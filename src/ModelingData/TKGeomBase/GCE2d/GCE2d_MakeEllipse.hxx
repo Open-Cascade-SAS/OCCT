@@ -85,7 +85,7 @@ public:
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
   Standard_EXPORT const Handle(Geom2d_Ellipse)& Value() const;
 
-  operator const Handle(Geom2d_Ellipse) & () const { return Value(); }
+  operator const Handle(Geom2d_Ellipse)&() const { return Value(); }
 
 private:
   Handle(Geom2d_Ellipse) TheEllipse;

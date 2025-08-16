@@ -162,7 +162,6 @@ public:
   Standard_EXPORT void Format();
 
   Standard_DEPRECATED("BottomLeft should be used instead")
-
   const NCollection_Vec2<Standard_ShortReal>& TopLeft(const Standard_Integer theIndex) const
   {
     return BottomLeft(theIndex);

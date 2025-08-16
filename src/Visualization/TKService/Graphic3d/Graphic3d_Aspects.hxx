@@ -548,7 +548,6 @@ public:
 
 public:
   Standard_DEPRECATED("Deprecated method, FaceCulling() should be used instead")
-
   bool ToSuppressBackFaces() const
   {
     return myFaceCulling == Graphic3d_TypeOfBackfacingModel_BackCulled
@@ -557,7 +556,6 @@ public:
 
   Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used "
                       "instead")
-
   void SetSuppressBackFaces(bool theToSuppress)
   {
     myFaceCulling = theToSuppress ? Graphic3d_TypeOfBackfacingModel_Auto
@@ -565,7 +563,6 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated method, FaceCulling() should be used instead")
-
   bool BackFace() const
   {
     return myFaceCulling == Graphic3d_TypeOfBackfacingModel_BackCulled
@@ -573,11 +570,9 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used instead")
-
   void AllowBackFace() { myFaceCulling = Graphic3d_TypeOfBackfacingModel_DoubleSided; }
 
   Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used instead")
-
   void SuppressBackFace() { myFaceCulling = Graphic3d_TypeOfBackfacingModel_Auto; }
 
 protected:

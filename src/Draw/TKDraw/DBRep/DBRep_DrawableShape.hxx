@@ -37,17 +37,16 @@ class gp_Trsf;
 class DBRep_DrawableShape : public Draw_Drawable3D
 {
   DEFINE_STANDARD_RTTIEXT(DBRep_DrawableShape, Draw_Drawable3D)
-  Draw_Drawable3D_FACTORY public :
-
-      Standard_EXPORT
-      DBRep_DrawableShape(const TopoDS_Shape&    C,
-                          const Draw_Color&      FreeCol,
-                          const Draw_Color&      ConnCol,
-                          const Draw_Color&      EdgeCol,
-                          const Draw_Color&      IsosCol,
-                          const Standard_Real    size,
-                          const Standard_Integer nbisos,
-                          const Standard_Integer discret);
+  Draw_Drawable3D_FACTORY
+public:
+  Standard_EXPORT DBRep_DrawableShape(const TopoDS_Shape&    C,
+                                      const Draw_Color&      FreeCol,
+                                      const Draw_Color&      ConnCol,
+                                      const Draw_Color&      EdgeCol,
+                                      const Draw_Color&      IsosCol,
+                                      const Standard_Real    size,
+                                      const Standard_Integer nbisos,
+                                      const Standard_Integer discret);
 
   //! Changes the number of isoparametric curves in a shape.
   Standard_EXPORT void ChangeNbIsos(const Standard_Integer NbIsos);

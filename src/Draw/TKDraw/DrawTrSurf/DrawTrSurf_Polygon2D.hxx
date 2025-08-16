@@ -29,10 +29,9 @@ DEFINE_STANDARD_HANDLE(DrawTrSurf_Polygon2D, Draw_Drawable2D)
 class DrawTrSurf_Polygon2D : public Draw_Drawable2D
 {
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Polygon2D, Draw_Drawable2D)
-  Draw_Drawable3D_FACTORY public :
-
-      Standard_EXPORT
-      DrawTrSurf_Polygon2D(const Handle(Poly_Polygon2D)& P);
+  Draw_Drawable3D_FACTORY
+public:
+  Standard_EXPORT DrawTrSurf_Polygon2D(const Handle(Poly_Polygon2D)& P);
 
   Handle(Poly_Polygon2D) Polygon2D() const { return myPolygon2D; }
 

@@ -37,8 +37,7 @@
 //=============================================================================
 GeomToStep_MakeBSplineCurveWithKnots::GeomToStep_MakeBSplineCurveWithKnots(
   const Handle(Geom_BSplineCurve)& BS,
-  const StepData_Factors&          theLocalFactors)
-{
+  const StepData_Factors&          theLocalFactors){
 #define Array1OfPnt_gen TColgp_Array1OfPnt
 #include "GeomToStep_MakeBSplineCurveWithKnots_gen.pxx"
 #undef Array1OfPnt_gen

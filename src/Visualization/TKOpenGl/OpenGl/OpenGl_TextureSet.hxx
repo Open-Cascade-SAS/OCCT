@@ -31,9 +31,9 @@ public:
     Handle(OpenGl_Texture) Texture;
     Graphic3d_TextureUnit  Unit;
 
-    operator const Handle(OpenGl_Texture) & () const { return Texture; }
+    operator const Handle(OpenGl_Texture)&() const { return Texture; }
 
-    operator Handle(OpenGl_Texture) & () { return Texture; }
+    operator Handle(OpenGl_Texture)&() { return Texture; }
 
     TextureSlot()
         : Unit(Graphic3d_TextureUnit_0)

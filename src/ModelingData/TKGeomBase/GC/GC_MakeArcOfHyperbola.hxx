@@ -68,7 +68,7 @@ public:
   //! Returns the constructed arc of hyperbola.
   Standard_EXPORT const Handle(Geom_TrimmedCurve)& Value() const;
 
-  operator const Handle(Geom_TrimmedCurve) & () const { return Value(); }
+  operator const Handle(Geom_TrimmedCurve)&() const { return Value(); }
 
 private:
   Handle(Geom_TrimmedCurve) TheArc;

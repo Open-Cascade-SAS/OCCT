@@ -30,12 +30,11 @@ DEFINE_STANDARD_HANDLE(DrawTrSurf_Curve, DrawTrSurf_Drawable)
 class DrawTrSurf_Curve : public DrawTrSurf_Drawable
 {
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Curve, DrawTrSurf_Drawable)
-  Draw_Drawable3D_FACTORY public :
-
-      //! creates a drawable curve from a curve of package Geom.
-      Standard_EXPORT
-      DrawTrSurf_Curve(const Handle(Geom_Curve)& C,
-                       const Standard_Boolean    DispOrigin = Standard_True);
+  Draw_Drawable3D_FACTORY
+public:
+  //! creates a drawable curve from a curve of package Geom.
+  Standard_EXPORT DrawTrSurf_Curve(const Handle(Geom_Curve)& C,
+                                   const Standard_Boolean    DispOrigin = Standard_True);
 
   Standard_EXPORT DrawTrSurf_Curve(const Handle(Geom_Curve)& C,
                                    const Draw_Color&         aColor,

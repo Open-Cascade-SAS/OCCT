@@ -57,7 +57,6 @@ public:
 
 public:
   Standard_DEPRECATED("Deprecated method, ToDrawEdges() should be used instead")
-
   bool Edge() const { return ToDrawEdges(); }
 };
 

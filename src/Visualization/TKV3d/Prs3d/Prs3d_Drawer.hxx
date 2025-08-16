@@ -883,23 +883,18 @@ public:
 
 public: //! @name deprecated methods
   Standard_DEPRECATED("SetDeviationAngle() should be used instead")
-
   void SetHLRAngle(const Standard_Real theAngle) { SetDeviationAngle(theAngle); }
 
   Standard_DEPRECATED("DeviationAngle() should be used instead")
-
   Standard_Real HLRAngle() const { return DeviationAngle(); }
 
   Standard_DEPRECATED("SetDeviationAngle() should be used instead")
-
   void SetHLRAngle() { SetDeviationAngle(); }
 
   Standard_DEPRECATED("HasOwnDeviationAngle() should be used instead")
-
   Standard_Boolean HasOwnHLRDeviationAngle() const { return HasOwnDeviationAngle(); }
 
   Standard_DEPRECATED("PreviousDeviationAngle() should be used instead")
-
   Standard_Real PreviousHLRDeviationAngle() const { return PreviousDeviationAngle(); }
 
 protected:

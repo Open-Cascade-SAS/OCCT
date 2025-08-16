@@ -40,10 +40,7 @@ public:
   }
 
   //! Method Relieve() was replaced by Close() in Message_ProgressScope
-  void Relieve()
-  {
-    Close();
-  }
+  void Relieve() { Close(); }
 
 private:
   //! Message_ProgressRange should be passed to constructor instead of Message_ProgressIndicator.
