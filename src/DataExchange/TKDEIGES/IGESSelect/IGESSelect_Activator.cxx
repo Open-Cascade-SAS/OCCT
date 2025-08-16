@@ -213,9 +213,9 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
       }
       char signature[20];
       if (argc == 2)
-        sprintf(signature, "%s", arg1);
+        Sprintf(signature, "%s", arg1);
       else
-        sprintf(signature, "%s %s", arg1, arg2);
+        Sprintf(signature, "%s %s", arg1, arg2);
       Handle(IFSelect_SelectSignature) sel =
         new IFSelect_SelectSignature(new IGESSelect_IGESTypeForm, signature, (argc > 2));
       return pilot->RecordItem(sel);

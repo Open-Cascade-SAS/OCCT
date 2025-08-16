@@ -41,7 +41,7 @@ static int errh = 1;
 static void raisecheck(Standard_Failure& theException, Handle(Interface_Check)& ach)
 {
   char mess[100];
-  sprintf(mess, "** Exception Raised during Check : %s **", theException.DynamicType()->Name());
+  Sprintf(mess, "** Exception Raised during Check : %s **", theException.DynamicType()->Name());
   ach->AddFail(mess);
 #ifdef _WIN32
   if (theException.IsKind(STANDARD_TYPE(OSD_Exception)))

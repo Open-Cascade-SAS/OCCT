@@ -126,13 +126,13 @@ TCollection_AsciiString IFSelect_SelectAnyList::Label() const
   if (HasUpper())
     rankto = UpperValue();
   if (rankfrom == rankto)
-    sprintf(lab, " (no %d)", rankfrom);
+    Sprintf(lab, " (no %d)", rankfrom);
   else if (rankfrom == 0)
-    sprintf(lab, " (-> %d)", rankfrom);
+    Sprintf(lab, " (-> %d)", rankfrom);
   else if (rankto == 0)
-    sprintf(lab, " (%d ->)", rankto);
+    Sprintf(lab, " (%d ->)", rankto);
   else
-    sprintf(lab, " (%d -> %d)", rankfrom, rankto);
+    Sprintf(lab, " (%d -> %d)", rankfrom, rankto);
 
   TCollection_AsciiString labl("In List ");
   labl.AssignCat(ListLabel());

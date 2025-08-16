@@ -522,7 +522,7 @@ Standard_Integer bopwho(Draw_Interpretor& di, Standard_Integer n, const char** a
           di << " FF points: ";
           bFound = Standard_True;
         }
-        sprintf(buf, "(%d, %d) ", n1, n2);
+        Sprintf(buf, "(%d, %d) ", n1, n2);
         di << buf;
       }
     } // for (k=0; k<aNbP; ++k)
@@ -578,12 +578,12 @@ Standard_Integer bopnews(Draw_Interpretor& di, Standard_Integer n, const char** 
     {
       const TopoDS_Shape& aS = aSI.Shape();
       //
-      sprintf(buf, "z%d", i);
+      Sprintf(buf, "z%d", i);
       aText   = buf;
       aDShape = new BOPTest_DrawableShape(aS, aText, aTextColor);
       Draw::Set(aText, aDShape);
       //
-      sprintf(buf, "z%d ", i);
+      Sprintf(buf, "z%d ", i);
       di << buf;
       //
       bFound = Standard_True;
@@ -764,7 +764,7 @@ Standard_Integer bopsc(Draw_Interpretor& di, Standard_Integer n, const char** a)
           di << buf;
           iX = 1;
         }
-        sprintf(buf, "t_%d_%d", k, nSp);
+        Sprintf(buf, "t_%d_%d", k, nSp);
         di << buf;
         //
         const TopoDS_Shape& aSp = pDS->Shape(nSp);
@@ -793,11 +793,11 @@ Standard_Integer bopsc(Draw_Interpretor& di, Standard_Integer n, const char** a)
       }
       if (!iX)
       {
-        sprintf(buf, "[%d %d] section vertices: ", nF1, nF2);
+        Sprintf(buf, "[%d %d] section vertices: ", nF1, nF2);
         di << buf;
         iX = 1;
       }
-      sprintf(buf, "p_%d_%d", k, nSp);
+      Sprintf(buf, "p_%d_%d", k, nSp);
       di << buf;
       //
       const TopoDS_Shape& aSp = pDS->Shape(nSp);
@@ -1263,7 +1263,7 @@ Standard_Integer bopimage(Draw_Interpretor& di, Standard_Integer n, const char**
   }
   //
   di << i << " images found\n";
-  sprintf(buf, "%s_im", a[1]);
+  Sprintf(buf, "%s_im", a[1]);
   DBRep::Set(buf, aC);
   di << buf << "\n";
   //
@@ -1303,7 +1303,7 @@ Standard_Integer boporigin(Draw_Interpretor& di, Standard_Integer n, const char*
   }
   //
   char buf[32];
-  sprintf(buf, "%s_or", a[1]);
+  Sprintf(buf, "%s_or", a[1]);
   //
   const TopTools_ListOfShape& aLSx = aDMI.Find(aS);
   if (aLSx.Extent() == 1)
@@ -1396,7 +1396,7 @@ Standard_Integer bopfsd(Draw_Interpretor& di, Standard_Integer n, const char** a
   //
   di << i << " SD shapes found\n";
   //
-  sprintf(buf, "%s_sd", a[1]);
+  Sprintf(buf, "%s_sd", a[1]);
   DBRep::Set(buf, aC);
   //
   di << buf << "\n";
@@ -1464,7 +1464,7 @@ Standard_Integer bopbface(Draw_Interpretor& di, Standard_Integer n, const char**
   for (i = 1; aIt.More(); aIt.Next(), ++i)
   {
     const TopoDS_Shape& aFR = aIt.Value();
-    sprintf(buf, "%s_%d", a[1], i);
+    Sprintf(buf, "%s_%d", a[1], i);
     DBRep::Set(buf, aFR);
     di << " " << buf;
   }
@@ -1534,7 +1534,7 @@ Standard_Integer bopbsolid(Draw_Interpretor& di, Standard_Integer n, const char*
   for (i = 1; aIt.More(); aIt.Next(), ++i)
   {
     const TopoDS_Shape& aSR = aIt.Value();
-    sprintf(buf, "%s_%d", a[1], i);
+    Sprintf(buf, "%s_%d", a[1], i);
     DBRep::Set(buf, aSR);
     di << " " << buf;
   }
@@ -1690,7 +1690,7 @@ void SearchNewIndex(const char*                           theCType,
       }
       //
       anInt.Indices(n1, n2);
-      sprintf(buf, "(%d, %d) ", n1, n2);
+      Sprintf(buf, "(%d, %d) ", n1, n2);
       di << buf;
     }
   }

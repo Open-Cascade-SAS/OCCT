@@ -191,9 +191,9 @@ void GeomFill_CircularBlendFunc::Discret()
       myCurve1->D0(T, P1);
       myCurve2->D0(T, P2);
       /*
-            sprintf(name,"PNT_%d",NbSections++);
+            Sprintf(name,"PNT_%d",NbSections++);
             DrawTrSurf::Set(name, P1);
-            sprintf(name,"PNT_%d",NbSections++);
+            Sprintf(name,"PNT_%d",NbSections++);
             DrawTrSurf::Set(name, P2);*/
       myPath->D0(T, Center);
       ns1.SetXYZ(Center.XYZ() - P1.XYZ());
@@ -296,7 +296,7 @@ Standard_Boolean GeomFill_CircularBlendFunc::D0(const Standard_Real Param,
 #ifdef DRAW
 //  Handle(Geom_BSplineCurve) BS =
 //    new Geom_BSplineCurve(Poles,Weights,Knots,Mults,Degree);
-//  sprintf(name,"SECT_%d",NbSections++);
+//  Sprintf(name,"SECT_%d",NbSections++);
 //  DrawTrSurf::Set(name,BS);
 #endif
   return Standard_True;

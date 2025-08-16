@@ -206,11 +206,11 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
   }
 
   //  ...  ECRITURE
-  sprintf(laligne, "!XSTEP SESSION V1 %s", thesess->DynamicType()->Name());
+  Sprintf(laligne, "!XSTEP SESSION V1 %s", thesess->DynamicType()->Name());
   WriteLine(laligne, '\n');
-  sprintf(laligne, "!GENERALS");
+  Sprintf(laligne, "!GENERALS");
   WriteLine(laligne, '\n');
-  sprintf(laligne, "ErrorHandle %d", (thesess->ErrorHandle() ? 1 : 0));
+  Sprintf(laligne, "ErrorHandle %d", (thesess->ErrorHandle() ? 1 : 0));
   WriteLine(laligne, '\n');
   Handle(TColStd_HSequenceOfInteger) idents;
   Standard_Integer                   nb;
@@ -230,10 +230,10 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
     {
       thenewnum++;
       idents->SetValue(i, thenewnum);
-      sprintf(laligne, " #%d %d", thenewnum, P->Value());
+      Sprintf(laligne, " #%d %d", thenewnum, P->Value());
     }
     else
-      sprintf(laligne, " %s %d", name->ToCString(), P->Value());
+      Sprintf(laligne, " %s %d", name->ToCString(), P->Value());
     WriteLine(laligne, '\n');
   }
 
@@ -250,10 +250,10 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
     {
       thenewnum++;
       thenums->SetValue(i, thenewnum);
-      sprintf(laligne, " #%d %s", thenewnum, P->ToCString());
+      Sprintf(laligne, " #%d %s", thenewnum, P->ToCString());
     }
     else
-      sprintf(laligne, " %s %s", name->ToCString(), P->ToCString());
+      Sprintf(laligne, " %s %s", name->ToCString(), P->ToCString());
     WriteLine(laligne, '\n');
   }
 
@@ -271,7 +271,7 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
     DeclareAndCast(IFSelect_SelectExtract, sxt, P);
     if (!sxt.IsNull())
     {
-      sprintf(laligne, " %c", (sxt->IsDirect() ? 'D' : 'R'));
+      Sprintf(laligne, " %c", (sxt->IsDirect() ? 'D' : 'R'));
       WriteLine(laligne);
     }
     DeclareAndCast(IFSelect_SelectAnyList, sli, P);
@@ -300,9 +300,9 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
       continue;
     name = thesess->Name(P);
     if (name.IsNull())
-      sprintf(laligne, " #%d %d", thenums->Value(i), nbs);
+      Sprintf(laligne, " #%d %d", thenums->Value(i), nbs);
     else
-      sprintf(laligne, " %s %d", name->ToCString(), nbs);
+      Sprintf(laligne, " %s %d", name->ToCString(), nbs);
     WriteLine(laligne);
     for (Standard_Integer k = 1; k <= nbs; k++)
       SendItem(thesess->Source(P, k));
@@ -394,7 +394,7 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
     namingpart = P->RootName();
     SetOwn(Standard_False);
     SendItem(P);
-    sprintf(laligne, " %s", namingpart->ToCString());
+    Sprintf(laligne, " %s", namingpart->ToCString());
     WriteLine(laligne, ' ');
     WriteLine("", '\n');
   }
@@ -975,10 +975,10 @@ void IFSelect_SessionFile::NewItem(const Standard_Integer            ident,
   {
     thenewnum++;
     thenums->SetValue(ident, thenewnum);
-    sprintf(laligne, " #%d %s", thenewnum, par->DynamicType()->Name());
+    Sprintf(laligne, " #%d %s", thenewnum, par->DynamicType()->Name());
   }
   else
-    sprintf(laligne, " %s %s", thesess->Name(par)->ToCString(), par->DynamicType()->Name());
+    Sprintf(laligne, " %s %s", thesess->Name(par)->ToCString(), par->DynamicType()->Name());
   WriteLine(laligne);
 }
 
@@ -1014,17 +1014,17 @@ void IFSelect_SessionFile::SendItem(const Handle(Standard_Transient)& par)
   ////  if (theownflag) WriteLine(" :");
   ////  else            WriteLine(" ");
   if (filenum < 0)
-    sprintf(laligne, " :%s", thesess->Name(par)->ToCString());
+    Sprintf(laligne, " :%s", thesess->Name(par)->ToCString());
   else
-    sprintf(laligne, " #%d", filenum);
+    Sprintf(laligne, " #%d", filenum);
   WriteLine(laligne);
 }
 
 void IFSelect_SessionFile::SendText(const Standard_CString text)
 {
   char laligne[100];
-  ////  if (theownflag) sprintf(laligne," :%s",text);
-  sprintf(laligne, " %s", text);
+  ////  if (theownflag) Sprintf(laligne," :%s",text);
+  Sprintf(laligne, " %s", text);
   WriteLine(laligne);
 }
 

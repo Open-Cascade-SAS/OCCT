@@ -134,7 +134,7 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::WriteStep(
   //  Interface_FloatWriter::Convert
   //    (Interface_MSG::Intervalled(ent->ValueComponent()*0.98,5,Standard_True),
   //     lmv,Standard_True, 10.,0.1,"%E","%E");
-  //  sprintf (lm,"LENGTH_MEASURE(%s)",lmv);
+  //  Sprintf (lm,"LENGTH_MEASURE(%s)",lmv);
   //  SW.SendString(lm);
 
   //  SW.AddString("LENGTH_MEASURE");

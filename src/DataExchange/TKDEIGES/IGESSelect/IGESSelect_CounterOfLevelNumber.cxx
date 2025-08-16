@@ -92,7 +92,7 @@ void IGESSelect_CounterOfLevelNumber::AddLevel(const Handle(Standard_Transient)&
   //  if (level == 0) Add(ent," NO LEVEL");
   //  else {
   char signature[30];
-  sprintf(signature, "%7d", level);
+  Sprintf(signature, "%7d", level);
   Add(ent, signature);
   //  }
 }
@@ -140,7 +140,7 @@ Handle(TCollection_HAsciiString) IGESSelect_CounterOfLevelNumber::Sign(
   if (level < 0)
     return new TCollection_HAsciiString("LEVEL LIST");
   char signature[30];
-  sprintf(signature, "%7d", level);
+  Sprintf(signature, "%7d", level);
   return new TCollection_HAsciiString(signature);
 }
 

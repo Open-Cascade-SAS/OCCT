@@ -206,11 +206,11 @@ Handle(TCollection_HAsciiString) StepData_StepModel::StringLabel(
   Standard_Integer                 nid = (!num ? 0 : theidnums->Value(num));
 
   if (nid > 0)
-    sprintf(text, "#%d", nid);
+    Sprintf(text, "#%d", nid);
   else if (num > 0)
-    sprintf(text, "(#%d)", num);
+    Sprintf(text, "(#%d)", num);
   else
-    sprintf(text, "(#0..)");
+    Sprintf(text, "(#0..)");
 
   label = new TCollection_HAsciiString(text);
   return label;

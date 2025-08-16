@@ -72,6 +72,6 @@ TCollection_AsciiString IGESSelect_SelectLevelNumber::ExtractLabel() const
   if (numlev == 0)
     return TCollection_AsciiString("IGES Entity attached to no Level");
 
-  sprintf(labl, "IGES Entity, Level Number admitting %d", numlev);
+  Sprintf(labl, "IGES Entity, Level Number admitting %d", numlev);
   return TCollection_AsciiString(labl);
 }

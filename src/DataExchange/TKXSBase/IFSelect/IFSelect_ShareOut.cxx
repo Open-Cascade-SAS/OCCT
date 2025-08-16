@@ -396,17 +396,17 @@ TCollection_AsciiString IFSelect_ShareOut::FileName(const Standard_Integer dnum,
     }
     if (nbch > 1)
     {
-      sprintf(format, "_ %d.%dd", nbch, nbch);
+      Sprintf(format, "_ %d.%dd", nbch, nbch);
       format[1] = '%';
     }
     else if (npac >= num || num >= 1)
     {
-      sprintf(format, "_ d");
+      Sprintf(format, "_ d");
       format[1] = '%';
     }
     if (format[1] == '%')
     {
-      sprintf(suffixe, format, num);
+      Sprintf(suffixe, format, num);
       res.AssignCat(suffixe);
     }
   }

@@ -697,7 +697,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepShape_GeometricSet)&           
     if (ent.IsNull())
     {
       char buff[100];
-      sprintf(buff, "Entity %d is a Null entity", i);
+      Sprintf(buff, "Entity %d is a Null entity", i);
       TP->AddWarning(GCS, buff);
       continue;
     }

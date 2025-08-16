@@ -111,7 +111,7 @@ TCollection_AsciiString IFSelect_SelectExplore::Label() const
   else if (thelevel > 0)
   {
     char lab[30];
-    sprintf(lab, "(Level %d)", thelevel);
+    Sprintf(lab, "(Level %d)", thelevel);
     labl.AssignCat(lab);
   }
   labl.AssignCat(ExploreLabel());

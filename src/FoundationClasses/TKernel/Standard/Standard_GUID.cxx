@@ -316,7 +316,7 @@ void Standard_GUID::Assign(const Standard_UUID& theUUID)
 
 void Standard_GUID::ToCString(const Standard_PCharacter aStrGuid) const
 {
-  sprintf(aStrGuid,
+  Sprintf(aStrGuid,
           "%.8x-%.4x-%.4x-%.4x-%.2x%.2x%.2x%.2x%.2x%.2x",
           my32b,
           (unsigned short)my16b1,

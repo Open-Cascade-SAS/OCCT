@@ -331,19 +331,19 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
     f = AC1.FirstParameter();
     l = AC1.LastParameter();
     char name[32];
-    sprintf(name, "C1_%d", ++intind);
+    Sprintf(name, "C1_%d", ++intind);
     DrawTrSurf::Set(name, new Geom2d_TrimmedCurve(C1, f, l));
     f = AC2.FirstParameter();
     l = AC2.LastParameter();
-    sprintf(name, "C2_%d", intind);
+    Sprintf(name, "C2_%d", intind);
     DrawTrSurf::Set(name, new Geom2d_TrimmedCurve(C2, f, l));
     f = myBis.FirstParameter();
     l = myBis.LastParameter();
-    sprintf(name, "BIS%d", intind);
+    Sprintf(name, "BIS%d", intind);
     DrawTrSurf::Set(name, new Geom2d_TrimmedCurve(myBis.Curve(), f, l));
-    sprintf(name, "E1_%d", intind);
+    Sprintf(name, "E1_%d", intind);
     DBRep::Set(name, Edge1);
-    sprintf(name, "E2_%d", intind);
+    Sprintf(name, "E2_%d", intind);
     DBRep::Set(name, Edge2);
   }
 #endif

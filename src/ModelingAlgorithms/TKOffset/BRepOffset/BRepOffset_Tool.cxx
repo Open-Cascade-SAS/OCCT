@@ -720,9 +720,9 @@ void BRepOffset_Tool::PipeInter(const TopoDS_Face&    F1,
   if (AffichInter)
   {
     char name[256];
-    sprintf(name, "FF_%d", NbFaces++);
+    Sprintf(name, "FF_%d", NbFaces++);
     DBRep::Set(name, F1);
-    sprintf(name, "FF_%d", NbFaces++);
+    Sprintf(name, "FF_%d", NbFaces++);
     DBRep::Set(name, F2);
   }
 #endif
@@ -777,7 +777,7 @@ void BRepOffset_Tool::PipeInter(const TopoDS_Face&    F1,
       if (AffichInter)
       {
         char name[256];
-        sprintf(name, "EI_%d", NbNewEdges++);
+        Sprintf(name, "EI_%d", NbNewEdges++);
         DBRep::Set(name, E.Oriented(O1));
       }
 #endif
@@ -1391,9 +1391,9 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face&    F1,
   if (AffichInter)
   {
     char name[256];
-    sprintf(name, "FF_%d", NbFaces++);
+    Sprintf(name, "FF_%d", NbFaces++);
     DBRep::Set(name, F1);
-    sprintf(name, "FF_%d", NbFaces++);
+    Sprintf(name, "FF_%d", NbFaces++);
     DBRep::Set(name, F2);
   }
 #endif
@@ -1535,7 +1535,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face&    F1,
         if (AffichInter)
         {
           char name[256];
-          sprintf(name, "EI_%d", NbNewEdges++);
+          Sprintf(name, "EI_%d", NbNewEdges++);
           DBRep::Set(name, anEdge.Oriented(O1));
         }
 #endif
@@ -1869,9 +1869,9 @@ Standard_Boolean BRepOffset_Tool::TryProject(const TopoDS_Face&          F1,
   if (AffichInter)
   {
     char name[256];
-    sprintf(name, "FF_%d", NbFaces++);
+    Sprintf(name, "FF_%d", NbFaces++);
     DBRep::Set(name, F1);
-    sprintf(name, "FF_%d", NbFaces++);
+    Sprintf(name, "FF_%d", NbFaces++);
     DBRep::Set(name, F2);
   }
 #endif
@@ -1923,7 +1923,7 @@ Standard_Boolean BRepOffset_Tool::TryProject(const TopoDS_Face&          F1,
       if (AffichInter)
       {
         char name[256];
-        sprintf(name, "EI_%d", NbNewEdges++);
+        Sprintf(name, "EI_%d", NbNewEdges++);
         DBRep::Set(name, CurE.Oriented(O1));
       }
 #endif
@@ -1946,9 +1946,9 @@ void BRepOffset_Tool::InterOrExtent(const TopoDS_Face&    F1,
   if (AffichInter)
   {
     char name[256];
-    sprintf(name, "FF_%d", NbFaces++);
+    Sprintf(name, "FF_%d", NbFaces++);
     DBRep::Set(name, F1);
-    sprintf(name, "FF_%d", NbFaces++);
+    Sprintf(name, "FF_%d", NbFaces++);
     DBRep::Set(name, F2);
   }
 #endif
@@ -2004,7 +2004,7 @@ void BRepOffset_Tool::InterOrExtent(const TopoDS_Face&    F1,
       if (AffichInter)
       {
         char name[256];
-        sprintf(name, "EI_%d", NbNewEdges++);
+        Sprintf(name, "EI_%d", NbNewEdges++);
         DBRep::Set(name, E.Oriented(O1));
       }
 #endif
@@ -2093,11 +2093,11 @@ static void ExtentEdge(const TopoDS_Face& F,
   if (AffichExtent)
   {
     char name[256];
-    sprintf(name, "F_%d", NbExtE);
+    Sprintf(name, "F_%d", NbExtE);
     DBRep::Set(name, EF);
-    sprintf(name, "OE_%d", NbExtE);
+    Sprintf(name, "OE_%d", NbExtE);
     DBRep::Set(name, E);
-    sprintf(name, "ExtE_%d", NbExtE++);
+    Sprintf(name, "ExtE_%d", NbExtE++);
     DBRep::Set(name, NE);
   }
 #endif
@@ -3601,7 +3601,7 @@ void BRepOffset_Tool::ExtentFace(const TopoDS_Face&            F,
   if (AffichInter)
   {
     char name[256];
-    sprintf(name, "FTE_%d", NbFTE++);
+    Sprintf(name, "FTE_%d", NbFTE++);
     DBRep::Set(name, F);
   }
 #endif
@@ -4099,7 +4099,7 @@ void BRepOffset_Tool::ExtentFace(const TopoDS_Face&            F,
   if (AffichInter)
   {
     char name[256];
-    sprintf(name, "FOB_%d", NbFOB++);
+    Sprintf(name, "FOB_%d", NbFOB++);
     DBRep::Set(name, NF);
   }
 #endif

@@ -88,7 +88,7 @@ void IFSelect_GraphCounter::AddWithGraph(const Handle(TColStd_HSequenceOfTransie
         Add(ent, "9");
         break;
       default:
-        sprintf(val, "%d", n);
+        Sprintf(val, "%d", n);
         Add(ent, val);
         break;
     }

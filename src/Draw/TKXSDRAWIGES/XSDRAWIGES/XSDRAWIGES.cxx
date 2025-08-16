@@ -58,7 +58,7 @@
 void WriteShape(const TopoDS_Shape& shape, const Standard_Integer number)
 {
   char fname[110];
-  sprintf(fname, "Shape_%d", number);
+  Sprintf(fname, "Shape_%d", number);
   std::ofstream f(fname, std::ios::out | std::ios::binary);
   std::cout << "Output file name : " << fname << std::endl;
   f << "DBRep_DrawableShape\n";

@@ -824,7 +824,7 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
     if (AffichGeom)
     {
       char name[256];
-      sprintf(name, "BISSEC_%d", NbBISSEC++);
+      Sprintf(name, "BISSEC_%d", NbBISSEC++);
       DrawTrSurf::Set(name, Bisec.Value());
     }
   #endif
@@ -2052,7 +2052,7 @@ void MakeCircle(const TopoDS_Edge&                                 E,
   if (AffichGeom && !OE.IsNull())
   {
     char name[256];
-    sprintf(name, "OFFSET_%d", ++NbOFFSET);
+    Sprintf(name, "OFFSET_%d", ++NbOFFSET);
     DBRep::Set(name, OE);
   }
   #endif
@@ -2182,7 +2182,7 @@ void MakeOffset(const TopoDS_Edge&                                 E,
     if (AffichGeom && !OE.IsNull())
     {
       char name[256];
-      sprintf(name, "OFFSET_%d", ++NbOFFSET);
+      Sprintf(name, "OFFSET_%d", ++NbOFFSET);
       DBRep::Set(name, OE);
       // Standard_Real ii = 0;
     }
@@ -2443,7 +2443,7 @@ void TrimEdge(const TopoDS_Edge&                   E,
       if (AffichEdge)
       {
         char name[256];
-        sprintf(name, "TRIMEDGE_%d", NbTRIMEDGES);
+        Sprintf(name, "TRIMEDGE_%d", NbTRIMEDGES);
         DBRep::Set(name, NewEdge);
       }
       if (Affich2d)
@@ -2454,7 +2454,7 @@ void TrimEdge(const TopoDS_Edge&                   E,
         Handle(Geom2d_Curve) C;
         BRep_Tool::CurveOnSurface(NewEdge, C, Surf, L, f, l);
         char name[256];
-        sprintf(name, "OFFSET2d_%d", NbTRIMEDGES++);
+        Sprintf(name, "OFFSET2d_%d", NbTRIMEDGES++);
         Handle(Geom2d_TrimmedCurve) C2d = new Geom2d_TrimmedCurve(C, f, l);
         Handle(DrawTrSurf_Curve2d)  dr  = new DrawTrSurf_Curve2d(C2d, Standard_False);
         dr->SetColor(Draw_bleu);

@@ -688,7 +688,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
       // Temporary
       // char* name = new char[100];
-      // sprintf(name, "c%d", i);
+      // Sprintf(name, "c%d", i);
       // DrawTrSurf::Set(name, tab(i-1));
 
       if (i > 1)

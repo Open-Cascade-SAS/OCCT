@@ -163,6 +163,6 @@ Standard_CString IFSelect_Signature::IntValue(const Standard_Integer val)
     default:
       break;
   }
-  sprintf(intval, "%d", val);
+  Sprintf(intval, "%d", val);
   return intval;
 }

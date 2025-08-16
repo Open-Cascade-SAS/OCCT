@@ -1122,7 +1122,7 @@ static Standard_Integer BinderStatus(const Handle(Transfer_Binder)& binder, char
   mess[0]               = '\0';
   if (binder.IsNull())
   {
-    sprintf(mess, "(no data recorded)");
+    Sprintf(mess, "(no data recorded)");
     return 0;
   }
   Interface_CheckStatus cst = binder->Check()->Status();
@@ -1130,10 +1130,10 @@ static Standard_Integer BinderStatus(const Handle(Transfer_Binder)& binder, char
   {
     stat = 11;
     if (binder->HasResult())
-      sprintf(mess, "%s", binder->ResultTypeName());
+      Sprintf(mess, "%s", binder->ResultTypeName());
     else
     {
-      sprintf(mess, "(no result)");
+      Sprintf(mess, "(no result)");
       stat = 1;
     }
   }
@@ -1141,10 +1141,10 @@ static Standard_Integer BinderStatus(const Handle(Transfer_Binder)& binder, char
   {
     stat = 12;
     if (binder->HasResult())
-      sprintf(mess, "%s  (+ warning)", binder->ResultTypeName());
+      Sprintf(mess, "%s  (+ warning)", binder->ResultTypeName());
     else
     {
-      sprintf(mess, "(warning)");
+      Sprintf(mess, "(warning)");
       stat = 2;
     }
   }
@@ -1152,10 +1152,10 @@ static Standard_Integer BinderStatus(const Handle(Transfer_Binder)& binder, char
   {
     stat = 13;
     if (binder->HasResult())
-      sprintf(mess, "%s  (+ FAIL)", binder->ResultTypeName());
+      Sprintf(mess, "%s  (+ FAIL)", binder->ResultTypeName());
     else
     {
-      sprintf(mess, "(FAIL)");
+      Sprintf(mess, "(FAIL)");
       stat = 3;
     }
   }
@@ -1359,7 +1359,7 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
           TCollection_AsciiString mest(model->TypeName(ent, Standard_False));
           mest.AssignCat("	-> ");
           mest.AssignCat(mess);
-          // sprintf(mest,"%s	-> %s",model->TypeName(ent,Standard_False),mess);
+          // Sprintf(mest,"%s	-> %s",model->TypeName(ent,Standard_False),mess);
           counter->Add(ent, mest.ToCString());
         }
       }

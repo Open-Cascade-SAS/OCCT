@@ -103,12 +103,12 @@ static void Drawsect(const Handle(Adaptor3d_Surface)& surf1,
   if ((State == Blend_StepTooLarge) || (State == Blend_SamePoints))
   {
     IndexOfRejection++;
-    sprintf(name, "%s_%d", "Rejection", IndexOfRejection);
+    Sprintf(name, "%s_%d", "Rejection", IndexOfRejection);
   }
   else
   {
     IndexOfSection++;
-    sprintf(name, "%s_%d", "Section", IndexOfSection);
+    Sprintf(name, "%s_%d", "Section", IndexOfSection);
   }
   #ifdef DRAW
   Handle(DrawTrSurf_BSplineCurve) BS = new (DrawTrSurf_BSplineCurve)(sect);
@@ -2251,11 +2251,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
 #ifdef DRAW
         Standard_Integer nbpts = line->NbPoints();
         char             name[100];
-        sprintf(name, "pg%d", nbpts);
+        Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
-        sprintf(name, "p1_%d", nbpts);
+        Sprintf(name, "p1_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS1());
-        sprintf(name, "p2_%d", nbpts);
+        Sprintf(name, "p2_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS2());
 #endif
 
@@ -2327,11 +2327,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
 #ifdef DRAW
         Standard_Integer nbpts = line->NbPoints();
         char             name[100];
-        sprintf(name, "pg%d", nbpts);
+        Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
-        sprintf(name, "p1_%d", nbpts);
+        Sprintf(name, "p1_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS1());
-        sprintf(name, "p2_%d", nbpts);
+        Sprintf(name, "p2_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS2());
 #endif
 
@@ -2374,11 +2374,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
 #ifdef DRAW
         Standard_Integer nbpts = line->NbPoints();
         char             name[100];
-        sprintf(name, "pg%d", nbpts);
+        Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
-        sprintf(name, "p1_%d", nbpts);
+        Sprintf(name, "p1_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS1());
-        sprintf(name, "p2_%d", nbpts);
+        Sprintf(name, "p2_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS2());
 #endif
 
@@ -2410,11 +2410,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
 #ifdef DRAW
         Standard_Integer nbpts = line->NbPoints();
         char             name[100];
-        sprintf(name, "pg%d", nbpts);
+        Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
-        sprintf(name, "p1_%d", nbpts);
+        Sprintf(name, "p1_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS1());
-        sprintf(name, "p2_%d", nbpts);
+        Sprintf(name, "p2_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS2());
 #endif
 
@@ -2446,11 +2446,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
 #ifdef DRAW
         Standard_Integer nbpts = line->NbPoints();
         char             name[100];
-        sprintf(name, "pg%d", nbpts);
+        Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
-        sprintf(name, "p1_%d", nbpts);
+        Sprintf(name, "p1_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS1());
-        sprintf(name, "p2_%d", nbpts);
+        Sprintf(name, "p2_%d", nbpts);
         DrawTrSurf::Set(name, previousP.PointOnS2());
 #endif
 

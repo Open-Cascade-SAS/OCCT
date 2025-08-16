@@ -103,8 +103,8 @@ TCollection_AsciiString IGESSelect_ChangeLevelNumber::Label() const
     newl = thenew->Value();
 
   if (yaold)
-    sprintf(labl, "Changes Level Number %d to %d", oldl, newl);
+    Sprintf(labl, "Changes Level Number %d to %d", oldl, newl);
   else
-    sprintf(labl, "Changes all Level Numbers positive and zero to %d", newl);
+    Sprintf(labl, "Changes all Level Numbers positive and zero to %d", newl);
   return TCollection_AsciiString(labl);
 }

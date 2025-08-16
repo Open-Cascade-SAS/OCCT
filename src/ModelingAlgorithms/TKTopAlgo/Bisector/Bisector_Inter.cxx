@@ -331,16 +331,16 @@ void Bisector_Inter::SinglePerform(const Handle(Geom2d_Curve)& CBis1,
 #ifdef DRAW
   if (Affich)
   {
-    sprintf(name, "i1_%d", ++nbint);
+    Sprintf(name, "i1_%d", ++nbint);
     DrawTrSurf::Set(name, Bis1);
-    sprintf(name, "i2_%d", nbint);
+    Sprintf(name, "i2_%d", nbint);
     DrawTrSurf::Set(name, Bis2);
     if (IsDone() && !IsEmpty())
     {
       for (Standard_Integer k = 1; k <= NbPoints(); k++)
       {
         gp_Pnt2d P = Point(k).Value();
-        sprintf(name, "ip_%d_%d", nbint, k);
+        Sprintf(name, "ip_%d_%d", nbint, k);
         DrawTrSurf::Set(name, P);
       }
     }

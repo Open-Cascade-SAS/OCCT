@@ -444,13 +444,13 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const Handle(IGESDefs_AttributeDef)& en
     char mess[80];
     if (ent->AttributeType(i) < 0 || ent->AttributeType(i) > 9999)
     {
-      sprintf(mess, "Attribute Type n0.%d not in <0 - 9999>", ent->AttributeType(i));
+      Sprintf(mess, "Attribute Type n0.%d not in <0 - 9999>", ent->AttributeType(i));
       ach->AddFail(mess);
     }
     Standard_Integer aty = ent->AttributeValueDataType(i);
     if (aty < 0 || aty > 6)
     {
-      sprintf(mess, "Attribute Value Data Type n0.%d not in <0 - 6>", aty);
+      Sprintf(mess, "Attribute Value Data Type n0.%d not in <0 - 6>", aty);
       ach->AddFail(mess);
     }
     if (ent->AttributeValueCount(i) <= 0)
@@ -460,7 +460,7 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const Handle(IGESDefs_AttributeDef)& en
     {
       if (aty == 0 || aty == 5)
         continue;
-      sprintf(mess, "Form Number > 0 and Attribute Value List n0.%d undefined", aty);
+      Sprintf(mess, "Form Number > 0 and Attribute Value List n0.%d undefined", aty);
       ach->AddFail(mess);
       continue;
     }
@@ -472,31 +472,31 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const Handle(IGESDefs_AttributeDef)& en
       case 1:
         if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfInteger)))
         {
-          sprintf(mess, "Attribute List n0.%d (Integers) badly defined", aty);
+          Sprintf(mess, "Attribute List n0.%d (Integers) badly defined", aty);
         }
         break;
       case 2:
         if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfReal)))
         {
-          sprintf(mess, "Attribute List n0.%d (Reals) badly defined", aty);
+          Sprintf(mess, "Attribute List n0.%d (Reals) badly defined", aty);
         }
         break;
       case 3:
         if (!list->IsKind(STANDARD_TYPE(Interface_HArray1OfHAsciiString)))
         {
-          sprintf(mess, "Attribute List n0.%d (Strings) badly defined", aty);
+          Sprintf(mess, "Attribute List n0.%d (Strings) badly defined", aty);
         }
         break;
       case 4:
         if (!list->IsKind(STANDARD_TYPE(IGESData_HArray1OfIGESEntity)))
         {
-          sprintf(mess, "Attribute List n0.%d (IGES Pointers) badly defined", aty);
+          Sprintf(mess, "Attribute List n0.%d (IGES Pointers) badly defined", aty);
         }
         break;
       case 6:
         if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfInteger)))
         {
-          sprintf(mess, "Attribute List n0.%d (Logicals i.e. Integers) badly defined", aty);
+          Sprintf(mess, "Attribute List n0.%d (Logicals i.e. Integers) badly defined", aty);
         }
         break;
       default:

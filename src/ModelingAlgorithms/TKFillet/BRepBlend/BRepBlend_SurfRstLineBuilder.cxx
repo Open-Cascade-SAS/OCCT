@@ -139,7 +139,7 @@ static void Drawsect(const Standard_Real param, Blend_SurfRstFunction& Func)
   #ifdef DRAW
   char             tname[100];
   Standard_CString name = tname;
-  sprintf(name, "%s_%d", "Section", IndexOfSection);
+  Sprintf(name, "%s_%d", "Section", IndexOfSection);
   DrawTrSurf::Set(name, sect);
   #endif
 }

@@ -43,7 +43,7 @@ Interface_MSG::Interface_MSG(const Standard_CString key, const Standard_Integer 
       theval(NULL)
 {
   char mess[300];
-  sprintf(mess, Interface_MSG::Translated(thekey), i1);
+  Sprintf(mess, Interface_MSG::Translated(thekey), i1);
   theval = new char[strlen(mess) + 1];
   strcpy(theval, mess);
 }
@@ -55,7 +55,7 @@ Interface_MSG::Interface_MSG(const Standard_CString key,
       theval(NULL)
 {
   char mess[300];
-  sprintf(mess, Interface_MSG::Translated(thekey), i1, i2);
+  Sprintf(mess, Interface_MSG::Translated(thekey), i1, i2);
   theval = new char[strlen(mess) + 1];
   strcpy(theval, mess);
 }
@@ -67,7 +67,7 @@ Interface_MSG::Interface_MSG(const Standard_CString key,
       theval(NULL)
 {
   char mess[300];
-  sprintf(mess,
+  Sprintf(mess,
           Interface_MSG::Translated(thekey),
           (intervals < 0 ? r1 : Interface_MSG::Intervalled(r1, intervals)));
   theval = new char[strlen(mess) + 1];
@@ -79,7 +79,7 @@ Interface_MSG::Interface_MSG(const Standard_CString key, const Standard_CString 
       theval(NULL)
 {
   char mess[300];
-  sprintf(mess, Interface_MSG::Translated(thekey), str);
+  Sprintf(mess, Interface_MSG::Translated(thekey), str);
   theval = new char[strlen(mess) + 1];
   strcpy(theval, mess);
 }
@@ -91,7 +91,7 @@ Interface_MSG::Interface_MSG(const Standard_CString key,
       theval(NULL)
 {
   char mess[300];
-  sprintf(mess, Interface_MSG::Translated(thekey), val, str);
+  Sprintf(mess, Interface_MSG::Translated(thekey), val, str);
   theval = new char[strlen(mess) + 1];
   strcpy(theval, mess);
 }
@@ -423,9 +423,9 @@ void Interface_MSG::TDate(const Standard_CString text,
   }
   char* pText = (char*)text;
   if (!format || format[0] == '\0')
-    sprintf(pText, "%4.4d-%2.2d-%2.2d:%2.2d-%2.2d-%2.2d", y2, m2, d2, h2, n2, s2);
+    Sprintf(pText, "%4.4d-%2.2d-%2.2d:%2.2d-%2.2d-%2.2d", y2, m2, d2, h2, n2, s2);
   else if ((format[0] == 'c' || format[0] == 'C') && format[1] == ':')
-    sprintf(pText, &format[2], y2, m2, d2, h2, n2, s2);
+    Sprintf(pText, &format[2], y2, m2, d2, h2, n2, s2);
 }
 
 Standard_Boolean Interface_MSG::NDate(const Standard_CString text,

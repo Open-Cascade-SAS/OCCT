@@ -199,7 +199,7 @@ Interface_CheckIterator IFSelect_ModelCopier::SendCopied(const Handle(IFSelect_W
       if (!res)
       {
         char mess[100];
-        sprintf(mess, "Split Send (WriteFile) abandon on file n0.%d", i);
+        Sprintf(mess, "Split Send (WriteFile) abandon on file n0.%d", i);
         checks.CCheck(0)->AddFail(mess);
         Message::SendInfo() << "  **  Sending File n0." << i << " has failed, abandon  **"
                             << std::endl;
@@ -267,7 +267,7 @@ Interface_CheckIterator IFSelect_ModelCopier::Sending(IFSelect_ShareOutResult&  
     if (!res)
     {
       char mess[100];
-      sprintf(mess, "Split Send (WriteFile) abandon on file n0.%d", i);
+      Sprintf(mess, "Split Send (WriteFile) abandon on file n0.%d", i);
       checks.CCheck(0)->AddFail(mess);
       Message::SendInfo() << "  **  Sending File " << filename << " has failed, abandon  **"
                           << std::endl;

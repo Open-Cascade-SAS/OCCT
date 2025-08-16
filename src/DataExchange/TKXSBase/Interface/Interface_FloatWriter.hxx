@@ -26,11 +26,11 @@
 
 //! This class converts a floating number (Real) to a string
 //! It can be used if the standard C-C++ output functions
-//! (sprintf or std::cout<<) are not convenient. That is to say :
+//! (Sprintf or std::cout<<) are not convenient. That is to say :
 //! - to suppress trailing '0' and 'E+00' (if desired)
 //! - to control exponent output and floating point output
 //!
-//! Formats are given in the form used by printf-sprintf
+//! Formats are given in the form used by printf-Sprintf
 class Interface_FloatWriter
 {
 public:

@@ -226,7 +226,7 @@ void IGESDraw_ToolViewsVisible::OwnCheck(const Handle(IGESDraw_ViewsVisible)& en
   if (!res)
     return;
   char mess[80];
-  sprintf(mess, "Mismatch for %d Entities displayed", res);
+  Sprintf(mess, "Mismatch for %d Entities displayed", res);
   ach->AddFail(mess, "Mismatch for %d Entities displayed");
 }
 

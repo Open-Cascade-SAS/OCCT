@@ -984,14 +984,14 @@ void BRepFeat_MakeLinearForm::Perform()
     Standard_Integer ii = 0;
     for(; expr.More(); expr.Next()) {
       ii++;
-      sprintf(nom1, "faceinitial_%d", ii);
+      Sprintf(nom1, "faceinitial_%d", ii);
       DBRep::Set(nom1, expr.Current());
       Standard_Integer jj = 0;
       const TopTools_ListOfShape& list = Modified(expr.Current());
       TopTools_ListIteratorOfListOfShape ite(list);
       for(; ite.More(); ite.Next()) {
         jj++;
-        sprintf(nom2, "facemodifie_%d_%d", ii, jj);
+        Sprintf(nom2, "facemodifie_%d_%d", ii, jj);
         DBRep::Set(nom2, ite.Value());
       }
     }
@@ -1000,14 +1000,14 @@ void BRepFeat_MakeLinearForm::Perform()
     ii=0;
     for(; expr.More(); expr.Next()) {
       ii++;
-      sprintf(nom1, "edgeinitial_%d", ii);
+      Sprintf(nom1, "edgeinitial_%d", ii);
       DBRep::Set(nom1, expr.Current());
       Standard_Integer jj = 0;
       const TopTools_ListOfShape& genf = Generated(expr.Current());
       TopTools_ListIteratorOfListOfShape ite(genf);
       for(; ite.More(); ite.Next()) {
         jj++;
-        sprintf(nom2, "egdegeneree_%d_%d", ii, jj);
+        Sprintf(nom2, "egdegeneree_%d_%d", ii, jj);
         DBRep::Set(nom2, ite.Value());
       }
     }

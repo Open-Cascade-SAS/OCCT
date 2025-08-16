@@ -427,18 +427,18 @@ void IGESAppli_ToolElementResults::OwnCheck(const Handle(IGESAppli_ElementResult
       ach->AddFail("One of the Data Layer Flags not in [0-4]");
     if (dlf < 4 && ent->NbLayers(i) != 1)
     {
-      sprintf(mess, "Nb. of Layers n0.%d not ONE while Data Layer Flag is in [0-3]", i);
+      Sprintf(mess, "Nb. of Layers n0.%d not ONE while Data Layer Flag is in [0-3]", i);
       ach->AddFail(mess);
     }
     if (rrf == 1 || rrf == 2)
       if (nrl != 1 || ent->ResultDataLoc(i, 1) != 0)
       {
-        sprintf(mess, "Result Data Locs n0.%d incorrect for Result Report = 1 or 2", i);
+        Sprintf(mess, "Result Data Locs n0.%d incorrect for Result Report = 1 or 2", i);
         ach->AddFail(mess);
       }
     if (ent->NbResults(i) != (nv * nl * nrl))
     {
-      sprintf(mess, "Nb. of results for Element n0.%d incorrect, should be %d", i, nv * nl * nrl);
+      Sprintf(mess, "Nb. of results for Element n0.%d incorrect, should be %d", i, nv * nl * nrl);
       ach->AddFail(mess);
     }
   }

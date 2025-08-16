@@ -119,14 +119,14 @@ TCollection_AsciiString IGESSelect_ChangeLevelList::Label() const
     newl = thenew->Value();
 
   if (yaold)
-    sprintf(labl, "Changes Level Lists containing %d", oldl);
+    Sprintf(labl, "Changes Level Lists containing %d", oldl);
   else
-    sprintf(labl, "Changes all Level Lists in D.E. %d", oldl);
+    Sprintf(labl, "Changes all Level Lists in D.E. %d", oldl);
   TCollection_AsciiString label(labl);
   if (yanew)
-    sprintf(labl, " to Number %d", newl);
+    Sprintf(labl, " to Number %d", newl);
   else
-    sprintf(labl, " to Number = first value in List");
+    Sprintf(labl, " to Number = first value in List");
   label.AssignCat(labl);
   return label;
 }

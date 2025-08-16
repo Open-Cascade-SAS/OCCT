@@ -370,7 +370,7 @@ static Standard_Integer xdistcs(Draw_Interpretor& di, Standard_Integer n, const 
       di << "Attention (critical value of tolerance) :";
     }
     char aMsg[256];
-    sprintf(aMsg, " T=%lg\tD=%lg\n", aT, aD);
+    Sprintf(aMsg, " T=%lg\tD=%lg\n", aT, aD);
     di << aMsg;
     //
     aMr = new Draw_Marker3D(aP, Draw_Plus, aColor, iSize);

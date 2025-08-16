@@ -680,7 +680,7 @@ void GeomFill_NSections::ComputeSurface()
   {
   #ifdef DRAW
     char name[256];
-    sprintf(name, "NS_Surf_%d", NbSurf);
+    Sprintf(name, "NS_Surf_%d", NbSurf);
     DrawTrSurf::Set(name, BS);
     std::cout << std::endl
               << "RESULTAT de ComputeSurface : NS_Surf_" << NbSurf << std::endl

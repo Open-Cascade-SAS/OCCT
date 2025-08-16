@@ -92,7 +92,7 @@ TCollection_AsciiString IFSelect_SelectSuite::Label() const
   if (thelab.Length() > 0)
     return thelab;
   char txt[100];
-  sprintf(txt, "Suite of %d Selections", NbItems());
+  Sprintf(txt, "Suite of %d Selections", NbItems());
   TCollection_AsciiString lab(txt);
   return lab;
 }

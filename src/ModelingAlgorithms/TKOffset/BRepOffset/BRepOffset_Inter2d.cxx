@@ -408,9 +408,9 @@ static void EdgeInter(const TopoDS_Face&                         F,
   if (Inter2dAffichInt2d)
   {
     char name[256];
-    sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
+    Sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
     DBRep::Set(name, E1);
-    sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
+    Sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
     DBRep::Set(name, E2);
   }
 #endif
@@ -691,9 +691,9 @@ static void RefEdgeInter(const TopoDS_Face&                         F,
   if (Inter2dAffichInt2d)
   {
     char name[256];
-    sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
+    Sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
     DBRep::Set(name, E1);
-    sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
+    Sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
     DBRep::Set(name, E2);
   }
 #endif

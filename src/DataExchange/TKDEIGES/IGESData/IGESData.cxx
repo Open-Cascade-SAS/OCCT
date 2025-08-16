@@ -190,7 +190,7 @@ void IGESData::Init()
   IGESData_GlobalSection GS;
   // #58 rln 28.12.98 changing default values for Global Section
   char procver[80];
-  sprintf(procver, XSTEP_PROCESSOR_VERSION, "IGES");
+  Sprintf(procver, XSTEP_PROCESSOR_VERSION, "IGES");
   Handle(TCollection_HAsciiString) gsys = new TCollection_HAsciiString(procver);
   Interface_Static::Init("XSTEP", "write.iges.header.product", 't', procver);
 

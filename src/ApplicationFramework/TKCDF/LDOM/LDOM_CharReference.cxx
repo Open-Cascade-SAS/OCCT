@@ -14,6 +14,9 @@
 // commercial license or contractual agreement.
 
 #include <LDOM_CharReference.hxx>
+
+#include <Standard_CString.hxx>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -194,7 +197,7 @@ char* LDOM_CharReference::Encode(const char*            theSrc,
         *ptrDest++ = *ptrSrc;
       else if (aCode == CHAR_REF)
       { // character reference
-        sprintf(ptrDest, "&#x%02x;", iSrc);
+        Sprintf(ptrDest, "&#x%02x;", iSrc);
         ptrDest += 6;
       }
       else // predefined entity reference

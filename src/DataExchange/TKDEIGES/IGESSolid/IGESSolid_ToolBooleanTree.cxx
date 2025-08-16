@@ -181,7 +181,7 @@ void IGESSolid_ToolBooleanTree::OwnCheck(const Handle(IGESSolid_BooleanTree)& en
     if (ent->Operation(i) < 1 || ent->Operation(i) > 3)
     {
       char mess[80];
-      sprintf(mess, "Item no. %d Incorrect", i);
+      Sprintf(mess, "Item no. %d Incorrect", i);
       ach->AddFail(mess);
     }
   }

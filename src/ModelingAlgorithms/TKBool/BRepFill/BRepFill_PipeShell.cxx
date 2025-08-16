@@ -1107,7 +1107,7 @@ void BRepFill_PipeShell::Prepare()
       for (Standard_Integer i = 1; i <= WSeq.Length(); i++)
       {
         NBSECT++;
-        sprintf(name, "WSeq_%d", NBSECT);
+        Sprintf(name, "WSeq_%d", NBSECT);
         DBRep::Set(name, TopoDS::Wire(WSeq.Value(i)));
       }
     }

@@ -97,19 +97,19 @@ BRepFill_TrimSurfaceTool::BRepFill_TrimSurfaceTool(const Handle(Geom2d_Curve)& B
   #ifdef DRAW
     char name[256];
 
-    sprintf(name, "FACE1_%d", NBCALL);
+    Sprintf(name, "FACE1_%d", NBCALL);
     DBRep::Set(name, myFace1);
 
-    sprintf(name, "FACE2_%d", NBCALL);
+    Sprintf(name, "FACE2_%d", NBCALL);
     DBRep::Set(name, myFace2);
 
-    sprintf(name, "EDGE1_%d", NBCALL);
+    Sprintf(name, "EDGE1_%d", NBCALL);
     DBRep::Set(name, myEdge1);
 
-    sprintf(name, "EDGE2_%d", NBCALL);
+    Sprintf(name, "EDGE2_%d", NBCALL);
     DBRep::Set(name, myEdge2);
 
-    sprintf(name, "BISSEC_%d", NBCALL);
+    Sprintf(name, "BISSEC_%d", NBCALL);
     DrawTrSurf::Set(name, myBis);
   #endif
   }
@@ -403,10 +403,10 @@ void BRepFill_TrimSurfaceTool::IntersectWith(const TopoDS_Edge&    EdgeOnF1,
   {
     char             name[256];
     Standard_Integer i1 = 0, i2 = 2;
-    sprintf(name, "EdgeOnF1_%d_%d", i1, NBCALL);
+    Sprintf(name, "EdgeOnF1_%d_%d", i1, NBCALL);
     DBRep::Set(name, EdgeOnF1);
 
-    sprintf(name, "EdgeOnF2_%d_%d", i2, NBCALL);
+    Sprintf(name, "EdgeOnF2_%d_%d", i2, NBCALL);
     DBRep::Set(name, EdgeOnF2);
   }
 

@@ -40,7 +40,7 @@ Standard_CString IGESSelect_SignStatus::Value(
   j = igesent->SubordinateStatus();
   k = igesent->UseFlag();
   l = igesent->HierarchyStatus();
-  sprintf(theval, "%d,%d,%d,%d", i, j, k, l);
+  Sprintf(theval, "%d,%d,%d,%d", i, j, k, l);
   return theval;
 }
 

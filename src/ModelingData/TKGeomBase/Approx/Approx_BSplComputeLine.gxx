@@ -85,23 +85,23 @@ static void DUMP(const MultiLine& Line)
     else if (nbP3d != 0)          LineTool::Value(Line, i, tabP);
 
     for (j = 1; j <= nbP3d; j++) {
-      sprintf(solname, "%s%i%s_%i", "p", j, "3d", i);
+      Sprintf(solname, "%s%i%s_%i", "p", j, "3d", i);
       char* Temp = solname;
       DrawTrSurf::Set(Temp, tabP(j));
       //      DrawTrSurf::Set(solname, tabP(j));
       if (i == firstP || i == lastP) {
-        sprintf(mytext, "%s%i", " ", i);
+        Sprintf(mytext, "%s%i", " ", i);
         T3D = new Draw_Text3D(tabP(j), mytext, Draw_vert);
         dout << T3D;
       }
     }
     for (j = 1; j <= nbP2d; j++) {
-      sprintf(solname, "%s%i%s_%i", "p", j, "2d", i);
+      Sprintf(solname, "%s%i%s_%i", "p", j, "2d", i);
       char* Temp = solname;
       DrawTrSurf::Set(Temp, tabP2d(j));
       //      DrawTrSurf::Set(solname, tabP2d(j));
       if (i == firstP || i == lastP) {
-        sprintf(mytext, "%s%i", " ", i);
+        Sprintf(mytext, "%s%i", " ", i);
         T2D = new Draw_Text2D(tabP2d(j), mytext, Draw_vert);
         dout << T2D;
       }
@@ -118,7 +118,7 @@ static void DUMP(const MultiLine& Line)
 
       if (Ok) {
         for (j = 1; j <= nbP3d; j++) {
-          sprintf(solname, "%s%i%s_%i", "t", j, "3d", i);
+          Sprintf(solname, "%s%i%s_%i", "t", j, "3d", i);
           L3d = new Geom_Line(tabP(j), gp_Dir(TabV(j)));
           L3dt = new Geom_TrimmedCurve(L3d, 0.0, 0.3);
           char* Temp = solname;
@@ -126,7 +126,7 @@ static void DUMP(const MultiLine& Line)
           //	  DrawTrSurf::Set(solname, L3dt);
         }
         for (j = 1; j <= nbP2d; j++) {
-          sprintf(solname, "%s%i%s_%i", "t", j, "2d", i);
+          Sprintf(solname, "%s%i%s_%i", "t", j, "2d", i);
           L2d = new Geom2d_Line(tabP2d(j), gp_Dir2d(TabV2d(j)));
           L2dt = new Geom2d_TrimmedCurve(L2d, 0.0, 0.3);
           char* Temp = solname;
@@ -161,7 +161,7 @@ static void DUMP(const AppParCurves_MultiBSpCurve& C)
     if (C.Dimension(i) == 3) {
       C.Curve(i, tabPoles);
       BSp = new Geom_BSplineCurve(tabPoles, Knots, Mults, deg);
-      sprintf(solname, "%s%i%s_%i", "c", i, "3d", nbappel);
+      Sprintf(solname, "%s%i%s_%i", "c", i, "3d", nbappel);
       char* Temp = solname;
       DrawTrSurf::Set(Temp, BSp);
       //      DrawTrSurf::Set(solname, BSp);
@@ -169,7 +169,7 @@ static void DUMP(const AppParCurves_MultiBSpCurve& C)
     else {
       C.Curve(i, tabPoles2d);
       BSp2d = new Geom2d_BSplineCurve(tabPoles2d, Knots, Mults, deg);
-      sprintf(solname, "%s%i%s_%i", "c", i, "2d", nbappel);
+      Sprintf(solname, "%s%i%s_%i", "c", i, "2d", nbappel);
       char* Temp = solname;
       DrawTrSurf::Set(Temp, BSp2d);
       //      DrawTrSurf::Set(solname, BSp2d);

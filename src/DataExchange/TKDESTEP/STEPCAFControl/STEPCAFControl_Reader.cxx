@@ -696,7 +696,7 @@ Standard_Boolean STEPCAFControl_Reader::Transfer(STEPControl_Reader&            
         for ( Standard_Integer k=0; mainfile[k]; k++ )
           if ( mainfile[k] == '/' ) slash = k;
         strncpy ( fullname, mainfile, slash );
-        sprintf ( &fullname[slash], "%s%s", ( mainfile[0] ? "/" : "" ), filename );
+        Sprintf ( &fullname[slash], "%s%s", ( mainfile[0] ? "/" : "" ), filename );
     */
 
     // get and check PD associated with the current extern ref

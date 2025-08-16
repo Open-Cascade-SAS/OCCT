@@ -72,6 +72,6 @@ TCollection_AsciiString IGESSelect_AddFileComment::Label() const
 {
   Standard_Integer nb = NbLines();
   char             labl[80];
-  sprintf(labl, "Add %d Comment Lines (Start Section)", nb);
+  Sprintf(labl, "Add %d Comment Lines (Start Section)", nb);
   return TCollection_AsciiString(labl);
 }

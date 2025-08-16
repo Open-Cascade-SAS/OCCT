@@ -60,7 +60,7 @@ void IGESSelect_SetGlobalParameter::Performing(IFSelect_ContextModif&           
   if (thenum <= 0 || thenum > oldset->NbParams())
   {
     char mess[80];
-    sprintf(mess, "Set IGES Global Parameter : Number %d incorrect", thenum);
+    Sprintf(mess, "Set IGES Global Parameter : Number %d incorrect", thenum);
     ctx.CCheck()->AddFail(mess);
     return;
   }
@@ -77,8 +77,8 @@ TCollection_AsciiString IGESSelect_SetGlobalParameter::Label() const
 {
   char mess[80];
   if (theval.IsNull())
-    sprintf(mess, "Set IGES Global Parameter (undefined)");
+    Sprintf(mess, "Set IGES Global Parameter (undefined)");
   else
-    sprintf(mess, "Set IGES Global Parameter Number %d to %s", thenum, theval->ToCString());
+    Sprintf(mess, "Set IGES Global Parameter Number %d to %s", thenum, theval->ToCString());
   return TCollection_AsciiString(mess);
 }

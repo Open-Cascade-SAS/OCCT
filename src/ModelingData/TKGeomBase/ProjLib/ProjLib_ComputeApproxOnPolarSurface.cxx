@@ -1639,7 +1639,7 @@ Handle(Adaptor2d_Curve2d) ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve
     Handle(Adaptor2d_Curve2d) IC2d = new Geom2dAdaptor_Curve(GAC);
 #ifdef OCCT_DEBUG
 //    char name [100];
-//    sprintf(name,"%s_%d","build",compteur++);
+//    Sprintf(name,"%s_%d","build",compteur++);
 //    DrawTrSurf::Set(name,myBSpline);
 #endif
     return IC2d;

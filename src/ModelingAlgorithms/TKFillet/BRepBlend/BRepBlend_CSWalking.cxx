@@ -85,7 +85,7 @@ static void Drawsect(const Handle(Adaptor3d_Surface)& surf,
   // POP pour NT
   // char name[100];
   char* name = new char[100];
-  sprintf(name, "%s_%d", "Section", IndexOfSection);
+  Sprintf(name, "%s_%d", "Section", IndexOfSection);
   #ifdef DRAW
   DrawTrSurf::Set(name, sect);
   #endif
