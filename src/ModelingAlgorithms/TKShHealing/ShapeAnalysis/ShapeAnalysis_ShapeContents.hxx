@@ -146,7 +146,6 @@ public:
 
 public:
   Standard_DEPRECATED("ModifyOffsetSurfaceMode() should be used instead")
-
   Standard_Boolean& ModifyOffestSurfaceMode() { return myOffsetSurfaceMode; }
 
 private:

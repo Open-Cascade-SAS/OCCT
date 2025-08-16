@@ -88,7 +88,6 @@ public:
 
   Standard_DEPRECATED("Deprecated since OCCT7.7, Graphic3d_DisplayPriority should be passed "
                       "instead of integer number to SetDisplayPriority()")
-
   void SetDisplayPriority(const Standard_Integer thePriority)
   {
     SetDisplayPriority((Graphic3d_DisplayPriority)thePriority);
@@ -328,7 +327,6 @@ public:
                                Standard_Boolean           theWithCheck = Standard_False);
 
   Standard_DEPRECATED("Deprecated short-cut")
-
   void Connect(const Handle(Graphic3d_Structure)& thePrs)
   {
     Connect(thePrs.get(), Graphic3d_TOC_DESCENDANT);
@@ -341,7 +339,6 @@ public:
   Standard_EXPORT void Disconnect(Graphic3d_Structure* theStructure);
 
   Standard_DEPRECATED("Deprecated alias for Disconnect()")
-
   void Remove(const Handle(Graphic3d_Structure)& thePrs) { Disconnect(thePrs.get()); }
 
   //! If Atype is TOC_DESCENDANT then suppress all
@@ -351,7 +348,6 @@ public:
   Standard_EXPORT void DisconnectAll(const Graphic3d_TypeOfConnection AType);
 
   Standard_DEPRECATED("Deprecated alias for DisconnectAll()")
-
   void RemoveAll() { DisconnectAll(Graphic3d_TOC_DESCENDANT); }
 
   //! Returns <ASet> the group of structures :
