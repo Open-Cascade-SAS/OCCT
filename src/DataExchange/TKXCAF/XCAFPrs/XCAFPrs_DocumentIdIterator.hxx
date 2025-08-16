@@ -48,10 +48,8 @@ private:
   Standard_Integer               myPosition; //!< last processed new-line symbol
 };
 
-// =======================================================================
-// function : Next
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void XCAFPrs_DocumentIdIterator::Next()
 {
   for (Standard_Integer aCharIndex = myPosition + 1; aCharIndex <= myPath.Length(); ++aCharIndex)

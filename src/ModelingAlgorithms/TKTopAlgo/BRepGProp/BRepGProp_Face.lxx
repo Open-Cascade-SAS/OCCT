@@ -49,10 +49,8 @@ inline Standard_Boolean BRepGProp_Face::NaturalRestriction() const
 }
 
 //
-//=======================================================================
-// function : GetFace
-// purpose  : Returns TopoDS Face.
-//=======================================================================
+
+//=================================================================================================
 
 inline const TopoDS_Face& BRepGProp_Face::GetFace() const
 {

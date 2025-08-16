@@ -33,10 +33,9 @@ DEFINE_STANDARD_HANDLE(DrawTrSurf_Triangulation, Draw_Drawable3D)
 class DrawTrSurf_Triangulation : public Draw_Drawable3D
 {
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Triangulation, Draw_Drawable3D)
-  Draw_Drawable3D_FACTORY public :
-
-      Standard_EXPORT
-      DrawTrSurf_Triangulation(const Handle(Poly_Triangulation)& T);
+  Draw_Drawable3D_FACTORY
+public:
+  Standard_EXPORT DrawTrSurf_Triangulation(const Handle(Poly_Triangulation)& T);
 
   Handle(Poly_Triangulation) Triangulation() const { return myTriangulation; }
 

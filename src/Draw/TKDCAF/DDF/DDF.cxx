@@ -70,10 +70,7 @@ Standard_Boolean DDF::GetDF(Standard_CString&      Name,
   return Standard_False;
 }
 
-//=======================================================================
-// function : Find
-// purpose  : Finds an attribute.
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean DDF::Find(const Handle(TDF_Data)& DF,
                            const Standard_CString  Entry,

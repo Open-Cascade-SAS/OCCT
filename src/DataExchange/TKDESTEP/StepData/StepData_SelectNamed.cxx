@@ -15,7 +15,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectNamed, StepData_SelectMember)
 
-//  Definitions reprises de Field :
+//  Definitions taken from Field:
 #define KindInteger 1
 #define KindBoolean 2
 #define KindLogical 3

@@ -820,14 +820,13 @@ static Standard_Integer meshcolors(Draw_Interpretor& theDI,
             aDataSource->GetGeom(anIter.Key(), Standard_False, aCoords, aNbNodes, aType);
 
             Standard_Real aScaleValue;
-            try
+            if (aDelta > Precision::Confusion())
             {
-              OCC_CATCH_SIGNALS
-              aScaleValue = (aCoords.Value(1) - (Standard_Real)aMinX) / aDelta;
+              aScaleValue = (aCoords.Value(1) - aMinX) / aDelta;
             }
-            catch (Standard_Failure const&)
+            else
             {
-              aScaleValue = 0;
+              aScaleValue = 0.0;
             }
 
             aScaleMap.Bind(anIter.Key(), aScaleValue);

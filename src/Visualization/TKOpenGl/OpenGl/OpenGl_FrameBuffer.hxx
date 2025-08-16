@@ -282,7 +282,6 @@ public:
 
   //! Initialize FBO for rendering into single/multiple color buffer and depth textures.
   Standard_DEPRECATED("Obsolete method, use Init() taking Graphic3d_Vec2i")
-
   bool Init(const Handle(OpenGl_Context)& theGlCtx,
             const Standard_Integer        theSizeX,
             const Standard_Integer        theSizeY,
@@ -299,7 +298,6 @@ public:
 
   //! Initialize FBO for rendering into textures.
   Standard_DEPRECATED("Obsolete method, use Init() taking Graphic3d_Vec2i")
-
   bool Init(const Handle(OpenGl_Context)& theGlCtx,
             const Standard_Integer        theSizeX,
             const Standard_Integer        theSizeY,
@@ -316,7 +314,6 @@ public:
 
   //! Initialize FBO for rendering into single/multiple color buffer and depth textures.
   Standard_DEPRECATED("Obsolete method, use Init() taking Graphic3d_Vec2i")
-
   bool Init(const Handle(OpenGl_Context)& theGlCtx,
             const Standard_Integer        theSizeX,
             const Standard_Integer        theSizeY,
@@ -333,7 +330,6 @@ public:
 
   //! (Re-)initialize FBO with specified dimensions.
   Standard_DEPRECATED("Obsolete method, use InitLazy() taking Graphic3d_Vec2i")
-
   bool InitLazy(const Handle(OpenGl_Context)& theGlCtx,
                 const Standard_Integer        theViewportSizeX,
                 const Standard_Integer        theViewportSizeY,
@@ -350,7 +346,6 @@ public:
 
   //! (Re-)initialize FBO with specified dimensions.
   Standard_DEPRECATED("Obsolete method, use InitLazy() taking Graphic3d_Vec2i")
-
   bool InitLazy(const Handle(OpenGl_Context)& theGlCtx,
                 const Standard_Integer        theViewportSizeX,
                 const Standard_Integer        theViewportSizeY,
@@ -369,7 +364,6 @@ public:
   //! The Render Buffer Objects will be used for Color, Depth and Stencil attachments (as opposite
   //! to textures).
   Standard_DEPRECATED("Obsolete method, use InitWithRB() taking Graphic3d_Vec2i")
-
   bool InitWithRB(const Handle(OpenGl_Context)& theGlCtx,
                   const Standard_Integer        theSizeX,
                   const Standard_Integer        theSizeY,

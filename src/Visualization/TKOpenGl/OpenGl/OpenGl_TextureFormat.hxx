@@ -302,10 +302,8 @@ struct OpenGl_TextureFormatSelector<GLint>
   }
 };
 
-// =======================================================================
-// function : Create
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class theCompType, int theNbComps>
 inline OpenGl_TextureFormat OpenGl_TextureFormat::Create()
 {

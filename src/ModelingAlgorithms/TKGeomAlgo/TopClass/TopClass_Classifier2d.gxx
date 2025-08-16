@@ -24,10 +24,8 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <gp_Vec2d.hxx>
 
-//=======================================================================
-//function : TopClass_Classifier2d
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 TopClass_Classifier2d::TopClass_Classifier2d() :
        myIsSet(Standard_False),
@@ -41,10 +39,8 @@ TopClass_Classifier2d::TopClass_Classifier2d() :
 {
 }
 
-//=======================================================================
-//function : Reset
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void TopClass_Classifier2d::Reset(const gp_Lin2d& L,  
 				  const Standard_Real P,
@@ -63,10 +59,8 @@ void TopClass_Classifier2d::Reset(const gp_Lin2d& L,
 //  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 End
 }
 
-//=======================================================================
-//function : Compare
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void TopClass_Classifier2d::Compare(const TheEdge& E,
 				    const TopAbs_Orientation Or)

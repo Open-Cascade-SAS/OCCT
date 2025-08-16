@@ -28,11 +28,10 @@ DEFINE_STANDARD_HANDLE(DrawTrSurf_BSplineCurve, DrawTrSurf_Curve)
 class DrawTrSurf_BSplineCurve : public DrawTrSurf_Curve
 {
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BSplineCurve, DrawTrSurf_Curve)
-  Draw_Drawable3D_FACTORY public :
-
-      //! creates a drawable BSpline curve from a BSpline curve of package Geom.
-      Standard_EXPORT
-      DrawTrSurf_BSplineCurve(const Handle(Geom_BSplineCurve)& C);
+  Draw_Drawable3D_FACTORY
+public:
+  //! creates a drawable BSpline curve from a BSpline curve of package Geom.
+  Standard_EXPORT DrawTrSurf_BSplineCurve(const Handle(Geom_BSplineCurve)& C);
 
   //! creates a drawable BSpline curve from a BSpline curve of package Geom.
   Standard_EXPORT DrawTrSurf_BSplineCurve(const Handle(Geom_BSplineCurve)& C,

@@ -37,7 +37,6 @@ public:
   Standard_EXPORT ~PrsMgr_Presentation();
 
   Standard_DEPRECATED("Dummy to simplify porting - returns self")
-
   Prs3d_Presentation* Presentation() { return this; }
 
   //! returns the PresentationManager in which the presentation has been created.

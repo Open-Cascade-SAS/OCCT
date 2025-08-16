@@ -102,7 +102,7 @@ public:
   //! Exceptions StdFail_NotDone if no circle is constructed.
   Standard_EXPORT const Handle(Geom2d_Circle)& Value() const;
 
-  operator const Handle(Geom2d_Circle) & () const { return Value(); }
+  operator const Handle(Geom2d_Circle)&() const { return Value(); }
 
 private:
   Handle(Geom2d_Circle) TheCircle;

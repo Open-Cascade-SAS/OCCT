@@ -79,10 +79,8 @@ inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Real 
   return TCollection_AsciiString(*this, TCollection_AsciiString(other));
 }
 
-//============================================================================
-// function : HashCode
-// purpose  :
-//============================================================================
+//=================================================================================================
+
 inline size_t TCollection_AsciiString::HashCode() const
 {
   if (mylength < 4)

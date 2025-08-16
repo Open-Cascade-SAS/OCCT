@@ -98,10 +98,8 @@ private:
   // clang-format on
 };
 
-// =======================================================================
-// function : getSubVolumes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N, int Bins>
 void BVH_BinnedBuilder<T, N, Bins>::getSubVolumes(BVH_Set<T, N>*         theSet,
                                                   BVH_Tree<T, N>*        theBVH,
@@ -210,10 +208,8 @@ struct BVH_AxisSelector<T, 2>
 };
 } // namespace BVH
 
-// =======================================================================
-// function : buildNode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N, int Bins>
 typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::buildNode(
   BVH_Set<T, N>*         theSet,

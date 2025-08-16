@@ -161,10 +161,8 @@ struct UnitVector<T, 4>
 };
 } // namespace BVH
 
-// =======================================================================
-// function : SetTransform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N>
 void BVH_Transform<T, N>::SetTransform(const BVH_MatNt& theTransform)
 {
@@ -172,10 +170,8 @@ void BVH_Transform<T, N>::SetTransform(const BVH_MatNt& theTransform)
   BVH::MatrixOp<T, N>::Inverse(myTransform, myTransformInversed);
 }
 
-// =======================================================================
-// function : Apply
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N>
 BVH_Box<T, N> BVH_Transform<T, N>::Apply(const BVH_Box<T, N>& theBox) const
 {

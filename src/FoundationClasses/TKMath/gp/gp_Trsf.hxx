@@ -375,10 +375,8 @@ private:
 #include <gp_Vec.hxx>
 #include <gp_Pnt.hxx>
 
-//=======================================================================
-// function : gp_Trsf
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Trsf::gp_Trsf()
     : scale(1.0),
       shape(gp_Identity),
@@ -387,10 +385,8 @@ inline gp_Trsf::gp_Trsf()
 {
 }
 
-//=======================================================================
-// function : SetMirror
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf::SetMirror(const gp_Pnt& theP)
 {
   shape = gp_PntMirror;
@@ -400,10 +396,8 @@ inline void gp_Trsf::SetMirror(const gp_Pnt& theP)
   loc.Multiply(2.0);
 }
 
-//=======================================================================
-// function : SetTranslation
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf::SetTranslation(const gp_Vec& theV)
 {
   shape = gp_Translation;
@@ -412,10 +406,8 @@ inline void gp_Trsf::SetTranslation(const gp_Vec& theV)
   loc = theV.XYZ();
 }
 
-//=======================================================================
-// function : SetTranslation
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf::SetTranslation(const gp_Pnt& theP1, const gp_Pnt& theP2)
 {
   shape = gp_Translation;
@@ -424,10 +416,8 @@ inline void gp_Trsf::SetTranslation(const gp_Pnt& theP1, const gp_Pnt& theP2)
   loc = (theP2.XYZ()).Subtracted(theP1.XYZ());
 }
 
-//=======================================================================
-// function : Value
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Trsf::Value(const Standard_Integer theRow,
                                     const Standard_Integer theCol) const
 {
@@ -442,10 +432,8 @@ inline Standard_Real gp_Trsf::Value(const Standard_Integer theRow,
   }
 }
 
-//=======================================================================
-// function : Transforms
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf::Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
 {
   gp_XYZ aTriplet(theX, theY, theZ);
@@ -460,10 +448,8 @@ inline void gp_Trsf::Transforms(Standard_Real& theX, Standard_Real& theY, Standa
   theZ = aTriplet.Z();
 }
 
-//=======================================================================
-// function : Transforms
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf::Transforms(gp_XYZ& theCoord) const
 {
   theCoord.Multiply(matrix);

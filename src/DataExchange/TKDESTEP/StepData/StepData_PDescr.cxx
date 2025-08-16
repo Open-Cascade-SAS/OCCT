@@ -150,7 +150,7 @@ void StepData_PDescr::SetFrom(const Handle(StepData_PDescr)& other)
   Standard_Integer i, maxenum = other->EnumMax();
   for (i = 0; i <= maxenum; i++)
     AddEnumDef(other->EnumText(i));
-  //  ne sont pas reprises : les SELECT
+  //  SELECT types are not copied
   thetype = other->Type();
   thearit = other->Arity();
   thefrom = other;
@@ -332,5 +332,5 @@ Standard_Integer StepData_PDescr::FieldRank() const
 
 void StepData_PDescr::Check(const StepData_Field& /*afild*/, Handle(Interface_Check)& /*ach*/) const
 {
-  //  pour l instant ...
+  //  For now...
 }

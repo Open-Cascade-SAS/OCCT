@@ -22,10 +22,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 
-//=======================================================================
-// name    : MeshVS_SensitiveMesh::MeshVS_SensitiveMesh
-// Purpose :
-//=======================================================================
+//=================================================================================================
+
 MeshVS_SensitiveMesh::MeshVS_SensitiveMesh(const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                            const Standard_Integer               theMode)
     : Select3D_SensitiveEntity(theOwnerId)
@@ -55,10 +53,8 @@ Standard_Integer MeshVS_SensitiveMesh::GetMode() const
   return myMode;
 }
 
-//=======================================================================
-// name    : GetConnected
-// Purpose :
-//=======================================================================
+//=================================================================================================
+
 Handle(Select3D_SensitiveEntity) MeshVS_SensitiveMesh::GetConnected()
 {
   Handle(MeshVS_SensitiveMesh) aMeshEnt = new MeshVS_SensitiveMesh(myOwnerId);

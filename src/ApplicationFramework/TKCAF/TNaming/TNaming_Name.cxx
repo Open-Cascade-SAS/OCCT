@@ -1498,7 +1498,7 @@ static Standard_Boolean FilterByNeighbourgs(const TDF_Label&                  L,
     TC = TopAbs_VERTEX;
   // clang-format off
   if (ShapeType == TopAbs_VERTEX) TC = TopAbs_VERTEX; // szy 31.03.10 - to process case when Candidate is of type Vertex
-    // clang-format on
+  // clang-format on
 
 #ifdef OCCT_DEBUG_FNB
   i    = 1;

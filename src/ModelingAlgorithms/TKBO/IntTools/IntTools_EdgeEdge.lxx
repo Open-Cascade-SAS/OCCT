@@ -15,10 +15,8 @@
 #include <Precision.hxx>
 #include <BRep_Tool.hxx>
 
-//=======================================================================
-// function : IntTools_EdgeEdge
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline IntTools_EdgeEdge::IntTools_EdgeEdge()
     : myTol1(0.),
       myTol2(0.),
@@ -38,10 +36,8 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge()
 {
 }
 
-//=======================================================================
-// function : IntTools_EdgeEdge
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
                                             const TopoDS_Edge& theEdge2)
     : myEdge1(theEdge1),
@@ -64,10 +60,8 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
 {
 }
 
-//=======================================================================
-// function : IntTools_EdgeEdge
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
                                             const Standard_Real aT11,
                                             const Standard_Real aT12,
@@ -94,44 +88,34 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
 {
 }
 
-//=======================================================================
-// function : IntTools_EdgeEdge
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline IntTools_EdgeEdge::~IntTools_EdgeEdge() {}
 
-//=======================================================================
-// function : SetEdge1
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge& theEdge)
 {
   myEdge1 = theEdge;
 }
 
-//=======================================================================
-// function : SetRange1
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::SetRange1(const IntTools_Range& theRange)
 {
   myRange1 = theRange;
 }
 
-//=======================================================================
-// function : SetRange1
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::SetRange1(const Standard_Real aT1, const Standard_Real aT2)
 {
   myRange1.SetFirst(aT1);
   myRange1.SetLast(aT2);
 }
 
-//=======================================================================
-// function : SetEdge1
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge&  theEdge,
                                         const Standard_Real aT1,
                                         const Standard_Real aT2)
@@ -140,38 +124,30 @@ inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge&  theEdge,
   SetRange1(aT1, aT2);
 }
 
-//=======================================================================
-// function : SetEdge2
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge& theEdge)
 {
   myEdge2 = theEdge;
 }
 
-//=======================================================================
-// function : SetRange1
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::SetRange2(const IntTools_Range& theRange)
 {
   myRange2 = theRange;
 }
 
-//=======================================================================
-// function : SetRange1
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::SetRange2(const Standard_Real aT1, const Standard_Real aT2)
 {
   myRange2.SetFirst(aT1);
   myRange2.SetLast(aT2);
 }
 
-//=======================================================================
-// function : SetEdge1
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge&  theEdge,
                                         const Standard_Real aT1,
                                         const Standard_Real aT2)
@@ -180,46 +156,36 @@ inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge&  theEdge,
   SetRange2(aT1, aT2);
 }
 
-//=======================================================================
-// function : SetFuzzyValue
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::SetFuzzyValue(const Standard_Real theFuzz)
 {
   myFuzzyValue = Max(theFuzz, Precision::Confusion());
 }
 
-//=======================================================================
-// function : FuzzyValue
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real IntTools_EdgeEdge::FuzzyValue() const
 {
   return myFuzzyValue;
 }
 
-//=======================================================================
-// function : CommonParts
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline const IntTools_SequenceOfCommonPrts& IntTools_EdgeEdge::CommonParts() const
 {
   return myCommonParts;
 }
 
-//=======================================================================
-// function : IsDone
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean IntTools_EdgeEdge::IsDone() const
 {
   return (myErrorStatus == 0);
 }
 
-//=======================================================================
-// function : CheckData
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void IntTools_EdgeEdge::CheckData()
 {
   if (myEdge1.IsNull() || myEdge2.IsNull())

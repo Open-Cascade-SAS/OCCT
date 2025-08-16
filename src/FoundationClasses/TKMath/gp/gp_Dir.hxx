@@ -288,10 +288,8 @@ private:
 
 #include <gp_Trsf.hxx>
 
-// =======================================================================
-// function : gp_Dir
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Dir::gp_Dir(const gp_Vec& theV)
 {
   const gp_XYZ& aXYZ = theV.XYZ();
@@ -306,10 +304,8 @@ inline gp_Dir::gp_Dir(const gp_Vec& theV)
   coord.SetZ(aZ / aD);
 }
 
-// =======================================================================
-// function : gp_Dir
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Dir::gp_Dir(const gp_XYZ& theXYZ)
 {
   Standard_Real aX = theXYZ.X();
@@ -323,10 +319,8 @@ inline gp_Dir::gp_Dir(const gp_XYZ& theXYZ)
   coord.SetZ(aZ / aD);
 }
 
-// =======================================================================
-// function : gp_Dir
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Dir::gp_Dir(const Standard_Real theXv,
                       const Standard_Real theYv,
                       const Standard_Real theZv)
@@ -339,10 +333,8 @@ inline gp_Dir::gp_Dir(const Standard_Real theXv,
   coord.SetZ(theZv / aD);
 }
 
-// =======================================================================
-// function : SetCoord
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir::SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
 {
   Standard_Real aX = coord.X();
@@ -370,10 +362,8 @@ inline void gp_Dir::SetCoord(const Standard_Integer theIndex, const Standard_Rea
   coord.SetZ(aZ / aD);
 }
 
-// =======================================================================
-// function : SetCoord
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir::SetCoord(const Standard_Real theXv,
                              const Standard_Real theYv,
                              const Standard_Real theZv)
@@ -386,10 +376,8 @@ inline void gp_Dir::SetCoord(const Standard_Real theXv,
   coord.SetZ(theZv / aD);
 }
 
-// =======================================================================
-// function : SetX
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir::SetX(const Standard_Real theX)
 {
   Standard_Real anY = coord.Y();
@@ -402,10 +390,8 @@ inline void gp_Dir::SetX(const Standard_Real theX)
   coord.SetZ(aZ / aD);
 }
 
-// =======================================================================
-// function : SetY
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir::SetY(const Standard_Real theY)
 {
   Standard_Real aZ = coord.Z();
@@ -418,10 +404,8 @@ inline void gp_Dir::SetY(const Standard_Real theY)
   coord.SetZ(aZ / aD);
 }
 
-// =======================================================================
-// function : SetZ
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir::SetZ(const Standard_Real theZ)
 {
   Standard_Real aX  = coord.X();
@@ -434,10 +418,8 @@ inline void gp_Dir::SetZ(const Standard_Real theZ)
   coord.SetZ(theZ / aD);
 }
 
-// =======================================================================
-// function : SetXYZ
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir::SetXYZ(const gp_XYZ& theXYZ)
 {
   Standard_Real aX  = theXYZ.X();
@@ -451,10 +433,8 @@ inline void gp_Dir::SetXYZ(const gp_XYZ& theXYZ)
   coord.SetZ(aZ / aD);
 }
 
-// =======================================================================
-// function : Cross
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir::Cross(const gp_Dir& theRight)
 {
   coord.Cross(theRight.coord);
@@ -464,10 +444,8 @@ inline void gp_Dir::Cross(const gp_Dir& theRight)
   coord.Divide(aD);
 }
 
-// =======================================================================
-// function : Crossed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Dir gp_Dir::Crossed(const gp_Dir& theRight) const
 {
   gp_Dir aV = *this;
@@ -479,10 +457,8 @@ inline gp_Dir gp_Dir::Crossed(const gp_Dir& theRight) const
   return aV;
 }
 
-// =======================================================================
-// function : CrossCross
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir::CrossCross(const gp_Dir& theV1, const gp_Dir& theV2)
 {
   coord.CrossCross(theV1.coord, theV2.coord);
@@ -492,10 +468,8 @@ inline void gp_Dir::CrossCross(const gp_Dir& theV1, const gp_Dir& theV2)
   coord.Divide(aD);
 }
 
-// =======================================================================
-// function : CrossCrossed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Dir gp_Dir::CrossCrossed(const gp_Dir& theV1, const gp_Dir& theV2) const
 {
   gp_Dir aV = *this;
@@ -507,10 +481,8 @@ inline gp_Dir gp_Dir::CrossCrossed(const gp_Dir& theV1, const gp_Dir& theV2) con
   return aV;
 }
 
-// =======================================================================
-// function : Rotate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir::Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
 {
   gp_Trsf aT;

@@ -13,10 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : GetShapesLocations
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline TopTools_LocationSet& XmlMNaming_NamedShapeDriver::GetShapesLocations()
 {
   return myShapeSet.ChangeLocations();

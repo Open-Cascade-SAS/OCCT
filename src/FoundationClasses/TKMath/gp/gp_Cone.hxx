@@ -231,10 +231,8 @@ private:
   Standard_Real semiAngle;
 };
 
-// =======================================================================
-// function : gp_Cone
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Cone::gp_Cone(const gp_Ax3&       theA3,
                         const Standard_Real theAng,
                         const Standard_Real theRadius)
@@ -252,10 +250,8 @@ inline gp_Cone::gp_Cone(const gp_Ax3&       theA3,
                                       "gp_Cone() - invalid construction parameters");
 }
 
-// =======================================================================
-// function : SetSemiAngle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Cone::SetSemiAngle(const Standard_Real theAng)
 {
   Standard_Real aVal = theAng;
@@ -269,10 +265,8 @@ inline void gp_Cone::SetSemiAngle(const Standard_Real theAng)
   semiAngle = theAng;
 }
 
-// =======================================================================
-// function : Scale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Cone::Scale(const gp_Pnt& theP, const Standard_Real theS)
 {
   pos.Scale(theP, theS);
@@ -283,10 +277,8 @@ inline void gp_Cone::Scale(const gp_Pnt& theP, const Standard_Real theS)
   }
 }
 
-// =======================================================================
-// function : Scaled
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Cone gp_Cone::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
 {
   gp_Cone aC = *this;
@@ -299,10 +291,8 @@ inline gp_Cone gp_Cone::Scaled(const gp_Pnt& theP, const Standard_Real theS) con
   return aC;
 }
 
-// =======================================================================
-// function : Transform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Cone::Transform(const gp_Trsf& theT)
 {
   pos.Transform(theT);
@@ -313,10 +303,8 @@ inline void gp_Cone::Transform(const gp_Trsf& theT)
   }
 }
 
-// =======================================================================
-// function : Transformed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Cone gp_Cone::Transformed(const gp_Trsf& theT) const
 {
   gp_Cone aC = *this;

@@ -1093,10 +1093,8 @@ static Standard_Integer noteGetNotes(Draw_Interpretor& di, Standard_Integer argc
   return 0;
 }
 
-//=======================================================================
-// function : noteUsername
-// purpose  : gets a note username
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteUsername = {"XNoteUsername", 3, "XNoteUsername Doc note"};
 
 static Standard_Integer noteUsername(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -1189,10 +1187,8 @@ static Standard_Integer noteTimestamp(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-// function : noteDump
-// purpose  : dump a note contents
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteDump = {"XNoteDump", 3, "XNoteDump Doc note"};
 
 static Standard_Integer noteDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)

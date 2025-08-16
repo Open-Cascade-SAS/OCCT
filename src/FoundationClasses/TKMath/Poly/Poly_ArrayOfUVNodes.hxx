@@ -112,10 +112,8 @@ public:
   gp_Pnt2d operator[](Standard_Integer theIndex) const { return Value(theIndex); }
 };
 
-// =======================================================================
-// function : Value
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Pnt2d Poly_ArrayOfUVNodes::Value(Standard_Integer theIndex) const
 {
   if (myStride == (Standard_Integer)sizeof(gp_Pnt2d))
@@ -129,10 +127,8 @@ inline gp_Pnt2d Poly_ArrayOfUVNodes::Value(Standard_Integer theIndex) const
   }
 }
 
-// =======================================================================
-// function : SetValue
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void Poly_ArrayOfUVNodes::SetValue(Standard_Integer theIndex, const gp_Pnt2d& theValue)
 {
   if (myStride == (Standard_Integer)sizeof(gp_Pnt2d))

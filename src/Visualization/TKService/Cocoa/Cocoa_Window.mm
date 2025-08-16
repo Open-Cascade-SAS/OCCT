@@ -90,10 +90,8 @@ static Standard_Integer getScreenBottom()
   @end
 #endif
 
-// =======================================================================
-// function : Cocoa_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
                             const Standard_Integer thePxLeft,
                             const Standard_Integer thePxTop,
@@ -150,10 +148,8 @@ Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
 #endif
 }
 
-// =======================================================================
-// function : Cocoa_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 Cocoa_Window::Cocoa_Window (UIView* theViewNS)
 : Aspect_Window(),
@@ -204,10 +200,8 @@ Cocoa_Window::~Cocoa_Window()
   }
 }
 
-// =======================================================================
-// function : SetHView
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 void Cocoa_Window::SetHView (UIView* theView)
 {
@@ -232,10 +226,8 @@ void Cocoa_Window::SetHView (NSView* theView)
 #endif
 }
 
-// =======================================================================
-// function : IsMapped
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Cocoa_Window::IsMapped() const
 {
   if (IsVirtual())
@@ -251,10 +243,8 @@ Standard_Boolean Cocoa_Window::IsMapped() const
 #endif
 }
 
-// =======================================================================
-// function : Map
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Cocoa_Window::Map() const
 {
   if (IsVirtual())
@@ -272,10 +262,8 @@ void Cocoa_Window::Map() const
   }
 }
 
-// =======================================================================
-// function : Unmap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Cocoa_Window::Unmap() const
 {
   if (myHView != NULL)
@@ -288,10 +276,8 @@ void Cocoa_Window::Unmap() const
   }
 }
 
-// =======================================================================
-// function : DoResize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_TypeOfResize Cocoa_Window::DoResize()
 {
   if (myHView == NULL)
@@ -332,19 +318,15 @@ Aspect_TypeOfResize Cocoa_Window::DoResize()
   return aMode;
 }
 
-// =======================================================================
-// function : DoMapping
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Cocoa_Window::DoMapping() const
 {
   return Standard_True;
 }
 
-// =======================================================================
-// function : Ratio
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Cocoa_Window::Ratio() const
 {
   if (myHView == NULL)
@@ -360,10 +342,8 @@ Standard_Real Cocoa_Window::Ratio() const
   return Standard_Real (aBounds.size.width / aBounds.size.height);
 }
 
-// =======================================================================
-// function : Position
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Cocoa_Window::Position (Standard_Integer& X1, Standard_Integer& Y1,
                              Standard_Integer& X2, Standard_Integer& Y2) const
 {
@@ -383,10 +363,8 @@ void Cocoa_Window::Position (Standard_Integer& X1, Standard_Integer& Y1,
 #endif
 }
 
-// =======================================================================
-// function : Size
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Cocoa_Window::Size (Standard_Integer& theWidth,
                          Standard_Integer& theHeight) const
 {
@@ -404,10 +382,8 @@ void Cocoa_Window::Size (Standard_Integer& theWidth,
   theHeight = (Standard_Integer )aBounds.size.height;
 }
 
-// =======================================================================
-// function : SetTitle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Cocoa_Window::SetTitle (const TCollection_AsciiString& theTitle)
 {
   if (myHView == NULL)
@@ -425,10 +401,8 @@ void Cocoa_Window::SetTitle (const TCollection_AsciiString& theTitle)
 #endif
 }
 
-// =======================================================================
-// function : InvalidateContent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Cocoa_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& )
 {
   if (myHView == NULL)
@@ -443,10 +417,8 @@ void Cocoa_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& )
   }
 }
 
-// =======================================================================
-// function : VirtualKeyFromNative
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKey Cocoa_Window::VirtualKeyFromNative (Standard_Integer theKey)
 {
   switch (theKey)

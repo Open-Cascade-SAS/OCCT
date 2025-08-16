@@ -1121,19 +1121,15 @@ IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve& C1,
   }
 }
 
-//=======================================================================
-//function : SetMinNbSamples
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntCurveCurveGen::SetMinNbSamples(const Standard_Integer theMinNbSamples)
 {
   intcurvcurv.SetMinNbSamples(theMinNbSamples);
 }
 
-//=======================================================================
-//function : GetMinNbSamples
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer IntCurve_IntCurveCurveGen::GetMinNbSamples() const
 {
   return intcurvcurv.GetMinNbSamples();

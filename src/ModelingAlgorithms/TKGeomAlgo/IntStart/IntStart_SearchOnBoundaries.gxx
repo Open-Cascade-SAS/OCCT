@@ -135,10 +135,8 @@ private:
 };
 
 
-//=======================================================================
-//function : FindVertex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void FindVertex (const TheArc& A,
                  const Handle(TheTopolTool)& Domain,
                  TheFunction& Func,
@@ -790,10 +788,8 @@ void BoundedArc (const TheArc& A,
   }
 }
 
-//=======================================================================
-//function : ComputeBoundsfromInfinite
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 // - PROVISIONAL - TEMPORARY - NOT GOOD - NYI - TO DO
 // - Temporary - temporary - not good - nyi - to do
 void ComputeBoundsfromInfinite(TheFunction& Func,
@@ -861,10 +857,8 @@ void ComputeBoundsfromInfinite(TheFunction& Func,
   }
 } 
 
-//=======================================================================
-//function : PointProcess
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void PointProcess (const gp_Pnt& Pt,
                    const Standard_Real Para,
                    const TheArc& A,
@@ -974,10 +968,8 @@ void PointProcess (const gp_Pnt& Pt,
   }
 }
 
-//=======================================================================
-//function : IsRegularity
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean IsRegularity(const TheArc& /*A*/,
                               const Handle(TheTopolTool)& aDomain)
 {
@@ -991,10 +983,8 @@ Standard_Boolean IsRegularity(const TheArc& /*A*/,
   return (BRep_Tool::HasContinuity(*anE));
 }
 
-//=======================================================================
-//function : TreatLC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer TreatLC (const TheArc& A,
                           const Handle(TheTopolTool)& aDomain,
                           const IntSurf_Quadric& aQuadric,
@@ -1095,20 +1085,16 @@ Standard_Integer TreatLC (const TheArc& A,
 }
 
 
-//=======================================================================
-//function : IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries ()
 :  done(Standard_False),
    all(Standard_False)  
 {
 }  
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
   void IntStart_SearchOnBoundaries::Perform (TheFunction& Func,
                                              const Handle(TheTopolTool)& Domain,
                                              const Standard_Real TolBoundary,

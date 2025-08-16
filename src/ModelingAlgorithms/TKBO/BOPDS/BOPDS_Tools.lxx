@@ -12,28 +12,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function: HasBRep
-// purpose:
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean BOPDS_Tools::HasBRep(const TopAbs_ShapeEnum aTi)
 {
   return (aTi == TopAbs_VERTEX || aTi == TopAbs_EDGE || aTi == TopAbs_FACE);
 }
 
-//=======================================================================
-// function: IsInterfering
-// purpose:
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean BOPDS_Tools::IsInterfering(const TopAbs_ShapeEnum aTi)
 {
   return (BOPDS_Tools::HasBRep(aTi) || aTi == TopAbs_SOLID);
 }
 
-//=======================================================================
-// function : TypeToInteger
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1,
                                                    const TopAbs_ShapeEnum aType2)
 {
@@ -88,10 +82,8 @@ inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1
   return iRet;
 }
 
-//=======================================================================
-// function : TypeToInteger
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1)
 {
   Standard_Integer iRet = 9;

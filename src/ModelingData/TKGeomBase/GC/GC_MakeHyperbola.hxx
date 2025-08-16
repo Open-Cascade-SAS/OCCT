@@ -85,7 +85,7 @@ public:
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
   Standard_EXPORT const Handle(Geom_Hyperbola)& Value() const;
 
-  operator const Handle(Geom_Hyperbola) & () const { return Value(); }
+  operator const Handle(Geom_Hyperbola)&() const { return Value(); }
 
 private:
   Handle(Geom_Hyperbola) TheHyperbola;

@@ -342,10 +342,8 @@ private:
   Standard_Real minorRadius;
 };
 
-//=======================================================================
-// function : Asymptote1
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Ax1 gp_Hypr::Asymptote1() const
 {
   Standard_ConstructionError_Raise_if(majorRadius <= gp::Resolution(),
@@ -357,10 +355,8 @@ inline gp_Ax1 gp_Hypr::Asymptote1() const
   return gp_Ax1(pos.Location(), gp_Dir(aV));
 }
 
-//=======================================================================
-// function : Asymptote2
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Ax1 gp_Hypr::Asymptote2() const
 {
   Standard_ConstructionError_Raise_if(majorRadius <= gp::Resolution(),
@@ -372,10 +368,8 @@ inline gp_Ax1 gp_Hypr::Asymptote2() const
   return gp_Ax1(pos.Location(), gp_Dir(aV));
 }
 
-//=======================================================================
-// function : Focus1
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Pnt gp_Hypr::Focus1() const
 {
   Standard_Real aC  = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
@@ -384,10 +378,8 @@ inline gp_Pnt gp_Hypr::Focus1() const
   return gp_Pnt(aPP.X() + aC * aDD.X(), aPP.Y() + aC * aDD.Y(), aPP.Z() + aC * aDD.Z());
 }
 
-//=======================================================================
-// function : Focus2
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Pnt gp_Hypr::Focus2() const
 {
   Standard_Real aC  = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
@@ -396,10 +388,8 @@ inline gp_Pnt gp_Hypr::Focus2() const
   return gp_Pnt(aPP.X() - aC * aDD.X(), aPP.Y() - aC * aDD.Y(), aPP.Z() - aC * aDD.Z());
 }
 
-//=======================================================================
-// function : Scale
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Hypr::Scale(const gp_Pnt& theP, const Standard_Real theS)
 {
   majorRadius *= theS;
@@ -415,10 +405,8 @@ inline void gp_Hypr::Scale(const gp_Pnt& theP, const Standard_Real theS)
   pos.Scale(theP, theS);
 }
 
-//=======================================================================
-// function : Scaled
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Hypr gp_Hypr::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
 {
   gp_Hypr aH = *this;
@@ -436,10 +424,8 @@ inline gp_Hypr gp_Hypr::Scaled(const gp_Pnt& theP, const Standard_Real theS) con
   return aH;
 }
 
-//=======================================================================
-// function : Transform
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Hypr::Transform(const gp_Trsf& theT)
 {
   majorRadius *= theT.ScaleFactor();
@@ -455,10 +441,8 @@ inline void gp_Hypr::Transform(const gp_Trsf& theT)
   pos.Transform(theT);
 }
 
-//=======================================================================
-// function : Transformed
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Hypr gp_Hypr::Transformed(const gp_Trsf& theT) const
 {
   gp_Hypr aH = *this;
@@ -476,10 +460,8 @@ inline gp_Hypr gp_Hypr::Transformed(const gp_Trsf& theT) const
   return aH;
 }
 
-//=======================================================================
-// function : Directrix1
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Ax1 gp_Hypr::Directrix1() const
 {
   Standard_Real anE    = Eccentricity();
@@ -489,10 +471,8 @@ inline gp_Ax1 gp_Hypr::Directrix1() const
   return gp_Ax1(gp_Pnt(anOrig), pos.YDirection());
 }
 
-//=======================================================================
-// function : Directrix2
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Ax1 gp_Hypr::Directrix2() const
 {
   Standard_Real anE    = Eccentricity();

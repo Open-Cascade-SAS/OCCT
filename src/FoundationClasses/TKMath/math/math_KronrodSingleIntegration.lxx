@@ -47,10 +47,7 @@ inline Standard_Real math_KronrodSingleIntegration::ErrorReached() const
   return myErrorReached;
 }
 
-//=======================================================================
-// function : AbsolutError
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Standard_Real math_KronrodSingleIntegration::AbsolutError() const
 {

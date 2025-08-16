@@ -266,10 +266,8 @@ private:
   Standard_Real myMat[2][2];
 };
 
-//=======================================================================
-// function : SetRotation
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat2d::SetRotation(const Standard_Real theAng)
 {
   Standard_Real aSinA = sin(theAng);
@@ -279,10 +277,8 @@ inline void gp_Mat2d::SetRotation(const Standard_Real theAng)
   myMat[1][0]               = aSinA;
 }
 
-//=======================================================================
-// function : Add
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat2d::Add(const gp_Mat2d& theOther)
 {
   myMat[0][0] += theOther.myMat[0][0];
@@ -291,10 +287,8 @@ inline void gp_Mat2d::Add(const gp_Mat2d& theOther)
   myMat[1][1] += theOther.myMat[1][1];
 }
 
-//=======================================================================
-// function : Added
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat2d gp_Mat2d::Added(const gp_Mat2d& theOther) const
 {
   gp_Mat2d aNewMat2d;
@@ -305,10 +299,8 @@ inline gp_Mat2d gp_Mat2d::Added(const gp_Mat2d& theOther) const
   return aNewMat2d;
 }
 
-//=======================================================================
-// function : Divide
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat2d::Divide(const Standard_Real theScalar)
 {
   myMat[0][0] /= theScalar;
@@ -317,10 +309,8 @@ inline void gp_Mat2d::Divide(const Standard_Real theScalar)
   myMat[1][1] /= theScalar;
 }
 
-//=======================================================================
-// function : Divided
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat2d gp_Mat2d::Divided(const Standard_Real theScalar) const
 {
   gp_Mat2d aNewMat2d;
@@ -331,10 +321,8 @@ inline gp_Mat2d gp_Mat2d::Divided(const Standard_Real theScalar) const
   return aNewMat2d;
 }
 
-//=======================================================================
-// function : Multiply
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat2d::Multiply(const gp_Mat2d& theOther)
 {
   const Standard_Real aT00 =
@@ -347,10 +335,8 @@ inline void gp_Mat2d::Multiply(const gp_Mat2d& theOther)
   myMat[1][0] = aT10;
 }
 
-//=======================================================================
-// function : PreMultiply
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat2d::PreMultiply(const gp_Mat2d& theOther)
 {
   const Standard_Real aT00 =
@@ -363,10 +349,8 @@ inline void gp_Mat2d::PreMultiply(const gp_Mat2d& theOther)
   myMat[0][1] = aT01;
 }
 
-//=======================================================================
-// function : Multiplied
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat2d gp_Mat2d::Multiplied(const Standard_Real theScalar) const
 {
   gp_Mat2d aNewMat2d;
@@ -377,10 +361,8 @@ inline gp_Mat2d gp_Mat2d::Multiplied(const Standard_Real theScalar) const
   return aNewMat2d;
 }
 
-//=======================================================================
-// function : Multiply
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat2d::Multiply(const Standard_Real theScalar)
 {
   myMat[0][0] *= theScalar;
@@ -389,10 +371,8 @@ inline void gp_Mat2d::Multiply(const Standard_Real theScalar)
   myMat[1][1] *= theScalar;
 }
 
-//=======================================================================
-// function : Subtract
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat2d::Subtract(const gp_Mat2d& theOther)
 {
   myMat[0][0] -= theOther.myMat[0][0];
@@ -401,10 +381,8 @@ inline void gp_Mat2d::Subtract(const gp_Mat2d& theOther)
   myMat[1][1] -= theOther.myMat[1][1];
 }
 
-//=======================================================================
-// function : Subtracted
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat2d gp_Mat2d::Subtracted(const gp_Mat2d& theOther) const
 {
   gp_Mat2d aNewMat2d;
@@ -415,10 +393,8 @@ inline gp_Mat2d gp_Mat2d::Subtracted(const gp_Mat2d& theOther) const
   return aNewMat2d;
 }
 
-//=======================================================================
-// function : Transpose
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat2d::Transpose()
 {
   const Standard_Real aTemp = myMat[0][1];
@@ -426,10 +402,8 @@ inline void gp_Mat2d::Transpose()
   myMat[1][0]               = aTemp;
 }
 
-//=======================================================================
-// function : Transposed
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat2d gp_Mat2d::Transposed() const
 {
   gp_Mat2d aNewMat2d;

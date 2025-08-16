@@ -930,10 +930,10 @@ void MeshVS_Mesh::HilightSelected(const Handle(PrsMgr_PresentationManager)& theP
 
   if (HasPresentation())
     aSelectionPrs->SetTransformPersistence(Presentation()->TransformPersistence());
-    //----------------
+  //----------------
 
-    //   It is very important to call this parent method, because it check whether
-    // mySelectionPrs is created and if not, create it.
+  //   It is very important to call this parent method, because it check whether
+  // mySelectionPrs is created and if not, create it.
 
 #ifdef OCCT_DEBUG
   OSD_Timer gTimer;

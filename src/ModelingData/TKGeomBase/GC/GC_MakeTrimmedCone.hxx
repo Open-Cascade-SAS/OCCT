@@ -78,7 +78,7 @@ public:
   //! StdFail_NotDone if no trimmed cone is constructed.
   Standard_EXPORT const Handle(Geom_RectangularTrimmedSurface)& Value() const;
 
-  operator const Handle(Geom_RectangularTrimmedSurface) & () const { return Value(); }
+  operator const Handle(Geom_RectangularTrimmedSurface)&() const { return Value(); }
 
 private:
   Handle(Geom_RectangularTrimmedSurface) TheCone;

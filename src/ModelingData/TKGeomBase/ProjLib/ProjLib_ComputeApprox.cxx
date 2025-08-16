@@ -942,10 +942,9 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
 
 //
 //
-//=======================================================================
-// classn : ProjLib_Function
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 class ProjLib_Function : public AppCont_Function
 {
   Handle(Adaptor3d_Curve)   myCurve;

@@ -153,17 +153,13 @@ static
 				 Standard_Real&       theVmax,
 				 Standard_Boolean&    theNoIntersection);
 
-//=======================================================================
-//function : IntCurveSurface_Inter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 IntCurveSurface_Inter::IntCurveSurface_Inter() 
 { 
 }
-//=======================================================================
-//function : DoSurface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::DoSurface(const TheSurface&   surface,
 				      const Standard_Real u0,
 				      const Standard_Real u1,
@@ -208,10 +204,8 @@ void IntCurveSurface_Inter::DoSurface(const TheSurface&   surface,
   gap = Max(Ures,Vres);
 }
 
-//=======================================================================
-//function : DoNewBounds
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::DoNewBounds(
 					const TheSurface&           surface,
 					const Standard_Real         u0,
@@ -368,10 +362,8 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
     Perform(curve,surface,U0,V0,U1,V1);
   }
 }
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
                                     const TheSurface& surface,
                                     const Standard_Real U1,const Standard_Real V1,
@@ -466,10 +458,8 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
     }
   }
 }
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
 				    const IntCurveSurface_ThePolygon& polygon,
 				    const TheSurface& surface) {
@@ -488,10 +478,8 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
   IntCurveSurface_ThePolyhedron    polyhedron(surface,nbsu,nbsv,u1,v1,u2,v2);
   Perform(curve,polygon,surface,polyhedron);
 }
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
 				    const TheSurface& surface,
 				    const IntCurveSurface_ThePolyhedron& polyhedron) {
@@ -502,10 +490,8 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
   IntCurveSurface_ThePolygon polygon(curve,TheCurveTool::NbSamples(curve,u1,u2));
   Perform(curve,polygon,surface,polyhedron);
 }
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::Perform(const TheCurve&       curve,
 				    const IntCurveSurface_ThePolygon&     polygon,
 				    const TheSurface&     surface,
@@ -520,10 +506,8 @@ void IntCurveSurface_Inter::Perform(const TheCurve&       curve,
   InternalPerform(curve,polygon,surface,polyhedron,u1,v1,u2,v2);
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::Perform(const TheCurve&       curve,
 				    const IntCurveSurface_ThePolygon&     polygon,
 				    const TheSurface&     surface,
@@ -684,10 +668,8 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
   }
 }
 
-//=======================================================================
-//function : InternalPerform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
 					    const IntCurveSurface_ThePolygon&     polygon,
 					    const TheSurface&     surface,
@@ -827,10 +809,8 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
     delete [] TabU;
   }
 }
-//=======================================================================
-//function : InternalPerformCurveQuadric
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::InternalPerformCurveQuadric(const TheCurve&                 curve,
 							const TheSurface&               surface) { 
   IntCurveSurface_TheQuadCurvExactInter QuadCurv(surface,curve);  
@@ -846,10 +826,8 @@ void IntCurveSurface_Inter::InternalPerformCurveQuadric(const TheCurve&         
   }
 }
 
-//=======================================================================
-//function : InternalPerform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
 					    const IntCurveSurface_ThePolygon&  polygon,
 					    const TheSurface&     surface,
@@ -902,10 +880,8 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
     }
   } //-- Fin : la Surface  est une quadrique
 }
-//=======================================================================
-//function : PerformConicSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
 					     const TheCurve&       curve,
 					     const TheSurface&     surface,
@@ -1034,10 +1010,8 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
     }
   }
 }
-//=======================================================================
-//function : PerformConicSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::PerformConicSurf(const gp_Circ&        Circle,
 					     const TheCurve&       curve,
 					     const TheSurface&     surface,
@@ -1079,10 +1053,8 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Circ&        Circle,
     }
   }
 }
-//=======================================================================
-//function : PerformConicSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::PerformConicSurf(const gp_Elips&       Ellipse,
 					     const TheCurve&       curve,
 					     const TheSurface&     surface,
@@ -1124,10 +1096,8 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Elips&       Ellipse,
     }
   }
 }
-//=======================================================================
-//function : PerformConicSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::PerformConicSurf(const gp_Parab&       Parab,
 					     const TheCurve&       curve,
 					     const TheSurface&     surface,
@@ -1183,10 +1153,8 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Parab&       Parab,
     }
   }
 }
-//=======================================================================
-//function : PerformConicSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::PerformConicSurf(const gp_Hypr&        Hypr,
 					     const TheCurve&       curve,
 					     const TheSurface&     surface,
@@ -1242,10 +1210,8 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Hypr&        Hypr,
     }
   }
 }
-//=======================================================================
-//function : AppendIntAna
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::AppendIntAna(const TheCurve& curve,
 					 const TheSurface& surface,
 					 const IntAna_IntConicQuad& intana_ConicQuad) {
@@ -1273,10 +1239,8 @@ void IntCurveSurface_Inter::AppendIntAna(const TheCurve& curve,
     //-- std::cout<<" IntAna Conic Quad Not Done  "<<std::endl;
   }
 }
-//=======================================================================
-//function : AppendPoint
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::AppendPoint(const TheCurve& curve,
 					const Standard_Real lw,
 					const TheSurface& surface,
@@ -1326,10 +1290,8 @@ void IntCurveSurface_Inter::AppendPoint(const TheCurve& curve,
   
 }
 
-//=======================================================================
-//function : AppendSegment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Inter::AppendSegment(const TheCurve& ,
 					  const Standard_Real ,
 					  const Standard_Real ,
@@ -1418,10 +1380,8 @@ void SectionPointToParameters(const Intf_SectionPoint&              Sp,
   U = u1;
   V = v1;
 }
-//=======================================================================
-//function : IntCurveSurface_ComputeTransitions
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_ComputeTransitions(const TheCurve& curve,
 					const Standard_Real w,
 					IntCurveSurface_TransitionOnCurve&   TransOnCurve,
@@ -1459,10 +1419,8 @@ void IntCurveSurface_ComputeTransitions(const TheCurve& curve,
     TransOnCurve   = IntCurveSurface_Tangent;
   }
 }
-//=======================================================================
-//function : IntCurveSurface_ComputeParamsOnQuadric
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_ComputeParamsOnQuadric(const TheSurface& surface,
 					    const gp_Pnt& P,
 					    Standard_Real& u,
@@ -1864,10 +1822,8 @@ void EstLimForInfRevl(const gp_Lin&   Line,
   return;
 }
 
-//=======================================================================
-//function : EstLimForInfOffs
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void EstLimForInfOffs(const gp_Lin&   Line,
 		      const TheSurface& surface, 
 		      const Standard_Integer nbsu, 
@@ -2084,10 +2040,8 @@ void EstLimForInfOffs(const gp_Lin&   Line,
     V2new = Min(V2new,  1.e10);
   }
 }
-//=======================================================================
-//function : EstLimForInfSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void EstLimForInfSurf(Standard_Real& U1new, 
 		      Standard_Real& U2new, 
 		      Standard_Real& V1new, 

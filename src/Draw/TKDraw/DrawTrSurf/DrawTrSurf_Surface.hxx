@@ -30,14 +30,13 @@ DEFINE_STANDARD_HANDLE(DrawTrSurf_Surface, DrawTrSurf_Drawable)
 class DrawTrSurf_Surface : public DrawTrSurf_Drawable
 {
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Surface, DrawTrSurf_Drawable)
-  Draw_Drawable3D_FACTORY public :
-
-      //! default drawing mode
-      //! Just the middle isoparametric curves are drawn.
-      //! The boundaries are yellow, the isoparametric curves are blues.
-      //! For the discretisation 50 points are computed in each parametric direction.
-      Standard_EXPORT
-      DrawTrSurf_Surface(const Handle(Geom_Surface)& S);
+  Draw_Drawable3D_FACTORY
+public:
+  //! default drawing mode
+  //! Just the middle isoparametric curves are drawn.
+  //! The boundaries are yellow, the isoparametric curves are blues.
+  //! For the discretisation 50 points are computed in each parametric direction.
+  Standard_EXPORT DrawTrSurf_Surface(const Handle(Geom_Surface)& S);
 
   Standard_EXPORT DrawTrSurf_Surface(const Handle(Geom_Surface)& S,
                                      const Standard_Integer      Nu,

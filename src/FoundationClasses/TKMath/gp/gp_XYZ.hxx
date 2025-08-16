@@ -477,10 +477,8 @@ private:
   Standard_Real z;
 };
 
-//=======================================================================
-// function : Cross
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_XYZ::Cross(const gp_XYZ& theRight)
 {
   const Standard_Real aXresult = y * theRight.z - z * theRight.y;
@@ -490,19 +488,15 @@ inline void gp_XYZ::Cross(const gp_XYZ& theRight)
   y                            = aYresult;
 }
 
-//=======================================================================
-// function : CrossMagnitude
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_XYZ::CrossMagnitude(const gp_XYZ& theRight) const
 {
   return sqrt(CrossSquareMagnitude(theRight));
 }
 
-//=======================================================================
-// function : CrossSquareMagnitude
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_XYZ::CrossSquareMagnitude(const gp_XYZ& theRight) const
 {
   const Standard_Real aXresult = y * theRight.z - z * theRight.y;
@@ -511,10 +505,8 @@ inline Standard_Real gp_XYZ::CrossSquareMagnitude(const gp_XYZ& theRight) const
   return aXresult * aXresult + aYresult * aYresult + aZresult * aZresult;
 }
 
-//=======================================================================
-// function : CrossCross
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_XYZ::CrossCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2)
 {
   // First compute theCoord1 * theCoord2
@@ -531,10 +523,8 @@ inline void gp_XYZ::CrossCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2)
   y = aYresult;
 }
 
-//=======================================================================
-// function : DotCross
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_XYZ::DotCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2) const
 {
   const Standard_Real aXresult  = theCoord1.y * theCoord2.z - theCoord1.z * theCoord2.y;
@@ -543,10 +533,8 @@ inline Standard_Real gp_XYZ::DotCross(const gp_XYZ& theCoord1, const gp_XYZ& the
   return (x * aXresult + y * anYresult + z * aZresult);
 }
 
-//=======================================================================
-// function : Multiply
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_XYZ::Multiply(const gp_Mat& theMatrix)
 {
   // Cache original coordinates to avoid aliasing issues
@@ -563,10 +551,8 @@ inline void gp_XYZ::Multiply(const gp_Mat& theMatrix)
       + theMatrix.myMat[2][2] * aOrigZ;
 }
 
-//=======================================================================
-// function : Normalize
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_XYZ::Normalize()
 {
   Standard_Real aD = Modulus();

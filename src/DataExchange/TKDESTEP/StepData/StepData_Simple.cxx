@@ -102,7 +102,7 @@ StepData_FieldListN& StepData_Simple::CFields()
 }
 
 void StepData_Simple::Check(Handle(Interface_Check)& /*ach*/) const {
-} // qq chose ? cf la description
+} // something? see the description
 
 void StepData_Simple::Shared(Interface_EntityIterator& list) const
 {

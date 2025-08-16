@@ -178,10 +178,8 @@ protected:
 };
 } // namespace BVH
 
-// =======================================================================
-// function : Perform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N>
 void BVH_RadixSorter<T, N>::Perform(BVH_Set<T, N>*         theSet,
                                     const Standard_Integer theStart,

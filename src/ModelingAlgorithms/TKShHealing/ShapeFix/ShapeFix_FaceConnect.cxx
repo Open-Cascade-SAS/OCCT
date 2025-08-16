@@ -309,7 +309,8 @@ TopoDS_Shell ShapeFix_FaceConnect::Build(const TopoDS_Shell& shell,
               {
                 try
                 {
-                  OCC_CATCH_SIGNALS theSewer.Perform();
+                  OCC_CATCH_SIGNALS
+                  theSewer.Perform();
                 }
                 catch (Standard_Failure const&)
                 {

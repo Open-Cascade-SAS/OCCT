@@ -1229,10 +1229,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&    
   return Standard_False;
 }
 
-//=======================================================================
-// function : Recadre2
-// purpose  : Contact lost on Rst2
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&      Func,
                                                        Blend_SurfCurvFuncInv&     Finv,

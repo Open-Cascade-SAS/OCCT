@@ -235,10 +235,8 @@ private:
 
 #include <gp_Trsf2d.hxx>
 
-//=======================================================================
-// function : SetTrsf2d
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_GTrsf2d::SetTrsf2d(const gp_Trsf2d& theT)
 {
   shape  = theT.shape;
@@ -247,10 +245,8 @@ inline void gp_GTrsf2d::SetTrsf2d(const gp_Trsf2d& theT)
   scale  = theT.scale;
 }
 
-//=======================================================================
-// function : gp_GTrsf2d
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_GTrsf2d::gp_GTrsf2d(const gp_Trsf2d& theT)
 {
   shape  = theT.shape;
@@ -259,10 +255,8 @@ inline gp_GTrsf2d::gp_GTrsf2d(const gp_Trsf2d& theT)
   scale  = theT.scale;
 }
 
-//=======================================================================
-// function : SetValue
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_GTrsf2d::SetValue(const Standard_Integer theRow,
                                  const Standard_Integer theCol,
                                  const Standard_Real    theValue)
@@ -279,10 +273,8 @@ inline void gp_GTrsf2d::SetValue(const Standard_Integer theRow,
   shape = gp_Other;
 }
 
-//=======================================================================
-// function : Value
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_GTrsf2d::Value(const Standard_Integer theRow,
                                        const Standard_Integer theCol) const
 {
@@ -298,10 +290,8 @@ inline Standard_Real gp_GTrsf2d::Value(const Standard_Integer theRow,
   return scale * matrix.Value(theRow, theCol);
 }
 
-//=======================================================================
-// function : Transforms
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_GTrsf2d::Transforms(gp_XY& theCoord) const
 {
   theCoord.Multiply(matrix);
@@ -312,10 +302,8 @@ inline void gp_GTrsf2d::Transforms(gp_XY& theCoord) const
   theCoord.Add(loc);
 }
 
-//=======================================================================
-// function : Transforms
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_GTrsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) const
 {
   gp_XY aDoublet(theX, theY);

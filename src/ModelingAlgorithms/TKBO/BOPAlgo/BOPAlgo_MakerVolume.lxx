@@ -12,10 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : BOPAlgo_MakerVolume
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume()
     : BOPAlgo_Builder(),
       myIntersect(Standard_True),
@@ -23,10 +21,8 @@ inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume()
 {
 }
 
-//=======================================================================
-// function : BOPAlgo_MakerVolume
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume(
   const Handle(NCollection_BaseAllocator)& theAllocator)
     : BOPAlgo_Builder(theAllocator),
@@ -44,10 +40,8 @@ inline BOPAlgo_MakerVolume::~BOPAlgo_MakerVolume()
   Clear();
 }
 
-//=======================================================================
-// function : Clear
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void BOPAlgo_MakerVolume::Clear()
 {
   BOPAlgo_Builder::Clear();
@@ -58,37 +52,29 @@ inline void BOPAlgo_MakerVolume::Clear()
   myAvoidInternalShapes = Standard_False;
 }
 
-//=======================================================================
-// function : SetIntersect
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void BOPAlgo_MakerVolume::SetIntersect(const Standard_Boolean bIntersect)
 {
   myIntersect = bIntersect;
 }
 
-//=======================================================================
-// function : IsIntersect
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean BOPAlgo_MakerVolume::IsIntersect() const
 {
   return myIntersect;
 }
 
-//=======================================================================
-// function : Box
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline const TopoDS_Solid& BOPAlgo_MakerVolume::Box() const
 {
   return mySBox;
 }
 
-//=======================================================================
-// function : Faces
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline const TopTools_ListOfShape& BOPAlgo_MakerVolume::Faces() const
 {
   return myFaces;

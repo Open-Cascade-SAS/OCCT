@@ -17,10 +17,7 @@
 #include <TopoDS.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 
-//=======================================================================
-// function : SetFreeBound
-// purpose  : Sets contour
-//=======================================================================
+//=================================================================================================
 
 inline void ShapeAnalysis_FreeBoundData::SetFreeBound(const TopoDS_Wire& freebound)
 {
@@ -72,10 +69,7 @@ inline void ShapeAnalysis_FreeBoundData::SetWidth(const Standard_Real width)
 // purpose  : Adds notch on free bound with its maximum width
 //=======================================================================
 
-//=======================================================================
-// function : FreeBound
-// purpose  : Returns contour
-//=======================================================================
+//=================================================================================================
 
 inline TopoDS_Wire ShapeAnalysis_FreeBoundData::FreeBound() const
 {

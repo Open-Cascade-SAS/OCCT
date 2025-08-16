@@ -93,7 +93,7 @@ public:
   //! Exceptions StdFail_NotDone if no arc of circle is constructed.
   Standard_EXPORT const Handle(Geom_TrimmedCurve)& Value() const;
 
-  operator const Handle(Geom_TrimmedCurve) & () const { return Value(); }
+  operator const Handle(Geom_TrimmedCurve)&() const { return Value(); }
 
 private:
   Handle(Geom_TrimmedCurve) TheArc;

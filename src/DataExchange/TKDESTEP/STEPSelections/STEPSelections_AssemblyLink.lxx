@@ -14,40 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : GetNAUO
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Handle(StepRepr_NextAssemblyUsageOccurrence) STEPSelections_AssemblyLink::GetNAUO() const
 {
   return myNAUO;
 }
 
-//=======================================================================
-// function : GetSDSR
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Handle(Standard_Transient) STEPSelections_AssemblyLink::GetItem() const
 {
   return myItem;
 }
 
-//=======================================================================
-// function : GetComponent
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Handle(STEPSelections_AssemblyComponent) STEPSelections_AssemblyLink::GetComponent() const
 {
   return myComponent;
 }
 
-//=======================================================================
-// function : SetNAUO
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void STEPSelections_AssemblyLink::SetNAUO(
   const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo)
@@ -55,20 +43,14 @@ inline void STEPSelections_AssemblyLink::SetNAUO(
   myNAUO = nauo;
 }
 
-//=======================================================================
-// function : SetCDSR
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void STEPSelections_AssemblyLink::SetItem(const Handle(Standard_Transient)& item)
 {
   myItem = item;
 }
 
-//=======================================================================
-// function : SetComponent
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void STEPSelections_AssemblyLink::SetComponent(
   const Handle(STEPSelections_AssemblyComponent)& part)

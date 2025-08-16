@@ -70,10 +70,8 @@ inline T unaligned_load(const char* thePnt) noexcept
 }
 } // namespace MurmurHashUtils
 
-//=======================================================================
-// function : MurmurHash64A
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept
 {
   static constexpr uint64_t aMul = (((uint64_t)0xc6a4a793UL) << 32UL) + (uint64_t)0x5bd1e995UL;
@@ -102,10 +100,8 @@ inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed) 
   return aHash;
 }
 
-//=======================================================================
-// function : MurmurHash2A
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed) noexcept
 {
   constexpr uint32_t aMul  = 0x5bd1e995;
@@ -153,10 +149,8 @@ inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed) n
 
 namespace FNVHash
 {
-//=======================================================================
-// function : FNVHash1A
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed) noexcept
 {
   const char* cptr = static_cast<const char*>(theKey);
@@ -168,10 +162,8 @@ inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed) noex
   return theSeed;
 }
 
-//=======================================================================
-// function : FNVHash64A
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline uint64_t FNVHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept
 {
   const char* cptr = static_cast<const char*>(theKey);

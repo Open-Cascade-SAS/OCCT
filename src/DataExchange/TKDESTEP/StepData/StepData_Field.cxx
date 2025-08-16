@@ -27,13 +27,13 @@
 #include <TColStd_HArray2OfReal.hxx>
 #include <TColStd_HArray2OfTransient.hxx>
 
-//  Le kind code le type de donnee, le mode d acces (direct ou via Select),
-//  l arite (simple, liste, carre)
-//  Valeurs pour Kind : 0 = Clear/Undefined
+//  The kind encodes the data type, access mode (direct or via Select),
+//  and arity (simple, list, square array)
+//  Values for Kind: 0 = Clear/Undefined
 //  KindInteger KindBoolean KindLogical KindEnum KindReal KindString KindEntity
-//  + KindSelect qui s y substitue et peut s y combiner
-//  + KindList et KindList2  qui peuvent s y combiner
-//  (sur masque KindArity et decalage ShiftArity)
+//  + KindSelect which substitutes and can combine with them
+//  + KindList and KindList2 which can combine with them
+//  (on KindArity mask and ShiftArity offset)
 #define KindInteger 1
 #define KindBoolean 2
 #define KindLogical 3
@@ -160,13 +160,13 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
       low                                    = ht->Lower();
       up                                     = ht->Upper();
       Handle(TColStd_HArray1OfTransient) ht2 = new TColStd_HArray1OfTransient(low, up);
-      //  faudrait reprendre les cas SelectMember ...
+      //  Should handle SelectMember cases...
       for (i = low; i <= up; i++)
         ht2->SetValue(i, ht->Value(i));
       return;
     }
   }
-  //    Reste la liste 2 ...
+  //    Remains the 2D list...
   //  if ((thekind & KindArity) == KindList2) {
   //    DeclareAndCast(TColStd_HArray2OfTransient,ht,theany);
   //  }
@@ -313,7 +313,7 @@ void StepData_Field::SetEntity()
 
 void StepData_Field::SetList(const Standard_Integer size, const Standard_Integer first)
 {
-  //  ATTENTION, on ne traite pas l agrandissement ...
+  //  WARNING: we don't handle expansion...
 
   theint  = size;
   thereal = 0.0;
@@ -346,7 +346,7 @@ void StepData_Field::SetList2(const Standard_Integer siz1,
                               const Standard_Integer f1,
                               const Standard_Integer f2)
 {
-  //  ATTENTION, on ne traite pas l agrandissement ...
+  //  WARNING: we don't handle expansion...
 
   theint  = siz1;
   thereal = Standard_Real(siz2);
@@ -481,7 +481,7 @@ void StepData_Field::SetInt(const Standard_Integer num,
     hi->SetValue(num, val);
     return;
   }
-  //   Si deja commence sur autre chose, changer et mettre des select
+  //   If already started with something else, change and put selects
   DeclareAndCast(TColStd_HArray1OfTransient, ht, theany);
   if (ht.IsNull())
     return; // yena erreur, ou alors OfReal
@@ -544,7 +544,7 @@ void StepData_Field::SetReal(const Standard_Integer num, const Standard_Real val
     hr->SetValue(num, val);
     return;
   }
-  //   Si deja commence sur autre chose, changer et mettre des select
+  //   If already started with something else, change and put selects
   DeclareAndCast(TColStd_HArray1OfTransient, ht, theany);
   if (ht.IsNull())
     return; // yena erreur, ou alors OfInteger
@@ -680,7 +680,7 @@ Standard_Integer StepData_Field::ItemKind(const Standard_Integer n1,
   Standard_Integer kind = TrueKind(thekind); // si Any, evaluer ...
   if (kind != KindAny)
     return kind;
-  //  Sinon, chercher un Transient
+  //  Otherwise, look for a Transient
   Handle(Standard_Transient) item;
   if ((thekind & KindArity) == KindList)
   {

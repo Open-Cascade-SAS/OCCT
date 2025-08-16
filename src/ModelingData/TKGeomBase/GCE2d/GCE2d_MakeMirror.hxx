@@ -52,7 +52,7 @@ public:
   //! Returns the constructed transformation.
   Standard_EXPORT const Handle(Geom2d_Transformation)& Value() const;
 
-  operator const Handle(Geom2d_Transformation) & () const { return Value(); }
+  operator const Handle(Geom2d_Transformation)&() const { return Value(); }
 
 protected:
 private:

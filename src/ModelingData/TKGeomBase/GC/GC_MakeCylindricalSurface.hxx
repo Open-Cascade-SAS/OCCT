@@ -106,7 +106,7 @@ public:
   //! Exceptions StdFail_NotDone if no cylinder is constructed.
   Standard_EXPORT const Handle(Geom_CylindricalSurface)& Value() const;
 
-  operator const Handle(Geom_CylindricalSurface) & () const { return Value(); }
+  operator const Handle(Geom_CylindricalSurface)&() const { return Value(); }
 
 private:
   Handle(Geom_CylindricalSurface) TheCylinder;

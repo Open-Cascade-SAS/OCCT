@@ -36,6 +36,9 @@ UseTab: Never
 # OCCT specific settings
 StatementMacros:
   - Standard_FALLTHROUGH
+  - OCC_CATCH_SIGNALS
+  - DEFINE_STANDARD_RTTIEXT
+  - Draw_Drawable3D_FACTORY
   - Standard_DEPRECATED
 TypenameMacros:
   - Handle

@@ -104,10 +104,8 @@ protected:
   Handle(NCollection_Buffer) myData; //!< buffer data
 };
 
-// =======================================================================
-// function : Create
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class BaseBufferT>
 bool OpenGl_BufferCompatT<BaseBufferT>::Create(const Handle(OpenGl_Context)&)
 {
@@ -119,10 +117,8 @@ bool OpenGl_BufferCompatT<BaseBufferT>::Create(const Handle(OpenGl_Context)&)
   return BaseBufferT::myBufferId != OpenGl_Buffer::NO_BUFFER;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class BaseBufferT>
 void OpenGl_BufferCompatT<BaseBufferT>::Release(OpenGl_Context*)
 {
@@ -136,10 +132,8 @@ void OpenGl_BufferCompatT<BaseBufferT>::Release(OpenGl_Context*)
   myData.Nullify();
 }
 
-// =======================================================================
-// function : initLink
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class BaseBufferT>
 bool OpenGl_BufferCompatT<BaseBufferT>::initLink(const Handle(NCollection_Buffer)& theData,
                                                  const unsigned int                theComponentsNb,
@@ -164,10 +158,8 @@ bool OpenGl_BufferCompatT<BaseBufferT>::initLink(const Handle(NCollection_Buffer
   return true;
 }
 
-// =======================================================================
-// function : init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class BaseBufferT>
 bool OpenGl_BufferCompatT<BaseBufferT>::init(const Handle(OpenGl_Context)& theCtx,
                                              const unsigned int            theComponentsNb,
@@ -201,10 +193,8 @@ bool OpenGl_BufferCompatT<BaseBufferT>::init(const Handle(OpenGl_Context)& theCt
   return true;
 }
 
-// =======================================================================
-// function : subData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class BaseBufferT>
 bool OpenGl_BufferCompatT<BaseBufferT>::subData(const Handle(OpenGl_Context)&,
                                                 const Standard_Integer theElemFrom,
@@ -229,10 +219,8 @@ bool OpenGl_BufferCompatT<BaseBufferT>::subData(const Handle(OpenGl_Context)&,
   return true;
 }
 
-// =======================================================================
-// function : getSubData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class BaseBufferT>
 bool OpenGl_BufferCompatT<BaseBufferT>::getSubData(const Handle(OpenGl_Context)&,
                                                    const Standard_Integer theElemFrom,

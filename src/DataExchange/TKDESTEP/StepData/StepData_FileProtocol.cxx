@@ -20,28 +20,31 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepData_FileProtocol, StepData_Protocol)
 
 // static TCollection_AsciiString  thename("");
-static Standard_CString thename = "";
+static Standard_CString thename = ""; // Empty schema name for file protocols
 
-//  Protocol fabrique a la demande avec d autres Protocoles
+//  Protocol factory created on demand with other Protocols
 
 StepData_FileProtocol::StepData_FileProtocol() {}
 
 void StepData_FileProtocol::Add(const Handle(StepData_Protocol)& protocol)
 {
+  // Add a protocol to the collection, avoiding duplicates of the same type
   if (protocol.IsNull())
     return;
   Handle(Standard_Type) ptype = protocol->DynamicType();
   Standard_Integer      nb    = thecomps.Length();
+  // Check if a protocol of the same type is already present
   for (Standard_Integer i = 1; i <= nb; i++)
   {
     if (thecomps.Value(i)->IsInstance(ptype))
-      return;
+      return; // Protocol of this type already exists
   }
   thecomps.Append(protocol);
 }
 
 Standard_Integer StepData_FileProtocol::NbResources() const
 {
+  // Return the number of component protocols in this file protocol
   return thecomps.Length();
 }
 
@@ -52,16 +55,18 @@ Handle(Interface_Protocol) StepData_FileProtocol::Resource(const Standard_Intege
 
 Standard_Integer StepData_FileProtocol::TypeNumber(const Handle(Standard_Type)& /*atype*/) const
 {
+  // FileProtocol doesn't recognize specific types directly (delegates to component protocols)
   return 0;
 }
 
 Standard_Boolean StepData_FileProtocol::GlobalCheck(const Interface_Graph&   G,
                                                     Handle(Interface_Check)& ach) const
 {
+  // Perform global validation check across all component protocols
   Standard_Boolean res = Standard_False;
   Standard_Integer i, nb = NbResources();
   for (i = 1; i <= nb; i++)
-    res |= Resource(i)->GlobalCheck(G, ach);
+    res |= Resource(i)->GlobalCheck(G, ach); // Aggregate results from all protocols
   return res;
 }
 

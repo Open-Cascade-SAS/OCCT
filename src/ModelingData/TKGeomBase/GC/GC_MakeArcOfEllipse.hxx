@@ -70,7 +70,7 @@ public:
   //! Returns the constructed arc of ellipse.
   Standard_EXPORT const Handle(Geom_TrimmedCurve)& Value() const;
 
-  operator const Handle(Geom_TrimmedCurve) & () const { return Value(); }
+  operator const Handle(Geom_TrimmedCurve)&() const { return Value(); }
 
 private:
   Handle(Geom_TrimmedCurve) TheArc;

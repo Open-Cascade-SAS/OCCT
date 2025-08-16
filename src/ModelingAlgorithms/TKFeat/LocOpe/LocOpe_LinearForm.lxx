@@ -14,10 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : LocOpe_LinearForm
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline LocOpe_LinearForm::LocOpe_LinearForm()
     : myDone(Standard_False),
@@ -25,10 +22,7 @@ inline LocOpe_LinearForm::LocOpe_LinearForm()
 {
 }
 
-//=======================================================================
-// function : LocOpe_LinearForm
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline LocOpe_LinearForm::LocOpe_LinearForm(const TopoDS_Shape& Base,
                                             const gp_Vec&       V,
@@ -39,10 +33,7 @@ inline LocOpe_LinearForm::LocOpe_LinearForm(const TopoDS_Shape& Base,
   Perform(Base, V, Pnt1, Pnt2);
 }
 
-//=======================================================================
-// function : LocOpe_LinearForm
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline LocOpe_LinearForm::LocOpe_LinearForm(const TopoDS_Shape& Base,
                                             const gp_Vec&       V,

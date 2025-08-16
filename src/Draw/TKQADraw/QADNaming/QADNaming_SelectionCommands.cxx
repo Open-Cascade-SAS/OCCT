@@ -272,10 +272,7 @@ static void CollectAttachment(const TDF_Label&              root,
   }
 }
 
-//=======================================================================
-// function : Attachment
-// purpose  : Attachment DF entry
-//=======================================================================
+//=================================================================================================
 
 static Standard_Integer QADNaming_Attachment(Draw_Interpretor& di,
                                              Standard_Integer  n,

@@ -32,10 +32,8 @@
 #include <NCollection_Array1.hxx>
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Extrema_GExtPC::Perform(const ThePoint& P)
 {
   mySqDist.Clear();
@@ -484,10 +482,8 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
 }
 
 
-//=======================================================================
-//function : Initialize
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Extrema_GExtPC::Initialize(const TheCurve&     C,
 				const Standard_Real Uinf,
@@ -507,10 +503,8 @@ void Extrema_GExtPC::Initialize(const TheCurve&     C,
 }
 
 
-//=======================================================================
-//function : IntervalPerform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Extrema_GExtPC::IntervalPerform(const ThePoint& P)
 {
@@ -542,10 +536,8 @@ void Extrema_GExtPC::IntervalPerform(const ThePoint& P)
 }
 
 
-//=======================================================================
-//function : AddSol
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Extrema_GExtPC::AddSol(const Standard_Real theU, const ThePoint& theP,
                             const Standard_Real theSqDist, 
@@ -568,10 +560,8 @@ void Extrema_GExtPC::AddSol(const Standard_Real theU, const ThePoint& theP,
  }
 
 
-//=======================================================================
-//function : Extrema_GExtPC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Extrema_GExtPC::Extrema_GExtPC()
 {
@@ -586,10 +576,8 @@ Extrema_GExtPC::Extrema_GExtPC()
   type = GeomAbs_OtherCurve;
 }
 
-//=======================================================================
-//function : Extrema_GExtPC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Extrema_GExtPC::Extrema_GExtPC(const ThePoint&           P, 
 			       const TheCurve&           C,
@@ -601,10 +589,8 @@ Extrema_GExtPC::Extrema_GExtPC(const ThePoint&           P,
   Perform(P);
 }
 
-//=======================================================================
-//function : Extrema_GExtPC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Extrema_GExtPC::Extrema_GExtPC(const ThePoint&     P, 
 			       const TheCurve&     C,
@@ -616,10 +602,8 @@ Extrema_GExtPC::Extrema_GExtPC(const ThePoint&     P,
 }
 
 
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean Extrema_GExtPC::IsDone() const
 {
@@ -627,10 +611,8 @@ Standard_Boolean Extrema_GExtPC::IsDone() const
 }
 
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Real Extrema_GExtPC::SquareDistance(const Standard_Integer N) const 
 {
@@ -639,10 +621,8 @@ Standard_Real Extrema_GExtPC::SquareDistance(const Standard_Integer N) const
 }
 
 
-//=======================================================================
-//function : NbExt
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Integer Extrema_GExtPC::NbExt() const
 {
@@ -651,10 +631,8 @@ Standard_Integer Extrema_GExtPC::NbExt() const
 }
 
 
-//=======================================================================
-//function : IsMin
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean Extrema_GExtPC::IsMin(const Standard_Integer N) const
 {
@@ -664,10 +642,8 @@ Standard_Boolean Extrema_GExtPC::IsMin(const Standard_Integer N) const
 
 
 
-//=======================================================================
-//function : Point
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 const ThePOnC & Extrema_GExtPC::Point(const Standard_Integer N) const
 {
@@ -676,10 +652,8 @@ const ThePOnC & Extrema_GExtPC::Point(const Standard_Integer N) const
 }
 
 
-//=======================================================================
-//function : TrimmedDistances
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Extrema_GExtPC::TrimmedSquareDistances(Standard_Real& dist1, 
 				      Standard_Real& dist2,

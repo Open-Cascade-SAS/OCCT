@@ -17,20 +17,14 @@
 // 25.12.98 pdn renaming methods GetWires and GetEdges to GetClosedWires and GetOpenWires
 // respectively
 
-//=======================================================================
-// function : GetClosedWires
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline const TopoDS_Compound& ShapeAnalysis_FreeBounds::GetClosedWires() const
 {
   return myWires;
 }
 
-//=======================================================================
-// function : GetOpenWires
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline const TopoDS_Compound& ShapeAnalysis_FreeBounds::GetOpenWires() const
 {

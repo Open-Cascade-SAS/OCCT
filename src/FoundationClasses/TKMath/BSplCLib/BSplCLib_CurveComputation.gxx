@@ -46,10 +46,8 @@ struct BSplCLib_DataContainer
   Standard_Real ders[Dimension_gen*4];
 };
 
-//=======================================================================
-//function : Reverse
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void  BSplCLib::Reverse(Array1OfPoints& Poles,
 			const Standard_Integer L)
@@ -73,10 +71,8 @@ void  BSplCLib::Reverse(Array1OfPoints& Poles,
 // CURVES MODIFICATIONS
 //
 
-//=======================================================================
-//function : RemoveKnot
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean BSplCLib::RemoveKnot 
 (const Standard_Integer         Index,       
@@ -152,10 +148,8 @@ void BSplCLib::InsertKnots
   else          PLib::GetPoles(newpoles,NewPoles);
 }
 
-//=======================================================================
-//function : InsertKnot
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void  BSplCLib::InsertKnot(const Standard_Integer , 
 			   const Standard_Real U,
@@ -179,10 +173,8 @@ void  BSplCLib::InsertKnot(const Standard_Integer ,
 	      k,&m,NewPoles,NewWeights,nk,nm,Epsilon(U));
 }
 
-//=======================================================================
-//function : RaiseMultiplicity
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void  BSplCLib::RaiseMultiplicity(const Standard_Integer KnotIndex,
 				  const Standard_Integer Mult,
@@ -205,10 +197,8 @@ void  BSplCLib::RaiseMultiplicity(const Standard_Integer KnotIndex,
 	      k,&m,NewPoles,NewWeights,nk,nm,Epsilon(k(1)));
 }
 
-//=======================================================================
-//function : IncreaseDegree
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::IncreaseDegree 
 (const Standard_Integer          Degree,
@@ -241,10 +231,8 @@ void BSplCLib::IncreaseDegree
   else          PLib::GetPoles(newpoles,NewPoles);
 }
 
-//=======================================================================
-//function : Unperiodize
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void  BSplCLib::Unperiodize
 (const Standard_Integer         Degree, 
@@ -275,10 +263,8 @@ void  BSplCLib::Unperiodize
   else          PLib::GetPoles(newpoles,NewPoles);
 }
 
-//=======================================================================
-//function : Trimming
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::Trimming(const Standard_Integer         Degree, 
 			const Standard_Boolean         Periodic,
@@ -408,10 +394,8 @@ static void PrepareEval
   }
 }
 
-//=======================================================================
-//function : D0
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::D0 
 (const Standard_Real            U,                  
@@ -440,10 +424,8 @@ void BSplCLib::D0
     CoordsToPoint (P, dc.poles, );
 }
 
-//=======================================================================
-//function : D1
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::D1
 (const Standard_Real            U,                  
@@ -473,10 +455,8 @@ void BSplCLib::D1
   CoordsToPoint (V, result + Dimension_gen, );
 }
 
-//=======================================================================
-//function : D2
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::D2
 (const Standard_Real            U,                  
@@ -511,10 +491,8 @@ void BSplCLib::D2
     CoordsToPoint (V2, result + 2 * Dimension_gen, );  
 }
 
-//=======================================================================
-//function : D3
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::D3
 (const Standard_Real            U,                  
@@ -554,10 +532,8 @@ void BSplCLib::D3
     CoordsToPoint (V3, result + 3 * Dimension_gen, );  
 }
 
-//=======================================================================
-//function : DN
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::DN
 (const Standard_Real            U,                  
@@ -593,10 +569,8 @@ void BSplCLib::DN
   }
 }
 
-//=======================================================================
-//function : Solves a LU factored Matrix 
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Integer 
 BSplCLib::SolveBandedSystem(const math_Matrix&  Matrix,
@@ -1154,10 +1128,8 @@ void BSplCLib::BuildCache(const Standard_Real          theParameter,
     theCacheArray.SetValue(theCacheArray.LowerRow(), theCacheArray.LowerCol() + aCacheShift - 1, 1.0);
 }
 
-//=======================================================================
-//function : Interpolate
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void  BSplCLib::Interpolate(const Standard_Integer         Degree,
 			    const TColStd_Array1OfReal&    FlatKnots,
@@ -1180,10 +1152,8 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
 			InversionProblem) ;
 }
 
-//=======================================================================
-//function : Interpolate
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void  BSplCLib::Interpolate(const Standard_Integer         Degree,
 			    const TColStd_Array1OfReal&    FlatKnots,
@@ -1334,10 +1304,8 @@ void BSplCLib::MovePoint (const Standard_Real            U,
 //           given  u as parameter) to reach a new position
 //=======================================================================
 
-//=======================================================================
-//function : MovePointAndTangent
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::MovePointAndTangent (const Standard_Real      U, 
 				    const Vector&            Delta,
@@ -1383,10 +1351,8 @@ void BSplCLib::MovePointAndTangent (const Standard_Real      U,
 		      ErrorStatus) ;
 }
 
-//=======================================================================
-//function : Resolution
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::Resolution(const Array1OfPoints&          Poles,  
 			  const TColStd_Array1OfReal*    Weights,
@@ -1408,10 +1374,8 @@ void BSplCLib::Resolution(const Array1OfPoints&          Poles,
 		       UTolerance) ;
 }
 
-//=======================================================================
-//function : FunctionMultiply
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::FunctionMultiply
 (const BSplCLib_EvaluatorFunction & FunctionPtr,
@@ -1447,10 +1411,8 @@ void BSplCLib::FunctionMultiply
 			     theStatus);
 }
 
-//=======================================================================
-//function : FunctionReparameterise
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void BSplCLib::FunctionReparameterise
 (const BSplCLib_EvaluatorFunction & FunctionPtr,

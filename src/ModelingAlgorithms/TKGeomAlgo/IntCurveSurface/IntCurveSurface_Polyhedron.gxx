@@ -35,10 +35,8 @@
 #define LONGUEUR_MINI_EDGE_TRIANGLE 1e-15
 
 
-//=======================================================================
-//function : IntCurveSurface_Polyhedron
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 IntCurveSurface_Polyhedron::IntCurveSurface_Polyhedron (const ThePSurface&     Surface,
 							const Standard_Integer nbdU,
 							const Standard_Integer nbdV,
@@ -64,10 +62,8 @@ IntCurveSurface_Polyhedron::IntCurveSurface_Polyhedron (const ThePSurface&     S
   Init(Surface,u1,v1,u2,v2);
 }
 
-//=======================================================================
-//function : IntCurveSurface_Polyhedron
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 IntCurveSurface_Polyhedron::IntCurveSurface_Polyhedron (const ThePSurface&     Surface,
 							const TColStd_Array1OfReal&    Upars,
 							const TColStd_Array1OfReal&    Vpars)
@@ -105,10 +101,8 @@ void IntCurveSurface_Polyhedron::Destroy() {
   C_MyPnts=C_MyU=C_MyV=C_MyIsOnBounds=NULL;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
 				      const Standard_Real U0,
 				      const Standard_Real V0,
@@ -193,10 +187,8 @@ void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
     Dump();
   #endif
 }
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
 				      const TColStd_Array1OfReal& Upars,
 				      const TColStd_Array1OfReal& Vpars) { 
@@ -284,10 +276,8 @@ void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
     Dump();
   #endif
 }
-//=======================================================================
-//function : DeflectionOnTriangle
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Real IntCurveSurface_Polyhedron::DeflectionOnTriangle (const ThePSurface& Surface,
 								const Standard_Integer Triang) const 
 {
@@ -320,10 +310,8 @@ Standard_Real IntCurveSurface_Polyhedron::DeflectionOnTriangle (const ThePSurfac
   gp_Vec P1P(P1,P);
   return(Abs(P1P.Dot(NormalVector)));
 }
-//=======================================================================
-//function : Parameters
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polyhedron::Parameters( const Standard_Integer Index
 					    ,Standard_Real &U
 					    ,Standard_Real &V) const 
@@ -338,10 +326,8 @@ void IntCurveSurface_Polyhedron::Parameters( const Standard_Integer Index
   Standard_Real *CMyV = (Standard_Real *)C_MyV;
   V = CMyV[Index];
 }
-//=======================================================================
-//function : DeflectionOverEstimation
-//purpose  : Set
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polyhedron::DeflectionOverEstimation(const Standard_Real flec)
 {
   if(flec<0.0001) {  
@@ -353,26 +339,20 @@ void IntCurveSurface_Polyhedron::DeflectionOverEstimation(const Standard_Real fl
     TheBnd.Enlarge(flec);
   }    
 }
-//=======================================================================
-//function : DeflectionOverEstimation
-//purpose  : Get
-//=======================================================================
+//=================================================================================================
+
 Standard_Real IntCurveSurface_Polyhedron::DeflectionOverEstimation() const
 {
   return TheDeflection;
 }
-//=======================================================================
-//function : Bounding
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const Bnd_Box& IntCurveSurface_Polyhedron::Bounding() const
 {
   return TheBnd;
 }
-//=======================================================================
-//function : FillBounding
-//purpose  :  
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polyhedron::FillBounding()
 {
   TheComponentsBnd=new Bnd_HArray1OfBox(1, NbTriangles());
@@ -399,35 +379,27 @@ void IntCurveSurface_Polyhedron::FillBounding()
     TheComponentsBnd->SetValue(iTri,Boite); 
   }
 }
-//=======================================================================
-//function : ComponentsBounding
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const Handle(Bnd_HArray1OfBox)& 
       IntCurveSurface_Polyhedron::ComponentsBounding() const
 {
  return TheComponentsBnd;
 }
-//=======================================================================
-//function : NbTriangles
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer IntCurveSurface_Polyhedron::NbTriangles  () const
 {
   return nbdeltaU*nbdeltaV*2;
 }
-//=======================================================================
-//function : NbPoints
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer IntCurveSurface_Polyhedron::NbPoints () const
 {
   return (nbdeltaU+1)*(nbdeltaV+1);
 }
-//=======================================================================
-//function : TriConnex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer IntCurveSurface_Polyhedron::TriConnex
   (const Standard_Integer Triang,
    const Standard_Integer Pivot,
@@ -602,10 +574,8 @@ Standard_Integer IntCurveSurface_Polyhedron::TriConnex
 }
 
 
-//=======================================================================
-//function : PlaneEquation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polyhedron::PlaneEquation (const Standard_Integer Triang,
 					gp_XYZ&        NormalVector,
 					Standard_Real& PolarDistance)  const
@@ -640,10 +610,8 @@ void IntCurveSurface_Polyhedron::PlaneEquation (const Standard_Integer Triang,
     PolarDistance = NormalVector * Point(i1).XYZ();
   }
 }
-//=======================================================================
-//function : Contain
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean IntCurveSurface_Polyhedron::Contain (const Standard_Integer Triang,
 						      const gp_Pnt& ThePnt) const
 {
@@ -661,28 +629,22 @@ Standard_Boolean IntCurveSurface_Polyhedron::Contain (const Standard_Integer Tri
   else 
     return Standard_False;
 }
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polyhedron::Dump() const
 {
 
 }
-//=======================================================================
-//function : Size
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polyhedron::Size (Standard_Integer& nbdu,
 			      Standard_Integer& nbdv) const
 {
   nbdu=nbdeltaU;
   nbdv=nbdeltaV;
 }
-//=======================================================================
-//function : Triangle
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polyhedron::Triangle (const Standard_Integer Index,
 				  Standard_Integer& P1,
 				  Standard_Integer& P2,

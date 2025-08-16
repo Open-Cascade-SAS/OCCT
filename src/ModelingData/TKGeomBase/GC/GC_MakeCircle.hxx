@@ -98,7 +98,7 @@ public:
   //! StdFail_NotDone if no circle is constructed.
   Standard_EXPORT const Handle(Geom_Circle)& Value() const;
 
-  operator const Handle(Geom_Circle) & () const { return Value(); }
+  operator const Handle(Geom_Circle)&() const { return Value(); }
 
 private:
   Handle(Geom_Circle) TheCircle;

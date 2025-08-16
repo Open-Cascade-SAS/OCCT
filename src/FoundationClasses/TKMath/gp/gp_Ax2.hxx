@@ -370,10 +370,8 @@ private:
   gp_Dir vxdir;
 };
 
-// =======================================================================
-// function : SetAxis
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax2::SetAxis(const gp_Ax1& theA1)
 {
   Standard_Real a = theA1.Direction() * vxdir;
@@ -399,10 +397,8 @@ inline void gp_Ax2::SetAxis(const gp_Ax1& theA1)
   }
 }
 
-// =======================================================================
-// function : SetDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax2::SetDirection(const gp_Dir& theV)
 {
   Standard_Real a = theV * vxdir;
@@ -428,10 +424,8 @@ inline void gp_Ax2::SetDirection(const gp_Dir& theV)
   }
 }
 
-// =======================================================================
-// function : IsCoplanar
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Ax2::IsCoplanar(const gp_Ax2&       theOther,
                                            const Standard_Real theLinearTolerance,
                                            const Standard_Real theAngularTolerance) const
@@ -448,10 +442,8 @@ inline Standard_Boolean gp_Ax2::IsCoplanar(const gp_Ax2&       theOther,
   return D1 <= theLinearTolerance && axis.IsParallel(theOther.axis, theAngularTolerance);
 }
 
-// =======================================================================
-// function : IsCoplanar
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Ax2::IsCoplanar(const gp_Ax1&       theA,
                                            const Standard_Real theLinearTolerance,
                                            const Standard_Real theAngularTolerance) const

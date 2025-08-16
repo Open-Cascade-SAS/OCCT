@@ -253,19 +253,15 @@ struct equal_to<gp_Pnt>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 
-//=======================================================================
-// function : Distance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Pnt::Distance(const gp_Pnt& theOther) const
 {
   return sqrt(SquareDistance(theOther));
 }
 
-//=======================================================================
-// function : SquareDistance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Pnt::SquareDistance(const gp_Pnt& theOther) const
 {
   const gp_XYZ&       aXYZ = theOther.coord;
@@ -275,10 +271,8 @@ inline Standard_Real gp_Pnt::SquareDistance(const gp_Pnt& theOther) const
   return aDx * aDx + aDy * aDy + aDz * aDz;
 }
 
-//=======================================================================
-// function : Rotate
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Pnt::Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
 {
   gp_Trsf aT;
@@ -286,10 +280,8 @@ inline void gp_Pnt::Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
   aT.Transforms(coord);
 }
 
-//=======================================================================
-// function : Scale
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Pnt::Scale(const gp_Pnt& theP, const Standard_Real theS)
 {
   gp_XYZ aXYZ = theP.coord;
@@ -298,19 +290,15 @@ inline void gp_Pnt::Scale(const gp_Pnt& theP, const Standard_Real theS)
   coord.Add(aXYZ);
 }
 
-//=======================================================================
-// function : Translate
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Pnt::Translate(const gp_Vec& theV)
 {
   coord.Add(theV.XYZ());
 }
 
-//=======================================================================
-// function : Translated
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Pnt gp_Pnt::Translated(const gp_Vec& theV) const
 {
   gp_Pnt aP = *this;

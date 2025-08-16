@@ -69,10 +69,7 @@ inline const Intf_TangentZone& Intf_Interference::ZoneValue(const Standard_Integ
   return myTZones(Index);
 }
 
-//=======================================================================
-// function : GetTolerance
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Standard_Real Intf_Interference::GetTolerance() const
 {

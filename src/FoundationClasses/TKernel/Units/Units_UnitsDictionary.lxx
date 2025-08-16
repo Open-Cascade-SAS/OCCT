@@ -18,20 +18,14 @@
 #include <Units_Quantity.hxx>
 #include <Units_Explorer.hxx>
 
-//=======================================================================
-// function : Sequence
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Handle(Units_QuantitiesSequence) Units_UnitsDictionary::Sequence() const
 {
   return thequantitiessequence;
 }
 
-//=======================================================================
-// function : Dump
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void Units_UnitsDictionary::Dump(const Standard_Integer alevel) const
 {
@@ -59,10 +53,7 @@ inline void Units_UnitsDictionary::Dump(const Standard_Integer alevel) const
   }
 }
 
-//=======================================================================
-// function : Dump
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void Units_UnitsDictionary::Dump(const Handle(Units_Dimensions)& adimensions) const
 {

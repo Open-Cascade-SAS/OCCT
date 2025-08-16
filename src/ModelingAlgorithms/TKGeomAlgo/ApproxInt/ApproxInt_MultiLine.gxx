@@ -27,10 +27,8 @@
 #include <DrawTrSurf.hxx>
 #endif
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 ApproxInt_MultiLine::ApproxInt_MultiLine()
 {
   PtrOnmySvSurfaces = NULL;
@@ -51,10 +49,8 @@ ApproxInt_MultiLine::ApproxInt_MultiLine()
   V2o = 0.;
 }
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 ApproxInt_MultiLine::
   ApproxInt_MultiLine(const Handle_TheLine& line,
                       const Standard_Address svsurf,
@@ -92,10 +88,8 @@ ApproxInt_MultiLine::
 #endif
 }
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 ApproxInt_MultiLine::
   ApproxInt_MultiLine(const Handle_TheLine& line,
                       const Standard_Integer NbP3d,
@@ -162,10 +156,8 @@ void ApproxInt_MultiLine::Value(const Standard_Integer  Index,
   TabPnt(1).SetCoord(aP.X()+Xo, aP.Y()+Yo, aP.Z()+Zo);
 }
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void ApproxInt_MultiLine::Value(const Standard_Integer Index,
                                 TColgp_Array1OfPnt2d&  TabPnt2d) const 
 {
@@ -193,10 +185,8 @@ void ApproxInt_MultiLine::Value(const Standard_Integer Index,
   }
 }
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void ApproxInt_MultiLine::Value(const Standard_Integer Index,
                                 TColgp_Array1OfPnt&    TabPnt,
                                 TColgp_Array1OfPnt2d&  TabPnt2d)  const 
@@ -205,10 +195,8 @@ void ApproxInt_MultiLine::Value(const Standard_Integer Index,
     Value(Index, TabPnt2d);
 }
 
-//=======================================================================
-//function : Tangency
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index,
                                                 TColgp_Array1OfVec&    TabVec) const 
 {
@@ -229,10 +217,8 @@ Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index,
   return ret;
 }
 
-//=======================================================================
-//function : Tangency
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index,
                                                 TColgp_Array1OfVec2d&  TabVec2d) const 
 {
@@ -282,10 +268,8 @@ Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index,
   return ret;
 }
 
-//=======================================================================
-//function : Tangency
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index,
                                                 TColgp_Array1OfVec& TabVec,
                                                 TColgp_Array1OfVec2d& TabVec2d) const
@@ -293,10 +277,8 @@ Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index,
   return (Tangency(Index, TabVec) && Tangency(Index, TabVec2d));
 }
 
-//=======================================================================
-//function : MakeMLBetween
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 ApproxInt_MultiLine
   ApproxInt_MultiLine::MakeMLBetween( const Standard_Integer Low,
                                       const Standard_Integer High,
@@ -601,10 +583,8 @@ ApproxInt_MultiLine
   }
 }
 
-//=======================================================================
-//function : MakeMLOneMorePoint
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean
   ApproxInt_MultiLine::MakeMLOneMorePoint(const Standard_Integer theLow,
                                           const Standard_Integer theHigh,
@@ -731,10 +711,8 @@ Standard_Boolean
   return Standard_True;
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void ApproxInt_MultiLine::Dump() const
 {
   TColgp_Array1OfPnt anArr1(1, 1);

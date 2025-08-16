@@ -160,7 +160,6 @@ public:
 
   //! Returns selection state.
   Standard_DEPRECATED("Deprecated method - IsSelected() should be used instead")
-
   Standard_Integer State() const { return myIsSelected ? 1 : 0; }
 
   //! Set the state of the owner.
@@ -215,12 +214,10 @@ public:
 public:
   //! Sets the selectable object.
   Standard_DEPRECATED("Deprecated method - SetSelectable() should be used instead")
-
   void Set(const Handle(SelectMgr_SelectableObject)& theSelObj) { SetSelectable(theSelObj); }
 
   //! sets the selectable priority of the owner
   Standard_DEPRECATED("Deprecated method - SetPriority() should be used instead")
-
   void Set(const Standard_Integer thePriority) { SetPriority(thePriority); }
 
 protected:

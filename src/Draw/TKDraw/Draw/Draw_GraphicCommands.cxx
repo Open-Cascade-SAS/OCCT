@@ -873,10 +873,7 @@ static Standard_Integer hcolor(Draw_Interpretor& di, Standard_Integer n, const c
   return 0;
 }
 
-//=======================================================================
-// function : xwd
-// purpose  : xwd file from a view
-//=======================================================================
+//=================================================================================================
 
 extern void Draw_RepaintNowIfNecessary();
 

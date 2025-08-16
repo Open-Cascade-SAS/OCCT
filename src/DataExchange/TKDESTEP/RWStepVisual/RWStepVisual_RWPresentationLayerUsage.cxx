@@ -34,7 +34,7 @@ void RWStepVisual_RWPresentationLayerUsage::ReadStep(
   if (!data->CheckNbParams(num, 2, ach, "presentation_layer_usage"))
     return;
 
-    // --- own fields
+  // --- own fields
 #include <StepVisual_PresentationLayerAssignment.hxx>
 #include <StepVisual_PresentationRepresentation.hxx>
   Handle(StepVisual_PresentationLayerAssignment) pla;

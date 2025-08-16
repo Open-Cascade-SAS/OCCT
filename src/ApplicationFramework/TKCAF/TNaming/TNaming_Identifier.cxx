@@ -264,7 +264,7 @@ Standard_Boolean IsImported(const Handle(TNaming_NamedShape)& NS)
   it.Next();
   if (!it.More())
     return 0;
-    // plus d un shape.
+  // plus d un shape.
 #ifdef OCCT_DEBUG
   std::cout << "WARNING IMPORTED" << std::endl;
 #endif

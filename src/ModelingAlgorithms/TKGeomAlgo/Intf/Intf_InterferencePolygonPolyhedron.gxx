@@ -51,10 +51,8 @@ static Standard_Boolean IsInSegment(const gp_Vec& P1P2,
 }
     
 
-//=======================================================================
-//function : Intf_InterferencePolygonPolyhedron
-//purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
+
 
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron() 
 : Intf_Interference (Standard_False),
@@ -188,10 +186,8 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
 }
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Intf_InterferencePolygonPolyhedron::Perform 
   (const Polygon3d& thePolyg, const Polyhedron& thePolyh) 
@@ -209,10 +205,8 @@ void Intf_InterferencePolygonPolyhedron::Perform
 } 
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Intf_InterferencePolygonPolyhedron::Perform 
   (const gp_Lin& theLin, const Polyhedron& thePolyh) 
@@ -451,10 +445,8 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
 }
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Intf_InterferencePolygonPolyhedron::Perform 
   (const Polygon3d& thePolyg, const Polyhedron& thePolyh,
@@ -473,10 +465,8 @@ void Intf_InterferencePolygonPolyhedron::Perform
 } 
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Intf_InterferencePolygonPolyhedron::Perform 
   (const gp_Lin& theLin, const Polyhedron& thePolyh,

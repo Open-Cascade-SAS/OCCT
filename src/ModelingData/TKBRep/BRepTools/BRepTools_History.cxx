@@ -340,10 +340,8 @@ Standard_Boolean BRepTools_History::prepareModified(const TopoDS_Shape& theIniti
   return Standard_True;
 }
 
-//==============================================================================
-// data : myEmptyList
-// purpose  :
-//==============================================================================
+//=================================================================================================
+
 const TopTools_ListOfShape BRepTools_History::myEmptyList;
 
 //=================================================================================================
@@ -353,30 +351,22 @@ const TopTools_ListOfShape& BRepTools_History::emptyList()
   return myEmptyList;
 }
 
-//==============================================================================
-// data : myMsgUnsupportedType
-// purpose  :
-//==============================================================================
+//=================================================================================================
+
 const char* BRepTools_History::myMsgUnsupportedType = "Error: unsupported shape type.";
 
-//==============================================================================
-// data : myMsgGeneratedAndRemoved
-// purpose  :
-//==============================================================================
+//=================================================================================================
+
 const char* BRepTools_History::myMsgGeneratedAndRemoved =
   "Error: a shape is generated and removed simultaneously.";
 
-//==============================================================================
-// data : myMsgModifiedAndRemoved
-// purpose  :
-//==============================================================================
+//=================================================================================================
+
 const char* BRepTools_History::myMsgModifiedAndRemoved =
   "Error: a shape is modified and removed simultaneously.";
 
-//==============================================================================
-// data : myMsgGeneratedAndModified
-// purpose  :
-//==============================================================================
+//=================================================================================================
+
 const char* BRepTools_History::myMsgGeneratedAndModified =
   "Error: a shape is generated and modified "
   "from the same shape simultaneously.";

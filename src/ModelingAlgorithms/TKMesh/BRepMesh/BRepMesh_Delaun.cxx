@@ -274,10 +274,8 @@ void BRepMesh_Delaun::perform(IMeshData::VectorOfInteger& theVertexIndices,
   compute(theVertexIndices);
 }
 
-//=======================================================================
-// function : superMesh
-// purpose  : Build the super mesh
-//=======================================================================
+//=================================================================================================
+
 void BRepMesh_Delaun::superMesh(const Bnd_Box2d& theBox)
 {
   Standard_Real aMinX, aMinY, aMaxX, aMaxY;

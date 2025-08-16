@@ -14,50 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : OriginalShape
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void HLRTopoBRep_OutLiner::OriginalShape(const TopoDS_Shape& OriS)
 {
   myOriginalShape = OriS;
 }
 
-//=======================================================================
-// function : OriginalShape
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline TopoDS_Shape& HLRTopoBRep_OutLiner::OriginalShape()
 {
   return myOriginalShape;
 }
 
-//=======================================================================
-// function : OutLinedShape
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void HLRTopoBRep_OutLiner::OutLinedShape(const TopoDS_Shape& OutS)
 {
   myOutLinedShape = OutS;
 }
 
-//=======================================================================
-// function : OutLinedShape
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline TopoDS_Shape& HLRTopoBRep_OutLiner::OutLinedShape()
 {
   return myOutLinedShape;
 }
 
-//=======================================================================
-// function : DataStructure
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline HLRTopoBRep_Data& HLRTopoBRep_OutLiner::DataStructure()
 {

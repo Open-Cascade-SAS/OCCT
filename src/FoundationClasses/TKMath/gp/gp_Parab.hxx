@@ -220,10 +220,8 @@ private:
   Standard_Real focalLength;
 };
 
-//=======================================================================
-// function : gp_Parab
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Parab::gp_Parab(const gp_Ax1& theD, const gp_Pnt& theF)
 {
   gp_Lin aDroite(theD);
@@ -238,10 +236,8 @@ inline gp_Parab::gp_Parab(const gp_Ax1& theD, const gp_Pnt& theF)
                anAx.Direction());
 }
 
-//=======================================================================
-// function : Directrix
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Ax1 gp_Parab::Directrix() const
 {
   const gp_Pnt& aPP = pos.Location();
@@ -252,10 +248,8 @@ inline gp_Ax1 gp_Parab::Directrix() const
   return gp_Ax1(aP, pos.YDirection());
 }
 
-//=======================================================================
-// function : Focus
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Pnt gp_Parab::Focus() const
 {
   const gp_Pnt& aPP = pos.Location();
@@ -265,10 +259,8 @@ inline gp_Pnt gp_Parab::Focus() const
                 aPP.Z() + focalLength * aDD.Z());
 }
 
-//=======================================================================
-// function : Scale
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Parab::Scale(const gp_Pnt& theP, const Standard_Real theS)
 {
   focalLength *= theS;
@@ -279,10 +271,8 @@ inline void gp_Parab::Scale(const gp_Pnt& theP, const Standard_Real theS)
   pos.Scale(theP, theS);
 }
 
-//=======================================================================
-// function : Scaled
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Parab gp_Parab::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
 {
   gp_Parab aPrb = *this;
@@ -295,10 +285,8 @@ inline gp_Parab gp_Parab::Scaled(const gp_Pnt& theP, const Standard_Real theS) c
   return aPrb;
 }
 
-//=======================================================================
-// function : Transform
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Parab::Transform(const gp_Trsf& theT)
 {
   focalLength *= theT.ScaleFactor();
@@ -309,10 +297,8 @@ inline void gp_Parab::Transform(const gp_Trsf& theT)
   pos.Transform(theT);
 }
 
-//=======================================================================
-// function : Transformed
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Parab gp_Parab::Transformed(const gp_Trsf& theT) const
 {
   gp_Parab aPrb = *this;

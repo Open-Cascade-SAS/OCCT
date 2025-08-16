@@ -26,7 +26,7 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_Protocol, Interface_Protocol)
 
-//  Le Protocol de base reconnait UnknownEntity
+//  The base Protocol recognizes UnknownEntity
 // static TCollection_AsciiString  thename("(DEFAULT)");
 static Standard_CString thename = "(DEFAULT)";
 
@@ -91,7 +91,7 @@ Standard_Boolean StepData_Protocol::IsUnknownEntity(const Handle(Standard_Transi
   return Standard_False;
 }
 
-//  ####    Description pour LateBinding
+//  ####    Description for LateBinding (runtime entity description support)
 
 Standard_Integer StepData_Protocol::DescrNumber(const Handle(StepData_EDescr)& adescr) const
 {
@@ -105,9 +105,9 @@ void StepData_Protocol::AddDescr(const Handle(StepData_EDescr)& adescr, const St
   Handle(StepData_ESDescr) sd = Handle(StepData_ESDescr)::DownCast(adescr);
   thedscnum.Bind(adescr, CN);
 
-  //  Simple : memorisee selon son nom
-  //  sinon que faire ? on memorise selon le numero passe en alpha-num ...
-  //   (temporaire)
+  //  Simple descriptor: stored according to its name
+  //  Otherwise what to do? Store according to the passed number in alpha-numeric form...
+  //  (temporary solution)
   if (!sd.IsNull())
     thedscnam.Bind(sd->TypeName(), sd);
   char fonom[10];

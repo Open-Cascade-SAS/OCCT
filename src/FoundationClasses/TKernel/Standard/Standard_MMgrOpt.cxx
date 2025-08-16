@@ -188,7 +188,7 @@ void Standard_MMgrOpt::Initialize()
   if (myNbPages < 100)
     myNbPages = 1000;
 
-    // get system-dependent page size
+  // get system-dependent page size
 #ifndef _WIN32
   myPageSize = getpagesize();
   if (!myPageSize)

@@ -26,10 +26,8 @@
  * The class BOPDS_Interf is root class
  *
  */
-//=======================================================================
-// function : BOPDS_Interf
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_Interf
 {
 public:
@@ -203,10 +201,8 @@ protected:
  * The class BOPDS_InterfVV stores the information about
  * the interference of the type vertex/vertex.
  */
-//=======================================================================
-// function : BOPDS_InterfVV
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfVV : public BOPDS_Interf
 {
 public:
@@ -243,10 +239,8 @@ public:
  * The class BOPDS_InterfVE stores the information about
  * the interference of the type vertex/edge.
  */
-//=======================================================================
-// function : BOPDS_InterfVE
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfVE : public BOPDS_Interf
 {
 public:
@@ -308,10 +302,8 @@ protected:
  * The class BOPDS_InterfVF stores the information about
  * the interference of the type vertex/face
  */
-//=======================================================================
-// function : BOPDS_InterfVF
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfVF : public BOPDS_Interf
 {
 public:
@@ -388,10 +380,8 @@ protected:
  * The class BOPDS_InterfEE stores the information about
  * the interference of the type edge/edge.
  */
-//=======================================================================
-// function : BOPDS_InterfEE
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfEE : public BOPDS_Interf
 {
 public:
@@ -447,10 +437,8 @@ protected:
  * The class BOPDS_InterfEF stores the information about
  * the interference of the type edge/face.
  */
-//=======================================================================
-// function : BOPDS_InterfEF
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfEF : public BOPDS_Interf
 {
 public:
@@ -513,10 +501,8 @@ protected:
  */
 ;
 
-//=======================================================================
-// function : BOPDS_InterfFF
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfFF : public BOPDS_Interf
 {
 public:
@@ -622,10 +608,8 @@ protected:
  * The class BOPDS_InterfVZ stores the information about
  * the interference of the type vertex/solid.
  */
-//=======================================================================
-// function : BOPDS_InterfVZ
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfVZ : public BOPDS_Interf
 {
 public:
@@ -655,10 +639,8 @@ public:
  * The class BOPDS_InterfEZ stores the information about
  * the interference of the type edge/solid.
  */
-//=======================================================================
-// function : BOPDS_InterfEZ
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfEZ : public BOPDS_Interf
 {
 public:
@@ -688,10 +670,8 @@ public:
  * The class BOPDS_InterfFZ stores the information about
  * the interference of the type face/solid.
  */
-//=======================================================================
-// function : BOPDS_InterfFZ
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfFZ : public BOPDS_Interf
 {
 public:
@@ -721,10 +701,8 @@ public:
  * The class BOPDS_InterfZZ stores the information about
  * the interference of the type solid/solid.
  */
-//=======================================================================
-// function : BOPDS_InterfZZ
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 class BOPDS_InterfZZ : public BOPDS_Interf
 {
 public:

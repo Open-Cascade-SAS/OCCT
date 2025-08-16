@@ -56,6 +56,20 @@ runs:
           clang-format -i -style=file $_
         }
 
+    - name: Remove empty lines after Standard_DEPRECATED
+      if: steps.changed-files.outputs.has_files == 'true'
+      shell: pwsh
+      run: |
+        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
+        $files | ForEach-Object {
+          $content = Get-Content $_ -Raw
+          $pattern = '(Standard_DEPRECATED\("[a-z0-9\.,;\s\(\)_-]+"(?:[\s\n]+"[a-z0-9\.,;\s\(\)_-]+")?\)\n)\n+'
+          $newContent = $content -replace $pattern, '$1'
+          if ($content -ne $newContent) {
+            Set-Content -Path $_ -Value $newContent -NoNewline
+          }
+        }
+
     - name: Check git status
       id: git-check
       if: steps.changed-files.outputs.has_files == 'true'

@@ -25,10 +25,9 @@ DEFINE_STANDARD_HANDLE(Draw_Number, Draw_Drawable3D)
 class Draw_Number : public Draw_Drawable3D
 {
   DEFINE_STANDARD_RTTIEXT(Draw_Number, Draw_Drawable3D)
-  Draw_Drawable3D_FACTORY public :
-
-      Standard_EXPORT
-      Draw_Number(const Standard_Real theV);
+  Draw_Drawable3D_FACTORY
+public:
+  Standard_EXPORT Draw_Number(const Standard_Real theV);
 
   Standard_Real Value() const { return myValue; }
 
