@@ -225,7 +225,7 @@ void IGESGeom_ToolCurveOnSurface::OwnCheck(const Handle(IGESGeom_CurveOnSurface)
   //  Standard_Integer pref = ent->PreferenceMode();
   //  if (pref < 0 || pref > 3)
   //    ach.SendFail("Incorrect value for the Preference Mode");
-  //  tolerance a la norme
+  //  tolerance to the standard
   //  if (pref == 1 && ent->CurveUV().IsNull())
   //    ach.AddWarning("Preference Mode asks UV and Curve UV not defined");
   //  if (pref == 2 && ent->Curve3D().IsNull())

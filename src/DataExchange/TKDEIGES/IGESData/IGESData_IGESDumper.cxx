@@ -38,7 +38,7 @@ IGESData_IGESDumper::IGESData_IGESDumper(const Handle(IGESData_IGESModel)& model
 void IGESData_IGESDumper::PrintDNum(const Handle(IGESData_IGESEntity)& ent,
                                     Standard_OStream&                  S) const
 {
-  //   Affichage garanti sur  12 caracteres 12345/D24689
+  //   Display guaranteed on 12 characters 12345/D24689
   Standard_Integer num = 0;
   if (!ent.IsNull())
   {
@@ -239,7 +239,7 @@ void IGESData_IGESDumper::Dump(const Handle(IGESData_IGESEntity)& ent,
     }
   }
 
-  //   Donnees attachees : Properties, Associativities, et Sharings
+  //   Attached data : Properties, Associativities, and Sharings
   if (att < 0)
     return;
   Interface_EntityIterator iter   = ent->Properties();

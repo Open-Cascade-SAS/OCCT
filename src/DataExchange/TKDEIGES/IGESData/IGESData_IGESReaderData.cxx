@@ -108,7 +108,7 @@ void IGESData_IGESReaderData::SetDirPart(const Standard_Integer num,
           res2,
           label,
           subs);
-  ////  thedirs(num) = DP;  // verifier si utile
+  ////  thedirs(num) = DP;  // check if useful
   // InitParams(num); gka optimization memory
 }
 
@@ -181,18 +181,18 @@ Standard_Integer IGESData_IGESReaderData::FindNextRecord(const Standard_Integer 
     return (num + 1);
 }
 
-// Reference a d'autres entites : c'est a la fois tres simple et problematique
-// Tres simple : une reference a une entite est un numero (dans directory list)
-// qui vaut (2*N-1) si N est le rang vrai de l'entite
-// Problematique : ce numero est un Entier ... rien ne le distingue d'un autre
-// D'ou critere : tout entier impair inferieur a 2*NbRecords PEUT etre une
-// reference ... C'est a chaque entite de faire ensuite son tri ...
-//  Attention, une reference peut etre donnee en "Pointeur Negatif"
-// N.B.: DirPart non concernes (lecture specifique assuree par IGESEntity)
+// Reference to other entities: this is both very simple and problematic
+// Very simple: a reference to an entity is a number (in directory list)
+// which equals (2*N-1) if N is the true rank of the entity
+// Problematic: this number is an Integer... nothing distinguishes it from another
+// Hence criterion: any odd integer less than 2*NbRecords CAN be a
+// reference... It's up to each entity to sort it out afterwards...
+//  Attention, a reference can be given as "Negative Pointer"
+// N.B.: DirPart not concerned (specific reading ensured by IGESEntity)
 
 void IGESData_IGESReaderData::SetEntityNumbers()
 {
-  //   On essaie de se baser uniquement sur calcul de IGESRead
+  //   We try to rely solely on IGESRead calculation
   /*
     Standard_Integer nbd = thedirs.Upper();
     for (Standard_Integer i = 1; i <= nbd; i ++) {

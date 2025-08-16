@@ -244,7 +244,7 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnCopy(
     else
     {
       colorValues->SetValue(i, another->ColorValue(i));
-      ////          colorDefinitions->SetValue( i, NULL );    par defaut
+      ////          colorDefinitions->SetValue( i, NULL );    by default
     }
 
     if (another->IsFontDefinition(i))
@@ -256,7 +256,7 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnCopy(
     else
     {
       lineFontValues->SetValue(i, another->LineFontValue(i));
-      ////          lineFontDefinitions->SetValue( i, NULL );  par defaut
+      ////          lineFontDefinitions->SetValue( i, NULL );  by default
     }
 
     lineWeights->SetValue(i, another->LineWeightItem(i));

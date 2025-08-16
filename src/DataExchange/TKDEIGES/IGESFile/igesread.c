@@ -13,7 +13,7 @@
  commercial license or contractual agreement.
 */
 
-/*  Regroupement des sources "C" pour compilation   */ 
+/*  Grouping of "C" sources for compilation   */ 
 #include <stdio.h>
 #include "igesread.h"
 #include <OSD_OpenFile.hxx>
@@ -24,7 +24,7 @@ void IGESFile_Check21 (int mode,char * code, int num, char * str);
 void IGESFile_Check3 (int mode,char * code);
 void IGESFile_Check2 (int mode,char * code, int num, char * str);
 
-/*  #include "structiges.c"    ...  fait par analiges qui en a l'usage  ...  */
+/*  #include "structiges.c"    ...  done by analiges which uses it  ...  */
 void iges_initfile();
 int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes);
 void iges_newparam(int typarg,int longval, char *parval);
@@ -34,12 +34,12 @@ void iges_Psect(int numsec,char ligne[80]);
 
 
 
-/*  Routine de lecture generale d'un fichier IGES
-    Assure l'enchainement des appels necessaires
-    Il en resulte un ensemble de donnees (struct C) interrogeables par
-    routines ad hoc  (cf igesread.h qui les recapitule pour appel par C++)
+/*  General reading routine for an IGES file
+    Ensures the chaining of necessary calls
+    Results in a set of data (struct C) queryable by
+    ad hoc routines (see igesread.h which summarizes them for C++ call)
 
-    Retourne : 0 si OK, 1 si fichier pas pu etre ouvert
+    Returns: 0 if OK, 1 if file could not be opened
   */
 
 
@@ -64,7 +64,7 @@ int igesread (char* nomfic, int lesect[6], int modefnes)
   lefic = stdin; i0 = numsec = 0;  numl = 0;
   if (nomfic[0] != '\0') 
     lefic = OSD_OpenFile(nomfic,"r");
-  if (lefic == NULL) return -1;    /*  fichier pas pu etre ouvert  */
+  if (lefic == NULL) return -1;    /*  file could not be opened  */
   for (i = 1; i < 6; i++) lesect[i] = 0;
   for (j = 0; j < 100; j++) ligne[j] = 0;
   for(;;) {
@@ -102,7 +102,7 @@ int igesread (char* nomfic, int lesect[6], int modefnes)
     if (i == 2) {                                   /* Header (Global sect) */
       iges_setglobal();
       for (;;) {
-        if (lesect[i] == 1) {    /* Separation specifique */
+        if (lesect[i] == 1) {    /* Specific separation */
           int n0 = 0;
           if (ligne[0] != ',') {  c_separ = ligne[2]; n0 = 3;  }
           if (ligne[n0+1] != c_separ) { c_fin = ligne[n0+3]; }
@@ -112,7 +112,7 @@ int igesread (char* nomfic, int lesect[6], int modefnes)
       }
     }
     if (i == 3) iges_Dsect(&Dstat,numsec,ligne);    /* Directory  (Dsect) */
-    if (i == 4) {                                   /* Parametres (Psect) */
+    if (i == 4) {                                   /* Parameters (Psect) */
       iges_Psect(numsec,ligne);
       for (;;) {
         iges_param(&Pstat,ligne,c_separ,c_fin,64);

@@ -177,7 +177,7 @@ Standard_Boolean IGESDimen_ToolNewDimensionedGeometry::OwnCorrect(
   }
   if (ent->NbDimensions() == 1)
     return res;
-  //   Forcer NbDimensions = 1 -> reconstruire
+  //   Force NbDimensions = 1 -> reconstruct
   Standard_Integer                     nb              = ent->NbGeometries();
   Handle(IGESData_HArray1OfIGESEntity) tempGeomEnts    = new IGESData_HArray1OfIGESEntity(1, nb);
   Handle(TColStd_HArray1OfInteger)     tempDimLocFlags = new TColStd_HArray1OfInteger(1, nb);

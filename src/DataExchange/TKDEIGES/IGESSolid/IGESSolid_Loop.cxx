@@ -102,13 +102,13 @@ Standard_Boolean IGESSolid_Loop::IsIsoparametric(const Standard_Integer EdgeInde
   if (!theIsoparametricFlags->Value(EdgeIndex).IsNull())
     return (theIsoparametricFlags->Value(EdgeIndex)->Value(CurveIndex) != 0);
   else
-    return Standard_False; // faut bien dire qq chose
+    return Standard_False; // must say something
 }
 
 Handle(IGESData_IGESEntity) IGESSolid_Loop::ParametricCurve(const Standard_Integer EdgeIndex,
                                                             const Standard_Integer CurveIndex) const
 {
-  Handle(IGESData_IGESEntity) acurve; // par defaut sera nulle
+  Handle(IGESData_IGESEntity) acurve; // by default will be null
   if (!theCurves->Value(EdgeIndex).IsNull())
     acurve = theCurves->Value(EdgeIndex)->Value(CurveIndex);
   return acurve;

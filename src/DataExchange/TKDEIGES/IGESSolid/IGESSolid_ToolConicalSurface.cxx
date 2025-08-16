@@ -78,7 +78,7 @@ void IGESSolid_ToolConicalSurface::WriteOwnParams(const Handle(IGESSolid_Conical
   IW.Send(ent->Radius());
   IW.Send(ent->SemiAngle());
   if (ent->IsParametrised())
-    IW.Send(ent->ReferenceDir()); // cf FormNumber
+    IW.Send(ent->ReferenceDir()); // see FormNumber
 }
 
 void IGESSolid_ToolConicalSurface::OwnShared(const Handle(IGESSolid_ConicalSurface)& ent,

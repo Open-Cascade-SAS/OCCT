@@ -13,9 +13,9 @@
 
 #include <IGESData_DefSwitch.hxx>
 
-//  DefSwitch : represente une definition, soit vide (-> valeur = 0),
-//  soit comme rang dans une table (-> valeur > 0 ce rang),
-//  soit comme reference (-> valeur < 0), la reference elle-meme est ailleurs
+//  DefSwitch : represents a definition, either empty (-> value = 0),
+//  or as rank in a table (-> value > 0 this rank),
+//  or as reference (-> value < 0), the reference itself is elsewhere
 
 //=================================================================================================
 

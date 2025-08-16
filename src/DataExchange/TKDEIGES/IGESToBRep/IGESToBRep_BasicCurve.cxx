@@ -460,7 +460,7 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferConicArc(const Handle(IGESGeom
       SendWarning(st, msg1160);
     }
     else if (t1 > t2)
-      res = new Geom_TrimmedCurve(res, t2, t1); // inversion des parametres.
+      res = new Geom_TrimmedCurve(res, t2, t1); // parameter inversion.
     else
       res = new Geom_TrimmedCurve(res, t1, t2);
   }
@@ -595,7 +595,7 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dConicArc(const Handle(IGES
       SendWarning(st, msg1160);
     }
     else if (t1 > t2)
-      res = new Geom2d_TrimmedCurve(res, t2, t1); // inversion des parametres.
+      res = new Geom2d_TrimmedCurve(res, t2, t1); // parameter inversion.
     else
       res = new Geom2d_TrimmedCurve(res, t1, t2);
     return res;
@@ -656,7 +656,7 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dConicArc(const Handle(IGES
       SendWarning(st, msg1160);
     }
     else if (t1 > t2)
-      res = new Geom2d_TrimmedCurve(res, t2, t1); // inversion des parametres.
+      res = new Geom2d_TrimmedCurve(res, t2, t1); // parameter inversion.
     else
       res = new Geom2d_TrimmedCurve(res, t1, t2);
   }
@@ -1028,7 +1028,7 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBSplineCurve(
     SumOfMult += aMult;
   }
 
-  // Mise a jour du tableau des poles lors de la correction de la multiplicite
+  // Update of the poles array during multiplicity correction
   TColgp_Array1OfPnt        Poles(1, newNbPoles);
   TColStd_SequenceOfInteger PoleInd;
 
@@ -1111,7 +1111,7 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBSplineCurve(
       SendWarning(start, msg1220);
       // Rational curve is polynomial
     }
-    // Mise a jour du tableau des Weight lors de la correction de la multiplicite
+    // Update of the Weight array during multiplicity correction
     if (newNbPoles < NbPoles)
     {
       Standard_Integer indj = 1;
@@ -1282,7 +1282,7 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dBSplineCurve(
 
   res = BSplineC;
 
-  // cas ou la Bspline est trimmee.
+  // case where the Bspline is trimmed.
   if (IsTrimmed)
   {
     Handle(Geom2d_TrimmedCurve) TC = new Geom2d_TrimmedCurve(BSplineC, Deb, Fin, Standard_True);
@@ -1317,8 +1317,8 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferLine(const Handle(IGESGeom_Lin
     Pe = start->EndPoint();
   }
 
-  // modif du 15/10/97  : test moins severe
-  // beaucoup de points confondus a GetEpsGeom()*GetUnitFactor()
+  // modification of 15/10/97: less severe test
+  // many points confused at GetEpsGeom()*GetUnitFactor()
   if (!Ps.IsEqual(Pe, Precision::Confusion()))
   { //: l3 abv 11 Jan 99: GetEpsGeom()*GetUnitFactor()/10.)) {
     gp_Lin            line(Ps, gp_Dir(gp_Vec(Ps, Pe)));

@@ -116,5 +116,5 @@ Standard_Boolean IGESSelect_SignStatus::Matches(const Handle(Standard_Transient)
         return Standard_False;
     }
   }
-  return exact; // un brin de reflexion pour arriver
+  return exact; // a bit of reflection to arrive
 }

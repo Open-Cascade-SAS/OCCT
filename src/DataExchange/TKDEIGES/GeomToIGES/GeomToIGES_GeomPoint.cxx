@@ -12,8 +12,8 @@
 // commercial license or contractual agreement.
 
 // modif du 14/09/95 mjm
-// prise en compte de l'unite choisi par l'utilisateur
-// pour l'ecriture du fichier IGES.
+// taking into account the unit chosen by the user
+// for writing the IGES file.
 
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Point.hxx>
@@ -41,7 +41,7 @@ GeomToIGES_GeomPoint::GeomToIGES_GeomPoint()
 }
 
 //=============================================================================
-// Transfer de Point de Geom vers IGES
+// Transfer of Point from Geom to IGES
 // TranferPoint
 //=============================================================================
 
@@ -61,7 +61,7 @@ Handle(IGESGeom_Point) GeomToIGES_GeomPoint::TransferPoint(const Handle(Geom_Poi
 }
 
 //=============================================================================
-// Transfer de Point de Geom vers IGES
+// Transfer of Point from Geom to IGES
 // TranferPoint
 //=============================================================================
 

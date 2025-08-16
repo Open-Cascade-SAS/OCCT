@@ -62,7 +62,7 @@ void IGESGraph_ToolColor::WriteOwnParams(const Handle(IGESGraph_Color)& ent,
   IW.Send(Red);
   IW.Send(Green);
   IW.Send(Blue);
-  //  ATTENTION  place a reserver (Null) silya des pointeurs additionnels
+  //  WARNING  place to reserve (Null) if there are additional pointers
   if (ent->HasColorName())
     IW.Send(ent->ColorName());
   else

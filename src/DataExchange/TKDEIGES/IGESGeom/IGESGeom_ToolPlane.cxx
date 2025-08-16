@@ -99,7 +99,7 @@ void IGESGeom_ToolPlane::ReadOwnParams(const Handle(IGESGeom_Plane)&          en
     }
   } // szv#4:S4163:12Mar99 `st=` not needed
     // st = PR.ReadEntity(IR, PR.Current(), "Bounding Curve", aCurve,Standard_True);
-  //  en principe exige si FormNumber != 0 ... cf OwnCheck (Load accepte)
+  //  in principle required if FormNumber != 0 ... see OwnCheck (Load accepts)
 
   if (PR.IsParamDefined(PR.CurrentNumber()))
   {
@@ -219,11 +219,11 @@ void IGESGeom_ToolPlane::OwnCheck(const Handle(IGESGeom_Plane)& ent,
     ach->SendFail(Msg137);
   }
   // These messages are transferred in the translation procedure
-  //  if ( (A*A + B*B + C*C) < eps)    //  pas nul !
+  //  if ( (A*A + B*B + C*C) < eps)    //  not null !
   //    ach.SendFail("Incorrect Coefficients for the Plane");
   if (!ent->HasBoundingCurve())
     return;
-  //  Symbol : verifie si Size defini > 0 (sinon, n a pas de signification)
+  //  Symbol : check if Size defined > 0 (otherwise, has no meaning)
   /*  Standard_Real ec = 0.;
     if (ent->SymbolSize() > 0.) ec = A*ent->SymbolAttach().X() + B*ent->SymbolAttach().Y() +
         C * ent->SymbolAttach().Z() - D;

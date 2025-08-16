@@ -947,8 +947,8 @@ TopoDS_Shape IGESToBRep_TopoCurve::TransferTopoBasicCurve(const Handle(IGESData_
     return myshape;
   }
 
-  // si la courbe est une BSpline de degre 1, et si l`utilisateur
-  // le souhaite, on approxime
+  // if the curve is a BSpline of degree 1, and if the user
+  // wishes it, we approximate
   TheCurves.Clear();
   if ((C->IsKind(STANDARD_TYPE(Geom_BSplineCurve))) && GetModeApprox())
   {
@@ -1062,7 +1062,7 @@ TopoDS_Shape IGESToBRep_TopoCurve::TransferTopoBasicCurve(const Handle(IGESData_
   // 15.03.2011 emv for OCC22294 end
 
   // debug mjm du 26/07/96 en attendant developpement meilleur
-  // sur traitement des Wire et non des Edge dans les programmes appelant
+  // on Wire processing and not Edge in calling programs
 
   if (sewd->NbEdges() != 1)
   {
@@ -1243,7 +1243,7 @@ TopoDS_Shape IGESToBRep_TopoCurve::Transfer2dTopoBasicCurve(
   //  B.UpdateVertex (V2, epsgeom);
 
   // debug mjm du 26/07/96 en attendant developpement meilleur
-  // sur traitement des Wire et non des Edge dans les programmes appelant
+  // on Wire processing and not Edge in calling programs
 
   if (sewd->NbEdges() != 1)
   {

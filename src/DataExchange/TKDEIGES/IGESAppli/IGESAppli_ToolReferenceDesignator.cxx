@@ -89,7 +89,7 @@ Standard_Boolean IGESAppli_ToolReferenceDesignator::OwnCorrect(
     ent->InitLevel(nulevel, 0);
     res = Standard_True;
   }
-  return res; // + RAZ level selon subordibate
+  return res; // + RAZ level according to subordinate
 }
 
 IGESData_DirChecker IGESAppli_ToolReferenceDesignator::DirChecker(

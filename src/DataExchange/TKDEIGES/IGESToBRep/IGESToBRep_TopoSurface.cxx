@@ -753,7 +753,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
   if (IsFullAngle)
     deltaAngle = 2. * M_PI; // ** CKY 18-SEP-1996
   // il faudra translater les courbes 2d de startAngle pour
-  // etre en phase IGES et BRep
+  // be in phase IGES and BRep
   startLoc.SetRotation(revolAxis, startAngle);
   generatrix.Move(startLoc);
 
@@ -1475,8 +1475,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlane(const Handle(IGESGeom_Plane)&
   gp_Pln  pln;
   gp_Trsf trsf;
   res = TransferPlaneParts(st, pln, trsf, Standard_True);
-  //   res contient (en principe ...) une Face avec eventuellement un Wire
-  //   il reste a la mettre en position
+  //   res contains (in principle ...) a Face with possibly a Wire
+  //   it remains to position it
   if (trsf.Form() != gp_Identity)
   {
     TopLoc_Location loc(trsf);
@@ -1518,7 +1518,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPerforate(const Handle(IGESBasic_Si
     return res;
   }
   res = TransferPlaneParts(p0, pln, trsf, Standard_True);
-  // res demarre avec la face et son contour externe
+  // res starts with the face and its external contour
   Standard_Integer nb = st->NbChildren();
   for (Standard_Integer i = 1; i <= nb; i++)
   {

@@ -99,9 +99,9 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const Handle(IGESDefs_TabularData)&
     valuesInd->SetValue(i, tarr);
   }
   // ??  for (i=1; i<=nbDeps; i++) {  }
-  //  Dependents : definition pas limpide, on accumule tout sur un seul
-  //  HArray1OfReal, mis en 1re position du HArray1OfHArray1OfReal
-  //  On y met tous les flottants qui restent
+  //  Dependents : definition not clear, we accumulate everything on a single
+  //  HArray1OfReal, put in 1st position of the HArray1OfHArray1OfReal
+  //  We put all the remaining floats there
   Standard_Integer curnum = PR.CurrentNumber();
   Standard_Integer nbpars = PR.NbParams();
   Standard_Integer nbd    = 0;
@@ -135,7 +135,7 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const Handle(IGESDefs_TabularData)&
       PR.SetCurrentNumber (curnum+1);
     }  */
   PR.AddWarning("Don't know exactly how to read dependent values ...");
-  //  ??  a eclaircir
+  //  ??  to clarify
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(nbProps, propType, typesInd, nbValuesInd, valuesInd, valuesDep);
 }

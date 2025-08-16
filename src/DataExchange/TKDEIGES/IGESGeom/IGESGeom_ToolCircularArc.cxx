@@ -120,7 +120,7 @@ void IGESGeom_ToolCircularArc::OwnCheck(const Handle(IGESGeom_CircularArc)& /*en
                                         Handle(Interface_Check)& /*ach*/) const
 {
   /*
-    //Standard_Real eps  = 1.E-04;    // Tolerance des tests ?? //szv#4:S4163:12Mar99 not needed
+    //Standard_Real eps  = 1.E-04;    // Test tolerance ?? //szv#4:S4163:12Mar99 not needed
 
     Standard_Real Rad1 = Sqrt(Square(ent->StartPoint().X() - ent->Center().X()) +
                   Square(ent->StartPoint().Y() - ent->Center().Y()));

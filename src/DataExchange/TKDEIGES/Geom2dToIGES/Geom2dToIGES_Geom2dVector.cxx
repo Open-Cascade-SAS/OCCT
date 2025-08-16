@@ -40,7 +40,7 @@ Geom2dToIGES_Geom2dVector::Geom2dToIGES_Geom2dVector(const Geom2dToIGES_Geom2dEn
 }
 
 //=============================================================================
-// Transfer des Entites Vector de Geom2d vers IGES
+// Transfer of Vector Entities from Geom2d to IGES
 // Transfer2dVector
 //=============================================================================
 
@@ -68,7 +68,7 @@ Handle(IGESGeom_Direction) Geom2dToIGES_Geom2dVector::Transfer2dVector(
 }
 
 //=============================================================================
-// Transfer des Entites VectorWithMagnitude de Geom2d vers IGES
+// Transfer of VectorWithMagnitude Entities from Geom2d to IGES
 // Transfer2dVector
 //=============================================================================
 
@@ -89,7 +89,7 @@ Handle(IGESGeom_Direction) Geom2dToIGES_Geom2dVector::Transfer2dVector(
 }
 
 //=============================================================================
-// Transfer des Entites Direction de Geom2d vers IGES
+// Transfer of Direction Entities from Geom2d to IGES
 // Transfer2dVector
 //=============================================================================
 

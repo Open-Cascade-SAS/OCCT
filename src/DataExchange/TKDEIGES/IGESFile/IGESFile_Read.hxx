@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//  Include a utiliser pour appeler IGESFile_Read
+//  Include to use for calling IGESFile_Read
 
 #ifndef IGESFile_Read_HeaderFile
 #define IGESFile_Read_HeaderFile

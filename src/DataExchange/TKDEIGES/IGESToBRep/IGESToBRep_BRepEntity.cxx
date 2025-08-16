@@ -224,8 +224,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge(const Handle(IGESSolid_EdgeList
             Standard_Real      first, last;
             Handle(Geom_Curve) Crv = BRep_Tool::Curve(edge, loc, first, last);
             Handle(Geom_Curve) newC3d;
-            // dams le cas d`une conique, il faut reverser
-            // sens de parcours IGES inverse sens de parcours CASCADE.
+            // in the case of a conic, it is necessary to reverse
+            // IGES direction of travel inverse to CASCADE direction of travel.
             if (Crv->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
             {
               DeclareAndCast(Geom_TrimmedCurve, acurve, Crv);
@@ -258,7 +258,7 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge(const Handle(IGESSolid_EdgeList
               // clang-format on
               B.Range(E, first, last);
             }
-            // modif mjm du 13/10/97 : Reverse de l`edge ?
+            // modification mjm of 13/10/97 : Reverse the edge?
             else
             {
               E.Reverse();
@@ -387,7 +387,7 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const Handle(IGESSolid_Loop)& s
         if (!orientation)
           curve3d->Reverse();
 
-        //  traitement des courbes 2d.
+        //  processing of 2d curves.
         //  -------------------------
         Handle(IGESData_HArray1OfIGESEntity) Curves2d;
 
@@ -475,16 +475,16 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const Handle(IGESSolid_Face)& s
         || surf->IsKind(STANDARD_TYPE(IGESGeom_TrimmedSurface))
         || surf->IsKind(STANDARD_TYPE(IGESBasic_SingleParent)))
     {
-      Message_Msg Msg196("XSTEP_196"); //"pas de surface de base pour creer la face"
+      Message_Msg Msg196("XSTEP_196"); //"no base surface to create the face"
       SendWarning(start, Msg196);
-      // AddWarning(start, "pas de surface de base pour creer la face");
+      // AddWarning(start, "no base surface to create the face");
       TopoDS_Shape Sh;
       SetShapeResult(start, Sh);
     }
     else
     {
-      // si la surface IGES est une surface de revolution , il faudra
-      // inverser les courbes 2d (u,v) pour etre en accord avec le parametrage
+      // if the IGES surface is a surface of revolution, it will be necessary
+      // to invert the 2d curves (u,v) to be in agreement with the parametrization
       // BRep.
       gp_Trsf2d     trans;
       Standard_Real uFact;

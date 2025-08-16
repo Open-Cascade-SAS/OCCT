@@ -17,4 +17,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_NameEntity, IGESData_IGESEntity)
 
-// NameEntity sert a decrire des entites "propriete nom" (Value a definir)
+// NameEntity is used to describe entities "name property" (Value to be defined)

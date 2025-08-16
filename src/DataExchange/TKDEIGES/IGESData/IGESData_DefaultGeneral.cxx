@@ -58,14 +58,14 @@ IGESData_DirChecker IGESData_DefaultGeneral::DirChecker(const Standard_Integer,
 {
   IGESData_DirChecker dc;
   return dc;
-} // aucun critere specifique
+} // no specific criteria
 
 void IGESData_DefaultGeneral::OwnCheckCase(const Standard_Integer,
                                            const Handle(IGESData_IGESEntity)&,
                                            const Interface_ShareTool&,
                                            Handle(Interface_Check)&) const
 {
-} // aucun critere specifique
+} // no specific criteria
 
 Standard_Boolean IGESData_DefaultGeneral::NewVoid(const Standard_Integer      CN,
                                                   Handle(Standard_Transient)& entto) const
@@ -89,12 +89,12 @@ void IGESData_DefaultGeneral::OwnCopyCase(const Standard_Integer             CN,
     return;
   DeclareAndCast(IGESData_UndefinedEntity, enfr, entfrom);
   DeclareAndCast(IGESData_UndefinedEntity, ento, entto);
-  //  ShallowCopy aura passe DirStatus
-  //  transmettre les contenus des UndefinedContents
+  //  ShallowCopy will have passed DirStatus
+  //  transmit the contents of UndefinedContents
   Handle(Interface_UndefinedContent) cont = new Interface_UndefinedContent;
   cont->GetFromAnother(enfr->UndefinedContent(), TC);
   ento->SetNewContent(cont);
-  //  FreeFormat, encore des choses
+  //  FreeFormat, more things
   if (enfr->IsKind(STANDARD_TYPE(IGESData_FreeFormatEntity)))
   {
     DeclareAndCast(IGESData_FreeFormatEntity, enf, entfrom);

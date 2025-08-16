@@ -159,7 +159,7 @@ void IGESDraw_ToolViewsVisible::OwnCopy(const Handle(IGESDraw_ViewsVisible)& ano
     DeclareAndCast(IGESData_ViewKindEntity, tempView, TC.Transferred(another->ViewItem(I)));
     tempViewEntities->SetValue(I, tempView);
   }
-  //  Displayed -> Implied : mettre une liste vide par defaut
+  //  Displayed -> Implied : set an empty list by default
   Handle(IGESData_HArray1OfIGESEntity) tempDisplayEntities;
   ent->Init(tempViewEntities, tempDisplayEntities);
 }
@@ -253,7 +253,7 @@ void IGESDraw_ToolViewsVisible::OwnDump(const Handle(IGESDraw_ViewsVisible)& ent
 Standard_Boolean IGESDraw_ToolViewsVisible::OwnCorrect(
   const Handle(IGESDraw_ViewsVisible)& ent) const
 {
-  //  Les entites affichees doivent referencer <ent>. Elles ont priorite.
+  //  The displayed entities must reference <ent>. They have priority.
   Standard_Boolean                       res     = Standard_False;
   Standard_Integer                       nb      = ent->NbDisplayedEntities();
   const Handle(IGESData_ViewKindEntity)& entcomp = ent;

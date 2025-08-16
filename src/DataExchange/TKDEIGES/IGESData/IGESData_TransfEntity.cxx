@@ -17,5 +17,5 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_TransfEntity, IGESData_IGESEntity)
 
-// TransfEntity ne sert que pour controle de Type, et fourniture par Value
-// de la GTrsf correspondante
+// TransfEntity is only used for Type control, and providing by Value
+// the corresponding GTrsf

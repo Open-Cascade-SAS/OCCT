@@ -40,7 +40,7 @@
 
 // #define PATIENCELOG
 
-// Constructeur complet : taille OK, et se remplit depuis le modele en direct
+// Complete constructor: size OK, and fills from the model directly
 
 IGESData_IGESWriter::IGESData_IGESWriter(const Handle(IGESData_IGESModel)& amodel)
     : thedirs(0, amodel->NbEntities()),
@@ -54,10 +54,10 @@ IGESData_IGESWriter::IGESData_IGESWriter(const Handle(IGESData_IGESModel)& amode
   thesep   = ',';
   theendm  = ';';
   thepars  = new TColStd_HSequenceOfHAsciiString();
-  thepnum.SetValue(1, 1); // debut des parametres de la 1re entite
+  thepnum.SetValue(1, 1); // start of parameters for the 1st entity
   thesect = 0;
   thepnum.Init(0);
-  //  Format flottant : cf FloatWriter
+  //  Floating format : see FloatWriter
 }
 
 IGESData_IGESWriter::IGESData_IGESWriter()
@@ -76,7 +76,7 @@ IGESData_IGESWriter::IGESData_IGESWriter(const IGESData_IGESWriter&)
 {
 }
 
-//  ....                Controle d Envoi des Flottants                ....
+//  ....                Float Sending Control                ....
 
 Interface_FloatWriter& IGESData_IGESWriter::FloatWriter()
 {
@@ -109,7 +109,7 @@ void IGESData_IGESWriter::SendStartLine(const Standard_CString startline)
     thestar->Append(new TCollection_HAsciiString(startline));
     return;
   }
-  //  Trop longue : on passe par bouts
+  //  Too long: we go piece by piece
   char startchar       = startline[MaxcarsG];
   pstartline[MaxcarsG] = '\0';
   SendStartLine(startline);
@@ -141,7 +141,7 @@ void IGESData_IGESWriter::SendModel(const Handle(IGESData_Protocol)& protocol)
     if (i % 1000 == 1)
       std::cout << "*" << std::flush;
 #endif
-    //  Attention aux cas d erreur : contenu redefini
+    //  Watch out for error cases : redefined content
     if (themodel->IsRedefinedContent(i))
     {
       sout << " --  IGESWriter : Erroneous Entity N0." << i << "  --" << std::endl;
@@ -153,12 +153,12 @@ void IGESData_IGESWriter::SendModel(const Handle(IGESData_Protocol)& protocol)
     }
 
     DirPart(cnt);
-    OwnParams(ent); // preparation : porte sur le vrai <ent> ...
+    OwnParams(ent); // preparation: applies to the real <ent> ...
 
-    //  Envoi proprement dit des Parametres proprement definis
+    //  Actual sending of properly defined Parameters
     Handle(IGESData_ReadWriteModule) module;
     Standard_Integer                 CN;
-    //  Differents cas
+    //  Different cases
     if (lib.Select(cnt, module, CN))
       module->WriteOwnParams(CN, cnt, *this);
     else if (cnt->IsKind(STANDARD_TYPE(IGESData_UndefinedEntity)))
@@ -175,7 +175,7 @@ void IGESData_IGESWriter::SendModel(const Handle(IGESData_Protocol)& protocol)
     EndEntity();
   }
 #ifdef PATIENCELOG
-  std::cout << " Envoi des Entites Termine" << std::endl;
+  std::cout << " Entity Sending Finished" << std::endl;
 #endif
   SectionT();
 }
@@ -195,8 +195,8 @@ void IGESData_IGESWriter::SectionG(const IGESData_GlobalSection& header)
   thesep  = header.Separator();
   theendm = header.EndMark();
   thecurr.SetMax(MaxcarsG);
-  //   Important : les Parametres sont sortis sous leur forme definitive
-  //   (c-a-d Hollerith pour les Textes ...)
+  //   Important : Parameters are output in their final form
+  //   (i.e. Hollerith for Texts ...)
   Handle(Interface_ParamSet) gl = header.Params();
   Standard_Integer           nb = gl->NbParams();
   for (Standard_Integer i = 1; i <= nb; i++)
@@ -239,9 +239,9 @@ void IGESData_IGESWriter::DirPart(const Handle(IGESData_IGESEntity)& anent)
   if (nument == 0)
     return;
   IGESData_DirPart& DP = thedirs.ChangeValue(nument);
-  //                                            Remplissage du DirPart
+  //                                            Filling the DirPart
   v[0] = anent->TypeNumber();
-  v[1] = 0; // numero en section P : calcule ulterieurement
+  v[1] = 0; // number in section P: calculated later
   if (anent->HasStructure())
     v[2] = -themodel->DNum(anent->DirFieldEntity(3));
   else
@@ -294,7 +294,7 @@ void IGESData_IGESWriter::DirPart(const Handle(IGESData_IGESEntity)& anent)
   else
     v[14] = 0;
 
-  v[15] = 0; // nb lignes section P : calcule plus tard
+  v[15] = 0; // number of lines in section P: calculated later
   v[16] = anent->FormNumber();
 
   anent->CResValues(res1, res2);
@@ -378,7 +378,7 @@ void IGESData_IGESWriter::Associativities(const Handle(IGESData_IGESEntity)& ane
     throw Interface_InterfaceError("IGESWriter : Associativities");
   thestep = IGESData_ReadAssocs;
   if (!anent->ArePresentAssociativities() && !anent->ArePresentProperties())
-    return; // Properties suivent : ne pas les omettre !
+    return; // Properties follow : do not omit them !
   Send(anent->NbAssociativities());
   for (Interface_EntityIterator iter = anent->Associativities(); iter.More(); iter.Next())
   {
@@ -398,7 +398,7 @@ void IGESData_IGESWriter::EndEntity()
   thestep = IGESData_ReadEnd;
 }
 
-//  ....                    Alimentation des parametres                    ....
+//  ....                    Parameter feeding                    ....
 
 void IGESData_IGESWriter::AddString(const Handle(TCollection_HAsciiString)& val,
                                     const Standard_Integer                  more)
@@ -417,7 +417,7 @@ void IGESData_IGESWriter::AddString(const Standard_CString val,
     lnstr = (Standard_Integer)strlen(val);
   if (!thecurr.CanGet(lnstr + more + 1))
   {
-    // + 1 (18-SEP-1996) pour etre sur que le separateur n est pas en tete de ligne
+    // + 1 (18-SEP-1996) to be sure that the separator n is not at the head of line
     if (thesect < 3)
       thehead->Append(thecurr.Moved());
     else
@@ -425,7 +425,7 @@ void IGESData_IGESWriter::AddString(const Standard_CString val,
   }
   Standard_Integer maxcars = (thesect == 3 ? MaxcarsP : MaxcarsG);
   Standard_Integer n2      = 0;
-  // ..  pb de taille limite (30-DEC-1996)
+  // ..  size limit issue (30-DEC-1996)
   while (lnstr > maxcars)
   {
     thecurr.Add(&val[n2], lnstr);
@@ -441,7 +441,7 @@ void IGESData_IGESWriter::AddString(const Standard_CString val,
 
 void IGESData_IGESWriter::AddChar(const Standard_Character val, const Standard_Integer more)
 {
-  //   1 seul caractere : cas particulier simplifie
+  //   1 single character : simplified special case
   char text[2];
   text[0] = val;
   text[1] = '\0';
@@ -479,7 +479,7 @@ void IGESData_IGESWriter::SendBoolean(const Standard_Boolean val)
 
 void IGESData_IGESWriter::Send(const Standard_Real val)
 {
-  //    Valeur flottante, expurgee de "0000" qui trainent et de "E+00"
+  //    Floating value, purged of trailing "0000" and "E+00"
   char lval[24];
   AddChar(thesep);
   Standard_Integer lng = thefloatw.Write(val, lval);
@@ -508,7 +508,7 @@ void IGESData_IGESWriter::Send(const Handle(IGESData_IGESEntity)& val,
     num = themodel->DNum(val);
   if (negative)
     num = -num;
-  Send(num); // qui faut tout, une fois Entity convertie en Integer
+  Send(num); // which handles everything, once Entity converted to Integer
 }
 
 void IGESData_IGESWriter::Send(const gp_XY& val)
@@ -527,7 +527,7 @@ void IGESData_IGESWriter::Send(const gp_XYZ& val)
 void IGESData_IGESWriter::SendString(const Handle(TCollection_HAsciiString)& val)
 {
   AddChar(thesep);
-  AddString(val); // envoi en l etat
+  AddString(val); // send as is
 }
 
 //  ....                            Envoi final                            ....
@@ -559,12 +559,12 @@ static void writefnes(Standard_OStream& S, const Standard_CString ligne)
 
 Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
 {
-  //  ATTENTION MODEFNES : si themodew = 10 ... alors on ecrit du FNES
-  //  quesaco ? fnes = iges + xor sur les caracteres (150,151,152,153,150...)
-  //   avec en plus une ligne qcq en tete ...
-  //  donc tous les 4 car.s, on fait un tour de modulo. ainsi a 64 et a 72 ...
-  //  On a une mini-routine qui ecrit un morceau de texte "en fnes", et les
-  //  blancs qui sont optimises (quand meme ...)
+  //  WARNING MODEFNES : if themodew = 10 ... then we write FNES
+  //  what is it? fnes = iges + xor on characters (150,151,152,153,150...)
+  //   with additionally some line at the head ...
+  //  so every 4 chars, we do a modulo round. thus at 64 and at 72 ...
+  //  We have a mini-routine that writes a piece of text "in fnes", and the
+  //  blanks that are optimized (anyway ...)
 
   Standard_Boolean isGood = (S.good());
   Standard_Boolean fnes   = (themodew >= 10);
@@ -587,7 +587,7 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
 
   if (thesect != 4)
     throw Interface_InterfaceError("IGESWriter not ready for Print");
-  //  Start Section (assez simple, somme toute). Attention si commentaires
+  //  Start Section (quite simple, all in all). Watch out for comments
   Handle(TCollection_HAsciiString) line;
   Standard_Integer                 nbs = 1;
   if (thestar.IsNull())
@@ -629,7 +629,7 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
   std::cout << "Global Section : " << std::flush;
 #endif
   isGood = S.good();
-  //  Global Section  :  convertie dans <thehead>
+  //  Global Section  :  converted in <thehead>
   Standard_Integer nbg = thehead->Length();
   for (i = 1; i <= nbg && isGood; i++)
   {
@@ -686,8 +686,8 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
                             res2,
                             lab,
                             num);
-    v[1]  = thepnum.Value(i);                        // debut en P
-    v[15] = thepnum.Value(i + 1) - thepnum.Value(i); // nb de lignes en P
+    v[1]  = thepnum.Value(i);                        // start in P
+    v[15] = thepnum.Value(i + 1) - thepnum.Value(i); // nb of lines in P
     sprintf(ligne,
             "%8d%8d%8d%8d%8d%8d%8d%8d%2.2d%2.2d%2.2d%2.2dD%7.7d",
             v[0],
@@ -747,7 +747,7 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
       char finlin[32];
       sprintf(finlin, " %7.7dP%7.7d", 2 * i - 1, j);
       line = thepars->Value(j);
-      //      line->LeftJustify(MaxcarsP,' ');  remplace par plus economique ! :
+      //      line->LeftJustify(MaxcarsP,' ');  replaced by more economical ! :
 
       if (fnes)
         writefnes(S, line->ToCString());

@@ -21,8 +21,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_FreeFormatEntity, IGESData_UndefinedEntity)
 
-//  Donne un acces simple a la constitution d une UndefinedEntity :
-//  Methodes de UndefinedContent, + Type & Form, + AddEntities (little gadget)
+//  Provides simple access to the constitution of an UndefinedEntity :
+//  Methods of UndefinedContent, + Type & Form, + AddEntities (little gadget)
 IGESData_FreeFormatEntity::IGESData_FreeFormatEntity() {}
 
 void IGESData_FreeFormatEntity::SetTypeNumber(const Standard_Integer typenum)
@@ -140,7 +140,7 @@ void IGESData_FreeFormatEntity::ClearNegativePointers()
 
 void IGESData_FreeFormatEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
 {
-  //  Redefini de UndefinedEntity pour : NegativePointers
+  //  Redefined from UndefinedEntity for : NegativePointers
   Standard_Integer neg  = 0;
   Standard_Integer fneg = 0;
   if (!thenegptrs.IsNull())

@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESData_IGESModel, Interface_InterfaceModel)
 
 static Standard_CString voidline = "";
 
-// Routine interne utilisee pour VerifyCheck
+// Internal routine used for VerifyCheck
 void IGESData_VerifyDate(const Handle(TCollection_HAsciiString)& str,
                          Handle(Interface_Check)&                ach,
                          const Standard_CString                  mess);
@@ -396,7 +396,7 @@ void IGESData_IGESModel::VerifyCheck(Handle(Interface_Check)& ach) const
     ach->SendFail(Msg48);
   }
 
-  // ..  verifie-t-on UnitName en accord avec UnitFlag ?
+  // ..  should we verify UnitName in accordance with UnitFlag ?
   if (theheader.UnitName().IsNull())
   {
     // Sending of message : Unit Name parameter is undefined.
@@ -465,7 +465,7 @@ void IGESData_IGESModel::VerifyCheck(Handle(Interface_Check)& ach) const
     Message_Msg Msg52("XSTEP_52");
     ach->SendFail(Msg52);
   }
-  // ..  comment verifier les coordonnees max ?
+  // ..  how to verify the max coordinates ?
 
   // Sending of message : Version Flag parameter is incorrect.
   if (theheader.IGESVersion() < 1
@@ -506,7 +506,7 @@ void IGESData_VerifyDate(const Handle(TCollection_HAsciiString)& str,
   Message_Msg Msg57("XSTEP_57");
   // =====================================
 
-  //  Attention c est du Hollerith
+  //  Warning this is Hollerith format
   if (str.IsNull())
   {
     ach->SendFail(Msg57);
