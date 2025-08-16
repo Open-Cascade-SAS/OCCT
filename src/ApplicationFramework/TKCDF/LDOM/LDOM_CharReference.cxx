@@ -194,7 +194,7 @@ char* LDOM_CharReference::Encode(const char*            theSrc,
         *ptrDest++ = *ptrSrc;
       else if (aCode == CHAR_REF)
       { // character reference
-        sprintf(ptrDest, "&#x%02x;", iSrc);
+        Sprintf(ptrDest, "&#x%02x;", iSrc);
         ptrDest += 6;
       }
       else // predefined entity reference

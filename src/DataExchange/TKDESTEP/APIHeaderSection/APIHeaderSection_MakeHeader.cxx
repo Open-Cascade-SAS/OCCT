@@ -109,7 +109,7 @@ void APIHeaderSection_MakeHeader::Init(const Standard_CString nameval)
   fn->SetOrganization(org);
 
   char procver[80];
-  sprintf(procver, XSTEP_PROCESSOR_VERSION, "STEP");
+  Sprintf(procver, XSTEP_PROCESSOR_VERSION, "STEP");
   Handle(TCollection_HAsciiString) pv = new TCollection_HAsciiString(procver);
   // Handle(TCollection_HAsciiString) pv =
   // new TCollection_HAsciiString(XSTEP_VERSION);

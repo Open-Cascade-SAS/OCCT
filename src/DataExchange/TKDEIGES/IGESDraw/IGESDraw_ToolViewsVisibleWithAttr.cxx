@@ -360,7 +360,7 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnCheck(const Handle(IGESDraw_ViewsVisi
   if (!res)
     return;
   char mess[80];
-  sprintf(mess, "Mismatch for %d Entities displayed", res);
+  Sprintf(mess, "Mismatch for %d Entities displayed", res);
   ach->AddFail(mess, "Mismatch for %d Entities displayed");
 }
 

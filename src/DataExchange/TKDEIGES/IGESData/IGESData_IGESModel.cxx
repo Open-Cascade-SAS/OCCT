@@ -639,9 +639,9 @@ Handle(TCollection_HAsciiString) IGESData_IGESModel::StringLabel(
     char             text[20];
     Standard_Integer num = Number(ent);
     if (num > 0)
-      sprintf(text, "D%d", 2 * num - 1);
+      Sprintf(text, "D%d", 2 * num - 1);
     else
-      sprintf(text, "D0...");
+      Sprintf(text, "D0...");
     label = new TCollection_HAsciiString(text);
   }
   return label;

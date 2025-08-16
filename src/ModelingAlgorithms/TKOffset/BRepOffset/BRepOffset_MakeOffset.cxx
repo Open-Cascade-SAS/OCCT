@@ -143,7 +143,7 @@ static void DEBVerticesControl(const TopTools_IndexedMapOfShape& NewEdges,
   #ifdef DRAW
           if (AffichInt2d)
           {
-            sprintf(name, "VP_%d", NVP++);
+            Sprintf(name, "VP_%d", NVP++);
             DBRep::Set(name, it1LE.Value());
           }
   #endif
@@ -154,7 +154,7 @@ static void DEBVerticesControl(const TopTools_IndexedMapOfShape& NewEdges,
   #ifdef DRAW
           if (AffichInt2d)
           {
-            sprintf(name, "VM_%d", NVM++);
+            Sprintf(name, "VM_%d", NVM++);
             DBRep::Set(name, it1LE.Value());
           }
   #endif
@@ -164,7 +164,7 @@ static void DEBVerticesControl(const TopTools_IndexedMapOfShape& NewEdges,
   #ifdef DRAW
           if (AffichInt2d)
           {
-            sprintf(name, "VN_%d", NVN++);
+            Sprintf(name, "VN_%d", NVN++);
             DBRep::Set(name, it1LE.Value());
           }
   #endif
@@ -1557,7 +1557,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 #ifdef DRAW
           if (AffichInt2d)
           {
-            sprintf(name, "AF_%d", NbAF++);
+            Sprintf(name, "AF_%d", NbAF++);
             DBRep::Set(name, OFE);
           }
 #endif
@@ -1570,7 +1570,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 #ifdef DRAW
             if (AffichInt2d)
             {
-              sprintf(name, "AE_%d", NbAE++);
+              Sprintf(name, "AE_%d", NbAE++);
               DBRep::Set(name, COE);
               COES.Add(COE);
             }
@@ -1602,7 +1602,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 #ifdef DRAW
         if (AffichInt2d)
         {
-          sprintf(name, "AF_%d", NbAF++);
+          Sprintf(name, "AF_%d", NbAF++);
           DBRep::Set(name, OF);
         }
 #endif
@@ -1624,7 +1624,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 #ifdef DRAW
               if (AffichInt2d)
               {
-                sprintf(name, "AE_%d", NbAE++);
+                Sprintf(name, "AE_%d", NbAE++);
                 DBRep::Set(name, COE);
                 COES.Add(COE);
               }
@@ -1647,7 +1647,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 #ifdef DRAW
             if (AffichInt2d)
             {
-              sprintf(name, "AE_%d", NbAE++);
+              Sprintf(name, "AE_%d", NbAE++);
               DBRep::Set(name, OE);
               COES.Add(OE);
             }
@@ -1672,7 +1672,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 #ifdef DRAW
         if (AffichInt2d)
         {
-          sprintf(name, "AE_%d", NbAE++);
+          Sprintf(name, "AE_%d", NbAE++);
           DBRep::Set(name, COE);
           COES.Add(COE);
         }
@@ -1798,7 +1798,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 #ifdef DRAW
           if (AffichInt2d)
           {
-            sprintf(name, "AE_%d", NbAE++);
+            Sprintf(name, "AE_%d", NbAE++);
             DBRep::Set(name, COE);
             COES.Add(COE);
           }
@@ -1825,7 +1825,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 #ifdef DRAW
         if (AffichInt2d)
         {
-          sprintf(name, "AE_%d", NbAE++);
+          Sprintf(name, "AE_%d", NbAE++);
           DBRep::Set(name, OE);
           COES.Add(OE);
         }

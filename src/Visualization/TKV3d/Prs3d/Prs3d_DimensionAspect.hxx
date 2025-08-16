@@ -120,7 +120,7 @@ public:
   //! Returns arrow tail size.
   Standard_Real ArrowTailSize() const { return myArrowTailSize; }
 
-  //! Sets "sprintf"-syntax format for formatting dimension value labels.
+  //! Sets "Sprintf"-syntax format for formatting dimension value labels.
   void SetValueStringFormat(const TCollection_AsciiString& theFormat)
   {
     myValueStringFormat = theFormat;

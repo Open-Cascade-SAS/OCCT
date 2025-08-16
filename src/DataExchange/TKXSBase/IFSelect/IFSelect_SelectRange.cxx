@@ -104,13 +104,13 @@ TCollection_AsciiString IFSelect_SelectRange::ExtractLabel() const
   if (!theupper.IsNull())
     rankto = theupper->Value();
   if (rankfrom == rankto)
-    sprintf(lab, "Rank no %d", rankfrom);
+    Sprintf(lab, "Rank no %d", rankfrom);
   else if (rankfrom == 0)
-    sprintf(lab, "Until no %d", rankto);
+    Sprintf(lab, "Until no %d", rankto);
   else if (rankto == 0)
-    sprintf(lab, "From no %d", rankto);
+    Sprintf(lab, "From no %d", rankto);
   else
-    sprintf(lab, "From %d Until %d", rankfrom, rankto);
+    Sprintf(lab, "From %d Until %d", rankfrom, rankto);
 
   return TCollection_AsciiString(lab);
 }

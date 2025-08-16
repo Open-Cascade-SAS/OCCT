@@ -231,7 +231,7 @@ void IntCurveSurface_Polygon::Dump(void) const {
   static Standard_Integer Compteur=0;
   char tamp[100];
   Compteur++;
-  sprintf(tamp,"Poly%d",Compteur);
+  Sprintf(tamp,"Poly%d",Compteur);
   std::cout<<"  @@@@@@@@@@@ F i c h i e r   :   "<<tamp<<" @@@@@@@@@@"<<std::endl;
   FILE *fp;
   fp=fopen(tamp,"w");

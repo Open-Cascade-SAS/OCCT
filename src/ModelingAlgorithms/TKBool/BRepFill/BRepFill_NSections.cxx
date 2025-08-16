@@ -380,7 +380,7 @@ BRepFill_NSections::BRepFill_NSections(const TopTools_SequenceOfShape& S,
     {
       NBSECT++;
       char name[256];
-      sprintf(name, "WIRE_%d", NBSECT);
+      Sprintf(name, "WIRE_%d", NBSECT);
       DBRep::Set(name, TopoDS::Wire(S.Value(i)));
     }
   #endif
@@ -562,7 +562,7 @@ void BRepFill_NSections::Init(const TColStd_SequenceOfReal& P, const Standard_Bo
   if (Affich)
   {
     char* name = new char[100];
-    sprintf(name, "Ref_Surf");
+    Sprintf(name, "Ref_Surf");
     DrawTrSurf::Set(name, mySurface);
   }
 #endif

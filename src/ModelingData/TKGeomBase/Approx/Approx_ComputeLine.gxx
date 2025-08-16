@@ -99,7 +99,7 @@ static void DUMP(const AppParCurves_MultiCurve& C) {
     if (C.Dimension(i) == 3) {
       C.Curve(i, tabPoles);
       BSp = new Geom_BezierCurve(tabPoles);
-      sprintf(solname, "%s%i%s_%i", "c", i, "3d", nbappel);
+      Sprintf(solname, "%s%i%s_%i", "c", i, "3d", nbappel);
 #ifdef DRAW
       char* Temp = solname;
       DrawTrSurf::Set(Temp, BSp);
@@ -109,7 +109,7 @@ static void DUMP(const AppParCurves_MultiCurve& C) {
     else {
       C.Curve(i, tabPoles2d);
       BSp2d = new Geom2d_BezierCurve(tabPoles2d);
-      sprintf(solname, "%s%i%s_%i", "c", i, "2d", nbappel);
+      Sprintf(solname, "%s%i%s_%i", "c", i, "2d", nbappel);
 #ifdef DRAW
       char* Temp = solname;
       DrawTrSurf::Set(Temp, BSp2d);
@@ -165,7 +165,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
     theMultiCurve.Curve(1, aPoles);
 #ifdef DRAW
     Handle(Geom_Curve) theBezier = new Geom_BezierCurve(aPoles);
-    sprintf(name, "bc3d_%d_%d", indc, nbbc);
+    Sprintf(name, "bc3d_%d_%d", indc, nbbc);
     DrawTrSurf::Set(name, theBezier);
 #endif
     gp_Vec FirstVec, SecondVec;
@@ -213,7 +213,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
       {
         LineTool::Value(theLine, ipoint, tabP);
         gp_Pnt aPnt = tabP(1);
-        sprintf(name, "p%d", ipoint);
+        Sprintf(name, "p%d", ipoint);
         DrawTrSurf::Set(name, aPnt);
       }
 #endif
@@ -299,7 +299,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
     theMultiCurve.Curve(1, aPoles2d);
 #ifdef DRAW
     Handle(Geom2d_Curve) theBezier2d = new Geom2d_BezierCurve(aPoles2d);
-    sprintf(name, "bc2d_%d_%d", indc, nbbc);
+    Sprintf(name, "bc2d_%d_%d", indc, nbbc);
     DrawTrSurf::Set(name, theBezier2d);
 #endif
     const Standard_Real aSqNormToler = Epsilon(1.0)*Epsilon(1.0);
@@ -344,7 +344,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
       {
         LineTool::Value(theLine, ipoint, tabP2d);
         gp_Pnt2d aPnt2d = tabP2d(1);
-        sprintf(name, "p%d", ipoint);
+        Sprintf(name, "p%d", ipoint);
         DrawTrSurf::Set(name, aPnt2d);
       }
 #endif

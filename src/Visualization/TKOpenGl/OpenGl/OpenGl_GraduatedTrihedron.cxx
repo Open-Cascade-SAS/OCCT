@@ -528,7 +528,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(const Handle(OpenGl_Workspa
 
     for (Standard_Integer anIt = 0; anIt <= aCurAspect.TickmarksNumber(); ++anIt)
     {
-      sprintf(aTextValue, "%g", theGridAxes.Ticks[theIndex].GetData()[theIndex] + anIt * aStep);
+      Sprintf(aTextValue, "%g", theGridAxes.Ticks[theIndex].GetData()[theIndex] + anIt * aStep);
       OpenGl_Vec3 aPos(theGridAxes.Ticks[theIndex]
                        + anAxis.Direction * (Standard_ShortReal)(anIt * aStep)
                        + aDir * (Standard_ShortReal)(theDpix * anOffset));

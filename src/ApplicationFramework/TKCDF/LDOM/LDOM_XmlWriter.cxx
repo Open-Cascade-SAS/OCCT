@@ -425,7 +425,7 @@ void LDOM_XmlWriter::WriteAttribute(Standard_OStream& theOStream, const LDOM_Nod
       myABuffer    = new char[aLength + 1];
       myABufferLen = aLength;
     }
-    sprintf(myABuffer,
+    Sprintf(myABuffer,
             "%c%s%c%c%d%c",
             chSpace,
             aName,
@@ -461,7 +461,7 @@ void LDOM_XmlWriter::WriteAttribute(Standard_OStream& theOStream, const LDOM_Nod
       myABufferLen = aLength;
     }
 
-    sprintf(myABuffer,
+    Sprintf(myABuffer,
             "%c%s%c%c%s%c",
             chSpace,
             aName,

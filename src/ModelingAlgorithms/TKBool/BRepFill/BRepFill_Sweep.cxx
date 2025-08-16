@@ -798,11 +798,11 @@ static TopoDS_Edge BuildEdge(Handle(Geom_Curve)&   C3d,
   { // Error of construction !!
 #ifdef DRAW
     char name[100];
-    sprintf(name, "firstvertex_error");
+    Sprintf(name, "firstvertex_error");
     DBRep::Set(name, VF);
-    sprintf(name, "lastvertex_error");
+    Sprintf(name, "lastvertex_error");
     DBRep::Set(name, VL);
-    sprintf(name, "curve3d_error");
+    Sprintf(name, "curve3d_error");
     char* Temp = name;
     DrawTrSurf::Set(Temp, C3d);
     //    DrawTrSurf::Set(name, C3d);
@@ -1573,11 +1573,11 @@ static TopoDS_Edge BuildEdge(const Handle(Geom_Surface)& S,
     { // Erreur de construction !!
 #ifdef DRAW
       char name[100];
-      sprintf(name, "firstvertex_error");
+      Sprintf(name, "firstvertex_error");
       DBRep::Set(name, VFirst);
-      sprintf(name, "lastvertex_error");
+      Sprintf(name, "lastvertex_error");
       DBRep::Set(name, VLast);
-      sprintf(name, "curve3d_error");
+      Sprintf(name, "curve3d_error");
       char* Temp = name;
       DrawTrSurf::Set(Temp, Iso);
 //      DrawTrSurf::Set(name,Iso);
@@ -2129,11 +2129,11 @@ Standard_Boolean BRepFill_Sweep::BuildWire(const BRepFill_TransitionStyle /*Tran
     { // Error of construction !!
 #ifdef DRAW
       char name[100];
-      sprintf(name, "firstvertex_error");
+      Sprintf(name, "firstvertex_error");
       DBRep::Set(name, myVEdges->Value(1, ipath));
-      sprintf(name, "lastvertex_error");
+      Sprintf(name, "lastvertex_error");
       DBRep::Set(name, myVEdges->Value(1, ipath + 1));
-      sprintf(name, "curve3d_error");
+      Sprintf(name, "curve3d_error");
       char* Temp = name;
       DrawTrSurf::Set(Temp, Iso);
       //       DrawTrSurf::Set(name,Iso);
@@ -2145,11 +2145,11 @@ Standard_Boolean BRepFill_Sweep::BuildWire(const BRepFill_TransitionStyle /*Tran
 #ifdef DRAW
     if (Affich)
     {
-      sprintf(name, "Surf_%d", ipath);
+      Sprintf(name, "Surf_%d", ipath);
       char* Temp = name;
       DrawTrSurf::Set(Temp, S);
       //      DrawTrSurf::Set(name, S);
-      sprintf(name, "Edge_%d", ipath);
+      Sprintf(name, "Edge_%d", ipath);
       DBRep::Set(name, E);
     }
 #endif
@@ -2292,7 +2292,7 @@ Standard_Boolean BRepFill_Sweep::BuildShell(const BRepFill_TransitionStyle /*Tra
 #ifdef DRAW
       if (Affich)
       {
-        sprintf(name, "Surf_%d_%d", isec, IPath);
+        Sprintf(name, "Surf_%d_%d", isec, IPath);
         char* Temp = name;
         DrawTrSurf::Set(Temp, TabS(isec, ipath));
       }
@@ -2869,7 +2869,7 @@ Standard_Boolean BRepFill_Sweep::BuildShell(const BRepFill_TransitionStyle /*Tra
     {
       for (isec = 1; isec <= NbLaw + 1; isec++)
       {
-        sprintf(name, "uedge_%d_%d", isec, IPath);
+        Sprintf(name, "uedge_%d_%d", isec, IPath);
         DBRep::Set(name, UEdge(isec, ipath));
       }
     }
@@ -2878,13 +2878,13 @@ Standard_Boolean BRepFill_Sweep::BuildShell(const BRepFill_TransitionStyle /*Tra
     {
       for (isec = 1; isec <= NbLaw; isec++)
       {
-        sprintf(name, "vedge_%d_%d", isec, IPath);
+        Sprintf(name, "vedge_%d_%d", isec, IPath);
         DBRep::Set(name, VEdge(isec, ipath));
       }
 
       for (isec = 1; isec <= NbLaw + 1; isec++)
       {
-        sprintf(name, "vertex_%d_%d", isec, IPath);
+        Sprintf(name, "vertex_%d_%d", isec, IPath);
         DBRep::Set(name, Vertex(isec, ipath));
       }
     }
@@ -3675,9 +3675,9 @@ Standard_Boolean BRepFill_Sweep::PerformCorner(const Standard_Integer           
       char name[100];
       DBRep::Set("TrimmedShell", TheShape);
       for (jj=1; jj <=myFaces->ColLength(); jj++){
-        sprintf(name,"Tfaces_%d_%d", jj, I1);
+        Sprintf(name,"Tfaces_%d_%d", jj, I1);
         DBRep::Set(name, myFaces->Value(jj, I1));
-        sprintf(name,"Tfaces_%d_%d", jj, I2);
+        Sprintf(name,"Tfaces_%d_%d", jj, I2);
         DBRep::Set(name, myFaces->Value(jj, I2));
       }
     }

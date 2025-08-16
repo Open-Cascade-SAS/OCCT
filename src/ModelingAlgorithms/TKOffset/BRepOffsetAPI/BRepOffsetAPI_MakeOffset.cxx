@@ -249,7 +249,7 @@ static void BuildDomains(TopoDS_Face&               myFace,
     {
       char name[32];
       ns++;
-      sprintf(name, "FR%d", ns);
+      Sprintf(name, "FR%d", ns);
       BRepTools::Write(FR.Current(), name);
     }
 #endif

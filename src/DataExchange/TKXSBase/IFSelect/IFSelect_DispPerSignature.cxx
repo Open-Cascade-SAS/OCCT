@@ -47,7 +47,7 @@ Standard_CString IFSelect_DispPerSignature::SignName() const
 TCollection_AsciiString IFSelect_DispPerSignature::Label() const
 {
   char lab[50];
-  sprintf(lab, "One File per Signature %s", SignName());
+  Sprintf(lab, "One File per Signature %s", SignName());
   return TCollection_AsciiString(lab);
 }
 

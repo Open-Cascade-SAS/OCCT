@@ -330,11 +330,11 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
 #ifdef IFV
   char  name[16];
   char* nm = &name[0];
-  sprintf(name, "C3D_%d", ++NbCalls);
+  Sprintf(name, "C3D_%d", ++NbCalls);
   DrawTrSurf::Set(nm, C3D);
-  sprintf(name, "PC1_%d", NbCalls);
+  Sprintf(name, "PC1_%d", NbCalls);
   DrawTrSurf::Set(nm, PC1);
-  sprintf(name, "PC2_%d", NbCalls);
+  Sprintf(name, "PC2_%d", NbCalls);
   DrawTrSurf::Set(nm, PC2);
 #endif
   //*/
@@ -515,13 +515,13 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
       iparmax = NbPol;
 
   #ifdef IFV
-      sprintf(name, "C3Dmod_%d", NbCalls);
+      Sprintf(name, "C3Dmod_%d", NbCalls);
       nm = &name[0];
       DrawTrSurf::Set(nm, C3D);
-      sprintf(name, "PC1mod_%d", NbCalls);
+      Sprintf(name, "PC1mod_%d", NbCalls);
       nm = &name[0];
       DrawTrSurf::Set(nm, PC1);
-      sprintf(name, "PC2mod_%d", NbCalls);
+      Sprintf(name, "PC2mod_%d", NbCalls);
       nm = &name[0];
       DrawTrSurf::Set(nm, PC2);
   #endif
@@ -743,18 +743,18 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
   }
 
 #ifdef IFV
-  sprintf(name, "C3Dnew_%d", NbCalls);
+  Sprintf(name, "C3Dnew_%d", NbCalls);
   nm = &name[0];
   DrawTrSurf::Set(nm, C3Dnew);
   if (CompPC1)
   {
-    sprintf(name, "PC1new_%d", NbCalls);
+    Sprintf(name, "PC1new_%d", NbCalls);
     nm = &name[0];
     DrawTrSurf::Set(nm, PC1new);
   }
   if (CompPC2)
   {
-    sprintf(name, "PC2new_%d", NbCalls);
+    Sprintf(name, "PC2new_%d", NbCalls);
     nm = &name[0];
     DrawTrSurf::Set(nm, PC2new);
   }

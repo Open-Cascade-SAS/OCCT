@@ -182,7 +182,7 @@ void TPrsStd_ConstraintTools::ComputeTextAndValue(const Handle(TDataXtd_Constrai
     outvalue = UnitsAPI::CurrentFromLS(val, "LENGTH");
   }
   char res[1000];
-  sprintf(res, "%g", outvalue);
+  Sprintf(res, "%g", outvalue);
   txt = TCollection_ExtendedString(res);
 
   if (VAL->IsCaptured())

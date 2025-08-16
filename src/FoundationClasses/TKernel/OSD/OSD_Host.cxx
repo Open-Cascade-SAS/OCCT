@@ -152,7 +152,7 @@ TCollection_AsciiString OSD_Host::InternetAddress()
   b = (unsigned char)internet_address.h_addr_list[0][1];
   c = (unsigned char)internet_address.h_addr_list[0][2];
   d = (unsigned char)internet_address.h_addr_list[0][3];
-  sprintf(buffer, "%d.%d.%d.%d", a, b, c, d);
+  Sprintf(buffer, "%d.%d.%d.%d", a, b, c, d);
   result = buffer;
   return (result);
 }

@@ -299,9 +299,9 @@ void StepData_StepWriter::SendEntity(const Standard_Integer num, const StepData_
   if (idnum == 0)
     idnum = num;
   if (thelabmode < 2 || idnum == idtrue)
-    sprintf(lident, "#%d = ", idnum); // skl 29.01.2003
+    Sprintf(lident, "#%d = ", idnum); // skl 29.01.2003
   else
-    sprintf(lident, "%d:#%d = ", idnum, idtrue); // skl 29.01.2003
+    Sprintf(lident, "%d:#%d = ", idnum, idtrue); // skl 29.01.2003
 
   //  SendIdent reused, lident has just been calculated
   thecurr.Clear();
@@ -444,7 +444,7 @@ void StepData_StepWriter::Indent(const Standard_Boolean onent)
 void StepData_StepWriter::SendIdent(const Standard_Integer ident)
 {
   char lident[12];
-  sprintf(lident, "#%d =", ident);
+  Sprintf(lident, "#%d =", ident);
   thecurr.Clear();
   thecurr.Add(lident);
   themult = Standard_False;
@@ -806,7 +806,7 @@ void StepData_StepWriter::Send(const Standard_Integer val)
 {
   char lval[12];
   AddParam();
-  sprintf(lval, "%d", val);
+  Sprintf(lval, "%d", val);
   AddString(lval, (Standard_Integer)strlen(lval));
 }
 
@@ -947,9 +947,9 @@ void StepData_StepWriter::Send(const Handle(Standard_Transient)& val)
     if (idnum == 0)
       idnum = num;
     if (thelabmode < 2 || idnum == idtrue)
-      sprintf(lident, "#%d", idnum);
+      Sprintf(lident, "#%d", idnum);
     else
-      sprintf(lident, "%d:#%d", idnum, idtrue);
+      Sprintf(lident, "%d:#%d", idnum, idtrue);
     AddParam();
     AddString(lident, (Standard_Integer)strlen(lident));
   }

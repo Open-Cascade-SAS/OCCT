@@ -58,18 +58,18 @@ public:
 
   //! Translates a message which contains one integer variable
   //! It is just a help which avoid the following :
-  //! char mess[100];  sprintf(mess,Interface_MSG("code"),ival);
+  //! char mess[100];  Sprintf(mess,Interface_MSG("code"),ival);
   //! then  AddFail(mess);
   //! replaced by  AddFail (Interface_MSG("code",ival));
   //!
-  //! The basic message is intended to be in  C-sprintf  format,
+  //! The basic message is intended to be in  C-Sprintf  format,
   //! with one %d form in it
   Standard_EXPORT Interface_MSG(const Standard_CString key, const Standard_Integer i1);
 
   //! Translates a message which contains two integer variables
   //! As for one integer, it is just a writing help
   //!
-  //! The basic message is intended to be in  C-sprintf  format
+  //! The basic message is intended to be in  C-Sprintf  format
   //! with two %d forms in it
   Standard_EXPORT Interface_MSG(const Standard_CString key,
                                 const Standard_Integer i1,
@@ -80,7 +80,7 @@ public:
   //! interval (see below, method Intervals)
   //! As for one integer, it is just a writing help
   //!
-  //! The basic message is intended to be in  C-sprintf  format
+  //! The basic message is intended to be in  C-Sprintf  format
   //! with one %f form (or equivalent : %e etc) in it
   Standard_EXPORT Interface_MSG(const Standard_CString key,
                                 const Standard_Real    r1,
@@ -89,7 +89,7 @@ public:
   //! Translates a message which contains one string variable
   //! As for one integer, it is just a writing help
   //!
-  //! The basic message is intended to be in  C-sprintf  format
+  //! The basic message is intended to be in  C-Sprintf  format
   //! with one %s form in it
   Standard_EXPORT Interface_MSG(const Standard_CString key, const Standard_CString str);
 
@@ -98,7 +98,7 @@ public:
   //! As for one integer, it is just a writing help
   //! Used for instance to say "Param n0.<ival> i.e. <str> is not.."
   //!
-  //! The basic message is intended to be in  C-sprintf  format
+  //! The basic message is intended to be in  C-Sprintf  format
   //! with one %d then one %s forms in it
   Standard_EXPORT Interface_MSG(const Standard_CString key,
                                 const Standard_Integer ival,

@@ -494,7 +494,7 @@ private:
   Graphic3d_Vec3d                  myColorHlsMin;     //!< HLS color corresponding to minimum value
   Graphic3d_Vec3d                  myColorHlsMax;     //!< HLS color corresponding to maximum value
   TCollection_ExtendedString       myTitle;           //!< optional title string     
-  TCollection_AsciiString          myFormat;          //!< sprintf() format for generating label from value
+  TCollection_AsciiString          myFormat;          //!< Sprintf() format for generating label from value
   Standard_Integer                 myNbIntervals;     //!< number of intervals
   Aspect_TypeOfColorScaleData      myColorType;       //!< color type
   Aspect_TypeOfColorScaleData      myLabelType;       //!< label type

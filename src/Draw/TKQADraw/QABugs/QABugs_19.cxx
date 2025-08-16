@@ -4045,10 +4045,10 @@ static Standard_Integer OCC26407(Draw_Interpretor& theDI,
   }
   DBRep::Set(theArgVec[1], face);
   char buf[256];
-  sprintf(buf, "isos %s 0", theArgVec[1]);
+  Sprintf(buf, "isos %s 0", theArgVec[1]);
   theDI.Eval(buf);
 
-  sprintf(buf, "triangles %s", theArgVec[1]);
+  Sprintf(buf, "triangles %s", theArgVec[1]);
   theDI.Eval(buf);
 
   theDI.Eval("smallview; fit");
@@ -4104,7 +4104,7 @@ static Standard_Integer OCC26485(Draw_Interpretor& theDI,
       if (aNormal.X() == 0 && aNormal.Y() == 0 && aNormal.Z() == 1)
       {
         char buf[256];
-        sprintf(buf, "fail_%d", i + 1);
+        Sprintf(buf, "fail_%d", i + 1);
         theDI << "Failed. Point " << buf << ": " << aPoint.X() << " " << aPoint.Y() << " "
               << aPoint.Z() << "\n";
 
@@ -4450,14 +4450,14 @@ Standard_Integer OCC26525(Draw_Interpretor& di, Standard_Integer n, const char**
   }
 
   aNbPoints = aHInter.NbPoints();
-  sprintf(buf, " Number of intersection points found: %d", aNbPoints);
+  Sprintf(buf, " Number of intersection points found: %d", aNbPoints);
   di << buf << "\n";
   for (i = 1; i <= aNbPoints; ++i)
   {
     const IntCurveSurface_IntersectionPoint& aIP = aHInter.Point(i);
     aIP.Values(aP, aU, aV, aT, aTC);
     //
-    sprintf(buf, "point %s_%d %lg %lg %lg  ", a[1], i, aP.X(), aP.Y(), aP.Z());
+    Sprintf(buf, "point %s_%d %lg %lg %lg  ", a[1], i, aP.X(), aP.Y(), aP.Z());
     di << buf << "\n";
   }
 
