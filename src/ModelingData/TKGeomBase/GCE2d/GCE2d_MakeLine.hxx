@@ -69,7 +69,7 @@ public:
   //! Exceptions StdFail_NotDone if no line is constructed.
   Standard_EXPORT const Handle(Geom2d_Line)& Value() const;
 
-  operator const Handle(Geom2d_Line) & () const { return Value(); }
+  operator const Handle(Geom2d_Line)&() const { return Value(); }
 
 private:
   Handle(Geom2d_Line) TheLine;

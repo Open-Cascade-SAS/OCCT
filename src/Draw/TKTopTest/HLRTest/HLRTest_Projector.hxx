@@ -27,10 +27,9 @@ DEFINE_STANDARD_HANDLE(HLRTest_Projector, Draw_Drawable3D)
 class HLRTest_Projector : public Draw_Drawable3D
 {
   DEFINE_STANDARD_RTTIEXT(HLRTest_Projector, Draw_Drawable3D)
-  Draw_Drawable3D_FACTORY public :
-
-      Standard_EXPORT
-      HLRTest_Projector(const HLRAlgo_Projector& P);
+  Draw_Drawable3D_FACTORY
+public:
+  Standard_EXPORT HLRTest_Projector(const HLRAlgo_Projector& P);
 
   const HLRAlgo_Projector& Projector() const { return myProjector; }
 

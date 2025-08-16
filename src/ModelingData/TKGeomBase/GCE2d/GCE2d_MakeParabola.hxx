@@ -100,7 +100,7 @@ public:
   //! Exceptions StdFail_NotDone if no parabola is constructed.
   Standard_EXPORT const Handle(Geom2d_Parabola)& Value() const;
 
-  operator const Handle(Geom2d_Parabola) & () const { return Value(); }
+  operator const Handle(Geom2d_Parabola)&() const { return Value(); }
 
 private:
   Handle(Geom2d_Parabola) TheParabola;

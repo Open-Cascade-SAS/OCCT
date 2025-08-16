@@ -47,7 +47,7 @@ public:
   //! Returns the constructed transformation.
   Standard_EXPORT const Handle(Geom_Transformation)& Value() const;
 
-  operator const Handle(Geom_Transformation) & () const { return Value(); }
+  operator const Handle(Geom_Transformation)&() const { return Value(); }
 
 protected:
 private:

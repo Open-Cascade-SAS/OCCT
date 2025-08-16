@@ -214,7 +214,7 @@ static Standard_Boolean IsValidSurfType(const TopoDS_Face& theFace)
   }
 */
 #ifdef OCCT_DEBUG
-    // ModDbgTools_Write(theFace, "Surf");
+  // ModDbgTools_Write(theFace, "Surf");
 #endif
   return Standard_False;
 }
