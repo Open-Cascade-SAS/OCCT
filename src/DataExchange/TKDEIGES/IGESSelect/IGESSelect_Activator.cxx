@@ -126,8 +126,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
                   << " l : summary list"
                   << " c : complete list per item (but not for remaining)\n"
                   << " r : same + complete remaining list\n"
-                  << "  on entire model. Add selection name to list on a part"
-                  << std::endl;
+                  << "  on entire model. Add selection name to list on a part" << std::endl;
         return (argc >= 0 ? IFSelect_RetError : IFSelect_RetVoid);
       }
       if (arg1[0] == 'l')
