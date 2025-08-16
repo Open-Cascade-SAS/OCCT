@@ -14,6 +14,9 @@
 // commercial license or contractual agreement.
 
 #include <LDOM_CharReference.hxx>
+
+#include <Standard_CString.hxx>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
