@@ -102,7 +102,7 @@ int  iges_lire (FILE* lefic, int *numsec, char line[100], int modefnes)
   if (line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
     return iges_lire(lefic,numsec,line,modefnes); /* 0 */
 
-  if (sscanf(&line[73],"%d",&result) != 0) {
+  if (sscanf(&line[73],"%d",&result) == 1) {
     *numsec = result;
     typesec = line[72];
     switch (typesec) {
@@ -146,7 +146,7 @@ int  iges_lire (FILE* lefic, int *numsec, char line[100], int modefnes)
   // find the number start
   while (line[i] >= '0' && line[i] <= '9' && i > 0)
     i--;
-  if (sscanf(&line[i + 1],"%d",&result) == 0)
+  if (sscanf(&line[i + 1],"%d",&result) != 1)
     return -1;
   *numsec = result;
   // find type of line
