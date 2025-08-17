@@ -71,7 +71,7 @@ extern "C"
 #endif
     ;
 
-  //! Equivalent of standard C function Sprintf() that always uses C locale
+  //! Equivalent of standard C function sprintf() that always uses C locale
   Standard_EXPORT int Sprintf(char* theBuffer, const char* theFormat, ...)
 #ifdef __GNUC__
     __attribute__((format(printf, 2, 3)))
