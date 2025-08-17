@@ -554,7 +554,9 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
     Standard_Integer nbp, i;
     Standard_Real    x, y, z;
     iFile >> nbp;
-    char dimen[3];
+    constexpr size_t aBufferSize = 3;
+    char dimen[aBufferSize];
+    iFile.width(aBufferSize);
     iFile >> dimen;
     if (!strcmp(dimen, "3d"))
     {
