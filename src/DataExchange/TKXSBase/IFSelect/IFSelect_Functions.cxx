@@ -3039,7 +3039,7 @@ Standard_Integer IFSelect_Functions::GiveEntityNumber(const Handle(IFSelect_Work
   if (!name || name[0] == '\0')
   {
     constexpr size_t aBufferSize = 80;
-    char ligne[aBufferSize];
+    char             ligne[aBufferSize];
     ligne[0] = '\0';
     std::cin.width(aBufferSize);
     std::cin >> ligne;

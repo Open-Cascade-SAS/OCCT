@@ -92,7 +92,7 @@ static Standard_Integer GiveEntityNumber(const Handle(XSControl_WorkSession)& WS
   if (!name || name[0] == '\0')
   {
     constexpr size_t aBufferSize = 80;
-    char ligne[aBufferSize];
+    char             ligne[aBufferSize];
     ligne[0] = '\0';
     std::cin.width(aBufferSize);
     std::cin >> ligne;
@@ -224,7 +224,7 @@ static Standard_Integer igesbrep(Draw_Interpretor& theDI,
 
       // amv 26.09.2003 : this is used to avoid error of enter's symbol
       constexpr size_t aBufferSize = 80;
-      char str[aBufferSize];
+      char             str[aBufferSize];
       std::cin.width(aBufferSize);
       std::cin >> str;
       modepri = Draw::Atoi(str);
@@ -272,7 +272,7 @@ static Standard_Integer igesbrep(Draw_Interpretor& theDI,
         answer = -1;
         // amv 26.09.2003
         constexpr size_t aBufferSize = 80;
-        char str_a[aBufferSize];
+        char             str_a[aBufferSize];
         std::cin.width(aBufferSize);
         std::cin >> str_a;
         answer = Draw::Atoi(str_a);
@@ -461,7 +461,7 @@ static Standard_Integer igesbrep(Draw_Interpretor& theDI,
           answer = -1;
           // anv 26.09.2003
           constexpr size_t aBufferSize = 80;
-          char str_answer[aBufferSize];
+          char             str_answer[aBufferSize];
           std::cin.width(aBufferSize);
           std::cin >> str_answer;
           answer = Draw::Atoi(str_answer);
