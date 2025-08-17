@@ -64,8 +64,8 @@ Standard_Boolean Transfer_ResultFromModel::Fill(const Handle(Transfer_TransientP
   themain->SetStart(ent);
   themain->SetBinder(binder);
   themain->Fill(TP);
-  //   Substitution de resultat pour la Shape (-> HShape) : pas ici, on est
-  //   dans le pk Transfer qui est general et ne sait pas ce qu est une Shape ...
+  //   Result substitution for the Shape (-> HShape): not here, we are
+  //   in the Transfer package which is general and doesn't know what a Shape is ...
   if (!TP->Model().IsNull())
     themodel = TP->Model();
   if (themodel.IsNull())

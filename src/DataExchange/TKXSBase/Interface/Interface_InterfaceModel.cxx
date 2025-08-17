@@ -34,12 +34,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_InterfaceModel, Standard_Transient)
 
-// Un Modele d`Interface est un ensemble ferme d`Entites d`interface : chacune
-// est dans un seul modele a la fois; elle y a un numero (Number) qui permet de
-// verifier qu`une entite est bien dans un seul modele, de definir des Map tres
-// performantes, de fournir un identifieur numerique
-// Il est a meme d`etre utilise dans des traitements de Graphe
-// STATICS : les TEMPLATES
+// An Interface Model is a closed set of interface Entities: each one
+// is in a single model at a time; it has a number (Number) which allows to
+// verify that an entity is indeed in a single model, to define very
+// efficient Maps, to provide a numerical identifier
+// It is able to be used in Graph processing
+// STATICS : the TEMPLATES
 static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> atemp;
 
 static const Handle(Standard_Type)& typerep()
@@ -65,9 +65,9 @@ Interface_InterfaceModel::Interface_InterfaceModel()
 
 //=================================================================================================
 
-void Interface_InterfaceModel::Destroy() // on fait un mimumum
+void Interface_InterfaceModel::Destroy() // we do a minimum
 {
-  //   Moins que Clear que, lui, est adapte a chaque norme
+  //   Less than Clear which, itself, is adapted to each standard
   ClearEntities();
   thecheckstx->Clear();
   thechecksem->Clear();
@@ -148,7 +148,7 @@ void Interface_InterfaceModel::ClearEntities()
   theentities.Clear();
 }
 
-//  ....                ACCES AUX ENTITES                ....
+//  ....                ENTITY ACCESS                ....
 
 //=================================================================================================
 
@@ -204,7 +204,7 @@ Standard_Integer Interface_InterfaceModel::DENumber
 }
 */
 
-//  ..                Acces Speciaux (Report, etc...)                ..
+//  ..                Special Access (Report, etc...)                ..
 
 //=================================================================================================
 
@@ -434,7 +434,7 @@ void Interface_InterfaceModel::FillSemanticChecks(const Interface_CheckIterator&
   {
     const Handle(Interface_Check)& ach = checks.Value();
     Standard_Integer               num = checks.Number();
-    //    global check : ok si MEME MODELE
+    //    global check : ok if SAME MODEL
     if (num == 0)
       thechecksem->GetMessages(ach);
     else
@@ -480,7 +480,7 @@ const Handle(Interface_Check)& Interface_InterfaceModel::Check(
   return rep->Check();
 }
 
-//  ....              Chargement des donnees du Modele                ....  //
+//  ....              Loading of Model data                ....  //
 
 //=================================================================================================
 
@@ -499,7 +499,7 @@ void Interface_InterfaceModel::AddEntity(const Handle(Standard_Transient)& anent
   // Standard_Integer newnum; svv #2
   if (!anentity->IsKind(typerep()))
     theentities.Add(anentity);
-  //  Report : Ajouter Concerned, mais noter presence Report et sa valeur
+  //  Report : Add Concerned, but note presence Report and its value
   else
   {
     Handle(Interface_ReportEntity) rep = Handle(Interface_ReportEntity)::DownCast(anentity);
@@ -511,8 +511,8 @@ void Interface_InterfaceModel::AddEntity(const Handle(Standard_Transient)& anent
   }
 }
 
-//  AddWithRefs itere sur les Entities referencees pour charger une Entite
-//  au complet, avec tout ce dont elle a besoin
+//  AddWithRefs iterates on referenced Entities to load an Entity
+//  completely, with everything it needs
 
 //=================================================================================================
 
@@ -569,13 +569,13 @@ void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& ane
   if (lib.Select(anent, module, CN))
   {
     module->FillSharedCase(CN, anent, iter);
-    //    FillShared tout court : supposerait que le modele soit deja pret
-    //    or justement, on est en train de le construire ...
+    //    FillShared simply : would suppose that the model is already ready
+    //    or precisely, we are in the process of building it ...
     module->ListImpliedCase(CN, anent, iter);
   }
   Standard_Integer lev1 = level - 1;
   if (lev1 == 0)
-    return; // level = 0 -> tous niveaux; sinon encore n-1
+    return; // level = 0 -> all levels; otherwise still n-1
   for (iter.Start(); iter.More(); iter.Next())
     AddWithRefs(iter.Value(), lib, lev1, listall);
 }
@@ -588,9 +588,9 @@ void Interface_InterfaceModel::ReplaceEntity(const Standard_Integer            n
   theentities.Substitute(nument, anent);
 }
 
-//  ReverseOrders permet de mieux controler la numeration des Entites :
-//  Souvent, les fichiers mettent les racines en fin, tandis que AddWithRefs
-//  les met en tete.
+//  ReverseOrders allows better control of Entity numbering :
+//  Often, files put the roots at the end, while AddWithRefs
+//  puts them at the head.
 
 //=================================================================================================
 
@@ -603,15 +603,15 @@ void Interface_InterfaceModel::ReverseOrders(const Standard_Integer after)
   Standard_Integer          i; // svv #1
   for (i = 1; i <= nb; i++)
     ents.SetValue(i, theentities.FindKey(i));
-  //    On va vider la Map, puis la recharger : dans l ordre jusqua after
-  //        en ordre inverse apres
+  //    We will empty the Map, then reload it : in order until after
+  //        in reverse order after
   theentities.Clear();
   Reservate(nb);
   for (i = 1; i <= after; i++)
     theentities.Add(ents(i)); // svv #2
   for (i = nb; i > after; i--)
     theentities.Add(ents(i));
-  //    Faudra aussi s occuper des Reports
+  //    Will also have to take care of the Reports
   for (i = nb; i > after; i--)
   {
     Standard_Integer           i2 = nb + after - i;
@@ -643,7 +643,7 @@ void Interface_InterfaceModel::ChangeOrder(
   if (nb < 2 || newnum >= nb || cnt <= 0)
     return;
   TColStd_Array1OfTransient ents(1, nb);
-  //  On va preparer le changement
+  //  We will prepare the change
   Standard_Integer minum = (oldnum > newnum ? newnum : oldnum);
   Standard_Integer mxnum = (oldnum < newnum ? newnum : oldnum);
   Standard_Integer kount = (oldnum > newnum ? cnt : -cnt);
@@ -682,8 +682,8 @@ void Interface_InterfaceModel::ChangeOrder(
   }
 }
 
-//  GetFromTransfer permet de recuperer un resultat prepare par ailleurs
-//  Le Modele demarre a zero. Les entites doivent etre libres (cf AddEntity)
+//  GetFromTransfer allows to recover a result prepared elsewhere
+//  The Model starts at zero. Entities must be free (cf AddEntity)
 
 //=================================================================================================
 
@@ -883,7 +883,7 @@ Standard_Integer Interface_InterfaceModel::NextNumberForLabel(const Standard_CSt
     }
   }
 
-  //   En "non exact", on admet de recevoir le numero entre 1 et n
+  //   In "non exact", we admit to receive the number between 1 and n
   if (exact)
     return 0;
   i = 0;

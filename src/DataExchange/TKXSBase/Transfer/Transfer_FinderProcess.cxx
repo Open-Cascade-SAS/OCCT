@@ -69,7 +69,7 @@ void Transfer_FinderProcess::PrintStats(const Standard_Integer mode, Standard_OS
 {
   S << "\n*******************************************************************\n";
   if (mode == 1)
-  { //  Statistiques de base
+  { //  Basic statistics
     S << "********                 Basic Statistics                  ********" << std::endl;
 
     Standard_Integer nbr = 0, nbe = 0, nbw = 0;

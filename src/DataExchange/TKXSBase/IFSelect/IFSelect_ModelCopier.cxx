@@ -47,7 +47,7 @@ void IFSelect_ModelCopier::SetShareOut(const Handle(IFSelect_ShareOut)& sho)
 }
 
 //  ########################################################################
-//  ########    OPERATIONS DE TRANSFERT GLOBAL (memorise ou non)    ########
+//  ########    GLOBAL TRANSFER OPERATIONS (memorized or not)    ########
 
 void IFSelect_ModelCopier::ClearResult()
 {
@@ -121,7 +121,7 @@ Standard_Boolean IFSelect_ModelCopier::ClearAppliedModifiers(const Standard_Inte
   return Standard_True;
 }
 
-//  ....    Copy : Opere les Transferts, les Memorise (pas d envoi fichier ici)
+//  ....    Copy : Performs Transfers, Memorizes them (no file sending here)
 
 Interface_CheckIterator IFSelect_ModelCopier::Copy(IFSelect_ShareOutResult&            eval,
                                                    const Handle(IFSelect_WorkLibrary)& WL,
@@ -131,7 +131,7 @@ Interface_CheckIterator IFSelect_ModelCopier::Copy(IFSelect_ShareOutResult&     
   return Copying(eval, WL, protocol, TC);
 }
 
-//  Copy Interne
+//  Internal Copy
 
 Interface_CheckIterator IFSelect_ModelCopier::Copying(IFSelect_ShareOutResult&            eval,
                                                       const Handle(IFSelect_WorkLibrary)& WL,
@@ -172,7 +172,7 @@ Interface_CheckIterator IFSelect_ModelCopier::Copying(IFSelect_ShareOutResult&  
   return checks;
 }
 
-//  Send a deux arguments : Envoi Fichier du Resultat deja memorise
+//  Send with two arguments : File Sending of Result already memorized
 
 Interface_CheckIterator IFSelect_ModelCopier::SendCopied(const Handle(IFSelect_WorkLibrary)& WL,
                                                          const Handle(Interface_Protocol)& protocol)
@@ -213,7 +213,7 @@ Interface_CheckIterator IFSelect_ModelCopier::SendCopied(const Handle(IFSelect_W
   return checks;
 }
 
-//  .... Send a 4 arguments : Calcul du Transfert et Envoi sur Fichier
+//  .... Send with 4 arguments : Transfer Calculation and File Sending
 
 Interface_CheckIterator IFSelect_ModelCopier::Send(IFSelect_ShareOutResult&            eval,
                                                    const Handle(IFSelect_WorkLibrary)& WL,
@@ -281,7 +281,7 @@ Interface_CheckIterator IFSelect_ModelCopier::Sending(IFSelect_ShareOutResult&  
   return checks;
 }
 
-//  .... SendAll : Donnees a tranferer dans G, aucun split, envoi sur fichier
+//  .... SendAll : Data to transfer in G, no split, file sending
 
 Interface_CheckIterator IFSelect_ModelCopier::SendAll(const Standard_CString              filename,
                                                       const Interface_Graph&              G,
@@ -329,8 +329,8 @@ Interface_CheckIterator IFSelect_ModelCopier::SendAll(const Standard_CString    
   return checks;
 }
 
-//  .... SendSelected : Donnees a tranferer dans G, filtrees par iter,
-//       aucun split, envoi sur fichier
+//  .... SendSelected : Data to transfer in G, filtered by iter,
+//       no split, file sending
 
 Interface_CheckIterator IFSelect_ModelCopier::SendSelected(
   const Standard_CString              filename,
@@ -347,9 +347,9 @@ Interface_CheckIterator IFSelect_ModelCopier::SendSelected(
     return checks;
   Handle(Interface_InterfaceModel) newmod = original->NewEmptyModel();
   Interface_CopyTool               TC(original, protocol);
-  TC.FillModel(newmod); // pour Header ...
+  TC.FillModel(newmod); // for Header ...
 
-  //  Pas de copie : AddWithRefs plus declaration de Bind
+  //  No copy : AddWithRefs plus Bind declaration
   Interface_GeneralLib lib(protocol);
   for (list.Start(); list.More(); list.Next())
   {
@@ -377,7 +377,7 @@ Interface_CheckIterator IFSelect_ModelCopier::SendSelected(
               newmod,
               applied,
               checks);
-  //  Alimenter Remaining : les entites copiees sont a noter
+  //  Feed Remaining : copied entities are to be noted
   Handle(Standard_Transient) ent1, ent2;
   for (Standard_Integer ic = TC.LastCopiedAfter(0, ent1, ent2); ic > 0;
        ic                  = TC.LastCopiedAfter(ic, ent1, ent2))
@@ -400,7 +400,7 @@ Interface_CheckIterator IFSelect_ModelCopier::SendSelected(
 }
 
 //  ##########################################################################
-//  ########        UN TRANSFERT UNITAIRE (avec Modifications)        ########
+//  ########        A UNIT TRANSFER (with Modifications)        ########
 
 void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&              G,
                                        const Handle(IFSelect_WorkLibrary)& WL,
@@ -414,11 +414,11 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&              G,
                                        Handle(IFSelect_AppliedModifiers)& applied,
                                        Interface_CheckIterator&           checks) const
 {
-  //  ...  Premiere partie "standard" : remplissage du modele  ...
-  //  On cree le Modele, on le remplit avec les Entites, et avec le Header depart
+  //  ...  First "standard" part : filling the model  ...
+  //  We create the Model, we fill it with Entities, and with the starting Header
 
-  //  ATTENTION : dispnum = 0  signifie prendre modele original, ne rien copier
-  //                             et aussi : pas de Dispatch (envoi en bloc)
+  //  WARNING : dispnum = 0  means take original model, copy nothing
+  //                             and also : no Dispatch (bulk sending)
 
   applied.Nullify();
   const Handle(Interface_InterfaceModel)& original = G.Model();
@@ -429,7 +429,7 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&              G,
     WL->CopyModel(original, newmod, tocopy, TC);
 
     Handle(Standard_Transient) ent1, ent2;
-    //  Alimenter Remaining : les entites copiees sont a noter
+    //  Feed Remaining : copied entities are to be noted
     for (Standard_Integer ic = TC.LastCopiedAfter(0, ent1, ent2); ic > 0;
          ic                  = TC.LastCopiedAfter(ic, ent1, ent2))
     {
@@ -440,7 +440,7 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&              G,
   else if (newmod.IsNull())
     newmod = original;
 
-  //  ...  Ensuite : On prend en compte les Model Modifiers  ...
+  //  ...  Then : We take into account the Model Modifiers  ...
   Standard_Integer nbmod = 0;
   if (!theshareout.IsNull())
     nbmod = theshareout->NbModifiers(Standard_True);
@@ -449,12 +449,12 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&              G,
   {
     Handle(IFSelect_Modifier) unmod = theshareout->ModelModifier(i);
 
-    //    D abord,  critere Dispatch/Packet
+    //    First,  Dispatch/Packet criterion
     if (dispnum > 0)
       if (!unmod->Applies(theshareout->Dispatch(dispnum)))
         continue;
     IFSelect_ContextModif ctx(G, TC, filename.ToCString());
-    //    Ensuite, la Selection
+    //    Then, the Selection
     Handle(IFSelect_Selection) sel = unmod->Selection();
     if (!sel.IsNull())
     {
@@ -467,7 +467,7 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&              G,
     Interface_CheckIterator checklst = ctx.CheckList();
     checks.Merge(checklst);
 
-    //    Faut-il enregistrer les erreurs dans newmod ? bonne question
+    //    Should we record errors in newmod ? good question
     //    if (!checks.IsEmpty(Standard_False)) {
     //      Message::SendWarning() <<
     //        " Messages on Copied Model n0 "<<numod<<", Dispatch Rank "<<dispnum<<std::endl;
@@ -475,7 +475,7 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&              G,
     //    }
   }
 
-  //  ...  Puis les File Modifiers : en fait, on les enregistre  ...
+  //  ...  Then the File Modifiers : in fact, we record them  ...
   nbmod = 0;
   if (!theshareout.IsNull())
     nbmod = theshareout->NbModifiers(Standard_False);
@@ -486,22 +486,22 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&              G,
   {
     Handle(IFSelect_GeneralModifier) unmod = theshareout->GeneralModifier(Standard_False, i);
 
-    //    D abord,  critere Dispatch/Packet
+    //    First,  Dispatch/Packet criterion
     if (dispnum > 0)
       if (!unmod->Applies(theshareout->Dispatch(dispnum)))
         continue;
-    //    Ensuite, la Selection
+    //    Then, the Selection
     Handle(IFSelect_Selection) sel = unmod->Selection();
     if (sel.IsNull())
-      applied->AddModif(unmod); // vide -> on prend tout
+      applied->AddModif(unmod); // empty -> we take all
     else
     {
       Interface_EntityIterator   list = sel->UniqueResult(G);
       Handle(Standard_Transient) newent;
 
-      //    Entites designees par la Selection et Copiees ?
-      //    -> s ilyena au moins une, le Modifier s applique, sinon il est rejete
-      //    -> et cette liste est exploitable par le Modifier ...
+      //    Entities designated by the Selection and Copied ?
+      //    -> if there is at least one, the Modifier applies, otherwise it is rejected
+      //    -> and this list is exploitable by the Modifier ...
       for (list.Start(); list.More(); list.Next())
       {
         if (TC.Search(list.Value(), newent))
@@ -537,7 +537,7 @@ void IFSelect_ModelCopier::CopiedRemaining(const Interface_Graph&              G
     newmod.Nullify();
   else
   {
-    //  CE QUI SUIT NE DOIT PAS ETRE SUPPRIME ! cf theremain
+    //  WHAT FOLLOWS MUST NOT BE DELETED ! cf theremain
     Handle(Standard_Transient) ent1, ent2;
     for (Standard_Integer ic = TC.LastCopiedAfter(0, ent1, ent2); ic > 0;
          ic                  = TC.LastCopiedAfter(ic, ent1, ent2))
@@ -545,7 +545,7 @@ void IFSelect_ModelCopier::CopiedRemaining(const Interface_Graph&              G
       if (ic <= theremain->Upper())
         theremain->SetValue(ic, 1);
     }
-//  qq impressions de mise au point
+//  some debugging prints
 #ifdef MISOPOINT
     std::cout << " Remaining Model : " << newmod->NbEntities() << " Entities" << std::endl;
     Standard_Integer ne = 0;
@@ -554,7 +554,7 @@ void IFSelect_ModelCopier::CopiedRemaining(const Interface_Graph&              G
       if (theremain->Value(i) == 0)
       {
         if (ne == 0)
-          std::cout << " Refractaires : ";
+          std::cout << " Refractory : ";
         ne++;
         std::cout << " " << i;
       }
@@ -584,7 +584,7 @@ Standard_Boolean IFSelect_ModelCopier::SetRemaining(Interface_Graph& CG) const
 }
 
 //  ##########################################################################
-//  ########        RESULTAT de la Memorisation des Transferts        ########
+//  ########        RESULT of Transfer Memorization        ########
 
 Standard_Integer IFSelect_ModelCopier::NbFiles() const
 {
@@ -613,12 +613,12 @@ void IFSelect_ModelCopier::BeginSentFiles(const Handle(IFSelect_ShareOut)& sho,
   thesentfiles.Nullify();
   if (record)
     thesentfiles = new TColStd_HSequenceOfHAsciiString();
-  //  et numerotation des fichiers par defaut : detenue par ShareOut
+  //  and default file numbering : held by ShareOut
   if (sho.IsNull())
     return;
   Standard_Integer lastrun = sho->LastRun();
   sho->ClearResult(Standard_True);
-  sho->SetLastRun(lastrun); // on ne s interesse quaux numeros
+  sho->SetLastRun(lastrun); // we are only interested in the numbers
 }
 
 void IFSelect_ModelCopier::AddSentFile(const Standard_CString filename)

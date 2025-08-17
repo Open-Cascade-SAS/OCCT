@@ -95,7 +95,7 @@ Handle(TColStd_HSequenceOfTransient) XSControl_ConnectedShapes::AdjacentEntities
       if (vtx.Contains(avtx))
       {
         li->Append(TP->Mapped(i));
-        break; // break de ce for interieur, entite suivante
+        break; // break from this inner for, next entity
       }
     }
   }

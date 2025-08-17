@@ -14,15 +14,15 @@
 
 //#include <LibCtl_GlobalNode.ixx>
 
-//  Classe generique imbriquee dans Library : utilisee pour construire les
-//  listes globales de Modules attaches a une classe instanciee de Library
-//  (cf Library pour plus de details)
+//  Generic class nested in Library: used to build the
+//  global lists of Modules attached to an instantiated class of Library
+//  (see Library for more details)
 
 
 LibCtl_GlobalNode::LibCtl_GlobalNode ()    {  }
 
-// ATTENTION, Add agit en substitution : pour un Protocol donne, c est le
-//   dernier appel qui l emporte
+// WARNING, Add acts as substitution: for a given Protocol, it is the
+//   last call wins
     void LibCtl_GlobalNode::Add
   (const Handle(TheModule)& amodule, const Handle(TheProtocol)& aprotocol)
 {

@@ -17,10 +17,10 @@
 #include <Interface_Graph.hxx>
 #include <Standard_Transient.hxx>
 
-//  Comparateur de deux sous-ensembles d un Modele
-//  Au premier  sous-ensemble, est attribue le Status 1
-//  Au deuxieme sous-ensemble, est attribue le Status 2
-//  La partie commune se voit attribuer le Status 3
+//  Comparator of two subsets of a Model
+//  To the first subset, Status 1 is assigned
+//  To the second subset, Status 2 is assigned
+//  The common part is assigned Status 3
 IFGraph_Compare::IFGraph_Compare(const Interface_Graph& agraph)
     : thegraph(agraph)
 {
@@ -70,7 +70,7 @@ void IFGraph_Compare::ResetData()
 void IFGraph_Compare::Evaluate()
 {
   Reset();
-  GetFromGraph(thegraph); // Evaluation deja faite par le graphe
+  GetFromGraph(thegraph); // Evaluation already done by the graph
 }
 
 Interface_EntityIterator IFGraph_Compare::Common() const

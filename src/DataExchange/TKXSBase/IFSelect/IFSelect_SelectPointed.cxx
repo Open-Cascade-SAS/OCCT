@@ -103,7 +103,7 @@ Standard_Boolean IFSelect_SelectPointed::Toggle(const Handle(Standard_Transient)
 
 Standard_Boolean IFSelect_SelectPointed::AddList(const Handle(TColStd_HSequenceOfTransient)& list)
 {
-  //   Optimise avec une Map
+  //   Optimized with a Map
   Standard_Boolean res = Standard_False;
   if (list.IsNull())
     return res;

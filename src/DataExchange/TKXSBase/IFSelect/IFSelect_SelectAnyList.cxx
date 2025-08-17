@@ -23,7 +23,7 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectAnyList, IFSelect_SelectDeduct)
 
-// ....    Definition de liste : methodes "deferred" NbItems & FillResult
+// ....    List definition: "deferred" methods NbItems & FillResult
 void IFSelect_SelectAnyList::SetRange(const Handle(IFSelect_IntParam)& rankfrom,
                                       const Handle(IFSelect_IntParam)& rankto)
 {
@@ -82,7 +82,7 @@ Standard_Integer IFSelect_SelectAnyList::UpperValue() const
   return theupper->Value();
 }
 
-//  On prend les sous-entites de lower a upper (inclus)
+//  Take the sub-entities from lower to upper (included)
 Interface_EntityIterator IFSelect_SelectAnyList::RootResult(const Interface_Graph& G) const
 {
   Interface_EntityIterator input = InputResult(G);

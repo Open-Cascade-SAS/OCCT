@@ -74,7 +74,7 @@ void IFSelect_ShareOut::SetLastRun(const Standard_Integer lastrun)
 }
 
 //  #######################################################################
-//  ####                DISPATCHES (ENVOI DES FICHIERS)                ####
+//  ####                DISPATCHES (FILE SENDING)                ####
 
 Standard_Integer IFSelect_ShareOut::NbDispatches() const
 {
@@ -218,8 +218,8 @@ Standard_Boolean IFSelect_ShareOut::RemoveModifier(const Standard_Boolean formod
   return Standard_True;
 }
 
-//    ChangeModifierRank revient a une permutation circulaire :
-//    before est mis en after, ceux qui sont entre tournent
+//    ChangeModifierRank amounts to a circular permutation :
+//    before is put in after, those that are between rotate
 Standard_Boolean IFSelect_ShareOut::ChangeModifierRank(const Standard_Boolean formodel,
                                                        const Standard_Integer before,
                                                        const Standard_Integer after)
@@ -257,8 +257,8 @@ Standard_Boolean IFSelect_ShareOut::ChangeModifierRank(const Standard_Boolean fo
 }
 
 //  #######################################################################
-//  ####                    NOMINATION DES FICHIERS                    ####
-//  Rq : thenbdefs s applique tant que l on ne change pas les termes principaux
+//  ####                    FILE NAMING                    ####
+//  Note : thenbdefs applies as long as we don't change the main terms
 
 Standard_Boolean IFSelect_ShareOut::SetRootName(const Standard_Integer                  num,
                                                 const Handle(TCollection_HAsciiString)& name)
@@ -364,7 +364,7 @@ TCollection_AsciiString IFSelect_ShareOut::FileName(const Standard_Integer dnum,
     thenbdefs++;
     num    = thenbdefs;
     npac   = 0;
-    sufnum = Standard_True; // numeroter sur noms par defaut, des le 1er sans 0
+    sufnum = Standard_True; // number on default names, from the 1st without 0
   }
 
   TCollection_AsciiString res;
@@ -375,13 +375,13 @@ TCollection_AsciiString IFSelect_ShareOut::FileName(const Standard_Integer dnum,
 
   //  Suffixe numerique
   if (sufnum)
-  { // sinon, pas de suffixe numerique
-    //  Nom du PacketSuffix : _ suivi du numero <num>
-    //  Si nbpack non nul, alors on a un majorant et on peut preceder de zeros
-    //  Ex.: nbpack = 50 (donc 2 chiffres), num = 3, cela donnera _03
-    //  idnum pas utilise : cette methode peut etre redefinie et utiliser idnum ...
-    //  Si nbpack = 0 ou 1, num = 1 pas de suffixe, sinon suffixe "_num" tel quel
-    //  MODIF du 3-NOV-1995 -> pour eviter toute confusion, num = 1 donne aussi _1
+  { // otherwise, no numeric suffix
+    //  PacketSuffix name : _ followed by number <num>
+    //  If nbpack non-zero, then we have an upper bound and we can precede with zeros
+    //  Ex.: nbpack = 50 (so 2 digits), num = 3, this will give _03
+    //  idnum not used : this method can be redefined and use idnum ...
+    //  If nbpack = 0 or 1, num = 1 no suffix, otherwise suffix "_num" as is
+    //  MODIF of 3-NOV-1995 -> to avoid any confusion, num = 1 also gives _1
     Standard_Integer nbch = 0;
     char             format[30], suffixe[30];
     format[1] = ' ';

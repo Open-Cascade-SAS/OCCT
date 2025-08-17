@@ -145,7 +145,7 @@ MoniTool_TypedValue::MoniTool_TypedValue(const Handle(MoniTool_TypedValue)& othe
       theeadds.Bind(itad.Key(), itad.Value());
   }
 
-  //  on duplique la string
+  //  we duplicate the string
   if (!thehval.IsNull())
     thehval = new TCollection_HAsciiString(other->CStringValue());
 }
@@ -323,14 +323,14 @@ void MoniTool_TypedValue::PrintValue(Standard_OStream& S) const
 
 Standard_Boolean MoniTool_TypedValue::AddDef(const Standard_CString init)
 {
-  //    Editions : init donne un petit texte d edition, en 2 termes "cmd var" :
+  //    Editions : init gives a small edition text, in 2 terms "cmd var" :
   Standard_Integer i, iblc = 0;
   for (i = 0; init[i] != '\0'; i++)
     if (init[i] == ' ')
       iblc = i + 1;
   if (iblc == 0)
     return Standard_False;
-  //  Reconnaissance du sous-cas et aiguillage
+  //  Recognition of sub-case and routing
   if (init[0] == 'i' && init[2] == 'i') // imin ival
     SetIntegerLimit(Standard_False, atoi(&init[iblc]));
   else if (init[0] == 'i' && init[2] == 'a') // imax ival
@@ -458,7 +458,7 @@ Standard_CString MoniTool_TypedValue::UnitDef() const
   return theunidef.ToCString();
 }
 
-//  ******  les enums  ******
+//  ******  the enums  ******
 
 void MoniTool_TypedValue::StartEnum(const Standard_Integer start, const Standard_Boolean match)
 {
@@ -583,7 +583,7 @@ void MoniTool_TypedValue::AddEnumValue(const Standard_CString val, const Standar
   {
     theenums->SetValue(num, TCollection_AsciiString(val));
   }
-  //    On met AUSSI dans le dictionnaire
+  //    We ALSO put in the dictionary
   //  else {
   theeadds.Bind(val, num);
   //  }
@@ -678,7 +678,7 @@ Standard_CString MoniTool_TypedValue::SatisfiesName() const
   return thesatisn.ToCString();
 }
 
-//  ###########    VALEUR DU STATIC    ############
+//  ###########    STATIC VALUE    ############
 
 Standard_Boolean MoniTool_TypedValue::IsSetValue() const
 {
@@ -714,7 +714,7 @@ Handle(TCollection_HAsciiString) MoniTool_TypedValue::Interpret(
     return theinterp(this, hval, native);
   if (thetype == MoniTool_ValueEnum)
   {
-    //  On admet les deux formes : Enum de preference, sinon Integer
+    //  We accept both forms : Enum preferably, otherwise Integer
     Standard_Integer startcase, endcase;
     Standard_Boolean match;
     EnumDef(startcase, endcase, match);
@@ -767,7 +767,7 @@ Standard_Boolean MoniTool_TypedValue::Satisfies(const Handle(TCollection_HAsciiS
       return Standard_True;
     }
     case MoniTool_ValueEnum: {
-      //  On admet les deux formes : Enum de preference, sinon Integer
+      //  We accept both forms : Enum preferably, otherwise Integer
       Standard_Integer startcase, endcase; // unused ival;
       Standard_Boolean match;
       EnumDef(startcase, endcase, match);
@@ -775,7 +775,7 @@ Standard_Boolean MoniTool_TypedValue::Satisfies(const Handle(TCollection_HAsciiS
         return Standard_True;
       if (EnumCase(val->ToCString()) >= startcase)
         return Standard_True;
-      //  Ici, on admet un entier dans la fourchette
+      //  Here, we accept an integer in the range
       ////      if (val->IsIntegerValue()) ival = atoi (val->ToCString());
 
       // PTV 16.09.2000 The if is comment, cause this check is never been done (You can see the

@@ -17,8 +17,8 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 
-// Points d'Articulation d'un Graphe : ce sont les "passages obliges" du graphe
-// Algorithme tire du Sedgewick, p 392
+// Articulation Points of a Graph: these are the "required passages" of the graph
+// Algorithm taken from Sedgewick, p 392
 IFGraph_Articulations::IFGraph_Articulations(const Interface_Graph& agraph,
                                              const Standard_Boolean whole)
     : thegraph(agraph)
@@ -46,9 +46,9 @@ void IFGraph_Articulations::ResetData()
 
 void IFGraph_Articulations::Evaluate()
 {
-  //  Algorithme, cf Sedgewick "Algorithms", p 392
+  //  Algorithm, see Sedgewick "Algorithms", p 392
   thelist = new TColStd_HSequenceOfInteger();
-  //  Utilisation de Visit
+  //  Use of Visit
   Standard_Integer nb = thegraph.Size();
   for (Standard_Integer i = 1; i <= nb; i++)
   {
@@ -56,7 +56,7 @@ void IFGraph_Articulations::Evaluate()
     if (thegraph.IsPresent(i))
       Visit(i);
   }
-  //  Resultat dans thelist
+  //  Result in thelist
   Reset();
   Standard_Integer nbres = thelist->Length();
   for (Standard_Integer ires = 1; ires <= nbres; ires++)
@@ -82,14 +82,14 @@ Standard_Integer IFGraph_Articulations::Visit(const Standard_Integer num)
       thegraph.GetFromEntity(ent, Standard_False);
       nument = thegraph.EntityNumber(ent);
     }
-    Standard_Integer statent = thegraph.Status(nument); // pas reevalue
+    Standard_Integer statent = thegraph.Status(nument); // not reevaluated
     if (statent == 0)
     {
       Standard_Integer mm = Visit(nument);
       if (mm < min)
         min = mm;
       if (mm > thegraph.Status(num))
-        thelist->Append(num); // ON EN A UN : num
+        thelist->Append(num); // WE HAVE ONE: num
     }
     else if (statent < min)
       min = statent;

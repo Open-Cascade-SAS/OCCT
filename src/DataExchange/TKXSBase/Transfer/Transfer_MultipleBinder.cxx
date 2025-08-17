@@ -19,10 +19,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_MultipleBinder, Transfer_Binder)
 
-// Resultat Multiple
-// Possibilite de definir un Resultat Multiple : plusieurs objets resultant
-//  d un Transfert, sans pouvoir les distinguer
-//  N.B. : Pour l heure, tous Transients (pourra evoluer)
+// Multiple Result
+// Possibility to define a Multiple Result : several objects resulting
+//  from a Transfer, without being able to distinguish them
+//  N.B. : For now, all Transients (may evolve)
 Transfer_MultipleBinder::Transfer_MultipleBinder() {}
 
 Standard_Boolean Transfer_MultipleBinder::IsMultiple() const
@@ -42,7 +42,7 @@ Standard_CString Transfer_MultipleBinder::ResultTypeName() const
   return "(list)";
 }
 
-//  ....        Gestion du Resultat Multiple        ....
+//  ....        Multiple Result Management        ....
 
 void Transfer_MultipleBinder::AddResult(const Handle(Standard_Transient)& res)
 {

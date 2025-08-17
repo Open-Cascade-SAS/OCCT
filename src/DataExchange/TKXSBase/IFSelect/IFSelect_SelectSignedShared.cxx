@@ -55,13 +55,13 @@ Standard_Boolean IFSelect_SelectSignedShared::Explore(const Standard_Integer    
   if (thematcher->Matches(ent, G.Model(), thesigntext, theexact))
     return Standard_True;
 
-  //  sinon, on fait le tri ici
+  //  otherwise, we do the sorting here
   Interface_EntityIterator list = G.Shareds(ent);
-  //  Si plus de Shared, alors c est cuit
+  //  If no more Shared, then it's finished
   if (list.NbEntities() == 0)
     return Standard_False;
 
-  //  Sinon, trier si on est au niveau
+  //  Otherwise, sort if we are at the level
   if (level < Level())
   {
     explored = list;

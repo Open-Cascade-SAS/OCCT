@@ -41,7 +41,7 @@ IFSelect_SessionFile::IFSelect_SessionFile(const Handle(IFSelect_WorkSession)& W
   ClearLines();
   themode = Standard_False;
   if (!deja)
-  { // au moins celui-la :
+  { // at least this one :
     Handle(IFSelect_BasicDumper) basedumper = new IFSelect_BasicDumper;
     deja                                    = 1;
   }
@@ -56,7 +56,7 @@ IFSelect_SessionFile::IFSelect_SessionFile(const Handle(IFSelect_WorkSession)& W
   ClearLines();
   themode = Standard_True;
   if (!deja)
-  { // au moins celui-la :
+  { // at least this one :
     Handle(IFSelect_BasicDumper) basedumper = new IFSelect_BasicDumper;
     deja                                    = 1;
   }
@@ -65,7 +65,7 @@ IFSelect_SessionFile::IFSelect_SessionFile(const Handle(IFSelect_WorkSession)& W
   thelastgen = 0;
   thesess    = WS;
   thedone    = (Write(filename) == 0);
-  //  Close fait par Write (selon les cas)
+  //  Close done by Write (depending on cases)
 }
 
 void IFSelect_SessionFile::ClearLines()
@@ -113,8 +113,8 @@ Standard_Boolean IFSelect_SessionFile::ReadFile(const Standard_CString filename)
   if (!lefic)
     return Standard_False;
   ClearLines();
-  //  read mode : lire les lignes
-  //  On charge le fichier dans "thelist"
+  //  read mode : read the lines
+  //  Load the file into "thelist"
   Standard_Boolean header = Standard_False;
   for (;;)
   {
@@ -125,14 +125,14 @@ Standard_Boolean IFSelect_SessionFile::ReadFile(const Standard_CString filename)
     }
     if (ligne[0] == '\0')
       continue;
-    //  D abord ligne initiale ?
+    //  First initial line ?
     if (!header)
     {
       if (!RecognizeFile(ligne))
         break;
       header = Standard_True;
     }
-    ligne[200] = '\0'; // fin forcee ...
+    ligne[200] = '\0'; // forced end ...
     TCollection_AsciiString onemore(ligne);
     thelist.Append(onemore);
   }
@@ -157,7 +157,7 @@ Standard_Boolean IFSelect_SessionFile::RecognizeFile(const Standard_CString head
     sout << "Lineno." << thenl << " : File Header Description Incorrect" << std::endl;
     return Standard_False;
   }
-  //   Value(3) definit la VERSION du format de fichier
+  //   Value(3) defines the VERSION of the file format
   return Standard_True;
 }
 
@@ -186,13 +186,13 @@ Standard_Integer IFSelect_SessionFile::Read(const Standard_CString filename)
 }
 
 //  ##################################################################
-//  ########        WriteSession : Ecriture du contenu        ########
+//  ########        WriteSession : Writing the content        ########
 
 Standard_Integer IFSelect_SessionFile::WriteSession()
 {
   char laligne[200];
   thedone = Standard_True;
-  //  ...  Preparation Specifique
+  //  ...  Specific Preparation
   thenames.Clear();
   Standard_Integer nbidents = thesess->MaxIdent();
   thenums                   = new TColStd_HArray1OfInteger(0, nbidents);
@@ -205,7 +205,7 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
       thenums->SetValue(i, -1);
   }
 
-  //  ...  ECRITURE
+  //  ...  WRITING
   Sprintf(laligne, "!XSTEP SESSION V1 %s", thesess->DynamicType()->Name());
   WriteLine(laligne, '\n');
   Sprintf(laligne, "!GENERALS");
@@ -266,8 +266,8 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
     i                            = idents->Value(j);
     Handle(IFSelect_Selection) P = thesess->Selection(i);
     NewItem(i, P);
-    //  ..  Ecritures particulieres
-    //  ->  Traiter les principaux sous-types : Extract,AnyList,AnyType
+    //  ..  Particular writings
+    //  ->  Handle the main sub-types : Extract,AnyList,AnyType
     DeclareAndCast(IFSelect_SelectExtract, sxt, P);
     if (!sxt.IsNull())
     {
@@ -283,7 +283,7 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
       SendItem(sli->Upper());
       SetOwn(Standard_True);
     }
-    //  ..  Ecritures specifiques selon dumpers
+    //  ..  Specific writings according to dumpers
     WriteOwn(P);
     WriteLine("", '\n');
   }
@@ -315,12 +315,12 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
     WriteLine("!MODIFIERS", '\n');
   for (j = 1; j <= nb; j++)
   {
-    //  Description de base des Modifiers, donc sans Selection ni Dispatch-Rank
+    //  Basic description of Modifiers, so without Selection or Dispatch-Rank
     i                                  = idents->Value(j);
     Handle(IFSelect_GeneralModifier) P = thesess->GeneralModifier(i);
     NewItem(i, P);
     SetOwn(Standard_True);
-    //  ..  Ecritures specifiques selon dumpers
+    //  ..  Specific writings according to dumpers
     WriteOwn(P);
     WriteLine("", '\n');
   }
@@ -331,12 +331,12 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
     WriteLine("!TRANSFORMERS", '\n');
   for (j = 1; j <= nb; j++)
   {
-    //  Description des Transformers
+    //  Description of Transformers
     i                              = idents->Value(j);
     Handle(IFSelect_Transformer) P = thesess->Transformer(i);
     NewItem(i, P);
     SetOwn(Standard_True);
-    //  ..  Ecritures specifiques selon dumpers
+    //  ..  Specific writings according to dumpers
     WriteOwn(P);
     WriteLine("", '\n');
   }
@@ -355,7 +355,7 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
     SetOwn(Standard_False);
     SendItem(P->FinalSelection());
     SetOwn(Standard_True);
-    //  ..  Ecritures specifiques selon dumpers
+    //  ..  Specific writings according to dumpers
     WriteOwn(P);
     WriteLine("", '\n');
   }
@@ -399,13 +399,13 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
     WriteLine("", '\n');
   }
 
-  //   Pour les Modifiers, ATTENTION car il faut respecter l ORDRE effectif
-  //   Or il y a deux listes : Model Modifiers; File Modifiers
-  //   Les Modifiers eux-memes ont deja ete ecrits
-  //   Ici, on ecrit simplement leur utilisation dans l envoi final
+  //   For Modifiers, CAUTION because we must respect the effective ORDER
+  //   Now there are two lists : Model Modifiers; File Modifiers
+  //   The Modifiers themselves have already been written
+  //   Here, we simply write their use in the final sending
   for (Standard_Integer formod = 1; formod >= 0; formod--)
   {
-    idents = thesess->FinalModifierIdents((formod > 0)); // donnes dans l ordre d application
+    idents = thesess->FinalModifierIdents((formod > 0)); // given in application order
     nb     = idents->Length();
     if (nb == 0)
       continue;
@@ -419,7 +419,7 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
       Handle(IFSelect_GeneralModifier) P = thesess->GeneralModifier(i);
       SetOwn(Standard_False);
       SendItem(P);
-      //  ..  Parametres Generaux (les specifiques ont deja ete envoyes)
+      //  ..  General Parameters (the specific ones have already been sent)
       SendItem(P->Selection());
       SendItem(P->Dispatch());
       WriteLine("", '\n');
@@ -433,7 +433,7 @@ Standard_Integer IFSelect_SessionFile::WriteSession()
 
 Standard_Integer IFSelect_SessionFile::WriteEnd()
 {
-  WriteLine("!XSTEP END", '\n'); // sinon, cf sous-types de SessionFile ...
+  WriteLine("!XSTEP END", '\n'); // otherwise, see SessionFile sub-types ...
   return 0;
 }
 
@@ -470,17 +470,17 @@ Standard_Boolean IFSelect_SessionFile::WriteOwn(const Handle(Standard_Transient)
 }
 
 //  ##################################################################
-//  ########        ReadSession  :  Lecture du contenu        ########
+//  ########        ReadSession  :  Content Reading        ########
 
 Standard_Integer IFSelect_SessionFile::ReadSession()
 {
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
 
   thedone = Standard_True;
-  //  ...  Preparation Specifique
+  //  ...  Specific Preparation
   thenums.Nullify();
   thenames.Clear();
-  //  ..  Donnees generales, controle
+  //  ..  General data, control
   if (!ReadLine())
     return 1;
   if (theline.Length() != 4)
@@ -495,11 +495,11 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
     sout << "Lineno." << thenl << " : File Header Description Incorrect" << std::endl;
     return 1;
   }
-  //   Value(3) definit la VERSION du format de fichier
+  //   Value(3) defines the VERSION of the file format
   if (!ReadLine())
     return 1;
 
-  //  ..  Parametres Generaux
+  //  ..  General Parameters
   Standard_Integer rubr = (theline.Length() == 1 && theline.Value(1).IsEqual("!GENERALS"));
   while (rubr)
   {
@@ -509,7 +509,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
       continue;
     const TCollection_AsciiString& ungen = theline.Value(1);
     if (ungen.Value(1) == '!')
-      break; // fin des generaux
+      break; // end of generals
     if (ungen.IsEqual("ErrorHandle"))
     {
       if (theline.Length() != 2)
@@ -535,7 +535,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
   }
 
   //  ..  IntParams
-  //   deja fait  if (!ReadLine()) return 1;
+  //   already done  if (!ReadLine()) return 1;
   rubr = (theline.Length() == 1 && theline.Value(1).IsEqual("!INTEGERS"));
   while (rubr)
   {
@@ -553,7 +553,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
     AddItem(par);
   }
 
-  //  .. TextParams (ligne de garde deja lue)
+  //  .. TextParams (guard line already read)
   rubr = (theline.Length() == 1 && theline.Value(1).IsEqual("!TEXTS"));
   while (rubr)
   {
@@ -566,7 +566,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
       sout << "Lineno." << thenl << " : A Text Parameter is badly defined" << std::endl;
       continue;
     }
-    //    Attention, un texte peut contenir des blancs ...  repartir de line(thenl)
+    //    Caution, a text can contain blanks ... restart from line(thenl)
     TCollection_AsciiString oneline = thelist.Value(thenl);
     Standard_Integer        iw = 0, inc = 0;
     for (Standard_Integer ic = 1; ic <= oneline.Length(); ic++)
@@ -582,7 +582,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
     AddItem(new TCollection_HAsciiString(oneline.ToCString()));
   }
 
-  //  .. Selections (ligne de garde deja lue)
+  //  .. Selections (guard line already read)
   rubr = (theline.Length() == 1 && theline.Value(1).IsEqual("!SELECTIONS"));
   while (rubr)
   {
@@ -595,7 +595,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
       sout << "Lineno." << thenl << " : A Selection is badly defined" << std::endl;
       continue;
     }
-    //  ..  Analyse de certains cas generaux
+    //  ..  Analysis of certain general cases
     Handle(IFSelect_IntParam) low, up;
     Standard_Integer          firstown = 3;
     Standard_Integer          direct   = 0;
@@ -620,7 +620,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
       }
       SetLastGeneral(firstown - 1);
     }
-    Handle(Standard_Transient) item; // a fournir ...
+    Handle(Standard_Transient) item; // to be provided ...
     ReadOwn(item);
     if (item.IsNull())
       continue;
@@ -663,7 +663,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
       continue;
     }
     Standard_Integer nbs = atoi(theline.Value(2).ToCString());
-    //  .. Differents cas reconnus
+    //  .. Different recognized cases
     DeclareAndCast(IFSelect_SelectExtract, sxt, sel);
     if (!sxt.IsNull())
     {
@@ -698,7 +698,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
     }
   }
 
-  //  ... Modifiers en tout genre
+  //  ... Modifiers of all kinds
   rubr = (theline.Length() == 1 && theline.Value(1).IsEqual("!MODIFIERS"));
   while (rubr)
   {
@@ -711,7 +711,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
       sout << "Lineno." << thenl << " : A Modifier is badly defined" << std::endl;
       continue;
     }
-    Handle(Standard_Transient) item; // a fournir ...
+    Handle(Standard_Transient) item; // to be provided ...
     ReadOwn(item);
     if (item.IsNull())
       continue;
@@ -721,7 +721,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
       sout << "Lineno." << thenl << " : A Modifier has not been Recognized" << std::endl;
       continue;
     }
-    AddItem(modif, Standard_False); // active plus tard
+    AddItem(modif, Standard_False); // active later
   }
 
   //  ... Transformers
@@ -737,7 +737,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
       sout << "Lineno." << thenl << " : A Transformer is badly defined" << std::endl;
       continue;
     }
-    Handle(Standard_Transient) item; // a fournir ...
+    Handle(Standard_Transient) item; // to be provided ...
     ReadOwn(item);
     if (item.IsNull())
       continue;
@@ -747,10 +747,10 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
       sout << "Lineno." << thenl << " : A Transformer has not been Recognized" << std::endl;
       continue;
     }
-    AddItem(trf, Standard_False); // active plus tard
+    AddItem(trf, Standard_False); // active later
   }
 
-  //  ... Dispatches (ligne de garde deja lue)
+  //  ... Dispatches (guard line already read)
   rubr = (theline.Length() == 1 && theline.Value(1).IsEqual("!DISPATCHES"));
   while (rubr)
   {
@@ -765,7 +765,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
     }
     DeclareAndCast(IFSelect_Selection, input, ItemValue(3));
     SetLastGeneral(3);
-    Handle(Standard_Transient) item; // a fournir ...
+    Handle(Standard_Transient) item; // to be provided ...
     ReadOwn(item);
     if (item.IsNull())
       continue;
@@ -779,8 +779,8 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
     thesess->SetItemSelection(disp, input);
   }
 
-  //  ... FileNaming (ligne de garde deja lue)
-  //  ..  Modifiers deja lus et charges
+  //  ... FileNaming (guard line already read)
+  //  ..  Modifiers already read and loaded
   rubr = (theline.Length() == 4 && theline.Value(1).IsEqual("!FILENAMING"));
   if (rubr)
   {
@@ -806,8 +806,8 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
     thesess->SetFileRoot(disp, theline.Value(2).ToCString());
   }
 
-  //  ... Modifiers (ligne de garde deja lue)
-  //  ... Attention, deux listes (MODELMODIFIERS et FILEMODIFIERS)
+  //  ... Modifiers (guard line already read)
+  //  ... Caution, two lists (MODELMODIFIERS and FILEMODIFIERS)
   for (Standard_Integer formod = 1; formod >= 0; formod--)
   {
     rubr = (theline.Length() == 1
@@ -846,7 +846,7 @@ Standard_Integer IFSelect_SessionFile::ReadSession()
     }
   }
 
-  //  ...  Conclusion : voir ReadEnd (separe)
+  //  ...  Conclusion: see ReadEnd (separate)
   return 0;
 }
 
@@ -868,7 +868,7 @@ Standard_Boolean IFSelect_SessionFile::ReadLine()
     return Standard_False;
   thenl++;
   Standard_CString ligne = thelist.Value(thenl).ToCString();
-  //   Lignes vides ?
+  //   Empty lines?
   if (ligne[0] == '\0')
     return ReadLine();
   SplitLine(ligne);
@@ -916,7 +916,7 @@ Standard_Boolean IFSelect_SessionFile::ReadOwn(Handle(Standard_Transient)& item)
     return Standard_False;
   const TCollection_AsciiString& type = theline.Value(2);
   if (thelastgen < 2)
-    thelastgen = 2; // mini : ident+type d abord
+    thelastgen = 2; // mini : ident+type first
                     //  thelastgen = theline.Length();
                     //  for (Standard_Integer i = theline.Length(); i > 0; i --) {
                     //    if (theline.Value(i).Value(1) == ':') thelastgen = i - 1;
@@ -965,7 +965,7 @@ Handle(IFSelect_WorkSession) IFSelect_SessionFile::WorkSession() const
   return thesess;
 }
 
-//  ########                Actions Unitaires d ECRITURE               ########
+//  ########                Unit WRITING Actions               ########
 
 void IFSelect_SessionFile::NewItem(const Standard_Integer            ident,
                                    const Handle(Standard_Transient)& par)
@@ -1028,7 +1028,7 @@ void IFSelect_SessionFile::SendText(const Standard_CString text)
   WriteLine(laligne);
 }
 
-//  ########                Actions Unitaires de LECTURE               ########
+//  ########                Unit READING Actions               ########
 
 void IFSelect_SessionFile::SetLastGeneral(const Standard_Integer lastgen)
 {
@@ -1108,4 +1108,4 @@ Handle(Standard_Transient) IFSelect_SessionFile::ItemValue(const Standard_Intege
   return thesess->Item(id);
 }
 
-void IFSelect_SessionFile::Destroy() {} // agit si File non ferme, sinon ne fait rien
+void IFSelect_SessionFile::Destroy() {} // acts if File not closed, otherwise does nothing

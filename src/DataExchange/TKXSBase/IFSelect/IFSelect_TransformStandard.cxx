@@ -174,11 +174,11 @@ Standard_Boolean IFSelect_TransformStandard::ApplyModifiers(
     if (unmod->MayChangeGraph())
       chg = Standard_True;
 
-    //    Appliquer ce Modifier (nb : le Dispatch, on s en moque)
-    //    D abord, la Selection
+    //    Apply this Modifier (nb : the Dispatch, we don't care about it)
+    //    First, the Selection
     IFSelect_ContextModif ctx(G, TC);
-    //    Ensuite, la Selection
-    //    S il y en a une ici, elle a priorite. Sinon, chaque Modifier a la sienne
+    //    Then, the Selection
+    //    If there is one here, it has priority. Otherwise, each Modifier has its own
 
     Handle(IFSelect_Selection) sel = thesel;
     if (sel.IsNull())
@@ -192,8 +192,8 @@ Standard_Boolean IFSelect_TransformStandard::ApplyModifiers(
       continue;
     unmod->Perform(ctx, newmod, protocol, TC);
 
-    //    Report des Erreurs
-    //    Faut-il les enregistrer dans newmod ? bonne question
+    //    Error Reporting
+    //    Should we record them in newmod ? good question
     Interface_CheckIterator checklist = ctx.CheckList();
     if (!checklist.IsEmpty(Standard_False))
     {
@@ -210,7 +210,7 @@ Standard_Boolean IFSelect_TransformStandard::ApplyModifiers(
     }
   }
 
-  //   Modele pas modifie et Graphe pas modifie : le dire
+  //   Model not modified and Graph not modified: say it
   if (newmod == original && !chg)
     newmod.Nullify();
   return res;

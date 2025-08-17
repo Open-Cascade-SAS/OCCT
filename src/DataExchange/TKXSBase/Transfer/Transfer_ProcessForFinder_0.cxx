@@ -482,7 +482,7 @@ void Transfer_ProcessForFinder::Mend(const Handle(Transfer_Finder)& start,
 {
   Handle(Transfer_Binder) binder = FindAndMask(start);
   if (binder.IsNull())
-    return; // rien a faire ...
+    return; // nothing to do ...
   Handle(Interface_Check) ach = binder->CCheck();
   ach->Mend(pref);
 }
@@ -510,7 +510,7 @@ void Transfer_ProcessForFinder::BindTransient(const Handle(Transfer_Finder)&    
   Handle(Transfer_Binder)                  former = Find(start);
   Handle(Transfer_SimpleBinderOfTransient) binder =
     Handle(Transfer_SimpleBinderOfTransient)::DownCast(former);
-  // Binding sur place ?
+  // Binding in place?
   if (!binder.IsNull())
   {
     if (binder->Status() == Transfer_StatusVoid)

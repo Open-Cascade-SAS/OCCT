@@ -23,5 +23,5 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Transformer, Standard_Transient)
 
 Standard_Boolean IFSelect_Transformer::ChangeProtocol(Handle(Interface_Protocol)&) const
 {
-  return Standard_False; // par defaut, protocole inchange
+  return Standard_False; // by default, protocol unchanged
 }

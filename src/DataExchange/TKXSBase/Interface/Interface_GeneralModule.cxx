@@ -79,20 +79,20 @@ void Interface_GeneralModule::RenewImpliedCase(const Standard_Integer /*casenum*
                                                const Handle(Standard_Transient)& /*entto*/,
                                                const Interface_CopyTool& /*TC*/) const
 {
-} // Par defaut, ne fait rien
+} // By default, does nothing
 
 void Interface_GeneralModule::WhenDeleteCase(const Standard_Integer /*casenum*/,
                                              const Handle(Standard_Transient)& /*ent*/,
                                              const Standard_Boolean /*dispatched*/) const
 {
-} // par defaut, ne fait rien
+} // by default, does nothing
 
 Standard_Integer Interface_GeneralModule::CategoryNumber(const Standard_Integer,
                                                          const Handle(Standard_Transient)&,
                                                          const Interface_ShareTool&) const
 {
   return 0;
-} // par defaut, non specifie
+} // by default, not specified
 
 Handle(TCollection_HAsciiString) Interface_GeneralModule::Name(const Standard_Integer,
                                                                const Handle(Standard_Transient)&,
@@ -100,4 +100,4 @@ Handle(TCollection_HAsciiString) Interface_GeneralModule::Name(const Standard_In
 {
   Handle(TCollection_HAsciiString) str;
   return str;
-} // par defaut, non specifie
+} // by default, not specified

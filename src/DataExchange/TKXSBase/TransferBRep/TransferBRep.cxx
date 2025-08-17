@@ -159,7 +159,7 @@ TopAbs_Orientation TransferBRep::ShapeState(const Handle(Transfer_FinderProcess)
   if (sm.IsNull())
     return TopAbs_EXTERNAL;
   const TopoDS_Shape& mapped = sm->Value();
-  //  l egalite est assumee, on ne teste que l orientation
+  //  equality is assumed, we only test the orientation
   if (mapped.Orientation() != shape.Orientation())
     return TopAbs_REVERSED;
   return TopAbs_FORWARD;

@@ -15,20 +15,20 @@
 
 #include <Interface_IntList.hxx>
 
-//   Organisation des donnees :
-//   theents vaut : 0 pas de reference
-//    > 0 : une reference, dont voici la valeur; pas de liste
-//    < 0 : une liste de references; on stocke <rank>, elle debute a <rank>+1
-//   la liste est dans therefs et est ainsi constitue :
-//   liste de valeurs negatives, se terminant pas une valeur positive :
-//   de <rank>+1 a <rank>+nb , <rank>+1 a <rank>+nb-1 sont negatifs et
-//    <rank>+nb est negatif
-//   un zero signifie : place libre
-//   Pre-reservation : <rank> note le nombre courant, en positif strict
-//   Il faut alors l incrementer a chaque ajout
-//   Usage contextuel, il faut demander SetNumber(num < 0) pour exploiter cette
-//   info et Add(ref < 0) pour la gerer.
-//   Si elle n est pas presente, on bascule en mode courant
+//   Data organization :
+//   theents value : 0 no reference
+//    > 0 : one reference, here is the value; no list
+//    < 0 : a list of references; we store <rank>, it starts at <rank>+1
+//   the list is in therefs and is thus constituted :
+//   list of negative values, ending with a positive value :
+//   from <rank>+1 to <rank>+nb , <rank>+1 to <rank>+nb-1 are negative and
+//    <rank>+nb is negative
+//   a zero means : free space
+//   Pre-reservation : <rank> notes the current number, in strict positive
+//   It must then be incremented at each addition
+//   Contextual usage, you must call SetNumber(num < 0) to exploit this
+//   info and Add(ref < 0) to manage it.
+//   If it is not present, we switch to current mode
 Interface_IntList::Interface_IntList()
 {
   thenbe = thenbr = thenum = thecount = therank = 0;
@@ -98,8 +98,8 @@ void Interface_IntList::SetNbEntities(const Standard_Integer nbe)
 
 void Interface_IntList::SetNumber(const Standard_Integer number)
 {
-  //  Usage en pre-reservation : a demander specifiquement ! -> optimisation
-  //   <preres> verifie que la pre-reservation est valide
+  //  Pre-reservation usage : to be requested specifically ! -> optimization
+  //   <preres> verifies that the pre-reservation is valid
   if (number < 0)
   {
     if (thenum == -number || number < -thenbe)
@@ -127,7 +127,7 @@ void Interface_IntList::SetNumber(const Standard_Integer number)
     if (preres)
       return;
   }
-  //  Usage courant. La suite en usage courant ou si pas de pre-reservation
+  //  Current usage. The following in current usage or if no pre-reservation
   else if (number > 0)
   {
     if (thenum == number || number > thenbe)
@@ -222,14 +222,14 @@ void Interface_IntList::SetRedefined(const Standard_Boolean mode)
 
 void Interface_IntList::Reservate(const Standard_Integer count)
 {
-  //  Reservate (-count) = Reservate (count) + allocation sur entite courante + 1
+  //  Reservate (-count) = Reservate (count) + allocation on current entity + 1
   if (count < 0)
   {
     Reservate(-count - 1);
     if (thenum == 0)
       return;
     thenbr++;
-    therefs->SetValue(thenbr, 0); // contiendra le nombre ...
+    therefs->SetValue(thenbr, 0); // will contain the number ...
     therank = thenbr;
     theents->SetValue(thenum, -thenbr);
     thenbr -= count;
@@ -237,7 +237,7 @@ void Interface_IntList::Reservate(const Standard_Integer count)
   }
   Standard_Integer up, oldup = 0;
   if (thenbr == 0)
-  { //  c-a-d pas encore allouee ...
+  { //  i.e. not yet allocated ...
     up = thenbe / 2 + 1;
     if (up < 2)
       up = 2;
@@ -245,7 +245,7 @@ void Interface_IntList::Reservate(const Standard_Integer count)
       up = count * 3 / 2;
     therefs = new TColStd_HArray1OfInteger(0, up);
     therefs->Init(0);
-    thenbr = 2; // on commence apres (commodite d adressage)
+    thenbr = 2; // we start after (convenience of addressing)
   }
   oldup = therefs->Upper();
   if (thenbr + count < oldup)
@@ -297,20 +297,20 @@ void Interface_IntList::Add(const Standard_Integer ref)
     thecount++;
   }
   else if (thenbr == therank + thecount)
-  { // place libre en fin
+  { // free space at end
     therefs->SetValue(thenbr, -therefs->Value(thenbr));
     therefs->SetValue(thenbr + 1, ref);
     thenbr++;
     thecount++;
   }
   else if (therefs->Value(therank + thecount + 1) == 0)
-  { // place libre apres
+  { // free space after
     therefs->SetValue(therank + thecount, -therefs->Value(therank + thecount));
     therefs->SetValue(therank + thecount + 1, ref);
     thecount++;
   }
   else
-  { // recopier plus loin !
+  { // copy further !
     Reservate(thecount + 2);
     Standard_Integer rank = therank;
     therank               = thenbr;
@@ -367,7 +367,7 @@ Standard_Boolean Interface_IntList::Remove(const Standard_Integer)
 void Interface_IntList::Clear()
 {
   if (thenbr == 0)
-    return; // deja clear
+    return; // already clear
   Standard_Integer i, low, up;
   low = theents->Lower();
   up  = theents->Upper();

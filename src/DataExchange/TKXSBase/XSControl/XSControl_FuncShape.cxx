@@ -70,8 +70,8 @@ static IFSelect_ReturnStatus XSControl_tpdraw(const Handle(IFSelect_SessionPilot
   {
     sout << "Donner [mode facultatif : item ou root] , NUMERO , nom DRAW facultatif" << std::endl;
     sout << "  mode si present : item ou root, sinon n0 d entite modele" << std::endl;
-    sout << "  NUMERO entier : d entite, d item transfert ou de root transfert\n"
-         << "    ou * pour dire tous" << std::endl;
+    sout << "  INTEGER NUMBER : of entity, of transfer item or of transfer root\n"
+         << "    or * to say all" << std::endl;
     return IFSelect_RetError;
   }
   Standard_Integer mode = 0, num = 0;
@@ -113,30 +113,30 @@ static IFSelect_ReturnStatus XSControl_tpdraw(const Handle(IFSelect_SessionPilot
   {
     if (mode == 0)
     {
-      sout << "Pas de modele, preciser n0 d item de transfert" << std::endl;
+      sout << "No model, specify n0 of transfer item" << std::endl;
       return IFSelect_RetError;
     }
   }
   if (mode == 0)
   {
-    sout << "Entite de modele";
+    sout << "Model entity";
     max = model->NbEntities();
   }
   if (mode == 1)
   {
-    sout << "Item de transfert";
+    sout << "Transfer item";
     max = TP->NbMapped();
   }
   if (mode == 2)
   {
-    sout << "Racine de transfert";
+    sout << "Transfer root";
     max = TP->NbRoots();
   }
   if (tout)
   {
     n1 = 1;
     n2 = max;
-    sout << ", listage de 1 a " << max << std::endl;
+    sout << ", listing from 1 to " << max << std::endl;
   }
   else if (num <= 0 || num > max)
   {
@@ -146,7 +146,7 @@ static IFSelect_ReturnStatus XSControl_tpdraw(const Handle(IFSelect_SessionPilot
   else
   {
     n1 = n2 = num;
-    nbvar   = -1; // nbvar : 1ere shape simple = pas de n0
+    nbvar   = -1; // nbvar : 1st simple shape = no n0
     sout << ", n0 " << num << std::endl;
   }
 
@@ -190,7 +190,7 @@ static IFSelect_ReturnStatus XSControl_tpdraw(const Handle(IFSelect_SessionPilot
     if (!binder->HasResult())
     {
       if (!tout)
-        sout << "Entite n0 " << num << " : pas de resultat" << std::endl;
+        sout << "Entity n0 " << num << " : no result" << std::endl;
       continue;
     }
     sh = TransferBRep::ShapeResult(binder);
@@ -274,7 +274,7 @@ static IFSelect_ReturnStatus XSControl_tpdraw(const Handle(IFSelect_SessionPilot
       Handle(Standard_Transient) resu = trb->Result();
       if (resu.IsNull())
       {
-        sout << "Entite n0 " << num << " : pas de resultat" << std::endl;
+        sout << "Entity n0 " << num << " : no result" << std::endl;
         continue;
       }
       DeclareAndCast(Geom_Geometry, geom, resu);
@@ -410,7 +410,7 @@ static IFSelect_ReturnStatus XSControl_traccess(const Handle(IFSelect_SessionPil
 
   if (num == 0 || cascomp)
   {
-    TopoDS_Compound C; // pour cas compound
+    TopoDS_Compound C; // for compound case
     BRep_Builder    B;
     B.MakeCompound(C);
 
@@ -452,7 +452,7 @@ static IFSelect_ReturnStatus XSControl_traccess(const Handle(IFSelect_SessionPil
     TopoDS_Shape sh = TR->ShapeResult(mdl->Value(num));
     if (sh.IsNull())
     {
-      sout << " Pas de resultat pour " << arg1 << std::endl;
+      sout << " No result for " << arg1 << std::endl;
       return IFSelect_RetError;
     }
     if (argc > 2)
@@ -753,8 +753,8 @@ static IFSelect_ReturnStatus XSControl_trconnexentities(const Handle(IFSelect_Se
 
 static IFSelect_ReturnStatus XSControl_trimport(const Handle(IFSelect_SessionPilot)& pilot)
 {
-  //  FileName ou . (pour courant)  VarName  GiveList (obligatoire)
-  //    GiveList : * pour xst-transferrable-roots
+  //  FileName or . (for current)  VarName  GiveList (mandatory)
+  //    GiveList : * for xst-transferrable-roots
   Handle(XSControl_WorkSession) WS = XSControl::Session(pilot);
 
   Standard_Integer                argc = pilot->NbWords();
@@ -899,7 +899,7 @@ static IFSelect_ReturnStatus XSControl_twrite(const Handle(IFSelect_SessionPilot
   Handle(XSControl_TransferWriter) TW   = XSControl::Session(pilot)->TransferWriter();
   if (argc < 2)
   {
-    sout << " donner nom de shape draw" << std::endl;
+    sout << " give draw shape name" << std::endl;
     return IFSelect_RetError;
   }
   sout << "Attention, on alimente le modele courant ..." << std::endl;
@@ -911,7 +911,7 @@ static IFSelect_ReturnStatus XSControl_twrite(const Handle(IFSelect_SessionPilot
     TopoDS_Shape Shape = XSControl::Vars(pilot)->GetShape(ai);
     if (Shape.IsNull())
     {
-      sout << "pas un nom de shape draw:" << arg1 << std::endl;
+      sout << "not a draw shape name:" << arg1 << std::endl;
       continue;
     }
     sout << "Pour Shape : " << ai;
@@ -1011,7 +1011,7 @@ Standard_Integer XSControl_FuncShape::MoreShapes(const Handle(XSControl_WorkSess
   //  name = "*"    -> tous les transferts RACINES du TP
   //  name = "**"   -> tous les transferts du TP : VRAIMENT TOUS
   //  name = "."    -> reperage graphique (not yet impl)
-  //  name = nom(n1-n2) avec n1,n2 entiers :  les variables de nom  nomn1 a nomn2
+  //  name = nom(n1-n2) with n1,n2 integers :  the variables of name  nomn1 to nomn2
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (list.IsNull())
     list = new TopTools_HSequenceOfShape();
@@ -1044,7 +1044,7 @@ Standard_Integer XSControl_FuncShape::MoreShapes(const Handle(XSControl_WorkSess
     n2 = atoi(&name[moins + 1]);
     n1 = atoi(&name[paro + 1]);
     if (n1 < 0)
-      n1 += n2; // sinon on a n1-n2
+      n1 += n2; // otherwise we have n1-n2
   }
   //  liste
   if (n1 <= n2 && n1 > 0)
@@ -1110,7 +1110,7 @@ Standard_Boolean XSControl_FuncShape::FileAndVar(const Handle(XSControl_WorkSess
     Standard_Integer nomdeb, nomfin;
     nomdeb = resfile.SearchFromEnd("/");
     if (nomdeb <= 0)
-      nomdeb = resfile.SearchFromEnd("\\"); // pour NT
+      nomdeb = resfile.SearchFromEnd("\\"); // for NT
     if (nomdeb < 0)
       nomdeb = 0;
     nomfin = resfile.SearchFromEnd(".");

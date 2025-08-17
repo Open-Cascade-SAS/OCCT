@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerOne, IFSelect_Dispatch)
 
-//  Genere un paquet par racine (strong comp.) locale a la liste transmise
+//  Generates one packet per root (strong comp.) local to the transmitted list
 IFSelect_DispPerOne::IFSelect_DispPerOne() {}
 
 TCollection_AsciiString IFSelect_DispPerOne::Label() const
@@ -40,10 +40,10 @@ Standard_Boolean IFSelect_DispPerOne::LimitedMax(const Standard_Integer nbent,
 
 void IFSelect_DispPerOne::Packets(const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const
 {
-  IFGraph_SCRoots packsc(G, Standard_False); // OK pour SubPartsIterator
+  IFGraph_SCRoots packsc(G, Standard_False); // OK for SubPartsIterator
   packsc.SetLoad();
   packsc.GetFromIter(FinalSelection()->UniqueResult(G));
-  //   SCRoots a initie la resolution : decoupage en StrongComponants + selection
-  //   des Racines. Chaque Racine correspond a un Packet. CQFD
+  //   SCRoots initiated the resolution: splitting into StrongComponents + selection
+  //   of Roots. Each Root corresponds to a Packet. QED
   packs.GetParts(packsc);
 }

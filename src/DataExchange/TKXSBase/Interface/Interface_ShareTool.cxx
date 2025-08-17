@@ -56,7 +56,7 @@ Interface_ShareTool::Interface_ShareTool(const Handle(Interface_HGraph)& ahgraph
   theHGraph = ahgraph;
 }
 
-//    Ajout des "Implied" sur toutes les Entites du Graphe
+//    Addition of "Implied" on all Entities of the Graph
 /*void Interface_ShareTool::AddImplied (const Handle(Interface_GTool)& gtool)
 {
   Interface_Graph& thegraph = theHGraph->CGraph();
@@ -171,7 +171,7 @@ Interface_EntityIterator Interface_ShareTool::All(const Handle(Standard_Transien
   fl->Init(0);
   if (ent == model)
   {
-    //    On passe les racines en revue (l ordre de base est conserve)
+    //    We review the roots (the base order is preserved)
     Interface_EntityIterator roots = RootEntities();
     for (roots.Start(); roots.More(); roots.Next())
     {
@@ -185,7 +185,7 @@ Interface_EntityIterator Interface_ShareTool::All(const Handle(Standard_Transien
         fl->SetValue(nm, n0);
       }
     }
-    //    Attention, y a t il des oublis ?
+    //    Warning, are there any omissions?
     for (i = 1; i <= nb; i++)
       if (fl->Value(i) == 0)
       {
@@ -197,20 +197,20 @@ Interface_EntityIterator Interface_ShareTool::All(const Handle(Standard_Transien
   {
     Handle(TColStd_HSequenceOfTransient) sq = new TColStd_HSequenceOfTransient();
     sq->Append(ent);
-    //    processus de type file
+    //    file type process
     for (i = 1; i <= sq->Length(); i++)
     { // Length croit
       Handle(Standard_Transient) en  = sq->Value(i);
       Standard_Integer           num = model->Number(en);
       if (fl->Value(num) != 0)
-        continue; // deja vu
+        continue; // already seen
       n0++;
       fl->SetValue(num, n0);
       Interface_EntityIterator sh = Shareds(en);
       sq->Append(sh.Content());
     }
   }
-  //    Reste a constituer la liste, retourner si necessaire
+  //    Remains to constitute the list, return if necessary
   Handle(TColStd_HArray1OfInteger) ord = new TColStd_HArray1OfInteger(0, nb);
   ord->Init(0);
   for (i = 1; i <= nb; i++)

@@ -22,10 +22,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSignature, IFSelect_SelectExtract)
 
-//  theexact : -1  OUI   0  NON une seule valeur  > 0 NON nb de valeurs
-//  signmode : 1 prendre si contenu, 2 refuser si contenu
-//             3 prendre si egal,    4 refuser si egal
-//  ou test numerique, ajouter : 16 <  24 <=  32 >  40 >=
+//  theexact : -1  YES   0  NO single value  > 0 NO number of values
+//  signmode: 1 take if contained, 2 refuse if contained
+//            3 take if equal,     4 refuse if equal
+//  or numeric test, add : 16 <  24 <=  32 >  40 >=
 static Standard_Integer multsign(const TCollection_AsciiString& signtext,
                                  TColStd_SequenceOfAsciiString& signlist,
                                  TColStd_SequenceOfInteger&     signmode)
@@ -82,7 +82,7 @@ static Standard_Integer multsign(const TCollection_AsciiString& signtext,
   {
     signlist.Append(item);
     signmode.Append(imod);
-    //    mode ++;  valait un au depart
+    //    mode ++;  was one at start
   }
   return mode;
 }
@@ -145,13 +145,13 @@ Standard_Boolean IFSelect_SelectSignature::SortInGraph(const Standard_Integer,
     return IFSelect_Signature::MatchValue(txt, thesigntext, (theexact < 0));
   }
 
-  //  sinon : liste
-  //  Analyse en sequence : si alternance prend/prend-pas, le dernier a raison
-  //   en consequence, si que des prend ou que des prend-pas, c est commutatif
-  //   DONC recommendation : mettre les prend-pas en fin
+  //  otherwise: list
+  //  Sequence analysis: if take/don't-take alternation, the last one is right
+  //   consequently, if only takes or only don't-takes, it's commutative
+  //   THEREFORE recommendation: put the don't-takes at the end
 
-  //  AU DEPART : prendre = ne prendre que. prend-pas = prend-tout-sauf ...
-  //  Donc si le premier est un prend-pas, je commence par tout prendre
+  //  AT START: take = take only. don't-take = take-all-except ...
+  //  So if the first is a don't-take, I start by taking everything
   Standard_Integer hmod = thesignmode.Value(1);
   Standard_Integer jmod = hmod / 8;
   Standard_Integer imod = hmod - (jmod * 8);

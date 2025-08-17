@@ -16,12 +16,12 @@
 #include <Interface_Graph.hxx>
 #include <Standard_Transient.hxx>
 
-// Pour travailler, ConnectedComponants exploite AllConnected :
-// On prend un 1er Vertex, on determine ses AllConnected -> voila un 1er
+// To work, ConnectedComponants exploits AllConnected:
+// Take a 1st Vertex, determine its AllConnected -> here is a 1st
 //  Connected Component
-// On recommence jusqu'a ce qu'il n'y ait plus de Vertex libre
-//  Honnetement, si ca ne marche pas, cf classe ConnectedVerticesIterator
-//  de GraphTools  qui fait en principe la meme chose
+// Restart until there are no more free Vertices
+//  Honestly, if it doesn't work, see ConnectedVerticesIterator class
+//  from GraphTools which does basically the same thing
 IFGraph_ConnectedComponants::IFGraph_ConnectedComponants(const Interface_Graph& agraph,
                                                          const Standard_Boolean whole)
     : IFGraph_SubPartsIterator(agraph, whole)
@@ -30,9 +30,9 @@ IFGraph_ConnectedComponants::IFGraph_ConnectedComponants(const Interface_Graph& 
 
 void IFGraph_ConnectedComponants::Evaluate()
 {
-  //  On part des "loaded"
-  //  Pour chacun : s il est note dans le graphe, on passe
-  //  Sinon, on ajoute les AllConnected en tant que sub-part
+  //  Start from "loaded"
+  //  For each: if it is noted in the graph, we pass
+  //  Otherwise, add the AllConnected as sub-part
   Interface_EntityIterator loaded = Loaded();
   Reset();
   for (loaded.Start(); loaded.More(); loaded.Next())

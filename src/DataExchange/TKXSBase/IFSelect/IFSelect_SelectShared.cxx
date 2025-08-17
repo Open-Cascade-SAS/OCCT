@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectShared, IFSelect_SelectDeduct)
 
 IFSelect_SelectShared::IFSelect_SelectShared() {}
 
-// Entites partagees par d autres (a 1 niveau et au sens Strict)
+// Entities shared by others (at 1 level and in Strict sense)
 
 Interface_EntityIterator IFSelect_SelectShared::RootResult(const Interface_Graph& G) const
 {

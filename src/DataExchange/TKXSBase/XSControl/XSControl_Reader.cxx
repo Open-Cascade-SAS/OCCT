@@ -80,7 +80,7 @@ void XSControl_Reader::SetWS(const Handle(XSControl_WorkSession)& WS,
   therootsta = Standard_False;
   theroots.Clear();
   thesession = WS;
-  //  Il doit y avoir un Controller ...  Sinon onverra plus tard (apres SetNorm)
+  //  There must be a Controller ...  Otherwise we'll see later (after SetNorm)
   if (thesession->NormAdaptor().IsNull())
     return;
   Handle(Interface_InterfaceModel) model = thesession->Model();

@@ -40,7 +40,7 @@ Interface_EntityIterator IFSelect_SelectEntityNumber::RootResult(const Interface
   if (!thenum.IsNull())
     num = thenum->Value();
   if (num < 1)
-    return iter; // vide si num < 1 ou num > NbEntities
+    return iter; // empty if num < 1 or num > NbEntities
   if (num <= G.Size())
     iter.GetOneItem(G.Entity(num));
   return iter;

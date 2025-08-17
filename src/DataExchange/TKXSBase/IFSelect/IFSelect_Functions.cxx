@@ -83,7 +83,7 @@ static void SplitFileName(const Standard_CString   filename,
   nomlon = resfile.Length();
   nomdeb = resfile.SearchFromEnd("/");
   if (nomdeb <= 0)
-    nomdeb = resfile.SearchFromEnd("\\"); // pour NT
+    nomdeb = resfile.SearchFromEnd("\\"); // for NT
   if (nomdeb < 0)
     nomdeb = 0;
   nomfin = resfile.SearchFromEnd(".");
@@ -97,11 +97,11 @@ static void SplitFileName(const Standard_CString   filename,
     suffix = resfile.SubString(nomfin, nomlon);
 }
 
-//  Functions definit un certain nombre de commandes
-//  enregistrees dans le Dictionnaire de Activator (par des Act unitaires)
-//  Les actions elles-memes sont regroupees en fin de fichier
+//  Functions defines a certain number of commands
+//  registered in the Activator Dictionary (by unit Acts)
+//  The actions themselves are grouped at the end of file
 
-//  Les definitions
+//  The definitions
 
 static IFSelect_ReturnStatus funstatus(const Handle(IFSelect_SessionPilot)&)
 {
@@ -153,8 +153,8 @@ static IFSelect_ReturnStatus fun3(const Handle(IFSelect_SessionPilot)& pilot)
   }
 
   IFSelect_ReturnStatus status = WS->ReadFile(arg1);
-  // status : 0 OK, 1 erreur lecture, 2 Fail(try/catch),
-  //          -1 fichier non trouve, -2 lecture faite mais resultat vide
+  // status: 0 OK, 1 read error, 2 Fail(try/catch),
+  //          -1 file not found, -2 reading done but empty result
   switch (status)
   {
     case IFSelect_RetVoid:
@@ -381,8 +381,8 @@ static IFSelect_ReturnStatus funcount(const Handle(IFSelect_SessionPilot)& pilot
   //    return IFSelect_RetError;
   //  }
 
-  //  Ajout : si Selection, on applique un GraphCounter
-  //   Et en ce cas, on peut en avoir plusieurs : la limite est le mot-cle "on"
+  //  Addition: if Selection, we apply a GraphCounter
+  //   And in this case, we can have several: the limit is the keyword "on"
   Standard_Integer onflag = 0;
   Standard_Integer i; // svv Jan11 2000 : porting on DEC
   for (i = 2; i < argc; i++)
@@ -398,7 +398,7 @@ static IFSelect_ReturnStatus funcount(const Handle(IFSelect_SessionPilot)& pilot
   DeclareAndCast(IFSelect_SelectDeduct, seld, sel);
   if (!seld.IsNull())
   {
-    //  Si onflag, faire une SelectSuite
+    //  If onflag, create a SelectSuite
     if (onflag > 2)
     {
       Handle(IFSelect_SelectSuite) suite = new IFSelect_SelectSuite;
@@ -607,7 +607,7 @@ static IFSelect_ReturnStatus fun11(const Handle(IFSelect_SessionPilot)& pilot)
       niv = 10;
       break;
     default:
-      sout << "Unknown Mode .  data tout court pour help" << std::endl;
+      sout << "Unknown Mode .  data simply for help" << std::endl;
       return IFSelect_RetError;
   }
   WS->TraceDumpModel(niv);
@@ -745,7 +745,7 @@ static IFSelect_ReturnStatus fun14(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 1)
   {
-    sout << "Donner la valeur entiere pour IntParam" << std::endl;
+    sout << "Give integer value for IntParam" << std::endl;
     return IFSelect_RetError;
   }
   Handle(IFSelect_IntParam) intpar = new IFSelect_IntParam;
@@ -783,7 +783,7 @@ static IFSelect_ReturnStatus fun16(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 1)
   {
-    sout << "Donner la valeur texte pour TextParam" << std::endl;
+    sout << "Give text value for TextParam" << std::endl;
     return IFSelect_RetError;
   }
   Handle(TCollection_HAsciiString) textpar = new TCollection_HAsciiString();
@@ -845,7 +845,7 @@ static IFSelect_ReturnStatus fun20(const Handle(IFSelect_SessionPilot)& pilot)
     return IFSelect_RetError;
   }
 
-  //    MakeList : sur Pointed existante ou a creer
+  //    MakeList: on existing Pointed or to be created
   Handle(IFSelect_SelectPointed) pnt;
   if (mode == 'm')
   {
@@ -1193,7 +1193,7 @@ static IFSelect_ReturnStatus fun30(const Handle(IFSelect_SessionPilot)& pilot)
   if (argc < 2)
   {
     if (WS->FilePrefix().IsNull())
-      sout << "Pas de prefixe defini" << std::endl;
+      sout << "No prefix defined" << std::endl;
     else
       sout << "Prefixe : " << WS->FilePrefix()->ToCString() << std::endl;
     sout << "Pour changer :  filepref newprefix" << std::endl;
@@ -1233,16 +1233,16 @@ static IFSelect_ReturnStatus fun32(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
   {
-    sout << "Donner Dispatch et nom de Root" << std::endl;
+    sout << "Give Dispatch and Root name" << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(arg1));
   if (argc < 3)
   {
     if (WS->FileRoot(disp).IsNull())
-      sout << "Pas de racine definie pour " << arg1 << std::endl;
+      sout << "No root defined for " << arg1 << std::endl;
     else
-      sout << "Racine pour " << arg1 << " : " << WS->FileRoot(disp)->ToCString() << std::endl;
+      sout << "Root for " << arg1 << " : " << WS->FileRoot(disp)->ToCString() << std::endl;
     sout << "Pour changer :  fileroot nomdisp newroot" << std::endl;
     return IFSelect_RetVoid;
   }
@@ -1261,7 +1261,7 @@ static IFSelect_ReturnStatus fun33(const Handle(IFSelect_SessionPilot)& pilot)
   if (argc < 2)
   {
     if (WS->DefaultFileRoot().IsNull())
-      sout << "Pas de racine par defaut definie" << std::endl;
+      sout << "No default root defined" << std::endl;
     else
       sout << "Racine par defaut : " << WS->DefaultFileRoot()->ToCString() << std::endl;
     sout << "Pour changer :  filedef newdef" << std::endl;
@@ -1278,7 +1278,7 @@ static IFSelect_ReturnStatus fun34(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (!WS->HasModel())
   {
-    sout << "Pas de Modele charge, abandon" << std::endl;
+    sout << "No Model loaded, abort" << std::endl;
     return IFSelect_RetFail;
   }
 
@@ -1316,7 +1316,7 @@ static IFSelect_ReturnStatus fun36(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   IFSelect_ReturnStatus           stat = IFSelect_RetVoid;
   if (argc < 2)
-    sout << "Split : derniere liste de dispatches definie" << std::endl;
+    sout << "Split : last dispatch list defined" << std::endl;
   else
   {
     WS->ClearShareOut(Standard_True);
@@ -1391,7 +1391,7 @@ static IFSelect_ReturnStatus fun38(const Handle(IFSelect_SessionPilot)& pilot)
   DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
   if (sel.IsNull())
   {
-    sout << "Pas de Selection de Nom : " << arg1 << std::endl;
+    sout << "No Selection with Name : " << arg1 << std::endl;
     return IFSelect_RetError;
   }
   if (arg2[0] == 'k')
@@ -1441,7 +1441,7 @@ static IFSelect_ReturnStatus fun41(const Handle(IFSelect_SessionPilot)& pilot)
   DeclareAndCast(IFSelect_GeneralModifier, modif, WS->NamedItem(arg1));
   if (modif.IsNull())
   {
-    sout << "Pas de Modifier de Nom : " << arg1 << std::endl;
+    sout << "No Modifier with Name : " << arg1 << std::endl;
     return IFSelect_RetVoid;
   }
   Handle(IFSelect_IntParam) low, up;
@@ -1483,13 +1483,13 @@ static IFSelect_ReturnStatus fun42(const Handle(IFSelect_SessionPilot)& pilot)
   if (argc < 2)
   {
     sout << "Donner Nom Modifier; + Nom Selection optionnel\n"
-         << "Selection pour Mettre une Selection, sinon Annule" << std::endl;
+         << "Selection to Set a Selection, otherwise Cancel" << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_GeneralModifier, modif, WS->NamedItem(arg1));
   if (modif.IsNull())
   {
-    sout << "Pas un nom de Modifier : " << arg1 << std::endl;
+    sout << "Not a Modifier name : " << arg1 << std::endl;
     return IFSelect_RetError;
   }
   Handle(IFSelect_Selection) sel;
@@ -1498,7 +1498,7 @@ static IFSelect_ReturnStatus fun42(const Handle(IFSelect_SessionPilot)& pilot)
     sel = GetCasted(IFSelect_Selection, WS->NamedItem(arg2));
     if (sel.IsNull())
     {
-      sout << "Pas un nom de Selection : " << arg2 << std::endl;
+      sout << "Not a Selection name : " << arg2 << std::endl;
       return IFSelect_RetError;
     }
   }
@@ -1525,7 +1525,7 @@ static IFSelect_ReturnStatus fun43(const Handle(IFSelect_SessionPilot)& pilot)
   DeclareAndCast(IFSelect_GeneralModifier, modif, WS->NamedItem(arg1));
   if (modif.IsNull())
   {
-    sout << "Pas un nom de Modifier : " << arg1 << std::endl;
+    sout << "Not a Modifier name : " << arg1 << std::endl;
     return IFSelect_RetError;
   }
   Handle(Standard_Transient) item;
@@ -1560,7 +1560,7 @@ static IFSelect_ReturnStatus fun44(const Handle(IFSelect_SessionPilot)& pilot)
   DeclareAndCast(IFSelect_GeneralModifier, modif, WS->NamedItem(arg1));
   if (modif.IsNull())
   {
-    sout << "Pas un nom de Modifier : " << arg1 << std::endl;
+    sout << "Not a Modifier name : " << arg1 << std::endl;
     return IFSelect_RetError;
   }
   if (!WS->ResetAppliedModifier(modif))
@@ -1579,7 +1579,7 @@ static IFSelect_ReturnStatus fun45(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 4)
   {
-    sout << "modifmove MF rang1 rang2, M pour Model F pour File" << std::endl;
+    sout << "modifmove MF rang1 rang2, M for Model F for File" << std::endl;
     return IFSelect_RetError;
   }
   Standard_Boolean formodel;
@@ -1589,7 +1589,7 @@ static IFSelect_ReturnStatus fun45(const Handle(IFSelect_SessionPilot)& pilot)
     formodel = Standard_False;
   else
   {
-    sout << "preciser M pour Model, F pour File" << std::endl;
+    sout << "specify M for Model, F for File" << std::endl;
     return IFSelect_RetError;
   }
   Standard_Integer before = atoi(arg2);
@@ -1620,13 +1620,13 @@ static IFSelect_ReturnStatus fun51(const Handle(IFSelect_SessionPilot)& pilot)
   DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(arg1));
   if (disp.IsNull())
   {
-    sout << "Pas un nom de Dispatch : " << arg1 << std::endl;
+    sout << "Not a Dispatch name : " << arg1 << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg2));
   if (sel.IsNull())
   {
-    sout << "Pas un nom de Selection : " << arg2 << std::endl;
+    sout << "Not a Selection name : " << arg2 << std::endl;
     return IFSelect_RetError;
   }
   if (!WS->SetItemSelection(disp, sel))
@@ -1659,13 +1659,13 @@ static IFSelect_ReturnStatus fun_dispcount(const Handle(IFSelect_SessionPilot)& 
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
   {
-    sout << "Donner Nom IntParam pour Count" << std::endl;
+    sout << "Give IntParam Name for Count" << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_IntParam, par, WS->NamedItem(arg1));
   if (par.IsNull())
   {
-    sout << "Pas un nom de IntParam : " << arg1 << std::endl;
+    sout << "Not an IntParam name : " << arg1 << std::endl;
     return IFSelect_RetError;
   }
   Handle(IFSelect_DispPerCount) disp = new IFSelect_DispPerCount;
@@ -1682,13 +1682,13 @@ static IFSelect_ReturnStatus fun_dispfiles(const Handle(IFSelect_SessionPilot)& 
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
   {
-    sout << "Donner Nom IntParam pour NbFiles" << std::endl;
+    sout << "Give IntParam Name for NbFiles" << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_IntParam, par, WS->NamedItem(arg1));
   if (par.IsNull())
   {
-    sout << "Pas un nom de IntParam : " << arg1 << std::endl;
+    sout << "Not an IntParam name : " << arg1 << std::endl;
     return IFSelect_RetError;
   }
   Handle(IFSelect_DispPerFiles) disp = new IFSelect_DispPerFiles;
@@ -1711,7 +1711,7 @@ static IFSelect_ReturnStatus fun_dispsign(const Handle(IFSelect_SessionPilot)& p
   DeclareAndCast(IFSelect_Signature, sig, WS->NamedItem(arg1));
   if (sig.IsNull())
   {
-    sout << "Pas un nom de Signature : " << arg1 << std::endl;
+    sout << "Not a Signature name : " << arg1 << std::endl;
     return IFSelect_RetError;
   }
   Handle(IFSelect_DispPerSignature) disp = new IFSelect_DispPerSignature;
@@ -1738,17 +1738,17 @@ static IFSelect_ReturnStatus fun56(const Handle(IFSelect_SessionPilot)& pilot)
     return IFSelect_RetError;
   }
   Standard_Integer num = WS->DispatchRank(disp);
-  sout << "Dispatch de Nom : " << arg1 << " , en ShareOut, Numero " << num << " : ";
+  sout << "Dispatch with Name : " << arg1 << " , in ShareOut, Number " << num << " : ";
   Handle(IFSelect_Selection)       sel     = WS->ItemSelection(disp);
   Handle(TCollection_HAsciiString) selname = WS->Name(sel);
   if (sel.IsNull())
-    sout << "Pas de Selection Finale" << std::endl;
+    sout << "No Final Selection" << std::endl;
   else if (selname.IsNull())
     sout << "Selection Finale : #" << WS->ItemIdent(sel) << std::endl;
   else
     sout << "Selection Finale : " << selname->ToCString() << std::endl;
   if (disp->HasRootName())
-    sout << "-- Racine nom de fichier : " << disp->RootName()->ToCString() << std::endl;
+    sout << "-- Root file name : " << disp->RootName()->ToCString() << std::endl;
   return IFSelect_RetVoid;
 }
 
@@ -1990,7 +1990,7 @@ static IFSelect_ReturnStatus fun61(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
   {
-    sout << "Donner Nom de Transformer" << std::endl;
+    sout << "Give Transformer Name" << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_Transformer, tsf, WS->NamedItem(arg1));
@@ -2004,10 +2004,10 @@ static IFSelect_ReturnStatus fun61(const Handle(IFSelect_SessionPilot)& pilot)
       sout << "Erreur, Transformation ignoree" << std::endl;
       break;
     case -2:
-      sout << "Erreur sur edition sur place, risque de corruption (verifier)" << std::endl;
+      sout << "Error on in-place editing, risk of corruption (check)" << std::endl;
       break;
     case -1:
-      sout << "Erreur sur edition locale, risque de corruption (verifier)" << std::endl;
+      sout << "Error on local editing, risk of corruption (check)" << std::endl;
       break;
     case 0:
       if (tsf.IsNull())
@@ -2058,20 +2058,20 @@ static IFSelect_ReturnStatus fun6465(const Handle(IFSelect_SessionPilot)& pilot)
   //        ****    Run Modifier avec Standard Copy     ****
   //        ****    Run Modifier avec OnTheSpot         ****
   Standard_Boolean runcopy = (pilot->Arg(0)[3] == 'c');
-  //  soit c est un nom, sinon c est une commande
+  //  either it's a name, otherwise it's a command
   Handle(IFSelect_Modifier) modif;
   if (WS->NameIdent(arg1) > 0)
     modif = GetCasted(IFSelect_Modifier, WS->NamedItem(arg1));
   else
   {
-    pilot->RemoveWord(0); // c etait la commande run
+    pilot->RemoveWord(0); // it was the run command
     pilot->Perform();
     modif = GetCasted(IFSelect_Modifier, pilot->RecordedItem());
   }
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (modif.IsNull())
   {
-    sout << "Pas un nom de Modifier : " << arg1 << std::endl;
+    sout << "Not a Modifier name : " << arg1 << std::endl;
     return IFSelect_RetError;
   }
 
@@ -2096,10 +2096,10 @@ static IFSelect_ReturnStatus fun6465(const Handle(IFSelect_SessionPilot)& pilot)
       sout << "Erreur, Transformation ignoree" << std::endl;
       break;
     case -2:
-      sout << "Erreur sur edition sur place, risque de corruption (verifier)" << std::endl;
+      sout << "Error on in-place editing, risk of corruption (check)" << std::endl;
       break;
     case -1:
-      sout << "Erreur sur edition locale, risque de corruption (verifier)" << std::endl;
+      sout << "Error on local editing, risk of corruption (check)" << std::endl;
       break;
     case 0:
       if (modif.IsNull())
@@ -2153,7 +2153,7 @@ static IFSelect_ReturnStatus fun70(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
   {
-    sout << "Donner Nom de Selection" << std::endl;
+    sout << "Give Selection Name" << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
@@ -2217,7 +2217,7 @@ static IFSelect_ReturnStatus fun73(const Handle(IFSelect_SessionPilot)& pilot)
   if (argc < 2)
   {
     sout << "Donner la description du SelectRange"
-         << "    Formes admises :\n <n1> <n2>  : Range de <n1> a <n2>\n"
+         << "    Accepted forms :\n <n1> <n2>  : Range from <n1> to <n2>\n"
          << " <n1> tout seul : Range n0 <n1>\n  from <n1>  : Range From <n1>\n"
          << "  until <n2> : Range Until <n2>" << std::endl;
     return IFSelect_RetVoid;
@@ -2293,7 +2293,7 @@ static IFSelect_ReturnStatus fun76(const Handle(IFSelect_SessionPilot)& pilot)
     return IFSelect_RetFail;
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
-    sout << "Diff sans input : ne pas oublier de les definir (ctlmain, ctlsec)!" << std::endl;
+    sout << "Diff without input : don't forget to define them (ctlmain, ctlsec)!" << std::endl;
   DeclareAndCast(IFSelect_Selection, selmain, WS->NamedItem(arg1));
   DeclareAndCast(IFSelect_Selection, selsec, WS->NamedItem(arg2));
   if (argc >= 2)
@@ -2315,14 +2315,14 @@ static IFSelect_ReturnStatus fun77(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
   {
-    sout << "Donner Noms de Control et MainInput" << std::endl;
+    sout << "Give Control and MainInput Names" << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
   DeclareAndCast(IFSelect_Selection, selmain, WS->NamedItem(arg2));
   if (WS->SetControl(sel, selmain, Standard_True))
     return IFSelect_RetDone;
-  sout << "Nom incorrect ou Selection " << arg1 << " pas de type Control" << std::endl;
+  sout << "Incorrect name or Selection " << arg1 << " not of Control type" << std::endl;
   return IFSelect_RetFail;
 }
 
@@ -2336,14 +2336,14 @@ static IFSelect_ReturnStatus fun78(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
   {
-    sout << "Donner Noms de Control et SecondInput" << std::endl;
+    sout << "Give Control and SecondInput Names" << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg1));
   DeclareAndCast(IFSelect_Selection, seldif, WS->NamedItem(arg2));
   if (WS->SetControl(sel, seldif, Standard_False))
     return IFSelect_RetDone;
-  sout << "Nom incorrect ou Selection " << arg1 << " pas de type Control" << std::endl;
+  sout << "Incorrect name or Selection " << arg1 << " not of Control type" << std::endl;
   return IFSelect_RetFail;
 }
 
@@ -2405,7 +2405,7 @@ static IFSelect_ReturnStatus fun82(const Handle(IFSelect_SessionPilot)& pilot)
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
   {
-    sout << "Donner Nom IntParam pour n0 Entite" << std::endl;
+    sout << "Give IntParam Name for Entity n0" << std::endl;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_IntParam, par, WS->NamedItem(arg1));
@@ -2513,7 +2513,7 @@ static IFSelect_ReturnStatus fun91(const Handle(IFSelect_SessionPilot)& pilot)
     sout << "Pas une SelectPointed:" << arg1 << std::endl;
     return IFSelect_RetError;
   }
-  const Handle(Interface_InterfaceModel)& model = WS->Model(); // pour Print
+  const Handle(Interface_InterfaceModel)& model = WS->Model(); // for Print
   if (argc == 2)
   { // listage simple
     Standard_Integer nb = sp->NbItems();
@@ -2581,7 +2581,7 @@ static IFSelect_ReturnStatus fun91(const Handle(IFSelect_SessionPilot)& pilot)
     }
     else
     {
-      sout << "Ignore:" << argi << " , donner n0 PRECEDE de + ou - ou /" << std::endl;
+      sout << "Ignore:" << argi << " , give n0 PRECEDED by + or - or /" << std::endl;
     }
   }
   return IFSelect_RetDone;
@@ -2770,7 +2770,7 @@ static IFSelect_ReturnStatus fun_editvalue(const Handle(IFSelect_SessionPilot)& 
     return IFSelect_RetError;
 
   Standard_Boolean islist = edf->Editor()->IsList(num);
-  Standard_CString name   = edf->Editor()->Name(num, Standard_True); // vrai nom
+  Standard_CString name   = edf->Editor()->Name(num, Standard_True); // real name
   Handle(TColStd_HSequenceOfHAsciiString) listr;
   Handle(TCollection_HAsciiString)        str;
   sout << "Value Name : " << name << (edf->IsModified(num) ? "(already edited) : " : " : ");
@@ -3200,7 +3200,7 @@ void IFSelect_Functions::Init()
   IFSelect_Act::AddFunc("settext",
                         "Name:TextParam  newValue:string   : Change valeur TextParam",
                         fun17);
-  IFSelect_Act::AddFunc("dumpsel", "Dump Selection suivi du Nom de la Selection a dumper", fun19);
+  IFSelect_Act::AddFunc("dumpsel", "Dump Selection followed by Name of Selection to dump", fun19);
   IFSelect_Act::AddFunc("evalsel", "name:Selection [num/sel]  : Evalue une Selection", fun20);
   IFSelect_Act::AddFunc("givelist", "num/sel [num/sel ...]  : Evaluates GiveList", fun20);
   IFSelect_Act::AddFunc("giveshort", "num/sel [num/sel ...]  : GiveList in short form", fun20);
@@ -3248,14 +3248,14 @@ void IFSelect_Functions::Init()
   IFSelect_Act::AddFunc("listmodif", "List Final Modifiers", fun40);
   IFSelect_Act::AddFunc("dumpmodif", "modif:Modifier  : Affiche le Statut d'un Modifier", fun41);
   IFSelect_Act::AddFunc("modifsel",
-                        "modif:Modifier [sel:Selection]  : Change/Annule Selection de Modifier",
+                        "modif:Modifier [sel:Selection]  : Change/Cancel Selection of Modifier",
                         fun42);
   IFSelect_Act::AddFunc(
     "setapplied",
     "modif:Modifier [name:un item sinon sortie fichier]  : Applique un Modifier",
     fun43);
   IFSelect_Act::AddFunc("resetapplied",
-                        "modif:Modifier  : Enleve un Modifier de la sortie fichier",
+                        "modif:Modifier  : Remove a Modifier from file output",
                         fun44);
   IFSelect_Act::AddFunc(
     "modifmove",
@@ -3263,7 +3263,7 @@ void IFSelect_Functions::Init()
     fun45);
 
   IFSelect_Act::AddFunc("dispsel",
-                        "disp:Dispatch sel:Selection  -> Selection Finale de Dispatch",
+                        "disp:Dispatch sel:Selection  -> Final Selection of Dispatch",
                         fun51);
   IFSelect_Act::AddFSet("dispone", "cree DispPerOne", fun_dispone);
   IFSelect_Act::AddFSet("dispglob", "cree DispGlobal", fun_dispglob);
@@ -3272,7 +3272,7 @@ void IFSelect_Functions::Init()
   IFSelect_Act::AddFSet("dispsign", "sign:Signature  : cree DispPerSignature", fun_dispsign);
   IFSelect_Act::AddFunc("dumpdisp", "disp:Dispatch   : Affiche le Statut d'un Dispatch", fun56);
 
-  IFSelect_Act::AddFunc("xremove", "nom  : Remove a Control Item de la Session", fun57);
+  IFSelect_Act::AddFunc("xremove", "nom  : Remove a Control Item from the Session", fun57);
   IFSelect_Act::AddFunc("evaldisp",
                         "mode=[0-3]  disp:Dispatch  : Evaluates one or more Dispatch(es)",
                         fun58);
@@ -3284,7 +3284,7 @@ void IFSelect_Functions::Init()
     "writedisp",
     "filepattern  disp:Dispatch [givelist]  : Writes Entities by Splitting by a Dispatch",
     fun_writedisp);
-  IFSelect_Act::AddFunc("evalcomplete", "Evaluation Complete de la Repartition", fun59);
+  IFSelect_Act::AddFunc("evalcomplete", "Complete Evaluation of the Distribution", fun59);
 
   IFSelect_Act::AddFunc("runcheck", "affiche LastRunCheckList (write,modif)", fun60);
   IFSelect_Act::AddFunc("runtranformer", "transf:Transformer  : Applique un Transformer", fun61);
@@ -3305,7 +3305,7 @@ void IFSelect_Functions::Init()
                         "sel:Selection genre Deduct ou Extract  input:Selection  : Set Input",
                         fun71);
   IFSelect_Act::AddFSet("modelroots", "cree SelectModelRoots", fun72);
-  IFSelect_Act::AddFSet("range", "options... : cree SelectRange ...; tout court pour help", fun73);
+  IFSelect_Act::AddFSet("range", "options... : create SelectRange ...; simply for help", fun73);
   IFSelect_Act::AddFSet("roots", "cree SelectRoots (local roots)", fun74);
   IFSelect_Act::AddFSet("shared", "cree SelectShared", fun75);
   IFSelect_Act::AddFSet("diff", "[main:Selection diff:Selection]  : cree SelectDiff", fun76);
@@ -3335,10 +3335,10 @@ void IFSelect_Functions::Init()
   IFSelect_Act::AddFSet("typecontain", "type:string  : cree SelectTextType Contains", fun89);
   IFSelect_Act::AddFSet("pointed", "cree SelectPointed [num/sel num/sel]", fun90);
   IFSelect_Act::AddFunc("setpointed",
-                        "sel:SelectPointed  : edition SelectPointed. tout court pour help",
+                        "sel:SelectPointed  : edit SelectPointed. simply for help",
                         fun91);
   IFSelect_Act::AddFunc("setlist",
-                        "sel:SelectPointed  : edition SelectPointed. tout court pour help",
+                        "sel:SelectPointed  : edit SelectPointed. simply for help",
                         fun91);
   IFSelect_Act::AddFSet("incorrect", "cree SelectIncorrectEntities (computed)", fun92);
 

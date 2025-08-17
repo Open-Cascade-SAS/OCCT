@@ -112,10 +112,10 @@ void Interface_LineBuffer::Prepare()
       myLine.SetValue(i, ' ');
     }
   }
-  //  GERER KEEP : est-il jouable ? sinon, annuler. sioui, noter la jointure
+  //  MANAGE KEEP: is it playable? otherwise, cancel. if yes, note the junction
   if (myKeep > 0)
   {
-    myKeep += (myInit + 1); // myInit, et +1 car Keep INCLUS
+    myKeep += (myInit + 1); // myInit, and +1 because Keep INCLUDED
   }
   if (myKeep > 0)
   {
@@ -133,7 +133,7 @@ void Interface_LineBuffer::Prepare()
 
 void Interface_LineBuffer::Keep()
 {
-  //  Si Keep, sauver de myKeep + 1  a  myLen (+1 pour 0 final)
+  //  If Keep, save from myKeep + 1 to myLen (+1 for final 0)
   if (myKeep > 0)
   {
     myLine.SetValue(1, myKept);

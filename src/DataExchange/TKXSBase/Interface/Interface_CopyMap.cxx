@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_CopyMap, Interface_CopyControl)
 
-//  CopyMap : rien de plus qu une Map passive
+//  CopyMap : nothing more than a passive Map
 Interface_CopyMap::Interface_CopyMap(const Handle(Interface_InterfaceModel)& amodel)
     : theres(0, amodel->NbEntities())
 {

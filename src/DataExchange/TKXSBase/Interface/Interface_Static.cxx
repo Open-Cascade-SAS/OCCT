@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_Static, Interface_TypedValue)
 
 static char defmess[31];
 
-//  Fonctions Satisfies offertes en standard ...
+//  Satisfies functions offered as standard ...
 
 // svv #2
 // static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
@@ -133,7 +133,7 @@ Standard_Boolean Interface_Static::UpdatedStatus() const
 }
 
 //  #######################################################################
-//  #########    DICTIONNAIRE DES STATICS (static sur Static)    ##########
+//  #########    STATICS DICTIONARY (static on Static)    ##########
 
 Standard_Boolean Interface_Static::Init(const Standard_CString    family,
                                         const Standard_CString    name,
@@ -193,14 +193,14 @@ Standard_Boolean Interface_Static::Init(const Standard_CString   family,
       Handle(Interface_Static) unstat = Interface_Static::Static(name);
       if (unstat.IsNull())
         return Standard_False;
-      //    Editions : init donne un petit texte d edition, en 2 termes "cmd var" :
+      //    Editions : init gives a small edition text, in 2 terms "cmd var" :
       //  imin <ival>  imax <ival>  rmin <rval>  rmax <rval>  unit <def>
       //  enum <from>  ematch <from>  eval <cval>
       Standard_Integer i, iblc = 0;
       for (i = 0; init[i] != '\0'; i++)
         if (init[i] == ' ')
           iblc = i + 1;
-      //  Reconnaissance du sous-cas et aiguillage
+      //  Recognition of the sub-case and routing
       if (init[0] == 'i' && init[2] == 'i')
         unstat->SetIntegerLimit(Standard_False, atoi(&init[iblc]));
       else if (init[0] == 'i' && init[2] == 'a')
@@ -335,7 +335,7 @@ Standard_Integer Interface_Static::IDef(const Standard_CString name, const Stand
   return 0;
 }
 
-//  ##########  VALEUR COURANTE  ###########
+//  ##########  CURRENT VALUE  ###########
 
 Standard_Boolean Interface_Static::IsSet(const Standard_CString name, const Standard_Boolean proper)
 {
@@ -459,7 +459,7 @@ Handle(TColStd_HSequenceOfHAsciiString) Interface_Static::Items(const Standard_I
       ok = Standard_True;
     }
     else
-    { // tous ... sauf famille a $
+    { // all ... except family with $
       if (item->Family()[0] == '$')
         continue;
     }

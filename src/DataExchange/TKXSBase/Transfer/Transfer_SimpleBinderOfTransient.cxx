@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient, Transfer_Binder)
 
-//  "Handle(Standard_Transient)" : la classe de base pour le Resultat
+//  "Handle(Standard_Transient)": the base class for the Result
 Transfer_SimpleBinderOfTransient::Transfer_SimpleBinderOfTransient() {}
 
 //    Standard_Boolean  Transfer_SimpleBinderOfTransient::IsMultiple() const

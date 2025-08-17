@@ -16,19 +16,19 @@
 #include <Standard_NoSuchObject.hxx>
 
 
-//  Liste Globale des Modules, dans laquelle on va se servir
+//  Global List of Modules, from which we will be served
 
 static Handle(LibCtl_GlobalNode) theglobal;
 
-//  Donnees pour optimisation (dernier Protocole demande)
+//  Data for optimization (last Protocol requested)
 
 static Handle(TheProtocol) theprotocol;
 static Handle(LibCtl_Node) thelast;
 
 
-//  Alimentation de la liste globale
-//  ATTENTION : SetGlobal fait de la substitution, c-a-d que c est le dernier
-//   qui a raison pour un Protocol donne
+//  Feeding the global list
+//  WARNING: SetGlobal performs substitution, i.e. it's the last one
+//   that is right for a given Protocol
     void LibCtl_Library::SetGlobal
   (const Handle(TheModule)& amodule, const Handle(TheProtocol)& aprotocol)
 {
@@ -36,19 +36,19 @@ static Handle(LibCtl_Node) thelast;
   theglobal->Add(amodule,aprotocol);
 }
 
-// Constructeur d apres Protocole
+// Constructor from Protocol
     LibCtl_Library::LibCtl_Library (const Handle(TheProtocol)& aprotocol)
 {
   Standard_Boolean last = Standard_False;
-  if (aprotocol.IsNull()) return;    // PAS de protocole = Lib VIDE
+  if (aprotocol.IsNull()) return;    // NO protocol = EMPTY Lib
   if (!theprotocol.IsNull()) last =
     (theprotocol == aprotocol);
 
   if (last) thelist = thelast;
-//  Si Pas d optimisation disponible : construire la liste
+//  If no optimization available: build the list
   else {
     AddProtocol(aprotocol);
-//  Ceci definit l optimisation (pour la fois suivante)
+//  This defines the optimization (for the next time)
     thelast     = thelist;
     theprotocol = aprotocol;
   }
@@ -58,16 +58,16 @@ static Handle(LibCtl_Node) thelast;
     LibCtl_Library::LibCtl_Library ()    {  }
 
 
-//  Ajout d un Protocol : attention, desoptimise (sinon risque de confusion !)
+//  Adding a Protocol: beware, deoptimizes (otherwise risk of confusion!)
     void LibCtl_Library::AddProtocol
   (const Handle(Standard_Transient)& aprotocol)
 {
-//  DownCast car Protocol->Resources, meme redefini et utilise dans d autres
-//  librairies, doit toujours renvoyer le type le plus haut
+//  DownCast because Protocol->Resources, even redefined and used in other
+//  libraries, must always return the highest type
   Handle(TheProtocol) aproto = Handle(TheProtocol)::DownCast(aprotocol);
   if (aproto.IsNull()) return;
 
-//  D abord, ajouter celui-ci a la liste : chercher le Node
+//  First, add this one to the list: search for the Node
   Handle(LibCtl_GlobalNode) curr;
   for (curr = theglobal; !curr.IsNull(); ) {        // curr->Next : plus loin
     const Handle(TheProtocol)& protocol = curr->Protocol();
@@ -79,14 +79,14 @@ static Handle(LibCtl_Node) thelast;
 	break;  // UN SEUL MODULE PAR PROTOCOLE
       }
     }
-    curr = curr->Next();  // cette formule est refusee dans "for"
+    curr = curr->Next();  // this formula is refused in "for"
   }
-//  Ensuite, Traiter les ressources
+//  Then, process the resources
   Standard_Integer nb = aproto->NbResources();
   for (Standard_Integer i = 1; i <= nb; i ++) {
     AddProtocol (aproto->Resource(i));
   }
-//  Ne pas oublier de desoptimiser
+//  Don't forget to deoptimize
   theprotocol.Nullify();
   thelast.Nullify();
 }
@@ -97,25 +97,25 @@ static Handle(LibCtl_Node) thelast;
     void LibCtl_Library::SetComplete ()
 {
   thelist = new LibCtl_Node;
-//    On prend chacun des Protocoles de la Liste Globale et on l ajoute
+//    We take each of the Protocols from the Global List and add it
   Handle(LibCtl_GlobalNode) curr;
   for (curr = theglobal; !curr.IsNull(); ) {        // curr->Next : plus loin
     const Handle(TheProtocol)& protocol = curr->Protocol();
-//    Comme on prend tout tout tout, on ne se preoccupe pas des Ressources !
+//    Since we take everything, we don't worry about Resources!
     if (!protocol.IsNull()) thelist->AddNode(curr);
-    curr = curr->Next();  // cette formule est refusee dans "for"
+    curr = curr->Next();  // this formula is refused in "for"
   }
 }
 
 
-//  Selection : Tres fort, on retourne le Module correspondant a un Type
-//  (ainsi que le CaseNumber retourne par le protocole correspondant)
+//  Selection: Very powerful, we return the Module corresponding to a Type
+//  (as well as the CaseNumber returned by the corresponding protocol)
 
     Standard_Boolean LibCtl_Library::Select
   (const TheObject& obj,
    Handle(TheModule)& module, Standard_Integer& CN) const
 {
-  module.Nullify();  CN = 0;    // Reponse "pas trouve"
+  module.Nullify();  CN = 0;    // Response "not found"
   if (thelist.IsNull()) return Standard_False;
   Handle(LibCtl_Node) curr = thelist;
   for (curr = thelist; !curr.IsNull(); ) {        // curr->Next : plus loin
@@ -127,9 +127,9 @@ static Handle(LibCtl_Node) thelast;
 	return Standard_True;
       }
     }
-    curr = curr->Next();        // cette formule est refusee dans "for"
+    curr = curr->Next();        // this formula is refused in "for"
   }
-  return Standard_False;        // ici, pas trouce
+  return Standard_False;        // here, not found
 }
 
 

@@ -67,7 +67,7 @@ Interface_ShareFlags::Interface_ShareFlags(const Interface_Graph& agraph)
   theroots = new TColStd_HSequenceOfTransient();
   for (Standard_Integer i = 1; i <= nb; i++)
   {
-    //    Resultat obtenu depuis le Graph
+    //    Result obtained from the Graph
     Handle(Standard_Transient)           ent  = themodel->Value(i);
     Handle(TColStd_HSequenceOfTransient) list = agraph.GetSharings(ent);
 
@@ -90,13 +90,13 @@ void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&    lib,
   for (i = 1; i <= nb; i++)
   {
 
-    //    ATTENTION : Si Entite non chargee donc illisible, basculer sur son
-    //    "Contenu" equivalent
+    //    WARNING: If Entity not loaded hence unreadable, switch to its
+    //    equivalent "Content"
     Handle(Standard_Transient) ent = themodel->Value(i);
     if (themodel->IsRedefinedContent(i))
       ent = themodel->ReportEntity(i)->Content();
 
-    //    Resultat obtenu via GeneralLib
+    //    Result obtained via GeneralLib
     Interface_EntityIterator        iter;
     Handle(Interface_GeneralModule) module;
     Standard_Integer                CN;
@@ -111,7 +111,7 @@ void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&    lib,
         module->FillShared(themodel, CN, ent, iter);
     }
 
-    //    Entites partagees par <ent> : reste a noter chacune comme "Shared"
+    //    Entities shared by <ent>: need to mark each one as "Shared"
     for (iter.Start(); iter.More(); iter.Next())
     {
       Standard_Integer num = themodel->Number(iter.Value());

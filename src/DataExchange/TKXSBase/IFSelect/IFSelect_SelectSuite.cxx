@@ -72,8 +72,8 @@ Interface_EntityIterator IFSelect_SelectSuite::RootResult(const Interface_Graph&
   Standard_Boolean         firstin = (HasInput() || HasAlternate());
   if (firstin)
     iter = InputResult(G);
-  //   Demarrage : on prend l Input/Alternate SI un des 2 est mis
-  //   Sinon, on demarre sur la definition de base de la premiere selection
+  //   Starting : we take the Input/Alternate IF one of the 2 is set
+  //   Otherwise, we start on the basic definition of the first selection
 
   Standard_Integer i, nb = NbItems();
   for (i = 1; i <= nb; i++)
@@ -81,7 +81,7 @@ Interface_EntityIterator IFSelect_SelectSuite::RootResult(const Interface_Graph&
     Handle(IFSelect_SelectDeduct) anitem = Item(i);
     if (firstin)
       anitem->Alternate()->SetList(iter.Content());
-    firstin = Standard_True; // ensuite c est systematique
+    firstin = Standard_True; // then it's systematic
     iter    = anitem->UniqueResult(G);
   }
   return iter;

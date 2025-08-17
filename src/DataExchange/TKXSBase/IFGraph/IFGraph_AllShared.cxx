@@ -34,7 +34,7 @@ IFGraph_AllShared::IFGraph_AllShared(const Interface_Graph&            agraph,
 void IFGraph_AllShared::GetFromEntity(const Handle(Standard_Transient)& ent)
 {
   thegraph.GetFromEntity(ent, Standard_True);
-} // le fait pour nous
+} // does it for us
 
 void IFGraph_AllShared::GetFromIter(const Interface_EntityIterator& iter)
 {

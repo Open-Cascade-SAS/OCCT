@@ -35,7 +35,7 @@
 
 //  ....                           CONSTRUCTEURS                           ....
 
-//  ....       Construction a partir de la connaissance des Entites        ....
+//  ....       Construction from Entity knowledge        ....
 
 Interface_Graph::Interface_Graph(const Handle(Interface_InterfaceModel)& amodel,
                                  const Interface_GeneralLib& /*lib*/,
@@ -81,7 +81,7 @@ Interface_Graph::Interface_Graph(const Handle(Interface_InterfaceModel)& amodel,
   Evaluate();
 }
 
-//  ....                Construction depuis un autre Graph                ....
+//  ....                Construction from another Graph                ....
 
 Interface_Graph::Interface_Graph(const Interface_Graph& agraph, const Standard_Boolean /*copied*/)
     : themodel(agraph.Model()),
@@ -211,11 +211,11 @@ void Interface_Graph::Evaluate()
   }
 }
 
-//  ....                Construction depuis un autre Graph                ....
+//  ....                Construction from another Graph                ....
 
 //  ###########################################################################
 
-//  ....                ACCES UNITAIRES AUX DONNEES DE BASE                ....
+//  ....                UNITARY ACCESS TO BASE DATA                ....
 
 void Interface_Graph::Reset()
 {
@@ -318,7 +318,7 @@ Interface_BitMap& Interface_Graph::CBitMap()
 
 //  ###########################################################################
 
-//  ....      Chargements Elementaires avec Propagation de "Share"      .... //
+//  ....      Elementary Loadings with "Share" Propagation      .... //
 
 const Handle(Interface_InterfaceModel)& Interface_Graph::Model() const
 {
@@ -328,7 +328,7 @@ const Handle(Interface_InterfaceModel)& Interface_Graph::Model() const
 void Interface_Graph::GetFromModel()
 {
   if (themodel.IsNull() || thestats.IsNull())
-    return; // no model ... (-> on n ira pas loin)
+    return; // no model ... (-> we won't go far)
   theflags.Init(Standard_True, Graph_Present);
   thestats->Init(0);
 }
@@ -343,11 +343,11 @@ void Interface_Graph::GetFromEntity(const Handle(Standard_Transient)& ent,
   if (!num)
     return;
   if (theflags.CTrue(num, Graph_Present))
-    return; // deja pris : on passe
+    return; // already taken : we skip
   thestats->SetValue(num, newstat);
   if (!shared)
     return;
-  //  Attention a la redefinition !
+  //  Watch out for redefinition !
   Interface_EntityIterator aIter = GetShareds(ent);
 
   for (; aIter.More(); aIter.Next())
@@ -370,25 +370,25 @@ void Interface_Graph::GetFromEntity(const Handle(Standard_Transient)& ent,
 
   if (pasla)
   {
-    ///    theflags.SetTrue (num, Graph_Present);   // nouveau : noter avec newstat
+    ///    theflags.SetTrue (num, Graph_Present);   // new : note with newstat
     thestats->SetValue(num, newstat);
   }
   else
   {
     Standard_Integer overstat = stat;
     if (stat != newstat)
-    { // deja pris, meme statut : passer
+    { // already taken, same status : skip
       if (cumul)
-        overstat += overlapstat; // nouveau statut : avec cumul ...
+        overstat += overlapstat; // new status : with cumulation ...
       else
-        overstat = overlapstat; // ... ou sans (statut force)
-      if (stat != overstat)     // si repasse deja faite, passer
+        overstat = overlapstat; // ... or without (forced status)
+      if (stat != overstat)     // if repass already done, skip
         thestats->SetValue(num, overstat);
     }
   }
   if (!shared)
     return;
-  //  Attention a la redefinition !
+  //  Watch out for redefinition !
   Interface_EntityIterator aIter = GetShareds(ent);
 
   for (; aIter.More(); aIter.Next())
@@ -457,7 +457,7 @@ void Interface_Graph::GetFromGraph(const Interface_Graph& agraph, const Standard
 
 //  #####################################################################
 
-//  ....                Listage des Entites Partagees                ....
+//  ....                Listing of Shared Entities                ....
 
 Standard_Boolean Interface_Graph::HasShareErrors(const Handle(Standard_Transient)& ent) const
 {

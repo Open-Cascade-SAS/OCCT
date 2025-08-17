@@ -16,8 +16,8 @@
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
 
-//  Cycles utilise les services de StrongComponants :
-//  Il retient les Strong Componants qui ne sont pas Single
+//  Cycles uses the services of StrongComponants :
+//  It retains the Strong Componants which are not Single
 IFGraph_Cycles::IFGraph_Cycles(const Interface_Graph& agraph, const Standard_Boolean whole)
     : IFGraph_SubPartsIterator(agraph, whole)
 {

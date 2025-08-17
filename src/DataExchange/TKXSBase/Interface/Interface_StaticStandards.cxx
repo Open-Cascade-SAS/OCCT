@@ -47,11 +47,11 @@ void Interface_Static::Standards()
   Interface_Static::Init("XSTEP", "read.maxprecision.val", 'r', "1.");
 
   //   encode regularity
-  //  negatif ou nul : ne rien faire. positif : on y va
+  //  negative or null : do nothing. positive : let's go
   Interface_Static::Init("XSTEP", "read.encoderegularity.angle", 'r', "0.01");
 
   //   compute surface curves
-  //  0 : par defaut. 2 : ne garder que le 2D. 3 : ne garder que le 3D
+  //  0 : by default. 2 : keep only 2D. 3 : keep only 3D
   // gka S4054
   Interface_Static::Init("XSTEP", "read.surfacecurve.mode", 'e', "");
   Interface_Static::Init("XSTEP", "read.surfacecurve.mode", '&', "ematch -3");
@@ -84,8 +84,8 @@ void Interface_Static::Standards()
   //  Interface_Static::Init("XSTEP"  ,"write.surfacecurve.mode", '&',"eval NoAnalytic");
   Interface_Static::SetIVal("write.surfacecurve.mode", 1);
 
-  //  lastpreci : pour recuperer la derniere valeur codee (cf XSControl)
-  //    (0 pour dire : pas codee)
+  //  lastpreci : to recover the last encoded value (cf XSControl)
+  //    (0 to say : not encoded)
   //: S4136  Interface_Static::Init("std"    ,"lastpreci", 'r',"0.");
 
   // load messages if needed

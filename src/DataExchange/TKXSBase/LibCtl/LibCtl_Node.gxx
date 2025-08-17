@@ -15,9 +15,9 @@
 //#include <LibCtl_Node.ixx>
 
 
-//  Classe generique imbriquee dans Library : utilisee pour construire la
-//  listes de Modules d une librairie  (cf Library pour plus de details)
-//  (En fait : Liste de Global Nodes -> Module + Protocol)
+//  Generic class nested in Library: used to build the
+//  lists of Modules of a library  (see Library for more details)
+//  (In fact: List of Global Nodes -> Module + Protocol)
 
 LibCtl_Node::LibCtl_Node ()    {  }
 

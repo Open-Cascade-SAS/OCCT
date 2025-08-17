@@ -47,7 +47,7 @@ static const Standard_ExtString   voidext = {0};
 XSControl_Utils::XSControl_Utils() {}
 
 //  #########################################################
-//  #######           Fonctions  de   TRACE           #######
+//  #######           TRACE   Functions           #######
 
 void XSControl_Utils::TraceLine(const Standard_CString line) const
 {
@@ -102,7 +102,7 @@ void XSControl_Utils::TraceLines(const Handle(Standard_Transient)& lines) const
 }
 
 //  #########################################################
-//  #######   TRANSIENT : Quelques  acces  de  base   #######
+//  #######   TRANSIENT : Some  basic  access   #######
 
 Standard_Boolean XSControl_Utils::IsKind(const Handle(Standard_Transient)& item,
                                          const Handle(Standard_Type)&      what) const
@@ -133,7 +133,7 @@ Standard_CString XSControl_Utils::TypeName(const Handle(Standard_Transient)& ite
   return tn;
 }
 
-//  #######       TRANSIENT : Fonctions de liste       #######
+//  #######       TRANSIENT : List functions       #######
 
 Handle(Standard_Transient) XSControl_Utils::TraValue(const Handle(Standard_Transient)& seqval,
                                                      const Standard_Integer            num) const
@@ -200,7 +200,7 @@ void XSControl_Utils::DateValues(const Standard_CString text,
 }
 
 //  ##########################################################
-//  #######           STRING : Ascii de base           #######
+//  #######           STRING : Basic Ascii           #######
 
 Standard_CString XSControl_Utils::ToCString(const Handle(TCollection_HAsciiString)& strval) const
 {
@@ -225,7 +225,7 @@ TCollection_AsciiString XSControl_Utils::ToAString(const Standard_CString strcon
   return TCollection_AsciiString(strcon);
 }
 
-//  #######         STRING : Extended de base         #######
+//  #######         STRING : Basic Extended         #######
 
 Standard_ExtString XSControl_Utils::ToEString(
   const Handle(TCollection_HExtendedString)& strval) const
@@ -388,7 +388,7 @@ void XSControl_Utils::AppendEStr(const Handle(TColStd_HSequenceOfHExtendedString
 }
 
 //  ##########################################################
-//  #######           SHAPES : Acces de base           #######
+//  #######           SHAPES : Basic access           #######
 
 TopoDS_Shape XSControl_Utils::CompoundFromSeq(const Handle(TopTools_HSequenceOfShape)& seqval) const
 {
@@ -420,7 +420,7 @@ TopAbs_ShapeEnum XSControl_Utils::ShapeType(const TopoDS_Shape&    shape,
       typ = ShapeType(sh, compound);
     if (res == TopAbs_SHAPE)
       res = typ;
-    //   Egalite : OK;  Pseudo-Egalite : EDGE/WIRE ou FACE/SHELL
+    //   Equality: OK;  Pseudo-Equality: EDGE/WIRE or FACE/SHELL
     else if (res == TopAbs_EDGE && typ == TopAbs_WIRE)
       res = typ;
     else if (res == TopAbs_WIRE && typ == TopAbs_EDGE)
@@ -446,7 +446,7 @@ TopoDS_Shape XSControl_Utils::SortedCompound(const TopoDS_Shape&    shape,
   TopoDS_Shape     sh, sh0;
   Standard_Integer nb = 0;
 
-  //  Compound : on le prend, soit tel quel, soit son contenu
+  //  Compound: we take it, either as is, or its content
   if (typ == TopAbs_COMPOUND || typ == TopAbs_COMPSOLID)
   {
     TopoDS_Compound C;

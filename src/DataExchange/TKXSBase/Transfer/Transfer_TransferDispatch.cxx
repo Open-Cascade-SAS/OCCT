@@ -59,7 +59,7 @@ Standard_Boolean Transfer_TransferDispatch::Copy(const Handle(Standard_Transient
     return Interface_CopyTool::Copy(entfrom, entto, mapped, errstat);
 
   if (!result->IsKind(STANDARD_TYPE(Transfer_SimpleBinderOfTransient)))
-    return Standard_False; // Produit qq chose, mais quoi ?
+    return Standard_False; // Produces something, but what ?
   entto = GetCasted(Transfer_SimpleBinderOfTransient, result)->Result();
   return Standard_True;
 }

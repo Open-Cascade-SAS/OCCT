@@ -238,7 +238,7 @@ Standard_Integer IFSelect_Editor::NameNumber(const Standard_CString name) const
   Standard_Integer res;
   if (thenames.Find(name, res))
     return res;
-  res = atoi(name); // si c est un entier, on tente le coup
+  res = atoi(name); // if it's an integer, we try it
   if (res < 1 || res > NbValues())
     res = 0;
   return res;

@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectRoots, IFSelect_SelectExtract)
 
 IFSelect_SelectRoots::IFSelect_SelectRoots() {}
 
-// Refait pour travailler en une fois
+// Redone to work at once
 
 Interface_EntityIterator IFSelect_SelectRoots::RootResult(const Interface_Graph& G) const
 {
@@ -32,14 +32,14 @@ Interface_EntityIterator IFSelect_SelectRoots::RootResult(const Interface_Graph&
   Interface_EntityIterator iter;
   IFGraph_Cumulate         GC(G);
 
-  //  On note dans le graphe : le cumul de chaque ensemble (Entite + Shared tous
-  //  niveaux). Les Roots initiales comptees une seule fois sont bonnes
+  //  We note in the graph: the cumulation of each set (Entity + Shared all
+  //  levels). The initial Roots counted only once are good
   for (input.Start(); input.More(); input.Next())
   {
     const Handle(Standard_Transient)& ent = input.Value();
     GC.GetFromEntity(ent);
   }
-  //  A present, on retient, parmi les inputs, celles comptees une seule fois
+  //  Now, we retain, among the inputs, those counted only once
   for (input.Start(); input.More(); input.Next())
   {
     const Handle(Standard_Transient)& ent = input.Value();

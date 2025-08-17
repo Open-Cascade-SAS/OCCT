@@ -187,7 +187,7 @@ void Transfer_TransientProcess::PrintStats(const Standard_Integer /*mode*/,
                                            Standard_OStream& S) const
 {
   S << "\n*******************************************************************\n";
-  //  if (mode == 1) {    //  Statistiques de base
+  //  if (mode == 1) {    //  Basic statistics
   S << "********                 Basic Statistics                  ********" << std::endl;
 
   Handle(Interface_InterfaceModel) model = Model();

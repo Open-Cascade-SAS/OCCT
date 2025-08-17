@@ -149,10 +149,10 @@ static IFSelect_ReturnStatus XSControl_tpstat(const Handle(IFSelect_SessionPilot
   Standard_Integer mod2 = 0;
   //  g : general  c : check (compte) C (liste)   f : fails(compte)  F (liste)
   //  resultats racines :  n : n0s entites  s : status  b : binders
-  //    t : compte par type  r : compte par resultat   l : liste(type-resultat)
-  //   *n *s *b *t *r *l : idem sur tout
-  //   ?n  etc.. : idem sur resultats anormaux
-  //   ?  tout court pour help
+  //    t : count by type  r : count by result   l : list(type-result)
+  //   *n *s *b *t *r *l : same on everything
+  //   ?n  etc.. : same on abnormal results
+  //   ?  short for help
 
   if (argc > 1)
   {
@@ -345,10 +345,10 @@ static IFSelect_ReturnStatus XSControl_trecord(const Handle(IFSelect_SessionPilo
   const Handle(Transfer_TransientProcess)& TP =
     XSControl::Session(pilot)->TransferReader()->TransientProcess();
   //        ****    trecord : TransferReader        ****
-  Standard_Boolean                        tous = (argc == 1);
-  Standard_Integer                        num  = -1;
-  const Handle(Interface_InterfaceModel)& mdl  = XSControl::Session(pilot)->Model();
-  const Handle(XSControl_TransferReader)& TR   = XSControl::Session(pilot)->TransferReader();
+  Standard_Boolean                        all = (argc == 1);
+  Standard_Integer                        num = -1;
+  const Handle(Interface_InterfaceModel)& mdl = XSControl::Session(pilot)->Model();
+  const Handle(XSControl_TransferReader)& TR  = XSControl::Session(pilot)->TransferReader();
   Handle(Standard_Transient)              ent;
   Message_Messenger::StreamBuffer         sout = Message::SendInfo();
   if (mdl.IsNull() || TR.IsNull() || TP.IsNull())
@@ -356,10 +356,10 @@ static IFSelect_ReturnStatus XSControl_trecord(const Handle(IFSelect_SessionPilo
     sout << " init not done" << std::endl;
     return IFSelect_RetError;
   }
-  if (!tous)
+  if (!all)
     num = atoi(arg1);
-  //    Enregistrer les racines
-  if (tous)
+  //    Record the roots
+  if (all)
   {
     Standard_Integer nb = TP->NbRoots();
     sout << " Recording " << nb << " Roots" << std::endl;
@@ -587,7 +587,7 @@ static IFSelect_ReturnStatus XSControl_twstat(const Handle(IFSelect_SessionPilot
   const Handle(Transfer_FinderProcess)& FP =
     XSControl::Session(pilot)->TransferWriter()->FinderProcess();
   //        ****    twstat        ****
-  //  Pour Write
+  //  For Write
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (!FP.IsNull())
   {

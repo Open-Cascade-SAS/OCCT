@@ -54,7 +54,7 @@ IFSelect_SelectionIterator IFSelect_Dispatch::Selections() const
   iter.AddItem(thefinal);
   for (; iter.More(); iter.Next())
   {
-    iter.Value()->FillIterator(iter); // Iterateur qui se court apres
+    iter.Value()->FillIterator(iter); // Iterator that runs itself after
   }
   return iter;
 }
@@ -81,7 +81,7 @@ Interface_EntityIterator IFSelect_Dispatch::Packeted(const Interface_Graph& G) c
   Interface_EntityIterator remain = Remainder(G);
   if (remain.NbEntities() == 0)
     return total;
-  //  sinon, faire la difference !
+  //  otherwise, make the difference!
   IFGraph_Compare GC(G);
   GC.GetFromIter(total, Standard_True);
   GC.GetFromIter(remain, Standard_False);
@@ -92,4 +92,4 @@ Interface_EntityIterator IFSelect_Dispatch::Remainder(const Interface_Graph&) co
 {
   Interface_EntityIterator iter;
   return iter;
-} // par defaut vide
+} // empty by default

@@ -69,9 +69,9 @@ void IFSelect_DispPerCount::Packets(const Interface_Graph& G, IFGraph_SubPartsIt
   IFGraph_SCRoots roots(G, Standard_False);
   roots.SetLoad();
   roots.GetFromIter(FinalSelection()->UniqueResult(G));
-  //   SCRoots a initie la resolution : decoupage en StrongComponants + selection
-  //   des racines. Un paquet correspond des lors a <count> racines
-  //   Donc, il faut iterer sur les Parts de roots et les prendre par <count>
+  //   SCRoots initiated the resolution: splitting into StrongComponents + selection
+  //   of roots. A packet then corresponds to <count> roots
+  //   Therefore, we must iterate on the Parts of roots and take them by <count>
 
   Standard_Integer i = 0;
   for (roots.Start(); roots.More(); roots.Next())

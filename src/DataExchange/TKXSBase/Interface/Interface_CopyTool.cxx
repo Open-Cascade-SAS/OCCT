@@ -24,17 +24,17 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-// Se souvenir qu une version plus riche de CopyTool existe : c est
-// TransferDispatch (package Transfer). Cette classe offre beaucoup plus de
-// possibilite (parametrage des actions, gestion du Mapping ...)
-// Mais le principe (transfert en 2 passes) reste le meme, a savoir :
-// Passe 1 normale : les entites a transferer sont designees, elles entrainent
-// leurs sous-references vraies
-// Passe 2 : une fois tous les transferts faits, les relations "Imply" sont
-// mises, pour les entites designees ET QUI ONT ETE AUSSI TRANSFEREES, la
-// relation est reconduite (pas de nouveau Share)
+// Remember that a richer version of CopyTool exists: it is
+// TransferDispatch (package Transfer). This class offers much more
+// possibilities (parameterization of actions, Mapping management ...)
+// But the principle (transfer in 2 passes) remains the same, namely:
+// Pass 1 normal: the entities to transfer are designated, they involve
+// their true sub-references
+// Pass 2: once all transfers are done, the "Imply" relations are
+// set, for the designated entities AND WHICH HAVE ALSO BEEN TRANSFERRED, the
+// relation is continued (no new Share)
 //  #####################################################################
-//  ....                        CONSTRUCTEURS                        ....
+//  ....                        CONSTRUCTORS                        ....
 Interface_CopyTool::Interface_CopyTool(const Handle(Interface_InterfaceModel)& amodel,
                                        const Interface_GeneralLib&             lib)
     : thelib(lib),
@@ -92,7 +92,7 @@ Handle(Interface_CopyControl) Interface_CopyTool::Control() const
 }
 
 //  #####################################################################
-//  ....                    Actions Individuelles                    ....
+//  ....                    Individual Actions                    ....
 
 void Interface_CopyTool::Clear()
 {
@@ -152,16 +152,16 @@ Standard_Boolean Interface_CopyTool::Copy(const Handle(Standard_Transient)& entf
     }
     return res;
   }
-  //  On cree l Entite vide (NewVoid), la Copie reste a faire
+  //  Create the empty Entity (NewVoid), the Copy remains to be done
   res = NewVoid(entfrom, entto);
   if (mapped)
-    themap->Bind(entfrom, entto); // Mapper avant de continuer ...
+    themap->Bind(entfrom, entto); // Map before continuing ...
 
-  //  A present, on effectue la Copie (selon cas; si ShallowCopy ne suffit pas :
-  //  c est <themdu> qui decide)
+  //  Now, perform the Copy (depending on case; if ShallowCopy is not enough:
+  //  it is <themdu> who decides)
 
-  //    Une Entite en Erreur n est pas copiee (pas de sens et c est risque ...)
-  //    Cependant, elle est "Copiee a Vide (NewVoid)" donc referencable
+  //    An Entity in Error is not copied (no sense and it's risky ...)
+  //    However, it is "Copied Empty (NewVoid)" so referenceable
   if (!errstat)
     themdu->CopyCase(theCN, entfrom, entto, *this);
   return res;
@@ -176,25 +176,25 @@ void Interface_CopyTool::Implied(const Handle(Standard_Transient)& entfrom,
     module->RenewImpliedCase(CN, entfrom, entto, *this);
 }
 
-//  ....                Alimentation de la Map                ....
+//  ....                Feeding the Map                ....
 
 Handle(Standard_Transient) Interface_CopyTool::Transferred(const Handle(Standard_Transient)& ent)
 {
   Handle(Standard_Transient) res;
   if (ent.IsNull())
-    return res; // Copie d un Null : tres simple ...
+    return res; // Copy of a Null : very simple ...
   Standard_Integer nument = themod->Number(ent);
 
-  //  <nument> == 0 -> Peut etre une sous-partie non partagee ...
-  //  On accepte mais on se protege contre un bouclage
+  //  <nument> == 0 -> May be a non-shared sub-part ...
+  //  We accept but we protect against a loop
   if (nument == 0 && thelev > 100)
     throw Interface_InterfaceError(
       "CopyTool : Transferred, Entity is not contained in Starting Model");
   if (!themap->Search(ent, res))
-  { // deja transfere ? sinon, le faire
+  { // already transferred ? if not, do it
 
-    //  On opere la Copie (enfin, on tente)
-    //  En cas d echec, rien n est enregistre
+    //  We perform the Copy (finally, we try)
+    //  In case of failure, nothing is recorded
     if (!Copy(ent, res, (nument != 0), themod->IsRedefinedContent(nument)))
       return res;
 
@@ -206,8 +206,8 @@ Handle(Standard_Transient) Interface_CopyTool::Transferred(const Handle(Standard
       rep = themod->ReportEntity(nument);
     if (!rep.IsNull())
     {
-      //  ATTENTION ATTENTION, si ReportEntity : Copier aussi Content et refaire une
-      //  ReportEntity avec les termes initiaux
+      //  WARNING WARNING, if ReportEntity : Also copy Content and remake a
+      //  ReportEntity with the initial terms
       if (rep->IsUnknown())
         therep->Bind(ent, new Interface_ReportEntity(res));
       else
@@ -226,7 +226,7 @@ Handle(Standard_Transient) Interface_CopyTool::Transferred(const Handle(Standard
         therep->Bind(ent, repto);
       }
     }
-    //    Gerer le niveau d imbrication (0 = racine du transfert)
+    //    Manage the nesting level (0 = root of transfer)
     thelev--;
   }
   if (thelev == 0 && nument > 0)
@@ -274,7 +274,7 @@ Standard_Integer Interface_CopyTool::LastCopiedAfter(const Standard_Integer     
 }
 
 //  #########################################################################
-//  ....                        Actions Generales                        ....
+//  ....                        General Actions                        ....
 
 void Interface_CopyTool::TransferEntity(const Handle(Standard_Transient)& ent)
 {
@@ -284,13 +284,13 @@ void Interface_CopyTool::TransferEntity(const Handle(Standard_Transient)& ent)
 void Interface_CopyTool::RenewImpliedRefs()
 {
   if (theimp)
-    return; // deja fait
+    return; // already done
   theimp = Standard_True;
 
-  //  Transfert Passe 2 : recuperation des relations non "Share" (mais "Imply")
-  //  c-a-d portant sur des entites qui ont pu ou non etre transferees
-  //  (Et que la 1re passe n a pas copie mais laisse en Null)
-  //  N.B. : on devrait interdire de commander des nouveaux transferts ...
+  //  Transfer Pass 2 : recovery of non "Share" relations (but "Imply")
+  //  i.e. concerning entities that may or may not have been transferred
+  //  (And that the 1st pass did not copy but left as Null)
+  //  N.B. : we should forbid commanding new transfers ...
 
   Standard_Integer nb = themod->NbEntities();
   for (Standard_Integer i = 1; i <= nb; i++)
@@ -298,8 +298,8 @@ void Interface_CopyTool::RenewImpliedRefs()
     Handle(Standard_Transient) ent = themod->Value(i);
     Handle(Standard_Transient) res;
     if (!themap->Search(ent, res))
-      continue; // entite pas transferee
-                //    Reconduction des references "Imply".  Attention, ne pas copier si non chargee
+      continue; // entity not transferred
+                //    Renewal of "Imply" references.  Warning, do not copy if not loaded
     Handle(Standard_Transient) aRep;
     if (!therep->Search(ent, aRep))
     {
@@ -316,16 +316,16 @@ void Interface_CopyTool::RenewImpliedRefs()
 
 void Interface_CopyTool::FillModel(const Handle(Interface_InterfaceModel)& bmodel)
 {
-  //  Travaux preparatoires concernant les modeles
-  //  On commence : cela implique le Header
+  //  Preparatory work concerning the models
+  //  We start : this involves the Header
   bmodel->Clear();
   bmodel->GetFromAnother(themod);
 
-  //  Transfert Passe 1 : On prend les Entites prealablement copiees
+  //  Transfer Pass 1 : We take the Entities previously copied
   Interface_EntityIterator list = CompleteResult(Standard_True);
   bmodel->GetFromTransfer(list);
 
-  //  Transfert Passe 2 : recuperation des relations non "Share" (mais "Imply")
+  //  Transfer Pass 2 : recovery of non "Share" relations (but "Imply")
   RenewImpliedRefs();
 }
 

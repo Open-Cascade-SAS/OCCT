@@ -79,7 +79,7 @@ void IFSelect_ShareOutResult::Reset()
 void IFSelect_ShareOutResult::Evaluate()
 {
   if (theeval)
-    return; // deja fait. si pas OK, faire Reset avant
+    return; // already done. if not OK, do Reset before
   Prepare();
   theeval = Standard_True;
 }
@@ -134,14 +134,14 @@ void IFSelect_ShareOutResult::Prepare()
       if (iter.NbEntities() == 0)
         continue;
       thedispres.AddPart();
-      thedispres.GetFromIter(iter); // on enregistre ce paquet
+      thedispres.GetFromIter(iter); // we register this packet
       A.ResetData();
       A.GetFromIter(iter);
-      thedisplist.Append(i); // n0 du dispatch producteur
+      thedisplist.Append(i); // n0 of producer dispatch
     }
   }
   thedispnum = thepacknum = 1;
-  thepackdisp             = 1; // calcul sur 1er Dispatch
+  thepackdisp             = 1; // calculation on 1st Dispatch
   thenbindisp             = 0;
   for (i = thepacknum; i <= thedisplist.Length(); i++)
   {

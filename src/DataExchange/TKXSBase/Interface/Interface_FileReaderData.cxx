@@ -28,13 +28,13 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_FileReaderData, Standard_Transient)
 
-//  Stoque les Donnees issues d un Fichier (Conservees sous forme Litterale)
-//  Chaque norme peut s en servir comme base (listes de parametres litteraux,
-//  entites associees) et y ajoute ses donnees propres.
-//  Travaille sous le controle de FileReaderTool
-//  Optimisation : Champs pas possibles, car Param est const. Dommage
-//  Donc, on suppose qu on lit un fichier a la fois (hypothese raisonnable)
-//  On note en champ un numero de fichier, par rapport auquel on optimise
+//  Stores Data from a File (Preserved in Literal form)
+//  Each standard can use it as a base (literal parameter lists,
+//  associated entities) and add its own data to it.
+//  Works under the control of FileReaderTool
+//  Optimization : Fields not possible, because Param is const. Too bad
+//  So, we assume that we read one file at a time (reasonable assumption)
+//  We note in field a file number, relative to which we optimize
 static Standard_Integer thefic = 0;
 static Standard_Integer thenm0 = -1;
 static Standard_Integer thenp0 = -1;
@@ -65,7 +65,7 @@ Standard_Integer Interface_FileReaderData::NbEntities() const
   return nb;
 }
 
-//  ....            Gestion des Parametres attaches aux Records            ....
+//  ....            Management of Parameters attached to Records            ....
 
 void Interface_FileReaderData::InitParams(const Standard_Integer num)
 {
@@ -228,7 +228,7 @@ Standard_Boolean Interface_FileReaderData::ResetErrorLoad()
   return res;
 }
 
-//  ....        Gestion des Entites Associees aux Donnees du Fichier       ....
+//  ....        Management of Entities Associated with File Data       ....
 
 const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity(
   const Standard_Integer num) const
