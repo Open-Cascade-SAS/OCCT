@@ -141,8 +141,7 @@ void IFGraph_SubPartsIterator::Reset()
 
 //  ....              Result (Evaluation, Iterations)              .... //
 
-void IFGraph_SubPartsIterator::Evaluate() {
-} // by default, does nothing; redefined by subclasses
+void IFGraph_SubPartsIterator::Evaluate() {} // by default, does nothing; redefined by subclasses
 
 Interface_GraphContent IFGraph_SubPartsIterator::Loaded() const
 {

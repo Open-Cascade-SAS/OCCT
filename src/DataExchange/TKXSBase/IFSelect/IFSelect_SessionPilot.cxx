@@ -524,8 +524,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::Do(const Standard_Integer          
       {
         std::cout << "Give an option :\n"
                   << "a : analyze a line  r : toggle record mode\n"
-                  << "l : list recorded  c : clear  f name : save in file of name"
-                  << std::endl;
+                  << "l : list recorded  c : clear  f name : save in file of name" << std::endl;
         return IFSelect_RetVoid;
       }
       switch (arg1[0])

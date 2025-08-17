@@ -346,9 +346,9 @@ static IFSelect_ReturnStatus XSControl_trecord(const Handle(IFSelect_SessionPilo
     XSControl::Session(pilot)->TransferReader()->TransientProcess();
   //        ****    trecord : TransferReader        ****
   Standard_Boolean                        all = (argc == 1);
-  Standard_Integer                        num  = -1;
-  const Handle(Interface_InterfaceModel)& mdl  = XSControl::Session(pilot)->Model();
-  const Handle(XSControl_TransferReader)& TR   = XSControl::Session(pilot)->TransferReader();
+  Standard_Integer                        num = -1;
+  const Handle(Interface_InterfaceModel)& mdl = XSControl::Session(pilot)->Model();
+  const Handle(XSControl_TransferReader)& TR  = XSControl::Session(pilot)->TransferReader();
   Handle(Standard_Transient)              ent;
   Message_Messenger::StreamBuffer         sout = Message::SendInfo();
   if (mdl.IsNull() || TR.IsNull() || TP.IsNull())
