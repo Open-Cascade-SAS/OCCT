@@ -93,7 +93,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferShell(
   }
   else
   {
-    // message d`erreur
+    // error message
   }
   return res;
 }
@@ -113,7 +113,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
     return res;
   }
 
-  // pour explorer la face , il faut la mettre fORWARD.
+  // to explore the face, it must be set to FORWARD.
   TopoDS_Face aFace = start;
   // Associates the input face (start) and its sub-shapes with the reversed variant,
   // if the input face has a Reversed orientation
@@ -242,7 +242,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
   if (!Surf.IsNull())
   {
     Standard_Real U1, U2, V1, V2;
-    // pour limiter les surfaces de base
+    // to limit the base surfaces
     BRepTools::UVBounds(aFace, U1, U2, V1, V2);
     GeomToIGES_GeomSurface GS;
     GS.SetModel(GetModel());

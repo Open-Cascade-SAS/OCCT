@@ -121,10 +121,10 @@ Standard_Boolean IGESDimen_ToolCenterLine::OwnCorrect(const Handle(IGESDimen_Cen
   }
   if (ent->Datatype() == 1)
     return res;
-  //  Forcer DataType = 1 -> reconstruire
+  //  Force DataType = 1 -> reconstruct
   Standard_Integer nb = ent->NbPoints();
   if (nb == 0)
-    return res; // rien pu faire (est-ce possible ?)
+    return res; // nothing could be done (is this possible?)
   Handle(TColgp_HArray1OfXY) pts = new TColgp_HArray1OfXY(1, nb);
   for (Standard_Integer i = 1; i <= nb; i++)
     pts->SetValue(i, gp_XY(ent->Point(i).X(), ent->Point(i).Y()));

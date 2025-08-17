@@ -146,8 +146,8 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
             switch (attrValueDataType)
             {
               case 0: {
-                PR.SetCurrentNumber(PR.CurrentNumber() + 1); // passer
-                ////			attrValue->SetValue(j, NULL);    par defaut
+                PR.SetCurrentNumber(PR.CurrentNumber() + 1); // skip
+                ////			attrValue->SetValue(j, NULL);    by default
                 break;
               }
               case 1: {

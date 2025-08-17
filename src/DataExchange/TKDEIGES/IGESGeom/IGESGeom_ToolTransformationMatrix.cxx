@@ -164,7 +164,7 @@ void IGESGeom_ToolTransformationMatrix::OwnCheck(const Handle(IGESGeom_Transform
   }
   // These messages are transferred in the translation procedure
   /*
-    if (form > 1) return;    // ce qui suit : matrice orthogonale
+    if (form > 1) return;    // what follows : orthogonal matrix
     if (form == 0 && ent->Value().IsNegative())
       ach.AddFail("For Form 0, Determinant is not Positive");
     else if (form == 1 && !ent->Value().IsNegative())

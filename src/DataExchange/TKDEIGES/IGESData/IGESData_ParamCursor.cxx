@@ -69,5 +69,5 @@ void IGESData_ParamCursor::SetAdvance(const Standard_Boolean advance)
   theadv = advance;
 }
 
-//  LA SUITE : inline , cf lxx
+//  THE REST : inline , see lxx
 //     (Start,Limit,Count,ItemSize,TermSize,Offset,Advance)

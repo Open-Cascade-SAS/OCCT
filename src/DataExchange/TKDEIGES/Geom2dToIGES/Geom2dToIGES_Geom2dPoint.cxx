@@ -38,7 +38,7 @@ Geom2dToIGES_Geom2dPoint::Geom2dToIGES_Geom2dPoint(const Geom2dToIGES_Geom2dEnti
 }
 
 //=============================================================================
-// Transfer de Point2d de Geom2d vers IGES
+// Transfer of Point2d from Geom2d to IGES
 // Tranfer2dPoint
 //=============================================================================
 
@@ -59,7 +59,7 @@ Handle(IGESGeom_Point) Geom2dToIGES_Geom2dPoint::Transfer2dPoint(const Handle(Ge
 }
 
 //=============================================================================
-// Transfer de CartesianPoint de Geom2d vers IGES
+// Transfer of CartesianPoint from Geom2d to IGES
 // Tranfer2dPoint
 //=============================================================================
 

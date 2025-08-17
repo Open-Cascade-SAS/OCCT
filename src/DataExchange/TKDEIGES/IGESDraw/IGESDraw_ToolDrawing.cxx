@@ -186,7 +186,7 @@ void IGESDraw_ToolDrawing::OwnCopy(const Handle(IGESDraw_Drawing)& another,
 
 Standard_Boolean IGESDraw_ToolDrawing::OwnCorrect(const Handle(IGESDraw_Drawing)& ent) const
 {
-  //  Vues vides : les supprimer
+  //  Empty views: remove them
   Standard_Integer i, nb = ent->NbViews();
   Standard_Integer nbtrue = nb;
   for (i = 1; i <= nb; i++)
@@ -219,7 +219,7 @@ Standard_Boolean IGESDraw_ToolDrawing::OwnCorrect(const Handle(IGESDraw_Drawing)
     viewOrigins->SetValue(nbtrue, ent->ViewOrigin(i).XY());
   }
 
-  //  Ne pas oublier les annotations ...
+  //  Don't forget the annotations ...
   Standard_Integer                     nbanot      = ent->NbAnnotations();
   Handle(IGESData_HArray1OfIGESEntity) annotations = new IGESData_HArray1OfIGESEntity(1, nbanot);
   for (i = 1; i <= nbanot; i++)

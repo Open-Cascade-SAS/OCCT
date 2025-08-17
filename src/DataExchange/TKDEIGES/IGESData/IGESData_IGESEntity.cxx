@@ -66,7 +66,7 @@ IGESData_IGESEntity::IGESData_IGESEntity()
 
 void IGESData_IGESEntity::Clear()
 {
-  //  Handle et DefSwitch
+  //  Handle and DefSwitch
   theStructure.Nullify();
   theDefLineFont.SetVoid();
   theLineFont.Nullify();
@@ -222,8 +222,8 @@ Handle(IGESData_LabelDisplayEntity) IGESData_IGESEntity::LabelDisplay() const
   return GetCasted(IGESData_LabelDisplayEntity, theLabDisplay);
 }
 
-// Status : un Integer pour BlankStatus,SubrodinateStatus,USeFlag,HierarchySt.
-// Decoupage : 4 bits chacun (BlankStatus tout a droite, etc)
+// Status : an Integer for BlankStatus,SubordinateStatus,UseFlag,HierarchySt.
+// Division : 4 bits each (BlankStatus on the right, etc)
 
 Standard_Integer IGESData_IGESEntity::BlankStatus() const
 {
@@ -446,7 +446,7 @@ gp_GTrsf IGESData_IGESEntity::VectorLocation() const
 {
   if (!HasTransf())
     return gp_GTrsf();               // Identite
-                                     //    Prendre Location et anuler TranslationPart
+                                     //    Take Location and cancel TranslationPart
   gp_GTrsf loca = Transf()->Value(); // c-a-d Compoound
   loca.SetTranslationPart(gp_XYZ(0., 0., 0.));
   return loca;

@@ -49,15 +49,15 @@ IGESData_ToolLocation::IGESData_ToolLocation(const Handle(IGESData_IGESModel)& a
 
 void IGESData_ToolLocation::Load()
 {
-  // Pour chaque Entite, sauf Transf et Assoc (sauf SingleParent), on considere
-  // ses "OwnShared" comme etant dependents
+  // For each Entity, except Transf and Assoc (except SingleParent), we consider
+  // its "OwnShared" as being dependents
   Standard_Integer nb = themodel->NbEntities();
   for (Standard_Integer i = 1; i <= nb; i++)
   {
     Handle(IGESData_IGESEntity) ent = themodel->Entity(i);
     if (ent->IsKind(STANDARD_TYPE(IGESData_TransfEntity)))
       continue;
-    // Cas de SingleParentEntity
+    // Case of SingleParentEntity
     if (ent->IsKind(STANDARD_TYPE(IGESData_SingleParentEntity)))
     {
       DeclareAndCast(IGESData_SingleParentEntity, assoc, ent);
@@ -68,9 +68,9 @@ void IGESData_ToolLocation::Load()
       continue;
     }
     if (ent->TypeNumber() == TYPEFORASSOC)
-      continue; // Assoc sauf SingleParent
-    // Cas courant
-    SetOwnAsDependent(ent); // qui opere
+      continue; // Assoc except SingleParent
+    // Current case
+    SetOwnAsDependent(ent); // which operates
   }
 }
 
@@ -121,9 +121,9 @@ void IGESData_ToolLocation::SetOwnAsDependent(const Handle(IGESData_IGESEntity)&
   Handle(IGESData_GeneralModule) module = Handle(IGESData_GeneralModule)::DownCast(gmodule);
   Interface_EntityIterator       list;
   module->OwnSharedCase(CN, ent, list);
-  // Remarque : en toute rigueur, il faudrait ignorer les entites referencees
-  // dont le SubordinateStatus vaut 0 ou 2 ...
-  // Question : ce Status est-il toujours bien comme il faut ?
+  // Remark : strictly speaking, we should ignore the referenced entities
+  // whose SubordinateStatus is 0 or 2 ...
+  // Question : is this Status always correct as it should be ?
   for (list.Start(); list.More(); list.Next())
     SetReference(ent, GetCasted(IGESData_IGESEntity, list.Value()));
 }
@@ -213,7 +213,7 @@ Standard_Boolean IGESData_ToolLocation::HasParentByAssociativity(
 
 gp_GTrsf IGESData_ToolLocation::ParentLocation(const Handle(IGESData_IGESEntity)& ent) const
 {
-  gp_GTrsf                    locat; // par defaut, identite
+  gp_GTrsf                    locat; // by default, identity
   Handle(IGESData_IGESEntity) parent = Parent(ent);
   // Definition recursive
   if (!parent.IsNull())
@@ -224,8 +224,8 @@ gp_GTrsf IGESData_ToolLocation::ParentLocation(const Handle(IGESData_IGESEntity)
 gp_GTrsf IGESData_ToolLocation::EffectiveLocation(const Handle(IGESData_IGESEntity)& ent) const
 {
   gp_GTrsf locat = ent->Location();
-  // Combiner Transf et ParentLocation
-  locat.PreMultiply(ParentLocation(ent)); // ne pas se tromper de sens !
+  // Combine Transf and ParentLocation
+  locat.PreMultiply(ParentLocation(ent)); // don't confuse the direction !
   return locat;
 }
 
@@ -240,19 +240,19 @@ Standard_Boolean IGESData_ToolLocation::ConvertLocation(const Standard_Real prec
                                                         const Standard_Real unit)
 {
   if (result.Form() != gp_Identity)
-    result = gp_Trsf(); // Identite forcee au depart
-  // On prend le contenu de <loc>. Attention a l adressage
+    result = gp_Trsf(); // Identity forced at start
+  // We take the content of <loc>. Be careful with addressing
   gp_XYZ v1(loc.Value(1, 1), loc.Value(1, 2), loc.Value(1, 3));
   gp_XYZ v2(loc.Value(2, 1), loc.Value(2, 2), loc.Value(2, 3));
   gp_XYZ v3(loc.Value(3, 1), loc.Value(3, 2), loc.Value(3, 3));
-  // A-t-on affaire a une similitude ?
+  // Are we dealing with a similarity ?
   Standard_Real m1 = v1.Modulus();
   Standard_Real m2 = v2.Modulus();
   Standard_Real m3 = v3.Modulus();
-  // D abord est-elle singuliere cette matrice ?
+  // First is this matrix singular ?
   if (m1 < prec || m2 < prec || m3 < prec)
     return Standard_False;
-  Standard_Real mm = (m1 + m2 + m3) / 3.; // voici la Norme moyenne, cf Scale
+  Standard_Real mm = (m1 + m2 + m3) / 3.; // here is the average Norm, see Scale
   if (Abs(m1 - mm) > prec * mm || Abs(m2 - mm) > prec * mm || Abs(m3 - mm) > prec * mm)
     return Standard_False;
   v1.Divide(m1);
@@ -260,8 +260,8 @@ Standard_Boolean IGESData_ToolLocation::ConvertLocation(const Standard_Real prec
   v3.Divide(m3);
   if (Abs(v1.Dot(v2)) > prec || Abs(v2.Dot(v3)) > prec || Abs(v3.Dot(v1)) > prec)
     return Standard_False;
-  // Ici, Orthogonale et memes normes. En plus on l a Normee
-  // Restent les autres caracteristiques :
+  // Here, Orthogonal and same norms. Plus we normalized it
+  // Remain the other characteristics :
   if (Abs(mm - 1.) > prec)
     result.SetScale(gp_Pnt(0, 0, 0), mm);
   gp_XYZ tp = loc.TranslationPart();
@@ -269,11 +269,11 @@ Standard_Boolean IGESData_ToolLocation::ConvertLocation(const Standard_Real prec
     tp.Multiply(unit);
   if (tp.X() != 0. || tp.Y() != 0. || tp.Z() != 0.)
     result.SetTranslationPart(tp);
-  // On isole le cas de l Identite (tellement facile et avantageux)
+  // We isolate the case of Identity (so easy and advantageous)
   if (v1.X() != 1. || v1.Y() != 0. || v1.Z() != 0. || v2.X() != 0. || v2.Y() != 1. || v2.Z() != 0.
       || v3.X() != 0. || v3.Y() != 0. || v3.Z() != 1.)
   {
-    // Pas Identite : vraie construction depuis un Ax3
+    // Not Identity : real construction from an Ax3
     gp_Dir d1(v1);
     gp_Dir d2(v2);
     gp_Dir d3(v3);

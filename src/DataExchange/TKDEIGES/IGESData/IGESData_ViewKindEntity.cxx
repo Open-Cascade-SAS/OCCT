@@ -17,6 +17,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_ViewKindEntity, IGESData_IGESEntity)
 
-// ViewKindEntity ne sert qu'au controle de type (entite View du directory part
-// qui peut etre une Vue Simple ou une Liste de Vue
-// Vue Simple doit implementer IsSingle a Standard_True, Liste de Vue a Standard_False
+// ViewKindEntity is only used for type control (View entity in directory part
+// which can be a Simple View or a View List
+// Simple View must implement IsSingle as Standard_True, View List as Standard_False

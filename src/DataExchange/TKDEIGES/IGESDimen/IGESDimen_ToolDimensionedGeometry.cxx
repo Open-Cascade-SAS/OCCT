@@ -112,7 +112,7 @@ Standard_Boolean IGESDimen_ToolDimensionedGeometry::OwnCorrect(
 {
   if (ent->NbDimensions() == 1)
     return Standard_False;
-  //  forcer NbDimensions a 1 -> reconstruire
+  //  force NbDimensions to 1 -> reconstruct
   Standard_Integer                     nb       = ent->NbGeometryEntities();
   Handle(IGESData_HArray1OfIGESEntity) EntArray = new IGESData_HArray1OfIGESEntity(1, nb);
   for (Standard_Integer i = 1; i <= nb; i++)

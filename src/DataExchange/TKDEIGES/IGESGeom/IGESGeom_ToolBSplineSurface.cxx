@@ -204,7 +204,7 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
     st = PR.ReadReal(PR.Current(), "Starting Value For V Direction", aVmin);
     st = PR.ReadReal(PR.Current(), "Ending Value For U Direction", aVmax);
   */
-  //  PROTECTION contre ANSYS 5.3 qui ecrit 3 flottants en plus ...
+  //  PROTECTION against ANSYS 5.3 which writes 3 additional floats ...
   Standard_Integer icur = PR.CurrentNumber(), imax = PR.NbParams();
   Standard_Real    bid;
   Standard_Integer pbfin = 0;

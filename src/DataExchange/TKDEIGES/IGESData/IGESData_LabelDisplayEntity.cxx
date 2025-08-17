@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_LabelDisplayEntity, IGESData_IGESEntity)
 
-// LabelDisplayEntity ne sert qu'au controle de type (pour le directory part)
+// LabelDisplayEntity is only used for type control (for the directory part)

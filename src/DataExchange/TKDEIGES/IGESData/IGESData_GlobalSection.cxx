@@ -30,13 +30,13 @@
 
 #include <stdio.h>
 
-//  Routines locales copiant une string [l`ideal serait : astr = astr->Copy()]
-//    et transformant un CString (Hollerith ou non) en HAsciiString non Holl.
-//    et l inverse
+//  Local routines copying a string [the ideal would be : astr = astr->Copy()]
+//    and transforming a CString (Hollerith or not) to non-Hollerith HAsciiString.
+//    and the reverse
 static void CopyString(Handle(TCollection_HAsciiString)& astr)
 {
   if (astr.IsNull())
-    return; // ne rien faire si String pas definie !
+    return; // do nothing if String not defined !
   Handle(TCollection_HAsciiString) S = new TCollection_HAsciiString("");
   S->AssignCat(astr);
   astr = S;
@@ -66,7 +66,7 @@ static void MakeHollerith(const Handle(TCollection_HAsciiString)& astr,
 IGESData_GlobalSection::IGESData_GlobalSection()
     : theSeparator(','),
       theEndMark(';'),
-      theIntegerBits(32), // simple = entier = 32b, double = 64
+      theIntegerBits(32), // simple = integer = 32b, double = 64
       theMaxPower10Single(38),
       theMaxDigitsSingle(6),
       theMaxPower10Double(308),
@@ -127,7 +127,7 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
   theFileName.Nullify();
   theSystemId.Nullify();
   theInterfaceVersion.Nullify();
-  theIntegerBits      = 32; // par defaut, simple = entier = 32b, double = 64
+  theIntegerBits      = 32; // by default, simple = integer = 32b, double = 64
   theMaxPower10Single = 38;
   theMaxDigitsSingle  = 6;
   theMaxPower10Double = 308;
@@ -149,8 +149,8 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
   // clang-format on
   theDraftingStandard = 0;
   theCascadeUnit      = UnitsMethods::GetCasCadeLengthUnit();
-  theLastChangeDate.Nullify(); // nouveaute 5.1 (peut etre absente)
-  theAppliProtocol.Nullify();  // nouveaute 5.3 (peut etre absente)
+  theLastChangeDate.Nullify(); // new in 5.1 (may be absent)
+  theAppliProtocol.Nullify();  // new in 5.3 (may be absent)
 
   Standard_Integer nbp = params->NbParams();
 

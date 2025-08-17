@@ -186,7 +186,7 @@ void IGESSolid_TopoBuilder::AddCurveUV(const Handle(IGESData_IGESEntity)& curve,
 
 void IGESSolid_TopoBuilder::EndEdge()
 {
-  //  transformer  thecuruv,theiso en array et le mettre dans theeuv
+  //  transform thecuruv,theiso to array and put it in theeuv
   Handle(IGESData_HArray1OfIGESEntity) curuv;
   Handle(TColStd_HArray1OfInteger)     iso;
   if (!thecuruv->IsEmpty())

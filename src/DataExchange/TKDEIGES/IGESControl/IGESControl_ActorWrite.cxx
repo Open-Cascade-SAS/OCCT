@@ -107,8 +107,8 @@ Handle(Transfer_Binder) IGESControl_ActorWrite::Transfer(const Handle(Transfer_F
     DeclareAndCast(Geom_Curve, Curve, geom);
     DeclareAndCast(Geom_Surface, Surf, geom);
 
-    //  On reconnait : Curve et Surface de Geom
-    //   quid de Point; Geom2d ?
+    //  We recognize: Curve and Surface from Geom
+    //   what about Point; Geom2d ?
 
     //  GeomToIGES_GeomPoint GP;
     GeomToIGES_GeomCurve GC;

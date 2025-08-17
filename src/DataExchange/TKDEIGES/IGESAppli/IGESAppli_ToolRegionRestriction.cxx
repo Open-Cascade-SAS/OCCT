@@ -91,7 +91,7 @@ Standard_Boolean IGESAppli_ToolRegionRestriction::OwnCorrect(
     ent->InitLevel(nulevel, 0);
     res = Standard_True;
   }
-  return res; // + RAZ level selon subordibate
+  return res; // + reset level according to subordinate
 }
 
 IGESData_DirChecker IGESAppli_ToolRegionRestriction::DirChecker(

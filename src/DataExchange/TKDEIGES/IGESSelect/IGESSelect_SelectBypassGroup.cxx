@@ -34,7 +34,7 @@ Standard_Boolean IGESSelect_SelectBypassGroup::Explore(const Standard_Integer /*
                                                        const Interface_Graph& /*G*/,
                                                        Interface_EntityIterator& explored) const
 {
-  DeclareAndCast(IGESBasic_Group, gr, ent); // Group les regroupe tous
+  DeclareAndCast(IGESBasic_Group, gr, ent); // Group groups them all
   if (gr.IsNull())
     return Standard_True;
 

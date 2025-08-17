@@ -231,7 +231,7 @@ void IGESDefs_ToolAttributeTable::OwnCopy(const Handle(IGESDefs_AttributeTable)&
       Standard_Integer atype = ab->AttributeValueDataType(i);
       switch (atype)
       {
-        case 0: ////    list2->SetValue(i,k,NULL);    par defaut
+        case 0: ////    list2->SetValue(i,k,NULL);    by default
           break;
         case 1: {
           DeclareAndCast(TColStd_HArray1OfInteger, otherInt, another->AttributeList(i, k));
@@ -267,7 +267,7 @@ void IGESDefs_ToolAttributeTable::OwnCopy(const Handle(IGESDefs_AttributeTable)&
                               GetCasted(IGESData_IGESEntity, TC.Transferred(otherEnt->Value(j))));
         }
         break;
-        case 5: /////	      list2->SetValue(i,k,NULL);    par defaut
+        case 5: /////	      list2->SetValue(i,k,NULL);    by default
           break;
         case 6: { // Here item takes value 0 or 1
           DeclareAndCast(TColStd_HArray1OfInteger, otherInt, another->AttributeList(i, k));

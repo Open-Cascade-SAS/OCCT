@@ -320,12 +320,12 @@ Standard_Boolean IGESGeom_ToolBoundary::OwnCorrect(const Handle(IGESGeom_Boundar
   if (ent->BoundaryType() != 0)
     return res; // OK
 
-  //  Reste Boundary Type : s ilya des ParameterCurves, il doit valoir 1
-  //  On reconstruit donc la Boundary a l identique, mais avec BoundaryType = 1
+  //  Remaining Boundary Type : if there are ParameterCurves, it must be valued 1
+  //  We therefore reconstruct the Boundary identically, but with BoundaryType = 1
 
-  // si type = 0, annuller tous les ParameterCurves
-  //  -> On reconstruit, avec ParameterCurves Nulles
-  // En plus, les ParameterCurves doivent avoir leur UseFlag a 5
+  // if type = 0, nullify all ParameterCurves
+  //  -> We reconstruct, with Null ParameterCurves
+  // In addition, the ParameterCurves must have their UseFlag at 5
 
   Handle(IGESBasic_HArray1OfHArray1OfIGESEntity) cv2d =
     new IGESBasic_HArray1OfHArray1OfIGESEntity(1, nb);
@@ -383,8 +383,8 @@ void IGESGeom_ToolBoundary::OwnCheck(const Handle(IGESGeom_Boundary)& ent,
     ach->SendFail(Msg123);
   }
 
-  // il faudrait aussi tester que, pour BoundaryType = 1, la Surface est bien
-  //  Parametrique ... (au moins un cas ne passe pas : c est Plane 108)
+  // we should also test that, for BoundaryType = 1, the Surface is indeed
+  //  Parametric ... (at least one case fails : it is Plane 108)
   if (ent->BoundaryType() == 1)
   {
     if (ent->Surface()->TypeNumber() == 108)

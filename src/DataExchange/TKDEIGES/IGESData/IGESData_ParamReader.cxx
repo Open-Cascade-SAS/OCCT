@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 // MGE 03/08/98
-static Standard_Integer testconv = -1; // cf parametre de session
+static Standard_Integer testconv = -1; // see session parameter
 
 //  ....              Gestion generale (etat, courant ...)              ....
 
@@ -107,7 +107,7 @@ void IGESData_ParamReader::EndAll()
   thestage = IGESData_ReadEnd;
 }
 
-//  ....                  Acces de base aux parametres                  ....
+//  ....                  Basic parameter access                  ....
 
 //=================================================================================================
 
@@ -165,19 +165,19 @@ Handle(IGESData_IGESEntity) IGESData_ParamReader::ParamEntity(
   return GetCasted(IGESData_IGESEntity, IR->BoundEntity(n));
 }
 
-//  ....                    Assistance a la lecture                    ....
+//  ....                    Reading assistance                    ....
 
-//  Les fonctions Read* offrent les services suivants :
-//  Gestion des erreurs : le Check est alimente, par Fail ou Corrected selon
-//  Si Fail, retour de fonction False (peut etre utile), sinon True
-//  En outre, un Status est gere (de type enum DataState)
-//    (peut etre interroge suite a appel Read* si retour True/False trop court)
+//  The Read* functions offer the following services :
+//  Error management : the Check is fed, by Fail or Corrected accordingly
+//  If Fail, function returns False (may be useful), otherwise True
+//  Furthermore, a Status is managed (of type enum DataState)
+//    (can be queried following Read* call if True/False return too short)
 //
-//  Gestion du pointeur courant (sur option, nais elle est mise par defaut) :
-//  Les parametres sont designes via un ParmCursor, qui peut etre fabrique par
-//  les methodes ad hoc  Current et CurrentList, et qui peut demander a avancer
-//  le pointeur courant une fois la lecture faite
-//  En outre, pour un HArray1, on peut preciser index de depart
+//  Current pointer management (optional, but set by default) :
+//  Parameters are designated via a ParmCursor, which can be manufactured by
+//  the ad hoc methods Current and CurrentList, and which can request to advance
+//  the current pointer once reading is done
+//  Furthermore, for an HArray1, you can specify starting index
 
 //=================================================================================================
 
@@ -271,17 +271,17 @@ Standard_Boolean IGESData_ParamReader::PrepareRead(const IGESData_ParamCursor& P
   return Standard_True;
 }
 
-//  theindex donne le debut de la lecture; tjrs cale sur debut d item
-//  thenbterm donne debut a lire dans l item
-//  Ainsi, l indice vrai est   theindex + thenbterm
-//  thenbterm avance par +nb. Quand il a depasse thetermsz, item suivant
-//  theindex est lui-meme limite (critere d arret) a themaxind
+//  theindex gives the start of reading; always aligned on item start
+//  thenbterm gives start to read in the item
+//  Thus, the true index is   theindex + thenbterm
+//  thenbterm advances by +nb. When it has exceeded thetermsz, next item
+//  theindex is itself limited (stop criterion) to themaxind
 
 //=================================================================================================
 
 Standard_Integer IGESData_ParamReader::FirstRead(const Standard_Integer nb)
 {
-  theindex += theoffset; // On se cale d office sur le debut du terme a lire
+  theindex += theoffset; // We automatically align on the start of the term to read
   Standard_Integer res = theindex;
   thenbterm            = nb;
   if (thenbterm >= thetermsz)
@@ -299,7 +299,7 @@ Standard_Integer IGESData_ParamReader::NextRead(const Standard_Integer nb)
   Standard_Integer res = theindex;
   if (theindex >= themaxind)
     res = 0;
-  thenbterm += nb; // Par Item : en lire thetermsz, puis item suivant
+  thenbterm += nb; // Per Item: read thetermsz, then next item
   if (thenbterm >= thetermsz)
   {
     theindex += theitemsz;
@@ -389,8 +389,8 @@ Standard_Boolean IGESData_ParamReader::ReadBoolean(const IGESData_ParamCursor& P
     return Standard_False;
   }
 
-  //  Un Booleen, c est 0/1. Mais on peut tolerer d autres valeurs
-  //  On peut toujours consulter LastReadStatus apres la lecture pour etre sur
+  //  A Boolean is 0/1. But we can tolerate other values
+  //  One can always consult LastReadStatus after reading to be sure
   Standard_Integer flag = atoi(FP.CValue());
   if (flag != 0 && flag != 1)
   {
@@ -430,8 +430,8 @@ Standard_Boolean IGESData_ParamReader::ReadBoolean(const IGESData_ParamCursor& P
     return Standard_False;
   }
 
-  //  Un Booleen, c est 0/1. Mais on peut tolerer d autres valeurs
-  //  On peut toujours consulter LastReadStatus apres la lecture pour etre sur
+  //  A Boolean is 0/1. But we can tolerate other values
+  //  One can always consult LastReadStatus after reading to be sure
   Standard_Integer flag = atoi(FP.CValue());
   if (flag != 0 && flag != 1)
   {
@@ -668,11 +668,11 @@ Standard_Boolean IGESData_ParamReader::ReadEntity(const Handle(IGESData_IGESRead
     val = GetCasted(IGESData_IGESEntity, IR->BoundEntity(nval));
   if (val.IsNull())
     return canbenul;
-  //    Cas du "Nul IGES"
+  //    Case of "Null IGES"
   if (val->TypeNumber() == 0)
-  { // Null ou pas encore rempli ...
+  { // Null or not yet filled ...
     if (IR->DirType(nval).Type() == 0)
-    { // le vrai critere (un peu cher)
+    { // the real criterion (a bit expensive)
       val.Nullify();
       if (!canbenul)
       {
@@ -718,11 +718,11 @@ Standard_Boolean IGESData_ParamReader::ReadEntity(const Handle(IGESData_IGESRead
     val = GetCasted(IGESData_IGESEntity, IR->BoundEntity(nval));
   if (val.IsNull())
     return canbenul;
-  //    Cas du "Nul IGES"
+  //    Case of "Null IGES"
   if (val->TypeNumber() == 0)
-  { // Null ou pas encore rempli ...
+  { // Null or not yet filled ...
     if (IR->DirType(nval).Type() == 0)
-    { // le vrai critere (un peu cher)
+    { // the real criterion (a bit expensive)
       val.Nullify();
       if (!canbenul)
       {
@@ -1061,12 +1061,12 @@ Standard_Boolean IGESData_ParamReader::ReadEnts(const Handle(IGESData_IGESReader
   }
   if (ind == indmax + 1)
   {
-  } // tableau complet
+  } // complete array
   else if (ind == index)
-    val.Nullify(); // tableau vide
+    val.Nullify(); // empty array
   else
   {
-    // Trous : ils ont ete elimines, mais le tableau est a retailler
+    // Gaps: they have been eliminated, but the array needs to be resized
     Handle(IGESData_HArray1OfIGESEntity) tab = new IGESData_HArray1OfIGESEntity(index, ind - 1);
     for (i = index; i < ind; i++)
       tab->SetValue(i, val->Value(i));
@@ -1120,12 +1120,12 @@ Standard_Boolean IGESData_ParamReader::ReadEnts(const Handle(IGESData_IGESReader
   }
   if (ind == indmax + 1)
   {
-  } // tableau complet
+  } // complete array
   else if (ind == index)
-    val.Nullify(); // tableau vide
+    val.Nullify(); // empty array
   else
   {
-    // Trous : ils ont ete elimines, mais le tableau est a retailler
+    // Gaps: they have been eliminated, but the array needs to be resized
     Handle(IGESData_HArray1OfIGESEntity) tab = new IGESData_HArray1OfIGESEntity(index, ind - 1);
     for (i = index; i < ind; i++)
       tab->SetValue(i, val->Value(i));
@@ -1283,10 +1283,10 @@ Standard_Boolean IGESData_ParamReader::ReadingReal(const Standard_Integer num, S
         //  AddWarning (mess,ssem,"Real with no decimal point (added), 1st rank=%d");
       }
     }
-    // Par convention (pas d enum explicite dans IGES), signifie
-    // "reconnu comme flottant mais pas blanc-bleu" c-a-d sans point decimal
-    // mais avec exposant (sinon ce serait un entier)
-    // -> un message avertissement + on ajoute le point puis on convertit
+    // By convention (no explicit enum in IGES), means
+    // "recognized as floating but not clean" i.e. without decimal point
+    // but with exponent (otherwise it would be an integer)
+    // -> a warning message + we add the point then convert
 
     val = Atof(text);
   }
@@ -1361,10 +1361,10 @@ Standard_Boolean IGESData_ParamReader::ReadingReal(const Standard_Integer num,
         AddWarning(mess, ssem, "Real with no decimal point (added), 1st rank=%d");
       }
     }
-    // Par convention (pas d enum explicite dans IGES), signifie
-    // "reconnu comme flottant mais pas blanc-bleu" c-a-d sans point decimal
-    // mais avec exposant (sinon ce serait un entier)
-    // -> un message avertissement + on ajoute le point puis on convertit
+    // By convention (no explicit enum in IGES), means
+    // "recognized as floating but not clean" i.e. without decimal point
+    // but with exponent (otherwise it would be an integer)
+    // -> a warning message + we add the point then convert
 
     val = Atof(text);
   }
@@ -1450,7 +1450,7 @@ void IGESData_ParamReader::SendWarning(const Message_Msg& amsg)
   thelast = Standard_False;
 }
 
-//  ....              Gestion courante du statut de lecture              ....
+//  ....              Current reading status management              ....
 
 //=================================================================================================
 

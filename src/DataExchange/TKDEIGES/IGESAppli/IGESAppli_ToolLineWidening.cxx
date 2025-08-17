@@ -108,7 +108,7 @@ Standard_Boolean IGESAppli_ToolLineWidening::OwnCorrect(
     ent->InitLevel(nulevel, 0);
     res = Standard_True;
   }
-  return res; // nbpropertyvalues = 5 + RAZ level selon subordinate
+  return res; // nbpropertyvalues = 5 + reset level according to subordinate
 }
 
 IGESData_DirChecker IGESAppli_ToolLineWidening::DirChecker(

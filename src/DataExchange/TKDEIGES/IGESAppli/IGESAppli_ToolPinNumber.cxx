@@ -80,7 +80,7 @@ Standard_Boolean IGESAppli_ToolPinNumber::OwnCorrect(const Handle(IGESAppli_PinN
     Handle(IGESData_LevelListEntity) nulevel;
     ent->InitLevel(nulevel, 0);
   }
-  return res; // RAZ level selon subordibate
+  return res; // RAZ level according to subordinate
 }
 
 IGESData_DirChecker IGESAppli_ToolPinNumber::DirChecker(

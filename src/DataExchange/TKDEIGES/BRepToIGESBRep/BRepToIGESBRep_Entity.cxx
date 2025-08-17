@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// modif le 25/03/96 mjm
+// modification on 25/03/96 mjm
 // implement ShapeCustom::DirectModification for indirect surfaces (out of norm IGES)
 //: l4 abv 12 Jan 99: CTS22022-2: correct writing reversed shells
 //: n3 abv 8 Feb 99: PRO17820: BRepTools::OuterWire() -> ShapeAnalysis::OuterWire

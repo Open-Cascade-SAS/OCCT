@@ -113,7 +113,7 @@ Standard_Boolean IGESGraph_ToolDrawingUnits::OwnCorrect(
       }
       break;
     case 3:
-      break; // nom libre
+      break; // free name
     case 4:
       if (strcmp(unm, "FT") == 0)
       {
@@ -163,7 +163,7 @@ Standard_Boolean IGESGraph_ToolDrawingUnits::OwnCorrect(
       }
       break;
     default:
-      break; // on ne peut rien faire ... ?
+      break; // we can't do anything ... ?
   }
 
   res |= (!name.IsNull());
@@ -215,7 +215,7 @@ void IGESGraph_ToolDrawingUnits::OwnCheck(const Handle(IGESGraph_DrawingUnits)& 
         break;
       case 3:
         unok = Standard_True;
-        break; // nom libre
+        break; // free name
       case 4:
         unok = !strcmp(unm, "FT");
         break;

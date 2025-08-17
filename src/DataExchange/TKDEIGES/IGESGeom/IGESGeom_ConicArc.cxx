@@ -238,7 +238,7 @@ void IGESGeom_ConicArc::ComputedDefinition(Standard_Real& Xcen,
 
   if (IsFromParabola())
   {
-    Rmin = Rmax = -1.; // rayons : yena pas
+    Rmin = Rmax = -1.; // radii : there are none
     if ((Abs(a) <= eps) && (Abs(b) <= eps))
     {
       Xcen                = (f * c - e * e) / c / d / 2.;
@@ -274,11 +274,11 @@ void IGESGeom_ConicArc::ComputedDefinition(Standard_Real& Xcen,
 
   else
   {
-    //   -> Conique a centre, cas general
-    //  On utilise les Determinants des matrices :
+    //   -> Centered conic, general case
+    //  We use the matrix Determinants :
     //               | a b d |
-    //  gdet (3x3) = | b c e |  et pdet (2X2) = | a b |
-    //               | d e f |                  | b c |
+    //  gdet (3x3) = | b c e |  and pdet (2X2) = | a b |
+    //               | d e f |                   | b c |
 
     Standard_Real gdet = a * c * f + 2 * b * d * e - c * d * d - a * e * e - b * b * f;
     Standard_Real pdet = a * c - b * b;

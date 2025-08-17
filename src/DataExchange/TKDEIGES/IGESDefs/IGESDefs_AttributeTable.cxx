@@ -31,9 +31,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeTable, IGESData_IGESEntity)
 
-//  ATTENTION  ATTENTION : L Appellation "ROW" n est pas reconduite en l etat
-//  Le Numero d Attribut est donne en 1er (donc, en colonne du HArray2 et non
-//  en ligne), le numero de Colonne en 2e (donc, comme un numero de Ligne)
+//  WARNING  WARNING : The "ROW" designation is not continued as is
+//  The Attribute Number is given first (therefore, in column of HArray2 and not
+//  in row), the Column number second (therefore, as a Row number)
 IGESDefs_AttributeTable::IGESDefs_AttributeTable() {}
 
 void IGESDefs_AttributeTable::Init(const Handle(TColStd_HArray2OfTransient)& attributes)
@@ -124,5 +124,5 @@ Standard_Boolean IGESDefs_AttributeTable::AttributeAsLogical(const Standard_Inte
                                                              const Standard_Integer Rownum,
                                                              const Standard_Integer Valuenum) const
 {
-  return (AttributeAsInteger(Atnum, Rownum, Valuenum) != 0); // raccourci
+  return (AttributeAsInteger(Atnum, Rownum, Valuenum) != 0); // shortcut
 }

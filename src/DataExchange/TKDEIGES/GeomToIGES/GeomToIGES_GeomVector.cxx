@@ -12,8 +12,8 @@
 // commercial license or contractual agreement.
 
 // modif du 14/09/95 mjm
-// prise en compte de l'unite choisi par l'utilisateur
-// pour l'ecriture du fichier IGES.
+// taking into account the unit chosen by the user
+// for writing the IGES file.
 
 #include <Geom_Direction.hxx>
 #include <Geom_Vector.hxx>
@@ -42,7 +42,7 @@ GeomToIGES_GeomVector::GeomToIGES_GeomVector(const GeomToIGES_GeomEntity& GE)
 }
 
 //=============================================================================
-// Transfer des Entites Vector de Geom vers IGES
+// Transfer of Vector Entities from Geom to IGES
 // TransferVector
 //=============================================================================
 
@@ -69,7 +69,7 @@ Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(const Handle(Ge
 }
 
 //=============================================================================
-// Transfer des Entites VectorWithMagnitude de Geom vers IGES
+// Transfer of VectorWithMagnitude Entities from Geom to IGES
 // TransferVector
 //=============================================================================
 
@@ -90,7 +90,7 @@ Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(
 }
 
 //=============================================================================
-// Transfer des Entites Direction de Geom vers IGES
+// Transfer of Direction Entities from Geom to IGES
 // TransferVector
 //=============================================================================
 

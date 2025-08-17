@@ -145,8 +145,8 @@ Standard_Boolean IGESData_UndefinedEntity::HasSubScriptNumber() const
     return Standard_False;
 }
 
-//   ReadDir verifie les donnees, s il y a des erreurs les note (status),
-//   genere un nouveau DirPart sans ces erreurs, et appelle ReadDir de base
+//   ReadDir verifies the data, if there are errors notes them (status),
+//   generates a new DirPart without these errors, and calls base ReadDir
 
 //=================================================================================================
 
@@ -167,7 +167,7 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
 
   Standard_Integer   v[17];
   Standard_Character res1[9], res2[9], lab[9], subs[9];
-  Standard_Integer   max = 2 * IR->NbRecords(); // valeur maxi pour DSectNum
+  Standard_Integer   max = 2 * IR->NbRecords(); // max value for DSectNum
   thedstat               = 0;
 
   Handle(IGESData_IGESEntity) anent;
@@ -315,7 +315,7 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
   for (i = 0; i < 8; i++)
   {
     if (subs[i] == '\0')
-      break; // fin de ligne
+      break; // end of line
     if (subs[i] != ' ' && (subs[i] < 48 || subs[i] > 57))
       iapb = Standard_True;
   }
@@ -330,7 +330,7 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
       subs[i] = ' ';
   }
 
-  //  ...  Fin de cette analyse : si necessaire on reconstruit DP  ...
+  //  ...  End of this analysis : if necessary we rebuild DP  ...
   if (thedstat == 0)
     return Standard_True;
   else
@@ -360,7 +360,7 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
   }
 }
 
-//   Parametres indifferencies : assocs et props ignores
+//   Undifferentiated parameters : assocs and props ignored
 
 //=================================================================================================
 
@@ -378,7 +378,7 @@ void IGESData_UndefinedEntity::ReadOwnParams(const Handle(IGESData_IGESReaderDat
         }
         else thecont->AddLiteral (ptyp,new TCollection_HAsciiString(PR.ParamValue(i)));
     */
-    //  On est TOUJOURS en mode litteral, c est bien plus clair !
+    //  We are ALWAYS in literal mode, it's much clearer !
     thecont->AddLiteral(ptyp, new TCollection_HAsciiString(PR.ParamValue(i)));
   }
   PR.SetCurrentNumber(nb + 1);

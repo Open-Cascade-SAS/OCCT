@@ -40,7 +40,7 @@ void IGESDimen_GeneralSymbol::Init(const Handle(IGESDimen_GeneralNote)&         
   theGeoms   = allGeoms;
   theLeaders = allLeaders;
   InitTypeAndForm(228, FormNumber());
-  //  FormNumber precises the Nature of the Symbol, cf G.14 (0-3 or > 5000)
+  //  FormNumber specifies the Nature of the Symbol, see G.14 (0-3 or > 5000)
 }
 
 void IGESDimen_GeneralSymbol::SetFormNumber(const Standard_Integer form)

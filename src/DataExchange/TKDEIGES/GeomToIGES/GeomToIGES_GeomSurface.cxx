@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// modif du 22/10/96 mjm
-// ajout du champ TheLength
+// modification of 22/10/96 mjm
+// addition of TheLength field
 //: l6 abv 15.01.99: CTS22022: writing full tori
 // szv#4:S4163:12Mar99
 // S4181 pdn 20.04.99 implementing of writing IGES elementary surfaces.
@@ -104,7 +104,7 @@ GeomToIGES_GeomSurface::GeomToIGES_GeomSurface(const GeomToIGES_GeomEntity& GE)
 }
 
 //=============================================================================
-// Transfer des Entites Surface de Geom vers IGES
+// Transfer of Surface Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -146,7 +146,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 }
 
 //=============================================================================
-// Transfer des Entites BoundedSurface de Geom vers IGES
+// Transfer of BoundedSurface Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -183,7 +183,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 }
 
 //=============================================================================
-// Transfer des Entites BSplineSurface de Geom vers IGES
+// Transfer of BSplineSurface Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -334,7 +334,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   Standard_Boolean Polynom  = !(RationU || RationV); // szv#10:PRO19566:05Oct99 && was wrong
 
   // filling knots array for U :
-  // Sequence des Knots de [-DegU, IndexU+1] dans IGESGeom.
+  // Knots sequence from [-DegU, IndexU+1] in IGESGeom.
   Standard_Integer     Knotindex;
   Standard_Real        rtampon;
   Standard_Integer     itampon;
@@ -350,7 +350,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   }
 
   // filling knots array for V :
-  // Sequence des Knots de [-DegV, IndexV+1] dans IGESGeom.
+  // Knots sequence from [-DegV, IndexV+1] in IGESGeom.
   TColStd_Array1OfReal KV(1, NbVPoles + DegV + 1);
   mysurface->VKnotSequence(KV);
   itampon                              = -DegV;
@@ -362,7 +362,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
     itampon++;
   }
 
-  // filling Weights array de [0, IndexU, 0, IndexV]
+  // filling Weights array from [0, IndexU, 0, IndexV]
   // ----------------------------------------------
   Handle(TColStd_HArray2OfReal) Weights   = new TColStd_HArray2OfReal(0, IndexU, 0, IndexV);
   Standard_Integer              WeightRow = Weights->LowerRow();
@@ -390,7 +390,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
     }
   }
 
-  // filling Poles array de [0, IndexU, 0, IndexV]
+  // filling Poles array from [0, IndexU, 0, IndexV]
   // ---------------------------------------------
   Handle(TColgp_HArray2OfXYZ) Poles  = new TColgp_HArray2OfXYZ(0, IndexU, 0, IndexV);
   Standard_Integer            UIndex = Poles->LowerRow();
@@ -433,7 +433,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 }
 
 //=============================================================================
-// Transfer des Entites BezierSurface de Geom vers IGES
+// Transfer of BezierSurface Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -458,7 +458,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 }
 
 //=============================================================================
-// Transfer des Entites RectangularTrimmedSurface de Geom vers IGES
+// Transfer of RectangularTrimmedSurface Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -478,8 +478,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   Handle(Geom_Surface) st = start->BasisSurface();
   if (st->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
-    // message d'erreur pas de trimmed a partir d'une trimmed ,
-    // on peut eventuellement ecrire la surface de base : st.
+    // error message no trimmed from a trimmed,
+    // we can possibly write the base surface: st.
     return res;
   }
 
@@ -488,7 +488,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 }
 
 //=============================================================================
-// Transfer des Entites ElementarySurface de Geom vers IGES
+// Transfer of ElementarySurface Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -555,7 +555,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 }
 
 //=============================================================================
-// Transfer des Entites Plane de Geom vers IGES
+// Transfer of Plane Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -565,7 +565,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
                                                                     const Standard_Real       Vdeb,
                                                                     const Standard_Real       Vfin)
 {
-  // on va ecrire une BSplineSurface pour pouvoir etre coherent avec les courbes 2d
+  // we will write a BSplineSurface to be able to be coherent with 2d curves
   Handle(IGESData_IGESEntity) res;
   TheLength = 1;
   if (start.IsNull())
@@ -640,7 +640,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
 }
 
 //=============================================================================
-// Transfer des Entites CylindricalSurface de Geom vers IGES
+// Transfer of CylindricalSurface Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -678,7 +678,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   if (Precision::IsPositiveInfinite(Vfin))
     V2 = Precision::Infinite();
 
-  // creation de la generatrice : Generatrix
+  // creation of the generatrix : Generatrix
   Handle(Geom_Line) Ligne =
     new Geom_Line(gp_Pnt(start->Cylinder().Radius(), 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   GeomToIGES_GeomCurve        GC(*this);
@@ -687,7 +687,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   gp_Pnt                      gen2       = Ligne->Value(V2);
   TheLength                              = gen1.Distance(gen2);
 
-  // creation de l`axe : Axis .
+  // creation of the axis : Axis .
   Handle(IGESGeom_Line) Axis = new IGESGeom_Line;
   // #30 rln 19.10.98 IGES axis = reversed CAS.CADE axis
   // Axis->Init(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(0.0, 0.0, 1.0/GetUnit()));
@@ -695,8 +695,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   Axis->Init(gp_XYZ(0, 0, 1.), gp_XYZ(0, 0, 0));
   Surf->Init(Axis, Generatrix, 2 * M_PI - U2, 2 * M_PI - U1);
 
-  // creation de la Trsf (#124)
-  // il faut tenir compte de l`unite pour la matrice de transformation
+  // creation of the Trsf (#124)
+  // we must take into account the unit for the transformation matrix
   // (partie translation).
   IGESConvGeom_GeomBuilder Build;
   Standard_Real            xloc, yloc, zloc;
@@ -717,7 +717,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 }
 
 //=============================================================================
-// Transfer des Entites ConicalSurface de Geom vers IGES
+// Transfer of ConicalSurface Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -755,7 +755,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   if (Precision::IsPositiveInfinite(Vfin))
     V2 = Precision::Infinite();
 
-  // creation de la generatrice : Generatrix
+  // creation of the generatrix : Generatrix
   Handle(Geom_Line) Ligne =
     new Geom_Line(gp_Pnt(start->Cone().RefRadius(), 0.0, 0.0),
                   gp_Dir(sin(start->Cone().SemiAngle()), 0., cos(start->Cone().SemiAngle())));
@@ -766,7 +766,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   //  TheLength = gen1.Distance(gen2)*Cos(start->Cone().SemiAngle());
   TheLength = gen1.Distance(gen2);
 
-  // creation de l`axe : Axis .
+  // creation of the axis : Axis .
   Handle(IGESGeom_Line) Axis = new IGESGeom_Line;
   // #30 rln 19.10.98 IGES axis = reversed CAS.CADE axis
   // Axis->Init(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(0.0, 0.0, 1.0/GetUnit()));
@@ -774,8 +774,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   Axis->Init(gp_XYZ(0, 0, 1.), gp_XYZ(0, 0, 0));
   Surf->Init(Axis, Generatrix, 2 * M_PI - U2, 2 * M_PI - U1);
 
-  // creation de la Trsf (#124)
-  // il faut tenir compte de l`unite pour la matrice de transformation
+  // creation of the Trsf (#124)
+  // we must take into account the unit for the transformation matrix
   // (partie translation).
   IGESConvGeom_GeomBuilder Build;
   Standard_Real            xloc, yloc, zloc;
@@ -796,7 +796,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 }
 
 //=============================================================================
-// Transfer des Entites SphericalSurface de Geom vers IGES
+// Transfer of SphericalSurface Entities from Geom to IGES
 // TransferSurface
 //=============================================================================
 
@@ -833,13 +833,13 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   Standard_Real V1 = Vdeb;
   Standard_Real V2 = Vfin;
 
-  // creation de la generatrice : Generatrix (1/2 cercle)
+  // creation of the generatrix : Generatrix (1/2 cercle)
   gp_Ax2                      Axe(gp::Origin(), -gp::DY(), gp::DX());
   Handle(Geom_Circle)         Cercle = new Geom_Circle(Axe, start->Sphere().Radius());
   GeomToIGES_GeomCurve        GC(*this);
   Handle(IGESData_IGESEntity) Gen = GC.TransferCurve(Cercle, V1, V2);
 
-  // creation de l`axe : Axis .
+  // creation of the axis : Axis .
   Handle(IGESGeom_Line) Axis = new IGESGeom_Line;
   // #30 rln 19.10.98 IGES axis = reversed CAS.CADE axis
   // Axis->Init(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(0.0, 0.0, 1.0/GetUnit()));
@@ -900,13 +900,13 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   Standard_Real                        V1   = Vdeb;
   Standard_Real                        V2   = Vfin;
 
-  // creation de la generatrice : Generatrix (cercle)
+  // creation of the generatrix : Generatrix (cercle)
   gp_Ax2 Axe = gp_Ax2(gp_Pnt((start->Torus().MajorRadius()), 0., 0.), -gp::DY(), gp::DX());
   Handle(Geom_Circle)         Cercle = new Geom_Circle(Axe, start->Torus().MinorRadius());
   GeomToIGES_GeomCurve        GC(*this);
   Handle(IGESData_IGESEntity) Gen = GC.TransferCurve(Cercle, V1, V2);
 
-  // creation de l`axe : Axis .
+  // creation of the axis : Axis .
   Handle(IGESGeom_Line) Axis = new IGESGeom_Line;
   // #30 rln 19.10.98 IGES axis = reversed CAS.CADE axis
   // Axis->Init(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(0.0, 0.0, 1.0/GetUnit()));
@@ -1014,7 +1014,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 
   // dans IGES l'origine de la generatrice est identique a l'origine
   // de la directrice , il faut translater la courbe si les deux
-  // points ne sont pas confondus dans Geom et donc la copier !!!!!!!
+  // points are not coincident in Geom and therefore copy it !!!!!!!
   gp_Pnt        TheEnd = start->Value(U1, V2);
   Standard_Real Xe, Ye, Ze;
   TheEnd.Coord(Xe, Ye, Ze);
@@ -1085,7 +1085,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   if (Precision::IsPositiveInfinite(Vfin))
     V2 = Precision::Infinite();
 
-  // creation de la generatrice : Generatrix
+  // creation of the generatrix : Generatrix
   Handle(Geom_Curve)          Curve = start->BasisCurve();
   GeomToIGES_GeomCurve        GC(*this);
   Handle(IGESData_IGESEntity) Generatrix = GC.TransferCurve(Curve, V1, V2);
@@ -1104,7 +1104,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
     TheLength   = gen1.Distance(gen2);
   }
 
-  // creation de l`axe : Axis .
+  // creation of the axis : Axis .
   Handle(IGESGeom_Line) Axis = new IGESGeom_Line;
   gp_Ax1                Axe  = start->Axis();
   Standard_Real         X1, Y1, Z1, X2, Y2, Z2;
@@ -1170,7 +1170,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 }
 
 //=============================================================================
-// Transfer des Entites Plane de Geom vers IGESSolid
+// Transfer of Plane Entities from Geom to IGESSolid
 // TransferPlaneSurface
 //=============================================================================
 

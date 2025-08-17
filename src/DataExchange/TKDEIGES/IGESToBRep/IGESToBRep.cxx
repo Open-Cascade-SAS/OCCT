@@ -214,7 +214,7 @@ Standard_Boolean IGESToBRep::IsTopoSurface(const Handle(IGESData_IGESEntity)& st
     return Standard_True;
   // S4181 pdn 15.04.99 removing to basic surface
   // if (start->IsKind(STANDARD_TYPE(IGESSolid_PlaneSurface)))       return Standard_True;
-  //  SingleParent, cas particulier (Face Trouee : ne contient que des PLANE)
+  //  SingleParent, special case (Perforated Face: contains only PLANEs)
   if (start->IsKind(STANDARD_TYPE(IGESBasic_SingleParent)))
   {
     DeclareAndCast(IGESBasic_SingleParent, sp, start);

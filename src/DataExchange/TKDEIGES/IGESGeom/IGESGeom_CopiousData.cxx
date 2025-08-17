@@ -59,7 +59,7 @@ void IGESGeom_CopiousData::SetPolyline(const Standard_Boolean F)
 
 void IGESGeom_CopiousData::SetClosedPath2D()
 {
-  InitTypeAndForm(106, 63); // et verifier DataType !
+  InitTypeAndForm(106, 63); // and verify DataType !
 }
 
 Standard_Boolean IGESGeom_CopiousData::IsPointSet() const

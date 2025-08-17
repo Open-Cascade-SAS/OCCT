@@ -41,4 +41,4 @@ void IGESData_ReadWriteModule::Read(const Standard_Integer,
 #endif
 }
 
-// IGESReaderTool fait tout
+// IGESReaderTool does everything

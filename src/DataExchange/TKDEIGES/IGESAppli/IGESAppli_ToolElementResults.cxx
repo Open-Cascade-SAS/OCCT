@@ -473,8 +473,8 @@ void IGESAppli_ToolElementResults::OwnDump(const Handle(IGESAppli_ElementResults
   S << "\nResult Data Locations : ";
   S << " TO BE DONE  ";
 
-  //  ??  A VERIFIER DE PRES, pas du tout sur que ce soit bon
-  //      cf aussi Write et Copy
+  //  ??  TO VERIFY CLOSELY, not at all sure this is correct
+  //      see also Write and Copy
   if (level <= 4)
     S << " [ ask level > 4 for more, > 5 for complete ]\n";
   else

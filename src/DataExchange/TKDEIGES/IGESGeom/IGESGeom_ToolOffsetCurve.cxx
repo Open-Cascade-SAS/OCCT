@@ -287,7 +287,7 @@ Standard_Boolean IGESGeom_ToolOffsetCurve::OwnCorrect(const Handle(IGESGeom_Offs
   Handle(IGESData_IGESEntity) func = ent->Function();
   if (func.IsNull())
     return Standard_False;
-  //  OffsetType != 3 : reconstruire avec Offset Function Nulle
+  //  OffsetType != 3 : reconstruct with Null Offset Function
   func.Nullify();
   ent->Init(ent->BaseCurve(),
             ent->OffsetType(),
