@@ -214,20 +214,20 @@ static IFSelect_ReturnStatus XSControl_tpdraw(const Handle(IFSelect_SessionPilot
       if (nbvar == 0)
       {
         if (argc > 3 && mode > 0)
-          sprintf(nomvar, "%s", arg3);
+          Sprintf(nomvar, "%s", arg3);
         else if (argc > 2 && mode == 0)
-          sprintf(nomvar, "%s", arg2);
+          Sprintf(nomvar, "%s", arg2);
         else
-          sprintf(nomvar, "tp_%d", i);
+          Sprintf(nomvar, "tp_%d", i);
       }
       else
       {
         if (argc > 3 && mode > 0)
-          sprintf(nomvar, "%s_%d", arg3, nbvar);
+          Sprintf(nomvar, "%s_%d", arg3, nbvar);
         else if (argc > 2 && mode == 0)
-          sprintf(nomvar, "%s_%d", arg2, nbvar);
+          Sprintf(nomvar, "%s_%d", arg2, nbvar);
         else
-          sprintf(nomvar, "tp_%d", i);
+          Sprintf(nomvar, "tp_%d", i);
       }
       sout << " -> 1 DRAW Shape: " << nomvar << std::endl;
       XSControl::Vars(pilot)->SetShape(nomvar, sh);
@@ -257,11 +257,11 @@ static IFSelect_ReturnStatus XSControl_tpdraw(const Handle(IFSelect_SessionPilot
           continue;
         }
         if (argc > 3 && mode > 0)
-          sprintf(nomvar, "%s_%d", arg3, nbvar);
+          Sprintf(nomvar, "%s_%d", arg3, nbvar);
         else if (argc > 2 && mode == 0)
-          sprintf(nomvar, "%s_%d", arg2, nbvar);
+          Sprintf(nomvar, "%s_%d", arg2, nbvar);
         else
-          sprintf(nomvar, "tp_%d_%d", i, nbvar);
+          Sprintf(nomvar, "tp_%d_%d", i, nbvar);
         sout << " " << nomvar;
         XSControl::Vars(pilot)->SetShape(nomvar, sh);
       }
@@ -288,20 +288,20 @@ static IFSelect_ReturnStatus XSControl_tpdraw(const Handle(IFSelect_SessionPilot
       if (nbvar == 0)
       {
         if (argc > 3 && mode > 0)
-          sprintf(nomvar, "%s", arg3);
+          Sprintf(nomvar, "%s", arg3);
         else if (argc > 2 && mode == 0)
-          sprintf(nomvar, "%s", arg2);
+          Sprintf(nomvar, "%s", arg2);
         else
-          sprintf(nomvar, "tp_%d", i);
+          Sprintf(nomvar, "tp_%d", i);
       }
       else
       {
         if (argc > 3 && mode > 0)
-          sprintf(nomvar, "%s_%d", arg3, nbvar);
+          Sprintf(nomvar, "%s_%d", arg3, nbvar);
         else if (argc > 2 && mode == 0)
-          sprintf(nomvar, "%s_%d", arg2, nbvar);
+          Sprintf(nomvar, "%s_%d", arg2, nbvar);
         else
-          sprintf(nomvar, "tp_%d", i);
+          Sprintf(nomvar, "tp_%d", i);
       }
       char* nomv = nomvar;
       XSControl::Vars(pilot)->Set(nomv, geom);
@@ -863,7 +863,7 @@ static IFSelect_ReturnStatus XSControl_trimport(const Handle(IFSelect_SessionPil
     else
     {
       char nomsh[50];
-      sprintf(nomsh, "%s_%d", rnom.ToCString(), nbs);
+      Sprintf(nomsh, "%s_%d", rnom.ToCString(), nbs);
       XSControl::Vars(pilot)->SetShape(nomsh, sh);
     }
   }
@@ -1060,7 +1060,7 @@ Standard_Integer XSControl_FuncShape::MoreShapes(const Handle(XSControl_WorkSess
     for (i = n1; i <= n2; i++)
     {
       const char* nomshh = &nomsh[0];
-      sprintf(nomsh, "%s%d", nom, i);
+      Sprintf(nomsh, "%s%d", nom, i);
       TopoDS_Shape Shape = session->Vars()->GetShape(nomshh);
       if (Shape.IsNull())
         continue;

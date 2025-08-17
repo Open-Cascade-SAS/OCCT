@@ -427,7 +427,7 @@ void GeomFill_CorrectedFrenet::Init()
     }
     char             tname[100];
     Standard_CString name = tname;
-    sprintf(name, "Binorm_%d", ++CorrNumber);
+    Sprintf(name, "Binorm_%d", ++CorrNumber);
     Handle(Geom_BSplineCurve) BS = new (Geom_BSplineCurve)(TabP, TI, M, 1);
     //    DrawTrSurf::Set(&name[0], BS);
     DrawTrSurf::Set(name, BS);

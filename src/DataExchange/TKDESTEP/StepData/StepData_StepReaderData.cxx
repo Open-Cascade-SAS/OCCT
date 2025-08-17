@@ -376,7 +376,7 @@ StepData_StepReaderData::StepData_StepReaderData(const Standard_Integer    nbhea
   if (initstr)
     return;
   // for (Standard_Integer i = 0; i < Maxlst; i ++) {
-  //   sprintf(textnum,"$%d",i+1);
+  //   Sprintf(textnum,"$%d",i+1);
   //   subl[i].AssignCat(textnum);
   // }
   initstr = Standard_True;
@@ -596,21 +596,21 @@ Standard_Boolean StepData_StepReaderData::NamedForComplex(const Standard_CString
     NamedForComplex(name, num0, n, ach); // on a rembobine
                                          //  Not in alphabetical order: loop
   Handle(String) errmess = new String("Parameter n0.%d (%s) not a LIST");
-  sprintf(txtmes, errmess->ToCString(), num0, name);
+  Sprintf(txtmes, errmess->ToCString(), num0, name);
   for (n = num0; n > 0; n = NextForComplex(n))
   {
     if (!strcmp(RecordType(n).ToCString(), name))
     {
       num     = n;
       errmess = new String("Complex Record n0.%d, member type %s not in alphabetic order");
-      sprintf(txtmes, errmess->ToCString(), num0, name);
+      Sprintf(txtmes, errmess->ToCString(), num0, name);
       ach->AddWarning(txtmes, errmess->ToCString());
       return Standard_False;
     }
   }
   num     = 0;
   errmess = new String("Complex Record n0.%d, member type %s not found");
-  sprintf(txtmes, errmess->ToCString(), num0, name);
+  Sprintf(txtmes, errmess->ToCString(), num0, name);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -635,7 +635,7 @@ Standard_Boolean StepData_StepReaderData::NamedForComplex(const Standard_CString
 
   // entities are not in alphabetical order
   Handle(String) errmess = new String("Parameter n0.%d (%s) not a LIST");
-  sprintf(txtmes, errmess->ToCString(), num0, theName);
+  Sprintf(txtmes, errmess->ToCString(), num0, theName);
   for (n = num0; n > 0; n = NextForComplex(n))
   {
     if (!strcmp(RecordType(n).ToCString(), theName)
@@ -643,14 +643,14 @@ Standard_Boolean StepData_StepReaderData::NamedForComplex(const Standard_CString
     {
       num     = n;
       errmess = new String("Complex Record n0.%d, member type %s not in alphabetic order");
-      sprintf(txtmes, errmess->ToCString(), num0, theName);
+      Sprintf(txtmes, errmess->ToCString(), num0, theName);
       ach->AddWarning(txtmes, errmess->ToCString());
       return Standard_False;
     }
   }
   num     = 0;
   errmess = new String("Complex Record n0.%d, member type %s not found");
-  sprintf(txtmes, errmess->ToCString(), num0, theName);
+  Sprintf(txtmes, errmess->ToCString(), num0, theName);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -671,7 +671,7 @@ Standard_Boolean StepData_StepReaderData::CheckNbParams(const Standard_Integer  
     errmess = new String("Count of Parameters is not %d");
   else
     errmess = new String("Count of Parameters is not %d for %s");
-  sprintf(txtmes, errmess->ToCString(), nbreq, mess);
+  Sprintf(txtmes, errmess->ToCString(), nbreq, mess);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -694,7 +694,7 @@ Standard_Boolean StepData_StepReaderData::ReadSubList(const Standard_Integer   n
     if (aNbParams == 0)
     {
       Handle(String) anErrMess = new String("Parameter n0.%d (%s) is an empty LIST");
-      sprintf(txtmes, anErrMess->ToCString(), nump, mess);
+      Sprintf(txtmes, anErrMess->ToCString(), nump, mess);
       ach->AddWarning(txtmes, anErrMess->ToCString());
     }
     return Standard_True;
@@ -706,7 +706,7 @@ Standard_Boolean StepData_StepReaderData::ReadSubList(const Standard_Integer   n
     return Standard_False;
 
   Handle(String) errmess = new String("Parameter n0.%d (%s) not a LIST");
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   if (acceptvoid && isvoid)
     ach->AddWarning(txtmes, errmess->ToCString());
   else
@@ -1033,7 +1033,7 @@ Standard_Boolean StepData_StepReaderData::ReadMember(const Standard_Integer     
     return res;
   //   changement -> refus
   Handle(String) errmess = new String("Parameter n0.%d (%s) : does not match SELECT clause");
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -1354,7 +1354,7 @@ Standard_Boolean StepData_StepReaderData::ReadXY(const Standard_Integer   num,
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -1401,7 +1401,7 @@ Standard_Boolean StepData_StepReaderData::ReadXYZ(const Standard_Integer   num,
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -1428,7 +1428,7 @@ Standard_Boolean StepData_StepReaderData::ReadReal(const Standard_Integer   num,
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -1483,7 +1483,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer     
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   if (warn)
     ach->AddWarning(txtmes, errmess->ToCString());
   else
@@ -1551,7 +1551,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer   nu
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   if (warn)
     ach->AddWarning(txtmes, errmess->ToCString());
   else
@@ -1592,7 +1592,7 @@ Standard_Boolean StepData_StepReaderData::ReadInteger(const Standard_Integer   n
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   if (warn)
     ach->AddWarning(txtmes, errmess->ToCString());
   else
@@ -1631,7 +1631,7 @@ Standard_Boolean StepData_StepReaderData::ReadBoolean(const Standard_Integer   n
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -1668,7 +1668,7 @@ Standard_Boolean StepData_StepReaderData::ReadLogical(const Standard_Integer   n
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -1710,7 +1710,7 @@ Standard_Boolean StepData_StepReaderData::ReadString(const Standard_Integer     
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   if (warn)
     ach->AddWarning(txtmes, errmess->ToCString());
   else
@@ -1749,7 +1749,7 @@ Standard_Boolean StepData_StepReaderData::ReadEnumParam(const Standard_Integer  
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   if (warn)
     ach->AddWarning(txtmes, errmess->ToCString());
   else
@@ -1765,7 +1765,7 @@ void StepData_StepReaderData::FailEnumValue(const Standard_Integer /* num */,
                                             Handle(Interface_Check)& ach) const
 {
   Handle(String) errmess = new String("Parameter n0.%d (%s) : Incorrect Enumeration Value");
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   ach->AddFail(txtmes, errmess->ToCString());
 }
 
@@ -1808,7 +1808,7 @@ Standard_Boolean StepData_StepReaderData::ReadEnum(const Standard_Integer   num,
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   if (warn)
     ach->AddWarning(txtmes, errmess->ToCString());
   else
@@ -1840,7 +1840,7 @@ Standard_Boolean StepData_StepReaderData::ReadTypedParam(const Standard_Integer 
       if (mustbetyped)
       {
         errmess = new String("Parameter n0.%d (%s) : single, not typed");
-        sprintf(txtmes, errmess->ToCString(), nump, mess);
+        Sprintf(txtmes, errmess->ToCString(), nump, mess);
         ach->AddFail(txtmes, errmess->ToCString());
         return Standard_False;
       }
@@ -1857,7 +1857,7 @@ Standard_Boolean StepData_StepReaderData::ReadTypedParam(const Standard_Integer 
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
@@ -1886,7 +1886,7 @@ Standard_Boolean StepData_StepReaderData::CheckDerived(const Standard_Integer   
 
   if (errmess.IsNull())
     return Standard_True;
-  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  Sprintf(txtmes, errmess->ToCString(), nump, mess);
   if (warn)
     ach->AddWarning(txtmes, errmess->ToCString());
   else
@@ -2076,7 +2076,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
           }
           char failmess[100];
           //  ...  Build the Check  ...
-          sprintf(failmess, "Unresolved Reference, Ent.Id.#%d Param.n0 %d (Id.#%d)", ident, na, id);
+          Sprintf(failmess, "Unresolved Reference, Ent.Id.#%d Param.n0 %d (Id.#%d)", ident, na, id);
           thecheck->AddFail(failmess, "Unresolved Reference");
           //  ...  And output a more complete message
           sout << "*** ERR StepReaderData *** Entite #" << ident << "\n    Type:" << RecordType(num)
@@ -2166,7 +2166,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
           {
             //  We are inside: report it
             char ligne[80];
-            sprintf(ligne, "Ident defined SEVERAL TIMES : #%d", ident);
+            Sprintf(ligne, "Ident defined SEVERAL TIMES : #%d", ident);
             thecheck->AddFail(ligne, "Ident defined SEVERAL TIMES : #%d");
             sout << "StepReaderData : SetEntityNumbers, " << ligne << std::endl;
           }
@@ -2430,7 +2430,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
             }
           }
           //  ...  Build the Check  ...
-          sprintf(failmess,
+          Sprintf(failmess,
                   "Unresolved Reference, Ent.n0 %d (Id.#%d) Param.n0 %d (Id.#%d)",
                   nument,
                   ident,

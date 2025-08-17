@@ -335,21 +335,21 @@ void IGESDimen_ToolGeneralNote::OwnCheck(const Handle(IGESDimen_GeneralNote)& en
     if (ent->NbCharacters(i) != ent->Text(i)->Length())
     {
       char mess[80];
-      sprintf(mess, "%d : Number of Characters != Length of Text String", i);
+      Sprintf(mess, "%d : Number of Characters != Length of Text String", i);
       ach->AddFail(mess);
     }
     Standard_Integer mflag = ent->MirrorFlag(i);
     if ((mflag < 0) || (mflag > 2))
     {
       char mess[80];
-      sprintf(mess, "%d : Mirror flag != 0, 1, 2", i);
+      Sprintf(mess, "%d : Mirror flag != 0, 1, 2", i);
       ach->AddFail(mess);
     }
     Standard_Integer rflag = ent->RotateFlag(i);
     if ((rflag < 0) || (rflag > 1))
     {
       char mess[80];
-      sprintf(mess, "%d : Rotate flag != 0, 1", i);
+      Sprintf(mess, "%d : Rotate flag != 0, 1", i);
       ach->AddFail(mess);
     }
   }

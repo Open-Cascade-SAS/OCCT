@@ -445,7 +445,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData(Handle(ChFiDS_SurfData)&         D
     IndexOfConge++;
     //    char name[100];
     char* name = new char[100];
-    sprintf(name, "%s_%d", "Surf", IndexOfConge);
+    Sprintf(name, "%s_%d", "Surf", IndexOfConge);
     DrawTrSurf::Set(name, Surfcoin);
   }
 #endif
@@ -757,7 +757,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)&         Data
     IndexOfConge++;
     //    char name[100];
     char* name = new char[100];
-    sprintf(name, "%s_%d", "Surf", IndexOfConge);
+    Sprintf(name, "%s_%d", "Surf", IndexOfConge);
     DrawTrSurf::Set(name, Surf);
   }
 #endif

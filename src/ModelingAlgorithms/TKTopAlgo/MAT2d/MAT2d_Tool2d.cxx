@@ -216,7 +216,7 @@ Standard_Integer MAT2d_Tool2d::TangentBefore(const Standard_Integer anitem,
     curve = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(anitem));
 #ifdef DRAW
     char* name = new char[100];
-    sprintf(name, "c%d", anitem);
+    Sprintf(name, "c%d", anitem);
     DrawTrSurf::Set(name, curve);
     delete[] name;
 #endif
@@ -227,7 +227,7 @@ Standard_Integer MAT2d_Tool2d::TangentBefore(const Standard_Integer anitem,
     curve = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(item));
 #ifdef DRAW
     char* name = new char[100];
-    sprintf(name, "c%d", item);
+    Sprintf(name, "c%d", item);
     DrawTrSurf::Set(name, curve);
     delete[] name;
 #endif
@@ -266,7 +266,7 @@ Standard_Integer MAT2d_Tool2d::TangentAfter(const Standard_Integer anitem,
     curve = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(anitem));
 #ifdef DRAW
     char* name = new char[100];
-    sprintf(name, "c%d", anitem);
+    Sprintf(name, "c%d", anitem);
     DrawTrSurf::Set(name, curve);
     delete[] name;
 #endif
@@ -282,7 +282,7 @@ Standard_Integer MAT2d_Tool2d::TangentAfter(const Standard_Integer anitem,
     curve = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(item));
 #ifdef DRAW
     char* name = new char[100];
-    sprintf(name, "c%d", item);
+    Sprintf(name, "c%d", item);
     DrawTrSurf::Set(name, curve);
     delete[] name;
 #endif
@@ -426,7 +426,7 @@ void MAT2d_Tool2d::CreateBisector(const Handle(MAT_Bisector)& abisector)
 
 #ifdef DRAW
   char* name = new char[100];
-  sprintf(name, "b%d", theNumberOfBisectors);
+  Sprintf(name, "b%d", theNumberOfBisectors);
   DrawTrSurf::Set(name, bisector.Value());
   Dump(abisector->BisectorNumber(), 1);
   delete[] name;
@@ -446,7 +446,7 @@ void MAT2d_Tool2d::CreateBisector(const Handle(MAT_Bisector)& abisector)
         Handle(Bisector_BisecAna)::DownCast(bisector.Value()->BasisCurve())->Geom2dCurve();
   #ifdef DRAW
       char* name = new char[100];
-      sprintf(name, "BISSEC_%d", abisector->BisectorNumber());
+      Sprintf(name, "BISSEC_%d", abisector->BisectorNumber());
       DrawTrSurf::Set(name, BasisCurve);
       delete[] name;
   #endif

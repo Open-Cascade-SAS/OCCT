@@ -550,7 +550,7 @@ void BRepAlgo_Loop::Perform()
     std::cout << "NewLoop" << std::endl;
     NbLoops++;
   #ifdef DRAW
-    sprintf(name, "FLoop_%d", NbLoops);
+    Sprintf(name, "FLoop_%d", NbLoops);
     DBRep::Set(name, myFace);
     Standard_Integer NbEdges = 1;
   #endif
@@ -558,7 +558,7 @@ void BRepAlgo_Loop::Perform()
     {
       const TopoDS_Edge& E = TopoDS::Edge(itl.Value());
   #ifdef DRAW
-      sprintf(name, "EEE_%d_%d", NbLoops, NbEdges++);
+      Sprintf(name, "EEE_%d_%d", NbLoops, NbEdges++);
       DBRep::Set(name, E);
   #endif
     }
@@ -566,7 +566,7 @@ void BRepAlgo_Loop::Perform()
     {
       const TopoDS_Edge& E = TopoDS::Edge(itl.Value());
   #ifdef DRAW
-      sprintf(name, "EEE_%d_%d", NbLoops, NbEdges++);
+      Sprintf(name, "EEE_%d_%d", NbLoops, NbEdges++);
       DBRep::Set(name, E);
   #endif
     }
@@ -632,7 +632,7 @@ void BRepAlgo_Loop::Perform()
         TopoDS_Edge& E = TopoDS::Edge(itl.Value());
         if (Done.Add(E))
         {
-          sprintf(name, "EEC_%d_%d", NbLoops, NbEdges++);
+          Sprintf(name, "EEC_%d_%d", NbLoops, NbEdges++);
           DBRep::Set(name, E);
         }
       }
@@ -763,7 +763,7 @@ void BRepAlgo_Loop::Perform()
 #ifdef DRAW
     if (AffichLoop)
     {
-      sprintf(name, "NW_%d_%d", NbLoops, NbWires++);
+      Sprintf(name, "NW_%d_%d", NbLoops, NbWires++);
       DBRep::Set(name, NW);
     }
 #endif

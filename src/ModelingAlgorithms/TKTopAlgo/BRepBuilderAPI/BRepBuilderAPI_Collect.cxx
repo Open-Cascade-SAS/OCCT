@@ -175,7 +175,7 @@ static void DEBControl(const TopTools_DataMapOfShapeListOfShape& MG)
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& OS = it.Key();
-    sprintf(name, "SK_%d", ++IK);
+    Sprintf(name, "SK_%d", ++IK);
   #ifdef DRAW
     DBRep::Set(name, OS);
   #endif
@@ -183,7 +183,7 @@ static void DEBControl(const TopTools_DataMapOfShapeListOfShape& MG)
     Standard_Integer                   IV = 1;
     for (; itl.More(); itl.Next())
     {
-      sprintf(name, "SV_%d_%d", IK, IV++);
+      Sprintf(name, "SV_%d_%d", IK, IV++);
   #ifdef DRAW
       DBRep::Set(name, NS);
   #endif

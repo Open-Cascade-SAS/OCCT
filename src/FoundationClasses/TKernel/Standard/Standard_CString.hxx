@@ -58,13 +58,25 @@ extern "C"
   Standard_EXPORT double Strtod(const char* theStr, char** theNextPtr);
 
   //! Equivalent of standard C function printf() that always uses C locale
-  Standard_EXPORT int Printf(const char* theFormat, ...);
+  Standard_EXPORT int Printf(const char* theFormat, ...)
+#ifdef __GNUC__
+    __attribute__((format(printf, 1, 2)))
+#endif
+    ;
 
   //! Equivalent of standard C function fprintf() that always uses C locale
-  Standard_EXPORT int Fprintf(FILE* theFile, const char* theFormat, ...);
+  Standard_EXPORT int Fprintf(FILE* theFile, const char* theFormat, ...)
+#ifdef __GNUC__
+    __attribute__((format(printf, 2, 3)))
+#endif
+    ;
 
   //! Equivalent of standard C function sprintf() that always uses C locale
-  Standard_EXPORT int Sprintf(char* theBuffer, const char* theFormat, ...);
+  Standard_EXPORT int Sprintf(char* theBuffer, const char* theFormat, ...)
+#ifdef __GNUC__
+    __attribute__((format(printf, 2, 3)))
+#endif
+    ;
 
   //! Equivalent of standard C function vsprintf() that always uses C locale.
   //! Note that this function does not check buffer bounds and should be used with precaution
@@ -73,7 +85,11 @@ extern "C"
   //! @param[in] theFormat   format to apply
   //! @param[in] theArgList  argument list for specified format
   //! @return the total number of characters written, or a negative number on error
-  Standard_EXPORT int Vsprintf(char* theBuffer, const char* theFormat, va_list theArgList);
+  Standard_EXPORT int Vsprintf(char* theBuffer, const char* theFormat, va_list theArgList)
+#ifdef __GNUC__
+    __attribute__((format(printf, 2, 0)))
+#endif
+    ;
 
 #ifdef __cplusplus
 }

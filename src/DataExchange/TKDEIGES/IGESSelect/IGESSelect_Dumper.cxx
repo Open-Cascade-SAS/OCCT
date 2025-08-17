@@ -127,7 +127,7 @@ Standard_Boolean IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&             f
     Standard_Integer                 np  = sp->GlobalNumber();
     Handle(TCollection_HAsciiString) val = sp->Value();
     char                             intext[10];
-    sprintf(intext, "%d", np);
+    Sprintf(intext, "%d", np);
     file.SendText(intext);
     file.SendItem(val);
     return Standard_True;
@@ -198,9 +198,9 @@ Standard_Boolean IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&          file,
     // Attention, 2 termes possibles pour la signature
     char sig[40];
     if (file.NbParams() == 2)
-      sprintf(sig, "%s", file.ParamValue(2).ToCString());
+      Sprintf(sig, "%s", file.ParamValue(2).ToCString());
     else
-      sprintf(sig, "%s %s", file.ParamValue(2).ToCString(), file.ParamValue(3).ToCString());
+      Sprintf(sig, "%s %s", file.ParamValue(2).ToCString(), file.ParamValue(3).ToCString());
     //    item = new IGESSelect_SelectIGESTypeForm(sig,exact);
     //    return Standard_True;
   }

@@ -234,11 +234,11 @@ TCollection_AsciiString IFSelect_TransformStandard::Label() const
     labl.AssignCat("On the spot Edition");
   Standard_Integer nb = NbModifiers();
   if (nb == 0)
-    sprintf(lab, " (no Modifier)");
+    Sprintf(lab, " (no Modifier)");
   if (nb == 1)
-    sprintf(lab, " - %s", Modifier(1)->Label().ToCString());
+    Sprintf(lab, " - %s", Modifier(1)->Label().ToCString());
   if (nb > 1)
-    sprintf(lab, " - %d Modifiers", nb);
+    Sprintf(lab, " - %d Modifiers", nb);
   labl.AssignCat(lab);
   return labl;
 }

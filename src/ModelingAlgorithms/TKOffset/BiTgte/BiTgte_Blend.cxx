@@ -2234,7 +2234,7 @@ void BiTgte_Blend::ComputeSurfaces()
 #ifdef DRAW
       if (Affich)
       {
-        sprintf(name, "%s_%d", "SURF", nbc);
+        Sprintf(name, "%s_%d", "SURF", nbc);
         DBRep::Set(name, AnOffset.Face());
         nbc++;
       }
@@ -2276,7 +2276,7 @@ void BiTgte_Blend::ComputeSurfaces()
 #ifdef DRAW
     if (Affich)
     {
-      sprintf(name, "%s_%d", "SURF", nbc);
+      Sprintf(name, "%s_%d", "SURF", nbc);
       DBRep::Set(name, OFT.Face());
       nbc++;
     }
@@ -2310,7 +2310,7 @@ void BiTgte_Blend::ComputeShape()
       CutEdge(E, VonE, NewE);
       for (TopTools_ListIteratorOfListOfShape it(NewE); it.More(); it.Next())
       {
-        sprintf(name, "%s_%d", "CUTE", ++NbEdges);
+        Sprintf(name, "%s_%d", "CUTE", ++NbEdges);
         DBRep::Set(name, it.Value());
       }
     }

@@ -59,9 +59,9 @@ Standard_CString IGESSelect_SignLevelNumber::Value(
     //    if (level < 0) return (thecountmode ? " NO LEVEL" : "/0/");
     laval.Clear();
     if (thecountmode)
-      sprintf(carlev, "%7d", level);
+      Sprintf(carlev, "%7d", level);
     else
-      sprintf(carlev, "/%d/", level);
+      Sprintf(carlev, "/%d/", level);
     laval.AssignCat(carlev);
   }
   else if (thecountmode)
@@ -73,7 +73,7 @@ Standard_CString IGESSelect_SignLevelNumber::Value(
     laval.AssignCat("LIST:/");
     for (i = 1; i <= nblev; i++)
     {
-      sprintf(carlev, "%d/", levelist->LevelNumber(i));
+      Sprintf(carlev, "%d/", levelist->LevelNumber(i));
       laval.AssignCat(carlev);
     }
   }

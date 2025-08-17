@@ -46,7 +46,7 @@
 
 //! This class intended to temporary switch C locale and logically equivalent to setlocale(LC_ALL,
 //! "C"). It is intended to format text regardless of user locale settings (for import/export
-//! functionality). Thus following calls to sprintf, atoi and other functions will use "C" locale.
+//! functionality). Thus following calls to Sprintf, atoi and other functions will use "C" locale.
 //! Destructor of this class will return original locale.
 //!
 //! Notice that this functionality is platform dependent and intended only to workaround alien code

@@ -143,7 +143,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BREntity::TransferShape(
     //    the following function forces indirect surfaces to
     //    direct surfaces (mandatory in IGES)
     //    theShape = ShapeCustom::DirectFaces(start);
-    // sprintf(Name,"res_%d",Nb++);
+    // Sprintf(Name,"res_%d",Nb++);
     // DBRep::Set(Name,theShape);
 
     if (start.ShapeType() == TopAbs_FACE)

@@ -58,16 +58,16 @@ Standard_CString IGESSelect_IGESTypeForm::Value(
   if (unk)
   {
     if (theform)
-      sprintf(typeval, "%d %d (?)", typenum, formnum);
+      Sprintf(typeval, "%d %d (?)", typenum, formnum);
     else
-      sprintf(typeval, "%d (?)", typenum);
+      Sprintf(typeval, "%d (?)", typenum);
   }
   else
   {
     if (theform)
-      sprintf(typeval, "%d %d", typenum, formnum);
+      Sprintf(typeval, "%d %d", typenum, formnum);
     else
-      sprintf(typeval, "%d", typenum);
+      Sprintf(typeval, "%d", typenum);
   }
   return &typeval[0];
 }

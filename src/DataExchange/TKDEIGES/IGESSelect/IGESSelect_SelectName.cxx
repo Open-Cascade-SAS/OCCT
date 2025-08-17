@@ -75,7 +75,7 @@ TCollection_AsciiString IGESSelect_SelectName::ExtractLabel() const
   char labl[50];
   if (!thename.IsNull())
   {
-    sprintf(labl, "IGES Entity, Name : %s", thename->ToCString());
+    Sprintf(labl, "IGES Entity, Name : %s", thename->ToCString());
     return TCollection_AsciiString(labl);
   }
   else

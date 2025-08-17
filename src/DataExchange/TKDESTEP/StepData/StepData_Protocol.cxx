@@ -111,7 +111,7 @@ void StepData_Protocol::AddDescr(const Handle(StepData_EDescr)& adescr, const St
   if (!sd.IsNull())
     thedscnam.Bind(sd->TypeName(), sd);
   char fonom[10];
-  sprintf(fonom, "%d", CN);
+  Sprintf(fonom, "%d", CN);
   thedscnam.Bind(fonom, adescr);
 }
 
@@ -126,7 +126,7 @@ Handle(StepData_EDescr) StepData_Protocol::Descr(const Standard_Integer num) con
   if (thedscnam.IsEmpty())
     return dsc;
   char fonom[10];
-  sprintf(fonom, "%d", num);
+  Sprintf(fonom, "%d", num);
   Handle(Standard_Transient) aTDsc;
   if (thedscnam.Find(fonom, aTDsc))
     dsc = Handle(StepData_EDescr)::DownCast(aTDsc);

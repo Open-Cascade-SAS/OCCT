@@ -318,17 +318,17 @@ Standard_Integer bopcheck(Draw_Interpretor& di, Standard_Integer n, const char**
     iT = aBI.Type();
     di << aInterfTypes[iT] << ": ";
     //
-    sprintf(aName1, "x%d", n1);
-    // sprintf(aName1, "x%d", iCnt);
+    Sprintf(aName1, "x%d", n1);
+    // Sprintf(aName1, "x%d", iCnt);
     DBRep::Set(aName1, aS1);
     //
     ++iCnt;
-    sprintf(aName2, "x%d", n2);
-    // sprintf(aName2, "x%d", iCnt);
+    Sprintf(aName2, "x%d", n2);
+    // Sprintf(aName2, "x%d", iCnt);
     DBRep::Set(aName2, aS2);
     ++iCnt;
     //
-    sprintf(buf, "%s %s \n", aName1, aName2);
+    Sprintf(buf, "%s %s \n", aName1, aName2);
     di << buf;
   }
   //
@@ -1273,9 +1273,9 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di, Standard_Integer n, cons
         ++aFCounter;
       }
       //
-      sprintf(anEName, "e_%d", nE);
-      sprintf(aFName, "f_%d", nF);
-      sprintf(buf,
+      Sprintf(anEName, "e_%d", nE);
+      Sprintf(aFName, "f_%d", nF);
+      Sprintf(buf,
               "edge %s on face %s (max dist: %3.16f, parameter on curve: %3.16f)\n",
               anEName,
               aFName,
@@ -1311,7 +1311,7 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di, Standard_Integer n, cons
       //
       aTolE = aDMETol.Find(aE);
       aTolE *= 1.001;
-      sprintf(buf, "settolerance %s_%d %3.16f;\n", a[1], anECounter, aTolE);
+      Sprintf(buf, "settolerance %s_%d %3.16f;\n", a[1], anECounter, aTolE);
       di << buf;
     }
   }

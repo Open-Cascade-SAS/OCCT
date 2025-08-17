@@ -457,7 +457,7 @@ void OSD_Error::Perror()
     default: {
       Standard_Character buf[255];
       //
-      sprintf(buf, "%sUnknowm error #%d", buffer.ToCString(), myErrno);
+      Sprintf(buf, "%sUnknowm error #%d", buffer.ToCString(), myErrno);
       TCollection_AsciiString interm(buf);
       buffer  = interm;
       extCode = ERR_UNKNOWN;

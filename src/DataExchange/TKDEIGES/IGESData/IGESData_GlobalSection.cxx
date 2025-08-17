@@ -53,7 +53,7 @@ static void MakeHollerith(const Handle(TCollection_HAsciiString)& astr,
   Standard_Integer ln = astr->Length();
   if (ln == 0)
     return;
-  sprintf(text, "%dH%s", ln, astr->ToCString());
+  Sprintf(text, "%dH%s", ln, astr->ToCString());
   lt = ln + 2;
   if (ln >= 10)
     lt++;
@@ -415,51 +415,51 @@ Handle(Interface_ParamSet) IGESData_GlobalSection::Params() const
   MakeHollerith(theInterfaceVersion, text, lt);
   res->Append(text, lt, Interface_ParamText, 0);
 
-  sprintf(nombre, "%d", theIntegerBits);
+  Sprintf(nombre, "%d", theIntegerBits);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamInteger, 0);
 
-  sprintf(nombre, "%d", theMaxPower10Single);
+  Sprintf(nombre, "%d", theMaxPower10Single);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamInteger, 0);
 
-  sprintf(nombre, "%d", theMaxDigitsSingle);
+  Sprintf(nombre, "%d", theMaxDigitsSingle);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamInteger, 0);
 
-  sprintf(nombre, "%d", theMaxPower10Double);
+  Sprintf(nombre, "%d", theMaxPower10Double);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamInteger, 0);
 
-  sprintf(nombre, "%d", theMaxDigitsDouble);
+  Sprintf(nombre, "%d", theMaxDigitsDouble);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamInteger, 0);
 
   MakeHollerith(theReceiveName, text, lt);
   res->Append(text, lt, Interface_ParamText, 0);
 
   Interface_FloatWriter::Convert(theScale, nombre, Standard_True, 0., 0., "%f", "%f");
-  //  sprintf(nombre,"%f",theScale);
+  //  Sprintf(nombre,"%f",theScale);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamReal, 0);
 
-  sprintf(nombre, "%d", theUnitFlag);
+  Sprintf(nombre, "%d", theUnitFlag);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamInteger, 0);
 
   MakeHollerith(theUnitName, text, lt);
   res->Append(text, lt, Interface_ParamText, 0);
 
-  sprintf(nombre, "%d", theLineWeightGrad);
+  Sprintf(nombre, "%d", theLineWeightGrad);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamInteger, 0);
 
   Interface_FloatWriter::Convert(theMaxLineWeight, nombre, Standard_True, 0., 0., "%f", "%f");
-  //  sprintf(nombre,"%f",theMaxLineWeight);
+  //  Sprintf(nombre,"%f",theMaxLineWeight);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamReal, 0);
 
   MakeHollerith(theDate, text, lt);
   res->Append(text, lt, Interface_ParamText, 0);
 
   Interface_FloatWriter::Convert(theResolution, nombre, Standard_True, 0., 0., "%g", "%g");
-  //  sprintf(nombre,"%f",theResolution);
+  //  Sprintf(nombre,"%f",theResolution);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamReal, 0);
 
   if (hasMaxCoord)
     Interface_FloatWriter::Convert(theMaxCoord, nombre, Standard_True, 0., 0., "%f", "%f");
-  //  sprintf(nombre,"%f",theMaxCoord);
+  //  Sprintf(nombre,"%f",theMaxCoord);
   else
     nombre[0] = '\0';
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamReal, 0);
@@ -470,10 +470,10 @@ Handle(Interface_ParamSet) IGESData_GlobalSection::Params() const
   MakeHollerith(theCompanyName, text, lt);
   res->Append(text, lt, Interface_ParamText, 0);
 
-  sprintf(nombre, "%d", theIGESVersion);
+  Sprintf(nombre, "%d", theIGESVersion);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamInteger, 0);
 
-  sprintf(nombre, "%d", theDraftingStandard);
+  Sprintf(nombre, "%d", theDraftingStandard);
   res->Append(nombre, (Standard_Integer)strlen(nombre), Interface_ParamInteger, 0);
 
   if (!theLastChangeDate.IsNull())
@@ -757,14 +757,14 @@ Handle(TCollection_HAsciiString) IGESData_GlobalSection::NewDateString(
     }
     Standard_Integer date1 = (an) * 10000 + moi * 100 + jou;
     Standard_Integer date2 = (heur + 100) * 10000 + minut * 100 + second;
-    sprintf(madate, "%d%d", date1, date2);
+    Sprintf(madate, "%d%d", date1, date2);
     madate[(mode == 0 ? 6 : 8)] = '.';
     if (!dizaine)
       madate[0] = '0';
   }
   else if (mode == 1)
   {
-    sprintf(madate, "%4.4d-%2.2d-%2.2d:%2.2d-%2.2d-%2.2d", anne, moi, jou, heur, minut, second);
+    Sprintf(madate, "%4.4d-%2.2d-%2.2d:%2.2d-%2.2d-%2.2d", anne, moi, jou, heur, minut, second);
   }
   return new TCollection_HAsciiString(madate);
 }

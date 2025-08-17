@@ -52,7 +52,7 @@ void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&          list
 {
   Standard_Integer i, nb, num, nbe = (model.IsNull() ? 0 : model->NbEntities());
   char             mess[300];
-  sprintf(mess, "Check %s", list.Name());
+  Sprintf(mess, "Check %s", list.Name());
   SetName(mess);
   for (list.Start(); list.More(); list.Next())
   {
@@ -76,9 +76,9 @@ void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&          list
     for (i = 1; i <= nb; i++)
     {
       if (ent.IsNull())
-        sprintf(mess, "F: %s", check->CFail(i, original));
+        Sprintf(mess, "F: %s", check->CFail(i, original));
       else
-        sprintf(mess, "F:%s: %s", tystr, check->CFail(i, original));
+        Sprintf(mess, "F:%s: %s", tystr, check->CFail(i, original));
       Add(ent, mess);
     }
     nb = 0;
@@ -87,9 +87,9 @@ void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&          list
     for (i = 1; i <= nb; i++)
     {
       if (ent.IsNull())
-        sprintf(mess, "W: %s", check->CWarning(i, original));
+        Sprintf(mess, "W: %s", check->CWarning(i, original));
       else
-        sprintf(mess, "W:%s: %s", tystr, check->CWarning(i, original));
+        Sprintf(mess, "W:%s: %s", tystr, check->CWarning(i, original));
       Add(ent, mess);
     }
   }

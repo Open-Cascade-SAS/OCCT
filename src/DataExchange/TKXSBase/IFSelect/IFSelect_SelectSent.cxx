@@ -88,9 +88,9 @@ TCollection_AsciiString IFSelect_SelectSent::ExtractLabel() const
   if (thecnt > 2)
   {
     if (thelst)
-      sprintf(lb, "Sent at least %d times entities", thecnt);
+      Sprintf(lb, "Sent at least %d times entities", thecnt);
     else
-      sprintf(lb, "Sent just %d times entities", thecnt);
+      Sprintf(lb, "Sent just %d times entities", thecnt);
     lab.AssignCat(lb);
   }
   return lab;

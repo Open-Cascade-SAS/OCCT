@@ -352,7 +352,7 @@ void IGESData_IGESWriter::OwnParams(const Handle(IGESData_IGESEntity)& anent)
     throw Interface_InterfaceError("IGESWriter : OwnParams");
   thepnum.SetValue(themodel->Number(anent), thepars->Length() + 1);
   thecurr.Clear();
-  sprintf(text, "%d", anent->TypeNumber());
+  Sprintf(text, "%d", anent->TypeNumber());
   AddString(text);
   thestep = IGESData_ReadOwn;
 }
@@ -464,7 +464,7 @@ void IGESData_IGESWriter::Send(const Standard_Integer val)
 {
   char text[20];
   AddChar(thesep);
-  sprintf(text, "%d", val);
+  Sprintf(text, "%d", val);
   AddString(text);
 }
 
@@ -609,7 +609,7 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
     for (i = 1; i <= nbs; i++)
     {
       char finlin[20];
-      sprintf(finlin, "S%7.7d", i);
+      Sprintf(finlin, "S%7.7d", i);
       line = thestar->Value(i);
 
       if (fnes)
@@ -634,7 +634,7 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
   for (i = 1; i <= nbg && isGood; i++)
   {
     char finlin[20];
-    sprintf(finlin, "G%7.7d", i);
+    Sprintf(finlin, "G%7.7d", i);
     line = thehead->Value(i);
 
     if (fnes)
@@ -688,7 +688,7 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
                             num);
     v[1]  = thepnum.Value(i);                        // start in P
     v[15] = thepnum.Value(i + 1) - thepnum.Value(i); // nb of lines in P
-    sprintf(ligne,
+    Sprintf(ligne,
             "%8d%8d%8d%8d%8d%8d%8d%8d%2.2d%2.2d%2.2d%2.2dD%7.7d",
             v[0],
             v[1],
@@ -708,7 +708,7 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
     else
       S << ligne;
     S << "\n";
-    sprintf(ligne,
+    Sprintf(ligne,
             "%8d%8d%8d%8d%8d%8s%8s%8s%8sD%7.7d",
             v[0],
             v[13],
@@ -745,7 +745,7 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
     for (Standard_Integer j = thepnum.Value(i); j < thepnum.Value(i + 1); j++)
     {
       char finlin[32];
-      sprintf(finlin, " %7.7dP%7.7d", 2 * i - 1, j);
+      Sprintf(finlin, " %7.7dP%7.7d", 2 * i - 1, j);
       line = thepars->Value(j);
       //      line->LeftJustify(MaxcarsP,' ');  replaced by more economical ! :
 
@@ -774,7 +774,7 @@ Standard_Boolean IGESData_IGESWriter::Print(Standard_OStream& S) const
   if (!isGood)
     return isGood;
   //  Terminal Section (pas trop compliquee, ma foi)
-  sprintf(ligne,
+  Sprintf(ligne,
           "S%7dG%7dD%7dP%7d                                        T0000001",
           nbs,
           nbg,
