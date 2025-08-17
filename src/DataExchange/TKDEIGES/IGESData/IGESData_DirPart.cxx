@@ -69,7 +69,7 @@ void IGESData_DirPart::Init(const Standard_Integer i1,
   thesubs[8] = '\0';
 }
 
-//   CString : on modifie leur CONTENU, pas le POINTEUR LUI-MEME
+//   CString : we modify their CONTENT, not the POINTER ITSELF
 
 //=================================================================================================
 

@@ -114,7 +114,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
   switch (number)
   {
 
-    case 5:   //        ****    ListViews (sans tri complementaire)
+    case 5:   //        ****    ListViews (without additional sorting)
     case 6:   //        ****    ListDrawings
     case 7: { //        ****    ListS(ingle)Views
       Standard_Integer listmode = 0;
@@ -122,12 +122,11 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         argc = -1;
       if (argc < 2)
       {
-        std::cout << "Ajouter un argument pour avoir :\n"
-                  << " l : liste resumee"
-                  << " c : liste complete par item (mais pas pour remaining)\n"
-                  << " r : idem + liste complete remaining\n"
-                  << "  sur tout le modele. Ajouter nom selection pour lister sur une partie"
-                  << std::endl;
+        std::cout << "Add an argument to have :\n"
+                  << " l : summary list"
+                  << " c : complete list per item (but not for remaining)\n"
+                  << " r : same + complete remaining list\n"
+                  << "  on entire model. Add selection name to list on a part" << std::endl;
         return (argc >= 0 ? IFSelect_RetError : IFSelect_RetVoid);
       }
       if (arg1[0] == 'l')
@@ -138,12 +137,12 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
       else if (arg1[0] == 'c')
       {
         listmode = 1;
-        std::cout << "Liste complete par item (pas pour Remaining)" << std::endl;
+        std::cout << "Complete list per item (not for Remaining)" << std::endl;
       }
       else if (arg1[0] == 'r')
       {
         listmode = 2;
-        std::cout << "Liste complete par item et pour Remaining" << std::endl;
+        std::cout << "Complete list per item and for Remaining" << std::endl;
       }
       else
       {
@@ -207,8 +206,8 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
     case 10: { //        ****    IGESType (form Type/Form)
       if (argc < 2)
       {
-        std::cout << "Donner le n0 de type desire, + en option la forme\n"
-                  << "  Si pas de forme, prend toutes les formes du type demande" << std::endl;
+        std::cout << "Give the desired type number, + optionally the form\n"
+                  << "  If no form, takes all forms of the requested type" << std::endl;
         return IFSelect_RetError;
       }
       char signature[20];
@@ -228,7 +227,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
     case 12: { //        ****    IGES Name
       if (argc < 2)
       {
-        std::cout << "Donner un Nom de TextParam pour IGESName" << std::endl;
+        std::cout << "Give a TextParam Name for IGESName" << std::endl;
         return IFSelect_RetError;
       }
       Handle(IGESSelect_SelectName) sel = new IGESSelect_SelectName;
@@ -243,13 +242,13 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
     case 14: { //        ****    IGES LevelNumber
       if (argc < 2)
       {
-        std::cout << "Donner nom IntParam pour Level" << std::endl;
+        std::cout << "Give IntParam name for Level" << std::endl;
         return IFSelect_RetError;
       }
       DeclareAndCast(IFSelect_IntParam, lev, WS->NamedItem(arg1));
       if (lev.IsNull())
       {
-        std::cout << arg1 << " : pas un IntParam (pour Level)" << std::endl;
+        std::cout << arg1 << " : not an IntParam (for Level)" << std::endl;
         return IFSelect_RetError;
       }
       Handle(IGESSelect_SelectLevelNumber) sel = new IGESSelect_SelectLevelNumber;
@@ -283,7 +282,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         prem = '?';
       else if (argc == 5)
       {
-        std::cout << "floatformat tout court donne les formes admises" << std::endl;
+        std::cout << "floatformat alone gives the accepted forms" << std::endl;
         return IFSelect_RetError;
       }
       else
@@ -298,13 +297,13 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         digits = atoi(arg1);
       else
       {
-        std::cout << "floatformat digits, digits=nb de chiffres signifiants, ou\n"
+        std::cout << "floatformat digits, digits=nb of significant digits, or\n"
                   << "floatformat NZ %mainformat [%rangeformat [Rmin Rmax]]\n"
-                  << "  NZ : N ou n pour Non-zero-suppress, Z ou z pour zero-suppress\n"
-                  << " %mainformat  : format principal type printf, ex,: %E\n"
-                  << " + optionnel  : format secondaire (flottants autour de 1.) :\n"
-                  << " %rangeformat Rmin Rmax : format type printf entre Rmin et Rmax\n"
-                  << " %rangeformat tout seul : format type printf entre 0.1 et 1000.\n"
+                  << "  NZ : N or n for Non-zero-suppress, Z or z for zero-suppress\n"
+                  << " %mainformat  : main format printf type, ex,: %E\n"
+                  << " + optional  : secondary format (floats around 1.) :\n"
+                  << " %rangeformat Rmin Rmax : printf type format between Rmin and Rmax\n"
+                  << " %rangeformat alone : printf type format between 0.1 and 1000.\n"
                   << std::flush;
         return (prem == '?' ? IFSelect_RetVoid : IFSelect_RetError);
       }
@@ -339,7 +338,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
     case 41: { //        ****    SetGlobalParameter
       if (argc < 3)
       {
-        std::cout << "Donner entier=n0 param a changer + nom TextParam pour la valeur" << std::endl;
+        std::cout << "Give integer=n0 param to change + TextParam name for the value" << std::endl;
         return IFSelect_RetError;
       }
       Standard_Integer numpar = atoi(arg1);
@@ -391,8 +390,8 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
     case 60: { //        ****    Spline To BSpline
       if (argc < 2)
       {
-        std::cout << "Pour SplineToBSpline, donner mode :\n"
-                  << " n pour normal, t pour tryC2" << std::endl;
+        std::cout << "For SplineToBSpline, give mode :\n"
+                  << " n for normal, t for tryC2" << std::endl;
         return IFSelect_RetError;
       }
       Standard_Boolean tryC2;
@@ -452,11 +451,11 @@ Standard_CString IGESSelect_Activator::Help(const Standard_Integer number) const
   switch (number)
   {
     case 5:
-      return "Liste Vues (tous types). Nom selection sinon tout modele";
+      return "List Views (all types). Selection name otherwise entire model";
     case 6:
-      return "Liste Drawings. Nom selection sinon tout modele";
+      return "List Drawings. Selection name otherwise entire model";
     case 7:
-      return "Liste Vues SIMPLES. Nom selection sinon tout modele";
+      return "List SIMPLE Views. Selection name otherwise entire model";
 
     case 10:
       return "type:integer [form:integer]  : cree Select IGESType";
@@ -472,21 +471,21 @@ Standard_CString IGESSelect_Activator::Help(const Standard_Integer number) const
     case 21:
       return "cree Select From Drawing";
     case 22:
-      return "cree Select From Single View";
+      return "create Select From Single View";
     case 23:
-      return "cree Select Drawing From, drawing(s) pour une liste d entites";
+      return "create Select Drawing From, drawing(s) for an entity list";
     case 24:
-      return "cree Select View From, views pour une liste d entites";
+      return "create Select View From, views for an entity list";
 
     case 31:
-      return "cree Dispatch Per Drawing";
+      return "create Dispatch Per Drawing";
     case 32:
-      return "cree Dispatch Per SingleView";
+      return "create Dispatch Per SingleView";
 
     case 40:
-      return "options... : cree FloatFormat ... floatformat tout court->help";
+      return "options... : create FloatFormat ... floatformat alone->help";
     case 41:
-      return "numpar:integer  value:TextParam  : cree Set Global Param";
+      return "numpar:integer  value:TextParam  : create Set Global Param";
     case 42:
       return "cree Set Version -> 5.1";
     case 43:

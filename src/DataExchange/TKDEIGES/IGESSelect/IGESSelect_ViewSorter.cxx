@@ -76,7 +76,7 @@ Standard_Boolean IGESSelect_ViewSorter::AddEntity(const Handle(IGESData_IGESEnti
   if (themap.FindIndex(igesent))
     return Standard_False;
   themap.Add(igesent);
-  //  Recuperation de la vue (attention au cas du Drawing)
+  //  View recovery (watch out for Drawing case)
   Handle(IGESData_IGESEntity) view;
   if (igesent->TypeNumber() == PourDrawing)
     view = igesent; // DRAWING
@@ -131,10 +131,10 @@ Standard_Integer IGESSelect_ViewSorter::NbEntities() const
 
 void IGESSelect_ViewSorter::SortSingleViews(const Standard_Boolean alsoframes)
 {
-  // Du tas initial, on ecarte : les vues nulles, et selon alsoframe les drawings
-  // Vues nulles : cf theremain (remain initial reconduit)
+  // From the initial pile, we exclude : null views, and according to alsoframe the drawings
+  // Null views : see theremain (initial remain carried forward)
 
-  //  Remarque : le filtre IsSingle a ete applique par Add
+  //  Note : the IsSingle filter has been applied by Add
   thefinals.Clear();
   Standard_Integer nb = theinditem.Length();
   // Standard_Integer numit = 0; //szv#4:S4163:12Mar99 not needed

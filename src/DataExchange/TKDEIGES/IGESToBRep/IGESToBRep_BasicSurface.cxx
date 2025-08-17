@@ -790,7 +790,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     // Sum of multiplicities following V is not equal to the sum : Count of poles + Degree V + 1
   }
 
-  // Mise a jour du tableau des poles
+  // Update of the poles array
   TColgp_Array2OfPnt        Poles(1, newNbPolesU, 1, newNbPolesV);
   TColStd_SequenceOfInteger PoleUInd;
   TColStd_SequenceOfInteger PoleVInd;
@@ -918,7 +918,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
       msg1220.Arg(surface);
       SendWarning(start, msg1220);
     }
-    // Mise a jour du tableau des Weight lors de la correction de la multiplicite
+    // Update of the Weight array during multiplicity correction
     TColStd_Array2OfReal Weight(1, newNbPolesU, 1, newNbPolesV);
     UIndex = Weight.LowerRow();
     VIndex = Weight.LowerCol();

@@ -39,7 +39,7 @@ void IGESData::Init()
     stmod = new IGESData_DefaultGeneral;
   if (speci.IsNull())
     speci = new IGESData_DefaultSpecific;
-  //  et modele template "iges"
+  //  and template model "iges"
   if (Interface_InterfaceModel::HasTemplate("iges"))
     return;
 
@@ -206,9 +206,9 @@ void IGESData::Init()
       (host.SystemVersion().ToCString());
   #endif
 
-  //  SendName : nom significatif de la piece transmise par exemple
-  //  SystemId : c est MDTV etc
-  //  InterfaceVersion : la version en cours de XSTEP; incluant la plateforme
+  //  SendName : significant name of the transmitted part for example
+  //  SystemId : it is MDTV etc
+  //  InterfaceVersion : the current version of XSTEP; including the platform
 
     char nomsys[100]; int istat; long lstat;
     struct utsname infosy;
@@ -261,7 +261,7 @@ void IGESData::Init()
   //  new TCollection_HAsciiString (process.UserName());
   GS.SetCompanyName(Interface_Static::Static("write.iges.header.company")->HStringValue());
   //  new TCollection_HAsciiString("Matra Datavision");
-  GS.SetIGESVersion(11); // pour IGES-5.3 //gka 19.01.99
+  GS.SetIGESVersion(11); // for IGES-5.3 //gka 19.01.99
   GS.SetDraftingStandard(0);
   GS.SetLastChangeDate(datestr);
   GS.SetApplicationProtocol(new TCollection_HAsciiString("")); // gka 19.01.99

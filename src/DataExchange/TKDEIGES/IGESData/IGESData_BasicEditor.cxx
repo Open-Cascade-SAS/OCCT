@@ -69,7 +69,7 @@ Handle(IGESData_IGESModel) IGESData_BasicEditor::Model() const
   return themodel;
 }
 
-// ####   Travaux sur le Header (GlobalSection)    ####
+// ####   Work on the Header (GlobalSection)    ####
 
 Standard_Boolean IGESData_BasicEditor::SetUnitFlag(const Standard_Integer flag)
 {
@@ -96,7 +96,7 @@ Standard_Boolean IGESData_BasicEditor::SetUnitValue(const Standard_Real val)
   Standard_Real vmm = val * themodel->GlobalSection().CascadeUnit();
   // #73 rln 10.03.99 S4135: "read.scale.unit" does not affect GlobalSection
   // if (Interface_Static::IVal("read.scale.unit") == 1) vmm = vmm * 1000.;
-  // vmm est exprime en MILLIMETRES
+  // vmm is expressed in MILLIMETERS
   Standard_Integer aFlag = GetFlagByValue(vmm);
   return (aFlag > 0) ? SetUnitFlag(aFlag) : Standard_False;
 }
@@ -170,7 +170,7 @@ void IGESData_BasicEditor::ApplyUnit(const Standard_Boolean enforce)
   theunit = Standard_False;
 }
 
-// ####   Travaux globaux sur les entites    ####
+// ####   Global work on entities    ####
 
 void IGESData_BasicEditor::ComputeStatus()
 {
@@ -184,34 +184,34 @@ void IGESData_BasicEditor::ComputeStatus()
   Interface_Graph G(themodel, theglib); // gere & memorise UseFlag
   G.ResetStatus();
 
-  //  2 phases : d abord on fait un calcul d ensemble. Ensuite on applique
-  //             Tout le modele est traite, pas de jaloux
+  //  2 phases : first we do an overall calculation. Then we apply
+  //             The whole model is processed, no favorites
 
-  //  Chaque entite va donner une contribution sur ses descendents propres :
-  //  pour Subordinate (1 ou 2 cumulables), pour UseFlag (1 a 6 exclusifs)
-  //    (6 depuis IGES-5.2)
+  //  Each entity will give a contribution on its own descendants :
+  //  for Subordinate (1 or 2 cumulative), for UseFlag (1 to 6 exclusive)
+  //    (6 since IGES-5.2)
 
-  //  Pour Subordinate : Drawing et 402 (sauf p-e dimensioned geometry ?) donnent
-  //   Logical, le reste implique Physical (sur descendants directs propres)
+  //  For Subordinate : Drawing and 402 (except maybe dimensioned geometry ?) give
+  //   Logical, the rest implies Physical (on direct descendants)
 
-  //  Pour UseFlag, un peu plus complique :
-  //  D une part, les UseFlag se propagent aux descendants directs ou non
-  //  D autre part les cas sont plus compliques (et pas aussi clairs)
+  //  For UseFlag, a bit more complicated :
+  //  On one hand, UseFlags propagate to direct descendants or not
+  //  On the other hand cases are more complicated (and not as clear)
 
-  //  ATTENTION, on ne peut traiter que ce qui se deduit du graphe en s appuyant
-  //  sur les "IGES Type Number", on n a pas le droit ici d acceder a la
-  //  description specifique des differents types : traites par AutoCorrect.
-  //  Exemple : une courbe est 3D ou parametrique 2D(UV), non seulement selon son
-  //  ascendant, mais selon le role qu elle y joue (ex. pour CurveOnSurface :
+  //  WARNING, we can only process what can be deduced from the graph by relying
+  //  on "IGES Type Number", we don't have the right here to access the
+  //  specific description of different types : handled by AutoCorrect.
+  //  Example : a curve is 3D or parametric 2D(UV), not only according to its
+  //  ancestor, but according to the role it plays there (ex. for CurveOnSurface :
   //  CurveUV/Curve3D)
-  //  Traites actuellement (necessaires) :
-  //  1(Annotation), aussi 4(pour maillage). 5(ParamUV) traite par AutoCorrect
+  //  Currently handled (necessary) :
+  //  1(Annotation), also 4(for meshing). 5(ParamUV) handled by AutoCorrect
 
   Standard_Integer CN;
   Standard_Integer i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nb; i++)
   {
-    //  Subordinate (sur directs en propre seulement)
+    //  Subordinate (on direct descendants only)
     Handle(IGESData_IGESEntity)     ent = themodel->Entity(i);
     Standard_Integer                igt = ent->TypeNumber();
     Handle(Interface_GeneralModule) gmodule;
@@ -241,7 +241,7 @@ void IGESData_BasicEditor::ComputeStatus()
       Interface_EntityIterator sh = G.Sharings(ent); // Maillage ...
       if (sh.NbEntities() > 0)
         G.GetFromEntity(ent, Standard_True, 4);
-      //  UV : voir AutoCorrect des classes concernees (Boundary et CurveOnSurface)
+      //  UV : see AutoCorrect of concerned classes (Boundary and CurveOnSurface)
       /*
           } else if (ent->IsKind(STANDARD_TYPE(IGESGeom_CurveOnSurface))) {
             DeclareAndCast(IGESGeom_CurveOnSurface,cos,ent);    // Curve UV
@@ -258,8 +258,8 @@ void IGESData_BasicEditor::ComputeStatus()
     }
   }
 
-  //  A present, on va appliquer tout cela "de force"
-  //  Seule exception : des UseFlags non nuls deja en place sont laisses
+  //  Now, we will apply all this "by force"
+  //  Only exception: non-zero UseFlags already in place are left
 
   for (i = 1; i <= nb; i++)
   {
@@ -289,9 +289,9 @@ Standard_Boolean IGESData_BasicEditor::AutoCorrect(const Handle(IGESData_IGESEnt
   Standard_Boolean done = Standard_False;
   if (ent.IsNull())
     return done;
-  //    Corrections dans l entete (entites presentes)
-  //    On ne verifie pas les items "Shared", presents de toute facon
-  //    Entete : traite par DirChecker pour les cas standard
+  //    Corrections in the header (present entities)
+  //    We don't check "Shared" items, present anyway
+  //    Header : handled by DirChecker for standard cases
   /*
     linefont = ent->LineFont();
     if (!linefont.IsNull() && themodel->Number(linefont) == 0) {
@@ -331,7 +331,7 @@ Standard_Boolean IGESData_BasicEditor::AutoCorrect(const Handle(IGESData_IGESEnt
     }
   */
 
-  //    Corrections dans les Assocs (les Props restent attachees a l Entite)
+  //    Corrections in Assocs (Props remain attached to the Entity)
   Interface_EntityIterator iter = ent->Associativities();
   for (iter.Start(); iter.More(); iter.Next())
   {

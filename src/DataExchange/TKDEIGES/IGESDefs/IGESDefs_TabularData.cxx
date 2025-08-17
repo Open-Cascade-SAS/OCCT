@@ -59,7 +59,7 @@ Standard_Integer IGESDefs_TabularData::NbPropertyValues() const
 
 Standard_Integer IGESDefs_TabularData::ComputedNbPropertyValues() const
 {
-  return theNbPropertyValues; // pas malin ... a ameliorer
+  return theNbPropertyValues; // not smart ... to improve
 }
 
 Standard_Boolean IGESDefs_TabularData::OwnCorrect()

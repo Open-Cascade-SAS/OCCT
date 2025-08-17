@@ -92,7 +92,7 @@ IGESControl_Controller::IGESControl_Controller(const Standard_Boolean mod)
   flf->SetDefault(12);
   AddSessionItem(flf, "iges-float-digits-12", Standard_True);
 
-  //  --   Sender Product Identification   --  (pas un statique ...)
+  //  --   Sender Product Identification   --  (not a static ...)
   Handle(IGESSelect_SetGlobalParameter) set3 = new IGESSelect_SetGlobalParameter(3);
   Handle(TCollection_HAsciiString)      pa3 =
     Interface_Static::Static("write.iges.header.product")->HStringValue();
@@ -102,7 +102,7 @@ IGESControl_Controller::IGESControl_Controller(const Standard_Boolean mod)
 
   AddSessionItem(new IGESSelect_UpdateFileName, "iges-update-file-name", Standard_True);
 
-  //  --   Receiver   --   Acces par Static, ajustable
+  //  --   Receiver   --   Access by Static, adjustable
   Handle(IGESSelect_SetGlobalParameter) set12 = new IGESSelect_SetGlobalParameter(12);
   Handle(TCollection_HAsciiString)      pa12 =
     Interface_Static::Static("write.iges.header.receiver")->HStringValue();
@@ -110,7 +110,7 @@ IGESControl_Controller::IGESControl_Controller(const Standard_Boolean mod)
   AddSessionItem(pa12, "iges-header-val-receiver");
   AddSessionItem(set12, "iges-header-set-receiver", Standard_True);
 
-  //  --   Auteur   --   acces par Static (demarre par whoami), ajustable
+  //  --   Author   --   access by Static (started by whoami), adjustable
   Handle(IGESSelect_SetGlobalParameter) set21 = new IGESSelect_SetGlobalParameter(21);
   Handle(TCollection_HAsciiString)      pa21 =
     Interface_Static::Static("write.iges.header.author")->HStringValue();
@@ -118,7 +118,7 @@ IGESControl_Controller::IGESControl_Controller(const Standard_Boolean mod)
   AddSessionItem(pa21, "iges-header-val-author");
   AddSessionItem(set21, "iges-header-set-author", Standard_True);
 
-  //  --   Compagnie (de l auteur)   --   acces par Static, ajustable
+  //  --   Company (of the author)   --   access by Static, adjustable
   Handle(IGESSelect_SetGlobalParameter) set22 = new IGESSelect_SetGlobalParameter(22);
   Handle(TCollection_HAsciiString)      pa22 =
     Interface_Static::Static("write.iges.header.company")->HStringValue();
@@ -301,7 +301,7 @@ void IGESControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
 
 Handle(Interface_InterfaceModel) IGESControl_Controller::NewModel() const
 {
-  //  On prend un modele qu on prepare avec les statiques enregistres
+  //  We take a model that we prepare with registered statics
   DeclareAndCast(IGESData_IGESModel, igm, Interface_InterfaceModel::Template("iges"));
   IGESData_GlobalSection GS = igm->GlobalSection();
 
@@ -332,8 +332,8 @@ Handle(Transfer_ActorOfTransientProcess) IGESControl_Controller::ActorRead(
   return myAdaptorRead;
 }
 
-//  ####    TRANSFERT (ECRITURE SHAPE)    ####
-//  modetrans : 0  <5.1 (groupe de faces),  1 BREP-5.1
+//  ####    TRANSFER (SHAPE WRITING)    ####
+//  modetrans : 0  <5.1 (group of faces),  1 BREP-5.1
 
 //=================================================================================================
 

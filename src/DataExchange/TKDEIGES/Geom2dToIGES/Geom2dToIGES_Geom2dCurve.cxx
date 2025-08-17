@@ -46,7 +46,7 @@ Geom2dToIGES_Geom2dCurve::Geom2dToIGES_Geom2dCurve(const Geom2dToIGES_Geom2dEnti
 }
 
 //=============================================================================
-// Transfer des Entites Curve de Geom2d vers IGES
+// Transfer of Curve Entities from Geom2d to IGES
 // Transfer2dCurve
 //=============================================================================
 

@@ -78,7 +78,7 @@ Handle(IGESGeom_CopiousData) IGESConvGeom_GeomBuilder::MakeCopiousData(
   if (datatype < 1 || datatype > 3 || nb == 0 || (polyline && datatype == 3))
     throw Standard_DomainError("IGESConvGeom_GeomBuilder : MakeCopiousData");
 
-  Standard_Integer nbd = datatype + 1; // 1->2  2->3   et   3->6
+  Standard_Integer nbd = datatype + 1; // 1->2  2->3   and   3->6
   if (datatype == 3)
     nbd = 6;
   Handle(TColStd_HArray1OfReal) data = new TColStd_HArray1OfReal(1, nb * nbd);
@@ -144,7 +144,7 @@ Standard_Boolean IGESConvGeom_GeomBuilder::IsIdentity() const
 {
   if (thepos.Form() == gp_Identity)
     return Standard_True;
-  //   sinon, regarder de plus pres  ...
+  //   otherwise, look more closely  ...
   if (!IsTranslation())
     return Standard_False;
   if (!thepos.TranslationPart().IsEqual(gp_XYZ(0., 0., 0.), epsl))
@@ -156,7 +156,7 @@ Standard_Boolean IGESConvGeom_GeomBuilder::IsTranslation() const
 {
   if (thepos.Form() == gp_Identity || thepos.Form() == gp_Translation)
     return Standard_True;
-  //   sinon, regarder de plus pres  ...
+  //   otherwise, look more closely  ...
 
   Standard_Integer i, j;
   for (i = 1; i <= 3; i++)

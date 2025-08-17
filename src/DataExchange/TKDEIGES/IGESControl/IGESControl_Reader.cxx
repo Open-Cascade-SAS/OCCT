@@ -105,7 +105,7 @@ Standard_Integer IGESControl_Reader::NbRootsForTransfer()
     Handle(IGESData_IGESEntity) ent = model->Entity(i);
     if (SH.IsShared(ent) || !actor->Recognize(ent))
       continue;
-    // on ajoute un traitement pour ne prendre que les entites visibles
+    // add processing to take only visible entities
     if (!theReadOnlyVisible || ent->BlankStatus() == 0)
     {
       theroots.Append(ent);
@@ -115,7 +115,7 @@ Standard_Integer IGESControl_Reader::NbRootsForTransfer()
   return theroots.Length();
 }
 
-//  ####    Reliquat de methodes a reprendre    ####
+//  ####    Remainder of methods to be reworked    ####
 
 //=======================================================================
 // Function : PrintTransferInfo

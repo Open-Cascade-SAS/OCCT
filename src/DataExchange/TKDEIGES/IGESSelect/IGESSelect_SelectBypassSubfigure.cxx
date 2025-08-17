@@ -89,7 +89,7 @@ Standard_Boolean IGESSelect_SelectBypassSubfigure::Explore(const Standard_Intege
     explored.AddItem(subf->BaseEntity());
   }
 
-  //  Si c est pas tout ca, c est un objet de base et on le prend tel quel
+  //  If it's not all that, it's a base object and we take it as is
   return Standard_True;
 }
 

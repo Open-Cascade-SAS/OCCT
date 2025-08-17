@@ -164,8 +164,8 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const Handle(IGESGeom_SplineSurfa
         }
         else
         {
-          //  Si fin manquante ... On refait temp !
-          //  Les valeurs n ont pas ete lues ... il faut d abord les relire !
+          //  If end missing ... We redo temp !
+          //  The values were not read ... we must first re-read them !
           Temp = new TColStd_HArray1OfReal(1, 16);
           Temp->Init(0.);
           for (k = 1; k <= 16; k++)

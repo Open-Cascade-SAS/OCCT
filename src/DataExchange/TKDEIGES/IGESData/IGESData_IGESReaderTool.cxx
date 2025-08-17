@@ -82,9 +82,9 @@ Standard_Boolean IGESData_IGESReaderTool::Recognize(const Standard_Integer      
 }
 
 //  ###########################################################################
-//  ########                LECTURE  (Controle General)                ########
+//  ########                READING  (General Control)                ########
 
-//    (Elements enchaines par la classe de base Interface_FileReaderTool)
+//    (Elements chained by the base class Interface_FileReaderTool)
 
 void IGESData_IGESReaderTool::BeginRead(const Handle(Interface_InterfaceModel)& amodel)
 {
@@ -106,7 +106,7 @@ void IGESData_IGESReaderTool::BeginRead(const Handle(Interface_InterfaceModel)& 
   thedefweight = igesdat->DefaultLineWeight();
 }
 
-// Manquent les procedures de reprise sur erreur en cours de route ...
+// Missing error recovery procedures during the process ...
 Standard_Boolean IGESData_IGESReaderTool::AnalyseRecord(const Standard_Integer            num,
                                                         const Handle(Standard_Transient)& anent,
                                                         Handle(Interface_Check)&          ach)
@@ -117,29 +117,29 @@ Standard_Boolean IGESData_IGESReaderTool::AnalyseRecord(const Standard_Integer  
   DeclareAndCast(IGESData_IGESEntity, ent, anent);
   DeclareAndCast(IGESData_IGESReaderData, igesdat, Data());
 
-  //  Demarrage de la lecture : Faire Clear
+  //  Start of reading : Do Clear
   ent->Clear();
 
-  //  UndefinedEntity : une pre-analyse est faite
+  //  UndefinedEntity : a pre-analysis is done
   DeclareAndCast(IGESData_UndefinedEntity, undent, ent);
   if (!undent.IsNull())
   {
-    IGESData_DirPart DP = igesdat->DirPart(num); // qui le copie ...
-    undent->ReadDir(igesdat, DP, ach);           // DP a pu etre modifie
-    ReadDir(ent, igesdat, DP, ach);              // Lecture avec ce DP
+    IGESData_DirPart DP = igesdat->DirPart(num); // which copies it ...
+    undent->ReadDir(igesdat, DP, ach);           // DP may have been modified
+    ReadDir(ent, igesdat, DP, ach);              // Reading with this DP
   }
   else
     ReadDir(ent, igesdat, igesdat->DirPart(num), ach);
 
   thestep = IGESData_ReadDir;
 
-  //   Liste de Parametres : controle de son entete
+  //   Parameter List : control of its header
   //  Handle(Interface_ParamList) list = Data()->Params(num);
   Standard_Integer nbpar = Data()->NbParams(num);
   Standard_Integer n0par = (num == 1 ? 1 : (Data()->ParamFirstRank(num - 1) + 1));
   if (nbpar < 1)
   {
-    //   Liste vide non admise, sauf si Undefined (par exemple type nul)
+    //   Empty list not allowed, except if Undefined (for example null type)
     if (!undent.IsNull())
       return Standard_True;
     // Sending of message : DE : no parameter
@@ -196,7 +196,7 @@ void IGESData_IGESReaderTool::EndRead(const Handle(Interface_InterfaceModel)& /*
 }
 
 //  ###########################################################################
-//  ########                        UNE  ENTITE                        ########
+//  ########                        ONE  ENTITY                        ########
 
 //  ########                      Directory  Part                      ########
 
@@ -354,10 +354,10 @@ void IGESData_IGESReaderTool::ReadDir(const Handle(IGESData_IGESEntity)&     ent
   ent->InitMisc(Structure, Lbd, LWeightNum);
   ent->InitDirFieldEntity(8, fieldlab);
 
-  // ignores : 1(type),2(ptrPsect),13(type),16(lignesPsect),17(form)
-  // type et forme sont lus directement du DirPart; autres infos recalculees
+  // ignores : 1(type),2(ptrPsect),13(type),16(linesPsect),17(form)
+  // type and form are read directly from DirPart; other info recalculated
 
-  //    Restent a analyser nom (short label) et snum (subscript number)
+  //    Remaining to analyze name (short label) and snum (subscript number)
   Handle(TCollection_HAsciiString) ShortLabel;
   Standard_Integer                 SubScriptN = -1;
   Standard_Integer                 iacar      = 0;
@@ -381,7 +381,7 @@ void IGESData_IGESReaderTool::ReadDir(const Handle(IGESData_IGESEntity)&     ent
     SubScriptN = atoi(snum);
   ent->SetLabel(ShortLabel, SubScriptN);
 
-  //    Enfin, SetLineWeight, tenant compte du defaut
+  //    Finally, SetLineWeight, taking into account the default
   ent->SetLineWeight(IR->DefaultLineWeight(), themaxweight, thegradweight);
 }
 
@@ -395,7 +395,7 @@ void IGESData_IGESReaderTool::ReadOwnParams(const Handle(IGESData_IGESEntity)&  
   Handle(Interface_ReaderModule) imodule;
   Standard_Integer               CN;
 
-  //  Les Modules font tout
+  //  The Modules do everything
   if (therlib.Select(ent, imodule, CN))
   {
     Handle(IGESData_ReadWriteModule) module = Handle(IGESData_ReadWriteModule)::DownCast(imodule);
@@ -408,13 +408,13 @@ void IGESData_IGESReaderTool::ReadOwnParams(const Handle(IGESData_IGESEntity)&  
     Message_Msg Msg35("XSTEP_35");
     Msg35.Arg(thecnum);
     ach->SendFail(Msg35);
-    //  Cas de UndefinedEntity
+    //  Case of UndefinedEntity
   }
   else if (ent->IsKind(STANDARD_TYPE(IGESData_UndefinedEntity)))
   {
     DeclareAndCast(IGESData_UndefinedEntity, undent, ent);
     undent->ReadOwnParams(IR, PR);
-    //    IGESEntity creee puis non reconnue ... (bizarre, non ?)
+    //    IGESEntity created then not recognized ... (strange, isn't it ?)
   }
   else
   {

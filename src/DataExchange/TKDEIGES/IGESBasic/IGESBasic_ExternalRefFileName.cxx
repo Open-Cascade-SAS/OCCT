@@ -30,7 +30,7 @@ void IGESBasic_ExternalRefFileName::Init(const Handle(TCollection_HAsciiString)&
   theExtRefFileIdentifier = aFileIdent;
   theExtRefEntitySymbName = anExtName;
   InitTypeAndForm(416, FormNumber());
-  //  FormNumber 0-2 : sens pas clair. Pourrait etre 0:Definition  2:Entity
+  //  FormNumber 0-2 : meaning not clear. Could be 0:Definition  2:Entity
 }
 
 void IGESBasic_ExternalRefFileName::SetForEntity(const Standard_Boolean F)

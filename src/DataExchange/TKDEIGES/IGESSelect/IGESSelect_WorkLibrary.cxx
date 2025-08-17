@@ -185,7 +185,7 @@ void IGESSelect_WorkLibrary::DumpEntity(const Handle(Interface_InterfaceModel)& 
     return;
   }
 
-  //  On attaque le dump : d abord cas de l Erreur
+  //  We start the dump : first the Error case
   if (iserr)
   {
     S << " ERRONEOUS, Content, Type cdl : ";

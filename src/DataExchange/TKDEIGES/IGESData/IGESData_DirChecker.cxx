@@ -23,17 +23,17 @@
 
 #include <stdio.h>
 
-//  Pour Correct :
+//  For Correct :
 // MGE 23/07/98
-// Chaque critere est par defaut inhibe
+// Each criterion is inhibited by default
 //=================================================================================================
 
 IGESData_DirChecker::IGESData_DirChecker()
 {
   thetype = theform1 = theform2 = 0;
   thestructure = thelinefont = thelineweig = thecolor = IGESData_ErrorRef;
-  thegraphier                                         = -100; // ne pas tester GraphicsIgnored
-  theblankst = thesubordst = theuseflag = thehierst = -100;   // ne pas tester
+  thegraphier                                         = -100; // do not test GraphicsIgnored
+  theblankst = thesubordst = theuseflag = thehierst = -100;   // do not test
 }
 
 //=================================================================================================
@@ -42,10 +42,10 @@ IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype)
 {
   thetype      = atype;
   theform1     = 0;
-  theform2     = -1; // test de forme inhibe
+  theform2     = -1; // form test inhibited
   thestructure = thelinefont = thelineweig = thecolor = IGESData_ErrorRef;
-  thegraphier                                         = -100; // ne pas tester GraphicsIgnored
-  theblankst = thesubordst = theuseflag = thehierst = -100;   // ne pas tester
+  thegraphier                                         = -100; // do not test GraphicsIgnored
+  theblankst = thesubordst = theuseflag = thehierst = -100;   // do not test
 }
 
 //=================================================================================================
@@ -53,10 +53,10 @@ IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype)
 IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype, const Standard_Integer aform)
 {
   thetype  = atype;
-  theform1 = theform2 = aform; // forme : valeur requise
+  theform1 = theform2 = aform; // form : required value
   thestructure = thelinefont = thelineweig = thecolor = IGESData_ErrorRef;
-  thegraphier                                         = -100; // ne pas tester GraphicsIgnored
-  theblankst = thesubordst = theuseflag = thehierst = -100;   // ne pas tester
+  thegraphier                                         = -100; // do not test GraphicsIgnored
+  theblankst = thesubordst = theuseflag = thehierst = -100;   // do not test
 }
 
 //=================================================================================================
@@ -67,10 +67,10 @@ IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype,
 {
   thetype      = atype;
   theform1     = aform1;
-  theform2     = aform2; // forme : [...]
+  theform2     = aform2; // form : [...]
   thestructure = thelinefont = thelineweig = thecolor = IGESData_ErrorRef;
-  thegraphier                                         = -100; // ne pas tester GraphicsIgnored
-  theblankst = thesubordst = theuseflag = thehierst = -100;   // ne pas tester
+  thegraphier                                         = -100; // do not test GraphicsIgnored
+  theblankst = thesubordst = theuseflag = thehierst = -100;   // do not test
 }
 
 //=================================================================================================
@@ -85,7 +85,7 @@ Standard_Boolean IGESData_DirChecker::IsSet() const
 void IGESData_DirChecker::SetDefault()
 {
   Structure(IGESData_DefVoid);
-} // Option par defaut
+} // Default option
 
 //=================================================================================================
 
@@ -377,14 +377,14 @@ Standard_Boolean IGESData_DirChecker::Correct(const Handle(IGESData_IGESEntity)&
     }
   }
 
-  Handle(IGESData_IGESEntity) structure; // par defaut Nulle
+  Handle(IGESData_IGESEntity) structure; // by default Null
   if (thestructure != IGESData_DefVoid)
     structure = ent->Structure();
   Handle(IGESData_ViewKindEntity)     nulview;
   Handle(IGESData_LineFontEntity)     nulfont;
   Handle(IGESData_LevelListEntity)    nulevel;
   Handle(IGESData_ColorEntity)        nulcolor;
-  Handle(IGESData_LabelDisplayEntity) label; // par defaut Nulle
+  Handle(IGESData_LabelDisplayEntity) label; // by default Null
   if (thegraphier != -1)
     label = ent->LabelDisplay();
   Standard_Integer linew = 0;

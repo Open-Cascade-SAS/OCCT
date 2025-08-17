@@ -104,7 +104,7 @@ Standard_Boolean IGESAppli_ToolDrilledHole::OwnCorrect(
     Handle(IGESData_LevelListEntity) nulevel;
     ent->InitLevel(nulevel, 0);
     res = Standard_True;
-  } // NbPropertyvalues = 5 + RAZ level selon subordinate
+  } // NbPropertyvalues = 5 + RAZ level according to subordinate
   return res;
 }
 

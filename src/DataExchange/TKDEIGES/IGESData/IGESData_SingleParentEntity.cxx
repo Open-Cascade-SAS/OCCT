@@ -17,5 +17,5 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_SingleParentEntity, IGESData_IGESEntity)
 
-// SingleParentEntity sert a decrire des entites "associativite parent"
-// (methode Parent a definir)
+// SingleParentEntity is used to describe "parent associativity" entities
+// (Parent method to be defined)

@@ -348,7 +348,7 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const Handle(IGESGeom_BSplineCurve)& en
   // Message_Msg Msg109("XSTEP_109");
   //========================================
 
-  Standard_Real eps = 1.E-04; // Tolerance des tests ??
+  Standard_Real eps = 1.E-04; // Test tolerance ??
                               //  Standard_Real norm = ent->Normal().SquareModulus();
 
   // modified by rln 17/12/97 check of flag PROP2 according to IGES Standard

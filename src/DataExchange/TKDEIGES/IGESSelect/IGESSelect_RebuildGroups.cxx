@@ -37,14 +37,14 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&            ctx,
                                           const Handle(IGESData_IGESModel)& target,
                                           Interface_CopyTool&               TC) const
 {
-  //  On reconstruit les groupes qui peuvent l etre
-  //  Pour chaque groupe de l original, on regarde les composants transferes
-  //   (evt filtres par <ctx>)
-  //  Ensuite, silyena plus d une, on refait un nouveau groupe
+  //  We rebuild the groups that can be
+  //  For each group of the original, we look at the transferred components
+  //   (possibly filtered by <ctx>)
+  //  Then, if there are more than one, we create a new group
   DeclareAndCast(IGESData_IGESModel, original, ctx.OriginalModel());
   Standard_Integer nbo = original->NbEntities();
 
-  //  Entites a prendre en compte pour la reconstruction
+  //  Entities to consider for reconstruction
   //  NB : Les groupes deja transferes ne sont bien sur pas reconstruits !
   TColStd_Array1OfInteger pris(0, nbo);
   pris.Init(0);

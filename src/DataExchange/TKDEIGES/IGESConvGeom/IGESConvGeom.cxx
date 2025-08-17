@@ -41,12 +41,12 @@ Standard_Integer IGESConvGeom::SplineCurveFromIGES(const Handle(IGESGeom_SplineC
 {
   Standard_Integer returned = 0;
 
-  // on recupere le degre
+  // we retrieve the degree
   Standard_Integer degree = st->SplineType();
   if (degree > 3)
     degree = 3;
 
-  // on recupere le nombre de segments.
+  // we retrieve the number of segments.
   Standard_Integer nbSegs = st->NbSegments();
   if (nbSegs < 1)
     return 5; // FAIL : no segment
@@ -71,8 +71,8 @@ Standard_Integer IGESConvGeom::SplineCurveFromIGES(const Handle(IGESGeom_SplineC
 
   TColgp_Array1OfPnt bspoles(1, nbSegs * degree + 1);
   Standard_Integer   ibspole = bspoles.Lower() - 1; // Bspole Index.
-  // il faut reparametrer avant de passer dans PLib.
-  // on est entre[0, T(i+1)-T(i)] et on veut [0,1]
+  // we need to reparameterize before passing to PLib.
+  // we are between [0, T(i+1)-T(i)] and we want [0,1]
 
   for (i = 1; i <= nbSegs; i++)
   {

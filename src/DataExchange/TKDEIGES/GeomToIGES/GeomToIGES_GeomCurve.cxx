@@ -69,9 +69,9 @@
 #include <TColStd_HArray1OfReal.hxx>
 
 // Pour toutes les courbes infinies soit
-// Udeb <= -Precision::Infinite() et/ou Ufin >= Precision::Infinite()
-// on choisit arbitrairement de les construire entre
-// Udeb = -Precision::Infinite() et Ufin = Precision::Infinite()
+// Udeb <= -Precision::Infinite() and/or Ufin >= Precision::Infinite()
+// we arbitrarily choose to construct them between
+// Udeb = -Precision::Infinite() and Ufin = Precision::Infinite()
 //=============================================================================
 // GeomToIGES_GeomCurve
 //=============================================================================
@@ -285,8 +285,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
   Standard_Boolean          IPlan = Standard_False;
   gp_XYZ                    Norm  = gp_XYZ(0., 0., 1.);
 
-  // Si la courbe est periodique, on passe par une fonction pour recuperer tous
-  // les parametres necessaires a l`ecriture IGES.
+  // If the curve is periodic, we go through a function to recover all
+  // the parameters necessary for IGES writing.
 
   Standard_Boolean IPerio = start->IsPeriodic();
 
@@ -349,7 +349,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
   Standard_Integer Index = Nbpoles - 1;
 
   // Sequence des Knots de [-Deg, Index+1] dans IGESGeom.
-  // et de [1, Nbpoles+Deg+1] dans Geom
+  // and from [1, Nbpoles+Deg+1] in Geom
   Standard_Integer     Knotindex;
   Standard_Real        rtampon;
   TColStd_Array1OfReal K(1, Nbpoles + Deg + 1);
@@ -909,7 +909,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
                 (start->Offset() / GetUnit()),
                 0.,
                 // clang-format off
-		start->Direction().XYZ().Reversed(), U1, U2);  //%11 pdn 12.01.99 // valeur (0,0,1) pour l'instant
+		start->Direction().XYZ().Reversed(), U1, U2);  //%11 pdn 12.01.99 // value (0,0,1) for now
   // clang-format on
 
   res = OffsetC;

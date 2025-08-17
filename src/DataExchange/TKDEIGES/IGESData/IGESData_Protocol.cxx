@@ -35,7 +35,7 @@ Handle(Interface_Protocol) IGESData_Protocol::Resource(const Standard_Integer /*
   return nulpro;
 }
 
-//  TypeNumber : Ici, on reconnait UndefinedEntity (faut bien quelqu un)
+//  TypeNumber : Here, we recognize UndefinedEntity (someone has to)
 
 Standard_Integer IGESData_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
 {

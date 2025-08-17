@@ -18,19 +18,19 @@
 
 #include "igesread.h"
 
-/*   Structures temporaires IGES (enregistrement des entites et parametres)
-     Comprennent : les declarations, et la gestion de l'entite en cours  */
+/*   Temporary IGES structures (recording entities and parameters)
+     Include: declarations, and management of the current entity  */
 
 static int nbparts;
 static int nbparams;
 
-/*                Liste de parametres IGES (header ou current part)        */
+/*                IGES parameter list (header or current part)        */
 static struct parlist *curlist;
-static struct parlist *starts;   /*  Start Section du fichier IGES  */
-static struct parlist *header;   /*  Entete du fichier IGES  */
+static struct parlist *starts;   /*  Start Section of IGES file  */
+static struct parlist *header;   /*  Header of IGES file  */
 
 
-/*                Declaration d'une portion de Directory IGES              */
+/*                Declaration of a portion of IGES Directory              */
 static struct dirpart *curp;
 
 struct dirpart *iges_get_curp (void)
@@ -38,7 +38,7 @@ struct dirpart *iges_get_curp (void)
   return curp;
 }
 
-/*                   Declaration d'un parametre IGES (Psect)              */
+/*                   Declaration of an IGES parameter (Psect)              */
 static struct oneparam {
   struct oneparam *next;
   int typarg;
@@ -53,7 +53,7 @@ static struct dirpage {
 } *firstpage = NULL;
 
 #define Maxpar 20000
-static struct parpage {    /* une page de parametres ; cf AddParam */
+static struct parpage {    /* a page of parameters; see AddParam */
   struct parpage* next;
   int             used;
   struct oneparam params[Maxpar+1];
@@ -64,28 +64,28 @@ static int curnumpart = 0;
 static struct dirpage *curpage;
 
 
-/*           ROUTINES UTILITAIRES de traitement des textes (char*)          */
+/*           UTILITY ROUTINES for text processing (char*)          */
 
-/*     Gestion du texte courant : c'est un texte alloue dynamiquement
-       iges_newchar en alloue un (jete le precedent alloue si pas lu)
-       rec_gettext lit le texte en cours, qui ne sera pas desalloue ensuite
-       rec_settext en force un autre en jetant le precedent (idem rec_newtext)
-       tandis que rec_newtext alloue un texte, sans lien avec le courant
+/*     Current text management: it's a dynamically allocated text
+       iges_newchar allocates one (discards the previous allocated if not read)
+       rec_gettext reads the current text, which will not be deallocated afterwards
+       rec_settext forces another by discarding the previous (same as rec_newtext)
+       while rec_newtext allocates a text, without link to the current one
 */
 
 #define Maxcar 10000
 
   static struct carpage {
-    struct carpage* next;        /*  chainage des pages de caracteres  */
-    int             used;        /*  place deja prise  */
-    char  cars[Maxcar+1];        /*  page de caracteres  */
+    struct carpage* next;        /*  chaining of character pages  */
+    int             used;        /*  space already taken  */
+    char  cars[Maxcar+1];        /*  character page  */
   } *onecarpage;
 
-  static char* restext = NULL ;  /* texte courant  (allocation dynamique) */
-/*  static int   resalloc = 0 ; */    /*   alloue (memoire a liberer) ou non   */
+  static char* restext = NULL ;  /* current text  (dynamic allocation) */
+/*  static int   resalloc = 0 ; */    /*   allocated (memory to free) or not   */
 
-/*    Utilitaire : Reservation de caracteres
-      Remplace suite de mini-malloc par gestion de page   */
+/*    Utility: Character reservation
+      Replaces series of mini-malloc with page management   */
 
 static char* iges_newchar (int lentext)
 {
@@ -107,9 +107,9 @@ static char* iges_newchar (int lentext)
 }
 
 
-/*             FICHIER  IGES  Proprement Dit             */
+/*             IGES FILE  Properly Speaking             */
 
-/*             Initialisation de l'enregistrement d'un fichier            */
+/*             Initialization of file recording            */
 void iges_initfile()
 {
   onecarpage = (struct carpage*) malloc ( sizeof(struct carpage) );
@@ -122,19 +122,19 @@ void iges_initfile()
   header = (struct parlist*) malloc ( sizeof(struct parlist) );
   header->first = header->last = NULL; header->nbparam = 0;
 
-  curlist = starts;    /* On commence a enregistrer la start section */
+  curlist = starts;    /* We start recording the start section */
   nbparts = nbparams = 0;
   firstpage = (struct dirpage*) malloc ( sizeof(struct dirpage) );
   firstpage->next = NULL; firstpage->used = 0;
   curpage = firstpage;
 }  
 
-/*   Passage au Header (Global Section), lecture comme ecriture    */
+/*   Switch to Header (Global Section), reading as writing    */
 void iges_setglobal()
 {  if (curlist == header) return;  curlist = header;    curparam = curlist->first;  }
 
 
-/*   Definition et Selection d'un nouveau dirpart   */
+/*   Definition and Selection of a new dirpart   */
 
 void iges_newpart(int numsec)
 {
@@ -153,7 +153,7 @@ void iges_newpart(int numsec)
 }
 
 
-/*   Selection du dirpart dnum, correspond a numsec en Psect   */
+/*   Selection of dirpart dnum, corresponds to numsec in Psect   */
 
 void iges_curpart (int dnum)
 {
@@ -181,20 +181,20 @@ void iges_curpart (int dnum)
     }
     curpage = curpage->next;
   }
-  curp = NULL;    /*  pas trouve  */
+  curp = NULL;    /*  not found  */
 }
 
 
-/*     Definition d'un nouveau parametre    */
-/*   (manque la gestion d'un Hollerith sur plusieurs lignes)   */
+/*     Definition of a new parameter    */
+/*   (missing management of Hollerith over multiple lines)   */
 
-/*   longval : longueur de parval, incluant le zero final   */
+/*   longval: length of parval, including the final zero   */
 void iges_newparam (int typarg, int longval, char *parval)
 {
   char *newval;
   int i;
 
-  if (curlist == NULL) return;      /*  non defini : abandon  */
+  if (curlist == NULL) return;      /*  not defined: abort  */
 
   newval = iges_newchar(longval);
   for (i = 0; i < longval; i++) newval[i] = parval[i];
@@ -218,7 +218,7 @@ void iges_newparam (int typarg, int longval, char *parval)
   nbparams ++;
 }
 
-/*     Complement du parametre courant (cf Hollerith sur +ieurs lignes)    */
+/*     Complement of current parameter (see Hollerith over multiple lines)    */
 void iges_addparam (int longval, char* parval)
 {
   char *newval, *oldval;
@@ -235,9 +235,9 @@ void iges_addparam (int longval, char* parval)
 }
 
 
-/*               Relecture : Initialiation              */
-/*  entites relues par suite de lirpart + {lirparam}
-    lirparam initiaux : pour relire le demarrage (start section)   */
+/*               Re-reading: Initialization              */
+/*  entities re-read following lirpart + {lirparam}
+    initial lirparam: to re-read the startup (start section)   */
 void iges_stats (int* nbpart, int* nbparam)
 {
   curpage  = firstpage; curnumpart = 0;
@@ -247,9 +247,9 @@ void iges_stats (int* nbpart, int* nbparam)
   *nbparam = nbparams;
 }
 
-/*      Lecture d'une part : retour = n0 section, 0 si fin         */
-/* \par tabval tableau recepteur des entiers (reserver 17 valeurs) */
-/* \par res1 res2 nom num char : transmis a part */
+/*      Reading a part: return = section n0, 0 if end         */
+/* \par tabval integer receiver array (reserve 17 values) */
+/* \par res1 res2 nom num char: transmitted to part */
 int iges_lirpart (int* *tabval, char* *res1, char* *res2, char* *nom, char* *num, int *nbparam)
 {
   if (curpage == NULL) return 0;
@@ -257,24 +257,24 @@ int iges_lirpart (int* *tabval, char* *res1, char* *res2, char* *nom, char* *num
   curlist = &(curp->list);
   *nbparam = curlist->nbparam;
   curparam = curlist->first;
-  *tabval = &(curp->typ);    /* adresse de curp = adresse du tableau */
+  *tabval = &(curp->typ);    /* address of curp = address of array */
   *res1 = curp->res1; *res2 = curp->res2;
   *nom  = curp->nom;  *num  = curp->num;
   return curp->numpart;
 }
 
-/*               Passage au suivant (une fois lus les parametres)          */
+/*               Move to next (once parameters are read)          */
 void iges_nextpart()
 {
   curnumpart ++;
-  if (curnumpart >= curpage->used) {  /* attention, adressage de 0 a used-1 */
+  if (curnumpart >= curpage->used) {  /* caution, addressing from 0 to used-1 */
     curpage = curpage->next;
     curnumpart = 0;
   }
 }
 
-/*               Lecture parametre + passage au suivant                   */
-int iges_lirparam (int *typarg, char* *parval)    /* renvoie 0 si fin de liste, 1 sinon */
+/*               Read parameter + move to next                   */
+int iges_lirparam (int *typarg, char* *parval)    /* returns 0 if end of list, 1 otherwise */
 {
   if (curparam == NULL) return 0;
   *typarg = curparam->typarg;
@@ -283,8 +283,8 @@ int iges_lirparam (int *typarg, char* *parval)    /* renvoie 0 si fin de liste, 
   return 1;
 }
 
-/*               Fin pour ce fichier : liberer la place                  */
-/*    mode = 0 : tout; 1 : parametres; 2 : caracteres  */
+/*               End for this file: free the space                  */
+/*    mode = 0: all; 1: parameters; 2: characters  */
 void iges_finfile (int mode)
 {
   struct dirpage* oldpage;

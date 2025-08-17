@@ -49,7 +49,7 @@ Standard_Integer IGESSelect::WhatIges(const Handle(IGESData_IGESEntity)& ent,
   if (igesent.IsNull() || model.IsNull())
     return 0;
 
-  //  Plane : de View ? de SingleParent ?  sinon cf TrimmedSurface & cie
+  //  Plane : from View? from SingleParent? otherwise see TrimmedSurface & co
 
   return 0;
 }

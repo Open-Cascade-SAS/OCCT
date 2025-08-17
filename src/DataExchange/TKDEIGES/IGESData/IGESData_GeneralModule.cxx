@@ -74,7 +74,7 @@ void IGESData_GeneralModule::OwnImpliedCase(const Standard_Integer,
                                             const Handle(IGESData_IGESEntity)&,
                                             Interface_EntityIterator&) const
 {
-} // par defaut, rien  (redefinissable)
+} // by default, nothing (redefinable)
 
 void IGESData_GeneralModule::CheckCase(const Standard_Integer            CN,
                                        const Handle(Standard_Transient)& ent,
@@ -103,7 +103,7 @@ void IGESData_GeneralModule::CopyCase(const Standard_Integer            CN,
   DeclareAndCast(IGESData_IGESEntity, enfr, entfrom);
   ////  ento->Clear();
 
-  // ...                Reprendre entete                ...
+  // ...                Resume header                ...
   //?  ento->InitTypeAndForm (enfr->TypeNumber(), enfr->FormNumber());ShallowCopy
 
   if (enfr->DefLineFont() == IGESData_DefReference)
@@ -206,7 +206,7 @@ void IGESData_GeneralModule::WhenDeleteCase(const Standard_Integer            CN
 void IGESData_GeneralModule::OwnDeleteCase(const Standard_Integer,
                                            const Handle(IGESData_IGESEntity)&) const
 {
-} // par defaut, rien  (redefinissable)
+} // by default, nothing (redefinable)
 
 Handle(TCollection_HAsciiString) IGESData_GeneralModule::Name(const Standard_Integer,
                                                               const Handle(Standard_Transient)& ent,

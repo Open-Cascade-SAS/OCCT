@@ -186,8 +186,8 @@ Standard_Boolean IGESControl_Writer::AddGeom(const Handle(Standard_Transient)& g
   DeclareAndCast(Geom_Surface, Surf, geom);
   Handle(IGESData_IGESEntity) ent;
 
-  //  On reconnait : Curve et Surface de Geom
-  //   quid de Point; Geom2d ?
+  //  We recognize: Curve and Surface from Geom
+  //   what about Point; Geom2d ?
 
   //  GeomToIGES_GeomPoint GP;
   GeomToIGES_GeomCurve GC;
@@ -254,7 +254,7 @@ Standard_Boolean IGESControl_Writer::Write(Standard_OStream& S, const Standard_B
   if (!nbEnt)
     return Standard_False;
   IGESData_IGESWriter IW(myModel);
-  //  ne pas oublier le mode fnes ... a transmettre a IW
+  //  do not forget the fnes mode ... to transmit to IW
   IW.SendModel(IGESSelect_WorkLibrary::DefineProtocol());
   if (fnes)
     IW.WriteMode() = 10;
