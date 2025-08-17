@@ -39,7 +39,7 @@ void IFSelect_SelectExtract::SetDirect(const Standard_Boolean direct)
 Interface_EntityIterator IFSelect_SelectExtract::RootResult(const Interface_Graph& G) const
 {
   Interface_EntityIterator iter;
-  Interface_EntityIterator inputer = InputResult(G); // tient compte de tout
+  Interface_EntityIterator inputer = InputResult(G); // takes everything into account
   Standard_Integer         rank    = 0;
   for (inputer.Start(); inputer.More(); inputer.Next())
   {

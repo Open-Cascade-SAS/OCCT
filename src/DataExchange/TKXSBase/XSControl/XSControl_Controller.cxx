@@ -144,7 +144,7 @@ Handle(Transfer_ActorOfFinderProcess) XSControl_Controller::ActorWrite() const
 }
 
 // ###########################
-//  Help du Transfer : controle de valeur + help
+//  Transfer Help : value control + help
 
 //=================================================================================================
 
@@ -220,8 +220,8 @@ Standard_CString XSControl_Controller::ModeWriteHelp(const Standard_Integer mode
 }
 
 // ###########################
-//  Transfer : on fait ce qu il faut par defaut (avec ActorWrite)
-//    peut etre redefini ...
+//  Transfer : we do what is needed by default (with ActorWrite)
+//    can be redefined ...
 
 //=================================================================================================
 
@@ -325,9 +325,9 @@ IFSelect_ReturnStatus XSControl_Controller::TransferWriteShape(
 }
 
 // ###########################
-//  Cutomisation ! On enregistre des Items pour une WorkSession
-//     (annule et remplace)
-//     Ensuite, on les remet en place a la demande
+//  Customization ! We register Items for a WorkSession
+//     (cancels and replaces)
+//     Then, we put them back in place on demand
 
 //=================================================================================================
 

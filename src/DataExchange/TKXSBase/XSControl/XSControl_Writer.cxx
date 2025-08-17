@@ -48,7 +48,7 @@ void XSControl_Writer::SetWS(const Handle(XSControl_WorkSession)& WS,
                              const Standard_Boolean               scratch)
 {
   thesession = WS;
-  //  Un controller doit etre defini ...
+  //  A controller must be defined ...
   thesession->InitTransferReader(0);
   Handle(Interface_InterfaceModel) model = Model(scratch);
 }

@@ -45,8 +45,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_BasicDumper, IFSelect_SessionDumper)
 // #include <IFSelect_SelectTextType.hxx>
 #define FIRSTCHAR 1
 
-// Param litteral "own" sous la forme  :"<val>" -> first = 3
-// A present, forme simplifiee         : <val>  directement -> first = 1
+// Literal param "own" in the form  :"<val>" -> first = 3
+// Now, simplified form         : <val>  directly -> first = 1
 
 IFSelect_BasicDumper::IFSelect_BasicDumper() {}
 

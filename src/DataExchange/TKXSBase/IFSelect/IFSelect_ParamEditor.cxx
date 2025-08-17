@@ -59,7 +59,7 @@ TCollection_AsciiString IFSelect_ParamEditor::Label() const
 Standard_Boolean IFSelect_ParamEditor::Recognize(const Handle(IFSelect_EditForm)& /*form*/) const
 {
   return Standard_True;
-} // pas de contrainte
+} // no constraint
 
 Handle(TCollection_HAsciiString) IFSelect_ParamEditor::StringValue(
   const Handle(IFSelect_EditForm)& /*form*/,

@@ -93,7 +93,7 @@ void Interface_CheckIterator::Merge(Interface_CheckIterator& other)
 
 void Interface_CheckIterator::Add(const Handle(Interface_Check)& ach, const Standard_Integer num)
 {
-  //  Add <meme num que le dernier> -> cumul des Checks
+  //  Add <same num as the last> -> accumulate Checks
   if (ach->NbWarnings() + ach->NbFails() == 0)
     return;
   Standard_Integer nm = num;
@@ -122,14 +122,14 @@ void Interface_CheckIterator::Add(const Handle(Interface_Check)& ach, const Stan
       Handle(Interface_Check) lch = thelist->ChangeValue(numpos);
       lch->GetMessages(ach);
     }
-    //  Cas normal : on ajoute en fin de liste
+    //  Normal case: add at end of list
     else
     {
       thelist->Append(ach);
       thenums->Append(nm);
     }
   }
-  //  Pas encore vu passe : inutile de chercher
+  //  Not yet seen passed: no need to search
   else
   {
     thelist->Append(ach);

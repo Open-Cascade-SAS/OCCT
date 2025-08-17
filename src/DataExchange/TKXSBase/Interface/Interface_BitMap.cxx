@@ -61,7 +61,7 @@ void Interface_BitMap::Initialize(const Interface_BitMap& other, const Standard_
 void Interface_BitMap::Reservate(const Standard_Integer moreflags)
 {
   Standard_Integer nb      = theflags->Upper();
-  Standard_Integer nbflags = nb / thenbwords - 1; // flag 0 non compte ...
+  Standard_Integer nbflags = nb / thenbwords - 1; // flag 0 not counted ...
   if (nbflags >= thenbflags + moreflags)
     return;
   Standard_Integer                 nbw   = thenbwords * (thenbflags + moreflags + 2);
@@ -187,7 +187,7 @@ Standard_Integer Interface_BitMap::FlagNumber(const Standard_CString name) const
   return 0;
 }
 
-//  Les valeurs ...
+//  Values ...
 
 Standard_Boolean Interface_BitMap::Value(const Standard_Integer item,
                                          const Standard_Integer flag) const

@@ -871,7 +871,7 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
   {
     if (!former.IsNull())
       former->SetStatusExec(Transfer_StatusDone); //+
-    return Handle(Transfer_Binder)();             // Binder Null ... que faire d autre ?
+    return Handle(Transfer_Binder)();             // Null Binder ... what else to do?
   }
 
   if (therootl >= thelevel)

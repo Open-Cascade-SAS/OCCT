@@ -18,13 +18,13 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 
-// Calcul de cumul
-// Tres simple, on note les entites demandees, et a la fin
-// on a le cumul lui-meme, et comme infos derivees, les doubles et les oublis
-// Chaque recouvrement correspond a une augmentation de UN du status
-// Les status demarrent a 2, ainsi a l ajout d une entite, on distingue bien
-// entre les entites nouvelles, liees a cet appel (statut temporaire 1) et les
-// autres (statut superieur ou egal a 2)
+// Cumulation calculation
+// Very simple, we note the requested entities, and at the end
+// we have the cumulation itself, and as derived info, the duplicates and omissions
+// Each overlap corresponds to an increase of ONE in the status
+// Status starts at 2, thus when adding an entity, we distinguish well
+// between new entities, linked to this call (temporary status 1) and the
+// others (status greater than or equal to 2)
 IFGraph_Cumulate::IFGraph_Cumulate(const Interface_Graph& agraph)
     : thegraph(agraph)
 {
@@ -45,13 +45,13 @@ void IFGraph_Cumulate::ResetData()
 void IFGraph_Cumulate::GetFromIter(const Interface_EntityIterator& iter)
 {
   thegraph.GetFromIter(iter, 1, 1, Standard_True);
-  thegraph.ChangeStatus(1, 2); // une fois le calcul fait
+  thegraph.ChangeStatus(1, 2); // once the calculation is done
 }
 
 void IFGraph_Cumulate::Evaluate()
 {
   Reset();
-  GetFromGraph(thegraph); // evaluation deja faite dans le graphe
+  GetFromGraph(thegraph); // evaluation already done in the graph
 }
 
 Interface_EntityIterator IFGraph_Cumulate::Overlapped() const

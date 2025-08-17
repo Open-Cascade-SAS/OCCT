@@ -14,21 +14,21 @@
 //#include <Interface_Recognizer.ixx>
 #include <Standard_NoSuchObject.hxx>
 
-//  ATTENTION : TransRecognizer a exactement le meme code ...
-//  Mais produit un Transient au lieu d un Persistent
+//  WARNING: TransRecognizer has exactly the same code ...
+//  But produces a Transient instead of a Persistent
 
-// Principe : a un objet de depart (cle), un Recognizer tente d'associer un
-// resultat. La classe Recognizer offre le mecanisme general gerant cela
-// Chaque classe particuliere (une fois definie l'instanciation) doit fournir
-// une methode specifique Eval, qui opere la correspondance
-// Eval considere l'objet par tous moyens appropries, et en cas de succes,
-// appelle  SetOK(result) puis sort (return)
-// en cas d'echec, suite au retour d'Eval, Recognizer sait que SetOK n'a pas
-// ete appele
+// Principle: from a starting object (key), a Recognizer attempts to associate a
+// result. The Recognizer class provides the general mechanism managing this
+// Each particular class (once the instantiation is defined) must provide
+// a specific Eval method, which performs the correspondence
+// Eval considers the object by all appropriate means, and in case of success,
+// calls SetOK(result) then exits (return)
+// in case of failure, following the return from Eval, Recognizer knows that SetOK was not
+// called
 
 Interface_Recognizer::Interface_Recognizer ()
       {  hasnext = Standard_False;  }
-  //thekey.Nullify();  inutile, fait par le constructeur ...
+  //thekey.Nullify();  useless, done by the constructor ...
 
     Standard_Boolean Interface_Recognizer::Evaluate
   (const TheKey& akey, Handle(TheResul)& res)

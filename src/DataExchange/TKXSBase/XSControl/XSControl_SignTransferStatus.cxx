@@ -29,7 +29,7 @@ static TCollection_AsciiString& themes()
   return tm;
 }
 
-// si resultat avec type: a exploiter tout de suite !
+// if result with type: to be exploited immediately!
 
 XSControl_SignTransferStatus::XSControl_SignTransferStatus()
     : IFSelect_Signature("Transfer Status")

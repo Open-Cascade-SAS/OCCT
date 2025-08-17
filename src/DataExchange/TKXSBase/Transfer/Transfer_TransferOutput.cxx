@@ -84,9 +84,9 @@ void Transfer_TransferOutput::Transfer(const Handle(Standard_Transient)& obj,
   */
 }
 
-//  Resultats :
-//   Pour transferer tout simplement toutes les racines d'un modele d'interface
-//   Chacune est notee "Root" dans le Process final
+//  Results :
+//   To transfer quite simply all roots of an interface model
+//   Each one is noted "Root" in the final Process
 
 void Transfer_TransferOutput::TransferRoots(const Message_ProgressRange& theProgress)
 {

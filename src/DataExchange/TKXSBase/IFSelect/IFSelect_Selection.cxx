@@ -25,7 +25,7 @@ Standard_Boolean IFSelect_Selection::HasUniqueResult() const
   return Standard_False;
 } // eminemment redefinissable
 
-// UniqueResult, c est RootResult passe par une Map (-> mis a plat)
+// UniqueResult, it is RootResult passed through a Map (-> flattened)
 
 Interface_EntityIterator IFSelect_Selection::UniqueResult(const Interface_Graph& G) const
 {
@@ -34,20 +34,20 @@ Interface_EntityIterator IFSelect_Selection::UniqueResult(const Interface_Graph&
     return iter;
   Interface_Graph GG(G);
   GG.GetFromIter(iter, 0);
-  return Interface_GraphContent(GG); // EntityIterator specialise (meme taille)
+  return Interface_GraphContent(GG); // specialized EntityIterator (same size)
 }
 
-// CompleteResult, c est RootResult + propagation du partage (Shareds)
+// CompleteResult, it is RootResult + propagation of sharing (Shareds)
 
 Interface_EntityIterator IFSelect_Selection::CompleteResult(const Interface_Graph& G) const
 {
   Interface_EntityIterator iter = RootResult(G);
-  //  On peut utiliser le Graphe a present
+  //  We can use the Graph now
   Interface_Graph GG(G);
   for (iter.Start(); iter.More(); iter.Next())
   {
     const Handle(Standard_Transient)& ent = iter.Value();
-    GG.GetFromEntity(ent, Standard_True); // et voila
+    GG.GetFromEntity(ent, Standard_True); // and there we go
   }
-  return Interface_GraphContent(GG); // EntityIterator specialise (meme taille)
+  return Interface_GraphContent(GG); // specialized EntityIterator (same size)
 }

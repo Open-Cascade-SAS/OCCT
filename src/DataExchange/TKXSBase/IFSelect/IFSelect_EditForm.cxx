@@ -155,7 +155,7 @@ Standard_Integer IFSelect_EditForm::NameNumber(const Standard_CString name) cons
   Standard_Integer res = theeditor->NameNumber(name);
   if (thecomplete || res == 0)
     return res;
-  //   Sinon, chercher res dans thenums
+  //   Otherwise, search res in thenums
   Standard_Integer i, nb = thenums.Length();
   for (i = 1; i <= nb; i++)
   {
@@ -170,7 +170,7 @@ Standard_Integer IFSelect_EditForm::NameRank(const Standard_CString name) const
   Standard_Integer res = theeditor->NameNumber(name);
   if (thecomplete || res == 0)
     return res;
-  //   Sinon, chercher res dans thenums
+  //   Otherwise, search res in thenums
   Standard_Integer i, nb = thenums.Length();
   for (i = 1; i <= nb; i++)
   {
@@ -520,7 +520,7 @@ void IFSelect_EditForm::PrintValues(Standard_OStream&      S,
 
   else
   {
-    //  Donnees sur lesquelles on a travaille
+    //  Data on which we worked
     if (themodel.IsNull())
     {
       if (theent.IsNull())
@@ -543,7 +543,7 @@ void IFSelect_EditForm::PrintValues(Standard_OStream&      S,
     << "****************************************************" << std::endl
     << std::endl;
 
-  //  Affichage des valeurs
+  //  Display of values
   Standard_Boolean nams   = names;
   Standard_Integer maxnam = theeditor->MaxNameLength(names ? 0 : -1);
   if (maxnam == 0)
@@ -562,7 +562,7 @@ void IFSelect_EditForm::PrintValues(Standard_OStream&      S,
     Standard_Integer jv   = NumberFromRank(iv);
     Standard_CString name = theeditor->Name(jv, !nams);
 
-    //     Original ou Final
+    //     Original or Final
     if (what != 0)
     {
       Handle(TCollection_HAsciiString) str;

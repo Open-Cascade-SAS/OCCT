@@ -16,12 +16,12 @@
 #include <Interface_Graph.hxx>
 #include <Standard_Transient.hxx>
 
-// ExternalSources exploite les resultats stockes dans le Graphe sur Sharings
-// Soit les "Sharings" des entites notees par GetFromEntity et GetFromIter
-// Celles des "Sharings" qui n etaient pas deja notees sont ExternalSources
-// Les status :
-// - Les entites de depart sont au Status 0
-// - Les entites Sharing NOUVELLES (ExternalSources) sont au Status 1
+// ExternalSources exploits the results stored in the Graph on Sharings
+// Either the "Sharings" of entities noted by GetFromEntity and GetFromIter
+// Those of the "Sharings" that were not already noted are ExternalSources
+// The status:
+// - The starting entities are at Status 0
+// - The NEW Sharing entities (ExternalSources) are at Status 1
 IFGraph_ExternalSources::IFGraph_ExternalSources(const Interface_Graph& agraph)
     : thegraph(agraph)
 {

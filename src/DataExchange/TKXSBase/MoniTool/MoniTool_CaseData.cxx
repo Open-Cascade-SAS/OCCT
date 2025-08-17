@@ -35,7 +35,7 @@ static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> 
 static Standard_Boolean stachr = Standard_False;
 
 // static OSD_Timer chrono;
-//  because merdouille link dynamique & perf, ne creer le static qu au 1er usage
+//  because mess of dynamic link & perf, only create the static on 1st usage
 static OSD_Timer& chrono()
 {
   static OSD_Timer chr;
@@ -124,7 +124,7 @@ void MoniTool_CaseData::AddData(const Handle(Standard_Transient)& val,
   TCollection_AsciiString aname(name);
   Standard_Integer        subs = thesubst;
 
-  //  SetChange (calculer la position d apres Name)
+  //  SetChange (calculate position from Name)
   if (thesubst < 0)
   {
     if (name[0] != '\0')
@@ -393,7 +393,7 @@ Standard_Integer MoniTool_CaseData::NameNum(const Standard_CString name) const
   return 0;
 }
 
-//  ####    RETOUR DES VALEURS    ####
+//  ####    RETURN OF VALUES    ####
 
 TopoDS_Shape MoniTool_CaseData::Shape(const Standard_Integer nd) const
 {
@@ -463,7 +463,7 @@ Standard_Boolean MoniTool_CaseData::Integer(const Standard_Integer nd, Standard_
   return Standard_True;
 }
 
-//  ####    MESSAGES ET DEFINITIONS    ####
+//  ####    MESSAGES AND DEFINITIONS    ####
 
 Message_Msg MoniTool_CaseData::Msg() const
 {

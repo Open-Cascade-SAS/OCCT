@@ -28,7 +28,7 @@
 
 Transfer_TransferInput::Transfer_TransferInput() {}
 
-//  Resultats : Pour le Modele ...
+//  Results : For the Model ...
 
 Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferIterator& list) const
 {
@@ -41,7 +41,7 @@ Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferItera
     if (binder->IsKind(STANDARD_TYPE(Transfer_VoidBinder)))
       continue;
 
-    // Vrai resultat : doit etre transient (simple ou liste)
+    // True result : must be transient (simple or list)
     DeclareAndCast(Transfer_SimpleBinderOfTransient, transb, binder);
     DeclareAndCast(Transfer_MultipleBinder, multi, binder);
     if (!transb.IsNull())

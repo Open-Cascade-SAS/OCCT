@@ -42,7 +42,7 @@ Standard_Integer IFSelect_DispPerFiles::CountValue() const
   if (!thecount.IsNull())
     pcount = thecount->Value();
   if (pcount <= 0)
-    pcount = 1; // option prise par defaut
+    pcount = 1; // default option taken
   return pcount;
 }
 
@@ -63,23 +63,23 @@ Standard_Boolean IFSelect_DispPerFiles::LimitedMax(const Standard_Integer /* nbe
 
 void IFSelect_DispPerFiles::Packets(const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const
 {
-  //  Ressemble a DispPerOne, mais fait "count" AddPart racines
+  //  Resembles DispPerOne, but does "count" AddPart roots
   Standard_Integer pcount = CountValue();
 
   IFGraph_SCRoots roots(G, Standard_False);
   roots.SetLoad();
   roots.GetFromIter(FinalSelection()->UniqueResult(G));
-  //   SCRoots a initie la resolution : decoupage en StrongComponants + selection
-  //   des racines. Un paquet correspond des lors a <count> racines
-  //   Donc, il faut iterer sur les Parts de roots et les prendre par <count>
-  roots.Start(); // Start fait Evaluate specifique
+  //   SCRoots initiated the resolution: breakdown into StrongComponents + selection
+  //   of roots. A packet then corresponds to <count> roots
+  //   Therefore, we need to iterate over the Parts of roots and take them by <count>
+  roots.Start(); // Start performs specific Evaluate
   Standard_Integer nb = roots.NbParts();
   if (pcount > 0)
-    pcount = (nb - 1) / pcount + 1; // par packet
+    pcount = (nb - 1) / pcount + 1; // per packet
 
   Standard_Integer i = 0;
   for (; roots.More(); roots.Next())
-  { // Start deja fait
+  { // Start already done
     if (i == 0)
       packs.AddPart();
     i++;

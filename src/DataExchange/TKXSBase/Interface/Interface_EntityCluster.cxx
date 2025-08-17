@@ -21,12 +21,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_EntityCluster, Standard_Transient)
 
-// Un Cluster, ce sont 4 entites qui se suivent (dans le principe, nombre fixe,
-// meme si pas 4). Elles sont remplies depuis 0. Il y a donc autant d Entites
-// que de Handles non Nuls, plus le fait qu ils sont remplis dans l ordre
-// Ainsi (avec Next), on consomme 5 Handles pour 4 Entites, avec une pointe
-// pour 1 et 2 Entites (on reste a 5 Handles)
-// Suppression : On retasse le Cluster pour que les Nulls soient tjrs a la fin
+// A Cluster is 4 entities that follow each other (in principle, fixed number,
+// even if not 4). They are filled from 0. There are therefore as many Entities
+// as there are non-Null Handles, plus the fact that they are filled in order
+// Thus (with Next), we consume 5 Handles for 4 Entities, with a spike
+// for 1 and 2 Entities (we stay at 5 Handles)
+// Deletion: We compact the Cluster so that the Nulls are always at the end
 //  ....                        CONSTRUCTEURS                        ....
 Interface_EntityCluster::Interface_EntityCluster() {}
 
@@ -62,7 +62,7 @@ void Interface_EntityCluster::Append(const Handle(Standard_Transient)& ent)
   else if (theents[3].IsNull())
     theents[3] = ent;
   else
-  { // Si celui-ci est plein ...
+  { // If this one is full ...
     if (thenext.IsNull())
       thenext = new Interface_EntityCluster(ent);
     else
@@ -80,7 +80,7 @@ Standard_Boolean Interface_EntityCluster::Remove(const Handle(Standard_Transient
   if (ent.IsNull())
     throw Standard_NullObject("Interface_EntityCluster Remove");
   Standard_Integer i;
-  //  <ent> est-il ici ? si oui, on a son rang
+  //  Is <ent> here? if yes, we have its rank
   if (ent == theents[0])
     i = 1;
   else if (ent == theents[1])
@@ -90,10 +90,10 @@ Standard_Boolean Interface_EntityCluster::Remove(const Handle(Standard_Transient
   else if (ent == theents[3])
     i = 4;
 
-  //  Sinon, passer au suivant, qui peut du coup devenir vide ->
-  //  On enleve le cluster vide de la liste (en principe cest le dernier)
+  //  Otherwise, go to the next one, which can then become empty ->
+  //  We remove the empty cluster from the list (in principle it's the last one)
   else
-  { // Pas trouve dans celui-ci ...
+  { // Not found in this one ...
     if (thenext.IsNull())
       return Standard_False;
     Standard_Integer res = thenext->Remove(ent);
@@ -120,11 +120,11 @@ Standard_Boolean Interface_EntityCluster::Remove(const Standard_Integer num)
   }
   for (Standard_Integer j = num; j < n; j--)
     theents[j - 1] = theents[j];
-  theents[3].Nullify(); // On Nullify par la fin
-  return (n == 1);      // Ancien NbLocal == 1  -> devient nul
+  theents[3].Nullify(); // We Nullify at the end
+  return (n == 1);      // Old NbLocal == 1  -> becomes null
 }
 
-//  ....                        ACCES AUX DONNEES                        ....
+//  ....                        DATA ACCESS                        ....
 
 Standard_Integer Interface_EntityCluster::NbEntities() const
 {
@@ -152,7 +152,7 @@ const Handle(Standard_Transient)& Interface_EntityCluster::Value(const Standard_
     }
     return aCurEntClust->theents[aLocalNum - 1];
   }
-  return theents[num - 1]; // numerotation a partir de 0
+  return theents[num - 1]; // numbering from 0
 }
 
 void Interface_EntityCluster::SetValue(const Standard_Integer            num,
@@ -177,7 +177,7 @@ void Interface_EntityCluster::SetValue(const Standard_Integer            num,
     aCurEntClust->theents[aLocalNum - 1] = ent;
   }
   else
-    theents[num - 1] = ent; // numerotation a partir de 0
+    theents[num - 1] = ent; // numbering from 0
 }
 
 void Interface_EntityCluster::FillIterator(Interface_EntityIterator& iter) const

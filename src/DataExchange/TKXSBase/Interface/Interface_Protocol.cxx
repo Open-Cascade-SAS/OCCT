@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_Protocol, Standard_Transient)
 
-//  Gestion du Protocol actif : tres simple, une variable statique
+//  Management of active Protocol: very simple, a static variable
 static Handle(Interface_Protocol)& theactive()
 {
   static Handle(Interface_Protocol) theact;
@@ -48,7 +48,7 @@ void Interface_Protocol::ClearActive()
   theactive().Nullify();
 }
 
-//  ===   Typage (formules fournies par defaut)
+//  ===   Typing (formulas provided by default)
 
 //=================================================================================================
 

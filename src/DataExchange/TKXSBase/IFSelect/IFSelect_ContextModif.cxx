@@ -174,7 +174,7 @@ Standard_Boolean IFSelect_ContextModif::IsTransferred(const Handle(Standard_Tran
 
 Standard_Boolean IFSelect_ContextModif::IsSelected(const Handle(Standard_Transient)& ent) const
 {
-  //  Select a deja verifie "IsTransferred"
+  //  Select already verified "IsTransferred"
   Standard_Integer num = thegraf.EntityNumber(ent);
   if (num == 0)
     return Standard_False;

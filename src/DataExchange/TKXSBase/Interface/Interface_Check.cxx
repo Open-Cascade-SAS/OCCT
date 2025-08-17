@@ -22,8 +22,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_Check, Standard_Transient)
 
-// Un Check est cree au depart sans liste de message : celle ci est creee
-// seulement si au moins une erreur doit y etre enregitree (Fail-Warning)
+// A Check is created initially without a message list: this is created
+// only if at least one error must be recorded (Fail-Warning)
 //=================================================================================================
 
 Interface_Check::Interface_Check() {} // construit a vide
@@ -35,7 +35,7 @@ Interface_Check::Interface_Check(const Handle(Standard_Transient)& anentity)
   theent = anentity;
 }
 
-// ....      Ajout de message d Erreur vraie (Fail)
+// ....      Adding a true Error message (Fail)
 
 //=================================================================================================
 
@@ -133,7 +133,7 @@ Handle(TColStd_HSequenceOfHAsciiString) Interface_Check::Fails(const Standard_Bo
   return (final ? thefails : thefailo);
 }
 
-//  ....        Ajout de message de Warning
+//  ....        Adding a Warning message
 
 //=================================================================================================
 
@@ -232,7 +232,7 @@ Handle(TColStd_HSequenceOfHAsciiString) Interface_Check::Warnings(
   return (final ? thewarns : thewarno);
 }
 
-//  ....        Ajout de message d Info simple (not yet completed)
+//  ....        Adding a simple Info message (not yet completed)
 
 //=================================================================================================
 
@@ -286,7 +286,7 @@ Handle(TColStd_HSequenceOfHAsciiString) Interface_Check::InfoMsgs(
   return (final ? theinfos : theinfoo);
 }
 
-//    ....  Gestion generale
+//    ....  General management
 
 //=================================================================================================
 
@@ -530,7 +530,7 @@ Standard_Boolean Interface_Check::Mend(const Standard_CString pref, const Standa
       return Standard_True;
     }
   }
-  //  Cas courant
+  //  Common case
   if (num == 0)
   {
     n1 = 1;
@@ -541,7 +541,7 @@ Standard_Boolean Interface_Check::Mend(const Standard_CString pref, const Standa
   }
   else if (num < 0 || num > NbFails())
     return Standard_False;
-  //  Un message
+  //  A message
   Handle(TCollection_HAsciiString) strf = thefails->Value(num);
   Handle(TCollection_HAsciiString) stro = thefailo->Value(num);
   if (pref && pref[0] != '\0')
@@ -578,11 +578,11 @@ void Interface_Check::GetEntity(const Handle(Standard_Transient)& anentity)
     SetEntity(anentity);
 }
 
-// .. GetMessages, reprend les messages en les cumulant aux siens propres
-// .. GetAsWarning, reprend les messages en les cumulant et en les
-//    considerant tous comme "Warning" . En outre, selon <failsonly>
-//      failsonly True  : ne pas reprendre les Warnings originaux
-//      failsonly False : les prendre aussi
+// .. GetMessages, takes messages by accumulating them with its own
+// .. GetAsWarning, takes messages by accumulating them and
+//    considering them all as "Warning". Furthermore, according to <failsonly>
+//      failsonly True  : do not take original Warnings
+//      failsonly False : take them as well
 
 //=================================================================================================
 
@@ -694,7 +694,7 @@ void Interface_Check::Print(Standard_OStream&      S,
     }
   }
 
-  //   InfoMsg : regle causant (user message)
+  //   InfoMsg : causal rule (user message)
   if (level >= 0)
   {
     nb = NbInfoMsgs();

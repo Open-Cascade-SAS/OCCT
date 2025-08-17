@@ -55,9 +55,9 @@ static void raisecheck(Standard_Failure& theException, Handle(Interface_Check)& 
   }
 }
 
-//  thestat : evite a CheckSuccess de refaire un calcul prealablement fait :
-//  bit valeur 1 : Verify  fait, valeur 4 : et ilya des erreurs
-//  bit valeur 2 : Analyse fait, valeur 8 : et ilya des erreurs
+//  thestat : avoids CheckSuccess redoing a previously done calculation :
+//  bit value 1 : Verify done, value 4 : and there are errors
+//  bit value 2 : Analysis done, value 8 : and there are errors
 
 //=================================================================================================
 
@@ -105,13 +105,13 @@ void Interface_CheckTool::FillCheck(const Handle(Standard_Transient)& ent,
   Standard_Integer                CN;
   if (thegtool->Select(ent, module, CN))
   {
-    //    Sans try/catch (fait par l appelant, evite try/catch en boucle)
+    //    Without try/catch (done by caller, avoids try/catch in loop)
     if (!errh)
     {
       module->CheckCase(CN, ent, sh, ach);
       return;
     }
-    //    Avec try/catch
+    //    With try/catch
     try
     {
       OCC_CATCH_SIGNALS
@@ -162,9 +162,9 @@ void Interface_CheckTool::Print(const Interface_CheckIterator& list, Standard_OS
   list.Print(S, model, Standard_False);
 }
 
-//  ....                Check General sur un Modele                ....
+//  ....                General Check on a Model                ....
 
-// Check : Une Entite d un Modele, designee par son rang
+// Check: An Entity of a Model, designated by its rank
 
 //=================================================================================================
 
@@ -172,13 +172,13 @@ Handle(Interface_Check) Interface_CheckTool::Check(const Standard_Integer num)
 {
   Handle(Interface_InterfaceModel) model = theshare.Model();
   Handle(Standard_Transient)       ent   = model->Value(num);
-  Handle(Interface_Check) ach = new Interface_Check(ent); // non filtre par "Warning" : tel quel
+  Handle(Interface_Check) ach = new Interface_Check(ent); // not filtered by "Warning": as is
   errh                        = 1;
   FillCheck(ent, theshare, ach);
   return ach;
 }
 
-//  CheckSuccess : test passe-passe pas, sur CheckList(Fail) des Entites
+//  CheckSuccess: test passes-doesn't pass, on CheckList(Fail) of Entities
 
 //=================================================================================================
 
@@ -187,7 +187,7 @@ void Interface_CheckTool::CheckSuccess(const Standard_Boolean reset)
   if (reset)
     thestat = 0;
   if (thestat > 3)
-    throw Interface_CheckFailure // deja teste avec erreur
+    throw Interface_CheckFailure // already tested with error
       ("Interface Model : Global Check");
   Handle(Interface_InterfaceModel) model = theshare.Model();
   if (model->GlobalCheck()->NbFails() > 0)
@@ -199,9 +199,9 @@ void Interface_CheckTool::CheckSuccess(const Standard_Boolean reset)
   if (modchk->HasFailed())
     throw Interface_CheckFailure("Interface Model : Verify Check");
   if (thestat == 3)
-    return; // tout teste et ca passe
+    return; // everything tested and it passes
 
-  errh                = 0; // Pas de try/catch, car justement on raise
+  errh                = 0; // No try/catch, because we precisely raise
   Standard_Integer nb = model->NbEntities();
   for (Standard_Integer i = 1; i <= nb; i++)
   {
@@ -211,12 +211,12 @@ void Interface_CheckTool::CheckSuccess(const Standard_Boolean reset)
     if (thestat & 1)
     {
       if (!model->IsErrorEntity(i))
-        continue; // deja verify, reste analyse
+        continue; // already verify, remains analyse
     }
     if (thestat & 2)
     {
       if (model->IsErrorEntity(i))
-        continue; // deja analyse, reste verify
+        continue; // already analyse, remains verify
     }
 
     Handle(Interface_Check) ach = new Interface_Check(ent);
@@ -226,8 +226,8 @@ void Interface_CheckTool::CheckSuccess(const Standard_Boolean reset)
   }
 }
 
-//  CompleteCheckList : Tous Tests : GlobalCheck, Analyse-Verify en Fail ou en
-//  Warning; plus les Unknown Entities (par Check vide)
+//  CompleteCheckList: All Tests: GlobalCheck, Analyse-Verify in Fail or in
+//  Warning; plus the Unknown Entities (by empty Check)
 
 //=================================================================================================
 
@@ -263,7 +263,7 @@ Interface_CheckIterator Interface_CheckTool::CompleteCheckList()
         if (model->IsReportEntity(i))
         {
           ach = model->ReportEntity(i)->Check(); // INCLUT Unknown
-          if (ach->HasFailed())                  // FAIL : pas de Check semantique
+          if (ach->HasFailed())                  // FAIL : no semantic Check
           {
             res.Add(ach, i);
             ach = new Interface_Check;
@@ -296,7 +296,7 @@ Interface_CheckIterator Interface_CheckTool::CompleteCheckList()
   return res;
 }
 
-//  CheckList : Check Fail sur Entites, en Analyse (Read time) ou Verify
+//  CheckList: Check Fail on Entities, in Analysis (Read time) or Verify
 
 //=================================================================================================
 
@@ -365,7 +365,7 @@ Interface_CheckIterator Interface_CheckTool::CheckList()
   return res;
 }
 
-//  AnalyseCheckList : Fail au chargement des Entites (Read time)
+//  AnalyseCheckList: Fail during loading of Entities (Read time)
 
 //=================================================================================================
 
@@ -409,7 +409,7 @@ Interface_CheckIterator Interface_CheckTool::AnalyseCheckList()
   return res;
 }
 
-//  VerifyCheckList : Fail/Warning sur Analyse (Entites chargees OK. Valides ?)
+//  VerifyCheckList: Fail/Warning on Analysis (Entities loaded OK. Valid?)
 
 //=================================================================================================
 
@@ -459,7 +459,7 @@ Interface_CheckIterator Interface_CheckTool::VerifyCheckList()
   return res;
 }
 
-//  Warnings sur Entites (Read time ou apres)
+//  Warnings on Entities (Read time or after)
 
 //=================================================================================================
 

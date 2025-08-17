@@ -260,7 +260,7 @@ void IFSelect_SignatureList::PrintSum(Standard_OStream& S) const
     if (nbent > maxent)
       maxent = nbent;
     const TCollection_AsciiString& name = iter.Key();
-    //    if (!name.IsIntegerValue()) continue;  pas bien fiable
+    //    if (!name.IsIntegerValue()) continue;  not very reliable
     Standard_Integer ic, nc = name.Length();
     Standard_Boolean iaint = Standard_True;
     for (ic = 1; ic <= nc; ic++)

@@ -273,7 +273,7 @@ void Interface_MSG::PrintTrace(Standard_OStream& S)
   }
 }
 
-//  ###########    ARRONDIS DE FLOTTANTS    ############
+//  ###########    FLOATING POINT ROUNDING    ############
 
 Standard_Real Interface_MSG::Intervalled(const Standard_Real    val,
                                          const Standard_Integer order,
@@ -352,7 +352,7 @@ Standard_Real Interface_MSG::Intervalled(const Standard_Real    val,
       rst = (upper ? 10. : 7.);
   }
   else
-  { // n a de sens que jusqu a 10 ...
+  { // only makes sense up to 10 ...
     if (rst <= 1.2)
       rst = (upper ? 1.2 : 1.);
     else if (rst <= 1.5)
@@ -388,9 +388,9 @@ void Interface_MSG::TDate(const Standard_CString text,
                           const Standard_Integer ss,
                           const Standard_CString format)
 {
-  //  valeurs nulles : en tete (avec au moins une non nulle, la derniere)
-  //  -> completees avec les valeurs actuelle (system date)
-  //  tout nul on laisse
+  //  null values : at the beginning (with at least one non-null, the last one)
+  //  -> completed with current values (system date)
+  //  all null we leave
 
   // svv #2 Standard_Integer y1 , m1 , d1 , h1 , n1 , s1;
   Standard_Integer y2 = yy, m2 = mm, d2 = dd, h2 = hh, n2 = mn, s2 = ss;

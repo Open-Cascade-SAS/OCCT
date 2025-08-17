@@ -42,9 +42,9 @@ Interface_ParamType Interface_TypedValue::Type() const
 MoniTool_ValueType Interface_TypedValue::ParamTypeToValueType(const Interface_ParamType type)
 {
   return (MoniTool_ValueType)type;
-} // meme valeurs
+} // same values
 
 Interface_ParamType Interface_TypedValue::ValueTypeToParamType(const MoniTool_ValueType type)
 {
   return (Interface_ParamType)type;
-} // meme valeurs
+} // same values

@@ -20,7 +20,7 @@ Interface_FloatWriter::Interface_FloatWriter(const Standard_Integer chars)
   SetDefaults(chars);
 }
 
-//  ....                Controle d Envoi des Flottants                ....
+//  ....                Control of Float Transmission                ....
 
 void Interface_FloatWriter::SetFormat(const Standard_CString form, const Standard_Boolean reset)
 {
@@ -107,7 +107,7 @@ Standard_Integer Interface_FloatWriter::Convert(const Standard_Real    val,
                                                 const Standard_CString mainform,
                                                 const Standard_CString rangeform)
 {
-  //    Valeur flottante, expurgee de "0000" qui trainent et de "E+00"
+  //    Float value, purged of trailing "0000" and "E+00"
   const Standard_Integer anMasSize = 5; // change 6 to 5: index 5 is not used below
   char                   lxp[anMasSize], *pText;
   int                    i0 = 0, j0 = 0;

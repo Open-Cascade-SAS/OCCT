@@ -18,4 +18,4 @@
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectBase, IFSelect_Selection)
 
 void IFSelect_SelectBase::FillIterator(IFSelect_SelectionIterator&) const {
-} // rien a faire, une SelectBase ne depend d aucune autre Selection
+} // nothing to do, a SelectBase doesn't depend on any other Selection

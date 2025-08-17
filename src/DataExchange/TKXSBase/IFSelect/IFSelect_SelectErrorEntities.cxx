@@ -25,7 +25,7 @@ Standard_Boolean IFSelect_SelectErrorEntities::Sort(
   const Standard_Integer,
   const Handle(Standard_Transient)&       ent,
   const Handle(Interface_InterfaceModel)& model) const
-//.. ne peut pas marcher, il faut aussi le modele ! ex. via le graphe ...
+//.. cannot work, the model is also needed ! ex. via the graph ...
 {
   return model->IsErrorEntity(model->Number(ent));
 }

@@ -72,7 +72,7 @@ void IFSelect_SignCounter::AddSign(const Handle(Standard_Transient)&       ent,
   char nulsign[2];
   nulsign[0] = '\0';
   if (ent.IsNull() || thematcher.IsNull())
-    Add(ent, nulsign); // pour compter les Nuls
+    Add(ent, nulsign); // to count the Nulls
   else
     Add(ent, thematcher->Value(ent, model));
 }
@@ -98,7 +98,7 @@ void IFSelect_SignCounter::AddModel(const Handle(Interface_InterfaceModel)& mode
   if (model.IsNull())
     return;
   Standard_Integer nb = model->NbEntities();
-  //  Si on part de vide, on sait que chque entite est unique dans le modele
+  //  If we start from empty, we know that each entity is unique in the model
   Standard_Boolean mapstat = themapstat;
   if (themap.Extent() == 0)
     themapstat = Standard_False;

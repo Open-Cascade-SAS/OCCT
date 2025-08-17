@@ -119,7 +119,7 @@ Standard_Boolean IFSelect_Signature::MatchValue(const Standard_CString         v
   {
     if (val[i] == cardeb)
     {
-      //    un candidat
+      //    a candidate
       Standard_Boolean res = Standard_True;
       for (j = 1; j < ln; j++)
       {

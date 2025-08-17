@@ -17,7 +17,7 @@
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransferIterator.hxx>
 
-static Handle(Standard_Transient) nultrans; // pour retour const&(Null)
+static Handle(Standard_Transient) nultrans; // for const&(Null) return
 
 Transfer_TransferIterator::Transfer_TransferIterator()
 {
@@ -150,7 +150,7 @@ const Handle(Transfer_Binder)& Transfer_TransferIterator::Value() const
   return theitems->Value(thecurr);
 }
 
-//  ....                Acces aux Donnees du Binder Courant                ....
+//  ....                Access to Current Binder Data                ....
 
 Standard_Boolean Transfer_TransferIterator::HasResult() const
 {
@@ -172,7 +172,7 @@ Handle(Standard_Type) Transfer_TransferIterator::ResultType() const
   Handle(Transfer_Binder) atr = Value();
   if (!atr->IsMultiple())
     btype = atr->ResultType();
-  //  ResultType de Binder prend en compte le Type Dynamique pour les Handle
+  //  Binder's ResultType takes into account the Dynamic Type for Handles
   return btype;
 }
 

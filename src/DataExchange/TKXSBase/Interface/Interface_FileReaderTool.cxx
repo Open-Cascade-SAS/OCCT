@@ -43,11 +43,11 @@
 // To use TCollectionHAsciiString
 #include <TCollection_HAsciiString.hxx>
 
-// Failure pour recuperer erreur en lecture fichier,
-// TypeMismatch pour message d erreur circonstancie (cas particulier important)
+// Failure to recover error when reading file,
+// TypeMismatch for detailed error message (important special case)
 
-//  Gere le chargement d un Fichier, prealablement transforme en FileReaderData
-//  (de la bonne norme), dans un Modele
+//  Manages the loading of a File, previously transformed into FileReaderData
+//  (of the right standard), into a Model
 
 //=================================================================================================
 
@@ -141,13 +141,13 @@ Standard_Boolean Interface_FileReaderTool::ErrorHandle() const
   return theerrhand;
 }
 
-//  ....            Actions Connexes au CHARGEMENT DU MODELE            ....
+//  ....            Actions Related to MODEL LOADING            ....
 
-// SetEntities fait appel a des methodes a fournir :
-// s appuyant sur un Recognizer adapte a l interface :
-// - Recognize fait reco->Evaluate(... : selon record no num)
-//   et recupere le resultat
-// ainsi que la definition de l entite inconnue de l interface
+// SetEntities calls methods to be provided :
+// based on a Recognizer adapted to the interface :
+// - Recognize makes reco->Evaluate(... : according to record no num)
+//   and retrieves the result
+// as well as the definition of the unknown entity of the interface
 
 //=================================================================================================
 
@@ -194,7 +194,7 @@ Standard_Boolean Interface_FileReaderTool::RecognizeByLib(const Standard_Integer
   Handle(Interface_ReaderModule)  rmod;
   Handle(Interface_Protocol)      proto;
   Standard_Integer                CN = 0;
-  //   Chercher dans ReaderLib : Reconnaissance de cas -> CN , proto
+  //   Search in ReaderLib : Case recognition -> CN , proto
   for (rlib.Start(); rlib.More(); rlib.Next())
   {
     rmod = rlib.Module();
@@ -209,7 +209,7 @@ Standard_Boolean Interface_FileReaderTool::RecognizeByLib(const Standard_Integer
   }
   if (CN <= 0 || proto.IsNull())
     return Standard_False;
-  //   Se recaler dans GeneralLib : Creation de l entite vide
+  //   Recalibrate in GeneralLib : Creation of empty entity
   Handle(Standard_Type) typrot = proto->DynamicType();
   for (glib.Start(); glib.More(); glib.Next())
   {
@@ -245,7 +245,7 @@ Handle(Interface_InterfaceModel) Interface_FileReaderTool::NewModel() const
 //=================================================================================================
 
 void Interface_FileReaderTool::EndRead(const Handle(Interface_InterfaceModel)&) {
-} // par defaut, ne fait rien; redefinissable selon besoin
+} // by default, does nothing; redefinable as needed
 
 //  ....               (Sa Majeste le) CHARGEMENT DU MODELE               ....
 
@@ -253,9 +253,9 @@ void Interface_FileReaderTool::EndRead(const Handle(Interface_InterfaceModel)&) 
 
 void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)& amodel)
 //
-//   Methode generale de lecture d un fichier : il est lu via un FileReaderData
-//   qui doit y donner acces de la facon la plus performante possible
-//   chaque interface definit son FileHeader avec ses methodes, appelees ici
+//   General method for reading a file : it is read via a FileReaderData
+//   which must provide access in the most efficient way possible
+//   each interface defines its FileHeader with its methods, called here
 {
   // MGE 16/06/98
   // Building of Messages
@@ -266,13 +266,13 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
 
   SetModel(amodel);
 
-  //  ..            Demarrage : Lecture du Header            ..
+  //  ..            Startup : Header Reading            ..
   if (theerrhand)
   {
     try
     {
       OCC_CATCH_SIGNALS
-      BeginRead(amodel); // selon la norme
+      BeginRead(amodel); // according to the standard
     }
     catch (Standard_Failure const&)
     {
@@ -287,7 +287,7 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
   else
     BeginRead(amodel); // selon la norme
 
-  //  ..            Lecture des Entites            ..
+  //  ..            Reading Entities            ..
 
   amodel->Reservate(thereader->NbEntities());
 
@@ -296,7 +296,7 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
 
   while (num > 0)
   {
-    Standard_Integer           ierr = 0; // erreur sur analyse d une entite
+    Standard_Integer           ierr = 0; // error on analysis of an entity
     Handle(Standard_Transient) anent;
     try
     {
@@ -305,15 +305,15 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
       {
         num0 = num;
 
-        //    Lecture sous protection contre crash
-        //    (fait aussi AddEntity mais pas SetReportEntity)
+        //    Reading under crash protection
+        //    (also does AddEntity but not SetReportEntity)
         anent = LoadedEntity(num);
 
-        //     Lecture non protegee : utile pour travailler avec dbx
+        //     Unprotected reading : useful for working with dbx
         ////    else
         ////      anent = LoadedEntity(num);
 
-        //   ..        Fin Lecture        ..
+        //   ..        End Reading        ..
         if (anent.IsNull())
         {
           // Sending of message : Number of ignored Null Entities
@@ -325,17 +325,17 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
           }
           continue;
         }
-        //      LoadedEntity fait AddEntity MAIS PAS SetReport (en bloc a la fin)
+        //      LoadedEntity does AddEntity BUT NOT SetReport (in block at the end)
 
-      } // ---- fin boucle sur entites
-      num0 = 0; // plus rien
+      } // ---- end loop on entities
+      num0 = 0; // nothing more
     } // ---- fin du try, le catch suit
 
-    //   En cas d erreur NON PREVUE par l analyse, recuperation par defaut
-    //   Attention : la recuperation peut elle-meme planter ... (cf ierr)
+    //   In case of UNFORESEEN error by the analysis, default recovery
+    //   Warning : the recovery can itself crash ... (cf ierr)
     catch (Standard_Failure const& anException)
     {
-      //      Au passage suivant, on attaquera le record suivant
+      //      On the next pass, we will attack the next record
       // clang-format off
       num0 = thereader->FindNextRecord(num); //:g9 abv 28 May 98: tr8_as2_ug.stp - infinite cycle: (0);
       // clang-format on
@@ -387,7 +387,7 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
       {
         // char mess[100]; svv #2
         ierr = 1;
-        // ce qui serait bien ici serait de recuperer le texte de l erreur pour ach ...
+        // what would be good here would be to recover the error text for ach ...
         if (thetrace > 0)
         {
           // Sending of message : recovered entity
@@ -399,7 +399,7 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
           }
         }
 
-        //  Finalement, on charge une Entite Inconnue
+        //  Finally, we load an Unknown Entity
         thenbreps++;
         Handle(Interface_ReportEntity) rep   = new Interface_ReportEntity(ach, anent);
         Handle(Standard_Transient)     undef = UnknownEntity();
@@ -411,7 +411,7 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
         thenbreps++;
         thereports->SetValue(num, rep);
         // if(isValid)
-        amodel->AddEntity(anent); // pas fait par LoadedEntity ...
+        amodel->AddEntity(anent); // not done by LoadedEntity ...
       }
       else
       {
@@ -425,14 +425,14 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
             TF->Send(Msg22, Message_Info);
           }
         }
-        //  On garde <rep> telle quelle : pas d analyse fichier supplementaire,
-        //  Mais la phase preliminaire eventuelle est conservee
-        //  (en particulier, on garde trace du Type lu du fichier, etc...)
+        //  We keep <rep> as is : no additional file analysis,
+        //  But the eventual preliminary phase is preserved
+        //  (in particular, we keep trace of the Type read from the file, etc...)
       }
     } // -----  fin complete du try/catch
   } // -----  fin du while
 
-  //  ..        Ajout des Reports, silya
+  //  ..        Adding Reports, if any
   if (!thereports.IsNull())
   {
     if (thetrace > 0)
@@ -458,13 +458,13 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
     }
   }
 
-  //   Conclusion : peut ne rien faire : selon necessite
+  //   Conclusion : may do nothing : according to necessity
   if (theerrhand)
   {
     try
     {
       OCC_CATCH_SIGNALS
-      EndRead(amodel); // selon la norme
+      EndRead(amodel); // according to the standard
     }
     catch (Standard_Failure const&)
     {
@@ -499,7 +499,7 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity(const Standard
     }
   }
 
-  //    Trace Entite Inconnue
+  //    Trace Unknown Entity
   if (thetrace >= 2 && theproto->IsUnknownEntity(anent))
   {
     Handle(Message_Messenger) TF = Messenger();
@@ -511,18 +511,18 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity(const Standard
       TF->Send(Msg22, Message_Info);
     }
   }
-  //  ..        Chargement proprement dit : Specifique de la Norme        ..
+  //  ..        Actual Loading : Standard Specific        ..
   AnalyseRecord(num, anent, ach);
 
-  //  ..        Ajout dans le modele de l entite telle quelle        ..
-  //            ATTENTION, ReportEntity traitee en bloc apres les Load
+  //  ..        Adding to the model the entity as is        ..
+  //            WARNING, ReportEntity processed in block after Load
   themodel->AddEntity(anent);
 
-  //   Erreur ou Correction : On cree une ReportEntity qui memorise le Check,
-  //   l Entite, et en cas d Erreur une UndefinedEntity pour les Parametres
+  //   Error or Correction : We create a ReportEntity that memorizes the Check,
+  //   the Entity, and in case of Error an UndefinedEntity for the Parameters
 
-  //   On exploite ici le flag IsLoadError : s il a ete defini (a vrai ou faux)
-  //   il a priorite sur les fails du check. Sinon, ce sont les fails qui parlent
+  //   We exploit here the IsLoadError flag: if it has been defined (true or false)
+  //   it has priority over check fails. Otherwise, it's the fails that speak
 
   Standard_Integer nbf = ach->NbFails();
   Standard_Integer nbw = ach->NbWarnings();
@@ -547,7 +547,7 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity(const Standard
     }
   }
 
-  //    Rechargement ? si oui, dans une UnknownEntity fournie par le protocole
+  //    Reloading ? if yes, in an UnknownEntity provided by the protocol
   if (thereader->IsErrorLoad())
     nbf = (thereader->ResetErrorLoad() ? 1 : 0);
   if (nbf > 0)
@@ -557,7 +557,7 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity(const Standard
     rep->SetContent(undef);
   }
 
-  //    Conclusion  (Unknown : traite en externe because traitement Raise)
+  //    Conclusion  (Unknown : treated externally because Raise treatment)
   ////  if (irep > 0) themodel->SetReportEntity (nbe,rep);  en bloc a la fin
 
   return anent;

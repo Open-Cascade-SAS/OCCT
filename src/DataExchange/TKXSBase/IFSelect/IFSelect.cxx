@@ -15,8 +15,8 @@
 #include <IFSelect_SessionFile.hxx>
 #include <IFSelect_WorkSession.hxx>
 
-//  Methodes de confort, evitant de devoir connaitre SessionFile, qui est un
-//  Tool non destine a l export (en particulier, pas un Handle)
+//  Convenience methods, avoiding having to know SessionFile, which is a
+//  Tool not intended for export (in particular, not a Handle)
 Standard_Boolean IFSelect::SaveSession(const Handle(IFSelect_WorkSession)& WS,
                                        const Standard_CString              file)
 {

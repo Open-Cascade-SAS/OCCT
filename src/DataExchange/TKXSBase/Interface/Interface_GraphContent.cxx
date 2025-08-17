@@ -79,4 +79,4 @@ void Interface_GraphContent::Begin()
   Interface_EntityIterator::Start();
 }
 
-void Interface_GraphContent::Evaluate() {} // par defaut, Evaluate ne fait rien
+void Interface_GraphContent::Evaluate() {} // by default, Evaluate does nothing

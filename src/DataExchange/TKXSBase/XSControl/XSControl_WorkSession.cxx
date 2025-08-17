@@ -54,9 +54,9 @@ void XSControl_WorkSession::ClearData(const Standard_Integer mode)
   if (mode >= 1 && mode <= 4)
     IFSelect_WorkSession::ClearData(mode);
 
-  // 5 : Transferts seuls
-  // 6 : Resultats forces seuls
-  // 7 : Management, y compris tous transferts (forces/calcules), views
+  // 5 : Transfers only
+  // 6 : Forced results only
+  // 7 : Management, including all transfers (forced/calculated), views
 
   if (mode == 5 || mode == 7)
   {
@@ -75,8 +75,8 @@ Standard_Boolean XSControl_WorkSession::SelectNorm(const Standard_CString normna
   const Standard_Mutex::Sentry aMutexLock(WS_GLOBAL_MUTEX);
   // Old norm and results
   myTransferReader->Clear(-1);
-  //  ????  En toute rigueur, menage a faire dans XWS : virer les items
-  //        ( a la limite, pourquoi pas, refaire XWS en entier)
+  //  ????  Strictly speaking, cleanup to do in XWS: remove the items
+  //        ( at the limit, why not, redo XWS entirely)
 
   Handle(XSControl_Controller) newadapt = XSControl_Controller::Recorded(normname);
   if (newadapt.IsNull())
@@ -119,7 +119,7 @@ Standard_CString XSControl_WorkSession::SelectedNorm(const Standard_Boolean rsc)
 }
 
 //              ##########################################
-//              ############  Contexte de Transfert ######
+//              ############  Transfer Context ######
 //              ##########################################
 
 //=================================================================================================
@@ -193,7 +193,7 @@ Standard_Boolean XSControl_WorkSession::PrintTransferStatus(const Standard_Integ
     FP->StartTrace(binder, finder, 0, 0); // pb sout/S
     if (!ent.IsNull())
     {
-      S << " ** Resultat Transient, type " << ent->DynamicType()->Name();
+      S << " ** Transient Result, type " << ent->DynamicType()->Name();
       const Handle(Interface_InterfaceModel)& model = Model();
       if (!model.IsNull())
       {
@@ -251,7 +251,7 @@ Standard_Boolean XSControl_WorkSession::PrintTransferStatus(const Standard_Integ
     TP->StartTrace(binder, ent, 0, 0);
   }
 
-  //   ***   CHECK (commun READ+WRITE)   ***
+  //   ***   CHECK (common READ+WRITE)   ***
   if (!binder.IsNull())
   {
     const Handle(Interface_Check) ch = binder->Check();
@@ -283,7 +283,7 @@ void XSControl_WorkSession::InitTransferReader(const Standard_Integer mode)
   else
     SetTransferReader(myTransferReader);
 
-  // mode = 0 fait par SetTransferReader suite a Nullify
+  // mode = 0 done by SetTransferReader following Nullify
   if (mode == 1)
   {
     if (!myTransferReader.IsNull())
@@ -355,14 +355,14 @@ Standard_Boolean XSControl_WorkSession::SetMapReader(const Handle(Transfer_Trans
   TP->SetGraph(HGraph());
   if (TP->Model() != Model())
     return Standard_False;
-  //  TR ne doit pas bouger, c est un "crochet" pour signatures, selections ...
-  //  En revanche, mieux vaut le RAZ
+  //  TR must not move, it's a "hook" for signatures, selections ...
+  //  On the other hand, better to reset it
   //  Handle(XSControl_TransferReader) TR = new XSControl_TransferReader;
   Handle(XSControl_TransferReader) TR = myTransferReader;
   TR->Clear(-1);
 
-  SetTransferReader(TR);       // avec le meme mais le reinitialise
-  TR->SetTransientProcess(TP); // et prend le nouveau TP
+  SetTransferReader(TR);       // with the same but reinitializes it
+  TR->SetTransientProcess(TP); // and takes the new TP
   return Standard_True;
 }
 
@@ -466,7 +466,7 @@ IFSelect_ReturnStatus XSControl_WorkSession::TransferWriteShape(
   status = myTransferWriter->TransferWriteShape(model, shape, theProgress);
   if (theProgress.UserBreak())
     return IFSelect_RetStop;
-  //  qui s occupe de tout, try/catch inclus
+  //  which takes care of everything, try/catch included
 
   // skl insert param compgraph for XDE writing 10.12.2003
   if (compgraph)

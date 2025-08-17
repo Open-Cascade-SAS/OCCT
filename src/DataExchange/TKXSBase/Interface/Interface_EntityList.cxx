@@ -19,11 +19,11 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 
-// Une EntityList, c est au fond un "Handle" bien entoure :
-// S il est nul, la liste est vide
-// Si c est une Entite, la liste comprend cette entite et rien d autre
-// Si c est un EntityCluster, il definit (avec ses Next eventuels) le contenu
-// de la liste
+// An EntityList is basically a well-wrapped "Handle":
+// If it is null, the list is empty
+// If it is an Entity, the list includes this entity and nothing else
+// If it is an EntityCluster, it defines (with its possible Next) the content
+// of the list
 Interface_EntityList::Interface_EntityList() {}
 
 void Interface_EntityList::Clear()
@@ -31,7 +31,7 @@ void Interface_EntityList::Clear()
   theval.Nullify();
 }
 
-//  ....                EDITIONS (ajout-suppression)                ....
+//  ....                EDITIONS (add-remove)                ....
 
 void Interface_EntityList::Append(const Handle(Standard_Transient)& ent)
 {
@@ -53,10 +53,10 @@ void Interface_EntityList::Append(const Handle(Standard_Transient)& ent)
   }
 }
 
-// Difference avec Append : on optimise, en evitant la recursivite
-// En effet, quand un EntityCluster est plein, Append transmet au Next
-// Ici, EntityList garde le controle, le temps de traitement reste le meme
-// Moyennant quoi, l ordre n est pas garanti
+// Difference with Append : we optimize, avoiding recursion
+// Indeed, when an EntityCluster is full, Append transmits to Next
+// Here, EntityList keeps control, the processing time remains the same
+// With which, the order is not guaranteed
 
 void Interface_EntityList::Add(const Handle(Standard_Transient)& ent)
 {
@@ -83,9 +83,9 @@ void Interface_EntityList::Add(const Handle(Standard_Transient)& ent)
   }
 }
 
-//  Remove : Par Identification d Item a supprimer, ou par Rang
-//  Identification : Item supprime ou qu il soit
-//  N.B.: La liste peut devenir vide ... cf retour Remove de Cluster
+//  Remove : By Identification of Item to remove, or by Rank
+//  Identification : Item removed wherever it is
+//  N.B.: The list can become empty ... cf return Remove from Cluster
 
 void Interface_EntityList::Remove(const Handle(Standard_Transient)& ent)
 {
@@ -100,13 +100,13 @@ void Interface_EntityList::Remove(const Handle(Standard_Transient)& ent)
   }
   Handle(Interface_EntityCluster) ec = Handle(Interface_EntityCluster)::DownCast(theval);
   if (ec.IsNull())
-    return; // Une seule Entite et pas la bonne
+    return; // A single Entity and not the right one
   Standard_Boolean res = ec->Remove(ent);
   if (res)
     theval.Nullify();
 }
 
-//  Remove par rang : tester OutOfRange
+//  Remove by rank : test OutOfRange
 
 void Interface_EntityList::Remove(const Standard_Integer num)
 {
@@ -125,7 +125,7 @@ void Interface_EntityList::Remove(const Standard_Integer num)
     theval.Nullify();
 }
 
-//  ....                    ACCES Unitaire AUX DONNEES                    ....
+//  ....                    UNIT ACCESS TO DATA                    ....
 
 Standard_Boolean Interface_EntityList::IsEmpty() const
 {
@@ -138,7 +138,7 @@ Standard_Integer Interface_EntityList::NbEntities() const
     return 0;
   Handle(Interface_EntityCluster) ec = Handle(Interface_EntityCluster)::DownCast(theval);
   if (ec.IsNull())
-    return 1; // Une seuke Entite
+    return 1; // A single Entity
   return ec->NbEntities();
 }
 
