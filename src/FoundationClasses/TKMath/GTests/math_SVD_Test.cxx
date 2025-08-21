@@ -335,36 +335,23 @@ TEST(MathSVDTest, DifferentMatrixBounds)
   // Test with non-standard matrix bounds
   math_Matrix aMatrix(2, 4, 3, 5); // 3x3 matrix with custom bounds
   
-  try {
-    aMatrix(2, 3) = 1.0; aMatrix(2, 4) = 0.0; aMatrix(2, 5) = 0.0;
-    aMatrix(3, 3) = 0.0; aMatrix(3, 4) = 1.0; aMatrix(3, 5) = 0.0;
-    aMatrix(4, 3) = 0.0; aMatrix(4, 4) = 0.0; aMatrix(4, 5) = 1.0;
+  aMatrix(2, 3) = 1.0; aMatrix(2, 4) = 0.0; aMatrix(2, 5) = 0.0;
+  aMatrix(3, 3) = 0.0; aMatrix(3, 4) = 1.0; aMatrix(3, 5) = 0.0;
+  aMatrix(4, 3) = 0.0; aMatrix(4, 4) = 0.0; aMatrix(4, 5) = 1.0;
 
-    math_SVD aSVD(aMatrix);
-    if (!aSVD.IsDone()) {
-      EXPECT_TRUE(false) << "SVD failed for custom bounds matrix - may indicate bounds handling issue";
-      return;
-    }
+  math_SVD aSVD(aMatrix);
+  EXPECT_TRUE(aSVD.IsDone()) << "SVD should succeed for custom bounds matrix";
 
-    math_Vector aB(2, 4); // Matching row bounds
-    aB(2) = 5.0; aB(3) = 7.0; aB(4) = 9.0;
+  math_Vector aB(2, 4); // Matching row bounds
+  aB(2) = 5.0; aB(3) = 7.0; aB(4) = 9.0;
 
-    math_Vector aX(3, 5); // Matching column bounds
-    aSVD.Solve(aB, aX);
+  math_Vector aX(3, 5); // Matching column bounds
+  aSVD.Solve(aB, aX);
 
-    // For identity matrix, solution should equal RHS
-    EXPECT_NEAR(aX(3), 5.0, Precision::Confusion()) << "Custom bounds solution X(3)";
-    EXPECT_NEAR(aX(4), 7.0, Precision::Confusion()) << "Custom bounds solution X(4)";
-    EXPECT_NEAR(aX(5), 9.0, Precision::Confusion()) << "Custom bounds solution X(5)";
-  }
-  catch (const std::exception& e) {
-    EXPECT_TRUE(false) << "POTENTIAL BUG: Exception in SVD with custom matrix bounds: " << e.what()
-                       << ". This may indicate a bug in math_SVD bounds handling.";
-  }
-  catch (...) {
-    EXPECT_TRUE(false) << "POTENTIAL BUG: Unknown exception in SVD with custom matrix bounds. "
-                       << "This may indicate a bug in math_SVD implementation.";
-  }
+  // For identity matrix, solution should equal RHS
+  EXPECT_NEAR(aX(3), 5.0, Precision::Confusion()) << "Custom bounds solution X(3)";
+  EXPECT_NEAR(aX(4), 7.0, Precision::Confusion()) << "Custom bounds solution X(4)";
+  EXPECT_NEAR(aX(5), 9.0, Precision::Confusion()) << "Custom bounds solution X(5)";
 }
 
 TEST(MathSVDTest, LargerMatrix)
