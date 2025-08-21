@@ -6,5 +6,7 @@ set(OCCT_TKMath_GTests_FILES
   Bnd_Box_Test.cxx
   ElCLib_Test.cxx
   math_DoubleTab_Test.cxx
+  math_FunctionRoot_Test.cxx
   math_Matrix_Test.cxx
+  math_Vector_Test.cxx
 )
