@@ -135,6 +135,7 @@ public:
 
   Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
   {
+    (void)theX;
     theG(1) = 2.0;
     theG(2) = 3.0;
     return Standard_True;

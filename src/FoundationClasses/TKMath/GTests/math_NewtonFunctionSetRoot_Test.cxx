@@ -129,6 +129,7 @@ public:
 
   virtual Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D) override
   {
+    (void)X;
     D(1, 1) = 1.0;
     D(1, 2) = 1.0;
     D(1, 3) = 1.0;

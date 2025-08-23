@@ -116,6 +116,7 @@ public:
 
   Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
   {
+    (void)theX;
     theD = 2.0;
     return Standard_True;
   }
@@ -150,6 +151,7 @@ public:
                           Standard_Real&      theF,
                           Standard_Real&      theD) override
   {
+    (void)theX;
     theF = 0.0;
     theD = 0.0;
     return Standard_True;

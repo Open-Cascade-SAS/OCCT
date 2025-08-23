@@ -134,9 +134,6 @@ TEST(MathJacobiTest, EigenvectorVerification)
 
   EXPECT_TRUE(aJacobi.IsDone()) << "Jacobi should succeed";
 
-  const math_Matrix& aVectors = aJacobi.Vectors();
-  const math_Vector& aValues  = aJacobi.Values();
-
   // Verify A * v = lambda * v for each eigenpair
   for (Standard_Integer i = 1; i <= 2; i++)
   {
