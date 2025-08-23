@@ -93,7 +93,7 @@ TEST(MathHouseholderTest, OverdeterminedSystem)
   math_Vector aSol(1, 2);
   aHouseholder.Value(aSol, 1);
 
-  // For least squares, solution should minimize ||A*x - b||²
+  // For least squares, solution should minimize ||A*x - b||^2
   // Expected solution is approximately [1, 1]
   EXPECT_NEAR(aSol(1), 1.0, 1.0e-6) << "Least squares solution X(1)";
   EXPECT_NEAR(aSol(2), 1.0, 1.0e-6) << "Least squares solution X(2)";

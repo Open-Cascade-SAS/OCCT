@@ -137,7 +137,7 @@ TEST(MathJacobiTest, EigenvectorVerification)
   const math_Matrix& aVectors = aJacobi.Vectors();
   const math_Vector& aValues  = aJacobi.Values();
 
-  // Verify A * v = λ * v for each eigenpair
+  // Verify A * v = lambda * v for each eigenpair
   for (Standard_Integer i = 1; i <= 2; i++)
   {
     math_Vector aV(1, 2);
@@ -150,12 +150,12 @@ TEST(MathJacobiTest, EigenvectorVerification)
     aAv(1) = aMatrix(1, 1) * aV(1) + aMatrix(1, 2) * aV(2);
     aAv(2) = aMatrix(2, 1) * aV(1) + aMatrix(2, 2) * aV(2);
 
-    // Compute λ * v
+    // Compute lambda * v
     math_Vector aLambdaV(1, 2);
     aLambdaV(1) = aLambda * aV(1);
     aLambdaV(2) = aLambda * aV(2);
 
-    // Check A*v = λ*v
+    // Check A*v = lambda*v
     EXPECT_NEAR(aAv(1), aLambdaV(1), 1.0e-10) << "Eigenvector equation should hold for component 1";
     EXPECT_NEAR(aAv(2), aLambdaV(2), 1.0e-10) << "Eigenvector equation should hold for component 2";
   }

@@ -29,7 +29,7 @@
 namespace
 {
 
-// Test function: f(x,y) = (x-1)² + (y-2)²
+// Test function: f(x,y) = (x-1)^2 + (y-2)^2
 // Minimum at (1,2) with value 0
 class QuadraticFunction : public math_MultipleVarFunction
 {
@@ -47,7 +47,7 @@ public:
   }
 };
 
-// Rosenbrock function: f(x,y) = 100*(y-x²)² + (1-x)²
+// Rosenbrock function: f(x,y) = 100*(y-x^2)^2 + (1-x)^2
 // Minimum at (1,1) with value 0 - classic optimization test case
 class RosenbrockFunction : public math_MultipleVarFunction
 {
@@ -67,7 +67,7 @@ public:
   }
 };
 
-// Simple 1D function: f(x) = (x-3)²
+// Simple 1D function: f(x) = (x-3)^2
 // Minimum at x=3 with value 0
 class Simple1DFunction : public math_MultipleVarFunction
 {
@@ -84,7 +84,7 @@ public:
   }
 };
 
-// Higher dimensional function: f(x) = Σ(xi - i)² for i=1..n
+// Higher dimensional function: f(x) = Sum(xi - i)^2 for i=1..n
 class MultiDimensionalQuadratic : public math_MultipleVarFunction
 {
 private:

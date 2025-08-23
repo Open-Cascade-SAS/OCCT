@@ -53,7 +53,7 @@ public:
 };
 
 // Cubic function: f(x) = x^3 - x - 2, f'(x) = 3x^2 - 1
-// Root at x ≈ 1.521 (exact root of x^3 - x - 2 = 0)
+// Root at x approximately 1.521 (exact root of x^3 - x - 2 = 0)
 class CubicWithDerivative : public math_FunctionWithDerivative
 {
 public:
@@ -179,16 +179,16 @@ TEST(MathBissecNewtonTest, CubicRootFinding)
 
 TEST(MathBissecNewtonTest, SineFunctionRoot)
 {
-  // Test finding root of sin(x) = 0 near π
+  // Test finding root of sin(x) = 0 near PI
   SineWithDerivative aFunc;
 
   math_BissecNewton aSolver(1.0e-10);
-  aSolver.Perform(aFunc, 3.0, 3.5, 100); // Find root near π ≈ 3.14159
+  aSolver.Perform(aFunc, 3.0, 3.5, 100); // Find root near PI approximately 3.14159
 
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root for sine function";
-  EXPECT_NEAR(aSolver.Root(), M_PI, 1.0e-8) << "Root should be π";
+  EXPECT_NEAR(aSolver.Root(), M_PI, 1.0e-8) << "Root should be PI";
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-10) << "Function value at root should be zero";
-  EXPECT_NEAR(aSolver.Derivative(), -1.0, 1.0e-8) << "cos(π) should be -1";
+  EXPECT_NEAR(aSolver.Derivative(), -1.0, 1.0e-8) << "cos(PI) should be -1";
 }
 
 TEST(MathBissecNewtonTest, CustomTolerance)

@@ -48,7 +48,7 @@ void checkSolution(const math_Matrix&  theA,
     aResult(anI - theA.LowerRow() + theB.Lower()) = aSum;
   }
 
-  // Check if A * X ≈ B
+  // Check if A * X approximately equals B
   for (Standard_Integer anI = theB.Lower(); anI <= theB.Upper(); anI++)
   {
     EXPECT_NEAR(aResult(anI), theB(anI), theTolerance)
@@ -279,9 +279,9 @@ TEST(MathSVDTest, SingleColumnMatrix)
 
   // Least squares problem: find x that minimizes ||Ax - b||^2
   math_Vector aB(1, 3);
-  aB(1) = 4.0; // 2x ≈ 4 → x ≈ 2
-  aB(2) = 6.0; // 3x ≈ 6 → x ≈ 2
-  aB(3) = 8.0; // 4x ≈ 8 → x ≈ 2
+  aB(1) = 4.0; // 2x approximately 4 -> x approximately 2
+  aB(2) = 6.0; // 3x approximately 6 -> x approximately 2
+  aB(3) = 8.0; // 4x approximately 8 -> x approximately 2
 
   math_Vector aX(1, 1);
   aSVD.Solve(aB, aX);

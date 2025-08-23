@@ -26,7 +26,7 @@
 namespace
 {
 
-// Quadratic function: f(x) = x^2 - 4, f'(x) = 2x, roots at x = ±2
+// Quadratic function: f(x) = x^2 - 4, f'(x) = 2x, roots at x = +/-2
 class QuadraticWithDerivative : public math_FunctionWithDerivative
 {
 public:
@@ -223,7 +223,7 @@ TEST(MathFunctionRootsTest, QuadraticTwoRoots)
   EXPECT_FALSE(aRootFinder.IsAllNull()) << "Function should not be all null";
   EXPECT_EQ(aRootFinder.NbSolutions(), 2) << "Should find exactly 2 roots";
 
-  // Check that roots are approximately ±2
+  // Check that roots are approximately +/-2
   Standard_Real aRoot1 = aRootFinder.Value(1);
   Standard_Real aRoot2 = aRootFinder.Value(2);
 
@@ -274,8 +274,8 @@ TEST(MathFunctionRootsTest, SineMultipleRoots)
   EXPECT_FALSE(aRootFinder.IsAllNull()) << "Sine function should not be all null";
 
   Standard_Integer aNbRoots = aRootFinder.NbSolutions();
-  EXPECT_GE(aNbRoots, 2) << "Should find at least 2 roots (0, π, 2π)";
-  EXPECT_LE(aNbRoots, 3) << "Should find at most 3 roots in [0, 2π]";
+  EXPECT_GE(aNbRoots, 2) << "Should find at least 2 roots (0, PI, 2PI)";
+  EXPECT_LE(aNbRoots, 3) << "Should find at most 3 roots in [0, 2PI]";
 
   // Check that all found roots are actually roots
   for (Standard_Integer i = 1; i <= aNbRoots; ++i)

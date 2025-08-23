@@ -289,7 +289,7 @@ TEST(MathCroutTest, LargerMatrix)
   aB(1) = 16.0;
   aB(2) = 16.0;
   aB(3) = 14.0;
-  aB(4) = 18.0; // Should give solution ≈ [1, 1, 1, 1]
+  aB(4) = 18.0; // Should give solution approximately [1, 1, 1, 1]
 
   math_Vector aX(1, 4);
   aCrout.Solve(aB, aX);

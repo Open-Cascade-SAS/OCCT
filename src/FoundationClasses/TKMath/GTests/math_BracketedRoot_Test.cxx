@@ -37,7 +37,7 @@ public:
   }
 };
 
-// Cubic function: f(x) = x^3 - x - 2, root at x ≈ 1.521
+// Cubic function: f(x) = x^3 - x - 2, root at x approximately 1.521
 class CubicFunction : public math_Function
 {
 public:
@@ -48,7 +48,7 @@ public:
   }
 };
 
-// Sine function: f(x) = sin(x), root at x = π
+// Sine function: f(x) = sin(x), root at x = PI
 class SineFunction : public math_Function
 {
 public:
@@ -113,13 +113,13 @@ TEST(MathBracketedRootTest, CubicRootFinding)
 
 TEST(MathBracketedRootTest, SineFunctionRoot)
 {
-  // Test finding root of sin(x) = 0 near π
+  // Test finding root of sin(x) = 0 near PI
   SineFunction aFunc;
 
   math_BracketedRoot aSolver(aFunc, 3.0, 3.5, 1.0e-10);
 
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root for sine function";
-  EXPECT_NEAR(aSolver.Root(), M_PI, 1.0e-8) << "Root should be π";
+  EXPECT_NEAR(aSolver.Root(), M_PI, 1.0e-8) << "Root should be PI";
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-9) << "Function value at root should be near zero";
 }
 

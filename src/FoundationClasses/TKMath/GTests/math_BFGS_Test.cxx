@@ -219,7 +219,7 @@ TEST(MathBFGSTest, BoundaryConstraints)
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
-  // Set boundaries: x ∈ [2, 4], y ∈ [3, 5]
+  // Set boundaries: x in [2, 4], y in [3, 5]
   // True minimum (1,2) is outside these bounds
   // Constrained minimum should be at (2,3)
   math_Vector aLowerBound(1, 2);

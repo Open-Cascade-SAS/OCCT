@@ -51,7 +51,7 @@ public:
   }
 };
 
-// Cosine function: f(x) = cos(x), minimum at x = π in [0, 2π]
+// Cosine function: f(x) = cos(x), minimum at x = PI in [0, 2*PI]
 class CosineFunction : public math_Function
 {
 public:
@@ -164,7 +164,7 @@ TEST(MathBracketMinimumTest, QuarticFunctionBracketing)
 
 TEST(MathBracketMinimumTest, CosineFunction)
 {
-  // Test with cosine function which has minimum at π
+  // Test with cosine function which has minimum at PI
   CosineFunction aFunc;
 
   math_BracketMinimum aBracketer(aFunc, 2.0, 4.0);
@@ -174,7 +174,7 @@ TEST(MathBracketMinimumTest, CosineFunction)
   Standard_Real aA, aB, aC;
   aBracketer.Values(aA, aB, aC);
 
-  // The minimum should be bracketed around π ≈ 3.14159
+  // The minimum should be bracketed around PI approximately 3.14159
   EXPECT_GT(aB, 2.5) << "Bracketed point should be greater than 2.5";
   EXPECT_LT(aB, 4.5) << "Bracketed point should be less than 4.5";
 

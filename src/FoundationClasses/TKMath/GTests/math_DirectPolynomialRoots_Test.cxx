@@ -27,7 +27,7 @@ namespace
 
 TEST(MathDirectPolynomialRootsTest, QuadraticRoots)
 {
-  // Test quadratic: x² - 5x + 6 = 0, roots should be 2 and 3
+  // Test quadratic: x^2 - 5x + 6 = 0, roots should be 2 and 3
   math_DirectPolynomialRoots aRoots(1.0, -5.0, 6.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Quadratic root finding should succeed";
@@ -48,7 +48,7 @@ TEST(MathDirectPolynomialRootsTest, QuadraticRoots)
 
 TEST(MathDirectPolynomialRootsTest, QuadraticNoRealRoots)
 {
-  // Test quadratic: x² + x + 1 = 0, no real roots (discriminant < 0)
+  // Test quadratic: x^2 + x + 1 = 0, no real roots (discriminant < 0)
   math_DirectPolynomialRoots aRoots(1.0, 1.0, 1.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Should complete even with no real roots";
@@ -57,7 +57,7 @@ TEST(MathDirectPolynomialRootsTest, QuadraticNoRealRoots)
 
 TEST(MathDirectPolynomialRootsTest, QuadraticDoubleRoot)
 {
-  // Test quadratic: (x-1)² = x² - 2x + 1 = 0, double root at x = 1
+  // Test quadratic: (x-1)^2 = x^2 - 2x + 1 = 0, double root at x = 1
   math_DirectPolynomialRoots aRoots(1.0, -2.0, 1.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Double root case should succeed";
@@ -74,7 +74,7 @@ TEST(MathDirectPolynomialRootsTest, QuadraticDoubleRoot)
 
 TEST(MathDirectPolynomialRootsTest, CubicRoots)
 {
-  // Test cubic: (x-1)(x-2)(x-3) = x³ - 6x² + 11x - 6 = 0
+  // Test cubic: (x-1)(x-2)(x-3) = x^3 - 6x^2 + 11x - 6 = 0
   // Roots should be 1, 2, 3
   math_DirectPolynomialRoots aRoots(1.0, -6.0, 11.0, -6.0);
 
@@ -96,7 +96,7 @@ TEST(MathDirectPolynomialRootsTest, CubicRoots)
 
 TEST(MathDirectPolynomialRootsTest, CubicOneRealRoot)
 {
-  // Test cubic: x³ + x + 1 = 0, should have one real root
+  // Test cubic: x^3 + x + 1 = 0, should have one real root
   math_DirectPolynomialRoots aRoots(1.0, 0.0, 1.0, 1.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Cubic with one real root should succeed";
@@ -110,7 +110,7 @@ TEST(MathDirectPolynomialRootsTest, CubicOneRealRoot)
 
 TEST(MathDirectPolynomialRootsTest, QuarticRoots)
 {
-  // Test quartic: (x-1)(x-2)(x+1)(x+2) = (x²-1)(x²-4) = x⁴ - 5x² + 4 = 0
+  // Test quartic: (x-1)(x-2)(x+1)(x+2) = (x^2-1)(x^2-4) = x^4 - 5x^2 + 4 = 0
   // Roots should be -2, -1, 1, 2
   math_DirectPolynomialRoots aRoots(1.0, 0.0, -5.0, 0.0, 4.0);
 
@@ -154,7 +154,7 @@ TEST(MathDirectPolynomialRootsTest, DegenerateLinearCase)
 TEST(MathDirectPolynomialRootsTest, PolynomialEvaluation)
 {
   // Test root verification by polynomial evaluation
-  math_DirectPolynomialRoots aRoots(1.0, -3.0, 2.0); // x² - 3x + 2 = 0, roots: 1, 2
+  math_DirectPolynomialRoots aRoots(1.0, -3.0, 2.0); // x^2 - 3x + 2 = 0, roots: 1, 2
 
   EXPECT_TRUE(aRoots.IsDone()) << "Should find roots successfully";
   EXPECT_EQ(aRoots.NbSolutions(), 2) << "Should have 2 roots";
@@ -192,7 +192,7 @@ TEST(MathDirectPolynomialRootsTest, NearZeroCoefficients)
 
 TEST(MathDirectPolynomialRootsTest, BiQuadraticPolynomial)
 {
-  // Test biquadratic: x⁴ - 10x² + 9 = (x²-1)(x²-9) = 0
+  // Test biquadratic: x^4 - 10x^2 + 9 = (x^2-1)(x^2-9) = 0
   // Roots: -3, -1, 1, 3
   math_DirectPolynomialRoots aRoots(1.0, 0.0, -10.0, 0.0, 9.0);
 
@@ -216,7 +216,7 @@ TEST(MathDirectPolynomialRootsTest, BiQuadraticPolynomial)
 
 TEST(MathDirectPolynomialRootsTest, RepeatedRoots)
 {
-  // Test polynomial with repeated roots: (x-1)³ = x³ - 3x² + 3x - 1 = 0
+  // Test polynomial with repeated roots: (x-1)^3 = x^3 - 3x^2 + 3x - 1 = 0
   math_DirectPolynomialRoots aRoots(1.0, -3.0, 3.0, -1.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Should handle repeated roots";

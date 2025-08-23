@@ -26,7 +26,7 @@
 namespace
 {
 
-// Quadratic function: f(x) = x^2 - 4, f'(x) = 2x, roots at x = ±2
+// Quadratic function: f(x) = x^2 - 4, f'(x) = 2x, roots at x = +/-2
 class QuadraticWithDerivative : public math_FunctionWithDerivative
 {
 public:
@@ -78,7 +78,7 @@ public:
   }
 };
 
-// Sine function: f(x) = sin(x), f'(x) = cos(x), root at x = π
+// Sine function: f(x) = sin(x), f'(x) = cos(x), root at x = PI
 class SineWithDerivative : public math_FunctionWithDerivative
 {
 public:
@@ -232,10 +232,10 @@ TEST(MathNewtonFunctionRootTest, SineRootFinding)
   // Test finding root of sine function
   SineWithDerivative aFunc;
 
-  math_NewtonFunctionRoot aSolver(aFunc, 3.0, 1.0e-10, 1.0e-10); // Guess near π
+  math_NewtonFunctionRoot aSolver(aFunc, 3.0, 1.0e-10, 1.0e-10); // Guess near PI
 
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root for sine function";
-  EXPECT_NEAR(aSolver.Root(), M_PI, 1.0e-8) << "Root should be π";
+  EXPECT_NEAR(aSolver.Root(), M_PI, 1.0e-8) << "Root should be PI";
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-10) << "Function value at root should be near 0";
   EXPECT_NEAR(aSolver.Derivative(), -1.0, 1.0e-8) << "Derivative at root should be -1";
 }

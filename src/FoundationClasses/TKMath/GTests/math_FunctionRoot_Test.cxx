@@ -26,7 +26,7 @@
 
 // Test function classes for root finding
 
-// Simple quadratic function: f(x) = x^2 - 4 (roots at x = ±2)
+// Simple quadratic function: f(x) = x^2 - 4 (roots at x = +/-2)
 class QuadraticFunction : public math_FunctionWithDerivative
 {
 public:
@@ -78,7 +78,7 @@ public:
   }
 };
 
-// Trigonometric function: f(x) = sin(x) (root at x = π)
+// Trigonometric function: f(x) = sin(x) (root at x = PI)
 class SinFunction : public math_FunctionWithDerivative
 {
 public:
@@ -223,15 +223,15 @@ TEST(MathFunctionRootTest, TrigonometricFunction)
 {
   SinFunction   aFunc;
   Standard_Real aTolerance     = 1.0e-6;
-  Standard_Real anInitialGuess = 3.5; // Should converge to π ≈ 3.14159
+  Standard_Real anInitialGuess = 3.5; // Should converge to PI approximately 3.14159
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
   EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed for sin(x)";
-  EXPECT_NEAR(aRootFinder.Root(), M_PI, aTolerance) << "Root should be approximately π";
+  EXPECT_NEAR(aRootFinder.Root(), M_PI, aTolerance) << "Root should be approximately PI";
   EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance)
     << "Function value at root should be approximately 0";
-  EXPECT_NEAR(aRootFinder.Derivative(), -1.0, aTolerance) << "cos(π) should be approximately -1";
+  EXPECT_NEAR(aRootFinder.Derivative(), -1.0, aTolerance) << "cos(PI) should be approximately -1";
 }
 
 TEST(MathFunctionRootTest, HighPrecisionTolerance)

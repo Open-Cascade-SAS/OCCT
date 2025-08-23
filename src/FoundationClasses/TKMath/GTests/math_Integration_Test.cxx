@@ -194,7 +194,7 @@ TEST(MathIntegrationTest, GaussSineFunction)
 
   EXPECT_TRUE(anIntegrator.IsDone()) << "Gauss integration should succeed for sine function";
 
-  // Integral of sin(x) from 0 to π: [-cos(x)] from 0 to π = -(-1) - (-1) = 2
+  // Integral of sin(x) from 0 to PI: [-cos(x)] from 0 to PI = -(-1) - (-1) = 2
   Standard_Real anExpected = 2.0;
   EXPECT_NEAR(anIntegrator.Value(), anExpected, 1.0e-10)
     << "Sine function integration should be accurate";
@@ -211,7 +211,7 @@ TEST(MathIntegrationTest, GaussExponentialFunction)
 
   EXPECT_TRUE(anIntegrator.IsDone()) << "Gauss integration should succeed for exponential function";
 
-  // Integral of e^x from 0 to 1: [e^x] from 0 to 1 = e - 1 ≈ 1.71828
+  // Integral of e^x from 0 to 1: [e^x] from 0 to 1 = e - 1 approximately 1.71828
   Standard_Real anExpected = exp(1.0) - 1.0;
   EXPECT_NEAR(anIntegrator.Value(), anExpected, 1.0e-8)
     << "Exponential function integration should be accurate";
@@ -330,7 +330,7 @@ TEST(MathIntegrationTest, KronrodSineFunction)
 
   EXPECT_TRUE(anIntegrator.IsDone()) << "Kronrod integration should succeed for sine function";
 
-  // Integral of sin(x) from 0 to π/2: [-cos(x)] from 0 to π/2 = 0 - (-1) = 1
+  // Integral of sin(x) from 0 to PI/2: [-cos(x)] from 0 to PI/2 = 0 - (-1) = 1
   Standard_Real anExpected = 1.0;
   EXPECT_NEAR(anIntegrator.Value(), anExpected, 1.0e-12)
     << "Sine function integration should be very accurate";

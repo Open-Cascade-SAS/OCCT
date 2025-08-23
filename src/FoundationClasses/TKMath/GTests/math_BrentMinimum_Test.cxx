@@ -49,7 +49,7 @@ public:
   }
 };
 
-// Cosine function: f(x) = cos(x), minimum at x = π with value -1
+// Cosine function: f(x) = cos(x), minimum at x = PI with value -1
 class CosineFunction : public math_Function
 {
 public:
@@ -60,7 +60,7 @@ public:
   }
 };
 
-// Shifted exponential: f(x) = e^(x-3), minimum approaches x = -∞
+// Shifted exponential: f(x) = e^(x-3), minimum approaches x = -infinity
 class ShiftedExponentialFunction : public math_Function
 {
 public:
@@ -115,14 +115,14 @@ TEST(MathBrentMinimumTest, QuarticMinimumFinding)
 
 TEST(MathBrentMinimumTest, CosineMinimumFinding)
 {
-  // Test with cosine function, minimum at π
+  // Test with cosine function, minimum at PI
   CosineFunction aFunc;
 
   math_BrentMinimum aSolver(1.0e-10);
-  aSolver.Perform(aFunc, 2.5, 3.1, 4.0); // Bracketing triplet around minimum at π
+  aSolver.Perform(aFunc, 2.5, 3.1, 4.0); // Bracketing triplet around minimum at PI
 
   EXPECT_TRUE(aSolver.IsDone()) << "Should find minimum for cosine function";
-  EXPECT_NEAR(aSolver.Location(), M_PI, 1.0e-8) << "Minimum should be at π";
+  EXPECT_NEAR(aSolver.Location(), M_PI, 1.0e-8) << "Minimum should be at PI";
   EXPECT_NEAR(aSolver.Minimum(), -1.0, 1.0e-10) << "Minimum value should be -1";
 }
 
@@ -301,7 +301,7 @@ TEST(MathBrentMinimumTest, MultipleCalls)
   // Second call with different function
   aSolver.Perform(aFunc2, 2.5, 3.1, 4.0);
   EXPECT_TRUE(aSolver.IsDone()) << "Second call should succeed";
-  EXPECT_NEAR(aSolver.Location(), M_PI, 1.0e-8) << "Second minimum should be π";
+  EXPECT_NEAR(aSolver.Location(), M_PI, 1.0e-8) << "Second minimum should be PI";
 }
 
 TEST(MathBrentMinimumTest, EdgeCaseAtBoundary)

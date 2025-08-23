@@ -16,7 +16,7 @@ const Standard_Real TOLERANCE = 1.0e-6;
 
 TEST(math_TrigonometricFunctionRoots, FullEquationBasic)
 {
-  // Test a*cos²(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0
+  // Test a*cos^2(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0
   // Example: cos^2(x) - sin^2(x) = 0 => cos(2x) = 0
   // a=1, b=0, c=0, d=0, e=-sin^2(x) equivalent to: cos^2(x) - sin^2(x) = cos(2x) = 0
   // But let's use: cos^2(x) + c*cos(x) = 0 => cos(x)(cos(x) + c) = 0
@@ -194,7 +194,7 @@ TEST(math_TrigonometricFunctionRoots, MixedTerms)
 TEST(math_TrigonometricFunctionRoots, AllCoefficients)
 {
   // Test a more complex equation with all coefficients non-zero
-  // a*cos²(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0
+  // a*cos^2(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0
   Standard_Real                   a = 1.0, b = 0.5, c = 0.5, d = 0.5, e = -0.25;
   math_TrigonometricFunctionRoots solver(a, b, c, d, e, 0.0, 2.0 * PI);
 

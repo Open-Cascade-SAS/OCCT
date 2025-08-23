@@ -72,7 +72,7 @@ public:
   }
 };
 
-// Multi-modal function: f(x,y) = -cos(x)*cos(y)*exp(-((x-π)^2+(y-π)^2))
+// Multi-modal function: f(x,y) = -cos(x)*cos(y)*exp(-((x-PI)^2+(y-PI)^2))
 class MultiModalFunction : public math_MultipleVarFunction
 {
 public:
