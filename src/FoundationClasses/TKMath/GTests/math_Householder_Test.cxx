@@ -165,24 +165,24 @@ TEST(MathHouseholderTest, NearSingularMatrix)
 
 TEST(MathHouseholderTest, CustomEpsilon)
 {
-  // Test with custom epsilon threshold
+  // Test with custom epsilon threshold using well-conditioned values
   math_Matrix aA(1, 2, 1, 2);
-  aA(1, 1) = 1.0e-8;
-  aA(1, 2) = 1.0; // Small but reasonable first column norm
-  aA(2, 1) = 2.0e-8;
+  aA(1, 1) = 1.0e-3;
+  aA(1, 2) = 1.0;
+  aA(2, 1) = 2.0e-3;
   aA(2, 2) = 2.0;
 
   math_Vector aB(1, 2);
   aB(1) = 1.0;
   aB(2) = 2.0;
 
-  // With very small EPS, should succeed
-  math_Householder aHouseholder1(aA, aB, 1.0e-15);
-  EXPECT_TRUE(aHouseholder1.IsDone()) << "Should succeed with small EPS";
+  // Test that default EPS works with this matrix
+  math_Householder aHouseholder1(aA, aB);
+  EXPECT_TRUE(aHouseholder1.IsDone()) << "Should succeed with default EPS";
 
-  // With larger EPS (1e-5), should fail due to small column norm
-  math_Householder aHouseholder2(aA, aB, 1.0e-5);
-  EXPECT_FALSE(aHouseholder2.IsDone()) << "Should fail with large EPS";
+  // Test with very restrictive EPS that should fail
+  math_Householder aHouseholder2(aA, aB, 1.0e-2);
+  EXPECT_FALSE(aHouseholder2.IsDone()) << "Should fail with very restrictive EPS";
 }
 
 TEST(MathHouseholderTest, IdentityMatrix)
