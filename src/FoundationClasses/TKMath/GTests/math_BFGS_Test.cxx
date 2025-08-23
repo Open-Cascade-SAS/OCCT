@@ -37,16 +37,18 @@ public:
 
   Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
   {
-    if (theX.Length() != 2) return Standard_False;
+    if (theX.Length() != 2)
+      return Standard_False;
     Standard_Real dx = theX(1) - 1.0;
     Standard_Real dy = theX(2) - 2.0;
-    theF = dx * dx + dy * dy;
+    theF             = dx * dx + dy * dy;
     return Standard_True;
   }
 
   Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
   {
-    if (theX.Length() != 2 || theG.Length() != 2) return Standard_False;
+    if (theX.Length() != 2 || theG.Length() != 2)
+      return Standard_False;
     theG(1) = 2.0 * (theX(1) - 1.0);
     theG(2) = 2.0 * (theX(2) - 2.0);
     return Standard_True;
@@ -68,22 +70,24 @@ public:
 
   Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
   {
-    if (theX.Length() != 2) return Standard_False;
-    Standard_Real x = theX(1);
-    Standard_Real y = theX(2);
+    if (theX.Length() != 2)
+      return Standard_False;
+    Standard_Real x  = theX(1);
+    Standard_Real y  = theX(2);
     Standard_Real t1 = y - x * x;
     Standard_Real t2 = 1.0 - x;
-    theF = 100.0 * t1 * t1 + t2 * t2;
+    theF             = 100.0 * t1 * t1 + t2 * t2;
     return Standard_True;
   }
 
   Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
   {
-    if (theX.Length() != 2 || theG.Length() != 2) return Standard_False;
+    if (theX.Length() != 2 || theG.Length() != 2)
+      return Standard_False;
     Standard_Real x = theX(1);
     Standard_Real y = theX(2);
-    theG(1) = -400.0 * x * (y - x * x) - 2.0 * (1.0 - x);
-    theG(2) = 200.0 * (y - x * x);
+    theG(1)         = -400.0 * x * (y - x * x) - 2.0 * (1.0 - x);
+    theG(2)         = 200.0 * (y - x * x);
     return Standard_True;
   }
 
@@ -103,14 +107,16 @@ public:
 
   Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
   {
-    if (theX.Length() != 3) return Standard_False;
+    if (theX.Length() != 3)
+      return Standard_False;
     theF = theX(1) * theX(1) + 2.0 * theX(2) * theX(2) + 3.0 * theX(3) * theX(3);
     return Standard_True;
   }
 
   Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
   {
-    if (theX.Length() != 3 || theG.Length() != 3) return Standard_False;
+    if (theX.Length() != 3 || theG.Length() != 3)
+      return Standard_False;
     theG(1) = 2.0 * theX(1);
     theG(2) = 4.0 * theX(2);
     theG(3) = 6.0 * theX(3);
@@ -127,8 +133,8 @@ public:
 TEST(MathBFGSTest, QuadraticFunction2DOptimization)
 {
   QuadraticFunction2D aFunc;
-  Standard_Real aTolerance = 1.0e-8;
-  Standard_Integer aMaxIterations = 100;
+  Standard_Real       aTolerance     = 1.0e-8;
+  Standard_Integer    aMaxIterations = 100;
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
@@ -140,13 +146,13 @@ TEST(MathBFGSTest, QuadraticFunction2DOptimization)
   anOptimizer.Perform(aFunc, aStartPoint);
 
   EXPECT_TRUE(anOptimizer.IsDone()) << "BFGS optimization should succeed";
-  
+
   const math_Vector& aLocation = anOptimizer.Location();
   EXPECT_NEAR(aLocation(1), 1.0, 1.0e-6) << "X coordinate should be close to 1.0";
   EXPECT_NEAR(aLocation(2), 2.0, 1.0e-6) << "Y coordinate should be close to 2.0";
-  
+
   EXPECT_NEAR(anOptimizer.Minimum(), 0.0, 1.0e-10) << "Minimum value should be close to 0.0";
-  
+
   const math_Vector& aGradient = anOptimizer.Gradient();
   EXPECT_NEAR(aGradient(1), 0.0, 1.0e-6) << "Gradient X component should be close to 0";
   EXPECT_NEAR(aGradient(2), 0.0, 1.0e-6) << "Gradient Y component should be close to 0";
@@ -158,8 +164,8 @@ TEST(MathBFGSTest, QuadraticFunction2DOptimization)
 TEST(MathBFGSTest, RosenbrockFunctionOptimization)
 {
   RosenbrockFunction aFunc;
-  Standard_Real aTolerance = 1.0e-6;
-  Standard_Integer aMaxIterations = 1000; // Rosenbrock can be challenging
+  Standard_Real      aTolerance     = 1.0e-6;
+  Standard_Integer   aMaxIterations = 1000; // Rosenbrock can be challenging
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
@@ -171,18 +177,18 @@ TEST(MathBFGSTest, RosenbrockFunctionOptimization)
   anOptimizer.Perform(aFunc, aStartPoint);
 
   EXPECT_TRUE(anOptimizer.IsDone()) << "BFGS optimization should succeed for Rosenbrock";
-  
+
   const math_Vector& aLocation = anOptimizer.Location();
   EXPECT_NEAR(aLocation(1), 1.0, 1.0e-4) << "X coordinate should be close to 1.0";
   EXPECT_NEAR(aLocation(2), 1.0, 1.0e-4) << "Y coordinate should be close to 1.0";
-  
+
   EXPECT_NEAR(anOptimizer.Minimum(), 0.0, 1.0e-8) << "Minimum value should be close to 0.0";
 }
 
 TEST(MathBFGSTest, Paraboloid3DOptimization)
 {
-  Paraboloid3D aFunc;
-  Standard_Real aTolerance = 1.0e-8;
+  Paraboloid3D     aFunc;
+  Standard_Real    aTolerance     = 1.0e-8;
   Standard_Integer aMaxIterations = 100;
 
   math_BFGS anOptimizer(3, aTolerance, aMaxIterations);
@@ -196,20 +202,20 @@ TEST(MathBFGSTest, Paraboloid3DOptimization)
   anOptimizer.Perform(aFunc, aStartPoint);
 
   EXPECT_TRUE(anOptimizer.IsDone()) << "BFGS optimization should succeed for 3D paraboloid";
-  
+
   const math_Vector& aLocation = anOptimizer.Location();
   EXPECT_NEAR(aLocation(1), 0.0, 1.0e-6) << "X coordinate should be close to 0.0";
   EXPECT_NEAR(aLocation(2), 0.0, 1.0e-6) << "Y coordinate should be close to 0.0";
   EXPECT_NEAR(aLocation(3), 0.0, 1.0e-6) << "Z coordinate should be close to 0.0";
-  
+
   EXPECT_NEAR(anOptimizer.Minimum(), 0.0, 1.0e-10) << "Minimum value should be close to 0.0";
 }
 
 TEST(MathBFGSTest, BoundaryConstraints)
 {
   QuadraticFunction2D aFunc;
-  Standard_Real aTolerance = 1.0e-8;
-  Standard_Integer aMaxIterations = 100;
+  Standard_Real       aTolerance     = 1.0e-8;
+  Standard_Integer    aMaxIterations = 100;
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
@@ -219,7 +225,7 @@ TEST(MathBFGSTest, BoundaryConstraints)
   math_Vector aLowerBound(1, 2);
   aLowerBound(1) = 2.0;
   aLowerBound(2) = 3.0;
-  
+
   math_Vector anUpperBound(1, 2);
   anUpperBound(1) = 4.0;
   anUpperBound(2) = 5.0;
@@ -234,13 +240,13 @@ TEST(MathBFGSTest, BoundaryConstraints)
   anOptimizer.Perform(aFunc, aStartPoint);
 
   EXPECT_TRUE(anOptimizer.IsDone()) << "BFGS optimization with boundaries should succeed";
-  
+
   const math_Vector& aLocation = anOptimizer.Location();
   EXPECT_GE(aLocation(1), aLowerBound(1)) << "X should be within lower bound";
   EXPECT_LE(aLocation(1), anUpperBound(1)) << "X should be within upper bound";
   EXPECT_GE(aLocation(2), aLowerBound(2)) << "Y should be within lower bound";
   EXPECT_LE(aLocation(2), anUpperBound(2)) << "Y should be within upper bound";
-  
+
   // Should find constrained minimum at (2,3)
   EXPECT_NEAR(aLocation(1), 2.0, 1.0e-6) << "Constrained minimum X should be at boundary";
   EXPECT_NEAR(aLocation(2), 3.0, 1.0e-6) << "Constrained minimum Y should be at boundary";
@@ -249,7 +255,7 @@ TEST(MathBFGSTest, BoundaryConstraints)
 TEST(MathBFGSTest, LocationCopyMethod)
 {
   QuadraticFunction2D aFunc;
-  math_BFGS anOptimizer(2);
+  math_BFGS           anOptimizer(2);
 
   math_Vector aStartPoint(1, 2);
   aStartPoint(1) = 3.0;
@@ -264,7 +270,7 @@ TEST(MathBFGSTest, LocationCopyMethod)
   anOptimizer.Location(aLocationCopy);
 
   const math_Vector& aLocationRef = anOptimizer.Location();
-  EXPECT_NEAR(aLocationCopy(1), aLocationRef(1), Precision::Confusion()) 
+  EXPECT_NEAR(aLocationCopy(1), aLocationRef(1), Precision::Confusion())
     << "Copied location should match reference";
   EXPECT_NEAR(aLocationCopy(2), aLocationRef(2), Precision::Confusion())
     << "Copied location should match reference";
@@ -273,7 +279,7 @@ TEST(MathBFGSTest, LocationCopyMethod)
 TEST(MathBFGSTest, GradientCopyMethod)
 {
   QuadraticFunction2D aFunc;
-  math_BFGS anOptimizer(2);
+  math_BFGS           anOptimizer(2);
 
   math_Vector aStartPoint(1, 2);
   aStartPoint(1) = 3.0;
@@ -297,11 +303,11 @@ TEST(MathBFGSTest, GradientCopyMethod)
 TEST(MathBFGSTest, DifferentTolerances)
 {
   QuadraticFunction2D aFunc;
-  
+
   // Test with very tight tolerance
   {
     Standard_Real aTightTolerance = 1.0e-12;
-    math_BFGS anOptimizer(2, aTightTolerance);
+    math_BFGS     anOptimizer(2, aTightTolerance);
 
     math_Vector aStartPoint(1, 2);
     aStartPoint(1) = 2.0;
@@ -310,14 +316,16 @@ TEST(MathBFGSTest, DifferentTolerances)
     anOptimizer.Perform(aFunc, aStartPoint);
 
     EXPECT_TRUE(anOptimizer.IsDone()) << "High precision optimization should succeed";
-    EXPECT_NEAR(anOptimizer.Location()(1), 1.0, aTightTolerance * 10) << "High precision X coordinate";
-    EXPECT_NEAR(anOptimizer.Location()(2), 2.0, aTightTolerance * 10) << "High precision Y coordinate";
+    EXPECT_NEAR(anOptimizer.Location()(1), 1.0, aTightTolerance * 10)
+      << "High precision X coordinate";
+    EXPECT_NEAR(anOptimizer.Location()(2), 2.0, aTightTolerance * 10)
+      << "High precision Y coordinate";
   }
 
   // Test with loose tolerance
   {
     Standard_Real aLooseTolerance = 1.0e-3;
-    math_BFGS anOptimizer(2, aLooseTolerance);
+    math_BFGS     anOptimizer(2, aLooseTolerance);
 
     math_Vector aStartPoint(1, 2);
     aStartPoint(1) = 10.0;
@@ -326,16 +334,18 @@ TEST(MathBFGSTest, DifferentTolerances)
     anOptimizer.Perform(aFunc, aStartPoint);
 
     EXPECT_TRUE(anOptimizer.IsDone()) << "Low precision optimization should succeed";
-    EXPECT_NEAR(anOptimizer.Location()(1), 1.0, aLooseTolerance * 10) << "Low precision X coordinate";
-    EXPECT_NEAR(anOptimizer.Location()(2), 2.0, aLooseTolerance * 10) << "Low precision Y coordinate";
+    EXPECT_NEAR(anOptimizer.Location()(1), 1.0, aLooseTolerance * 10)
+      << "Low precision X coordinate";
+    EXPECT_NEAR(anOptimizer.Location()(2), 2.0, aLooseTolerance * 10)
+      << "Low precision Y coordinate";
   }
 }
 
 TEST(MathBFGSTest, MaxIterationsLimit)
 {
-  RosenbrockFunction aFunc; // Challenging function
-  Standard_Real aTolerance = 1.0e-12; // Very tight tolerance
-  Standard_Integer aVeryFewIterations = 5; // Very few iterations
+  RosenbrockFunction aFunc;                        // Challenging function
+  Standard_Real      aTolerance         = 1.0e-12; // Very tight tolerance
+  Standard_Integer   aVeryFewIterations = 5;       // Very few iterations
 
   math_BFGS anOptimizer(2, aTolerance, aVeryFewIterations);
 
@@ -361,7 +371,7 @@ TEST(MathBFGSTest, MaxIterationsLimit)
 TEST(MathBFGSTest, NotDoneExceptions)
 {
   QuadraticFunction2D aFunc;
-  math_BFGS anOptimizer(2, 1.0e-15, 1); // Very tight tolerance, one iteration
+  math_BFGS           anOptimizer(2, 1.0e-15, 1); // Very tight tolerance, one iteration
 
   math_Vector aStartPoint(1, 2);
   aStartPoint(1) = 100.0; // Very far from minimum
@@ -375,7 +385,7 @@ TEST(MathBFGSTest, NotDoneExceptions)
     EXPECT_THROW(anOptimizer.Minimum(), StdFail_NotDone);
     EXPECT_THROW(anOptimizer.Gradient(), StdFail_NotDone);
     EXPECT_THROW(anOptimizer.NbIterations(), StdFail_NotDone);
-    
+
     // Test copy methods
     math_Vector aDummyLocation(1, 2);
     math_Vector aDummyGradient(1, 2);
@@ -387,7 +397,7 @@ TEST(MathBFGSTest, NotDoneExceptions)
 TEST(MathBFGSTest, DimensionErrorExceptions)
 {
   QuadraticFunction2D aFunc;
-  math_BFGS anOptimizer(2);
+  math_BFGS           anOptimizer(2);
 
   math_Vector aStartPoint(1, 2);
   aStartPoint(1) = 2.0;
@@ -409,9 +419,9 @@ TEST(MathBFGSTest, ConstructorParameters)
 {
   // Test different constructor parameter combinations
   {
-    math_BFGS anOptimizer1(3); // Default tolerance, iterations, ZEPS
+    math_BFGS           anOptimizer1(3); // Default tolerance, iterations, ZEPS
     QuadraticFunction2D aFunc; // This is 2D, but optimizer is 3D - should handle gracefully
-    
+
     // This might not work well due to dimension mismatch, but shouldn't crash
     EXPECT_NO_THROW({
       math_Vector aStart(1, 3);
@@ -439,12 +449,13 @@ TEST(MathBFGSTest, ConstructorParameters)
 TEST(MathBFGSTest, MultipleOptimizations)
 {
   QuadraticFunction2D aFunc;
-  math_BFGS anOptimizer(2);
+  math_BFGS           anOptimizer(2);
 
   // Perform multiple optimizations with the same optimizer instance
-  std::vector<std::pair<Standard_Real, Standard_Real>> aStartPoints = {
-    {5.0, 7.0}, {-3.0, -4.0}, {0.5, 1.5}, {10.0, -5.0}
-  };
+  std::vector<std::pair<Standard_Real, Standard_Real>> aStartPoints = {{5.0, 7.0},
+                                                                       {-3.0, -4.0},
+                                                                       {0.5, 1.5},
+                                                                       {10.0, -5.0}};
 
   for (const auto& aStart : aStartPoints)
   {

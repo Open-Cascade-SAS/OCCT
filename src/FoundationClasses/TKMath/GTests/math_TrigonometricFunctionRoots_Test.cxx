@@ -10,9 +10,9 @@
 
 namespace
 {
-  const Standard_Real PI = M_PI;
-  const Standard_Real TOLERANCE = 1.0e-6;
-}
+const Standard_Real PI        = M_PI;
+const Standard_Real TOLERANCE = 1.0e-6;
+} // namespace
 
 TEST(math_TrigonometricFunctionRoots, FullEquationBasic)
 {
@@ -20,9 +20,9 @@ TEST(math_TrigonometricFunctionRoots, FullEquationBasic)
   // Example: cos²(x) - sin²(x) = 0 => cos(2x) = 0
   // a=1, b=0, c=0, d=0, e=-sin²(x) equivalent to: cos²(x) - sin²(x) = cos(2x) = 0
   // But let's use: cos²(x) + c*cos(x) = 0 => cos(x)(cos(x) + c) = 0
-  Standard_Real a = 1.0, b = 0.0, c = 1.0, d = 0.0, e = 0.0;
+  Standard_Real                   a = 1.0, b = 0.0, c = 1.0, d = 0.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(a, b, c, d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GT(solver.NbSolutions(), 0);
@@ -32,16 +32,16 @@ TEST(math_TrigonometricFunctionRoots, LinearSineOnly)
 {
   // Test d*sin(x) + e = 0 => sin(x) = -e/d
   // Example: sin(x) - 0.5 = 0 => sin(x) = 0.5 => x = π/6, 5π/6
-  Standard_Real d = 1.0, e = -0.5;
+  Standard_Real                   d = 1.0, e = -0.5;
   math_TrigonometricFunctionRoots solver(d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GT(solver.NbSolutions(), 0);
-  
+
   if (solver.NbSolutions() >= 1)
   {
-    Standard_Real x1 = solver.Value(1);
+    Standard_Real x1      = solver.Value(1);
     Standard_Real sin_val = sin(x1);
     EXPECT_NEAR(sin_val, 0.5, TOLERANCE);
   }
@@ -51,16 +51,16 @@ TEST(math_TrigonometricFunctionRoots, LinearCosineAndSine)
 {
   // Test c*cos(x) + d*sin(x) + e = 0
   // Example: cos(x) + sin(x) = 0 => tan(x) = -1 => x = 3π/4, 7π/4
-  Standard_Real c = 1.0, d = 1.0, e = 0.0;
+  Standard_Real                   c = 1.0, d = 1.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(c, d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GT(solver.NbSolutions(), 0);
-  
+
   if (solver.NbSolutions() >= 1)
   {
-    Standard_Real x1 = solver.Value(1);
+    Standard_Real x1     = solver.Value(1);
     Standard_Real result = cos(x1) + sin(x1);
     EXPECT_NEAR(result, 0.0, TOLERANCE);
   }
@@ -69,13 +69,13 @@ TEST(math_TrigonometricFunctionRoots, LinearCosineAndSine)
 TEST(math_TrigonometricFunctionRoots, PureCosineEquation)
 {
   // Test cos(x) = 0 => x = π/2, 3π/2
-  Standard_Real c = 1.0, d = 0.0, e = 0.0;
+  Standard_Real                   c = 1.0, d = 0.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(c, d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GE(solver.NbSolutions(), 1);
-  
+
   if (solver.NbSolutions() >= 1)
   {
     Standard_Real x1 = solver.Value(1);
@@ -86,13 +86,13 @@ TEST(math_TrigonometricFunctionRoots, PureCosineEquation)
 TEST(math_TrigonometricFunctionRoots, PureSineEquation)
 {
   // Test sin(x) = 0 => x = 0, π, 2π
-  Standard_Real d = 1.0, e = 0.0;
+  Standard_Real                   d = 1.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GE(solver.NbSolutions(), 2);
-  
+
   if (solver.NbSolutions() >= 1)
   {
     Standard_Real x1 = solver.Value(1);
@@ -103,9 +103,9 @@ TEST(math_TrigonometricFunctionRoots, PureSineEquation)
 TEST(math_TrigonometricFunctionRoots, NoSolution)
 {
   // Test sin(x) + 2 = 0 => sin(x) = -2 (impossible)
-  Standard_Real d = 1.0, e = 2.0;
+  Standard_Real                   d = 1.0, e = 2.0;
   math_TrigonometricFunctionRoots solver(d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_EQ(solver.NbSolutions(), 0);
@@ -114,9 +114,9 @@ TEST(math_TrigonometricFunctionRoots, NoSolution)
 TEST(math_TrigonometricFunctionRoots, InfiniteSolutions)
 {
   // Test 0*sin(x) + 0 = 0 (always true)
-  Standard_Real d = 0.0, e = 0.0;
+  Standard_Real                   d = 0.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_TRUE(solver.InfiniteRoots());
 }
@@ -124,18 +124,18 @@ TEST(math_TrigonometricFunctionRoots, InfiniteSolutions)
 TEST(math_TrigonometricFunctionRoots, CustomBounds)
 {
   // Test sin(x) = 0 in range [π/2, 3π/2]
-  Standard_Real d = 1.0, e = 0.0;
-  math_TrigonometricFunctionRoots solver(d, e, PI/2.0, 3.0*PI/2.0);
-  
+  Standard_Real                   d = 1.0, e = 0.0;
+  math_TrigonometricFunctionRoots solver(d, e, PI / 2.0, 3.0 * PI / 2.0);
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GE(solver.NbSolutions(), 1);
-  
+
   for (int i = 1; i <= solver.NbSolutions(); i++)
   {
     Standard_Real x = solver.Value(i);
-    EXPECT_GE(x, PI/2.0);
-    EXPECT_LE(x, 3.0*PI/2.0);
+    EXPECT_GE(x, PI / 2.0);
+    EXPECT_LE(x, 3.0 * PI / 2.0);
     EXPECT_NEAR(fabs(sin(x)), 0.0, TOLERANCE);
   }
 }
@@ -143,9 +143,9 @@ TEST(math_TrigonometricFunctionRoots, CustomBounds)
 TEST(math_TrigonometricFunctionRoots, NarrowBounds)
 {
   // Test cos(x) = 0 in range [0, π/4]
-  Standard_Real c = 1.0, d = 0.0, e = 0.0;
-  math_TrigonometricFunctionRoots solver(c, d, e, 0.0, PI/4.0);
-  
+  Standard_Real                   c = 1.0, d = 0.0, e = 0.0;
+  math_TrigonometricFunctionRoots solver(c, d, e, 0.0, PI / 4.0);
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   // No solutions expected in this narrow range
@@ -155,16 +155,16 @@ TEST(math_TrigonometricFunctionRoots, NarrowBounds)
 TEST(math_TrigonometricFunctionRoots, QuadraticTerms)
 {
   // Test cos²(x) - 0.5 = 0 => cos²(x) = 0.5 => cos(x) = ±√0.5
-  Standard_Real a = 1.0, b = 0.0, c = 0.0, d = 0.0, e = -0.5;
+  Standard_Real                   a = 1.0, b = 0.0, c = 0.0, d = 0.0, e = -0.5;
   math_TrigonometricFunctionRoots solver(a, b, c, d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GE(solver.NbSolutions(), 2);
-  
+
   if (solver.NbSolutions() >= 1)
   {
-    Standard_Real x1 = solver.Value(1);
+    Standard_Real x1          = solver.Value(1);
     Standard_Real cos_squared = cos(x1) * cos(x1);
     EXPECT_NEAR(cos_squared, 0.5, TOLERANCE);
   }
@@ -176,16 +176,16 @@ TEST(math_TrigonometricFunctionRoots, MixedTerms)
   // This gives cos(x) + sin(x) = √2
   // Which is √2*sin(x + π/4) = √2
   // So sin(x + π/4) = 1 => x + π/4 = π/2 => x = π/4
-  Standard_Real c = 1.0, d = 1.0, e = -sqrt(2.0);
+  Standard_Real                   c = 1.0, d = 1.0, e = -sqrt(2.0);
   math_TrigonometricFunctionRoots solver(c, d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GE(solver.NbSolutions(), 1);
-  
+
   if (solver.NbSolutions() >= 1)
   {
-    Standard_Real x1 = solver.Value(1);
+    Standard_Real x1     = solver.Value(1);
     Standard_Real result = cos(x1) + sin(x1);
     EXPECT_NEAR(result, sqrt(2.0), TOLERANCE);
   }
@@ -195,18 +195,18 @@ TEST(math_TrigonometricFunctionRoots, AllCoefficients)
 {
   // Test a more complex equation with all coefficients non-zero
   // a*cos²(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0
-  Standard_Real a = 1.0, b = 0.5, c = 0.5, d = 0.5, e = -0.25;
+  Standard_Real                   a = 1.0, b = 0.5, c = 0.5, d = 0.5, e = -0.25;
   math_TrigonometricFunctionRoots solver(a, b, c, d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
-  
+
   // Check that found solutions are valid
   for (int i = 1; i <= solver.NbSolutions(); i++)
   {
     Standard_Real x = solver.Value(i);
-    Standard_Real result = a * cos(x) * cos(x) + 2.0 * b * cos(x) * sin(x) + 
-                          c * cos(x) + d * sin(x) + e;
+    Standard_Real result =
+      a * cos(x) * cos(x) + 2.0 * b * cos(x) * sin(x) + c * cos(x) + d * sin(x) + e;
     EXPECT_NEAR(result, 0.0, TOLERANCE);
   }
 }
@@ -214,9 +214,9 @@ TEST(math_TrigonometricFunctionRoots, AllCoefficients)
 TEST(math_TrigonometricFunctionRoots, LargeBounds)
 {
   // Test sin(x) = 0 over multiple periods
-  Standard_Real d = 1.0, e = 0.0;
+  Standard_Real                   d = 1.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(d, e, 0.0, 4.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GE(solver.NbSolutions(), 2); // Should find multiple roots
@@ -225,13 +225,13 @@ TEST(math_TrigonometricFunctionRoots, LargeBounds)
 TEST(math_TrigonometricFunctionRoots, NegativeBounds)
 {
   // Test cos(x) = 0 with negative bounds
-  Standard_Real c = 1.0, d = 0.0, e = 0.0;
+  Standard_Real                   c = 1.0, d = 0.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(c, d, e, -PI, PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GE(solver.NbSolutions(), 1);
-  
+
   for (int i = 1; i <= solver.NbSolutions(); i++)
   {
     Standard_Real x = solver.Value(i);
@@ -244,13 +244,13 @@ TEST(math_TrigonometricFunctionRoots, NegativeBounds)
 TEST(math_TrigonometricFunctionRoots, HighFrequencyTest)
 {
   // Test sin(x) - 0.5 = 0 with precise expected solutions
-  Standard_Real d = 1.0, e = -0.5;
+  Standard_Real                   d = 1.0, e = -0.5;
   math_TrigonometricFunctionRoots solver(d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GE(solver.NbSolutions(), 2);
-  
+
   // Expected solutions: π/6 ≈ 0.5236 and 5π/6 ≈ 2.618
   if (solver.NbSolutions() >= 2)
   {
@@ -259,13 +259,15 @@ TEST(math_TrigonometricFunctionRoots, HighFrequencyTest)
     {
       solutions.push_back(solver.Value(i));
     }
-    
+
     // Check that we have solutions near π/6 and 5π/6
     bool found_first = false, found_second = false;
     for (Standard_Real sol : solutions)
     {
-      if (fabs(sol - PI/6.0) < 0.1) found_first = true;
-      if (fabs(sol - 5.0*PI/6.0) < 0.1) found_second = true;
+      if (fabs(sol - PI / 6.0) < 0.1)
+        found_first = true;
+      if (fabs(sol - 5.0 * PI / 6.0) < 0.1)
+        found_second = true;
     }
     EXPECT_TRUE(found_first || found_second);
   }
@@ -274,9 +276,9 @@ TEST(math_TrigonometricFunctionRoots, HighFrequencyTest)
 TEST(math_TrigonometricFunctionRoots, EdgeCaseSmallCoefficients)
 {
   // Test with very small coefficients
-  Standard_Real c = 1.0e-10, d = 1.0, e = 0.0;
+  Standard_Real                   c = 1.0e-10, d = 1.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(c, d, e, 0.0, 2.0 * PI);
-  
+
   EXPECT_TRUE(solver.IsDone());
   // Should behave approximately like sin(x) = 0
   if (!solver.InfiniteRoots())

@@ -28,7 +28,9 @@
 namespace
 {
 // Helper function to check if solution is approximately correct
-void checkSolution(const math_Matrix& theA, const math_Vector& theX, const math_Vector& theB, 
+void checkSolution(const math_Matrix&  theA,
+                   const math_Vector&  theX,
+                   const math_Vector&  theB,
                    const Standard_Real theTolerance = 1.0e-10)
 {
   ASSERT_EQ(theA.ColNumber(), theX.Length()) << "Matrix and solution vector dimensions must match";
@@ -49,7 +51,7 @@ void checkSolution(const math_Matrix& theA, const math_Vector& theX, const math_
   // Check if A * X ≈ B
   for (Standard_Integer anI = theB.Lower(); anI <= theB.Upper(); anI++)
   {
-    EXPECT_NEAR(aResult(anI), theB(anI), theTolerance) 
+    EXPECT_NEAR(aResult(anI), theB(anI), theTolerance)
       << "Solution verification failed at index " << anI;
   }
 }
@@ -58,9 +60,15 @@ void checkSolution(const math_Matrix& theA, const math_Vector& theX, const math_
 math_Matrix createWellConditionedMatrix()
 {
   math_Matrix aMatrix(1, 3, 1, 3);
-  aMatrix(1, 1) = 2.0; aMatrix(1, 2) = 1.0; aMatrix(1, 3) = 0.0;
-  aMatrix(2, 1) = 1.0; aMatrix(2, 2) = 2.0; aMatrix(2, 3) = 1.0;
-  aMatrix(3, 1) = 0.0; aMatrix(3, 2) = 1.0; aMatrix(3, 3) = 2.0;
+  aMatrix(1, 1) = 2.0;
+  aMatrix(1, 2) = 1.0;
+  aMatrix(1, 3) = 0.0;
+  aMatrix(2, 1) = 1.0;
+  aMatrix(2, 2) = 2.0;
+  aMatrix(2, 3) = 1.0;
+  aMatrix(3, 1) = 0.0;
+  aMatrix(3, 2) = 1.0;
+  aMatrix(3, 3) = 2.0;
   return aMatrix;
 }
 } // namespace
@@ -69,13 +77,15 @@ math_Matrix createWellConditionedMatrix()
 TEST(MathSVDTest, WellConditionedSquareMatrix)
 {
   math_Matrix aMatrix = createWellConditionedMatrix();
-  math_SVD aSVD(aMatrix);
+  math_SVD    aSVD(aMatrix);
 
   EXPECT_TRUE(aSVD.IsDone()) << "SVD decomposition should succeed for well-conditioned matrix";
 
   // Test solving Ax = b where b = [6, 9, 8]
   math_Vector aB(1, 3);
-  aB(1) = 6.0; aB(2) = 9.0; aB(3) = 8.0;
+  aB(1) = 6.0;
+  aB(2) = 9.0;
+  aB(3) = 8.0;
 
   math_Vector aX(1, 3);
   aSVD.Solve(aB, aX);
@@ -88,15 +98,23 @@ TEST(MathSVDTest, IdentityMatrix)
 {
   // Identity matrix test
   math_Matrix anIdentity(1, 3, 1, 3);
-  anIdentity(1, 1) = 1.0; anIdentity(1, 2) = 0.0; anIdentity(1, 3) = 0.0;
-  anIdentity(2, 1) = 0.0; anIdentity(2, 2) = 1.0; anIdentity(2, 3) = 0.0;
-  anIdentity(3, 1) = 0.0; anIdentity(3, 2) = 0.0; anIdentity(3, 3) = 1.0;
+  anIdentity(1, 1) = 1.0;
+  anIdentity(1, 2) = 0.0;
+  anIdentity(1, 3) = 0.0;
+  anIdentity(2, 1) = 0.0;
+  anIdentity(2, 2) = 1.0;
+  anIdentity(2, 3) = 0.0;
+  anIdentity(3, 1) = 0.0;
+  anIdentity(3, 2) = 0.0;
+  anIdentity(3, 3) = 1.0;
 
   math_SVD aSVD(anIdentity);
   EXPECT_TRUE(aSVD.IsDone()) << "SVD should succeed for identity matrix";
 
   math_Vector aB(1, 3);
-  aB(1) = 5.0; aB(2) = 7.0; aB(3) = 9.0;
+  aB(1) = 5.0;
+  aB(2) = 7.0;
+  aB(3) = 9.0;
 
   math_Vector aX(1, 3);
   aSVD.Solve(aB, aX);
@@ -111,15 +129,23 @@ TEST(MathSVDTest, DiagonalMatrix)
 {
   // Diagonal matrix test
   math_Matrix aDiagonal(1, 3, 1, 3);
-  aDiagonal(1, 1) = 3.0; aDiagonal(1, 2) = 0.0; aDiagonal(1, 3) = 0.0;
-  aDiagonal(2, 1) = 0.0; aDiagonal(2, 2) = 5.0; aDiagonal(2, 3) = 0.0;
-  aDiagonal(3, 1) = 0.0; aDiagonal(3, 2) = 0.0; aDiagonal(3, 3) = 2.0;
+  aDiagonal(1, 1) = 3.0;
+  aDiagonal(1, 2) = 0.0;
+  aDiagonal(1, 3) = 0.0;
+  aDiagonal(2, 1) = 0.0;
+  aDiagonal(2, 2) = 5.0;
+  aDiagonal(2, 3) = 0.0;
+  aDiagonal(3, 1) = 0.0;
+  aDiagonal(3, 2) = 0.0;
+  aDiagonal(3, 3) = 2.0;
 
   math_SVD aSVD(aDiagonal);
   EXPECT_TRUE(aSVD.IsDone()) << "SVD should succeed for diagonal matrix";
 
   math_Vector aB(1, 3);
-  aB(1) = 12.0; aB(2) = 20.0; aB(3) = 8.0;
+  aB(1) = 12.0;
+  aB(2) = 20.0;
+  aB(3) = 8.0;
 
   math_Vector aX(1, 3);
   aSVD.Solve(aB, aX);
@@ -134,17 +160,28 @@ TEST(MathSVDTest, OverdeterminedSystem)
 {
   // Overdetermined system: more equations than unknowns (4x3)
   math_Matrix aMatrix(1, 4, 1, 3);
-  aMatrix(1, 1) = 1.0; aMatrix(1, 2) = 0.0; aMatrix(1, 3) = 0.0;
-  aMatrix(2, 1) = 0.0; aMatrix(2, 2) = 1.0; aMatrix(2, 3) = 0.0;
-  aMatrix(3, 1) = 0.0; aMatrix(3, 2) = 0.0; aMatrix(3, 3) = 1.0;
-  aMatrix(4, 1) = 1.0; aMatrix(4, 2) = 1.0; aMatrix(4, 3) = 1.0;
+  aMatrix(1, 1) = 1.0;
+  aMatrix(1, 2) = 0.0;
+  aMatrix(1, 3) = 0.0;
+  aMatrix(2, 1) = 0.0;
+  aMatrix(2, 2) = 1.0;
+  aMatrix(2, 3) = 0.0;
+  aMatrix(3, 1) = 0.0;
+  aMatrix(3, 2) = 0.0;
+  aMatrix(3, 3) = 1.0;
+  aMatrix(4, 1) = 1.0;
+  aMatrix(4, 2) = 1.0;
+  aMatrix(4, 3) = 1.0;
 
   math_SVD aSVD(aMatrix);
   EXPECT_TRUE(aSVD.IsDone()) << "SVD should succeed for overdetermined system";
 
   // Consistent system: b4 = b1 + b2 + b3
   math_Vector aB(1, 4);
-  aB(1) = 2.0; aB(2) = 3.0; aB(3) = 4.0; aB(4) = 9.0; // 2 + 3 + 4 = 9
+  aB(1) = 2.0;
+  aB(2) = 3.0;
+  aB(3) = 4.0;
+  aB(4) = 9.0; // 2 + 3 + 4 = 9
 
   math_Vector aX(1, 3);
   aSVD.Solve(aB, aX);
@@ -157,8 +194,12 @@ TEST(MathSVDTest, UnderdeterminedSystem)
 {
   // Underdetermined system: fewer equations than unknowns (2x3)
   math_Matrix aMatrix(1, 2, 1, 3);
-  aMatrix(1, 1) = 1.0; aMatrix(1, 2) = 2.0; aMatrix(1, 3) = 3.0;
-  aMatrix(2, 1) = 4.0; aMatrix(2, 2) = 5.0; aMatrix(2, 3) = 6.0;
+  aMatrix(1, 1) = 1.0;
+  aMatrix(1, 2) = 2.0;
+  aMatrix(1, 3) = 3.0;
+  aMatrix(2, 1) = 4.0;
+  aMatrix(2, 2) = 5.0;
+  aMatrix(2, 3) = 6.0;
 
   math_SVD aSVD(aMatrix);
   EXPECT_TRUE(aSVD.IsDone()) << "SVD should succeed for underdetermined system";
@@ -178,9 +219,15 @@ TEST(MathSVDTest, RankDeficientMatrix)
 {
   // Rank deficient matrix (rank 2, but 3x3)
   math_Matrix aMatrix(1, 3, 1, 3);
-  aMatrix(1, 1) = 1.0; aMatrix(1, 2) = 2.0; aMatrix(1, 3) = 3.0;
-  aMatrix(2, 1) = 2.0; aMatrix(2, 2) = 4.0; aMatrix(2, 3) = 6.0; // 2 * row 1
-  aMatrix(3, 1) = 1.0; aMatrix(3, 2) = 1.0; aMatrix(3, 3) = 1.0;
+  aMatrix(1, 1) = 1.0;
+  aMatrix(1, 2) = 2.0;
+  aMatrix(1, 3) = 3.0;
+  aMatrix(2, 1) = 2.0;
+  aMatrix(2, 2) = 4.0;
+  aMatrix(2, 3) = 6.0; // 2 * row 1
+  aMatrix(3, 1) = 1.0;
+  aMatrix(3, 2) = 1.0;
+  aMatrix(3, 3) = 1.0;
 
   math_SVD aSVD(aMatrix);
   EXPECT_TRUE(aSVD.IsDone()) << "SVD should handle rank deficient matrix";
@@ -202,7 +249,9 @@ TEST(MathSVDTest, SingleRowMatrix)
 {
   // Single equation, multiple unknowns (1x3)
   math_Matrix aMatrix(1, 1, 1, 3);
-  aMatrix(1, 1) = 2.0; aMatrix(1, 2) = 3.0; aMatrix(1, 3) = 4.0;
+  aMatrix(1, 1) = 2.0;
+  aMatrix(1, 2) = 3.0;
+  aMatrix(1, 3) = 4.0;
 
   math_SVD aSVD(aMatrix);
   EXPECT_TRUE(aSVD.IsDone()) << "SVD should succeed for single row matrix";
@@ -230,9 +279,9 @@ TEST(MathSVDTest, SingleColumnMatrix)
 
   // Least squares problem: find x that minimizes ||Ax - b||^2
   math_Vector aB(1, 3);
-  aB(1) = 4.0;  // 2x ≈ 4 → x ≈ 2
-  aB(2) = 6.0;  // 3x ≈ 6 → x ≈ 2
-  aB(3) = 8.0;  // 4x ≈ 8 → x ≈ 2
+  aB(1) = 4.0; // 2x ≈ 4 → x ≈ 2
+  aB(2) = 6.0; // 3x ≈ 6 → x ≈ 2
+  aB(3) = 8.0; // 4x ≈ 8 → x ≈ 2
 
   math_Vector aX(1, 1);
   aSVD.Solve(aB, aX);
@@ -243,20 +292,24 @@ TEST(MathSVDTest, SingleColumnMatrix)
 TEST(MathSVDTest, PseudoInverseMethod)
 {
   math_Matrix aMatrix = createWellConditionedMatrix();
-  math_SVD aSVD(aMatrix);
+  math_SVD    aSVD(aMatrix);
 
   EXPECT_TRUE(aSVD.IsDone()) << "SVD decomposition should succeed";
 
   // Test PseudoInverse method - compute A^+ (pseudoinverse of A)
-  math_Matrix aPseudoInv(aMatrix.LowerCol(), aMatrix.UpperCol(), 
-                         aMatrix.LowerRow(), aMatrix.UpperRow());
+  math_Matrix aPseudoInv(aMatrix.LowerCol(),
+                         aMatrix.UpperCol(),
+                         aMatrix.LowerRow(),
+                         aMatrix.UpperRow());
   aSVD.PseudoInverse(aPseudoInv);
 
   // For a well-conditioned square matrix, pseudoinverse should behave like regular inverse
   // Test: A^+ * A should be approximately identity
-  math_Matrix aProduct(aMatrix.LowerRow(), aMatrix.UpperRow(), 
-                       aMatrix.LowerRow(), aMatrix.UpperRow());
-  
+  math_Matrix aProduct(aMatrix.LowerRow(),
+                       aMatrix.UpperRow(),
+                       aMatrix.LowerRow(),
+                       aMatrix.UpperRow());
+
   for (Standard_Integer anI = aMatrix.LowerRow(); anI <= aMatrix.UpperRow(); anI++)
   {
     for (Standard_Integer aJ = aMatrix.LowerRow(); aJ <= aMatrix.UpperRow(); aJ++)
@@ -276,7 +329,7 @@ TEST(MathSVDTest, PseudoInverseMethod)
     for (Standard_Integer aJ = aMatrix.LowerRow(); aJ <= aMatrix.UpperRow(); aJ++)
     {
       Standard_Real anExpected = (anI == aJ) ? 1.0 : 0.0;
-      EXPECT_NEAR(aProduct(anI, aJ), anExpected, 1.0e-10) 
+      EXPECT_NEAR(aProduct(anI, aJ), anExpected, 1.0e-10)
         << "PseudoInverse * Matrix should approximate identity at (" << anI << "," << aJ << ")";
     }
   }
@@ -286,20 +339,23 @@ TEST(MathSVDTest, PseudoInverseMethod)
 TEST(MathSVDTest, DimensionErrorExceptions)
 {
   math_Matrix aMatrix = createWellConditionedMatrix();
-  math_SVD aSVD(aMatrix);
+  math_SVD    aSVD(aMatrix);
 
   ASSERT_TRUE(aSVD.IsDone()) << "SVD should succeed for dimension error tests";
 
   // Wrong dimension B vector (should be size 3, not 2)
   math_Vector aWrongSizeB(1, 2);
-  aWrongSizeB(1) = 1.0; aWrongSizeB(2) = 2.0;
+  aWrongSizeB(1) = 1.0;
+  aWrongSizeB(2) = 2.0;
 
   math_Vector aX(1, 3);
   EXPECT_THROW(aSVD.Solve(aWrongSizeB, aX), Standard_DimensionError);
 
   // Wrong dimension X vector (should be size 3, not 4)
   math_Vector aCorrectB(1, 3);
-  aCorrectB(1) = 1.0; aCorrectB(2) = 2.0; aCorrectB(3) = 3.0;
+  aCorrectB(1) = 1.0;
+  aCorrectB(2) = 2.0;
+  aCorrectB(3) = 3.0;
 
   math_Vector aWrongSizeX(1, 4);
   EXPECT_THROW(aSVD.Solve(aCorrectB, aWrongSizeX), Standard_DimensionError);
@@ -309,21 +365,27 @@ TEST(MathSVDTest, SingularValues)
 {
   // Test a matrix where we can predict singular values
   math_Matrix aMatrix(1, 2, 1, 2);
-  aMatrix(1, 1) = 3.0; aMatrix(1, 2) = 0.0;
-  aMatrix(2, 1) = 0.0; aMatrix(2, 2) = 4.0;
+  aMatrix(1, 1) = 3.0;
+  aMatrix(1, 2) = 0.0;
+  aMatrix(2, 1) = 0.0;
+  aMatrix(2, 2) = 4.0;
 
   math_SVD aSVD(aMatrix);
   EXPECT_TRUE(aSVD.IsDone()) << "SVD should succeed for diagonal matrix";
 
   // For a diagonal matrix, singular values should be the absolute values of diagonal elements
   // We can't directly access singular values in this interface, but we can verify through solutions
-  math_Vector aB1(1, 2); aB1(1) = 6.0; aB1(2) = 0.0;
+  math_Vector aB1(1, 2);
+  aB1(1) = 6.0;
+  aB1(2) = 0.0;
   math_Vector aX1(1, 2);
   aSVD.Solve(aB1, aX1);
   EXPECT_NEAR(aX1(1), 2.0, 1.0e-10) << "Solution should be 6/3 = 2";
   EXPECT_NEAR(aX1(2), 0.0, 1.0e-10) << "Solution should be 0/4 = 0";
 
-  math_Vector aB2(1, 2); aB2(1) = 0.0; aB2(2) = 12.0;
+  math_Vector aB2(1, 2);
+  aB2(1) = 0.0;
+  aB2(2) = 12.0;
   math_Vector aX2(1, 2);
   aSVD.Solve(aB2, aX2);
   EXPECT_NEAR(aX2(1), 0.0, 1.0e-10) << "Solution should be 0/3 = 0";
@@ -334,16 +396,24 @@ TEST(MathSVDTest, DifferentMatrixBounds)
 {
   // Test with non-standard matrix bounds
   math_Matrix aMatrix(2, 4, 3, 5); // 3x3 matrix with custom bounds
-  
-  aMatrix(2, 3) = 1.0; aMatrix(2, 4) = 0.0; aMatrix(2, 5) = 0.0;
-  aMatrix(3, 3) = 0.0; aMatrix(3, 4) = 1.0; aMatrix(3, 5) = 0.0;
-  aMatrix(4, 3) = 0.0; aMatrix(4, 4) = 0.0; aMatrix(4, 5) = 1.0;
+
+  aMatrix(2, 3) = 1.0;
+  aMatrix(2, 4) = 0.0;
+  aMatrix(2, 5) = 0.0;
+  aMatrix(3, 3) = 0.0;
+  aMatrix(3, 4) = 1.0;
+  aMatrix(3, 5) = 0.0;
+  aMatrix(4, 3) = 0.0;
+  aMatrix(4, 4) = 0.0;
+  aMatrix(4, 5) = 1.0;
 
   math_SVD aSVD(aMatrix);
   EXPECT_TRUE(aSVD.IsDone()) << "SVD should succeed for custom bounds matrix";
 
   math_Vector aB(2, 4); // Matching row bounds
-  aB(2) = 5.0; aB(3) = 7.0; aB(4) = 9.0;
+  aB(2) = 5.0;
+  aB(3) = 7.0;
+  aB(4) = 9.0;
 
   math_Vector aX(3, 5); // Matching column bounds
   aSVD.Solve(aB, aX);
@@ -358,7 +428,7 @@ TEST(MathSVDTest, LargerMatrix)
 {
   // Test with a larger well-conditioned matrix (5x5)
   math_Matrix aMatrix(1, 5, 1, 5);
-  
+
   // Create a symmetric positive definite matrix
   for (Standard_Integer anI = 1; anI <= 5; anI++)
   {

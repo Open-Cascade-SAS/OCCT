@@ -24,18 +24,27 @@
 #include <Standard_OutOfRange.hxx>
 #include <Precision.hxx>
 
-namespace {
+namespace
+{
 
 TEST(MathHouseholderTest, ExactlyDeterminedSystem)
 {
   // Test with a square matrix (exact solution exists)
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 1.0; aA(1, 2) = 2.0; aA(1, 3) = 3.0;
-  aA(2, 1) = 4.0; aA(2, 2) = 5.0; aA(2, 3) = 6.0;
-  aA(3, 1) = 7.0; aA(3, 2) = 8.0; aA(3, 3) = 10.0; // Note: 9 would make it singular
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 2.0;
+  aA(1, 3) = 3.0;
+  aA(2, 1) = 4.0;
+  aA(2, 2) = 5.0;
+  aA(2, 3) = 6.0;
+  aA(3, 1) = 7.0;
+  aA(3, 2) = 8.0;
+  aA(3, 3) = 10.0; // Note: 9 would make it singular
 
   math_Vector aB(1, 3);
-  aB(1) = 14.0; aB(2) = 32.0; aB(3) = 55.0; // Should give solution approximately [1, 2, 3]
+  aB(1) = 14.0;
+  aB(2) = 32.0;
+  aB(3) = 55.0; // Should give solution approximately [1, 2, 3]
 
   math_Householder aHouseholder(aA, aB);
   EXPECT_TRUE(aHouseholder.IsDone()) << "Householder should succeed for well-conditioned system";
@@ -45,9 +54,11 @@ TEST(MathHouseholderTest, ExactlyDeterminedSystem)
 
   // Verify solution by checking A * x = b
   math_Vector aVerify(1, 3);
-  for (Standard_Integer i = 1; i <= 3; i++) {
+  for (Standard_Integer i = 1; i <= 3; i++)
+  {
     aVerify(i) = 0.0;
-    for (Standard_Integer j = 1; j <= 3; j++) {
+    for (Standard_Integer j = 1; j <= 3; j++)
+    {
       aVerify(i) += aA(i, j) * aSol(j);
     }
   }
@@ -61,13 +72,20 @@ TEST(MathHouseholderTest, OverdeterminedSystem)
 {
   // Test with an overdetermined system (more equations than unknowns)
   math_Matrix aA(1, 4, 1, 2); // 4 equations, 2 unknowns
-  aA(1, 1) = 1.0; aA(1, 2) = 1.0;  // x + y = 2 (approximately)
-  aA(2, 1) = 1.0; aA(2, 2) = 2.0;  // x + 2y = 3
-  aA(3, 1) = 2.0; aA(3, 2) = 1.0;  // 2x + y = 3
-  aA(4, 1) = 1.0; aA(4, 2) = 3.0;  // x + 3y = 4
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 1.0; // x + y = 2 (approximately)
+  aA(2, 1) = 1.0;
+  aA(2, 2) = 2.0; // x + 2y = 3
+  aA(3, 1) = 2.0;
+  aA(3, 2) = 1.0; // 2x + y = 3
+  aA(4, 1) = 1.0;
+  aA(4, 2) = 3.0; // x + 3y = 4
 
   math_Vector aB(1, 4);
-  aB(1) = 2.0; aB(2) = 3.0; aB(3) = 3.0; aB(4) = 4.0;
+  aB(1) = 2.0;
+  aB(2) = 3.0;
+  aB(3) = 3.0;
+  aB(4) = 4.0;
 
   math_Householder aHouseholder(aA, aB);
   EXPECT_TRUE(aHouseholder.IsDone()) << "Householder should succeed for overdetermined system";
@@ -85,14 +103,20 @@ TEST(MathHouseholderTest, MultipleRightHandSides)
 {
   // Test solving A*X = B where B has multiple columns
   math_Matrix aA(1, 3, 1, 2);
-  aA(1, 1) = 1.0; aA(1, 2) = 0.0;
-  aA(2, 1) = 0.0; aA(2, 2) = 1.0;
-  aA(3, 1) = 1.0; aA(3, 2) = 1.0;
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 0.0;
+  aA(2, 1) = 0.0;
+  aA(2, 2) = 1.0;
+  aA(3, 1) = 1.0;
+  aA(3, 2) = 1.0;
 
   math_Matrix aB(1, 3, 1, 2); // Two right-hand sides
-  aB(1, 1) = 1.0; aB(1, 2) = 2.0;  // First RHS: [1, 3, 4]
-  aB(2, 1) = 3.0; aB(2, 2) = 4.0;  // Second RHS: [2, 4, 6]
-  aB(3, 1) = 4.0; aB(3, 2) = 6.0;
+  aB(1, 1) = 1.0;
+  aB(1, 2) = 2.0; // First RHS: [1, 3, 4]
+  aB(2, 1) = 3.0;
+  aB(2, 2) = 4.0; // Second RHS: [2, 4, 6]
+  aB(3, 1) = 4.0;
+  aB(3, 2) = 6.0;
 
   math_Householder aHouseholder(aA, aB);
   EXPECT_TRUE(aHouseholder.IsDone()) << "Householder should succeed for multiple RHS";
@@ -100,7 +124,7 @@ TEST(MathHouseholderTest, MultipleRightHandSides)
   // Get first solution
   math_Vector aSol1(1, 2);
   aHouseholder.Value(aSol1, 1);
-  
+
   // Get second solution
   math_Vector aSol2(1, 2);
   aHouseholder.Value(aSol2, 2);
@@ -108,7 +132,7 @@ TEST(MathHouseholderTest, MultipleRightHandSides)
   // Expected solutions: first RHS gives approximately [1, 3], second gives [2, 4]
   EXPECT_NEAR(aSol1(1), 1.0, 1.0e-6) << "First solution X(1)";
   EXPECT_NEAR(aSol1(2), 3.0, 1.0e-6) << "First solution X(2)";
-  
+
   EXPECT_NEAR(aSol2(1), 2.0, 1.0e-6) << "Second solution X(1)";
   EXPECT_NEAR(aSol2(2), 4.0, 1.0e-6) << "Second solution X(2)";
 }
@@ -117,16 +141,24 @@ TEST(MathHouseholderTest, NearSingularMatrix)
 {
   // Test with nearly singular matrix
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 1.0; aA(1, 2) = 2.0; aA(1, 3) = 3.0;
-  aA(2, 1) = 2.0; aA(2, 2) = 4.0; aA(2, 3) = 6.0 + 1.0e-15; // Nearly dependent
-  aA(3, 1) = 3.0; aA(3, 2) = 6.0; aA(3, 3) = 9.0 + 2.0e-15; // Nearly dependent
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 2.0;
+  aA(1, 3) = 3.0;
+  aA(2, 1) = 2.0;
+  aA(2, 2) = 4.0;
+  aA(2, 3) = 6.0 + 1.0e-15; // Nearly dependent
+  aA(3, 1) = 3.0;
+  aA(3, 2) = 6.0;
+  aA(3, 3) = 9.0 + 2.0e-15; // Nearly dependent
 
   math_Vector aB(1, 3);
-  aB(1) = 1.0; aB(2) = 2.0; aB(3) = 3.0;
+  aB(1) = 1.0;
+  aB(2) = 2.0;
+  aB(3) = 3.0;
 
   // With default EPS, should handle near-singularity
   math_Householder aHouseholder(aA, aB);
-  
+
   // Near-singular matrix should fail with default EPS
   EXPECT_FALSE(aHouseholder.IsDone()) << "Should fail for near-singular matrix with default EPS";
 }
@@ -135,11 +167,14 @@ TEST(MathHouseholderTest, CustomEpsilon)
 {
   // Test with custom epsilon threshold
   math_Matrix aA(1, 2, 1, 2);
-  aA(1, 1) = 1.0e-10; aA(1, 2) = 1.0;    // Very small first column norm
-  aA(2, 1) = 2.0e-10; aA(2, 2) = 2.0;
+  aA(1, 1) = 1.0e-10;
+  aA(1, 2) = 1.0; // Very small first column norm
+  aA(2, 1) = 2.0e-10;
+  aA(2, 2) = 2.0;
 
   math_Vector aB(1, 2);
-  aB(1) = 1.0; aB(2) = 2.0;
+  aB(1) = 1.0;
+  aB(2) = 2.0;
 
   // With default EPS (1e-20), should succeed
   math_Householder aHouseholder1(aA, aB);
@@ -154,12 +189,20 @@ TEST(MathHouseholderTest, IdentityMatrix)
 {
   // Test with identity matrix (trivial case)
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 1.0; aA(1, 2) = 0.0; aA(1, 3) = 0.0;
-  aA(2, 1) = 0.0; aA(2, 2) = 1.0; aA(2, 3) = 0.0;
-  aA(3, 1) = 0.0; aA(3, 2) = 0.0; aA(3, 3) = 1.0;
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 0.0;
+  aA(1, 3) = 0.0;
+  aA(2, 1) = 0.0;
+  aA(2, 2) = 1.0;
+  aA(2, 3) = 0.0;
+  aA(3, 1) = 0.0;
+  aA(3, 2) = 0.0;
+  aA(3, 3) = 1.0;
 
   math_Vector aB(1, 3);
-  aB(1) = 5.0; aB(2) = 7.0; aB(3) = 9.0;
+  aB(1) = 5.0;
+  aB(2) = 7.0;
+  aB(3) = 9.0;
 
   math_Householder aHouseholder(aA, aB);
   EXPECT_TRUE(aHouseholder.IsDone()) << "Householder should succeed for identity matrix";
@@ -180,19 +223,23 @@ TEST(MathHouseholderTest, DimensionErrorExceptions)
 {
   // Test dimension error exceptions
   math_Matrix aA(1, 3, 1, 2);
-  aA(1, 1) = 1.0; aA(1, 2) = 2.0;
-  aA(2, 1) = 3.0; aA(2, 2) = 4.0;
-  aA(3, 1) = 5.0; aA(3, 2) = 6.0;
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 2.0;
+  aA(2, 1) = 3.0;
+  aA(2, 2) = 4.0;
+  aA(3, 1) = 5.0;
+  aA(3, 2) = 6.0;
 
   // Wrong size B vector
   math_Vector aB_wrong(1, 2); // Should be size 3
-  aB_wrong(1) = 1.0; aB_wrong(2) = 2.0;
+  aB_wrong(1) = 1.0;
+  aB_wrong(2) = 2.0;
 
   // Test wrong size B vector - should throw exception
   EXPECT_THROW(math_Householder(aA, aB_wrong), Standard_Failure)
     << "Should throw exception for wrong B vector size";
 
-  // Wrong size B matrix - should throw exception  
+  // Wrong size B matrix - should throw exception
   math_Matrix aB_matrix_wrong(1, 2, 1, 2); // Should have 3 rows
   EXPECT_THROW(math_Householder(aA, aB_matrix_wrong), Standard_Failure)
     << "Should throw exception for wrong B matrix size";
@@ -202,11 +249,14 @@ TEST(MathHouseholderTest, NotDoneExceptions)
 {
   // Create a scenario where Householder fails
   math_Matrix aA(1, 2, 1, 2);
-  aA(1, 1) = 1.0e-25; aA(1, 2) = 0.0;  // Extremely small values
-  aA(2, 1) = 0.0;     aA(2, 2) = 1.0e-25;
+  aA(1, 1) = 1.0e-25;
+  aA(1, 2) = 0.0; // Extremely small values
+  aA(2, 1) = 0.0;
+  aA(2, 2) = 1.0e-25;
 
   math_Vector aB(1, 2);
-  aB(1) = 1.0; aB(2) = 2.0;
+  aB(1) = 1.0;
+  aB(2) = 2.0;
 
   math_Householder aHouseholder(aA, aB, 1.0e-10); // Large EPS
   EXPECT_FALSE(aHouseholder.IsDone()) << "Should fail for nearly zero matrix";
@@ -220,18 +270,22 @@ TEST(MathHouseholderTest, OutOfRangeExceptions)
 {
   // Test out of range exceptions
   math_Matrix aA(1, 2, 1, 2);
-  aA(1, 1) = 1.0; aA(1, 2) = 0.0;
-  aA(2, 1) = 0.0; aA(2, 2) = 1.0;
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 0.0;
+  aA(2, 1) = 0.0;
+  aA(2, 2) = 1.0;
 
   math_Matrix aB(1, 2, 1, 2); // Two columns
-  aB(1, 1) = 1.0; aB(1, 2) = 2.0;
-  aB(2, 1) = 3.0; aB(2, 2) = 4.0;
+  aB(1, 1) = 1.0;
+  aB(1, 2) = 2.0;
+  aB(2, 1) = 3.0;
+  aB(2, 2) = 4.0;
 
   math_Householder aHouseholder(aA, aB);
   EXPECT_TRUE(aHouseholder.IsDone());
 
   math_Vector aSol(1, 2);
-  
+
   // Valid indices
   aHouseholder.Value(aSol, 1); // Should work
   aHouseholder.Value(aSol, 2); // Should work
@@ -239,7 +293,7 @@ TEST(MathHouseholderTest, OutOfRangeExceptions)
   // Invalid indices
   EXPECT_THROW(aHouseholder.Value(aSol, 0), Standard_OutOfRange)
     << "Should throw OutOfRange for index 0";
-  
+
   EXPECT_THROW(aHouseholder.Value(aSol, 3), Standard_OutOfRange)
     << "Should throw OutOfRange for index > number of columns";
 }
@@ -248,12 +302,17 @@ TEST(MathHouseholderTest, RegressionTest)
 {
   // Regression test with known data
   math_Matrix aA(1, 3, 1, 2);
-  aA(1, 1) = 2.0; aA(1, 2) = 1.0;   // 2x + y = 5
-  aA(2, 1) = 1.0; aA(2, 2) = 1.0;   // x + y = 3  
-  aA(3, 1) = 1.0; aA(3, 2) = 2.0;   // x + 2y = 4
+  aA(1, 1) = 2.0;
+  aA(1, 2) = 1.0; // 2x + y = 5
+  aA(2, 1) = 1.0;
+  aA(2, 2) = 1.0; // x + y = 3
+  aA(3, 1) = 1.0;
+  aA(3, 2) = 2.0; // x + 2y = 4
 
   math_Vector aB(1, 3);
-  aB(1) = 5.0; aB(2) = 3.0; aB(3) = 4.0;
+  aB(1) = 5.0;
+  aB(2) = 3.0;
+  aB(3) = 4.0;
 
   math_Householder aHouseholder(aA, aB);
   EXPECT_TRUE(aHouseholder.IsDone()) << "Regression test should succeed";

@@ -40,12 +40,12 @@ protected:
         result += std::sin(i * 0.001) * std::cos(i * 0.002);
         result += std::sqrt(i + 1.0);
         result += std::pow(i * 0.1, 1.5);
-        
+
         // String operations to add more computational cost
         TCollection_AsciiString aStr("Test");
         aStr += TCollection_AsciiString(i);
         volatile int len = aStr.Length(); // volatile to prevent optimization
-        (void)len; // Suppress unused variable warning
+        (void)len;                        // Suppress unused variable warning
       }
       (void)result; // Suppress unused variable warning
     }

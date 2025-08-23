@@ -42,7 +42,9 @@ public:
     return Standard_True;
   }
 
-  Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
     theF = theX * theX - 4.0;
     theD = 2.0 * theX;
@@ -66,7 +68,9 @@ public:
     return Standard_True;
   }
 
-  Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
     theF = theX * theX * theX - 6.0 * theX * theX + 11.0 * theX - 6.0;
     theD = 3.0 * theX * theX - 12.0 * theX + 11.0;
@@ -90,7 +94,9 @@ public:
     return Standard_True;
   }
 
-  Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
     theF = sin(theX);
     theD = cos(theX);
@@ -114,7 +120,9 @@ public:
     return Standard_True;
   }
 
-  Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
     theF = theX * theX;
     theD = 2.0 * theX;
@@ -126,39 +134,43 @@ public:
 TEST(MathFunctionRootTest, QuadraticPositiveRoot)
 {
   QuadraticFunction aFunc;
-  Standard_Real aTolerance = 1.0e-6;
-  Standard_Real anInitialGuess = 3.0; // Should converge to +2
+  Standard_Real     aTolerance     = 1.0e-6;
+  Standard_Real     anInitialGuess = 3.0; // Should converge to +2
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
   EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed";
   EXPECT_NEAR(aRootFinder.Root(), 2.0, aTolerance) << "Root should be approximately 2.0";
-  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance) << "Function value at root should be approximately 0";
-  EXPECT_NEAR(aRootFinder.Derivative(), 4.0, aTolerance) << "Derivative at root should be approximately 4.0";
+  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance)
+    << "Function value at root should be approximately 0";
+  EXPECT_NEAR(aRootFinder.Derivative(), 4.0, aTolerance)
+    << "Derivative at root should be approximately 4.0";
   EXPECT_GT(aRootFinder.NbIterations(), 0) << "Should require at least one iteration";
 }
 
 TEST(MathFunctionRootTest, QuadraticNegativeRoot)
 {
   QuadraticFunction aFunc;
-  Standard_Real aTolerance = 1.0e-6;
-  Standard_Real anInitialGuess = -3.0; // Should converge to -2
+  Standard_Real     aTolerance     = 1.0e-6;
+  Standard_Real     anInitialGuess = -3.0; // Should converge to -2
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
   EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed";
   EXPECT_NEAR(aRootFinder.Root(), -2.0, aTolerance) << "Root should be approximately -2.0";
-  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance) << "Function value at root should be approximately 0";
-  EXPECT_NEAR(aRootFinder.Derivative(), -4.0, aTolerance) << "Derivative at root should be approximately -4.0";
+  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance)
+    << "Function value at root should be approximately 0";
+  EXPECT_NEAR(aRootFinder.Derivative(), -4.0, aTolerance)
+    << "Derivative at root should be approximately -4.0";
 }
 
 TEST(MathFunctionRootTest, QuadraticWithBounds)
 {
   QuadraticFunction aFunc;
-  Standard_Real aTolerance = 1.0e-6;
-  Standard_Real anInitialGuess = 1.5;
-  Standard_Real aLowerBound = 1.0;
-  Standard_Real anUpperBound = 3.0;
+  Standard_Real     aTolerance     = 1.0e-6;
+  Standard_Real     anInitialGuess = 1.5;
+  Standard_Real     aLowerBound    = 1.0;
+  Standard_Real     anUpperBound   = 3.0;
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance, aLowerBound, anUpperBound);
 
@@ -175,68 +187,73 @@ TEST(MathFunctionRootTest, CubicMultipleRoots)
 
   // Test finding root near x = 1
   {
-    Standard_Real anInitialGuess = 0.8;
+    Standard_Real     anInitialGuess = 0.8;
     math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
     EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed for first root";
     EXPECT_NEAR(aRootFinder.Root(), 1.0, aTolerance) << "Root should be approximately 1.0";
-    EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance) << "Function value at root should be approximately 0";
+    EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance)
+      << "Function value at root should be approximately 0";
   }
 
   // Test finding root near x = 2
   {
-    Standard_Real anInitialGuess = 1.8;
+    Standard_Real     anInitialGuess = 1.8;
     math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
     EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed for second root";
     EXPECT_NEAR(aRootFinder.Root(), 2.0, aTolerance) << "Root should be approximately 2.0";
-    EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance) << "Function value at root should be approximately 0";
+    EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance)
+      << "Function value at root should be approximately 0";
   }
 
   // Test finding root near x = 3
   {
-    Standard_Real anInitialGuess = 3.2;
+    Standard_Real     anInitialGuess = 3.2;
     math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
     EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed for third root";
     EXPECT_NEAR(aRootFinder.Root(), 3.0, aTolerance) << "Root should be approximately 3.0";
-    EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance) << "Function value at root should be approximately 0";
+    EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance)
+      << "Function value at root should be approximately 0";
   }
 }
 
 TEST(MathFunctionRootTest, TrigonometricFunction)
 {
-  SinFunction aFunc;
-  Standard_Real aTolerance = 1.0e-6;
+  SinFunction   aFunc;
+  Standard_Real aTolerance     = 1.0e-6;
   Standard_Real anInitialGuess = 3.5; // Should converge to π ≈ 3.14159
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
   EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed for sin(x)";
   EXPECT_NEAR(aRootFinder.Root(), M_PI, aTolerance) << "Root should be approximately π";
-  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance) << "Function value at root should be approximately 0";
+  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance)
+    << "Function value at root should be approximately 0";
   EXPECT_NEAR(aRootFinder.Derivative(), -1.0, aTolerance) << "cos(π) should be approximately -1";
 }
 
 TEST(MathFunctionRootTest, HighPrecisionTolerance)
 {
   QuadraticFunction aFunc;
-  Standard_Real aTolerance = 1.0e-12;
-  Standard_Real anInitialGuess = 2.1;
+  Standard_Real     aTolerance     = 1.0e-12;
+  Standard_Real     anInitialGuess = 2.1;
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
   EXPECT_TRUE(aRootFinder.IsDone()) << "High precision root finding should succeed";
   EXPECT_NEAR(aRootFinder.Root(), 2.0, aTolerance) << "Root should be very precise";
-  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance) << "Function value should be very close to zero";
+  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance)
+    << "Function value should be very close to zero";
 }
 
 TEST(MathFunctionRootTest, MaxIterationsLimit)
 {
   QuadraticFunction aFunc;
-  Standard_Real aTolerance = 1.0e-15; // Very tight tolerance
-  Standard_Real anInitialGuess = 2.1;
-  Standard_Integer aMaxIterations = 3; // Very few iterations
+  Standard_Real     aTolerance     = 1.0e-15; // Very tight tolerance
+  Standard_Real     anInitialGuess = 2.1;
+  Standard_Integer  aMaxIterations = 3; // Very few iterations
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance, aMaxIterations);
 
@@ -244,7 +261,8 @@ TEST(MathFunctionRootTest, MaxIterationsLimit)
   if (aRootFinder.IsDone())
   {
     EXPECT_LE(aRootFinder.NbIterations(), aMaxIterations) << "Should not exceed max iterations";
-    EXPECT_NEAR(aRootFinder.Root(), 2.0, 1.0e-3) << "Root should be reasonably close even with few iterations";
+    EXPECT_NEAR(aRootFinder.Root(), 2.0, 1.0e-3)
+      << "Root should be reasonably close even with few iterations";
   }
   else
   {
@@ -256,10 +274,10 @@ TEST(MathFunctionRootTest, MaxIterationsLimit)
 TEST(MathFunctionRootTest, OutOfBoundsGuess)
 {
   QuadraticFunction aFunc;
-  Standard_Real aTolerance = 1.0e-6;
-  Standard_Real anInitialGuess = 0.0;
-  Standard_Real aLowerBound = 2.5;
-  Standard_Real anUpperBound = 3.0; // No root in this interval
+  Standard_Real     aTolerance     = 1.0e-6;
+  Standard_Real     anInitialGuess = 0.0;
+  Standard_Real     aLowerBound    = 2.5;
+  Standard_Real     anUpperBound   = 3.0; // No root in this interval
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance, aLowerBound, anUpperBound);
 
@@ -270,7 +288,7 @@ TEST(MathFunctionRootTest, OutOfBoundsGuess)
     Standard_Real aRoot = aRootFinder.Root();
     EXPECT_GE(aRoot, aLowerBound) << "Solution should be within lower bound";
     EXPECT_LE(aRoot, anUpperBound) << "Solution should be within upper bound";
-    
+
     // If the algorithm reports Done but the function value is not near zero,
     // it might have stopped due to bounds rather than finding a true root
     Standard_Real aFunctionValue = aRootFinder.Value();
@@ -283,7 +301,8 @@ TEST(MathFunctionRootTest, OutOfBoundsGuess)
     else
     {
       // True root found
-      EXPECT_NEAR(aFunctionValue, 0.0, aTolerance) << "True root should have function value near zero";
+      EXPECT_NEAR(aFunctionValue, 0.0, aTolerance)
+        << "True root should have function value near zero";
     }
   }
 }
@@ -291,24 +310,27 @@ TEST(MathFunctionRootTest, OutOfBoundsGuess)
 TEST(MathFunctionRootTest, ZeroDerivativeHandling)
 {
   ZeroDerivativeFunction aFunc;
-  Standard_Real aTolerance = 1.0e-6;
-  Standard_Real anInitialGuess = 0.1; // Close to the root at x = 0
+  Standard_Real          aTolerance     = 1.0e-6;
+  Standard_Real          anInitialGuess = 0.1; // Close to the root at x = 0
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
-  EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed even with zero derivative at root";
+  EXPECT_TRUE(aRootFinder.IsDone())
+    << "Root finding should succeed even with zero derivative at root";
   EXPECT_NEAR(aRootFinder.Root(), 0.0, aTolerance) << "Root should be approximately 0.0";
-  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance) << "Function value at root should be approximately 0";
-  EXPECT_NEAR(aRootFinder.Derivative(), 0.0, aTolerance) << "Derivative at root should be approximately 0";
+  EXPECT_NEAR(aRootFinder.Value(), 0.0, aTolerance)
+    << "Function value at root should be approximately 0";
+  EXPECT_NEAR(aRootFinder.Derivative(), 0.0, aTolerance)
+    << "Derivative at root should be approximately 0";
 }
 
 // Tests for exceptions
 TEST(MathFunctionRootTest, NotDoneExceptions)
 {
   QuadraticFunction aFunc;
-  Standard_Real aTolerance = 1.0e-15; // Very tight tolerance
-  Standard_Real anInitialGuess = 100.0; // Very far from roots
-  Standard_Integer aMaxIterations = 1; // Very few iterations
+  Standard_Real     aTolerance     = 1.0e-15; // Very tight tolerance
+  Standard_Real     anInitialGuess = 100.0;   // Very far from roots
+  Standard_Integer  aMaxIterations = 1;       // Very few iterations
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance, aMaxIterations);
 
@@ -325,7 +347,7 @@ TEST(MathFunctionRootTest, NotDoneExceptions)
   {
     // If it surprisingly succeeds, verify the results are reasonable
     EXPECT_GT(aRootFinder.NbIterations(), 0) << "Should have done at least one iteration";
-    EXPECT_TRUE(Abs(aRootFinder.Root() - 2.0) < 0.1 || Abs(aRootFinder.Root() - (-2.0)) < 0.1) 
+    EXPECT_TRUE(Abs(aRootFinder.Root() - 2.0) < 0.1 || Abs(aRootFinder.Root() - (-2.0)) < 0.1)
       << "Root should be close to one of the expected roots";
   }
 }
@@ -334,28 +356,30 @@ TEST(MathFunctionRootTest, NotDoneExceptions)
 TEST(MathFunctionRootTest, ConvergenceBehavior)
 {
   QuadraticFunction aFunc;
-  Standard_Real aTolerance = 1.0e-6;
+  Standard_Real     aTolerance = 1.0e-6;
 
   // Test different initial guesses and verify they converge to the nearest root
-  struct TestCase {
+  struct TestCase
+  {
     Standard_Real initialGuess;
     Standard_Real expectedRoot;
     Standard_Real tolerance;
   };
 
   TestCase aTestCases[] = {
-    {1.0, 2.0, aTolerance},     // Positive initial guess -> positive root
-    {-1.0, -2.0, aTolerance},   // Negative initial guess -> negative root
-    {10.0, 2.0, aTolerance},    // Far positive guess -> positive root
-    {-10.0, -2.0, aTolerance},  // Far negative guess -> negative root
+    {1.0, 2.0, aTolerance},    // Positive initial guess -> positive root
+    {-1.0, -2.0, aTolerance},  // Negative initial guess -> negative root
+    {10.0, 2.0, aTolerance},   // Far positive guess -> positive root
+    {-10.0, -2.0, aTolerance}, // Far negative guess -> negative root
   };
 
   for (const auto& aTestCase : aTestCases)
   {
     math_FunctionRoot aRootFinder(aFunc, aTestCase.initialGuess, aTestCase.tolerance);
-    
-    EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed for initial guess " << aTestCase.initialGuess;
-    EXPECT_NEAR(aRootFinder.Root(), aTestCase.expectedRoot, aTestCase.tolerance) 
+
+    EXPECT_TRUE(aRootFinder.IsDone())
+      << "Root finding should succeed for initial guess " << aTestCase.initialGuess;
+    EXPECT_NEAR(aRootFinder.Root(), aTestCase.expectedRoot, aTestCase.tolerance)
       << "Root should converge correctly from initial guess " << aTestCase.initialGuess;
   }
 }
@@ -364,8 +388,8 @@ TEST(MathFunctionRootTest, ConvergenceBehavior)
 TEST(MathFunctionRootTest, PerformanceComparison)
 {
   QuadraticFunction aFunc;
-  Standard_Real aTolerance = 1.0e-10;
-  Standard_Real anInitialGuess = 2.1;
+  Standard_Real     aTolerance     = 1.0e-10;
+  Standard_Real     anInitialGuess = 2.1;
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 

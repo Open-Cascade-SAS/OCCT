@@ -66,7 +66,7 @@ TEST(MathVectorTest, Constructors)
 
   // Test constructor with external array
   Standard_Real anArray[5] = {1.0, 2.0, 3.0, 4.0, 5.0};
-  math_Vector aVec3(anArray, 0, 4);
+  math_Vector   aVec3(anArray, 0, 4);
   EXPECT_EQ(aVec3.Length(), 5);
   EXPECT_EQ(aVec3.Lower(), 0);
   EXPECT_EQ(aVec3.Upper(), 4);
@@ -85,7 +85,7 @@ TEST(MathVectorTest, Constructors)
 TEST(MathVectorTest, GeometryConstructors)
 {
   // Test gp_XY constructor
-  gp_XY anXY(3.5, 4.5);
+  gp_XY       anXY(3.5, 4.5);
   math_Vector aVecXY(anXY);
   EXPECT_EQ(aVecXY.Length(), 2);
   EXPECT_EQ(aVecXY.Lower(), 1);
@@ -94,7 +94,7 @@ TEST(MathVectorTest, GeometryConstructors)
   EXPECT_DOUBLE_EQ(aVecXY(2), 4.5);
 
   // Test gp_XYZ constructor
-  gp_XYZ anXYZ(1.1, 2.2, 3.3);
+  gp_XYZ      anXYZ(1.1, 2.2, 3.3);
   math_Vector aVecXYZ(anXYZ);
   EXPECT_EQ(aVecXYZ.Length(), 3);
   EXPECT_EQ(aVecXYZ.Lower(), 1);
@@ -183,10 +183,12 @@ TEST(MathVectorTest, NormalizationException)
 
   // Should throw exception when trying to normalize zero vector
   EXPECT_THROW(aZeroVec.Normalize(), Standard_NullValue);
-  EXPECT_THROW({
-    math_Vector temp = aZeroVec.Normalized();
-    (void)temp;
-  }, Standard_NullValue);
+  EXPECT_THROW(
+    {
+      math_Vector temp = aZeroVec.Normalized();
+      (void)temp;
+    },
+    Standard_NullValue);
 }
 
 // Tests for inversion
@@ -270,10 +272,12 @@ TEST(MathVectorTest, DivisionByZeroException)
   math_Vector aVec(1, 3, 1.0);
 
   EXPECT_THROW(aVec.Divide(0.0), Standard_DivideByZero);
-  EXPECT_THROW({
-    math_Vector temp = aVec.Divided(0.0);
-    (void)temp;
-  }, Standard_DivideByZero);
+  EXPECT_THROW(
+    {
+      math_Vector temp = aVec.Divided(0.0);
+      (void)temp;
+    },
+    Standard_DivideByZero);
 }
 
 // Tests for vector addition and subtraction
@@ -340,8 +344,8 @@ TEST(MathVectorTest, VectorOperationsDifferentBounds)
 
   math_Vector aVec2(-1, 1);
   aVec2(-1) = 4.0;
-  aVec2(0) = 5.0;
-  aVec2(1) = 6.0;
+  aVec2(0)  = 5.0;
+  aVec2(1)  = 6.0;
 
   // Should work fine - same length, different bounds
   math_Vector anAddResult = aVec1.Added(aVec2);
@@ -356,20 +360,26 @@ TEST(MathVectorTest, DimensionErrors)
   math_Vector aVec1(1, 3);
   math_Vector aVec2(1, 4); // Different length
 
-  EXPECT_THROW({
-    math_Vector temp = aVec1.Added(aVec2);
-    (void)temp;
-  }, Standard_DimensionError);
-  EXPECT_THROW({
-    math_Vector temp = aVec1.Subtracted(aVec2);
-    (void)temp;
-  }, Standard_DimensionError);
+  EXPECT_THROW(
+    {
+      math_Vector temp = aVec1.Added(aVec2);
+      (void)temp;
+    },
+    Standard_DimensionError);
+  EXPECT_THROW(
+    {
+      math_Vector temp = aVec1.Subtracted(aVec2);
+      (void)temp;
+    },
+    Standard_DimensionError);
   EXPECT_THROW(aVec1.Add(aVec2), Standard_DimensionError);
   EXPECT_THROW(aVec1.Subtract(aVec2), Standard_DimensionError);
-  EXPECT_THROW({
-    Standard_Real temp = aVec1.Multiplied(aVec2);
-    (void)temp;
-  }, Standard_DimensionError);
+  EXPECT_THROW(
+    {
+      Standard_Real temp = aVec1.Multiplied(aVec2);
+      (void)temp;
+    },
+    Standard_DimensionError);
 }
 
 // Tests for dot product
@@ -475,15 +485,22 @@ TEST(MathVectorTest, VectorMatrixOperations)
 {
   // Create test matrix [2x3]
   math_Matrix aMat(1, 2, 1, 3);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 2.0; aMat(1, 3) = 3.0;
-  aMat(2, 1) = 4.0; aMat(2, 2) = 5.0; aMat(2, 3) = 6.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 2.0;
+  aMat(1, 3) = 3.0;
+  aMat(2, 1) = 4.0;
+  aMat(2, 2) = 5.0;
+  aMat(2, 3) = 6.0;
 
   // Create test vectors
   math_Vector aVec1(1, 2); // For left multiplication
-  aVec1(1) = 2.0; aVec1(2) = 3.0;
+  aVec1(1) = 2.0;
+  aVec1(2) = 3.0;
 
   math_Vector aVec2(1, 3); // For right multiplication
-  aVec2(1) = 1.0; aVec2(2) = 2.0; aVec2(3) = 3.0;
+  aVec2(1) = 1.0;
+  aVec2(2) = 2.0;
+  aVec2(3) = 3.0;
 
   // Test vector * matrix (should produce vector of size 3)
   math_Vector aResult1 = aVec1.Multiplied(aMat);
@@ -511,14 +528,21 @@ TEST(MathVectorTest, TransposeMatrixOperations)
 {
   // Create test matrix [2x3]
   math_Matrix aMat(1, 2, 1, 3);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 2.0; aMat(1, 3) = 3.0;
-  aMat(2, 1) = 4.0; aMat(2, 2) = 5.0; aMat(2, 3) = 6.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 2.0;
+  aMat(1, 3) = 3.0;
+  aMat(2, 1) = 4.0;
+  aMat(2, 2) = 5.0;
+  aMat(2, 3) = 6.0;
 
   math_Vector aVec1(1, 2);
-  aVec1(1) = 2.0; aVec1(2) = 3.0;
+  aVec1(1) = 2.0;
+  aVec1(2) = 3.0;
 
   math_Vector aVec2(1, 3);
-  aVec2(1) = 1.0; aVec2(2) = 2.0; aVec2(3) = 3.0;
+  aVec2(1) = 1.0;
+  aVec2(2) = 2.0;
+  aVec2(3) = 3.0;
 
   // Test TMultiply (matrix^T * vector)
   math_Vector aResult1(1, 3);
@@ -540,14 +564,16 @@ TEST(MathVectorTest, TransposeMatrixOperations)
 TEST(MathVectorTest, MatrixDimensionErrors)
 {
   math_Matrix aMat(1, 2, 1, 3); // 2x3 matrix
-  math_Vector aVec1(1, 4); // Wrong size for left multiplication
-  math_Vector aVec2(1, 4); // Wrong size for right multiplication
+  math_Vector aVec1(1, 4);      // Wrong size for left multiplication
+  math_Vector aVec2(1, 4);      // Wrong size for right multiplication
   math_Vector aResult(1, 2);
 
-  EXPECT_THROW({
-    math_Vector temp = aVec1.Multiplied(aMat);
-    (void)temp;
-  }, Standard_DimensionError);
+  EXPECT_THROW(
+    {
+      math_Vector temp = aVec1.Multiplied(aMat);
+      (void)temp;
+    },
+    Standard_DimensionError);
   EXPECT_THROW(aResult.Multiply(aMat, aVec2), Standard_DimensionError);
   EXPECT_THROW(aResult.Multiply(aVec1, aMat), Standard_DimensionError);
 }
@@ -556,10 +582,14 @@ TEST(MathVectorTest, MatrixDimensionErrors)
 TEST(MathVectorTest, ThreeOperandOperations)
 {
   math_Vector aVec1(1, 3);
-  aVec1(1) = 1.0; aVec1(2) = 2.0; aVec1(3) = 3.0;
+  aVec1(1) = 1.0;
+  aVec1(2) = 2.0;
+  aVec1(3) = 3.0;
 
   math_Vector aVec2(1, 3);
-  aVec2(1) = 4.0; aVec2(2) = 5.0; aVec2(3) = 6.0;
+  aVec2(1) = 4.0;
+  aVec2(2) = 5.0;
+  aVec2(3) = 6.0;
 
   math_Vector aResult(1, 3);
 
@@ -604,7 +634,9 @@ TEST(MathVectorTest, OppositeOperation)
 TEST(MathVectorTest, AssignmentOperations)
 {
   math_Vector aVec1(1, 3);
-  aVec1(1) = 1.0; aVec1(2) = 2.0; aVec1(3) = 3.0;
+  aVec1(1) = 1.0;
+  aVec1(2) = 2.0;
+  aVec1(3) = 3.0;
 
   math_Vector aVec2(1, 3);
   aVec2.Init(0.0);
@@ -627,7 +659,9 @@ TEST(MathVectorTest, AssignmentOperations)
 TEST(MathVectorTest, FriendOperators)
 {
   math_Vector aVec(1, 3);
-  aVec(1) = 2.0; aVec(2) = 4.0; aVec(3) = 6.0;
+  aVec(1) = 2.0;
+  aVec(2) = 4.0;
+  aVec(3) = 6.0;
 
   // Test scalar * vector
   math_Vector aResult1 = 3.0 * aVec;
@@ -662,8 +696,8 @@ TEST(MathVectorTest, EdgeCases)
   math_Vector aNegVec(-2, 1);
   aNegVec(-2) = 10.0;
   aNegVec(-1) = 20.0;
-  aNegVec(0) = 30.0;
-  aNegVec(1) = 40.0;
+  aNegVec(0)  = 30.0;
+  aNegVec(1)  = 40.0;
 
   EXPECT_EQ(aNegVec.Length(), 4);
   EXPECT_EQ(aNegVec.Lower(), -2);

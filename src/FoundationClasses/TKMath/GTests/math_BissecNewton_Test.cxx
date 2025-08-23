@@ -23,7 +23,8 @@
 
 #include <cmath>
 
-namespace {
+namespace
+{
 
 // Quadratic function with derivative: f(x) = (x-2)^2 - 1, f'(x) = 2(x-2)
 class QuadraticWithDerivative : public math_FunctionWithDerivative
@@ -41,7 +42,9 @@ public:
     return Standard_True;
   }
 
-  Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
     theF = (theX - 2.0) * (theX - 2.0) - 1.0;
     theD = 2.0 * (theX - 2.0);
@@ -66,7 +69,9 @@ public:
     return Standard_True;
   }
 
-  Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
     theF = theX * theX * theX - theX - 2.0;
     theD = 3.0 * theX * theX - 1.0;
@@ -90,7 +95,9 @@ public:
     return Standard_True;
   }
 
-  Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
     theF = sin(theX);
     theD = cos(theX);
@@ -114,7 +121,9 @@ public:
     return Standard_True;
   }
 
-  Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
     theF = theX * theX * theX;
     theD = 3.0 * theX * theX;
@@ -129,10 +138,10 @@ TEST(MathBissecNewtonTest, QuadraticRootFinding)
   // Test finding roots of quadratic function (x-2)^2 - 1 = 0
   // Roots are at x = 1 and x = 3
   QuadraticWithDerivative aFunc;
-  
+
   math_BissecNewton aSolver(1.0e-10);
-  aSolver.Perform(aFunc, 0.0, 1.5, 100);  // Find root near x = 1
-  
+  aSolver.Perform(aFunc, 0.0, 1.5, 100); // Find root near x = 1
+
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root for quadratic function";
   EXPECT_NEAR(aSolver.Root(), 1.0, 1.0e-8) << "Root should be x = 1";
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-10) << "Function value at root should be zero";
@@ -143,10 +152,10 @@ TEST(MathBissecNewtonTest, QuadraticSecondRoot)
 {
   // Test finding the second root of the same quadratic function
   QuadraticWithDerivative aFunc;
-  
+
   math_BissecNewton aSolver(1.0e-10);
-  aSolver.Perform(aFunc, 2.5, 4.0, 100);  // Find root near x = 3
-  
+  aSolver.Perform(aFunc, 2.5, 4.0, 100); // Find root near x = 3
+
   EXPECT_TRUE(aSolver.IsDone()) << "Should find second root for quadratic function";
   EXPECT_NEAR(aSolver.Root(), 3.0, 1.0e-8) << "Root should be x = 3";
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-10) << "Function value at root should be zero";
@@ -157,10 +166,10 @@ TEST(MathBissecNewtonTest, CubicRootFinding)
 {
   // Test finding root of cubic function x^3 - x - 2 = 0
   CubicWithDerivative aFunc;
-  
+
   math_BissecNewton aSolver(1.0e-10);
-  aSolver.Perform(aFunc, 1.0, 2.0, 100);  // Root is approximately x = 1.521
-  
+  aSolver.Perform(aFunc, 1.0, 2.0, 100); // Root is approximately x = 1.521
+
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root for cubic function";
   Standard_Real aRoot = aSolver.Root();
   EXPECT_GT(aRoot, 1.52) << "Root should be greater than 1.52";
@@ -172,10 +181,10 @@ TEST(MathBissecNewtonTest, SineFunctionRoot)
 {
   // Test finding root of sin(x) = 0 near π
   SineWithDerivative aFunc;
-  
+
   math_BissecNewton aSolver(1.0e-10);
-  aSolver.Perform(aFunc, 3.0, 3.5, 100);  // Find root near π ≈ 3.14159
-  
+  aSolver.Perform(aFunc, 3.0, 3.5, 100); // Find root near π ≈ 3.14159
+
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root for sine function";
   EXPECT_NEAR(aSolver.Root(), M_PI, 1.0e-8) << "Root should be π";
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-10) << "Function value at root should be zero";
@@ -186,18 +195,18 @@ TEST(MathBissecNewtonTest, CustomTolerance)
 {
   // Test with different tolerance values
   QuadraticWithDerivative aFunc;
-  
+
   // Loose tolerance
   math_BissecNewton aSolver1(1.0e-3);
   aSolver1.Perform(aFunc, 0.5, 1.5, 100);
-  
+
   EXPECT_TRUE(aSolver1.IsDone()) << "Should converge with loose tolerance";
   EXPECT_NEAR(aSolver1.Root(), 1.0, 1.0e-2) << "Root should be approximately correct";
-  
+
   // Tight tolerance
   math_BissecNewton aSolver2(1.0e-12);
   aSolver2.Perform(aFunc, 0.5, 1.5, 100);
-  
+
   EXPECT_TRUE(aSolver2.IsDone()) << "Should converge with tight tolerance";
   EXPECT_NEAR(aSolver2.Root(), 1.0, 1.0e-10) << "Root should be very accurate";
 }
@@ -206,12 +215,13 @@ TEST(MathBissecNewtonTest, IterationLimit)
 {
   // Test behavior with limited iterations
   CubicWithDerivative aFunc;
-  
+
   math_BissecNewton aSolver(1.0e-12);
-  aSolver.Perform(aFunc, 1.0, 2.0, 5);  // Very few iterations
-  
+  aSolver.Perform(aFunc, 1.0, 2.0, 5); // Very few iterations
+
   // May or may not converge with so few iterations
-  if (aSolver.IsDone()) {
+  if (aSolver.IsDone())
+  {
     EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-3) << "If converged, should be reasonably accurate";
   }
 }
@@ -220,12 +230,13 @@ TEST(MathBissecNewtonTest, InvalidBounds)
 {
   // Test with bounds that don't bracket a root
   QuadraticWithDerivative aFunc;
-  
+
   math_BissecNewton aSolver(1.0e-10);
-  aSolver.Perform(aFunc, 1.5, 2.5, 100);  // Both bounds give positive function values
-  
+  aSolver.Perform(aFunc, 1.5, 2.5, 100); // Both bounds give positive function values
+
   // Function may fail to find root or find the nearby root at x=3
-  if (aSolver.IsDone()) {
+  if (aSolver.IsDone())
+  {
     Standard_Real aRoot = aSolver.Root();
     EXPECT_GT(aRoot, 1.4) << "If found, root should be reasonable";
     EXPECT_LT(aRoot, 3.1) << "If found, root should be reasonable";
@@ -236,10 +247,10 @@ TEST(MathBissecNewtonTest, ZeroDerivativeHandling)
 {
   // Test function where derivative can be zero (f(x) = x^3 has f'(0) = 0)
   CubicZeroDerivative aFunc;
-  
+
   math_BissecNewton aSolver(1.0e-10);
-  aSolver.Perform(aFunc, -0.5, 0.5, 100);  // Root at x = 0
-  
+  aSolver.Perform(aFunc, -0.5, 0.5, 100); // Root at x = 0
+
   EXPECT_TRUE(aSolver.IsDone()) << "Should handle zero derivative case";
   EXPECT_NEAR(aSolver.Root(), 0.0, 1.0e-8) << "Root should be x = 0";
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-10) << "Function value at root should be zero";
@@ -250,7 +261,7 @@ TEST(MathBissecNewtonTest, NotDoneExceptions)
 {
   // Test exception handling for incomplete calculations
   math_BissecNewton aSolver(1.0e-10);
-  
+
   EXPECT_THROW(aSolver.Root(), StdFail_NotDone) << "Should throw NotDone before Perform()";
   EXPECT_THROW(aSolver.Value(), StdFail_NotDone) << "Should throw NotDone before Perform()";
   EXPECT_THROW(aSolver.Derivative(), StdFail_NotDone) << "Should throw NotDone before Perform()";
@@ -260,13 +271,13 @@ TEST(MathBissecNewtonTest, MultipleCalls)
 {
   // Test multiple calls to Perform with the same solver instance
   QuadraticWithDerivative aFunc;
-  math_BissecNewton aSolver(1.0e-10);
-  
+  math_BissecNewton       aSolver(1.0e-10);
+
   // First call
   aSolver.Perform(aFunc, 0.0, 1.5, 100);
   EXPECT_TRUE(aSolver.IsDone()) << "First call should succeed";
   EXPECT_NEAR(aSolver.Root(), 1.0, 1.0e-8) << "First root should be x = 1";
-  
+
   // Second call with different bounds
   aSolver.Perform(aFunc, 2.5, 4.0, 100);
   EXPECT_TRUE(aSolver.IsDone()) << "Second call should succeed";
@@ -277,10 +288,10 @@ TEST(MathBissecNewtonTest, HighPrecisionRequirement)
 {
   // Test with extremely tight tolerance
   SineWithDerivative aFunc;
-  math_BissecNewton aSolver(1.0e-15);
-  
+  math_BissecNewton  aSolver(1.0e-15);
+
   aSolver.Perform(aFunc, 3.0, 3.5, 200);
-  
+
   EXPECT_TRUE(aSolver.IsDone()) << "Should converge with high precision requirement";
   EXPECT_NEAR(aSolver.Root(), M_PI, 1.0e-12) << "Root should be very accurate";
 }
@@ -289,10 +300,10 @@ TEST(MathBissecNewtonTest, EdgeCaseBounds)
 {
   // Test with bounds very close to the root
   QuadraticWithDerivative aFunc;
-  math_BissecNewton aSolver(1.0e-10);
-  
-  aSolver.Perform(aFunc, 0.99, 1.01, 100);  // Very narrow bounds around x = 1
-  
+  math_BissecNewton       aSolver(1.0e-10);
+
+  aSolver.Perform(aFunc, 0.99, 1.01, 100); // Very narrow bounds around x = 1
+
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root with narrow bounds";
   EXPECT_NEAR(aSolver.Root(), 1.0, 1.0e-8) << "Root should be accurate";
 }
