@@ -24,6 +24,8 @@
 
 #include <cmath>
 
+namespace {
+
 // Test function classes for numerical integration
 
 // Constant function: f(x) = c
@@ -415,3 +417,5 @@ TEST(MathIntegrationTest, HighOrderIntegration)
   EXPECT_NEAR(anIntegrator.Value(), anExpected, 1.0e-12) 
     << "High order integration of polynomial should be exact";
 }
+
+} // anonymous namespace
