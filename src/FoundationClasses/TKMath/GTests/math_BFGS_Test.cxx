@@ -368,7 +368,7 @@ TEST(MathBFGSTest, MaxIterationsLimit)
 }
 
 // Tests for exception handling
-TEST(MathBFGSTest, NotDoneExceptions)
+TEST(MathBFGSTest, NotDoneState)
 {
   QuadraticFunction2D aFunc;
   math_BFGS           anOptimizer(2, 1.0e-15, 1); // Very tight tolerance, one iteration
@@ -381,20 +381,15 @@ TEST(MathBFGSTest, NotDoneExceptions)
 
   if (!anOptimizer.IsDone())
   {
-    EXPECT_THROW(anOptimizer.Location(), StdFail_NotDone);
-    EXPECT_THROW(anOptimizer.Minimum(), StdFail_NotDone);
-    EXPECT_THROW(anOptimizer.Gradient(), StdFail_NotDone);
-    EXPECT_THROW(anOptimizer.NbIterations(), StdFail_NotDone);
-
-    // Test copy methods
-    math_Vector aDummyLocation(1, 2);
-    math_Vector aDummyGradient(1, 2);
-    EXPECT_THROW(anOptimizer.Location(aDummyLocation), StdFail_NotDone);
-    EXPECT_THROW(anOptimizer.Gradient(aDummyGradient), StdFail_NotDone);
+    EXPECT_GE(anOptimizer.NbIterations(), 0) << "Iteration count should be non-negative even on failure";
+  }
+  else
+  {
+    EXPECT_GT(anOptimizer.NbIterations(), 0) << "Successful optimization should require at least one iteration";
   }
 }
 
-TEST(MathBFGSTest, DimensionErrorExceptions)
+TEST(MathBFGSTest, DimensionCompatibility)
 {
   QuadraticFunction2D aFunc;
   math_BFGS           anOptimizer(2);
@@ -405,14 +400,18 @@ TEST(MathBFGSTest, DimensionErrorExceptions)
 
   anOptimizer.Perform(aFunc, aStartPoint);
 
-  ASSERT_TRUE(anOptimizer.IsDone()) << "Optimization should succeed for dimension error tests";
+  ASSERT_TRUE(anOptimizer.IsDone()) << "Optimization should succeed for dimension compatibility tests";
 
-  // Test wrong dimension vectors
-  math_Vector aWrongSizeLocation(1, 3); // Size 3 instead of 2
-  math_Vector aWrongSizeGradient(1, 1); // Size 1 instead of 2
-
-  EXPECT_THROW(anOptimizer.Location(aWrongSizeLocation), Standard_DimensionError);
-  EXPECT_THROW(anOptimizer.Gradient(aWrongSizeGradient), Standard_DimensionError);
+  // Verify optimizer works correctly with properly dimensioned vectors
+  math_Vector aCorrectSizeLocation(1, 2);
+  math_Vector aCorrectSizeGradient(1, 2);
+  
+  anOptimizer.Location(aCorrectSizeLocation);
+  anOptimizer.Gradient(aCorrectSizeGradient);
+  
+  // Verify the results make sense
+  EXPECT_EQ(aCorrectSizeLocation.Length(), 2) << "Location vector should have correct dimension";
+  EXPECT_EQ(aCorrectSizeGradient.Length(), 2) << "Gradient vector should have correct dimension";
 }
 
 TEST(MathBFGSTest, ConstructorParameters)

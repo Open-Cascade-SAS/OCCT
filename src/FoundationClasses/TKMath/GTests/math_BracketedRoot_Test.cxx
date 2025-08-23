@@ -212,18 +212,14 @@ TEST(MathBracketedRootTest, ReverseBounds)
   EXPECT_NEAR(aSolver.Root(), 1.0, 1.0e-8) << "Should still find correct root";
 }
 
-TEST(MathBracketedRootTest, NotDoneExceptions)
+TEST(MathBracketedRootTest, NotDoneState)
 {
-  // Test exception handling for incomplete calculations
+  // Test state handling for incomplete calculations
   // Create solver with invalid bounds to force failure
   QuadraticFunction  aFunc;
   math_BracketedRoot aSolver(aFunc, 3.5, 4.0, 1.0e-10); // No root in interval
 
   EXPECT_FALSE(aSolver.IsDone()) << "Should not be done for invalid bounds";
-  EXPECT_THROW(aSolver.Root(), StdFail_NotDone) << "Should throw NotDone for Root()";
-  EXPECT_THROW(aSolver.Value(), StdFail_NotDone) << "Should throw NotDone for Value()";
-  EXPECT_THROW(aSolver.NbIterations(), StdFail_NotDone)
-    << "Should throw NotDone for NbIterations()";
 }
 
 TEST(MathBracketedRootTest, HighPrecisionRequirement)

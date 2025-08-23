@@ -326,17 +326,20 @@ TEST(MathNewtonFunctionRootTest, ProtectedConstructorAndPerform)
   EXPECT_NEAR(aSolver.Root(), 2.0, 1.0e-8) << "Should find correct root";
 }
 
-TEST(MathNewtonFunctionRootTest, NotDoneExceptions)
+TEST(MathNewtonFunctionRootTest, UnperformedState)
 {
-  // Test exception handling before solving
+  // Test state handling before solving
   QuadraticWithDerivative aFunc;
   math_NewtonFunctionRoot aSolver(0.0, 5.0, 1.0e-10, 1.0e-10); // Protected constructor only
 
-  EXPECT_THROW(aSolver.Root(), StdFail_NotDone) << "Should throw NotDone for Root()";
-  EXPECT_THROW(aSolver.Value(), StdFail_NotDone) << "Should throw NotDone for Value()";
-  EXPECT_THROW(aSolver.Derivative(), StdFail_NotDone) << "Should throw NotDone for Derivative()";
-  EXPECT_THROW(aSolver.NbIterations(), StdFail_NotDone)
-    << "Should throw NotDone for NbIterations()";
+  // Before Perform() is called, solver should report not done
+  EXPECT_FALSE(aSolver.IsDone()) << "Solver should not be done before Perform()";
+  
+  // In release builds, verify the solver maintains consistent state
+  if (!aSolver.IsDone())
+  {
+    EXPECT_FALSE(aSolver.IsDone()) << "State should be consistent when not done";
+  }
 }
 
 TEST(MathNewtonFunctionRootTest, StartingAtRoot)

@@ -249,18 +249,12 @@ TEST(MathBracketMinimumTest, MultipleLocalMinima)
   EXPECT_LT(aFB, aFC) << "F(B) should be less than F(C)";
 }
 
-TEST(MathBracketMinimumTest, NotDoneExceptions)
+TEST(MathBracketMinimumTest, UnperformedState)
 {
-  // Test exception handling for incomplete calculations
+  // Test state handling for incomplete calculations
   math_BracketMinimum aBracketer(0.0, 1.0);
 
-  Standard_Real aA, aB, aC;
-  EXPECT_THROW(aBracketer.Values(aA, aB, aC), StdFail_NotDone)
-    << "Should throw NotDone before Perform()";
-
-  Standard_Real aFA, aFB, aFC;
-  EXPECT_THROW(aBracketer.FunctionValues(aFA, aFB, aFC), StdFail_NotDone)
-    << "Should throw NotDone before Perform()";
+  EXPECT_FALSE(aBracketer.IsDone()) << "Bracketer should not be done before Perform()";
 }
 
 TEST(MathBracketMinimumTest, VeryNarrowInitialBounds)

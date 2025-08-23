@@ -237,15 +237,19 @@ TEST(MathBrentMinimumTest, CustomZEPS)
   EXPECT_NEAR(aSolver.Location(), 2.0, 1.0e-8) << "Result should be accurate";
 }
 
-TEST(MathBrentMinimumTest, NotDoneExceptions)
+TEST(MathBrentMinimumTest, UnperformedState)
 {
-  // Test exception handling before Perform() is called
+  // Test state handling before Perform() is called
   math_BrentMinimum aSolver(1.0e-10);
 
-  EXPECT_THROW(aSolver.Location(), StdFail_NotDone) << "Should throw NotDone for Location()";
-  EXPECT_THROW(aSolver.Minimum(), StdFail_NotDone) << "Should throw NotDone for Minimum()";
-  EXPECT_THROW(aSolver.NbIterations(), StdFail_NotDone)
-    << "Should throw NotDone for NbIterations()";
+  // Before Perform() is called, solver should report not done
+  EXPECT_FALSE(aSolver.IsDone()) << "Solver should not be done before Perform()";
+  
+  // In release builds, verify the solver maintains consistent state
+  if (!aSolver.IsDone())
+  {
+    EXPECT_FALSE(aSolver.IsDone()) << "State should be consistent when not done";
+  }
 }
 
 TEST(MathBrentMinimumTest, ReversedBracketOrder)

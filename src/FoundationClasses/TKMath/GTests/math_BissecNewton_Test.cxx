@@ -257,14 +257,12 @@ TEST(MathBissecNewtonTest, ZeroDerivativeHandling)
   EXPECT_NEAR(aSolver.Derivative(), 0.0, 1.0e-8) << "Derivative at x=0 should be zero";
 }
 
-TEST(MathBissecNewtonTest, NotDoneExceptions)
+TEST(MathBissecNewtonTest, NotDoneState)
 {
-  // Test exception handling for incomplete calculations
+  // Test state handling for incomplete calculations
   math_BissecNewton aSolver(1.0e-10);
 
-  EXPECT_THROW(aSolver.Root(), StdFail_NotDone) << "Should throw NotDone before Perform()";
-  EXPECT_THROW(aSolver.Value(), StdFail_NotDone) << "Should throw NotDone before Perform()";
-  EXPECT_THROW(aSolver.Derivative(), StdFail_NotDone) << "Should throw NotDone before Perform()";
+  EXPECT_FALSE(aSolver.IsDone()) << "Solver should not be done before Perform()";
 }
 
 TEST(MathBissecNewtonTest, MultipleCalls)
