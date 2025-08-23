@@ -82,7 +82,7 @@ public:
 };
 
 // Single variable function: x^2 - 4 = 0
-// Solution: x = ±2
+// Solution: x = +/-2
 class SingleVariableSystem : public math_FunctionSetWithDerivatives
 {
 public:
@@ -257,7 +257,7 @@ TEST(math_FunctionSetRoot, SingleVariable)
   EXPECT_TRUE(solver.IsDone());
 
   const math_Vector& root = solver.Root();
-  EXPECT_NEAR(fabs(root(1)), 2.0, TOLERANCE); // Should find ±2
+  EXPECT_NEAR(fabs(root(1)), 2.0, TOLERANCE); // Should find +/-2
 }
 
 TEST(math_FunctionSetRoot, OverdeterminedSystem)

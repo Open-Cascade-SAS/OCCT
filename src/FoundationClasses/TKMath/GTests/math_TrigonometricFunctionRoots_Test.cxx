@@ -17,9 +17,9 @@ const Standard_Real TOLERANCE = 1.0e-6;
 TEST(math_TrigonometricFunctionRoots, FullEquationBasic)
 {
   // Test a*cos²(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0
-  // Example: cos²(x) - sin²(x) = 0 => cos(2x) = 0
-  // a=1, b=0, c=0, d=0, e=-sin²(x) equivalent to: cos²(x) - sin²(x) = cos(2x) = 0
-  // But let's use: cos²(x) + c*cos(x) = 0 => cos(x)(cos(x) + c) = 0
+  // Example: cos^2(x) - sin^2(x) = 0 => cos(2x) = 0
+  // a=1, b=0, c=0, d=0, e=-sin^2(x) equivalent to: cos^2(x) - sin^2(x) = cos(2x) = 0
+  // But let's use: cos^2(x) + c*cos(x) = 0 => cos(x)(cos(x) + c) = 0
   Standard_Real                   a = 1.0, b = 0.0, c = 1.0, d = 0.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(a, b, c, d, e, 0.0, 2.0 * PI);
 
@@ -31,7 +31,7 @@ TEST(math_TrigonometricFunctionRoots, FullEquationBasic)
 TEST(math_TrigonometricFunctionRoots, LinearSineOnly)
 {
   // Test d*sin(x) + e = 0 => sin(x) = -e/d
-  // Example: sin(x) - 0.5 = 0 => sin(x) = 0.5 => x = π/6, 5π/6
+  // Example: sin(x) - 0.5 = 0 => sin(x) = 0.5 => x = PI/6, 5*PI/6
   Standard_Real                   d = 1.0, e = -0.5;
   math_TrigonometricFunctionRoots solver(d, e, 0.0, 2.0 * PI);
 
@@ -50,7 +50,7 @@ TEST(math_TrigonometricFunctionRoots, LinearSineOnly)
 TEST(math_TrigonometricFunctionRoots, LinearCosineAndSine)
 {
   // Test c*cos(x) + d*sin(x) + e = 0
-  // Example: cos(x) + sin(x) = 0 => tan(x) = -1 => x = 3π/4, 7π/4
+  // Example: cos(x) + sin(x) = 0 => tan(x) = -1 => x = 3*PI/4, 7*PI/4
   Standard_Real                   c = 1.0, d = 1.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(c, d, e, 0.0, 2.0 * PI);
 
@@ -68,7 +68,7 @@ TEST(math_TrigonometricFunctionRoots, LinearCosineAndSine)
 
 TEST(math_TrigonometricFunctionRoots, PureCosineEquation)
 {
-  // Test cos(x) = 0 => x = π/2, 3π/2
+  // Test cos(x) = 0 => x = PI/2, 3*PI/2
   Standard_Real                   c = 1.0, d = 0.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(c, d, e, 0.0, 2.0 * PI);
 
@@ -85,7 +85,7 @@ TEST(math_TrigonometricFunctionRoots, PureCosineEquation)
 
 TEST(math_TrigonometricFunctionRoots, PureSineEquation)
 {
-  // Test sin(x) = 0 => x = 0, π, 2π
+  // Test sin(x) = 0 => x = 0, PI, 2*PI
   Standard_Real                   d = 1.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(d, e, 0.0, 2.0 * PI);
 
@@ -123,7 +123,7 @@ TEST(math_TrigonometricFunctionRoots, InfiniteSolutions)
 
 TEST(math_TrigonometricFunctionRoots, CustomBounds)
 {
-  // Test sin(x) = 0 in range [π/2, 3π/2]
+  // Test sin(x) = 0 in range [PI/2, 3*PI/2]
   Standard_Real                   d = 1.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(d, e, PI / 2.0, 3.0 * PI / 2.0);
 
@@ -142,7 +142,7 @@ TEST(math_TrigonometricFunctionRoots, CustomBounds)
 
 TEST(math_TrigonometricFunctionRoots, NarrowBounds)
 {
-  // Test cos(x) = 0 in range [0, π/4]
+  // Test cos(x) = 0 in range [0, PI/4]
   Standard_Real                   c = 1.0, d = 0.0, e = 0.0;
   math_TrigonometricFunctionRoots solver(c, d, e, 0.0, PI / 4.0);
 
@@ -154,7 +154,7 @@ TEST(math_TrigonometricFunctionRoots, NarrowBounds)
 
 TEST(math_TrigonometricFunctionRoots, QuadraticTerms)
 {
-  // Test cos²(x) - 0.5 = 0 => cos²(x) = 0.5 => cos(x) = ±√0.5
+  // Test cos^2(x) - 0.5 = 0 => cos^2(x) = 0.5 => cos(x) = +/-sqrt(0.5)
   Standard_Real                   a = 1.0, b = 0.0, c = 0.0, d = 0.0, e = -0.5;
   math_TrigonometricFunctionRoots solver(a, b, c, d, e, 0.0, 2.0 * PI);
 
@@ -172,10 +172,10 @@ TEST(math_TrigonometricFunctionRoots, QuadraticTerms)
 
 TEST(math_TrigonometricFunctionRoots, MixedTerms)
 {
-  // Test cos(x) + sin(x) - √2 = 0
-  // This gives cos(x) + sin(x) = √2
-  // Which is √2*sin(x + π/4) = √2
-  // So sin(x + π/4) = 1 => x + π/4 = π/2 => x = π/4
+  // Test cos(x) + sin(x) - sqrt(2) = 0
+  // This gives cos(x) + sin(x) = sqrt(2)
+  // Which is sqrt(2)*sin(x + PI/4) = sqrt(2)
+  // So sin(x + PI/4) = 1 => x + PI/4 = PI/2 => x = PI/4
   Standard_Real                   c = 1.0, d = 1.0, e = -sqrt(2.0);
   math_TrigonometricFunctionRoots solver(c, d, e, 0.0, 2.0 * PI);
 
@@ -251,7 +251,7 @@ TEST(math_TrigonometricFunctionRoots, HighFrequencyTest)
   EXPECT_FALSE(solver.InfiniteRoots());
   EXPECT_GE(solver.NbSolutions(), 2);
 
-  // Expected solutions: π/6 ≈ 0.5236 and 5π/6 ≈ 2.618
+  // Expected solutions: PI/6 approximately 0.5236 and 5*PI/6 approximately 2.618
   if (solver.NbSolutions() >= 2)
   {
     std::vector<Standard_Real> solutions;
@@ -260,7 +260,7 @@ TEST(math_TrigonometricFunctionRoots, HighFrequencyTest)
       solutions.push_back(solver.Value(i));
     }
 
-    // Check that we have solutions near π/6 and 5π/6
+    // Check that we have solutions near PI/6 and 5*PI/6
     bool found_first = false, found_second = false;
     for (Standard_Real sol : solutions)
     {

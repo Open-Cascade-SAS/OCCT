@@ -194,13 +194,13 @@ TEST(math_FunctionAllRoots, SineFunctionRoots)
 
   EXPECT_TRUE(solver.IsDone());
 
-  // Should find roots near 0, π, 2π within the range
+  // Should find roots near 0, PI, 2*PI within the range
   EXPECT_GE(solver.NbPoints(), 2);
 
   if (solver.NbPoints() >= 1)
   {
     Standard_Real root1 = solver.GetPoint(1);
-    // Check if we found a root near 0 or π
+    // Check if we found a root near 0 or PI
     EXPECT_TRUE(fabs(root1) < 1.0e-4 || fabs(root1 - M_PI) < 1.0e-4
                 || fabs(root1 - 2 * M_PI) < 1.0e-4);
   }

@@ -16,7 +16,7 @@ namespace
 const Standard_Real TOLERANCE = 1.0e-6;
 
 // Simple 2x2 system: x^2 + y^2 = 1, x - y = 0
-// Solution: x = y = ±1/√2
+// Solution: x = y = +/-1/sqrt(2)
 class CircleLineSystem : public math_FunctionSetWithDerivatives
 {
 public:
@@ -33,10 +33,10 @@ public:
 
   virtual Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D) override
   {
-    D(1, 1) = 2.0 * X(1); // ∂f1/∂x = 2x
-    D(1, 2) = 2.0 * X(2); // ∂f1/∂y = 2y
-    D(2, 1) = 1.0;        // ∂f2/∂x = 1
-    D(2, 2) = -1.0;       // ∂f2/∂y = -1
+    D(1, 1) = 2.0 * X(1); // df1/dx = 2x
+    D(1, 2) = 2.0 * X(2); // df1/dy = 2y
+    D(2, 1) = 1.0;        // df2/dx = 1
+    D(2, 2) = -1.0;       // df2/dy = -1
     return Standard_True;
   }
 
@@ -66,10 +66,10 @@ public:
 
   virtual Standard_Boolean Derivatives(const math_Vector&, math_Matrix& D) override
   {
-    D(1, 1) = 2.0; // ∂f1/∂x = 2
-    D(1, 2) = 1.0; // ∂f1/∂y = 1
-    D(2, 1) = 1.0; // ∂f2/∂x = 1
-    D(2, 2) = 2.0; // ∂f2/∂y = 2
+    D(1, 1) = 2.0; // df1/dx = 2
+    D(1, 2) = 1.0; // df1/dy = 1
+    D(2, 1) = 1.0; // df2/dx = 1
+    D(2, 2) = 2.0; // df2/dy = 2
     return Standard_True;
   }
 
@@ -82,7 +82,7 @@ public:
 };
 
 // Single equation: x^2 - 4 = 0
-// Solution: x = ±2
+// Solution: x = +/-2
 class QuadraticFunction : public math_FunctionSetWithDerivatives
 {
 public:
@@ -190,7 +190,7 @@ TEST(math_NewtonFunctionSetRoot, QuadraticSingleVariable)
   EXPECT_TRUE(solver.IsDone());
 
   const math_Vector& root = solver.Root();
-  EXPECT_NEAR(fabs(root(1)), 2.0, TOLERANCE); // Should find ±2
+  EXPECT_NEAR(fabs(root(1)), 2.0, TOLERANCE); // Should find +/-2
 }
 
 TEST(math_NewtonFunctionSetRoot, CircleLineIntersection)
