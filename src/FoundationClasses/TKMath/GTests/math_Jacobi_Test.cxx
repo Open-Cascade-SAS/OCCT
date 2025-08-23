@@ -237,15 +237,15 @@ TEST(MathJacobiTest, SquareMatrixRequirement)
   // Verify matrix is indeed non-square
   EXPECT_NE(aNonSquareMatrix.RowNumber(), aNonSquareMatrix.ColNumber())
     << "Matrix should be non-square for this test";
-    
+
   // Jacobi eigenvalue decomposition requires square matrices
   // Test with a proper square matrix instead
   math_Matrix aSquareMatrix(1, 2, 1, 2);
   aSquareMatrix(1, 1) = 1.0;
   aSquareMatrix(1, 2) = 0.5;
-  aSquareMatrix(2, 1) = 0.5; 
+  aSquareMatrix(2, 1) = 0.5;
   aSquareMatrix(2, 2) = 2.0;
-  
+
   math_Jacobi aJacobi(aSquareMatrix);
   EXPECT_TRUE(aJacobi.IsDone()) << "Should work with square matrix";
 }

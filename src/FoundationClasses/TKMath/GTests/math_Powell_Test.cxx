@@ -340,7 +340,7 @@ TEST(MathPowellTest, UnperformedState)
 
   // Before Perform() is called, optimizer should report not done
   EXPECT_FALSE(aPowell.IsDone()) << "Optimizer should not be done before Perform()";
-  
+
   // In release builds, verify the optimizer maintains consistent state
   if (!aPowell.IsDone())
   {
@@ -369,7 +369,7 @@ TEST(MathPowellTest, DimensionCompatibility)
   // Test with correctly sized vector
   math_Vector aCorrectLoc(1, 2); // Correct size 2
   aPowell.Location(aCorrectLoc);
-  
+
   // Verify the result makes sense
   EXPECT_EQ(aCorrectLoc.Length(), 2) << "Location vector should have correct dimension";
 }

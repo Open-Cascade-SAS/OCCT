@@ -354,17 +354,17 @@ TEST(MathGaussTest, DimensionCompatibility)
   aB(1) = 1.0;
   aB(2) = 2.0;
   aB(3) = 3.0;
-  
+
   math_Vector aX(1, 3);
   aGauss.Solve(aB, aX);
-  
+
   // Verify the result makes sense
   EXPECT_EQ(aX.Length(), 3) << "Solution vector should have correct dimension";
-  
+
   // Test invert with correctly sized matrix
   math_Matrix aInv(1, 3, 1, 3);
   aGauss.Invert(aInv);
-  
+
   EXPECT_EQ(aInv.RowNumber(), 3) << "Inverse matrix should have correct dimensions";
   EXPECT_EQ(aInv.ColNumber(), 3) << "Inverse matrix should have correct dimensions";
 }

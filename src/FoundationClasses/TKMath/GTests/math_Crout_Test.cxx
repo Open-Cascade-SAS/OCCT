@@ -200,7 +200,8 @@ TEST(MathCroutTest, NonSquareMatrixCheck)
 
   // In release builds, verify the solver correctly handles dimension mismatch
   // Crout decomposition requires square matrices
-  EXPECT_NE(aMatrix.RowNumber(), aMatrix.ColNumber()) << "Matrix should be non-square for this test";
+  EXPECT_NE(aMatrix.RowNumber(), aMatrix.ColNumber())
+    << "Matrix should be non-square for this test";
 }
 
 TEST(MathCroutTest, DimensionCompatibilityInSolve)
@@ -228,7 +229,7 @@ TEST(MathCroutTest, DimensionCompatibilityInSolve)
 
   math_Vector aX(1, 3);
   aCrout.Solve(aB_correct, aX);
-  
+
   // Verify the solution is reasonable
   EXPECT_EQ(aX.Length(), 3) << "Solution vector should have correct dimension";
 }
@@ -249,7 +250,6 @@ TEST(MathCroutTest, SingularMatrixState)
 
   math_Crout aCrout(aMatrix);
   EXPECT_FALSE(aCrout.IsDone()) << "Should fail for singular matrix";
-
 }
 
 TEST(MathCroutTest, LargerMatrix)

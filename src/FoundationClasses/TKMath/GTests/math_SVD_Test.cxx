@@ -351,11 +351,11 @@ TEST(MathSVDTest, DimensionCompatibility)
 
   math_Vector aX(1, 3); // Correct size for solution
   aSVD.Solve(aCorrectB, aX);
-  
+
   // Verify the results make sense
   EXPECT_EQ(aX.Length(), 3) << "Solution vector should have correct dimension";
   EXPECT_EQ(aCorrectB.Length(), 3) << "RHS vector should have correct dimension";
-  
+
   // Verify matrix dimensions are consistent
   EXPECT_EQ(aMatrix.RowNumber(), 3) << "Matrix should have 3 rows";
   EXPECT_EQ(aMatrix.ColNumber(), 3) << "Matrix should have 3 columns";

@@ -183,11 +183,13 @@ TEST(MathVectorTest, ZeroVectorHandling)
 
   // Test behavior with zero vector - verify it's actually zero
   EXPECT_DOUBLE_EQ(aZeroVec.Norm(), 0.0) << "Zero vector should have zero norm";
-  
+
   // Test with non-zero vector for comparison
   math_Vector aNonZeroVec(1, 3);
-  aNonZeroVec(1) = 1.0; aNonZeroVec(2) = 0.0; aNonZeroVec(3) = 0.0;
-  
+  aNonZeroVec(1) = 1.0;
+  aNonZeroVec(2) = 0.0;
+  aNonZeroVec(3) = 0.0;
+
   EXPECT_DOUBLE_EQ(aNonZeroVec.Norm(), 1.0) << "Unit vector should have norm 1";
   aNonZeroVec.Normalize();
   EXPECT_DOUBLE_EQ(aNonZeroVec.Norm(), 1.0) << "Normalized vector should have norm 1";
@@ -276,7 +278,7 @@ TEST(MathVectorTest, DivisionOperations)
   // Test normal division operations
   aVec.Divide(2.0);
   EXPECT_DOUBLE_EQ(aVec(1), 1.0) << "Division should work correctly";
-  
+
   math_Vector aVec2(1, 3, 4.0);
   math_Vector aResult = aVec2.Divided(2.0);
   EXPECT_DOUBLE_EQ(aResult(1), 2.0) << "Divided method should work correctly";
@@ -402,7 +404,6 @@ TEST(MathVectorTest, SetOperation)
   EXPECT_EQ(aVec(6), 0.0);
 }
 
-
 // Tests for Slice operation
 TEST(MathVectorTest, SliceOperation)
 {
@@ -432,7 +433,6 @@ TEST(MathVectorTest, SliceOperation)
   EXPECT_EQ(aSlice2(3), 30.0); // Copy from original aVec(3)
   EXPECT_EQ(aSlice2(4), 40.0); // Copy from original aVec(4)
 }
-
 
 // Tests for vector-matrix operations
 TEST(MathVectorTest, VectorMatrixOperations)

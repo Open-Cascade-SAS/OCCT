@@ -242,10 +242,13 @@ TEST(MathHouseholderTest, DimensionCompatibility)
 
   // Test with correctly sized B matrix
   math_Matrix aB_matrix_correct(1, 3, 1, 2); // Correct row count 3
-  aB_matrix_correct(1, 1) = 1.0; aB_matrix_correct(1, 2) = 4.0;
-  aB_matrix_correct(2, 1) = 2.0; aB_matrix_correct(2, 2) = 5.0;
-  aB_matrix_correct(3, 1) = 3.0; aB_matrix_correct(3, 2) = 6.0;
-  
+  aB_matrix_correct(1, 1) = 1.0;
+  aB_matrix_correct(1, 2) = 4.0;
+  aB_matrix_correct(2, 1) = 2.0;
+  aB_matrix_correct(2, 2) = 5.0;
+  aB_matrix_correct(3, 1) = 3.0;
+  aB_matrix_correct(3, 2) = 6.0;
+
   math_Householder aHouseholder2(aA, aB_matrix_correct);
   EXPECT_TRUE(aHouseholder2.IsDone()) << "Should work with correct B matrix size";
 }
@@ -290,10 +293,10 @@ TEST(MathHouseholderTest, ValidIndexRange)
   // Test valid indices
   aHouseholder.Value(aSol, 1); // Should work
   EXPECT_EQ(aSol.Length(), 2) << "Solution vector should have correct size";
-  
-  aHouseholder.Value(aSol, 2); // Should work  
+
+  aHouseholder.Value(aSol, 2); // Should work
   EXPECT_EQ(aSol.Length(), 2) << "Solution vector should have correct size";
-  
+
   // Verify we have the expected number of columns to work with
   EXPECT_EQ(aB.ColNumber(), 2) << "Matrix should have 2 columns available";
 }

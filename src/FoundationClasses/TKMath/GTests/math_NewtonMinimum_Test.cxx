@@ -472,7 +472,7 @@ TEST(MathNewtonMinimumTest, UnperformedState)
 
   // Before Perform() is called, solver should report not done
   EXPECT_FALSE(aSolver.IsDone()) << "Solver should not be done before Perform()";
-  
+
   // In release builds, verify the solver maintains consistent state
   if (!aSolver.IsDone())
   {
@@ -498,7 +498,7 @@ TEST(MathNewtonMinimumTest, DimensionCompatibility)
   math_Vector aCorrectVec(1, 2); // 2D vector for 2D function
   aSolver.Location(aCorrectVec);
   aSolver.Gradient(aCorrectVec);
-  
+
   // Verify the results make sense
   EXPECT_EQ(aCorrectVec.Length(), 2) << "Vector should have correct dimension";
 }

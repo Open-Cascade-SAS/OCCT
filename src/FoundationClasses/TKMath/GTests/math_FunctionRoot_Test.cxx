@@ -339,7 +339,8 @@ TEST(MathFunctionRootTest, ConstrainedConvergenceState)
   {
     // In release builds, verify consistent state reporting
     EXPECT_FALSE(aRootFinder.IsDone()) << "Root finder should consistently report failure";
-    EXPECT_GE(aRootFinder.NbIterations(), 0) << "Iteration count should be non-negative even on failure";
+    EXPECT_GE(aRootFinder.NbIterations(), 0)
+      << "Iteration count should be non-negative even on failure";
   }
   else
   {

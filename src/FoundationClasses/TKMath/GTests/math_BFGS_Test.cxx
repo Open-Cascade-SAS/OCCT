@@ -381,11 +381,13 @@ TEST(MathBFGSTest, NotDoneState)
 
   if (!anOptimizer.IsDone())
   {
-    EXPECT_GE(anOptimizer.NbIterations(), 0) << "Iteration count should be non-negative even on failure";
+    EXPECT_GE(anOptimizer.NbIterations(), 0)
+      << "Iteration count should be non-negative even on failure";
   }
   else
   {
-    EXPECT_GT(anOptimizer.NbIterations(), 0) << "Successful optimization should require at least one iteration";
+    EXPECT_GT(anOptimizer.NbIterations(), 0)
+      << "Successful optimization should require at least one iteration";
   }
 }
 
@@ -400,15 +402,16 @@ TEST(MathBFGSTest, DimensionCompatibility)
 
   anOptimizer.Perform(aFunc, aStartPoint);
 
-  ASSERT_TRUE(anOptimizer.IsDone()) << "Optimization should succeed for dimension compatibility tests";
+  ASSERT_TRUE(anOptimizer.IsDone())
+    << "Optimization should succeed for dimension compatibility tests";
 
   // Verify optimizer works correctly with properly dimensioned vectors
   math_Vector aCorrectSizeLocation(1, 2);
   math_Vector aCorrectSizeGradient(1, 2);
-  
+
   anOptimizer.Location(aCorrectSizeLocation);
   anOptimizer.Gradient(aCorrectSizeGradient);
-  
+
   // Verify the results make sense
   EXPECT_EQ(aCorrectSizeLocation.Length(), 2) << "Location vector should have correct dimension";
   EXPECT_EQ(aCorrectSizeGradient.Length(), 2) << "Gradient vector should have correct dimension";

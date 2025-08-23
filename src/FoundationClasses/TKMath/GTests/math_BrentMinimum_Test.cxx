@@ -244,7 +244,7 @@ TEST(MathBrentMinimumTest, UnperformedState)
 
   // Before Perform() is called, solver should report not done
   EXPECT_FALSE(aSolver.IsDone()) << "Solver should not be done before Perform()";
-  
+
   // In release builds, verify the solver maintains consistent state
   if (!aSolver.IsDone())
   {
