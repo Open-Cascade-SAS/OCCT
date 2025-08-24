@@ -52,7 +52,17 @@ void math_SVD::Solve(const math_Vector& B, math_Vector& X, const Standard_Real E
     if (Diag(I) < wmin)
       Diag(I) = 0.0;
   }
-  SVD_Solve(U, Diag, V, BB, X);
+
+  // Handle custom bounds in X vector - SVD_Solve expects 1-based indexing
+  if (X.Lower() != 1)
+  {
+    math_Vector anXTemp(&X.Value(X.Lower()), 1, X.Length());
+    SVD_Solve(U, Diag, V, BB, anXTemp);
+  }
+  else
+  {
+    SVD_Solve(U, Diag, V, BB, X);
+  }
 }
 
 void math_SVD::PseudoInverse(math_Matrix& Result, const Standard_Real Eps)

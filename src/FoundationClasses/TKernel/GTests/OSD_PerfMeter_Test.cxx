@@ -1,15 +1,13 @@
 #include <gtest/gtest.h>
 #include <OSD_PerfMeter.hxx>
-
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <BRepPrimAPI_MakeSphere.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <chrono>
 #include <thread>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cmath>
 
 // Test fixture for OSD_PerfMeter tests
 class OSD_PerfMeterTest : public ::testing::Test
@@ -33,11 +31,23 @@ protected:
     OSD_PerfMeter meter("WorkMeter", true);
     while (meter.Elapsed() < theTimeInSec)
     {
-      // do some operation that will take considerable time compared with time of starting /
-      // stopping timers
-      BRepPrimAPI_MakeBox    aBox(10., 10., 10.);
-      BRepPrimAPI_MakeSphere aSphere(10.);
-      BRepAlgoAPI_Cut        aCutter(aBox.Shape(), aSphere.Shape());
+      // Do some computational work that takes considerable time
+      // compared with time of starting/stopping timers
+      volatile double result = 0.0;
+      for (int i = 0; i < 10000; ++i)
+      {
+        // Complex mathematical operations using only standard library
+        result += std::sin(i * 0.001) * std::cos(i * 0.002);
+        result += std::sqrt(i + 1.0);
+        result += std::pow(i * 0.1, 1.5);
+
+        // String operations to add more computational cost
+        TCollection_AsciiString aStr("Test");
+        aStr += TCollection_AsciiString(i);
+        volatile int len = aStr.Length(); // volatile to prevent optimization
+        (void)len;                        // Suppress unused variable warning
+      }
+      (void)result; // Suppress unused variable warning
     }
     meter.Kill();
   }
