@@ -5,6 +5,33 @@ set(OCCT_TKMath_GTests_FILES
   Bnd_BoundSortBox_Test.cxx
   Bnd_Box_Test.cxx
   ElCLib_Test.cxx
+  math_BFGS_Test.cxx
+  math_BissecNewton_Test.cxx
+  math_BracketMinimum_Test.cxx
+  math_BracketedRoot_Test.cxx
+  math_Crout_Test.cxx
+  math_BrentMinimum_Test.cxx
+  math_DirectPolynomialRoots_Test.cxx
   math_DoubleTab_Test.cxx
+  math_FRPR_Test.cxx
+  math_FunctionAllRoots_Test.cxx
+  math_FunctionRoot_Test.cxx
+  math_FunctionRoots_Test.cxx
+  math_FunctionSetRoot_Test.cxx
+  math_Gauss_Test.cxx
+  math_GaussLeastSquare_Test.cxx
+  math_GlobOptMin_Test.cxx
+  math_Householder_Test.cxx
+  math_Integration_Test.cxx
+  math_Jacobi_Test.cxx
   math_Matrix_Test.cxx
+  math_NewtonFunctionRoot_Test.cxx
+  math_NewtonFunctionSetRoot_Test.cxx
+  math_NewtonMinimum_Test.cxx
+  math_Powell_Test.cxx
+  math_PSO_Test.cxx
+  math_SVD_Test.cxx
+  math_TrigonometricFunctionRoots_Test.cxx
+  math_Uzawa_Test.cxx
+  math_Vector_Test.cxx
 )
