@@ -34,6 +34,7 @@
 
 #include <algorithm>
 #include <stack>
+#include <vector>
 
 const Standard_Real AngDeviation1Deg  = M_PI / 180.;
 const Standard_Real AngDeviation90Deg = 90 * AngDeviation1Deg;
@@ -79,6 +80,66 @@ void UpdateBndBox(const gp_XY& thePnt1, const gp_XY& thePnt2, Bnd_B2d& theBox)
   theBox.Add(thePnt2);
   theBox.Enlarge(Precision);
 }
+
+// Class representing a stack of frames. Each frame is a range of elements to be processed.
+// The stack allows to process elements in depth-first order meaning that when new elements
+// are added to the stack, they will be processed before the remaining elements of the
+// current frame.
+// Frames are processed in LIFO order while elements inside a frame are processed in FIFO order.
+class StackOfFrames
+{
+private:
+  // A frame is a range of elements to be processed.
+  class Frame
+  {
+  public:
+    // Construct a frame for the given range of elements.
+    // Note that the range is [theFrameStart, theFrameEnd).
+    Frame(const int theFrameStart, const int theFrameEnd)
+        : CurrentElement(theFrameStart),
+          FrameEnd(theFrameEnd)
+    {
+    }
+
+    // Return the index of the current element and advance to the next one.
+    inline int Advance() { return CurrentElement++; }
+
+    // Check if all elements in the frame have been processed.
+    inline bool IsEmpty() const { return CurrentElement == FrameEnd; }
+
+  private:
+    int CurrentElement; // Index of the current element of the frame.
+    int FrameEnd;       // Index of the last element + 1 of the frame.
+  };
+
+public:
+  // Adds a new frame for the given range of elements.
+  // Note that the range is [theFrameStart, theFrameEnd).
+  inline void PushFrame(const int theFrameStart, const int theFrameEnd)
+  {
+    myFrames.emplace_back(theFrameStart, theFrameEnd);
+  }
+
+  // Returns the index of the current element of the top frame
+  // and advances to the next element. If all elements of the top
+  // frame have been processed, the frame is removed from the stack.
+  // Precondition: the stack is not empty.
+  inline int PopElement()
+  {
+    Frame&    aFrame = myFrames.back();
+    const int anElem = aFrame.Advance();
+    if (aFrame.IsEmpty())
+      myFrames.pop_back();
+
+    return anElem;
+  }
+
+  // Check if the stack is empty.
+  inline bool IsEmpty() const { return myFrames.empty(); }
+
+private:
+  std::vector<Frame, NCollection_Allocator<Frame>> myFrames; // Container of frames.
+};
 } // anonymous namespace
 
 //=================================================================================================
@@ -1339,17 +1400,28 @@ void BRepMesh_Delaun::cleanupPolygon(const IMeshData::SequenceOfInteger& thePoly
 
   IMeshData::MapOfInteger aSurvivedLinks(anIgnoredEdges);
 
-  Standard_Integer aPolyVertIt         = 0;
-  Standard_Integer anUniqueVerticesNum = aPolyVertices.Length() - 1;
-  for (; aPolyVertIt < anUniqueVerticesNum; ++aPolyVertIt)
+  for (Standard_Integer aPolyVertIt = 0; aPolyVertIt < aPolyVertices.Length() - 1; ++aPolyVertIt)
   {
-    killTrianglesAroundVertex(aPolyVertices(aPolyVertIt),
-                              aPolyVertices,
-                              aPolyVerticesFindMap,
-                              thePolygon,
-                              thePolyBoxes,
-                              aSurvivedLinks,
-                              aLoopEdges);
+    StackOfFrames              aStackFames;
+    IMeshData::VectorOfInteger aStackData;
+    for (int aCurrentVictim = aPolyVertices(aPolyVertIt); aCurrentVictim != -1;
+         aCurrentVictim     = aStackFames.IsEmpty() ? -1 : aStackData(aStackFames.PopElement()))
+    {
+      const int aPrevStackDataSize = aStackData.Length();
+      killTrianglesAroundVertex(aCurrentVictim,
+                                aPolyVertices,
+                                aPolyVerticesFindMap,
+                                thePolygon,
+                                thePolyBoxes,
+                                aSurvivedLinks,
+                                aLoopEdges,
+                                aStackData);
+      const int aNewStackDataSize = aStackData.Length();
+      if (aNewStackDataSize > aPrevStackDataSize)
+      {
+        aStackFames.PushFrame(aPrevStackDataSize, aNewStackDataSize);
+      }
+    }
   }
 
   IMeshData::MapOfIntegerInteger::Iterator aLoopEdgesIt(aLoopEdges);
@@ -1376,12 +1448,12 @@ void BRepMesh_Delaun::killTrianglesAroundVertex(
   const IMeshData::SequenceOfInteger& thePolygon,
   const IMeshData::SequenceOfBndB2d&  thePolyBoxes,
   IMeshData::MapOfInteger&            theSurvivedLinks,
-  IMeshData::MapOfIntegerInteger&     theLoopEdges)
+  IMeshData::MapOfIntegerInteger&     theLoopEdges,
+  IMeshData::VectorOfInteger&         theVictimNodes)
 {
   IMeshData::ListOfInteger::Iterator aNeighborsIt = myMeshData->LinksConnectedTo(theZombieNodeId);
 
   // Try to infect neighbor nodes
-  IMeshData::VectorOfInteger aVictimNodes;
   for (; aNeighborsIt.More(); aNeighborsIt.Next())
   {
     const Standard_Integer& aNeighborLinkId = aNeighborsIt.Value();
@@ -1421,7 +1493,7 @@ void BRepMesh_Delaun::killTrianglesAroundVertex(
         if (isVertexInsidePolygon(anOtherNode, thePolyVertices))
         {
           // Got you!
-          aVictimNodes.Append(anOtherNode);
+          theVictimNodes.Append(anOtherNode);
         }
         else
         {
@@ -1443,19 +1515,6 @@ void BRepMesh_Delaun::killTrianglesAroundVertex(
     // Add link to the survivors to avoid cycling
     theSurvivedLinks.Add(aNeighborLinkId);
     killLinkTriangles(aNeighborLinkId, theLoopEdges);
-  }
-
-  // Go and do your job!
-  IMeshData::VectorOfInteger::Iterator aVictimIt(aVictimNodes);
-  for (; aVictimIt.More(); aVictimIt.Next())
-  {
-    killTrianglesAroundVertex(aVictimIt.Value(),
-                              thePolyVertices,
-                              thePolyVerticesFindMap,
-                              thePolygon,
-                              thePolyBoxes,
-                              theSurvivedLinks,
-                              theLoopEdges);
   }
 }
 
