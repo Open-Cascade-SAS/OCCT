@@ -302,7 +302,8 @@ private:
                                  const IMeshData::SequenceOfInteger& thePolygon,
                                  const IMeshData::SequenceOfBndB2d&  thePolyBoxes,
                                  IMeshData::MapOfInteger&            theSurvivedLinks,
-                                 IMeshData::MapOfIntegerInteger&     theLoopEdges);
+                                 IMeshData::MapOfIntegerInteger&     theLoopEdges,
+                                 IMeshData::VectorOfInteger&         theVictimNodes);
 
   //! Checks is the given link crosses the polygon boundary.
   //! If yes, kills its triangles and checks neighbor links on boundary intersection. Does nothing
