@@ -1454,7 +1454,6 @@ void BRepMesh_Delaun::killTrianglesAroundVertex(
   IMeshData::ListOfInteger::Iterator aNeighborsIt = myMeshData->LinksConnectedTo(theZombieNodeId);
 
   // Try to infect neighbor nodes
-  // std::list<Standard_Integer> aVictimNodes;
   for (; aNeighborsIt.More(); aNeighborsIt.Next())
   {
     const Standard_Integer& aNeighborLinkId = aNeighborsIt.Value();
