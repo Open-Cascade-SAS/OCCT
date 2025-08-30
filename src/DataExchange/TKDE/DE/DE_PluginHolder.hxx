@@ -50,7 +50,7 @@ class DE_MultiPluginHolder
 {
 public:
   DE_MultiPluginHolder()
-      : myHolders(DE_PluginHolder<TheConfTypes>()...)
+      : myHolders{}
   {
   }
 
