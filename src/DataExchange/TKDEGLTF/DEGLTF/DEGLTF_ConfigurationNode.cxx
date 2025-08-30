@@ -15,7 +15,6 @@
 
 #include <DEGLTF_Provider.hxx>
 #include <DE_ConfigurationContext.hxx>
-#include <DE_PluginHolder.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DEGLTF_ConfigurationNode, DE_ConfigurationNode)
 
@@ -27,8 +26,6 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
   return aScope;
 }
 
-// Wrapper to auto-load DE component
-DE_PluginHolder<DEGLTF_ConfigurationNode> THE_OCCT_GLTF_COMPONENT_PLUGIN;
 } // namespace
 
 //=================================================================================================

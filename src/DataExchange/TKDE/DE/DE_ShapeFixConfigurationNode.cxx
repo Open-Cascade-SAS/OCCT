@@ -14,7 +14,6 @@
 #include <DE_ShapeFixConfigurationNode.hxx>
 
 #include <DE_ConfigurationContext.hxx>
-#include <DE_PluginHolder.hxx>
 #include <DE_Wrapper.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DE_ShapeFixConfigurationNode, DE_ConfigurationNode)

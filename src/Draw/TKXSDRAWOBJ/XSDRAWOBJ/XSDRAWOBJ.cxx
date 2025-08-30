@@ -17,6 +17,8 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
+#include <DEOBJ_ConfigurationNode.hxx>
+#include <DE_PluginHolder.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -335,6 +337,16 @@ static Standard_Integer WriteObj(Draw_Interpretor& theDI,
   return 0;
 }
 
+namespace
+{
+  // Singleton to ensure DEOBJ plugin is registered only once
+  void DEOBJSingleton()
+  {
+    static DE_PluginHolder<DEOBJ_ConfigurationNode> aHolder;
+    (void)aHolder;
+  }
+}
+
 //=================================================================================================
 
 void XSDRAWOBJ::Factory(Draw_Interpretor& theDI)
@@ -345,6 +357,9 @@ void XSDRAWOBJ::Factory(Draw_Interpretor& theDI)
     return;
   }
   aIsActivated = Standard_True;
+
+  //! Ensure DEOBJ plugin is registered
+  DEOBJSingleton();
 
   const char* aGroup = "XSTEP-STL/VRML"; // Step transfer file commands
   theDI.Add(

@@ -17,6 +17,8 @@
 #include <DDF.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
+#include <DESTEP_ConfigurationNode.hxx>
+#include <DE_PluginHolder.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -1092,6 +1094,16 @@ static Standard_Integer WriteStep(Draw_Interpretor& theDI,
   return 0;
 }
 
+namespace
+{
+  // Singleton to ensure DESTEP plugin is registered only once
+  void DESTEPSingleton()
+  {
+    static DE_PluginHolder<DESTEP_ConfigurationNode> aHolder;
+    (void)aHolder;
+  }
+}
+
 //=================================================================================================
 
 void XSDRAWSTEP::Factory(Draw_Interpretor& theDI)
@@ -1103,6 +1115,9 @@ void XSDRAWSTEP::Factory(Draw_Interpretor& theDI)
   }
   STEPCAFControl_Controller::Init();
   aIsActivated = Standard_True;
+
+  //! Ensure DESTEP plugin is registered
+  DESTEPSingleton();
 
   const char* aGroup = "DE: STEP"; // Step transfer file commands
   theDI.Add("stepwrite", "stepwrite mode[0-4 afsmw] shape", __FILE__, stepwrite, aGroup);

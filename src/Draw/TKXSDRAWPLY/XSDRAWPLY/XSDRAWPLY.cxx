@@ -18,6 +18,8 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
+#include <DEPLY_ConfigurationNode.hxx>
+#include <DE_PluginHolder.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -295,6 +297,16 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
   return 0;
 }
 
+namespace
+{
+  // Singleton to ensure DEPLY plugin is registered only once
+  void DEPLYSingleton()
+  {
+    static DE_PluginHolder<DEPLY_ConfigurationNode> aHolder;
+    (void)aHolder;
+  }
+}
+
 //=================================================================================================
 
 void XSDRAWPLY::Factory(Draw_Interpretor& theDI)
@@ -305,6 +317,9 @@ void XSDRAWPLY::Factory(Draw_Interpretor& theDI)
     return;
   }
   aIsActivated = Standard_True;
+
+  //! Ensure DEPLY plugin is registered
+  DEPLYSingleton();
 
   const char* aGroup = "XSTEP-STL/VRML"; // Step transfer file commands
   // XSDRAW::LoadDraw(theCommands);

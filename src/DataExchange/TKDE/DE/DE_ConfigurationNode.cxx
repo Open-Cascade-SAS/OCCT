@@ -139,3 +139,17 @@ bool DE_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuf
   (void)theBuffer;
   return false;
 }
+
+//=================================================================================================
+
+void DE_ConfigurationNode::Register(const Handle(DE_Wrapper)& theWrapper) const
+{
+  theWrapper->Bind(this);
+}
+
+//=================================================================================================
+
+void DE_ConfigurationNode::UnRegister(const Handle(DE_Wrapper)& theWrapper) const
+{
+  theWrapper->UnBind(this);
+}
