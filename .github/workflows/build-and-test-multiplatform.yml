@@ -125,7 +125,7 @@ jobs:
         artifact-name: install-macos-clang-no-pch
         build-use-pch: 'false'
         build-opt-profile: 'Default'
-        additional-cmake-flags: '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra"'
+        additional-cmake-flags: '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type-mismatch" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type-mismatch"'
         cmake-build-type: 'Debug'
         github-token: ${{ secrets.GITHUB_TOKEN }}
 

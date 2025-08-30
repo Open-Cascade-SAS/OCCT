@@ -56,7 +56,14 @@ runs:
       if: runner.os == 'macOS'
       run: |
         brew update || true
-        brew install cmake ninja nasm autoconf automake mono openexr || true
+        # Install each package separately to continue even if some fail
+        brew install cmake || true
+        brew install ninja || true
+        brew install nasm || true
+        brew install autoconf || true
+        brew install automake || true
+        brew install mono || true
+        brew install openexr || true
         brew install --cask xquartz || true
       shell: bash
 
