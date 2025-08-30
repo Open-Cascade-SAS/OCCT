@@ -16,9 +16,6 @@
 #include <XSDRAW.hxx>
 
 #include <AIS_InteractiveContext.hxx>
-#include <DEBREP_ConfigurationNode.hxx>
-#include <DEXCAF_ConfigurationNode.hxx>
-#include <DE_PluginHolder.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Trihedron.hxx>
 #include <Aspect_TypeOfLine.hxx>
@@ -110,16 +107,6 @@
 #include <XmlXCAFDrivers.hxx>
 
 #include <stdio.h>
-
-namespace
-{
-// Singleton to ensure DEBREP and DEXCAF plugins are registered only once
-void DECascadeSingleton()
-{
-  static DE_MultiPluginHolder<DEBREP_ConfigurationNode, DEXCAF_ConfigurationNode> aHolder;
-  (void)aHolder;
-}
-} // namespace
 
 //=======================================================================
 // Section: General commands
@@ -1856,9 +1843,6 @@ void XDEDRAW::Init(Draw_Interpretor& di)
     return;
   }
   initactor = Standard_True;
-
-  //! Ensure DEBREP and DEXCAF plugins are registered
-  DECascadeSingleton();
 
   // Initialize XCAF formats
   Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
