@@ -65,8 +65,6 @@ runs:
         brew install mono || true
         brew install openexr || true
         brew install --cask xquartz || true
-        # Check if mono is available
-        which mono || echo "Mono not found in PATH"
       shell: bash
 
 
