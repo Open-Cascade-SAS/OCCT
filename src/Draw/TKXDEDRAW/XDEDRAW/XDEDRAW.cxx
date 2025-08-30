@@ -111,6 +111,16 @@
 
 #include <stdio.h>
 
+namespace
+{
+// Singleton to ensure DEBREP and DEXCAF plugins are registered only once
+void DECascadeSingleton()
+{
+  static DE_MultiPluginHolder<DEBREP_ConfigurationNode, DEXCAF_ConfigurationNode> aHolder;
+  (void)aHolder;
+}
+} // namespace
+
 //=======================================================================
 // Section: General commands
 //=======================================================================
@@ -2008,16 +2018,6 @@ void XDEDRAW::Init(Draw_Interpretor& di)
   XDEDRAW_Notes::InitCommands(di);
   XDEDRAW_Common::InitCommands(di); // moved from EXE
 }
-
-namespace
-{
-// Singleton to ensure DEBREP and DEXCAF plugins are registered only once
-void DECascadeSingleton()
-{
-  static DE_MultiPluginHolder<DEBREP_ConfigurationNode, DEXCAF_ConfigurationNode> aHolder;
-  (void)aHolder;
-}
-} // namespace
 
 //==============================================================================
 // XDEDRAW::Factory
