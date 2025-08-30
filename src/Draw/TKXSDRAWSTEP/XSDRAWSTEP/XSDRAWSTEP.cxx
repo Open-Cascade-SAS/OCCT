@@ -1096,13 +1096,13 @@ static Standard_Integer WriteStep(Draw_Interpretor& theDI,
 
 namespace
 {
-  // Singleton to ensure DESTEP plugin is registered only once
-  void DESTEPSingleton()
-  {
-    static DE_PluginHolder<DESTEP_ConfigurationNode> aHolder;
-    (void)aHolder;
-  }
+// Singleton to ensure DESTEP plugin is registered only once
+void DESTEPSingleton()
+{
+  static DE_PluginHolder<DESTEP_ConfigurationNode> aHolder;
+  (void)aHolder;
 }
+} // namespace
 
 //=================================================================================================
 

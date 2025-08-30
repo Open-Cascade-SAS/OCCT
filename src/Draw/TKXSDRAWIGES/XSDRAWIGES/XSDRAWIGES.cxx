@@ -1112,13 +1112,13 @@ static Standard_Integer WriteIges(Draw_Interpretor& theDI,
 
 namespace
 {
-  // Singleton to ensure DEIGES plugin is registered only once
-  void DEIGESSingleton()
-  {
-    static DE_PluginHolder<DEIGES_ConfigurationNode> aHolder;
-    (void)aHolder;
-  }
+// Singleton to ensure DEIGES plugin is registered only once
+void DEIGESSingleton()
+{
+  static DE_PluginHolder<DEIGES_ConfigurationNode> aHolder;
+  (void)aHolder;
 }
+} // namespace
 
 //=================================================================================================
 

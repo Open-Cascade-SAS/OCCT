@@ -412,13 +412,13 @@ static Standard_Integer writevrml(Draw_Interpretor& di, Standard_Integer argc, c
 
 namespace
 {
-  // Singleton to ensure DEVRML plugin is registered only once
-  void DEVRMLSingleton()
-  {
-    static DE_PluginHolder<DEVRML_ConfigurationNode> aHolder;
-    (void)aHolder;
-  }
+// Singleton to ensure DEVRML plugin is registered only once
+void DEVRMLSingleton()
+{
+  static DE_PluginHolder<DEVRML_ConfigurationNode> aHolder;
+  (void)aHolder;
 }
+} // namespace
 
 //=================================================================================================
 

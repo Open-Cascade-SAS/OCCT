@@ -299,13 +299,13 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
 
 namespace
 {
-  // Singleton to ensure DEPLY plugin is registered only once
-  void DEPLYSingleton()
-  {
-    static DE_PluginHolder<DEPLY_ConfigurationNode> aHolder;
-    (void)aHolder;
-  }
+// Singleton to ensure DEPLY plugin is registered only once
+void DEPLYSingleton()
+{
+  static DE_PluginHolder<DEPLY_ConfigurationNode> aHolder;
+  (void)aHolder;
 }
+} // namespace
 
 //=================================================================================================
 

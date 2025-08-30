@@ -1237,13 +1237,13 @@ static Standard_Integer meshinfo(Draw_Interpretor& theDI,
 
 namespace
 {
-  // Singleton to ensure DESTL plugin is registered only once
-  void DESTLSingleton()
-  {
-    static DE_PluginHolder<DESTL_ConfigurationNode> aHolder;
-    (void)aHolder;
-  }
+// Singleton to ensure DESTL plugin is registered only once
+void DESTLSingleton()
+{
+  static DE_PluginHolder<DESTL_ConfigurationNode> aHolder;
+  (void)aHolder;
 }
+} // namespace
 
 //=================================================================================================
 

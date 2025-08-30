@@ -2011,13 +2011,13 @@ void XDEDRAW::Init(Draw_Interpretor& di)
 
 namespace
 {
-  // Singleton to ensure DEBREP and DEXCAF plugins are registered only once
-  void DECascadeSingleton()
-  {
-    static DE_MultiPluginHolder<DEBREP_ConfigurationNode, DEXCAF_ConfigurationNode> aHolder;
-    (void)aHolder;
-  }
+// Singleton to ensure DEBREP and DEXCAF plugins are registered only once
+void DECascadeSingleton()
+{
+  static DE_MultiPluginHolder<DEBREP_ConfigurationNode, DEXCAF_ConfigurationNode> aHolder;
+  (void)aHolder;
 }
+} // namespace
 
 //==============================================================================
 // XDEDRAW::Factory

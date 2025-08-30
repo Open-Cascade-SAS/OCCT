@@ -102,7 +102,7 @@ private:
   #define DEPLUGIN(theNodeType, ...)                                                               \
     extern "C" Standard_EXPORT void PLUGINFACTORY()                                                \
     {                                                                                              \
-      static DE_MultiPluginHolder<theNodeType, ##__VA_ARGS__> aMultiHolder;                       \
+      static DE_MultiPluginHolder<theNodeType, ##__VA_ARGS__> aMultiHolder;                        \
     }
 #endif
 
