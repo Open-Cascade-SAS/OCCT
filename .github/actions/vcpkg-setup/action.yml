@@ -56,8 +56,11 @@ runs:
       if: runner.os == 'macOS'
       run: |
         brew update || true
-        brew install cmake ninja nasm autoconf automake mono openexr || true
+        brew install cmake ninja nasm autoconf automake openexr || true
         brew install --cask xquartz || true
+        # Install mono separately and check if it's available
+        brew install mono || echo "Mono installation failed, vcpkg may need alternative setup"
+        which mono || echo "Mono not found in PATH"
       shell: bash
 
 
