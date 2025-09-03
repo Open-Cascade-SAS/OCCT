@@ -15,7 +15,6 @@
 
 #include <DEOBJ_Provider.hxx>
 #include <DE_ConfigurationContext.hxx>
-#include <DE_PluginHolder.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DEOBJ_ConfigurationNode, DE_ConfigurationNode)
 
@@ -27,8 +26,6 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
   return aScope;
 }
 
-// Wrapper to auto-load DE component
-DE_PluginHolder<DEOBJ_ConfigurationNode> THE_OCCT_OBJ_COMPONENT_PLUGIN;
 } // namespace
 
 //=================================================================================================

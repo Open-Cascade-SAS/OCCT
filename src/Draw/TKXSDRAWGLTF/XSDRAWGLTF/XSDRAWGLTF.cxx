@@ -16,6 +16,8 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
+#include <DEGLTF_ConfigurationNode.hxx>
+#include <DE_PluginHolder.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -29,6 +31,16 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
+
+namespace
+{
+// Singleton to ensure DEGLTF plugin is registered only once
+void DEGLTFSingleton()
+{
+  static DE_PluginHolder<DEGLTF_ConfigurationNode> aHolder;
+  (void)aHolder;
+}
+} // namespace
 
 //=============================================================================
 // function : parseNameFormat
@@ -508,6 +520,9 @@ void XSDRAWGLTF::Factory(Draw_Interpretor& theDI)
     return;
   }
   aIsActivated = Standard_True;
+
+  //! Ensure DEGLTF plugin is registered
+  DEGLTFSingleton();
 
   const char* aGroup = "XSTEP-STL/VRML"; // Step transfer file commands
   theDI.Add("ReadGltf",

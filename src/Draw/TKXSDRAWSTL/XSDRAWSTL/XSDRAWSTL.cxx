@@ -18,6 +18,8 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
+#include <DESTL_ConfigurationNode.hxx>
+#include <DE_PluginHolder.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -1233,6 +1235,16 @@ static Standard_Integer meshinfo(Draw_Interpretor& theDI,
   return 0;
 }
 
+namespace
+{
+// Singleton to ensure DESTL plugin is registered only once
+void DESTLSingleton()
+{
+  static DE_PluginHolder<DESTL_ConfigurationNode> aHolder;
+  (void)aHolder;
+}
+} // namespace
+
 //=================================================================================================
 
 void XSDRAWSTL::Factory(Draw_Interpretor& theDI)
@@ -1243,6 +1255,9 @@ void XSDRAWSTL::Factory(Draw_Interpretor& theDI)
     return;
   }
   aIsActivated = Standard_True;
+
+  //! Ensure DESTL plugin is registered
+  DESTLSingleton();
 
   const char* aGroup = "XSTEP-STL/VRML"; // Step transfer file commands
 

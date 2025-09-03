@@ -15,7 +15,6 @@
 
 #include <DESTEP_Provider.hxx>
 #include <DE_ConfigurationContext.hxx>
-#include <DE_PluginHolder.hxx>
 #include <NCollection_Buffer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DESTEP_ConfigurationNode, DE_ShapeFixConfigurationNode)
@@ -28,8 +27,6 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
   return aScope;
 }
 
-// Wrapper to auto-load DE component
-DE_PluginHolder<DESTEP_ConfigurationNode> THE_OCCT_STEP_COMPONENT_PLUGIN;
 } // namespace
 
 //=================================================================================================

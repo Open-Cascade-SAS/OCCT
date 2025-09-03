@@ -20,6 +20,8 @@
 #include <DE_Provider.hxx>
 #include <DE_Wrapper.hxx>
 #include <DEBREP_ConfigurationNode.hxx>
+#include <DEXCAF_ConfigurationNode.hxx>
+#include <DE_PluginHolder.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -30,6 +32,16 @@
 #include <TopoDS_Shape.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
+
+namespace
+{
+// Singleton to ensure DEBREP and DEXCAF plugins are registered only once
+void DECascadeSingleton()
+{
+  static DE_MultiPluginHolder<DEBREP_ConfigurationNode, DEXCAF_ConfigurationNode> aHolder;
+  (void)aHolder;
+}
+} // namespace
 
 //=================================================================================================
 
@@ -364,6 +376,9 @@ void XSDRAWDE::Factory(Draw_Interpretor& theDI)
   }
   aIsActivated = Standard_True;
 
+  //! Ensure DEBREP and DEXCAF plugins are registered
+  DECascadeSingleton();
+
   Standard_CString aGroup = "XDE translation commands";
   theDI.Add("DumpConfiguration",
             "DumpConfiguration [-path <path>] [-recursive {on|off}] [-format fmt1 fmt2 ...] "
@@ -428,10 +443,6 @@ void XSDRAWDE::Factory(Draw_Interpretor& theDI)
 
   // Load XSDRAW session for pilot activation
   XSDRAW::LoadDraw(theDI);
-
-  // Workaround to force load TKDECascade lib
-  DEBREP_ConfigurationNode aTmpObj;
-  (void)aTmpObj;
 }
 
 // Declare entry point PLUGINFACTORY
