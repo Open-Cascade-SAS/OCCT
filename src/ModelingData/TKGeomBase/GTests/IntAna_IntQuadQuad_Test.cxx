@@ -99,9 +99,6 @@ TEST_F(IntAna_IntQuadQuad_Test, NextCurveMethodCorrectness)
       EXPECT_GT(aNextIdx, 0);
       EXPECT_LE(aNextIdx, anIntersector.NbCurve());
       EXPECT_NE(aNextIdx, i); // Should not point to itself
-
-      // The opposite flag should be set correctly
-      EXPECT_TRUE(anOpposite == Standard_True || anOpposite == Standard_False);
     }
   }
 }
@@ -205,10 +202,6 @@ TEST_F(IntAna_IntQuadQuad_Test, IndexingConsistencyTest)
 
       EXPECT_GT(aNextIdx, 0);
       EXPECT_LE(aNextIdx, anIntersector.NbCurve());
-
-      // The bug was that NextCurve used wrong index for checking sign
-      // Now it should correctly determine the opposite parameter
-      EXPECT_TRUE(anOpposite == Standard_True || anOpposite == Standard_False);
     }
   }
 }
