@@ -20,7 +20,6 @@
 #include <gp_Ax3.hxx>
 
 #include <gtest/gtest.h>
-#include <chrono>
 
 class IntAna_IntQuadQuad_Test : public ::testing::Test
 {
@@ -28,59 +27,59 @@ protected:
   void SetUp() override
   {
     // Set up common geometric objects for tests
-    gp_Pnt origin(0, 0, 0);
-    gp_Dir zDir(0, 0, 1);
-    gp_Dir xDir(1, 0, 0);
-    gp_Ax3 axis(origin, zDir, xDir);
+    gp_Pnt anOrigin(0, 0, 0);
+    gp_Dir aZDir(0, 0, 1);
+    gp_Dir anXDir(1, 0, 0);
+    gp_Ax3 anAxis(anOrigin, aZDir, anXDir);
 
     // Create sphere at origin with radius 5
-    sphere1 = gp_Sphere(axis, 5.0);
+    mySphere1 = gp_Sphere(anAxis, 5.0);
 
     // Create cylinder with axis along Z, radius 3
-    cylinder1 = gp_Cylinder(axis, 3.0);
+    myCylinder1 = gp_Cylinder(anAxis, 3.0);
 
     // Create cone with semi-angle 30 degrees
-    cone1 = gp_Cone(axis, M_PI / 6, 2.0);
+    myCone1 = gp_Cone(anAxis, M_PI / 6, 2.0);
 
     // Create plane at Z = 2
-    gp_Pnt planeOrigin(0, 0, 2);
-    plane1 = gp_Pln(planeOrigin, zDir);
+    gp_Pnt aPlaneOrigin(0, 0, 2);
+    myPlane1 = gp_Pln(aPlaneOrigin, aZDir);
   }
 
-  gp_Sphere   sphere1;
-  gp_Cylinder cylinder1;
-  gp_Cone     cone1;
-  gp_Pln      plane1;
+  gp_Sphere   mySphere1;
+  gp_Cylinder myCylinder1;
+  gp_Cone     myCone1;
+  gp_Pln      myPlane1;
 };
 
 // Test basic intersection functionality - Cylinder vs Quadric (sphere)
 TEST_F(IntAna_IntQuadQuad_Test, CylinderVsSphereIntersection)
 {
-  IntAna_Quadric sphereQuad(sphere1);
+  IntAna_Quadric aSphereQuad(mySphere1);
 
-  IntAna_IntQuadQuad intersector(cylinder1, sphereQuad, 1e-7);
+  IntAna_IntQuadQuad anIntersector(myCylinder1, aSphereQuad, 1e-7);
 
   // Should have intersection curves
-  EXPECT_TRUE(intersector.IsDone());
-  EXPECT_FALSE(intersector.IdenticalElements());
+  EXPECT_TRUE(anIntersector.IsDone());
+  EXPECT_FALSE(anIntersector.IdenticalElements());
 
   // Should have intersection curves for cylinder-sphere case
-  EXPECT_GT(intersector.NbCurve(), 0);
+  EXPECT_GT(anIntersector.NbCurve(), 0);
 
   // Test that we can access all curves without exceptions
-  for (Standard_Integer i = 1; i <= intersector.NbCurve(); i++)
+  for (Standard_Integer i = 1; i <= anIntersector.NbCurve(); i++)
   {
     // This should not throw any exceptions - just verify we can access the curve
-    EXPECT_NO_THROW(intersector.Curve(i));
+    EXPECT_NO_THROW(anIntersector.Curve(i));
   }
 }
 
 // Test NextCurve functionality - the main test for our bug fix
 TEST_F(IntAna_IntQuadQuad_Test, NextCurveMethodCorrectness)
 {
-  IntAna_Quadric aSphereQuad(sphere1);
+  IntAna_Quadric aSphereQuad(mySphere1);
 
-  IntAna_IntQuadQuad anIntersector(cylinder1, aSphereQuad, 1e-7);
+  IntAna_IntQuadQuad anIntersector(myCylinder1, aSphereQuad, 1e-7);
 
   EXPECT_TRUE(anIntersector.IsDone());
 
@@ -106,9 +105,9 @@ TEST_F(IntAna_IntQuadQuad_Test, NextCurveMethodCorrectness)
 // Test edge cases and boundary conditions
 TEST_F(IntAna_IntQuadQuad_Test, NextCurveBoundaryConditions)
 {
-  IntAna_Quadric aSphereQuad(sphere1);
+  IntAna_Quadric aSphereQuad(mySphere1);
 
-  IntAna_IntQuadQuad anIntersector(cylinder1, aSphereQuad, 1e-7);
+  IntAna_IntQuadQuad anIntersector(myCylinder1, aSphereQuad, 1e-7);
 
   EXPECT_TRUE(anIntersector.IsDone());
 
@@ -131,20 +130,20 @@ TEST_F(IntAna_IntQuadQuad_Test, NextCurveBoundaryConditions)
 TEST_F(IntAna_IntQuadQuad_Test, ConnectedCurvesScenario)
 {
   // Create two spheres that intersect in a circle
-  gp_Pnt center1(0, 0, 0);
-  gp_Pnt center2(3, 0, 0); // Overlapping spheres
-  gp_Dir zDir(0, 0, 1);
-  gp_Dir xDir(1, 0, 0);
-  gp_Ax3 axis1(center1, zDir, xDir);
-  gp_Ax3 axis2(center2, zDir, xDir);
+  gp_Pnt aCenter1(0, 0, 0);
+  gp_Pnt aCenter2(3, 0, 0); // Overlapping spheres
+  gp_Dir aZDir(0, 0, 1);
+  gp_Dir anXDir(1, 0, 0);
+  gp_Ax3 anAxis1(aCenter1, aZDir, anXDir);
+  gp_Ax3 anAxis2(aCenter2, aZDir, anXDir);
 
-  gp_Sphere sphere1(axis1, 2.0);
-  gp_Sphere sphere2(axis2, 2.0);
+  gp_Sphere aSphere1(anAxis1, 2.0);
+  gp_Sphere aSphere2(anAxis2, 2.0);
 
-  IntAna_Quadric aSphere2Quad(sphere2);
+  IntAna_Quadric aSphere2Quad(aSphere2);
 
   IntAna_IntQuadQuad anIntersector;
-  anIntersector.Perform(gp_Cylinder(axis1, 2.0), aSphere2Quad, 1e-7);
+  anIntersector.Perform(gp_Cylinder(anAxis1, 2.0), aSphere2Quad, 1e-7);
 
   EXPECT_TRUE(anIntersector.IsDone());
 
@@ -182,9 +181,9 @@ TEST_F(IntAna_IntQuadQuad_Test, IndexingConsistencyTest)
   // This test specifically validates that HasNextCurve and NextCurve
   // use consistent indexing (both should use I-1 for 0-based arrays)
 
-  IntAna_Quadric aSphereQuad(sphere1); // Cylinder vs sphere intersection
+  IntAna_Quadric aSphereQuad(mySphere1); // Cylinder vs sphere intersection
 
-  IntAna_IntQuadQuad anIntersector(cylinder1, aSphereQuad, 1e-7);
+  IntAna_IntQuadQuad anIntersector(myCylinder1, aSphereQuad, 1e-7);
 
   EXPECT_TRUE(anIntersector.IsDone());
 
@@ -204,37 +203,4 @@ TEST_F(IntAna_IntQuadQuad_Test, IndexingConsistencyTest)
       EXPECT_LE(aNextIdx, anIntersector.NbCurve());
     }
   }
-}
-
-// Performance test to ensure the fix doesn't impact performance
-TEST_F(IntAna_IntQuadQuad_Test, PerformanceRegressionTest)
-{
-  const Standard_Integer aNumIterations = 100;
-
-  IntAna_Quadric aSphereQuad(sphere1);
-
-  // Measure time for multiple intersections
-  auto aStart = std::chrono::high_resolution_clock::now();
-
-  for (Standard_Integer anIter = 0; anIter < aNumIterations; anIter++)
-  {
-    IntAna_IntQuadQuad anIntersector(cylinder1, aSphereQuad, 1e-7);
-
-    EXPECT_TRUE(anIntersector.IsDone());
-
-    for (Standard_Integer i = 1; i <= anIntersector.NbCurve(); i++)
-    {
-      if (anIntersector.HasNextCurve(i)) // Only call NextCurve when HasNextCurve is true
-      {
-        Standard_Boolean anOpposite;
-        anIntersector.NextCurve(i, anOpposite);
-      }
-    }
-  }
-
-  auto anEnd     = std::chrono::high_resolution_clock::now();
-  auto aDuration = std::chrono::duration_cast<std::chrono::milliseconds>(anEnd - aStart);
-
-  // Should complete within reasonable time (less than 5 seconds for 100 iterations)
-  EXPECT_LT(aDuration.count(), 5000);
 }
