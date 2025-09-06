@@ -67,11 +67,11 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderVsSphereIntersection)
   // Should have intersection curves for cylinder-sphere case
   EXPECT_GT(intersector.NbCurve(), 0);
 
-  // Test that curve indices are valid
+  // Test that we can access all curves without exceptions
   for (Standard_Integer i = 1; i <= intersector.NbCurve(); i++)
   {
-    const IntAna_Curve& aCurve = intersector.Curve(i);
-    EXPECT_TRUE(aCurve.IsOpen() || aCurve.IsConstant() || !aCurve.IsOpen());
+    // This should not throw any exceptions - just verify we can access the curve
+    EXPECT_NO_THROW(intersector.Curve(i));
   }
 }
 
