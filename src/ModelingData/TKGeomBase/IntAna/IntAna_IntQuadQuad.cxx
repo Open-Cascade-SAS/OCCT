@@ -1576,16 +1576,8 @@ Standard_Integer IntAna_IntQuadQuad::NextCurve(const Standard_Integer I,
 {
   if (HasNextCurve(I))
   {
-    if (nextcurve[I] > 0)
-    {
-      theOpposite = Standard_False;
-      return (nextcurve[I - 1]);
-    }
-    else
-    {
-      theOpposite = Standard_True;
-      return (-nextcurve[I - 1]);
-    }
+    theOpposite = nextcurve[I - 1] < 0;
+    return Abs(nextcurve[I - 1]);
   }
   else
   {
