@@ -21,6 +21,7 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_RangeError.hxx>
 
+#include <algorithm>
 #include <cmath>
 
 namespace

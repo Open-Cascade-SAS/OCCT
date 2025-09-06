@@ -17,6 +17,8 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
+#include <DEIGES_ConfigurationNode.hxx>
+#include <DE_PluginHolder.hxx>
 #include <Draw.hxx>
 #include <DrawTrSurf.hxx>
 #include <Draw_Interpretor.hxx>
@@ -1108,6 +1110,16 @@ static Standard_Integer WriteIges(Draw_Interpretor& theDI,
   return 0;
 }
 
+namespace
+{
+// Singleton to ensure DEIGES plugin is registered only once
+void DEIGESSingleton()
+{
+  static DE_PluginHolder<DEIGES_ConfigurationNode> aHolder;
+  (void)aHolder;
+}
+} // namespace
+
 //=================================================================================================
 
 void XSDRAWIGES::Factory(Draw_Interpretor& theDI)
@@ -1120,6 +1132,9 @@ void XSDRAWIGES::Factory(Draw_Interpretor& theDI)
   aIsActivated = Standard_True;
 
   IGESControl_Controller::Init();
+
+  //! Ensure DEIGES plugin is registered
+  DEIGESSingleton();
 
   const char* aGroup = "DE: IGES";
 

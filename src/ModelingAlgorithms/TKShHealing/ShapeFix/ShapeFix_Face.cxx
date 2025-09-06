@@ -1687,6 +1687,12 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
   Handle(Geom_ToroidalSurface) aTorSurf = Handle(Geom_ToroidalSurface)::DownCast(mySurf->Surface());
   Standard_Boolean             anIsDegeneratedTor =
     (aTorSurf.IsNull() ? Standard_False : aTorSurf->MajorRadius() < aTorSurf->MinorRadius());
+  // if the second wire is not null, we don't need mark the torus as degenerated
+  // and should process it as a regular one.
+  if (anIsDegeneratedTor && !w2.IsNull())
+  {
+    anIsDegeneratedTor = Standard_False;
+  }
 
   if (w1.IsNull())
     return Standard_False;

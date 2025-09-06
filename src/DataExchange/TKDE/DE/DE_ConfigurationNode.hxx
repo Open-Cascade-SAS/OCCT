@@ -18,6 +18,7 @@
 
 class DE_ConfigurationContext;
 class DE_Provider;
+class DE_Wrapper;
 class NCollection_Buffer;
 
 //! Base class to work with CAD transfer properties.
@@ -153,6 +154,16 @@ public:
     Standard_Real SystemUnit = 1.0; //!< System Unit (scaling based on MM) to be used when initial
                                     //!< unit is unknown, default 1.0 (MM)
   } GlobalParameters;
+
+public:
+
+  //! Registers configuration node with the specified wrapper
+  //! @param[in] theWrapper wrapper to register with
+  Standard_EXPORT virtual void Register(const Handle(DE_Wrapper)& theWrapper) const;
+
+  //! Unregisters configuration node from the specified wrapper
+  //! @param[in] theWrapper wrapper to unregister from
+  Standard_EXPORT virtual void UnRegister(const Handle(DE_Wrapper)& theWrapper) const;
 
 private:
   Standard_Boolean myIsEnabled; //!< Flag to use a current provider for Read or Write process via DE_Wrapper

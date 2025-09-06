@@ -1,0 +1,8 @@
+puts "================================================"
+puts "Revolved shape in STEP file is imported inverted"
+puts "================================================"
+puts ""
+
+stepread [locate_data_file gh_bug378.stp] a *
+checkprops a_1 -v 10504.9
+

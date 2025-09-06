@@ -16,6 +16,8 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
+#include <DEVRML_ConfigurationNode.hxx>
+#include <DE_PluginHolder.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -408,6 +410,16 @@ static Standard_Integer writevrml(Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
+namespace
+{
+// Singleton to ensure DEVRML plugin is registered only once
+void DEVRMLSingleton()
+{
+  static DE_PluginHolder<DEVRML_ConfigurationNode> aHolder;
+  (void)aHolder;
+}
+} // namespace
+
 //=================================================================================================
 
 void XSDRAWVRML::Factory(Draw_Interpretor& theDI)
@@ -418,6 +430,9 @@ void XSDRAWVRML::Factory(Draw_Interpretor& theDI)
     return;
   }
   anInitActor = Standard_True;
+
+  //! Ensure DEVRML plugin is registered
+  DEVRMLSingleton();
 
   Standard_CString aGroup = "XDE translation commands";
   theDI.Add(
