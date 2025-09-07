@@ -16,6 +16,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_SparseArray_Test.cxx
   NCollection_Vector_Test.cxx
   OSD_PerfMeter_Test.cxx
+  Standard_ArrayStreamBuffer_Test.cxx
   TCollection_AsciiString_Test.cxx
   TCollection_ExtendedString_Test.cxx
 )
