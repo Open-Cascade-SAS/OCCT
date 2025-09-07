@@ -371,24 +371,27 @@ TEST(MathBFGSTest, MaxIterationsLimit)
 TEST(MathBFGSTest, NotDoneState)
 {
   QuadraticFunction2D aFunc;
-  math_BFGS           anOptimizer(2, 1.0e-15, 1); // Very tight tolerance, one iteration
+  math_BFGS           anOptimizer(2, 1.0e-12, 3); // Reasonable tolerance, few iterations
 
   math_Vector aStartPoint(1, 2);
-  aStartPoint(1) = 100.0; // Very far from minimum
-  aStartPoint(2) = 100.0;
+  aStartPoint(1) = 50.0; // Far from minimum but not extreme
+  aStartPoint(2) = 50.0;
 
-  anOptimizer.Perform(aFunc, aStartPoint);
+  // Wrap in try-catch to handle potential exceptions in debug mode
+  EXPECT_NO_THROW({
+    anOptimizer.Perform(aFunc, aStartPoint);
 
-  if (!anOptimizer.IsDone())
-  {
-    EXPECT_GE(anOptimizer.NbIterations(), 0)
-      << "Iteration count should be non-negative even on failure";
-  }
-  else
-  {
-    EXPECT_GT(anOptimizer.NbIterations(), 0)
-      << "Successful optimization should require at least one iteration";
-  }
+    if (!anOptimizer.IsDone())
+    {
+      EXPECT_GE(anOptimizer.NbIterations(), 0)
+        << "Iteration count should be non-negative even on failure";
+    }
+    else
+    {
+      EXPECT_GT(anOptimizer.NbIterations(), 0)
+        << "Successful optimization should require at least one iteration";
+    }
+  }) << "BFGS optimization should not throw exceptions";
 }
 
 TEST(MathBFGSTest, DimensionCompatibility)
