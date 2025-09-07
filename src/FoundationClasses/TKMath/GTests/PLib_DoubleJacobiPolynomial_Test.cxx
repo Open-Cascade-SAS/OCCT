@@ -196,14 +196,14 @@ TEST_F(PLibDoubleJacobiPolynomialTest, ReduceDegree)
 
   const Standard_Integer aDimension  = 1;
   const Standard_Integer aMinDegreeU = 2, aMaxDegreeU = 6; // Must be >= MinU=2
-  const Standard_Integer aMinDegreeV = 4, aMaxDegreeV = 7; // Must be >= MinV=4  
-  const Standard_Integer aDJacCoeff  = (aMaxDegreeU + 1) * aDimension;
-  const Standard_Real    anEpmsCut   = 1e-8;
+  const Standard_Integer aMinDegreeV = 4, aMaxDegreeV = 7; // Must be >= MinV=4
+  const Standard_Integer aDJacCoeff = (aMaxDegreeU + 1) * aDimension;
+  const Standard_Real    anEpmsCut  = 1e-8;
 
   // JacCoeff array must be sized based on WorkDegrees and use 0-based indexing
   const Standard_Integer aWorkDegreeU = myJacobiU->WorkDegree();
   const Standard_Integer aWorkDegreeV = myJacobiV->WorkDegree();
-  const Standard_Integer aCoeffCount = (aWorkDegreeU + 1) * (aWorkDegreeV + 1) * aDimension;
+  const Standard_Integer aCoeffCount  = (aWorkDegreeU + 1) * (aWorkDegreeV + 1) * aDimension;
 
   TColStd_Array1OfReal aJacCoeff(0, aCoeffCount - 1);
   for (Standard_Integer i = aJacCoeff.Lower(); i <= aJacCoeff.Upper(); i++)
@@ -242,15 +242,15 @@ TEST_F(PLibDoubleJacobiPolynomialTest, AverageError)
 {
   PLib_DoubleJacobiPolynomial aDoubleJac(myJacobiU, myJacobiV);
 
-  const Standard_Integer aDimension  = 2;
-  const Standard_Integer aDegreeU    = 4;
-  const Standard_Integer aDegreeV    = 3;
-  const Standard_Integer aDJacCoeff  = 0; // For 0-based arrays, start offset should be 0
+  const Standard_Integer aDimension = 2;
+  const Standard_Integer aDegreeU   = 4;
+  const Standard_Integer aDegreeV   = 3;
+  const Standard_Integer aDJacCoeff = 0; // For 0-based arrays, start offset should be 0
 
   // JacCoeff array must be sized based on WorkDegrees and use 0-based indexing
   const Standard_Integer aWorkDegreeU = myJacobiU->WorkDegree();
   const Standard_Integer aWorkDegreeV = myJacobiV->WorkDegree();
-  const Standard_Integer aCoeffCount = (aWorkDegreeU + 1) * (aWorkDegreeV + 1) * aDimension;
+  const Standard_Integer aCoeffCount  = (aWorkDegreeU + 1) * (aWorkDegreeV + 1) * aDimension;
 
   TColStd_Array1OfReal aJacCoeff(0, aCoeffCount - 1);
   for (Standard_Integer i = aJacCoeff.Lower(); i <= aJacCoeff.Upper(); i++)
@@ -307,7 +307,6 @@ TEST_F(PLibDoubleJacobiPolynomialTest, CoefficientConversion)
       << "Converted coefficient should be finite at index " << i;
   }
 }
-
 
 // Test with mismatched degrees
 TEST_F(PLibDoubleJacobiPolynomialTest, MismatchedDegrees)
@@ -373,15 +372,15 @@ TEST_F(PLibDoubleJacobiPolynomialTest, StressTest)
     PLib_DoubleJacobiPolynomial aDoubleJac(aJacU_Large, aJacV_Large);
 
     // Test basic operations don't crash with large degrees
-    const Standard_Integer aDimension  = 1;
-    const Standard_Integer aDegreeU    = 15;
-    const Standard_Integer aDegreeV    = 12;
-    
+    const Standard_Integer aDimension = 1;
+    const Standard_Integer aDegreeU   = 15;
+    const Standard_Integer aDegreeV   = 12;
+
     // Array must be sized based on WorkDegrees for proper method operation
     const Standard_Integer aWorkDegreeU = aJacU_Large->WorkDegree();
     const Standard_Integer aWorkDegreeV = aJacV_Large->WorkDegree();
-    const Standard_Integer aCoeffCount = (aWorkDegreeU + 1) * (aWorkDegreeV + 1) * aDimension;
-    const Standard_Integer aDJacCoeff  = 0; // For 0-based arrays
+    const Standard_Integer aCoeffCount  = (aWorkDegreeU + 1) * (aWorkDegreeV + 1) * aDimension;
+    const Standard_Integer aDJacCoeff   = 0; // For 0-based arrays
 
     TColStd_Array1OfReal aJacCoeff(0, aCoeffCount - 1);
     for (Standard_Integer i = aJacCoeff.Lower(); i <= aJacCoeff.Upper(); i++)

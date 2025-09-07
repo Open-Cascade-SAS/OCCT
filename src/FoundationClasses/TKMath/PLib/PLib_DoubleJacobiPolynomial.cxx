@@ -172,7 +172,7 @@ void PLib_DoubleJacobiPolynomial::ReduceDegree(const Standard_Integer      Dimen
   NewU = MaxDegreeU;
   NewV = MaxDegreeV;
   math_Vector MaxErr2(1, 2);
-  
+
   MaxError = 0.0; // Initialize MaxError
 
   //**********************************************************************
