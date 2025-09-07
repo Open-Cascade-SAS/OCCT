@@ -34,4 +34,8 @@ set(OCCT_TKMath_GTests_FILES
   math_TrigonometricFunctionRoots_Test.cxx
   math_Uzawa_Test.cxx
   math_Vector_Test.cxx
+  PLib_Test.cxx
+  PLib_JacobiPolynomial_Test.cxx
+  PLib_HermitJacobi_Test.cxx
+  PLib_DoubleJacobiPolynomial_Test.cxx
 )
