@@ -350,21 +350,21 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_MinMax)
   std::vector<Standard_Integer>        aVector;
 
   srand(1);
-  for (Standard_Integer i = 1; i <= size; ++i)
+  for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
   {
-    Standard_Integer val = rand();
-    anArray(i)           = val;
-    aVector.push_back(val);
+    Standard_Integer aVal = rand();
+    anArray(anIdx)       = aVal;
+    aVector.push_back(aVal);
   }
 
-  auto minOCCT = std::min_element(anArray.begin(), anArray.end());
-  auto minStd  = std::min_element(aVector.begin(), aVector.end());
+  auto aMinOCCT = std::min_element(anArray.begin(), anArray.end());
+  auto aMinStd  = std::min_element(aVector.begin(), aVector.end());
 
-  auto maxOCCT = std::max_element(anArray.begin(), anArray.end());
-  auto maxStd  = std::max_element(aVector.begin(), aVector.end());
+  auto aMaxOCCT = std::max_element(anArray.begin(), anArray.end());
+  auto aMaxStd  = std::max_element(aVector.begin(), aVector.end());
 
-  EXPECT_EQ(*minOCCT, *minStd);
-  EXPECT_EQ(*maxOCCT, *maxStd);
+  EXPECT_EQ(*aMinOCCT, *aMinStd);
+  EXPECT_EQ(*aMaxOCCT, *aMaxStd);
 }
 
 TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Replace)
@@ -374,18 +374,18 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Replace)
   std::vector<Standard_Integer>        aVector;
 
   srand(1);
-  for (Standard_Integer i = 1; i <= size; ++i)
+  for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
   {
-    Standard_Integer val = rand();
-    anArray(i)           = val;
-    aVector.push_back(val);
+    Standard_Integer aVal = rand();
+    anArray(anIdx)       = aVal;
+    aVector.push_back(aVal);
   }
 
-  Standard_Integer targetValue = aVector.back();
-  Standard_Integer newValue    = -1;
+  Standard_Integer aTargetValue = aVector.back();
+  Standard_Integer aNewValue    = -1;
 
-  std::replace(anArray.begin(), anArray.end(), targetValue, newValue);
-  std::replace(aVector.begin(), aVector.end(), targetValue, newValue);
+  std::replace(anArray.begin(), anArray.end(), aTargetValue, aNewValue);
+  std::replace(aVector.begin(), aVector.end(), aTargetValue, aNewValue);
 
   EXPECT_TRUE(std::equal(anArray.begin(), anArray.end(), aVector.begin()));
 }
@@ -397,11 +397,11 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Sort)
   std::vector<Standard_Integer>        aVector;
 
   srand(1);
-  for (Standard_Integer i = 1; i <= size; ++i)
+  for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
   {
-    Standard_Integer val = rand();
-    anArray(i)           = val;
-    aVector.push_back(val);
+    Standard_Integer aVal = rand();
+    anArray(anIdx)       = aVal;
+    aVector.push_back(aVal);
   }
 
   std::sort(anArray.begin(), anArray.end());

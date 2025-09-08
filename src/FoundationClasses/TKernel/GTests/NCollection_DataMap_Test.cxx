@@ -241,20 +241,20 @@ TEST_F(NCollection_DataMapTest, STLAlgorithmCompatibility_MinMax)
   NCollection_DataMap<Standard_Integer, Standard_Integer> aMap;
 
   // Add some sequential values to make results predictable
-  for (Standard_Integer i = 10; i <= 50; i += 5)
+  for (Standard_Integer anIdx = 10; anIdx <= 50; anIdx += 5)
   {
-    aMap.Bind(i, i * 2);
+    aMap.Bind(anIdx, anIdx * 2);
   }
 
   EXPECT_FALSE(aMap.IsEmpty());
 
   // Test that STL algorithms work with OCCT iterators
-  auto minElement = std::min_element(aMap.cbegin(), aMap.cend());
-  auto maxElement = std::max_element(aMap.cbegin(), aMap.cend());
+  auto aMinElement = std::min_element(aMap.cbegin(), aMap.cend());
+  auto aMaxElement = std::max_element(aMap.cbegin(), aMap.cend());
 
-  EXPECT_TRUE(minElement != aMap.cend());
-  EXPECT_TRUE(maxElement != aMap.cend());
-  EXPECT_LE(*minElement, *maxElement);
+  EXPECT_TRUE(aMinElement != aMap.cend());
+  EXPECT_TRUE(aMaxElement != aMap.cend());
+  EXPECT_LE(*aMinElement, *aMaxElement);
 }
 
 TEST_F(NCollection_DataMapTest, STLAlgorithmCompatibility_Find)
@@ -267,11 +267,11 @@ TEST_F(NCollection_DataMapTest, STLAlgorithmCompatibility_Find)
   aMap.Bind(300, 600);
 
   // Test std::find compatibility
-  auto found = std::find(aMap.cbegin(), aMap.cend(), 200);
-  EXPECT_TRUE(found != aMap.cend());
-  EXPECT_EQ(*found, 200);
+  auto aFound = std::find(aMap.cbegin(), aMap.cend(), 200);
+  EXPECT_TRUE(aFound != aMap.cend());
+  EXPECT_EQ(*aFound, 200);
 
   // Test finding non-existent value
-  auto notFound = std::find(aMap.cbegin(), aMap.cend(), 999);
-  EXPECT_TRUE(notFound == aMap.cend());
+  auto aNotFound = std::find(aMap.cbegin(), aMap.cend(), 999);
+  EXPECT_TRUE(aNotFound == aMap.cend());
 }

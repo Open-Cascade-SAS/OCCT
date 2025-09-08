@@ -521,21 +521,21 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_MinMax)
   std::vector<Standard_Integer>            aVector;
 
   srand(1);
-  for (Standard_Integer i = 0; i < 100; ++i)
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer val = rand();
-    aMap.Add(val);
-    aVector.push_back(val);
+    Standard_Integer aVal = rand();
+    aMap.Add(aVal);
+    aVector.push_back(aVal);
   }
 
-  auto minOCCT = std::min_element(aMap.cbegin(), aMap.cend());
-  auto minStd  = std::min_element(aVector.begin(), aVector.end());
+  auto aMinOCCT = std::min_element(aMap.cbegin(), aMap.cend());
+  auto aMinStd  = std::min_element(aVector.begin(), aVector.end());
 
-  auto maxOCCT = std::max_element(aMap.cbegin(), aMap.cend());
-  auto maxStd  = std::max_element(aVector.begin(), aVector.end());
+  auto aMaxOCCT = std::max_element(aMap.cbegin(), aMap.cend());
+  auto aMaxStd  = std::max_element(aVector.begin(), aVector.end());
 
-  EXPECT_EQ(*minOCCT, *minStd);
-  EXPECT_EQ(*maxOCCT, *maxStd);
+  EXPECT_EQ(*aMinOCCT, *aMinStd);
+  EXPECT_EQ(*aMaxOCCT, *aMaxStd);
 }
 
 TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
@@ -544,19 +544,19 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
   std::vector<Standard_Integer>            aVector;
 
   srand(1);
-  for (Standard_Integer i = 0; i < 100; ++i)
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer val = rand();
-    aMap.Add(val);
-    aVector.push_back(val);
+    Standard_Integer aVal = rand();
+    aMap.Add(aVal);
+    aVector.push_back(aVal);
   }
 
   // Test std::find compatibility
-  Standard_Integer searchValue = aVector[10];
-  auto             foundOCCT   = std::find(aMap.cbegin(), aMap.cend(), searchValue);
-  auto             foundStd    = std::find(aVector.begin(), aVector.end(), searchValue);
+  Standard_Integer aSearchValue = aVector[10];
+  auto             aFoundOCCT   = std::find(aMap.cbegin(), aMap.cend(), aSearchValue);
+  auto             aFoundStd    = std::find(aVector.begin(), aVector.end(), aSearchValue);
 
-  EXPECT_TRUE(foundOCCT != aMap.cend());
-  EXPECT_TRUE(foundStd != aVector.end());
-  EXPECT_EQ(*foundOCCT, *foundStd);
+  EXPECT_TRUE(aFoundOCCT != aMap.cend());
+  EXPECT_TRUE(aFoundStd != aVector.end());
+  EXPECT_EQ(*aFoundOCCT, *aFoundStd);
 }

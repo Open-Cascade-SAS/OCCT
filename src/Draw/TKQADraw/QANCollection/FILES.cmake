@@ -16,5 +16,4 @@ set(OCCT_QANCollection_FILES
   QANCollection_IndexedDataMapOfRealPnt.hxx
   QANCollection_ListIteratorOfListOfPnt.hxx
   QANCollection_ListOfPnt.hxx
-  QANCollection_Test.cxx
 )

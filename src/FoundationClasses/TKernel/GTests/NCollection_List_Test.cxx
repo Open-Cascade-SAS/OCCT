@@ -409,21 +409,21 @@ TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_MinMax)
   std::list<Standard_Integer>        aStdList;
 
   srand(1);
-  for (Standard_Integer i = 0; i < 100; ++i)
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer val = rand();
-    aList.Append(val);
-    aStdList.push_back(val);
+    Standard_Integer aVal = rand();
+    aList.Append(aVal);
+    aStdList.push_back(aVal);
   }
 
-  auto minOCCT = std::min_element(aList.begin(), aList.end());
-  auto minStd  = std::min_element(aStdList.begin(), aStdList.end());
+  auto aMinOCCT = std::min_element(aList.begin(), aList.end());
+  auto aMinStd  = std::min_element(aStdList.begin(), aStdList.end());
 
-  auto maxOCCT = std::max_element(aList.begin(), aList.end());
-  auto maxStd  = std::max_element(aStdList.begin(), aStdList.end());
+  auto aMaxOCCT = std::max_element(aList.begin(), aList.end());
+  auto aMaxStd  = std::max_element(aStdList.begin(), aStdList.end());
 
-  EXPECT_EQ(*minOCCT, *minStd);
-  EXPECT_EQ(*maxOCCT, *maxStd);
+  EXPECT_EQ(*aMinOCCT, *aMinStd);
+  EXPECT_EQ(*aMaxOCCT, *aMaxStd);
 }
 
 TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_Replace)
@@ -432,18 +432,18 @@ TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_Replace)
   std::list<Standard_Integer>        aStdList;
 
   srand(1);
-  for (Standard_Integer i = 0; i < 100; ++i)
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer val = rand();
-    aList.Append(val);
-    aStdList.push_back(val);
+    Standard_Integer aVal = rand();
+    aList.Append(aVal);
+    aStdList.push_back(aVal);
   }
 
-  Standard_Integer targetValue = aStdList.back();
-  Standard_Integer newValue    = -1;
+  Standard_Integer aTargetValue = aStdList.back();
+  Standard_Integer aNewValue    = -1;
 
-  std::replace(aList.begin(), aList.end(), targetValue, newValue);
-  std::replace(aStdList.begin(), aStdList.end(), targetValue, newValue);
+  std::replace(aList.begin(), aList.end(), aTargetValue, aNewValue);
+  std::replace(aStdList.begin(), aStdList.end(), aTargetValue, aNewValue);
 
   EXPECT_TRUE(std::equal(aList.begin(), aList.end(), aStdList.begin()));
 }

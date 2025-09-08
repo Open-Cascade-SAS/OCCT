@@ -1,3 +1,0 @@
-puts "Check NCollection_Sequence functionality"
-
-QANColTestSequence
