@@ -719,28 +719,7 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
                              gp_Vec&             D1U,
                              gp_Vec&             D1V) const
 {
-  Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   Standard_Real    u = U, v = V;
-  if (Abs(U - myUFirst) <= myTolU)
-  {
-    USide = 1;
-    u     = myUFirst;
-  }
-  else if (Abs(U - myULast) <= myTolU)
-  {
-    USide = -1;
-    u     = myULast;
-  }
-  if (Abs(V - myVFirst) <= myTolV)
-  {
-    VSide = 1;
-    v     = myVFirst;
-  }
-  else if (Abs(V - myVLast) <= myTolV)
-  {
-    VSide = -1;
-    v     = myVLast;
-  }
 
   switch (mySurfaceType)
   {
@@ -768,28 +747,7 @@ void GeomAdaptor_Surface::D2(const Standard_Real U,
                              gp_Vec&             D2V,
                              gp_Vec&             D2UV) const
 {
-  Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   Standard_Real    u = U, v = V;
-  if (Abs(U - myUFirst) <= myTolU)
-  {
-    USide = 1;
-    u     = myUFirst;
-  }
-  else if (Abs(U - myULast) <= myTolU)
-  {
-    USide = -1;
-    u     = myULast;
-  }
-  if (Abs(V - myVFirst) <= myTolV)
-  {
-    VSide = 1;
-    v     = myVFirst;
-  }
-  else if (Abs(V - myVLast) <= myTolV)
-  {
-    VSide = -1;
-    v     = myVLast;
-  }
 
   switch (mySurfaceType)
   {
@@ -823,28 +781,7 @@ void GeomAdaptor_Surface::D3(const Standard_Real U,
                              gp_Vec&             D3UUV,
                              gp_Vec&             D3UVV) const
 {
-  Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   Standard_Real    u = U, v = V;
-  if (Abs(U - myUFirst) <= myTolU)
-  {
-    USide = 1;
-    u     = myUFirst;
-  }
-  else if (Abs(U - myULast) <= myTolU)
-  {
-    USide = -1;
-    u     = myULast;
-  }
-  if (Abs(V - myVFirst) <= myTolV)
-  {
-    VSide = 1;
-    v     = myVFirst;
-  }
-  else if (Abs(V - myVLast) <= myTolV)
-  {
-    VSide = -1;
-    v     = myVLast;
-  }
 
   switch (mySurfaceType)
   {
@@ -870,28 +807,7 @@ gp_Vec GeomAdaptor_Surface::DN(const Standard_Real    U,
                                const Standard_Integer Nu,
                                const Standard_Integer Nv) const
 {
-  Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   Standard_Real    u = U, v = V;
-  if (Abs(U - myUFirst) <= myTolU)
-  {
-    USide = 1;
-    u     = myUFirst;
-  }
-  else if (Abs(U - myULast) <= myTolU)
-  {
-    USide = -1;
-    u     = myULast;
-  }
-  if (Abs(V - myVFirst) <= myTolV)
-  {
-    VSide = 1;
-    v     = myVFirst;
-  }
-  else if (Abs(V - myVLast) <= myTolV)
-  {
-    VSide = -1;
-    v     = myVLast;
-  }
 
   switch (mySurfaceType)
   {
