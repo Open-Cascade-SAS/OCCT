@@ -2969,95 +2969,11 @@ static Standard_Integer OCC28829(Draw_Interpretor&, Standard_Integer, const char
 #include <NCollection_Buffer.hxx>
 #include <DDocStd_DrawDocument.hxx>
 #include <OSD_FileSystem.hxx>
-#include <Standard_ArrayStreamBuffer.hxx>
 #include <TDocStd_Application.hxx>
 
 #ifdef max
   #undef max
 #endif
-
-static Standard_Integer OCC28887(Draw_Interpretor&,
-                                 Standard_Integer theNbArgs,
-                                 const char**     theArgVec)
-{
-  if (theNbArgs < 3)
-  {
-    std::cout << "Syntax error: wrong number of arguments!\n";
-    return 1;
-  }
-
-  const TCollection_AsciiString aFilePath(theArgVec[1]);
-  const TCollection_AsciiString aName(theArgVec[2]);
-  Handle(NCollection_Buffer)    aBuffer;
-  {
-    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    std::shared_ptr<std::istream> aFile =
-      aFileSystem->OpenIStream(aFilePath, std::ios::binary | std::ios::in);
-    if (aFile.get() == NULL)
-    {
-      std::cout << "Error: input file '" << aFilePath << "' cannot be read\n";
-      return 1;
-    }
-    aFile->seekg(0, std::ios_base::end);
-    const int64_t aFileLength = int64_t(aFile->tellg());
-    if (aFileLength > int64_t(std::numeric_limits<ptrdiff_t>::max()) || aFileLength < 1)
-    {
-      std::cout << "Error: input file '" << aFilePath << "' is too large\n";
-      return 1;
-    }
-    aFile->seekg(0, std::ios_base::beg);
-
-    aBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator());
-    if (!aBuffer->Allocate(size_t(aFileLength)))
-    {
-      std::cout << "Error: memory allocation (" << aFileLength << ") has failed\n";
-      return 1;
-    }
-
-    aFile->read((char*)aBuffer->ChangeData(), aBuffer->Size());
-    if (!aFile->good())
-    {
-      std::cout << "Error: input file '" << aFilePath << "' reading failure\n";
-      return 1;
-    }
-  }
-
-  Standard_ArrayStreamBuffer aStreamBuffer((const char*)aBuffer->ChangeData(), aBuffer->Size());
-  std::istream               aStream(&aStreamBuffer);
-  // just play with seeking
-  aStream.seekg(0, std::ios_base::end);
-  aStream.seekg(0, std::ios_base::beg);
-  if (aFilePath.EndsWith(".brep") || aFilePath.EndsWith(".rle"))
-  {
-    TopoDS_Shape aShape;
-    BRep_Builder aBuilder;
-    BRepTools::Read(aShape, aStream, aBuilder);
-    DBRep::Set(aName.ToCString(), aShape);
-  }
-  else
-  {
-    Handle(TDocStd_Document)    aDoc;
-    Handle(TDocStd_Application) anApp    = DDocStd::GetApplication();
-    Standard_CString            aNameVar = aName.ToCString();
-    if (DDocStd::GetDocument(aNameVar, aDoc, Standard_False))
-    {
-      std::cout << "Error: document with name " << aName << " already exists\n";
-      return 1;
-    }
-
-    if (anApp->Open(aStream, aDoc) != PCDM_RS_OK)
-    {
-      std::cout << "Error: cannot open XDE document\n";
-      return 1;
-    }
-
-    Handle(DDocStd_DrawDocument) aDrawDoc = new DDocStd_DrawDocument(aDoc);
-    TDataStd_Name::Set(aDoc->GetData()->Root(), aName.ToCString());
-    Draw::Set(aName.ToCString(), aDrawDoc);
-  }
-
-  return 0;
-}
 
 static Standard_Integer OCC28131(Draw_Interpretor&,
                                  Standard_Integer theNbArgs,
@@ -5290,12 +5206,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   theCommands.Add("OCC28594", "OCC28594", __FILE__, OCC28594, group);
   theCommands.Add("OCC28784", "OCC28784 result shape", __FILE__, OCC28784, group);
   theCommands.Add("OCC28829", "OCC28829: perform invalid FPE operation", __FILE__, OCC28829, group);
-  theCommands.Add("OCC28887",
-                  "OCC28887 filePath result"
-                  "\n\t\t: Check interface for reading BRep from memory.",
-                  __FILE__,
-                  OCC28887,
-                  group);
   theCommands.Add("OCC28131",
                   "OCC28131 name: creates face problematic for offset",
                   __FILE__,

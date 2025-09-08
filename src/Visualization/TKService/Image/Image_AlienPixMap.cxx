@@ -44,7 +44,6 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <NCollection_Array1.hxx>
-#include <Standard_ArrayStreamBuffer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_OpenFile.hxx>
