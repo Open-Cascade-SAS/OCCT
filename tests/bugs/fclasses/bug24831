@@ -1,5 +1,0 @@
-puts "TODO ?CR33225 Windows: Failed class "
-
-pload QAcommands
-
-QANTestStlIterators

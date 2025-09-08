@@ -22,5 +22,4 @@ void QANCollection::Commands(Draw_Interpretor& theCommands)
   QANCollection::CommandsPerf(theCommands);
   QANCollection::CommandsAlloc(theCommands);
   QANCollection::CommandsHandle(theCommands);
-  QANCollection::CommandsStl(theCommands);
 }

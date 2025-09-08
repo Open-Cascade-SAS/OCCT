@@ -17,6 +17,5 @@ set(OCCT_QANCollection_FILES
   QANCollection_ListIteratorOfListOfPnt.hxx
   QANCollection_ListOfPnt.hxx
   QANCollection_Perf.cxx
-  QANCollection_Stl.cxx
   QANCollection_Test.cxx
 )

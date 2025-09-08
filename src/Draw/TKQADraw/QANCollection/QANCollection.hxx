@@ -35,8 +35,6 @@ public:
 
   Standard_EXPORT static void CommandsAlloc(Draw_Interpretor& DI);
 
-  Standard_EXPORT static void CommandsStl(Draw_Interpretor& DI);
-
   Standard_EXPORT static void CommandsHandle(Draw_Interpretor& DI);
 };
 

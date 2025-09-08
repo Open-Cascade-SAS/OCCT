@@ -15,6 +15,8 @@
 #include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <vector>
 
 TEST(NCollection_Array1Test, DefaultConstructor)
 {
@@ -339,4 +341,71 @@ TEST(NCollection_Array1Test, IteratorAccess)
     EXPECT_EQ(index * 10, value);
     index++;
   }
+}
+
+TEST(NCollection_Array1Test, STLAlgorithmCompatibility_MinMax)
+{
+  const Standard_Integer size = 100;
+  NCollection_Array1<Standard_Integer> anArray(1, size);
+  std::vector<Standard_Integer> aVector;
+  
+  srand(1);
+  for (Standard_Integer i = 1; i <= size; ++i)
+  {
+    Standard_Integer val = rand();
+    anArray(i) = val;
+    aVector.push_back(val);
+  }
+  
+  auto minOCCT = std::min_element(anArray.begin(), anArray.end());
+  auto minStd = std::min_element(aVector.begin(), aVector.end());
+  
+  auto maxOCCT = std::max_element(anArray.begin(), anArray.end());
+  auto maxStd = std::max_element(aVector.begin(), aVector.end());
+  
+  EXPECT_EQ(*minOCCT, *minStd);
+  EXPECT_EQ(*maxOCCT, *maxStd);
+}
+
+TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Replace)
+{
+  const Standard_Integer size = 100;
+  NCollection_Array1<Standard_Integer> anArray(1, size);
+  std::vector<Standard_Integer> aVector;
+  
+  srand(1);
+  for (Standard_Integer i = 1; i <= size; ++i)
+  {
+    Standard_Integer val = rand();
+    anArray(i) = val;
+    aVector.push_back(val);
+  }
+  
+  Standard_Integer targetValue = aVector.back();
+  Standard_Integer newValue = -1;
+  
+  std::replace(anArray.begin(), anArray.end(), targetValue, newValue);
+  std::replace(aVector.begin(), aVector.end(), targetValue, newValue);
+  
+  EXPECT_TRUE(std::equal(anArray.begin(), anArray.end(), aVector.begin()));
+}
+
+TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Sort)
+{
+  const Standard_Integer size = 100;
+  NCollection_Array1<Standard_Integer> anArray(1, size);
+  std::vector<Standard_Integer> aVector;
+  
+  srand(1);
+  for (Standard_Integer i = 1; i <= size; ++i)
+  {
+    Standard_Integer val = rand();
+    anArray(i) = val;
+    aVector.push_back(val);
+  }
+  
+  std::sort(anArray.begin(), anArray.end());
+  std::sort(aVector.begin(), aVector.end());
+  
+  EXPECT_TRUE(std::equal(anArray.begin(), anArray.end(), aVector.begin()));
 }

@@ -15,6 +15,8 @@
 #include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <list>
 
 // Test fixture for NCollection_List tests
 class NCollection_ListTest : public testing::Test
@@ -399,4 +401,49 @@ TEST_F(NCollection_ListTest, Reverse)
   EXPECT_EQ(20, it.Value());
   it.Next();
   EXPECT_EQ(10, it.Value());
+}
+
+TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_MinMax)
+{
+  NCollection_List<Standard_Integer> aList;
+  std::list<Standard_Integer> aStdList;
+  
+  srand(1);
+  for (Standard_Integer i = 0; i < 100; ++i)
+  {
+    Standard_Integer val = rand();
+    aList.Append(val);
+    aStdList.push_back(val);
+  }
+  
+  auto minOCCT = std::min_element(aList.begin(), aList.end());
+  auto minStd = std::min_element(aStdList.begin(), aStdList.end());
+  
+  auto maxOCCT = std::max_element(aList.begin(), aList.end());
+  auto maxStd = std::max_element(aStdList.begin(), aStdList.end());
+  
+  EXPECT_EQ(*minOCCT, *minStd);
+  EXPECT_EQ(*maxOCCT, *maxStd);
+}
+
+TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_Replace)
+{
+  NCollection_List<Standard_Integer> aList;
+  std::list<Standard_Integer> aStdList;
+  
+  srand(1);
+  for (Standard_Integer i = 0; i < 100; ++i)
+  {
+    Standard_Integer val = rand();
+    aList.Append(val);
+    aStdList.push_back(val);
+  }
+  
+  Standard_Integer targetValue = aStdList.back();
+  Standard_Integer newValue = -1;
+  
+  std::replace(aList.begin(), aList.end(), targetValue, newValue);
+  std::replace(aStdList.begin(), aStdList.end(), targetValue, newValue);
+  
+  EXPECT_TRUE(std::equal(aList.begin(), aList.end(), aStdList.begin()));
 }
