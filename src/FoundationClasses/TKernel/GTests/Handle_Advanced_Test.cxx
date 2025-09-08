@@ -34,43 +34,48 @@ class TransientRoot : public Standard_Transient
 {
 public:
   virtual const char* Name() const { return "TransientRoot"; }
+
   virtual Standard_Transient* CreateParent() const { return new Standard_Transient; }
+
   virtual Standard_Transient* Clone() const { return new TransientRoot; }
   DEFINE_STANDARD_RTTI_INLINE(TransientRoot, Standard_Transient)
 };
 DEFINE_STANDARD_HANDLE(TransientRoot, Standard_Transient)
 
 // Auxiliary macros to create hierarchy of classes
-#define QA_DEFINECLASS(theClass, theParent)                                   \
-  class theClass : public theParent                                           \
-  {                                                                            \
-  public:                                                                      \
-    virtual const char* Name() const override { return #theClass; }           \
-    virtual Standard_Transient* CreateParent() const override                 \
-    {                                                                          \
-      return new theParent();                                                  \
-    }                                                                          \
-    virtual Standard_Transient* Clone() const override                        \
-    {                                                                          \
-      return new theClass();                                                   \
-    }                                                                          \
-    DEFINE_STANDARD_RTTI_INLINE(theClass, theParent)                          \
-  };                                                                           \
+#define QA_DEFINECLASS(theClass, theParent)                                                        \
+  class theClass : public theParent                                                                \
+  {                                                                                                \
+  public:                                                                                          \
+    virtual const char* Name() const override                                                      \
+    {                                                                                              \
+      return #theClass;                                                                            \
+    }                                                                                              \
+    virtual Standard_Transient* CreateParent() const override                                      \
+    {                                                                                              \
+      return new theParent();                                                                      \
+    }                                                                                              \
+    virtual Standard_Transient* Clone() const override                                             \
+    {                                                                                              \
+      return new theClass();                                                                       \
+    }                                                                                              \
+    DEFINE_STANDARD_RTTI_INLINE(theClass, theParent)                                               \
+  };                                                                                               \
   DEFINE_STANDARD_HANDLE(theClass, theParent)
 
 #define QA_NAME(theNum) QaClass##theNum##_50
 #define QA_HANDLE_NAME(theNum) Handle(QaClass##theNum##_50)
 
-#define QA_DEFINECLASS10(theParent, theTens)                                  \
-  QA_DEFINECLASS(QA_NAME(theTens##0), theParent)                              \
-  QA_DEFINECLASS(QA_NAME(theTens##1), QA_NAME(theTens##0))                    \
-  QA_DEFINECLASS(QA_NAME(theTens##2), QA_NAME(theTens##1))                    \
-  QA_DEFINECLASS(QA_NAME(theTens##3), QA_NAME(theTens##2))                    \
-  QA_DEFINECLASS(QA_NAME(theTens##4), QA_NAME(theTens##3))                    \
-  QA_DEFINECLASS(QA_NAME(theTens##5), QA_NAME(theTens##4))                    \
-  QA_DEFINECLASS(QA_NAME(theTens##6), QA_NAME(theTens##5))                    \
-  QA_DEFINECLASS(QA_NAME(theTens##7), QA_NAME(theTens##6))                    \
-  QA_DEFINECLASS(QA_NAME(theTens##8), QA_NAME(theTens##7))                    \
+#define QA_DEFINECLASS10(theParent, theTens)                                                       \
+  QA_DEFINECLASS(QA_NAME(theTens##0), theParent)                                                   \
+  QA_DEFINECLASS(QA_NAME(theTens##1), QA_NAME(theTens##0))                                         \
+  QA_DEFINECLASS(QA_NAME(theTens##2), QA_NAME(theTens##1))                                         \
+  QA_DEFINECLASS(QA_NAME(theTens##3), QA_NAME(theTens##2))                                         \
+  QA_DEFINECLASS(QA_NAME(theTens##4), QA_NAME(theTens##3))                                         \
+  QA_DEFINECLASS(QA_NAME(theTens##5), QA_NAME(theTens##4))                                         \
+  QA_DEFINECLASS(QA_NAME(theTens##6), QA_NAME(theTens##5))                                         \
+  QA_DEFINECLASS(QA_NAME(theTens##7), QA_NAME(theTens##6))                                         \
+  QA_DEFINECLASS(QA_NAME(theTens##8), QA_NAME(theTens##7))                                         \
   QA_DEFINECLASS(QA_NAME(theTens##9), QA_NAME(theTens##8))
 
 // Create the hierarchy: 50 classes in inheritance chain
@@ -115,7 +120,8 @@ public:
   };
 
   QATimer(const char* theOperationName, TimeFormat theFormat = Milliseconds)
-    : myOperationName(theOperationName), myFormat(theFormat)
+      : myOperationName(theOperationName),
+        myFormat(theFormat)
   {
     Start();
   }
@@ -137,13 +143,13 @@ public:
         break;
     }
     // Note: In tests we don't print timing info but could store it for verification
-    (void)aTime; // Avoid unused variable warning
+    (void)aTime;           // Avoid unused variable warning
     (void)myOperationName; // Avoid unused field warning
   }
 
 private:
   const char* myOperationName;
-  TimeFormat myFormat;
+  TimeFormat  myFormat;
 };
 } // namespace
 
@@ -152,6 +158,7 @@ class HandleAdvancedTest : public testing::Test
 {
 protected:
   void SetUp() override {}
+
   void TearDown() override {}
 };
 
@@ -173,13 +180,13 @@ TEST_F(HandleAdvancedTest, CompilerSpecificBehavior)
   EXPECT_TRUE(testFunction(aRoot));
 
 // Test overloaded function compatibility (compiler version specific)
-#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800) \
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800)                              \
   || (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3)
-  
+
   // Test overload resolution with handles
   auto testOverload1 = [](const Handle(Standard_Transient)&) -> int { return 1; };
   auto testOverload2 = [](const Handle(TransientRoot)&) -> int { return 2; };
-  
+
   // More specific overload should be chosen
   EXPECT_EQ(2, testOverload2(aRoot));
   EXPECT_EQ(1, testOverload1(aTransient));
@@ -191,8 +198,8 @@ TEST_F(HandleAdvancedTest, CompilerSpecificBehavior)
 
 TEST_F(HandleAdvancedTest, TemporaryObjectReferences)
 {
-  Handle(QaClass40_50) aDerived = new QaClass40_50();
-  Handle(TransientRoot) aBase = aDerived;
+  Handle(QaClass40_50)  aDerived = new QaClass40_50();
+  Handle(TransientRoot) aBase    = aDerived;
 
   // Test that compiler keeps temporary object referenced by local variable
   const Handle(QaClass40_50)& aTempRef(Handle(QaClass40_50)::DownCast(aBase));
@@ -201,16 +208,16 @@ TEST_F(HandleAdvancedTest, TemporaryObjectReferences)
   // Compiler-specific behavior with temporary references and diagnostic control
   // Use OCCT standard warning suppression for potentially problematic code sections
 #include <Standard_WarningsDisable.hxx>
-  
+
   // Test undesired but logical situation with temporary base type references
   const Handle(TransientRoot)& aTempRefBase(Handle(QaClass40_50)::DownCast(aBase));
-  
+
   // The behavior depends on compiler - some keep the temporary, others don't
   // We test that it either works correctly or behaves as documented
   bool aTempRefBaseValid = (aTempRefBase.get() == aDerived.get());
 
 #include <Standard_WarningsRestore.hxx>
-  
+
 #if (defined(_MSC_VER) && _MSC_VER >= 1800)
   // MSVC 2013+ creates temporary object and keeps it living
   CHECK_HANDLE(aTempRefBaseValid, "MSVC temporary handle object lifetime");
@@ -274,10 +281,10 @@ TEST_F(HandleAdvancedTest, TypeInfoCompatibility)
 #ifdef __cpp_rtti
   // Test C++ RTTI compatibility
   // Use OCCT standard warning suppression for RTTI operations
-#include <Standard_WarningsDisable.hxx>
-  
+  #include <Standard_WarningsDisable.hxx>
+
   const std::type_info& aTypeInfo = typeid(*aHandle.get());
-  
+
   // Test type_info comparisons
   EXPECT_FALSE(aTypeInfo == typeid(QaClass00_50));
   EXPECT_FALSE(aTypeInfo == typeid(QaClass10_50));
@@ -287,22 +294,22 @@ TEST_F(HandleAdvancedTest, TypeInfoCompatibility)
   EXPECT_FALSE(aTypeInfo == typeid(QaClass50_50));
 
   // Test type_index if available
-#if __cplusplus >= 201103L
+  #if __cplusplus >= 201103L
   std::type_index aCppType = typeid(*aHandle.get());
   EXPECT_FALSE(aCppType == typeid(QaClass00_50));
   EXPECT_TRUE(aCppType == typeid(QaClass40_50));
-#endif
+  #endif
 
   // Test anonymous and namespaced classes
-  QaClass50_50Anon anAnon;
+  QaClass50_50Anon          anAnon;
   QaNamespace::QaClass50_50 aNamed;
-  
+
   // These should have different type_info
   EXPECT_FALSE(typeid(anAnon) == typeid(aNamed));
   EXPECT_FALSE(typeid(anAnon) == typeid(QaClass50_50));
   EXPECT_FALSE(typeid(aNamed) == typeid(QaClass50_50));
 
-#include <Standard_WarningsRestore.hxx>
+  #include <Standard_WarningsRestore.hxx>
 
 #endif // __cpp_rtti
 
@@ -323,7 +330,8 @@ TEST_F(HandleAdvancedTest, AllocatorHandlePerformance)
     QATimer aTimer("IncAllocator DownCast", QATimer::Microseconds);
     for (int i = 0; i < 1000; ++i)
     {
-      Handle(NCollection_IncAllocator) anIncAlloc = Handle(NCollection_IncAllocator)::DownCast(aBasePtr);
+      Handle(NCollection_IncAllocator) anIncAlloc =
+        Handle(NCollection_IncAllocator)::DownCast(aBasePtr);
       EXPECT_FALSE(anIncAlloc.IsNull());
     }
   }
@@ -333,7 +341,8 @@ TEST_F(HandleAdvancedTest, AllocatorHandlePerformance)
     QATimer aTimer("Failed HeapAllocator DownCast", QATimer::Microseconds);
     for (int i = 0; i < 1000; ++i)
     {
-      Handle(NCollection_HeapAllocator) aHeapAlloc = Handle(NCollection_HeapAllocator)::DownCast(aBasePtr);
+      Handle(NCollection_HeapAllocator) aHeapAlloc =
+        Handle(NCollection_HeapAllocator)::DownCast(aBasePtr);
       EXPECT_TRUE(aHeapAlloc.IsNull());
     }
   }
@@ -343,34 +352,34 @@ TEST_F(HandleAdvancedTest, HandleArrayOperations)
 {
   // Test handle operations with arrays and containers
   std::vector<Handle(QaClass00_50)> aHandleVector;
-  
+
   // Fill with different types in the hierarchy
   aHandleVector.push_back(new QaClass00_50());
   aHandleVector.push_back(new QaClass10_50());
   aHandleVector.push_back(new QaClass20_50());
   aHandleVector.push_back(new QaClass30_50());
   aHandleVector.push_back(new QaClass40_50());
-  
+
   EXPECT_EQ(5, aHandleVector.size());
-  
+
   // Test that all handles are valid and point to correct types
   for (size_t i = 0; i < aHandleVector.size(); ++i)
   {
     EXPECT_FALSE(aHandleVector[i].IsNull());
-    
+
     // Test polymorphic behavior
     EXPECT_TRUE(aHandleVector[i]->IsKind("QaClass00_50"));
-    
+
     // Test dynamic casting
     Handle(QaClass00_50) aCast = aHandleVector[i];
     EXPECT_FALSE(aCast.IsNull());
     EXPECT_EQ(aHandleVector[i].get(), aCast.get());
   }
-  
+
   // Test specific type casting
   Handle(QaClass40_50) aSpecific = Handle(QaClass40_50)::DownCast(aHandleVector[4]);
   EXPECT_FALSE(aSpecific.IsNull());
-  
+
   // This should fail - trying to cast parent to child
   Handle(QaClass40_50) aFailedCast = Handle(QaClass40_50)::DownCast(aHandleVector[0]);
   EXPECT_TRUE(aFailedCast.IsNull());
@@ -378,24 +387,24 @@ TEST_F(HandleAdvancedTest, HandleArrayOperations)
 
 TEST_F(HandleAdvancedTest, ConstHandleOperations)
 {
-  Handle(QaClass30_50) aNonConstHandle = new QaClass30_50();
-  const Handle(QaClass30_50)& aConstHandle = aNonConstHandle;
-  
+  Handle(QaClass30_50)        aNonConstHandle = new QaClass30_50();
+  const Handle(QaClass30_50)& aConstHandle    = aNonConstHandle;
+
   // Test const correctness
   EXPECT_EQ(aNonConstHandle.get(), aConstHandle.get());
-  
+
   // Test const pointer access
-  const QaClass30_50* aConstPtr = aConstHandle.get();
-  QaClass30_50* aNonConstPtr = aNonConstHandle.get();
-  
+  const QaClass30_50* aConstPtr    = aConstHandle.get();
+  QaClass30_50*       aNonConstPtr = aNonConstHandle.get();
+
   EXPECT_EQ(aConstPtr, aNonConstPtr);
-  
+
   // Test const casting to base types
-  const Handle(QaClass00_50)& aConstBase = aConstHandle;
-  Handle(QaClass00_50) aNonConstBase = aNonConstHandle;
-  
+  const Handle(QaClass00_50)& aConstBase    = aConstHandle;
+  Handle(QaClass00_50)        aNonConstBase = aNonConstHandle;
+
   EXPECT_EQ(aConstBase.get(), aNonConstBase.get());
-  
+
   // Test const handle comparisons
   EXPECT_TRUE(aConstHandle == aNonConstHandle);
   EXPECT_TRUE(aConstBase == aNonConstBase);
@@ -406,27 +415,27 @@ TEST_F(HandleAdvancedTest, WeakReferenceSimulation)
 {
   // Simulate weak reference-like behavior using raw pointers
   QaClass20_50* aRawPtr = nullptr;
-  
+
   {
     Handle(QaClass20_50) aHandle = new QaClass20_50();
-    aRawPtr = aHandle.get();
-    
+    aRawPtr                      = aHandle.get();
+
     EXPECT_NE(nullptr, aRawPtr);
-    
+
     // Handle should keep the object alive
     EXPECT_FALSE(aHandle.IsNull());
     EXPECT_EQ(aRawPtr, aHandle.get());
   }
-  
+
   // After handle destruction, raw pointer becomes invalid
   // Note: We can't safely test this without risking segfaults,
   // but the pattern demonstrates handle lifetime management
-  
+
   // Create multiple new handles to ensure we get different objects
   // (Memory allocator might reuse the same location, so we create several)
   std::vector<Handle(QaClass20_50)> aHandles;
-  bool aFoundDifferent = false;
-  
+  bool                              aFoundDifferent = false;
+
   for (int i = 0; i < 10 && !aFoundDifferent; ++i)
   {
     aHandles.push_back(new QaClass20_50());
@@ -435,7 +444,7 @@ TEST_F(HandleAdvancedTest, WeakReferenceSimulation)
       aFoundDifferent = true;
     }
   }
-  
+
   // We expect to find at least one different address (though allocator might reuse)
   // The test demonstrates handle independence regardless
   EXPECT_TRUE(aFoundDifferent || !aFoundDifferent); // Either outcome is acceptable
