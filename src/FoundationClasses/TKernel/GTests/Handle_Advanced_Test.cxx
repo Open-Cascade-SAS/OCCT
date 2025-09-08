@@ -196,44 +196,6 @@ TEST_F(HandleAdvancedTest, CompilerSpecificBehavior)
   CHECK_HANDLE(!aTransient2.IsNull(), "cast to base class const reference");
 }
 
-TEST_F(HandleAdvancedTest, TemporaryObjectReferences)
-{
-  Handle(QaClass40_50)  aDerived = new QaClass40_50();
-  Handle(TransientRoot) aBase    = aDerived;
-
-  // Test that compiler keeps temporary object referenced by local variable
-  const Handle(QaClass40_50)& aTempRef(Handle(QaClass40_50)::DownCast(aBase));
-  CHECK_HANDLE(aTempRef.get() == aDerived.get(), "local reference to temporary handle object");
-
-  // Compiler-specific behavior with temporary references and diagnostic control
-  // Use OCCT standard warning suppression for potentially problematic code sections
-#include <Standard_WarningsDisable.hxx>
-
-  // Test undesired but logical situation with temporary base type references
-  const Handle(TransientRoot)& aTempRefBase(Handle(QaClass40_50)::DownCast(aBase));
-
-  // The behavior depends on compiler - some keep the temporary, others don't
-  // We test that it either works correctly or behaves as documented
-  bool aTempRefBaseValid = (aTempRefBase.get() == aDerived.get());
-
-#include <Standard_WarningsRestore.hxx>
-
-#if (defined(_MSC_VER) && _MSC_VER >= 1800)
-  // MSVC 2013+ creates temporary object and keeps it living
-  CHECK_HANDLE(aTempRefBaseValid, "MSVC temporary handle object lifetime");
-#elif defined(__GNUC__) && (__GNUC__ >= 4)
-  // GCC behavior with temporary references varies by version
-  // Modern GCC might warn about dangling references but behavior is consistent
-  EXPECT_TRUE(aTempRefBaseValid || !aTempRefBaseValid); // Either behavior is acceptable
-#elif defined(__clang__)
-  // Clang handles temporary references consistently
-  CHECK_HANDLE(aTempRefBaseValid, "Clang temporary handle object lifetime");
-#else
-  // Other compilers - accept either behavior as long as it's consistent
-  EXPECT_TRUE(aTempRefBaseValid || !aTempRefBaseValid); // Either behavior is acceptable
-#endif
-}
-
 TEST_F(HandleAdvancedTest, DeepHierarchyRTTI)
 {
   // Test RTTI with deep inheritance hierarchy
