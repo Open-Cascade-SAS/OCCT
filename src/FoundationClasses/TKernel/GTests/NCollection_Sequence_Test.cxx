@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <list>
+#include <random>
 
 // Basic test type for the Sequence
 typedef Standard_Integer ItemType;
@@ -381,10 +382,11 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_MinMax)
   NCollection_Sequence<Standard_Integer> aSequence;
   std::list<Standard_Integer>            aStdList;
 
-  srand(1);
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
   for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = rand();
+    Standard_Integer aVal = aDistribution(aGenerator);
     aSequence.Append(aVal);
     aStdList.push_back(aVal);
   }
@@ -404,10 +406,11 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Replace)
   NCollection_Sequence<Standard_Integer> aSequence;
   std::list<Standard_Integer>            aStdList;
 
-  srand(1);
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
   for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = rand();
+    Standard_Integer aVal = aDistribution(aGenerator);
     aSequence.Append(aVal);
     aStdList.push_back(aVal);
   }

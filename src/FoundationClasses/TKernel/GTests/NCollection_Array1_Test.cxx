@@ -16,6 +16,7 @@
 
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <random>
 #include <vector>
 
 TEST(NCollection_Array1Test, DefaultConstructor)
@@ -349,10 +350,11 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_MinMax)
   NCollection_Array1<Standard_Integer> anArray(1, size);
   std::vector<Standard_Integer>        aVector;
 
-  srand(1);
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
   for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
   {
-    Standard_Integer aVal = rand();
+    Standard_Integer aVal = aDistribution(aGenerator);
     anArray(anIdx)        = aVal;
     aVector.push_back(aVal);
   }
@@ -373,10 +375,11 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Replace)
   NCollection_Array1<Standard_Integer> anArray(1, size);
   std::vector<Standard_Integer>        aVector;
 
-  srand(1);
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
   for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
   {
-    Standard_Integer aVal = rand();
+    Standard_Integer aVal = aDistribution(aGenerator);
     anArray(anIdx)        = aVal;
     aVector.push_back(aVal);
   }
@@ -396,10 +399,11 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Sort)
   NCollection_Array1<Standard_Integer> anArray(1, size);
   std::vector<Standard_Integer>        aVector;
 
-  srand(1);
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
   for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
   {
-    Standard_Integer aVal = rand();
+    Standard_Integer aVal = aDistribution(aGenerator);
     anArray(anIdx)        = aVal;
     aVector.push_back(aVal);
   }

@@ -16,6 +16,7 @@
 
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <random>
 #include <vector>
 
 // Basic test type for the IndexedMap
@@ -520,10 +521,11 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_MinMax)
   NCollection_IndexedMap<Standard_Integer> aMap;
   std::vector<Standard_Integer>            aVector;
 
-  srand(1);
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
   for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = rand();
+    Standard_Integer aVal = aDistribution(aGenerator);
     aMap.Add(aVal);
     aVector.push_back(aVal);
   }
@@ -543,10 +545,11 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
   NCollection_IndexedMap<Standard_Integer> aMap;
   std::vector<Standard_Integer>            aVector;
 
-  srand(1);
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
   for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = rand();
+    Standard_Integer aVal = aDistribution(aGenerator);
     aMap.Add(aVal);
     aVector.push_back(aVal);
   }
