@@ -406,8 +406,8 @@ TEST_F(NCollection_ListTest, Reverse)
 TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_MinMax)
 {
   NCollection_List<Standard_Integer> aList;
-  std::list<Standard_Integer> aStdList;
-  
+  std::list<Standard_Integer>        aStdList;
+
   srand(1);
   for (Standard_Integer i = 0; i < 100; ++i)
   {
@@ -415,13 +415,13 @@ TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_MinMax)
     aList.Append(val);
     aStdList.push_back(val);
   }
-  
+
   auto minOCCT = std::min_element(aList.begin(), aList.end());
-  auto minStd = std::min_element(aStdList.begin(), aStdList.end());
-  
+  auto minStd  = std::min_element(aStdList.begin(), aStdList.end());
+
   auto maxOCCT = std::max_element(aList.begin(), aList.end());
-  auto maxStd = std::max_element(aStdList.begin(), aStdList.end());
-  
+  auto maxStd  = std::max_element(aStdList.begin(), aStdList.end());
+
   EXPECT_EQ(*minOCCT, *minStd);
   EXPECT_EQ(*maxOCCT, *maxStd);
 }
@@ -429,8 +429,8 @@ TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_MinMax)
 TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_Replace)
 {
   NCollection_List<Standard_Integer> aList;
-  std::list<Standard_Integer> aStdList;
-  
+  std::list<Standard_Integer>        aStdList;
+
   srand(1);
   for (Standard_Integer i = 0; i < 100; ++i)
   {
@@ -438,12 +438,12 @@ TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_Replace)
     aList.Append(val);
     aStdList.push_back(val);
   }
-  
+
   Standard_Integer targetValue = aStdList.back();
-  Standard_Integer newValue = -1;
-  
+  Standard_Integer newValue    = -1;
+
   std::replace(aList.begin(), aList.end(), targetValue, newValue);
   std::replace(aStdList.begin(), aStdList.end(), targetValue, newValue);
-  
+
   EXPECT_TRUE(std::equal(aList.begin(), aList.end(), aStdList.begin()));
 }

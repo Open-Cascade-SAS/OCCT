@@ -709,19 +709,19 @@ TEST(NCollection_IndexedDataMapTest, ReSize)
 TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_MinMax)
 {
   NCollection_IndexedDataMap<Standard_Integer, Standard_Integer> aMap;
-  
+
   // Add some sequential values to make results predictable
   for (Standard_Integer i = 10; i <= 50; i += 5)
   {
     aMap.Add(i, i * 2);
   }
-  
+
   EXPECT_FALSE(aMap.IsEmpty());
-  
+
   // Test that STL algorithms work with OCCT iterators
   auto minElement = std::min_element(aMap.cbegin(), aMap.cend());
   auto maxElement = std::max_element(aMap.cbegin(), aMap.cend());
-  
+
   EXPECT_TRUE(minElement != aMap.cend());
   EXPECT_TRUE(maxElement != aMap.cend());
   EXPECT_LE(*minElement, *maxElement);
@@ -730,17 +730,17 @@ TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_MinMax)
 TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_Find)
 {
   NCollection_IndexedDataMap<Standard_Integer, Standard_Integer> aMap;
-  
+
   // Add known values
   aMap.Add(100, 200);
   aMap.Add(200, 400);
   aMap.Add(300, 600);
-  
+
   // Test std::find compatibility
   auto found = std::find(aMap.cbegin(), aMap.cend(), 200);
   EXPECT_TRUE(found != aMap.cend());
   EXPECT_EQ(*found, 200);
-  
+
   // Test finding non-existent value
   auto notFound = std::find(aMap.cbegin(), aMap.cend(), 999);
   EXPECT_TRUE(notFound == aMap.cend());

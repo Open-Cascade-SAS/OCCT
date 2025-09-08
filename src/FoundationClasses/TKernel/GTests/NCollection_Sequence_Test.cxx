@@ -379,8 +379,8 @@ TEST(NCollection_SequenceTest, MoveOperations)
 TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_MinMax)
 {
   NCollection_Sequence<Standard_Integer> aSequence;
-  std::list<Standard_Integer> aStdList;
-  
+  std::list<Standard_Integer>            aStdList;
+
   srand(1);
   for (Standard_Integer i = 0; i < 100; ++i)
   {
@@ -388,13 +388,13 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_MinMax)
     aSequence.Append(val);
     aStdList.push_back(val);
   }
-  
+
   auto minOCCT = std::min_element(aSequence.begin(), aSequence.end());
-  auto minStd = std::min_element(aStdList.begin(), aStdList.end());
-  
+  auto minStd  = std::min_element(aStdList.begin(), aStdList.end());
+
   auto maxOCCT = std::max_element(aSequence.begin(), aSequence.end());
-  auto maxStd = std::max_element(aStdList.begin(), aStdList.end());
-  
+  auto maxStd  = std::max_element(aStdList.begin(), aStdList.end());
+
   EXPECT_EQ(*minOCCT, *minStd);
   EXPECT_EQ(*maxOCCT, *maxStd);
 }
@@ -402,8 +402,8 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_MinMax)
 TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Replace)
 {
   NCollection_Sequence<Standard_Integer> aSequence;
-  std::list<Standard_Integer> aStdList;
-  
+  std::list<Standard_Integer>            aStdList;
+
   srand(1);
   for (Standard_Integer i = 0; i < 100; ++i)
   {
@@ -411,29 +411,29 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Replace)
     aSequence.Append(val);
     aStdList.push_back(val);
   }
-  
+
   Standard_Integer targetValue = aStdList.back();
-  Standard_Integer newValue = -1;
-  
+  Standard_Integer newValue    = -1;
+
   std::replace(aSequence.begin(), aSequence.end(), targetValue, newValue);
   std::replace(aStdList.begin(), aStdList.end(), targetValue, newValue);
-  
+
   EXPECT_TRUE(std::equal(aSequence.begin(), aSequence.end(), aStdList.begin()));
 }
 
 TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Reverse)
 {
   NCollection_Sequence<Standard_Integer> aSequence;
-  std::list<Standard_Integer> aStdList;
-  
+  std::list<Standard_Integer>            aStdList;
+
   for (Standard_Integer i = 0; i < 100; ++i)
   {
     aSequence.Append(i);
     aStdList.push_back(i);
   }
-  
+
   std::reverse(aSequence.begin(), aSequence.end());
   std::reverse(aStdList.begin(), aStdList.end());
-  
+
   EXPECT_TRUE(std::equal(aSequence.begin(), aSequence.end(), aStdList.begin()));
 }

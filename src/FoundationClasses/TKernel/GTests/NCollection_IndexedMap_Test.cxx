@@ -518,8 +518,8 @@ TEST(NCollection_IndexedMapTest, ReSize)
 TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_MinMax)
 {
   NCollection_IndexedMap<Standard_Integer> aMap;
-  std::vector<Standard_Integer> aVector;
-  
+  std::vector<Standard_Integer>            aVector;
+
   srand(1);
   for (Standard_Integer i = 0; i < 100; ++i)
   {
@@ -527,13 +527,13 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_MinMax)
     aMap.Add(val);
     aVector.push_back(val);
   }
-  
+
   auto minOCCT = std::min_element(aMap.cbegin(), aMap.cend());
-  auto minStd = std::min_element(aVector.begin(), aVector.end());
-  
+  auto minStd  = std::min_element(aVector.begin(), aVector.end());
+
   auto maxOCCT = std::max_element(aMap.cbegin(), aMap.cend());
-  auto maxStd = std::max_element(aVector.begin(), aVector.end());
-  
+  auto maxStd  = std::max_element(aVector.begin(), aVector.end());
+
   EXPECT_EQ(*minOCCT, *minStd);
   EXPECT_EQ(*maxOCCT, *maxStd);
 }
@@ -541,8 +541,8 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_MinMax)
 TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
 {
   NCollection_IndexedMap<Standard_Integer> aMap;
-  std::vector<Standard_Integer> aVector;
-  
+  std::vector<Standard_Integer>            aVector;
+
   srand(1);
   for (Standard_Integer i = 0; i < 100; ++i)
   {
@@ -550,12 +550,12 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
     aMap.Add(val);
     aVector.push_back(val);
   }
-  
+
   // Test std::find compatibility
   Standard_Integer searchValue = aVector[10];
-  auto foundOCCT = std::find(aMap.cbegin(), aMap.cend(), searchValue);
-  auto foundStd = std::find(aVector.begin(), aVector.end(), searchValue);
-  
+  auto             foundOCCT   = std::find(aMap.cbegin(), aMap.cend(), searchValue);
+  auto             foundStd    = std::find(aVector.begin(), aVector.end(), searchValue);
+
   EXPECT_TRUE(foundOCCT != aMap.cend());
   EXPECT_TRUE(foundStd != aVector.end());
   EXPECT_EQ(*foundOCCT, *foundStd);
