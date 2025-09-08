@@ -50,8 +50,6 @@ set(OCCT_OSD_FILES
   OSD_LocalFileSystem.cxx
   OSD_LocalFileSystem.hxx
   OSD_LockType.hxx
-  OSD_MAllocHook.cxx
-  OSD_MAllocHook.hxx
   OSD_MemInfo.cxx
   OSD_MemInfo.hxx
   OSD_OEMType.hxx
