@@ -895,18 +895,6 @@ gp_Vec GeomAdaptor_Surface::DN(const Standard_Real    U,
 
   switch (mySurfaceType)
   {
-    case GeomAbs_BSplineSurface: {
-      if ((USide == 0) && (VSide == 0))
-        return myBSplineSurface->DN(u, v, Nu, Nv);
-      else
-      {
-        if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
-          return myBSplineSurface->LocalDN(u, v, Ideb, Ifin, IVdeb, IVfin, Nu, Nv);
-        else
-          return myBSplineSurface->DN(u, v, Nu, Nv);
-      }
-    }
-
     case GeomAbs_SurfaceOfExtrusion:
     case GeomAbs_SurfaceOfRevolution:
     case GeomAbs_OffsetSurface:

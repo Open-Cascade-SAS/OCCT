@@ -635,18 +635,6 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const Standard_Real U, const Standard_Integer N
 {
   switch (myTypeCurve)
   {
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve: {
-      Standard_Integer aStart = 0, aFinish = 0;
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        myBSplineCurve->LocalDN(U, aStart, aFinish, N);
-      }
-      else
-        return myCurve->DN(U, N);
-      break;
-    }
-
     case GeomAbs_OffsetCurve:
       return myNestedEvaluator->DN(U, N);
       break;
