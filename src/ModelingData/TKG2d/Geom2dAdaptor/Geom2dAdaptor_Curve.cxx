@@ -201,7 +201,6 @@ void Geom2dAdaptor_Curve::Reset()
 {
   myTypeCurve = GeomAbs_OtherCurve;
   myCurve.Nullify();
-  myCurveCache.Nullify();
   myNestedEvaluator.Nullify();
   myBSplineCurve.Nullify();
   myFirst = myLast = 0.0;
@@ -215,7 +214,6 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
 {
   myFirst = UFirst;
   myLast  = ULast;
-  myCurveCache.Nullify();
 
   if (myCurve != C)
   {
@@ -525,36 +523,8 @@ Standard_Real Geom2dAdaptor_Curve::Period() const
 
 //=================================================================================================
 
-void Geom2dAdaptor_Curve::RebuildCache(const Standard_Real theParameter) const
+void Geom2dAdaptor_Curve::RebuildCache(const Standard_Real) const
 {
-  if (myTypeCurve == GeomAbs_BezierCurve)
-  {
-    // Create cache for Bezier
-    Handle(Geom2d_BezierCurve) aBezier = Handle(Geom2d_BezierCurve)::DownCast(myCurve);
-    Standard_Integer           aDeg    = aBezier->Degree();
-    TColStd_Array1OfReal       aFlatKnots(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
-    if (myCurveCache.IsNull())
-      myCurveCache = new BSplCLib_Cache(aDeg,
-                                        aBezier->IsPeriodic(),
-                                        aFlatKnots,
-                                        aBezier->Poles(),
-                                        aBezier->Weights());
-    myCurveCache->BuildCache(theParameter, aFlatKnots, aBezier->Poles(), aBezier->Weights());
-  }
-  else if (myTypeCurve == GeomAbs_BSplineCurve)
-  {
-    // Create cache for B-spline
-    if (myCurveCache.IsNull())
-      myCurveCache = new BSplCLib_Cache(myBSplineCurve->Degree(),
-                                        myBSplineCurve->IsPeriodic(),
-                                        myBSplineCurve->KnotSequence(),
-                                        myBSplineCurve->Poles(),
-                                        myBSplineCurve->Weights());
-    myCurveCache->BuildCache(theParameter,
-                             myBSplineCurve->KnotSequence(),
-                             myBSplineCurve->Poles(),
-                             myBSplineCurve->Weights());
-  }
 }
 
 //=================================================================================================
@@ -601,23 +571,6 @@ void Geom2dAdaptor_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
 {
   switch (myTypeCurve)
   {
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve: {
-      Standard_Integer aStart = 0, aFinish = 0;
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        myBSplineCurve->LocalD0(U, aStart, aFinish, P);
-      }
-      else
-      {
-        // use cached data
-        if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
-          RebuildCache(U);
-        myCurveCache->D0(U, P);
-      }
-      break;
-    }
-
     case GeomAbs_OffsetCurve:
       myNestedEvaluator->D0(U, P);
       break;
@@ -633,23 +586,6 @@ void Geom2dAdaptor_Curve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) co
 {
   switch (myTypeCurve)
   {
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve: {
-      Standard_Integer aStart = 0, aFinish = 0;
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        myBSplineCurve->LocalD1(U, aStart, aFinish, P, V);
-      }
-      else
-      {
-        // use cached data
-        if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
-          RebuildCache(U);
-        myCurveCache->D1(U, P, V);
-      }
-      break;
-    }
-
     case GeomAbs_OffsetCurve:
       myNestedEvaluator->D1(U, P, V);
       break;
@@ -665,23 +601,6 @@ void Geom2dAdaptor_Curve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, g
 {
   switch (myTypeCurve)
   {
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve: {
-      Standard_Integer aStart = 0, aFinish = 0;
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        myBSplineCurve->LocalD2(U, aStart, aFinish, P, V1, V2);
-      }
-      else
-      {
-        // use cached data
-        if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
-          RebuildCache(U);
-        myCurveCache->D2(U, P, V1, V2);
-      }
-      break;
-    }
-
     case GeomAbs_OffsetCurve:
       myNestedEvaluator->D2(U, P, V1, V2);
       break;
@@ -701,23 +620,6 @@ void Geom2dAdaptor_Curve::D3(const Standard_Real U,
 {
   switch (myTypeCurve)
   {
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve: {
-      Standard_Integer aStart = 0, aFinish = 0;
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        myBSplineCurve->LocalD3(U, aStart, aFinish, P, V1, V2, V3);
-      }
-      else
-      {
-        // use cached data
-        if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
-          RebuildCache(U);
-        myCurveCache->D3(U, P, V1, V2, V3);
-      }
-      break;
-    }
-
     case GeomAbs_OffsetCurve:
       myNestedEvaluator->D3(U, P, V1, V2, V3);
       break;
