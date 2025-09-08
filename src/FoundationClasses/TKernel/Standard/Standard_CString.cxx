@@ -23,6 +23,7 @@
 #include <Standard_Type.hxx>
 #include <string.h>
 #include <stdarg.h>
+#include <cstdlib>
 
 //======================================================================
 // Locale-independent equivalents of C functions dealing with conversion
@@ -62,6 +63,12 @@
   #define vfprintf_l(theFile, theLocale, theFormat, theArgPtr)                                     \
     vfprintf(theFile, theFormat, theArgPtr)
 #endif
+
+double Strtod(const char* theStr, char** theNextPtr)
+{
+  SAVE_TL();
+  return strtod_l(theStr, theNextPtr, Standard_CLocaleSentry::GetCLocale());
+}
 
 double Atof(const char* theStr)
 {

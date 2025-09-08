@@ -85,7 +85,6 @@ set(OCCT_Standard_FILES
   Standard_StackTrace.cxx
   Standard_Std.hxx
   Standard_Stream.hxx
-  Standard_Strtod.cxx
   Standard_ThreadId.hxx
   Standard_Time.hxx
   Standard_Transient.cxx
