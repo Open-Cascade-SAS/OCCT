@@ -5,8 +5,6 @@ set(OCCT_QANCollection_FILES
   FILES
   QANCollection.cxx
   QANCollection.hxx
-  QANCollection_Alloc.cxx
-  QANCollection_Handle.cxx
   QANCollection_Common.cxx
   QANCollection_Common.hxx
   QANCollection_DataMapIteratorOfDataMapOfRealPnt.hxx

@@ -2,6 +2,8 @@
 set(OCCT_TKernel_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKernel_GTests_FILES
+  Handle_Advanced_Test.cxx
+  Handle_Operations_Test.cxx
   NCollection_Array1_Test.cxx
   NCollection_Array2_Test.cxx
   NCollection_BaseAllocator_Test.cxx
@@ -12,6 +14,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_List_Test.cxx
   NCollection_LocalArray_Test.cxx
   NCollection_Map_Test.cxx
+  NCollection_OccAllocator_Test.cxx
   NCollection_Sequence_Test.cxx
   NCollection_SparseArray_Test.cxx
   NCollection_Vec4_Test.cxx
