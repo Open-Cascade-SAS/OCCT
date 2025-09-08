@@ -1,3 +1,0 @@
-puts "Check NCollection_IndexedMap functionality"
-
-QANColTestIndexedMap

@@ -16,6 +16,9 @@
 #include <NCollection_BaseAllocator.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <list>
+#include <random>
 
 // Basic test type for the Sequence
 typedef Standard_Integer ItemType;
@@ -372,4 +375,68 @@ TEST(NCollection_SequenceTest, MoveOperations)
   EXPECT_TRUE(aSeq3.IsEmpty()); // Original sequence should be empty after move
   EXPECT_EQ(aSeq4.Size(), 1);
   EXPECT_EQ(aSeq4(1), 40);
+}
+
+TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_MinMax)
+{
+  NCollection_Sequence<Standard_Integer> aSequence;
+  std::list<Standard_Integer>            aStdList;
+
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  {
+    Standard_Integer aVal = aDistribution(aGenerator);
+    aSequence.Append(aVal);
+    aStdList.push_back(aVal);
+  }
+
+  auto aMinOCCT = std::min_element(aSequence.begin(), aSequence.end());
+  auto aMinStd  = std::min_element(aStdList.begin(), aStdList.end());
+
+  auto aMaxOCCT = std::max_element(aSequence.begin(), aSequence.end());
+  auto aMaxStd  = std::max_element(aStdList.begin(), aStdList.end());
+
+  EXPECT_EQ(*aMinOCCT, *aMinStd);
+  EXPECT_EQ(*aMaxOCCT, *aMaxStd);
+}
+
+TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Replace)
+{
+  NCollection_Sequence<Standard_Integer> aSequence;
+  std::list<Standard_Integer>            aStdList;
+
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  {
+    Standard_Integer aVal = aDistribution(aGenerator);
+    aSequence.Append(aVal);
+    aStdList.push_back(aVal);
+  }
+
+  Standard_Integer aTargetValue = aStdList.back();
+  Standard_Integer aNewValue    = -1;
+
+  std::replace(aSequence.begin(), aSequence.end(), aTargetValue, aNewValue);
+  std::replace(aStdList.begin(), aStdList.end(), aTargetValue, aNewValue);
+
+  EXPECT_TRUE(std::equal(aSequence.begin(), aSequence.end(), aStdList.begin()));
+}
+
+TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Reverse)
+{
+  NCollection_Sequence<Standard_Integer> aSequence;
+  std::list<Standard_Integer>            aStdList;
+
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  {
+    aSequence.Append(anIdx);
+    aStdList.push_back(anIdx);
+  }
+
+  std::reverse(aSequence.begin(), aSequence.end());
+  std::reverse(aStdList.begin(), aStdList.end());
+
+  EXPECT_TRUE(std::equal(aSequence.begin(), aSequence.end(), aStdList.begin()));
 }

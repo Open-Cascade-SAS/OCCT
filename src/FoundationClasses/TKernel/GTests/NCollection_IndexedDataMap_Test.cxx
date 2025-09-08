@@ -15,6 +15,8 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <vector>
 
 // Basic test types for the IndexedDataMap
 typedef Standard_Integer KeyType;
@@ -702,4 +704,44 @@ TEST(NCollection_IndexedDataMapTest, ReSize)
     EXPECT_EQ(aMap.FindIndex(i), i);
     EXPECT_DOUBLE_EQ(aMap.FindFromKey(i), static_cast<Standard_Real>(i) / 10.0);
   }
+}
+
+TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_MinMax)
+{
+  NCollection_IndexedDataMap<Standard_Integer, Standard_Integer> aMap;
+
+  // Add some sequential values to make results predictable
+  for (Standard_Integer anIdx = 10; anIdx <= 50; anIdx += 5)
+  {
+    aMap.Add(anIdx, anIdx * 2);
+  }
+
+  EXPECT_FALSE(aMap.IsEmpty());
+
+  // Test that STL algorithms work with OCCT iterators
+  auto aMinElement = std::min_element(aMap.cbegin(), aMap.cend());
+  auto aMaxElement = std::max_element(aMap.cbegin(), aMap.cend());
+
+  EXPECT_TRUE(aMinElement != aMap.cend());
+  EXPECT_TRUE(aMaxElement != aMap.cend());
+  EXPECT_LE(*aMinElement, *aMaxElement);
+}
+
+TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_Find)
+{
+  NCollection_IndexedDataMap<Standard_Integer, Standard_Integer> aMap;
+
+  // Add known values
+  aMap.Add(100, 200);
+  aMap.Add(200, 400);
+  aMap.Add(300, 600);
+
+  // Test std::find compatibility
+  auto aFound = std::find(aMap.cbegin(), aMap.cend(), 200);
+  EXPECT_TRUE(aFound != aMap.cend());
+  EXPECT_EQ(*aFound, 200);
+
+  // Test finding non-existent value
+  auto aNotFound = std::find(aMap.cbegin(), aMap.cend(), 999);
+  EXPECT_TRUE(aNotFound == aMap.cend());
 }

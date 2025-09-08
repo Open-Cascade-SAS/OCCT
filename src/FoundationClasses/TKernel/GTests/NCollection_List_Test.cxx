@@ -15,6 +15,9 @@
 #include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <list>
+#include <random>
 
 // Test fixture for NCollection_List tests
 class NCollection_ListTest : public testing::Test
@@ -399,4 +402,51 @@ TEST_F(NCollection_ListTest, Reverse)
   EXPECT_EQ(20, it.Value());
   it.Next();
   EXPECT_EQ(10, it.Value());
+}
+
+TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_MinMax)
+{
+  NCollection_List<Standard_Integer> aList;
+  std::list<Standard_Integer>        aStdList;
+
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  {
+    Standard_Integer aVal = aDistribution(aGenerator);
+    aList.Append(aVal);
+    aStdList.push_back(aVal);
+  }
+
+  auto aMinOCCT = std::min_element(aList.begin(), aList.end());
+  auto aMinStd  = std::min_element(aStdList.begin(), aStdList.end());
+
+  auto aMaxOCCT = std::max_element(aList.begin(), aList.end());
+  auto aMaxStd  = std::max_element(aStdList.begin(), aStdList.end());
+
+  EXPECT_EQ(*aMinOCCT, *aMinStd);
+  EXPECT_EQ(*aMaxOCCT, *aMaxStd);
+}
+
+TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_Replace)
+{
+  NCollection_List<Standard_Integer> aList;
+  std::list<Standard_Integer>        aStdList;
+
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  {
+    Standard_Integer aVal = aDistribution(aGenerator);
+    aList.Append(aVal);
+    aStdList.push_back(aVal);
+  }
+
+  Standard_Integer aTargetValue = aStdList.back();
+  Standard_Integer aNewValue    = -1;
+
+  std::replace(aList.begin(), aList.end(), aTargetValue, aNewValue);
+  std::replace(aStdList.begin(), aStdList.end(), aTargetValue, aNewValue);
+
+  EXPECT_TRUE(std::equal(aList.begin(), aList.end(), aStdList.begin()));
 }

@@ -15,6 +15,9 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <random>
+#include <vector>
 
 // Basic test type for the IndexedMap
 typedef Standard_Integer KeyType;
@@ -511,4 +514,52 @@ TEST(NCollection_IndexedMapTest, ReSize)
     EXPECT_EQ(aMap.FindIndex(i), i);
     EXPECT_EQ(aMap.FindKey(i), i);
   }
+}
+
+TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_MinMax)
+{
+  NCollection_IndexedMap<Standard_Integer> aMap;
+  std::vector<Standard_Integer>            aVector;
+
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  {
+    Standard_Integer aVal = aDistribution(aGenerator);
+    aMap.Add(aVal);
+    aVector.push_back(aVal);
+  }
+
+  auto aMinOCCT = std::min_element(aMap.cbegin(), aMap.cend());
+  auto aMinStd  = std::min_element(aVector.begin(), aVector.end());
+
+  auto aMaxOCCT = std::max_element(aMap.cbegin(), aMap.cend());
+  auto aMaxStd  = std::max_element(aVector.begin(), aVector.end());
+
+  EXPECT_EQ(*aMinOCCT, *aMinStd);
+  EXPECT_EQ(*aMaxOCCT, *aMaxStd);
+}
+
+TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
+{
+  NCollection_IndexedMap<Standard_Integer> aMap;
+  std::vector<Standard_Integer>            aVector;
+
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
+  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  {
+    Standard_Integer aVal = aDistribution(aGenerator);
+    aMap.Add(aVal);
+    aVector.push_back(aVal);
+  }
+
+  // Test std::find compatibility
+  Standard_Integer aSearchValue = aVector[10];
+  auto             aFoundOCCT   = std::find(aMap.cbegin(), aMap.cend(), aSearchValue);
+  auto             aFoundStd    = std::find(aVector.begin(), aVector.end(), aSearchValue);
+
+  EXPECT_TRUE(aFoundOCCT != aMap.cend());
+  EXPECT_TRUE(aFoundStd != aVector.end());
+  EXPECT_EQ(*aFoundOCCT, *aFoundStd);
 }

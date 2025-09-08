@@ -15,6 +15,9 @@
 #include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <random>
+#include <vector>
 
 TEST(NCollection_Array1Test, DefaultConstructor)
 {
@@ -339,4 +342,74 @@ TEST(NCollection_Array1Test, IteratorAccess)
     EXPECT_EQ(index * 10, value);
     index++;
   }
+}
+
+TEST(NCollection_Array1Test, STLAlgorithmCompatibility_MinMax)
+{
+  const Standard_Integer               size = 100;
+  NCollection_Array1<Standard_Integer> anArray(1, size);
+  std::vector<Standard_Integer>        aVector;
+
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
+  for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
+  {
+    Standard_Integer aVal = aDistribution(aGenerator);
+    anArray(anIdx)        = aVal;
+    aVector.push_back(aVal);
+  }
+
+  auto aMinOCCT = std::min_element(anArray.begin(), anArray.end());
+  auto aMinStd  = std::min_element(aVector.begin(), aVector.end());
+
+  auto aMaxOCCT = std::max_element(anArray.begin(), anArray.end());
+  auto aMaxStd  = std::max_element(aVector.begin(), aVector.end());
+
+  EXPECT_EQ(*aMinOCCT, *aMinStd);
+  EXPECT_EQ(*aMaxOCCT, *aMaxStd);
+}
+
+TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Replace)
+{
+  const Standard_Integer               size = 100;
+  NCollection_Array1<Standard_Integer> anArray(1, size);
+  std::vector<Standard_Integer>        aVector;
+
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
+  for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
+  {
+    Standard_Integer aVal = aDistribution(aGenerator);
+    anArray(anIdx)        = aVal;
+    aVector.push_back(aVal);
+  }
+
+  Standard_Integer aTargetValue = aVector.back();
+  Standard_Integer aNewValue    = -1;
+
+  std::replace(anArray.begin(), anArray.end(), aTargetValue, aNewValue);
+  std::replace(aVector.begin(), aVector.end(), aTargetValue, aNewValue);
+
+  EXPECT_TRUE(std::equal(anArray.begin(), anArray.end(), aVector.begin()));
+}
+
+TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Sort)
+{
+  const Standard_Integer               size = 100;
+  NCollection_Array1<Standard_Integer> anArray(1, size);
+  std::vector<Standard_Integer>        aVector;
+
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
+  for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
+  {
+    Standard_Integer aVal = aDistribution(aGenerator);
+    anArray(anIdx)        = aVal;
+    aVector.push_back(aVal);
+  }
+
+  std::sort(anArray.begin(), anArray.end());
+  std::sort(aVector.begin(), aVector.end());
+
+  EXPECT_TRUE(std::equal(anArray.begin(), anArray.end(), aVector.begin()));
 }

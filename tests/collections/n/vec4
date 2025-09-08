@@ -1,3 +1,0 @@
-puts "Check NCollection_Vec4 functionality"
-
-QANColTestVec4

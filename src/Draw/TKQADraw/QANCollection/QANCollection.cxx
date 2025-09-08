@@ -18,9 +18,7 @@
 
 void QANCollection::Commands(Draw_Interpretor& theCommands)
 {
-  QANCollection::CommandsTest(theCommands);
-  QANCollection::CommandsPerf(theCommands);
-  QANCollection::CommandsAlloc(theCommands);
-  QANCollection::CommandsHandle(theCommands);
-  QANCollection::CommandsStl(theCommands);
+  // All QANCollection commands have been migrated to GTest format
+  // This function is kept for compatibility but does nothing
+  (void)theCommands; // Avoid unused parameter warning
 }
