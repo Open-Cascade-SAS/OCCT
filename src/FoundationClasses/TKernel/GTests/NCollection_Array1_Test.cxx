@@ -353,7 +353,7 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_MinMax)
   for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
   {
     Standard_Integer aVal = rand();
-    anArray(anIdx)       = aVal;
+    anArray(anIdx)        = aVal;
     aVector.push_back(aVal);
   }
 
@@ -377,7 +377,7 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Replace)
   for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
   {
     Standard_Integer aVal = rand();
-    anArray(anIdx)       = aVal;
+    anArray(anIdx)        = aVal;
     aVector.push_back(aVal);
   }
 
@@ -400,7 +400,7 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Sort)
   for (Standard_Integer anIdx = 1; anIdx <= size; ++anIdx)
   {
     Standard_Integer aVal = rand();
-    anArray(anIdx)       = aVal;
+    anArray(anIdx)        = aVal;
     aVector.push_back(aVal);
   }
 
