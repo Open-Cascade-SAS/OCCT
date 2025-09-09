@@ -459,7 +459,17 @@ QuarticFactorization FactorQuarticViaFerrari(const Standard_Real theA,
   aP0               = (aP0 < 0.0) ? 0.0 : Sqrt(aP0);
 
   Standard_Real aQ0 = theY0 * theY0 * 0.25 - theD;
-  aQ0               = (aQ0 < 0.0) ? 0.0 : Sqrt(aQ0);
+
+  // Handle the case where Q0^2 is very close to zero more robustly
+  // This fixes the numerical precision issue on Linux/Windows vs macOS
+  if (Abs(aQ0) < 10 * MACHINE_EPSILON)
+  {
+    aQ0 = 0.0;
+  }
+  else
+  {
+    aQ0 = (aQ0 < 0.0) ? 0.0 : Sqrt(aQ0);
+  }
 
   // Form coefficients for the two quadratic equations
   const Standard_Real aAdemi    = theA * 0.5;
