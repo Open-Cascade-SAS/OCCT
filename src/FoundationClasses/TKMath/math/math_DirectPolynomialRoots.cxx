@@ -183,10 +183,10 @@ inline Standard_Integer ComputeBaseExponent(const Standard_Real theValue)
   return 0;
 }
 
-//@brief Remove duplicates and apply ordering to match old solver behavior
+//@brief Remove duplicate roots while preserving natural algorithm order
 //@param theRoots Array of roots
 //@param theNbRoots Number of roots
-void ProcessRootsForCompatibility(Standard_Real* theRoots, Standard_Integer& theNbRoots)
+void RemoveDuplicateRoots(Standard_Real* theRoots, Standard_Integer& theNbRoots)
 {
   if (theNbRoots <= 1)
   {
@@ -214,11 +214,7 @@ void ProcessRootsForCompatibility(Standard_Real* theRoots, Standard_Integer& the
   }
   theNbRoots = aUniqueCount;
 
-  // Apply reverse ordering to match old solver behavior (larger roots first)
-  if (theNbRoots > 1)
-  {
-    std::sort(theRoots, theRoots + theNbRoots, std::greater<Standard_Real>());
-  }
+  // Do not sort roots - return in natural algorithm order like old implementation
 }
 
 // ========================================================================
@@ -603,7 +599,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   RefineAllRootsWithDeflation(aOrigCoeffs, TheRoots, NbSol);
 
   // Process roots for compatibility with old solver behavior
-  ProcessRootsForCompatibility(TheRoots, NbSol);
+  RemoveDuplicateRoots(TheRoots, NbSol);
 }
 
 //====================================================================================================
@@ -667,7 +663,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   RefineAllRootsWithDeflation(aOrigCoeffs, TheRoots, NbSol);
 
   // Process roots for compatibility with old solver behavior
-  ProcessRootsForCompatibility(TheRoots, NbSol);
+  RemoveDuplicateRoots(TheRoots, NbSol);
 }
 
 //====================================================================================================
@@ -694,7 +690,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   NbSol = SolveQuadratic(A, B, C, TheRoots);
 
   // Apply compatibility processing for consistent ordering
-  ProcessRootsForCompatibility(TheRoots, NbSol);
+  RemoveDuplicateRoots(TheRoots, NbSol);
 }
 
 //====================================================================================================
