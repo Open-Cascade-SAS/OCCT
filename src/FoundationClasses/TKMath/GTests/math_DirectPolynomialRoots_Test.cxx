@@ -294,11 +294,11 @@ TEST_F(math_DirectPolynomialRootsTest, ProblematicQuarticCaseDetailed)
     actualRoots[i - 1] = aRoots.Value(i);
   }
 
-  // JavaScript reference order for problematic quartic case
-  EXPECT_NEAR(actualRoots[0], -2946.236617, 1.0e-3) << "First root";
-  EXPECT_NEAR(actualRoots[1], -2946.425490, 1.0e-3) << "Second root";
-  EXPECT_NEAR(actualRoots[2], 2946.394276, 1.0e-3) << "Third root";
-  EXPECT_NEAR(actualRoots[3], 2946.267830, 1.0e-3) << "Fourth root";
+  // Old implementation order for problematic quartic case
+  EXPECT_NEAR(actualRoots[0], -2946.425490, 1.0e-3) << "First root";
+  EXPECT_NEAR(actualRoots[1], -2946.236617, 1.0e-3) << "Second root";
+  EXPECT_NEAR(actualRoots[2], 2946.267830, 1.0e-3) << "Third root";
+  EXPECT_NEAR(actualRoots[3], 2946.394276, 1.0e-3) << "Fourth root";
 
   // Verify residuals are extremely small (main goal of the rework)
   for (Standard_Integer i = 1; i <= 4; ++i)
@@ -344,16 +344,16 @@ TEST_F(math_DirectPolynomialRootsTest, FullFerrariMethodRequired)
   EXPECT_TRUE(aRoots.IsDone()) << "Full Ferrari method should work";
   EXPECT_EQ(aRoots.NbSolutions(), 4) << "Should find 4 real roots";
 
-  // JavaScript reference order for Ferrari method: -1, -2, 2, 0
+  // Old implementation order for Ferrari method: -2, -1, 0, 2
   Standard_Real aRoot1 = aRoots.Value(1);
   Standard_Real aRoot2 = aRoots.Value(2);
   Standard_Real aRoot3 = aRoots.Value(3);
   Standard_Real aRoot4 = aRoots.Value(4);
 
-  EXPECT_NEAR(aRoot1, -1.0, 1.0e-10) << "First root should be -1";
-  EXPECT_NEAR(aRoot2, -2.0, 1.0e-10) << "Second root should be -2";
-  EXPECT_NEAR(aRoot3, 2.0, 1.0e-10) << "Third root should be 2";
-  EXPECT_NEAR(aRoot4, 0.0, 1.0e-10) << "Fourth root should be 0";
+  EXPECT_NEAR(aRoot1, -2.0, 1.0e-10) << "First root should be -2";
+  EXPECT_NEAR(aRoot2, -1.0, 1.0e-10) << "Second root should be -1";
+  EXPECT_NEAR(aRoot3, 0.0, 1.0e-10) << "Third root should be 0";
+  EXPECT_NEAR(aRoot4, 2.0, 1.0e-10) << "Fourth root should be 2";
 }
 
 TEST_F(math_DirectPolynomialRootsTest, AggressiveRefinementEffectiveness)

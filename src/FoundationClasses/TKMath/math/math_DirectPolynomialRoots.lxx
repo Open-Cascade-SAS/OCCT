@@ -43,3 +43,33 @@ inline Standard_Real math_DirectPolynomialRoots::Value(const Standard_Integer Ni
   Standard_RangeError_Raise_if((Nieme < 0) || (Nieme > NbSol), " ");
   return TheRoots[Nieme - 1];
 }
+
+inline Standard_Real math_DirectPolynomialRoots::ScienceValue(const Standard_Integer Nieme) const
+{
+  StdFail_InfiniteSolutions_Raise_if(InfiniteStatus, " ");
+  Standard_RangeError_Raise_if((Nieme < 1) || (Nieme > NbSol),
+                               "math_DirectPolynomialRoots::ScienceValue");
+
+  // Scientific ordering: within each pair, larger root first
+  if (NbSol == 4)
+  {
+    if (Nieme == 1)
+      return (TheRoots[0] > TheRoots[1]) ? TheRoots[0] : TheRoots[1]; // Larger from first pair
+    if (Nieme == 2)
+      return (TheRoots[0] < TheRoots[1]) ? TheRoots[0] : TheRoots[1]; // Smaller from first pair
+    if (Nieme == 3)
+      return (TheRoots[2] > TheRoots[3]) ? TheRoots[2] : TheRoots[3]; // Larger from second pair
+    if (Nieme == 4)
+      return (TheRoots[2] < TheRoots[3]) ? TheRoots[2] : TheRoots[3]; // Smaller from second pair
+  }
+  else if (NbSol == 2)
+  {
+    if (Nieme == 1)
+      return (TheRoots[0] > TheRoots[1]) ? TheRoots[0] : TheRoots[1]; // Larger root
+    if (Nieme == 2)
+      return (TheRoots[0] < TheRoots[1]) ? TheRoots[0] : TheRoots[1]; // Smaller root
+  }
+
+  // For single root or cubic, return in original order
+  return TheRoots[Nieme - 1];
+}

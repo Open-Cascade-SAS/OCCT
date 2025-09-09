@@ -72,6 +72,13 @@ public:
   //! or Nieme > NbSolutions.
   Standard_Real Value(const Standard_Integer Nieme) const;
 
+  //! returns the value of the Nieme root using scientific reference ordering.
+  //! Within each quadratic pair: larger root first, smaller root second.
+  //! This provides deterministic ordering for compatibility with scientific reference
+  //! implementations. An exception is raised if there are an infinity of roots. Exception
+  //! RangeError is raised if Nieme is < 1 or Nieme > NbSolutions.
+  Standard_Real ScienceValue(const Standard_Integer Nieme) const;
+
   //! Prints on the stream o information on the current state
   //! of the object.
   //! Is used to redefine the operator <<.

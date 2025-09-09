@@ -470,53 +470,27 @@ Standard_Integer SolveQuarticFerrari(const Standard_Real theA,
   const Standard_Real aP1 = aAdemi - aP0; // -sqrt(uma) case
   const Standard_Real aQ1 = aYdemi - aSdiscrQ0;
 
-  // Solve quadratics in JavaScript reference order
+  // Solve quadratics in old implementation order (no sorting within quadratics)
   Standard_Integer aNbRoots = 0;
 
   // First quadratic: x^2 + P*x + Q = 0 (corresponds to +sqrt(uma))
   Standard_Real          aQuadRoots1[2];
   const Standard_Integer aNb1 = SolveQuadratic(1.0, aP, aQ, aQuadRoots1);
 
-  // Add roots in JS order: x1 (larger), x2 (smaller)
-  if (aNb1 == 2)
+  // Add roots in natural order from quadratic solver (like old implementation)
+  for (Standard_Integer i = 0; i < aNb1; ++i)
   {
-    if (aQuadRoots1[0] > aQuadRoots1[1])
-    {
-      theRoots[aNbRoots++] = aQuadRoots1[0]; // x1 = larger root first
-      theRoots[aNbRoots++] = aQuadRoots1[1]; // x2 = smaller root second
-    }
-    else
-    {
-      theRoots[aNbRoots++] = aQuadRoots1[1]; // x1 = larger root first
-      theRoots[aNbRoots++] = aQuadRoots1[0]; // x2 = smaller root second
-    }
-  }
-  else if (aNb1 == 1)
-  {
-    theRoots[aNbRoots++] = aQuadRoots1[0];
+    theRoots[aNbRoots++] = aQuadRoots1[i];
   }
 
   // Second quadratic: x^2 + P1*x + Q1 = 0 (corresponds to -sqrt(uma))
   Standard_Real          aQuadRoots2[2];
   const Standard_Integer aNb2 = SolveQuadratic(1.0, aP1, aQ1, aQuadRoots2);
 
-  // Add roots in JS order: x3 (larger), x4 (smaller)
-  if (aNb2 == 2)
+  // Add roots in natural order from quadratic solver (like old implementation)
+  for (Standard_Integer i = 0; i < aNb2; ++i)
   {
-    if (aQuadRoots2[0] > aQuadRoots2[1])
-    {
-      theRoots[aNbRoots++] = aQuadRoots2[0]; // x3 = larger root first
-      theRoots[aNbRoots++] = aQuadRoots2[1]; // x4 = smaller root second
-    }
-    else
-    {
-      theRoots[aNbRoots++] = aQuadRoots2[1]; // x3 = larger root first
-      theRoots[aNbRoots++] = aQuadRoots2[0]; // x4 = smaller root second
-    }
-  }
-  else if (aNb2 == 1)
-  {
-    theRoots[aNbRoots++] = aQuadRoots2[0];
+    theRoots[aNbRoots++] = aQuadRoots2[i];
   }
 
   return aNbRoots;
