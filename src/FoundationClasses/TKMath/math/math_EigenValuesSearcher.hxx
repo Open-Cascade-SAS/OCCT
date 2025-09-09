@@ -20,12 +20,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_HArray1OfReal.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray2OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
 #include <math_Vector.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
 //! This class finds eigenvalues and eigenvectors of real symmetric tridiagonal matrices.
 //!
@@ -73,12 +73,12 @@ public:
   Standard_EXPORT math_Vector EigenVector(const Standard_Integer theIndex) const;
 
 private:
-  Handle(TColStd_HArray1OfReal) myDiagonal;     //!< Copy of input diagonal elements
-  Handle(TColStd_HArray1OfReal) mySubdiagonal;  //!< Copy of input subdiagonal elements
-  Standard_Boolean              myIsDone;       //!< Computation success flag
-  Standard_Integer              myN;            //!< Matrix dimension
-  Handle(TColStd_HArray1OfReal) myEigenValues;  //!< Computed eigenvalues
-  Handle(TColStd_HArray2OfReal) myEigenVectors; //!< Computed eigenvectors stored column-wise
+  NCollection_Array1<Standard_Real> myDiagonal;     //!< Copy of input diagonal elements
+  NCollection_Array1<Standard_Real> mySubdiagonal;  //!< Copy of input subdiagonal elements
+  Standard_Boolean                  myIsDone;       //!< Computation success flag
+  Standard_Integer                  myN;            //!< Matrix dimension
+  NCollection_Array1<Standard_Real> myEigenValues;  //!< Computed eigenvalues
+  NCollection_Array2<Standard_Real> myEigenVectors; //!< Computed eigenvectors stored column-wise
 };
 
 #endif // _math_EigenValuesSearcher_HeaderFile

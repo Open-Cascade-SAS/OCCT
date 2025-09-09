@@ -416,3 +416,408 @@ TEST_F(EigenValuesSearcherTest, SmallSubdiagonalElements)
   EXPECT_NEAR(eigenvals[1], 2.0, 1e-10);
   EXPECT_NEAR(eigenvals[2], 3.0, 1e-10);
 }
+
+// Test with zero diagonal elements
+TEST_F(EigenValuesSearcherTest, ZeroDiagonalElements)
+{
+  TColStd_Array1OfReal aDiagonal(1, 3);
+  TColStd_Array1OfReal aSubdiagonal(1, 3);
+
+  // Matrix: [0 1 0]
+  //         [1 0 1]
+  //         [0 1 0]
+  aDiagonal.SetValue(1, 0.0);
+  aDiagonal.SetValue(2, 0.0);
+  aDiagonal.SetValue(3, 0.0);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1.0);
+  aSubdiagonal.SetValue(3, 1.0);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+  EXPECT_EQ(searcher.Dimension(), 3);
+
+  // Eigenvalues should be -sqrt(2), 0, sqrt(2)
+  std::vector<Standard_Real> eigenvals;
+  for (Standard_Integer i = 1; i <= 3; i++)
+    eigenvals.push_back(searcher.EigenValue(i));
+
+  std::sort(eigenvals.begin(), eigenvals.end());
+
+  EXPECT_NEAR(eigenvals[0], -Sqrt(2.0), 1e-10);
+  EXPECT_NEAR(eigenvals[1], 0.0, 1e-10);
+  EXPECT_NEAR(eigenvals[2], Sqrt(2.0), 1e-10);
+}
+
+// Test with large diagonal elements (numerical stability)
+TEST_F(EigenValuesSearcherTest, LargeDiagonalElements)
+{
+  TColStd_Array1OfReal aDiagonal(1, 3);
+  TColStd_Array1OfReal aSubdiagonal(1, 3);
+
+  aDiagonal.SetValue(1, 1e6);
+  aDiagonal.SetValue(2, 2e6);
+  aDiagonal.SetValue(3, 3e6);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1e3);
+  aSubdiagonal.SetValue(3, 2e3);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Create original matrix for verification
+  math_Matrix originalMatrix(1, 3, 1, 3);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 3; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-6));
+    EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-10);
+  }
+}
+
+// Test with alternating pattern
+TEST_F(EigenValuesSearcherTest, AlternatingPattern)
+{
+  TColStd_Array1OfReal aDiagonal(1, 4);
+  TColStd_Array1OfReal aSubdiagonal(1, 4);
+
+  // Matrix with alternating diagonal pattern
+  aDiagonal.SetValue(1, 1.0);
+  aDiagonal.SetValue(2, -1.0);
+  aDiagonal.SetValue(3, 1.0);
+  aDiagonal.SetValue(4, -1.0);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 0.5);
+  aSubdiagonal.SetValue(3, -0.5);
+  aSubdiagonal.SetValue(4, 0.5);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Verify eigenvalue-eigenvector relationships
+  math_Matrix originalMatrix(1, 4, 1, 4);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 4; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-10));
+  }
+}
+
+// Test repeated eigenvalues (multiple eigenvalues)
+TEST_F(EigenValuesSearcherTest, RepeatedEigenvalues)
+{
+  TColStd_Array1OfReal aDiagonal(1, 4);
+  TColStd_Array1OfReal aSubdiagonal(1, 4);
+
+  // Matrix designed to have repeated eigenvalues
+  aDiagonal.SetValue(1, 2.0);
+  aDiagonal.SetValue(2, 2.0);
+  aDiagonal.SetValue(3, 2.0);
+  aDiagonal.SetValue(4, 2.0);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 0.0); // Block diagonal structure
+  aSubdiagonal.SetValue(3, 0.0);
+  aSubdiagonal.SetValue(4, 0.0);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  // All eigenvalues should be 2.0
+  for (Standard_Integer i = 1; i <= 4; i++)
+  {
+    EXPECT_NEAR(searcher.EigenValue(i), 2.0, Precision::Confusion());
+  }
+}
+
+// Test with very small matrix elements (precision test)
+TEST_F(EigenValuesSearcherTest, VerySmallElements)
+{
+  TColStd_Array1OfReal aDiagonal(1, 3);
+  TColStd_Array1OfReal aSubdiagonal(1, 3);
+
+  aDiagonal.SetValue(1, 1e-10);
+  aDiagonal.SetValue(2, 2e-10);
+  aDiagonal.SetValue(3, 3e-10);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1e-11);
+  aSubdiagonal.SetValue(3, 2e-11);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  math_Matrix originalMatrix(1, 3, 1, 3);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 3; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-18));
+    EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-12);
+  }
+}
+
+// Test antisymmetric subdiagonal pattern
+TEST_F(EigenValuesSearcherTest, AntisymmetricSubdiagonal)
+{
+  TColStd_Array1OfReal aDiagonal(1, 5);
+  TColStd_Array1OfReal aSubdiagonal(1, 5);
+
+  // Symmetric tridiagonal with specific pattern
+  for (Standard_Integer i = 1; i <= 5; i++)
+    aDiagonal.SetValue(i, static_cast<Standard_Real>(i));
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1.0);
+  aSubdiagonal.SetValue(3, -2.0);
+  aSubdiagonal.SetValue(4, 1.0);
+  aSubdiagonal.SetValue(5, -2.0);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  math_Matrix originalMatrix(1, 5, 1, 5);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  // Verify all eigenvalue-eigenvector pairs
+  for (Standard_Integer i = 1; i <= 5; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
+  }
+
+  // Verify orthogonality
+  for (Standard_Integer i = 1; i <= 5; i++)
+  {
+    for (Standard_Integer j = i + 1; j <= 5; j++)
+    {
+      const math_Vector vec_i = searcher.EigenVector(i);
+      const math_Vector vec_j = searcher.EigenVector(j);
+      EXPECT_TRUE(areOrthogonal(vec_i, vec_j, 1e-9));
+    }
+  }
+}
+
+// Test Wilkinson matrix (known challenging case)
+TEST_F(EigenValuesSearcherTest, WilkinsonMatrix)
+{
+  const Standard_Integer n = 5;
+  TColStd_Array1OfReal   aDiagonal(1, n);
+  TColStd_Array1OfReal   aSubdiagonal(1, n);
+
+  // Wilkinson matrix W_n pattern
+  const Standard_Integer m = (n - 1) / 2;
+  for (Standard_Integer i = 1; i <= n; i++)
+  {
+    aDiagonal.SetValue(i, static_cast<Standard_Real>(Abs(i - 1 - m)));
+  }
+
+  aSubdiagonal.SetValue(1, 0.0);
+  for (Standard_Integer i = 2; i <= n; i++)
+    aSubdiagonal.SetValue(i, 1.0);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  math_Matrix originalMatrix(1, n, 1, n);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= n; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
+    EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-9);
+  }
+}
+
+// Test with mixed positive/negative diagonal
+TEST_F(EigenValuesSearcherTest, MixedSignDiagonal)
+{
+  TColStd_Array1OfReal aDiagonal(1, 4);
+  TColStd_Array1OfReal aSubdiagonal(1, 4);
+
+  aDiagonal.SetValue(1, -2.0);
+  aDiagonal.SetValue(2, 1.0);
+  aDiagonal.SetValue(3, -1.0);
+  aDiagonal.SetValue(4, 3.0);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1.5);
+  aSubdiagonal.SetValue(3, 0.8);
+  aSubdiagonal.SetValue(4, -0.6);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  math_Matrix originalMatrix(1, 4, 1, 4);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  std::vector<Standard_Real> eigenvals;
+  for (Standard_Integer i = 1; i <= 4; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    eigenvals.push_back(eigenval);
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
+  }
+
+  // Check trace preservation (sum of eigenvalues = sum of diagonal)
+  Standard_Real eigenSum = 0.0, diagSum = 0.0;
+  for (Standard_Integer i = 1; i <= 4; i++)
+  {
+    eigenSum += eigenvals[i - 1];
+    diagSum += aDiagonal(i);
+  }
+  EXPECT_NEAR(eigenSum, diagSum, 1e-9);
+}
+
+// Test maximum size matrix (stress test)
+TEST_F(EigenValuesSearcherTest, LargerMatrix)
+{
+  const Standard_Integer n = 8;
+  TColStd_Array1OfReal   aDiagonal(1, n);
+  TColStd_Array1OfReal   aSubdiagonal(1, n);
+
+  // Create a more complex pattern
+  for (Standard_Integer i = 1; i <= n; i++)
+  {
+    aDiagonal.SetValue(i, static_cast<Standard_Real>(i * i));
+  }
+
+  aSubdiagonal.SetValue(1, 0.0);
+  for (Standard_Integer i = 2; i <= n; i++)
+  {
+    Standard_Real val = static_cast<Standard_Real>(i % 3 == 0 ? -1.0 : 1.0);
+    aSubdiagonal.SetValue(i, val * Sqrt(static_cast<Standard_Real>(i)));
+  }
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  math_Matrix originalMatrix(1, n, 1, n);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  // Verify all eigenvalue-eigenvector pairs
+  for (Standard_Integer i = 1; i <= n; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-8));
+    EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-8);
+  }
+
+  // Test orthogonality for larger matrix
+  for (Standard_Integer i = 1; i <= n; i++)
+  {
+    for (Standard_Integer j = i + 1; j <= n; j++)
+    {
+      const math_Vector vec_i = searcher.EigenVector(i);
+      const math_Vector vec_j = searcher.EigenVector(j);
+      EXPECT_TRUE(areOrthogonal(vec_i, vec_j, 1e-8));
+    }
+  }
+}
+
+// Test with rational number patterns
+TEST_F(EigenValuesSearcherTest, RationalNumberPattern)
+{
+  TColStd_Array1OfReal aDiagonal(1, 4);
+  TColStd_Array1OfReal aSubdiagonal(1, 4);
+
+  aDiagonal.SetValue(1, 1.0 / 3.0);
+  aDiagonal.SetValue(2, 2.0 / 3.0);
+  aDiagonal.SetValue(3, 1.0);
+  aDiagonal.SetValue(4, 4.0 / 3.0);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1.0 / 6.0);
+  aSubdiagonal.SetValue(3, 1.0 / 4.0);
+  aSubdiagonal.SetValue(4, 1.0 / 5.0);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  math_Matrix originalMatrix(1, 4, 1, 4);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 4; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-12));
+    EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-12);
+  }
+}
+
+// Test near-degenerate case (eigenvalues very close)
+TEST_F(EigenValuesSearcherTest, NearDegenerateEigenvalues)
+{
+  TColStd_Array1OfReal aDiagonal(1, 3);
+  TColStd_Array1OfReal aSubdiagonal(1, 3);
+
+  aDiagonal.SetValue(1, 1.0);
+  aDiagonal.SetValue(2, 1.0 + 1e-8);
+  aDiagonal.SetValue(3, 1.0 + 2e-8);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1e-10);
+  aSubdiagonal.SetValue(3, 1e-10);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Should still find distinct eigenvalues despite near-degeneracy
+  std::vector<Standard_Real> eigenvals;
+  for (Standard_Integer i = 1; i <= 3; i++)
+    eigenvals.push_back(searcher.EigenValue(i));
+
+  std::sort(eigenvals.begin(), eigenvals.end());
+
+  // Eigenvalues should be close to but distinct from diagonal values
+  EXPECT_NEAR(eigenvals[0], 1.0, 1e-7);
+  EXPECT_NEAR(eigenvals[1], 1.0 + 1e-8, 1e-7);
+  EXPECT_NEAR(eigenvals[2], 1.0 + 2e-8, 1e-7);
+
+  math_Matrix originalMatrix(1, 3, 1, 3);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 3; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
+  }
+}

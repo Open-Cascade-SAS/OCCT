@@ -16,8 +16,6 @@
 #include <math_EigenValuesSearcher.hxx>
 
 #include <StdFail_NotDone.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
 
 namespace
 {
@@ -181,56 +179,42 @@ Standard_Boolean performQLAlgorithm(NCollection_Array1<Standard_Real>& theDiagWo
 
 math_EigenValuesSearcher::math_EigenValuesSearcher(const TColStd_Array1OfReal& theDiagonal,
                                                    const TColStd_Array1OfReal& theSubdiagonal)
+    : myDiagonal(theDiagonal),
+      mySubdiagonal(theSubdiagonal),
+      myIsDone(Standard_False),
+      myN(theDiagonal.Length()),
+      myEigenValues(1, theDiagonal.Length()),
+      myEigenVectors(1, theDiagonal.Length(), 1, theDiagonal.Length())
 {
-  myIsDone = Standard_False;
-
-  const Standard_Integer aN = theDiagonal.Length();
-  if (theSubdiagonal.Length() != aN)
+  if (theSubdiagonal.Length() != myN)
   {
     return;
   }
 
-  // Initialize internal arrays using OCCT handle-based memory management
-  myDiagonal                    = new TColStd_HArray1OfReal(1, aN);
-  myDiagonal->ChangeArray1()    = theDiagonal;
-  mySubdiagonal                 = new TColStd_HArray1OfReal(1, aN);
-  mySubdiagonal->ChangeArray1() = theSubdiagonal;
-  myN                           = aN;
-  myEigenValues                 = new TColStd_HArray1OfReal(1, aN);
-  myEigenVectors                = new TColStd_HArray2OfReal(1, aN, 1, aN);
+  // Move lower bounds to 1 for consistent indexing
+  myDiagonal.UpdateLowerBound(1);
+  mySubdiagonal.UpdateLowerBound(1);
 
-  // Allocate working arrays using OCCT collections
-  NCollection_Array1<Standard_Real> aDiagWork(1, aN);
-  NCollection_Array1<Standard_Real> aSubdiagWork(1, aN);
-  NCollection_Array2<Standard_Real> aEigenVecWork(1, aN, 1, aN);
-
-  // Initialize working arrays with input data
-  for (Standard_Integer anIdx = 1; anIdx <= aN; anIdx++)
-    aDiagWork(anIdx) = myDiagonal->Value(anIdx);
-  for (Standard_Integer anIdx = 2; anIdx <= aN; anIdx++)
-    aSubdiagWork(anIdx) = mySubdiagonal->Value(anIdx);
+  // Use internal arrays directly as working arrays
+  shiftSubdiagonalElements(mySubdiagonal, myN);
 
   // Initialize eigenvector matrix as identity matrix
-  for (Standard_Integer aRowIdx = 1; aRowIdx <= aN; aRowIdx++)
-    for (Standard_Integer aColIdx = 1; aColIdx <= aN; aColIdx++)
-      aEigenVecWork(aRowIdx, aColIdx) = (aRowIdx == aColIdx) ? 1.0 : 0.0;
+  for (Standard_Integer aRowIdx = 1; aRowIdx <= myN; aRowIdx++)
+    for (Standard_Integer aColIdx = 1; aColIdx <= myN; aColIdx++)
+      myEigenVectors(aRowIdx, aColIdx) = (aRowIdx == aColIdx) ? 1.0 : 0.0;
 
   Standard_Boolean isConverged = Standard_True;
 
-  if (aN != 1)
+  if (myN != 1)
   {
-    shiftSubdiagonalElements(aSubdiagWork, aN);
-    isConverged = performQLAlgorithm(aDiagWork, aSubdiagWork, aEigenVecWork, aN);
+    isConverged = performQLAlgorithm(myDiagonal, mySubdiagonal, myEigenVectors, myN);
   }
 
-  // Copy results to class members if computation was successful
+  // Store results directly in myEigenValues (myDiagonal contains eigenvalues after QL algorithm)
   if (isConverged)
   {
-    for (Standard_Integer anIdx = 1; anIdx <= aN; anIdx++)
-      myEigenValues->ChangeValue(anIdx) = aDiagWork(anIdx);
-    for (Standard_Integer aRowIdx = 1; aRowIdx <= aN; aRowIdx++)
-      for (Standard_Integer aColIdx = 1; aColIdx <= aN; aColIdx++)
-        myEigenVectors->ChangeValue(aRowIdx, aColIdx) = aEigenVecWork(aRowIdx, aColIdx);
+    for (Standard_Integer anIdx = 1; anIdx <= myN; anIdx++)
+      myEigenValues(anIdx) = myDiagonal(anIdx);
   }
 
   myIsDone = isConverged;
@@ -254,7 +238,7 @@ Standard_Integer math_EigenValuesSearcher::Dimension() const
 
 Standard_Real math_EigenValuesSearcher::EigenValue(const Standard_Integer theIndex) const
 {
-  return myEigenValues->Value(theIndex);
+  return myEigenValues(theIndex);
 }
 
 //=======================================================================
@@ -264,7 +248,7 @@ math_Vector math_EigenValuesSearcher::EigenVector(const Standard_Integer theInde
   math_Vector aVector(1, myN);
 
   for (Standard_Integer anIdx = 1; anIdx <= myN; anIdx++)
-    aVector(anIdx) = myEigenVectors->Value(anIdx, theIndex);
+    aVector(anIdx) = myEigenVectors(anIdx, theIndex);
 
   return aVector;
 }
