@@ -460,31 +460,63 @@ Standard_Integer SolveQuarticFerrari(const Standard_Real theA,
     aQ0 = 0.0;
   aQ0 = std::sqrt(aQ0);
 
-  // Form two quadratics
+  // Form two quadratics following JavaScript reference implementation ordering
   const Standard_Real aAdemi    = theA * 0.5;
   const Standard_Real aYdemi    = aY0 * 0.5;
   const Standard_Real aSdiscrQ0 = aSdiscr * aQ0;
 
-  const Standard_Real aP  = aAdemi + aP0;
+  const Standard_Real aP  = aAdemi + aP0; // +sqrt(uma) case
   const Standard_Real aQ  = aYdemi + aSdiscrQ0;
-  const Standard_Real aP1 = aAdemi - aP0;
+  const Standard_Real aP1 = aAdemi - aP0; // -sqrt(uma) case
   const Standard_Real aQ1 = aYdemi - aSdiscrQ0;
 
-  // Solve two quadratics: x^2 + P*x + Q = 0 and x^2 + P1*x + Q1 = 0
+  // Solve quadratics in JavaScript reference order
   Standard_Integer aNbRoots = 0;
 
+  // First quadratic: x^2 + P*x + Q = 0 (corresponds to +sqrt(uma))
   Standard_Real          aQuadRoots1[2];
   const Standard_Integer aNb1 = SolveQuadratic(1.0, aP, aQ, aQuadRoots1);
-  for (Standard_Integer i = 0; i < aNb1; ++i)
+
+  // Add roots in JS order: x1 (larger), x2 (smaller)
+  if (aNb1 == 2)
   {
-    theRoots[aNbRoots++] = aQuadRoots1[i];
+    if (aQuadRoots1[0] > aQuadRoots1[1])
+    {
+      theRoots[aNbRoots++] = aQuadRoots1[0]; // x1 = larger root first
+      theRoots[aNbRoots++] = aQuadRoots1[1]; // x2 = smaller root second
+    }
+    else
+    {
+      theRoots[aNbRoots++] = aQuadRoots1[1]; // x1 = larger root first
+      theRoots[aNbRoots++] = aQuadRoots1[0]; // x2 = smaller root second
+    }
+  }
+  else if (aNb1 == 1)
+  {
+    theRoots[aNbRoots++] = aQuadRoots1[0];
   }
 
+  // Second quadratic: x^2 + P1*x + Q1 = 0 (corresponds to -sqrt(uma))
   Standard_Real          aQuadRoots2[2];
   const Standard_Integer aNb2 = SolveQuadratic(1.0, aP1, aQ1, aQuadRoots2);
-  for (Standard_Integer i = 0; i < aNb2; ++i)
+
+  // Add roots in JS order: x3 (larger), x4 (smaller)
+  if (aNb2 == 2)
   {
-    theRoots[aNbRoots++] = aQuadRoots2[i];
+    if (aQuadRoots2[0] > aQuadRoots2[1])
+    {
+      theRoots[aNbRoots++] = aQuadRoots2[0]; // x3 = larger root first
+      theRoots[aNbRoots++] = aQuadRoots2[1]; // x4 = smaller root second
+    }
+    else
+    {
+      theRoots[aNbRoots++] = aQuadRoots2[1]; // x3 = larger root first
+      theRoots[aNbRoots++] = aQuadRoots2[0]; // x4 = smaller root second
+    }
+  }
+  else if (aNb2 == 1)
+  {
+    theRoots[aNbRoots++] = aQuadRoots2[0];
   }
 
   return aNbRoots;
