@@ -118,7 +118,7 @@ public:
   Standard_Boolean IsDone() const;
 
   //! Returns true if there is an infinity of roots, otherwise returns false.
-  //! This occurs only for the degenerate linear case 0·x + 0 = 0.
+  //! This occurs only for the degenerate linear case 0*x + 0 = 0.
   Standard_Boolean InfiniteRoots() const;
 
   //! Returns the number of distinct real roots found.
