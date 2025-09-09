@@ -19,101 +19,241 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <Standard_RangeError.hxx>
+#include <StdFail_InfiniteSolutions.hxx>
 #include <Standard_Handle.hxx>
 
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 
 //! This class implements the calculation of all the real roots of a real
-//! polynomial of degree <= 4 using a direct method. Once found,
-//! the roots are polished using the Newton method.
+//! polynomial of degree <= 4 using direct algebraic methods. The implementation
+//! uses Ferrari's method for quartics, Cardano's formula for cubics, and
+//! numerically stable algorithms for quadratics and linear equations.
+//!
+//! Key features:
+//! - Robust numerical algorithms with coefficient scaling
+//! - Newton-Raphson root refinement for improved accuracy
+//! - Proper handling of degenerate and edge cases
+//! - Multiple root detection and infinite solution handling
+//! - Scientific reference ordering for deterministic results
+//!
+//! Once found, all roots are polished using the Newton-Raphson method
+//! to achieve maximum numerical precision.
 class math_DirectPolynomialRoots
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! computes all the real roots of the polynomial
-  //! Ax4 + Bx3 + Cx2 + Dx + E using a direct method.
-  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real A,
-                                             const Standard_Real B,
-                                             const Standard_Real C,
-                                             const Standard_Real D,
-                                             const Standard_Real E);
+  //! Computes all the real roots of the quartic polynomial
+  //! Ax^4 + Bx^3 + Cx^2 + Dx + E = 0 using Ferrari's method.
+  //!
+  //! The algorithm:
+  //! 1. Checks for degree reduction (A ~= 0)
+  //! 2. Normalizes and scales coefficients for numerical stability
+  //! 3. Solves Ferrari's resolvent cubic equation
+  //! 4. Factors quartic into two quadratic equations
+  //! 5. Solves both quadratics independently
+  //! 6. Refines all roots using Newton-Raphson method
+  //!
+  //! @param theA coefficient of x^4 term
+  //! @param theB coefficient of x^3 term
+  //! @param theC coefficient of x^2 term
+  //! @param theD coefficient of x term
+  //! @param theE constant term
+  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real theA,
+                                             const Standard_Real theB,
+                                             const Standard_Real theC,
+                                             const Standard_Real theD,
+                                             const Standard_Real theE);
 
-  //! computes all the real roots of the polynomial
-  //! Ax3 + Bx2 + Cx + D using a direct method.
-  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real A,
-                                             const Standard_Real B,
-                                             const Standard_Real C,
-                                             const Standard_Real D);
+  //! Computes all the real roots of the cubic polynomial
+  //! Ax^3 + Bx^2 + Cx + D = 0 using Cardano's method with Vieta substitution.
+  //!
+  //! The algorithm:
+  //! 1. Transforms to depressed cubic t^3 + Pt + Q = 0
+  //! 2. Computes discriminant Delta = -4P^3/27 - Q^2/4
+  //! 3. Uses trigonometric method for Delta < 0 (three real roots)
+  //! 4. Uses Cardano's formula for Delta > 0 (one real root)
+  //! 5. Handles multiple roots when Delta = 0
+  //! 6. Applies Newton-Raphson refinement
+  //!
+  //! @param theA coefficient of x^3 term
+  //! @param theB coefficient of x^2 term
+  //! @param theC coefficient of x term
+  //! @param theD constant term
+  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real theA,
+                                             const Standard_Real theB,
+                                             const Standard_Real theC,
+                                             const Standard_Real theD);
 
-  //! computes all the real roots of the polynomial
-  //! Ax2 + Bx + C using a direct method.
-  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real A,
-                                             const Standard_Real B,
-                                             const Standard_Real C);
+  //! Computes all the real roots of the quadratic polynomial
+  //! Ax^2 + Bx + C = 0 using numerically stable formulas.
+  //!
+  //! The algorithm avoids catastrophic cancellation by using:
+  //! - Discriminant with error bounds: Delta = B^2 - 4AC
+  //! - Stable root formulas based on sign of B
+  //! - Newton-Raphson refinement for improved accuracy
+  //!
+  //! @param theA coefficient of x^2 term
+  //! @param theB coefficient of x term
+  //! @param theC constant term
+  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real theA,
+                                             const Standard_Real theB,
+                                             const Standard_Real theC);
 
-  //! computes the real root of the polynomial Ax + B.
-  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real A, const Standard_Real B);
+  //! Computes the real root of the linear equation Ax + B = 0.
+  //!
+  //! Handles all cases:
+  //! - A != 0: unique solution x = -B/A
+  //! - A = 0, B != 0: no solution (inconsistent)
+  //! - A = 0, B = 0: infinite solutions (identity)
+  //!
+  //! @param theA coefficient of x term
+  //! @param theB constant term
+  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real theA, const Standard_Real theB);
 
   //! Returns true if the computations are successful, otherwise returns false.
+  //! Computations may fail due to numerical issues or overflow conditions.
   Standard_Boolean IsDone() const;
 
   //! Returns true if there is an infinity of roots, otherwise returns false.
+  //! This occurs only for the degenerate linear case 0·x + 0 = 0.
   Standard_Boolean InfiniteRoots() const;
 
-  //! returns the number of solutions.
+  //! Returns the number of distinct real roots found.
   //! An exception is raised if there are an infinity of roots.
+  //! For multiple roots, this counts each root according to its multiplicity.
   Standard_Integer NbSolutions() const;
 
-  //! returns the value of the Nieme root.
+  //! Returns the value of the Nth root in default ordering.
+  //! The default ordering may vary depending on the algorithm used.
   //! An exception is raised if there are an infinity of roots.
-  //! Exception RangeError is raised if Nieme is < 1
-  //! or Nieme > NbSolutions.
-  Standard_Real Value(const Standard_Integer Nieme) const;
+  //! Exception RangeError is raised if theIndex is < 1
+  //! or theIndex > NbSolutions.
+  //!
+  //! @param theIndex root index (1-based)
+  //! @return root value
+  Standard_Real Value(const Standard_Integer theIndex) const;
 
-  //! returns the value of the Nieme root using scientific reference ordering.
-  //! Within each quadratic pair: larger root first, smaller root second.
-  //! This provides deterministic ordering for compatibility with scientific reference
-  //! implementations. An exception is raised if there are an infinity of roots. Exception
-  //! RangeError is raised if Nieme is < 1 or Nieme > NbSolutions.
-  Standard_Real ScienceValue(const Standard_Integer Nieme) const;
-
-  //! Prints on the stream o information on the current state
-  //! of the object.
-  //! Is used to redefine the operator <<.
-  Standard_EXPORT void Dump(Standard_OStream& o) const;
+  //! Prints diagnostic information about the current state of the solver.
+  //! Outputs computation status, number of roots, and individual root values.
+  //! This method is used to redefine the operator << for debugging purposes.
+  //!
+  //! @param theStream output stream for diagnostic information
+  Standard_EXPORT void Dump(Standard_OStream& theStream) const;
 
 protected:
   //! Solves quartic equation Ax^4 + Bx^3 + Cx^2 + Dx + E = 0 using Ferrari's method
-  //! with modern numerical enhancements for stability and accuracy
-  Standard_EXPORT void Solve(const Standard_Real A,
-                             const Standard_Real B,
-                             const Standard_Real C,
-                             const Standard_Real D,
-                             const Standard_Real E);
+  //! with modern numerical enhancements for stability and accuracy.
+  //!
+  //! Implementation details:
+  //! - Degree reduction check for nearly-zero leading coefficient
+  //! - Coefficient normalization and scaling for numerical stability
+  //! - Ferrari's resolvent cubic construction and solution
+  //! - Quartic factorization into two quadratic equations
+  //! - Newton-Raphson refinement of all roots
+  //!
+  //! @param theA coefficient of x^4 term
+  //! @param theB coefficient of x^3 term
+  //! @param theC coefficient of x^2 term
+  //! @param theD coefficient of x term
+  //! @param theE constant term
+  Standard_EXPORT void Solve(const Standard_Real theA,
+                             const Standard_Real theB,
+                             const Standard_Real theC,
+                             const Standard_Real theD,
+                             const Standard_Real theE);
 
   //! Solves cubic equation Ax^3 + Bx^2 + Cx + D = 0 using Cardano's method
-  //! with Vieta substitution and trigonometric solution for stability
-  Standard_EXPORT void Solve(const Standard_Real A,
-                             const Standard_Real B,
-                             const Standard_Real C,
-                             const Standard_Real D);
+  //! with Vieta substitution and trigonometric solution for stability.
+  //!
+  //! Implementation features:
+  //! - Transformation to depressed cubic form
+  //! - Discriminant-based method selection
+  //! - Trigonometric solution for three real roots
+  //! - Cardano's formula for one real root
+  //! - Special handling for multiple roots
+  //! - Coefficient scaling for numerical robustness
+  //!
+  //! @param theA coefficient of x^3 term
+  //! @param theB coefficient of x^2 term
+  //! @param theC coefficient of x term
+  //! @param theD constant term
+  Standard_EXPORT void Solve(const Standard_Real theA,
+                             const Standard_Real theB,
+                             const Standard_Real theC,
+                             const Standard_Real theD);
 
   //! Solves quadratic equation Ax^2 + Bx + C = 0 using numerically stable
-  //! formulas to avoid catastrophic cancellation
-  Standard_EXPORT void Solve(const Standard_Real A, const Standard_Real B, const Standard_Real C);
+  //! formulas to avoid catastrophic cancellation.
+  //!
+  //! Features:
+  //! - Discriminant computation with error bounds
+  //! - Stable root extraction formulas
+  //! - Proper handling of near-zero discriminant (double roots)
+  //! - Newton-Raphson refinement
+  //!
+  //! @param theA coefficient of x^2 term
+  //! @param theB coefficient of x term
+  //! @param theC constant term
+  Standard_EXPORT void Solve(const Standard_Real theA,
+                             const Standard_Real theB,
+                             const Standard_Real theC);
 
-  //! Solves linear equation Ax + B = 0 with proper handling of degenerate cases
-  Standard_EXPORT void Solve(const Standard_Real A, const Standard_Real B);
+  //! Solves linear equation Ax + B = 0 with proper handling of degenerate cases.
+  //!
+  //! Handles all cases:
+  //! - Normal case (A != 0): unique solution
+  //! - Inconsistent case (A = 0, B != 0): no solution
+  //! - Identity case (A = 0, B = 0): infinite solutions
+  //!
+  //! @param theA coefficient of x term
+  //! @param theB constant term
+  Standard_EXPORT void Solve(const Standard_Real theA, const Standard_Real theB);
 
 private:
-  Standard_Boolean Done;
-  Standard_Boolean InfiniteStatus;
-  Standard_Integer NbSol{};
-  Standard_Real    TheRoots[4]{};
+  //! Computation status flag - true if solution completed successfully
+  Standard_Boolean myDone;
+
+  //! Infinite solutions flag - true for degenerate case 0*x + 0 = 0
+  Standard_Boolean myInfiniteStatus;
+
+  //! Number of real roots found (0 to 4)
+  Standard_Integer myNbSol;
+
+  //! Array storing the computed real roots
+  Standard_Real myRoots[4];
 };
 
-#include <math_DirectPolynomialRoots.lxx>
+inline Standard_Boolean math_DirectPolynomialRoots::IsDone() const
+{
+  return myDone;
+}
+
+inline Standard_Boolean math_DirectPolynomialRoots::InfiniteRoots() const
+{
+  return myInfiniteStatus;
+}
+
+inline Standard_Integer math_DirectPolynomialRoots::NbSolutions() const
+{
+  StdFail_InfiniteSolutions_Raise_if(myInfiniteStatus, " ");
+  return myNbSol;
+}
+
+inline Standard_Real math_DirectPolynomialRoots::Value(const Standard_Integer theIndex) const
+{
+  StdFail_InfiniteSolutions_Raise_if(myInfiniteStatus, " ");
+  Standard_RangeError_Raise_if((theIndex < 1) || (theIndex > myNbSol), " ");
+  return myRoots[theIndex - 1];
+}
+
+inline Standard_OStream& operator<<(Standard_OStream&                 theStream,
+                                    const math_DirectPolynomialRoots& theRoots)
+{
+  theRoots.Dump(theStream);
+  return theStream;
+}
 
 #endif // _math_DirectPolynomialRoots_HeaderFile
