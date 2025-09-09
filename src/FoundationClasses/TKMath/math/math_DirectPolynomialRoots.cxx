@@ -129,7 +129,7 @@ template <typename... Coeffs>
 inline Standard_Real RefinePolynomialRoot(const Standard_Real theInitialGuess, Coeffs... theCoeffs)
 {
   const Standard_Real aCoeffs[] = {theCoeffs...};
-  constexpr size_t    N         = sizeof...(Coeffs);
+  const size_t        N         = sizeof...(Coeffs);
   return RefineRoot(N, aCoeffs, theInitialGuess);
 }
 
