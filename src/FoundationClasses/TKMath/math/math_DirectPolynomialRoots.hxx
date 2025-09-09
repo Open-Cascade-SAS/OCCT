@@ -213,17 +213,10 @@ protected:
   Standard_EXPORT void Solve(const Standard_Real theA, const Standard_Real theB);
 
 private:
-  //! Computation status flag - true if solution completed successfully
-  Standard_Boolean myDone;
-
-  //! Infinite solutions flag - true for degenerate case 0*x + 0 = 0
-  Standard_Boolean myInfiniteStatus;
-
-  //! Number of real roots found (0 to 4)
-  Standard_Integer myNbSol;
-
-  //! Array storing the computed real roots
-  Standard_Real myRoots[4];
+  Standard_Boolean myDone;           //!< Computation status flag
+  Standard_Boolean myInfiniteStatus; //!< Infinite solutions flag (0*x + 0 = 0)
+  Standard_Integer myNbSol;          //!< Number of real roots found (0 to 4)
+  Standard_Real    myRoots[4];       //!< Array storing computed real roots
 };
 
 inline Standard_Boolean math_DirectPolynomialRoots::IsDone() const
