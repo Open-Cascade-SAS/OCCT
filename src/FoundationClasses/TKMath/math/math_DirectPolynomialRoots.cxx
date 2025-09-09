@@ -183,31 +183,42 @@ inline Standard_Integer ComputeBaseExponent(const Standard_Real theValue)
   return 0;
 }
 
-//@brief Sort roots in ascending order and remove duplicates
+//@brief Remove duplicates and apply ordering to match old solver behavior
 //@param theRoots Array of roots
 //@param theNbRoots Number of roots
-void SortAndRemoveDuplicateRoots(Standard_Real* theRoots, Standard_Integer& theNbRoots)
+void ProcessRootsForCompatibility(Standard_Real* theRoots, Standard_Integer& theNbRoots)
 {
   if (theNbRoots <= 1)
   {
     return;
   }
 
-  // Sort roots
-  std::sort(theRoots, theRoots + theNbRoots);
-
-  // Remove duplicates
+  // Remove duplicates without changing order
   Standard_Integer aUniqueCount = 1;
-
   for (Standard_Integer i = 1; i < theNbRoots; ++i)
   {
-    if (std::abs(theRoots[i] - theRoots[aUniqueCount - 1]) > DUPLICATE_ROOT_TOL)
+    bool isDuplicate = false;
+    for (Standard_Integer j = 0; j < aUniqueCount; ++j)
+    {
+      if (std::abs(theRoots[i] - theRoots[j]) <= DUPLICATE_ROOT_TOL)
+      {
+        isDuplicate = true;
+        break;
+      }
+    }
+
+    if (!isDuplicate)
     {
       theRoots[aUniqueCount++] = theRoots[i];
     }
   }
-
   theNbRoots = aUniqueCount;
+
+  // Apply reverse ordering to match old solver behavior (larger roots first)
+  if (theNbRoots > 1)
+  {
+    std::sort(theRoots, theRoots + theNbRoots, std::greater<Standard_Real>());
+  }
 }
 
 // ========================================================================
@@ -591,8 +602,8 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   const std::array<Standard_Real, 5> aOrigCoeffs = {A, B, C, D, E};
   RefineAllRootsWithDeflation(aOrigCoeffs, TheRoots, NbSol);
 
-  // Sort and remove duplicates
-  SortAndRemoveDuplicateRoots(TheRoots, NbSol);
+  // Process roots for compatibility with old solver behavior
+  ProcessRootsForCompatibility(TheRoots, NbSol);
 }
 
 //====================================================================================================
@@ -655,8 +666,8 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   const std::array<Standard_Real, 4> aOrigCoeffs = {A, B, C, D};
   RefineAllRootsWithDeflation(aOrigCoeffs, TheRoots, NbSol);
 
-  // Sort and remove duplicates
-  SortAndRemoveDuplicateRoots(TheRoots, NbSol);
+  // Process roots for compatibility with old solver behavior
+  ProcessRootsForCompatibility(TheRoots, NbSol);
 }
 
 //====================================================================================================
@@ -682,11 +693,8 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   // Solve quadratic
   NbSol = SolveQuadratic(A, B, C, TheRoots);
 
-  // Sort roots
-  if (NbSol == 2 && TheRoots[0] > TheRoots[1])
-  {
-    std::swap(TheRoots[0], TheRoots[1]);
-  }
+  // Apply compatibility processing for consistent ordering
+  ProcessRootsForCompatibility(TheRoots, NbSol);
 }
 
 //====================================================================================================

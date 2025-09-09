@@ -22,10 +22,37 @@
 #include <cmath>
 #include <algorithm>
 
-namespace
+// Test fixture for math_DirectPolynomialRoots testing
+class math_DirectPolynomialRootsTest : public ::testing::Test
 {
+protected:
+  void SetUp() override { myTolerance = 1.0e-10; }
 
-TEST(MathDirectPolynomialRootsTest, QuadraticRoots)
+  Standard_Real myTolerance;
+
+  //! Verify polynomial evaluation at root gives near-zero result
+  void verifyRoot(Standard_Real                     theRoot,
+                  const std::vector<Standard_Real>& theCoeffs,
+                  Standard_Integer                  theSolutionIndex,
+                  Standard_Real                     theTolerance = 1.0e-10) const
+  {
+    Standard_Real aResult = 0.0;
+    Standard_Real aPower  = 1.0;
+
+    // Evaluate polynomial: coefficients are in descending degree order (a0*x^n + a1*x^(n-1) + ... +
+    // an)
+    for (int i = static_cast<int>(theCoeffs.size()) - 1; i >= 0; i--)
+    {
+      aResult += theCoeffs[i] * aPower;
+      aPower *= theRoot;
+    }
+
+    EXPECT_NEAR(aResult, 0.0, theTolerance)
+      << "Root " << theSolutionIndex << " should satisfy polynomial equation";
+  }
+};
+
+TEST_F(math_DirectPolynomialRootsTest, QuadraticRoots)
 {
   // Test quadratic: x^2 - 5x + 6 = 0, roots should be 2 and 3
   math_DirectPolynomialRoots aRoots(1.0, -5.0, 6.0);
@@ -33,20 +60,19 @@ TEST(MathDirectPolynomialRootsTest, QuadraticRoots)
   EXPECT_TRUE(aRoots.IsDone()) << "Quadratic root finding should succeed";
   EXPECT_EQ(aRoots.NbSolutions(), 2) << "Quadratic should have 2 roots";
 
+  // With our root ordering fix, roots should come in descending order: 3, 2
   Standard_Real aRoot1 = aRoots.Value(1);
   Standard_Real aRoot2 = aRoots.Value(2);
 
-  // Sort roots for comparison
-  if (aRoot1 > aRoot2)
-  {
-    std::swap(aRoot1, aRoot2);
-  }
+  EXPECT_NEAR(aRoot1, 3.0, myTolerance) << "First root should be 3";
+  EXPECT_NEAR(aRoot2, 2.0, myTolerance) << "Second root should be 2";
 
-  EXPECT_NEAR(aRoot1, 2.0, 1.0e-10) << "First quadratic root";
-  EXPECT_NEAR(aRoot2, 3.0, 1.0e-10) << "Second quadratic root";
+  // Verify roots satisfy the equation x^2 - 5x + 6 = 0
+  verifyRoot(aRoot1, {1.0, -5.0, 6.0}, 1);
+  verifyRoot(aRoot2, {1.0, -5.0, 6.0}, 2);
 }
 
-TEST(MathDirectPolynomialRootsTest, QuadraticNoRealRoots)
+TEST_F(math_DirectPolynomialRootsTest, QuadraticNoRealRoots)
 {
   // Test quadratic: x^2 + x + 1 = 0, no real roots (discriminant < 0)
   math_DirectPolynomialRoots aRoots(1.0, 1.0, 1.0);
@@ -55,24 +81,23 @@ TEST(MathDirectPolynomialRootsTest, QuadraticNoRealRoots)
   EXPECT_EQ(aRoots.NbSolutions(), 0) << "Should have no real roots";
 }
 
-TEST(MathDirectPolynomialRootsTest, QuadraticDoubleRoot)
+TEST_F(math_DirectPolynomialRootsTest, QuadraticDoubleRoot)
 {
   // Test quadratic: (x-1)^2 = x^2 - 2x + 1 = 0, double root at x = 1
   math_DirectPolynomialRoots aRoots(1.0, -2.0, 1.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Double root case should succeed";
-  // Implementation may report double root as 1 or 2 solutions
-  EXPECT_GE(aRoots.NbSolutions(), 1) << "Should have at least one solution";
-  EXPECT_LE(aRoots.NbSolutions(), 2) << "Should have at most two solutions";
+  EXPECT_EQ(aRoots.NbSolutions(), 1)
+    << "Double root should be reported as 1 solution after deduplication";
 
-  // All reported roots should be 1.0
-  for (Standard_Integer i = 1; i <= aRoots.NbSolutions(); i++)
-  {
-    EXPECT_NEAR(aRoots.Value(i), 1.0, 1.0e-10) << "Double root value " << i;
-  }
+  Standard_Real aRoot = aRoots.Value(1);
+  EXPECT_NEAR(aRoot, 1.0, myTolerance) << "Double root should be 1.0";
+
+  // Verify root satisfies the equation x^2 - 2x + 1 = 0
+  verifyRoot(aRoot, {1.0, -2.0, 1.0}, 1);
 }
 
-TEST(MathDirectPolynomialRootsTest, CubicRoots)
+TEST_F(math_DirectPolynomialRootsTest, CubicRoots)
 {
   // Test cubic: (x-1)(x-2)(x-3) = x^3 - 6x^2 + 11x - 6 = 0
   // Roots should be 1, 2, 3
@@ -81,34 +106,35 @@ TEST(MathDirectPolynomialRootsTest, CubicRoots)
   EXPECT_TRUE(aRoots.IsDone()) << "Cubic root finding should succeed";
   EXPECT_EQ(aRoots.NbSolutions(), 3) << "Cubic should have 3 real roots";
 
-  // Collect and sort roots
-  std::vector<Standard_Real> aFoundRoots;
-  for (Standard_Integer i = 1; i <= aRoots.NbSolutions(); i++)
-  {
-    aFoundRoots.push_back(aRoots.Value(i));
-  }
-  std::sort(aFoundRoots.begin(), aFoundRoots.end());
+  // With our root ordering fix, roots should come in descending order: 3, 2, 1
+  Standard_Real aRoot1 = aRoots.Value(1);
+  Standard_Real aRoot2 = aRoots.Value(2);
+  Standard_Real aRoot3 = aRoots.Value(3);
 
-  EXPECT_NEAR(aFoundRoots[0], 1.0, 1.0e-10) << "First cubic root";
-  EXPECT_NEAR(aFoundRoots[1], 2.0, 1.0e-10) << "Second cubic root";
-  EXPECT_NEAR(aFoundRoots[2], 3.0, 1.0e-10) << "Third cubic root";
+  EXPECT_NEAR(aRoot1, 3.0, myTolerance) << "First root should be 3";
+  EXPECT_NEAR(aRoot2, 2.0, myTolerance) << "Second root should be 2";
+  EXPECT_NEAR(aRoot3, 1.0, myTolerance) << "Third root should be 1";
+
+  // Verify roots satisfy the equation x^3 - 6x^2 + 11x - 6 = 0
+  verifyRoot(aRoot1, {1.0, -6.0, 11.0, -6.0}, 1);
+  verifyRoot(aRoot2, {1.0, -6.0, 11.0, -6.0}, 2);
+  verifyRoot(aRoot3, {1.0, -6.0, 11.0, -6.0}, 3);
 }
 
-TEST(MathDirectPolynomialRootsTest, CubicOneRealRoot)
+TEST_F(math_DirectPolynomialRootsTest, CubicOneRealRoot)
 {
   // Test cubic: x^3 + x + 1 = 0, should have one real root
   math_DirectPolynomialRoots aRoots(1.0, 0.0, 1.0, 1.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Cubic with one real root should succeed";
-  EXPECT_GE(aRoots.NbSolutions(), 1) << "Should have at least one real root";
+  EXPECT_EQ(aRoots.NbSolutions(), 1) << "Should have exactly one real root";
 
-  // Verify the root by substitution
-  Standard_Real aRoot  = aRoots.Value(1);
-  Standard_Real aValue = aRoot * aRoot * aRoot + aRoot + 1.0;
-  EXPECT_NEAR(aValue, 0.0, 1.0e-10) << "Root should satisfy the equation";
+  Standard_Real aRoot = aRoots.Value(1);
+  // Verify the root by equation verification x^3 + x + 1 = 0
+  verifyRoot(aRoot, {1.0, 0.0, 1.0, 1.0}, 1);
 }
 
-TEST(MathDirectPolynomialRootsTest, QuarticRoots)
+TEST_F(math_DirectPolynomialRootsTest, QuarticRoots)
 {
   // Test quartic: (x-1)(x-2)(x+1)(x+2) = (x^2-1)(x^2-4) = x^4 - 5x^2 + 4 = 0
   // Roots should be -2, -1, 1, 2
@@ -117,21 +143,26 @@ TEST(MathDirectPolynomialRootsTest, QuarticRoots)
   EXPECT_TRUE(aRoots.IsDone()) << "Quartic root finding should succeed";
   EXPECT_EQ(aRoots.NbSolutions(), 4) << "Quartic should have 4 real roots";
 
-  // Collect and sort roots
-  std::vector<Standard_Real> aFoundRoots;
-  for (Standard_Integer i = 1; i <= aRoots.NbSolutions(); i++)
-  {
-    aFoundRoots.push_back(aRoots.Value(i));
-  }
-  std::sort(aFoundRoots.begin(), aFoundRoots.end());
+  // With our root ordering fix, roots should come in descending order: 2, 1, -1, -2
+  Standard_Real aRoot1 = aRoots.Value(1);
+  Standard_Real aRoot2 = aRoots.Value(2);
+  Standard_Real aRoot3 = aRoots.Value(3);
+  Standard_Real aRoot4 = aRoots.Value(4);
 
-  EXPECT_NEAR(aFoundRoots[0], -2.0, 1.0e-10) << "First quartic root";
-  EXPECT_NEAR(aFoundRoots[1], -1.0, 1.0e-10) << "Second quartic root";
-  EXPECT_NEAR(aFoundRoots[2], 1.0, 1.0e-10) << "Third quartic root";
-  EXPECT_NEAR(aFoundRoots[3], 2.0, 1.0e-10) << "Fourth quartic root";
+  EXPECT_NEAR(aRoot1, 2.0, myTolerance) << "First root should be 2";
+  EXPECT_NEAR(aRoot2, 1.0, myTolerance) << "Second root should be 1";
+  EXPECT_NEAR(aRoot3, -1.0, myTolerance) << "Third root should be -1";
+  EXPECT_NEAR(aRoot4, -2.0, myTolerance) << "Fourth root should be -2";
+
+  // Verify roots satisfy the equation x^4 - 5x^2 + 4 = 0
+  std::vector<Standard_Real> aCoeffs = {1.0, 0.0, -5.0, 0.0, 4.0};
+  verifyRoot(aRoot1, aCoeffs, 1);
+  verifyRoot(aRoot2, aCoeffs, 2);
+  verifyRoot(aRoot3, aCoeffs, 3);
+  verifyRoot(aRoot4, aCoeffs, 4);
 }
 
-TEST(MathDirectPolynomialRootsTest, LinearCase)
+TEST_F(math_DirectPolynomialRootsTest, LinearCase)
 {
   // Test linear: 2x - 6 = 0, root should be x = 3
   math_DirectPolynomialRoots aRoots(2.0, -6.0);
@@ -139,10 +170,14 @@ TEST(MathDirectPolynomialRootsTest, LinearCase)
   EXPECT_TRUE(aRoots.IsDone()) << "Linear root finding should succeed";
   EXPECT_EQ(aRoots.NbSolutions(), 1) << "Linear should have 1 root";
 
-  EXPECT_NEAR(aRoots.Value(1), 3.0, 1.0e-10) << "Linear root value";
+  Standard_Real aRoot = aRoots.Value(1);
+  EXPECT_NEAR(aRoot, 3.0, myTolerance) << "Linear root value";
+
+  // Verify root satisfies the equation 2x - 6 = 0
+  verifyRoot(aRoot, {2.0, -6.0}, 1);
 }
 
-TEST(MathDirectPolynomialRootsTest, DegenerateLinearCase)
+TEST_F(math_DirectPolynomialRootsTest, DegenerateLinearCase)
 {
   // Test degenerate linear: 0x + 5 = 0 (no solution)
   math_DirectPolynomialRoots aRoots(0.0, 5.0);
@@ -151,7 +186,7 @@ TEST(MathDirectPolynomialRootsTest, DegenerateLinearCase)
   EXPECT_EQ(aRoots.NbSolutions(), 0) << "0x + 5 = 0 should have no solutions";
 }
 
-TEST(MathDirectPolynomialRootsTest, PolynomialEvaluation)
+TEST_F(math_DirectPolynomialRootsTest, PolynomialEvaluation)
 {
   // Test root verification by polynomial evaluation
   math_DirectPolynomialRoots aRoots(1.0, -3.0, 2.0); // x^2 - 3x + 2 = 0, roots: 1, 2
@@ -159,83 +194,81 @@ TEST(MathDirectPolynomialRootsTest, PolynomialEvaluation)
   EXPECT_TRUE(aRoots.IsDone()) << "Should find roots successfully";
   EXPECT_EQ(aRoots.NbSolutions(), 2) << "Should have 2 roots";
 
+  // Verify both roots satisfy the equation x^2 - 3x + 2 = 0 using helper method
   for (Standard_Integer i = 1; i <= aRoots.NbSolutions(); i++)
   {
-    Standard_Real aRoot  = aRoots.Value(i);
-    Standard_Real aValue = aRoot * aRoot - 3.0 * aRoot + 2.0;
-    EXPECT_NEAR(aValue, 0.0, 1.0e-10) << "Root " << i << " should satisfy equation";
+    Standard_Real aRoot = aRoots.Value(i);
+    verifyRoot(aRoot, {1.0, -3.0, 2.0}, i);
   }
 }
 
-TEST(MathDirectPolynomialRootsTest, NearZeroCoefficients)
+TEST_F(math_DirectPolynomialRootsTest, NearZeroCoefficients)
 {
   // Test with very small leading coefficient (effectively lower degree)
   math_DirectPolynomialRoots aRoots(1.0e-15, 1.0, -2.0); // Effectively linear: x - 2 = 0
 
   EXPECT_TRUE(aRoots.IsDone()) << "Should handle near-zero leading coefficient";
+  EXPECT_EQ(aRoots.NbSolutions(), 2) << "Should find 2 roots for this quadratic";
 
-  if (aRoots.NbSolutions() > 0)
-  {
-    // Should find root near x = 2
-    bool aFoundNearTwo = false;
-    for (Standard_Integer i = 1; i <= aRoots.NbSolutions(); i++)
-    {
-      if (std::abs(aRoots.Value(i) - 2.0) < 1.0e-6)
-      {
-        aFoundNearTwo = true;
-        break;
-      }
-    }
-    EXPECT_TRUE(aFoundNearTwo) << "Should find root near x = 2";
-  }
+  // With very small leading coefficient, we get one small positive root near 2 and one very large
+  // negative root
+  Standard_Real aRoot1 = aRoots.Value(1);
+  Standard_Real aRoot2 = aRoots.Value(2);
+
+  // One root should be near 2 (the meaningful solution from linear approximation)
+  bool aFoundNearTwo = (std::abs(aRoot1 - 2.0) < 1.0e-6) || (std::abs(aRoot2 - 2.0) < 1.0e-6);
+  EXPECT_TRUE(aFoundNearTwo) << "Should find one root near x = 2";
 }
 
-TEST(MathDirectPolynomialRootsTest, BiQuadraticPolynomial)
+TEST_F(math_DirectPolynomialRootsTest, BiQuadraticPolynomial)
 {
   // Test biquadratic: x^4 - 10x^2 + 9 = (x^2-1)(x^2-9) = 0
   // Roots: -3, -1, 1, 3
   math_DirectPolynomialRoots aRoots(1.0, 0.0, -10.0, 0.0, 9.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Should solve biquadratic polynomial";
+  EXPECT_EQ(aRoots.NbSolutions(), 4) << "Should find 4 real roots";
 
-  if (aRoots.NbSolutions() == 4)
-  {
-    std::vector<Standard_Real> aFoundRoots;
-    for (Standard_Integer i = 1; i <= aRoots.NbSolutions(); i++)
-    {
-      aFoundRoots.push_back(aRoots.Value(i));
-    }
-    std::sort(aFoundRoots.begin(), aFoundRoots.end());
+  // With our root ordering fix, roots should come in descending order: 3, 1, -1, -3
+  Standard_Real aRoot1 = aRoots.Value(1);
+  Standard_Real aRoot2 = aRoots.Value(2);
+  Standard_Real aRoot3 = aRoots.Value(3);
+  Standard_Real aRoot4 = aRoots.Value(4);
 
-    EXPECT_NEAR(aFoundRoots[0], -3.0, 1.0e-8) << "Root -3";
-    EXPECT_NEAR(aFoundRoots[1], -1.0, 1.0e-8) << "Root -1";
-    EXPECT_NEAR(aFoundRoots[2], 1.0, 1.0e-8) << "Root 1";
-    EXPECT_NEAR(aFoundRoots[3], 3.0, 1.0e-8) << "Root 3";
-  }
+  EXPECT_NEAR(aRoot1, 3.0, 1.0e-8) << "First root should be 3";
+  EXPECT_NEAR(aRoot2, 1.0, 1.0e-8) << "Second root should be 1";
+  EXPECT_NEAR(aRoot3, -1.0, 1.0e-8) << "Third root should be -1";
+  EXPECT_NEAR(aRoot4, -3.0, 1.0e-8) << "Fourth root should be -3";
+
+  // Verify roots satisfy the equation x^4 - 10x^2 + 9 = 0
+  std::vector<Standard_Real> aCoeffs = {1.0, 0.0, -10.0, 0.0, 9.0};
+  verifyRoot(aRoot1, aCoeffs, 1, 1.0e-8);
+  verifyRoot(aRoot2, aCoeffs, 2, 1.0e-8);
+  verifyRoot(aRoot3, aCoeffs, 3, 1.0e-8);
+  verifyRoot(aRoot4, aCoeffs, 4, 1.0e-8);
 }
 
-TEST(MathDirectPolynomialRootsTest, RepeatedRoots)
+TEST_F(math_DirectPolynomialRootsTest, RepeatedRoots)
 {
   // Test polynomial with repeated roots: (x-1)^3 = x^3 - 3x^2 + 3x - 1 = 0
   math_DirectPolynomialRoots aRoots(1.0, -3.0, 3.0, -1.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Should handle repeated roots";
+  EXPECT_EQ(aRoots.NbSolutions(), 1)
+    << "Triple root should be reported as single root after deduplication";
 
-  // Implementation may report repeated roots differently
-  EXPECT_GE(aRoots.NbSolutions(), 1) << "Should find at least one root";
+  Standard_Real aRoot = aRoots.Value(1);
+  EXPECT_NEAR(aRoot, 1.0, 1.0e-8) << "Triple root should be 1.0";
 
-  // All reported roots should be near 1
-  for (Standard_Integer i = 1; i <= aRoots.NbSolutions(); i++)
-  {
-    EXPECT_NEAR(aRoots.Value(i), 1.0, 1.0e-8) << "Repeated root should be near 1";
-  }
+  // Verify root satisfies the equation x^3 - 3x^2 + 3x - 1 = 0
+  verifyRoot(aRoot, {1.0, -3.0, 3.0, -1.0}, 1, 1.0e-8);
 }
 
 // ====================================================================================================
 // Tests for the modernized C++17 implementation with aggressive Newton-Raphson refinement
 // ====================================================================================================
 
-TEST(MathDirectPolynomialRootsTest, ProblematicQuarticCaseDetailed)
+TEST_F(math_DirectPolynomialRootsTest, ProblematicQuarticCaseDetailed)
 {
   // The specific problematic case that motivated the implementation rework
   // Coefficients that caused issues with previous implementation
@@ -245,11 +278,8 @@ TEST(MathDirectPolynomialRootsTest, ProblematicQuarticCaseDetailed)
   const Standard_Real d = 28.998342463569099;
   const Standard_Real e = 75357446168894.516;
 
-  // Expected roots from external solver verification
-  const Standard_Real expectedRoots[4] = {2946.394276649265,
-                                          2946.267830747863,
-                                          -2946.236617290974,
-                                          -2946.425490106154};
+  // Expected roots from external solver verification (in descending order)
+  // These values are used for verification in the test below
 
   math_DirectPolynomialRoots aRoots(a, b, c, d, e);
 
@@ -264,18 +294,12 @@ TEST(MathDirectPolynomialRootsTest, ProblematicQuarticCaseDetailed)
     actualRoots[i - 1] = aRoots.Value(i);
   }
 
-  // Sort both arrays for comparison
-  std::sort(actualRoots, actualRoots + 4);
-  Standard_Real sortedExpected[4];
-  std::copy(expectedRoots, expectedRoots + 4, sortedExpected);
-  std::sort(sortedExpected, sortedExpected + 4);
-
-  // Verify each root with high precision requirement
-  for (Standard_Integer i = 0; i < 4; ++i)
-  {
-    EXPECT_NEAR(actualRoots[i], sortedExpected[i], 1.0e-6)
-      << "Root " << (i + 1) << " should match expected value with high precision";
-  }
+  // With our deterministic root ordering, verify roots match expected values
+  // Roots should be in descending order
+  EXPECT_NEAR(actualRoots[0], 2946.394276649265, 1.0e-6) << "First root";
+  EXPECT_NEAR(actualRoots[1], 2946.267830747863, 1.0e-6) << "Second root";
+  EXPECT_NEAR(actualRoots[2], -2946.236617290974, 1.0e-6) << "Third root";
+  EXPECT_NEAR(actualRoots[3], -2946.425490106154, 1.0e-6) << "Fourth root";
 
   // Verify residuals are extremely small (main goal of the rework)
   for (Standard_Integer i = 1; i <= 4; ++i)
@@ -289,7 +313,7 @@ TEST(MathDirectPolynomialRootsTest, ProblematicQuarticCaseDetailed)
   }
 }
 
-TEST(MathDirectPolynomialRootsTest, ModernImplementationBiquadraticDetection)
+TEST_F(math_DirectPolynomialRootsTest, ModernImplementationBiquadraticDetection)
 {
   // Test case that should be detected as biquadratic (q ~= 0 after Ferrari transformation)
   // x^4 - 5x^2 + 4 = 0, which factors as (x^2-1)(x^2-4) = 0
@@ -299,22 +323,19 @@ TEST(MathDirectPolynomialRootsTest, ModernImplementationBiquadraticDetection)
   EXPECT_TRUE(aRoots.IsDone()) << "Biquadratic should be solved";
   EXPECT_EQ(aRoots.NbSolutions(), 4) << "Should find 4 real roots";
 
-  // Collect and sort roots
-  Standard_Real roots[4];
-  for (Standard_Integer i = 1; i <= 4; ++i)
-  {
-    roots[i - 1] = aRoots.Value(i);
-  }
-  std::sort(roots, roots + 4);
+  // With deterministic ordering, roots come in descending order: 2, 1, -1, -2
+  Standard_Real aRoot1 = aRoots.Value(1);
+  Standard_Real aRoot2 = aRoots.Value(2);
+  Standard_Real aRoot3 = aRoots.Value(3);
+  Standard_Real aRoot4 = aRoots.Value(4);
 
-  // Expected: -2, -1, 1, 2
-  EXPECT_NEAR(roots[0], -2.0, 1.0e-12) << "First root";
-  EXPECT_NEAR(roots[1], -1.0, 1.0e-12) << "Second root";
-  EXPECT_NEAR(roots[2], 1.0, 1.0e-12) << "Third root";
-  EXPECT_NEAR(roots[3], 2.0, 1.0e-12) << "Fourth root";
+  EXPECT_NEAR(aRoot1, 2.0, 1.0e-12) << "First root should be 2";
+  EXPECT_NEAR(aRoot2, 1.0, 1.0e-12) << "Second root should be 1";
+  EXPECT_NEAR(aRoot3, -1.0, 1.0e-12) << "Third root should be -1";
+  EXPECT_NEAR(aRoot4, -2.0, 1.0e-12) << "Fourth root should be -2";
 }
 
-TEST(MathDirectPolynomialRootsTest, FullFerrariMethodRequired)
+TEST_F(math_DirectPolynomialRootsTest, FullFerrariMethodRequired)
 {
   // Test case that requires full Ferrari method (not biquadratic)
   // x^4 + x^3 - 4x^2 - 4x = 0, which factors as x(x+2)(x^2-x-2) = x(x+2)(x-2)(x+1)
@@ -324,22 +345,19 @@ TEST(MathDirectPolynomialRootsTest, FullFerrariMethodRequired)
   EXPECT_TRUE(aRoots.IsDone()) << "Full Ferrari method should work";
   EXPECT_EQ(aRoots.NbSolutions(), 4) << "Should find 4 real roots";
 
-  // Collect and sort roots
-  Standard_Real roots[4];
-  for (Standard_Integer i = 1; i <= 4; ++i)
-  {
-    roots[i - 1] = aRoots.Value(i);
-  }
-  std::sort(roots, roots + 4);
+  // With deterministic ordering, roots come in descending order: 2, 0, -1, -2
+  Standard_Real aRoot1 = aRoots.Value(1);
+  Standard_Real aRoot2 = aRoots.Value(2);
+  Standard_Real aRoot3 = aRoots.Value(3);
+  Standard_Real aRoot4 = aRoots.Value(4);
 
-  // Expected: -2, -1, 0, 2
-  EXPECT_NEAR(roots[0], -2.0, 1.0e-10) << "First root";
-  EXPECT_NEAR(roots[1], -1.0, 1.0e-10) << "Second root";
-  EXPECT_NEAR(roots[2], 0.0, 1.0e-10) << "Third root";
-  EXPECT_NEAR(roots[3], 2.0, 1.0e-10) << "Fourth root";
+  EXPECT_NEAR(aRoot1, 2.0, 1.0e-10) << "First root should be 2";
+  EXPECT_NEAR(aRoot2, 0.0, 1.0e-10) << "Second root should be 0";
+  EXPECT_NEAR(aRoot3, -1.0, 1.0e-10) << "Third root should be -1";
+  EXPECT_NEAR(aRoot4, -2.0, 1.0e-10) << "Fourth root should be -2";
 }
 
-TEST(MathDirectPolynomialRootsTest, AggressiveRefinementEffectiveness)
+TEST_F(math_DirectPolynomialRootsTest, AggressiveRefinementEffectiveness)
 {
   // Test that aggressive Newton-Raphson refinement provides excellent residuals
   // Using a case known to benefit from refinement
@@ -365,7 +383,7 @@ TEST(MathDirectPolynomialRootsTest, AggressiveRefinementEffectiveness)
   }
 }
 
-TEST(MathDirectPolynomialRootsTest, CubicWithAggressiveRefinement)
+TEST_F(math_DirectPolynomialRootsTest, CubicWithAggressiveRefinement)
 {
   // Test cubic case with aggressive refinement
   // x^3 - 6x^2 + 11x - 6 = 0, which factors as (x-1)(x-2)(x-3)
@@ -375,17 +393,14 @@ TEST(MathDirectPolynomialRootsTest, CubicWithAggressiveRefinement)
   EXPECT_TRUE(aRoots.IsDone()) << "Cubic with aggressive refinement should work";
   EXPECT_EQ(aRoots.NbSolutions(), 3) << "Should find 3 real roots";
 
-  // Collect and sort roots
-  Standard_Real roots[3];
-  for (Standard_Integer i = 1; i <= 3; ++i)
-  {
-    roots[i - 1] = aRoots.Value(i);
-  }
-  std::sort(roots, roots + 3);
+  // With deterministic ordering, roots come in descending order: 3, 2, 1
+  Standard_Real aRoot1 = aRoots.Value(1);
+  Standard_Real aRoot2 = aRoots.Value(2);
+  Standard_Real aRoot3 = aRoots.Value(3);
 
-  EXPECT_NEAR(roots[0], 1.0, 1.0e-12) << "First cubic root";
-  EXPECT_NEAR(roots[1], 2.0, 1.0e-12) << "Second cubic root";
-  EXPECT_NEAR(roots[2], 3.0, 1.0e-12) << "Third cubic root";
+  EXPECT_NEAR(aRoot1, 3.0, 1.0e-12) << "First root should be 3";
+  EXPECT_NEAR(aRoot2, 2.0, 1.0e-12) << "Second root should be 2";
+  EXPECT_NEAR(aRoot3, 1.0, 1.0e-12) << "Third root should be 1";
 
   // Verify excellent residuals
   for (Standard_Integer i = 1; i <= 3; ++i)
@@ -396,7 +411,7 @@ TEST(MathDirectPolynomialRootsTest, CubicWithAggressiveRefinement)
   }
 }
 
-TEST(MathDirectPolynomialRootsTest, ExtremeCoefficientsStability)
+TEST_F(math_DirectPolynomialRootsTest, ExtremeCoefficientsStability)
 {
   // Test numerical stability with extreme coefficient ranges
   // Similar to the problematic case but with even more extreme values
@@ -423,7 +438,7 @@ TEST(MathDirectPolynomialRootsTest, ExtremeCoefficientsStability)
   }
 }
 
-TEST(MathDirectPolynomialRootsTest, CloseToZeroCoefficients)
+TEST_F(math_DirectPolynomialRootsTest, CloseToZeroCoefficients)
 {
   // Test robustness when coefficients are close to zero (degree reduction)
   // x^4 + 0*x^3 + 0*x^2 + 0*x - 16 = 0, essentially x^4 = 16
@@ -434,14 +449,10 @@ TEST(MathDirectPolynomialRootsTest, CloseToZeroCoefficients)
   EXPECT_TRUE(aRoots.IsDone()) << "Should handle near-zero coefficients";
   EXPECT_EQ(aRoots.NbSolutions(), 2) << "Should find 2 real roots";
 
-  // Collect roots
-  Standard_Real root1 = aRoots.Value(1);
-  Standard_Real root2 = aRoots.Value(2);
-  if (root1 > root2)
-    std::swap(root1, root2);
+  // With deterministic ordering, roots come in descending order: 2, -2
+  Standard_Real aRoot1 = aRoots.Value(1);
+  Standard_Real aRoot2 = aRoots.Value(2);
 
-  EXPECT_NEAR(root1, -2.0, 1.0e-10) << "Negative root";
-  EXPECT_NEAR(root2, 2.0, 1.0e-10) << "Positive root";
+  EXPECT_NEAR(aRoot1, 2.0, 1.0e-10) << "First root should be 2";
+  EXPECT_NEAR(aRoot2, -2.0, 1.0e-10) << "Second root should be -2";
 }
-
-} // anonymous namespace
