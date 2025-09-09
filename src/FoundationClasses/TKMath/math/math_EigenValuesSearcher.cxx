@@ -14,12 +14,16 @@
 // commercial license or contractual agreement.
 
 #include <math_EigenValuesSearcher.hxx>
+
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 
 namespace
 {
+// Maximum number of QR iterations before convergence failure
+const Standard_Integer MAX_ITERATIONS = 30;
+
 // Computes sqrt(x*x + y*y) avoiding overflow and underflow
 Standard_Real computeHypotenuseLength(const Standard_Real theX, const Standard_Real theY)
 {
@@ -139,8 +143,6 @@ Standard_Boolean performQLAlgorithm(NCollection_Array1<Standard_Real>& theDiagWo
                                     NCollection_Array2<Standard_Real>& theEigenVecWork,
                                     const Standard_Integer             theSize)
 {
-  const Standard_Integer MAX_ITERATIONS = 30;
-
   for (Standard_Integer aSubmatrixStart = 1; aSubmatrixStart <= theSize; aSubmatrixStart++)
   {
     Standard_Integer aIterCount = 0;
