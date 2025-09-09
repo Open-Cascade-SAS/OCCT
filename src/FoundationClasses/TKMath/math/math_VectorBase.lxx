@@ -22,7 +22,7 @@
 template <typename TheItemType>
 math_VectorBase<TheItemType>::math_VectorBase(const Standard_Integer theLower,
                                               const Standard_Integer theUpper)
-    : Array(*myBuffer.data(),
+    : Array(*myBuffer,
             theLower,
             theUpper,
             (theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE))
@@ -33,7 +33,7 @@ template <typename TheItemType>
 math_VectorBase<TheItemType>::math_VectorBase(const Standard_Integer theLower,
                                               const Standard_Integer theUpper,
                                               const TheItemType      theInitialValue)
-    : Array(*myBuffer.data(),
+    : Array(*myBuffer,
             theLower,
             theUpper,
             (theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE))
@@ -51,7 +51,7 @@ math_VectorBase<TheItemType>::math_VectorBase(const TheItemType*     theTab,
 
 template <typename TheItemType>
 math_VectorBase<TheItemType>::math_VectorBase(const gp_XY& theOther)
-    : Array(*myBuffer.data(), 1, 2)
+    : Array(*myBuffer, 1, 2)
 {
   Array(1) = static_cast<TheItemType>(theOther.X());
   Array(2) = static_cast<TheItemType>(theOther.Y());
@@ -59,7 +59,7 @@ math_VectorBase<TheItemType>::math_VectorBase(const gp_XY& theOther)
 
 template <typename TheItemType>
 math_VectorBase<TheItemType>::math_VectorBase(const gp_XYZ& theOther)
-    : Array(*myBuffer.data(), 1, 3)
+    : Array(*myBuffer, 1, 3)
 {
   Array(1) = static_cast<TheItemType>(theOther.X());
   Array(2) = static_cast<TheItemType>(theOther.Y());
