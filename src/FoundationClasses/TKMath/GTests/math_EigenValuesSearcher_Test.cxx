@@ -47,7 +47,7 @@ void createTridiagonalMatrix(const TColStd_Array1OfReal& theDiagonal,
   }
 }
 
-// Helper function to verify eigenvalue-eigenvector relationship: A*v = λ*v
+// Helper function to verify eigenvalue-eigenvector relationship: A*v = lambda*v
 Standard_Boolean verifyEigenPair(const math_Matrix&  theMatrix,
                                  const Standard_Real theEigenValue,
                                  const math_Vector&  theEigenVector,
@@ -65,7 +65,7 @@ Standard_Boolean verifyEigenPair(const math_Matrix&  theMatrix,
     aResult(i) = aSum;
   }
 
-  // Check if A*v ≈ λ*v
+  // Check if A*v ~= lambda*v
   for (Standard_Integer i = 1; i <= aN; i++)
   {
     const Standard_Real aExpected = theEigenValue * theEigenVector(i);
@@ -174,8 +174,8 @@ TEST_F(EigenValuesSearcherTest, TwoByTwoMatrix)
   std::vector<Standard_Real> eigenvals = {searcher.EigenValue(1), searcher.EigenValue(2)};
   std::sort(eigenvals.begin(), eigenvals.end());
 
-  const Standard_Real lambda1 = 2.5 - 0.5 * Sqrt(5.0); // ≈ 0.382
-  const Standard_Real lambda2 = 2.5 + 0.5 * Sqrt(5.0); // ≈ 4.618
+  const Standard_Real lambda1 = 2.5 - 0.5 * Sqrt(5.0); // ~= 0.382
+  const Standard_Real lambda2 = 2.5 + 0.5 * Sqrt(5.0); // ~= 4.618
 
   EXPECT_NEAR(eigenvals[0], lambda1, 1e-10);
   EXPECT_NEAR(eigenvals[1], lambda2, 1e-10);

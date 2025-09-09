@@ -65,8 +65,8 @@ public:
   //! @pre 1 <= theIndex <= Dimension()
   //!
   //! @note The returned eigenvector is normalized and orthogonal to all other eigenvectors.
-  //!       The eigenvector satisfies: A * v = λ * v, where A is the original matrix,
-  //!       v is the eigenvector, and λ is the corresponding eigenvalue.
+  //!       The eigenvector satisfies: A * v = lambda * v, where A is the original matrix,
+  //!       v is the eigenvector, and lambda is the corresponding eigenvalue.
   Standard_EXPORT math_Vector EigenVector(const Standard_Integer theIndex) const;
 
 private:
