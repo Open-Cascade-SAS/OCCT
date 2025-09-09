@@ -15,190 +15,254 @@
 
 #include <math_EigenValuesSearcher.hxx>
 #include <StdFail_NotDone.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
-//==========================================================================
-// function : pythag
-//           Computation of sqrt(x*x + y*y).
-//==========================================================================
-static inline Standard_Real pythag(const Standard_Real x, const Standard_Real y)
+namespace
 {
-  return Sqrt(x * x + y * y);
+// Computes sqrt(x*x + y*y) avoiding overflow and underflow
+Standard_Real computeHypotenuseLength(const Standard_Real theX, const Standard_Real theY)
+{
+  return Sqrt(theX * theX + theY * theY);
 }
 
-math_EigenValuesSearcher::math_EigenValuesSearcher(const TColStd_Array1OfReal& Diagonal,
-                                                   const TColStd_Array1OfReal& Subdiagonal)
+// Shifts subdiagonal elements for QL algorithm initialization
+void shiftSubdiagonalElements(NCollection_Array1<Standard_Real>& theSubdiagWork,
+                              const Standard_Integer             theSize)
+{
+  for (Standard_Integer anIdx = 2; anIdx <= theSize; anIdx++)
+    theSubdiagWork(anIdx - 1) = theSubdiagWork(anIdx);
+  theSubdiagWork(theSize) = 0.0;
+}
+
+// Finds the end of the current unreduced submatrix using deflation
+Standard_Integer findSubmatrixEnd(const NCollection_Array1<Standard_Real>& theDiagWork,
+                                  const NCollection_Array1<Standard_Real>& theSubdiagWork,
+                                  const Standard_Integer                   theStart,
+                                  const Standard_Integer                   theSize)
+{
+  Standard_Integer aSubmatrixEnd;
+  for (aSubmatrixEnd = theStart; aSubmatrixEnd <= theSize - 1; aSubmatrixEnd++)
+  {
+    const Standard_Real aDiagSum =
+      Abs(theDiagWork(aSubmatrixEnd)) + Abs(theDiagWork(aSubmatrixEnd + 1));
+    if (Abs(theSubdiagWork(aSubmatrixEnd)) + aDiagSum == aDiagSum)
+      break;
+  }
+  return aSubmatrixEnd;
+}
+
+// Computes Wilkinson's shift for accelerated convergence
+Standard_Real computeWilkinsonShift(const NCollection_Array1<Standard_Real>& theDiagWork,
+                                    const NCollection_Array1<Standard_Real>& theSubdiagWork,
+                                    const Standard_Integer                   theStart,
+                                    const Standard_Integer                   theEnd)
+{
+  Standard_Real aShift =
+    (theDiagWork(theStart + 1) - theDiagWork(theStart)) / (2.0 * theSubdiagWork(theStart));
+  const Standard_Real aRadius = computeHypotenuseLength(1.0, aShift);
+
+  if (aShift < 0.0)
+    aShift =
+      theDiagWork(theEnd) - theDiagWork(theStart) + theSubdiagWork(theStart) / (aShift - aRadius);
+  else
+    aShift =
+      theDiagWork(theEnd) - theDiagWork(theStart) + theSubdiagWork(theStart) / (aShift + aRadius);
+
+  return aShift;
+}
+
+// Performs a single QL step with implicit shift
+Standard_Boolean performQLStep(NCollection_Array1<Standard_Real>& theDiagWork,
+                               NCollection_Array1<Standard_Real>& theSubdiagWork,
+                               NCollection_Array2<Standard_Real>& theEigenVecWork,
+                               const Standard_Integer             theStart,
+                               const Standard_Integer             theEnd,
+                               const Standard_Real                theShift,
+                               const Standard_Integer             theSize)
+{
+  Standard_Real aSine     = 1.0;
+  Standard_Real aCosine   = 1.0;
+  Standard_Real aPrevDiag = 0.0;
+  Standard_Real aShift    = theShift;
+  Standard_Real aRadius   = 0.0;
+
+  Standard_Integer aRowIdx;
+  for (aRowIdx = theEnd - 1; aRowIdx >= theStart; aRowIdx--)
+  {
+    const Standard_Real aTempVal     = aSine * theSubdiagWork(aRowIdx);
+    const Standard_Real aSubdiagTemp = aCosine * theSubdiagWork(aRowIdx);
+    aRadius                          = computeHypotenuseLength(aTempVal, aShift);
+    theSubdiagWork(aRowIdx + 1)      = aRadius;
+
+    if (aRadius == 0.0)
+    {
+      theDiagWork(aRowIdx + 1) -= aPrevDiag;
+      theSubdiagWork(theEnd) = 0.0;
+      break;
+    }
+
+    aSine   = aTempVal / aRadius;
+    aCosine = aShift / aRadius;
+    aShift  = theDiagWork(aRowIdx + 1) - aPrevDiag;
+    const Standard_Real aRadiusTemp =
+      (theDiagWork(aRowIdx) - aShift) * aSine + 2.0 * aCosine * aSubdiagTemp;
+    aPrevDiag                = aSine * aRadiusTemp;
+    theDiagWork(aRowIdx + 1) = aShift + aPrevDiag;
+    aShift                   = aCosine * aRadiusTemp - aSubdiagTemp;
+
+    // Update eigenvector matrix
+    for (Standard_Integer aVecIdx = 1; aVecIdx <= theSize; aVecIdx++)
+    {
+      const Standard_Real aTempVec = theEigenVecWork(aVecIdx, aRowIdx + 1);
+      theEigenVecWork(aVecIdx, aRowIdx + 1) =
+        aSine * theEigenVecWork(aVecIdx, aRowIdx) + aCosine * aTempVec;
+      theEigenVecWork(aVecIdx, aRowIdx) =
+        aCosine * theEigenVecWork(aVecIdx, aRowIdx) - aSine * aTempVec;
+    }
+  }
+
+  // Handle special case and update final elements
+  if (aRadius == 0.0 && aRowIdx >= 1)
+    return Standard_True;
+
+  theDiagWork(theStart) -= aPrevDiag;
+  theSubdiagWork(theStart) = aShift;
+  theSubdiagWork(theEnd)   = 0.0;
+
+  return Standard_True;
+}
+
+// Performs the complete QL algorithm iteration
+Standard_Boolean performQLAlgorithm(NCollection_Array1<Standard_Real>& theDiagWork,
+                                    NCollection_Array1<Standard_Real>& theSubdiagWork,
+                                    NCollection_Array2<Standard_Real>& theEigenVecWork,
+                                    const Standard_Integer             theSize)
+{
+  const Standard_Integer MAX_ITERATIONS = 30;
+
+  for (Standard_Integer aSubmatrixStart = 1; aSubmatrixStart <= theSize; aSubmatrixStart++)
+  {
+    Standard_Integer aIterCount = 0;
+    Standard_Integer aSubmatrixEnd;
+
+    do
+    {
+      aSubmatrixEnd = findSubmatrixEnd(theDiagWork, theSubdiagWork, aSubmatrixStart, theSize);
+
+      if (aSubmatrixEnd != aSubmatrixStart)
+      {
+        if (aIterCount++ == MAX_ITERATIONS)
+          return Standard_False;
+
+        const Standard_Real aShift =
+          computeWilkinsonShift(theDiagWork, theSubdiagWork, aSubmatrixStart, aSubmatrixEnd);
+
+        if (!performQLStep(theDiagWork,
+                           theSubdiagWork,
+                           theEigenVecWork,
+                           aSubmatrixStart,
+                           aSubmatrixEnd,
+                           aShift,
+                           theSize))
+          return Standard_False;
+      }
+    } while (aSubmatrixEnd != aSubmatrixStart);
+  }
+
+  return Standard_True;
+}
+
+} // anonymous namespace
+
+//=======================================================================
+
+math_EigenValuesSearcher::math_EigenValuesSearcher(const TColStd_Array1OfReal& theDiagonal,
+                                                   const TColStd_Array1OfReal& theSubdiagonal)
 {
   myIsDone = Standard_False;
 
-  Standard_Integer n = Diagonal.Length();
-  if (Subdiagonal.Length() != n)
-    throw Standard_Failure("math_EigenValuesSearcher : dimension mismatch");
-
-  myDiagonal                    = new TColStd_HArray1OfReal(1, n);
-  myDiagonal->ChangeArray1()    = Diagonal;
-  mySubdiagonal                 = new TColStd_HArray1OfReal(1, n);
-  mySubdiagonal->ChangeArray1() = Subdiagonal;
-  myN                           = n;
-  myEigenValues                 = new TColStd_HArray1OfReal(1, n);
-  myEigenVectors                = new TColStd_HArray2OfReal(1, n, 1, n);
-
-  Standard_Real*   d = new Standard_Real[n + 1];
-  Standard_Real*   e = new Standard_Real[n + 1];
-  Standard_Real**  z = new Standard_Real*[n + 1];
-  Standard_Integer i, j;
-  for (i = 1; i <= n; i++)
-    z[i] = new Standard_Real[n + 1];
-
-  for (i = 1; i <= n; i++)
-    d[i] = myDiagonal->Value(i);
-  for (i = 2; i <= n; i++)
-    e[i] = mySubdiagonal->Value(i);
-  for (i = 1; i <= n; i++)
-    for (j = 1; j <= n; j++)
-      z[i][j] = (i == j) ? 1. : 0.;
-
-  Standard_Boolean result;
-  Standard_Integer m;
-  Standard_Integer l;
-  Standard_Integer iter;
-  // Standard_Integer i;
-  Standard_Integer k;
-  Standard_Real    s;
-  Standard_Real    r;
-  Standard_Real    p;
-  Standard_Real    g;
-  Standard_Real    f;
-  Standard_Real    dd;
-  Standard_Real    c;
-  Standard_Real    b;
-
-  result = Standard_True;
-
-  if (n != 1)
+  const Standard_Integer aN = theDiagonal.Length();
+  if (theSubdiagonal.Length() != aN)
   {
-    // Shift e.
-    for (i = 2; i <= n; i++)
-      e[i - 1] = e[i];
-
-    e[n] = 0.0;
-
-    for (l = 1; l <= n; l++)
-    {
-      iter = 0;
-
-      do
-      {
-        for (m = l; m <= n - 1; m++)
-        {
-          dd = Abs(d[m]) + Abs(d[m + 1]);
-
-          if (Abs(e[m]) + dd == dd)
-            break;
-        }
-
-        if (m != l)
-        {
-          if (iter++ == 30)
-          {
-            result = Standard_False;
-            break; // return result;
-          }
-
-          g = (d[l + 1] - d[l]) / (2. * e[l]);
-          r = pythag(1., g);
-
-          if (g < 0)
-            g = d[m] - d[l] + e[l] / (g - r);
-          else
-            g = d[m] - d[l] + e[l] / (g + r);
-
-          s = 1.;
-          c = 1.;
-          p = 0.;
-
-          for (i = m - 1; i >= l; i--)
-          {
-            f        = s * e[i];
-            b        = c * e[i];
-            r        = pythag(f, g);
-            e[i + 1] = r;
-
-            if (r == 0.)
-            {
-              d[i + 1] -= p;
-              e[m] = 0.;
-              break;
-            }
-
-            s        = f / r;
-            c        = g / r;
-            g        = d[i + 1] - p;
-            r        = (d[i] - g) * s + 2.0 * c * b;
-            p        = s * r;
-            d[i + 1] = g + p;
-            g        = c * r - b;
-
-            for (k = 1; k <= n; k++)
-            {
-              f           = z[k][i + 1];
-              z[k][i + 1] = s * z[k][i] + c * f;
-              z[k][i]     = c * z[k][i] - s * f;
-            }
-          }
-
-          if (r == 0 && i >= 1)
-            continue;
-
-          d[l] -= p;
-          e[l] = g;
-          e[m] = 0.;
-        }
-      } while (m != l);
-      if (result == Standard_False)
-        break;
-    } // end of for (l = 1; l <= n; l++)
-  } // end of if (n != 1)
-
-  if (result)
-  {
-    for (i = 1; i <= n; i++)
-      myEigenValues->ChangeValue(i) = d[i];
-    for (i = 1; i <= n; i++)
-      for (j = 1; j <= n; j++)
-        myEigenVectors->ChangeValue(i, j) = z[i][j];
+    return;
   }
 
-  myIsDone = result;
+  // Initialize internal arrays using OCCT handle-based memory management
+  myDiagonal                    = new TColStd_HArray1OfReal(1, aN);
+  myDiagonal->ChangeArray1()    = theDiagonal;
+  mySubdiagonal                 = new TColStd_HArray1OfReal(1, aN);
+  mySubdiagonal->ChangeArray1() = theSubdiagonal;
+  myN                           = aN;
+  myEigenValues                 = new TColStd_HArray1OfReal(1, aN);
+  myEigenVectors                = new TColStd_HArray2OfReal(1, aN, 1, aN);
 
-  delete[] d;
-  delete[] e;
-  for (i = 1; i <= n; i++)
-    delete[] z[i];
-  delete[] z;
+  // Allocate working arrays using OCCT collections
+  NCollection_Array1<Standard_Real> aDiagWork(1, aN);
+  NCollection_Array1<Standard_Real> aSubdiagWork(1, aN);
+  NCollection_Array2<Standard_Real> aEigenVecWork(1, aN, 1, aN);
+
+  // Initialize working arrays with input data
+  for (Standard_Integer anIdx = 1; anIdx <= aN; anIdx++)
+    aDiagWork(anIdx) = myDiagonal->Value(anIdx);
+  for (Standard_Integer anIdx = 2; anIdx <= aN; anIdx++)
+    aSubdiagWork(anIdx) = mySubdiagonal->Value(anIdx);
+
+  // Initialize eigenvector matrix as identity matrix
+  for (Standard_Integer aRowIdx = 1; aRowIdx <= aN; aRowIdx++)
+    for (Standard_Integer aColIdx = 1; aColIdx <= aN; aColIdx++)
+      aEigenVecWork(aRowIdx, aColIdx) = (aRowIdx == aColIdx) ? 1.0 : 0.0;
+
+  Standard_Boolean isConverged = Standard_True;
+
+  if (aN != 1)
+  {
+    shiftSubdiagonalElements(aSubdiagWork, aN);
+    isConverged = performQLAlgorithm(aDiagWork, aSubdiagWork, aEigenVecWork, aN);
+  }
+
+  // Copy results to class members if computation was successful
+  if (isConverged)
+  {
+    for (Standard_Integer anIdx = 1; anIdx <= aN; anIdx++)
+      myEigenValues->ChangeValue(anIdx) = aDiagWork(anIdx);
+    for (Standard_Integer aRowIdx = 1; aRowIdx <= aN; aRowIdx++)
+      for (Standard_Integer aColIdx = 1; aColIdx <= aN; aColIdx++)
+        myEigenVectors->ChangeValue(aRowIdx, aColIdx) = aEigenVecWork(aRowIdx, aColIdx);
+  }
+
+  myIsDone = isConverged;
 }
+
+//=======================================================================
 
 Standard_Boolean math_EigenValuesSearcher::IsDone() const
 {
   return myIsDone;
 }
 
+//=======================================================================
+
 Standard_Integer math_EigenValuesSearcher::Dimension() const
 {
   return myN;
 }
 
-Standard_Real math_EigenValuesSearcher::EigenValue(const Standard_Integer Index) const
+//=======================================================================
+
+Standard_Real math_EigenValuesSearcher::EigenValue(const Standard_Integer theIndex) const
 {
-  return myEigenValues->Value(Index);
+  return myEigenValues->Value(theIndex);
 }
 
-math_Vector math_EigenValuesSearcher::EigenVector(const Standard_Integer Index) const
+//=======================================================================
+
+math_Vector math_EigenValuesSearcher::EigenVector(const Standard_Integer theIndex) const
 {
-  math_Vector theVector(1, myN);
+  math_Vector aVector(1, myN);
 
-  Standard_Integer i;
-  for (i = 1; i <= myN; i++)
-    theVector(i) = myEigenVectors->Value(i, Index);
+  for (Standard_Integer anIdx = 1; anIdx <= myN; anIdx++)
+    aVector(anIdx) = myEigenVectors->Value(anIdx, theIndex);
 
-  return theVector;
+  return aVector;
 }

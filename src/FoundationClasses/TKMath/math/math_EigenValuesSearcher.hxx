@@ -44,22 +44,40 @@ public:
   //! Returns the dimension of matrix
   Standard_EXPORT Standard_Integer Dimension() const;
 
-  //! Returns the Index_th eigen value of matrix
-  //! Index must be in [1, Dimension()]
-  Standard_EXPORT Standard_Real EigenValue(const Standard_Integer Index) const;
+  //! Returns the specified eigenvalue.
+  //!
+  //! @param[in] theIndex index of the desired eigenvalue (1-based indexing)
+  //! @return the eigenvalue at the specified index
+  //!
+  //! @pre IsDone() == Standard_True
+  //! @pre 1 <= theIndex <= Dimension()
+  //!
+  //! @note Eigenvalues are returned in the order they were computed by the algorithm,
+  //!       which may not be sorted. Use sorting if ordered eigenvalues are needed.
+  Standard_EXPORT Standard_Real EigenValue(const Standard_Integer theIndex) const;
 
-  //! Returns the Index_th eigen vector of matrix
-  //! Index must be in [1, Dimension()]
-  Standard_EXPORT math_Vector EigenVector(const Standard_Integer Index) const;
+  //! Returns the specified eigenvector.
+  //!
+  //! @param[in] theIndex index of the desired eigenvector (1-based indexing)
+  //! @return the normalized eigenvector corresponding to EigenValue(theIndex)
+  //!
+  //! @pre IsDone() == Standard_True
+  //! @pre 1 <= theIndex <= Dimension()
+  //!
+  //! @note The returned eigenvector is normalized and orthogonal to all other eigenvectors.
+  //!       The eigenvector satisfies: A * v = λ * v, where A is the original matrix,
+  //!       v is the eigenvector, and λ is the corresponding eigenvalue.
+  Standard_EXPORT math_Vector EigenVector(const Standard_Integer theIndex) const;
 
-protected:
 private:
-  Handle(TColStd_HArray1OfReal) myDiagonal;
-  Handle(TColStd_HArray1OfReal) mySubdiagonal;
-  Standard_Boolean              myIsDone;
-  Standard_Integer              myN;
-  Handle(TColStd_HArray1OfReal) myEigenValues;
-  Handle(TColStd_HArray2OfReal) myEigenVectors;
+  //! @name Private data members
+
+  Handle(TColStd_HArray1OfReal) myDiagonal;     //!< Copy of input diagonal elements
+  Handle(TColStd_HArray1OfReal) mySubdiagonal;  //!< Copy of input subdiagonal elements
+  Standard_Boolean              myIsDone;       //!< Computation success flag
+  Standard_Integer              myN;            //!< Matrix dimension
+  Handle(TColStd_HArray1OfReal) myEigenValues;  //!< Computed eigenvalues
+  Handle(TColStd_HArray2OfReal) myEigenVectors; //!< Computed eigenvectors (column-wise)
 };
 
 #endif // _math_EigenValuesSearcher_HeaderFile
