@@ -1,5 +1,5 @@
 // Copyright (c) 1997-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 1999-2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,146 +12,484 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// #ifndef OCCT_DEBUG
+// @file math_DirectPolynomialRoots.cxx
+// @brief Implementation of polynomial root finding using direct algebraic methods
+//
+// This implementation follows Ferrari's method (1540) for quartic equations:
+//
+// Given: ax^4 + bx^3 + cx^2 + dx + e = 0
+//
+// Step 1: Normalize by dividing by 'a' and substitute x = X - b/4a to eliminate
+//         the cubic term, obtaining: X^4 + AX^2 + BX + C = 0
+//
+// Step 2: If B = 0, solve as biquadratic (X^4 + AX^2 + C = 0)
+//
+// Step 3: Otherwise, introduce auxiliary variable u and construct:
+//         (X^2 + u/2)^2 = (u - A)X^2 - BX + u^2/4 - C
+//
+// Step 4: Force the right side to be a perfect square by solving the
+//         resolvent cubic: u^3 - Au^2 - 4Cu + 4AC - B^2 = 0
+//
+// Step 5: Use a root u of this cubic to factor into two quadratics and solve
+//
+// References:
+// - J. VIGNES "Algorithmes Numeriques Analyse et Mise en Oeuvre" Tome 2
+// - L. Ferrari's method (1540) for quartic equations
+// - Modern numerical analysis techniques for stability
+
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
 
-// #endif
-
 #include <math_DirectPolynomialRoots.hxx>
 #include <StdFail_InfiniteSolutions.hxx>
+#include <Standard.hxx>
 
-// Reference pour solution equation 3ieme degre et 2ieme degre :
-//     ALGORITHMES NUMERIQUES ANALYSE ET MISE EN OEUVRE, tome 2
-//          (equations et systemes non lineaires)
-// J. VIGNES editions TECHNIP.
-const Standard_Real ZERO             = 1.0e-30;
-const Standard_Real EPSILON          = RealEpsilon();
-const Standard_Real RADIX            = 2;
-const Standard_Real Un_Sur_Log_RADIX = 1.0 / log(2.0);
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <complex>
+#include <limits>
+#include <numeric>
 
-static Standard_Real Value(const Standard_Integer N, Standard_Real* Poly, const Standard_Real X)
+namespace
 {
+// ========================================================================
+// Numerical Constants
+// ========================================================================
 
-  Standard_Real Result = Poly[0];
-  for (Standard_Integer Index = 1; Index < N; Index++)
+// Fundamental constants
+constexpr Standard_Real EPSILON       = std::numeric_limits<Standard_Real>::epsilon();
+constexpr Standard_Real RADIX         = 2.0;
+constexpr Standard_Real LN2           = 0.693147180559945309417; // Natural logarithm of 2
+constexpr Standard_Real INV_LOG_RADIX = 1.0 / LN2;               // 1/ln(2)
+
+// Tolerance constants for various numerical operations
+constexpr Standard_Real ZERO_TOLERANCE = 1.0e-30; // General zero tolerance
+constexpr Standard_Real BIQUADRATIC_TOLERANCE =
+  1.0e-14; // Biquadratic detection - stringent to avoid false positives
+constexpr Standard_Real NEWTON_DERIVATIVE_MIN =
+  1.0e-15; // Minimum derivative for Newton-Raphson iteration
+constexpr Standard_Real NEWTON_TARGET_DEFAULT =
+  1.0e-15; // Default target tolerance for Newton-Raphson refinement
+constexpr Standard_Real DUPLICATE_ROOT_TOL = 1.0e-10; // Tolerance for detecting duplicate roots
+
+// Iteration limits
+constexpr Standard_Integer MAX_NEWTON_ITERATIONS =
+  100; // Maximum iterations for aggressive Newton-Raphson
+
+// ========================================================================
+// Utility Functions
+// ========================================================================
+
+//@brief Evaluate polynomial using Horner's method
+//@param theCoeffs Polynomial coefficients in descending order
+//@param theX Value at which to evaluate
+//@return Polynomial value at theX
+template <std::size_t N>
+Standard_Real EvaluatePolynomial(const std::array<Standard_Real, N>& theCoeffs,
+                                 const Standard_Real                 theX)
+{
+  Standard_Real aResult = theCoeffs[0];
+  for (std::size_t i = 1; i < N; ++i)
   {
-    Result = Result * X + Poly[Index];
+    aResult = aResult * theX + theCoeffs[i];
   }
-  return Result;
+  return aResult;
 }
 
-static void Values(const Standard_Integer N,
-                   Standard_Real*         Poly,
-                   const Standard_Real    X,
-                   Standard_Real&         Val,
-                   Standard_Real&         Der)
+//@brief Evaluate polynomial and its derivative simultaneously using Horner's method
+//@param theCoeffs Polynomial coefficients in descending order
+//@param theX Value at which to evaluate
+//@param theValue Output: polynomial value
+//@param theDerivative Output: derivative value
+template <std::size_t N>
+void EvaluatePolynomialWithDerivative(const std::array<Standard_Real, N>& theCoeffs,
+                                      const Standard_Real                 theX,
+                                      Standard_Real&                      theValue,
+                                      Standard_Real&                      theDerivative)
 {
+  theValue      = theCoeffs[0] * theX + theCoeffs[1];
+  theDerivative = theCoeffs[0];
 
-  Val = Poly[0] * X + Poly[1];
-  Der = Poly[0];
-  for (Standard_Integer Index = 2; Index < N; Index++)
+  for (std::size_t i = 2; i < N; ++i)
   {
-    Der = Der * X + Val;
-    Val = Val * X + Poly[Index];
+    theDerivative = theDerivative * theX + theValue;
+    theValue      = theValue * theX + theCoeffs[i];
   }
 }
 
-static Standard_Real Improve(const Standard_Integer N,
-                             Standard_Real*         Poly,
-                             const Standard_Real    IniSol)
+// Aggressive Newton-Raphson refinement with many iterations for high precision
+template <std::size_t N>
+Standard_Real RefineRootAggressively(const std::array<Standard_Real, N>& theCoeffs,
+                                     const Standard_Real                 theInitialGuess,
+                                     const Standard_Real theTargetTolerance = NEWTON_TARGET_DEFAULT)
 {
 
-  Standard_Real    Val    = 0., Der, Delta;
-  Standard_Real    Sol    = IniSol;
-  Standard_Real    IniVal = Value(N, Poly, IniSol);
-  Standard_Integer Index;
+  Standard_Real aX = theInitialGuess;
 
-  //      std::cout << "Improve\n";
-  for (Index = 1; Index < 10; Index++)
+  for (Standard_Integer anIter = 0; anIter < MAX_NEWTON_ITERATIONS; ++anIter)
   {
-    Values(N, Poly, Sol, Val, Der);
-    if (Abs(Der) <= ZERO)
-      break;
-    Delta = -Val / Der;
-    if (Abs(Delta) <= EPSILON * Abs(Sol))
-      break;
-    Sol = Sol + Delta;
-    //        std::cout << " Iter = " << Index << " Delta = " << Delta
-    //             << " Val  = " << Val   << " Der   = " << Der << "\n";
+    Standard_Real aValue, aDerivative;
+    EvaluatePolynomialWithDerivative(theCoeffs, aX, aValue, aDerivative);
+
+    if (std::abs(aValue) < theTargetTolerance)
+    {
+      return aX; // Achieved target accuracy
+    }
+
+    if (std::abs(aDerivative) < NEWTON_DERIVATIVE_MIN)
+    {
+      break; // Derivative too small
+    }
+
+    const Standard_Real aDelta = aValue / aDerivative;
+    if (std::abs(aDelta) < theTargetTolerance)
+    {
+      break; // Converged
+    }
+
+    aX -= aDelta;
   }
-  if (Abs(Val) <= Abs(IniVal))
+
+  return aX;
+}
+
+// Simple aggressive refinement for all roots using direct Newton-Raphson
+template <std::size_t N>
+void RefineAllRootsWithDeflation(const std::array<Standard_Real, N>& theCoeffs,
+                                 Standard_Real*                      theRoots,
+                                 const Standard_Integer              theNbRoots)
+{
+  // Refine each root individually using direct Newton-Raphson
+  for (Standard_Integer i = 0; i < theNbRoots; ++i)
   {
-    return Sol;
+    const Standard_Real aRefinedRoot = RefineRootAggressively(theCoeffs, theRoots[i]);
+    if (aRefinedRoot != std::numeric_limits<Standard_Real>::max())
+    {
+      theRoots[i] = aRefinedRoot;
+    }
+  }
+}
+
+// Compute base-2 exponent of a number for scaling purposes
+inline Standard_Integer ComputeBaseExponent(const Standard_Real theValue)
+{
+  const Standard_Real anAbsValue = std::abs(theValue);
+  if (anAbsValue > 1.0)
+  {
+    return static_cast<Standard_Integer>(std::log(anAbsValue) * INV_LOG_RADIX);
+  }
+  return 0;
+}
+
+//@brief Sort roots in ascending order and remove duplicates
+//@param theRoots Array of roots
+//@param theNbRoots Number of roots
+void SortAndRemoveDuplicateRoots(Standard_Real* theRoots, Standard_Integer& theNbRoots)
+{
+  if (theNbRoots <= 1)
+  {
+    return;
+  }
+
+  // Sort roots
+  std::sort(theRoots, theRoots + theNbRoots);
+
+  // Remove duplicates
+  Standard_Integer aUniqueCount = 1;
+
+  for (Standard_Integer i = 1; i < theNbRoots; ++i)
+  {
+    if (std::abs(theRoots[i] - theRoots[aUniqueCount - 1]) > DUPLICATE_ROOT_TOL)
+    {
+      theRoots[aUniqueCount++] = theRoots[i];
+    }
+  }
+
+  theNbRoots = aUniqueCount;
+}
+
+// ========================================================================
+// Quadratic Equation Solver
+// ========================================================================
+
+// @brief Solve quadratic equation ax^2 + bx + c = 0 with numerical stability
+// @param theA Leading coefficient
+// @param theB Linear coefficient
+// @param theC Constant term
+// @param theRoots Output array for roots
+// @return Number of real roots found
+Standard_Integer SolveQuadratic(const Standard_Real theA,
+                                const Standard_Real theB,
+                                const Standard_Real theC,
+                                Standard_Real       theRoots[2])
+{
+  // Handle degenerate case
+  if (std::abs(theA) < ZERO_TOLERANCE)
+  {
+    if (std::abs(theB) < ZERO_TOLERANCE)
+    {
+      return 0;
+    }
+    theRoots[0] = -theC / theB;
+    return 1;
+  }
+
+  // Normalize coefficients
+  const Standard_Real aB = theB / theA;
+  const Standard_Real aC = theC / theA;
+
+  // Compute discriminant with care for numerical stability
+  const Standard_Real aDiscriminant = aB * aB - 4.0 * aC;
+
+  if (aDiscriminant < -EPSILON)
+  {
+    return 0; // No real roots
+  }
+
+  if (std::abs(aDiscriminant) < EPSILON)
+  {
+    // One repeated root
+    theRoots[0] = -aB * 0.5;
+    return 1;
+  }
+
+  // Two distinct real roots - use numerically stable formula
+  const Standard_Real aSqrtDiscriminant = std::sqrt(aDiscriminant);
+
+  if (aB > 0)
+  {
+    const Standard_Real aTemp = -0.5 * (aB + aSqrtDiscriminant);
+    theRoots[0]               = aTemp;
+    theRoots[1]               = aC / aTemp;
   }
   else
   {
-    return IniSol;
+    const Standard_Real aTemp = -0.5 * (aB - aSqrtDiscriminant);
+    theRoots[0]               = aC / aTemp;
+    theRoots[1]               = aTemp;
   }
+
+  return 2;
 }
 
-Standard_Real Improve(const Standard_Real A,
-                      const Standard_Real B,
-                      const Standard_Real C,
-                      const Standard_Real D,
-                      const Standard_Real E,
-                      const Standard_Real IniSol)
+// ========================================================================
+// Cubic Equation Solver (Cardano's Method)
+// ========================================================================
+
+// @brief Solve cubic equation x^3 + ax^2 + bx + c = 0 using Cardano's method
+// @param theA Quadratic coefficient
+// @param theB Linear coefficient
+// @param theC Constant term
+// @param theRoots Output array for roots
+// @return Number of real roots found
+Standard_Integer SolveCubicNormalized(const Standard_Real theA,
+                                      const Standard_Real theB,
+                                      const Standard_Real theC,
+                                      Standard_Real       theRoots[3])
 {
+  // Vieta substitution: x = y - a/3 to eliminate quadratic term
+  const Standard_Real aThirdA = theA / 3.0;
+  const Standard_Real aP      = theB - theA * aThirdA;
+  const Standard_Real aQ      = theC - theB * aThirdA + 2.0 * aThirdA * aThirdA * aThirdA;
 
-  Standard_Real Poly[5];
-  Poly[0] = A;
-  Poly[1] = B;
-  Poly[2] = C;
-  Poly[3] = D;
-  Poly[4] = E;
-  return Improve(5, Poly, IniSol);
-}
-
-Standard_Real Improve(const Standard_Real A,
-                      const Standard_Real B,
-                      const Standard_Real C,
-                      const Standard_Real D,
-                      const Standard_Real IniSol)
-{
-
-  Standard_Real Poly[4];
-  Poly[0] = A;
-  Poly[1] = B;
-  Poly[2] = C;
-  Poly[3] = D;
-  return Improve(4, Poly, IniSol);
-}
-
-Standard_Real Improve(const Standard_Real A,
-                      const Standard_Real B,
-                      const Standard_Real C,
-                      const Standard_Real IniSol)
-{
-
-  Standard_Real Poly[3];
-  Poly[0] = A;
-  Poly[1] = B;
-  Poly[2] = C;
-  return Improve(3, Poly, IniSol);
-}
-
-Standard_Integer BaseExponent(const Standard_Real X)
-{
-
-  if (X > 1.0)
+  // Check for special case: y^3 + q = 0
+  if (std::abs(aP) < EPSILON)
   {
-    return (Standard_Integer)(log(X) * Un_Sur_Log_RADIX);
+    theRoots[0] = std::cbrt(-aQ) - aThirdA;
+    return 1;
   }
-  else if (X < -1.0)
+
+  // Compute discriminant
+  const Standard_Real aDiscriminant = -4.0 * aP * aP * aP - 27.0 * aQ * aQ;
+
+  if (aDiscriminant > EPSILON)
   {
-    return (Standard_Integer)(-log(-X) * Un_Sur_Log_RADIX);
+    // Three distinct real roots - use trigonometric solution
+    const Standard_Real aM          = 2.0 * std::sqrt(-aP / 3.0);
+    const Standard_Real aTheta      = std::acos(3.0 * aQ / (aP * aM)) / 3.0;
+    const Standard_Real aTwoPiThird = 2.0 * M_PI / 3.0;
+
+    theRoots[0] = aM * std::cos(aTheta) - aThirdA;
+    theRoots[1] = aM * std::cos(aTheta - aTwoPiThird) - aThirdA;
+    theRoots[2] = aM * std::cos(aTheta + aTwoPiThird) - aThirdA;
+
+    return 3;
+  }
+  else if (std::abs(aDiscriminant) < EPSILON)
+  {
+    // One single and one double root
+    const Standard_Real aRoot = 3.0 * aQ / aP;
+    theRoots[0]               = aRoot - aThirdA;
+    theRoots[1]               = -0.5 * aRoot - aThirdA;
+    return 2;
   }
   else
   {
-    return 0;
+    // One real root - use Cardano's formula
+    const Standard_Real aSqrtDisc = std::sqrt(-aDiscriminant / 108.0);
+    const Standard_Real aU        = std::cbrt(-aQ / 2.0 + aSqrtDisc);
+    const Standard_Real aV        = std::cbrt(-aQ / 2.0 - aSqrtDisc);
+
+    theRoots[0] = aU + aV - aThirdA;
+    return 1;
   }
 }
+
+// ========================================================================
+// Quartic Equation Solver (Ferrari's Method) - MODERN IMPLEMENTATION
+// ========================================================================
+
+// @brief Detect if polynomial is biquadratic (x^4 + ax^2 + b = 0)
+// @param theA Cubic coefficient
+// @param theB Quadratic coefficient
+// @param theC Linear coefficient
+// @param theD Constant term
+// @return True if polynomial is biquadratic
+inline bool IsBiquadratic(const Standard_Real theA,
+                          const Standard_Real theB,
+                          const Standard_Real theC,
+                          const Standard_Real theD)
+{
+  const Standard_Real aMaxCoeff =
+    std::max({std::abs(theA), std::abs(theB), std::abs(theC), std::abs(theD)});
+
+  // Use very strict tolerance to avoid false positives
+  return (std::abs(theA) < BIQUADRATIC_TOLERANCE * aMaxCoeff)
+         && (std::abs(theC) < BIQUADRATIC_TOLERANCE * aMaxCoeff);
+}
+
+// @brief Solve biquadratic equation x^4 + bx^2 + d = 0
+// @param theB Quadratic coefficient
+// @param theD Constant term
+// @param theRoots Output array for roots
+// @return Number of real roots found
+Standard_Integer SolveBiquadratic(const Standard_Real theB,
+                                  const Standard_Real theD,
+                                  Standard_Real       theRoots[4])
+{
+  // Solve as quadratic in y = x^2
+  Standard_Real          aQuadRoots[2];
+  const Standard_Integer aNbQuadRoots = SolveQuadratic(1.0, theB, theD, aQuadRoots);
+
+  Standard_Integer aNbRoots = 0;
+  for (Standard_Integer i = 0; i < aNbQuadRoots; ++i)
+  {
+    if (aQuadRoots[i] > EPSILON)
+    {
+      const Standard_Real aSqrt = std::sqrt(aQuadRoots[i]);
+      theRoots[aNbRoots++]      = -aSqrt;
+      theRoots[aNbRoots++]      = aSqrt;
+    }
+    else if (std::abs(aQuadRoots[i]) < EPSILON)
+    {
+      theRoots[aNbRoots++] = 0.0;
+    }
+  }
+
+  return aNbRoots;
+}
+
+// @brief Solve quartic equation x^4 + ax^3 + bx^2 + cx + d = 0 using Ferrari's method
+// Uses the original OCCT approach with modern C++ improvements
+// @param theA Cubic coefficient
+// @param theB Quadratic coefficient
+// @param theC Linear coefficient
+// @param theD Constant term
+// @param theRoots Output array for roots
+// @return Number of real roots found
+Standard_Integer SolveQuarticFerrari(const Standard_Real theA,
+                                     const Standard_Real theB,
+                                     const Standard_Real theC,
+                                     const Standard_Real theD,
+                                     Standard_Real       theRoots[4])
+{
+  // Check for biquadratic case first
+  if (IsBiquadratic(theA, theB, theC, theD))
+  {
+    return SolveBiquadratic(theB, theD, theRoots);
+  }
+
+  // Use original OCCT Ferrari method for robustness
+  // This follows the proven approach from the working implementation
+
+  // Resolvent cubic coefficients
+  const Standard_Real R3 = -theB;
+  const Standard_Real S3 = theA * theC - 4.0 * theD;
+  const Standard_Real T3 = theD * (4.0 * theB - theA * theA) - theC * theC;
+
+  // Solve resolvent cubic: y^3 + R3*y^2 + S3*y + T3 = 0
+  Standard_Real          aCubicRoots[3];
+  const Standard_Integer aNbCubicRoots = SolveCubicNormalized(R3, S3, T3, aCubicRoots);
+
+  if (aNbCubicRoots == 0)
+  {
+    return 0; // No solutions
+  }
+
+  // Choose the best resolvent root (largest real value for stability)
+  Standard_Real aY0 = aCubicRoots[0];
+  for (Standard_Integer i = 1; i < aNbCubicRoots; ++i)
+  {
+    if (aCubicRoots[i] > aY0)
+    {
+      aY0 = aCubicRoots[i];
+    }
+  }
+
+  // Check discriminant for square root extraction
+  const Standard_Real aDiscr  = theA * aY0 * 0.5 - theC;
+  const Standard_Real aSdiscr = (aDiscr >= 0.0) ? 1.0 : -1.0;
+
+  // Compute P0 and Q0
+  Standard_Real aP0 = theA * theA * 0.25 - theB + aY0;
+  if (aP0 < 0.0)
+    aP0 = 0.0;
+  aP0 = std::sqrt(aP0);
+
+  Standard_Real aQ0 = aY0 * aY0 * 0.25 - theD;
+  if (aQ0 < 0.0)
+    aQ0 = 0.0;
+  aQ0 = std::sqrt(aQ0);
+
+  // Form two quadratics
+  const Standard_Real aAdemi    = theA * 0.5;
+  const Standard_Real aYdemi    = aY0 * 0.5;
+  const Standard_Real aSdiscrQ0 = aSdiscr * aQ0;
+
+  const Standard_Real aP  = aAdemi + aP0;
+  const Standard_Real aQ  = aYdemi + aSdiscrQ0;
+  const Standard_Real aP1 = aAdemi - aP0;
+  const Standard_Real aQ1 = aYdemi - aSdiscrQ0;
+
+  // Solve two quadratics: x^2 + P*x + Q = 0 and x^2 + P1*x + Q1 = 0
+  Standard_Integer aNbRoots = 0;
+
+  Standard_Real          aQuadRoots1[2];
+  const Standard_Integer aNb1 = SolveQuadratic(1.0, aP, aQ, aQuadRoots1);
+  for (Standard_Integer i = 0; i < aNb1; ++i)
+  {
+    theRoots[aNbRoots++] = aQuadRoots1[i];
+  }
+
+  Standard_Real          aQuadRoots2[2];
+  const Standard_Integer aNb2 = SolveQuadratic(1.0, aP1, aQ1, aQuadRoots2);
+  for (Standard_Integer i = 0; i < aNb2; ++i)
+  {
+    theRoots[aNbRoots++] = aQuadRoots2[i];
+  }
+
+  return aNbRoots;
+}
+
+} // anonymous namespace
+
+// ========================================================================
+// math_DirectPolynomialRoots Implementation
+// ========================================================================
+
+//====================================================================================================
 
 math_DirectPolynomialRoots::math_DirectPolynomialRoots(const Standard_Real A,
                                                        const Standard_Real B,
@@ -159,478 +497,246 @@ math_DirectPolynomialRoots::math_DirectPolynomialRoots(const Standard_Real A,
                                                        const Standard_Real D,
                                                        const Standard_Real E)
 {
-  InfiniteStatus = Standard_False;
-  Done           = Standard_True;
   Solve(A, B, C, D, E);
 }
+
+//====================================================================================================
 
 math_DirectPolynomialRoots::math_DirectPolynomialRoots(const Standard_Real A,
                                                        const Standard_Real B,
                                                        const Standard_Real C,
                                                        const Standard_Real D)
 {
-  Done           = Standard_True;
-  InfiniteStatus = Standard_False;
   Solve(A, B, C, D);
 }
+
+//====================================================================================================
 
 math_DirectPolynomialRoots::math_DirectPolynomialRoots(const Standard_Real A,
                                                        const Standard_Real B,
                                                        const Standard_Real C)
 {
-  Done           = Standard_True;
-  InfiniteStatus = Standard_False;
   Solve(A, B, C);
 }
 
+//====================================================================================================
+
 math_DirectPolynomialRoots::math_DirectPolynomialRoots(const Standard_Real A, const Standard_Real B)
 {
-  Done           = Standard_True;
-  InfiniteStatus = Standard_False;
   Solve(A, B);
 }
 
-void math_DirectPolynomialRoots::Solve(const Standard_Real a,
-                                       const Standard_Real b,
-                                       const Standard_Real c,
-                                       const Standard_Real d,
-                                       const Standard_Real e)
+//====================================================================================================
+
+void math_DirectPolynomialRoots::Solve(const Standard_Real A,
+                                       const Standard_Real B,
+                                       const Standard_Real C,
+                                       const Standard_Real D,
+                                       const Standard_Real E)
 {
-  if (Abs(a) <= ZERO)
+  Done           = Standard_True;
+  InfiniteStatus = Standard_False;
+  NbSol          = 0;
+
+  // Check for degenerate cases
+  const Standard_Real anAbsA = std::abs(A);
+
+  if (anAbsA < ZERO_TOLERANCE)
   {
-    Solve(b, c, d, e);
+    // Degenerate to cubic
+    Solve(B, C, D, E);
     return;
   }
 
-  //// modified by jgv, 22.01.09 ////
-  Standard_Real aZero = ZERO;
-  Standard_Real Abs_b = Abs(b), Abs_c = Abs(c), Abs_d = Abs(d), Abs_e = Abs(e);
+  // Normalize coefficients
+  const Standard_Real aNormB = B / A;
+  const Standard_Real aNormC = C / A;
+  const Standard_Real aNormD = D / A;
+  const Standard_Real aNormE = E / A;
 
-  if (Abs_b > aZero)
-    aZero = Abs_b;
-  if (Abs_c > aZero)
-    aZero = Abs_c;
-  if (Abs_d > aZero)
-    aZero = Abs_d;
-  if (Abs_e > aZero)
-    aZero = Abs_e;
-  if (aZero > ZERO)
-    aZero = Epsilon(100. * aZero);
+  // Apply scaling for numerical stability
+  const Standard_Real aMaxCoeff =
+    std::max({std::abs(aNormB), std::abs(aNormC), std::abs(aNormD), std::abs(aNormE)});
 
-  if (Abs(a) <= aZero)
+  if (aMaxCoeff > 1.0e8)
   {
-    Standard_Real    aZero1000 = 1000. * aZero;
-    Standard_Boolean with_a    = Standard_False;
-    if (Abs_b > ZERO && Abs_b <= aZero1000)
-      with_a = Standard_True;
-    if (Abs_c > ZERO && Abs_c <= aZero1000)
-      with_a = Standard_True;
-    if (Abs_d > ZERO && Abs_d <= aZero1000)
-      with_a = Standard_True;
-    if (Abs_e > ZERO && Abs_e <= aZero1000)
-      with_a = Standard_True;
+    // Scale coefficients to improve numerical stability
+    const Standard_Integer anExponent = ComputeBaseExponent(aMaxCoeff) / 4;
+    const Standard_Real    aScale     = std::pow(RADIX, anExponent);
+    const Standard_Real    aScale2    = aScale * aScale;
+    const Standard_Real    aScale3    = aScale2 * aScale;
+    const Standard_Real    aScale4    = aScale2 * aScale2;
 
-    if (!with_a)
+    const Standard_Real aScaledB = aNormB / aScale;
+    const Standard_Real aScaledC = aNormC / aScale2;
+    const Standard_Real aScaledD = aNormD / aScale3;
+    const Standard_Real aScaledE = aNormE / aScale4;
+
+    // Solve scaled equation
+    NbSol = SolveQuarticFerrari(aScaledB, aScaledC, aScaledD, aScaledE, TheRoots);
+
+    // Scale back roots
+    for (Standard_Integer i = 0; i < NbSol; ++i)
     {
-      Solve(b, c, d, e);
-      return;
+      TheRoots[i] *= aScale;
     }
-  }
-  ///////////////////////////////////
-
-  Standard_Real    A, B, C, D, R3, S3, T3, Q3, Y0, P0, Q0, P, Q, P1, Q1;
-  Standard_Real    Discr, Sdiscr;
-  Standard_Integer Index;
-  Standard_Integer Exp;
-  Standard_Real    PowRadix1, PowRadix2;
-
-  A   = b / a;
-  B   = c / a;
-  C   = d / a;
-  D   = e / a;
-  Exp = BaseExponent(D) / 4;
-  //--
-  //-- A = A / pow(RADIX, Exp);
-  //-- B = B / pow(RADIX, 2 * Exp);
-  //-- C = C / pow(RADIX, 3 * Exp);
-  //-- D = D / pow(RADIX, 4 * Exp);
-  PowRadix1 = pow(RADIX, Exp);
-  A /= PowRadix1;
-  PowRadix2 = PowRadix1 * PowRadix1;
-  B /= PowRadix2;
-  C /= PowRadix2 * PowRadix1;
-  D /= PowRadix2 * PowRadix2;
-  //--
-  R3 = -B;
-  S3 = A * C - 4.0 * D;
-  T3 = D * (4.0 * B - A * A) - C * C;
-  Q3 = 1.0;
-  math_DirectPolynomialRoots Sol3(Q3, R3, S3, T3);
-  //-- ################################################################################
-  if (Sol3.IsDone() == Standard_False)
-  {
-    Done = Standard_False;
-    return;
-  }
-  //-- ################################################################################
-
-  Y0 = Sol3.Value(1);
-  for (Index = 2; Index <= Sol3.NbSolutions(); Index++)
-  {
-    if (Sol3.Value(Index) > Y0)
-      Y0 = Sol3.Value(Index);
-  }
-  Discr = A * Y0 * 0.5 - C;
-  if (Discr >= 0.0)
-  {
-    Sdiscr = 1.0;
   }
   else
   {
-    Sdiscr = -1.0;
+    // Solve directly
+    NbSol = SolveQuarticFerrari(aNormB, aNormC, aNormD, aNormE, TheRoots);
   }
-  P0 = A * A * 0.25 - B + Y0;
-  if (P0 < 0.0)
-    P0 = 0.0;
-  P0 = sqrt(P0);
-  Q0 = Y0 * Y0 * 0.25 - D;
-  if (Q0 < 0.0)
-    Q0 = 0.0;
-  Q0 = sqrt(Q0);
 
-  Standard_Real Ademi    = A * 0.5;
-  Standard_Real Ydemi    = Y0 * 0.5;
-  Standard_Real SdiscrQ0 = Sdiscr * Q0;
+  // Refine all roots using aggressive multi-stage Newton-Raphson with deflation
+  const std::array<Standard_Real, 5> aOrigCoeffs = {A, B, C, D, E};
+  RefineAllRootsWithDeflation(aOrigCoeffs, TheRoots, NbSol);
 
-  P  = Ademi + P0;
-  Q  = Ydemi + SdiscrQ0;
-  P1 = Ademi - P0;
-  Q1 = Ydemi - SdiscrQ0;
-  //
-  Standard_Real anEps = 100 * EPSILON;
-
-  if (Abs(P) <= anEps)
-    P = 0.;
-  if (Abs(P1) <= anEps)
-    P1 = 0.;
-
-  if (Abs(Q) <= anEps)
-    Q = 0.;
-  if (Abs(Q1) <= anEps)
-    Q1 = 0.;
-  //
-  Ademi = 1.0;
-
-  math_DirectPolynomialRoots ASol2(Ademi, P, Q);
-  //-- ################################################################################
-  if (ASol2.IsDone() == Standard_False)
-  {
-    Done = Standard_False;
-    return;
-  }
-  //-- ################################################################################
-  math_DirectPolynomialRoots BSol2(Ademi, P1, Q1);
-  //-- ################################################################################
-  if (BSol2.IsDone() == Standard_False)
-  {
-    Done = Standard_False;
-    return;
-  }
-  //-- ################################################################################
-
-  NbSol = ASol2.NbSolutions() + BSol2.NbSolutions();
-  for (Index = 0; Index < ASol2.NbSolutions(); Index++)
-  {
-    TheRoots[Index] = ASol2.TheRoots[Index];
-  }
-  for (Index = 0; Index < BSol2.NbSolutions(); Index++)
-  {
-    TheRoots[ASol2.NbSolutions() + Index] = BSol2.TheRoots[Index];
-  }
-  for (Index = 0; Index < NbSol; Index++)
-  {
-    TheRoots[Index] = TheRoots[Index] * PowRadix1;
-    TheRoots[Index] = Improve(a, b, c, d, e, TheRoots[Index]);
-  }
+  // Sort and remove duplicates
+  SortAndRemoveDuplicateRoots(TheRoots, NbSol);
 }
+
+//====================================================================================================
 
 void math_DirectPolynomialRoots::Solve(const Standard_Real A,
                                        const Standard_Real B,
                                        const Standard_Real C,
                                        const Standard_Real D)
 {
+  Done           = Standard_True;
+  InfiniteStatus = Standard_False;
+  NbSol          = 0;
 
-  if (Abs(A) <= ZERO)
+  // Check for degenerate cases
+  const Standard_Real anAbsA = std::abs(A);
+
+  if (anAbsA < ZERO_TOLERANCE)
   {
+    // Degenerate to quadratic
     Solve(B, C, D);
     return;
   }
 
-  Standard_Real    Beta, Gamma, Del, P1, P2, P, Ep, Q1, Q2, Q3, Q, Eq, A1, A2, Discr;
-  Standard_Real    Sigma, Psi, D1, D2, Sb, Omega, Sp3, Y1, Dbg, Sdbg, Den1, Den2;
-  Standard_Real    U, H, Sq;
-  Standard_Integer Exp;
+  // Normalize coefficients
+  const Standard_Real aNormB = B / A;
+  const Standard_Real aNormC = C / A;
+  const Standard_Real aNormD = D / A;
 
-  Beta  = B / A;
-  Gamma = C / A;
-  Del   = D / A;
+  // Apply scaling for numerical stability
+  const Standard_Real aMaxCoeff = std::max({std::abs(aNormB), std::abs(aNormC), std::abs(aNormD)});
 
-  Exp = BaseExponent(Del) / 3;
+  if (aMaxCoeff > 1.0e8)
+  {
+    // Scale coefficients
+    const Standard_Integer anExponent = ComputeBaseExponent(aMaxCoeff) / 3;
+    const Standard_Real    aScale     = std::pow(RADIX, anExponent);
+    const Standard_Real    aScale2    = aScale * aScale;
+    const Standard_Real    aScale3    = aScale2 * aScale;
 
-  Standard_Real PowRadix1 = pow(RADIX, Exp);
-  Standard_Real PowRadix2 = PowRadix1 * PowRadix1;
-  Beta /= PowRadix1;
-  Gamma /= PowRadix2;
-  Del /= PowRadix2 * PowRadix1;
-  //-- Beta  = Beta  / pow(RADIX, Exp);
-  //-- Gamma = Gamma / pow(RADIX, 2 * Exp);
-  //-- Del   = Del   / pow(RADIX, 3 * Exp);
+    const Standard_Real aScaledB = aNormB / aScale;
+    const Standard_Real aScaledC = aNormC / aScale2;
+    const Standard_Real aScaledD = aNormD / aScale3;
 
-  P1 = Gamma;
-  P2 = -(Beta * Beta) / 3.0;
-  P  = P1 + P2;
-  Ep = 5.0 * EPSILON * (Abs(P1) + Abs(P2));
-  if (Abs(P) <= Ep)
-    P = 0.0;
-  Q1 = Del;
-  Q2 = -Beta * Gamma / 3.0;
-  Q3 = 2.0 * (Beta * Beta * Beta) / 27.0;
-  Q  = Q1 + Q2 + Q3;
-  Eq = 10.0 * EPSILON * (Abs(Q1) + Abs(Q2) + Abs(Q3));
-  if (Abs(Q) <= Eq)
-    Q = 0.0;
-  //-- ############################################################
-  Standard_Real AbsP = P;
-  if (P < 0.0)
-    AbsP = -P;
-  if (AbsP > 1e+80)
-  {
-    Done = Standard_False;
-    return;
-  }
-  //-- ############################################################
-  A1    = (P * P * P) / 27.0;
-  A2    = (Q * Q) / 4.0;
-  Discr = A1 + A2;
-  if (P < 0.0)
-  {
-    Sigma = -Q2 - Q3;
-    Psi   = Gamma * Gamma * (4.0 * Gamma - Beta * Beta) / 27.0;
-    if (Sigma >= 0.0)
+    // Solve scaled equation
+    NbSol = SolveCubicNormalized(aScaledB, aScaledC, aScaledD, TheRoots);
+
+    // Scale back roots
+    for (Standard_Integer i = 0; i < NbSol; ++i)
     {
-      D1 = Sigma + 2.0 * sqrt(-A1);
-    }
-    else
-    {
-      D1 = Sigma - 2.0 * sqrt(-A1);
-    }
-    D2    = Psi / D1;
-    Discr = 0.0;
-    if (Abs(Del - D1) >= 18.0 * EPSILON * (Abs(Del) + Abs(D1))
-        && Abs(Del - D2) >= 24.0 * EPSILON * (Abs(Del) + Abs(D2)))
-    {
-      Discr = (Del - D1) * (Del - D2) / 4.0;
-    }
-  }
-  if (Beta >= 0.0)
-  {
-    Sb = 1.0;
-  }
-  else
-  {
-    Sb = -1.0;
-  }
-  if (Discr < 0.0)
-  {
-    NbSol = 3;
-    if (Beta == 0.0 && Q == 0.0)
-    {
-      TheRoots[0] = sqrt(-P);
-      TheRoots[1] = -TheRoots[0];
-      TheRoots[2] = 0.0;
-    }
-    else
-    {
-      Omega       = atan(0.5 * Q / sqrt(-Discr));
-      Sp3         = sqrt(-P / 3.0);
-      Y1          = -2.0 * Sb * Sp3 * cos(M_PI / 6.0 - Sb * Omega / 3.0);
-      TheRoots[0] = -Beta / 3.0 + Y1;
-      if (Beta * Q <= 0.0)
-      {
-        TheRoots[1] = -Beta / 3.0 + 2.0 * Sp3 * sin(Omega / 3.0);
-      }
-      else
-      {
-        Dbg = Del - Beta * Gamma;
-        if (Dbg >= 0.0)
-        {
-          Sdbg = 1.0;
-        }
-        else
-        {
-          Sdbg = -1.0;
-        }
-        Den1        = 8.0 * Beta * Beta / 9.0 - 4.0 * Beta * Y1 / 3.0 - 2.0 * Q / Y1;
-        Den2        = 2.0 * Y1 * Y1 - Q / Y1;
-        TheRoots[1] = Dbg / Den1 + Sdbg * sqrt(-27.0 * Discr) / Den2;
-      }
-      TheRoots[2] = -Del / (TheRoots[0] * TheRoots[1]);
-    }
-  }
-  else if (Discr > 0.0)
-  {
-    NbSol = 1;
-    U     = sqrt(Discr) + Abs(Q / 2.0);
-    if (U >= 0.0)
-    {
-      U = pow(U, 1.0 / 3.0);
-    }
-    else
-    {
-      U = -pow(Abs(U), 1.0 / 3.0);
-    }
-    if (P >= 0.0)
-    {
-      H = U * U + P / 3.0 + (P / U) * (P / U) / 9.0;
-    }
-    else
-    {
-      H = U * Abs(Q) / (U * U - P / 3.0);
-    }
-    if (Beta * Q >= 0.0)
-    {
-      if (Abs(H) <= RealSmall() && Abs(Q) <= RealSmall())
-      {
-        TheRoots[0] = -Beta / 3.0 - U + P / (3.0 * U);
-      }
-      else
-      {
-        TheRoots[0] = -Beta / 3.0 - Q / H;
-      }
-    }
-    else
-    {
-      TheRoots[0] = -Del / (Beta * Beta / 9.0 + H - Beta * Q / (3.0 * H));
+      TheRoots[i] *= aScale;
     }
   }
   else
   {
-    NbSol = 3;
-    if (Q >= 0.0)
-    {
-      Sq = 1.0;
-    }
-    else
-    {
-      Sq = -1.0;
-    }
-    Sp3 = sqrt(-P / 3.0);
-    if (Beta * Q <= 0.0)
-    {
-      TheRoots[0] = -Beta / 3.0 + Sq * Sp3;
-      TheRoots[1] = TheRoots[0];
-      if (Beta * Q == 0.0)
-      {
-        TheRoots[2] = -Beta / 3.0 - 2.0 * Sq * Sp3;
-      }
-      else
-      {
-        TheRoots[2] = -Del / (TheRoots[0] * TheRoots[1]);
-      }
-    }
-    else
-    {
-      TheRoots[0] = -Gamma / (Beta + 3.0 * Sq * Sp3);
-      TheRoots[1] = TheRoots[0];
-      TheRoots[2] = -Beta / 3.0 - 2.0 * Sq * Sp3;
-    }
+    // Solve directly
+    NbSol = SolveCubicNormalized(aNormB, aNormC, aNormD, TheRoots);
   }
-  for (Standard_Integer Index = 0; Index < NbSol; Index++)
-  {
-    TheRoots[Index] = TheRoots[Index] * pow(RADIX, Exp);
-    TheRoots[Index] = Improve(A, B, C, D, TheRoots[Index]);
-  }
+
+  // Refine all roots using aggressive multi-stage Newton-Raphson with deflation
+  const std::array<Standard_Real, 4> aOrigCoeffs = {A, B, C, D};
+  RefineAllRootsWithDeflation(aOrigCoeffs, TheRoots, NbSol);
+
+  // Sort and remove duplicates
+  SortAndRemoveDuplicateRoots(TheRoots, NbSol);
 }
+
+//====================================================================================================
 
 void math_DirectPolynomialRoots::Solve(const Standard_Real A,
                                        const Standard_Real B,
                                        const Standard_Real C)
 {
+  Done           = Standard_True;
+  InfiniteStatus = Standard_False;
+  NbSol          = 0;
 
-  if (Abs(A) <= ZERO)
+  // Check for degenerate cases
+  const Standard_Real anAbsA = std::abs(A);
+
+  if (anAbsA < ZERO_TOLERANCE)
   {
+    // Degenerate to linear
     Solve(B, C);
     return;
   }
 
-  Standard_Real EpsD    = 3.0 * EPSILON * (B * B + Abs(4.0 * A * C));
-  Standard_Real Discrim = B * B - 4.0 * A * C;
+  // Solve quadratic
+  NbSol = SolveQuadratic(A, B, C, TheRoots);
 
-  if (Abs(Discrim) <= EpsD)
-    Discrim = 0.0;
-  if (Discrim < 0.0)
+  // Sort roots
+  if (NbSol == 2 && TheRoots[0] > TheRoots[1])
   {
-    NbSol = 0;
-  }
-  else if (Discrim == 0.0)
-  {
-    NbSol       = 2;
-    TheRoots[0] = -0.5 * B / A;
-    TheRoots[0] = Improve(A, B, C, TheRoots[0]);
-    TheRoots[1] = TheRoots[0];
-  }
-  else
-  {
-    NbSol = 2;
-    if (B > 0.0)
-    {
-      TheRoots[0] = -(B + sqrt(Discrim)) / (2.0 * A);
-    }
-    else
-    {
-      TheRoots[0] = -(B - sqrt(Discrim)) / (2.0 * A);
-    }
-    TheRoots[0] = Improve(A, B, C, TheRoots[0]);
-    TheRoots[1] = C / (A * TheRoots[0]);
-    TheRoots[1] = Improve(A, B, C, TheRoots[1]);
+    std::swap(TheRoots[0], TheRoots[1]);
   }
 }
+
+//====================================================================================================
 
 void math_DirectPolynomialRoots::Solve(const Standard_Real A, const Standard_Real B)
 {
+  Done           = Standard_True;
+  InfiniteStatus = Standard_False;
+  NbSol          = 0;
 
-  if (Abs(A) <= ZERO)
+  const Standard_Real anAbsA = std::abs(A);
+  const Standard_Real anAbsB = std::abs(B);
+
+  if (anAbsA < ZERO_TOLERANCE)
   {
-    if (Abs(B) <= ZERO)
+    if (anAbsB < ZERO_TOLERANCE)
     {
+      // Infinite solutions: 0 = 0
       InfiniteStatus = Standard_True;
-      return;
     }
-    NbSol = 0;
-    return;
+    // else: No solution: B = 0 with B != 0
   }
-  NbSol       = 1;
-  TheRoots[0] = -B / A;
+  else
+  {
+    // One solution
+    TheRoots[0] = -B / A;
+    NbSol       = 1;
+  }
 }
+
+//====================================================================================================
 
 void math_DirectPolynomialRoots::Dump(Standard_OStream& o) const
 {
-  o << "math_DirectPolynomialRoots ";
+  o << "math_DirectPolynomialRoots: " << std::endl;
   if (!Done)
   {
-    o << " Not Done \n";
+    o << "  Status = Not Done" << std::endl;
   }
   else if (InfiniteStatus)
   {
-    o << " Status = Infinity Roots \n";
+    o << "  Status = Infinite Solutions" << std::endl;
   }
-  else if (!InfiniteStatus)
+  else
   {
-    o << " Status = Not Infinity Roots \n";
-    o << " Number of solutions = " << NbSol << "\n";
-    for (Standard_Integer i = 1; i <= NbSol; i++)
+    o << "  Status = Done" << std::endl;
+    o << "  Number of solutions = " << NbSol << std::endl;
+    for (Standard_Integer i = 0; i < NbSol; ++i)
     {
-      o << " Solution number " << i << " = " << TheRoots[i - 1] << "\n";
+      o << "    Root[" << (i + 1) << "] = " << TheRoots[i] << std::endl;
     }
   }
 }

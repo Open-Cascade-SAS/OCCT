@@ -78,19 +78,26 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
+  //! Solves quartic equation Ax^4 + Bx^3 + Cx^2 + Dx + E = 0 using Ferrari's method
+  //! with modern numerical enhancements for stability and accuracy
   Standard_EXPORT void Solve(const Standard_Real A,
                              const Standard_Real B,
                              const Standard_Real C,
                              const Standard_Real D,
                              const Standard_Real E);
 
+  //! Solves cubic equation Ax^3 + Bx^2 + Cx + D = 0 using Cardano's method
+  //! with Vieta substitution and trigonometric solution for stability
   Standard_EXPORT void Solve(const Standard_Real A,
                              const Standard_Real B,
                              const Standard_Real C,
                              const Standard_Real D);
 
+  //! Solves quadratic equation Ax^2 + Bx + C = 0 using numerically stable
+  //! formulas to avoid catastrophic cancellation
   Standard_EXPORT void Solve(const Standard_Real A, const Standard_Real B, const Standard_Real C);
 
+  //! Solves linear equation Ax + B = 0 with proper handling of degenerate cases
   Standard_EXPORT void Solve(const Standard_Real A, const Standard_Real B);
 
 private:
