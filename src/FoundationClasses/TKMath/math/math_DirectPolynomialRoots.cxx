@@ -99,10 +99,10 @@ Standard_Real EvaluatePolynomial(const std::array<Standard_Real, N>& theCoeffs,
 }
 
 //@brief Evaluate polynomial and its derivative simultaneously using Horner's method
-//@param theCoeffs Polynomial coefficients in descending order
-//@param theX Value at which to evaluate
-//@param theValue Output: polynomial value
-//@param theDerivative Output: derivative value
+//@param[in] theCoeffs Polynomial coefficients in descending order
+//@param[in] theX Value at which to evaluate
+//@param[out] theValue polynomial value
+//@param[out] theDerivative derivative value
 template <std::size_t N>
 void EvaluatePolynomialWithDerivative(const std::array<Standard_Real, N>& theCoeffs,
                                       const Standard_Real                 theX,
@@ -184,8 +184,8 @@ inline Standard_Integer ComputeBaseExponent(const Standard_Real theValue)
 }
 
 //@brief Remove duplicate roots while preserving natural algorithm order
-//@param theRoots Array of roots
-//@param theNbRoots Number of roots
+//@param[in,out] theRoots Array of roots
+//@param[in,out] theNbRoots Number of roots
 void RemoveDuplicateRoots(Standard_Real* theRoots, Standard_Integer& theNbRoots)
 {
   if (theNbRoots <= 1)

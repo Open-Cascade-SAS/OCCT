@@ -40,7 +40,7 @@ protected:
     Standard_Real aPower  = 1.0;
 
     // Evaluate polynomial: coefficients are in descending degree order (a0*x^n + a1*x^(n-1) + ... +
-    // an)
+    // an*x^0)
     for (int i = static_cast<int>(theCoeffs.size()) - 1; i >= 0; i--)
     {
       aResult += theCoeffs[i] * aPower;

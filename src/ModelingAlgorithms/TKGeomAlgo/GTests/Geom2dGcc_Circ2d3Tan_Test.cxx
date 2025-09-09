@@ -350,7 +350,7 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, LinearConfiguration_GeometricTest)
 }
 
 // Test with touching circles
-TEST_F(Geom2dGcc_Circ2d3TanTest, TouchingCircles_DegenrateCase)
+TEST_F(Geom2dGcc_Circ2d3TanTest, TouchingCircles_DegenerateCase)
 {
   // Two circles that touch each other externally plus a third separate circle
   // This configuration should have solutions geometrically
