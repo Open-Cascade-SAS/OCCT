@@ -291,9 +291,9 @@ TEST(MathDirectPolynomialRootsTest, ProblematicQuarticCaseDetailed)
 
 TEST(MathDirectPolynomialRootsTest, ModernImplementationBiquadraticDetection)
 {
-  // Test case that should be detected as biquadratic (q ≈ 0 after Ferrari transformation)
+  // Test case that should be detected as biquadratic (q ~= 0 after Ferrari transformation)
   // x^4 - 5x^2 + 4 = 0, which factors as (x^2-1)(x^2-4) = 0
-  // Roots should be: ±1, ±2
+  // Roots should be: +/-1, +/-2
   math_DirectPolynomialRoots aRoots(1.0, 0.0, -5.0, 0.0, 4.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Biquadratic should be solved";
@@ -427,7 +427,7 @@ TEST(MathDirectPolynomialRootsTest, CloseToZeroCoefficients)
 {
   // Test robustness when coefficients are close to zero (degree reduction)
   // x^4 + 0*x^3 + 0*x^2 + 0*x - 16 = 0, essentially x^4 = 16
-  // Roots should be ±2, ±2i (but we only get real roots: ±2)
+  // Roots should be +/-2, +/-2i (but we only get real roots: +/-2)
   const Standard_Real        epsilon = 1.0e-14;
   math_DirectPolynomialRoots aRoots(1.0, epsilon, epsilon, epsilon, -16.0);
 
