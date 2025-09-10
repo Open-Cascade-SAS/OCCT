@@ -22,10 +22,9 @@
 template <typename TheItemType>
 math_VectorBase<TheItemType>::math_VectorBase(const Standard_Integer theLower,
                                               const Standard_Integer theUpper)
-    : Array(*myBuffer.data(),
-            theLower,
-            theUpper,
-            (theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE))
+    : Array(theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE
+              ? NCollection_Array1<TheItemType>(*myBuffer.data(), theLower, theUpper)
+              : NCollection_Array1<TheItemType>(theLower, theUpper))
 {
 }
 
@@ -33,10 +32,9 @@ template <typename TheItemType>
 math_VectorBase<TheItemType>::math_VectorBase(const Standard_Integer theLower,
                                               const Standard_Integer theUpper,
                                               const TheItemType      theInitialValue)
-    : Array(*myBuffer.data(),
-            theLower,
-            theUpper,
-            (theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE))
+    : Array(theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE
+              ? NCollection_Array1<TheItemType>(*myBuffer.data(), theLower, theUpper)
+              : NCollection_Array1<TheItemType>(theLower, theUpper))
 {
   Array.Init(theInitialValue);
 }
