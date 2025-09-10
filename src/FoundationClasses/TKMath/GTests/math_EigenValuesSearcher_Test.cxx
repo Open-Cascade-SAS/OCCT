@@ -98,23 +98,8 @@ Standard_Real vectorNorm(const math_Vector& theVector)
 }
 } // namespace
 
-// Test fixture for math_EigenValuesSearcher
-class EigenValuesSearcherTest : public ::testing::Test
-{
-protected:
-  void SetUp() override
-  {
-    // Setup common test data if needed
-  }
-
-  void TearDown() override
-  {
-    // Cleanup if needed
-  }
-};
-
 // Test constructor with dimension mismatch
-TEST_F(EigenValuesSearcherTest, ConstructorDimensionMismatch)
+TEST(math_EigenValuesSearcherTest, ConstructorDimensionMismatch)
 {
   TColStd_Array1OfReal aDiagonal(1, 3);
   TColStd_Array1OfReal aSubdiagonal(1, 2); // Wrong size
@@ -133,7 +118,7 @@ TEST_F(EigenValuesSearcherTest, ConstructorDimensionMismatch)
 }
 
 // Test 1x1 matrix (trivial case)
-TEST_F(EigenValuesSearcherTest, OneByOneMatrix)
+TEST(math_EigenValuesSearcherTest, OneByOneMatrix)
 {
   TColStd_Array1OfReal aDiagonal(1, 1);
   TColStd_Array1OfReal aSubdiagonal(1, 1);
@@ -153,7 +138,7 @@ TEST_F(EigenValuesSearcherTest, OneByOneMatrix)
 }
 
 // Test 2x2 symmetric tridiagonal matrix
-TEST_F(EigenValuesSearcherTest, TwoByTwoMatrix)
+TEST(math_EigenValuesSearcherTest, TwoByTwoMatrix)
 {
   TColStd_Array1OfReal aDiagonal(1, 2);
   TColStd_Array1OfReal aSubdiagonal(1, 2);
@@ -201,7 +186,7 @@ TEST_F(EigenValuesSearcherTest, TwoByTwoMatrix)
 }
 
 // Test 3x3 symmetric tridiagonal matrix
-TEST_F(EigenValuesSearcherTest, ThreeByThreeMatrix)
+TEST(math_EigenValuesSearcherTest, ThreeByThreeMatrix)
 {
   TColStd_Array1OfReal aDiagonal(1, 3);
   TColStd_Array1OfReal aSubdiagonal(1, 3);
@@ -248,7 +233,7 @@ TEST_F(EigenValuesSearcherTest, ThreeByThreeMatrix)
 }
 
 // Test diagonal matrix (eigenvalues should be diagonal elements)
-TEST_F(EigenValuesSearcherTest, DiagonalMatrix)
+TEST(math_EigenValuesSearcherTest, DiagonalMatrix)
 {
   TColStd_Array1OfReal aDiagonal(1, 4);
   TColStd_Array1OfReal aSubdiagonal(1, 4);
@@ -283,7 +268,7 @@ TEST_F(EigenValuesSearcherTest, DiagonalMatrix)
 }
 
 // Test identity matrix
-TEST_F(EigenValuesSearcherTest, IdentityMatrix)
+TEST(math_EigenValuesSearcherTest, IdentityMatrix)
 {
   TColStd_Array1OfReal aDiagonal(1, 3);
   TColStd_Array1OfReal aSubdiagonal(1, 3);
@@ -310,7 +295,7 @@ TEST_F(EigenValuesSearcherTest, IdentityMatrix)
 }
 
 // Test matrix with negative eigenvalues
-TEST_F(EigenValuesSearcherTest, NegativeEigenvalues)
+TEST(math_EigenValuesSearcherTest, NegativeEigenvalues)
 {
   TColStd_Array1OfReal aDiagonal(1, 2);
   TColStd_Array1OfReal aSubdiagonal(1, 2);
@@ -346,7 +331,7 @@ TEST_F(EigenValuesSearcherTest, NegativeEigenvalues)
 }
 
 // Test larger matrix (5x5)
-TEST_F(EigenValuesSearcherTest, FiveByFiveMatrix)
+TEST(math_EigenValuesSearcherTest, FiveByFiveMatrix)
 {
   TColStd_Array1OfReal aDiagonal(1, 5);
   TColStd_Array1OfReal aSubdiagonal(1, 5);
@@ -388,7 +373,7 @@ TEST_F(EigenValuesSearcherTest, FiveByFiveMatrix)
 }
 
 // Test with very small subdiagonal elements (near singular)
-TEST_F(EigenValuesSearcherTest, SmallSubdiagonalElements)
+TEST(math_EigenValuesSearcherTest, SmallSubdiagonalElements)
 {
   TColStd_Array1OfReal aDiagonal(1, 3);
   TColStd_Array1OfReal aSubdiagonal(1, 3);
@@ -418,7 +403,7 @@ TEST_F(EigenValuesSearcherTest, SmallSubdiagonalElements)
 }
 
 // Test with zero diagonal elements
-TEST_F(EigenValuesSearcherTest, ZeroDiagonalElements)
+TEST(math_EigenValuesSearcherTest, ZeroDiagonalElements)
 {
   TColStd_Array1OfReal aDiagonal(1, 3);
   TColStd_Array1OfReal aSubdiagonal(1, 3);
@@ -452,7 +437,7 @@ TEST_F(EigenValuesSearcherTest, ZeroDiagonalElements)
 }
 
 // Test with large diagonal elements (numerical stability)
-TEST_F(EigenValuesSearcherTest, LargeDiagonalElements)
+TEST(math_EigenValuesSearcherTest, LargeDiagonalElements)
 {
   TColStd_Array1OfReal aDiagonal(1, 3);
   TColStd_Array1OfReal aSubdiagonal(1, 3);
@@ -484,7 +469,7 @@ TEST_F(EigenValuesSearcherTest, LargeDiagonalElements)
 }
 
 // Test with alternating pattern
-TEST_F(EigenValuesSearcherTest, AlternatingPattern)
+TEST(math_EigenValuesSearcherTest, AlternatingPattern)
 {
   TColStd_Array1OfReal aDiagonal(1, 4);
   TColStd_Array1OfReal aSubdiagonal(1, 4);
@@ -518,7 +503,7 @@ TEST_F(EigenValuesSearcherTest, AlternatingPattern)
 }
 
 // Test repeated eigenvalues (multiple eigenvalues)
-TEST_F(EigenValuesSearcherTest, RepeatedEigenvalues)
+TEST(math_EigenValuesSearcherTest, RepeatedEigenvalues)
 {
   TColStd_Array1OfReal aDiagonal(1, 4);
   TColStd_Array1OfReal aSubdiagonal(1, 4);
@@ -546,7 +531,7 @@ TEST_F(EigenValuesSearcherTest, RepeatedEigenvalues)
 }
 
 // Test with very small matrix elements (precision test)
-TEST_F(EigenValuesSearcherTest, VerySmallElements)
+TEST(math_EigenValuesSearcherTest, VerySmallElements)
 {
   TColStd_Array1OfReal aDiagonal(1, 3);
   TColStd_Array1OfReal aSubdiagonal(1, 3);
@@ -577,7 +562,7 @@ TEST_F(EigenValuesSearcherTest, VerySmallElements)
 }
 
 // Test antisymmetric subdiagonal pattern
-TEST_F(EigenValuesSearcherTest, AntisymmetricSubdiagonal)
+TEST(math_EigenValuesSearcherTest, AntisymmetricSubdiagonal)
 {
   TColStd_Array1OfReal aDiagonal(1, 5);
   TColStd_Array1OfReal aSubdiagonal(1, 5);
@@ -621,7 +606,7 @@ TEST_F(EigenValuesSearcherTest, AntisymmetricSubdiagonal)
 }
 
 // Test Wilkinson matrix (known challenging case)
-TEST_F(EigenValuesSearcherTest, WilkinsonMatrix)
+TEST(math_EigenValuesSearcherTest, WilkinsonMatrix)
 {
   const Standard_Integer n = 5;
   TColStd_Array1OfReal   aDiagonal(1, n);
@@ -656,7 +641,7 @@ TEST_F(EigenValuesSearcherTest, WilkinsonMatrix)
 }
 
 // Test with mixed positive/negative diagonal
-TEST_F(EigenValuesSearcherTest, MixedSignDiagonal)
+TEST(math_EigenValuesSearcherTest, MixedSignDiagonal)
 {
   TColStd_Array1OfReal aDiagonal(1, 4);
   TColStd_Array1OfReal aSubdiagonal(1, 4);
@@ -699,7 +684,7 @@ TEST_F(EigenValuesSearcherTest, MixedSignDiagonal)
 }
 
 // Test maximum size matrix (stress test)
-TEST_F(EigenValuesSearcherTest, LargerMatrix)
+TEST(math_EigenValuesSearcherTest, LargerMatrix)
 {
   const Standard_Integer n = 8;
   TColStd_Array1OfReal   aDiagonal(1, n);
@@ -748,7 +733,7 @@ TEST_F(EigenValuesSearcherTest, LargerMatrix)
 }
 
 // Test with rational number patterns
-TEST_F(EigenValuesSearcherTest, RationalNumberPattern)
+TEST(math_EigenValuesSearcherTest, RationalNumberPattern)
 {
   TColStd_Array1OfReal aDiagonal(1, 4);
   TColStd_Array1OfReal aSubdiagonal(1, 4);
@@ -781,7 +766,7 @@ TEST_F(EigenValuesSearcherTest, RationalNumberPattern)
 }
 
 // Test near-degenerate case (eigenvalues very close)
-TEST_F(EigenValuesSearcherTest, NearDegenerateEigenvalues)
+TEST(math_EigenValuesSearcherTest, NearDegenerateEigenvalues)
 {
   TColStd_Array1OfReal aDiagonal(1, 3);
   TColStd_Array1OfReal aSubdiagonal(1, 3);
