@@ -16,7 +16,6 @@
 #define _math_VectorBase_HeaderFile
 
 #include <NCollection_Array1.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 
@@ -26,6 +25,8 @@
 #endif
 
 #include <math_Matrix.hxx>
+
+#include <array>
 
 //! This class implements the real vector abstract data type.
 //! Vectors can have an arbitrary range which must be defined at
@@ -312,8 +313,8 @@ protected:
   inline void SetLower(const Standard_Integer theLower);
 
 private:
-  STANDARD_ALIGNED(32, TheItemType, myBuffer)[THE_BUFFER_SIZE];
-  NCollection_Array1<TheItemType> Array;
+  std::array<TheItemType, THE_BUFFER_SIZE> myBuffer;
+  NCollection_Array1<TheItemType>          Array;
 };
 
 #include <math_VectorBase.lxx>

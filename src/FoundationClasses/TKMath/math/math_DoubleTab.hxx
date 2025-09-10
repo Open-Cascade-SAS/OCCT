@@ -25,6 +25,8 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 
+#include <array>
+
 class math_DoubleTab
 {
   static const Standard_Integer THE_BUFFER_SIZE = 64;
@@ -42,7 +44,7 @@ public:
       : myBuffer{},
         myArray(
           (theUpperRow - theLowerRow + 1) * (theUpperCol - theLowerCol + 1) <= THE_BUFFER_SIZE
-            ? NCollection_Array2<Standard_Real>(*myBuffer,
+            ? NCollection_Array2<Standard_Real>(*myBuffer.data(),
                                                 theLowerRow,
                                                 theUpperRow,
                                                 theLowerCol,
@@ -114,8 +116,8 @@ public:
   ~math_DoubleTab() = default;
 
 private:
-  STANDARD_ALIGNED(32, Standard_Real, myBuffer)[THE_BUFFER_SIZE];
-  NCollection_Array2<Standard_Real> myArray;
+  std::array<Standard_Real, THE_BUFFER_SIZE> myBuffer;
+  NCollection_Array2<Standard_Real>          myArray;
 };
 
 #endif // _math_DoubleTab_HeaderFile
