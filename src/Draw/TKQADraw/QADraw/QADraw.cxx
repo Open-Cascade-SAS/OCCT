@@ -18,7 +18,6 @@
 #include <QABugs.hxx>
 #include <QADraw.hxx>
 #include <QADNaming.hxx>
-#include <QANCollection.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <Bnd_Box.hxx>
@@ -175,7 +174,6 @@ void QADraw::Factory(Draw_Interpretor& theCommands)
 
   QABugs::Commands(theCommands);
   QADNaming::AllCommands(theCommands);
-  QANCollection::Commands(theCommands);
 }
 
 // Declare entry point PLUGINFACTORY
