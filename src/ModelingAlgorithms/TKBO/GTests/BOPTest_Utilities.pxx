@@ -22,6 +22,7 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Vec.hxx>
@@ -67,6 +68,7 @@ public:
   enum class ProfileCmd
   {
     O,  // Set origin (O X Y Z)
+    P,  // Set plane (P nx ny nz dx dy dz)
     F,  // Set first point
     X,  // Translate along X
     Y,  // Translate along Y
@@ -109,6 +111,24 @@ public:
     ProfileOperation(ProfileCmd c, Standard_Real p1, Standard_Real p2, Standard_Real p3)
         : cmd(c),
           params({p1, p2, p3})
+    {
+    }
+
+    ProfileOperation(ProfileCmd    c,
+                     Standard_Real p1,
+                     Standard_Real p2,
+                     Standard_Real p3,
+                     Standard_Real p4,
+                     Standard_Real p5,
+                     Standard_Real p6)
+        : cmd(c),
+          params({p1, p2, p3, p4, p5, p6})
+    {
+    }
+
+    ProfileOperation(ProfileCmd c, const std::vector<Standard_Real>& p)
+        : cmd(c),
+          params(p)
     {
     }
   };
@@ -359,6 +379,15 @@ public:
           }
           break;
 
+        case ProfileCmd::P: // Set plane (P nx ny nz dx dy dz)
+          if (op.params.size() >= 6)
+          {
+            // P command sets plane normal and direction vectors
+            // For now, we'll acknowledge it but continue using the provided plane
+            // In a full implementation, this would update the working plane
+          }
+          break;
+
         case ProfileCmd::F: // Set first point
           if (op.params.size() >= 2)
           {
@@ -444,6 +473,18 @@ public:
           }
           break;
 
+        case ProfileCmd::D: // Set direction vector
+          if (op.params.size() >= 2)
+          {
+            aCurrentDir = gp_Vec2d(op.params[0], op.params[1]);
+            aCurrentDir.Normalize();
+          }
+          break;
+
+        case ProfileCmd::W: // Make closed wire
+          // W command closes the current wire - handled at end of function
+          break;
+
         default:
           // Other commands can be added as needed
           break;
@@ -466,6 +507,15 @@ public:
     BRepBuilderAPI_MakeFace aFaceMaker(aWire);
     EXPECT_TRUE(aFaceMaker.IsDone()) << "Profile face creation failed";
     return aFaceMaker.Face();
+  }
+
+  //! Create profile from operations list (simplified version)
+  static TopoDS_Shape CreateProfileFromOperations(
+    const std::vector<ProfileOperation>& theOperations)
+  {
+    // Use default plane (XY plane)
+    const gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+    return CreateProfile(aPlane, theOperations);
   }
 
   //! Create rectangular profile from corner and dimensions
@@ -627,6 +677,73 @@ public:
     theNurbsBox = ConvertToNurbs(theNurbsBox);
 
     theRegularBox = CreateBox(theRegularCorner, theRegularX, theRegularY, theRegularZ);
+  }
+
+  //! Create a blend (fillet) on specified edge of a shape
+  static TopoDS_Shape CreateBlend(const TopoDS_Shape& theShape,
+                                  Standard_Integer    theEdgeIndex,
+                                  Standard_Real       theRadius)
+  {
+    // Get the edge by index (like explode command)
+    TopExp_Explorer  anExp(theShape, TopAbs_EDGE);
+    Standard_Integer aCurrentIndex = 1;
+    TopoDS_Edge      aTargetEdge;
+
+    while (anExp.More())
+    {
+      if (aCurrentIndex == theEdgeIndex)
+      {
+        aTargetEdge = TopoDS::Edge(anExp.Current());
+        break;
+      }
+      aCurrentIndex++;
+      anExp.Next();
+    }
+
+    if (aTargetEdge.IsNull())
+    {
+      return theShape; // Return original shape if edge not found
+    }
+
+    // Create fillet maker
+    BRepFilletAPI_MakeFillet aFilletMaker(theShape);
+    aFilletMaker.Add(theRadius, aTargetEdge);
+    aFilletMaker.Build();
+
+    if (!aFilletMaker.IsDone())
+    {
+      return theShape; // Return original shape if fillet failed
+    }
+
+    return aFilletMaker.Shape();
+  }
+
+  //! Create a cylinder on a specified plane (like TCL pcylinder command)
+  static TopoDS_Shape CreateCylinderOnPlane(const gp_Pln& thePlane,
+                                            Standard_Real theRadius,
+                                            Standard_Real theHeight)
+  {
+    // Create cylinder in default orientation (Z-axis up)
+    BRepPrimAPI_MakeCylinder aCylinderMaker(theRadius, theHeight);
+    if (!aCylinderMaker.IsDone())
+    {
+      return TopoDS_Shape(); // Return null shape on failure
+    }
+
+    TopoDS_Shape aCylinder = aCylinderMaker.Shape();
+
+    // Calculate transformation to move cylinder to the plane
+    const gp_Ax3& anAx3 = thePlane.Position();
+
+    // Default cylinder is positioned at origin with Z-axis up
+    gp_Ax3 aDefaultAx3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
+
+    // Transform from default position to plane position
+    gp_Trsf aTrsf;
+    aTrsf.SetTransformation(anAx3, aDefaultAx3);
+
+    BRepBuilderAPI_Transform aTransform(aCylinder, aTrsf);
+    return aTransform.Shape();
   }
 };
 

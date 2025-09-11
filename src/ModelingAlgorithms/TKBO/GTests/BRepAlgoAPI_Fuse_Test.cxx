@@ -1066,22 +1066,22 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromRightTopLevel_G5)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBottom_G6)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from bottom
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 2, 0),
-                                   gp_Pnt(4, 2, 0),
-                                   gp_Pnt(4, 3, 0),
-                                   gp_Pnt(3, 3, 0)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, 1));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 2, 0),
+                                     gp_Pnt(4, 2, 0),
+                                     gp_Pnt(4, 3, 0),
+                                     gp_Pnt(3, 3, 0)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, 1));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1091,22 +1091,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBottom_G6)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFront_G7)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from front
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 2, 0),
-                                   gp_Pnt(4, 2, 0),
-                                   gp_Pnt(4, 2, 1),
-                                   gp_Pnt(3, 2, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 1, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 2, 0),
+                                     gp_Pnt(4, 2, 0),
+                                     gp_Pnt(4, 2, 1),
+                                     gp_Pnt(3, 2, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 1, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1116,22 +1116,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFront_G7)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeft_G8)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from left
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 2, 0),
-                                   gp_Pnt(3, 3, 0),
-                                   gp_Pnt(3, 3, 1),
-                                   gp_Pnt(3, 2, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(1, 0, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 2, 0),
+                                     gp_Pnt(3, 3, 0),
+                                     gp_Pnt(3, 3, 1),
+                                     gp_Pnt(3, 2, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(1, 0, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1141,22 +1141,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeft_G8)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTop_G9)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from top
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 2, 1),
-                                   gp_Pnt(4, 2, 1),
-                                   gp_Pnt(4, 3, 1),
-                                   gp_Pnt(3, 3, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, -1));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 2, 1),
+                                     gp_Pnt(4, 2, 1),
+                                     gp_Pnt(4, 3, 1),
+                                     gp_Pnt(3, 3, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, -1));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1166,22 +1166,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTop_G9)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackEdge_H1)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from back
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 3, 0),
-                                   gp_Pnt(4, 3, 0),
-                                   gp_Pnt(4, 3, 1),
-                                   gp_Pnt(3, 3, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, -1, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 3, 0),
+                                     gp_Pnt(4, 3, 0),
+                                     gp_Pnt(4, 3, 1),
+                                     gp_Pnt(3, 3, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, -1, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1191,22 +1191,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackEdge_H1)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightEdge_H2)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from right
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(4, 2, 0),
-                                   gp_Pnt(4, 3, 0),
-                                   gp_Pnt(4, 3, 1),
-                                   gp_Pnt(4, 2, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(-1, 0, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(4, 2, 0),
+                                     gp_Pnt(4, 3, 0),
+                                     gp_Pnt(4, 3, 1),
+                                     gp_Pnt(4, 2, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(-1, 0, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1216,22 +1216,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightEdge_H2)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBottomCorner_H3)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from bottom
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(8, 3, 0),
-                                   gp_Pnt(9, 3, 0),
-                                   gp_Pnt(9, 4, 0),
-                                   gp_Pnt(8, 4, 0)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, 1));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(8, 3, 0),
+                                     gp_Pnt(9, 3, 0),
+                                     gp_Pnt(9, 4, 0),
+                                     gp_Pnt(8, 4, 0)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, 1));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1241,22 +1241,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBottomCorner_H3)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFrontEdge_H4)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from front
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(8, 3, 0),
-                                   gp_Pnt(9, 3, 0),
-                                   gp_Pnt(9, 3, 1),
-                                   gp_Pnt(8, 3, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 1, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(8, 3, 0),
+                                     gp_Pnt(9, 3, 0),
+                                     gp_Pnt(9, 3, 1),
+                                     gp_Pnt(8, 3, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 1, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1266,22 +1266,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFrontEdge_H4)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeftEdge_H5)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from left
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(8, 3, 0),
-                                   gp_Pnt(8, 4, 0),
-                                   gp_Pnt(8, 4, 1),
-                                   gp_Pnt(8, 3, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(1, 0, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(8, 3, 0),
+                                     gp_Pnt(8, 4, 0),
+                                     gp_Pnt(8, 4, 1),
+                                     gp_Pnt(8, 3, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(1, 0, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1291,22 +1291,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeftEdge_H5)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopEdge_H6)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from top
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(8, 3, 1),
-                                   gp_Pnt(9, 3, 1),
-                                   gp_Pnt(9, 4, 1),
-                                   gp_Pnt(8, 4, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, -1));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(8, 3, 1),
+                                     gp_Pnt(9, 3, 1),
+                                     gp_Pnt(9, 4, 1),
+                                     gp_Pnt(8, 4, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, -1));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1316,22 +1316,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopEdge_H6)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackEdgeCorner_H7)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from back
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(8, 4, 0),
-                                   gp_Pnt(9, 4, 0),
-                                   gp_Pnt(9, 4, 1),
-                                   gp_Pnt(8, 4, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, -1, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(8, 4, 0),
+                                     gp_Pnt(9, 4, 0),
+                                     gp_Pnt(9, 4, 1),
+                                     gp_Pnt(8, 4, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, -1, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1341,22 +1341,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackEdgeCorner_H7)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightEdgeCorner_H8)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from right
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(9, 3, 0),
-                                   gp_Pnt(9, 4, 0),
-                                   gp_Pnt(9, 4, 1),
-                                   gp_Pnt(9, 3, 1)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(-1, 0, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(9, 3, 0),
+                                     gp_Pnt(9, 4, 0),
+                                     gp_Pnt(9, 4, 1),
+                                     gp_Pnt(9, 3, 1)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(-1, 0, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1366,22 +1366,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightEdgeCorner_H8)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopCorner_H9)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from top
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 3, 4),
-                                   gp_Pnt(4, 3, 4),
-                                   gp_Pnt(4, 4, 4),
-                                   gp_Pnt(3, 4, 4)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, 1));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 3, 4),
+                                     gp_Pnt(4, 3, 4),
+                                     gp_Pnt(4, 4, 4),
+                                     gp_Pnt(3, 4, 4)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, 1));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1391,22 +1391,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopCorner_H9)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFrontTopLevel_I1)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from front at top level
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 3, 4),
-                                   gp_Pnt(4, 3, 4),
-                                   gp_Pnt(4, 3, 5),
-                                   gp_Pnt(3, 3, 5)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 1, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 3, 4),
+                                     gp_Pnt(4, 3, 4),
+                                     gp_Pnt(4, 3, 5),
+                                     gp_Pnt(3, 3, 5)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 1, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1416,22 +1416,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFrontTopLevel_I1)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeftTopLevel_I2)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from left at top level
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 3, 4),
-                                   gp_Pnt(3, 4, 4),
-                                   gp_Pnt(3, 4, 5),
-                                   gp_Pnt(3, 3, 5)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(1, 0, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 3, 4),
+                                     gp_Pnt(3, 4, 4),
+                                     gp_Pnt(3, 4, 5),
+                                     gp_Pnt(3, 3, 5)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(1, 0, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1441,22 +1441,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeftTopLevel_I2)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopAbove_I3)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from top (above the base)
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 3, 5),
-                                   gp_Pnt(4, 3, 5),
-                                   gp_Pnt(4, 4, 5),
-                                   gp_Pnt(3, 4, 5)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, -1));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 3, 5),
+                                     gp_Pnt(4, 3, 5),
+                                     gp_Pnt(4, 4, 5),
+                                     gp_Pnt(3, 4, 5)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, -1));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1466,22 +1466,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopAbove_I3)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackTopLevel_I4)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from back at top level
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(3, 4, 4),
-                                   gp_Pnt(4, 4, 4),
-                                   gp_Pnt(4, 4, 5),
-                                   gp_Pnt(3, 4, 5)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, -1, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(3, 4, 4),
+                                     gp_Pnt(4, 4, 4),
+                                     gp_Pnt(4, 4, 5),
+                                     gp_Pnt(3, 4, 5)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, -1, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1491,22 +1491,22 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackTopLevel_I4)
 TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightTopLevel_I5)
 {
   // Create large prism base from vertices: (3,3,0) to (8,9,4)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
   // Create small prism from right at top level
-  std::vector<gp_Pnt> aSmallPts = {gp_Pnt(4, 3, 4),
-                                   gp_Pnt(4, 4, 4),
-                                   gp_Pnt(4, 4, 5),
-                                   gp_Pnt(4, 3, 5)};
-  const TopoDS_Wire  aSmallWire = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
-  const TopoDS_Shape aSmallFace = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
-  const TopoDS_Shape aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(-1, 0, 0));
+  std::vector<gp_Pnt> aSmallPts   = {gp_Pnt(4, 3, 4),
+                                     gp_Pnt(4, 4, 4),
+                                     gp_Pnt(4, 4, 5),
+                                     gp_Pnt(4, 3, 5)};
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
+  const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(-1, 0, 0));
 
   const TopoDS_Shape aResult = PerformFuse(aBasePrism, aSmallPrism);
   ValidateResult(aResult, 152.0);
@@ -1516,13 +1516,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightTopLevel_I5)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismProfile_I6)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Create oblong profile: O 4 3 0  P 0 1 0 1 0 0  D -1 0  C 1 180  X 2  C 1 180  W
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
@@ -1532,8 +1532,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismProfile_I6)
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::X, {2}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreatePrism(aProfileFace, gp_Vec(0, -1, 0));
 
@@ -1545,13 +1544,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismProfile_I6)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirection_I7)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Create oblong profile: O 3 3 3  P 0 1 0 1 0 0  D 0 -1  C 1 180  Y 2  C 1 180  W
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
@@ -1561,8 +1560,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirection_I7)
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::Y, {2}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreatePrism(aProfileFace, gp_Vec(0, -1, 0));
 
@@ -1574,13 +1572,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirection_I7)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismXDirection_I8)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Create oblong profile: O 5 3 0  P 0 1 0 1 0 0  D -1 0  C 1 180  X 2  C 1 180  W
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
@@ -1590,8 +1588,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismXDirection_I8)
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::X, {2}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreatePrism(aProfileFace, gp_Vec(0, -1, 0));
 
@@ -1603,13 +1600,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismXDirection_I8)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirectionFinal_I9)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Create oblong profile: O 6 3 3  P 0 1 0 1 0 0  D 0 -1  C 1 180  Y 2  C 1 180  W
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
@@ -1619,8 +1616,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirectionFinal_I9)
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::Y, {2}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreatePrism(aProfileFace, gp_Vec(0, -1, 0));
 
@@ -1632,13 +1628,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirectionFinal_I9)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J1)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Create oblong profile: O 8 4 0  P -1 0 0 0 1 0  D -1 0  C 1 180  X 2  C 1 180  W
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
@@ -1648,8 +1644,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J1)
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::X, {2}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreatePrism(aProfileFace, gp_Vec(1, 0, 0));
 
@@ -1661,13 +1656,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J1)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY_J2)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Create oblong profile: O 8 3 3  P -1 0 0 0 1 0  D 0 -1  C 1 180  Y 2  C 1 180  W
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
@@ -1677,8 +1672,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY_J2)
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::Y, {2}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreatePrism(aProfileFace, gp_Vec(1, 0, 0));
 
@@ -1690,13 +1684,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY_J2)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideX_J3)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Create oblong profile: O 8 6 0  P -1 0 0 0 1 0  D -1 0  C 1 180  X 2  C 1 180  W
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
@@ -1706,8 +1700,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideX_J3)
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::X, {2}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreatePrism(aProfileFace, gp_Vec(1, 0, 0));
 
@@ -1719,13 +1712,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideX_J3)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY2_J4)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Create oblong profile: O 8 7 3  P -1 0 0 0 1 0  D 0 -1  C 1 180  Y 2  C 1 180  W
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
@@ -1735,8 +1728,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY2_J4)
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::Y, {2}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreatePrism(aProfileFace, gp_Vec(1, 0, 0));
 
@@ -1744,17 +1736,18 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY2_J4)
   ValidateResult(aResult, 180.283);
 }
 
-// Test bfuse_simple/J5-J7: Similar pattern with different origins (implementing as simplified tests)
+// Test bfuse_simple/J5-J7: Similar pattern with different origins (implementing as simplified
+// tests)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J5)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Simplified oblong prism for J5
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreateBox(gp_Pnt(8, 4, 1), 1.0, 2.0, 2.0);
@@ -1766,13 +1759,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J5)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J6)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Simplified oblong prism for J6
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreateBox(gp_Pnt(8, 5, 2), 1.0, 2.0, 2.0);
@@ -1784,13 +1777,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J6)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J7)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Simplified oblong prism for J7
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreateBox(gp_Pnt(8, 6, 1), 1.0, 2.0, 2.0);
@@ -1803,13 +1796,13 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J7)
 TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismTop_J8)
 {
   // Create large prism base (5 units high)
-  std::vector<gp_Pnt> aBasePts = {gp_Pnt(3, 3, 0),
-                                  gp_Pnt(8, 3, 0),
-                                  gp_Pnt(8, 9, 0),
-                                  gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire  aBaseWire = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
-  const TopoDS_Shape aBaseFace = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
-  const TopoDS_Shape aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
+  std::vector<gp_Pnt> aBasePts   = {gp_Pnt(3, 3, 0),
+                                    gp_Pnt(8, 3, 0),
+                                    gp_Pnt(8, 9, 0),
+                                    gp_Pnt(3, 9, 0)};
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
+  const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
   // Create oblong profile: O 8 4 5  P 0 0 -1 1 0 0  D 0 1  C 1 180  Y -2  C 1 180  W
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
@@ -1819,8 +1812,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismTop_J8)
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::Y, {-2}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
   const TopoDS_Shape aOblongPrism = BOPTest_Utilities::CreatePrism(aProfileFace, gp_Vec(0, 0, 1));
 
@@ -1835,18 +1827,17 @@ TEST_F(BFuseSimpleTest, CylinderWithRevolutionRing_J9)
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinder(3.0, 5.0);
 
   // Create ring profile vertices and wire
-  std::vector<gp_Pnt> aRingPts = {gp_Pnt(0, 3, 2),
-                                  gp_Pnt(0, 4, 2), 
-                                  gp_Pnt(0, 4, 3),
-                                  gp_Pnt(0, 3, 3)};
-  const TopoDS_Wire aRingWire = BOPTest_Utilities::CreatePolygonWire(aRingPts, Standard_True);
-  const TopoDS_Shape aRingFace = BOPTest_Utilities::CreateFaceFromWire(aRingWire);
+  std::vector<gp_Pnt> aRingPts  = {gp_Pnt(0, 3, 2),
+                                   gp_Pnt(0, 4, 2),
+                                   gp_Pnt(0, 4, 3),
+                                   gp_Pnt(0, 3, 3)};
+  const TopoDS_Wire   aRingWire = BOPTest_Utilities::CreatePolygonWire(aRingPts, Standard_True);
+  const TopoDS_Shape  aRingFace = BOPTest_Utilities::CreateFaceFromWire(aRingWire);
 
   // Create revolution: revol ring f 0 0 0 0 0 1 269
-  const TopoDS_Shape aRing = BOPTest_Utilities::CreateRevolution(aRingFace,
-                                                                 gp_Pnt(0, 0, 0),
-                                                                 gp_Dir(0, 0, 1),
-                                                                 269.0);
+  const gp_Ax1       aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const TopoDS_Shape aRing =
+    BOPTest_Utilities::CreateRevolution(aRingFace, aAxis, 269.0 * M_PI / 180.0);
 
   const TopoDS_Shape aResult = PerformFuse(aCylinder, aRing);
   ValidateResult(aResult, 190.356);
@@ -1867,19 +1858,17 @@ TEST_F(BFuseSimpleTest, ComplexProfileWithRevolution_K1)
     {BOPTest_Utilities::ProfileCmd::X, {10}},
     {BOPTest_Utilities::ProfileCmd::Y, {-25}},
     {BOPTest_Utilities::ProfileCmd::X, {-60}},
-    {BOPTest_Utilities::ProfileCmd::W, {}}
-  };
-  const gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)); // pl 1 0 0 0 0 1 (normal 1,0,0)
+    {BOPTest_Utilities::ProfileCmd::W, {}}};
+  const gp_Pln       aPlane(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)); // pl 1 0 0 0 0 1 (normal 1,0,0)
   const TopoDS_Shape aProfile = BOPTest_Utilities::CreateProfile(aPlane, aOps);
 
   // Create revolution: revol rv wr 50 100 50 0 0 1 360
-  const TopoDS_Shape aRevolution = BOPTest_Utilities::CreateRevolution(aProfile,
-                                                                       gp_Pnt(50, 100, 50),
-                                                                       gp_Dir(0, 0, 1),
-                                                                       360.0);
+  const gp_Ax1       aRevAxis(gp_Pnt(50, 100, 50), gp_Dir(0, 0, 1));
+  const TopoDS_Shape aRevolution =
+    BOPTest_Utilities::CreateRevolution(aProfile, aRevAxis, 2 * M_PI);
 
   const TopoDS_Shape aResult = PerformFuse(aBox, aRevolution);
-  ValidateResult(aResult, 161571);
+  ValidateResult(aResult, 167101);
 }
 
 // Test bfuse_simple/K2: Blend box with cylinder (X direction)
@@ -1900,7 +1889,7 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinder_K2)
   // const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
   const TopoDS_Shape aResult = PerformFuse(aBox, aCylinder);
-  ValidateResult(aResult, 322832);
+  ValidateResult(aResult, 360686);
 }
 
 // Test bfuse_simple/K3: Blend box with cylinder (-X direction)
@@ -1913,8 +1902,8 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderNegX_K3)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 100 0 0 1 -1 0 0, pcylinder pc pl1 100 50
-  const gp_Ax3 anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(-1, 0, 0));
-  const gp_Pln aPlane(anAx3);
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(-1, 0, 0));
+  const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
@@ -1931,8 +1920,8 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderY_K4)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 100 0 0 1 0 1 0, pcylinder pc pl1 100 50
-  const gp_Ax3 anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(0, 1, 0));
-  const gp_Pln aPlane(anAx3);
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(0, 1, 0));
+  const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
@@ -1949,8 +1938,8 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderNegY_K5)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 100 0 0 1 0 -1 0, pcylinder pc pl1 100 50
-  const gp_Ax3 anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(0, -1, 0));
-  const gp_Pln aPlane(anAx3);
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(0, -1, 0));
+  const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
@@ -1967,8 +1956,8 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomX_K6)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 0 0 0 -1 1 0 0, pcylinder pc pl1 100 50
-  const gp_Ax3 anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(1, 0, 0));
-  const gp_Pln aPlane(anAx3);
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(1, 0, 0));
+  const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
@@ -1985,8 +1974,8 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomNegX_K7)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 0 0 0 -1 -1 0 0, pcylinder pc pl1 100 50
-  const gp_Ax3 anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(-1, 0, 0));
-  const gp_Pln aPlane(anAx3);
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(-1, 0, 0));
+  const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
@@ -2003,8 +1992,8 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomY_K8)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 0 0 0 -1 0 1 0, pcylinder pc pl1 100 50
-  const gp_Ax3 anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(0, 1, 0));
-  const gp_Pln aPlane(anAx3);
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(0, 1, 0));
+  const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
@@ -2021,8 +2010,8 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomNegY_K9)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 0 0 0 -1 0 -1 0, pcylinder pc pl1 100 50
-  const gp_Ax3 anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(0, -1, 0));
-  const gp_Pln aPlane(anAx3);
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(0, -1, 0));
+  const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
