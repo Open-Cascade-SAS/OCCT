@@ -793,7 +793,7 @@ TEST_F(BCutSimpleTest, ComplexProfileRevolOperation_G6)
 {
   // Create box: "box b 100 100 40"
   const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 100.0, 100.0, 40.0);
-  
+
   // Create exact G6 profile: "profile rev S b_4 F 50 20 Y 50 C 10 180 Y -50 C 10 180"
   gp_Pln aPlane(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1)); // Face b_4 of box (top face at Z=40)
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps = {
@@ -804,14 +804,13 @@ TEST_F(BCutSimpleTest, ComplexProfileRevolOperation_G6)
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::C, 10.0, 180.0)  // C 10 180
   };
   const TopoDS_Shape aProfile = BOPTest_Utilities::CreateProfile(aPlane, aProfileOps);
-  
+
   // Create revolution: "revol rev2 rev 0 0 50 0 1 0 360" (around Y-axis at Z=50)
-  const TopoDS_Shape aRevolution = BOPTest_Utilities::CreateRevolution(
-    aProfile, 
-    gp_Ax1(gp_Pnt(0, 0, 50), gp_Dir(0, 1, 0)), 
-    2.0 * M_PI
-  );
-  
+  const TopoDS_Shape aRevolution =
+    BOPTest_Utilities::CreateRevolution(aProfile,
+                                        gp_Ax1(gp_Pnt(0, 0, 50), gp_Dir(0, 1, 0)),
+                                        2.0 * M_PI);
+
   // Perform boolean cut operation: "bcut result b rev2"
   const TopoDS_Shape aResult = PerformCut(aBox, aRevolution);
   ValidateResult(aResult, 41187.4);
@@ -829,19 +828,20 @@ TEST_F(BCutSimpleTest, BoxMinusTranslatedBox_G7)
 // Test bcut_simple/G8: Box minus prism (BUC40188 bug)
 TEST_F(BCutSimpleTest, BoxMinusPrism_G8)
 {
-  // Create box mb (-0.5, -0.5, -0.5, 1, 1, 1) 
+  // Create box mb (-0.5, -0.5, -0.5, 1, 1, 1)
   const TopoDS_Shape aBoxMb = BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 1.0, 1.0, 1.0);
-  
+
   // Get face mb_1 (approximated as first face)
   const TopoDS_Face aFace = BOPTest_Utilities::GetFaceByIndex(aBoxMb, 1);
-  
+
   // Create semi-infinite prism (simulated with very large prism: prism pryz mb_1 1 0 0 SemiInf)
   // Semi-infinite prism approximated as large prism extending 1000 units in X direction
-  const TopoDS_Shape aSemiInfPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(1000.0, 0.0, 0.0));
-  
+  const TopoDS_Shape aSemiInfPrism =
+    BOPTest_Utilities::CreatePrism(aFace, gp_Vec(1000.0, 0.0, 0.0));
+
   // Create box ab (0, -1, -1, 2, 2, 2)
   const TopoDS_Shape aBoxAb = BOPTest_Utilities::CreateBox(gp_Pnt(0, -1, -1), 2.0, 2.0, 2.0);
-  
+
   // Perform boolean cut operation: bcut result ab pryz
   const TopoDS_Shape aResult = PerformCut(aBoxAb, aSemiInfPrism);
   ValidateResult(aResult, 30.0);
@@ -869,25 +869,26 @@ TEST_F(BCutSimpleTest, ComplexCylinderConeOperation_G9)
 // Test bcut_simple/H1: Complex custom polygon prism minus box (MFA bug collection)
 TEST_F(BCutSimpleTest, ComplexPolygonPrismMinusBox_H1)
 {
-  // Create custom polygon from H1 test vertices: v1(0,0,0) v2(1,0,0) v3(1,3,0) v4(2,3,0) v5(2,0,0) v6(3,0,0) v7(3,5,0) v8(0,5,0)
+  // Create custom polygon from H1 test vertices: v1(0,0,0) v2(1,0,0) v3(1,3,0) v4(2,3,0) v5(2,0,0)
+  // v6(3,0,0) v7(3,5,0) v8(0,5,0)
   std::vector<gp_Pnt> aPoints;
-  aPoints.push_back(gp_Pnt(0, 0, 0));  // v1
-  aPoints.push_back(gp_Pnt(1, 0, 0));  // v2
-  aPoints.push_back(gp_Pnt(1, 3, 0));  // v3
-  aPoints.push_back(gp_Pnt(2, 3, 0));  // v4
-  aPoints.push_back(gp_Pnt(2, 0, 0));  // v5
-  aPoints.push_back(gp_Pnt(3, 0, 0));  // v6
-  aPoints.push_back(gp_Pnt(3, 5, 0));  // v7
-  aPoints.push_back(gp_Pnt(0, 5, 0));  // v8
-  
+  aPoints.push_back(gp_Pnt(0, 0, 0)); // v1
+  aPoints.push_back(gp_Pnt(1, 0, 0)); // v2
+  aPoints.push_back(gp_Pnt(1, 3, 0)); // v3
+  aPoints.push_back(gp_Pnt(2, 3, 0)); // v4
+  aPoints.push_back(gp_Pnt(2, 0, 0)); // v5
+  aPoints.push_back(gp_Pnt(3, 0, 0)); // v6
+  aPoints.push_back(gp_Pnt(3, 5, 0)); // v7
+  aPoints.push_back(gp_Pnt(0, 5, 0)); // v8
+
   // Create wire and extrude to solid (prism sol p 0 0 2)
-  TopoDS_Wire aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
-  TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+  TopoDS_Wire        aWire  = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  TopoDS_Shape       aFace  = BOPTest_Utilities::CreateFaceFromWire(aWire);
   const TopoDS_Shape aSolid = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 0, 2));
-  
+
   // Create box: box b -1 2 1 5 1 3 (corner at (-1,2,1), dimensions 5x1x3)
   const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(-1, 2, 1), 5.0, 1.0, 3.0);
-  
+
   // Perform boolean cut: bcut result sol b
   const TopoDS_Shape aResult = PerformCut(aSolid, aBox);
   ValidateResult(aResult, 68.0);
@@ -897,25 +898,26 @@ TEST_F(BCutSimpleTest, ComplexPolygonPrismMinusBox_H1)
 TEST_F(BCutSimpleTest, ComplexPolygonPrismMinusBox_H2)
 {
   // H2 is identical to H1 - same polygon and same box
-  // Create custom polygon from H2 test vertices (same as H1): v1(0,0,0) v2(1,0,0) v3(1,3,0) v4(2,3,0) v5(2,0,0) v6(3,0,0) v7(3,5,0) v8(0,5,0)
+  // Create custom polygon from H2 test vertices (same as H1): v1(0,0,0) v2(1,0,0) v3(1,3,0)
+  // v4(2,3,0) v5(2,0,0) v6(3,0,0) v7(3,5,0) v8(0,5,0)
   std::vector<gp_Pnt> aPoints;
-  aPoints.push_back(gp_Pnt(0, 0, 0));  // v1
-  aPoints.push_back(gp_Pnt(1, 0, 0));  // v2
-  aPoints.push_back(gp_Pnt(1, 3, 0));  // v3
-  aPoints.push_back(gp_Pnt(2, 3, 0));  // v4
-  aPoints.push_back(gp_Pnt(2, 0, 0));  // v5
-  aPoints.push_back(gp_Pnt(3, 0, 0));  // v6
-  aPoints.push_back(gp_Pnt(3, 5, 0));  // v7
-  aPoints.push_back(gp_Pnt(0, 5, 0));  // v8
-  
+  aPoints.push_back(gp_Pnt(0, 0, 0)); // v1
+  aPoints.push_back(gp_Pnt(1, 0, 0)); // v2
+  aPoints.push_back(gp_Pnt(1, 3, 0)); // v3
+  aPoints.push_back(gp_Pnt(2, 3, 0)); // v4
+  aPoints.push_back(gp_Pnt(2, 0, 0)); // v5
+  aPoints.push_back(gp_Pnt(3, 0, 0)); // v6
+  aPoints.push_back(gp_Pnt(3, 5, 0)); // v7
+  aPoints.push_back(gp_Pnt(0, 5, 0)); // v8
+
   // Create wire and extrude to solid (prism sol p 0 0 2)
-  TopoDS_Wire aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
-  TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+  TopoDS_Wire        aWire  = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  TopoDS_Shape       aFace  = BOPTest_Utilities::CreateFaceFromWire(aWire);
   const TopoDS_Shape aSolid = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 0, 2));
-  
+
   // Create box: box b -1 2 1 5 1 3 (corner at (-1,2,1), dimensions 5x1x3)
   const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(-1, 2, 1), 5.0, 1.0, 3.0);
-  
+
   // Perform boolean cut: bcut result sol b
   const TopoDS_Shape aResult = PerformCut(aSolid, aBox);
   ValidateResult(aResult, 68.0);
@@ -945,27 +947,33 @@ TEST_F(BCutSimpleTest, ComplexCylinderConeOperationPro13307_H3)
 TEST_F(BCutSimpleTest, ComplexProfileForwardForward_H4)
 {
   // Create profile p1: "profile p1 o 0 0 40 x 150 y 200 x -150"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0),          // y 200
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)          // x -150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                    // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0), // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0), // y 200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0) // x -150
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: "profile p2 o 0 0 50 f 25 25 y 100 x 75 y -100"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0),      // f 25 25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)           // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0), // f 25 25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)      // y -100
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   // First cut operation: bcut po1 pr1 pr2
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
@@ -974,14 +982,17 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardForward_H4)
 
   // Create profile p3: "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 x 75 y -100 x -75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0),     // f 50 -75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0), // f 50 -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   // Final cut operation: bcut result po1 pr3
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
@@ -992,29 +1003,35 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardForward_H4)
 TEST_F(BCutSimpleTest, ComplexProfileForwardForwardVariation_H5)
 {
   // H5 has same profiles as H4, but p3 has different sequence: "f 50 -75 y -100 x 75 y 100"
-  
+
   // Create profile p1: same as H4 "profile p1 o 0 0 40 x 150 y 200 x -150"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0),          // y 200
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)          // x -150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                    // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0), // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0), // y 200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0) // x -150
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: same as H4 "profile p2 o 0 0 50 f 25 25 y 100 x 75 y -100"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0),      // f 25 25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)           // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0), // f 25 25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)      // y -100
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1022,14 +1039,17 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardForwardVariation_H5)
 
   // Create profile p3: H5 variation "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 y -100 x 75 y 100"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0),     // f 50 -75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)            // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0), // f 50 -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)        // y 100
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 98000.0);
@@ -1039,27 +1059,33 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardForwardVariation_H5)
 TEST_F(BCutSimpleTest, ComplexProfileForwardReversed_H6)
 {
   // Create profile p1: same as H4/H5 "profile p1 o 0 0 40 x 150 y 200 x -150"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0),          // y 200
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)          // x -150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                    // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0), // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0), // y 200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0) // x -150
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: same as H4/H5 "profile p2 o 0 0 50 f 25 25 y 100 x 75 y -100"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0),      // f 25 25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)           // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0), // f 25 25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)      // y -100
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1067,14 +1093,17 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardReversed_H6)
 
   // Create profile p3: H6 variation "profile p3 o 0 0 50 f 50 75 x 75 y 100 x -75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0),      // f 50 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0), // f 50 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)       // x -75
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 98000.0);
@@ -1084,27 +1113,33 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardReversed_H6)
 TEST_F(BCutSimpleTest, ComplexProfileForwardReversedVariation_H7)
 {
   // Create profile p1: same as other H tests "profile p1 o 0 0 40 x 150 y 200 x -150"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0),          // y 200
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)          // x -150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                    // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0), // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0), // y 200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0) // x -150
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: same as other H tests "profile p2 o 0 0 50 f 25 25 y 100 x 75 y -100"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0),      // f 25 25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)           // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0), // f 25 25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)      // y -100
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1112,14 +1147,17 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardReversedVariation_H7)
 
   // Create profile p3: H7 variation "profile p3 o 0 0 50 f 50 75 y 100 x 75 y -100"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0),      // f 50 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)           // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0), // f 50 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)      // y -100
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 98000.0);
@@ -1129,27 +1167,33 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardReversedVariation_H7)
 TEST_F(BCutSimpleTest, ComplexProfileReversedForward_H8)
 {
   // Create profile p1: "profile p1 p 0 0 -1 1 0 0 o 0 0 40 y -200 x 150 y 200"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));  // Use same approach as working H4/H5
+  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1)); // Use same approach as working H4/H5
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -200.0),          // y -200
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0)            // y 200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                     // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -200.0), // y -200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),  // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0)   // y 200
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x -75"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0),     // f 25 -25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0), // f 25 -25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1157,14 +1201,17 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedForward_H8)
 
   // Create profile p3: "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 x 75 y -100 x -75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0),     // f 50 -75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0), // f 50 -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 98000.0);
@@ -1174,27 +1221,33 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedForward_H8)
 TEST_F(BCutSimpleTest, ComplexProfileReversedForwardVariation_H9)
 {
   // Create profile p1: same as H8 "profile p1 p 0 0 -1 1 0 0 o 0 0 40 y -200 x 150 y 200"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -200.0),          // y -200
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0)            // y 200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                     // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -200.0), // y -200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),  // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0)   // y 200
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: same as H8 "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x -75"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0),     // f 25 -25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0), // f 25 -25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1202,14 +1255,17 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedForwardVariation_H9)
 
   // Create profile p3: H9 variation "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 y -100 x 75 y 100"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0),     // f 50 -75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)            // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0), // f 50 -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)        // y 100
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 98000.0);
@@ -1219,27 +1275,34 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedForwardVariation_H9)
 TEST_F(BCutSimpleTest, ComplexProfileReversedReversed_I1)
 {
   // Create profile p1: same as H8/H9 "profile p1 p 0 0 -1 1 0 0 o 0 0 40 y -200 x 150 y 200"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -200.0),          // y -200
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0)            // y 200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                     // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -200.0), // y -200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),  // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0)   // y 200
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
-  // Create profile p2: same as H8/H9 "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x -75"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  // Create profile p2: same as H8/H9 "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x
+  // -75"
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0),     // f 25 -25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0), // f 25 -25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1247,14 +1310,17 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedReversed_I1)
 
   // Create profile p3: I1 "profile p3 o 0 0 50 f 50 75 x 75 y 100 x -75" (similar to H6)
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0),      // f 50 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0), // f 50 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)       // x -75
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 98000.0);
@@ -1264,27 +1330,33 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedReversed_I1)
 TEST_F(BCutSimpleTest, ComplexProfileReversedReversedVariation_I2)
 {
   // Create profile p1: same as I1 "profile p1 p 0 0 -1 1 0 0 o 0 0 40 y -200 x 150 y 200"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -200.0),          // y -200
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0)            // y 200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                     // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -200.0), // y -200
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),  // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0)   // y 200
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: same as I1 "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x -75"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0),     // f 25 -25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0), // f 25 -25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1292,14 +1364,17 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedReversedVariation_I2)
 
   // Create profile p3: I2 "profile p3 o 0 0 50 f 50 75 y 100 x 75 y -100" (similar to H7)
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0),      // f 50 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)           // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0), // f 50 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)      // y -100
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 98000.0);
@@ -1309,28 +1384,35 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedReversedVariation_I2)
 TEST_F(BCutSimpleTest, ComplexProfileForwardForwardVariation2_I3)
 {
   // Create profile p1: "profile p1 o 0 0 40 f 0 50 x 150 y 100 x -150"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, 50.0),       // f 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)           // x -150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                        // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, 50.0), // f 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),     // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),     // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)     // x -150
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
-  // Create profile p2: same as I1/I2 but different plane "profile p2 o 0 0 50 f 25 25 y 100 x 75 y -100"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  // Create profile p2: same as I1/I2 but different plane "profile p2 o 0 0 50 f 25 25 y 100 x 75 y
+  // -100"
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0),      // f 25 25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)           // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0), // f 25 25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)      // y -100
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1338,14 +1420,17 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardForwardVariation2_I3)
 
   // Create profile p3: same as H8 "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 x 75 y -100 x -75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0),     // f 50 -75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0), // f 50 -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 52000.0);
@@ -1355,43 +1440,54 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardForwardVariation2_I3)
 TEST_F(BCutSimpleTest, ComplexProfileForwardForwardVariation3_I4)
 {
   // Create profile p1: same as I3 "profile p1 o 0 0 40 f 0 50 x 150 y 100 x -150"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, 50.0),       // f 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)           // x -150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                        // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, 50.0), // f 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),     // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),     // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)     // x -150
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: same as I3 "profile p2 o 0 0 50 f 25 25 y 100 x 75 y -100"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0),      // f 25 25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)           // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0), // f 25 25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)      // y -100
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
   const TopoDS_Shape aIntermediate = aCutOp1.Shape();
 
-  // Create profile p3: I4 "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 y -100 x 75 y 100" with prism height -3
+  // Create profile p3: I4 "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 y -100 x 75 y 100" with
+  // prism height -3
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0),     // f 50 -75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)            // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0), // f 50 -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)        // y 100
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -3));  // Note: -3, not -30!
+  const TopoDS_Shape aPrism3 =
+    BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -3)); // Note: -3, not -30!
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 53000.0);
@@ -1401,28 +1497,34 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardForwardVariation3_I4)
 TEST_F(BCutSimpleTest, ComplexProfileForwardReversedVariation2_I5)
 {
   // Create profile p1: same as I3/I4 "profile p1 o 0 0 40 f 0 50 x 150 y 100 x -150"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, 50.0),       // f 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)           // x -150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                        // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, 50.0), // f 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),     // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),     // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)     // x -150
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: same as I3/I4 "profile p2 o 0 0 50 f 25 25 y 100 x 75 y -100"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0),      // f 25 25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)           // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0), // f 25 25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)      // y -100
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1430,14 +1532,17 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardReversedVariation2_I5)
 
   // Create profile p3: I5 "profile p3 o 0 0 50 f 50 75 x 75 y 100 x -75" (similar to H6/I1)
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0),      // f 50 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0), // f 50 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)       // x -75
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 52000.0);
@@ -1447,27 +1552,25 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardReversedVariation2_I5)
 TEST_F(BCutSimpleTest, ComplexProfileForwardReversedVariation3_I6)
 {
   // Same profiles as I5 but different p3 - "profile p3 o 0 0 50 f 50 75 y 100 x 75 y -100"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, 50.0),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)
-  };
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -150.0)};
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, 25.0),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)
-  };
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)};
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1478,10 +1581,9 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardReversedVariation3_I6)
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)
-  };
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0)};
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 52000.0);
@@ -1491,28 +1593,34 @@ TEST_F(BCutSimpleTest, ComplexProfileForwardReversedVariation3_I6)
 TEST_F(BCutSimpleTest, ComplexProfileReversedForwardVariation2_I7)
 {
   // Create profile p1: "profile p1 p 0 0 -1 1 0 0 o 0 0 40 f 0 -50 y -100 x 150 y 100"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, -50.0),      // f 0 -50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)            // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                         // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, -50.0), // f 0 -50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),     // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),      // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)       // y 100
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x -75"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0),     // f 25 -25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0), // f 25 -25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1520,14 +1628,17 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedForwardVariation2_I7)
 
   // Create profile p3: same as H8 "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 x 75 y -100 x -75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0),     // f 50 -75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0), // f 50 -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 52000.0);
@@ -1537,28 +1648,34 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedForwardVariation2_I7)
 TEST_F(BCutSimpleTest, ComplexProfileReversedForwardVariation3_I8)
 {
   // Create profile p1: "profile p1 p 0 0 -1 1 0 0 o 0 0 40 f 0 -50 y -100 x 150 y 100"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, -50.0),      // f 0 -50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)            // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                         // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, -50.0), // f 0 -50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),     // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),      // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)       // y 100
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x -75"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0),     // f 25 -25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0), // f 25 -25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1566,14 +1683,17 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedForwardVariation3_I8)
 
   // Create profile p3: "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 y -100 x 75 y 100"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0),     // f 50 -75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)            // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, -75.0), // f 50 -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)        // y 100
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 52000.0);
@@ -1583,28 +1703,34 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedForwardVariation3_I8)
 TEST_F(BCutSimpleTest, ComplexProfileReversedReversedVariation2_I9)
 {
   // Create profile p1: "profile p1 p 0 0 -1 1 0 0 o 0 0 40 f 0 -50 y -100 x 150 y 100"
-  gp_Pln aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 40), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 40.0),  // o 0 0 40
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, -50.0),      // f 0 -50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),           // x 150
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)            // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        40.0),                                         // o 0 0 40
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 0.0, -50.0), // f 0 -50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),     // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 150.0),      // x 150
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0)       // y 100
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
-  const TopoDS_Shape aPrism1 = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x -75"
-  gp_Pln aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0),     // f 25 -25
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),          // y -100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                          // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 25.0, -25.0), // f 25 -25
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),        // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, -100.0),      // y -100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)        // x -75
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
-  const TopoDS_Shape aPrism2 = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -30));
 
   BRepAlgoAPI_Cut aCutOp1(aPrism1, aPrism2);
   EXPECT_TRUE(aCutOp1.IsDone()) << "First cut operation failed";
@@ -1612,14 +1738,17 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedReversedVariation2_I9)
 
   // Create profile p3: "profile p3 o 0 0 50 f 50 75 x 75 y 100 x -75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O, 0.0, 0.0, 50.0),  // o 0 0 50
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0),      // f 50 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),            // x 75
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),           // y 100
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)            // x -75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
+                                        0.0,
+                                        0.0,
+                                        50.0),                                         // o 0 0 50
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::F, 50.0, 75.0), // f 50 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 75.0),       // x 75
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 100.0),      // y 100
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -75.0)       // x -75
   };
   const TopoDS_Shape aProfile3 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps3);
-  const TopoDS_Shape aPrism3 = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
+  const TopoDS_Shape aPrism3   = BOPTest_Utilities::CreatePrism(aProfile3, gp_Vec(0, 0, -30));
 
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 52000.0);

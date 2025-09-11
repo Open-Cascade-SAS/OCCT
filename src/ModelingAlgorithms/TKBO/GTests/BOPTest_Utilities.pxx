@@ -64,36 +64,55 @@ class BOPTest_Utilities
 {
 public:
   //! Profile command types (equivalent to TCL profile commands)
-  enum class ProfileCmd 
+  enum class ProfileCmd
   {
-    O,    // Set origin (O X Y Z)
-    F,    // Set first point
-    X,    // Translate along X
-    Y,    // Translate along Y
-    L,    // Translate along direction
-    XX,   // Set X coordinate
-    YY,   // Set Y coordinate
-    T,    // Translate by vector
-    TT,   // Set point
-    R,    // Rotate direction
-    RR,   // Set direction angle
-    D,    // Set direction vector
-    C,    // Arc (circle)
-    W,    // Make closed wire
-    WW    // Make open wire
+    O,  // Set origin (O X Y Z)
+    F,  // Set first point
+    X,  // Translate along X
+    Y,  // Translate along Y
+    L,  // Translate along direction
+    XX, // Set X coordinate
+    YY, // Set Y coordinate
+    T,  // Translate by vector
+    TT, // Set point
+    R,  // Rotate direction
+    RR, // Set direction angle
+    D,  // Set direction vector
+    C,  // Arc (circle)
+    W,  // Make closed wire
+    WW  // Make open wire
   };
 
   //! Profile command structure
   struct ProfileOperation
   {
-    ProfileCmd cmd;
+    ProfileCmd                 cmd;
     std::vector<Standard_Real> params;
-    
-    ProfileOperation(ProfileCmd c) : cmd(c) {}
-    ProfileOperation(ProfileCmd c, Standard_Real p1) : cmd(c), params({p1}) {}
-    ProfileOperation(ProfileCmd c, Standard_Real p1, Standard_Real p2) : cmd(c), params({p1, p2}) {}
-    ProfileOperation(ProfileCmd c, Standard_Real p1, Standard_Real p2, Standard_Real p3) : cmd(c), params({p1, p2, p3}) {}
+
+    ProfileOperation(ProfileCmd c)
+        : cmd(c)
+    {
+    }
+
+    ProfileOperation(ProfileCmd c, Standard_Real p1)
+        : cmd(c),
+          params({p1})
+    {
+    }
+
+    ProfileOperation(ProfileCmd c, Standard_Real p1, Standard_Real p2)
+        : cmd(c),
+          params({p1, p2})
+    {
+    }
+
+    ProfileOperation(ProfileCmd c, Standard_Real p1, Standard_Real p2, Standard_Real p3)
+        : cmd(c),
+          params({p1, p2, p3})
+    {
+    }
   };
+
   //! Default tolerance values
   static constexpr Standard_Real DefaultTolerance() { return 1.0e-6; }
 
@@ -210,8 +229,8 @@ public:
 
   //! Rotate shape around axis
   static TopoDS_Shape RotateShape(const TopoDS_Shape& theShape,
-                                  const gp_Ax1& theAxis,
-                                  Standard_Real theAngle)
+                                  const gp_Ax1&       theAxis,
+                                  Standard_Real       theAngle)
   {
     gp_Trsf aTrsf;
     aTrsf.SetRotation(theAxis, theAngle);
@@ -243,7 +262,8 @@ public:
   }
 
   //! Create wire from list of points (closed polygon)
-  static TopoDS_Wire CreatePolygonWire(const std::vector<gp_Pnt>& thePoints, Standard_Boolean theClose = Standard_True)
+  static TopoDS_Wire CreatePolygonWire(const std::vector<gp_Pnt>& thePoints,
+                                       Standard_Boolean           theClose = Standard_True)
   {
     BRepBuilderAPI_MakePolygon aPolygonMaker;
     for (const gp_Pnt& aPt : thePoints)
@@ -259,18 +279,18 @@ public:
 
   //! Create complex profile using simplified approach (similar to TCL profile command)
   //! Simulates "profile rev S face F x y [commands...]" by creating a rectangular wire
-  static TopoDS_Wire CreateProfileWire(const gp_Pln& thePlane, 
-                                       const gp_Pnt2d& theStartPt,
+  static TopoDS_Wire CreateProfileWire(const gp_Pln&                   thePlane,
+                                       const gp_Pnt2d&                 theStartPt,
                                        const std::vector<std::string>& theCommands)
   {
     // Simplified profile creation - create a rectangular wire based on commands
     // This approximates the TCL profile behavior for basic geometric operations
     std::vector<gp_Pnt2d> aPoints;
     aPoints.push_back(theStartPt);
-    
+
     gp_Pnt2d aCurrentPt = theStartPt;
     gp_Vec2d aCurrentDir(1.0, 0.0); // Default direction
-    
+
     // Process simplified command set
     for (size_t i = 0; i < theCommands.size(); ++i)
     {
@@ -295,7 +315,7 @@ public:
         i += 2; // Skip next two parameters
       }
     }
-    
+
     // Convert 2D points to 3D points on the plane
     std::vector<gp_Pnt> a3DPoints;
     for (const gp_Pnt2d& aPt2d : aPoints)
@@ -303,22 +323,23 @@ public:
       gp_Pnt aPt3d = ElSLib::Value(aPt2d.X(), aPt2d.Y(), thePlane);
       a3DPoints.push_back(aPt3d);
     }
-    
+
     return CreatePolygonWire(a3DPoints, Standard_True);
   }
 
   //! Create profile using typed commands (equivalent to TCL profile)
   //! plane: The reference plane/face (equivalent to "S face" in TCL)
   //! operations: List of profile operations
-  static TopoDS_Shape CreateProfile(const gp_Pln& thePlane, const std::vector<ProfileOperation>& theOperations)
+  static TopoDS_Shape CreateProfile(const gp_Pln&                        thePlane,
+                                    const std::vector<ProfileOperation>& theOperations)
   {
     BRepBuilderAPI_MakeWire aMakeWire;
-    
-    gp_Pnt2d aCurrentPt(0, 0);        // Current point in 2D
-    gp_Vec2d aCurrentDir(1, 0);       // Current direction in 2D
+
+    gp_Pnt2d         aCurrentPt(0, 0);  // Current point in 2D
+    gp_Vec2d         aCurrentDir(1, 0); // Current direction in 2D
     Standard_Boolean aFirstSet = Standard_False;
-    gp_Pnt2d aFirstPt(0, 0);
-    
+    gp_Pnt2d         aFirstPt(0, 0);
+
     for (const auto& op : theOperations)
     {
       switch (op.cmd)
@@ -331,22 +352,22 @@ public:
             // The actual starting point is still (0,0) unless F is specified
             if (!aFirstSet)
             {
-              aCurrentPt.SetCoord(0.0, 0.0);  // TCL default: start at (0,0)
-              aFirstPt = aCurrentPt;
+              aCurrentPt.SetCoord(0.0, 0.0); // TCL default: start at (0,0)
+              aFirstPt  = aCurrentPt;
               aFirstSet = Standard_True;
             }
           }
           break;
-          
+
         case ProfileCmd::F: // Set first point
           if (op.params.size() >= 2)
           {
             aCurrentPt.SetCoord(op.params[0], op.params[1]);
-            aFirstPt = aCurrentPt;
+            aFirstPt  = aCurrentPt;
             aFirstSet = Standard_True;
           }
           break;
-          
+
         case ProfileCmd::X: // Translate along X
           if (op.params.size() >= 1 && aFirstSet)
           {
@@ -355,11 +376,11 @@ public:
             gp_Pnt aPt1 = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), thePlane);
             gp_Pnt aPt2 = ElSLib::Value(aNewPt.X(), aNewPt.Y(), thePlane);
             aMakeWire.Add(BRepBuilderAPI_MakeEdge(aPt1, aPt2));
-            aCurrentPt = aNewPt;
+            aCurrentPt  = aNewPt;
             aCurrentDir = gp_Vec2d(op.params[0] > 0 ? 1 : -1, 0);
           }
           break;
-          
+
         case ProfileCmd::Y: // Translate along Y
           if (op.params.size() >= 1 && aFirstSet)
           {
@@ -368,47 +389,67 @@ public:
             gp_Pnt aPt1 = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), thePlane);
             gp_Pnt aPt2 = ElSLib::Value(aNewPt.X(), aNewPt.Y(), thePlane);
             aMakeWire.Add(BRepBuilderAPI_MakeEdge(aPt1, aPt2));
-            aCurrentPt = aNewPt;
+            aCurrentPt  = aNewPt;
             aCurrentDir = gp_Vec2d(0, op.params[0] > 0 ? 1 : -1);
           }
           break;
-          
+
         case ProfileCmd::C: // Arc
-          if (op.params.size() >= 2 && aFirstSet)
+          if (op.params.size() >= 2)
           {
-            Standard_Real aRadius = op.params[0];
+            Standard_Real aRadius   = Abs(op.params[0]);
             Standard_Real aAngleDeg = op.params[1];
             Standard_Real aAngleRad = aAngleDeg * M_PI / 180.0;
-            
-            // Calculate arc center perpendicular to current direction
-            gp_Vec2d aNormal(-aCurrentDir.Y(), aCurrentDir.X());
-            gp_Pnt2d aCenter = aCurrentPt.Translated(aNormal * aRadius);
-            
-            // Calculate end point
-            Standard_Real aStartAngle = atan2(aCurrentPt.Y() - aCenter.Y(), aCurrentPt.X() - aCenter.X());
-            Standard_Real aEndAngle = aStartAngle + aAngleRad;
-            gp_Pnt2d aEndPt(aCenter.X() + aRadius * cos(aEndAngle), 
-                           aCenter.Y() + aRadius * sin(aEndAngle));
-            
-            // Create 3D arc
-            gp_Pnt aPt1 = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), thePlane);
-            gp_Pnt aPt2 = ElSLib::Value(aEndPt.X(), aEndPt.Y(), thePlane);
-            gp_Pnt aCenter3D = ElSLib::Value(aCenter.X(), aCenter.Y(), thePlane);
-            
-            gp_Circ aCirc(gp_Ax2(aCenter3D, thePlane.Axis().Direction()), aRadius);
-            aMakeWire.Add(BRepBuilderAPI_MakeEdge(aCirc, aPt1, aPt2));
-            
-            aCurrentPt = aEndPt;
-            aCurrentDir = gp_Vec2d(cos(aEndAngle + M_PI/2), sin(aEndAngle + M_PI/2));
+
+            // Handle full circle case (360 degrees) or standalone circle
+            if (Abs(aAngleDeg) >= 360.0 || !aFirstSet)
+            {
+              // Create a full circle centered at current point (0,0 if not set)
+              gp_Pnt2d aCenter2D = aFirstSet ? aCurrentPt : gp_Pnt2d(0, 0);
+              gp_Pnt   aCenter3D = ElSLib::Value(aCenter2D.X(), aCenter2D.Y(), thePlane);
+
+              // Create full circle
+              gp_Circ aCirc(gp_Ax2(aCenter3D, thePlane.Axis().Direction()), aRadius);
+              aMakeWire.Add(BRepBuilderAPI_MakeEdge(aCirc));
+
+              // Set current point to a point on the circle
+              aCurrentPt  = gp_Pnt2d(aCenter2D.X() + aRadius, aCenter2D.Y());
+              aCurrentDir = gp_Vec2d(0, 1); // Tangent direction
+              aFirstSet   = Standard_True;
+            }
+            else
+            {
+              // Create arc from current point
+              gp_Vec2d aNormal(-aCurrentDir.Y(), aCurrentDir.X());
+              gp_Pnt2d aCenter = aCurrentPt.Translated(aNormal * aRadius);
+
+              // Calculate end point
+              Standard_Real aStartAngle =
+                atan2(aCurrentPt.Y() - aCenter.Y(), aCurrentPt.X() - aCenter.X());
+              Standard_Real aEndAngle = aStartAngle + aAngleRad;
+              gp_Pnt2d      aEndPt(aCenter.X() + aRadius * cos(aEndAngle),
+                              aCenter.Y() + aRadius * sin(aEndAngle));
+
+              // Create 3D arc
+              gp_Pnt aPt1      = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), thePlane);
+              gp_Pnt aPt2      = ElSLib::Value(aEndPt.X(), aEndPt.Y(), thePlane);
+              gp_Pnt aCenter3D = ElSLib::Value(aCenter.X(), aCenter.Y(), thePlane);
+
+              gp_Circ aCirc(gp_Ax2(aCenter3D, thePlane.Axis().Direction()), aRadius);
+              aMakeWire.Add(BRepBuilderAPI_MakeEdge(aCirc, aPt1, aPt2));
+
+              aCurrentPt  = aEndPt;
+              aCurrentDir = gp_Vec2d(cos(aEndAngle + M_PI / 2), sin(aEndAngle + M_PI / 2));
+            }
           }
           break;
-          
+
         default:
           // Other commands can be added as needed
           break;
       }
     }
-    
+
     // Close the wire if needed (TCL profiles are typically closed by default)
     if (aFirstSet && !aCurrentPt.IsEqual(aFirstPt, Precision::Confusion()))
     {
@@ -417,19 +458,20 @@ public:
       gp_Pnt aPt2 = ElSLib::Value(aFirstPt.X(), aFirstPt.Y(), thePlane);
       aMakeWire.Add(BRepBuilderAPI_MakeEdge(aPt1, aPt2));
     }
-    
+
     EXPECT_TRUE(aMakeWire.IsDone()) << "Profile wire creation failed";
     TopoDS_Wire aWire = aMakeWire.Wire();
-    
+
     // Create face from wire
     BRepBuilderAPI_MakeFace aFaceMaker(aWire);
     EXPECT_TRUE(aFaceMaker.IsDone()) << "Profile face creation failed";
     return aFaceMaker.Face();
   }
 
-
   //! Create rectangular profile from corner and dimensions
-  static TopoDS_Wire CreateRectangularProfile(const gp_Pnt& theCorner, Standard_Real theX, Standard_Real theY)
+  static TopoDS_Wire CreateRectangularProfile(const gp_Pnt& theCorner,
+                                              Standard_Real theX,
+                                              Standard_Real theY)
   {
     std::vector<gp_Pnt> aPoints;
     aPoints.push_back(theCorner);
@@ -462,20 +504,20 @@ public:
   }
 
   //! Create simple rectangular prism (like TCL profile operations)
-  static TopoDS_Shape CreateRectangularPrism(const gp_Pnt& theCorner, 
-                                             Standard_Real theX, 
-                                             Standard_Real theY, 
+  static TopoDS_Shape CreateRectangularPrism(const gp_Pnt& theCorner,
+                                             Standard_Real theX,
+                                             Standard_Real theY,
                                              Standard_Real theZ)
   {
-    TopoDS_Wire aWire = CreateRectangularProfile(theCorner, theX, theY);
+    TopoDS_Wire  aWire = CreateRectangularProfile(theCorner, theX, theY);
     TopoDS_Shape aFace = CreateFaceFromWire(aWire);
     return CreatePrism(aFace, gp_Vec(0, 0, theZ));
   }
 
   //! Create revolution of a profile around an axis
-  static TopoDS_Shape CreateRevolution(const TopoDS_Shape& theProfile, 
-                                       const gp_Ax1& theAxis, 
-                                       Standard_Real theAngle)
+  static TopoDS_Shape CreateRevolution(const TopoDS_Shape& theProfile,
+                                       const gp_Ax1&       theAxis,
+                                       Standard_Real       theAngle)
   {
     BRepPrimAPI_MakeRevol aRevolMaker(theProfile, theAxis, theAngle);
     EXPECT_TRUE(aRevolMaker.IsDone()) << "Revolution operation failed";
@@ -485,9 +527,9 @@ public:
   //! Get a face from a shape by index (for nexplode simulation)
   static TopoDS_Face GetFaceByIndex(const TopoDS_Shape& theShape, Standard_Integer theIndex)
   {
-    TopExp_Explorer anExp(theShape, TopAbs_FACE);
+    TopExp_Explorer  anExp(theShape, TopAbs_FACE);
     Standard_Integer aCurrentIndex = 1;
-    
+
     while (anExp.More())
     {
       if (aCurrentIndex == theIndex)
@@ -499,7 +541,6 @@ public:
     }
     return TopoDS_Face(); // Return empty face if not found
   }
-
 
   //! Apply rotation around Z-axis (equivalent to "trotate shape 0 0 0 0 0 1 angle")
   static TopoDS_Shape RotateZ(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)

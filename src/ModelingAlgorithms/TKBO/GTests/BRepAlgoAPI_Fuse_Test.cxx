@@ -46,15 +46,15 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusBox_B1)
   ValidateResult(aResult, 6.0);
 }
 
-// Test bfuse_simple/B2: box + nurbs box 
+// Test bfuse_simple/B2: box + nurbs box
 TEST_F(BFuseSimpleTest, BoxPlusNurbsBox_B2)
 {
   const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 0.5, 0.5, 1.0);
-  
+
   TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2 = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
   ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 7.5);
 }
@@ -63,11 +63,11 @@ TEST_F(BFuseSimpleTest, BoxPlusNurbsBox_B2)
 TEST_F(BFuseSimpleTest, NurbsBoxPlusAdjacentBox_B3)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 0.5, 1.5, 1.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox2, aBox1);
   ValidateResult(aResult, 7.5);
 }
@@ -76,11 +76,11 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusAdjacentBox_B3)
 TEST_F(BFuseSimpleTest, AdjacentBoxPlusNurbsBox_B4)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0.5, 0), 1.0, 1.0, 1.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox2, aBox1);
   ValidateResult(aResult, 8.0);
 }
@@ -89,11 +89,11 @@ TEST_F(BFuseSimpleTest, AdjacentBoxPlusNurbsBox_B4)
 TEST_F(BFuseSimpleTest, NurbsBoxPlusSmallerBox_B5)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0.25, 0.25, 0.25), 0.5, 0.5, 0.5);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.0);
 }
@@ -102,11 +102,11 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusSmallerBox_B5)
 TEST_F(BFuseSimpleTest, SmallerBoxPlusNurbsBox_B6)
 {
   const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0.25, 0.25, 0.25), 0.5, 0.5, 0.5);
-  
+
   TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2 = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
   ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.0);
 }
@@ -115,11 +115,11 @@ TEST_F(BFuseSimpleTest, SmallerBoxPlusNurbsBox_B6)
 TEST_F(BFuseSimpleTest, NurbsBoxPlusPartiallyOverlappingBox_B7)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0.5, 0.5, 0.5), 1.0, 1.0, 1.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 7.75);
 }
@@ -128,11 +128,11 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusPartiallyOverlappingBox_B7)
 TEST_F(BFuseSimpleTest, PartiallyOverlappingBoxPlusNurbsBox_B8)
 {
   const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0.5, 0.5, 0.5), 1.0, 1.0, 1.0);
-  
+
   TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2 = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
   ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 7.75);
 }
@@ -141,11 +141,11 @@ TEST_F(BFuseSimpleTest, PartiallyOverlappingBoxPlusNurbsBox_B8)
 TEST_F(BFuseSimpleTest, NurbsBoxPlusExtendedBox_B9)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 2.0, 2.0, 2.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 24.0);
 }
@@ -154,11 +154,11 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusExtendedBox_B9)
 TEST_F(BFuseSimpleTest, ExtendedBoxPlusNurbsBox_C1)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.5, 0.5, 0.5);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox2, aBox1);
   ValidateResult(aResult, 7.0);
 }
@@ -167,11 +167,11 @@ TEST_F(BFuseSimpleTest, ExtendedBoxPlusNurbsBox_C1)
 TEST_F(BFuseSimpleTest, NurbsBoxPlusShiftedBox_C2)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 1.5, 0.5, 0.5);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox2, aBox1);
   ValidateResult(aResult, 8.5);
 }
@@ -180,11 +180,11 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusShiftedBox_C2)
 TEST_F(BFuseSimpleTest, ShiftedBoxPlusNurbsBox_C3)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0.25, 0, 0), 0.5, 0.5, 1.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox2, aBox1);
   ValidateResult(aResult, 6.0);
 }
@@ -193,11 +193,11 @@ TEST_F(BFuseSimpleTest, ShiftedBoxPlusNurbsBox_C3)
 TEST_F(BFuseSimpleTest, NurbsBoxPlusNarrowBox_C4)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0.25, 0.25, 0), 0.5, 0.5, 1.5);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.75);
 }
@@ -206,11 +206,11 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusNarrowBox_C4)
 TEST_F(BFuseSimpleTest, NarrowBoxPlusNurbsBox_C5)
 {
   const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0.25, 0.25, 0), 0.5, 0.5, 1.5);
-  
+
   TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2 = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
   ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.75);
 }
@@ -219,11 +219,11 @@ TEST_F(BFuseSimpleTest, NarrowBoxPlusNurbsBox_C5)
 TEST_F(BFuseSimpleTest, NurbsBoxPlusCornerCube_C6)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0.5, 0.5, 0.5), 0.5, 0.5, 0.5);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.0);
 }
@@ -232,11 +232,11 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusCornerCube_C6)
 TEST_F(BFuseSimpleTest, CornerCubePlusNurbsBox_C7)
 {
   const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0.5, 0.5, 0.5), 0.5, 0.5, 0.5);
-  
+
   TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2 = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
   ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.0);
 }
@@ -245,11 +245,11 @@ TEST_F(BFuseSimpleTest, CornerCubePlusNurbsBox_C7)
 TEST_F(BFuseSimpleTest, NurbsBoxPlusOffsetCube_C8)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(1, 1, 0), 0.5, 0.5, 1.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.25);
 }
@@ -258,11 +258,11 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusOffsetCube_C8)
 TEST_F(BFuseSimpleTest, OffsetCubePlusNurbsBox_C9)
 {
   const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(1, 1, 0), 0.5, 0.5, 1.0);
-  
+
   TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2 = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
   ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.25);
 }
@@ -271,11 +271,11 @@ TEST_F(BFuseSimpleTest, OffsetCubePlusNurbsBox_C9)
 TEST_F(BFuseSimpleTest, BoxPlusRotatedSphere_A3)
 {
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
-  
+
   // Apply standard rotation: Z(-90°) then Y(-45°)
   const TopoDS_Shape aRotatedSphere = BOPTest_Utilities::RotateStandard(aSphere);
-  
-  const TopoDS_Shape aBox = BOPTest_Utilities::CreateUnitBox();
+
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
   const TopoDS_Shape aResult = PerformFuse(aBox, aRotatedSphere);
   ValidateResult(aResult, 14.6393);
 }
@@ -284,24 +284,24 @@ TEST_F(BFuseSimpleTest, BoxPlusRotatedSphere_A3)
 TEST_F(BFuseSimpleTest, SpherePlusRotatedBox_A4)
 {
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
-  const TopoDS_Shape aBox = BOPTest_Utilities::CreateUnitBox();
-  
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
+
   // Apply Y rotation: 90°
   const TopoDS_Shape aRotatedBox = BOPTest_Utilities::RotateY(aBox, 90.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aSphere, aRotatedBox);
   ValidateResult(aResult, 14.6393);
 }
 
-// Test bfuse_simple/A5: rotated box + sphere 
+// Test bfuse_simple/A5: rotated box + sphere
 TEST_F(BFuseSimpleTest, RotatedBoxPlusSphere_A5)
 {
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
-  const TopoDS_Shape aBox = BOPTest_Utilities::CreateUnitBox();
-  
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
+
   // Apply Y rotation: 90°
   const TopoDS_Shape aRotatedBox = BOPTest_Utilities::RotateY(aBox, 90.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aRotatedBox, aSphere);
   ValidateResult(aResult, 14.6393);
 }
@@ -311,11 +311,11 @@ TEST_F(BFuseSimpleTest, IdenticalNurbsBoxPlusBox_A6)
 {
   // Create first box and convert to NURBS
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.0);
 }
@@ -324,11 +324,11 @@ TEST_F(BFuseSimpleTest, IdenticalNurbsBoxPlusBox_A6)
 TEST_F(BFuseSimpleTest, IdenticalBoxPlusNurbsBox_A7)
 {
   const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  
+
   TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2 = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
   ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.0);
 }
@@ -338,11 +338,11 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusLargerBox_A8)
 {
   // Create first box and convert to NURBS
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1 = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
   ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 2.0, 2.0, 2.0);
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 24.0);
 }
@@ -351,13 +351,596 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusLargerBox_A8)
 TEST_F(BFuseSimpleTest, LargerBoxPlusNurbsBox_A9)
 {
   const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 2.0, 2.0, 2.0);
-  
+
   TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2 = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
   ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-  
+
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 24.0);
+}
+
+// Test bfuse_simple/D1: nurbs box + rotated narrow box
+TEST_F(BFuseSimpleTest, NurbsBoxPlusRotatedNarrowBox_D1)
+{
+  TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
+
+  // Create rotated narrow box: r=sqrt(2), box(0,0,0,r,0.25,1), rotate 45 degrees around Z
+  const Standard_Real r     = sqrt(2.0);
+  TopoDS_Shape        aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
+  gp_Trsf             aTrsf;
+  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4.0); // 45 degrees
+  aBox2.Move(aTrsf);
+
+  const TopoDS_Shape aResult = PerformFuse(aBox2, aBox1);
+  ValidateResult(aResult, 6.41789);
+}
+
+// Test bfuse_simple/D2: nurbs box + rotated narrow box variation
+TEST_F(BFuseSimpleTest, NurbsBoxPlusRotatedNarrowBoxVariation_D2)
+{
+  TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
+
+  // Create rotated narrow box: r=sqrt(31), box(0,0,0,r/4,0.25,1), rotate 34.73 degrees around Z
+  const Standard_Real r     = sqrt(31.0);
+  TopoDS_Shape        aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
+  gp_Trsf             aTrsf;
+  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 34.73 * M_PI / 180.0);
+  aBox2.Move(aTrsf);
+
+  const TopoDS_Shape aResult = PerformFuse(aBox2, aBox1);
+  ValidateResult(aResult, 6.32953);
+}
+
+// Test bfuse_simple/D3: sphere + box
+TEST_F(BFuseSimpleTest, SpherePlusBox_D3)
+{
+  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateSphere(gp_Pnt(0, 0, 0), 1.0);
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+
+  const TopoDS_Shape aResult = PerformFuse(aSphere, aBox);
+  ValidateResult(aResult, 14.6394);
+}
+
+// Test bfuse_simple/D4: sphere + box (reversed order)
+TEST_F(BFuseSimpleTest, BoxPlusSphere_D4)
+{
+  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateSphere(gp_Pnt(0, 0, 0), 1.0);
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aSphere);
+  ValidateResult(aResult, 14.6394);
+}
+
+// Test bfuse_simple/D5: rotated sphere + box
+TEST_F(BFuseSimpleTest, RotatedSpherePlusBox_D5)
+{
+  TopoDS_Shape aSphere = BOPTest_Utilities::CreateSphere(gp_Pnt(0, 0, 0), 1.0);
+
+  // Apply rotations: -90 degrees around Z, then -45 degrees around Y
+  gp_Trsf aTrsf1, aTrsf2, aTrsfCombined;
+  aTrsf1.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), -M_PI / 2.0); // -90 degrees Z
+  aTrsf2.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), -M_PI / 4.0); // -45 degrees Y
+  aTrsfCombined = aTrsf2 * aTrsf1;
+  aSphere.Move(aTrsfCombined);
+
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  const TopoDS_Shape aResult = PerformFuse(aSphere, aBox);
+  ValidateResult(aResult, 14.6393);
+}
+
+// Test bfuse_simple/D6: rotated sphere + box (reversed order)
+TEST_F(BFuseSimpleTest, BoxPlusRotatedSphere_D6)
+{
+  TopoDS_Shape aSphere = BOPTest_Utilities::CreateSphere(gp_Pnt(0, 0, 0), 1.0);
+
+  // Apply rotations: -90 degrees around Z, then -45 degrees around Y
+  gp_Trsf aTrsf1, aTrsf2, aTrsfCombined;
+  aTrsf1.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), -M_PI / 2.0);
+  aTrsf2.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), -M_PI / 4.0);
+  aTrsfCombined = aTrsf2 * aTrsf1;
+  aSphere.Move(aTrsfCombined);
+
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  const TopoDS_Shape aResult = PerformFuse(aBox, aSphere);
+  ValidateResult(aResult, 14.6393);
+}
+
+// Test bfuse_simple/D7: sphere + rotated box
+TEST_F(BFuseSimpleTest, SpherePlusRotatedBox_D7)
+{
+  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateSphere(gp_Pnt(0, 0, 0), 1.0);
+
+  TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  // Rotate box 90 degrees around Y axis: "trotate b 0 0 1 0 1 0 90"
+  gp_Trsf aTrsf;
+  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 1), gp_Dir(0, 1, 0)), M_PI / 2.0); // 90 degrees Y
+  aBox.Move(aTrsf);
+
+  const TopoDS_Shape aResult = PerformFuse(aSphere, aBox);
+  ValidateResult(aResult, 14.6393);
+}
+
+// Test bfuse_simple/D8: rotated box + sphere (reversed order)
+TEST_F(BFuseSimpleTest, RotatedBoxPlusSphere_D8)
+{
+  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateSphere(gp_Pnt(0, 0, 0), 1.0);
+
+  TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  // Rotate box 90 degrees around Y axis: "trotate b 0 0 1 0 1 0 90"
+  gp_Trsf aTrsf;
+  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 1), gp_Dir(0, 1, 0)), M_PI / 2.0); // 90 degrees Y
+  aBox.Move(aTrsf);
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aSphere);
+  ValidateResult(aResult, 14.6393);
+}
+
+// Test bfuse_simple/D9: profile-based prisms (cts40125 bug)
+TEST_F(BFuseSimpleTest, ProfileBasedPrisms_D9)
+{
+  // Create first profile: "profile f1 x 100 y 100 x -200 y -200 x 100"
+  // This creates a closed rectangular profile starting at origin
+  gp_Pln aPlane1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+  std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X,
+                                        100.0), // move to (100, 0)
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
+                                        100.0), // move to (100, 100)
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X,
+                                        -200.0), // move to (-100, 100)
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
+                                        -200.0), // move to (-100, -100)
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X,
+                                        100.0), // move to (0, -100)
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
+                                        100.0) // move back to (0, 0) to close
+  };
+  const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
+  const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, 100));
+
+  // Create second profile: "profile f2 x -100 y 100 x 100; ttranslate f2 0 0 100"
+  // This creates a triangular profile translated to z=100
+  gp_Pln aPlane2(gp_Ax3(gp_Pnt(0, 0, 100), gp_Dir(0, 0, 1)));
+  std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X,
+                                        -100.0), // move to (-100, 0)
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
+                                        100.0), // move to (-100, 100)
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X,
+                                        100.0), // move to (0, 100)
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
+                                        -100.0) // move back to (0, 0) to close
+  };
+  const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
+  const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, 100));
+
+  const TopoDS_Shape aResult = PerformFuse(aPrism1, aPrism2);
+  ValidateResult(aResult, 180000.0);
+}
+
+// Test bfuse_simple/E1: Complex profile with scaling (pro7637 bug)
+TEST_F(BFuseSimpleTest, ComplexProfileWithScaling_E1)
+{
+  const Standard_Real SCALE = 100.0;
+
+  // Create first profile: "profile f1 c 50*SCALE 180 x -100*SCALE c 50*SCALE 180"
+  gp_Pln aPlane1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+  std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::C, 50.0 * SCALE, 180.0),
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -100.0 * SCALE),
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::C, 50.0 * SCALE, 180.0)};
+  const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
+  const TopoDS_Shape aPrism1 =
+    BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, 30.0 * SCALE));
+
+  // Create second profile: "profile f2 x 300*SCALE y 200*SCALE x -300*SCALE; ttranslate f2
+  // -200*SCALE -50*SCALE 0"
+  gp_Pln aPlane2(gp_Ax3(gp_Pnt(-200.0 * SCALE, -50.0 * SCALE, 0), gp_Dir(0, 0, 1)));
+  std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 300.0 * SCALE),
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0 * SCALE),
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -300.0 * SCALE),
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
+                                        -200.0 * SCALE) // Close the profile
+  };
+  const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
+  const TopoDS_Shape aPrism2 =
+    BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, -50.0 * SCALE));
+
+  const TopoDS_Shape aResult = PerformFuse(aPrism2, aPrism1);
+  ValidateResult(aResult, 1.85425e+09);
+}
+
+// Test bfuse_simple/E2: Adjacent boxes (buc40054 bug)
+TEST_F(BFuseSimpleTest, AdjacentBoxes_E2)
+{
+  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 3.0, 3.0, 3.0);
+  const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 3, 0), 1.0, 1.0, 1.0);
+
+  const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
+  ValidateResult(aResult, 58.0);
+}
+
+// Test bfuse_simple/E3: Complex vertex/edge/wire construction with revolution
+TEST_F(BFuseSimpleTest, ComplexVertexEdgeWireRevolution_E3)
+{
+  // Create profile points for the wire
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(0, 0, 0),
+                                 gp_Pnt(9, 0, 0),
+                                 gp_Pnt(9, 0, 3),
+                                 gp_Pnt(6.25, 0, 3),
+                                 gp_Pnt(6, 0, 4),
+                                 gp_Pnt(0, 0, 4)};
+
+  // Create wire from points
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create revolution: "revol cyla pa 0 0 0 0 0 1 360"
+  const TopoDS_Shape aRevolution =
+    BOPTest_Utilities::CreateRevolution(aFace,
+                                        gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
+                                        2.0 * M_PI);
+
+  // Create cylinder: "pcylinder cylb 1 9; ttranslate cylb 5 0 -2"
+  TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinder(1.0, 9.0);
+  gp_Trsf      aTrsf;
+  aTrsf.SetTranslation(gp_Vec(5, 0, -2));
+  aCylinder.Move(aTrsf);
+
+  const TopoDS_Shape aResult = PerformFuse(aRevolution, aCylinder);
+  ValidateResult(aResult, 740.048);
+}
+
+// Test bfuse_simple/E4: Cylinder with complex wire revolution
+TEST_F(BFuseSimpleTest, CylinderWithComplexWireRevolution_E4)
+{
+  // Create cylinder: "pcylinder cyl 3 5"
+  const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinder(3.0, 5.0);
+
+  // Create profile points for rectangular profile
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(0, 3, 2),
+                                 gp_Pnt(0, 4, 2),
+                                 gp_Pnt(0, 4, 3),
+                                 gp_Pnt(0, 3, 3)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create revolution: "revol ring f 0 0 0 0 0 1 269"
+  const TopoDS_Shape aRing =
+    BOPTest_Utilities::CreateRevolution(aFace,
+                                        gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
+                                        269.0 * M_PI / 180.0);
+
+  const TopoDS_Shape aResult = PerformFuse(aCylinder, aRing);
+  ValidateResult(aResult, 190.356);
+}
+
+// Test bfuse_simple/E5: Box with prism from vertex/edge construction
+TEST_F(BFuseSimpleTest, BoxWithPrismFromVertexEdge_E5)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for rectangular prism
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(3, 2, 0),
+                                 gp_Pnt(4, 2, 0),
+                                 gp_Pnt(4, 3, 0),
+                                 gp_Pnt(3, 3, 0)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 0 1"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 0, 1));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/E6: Box with prism from front
+TEST_F(BFuseSimpleTest, BoxWithPrismFromFront_E6)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for front prism
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(3, 2, 0),
+                                 gp_Pnt(4, 2, 0),
+                                 gp_Pnt(4, 2, 1),
+                                 gp_Pnt(3, 2, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 1 0"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 1, 0));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/E7: Box with prism from left
+TEST_F(BFuseSimpleTest, BoxWithPrismFromLeft_E7)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for left prism
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(3, 2, 0),
+                                 gp_Pnt(3, 3, 0),
+                                 gp_Pnt(3, 3, 1),
+                                 gp_Pnt(3, 2, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 1 0 0"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(1, 0, 0));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/E8: Box with prism from top
+TEST_F(BFuseSimpleTest, BoxWithPrismFromTop_E8)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for top prism
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(3, 2, 1),
+                                 gp_Pnt(4, 2, 1),
+                                 gp_Pnt(4, 3, 1),
+                                 gp_Pnt(3, 3, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 0 -1"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 0, -1));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/E9: Box with prism from back
+TEST_F(BFuseSimpleTest, BoxWithPrismFromBack_E9)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for back prism
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(3, 3, 0),
+                                 gp_Pnt(4, 3, 0),
+                                 gp_Pnt(4, 3, 1),
+                                 gp_Pnt(3, 3, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 -1 0"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, -1, 0));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/F1: Box with prism from right
+TEST_F(BFuseSimpleTest, BoxWithPrismFromRight_F1)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for right prism
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(4, 2, 0),
+                                 gp_Pnt(4, 3, 0),
+                                 gp_Pnt(4, 3, 1),
+                                 gp_Pnt(4, 2, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f -1 0 0"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(-1, 0, 0));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/F2: Box with prism from bottom (different position)
+TEST_F(BFuseSimpleTest, BoxWithPrismFromBottomDifferent_F2)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for bottom prism (different position)
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(4, 3, 0),
+                                 gp_Pnt(4, 2, 0),
+                                 gp_Pnt(3, 2, 0),
+                                 gp_Pnt(3, 3, 0)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 0 1"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 0, 1));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/F3: Box with prism from bottom (external position)
+TEST_F(BFuseSimpleTest, BoxWithPrismFromBottomExternal_F3)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for bottom prism (external position)
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(8, 3, 0),
+                                 gp_Pnt(9, 3, 0),
+                                 gp_Pnt(9, 4, 0),
+                                 gp_Pnt(8, 4, 0)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 0 1"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 0, 1));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/F4: Box with prism from front (external position)
+TEST_F(BFuseSimpleTest, BoxWithPrismFromFrontExternal_F4)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for front prism (external position)
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(8, 3, 0),
+                                 gp_Pnt(9, 3, 0),
+                                 gp_Pnt(9, 3, 1),
+                                 gp_Pnt(8, 3, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 1 0"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 1, 0));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/F5: Box with prism from left (external position)
+TEST_F(BFuseSimpleTest, BoxWithPrismFromLeftExternal_F5)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for left prism (external position)
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(8, 3, 0),
+                                 gp_Pnt(8, 4, 0),
+                                 gp_Pnt(8, 4, 1),
+                                 gp_Pnt(8, 3, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 1 0 0"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(1, 0, 0));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/F6: Box with prism from top (external position)
+TEST_F(BFuseSimpleTest, BoxWithPrismFromTopExternal_F6)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for top prism (external position)
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(8, 3, 1),
+                                 gp_Pnt(9, 3, 1),
+                                 gp_Pnt(9, 4, 1),
+                                 gp_Pnt(8, 4, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 0 -1"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 0, -1));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/F7: Box with prism from back (external position)
+TEST_F(BFuseSimpleTest, BoxWithPrismFromBackExternal_F7)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for back prism (external position)
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(8, 4, 0),
+                                 gp_Pnt(9, 4, 0),
+                                 gp_Pnt(9, 4, 1),
+                                 gp_Pnt(8, 4, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 -1 0"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, -1, 0));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/F8: Box with prism from right (external position)
+TEST_F(BFuseSimpleTest, BoxWithPrismFromRightExternal_F8)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for right prism (external position)
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(9, 3, 0),
+                                 gp_Pnt(9, 4, 0),
+                                 gp_Pnt(9, 4, 1),
+                                 gp_Pnt(9, 3, 1)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f -1 0 0"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(-1, 0, 0));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
+}
+
+// Test bfuse_simple/F9: Box with prism from bottom (top position)
+TEST_F(BFuseSimpleTest, BoxWithPrismFromBottomTopPosition_F9)
+{
+  // Create box: "box ba 3 3 0 5 7 4"
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(3, 3, 0), 5.0, 7.0, 4.0);
+
+  // Create profile points for bottom prism at top position
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(3, 3, 4),
+                                 gp_Pnt(4, 3, 4),
+                                 gp_Pnt(4, 4, 4),
+                                 gp_Pnt(3, 4, 4)};
+
+  // Create wire and face
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
+
+  // Create prism: "prism bb f 0 0 1"
+  const TopoDS_Shape aPrism = BOPTest_Utilities::CreatePrism(aFace, gp_Vec(0, 0, 1));
+
+  const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
+  ValidateResult(aResult, 170.0);
 }
 
 //==================================================================================================
