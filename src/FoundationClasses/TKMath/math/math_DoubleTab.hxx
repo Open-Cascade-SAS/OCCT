@@ -29,7 +29,7 @@
 
 class math_DoubleTab
 {
-  static const Standard_Integer THE_BUFFER_SIZE = 16;
+  static const Standard_Integer THE_BUFFER_SIZE = 64;
 
 public:
   DEFINE_STANDARD_ALLOC;
