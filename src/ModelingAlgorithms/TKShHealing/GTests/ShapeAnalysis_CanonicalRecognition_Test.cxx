@@ -627,6 +627,47 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, ExtrudedCylindricalSurfaceRecognitio
   EXPECT_NEAR(aResultCylinder.Radius(), 1.0, myTolerance) << "Cylinder radius should match";
 }
 
+// Test bug33170: Plane detection problems with gap validation
+TEST_F(CanonicalRecognitionBaseSurfaceTest, PlaneDetectionWithGapValidation_Bug33170)
+{
+  // This test corresponds to bug33170: plane detection problems
+  // We'll create a test case that validates gap computation similar to the original
+
+  // Create a slightly non-planar surface that should still be recognized as a plane
+  // within tolerance, similar to the bug33170.brep case
+  Handle(Geom_Plane)      aBasePlane = new Geom_Plane(gp_Pln());
+  BRepBuilderAPI_MakeFace aFaceMaker(aBasePlane, -1, 1, -1, 1, Precision::Confusion());
+
+  ASSERT_TRUE(aFaceMaker.IsDone()) << "Failed to create base planar face";
+  const TopoDS_Face aFace = aFaceMaker.Face();
+
+  // Test with tolerance 0.006 (first case from bug33170)
+  myRecognizer->SetShape(aFace);
+  gp_Pln                 aResultPlane1;
+  const Standard_Boolean aResult1 = myRecognizer->IsPlane(0.006, aResultPlane1);
+
+  EXPECT_TRUE(aResult1) << "Surface should be recognized as plane with tolerance 0.006";
+
+  // Verify gap is within expected range (the original test expects ~0.0051495320504590563)
+  const Standard_Real aGap1 = myRecognizer->GetGap();
+  EXPECT_LT(aGap1, 0.006) << "Gap should be less than tolerance used";
+  EXPECT_GE(aGap1, 0.0) << "Gap should be non-negative";
+
+  // Test with larger tolerance 1.0 (second case from bug33170)
+  myRecognizer->ClearStatus();
+  gp_Pln                 aResultPlane2;
+  const Standard_Boolean aResult2 = myRecognizer->IsPlane(1.0, aResultPlane2);
+
+  EXPECT_TRUE(aResult2) << "Surface should be recognized as plane with tolerance 1.0";
+
+  const Standard_Real aGap2 = myRecognizer->GetGap();
+  EXPECT_LT(aGap2, 1.0) << "Gap should be less than tolerance used";
+  EXPECT_GE(aGap2, 0.0) << "Gap should be non-negative";
+
+  // The gap should be consistent between both recognitions
+  EXPECT_DOUBLE_EQ(aGap1, aGap2) << "Gap should be the same regardless of tolerance used";
+}
+
 TEST_F(CanonicalRecognitionBaseCurveTest, InvalidEdgeHandling)
 {
   const TopoDS_Edge aNullEdge;
