@@ -705,8 +705,17 @@ public:
       return theShape; // Return original shape if edge not found
     }
 
-    // Create fillet maker
-    BRepFilletAPI_MakeFillet aFilletMaker(theShape);
+    // Create fillet maker (matching DRAW blend command)
+    // DRAW uses ChFi3d_Rational by default
+    BRepFilletAPI_MakeFillet aFilletMaker(theShape, ChFi3d_Rational);
+
+    // Set parameters exactly like DRAW command does
+    // SetParams(ta, tesp, t2d, t3d, t2d, fl) - exact DRAW defaults
+    aFilletMaker.SetParams(1e-2, 1.0e-4, 1.e-5, 1.e-4, 1.e-5, 1.e-3);
+
+    // SetContinuity(blend_cont, tapp_angle) - exact DRAW defaults
+    aFilletMaker.SetContinuity(GeomAbs_C1, 1.e-2);
+
     aFilletMaker.Add(theRadius, aTargetEdge);
     aFilletMaker.Build();
 
@@ -723,27 +732,17 @@ public:
                                             Standard_Real theRadius,
                                             Standard_Real theHeight)
   {
-    // Create cylinder in default orientation (Z-axis up)
-    BRepPrimAPI_MakeCylinder aCylinderMaker(theRadius, theHeight);
+    // Use DRAW pcylinder approach exactly:
+    // S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(), radius, height);
+    const gp_Ax2 anAx2 = thePlane.Position().Ax2();
+
+    BRepPrimAPI_MakeCylinder aCylinderMaker(anAx2, theRadius, theHeight);
     if (!aCylinderMaker.IsDone())
     {
-      return TopoDS_Shape(); // Return null shape on failure
+      return TopoDS_Shape();
     }
 
-    TopoDS_Shape aCylinder = aCylinderMaker.Shape();
-
-    // Calculate transformation to move cylinder to the plane
-    const gp_Ax3& anAx3 = thePlane.Position();
-
-    // Default cylinder is positioned at origin with Z-axis up
-    gp_Ax3 aDefaultAx3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
-
-    // Transform from default position to plane position
-    gp_Trsf aTrsf;
-    aTrsf.SetTransformation(anAx3, aDefaultAx3);
-
-    BRepBuilderAPI_Transform aTransform(aCylinder, aTrsf);
-    return aTransform.Shape();
+    return aCylinderMaker.Shape();
   }
 };
 
