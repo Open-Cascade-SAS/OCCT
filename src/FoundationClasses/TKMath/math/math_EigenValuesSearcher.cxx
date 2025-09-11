@@ -48,6 +48,14 @@ Standard_Integer findSubmatrixEnd(const NCollection_Array1<Standard_Real>& theDi
   {
     const Standard_Real aDiagSum =
       Abs(theDiagWork(aSubmatrixEnd)) + Abs(theDiagWork(aSubmatrixEnd + 1));
+
+    // Deflation test: Check if subdiagonal element is negligible
+    // The condition |e[i]| + (|d[i]| + |d[i+1]|) == |d[i]| + |d[i+1]|
+    // tests whether the subdiagonal element e[i] is smaller than machine epsilon
+    // relative to the adjacent diagonal elements. This is more robust than
+    // checking e[i] == 0.0 because it accounts for finite precision arithmetic.
+    // When this condition is true in floating-point arithmetic, the subdiagonal
+    // element can be treated as zero for convergence purposes.
     if (Abs(theSubdiagWork(aSubmatrixEnd)) + aDiagSum == aDiagSum)
       break;
   }

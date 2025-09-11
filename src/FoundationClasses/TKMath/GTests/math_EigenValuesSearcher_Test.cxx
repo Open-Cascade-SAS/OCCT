@@ -806,3 +806,383 @@ TEST(math_EigenValuesSearcherTest, NearDegenerateEigenvalues)
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
   }
 }
+
+// Test deflation condition edge case - subdiagonal element smaller than machine epsilon
+TEST(math_EigenValuesSearcherTest, DeflationConditionPrecision)
+{
+  TColStd_Array1OfReal aDiagonal(1, 4);
+  TColStd_Array1OfReal aSubdiagonal(1, 4);
+
+  // Large diagonal elements
+  aDiagonal.SetValue(1, 1e6);
+  aDiagonal.SetValue(2, 2e6);
+  aDiagonal.SetValue(3, 3e6);
+  aDiagonal.SetValue(4, 4e6);
+
+  // Subdiagonal elements at machine epsilon level
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1e-15); // Should trigger deflation
+  aSubdiagonal.SetValue(3, 2e-15); // Should trigger deflation
+  aSubdiagonal.SetValue(4, 3e-15); // Should trigger deflation
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Should converge quickly due to deflation
+  math_Matrix originalMatrix(1, 4, 1, 4);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 4; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
+  }
+
+  // Eigenvalues should be close to diagonal elements due to small off-diagonal
+  std::vector<Standard_Real> eigenvals;
+  for (Standard_Integer i = 1; i <= 4; i++)
+    eigenvals.push_back(searcher.EigenValue(i));
+
+  std::sort(eigenvals.begin(), eigenvals.end());
+
+  EXPECT_NEAR(eigenvals[0], 1e6, 1e3);
+  EXPECT_NEAR(eigenvals[1], 2e6, 1e3);
+  EXPECT_NEAR(eigenvals[2], 3e6, 1e3);
+  EXPECT_NEAR(eigenvals[3], 4e6, 1e3);
+}
+
+// Test exact zero subdiagonal elements (should deflate immediately)
+TEST(math_EigenValuesSearcherTest, ExactZeroSubdiagonal)
+{
+  TColStd_Array1OfReal aDiagonal(1, 5);
+  TColStd_Array1OfReal aSubdiagonal(1, 5);
+
+  aDiagonal.SetValue(1, 1.0);
+  aDiagonal.SetValue(2, 4.0);
+  aDiagonal.SetValue(3, 9.0);
+  aDiagonal.SetValue(4, 16.0);
+  aDiagonal.SetValue(5, 25.0);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1.0);
+  aSubdiagonal.SetValue(3, 0.0); // Exact zero - should cause deflation
+  aSubdiagonal.SetValue(4, 2.0);
+  aSubdiagonal.SetValue(5, 0.0); // Exact zero - should cause deflation
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Should handle block structure correctly
+  math_Matrix originalMatrix(1, 5, 1, 5);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 5; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-12));
+  }
+}
+
+// Test convergence behavior with maximum iterations edge case
+TEST(math_EigenValuesSearcherTest, ConvergenceBehavior)
+{
+  TColStd_Array1OfReal aDiagonal(1, 6);
+  TColStd_Array1OfReal aSubdiagonal(1, 6);
+
+  // Create a matrix that might require more iterations to converge
+  for (Standard_Integer i = 1; i <= 6; i++)
+    aDiagonal.SetValue(i, static_cast<Standard_Real>(i) * 0.1);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  for (Standard_Integer i = 2; i <= 6; i++)
+    aSubdiagonal.SetValue(i, 0.99); // Large off-diagonal elements
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Should still converge within maximum iterations
+  math_Matrix originalMatrix(1, 6, 1, 6);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 6; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
+  }
+}
+
+// Test underflow/overflow protection
+TEST(math_EigenValuesSearcherTest, NumericalStability)
+{
+  TColStd_Array1OfReal aDiagonal(1, 3);
+  TColStd_Array1OfReal aSubdiagonal(1, 3);
+
+  // Mix of very large and very small values
+  aDiagonal.SetValue(1, 1e-100);
+  aDiagonal.SetValue(2, 1e100);
+  aDiagonal.SetValue(3, 1e-50);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1e-75);
+  aSubdiagonal.SetValue(3, 1e75);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Should handle extreme values without overflow/underflow
+  for (Standard_Integer i = 1; i <= 3; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    EXPECT_TRUE(std::isfinite(eigenval));
+    EXPECT_FALSE(std::isnan(eigenval));
+
+    const math_Vector eigenvec = searcher.EigenVector(i);
+    for (Standard_Integer j = 1; j <= 3; j++)
+    {
+      EXPECT_TRUE(std::isfinite(eigenvec(j)));
+      EXPECT_FALSE(std::isnan(eigenvec(j)));
+    }
+  }
+}
+
+// Test Wilkinson shift effectiveness
+TEST(math_EigenValuesSearcherTest, WilkinsonShiftAccuracy)
+{
+  TColStd_Array1OfReal aDiagonal(1, 3);
+  TColStd_Array1OfReal aSubdiagonal(1, 3);
+
+  // Matrix where Wilkinson shift should provide fast convergence
+  aDiagonal.SetValue(1, 1.0);
+  aDiagonal.SetValue(2, 2.0);
+  aDiagonal.SetValue(3, 1.0000001); // Very close to first diagonal element
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1.0);
+  aSubdiagonal.SetValue(3, 0.0000001); // Very small
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  math_Matrix originalMatrix(1, 3, 1, 3);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 3; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-10));
+  }
+}
+
+// Test special case when radius becomes zero in QL step
+TEST(math_EigenValuesSearcherTest, ZeroRadiusHandling)
+{
+  TColStd_Array1OfReal aDiagonal(1, 4);
+  TColStd_Array1OfReal aSubdiagonal(1, 4);
+
+  // Configuration that might lead to zero radius in computeHypotenuseLength
+  aDiagonal.SetValue(1, 0.0);
+  aDiagonal.SetValue(2, 0.0);
+  aDiagonal.SetValue(3, 1.0);
+  aDiagonal.SetValue(4, 1.0);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(2, 1e-16); // Very small but non-zero
+  aSubdiagonal.SetValue(3, 1e-16);
+  aSubdiagonal.SetValue(4, 0.0);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  math_Matrix originalMatrix(1, 4, 1, 4);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 4; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-12));
+  }
+}
+
+// Test pathological case with all equal elements
+TEST(math_EigenValuesSearcherTest, PathologicalEqualElements)
+{
+  TColStd_Array1OfReal aDiagonal(1, 5);
+  TColStd_Array1OfReal aSubdiagonal(1, 5);
+
+  // All elements equal - degenerate case
+  const Standard_Real value = 42.0;
+  for (Standard_Integer i = 1; i <= 5; i++)
+    aDiagonal.SetValue(i, value);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  for (Standard_Integer i = 2; i <= 5; i++)
+    aSubdiagonal.SetValue(i, value);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Algorithm should still work correctly
+  math_Matrix originalMatrix(1, 5, 1, 5);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 5; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
+  }
+}
+
+// Test matrix with systematically increasing subdiagonal elements
+TEST(math_EigenValuesSearcherTest, IncreasingSubdiagonal)
+{
+  TColStd_Array1OfReal aDiagonal(1, 6);
+  TColStd_Array1OfReal aSubdiagonal(1, 6);
+
+  for (Standard_Integer i = 1; i <= 6; i++)
+    aDiagonal.SetValue(i, 1.0);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  for (Standard_Integer i = 2; i <= 6; i++)
+    aSubdiagonal.SetValue(i, static_cast<Standard_Real>(i - 1) * 0.1);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+
+  EXPECT_TRUE(searcher.IsDone());
+
+  math_Matrix originalMatrix(1, 6, 1, 6);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  // Verify all pairs and orthogonality
+  for (Standard_Integer i = 1; i <= 6; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-10));
+    EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-10);
+  }
+
+  // Check orthogonality of all eigenvector pairs
+  for (Standard_Integer i = 1; i <= 6; i++)
+  {
+    for (Standard_Integer j = i + 1; j <= 6; j++)
+    {
+      const math_Vector vec_i = searcher.EigenVector(i);
+      const math_Vector vec_j = searcher.EigenVector(j);
+      EXPECT_TRUE(areOrthogonal(vec_i, vec_j, 1e-10));
+    }
+  }
+}
+
+// Test to demonstrate and verify the deflation condition behavior
+// This test documents the precision semantics of the deflation test:
+// |e[i]| + (|d[i]| + |d[i+1]|) == |d[i]| + |d[i+1]| in floating-point arithmetic
+TEST(math_EigenValuesSearcherTest, DeflationConditionSemantics)
+{
+  TColStd_Array1OfReal aDiagonal(1, 3);
+  TColStd_Array1OfReal aSubdiagonal(1, 3);
+
+  // Test 1: Large diagonal elements with subdiagonal at machine epsilon level
+  const Standard_Real largeDiag1       = 1e8;
+  const Standard_Real largeDiag2       = 2e8;
+  const Standard_Real machEpsilonLevel = largeDiag1 * std::numeric_limits<Standard_Real>::epsilon();
+
+  aDiagonal.SetValue(1, largeDiag1);
+  aDiagonal.SetValue(2, largeDiag2);
+  aDiagonal.SetValue(3, 3e8);
+
+  aSubdiagonal.SetValue(1, 0.0);
+  aSubdiagonal.SetValue(
+    2,
+    machEpsilonLevel); // Should trigger deflation due to floating-point precision
+  aSubdiagonal.SetValue(3, machEpsilonLevel * 0.5); // Even smaller, should definitely deflate
+
+  // Verify the mathematical behavior that the deflation condition tests
+  const Standard_Real diagSum       = Abs(largeDiag1) + Abs(largeDiag2);
+  const Standard_Real testCondition = machEpsilonLevel + diagSum;
+
+  // This should be true in floating-point arithmetic due to precision limits
+  EXPECT_EQ(testCondition, diagSum)
+    << "Deflation condition should hold for machine-epsilon level elements";
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Should converge efficiently due to deflation
+  math_Matrix originalMatrix(1, 3, 1, 3);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 3; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+    // Use looser tolerance for very large eigenvalues
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-6));
+  }
+}
+
+// Test edge case where deflation condition is exactly at the boundary
+TEST(math_EigenValuesSearcherTest, DeflationBoundaryCondition)
+{
+  TColStd_Array1OfReal aDiagonal(1, 4);
+  TColStd_Array1OfReal aSubdiagonal(1, 4);
+
+  // Create diagonal elements of different scales
+  aDiagonal.SetValue(1, 1.0);
+  aDiagonal.SetValue(2, 1000.0);
+  aDiagonal.SetValue(3, 1e-6);
+  aDiagonal.SetValue(4, 1e6);
+
+  aSubdiagonal.SetValue(1, 0.0);
+
+  // Set subdiagonal elements right at the deflation boundary for different scales
+  const Standard_Real eps = std::numeric_limits<Standard_Real>::epsilon();
+
+  // For first pair: should deflate
+  const Standard_Real sum1 = Abs(aDiagonal(1)) + Abs(aDiagonal(2));
+  aSubdiagonal.SetValue(2, sum1 * eps * 0.1); // Below machine epsilon relative to sum
+
+  // For second pair: should deflate
+  const Standard_Real sum2 = Abs(aDiagonal(2)) + Abs(aDiagonal(3));
+  aSubdiagonal.SetValue(3, sum2 * eps * 0.1);
+
+  // For third pair: should deflate
+  const Standard_Real sum3 = Abs(aDiagonal(3)) + Abs(aDiagonal(4));
+  aSubdiagonal.SetValue(4, sum3 * eps * 0.1);
+
+  math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
+  EXPECT_TRUE(searcher.IsDone());
+
+  // Verify that algorithm handles the mixed scales correctly
+  math_Matrix originalMatrix(1, 4, 1, 4);
+  createTridiagonalMatrix(aDiagonal, aSubdiagonal, originalMatrix);
+
+  for (Standard_Integer i = 1; i <= 4; i++)
+  {
+    const Standard_Real eigenval = searcher.EigenValue(i);
+    const math_Vector   eigenvec = searcher.EigenVector(i);
+
+    EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
+    EXPECT_TRUE(std::isfinite(eigenval));
+    EXPECT_FALSE(std::isnan(eigenval));
+  }
+}
