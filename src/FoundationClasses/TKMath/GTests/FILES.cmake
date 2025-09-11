@@ -13,6 +13,7 @@ set(OCCT_TKMath_GTests_FILES
   math_BrentMinimum_Test.cxx
   math_DirectPolynomialRoots_Test.cxx
   math_DoubleTab_Test.cxx
+  math_EigenValuesSearcher_Test.cxx
   math_FRPR_Test.cxx
   math_FunctionAllRoots_Test.cxx
   math_FunctionRoot_Test.cxx
