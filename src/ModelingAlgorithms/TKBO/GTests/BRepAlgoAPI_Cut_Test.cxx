@@ -1753,21 +1753,3 @@ TEST_F(BCutSimpleTest, ComplexProfileReversedReversedVariation2_I9)
   const TopoDS_Shape aResult = PerformCut(aIntermediate, aPrism3);
   ValidateResult(aResult, 52000.0);
 }
-
-//==================================================================================================
-// BOPCut Simple Tests - migrating from /tests/boolean/bopcut_simple/
-//==================================================================================================
-
-class BOPCutSimpleTest : public BOPAlgo_TestBase
-{
-};
-
-// Test bopcut_simple/A1: identical boxes (should result in empty)
-TEST_F(BOPCutSimpleTest, IdenticalBoxes_A1)
-{
-  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-
-  const TopoDS_Shape aResult = PerformDirectBOP(aBox1, aBox2, BOPAlgo_CUT);
-  ValidateResult(aResult, -1.0, -1.0, Standard_True); // Expected empty
-}
