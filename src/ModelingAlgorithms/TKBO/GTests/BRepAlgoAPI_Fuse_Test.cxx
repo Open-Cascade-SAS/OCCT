@@ -1526,7 +1526,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismProfile_I6)
     {BOPTest_Utilities::ProfileCmd::P, {0, 1, 0, 1, 0, 0}},
     {BOPTest_Utilities::ProfileCmd::D, {-1, 0}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::X, {2}},
+    {BOPTest_Utilities::ProfileCmd::X, 2},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
@@ -1554,7 +1554,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirection_I7)
     {BOPTest_Utilities::ProfileCmd::P, {0, 1, 0, 1, 0, 0}},
     {BOPTest_Utilities::ProfileCmd::D, {0, -1}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::Y, {2}},
+    {BOPTest_Utilities::ProfileCmd::Y, 2},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
@@ -1582,7 +1582,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismXDirection_I8)
     {BOPTest_Utilities::ProfileCmd::P, {0, 1, 0, 1, 0, 0}},
     {BOPTest_Utilities::ProfileCmd::D, {-1, 0}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::X, {2}},
+    {BOPTest_Utilities::ProfileCmd::X, 2},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
@@ -1610,7 +1610,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirectionFinal_I9)
     {BOPTest_Utilities::ProfileCmd::P, {0, 1, 0, 1, 0, 0}},
     {BOPTest_Utilities::ProfileCmd::D, {0, -1}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::Y, {2}},
+    {BOPTest_Utilities::ProfileCmd::Y, 2},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
@@ -1638,7 +1638,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J1)
     {BOPTest_Utilities::ProfileCmd::P, {-1, 0, 0, 0, 1, 0}},
     {BOPTest_Utilities::ProfileCmd::D, {-1, 0}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::X, {2}},
+    {BOPTest_Utilities::ProfileCmd::X, 2},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
@@ -1666,7 +1666,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY_J2)
     {BOPTest_Utilities::ProfileCmd::P, {-1, 0, 0, 0, 1, 0}},
     {BOPTest_Utilities::ProfileCmd::D, {0, -1}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::Y, {2}},
+    {BOPTest_Utilities::ProfileCmd::Y, 2},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
@@ -1694,7 +1694,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideX_J3)
     {BOPTest_Utilities::ProfileCmd::P, {-1, 0, 0, 0, 1, 0}},
     {BOPTest_Utilities::ProfileCmd::D, {-1, 0}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::X, {2}},
+    {BOPTest_Utilities::ProfileCmd::X, 2},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
@@ -1722,7 +1722,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY2_J4)
     {BOPTest_Utilities::ProfileCmd::P, {-1, 0, 0, 0, 1, 0}},
     {BOPTest_Utilities::ProfileCmd::D, {0, -1}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::Y, {2}},
+    {BOPTest_Utilities::ProfileCmd::Y, 2},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
@@ -1806,7 +1806,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismTop_J8)
     {BOPTest_Utilities::ProfileCmd::P, {0, 0, -1, 1, 0, 0}},
     {BOPTest_Utilities::ProfileCmd::D, {0, 1}},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
-    {BOPTest_Utilities::ProfileCmd::Y, {-2}},
+    {BOPTest_Utilities::ProfileCmd::Y, -2},
     {BOPTest_Utilities::ProfileCmd::C, {1, 180}},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const TopoDS_Shape aProfileFace = BOPTest_Utilities::CreateProfileFromOperations(aOps);
@@ -1849,11 +1849,11 @@ TEST_F(BFuseSimpleTest, ComplexProfileWithRevolution_K1)
   const std::vector<BOPTest_Utilities::ProfileOperation> aOps = {
     {BOPTest_Utilities::ProfileCmd::O, {50, 0, 0}},
     {BOPTest_Utilities::ProfileCmd::F, {50, -80}},
-    {BOPTest_Utilities::ProfileCmd::X, {50}},
-    {BOPTest_Utilities::ProfileCmd::Y, {5}},
-    {BOPTest_Utilities::ProfileCmd::X, {10}},
-    {BOPTest_Utilities::ProfileCmd::Y, {-25}},
-    {BOPTest_Utilities::ProfileCmd::X, {-60}},
+    {BOPTest_Utilities::ProfileCmd::X, 50},
+    {BOPTest_Utilities::ProfileCmd::Y, 5},
+    {BOPTest_Utilities::ProfileCmd::X, 10},
+    {BOPTest_Utilities::ProfileCmd::Y, -25},
+    {BOPTest_Utilities::ProfileCmd::X, -60},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
   const gp_Pln       aPlane(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)); // pl 1 0 0 0 0 1 (normal 1,0,0)
   const TopoDS_Shape aProfile = BOPTest_Utilities::CreateProfile(aPlane, aOps);

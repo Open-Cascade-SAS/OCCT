@@ -128,6 +128,13 @@ TEST_F(BCutSimpleTest1, ComplexProfileWithTranslationForwardReversedForward_J3)
 
   // Create profile p3: "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 100 -150 y -75 x 50 y 75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
