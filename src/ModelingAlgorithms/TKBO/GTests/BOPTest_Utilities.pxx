@@ -464,8 +464,8 @@ public:
             Standard_Real aAngleDeg = op.params[1];
             Standard_Real aAngleRad = aAngleDeg * M_PI / 180.0;
 
-            // Handle full circle case (360 degrees) or standalone circle
-            if (Abs(aAngleDeg) >= 360.0 || !aFirstSet)
+            // Handle full circle case (360 degrees)
+            if (Abs(aAngleDeg) >= 360.0)
             {
               // Create a full circle centered at current point (0,0 if not set)
               gp_Pnt2d aCenter2D = aFirstSet ? aCurrentPt : gp_Pnt2d(0, 0);
@@ -482,6 +482,15 @@ public:
             }
             else
             {
+              // If first point not set, start at origin with default direction
+              if (!aFirstSet)
+              {
+                aCurrentPt.SetCoord(0.0, 0.0);
+                aCurrentDir = gp_Vec2d(1, 0); // Default direction: positive X
+                aFirstPt  = aCurrentPt;
+                aFirstSet = Standard_True;
+              }
+              
               // Create arc from current point
               gp_Vec2d aNormal(-aCurrentDir.Y(), aCurrentDir.X());
               gp_Pnt2d aCenter = aCurrentPt.Translated(aNormal * aRadius);
