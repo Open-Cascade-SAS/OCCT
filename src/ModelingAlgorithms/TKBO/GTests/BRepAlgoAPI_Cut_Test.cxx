@@ -36,7 +36,7 @@ TEST_F(BCutSimpleTest, RotatedSphereMinusBox_A2)
 {
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
 
-  // Apply standard rotation: Z(-90°) then Y(-45°)
+  // Apply standard rotation: Z(-90deg) then Y(-45deg)
   const TopoDS_Shape aRotatedSphere = BOPTest_Utilities::RotateStandard(aSphere);
 
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
@@ -49,7 +49,7 @@ TEST_F(BCutSimpleTest, BoxMinusRotatedSphere_A3)
 {
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
 
-  // Apply standard rotation: Z(-90°) then Y(-45°)
+  // Apply standard rotation: Z(-90deg) then Y(-45deg)
   const TopoDS_Shape aRotatedSphere = BOPTest_Utilities::RotateStandard(aSphere);
 
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
@@ -617,7 +617,7 @@ TEST_F(BCutSimpleTest, OffsetRightHalfBoxMinusNurbsBox_E9)
   ValidateResult(aResult, 4.0);
 }
 
-// Test bcut_simple/F1: NURBS box - rotated rectangular box (sqrt(2) x sqrt(2)/2 x 1, 45°)
+// Test bcut_simple/F1: NURBS box - rotated rectangular box (sqrt(2) x sqrt(2)/2 x 1, 45deg)
 TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedRectangularBox_F1)
 {
   TopoDS_Shape aNurbsBox       = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
@@ -645,7 +645,7 @@ TEST_F(BCutSimpleTest, RotatedRectangularBoxMinusNurbsBox_F2)
   ValidateResult(aResult, 5.82843);
 }
 
-// Test bcut_simple/F3: NURBS box - rotated square box (sqrt(2)/2 x sqrt(2)/2 x 1, 45°)
+// Test bcut_simple/F3: NURBS box - rotated square box (sqrt(2)/2 x sqrt(2)/2 x 1, 45deg)
 TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedSquareBox_F3)
 {
   TopoDS_Shape aNurbsBox         = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
@@ -673,7 +673,7 @@ TEST_F(BCutSimpleTest, RotatedSquareBoxMinusNurbsBox_F4)
   ValidateResult(aResult, 2.91421);
 }
 
-// Test bcut_simple/F5: NURBS box - rotated thin box (sqrt(2) x 0.25 x 1, 45°)
+// Test bcut_simple/F5: NURBS box - rotated thin box (sqrt(2) x 0.25 x 1, 45deg)
 TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedThinBox_F5)
 {
   TopoDS_Shape aNurbsBox       = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
@@ -701,7 +701,7 @@ TEST_F(BCutSimpleTest, RotatedThinBoxMinusNurbsBox_F6)
   ValidateResult(aResult, 1.83211);
 }
 
-// Test bcut_simple/F7: NURBS box - rotated narrow box (sqrt(31)/4 x 0.25 x 1, 34.73°)
+// Test bcut_simple/F7: NURBS box - rotated narrow box (sqrt(31)/4 x 0.25 x 1, 34.73deg)
 TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedNarrowBox_F7)
 {
   TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);

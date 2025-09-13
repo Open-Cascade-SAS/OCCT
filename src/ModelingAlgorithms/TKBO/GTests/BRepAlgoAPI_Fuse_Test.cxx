@@ -36,7 +36,7 @@ TEST_F(BFuseSimpleTest, RotatedSpherePlusBox_A2)
 {
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
 
-  // Apply standard rotation: Z(-90°) then Y(-45°)
+  // Apply standard rotation: Z(-90deg) then Y(-45deg)
   const TopoDS_Shape aRotatedSphere = BOPTest_Utilities::RotateStandard(aSphere);
 
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
@@ -49,7 +49,7 @@ TEST_F(BFuseSimpleTest, BoxPlusRotatedSphere_A3)
 {
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
 
-  // Apply standard rotation: Z(-90°) then Y(-45°)
+  // Apply standard rotation: Z(-90deg) then Y(-45deg)
   const TopoDS_Shape aRotatedSphere = BOPTest_Utilities::RotateStandard(aSphere);
 
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
@@ -63,7 +63,7 @@ TEST_F(BFuseSimpleTest, SpherePlusRotatedBox_A4)
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
 
-  // Apply Y rotation: 90°
+  // Apply Y rotation: 90deg
   const TopoDS_Shape aRotatedBox = BOPTest_Utilities::RotateY(aBox, 90.0);
 
   const TopoDS_Shape aResult = PerformFuse(aSphere, aRotatedBox);
@@ -76,7 +76,7 @@ TEST_F(BFuseSimpleTest, RotatedBoxPlusSphere_A5)
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
 
-  // Apply Y rotation: 90°
+  // Apply Y rotation: 90deg
   const TopoDS_Shape aRotatedBox = BOPTest_Utilities::RotateY(aBox, 90.0);
 
   const TopoDS_Shape aResult = PerformFuse(aRotatedBox, aSphere);

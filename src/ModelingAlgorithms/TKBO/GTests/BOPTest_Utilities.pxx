@@ -409,7 +409,7 @@ public:
             gp_Dir aNormalDir(aNormal);
             gp_Dir aXDirection(aXDir);
 
-            // Note: Y direction computed as cross product: Y = Z × X (for right-handed system)
+            // Note: Y direction computed as cross product: Y = Z x X (for right-handed system)
             // But DRAW uses standard X/Y axes based on normal direction
 
             // Use the current plane's origin but new orientation
@@ -499,10 +499,10 @@ public:
               {
                 aCurrentPt.SetCoord(0.0, 0.0);
                 aCurrentDir = gp_Vec2d(1, 0); // Default direction: positive X
-                aFirstPt  = aCurrentPt;
-                aFirstSet = Standard_True;
+                aFirstPt    = aCurrentPt;
+                aFirstSet   = Standard_True;
               }
-              
+
               // Create arc from current point
               gp_Vec2d aNormal(-aCurrentDir.Y(), aCurrentDir.X());
               gp_Pnt2d aCenter = aCurrentPt.Translated(aNormal * aRadius);
@@ -674,7 +674,7 @@ public:
     return aTransform.Shape();
   }
 
-  //! Apply common test rotation: Z(-90°) then Y(-45°) - used in many TCL tests
+  //! Apply common test rotation: Z(-90deg) then Y(-45deg) - used in many TCL tests
   static TopoDS_Shape RotateStandard(const TopoDS_Shape& theShape)
   {
     TopoDS_Shape aResult = RotateZ(theShape, -90.0);
