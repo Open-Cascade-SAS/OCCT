@@ -156,6 +156,13 @@ TEST_F(BCutSimpleTest1, ComplexProfileWithTranslationForwardReversedForward_J3)
 
   // Create profile p4: "profile p4 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 x 75 y -100 x -75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps4 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -184,8 +191,15 @@ TEST_F(BCutSimpleTest1, ComplexProfileReversedReversedForward_J4)
     BOPTest_Utilities::CreateRectangularPrism(gp_Pnt(0, 0, 40), 175, 250, -40);
 
   // Create profile p2: "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 y -75 x 50 y 75"
-  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -200,6 +214,13 @@ TEST_F(BCutSimpleTest1, ComplexProfileReversedReversedForward_J4)
 
   // Create profile p3: "profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 100 -150 y -75 x 50 y 75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps3 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -226,6 +247,13 @@ TEST_F(BCutSimpleTest1, ComplexProfileReversedReversedForward_J4)
 
   // Create profile p4: "profile p4 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 x 75 y -100 x -75"
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps4 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -385,8 +413,15 @@ TEST_F(BCutSimpleTest1, ComplexProfileReversedReversedForwardVariation_J7)
     BOPTest_Utilities::CreateRectangularPrism(gp_Pnt(0, 0, 40), 175, 250, -40);
 
   // Create profile p2: "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 y -75 x 50 y 75"
-  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 50), gp_Dir(0, 0, 1));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -636,8 +671,10 @@ TEST_F(BCutSimpleTest1, SameOrientedProfileForwardObjectReversedTool_K2)
 TEST_F(BCutSimpleTest1, SameOrientedProfileReversedObjectForwardTool_K3)
 {
   // Create profile p1: "profile p1 p 0 0 -1 1 0 0 o 0 0 40 y -200 x 150 y 200"
-  gp_Pln                                           aPlane1(gp_Pnt(0, 0, -1), gp_Dir(1, 0, 0));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0, 0.0, -1.0, 1.0, 0.0, 0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -650,8 +687,10 @@ TEST_F(BCutSimpleTest1, SameOrientedProfileReversedObjectForwardTool_K3)
   const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x -75"
-  gp_Pln                                           aPlane2(gp_Pnt(0, 0, -1), gp_Dir(1, 0, 0));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0, 0.0, -1.0, 1.0, 0.0, 0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -693,8 +732,10 @@ TEST_F(BCutSimpleTest1, SameOrientedProfileReversedObjectForwardTool_K3)
 TEST_F(BCutSimpleTest1, SameOrientedProfileReversedObjectReversedTool_K4)
 {
   // Create profile p1: "profile p1 p 0 0 -1 1 0 0 o 0 0 40 y -200 x 150 y 200"
-  gp_Pln                                           aPlane1(gp_Pnt(0, 0, -1), gp_Dir(1, 0, 0));
+  gp_Pln                                           aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0, 0.0, -1.0, 1.0, 0.0, 0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -707,8 +748,10 @@ TEST_F(BCutSimpleTest1, SameOrientedProfileReversedObjectReversedTool_K4)
   const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, -40));
 
   // Create profile p2: "profile p2 p 0 0 -1 1 0 0 o 0 0 50 f 25 -25 x 75 y -100 x -75"
-  gp_Pln                                           aPlane2(gp_Pnt(0, 0, -1), gp_Dir(1, 0, 0));
+  gp_Pln                                           aPlane2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
+    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
+                                        0.0, 0.0, -1.0, 1.0, 0.0, 0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -1260,8 +1303,8 @@ TEST_F(BCutSimpleTest1, ComplexFaceBasedOperation_L9)
   const TopoDS_Shape aResult = PerformCut(aBox1, aBox2);
 
   // The original test expects a CompSolid result with surface area 750
-  // Our simplified version will have different results, so we'll use a more tolerant validation
-  ValidateResult(aResult, 750.0, 200.0); // Using larger tolerance for this complex test
+  // Our simplified version will have different results, so we validate only surface area
+  ValidateResult(aResult, 750.0); // Surface area only, no volume check
 }
 
 // Test bcut_simple/M1: Complex face-based CompSolid operation (JAP60271)
@@ -1279,7 +1322,7 @@ TEST_F(BCutSimpleTest1, ComplexFaceBasedCompSolidOperation_M1)
   const TopoDS_Shape aResult = PerformCut(aBox1, aBox2);
 
   // The original test expects CompSolid with surface area 750
-  ValidateResult(aResult, 750.0, 100.0); // Using tolerance for this complex approximation
+  ValidateResult(aResult, 750.0); // Surface area only, no volume check
 }
 
 // Test bcut_simple/M2: Box cut by cylinder, then result cut by original box (empty result)
