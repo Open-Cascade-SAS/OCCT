@@ -674,7 +674,12 @@ TEST_F(BCutSimpleTest1, SameOrientedProfileReversedObjectForwardTool_K3)
   gp_Pln                                           aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
-                                        0.0, 0.0, -1.0, 1.0, 0.0, 0.0), // p 0 0 -1 1 0 0
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -690,7 +695,12 @@ TEST_F(BCutSimpleTest1, SameOrientedProfileReversedObjectForwardTool_K3)
   gp_Pln                                           aPlane2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
-                                        0.0, 0.0, -1.0, 1.0, 0.0, 0.0), // p 0 0 -1 1 0 0
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -735,7 +745,12 @@ TEST_F(BCutSimpleTest1, SameOrientedProfileReversedObjectReversedTool_K4)
   gp_Pln                                           aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
-                                        0.0, 0.0, -1.0, 1.0, 0.0, 0.0), // p 0 0 -1 1 0 0
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
@@ -751,7 +766,12 @@ TEST_F(BCutSimpleTest1, SameOrientedProfileReversedObjectReversedTool_K4)
   gp_Pln                                           aPlane2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::P,
-                                        0.0, 0.0, -1.0, 1.0, 0.0, 0.0), // p 0 0 -1 1 0 0
+                                        0.0,
+                                        0.0,
+                                        -1.0,
+                                        1.0,
+                                        0.0,
+                                        0.0), // p 0 0 -1 1 0 0
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::O,
                                         0.0,
                                         0.0,
