@@ -370,9 +370,11 @@ public:
           {
             // O command sets the origin of the plane coordinate system
             gp_Pnt aNewOrigin(op.params[0], op.params[1], op.params[2]);
-            gp_Ax3 aNewAx3(aNewOrigin, aWorkingPlane.Axis().Direction(), aWorkingPlane.XAxis().Direction());
+            gp_Ax3 aNewAx3(aNewOrigin,
+                           aWorkingPlane.Axis().Direction(),
+                           aWorkingPlane.XAxis().Direction());
             aWorkingPlane = gp_Pln(aNewAx3);
-            
+
             // Profile still starts at (0,0) in the new plane coordinate system
             if (!aFirstSet)
             {
@@ -389,15 +391,15 @@ public:
             // P command sets plane normal and X direction vectors
             gp_Vec aNormal(op.params[0], op.params[1], op.params[2]);
             gp_Vec aXDir(op.params[3], op.params[4], op.params[5]);
-            
+
             // Create new coordinate system
             gp_Dir aNormalDir(aNormal);
             gp_Dir aXDirection(aXDir);
-            
+
             // Compute Y direction as cross product: Y = Z × X (for right-handed system)
             // But DRAW might use different handedness convention
             gp_Vec aYVec = aNormal.Crossed(aXDir);
-            
+
             // Use the current plane's origin but new orientation
             gp_Ax3 aNewAx3(aWorkingPlane.Location(), aNormalDir, aXDirection);
             aWorkingPlane = gp_Pln(aNewAx3);
@@ -414,8 +416,16 @@ public:
           break;
 
         case ProfileCmd::X: // Translate along X
-          if (op.params.size() >= 1 && aFirstSet)
+          if (op.params.size() >= 1)
           {
+            // If first point not set, implicitly start at (0,0)
+            if (!aFirstSet)
+            {
+              aCurrentPt.SetCoord(0.0, 0.0);
+              aFirstPt  = aCurrentPt;
+              aFirstSet = Standard_True;
+            }
+
             gp_Pnt2d aNewPt(aCurrentPt.X() + op.params[0], aCurrentPt.Y());
             // Add line segment
             gp_Pnt aPt1 = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), aWorkingPlane);
@@ -427,8 +437,16 @@ public:
           break;
 
         case ProfileCmd::Y: // Translate along Y
-          if (op.params.size() >= 1 && aFirstSet)
+          if (op.params.size() >= 1)
           {
+            // If first point not set, implicitly start at (0,0)
+            if (!aFirstSet)
+            {
+              aCurrentPt.SetCoord(0.0, 0.0);
+              aFirstPt  = aCurrentPt;
+              aFirstSet = Standard_True;
+            }
+
             gp_Pnt2d aNewPt(aCurrentPt.X(), aCurrentPt.Y() + op.params[0]);
             // Add line segment
             gp_Pnt aPt1 = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), aWorkingPlane);
@@ -737,7 +755,7 @@ public:
 
     if (!aFilletMaker.IsDone())
     {
-      return theShape; // Return original shape if fillet failed
+      return TopoDS_Shape(); // Return null shape if fillet failed, like DRAW command
     }
 
     return aFilletMaker.Shape();
@@ -752,7 +770,11 @@ public:
     // S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(), radius, height);
     const gp_Ax2 anAx2 = thePlane.Position().Ax2();
 
+    // Use DRAW pcylinder approach exactly:
+    // S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(), radius, height);
     BRepPrimAPI_MakeCylinder aCylinderMaker(anAx2, theRadius, theHeight);
+    aCylinderMaker.Build();
+
     if (!aCylinderMaker.IsDone())
     {
       return TopoDS_Shape();

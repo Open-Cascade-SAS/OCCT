@@ -494,9 +494,7 @@ TEST_F(BFuseSimpleTest, ProfileBasedPrisms_D9)
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
                                         -200.0), // move to (-100, -100)
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X,
-                                        100.0), // move to (0, -100)
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
-                                        100.0) // move back to (0, 0) to close
+                                        100.0) // move to (0, -100), profile will auto-close
   };
   const TopoDS_Shape aProfile1 = BOPTest_Utilities::CreateProfile(aPlane1, aProfileOps1);
   const TopoDS_Shape aPrism1   = BOPTest_Utilities::CreatePrism(aProfile1, gp_Vec(0, 0, 100));
@@ -510,9 +508,7 @@ TEST_F(BFuseSimpleTest, ProfileBasedPrisms_D9)
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
                                         100.0), // move to (-100, 100)
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X,
-                                        100.0), // move to (0, 100)
-    BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y,
-                                        -100.0) // move back to (0, 0) to close
+                                        100.0) // move to (0, 100), profile will auto-close
   };
   const TopoDS_Shape aProfile2 = BOPTest_Utilities::CreateProfile(aPlane2, aProfileOps2);
   const TopoDS_Shape aPrism2   = BOPTest_Utilities::CreatePrism(aProfile2, gp_Vec(0, 0, 100));
@@ -1864,7 +1860,7 @@ TEST_F(BFuseSimpleTest, ComplexProfileWithRevolution_K1)
     BOPTest_Utilities::CreateRevolution(aProfile, aRevAxis, 2 * M_PI);
 
   const TopoDS_Shape aResult = PerformFuse(aBox, aRevolution);
-  ValidateResult(aResult, 167101);
+  ValidateResult(aResult, 161571);
 }
 
 // Test bfuse_simple/K2: Blend box with cylinder (X direction)
@@ -1896,11 +1892,13 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderNegX_K3)
 
   // Create blend: explode bx1 e, blend bl1 bx1 100 bx1_1
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
+  EXPECT_FALSE(aBlendedBox.IsNull()) << "Blend operation failed";
 
   // Create plane and cylinder: plane pl1 100 100 100 0 0 1 -1 0 0, pcylinder pc pl1 100 50
   const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(-1, 0, 0));
   const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
+  EXPECT_FALSE(aCylinder.IsNull()) << "Cylinder creation failed";
 
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
   ValidateResult(aResult, 322832);
