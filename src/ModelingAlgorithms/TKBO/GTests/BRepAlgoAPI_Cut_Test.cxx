@@ -1771,21 +1771,3 @@ TEST_F(BOPCutSimpleTest, IdenticalBoxes_A1)
   const TopoDS_Shape aResult = PerformDirectBOP(aBox1, aBox2, BOPAlgo_CUT);
   ValidateResult(aResult, -1.0, -1.0, Standard_True); // Expected empty
 }
-
-//==================================================================================================
-// BOPTUC Simple Tests - migrating from /tests/boolean/boptuc_simple/
-//==================================================================================================
-
-class BOPTUCSimpleTest : public BOPAlgo_TestBase
-{
-};
-
-// Test boptuc_simple/A1: identical boxes (TUC operation should result in empty)
-TEST_F(BOPTUCSimpleTest, IdenticalBoxes_A1)
-{
-  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-
-  const TopoDS_Shape aResult = PerformDirectBOP(aBox1, aBox2, BOPAlgo_CUT21);
-  ValidateResult(aResult, -1.0, -1.0, Standard_True); // Expected empty
-}

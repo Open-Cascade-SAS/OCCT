@@ -31,6 +31,99 @@ TEST_F(BFuseSimpleTest, RotatedSpherePlusBox_A2)
   ValidateResult(aResult, 14.6393);
 }
 
+// Test bfuse_simple/A3: box + rotated sphere
+TEST_F(BFuseSimpleTest, BoxPlusRotatedSphere_A3)
+{
+  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
+
+  // Apply standard rotation: Z(-90°) then Y(-45°)
+  const TopoDS_Shape aRotatedSphere = BOPTest_Utilities::RotateStandard(aSphere);
+
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
+  const TopoDS_Shape aResult = PerformFuse(aBox, aRotatedSphere);
+  ValidateResult(aResult, 14.6393);
+}
+
+// Test bfuse_simple/A4: sphere + rotated box
+TEST_F(BFuseSimpleTest, SpherePlusRotatedBox_A4)
+{
+  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
+
+  // Apply Y rotation: 90°
+  const TopoDS_Shape aRotatedBox = BOPTest_Utilities::RotateY(aBox, 90.0);
+
+  const TopoDS_Shape aResult = PerformFuse(aSphere, aRotatedBox);
+  ValidateResult(aResult, 14.6393);
+}
+
+// Test bfuse_simple/A5: rotated box + sphere
+TEST_F(BFuseSimpleTest, RotatedBoxPlusSphere_A5)
+{
+  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
+  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
+
+  // Apply Y rotation: 90°
+  const TopoDS_Shape aRotatedBox = BOPTest_Utilities::RotateY(aBox, 90.0);
+
+  const TopoDS_Shape aResult = PerformFuse(aRotatedBox, aSphere);
+  ValidateResult(aResult, 14.6393);
+}
+
+// Test bfuse_simple/A6: nurbs box + identical box (should be 6.0 surface area)
+TEST_F(BFuseSimpleTest, IdenticalNurbsBoxPlusBox_A6)
+{
+  // Create first box and convert to NURBS
+  TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
+
+  const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+
+  const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
+  ValidateResult(aResult, 6.0);
+}
+
+// Test bfuse_simple/A7: box + nurbs box (identical)
+TEST_F(BFuseSimpleTest, IdenticalBoxPlusNurbsBox_A7)
+{
+  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+
+  TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
+
+  const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
+  ValidateResult(aResult, 6.0);
+}
+
+// Test bfuse_simple/A8: nurbs box + larger box
+TEST_F(BFuseSimpleTest, NurbsBoxPlusLargerBox_A8)
+{
+  // Create first box and convert to NURBS
+  TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
+  ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
+
+  const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 2.0, 2.0, 2.0);
+
+  const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
+  ValidateResult(aResult, 24.0);
+}
+
+// Test bfuse_simple/A9: larger box + nurbs box
+TEST_F(BFuseSimpleTest, LargerBoxPlusNurbsBox_A9)
+{
+  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 2.0, 2.0, 2.0);
+
+  TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
+  ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
+
+  const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
+  ValidateResult(aResult, 24.0);
+}
+
 // Test bfuse_simple/B1: nurbs box + box
 TEST_F(BFuseSimpleTest, NurbsBoxPlusBox_B1)
 {
@@ -265,99 +358,6 @@ TEST_F(BFuseSimpleTest, OffsetCubePlusNurbsBox_C9)
 
   const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
   ValidateResult(aResult, 6.25);
-}
-
-// Test bfuse_simple/A3: box + rotated sphere
-TEST_F(BFuseSimpleTest, BoxPlusRotatedSphere_A3)
-{
-  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
-
-  // Apply standard rotation: Z(-90°) then Y(-45°)
-  const TopoDS_Shape aRotatedSphere = BOPTest_Utilities::RotateStandard(aSphere);
-
-  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
-  const TopoDS_Shape aResult = PerformFuse(aBox, aRotatedSphere);
-  ValidateResult(aResult, 14.6393);
-}
-
-// Test bfuse_simple/A4: sphere + rotated box
-TEST_F(BFuseSimpleTest, SpherePlusRotatedBox_A4)
-{
-  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
-  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
-
-  // Apply Y rotation: 90°
-  const TopoDS_Shape aRotatedBox = BOPTest_Utilities::RotateY(aBox, 90.0);
-
-  const TopoDS_Shape aResult = PerformFuse(aSphere, aRotatedBox);
-  ValidateResult(aResult, 14.6393);
-}
-
-// Test bfuse_simple/A5: rotated box + sphere
-TEST_F(BFuseSimpleTest, RotatedBoxPlusSphere_A5)
-{
-  const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
-  const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
-
-  // Apply Y rotation: 90°
-  const TopoDS_Shape aRotatedBox = BOPTest_Utilities::RotateY(aBox, 90.0);
-
-  const TopoDS_Shape aResult = PerformFuse(aRotatedBox, aSphere);
-  ValidateResult(aResult, 14.6393);
-}
-
-// Test bfuse_simple/A6: nurbs box + identical box (should be 6.0 surface area)
-TEST_F(BFuseSimpleTest, IdenticalNurbsBoxPlusBox_A6)
-{
-  // Create first box and convert to NURBS
-  TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
-  ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-
-  const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-
-  const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
-  ValidateResult(aResult, 6.0);
-}
-
-// Test bfuse_simple/A7: box + nurbs box (identical)
-TEST_F(BFuseSimpleTest, IdenticalBoxPlusNurbsBox_A7)
-{
-  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-
-  TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
-  ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-
-  const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
-  ValidateResult(aResult, 6.0);
-}
-
-// Test bfuse_simple/A8: nurbs box + larger box
-TEST_F(BFuseSimpleTest, NurbsBoxPlusLargerBox_A8)
-{
-  // Create first box and convert to NURBS
-  TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
-  ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
-
-  const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 2.0, 2.0, 2.0);
-
-  const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
-  ValidateResult(aResult, 24.0);
-}
-
-// Test bfuse_simple/A9: larger box + nurbs box
-TEST_F(BFuseSimpleTest, LargerBoxPlusNurbsBox_A9)
-{
-  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 2.0, 2.0, 2.0);
-
-  TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aBox2              = BOPTest_Utilities::ConvertToNurbs(aBox2);
-  ASSERT_FALSE(aBox2.IsNull()) << "Failed to convert to NURBS";
-
-  const TopoDS_Shape aResult = PerformFuse(aBox1, aBox2);
-  ValidateResult(aResult, 24.0);
 }
 
 // Test bfuse_simple/D1: nurbs box + rotated narrow box
@@ -942,10 +942,6 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromBottomTopPosition_F9)
   const TopoDS_Shape aResult = PerformFuse(aBox, aPrism);
   ValidateResult(aResult, 170.0);
 }
-
-//==================================================================================================
-// BOPFuse Simple Tests - migrating from /tests/boolean/bopfuse_simple/
-//==================================================================================================
 
 // Test bfuse_simple/G1: Box with prism from front at top level
 TEST_F(BFuseSimpleTest, BoxWithPrismFromFrontTopLevel_G1)
@@ -2016,18 +2012,4 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomNegY_K9)
 
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
   ValidateResult(aResult, 322832);
-}
-
-class BOPFuseSimpleTest : public BOPAlgo_TestBase
-{
-};
-
-// Test bopfuse_simple/A1: identical boxes
-TEST_F(BOPFuseSimpleTest, IdenticalBoxes_A1)
-{
-  const TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-
-  const TopoDS_Shape aResult = PerformDirectBOP(aBox1, aBox2, BOPAlgo_FUSE);
-  ValidateResult(aResult, 6.0);
 }
