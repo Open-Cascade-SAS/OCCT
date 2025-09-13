@@ -409,9 +409,8 @@ public:
             gp_Dir aNormalDir(aNormal);
             gp_Dir aXDirection(aXDir);
 
-            // Compute Y direction as cross product: Y = Z × X (for right-handed system)
-            // But DRAW might use different handedness convention
-            gp_Vec aYVec = aNormal.Crossed(aXDir);
+            // Note: Y direction computed as cross product: Y = Z × X (for right-handed system)
+            // But DRAW uses standard X/Y axes based on normal direction
 
             // Use the current plane's origin but new orientation
             gp_Ax3 aNewAx3(aWorkingPlane.Location(), aNormalDir, aXDirection);
@@ -850,7 +849,7 @@ protected:
       return;
     }
 
-    ASSERT_FALSE(theResult.IsNull()) << "Result shape should not be null";
+    EXPECT_FALSE(theResult.IsNull()) << "Result shape should not be null";
 
     if (theExpectedSurfaceArea >= 0.0)
     {
@@ -971,7 +970,7 @@ protected:
       return;
     }
 
-    ASSERT_FALSE(theResult.IsNull()) << "Result shape should not be null";
+    EXPECT_FALSE(theResult.IsNull()) << "Result shape should not be null";
 
     if (theExpectedSurfaceArea >= 0.0)
     {

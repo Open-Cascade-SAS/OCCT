@@ -28,7 +28,7 @@ TEST_F(BOPAlgo_DirectOperationsTest, DirectCut_SphereMinusBox)
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
 
   const TopoDS_Shape aResult = PerformDirectBOP(aSphere, aBox, BOPAlgo_CUT);
-  ASSERT_FALSE(aResult.IsNull()) << "Result shape should not be null";
+  EXPECT_FALSE(aResult.IsNull()) << "Result shape should not be null";
 
   const Standard_Real aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
   EXPECT_GT(aSurfaceArea, 0.0) << "Cut result should have positive surface area";
@@ -41,7 +41,7 @@ TEST_F(BOPAlgo_DirectOperationsTest, DirectFuse_SpherePlusBox)
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
 
   const TopoDS_Shape aResult = PerformDirectBOP(aSphere, aBox, BOPAlgo_FUSE);
-  ASSERT_FALSE(aResult.IsNull()) << "Result shape should not be null";
+  EXPECT_FALSE(aResult.IsNull()) << "Result shape should not be null";
 
   const Standard_Real aVolume       = BOPTest_Utilities::GetVolume(aResult);
   const Standard_Real aSphereVolume = BOPTest_Utilities::GetVolume(aSphere);
@@ -75,7 +75,7 @@ TEST_F(BOPAlgo_DirectOperationsTest, DirectCut_NurbsBoxMinusBox)
 {
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
-  ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 1, 0), 1.0, 0.5, 1.0);
 
@@ -110,7 +110,7 @@ TEST_F(BOPAlgo_TwoStepOperationsTest, TwoStepFuse_SpherePlusBox)
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
 
   const TopoDS_Shape aResult = PerformTwoStepBOP(aSphere, aBox, BOPAlgo_FUSE);
-  ASSERT_FALSE(aResult.IsNull()) << "Result shape should not be null";
+  EXPECT_FALSE(aResult.IsNull()) << "Result shape should not be null";
 
   const Standard_Real aVolume       = BOPTest_Utilities::GetVolume(aResult);
   const Standard_Real aSphereVolume = BOPTest_Utilities::GetVolume(aSphere);
@@ -156,7 +156,7 @@ TEST_F(BOPAlgo_ComplexOperationsTest, MultipleIntersectingPrimitives)
 
   // First intersect sphere with cylinder
   const TopoDS_Shape aIntermediate = PerformDirectBOP(aSphere, aCylinder, BOPAlgo_COMMON);
-  ASSERT_FALSE(aIntermediate.IsNull()) << "Intermediate result should not be null";
+  EXPECT_FALSE(aIntermediate.IsNull()) << "Intermediate result should not be null";
 
   // Then fuse with box
   const TopoDS_Shape  aFinalResult = PerformDirectBOP(aIntermediate, aBox, BOPAlgo_FUSE);

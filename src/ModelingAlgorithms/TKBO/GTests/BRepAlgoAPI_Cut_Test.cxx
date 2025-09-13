@@ -84,7 +84,7 @@ TEST_F(BCutSimpleTest, IdenticalNurbsBoxMinusBox_A6)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
 
@@ -97,7 +97,7 @@ TEST_F(BCutSimpleTest, IdenticalBoxMinusNurbsBox_A7)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
 
@@ -110,7 +110,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusLargerBox_A8)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aLargerBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.5, 1.0);
 
@@ -123,7 +123,7 @@ TEST_F(BCutSimpleTest, LargerBoxMinusNurbsBox_A9)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aLargerBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.5, 1.0);
 
@@ -137,7 +137,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusBox_B1)
   // Create first box and convert to NURBS
   TopoDS_Shape aBox1 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
-  ASSERT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aBox1.IsNull()) << "Failed to convert to NURBS";
 
   // Create second box
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 1, 0), 1.0, 0.5, 1.0);
@@ -152,7 +152,7 @@ TEST_F(BCutSimpleTest, BoxMinusNurbsBox_B2)
   // Create first box and convert to NURBS
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   // Create second box
   const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 1, 0), 1.0, 0.5, 1.0);
@@ -166,7 +166,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusAdjacentBox_B3)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aAdjacentBox = BOPTest_Utilities::CreateBox(gp_Pnt(1, 1, 0), 1.0, 1.0, 1.0);
 
@@ -179,7 +179,7 @@ TEST_F(BCutSimpleTest, AdjacentBoxMinusNurbsBox_B4)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aAdjacentBox = BOPTest_Utilities::CreateBox(gp_Pnt(1, 1, 0), 1.0, 1.0, 1.0);
 
@@ -192,7 +192,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusSmallerBox_B5)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aSmallerBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 0.5, 1.0, 0.5);
 
@@ -205,7 +205,7 @@ TEST_F(BCutSimpleTest, SmallerBoxMinusNurbsBox_B6)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aSmallerBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 0.5, 1.0, 0.5);
 
@@ -218,7 +218,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusPartiallyOverlappingBox_B7)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aPartialBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 0.5, 0.5, 1.0);
 
@@ -231,7 +231,7 @@ TEST_F(BCutSimpleTest, PartiallyOverlappingBoxMinusNurbsBox_B8)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aPartialBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 0.5, 0.5, 1.0);
 
@@ -244,7 +244,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusExtendedBox_B9)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aExtendedBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 0.5, 1.5, 1.0);
 
@@ -257,7 +257,7 @@ TEST_F(BCutSimpleTest, ExtendedBoxMinusNurbsBox_C1)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aExtendedBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 0.5, 1.5, 1.0);
 
@@ -270,7 +270,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusShiftedBox_C2)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aShiftedBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0.5, 0), 1.0, 1.0, 1.0);
 
@@ -283,7 +283,7 @@ TEST_F(BCutSimpleTest, ShiftedBoxMinusNurbsBox_C3)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aShiftedBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0.5, 0), 1.0, 1.0, 1.0);
 
@@ -296,7 +296,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusNarrowBox_C4)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aNarrowBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0.25, 0), 1.0, 0.5, 1.0);
 
@@ -309,7 +309,7 @@ TEST_F(BCutSimpleTest, NarrowBoxMinusNurbsBox_C5)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aNarrowBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0.25, 0), 1.0, 0.5, 1.0);
 
@@ -322,7 +322,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusCornerCube_C6)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aCornerCube = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 0.5, 0.5, 0.5);
 
@@ -335,7 +335,7 @@ TEST_F(BCutSimpleTest, CornerCubeMinusNurbsBox_C7)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aCornerCube = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 0.5, 0.5, 0.5);
 
@@ -348,7 +348,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusOffsetCube_C8)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetCube = BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 0.5, 0.5, 0.5);
 
@@ -361,7 +361,7 @@ TEST_F(BCutSimpleTest, OffsetCubeMinusNurbsBox_C9)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetCube = BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 0.5, 0.5, 0.5);
 
@@ -374,7 +374,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusOffsetCornerCube_D1)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetCornerCube =
     BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, -0.5), 0.5, 0.5, 0.5);
@@ -388,7 +388,7 @@ TEST_F(BCutSimpleTest, OffsetCornerCubeMinusNurbsBox_D2)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetCornerCube =
     BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, -0.5), 0.5, 0.5, 0.5);
@@ -402,7 +402,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusShiftedCornerCube_D3)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aShiftedCornerCube =
     BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 0.5, 0.5, 0.5);
@@ -416,7 +416,7 @@ TEST_F(BCutSimpleTest, ShiftedCornerCubeMinusNurbsBox_D4)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aShiftedCornerCube =
     BOPTest_Utilities::CreateBox(gp_Pnt(-0.5, -0.5, -0.5), 0.5, 0.5, 0.5);
@@ -430,7 +430,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusExtendedXBox_D5)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aExtendedXBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.5, 0.5, 0.5);
 
@@ -443,7 +443,7 @@ TEST_F(BCutSimpleTest, ExtendedXBoxMinusNurbsBox_D6)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aExtendedXBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.5, 0.5, 0.5);
 
@@ -456,7 +456,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusOffsetExtendedXBox_D7)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetExtendedXBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 1.5, 0.5, 0.5);
@@ -470,7 +470,7 @@ TEST_F(BCutSimpleTest, OffsetExtendedXBoxMinusNurbsBox_D8)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetExtendedXBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0, -0.5, 0), 1.5, 0.5, 0.5);
@@ -484,7 +484,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusShiftedNarrowBox_D9)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aShiftedNarrowBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.25, 0, 0), 0.5, 0.5, 1.0);
@@ -498,7 +498,7 @@ TEST_F(BCutSimpleTest, ShiftedNarrowBoxMinusNurbsBox_E1)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aShiftedNarrowBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.25, 0, 0), 0.5, 0.5, 1.0);
@@ -512,7 +512,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusOffsetShiftedNarrowBox_E2)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetShiftedNarrowBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.25, -0.5, 0), 0.5, 0.5, 1.0);
@@ -526,7 +526,7 @@ TEST_F(BCutSimpleTest, OffsetShiftedNarrowBoxMinusNurbsBox_E3)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetShiftedNarrowBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.25, -0.5, 0), 0.5, 0.5, 1.0);
@@ -540,7 +540,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusExtendedYShiftedNarrowBox_E4)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aExtendedYShiftedNarrowBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.25, 0, 0), 0.5, 1.5, 1.0);
@@ -554,7 +554,7 @@ TEST_F(BCutSimpleTest, ExtendedYShiftedNarrowBoxMinusNurbsBox_E5)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aExtendedYShiftedNarrowBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.25, 0, 0), 0.5, 1.5, 1.0);
@@ -568,7 +568,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusRightHalfBox_E6)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aRightHalfBox = BOPTest_Utilities::CreateBox(gp_Pnt(0.5, 0, 0), 1.0, 1.0, 0.5);
 
@@ -581,7 +581,7 @@ TEST_F(BCutSimpleTest, RightHalfBoxMinusNurbsBox_E7)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aRightHalfBox = BOPTest_Utilities::CreateBox(gp_Pnt(0.5, 0, 0), 1.0, 1.0, 0.5);
 
@@ -594,7 +594,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusOffsetRightHalfBox_E8)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetRightHalfBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.5, 0, -0.5), 1.0, 1.0, 0.5);
@@ -608,7 +608,7 @@ TEST_F(BCutSimpleTest, OffsetRightHalfBoxMinusNurbsBox_E9)
 {
   TopoDS_Shape aNurbsBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox              = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  ASSERT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
+  EXPECT_FALSE(aNurbsBox.IsNull()) << "Failed to convert to NURBS";
 
   const TopoDS_Shape aOffsetRightHalfBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.5, 0, -0.5), 1.0, 1.0, 0.5);
