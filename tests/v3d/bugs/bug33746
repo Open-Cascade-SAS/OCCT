@@ -1,0 +1,30 @@
+puts "============"
+puts "0033746: Visualization - Unexpected moving with AIS_ViewCube"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+box b 0 0 -100 100 20 10
+vdisplay -dispMode 1 b
+
+vviewcube c
+vcamera -navmode fly
+
+vtop
+vfit
+vmousebutton 200 200 -button left -down
+vmousebutton 201 200 -button left -up
+if { [vreadpixel 100 200 -rgb -name] == "BLACK" } { puts "Error: wrong transformation" }
+
+vdump $::imagedir/${::casename}_top.png
+
+vbottom
+vfit
+vmousebutton 200 200 -button left -down
+vmousebutton 201 200 -button left -up
+if { [vreadpixel 100 200 -rgb -name] == "BLACK" } { puts "Error: wrong transformation" }
+
+vdump $::imagedir/${::casename}_bottom.png

@@ -993,7 +993,7 @@ public:
                             const Graphic3d_BufferType& theBufferType     = Graphic3d_BT_RGB,
                             const Standard_Boolean      theToAdjustAspect = Standard_True,
                             const Graphic3d_ZLayerId theTargetZLayerId = Graphic3d_ZLayerId_BotOSD,
-                            const Standard_Integer   theIsSingleLayer  = Standard_False,
+                            const Standard_Boolean   theIsSingleLayer  = Standard_False,
                             const V3d_StereoDumpOptions theStereoOptions = V3d_SDO_MONO,
                             const Standard_CString      theLightName     = "")
   {

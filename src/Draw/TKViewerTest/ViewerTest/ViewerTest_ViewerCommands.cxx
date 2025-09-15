@@ -6375,6 +6375,106 @@ static Standard_Integer VMoveTo(Draw_Interpretor& theDI,
   return 0;
 }
 
+//=======================================================================
+//function : VMouseButton
+//purpose  : Emulates mouse button event
+//=======================================================================
+static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
+  Standard_Integer theNbArgs,
+  const char** theArgVec)
+{
+  const Handle(AIS_InteractiveContext)& aContext = ViewerTest::GetAISContext();
+  const Handle(V3d_View)& aView = ViewerTest::CurrentView();
+  if (aContext.IsNull())
+  {
+    Message::SendFail("Error: no active viewer");
+    return 1;
+  }
+
+  if (theNbArgs < 6)
+  {
+    Message::SendFail("Syntax error: wrong number arguments");
+    return 1;
+  }
+
+  Aspect_VKeyMouse aButton = Aspect_VKeyMouse_LeftButton;
+  Standard_Boolean isPressButton = false;
+
+  Graphic3d_Vec2i aMousePos(IntegerLast(), IntegerLast());
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArgStr(theArgVec[anArgIter]);
+    anArgStr.LowerCase();
+    if (anArgStr == "-button")
+    {
+      if (anArgIter + 1 < theNbArgs)
+      {
+        ++anArgIter;
+        TCollection_AsciiString aButtonStr(theArgVec[anArgIter]);
+        if (aButtonStr == "left")
+        {
+          aButton = Aspect_VKeyMouse_LeftButton;
+        }
+        else if (aButtonStr == "right")
+        {
+          aButton = Aspect_VKeyMouse_RightButton;
+        }
+        else if (aButtonStr == "middle")
+        {
+          aButton = Aspect_VKeyMouse_MiddleButton;
+        }
+      }
+    }
+    else if (anArgStr == "-up")
+    {
+      isPressButton = false;
+    }
+    else if (anArgStr == "-down")
+    {
+      isPressButton = true;
+    }
+    else if (aMousePos.x() == IntegerLast()
+      && anArgStr.IsIntegerValue())
+    {
+      aMousePos.x() = anArgStr.IntegerValue();
+    }
+    else if (aMousePos.y() == IntegerLast()
+      && anArgStr.IsIntegerValue())
+    {
+      aMousePos.y() = anArgStr.IntegerValue();
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
+      return 1;
+    }
+  }
+
+  if (aMousePos.x() == IntegerLast()
+    || aMousePos.y() == IntegerLast())
+  {
+    Message::SendFail("Syntax error: wrong number of arguments");
+    return 1;
+  }
+
+  if (isPressButton)
+  {
+    ViewerTest::CurrentEventManager()->ResetPreviousMoveTo();
+    ViewerTest::CurrentEventManager()->PressMouseButton(aMousePos, aButton, Aspect_VKeyFlags_NONE, false);
+    ViewerTest::CurrentEventManager()->UpdateMousePosition(aMousePos, Aspect_VKeyMouse_NONE, Aspect_VKeyFlags_NONE, false);
+    ViewerTest::CurrentEventManager()->FlushViewEvents(ViewerTest::GetAISContext(), aView, true);
+  }
+  else
+  {
+    ViewerTest::CurrentEventManager()->UpdateMousePosition(aMousePos, Aspect_VKeyMouse_NONE, Aspect_VKeyFlags_NONE, false);
+    ViewerTest::CurrentEventManager()->FlushViewEvents(ViewerTest::GetAISContext(), aView, true);
+    ViewerTest::CurrentEventManager()->ReleaseMouseButton(aMousePos, aButton, Aspect_VKeyFlags_NONE, false);
+    ViewerTest::CurrentEventManager()->FlushViewEvents(ViewerTest::GetAISContext(), aView, true);
+  }
+
+  return 0;
+}
+
 //=================================================================================================
 
 static Standard_Integer VSelectByAxis(Draw_Interpretor& theDI,
@@ -14080,6 +14180,14 @@ vmoveto [x y] [-reset]
 Emulate cursor movement to pixel position (x,y).
  -reset resets current highlighting.
 )" /* [vmoveto] */);
+
+  addCmd("vmousebutton", VMouseButton, /* [vmousebutton] */ R"(
+vmousebutton x y -button right|left|middle -up|-down
+Emulate mouse button events.
+ -button choose button;
+ -down   press button;
+ -up     release button.
+)" /* [vmousebutton] */);
 
   addCmd("vselaxis", VSelectByAxis, /* [vselaxis] */ R"(
 vselaxis x y z dx dy dz [-onlyTop 0|1] [-display Name] [-showNormal 0|1]"
