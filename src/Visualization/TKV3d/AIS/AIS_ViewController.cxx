@@ -29,7 +29,7 @@
 
 namespace
 {
-//! Extract camera up direction from quaternion (corresponds to Z-axis)
+// Extract camera up direction from quaternion (corresponds to Z-axis)
 inline gp_Dir QuaternionToUpDir(const gp_Quaternion& theQuaternion)
 {
   gp_Trsf aTrsf;
@@ -37,7 +37,7 @@ inline gp_Dir QuaternionToUpDir(const gp_Quaternion& theQuaternion)
   return gp::DZ().Transformed(aTrsf);
 }
 
-//! Extract camera right direction from quaternion (corresponds to X-axis)
+// Extract camera right direction from quaternion (corresponds to X-axis)
 inline gp_Dir QuaternionToRightDir(const gp_Quaternion& theQuaternion)
 {
   gp_Trsf aTrsf;
@@ -45,7 +45,7 @@ inline gp_Dir QuaternionToRightDir(const gp_Quaternion& theQuaternion)
   return gp::DX().Transformed(aTrsf);
 }
 
-//! Extract camera view direction from quaternion (corresponds to -Y-axis)
+// Extract camera view direction from quaternion (corresponds to -Y-axis)
 inline gp_Dir QuaternionToViewDir(const gp_Quaternion& theQuaternion)
 {
   gp_Trsf aTrsf;
