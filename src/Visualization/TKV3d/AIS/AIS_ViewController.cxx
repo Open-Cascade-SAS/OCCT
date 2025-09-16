@@ -1791,7 +1791,7 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
     // Store the current camera orientation as a quaternion
     // This avoids the numerical instability of Euler angle conversion
     const gp_Dir& aCamDir = aCam->Direction();
-    const gp_Dir& aCamUp  = aCam->Up();
+    const gp_Dir  aCamUp  = aCam->OrthogonalizedUp();
 
     // Build camera coordinate system
     gp_Dir aCamRight = aCamUp.Crossed(aCamDir); // right-handed basis
@@ -1868,8 +1868,8 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   aPitchRotation.SetVectorAndAngle(gp_Vec(aLocalRight),
                                    aPitchDelta); // Pitch around camera local right
 
-  // Combine rotations: apply pitch first, then yaw (correct order for camera control)
-  const gp_Quaternion aCombinedRotation = aYawRotation * aPitchRotation;
+  // Combine rotations: apply pitch first, then yaw (matches multiplication order)
+  const gp_Quaternion aCombinedRotation = aPitchRotation * aYawRotation;
 
   // Apply the rotation to the starting camera orientation
   gp_Quaternion aFinalRotation = aCombinedRotation * myRotateStartQuaternion;
@@ -1880,7 +1880,7 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
     // Get the current view direction to use as roll axis
     gp_Trsf aPreRollTrsf;
     aPreRollTrsf.SetRotation(aFinalRotation);
-    const gp_Dir aViewDir = gp::DX().Transformed(aPreRollTrsf);
+    const gp_Dir aViewDir = -gp::DY().Transformed(aPreRollTrsf);
 
     gp_Quaternion aRollRotation;
     aRollRotation.SetVectorAndAngle(gp_Vec(aViewDir), theRoll); // Roll around view direction
@@ -1893,7 +1893,7 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
 
   // Get the new camera directions from the world coordinate system
   const gp_Dir aNewUp  = gp::DZ().Transformed(aFinalTrsf);
-  const gp_Dir aNewDir = gp::DX().Transformed(aFinalTrsf);
+  const gp_Dir aNewDir = -gp::DY().Transformed(aFinalTrsf);
 
   // Apply to camera
   aCam->SetUp(aNewUp);

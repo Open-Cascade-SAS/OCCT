@@ -6424,6 +6424,17 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
         {
           aButton = Aspect_VKeyMouse_MiddleButton;
         }
+        else
+        {
+          Message::SendFail() << "Syntax error: invalid button name '" << aButtonStr
+                              << "' (valid options: left, right, middle)";
+          return 1;
+        }
+      }
+      else
+      {
+        Message::SendFail("Syntax error: -button option requires a value (left, right, middle)");
+        return 1;
       }
     }
     else if (anArgStr == "-up")
