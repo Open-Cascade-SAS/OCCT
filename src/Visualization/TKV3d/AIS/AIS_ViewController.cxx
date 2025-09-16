@@ -1811,7 +1811,6 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   }
 
   // Compute camera-local axes from current camera orientation for rotation calculations
-  // Use the already defined aCam from line 1780
   const gp_Dir&            aCamDir     = aCam->Direction();
   const gp_Dir             aCamUp      = aCam->OrthogonalizedUp();
   gp_Dir                   aLocalRight = aCamUp.Crossed(aCamDir); // Camera right (pitch axis)
@@ -1862,8 +1861,6 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   const double aRotationScale = M_PI_2;
   const double aYawDelta      = -aMouseDeltaX * aRotationScale;
   const double aPitchDelta    = aMouseDeltaY * aRotationScale;
-
-  // Use previously computed camera-local axes (computed above if rotation is needed)
 
   gp_Quaternion aYawRotation, aPitchRotation;
   aYawRotation.SetVectorAndAngle(gp_Vec(aLocalUp), aYawDelta); // Yaw around camera local up
