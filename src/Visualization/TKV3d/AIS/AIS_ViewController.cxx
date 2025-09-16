@@ -27,6 +27,33 @@
 #include <V3d_Viewer.hxx>
 #include <WNT_HIDSpaceMouse.hxx>
 
+namespace
+{
+//! Extract camera up direction from quaternion (corresponds to Z-axis)
+inline gp_Dir QuaternionToUpDir(const gp_Quaternion& theQuaternion)
+{
+  gp_Trsf aTrsf;
+  aTrsf.SetRotation(theQuaternion);
+  return gp::DZ().Transformed(aTrsf);
+}
+
+//! Extract camera right direction from quaternion (corresponds to X-axis)
+inline gp_Dir QuaternionToRightDir(const gp_Quaternion& theQuaternion)
+{
+  gp_Trsf aTrsf;
+  aTrsf.SetRotation(theQuaternion);
+  return gp::DX().Transformed(aTrsf);
+}
+
+//! Extract camera view direction from quaternion (corresponds to -Y-axis)
+inline gp_Dir QuaternionToViewDir(const gp_Quaternion& theQuaternion)
+{
+  gp_Trsf aTrsf;
+  aTrsf.SetRotation(theQuaternion);
+  return -gp::DY().Transformed(aTrsf);
+}
+} // namespace
+
 //=================================================================================================
 
 AIS_ViewController::AIS_ViewController()
@@ -1686,10 +1713,12 @@ void AIS_ViewController::handleOrbitRotation(const Handle(V3d_View)& theView,
 
     gp_Quaternion aRot;
     aRot.SetEulerAngles(gp_YawPitchRoll, aYawAngleNew, aPitchAngleNew, aRoll);
+
+    const gp_Dir aNewUp = QuaternionToUpDir(aRot);
+
+    // Create transformation for position updates
     gp_Trsf aTrsfRot;
     aTrsfRot.SetRotation(aRot);
-
-    const gp_Dir aNewUp = gp::DZ().Transformed(aTrsfRot);
     aCam->SetUp(aNewUp);
     aCam->SetEyeAndCenter(myRotatePnt3d.XYZ() + myCamStartOpToEye.Transformed(aTrsfRot).XYZ(),
                           myRotatePnt3d.XYZ() + myCamStartOpToCenter.Transformed(aTrsfRot).XYZ());
@@ -1799,6 +1828,9 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
     gp_Ax3 aCamCoordSys(gp::Origin(), aCamUp, aCamRight);
 
     // Create quaternion from camera coordinate system
+    // SetTransformation(from, to) computes transformation FROM aCamCoordSys TO gp_Ax3()
+    // This maps: camera X(right) → world X, camera Y(aCamUp) → world Z, camera Z(aCamRight) → world
+    // Y
     gp_Trsf aCamTrsf;
     aCamTrsf.SetTransformation(aCamCoordSys, gp_Ax3());
     myRotateStartQuaternion = aCamTrsf.GetRotation();
@@ -1810,19 +1842,16 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
     myRotateStartYawPitchRoll[2] = 0.0;
   }
 
-  // Compute camera-local axes from current camera orientation for rotation calculations
-  const gp_Dir&            aCamDir     = aCam->Direction();
-  const gp_Dir             aCamUp      = aCam->OrthogonalizedUp();
-  gp_Dir                   aLocalRight = aCamUp.Crossed(aCamDir); // Camera right (pitch axis)
-  gp_Dir                   aLocalUp    = aCamUp;                  // Camera up (yaw axis)
-
   if (toRotateAnyway)
   {
-
     // For incremental rotations, apply them to the current camera state
     if (!myGL.ViewRotation.ToStart
         && (Abs(theYawExtra) > gp::Resolution() || Abs(thePitchExtra) > gp::Resolution()))
     {
+      // Compute camera-local axes from current start quaternion before update
+      const gp_Dir aLocalUp    = QuaternionToUpDir(myRotateStartQuaternion);
+      const gp_Dir aLocalRight = QuaternionToRightDir(myRotateStartQuaternion);
+
       gp_Quaternion aYawIncrement, aPitchIncrement;
       aYawIncrement.SetVectorAndAngle(gp_Vec(aLocalUp), theYawExtra);
       aPitchIncrement.SetVectorAndAngle(gp_Vec(aLocalRight), thePitchExtra);
@@ -1862,6 +1891,10 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   const double aYawDelta      = -aMouseDeltaX * aRotationScale;
   const double aPitchDelta    = aMouseDeltaY * aRotationScale;
 
+  // Compute camera-local axes from the final quaternion state (after any incremental updates)
+  const gp_Dir aLocalUp    = QuaternionToUpDir(myRotateStartQuaternion);
+  const gp_Dir aLocalRight = QuaternionToRightDir(myRotateStartQuaternion);
+
   gp_Quaternion aYawRotation, aPitchRotation;
   aYawRotation.SetVectorAndAngle(gp_Vec(aLocalUp), aYawDelta); // Yaw around camera local up
   aPitchRotation.SetVectorAndAngle(gp_Vec(aLocalRight),
@@ -1878,9 +1911,7 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   if (Abs(theRoll) > gp::Resolution())
   {
     // Get the current view direction to use as roll axis
-    gp_Trsf aPreRollTrsf;
-    aPreRollTrsf.SetRotation(aFinalRotation);
-    const gp_Dir aViewDir = -gp::DY().Transformed(aPreRollTrsf);
+    const gp_Dir aViewDir = QuaternionToViewDir(aFinalRotation);
 
     gp_Quaternion aRollRotation;
     aRollRotation.SetVectorAndAngle(gp_Vec(aViewDir), theRoll); // Roll around view direction
@@ -1890,13 +1921,9 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   // Ensure final quaternion is normalized to prevent accumulation errors
   aFinalRotation.Normalize();
 
-  // Convert quaternion back to camera orientation
-  gp_Trsf aFinalTrsf;
-  aFinalTrsf.SetRotation(aFinalRotation);
-
-  // Get the new camera directions from the world coordinate system
-  const gp_Dir aNewUp  = gp::DZ().Transformed(aFinalTrsf);
-  const gp_Dir aNewDir = -gp::DY().Transformed(aFinalTrsf);
+  // Get the new camera directions from the final quaternion
+  const gp_Dir aNewUp  = QuaternionToUpDir(aFinalRotation);
+  const gp_Dir aNewDir = QuaternionToViewDir(aFinalRotation);
 
   // Apply to camera
   aCam->SetUp(aNewUp);
