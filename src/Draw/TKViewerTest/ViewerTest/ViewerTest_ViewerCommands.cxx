@@ -6391,7 +6391,7 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
     return 1;
   }
 
-  if (theNbArgs < 6)
+  if (theNbArgs < 4)
   {
     Message::SendFail("Syntax error: wrong number arguments");
     return 1;
@@ -6399,6 +6399,7 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
 
   Aspect_VKeyMouse aButton = Aspect_VKeyMouse_LeftButton;
   Standard_Boolean isPressButton = false;
+  Standard_Boolean hasActionFlag = false;
 
   Graphic3d_Vec2i aMousePos(IntegerLast(), IntegerLast());
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
@@ -6428,10 +6429,12 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
     else if (anArgStr == "-up")
     {
       isPressButton = false;
+      hasActionFlag = true;
     }
     else if (anArgStr == "-down")
     {
       isPressButton = true;
+      hasActionFlag = true;
     }
     else if (aMousePos.x() == IntegerLast()
       && anArgStr.IsIntegerValue())
@@ -6453,7 +6456,13 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
   if (aMousePos.x() == IntegerLast()
     || aMousePos.y() == IntegerLast())
   {
-    Message::SendFail("Syntax error: wrong number of arguments");
+    Message::SendFail("Syntax error: mouse coordinates (x y) are required");
+    return 1;
+  }
+
+  if (!hasActionFlag)
+  {
+    Message::SendFail("Syntax error: action flag (-up or -down) is required");
     return 1;
   }
 
@@ -6467,7 +6476,6 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
   else
   {
     ViewerTest::CurrentEventManager()->UpdateMousePosition(aMousePos, Aspect_VKeyMouse_NONE, Aspect_VKeyFlags_NONE, false);
-    ViewerTest::CurrentEventManager()->FlushViewEvents(ViewerTest::GetAISContext(), aView, true);
     ViewerTest::CurrentEventManager()->ReleaseMouseButton(aMousePos, aButton, Aspect_VKeyFlags_NONE, false);
     ViewerTest::CurrentEventManager()->FlushViewEvents(ViewerTest::GetAISContext(), aView, true);
   }
