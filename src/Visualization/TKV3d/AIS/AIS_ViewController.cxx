@@ -32,25 +32,19 @@ namespace
 // Extract camera up direction from quaternion (corresponds to Z-axis)
 inline gp_Dir QuaternionToUpDir(const gp_Quaternion& theQuaternion)
 {
-  gp_Trsf aTrsf;
-  aTrsf.SetRotation(theQuaternion);
-  return gp::DZ().Transformed(aTrsf);
+  return gp_Dir(theQuaternion.Multiply(gp_Vec(gp::DZ())));
 }
 
 // Extract camera right direction from quaternion (corresponds to X-axis)
 inline gp_Dir QuaternionToRightDir(const gp_Quaternion& theQuaternion)
 {
-  gp_Trsf aTrsf;
-  aTrsf.SetRotation(theQuaternion);
-  return gp::DX().Transformed(aTrsf);
+  return gp_Dir(theQuaternion.Multiply(gp_Vec(gp::DX())));
 }
 
 // Extract camera view direction from quaternion (corresponds to -Y-axis)
 inline gp_Dir QuaternionToViewDir(const gp_Quaternion& theQuaternion)
 {
-  gp_Trsf aTrsf;
-  aTrsf.SetRotation(theQuaternion);
-  return -gp::DY().Transformed(aTrsf);
+  return gp_Dir(-theQuaternion.Multiply(gp_Vec(gp::DY())));
 }
 } // namespace
 
@@ -1822,15 +1816,16 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
     const gp_Dir& aCamDir = aCam->Direction();
     const gp_Dir  aCamUp  = aCam->OrthogonalizedUp();
 
-    // Build camera coordinate system where:
-    // X-axis = camera right, Y-axis = camera forward, Z-axis = camera up
+    // Build camera's local coordinate system.
+    // gp_Ax3 constructor takes (origin, Z direction, X direction).
+    // Local Z-axis = aCamUp
+    // Local X-axis = aCamRight
+    // Local Y-axis is Z.Cross(X) = aCamUp.Cross(aCamRight) = -aCamDir (points backward).
     gp_Dir aCamRight = aCamUp.Crossed(aCamDir); // right-handed basis
     gp_Ax3 aCamCoordSys(gp::Origin(), aCamUp, aCamRight);
 
-    // Create quaternion from camera coordinate system
-    // SetTransformation(from, to) computes transformation FROM aCamCoordSys TO gp_Ax3()
-    // This maps: camera X(right) → world X, camera Y(aCamUp) → world Z, camera Z(aCamRight) → world
-    // Y
+    // Create a transformation from the camera's coordinate system to the world system (gp_Ax3()).
+    // The rotation part of this transform represents the camera's orientation.
     gp_Trsf aCamTrsf;
     aCamTrsf.SetTransformation(aCamCoordSys, gp_Ax3());
     myRotateStartQuaternion = aCamTrsf.GetRotation();
