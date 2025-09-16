@@ -1857,7 +1857,7 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   aPitchRotation.SetVectorAndAngle(gp_Vec(gp::DX()), aPitchDelta); // Pitch around world X axis
 
   // Combine rotations: first pitch, then yaw
-  gp_Quaternion aCombinedRotation = aYawRotation * aPitchRotation;
+  const gp_Quaternion aCombinedRotation = aYawRotation * aPitchRotation;
 
   // Apply the rotation to the starting camera orientation
   gp_Quaternion aFinalRotation = aCombinedRotation * myRotateStartQuaternion;
@@ -1865,8 +1865,13 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   // Apply roll if specified
   if (Abs(theRoll) > gp::Resolution())
   {
+    // Get the current view direction to use as roll axis
+    gp_Trsf aPreRollTrsf;
+    aPreRollTrsf.SetRotation(aFinalRotation);
+    const gp_Dir aViewDir = gp::DX().Transformed(aPreRollTrsf);
+
     gp_Quaternion aRollRotation;
-    aRollRotation.SetVectorAndAngle(gp_Vec(gp::DY()), theRoll); // Roll around view direction
+    aRollRotation.SetVectorAndAngle(gp_Vec(aViewDir), theRoll); // Roll around view direction
     aFinalRotation = aRollRotation * aFinalRotation;
   }
 
