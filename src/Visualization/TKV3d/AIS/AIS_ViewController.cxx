@@ -1794,7 +1794,7 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
     const gp_Dir& aCamUp  = aCam->Up();
 
     // Build camera coordinate system
-    gp_Dir aCamRight = aCamDir.Crossed(aCamUp);
+    gp_Dir aCamRight = aCamUp.Crossed(aCamDir); // right-handed basis
     gp_Ax3 aCamCoordSys(gp::Origin(), aCamUp, aCamRight);
 
     // Create quaternion from camera coordinate system
