@@ -6375,16 +6375,14 @@ static Standard_Integer VMoveTo(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : VMouseButton
-//purpose  : Emulates mouse button event
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
-  Standard_Integer theNbArgs,
-  const char** theArgVec)
+                                     Standard_Integer theNbArgs,
+                                     const char**     theArgVec)
 {
   const Handle(AIS_InteractiveContext)& aContext = ViewerTest::GetAISContext();
-  const Handle(V3d_View)& aView = ViewerTest::CurrentView();
+  const Handle(V3d_View)&               aView    = ViewerTest::CurrentView();
   if (aContext.IsNull())
   {
     Message::SendFail("Error: no active viewer");
@@ -6397,7 +6395,7 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
     return 1;
   }
 
-  Aspect_VKeyMouse aButton = Aspect_VKeyMouse_LeftButton;
+  Aspect_VKeyMouse aButton       = Aspect_VKeyMouse_LeftButton;
   Standard_Boolean isPressButton = false;
   Standard_Boolean hasActionFlag = false;
 
@@ -6412,6 +6410,7 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
       {
         ++anArgIter;
         TCollection_AsciiString aButtonStr(theArgVec[anArgIter]);
+        aButtonStr.LowerCase();
         if (aButtonStr == "left")
         {
           aButton = Aspect_VKeyMouse_LeftButton;
@@ -6447,13 +6446,11 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
       isPressButton = true;
       hasActionFlag = true;
     }
-    else if (aMousePos.x() == IntegerLast()
-      && anArgStr.IsIntegerValue())
+    else if (aMousePos.x() == IntegerLast() && anArgStr.IsIntegerValue())
     {
       aMousePos.x() = anArgStr.IntegerValue();
     }
-    else if (aMousePos.y() == IntegerLast()
-      && anArgStr.IsIntegerValue())
+    else if (aMousePos.y() == IntegerLast() && anArgStr.IsIntegerValue())
     {
       aMousePos.y() = anArgStr.IntegerValue();
     }
@@ -6464,8 +6461,7 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
     }
   }
 
-  if (aMousePos.x() == IntegerLast()
-    || aMousePos.y() == IntegerLast())
+  if (aMousePos.x() == IntegerLast() || aMousePos.y() == IntegerLast())
   {
     Message::SendFail("Syntax error: mouse coordinates (x y) are required");
     return 1;
@@ -6480,14 +6476,26 @@ static Standard_Integer VMouseButton(Draw_Interpretor& /*theDI*/,
   if (isPressButton)
   {
     ViewerTest::CurrentEventManager()->ResetPreviousMoveTo();
-    ViewerTest::CurrentEventManager()->PressMouseButton(aMousePos, aButton, Aspect_VKeyFlags_NONE, false);
-    ViewerTest::CurrentEventManager()->UpdateMousePosition(aMousePos, Aspect_VKeyMouse_NONE, Aspect_VKeyFlags_NONE, false);
+    ViewerTest::CurrentEventManager()->PressMouseButton(aMousePos,
+                                                        aButton,
+                                                        Aspect_VKeyFlags_NONE,
+                                                        false);
+    ViewerTest::CurrentEventManager()->UpdateMousePosition(aMousePos,
+                                                           Aspect_VKeyMouse_NONE,
+                                                           Aspect_VKeyFlags_NONE,
+                                                           false);
     ViewerTest::CurrentEventManager()->FlushViewEvents(ViewerTest::GetAISContext(), aView, true);
   }
   else
   {
-    ViewerTest::CurrentEventManager()->UpdateMousePosition(aMousePos, Aspect_VKeyMouse_NONE, Aspect_VKeyFlags_NONE, false);
-    ViewerTest::CurrentEventManager()->ReleaseMouseButton(aMousePos, aButton, Aspect_VKeyFlags_NONE, false);
+    ViewerTest::CurrentEventManager()->UpdateMousePosition(aMousePos,
+                                                           Aspect_VKeyMouse_NONE,
+                                                           Aspect_VKeyFlags_NONE,
+                                                           false);
+    ViewerTest::CurrentEventManager()->ReleaseMouseButton(aMousePos,
+                                                          aButton,
+                                                          Aspect_VKeyFlags_NONE,
+                                                          false);
     ViewerTest::CurrentEventManager()->FlushViewEvents(ViewerTest::GetAISContext(), aView, true);
   }
 
