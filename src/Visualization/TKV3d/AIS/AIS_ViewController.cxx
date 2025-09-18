@@ -1835,6 +1835,16 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
 
   if (toRotateAnyway)
   {
+    // Apply incremental rotations directly to quaternion (avoid Euler conversion)
+    if (Abs(theYawExtra) > gp::Resolution() || Abs(thePitchExtra) > gp::Resolution())
+    {
+      gp_Quaternion aYawIncrement, aPitchIncrement;
+      aYawIncrement.SetVectorAndAngle(gp_Vec(gp::DZ()), theYawExtra);  // Yaw around world Z
+      aPitchIncrement.SetVectorAndAngle(gp_Vec(gp::DX()), thePitchExtra); // Pitch around world X
+      
+      myRotateStartQuaternion = aPitchIncrement * aYawIncrement * myRotateStartQuaternion;
+      myRotateStartQuaternion.Normalize();
+    }
     myGL.ViewRotation.ToRotate = true;
   }
 
@@ -1855,30 +1865,41 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
     -((myGL.ViewRotation.PointStart.y() - myGL.ViewRotation.PointTo.y()) / double(aWinXY.y()))
     * (M_PI * 0.5);
 
-  // Extract current Euler angles from quaternion
-  double aYawStart, aPitchStart, aRollStart;
-  myRotateStartQuaternion.GetEulerAngles(gp_YawPitchRoll, aYawStart, aPitchStart, aRollStart);
+  // Apply pitch clamping only when needed (minimize Euler conversions)
+  gp_Quaternion aMouseRotation = myRotateStartQuaternion;
+  if (Abs(aPitchAngleDelta) > gp::Resolution())
+  {
+    // Extract only pitch for clamping
+    double aDummy1, aPitchStart, aDummy2;
+    myRotateStartQuaternion.GetEulerAngles(gp_YawPitchRoll, aDummy1, aPitchStart, aDummy2);
+    const double aPitchAngleNew = Max(Min(aPitchStart + aPitchAngleDelta, M_PI * 0.5 - M_PI / 180.0), 
+                                      -M_PI * 0.5 + M_PI / 180.0);
+    aPitchAngleDelta = aPitchAngleNew - aPitchStart; // Use clamped delta
+  }
+  
+  // Apply mouse deltas with quaternion operations (more efficient)
+  if (Abs(aYawAngleDelta) > gp::Resolution() || Abs(aPitchAngleDelta) > gp::Resolution())
+  {
+    gp_Quaternion aYawMouse, aPitchMouse;
+    aYawMouse.SetVectorAndAngle(gp_Vec(gp::DZ()), aYawAngleDelta);
+    aPitchMouse.SetVectorAndAngle(gp_Vec(gp::DX()), aPitchAngleDelta);
+    
+    aMouseRotation = aPitchMouse * aYawMouse * myRotateStartQuaternion;
+  }
 
-  // Add any incremental rotations from theYawExtra/thePitchExtra
-  aYawStart += theYawExtra;
-  aPitchStart += thePitchExtra;
+  // Apply roll if specified (temporary, not stored in quaternion)
+  gp_Quaternion aFinalRotation = aMouseRotation;
+  if (Abs(theRoll) > gp::Resolution())
+  {
+    gp_Quaternion aRollRotation;
+    aRollRotation.SetVectorAndAngle(gp_Vec(gp::DY()), -theRoll); // Roll around Y (view direction)
+    aFinalRotation = aRollRotation * aMouseRotation;
+  }
 
-  // Apply deltas with pitch clamping (matching original logic)
-  const double aPitchAngleNew =
-    Max(Min(aPitchStart + aPitchAngleDelta, M_PI * 0.5 - M_PI / 180.0), -M_PI * 0.5 + M_PI / 180.0);
-  const double aYawAngleNew = aYawStart + aYawAngleDelta;
-
-  // Roll behavior: use theRoll directly (as in original), not accumulated from quaternion
-  // This matches original behavior where roll was reset to original position
-  const double aRollFinal = theRoll;
-
-  // Build final quaternion from computed Euler angles
-  gp_Quaternion aRot;
-  aRot.SetEulerAngles(gp_YawPitchRoll, aYawAngleNew, aPitchAngleNew, aRollFinal);
+  // Convert final quaternion to transformation and apply
   gp_Trsf aTrsfRot;
-  aTrsfRot.SetRotation(aRot);
+  aTrsfRot.SetRotation(aFinalRotation);
 
-  // Apply same transformations as original
   const gp_Dir aNewUp  = gp::DZ().Transformed(aTrsfRot);
   const gp_Dir aNewDir = gp::DX().Transformed(aTrsfRot);
   aCam->SetUp(aNewUp);
