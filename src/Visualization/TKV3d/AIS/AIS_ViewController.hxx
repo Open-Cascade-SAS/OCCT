@@ -828,6 +828,7 @@ protected: //! @name rotation/panning transient state variables
   gp_Pnt              myCamStartOpCenter;         //!< camera Center position at the beginning of rotation
   gp_Vec              myCamStartOpToCenter;       //!< vector from rotation gravity point to camera Center at the beginning of rotation
   gp_Vec              myCamStartOpToEye;          //!< vector from rotation gravity point to camera Eye    at the beginning of rotation
+  double              myCurrentRollAngle;        //!< current roll angle for instantaneous roll
   // clang-format on
 };
 
