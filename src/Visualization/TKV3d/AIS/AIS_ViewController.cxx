@@ -1679,25 +1679,43 @@ void AIS_ViewController::handleOrbitRotation(const Handle(V3d_View)& theView,
       aPitchAngleDelta = aPitchAngleNew - aCurrentPitch; // Use clamped delta
     }
 
-    // Simple approach: just use the original transformation logic but with stored vectors
-    gp_Trsf aYawTrsf;
-    aYawTrsf.SetRotation(gp_Ax1(myRotatePnt3d, gp::DZ()), aYawAngleDelta);
+    // Apply transformations only when needed
+    const bool hasYaw   = Abs(aYawAngleDelta) > Precision::Angular();
+    const bool hasPitch = Abs(aPitchAngleDelta) > Precision::Angular();
 
-    gp_Trsf aPitchTrsf;
-    aPitchTrsf.SetRotation(gp_Ax1(myRotatePnt3d, myCamStartOpUp.Crossed(myCamStartOpDir)),
-                           aPitchAngleDelta);
+    if (hasYaw || hasPitch)
+    {
+      gp_Trsf aCombinedTrsf;
 
-    // Combine transformations
-    gp_Trsf aCombinedTrsf;
-    aCombinedTrsf.Multiply(aYawTrsf);
-    aCombinedTrsf.Multiply(aPitchTrsf);
+      if (hasYaw)
+      {
+        gp_Trsf aYawTrsf;
+        aYawTrsf.SetRotation(gp_Ax1(myRotatePnt3d, gp::DZ()), aYawAngleDelta);
+        aCombinedTrsf.Multiply(aYawTrsf);
+      }
 
-    // Apply to camera using the original vectors
-    aCam->SetUp(myCamStartOpUp.Transformed(aCombinedTrsf));
-    aCam->SetEyeAndCenter(
-      myRotatePnt3d.XYZ() + gp_Vec(myRotatePnt3d, myCamStartOpEye).Transformed(aCombinedTrsf).XYZ(),
-      myRotatePnt3d.XYZ()
-        + gp_Vec(myRotatePnt3d, myCamStartOpCenter).Transformed(aCombinedTrsf).XYZ());
+      if (hasPitch)
+      {
+        gp_Trsf aPitchTrsf;
+        aPitchTrsf.SetRotation(gp_Ax1(myRotatePnt3d, myCamStartOpUp.Crossed(myCamStartOpDir)),
+                               aPitchAngleDelta);
+        aCombinedTrsf.Multiply(aPitchTrsf);
+      }
+
+      // Apply to camera using the original vectors
+      aCam->SetUp(myCamStartOpUp.Transformed(aCombinedTrsf));
+      aCam->SetEyeAndCenter(
+        myRotatePnt3d.XYZ()
+          + gp_Vec(myRotatePnt3d, myCamStartOpEye).Transformed(aCombinedTrsf).XYZ(),
+        myRotatePnt3d.XYZ()
+          + gp_Vec(myRotatePnt3d, myCamStartOpCenter).Transformed(aCombinedTrsf).XYZ());
+    }
+    else
+    {
+      // No rotation needed - use original vectors
+      aCam->SetUp(myCamStartOpUp);
+      aCam->SetEyeAndCenter(myCamStartOpEye, myCamStartOpCenter);
+    }
 
     aCam->OrthogonalizeUp();
   }
@@ -1838,41 +1856,50 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   aPitchAngleDelta = aPitchAngleClamped - aCurrentPitch;
 
   // Apply yaw and pitch transformations to stored camera vectors
-  gp_Trsf aYawTrsf;
-  aYawTrsf.SetRotation(gp_Ax1(gp::Origin(), gp::DZ()), aYawAngleDelta);
+  gp_Dir aBaseUp  = myCamStartOpUp;
+  gp_Dir aBaseDir = myCamStartOpDir;
 
-  gp_Trsf      aPitchTrsf;
-  const gp_Vec aPitchAxis = myCamStartOpUp.Crossed(myCamStartOpDir);
-  aPitchTrsf.SetRotation(gp_Ax1(gp::Origin(), aPitchAxis), aPitchAngleDelta);
+  const bool hasYaw   = Abs(aYawAngleDelta) > Precision::Angular();
+  const bool hasPitch = Abs(aPitchAngleDelta) > Precision::Angular();
 
-  // Combine yaw and pitch transformations
-  gp_Trsf aCombinedTrsf;
-  aCombinedTrsf.Multiply(aYawTrsf);
-  aCombinedTrsf.Multiply(aPitchTrsf);
+  if (hasYaw || hasPitch)
+  {
+    gp_Trsf aCombinedTrsf;
 
-  // Apply yaw and pitch to stored camera state
-  const gp_Dir aBaseUp  = myCamStartOpUp.Transformed(aCombinedTrsf);
-  const gp_Dir aBaseDir = myCamStartOpDir.Transformed(aCombinedTrsf);
+    if (hasYaw)
+    {
+      gp_Trsf aYawTrsf;
+      aYawTrsf.SetRotation(gp_Ax1(gp::Origin(), gp::DZ()), aYawAngleDelta);
+      aCombinedTrsf.Multiply(aYawTrsf);
+    }
+
+    if (hasPitch)
+    {
+      gp_Trsf      aPitchTrsf;
+      const gp_Vec aPitchAxis = myCamStartOpUp.Crossed(myCamStartOpDir);
+      aPitchTrsf.SetRotation(gp_Ax1(gp::Origin(), aPitchAxis), aPitchAngleDelta);
+      aCombinedTrsf.Multiply(aPitchTrsf);
+    }
+
+    aBaseUp  = myCamStartOpUp.Transformed(aCombinedTrsf);
+    aBaseDir = myCamStartOpDir.Transformed(aCombinedTrsf);
+  }
 
   // Apply roll transformation - handle old/new roll if changed
-  gp_Dir aFinalUp = aBaseUp;
   if (aRollIsChanged)
   {
     // First remove old roll, then apply new roll
     gp_Trsf anInverseOldRollTrsf;
     anInverseOldRollTrsf.SetRotation(gp_Ax1(gp::Origin(), aBaseDir), -anOldRollAngle);
-    aFinalUp = aFinalUp.Transformed(anInverseOldRollTrsf);
+    aBaseUp = aBaseUp.Transformed(anInverseOldRollTrsf);
 
     gp_Trsf aNewRollTrsf;
     aNewRollTrsf.SetRotation(gp_Ax1(gp::Origin(), aBaseDir), aNewRollAngle);
-    aFinalUp = aFinalUp.Transformed(aNewRollTrsf);
+    aBaseUp = aBaseUp.Transformed(aNewRollTrsf);
   }
 
-  const gp_Dir aNewUp  = aFinalUp;
-  const gp_Dir aNewDir = aBaseDir;
-
-  aCam->SetUp(aNewUp);
-  aCam->SetDirectionFromEye(aNewDir);
+  aCam->SetUp(aBaseUp);
+  aCam->SetDirectionFromEye(aBaseDir);
   aCam->OrthogonalizeUp();
   theView->Invalidate();
 }
