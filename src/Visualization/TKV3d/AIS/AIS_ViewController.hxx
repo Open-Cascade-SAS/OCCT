@@ -828,7 +828,6 @@ protected: //! @name rotation/panning transient state variables
   gp_Pnt              myCamStartOpCenter;         //!< camera Center position at the beginning of rotation
   gp_Vec              myCamStartOpToCenter;       //!< vector from rotation gravity point to camera Center at the beginning of rotation
   gp_Vec              myCamStartOpToEye;          //!< vector from rotation gravity point to camera Eye    at the beginning of rotation
-  gp_Quaternion       myRotateStartQuaternion;    //!< camera orientation quaternion at the beginning of view rotation
   // clang-format on
 };
 
