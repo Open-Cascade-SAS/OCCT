@@ -14,7 +14,6 @@
 #include "AIS_ViewController.hxx"
 
 #include <AIS_AnimationCamera.hxx>
-#include <iostream>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Point.hxx>
 #include <AIS_RubberBand.hxx>
@@ -1783,10 +1782,10 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
     return;
   }
 
-  const Handle(Graphic3d_Camera)& aCam           = theView->Camera();
-  const bool                      toRotateAnyway = Abs(theYawExtra) > gp::Resolution()
-                              || Abs(thePitchExtra) > gp::Resolution()
-                              || Abs(theRoll - myCurrentRollAngle) > gp::Resolution();
+  const Handle(Graphic3d_Camera)& aCam = theView->Camera();
+  const bool aRollIsChanged            = Abs(theRoll - myCurrentRollAngle) > gp::Resolution();
+  const bool toRotateAnyway =
+    Abs(theYawExtra) > gp::Resolution() || Abs(thePitchExtra) > gp::Resolution() || aRollIsChanged;
 
   // Store old and new roll values for later processing
   const double anOldRollAngle = myCurrentRollAngle;
@@ -1857,7 +1856,7 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
 
   // Apply roll transformation - handle old/new roll if changed
   gp_Dir aFinalUp = aBaseUp;
-  if (toRotateAnyway)
+  if (aRollIsChanged)
   {
     // First remove old roll, then apply new roll
     gp_Trsf anInverseOldRollTrsf;
