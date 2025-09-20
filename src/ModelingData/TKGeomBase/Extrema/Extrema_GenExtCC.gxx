@@ -29,8 +29,7 @@
 #include <GCPnts_AbscissaPoint.hxx>
 
 // Comparator, used in std::sort.
-static Standard_Boolean comp(const gp_XY& theA,
-                             const gp_XY& theB)
+static Standard_Boolean comp(const gp_XY& theA, const gp_XY& theB)
 {
   if (theA.X() < theB.X())
   {
@@ -48,19 +47,20 @@ static Standard_Boolean comp(const gp_XY& theA,
   return Standard_False;
 }
 
-static void ChangeIntervals(Handle(TColStd_HArray1OfReal)& theInts, const Standard_Integer theNbInts)
+static void ChangeIntervals(Handle(TColStd_HArray1OfReal)& theInts,
+                            const Standard_Integer         theNbInts)
 {
-  Standard_Integer aNbInts = theInts->Length() - 1;
-  Standard_Integer aNbAdd = theNbInts - aNbInts;
+  Standard_Integer              aNbInts  = theInts->Length() - 1;
+  Standard_Integer              aNbAdd   = theNbInts - aNbInts;
   Handle(TColStd_HArray1OfReal) aNewInts = new TColStd_HArray1OfReal(1, theNbInts + 1);
-  Standard_Integer aNbLast = theInts->Length();
-  Standard_Integer i;
+  Standard_Integer              aNbLast  = theInts->Length();
+  Standard_Integer              i;
   if (aNbInts == 1)
   {
     aNewInts->SetValue(1, theInts->First());
     aNewInts->SetValue(theNbInts + 1, theInts->Last());
     Standard_Real dt = (theInts->Last() - theInts->First()) / theNbInts;
-    Standard_Real t = theInts->First() + dt;
+    Standard_Real t  = theInts->First() + dt;
     for (i = 2; i <= theNbInts; ++i, t += dt)
     {
       aNewInts->SetValue(i, t);
@@ -76,15 +76,15 @@ static void ChangeIntervals(Handle(TColStd_HArray1OfReal)& theInts, const Standa
   //
   while (aNbAdd > 0)
   {
-    Standard_Real anLIntMax = -1.;
-    Standard_Integer aMaxInd = -1;
+    Standard_Real    anLIntMax = -1.;
+    Standard_Integer aMaxInd   = -1;
     for (i = 1; i < aNbLast; ++i)
     {
       Standard_Real anL = aNewInts->Value(i + 1) - aNewInts->Value(i);
       if (anL > anLIntMax)
       {
         anLIntMax = anL;
-        aMaxInd = i;
+        aMaxInd   = i;
       }
     }
 
@@ -99,39 +99,32 @@ static void ChangeIntervals(Handle(TColStd_HArray1OfReal)& theInts, const Standa
   }
   theInts = aNewInts;
 }
+
 class Extrema_CCPointsInspector : public NCollection_CellFilter_InspectorXY
 {
 public:
   typedef gp_XY Target;
+
   //! Constructor; remembers the tolerance
-  Extrema_CCPointsInspector (const Standard_Real theTol)
+  Extrema_CCPointsInspector(const Standard_Real theTol)
   {
-    myTol = theTol * theTol;
+    myTol    = theTol * theTol;
     myIsFind = Standard_False;
   }
 
-  void ClearFind()
-  {
-    myIsFind = Standard_False;
-  }
+  void ClearFind() { myIsFind = Standard_False; }
 
-  Standard_Boolean isFind()
-  {
-    return myIsFind;
-  }
+  Standard_Boolean isFind() { return myIsFind; }
 
   //! Set current point to search for coincidence
-  void SetCurrent (const gp_XY& theCurPnt) 
-  { 
-    myCurrent = theCurPnt;
-  }
+  void SetCurrent(const gp_XY& theCurPnt) { myCurrent = theCurPnt; }
 
   //! Implementation of inspection method
-  NCollection_CellFilter_Action Inspect (const Target& theObject)
+  NCollection_CellFilter_Action Inspect(const Target& theObject)
   {
-    gp_XY aPt = myCurrent.Subtracted(theObject);
+    gp_XY               aPt     = myCurrent.Subtracted(theObject);
     const Standard_Real aSQDist = aPt.SquareModulus();
-    if(aSQDist < myTol)
+    if (aSQDist < myTol)
     {
       myIsFind = Standard_True;
     }
@@ -140,18 +133,17 @@ public:
   }
 
 private:
-  Standard_Real myTol;
-  gp_XY myCurrent;
+  Standard_Real    myTol;
+  gp_XY            myCurrent;
   Standard_Boolean myIsFind;
 };
 
 //=======================================================================
-//function : ProjPOnC
-//purpose  : Projects the point on the curve and returns the minimal
+// function : ProjPOnC
+// purpose  : Projects the point on the curve and returns the minimal
 //           projection distance
 //=======================================================================
-static Standard_Real ProjPOnC(const Pnt& theP,
-                              Extrema_GExtPC& theProjTool)
+static Standard_Real ProjPOnC(const Pnt& theP, Extrema_GExtPC& theProjTool)
 {
   Standard_Real aDist = ::RealLast();
   theProjTool.Perform(theP);
@@ -170,29 +162,28 @@ static Standard_Real ProjPOnC(const Pnt& theP,
 //=================================================================================================
 
 Extrema_GenExtCC::Extrema_GenExtCC()
-: myIsFindSingleSolution(Standard_False),
-  myParallel(Standard_False),
-  myCurveMinTol(Precision::PConfusion()),
-  myLowBorder(1,2),
-  myUppBorder(1,2),
-  myDone(Standard_False)
+    : myIsFindSingleSolution(Standard_False),
+      myParallel(Standard_False),
+      myCurveMinTol(Precision::PConfusion()),
+      myLowBorder(1, 2),
+      myUppBorder(1, 2),
+      myDone(Standard_False)
 {
   myC[0] = myC[1] = 0;
 }
 
 //=================================================================================================
 
-Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
-                                   const Curve2& C2)
-: myIsFindSingleSolution(Standard_False),
-  myParallel(Standard_False),
-  myCurveMinTol(Precision::PConfusion()),
-  myLowBorder(1,2),
-  myUppBorder(1,2),
-  myDone(Standard_False)
+Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1, const Curve2& C2)
+    : myIsFindSingleSolution(Standard_False),
+      myParallel(Standard_False),
+      myCurveMinTol(Precision::PConfusion()),
+      myLowBorder(1, 2),
+      myUppBorder(1, 2),
+      myDone(Standard_False)
 {
-  myC[0] = (Standard_Address)&C1;
-  myC[1] = (Standard_Address)&C2;
+  myC[0]         = (Standard_Address)&C1;
+  myC[1]         = (Standard_Address)&C2;
   myLowBorder(1) = C1.FirstParameter();
   myLowBorder(2) = C2.FirstParameter();
   myUppBorder(1) = C1.LastParameter();
@@ -201,21 +192,21 @@ Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
 
 //=================================================================================================
 
-Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
-                                   const Curve2& C2,
+Extrema_GenExtCC::Extrema_GenExtCC(const Curve1&       C1,
+                                   const Curve2&       C2,
                                    const Standard_Real Uinf,
                                    const Standard_Real Usup,
                                    const Standard_Real Vinf,
                                    const Standard_Real Vsup)
-: myIsFindSingleSolution(Standard_False),
-  myParallel(Standard_False),
-  myCurveMinTol(Precision::PConfusion()),
-  myLowBorder(1,2),
-  myUppBorder(1,2),
-  myDone(Standard_False)
+    : myIsFindSingleSolution(Standard_False),
+      myParallel(Standard_False),
+      myCurveMinTol(Precision::PConfusion()),
+      myLowBorder(1, 2),
+      myUppBorder(1, 2),
+      myDone(Standard_False)
 {
-  myC[0] = (Standard_Address)&C1;
-  myC[1] = (Standard_Address)&C2;
+  myC[0]         = (Standard_Address)&C1;
+  myC[1]         = (Standard_Address)&C2;
   myLowBorder(1) = Uinf;
   myLowBorder(2) = Vinf;
   myUppBorder(1) = Usup;
@@ -224,15 +215,15 @@ Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
 
 //=================================================================================================
 
-void Extrema_GenExtCC::SetParams(const Curve1& C1,
-                                 const Curve2& C2,
+void Extrema_GenExtCC::SetParams(const Curve1&       C1,
+                                 const Curve2&       C2,
                                  const Standard_Real Uinf,
                                  const Standard_Real Usup,
                                  const Standard_Real Vinf,
                                  const Standard_Real Vsup)
 {
-  myC[0] = (Standard_Address)&C1;
-  myC[1] = (Standard_Address)&C2;
+  myC[0]         = (Standard_Address)&C1;
+  myC[1]         = (Standard_Address)&C2;
   myLowBorder(1) = Uinf;
   myLowBorder(2) = Vinf;
   myUppBorder(1) = Usup;
@@ -250,16 +241,16 @@ void Extrema_GenExtCC::SetTolerance(Standard_Real theTol)
 
 void Extrema_GenExtCC::Perform()
 {
-  myDone = Standard_False;
+  myDone     = Standard_False;
   myParallel = Standard_False;
 
-  Curve1 &C1 = *(Curve1*)myC[0];
-  Curve2 &C2 = *(Curve2*)myC[1];
+  Curve1& C1 = *(Curve1*)myC[0];
+  Curve2& C2 = *(Curve2*)myC[1];
 
   Standard_Integer aNbInter[2];
-  GeomAbs_Shape aContinuity = GeomAbs_C2;
-  aNbInter[0] = C1.NbIntervals(aContinuity);
-  aNbInter[1] = C2.NbIntervals(aContinuity);
+  GeomAbs_Shape    aContinuity = GeomAbs_C2;
+  aNbInter[0]                  = C1.NbIntervals(aContinuity);
+  aNbInter[1]                  = C2.NbIntervals(aContinuity);
 
   if (aNbInter[0] * aNbInter[1] > 100)
   {
@@ -268,11 +259,11 @@ void Extrema_GenExtCC::Perform()
     aNbInter[1] = C2.NbIntervals(aContinuity);
   }
 
-  Standard_Real anL[2];
-  Standard_Integer indmax = -1, indmin = -1;
+  Standard_Real       anL[2];
+  Standard_Integer    indmax = -1, indmin = -1;
   const Standard_Real mult = 20.;
-  if (!(Precision::IsInfinite(C1.FirstParameter()) || Precision::IsInfinite(C1.LastParameter()) ||
-        Precision::IsInfinite(C2.FirstParameter()) || Precision::IsInfinite(C2.LastParameter())))
+  if (!(Precision::IsInfinite(C1.FirstParameter()) || Precision::IsInfinite(C1.LastParameter())
+        || Precision::IsInfinite(C2.FirstParameter()) || Precision::IsInfinite(C2.LastParameter())))
   {
     anL[0] = GCPnts_AbscissaPoint::Length(C1);
     anL[1] = GCPnts_AbscissaPoint::Length(C2);
@@ -290,7 +281,7 @@ void Extrema_GenExtCC::Perform()
   Standard_Integer aNbIntOpt = 0;
   if (indmax >= 0)
   {
-    aNbIntOpt = RealToInt(anL[indmax] * aNbInter[indmin] / anL[indmin] / (mult / 4.))  + 1;
+    aNbIntOpt = RealToInt(anL[indmax] * aNbInter[indmin] / anL[indmin] / (mult / 4.)) + 1;
     if (aNbIntOpt > 100 || aNbIntOpt < aNbInter[indmax])
     {
       indmax = -1;
@@ -316,13 +307,13 @@ void Extrema_GenExtCC::Perform()
   {
     if (indmax == 0)
     {
-      //Change anIntervals1
+      // Change anIntervals1
       ChangeIntervals(anIntervals1, aNbIntOpt);
       aNbInter[0] = anIntervals1->Length() - 1;
     }
     else
     {
-      //Change anIntervals2;
+      // Change anIntervals2;
       ChangeIntervals(anIntervals2, aNbIntOpt);
       aNbInter[1] = anIntervals2->Length() - 1;
     }
@@ -339,17 +330,17 @@ void Extrema_GenExtCC::Perform()
   }
 
   // Lipchitz constant computation.
-  const Standard_Real aMaxLC = 10000.;
-  Standard_Real aLC = 100.0; // Default value.
+  const Standard_Real aMaxLC   = 10000.;
+  Standard_Real       aLC      = 100.0; // Default value.
   const Standard_Real aMaxDer1 = 1.0 / C1.Resolution(1.0);
   const Standard_Real aMaxDer2 = 1.0 / C2.Resolution(1.0);
-  Standard_Real aMaxDer = Max(aMaxDer1, aMaxDer2) * Sqrt(2.0);
+  Standard_Real       aMaxDer  = Max(aMaxDer1, aMaxDer2) * Sqrt(2.0);
   if (aLC > aMaxDer)
     aLC = aMaxDer;
 
   // Change constant value according to the concrete curve types.
   Standard_Boolean isConstLockedFlag = Standard_False;
-  //To prevent LipConst to became too small
+  // To prevent LipConst to became too small
   const Standard_Real aCR = 0.001;
   if (aMaxDer1 / aMaxDer < aCR || aMaxDer2 / aMaxDer < aCR)
   {
@@ -357,7 +348,7 @@ void Extrema_GenExtCC::Perform()
   }
   if (aMaxDer > aMaxLC)
   {
-    aLC = aMaxLC;
+    aLC               = aMaxLC;
     isConstLockedFlag = Standard_True;
   }
   if (C1.GetType() == GeomAbs_Line)
@@ -366,7 +357,7 @@ void Extrema_GenExtCC::Perform()
     if (aLC > aMaxDer)
     {
       isConstLockedFlag = Standard_True;
-      aLC = aMaxDer;
+      aLC               = aMaxDer;
     }
   }
   if (C2.GetType() == GeomAbs_Line)
@@ -375,18 +366,18 @@ void Extrema_GenExtCC::Perform()
     if (aLC > aMaxDer)
     {
       isConstLockedFlag = Standard_True;
-      aLC = aMaxDer;
+      aLC               = aMaxDer;
     }
   }
 
-  Extrema_GlobOptFuncCCC2 aFunc (C1, C2);
+  Extrema_GlobOptFuncCCC2 aFunc(C1, C2);
   if (aLC < aMaxLC || aMaxDer > aMaxLC)
   {
-    //Estimation of Lipschitz constant by gradient of optimization function 
-    //using sampling in parameter space.
-    math_Vector aT(1, 2), aG(1, 2);
-    Standard_Real aF, aMaxG = 0.;
-    Standard_Real t1, t2, dt1, dt2;
+    // Estimation of Lipschitz constant by gradient of optimization function
+    // using sampling in parameter space.
+    math_Vector      aT(1, 2), aG(1, 2);
+    Standard_Real    aF, aMaxG = 0.;
+    Standard_Real    t1, t2, dt1, dt2;
     Standard_Integer n1 = 21, n2 = 21, i1, i2;
     dt1 = (C1.LastParameter() - C1.FirstParameter()) / (n1 - 1);
     dt2 = (C2.LastParameter() - C2.FirstParameter()) / (n2 - 1);
@@ -397,19 +388,19 @@ void Extrema_GenExtCC::Perform()
       {
         aT(2) = t2;
         aFunc.Values(aT, aF, aG);
-        Standard_Real aMod = aG(1)*aG(1) + aG(2)*aG(2);
-        aMaxG = Max(aMaxG, aMod);
+        Standard_Real aMod = aG(1) * aG(1) + aG(2) * aG(2);
+        aMaxG              = Max(aMaxG, aMod);
       }
     }
     aMaxG = Sqrt(aMaxG);
     if (aMaxG > aMaxDer)
     {
-      aLC = Min(aMaxG, aMaxLC);
+      aLC               = Min(aMaxG, aMaxLC);
       isConstLockedFlag = Standard_True;
     }
     if (aMaxG > 100. * aMaxLC)
     {
-      aLC = 100. * aMaxLC;
+      aLC               = 100. * aMaxLC;
       isConstLockedFlag = Standard_True;
     }
     else if (aMaxG < 0.1 * aMaxDer)
@@ -420,32 +411,32 @@ void Extrema_GenExtCC::Perform()
   math_GlobOptMin aFinder(&aFunc, myLowBorder, myUppBorder, aLC);
   aFinder.SetLipConstState(isConstLockedFlag);
   aFinder.SetContinuity(aContinuity == GeomAbs_C2 ? 2 : 1);
-  Standard_Real aDiscTol = 1.0e-2;
+  Standard_Real aDiscTol  = 1.0e-2;
   Standard_Real aValueTol = 1.0e-2;
-  Standard_Real aSameTol = myCurveMinTol / (aDiscTol);
+  Standard_Real aSameTol  = myCurveMinTol / (aDiscTol);
   aFinder.SetTol(aDiscTol, aSameTol);
   aFinder.SetFunctionalMinimalValue(0.0); // Best distance cannot be lower than 0.0.
 
   // Size computed to have cell index inside of int32 value.
-  const Standard_Real aCellSize = Max(Max(anIntervals1->Last() - anIntervals1->First(),
-                                      anIntervals2->Last() - anIntervals2->First())
-                                      * Precision::PConfusion() / (2.0 * Sqrt(2.0)),
-                                      Precision::PConfusion());
-  Extrema_CCPointsInspector anInspector(aCellSize);
+  const Standard_Real aCellSize = Max(
+    Max(anIntervals1->Last() - anIntervals1->First(), anIntervals2->Last() - anIntervals2->First())
+      * Precision::PConfusion() / (2.0 * Sqrt(2.0)),
+    Precision::PConfusion());
+  Extrema_CCPointsInspector                         anInspector(aCellSize);
   NCollection_CellFilter<Extrema_CCPointsInspector> aFilter(aCellSize);
-  NCollection_Vector<gp_XY> aPnts;
+  NCollection_Vector<gp_XY>                         aPnts;
 
-  Standard_Integer i,j,k;
-  math_Vector aFirstBorderInterval(1,2);
-  math_Vector aSecondBorderInterval(1,2);
-  Standard_Real aF = RealLast(); // Best functional value.
-  Standard_Real aCurrF = RealLast(); // Current functional value computed on current interval.
-  for(i = 1; i <= aNbInter[0]; i++)
+  Standard_Integer i, j, k;
+  math_Vector      aFirstBorderInterval(1, 2);
+  math_Vector      aSecondBorderInterval(1, 2);
+  Standard_Real    aF     = RealLast(); // Best functional value.
+  Standard_Real    aCurrF = RealLast(); // Current functional value computed on current interval.
+  for (i = 1; i <= aNbInter[0]; i++)
   {
-    for(j = 1; j <= aNbInter[1]; j++)
+    for (j = 1; j <= aNbInter[1]; j++)
     {
-      aFirstBorderInterval(1) = anIntervals1->Value(i);
-      aFirstBorderInterval(2) = anIntervals2->Value(j); 
+      aFirstBorderInterval(1)  = anIntervals1->Value(i);
+      aFirstBorderInterval(2)  = anIntervals2->Value(j);
       aSecondBorderInterval(1) = anIntervals1->Value(i + 1);
       aSecondBorderInterval(2) = anIntervals2->Value(j + 1);
 
@@ -473,14 +464,14 @@ void Extrema_GenExtCC::Perform()
       }
 
       // Save found solutions avoiding repetitions.
-      math_Vector sol(1,2);
-      for(k = 1; k <= aFinder.NbExtrema(); k++)
+      math_Vector sol(1, 2);
+      for (k = 1; k <= aFinder.NbExtrema(); k++)
       {
         aFinder.Points(k, sol);
         gp_XY aPnt2d(sol(1), sol(2));
 
         gp_XY aXYmin = anInspector.Shift(aPnt2d, -aCellSize);
-        gp_XY aXYmax = anInspector.Shift(aPnt2d,  aCellSize);
+        gp_XY aXYmax = anInspector.Shift(aPnt2d, aCellSize);
 
         anInspector.ClearFind();
         anInspector.SetCurrent(aPnt2d);
@@ -539,8 +530,8 @@ void Extrema_GenExtCC::Perform()
   Standard_Boolean bDifferentSolutions = Standard_False;
 
   Standard_Boolean isParallel = Standard_True;
-  Standard_Real aVal = 0.0;
-  math_Vector aVec(1, 2, 0.0);
+  Standard_Real    aVal       = 0.0;
+  math_Vector      aVec(1, 2, 0.0);
 
   // Iterate on all solutions and collect the extreme solutions on all parallel segments.
   for (Standard_Integer anIdx = 0; anIdx < aNbSol - 1; anIdx++)
@@ -581,12 +572,12 @@ void Extrema_GenExtCC::Perform()
         if (aNext.Y() > aCurrent.Y())
         {
           bDifferentSolutions = Standard_True;
-          bDirsCoinside = Standard_True;
+          bDirsCoinside       = Standard_True;
         }
         else if (aNext.Y() < aCurrent.Y())
         {
           bDifferentSolutions = Standard_True;
-          bDirsCoinside = Standard_False;
+          bDirsCoinside       = Standard_False;
         }
       }
     }
@@ -615,7 +606,7 @@ void Extrema_GenExtCC::Perform()
     {
       Standard_Real aDist1 = ProjPOnC(C1.Value(aT1[iT]), anExtPC2);
       Standard_Real aDist2 = ProjPOnC(C2.Value(aT2[iT]), anExtPC1);
-      isParallel = (Abs(Min(aDist1, aDist2) - aF * aF) < Precision::Confusion());
+      isParallel           = (Abs(Min(aDist1, aDist2) - aF * aF) < Precision::Confusion());
     }
   }
 
@@ -642,16 +633,17 @@ void Extrema_GenExtCC::Perform()
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GenExtCC::IsDone() const 
+Standard_Boolean Extrema_GenExtCC::IsDone() const
 {
-  return myDone; 
+  return myDone;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GenExtCC::IsParallel() const 
+Standard_Boolean Extrema_GenExtCC::IsParallel() const
 {
-  if (!IsDone()) throw StdFail_NotDone();
+  if (!IsDone())
+    throw StdFail_NotDone();
   return myParallel;
 }
 
@@ -659,7 +651,8 @@ Standard_Boolean Extrema_GenExtCC::IsParallel() const
 
 Standard_Integer Extrema_GenExtCC::NbExt() const
 {
-  if (!IsDone()) throw StdFail_NotDone();
+  if (!IsDone())
+    throw StdFail_NotDone();
   return myPoints1.Length();
 }
 
@@ -672,14 +665,13 @@ Standard_Real Extrema_GenExtCC::SquareDistance(const Standard_Integer N) const
     throw Standard_OutOfRange();
   }
 
-  return Tool1::Value(*((Curve1*)myC[0]), myPoints1(N)).SquareDistance(Tool2::Value(*((Curve2*)myC[1]), myPoints2(N)));
+  return Tool1::Value(*((Curve1*)myC[0]), myPoints1(N))
+    .SquareDistance(Tool2::Value(*((Curve2*)myC[1]), myPoints2(N)));
 }
 
 //=================================================================================================
 
-void Extrema_GenExtCC::Points(const Standard_Integer N,
-                              POnC& P1,
-                              POnC& P2) const
+void Extrema_GenExtCC::Points(const Standard_Integer N, POnC& P1, POnC& P2) const
 {
   if (N < 1 || N > NbExt())
   {

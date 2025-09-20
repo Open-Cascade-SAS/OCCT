@@ -21,103 +21,103 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 
-
 //======================================================================
-//== On echantillonne sur le Domain de la Curve  NbPts Points 
+//== On echantillonne sur le Domain de la Curve  NbPts Points
 //== a parametres constants.
-//== 
-//== On estime la fleche maximum en prenant la distance maxi entre la 
-//== droite Curve.Value(X(i))-->Curve.Value(X(i+1)) 
+//==
+//== On estime la fleche maximum en prenant la distance maxi entre la
+//== droite Curve.Value(X(i))-->Curve.Value(X(i+1))
 //== et le point Curve.Value(X(i+1/2))
 //======================================================================
-IntCurveSurface_Polygon::IntCurveSurface_Polygon(const TheCurve&        C,
-						 const Standard_Integer tNbPts):
-       ThePnts(1,(tNbPts<5)? 5 : tNbPts) 
-{ 
-  Standard_Integer NbPts = (tNbPts<5)? 5 : tNbPts;
-  NbPntIn = NbPts;
-  Binf = TheCurveTool::FirstParameter(C);
-  Bsup = TheCurveTool::LastParameter(C);
-  Init(C); 
+IntCurveSurface_Polygon::IntCurveSurface_Polygon(const TheCurve& C, const Standard_Integer tNbPts)
+    : ThePnts(1, (tNbPts < 5) ? 5 : tNbPts)
+{
+  Standard_Integer NbPts = (tNbPts < 5) ? 5 : tNbPts;
+  NbPntIn                = NbPts;
+  Binf                   = TheCurveTool::FirstParameter(C);
+  Bsup                   = TheCurveTool::LastParameter(C);
+  Init(C);
 }
 
-
-
 IntCurveSurface_Polygon::IntCurveSurface_Polygon(const TheCurve&        C,
-						 const Standard_Real    U1,
-						 const Standard_Real    U2,
-						 const Standard_Integer tNbPts):
-       ThePnts(1,(tNbPts<5)? 5 : tNbPts) , Binf(U1) , Bsup(U2)
-{ 
-  
-  
-  Standard_Integer NbPts = (tNbPts<5)? 5 : tNbPts;
-  NbPntIn = NbPts;
+                                                 const Standard_Real    U1,
+                                                 const Standard_Real    U2,
+                                                 const Standard_Integer tNbPts)
+    : ThePnts(1, (tNbPts < 5) ? 5 : tNbPts),
+      Binf(U1),
+      Bsup(U2)
+{
+
+  Standard_Integer NbPts = (tNbPts < 5) ? 5 : tNbPts;
+  NbPntIn                = NbPts;
   Init(C);
 }
 
 //=================================================================================================
 
+IntCurveSurface_Polygon::IntCurveSurface_Polygon(const TheCurve&             C,
+                                                 const TColStd_Array1OfReal& Upars)
+    : ThePnts(1, Upars.Length()),
+      Binf(Upars(Upars.Lower())),
+      Bsup(Upars(Upars.Upper()))
+{
 
-IntCurveSurface_Polygon::IntCurveSurface_Polygon(const TheCurve&        C,
-						 const TColStd_Array1OfReal& Upars):
-       ThePnts(1,Upars.Length()) , Binf(Upars(Upars.Lower())) , Bsup(Upars(Upars.Upper()))
-{ 
-  
-  //ddout << "IntCurveSurface_Polygon::IntCurveSurface_Polygon" << endl;
+  // ddout << "IntCurveSurface_Polygon::IntCurveSurface_Polygon" << endl;
   Standard_Integer NbPts = Upars.Length();
-  //ddout << "NbPts :" << NbPts << endl;
+  // ddout << "NbPts :" << NbPts << endl;
   NbPntIn = NbPts;
   Init(C, Upars);
 }
 
+void IntCurveSurface_Polygon::Init(const TheCurve& C)
+{
 
-void IntCurveSurface_Polygon::Init(const TheCurve&        C) { 
-  
-  Standard_Real u=Binf; 
-  Standard_Real u1=Bsup;
-  Standard_Real du=(u1-u)/(Standard_Real)(NbPntIn-1);
-  Standard_Integer i=1;
-  gp_Pnt P;
-  do {
-    TheCurveTool::D0(C,u,P);
+  Standard_Real    u  = Binf;
+  Standard_Real    u1 = Bsup;
+  Standard_Real    du = (u1 - u) / (Standard_Real)(NbPntIn - 1);
+  Standard_Integer i  = 1;
+  gp_Pnt           P;
+  do
+  {
+    TheCurveTool::D0(C, u, P);
     TheBnd.Add(P);
-    ThePnts.SetValue(i,P);             
-    u+=du;
+    ThePnts.SetValue(i, P);
+    u += du;
     i++;
-  }
-  while(i<=NbPntIn);
-
+  } while (i <= NbPntIn);
 
   //-----------------------------------------------------
   //--- Calcul d un majorant de fleche approche
   //---
   TheDeflection = 0.0;
 
-  if(NbPntIn>3) { 
-    
-    i=1;
-    u=Binf;
-    u+=du * 0.5;
-    
-    do {
-      gp_Pnt Pm=TheCurveTool::Value(C,u);
-      gp_Pnt P1=ThePnts.Value(i);
-      gp_Pnt P2=ThePnts.Value(i+1);
-      gp_Lin L(P1,gp_Dir(gp_Vec(P1,P2)));
-      Standard_Real t=L.Distance(Pm);
-      
-      if(t>TheDeflection) {
-	TheDeflection = t;
+  if (NbPntIn > 3)
+  {
+
+    i = 1;
+    u = Binf;
+    u += du * 0.5;
+
+    do
+    {
+      gp_Pnt        Pm = TheCurveTool::Value(C, u);
+      gp_Pnt        P1 = ThePnts.Value(i);
+      gp_Pnt        P2 = ThePnts.Value(i + 1);
+      gp_Lin        L(P1, gp_Dir(gp_Vec(P1, P2)));
+      Standard_Real t = L.Distance(Pm);
+
+      if (t > TheDeflection)
+      {
+        TheDeflection = t;
       }
-      u+=du;
+      u += du;
       i++;
-    }
-    while(i<NbPntIn);
-    
-    TheBnd.Enlarge(1.5*TheDeflection);
+    } while (i < NbPntIn);
+
+    TheBnd.Enlarge(1.5 * TheDeflection);
   }
-  else { 
+  else
+  {
     TheBnd.Enlarge(1e-10);
   }
   ClosedPolygon = Standard_False;
@@ -125,108 +125,112 @@ void IntCurveSurface_Polygon::Init(const TheCurve&        C) {
 
 //=================================================================================================
 
+void IntCurveSurface_Polygon::Init(const TheCurve& C, const TColStd_Array1OfReal& Upars)
+{
 
-void IntCurveSurface_Polygon::Init(const TheCurve&        C,
-				   const TColStd_Array1OfReal& Upars) { 
-
-  //ddout << "IntCurveSurface_Polygon::Init" << endl;
-  Standard_Real u=Binf; 
-  Standard_Integer i=1, i0 = Upars.Lower()-1;
-  gp_Pnt P;
+  // ddout << "IntCurveSurface_Polygon::Init" << endl;
+  Standard_Real    u = Binf;
+  Standard_Integer i = 1, i0 = Upars.Lower() - 1;
+  gp_Pnt           P;
 
   myParams = new TColStd_HArray1OfReal(1, Upars.Length());
-  do {
-    //ddout << "-------------Parameter : " << i << " " << Upars(i+i0) << endl;
-    myParams->SetValue(i, Upars(i+i0));
-    TheCurveTool::D0(C,Upars(i+i0),P);
-    //ddout << "P : " << P.X() << " " << P.Y() << " " << P.Z() << endl;
+  do
+  {
+    // ddout << "-------------Parameter : " << i << " " << Upars(i+i0) << endl;
+    myParams->SetValue(i, Upars(i + i0));
+    TheCurveTool::D0(C, Upars(i + i0), P);
+    // ddout << "P : " << P.X() << " " << P.Y() << " " << P.Z() << endl;
     TheBnd.Add(P);
-    ThePnts.SetValue(i,P);             
+    ThePnts.SetValue(i, P);
     i++;
-  }
-  while(i<=NbPntIn);
-
+  } while (i <= NbPntIn);
 
   //-----------------------------------------------------
   //--- Calcul d un majorant de fleche approche
   //---
   TheDeflection = 0.0;
 
-  if(NbPntIn>3) { 
-    
-    i=1;
-    //ddout << "Deflection estimation" << endl;
-    do {
-      u = 0.5*(Upars(i0+i)+Upars(i0+i+1));
-      //ddout << "===========Parameter : " << i << " " << u << endl;
-      gp_Pnt Pm=TheCurveTool::Value(C,u);
-      //ddout << "Pm : " << Pm.X() << " " << Pm.Y() << " " << Pm.Z() << endl;
-      gp_Pnt P1=ThePnts.Value(i);
-      //ddout << "P1 : " << P1.X() << " " << P1.Y() << " " << P1.Z() << endl;
-      gp_Pnt P2=ThePnts.Value(i+1);
-      //ddout << "P2 : " << P2.X() << " " << P2.Y() << " " << P2.Z() << endl;
-      gp_Lin L(P1,gp_Dir(gp_Vec(P1,P2)));
-      Standard_Real t=L.Distance(Pm);
-      //ddout << "Distance " << t << endl;
-      if(t>TheDeflection) {
-	TheDeflection = t;
+  if (NbPntIn > 3)
+  {
+
+    i = 1;
+    // ddout << "Deflection estimation" << endl;
+    do
+    {
+      u = 0.5 * (Upars(i0 + i) + Upars(i0 + i + 1));
+      // ddout << "===========Parameter : " << i << " " << u << endl;
+      gp_Pnt Pm = TheCurveTool::Value(C, u);
+      // ddout << "Pm : " << Pm.X() << " " << Pm.Y() << " " << Pm.Z() << endl;
+      gp_Pnt P1 = ThePnts.Value(i);
+      // ddout << "P1 : " << P1.X() << " " << P1.Y() << " " << P1.Z() << endl;
+      gp_Pnt P2 = ThePnts.Value(i + 1);
+      // ddout << "P2 : " << P2.X() << " " << P2.Y() << " " << P2.Z() << endl;
+      gp_Lin        L(P1, gp_Dir(gp_Vec(P1, P2)));
+      Standard_Real t = L.Distance(Pm);
+      // ddout << "Distance " << t << endl;
+      if (t > TheDeflection)
+      {
+        TheDeflection = t;
       }
       i++;
-    }
-    while(i<NbPntIn);
-    //ddout << " TheDeflection = " << TheDeflection << endl;
-    TheBnd.Enlarge(1.5*TheDeflection);
+    } while (i < NbPntIn);
+    // ddout << " TheDeflection = " << TheDeflection << endl;
+    TheBnd.Enlarge(1.5 * TheDeflection);
   }
-  else { 
+  else
+  {
     TheBnd.Enlarge(1e-10);
   }
   ClosedPolygon = Standard_False;
 }
 
-
 //======================================================================
 Standard_Real IntCurveSurface_Polygon::ApproxParamOnCurve(const Standard_Integer TheIndex,
-							  const Standard_Real    TheParamOnLine) const
+                                                          const Standard_Real TheParamOnLine) const
 {
-  //ddout << "IntCurveSurface_Polygon::ApproxParamOnCurve" << endl;
-  if(TheParamOnLine < 0.0 || TheParamOnLine >1.0) { 
+  // ddout << "IntCurveSurface_Polygon::ApproxParamOnCurve" << endl;
+  if (TheParamOnLine < 0.0 || TheParamOnLine > 1.0)
+  {
 #ifdef OCCT_DEBUG
-    std::cout<<" ParamOnLine  =  "<<TheParamOnLine<<"  avec Index = "
-      <<TheIndex<<"  dans IntCurveSurface_Polygon::ApproxParamOnCurve"<<std::endl;
+    std::cout << " ParamOnLine  =  " << TheParamOnLine << "  avec Index = " << TheIndex
+              << "  dans IntCurveSurface_Polygon::ApproxParamOnCurve" << std::endl;
 #endif
-    return(Binf+(TheParamOnLine*(Bsup-Binf))/(Standard_Real)(NbPntIn-1));
+    return (Binf + (TheParamOnLine * (Bsup - Binf)) / (Standard_Real)(NbPntIn - 1));
   }
 
-  Standard_Integer Index = TheIndex;
+  Standard_Integer Index       = TheIndex;
   Standard_Real    ParamOnLine = TheParamOnLine;
 #ifdef OCCT_DEBUG
-  if (Index > NbPntIn) {
-    std::cout << "OutOfRange Polygon::ApproxParamOnCurve " <<std::endl;
+  if (Index > NbPntIn)
+  {
+    std::cout << "OutOfRange Polygon::ApproxParamOnCurve " << std::endl;
   }
 #endif
-  if((Index == NbPntIn) && (ParamOnLine == 0.0)) { 
-    Index--; ParamOnLine=1.0;
+  if ((Index == NbPntIn) && (ParamOnLine == 0.0))
+  {
+    Index--;
+    ParamOnLine = 1.0;
   }
 
   Standard_Real du, u;
   if (myParams.IsNull())
-    {
-      du = (Bsup-Binf)/(Standard_Real)(NbPntIn-1);
-      u  = Binf + du * (Standard_Real)(Index-1);
-    }
+  {
+    du = (Bsup - Binf) / (Standard_Real)(NbPntIn - 1);
+    u  = Binf + du * (Standard_Real)(Index - 1);
+  }
   else
-    {
-      du = myParams->Value(Index+1) - myParams->Value(Index);
-      u  = myParams->Value(Index);
-    }
+  {
+    du = myParams->Value(Index + 1) - myParams->Value(Index);
+    u  = myParams->Value(Index);
+  }
 
   u += du * ParamOnLine;
   return (u);
 }
- 
 
 //======================================================================
-void IntCurveSurface_Polygon::Dump(void) const {
+void IntCurveSurface_Polygon::Dump(void) const
+{
 #if 0  
   static Standard_Integer Compteur=0;
   char tamp[100];
@@ -252,5 +256,6 @@ void IntCurveSurface_Polygon::Dump(void) const {
   fclose(fp);
 #endif
 }
+
 //======================================================================
 //======================================================================
