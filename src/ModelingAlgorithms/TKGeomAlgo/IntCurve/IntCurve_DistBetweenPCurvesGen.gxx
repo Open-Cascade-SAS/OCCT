@@ -28,7 +28,8 @@
 #define THECURVE1 (*((TheCurve*)thecurve1))
 #define THECURVE2 (*((TheCurve*)thecurve2))
 
-//======================================================================
+//=================================================================================================
+
 IntCurve_DistBetweenPCurvesGen::IntCurve_DistBetweenPCurvesGen(const TheCurve& C1,
                                                                const TheCurve& C2)
 {
@@ -36,19 +37,22 @@ IntCurve_DistBetweenPCurvesGen::IntCurve_DistBetweenPCurvesGen(const TheCurve& C
   thecurve2 = (Standard_Address)(&C2);
 }
 
-//======================================================================
+//=================================================================================================
+
 Standard_Integer IntCurve_DistBetweenPCurvesGen::NbVariables(void) const
 {
   return (2);
 }
 
-//======================================================================
+//=================================================================================================
+
 Standard_Integer IntCurve_DistBetweenPCurvesGen::NbEquations(void) const
 {
   return (2);
 }
 
-//======================================================================
+//=================================================================================================
+
 Standard_Boolean IntCurve_DistBetweenPCurvesGen::Value(const math_Vector& X, math_Vector& F)
 {
   gp_Pnt2d P1, P2;
@@ -59,7 +63,8 @@ Standard_Boolean IntCurve_DistBetweenPCurvesGen::Value(const math_Vector& X, mat
   return (Standard_True);
 }
 
-//======================================================================
+//=================================================================================================
+
 Standard_Boolean IntCurve_DistBetweenPCurvesGen::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Vec2d T;
@@ -75,7 +80,8 @@ Standard_Boolean IntCurve_DistBetweenPCurvesGen::Derivatives(const math_Vector& 
   return (Standard_True);
 }
 
-//======================================================================
+//=================================================================================================
+
 Standard_Boolean IntCurve_DistBetweenPCurvesGen::Values(const math_Vector& X,
                                                         math_Vector&       F,
                                                         math_Matrix&       D)

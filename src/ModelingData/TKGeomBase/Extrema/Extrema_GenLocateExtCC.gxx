@@ -18,7 +18,8 @@
 #include <math_FunctionSetRoot.hxx>
 #include <math_Vector.hxx>
 
-//=============================================================================
+//=================================================================================================
+
 Extrema_GenLocateExtCC::Extrema_GenLocateExtCC(const Curve1&       C1,
                                                const Curve2&       C2,
                                                const Standard_Real U0,

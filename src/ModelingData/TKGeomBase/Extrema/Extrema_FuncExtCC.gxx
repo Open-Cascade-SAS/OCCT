@@ -43,7 +43,8 @@ static const Standard_Real MinStep   = 1e-7;
 
 static const Standard_Integer MaxOrder = 3;
 
-//=============================================================================
+//=================================================================================================
+
 Standard_Real Extrema_FuncExtCC::SearchOfTolerance(const Standard_Address C)
 {
   const Standard_Integer NPoint = 10;
@@ -88,7 +89,8 @@ Standard_Real Extrema_FuncExtCC::SearchOfTolerance(const Standard_Address C)
   return Max(aMax * TolFactor, MinTol);
 }
 
-//=============================================================================
+//=================================================================================================
+
 Extrema_FuncExtCC::Extrema_FuncExtCC(const Standard_Real thetol)
     : myC1(0),
       myC2(0),
@@ -106,7 +108,8 @@ Extrema_FuncExtCC::Extrema_FuncExtCC(const Standard_Real thetol)
   myTolC2           = MinTol;
 }
 
-//=============================================================================
+//=================================================================================================
+
 Extrema_FuncExtCC::Extrema_FuncExtCC(const Curve1& C1, const Curve2& C2, const Standard_Real thetol)
     : myC1((Standard_Address)&C1),
       myC2((Standard_Address)&C2),
@@ -150,7 +153,8 @@ Extrema_FuncExtCC::Extrema_FuncExtCC(const Curve1& C1, const Curve2& C2, const S
   }
 }
 
-//=============================================================================
+//=================================================================================================
+
 void Extrema_FuncExtCC::SetCurve(const Standard_Integer theRank, const Curve1& C)
 {
   Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2, "Extrema_FuncExtCC::SetCurve()")
@@ -193,7 +197,8 @@ void Extrema_FuncExtCC::SetCurve(const Standard_Integer theRank, const Curve1& C
   }
 }
 
-//=============================================================================
+//=================================================================================================
+
 Standard_Boolean Extrema_FuncExtCC::Value(const math_Vector& UV, math_Vector& F)
 {
   myU = UV(1);

@@ -544,7 +544,7 @@ static void BoundedArc(const TheArc&                 A,
             SolAgain.GetIntervalState(i, ideb, ifin);
 
             //-- cout<<" Debug : IntStart_SearchOnBoundaries_1.gxx : i= "<<i<<" ParDeb:"<<pardeb<<"
-            //ParFin:"<<parfin<<endl;
+            // ParFin:"<<parfin<<endl;
 
             ptdeb = Func.Valpoint(ideb);
             ptfin = Func.Valpoint(ifin);
@@ -775,7 +775,7 @@ static void BoundedArc(const TheArc&                 A,
         pSol->GetIntervalState(i, ideb, ifin);
 
         //-- cout<<" Debug : IntStart_SearchOnBoundaries_1.gxx : i= "<<i<<" ParDeb:"<<pardeb<<"
-        //ParFin:"<<parfin<<endl;
+        // ParFin:"<<parfin<<endl;
 
         ptdeb = Func.Valpoint(ideb);
         ptfin = Func.Valpoint(ifin);

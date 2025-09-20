@@ -184,7 +184,8 @@ void IntCurveSurface_Polygon::Init(const TheCurve& C, const TColStd_Array1OfReal
   ClosedPolygon = Standard_False;
 }
 
-//======================================================================
+//=================================================================================================
+
 Standard_Real IntCurveSurface_Polygon::ApproxParamOnCurve(const Standard_Integer TheIndex,
                                                           const Standard_Real TheParamOnLine) const
 {
@@ -228,7 +229,8 @@ Standard_Real IntCurveSurface_Polygon::ApproxParamOnCurve(const Standard_Integer
   return (u);
 }
 
-//======================================================================
+//=================================================================================================
+
 void IntCurveSurface_Polygon::Dump(void) const
 {
 #if 0  

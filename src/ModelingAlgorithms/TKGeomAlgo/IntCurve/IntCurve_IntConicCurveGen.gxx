@@ -19,7 +19,8 @@
 #include <IntRes2d_Domain.hxx>
 #include <IntCurve_IConicTool.hxx>
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Circ2d&       C,
                                                      const IntRes2d_Domain& D1,
                                                      const ThePCurve&       PCurve,
@@ -40,7 +41,8 @@ IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Circ2d&       C,
   }
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Elips2d&      E,
                                                      const IntRes2d_Domain& D1,
                                                      const ThePCurve&       PCurve,
@@ -61,7 +63,8 @@ IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Elips2d&      E,
   }
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Parab2d&      Prb,
                                                      const IntRes2d_Domain& D1,
                                                      const ThePCurve&       PCurve,
@@ -73,7 +76,8 @@ IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Parab2d&      Prb,
   Perform(IntCurve_IConicTool(Prb), D1, PCurve, D2, TolConf, Tol);
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Hypr2d&       H,
                                                      const IntRes2d_Domain& D1,
                                                      const ThePCurve&       PCurve,

@@ -16,7 +16,8 @@
 
 #include <gp_Vec.hxx>
 
-//================================================================================
+//=================================================================================================
+
 IntCurveSurface_QuadricCurveFunc::IntCurveSurface_QuadricCurveFunc(const TheQuadric& Q,
                                                                    const TheCurve&   C)
     : myQuadric(Q),
@@ -24,7 +25,8 @@ IntCurveSurface_QuadricCurveFunc::IntCurveSurface_QuadricCurveFunc(const TheQuad
 {
 }
 
-//================================================================================
+//=================================================================================================
+
 Standard_Boolean IntCurveSurface_QuadricCurveFunc::Value(const Standard_Real Param,
                                                          Standard_Real&      F)
 {

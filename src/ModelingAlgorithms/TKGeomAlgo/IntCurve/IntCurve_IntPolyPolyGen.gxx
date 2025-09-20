@@ -51,7 +51,7 @@
 #define TOL_CONF_MINI 0.0000000001
 #define TOL_MINI 0.0000000001
 
-//----------------------------------------------------------------------
+//=================================================================================================
 
 void GetIntersection(const TheCurve&             theC1,
                      const Standard_Real         theT1f,
@@ -79,7 +79,8 @@ Standard_Boolean HeadOrEndPoint(const IntRes2d_Domain&      D1,
                                 Standard_Boolean&           EndOn2,
                                 Standard_Integer            PosSegment);
 
-//======================================================================
+//=================================================================================================
+
 IntCurve_IntPolyPolyGen::IntCurve_IntPolyPolyGen()
 {
   const Standard_Integer aMinPntNb = 20; // Minimum number of samples.
@@ -87,7 +88,8 @@ IntCurve_IntPolyPolyGen::IntCurve_IntPolyPolyGen()
   done                             = Standard_False;
 }
 
-//======================================================================
+//=================================================================================================
+
 void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                                       const IntRes2d_Domain& D1,
                                       const TheCurve&        C2,

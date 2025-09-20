@@ -24,7 +24,8 @@
 #define MySurf1 MyIntersectionOn2S.Function().AuxillarSurface1()
 #define MySurf2 MyIntersectionOn2S.Function().AuxillarSurface2()
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 ApproxInt_PrmPrmSvSurfaces::ApproxInt_PrmPrmSvSurfaces(const ThePSurface& Surf1,
                                                        const ThePSurface& Surf2)
     : MyIsTangent(Standard_False),
@@ -226,7 +227,8 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
   return (Standard_True);
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 void ApproxInt_PrmPrmSvSurfaces::Pnt(const Standard_Real u1,
                                      const Standard_Real v1,
                                      const Standard_Real u2,
@@ -269,7 +271,8 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::SeekPoint(const Standard_Real u1,
   return Standard_True;
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Tangency(const Standard_Real u1,
                                                       const Standard_Real v1,
                                                       const Standard_Real u2,
@@ -288,7 +291,8 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Tangency(const Standard_Real u1,
   return (t);
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 Standard_Boolean ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf1(const Standard_Real u1,
                                                              const Standard_Real v1,
                                                              const Standard_Real u2,
@@ -307,7 +311,8 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf1(const Standard_Real
   return (t);
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 Standard_Boolean ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf2(const Standard_Real u1,
                                                              const Standard_Real v1,
                                                              const Standard_Real u2,

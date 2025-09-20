@@ -117,7 +117,8 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C,
   }
 }
 
-//----------------------------------------------------------------------
+//=================================================================================================
+
 IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve&     C1,
                                                          const Standard_Real TolDomain) const
 {

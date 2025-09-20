@@ -38,7 +38,8 @@
 #define EPSX ParTool::EpsX(TheParCurve)
 #define NB_ECHANTILLONS
 
-//======================================================================
+//=================================================================================================
+
 void IntImpParGen_Intersector::And_Domaine_Objet1_Intersections(
   const ImpTool&         TheImpTool,
   const ParCurve&        TheParCurve,

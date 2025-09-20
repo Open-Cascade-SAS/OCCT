@@ -985,7 +985,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
   //-- Si cette distance est inferieure a Tolerance, on cree un SP.
   //--
   //-- printf("\nIntf_InterferencePolygPolyh : dBegTri=%g dEndTri=%g
-  //Tolerance=%g\n",dBegTri,dEndTri,Tolerance);
+  // Tolerance=%g\n",dBegTri,dEndTri,Tolerance);
   //  if(Abs(dBegTri) <= Tolerance || Abs(dEndTri) <= Tolerance)
   {
     gp_Vec        VecPol(BegO, EndO);
@@ -1296,7 +1296,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
   //-- Si cette distance est inferieure a Tolerance, on cree un SP.
   //--
   //-- printf("\nIntf_InterferencePolygPolyh : dBegTri=%g dEndTri=%g
-  //Tolerance=%g\n",dBegTri,dEndTri,Tolerance);
+  // Tolerance=%g\n",dBegTri,dEndTri,Tolerance);
   //  if (Abs(dBegTri) <= Tolerance || Abs(dEndTri) <= Tolerance)
   {
     gp_Vec        VecPol(BegO, EndO);

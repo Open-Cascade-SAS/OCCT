@@ -26,7 +26,8 @@
 #define EPSDIST 0.00000001
 #define EPSNUL 0.00000001
 
-//================================================================================
+//=================================================================================================
+
 IntCurveSurface_QuadricCurveExactInter::IntCurveSurface_QuadricCurveExactInter(const TheSurface& S,
                                                                                const TheCurve&   C)
     : nbpnts(-1),
@@ -109,31 +110,36 @@ IntCurveSurface_QuadricCurveExactInter::IntCurveSurface_QuadricCurveExactInter(c
   //  Modified by skv - Wed Jun 16 17:36:47 2004 OCC6001 End
 }
 
-//================================================================================
+//=================================================================================================
+
 Standard_Boolean IntCurveSurface_QuadricCurveExactInter::IsDone() const
 {
   return (nbpnts != -1);
 }
 
-//================================================================================
+//=================================================================================================
+
 Standard_Integer IntCurveSurface_QuadricCurveExactInter::NbRoots() const
 {
   return (nbpnts);
 }
 
-//================================================================================
+//=================================================================================================
+
 Standard_Integer IntCurveSurface_QuadricCurveExactInter::NbIntervals() const
 {
   return (nbintv);
 }
 
-//================================================================================
+//=================================================================================================
+
 Standard_Real IntCurveSurface_QuadricCurveExactInter::Root(const Standard_Integer Index) const
 {
   return (pnts(Index));
 }
 
-//================================================================================
+//=================================================================================================
+
 void IntCurveSurface_QuadricCurveExactInter::Intervals(const Standard_Integer Index,
                                                        Standard_Real&         a,
                                                        Standard_Real&         b) const

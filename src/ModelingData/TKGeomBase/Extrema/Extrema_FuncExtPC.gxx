@@ -410,7 +410,8 @@ Standard_Real Extrema_FuncExtPC::SquareDistance(const Standard_Integer N) const
   return mySqDist.Value(N);
 }
 
-//=============================================================================
+//=================================================================================================
+
 Standard_Boolean Extrema_FuncExtPC::IsMin(const Standard_Integer N) const
 {
   if (!myPinit || !myCinit)
@@ -418,7 +419,8 @@ Standard_Boolean Extrema_FuncExtPC::IsMin(const Standard_Integer N) const
   return (myIsMin.Value(N) == 1);
 }
 
-//=============================================================================
+//=================================================================================================
+
 const POnC& Extrema_FuncExtPC::Point(const Standard_Integer N) const
 {
   if (!myPinit || !myCinit)

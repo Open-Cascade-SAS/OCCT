@@ -135,19 +135,22 @@ ApproxInt_MultiLine::ApproxInt_MultiLine(const Handle_TheLine&  line,
 #endif
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 Standard_Integer ApproxInt_MultiLine::FirstPoint() const
 {
   return indicemin;
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 Standard_Integer ApproxInt_MultiLine::LastPoint() const
 {
   return indicemax;
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 Approx_Status ApproxInt_MultiLine::WhatStatus() const
 {
   if (PtrOnmySvSurfaces)
@@ -156,19 +159,22 @@ Approx_Status ApproxInt_MultiLine::WhatStatus() const
     return Approx_NoPointsAdded;
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 Standard_Integer ApproxInt_MultiLine::NbP3d() const
 {
   return nbp3d;
 }
 
-//--------------------------------------------------------------------------------
+//=================================================================================================
+
 Standard_Integer ApproxInt_MultiLine::NbP2d() const
 {
   return nbp2d;
 }
 
-//================================================================================
+//=================================================================================================
+
 void ApproxInt_MultiLine::Value(const Standard_Integer Index, TColgp_Array1OfPnt& TabPnt) const
 {
   const gp_Pnt aP = myLine->Point(Index).Value();

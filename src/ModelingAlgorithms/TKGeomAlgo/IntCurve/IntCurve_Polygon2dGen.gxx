@@ -115,7 +115,8 @@ IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
   ClosedPolygon = Standard_False;
 }
 
-//======================================================================
+//=================================================================================================
+
 void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& BoxOtherPolygon)
 {
   if (myBox.IsOut(BoxOtherPolygon))
@@ -278,7 +279,8 @@ Standard_Boolean IntCurve_Polygon2dGen::AutoIntersectionIsPossible() const
   return (Standard_False);
 }
 
-//======================================================================
+//=================================================================================================
+
 Standard_Real IntCurve_Polygon2dGen::ApproxParamOnCurve(const Standard_Integer Aindex,
                                                         const Standard_Real    TheParamOnLine) const
 {

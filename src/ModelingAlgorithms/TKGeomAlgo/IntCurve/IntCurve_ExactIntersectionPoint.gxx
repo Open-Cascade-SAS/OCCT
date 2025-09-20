@@ -40,7 +40,8 @@ IntCurve_ExactIntersectionPoint::IntCurve_ExactIntersectionPoint(const TheCurve&
   ToleranceVector.Value(2) = TheCurveTool::EpsX(C2);
 }
 
-//----------------------------------------------------------------------
+//=================================================================================================
+
 void IntCurve_ExactIntersectionPoint::Perform(const IntCurve_ThePolygon2d& Poly1,
                                               const IntCurve_ThePolygon2d& Poly2,
                                               Standard_Integer&            NumSegOn1,
@@ -200,7 +201,8 @@ void IntCurve_ExactIntersectionPoint::Perform(const IntCurve_ThePolygon2d& Poly1
   }
 }
 
-//----------------------------------------------------------------------
+//=================================================================================================
+
 void IntCurve_ExactIntersectionPoint::Perform(const Standard_Real Uo,
                                               const Standard_Real Vo,
                                               const Standard_Real UInf,
@@ -221,13 +223,14 @@ void IntCurve_ExactIntersectionPoint::Perform(const Standard_Real Uo,
   IntCurve_ExactIntersectionPoint::MathPerform();
 }
 
-//----------------------------------------------------------------------
+//=================================================================================================
+
 Standard_Integer IntCurve_ExactIntersectionPoint::NbRoots() const
 {
   return (nbroots);
 }
 
-//----------------------------------------------------------------------
+//=================================================================================================
 
 void IntCurve_ExactIntersectionPoint::Roots(Standard_Real& U, Standard_Real& V)
 {
@@ -235,7 +238,7 @@ void IntCurve_ExactIntersectionPoint::Roots(Standard_Real& U, Standard_Real& V)
   V = Root.Value(2);
 }
 
-//----------------------------------------------------------------------
+//=================================================================================================
 
 void IntCurve_ExactIntersectionPoint::MathPerform(void)
 {
