@@ -74,8 +74,14 @@
             myNext(aNxt)                                                                           \
       {                                                                                            \
       }                                                                                            \
-      const Type& Value() const { return myValue; }                                                \
-      Type&       ChangeValue() { return myValue; }                                                \
+      const Type& Value() const                                                                    \
+      {                                                                                            \
+        return myValue;                                                                            \
+      }                                                                                            \
+      Type& ChangeValue()                                                                          \
+      {                                                                                            \
+        return myValue;                                                                            \
+      }                                                                                            \
       friend class ClassName;                                                                      \
     };                                                                                             \
                                                                                                    \

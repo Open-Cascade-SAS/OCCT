@@ -95,7 +95,7 @@ static Standard_Boolean fMsgBox;
 static Standard_Mutex THE_SIGNAL_MUTEX;
 
 static LONG __fastcall _osd_raise(DWORD theCode, const char* theMsg, const char* theStack);
-static BOOL WINAPI     _osd_ctrl_break_handler(DWORD);
+static BOOL WINAPI _osd_ctrl_break_handler(DWORD);
 
   #if !defined(OCCT_UWP) && !defined(__MINGW32__) && !defined(__CYGWIN32__)
 static Standard_Boolean fDbgLoaded;

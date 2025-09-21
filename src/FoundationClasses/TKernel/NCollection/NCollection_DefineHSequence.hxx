@@ -34,10 +34,22 @@
         : _SequenceType_(theOther)                                                                 \
     {                                                                                              \
     }                                                                                              \
-    const _SequenceType_& Sequence() const { return *this; }                                       \
-    void Append(const _SequenceType_::value_type& theItem) { _SequenceType_::Append(theItem); }    \
-    void Append(_SequenceType_& theSequence) { _SequenceType_::Append(theSequence); }              \
-    _SequenceType_& ChangeSequence() { return *this; }                                             \
+    const _SequenceType_& Sequence() const                                                         \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
+    void Append(const _SequenceType_::value_type& theItem)                                         \
+    {                                                                                              \
+      _SequenceType_::Append(theItem);                                                             \
+    }                                                                                              \
+    void Append(_SequenceType_& theSequence)                                                       \
+    {                                                                                              \
+      _SequenceType_::Append(theSequence);                                                         \
+    }                                                                                              \
+    _SequenceType_& ChangeSequence()                                                               \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
     template <class T>                                                                             \
     void Append(const Handle(T)& theOther,                                                         \
                 typename opencascade::std::enable_if<                                              \

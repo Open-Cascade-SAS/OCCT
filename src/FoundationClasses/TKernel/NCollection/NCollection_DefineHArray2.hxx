@@ -49,8 +49,14 @@
         : _Array2Type_(theOther)                                                                   \
     {                                                                                              \
     }                                                                                              \
-    const _Array2Type_& Array2() const { return *this; }                                           \
-    _Array2Type_&       ChangeArray2() { return *this; }                                           \
+    const _Array2Type_& Array2() const                                                             \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
+    _Array2Type_& ChangeArray2()                                                                   \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
     DEFINE_STANDARD_RTTI_INLINE(HClassName, Standard_Transient)                                    \
   };                                                                                               \
   DEFINE_STANDARD_HANDLE(HClassName, Standard_Transient)

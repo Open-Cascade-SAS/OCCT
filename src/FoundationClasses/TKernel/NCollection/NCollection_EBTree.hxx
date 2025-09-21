@@ -195,9 +195,15 @@ Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObj
                                                                                                    \
     /* Access to the methods of EBTree */                                                          \
                                                                                                    \
-    Standard_Boolean Remove(const _OBJTYPE& theObj) { return ChangeETree().Remove(theObj); }       \
+    Standard_Boolean Remove(const _OBJTYPE& theObj)                                                \
+    {                                                                                              \
+      return ChangeETree().Remove(theObj);                                                         \
+    }                                                                                              \
                                                                                                    \
-    Standard_Boolean Contains(const _OBJTYPE& theObj) const { return ETree().Contains(theObj); }   \
+    Standard_Boolean Contains(const _OBJTYPE& theObj) const                                        \
+    {                                                                                              \
+      return ETree().Contains(theObj);                                                             \
+    }                                                                                              \
                                                                                                    \
     const UBTree::TreeNode& FindNode(const _OBJTYPE& theObj) const                                 \
     {                                                                                              \
@@ -206,8 +212,14 @@ Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObj
                                                                                                    \
     /* Access to the extended tree algorithm */                                                    \
                                                                                                    \
-    const EBTree& ETree() const { return (const EBTree&)Tree(); }                                  \
-    EBTree&       ChangeETree() { return (EBTree&)ChangeTree(); }                                  \
+    const EBTree& ETree() const                                                                    \
+    {                                                                                              \
+      return (const EBTree&)Tree();                                                                \
+    }                                                                                              \
+    EBTree& ChangeETree()                                                                          \
+    {                                                                                              \
+      return (EBTree&)ChangeTree();                                                                \
+    }                                                                                              \
                                                                                                    \
     DEFINE_STANDARD_RTTI_INLINE(_HEBTREE, _HUBTREE)                                                \
     /* Type management */                                                                          \

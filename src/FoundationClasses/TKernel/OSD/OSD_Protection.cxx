@@ -731,7 +731,7 @@ Standard_Integer OSD_Protection::Internal() const
   #define FLAG_EXECUTE 0x00000004
   #define FLAG_DELETE 0x00000008
 
-static Standard_Integer __fastcall     _get_mask(OSD_SingleProtection);
+static Standard_Integer __fastcall _get_mask(OSD_SingleProtection);
 static OSD_SingleProtection __fastcall _get_prot(Standard_Integer);
 
 OSD_Protection ::OSD_Protection()

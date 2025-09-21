@@ -30,7 +30,10 @@
                                                                                                    \
   class C1 : public C2                                                                             \
   {                                                                                                \
-    void Throw() const Standard_OVERRIDE { throw *this; }                                          \
+    void Throw() const Standard_OVERRIDE                                                           \
+    {                                                                                              \
+      throw *this;                                                                                 \
+    }                                                                                              \
                                                                                                    \
   public:                                                                                          \
     C1()                                                                                           \
@@ -55,7 +58,10 @@
       Handle(C1) _E = new C1;                                                                      \
       _E->Reraise(theMessage);                                                                     \
     }                                                                                              \
-    static Handle(C1) NewInstance(Standard_CString theMessage = "") { return new C1(theMessage); } \
+    static Handle(C1) NewInstance(Standard_CString theMessage = "")                                \
+    {                                                                                              \
+      return new C1(theMessage);                                                                   \
+    }                                                                                              \
     static Handle(C1) NewInstance(Standard_CString theMessage, Standard_CString theStackTrace)     \
     {                                                                                              \
       return new C1(theMessage, theStackTrace);                                                    \

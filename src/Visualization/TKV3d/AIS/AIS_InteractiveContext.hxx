@@ -314,7 +314,6 @@ public: //! @name object presence management (View affinity, Layer, Priority)
 
   Standard_DEPRECATED("Deprecated since OCCT7.7, Graphic3d_DisplayPriority should be passed "
                       "instead of integer number to SetDisplayPriority()")
-
   void SetDisplayPriority(const Handle(AIS_InteractiveObject)& theIObj,
                           const Standard_Integer               thePriority)
   {
@@ -574,7 +573,6 @@ public: //! @name Selection management
   Standard_EXPORT Bnd_Box BoundingBoxOfSelection(const Handle(V3d_View)& theView) const;
 
   Standard_DEPRECATED("BoundingBoxOfSelection() should be called with View argument")
-
   Bnd_Box BoundingBoxOfSelection() const { return BoundingBoxOfSelection(Handle(V3d_View)()); }
 
   //! Sets list of owner selected/deselected using specified selection scheme.
@@ -1230,7 +1228,6 @@ public: //! @name iso-line display attributes
 public:
   Standard_DEPRECATED("Deprecated method Display() with obsolete argument "
                       "theToAllowDecomposition")
-
   void Display(const Handle(AIS_InteractiveObject)& theIObj,
                const Standard_Integer               theDispMode,
                const Standard_Integer               theSelectionMode,
@@ -1244,7 +1241,6 @@ public:
 
   Standard_DEPRECATED("Deprecated method Load() with obsolete last argument "
                       "theToAllowDecomposition")
-
   void Load(const Handle(AIS_InteractiveObject)& theObj,
             Standard_Integer                     theSelectionMode,
             Standard_Boolean)
@@ -1256,7 +1252,6 @@ public:
   //! On dynamic detection by the mouse cursor, sensitive primitives are highlighted.
   //! The highlight color of entities detected by mouse movement is white by default.
   Standard_DEPRECATED("Deprecated method Hilight()")
-
   void Hilight(const Handle(AIS_InteractiveObject)& theObj,
                const Standard_Boolean               theIsToUpdateViewer)
   {
@@ -1326,7 +1321,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void SetCurrentObject(const Handle(AIS_InteractiveObject)& theIObj,
                         const Standard_Boolean               theToUpdateViewer)
   {
@@ -1339,7 +1333,6 @@ public:
   //! object, if 0 selection of the object is empty this method simply does nothing.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void AddOrRemoveCurrentObject(const Handle(AIS_InteractiveObject)& theObj,
                                 const Standard_Boolean               theIsToUpdateViewer)
   {
@@ -1351,7 +1344,6 @@ public:
   //! current objects; those selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void UpdateCurrent() { UpdateSelected(Standard_True); }
 
   //! Returns true if there is a non-null interactive object in Neutral Point.
@@ -1370,7 +1362,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void InitCurrent() { InitSelected(); }
 
   //! Returns true if there is another object found by the scan of the list of current objects.
@@ -1386,7 +1377,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void NextCurrent() { NextSelected(); }
 
   //! Returns the current interactive object.
@@ -1407,7 +1397,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void HilightCurrents(const Standard_Boolean theToUpdateViewer)
   {
     HilightSelected(theToUpdateViewer);
@@ -1418,7 +1407,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void UnhilightCurrents(const Standard_Boolean theToUpdateViewer)
   {
     UnhilightSelected(theToUpdateViewer);
@@ -1429,7 +1417,6 @@ public:
   //! objects; those selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void ClearCurrents(const Standard_Boolean theToUpdateViewer) { ClearSelected(theToUpdateViewer); }
 
   //! @return current mouse-detected shape or empty (null) shape, if current interactive object

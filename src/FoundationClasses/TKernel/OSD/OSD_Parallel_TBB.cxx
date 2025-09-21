@@ -32,10 +32,11 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 
   //=================================================================================================
 
-  void OSD_Parallel::forEachExternal(UniversalIterator&      theBegin,
-                                     UniversalIterator&      theEnd,
-                                     const FunctorInterface& theFunctor,
-                                     Standard_Integer        theNbItems)
+  void
+  OSD_Parallel::forEachExternal(UniversalIterator&      theBegin,
+                                UniversalIterator&      theEnd,
+                                const FunctorInterface& theFunctor,
+                                Standard_Integer        theNbItems)
 {
   #if TBB_VERSION_MAJOR >= 2021
   // task_scheduler_init is removed,

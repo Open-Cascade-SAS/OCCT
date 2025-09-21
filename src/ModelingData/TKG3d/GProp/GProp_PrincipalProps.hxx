@@ -151,7 +151,8 @@ public:
     //! of principal properties of inertia
     //! (GProp_PrincipalProps object) which may be
     //! queried to access the value sought.
-    Standard_EXPORT GProp_PrincipalProps GProp_GProps::PrincipalProperties() const;
+    Standard_EXPORT GProp_PrincipalProps
+    GProp_GProps::PrincipalProperties() const;
 
 protected:
 private:

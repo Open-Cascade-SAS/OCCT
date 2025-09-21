@@ -55,8 +55,14 @@
         : _Array1Type_(theOther)                                                                   \
     {                                                                                              \
     }                                                                                              \
-    const _Array1Type_& Array1() const { return *this; }                                           \
-    _Array1Type_&       ChangeArray1() { return *this; }                                           \
+    const _Array1Type_& Array1() const                                                             \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
+    _Array1Type_& ChangeArray1()                                                                   \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
     DEFINE_STANDARD_RTTI_INLINE(HClassName, Standard_Transient)                                    \
   };                                                                                               \
   DEFINE_STANDARD_HANDLE(HClassName, Standard_Transient)

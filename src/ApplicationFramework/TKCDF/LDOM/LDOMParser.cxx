@@ -50,10 +50,11 @@ static
 #else
 inline
 #endif
-  LDOM_XmlReader::RecordType ReadRecord(LDOM_XmlReader&   aReader,
-                                        Standard_IStream& theIStream,
-                                        LDOM_OSStream&    aData,
-                                        Standard_Boolean& theDocStart)
+  LDOM_XmlReader::RecordType
+  ReadRecord(LDOM_XmlReader&   aReader,
+             Standard_IStream& theIStream,
+             LDOM_OSStream&    aData,
+             Standard_Boolean& theDocStart)
 {
 #ifdef LDOM_PARSER_TRACE
   static aCounter = 0;
