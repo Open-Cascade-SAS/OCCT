@@ -612,7 +612,7 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
 #ifdef _WIN32
   // Windows specific code
   unsigned int __stdcall CpuFunc(void*);
-  unsigned aThreadID;
+  unsigned               aThreadID;
 
   if (n <= 1)
   {

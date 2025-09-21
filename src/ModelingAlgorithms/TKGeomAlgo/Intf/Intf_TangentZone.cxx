@@ -292,10 +292,7 @@ Standard_Boolean Intf_TangentZone::HasCommonRange(const Intf_TangentZone& Other)
   return Standard_False;
 }
 
-//=======================================================================
-// function : Dump
-// purpose  : Dump the TangentZone.
-//=======================================================================
+//=================================================================================================
 
 void Intf_TangentZone::Dump(const Standard_Integer /*Indent*/) const
 {

@@ -47,18 +47,9 @@ DEFINE_STANDARD_HANDLE(TransientRoot, Standard_Transient)
   class theClass : public theParent                                                                \
   {                                                                                                \
   public:                                                                                          \
-    virtual const char* Name() const override                                                      \
-    {                                                                                              \
-      return #theClass;                                                                            \
-    }                                                                                              \
-    virtual Standard_Transient* CreateParent() const override                                      \
-    {                                                                                              \
-      return new theParent();                                                                      \
-    }                                                                                              \
-    virtual Standard_Transient* Clone() const override                                             \
-    {                                                                                              \
-      return new theClass();                                                                       \
-    }                                                                                              \
+    virtual const char*         Name() const override { return #theClass; }                        \
+    virtual Standard_Transient* CreateParent() const override { return new theParent(); }          \
+    virtual Standard_Transient* Clone() const override { return new theClass(); }                  \
     DEFINE_STANDARD_RTTI_INLINE(theClass, theParent)                                               \
   };                                                                                               \
   DEFINE_STANDARD_HANDLE(theClass, theParent)

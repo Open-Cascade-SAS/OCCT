@@ -155,15 +155,13 @@ public:
 #if defined(OCC_CONVERT_SIGNALS)
     Standard_EXPORT
 #endif
-      void
-      RegisterCallback();
+      void RegisterCallback();
 
 //! Unregisters this callback object from the error handler.
 #if defined(OCC_CONVERT_SIGNALS)
     Standard_EXPORT
 #endif
-      void
-      UnregisterCallback();
+      void UnregisterCallback();
 
 //! Destructor
 #if defined(OCC_CONVERT_SIGNALS)

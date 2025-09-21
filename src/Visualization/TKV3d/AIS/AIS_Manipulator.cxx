@@ -1794,11 +1794,7 @@ AIS_Manipulator::Axis::Axis(const gp_Ax1&            theAxis,
   //
 }
 
-//=======================================================================
-// class    : Axis
-// function : Compute
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 void AIS_Manipulator::Axis::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                     const Handle(Prs3d_Presentation)&         thePrs,

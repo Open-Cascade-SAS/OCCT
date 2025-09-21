@@ -913,10 +913,8 @@ static Standard_Integer OCC277bug(Draw_Interpretor& di, Standard_Integer nb, con
 #include <TDF_Label.hxx>
 #include <XCAFPrs_Driver.hxx>
 
-//------------------------------------------------------------------------------------------
-// name    : OCC363
-// Purpose :
-//------------------------------------------------------------------------------------------
+//=================================================================================================
+
 static Standard_Integer OCC363(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   try

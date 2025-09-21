@@ -272,10 +272,8 @@ void BRepFill_PipeShell::SetDiscrete()
   mySection.Nullify(); // It is required to relocalize sections.
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Define a law Constant
-//=======================================================================
+//=================================================================================================
+
 void BRepFill_PipeShell::Set(const gp_Ax2& Axe)
 {
   myTrihedron = GeomFill_IsFixed;

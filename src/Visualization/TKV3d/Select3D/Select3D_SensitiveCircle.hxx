@@ -36,6 +36,7 @@ public:
   //! owner theOwnerId, the circle theCircle, the boolean
   //! theIsFilled and the number of points theNbPnts.
   Standard_DEPRECATED("Deprecated constructor, theNbPnts parameter will be ignored")
+
   Select3D_SensitiveCircle(const Handle(SelectMgr_EntityOwner)& theOwnerId,
                            const gp_Circ&                       theCircle,
                            const Standard_Boolean               theIsFilled,

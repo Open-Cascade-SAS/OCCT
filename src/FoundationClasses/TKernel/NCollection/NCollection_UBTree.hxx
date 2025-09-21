@@ -509,36 +509,18 @@ Standard_Integer NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNo
       return Tree().Select(theSelector);                                                           \
     }                                                                                              \
                                                                                                    \
-    void Clear()                                                                                   \
-    {                                                                                              \
-      ChangeTree().Clear();                                                                        \
-    }                                                                                              \
+    void Clear() { ChangeTree().Clear(); }                                                         \
                                                                                                    \
-    Standard_Boolean IsEmpty() const                                                               \
-    {                                                                                              \
-      return Tree().IsEmpty();                                                                     \
-    }                                                                                              \
+    Standard_Boolean IsEmpty() const { return Tree().IsEmpty(); }                                  \
                                                                                                    \
-    const UBTree::TreeNode& Root() const                                                           \
-    {                                                                                              \
-      return Tree().Root();                                                                        \
-    }                                                                                              \
+    const UBTree::TreeNode& Root() const { return Tree().Root(); }                                 \
                                                                                                    \
     /* Access to the tree algorithm */                                                             \
                                                                                                    \
-    const UBTree& Tree() const                                                                     \
-    {                                                                                              \
-      return *myTree;                                                                              \
-    }                                                                                              \
-    UBTree& ChangeTree()                                                                           \
-    {                                                                                              \
-      return *myTree;                                                                              \
-    }                                                                                              \
+    const UBTree& Tree() const { return *myTree; }                                                 \
+    UBTree&       ChangeTree() { return *myTree; }                                                 \
                                                                                                    \
-    ~_HUBTREE()                                                                                    \
-    {                                                                                              \
-      delete myTree;                                                                               \
-    }                                                                                              \
+    ~_HUBTREE() { delete myTree; }                                                                 \
     /* Destructor */                                                                               \
                                                                                                    \
     DEFINE_STANDARD_RTTI_INLINE(_HUBTREE, _HPARENT)                                                \

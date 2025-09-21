@@ -27,10 +27,7 @@
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-//-----------------------------------------------------------------------
-// function : TransitionToOrientation
-// purpose  : static
-//-----------------------------------------------------------------------
+//=================================================================================================
 
 static Standard_Boolean TransitionToOrientation(const IntSurf_Transition& T, TopAbs_Orientation& O)
 {

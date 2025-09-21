@@ -305,10 +305,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
   return Standard_True;
 }
 
-//=======================================================================
-// function : Value
-// purpose  : return resulting wire
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Wire& StepToTopoDS_TranslateCompositeCurve::Value() const
 {

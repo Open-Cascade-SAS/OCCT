@@ -75,9 +75,9 @@
 #include <GeomConvert_Units.hxx>
 
 // Processing of non-manifold topology (ssv; 10.11.2010)
-// ----------------------------------------------------------------------------
-// Constructors
-// ----------------------------------------------------------------------------
+
+//=================================================================================================
+
 TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace()
     : myError(TopoDSToStep_FaceOther)
 {
@@ -93,10 +93,8 @@ TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace(const TopoDS_Face&         
   Init(F, T, FP, theLocalFactors);
 }
 
-// ----------------------------------------------------------------------------
-// Method  : Init
-// Purpose :
-// ----------------------------------------------------------------------------
+//=================================================================================================
+
 void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace,
                                      TopoDSToStep_Tool&                    aTool,
                                      const Handle(Transfer_FinderProcess)& FP,
@@ -475,10 +473,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
   }
 }
 
-// ----------------------------------------------------------------------------
-// Method  : Value
-// Purpose :
-// ----------------------------------------------------------------------------
+//=================================================================================================
 
 const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepFace::Value() const
 {
@@ -486,10 +481,7 @@ const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepFace
   return myResult;
 }
 
-// ----------------------------------------------------------------------------
-// Method  : Error
-// Purpose :
-// ----------------------------------------------------------------------------
+//=================================================================================================
 
 TopoDSToStep_MakeFaceError TopoDSToStep_MakeStepFace::Error() const
 {

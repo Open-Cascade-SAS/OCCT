@@ -24,19 +24,14 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx,
                            StepRepr_RepresentationContext)
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
   StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx()
 {
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Init(
   const Handle(TCollection_HAsciiString)&                  aContextIdentifier,
@@ -53,10 +48,7 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Init(
   StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Init(
   const Handle(TCollection_HAsciiString)&                      aContextIdentifier,
@@ -85,10 +77,7 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Init(
   globalUncertaintyAssignedContext->Init(aContextIdentifier, aContextType, anUncertainty);
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
   SetGeometricRepresentationContext(
@@ -97,10 +86,7 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
   geometricRepresentationContext = aGeometricRepresentationContext;
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Handle(StepGeom_GeometricRepresentationContext)
   StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::GeometricRepresentationContext()
@@ -109,10 +95,7 @@ Handle(StepGeom_GeometricRepresentationContext)
   return geometricRepresentationContext;
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetGlobalUnitAssignedContext(
   const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext)
@@ -120,10 +103,7 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetGlobal
   globalUnitAssignedContext = aGlobalUnitAssignedContext;
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Handle(StepRepr_GlobalUnitAssignedContext)
   StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::GlobalUnitAssignedContext()
@@ -132,10 +112,7 @@ Handle(StepRepr_GlobalUnitAssignedContext)
   return globalUnitAssignedContext;
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
   SetGlobalUncertaintyAssignedContext(
@@ -144,10 +121,7 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
   globalUncertaintyAssignedContext = aGlobalUncertaintyAssignedCtx;
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Handle(StepRepr_GlobalUncertaintyAssignedContext)
   StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
@@ -160,10 +134,7 @@ Handle(StepRepr_GlobalUncertaintyAssignedContext)
 //--- Specific Methods for AND classe field access : GeometricRepresentationContext ---
 //-------------------------------------------------------------------------------------
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetCoordinateSpaceDimension(
   const Standard_Integer aCoordinateSpaceDimension)
@@ -171,10 +142,7 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetCoordi
   geometricRepresentationContext->SetCoordinateSpaceDimension(aCoordinateSpaceDimension);
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Standard_Integer StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
   CoordinateSpaceDimension() const
@@ -186,10 +154,7 @@ Standard_Integer StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCt
 //--- Specific Methods for AND classe field access : GlobalUnitAssignedContext  ---
 //---------------------------------------------------------------------------------
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetUnits(
   const Handle(StepBasic_HArray1OfNamedUnit)& aUnits)
@@ -197,10 +162,7 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetUnits(
   globalUnitAssignedContext->SetUnits(aUnits);
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Handle(StepBasic_HArray1OfNamedUnit)
   StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Units() const
@@ -208,10 +170,7 @@ Handle(StepBasic_HArray1OfNamedUnit)
   return globalUnitAssignedContext->Units();
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Handle(StepBasic_NamedUnit) StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
   UnitsValue(const Standard_Integer num) const
@@ -219,10 +178,7 @@ Handle(StepBasic_NamedUnit) StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncer
   return globalUnitAssignedContext->UnitsValue(num);
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Standard_Integer StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::NbUnits() const
 {
@@ -233,10 +189,7 @@ Standard_Integer StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCt
 //--- Specific Methods for AND classe field access : GlobalUncertaintyAssignedContext  ---
 //----------------------------------------------------------------------------------------
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetUncertainty(
   const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& aUncertainty)
@@ -244,10 +197,7 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetUncert
   globalUncertaintyAssignedContext->SetUncertainty(aUncertainty);
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)
   StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Uncertainty() const
@@ -255,10 +205,7 @@ Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)
   return globalUncertaintyAssignedContext->Uncertainty();
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Handle(StepBasic_UncertaintyMeasureWithUnit)
   StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::UncertaintyValue(
@@ -267,10 +214,7 @@ Handle(StepBasic_UncertaintyMeasureWithUnit)
   return globalUncertaintyAssignedContext->UncertaintyValue(num);
 }
 
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 Standard_Integer StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::NbUncertainty()
   const

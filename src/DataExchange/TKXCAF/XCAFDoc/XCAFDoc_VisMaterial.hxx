@@ -132,6 +132,7 @@ public:
   Standard_EXPORT void SetFaceCulling(Graphic3d_TypeOfBackfacingModel theFaceCulling);
 
   Standard_DEPRECATED("Deprecated method, FaceCulling() should be used instead")
+
   Standard_Boolean IsDoubleSided() const
   {
     return myFaceCulling == Graphic3d_TypeOfBackfacingModel_DoubleSided;
@@ -139,6 +140,7 @@ public:
 
   Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used "
                       "instead")
+
   void SetDoubleSided(Standard_Boolean theIsDoubleSided)
   {
     SetFaceCulling(theIsDoubleSided ? Graphic3d_TypeOfBackfacingModel_DoubleSided

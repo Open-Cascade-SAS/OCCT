@@ -358,9 +358,8 @@ void BSplCLib::Trimming(const Standard_Integer         Degree,
     PLib::GetPoles(newpoles, NewPoles);
 }
 
-//--------------------------------------------------------------------------
-// ELEMENTARY COMPUTATIONS
-//--------------------------------------------------------------------------
+//=================================================================================================
+
 //
 // All the following methods are methods of low level used in BSplCLib
 // but also in BSplSLib (but not in Geom)

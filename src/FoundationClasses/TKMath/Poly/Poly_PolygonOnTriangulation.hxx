@@ -127,9 +127,11 @@ public:
   const Handle(TColStd_HArray1OfReal)& Parameters() const { return myParameters; }
 
   Standard_DEPRECATED("Deprecated method, SetNode() should be used instead")
+
   TColStd_Array1OfInteger& ChangeNodes() { return myNodes; }
 
   Standard_DEPRECATED("Deprecated method, SetParameter() should be used instead")
+
   TColStd_Array1OfReal& ChangeParameters() { return myParameters->ChangeArray1(); }
 
 private:

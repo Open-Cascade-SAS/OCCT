@@ -259,6 +259,7 @@ public:
 
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat should be passed instead of "
                       "separate parameters")
+
   bool Init(const Handle(OpenGl_Context)& theCtx,
             const Standard_Integer        theTextFormat,
             const unsigned int            thePixelFormat,
@@ -277,6 +278,7 @@ public:
 
   Standard_DEPRECATED("Deprecated method, theIsColorMap parameter should be explicitly "
                       "specified")
+
   bool Init(const Handle(OpenGl_Context)& theCtx,
             const Image_PixMap&           theImage,
             const Graphic3d_TypeOfTexture theType)
@@ -286,6 +288,7 @@ public:
 
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat should be passed instead of "
                       "separate parameters")
+
   bool Init3D(const Handle(OpenGl_Context)& theCtx,
               const Standard_Integer        theTextFormat,
               const unsigned int            thePixelFormat,

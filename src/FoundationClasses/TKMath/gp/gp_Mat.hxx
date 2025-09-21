@@ -512,8 +512,7 @@ inline gp_Mat gp_Mat::Subtracted(const gp_Mat& theOther) const
 #if defined(__APPLE__) && (__apple_build_version__ > 9020000)
 __attribute__((optnone))
 #endif
-inline void
-  gp_Mat::Transpose()
+inline void gp_Mat::Transpose()
 {
   std::swap(myMat[0][1], myMat[1][0]);
   std::swap(myMat[0][2], myMat[2][0]);

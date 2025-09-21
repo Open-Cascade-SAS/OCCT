@@ -529,10 +529,7 @@ static Standard_Integer DDataStd_ChildNodeNext(Draw_Interpretor& /*di*/,
   return 0;
 }
 
-//=======================================================================
-// TreeNode : ChildNodeNextBrother
-// purpose  : ChildNodeNext Brother
-//=======================================================================
+//=================================================================================================
 
 static Standard_Integer DDataStd_ChildNodeNextBrother(Draw_Interpretor& /*di*/,
                                                       Standard_Integer /*n*/,

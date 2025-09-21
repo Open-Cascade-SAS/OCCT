@@ -294,10 +294,7 @@ LDOMBasicString::operator TCollection_ExtendedString() const
   return TCollection_ExtendedString();
 }
 
-//=======================================================================
-// function : GetInteger
-// purpose  : Conversion to Integer
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean LDOMBasicString::GetInteger(Standard_Integer& aResult) const
 {

@@ -77,8 +77,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #define QCOMPARE(val1, val2)                                                                       \
   di << "Checking " #val1 " == " #val2 << ((val1) == (val2) ? ": OK\n" : ": Error\n")
 
-  static Standard_Integer
-  OCC230(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+  static Standard_Integer OCC230(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 4)
   {

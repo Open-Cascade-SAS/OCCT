@@ -335,12 +335,15 @@ public:
   Standard_EXPORT void SetNormals(const Handle(TShort_HArray1OfShortReal)& theNormals);
 
   Standard_DEPRECATED("Deprecated method, Triangle() should be used instead")
+
   const Poly_Array1OfTriangle& Triangles() const { return myTriangles; }
 
   Standard_DEPRECATED("Deprecated method, SetTriangle() should be used instead")
+
   Poly_Array1OfTriangle& ChangeTriangles() { return myTriangles; }
 
   Standard_DEPRECATED("Deprecated method, SetTriangle() should be used instead")
+
   Poly_Triangle& ChangeTriangle(const Standard_Integer theIndex)
   {
     return myTriangles.ChangeValue(theIndex);

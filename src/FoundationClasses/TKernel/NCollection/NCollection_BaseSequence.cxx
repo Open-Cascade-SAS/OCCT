@@ -396,10 +396,7 @@ void NCollection_BaseSequence::RemoveSeq(const Standard_Integer theIndex,
   fDel(p, myAllocator);
 }
 
-//=======================================================================
-// function : Remove
-// purpose  : remove a set of items
-//=======================================================================
+//=================================================================================================
 
 void NCollection_BaseSequence::RemoveSeq(const Standard_Integer From,
                                          const Standard_Integer To,

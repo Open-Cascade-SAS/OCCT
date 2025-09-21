@@ -1900,10 +1900,8 @@ static Standard_Boolean ORientation(const TDF_Label&                  L,
   return Standard_True;
 }
 
-//===========================================================================
-// function : WireIN
-// purpose  : to solve  WIREIN name
-//=======================================================================
+//=================================================================================================
+
 static Standard_Boolean WireIN(const TDF_Label&                  L,
                                const TDF_LabelMap&               Valid,
                                const TNaming_ListOfNamedShape&   Args,

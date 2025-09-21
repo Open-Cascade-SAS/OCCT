@@ -28,18 +28,16 @@ struct hash<TCollection_AsciiString>
 };
 } // namespace std
 
-//------------------------------------------------------------------------
-//  IsEqual
-//------------------------------------------------------------------------
+//=================================================================================================
+
 inline Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
                                 const TCollection_AsciiString& string2)
 {
   return TCollection_AsciiString::IsEqual(string1, string2);
 }
 
-// ----------------------------------------------------------------------------
-// ToCString
-// ----------------------------------------------------------------------------
+//=================================================================================================
+
 inline Standard_CString TCollection_AsciiString::ToCString() const
 {
   return mystring;
@@ -90,27 +88,24 @@ inline size_t TCollection_AsciiString::HashCode() const
   return opencascade::hashBytes(mystring, mylength);
 }
 
-//------------------------------------------------------------------------
-//  IsEqual
-//------------------------------------------------------------------------
+//=================================================================================================
+
 inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& string1,
                                                          const TCollection_AsciiString& string2)
 {
   return string1.IsEqual(string2);
 }
 
-//------------------------------------------------------------------------
-//  IsEqual
-//------------------------------------------------------------------------
+//=================================================================================================
+
 inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& string1,
                                                          const Standard_CString         string2)
 {
   return string1.IsEqual(string2);
 }
 
-// ----------------------------------------------------------------------------
-// SubString
-// ----------------------------------------------------------------------------
+//=================================================================================================
+
 inline TCollection_AsciiString TCollection_AsciiString::SubString(
   const Standard_Integer FromIndex,
   const Standard_Integer ToIndex) const

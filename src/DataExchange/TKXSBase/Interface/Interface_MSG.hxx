@@ -113,7 +113,7 @@ public:
   //! operator ()
   //! was C++ : return const
   Standard_EXPORT Standard_CString Value() const;
-  operator Standard_CString() const;
+                                   operator Standard_CString() const;
 
   //! Reads a list of messages from a stream, returns read count
   //! 0 means empty file, -1 means error

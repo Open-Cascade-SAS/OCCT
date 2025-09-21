@@ -241,6 +241,7 @@ public:
   //! Deactivates the reflective properties of the surface with specified reflection type.
   Standard_DEPRECATED("Deprecated method, specific material component should be zerroed "
                       "instead")
+
   void SetReflectionModeOff(const Graphic3d_TypeOfReflection theType)
   {
     if (!ReflectionMode(theType))

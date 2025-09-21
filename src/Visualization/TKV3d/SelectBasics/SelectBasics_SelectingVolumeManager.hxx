@@ -180,6 +180,7 @@ public:
 
 public:
   Standard_DEPRECATED("Deprecated alias for OverlapsBox()")
+
   Standard_Boolean Overlaps(const NCollection_Vec3<Standard_Real>& theBoxMin,
                             const NCollection_Vec3<Standard_Real>& theBoxMax,
                             SelectBasics_PickResult&               thePickResult) const
@@ -188,6 +189,7 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsBox()")
+
   Standard_Boolean Overlaps(const NCollection_Vec3<Standard_Real>& theBoxMin,
                             const NCollection_Vec3<Standard_Real>& theBoxMax,
                             Standard_Boolean*                      theInside = NULL) const
@@ -196,12 +198,14 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPoint()")
+
   Standard_Boolean Overlaps(const gp_Pnt& thePnt, SelectBasics_PickResult& thePickResult) const
   {
     return OverlapsPoint(thePnt, thePickResult);
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPoint()")
+
   Standard_Boolean Overlaps(const gp_Pnt& thePnt) const { return OverlapsPoint(thePnt); }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPolygon()")
@@ -210,6 +214,7 @@ public:
                                             SelectBasics_PickResult&           thePickResult) const;
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPolygon()")
+
   Standard_Boolean Overlaps(const TColgp_Array1OfPnt& theArrayOfPts,
                             Standard_Integer          theSensType,
                             SelectBasics_PickResult&  thePickResult) const
@@ -218,6 +223,7 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsSegment()")
+
   Standard_Boolean Overlaps(const gp_Pnt&            thePnt1,
                             const gp_Pnt&            thePnt2,
                             SelectBasics_PickResult& thePickResult) const
@@ -226,6 +232,7 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsTriangle()")
+
   Standard_Boolean Overlaps(const gp_Pnt&            thePnt1,
                             const gp_Pnt&            thePnt2,
                             const gp_Pnt&            thePnt3,

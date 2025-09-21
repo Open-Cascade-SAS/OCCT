@@ -189,6 +189,7 @@ public:
   //! For compatibility, define down casting operator from non-base type, as deprecated
   template <class T2>
   Standard_DEPRECATED("down-casting from object of the same or unrelated type is meaningless")
+
   static handle DownCast(
     const handle<T2>& theObject,
     typename opencascade::std::enable_if<!is_base_but_not_same<T2, T>::value, void*>::type = 0)
@@ -199,6 +200,7 @@ public:
   //! For compatibility, define down casting operator from non-base type, as deprecated
   template <class T2>
   Standard_DEPRECATED("down-casting from object of the same or unrelated type is meaningless")
+
   static handle DownCast(
     const T2* thePtr,
     typename opencascade::std::enable_if<!is_base_but_not_same<T2, T>::value, void*>::type = 0)
@@ -348,6 +350,7 @@ public:
   template <class T2>
   Standard_DEPRECATED("Passing non-const reference to handle of base type in function is unsafe; "
                       "use variable of exact type")
+
   operator handle<T2>&()
   {
     // error "type is not a member of enable_if" will be generated if T2 is not sub-type of T
