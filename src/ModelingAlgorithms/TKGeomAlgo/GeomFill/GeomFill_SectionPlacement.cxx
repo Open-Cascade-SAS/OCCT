@@ -363,10 +363,8 @@ void GeomFill_SectionPlacement::Perform(const Standard_Real Tol)
   Perform(Path, Tol);
 }
 
-//===============================================================
-// Function :Perform
-// Purpose : Recherche automatique
-//===============================================================
+//=================================================================================================
+
 void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
                                         const Standard_Real            Tol)
 {

@@ -54,9 +54,8 @@
 
 /*********************************************************************************/
 
-//------------------------------------------------------------------------------
-// function: TRI_SOLUTION
-//------------------------------------------------------------------------------
+//=================================================================================================
+
 static Standard_Boolean TRI_SOLUTION(const BRepExtrema_SeqOfSolution& SeqSol, const gp_Pnt& Pt)
 {
   for (BRepExtrema_SeqOfSolution::iterator anIt = SeqSol.begin(); anIt != SeqSol.end(); anIt++)
@@ -70,9 +69,8 @@ static Standard_Boolean TRI_SOLUTION(const BRepExtrema_SeqOfSolution& SeqSol, co
   return Standard_True;
 }
 
-//------------------------------------------------------------------------------
-// function: MIN_SOLUTION
-//------------------------------------------------------------------------------
+//=================================================================================================
+
 static void MIN_SOLUTION(const BRepExtrema_SeqOfSolution& SeqSol1,
                          const BRepExtrema_SeqOfSolution& SeqSol2,
                          const Standard_Real              DstRef,
@@ -93,9 +91,8 @@ static void MIN_SOLUTION(const BRepExtrema_SeqOfSolution& SeqSol1,
   }
 }
 
-//------------------------------------------------------------------------------
-// function: TRIM_INFINIT_EDGE
-//------------------------------------------------------------------------------
+//=================================================================================================
+
 static void TRIM_INFINIT_EDGE(const TopoDS_Edge& S1,
                               const TopoDS_Edge& S2,
                               TopoDS_Edge&       aResEdge,
@@ -220,9 +217,8 @@ static void TRIM_INFINIT_EDGE(const TopoDS_Edge& S1,
   }
 }
 
-//------------------------------------------------------------------------------
-// function: TRIM_INFINIT_FACE
-//------------------------------------------------------------------------------
+//=================================================================================================
+
 static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1,
                               const TopoDS_Shape& S2,
                               TopoDS_Face&        aResFace,
@@ -409,9 +405,8 @@ static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1,
     bIsInfinit = Standard_False;
 }
 
-//------------------------------------------------------------------------------
-// static function: PERFORM_C0
-//------------------------------------------------------------------------------
+//=================================================================================================
+
 static void PERFORM_C0(const TopoDS_Edge&         S1,
                        const TopoDS_Edge&         S2,
                        BRepExtrema_SeqOfSolution& SeqSol1,

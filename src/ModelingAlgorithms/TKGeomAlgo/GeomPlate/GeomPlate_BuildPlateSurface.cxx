@@ -225,9 +225,8 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const Standard_Integer 
 //      =========================================================
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 
-//-------------------------------------------------------------------------
-// Function : TrierTab, internal Function, does not belong to class
-//-------------------------------------------------------------------------
+//=================================================================================================
+
 // Reorder the table of transformations
 // After the call of CourbeJointive the order of curves is modified
 // Ex : initial order of curves ==> A B C D E F
@@ -1352,9 +1351,8 @@ Standard_Boolean GeomPlate_BuildPlateSurface::CourbeJointive(const Standard_Real
     return Standard_False;
 }
 
-//-------------------------------------------------------------------------
-// Function : ComputeSurfInit
-//-------------------------------------------------------------------------
+//=================================================================================================
+
 // Calculate the initial surface either by the method of max flow or by
 // the method of the plane of inertia if the contour is not closed or if
 // there are point constraints.

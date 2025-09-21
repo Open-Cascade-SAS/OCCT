@@ -113,10 +113,8 @@ void TopOpeBRepTool_CurveTool::SetGeomTool(const TopOpeBRepTool_GeomTool& GT)
   myGeomTool.Define(GT);
 }
 
-//-----------------------------------------------------------------------
-// function : MakePCurve
-// purpose  :
-//-----------------------------------------------------------------------
+//=================================================================================================
+
 Standard_EXPORT Handle(Geom2d_Curve) MakePCurve(const ProjLib_ProjectedCurve& PC)
 {
   Handle(Geom2d_Curve) C2D;

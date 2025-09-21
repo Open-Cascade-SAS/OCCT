@@ -2786,10 +2786,8 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(const Standard_Integer  theXPMin
   return aStatus;
 }
 
-//=======================================================================
-// function : Select
-// purpose  : Selection by polyline
-//=======================================================================
+//=================================================================================================
+
 AIS_StatusOfPick AIS_InteractiveContext::Select(const TColgp_Array1OfPnt2d& thePolyline,
                                                 const Handle(V3d_View)&     theView,
                                                 const Standard_Boolean      theToUpdateViewer)

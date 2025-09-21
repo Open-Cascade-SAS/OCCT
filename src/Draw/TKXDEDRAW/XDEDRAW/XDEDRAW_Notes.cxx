@@ -1138,10 +1138,8 @@ static Standard_Integer noteUsername(Draw_Interpretor& di, Standard_Integer argc
   return 0;
 }
 
-//=======================================================================
-// function : noteTimestamp
-// purpose  : gets a note timestamp
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteTimestamp = {"XNoteTimestamp", 3, "XNoteTimestamp Doc note"};
 
 static Standard_Integer noteTimestamp(Draw_Interpretor& di,
