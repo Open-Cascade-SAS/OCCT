@@ -8,7 +8,7 @@ inputs:
   file-pattern:
     description: 'Pattern to match files for formatting check'
     required: false
-    default: '^(src)/.*\.(cpp|hxx|cxx|lxx|h|pxx|hpp)$'
+    default: '^(src)/.*\.(cpp|hxx|cxx|lxx|h|pxx|hpp|gxx)$'
   clang-format-version:
     description: 'Required clang-format version'
     required: false
