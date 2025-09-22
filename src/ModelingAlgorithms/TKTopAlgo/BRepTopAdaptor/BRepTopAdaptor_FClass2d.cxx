@@ -168,30 +168,38 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
         if (Abs(plbid - pfbid) < 1.e-9)
           continue;
 
-        // if(degenerated==Standard_False)
-        //   C3d.Initialize(edge,Face);
-
         //-- Check cases when it was forgotten to code degenerated :  PRO17410 (janv 99)
         if (degenerated == Standard_False)
         {
           C3d.Initialize(edge, Face);
-          du          = (plbid - pfbid) * 0.1;
-          u           = pfbid + du;
-          gp_Pnt P3da = C3d.Value(u);
-          degenerated = Standard_True;
-          u += du;
+          const double aParametricStep   = (plbid - pfbid) * 0.1;
+          double       aCurrentParameter = pfbid + aParametricStep;
+          const gp_Pnt aStartPoint       = C3d.Value(aCurrentParameter);
+          degenerated                    = Standard_True;
+          aCurrentParameter += aParametricStep;
           do
           {
 
-            gp_Pnt P3db = C3d.Value(u);
-            // 		      if(P3da.SquareDistance(P3db)) { degenerated=Standard_False; break; }
-            if (P3da.SquareDistance(P3db) > Precision::Confusion())
+            const gp_Pnt aCurrentPoint = C3d.Value(aCurrentParameter);
+            if (aStartPoint.SquareDistance(aCurrentPoint) > Precision::Confusion())
             {
               degenerated = Standard_False;
               break;
             }
-            u += du;
-          } while (u < plbid);
+
+            // For large values of pfbid and plbid with small difference (plbid - pfbid) the
+            // addition of aParametricStep to aCurrentParameter can be equal to aCurrentParameter
+            // due to the limited resolution of double precision. In this case the loop can be
+            // infinite. To prevent this we use std::nextafter to compute the next representable
+            // double after aCurrentParameter in the direction of plbid.
+            const double aNextDouble = std::nextafter(aCurrentParameter, plbid);
+            aCurrentParameter += aParametricStep;
+            if (aNextDouble > aCurrentParameter)
+            {
+              aCurrentParameter = aNextDouble;
+            }
+
+          } while (aCurrentParameter < plbid);
         }
 
         //-- ----------------------------------------
