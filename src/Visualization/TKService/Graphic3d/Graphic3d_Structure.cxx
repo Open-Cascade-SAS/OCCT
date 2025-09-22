@@ -807,8 +807,11 @@ void Graphic3d_Structure::Transforms(const gp_Trsf&      theTrsf,
   theTrsf.Transforms(theNewX, theNewY, theNewZ);
 }
 
-//=================================================================================================
-
+//=======================================================================
+// function : TransformBoundaries
+// purpose  : Calculated a new AABB given an old AABB and a transformation matrix.
+//            Uses efficient algorithm by James Arvo from the Graphics Gems (1990) book.
+//=======================================================================
 void Graphic3d_Structure::TransformBoundaries(const gp_Trsf& theTrsf,
                                               Standard_Real& theXMin,
                                               Standard_Real& theYMin,
@@ -817,65 +820,40 @@ void Graphic3d_Structure::TransformBoundaries(const gp_Trsf& theTrsf,
                                               Standard_Real& theYMax,
                                               Standard_Real& theZMax)
 {
-  Standard_Real aXMin, aYMin, aZMin, aXMax, aYMax, aZMax, anU, aV, aW;
+  if (theTrsf.Form() == gp_Identity)
+  {
+    return;
+  }
 
-  Graphic3d_Structure::Transforms(theTrsf, theXMin, theYMin, theZMin, aXMin, aYMin, aZMin);
-  Graphic3d_Structure::Transforms(theTrsf, theXMax, theYMax, theZMax, aXMax, aYMax, aZMax);
+  // Untransformed AABB min and max points
+  gp_Pnt anOldMinPnt(theXMin, theYMin, theZMin);
+  gp_Pnt anOldMaxPnt(theXMax, theYMax, theZMax);
 
-  Graphic3d_Structure::Transforms(theTrsf, theXMin, theYMin, theZMax, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
+  // Define an empty AABB located in the transformation translation point
+  gp_XYZ aNewMinPnt = theTrsf.TranslationPart();
+  gp_XYZ aNewMaxPnt = theTrsf.TranslationPart();
 
-  Graphic3d_Structure::Transforms(theTrsf, theXMax, theYMin, theZMax, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
+  // Add in extreme values obtained by computing the products of the
+  // mins and maxes with the elements of the 'i' row of M
+  for (Standard_Integer aRow = 1; aRow < 4; ++aRow)
+  {
+    for (Standard_Integer aCol = 1; aCol < 4; ++aCol)
+    {
+      Standard_Real aMatValue = theTrsf.Value(aRow, aCol);
+      Standard_Real anOffset1 = aMatValue * anOldMinPnt.Coord(aCol);
+      Standard_Real anOffset2 = aMatValue * anOldMaxPnt.Coord(aCol);
 
-  Graphic3d_Structure::Transforms(theTrsf, theXMax, theYMin, theZMin, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
+      aNewMinPnt.ChangeCoord(aRow) += Min(anOffset1, anOffset2);
+      aNewMaxPnt.ChangeCoord(aRow) += Max(anOffset1, anOffset2);
+    }
+  }
 
-  Graphic3d_Structure::Transforms(theTrsf, theXMax, theYMax, theZMin, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
-
-  Graphic3d_Structure::Transforms(theTrsf, theXMin, theYMax, theZMax, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
-
-  Graphic3d_Structure::Transforms(theTrsf, theXMin, theYMax, theZMin, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
-
-  theXMin = aXMin;
-  theYMin = aYMin;
-  theZMin = aZMin;
-  theXMax = aXMax;
-  theYMax = aYMax;
-  theZMax = aZMax;
+  theXMin = aNewMinPnt.X();
+  theYMin = aNewMinPnt.Y();
+  theZMin = aNewMinPnt.Z();
+  theXMax = aNewMaxPnt.X();
+  theYMax = aNewMaxPnt.Y();
+  theZMax = aNewMaxPnt.Z();
 }
 
 //=================================================================================================
