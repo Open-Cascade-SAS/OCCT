@@ -14,8 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define AFFICHAGE 0
-
 #define No_Standard_OutOfRange
 
 #include <BRep_Tool.hxx>
@@ -46,38 +44,46 @@
   #include <stdio.h>
 #endif
 
-#ifdef OCCT_DEBUG
-  #define LBRCOMPT 0
-#else
-  #define LBRCOMPT 0
-#endif
-
-#if LBRCOMPT
-class StatistiquesFClass2d
+namespace
 {
-public:
-  long unsigned NbConstrShape;
-  long unsigned NbPerformInfinitePoint;
-  long unsigned NbPerform;
-  long unsigned NbTestOnRestriction;
-  long unsigned NbDestroy;
+// Increments @p theValue by @p theIncrement towards @p theDirection, ensuring that the result is
+// different from @p theValue. For large values of theValue with small theIncrement the result of
+// theValue + theIncrement can be equal to theValue due to the limited resolution of double
+// precision. This function guarantees to return the next representable value in the direction of
+// theDirection in such cases.
+inline double safeIncrement(const double theValue,
+                            const double theDirection,
+                            const double theIncrement)
+{
+  const double aNextValue = theValue + theIncrement;
+  return aNextValue == theValue ? std::nextafter(theValue, theDirection) : aNextValue;
+}
 
-public:
-  StatistiquesFClass2d() { NbConstrShape = NbPerform = NbPerformInfinitePoint = NbDestroy = 0; }
+//==================================================================================================
 
-  ~StatistiquesFClass2d()
+// Checks whether the curve is degenerated between theStartParam and theEndParam.
+// The check is performed by sampling the curve at several points and measuring the distance to the
+// start point. If all sampled points are closer than Precision::Confusion() to the start point, the
+// curve is considered degenerated.
+bool isDegenerated(const BRepAdaptor_Curve& theCurve,
+                   const double             theStartParam,
+                   const double             theEndParam)
+{
+  const double aParametricStep = (theEndParam - theStartParam) * 0.1;
+  const gp_Pnt aStartPoint     = theCurve.Value(theStartParam);
+  for (double aCurrParam = theStartParam; aCurrParam < theEndParam;
+       aCurrParam        = safeIncrement(aCurrParam, theEndParam, aParametricStep))
   {
-    printf("\n--- Statistiques BRepTopAdaptor:\n");
-    printf("\nConstructeur(Shape) : %10lu", NbConstrShape);
-    printf("\nPerformInfinitePoint: %10lu", NbPerformInfinitePoint);
-    printf("\nTestOnRestriction   : %10lu", NbTestOnRestriction);
-    printf("\nPerform(pnt2d)      : %10lu", NbPerform);
-    printf("\nDestroy             : %10lu", NbDestroy);
+    const gp_Pnt aCurrentPoint = theCurve.Value(aCurrParam);
+    if (aStartPoint.SquareDistance(aCurrentPoint) > Precision::Confusion())
+    {
+      return false;
+    }
   }
-};
 
-static StatistiquesFClass2d STAT;
-#endif
+  return true;
+}
+} // namespace
 
 BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
                                                  const Standard_Real TolUV)
@@ -88,11 +94,6 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
       U2(0.0),
       V2(0.0)
 {
-
-#if LBRCOMPT
-  STAT.NbConstrShape++;
-#endif
-
   //-- dead end on surfaces defined on more than one period
 
   Face.Orientation(TopAbs_FORWARD);
@@ -101,18 +102,16 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
 
   TopoDS_Edge            edge;
   TopAbs_Orientation     Or;
-  Standard_Real          u, du, Tole = 0.0, Tol = 0.0;
   BRepTools_WireExplorer WireExplorer;
-  TopExp_Explorer        FaceExplorer;
 
   Umin = Vmin = 0.0; // RealLast();
   Umax = Vmax = -Umin;
 
-  Standard_Integer aNbE    = 0;
-  Standard_Real    eps     = 1.e-10;
-  Standard_Integer BadWire = 0;
-  for (FaceExplorer.Init(Face, TopAbs_WIRE); (FaceExplorer.More() && BadWire == 0);
-       FaceExplorer.Next())
+  Standard_Integer        aNbE        = 0;
+  constexpr Standard_Real eps         = 1.e-10;
+  bool                    anIsBadWire = false;
+  for (TopExp_Explorer aFaceExplorer(Face, TopAbs_WIRE); (aFaceExplorer.More() && !anIsBadWire);
+       aFaceExplorer.Next())
   {
     Standard_Integer       nbpnts = 0;
     TColgp_SequenceOfPnt2d SeqPnt2d;
@@ -123,17 +122,16 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
     Standard_Integer       NbEdges        = 0;
 
     TopExp_Explorer Explorer;
-    for (Explorer.Init(FaceExplorer.Current(), TopAbs_EDGE); Explorer.More(); Explorer.Next())
+    for (Explorer.Init(aFaceExplorer.Current(), TopAbs_EDGE); Explorer.More(); Explorer.Next())
       NbEdges++;
     aNbE = NbEdges;
 
     gp_Pnt           Ancienpnt3d(0, 0, 0);
     Standard_Boolean Ancienpnt3dinitialise = Standard_False;
 
-    for (WireExplorer.Init(TopoDS::Wire(FaceExplorer.Current()), Face); WireExplorer.More();
+    for (WireExplorer.Init(TopoDS::Wire(aFaceExplorer.Current()), Face); WireExplorer.More();
          WireExplorer.Next())
     {
-
       NbEdges--;
       edge = WireExplorer.Current();
       Or   = edge.Orientation();
@@ -142,79 +140,44 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
         Standard_Real pfbid, plbid;
         if (BRep_Tool::CurveOnSurface(edge, Face, pfbid, plbid).IsNull())
           return;
-        BRepAdaptor_Curve2d C(edge, Face);
-
-        //-- ----------------------------------------
-        Standard_Boolean degenerated = Standard_False;
-        if (BRep_Tool::Degenerated(edge))
-          degenerated = Standard_True;
-        if (BRep_Tool::IsClosed(edge, Face))
-          degenerated = Standard_True;
-        TopoDS_Vertex Va, Vb;
-        TopExp::Vertices(edge, Va, Vb);
-        Standard_Real TolVertex1 = 0., TolVertex = 0.;
-        if (Va.IsNull())
-          degenerated = Standard_True;
-        else
-          TolVertex1 = BRep_Tool::Tolerance(Va);
-        if (Vb.IsNull())
-          degenerated = Standard_True;
-        else
-          TolVertex = BRep_Tool::Tolerance(Vb);
-        if (TolVertex < TolVertex1)
-          TolVertex = TolVertex1;
-        BRepAdaptor_Curve C3d;
 
         if (Abs(plbid - pfbid) < 1.e-9)
           continue;
 
+        Standard_Boolean degenerated = Standard_False;
+        if (BRep_Tool::Degenerated(edge))
+        {
+          degenerated = Standard_True;
+        }
+        if (BRep_Tool::IsClosed(edge, Face))
+        {
+          degenerated = Standard_True;
+        }
+        TopoDS_Vertex Va, Vb;
+        TopExp::Vertices(edge, Va, Vb);
+        if (Va.IsNull() || Vb.IsNull())
+        {
+          degenerated = Standard_True;
+        }
+
+        const BRepAdaptor_Curve2d aCurveAdaptor2D(edge, Face);
+        const BRepAdaptor_Curve   aCurveAdaptor3D(edge, Face);
+
         //-- Check cases when it was forgotten to code degenerated :  PRO17410 (janv 99)
         if (degenerated == Standard_False)
         {
-          C3d.Initialize(edge, Face);
-          const double aParametricStep   = (plbid - pfbid) * 0.1;
-          double       aCurrentParameter = pfbid + aParametricStep;
-          const gp_Pnt aStartPoint       = C3d.Value(aCurrentParameter);
-          degenerated                    = Standard_True;
-          aCurrentParameter += aParametricStep;
-          do
-          {
-
-            const gp_Pnt aCurrentPoint = C3d.Value(aCurrentParameter);
-            if (aStartPoint.SquareDistance(aCurrentPoint) > Precision::Confusion())
-            {
-              degenerated = Standard_False;
-              break;
-            }
-
-            // For large values of pfbid and plbid with small difference (plbid - pfbid) the
-            // addition of aParametricStep to aCurrentParameter can be equal to aCurrentParameter
-            // due to the limited resolution of double precision. In this case the loop can be
-            // infinite. To prevent this we use std::nextafter to compute the next representable
-            // double after aCurrentParameter in the direction of plbid.
-            const double aNextDouble = std::nextafter(aCurrentParameter, plbid);
-            aCurrentParameter += aParametricStep;
-            if (aNextDouble > aCurrentParameter)
-            {
-              aCurrentParameter = aNextDouble;
-            }
-
-          } while (aCurrentParameter < plbid);
+          degenerated = isDegenerated(aCurveAdaptor3D, pfbid, plbid);
         }
 
         //-- ----------------------------------------
 
-        Tole = BRep_Tool::Tolerance(edge);
-        if (Tole > Tol)
-          Tol = Tole;
-
         // Standard_Integer nbs = 1 + Geom2dInt_Geom2dCurveTool::NbSamples(C);
-        Standard_Integer nbs = Geom2dInt_Geom2dCurveTool::NbSamples(C);
+        Standard_Integer nbs = Geom2dInt_Geom2dCurveTool::NbSamples(aCurveAdaptor2D);
         //-- Attention to rational bsplines of degree 3. (ends of circles among others)
         if (nbs > 2)
           nbs *= 4;
-        du = (plbid - pfbid) / (Standard_Real)(nbs - 1);
-
+        Standard_Real du = (plbid - pfbid) / (Standard_Real)(nbs - 1);
+        Standard_Real u  = 0.0;
         if (Or == TopAbs_FORWARD)
           u = pfbid;
         else
@@ -228,24 +191,12 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
         //-- and the last point registered in SeqPnt2d
         //-- Try to remote the first point of the current edge
         //-- from the last saved point
-#ifdef OCCT_DEBUG
-        gp_Pnt2d Pnt2dDebutEdgeCourant = C.Value(u);
-        (void)Pnt2dDebutEdgeCourant;
-#endif
-
-        // Standard_Real Baillement2dU=0;
-        // Standard_Real Baillement2dV=0;
-#if AFFICHAGE
-        if (nbpnts > 1)
-          printf("\nTolVertex %g ", TolVertex);
-#endif
-
         if (firstpoint == 2)
           u += du;
         Standard_Integer Avant = nbpnts;
         for (Standard_Integer e = firstpoint; e <= nbs; e++)
         {
-          gp_Pnt2d P2d = C.Value(u);
+          gp_Pnt2d P2d = aCurveAdaptor2D.Value(u);
           if (P2d.X() < Umin)
             Umin = P2d.X();
           if (P2d.X() > Umax)
@@ -259,14 +210,14 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
           gp_Pnt        P3d;
           if (degenerated == Standard_False)
           {
-            P3d = C3d.Value(u);
+            P3d = aCurveAdaptor3D.Value(u);
             if (nbpnts > 1 && Ancienpnt3dinitialise)
               dist3dptcourant_ancienpnt = P3d.Distance(Ancienpnt3d);
           }
           Standard_Boolean IsRealCurve3d = Standard_True; // patch
           if (dist3dptcourant_ancienpnt < Precision::Confusion())
           {
-            gp_Pnt MidP3d = C3d.Value(u - du / 2.);
+            gp_Pnt MidP3d = aCurveAdaptor3D.Value(u - du / 2.);
             if (P3d.Distance(MidP3d) < Precision::Confusion())
               IsRealCurve3d = Standard_False;
           }
@@ -280,13 +231,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
             nbpnts++;
             SeqPnt2d.Append(P2d);
           }
-#if AFFICHAGE
-          else
-          {
-            static int mm = 0;
-            printf("\npoint p%d  %g %g %g", ++mm, P3d.X(), P3d.Y(), P3d.Z());
-          }
-#endif
+
           u += du;
           Standard_Integer ii = nbpnts;
           //-- printf("\n nbpnts:%4d  u=%7.5g   FlecheU=%7.5g  FlecheV=%7.5g  ii=%3d  Avant=%3d
@@ -316,21 +261,12 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
 
     if (NbEdges)
     { //-- on compte ++ with a normal explorer and with the Wire Explorer
-      /*
-      #ifdef OCCT_DEBUG
-
-            std::cout << std::endl;
-            std::cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probablement FAUX **" << std::endl;
-            std::cout << "*** WireExplorer does not find all edges " << std::endl;
-            std::cout << "*** Connect old classifier" << std::endl;
-      #endif
-      */
       TColgp_Array1OfPnt2d PClass(1, 2);
       //// modified by jgv, 28.04.2009 ////
       PClass.Init(gp_Pnt2d(0., 0.));
       /////////////////////////////////////
       TabClass.Append((void*)new CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
-      BadWire = 1;
+      anIsBadWire = true;
       TabOrien.Append(-1);
     }
     else if (WireIsNotEmpty)
@@ -386,7 +322,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
           SeqPnt2d.Clear();
           FlecheU = 0.0;
           FlecheV = 0.0;
-          for (WireExplorer.Init(TopoDS::Wire(FaceExplorer.Current()), Face); WireExplorer.More();
+          for (WireExplorer.Init(TopoDS::Wire(aFaceExplorer.Current()), Face); WireExplorer.More();
                WireExplorer.Next())
           {
             edge = WireExplorer.Current();
@@ -470,31 +406,11 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
           FlecheU = Toluv;
         if (FlecheV < Toluv)
           FlecheV = Toluv;
-        //-- std::cout<<" U:"<<FlecheU<<" V:"<<FlecheV<<std::endl;
         TabClass.Append((void*)new CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
-
-        //	      if((angle<2 && angle>-2)||(angle>10)||(angle<-10))
-        //		{
-        //		  BadWire=1;
-        //		  TabOrien.Append(-1);
-        // #ifdef OCCT_DEBUG
-        //		  std::cout << std::endl;
-        //		  std::cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probably FALSE **" <<
-        // std::endl; 		  std::cout << "*** Total rotation angle of the wire : " << angle <<
-        // std::endl; 		  std::cout << "*** Connect the old classifier" << std::endl;
-        // #endif
-        //		}
-        //	      else TabOrien.Append(((angle>0.0)? 1 : 0));
       } // if(nbpoints>3
       else
       {
-#ifdef OCCT_DEBUG
-        std::cout << std::endl;
-        std::cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probably FALSE **" << std::endl;
-        std::cout << "*** The sample wire contains less than 3 points" << std::endl;
-        std::cout << "*** Connect the old classifier" << std::endl;
-#endif
-        BadWire = 1;
+        anIsBadWire = true;
         TabOrien.Append(-1);
         TColgp_Array1OfPnt2d xPClass(1, 2);
         xPClass(1) = SeqPnt2d(1);
@@ -510,7 +426,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
   if (nbtabclass > 0)
   {
     //-- If an error was detected on a wire: set all TabOrien to -1
-    if (BadWire)
+    if (anIsBadWire)
       TabOrien(1) = -1;
 
     if (surf->GetType() == GeomAbs_Cone || surf->GetType() == GeomAbs_Cylinder
@@ -546,10 +462,6 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
 
 TopAbs_State BRepTopAdaptor_FClass2d::PerformInfinitePoint() const
 {
-#if LBRCOMPT
-  STAT.NbPerformInfinitePoint++;
-#endif
-
   if (Umax == -RealLast() || Vmax == -RealLast() || Umin == RealLast() || Vmin == RealLast())
   {
     return (TopAbs_IN);
@@ -561,10 +473,6 @@ TopAbs_State BRepTopAdaptor_FClass2d::PerformInfinitePoint() const
 TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d&        _Puv,
                                               const Standard_Boolean RecadreOnPeriodic) const
 {
-#if LBRCOMPT
-  STAT.NbPerform++;
-#endif
-
   Standard_Integer dedans;
   Standard_Integer nbtabclass = TabClass.Length();
 
@@ -706,10 +614,6 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(
   const Standard_Real    Tol,
   const Standard_Boolean RecadreOnPeriodic) const
 {
-#if LBRCOMPT
-  STAT.NbConstrShape++;
-#endif
-
   Standard_Integer dedans;
   Standard_Integer nbtabclass = TabClass.Length();
 
@@ -844,10 +748,6 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(
 
 void BRepTopAdaptor_FClass2d::Destroy()
 {
-#if LBRCOMPT
-  STAT.NbDestroy++;
-#endif
-
   Standard_Integer nbtabclass = TabClass.Length();
   for (Standard_Integer d = 1; d <= nbtabclass; d++)
   {
