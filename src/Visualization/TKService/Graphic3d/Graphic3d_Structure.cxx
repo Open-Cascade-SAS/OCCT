@@ -807,11 +807,8 @@ void Graphic3d_Structure::Transforms(const gp_Trsf&      theTrsf,
   theTrsf.Transforms(theNewX, theNewY, theNewZ);
 }
 
-//=======================================================================
-// function : TransformBoundaries
-// purpose  : Calculated a new AABB given an old AABB and a transformation matrix.
-//            Uses efficient algorithm by James Arvo from the Graphics Gems (1990) book.
-//=======================================================================
+//=================================================================================================
+
 void Graphic3d_Structure::TransformBoundaries(const gp_Trsf& theTrsf,
                                               Standard_Real& theXMin,
                                               Standard_Real& theYMin,
@@ -833,8 +830,11 @@ void Graphic3d_Structure::TransformBoundaries(const gp_Trsf& theTrsf,
   gp_XYZ aNewMinPnt = theTrsf.TranslationPart();
   gp_XYZ aNewMaxPnt = theTrsf.TranslationPart();
 
-  // Add in extreme values obtained by computing the products of the
-  // mins and maxes with the elements of the 'i' row of M
+  // This implements James Arvo's algorithm for transforming an axis-aligned bounding box (AABB)
+  // under an affine transformation. For each row of the transformation matrix, we compute
+  // the products of the min and max coordinates with the matrix elements, and select the
+  // minimum and maximum values to form the new bounding box. This ensures that the transformed
+  // box tightly encloses the original box after transformation, accounting for rotation and scaling.
   for (Standard_Integer aRow = 1; aRow < 4; ++aRow)
   {
     for (Standard_Integer aCol = 1; aCol < 4; ++aCol)
