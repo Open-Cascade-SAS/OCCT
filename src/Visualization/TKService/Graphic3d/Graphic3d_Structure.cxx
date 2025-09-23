@@ -834,7 +834,8 @@ void Graphic3d_Structure::TransformBoundaries(const gp_Trsf& theTrsf,
   // under an affine transformation. For each row of the transformation matrix, we compute
   // the products of the min and max coordinates with the matrix elements, and select the
   // minimum and maximum values to form the new bounding box. This ensures that the transformed
-  // box tightly encloses the original box after transformation, accounting for rotation and scaling.
+  // box tightly encloses the original box after transformation, accounting for rotation and
+  // scaling.
   for (Standard_Integer aRow = 1; aRow < 4; ++aRow)
   {
     for (Standard_Integer aCol = 1; aCol < 4; ++aCol)
