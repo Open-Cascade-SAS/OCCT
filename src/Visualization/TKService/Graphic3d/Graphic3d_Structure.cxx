@@ -762,13 +762,9 @@ void Graphic3d_Structure::addTransformed(Graphic3d_BndBox3d&    theBox,
   {
     if (!myCStructure->Transformation().IsNull())
     {
-      TransformBoundaries(myCStructure->Transformation()->Trsf(),
-                          aBox.CornerMin().x(),
-                          aBox.CornerMin().y(),
-                          aBox.CornerMin().z(),
-                          aBox.CornerMax().x(),
-                          aBox.CornerMax().y(),
-                          aBox.CornerMax().z());
+      Graphic3d_Mat4d aMat4;
+      myCStructure->Transformation()->Trsf().GetMat4(aMat4);
+      aBox.Transform(aMat4);
     }
 
     // if box is still valid after transformation
@@ -781,80 +777,6 @@ void Graphic3d_Structure::addTransformed(Graphic3d_BndBox3d&    theBox,
       theBox.Combine(aCombinedBox);
     }
   }
-}
-
-//=================================================================================================
-
-void Graphic3d_Structure::Transforms(const gp_Trsf&      theTrsf,
-                                     const Standard_Real theX,
-                                     const Standard_Real theY,
-                                     const Standard_Real theZ,
-                                     Standard_Real&      theNewX,
-                                     Standard_Real&      theNewY,
-                                     Standard_Real&      theNewZ)
-{
-  constexpr Standard_Real aRL = RealLast();
-  constexpr Standard_Real aRF = RealFirst();
-  theNewX                     = theX;
-  theNewY                     = theY;
-  theNewZ                     = theZ;
-  if ((theX == aRF) || (theY == aRF) || (theZ == aRF) || (theX == aRL) || (theY == aRL)
-      || (theZ == aRL))
-  {
-    return;
-  }
-
-  theTrsf.Transforms(theNewX, theNewY, theNewZ);
-}
-
-//=================================================================================================
-
-void Graphic3d_Structure::TransformBoundaries(const gp_Trsf& theTrsf,
-                                              Standard_Real& theXMin,
-                                              Standard_Real& theYMin,
-                                              Standard_Real& theZMin,
-                                              Standard_Real& theXMax,
-                                              Standard_Real& theYMax,
-                                              Standard_Real& theZMax)
-{
-  if (theTrsf.Form() == gp_Identity)
-  {
-    return;
-  }
-
-  // Untransformed AABB min and max points
-  gp_Pnt anOldMinPnt(theXMin, theYMin, theZMin);
-  gp_Pnt anOldMaxPnt(theXMax, theYMax, theZMax);
-
-  // Define an empty AABB located in the transformation translation point
-  gp_XYZ aNewMinPnt = theTrsf.TranslationPart();
-  gp_XYZ aNewMaxPnt = theTrsf.TranslationPart();
-
-  // This implements James Arvo's algorithm for transforming an axis-aligned bounding box (AABB)
-  // under an affine transformation. For each row of the transformation matrix, we compute
-  // the products of the min and max coordinates with the matrix elements, and select the
-  // minimum and maximum values to form the new bounding box. This ensures that the transformed
-  // box tightly encloses the original box after transformation, accounting for rotation and
-  // scaling.
-  for (Standard_Integer aRow = 1; aRow < 4; ++aRow)
-  {
-    for (Standard_Integer aCol = 1; aCol < 4; ++aCol)
-    {
-      Standard_Real aMatValue = theTrsf.Value(aRow, aCol);
-      Standard_Real anOffset1 = aMatValue * anOldMinPnt.Coord(aCol);
-      Standard_Real anOffset2 = aMatValue * anOldMaxPnt.Coord(aCol);
-
-      aNewMinPnt.ChangeCoord(aRow) += Min(anOffset1, anOffset2);
-      aNewMaxPnt.ChangeCoord(aRow) += Max(anOffset1, anOffset2);
-    }
-  }
-
-  theXMin = aNewMinPnt.X();
-  theYMin = aNewMinPnt.Y();
-  theZMin = aNewMinPnt.Z();
-  theXMax = aNewMaxPnt.X();
-  theYMax = aNewMaxPnt.Y();
-  theZMax = aNewMaxPnt.Z();
 }
 
 //=================================================================================================
