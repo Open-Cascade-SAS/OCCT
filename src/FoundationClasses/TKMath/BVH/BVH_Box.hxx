@@ -89,12 +89,10 @@ public:
 
     // Define an empty AABB located in the transformation translation point
     Graphic3d_Vec4d aTranslation = theTransform.GetColumn(3);
-    Graphic3d_Vec3d aNewMinPnt   = Graphic3d_Vec3d(aTranslation.x(),
-                                                   aTranslation.y(),
-                                                   aTranslation.z());
-    Graphic3d_Vec3d aNewMaxPnt = Graphic3d_Vec3d(aTranslation.x(),
-                                                 aTranslation.y(),
-                                                 aTranslation.z());
+    Graphic3d_Vec3d aNewMinPnt =
+      Graphic3d_Vec3d(aTranslation.x(), aTranslation.y(), aTranslation.z());
+    Graphic3d_Vec3d aNewMaxPnt =
+      Graphic3d_Vec3d(aTranslation.x(), aTranslation.y(), aTranslation.z());
 
     // This implements James Arvo's algorithm for transforming an axis-aligned bounding box (AABB)
     // under an affine transformation. For each row of the transformation matrix, we compute

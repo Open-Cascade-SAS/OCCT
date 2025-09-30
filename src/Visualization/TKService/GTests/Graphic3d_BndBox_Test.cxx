@@ -20,7 +20,7 @@ TEST(Graphic3d_BndBox3dTest, DefaultConstructor)
 
 TEST(Graphic3d_BndBox3dTest, PointConstructor)
 {
-  Graphic3d_Vec3d   aPnt(1.0, 2.0, 3.0);
+  Graphic3d_Vec3d    aPnt(1.0, 2.0, 3.0);
   Graphic3d_BndBox3d aBox(aPnt);
   EXPECT_TRUE(aBox.IsValid()) << "Box constructed with 1 point should be valid";
   EXPECT_DOUBLE_EQ(1.0, aBox.CornerMin().x()) << "Xmin should match constructor input";
@@ -33,7 +33,7 @@ TEST(Graphic3d_BndBox3dTest, PointConstructor)
 
 TEST(Graphic3d_BndBox3dTest, PointsConstructor)
 {
-  Graphic3d_Vec3d   aMinPnt(1.0, 2.0, 3.0);
+  Graphic3d_Vec3d    aMinPnt(1.0, 2.0, 3.0);
   Graphic3d_Vec3d    aMaxPnt(4.0, 5.0, 6.0);
   Graphic3d_BndBox3d aBox(aMinPnt, aMaxPnt);
   EXPECT_TRUE(aBox.IsValid()) << "Box constructed with 2 points should be valid";
@@ -113,8 +113,8 @@ TEST(Graphic3d_BndBox3dTest, BoxArea)
 TEST(Graphic3d_BndBox3dTest, TransformationIdentity)
 {
   Graphic3d_BndBox3d aBox(Graphic3d_Vec3d(0.0, 0.0, 0.0), Graphic3d_Vec3d(4.0, 5.0, 6.0));
-  
-  Graphic3d_Mat4d    anIdentity; 
+
+  Graphic3d_Mat4d anIdentity;
   aBox.Transform(anIdentity); // Identity transformation applied
   EXPECT_TRUE(aBox.IsValid()) << "Transformed box should remain valid";
   EXPECT_DOUBLE_EQ(0.0, aBox.CornerMin().x()) << "Xmin should remain unchanged";
@@ -189,25 +189,28 @@ TEST(Graphic3d_BndBox3dTest, TransformationRotation)
 
 TEST(Graphic3d_BndBox3dTest, TransformationComposed)
 {
-  Graphic3d_Vec3d    aMinPnt = Graphic3d_Vec3d(-1.062999963760376, -1.062999963760376, -1.1150000095367432);
-  Graphic3d_Vec3d    aMaxPnt = Graphic3d_Vec3d(1.059000015258789, 1.062999963760376, 0);
+  Graphic3d_Vec3d aMinPnt =
+    Graphic3d_Vec3d(-1.062999963760376, -1.062999963760376, -1.1150000095367432);
+  Graphic3d_Vec3d aMaxPnt = Graphic3d_Vec3d(1.059000015258789, 1.062999963760376, 0);
 
-  gp_Ax1             aRotAxis(gp_Pnt(), gp_Dir(0.6220217, 0.6836324, -0.3817536));
-  gp_Trsf            aTrsf;
+  gp_Ax1  aRotAxis(gp_Pnt(), gp_Dir(0.6220217, 0.6836324, -0.3817536));
+  gp_Trsf aTrsf;
   aTrsf.SetRotation(aRotAxis, 3.4186892);
   aTrsf.SetScaleFactor(25.4);
   aTrsf.SetTranslationPart(gp_Vec(-88.76312074860142, 51.79953807026674, -65.57836431443693));
   Graphic3d_Mat4d aMat;
   aTrsf.GetMat4(aMat);
 
-  Graphic3d_BndBox3d aBox (aMinPnt, aMaxPnt);
+  Graphic3d_BndBox3d aBox(aMinPnt, aMaxPnt);
   aBox.Transform(aMat);
 
   Graphic3d_Vec3d aResultCornerMin = aBox.CornerMin();
   Graphic3d_Vec3d aResultCornerMax = aBox.CornerMax();
 
-  Graphic3d_Vec3d anExpectedCornerMin = Graphic3d_Vec3d(-113.92301586642091, 25.240619264201865, -91.49744953097915);
-  Graphic3d_Vec3d anExpectedCornerMax = Graphic3d_Vec3d(-45.09248805040103, 87.9443412035472, -20.487612688573407);
+  Graphic3d_Vec3d anExpectedCornerMin =
+    Graphic3d_Vec3d(-113.92301586642091, 25.240619264201865, -91.49744953097915);
+  Graphic3d_Vec3d anExpectedCornerMax =
+    Graphic3d_Vec3d(-45.09248805040103, 87.9443412035472, -20.487612688573407);
 
   Standard_Real aPrecision = 0.00001; // Acceptable error for this test case
   EXPECT_TRUE(Abs(aResultCornerMin.x() - anExpectedCornerMin.x()) < aPrecision)
@@ -228,7 +231,7 @@ TEST(Graphic3d_BndBox3dTest, TransformationInvalidBox)
 {
   Graphic3d_BndBox3d aBox; // Invalid box
 
-  gp_Trsf            aRotation;
+  gp_Trsf aRotation;
   aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4);
   Graphic3d_Mat4d aMat;
   aRotation.GetMat4(aMat);
