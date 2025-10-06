@@ -2639,7 +2639,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
           }
           else if (C2dint1.IsNull() || C2dint2.IsNull())
           {
-            throw Standard_Failure("Failed to get p-curve of edge");
+            throw Standard_ConstructionError("Failed to get p-curve of edge");
           }
           else
           {
