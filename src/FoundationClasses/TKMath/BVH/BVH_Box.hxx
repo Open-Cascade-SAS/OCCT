@@ -21,6 +21,8 @@
 #include <Standard_Macro.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_ShortReal.hxx>
+#include <Graphic3d_Vec4.hxx>
+#include <Graphic3d_Vec3.hxx>
 
 #include <limits>
 
@@ -77,25 +79,37 @@ public:
       return *aThis;
     }
 
-    BVH_Box<T, 3> aResultBox;
-    for (size_t aX = 0; aX <= 1; ++aX)
-    {
-      for (size_t aY = 0; aY <= 1; ++aY)
-      {
-        for (size_t aZ = 0; aZ <= 1; ++aZ)
-        {
-          typename BVH::VectorType<T, 4>::Type aPnt =
-            theTransform *
-            typename BVH::VectorType<T, 4>::Type(
-              aX ? aThis->CornerMax().x() : aThis->CornerMin().x(),
-              aY ? aThis->CornerMax().y() : aThis->CornerMin().y(),
-              aZ ? aThis->CornerMax().z() : aThis->CornerMin().z(),
-              static_cast<T>(1.0));
+    // Untransformed AABB min and max points
+    Graphic3d_Vec3d anOldMinPnt = aThis->CornerMin();
+    Graphic3d_Vec3d anOldMaxPnt = aThis->CornerMax();
 
-          aResultBox.Add(aPnt.xyz());
-        }
+    // Define an empty AABB located in the transformation translation point
+    Graphic3d_Vec4d aTranslation = theTransform.GetColumn(3);
+    Graphic3d_Vec3d aNewMinPnt =
+      Graphic3d_Vec3d(aTranslation.x(), aTranslation.y(), aTranslation.z());
+    Graphic3d_Vec3d aNewMaxPnt =
+      Graphic3d_Vec3d(aTranslation.x(), aTranslation.y(), aTranslation.z());
+
+    // This implements James Arvo's algorithm for transforming an axis-aligned bounding box (AABB)
+    // under an affine transformation. For each row of the transformation matrix, we compute
+    // the products of the min and max coordinates with the matrix elements, and select the
+    // minimum and maximum values to form the new bounding box. This ensures that the transformed
+    // box tightly encloses the original box after transformation, accounting for rotation and
+    // scaling.
+    for (Standard_Integer aCol = 0; aCol < 3; ++aCol)
+    {
+      for (Standard_Integer aRow = 0; aRow < 3; ++aRow)
+      {
+        Standard_Real aMatValue = theTransform.GetValue(aRow, aCol);
+        Standard_Real anOffset1 = aMatValue * anOldMinPnt.GetData()[aCol];
+        Standard_Real anOffset2 = aMatValue * anOldMaxPnt.GetData()[aCol];
+
+        aNewMinPnt.ChangeData()[aRow] += Min(anOffset1, anOffset2);
+        aNewMaxPnt.ChangeData()[aRow] += Max(anOffset1, anOffset2);
       }
     }
+
+    BVH_Box<T, 3> aResultBox(aNewMinPnt, aNewMaxPnt);
     return aResultBox;
   }
 };

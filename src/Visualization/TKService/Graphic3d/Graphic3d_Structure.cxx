@@ -762,13 +762,9 @@ void Graphic3d_Structure::addTransformed(Graphic3d_BndBox3d&    theBox,
   {
     if (!myCStructure->Transformation().IsNull())
     {
-      TransformBoundaries(myCStructure->Transformation()->Trsf(),
-                          aBox.CornerMin().x(),
-                          aBox.CornerMin().y(),
-                          aBox.CornerMin().z(),
-                          aBox.CornerMax().x(),
-                          aBox.CornerMax().y(),
-                          aBox.CornerMax().z());
+      Graphic3d_Mat4d aMat4;
+      myCStructure->Transformation()->Trsf().GetMat4(aMat4);
+      aBox.Transform(aMat4);
     }
 
     // if box is still valid after transformation
@@ -781,101 +777,6 @@ void Graphic3d_Structure::addTransformed(Graphic3d_BndBox3d&    theBox,
       theBox.Combine(aCombinedBox);
     }
   }
-}
-
-//=================================================================================================
-
-void Graphic3d_Structure::Transforms(const gp_Trsf&      theTrsf,
-                                     const Standard_Real theX,
-                                     const Standard_Real theY,
-                                     const Standard_Real theZ,
-                                     Standard_Real&      theNewX,
-                                     Standard_Real&      theNewY,
-                                     Standard_Real&      theNewZ)
-{
-  constexpr Standard_Real aRL = RealLast();
-  constexpr Standard_Real aRF = RealFirst();
-  theNewX                     = theX;
-  theNewY                     = theY;
-  theNewZ                     = theZ;
-  if ((theX == aRF) || (theY == aRF) || (theZ == aRF) || (theX == aRL) || (theY == aRL)
-      || (theZ == aRL))
-  {
-    return;
-  }
-
-  theTrsf.Transforms(theNewX, theNewY, theNewZ);
-}
-
-//=================================================================================================
-
-void Graphic3d_Structure::TransformBoundaries(const gp_Trsf& theTrsf,
-                                              Standard_Real& theXMin,
-                                              Standard_Real& theYMin,
-                                              Standard_Real& theZMin,
-                                              Standard_Real& theXMax,
-                                              Standard_Real& theYMax,
-                                              Standard_Real& theZMax)
-{
-  Standard_Real aXMin, aYMin, aZMin, aXMax, aYMax, aZMax, anU, aV, aW;
-
-  Graphic3d_Structure::Transforms(theTrsf, theXMin, theYMin, theZMin, aXMin, aYMin, aZMin);
-  Graphic3d_Structure::Transforms(theTrsf, theXMax, theYMax, theZMax, aXMax, aYMax, aZMax);
-
-  Graphic3d_Structure::Transforms(theTrsf, theXMin, theYMin, theZMax, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
-
-  Graphic3d_Structure::Transforms(theTrsf, theXMax, theYMin, theZMax, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
-
-  Graphic3d_Structure::Transforms(theTrsf, theXMax, theYMin, theZMin, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
-
-  Graphic3d_Structure::Transforms(theTrsf, theXMax, theYMax, theZMin, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
-
-  Graphic3d_Structure::Transforms(theTrsf, theXMin, theYMax, theZMax, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
-
-  Graphic3d_Structure::Transforms(theTrsf, theXMin, theYMax, theZMin, anU, aV, aW);
-  aXMin = Min(anU, aXMin);
-  aXMax = Max(anU, aXMax);
-  aYMin = Min(aV, aYMin);
-  aYMax = Max(aV, aYMax);
-  aZMin = Min(aW, aZMin);
-  aZMax = Max(aW, aZMax);
-
-  theXMin = aXMin;
-  theYMin = aYMin;
-  theZMin = aZMin;
-  theXMax = aXMax;
-  theYMax = aYMax;
-  theZMax = aZMax;
 }
 
 //=================================================================================================
