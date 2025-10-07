@@ -22,9 +22,8 @@
 #include <StdFail_NotDone.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
-//----------------------------------------------------------------------------
-// Purpose - to find min index of global variables and define
-//----------------------------------------------------------------------------
+//=================================================================================================
+
 static Standard_Integer MinIndex(const Handle(FEmTool_HAssemblyTable)& Table)
 {
   Standard_Integer dim, el, nvar, Imin;
@@ -51,9 +50,8 @@ static Standard_Integer MinIndex(const Handle(FEmTool_HAssemblyTable)& Table)
   return Imin;
 }
 
-//----------------------------------------------------------------------------
-// Purpose - to find max index of global variables
-//----------------------------------------------------------------------------
+//=================================================================================================
+
 static Standard_Integer MaxIndex(const Handle(FEmTool_HAssemblyTable)& Table)
 {
   Standard_Integer dim, el, nvar, Imax;

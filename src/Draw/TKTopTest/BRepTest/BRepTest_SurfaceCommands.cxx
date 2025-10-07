@@ -43,9 +43,8 @@
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <Message.hxx>
 
-//-----------------------------------------------------------------------
-// suppressarg : suppress a[d],modifie na--
-//-----------------------------------------------------------------------
+//=================================================================================================
+
 static void suppressarg(Standard_Integer& na, const char** a, const Standard_Integer d)
 {
   for (Standard_Integer i = d; i < na; i++)

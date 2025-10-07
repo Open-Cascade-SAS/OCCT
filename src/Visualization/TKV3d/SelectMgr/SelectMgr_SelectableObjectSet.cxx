@@ -24,9 +24,7 @@ namespace
 //! Short-cut definition of indexed data map of selectable objects
 typedef NCollection_IndexedMap<Handle(SelectMgr_SelectableObject)> ObjectsMap;
 
-//-------------------------------------------------------------------------------------
-// Adaptor over regular objects subset of SelectMgr_SelectableObjectSet for BVH builder
-//-------------------------------------------------------------------------------------
+//=================================================================================================
 
 //! This class provides direct access to fields of SelectMgr_SelectableObjectSet
 //! so the BVH builder could explicitly arrange objects in the map as necessary
@@ -93,9 +91,7 @@ private:
   mutable Select3D_BndBox3d myBox;
 };
 
-//----------------------------------------------------------------------------------------
-// Adaptor over persistent objects subset of SelectMgr_SelectableObjectSet for BVH builder
-//----------------------------------------------------------------------------------------
+//=================================================================================================
 
 //! This class provides direct access to fields of SelectMgr_SelectableObjectSet
 //! so the BVH builder could explicitly arrange objects in the map as necessary

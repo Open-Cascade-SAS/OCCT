@@ -260,40 +260,28 @@ void TDF_Attribute::RemoveBackup()
 
 void TDF_Attribute::References(const Handle(TDF_DataSet)& /*aDataSet*/) const {}
 
-//=======================================================================
-// function : DeltaOnAddition
-// purpose  : Creates such a delta.
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_DeltaOnAddition) TDF_Attribute::DeltaOnAddition() const
 {
   return new TDF_DeltaOnAddition(this);
 }
 
-//=======================================================================
-// function : DeltaOnForget
-// purpose  : Creates such a delta.
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_DeltaOnForget) TDF_Attribute::DeltaOnForget() const
 {
   return new TDF_DeltaOnForget(this);
 }
 
-//=======================================================================
-// function : DeltaOnResume
-// purpose  : Creates such a delta.
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_DeltaOnResume) TDF_Attribute::DeltaOnResume() const
 {
   return new TDF_DeltaOnResume(this);
 }
 
-//=======================================================================
-// function : DeltaOnModification
-// purpose  : Creates such a delta.
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_DeltaOnModification) TDF_Attribute::DeltaOnModification(
   const Handle(TDF_Attribute)& anOldAttribute) const
@@ -301,10 +289,7 @@ Handle(TDF_DeltaOnModification) TDF_Attribute::DeltaOnModification(
   return new TDF_DefaultDeltaOnModification(anOldAttribute);
 }
 
-//=======================================================================
-// function : DeltaOnModification
-// purpose  : Applies such a delta.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Attribute::DeltaOnModification(const Handle(TDF_DeltaOnModification)& aDelta)
 {
@@ -312,10 +297,7 @@ void TDF_Attribute::DeltaOnModification(const Handle(TDF_DeltaOnModification)& a
   Restore(aDelta->Attribute());
 }
 
-//=======================================================================
-// function : DeltaOnRemoval
-// purpose  : Creates such a delta.
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_DeltaOnRemoval) TDF_Attribute::DeltaOnRemoval() const
 {

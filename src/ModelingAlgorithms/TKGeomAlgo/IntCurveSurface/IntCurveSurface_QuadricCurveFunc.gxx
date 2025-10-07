@@ -16,39 +16,42 @@
 
 #include <gp_Vec.hxx>
 
+//=================================================================================================
 
-//================================================================================
 IntCurveSurface_QuadricCurveFunc::IntCurveSurface_QuadricCurveFunc(const TheQuadric& Q,
-								   const TheCurve&   C) 
-     : myQuadric(Q), myCurve(C) 
-{  
-} 
-//================================================================================
+                                                                   const TheCurve&   C)
+    : myQuadric(Q),
+      myCurve(C)
+{
+}
+
+//=================================================================================================
+
 Standard_Boolean IntCurveSurface_QuadricCurveFunc::Value(const Standard_Real Param,
-							 Standard_Real& F) { 
-  F = myQuadric.Distance(TheCurveTool::Value(myCurve,Param));
-  return(Standard_True);
+                                                         Standard_Real&      F)
+{
+  F = myQuadric.Distance(TheCurveTool::Value(myCurve, Param));
+  return (Standard_True);
 }
 
 Standard_Boolean IntCurveSurface_QuadricCurveFunc::Derivative(const Standard_Real Param,
-							      Standard_Real& D) { 
+                                                              Standard_Real&      D)
+{
   gp_Pnt P;
   gp_Vec T;
-  TheCurveTool::D1(myCurve,Param,P,T);  
+  TheCurveTool::D1(myCurve, Param, P, T);
   D = T.Dot(myQuadric.Gradient(P));
-  return(Standard_True);
+  return (Standard_True);
 }
 
 Standard_Boolean IntCurveSurface_QuadricCurveFunc::Values(const Standard_Real Param,
-							  Standard_Real& F,
-							  Standard_Real& D) { 
+                                                          Standard_Real&      F,
+                                                          Standard_Real&      D)
+{
   gp_Pnt P;
-  gp_Vec T,Grad;
-  TheCurveTool::D1(myCurve,Param,P,T);  
-  myQuadric.ValAndGrad(P,F,Grad);
+  gp_Vec T, Grad;
+  TheCurveTool::D1(myCurve, Param, P, T);
+  myQuadric.ValAndGrad(P, F, Grad);
   D = T.Dot(Grad);
-  return(Standard_True);
+  return (Standard_True);
 }
-  
-
-

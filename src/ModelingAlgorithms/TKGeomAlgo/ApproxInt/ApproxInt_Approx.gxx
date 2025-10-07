@@ -164,17 +164,17 @@ void ApproxInt_Approx::Parameters(const ApproxInt_TheMultiLine&    Line,
 
 //=================================================================================================
 
-ApproxInt_Approx::ApproxInt_Approx() :
-    myComputeLine(4, 8, 0.001, 0.001, 5),
-    myComputeLineBezier(4, 8, 0.001, 0.001, 5),
-    myWithTangency(Standard_True),
-    myTol3d(0.001),
-    myTol2d(0.001),
-    myDegMin(4),
-    myDegMax(8),
-    myNbIterMax(5),
-    myTolReached3d(0.0),
-    myTolReached2d(0.0)
+ApproxInt_Approx::ApproxInt_Approx()
+    : myComputeLine(4, 8, 0.001, 0.001, 5),
+      myComputeLineBezier(4, 8, 0.001, 0.001, 5),
+      myWithTangency(Standard_True),
+      myTol3d(0.001),
+      myTol2d(0.001),
+      myDegMin(4),
+      myDegMax(8),
+      myNbIterMax(5),
+      myTolReached3d(0.0),
+      myTolReached2d(0.0)
 {
   myComputeLine.SetContinuity(2);
   // myComputeLineBezier.SetContinuity(2);
@@ -240,9 +240,9 @@ void ApproxInt_Approx::Perform(const ThePSurface&      Surf1,
   const GeomAbs_SurfaceType typeS2 = ThePSurfaceTool::GetType(Surf2);
 
   const Standard_Boolean isQuadric =
-    ((typeS1 == GeomAbs_Plane) || (typeS1 == GeomAbs_Cylinder) || (typeS1 == GeomAbs_Sphere) ||
-     (typeS1 == GeomAbs_Cone) || (typeS2 == GeomAbs_Plane) || (typeS2 == GeomAbs_Cylinder) ||
-     (typeS2 == GeomAbs_Sphere) || (typeS2 == GeomAbs_Cone));
+    ((typeS1 == GeomAbs_Plane) || (typeS1 == GeomAbs_Cylinder) || (typeS1 == GeomAbs_Sphere)
+     || (typeS1 == GeomAbs_Cone) || (typeS2 == GeomAbs_Plane) || (typeS2 == GeomAbs_Cylinder)
+     || (typeS2 == GeomAbs_Sphere) || (typeS2 == GeomAbs_Cone));
 
   if (isQuadric)
   {
@@ -551,8 +551,8 @@ void ApproxInt_Approx::buildKnots(const Handle(TheWLine)& theline,
   const ApproxInt_TheMultiLine aTestLine(theline,
                                          thePtrSVSurf,
                                          ((myData.ApproxXYZ) ? 1 : 0),
-                                         ((myData.ApproxU1V1) ? 1 : 0) +
-                                           ((myData.ApproxU2V2) ? 1 : 0),
+                                         ((myData.ApproxU1V1) ? 1 : 0)
+                                           + ((myData.ApproxU2V2) ? 1 : 0),
                                          myData.ApproxU1V1,
                                          myData.ApproxU2V2,
                                          myData.Xo,
@@ -642,8 +642,8 @@ void ApproxInt_Approx::buildCurve(const Handle(TheWLine)& theline,
     ApproxInt_TheMultiLine myMultiLine(theline,
                                        thePtrSVSurf,
                                        ((myData.ApproxXYZ) ? 1 : 0),
-                                       ((myData.ApproxU1V1) ? 1 : 0) +
-                                         ((myData.ApproxU2V2) ? 1 : 0),
+                                       ((myData.ApproxU1V1) ? 1 : 0)
+                                         + ((myData.ApproxU2V2) ? 1 : 0),
                                        myData.ApproxU1V1,
                                        myData.ApproxU2V2,
                                        myData.Xo,

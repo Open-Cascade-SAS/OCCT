@@ -200,10 +200,9 @@ Standard_Integer Contap_ArcFunction::NbSamples() const
 }
 
 // modified by NIZNHY-PKV Thu Mar 29 16:53:07 2001f
-//=======================================================================
-// function : Quadric
-// purpose  : returns empty Quadric
-//=======================================================================
+
+//=================================================================================================
+
 const IntSurf_Quadric& Contap_ArcFunction::Quadric() const
 {
   return (myQuad);

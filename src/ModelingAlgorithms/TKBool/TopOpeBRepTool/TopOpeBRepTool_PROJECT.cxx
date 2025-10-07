@@ -246,9 +246,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_projPonS(const gp_Pnt&               P
   return Standard_True;
 }
 
-// ----------------------------------------------------------------------
-//  projecting point <P> on topologies (edge <E>,face <F>)
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 // ----------------------------------------------------------------------
 Standard_EXPORT Standard_Boolean FUN_tool_projPonE(const gp_Pnt&       P,
