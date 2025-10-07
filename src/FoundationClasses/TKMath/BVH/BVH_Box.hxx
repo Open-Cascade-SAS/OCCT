@@ -80,12 +80,8 @@ public:
     }
 
     // Untransformed AABB min and max points
-    Graphic3d_Vec3d anOldMinPnt(aThis->CornerMin().x(),
-                                aThis->CornerMin().y(),
-                                aThis->CornerMin().z());
-    Graphic3d_Vec3d anOldMaxPnt(aThis->CornerMax().x(),
-                                aThis->CornerMax().y(),
-                                aThis->CornerMax().z());
+    Graphic3d_Vec3d anOldMinPnt = aThis->CornerMin();
+    Graphic3d_Vec3d anOldMaxPnt = aThis->CornerMax();
 
     // Define an empty AABB located in the transformation translation point
     Graphic3d_Vec4d aTranslation = theTransform.GetColumn(3);
