@@ -2637,6 +2637,10 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
             cfacemoins1->D0(paredge2, pfac2);
             cface->D0(paredge2, pint);
           }
+          else if (C2dint1.IsNull() || C2dint2.IsNull())
+          {
+            throw Standard_ConstructionError("Failed to get p-curve of edge");
+          }
           else
           {
             C2dint1->D0(paredge2, pfac2);
