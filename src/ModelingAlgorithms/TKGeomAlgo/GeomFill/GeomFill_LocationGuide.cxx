@@ -59,7 +59,6 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationGuide, GeomFill_LocationLaw)
 static Standard_Integer Affich = 0;
   #include <Approx_Curve3d.hxx>
   #include <DrawTrSurf.hxx>
-  #include <GeomFill_TrihedronWithGuide.hxx>
 #endif
 
 //=======================================================================

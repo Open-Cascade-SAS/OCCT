@@ -2337,10 +2337,8 @@ IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
   return NewPoint;
 }
 
-//==================================================================================
-// function : Perform
-// purpose  : base SS Int. function
-//==================================================================================
+//=================================================================================================
+
 void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Surf1,
                                           const Handle(Adaptor3d_TopolTool)& D1,
                                           const Handle(Adaptor3d_Surface)&   Surf2,

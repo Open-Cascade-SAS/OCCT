@@ -78,13 +78,6 @@ typedef TNaming_DataMapOfShapeMapOfShape::Iterator
   #include <TDF_MapIteratorOfLabelMap.hxx>
   #include <TCollection_AsciiString.hxx>
   #include <TDF_Tool.hxx>
-  #include <BRepTools.hxx>
-  #include <TNaming_Tool.hxx>
-  #include <TDF_Tool.hxx>
-  #include <TDF_MapIteratorOfLabelMap.hxx>
-
-  #include <TCollection_AsciiString.hxx>
-  #include <BRepTools.hxx>
 
 void Print_Entry(const TDF_Label& label)
 {

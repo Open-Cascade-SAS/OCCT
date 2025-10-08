@@ -83,10 +83,7 @@ void TDF_IDFilter::Ignore(const Standard_GUID& anID)
     myIDMap.Add(anID);
 }
 
-//=======================================================================
-// function : Ignore
-// purpose  : Ignores a list of ID.
-//=======================================================================
+//=================================================================================================
 
 void TDF_IDFilter::Ignore(const TDF_IDList& anIDList)
 {

@@ -64,7 +64,6 @@ static const Standard_Real DERIVEE_PREMIERE_NULLE = 0.000000000001;
 
 #include <IntRes2d_TypeTrans.hxx>
 #include <IntRes2d_Position.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_Transition.hxx>
 
 static long unsigned Mask32[32] = {

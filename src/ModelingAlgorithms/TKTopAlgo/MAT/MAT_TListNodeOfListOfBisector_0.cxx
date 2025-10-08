@@ -18,7 +18,6 @@
 
 #include <Standard_Type.hxx>
 
-#include <MAT_TListNodeOfListOfBisector.hxx>
 #include <MAT_Bisector.hxx>
 #include <MAT_ListOfBisector.hxx>
 

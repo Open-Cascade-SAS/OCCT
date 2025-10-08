@@ -44,10 +44,7 @@ void MoniTool_Timer::Dump(Standard_OStream& ostr)
   ostr << buff << std::endl;
 }
 
-//=======================================================================
-// function : Dictionary
-// purpose  : Return DataMapOfTimer
-//=======================================================================
+//=================================================================================================
 
 MoniTool_DataMapOfTimer& MoniTool_Timer::Dictionary()
 {

@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
 #include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 #include <Approx_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>

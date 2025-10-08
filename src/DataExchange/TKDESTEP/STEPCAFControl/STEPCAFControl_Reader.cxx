@@ -239,8 +239,6 @@
 #include <StepRepr_RealRepresentationItem.hxx>
 #include <StepRepr_ValueRepresentationItem.hxx>
 
-#include <StepRepr_ShapeAspectRelationship.hxx>
-
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
@@ -2427,10 +2425,8 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)&       the
   return (aNbShapes > 0);
 }
 
-//=======================================================================
-// function : readAnnotationPlane
-// purpose  : read annotation plane
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane)& theAnnotationPlane,
                                      gp_Ax2&                                   thePlane,
                                      const StepData_Factors&                   theLocalFactors)

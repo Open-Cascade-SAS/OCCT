@@ -518,7 +518,6 @@ static Standard_Integer OCC138LC(Draw_Interpretor& di, Standard_Integer /*argc*/
 }
 
 #include <BRepBndLib.hxx>
-#include <Draw.hxx>
 
 //=================================================================================================
 

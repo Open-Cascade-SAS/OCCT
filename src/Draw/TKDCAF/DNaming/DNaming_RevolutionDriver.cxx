@@ -69,10 +69,8 @@ Standard_Boolean DNaming_RevolutionDriver::MustExecute(const Handle(TFunction_Lo
   return Standard_True;
 }
 
-//=======================================================================
-// function : Execute
-// purpose  : Executes the function
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer DNaming_RevolutionDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;

@@ -12,37 +12,50 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#include <LibCtl_GlobalNode.ixx>
+// #include <LibCtl_GlobalNode.ixx>
 
 //  Generic class nested in Library: used to build the
 //  global lists of Modules attached to an instantiated class of Library
 //  (see Library for more details)
 
-
-LibCtl_GlobalNode::LibCtl_GlobalNode ()    {  }
+LibCtl_GlobalNode::LibCtl_GlobalNode() {}
 
 // WARNING, Add acts as substitution: for a given Protocol, it is the
 //   last call wins
-    void LibCtl_GlobalNode::Add
-  (const Handle(TheModule)& amodule, const Handle(TheProtocol)& aprotocol)
+void LibCtl_GlobalNode::Add(const Handle(TheModule)& amodule, const Handle(TheProtocol)& aprotocol)
 {
-  if (themod == amodule) return;
-  if (theprot == aprotocol) themod = amodule;
-  else if (thenext.IsNull()) {
-    if (themod.IsNull()) {  themod = amodule;   theprot = aprotocol;  }
-    else {
+  if (themod == amodule)
+    return;
+  if (theprot == aprotocol)
+    themod = amodule;
+  else if (thenext.IsNull())
+  {
+    if (themod.IsNull())
+    {
+      themod  = amodule;
+      theprot = aprotocol;
+    }
+    else
+    {
       thenext = new LibCtl_GlobalNode;
-      thenext->Add (amodule,aprotocol);
+      thenext->Add(amodule, aprotocol);
     }
   }
-  else thenext->Add (amodule,aprotocol);
+  else
+    thenext->Add(amodule, aprotocol);
 }
 
-    const Handle(TheModule)& LibCtl_GlobalNode::Module () const
-      {  return themod;  }
+const Handle(TheModule)& LibCtl_GlobalNode::Module() const
+{
+  return themod;
+}
 
-    const Handle(TheProtocol)& LibCtl_GlobalNode::Protocol () const
-      {  return theprot;  }
+const Handle(TheProtocol)& LibCtl_GlobalNode::Protocol() const
+{
+  return theprot;
+}
 
-    const Handle(LibCtl_GlobalNode)& LibCtl_GlobalNode::Next () const
-      {  return thenext;  }
+const Handle(LibCtl_GlobalNode)& LibCtl_GlobalNode::Next() const
+{
+  return thenext;
+}

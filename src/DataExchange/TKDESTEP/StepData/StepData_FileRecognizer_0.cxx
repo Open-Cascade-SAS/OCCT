@@ -19,7 +19,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <StepData_FileRecognizer.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <TCollection_AsciiString.hxx>
 

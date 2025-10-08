@@ -189,10 +189,7 @@ BRepBlend_RstRstLineBuilder::BRepBlend_RstRstLineBuilder(const Handle(Adaptor3d_
 {
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : launch the processing
-//=======================================================================
+//=================================================================================================
 
 void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
                                           Blend_SurfCurvFuncInv&  Finv1,

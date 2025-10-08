@@ -1098,7 +1098,6 @@ static Standard_Integer DDataStd_GetVariable(Draw_Interpretor& di,
 }
 
 #include <TDataStd_Relation.hxx>
-#include <TDataStd_Variable.hxx>
 
 //=======================================================================
 // function : SetRelation (DF, entry, expression, var1[, var2, ...])

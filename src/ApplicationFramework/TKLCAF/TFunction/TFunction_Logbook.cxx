@@ -160,10 +160,7 @@ void TFunction_Logbook::SetImpacted(const TDF_Label& L, const Standard_Boolean W
   }
 }
 
-//=======================================================================
-// function : GetValid
-// purpose  : Returns valid labels.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_Logbook::GetValid(TDF_LabelMap& Ls) const
 {
@@ -278,10 +275,7 @@ Handle(TDF_Attribute) TFunction_Logbook::NewEmpty() const
   return new TFunction_Logbook();
 }
 
-//=======================================================================
-// function : Dump
-// purpose  : Dump of modifications
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& TFunction_Logbook::Dump(Standard_OStream& stream) const
 {

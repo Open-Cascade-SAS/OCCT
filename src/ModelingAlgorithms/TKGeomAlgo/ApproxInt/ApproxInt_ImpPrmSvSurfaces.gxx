@@ -323,13 +323,13 @@ static Standard_Boolean NonSingularProcessing(const gp_Vec&       theDU,
 //=================================================================================================
 
 ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces(const TheISurface& ISurf,
-                                                       const ThePSurface& PSurf) :
-    MyIsTangent(Standard_False),
-    MyHasBeenComputed(Standard_False),
-    MyIsTangentbis(Standard_False),
-    MyHasBeenComputedbis(Standard_False),
-    MyImplicitFirst(Standard_True),
-    MyZerImpFunc(PSurf, ISurf)
+                                                       const ThePSurface& PSurf)
+    : MyIsTangent(Standard_False),
+      MyHasBeenComputed(Standard_False),
+      MyIsTangentbis(Standard_False),
+      MyHasBeenComputedbis(Standard_False),
+      MyImplicitFirst(Standard_True),
+      MyZerImpFunc(PSurf, ISurf)
 {
   SetUseSolver(Standard_True);
 }
@@ -337,13 +337,13 @@ ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces(const TheISurface& ISurf,
 //=================================================================================================
 
 ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces(const ThePSurface& PSurf,
-                                                       const TheISurface& ISurf) :
-    MyIsTangent(Standard_False),
-    MyHasBeenComputed(Standard_False),
-    MyIsTangentbis(Standard_False),
-    MyHasBeenComputedbis(Standard_False),
-    MyImplicitFirst(Standard_False),
-    MyZerImpFunc(PSurf, ISurf)
+                                                       const TheISurface& ISurf)
+    : MyIsTangent(Standard_False),
+      MyHasBeenComputed(Standard_False),
+      MyIsTangentbis(Standard_False),
+      MyHasBeenComputedbis(Standard_False),
+      MyImplicitFirst(Standard_False),
+      MyZerImpFunc(PSurf, ISurf)
 {
   SetUseSolver(Standard_True);
 }
@@ -458,8 +458,8 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute(Standard_Real& u1,
 
   if (MyHasBeenComputed)
   {
-    if ((MyParOnS1.X() == u1) && (MyParOnS1.Y() == v1) && (MyParOnS2.X() == u2) &&
-        (MyParOnS2.Y() == v2))
+    if ((MyParOnS1.X() == u1) && (MyParOnS1.Y() == v1) && (MyParOnS2.X() == u2)
+        && (MyParOnS2.Y() == v2))
     {
       return (MyIsTangent);
     }
@@ -478,8 +478,8 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute(Standard_Real& u1,
 
   if (MyHasBeenComputedbis)
   {
-    if ((MyParOnS1bis.X() == u1) && (MyParOnS1bis.Y() == v1) && (MyParOnS2bis.X() == u2) &&
-        (MyParOnS2bis.Y() == v2))
+    if ((MyParOnS1bis.X() == u1) && (MyParOnS1bis.Y() == v1) && (MyParOnS2bis.X() == u2)
+        && (MyParOnS2bis.Y() == v2))
     {
 
       gp_Vec           TV(MyTg);

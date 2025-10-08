@@ -579,10 +579,7 @@ void TDF_Tool::ExtendedDeepDump(Standard_OStream&       anOS,
   TDF_Tool::ExtendedDeepDump(anOS, aDF->Root(), aFilter);
 }
 
-//=======================================================================
-// function : DeepDump
-// purpose  : Deep dump of a label.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::DeepDump(Standard_OStream& anOS, const TDF_Label& aLabel)
 {

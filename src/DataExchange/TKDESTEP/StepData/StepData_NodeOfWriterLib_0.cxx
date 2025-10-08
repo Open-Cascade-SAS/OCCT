@@ -19,7 +19,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepData_GlobalNodeOfWriterLib.hxx>
-#include <StepData_NodeOfWriterLib.hxx>
 #include <Standard_Transient.hxx>
 #include <StepData_ReadWriteModule.hxx>
 #include <StepData_Protocol.hxx>

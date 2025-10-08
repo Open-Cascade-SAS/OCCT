@@ -39,7 +39,6 @@
 #include <TopOpeBRepTool_SC.hxx>
 
 #ifdef OCCT_DEBUG
-  #include <TopOpeBRep_FFDumper.hxx>
   #include <Geom_TrimmedCurve.hxx>
   #include <Geom_Line.hxx>
 extern Standard_Boolean TopOpeBRep_GettraceBIPS();
@@ -208,9 +207,7 @@ TopAbs_State TopOpeBRep_FacesFiller::StateVPonFace(const TopOpeBRep_VPointInter&
   return state;
 }
 
-// ----------------------------------------------------------------------
-//           Class methods
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 //=======================================================================
 // function : Lminmax

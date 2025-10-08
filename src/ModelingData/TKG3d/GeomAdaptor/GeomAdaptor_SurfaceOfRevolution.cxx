@@ -18,7 +18,6 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <ElCLib.hxx>
-#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <GeomEvaluator_SurfaceOfRevolution.hxx>
 #include <Standard_NoSuchObject.hxx>
 

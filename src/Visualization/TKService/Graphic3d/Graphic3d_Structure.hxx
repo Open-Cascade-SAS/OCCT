@@ -461,15 +461,6 @@ public:
     }
   }
 
-  //! Transforms theX, theY, theZ with the transformation theTrsf.
-  Standard_EXPORT static void Transforms(const gp_Trsf&      theTrsf,
-                                         const Standard_Real theX,
-                                         const Standard_Real theY,
-                                         const Standard_Real theZ,
-                                         Standard_Real&      theNewX,
-                                         Standard_Real&      theNewY,
-                                         Standard_Real&      theNewZ);
-
   //! Returns the low-level structure
   const Handle(Graphic3d_CStructure)& CStructure() const { return myCStructure; }
 
@@ -478,15 +469,6 @@ public:
                                         Standard_Integer  theDepth = -1) const;
 
 protected:
-  //! Transforms boundaries with <theTrsf> transformation.
-  Standard_EXPORT static void TransformBoundaries(const gp_Trsf& theTrsf,
-                                                  Standard_Real& theXMin,
-                                                  Standard_Real& theYMin,
-                                                  Standard_Real& theZMin,
-                                                  Standard_Real& theXMax,
-                                                  Standard_Real& theYMax,
-                                                  Standard_Real& theZMax);
-
   //! Appends new descendant structure.
   Standard_EXPORT Standard_Boolean AppendDescendant(Graphic3d_Structure* theDescendant);
 

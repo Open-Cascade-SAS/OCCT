@@ -53,9 +53,9 @@
 #include <ShapeAnalysis_Curve.hxx>
 
 // Processing of non-manifold topology (ssv; 11.11.2010)
-// ----------------------------------------------------------------------------
-// Constructors
-// ----------------------------------------------------------------------------
+
+//=================================================================================================
+
 TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge()
     : myError(TopoDSToStep_EdgeOther)
 {
@@ -71,10 +71,7 @@ TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge(const TopoDS_Edge&         
   Init(E, T, FP, theLocalFactors);
 }
 
-// ----------------------------------------------------------------------------
-// Method  : Init
-// Purpose :
-// ----------------------------------------------------------------------------
+//=================================================================================================
 
 void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge,
                                      TopoDSToStep_Tool&                    aTool,
@@ -344,10 +341,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
   return;
 }
 
-// ----------------------------------------------------------------------------
-// Method  : Value
-// Purpose :
-// ----------------------------------------------------------------------------
+//=================================================================================================
 
 const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepEdge::Value() const
 {
@@ -355,10 +349,7 @@ const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepEdge
   return myResult;
 }
 
-// ----------------------------------------------------------------------------
-// Method  : Error
-// Purpose :
-// ----------------------------------------------------------------------------
+//=================================================================================================
 
 TopoDSToStep_MakeEdgeError TopoDSToStep_MakeStepEdge::Error() const
 {

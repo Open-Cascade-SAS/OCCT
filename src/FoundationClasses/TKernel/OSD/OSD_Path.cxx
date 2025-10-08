@@ -57,7 +57,6 @@ static OSD_SysType whereAmI()
   #include <Standard_NumericError.hxx>
   #include <Standard_NullObject.hxx>
   #include <Standard_ProgramError.hxx>
-  #include <Standard_ConstructionError.hxx>
   #include <OSD_WhoAmI.hxx>
 
 OSD_Path::OSD_Path()

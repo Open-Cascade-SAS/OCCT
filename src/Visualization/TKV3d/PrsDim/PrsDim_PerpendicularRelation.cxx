@@ -44,10 +44,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsDim_PerpendicularRelation, PrsDim_Relation)
 
-//=======================================================================
-// function : Constructor
-// purpose  : TwoEdgesPerpendicular
-//=======================================================================
+//=================================================================================================
+
 PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape&       aFShape,
                                                            const TopoDS_Shape&       aSShape,
                                                            const Handle(Geom_Plane)& aPlane)
@@ -58,10 +56,8 @@ PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape&  
   myPlane  = aPlane;
 }
 
-//=======================================================================
-// function : Constructor
-// purpose  : TwoFacesPerpendicular
-//=======================================================================
+//=================================================================================================
+
 PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape& aFShape,
                                                            const TopoDS_Shape& aSShape)
     : PrsDim_Relation()

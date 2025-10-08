@@ -37,7 +37,6 @@
 #include <TopoDS.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Plane.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>

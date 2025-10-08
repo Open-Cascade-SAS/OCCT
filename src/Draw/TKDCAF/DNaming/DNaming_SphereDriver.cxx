@@ -61,10 +61,8 @@ Standard_Boolean DNaming_SphereDriver::MustExecute(const Handle(TFunction_Logboo
   return Standard_True;
 }
 
-//=======================================================================
-// function : Execute
-// purpose  : Executes the function
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer DNaming_SphereDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;

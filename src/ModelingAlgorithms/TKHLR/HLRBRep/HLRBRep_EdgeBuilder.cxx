@@ -211,10 +211,7 @@ HLRBRep_EdgeBuilder::HLRBRep_EdgeBuilder(HLRBRep_VertexList& VList)
   Builds(TopAbs_IN);
 }
 
-//=======================================================================
-// function : InitAreas
-// purpose  : set on the first area
-//=======================================================================
+//=================================================================================================
 
 void HLRBRep_EdgeBuilder::InitAreas()
 {
