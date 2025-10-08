@@ -14,7 +14,6 @@
 #include <Geom_BSplineCurve.hxx>
 #include <HelixGeom_BuilderHelixCoil.hxx>
 #include <HelixGeom_HelixCurve.hxx>
-#include <HelixGeom_HelixCurve.hxx>
 #include <HelixGeom_Tools.hxx>
 
 //=================================================================================================

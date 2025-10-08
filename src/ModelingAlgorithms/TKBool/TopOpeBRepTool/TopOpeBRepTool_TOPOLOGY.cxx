@@ -718,9 +718,7 @@ Standard_EXPORT void FUN_tool_mkBnd2d(const TopoDS_Shape& W, const TopoDS_Shape&
   FUN_tool_UpdateBnd2d(B2d, newB2d);
 }
 
-// ----------------------------------------------------------------------
-//  closing topologies :
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 // ----------------------------------------------------------------------
 Standard_EXPORT Standard_Boolean FUN_tool_IsClosingE(const TopoDS_Edge&  E,
@@ -767,9 +765,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClosedE(const TopoDS_Edge& E,TopoDS_Sh
   return Standard_False;
 }*/
 
-// ----------------------------------------------------------------------
-//  shared topologies :
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 // ----------------------------------------------------------------------
 Standard_EXPORT Standard_Boolean FUN_tool_inS(const TopoDS_Shape& subshape,
@@ -1063,9 +1059,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_findPinE(const TopoDS_Shape& E,
   return r;
 }
 
-// ----------------------------------------------------------------------
-//  tolerances :
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 // ----------------------------------------------------------------------
 Standard_EXPORT Standard_Boolean FUN_tool_maxtol(const TopoDS_Shape&     S,
@@ -1319,9 +1313,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_pcurveonF(const TopoDS_Face&          
   return Standard_False;
 }
 
-// ----------------------------------------------------------------------
-//  shared geometry :
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 // ----------------------------------------------------------------------
 Standard_EXPORT Standard_Boolean FUN_tool_curvesSO(const TopoDS_Edge&  E1,
@@ -1426,9 +1418,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_findAncestor(const TopTools_ListOfShap
   return Standard_False;
 }
 
-// ----------------------------------------------------------------------
-//  new topologies :
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 // FUN_ds_* methods are methods of TopOpeBRepDS_BuildTool
 // that cannot be called (cyclic dependencies)

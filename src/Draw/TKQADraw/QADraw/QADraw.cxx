@@ -16,7 +16,6 @@
 #include <QADraw.hxx>
 
 #include <QABugs.hxx>
-#include <QADraw.hxx>
 #include <QADNaming.hxx>
 
 #include <AIS_InteractiveContext.hxx>

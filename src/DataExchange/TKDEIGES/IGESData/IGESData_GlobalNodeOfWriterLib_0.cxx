@@ -20,7 +20,6 @@
 
 #include <IGESData_ReadWriteModule.hxx>
 #include <IGESData_Protocol.hxx>
-#include <IGESData_GlobalNodeOfWriterLib.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_WriterLib.hxx>
 #include <IGESData_NodeOfWriterLib.hxx>

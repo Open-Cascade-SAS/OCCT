@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#include <Interface_Recognizer.ixx>
+// #include <Interface_Recognizer.ixx>
 #include <Standard_NoSuchObject.hxx>
 
 //  WARNING: TransRecognizer has exactly the same code ...
@@ -26,35 +26,48 @@
 // in case of failure, following the return from Eval, Recognizer knows that SetOK was not
 // called
 
-Interface_Recognizer::Interface_Recognizer ()
-      {  hasnext = Standard_False;  }
-  //thekey.Nullify();  useless, done by the constructor ...
+Interface_Recognizer::Interface_Recognizer()
+{
+  hasnext = Standard_False;
+}
 
-    Standard_Boolean Interface_Recognizer::Evaluate
-  (const TheKey& akey, Handle(TheResul)& res)
+// thekey.Nullify();  useless, done by the constructor ...
+
+Standard_Boolean Interface_Recognizer::Evaluate(const TheKey& akey, Handle(TheResul)& res)
 {
   theres.Nullify();
   Eval(akey);
-  if (!theres.IsNull()) {
+  if (!theres.IsNull())
+  {
     res = theres;
     return Standard_True;
   }
-  else if (hasnext) return thenext->Evaluate(akey,res);
+  else if (hasnext)
+    return thenext->Evaluate(akey, res);
   return Standard_False;
 }
 
-    Handle(TheResul) Interface_Recognizer::Result () const
+Handle(TheResul) Interface_Recognizer::Result() const
 {
-  if (!theres.IsNull()) return theres;
-  if (hasnext) return thenext->Result();
+  if (!theres.IsNull())
+    return theres;
+  if (hasnext)
+    return thenext->Result();
   throw Standard_NoSuchObject("Recognizer evaluation has failed");
 }
 
-    void Interface_Recognizer::Add (const Handle(Interface_Recognizer)& reco)
-      {  thenext = reco;  hasnext = Standard_True;  }
+void Interface_Recognizer::Add(const Handle(Interface_Recognizer)& reco)
+{
+  thenext = reco;
+  hasnext = Standard_True;
+}
 
-    void Interface_Recognizer::SetOK (const Handle(TheResul)& aresult)
-      {  theres = aresult;  }
+void Interface_Recognizer::SetOK(const Handle(TheResul)& aresult)
+{
+  theres = aresult;
+}
 
-    void Interface_Recognizer::SetKO ()
-      {  theres.Nullify();  }
+void Interface_Recognizer::SetKO()
+{
+  theres.Nullify();
+}

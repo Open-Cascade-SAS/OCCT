@@ -19,7 +19,6 @@
 #include <Standard_Type.hxx>
 
 #include <IGESData_GlobalNodeOfWriterLib.hxx>
-#include <IGESData_NodeOfWriterLib.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_ReadWriteModule.hxx>
 #include <IGESData_Protocol.hxx>

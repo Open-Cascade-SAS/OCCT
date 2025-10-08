@@ -136,10 +136,8 @@ OpenGl_ClippingState::OpenGl_ClippingState()
   //
 }
 
-// =======================================================================
-// function : Update
-// purpose  : Updates current state
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ClippingState::Update()
 {
   myStateStack.Prepend(myIndex);
@@ -147,10 +145,8 @@ void OpenGl_ClippingState::Update()
   ++myNextIndex;
 }
 
-// =======================================================================
-// function : Revert
-// purpose  : Reverts current state
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ClippingState::Revert()
 {
   if (!myStateStack.IsEmpty())

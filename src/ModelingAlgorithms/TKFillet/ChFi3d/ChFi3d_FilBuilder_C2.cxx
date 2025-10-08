@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepLProp_CLProps.hxx>

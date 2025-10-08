@@ -703,10 +703,8 @@ Handle(TFunction_Function) DNaming::GetFirstFunction(const Handle(TDataStd_UAttr
   return aFirstFun;
 }
 
-//=======================================================================
-// function : GetLastFunction
-// purpose  : Returns Last function
-//=======================================================================
+//=================================================================================================
+
 Handle(TFunction_Function) DNaming::GetLastFunction(const Handle(TDataStd_UAttribute)& theObject)
 {
   Handle(TFunction_Function) aLastFun;

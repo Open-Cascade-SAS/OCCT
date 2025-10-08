@@ -28,7 +28,6 @@
 #include <Draw_Appli.hxx>
 #include <Draw.hxx>
 #include <DBRep.hxx>
-#include <BRepTest.hxx>
 #include <LocalAnalysis_SurfaceContinuity.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>

@@ -20,7 +20,6 @@
 
 #include <Interface_ReaderModule.hxx>
 #include <Interface_Protocol.hxx>
-#include <Interface_GlobalNodeOfReaderLib.hxx>
 #include <Standard_Transient.hxx>
 #include <Interface_ReaderLib.hxx>
 #include <Interface_NodeOfReaderLib.hxx>

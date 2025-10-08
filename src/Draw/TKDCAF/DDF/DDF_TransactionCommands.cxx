@@ -77,10 +77,7 @@ static Standard_Integer AbortTran(Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
-//=======================================================================
-// function : CommitTran
-// purpose  : Commits a transaction
-//=======================================================================
+//=================================================================================================
 
 static Standard_Integer CommitTran(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {

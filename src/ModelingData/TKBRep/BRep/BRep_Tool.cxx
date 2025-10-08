@@ -1229,10 +1229,7 @@ GeomAbs_Shape BRep_Tool::MaxContinuity(const TopoDS_Edge& theEdge)
   return aMaxCont;
 }
 
-//=======================================================================
-// function : Pnt
-// purpose  : Returns the 3d point.
-//=======================================================================
+//=================================================================================================
 
 gp_Pnt BRep_Tool::Pnt(const TopoDS_Vertex& V)
 {

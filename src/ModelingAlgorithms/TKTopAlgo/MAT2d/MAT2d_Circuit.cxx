@@ -39,8 +39,6 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Circuit, Standard_Transient)
   #include <Geom2d_Curve.hxx>
   #include <Geom2d_Parabola.hxx>
   #include <Geom2d_Hyperbola.hxx>
-  #include <Geom2d_TrimmedCurve.hxx>
-  #include <Geom2d_CartesianPoint.hxx>
   #include <Geom2d_Line.hxx>
   #include <Geom2d_Circle.hxx>
 #endif

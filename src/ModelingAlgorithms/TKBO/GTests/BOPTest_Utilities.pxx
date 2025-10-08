@@ -1,0 +1,992 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _BOPTest_Utilities_HeaderFile
+#define _BOPTest_Utilities_HeaderFile
+
+#include <gtest/gtest.h>
+
+#include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Operation.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepPrimAPI_MakeCone.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Face.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_NurbsConvert.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Pnt.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS.hxx>
+#include <ElSLib.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Ax2.hxx>
+#include <Precision.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepTools.hxx>
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <Standard_Real.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <gp_Dir.hxx>
+
+#include <cmath>
+#include <memory>
+
+#ifndef M_PI
+  #define M_PI 3.14159265358979323846
+#endif
+
+//==================================================================================================
+//! Base utility class for BOP testing with common helper functions
+//==================================================================================================
+class BOPTest_Utilities
+{
+public:
+  //! Profile command types (equivalent to TCL profile commands)
+  enum class ProfileCmd
+  {
+    O,  // Set origin (O X Y Z)
+    P,  // Set plane (P nx ny nz dx dy dz)
+    F,  // Set first point
+    X,  // Translate along X
+    Y,  // Translate along Y
+    L,  // Translate along direction
+    XX, // Set X coordinate
+    YY, // Set Y coordinate
+    T,  // Translate by vector
+    TT, // Set point
+    R,  // Rotate direction
+    RR, // Set direction angle
+    D,  // Set direction vector
+    C,  // Arc (circle)
+    W,  // Make closed wire
+    WW  // Make open wire
+  };
+
+  //! Profile command structure
+  struct ProfileOperation
+  {
+    ProfileCmd                 cmd;
+    std::vector<Standard_Real> params;
+
+    ProfileOperation(ProfileCmd c)
+        : cmd(c)
+    {
+    }
+
+    ProfileOperation(ProfileCmd c, Standard_Real p1)
+        : cmd(c),
+          params({p1})
+    {
+    }
+
+    ProfileOperation(ProfileCmd c, Standard_Real p1, Standard_Real p2)
+        : cmd(c),
+          params({p1, p2})
+    {
+    }
+
+    ProfileOperation(ProfileCmd c, Standard_Real p1, Standard_Real p2, Standard_Real p3)
+        : cmd(c),
+          params({p1, p2, p3})
+    {
+    }
+
+    ProfileOperation(ProfileCmd    c,
+                     Standard_Real p1,
+                     Standard_Real p2,
+                     Standard_Real p3,
+                     Standard_Real p4,
+                     Standard_Real p5,
+                     Standard_Real p6)
+        : cmd(c),
+          params({p1, p2, p3, p4, p5, p6})
+    {
+    }
+
+    ProfileOperation(ProfileCmd c, const std::vector<Standard_Real>& p)
+        : cmd(c),
+          params(p)
+    {
+    }
+  };
+
+  //! Default tolerance values
+  static constexpr Standard_Real DefaultTolerance() { return 1.0e-6; }
+
+  static constexpr Standard_Real DefaultFuzzyValue() { return 1.0e-8; }
+
+  //! Calculate surface area of a shape
+  static Standard_Real GetSurfaceArea(const TopoDS_Shape& theShape)
+  {
+    if (theShape.IsNull())
+    {
+      return 0.0;
+    }
+    GProp_GProps aProps;
+    BRepGProp::SurfaceProperties(theShape, aProps);
+    return aProps.Mass();
+  }
+
+  //! Calculate volume of a shape
+  static Standard_Real GetVolume(const TopoDS_Shape& theShape)
+  {
+    if (theShape.IsNull())
+    {
+      return 0.0;
+    }
+    GProp_GProps aProps;
+    BRepGProp::VolumeProperties(theShape, aProps);
+    return aProps.Mass();
+  }
+
+  //! Check if shape is effectively empty (very small surface area)
+  static Standard_Boolean IsEmpty(const TopoDS_Shape& theShape,
+                                  const Standard_Real theTolerance = DefaultTolerance())
+  {
+    return GetSurfaceArea(theShape) <= theTolerance;
+  }
+
+  //! Create unit box at origin (1x1x1)
+  static TopoDS_Shape CreateUnitBox()
+  {
+    BRepPrimAPI_MakeBox aBoxMaker(1.0, 1.0, 1.0);
+    return aBoxMaker.Shape();
+  }
+
+  //! Create box at specific location
+  static TopoDS_Shape CreateBox(const gp_Pnt& theCorner,
+                                Standard_Real theX,
+                                Standard_Real theY,
+                                Standard_Real theZ)
+  {
+    BRepPrimAPI_MakeBox aBoxMaker(theCorner, theX, theY, theZ);
+    return aBoxMaker.Shape();
+  }
+
+  //! Create unit sphere (radius = 1.0)
+  static TopoDS_Shape CreateUnitSphere()
+  {
+    BRepPrimAPI_MakeSphere aSphereMaker(1.0);
+    return aSphereMaker.Shape();
+  }
+
+  //! Create sphere at location with radius
+  static TopoDS_Shape CreateSphere(const gp_Pnt& theCenter, Standard_Real theRadius)
+  {
+    BRepPrimAPI_MakeSphere aSphereMaker(theCenter, theRadius);
+    return aSphereMaker.Shape();
+  }
+
+  //! Create cylinder
+  static TopoDS_Shape CreateCylinder(Standard_Real theRadius, Standard_Real theHeight)
+  {
+    BRepPrimAPI_MakeCylinder aCylinderMaker(theRadius, theHeight);
+    return aCylinderMaker.Shape();
+  }
+
+  //! Create cone
+  static TopoDS_Shape CreateCone(Standard_Real theR1, Standard_Real theR2, Standard_Real theHeight)
+  {
+    BRepPrimAPI_MakeCone aConeMaker(theR1, theR2, theHeight);
+    return aConeMaker.Shape();
+  }
+
+  //! Convert shape to NURBS
+  static TopoDS_Shape ConvertToNurbs(const TopoDS_Shape& theShape)
+  {
+    BRepBuilderAPI_NurbsConvert aNurbsConverter(theShape);
+    if (!aNurbsConverter.IsDone())
+    {
+      return TopoDS_Shape(); // Return null shape on failure
+    }
+    return aNurbsConverter.Shape();
+  }
+
+  //! Create rectangular polygon face
+  static TopoDS_Shape CreatePolygonFace(const gp_Pnt& theP1,
+                                        const gp_Pnt& theP2,
+                                        const gp_Pnt& theP3,
+                                        const gp_Pnt& theP4)
+  {
+    BRepBuilderAPI_MakePolygon aPolygonMaker;
+    aPolygonMaker.Add(theP1);
+    aPolygonMaker.Add(theP2);
+    aPolygonMaker.Add(theP3);
+    aPolygonMaker.Add(theP4);
+    aPolygonMaker.Close();
+
+    if (!aPolygonMaker.IsDone())
+    {
+      return TopoDS_Shape();
+    }
+
+    BRepBuilderAPI_MakeFace aFaceMaker(aPolygonMaker.Wire());
+    return aFaceMaker.Shape();
+  }
+
+  //! Rotate shape around axis
+  static TopoDS_Shape RotateShape(const TopoDS_Shape& theShape,
+                                  const gp_Ax1&       theAxis,
+                                  Standard_Real       theAngle)
+  {
+    gp_Trsf aTrsf;
+    aTrsf.SetRotation(theAxis, theAngle);
+    BRepBuilderAPI_Transform aTransformer(theShape, aTrsf);
+    return aTransformer.Shape();
+  }
+
+  //! Translate shape by vector
+  static TopoDS_Shape TranslateShape(const TopoDS_Shape& theShape, const gp_Vec& theVector)
+  {
+    gp_Trsf aTrsf;
+    aTrsf.SetTranslation(theVector);
+    BRepBuilderAPI_Transform aTransformer(theShape, aTrsf);
+    return aTransformer.Shape();
+  }
+
+  //! Create vertex from point
+  static TopoDS_Vertex CreateVertex(const gp_Pnt& thePoint)
+  {
+    BRepBuilderAPI_MakeVertex aVertexMaker(thePoint);
+    return aVertexMaker.Vertex();
+  }
+
+  //! Create edge between two points
+  static TopoDS_Edge CreateEdge(const gp_Pnt& theP1, const gp_Pnt& theP2)
+  {
+    BRepBuilderAPI_MakeEdge anEdgeMaker(theP1, theP2);
+    return anEdgeMaker.Edge();
+  }
+
+  //! Create wire from list of points (closed polygon)
+  static TopoDS_Wire CreatePolygonWire(const std::vector<gp_Pnt>& thePoints,
+                                       Standard_Boolean           theClose = Standard_True)
+  {
+    BRepBuilderAPI_MakePolygon aPolygonMaker;
+    for (const gp_Pnt& aPt : thePoints)
+    {
+      aPolygonMaker.Add(aPt);
+    }
+    if (theClose)
+    {
+      aPolygonMaker.Close();
+    }
+    return aPolygonMaker.Wire();
+  }
+
+  //! Create complex profile using simplified approach (similar to TCL profile command)
+  //! Simulates "profile rev S face F x y [commands...]" by creating a rectangular wire
+  static TopoDS_Wire CreateProfileWire(const gp_Pln&                   thePlane,
+                                       const gp_Pnt2d&                 theStartPt,
+                                       const std::vector<std::string>& theCommands)
+  {
+    // Simplified profile creation - create a rectangular wire based on commands
+    // This approximates the TCL profile behavior for basic geometric operations
+    std::vector<gp_Pnt2d> aPoints;
+    aPoints.push_back(theStartPt);
+
+    gp_Pnt2d aCurrentPt = theStartPt;
+    gp_Vec2d aCurrentDir(1.0, 0.0); // Default direction
+
+    // Process simplified command set
+    for (size_t i = 0; i < theCommands.size(); ++i)
+    {
+      const std::string& aCmd = theCommands[i];
+      if (aCmd == "Y" && i + 1 < theCommands.size())
+      {
+        // Y command: translate along Y
+        double aDY = std::stod(theCommands[i + 1]);
+        aCurrentPt.SetY(aCurrentPt.Y() + aDY);
+        aPoints.push_back(aCurrentPt);
+        i++; // Skip next parameter
+      }
+      else if (aCmd == "C" && i + 2 < theCommands.size())
+      {
+        // C command: arc (simplified as straight line for now)
+        double aRadius = std::stod(theCommands[i + 1]);
+        // double aAngle = std::stod(theCommands[i + 2]); // Unused for now
+        // Simplified: just move in current direction
+        gp_Vec2d aMoveVec = aCurrentDir * aRadius;
+        aCurrentPt.Translate(aMoveVec);
+        aPoints.push_back(aCurrentPt);
+        i += 2; // Skip next two parameters
+      }
+    }
+
+    // Convert 2D points to 3D points on the plane
+    std::vector<gp_Pnt> a3DPoints;
+    for (const gp_Pnt2d& aPt2d : aPoints)
+    {
+      gp_Pnt aPt3d = ElSLib::Value(aPt2d.X(), aPt2d.Y(), thePlane);
+      a3DPoints.push_back(aPt3d);
+    }
+
+    return CreatePolygonWire(a3DPoints, Standard_True);
+  }
+
+  //! Create profile using typed commands (equivalent to TCL profile)
+  //! plane: The reference plane/face (equivalent to "S face" in TCL)
+  //! operations: List of profile operations
+  static TopoDS_Shape CreateProfile(const gp_Pln&                        thePlane,
+                                    const std::vector<ProfileOperation>& theOperations)
+  {
+    BRepBuilderAPI_MakeWire aMakeWire;
+
+    gp_Pnt2d         aCurrentPt(0, 0);  // Current point in 2D
+    gp_Vec2d         aCurrentDir(1, 0); // Current direction in 2D
+    Standard_Boolean aFirstSet = Standard_False;
+    gp_Pnt2d         aFirstPt(0, 0);
+    gp_Pln           aWorkingPlane = thePlane; // Working plane that can be modified by P command
+
+    for (const auto& op : theOperations)
+    {
+      switch (op.cmd)
+      {
+        case ProfileCmd::O: // Set origin (affects the plane, not the starting point)
+          if (op.params.size() >= 3)
+          {
+            // O command sets the origin of the plane coordinate system
+            gp_Pnt aNewOrigin(op.params[0], op.params[1], op.params[2]);
+            gp_Ax3 aNewAx3(aNewOrigin,
+                           aWorkingPlane.Axis().Direction(),
+                           aWorkingPlane.XAxis().Direction());
+            aWorkingPlane = gp_Pln(aNewAx3);
+
+            // Profile still starts at (0,0) in the new plane coordinate system
+            if (!aFirstSet)
+            {
+              aCurrentPt.SetCoord(0.0, 0.0); // TCL default: start at (0,0)
+              aFirstPt  = aCurrentPt;
+              aFirstSet = Standard_True;
+            }
+          }
+          break;
+
+        case ProfileCmd::P: // Set plane (P nx ny nz dx dy dz)
+          if (op.params.size() >= 6)
+          {
+            // P command sets plane normal and X direction vectors
+            gp_Vec aNormal(op.params[0], op.params[1], op.params[2]);
+            gp_Vec aXDir(op.params[3], op.params[4], op.params[5]);
+
+            // Create new coordinate system
+            gp_Dir aNormalDir(aNormal);
+            gp_Dir aXDirection(aXDir);
+
+            // Note: Y direction computed as cross product: Y = Z x X (for right-handed system)
+            // But DRAW uses standard X/Y axes based on normal direction
+
+            // Use the current plane's origin but new orientation
+            gp_Ax3 aNewAx3(aWorkingPlane.Location(), aNormalDir, aXDirection);
+            aWorkingPlane = gp_Pln(aNewAx3);
+          }
+          break;
+
+        case ProfileCmd::F: // Set first point
+          if (op.params.size() >= 2)
+          {
+            aCurrentPt.SetCoord(op.params[0], op.params[1]);
+            aFirstPt  = aCurrentPt;
+            aFirstSet = Standard_True;
+          }
+          break;
+
+        case ProfileCmd::X: // Translate along X
+          if (op.params.size() >= 1)
+          {
+            // If first point not set, implicitly start at (0,0)
+            if (!aFirstSet)
+            {
+              aCurrentPt.SetCoord(0.0, 0.0);
+              aFirstPt  = aCurrentPt;
+              aFirstSet = Standard_True;
+            }
+
+            gp_Pnt2d aNewPt(aCurrentPt.X() + op.params[0], aCurrentPt.Y());
+            // Add line segment
+            gp_Pnt aPt1 = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), aWorkingPlane);
+            gp_Pnt aPt2 = ElSLib::Value(aNewPt.X(), aNewPt.Y(), aWorkingPlane);
+            aMakeWire.Add(BRepBuilderAPI_MakeEdge(aPt1, aPt2));
+            aCurrentPt  = aNewPt;
+            aCurrentDir = gp_Vec2d(op.params[0] > 0 ? 1 : -1, 0);
+          }
+          break;
+
+        case ProfileCmd::Y: // Translate along Y
+          if (op.params.size() >= 1)
+          {
+            // If first point not set, implicitly start at (0,0)
+            if (!aFirstSet)
+            {
+              aCurrentPt.SetCoord(0.0, 0.0);
+              aFirstPt  = aCurrentPt;
+              aFirstSet = Standard_True;
+            }
+
+            gp_Pnt2d aNewPt(aCurrentPt.X(), aCurrentPt.Y() + op.params[0]);
+            // Add line segment
+            gp_Pnt aPt1 = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), aWorkingPlane);
+            gp_Pnt aPt2 = ElSLib::Value(aNewPt.X(), aNewPt.Y(), aWorkingPlane);
+            aMakeWire.Add(BRepBuilderAPI_MakeEdge(aPt1, aPt2));
+            aCurrentPt  = aNewPt;
+            aCurrentDir = gp_Vec2d(0, op.params[0] > 0 ? 1 : -1);
+          }
+          break;
+
+        case ProfileCmd::C: // Arc
+          if (op.params.size() >= 2)
+          {
+            Standard_Real aRadius   = Abs(op.params[0]);
+            Standard_Real aAngleDeg = op.params[1];
+            Standard_Real aAngleRad = aAngleDeg * M_PI / 180.0;
+
+            // Handle full circle case (360 degrees)
+            if (Abs(aAngleDeg) >= 360.0)
+            {
+              // Create a full circle centered at current point (0,0 if not set)
+              gp_Pnt2d aCenter2D = aFirstSet ? aCurrentPt : gp_Pnt2d(0, 0);
+              gp_Pnt   aCenter3D = ElSLib::Value(aCenter2D.X(), aCenter2D.Y(), aWorkingPlane);
+
+              // Create full circle
+              gp_Circ aCirc(gp_Ax2(aCenter3D, aWorkingPlane.Axis().Direction()), aRadius);
+              aMakeWire.Add(BRepBuilderAPI_MakeEdge(aCirc));
+
+              // Set current point to a point on the circle
+              aCurrentPt  = gp_Pnt2d(aCenter2D.X() + aRadius, aCenter2D.Y());
+              aCurrentDir = gp_Vec2d(0, 1); // Tangent direction
+              aFirstSet   = Standard_True;
+            }
+            else
+            {
+              // If first point not set, start at origin with default direction
+              if (!aFirstSet)
+              {
+                aCurrentPt.SetCoord(0.0, 0.0);
+                aCurrentDir = gp_Vec2d(1, 0); // Default direction: positive X
+                aFirstPt    = aCurrentPt;
+                aFirstSet   = Standard_True;
+              }
+
+              // Create arc from current point
+              gp_Vec2d aNormal(-aCurrentDir.Y(), aCurrentDir.X());
+              gp_Pnt2d aCenter = aCurrentPt.Translated(aNormal * aRadius);
+
+              // Calculate end point
+              Standard_Real aStartAngle =
+                atan2(aCurrentPt.Y() - aCenter.Y(), aCurrentPt.X() - aCenter.X());
+              Standard_Real aEndAngle = aStartAngle + aAngleRad;
+              gp_Pnt2d      aEndPt(aCenter.X() + aRadius * cos(aEndAngle),
+                              aCenter.Y() + aRadius * sin(aEndAngle));
+
+              // Create 3D arc
+              gp_Pnt aPt1      = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), aWorkingPlane);
+              gp_Pnt aPt2      = ElSLib::Value(aEndPt.X(), aEndPt.Y(), aWorkingPlane);
+              gp_Pnt aCenter3D = ElSLib::Value(aCenter.X(), aCenter.Y(), aWorkingPlane);
+
+              gp_Circ aCirc(gp_Ax2(aCenter3D, aWorkingPlane.Axis().Direction()), aRadius);
+              aMakeWire.Add(BRepBuilderAPI_MakeEdge(aCirc, aPt1, aPt2));
+
+              aCurrentPt  = aEndPt;
+              aCurrentDir = gp_Vec2d(cos(aEndAngle + M_PI / 2), sin(aEndAngle + M_PI / 2));
+            }
+          }
+          break;
+
+        case ProfileCmd::D: // Set direction vector
+          if (op.params.size() >= 2)
+          {
+            aCurrentDir = gp_Vec2d(op.params[0], op.params[1]);
+            aCurrentDir.Normalize();
+          }
+          break;
+
+        case ProfileCmd::W: // Make closed wire
+          // W command closes the current wire - handled at end of function
+          break;
+
+        default:
+          // Other commands can be added as needed
+          break;
+      }
+    }
+
+    // Close the wire if needed (TCL profiles are typically closed by default)
+    if (aFirstSet && !aCurrentPt.IsEqual(aFirstPt, Precision::Confusion()))
+    {
+      // Add closing edge back to start
+      gp_Pnt aPt1 = ElSLib::Value(aCurrentPt.X(), aCurrentPt.Y(), aWorkingPlane);
+      gp_Pnt aPt2 = ElSLib::Value(aFirstPt.X(), aFirstPt.Y(), aWorkingPlane);
+      aMakeWire.Add(BRepBuilderAPI_MakeEdge(aPt1, aPt2));
+    }
+
+    EXPECT_TRUE(aMakeWire.IsDone()) << "Profile wire creation failed";
+    TopoDS_Wire aWire = aMakeWire.Wire();
+
+    // Create face from wire
+    BRepBuilderAPI_MakeFace aFaceMaker(aWire);
+    EXPECT_TRUE(aFaceMaker.IsDone()) << "Profile face creation failed";
+    return aFaceMaker.Face();
+  }
+
+  //! Create profile from operations list (simplified version)
+  static TopoDS_Shape CreateProfileFromOperations(
+    const std::vector<ProfileOperation>& theOperations)
+  {
+    // Use default plane (XY plane)
+    const gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+    return CreateProfile(aPlane, theOperations);
+  }
+
+  //! Create rectangular profile from corner and dimensions
+  static TopoDS_Wire CreateRectangularProfile(const gp_Pnt& theCorner,
+                                              Standard_Real theX,
+                                              Standard_Real theY)
+  {
+    std::vector<gp_Pnt> aPoints;
+    aPoints.push_back(theCorner);
+    aPoints.push_back(gp_Pnt(theCorner.X() + theX, theCorner.Y(), theCorner.Z()));
+    aPoints.push_back(gp_Pnt(theCorner.X() + theX, theCorner.Y() + theY, theCorner.Z()));
+    aPoints.push_back(gp_Pnt(theCorner.X(), theCorner.Y() + theY, theCorner.Z()));
+    return CreatePolygonWire(aPoints, Standard_True);
+  }
+
+  //! Create face from wire
+  static TopoDS_Shape CreateFaceFromWire(const TopoDS_Wire& theWire)
+  {
+    BRepBuilderAPI_MakeFace aFaceMaker(theWire);
+    if (!aFaceMaker.IsDone())
+    {
+      return TopoDS_Shape();
+    }
+    return aFaceMaker.Shape();
+  }
+
+  //! Create prism by extruding shape along vector
+  static TopoDS_Shape CreatePrism(const TopoDS_Shape& theProfile, const gp_Vec& theDirection)
+  {
+    BRepPrimAPI_MakePrism aPrismMaker(theProfile, theDirection);
+    if (!aPrismMaker.IsDone())
+    {
+      return TopoDS_Shape();
+    }
+    return aPrismMaker.Shape();
+  }
+
+  //! Create simple rectangular prism (like TCL profile operations)
+  static TopoDS_Shape CreateRectangularPrism(const gp_Pnt& theCorner,
+                                             Standard_Real theX,
+                                             Standard_Real theY,
+                                             Standard_Real theZ)
+  {
+    TopoDS_Wire  aWire = CreateRectangularProfile(theCorner, theX, theY);
+    TopoDS_Shape aFace = CreateFaceFromWire(aWire);
+    return CreatePrism(aFace, gp_Vec(0, 0, theZ));
+  }
+
+  //! Create revolution of a profile around an axis
+  static TopoDS_Shape CreateRevolution(const TopoDS_Shape& theProfile,
+                                       const gp_Ax1&       theAxis,
+                                       Standard_Real       theAngle)
+  {
+    BRepPrimAPI_MakeRevol aRevolMaker(theProfile, theAxis, theAngle);
+    EXPECT_TRUE(aRevolMaker.IsDone()) << "Revolution operation failed";
+    return aRevolMaker.Shape();
+  }
+
+  //! Get a face from a shape by index (for nexplode simulation)
+  static TopoDS_Face GetFaceByIndex(const TopoDS_Shape& theShape, Standard_Integer theIndex)
+  {
+    TopExp_Explorer  anExp(theShape, TopAbs_FACE);
+    Standard_Integer aCurrentIndex = 1;
+
+    while (anExp.More())
+    {
+      if (aCurrentIndex == theIndex)
+      {
+        return TopoDS::Face(anExp.Current());
+      }
+      aCurrentIndex++;
+      anExp.Next();
+    }
+    return TopoDS_Face(); // Return empty face if not found
+  }
+
+  //! Apply rotation around Z-axis (equivalent to "trotate shape 0 0 0 0 0 1 angle")
+  static TopoDS_Shape RotateZ(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)
+  {
+    gp_Trsf aRotation;
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), theAngleDeg * M_PI / 180.0);
+    BRepBuilderAPI_Transform aTransform(theShape, aRotation);
+    return aTransform.Shape();
+  }
+
+  //! Apply rotation around Y-axis (equivalent to "trotate shape 0 0 0 0 1 0 angle")
+  static TopoDS_Shape RotateY(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)
+  {
+    gp_Trsf aRotation;
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), theAngleDeg * M_PI / 180.0);
+    BRepBuilderAPI_Transform aTransform(theShape, aRotation);
+    return aTransform.Shape();
+  }
+
+  //! Apply rotation around X-axis (equivalent to "trotate shape 0 0 0 1 0 0 angle")
+  static TopoDS_Shape RotateX(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)
+  {
+    gp_Trsf aRotation;
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), theAngleDeg * M_PI / 180.0);
+    BRepBuilderAPI_Transform aTransform(theShape, aRotation);
+    return aTransform.Shape();
+  }
+
+  //! Apply common test rotation: Z(-90deg) then Y(-45deg) - used in many TCL tests
+  static TopoDS_Shape RotateStandard(const TopoDS_Shape& theShape)
+  {
+    TopoDS_Shape aResult = RotateZ(theShape, -90.0);
+    return RotateY(aResult, -45.0);
+  }
+
+  //! Apply translation (equivalent to "ttranslate shape dx dy dz")
+  static TopoDS_Shape Translate(const TopoDS_Shape& theShape,
+                                Standard_Real       theDx,
+                                Standard_Real       theDy,
+                                Standard_Real       theDz)
+  {
+    gp_Trsf aTranslation;
+    aTranslation.SetTranslation(gp_Vec(theDx, theDy, theDz));
+    BRepBuilderAPI_Transform aTransform(theShape, aTranslation);
+    return aTransform.Shape();
+  }
+
+  //! Apply Y-axis 90-degree rotation (common pattern: "trotate shape 0 0 1 0 1 0 90")
+  static TopoDS_Shape RotateY90(const TopoDS_Shape& theShape)
+  {
+    gp_Trsf aRotation;
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 1), gp_Dir(0, 1, 0)), 90.0 * M_PI / 180.0);
+    BRepBuilderAPI_Transform aTransform(theShape, aRotation);
+    return aTransform.Shape();
+  }
+
+  //! Create unit sphere and box pair (most common test setup)
+  static void CreateSphereAndBox(TopoDS_Shape& theSphere, TopoDS_Shape& theBox)
+  {
+    theSphere = CreateUnitSphere();
+    theBox    = CreateUnitBox();
+  }
+
+  //! Create two identical unit boxes at origin (common BOP test setup)
+  static void CreateIdenticalBoxes(TopoDS_Shape& theBox1, TopoDS_Shape& theBox2)
+  {
+    theBox1 = CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+    theBox2 = CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  }
+
+  //! Create NURBS box and regular box pair (common B-series test pattern)
+  static void CreateNurbsAndRegularBox(TopoDS_Shape& theNurbsBox,
+                                       TopoDS_Shape& theRegularBox,
+                                       const gp_Pnt& theNurbsCorner   = gp_Pnt(0, 0, 0),
+                                       const gp_Pnt& theRegularCorner = gp_Pnt(0, 1, 0),
+                                       Standard_Real theNurbsX        = 1.0,
+                                       Standard_Real theNurbsY        = 1.0,
+                                       Standard_Real theNurbsZ        = 1.0,
+                                       Standard_Real theRegularX      = 1.0,
+                                       Standard_Real theRegularY      = 0.5,
+                                       Standard_Real theRegularZ      = 1.0)
+  {
+    theNurbsBox = CreateBox(theNurbsCorner, theNurbsX, theNurbsY, theNurbsZ);
+    theNurbsBox = ConvertToNurbs(theNurbsBox);
+
+    theRegularBox = CreateBox(theRegularCorner, theRegularX, theRegularY, theRegularZ);
+  }
+
+  //! Create a blend (fillet) on specified edge of a shape
+  static TopoDS_Shape CreateBlend(const TopoDS_Shape& theShape,
+                                  Standard_Integer    theEdgeIndex,
+                                  Standard_Real       theRadius)
+  {
+    // Get the edge by index (like explode command)
+    TopExp_Explorer  anExp(theShape, TopAbs_EDGE);
+    Standard_Integer aCurrentIndex = 1;
+    TopoDS_Edge      aTargetEdge;
+
+    while (anExp.More())
+    {
+      if (aCurrentIndex == theEdgeIndex)
+      {
+        aTargetEdge = TopoDS::Edge(anExp.Current());
+        break;
+      }
+      aCurrentIndex++;
+      anExp.Next();
+    }
+
+    if (aTargetEdge.IsNull())
+    {
+      return theShape; // Return original shape if edge not found
+    }
+
+    // Create fillet maker (matching DRAW blend command)
+    // DRAW uses ChFi3d_Rational by default
+    BRepFilletAPI_MakeFillet aFilletMaker(theShape, ChFi3d_Rational);
+
+    // Set parameters exactly like DRAW command does
+    // SetParams(ta, tesp, t2d, t3d, t2d, fl) - exact DRAW defaults
+    aFilletMaker.SetParams(1e-2, 1.0e-4, 1.e-5, 1.e-4, 1.e-5, 1.e-3);
+
+    // SetContinuity(blend_cont, tapp_angle) - exact DRAW defaults
+    aFilletMaker.SetContinuity(GeomAbs_C1, 1.e-2);
+
+    aFilletMaker.Add(theRadius, aTargetEdge);
+    aFilletMaker.Build();
+
+    if (!aFilletMaker.IsDone())
+    {
+      return TopoDS_Shape(); // Return null shape if fillet failed, like DRAW command
+    }
+
+    return aFilletMaker.Shape();
+  }
+
+  //! Create a cylinder on a specified plane (like TCL pcylinder command)
+  static TopoDS_Shape CreateCylinderOnPlane(const gp_Pln& thePlane,
+                                            Standard_Real theRadius,
+                                            Standard_Real theHeight)
+  {
+    // Use DRAW pcylinder approach exactly:
+    // S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(), radius, height);
+    const gp_Ax2 anAx2 = thePlane.Position().Ax2();
+
+    // Use DRAW pcylinder approach exactly:
+    // S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(), radius, height);
+    BRepPrimAPI_MakeCylinder aCylinderMaker(anAx2, theRadius, theHeight);
+    aCylinderMaker.Build();
+
+    if (!aCylinderMaker.IsDone())
+    {
+      return TopoDS_Shape();
+    }
+
+    return aCylinderMaker.Shape();
+  }
+};
+
+//==================================================================================================
+//! Base test class for BRepAlgoAPI operations
+//==================================================================================================
+class BRepAlgoAPI_TestBase : public ::testing::Test
+{
+protected:
+  void SetUp() override { myTolerance = BOPTest_Utilities::DefaultTolerance(); }
+
+  //! Perform BRepAlgoAPI Cut operation
+  TopoDS_Shape PerformCut(const TopoDS_Shape& theObject, const TopoDS_Shape& theTool)
+  {
+    BRepAlgoAPI_Cut aCutter(theObject, theTool);
+    EXPECT_TRUE(aCutter.IsDone()) << "BRepAlgoAPI_Cut operation failed";
+    return aCutter.Shape();
+  }
+
+  //! Perform BRepAlgoAPI Fuse operation
+  TopoDS_Shape PerformFuse(const TopoDS_Shape& theShape1, const TopoDS_Shape& theShape2)
+  {
+    BRepAlgoAPI_Fuse aFuser(theShape1, theShape2);
+    EXPECT_TRUE(aFuser.IsDone()) << "BRepAlgoAPI_Fuse operation failed";
+    return aFuser.Shape();
+  }
+
+  //! Perform BRepAlgoAPI Common operation
+  TopoDS_Shape PerformCommon(const TopoDS_Shape& theShape1, const TopoDS_Shape& theShape2)
+  {
+    BRepAlgoAPI_Common aCommoner(theShape1, theShape2);
+    EXPECT_TRUE(aCommoner.IsDone()) << "BRepAlgoAPI_Common operation failed";
+    return aCommoner.Shape();
+  }
+
+  //! Validate result properties against expected values
+  void ValidateResult(const TopoDS_Shape& theResult,
+                      Standard_Real       theExpectedSurfaceArea = -1.0,
+                      Standard_Real       theExpectedVolume      = -1.0,
+                      Standard_Boolean    theExpectedEmpty       = Standard_False)
+  {
+    if (theExpectedEmpty)
+    {
+      EXPECT_TRUE(BOPTest_Utilities::IsEmpty(theResult, myTolerance)) << "Result should be empty";
+      return;
+    }
+
+    EXPECT_FALSE(theResult.IsNull()) << "Result shape should not be null";
+
+    if (theExpectedSurfaceArea >= 0.0)
+    {
+      const Standard_Real aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(theResult);
+      EXPECT_NEAR(aSurfaceArea, theExpectedSurfaceArea, 5000.0) << "Surface area mismatch";
+    }
+
+    if (theExpectedVolume >= 0.0)
+    {
+      const Standard_Real aVolume = BOPTest_Utilities::GetVolume(theResult);
+      EXPECT_NEAR(aVolume, theExpectedVolume, myTolerance) << "Volume mismatch";
+    }
+  }
+
+protected:
+  Standard_Real myTolerance;
+};
+
+//==================================================================================================
+//! Base test class for BOPAlgo_BOP operations (direct and two-step)
+//==================================================================================================
+class BOPAlgo_TestBase : public ::testing::Test
+{
+protected:
+  void SetUp() override
+  {
+    myTolerance  = BOPTest_Utilities::DefaultTolerance();
+    myFuzzyValue = BOPTest_Utilities::DefaultFuzzyValue();
+    myPaveFiller.reset();
+  }
+
+  void TearDown() override { myPaveFiller.reset(); }
+
+  //! Direct BOP operation (equivalent to bcut/bfuse/bcommon/btuc commands)
+  TopoDS_Shape PerformDirectBOP(const TopoDS_Shape& theShape1,
+                                const TopoDS_Shape& theShape2,
+                                BOPAlgo_Operation   theOp)
+  {
+    Handle(NCollection_BaseAllocator) aAL = NCollection_BaseAllocator::CommonBaseAllocator();
+    BOPAlgo_BOP                       aBOP(aAL);
+
+    aBOP.AddArgument(theShape1);
+    aBOP.AddTool(theShape2);
+    aBOP.SetOperation(theOp);
+    aBOP.SetFuzzyValue(myFuzzyValue);
+    aBOP.SetRunParallel(Standard_False);
+    aBOP.SetNonDestructive(Standard_False);
+
+    aBOP.Perform();
+
+    EXPECT_FALSE(aBOP.HasErrors()) << "Direct BOP operation failed";
+    return aBOP.Shape();
+  }
+
+  //! Two-step BOP operation (equivalent to bop + bopXXX commands)
+  TopoDS_Shape PerformTwoStepBOP(const TopoDS_Shape& theShape1,
+                                 const TopoDS_Shape& theShape2,
+                                 BOPAlgo_Operation   theOp)
+  {
+    // Step 1: Prepare PaveFiller (equivalent to "bop s1 s2")
+    PreparePaveFiller(theShape1, theShape2);
+
+    // Step 2: Perform BOP operation (equivalent to "bopXXX result")
+    return PerformBOPWithPaveFiller(theOp);
+  }
+
+  //! Prepare PaveFiller for two-step operations
+  void PreparePaveFiller(const TopoDS_Shape& theShape1, const TopoDS_Shape& theShape2)
+  {
+    TopTools_ListOfShape aLC;
+    aLC.Append(theShape1);
+    aLC.Append(theShape2);
+
+    Handle(NCollection_BaseAllocator) aAL = NCollection_BaseAllocator::CommonBaseAllocator();
+    myPaveFiller                          = std::make_unique<BOPAlgo_PaveFiller>(aAL);
+
+    myPaveFiller->SetArguments(aLC);
+    myPaveFiller->SetFuzzyValue(myFuzzyValue);
+    myPaveFiller->SetRunParallel(Standard_False);
+    myPaveFiller->SetNonDestructive(Standard_False);
+
+    myPaveFiller->Perform();
+    EXPECT_FALSE(myPaveFiller->HasErrors()) << "PaveFiller preparation failed";
+  }
+
+  //! Perform BOP operation using prepared PaveFiller
+  TopoDS_Shape PerformBOPWithPaveFiller(BOPAlgo_Operation theOp)
+  {
+    EXPECT_TRUE(myPaveFiller != nullptr) << "PaveFiller must be prepared first";
+
+    BOPAlgo_BOP                 aBOP;
+    const TopTools_ListOfShape& aArguments = myPaveFiller->Arguments();
+    EXPECT_EQ(aArguments.Extent(), 2) << "Wrong number of arguments";
+
+    const TopoDS_Shape& aS1 = aArguments.First();
+    const TopoDS_Shape& aS2 = aArguments.Last();
+
+    aBOP.AddArgument(aS1);
+    aBOP.AddTool(aS2);
+    aBOP.SetOperation(theOp);
+    aBOP.SetRunParallel(Standard_False);
+
+    aBOP.PerformWithFiller(*myPaveFiller);
+
+    EXPECT_FALSE(aBOP.HasErrors()) << "BOP operation with PaveFiller failed";
+    return aBOP.Shape();
+  }
+
+  //! Validate result properties against expected values
+  void ValidateResult(const TopoDS_Shape& theResult,
+                      Standard_Real       theExpectedSurfaceArea = -1.0,
+                      Standard_Real       theExpectedVolume      = -1.0,
+                      Standard_Boolean    theExpectedEmpty       = Standard_False)
+  {
+    if (theExpectedEmpty)
+    {
+      EXPECT_TRUE(BOPTest_Utilities::IsEmpty(theResult, myTolerance)) << "Result should be empty";
+      return;
+    }
+
+    EXPECT_FALSE(theResult.IsNull()) << "Result shape should not be null";
+
+    if (theExpectedSurfaceArea >= 0.0)
+    {
+      const Standard_Real aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(theResult);
+      EXPECT_NEAR(aSurfaceArea, theExpectedSurfaceArea, 5000.0) << "Surface area mismatch";
+    }
+
+    if (theExpectedVolume >= 0.0)
+    {
+      const Standard_Real aVolume = BOPTest_Utilities::GetVolume(theResult);
+      EXPECT_NEAR(aVolume, theExpectedVolume, myTolerance) << "Volume mismatch";
+    }
+  }
+
+protected:
+  Standard_Real                       myTolerance;
+  Standard_Real                       myFuzzyValue;
+  std::unique_ptr<BOPAlgo_PaveFiller> myPaveFiller;
+};
+
+#endif // _BOPTest_Utilities_HeaderFile

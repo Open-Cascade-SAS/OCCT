@@ -18,7 +18,6 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <gp_Ax3.hxx>
-#include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 #include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 #include <Standard_NoSuchObject.hxx>
 

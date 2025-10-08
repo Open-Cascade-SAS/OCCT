@@ -81,10 +81,9 @@ static void Write(const TopoDS_Shape& shape, const Standard_CString filename)
   save.close();
 }
 #endif
-//=======================================================================
-// function : Execute
-// purpose  : Executes the function
-//=======================================================================
+
+//=================================================================================================
+
 Standard_Integer DNaming_PrismDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;

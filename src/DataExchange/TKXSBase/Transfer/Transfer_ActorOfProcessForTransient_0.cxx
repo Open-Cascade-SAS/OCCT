@@ -19,7 +19,6 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <Transfer_ActorOfProcessForTransient.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_IteratorOfProcessForTransient.hxx>
 #include <Transfer_ProcessForTransient.hxx>

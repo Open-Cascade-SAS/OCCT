@@ -43,9 +43,8 @@
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 
-// ----------------------------------------------------------------------------
-// Constructors
-// ----------------------------------------------------------------------------
+//=================================================================================================
+
 TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire()
     : myError(TopoDSToStep_WireOther)
 {
@@ -61,10 +60,7 @@ TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire(const TopoDS_Wire&         
   Init(W, T, FP, theLocalFactors);
 }
 
-// ----------------------------------------------------------------------------
-// Method  : Init
-// Purpose :
-// ----------------------------------------------------------------------------
+//=================================================================================================
 
 void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire&                    aWire,
                                      TopoDSToStep_Tool&                    aTool,
@@ -301,10 +297,7 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire&                    aWire
   }
 }
 
-// ----------------------------------------------------------------------------
-// Method  : Value
-// Purpose :
-// ----------------------------------------------------------------------------
+//=================================================================================================
 
 const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepWire::Value() const
 {
@@ -312,10 +305,7 @@ const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepWire
   return myResult;
 }
 
-// ----------------------------------------------------------------------------
-// Method  : Error
-// Purpose :
-// ----------------------------------------------------------------------------
+//=================================================================================================
 
 TopoDSToStep_MakeWireError TopoDSToStep_MakeStepWire::Error() const
 {

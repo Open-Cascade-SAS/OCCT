@@ -58,10 +58,7 @@ void LDOM_CharacterData::setData(const LDOMString& theValue)
   myLength = -1;
 }
 
-//=======================================================================
-// function : getLength
-// purpose  : query the data length
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer LDOM_CharacterData::getLength() const
 {

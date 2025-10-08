@@ -22,7 +22,6 @@
 #include <gp_Dir.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Adaptor3d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 

@@ -39,9 +39,8 @@
 
 #include <stdio.h>
 
-//------------------------------------------------------------------------------------------------------------------
-// Returns 1 if C is above of CMin; 0 if C is between CMin and CMax; -1 if C is Below CMax
-//-----------------------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 static Standard_Integer AboveInBelowCone(const gp_Circ& CMax, const gp_Circ& CMin, const gp_Circ& C)
 {
   const Standard_Real D  = CMax.Location().Distance(CMin.Location());

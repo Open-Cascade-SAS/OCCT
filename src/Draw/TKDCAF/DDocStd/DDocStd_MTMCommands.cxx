@@ -83,10 +83,7 @@ static int mtmAddDocument(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-//=======================================================================
-// function : mtmOpenTransaction
-// purpose  : opens new transaction
-//=======================================================================
+//=================================================================================================
 
 static int mtmOpenTransaction(Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {

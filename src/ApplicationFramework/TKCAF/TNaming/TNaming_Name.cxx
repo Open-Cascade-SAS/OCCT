@@ -67,12 +67,9 @@
 #endif
 #ifdef OCCT_DEBUG
   #include <TCollection_AsciiString.hxx>
-  #include <TDF_Tool.hxx>
-  #include <BRepTools.hxx>
 #endif
 #ifdef OCCT_DEBUG
   #include <TCollection_AsciiString.hxx>
-  #include <TDF_Tool.hxx>
   #include <TDF_ChildIterator.hxx>
   #include <TDF_MapIteratorOfLabelMap.hxx>
 
@@ -1900,10 +1897,8 @@ static Standard_Boolean ORientation(const TDF_Label&                  L,
   return Standard_True;
 }
 
-//===========================================================================
-// function : WireIN
-// purpose  : to solve  WIREIN name
-//=======================================================================
+//=================================================================================================
+
 static Standard_Boolean WireIN(const TDF_Label&                  L,
                                const TDF_LabelMap&               Valid,
                                const TNaming_ListOfNamedShape&   Args,

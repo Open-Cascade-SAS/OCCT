@@ -423,10 +423,8 @@ void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape, const Standard_Boole
   Sewing();
 }
 
-//=======================================================================
-// function : Init
-// purpose  : Construction of laws.
-//======================================================================
+//=================================================================================================
+
 void BRepFill_Draft::Init(const Handle(Geom_Surface)&,
                           const Standard_Real Length,
                           const Bnd_Box&      Box)

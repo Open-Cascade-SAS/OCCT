@@ -21,9 +21,7 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
 
-#include <NCollection_BasePointerVector.hxx>
 #include <NCollection_DefineAlloc.hxx>
-#include <NCollection_Allocator.hxx>
 #include <NCollection_Iterator.hxx>
 #include <NCollection_OccAllocator.hxx>
 #include <StdFail_NotDone.hxx>

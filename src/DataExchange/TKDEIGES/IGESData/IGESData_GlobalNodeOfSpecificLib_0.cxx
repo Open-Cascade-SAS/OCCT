@@ -20,7 +20,6 @@
 
 #include <IGESData_SpecificModule.hxx>
 #include <IGESData_Protocol.hxx>
-#include <IGESData_GlobalNodeOfSpecificLib.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_SpecificLib.hxx>
 #include <IGESData_NodeOfSpecificLib.hxx>

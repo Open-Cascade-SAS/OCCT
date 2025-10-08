@@ -102,10 +102,8 @@ PrsDim_LengthDimension::PrsDim_LengthDimension(const TopoDS_Shape& theFirstShape
   SetFlyout(15.0);
 }
 
-//=======================================================================
-// function : Constructor
-// purpose  : Dimension of one edge
-//=======================================================================
+//=================================================================================================
+
 PrsDim_LengthDimension::PrsDim_LengthDimension(const TopoDS_Edge& theEdge, const gp_Pln& thePlane)
     : PrsDim_Dimension(PrsDim_KOD_LENGTH),
       myHasCustomDirection(Standard_False)

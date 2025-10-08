@@ -19,7 +19,6 @@
 #include <Standard_Type.hxx>
 
 #include <Interface_GlobalNodeOfGeneralLib.hxx>
-#include <Interface_NodeOfGeneralLib.hxx>
 #include <Standard_Transient.hxx>
 #include <Interface_GeneralModule.hxx>
 #include <Interface_Protocol.hxx>

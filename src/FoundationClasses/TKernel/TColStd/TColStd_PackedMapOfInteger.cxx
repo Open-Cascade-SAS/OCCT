@@ -834,10 +834,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Subtract(const TColStd_PackedMapOfI
   }
 }
 
-//=======================================================================
-// function : Difference
-// purpose  : Boolean operation XOR
-//=======================================================================
+//=================================================================================================
 
 void TColStd_PackedMapOfInteger::Difference(const TColStd_PackedMapOfInteger& theMap1,
                                             const TColStd_PackedMapOfInteger& theMap2)
@@ -933,10 +930,7 @@ void TColStd_PackedMapOfInteger::Difference(const TColStd_PackedMapOfInteger& th
   }
 }
 
-//=======================================================================
-// function : Differ
-// purpose  : Boolean operation XOR
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TColStd_PackedMapOfInteger::Differ(const TColStd_PackedMapOfInteger& theMap)
 {

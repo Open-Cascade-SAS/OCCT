@@ -29,10 +29,8 @@ void* NCollection_BaseAllocator::AllocateOptimal(const size_t theSize)
   return Standard::AllocateOptimal(theSize);
 }
 
-//=======================================================================
-// function : Free
-// purpose  : Standard deallocation
-//=======================================================================
+//=================================================================================================
+
 void NCollection_BaseAllocator::Free(void* theAddress)
 {
   Standard::Free(theAddress);

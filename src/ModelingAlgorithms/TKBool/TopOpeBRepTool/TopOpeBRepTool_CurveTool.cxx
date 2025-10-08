@@ -70,7 +70,6 @@ extern Standard_Boolean TopOpeBRepTool_GettraceCHKBSPL();
 #define CurveImprovement
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
-  #include <Geom2d_Curve.hxx>
 static Standard_Integer NbCalls = 0;
 #endif
 //=================================================================================================
@@ -113,10 +112,8 @@ void TopOpeBRepTool_CurveTool::SetGeomTool(const TopOpeBRepTool_GeomTool& GT)
   myGeomTool.Define(GT);
 }
 
-//-----------------------------------------------------------------------
-// function : MakePCurve
-// purpose  :
-//-----------------------------------------------------------------------
+//=================================================================================================
+
 Standard_EXPORT Handle(Geom2d_Curve) MakePCurve(const ProjLib_ProjectedCurve& PC)
 {
   Handle(Geom2d_Curve) C2D;

@@ -43,9 +43,7 @@ static const OSD_WhoAmI Iam = OSD_WEnvironment;
 
 OSD_Environment::OSD_Environment() {}
 
-// ----------------------------------------------------------------------
-// Constructor
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 OSD_Environment::OSD_Environment(const TCollection_AsciiString& Name)
 {
@@ -56,9 +54,7 @@ OSD_Environment::OSD_Environment(const TCollection_AsciiString& Name)
   myName = Name;
 }
 
-// ----------------------------------------------------------------------
-// Create an environment variable and initialize it
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 OSD_Environment::OSD_Environment(const TCollection_AsciiString& Name,
                                  const TCollection_AsciiString& Value)
@@ -73,18 +69,14 @@ OSD_Environment::OSD_Environment(const TCollection_AsciiString& Name,
   myValue = Value;
 }
 
-// ----------------------------------------------------------------------
-// Returns the name of the symbol
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 TCollection_AsciiString OSD_Environment::Name() const
 {
   return myName;
 }
 
-// ----------------------------------------------------------------------
-// Set new value for environment variable
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 void OSD_Environment::SetName(const TCollection_AsciiString& Name)
 {
@@ -95,9 +87,7 @@ void OSD_Environment::SetName(const TCollection_AsciiString& Name)
   myName = Name;
 }
 
-// ----------------------------------------------------------------------
-// Change value
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 void OSD_Environment::SetValue(const TCollection_AsciiString& Value)
 {
@@ -107,9 +97,7 @@ void OSD_Environment::SetValue(const TCollection_AsciiString& Value)
   myValue = Value;
 }
 
-// ----------------------------------------------------------------------
-// Get environment variable physically
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 TCollection_AsciiString OSD_Environment::Value()
 {
@@ -121,9 +109,7 @@ TCollection_AsciiString OSD_Environment::Value()
   return myValue;
 }
 
-// ----------------------------------------------------------------------
-// Sets physically the environment variable
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 void OSD_Environment::Build()
 {
@@ -186,9 +172,7 @@ void OSD_Environment::Build()
     myError.SetValue(errno, Iam, "Set Environment");
 }
 
-// ----------------------------------------------------------------------
-// Remove physically the environment variable
-// ----------------------------------------------------------------------
+//=================================================================================================
 
 void OSD_Environment::Remove()
 {

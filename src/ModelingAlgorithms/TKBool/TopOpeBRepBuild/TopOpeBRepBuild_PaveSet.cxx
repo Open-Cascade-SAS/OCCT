@@ -28,7 +28,6 @@
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceVC();
   #include <TopOpeBRepBuild_Builder.hxx>
-  #include <gp_Pnt.hxx>
 #endif
 
 //=================================================================================================
