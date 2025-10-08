@@ -378,5 +378,4 @@ public:
   friend class IteratorOfLink;
 };
 
-
 #endif

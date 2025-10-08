@@ -79,7 +79,6 @@ typedef TNaming_DataMapOfShapeMapOfShape::Iterator
   #include <TCollection_AsciiString.hxx>
   #include <TDF_Tool.hxx>
 
-
 void Print_Entry(const TDF_Label& label)
 {
   TCollection_AsciiString entry;

@@ -16,7 +16,6 @@
 #ifndef _StepDimTol_ToleranceZoneForm_HeaderFile
 #define _StepDimTol_ToleranceZoneForm_HeaderFile
 
-
 #include <Standard_Transient.hxx>
 #include <Standard.hxx>
 #include <TCollection_HAsciiString.hxx>

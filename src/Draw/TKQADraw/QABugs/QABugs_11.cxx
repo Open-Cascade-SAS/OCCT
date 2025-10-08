@@ -5028,7 +5028,6 @@ Standard_Integer OCC23429(Draw_Interpretor& /*di*/, Standard_Integer narg, const
   return 0;
 }
 
-
 Standard_Integer CR23403(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
 

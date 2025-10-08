@@ -239,7 +239,6 @@
 #include <StepRepr_RealRepresentationItem.hxx>
 #include <StepRepr_ValueRepresentationItem.hxx>
 
-
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>

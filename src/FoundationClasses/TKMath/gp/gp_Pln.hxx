@@ -279,7 +279,6 @@ private:
   gp_Ax3 pos;
 };
 
-
 //=================================================================================================
 
 inline void gp_Pln::Coefficients(Standard_Real& theA,

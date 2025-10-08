@@ -16,7 +16,6 @@
 #ifndef _StepShape_ValueFormatTypeQualifier_HeaderFile
 #define _StepShape_ValueFormatTypeQualifier_HeaderFile
 
-
 #include <Standard_Transient.hxx>
 #include <Standard.hxx>
 #include <TCollection_HAsciiString.hxx>

@@ -659,7 +659,6 @@ static Standard_Integer OCC24008(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-
 //=================================================================================================
 
 static Standard_Integer OCC23945(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
@@ -4114,7 +4113,6 @@ static Standard_Integer OCC26485(Draw_Interpretor& theDI,
 }
 
 //=================================================================================================
-
 
 static Standard_Integer OCC26553(Draw_Interpretor& theDI,
                                  Standard_Integer  theArgc,
