@@ -20,7 +20,6 @@
 
 #include <Interface_GeneralModule.hxx>
 #include <Interface_Protocol.hxx>
-#include <Interface_GlobalNodeOfGeneralLib.hxx>
 #include <Standard_Transient.hxx>
 #include <Interface_GeneralLib.hxx>
 #include <Interface_NodeOfGeneralLib.hxx>

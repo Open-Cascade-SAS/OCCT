@@ -60,8 +60,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Real.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
 
 #include <cmath>

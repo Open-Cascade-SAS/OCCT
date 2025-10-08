@@ -563,7 +563,6 @@ Standard_Integer OCC165(Draw_Interpretor& di, Standard_Integer n, const char** a
 
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
 
 static Standard_Integer OCC297(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
 
@@ -906,7 +905,6 @@ static Standard_Integer OCC277bug(Draw_Interpretor& di, Standard_Integer nb, con
 
 #include <DDocStd_DrawDocument.hxx>
 #include <TDataStd_Name.hxx>
-#include <Draw.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <TDF_LabelSequence.hxx>
@@ -1757,7 +1755,6 @@ static Standard_Integer OCC902(Draw_Interpretor& di, Standard_Integer argc, cons
 
 #include <DDF.hxx>
 #include <TPrsStd_AISViewer.hxx>
-#include <TPrsStd_AISPresentation.hxx>
 
 //=======================================================================
 // function : OCC1029_AISTransparency
@@ -4727,7 +4724,6 @@ static Standard_Integer OCC12584(Draw_Interpretor& di, Standard_Integer argc, co
 
 #include <Interface_Macros.hxx>
 #include <Draw_ProgressIndicator.hxx>
-#include <XSControl_WorkSession.hxx>
 #include <Message_ProgressScope.hxx>
 
 #include <Geom_Plane.hxx>
@@ -5031,8 +5027,6 @@ Standard_Integer OCC23429(Draw_Interpretor& /*di*/, Standard_Integer narg, const
 
   return 0;
 }
-
-#include <ExprIntrp_GenExp.hxx>
 
 Standard_Integer CR23403(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {

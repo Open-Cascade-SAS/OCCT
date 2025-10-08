@@ -23,7 +23,6 @@
 
 #include <NCollection_Vector.hxx>
 #include <NCollection_Handle.hxx>
-#include <StepVisual_CoordinatesList.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 
 typedef NCollection_Vector<Handle(TColStd_HSequenceOfInteger)>

@@ -17,7 +17,6 @@
 #define TDF_AttributeDoubleMap_HeaderFile
 
 #include <TDF_Attribute.hxx>
-#include <TDF_Attribute.hxx>
 #include <NCollection_DoubleMap.hxx>
 
 typedef NCollection_DoubleMap<Handle(TDF_Attribute), Handle(TDF_Attribute)> TDF_AttributeDoubleMap;

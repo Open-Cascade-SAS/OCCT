@@ -40,9 +40,7 @@
 #include <AppParCurves_MultiPoint.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <math_Recipes.hxx>
-#include <math_Crout.hxx>
 
 static int FlatLength(const TColStd_Array1OfInteger& Mults)
 {

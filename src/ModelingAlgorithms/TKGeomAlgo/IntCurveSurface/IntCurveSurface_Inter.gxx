@@ -61,7 +61,6 @@
 #include <IntAna2d_IntPoint.hxx>
 #include <gp_Parab2d.hxx>
 #include <IntAna2d_Conic.hxx>
-#include <IntAna2d_AnaIntersection.hxx>
 #include <gp_Hypr2d.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>

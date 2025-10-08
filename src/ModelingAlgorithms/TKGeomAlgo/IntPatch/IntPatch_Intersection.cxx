@@ -234,8 +234,6 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
 #include <Extrema_POnSurf.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
-#include <Geom_Plane.hxx>
-#include <ProjLib_ProjectOnPlane.hxx>
 #include <GeomProjLib.hxx>
 #include <ElCLib.hxx>
 #include <Geom_TrimmedCurve.hxx>

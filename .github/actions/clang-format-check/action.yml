@@ -56,6 +56,24 @@ runs:
           clang-format -i -style=file $_
         }
 
+    - name: Clean up duplicate includes
+      if: steps.changed-files.outputs.has_files == 'true'
+      shell: pwsh
+      run: |
+        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
+        $files | ForEach-Object {
+          python3 .github/actions/scripts/cleanup-includes.py --files "$_"
+        }
+
+    - name: Re-run clang-format after include cleanup
+      if: steps.changed-files.outputs.has_files == 'true'
+      shell: pwsh
+      run: |
+        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
+        $files | ForEach-Object -ThrottleLimit 8 -Parallel {
+          clang-format -i -style=file $_
+        }
+
     - name: Remove empty lines after Standard_DEPRECATED
       if: steps.changed-files.outputs.has_files == 'true'
       shell: pwsh

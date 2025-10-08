@@ -19,7 +19,6 @@
 #include <Standard_Type.hxx>
 
 #include <IGESData_IGESEntity.hxx>
-#include <IGESData_FileRecognizer.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <IGESData_IGESType.hxx>
 

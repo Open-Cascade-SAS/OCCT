@@ -33,7 +33,6 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_EvolvedSection, GeomFill_SectionLaw)
 
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
-  #include <Geom_Curve.hxx>
   #include <Geom_BSplineCurve.hxx>
 static Standard_Integer NumSec = 0;
 static Standard_Boolean Affich = 0;

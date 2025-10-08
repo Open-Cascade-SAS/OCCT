@@ -58,7 +58,6 @@
 // includes especially needed by the static Project function
 #ifdef DRAW
   #include <TopOpeBRepDS_DRAW.hxx>
-  #include <Geom2d_Curve.hxx>
 #endif
 
 Standard_EXPORT Handle(Geom2d_Curve) BASISCURVE2D(const Handle(Geom2d_Curve)& C);

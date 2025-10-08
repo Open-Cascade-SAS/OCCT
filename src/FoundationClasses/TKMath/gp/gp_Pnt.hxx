@@ -251,7 +251,6 @@ struct equal_to<gp_Pnt>
 
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <gp_XYZ.hxx>
 
 //=================================================================================================
 

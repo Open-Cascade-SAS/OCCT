@@ -77,7 +77,6 @@ static Standard_Integer NbSections = 0;
 
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
-  #include <Geom_Curve.hxx>
 #endif
 
 static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,

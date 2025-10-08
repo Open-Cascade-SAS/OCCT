@@ -20,7 +20,6 @@
 #include <Standard_Handle.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <Transfer_ActorOfProcessForFinder.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_Finder.hxx>
 #include <Transfer_FindHasher.hxx>
