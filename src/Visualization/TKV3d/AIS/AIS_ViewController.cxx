@@ -1673,10 +1673,10 @@ void AIS_ViewController::handleOrbitRotation(const Handle(V3d_View)& theView,
       const double aCurrentPitch = asin(-myCamStartOpDir.Z()); // Negative Z for proper orientation
 
       // Clamp to +-89 degrees (leave 1 degree margin)
-      const double aPitchAngleNew =
-        Max(Min(aCurrentPitch + aPitchAngleDelta, M_PI * 0.5 - M_PI / 180.0),
-            -M_PI * 0.5 + M_PI / 180.0);
-      aPitchAngleDelta = aPitchAngleNew - aCurrentPitch; // Use clamped delta
+      const double aPitchAngleNew = std::clamp(aCurrentPitch + aPitchAngleDelta,
+                                               -M_PI * 0.5 + M_PI / 180.0,
+                                               M_PI * 0.5 - M_PI / 180.0);
+      aPitchAngleDelta            = aPitchAngleNew - aCurrentPitch; // Use clamped delta
     }
 
     // Apply transformations only when needed
@@ -1849,11 +1849,11 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   aPitchAngleDelta += thePitchExtra;
 
   // Clamp pitch to prevent gimbal lock
-  const double aCurrentPitch = asin(-myCamStartOpDir.Z());
-  const double aPitchAngleClamped =
-    Max(Min(aCurrentPitch + aPitchAngleDelta, M_PI * 0.5 - M_PI / 180.0),
-        -M_PI * 0.5 + M_PI / 180.0);
-  aPitchAngleDelta = aPitchAngleClamped - aCurrentPitch;
+  const double aCurrentPitch      = asin(-myCamStartOpDir.Z());
+  const double aPitchAngleClamped = std::clamp(aCurrentPitch + aPitchAngleDelta,
+                                               -M_PI * 0.5 + M_PI / 180.0,
+                                               M_PI * 0.5 - M_PI / 180.0);
+  aPitchAngleDelta                = aPitchAngleClamped - aCurrentPitch;
 
   // Apply yaw and pitch transformations to stored camera vectors
   gp_Dir aBaseUp  = myCamStartOpUp;
