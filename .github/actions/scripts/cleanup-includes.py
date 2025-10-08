@@ -174,11 +174,10 @@ def main():
     args = parser.parse_args()
 
     if args.files:
-        # Process specific files
+        # Process specific files (single file mode - minimal output)
         files = [os.path.abspath(f) for f in args.files if os.path.isfile(f)]
-        print(f"Processing {len(files)} specific files")
     else:
-        # Scan directory
+        # Scan directory (batch mode - verbose output)
         root_dir = os.path.abspath(args.path)
 
         if not os.path.isdir(root_dir):
@@ -196,6 +195,7 @@ def main():
     total_modified = 0
     total_duplicates = 0
     total_self_includes = 0
+    single_file_mode = len(files) == 1
 
     for filepath in sorted(files):
         modified, duplicates, self_include = process_file(filepath, args.dry_run)
@@ -206,23 +206,26 @@ def main():
             if self_include:
                 total_self_includes += 1
 
-            print(f"Modified: {filepath}")
-            if duplicates > 0:
-                print(f"  - Removed {duplicates} duplicate include(s)")
-            if self_include:
-                print(f"  - Removed self-include")
-            print()
+            if not single_file_mode:
+                print(f"Modified: {filepath}")
+                if duplicates > 0:
+                    print(f"  - Removed {duplicates} duplicate include(s)")
+                if self_include:
+                    print(f"  - Removed self-include")
+                print()
 
-    print("\n" + "="*70)
-    print("SUMMARY")
-    print("="*70)
-    print(f"Files processed: {len(files)}")
-    print(f"Files modified: {total_modified}")
-    print(f"Duplicate includes removed: {total_duplicates}")
-    print(f"Files with self-includes fixed: {total_self_includes}")
+    # Only show summary in batch mode
+    if not single_file_mode:
+        print("\n" + "="*70)
+        print("SUMMARY")
+        print("="*70)
+        print(f"Files processed: {len(files)}")
+        print(f"Files modified: {total_modified}")
+        print(f"Duplicate includes removed: {total_duplicates}")
+        print(f"Files with self-includes fixed: {total_self_includes}")
 
-    if args.dry_run:
-        print("\nThis was a dry run. Use without --dry-run to apply changes.")
+        if args.dry_run:
+            print("\nThis was a dry run. Use without --dry-run to apply changes.")
 
     return 0
 
