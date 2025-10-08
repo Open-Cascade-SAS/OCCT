@@ -61,8 +61,9 @@ runs:
       shell: pwsh
       run: |
         $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
-        $filesString = ($files | ForEach-Object { "`"$_`"" }) -join " "
-        python3 .github/actions/scripts/cleanup-includes.py --files $filesString
+        $files | ForEach-Object {
+          python3 .github/actions/scripts/cleanup-includes.py --files "$_"
+        }
 
     - name: Re-run clang-format after include cleanup
       if: steps.changed-files.outputs.has_files == 'true'
