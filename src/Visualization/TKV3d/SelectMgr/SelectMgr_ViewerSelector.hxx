@@ -27,7 +27,6 @@
 #include <SelectMgr_StateOfSelection.hxx>
 #include <SelectMgr_ToleranceMap.hxx>
 #include <SelectMgr_TypeOfDepthTolerance.hxx>
-#include <SelectMgr_ViewerSelector.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Transient.hxx>
 #include <StdSelect_TypeOfSelectionImage.hxx>

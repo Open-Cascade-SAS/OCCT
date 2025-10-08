@@ -35,8 +35,6 @@
 #include <STEPEdit.hxx>
 #include <STEPEdit_EditContext.hxx>
 #include <STEPEdit_EditSDR.hxx>
-#include <STEPControl_ActorRead.hxx>
-#include <StepData_StepModel.hxx>
 #include <StepSelect_WorkLibrary.hxx>
 #include <STEPSelections_SelectAssembly.hxx>
 #include <STEPSelections_SelectDerived.hxx>

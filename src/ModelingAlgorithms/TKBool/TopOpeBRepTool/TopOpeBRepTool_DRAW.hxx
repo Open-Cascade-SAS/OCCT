@@ -26,7 +26,6 @@
   #include <TopOpeBRepTool_define.hxx>
   #include <Geom_Curve.hxx>
   #include <Geom2d_Curve.hxx>
-  #include <TopOpeBRepTool_define.hxx>
 
 Standard_EXPORT void           TopOpeBRepTool_DrawPoint(const gp_Pnt&          P,
                                                         const Draw_MarkerShape T,

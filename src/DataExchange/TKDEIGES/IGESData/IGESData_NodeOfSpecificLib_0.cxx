@@ -19,7 +19,6 @@
 #include <Standard_Type.hxx>
 
 #include <IGESData_GlobalNodeOfSpecificLib.hxx>
-#include <IGESData_NodeOfSpecificLib.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_SpecificModule.hxx>
 #include <IGESData_Protocol.hxx>

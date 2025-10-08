@@ -3159,7 +3159,6 @@ Standard_Boolean IsSameGuid(const Standard_GUID& aGuidNull, const Standard_GUID&
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_IntegerList.hxx>
-#include <TDataStd_Name.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TDataStd_RealList.hxx>

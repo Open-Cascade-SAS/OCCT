@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Type.hxx>
 #include <IFSelect_SelectAnyType.hxx>
 class TCollection_AsciiString;
 

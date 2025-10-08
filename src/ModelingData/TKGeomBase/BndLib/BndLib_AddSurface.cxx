@@ -17,7 +17,6 @@
 //  Modified by skv - Fri Aug 27 12:29:04 2004 OCC6503
 
 #include <Adaptor3d_Surface.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib.hxx>
 #include <BndLib_AddSurface.hxx>

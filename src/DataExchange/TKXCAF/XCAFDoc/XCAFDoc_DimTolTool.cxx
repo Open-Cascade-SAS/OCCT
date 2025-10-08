@@ -31,7 +31,6 @@
 #include <XCAFDoc_GeomTolerance.hxx>
 #include <XCAFDoc_Datum.hxx>
 #include <XCAFDoc_DimTol.hxx>
-#include <XCAFDoc_DimTolTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_ShapeTool.hxx>

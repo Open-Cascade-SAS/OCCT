@@ -16,7 +16,6 @@
 #ifndef _StepDimTol_ToleranceZoneForm_HeaderFile
 #define _StepDimTol_ToleranceZoneForm_HeaderFile
 
-#include <StepDimTol_ToleranceZoneForm.hxx>
 
 #include <Standard_Transient.hxx>
 #include <Standard.hxx>

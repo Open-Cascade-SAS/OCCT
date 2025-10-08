@@ -67,7 +67,6 @@
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <StepVisual_ContextDependentOverRidingStyledItem.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
 
 namespace
 {

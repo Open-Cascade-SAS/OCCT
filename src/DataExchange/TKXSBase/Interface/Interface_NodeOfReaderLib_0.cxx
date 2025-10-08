@@ -19,7 +19,6 @@
 #include <Standard_Type.hxx>
 
 #include <Interface_GlobalNodeOfReaderLib.hxx>
-#include <Interface_NodeOfReaderLib.hxx>
 #include <Standard_Transient.hxx>
 #include <Interface_ReaderModule.hxx>
 #include <Interface_Protocol.hxx>

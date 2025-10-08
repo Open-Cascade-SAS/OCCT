@@ -390,10 +390,6 @@ Standard_Integer OSD_FileNode::Error() const
   #endif
   #include <windows.h>
 
-  #include <OSD_FileNode.hxx>
-  #include <OSD_Protection.hxx>
-  #include <Quantity_Date.hxx>
-  #include <Standard_ProgramError.hxx>
   #include <TCollection_ExtendedString.hxx>
 
   #include <OSD_WNT.hxx>

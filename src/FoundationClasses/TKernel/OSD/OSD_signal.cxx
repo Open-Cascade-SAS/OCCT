@@ -759,7 +759,6 @@ ACT_SIGIO_HANDLER* ADR_ACT_SIGIO_HANDLER = NULL;
 
   #ifdef __GNUC__
     #include <stdlib.h>
-    #include <stdio.h>
   #else
     #ifdef SA_SIGINFO
       #include <sys/siginfo.h>
@@ -767,7 +766,6 @@ ACT_SIGIO_HANDLER* ADR_ACT_SIGIO_HANDLER = NULL;
   #endif
 typedef void (*SIG_PFV)(int);
 
-  #include <signal.h>
 
   #if !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && defined(__GLIBC__)
     #include <sys/signal.h>

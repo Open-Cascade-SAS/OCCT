@@ -18,7 +18,6 @@
 
 #include <Standard_Type.hxx>
 
-#include <MAT_TListNodeOfListOfEdge.hxx>
 #include <MAT_Edge.hxx>
 #include <MAT_ListOfEdge.hxx>
 

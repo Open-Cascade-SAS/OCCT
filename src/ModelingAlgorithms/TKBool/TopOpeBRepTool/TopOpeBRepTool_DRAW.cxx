@@ -33,7 +33,6 @@
   #include <Geom_TrimmedCurve.hxx>
   #include <Geom2d_Line.hxx>
   #include <Geom2d_TrimmedCurve.hxx>
-  #include <BRep_Tool.hxx>
   #include <TopExp_Explorer.hxx>
   #include <TopOpeBRepTool_DRAW.hxx>
 

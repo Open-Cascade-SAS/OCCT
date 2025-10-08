@@ -35,8 +35,6 @@ void RWStepVisual_RWPresentationLayerUsage::ReadStep(
     return;
 
   // --- own fields
-#include <StepVisual_PresentationLayerAssignment.hxx>
-#include <StepVisual_PresentationRepresentation.hxx>
   Handle(StepVisual_PresentationLayerAssignment) pla;
   Handle(StepVisual_PresentationRepresentation)  pr;
 

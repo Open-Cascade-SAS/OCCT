@@ -378,6 +378,5 @@ public:
   friend class IteratorOfLink;
 };
 
-#include <Poly_CoherentTriangulation.hxx>
 
 #endif

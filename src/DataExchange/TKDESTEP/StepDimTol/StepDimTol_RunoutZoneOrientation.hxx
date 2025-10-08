@@ -16,7 +16,6 @@
 #ifndef _StepDimTol_RunoutZoneOrientation_HeaderFile
 #define _StepDimTol_RunoutZoneOrientation_HeaderFile
 
-#include <StepDimTol_RunoutZoneOrientation.hxx>
 
 #include <Standard_Transient.hxx>
 #include <Standard.hxx>

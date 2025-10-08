@@ -69,8 +69,6 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ColoredShape.hxx>
-#include <AIS_DisplayMode.hxx>
-#include <AIS_Shape.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <Geom_Plane.hxx>
@@ -83,7 +81,6 @@
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_Axis1Placement.hxx>
 #include <AIS_Trihedron.hxx>
-#include <AIS_Axis.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Quaternion.hxx>
 #include <TopLoc_Location.hxx>
@@ -125,7 +122,6 @@
 #include <AIS_MultipleConnectedInteractive.hxx>
 #include <AIS_ConnectedInteractive.hxx>
 #include <AIS_TextLabel.hxx>
-#include <TopLoc_Location.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
@@ -133,7 +129,6 @@
 #include <Select3D_SensitivePrimitiveArray.hxx>
 #include <Select3D_SensitivePoint.hxx>
 #include <Select3D_SensitivePoly.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <StdPrs_Curve.hxx>
 
 #include <BRepExtrema_ExtPC.hxx>
@@ -910,8 +905,6 @@ static int VPlaneTrihedron(Draw_Interpretor& di, Standard_Integer argc, const ch
 // Draw arg : vaxis AxisName Xa Ya Za Xb Yb Zb
 //==============================================================================
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopExp.hxx>
 #include <Geom_Line.hxx>
 
 static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -1087,9 +1080,6 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 
 //=================================================================================================
 
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopExp.hxx>
 #include <AIS_Point.hxx>
 #include <Geom_CartesianPoint.hxx>
 
@@ -1853,7 +1843,6 @@ static int VChangePlane(Draw_Interpretor& /*theDi*/,
 // Draw arg : vline LineName  [AIS_PointName] [AIS_PointName]
 //                           [Xa] [Ya] [Za]   [Xb] [Yb] [Zb]
 //==============================================================================
-#include <Geom_CartesianPoint.hxx>
 #include <AIS_Line.hxx>
 
 static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -2720,9 +2709,7 @@ static int VDrawText(Draw_Interpretor& theDI, Standard_Integer theArgsNb, const 
 
 #include <math.h>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPrimitives.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
@@ -2743,9 +2730,6 @@ static int VDrawText(Draw_Interpretor& theDI, Standard_Integer theArgsNb, const 
 #include <Graphic3d_AspectFillArea3d.hxx>
 
 #include <BRepPrimAPI_MakeCylinder.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopAbs.hxx>
 #include <AIS_InteractiveObject.hxx>
 
 //===============================================================================================

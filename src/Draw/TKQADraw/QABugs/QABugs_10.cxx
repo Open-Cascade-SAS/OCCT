@@ -311,7 +311,6 @@ static Standard_Integer OCC486(Draw_Interpretor& di, Standard_Integer argc, cons
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <TopoDS_Wire.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>

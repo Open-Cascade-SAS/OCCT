@@ -562,7 +562,6 @@ static Standard_Integer OCC23683(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-#include <gp_Ax1.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom2d_Circle.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
@@ -660,7 +659,6 @@ static Standard_Integer OCC24008(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-#include <Draw.hxx>
 
 //=================================================================================================
 
@@ -2981,7 +2979,6 @@ static Standard_Integer OCC25413(Draw_Interpretor& di, Standard_Integer narg, co
 //
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 //
 #include <TopExp.hxx>
@@ -3983,7 +3980,6 @@ static Standard_Integer OCC26448(Draw_Interpretor& theDI, Standard_Integer, cons
 
 //=================================================================================================
 
-#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -4119,7 +4115,6 @@ static Standard_Integer OCC26485(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-#include <BRepBuilderAPI_MakeWire.hxx>
 
 static Standard_Integer OCC26553(Draw_Interpretor& theDI,
                                  Standard_Integer  theArgc,
@@ -4388,7 +4383,6 @@ static Standard_Integer OCC26313(Draw_Interpretor& di, Standard_Integer n, const
 // function : OCC26525
 // purpose  : check number of intersection points
 //=======================================================================
-#include <BRepAdaptor_Curve.hxx>
 #include <IntCurveSurface_HInter.hxx>
 
 Standard_Integer OCC26525(Draw_Interpretor& di, Standard_Integer n, const char** a)
@@ -4705,7 +4699,6 @@ static Standard_Integer OCC24537(Draw_Interpretor& theDI, Standard_Integer argc,
   return 0;
 }
 
-#include <TopExp.hxx>
 #include <BRepOffsetAPI_DraftAngle.hxx>
 #include <vector>
 

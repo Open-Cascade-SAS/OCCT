@@ -1270,10 +1270,6 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule
 #include <StepDimTol_CommonDatum.hxx>
 #include <StepDimTol_DatumTarget.hxx>
 #include <StepDimTol_PlacedDatumTargetFeature.hxx>
-#include <StepRepr_ValueRange.hxx>
-#include <StepRepr_CompositeShapeAspect.hxx>
-#include <StepRepr_DerivedShapeAspect.hxx>
-#include <StepRepr_Extension.hxx>
 #include "../RWStepRepr/RWStepRepr_RWCompositeShapeAspect.pxx"
 #include "../RWStepRepr/RWStepRepr_RWDerivedShapeAspect.pxx"
 #include "../RWStepRepr/RWStepRepr_RWExtension.pxx"

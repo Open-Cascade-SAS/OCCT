@@ -33,7 +33,6 @@
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomLib_IsPlanarSurface.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
