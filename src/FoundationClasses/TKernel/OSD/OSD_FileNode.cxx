@@ -12,20 +12,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <OSD_FileNode.hxx>
+
+#include <OSD_Protection.hxx>
+#include <Quantity_Date.hxx>
+#include <Standard_ProgramError.hxx>
+
 #ifndef _WIN32
 
 //----------------------------------------------------------------------------
 //------------------- Linux Sources of OSD_FileNode --------------------------
 //----------------------------------------------------------------------------
 
-  #include <OSD_FileNode.hxx>
   #include <OSD_OSDError.hxx>
   #include <OSD_Path.hxx>
-  #include <OSD_Protection.hxx>
   #include <OSD_WhoAmI.hxx>
-  #include <Quantity_Date.hxx>
   #include <Standard_NullObject.hxx>
-  #include <Standard_ProgramError.hxx>
 
   #include <errno.h>
   #include <fcntl.h>

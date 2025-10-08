@@ -37,7 +37,7 @@ def process_file(filepath: str, dry_run: bool = False) -> Tuple[bool, int, bool]
     include_pattern = re.compile(r'^\s*#\s*include\s+[<"]([^>"]+)[>"]')
     preprocessor_pattern = re.compile(r'^\s*#\s*(if|ifdef|ifndef|elif|else|endif)')
 
-    ifdef_stack = [set()]  # Stack of seen includes per preprocessor scope
+    ifdef_stack = [set()]  # Stack of tuples: (parent_scope_includes, current_branch_includes)
     new_lines = []
     duplicates_removed = 0
     had_self_include = False
@@ -74,11 +74,13 @@ def process_file(filepath: str, dry_run: bool = False) -> Tuple[bool, int, bool]
                 if len(ifdef_stack) > 1:
                     ifdef_stack.pop()
             elif directive in ('elif', 'else'):
-                # Reset current scope to parent scope (alternative branches)
+                # Alternative branches - reset to empty scope (don't inherit sibling branch)
+                # Only keep includes from before the entire #if block started
                 if len(ifdef_stack) > 1:
-                    parent_includes = ifdef_stack[-2].copy()
-                    ifdef_stack[-1] = parent_includes
-                elif len(ifdef_stack) == 1:
+                    # Get the scope from before this #if block (grandparent)
+                    grandparent_includes = ifdef_stack[-2].copy() if len(ifdef_stack) > 1 else set()
+                    ifdef_stack[-1] = grandparent_includes
+                else:
                     ifdef_stack[-1] = set()
             new_lines.append(line)
             continue

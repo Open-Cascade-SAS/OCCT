@@ -12,14 +12,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <OSD_FileIterator.hxx>
+
+#include <OSD_Path.hxx>
+#include <TCollection_AsciiString.hxx>
+
 #ifndef _WIN32
 
   #include <OSD_File.hxx>
-  #include <OSD_FileIterator.hxx>
   #include <OSD_OSDError.hxx>
-  #include <OSD_Path.hxx>
   #include <OSD_WhoAmI.hxx>
-  #include <TCollection_AsciiString.hxx>
 
   #include <dirent.h>
   #include <stdio.h>
