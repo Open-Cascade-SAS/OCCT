@@ -15,6 +15,7 @@
 
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <BinMXCAFDoc_AssemblyItemRefDriver.hxx>
 #include <XCAFDoc_AssemblyItemRef.hxx>
