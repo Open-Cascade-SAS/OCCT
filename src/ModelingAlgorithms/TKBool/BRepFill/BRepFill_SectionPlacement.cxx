@@ -40,10 +40,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
-#ifdef OCCT_DEBUG
-static Standard_Boolean myDebug = Standard_False;
-#endif
-
 static Standard_Real SearchParam(const Handle(BRepFill_LocationLaw)& Law,
                                  const Standard_Integer              Ind,
                                  const TopoDS_Vertex&                TheV)
@@ -91,282 +87,174 @@ void BRepFill_SectionPlacement::Perform(const Standard_Boolean WithContact,
                                         const Standard_Boolean WithCorrection,
                                         const TopoDS_Shape&    Vertex)
 {
-  TopoDS_Vertex TheV;
-  TheV = TopoDS::Vertex(Vertex);
-  Standard_Integer          ii;
-  Standard_Integer          Ind1 = 0, Ind2 = 0;
-  Standard_Boolean          Bof, isVertex  = Standard_False;
-  Standard_Real             First = 0., Last = 0.;
-  TopExp_Explorer           Ex;
-  TopoDS_Edge               E;
-  TopoDS_Vertex             V;
-  Handle(Geom_Curve)        C;
-  Handle(Geom_TrimmedCurve) TC;
+  Standard_Real      anEdgeStartParam = 0.;
+  Standard_Real      anEdgeEndParam   = 0.;
+  Handle(Geom_Curve) aCurve;
 
-  // modified by NIZHNY-OCC629  Thu Jul 24 14:11:45 2003
-  Standard_Boolean isFound = Standard_False;
-  Ex.Init(mySection, TopAbs_EDGE);
-  for (; Ex.More(); Ex.Next())
+  // Here we are simply looking for the first valid curve in the section.
+  TopExp_Explorer anEdgeExplorer(mySection, TopAbs_EDGE);
+  for (; anEdgeExplorer.More(); anEdgeExplorer.Next())
   {
-    E = TopoDS::Edge(Ex.Current());
-    // avoid null, degenerated edges
-    if (E.IsNull() || BRep_Tool::Degenerated(E))
+    const TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExplorer.Current());
+    if (anEdge.IsNull() || BRep_Tool::Degenerated(anEdge))
       continue;
-    C = BRep_Tool::Curve(E, First, Last);
-    if (C.IsNull())
+
+    aCurve = BRep_Tool::Curve(anEdge, anEdgeStartParam, anEdgeEndParam);
+    if (aCurve.IsNull())
       continue;
-    isFound = Standard_True;
+
     break;
   }
-  if (!isFound)
-    isVertex = Standard_True;
+
+  Handle(Geom_Geometry) aSection;
+  if (aCurve.IsNull())
+  {
+    // No edge found : the section is a vertex
+    TopExp_Explorer     aVertexExplorer(mySection, TopAbs_VERTEX);
+    const TopoDS_Vertex aFirstVertex = TopoDS::Vertex(aVertexExplorer.Current());
+    const gp_Pnt        aPoint       = BRep_Tool::Pnt(aFirstVertex);
+    aSection                         = new Geom_CartesianPoint(aPoint);
+  }
   else
   {
-    TC = new (Geom_TrimmedCurve)(C, First, Last);
-    Ex.Next();
+    Handle(Geom_TrimmedCurve) aTrimmedCurve =
+      new Geom_TrimmedCurve(aCurve, anEdgeStartParam, anEdgeEndParam);
+    anEdgeExplorer.Next();
 
-    if (Ex.More())
+    if (anEdgeExplorer.More())
     {
-      Standard_Real                       tolrac, epsV;
-      constexpr Standard_Real             tol = Precision::Confusion();
-      GeomConvert_CompCurveToBSplineCurve Conv(TC);
-      for (; Ex.More(); Ex.Next())
+      constexpr Standard_Real             aPrecisionTolerance = Precision::Confusion();
+      GeomConvert_CompCurveToBSplineCurve aBSplineConverter(aTrimmedCurve);
+      for (; anEdgeExplorer.More(); anEdgeExplorer.Next())
       {
-        E = TopoDS::Edge(Ex.Current());
+        TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExplorer.Current());
         // avoid null, degenerated edges
-        if (E.IsNull() || BRep_Tool::Degenerated(E))
+        if (anEdge.IsNull() || BRep_Tool::Degenerated(anEdge))
           continue;
-        TopoDS_Vertex VFirst, VLast;
-        TopExp::Vertices(E, VFirst, VLast);
-        epsV = Max(BRep_Tool::Tolerance(VFirst), BRep_Tool::Tolerance(VLast));
-        C    = BRep_Tool::Curve(E, First, Last);
-        if (C.IsNull())
+
+        aCurve = BRep_Tool::Curve(anEdge, anEdgeStartParam, anEdgeEndParam);
+        if (aCurve.IsNull())
           continue;
-        TC     = new (Geom_TrimmedCurve)(C, First, Last);
-        tolrac = Min(tol, epsV);
-        Bof    = Conv.Add(TC, tolrac);
-        if (!Bof)
+
+        TopoDS_Vertex aFirstVertex;
+        TopoDS_Vertex aLastVertex;
+        TopExp::Vertices(anEdge, aFirstVertex, aLastVertex);
+        const Standard_Real aVertexTolerance =
+          Max(BRep_Tool::Tolerance(aFirstVertex), BRep_Tool::Tolerance(aLastVertex));
+
+        aTrimmedCurve = new Geom_TrimmedCurve(aCurve, anEdgeStartParam, anEdgeEndParam);
+        if (!aBSplineConverter.Add(aTrimmedCurve, Min(aPrecisionTolerance, aVertexTolerance)))
         {
-          tolrac = Max(tol, epsV);
-          Bof    = Conv.Add(TC, tolrac);
+          aBSplineConverter.Add(aTrimmedCurve, Max(aPrecisionTolerance, aVertexTolerance));
         }
       }
-      C = Conv.BSplineCurve();
+      aCurve = aBSplineConverter.BSplineCurve();
     }
     else
-      C = TC; // On garde l'unique courbe
-  }
-
-  // modified by NIZHNY-629  Fri Jul 25 11:10:27 2003 b
-
-  //   // punctual section
-  //  Ex.Init(mySection, TopAbs_EDGE);
-  //   Standard_Boolean isPonctual = Standard_False;
-  //  if (Ex.More()) {
-  //    E = TopoDS::Edge(Ex.Current());
-  //    isPonctual = BRep_Tool::Degenerated(E);
-  //  }
-
-  //   Ex.Init(mySection, TopAbs_EDGE);
-  //   if (Ex.More()&&!isPonctual) {
-  //     E = TopoDS::Edge(Ex.Current());
-  //     C = BRep_Tool::Curve(E, First, Last);
-  //     TC = new (Geom_TrimmedCurve)(C, First, Last);
-  //     Ex.Next();
-  //     if (Ex.More()) { // On essai d'avoir un echantillon representatif
-  //       Standard_Real tolrac, epsV, tol = Precision::Confusion();
-  //       GeomConvert_CompCurveToBSplineCurve Conv(TC);
-  //       for (; Ex.More(); Ex.Next()) {
-  // 	E = TopoDS::Edge(Ex.Current());
-  // 	TopoDS_Vertex VFirst, VLast;
-  // 	TopExp::Vertices(E,VFirst, VLast);
-  // 	epsV = Max(BRep_Tool::Tolerance(VFirst), BRep_Tool::Tolerance(VLast));
-  // 	C = BRep_Tool::Curve(E, First, Last);
-  // 	TC = new (Geom_TrimmedCurve)(C, First, Last);
-  // 	tolrac = Min(tol,epsV);
-  // 	Bof = Conv.Add(TC, tolrac);
-  // 	if (!Bof) {
-  // 	  tolrac = Max(tol,epsV);
-  // 	  Bof = Conv.Add(TC, tolrac);
-  // 	}
-  //       }
-  //       C = Conv.BSplineCurve();
-  //     }
-  //     else C = TC; // On garde l'unique courbe
-  //   }
-  //   else {
-  //     // Localisation par distance Shape/Shape
-  //     Standard_Real Tpos;
-  //     BRepExtrema_DistShapeShape Ext(mySection, myLaw->Wire());
-
-  //     if (! Ext.IsDone())
-  //        throw Standard_ConstructionError("Distance Vertex/Spine");
-
-  //     if (Ext.SupportTypeShape2(1) == BRepExtrema_IsOnEdge) {
-  //       TopoDS_Shape sbis = Ext.SupportOnShape2(1);
-  //       E = TopoDS::Edge(sbis);
-  //       Ext.ParOnEdgeS2(1, Tpos);
-  //     }
-  //     else {
-  //       TopoDS_Vertex Vf, Vl,V;
-  //       TopoDS_Shape sbis = Ext.SupportOnShape2(1);
-  //       V = TopoDS::Vertex(sbis);
-  //       for (ii=1, Ind1=0 ; ii<=myLaw->NbLaw(); ii++) {
-  // 	E = myLaw->Edge(ii);
-  // 	TopExp::Vertices(E, Vf, Vl);
-  // 	if ((V.IsSame(Vf)) || (V.IsSame(Vl))) {
-  // 	  if (Ind1 == 0) Ind1 = ii;
-  // 	  else Ind2 = ii;
-  // 	}
-  //       }
-
-  //       // On invente une section
-  //       gp_Dir D(0, 0, 1);
-  //       gp_Pnt Origine, PV;
-  //       Origine = BRep_Tool::Pnt(V);
-  //       Standard_Real length;
-
-  //       if (Ext.SupportTypeShape1(1) == BRepExtrema_IsVertex) {
-  // 	TopoDS_Shape aLocalShape = Ext.SupportOnShape1(1);
-  //         PV = BRep_Tool::Pnt(TopoDS::Vertex(aLocalShape));
-  // //        PV = BRep_Tool::Pnt(TopoDS::Vertex(Ext.SupportOnShape1(1)));
-  //       }
-  //       else {
-  //         PV = BRep_Tool::Pnt(TopoDS::Vertex(mySection));
-  //       }
-  //       length = Origine.Distance(PV);
-  //       if (length > Precision::Confusion()) {
-  // 	gp_Vec theVec(Origine, PV);
-  // 	D.SetXYZ(theVec.XYZ());
-  //       }
-  //       else length = 10*Precision::Confusion();
-  //       Handle(Geom_Line) CL = new (Geom_Line) (Origine, D);
-  //       TC = new (Geom_TrimmedCurve)(CL, 0., length);
-  //       C = TC;
-  //       isVertex = Standard_True;
-  //     }
-  //   }
-
-  //   // Recherche du Vertex de positionnement
-  //   if (!TheV.IsNull()) {
-  //     Standard_Integer NbV = myLaw->NbLaw()+1;
-  //     for (ii=1, Ind1=0; ii<=NbV && (!Ind1); ii++)
-  //       if (TheV.IsSame(myLaw->Vertex(ii))) Ind1 = ii;
-
-  //     if (Ind1 != 0) {
-  //       Ind2 =0;
-  //       isVertex = Standard_True;
-  //       if (Ind1==1) {
-  // 	if (myLaw->IsClosed()) Ind2 =  NbV-1;
-  //       }
-  //       else {
-  // 	Ind1--;
-  // 	if (Ind1 < NbV-1)
-  // 	  Ind2 = Ind1+1;
-  //       }
-  //     }
-  //     else {
-  //       TheV.Nullify(); // On oublie cette option...
-  //     }
-  //   }
-
-  // modified by NIZHNY-629  Fri Jul 25 11:11:06 2003 e
-
-  // Construction
-  Handle(Geom_Geometry) theSection = C;
-  if (isVertex)
-  {
-    Ex.Init(mySection, TopAbs_VERTEX);
-    TopoDS_Vertex theVertex = TopoDS::Vertex(Ex.Current());
-    gp_Pnt        thePoint  = BRep_Tool::Pnt(theVertex);
-    theSection              = new Geom_CartesianPoint(thePoint);
-  }
-
-  GeomFill_SectionPlacement Place(myLaw->Law(1), theSection);
-
-  // In the general case : Localisation via concatenation of the spine
-  TColStd_Array1OfReal SuperKnot(1, myLaw->NbLaw() + 1);
-  for (ii = 1; ii <= myLaw->NbLaw(); ii++)
-  {
-    SuperKnot(ii + 1) = ii;
-  }
-  SuperKnot(1) = 0;
-
-  Handle(BRepAdaptor_CompCurve) adpPath = new (BRepAdaptor_CompCurve)(myLaw->Wire());
-
-  Place.Perform(adpPath, Precision::Confusion());
-
-  Standard_Real           theParam = Place.ParameterOnPath();
-  constexpr Standard_Real eps      = Precision::PConfusion();
-
-#ifdef OCCT_DEBUG
-  if (myDebug)
-  {
-    gp_Pnt P_Path;
-    P_Path = adpPath->Value(theParam);
-    std::cout << "Point on Path" << P_Path.X() << ", " << P_Path.Y() << ", " << P_Path.Z() << ", "
-              << std::endl;
-  }
-#endif
-
-  for (ii = 1, Bof = Standard_True; ii <= myLaw->NbLaw() && Bof; ii++)
-  {
-    Bof = !((SuperKnot(ii) - eps <= theParam) && (SuperKnot(ii + 1) + eps >= theParam));
-    if (!Bof)
     {
-      Ind1 = ii;
-      if ((Abs(theParam - SuperKnot(ii)) < eps) && (ii > 1))
-        Ind2 = ii - 1;
-      else if ((Abs(theParam - SuperKnot(ii + 1)) < eps) && (ii < myLaw->NbLaw()))
-        Ind2 = ii + 1;
+      aCurve = aTrimmedCurve;
+    }
+
+    aSection = aCurve;
+  }
+
+  GeomFill_SectionPlacement     aSectionPlacement(myLaw->Law(1), aSection);
+  Handle(BRepAdaptor_CompCurve) aWireAdaptor = new BRepAdaptor_CompCurve(myLaw->Wire());
+  aSectionPlacement.Perform(aWireAdaptor, Precision::Confusion());
+
+  const Standard_Real     aSectionParam   = aSectionPlacement.ParameterOnPath();
+  constexpr Standard_Real aParamConfusion = Precision::PConfusion();
+
+  Standard_Integer aLawIndex1 = 0;
+  Standard_Integer aLawIndex2 = 0;
+  // In the general case : Localisation via concatenation of the spine
+  Standard_Boolean anIsIntervalFound = Standard_False;
+  for (int aLawIndex = 1; aLawIndex <= myLaw->NbLaw() && !anIsIntervalFound; ++aLawIndex)
+  {
+    const Standard_Real aCurrKnotParam = aLawIndex - 1;
+    const Standard_Real aNextKnotParam = aLawIndex;
+
+    // Check if the section parameter is in the interval [aCurrKnotParam, aNextKnotParam]
+    anIsIntervalFound = (aCurrKnotParam - aParamConfusion <= aSectionParam)
+                        && (aNextKnotParam + aParamConfusion >= aSectionParam);
+    if (!anIsIntervalFound)
+    {
+      continue;
+    }
+
+    aLawIndex1 = aLawIndex;
+    if ((Abs(aSectionParam - aCurrKnotParam) < aParamConfusion) && (aLawIndex > 1))
+    {
+      aLawIndex2 = aLawIndex - 1;
+    }
+    else if ((Abs(aSectionParam - aNextKnotParam) < aParamConfusion)
+             && (aLawIndex < myLaw->NbLaw()))
+    {
+      aLawIndex2 = aLawIndex + 1;
     }
   }
 
-  if (Bof)
-    throw Standard_ConstructionError("Interval non trouve !!");
+  if (!anIsIntervalFound)
+  {
+    throw Standard_ConstructionError("Interval is not found");
+  }
+
   // Search of the <Ind1> by vertex <TheV>
-  if (!TheV.IsNull())
-    for (Ind1 = 1; Ind1 <= myLaw->NbLaw(); Ind1++)
+  bool          anIsVertexOnLaw = false;
+  TopoDS_Vertex aVertex         = TopoDS::Vertex(Vertex);
+  if (!aVertex.IsNull())
+  {
+    for (int aCurrentLawIndex = 1; aCurrentLawIndex <= myLaw->NbLaw(); ++aCurrentLawIndex)
     {
-      TopoDS_Edge   anEdge = myLaw->Edge(Ind1);
+      TopoDS_Edge   anEdge = myLaw->Edge(aCurrentLawIndex);
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(anEdge, V1, V2);
-      if (V1.IsSame(TheV) || V2.IsSame(TheV))
+      if (V1.IsSame(aVertex) || V2.IsSame(aVertex))
+      {
+        anIsVertexOnLaw = true;
+        aLawIndex1      = aCurrentLawIndex;
+        aLawIndex2      = 0;
         break;
+      }
     }
+  }
   ////////////////////
 
   // Positioning on the localized edge (or 2 Edges)
-  Standard_Real Angle;
-  Place.SetLocation(myLaw->Law(Ind1));
-  if (TheV.IsNull())
-    Place.Perform(Precision::Confusion());
+
+  aSectionPlacement.SetLocation(myLaw->Law(aLawIndex1));
+  if (!anIsVertexOnLaw)
+  {
+    aSectionPlacement.Perform(Precision::Confusion());
+  }
   else
   {
-    Place.Perform(SearchParam(myLaw, Ind1, TheV), Precision::Confusion());
+    aSectionPlacement.Perform(SearchParam(myLaw, aLawIndex1, aVertex), Precision::Confusion());
   }
 
-  myTrsf  = Place.Transformation(WithContact, WithCorrection);
-  myIndex = Ind1;
-  myParam = Place.ParameterOnPath();
-  Angle   = Place.Angle();
+  myTrsf              = aSectionPlacement.Transformation(WithContact, WithCorrection);
+  myIndex             = aLawIndex1;
+  myParam             = aSectionPlacement.ParameterOnPath();
+  Standard_Real Angle = aSectionPlacement.Angle();
 
-  if (Ind2)
+  if (aLawIndex2)
   {
-    Place.SetLocation(myLaw->Law(Ind2));
-    if (TheV.IsNull())
-      Place.Perform(Precision::Confusion());
+    aSectionPlacement.SetLocation(myLaw->Law(aLawIndex2));
+    if (!anIsVertexOnLaw)
+    {
+      aSectionPlacement.Perform(Precision::Confusion());
+    }
     else
     {
-      if (Ind1 == Ind2)
-        TheV.Reverse();
-      Place.Perform(SearchParam(myLaw, Ind2, TheV), Precision::Confusion());
+      if (aLawIndex1 == aLawIndex2)
+        aVertex.Reverse();
+      aSectionPlacement.Perform(SearchParam(myLaw, aLawIndex2, aVertex), Precision::Confusion());
     }
-    if (Place.Angle() > Angle)
+    if (aSectionPlacement.Angle() > Angle)
     {
-      myTrsf  = Place.Transformation(WithContact, WithCorrection);
-      myIndex = Ind2;
-      myParam = Place.ParameterOnPath();
+      myTrsf  = aSectionPlacement.Transformation(WithContact, WithCorrection);
+      myIndex = aLawIndex2;
+      myParam = aSectionPlacement.ParameterOnPath();
     }
   }
 }
