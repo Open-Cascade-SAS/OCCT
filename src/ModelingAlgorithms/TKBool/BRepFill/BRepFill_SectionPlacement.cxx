@@ -200,8 +200,8 @@ void BRepFill_SectionPlacement::Perform(const Standard_Boolean WithContact,
   }
 
   // Search of the <Ind1> by vertex <TheV>
-  bool anIsVertexOnLaw = false;
-  TopoDS_Vertex aVertex = TopoDS::Vertex(Vertex);
+  bool          anIsVertexOnLaw = false;
+  TopoDS_Vertex aVertex         = TopoDS::Vertex(Vertex);
   if (!aVertex.IsNull())
   {
     for (int aCurrentLawIndex = 1; aCurrentLawIndex <= myLaw->NbLaw(); ++aCurrentLawIndex)
@@ -212,8 +212,8 @@ void BRepFill_SectionPlacement::Perform(const Standard_Boolean WithContact,
       if (V1.IsSame(aVertex) || V2.IsSame(aVertex))
       {
         anIsVertexOnLaw = true;
-        aLawIndex1 = aCurrentLawIndex;
-        aLawIndex2 = 0;
+        aLawIndex1      = aCurrentLawIndex;
+        aLawIndex2      = 0;
         break;
       }
     }
