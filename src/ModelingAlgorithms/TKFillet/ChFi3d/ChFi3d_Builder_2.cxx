@@ -71,16 +71,18 @@
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-#ifdef OCCT_DEBUG
-  #ifdef DRAW
-    #include <DrawTrSurf.hxx>
-  #endif
-  #include <OSD_Chronometer.hxx>
-extern Standard_Real t_perfsetofkpart, t_perfsetofkgen, t_makextremities, t_performsurf, t_startsol;
-extern Standard_Boolean ChFi3d_GettraceCHRON();
-extern void             ChFi3d_InitChron(OSD_Chronometer& ch);
-extern void             ChFi3d_ResultChron(OSD_Chronometer& ch, Standard_Real& time);
-#endif
+namespace
+{
+
+// Simple wrapper over BRep_Tool::CurveOnSurface to get the 2d curve of an edge on a face
+// without caring about the first and last parameters of the curve.
+static inline Handle(Geom2d_Curve) getCurveOnSurface(const TopoDS_Edge& theEdge,
+                                                     const TopoDS_Face& theFace)
+{
+  double aFirstParam = 0.;
+  double aLastParam  = 0.;
+  return BRep_Tool::CurveOnSurface(theEdge, theFace, aFirstParam, aLastParam);
+}
 
 //===================================================================
 //   Definition by a plane
@@ -173,22 +175,24 @@ static void ChFi3d_CoupeParPlan(const ChFiDS_CommonPoint&    compoint1,
 
 //=================================================================================================
 
-static Standard_Boolean SortieTangente(const ChFiDS_CommonPoint& CP,
-                                       const TopoDS_Face& /*F*/,
-                                       const Handle(ChFiDS_SurfData)& /*SD*/,
-                                       const Standard_Integer /*OnS*/,
-                                       const Standard_Real TolAngular)
+static Standard_Boolean isTangentToArc(const ChFiDS_CommonPoint& aCommonPoint,
+                                       const Standard_Real       anAngularTolerance)
 {
-  if (!CP.HasVector())
+  if (!aCommonPoint.HasVector())
+  {
     return Standard_False;
-  gp_Pnt             P;
-  gp_Vec             Darc, Dsurf;
-  Handle(Geom_Curve) C;
-  Standard_Real      Uf, Ul;
-  C = BRep_Tool::Curve(CP.Arc(), Uf, Ul);
-  C->D1(CP.ParameterOnArc(), P, Darc);
-  Dsurf = CP.Vector();
-  return Dsurf.IsParallel(Darc, TolAngular);
+  }
+
+  Standard_Real            aDummyParam1, aDummyParam2; // Not used.
+  const Handle(Geom_Curve) anArcCurve =
+    BRep_Tool::Curve(aCommonPoint.Arc(), aDummyParam1, aDummyParam2);
+
+  gp_Pnt aDummyPoint;  // Not used.
+  gp_Vec anArcTangent; // Tangent to the arc at the common point.
+  anArcCurve->D1(aCommonPoint.ParameterOnArc(), aDummyPoint, anArcTangent);
+
+  const gp_Vec aCommonPointVector = aCommonPoint.Vector();
+  return aCommonPointVector.IsParallel(anArcTangent, anAngularTolerance);
 }
 
 //=================================================================================================
@@ -204,7 +208,7 @@ static Standard_Boolean BonVoisin(const gp_Pnt&                Point,
                                   const Standard_Real          tol3d)
 {
   Standard_Boolean          bonvoisin = 1;
-  Standard_Real             winter, Uf, Ul;
+  Standard_Real             winter;
   gp_Pnt                    papp = HS->Value(XDep, YDep);
   Standard_Real             dist = RealLast();
   Handle(BRepAdaptor_Curve) hc   = new BRepAdaptor_Curve();
@@ -255,13 +259,13 @@ static Standard_Boolean BonVoisin(const gp_Pnt&                Point,
                   if (newe.IsSame(Ex2.Current()))
                   {
                     newe = TopoDS::Edge(Ex2.Current());
-                    PC   = BRep_Tool::CurveOnSurface(newe, fff, Uf, Ul);
+                    PC   = getCurveOnSurface(newe, fff);
                     break;
                   }
                 }
               }
               else
-                PC = BRep_Tool::CurveOnSurface(newe, ff, Uf, Ul);
+                PC = getCurveOnSurface(newe, ff);
               PC->Value(winter).Coord(XDep, YDep);
               if (issame)
               {
@@ -279,7 +283,7 @@ static Standard_Boolean BonVoisin(const gp_Pnt&                Point,
                 {
                   newe.Orientation(TopAbs_REVERSED);
                 }
-                PC = BRep_Tool::CurveOnSurface(newe, fff, Uf, Ul);
+                PC = getCurveOnSurface(newe, fff);
                 PC->Value(winter).Coord(XDep, YDep);
               }
               break;
@@ -372,7 +376,7 @@ static void TgtKP(const Handle(ChFiDS_SurfData)& CD,
 // purpose  : Checks if a vector belongs to a Face
 //=======================================================================
 
-Standard_Boolean IsInput(const gp_Vec& Vec, const TopoDS_Vertex& Ve, const TopoDS_Face& Fa)
+static Standard_Boolean IsInput(const gp_Vec& Vec, const TopoDS_Vertex& Ve, const TopoDS_Face& Fa)
 {
   TopExp_Explorer        FaceExp(Fa, TopAbs_WIRE);
   BRepTools_WireExplorer WireExp;
@@ -447,10 +451,10 @@ Standard_Boolean IsInput(const gp_Vec& Vec, const TopoDS_Vertex& Ve, const TopoD
 // purpose  : Find a neighbor G1 by an edge
 //=======================================================================
 
-Standard_Boolean IsG1(const ChFiDS_Map&  TheMap,
-                      const TopoDS_Edge& E,
-                      const TopoDS_Face& FRef,
-                      TopoDS_Face&       FVoi)
+static Standard_Boolean IsG1(const ChFiDS_Map&  TheMap,
+                             const TopoDS_Edge& E,
+                             const TopoDS_Face& FRef,
+                             TopoDS_Face&       FVoi)
 {
   TopTools_ListIteratorOfListOfShape It;
   // Find a neighbor of E different from FRef (general case).
@@ -573,14 +577,12 @@ static void ChangeTransition(const ChFiDS_CommonPoint&                  Precedan
                              const Handle(TopOpeBRepDS_HDataStructure)& DS)
 {
   Standard_Boolean     tochange = Standard_True;
-  Standard_Real        f, l;
-  const TopoDS_Face&   F   = TopoDS::Face(DS->Shape(FaceIndex));
-  const TopoDS_Edge&   Arc = Precedant.Arc();
+  const TopoDS_Face&   F        = TopoDS::Face(DS->Shape(FaceIndex));
+  const TopoDS_Edge&   Arc      = Precedant.Arc();
   Handle(Geom2d_Curve) PCurve1, PCurve2;
-  PCurve1                  = BRep_Tool::CurveOnSurface(Arc, F, f, l);
+  PCurve1                  = getCurveOnSurface(Arc, F);
   TopoDS_Shape aLocalShape = Arc.Reversed();
-  PCurve2                  = BRep_Tool::CurveOnSurface(TopoDS::Edge(aLocalShape), F, f, l);
-  //  PCurve2 = BRep_Tool::CurveOnSurface(TopoDS::Edge(Arc.Reversed()), F, f, l);
+  PCurve2                  = getCurveOnSurface(TopoDS::Edge(aLocalShape), F);
   if (PCurve1 != PCurve2)
   {
     // This is a cutting edge, it is necessary to make a small Geometric test
@@ -597,6 +599,7 @@ static void ChangeTransition(const ChFiDS_CommonPoint&                  Precedan
                    Precedant.ParameterOnArc(),
                    TopAbs::Reverse(Precedant.TransitionOnArc()));
 }
+} // namespace
 
 //=======================================================================
 // function : CallPerformSurf
@@ -635,9 +638,6 @@ void ChFi3d_Builder::CallPerformSurf(Handle(ChFiDS_Stripe)&             Stripe,
                                      Handle(BRepAdaptor_Surface)& Surf1,
                                      Handle(BRepAdaptor_Surface)& Surf2)
 {
-#ifdef OCCT_DEBUG
-  OSD_Chronometer ch1;
-#endif
   Handle(BRepAdaptor_Surface) HSon1, HSon2;
   HSon1 = HS1;
   HSon2 = HS2;
@@ -684,11 +684,6 @@ void ChFi3d_Builder::CallPerformSurf(Handle(ChFiDS_Stripe)&             Stripe,
   }
   else
   {
-
-#ifdef OCCT_DEBUG
-    ChFi3d_InitChron(ch1); // initial perform for PerformSurf
-#endif
-
     isdone = PerformSurf(SeqSD,
                          HGuide,
                          Spine,
@@ -710,9 +705,6 @@ void ChFi3d_Builder::CallPerformSurf(Handle(ChFiDS_Stripe)&             Stripe,
                          Soldep,
                          intf,
                          intl);
-#ifdef OCCT_DEBUG
-    ChFi3d_ResultChron(ch1, t_performsurf); // result perf for PerformSurf
-#endif
   }
 
   // Case of error
@@ -771,11 +763,6 @@ void ChFi3d_Builder::CallPerformSurf(Handle(ChFiDS_Stripe)&             Stripe,
       }
       else
       {
-
-#ifdef OCCT_DEBUG
-        ChFi3d_InitChron(ch1); // init perf for PerformSurf
-#endif
-
         isdone = PerformSurf(SeqSD,
                              HGuide,
                              Spine,
@@ -797,9 +784,6 @@ void ChFi3d_Builder::CallPerformSurf(Handle(ChFiDS_Stripe)&             Stripe,
                              Soldep,
                              intf,
                              intl);
-#ifdef OCCT_DEBUG
-        ChFi3d_ResultChron(ch1, t_performsurf); // result perf for PerformSurf
-#endif
       }
     }
   }
@@ -942,13 +926,13 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
         ChFi3d::NextSide(Or1, Or2, Stripe->OrientationOnFace1(), Stripe->OrientationOnFace2(), RC);
     }
 
-    Standard_Real woned, Uf, Ul, ResU, ResV;
+    Standard_Real woned, ResU, ResV;
     Spine->Parameter(iedge, w, woned, Standard_True);
     cured.Orientation(TopAbs_FORWARD);
     TopoDS_Face f1forward = f1, f2forward = f2;
     f1forward.Orientation(TopAbs_FORWARD);
     f2forward.Orientation(TopAbs_FORWARD);
-    PC = BRep_Tool::CurveOnSurface(cured, f1forward, Uf, Ul);
+    PC = getCurveOnSurface(cured, f1forward);
     I1->Initialize((const Handle(Adaptor3d_Surface)&)HS1);
     PC->D1(woned, P1, derive);
     // There are points on the border, and internal points are found
@@ -976,7 +960,7 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
     }
     if (f1.IsSame(f2))
       cured.Orientation(TopAbs_REVERSED);
-    PC                                     = BRep_Tool::CurveOnSurface(cured, f2forward, Uf, Ul);
+    PC                                     = getCurveOnSurface(cured, f2forward);
     P2                                     = PC->Value(woned);
     const Handle(Adaptor3d_Surface)& HSon2 = HS2; // to avoid ambiguity
     I2->Initialize(HSon2);
@@ -1013,14 +997,14 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
     Or2 = f2.Orientation();
     Choix =
       ChFi3d::NextSide(Or1, Or2, Stripe->OrientationOnFace1(), Stripe->OrientationOnFace2(), RC);
-    Standard_Real woned, Uf, Ul;
+    Standard_Real woned;
     Spine->Parameter(iedge, w, woned, Standard_True);
     TopoDS_Face f1forward = f1, f2forward = f2;
     f1forward.Orientation(TopAbs_FORWARD);
     f2forward.Orientation(TopAbs_FORWARD);
-    PC                                     = BRep_Tool::CurveOnSurface(cured, f1forward, Uf, Ul);
+    PC                                     = getCurveOnSurface(cured, f1forward);
     P1                                     = PC->Value(woned);
-    PC                                     = BRep_Tool::CurveOnSurface(cured, f2forward, Uf, Ul);
+    PC                                     = getCurveOnSurface(cured, f2forward);
     P2                                     = PC->Value(woned);
     const Handle(Adaptor3d_Surface)& HSon1 = HS1; // to avoid ambiguity
     const Handle(Adaptor3d_Surface)& HSon2 = HS2; // to avoid ambiguity
@@ -1159,72 +1143,66 @@ Standard_Boolean ChFi3d_Builder::StartSol(
   const Standard_Boolean         decroch,
   const TopoDS_Vertex&           Vref) const
 {
-  RecRst = RecS = RecP = c1obstacle = 0;
-  TopOpeBRepDS_DataStructure& DStr  = myDS->ChangeDS();
-  TopoDS_Face                 Fv, Fref;
-  // gp_Pnt2d  pp1,pp2;
-  Handle(Geom2d_Curve) pc;
-  Standard_Real        Uf, Ul;
+  RecP       = false;
+  RecS       = false;
+  RecRst     = false;
+  c1obstacle = false;
+  TopoDS_Face          Fv;
+  Handle(Geom2d_Curve) aPCurve;
 
-  TopoDS_Face F = TopoDS::Face(DStr.Shape(SD->Index(ons)));
-  if (!HSref.IsNull())
-    Fref = HSref->Face();
-  const ChFiDS_CommonPoint& CP = SD->Vertex(isfirst, ons);
+  const TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
+  TopoDS_Face                       Fref = !HSref.IsNull() ? HSref->Face() : TopoDS_Face();
+  TopoDS_Face                       F    = TopoDS::Face(DStr.Shape(SD->Index(ons)));
+
+  const ChFiDS_CommonPoint& aCommonPoint = SD->Vertex(isfirst, ons);
   HSBis.Nullify();
 
-  if (CP.IsOnArc())
+  if (aCommonPoint.IsOnArc())
   {
-    Standard_Integer notons;
-    if (ons == 1)
-      notons = 2;
-    else
-      notons = 1;
-    const ChFiDS_CommonPoint& CPbis = SD->Vertex(isfirst, notons);
+    const Standard_Integer    notons = ons == 1 ? 2 : 1;
+    const ChFiDS_CommonPoint& CPbis  = SD->Vertex(isfirst, notons);
     if (CPbis.IsOnArc())
     { // It is checked if it is not the extension zone
-      // In case CP is not at the end of surfdata and it is not necessary to take it into account
-      // except for separate cases (ie pointus) ...
-      // ts and tns were earlier CP.Parameter() and CPbis.Parameter, but sometimes they had no
-      // values.
-      Standard_Real ts  = SD->Interference(ons).Parameter(isfirst),
-                    tns = SD->Interference(notons).Parameter(isfirst);
-      Standard_Boolean isExtend;
+      // In case aCommonPoint is not at the end of surfdata and it is not necessary to take it into
+      // account except for separate cases (ie pointus) ... ts and tns were earlier
+      // aCommonPoint.Parameter() and CPbis.Parameter, but sometimes they had no values.
+      const Standard_Real ts  = SD->Interference(ons).Parameter(isfirst);
+      const Standard_Real tns = SD->Interference(notons).Parameter(isfirst);
       // Arbitrary test (to precise)
-      if (isfirst)
-        isExtend = (ts - tns > 100 * tolesp);
-      else
-        isExtend = (tns - ts > 100 * tolesp);
-      if (isExtend && !CP.Point().IsEqual(CPbis.Point(), 0))
+      const Standard_Boolean isExtend =
+        isfirst ? (ts - tns > 100 * tolesp) : (tns - ts > 100 * tolesp);
+      if (isExtend && !aCommonPoint.Point().IsEqual(CPbis.Point(), 0))
       {
         //  the state is preserved and False is returned (extension by the expected plane).
         HS->Initialize(F);
-        pc = SD->Interference(ons).PCurveOnFace();
+        aPCurve = SD->Interference(ons).PCurveOnFace();
         // The 2nd point is given by its trace on the support surface
-        RecS = Standard_False;
-        pons = pc->Value(tns);
-        return Standard_False;
+        RecS = false;
+        pons = aPCurve->Value(tns);
+        return false;
       }
     }
   }
 
-  if (CP.IsVertex() && !HC.IsNull() && !decroch)
+  if (aCommonPoint.IsVertex() && !HC.IsNull() && !decroch)
   {
     // The edge is changed, the parameter is updated and
     // eventually the support face and(or) the reference face.
-    TopoDS_Vertex VCP = CP.Vertex();
-    TopoDS_Edge   EHC = HC->Edge();
+    const TopoDS_Vertex VCP = aCommonPoint.Vertex();
+    const TopoDS_Edge   EHC = HC->Edge();
     // One starts by searching in Fref another edge referencing VCP.
-    TopExp_Explorer ex1, ex2;
-    TopoDS_Edge     newedge, edgereg;
-    TopoDS_Face     bidface = Fref, facereg;
+    TopoDS_Edge newedge;
+    TopoDS_Edge edgereg;
+    TopoDS_Face facereg;
+    TopoDS_Face bidface = Fref;
     bidface.Orientation(TopAbs_FORWARD);
-    for (ex1.Init(bidface, TopAbs_EDGE); ex1.More(); ex1.Next())
+    for (TopExp_Explorer ex1(bidface, TopAbs_EDGE); ex1.More(); ex1.Next())
     {
       const TopoDS_Edge& cured = TopoDS::Edge(ex1.Current());
-      Standard_Boolean   found = 0;
+      Standard_Boolean   found = false;
       if (!cured.IsSame(EHC))
       {
-        for (ex2.Init(cured, TopAbs_VERTEX); ex2.More() && !found; ex2.Next())
+        for (TopExp_Explorer ex2(cured, TopAbs_VERTEX); ex2.More() && !found; ex2.Next())
         {
           if (ex2.Current().IsSame(VCP))
           {
@@ -1234,7 +1212,9 @@ Standard_Boolean ChFi3d_Builder::StartSol(
               facereg = Fv;
             }
             else
-              found = 1;
+            {
+              found = true;
+            }
           }
         }
       }
@@ -1252,19 +1232,14 @@ Standard_Boolean ChFi3d_Builder::StartSol(
       if (V1.IsSame(V2))
       {
         newedge                            = EHC;
-        Standard_Real                  w1  = BRep_Tool::Parameter(V1, EHC);
-        Standard_Real                  w2  = BRep_Tool::Parameter(V2, EHC);
+        const Standard_Real            w1  = BRep_Tool::Parameter(V1, EHC);
+        const Standard_Real            w2  = BRep_Tool::Parameter(V2, EHC);
         const ChFiDS_FaceInterference& fi  = SD->Interference(ons);
         const Handle(Geom2d_Curve)&    pcf = fi.PCurveOnFace();
-        Standard_Real                  ww  = fi.Parameter(isfirst);
-
-        gp_Pnt2d pww;
-        if (!pcf.IsNull())
-          pww = pcf->Value(ww);
-        else
-          pww = SD->Get2dPoints(isfirst, ons);
-        gp_Pnt2d p1 = HC->Value(w1);
-        gp_Pnt2d p2 = HC->Value(w2);
+        const Standard_Real            ww  = fi.Parameter(isfirst);
+        const gp_Pnt2d pww = pcf.IsNull() ? SD->Get2dPoints(isfirst, ons) : pcf->Value(ww);
+        const gp_Pnt2d p1  = HC->Value(w1);
+        const gp_Pnt2d p2  = HC->Value(w2);
 
         if (p1.Distance(pww) > p2.Distance(pww))
         {
@@ -1276,20 +1251,21 @@ Standard_Boolean ChFi3d_Builder::StartSol(
           W    = w2;
           pons = p2;
         }
-        RecP = c1obstacle = 1;
-        return 1;
+        RecP       = true;
+        c1obstacle = true;
+        return true;
       }
       else if (!edgereg.IsNull())
       {
         // the reference edge and face are changed.
         Fref = facereg;
         HSref->Initialize(Fref);
-        for (ex1.Init(facereg, TopAbs_EDGE); ex1.More() && newedge.IsNull(); ex1.Next())
+        for (TopExp_Explorer ex1(facereg, TopAbs_EDGE); ex1.More() && newedge.IsNull(); ex1.Next())
         {
           const TopoDS_Edge& cured = TopoDS::Edge(ex1.Current());
           if (!cured.IsSame(edgereg))
           {
-            for (ex2.Init(cured, TopAbs_VERTEX); ex2.More(); ex2.Next())
+            for (TopExp_Explorer ex2(cured, TopAbs_VERTEX); ex2.More(); ex2.Next())
             {
               if (ex2.Current().IsSame(VCP))
               {
@@ -1324,8 +1300,7 @@ Standard_Boolean ChFi3d_Builder::StartSol(
       HCref->Initialize(newedge, Fref);
       TopoDS_Face newface = Fv;
       newface.Orientation(TopAbs_FORWARD);
-      TopExp_Explorer ex;
-      for (ex.Init(newface, TopAbs_EDGE); ex.More(); ex.Next())
+      for (TopExp_Explorer ex(newface, TopAbs_EDGE); ex.More(); ex.Next())
       {
         if (ex.Current().IsSame(newedge))
         {
@@ -1336,99 +1311,106 @@ Standard_Boolean ChFi3d_Builder::StartSol(
       HC->Initialize(newedge, Fv);
       pons = HC->Value(W);
     }
-    RecP = c1obstacle = 1;
-    return 1;
+    RecP       = true;
+    c1obstacle = true;
+    return true;
   } // End of Case Vertex && Obstacle
-
-  else if (CP.IsOnArc() && !HC.IsNull() && !decroch)
+  else if (aCommonPoint.IsOnArc() && !HC.IsNull() && !decroch)
   {
     // Nothing is changed, the parameter is only updated.
-    W          = CP.ParameterOnArc();
-    c1obstacle = 1;
-    return 1;
+    W          = aCommonPoint.ParameterOnArc();
+    c1obstacle = true;
+    return true;
   }
 
   HC.Nullify();
 
-  if (CP.IsOnArc())
+  if (aCommonPoint.IsOnArc())
   {
-    const TopoDS_Edge& E = CP.Arc();
+    const TopoDS_Edge& anArcEdge = aCommonPoint.Arc();
+
+    // Lambda to avoid code duplication.
+    // Sets HS, W, aPCurve and pons to default return values.
+    auto prepareDefaultReturn = [&]() {
+      HS->Initialize(F);
+      W       = aCommonPoint.ParameterOnArc();
+      aPCurve = getCurveOnSurface(anArcEdge, F);
+      pons    = aPCurve->Value(W);
+    };
+
     if (decroch)
     {
       HS->Initialize(Fref);
-      W    = CP.ParameterOnArc();
-      pc   = BRep_Tool::CurveOnSurface(E, Fref, Uf, Ul);
-      pons = pc->Value(W);
-      RecS = 1;
-      return 1;
+      W       = aCommonPoint.ParameterOnArc();
+      aPCurve = getCurveOnSurface(anArcEdge, Fref);
+      pons    = aPCurve->Value(W);
+      RecS    = true;
+      return true;
     }
-    if (SearchFace(Spine, CP, F, Fv))
+
+    if (SearchFace(Spine, aCommonPoint, F, Fv))
     {
       HS->Initialize(Fv);
-      RecS = 1;
-      if (CP.IsVertex())
+      RecS = true;
+      if (aCommonPoint.IsVertex())
       {
         // One goes directly by the Vertex
-        Standard_Integer Nb;
-        TopoDS_Face      aux;
         // And it is checked that there are no other candidates
-        Nb = SearchFaceOnV(CP, F, myVEMap, myEFMap, Fv, aux);
+        TopoDS_Face            aux;
+        const Standard_Integer Nb = SearchFaceOnV(aCommonPoint, F, myVEMap, myEFMap, Fv, aux);
 
-        pons = BRep_Tool::Parameters(CP.Vertex(), Fv);
+        pons = BRep_Tool::Parameters(aCommonPoint.Vertex(), Fv);
         HS->Initialize(Fv);
         if (Nb >= 2)
         {
-          HSBis = new (BRepAdaptor_Surface)(aux);
-          PBis  = BRep_Tool::Parameters(CP.Vertex(), aux);
+          HSBis = new BRepAdaptor_Surface(aux);
+          PBis  = BRep_Tool::Parameters(aCommonPoint.Vertex(), aux);
         }
-        return 1;
+        return true;
       }
       // otherwise one passes by the arc...
       if (!Fv.IsSame(F))
       {
         Fv.Orientation(TopAbs_FORWARD);
-        TopoDS_Edge     newedge;
-        TopExp_Explorer ex;
-        for (ex.Init(Fv, TopAbs_EDGE); ex.More(); ex.Next())
+        TopoDS_Edge newedge;
+        for (TopExp_Explorer ex(Fv, TopAbs_EDGE); ex.More(); ex.Next())
         {
-          if (ex.Current().IsSame(E))
+          if (ex.Current().IsSame(anArcEdge))
           {
             newedge = TopoDS::Edge(ex.Current());
             break;
           }
         }
-        // gp_Vec Varc, VSurf;
         //  In cas of Tangent output, the current face becomes the support face
-        if (SortieTangente(CP, F, SD, ons, 0.1))
+        if (isTangentToArc(aCommonPoint, 0.1))
         {
-          pc    = BRep_Tool::CurveOnSurface(CP.Arc(), F, Uf, Ul);
-          HSBis = new (BRepAdaptor_Surface)(F);
-          PBis  = pc->Value(CP.ParameterOnArc());
+          aPCurve = getCurveOnSurface(aCommonPoint.Arc(), F);
+          HSBis   = new BRepAdaptor_Surface(F);
+          PBis    = aPCurve->Value(aCommonPoint.ParameterOnArc());
         }
 
-        pc = BRep_Tool::CurveOnSurface(newedge, Fv, Uf, Ul);
+        aPCurve = getCurveOnSurface(newedge, Fv);
       }
       else
       {
-        TopoDS_Edge newedge = E;
+        TopoDS_Edge newedge = anArcEdge;
         newedge.Reverse();
         Fv.Orientation(TopAbs_FORWARD);
-        pc = BRep_Tool::CurveOnSurface(newedge, Fv, Uf, Ul);
+        aPCurve = getCurveOnSurface(newedge, Fv);
       }
-      pons = pc->Value(CP.ParameterOnArc());
-      return 1;
+      pons = aPCurve->Value(aCommonPoint.ParameterOnArc());
+      return true;
     }
     else if (!Fv.IsNull())
     {
-      c1obstacle = 1;
+      c1obstacle = true;
       if (!Vref.IsNull())
       {
-        TopExp_Explorer ex;
-        for (ex.Init(E, TopAbs_VERTEX); ex.More(); ex.Next())
+        for (TopExp_Explorer ex(anArcEdge, TopAbs_VERTEX); ex.More(); ex.Next())
         {
           if (ex.Current().IsSame(Vref))
           {
-            c1obstacle = 0;
+            c1obstacle = false;
             break;
           }
         }
@@ -1437,45 +1419,48 @@ Standard_Boolean ChFi3d_Builder::StartSol(
       {
         HS->Initialize(Fv);
         HSref->Initialize(F);
-        W  = CP.ParameterOnArc();
+        W  = aCommonPoint.ParameterOnArc();
         HC = new BRepAdaptor_Curve2d();
         TopoDS_Edge newedge;
         TopoDS_Face newface = Fv;
         newface.Orientation(TopAbs_FORWARD);
-        TopExp_Explorer ex;
-        for (ex.Init(newface, TopAbs_EDGE); ex.More(); ex.Next())
+        for (TopExp_Explorer ex(newface, TopAbs_EDGE); ex.More(); ex.Next())
         {
-          if (ex.Current().IsSame(E))
+          if (ex.Current().IsSame(anArcEdge))
           {
             newedge = TopoDS::Edge(ex.Current());
             break;
           }
         }
-        HC->Initialize(newedge, Fv);
-        pons = HC->Value(W);
-        HCref->Initialize(E, F);
-        if (CP.IsVertex())
-          RecP = 1;
+
+        if (!newedge.IsNull())
+        {
+          HC->Initialize(newedge, Fv);
+          pons = HC->Value(W);
+          HCref->Initialize(anArcEdge, F);
+          if (aCommonPoint.IsVertex())
+            RecP = true;
+          else
+            RecRst = true;
+          return true;
+        }
         else
-          RecRst = 1;
-        return 1;
+        {
+          prepareDefaultReturn();
+          return false;
+        }
       }
       else
       {
-        HS->Initialize(F);
-        W    = CP.ParameterOnArc();
-        pc   = BRep_Tool::CurveOnSurface(E, F, Uf, Ul);
-        pons = pc->Value(W);
-        return Standard_False;
+        prepareDefaultReturn();
+        return false;
       }
     }
     else
-    { // there is no neighbor face, the state is preserved and False is returned.
-      HS->Initialize(F);
-      W    = CP.ParameterOnArc();
-      pc   = BRep_Tool::CurveOnSurface(E, F, Uf, Ul);
-      pons = pc->Value(W);
-      return Standard_False;
+    {
+      // there is no neighbor face, the state is preserved and False is returned.
+      prepareDefaultReturn();
+      return false;
     }
   }
   else
@@ -1487,7 +1472,7 @@ Standard_Boolean ChFi3d_Builder::StartSol(
     else
       pons = FI.PCurveOnFace()->Value(FI.Parameter(isfirst));
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -1505,9 +1490,6 @@ Standard_Boolean ChFi3d_Builder::SearchFace(const Handle(ChFiDS_Spine)& Spine,
   if (Pc.IsVertex())
   {
     // attention it is necessary to analyze all faces that turn around of the vertex
-#ifdef OCCT_DEBUG
-    std::cout << "Commonpoint on vertex, the process hangs up" << std::endl;
-#endif
     if (Pc.HasVector())
     { // General processing
       TopoDS_Face      Fbis;
@@ -1560,9 +1542,6 @@ Standard_Boolean ChFi3d_Builder::SearchFace(const Handle(ChFiDS_Spine)& Spine,
           if (Spine.IsNull())
           {
             // La Spine peut etre nulle (ThreeCorner)
-#ifdef OCCT_DEBUG
-            std::cout << "FindFace sur vertex avec spine nulle! QUEZAKO ?" << std::endl;
-#endif
             return Standard_False;
           }
 
@@ -2012,9 +1991,6 @@ static void ChFi3d_Purge(Handle(ChFiDS_Stripe)&    Stripe,
   Standard_Integer opp = 3 - ons;
   if (!SD->Vertex(isfirst, opp).IsOnArc() || SD->TwistOnS1() || SD->TwistOnS2())
   {
-#ifdef OCCT_DEBUG
-    std::cout << "ChFi3d_Purge : No output on extension." << std::endl;
-#endif
     ChFiDS_SequenceOfSurfData& Seq = Stripe->ChangeSetOfSurfData()->ChangeSequence();
     if (isfirst)
       Seq.Remove(1);
@@ -2132,15 +2108,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
                                                Handle(BRepTopAdaptor_TopolTool)& It2,
                                                const Standard_Boolean            Simul)
 {
-#ifdef OCCT_DEBUG
-  OSD_Chronometer ch1;
-#endif
-
-  // Temporary
-  // gp_Pnt ptgui;
-  // gp_Vec d1gui;
-  //( HGuide->Curve() ).D1(HGuide->FirstParameter(),ptgui,d1gui);
-
   ChFiDS_ElSpine& Guide = *HGuide;
 
   Handle(ChFiDS_ElSpine) OffsetHGuide;
@@ -2218,15 +2185,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
     // sinon solution approchee.
     Inside = Standard_True;
 
-#ifdef OCCT_DEBUG
-    ChFi3d_InitChron(ch1); // init perf for StartSol
-#endif
-
     StartSol(Stripe, HGuide, HS1, HS2, It1, It2, pp1, pp2, First);
-
-#ifdef OCCT_DEBUG
-    ChFi3d_ResultChron(ch1, t_startsol); // result perf for StartSol
-#endif
 
     Last = wf;
     if (Guide.IsPeriodic())
@@ -2262,10 +2221,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
       First   = wl;
       Last    = Guide.FirstParameter();
     }
-
-#ifdef OCCT_DEBUG
-    ChFi3d_InitChron(ch1); // init perf for startsol
-#endif
 
     Ok1 = StartSol(Spine,
                    HS1,
@@ -2305,10 +2260,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
                    Vref);
     HC1.Nullify();
     HC2.Nullify();
-
-#ifdef OCCT_DEBUG
-    ChFi3d_ResultChron(ch1, t_startsol); // result perf for startsol
-#endif
 
     if (Ok1 == 1 && Ok2 == 1)
     {
@@ -2395,11 +2346,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
       Vref = Spine->LastVertex();
     if (!ref.IsNull())
     {
-
-#ifdef OCCT_DEBUG
-      ChFi3d_InitChron(ch1); // init perf for StartSol
-#endif
-
       Ok1 = StartSol(Spine,
                      HS1,
                      pp1,
@@ -2436,10 +2382,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
                      pp4,
                      decroch2,
                      Vref);
-
-#ifdef OCCT_DEBUG
-      ChFi3d_ResultChron(ch1, t_startsol); // result perf for StartSol
-#endif
     }
 
     // No more connected faces. Construction of the tangent plane to continue the path
@@ -2537,9 +2479,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
       }
       else
       {
-#ifdef OCCT_DEBUG
-        ChFi3d_InitChron(ch1); // init perf for PerformSurf
-#endif
         PerformSurf(SeqSD,
                     HGuide,
                     Spine,
@@ -2571,9 +2510,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
                     RecP2,
                     RecRst2,
                     SoldepCC);
-#ifdef OCCT_DEBUG
-        ChFi3d_ResultChron(ch1, t_performsurf); // result  perf for PerformSurf
-#endif
       }
       SD->ChangeIndexOfS1(DStr.AddShape(HS1->Face()));
       SD->ChangeIndexOfS2(DStr.AddShape(HS2->Face()));
@@ -2623,9 +2559,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
       }
       else
       {
-#ifdef OCCT_DEBUG
-        ChFi3d_InitChron(ch1); // init perf for PerformSurf
-#endif
         PerformSurf(SeqSD,
                     HGuide,
                     Spine,
@@ -2651,9 +2584,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
                     RecS2,
                     RecRst1,
                     SoldepCS);
-#ifdef OCCT_DEBUG
-        ChFi3d_ResultChron(ch1, t_performsurf); // result  perf for PerformSurf
-#endif
       }
       SD->ChangeIndexOfS1(DStr.AddShape(HS1->Face()));
       SD->ChangeIndexOfS2(DStr.AddShape(HS2->Face()));
@@ -2700,9 +2630,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
       }
       else
       {
-#ifdef OCCT_DEBUG
-        ChFi3d_InitChron(ch1); // init perf for PerformSurf
-#endif
         PerformSurf(SeqSD,
                     HGuide,
                     Spine,
@@ -2728,9 +2655,6 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
                     RecS1,
                     RecRst2,
                     SoldepCS);
-#ifdef OCCT_DEBUG
-        ChFi3d_ResultChron(ch1, t_performsurf); // result  perf for PerformSurf
-#endif
       }
       SD->ChangeIndexOfS1(DStr.AddShape(HS1->Face()));
       SD->ChangeIndexOfS2(DStr.AddShape(HS2->Face()));
@@ -2976,15 +2900,9 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe, const Stan
 
       if (!ChFiKPart_ComputeData::Compute(DStr, SD, HS1, HS2, Or1, Or2, Spine, iedge))
       {
-#ifdef OCCT_DEBUG
-        std::cout << "failed calculation KPart" << std::endl;
-#endif
       }
       else if (!SplitKPart(SD, LSD, Spine, iedge, HS1, It1, HS2, It2, intf, intl))
       {
-#ifdef OCCT_DEBUG
-        std::cout << "failed calculation KPart" << std::endl;
-#endif
         LSD.Clear();
       }
       else
@@ -3161,17 +3079,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe, const Stan
   ChFiDS_ListIteratorOfListOfHElSpine ILES(ll);
   for (; ILES.More(); ILES.Next())
   {
-#ifdef OCCT_DEBUG
-    if (ChFi3d_GettraceCHRON())
-      elspine.Start();
-#endif
     ChFi3d_PerformElSpine(ILES.ChangeValue(), Spine, myConti, tolesp);
-#ifdef OCCT_DEBUG
-    if (ChFi3d_GettraceCHRON())
-    {
-      elspine.Stop();
-    }
-#endif
   }
   if (Spine->Mode() == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
@@ -3207,17 +3115,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe, const Stand
   ChFiDS_ListIteratorOfListOfHElSpine ILES(ll);
   for (; ILES.More(); ILES.Next())
   {
-#ifdef OCCT_DEBUG
-    if (ChFi3d_GettraceCHRON())
-    {
-      chemine.Start();
-    }
-#endif
     PerformSetOfSurfOnElSpine(ILES.Value(), Stripe, It1, It2, Simul);
-#ifdef OCCT_DEBUG
-    if (ChFi3d_GettraceCHRON())
-      chemine.Stop();
-#endif
   }
   if (!Simul)
   {
@@ -3492,13 +3390,6 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe, const Stand
       ChFi3d_ReparamPcurv(0., 1., PC1);
       ChFi3d_ReparamPcurv(0., 1., PC2);
       Handle(Geom_Surface) newsurf = fil.Surface();
-#ifdef OCCT_DEBUG
-  #ifdef DRAW
-      // POP for NT
-      char* pops = "newsurf";
-      DrawTrSurf::Set(pops, newsurf);
-  #endif
-#endif
       if (pointuon1)
       {
         newsurf->VReverse(); // we return to direction 1 from  2;
@@ -3654,9 +3545,6 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe, const Stand
       else if (IF < IL)
       {
         TColStd_Array1OfReal wv(IF, IL - 1);
-#ifdef OCCT_DEBUG
-        std::cout << "length of the trajectory : " << (WL - WF) << std::endl;
-#endif
         for (i = IF; i < IL; i++)
         {
           Standard_Integer iloc = i;
@@ -3665,23 +3553,12 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe, const Stand
           Standard_Real wi = Spine->LastParameter(iloc);
           if (periodic)
             wi = ElCLib::InPeriod(wi, WF, WF + period);
-          gp_Pnt pv = Spine->Value(wi);
-#ifdef OCCT_DEBUG
-          gp_Pnt        pelsapp  = curhels->Value(wi);
-          Standard_Real distinit = pv.Distance(pelsapp);
-          std::cout << "distance psp/papp : " << distinit << std::endl;
-#endif
+          gp_Pnt              pv = Spine->Value(wi);
           Extrema_LocateExtPC ext(pv, *curhels, wi, 1.e-8);
           wv(i) = wi;
           if (ext.IsDone())
           {
             wv(i) = ext.Point().Parameter();
-          }
-          else
-          {
-#ifdef OCCT_DEBUG
-            std::cout << "fail of projection vertex ElSpine!!!" << std::endl;
-#endif
           }
         }
         for (i = 1; i <= len; i++)
@@ -3730,33 +3607,14 @@ void ChFi3d_Builder::PerformSetOfSurf(Handle(ChFiDS_Stripe)& Stripe, const Stand
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
 
-#ifdef OCCT_DEBUG
-  OSD_Chronometer ch;
-  ChFi3d_InitChron(ch); // init perf for PerformSetOfKPart
-#endif
-
   const Handle(ChFiDS_Spine)& sp = Stripe->Spine();
   Standard_Integer            SI = ChFi3d_SolidIndex(sp, DStr, myESoMap, myEShMap);
   Stripe->SetSolidIndex(SI);
   if (!sp->SplitDone())
     PerformSetOfKPart(Stripe, Simul);
 
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_perfsetofkpart); // result perf PerformSetOfKPart(
-  ChFi3d_InitChron(ch);                     // init perf for  PerformSetOfKGen
-#endif
-
   PerformSetOfKGen(Stripe, Simul);
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_perfsetofkgen); // result perf PerformSetOfKGen
-  ChFi3d_InitChron(ch);                    // init perf for ChFi3d_MakeExtremities
-#endif
 
   if (!Simul)
     ChFi3d_MakeExtremities(Stripe, DStr, myEFMap, tolapp3d, tol2d);
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_makextremities); // result perf t_makextremities
-#endif
 }
