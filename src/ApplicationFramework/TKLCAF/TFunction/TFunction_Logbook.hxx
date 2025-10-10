@@ -116,6 +116,8 @@ public:
   //! Prints th data of the attributes (touched, impacted and valid labels).
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
+  DEFINE_STANDARD_RTTIEXT(TFunction_Logbook, TDF_Attribute)
+
 private:
   TDF_LabelMap     myTouched;
   TDF_LabelMap     myImpacted;

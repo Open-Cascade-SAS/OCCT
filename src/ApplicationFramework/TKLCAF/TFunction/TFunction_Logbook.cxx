@@ -22,6 +22,8 @@
 #include <TFunction_Logbook.hxx>
 #include <Standard_GUID.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_Logbook, TDF_Attribute)
+
 //=======================================================================
 // function : GetID
 // purpose  : Static method to get an ID
