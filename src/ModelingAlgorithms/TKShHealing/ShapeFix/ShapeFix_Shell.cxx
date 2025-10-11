@@ -302,12 +302,9 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
                                   TopTools_DataMapOfShapeShape& aMapFaceShells,
                                   TopTools_SequenceOfShape&     ErrFaces)
 {
-  Message::SendInfo() << "GetShells: Starting with " << Lface.Length() << " faces";
-
   Standard_Boolean done = Standard_False;
   if (!Lface.Length())
   {
-    Message::SendInfo() << "GetShells: No faces to process, returning false";
     return Standard_False;
   }
   TopoDS_Shell nshell;
