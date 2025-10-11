@@ -302,9 +302,14 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
                                   TopTools_DataMapOfShapeShape& aMapFaceShells,
                                   TopTools_SequenceOfShape&     ErrFaces)
 {
+  Message::SendInfo() << "GetShells: Starting with " << Lface.Length() << " faces";
+
   Standard_Boolean done = Standard_False;
   if (!Lface.Length())
+  {
+    Message::SendInfo() << "GetShells: No faces to process, returning false";
     return Standard_False;
+  }
   TopoDS_Shell nshell;
   BRep_Builder B;
   B.MakeShell(nshell);
@@ -402,15 +407,17 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
   NCollection_List<TopTools_SequenceOfShape> aConnectedGroups =
     GetConnectedFaceGroups(aFaceEdges, aEdgeFaces);
 
+  // Process only the largest connected group for shell construction
+  if (aConnectedGroups.IsEmpty())
+  {
+    return Standard_False;
+  }
+
   // Some assumption that each edge can be in two orientations
   aNumberOfEdges = static_cast<size_t>((aNumberOfEdges / 2) + 1);
 
   EdgeOrientedMap aProcessedEdges;
   aProcessedEdges.reserve(aNumberOfEdges);
-
-  // Process only the largest connected group for shell construction
-  if (aConnectedGroups.IsEmpty())
-    return Standard_False;
 
   TopTools_SequenceOfShape aProcessingFaces = std::move(aConnectedGroups.First());
 
@@ -634,6 +641,8 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
       aSeqUnconnectFaces.Append(aUnprocessedGroup.Value(aFaceIdx));
     }
   }
+
+  Lface.Clear();
 
   // Sequence of faces Lface contains faces which can not be added to obtained shells.
   for (Standard_Integer j1 = 1; j1 <= aSeqUnconnectFaces.Length(); j1++)
