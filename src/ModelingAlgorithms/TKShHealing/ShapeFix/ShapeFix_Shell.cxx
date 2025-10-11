@@ -177,12 +177,13 @@ static Standard_Boolean GetFreeEdges(const TopoDS_Shape& aShape, TopTools_MapOfS
   return !MapEdges.IsEmpty();
 }
 
-//=======================================================================
-// function : GetConnectedFaceGroups
-// purpose  : Groups connected faces into separate dynamic arrays using existing
-//            connectivity data. Each face appears in exactly one group.
-//            Uses existing FaceEdgesMap and EdgeFacesMap for connectivity.
-//=======================================================================
+/// Groups connected faces into separate sequences using existing connectivity data.
+/// Uses depth-first search to find connected components through shared edges.
+/// Each face appears in exactly one group, ensuring no duplicates across groups.
+/// Groups are sorted by size with the largest group first.
+/// @param theFaceEdges Map from faces to their constituent edges
+/// @param theEdgeFaces Map from edges to faces that contain them
+/// @return List of face sequences, each representing one connected component
 static NCollection_List<TopTools_SequenceOfShape> GetConnectedFaceGroups(
   const std::unordered_map<
     TopoDS_Face,
@@ -288,31 +289,32 @@ static NCollection_List<TopTools_SequenceOfShape> GetConnectedFaceGroups(
   return aConnectedGroups;
 }
 
-//=======================================================================
-// function : GetShells
-// purpose  : If mode isMultiConnex = Standard_True gets max possible shell for
-//            exception of multiconnexity parts.
-//            Else if this mode is equal to Standard_False maximum possible
-//            shell will be created without taking account of multiconnexity.
-//            In this function map face - shell and sequence of mebius faces is formed.
-//=======================================================================
-static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
-                                  const TopTools_MapOfShape&    aMapMultiConnectEdges,
-                                  TopTools_SequenceOfShape&     aSeqShells,
-                                  TopTools_DataMapOfShapeShape& aMapFaceShells,
-                                  TopTools_SequenceOfShape&     ErrFaces)
+/// Creates shells from connected face groups using connectivity analysis.
+/// Processes only the largest connected group for shell construction, improving efficiency
+/// by focusing on faces that are actually topologically connected.
+/// @param theLfaces Input sequence of faces to process; returns unprocessed faces
+/// @param theMapMultiConnectEdges Map of edges shared by more than 2 faces (multiconnectivity mode)
+/// @param theSeqShells Output sequence of created shells
+/// @param theMapFaceShells Output map linking faces to their containing shells
+/// @param theErrFaces Output sequence of faces that could not be processed (e.g., Mobius-like)
+/// @return Standard_True if shell construction was successful, Standard_False otherwise
+static Standard_Boolean GetShells(TopTools_SequenceOfShape&     theLfaces,
+                                  const TopTools_MapOfShape&    theMapMultiConnectEdges,
+                                  TopTools_SequenceOfShape&     theSeqShells,
+                                  TopTools_DataMapOfShapeShape& theMapFaceShells,
+                                  TopTools_SequenceOfShape&     theErrFaces)
 {
-  Standard_Boolean done = Standard_False;
-  if (!Lface.Length())
+  Standard_Boolean aDone = Standard_False;
+  if (!theLfaces.Length())
   {
     return Standard_False;
   }
   TopoDS_Shell nshell;
   BRep_Builder B;
   B.MakeShell(nshell);
-  Standard_Boolean                  isMultiConnex = !aMapMultiConnectEdges.IsEmpty();
+  Standard_Boolean                  anIsMultiConnex = !theMapMultiConnectEdges.IsEmpty();
   Standard_Integer                  i = 1, j = 1;
-  Handle(NCollection_BaseAllocator) anAllocator = aMapMultiConnectEdges.Allocator();
+  Handle(NCollection_BaseAllocator) anAllocator = theMapMultiConnectEdges.Allocator();
   TopTools_SequenceOfShape          aSeqUnconnectFaces(anAllocator);
 
   // Using STL containers because number of faces or edges can be too high
@@ -342,10 +344,11 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
     TempProcessedEdges;
 
   FaceEdgesMap aFaceEdges;
-  aFaceEdges.reserve(Lface.Length());
+  aFaceEdges.reserve(theLfaces.Length());
   size_t                                aNumberOfEdges = 0;
   NCollection_DynamicArray<TopoDS_Edge> aTempEdges;
-  for (TopTools_SequenceOfShape::Iterator anFaceIter(Lface); anFaceIter.More(); anFaceIter.Next())
+  for (TopTools_SequenceOfShape::Iterator anFaceIter(theLfaces); anFaceIter.More();
+       anFaceIter.Next())
   {
     aTempEdges.Clear();
     TopoDS_Face aFace = TopoDS::Face(anFaceIter.Value());
@@ -437,7 +440,7 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
 
       // if multiconnexity mode is equal to Standard_True faces contains
       // the same multiconnexity edges are not added to one shell.
-      if (isMultiConnex && aMapMultiConnectEdges.Contains(edge))
+      if (anIsMultiConnex && theMapMultiConnectEdges.Contains(edge))
         continue;
 
       auto aProcessedEdgeIt = aProcessedEdges.find(edge);
@@ -501,7 +504,7 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
 
     if (nbe != 0 && nbbe != 0)
     {
-      ErrFaces.Append(F1);
+      theErrFaces.Append(F1);
       aProcessingFaces.Remove(i);
       j++;
       continue;
@@ -536,7 +539,7 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
             aPair       = aRevertedPair;
           }
         }
-        done = Standard_True;
+        aDone = Standard_True;
       }
       else
       {
@@ -561,16 +564,16 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
       }
       j++;
       B.Add(nshell, F1);
-      aMapFaceShells.Bind(F1, nshell);
+      theMapFaceShells.Bind(F1, nshell);
       aProcessingFaces.Remove(i);
 
       // check if closed shell is obtained in multi connex mode and add to sequence of
       // shells and new shell begin to construct.
       // (check is n*2)
-      if (isMultiConnex && BRep_Tool::IsClosed(nshell))
+      if (anIsMultiConnex && BRep_Tool::IsClosed(nshell))
       {
         nshell.Closed(Standard_True);
-        aSeqShells.Append(nshell);
+        theSeqShells.Append(nshell);
         TopoDS_Shell nshellnext;
         B.MakeShell(nshellnext);
         nshell = nshellnext;
@@ -587,7 +590,7 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
       if (aItf.More())
       {
         aSeqUnconnectFaces.Append(aItf.Value());
-        aMapFaceShells.UnBind(aItf.Value());
+        theMapFaceShells.UnBind(aItf.Value());
       }
       TopoDS_Shell nshellnext;
       B.MakeShell(nshellnext);
@@ -597,8 +600,8 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
     }
   }
   Standard_Boolean isContains = Standard_False;
-  for (Standard_Integer k = 1; k <= aSeqShells.Length() && !isContains; k++)
-    isContains = nshell.IsSame(aSeqShells.Value(k));
+  for (Standard_Integer k = 1; k <= theSeqShells.Length() && !isContains; k++)
+    isContains = nshell.IsSame(theSeqShells.Value(k));
   if (!isContains)
   {
     Standard_Integer numFace = 0;
@@ -611,14 +614,14 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
     if (numFace > 1)
     {
       // close all closed shells in no multi connex mode
-      if (!isMultiConnex)
+      if (!anIsMultiConnex)
         nshell.Closed(BRep_Tool::IsClosed(nshell));
-      aSeqShells.Append(nshell);
+      theSeqShells.Append(nshell);
     }
     else if (numFace == 1)
     {
-      if (aMapFaceShells.IsBound(aFace))
-        aMapFaceShells.UnBind(aFace);
+      if (theMapFaceShells.IsBound(aFace))
+        theMapFaceShells.UnBind(aFace);
       aProcessingFaces.Append(aFace);
     }
   }
@@ -639,15 +642,15 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
     }
   }
 
-  Lface.Clear();
+  theLfaces.Clear();
 
-  // Sequence of faces Lface contains faces which can not be added to obtained shells.
+  // Sequence of faces theLfaces contains faces which can not be added to obtained shells.
   for (Standard_Integer j1 = 1; j1 <= aSeqUnconnectFaces.Length(); j1++)
   {
-    Lface.Append(aSeqUnconnectFaces.Value(j1));
+    theLfaces.Append(aSeqUnconnectFaces.Value(j1));
   }
 
-  return done;
+  return aDone;
 }
 
 //=======================================================================
