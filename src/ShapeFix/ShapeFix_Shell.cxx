@@ -23,6 +23,10 @@
 #include <BRepBndLib.hxx>
 #include <Message_Msg.hxx>
 #include <Message_ProgressScope.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Array1.hxx>
 #include <ShapeAnalysis_Shell.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeFix_Face.hxx>
@@ -48,7 +52,34 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
+#include <unordered_set>
+#include <unordered_map>
+#include <stack>
+#include <algorithm>
+
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Shell, ShapeFix_Root)
+
+namespace
+{
+// Type aliases for unordered maps with custom allocators
+using FaceEdgesAllocator =
+  NCollection_Allocator<std::pair<const TopoDS_Face, NCollection_Array1<TopoDS_Edge>>>;
+using FaceEdgesMap = std::unordered_map<TopoDS_Face,
+                                        NCollection_Array1<TopoDS_Edge>,
+                                        TopTools_ShapeMapHasher,
+                                        TopTools_ShapeMapHasher,
+                                        FaceEdgesAllocator>;
+using EdgeFacesAllocator =
+  NCollection_Allocator<std::pair<const TopoDS_Edge, NCollection_DynamicArray<TopoDS_Face>>>;
+using EdgeFacesMap = std::unordered_map<TopoDS_Edge,
+                                        NCollection_DynamicArray<TopoDS_Face>,
+                                        TopTools_ShapeMapHasher,
+                                        TopTools_ShapeMapHasher,
+                                        EdgeFacesAllocator>;
+
+// Default increment for dynamic array of faces per edge
+constexpr Standard_Integer DEFAULT_EDGE_FACES_INCREMENT = 5;
+} // namespace
 
 //=================================================================================================
 
@@ -168,137 +199,404 @@ static Standard_Boolean GetFreeEdges(const TopoDS_Shape& aShape, TopTools_MapOfS
   return !MapEdges.IsEmpty();
 }
 
-//=======================================================================
-// function : GetShells
-// purpose  : If mode isMultiConnex = Standard_True gets max possible shell for
-//            exception of multiconnexity parts.
-//            Else if this mode is equal to Standard_False maximum possible
-//            shell will be created without taking account of multiconnexity.
-//            In this function map face - shell and sequence of mebius faces is formed.
-//=======================================================================
-static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
-                                  const TopTools_MapOfShape&    aMapMultiConnectEdges,
-                                  TopTools_SequenceOfShape&     aSeqShells,
-                                  TopTools_DataMapOfShapeShape& aMapFaceShells,
-                                  TopTools_SequenceOfShape&     ErrFaces)
+/// Groups connected faces into separate sequences using existing connectivity data.
+/// Uses depth-first search to find connected components through shared edges.
+/// Each face appears in exactly one group, ensuring no duplicates across groups.
+/// Groups are sorted by size with the largest group first.
+/// @param theFaceEdges Map from faces to their constituent edges
+/// @param theEdgeFaces Map from edges to faces that contain them
+/// @return List of face sequences, each representing one connected component
+static NCollection_List<TopTools_SequenceOfShape> GetConnectedFaceGroups(
+  const FaceEdgesMap& theFaceEdges,
+  const EdgeFacesMap& theEdgeFaces)
 {
-  Standard_Boolean done = Standard_False;
-  if (!Lface.Length())
-    return Standard_False;
-  TopoDS_Shell        nshell;
-  TopTools_MapOfShape dire, reve;
-  BRep_Builder        B;
-  B.MakeShell(nshell);
-  Standard_Boolean         isMultiConnex = !aMapMultiConnectEdges.IsEmpty();
-  Standard_Integer         i = 1, j = 1;
-  TopTools_SequenceOfShape aSeqUnconnectFaces;
-  for (; i <= Lface.Length(); i++)
+  NCollection_List<TopTools_SequenceOfShape> aConnectedGroups;
+
+  if (theFaceEdges.empty())
   {
-    TopTools_MapOfShape dtemp, rtemp;
-    Standard_Integer    nbbe = 0, nbe = 0;
-    TopoDS_Face         F1 = TopoDS::Face(Lface.Value(i));
-    for (TopExp_Explorer expe(F1, TopAbs_EDGE); expe.More(); expe.Next())
+    return aConnectedGroups;
+  }
+
+  TopTools_MapOfShape aVisitedFaces(static_cast<int>(theFaceEdges.size()));
+
+  for (auto aFaceIter = theFaceEdges.begin(); aFaceIter != theFaceEdges.end(); ++aFaceIter)
+  {
+    const TopoDS_Face& aStartFace = aFaceIter->first;
+
+    if (aVisitedFaces.Contains(aStartFace))
     {
-      TopoDS_Edge edge = TopoDS::Edge(expe.Current());
+      continue;
+    }
+
+    // Start new connected group
+    TopTools_SequenceOfShape aConnectedGroup;
+
+    // DFS traversal using STL stack with NCollection_Allocator
+    using StackAllocator = NCollection_Allocator<TopoDS_Face>;
+    std::stack<TopoDS_Face, std::deque<TopoDS_Face, StackAllocator>> aStack;
+    aStack.push(aStartFace);
+    aVisitedFaces.Add(aStartFace);
+
+    while (!aStack.empty())
+    {
+      const TopoDS_Face aCurrentFace = aStack.top();
+      aStack.pop();
+      aConnectedGroup.Append(aCurrentFace);
+
+      // Find connected faces through shared edges
+      auto aFaceEdgesIter = theFaceEdges.find(aCurrentFace);
+      if (aFaceEdgesIter != theFaceEdges.end())
+      {
+        const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdgesIter->second;
+
+        for (Standard_Integer anEdgeIdx = aFaceEdgesArray.Lower();
+             anEdgeIdx <= aFaceEdgesArray.Upper();
+             ++anEdgeIdx)
+        {
+          const TopoDS_Edge& anEdge = aFaceEdgesArray.Value(anEdgeIdx);
+
+          auto anEdgeFacesIter = theEdgeFaces.find(anEdge);
+          if (anEdgeFacesIter != theEdgeFaces.end())
+          {
+            const NCollection_DynamicArray<TopoDS_Face>& aConnectedFaces = anEdgeFacesIter->second;
+
+            for (Standard_Integer aFaceIdx = 0; aFaceIdx < aConnectedFaces.Length(); ++aFaceIdx)
+            {
+              const TopoDS_Face& aNeighborFace = aConnectedFaces.Value(aFaceIdx);
+
+              if (!aVisitedFaces.Contains(aNeighborFace))
+              {
+                aVisitedFaces.Add(aNeighborFace);
+                aStack.push(aNeighborFace);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Insert in sorted order (largest groups first)
+    Standard_Boolean anIsInserted = Standard_False;
+
+    for (NCollection_List<TopTools_SequenceOfShape>::Iterator anIter(aConnectedGroups);
+         anIter.More();
+         anIter.Next())
+    {
+      if (aConnectedGroup.Length() > anIter.Value().Length())
+      {
+        aConnectedGroups.InsertBefore(aConnectedGroup, anIter);
+        anIsInserted = Standard_True;
+        break;
+      }
+    }
+
+    if (!anIsInserted)
+    {
+      aConnectedGroups.Append(aConnectedGroup);
+    }
+  }
+
+  return aConnectedGroups;
+}
+
+/// Creates shells from connected face groups using connectivity analysis.
+/// Processes only the largest connected group for shell construction, improving efficiency
+/// by focusing on faces that are actually topologically connected.
+/// @param theLfaces Input sequence of faces to process; returns unprocessed faces
+/// @param theMapMultiConnectEdges Map of edges shared by more than 2 faces (multiconnectivity mode)
+/// @param theSeqShells Output sequence of created shells
+/// @param theMapFaceShells Output map linking faces to their containing shells
+/// @param theErrFaces Output sequence of faces that could not be processed (e.g., Mobius-like)
+/// @return Standard_True if shell construction was successful, Standard_False otherwise
+static Standard_Boolean GetShells(TopTools_SequenceOfShape&     theLfaces,
+                                  const TopTools_MapOfShape&    theMapMultiConnectEdges,
+                                  TopTools_SequenceOfShape&     theSeqShells,
+                                  TopTools_DataMapOfShapeShape& theMapFaceShells,
+                                  TopTools_SequenceOfShape&     theErrFaces)
+{
+  Standard_Boolean aDone = Standard_False;
+  if (!theLfaces.Length())
+  {
+    return Standard_False;
+  }
+  TopoDS_Shell nshell;
+  BRep_Builder B;
+  B.MakeShell(nshell);
+  Standard_Boolean         anIsMultiConnex = !theMapMultiConnectEdges.IsEmpty();
+  Standard_Integer         aFaceIdx = 1, aFacesInShellCount = 1;
+  TopTools_SequenceOfShape aSeqUnconnectFaces;
+
+  // Using STL containers because number of faces or edges can be too high
+  // to keep them on flat basket OCCT map
+  using EdgeMapAllocator =
+    NCollection_Allocator<std::pair<const TopoDS_Edge, std::pair<bool, bool>>>;
+  using EdgeOrientedMap = std::unordered_map<TopoDS_Edge,
+                                             std::pair<bool, bool>,
+                                             TopTools_ShapeMapHasher,
+                                             TopTools_ShapeMapHasher,
+                                             EdgeMapAllocator>;
+  using TempProcessedEdges =
+    NCollection_DataMap<TopoDS_Edge, std::pair<bool, bool>, TopTools_ShapeMapHasher>;
+
+  FaceEdgesMap aFaceEdges;
+  aFaceEdges.reserve(theLfaces.Length());
+  size_t                                aNumberOfEdges = 0;
+  NCollection_DynamicArray<TopoDS_Edge> aTempEdges;
+  for (TopTools_SequenceOfShape::Iterator anFaceIter(theLfaces); anFaceIter.More();
+       anFaceIter.Next())
+  {
+    aTempEdges.Clear();
+    TopoDS_Face aFace = TopoDS::Face(anFaceIter.Value());
+    for (TopExp_Explorer anEdgeExp(aFace, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+    {
+      aTempEdges.Append(TopoDS::Edge(anEdgeExp.Current()));
+      aNumberOfEdges++;
+    }
+    NCollection_Array1<TopoDS_Edge> aFaceEdgesArray(1, static_cast<int>(aTempEdges.Length()));
+    for (Standard_Integer idx = 0; idx < aTempEdges.Length(); ++idx)
+    {
+      aFaceEdgesArray.SetValue(idx + 1, aTempEdges.Value(idx));
+    }
+    aFaceEdges[aFace] = std::move(aFaceEdgesArray);
+  }
+
+  EdgeFacesMap aEdgeFaces;
+  aEdgeFaces.reserve(aNumberOfEdges);
+
+  for (const auto& aFaceEdgesPair : aFaceEdges)
+  {
+    const TopoDS_Face&                     aFace           = aFaceEdgesPair.first;
+    const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdgesPair.second;
+
+    for (Standard_Integer anEdgeInd = aFaceEdgesArray.Lower(); anEdgeInd <= aFaceEdgesArray.Upper();
+         ++anEdgeInd)
+    {
+      const TopoDS_Edge& anEdge = aFaceEdgesArray.Value(anEdgeInd);
+
+      auto& aFacesArray = aEdgeFaces[anEdge];
+
+      // Check if face already exists in the array
+      Standard_Boolean aFaceExists = Standard_False;
+      for (Standard_Integer aFaceCheckIdx = 0; aFaceCheckIdx < aFacesArray.Length();
+           ++aFaceCheckIdx)
+      {
+        if (aFacesArray.Value(aFaceCheckIdx).IsSame(aFace))
+        {
+          aFaceExists = Standard_True;
+          break;
+        }
+      }
+
+      if (aFacesArray.IsEmpty())
+      {
+        aFacesArray.SetIncrement(DEFAULT_EDGE_FACES_INCREMENT);
+      }
+
+      if (!aFaceExists)
+      {
+        aFacesArray.Append(aFace);
+      }
+    }
+  }
+
+  // Get connected groups of faces using existing connectivity data
+  NCollection_List<TopTools_SequenceOfShape> aConnectedGroups =
+    GetConnectedFaceGroups(aFaceEdges, aEdgeFaces);
+
+  // Process only the largest connected group for shell construction
+  if (aConnectedGroups.IsEmpty())
+  {
+    return Standard_False;
+  }
+
+  // Some assumption that each edge can be in two orientations
+  aNumberOfEdges = static_cast<size_t>((aNumberOfEdges / 2) + 1);
+
+  EdgeOrientedMap aProcessedEdges;
+  aProcessedEdges.reserve(aNumberOfEdges);
+
+  TopTools_SequenceOfShape aProcessingFaces = std::move(aConnectedGroups.First());
+
+  TempProcessedEdges aTempProcessedEdges(static_cast<int>(aNumberOfEdges));
+  for (; aFaceIdx <= aProcessingFaces.Length(); aFaceIdx++)
+  {
+    aTempProcessedEdges.Clear();
+
+    Standard_Integer aBadOrientationCount = 0, aGoodOrientationCount = 0;
+    TopoDS_Face      F1 = TopoDS::Face(aProcessingFaces.Value(aFaceIdx));
+    // Get edges of the face
+    const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdges[F1];
+
+    for (Standard_Integer anEdgeInd = aFaceEdgesArray.Lower(); anEdgeInd <= aFaceEdgesArray.Upper();
+         ++anEdgeInd)
+    {
+      const TopoDS_Edge& edge = aFaceEdgesArray.Value(anEdgeInd);
 
       // if multiconnexity mode is equal to Standard_True faces contains
       // the same multiconnexity edges are not added to one shell.
-      if (isMultiConnex && aMapMultiConnectEdges.Contains(edge))
+      if (anIsMultiConnex && theMapMultiConnectEdges.Contains(edge))
         continue;
 
-      if ((edge.Orientation() == TopAbs_FORWARD && dire.Contains(edge))
-          || (edge.Orientation() == TopAbs_REVERSED && reve.Contains(edge)))
-        nbbe++;
-      else if ((edge.Orientation() == TopAbs_FORWARD && reve.Contains(edge))
-               || (edge.Orientation() == TopAbs_REVERSED && dire.Contains(edge)))
-        nbe++;
+      auto aProcessedEdgeIt = aProcessedEdges.find(edge);
 
-      if (dire.Contains(edge))
-        dire.Remove(edge);
-      else if (reve.Contains(edge))
-        reve.Remove(edge);
-      else
+      if (aProcessedEdgeIt == aProcessedEdges.end())
       {
-        if (edge.Orientation() == TopAbs_FORWARD)
-          dtemp.Add(edge);
-        if (edge.Orientation() == TopAbs_REVERSED)
-          rtemp.Add(edge);
+        std::pair<bool, bool>* aTempProcessedEdgeIt = aTempProcessedEdges.ChangeSeek(edge);
+        if (!aTempProcessedEdgeIt)
+        {
+          std::pair<bool, bool> anEdgeOrientationPair{(edge.Orientation() == TopAbs_FORWARD),
+                                                      (edge.Orientation() == TopAbs_REVERSED)};
+
+          aTempProcessedEdges.Bind(edge, anEdgeOrientationPair);
+        }
+        else
+        {
+          aTempProcessedEdgeIt->first =
+            aTempProcessedEdgeIt->first || (edge.Orientation() == TopAbs_FORWARD);
+          aTempProcessedEdgeIt->second =
+            aTempProcessedEdgeIt->second || (edge.Orientation() == TopAbs_REVERSED);
+        }
+        continue;
+      }
+
+      auto& aPair = aProcessedEdgeIt->second;
+
+      const bool isDirect   = aPair.first;
+      const bool isReversed = aPair.second;
+
+      if ((edge.Orientation() == TopAbs_FORWARD && isDirect)
+          || (edge.Orientation() == TopAbs_REVERSED && isReversed))
+      {
+        aBadOrientationCount++;
+      }
+      else if ((edge.Orientation() == TopAbs_FORWARD && isReversed)
+               || (edge.Orientation() == TopAbs_REVERSED && isDirect))
+      {
+        aGoodOrientationCount++;
+      }
+
+      if (isDirect)
+      {
+        aPair.first = false;
+      }
+      else if (isReversed)
+      {
+        aPair.second = false;
+      }
+
+      if (!aPair.first && !aPair.second)
+      {
+        // if edge is processed in this face it is removed from map of processed edges
+        aProcessedEdges.erase(aProcessedEdgeIt);
       }
     }
-    if (!nbbe && !nbe && dtemp.IsEmpty() && rtemp.IsEmpty())
+
+    if (!aBadOrientationCount && !aGoodOrientationCount && aTempProcessedEdges.IsEmpty())
       continue;
 
     // if face can not be added to shell it added to sequence of error faces.
 
-    if (nbe != 0 && nbbe != 0)
+    if (aGoodOrientationCount != 0 && aBadOrientationCount != 0)
     {
-      ErrFaces.Append(F1);
-      Lface.Remove(i);
-      j++;
+      theErrFaces.Append(F1);
+      aProcessingFaces.Remove(aFaceIdx);
+      aFacesInShellCount++;
       continue;
     }
 
     // Addition of face to shell. In the dependance of orientation faces in the shell
     //  added face can be reversed.
 
-    if ((nbe != 0 || nbbe != 0) || j == 1)
+    if ((aGoodOrientationCount != 0 || aBadOrientationCount != 0) || aFacesInShellCount == 1)
     {
-      if (nbbe != 0)
+      if (aBadOrientationCount != 0)
       {
         F1.Reverse();
-        for (TopTools_MapIteratorOfMapOfShape ite(dtemp); ite.More(); ite.Next())
-          reve.Add(ite.Key());
-        for (TopTools_MapIteratorOfMapOfShape ite1(rtemp); ite1.More(); ite1.Next())
-          dire.Add(ite1.Key());
-        done = Standard_True;
+
+        for (TempProcessedEdges::Iterator aTempEdgeIter(aTempProcessedEdges); aTempEdgeIter.More();
+             aTempEdgeIter.Next())
+        {
+          const TopoDS_Edge& edge                  = aTempEdgeIter.Key();
+          const auto&        anEdgeOrientationPair = aTempEdgeIter.Value();
+
+          std::pair<bool, bool> aRevertedPair{!anEdgeOrientationPair.first,
+                                              !anEdgeOrientationPair.second};
+
+          auto aProcessedEdgeIt = aProcessedEdges.find(edge);
+          if (aProcessedEdgeIt == aProcessedEdges.end())
+          {
+            aProcessedEdges.emplace(edge, aRevertedPair);
+          }
+          else
+          {
+            auto& aPair = aProcessedEdgeIt->second;
+            aPair       = aRevertedPair;
+          }
+        }
+        aDone = Standard_True;
       }
       else
       {
-        for (TopTools_MapIteratorOfMapOfShape ite(dtemp); ite.More(); ite.Next())
-          dire.Add(ite.Key());
-        for (TopTools_MapIteratorOfMapOfShape ite1(rtemp); ite1.More(); ite1.Next())
-          reve.Add(ite1.Key());
+        for (TempProcessedEdges::Iterator aTempEdgeIter(aTempProcessedEdges); aTempEdgeIter.More();
+             aTempEdgeIter.Next())
+        {
+          const TopoDS_Edge& edge                  = aTempEdgeIter.Key();
+          const auto&        anEdgeOrientationPair = aTempEdgeIter.Value();
+
+          auto aProcessedEdgeIt = aProcessedEdges.find(edge);
+          if (aProcessedEdgeIt == aProcessedEdges.end())
+          {
+            aProcessedEdges.emplace(edge, anEdgeOrientationPair);
+          }
+          else
+          {
+            auto& aPair  = aProcessedEdgeIt->second;
+            aPair.first  = anEdgeOrientationPair.first;
+            aPair.second = anEdgeOrientationPair.second;
+          }
+        }
       }
-      j++;
+      aFacesInShellCount++;
       B.Add(nshell, F1);
-      aMapFaceShells.Bind(F1, nshell);
-      Lface.Remove(i);
+      theMapFaceShells.Bind(F1, nshell);
+      aProcessingFaces.Remove(aFaceIdx);
 
       // check if closed shell is obtained in multi connex mode and add to sequence of
       // shells and new shell begin to construct.
       // (check is n*2)
-      if (isMultiConnex && BRep_Tool::IsClosed(nshell))
+      if (anIsMultiConnex && BRep_Tool::IsClosed(nshell))
       {
         nshell.Closed(Standard_True);
-        aSeqShells.Append(nshell);
+        theSeqShells.Append(nshell);
         TopoDS_Shell nshellnext;
         B.MakeShell(nshellnext);
-        nshell = nshellnext;
-        j      = 1;
+        nshell             = nshellnext;
+        aFacesInShellCount = 1;
       }
 
-      i = 0;
+      aFaceIdx = 0;
     }
     // if shell contains of one face. This face is added to sequence of faces.
     //  This shell is removed.
-    if (Lface.Length() && i == Lface.Length() && j <= 2)
+    if (aProcessingFaces.Length() && aFaceIdx == aProcessingFaces.Length()
+        && aFacesInShellCount <= 2)
     {
       TopoDS_Iterator aItf(nshell, Standard_False);
       if (aItf.More())
       {
         aSeqUnconnectFaces.Append(aItf.Value());
-        aMapFaceShells.UnBind(aItf.Value());
+        theMapFaceShells.UnBind(aItf.Value());
       }
       TopoDS_Shell nshellnext;
       B.MakeShell(nshellnext);
-      nshell = nshellnext;
-      i      = 0;
-      j      = 1;
+      nshell             = nshellnext;
+      aFaceIdx           = 0;
+      aFacesInShellCount = 1;
     }
   }
   Standard_Boolean isContains = Standard_False;
-  for (Standard_Integer k = 1; k <= aSeqShells.Length() && !isContains; k++)
-    isContains = nshell.IsSame(aSeqShells.Value(k));
+  for (Standard_Integer k = 1; k <= theSeqShells.Length() && !isContains; k++)
+    isContains = nshell.IsSame(theSeqShells.Value(k));
   if (!isContains)
   {
     Standard_Integer numFace = 0;
@@ -311,25 +609,43 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
     if (numFace > 1)
     {
       // close all closed shells in no multi connex mode
-      if (!isMultiConnex)
+      if (!anIsMultiConnex)
         nshell.Closed(BRep_Tool::IsClosed(nshell));
-      aSeqShells.Append(nshell);
+      theSeqShells.Append(nshell);
     }
     else if (numFace == 1)
     {
-      if (aMapFaceShells.IsBound(aFace))
-        aMapFaceShells.UnBind(aFace);
-      Lface.Append(aFace);
+      if (theMapFaceShells.IsBound(aFace))
+        theMapFaceShells.UnBind(aFace);
+      aProcessingFaces.Append(aFace);
     }
   }
 
-  // Sequence of faces Lface contains faces which can not be added to obtained shells.
-  for (Standard_Integer j1 = 1; j1 <= aSeqUnconnectFaces.Length(); j1++)
+  // Add all unprocessed connected groups (second group and after) to unconnected faces
+  Standard_Integer aGroupIndex = 1;
+  for (NCollection_List<TopTools_SequenceOfShape>::Iterator aGroupIter(aConnectedGroups);
+       aGroupIter.More();
+       aGroupIter.Next(), ++aGroupIndex)
   {
-    Lface.Append(aSeqUnconnectFaces);
+    if (aGroupIndex == 1)
+      continue; // Skip first group (already processed)
+
+    const TopTools_SequenceOfShape& aUnprocessedGroup = aGroupIter.Value();
+    for (Standard_Integer aFaceIdx = 1; aFaceIdx <= aUnprocessedGroup.Length(); ++aFaceIdx)
+    {
+      aSeqUnconnectFaces.Append(aUnprocessedGroup.Value(aFaceIdx));
+    }
   }
 
-  return done;
+  theLfaces = std::move(aProcessingFaces);
+
+  // Add unconnected faces from the largest group that couldn't be added to shells
+  for (Standard_Integer j1 = 1; j1 <= aSeqUnconnectFaces.Length(); j1++)
+  {
+    theLfaces.Append(aSeqUnconnectFaces.Value(j1));
+  }
+
+  return aDone;
 }
 
 //=======================================================================
