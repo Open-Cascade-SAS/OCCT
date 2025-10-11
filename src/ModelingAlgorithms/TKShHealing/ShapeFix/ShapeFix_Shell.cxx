@@ -639,7 +639,7 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     theLfaces,
     }
   }
 
-  theLfaces.Clear();
+  theLfaces = std::move(aProcessingFaces);
 
   // Sequence of faces theLfaces contains faces which can not be added to obtained shells.
   for (Standard_Integer j1 = 1; j1 <= aSeqUnconnectFaces.Length(); j1++)
