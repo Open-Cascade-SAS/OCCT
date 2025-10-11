@@ -200,7 +200,7 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
   TopTools_SequenceOfShape aSeqUnconnectFaces;
 
   // Using STL containers because number of faces or edges can be too high
-  // to keep them on flat backet OCCT map
+  // to keep them on flat basket OCCT map
   using EdgeMapAllocator =
     NCollection_Allocator<std::pair<const TopoDS_Edge, std::pair<bool, bool>>>;
   using EdgeOrientedMap = std::unordered_map<TopoDS_Edge,
