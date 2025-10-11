@@ -312,10 +312,9 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     theLfaces,
   TopoDS_Shell nshell;
   BRep_Builder B;
   B.MakeShell(nshell);
-  Standard_Boolean                  anIsMultiConnex = !theMapMultiConnectEdges.IsEmpty();
-  Standard_Integer                  i = 1, j = 1;
-  Handle(NCollection_BaseAllocator) anAllocator = theMapMultiConnectEdges.Allocator();
-  TopTools_SequenceOfShape          aSeqUnconnectFaces(anAllocator);
+  Standard_Boolean         anIsMultiConnex = !theMapMultiConnectEdges.IsEmpty();
+  Standard_Integer         i = 1, j = 1;
+  TopTools_SequenceOfShape aSeqUnconnectFaces;
 
   // Using STL containers because number of faces or edges can be too high
   // to keep them on flat basket OCCT map
@@ -421,12 +420,10 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     theLfaces,
 
   TopTools_SequenceOfShape aProcessingFaces = std::move(aConnectedGroups.First());
 
-  Handle(NCollection_IncAllocator) aTempAllocator = new NCollection_IncAllocator();
-  TempProcessedEdges aTempProcessedEdges(static_cast<int>(aNumberOfEdges), aTempAllocator);
+  TempProcessedEdges aTempProcessedEdges(static_cast<int>(aNumberOfEdges));
   for (; i <= aProcessingFaces.Length(); i++)
   {
     aTempProcessedEdges.Clear();
-    aTempAllocator->Reset();
 
     Standard_Integer nbbe = 0, nbe = 0;
     TopoDS_Face      F1 = TopoDS::Face(aProcessingFaces.Value(i));
@@ -812,8 +809,8 @@ static Standard_Boolean AddMultiConexityFaces(
     }
 
     // Adds face to open shells containing the same multishared edges.
-    // For nonmanifold mode creation ine shell from face and shells containing the same
-    // multishared edges.
+    // For nonmanifold mode creation ine shell from face and shells containing the same multishared
+    // edges.
     //  If one face can be added to a few shells (case of compsolid) face will be added to each
     //  shell.
     done                      = Standard_True;
@@ -1300,31 +1297,27 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell&    shell
                                                     const Standard_Boolean NonManifold)
 {
   // myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);
-  Standard_Boolean                 done        = Standard_False;
-  Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator();
-  TopTools_SequenceOfShape         aSeqShells(anAllocator);
-  TopTools_SequenceOfShape     aErrFaces(anAllocator); // Compound of faces like to Mebiuce leaf.
-  TopTools_SequenceOfShape     Lface(anAllocator);
-  TopTools_DataMapOfShapeShape aMapFaceShells(1, anAllocator);
-  myShell                                        = shell;
-  myShape                                        = shell;
-  Standard_Integer                 aNumMultShell = 0;
-  Standard_Integer                 nbF           = 0;
-  Handle(NCollection_IncAllocator) aTempAlloc    = new NCollection_IncAllocator();
-  TopTools_MapOfShape              aMapAdded(1, aTempAlloc);
+  Standard_Boolean             done = Standard_False;
+  TopTools_SequenceOfShape     aSeqShells;
+  TopTools_SequenceOfShape     aErrFaces; // Compound of faces like to Mebiuce leaf.
+  TopTools_SequenceOfShape     Lface;
+  TopTools_DataMapOfShapeShape aMapFaceShells;
+  myShell                           = shell;
+  myShape                           = shell;
+  Standard_Integer    aNumMultShell = 0;
+  Standard_Integer    nbF           = 0;
+  TopTools_MapOfShape aMapAdded;
   for (TopoDS_Iterator iter(shell); iter.More(); iter.Next(), nbF++)
   {
     if (aMapAdded.Add(iter.Value()))
       Lface.Append(iter.Value());
   }
-  aMapAdded.Clear(true);
-  aTempAlloc->Reset();
   if (Lface.Length() < nbF)
     done = Standard_True;
 
-  TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces(nbF, aTempAlloc);
+  TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
   TopExp::MapShapesAndAncestors(myShell, TopAbs_EDGE, TopAbs_FACE, aMapEdgeFaces);
-  TopTools_MapOfShape aMapMultiConnectEdges(nbF, anAllocator);
+  TopTools_MapOfShape aMapMultiConnectEdges;
   Standard_Boolean    isFreeBoundaries = Standard_False;
   for (Standard_Integer k = 1; k <= aMapEdgeFaces.Extent(); k++)
   {
@@ -1344,13 +1337,13 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell&    shell
     myShell.Closed(!isFreeBoundaries);
     // clang-format off
     SendWarning (Message_Msg ("FixAdvShell.FixClosedFlag.MSG0"));//Shell has incorrect flag isClosed
-                                                                // clang-format on
+    // clang-format on
   }
   Standard_Boolean isGetShells = Standard_True;
   // Gets possible shells with taking in account of multiconnexity.
   while (isGetShells && Lface.Length())
   {
-    TopTools_SequenceOfShape aTmpSeqShells(anAllocator);
+    TopTools_SequenceOfShape aTmpSeqShells;
     if (GetShells(Lface, aMapMultiConnectEdges, aTmpSeqShells, aMapFaceShells, aErrFaces))
     {
       done = Standard_True;
@@ -1380,8 +1373,6 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell&    shell
                                     aErrFaces,
                                     NonManifold);
   }
-  aMapEdgeFaces.Clear(true);
-  aTempAlloc->Reset();
   aNumMultShell = aSeqShells.Length();
   if (!aErrFaces.IsEmpty())
   {
@@ -1431,7 +1422,7 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell&    shell
   }
   if (aNumMultShell > 1)
   {
-    TopTools_SequenceOfShape OpenShells(anAllocator);
+    TopTools_SequenceOfShape OpenShells;
     for (Standard_Integer i1 = 1; i1 <= aSeqShells.Length(); i1++)
     {
       TopoDS_Shape aShell = aSeqShells.Value(i1);
@@ -1442,8 +1433,7 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell&    shell
       }
     }
     if (OpenShells.Length() > 1)
-      // Attempt of creation closed shell from open shells with taking into account
-      // multiconnexity.
+      // Attempt of creation closed shell from open shells with taking into account multiconnexity.
       CreateClosedShell(OpenShells, aMapMultiConnectEdges);
     aSeqShells.Append(OpenShells);
   }
