@@ -238,6 +238,30 @@ const Standard_GUID& XCAFDoc::ViewRefAnnotationGUID()
   return ID;
 }
 
+//==================================================================================================
+
+const Standard_GUID& XCAFDoc::SupplementalContainerGUID()
+{
+  static const Standard_GUID ID("da071945-9557-41b4-9e44-19e649f98b54");
+  return ID;
+}
+
+//==================================================================================================
+
+const Standard_GUID& XCAFDoc::SupplementalRefGUID()
+{
+  static const Standard_GUID ID("85a1b8d7-0936-4e8b-a953-a8bd7731411a");
+  return ID;
+}
+
+//==================================================================================================
+
+const Standard_GUID& XCAFDoc::SupplementalGeometryGUID()
+{
+  static const Standard_GUID ID("e17cce33-1aa2-4b7f-9060-6e469a7954a9");
+  return ID;
+}
+
 //=================================================================================================
 
 const Standard_GUID& XCAFDoc::LockGUID()

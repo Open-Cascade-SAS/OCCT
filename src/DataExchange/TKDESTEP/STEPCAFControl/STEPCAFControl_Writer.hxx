@@ -408,6 +408,7 @@ protected:
                           const Handle(StepDimTol_GeometricTolerance)&         theEntity,
                           const Handle(StepRepr_RepresentationContext)&        theRC);
 
+   //! Write Geometric_Tolerance entity for given shapes, label and datum system.
   void writeGeomTolerance(const Handle(XSControl_WorkSession)&                      theWS,
                           const TDF_LabelSequence&                                  theShapeSeqL,
                           const TDF_Label&                                          theGeomTolL,
