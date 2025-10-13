@@ -246,7 +246,6 @@
 #include <StepRepr_ValueRepresentationItem.hxx>
 
 #include <TColgp_HArray1OfXYZ.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
@@ -1992,11 +1991,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(
     {
       if (style != aHSeqOfInvisStyle->Value(si))
         continue;
-        // found that current style is invisible.
-#ifdef OCCT_DEBUG
-      std::cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name()
-                << ") is invisible" << std::endl;
-#endif
+
+      // found that current style is invisible.
       IsVisible = Standard_False;
       break;
     }
