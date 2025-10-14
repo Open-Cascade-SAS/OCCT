@@ -49,6 +49,10 @@ public:
   Standard_EXPORT virtual const IMeshData::IPCurveHandle& GetPCurve(
     const Standard_Integer theIndex) const = 0;
 
+  //! Returns an array of pcurves indices for the specified discrete face.
+  Standard_EXPORT virtual const IMeshData::ListOfInteger& GetPCurves(
+    const IMeshData::IFacePtr& theDFace) const = 0;
+
   //! Clears curve and all pcurves assigned to the edge from discretization.
   void Clear(const Standard_Boolean isKeepEndPoints)
   {
