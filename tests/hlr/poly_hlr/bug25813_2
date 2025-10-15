@@ -6,7 +6,7 @@ puts "==========================================="
 puts ""
 
 set viewname ""
-set length 3025.49
+set length 3025.36
 
 restore [locate_data_file bug25813_hlr-bus1-draw-Fusion001.brep] a
 COMPUTE_HLR $viewname $algotype

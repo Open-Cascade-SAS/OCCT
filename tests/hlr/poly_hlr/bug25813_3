@@ -6,7 +6,7 @@ puts "==========================================="
 puts ""
 
 set viewname ""
-set length 301.999
+set length 302.238
 
 ptorus a 30 10
 
