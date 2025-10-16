@@ -25,6 +25,7 @@
 #include <AIS_WalkDelta.hxx>
 
 #include <gp_Pnt.hxx>
+#include <gp_Quaternion.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <NCollection_Array1.hxx>
 #include <OSD_Timer.hxx>
@@ -827,7 +828,7 @@ protected: //! @name rotation/panning transient state variables
   gp_Pnt              myCamStartOpCenter;         //!< camera Center position at the beginning of rotation
   gp_Vec              myCamStartOpToCenter;       //!< vector from rotation gravity point to camera Center at the beginning of rotation
   gp_Vec              myCamStartOpToEye;          //!< vector from rotation gravity point to camera Eye    at the beginning of rotation
-  Graphic3d_Vec3d     myRotateStartYawPitchRoll;  //!< camera yaw pitch roll at the beginning of rotation
+  double              myCurrentRollAngle;        //!< current roll angle for instantaneous roll
   // clang-format on
 };
 
