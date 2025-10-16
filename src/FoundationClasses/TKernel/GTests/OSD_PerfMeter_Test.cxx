@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <gtest/gtest.h>
 #include <OSD_PerfMeter.hxx>
 #include <TCollection_AsciiString.hxx>

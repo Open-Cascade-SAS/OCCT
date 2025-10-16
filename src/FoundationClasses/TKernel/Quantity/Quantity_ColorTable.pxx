@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 RawColor(BLACK, sRGB, 0x000000, 0.000000, 0.000000, 0.000000, RGB, 0.000000, 0.000000, 0.000000),
   RawColor(MATRABLUE,
            sRGB,

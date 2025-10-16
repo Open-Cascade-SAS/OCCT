@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef TKERNEL_PCH_H
 #define TKERNEL_PCH_H
 
