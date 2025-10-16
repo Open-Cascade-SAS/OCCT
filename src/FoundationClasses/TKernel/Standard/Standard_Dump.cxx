@@ -19,11 +19,42 @@
 
 void Standard_Dump::AddValuesSeparator(Standard_OStream& theOStream)
 {
-  Standard_SStream aStream;
-  aStream << theOStream.rdbuf();
-  TCollection_AsciiString aStreamStr = Standard_Dump::Text(aStream);
-  if (!aStreamStr.IsEmpty() && !aStreamStr.EndsWith("{") && !aStreamStr.EndsWith(", "))
+  // Check if the stream has any content by checking the current write position
+  std::streampos aPos = theOStream.tellp();
+  if (aPos <= 0)
+  {
+    // Stream is empty or at the beginning, no separator needed
+    return;
+  }
+
+  // Try to cast to Standard_SStream (std::stringstream)
+  Standard_SStream* anSStream = dynamic_cast<Standard_SStream*>(&theOStream);
+  if (anSStream != NULL)
+  {
+    TCollection_AsciiString aStreamStr = Standard_Dump::Text(*anSStream);
+    if (!aStreamStr.IsEmpty() && !aStreamStr.EndsWith("{") && !aStreamStr.EndsWith(", "))
+    {
+      theOStream << ", ";
+    }
+    return;
+  }
+
+  // Try to cast to std::ostringstream (for cases where users use ostringstream directly)
+  std::ostringstream* anOStrStream = dynamic_cast<std::ostringstream*>(&theOStream);
+  if (anOStrStream != NULL)
+  {
+    TCollection_AsciiString aStreamStr = anOStrStream->str().c_str();
+    if (!aStreamStr.IsEmpty() && !aStreamStr.EndsWith("{") && !aStreamStr.EndsWith(", "))
+    {
+      theOStream << ", ";
+    }
+  }
+  else
+  {
+    // For other stream types where we cannot read the content,
+    // we add the separator unconditionally since we know the stream is not empty
     theOStream << ", ";
+  }
 }
 
 //=================================================================================================

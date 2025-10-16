@@ -764,3 +764,52 @@ TEST(Bnd_BoxTest, UpdateExpandsCorrectly)
   EXPECT_DOUBLE_EQ(1.0, aYmin) << "Box should maintain previous bounds";
   EXPECT_DOUBLE_EQ(2.5, aYmax) << "Box should expand to include new point";
 }
+
+TEST(Bnd_BoxTest, DumpJsonAndInitFromJson)
+{
+  // Create a bounding box with specific values
+  Bnd_Box aBox(gp_Pnt(0, 0, 0), gp_Pnt(10, 5, 3));
+  aBox.SetGap(0.1);
+
+  // Serialize to JSON
+  std::ostringstream anOStream;
+  aBox.DumpJson(anOStream);
+  std::string aJsonStr = anOStream.str();
+
+  // Check that the JSON contains proper separators between fields
+  // This tests the bug in Standard_Dump::AddValuesSeparator
+  EXPECT_NE(aJsonStr.find(", \"Gap\""), std::string::npos)
+    << "JSON should have separator before Gap field. Got: " << aJsonStr;
+  EXPECT_NE(aJsonStr.find(", \"Flags\""), std::string::npos)
+    << "JSON should have separator before Flags field. Got: " << aJsonStr;
+
+  // Verify we don't have missing separators (the bug symptom)
+  EXPECT_EQ(aJsonStr.find("]\"Gap\""), std::string::npos)
+    << "JSON should not have missing separator between CornerMax and Gap. Got: " << aJsonStr;
+  EXPECT_EQ(aJsonStr.find("]\"Flags\""), std::string::npos)
+    << "JSON should not have missing separator between Gap and Flags. Got: " << aJsonStr;
+
+  // Try to deserialize
+  std::stringstream anIStream(aJsonStr);
+  Bnd_Box          aDeserializedBox;
+  Standard_Integer aStreamPos = 1;
+
+  EXPECT_TRUE(aDeserializedBox.InitFromJson(anIStream, aStreamPos))
+    << "Deserialization should succeed with proper JSON format";
+
+  // Verify the deserialized box matches the original
+  Standard_Real aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1;
+  Standard_Real aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
+
+  aBox.Get(aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1);
+  aDeserializedBox.Get(aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2);
+
+  EXPECT_DOUBLE_EQ(aXmin1, aXmin2) << "Deserialized box should match original";
+  EXPECT_DOUBLE_EQ(aYmin1, aYmin2) << "Deserialized box should match original";
+  EXPECT_DOUBLE_EQ(aZmin1, aZmin2) << "Deserialized box should match original";
+  EXPECT_DOUBLE_EQ(aXmax1, aXmax2) << "Deserialized box should match original";
+  EXPECT_DOUBLE_EQ(aYmax1, aYmax2) << "Deserialized box should match original";
+  EXPECT_DOUBLE_EQ(aZmax1, aZmax2) << "Deserialized box should match original";
+  EXPECT_DOUBLE_EQ(aBox.GetGap(), aDeserializedBox.GetGap())
+    << "Deserialized gap should match original";
+}
