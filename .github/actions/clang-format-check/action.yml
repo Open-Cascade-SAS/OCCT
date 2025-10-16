@@ -52,8 +52,9 @@ runs:
       shell: pwsh
       run: |
         $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
-        $fileList = $files -join ' '
-        python3 .github/actions/scripts/validate-license.py --files $fileList --fix
+        if ($files.Count -gt 0) {
+          python3 .github/actions/scripts/validate-license.py --files @files --fix
+        }
 
     - name: Check formatting
       if: steps.changed-files.outputs.has_files == 'true'
