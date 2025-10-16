@@ -50,6 +50,10 @@ public:
   Standard_EXPORT virtual const IMeshData::IPCurveHandle& GetPCurve(
     const Standard_Integer theIndex) const Standard_OVERRIDE;
 
+  //! Returns an array of pcurves indices for the specified discrete face.
+  Standard_EXPORT virtual const IMeshData::ListOfInteger& GetPCurves(
+    const IMeshData::IFacePtr& theDFace) const Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Edge, IMeshData_Edge)
 
 private:

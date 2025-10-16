@@ -84,3 +84,11 @@ const IMeshData::IPCurveHandle& BRepMeshData_Edge::GetPCurve(const Standard_Inte
 {
   return myPCurves(theIndex);
 }
+
+//==================================================================================================
+
+const IMeshData::ListOfInteger& BRepMeshData_Edge::GetPCurves(
+  const IMeshData::IFacePtr& theDFace) const
+{
+  return myPCurvesMap.Find(theDFace);
+}
