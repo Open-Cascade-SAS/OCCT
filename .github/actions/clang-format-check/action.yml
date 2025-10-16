@@ -47,6 +47,14 @@ runs:
           echo "has_files=true" >> $env:GITHUB_OUTPUT
         }
 
+    - name: Validate and add license headers
+      if: steps.changed-files.outputs.has_files == 'true'
+      shell: pwsh
+      run: |
+        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
+        $fileList = $files -join ' '
+        python3 .github/actions/scripts/validate-license.py --files $fileList --fix
+
     - name: Check formatting
       if: steps.changed-files.outputs.has_files == 'true'
       shell: pwsh
