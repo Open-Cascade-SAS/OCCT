@@ -30,91 +30,103 @@ struct hash<TCollection_AsciiString>
 
 //=================================================================================================
 
-inline Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
-                                const TCollection_AsciiString& string2)
+inline Standard_Boolean IsEqual(const TCollection_AsciiString& theString1,
+                                const TCollection_AsciiString& theString2)
 {
-  return TCollection_AsciiString::IsEqual(string1, string2);
+  return TCollection_AsciiString::IsEqual(theString1, theString2);
 }
 
 //=================================================================================================
 
 inline Standard_CString TCollection_AsciiString::ToCString() const
 {
-  return mystring;
+  return myString;
 }
 
-// ----------------------------------------------------------------------------
+//=================================================================================================
+
 inline Standard_Integer TCollection_AsciiString::Length() const
 {
-  return mylength;
+  return myLength;
 }
+
+//=================================================================================================
 
 inline TCollection_AsciiString TCollection_AsciiString::Cat(
-  const TCollection_AsciiString& other) const
+  const TCollection_AsciiString& theOther) const
 {
-  return TCollection_AsciiString(*this, other);
+  return TCollection_AsciiString(*this, theOther);
 }
 
-inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_CString other) const
+//=================================================================================================
+
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Character theOther) const
 {
-  return TCollection_AsciiString(*this, other);
+  return TCollection_AsciiString(*this, theOther);
 }
 
-inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Character other) const
+//=================================================================================================
+
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Integer theOther) const
 {
-  return TCollection_AsciiString(*this, other);
+
+  return TCollection_AsciiString(*this, TCollection_AsciiString(theOther));
 }
 
-inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Integer other) const
+//=================================================================================================
+
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Real theOther) const
 {
 
-  return TCollection_AsciiString(*this, TCollection_AsciiString(other));
-}
-
-inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Real other) const
-{
-
-  return TCollection_AsciiString(*this, TCollection_AsciiString(other));
+  return TCollection_AsciiString(*this, TCollection_AsciiString(theOther));
 }
 
 //=================================================================================================
 
 inline size_t TCollection_AsciiString::HashCode() const
 {
-  if (mylength < 4)
+  if (myLength < 4)
   {
-    return opencascade::FNVHash::hash_combine(*mystring, mylength);
+    return opencascade::FNVHash::hash_combine(*myString, myLength);
   }
-  return opencascade::hashBytes(mystring, mylength);
+  return opencascade::hashBytes(myString, myLength);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& string1,
-                                                         const TCollection_AsciiString& string2)
+inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& theString1,
+                                                         const TCollection_AsciiString& theString2)
 {
-  return string1.IsEqual(string2);
+  return theString1.IsEqual(theString2);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& string1,
-                                                         const Standard_CString         string2)
+inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& theString1,
+                                                         const std::string_view& theStringView)
 {
-  return string1.IsEqual(string2);
+  return theString1.IsEqual(theStringView);
+}
+
+//=================================================================================================
+
+inline Standard_Boolean TCollection_AsciiString::IsEqual(const std::string_view& theStringView,
+                                                         const TCollection_AsciiString& theString2)
+{
+  return theString2.IsEqual(theStringView);
 }
 
 //=================================================================================================
 
 inline TCollection_AsciiString TCollection_AsciiString::SubString(
-  const Standard_Integer FromIndex,
-  const Standard_Integer ToIndex) const
+  const Standard_Integer theFromIndex,
+  const Standard_Integer theToIndex) const
 {
   // note the we are doing here weird casts just to suppress annoying and meaningless warning
   // -Wstrict-overflow
-  Standard_OutOfRange_Always_Raise_if(FromIndex <= 0 || ToIndex <= 0
-                                        || (unsigned int)ToIndex > (unsigned int)mylength
-                                        || (unsigned int)FromIndex > (unsigned int)ToIndex,
+  Standard_OutOfRange_Always_Raise_if(theFromIndex <= 0 || theToIndex <= 0
+                                        || (unsigned int)theToIndex > (unsigned int)myLength
+                                        || (unsigned int)theFromIndex > (unsigned int)theToIndex,
                                       "TCollection_AsciiString::SubString() out of range");
-  return TCollection_AsciiString(&mystring[FromIndex - 1], ToIndex - FromIndex + 1);
+  return TCollection_AsciiString(&myString[theFromIndex - 1], theToIndex - theFromIndex + 1);
 }

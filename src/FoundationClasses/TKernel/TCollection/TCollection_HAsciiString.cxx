@@ -516,7 +516,7 @@ Standard_Boolean TCollection_HAsciiString::IsSameState(
   const Handle(TCollection_HAsciiString)& other) const
 {
   if (myString.Length() == other->Length())
-    return (strncmp(myString.mystring, other->ToCString(), myString.Length()) == 0);
+    return (strncmp(myString.myString, other->ToCString(), myString.Length()) == 0);
   else
     return Standard_False;
 }

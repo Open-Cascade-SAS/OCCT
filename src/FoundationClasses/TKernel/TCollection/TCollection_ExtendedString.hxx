@@ -61,8 +61,8 @@ public:
   //! treated as having UTF-8 coding.  If it is not a UTF-8
   //! then <isMultiByte> is ignored and each character is
   //! copied to ExtCharacter.
-  Standard_EXPORT TCollection_ExtendedString(const Standard_CString astring,
-                                             const Standard_Boolean isMultiByte = Standard_False);
+  explicit Standard_EXPORT TCollection_ExtendedString(const Standard_CString astring,
+                                                      const Standard_Boolean isMultiByte = Standard_False);
 
   //! Creation by converting an ExtString to an extended string.
   Standard_EXPORT TCollection_ExtendedString(const Standard_ExtString astring);
