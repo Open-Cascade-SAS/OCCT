@@ -38,6 +38,24 @@ inline Standard_Size calculatePaddedSize(const int theLength)
 {
   return (theLength + 4) & ~0x3; // Always guarantees at least +1 byte, up to +4 bytes
 }
+
+//! Helper structure to hold formatted integer string with its length
+struct FormattedInteger
+{
+  char             Buffer[16]; // Enough for 32-bit int + sign + null terminator
+  Standard_Integer Length;
+
+  FormattedInteger(const Standard_Integer theValue) { Length = Sprintf(Buffer, "%d", theValue); }
+};
+
+//! Helper structure to hold formatted real number string with its length
+struct FormattedReal
+{
+  char             Buffer[64]; // Enough for double in %g format + null terminator
+  Standard_Integer Length;
+
+  FormattedReal(const Standard_Real theValue) { Length = Sprintf(Buffer, "%g", theValue); }
+};
 } // namespace
 
 //=================================================================================================
@@ -94,18 +112,18 @@ TCollection_AsciiString::TCollection_AsciiString(const Standard_Integer   theLen
 
 TCollection_AsciiString::TCollection_AsciiString(const Standard_Integer theValue)
 {
-  char t[13];
-  allocate(Sprintf(t, "%d", theValue));
-  memcpy(myString, t, myLength);
+  const FormattedInteger aFormatted(theValue);
+  allocate(aFormatted.Length);
+  memcpy(myString, aFormatted.Buffer, myLength);
 }
 
 //=================================================================================================
 
 TCollection_AsciiString::TCollection_AsciiString(const Standard_Real theValue)
 {
-  char t[50];
-  allocate(Sprintf(t, "%g", theValue));
-  memcpy(myString, t, myLength);
+  const FormattedReal aFormatted(theValue);
+  allocate(aFormatted.Length);
+  memcpy(myString, aFormatted.Buffer, myLength);
 }
 
 //=================================================================================================
@@ -228,18 +246,16 @@ TCollection_AsciiString::TCollection_AsciiString(const Standard_WideChar* theStr
 
 void TCollection_AsciiString::AssignCat(const Standard_Integer theOther)
 {
-  char      aBuffer[16]; // Enough for 32-bit int + sign + null terminator
-  const int aLength = Sprintf(aBuffer, "%d", theOther);
-  AssignCat(aBuffer, aLength);
+  const FormattedInteger aFormatted(theOther);
+  AssignCat(aFormatted.Buffer, aFormatted.Length);
 }
 
 //=================================================================================================
 
 void TCollection_AsciiString::AssignCat(const Standard_Real theOther)
 {
-  char      aBuffer[64]; // Enough for double in %g format + null terminator
-  const int aLength = Sprintf(aBuffer, "%g", theOther);
-  AssignCat(aBuffer, aLength);
+  const FormattedReal aFormatted(theOther);
+  AssignCat(aFormatted.Buffer, aFormatted.Length);
 }
 
 //=================================================================================================
@@ -298,6 +314,32 @@ void TCollection_AsciiString::Capitalize()
 
 //=================================================================================================
 
+TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_CString theString,
+                                                     const Standard_Integer theLength) const
+{
+  TCollection_AsciiString aResult(*this);
+  aResult.AssignCat(theString, theLength);
+  return aResult;
+}
+
+//=================================================================================================
+
+TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Integer theOther) const
+{
+  const FormattedInteger aFormatted(theOther);
+  return Cat(aFormatted.Buffer, aFormatted.Length);
+}
+
+//=================================================================================================
+
+TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Real theOther) const
+{
+  const FormattedReal aFormatted(theOther);
+  return Cat(aFormatted.Buffer, aFormatted.Length);
+}
+
+//=================================================================================================
+
 void TCollection_AsciiString::Center(const Standard_Integer   theWidth,
                                      const Standard_Character theFiller)
 {
@@ -346,6 +388,10 @@ void TCollection_AsciiString::Clear()
 void TCollection_AsciiString::Copy(const Standard_CString theString,
                                    const Standard_Integer theLength)
 {
+  if (myString == theString)
+  {
+    return;
+  }
   if (theLength == 0 || theString == nullptr)
   {
     deallocate();
@@ -353,9 +399,19 @@ void TCollection_AsciiString::Copy(const Standard_CString theString,
     return;
   }
 
-  deallocate();
-  allocate(theLength);
+  if (theLength <= myLength)
+  {
+    // Reuse existing buffer - just update length and null terminator
+    myLength = theLength;
+  }
+  else
+  {
+    // Need bigger buffer - deallocate and allocate fresh
+    deallocate();
+    allocate(theLength);
+  }
   memcpy(myString, theString, myLength);
+  myString[myLength] = '\0';
 }
 
 //=================================================================================================
@@ -1173,15 +1229,6 @@ void TCollection_AsciiString::deallocate()
   }
   myLength = 0;
   myString = THE_DEFAULT_CHAR_STRING;
-}
-
-//=================================================================================================
-
-TCollection_AsciiString TCollection_AsciiString::Cat(const std::string_view& theStringView) const
-{
-  TCollection_AsciiString aResult(*this);
-  aResult.AssignCat(theStringView);
-  return aResult;
 }
 
 //=================================================================================================

@@ -257,6 +257,14 @@ public:
   //! ```
   Standard_EXPORT void Capitalize();
 
+  //! Core implementation: Appends string (pointer and length) to this ASCII string and returns
+  //! a new string. This is the primary implementation that all other Cat overloads redirect to.
+  //! @param[in] theString pointer to the string to append
+  //! @param[in] theLength length of the string to append
+  //! @return new string with the string appended
+  Standard_EXPORT TCollection_AsciiString Cat(const Standard_CString theString,
+                                              const Standard_Integer theLength) const;
+
   //! Appends other character to this string.
   //!
   //! Example:
@@ -271,10 +279,7 @@ public:
   //! ```
   //! @param[in] theOther the character to append
   //! @return new string with character appended
-  TCollection_AsciiString Cat(const Standard_Character theOther) const
-  {
-    return TCollection_AsciiString(*this, theOther);
-  }
+  TCollection_AsciiString Cat(const Standard_Character theOther) const { return Cat(&theOther, 1); }
 
   TCollection_AsciiString operator+(const Standard_Character theOther) const
   {
@@ -291,10 +296,7 @@ public:
   //! ```
   //! @param[in] theOther the integer to append
   //! @return new string with integer appended
-  TCollection_AsciiString Cat(const Standard_Integer theOther) const
-  {
-    return TCollection_AsciiString(*this, TCollection_AsciiString(theOther));
-  }
+  Standard_EXPORT TCollection_AsciiString Cat(const Standard_Integer theOther) const;
 
   TCollection_AsciiString operator+(const Standard_Integer theOther) const { return Cat(theOther); }
 
@@ -308,10 +310,7 @@ public:
   //! ```
   //! @param[in] theOther the real number to append
   //! @return new string with real number appended
-  TCollection_AsciiString Cat(const Standard_Real theOther) const
-  {
-    return TCollection_AsciiString(*this, TCollection_AsciiString(theOther));
-  }
+  Standard_EXPORT TCollection_AsciiString Cat(const Standard_Real theOther) const;
 
   TCollection_AsciiString operator+(const Standard_Real theOther) const { return Cat(theOther); }
 
@@ -328,7 +327,7 @@ public:
   //! @return new string with other string appended
   TCollection_AsciiString Cat(const TCollection_AsciiString& theOther) const
   {
-    return TCollection_AsciiString(*this, theOther);
+    return Cat(theOther.ToCString(), theOther.Length());
   }
 
   TCollection_AsciiString operator+(const TCollection_AsciiString& theOther) const
@@ -341,7 +340,8 @@ public:
   //! @return new string with C string appended
   TCollection_AsciiString Cat(const Standard_CString theCString) const
   {
-    return theCString ? Cat(std::string_view(theCString)) : TCollection_AsciiString(*this);
+    return theCString ? Cat(theCString, static_cast<Standard_Integer>(strlen(theCString)))
+                      : TCollection_AsciiString(*this);
   }
 
   TCollection_AsciiString operator+(const Standard_CString theCString) const
@@ -352,7 +352,10 @@ public:
   //! Appends string view to this ASCII string.
   //! @param[in] theStringView the string view to append
   //! @return new string with string view appended
-  TCollection_AsciiString Cat(const std::string_view& theStringView) const;
+  TCollection_AsciiString Cat(const std::string_view& theStringView) const
+  {
+    return Cat(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
+  }
 
   TCollection_AsciiString operator+(const std::string_view& theStringView) const
   {
@@ -373,7 +376,7 @@ public:
   template <std::size_t N>
   TCollection_AsciiString Cat(const char (&theLiteral)[N]) const
   {
-    return Cat(std::string_view(theLiteral, N - 1)); // Exclude null terminator
+    return Cat(theLiteral, static_cast<Standard_Integer>(N - 1)); // Exclude null terminator
   }
 
   template <std::size_t N>
