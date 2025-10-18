@@ -1259,10 +1259,3 @@ Standard_Boolean TCollection_AsciiString::IsSameString(const Standard_CString th
     return Standard_True;
   }
 }
-
-//=================================================================================================
-
-TCollection_AsciiString::operator std::string_view() const
-{
-  return std::string_view(myString, myLength);
-}

@@ -28,7 +28,9 @@
 #include <Standard_IStream.hxx>
 #include <Standard_Macro.hxx>
 
-#include <string_view>
+#if __cplusplus >= 201703L
+  #include <string_view>
+#endif
 
 class TCollection_ExtendedString;
 
@@ -55,6 +57,7 @@ public:
   //! Initializes a AsciiString to an empty AsciiString.
   Standard_EXPORT TCollection_AsciiString();
 
+#if __cplusplus >= 201703L
   //! Initializes a AsciiString with a string_view.
   //! @param[in] theStringView the string view to initialize from
   explicit TCollection_AsciiString(const std::string_view& theStringView)
@@ -62,6 +65,7 @@ public:
                                 static_cast<Standard_Integer>(theStringView.size()))
   {
   }
+#endif
 
   //! Initializes a AsciiString with a CString (null-terminated).
   //! @param[in] theMessage the C string to initialize from
@@ -213,6 +217,7 @@ public:
 
   void operator+=(const Standard_CString theCString) { AssignCat(theCString); }
 
+#if __cplusplus >= 201703L
   //! Appends string view to this ASCII string. This is an unary operator.
   //! @param[in] theStringView the string view to append
   void AssignCat(const std::string_view& theStringView)
@@ -224,6 +229,7 @@ public:
   }
 
   void operator+=(const std::string_view& theStringView) { AssignCat(theStringView); }
+#endif
 
   //! Template method for appending string literals with compile-time size deduction.
   //! This optimization avoids runtime strlen() calls and unnecessary conversions.
@@ -349,6 +355,7 @@ public:
     return Cat(theCString);
   }
 
+#if __cplusplus >= 201703L
   //! Appends string view to this ASCII string.
   //! @param[in] theStringView the string view to append
   //! @return new string with string view appended
@@ -361,6 +368,7 @@ public:
   {
     return Cat(theStringView);
   }
+#endif
 
   //! Template method for concatenating string literals with compile-time size deduction.
   //! This optimization avoids runtime strlen() calls and unnecessary conversions.
@@ -441,6 +449,7 @@ public:
 
   void operator=(const Standard_CString theCString) { Copy(theCString); }
 
+#if __cplusplus >= 201703L
   //! Copy string view to this ASCII string.
   //! Used as operator =
   //! @param[in] theStringView the string view to copy from
@@ -450,6 +459,7 @@ public:
   }
 
   void operator=(const std::string_view& theStringView) { Copy(theStringView); }
+#endif
 
   //! Template method for copying string literals with compile-time size deduction.
   //! This optimization avoids runtime strlen() calls and unnecessary conversions.
@@ -556,6 +566,7 @@ public:
     return FirstLocationInSet(theSet.ToCString(), theSet.Length(), theFromIndex, theToIndex);
   }
 
+#if __cplusplus >= 201703L
   //! Returns the index of the first character of this string that is present in string_view.
   //! @param[in] theSet the string view of characters to search for
   //! @param[in] theFromIndex the starting index for search
@@ -570,6 +581,7 @@ public:
                               theFromIndex,
                               theToIndex);
   }
+#endif
 
   //! Template method for FirstLocationInSet with string literals.
   //! @param[in] theLiteral the string literal of characters to search for
@@ -627,6 +639,7 @@ public:
     return FirstLocationNotInSet(theSet.ToCString(), theSet.Length(), theFromIndex, theToIndex);
   }
 
+#if __cplusplus >= 201703L
   //! Returns the index of the first character of this string that is not present in string_view.
   //! @param[in] theSet the string view of characters to check against
   //! @param[in] theFromIndex the starting index for search
@@ -641,6 +654,7 @@ public:
                                  theFromIndex,
                                  theToIndex);
   }
+#endif
 
   //! Template method for FirstLocationNotInSet with string literals.
   //! @param[in] theLiteral the string literal of characters to check against
@@ -702,6 +716,7 @@ public:
     }
   }
 
+#if __cplusplus >= 201703L
   //! Inserts a string_view at position theWhere.
   //! @param[in] theWhere position to insert at
   //! @param[in] theStringView the string view to insert
@@ -709,6 +724,7 @@ public:
   {
     Insert(theWhere, theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
   }
+#endif
 
   //! Template method for inserting string literals with compile-time size deduction.
   //! This optimization avoids runtime strlen() calls and unnecessary conversions.
@@ -802,6 +818,7 @@ public:
     return IsEqual(theCString);
   }
 
+#if __cplusplus >= 201703L
   //! Returns true if the characters in this ASCII string
   //! are identical to the characters in string_view.
   //! @param[in] theStringView the string view to compare with
@@ -815,6 +832,7 @@ public:
   {
     return IsEqual(theStringView);
   }
+#endif
 
   //! Template method for comparing with string literals with compile-time optimization.
   //! This optimization avoids runtime strlen() calls and unnecessary conversions.
@@ -879,6 +897,7 @@ public:
     return IsDifferent(theCString);
   }
 
+#if __cplusplus >= 201703L
   //! Returns true if there are differences between the
   //! characters in this ASCII string and string_view.
   //! @param[in] theStringView the string view to compare with
@@ -892,6 +911,7 @@ public:
   {
     return IsDifferent(theStringView);
   }
+#endif
 
   //! Template method for comparing difference with string literals with compile-time optimization.
   //! @param[in] theLiteral the string literal to compare with
@@ -941,6 +961,7 @@ public:
 
   Standard_Boolean operator<(const Standard_CString theCString) const { return IsLess(theCString); }
 
+#if __cplusplus >= 201703L
   //! Returns TRUE if this ASCII string is lexicographically less than theStringView.
   //! @param[in] theStringView the string view to compare with
   //! @return true if this string is lexicographically less than theStringView
@@ -953,6 +974,7 @@ public:
   {
     return IsLess(theStringView);
   }
+#endif
 
   //! Template method for lexicographic comparison with string literals with compile-time
   //! optimization.
@@ -1006,6 +1028,7 @@ public:
     return IsGreater(theCString);
   }
 
+#if __cplusplus >= 201703L
   //! Returns TRUE if this ASCII string is lexicographically greater than theStringView.
   //! @param[in] theStringView the string view to compare with
   //! @return true if this string is lexicographically greater than theStringView
@@ -1018,6 +1041,7 @@ public:
   {
     return IsGreater(theStringView);
   }
+#endif
 
   //! Template method for lexicographic greater comparison with string literals with compile-time
   //! optimization.
@@ -1060,6 +1084,7 @@ public:
                       : (myLength == 0);
   }
 
+#if __cplusplus >= 201703L
   //! Determines whether the beginning of this string instance matches the specified string_view.
   //! @param[in] theStartString the string view to check for at the beginning
   //! @return true if this string starts with theStartString
@@ -1067,6 +1092,7 @@ public:
   {
     return StartsWith(theStartString.data(), static_cast<Standard_Integer>(theStartString.size()));
   }
+#endif
 
   //! Core implementation: Determines whether the end of this string instance matches
   //! the specified string (pointer and length).
@@ -1084,6 +1110,7 @@ public:
     return EndsWith(theEndString.ToCString(), theEndString.Length());
   }
 
+#if __cplusplus >= 201703L
   //! Determines whether the end of this string instance matches the specified string_view.
   //! @param[in] theEndString the string view to check for at the end
   //! @return true if this string ends with theEndString
@@ -1091,6 +1118,7 @@ public:
   {
     return EndsWith(theEndString.data(), static_cast<Standard_Integer>(theEndString.size()));
   }
+#endif
 
   //! Template method for checking if string starts with a literal with compile-time optimization.
   //! @param[in] theLiteral the string literal to check for at the beginning
@@ -1098,7 +1126,7 @@ public:
   template <std::size_t N>
   Standard_Boolean StartsWith(const char (&theLiteral)[N]) const
   {
-    return StartsWith(std::string_view(theLiteral, N - 1)); // Exclude null terminator
+    return StartsWith(theLiteral, static_cast<Standard_Integer>(N - 1));
   }
 
   //! Template method for checking if string ends with a literal with compile-time optimization.
@@ -1107,7 +1135,7 @@ public:
   template <std::size_t N>
   Standard_Boolean EndsWith(const char (&theLiteral)[N]) const
   {
-    return EndsWith(std::string_view(theLiteral, N - 1)); // Exclude null terminator
+    return EndsWith(theLiteral, static_cast<Standard_Integer>(N - 1));
   }
 
   //! Converts a AsciiString containing a numeric expression to an Integer.
@@ -1351,6 +1379,7 @@ public:
     return theCString ? Search(theCString, static_cast<Standard_Integer>(strlen(theCString))) : -1;
   }
 
+#if __cplusplus >= 201703L
   //! Searches a string_view in this string from the beginning
   //! and returns position of first item matching.
   //! It returns -1 if not found.
@@ -1360,6 +1389,7 @@ public:
   {
     return Search(theWhat.data(), static_cast<Standard_Integer>(theWhat.size()));
   }
+#endif
 
   //! Template method for searching string literals with compile-time size deduction.
   //! @param[in] theLiteral the string literal to search for
@@ -1398,6 +1428,7 @@ public:
                       : -1;
   }
 
+#if __cplusplus >= 201703L
   //! Searches a string_view in this string from the end
   //! and returns position of first item matching.
   //! It returns -1 if not found.
@@ -1407,6 +1438,7 @@ public:
   {
     return SearchFromEnd(theWhat.data(), static_cast<Standard_Integer>(theWhat.size()));
   }
+#endif
 
   //! Template method for searching string literals from end with compile-time size deduction.
   //! @param[in] theLiteral the string literal to search for
@@ -1463,6 +1495,7 @@ public:
     }
   }
 
+#if __cplusplus >= 201703L
   //! Replaces a part of this ASCII string with a string_view.
   //! @param[in] theWhere position to start replacement
   //! @param[in] theStringView the string view to replace with
@@ -1470,6 +1503,7 @@ public:
   {
     SetValue(theWhere, theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
   }
+#endif
 
   //! Splits a AsciiString into two sub-strings.
   //!
@@ -1506,10 +1540,12 @@ public:
   //! @return the C string representation
   Standard_CString ToCString() const { return myString; }
 
+#if __cplusplus >= 201703L
   //! Returns string_view for this AsciiString.
   //! This provides a lightweight, non-owning view of the string data.
   //! @return the string_view representation
-  explicit operator std::string_view() const;
+  explicit operator std::string_view() const { return std::string_view(myString, myLength); }
+#endif
 
   //! Extracts whichone token from this string.
   //! By default, the separators is set to space and tabulation.
@@ -1608,6 +1644,7 @@ public:
   static Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
                                   const Standard_CString         string2);
 
+#if __cplusplus >= 201703L
   //! Returns True when the ASCII string and string_view are the same.
   //! (Just for HashCode for AsciiString)
   //! @param[in] theString1 first string to compare
@@ -1629,6 +1666,7 @@ public:
   {
     return theString2.IsEqual(theStringView);
   }
+#endif
 
   //! Core implementation: Returns True if the two strings (pointer and length) contain same
   //! characters. This is the primary implementation that all other IsSameString overloads redirect
@@ -1673,7 +1711,11 @@ public:
     if (!theCString)
       return theString1.Length() == 0;
 
-    return IsSameString(theString1, std::string_view(theCString), theIsCaseSensitive);
+    return IsSameString(theString1.ToCString(),
+                        theString1.Length(),
+                        theCString,
+                        static_cast<Standard_Integer>(strlen(theCString)),
+                        theIsCaseSensitive);
   }
 
   //! Returns True if the C string and string contain same characters.
@@ -1688,6 +1730,7 @@ public:
     return IsSameString(theString2, theCString, theIsCaseSensitive);
   }
 
+#if __cplusplus >= 201703L
   //! Returns True if the string and string_view contain same characters.
   //! @param[in] theString1 first string to compare
   //! @param[in] theStringView second string view to compare
@@ -1716,6 +1759,7 @@ public:
     // Redirect to the primary static method with swapped arguments
     return IsSameString(theString2, theStringView, theIsCaseSensitive);
   }
+#endif
 
   //! Returns True if the two C strings contain same characters.
   //! @param[in] theCString1 first C string to compare
@@ -1731,11 +1775,14 @@ public:
     if (!theCString1 || !theCString2)
       return Standard_False;
 
-    return IsSameString(std::string_view(theCString1),
-                        std::string_view(theCString2),
+    return IsSameString(theCString1,
+                        static_cast<Standard_Integer>(strlen(theCString1)),
+                        theCString2,
+                        static_cast<Standard_Integer>(strlen(theCString2)),
                         theIsCaseSensitive);
   }
 
+#if __cplusplus >= 201703L
   //! Returns True if the two string_views contain same characters.
   //! @param[in] theStringView1 first string view to compare
   //! @param[in] theStringView2 second string view to compare
@@ -1751,6 +1798,7 @@ public:
                         static_cast<Standard_Integer>(theStringView2.size()),
                         theIsCaseSensitive);
   }
+#endif
 
 private:
   //! Internal wrapper to allocate on stack or heap
