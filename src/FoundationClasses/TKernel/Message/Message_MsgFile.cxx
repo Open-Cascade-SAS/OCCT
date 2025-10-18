@@ -413,7 +413,7 @@ const TCollection_ExtendedString& Message_MsgFile::Msg(const TCollection_AsciiSt
     static const TCollection_AsciiString    aPrefixCode("Message_Msg_BadKeyword");
     static const TCollection_ExtendedString aDefPrefix("Unknown message invoked with the keyword ");
     const TCollection_ExtendedString*       aPrefValPtr = aDataMap.Seek(aPrefixCode);
-    TCollection_AsciiString aErrorMessage = (aPrefValPtr != NULL ? *aPrefValPtr : aDefPrefix);
+    TCollection_ExtendedString aErrorMessage = (aPrefValPtr != NULL ? *aPrefValPtr : aDefPrefix);
     aErrorMessage += theKeyword;
     aDataMap.Bind(theKeyword, aErrorMessage); // do not use AddMsg() here to avoid mutex deadlock
     aValPtr = aDataMap.Seek(theKeyword);

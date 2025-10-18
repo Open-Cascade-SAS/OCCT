@@ -49,7 +49,6 @@ TCollection_AsciiString::TCollection_AsciiString()
 
 //=================================================================================================
 
-
 //=================================================================================================
 
 TCollection_AsciiString::TCollection_AsciiString(const Standard_CString theString,
@@ -254,17 +253,18 @@ void TCollection_AsciiString::AssignCat(const Standard_Character theOther)
 
 //=================================================================================================
 
-
 //=================================================================================================
 
-void TCollection_AsciiString::AssignCat(const TCollection_AsciiString& theOther)
+void TCollection_AsciiString::AssignCat(const Standard_CString theString,
+                                        const Standard_Integer theLength)
 {
-  if (theOther.myLength != 0)
-  {
-    const Standard_Integer anOldLength = myLength;
-    reallocate(myLength + theOther.myLength);
-    memcpy(myString + anOldLength, theOther.myString, theOther.myLength + 1);
-  }
+  if (theLength == 0 || theString == nullptr)
+    return;
+
+  const Standard_Integer anOldLength = myLength;
+  reallocate(myLength + theLength);
+  memcpy(myString + anOldLength, theString, theLength);
+  myString[myLength] = '\0'; // Ensure null termination
 }
 
 //=================================================================================================
@@ -324,25 +324,21 @@ void TCollection_AsciiString::Clear()
 
 //=================================================================================================
 
-
 //=================================================================================================
 
-void TCollection_AsciiString::Copy(const TCollection_AsciiString& theFromWhere)
+void TCollection_AsciiString::Copy(const Standard_CString theString,
+                                   const Standard_Integer theLength)
 {
-  if (&theFromWhere == this)
+  if (theLength == 0 || theString == nullptr)
   {
+    deallocate();
+    allocate(0);
     return;
   }
-  if (theFromWhere.myString && theFromWhere.myLength > 0)
-  {
-    reallocate(theFromWhere.myLength);
-    memcpy(myString, theFromWhere.myString, myLength);
-  }
-  else if (myString != THE_DEFAULT_CHAR_STRING)
-  {
-    myLength           = 0;
-    myString[myLength] = '\0';
-  }
+
+  deallocate();
+  allocate(theLength);
+  memcpy(myString, theString, myLength);
 }
 
 //=================================================================================================
@@ -385,17 +381,18 @@ TCollection_AsciiString::~TCollection_AsciiString()
 //=================================================================================================
 
 Standard_Integer TCollection_AsciiString::FirstLocationInSet(
-  const TCollection_AsciiString& theSet,
-  const Standard_Integer         theFromIndex,
-  const Standard_Integer         theToIndex) const
+  const Standard_CString theSet,
+  const Standard_Integer theSetLength,
+  const Standard_Integer theFromIndex,
+  const Standard_Integer theToIndex) const
 {
-  if (myLength == 0 || theSet.myLength == 0)
+  if (myLength == 0 || theSetLength == 0)
     return 0;
   if (theFromIndex > 0 && theToIndex <= myLength && theFromIndex <= theToIndex)
   {
     for (int i = theFromIndex - 1; i < theToIndex; i++)
-      for (int j = 0; j < theSet.myLength; j++)
-        if (myString[i] == theSet.myString[j])
+      for (int j = 0; j < theSetLength; j++)
+        if (myString[i] == theSet[j])
           return i + 1;
     return 0;
   }
@@ -405,11 +402,12 @@ Standard_Integer TCollection_AsciiString::FirstLocationInSet(
 //=================================================================================================
 
 Standard_Integer TCollection_AsciiString::FirstLocationNotInSet(
-  const TCollection_AsciiString& theSet,
-  const Standard_Integer         theFromIndex,
-  const Standard_Integer         theToIndex) const
+  const Standard_CString theSet,
+  const Standard_Integer theSetLength,
+  const Standard_Integer theFromIndex,
+  const Standard_Integer theToIndex) const
 {
-  if (myLength == 0 || theSet.myLength == 0)
+  if (myLength == 0 || theSetLength == 0)
     return 0;
   if (theFromIndex > 0 && theToIndex <= myLength && theFromIndex <= theToIndex)
   {
@@ -417,8 +415,8 @@ Standard_Integer TCollection_AsciiString::FirstLocationNotInSet(
     for (int i = theFromIndex - 1; i < theToIndex; i++)
     {
       aFind = Standard_False;
-      for (int j = 0; j < theSet.myLength; j++)
-        if (myString[i] == theSet.myString[j])
+      for (int j = 0; j < theSetLength; j++)
+        if (myString[i] == theSet[j])
           aFind = Standard_True;
       if (!aFind)
         return i + 1;
@@ -450,35 +448,12 @@ void TCollection_AsciiString::Insert(const Standard_Integer   theWhere,
 
 //=================================================================================================
 
-
 //=================================================================================================
 
 void TCollection_AsciiString::Insert(const Standard_Integer         theWhere,
                                      const TCollection_AsciiString& theWhat)
 {
-  Standard_CString aSwhat = theWhat.myString;
-  if (theWhere <= myLength + 1)
-  {
-    const Standard_Integer aWhatLength = theWhat.myLength;
-    if (aWhatLength)
-    {
-      const int anOldLength = myLength;
-      reallocate(myLength + aWhatLength);
-
-      if (theWhere != anOldLength + 1)
-      {
-        for (int i = anOldLength - 1; i >= theWhere - 1; i--)
-          myString[i + aWhatLength] = myString[i];
-      }
-      for (int i = 0; i < aWhatLength; i++)
-        myString[theWhere - 1 + i] = aSwhat[i];
-    }
-  }
-  else
-  {
-    throw Standard_OutOfRange("TCollection_AsciiString::Insert : "
-                              "Parameter theWhere is too big");
-  }
+  Insert(theWhere, std::string_view(theWhat.ToCString(), theWhat.Length()));
 }
 
 //=================================================================================================
@@ -573,7 +548,6 @@ Standard_Boolean TCollection_AsciiString::IsSameString(const std::string_view&  
   return IsSameString(theString2, theStringView, theIsCaseSensitive);
 }
 
-
 //=================================================================================================
 
 Standard_Boolean TCollection_AsciiString::IsDifferent(const TCollection_AsciiString& theOther) const
@@ -584,14 +558,12 @@ Standard_Boolean TCollection_AsciiString::IsDifferent(const TCollection_AsciiStr
   return (strncmp(theOther.myString, myString, myLength) != 0);
 }
 
-
 //=================================================================================================
 
 Standard_Boolean TCollection_AsciiString::IsLess(const TCollection_AsciiString& theOther) const
 {
   return (strncmp(myString, theOther.myString, myLength + 1) < 0);
 }
-
 
 //=================================================================================================
 
@@ -602,33 +574,30 @@ Standard_Boolean TCollection_AsciiString::IsGreater(const TCollection_AsciiStrin
 
 //=================================================================================================
 
-Standard_Boolean TCollection_AsciiString::StartsWith(
-  const TCollection_AsciiString& theStartString) const
+Standard_Boolean TCollection_AsciiString::StartsWith(const Standard_CString theStartString,
+                                                     const Standard_Integer theStartLength) const
 {
-  if (this == &theStartString)
-  {
-    return true;
-  }
+  if (theStartLength > myLength)
+    return Standard_False;
 
-  return myLength >= theStartString.myLength
-         && strncmp(theStartString.myString, myString, theStartString.myLength) == 0;
+  if (theStartLength == 0)
+    return Standard_True;
+
+  return memcmp(myString, theStartString, theStartLength) == 0;
 }
 
 //=================================================================================================
 
-Standard_Boolean TCollection_AsciiString::EndsWith(
-  const TCollection_AsciiString& theEndString) const
+Standard_Boolean TCollection_AsciiString::EndsWith(const Standard_CString theEndString,
+                                                   const Standard_Integer theEndLength) const
 {
-  if (this == &theEndString)
-  {
-    return true;
-  }
+  if (theEndLength > myLength)
+    return Standard_False;
 
-  return myLength >= theEndString.myLength
-         && strncmp(theEndString.myString,
-                    myString + myLength - theEndString.myLength,
-                    theEndString.myLength)
-              == 0;
+  if (theEndLength == 0)
+    return Standard_True;
+
+  return memcmp(myString + myLength - theEndLength, theEndString, theEndLength) == 0;
 }
 
 //=================================================================================================
@@ -934,20 +903,19 @@ void TCollection_AsciiString::RightJustify(const Standard_Integer   theWidth,
 
 //=================================================================================================
 
-Standard_Integer TCollection_AsciiString::Search(const TCollection_AsciiString& theWhat) const
+Standard_Integer TCollection_AsciiString::Search(const Standard_CString theWhat,
+                                                 const Standard_Integer theWhatLength) const
 {
-  Standard_Integer aSize  = theWhat.myLength;
-  Standard_CString aSwhat = theWhat.myString;
-  if (aSize)
+  if (theWhatLength)
   {
     int k, j;
     int i = 0;
-    while (i < myLength - aSize + 1)
+    while (i < myLength - theWhatLength + 1)
     {
       k = i++;
       j = 0;
-      while (j < aSize && myString[k++] == aSwhat[j++])
-        if (j == aSize)
+      while (j < theWhatLength && myString[k++] == theWhat[j++])
+        if (j == theWhatLength)
           return i;
     }
   }
@@ -956,22 +924,20 @@ Standard_Integer TCollection_AsciiString::Search(const TCollection_AsciiString& 
 
 //=================================================================================================
 
-Standard_Integer TCollection_AsciiString::SearchFromEnd(
-  const TCollection_AsciiString& theWhat) const
+Standard_Integer TCollection_AsciiString::SearchFromEnd(const Standard_CString theWhat,
+                                                        const Standard_Integer theWhatLength) const
 {
-  int aSize = theWhat.myLength;
-  if (aSize)
+  if (theWhatLength)
   {
-    Standard_CString aSwhat = theWhat.myString;
-    int              k, j;
-    int              i = myLength - 1;
-    while (i >= aSize - 1)
+    int k, j;
+    int i = myLength - 1;
+    while (i >= theWhatLength - 1)
     {
       k = i--;
-      j = aSize - 1;
-      while (j >= 0 && myString[k--] == aSwhat[j--])
+      j = theWhatLength - 1;
+      while (j >= 0 && myString[k--] == theWhat[j--])
         if (j == -1)
-          return i - aSize + 3;
+          return i - theWhatLength + 3;
     }
   }
   return -1;
@@ -995,29 +961,12 @@ void TCollection_AsciiString::SetValue(const Standard_Integer   theWhere,
 
 //=================================================================================================
 
-
 //=================================================================================================
 
 void TCollection_AsciiString::SetValue(const Standard_Integer         theWhere,
                                        const TCollection_AsciiString& theWhat)
 {
-  if (theWhere > 0 && theWhere <= myLength + 1)
-  {
-    Standard_Integer aSize  = theWhat.myLength;
-    Standard_CString aSwhat = theWhat.myString;
-    aSize += (theWhere - 1);
-    if (aSize >= myLength)
-    {
-      reallocate(aSize);
-    }
-    for (int i = theWhere - 1; i < aSize; i++)
-      myString[i] = aSwhat[i - (theWhere - 1)];
-  }
-  else
-  {
-    throw Standard_OutOfRange("TCollection_AsciiString::SetValue : "
-                              "parameter theWhere");
-  }
+  SetValue(theWhere, std::string_view(theWhat.ToCString(), theWhat.Length()));
 }
 
 //=================================================================================================
@@ -1193,29 +1142,6 @@ void TCollection_AsciiString::deallocate()
 
 //=================================================================================================
 
-TCollection_AsciiString::TCollection_AsciiString(const std::string_view& theStringView)
-{
-  allocate(static_cast<int>(theStringView.size()));
-  if (myLength > 0)
-  {
-    memcpy(myString, theStringView.data(), myLength);
-  }
-}
-
-//=================================================================================================
-
-void TCollection_AsciiString::AssignCat(const std::string_view& theStringView)
-{
-  if (theStringView.empty())
-    return;
-
-  const int anOldLength = myLength;
-  const int aNewLength  = anOldLength + static_cast<int>(theStringView.size());
-
-  reallocate(aNewLength);
-  memcpy(myString + anOldLength, theStringView.data(), theStringView.size());
-}
-
 //=================================================================================================
 
 TCollection_AsciiString TCollection_AsciiString::Cat(const std::string_view& theStringView) const
@@ -1226,16 +1152,6 @@ TCollection_AsciiString TCollection_AsciiString::Cat(const std::string_view& the
 }
 
 //=================================================================================================
-
-void TCollection_AsciiString::Copy(const std::string_view& theStringView)
-{
-  deallocate();
-  allocate(static_cast<int>(theStringView.size()));
-  if (myLength > 0)
-  {
-    memcpy(myString, theStringView.data(), myLength);
-  }
-}
 
 //=================================================================================================
 
@@ -1316,40 +1232,6 @@ Standard_Boolean TCollection_AsciiString::IsGreater(const std::string_view& theS
     return Standard_False;
 
   return myLength > static_cast<int>(theStringView.size());
-}
-
-//=================================================================================================
-
-
-//=================================================================================================
-
-Standard_Boolean TCollection_AsciiString::StartsWith(const std::string_view& theStartString) const
-{
-  const int aStartLength = static_cast<int>(theStartString.size());
-  if (aStartLength > myLength)
-    return Standard_False;
-
-  if (aStartLength == 0)
-    return Standard_True;
-
-  return memcmp(myString, theStartString.data(), aStartLength) == 0;
-}
-
-//=================================================================================================
-
-
-//=================================================================================================
-
-Standard_Boolean TCollection_AsciiString::EndsWith(const std::string_view& theEndString) const
-{
-  const int anEndLength = static_cast<int>(theEndString.size());
-  if (anEndLength > myLength)
-    return Standard_False;
-
-  if (anEndLength == 0)
-    return Standard_True;
-
-  return memcmp(myString + myLength - anEndLength, theEndString.data(), anEndLength) == 0;
 }
 
 //=================================================================================================

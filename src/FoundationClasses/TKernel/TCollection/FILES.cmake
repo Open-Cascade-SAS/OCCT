@@ -10,7 +10,6 @@ set(OCCT_TCollection_FILES
   TCollection_ExtendedString.hxx
   TCollection_HAsciiString.cxx
   TCollection_HAsciiString.hxx
-  TCollection_HAsciiString.lxx
   TCollection_HExtendedString.cxx
   TCollection_HExtendedString.hxx
 )
