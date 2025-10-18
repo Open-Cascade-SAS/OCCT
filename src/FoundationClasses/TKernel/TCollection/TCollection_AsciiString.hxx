@@ -131,9 +131,8 @@ public:
   //! Otherwise, creates UTF-8 unicode string.
   //! @param[in] theExtendedString the extended string to convert
   //! @param[in] theReplaceNonAscii replacement character for non-ASCII characters
-  explicit Standard_EXPORT TCollection_AsciiString(
-    const TCollection_ExtendedString& theExtendedString,
-    const Standard_Character          theReplaceNonAscii = 0);
+  Standard_EXPORT TCollection_AsciiString(const TCollection_ExtendedString& theExtendedString,
+                                          const Standard_Character          theReplaceNonAscii = 0);
 
 #if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
   //! Initialize UTF-8 Unicode string from wide-char string considering it as Unicode string
@@ -154,7 +153,7 @@ public:
   //! ```
   //! @param[in] theLiteral the string literal
   template <std::size_t N>
-  explicit TCollection_AsciiString(const char (&theLiteral)[N])
+  TCollection_AsciiString(const char (&theLiteral)[N])
       : TCollection_AsciiString(theLiteral,
                                 static_cast<Standard_Integer>(N - 1)) // Exclude null terminator
   {
@@ -1396,17 +1395,8 @@ public:
   //! @param[in] theFromIndex the starting index
   //! @param[in] theToIndex the ending index
   //! @return the substring from FromIndex to ToIndex
-  TCollection_AsciiString SubString(const Standard_Integer theFromIndex,
-                                    const Standard_Integer theToIndex) const
-  {
-    // note the we are doing here weird casts just to suppress annoying and meaningless warning
-    // -Wstrict-overflow
-    Standard_OutOfRange_Always_Raise_if(theFromIndex <= 0 || theToIndex <= 0
-                                          || (unsigned int)theToIndex > (unsigned int)myLength
-                                          || (unsigned int)theFromIndex > (unsigned int)theToIndex,
-                                        "TCollection_AsciiString::SubString() out of range");
-    return TCollection_AsciiString(&myString[theFromIndex - 1], theToIndex - theFromIndex + 1);
-  }
+  Standard_EXPORT TCollection_AsciiString SubString(const Standard_Integer theFromIndex,
+                                                    const Standard_Integer theToIndex) const;
 
   //! Returns pointer to AsciiString (char *).
   //! This is useful for some casual manipulations.
