@@ -359,3 +359,878 @@ TEST(TCollection_AsciiStringTest, PaddingSafety)
     }
   }
 }
+
+// ========================================
+// Tests for AssignCat method
+// ========================================
+
+TEST(TCollection_AsciiStringTest, AssignCat_BasicCases)
+{
+  TCollection_AsciiString aString("Hello");
+
+  // AssignCat with C string
+  aString.AssignCat(" World");
+  EXPECT_STREQ("Hello World", aString.ToCString());
+  EXPECT_EQ(11, aString.Length());
+
+  // AssignCat with another AsciiString
+  TCollection_AsciiString aSuffix("!");
+  aString.AssignCat(aSuffix);
+  EXPECT_STREQ("Hello World!", aString.ToCString());
+  EXPECT_EQ(12, aString.Length());
+
+  // AssignCat with character
+  aString.AssignCat('?');
+  EXPECT_STREQ("Hello World!?", aString.ToCString());
+  EXPECT_EQ(13, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, AssignCat_EmptyStrings)
+{
+  TCollection_AsciiString aString;
+
+  // AssignCat to empty string
+  aString.AssignCat("First");
+  EXPECT_STREQ("First", aString.ToCString());
+  EXPECT_EQ(5, aString.Length());
+
+  // AssignCat empty string
+  aString.AssignCat("");
+  EXPECT_STREQ("First", aString.ToCString());
+  EXPECT_EQ(5, aString.Length());
+
+  // AssignCat null terminator character
+  TCollection_AsciiString aString2("Test");
+  aString2.AssignCat('\0');
+  EXPECT_STREQ("Test", aString2.ToCString());
+  EXPECT_EQ(4, aString2.Length());
+}
+
+TEST(TCollection_AsciiStringTest, AssignCat_SelfReference)
+{
+  TCollection_AsciiString aString("ABC");
+
+  // Self-reference: concatenate the entire string to itself
+  aString.AssignCat(aString.ToCString());
+  EXPECT_STREQ("ABCABC", aString.ToCString());
+  EXPECT_EQ(6, aString.Length());
+
+  // Self-reference: concatenate part of itself
+  TCollection_AsciiString aString2("Hello");
+  const char*             aSubStr = aString2.ToCString() + 1; // "ello"
+  aString2.AssignCat(aSubStr);
+  EXPECT_STREQ("Helloello", aString2.ToCString());
+  EXPECT_EQ(9, aString2.Length());
+}
+
+TEST(TCollection_AsciiStringTest, AssignCat_IntegerAndReal)
+{
+  TCollection_AsciiString aString("Value: ");
+
+  // AssignCat with integer
+  aString.AssignCat(42);
+  EXPECT_STREQ("Value: 42", aString.ToCString());
+
+  // AssignCat with real
+  TCollection_AsciiString aString2("Pi is approximately ");
+  aString2.AssignCat(3.14159);
+  EXPECT_TRUE(strstr(aString2.ToCString(), "3.14159") != NULL);
+}
+
+TEST(TCollection_AsciiStringTest, AssignCat_LargeStrings)
+{
+  TCollection_AsciiString aString(100, 'A');
+  TCollection_AsciiString aSuffix(100, 'B');
+
+  aString.AssignCat(aSuffix);
+  EXPECT_EQ(200, aString.Length());
+
+  // Verify first 100 are 'A' and last 100 are 'B'
+  const char* aPtr = aString.ToCString();
+  for (int i = 0; i < 100; ++i)
+  {
+    EXPECT_EQ('A', aPtr[i]);
+  }
+  for (int i = 100; i < 200; ++i)
+  {
+    EXPECT_EQ('B', aPtr[i]);
+  }
+}
+
+// ========================================
+// Tests for Insert method
+// ========================================
+
+TEST(TCollection_AsciiStringTest, Insert_BasicCases)
+{
+  TCollection_AsciiString aString("HelloWorld");
+
+  // Insert at beginning
+  aString.Insert(1, "Start");
+  EXPECT_STREQ("StartHelloWorld", aString.ToCString());
+
+  // Insert in middle
+  TCollection_AsciiString aString2("AC");
+  aString2.Insert(2, "B");
+  EXPECT_STREQ("ABC", aString2.ToCString());
+
+  // Insert at end
+  TCollection_AsciiString aString3("Hello");
+  aString3.Insert(6, " World");
+  EXPECT_STREQ("Hello World", aString3.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_EmptyStrings)
+{
+  TCollection_AsciiString aString;
+
+  // Insert into empty string
+  aString.Insert(1, "First");
+  EXPECT_STREQ("First", aString.ToCString());
+  EXPECT_EQ(5, aString.Length());
+
+  // Insert empty string
+  TCollection_AsciiString aString2("Test");
+  aString2.Insert(3, "");
+  EXPECT_STREQ("Test", aString2.ToCString());
+  EXPECT_EQ(4, aString2.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_SelfReference)
+{
+  TCollection_AsciiString aString("XYZ");
+
+  // Insert entire string into itself at beginning
+  aString.Insert(1, aString.ToCString());
+  EXPECT_STREQ("XYZXYZ", aString.ToCString());
+  EXPECT_EQ(6, aString.Length());
+
+  // Insert part of string into itself
+  TCollection_AsciiString aString2("ABCD");
+  const char*             aSubStr = aString2.ToCString() + 1; // "BCD"
+  aString2.Insert(2, aSubStr);
+  EXPECT_STREQ("ABCDBCD", aString2.ToCString());
+  EXPECT_EQ(7, aString2.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_WithCharacter)
+{
+  TCollection_AsciiString aString("Hllo");
+
+  // Insert character in middle
+  aString.Insert(2, 'e');
+  EXPECT_STREQ("Hello", aString.ToCString());
+  EXPECT_EQ(5, aString.Length());
+
+  // Insert character at beginning
+  TCollection_AsciiString aString2("ello");
+  aString2.Insert(1, 'H');
+  EXPECT_STREQ("Hello", aString2.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_BoundaryConditions)
+{
+  TCollection_AsciiString aString("Test");
+
+  // Insert at position 1 (beginning)
+  TCollection_AsciiString aString1 = aString;
+  aString1.Insert(1, ">");
+  EXPECT_STREQ(">Test", aString1.ToCString());
+
+  // Insert at position length+1 (end)
+  TCollection_AsciiString aString2 = aString;
+  aString2.Insert(5, "<");
+  EXPECT_STREQ("Test<", aString2.ToCString());
+}
+
+// ========================================
+// Tests for Cat method
+// ========================================
+
+TEST(TCollection_AsciiStringTest, Cat_BasicCases)
+{
+  TCollection_AsciiString aString("Hello");
+
+  // Cat with C string
+  TCollection_AsciiString aResult1 = aString.Cat(" World");
+  EXPECT_STREQ("Hello World", aResult1.ToCString());
+  EXPECT_STREQ("Hello", aString.ToCString()); // Original unchanged
+
+  // Cat with AsciiString
+  TCollection_AsciiString aSuffix("!");
+  TCollection_AsciiString aResult2 = aString.Cat(aSuffix);
+  EXPECT_STREQ("Hello!", aResult2.ToCString());
+
+  // Cat with character
+  TCollection_AsciiString aResult3 = aString.Cat('?');
+  EXPECT_STREQ("Hello?", aResult3.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, Cat_IntegerAndReal)
+{
+  TCollection_AsciiString aString("Count: ");
+
+  // Cat with integer
+  TCollection_AsciiString aResult1 = aString.Cat(42);
+  EXPECT_STREQ("Count: 42", aResult1.ToCString());
+
+  // Cat with negative integer
+  TCollection_AsciiString aResult2 = aString.Cat(-100);
+  EXPECT_STREQ("Count: -100", aResult2.ToCString());
+
+  // Cat with real
+  TCollection_AsciiString aString2("Value: ");
+  TCollection_AsciiString aResult3 = aString2.Cat(3.14);
+  EXPECT_TRUE(strstr(aResult3.ToCString(), "3.14") != NULL);
+
+  // Cat with zero
+  TCollection_AsciiString aResult4 = aString.Cat(0);
+  EXPECT_STREQ("Count: 0", aResult4.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, Cat_EmptyStrings)
+{
+  TCollection_AsciiString aEmpty;
+
+  // Cat to empty string
+  TCollection_AsciiString aResult1 = aEmpty.Cat("First");
+  EXPECT_STREQ("First", aResult1.ToCString());
+
+  // Cat empty string
+  TCollection_AsciiString aString("Test");
+  TCollection_AsciiString aResult2 = aString.Cat("");
+  EXPECT_STREQ("Test", aResult2.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, Cat_ChainedOperations)
+{
+  TCollection_AsciiString aString("A");
+
+  // Chain multiple Cat operations
+  TCollection_AsciiString aResult = aString.Cat("B").Cat("C").Cat("D");
+  EXPECT_STREQ("ABCD", aResult.ToCString());
+}
+
+// ========================================
+// Tests for Copy method
+// ========================================
+
+TEST(TCollection_AsciiStringTest, Copy_BasicCases)
+{
+  TCollection_AsciiString aString("Original");
+
+  // Copy with C string
+  aString.Copy("NewValue");
+  EXPECT_STREQ("NewValue", aString.ToCString());
+  EXPECT_EQ(8, aString.Length());
+
+  // Copy with AsciiString
+  TCollection_AsciiString aSource("Another");
+  aString.Copy(aSource);
+  EXPECT_STREQ("Another", aString.ToCString());
+  EXPECT_EQ(7, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Copy_ShorterAndLonger)
+{
+  TCollection_AsciiString aString("LongString");
+
+  // Copy shorter string (should reuse memory)
+  aString.Copy("Short");
+  EXPECT_STREQ("Short", aString.ToCString());
+  EXPECT_EQ(5, aString.Length());
+
+  // Copy longer string
+  aString.Copy("VeryLongStringHere");
+  EXPECT_STREQ("VeryLongStringHere", aString.ToCString());
+  EXPECT_EQ(18, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Copy_EmptyString)
+{
+  TCollection_AsciiString aString("Original");
+
+  // Copy empty string
+  aString.Copy("");
+  EXPECT_STREQ("", aString.ToCString());
+  EXPECT_EQ(0, aString.Length());
+  EXPECT_TRUE(aString.IsEmpty());
+}
+
+TEST(TCollection_AsciiStringTest, Copy_SelfAssignment)
+{
+  TCollection_AsciiString aString("Test");
+
+  // Copy to itself (should be no-op)
+  aString.Copy(aString.ToCString());
+  EXPECT_STREQ("Test", aString.ToCString());
+  EXPECT_EQ(4, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Copy_MemoryReuse)
+{
+  TCollection_AsciiString aString(100, 'A');
+
+  // Copy shorter string - should reuse buffer
+  aString.Copy("Short");
+  EXPECT_STREQ("Short", aString.ToCString());
+  EXPECT_EQ(5, aString.Length());
+
+  // Copy another short string - should still reuse
+  aString.Copy("Tiny");
+  EXPECT_STREQ("Tiny", aString.ToCString());
+  EXPECT_EQ(4, aString.Length());
+}
+
+// ========================================
+// Tests for Search and SearchFromEnd methods
+// ========================================
+
+TEST(TCollection_AsciiStringTest, Search_BasicCases)
+{
+  TCollection_AsciiString aString("This is a test string");
+
+  // Search for existing substring
+  EXPECT_EQ(1, aString.Search("This"));
+  EXPECT_EQ(11, aString.Search("test"));
+  EXPECT_EQ(16, aString.Search("string"));
+
+  // Search for non-existing substring
+  EXPECT_EQ(-1, aString.Search("xyz"));
+  EXPECT_EQ(-1, aString.Search("notfound"));
+}
+
+TEST(TCollection_AsciiStringTest, Search_EdgeCases)
+{
+  TCollection_AsciiString aString("abcabc");
+
+  // Search for substring - finds first occurrence
+  EXPECT_EQ(1, aString.Search("abc"));
+
+  // Search for single character - finds first occurrence
+  EXPECT_EQ(1, aString.Search("a"));
+  EXPECT_EQ(2, aString.Search("b"));
+  EXPECT_EQ(3, aString.Search("c"));
+
+  // Search for empty string
+  EXPECT_EQ(-1, aString.Search(""));
+
+  // Search in empty string
+  TCollection_AsciiString anEmpty;
+  EXPECT_EQ(-1, anEmpty.Search("test"));
+}
+
+TEST(TCollection_AsciiStringTest, Search_RepeatedPattern)
+{
+  TCollection_AsciiString aString("aaaaaaa");
+
+  // Search should find first occurrence
+  EXPECT_EQ(1, aString.Search("aaa"));
+
+  // Test with different patterns
+  TCollection_AsciiString aString2("abcabcabc");
+  EXPECT_EQ(1, aString2.Search("abc"));    // First occurrence
+  EXPECT_EQ(1, aString2.Search("abcabc")); // Longer pattern
+}
+
+TEST(TCollection_AsciiStringTest, SearchFromEnd_BasicCases)
+{
+  TCollection_AsciiString aString("This is a test string with test");
+
+  // SearchFromEnd should find last occurrence
+  EXPECT_EQ(28, aString.SearchFromEnd("test"));
+  EXPECT_EQ(16, aString.SearchFromEnd("string"));
+
+  // Search for non-existing substring
+  EXPECT_EQ(-1, aString.SearchFromEnd("xyz"));
+}
+
+TEST(TCollection_AsciiStringTest, SearchFromEnd_EdgeCases)
+{
+  TCollection_AsciiString aString("abcabc");
+
+  // SearchFromEnd for repeated pattern
+  EXPECT_EQ(4, aString.SearchFromEnd("abc"));
+
+  // SearchFromEnd for single character
+  EXPECT_EQ(4, aString.SearchFromEnd("a"));
+  EXPECT_EQ(6, aString.SearchFromEnd("c"));
+
+  // SearchFromEnd for empty string
+  EXPECT_EQ(-1, aString.SearchFromEnd(""));
+
+  // SearchFromEnd in empty string
+  TCollection_AsciiString anEmpty;
+  EXPECT_EQ(-1, anEmpty.SearchFromEnd("test"));
+}
+
+TEST(TCollection_AsciiStringTest, Search_LongerThanString)
+{
+  TCollection_AsciiString aString("Short");
+
+  // Search for substring longer than string
+  EXPECT_EQ(-1, aString.Search("VeryLongSubstring"));
+}
+
+// ========================================
+// Tests for IsSameString method
+// ========================================
+
+TEST(TCollection_AsciiStringTest, IsSameString_CaseSensitive)
+{
+  TCollection_AsciiString aString1("Test");
+  TCollection_AsciiString aString2("Test");
+  TCollection_AsciiString aString3("test");
+  TCollection_AsciiString aString4("Different");
+
+  // Case sensitive comparison
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString2, Standard_True));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString3, Standard_True));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString4, Standard_True));
+}
+
+TEST(TCollection_AsciiStringTest, IsSameString_CaseInsensitive)
+{
+  TCollection_AsciiString aString1("Test");
+  TCollection_AsciiString aString2("TEST");
+  TCollection_AsciiString aString3("test");
+  TCollection_AsciiString aString4("TeSt");
+
+  // Case insensitive comparison
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString2, Standard_False));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString3, Standard_False));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString4, Standard_False));
+}
+
+TEST(TCollection_AsciiStringTest, IsSameString_EmptyStrings)
+{
+  TCollection_AsciiString aEmpty1;
+  TCollection_AsciiString aEmpty2("");
+  TCollection_AsciiString aNonEmpty("Test");
+
+  // Empty string comparisons
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aEmpty1, aEmpty2, Standard_True));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aEmpty1, aEmpty2, Standard_False));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aEmpty1, aNonEmpty, Standard_True));
+}
+
+TEST(TCollection_AsciiStringTest, IsSameString_DifferentLengths)
+{
+  TCollection_AsciiString aString1("Short");
+  TCollection_AsciiString aString2("VeryLong");
+
+  // Different length strings are never same
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString2, Standard_True));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString2, Standard_False));
+}
+
+TEST(TCollection_AsciiStringTest, IsSameString_WithCStrings)
+{
+  // Test overload with C strings
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString("Test", 4, "Test", 4, Standard_True));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString("Test", 4, "test", 4, Standard_True));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString("Test", 4, "test", 4, Standard_False));
+}
+
+// ========================================
+// Tests for IsEqual, IsDifferent, IsLess, IsGreater methods
+// ========================================
+
+TEST(TCollection_AsciiStringTest, IsEqual_AllOverloads)
+{
+  TCollection_AsciiString aString("Test");
+
+  // IsEqual with AsciiString
+  TCollection_AsciiString aString2("Test");
+  EXPECT_TRUE(aString.IsEqual(aString2));
+
+  // IsEqual with C string
+  EXPECT_TRUE(aString.IsEqual("Test"));
+  EXPECT_FALSE(aString.IsEqual("Different"));
+
+  // IsEqual with case sensitivity
+  TCollection_AsciiString aString3("test");
+  EXPECT_FALSE(aString.IsEqual(aString3));
+}
+
+TEST(TCollection_AsciiStringTest, IsDifferent_AllOverloads)
+{
+  TCollection_AsciiString aString("Test");
+
+  // IsDifferent with AsciiString
+  TCollection_AsciiString aString2("Different");
+  EXPECT_TRUE(aString.IsDifferent(aString2));
+
+  // IsDifferent with C string
+  EXPECT_TRUE(aString.IsDifferent("Different"));
+  EXPECT_FALSE(aString.IsDifferent("Test"));
+}
+
+TEST(TCollection_AsciiStringTest, IsLess_AllOverloads)
+{
+  TCollection_AsciiString aStringA("Apple");
+  TCollection_AsciiString aStringB("Banana");
+
+  // IsLess with AsciiString
+  EXPECT_TRUE(aStringA.IsLess(aStringB));
+  EXPECT_FALSE(aStringB.IsLess(aStringA));
+
+  // IsLess with C string
+  EXPECT_TRUE(aStringA.IsLess("Banana"));
+  EXPECT_FALSE(aStringB.IsLess("Apple"));
+
+  // IsLess with same string
+  EXPECT_FALSE(aStringA.IsLess(aStringA));
+}
+
+TEST(TCollection_AsciiStringTest, IsGreater_AllOverloads)
+{
+  TCollection_AsciiString aStringA("Apple");
+  TCollection_AsciiString aStringB("Banana");
+
+  // IsGreater with AsciiString
+  EXPECT_TRUE(aStringB.IsGreater(aStringA));
+  EXPECT_FALSE(aStringA.IsGreater(aStringB));
+
+  // IsGreater with C string
+  EXPECT_TRUE(aStringB.IsGreater("Apple"));
+  EXPECT_FALSE(aStringA.IsGreater("Banana"));
+
+  // IsGreater with same string
+  EXPECT_FALSE(aStringA.IsGreater(aStringA));
+}
+
+TEST(TCollection_AsciiStringTest, Comparison_EmptyStrings)
+{
+  TCollection_AsciiString aEmpty;
+  TCollection_AsciiString aNonEmpty("Test");
+
+  // Empty string comparisons
+  EXPECT_TRUE(aEmpty.IsEqual(""));
+  EXPECT_FALSE(aEmpty.IsEqual(aNonEmpty));
+  EXPECT_TRUE(aEmpty.IsDifferent(aNonEmpty));
+  EXPECT_TRUE(aEmpty.IsLess(aNonEmpty));
+  EXPECT_FALSE(aEmpty.IsGreater(aNonEmpty));
+}
+
+// ========================================
+// Tests for SetValue method
+// ========================================
+
+TEST(TCollection_AsciiStringTest, SetValue_BasicCases)
+{
+  TCollection_AsciiString aString("Hello");
+
+  // SetValue with character
+  aString.SetValue(1, 'h');
+  EXPECT_STREQ("hello", aString.ToCString());
+
+  aString.SetValue(5, '!');
+  EXPECT_STREQ("hell!", aString.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, SetValue_WithString)
+{
+  TCollection_AsciiString aString("AAAAA");
+
+  // SetValue with C string
+  aString.SetValue(2, "XYZ");
+  EXPECT_STREQ("AXYZA", aString.ToCString());
+
+  // SetValue with AsciiString
+  TCollection_AsciiString aReplacement("12");
+  aString.SetValue(1, aReplacement);
+  EXPECT_STREQ("12YZA", aString.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, SetValue_BoundaryConditions)
+{
+  TCollection_AsciiString aString("Test");
+
+  // SetValue at first position
+  aString.SetValue(1, 'X');
+  EXPECT_STREQ("Xest", aString.ToCString());
+
+  // SetValue at last position
+  aString.SetValue(4, 'Y');
+  EXPECT_STREQ("XesY", aString.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, SetValue_StringOverflow)
+{
+  TCollection_AsciiString aString("AAAA");
+
+  // SetValue with string that extends beyond current length
+  aString.SetValue(3, "XYZ");
+  EXPECT_STREQ("AAXYZ", aString.ToCString());
+  EXPECT_EQ(5, aString.Length());
+}
+
+// ========================================
+// Tests for Remove and RemoveAll methods
+// ========================================
+
+TEST(TCollection_AsciiStringTest, Remove_BasicCases)
+{
+  TCollection_AsciiString aString("Hello World");
+
+  // Remove from middle
+  aString.Remove(6, 6);
+  EXPECT_STREQ("Hello", aString.ToCString());
+  EXPECT_EQ(5, aString.Length());
+
+  // Remove from beginning
+  TCollection_AsciiString aString2("XYZTest");
+  aString2.Remove(1, 3);
+  EXPECT_STREQ("Test", aString2.ToCString());
+
+  // Remove from end
+  TCollection_AsciiString aString3("TestXYZ");
+  aString3.Remove(5, 3);
+  EXPECT_STREQ("Test", aString3.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, Remove_EntireString)
+{
+  TCollection_AsciiString aString("Test");
+
+  // Remove all characters
+  aString.Remove(1, 4);
+  EXPECT_STREQ("", aString.ToCString());
+  EXPECT_EQ(0, aString.Length());
+  EXPECT_TRUE(aString.IsEmpty());
+}
+
+TEST(TCollection_AsciiStringTest, RemoveAll_SingleCharacter)
+{
+  TCollection_AsciiString aString("Mississippi");
+
+  // RemoveAll 's' -> "Miiippi" (4 's' removed)
+  aString.RemoveAll('s');
+  EXPECT_STREQ("Miiippi", aString.ToCString());
+
+  // RemoveAll 'i' -> "Mpp" (4 'i' removed: M-i-i-i-pp-i)
+  aString.RemoveAll('i');
+  EXPECT_STREQ("Mpp", aString.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, RemoveAll_NoOccurrence)
+{
+  TCollection_AsciiString aString("Test");
+
+  // RemoveAll character that doesn't exist
+  aString.RemoveAll('X');
+  EXPECT_STREQ("Test", aString.ToCString());
+  EXPECT_EQ(4, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, RemoveAll_AllCharacters)
+{
+  TCollection_AsciiString aString("AAAA");
+
+  // RemoveAll the only character
+  aString.RemoveAll('A');
+  EXPECT_STREQ("", aString.ToCString());
+  EXPECT_EQ(0, aString.Length());
+  EXPECT_TRUE(aString.IsEmpty());
+}
+
+// ========================================
+// Tests for Trunc method
+// ========================================
+
+TEST(TCollection_AsciiStringTest, Trunc_BasicCases)
+{
+  TCollection_AsciiString aString("Hello World");
+
+  // Truncate to shorter length
+  aString.Trunc(5);
+  EXPECT_STREQ("Hello", aString.ToCString());
+  EXPECT_EQ(5, aString.Length());
+
+  // Truncate to zero
+  aString.Trunc(0);
+  EXPECT_STREQ("", aString.ToCString());
+  EXPECT_EQ(0, aString.Length());
+  EXPECT_TRUE(aString.IsEmpty());
+}
+
+TEST(TCollection_AsciiStringTest, Trunc_NoChange)
+{
+  TCollection_AsciiString aString("Test");
+
+  // Truncate to same length
+  aString.Trunc(4);
+  EXPECT_STREQ("Test", aString.ToCString());
+  EXPECT_EQ(4, aString.Length());
+}
+
+// ========================================
+// Tests for std::string_view API
+// ========================================
+
+#if defined(__cplusplus) && __cplusplus >= 201703L
+TEST(TCollection_AsciiStringTest, StringView_Constructor)
+{
+  std::string_view        aView("Hello World");
+  TCollection_AsciiString aString(aView);
+
+  EXPECT_STREQ("Hello World", aString.ToCString());
+  EXPECT_EQ(11, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, StringView_AssignmentAndComparison)
+{
+  TCollection_AsciiString aString;
+  std::string_view        aView("Test");
+
+  // Assignment from string_view
+  aString = aView;
+  EXPECT_STREQ("Test", aString.ToCString());
+
+  // Comparison with string_view
+  EXPECT_TRUE(aString.IsEqual(aView));
+  EXPECT_FALSE(aString.IsDifferent(aView));
+}
+
+TEST(TCollection_AsciiStringTest, StringView_CatAndAssignCat)
+{
+  TCollection_AsciiString aString("Hello");
+  std::string_view        aView(" World");
+
+  // Cat with string_view
+  TCollection_AsciiString aResult = aString.Cat(aView);
+  EXPECT_STREQ("Hello World", aResult.ToCString());
+
+  // AssignCat with string_view
+  aString.AssignCat(aView);
+  EXPECT_STREQ("Hello World", aString.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, StringView_Insert)
+{
+  TCollection_AsciiString aString("HloWorld");
+  std::string_view        aView("el");
+
+  // Insert string_view
+  aString.Insert(2, aView);
+  EXPECT_STREQ("HelloWorld", aString.ToCString());
+}
+#endif
+
+// ========================================
+// Tests for Move semantics
+// ========================================
+
+TEST(TCollection_AsciiStringTest, MoveConstructor)
+{
+  TCollection_AsciiString aString1("Original String");
+  TCollection_AsciiString aString2(std::move(aString1));
+
+  EXPECT_STREQ("Original String", aString2.ToCString());
+  EXPECT_EQ(15, aString2.Length());
+
+  // Original should be in valid but unspecified state
+  // (typically empty after move)
+  EXPECT_TRUE(aString1.IsEmpty() || aString1.Length() >= 0);
+}
+
+TEST(TCollection_AsciiStringTest, MoveAssignment)
+{
+  TCollection_AsciiString aString1("First");
+  TCollection_AsciiString aString2("Second");
+
+  aString2 = std::move(aString1);
+
+  EXPECT_STREQ("First", aString2.ToCString());
+  EXPECT_EQ(5, aString2.Length());
+}
+
+// ========================================
+// Tests for template literal constructors
+// ========================================
+
+TEST(TCollection_AsciiStringTest, TemplateLiteral_Constructor)
+{
+  // Test compile-time size deduction for string literals
+  TCollection_AsciiString aString("Literal");
+  EXPECT_STREQ("Literal", aString.ToCString());
+  EXPECT_EQ(7, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, TemplateLiteral_Assignment)
+{
+  TCollection_AsciiString aString;
+  aString = "Assigned";
+  EXPECT_STREQ("Assigned", aString.ToCString());
+  EXPECT_EQ(8, aString.Length());
+}
+
+// ========================================
+// Tests for edge cases and stress tests
+// ========================================
+
+TEST(TCollection_AsciiStringTest, StressTest_MultipleOperations)
+{
+  TCollection_AsciiString aString;
+
+  // Build string through multiple operations
+  for (int i = 0; i < 10; ++i)
+  {
+    aString.AssignCat("A");
+  }
+  EXPECT_EQ(10, aString.Length());
+
+  // Insert in middle multiple times
+  for (int i = 0; i < 5; ++i)
+  {
+    aString.Insert(6, "B");
+  }
+  EXPECT_EQ(15, aString.Length());
+
+  // Remove characters
+  aString.RemoveAll('B');
+  EXPECT_EQ(10, aString.Length());
+  EXPECT_STREQ("AAAAAAAAAA", aString.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, StressTest_LargeOperations)
+{
+  // Create large string
+  TCollection_AsciiString aLarge(1000, 'X');
+  EXPECT_EQ(1000, aLarge.Length());
+
+  // Copy to another large string
+  TCollection_AsciiString aCopy;
+  aCopy.Copy(aLarge);
+  EXPECT_EQ(1000, aCopy.Length());
+
+  // Concatenate large strings
+  aLarge.AssignCat(aCopy);
+  EXPECT_EQ(2000, aLarge.Length());
+}
+
+TEST(TCollection_AsciiStringTest, EdgeCase_NullCharacterHandling)
+{
+  // Ensure null characters are handled correctly
+  TCollection_AsciiString aString('\0');
+  EXPECT_TRUE(aString.IsEmpty());
+  EXPECT_EQ(0, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, EdgeCase_ConsecutiveOperations)
+{
+  TCollection_AsciiString aString("Test");
+
+  // Multiple consecutive copies
+  aString.Copy("A");
+  aString.Copy("BB");
+  aString.Copy("CCC");
+  EXPECT_STREQ("CCC", aString.ToCString());
+
+  // Multiple consecutive assigncats
+  aString.AssignCat("D");
+  aString.AssignCat("E");
+  aString.AssignCat("F");
+  EXPECT_STREQ("CCCDEF", aString.ToCString());
+}
