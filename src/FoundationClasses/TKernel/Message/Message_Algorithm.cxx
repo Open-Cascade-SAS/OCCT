@@ -351,15 +351,15 @@ TCollection_ExtendedString Message_Algorithm::PrepareReport(
   for (; anIt.More() && nb <= theMaxCount; anIt.Next(), nb++)
   {
     if (nb > 1)
-      aNewReport += TCollection_ExtendedString(" ");
-    aNewReport += TCollection_ExtendedString(anIt.Key());
+      aNewReport += " ";
+    aNewReport += anIt.Key();
   }
 
   if (anIt.More())
   {
-    aNewReport += TCollection_ExtendedString(" ... (total ");
-    aNewReport += TCollection_ExtendedString(theMapError->Map().Extent());
-    aNewReport += TCollection_ExtendedString(")");
+    aNewReport += " ... (total ";
+    aNewReport += theMapError->Map().Extent();
+    aNewReport += ")";
   }
   return aNewReport;
 }
@@ -374,16 +374,16 @@ TCollection_ExtendedString Message_Algorithm::PrepareReport(
   Standard_Integer           nb = 1;
   for (; nb <= theReportSeq.Length() && nb <= theMaxCount; nb++)
   {
-    aNewReport += TCollection_ExtendedString((Standard_CString)(nb > 1 ? ", \'" : "\'"));
+    aNewReport += (Standard_CString)(nb > 1 ? ", \'" : "\'");
     aNewReport += theReportSeq.Value(nb)->String();
-    aNewReport += TCollection_ExtendedString("\'");
+    aNewReport += "\'";
   }
 
   if (theReportSeq.Length() > theMaxCount)
   {
-    aNewReport += TCollection_ExtendedString(" ... (total ");
-    aNewReport += TCollection_ExtendedString(theReportSeq.Length());
-    aNewReport += TCollection_ExtendedString(") ");
+    aNewReport += " ... (total ";
+    aNewReport += theReportSeq.Length();
+    aNewReport += ") ";
   }
   return aNewReport;
 }

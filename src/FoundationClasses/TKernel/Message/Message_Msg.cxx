@@ -51,8 +51,7 @@ Message_Msg::Message_Msg(const Standard_CString theMsgCode)
 
 Message_Msg::Message_Msg(const TCollection_ExtendedString& theMsgCode)
 {
-  TCollection_AsciiString aKey(theMsgCode);
-  Set(Message_MsgFile::Msg(aKey));
+  Set(Message_MsgFile::Msg(theMsgCode));
 }
 
 //=================================================================================================
