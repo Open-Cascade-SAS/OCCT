@@ -5,6 +5,7 @@ set(OCCT_TCollection_FILES
   TCollection.hxx
   TCollection_AsciiString.cxx
   TCollection_AsciiString.hxx
+  TCollection_AsciiString.lxx
   TCollection_ExtendedString.cxx
   TCollection_ExtendedString.hxx
   TCollection_HAsciiString.cxx

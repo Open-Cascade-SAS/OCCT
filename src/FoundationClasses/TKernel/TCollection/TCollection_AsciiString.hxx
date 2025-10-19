@@ -1900,4 +1900,6 @@ struct hash<TCollection_AsciiString>
 };
 } // namespace std
 
+#include <TCollection_AsciiString.lxx>
+
 #endif // _TCollection_AsciiString_HeaderFile
