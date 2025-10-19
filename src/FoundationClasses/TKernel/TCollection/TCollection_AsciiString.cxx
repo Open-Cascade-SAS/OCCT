@@ -266,6 +266,7 @@ void TCollection_AsciiString::AssignCat(const Standard_Character theOther)
   {
     reallocate(myLength + 1);
     myString[myLength - 1] = theOther;
+    myString[myLength]     = '\0';
   }
 }
 
@@ -541,7 +542,7 @@ void TCollection_AsciiString::Insert(const Standard_Integer theWhere,
 
   if (isSelfReference)
   {
-    // Self-reference: save offset, reallocate, then use memmove for everything
+    // Self-reference: save offset, reallocate, then handle the shifted source
     const Standard_Integer anOffset = static_cast<Standard_Integer>(theString - myString);
 
     reallocate(aNewLength);
@@ -554,8 +555,13 @@ void TCollection_AsciiString::Insert(const Standard_Integer theWhere,
               anOldLength - anInsertIndex);
     }
 
+    // After the shift, if the source was at or after the insertion point,
+    // it has been shifted by anInsertSize positions to the right
+    const Standard_Integer aSourceOffset =
+      (anOffset >= anInsertIndex) ? (anOffset + anInsertSize) : anOffset;
+
     // Insert from the recalculated position in the same buffer using memmove
-    memmove(myString + anInsertIndex, myString + anOffset, anInsertSize);
+    memmove(myString + anInsertIndex, myString + aSourceOffset, anInsertSize);
   }
   else
   {
@@ -577,22 +583,24 @@ void TCollection_AsciiString::Insert(const Standard_Integer theWhere,
 
 //=================================================================================================
 
-void TCollection_AsciiString::InsertAfter(const Standard_Integer         theIndex,
-                                          const TCollection_AsciiString& theWhat)
+void TCollection_AsciiString::InsertAfter(const Standard_Integer theIndex,
+                                          const Standard_CString theString,
+                                          const Standard_Integer theLength)
 {
   if (theIndex < 0 || theIndex > myLength)
     throw Standard_OutOfRange();
-  Insert(theIndex + 1, theWhat);
+  Insert(theIndex + 1, theString, theLength);
 }
 
 //=================================================================================================
 
-void TCollection_AsciiString::InsertBefore(const Standard_Integer         theIndex,
-                                           const TCollection_AsciiString& theWhat)
+void TCollection_AsciiString::InsertBefore(const Standard_Integer theIndex,
+                                           const Standard_CString theString,
+                                           const Standard_Integer theLength)
 {
   if (theIndex < 1 || theIndex > myLength)
     throw Standard_OutOfRange();
-  Insert(theIndex, theWhat);
+  Insert(theIndex, theString, theLength);
 }
 
 //=================================================================================================
@@ -1210,11 +1218,11 @@ void TCollection_AsciiString::reallocate(const int theLength)
       const Standard_Size aRoundSize = calculatePaddedSize(theLength);
       myString = static_cast<Standard_PCharacter>(Standard::Reallocate(myString, aRoundSize));
     }
-    myString[theLength] = '\0';
   }
+  // Ensure null termination after updating length
   if (myString != THE_DEFAULT_CHAR_STRING)
   {
-    myString[theLength] = '\0';
+    myString[myLength] = myString[theLength] = '\0';
   }
   myLength = theLength;
 }

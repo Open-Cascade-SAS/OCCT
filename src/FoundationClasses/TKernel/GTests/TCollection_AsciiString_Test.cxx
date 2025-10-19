@@ -544,6 +544,144 @@ TEST(TCollection_AsciiStringTest, Insert_BoundaryConditions)
 }
 
 // ========================================
+// Tests for Insert method with overlapping source
+// ========================================
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapLeftSide)
+{
+  // Test case: source overlaps the left side of the shift window
+  // String: "ABCDEFGH", insert "ABC" at position 4
+  // Result: "ABC[ABC]DEFGH" - source is before insertion point
+  TCollection_AsciiString aString("ABCDEFGH");
+  const char*             aSource = aString.ToCString(); // "ABCDEFGH"
+  aString.Insert(4, aSource, 3);                         // Insert first 3 chars at pos 4
+  EXPECT_STREQ("ABCABCDEFGH", aString.ToCString());
+  EXPECT_EQ(11, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapRightSide)
+{
+  // Test case: source overlaps the right side of the shift window
+  // String: "ABCDEFGH", insert "DEFGH" at position 2
+  // When shifting, "BCDEFGH" moves to positions 6-12
+  // Source "DEFGH" (originally at 3-7) also shifts to 8-12
+  // Result: "A" + "DEFGH" (from shifted position 8-12) + "BCDEFGH" = "ADEFGHBCDEFGH"
+  TCollection_AsciiString aString("ABCDEFGH");
+  const char*             aSource = aString.ToCString() + 3; // "DEFGH"
+  aString.Insert(2, aSource);
+  EXPECT_STREQ("ADEFGHBCDEFGH", aString.ToCString());
+  EXPECT_EQ(13, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapInsideShiftWindow)
+{
+  // Test case: source is completely inside the shift window
+  // String: "ABCDEFGH", insert "CDE" at position 2
+  // Result: "A[CDE]BCDEFGH" - source will be shifted
+  TCollection_AsciiString aString("ABCDEFGH");
+  const char*             aSource = aString.ToCString() + 2; // "CDEFGH"
+  aString.Insert(2, aSource, 3);                             // Insert "CDE" at pos 2
+  EXPECT_STREQ("ACDEBCDEFGH", aString.ToCString());
+  EXPECT_EQ(11, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapStartsBeforeShiftWindow)
+{
+  // Test case: source starts before and extends into shift window
+  // String: "ABCDEFGH", insert "BCDE" at position 4
+  // Result: "ABC[BCDE]DEFGH"
+  TCollection_AsciiString aString("ABCDEFGH");
+  const char*             aSource = aString.ToCString() + 1; // "BCDEFGH"
+  aString.Insert(4, aSource, 4);                             // Insert "BCDE" at pos 4
+  EXPECT_STREQ("ABCBCDEDEFGH", aString.ToCString());
+  EXPECT_EQ(12, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapAtInsertionPoint)
+{
+  // Test case: source starts exactly at insertion point
+  // String: "ABCDEFGH", insert "DEF" at position 4
+  // Result: "ABC[DEF]DEFGH" - source starts where we insert
+  TCollection_AsciiString aString("ABCDEFGH");
+  const char*             aSource = aString.ToCString() + 3; // "DEFGH"
+  aString.Insert(4, aSource, 3);                             // Insert "DEF" at pos 4
+  EXPECT_STREQ("ABCDEFDEFGH", aString.ToCString());
+  EXPECT_EQ(11, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapComplex1)
+{
+  // Test case: Insert middle portion into beginning
+  // String: "123456789", insert "456" at position 1
+  // Result: "[456]123456789"
+  TCollection_AsciiString aString("123456789");
+  const char*             aSource = aString.ToCString() + 3; // "456789"
+  aString.Insert(1, aSource, 3);                             // Insert "456" at pos 1
+  EXPECT_STREQ("456123456789", aString.ToCString());
+  EXPECT_EQ(12, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapComplex2)
+{
+  // Test case: Insert beginning portion into middle
+  // String: "XYZABC", insert "XY" at position 4
+  // Result: "XYZ[XY]ABC"
+  TCollection_AsciiString aString("XYZABC");
+  const char*             aSource = aString.ToCString(); // "XYZABC"
+  aString.Insert(4, aSource, 2);                         // Insert "XY" at pos 4
+  EXPECT_STREQ("XYZXYABC", aString.ToCString());
+  EXPECT_EQ(8, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapSpansEntireShiftWindow)
+{
+  // Test case: source spans from before to after shift window
+  // String: "ABCDEFGHIJK", insert "BCDEFGH" at position 5
+  // Result: "ABCD[BCDEFGH]EFGHIJK" - very wide overlap
+  TCollection_AsciiString aString("ABCDEFGHIJK");
+  const char*             aSource = aString.ToCString() + 1; // "BCDEFGHIJK"
+  aString.Insert(5, aSource, 7);                             // Insert "BCDEFGH" at pos 5
+  EXPECT_STREQ("ABCDBCDEFGHEFGHIJK", aString.ToCString());
+  EXPECT_EQ(18, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapSingleChar)
+{
+  // Test case: Insert single character from itself
+  // String: "ABC", insert 'B' at position 1
+  TCollection_AsciiString aString("ABC");
+  const char*             aSource = aString.ToCString() + 1; // "BC"
+  aString.Insert(1, aSource, 1);                             // Insert 'B' at pos 1
+  EXPECT_STREQ("BABC", aString.ToCString());
+  EXPECT_EQ(4, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapEndToBeginning)
+{
+  // Test case: Insert end of string at beginning
+  // String: "HELLO", insert "LO" at position 1
+  TCollection_AsciiString aString("HELLO");
+  const char*             aSource = aString.ToCString() + 3; // "LO"
+  aString.Insert(1, aSource);
+  EXPECT_STREQ("LOHELLO", aString.ToCString());
+  EXPECT_EQ(7, aString.Length());
+}
+
+TEST(TCollection_AsciiStringTest, Insert_OverlapLargeString)
+{
+  // Test case: Large string with overlap
+  // This tests that memmove is used correctly for large overlapping regions
+  TCollection_AsciiString aString(50, 'A');
+  aString.SetValue(25, "MARKER");                 // "AAA...MARKER...AAA"
+  const char* aSource = aString.ToCString() + 20; // Take substring from position 20
+  aString.Insert(10, aSource, 10);                // Insert 10 chars at position 10
+  EXPECT_EQ(60, aString.Length());
+  // Verify MARKER appears twice (once from original, once from inserted overlap)
+  const char* aResult = aString.ToCString();
+  EXPECT_TRUE(strstr(aResult, "MARKER") != nullptr);
+}
+
+// ========================================
 // Tests for Cat method
 // ========================================
 
@@ -1233,4 +1371,48 @@ TEST(TCollection_AsciiStringTest, EdgeCase_ConsecutiveOperations)
   aString.AssignCat("E");
   aString.AssignCat("F");
   EXPECT_STREQ("CCCDEF", aString.ToCString());
+}
+
+// Test case for bug with enum definition building (multiple AssignCat in loop)
+TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
+{
+  // This reproduces the scenario in MoniTool_TypedValue::Definition()
+  TCollection_AsciiString aDef;
+  char                    aMess[50];
+
+  // Build enum definition like MoniTool_TypedValue does
+  aDef.AssignCat("Enum");
+  sprintf(aMess, " [in %d-%d]", 0, 1);
+  aDef.AssignCat(aMess);
+
+  // Should be "Enum [in 0-1]" at this point
+  EXPECT_STREQ("Enum [in 0-1]", aDef.ToCString());
+
+  // Now add enum values in a loop
+  for (Standard_Integer i = 0; i <= 1; i++)
+  {
+    const char* anEnva = (i == 0) ? "Off" : "On";
+    sprintf(aMess, " %d:%s", i, anEnva);
+    aDef.AssignCat(aMess);
+  }
+
+  // Should be "Enum [in 0-1] 0:Off 1:On"
+  EXPECT_STREQ("Enum [in 0-1] 0:Off 1:On", aDef.ToCString());
+
+  // Add alpha section
+  aDef.AssignCat(" , alpha: ");
+  sprintf(aMess, "On:%d ", 1);
+  aDef.AssignCat("On");
+  aDef.AssignCat(aMess);
+  sprintf(aMess, "Off:%d ", 0);
+  aDef.AssignCat("Off");
+  aDef.AssignCat(aMess);
+
+  // Final result should contain all parts
+  const char* aResult = aDef.ToCString();
+  EXPECT_TRUE(strstr(aResult, "Enum") != nullptr);
+  EXPECT_TRUE(strstr(aResult, "[in 0-1]") != nullptr);
+  EXPECT_TRUE(strstr(aResult, "0:Off") != nullptr);
+  EXPECT_TRUE(strstr(aResult, "1:On") != nullptr);
+  EXPECT_TRUE(strstr(aResult, "alpha:") != nullptr);
 }

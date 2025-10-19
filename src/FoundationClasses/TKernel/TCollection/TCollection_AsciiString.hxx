@@ -148,18 +148,11 @@ public:
   Standard_EXPORT TCollection_AsciiString(const Standard_WideChar* theStringUtf);
 #endif
 
-  //! Template constructor for string literals with compile-time size deduction.
-  //! This optimization avoids runtime strlen() calls for string literals.
-  //!
-  //! Example:
-  //! ```cpp
-  //! TCollection_AsciiString aString("Hello");  // Size known at compile time
-  //! ```
-  //! @param[in] theLiteral the string literal
+  //! Template constructor for string literals or char arrays.
+  //! @param[in] theLiteral the string literal or char array
   template <std::size_t N>
   TCollection_AsciiString(const char (&theLiteral)[N])
-      : TCollection_AsciiString(theLiteral,
-                                static_cast<Standard_Integer>(N - 1)) // Exclude null terminator
+      : TCollection_AsciiString(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)))
   {
   }
 
@@ -231,19 +224,22 @@ public:
   void operator+=(const std::string_view& theStringView) { AssignCat(theStringView); }
 #endif
 
-  //! Template method for appending string literals with compile-time size deduction.
-  //! This optimization avoids runtime strlen() calls and unnecessary conversions.
+  //! Template method for appending string literals or char arrays.
+  //! For true string literals (const char[N] in code), the size is known at compile time.
+  //! For char arrays (like sprintf buffers), we need to call strlen to get actual length.
   //!
   //! Example:
   //! ```cpp
   //! TCollection_AsciiString aString("Hello");
-  //! aString += " World";  // Size known at compile time, no strlen() call
+  //! aString += " World";  // Size known at compile time for string literal
+  //! char buffer[50]; sprintf(buffer, "test");
+  //! aString += buffer;    // Uses strlen for actual length
   //! ```
-  //! @param[in] theLiteral the string literal to append
+  //! @param[in] theLiteral the string literal or char array to append
   template <std::size_t N>
   void AssignCat(const char (&theLiteral)[N])
   {
-    AssignCat(theLiteral, static_cast<Standard_Integer>(N - 1)); // Exclude null terminator
+    AssignCat(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
   template <std::size_t N>
@@ -370,21 +366,23 @@ public:
   }
 #endif
 
-  //! Template method for concatenating string literals with compile-time size deduction.
-  //! This optimization avoids runtime strlen() calls and unnecessary conversions.
+  //! Template method for concatenating string literals or char arrays.
+  //! For safety, uses strlen to get actual string length.
   //!
   //! Example:
   //! ```cpp
   //! TCollection_AsciiString aString("Hello");
-  //! TCollection_AsciiString aResult = aString + " World";  // Size known at compile time
-  //! // Result: aResult == "Hello World"
+  //! TCollection_AsciiString aResult = aString + " World";  // String literal
+  //! char buffer[50]; sprintf(buffer, "test");
+  //! aResult = aString + buffer;  // Char array - uses strlen
+  //! // Result: aResult == "Hello test"
   //! ```
-  //! @param[in] theLiteral the string literal to concatenate
+  //! @param[in] theLiteral the string literal or char array to concatenate
   //! @return new string with literal appended
   template <std::size_t N>
   TCollection_AsciiString Cat(const char (&theLiteral)[N]) const
   {
-    return Cat(theLiteral, static_cast<Standard_Integer>(N - 1)); // Exclude null terminator
+    return Cat(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
   template <std::size_t N>
@@ -461,20 +459,22 @@ public:
   void operator=(const std::string_view& theStringView) { Copy(theStringView); }
 #endif
 
-  //! Template method for copying string literals with compile-time size deduction.
-  //! This optimization avoids runtime strlen() calls and unnecessary conversions.
+  //! Template method for copying string literals or char arrays.
+  //! For safety, uses strlen to get actual string length.
   //!
   //! Example:
   //! ```cpp
   //! TCollection_AsciiString aString;
-  //! aString = "Hello World";  // Size known at compile time
-  //! // Result: aString == "Hello World"
+  //! aString = "Hello World";  // String literal
+  //! char buffer[50]; sprintf(buffer, "test");
+  //! aString = buffer;  // Char array - uses strlen
+  //! // Result: aString == "test"
   //! ```
-  //! @param[in] theLiteral the string literal to copy from
+  //! @param[in] theLiteral the string literal or char array to copy from
   template <std::size_t N>
   void Copy(const char (&theLiteral)[N])
   {
-    Copy(theLiteral, static_cast<Standard_Integer>(N - 1)); // Exclude null terminator
+    Copy(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
   template <std::size_t N>
@@ -736,46 +736,114 @@ public:
   //! // Result: aString == "Once more"
   //! ```
   //! @param[in] theWhere the position to insert at
-  //! @param[in] theLiteral the string literal to insert
+  //! @param[in] theLiteral the string literal or char array to insert
   template <std::size_t N>
   void Insert(const Standard_Integer theWhere, const char (&theLiteral)[N])
   {
-    Insert(theWhere, theLiteral, static_cast<Standard_Integer>(N - 1)); // Exclude null terminator
+    Insert(theWhere, theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
-  //! Pushing a string after a specific index in this string.
-  //! Raises an exception if Index is out of bounds.
-  //! -   less than 0 (InsertAfter), or less than 1 (InsertBefore), or
-  //! -   greater than the number of characters in this ASCII string.
-  //!
-  //! Example:
-  //! ```cpp
-  //! TCollection_AsciiString aString("cde");
-  //! TCollection_AsciiString anOther("ab");
-  //! aString.InsertAfter(0, anOther);
-  //! // Result: aString == "abcde"
-  //! ```
+  //! Core implementation: Inserts string (pointer and length) after a specific index in this
+  //! string. This is the primary implementation that all other InsertAfter overloads redirect to.
+  //! Raises an exception if index is out of bounds (less than 0 or greater than the length).
+  //! @param[in] theIndex the index to insert after
+  //! @param[in] theString pointer to the string to insert
+  //! @param[in] theLength length of the string to insert
+  Standard_EXPORT void InsertAfter(const Standard_Integer theIndex,
+                                   const Standard_CString theString,
+                                   const Standard_Integer theLength);
+
+  //! Inserts an ASCII string after a specific index in this string.
+  //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert after
   //! @param[in] theOther the string to insert
-  Standard_EXPORT void InsertAfter(const Standard_Integer         theIndex,
-                                   const TCollection_AsciiString& theOther);
+  void InsertAfter(const Standard_Integer theIndex, const TCollection_AsciiString& theOther)
+  {
+    InsertAfter(theIndex, theOther.ToCString(), theOther.Length());
+  }
 
-  //! Pushing a string before a specific index in this string.
-  //! Raises an exception if Index is out of bounds.
-  //! -   less than 0 (InsertAfter), or less than 1 (InsertBefore), or
-  //! -   greater than the number of characters in this ASCII string.
-  //!
-  //! Example:
-  //! ```cpp
-  //! TCollection_AsciiString aString("cde");
-  //! TCollection_AsciiString anOther("ab");
-  //! aString.InsertBefore(1, anOther);
-  //! // Result: aString == "abcde"
-  //! ```
+  //! Inserts a C string after a specific index in this string.
+  //! Raises an exception if index is out of bounds.
+  //! @param[in] theIndex the index to insert after
+  //! @param[in] theCString the C string to insert
+  void InsertAfter(const Standard_Integer theIndex, const Standard_CString theCString)
+  {
+    if (theCString)
+      InsertAfter(theIndex, theCString, static_cast<Standard_Integer>(strlen(theCString)));
+  }
+
+#if __cplusplus >= 201703L
+  //! Inserts a string_view after a specific index in this string.
+  //! Raises an exception if index is out of bounds.
+  //! @param[in] theIndex the index to insert after
+  //! @param[in] theStringView the string view to insert
+  void InsertAfter(const Standard_Integer theIndex, const std::string_view& theStringView)
+  {
+    InsertAfter(theIndex,
+                theStringView.data(),
+                static_cast<Standard_Integer>(theStringView.size()));
+  }
+#endif
+
+  //! Template method for inserting string literals or char arrays after a specific index.
+  //! @param[in] theIndex the index to insert after
+  //! @param[in] theLiteral the string literal or char array to insert
+  template <std::size_t N>
+  void InsertAfter(const Standard_Integer theIndex, const char (&theLiteral)[N])
+  {
+    InsertAfter(theIndex, theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
+  }
+
+  //! Core implementation: Inserts string (pointer and length) before a specific index in this
+  //! string. This is the primary implementation that all other InsertBefore overloads redirect to.
+  //! Raises an exception if index is out of bounds (less than 1 or greater than the length).
+  //! @param[in] theIndex the index to insert before
+  //! @param[in] theString pointer to the string to insert
+  //! @param[in] theLength length of the string to insert
+  Standard_EXPORT void InsertBefore(const Standard_Integer theIndex,
+                                    const Standard_CString theString,
+                                    const Standard_Integer theLength);
+
+  //! Inserts an ASCII string before a specific index in this string.
+  //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert before
   //! @param[in] theOther the string to insert
-  Standard_EXPORT void InsertBefore(const Standard_Integer         theIndex,
-                                    const TCollection_AsciiString& theOther);
+  void InsertBefore(const Standard_Integer theIndex, const TCollection_AsciiString& theOther)
+  {
+    InsertBefore(theIndex, theOther.ToCString(), theOther.Length());
+  }
+
+  //! Inserts a C string before a specific index in this string.
+  //! Raises an exception if index is out of bounds.
+  //! @param[in] theIndex the index to insert before
+  //! @param[in] theCString the C string to insert
+  void InsertBefore(const Standard_Integer theIndex, const Standard_CString theCString)
+  {
+    if (theCString)
+      InsertBefore(theIndex, theCString, static_cast<Standard_Integer>(strlen(theCString)));
+  }
+
+#if __cplusplus >= 201703L
+  //! Inserts a string_view before a specific index in this string.
+  //! Raises an exception if index is out of bounds.
+  //! @param[in] theIndex the index to insert before
+  //! @param[in] theStringView the string view to insert
+  void InsertBefore(const Standard_Integer theIndex, const std::string_view& theStringView)
+  {
+    InsertBefore(theIndex,
+                 theStringView.data(),
+                 static_cast<Standard_Integer>(theStringView.size()));
+  }
+#endif
+
+  //! Template method for inserting string literals or char arrays before a specific index.
+  //! @param[in] theIndex the index to insert before
+  //! @param[in] theLiteral the string literal or char array to insert
+  template <std::size_t N>
+  void InsertBefore(const Standard_Integer theIndex, const char (&theLiteral)[N])
+  {
+    InsertBefore(theIndex, theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
+  }
 
   //! Returns True if this string contains zero character.
   Standard_Boolean IsEmpty() const { return myLength == 0; }
@@ -843,12 +911,12 @@ public:
   //! bool isEqual = aString.IsEqual("Hello");  // Size known at compile time
   //! bool isEqual2 = (aString == "Hello");     // Same optimization
   //! ```
-  //! @param[in] theLiteral the string literal to compare with
+  //! @param[in] theLiteral the string literal or char array to compare with
   //! @return true if strings are equal, false otherwise
   template <std::size_t N>
   Standard_Boolean IsEqual(const char (&theLiteral)[N]) const
   {
-    return IsEqual(theLiteral, static_cast<Standard_Integer>(N - 1)); // Exclude null terminator
+    return IsEqual(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
   template <std::size_t N>
@@ -913,8 +981,8 @@ public:
   }
 #endif
 
-  //! Template method for comparing difference with string literals with compile-time optimization.
-  //! @param[in] theLiteral the string literal to compare with
+  //! Template method for comparing difference with string literals or char arrays.
+  //! @param[in] theLiteral the string literal or char array to compare with
   //! @return true if strings are different, false otherwise
   template <std::size_t N>
   Standard_Boolean IsDifferent(const char (&theLiteral)[N]) const
@@ -976,14 +1044,13 @@ public:
   }
 #endif
 
-  //! Template method for lexicographic comparison with string literals with compile-time
-  //! optimization.
-  //! @param[in] theLiteral the string literal to compare with
+  //! Template method for lexicographic comparison with string literals or char arrays.
+  //! @param[in] theLiteral the string literal or char array to compare with
   //! @return true if this string is lexicographically less than literal
   template <std::size_t N>
   Standard_Boolean IsLess(const char (&theLiteral)[N]) const
   {
-    return IsLess(theLiteral, static_cast<Standard_Integer>(N - 1)); // Exclude null terminator
+    return IsLess(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
   template <std::size_t N>
@@ -1043,14 +1110,13 @@ public:
   }
 #endif
 
-  //! Template method for lexicographic greater comparison with string literals with compile-time
-  //! optimization.
-  //! @param[in] theLiteral the string literal to compare with
+  //! Template method for lexicographic greater comparison with string literals or char arrays.
+  //! @param[in] theLiteral the string literal or char array to compare with
   //! @return true if this string is lexicographically greater than literal
   template <std::size_t N>
   Standard_Boolean IsGreater(const char (&theLiteral)[N]) const
   {
-    return IsGreater(theLiteral, static_cast<Standard_Integer>(N - 1)); // Exclude null terminator
+    return IsGreater(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
   template <std::size_t N>
@@ -1120,22 +1186,22 @@ public:
   }
 #endif
 
-  //! Template method for checking if string starts with a literal with compile-time optimization.
-  //! @param[in] theLiteral the string literal to check for at the beginning
+  //! Template method for checking if string starts with a literal or char array.
+  //! @param[in] theLiteral the string literal or char array to check for at the beginning
   //! @return true if this string starts with literal
   template <std::size_t N>
   Standard_Boolean StartsWith(const char (&theLiteral)[N]) const
   {
-    return StartsWith(theLiteral, static_cast<Standard_Integer>(N - 1));
+    return StartsWith(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
-  //! Template method for checking if string ends with a literal with compile-time optimization.
-  //! @param[in] theLiteral the string literal to check for at the end
+  //! Template method for checking if string ends with a literal or char array.
+  //! @param[in] theLiteral the string literal or char array to check for at the end
   //! @return true if this string ends with literal
   template <std::size_t N>
   Standard_Boolean EndsWith(const char (&theLiteral)[N]) const
   {
-    return EndsWith(theLiteral, static_cast<Standard_Integer>(N - 1));
+    return EndsWith(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
   //! Converts a AsciiString containing a numeric expression to an Integer.
@@ -1391,13 +1457,13 @@ public:
   }
 #endif
 
-  //! Template method for searching string literals with compile-time size deduction.
-  //! @param[in] theLiteral the string literal to search for
+  //! Template method for searching string literals or char arrays.
+  //! @param[in] theLiteral the string literal or char array to search for
   //! @return the position of first match, or -1 if not found
   template <std::size_t N>
   Standard_Integer Search(const char (&theLiteral)[N]) const
   {
-    return Search(theLiteral, static_cast<Standard_Integer>(N - 1));
+    return Search(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
   //! Core implementation: Searches a string (pointer and length) in this string from the end
@@ -1440,13 +1506,13 @@ public:
   }
 #endif
 
-  //! Template method for searching string literals from end with compile-time size deduction.
-  //! @param[in] theLiteral the string literal to search for
+  //! Template method for searching string literals or char arrays from end.
+  //! @param[in] theLiteral the string literal or char array to search for
   //! @return the position of first match from end, or -1 if not found
   template <std::size_t N>
   Standard_Integer SearchFromEnd(const char (&theLiteral)[N]) const
   {
-    return SearchFromEnd(theLiteral, static_cast<Standard_Integer>(N - 1));
+    return SearchFromEnd(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
   }
 
   //! Replaces one character in the AsciiString at position where.
