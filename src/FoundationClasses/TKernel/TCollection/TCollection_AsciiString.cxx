@@ -266,7 +266,6 @@ void TCollection_AsciiString::AssignCat(const Standard_Character theOther)
   {
     reallocate(myLength + 1);
     myString[myLength - 1] = theOther;
-    myString[myLength]     = '\0';
   }
 }
 
@@ -1219,10 +1218,10 @@ void TCollection_AsciiString::reallocate(const int theLength)
       myString = static_cast<Standard_PCharacter>(Standard::Reallocate(myString, aRoundSize));
     }
   }
-  // Ensure null termination after updating length
+  // Ensure null termination at new length
   if (myString != THE_DEFAULT_CHAR_STRING)
   {
-    myString[myLength] = myString[theLength] = '\0';
+    myString[theLength] = '\0';
   }
   myLength = theLength;
 }
