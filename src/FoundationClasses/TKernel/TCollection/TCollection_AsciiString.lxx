@@ -14,6 +14,25 @@
 
 #include <TCollection_AsciiString.hxx>
 
+//! Returns True when the two strings are the same.
+//! @param[in] theString1 first string to compare
+//! @param[in] theString2 second string to compare
+//! @return true if strings are equal
+inline Standard_Boolean IsEqual(const TCollection_AsciiString& theString1,
+                                const TCollection_AsciiString& theString2)
+{
+  return TCollection_AsciiString::IsEqual(theString1, theString2);
+}
+
+namespace std
+{
+template <>
+struct hash<TCollection_AsciiString>
+{
+  size_t operator()(const TCollection_AsciiString& theString) const { return theString.HashCode(); }
+};
+} // namespace std
+
 //=================================================================================================
 
 inline void TCollection_AsciiString::AssignCat(const TCollection_AsciiString& theOther)
@@ -33,6 +52,7 @@ inline void TCollection_AsciiString::AssignCat(const Standard_CString theCString
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline void TCollection_AsciiString::AssignCat(const std::string_view& theStringView)
 {
   if (!theStringView.empty())
@@ -40,6 +60,7 @@ inline void TCollection_AsciiString::AssignCat(const std::string_view& theString
     AssignCat(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
   }
 }
+#endif
 
 //=================================================================================================
 
@@ -67,11 +88,13 @@ inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_CStri
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline TCollection_AsciiString TCollection_AsciiString::Cat(
   const std::string_view& theStringView) const
 {
   return Cat(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -90,10 +113,12 @@ inline void TCollection_AsciiString::Copy(const Standard_CString theCString)
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline void TCollection_AsciiString::Copy(const std::string_view& theStringView)
 {
   Copy(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -134,11 +159,13 @@ inline void TCollection_AsciiString::Insert(const Standard_Integer theWhere,
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline void TCollection_AsciiString::Insert(const Standard_Integer  theWhere,
                                             const std::string_view& theStringView)
 {
   Insert(theWhere, theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -168,11 +195,13 @@ inline void TCollection_AsciiString::InsertAfter(const Standard_Integer theIndex
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline void TCollection_AsciiString::InsertAfter(const Standard_Integer  theIndex,
                                                  const std::string_view& theStringView)
 {
   InsertAfter(theIndex, theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -202,11 +231,13 @@ inline void TCollection_AsciiString::InsertBefore(const Standard_Integer theInde
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline void TCollection_AsciiString::InsertBefore(const Standard_Integer  theIndex,
                                                   const std::string_view& theStringView)
 {
   InsertBefore(theIndex, theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -235,11 +266,13 @@ inline Standard_Boolean TCollection_AsciiString::IsEqual(const Standard_CString 
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::IsEqual(
   const std::string_view& theStringView) const
 {
   return IsEqual(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -267,11 +300,13 @@ inline Standard_Boolean TCollection_AsciiString::IsDifferent(
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::IsDifferent(
   const std::string_view& theStringView) const
 {
   return !IsEqual(theStringView);
 }
+#endif
 
 //=================================================================================================
 
@@ -299,10 +334,12 @@ inline Standard_Boolean TCollection_AsciiString::IsLess(const Standard_CString t
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::IsLess(const std::string_view& theStringView) const
 {
   return IsLess(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -330,11 +367,13 @@ inline Standard_Boolean TCollection_AsciiString::IsGreater(const Standard_CStrin
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::IsGreater(
   const std::string_view& theStringView) const
 {
   return IsGreater(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -362,11 +401,13 @@ inline Standard_Boolean TCollection_AsciiString::StartsWith(const Standard_CStri
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::StartsWith(
   const std::string_view& theStartString) const
 {
   return StartsWith(theStartString.data(), static_cast<Standard_Integer>(theStartString.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -378,11 +419,13 @@ inline Standard_Boolean TCollection_AsciiString::EndsWith(
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::EndsWith(
   const std::string_view& theEndString) const
 {
   return EndsWith(theEndString.data(), static_cast<Standard_Integer>(theEndString.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -417,10 +460,12 @@ inline Standard_Integer TCollection_AsciiString::Search(const Standard_CString t
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Integer TCollection_AsciiString::Search(const std::string_view& theWhat) const
 {
   return Search(theWhat.data(), static_cast<Standard_Integer>(theWhat.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -449,11 +494,13 @@ inline Standard_Integer TCollection_AsciiString::SearchFromEnd(
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Integer TCollection_AsciiString::SearchFromEnd(
   const std::string_view& theWhat) const
 {
   return SearchFromEnd(theWhat.data(), static_cast<Standard_Integer>(theWhat.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -488,11 +535,13 @@ inline void TCollection_AsciiString::SetValue(const Standard_Integer theWhere,
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline void TCollection_AsciiString::SetValue(const Standard_Integer  theWhere,
                                               const std::string_view& theStringView)
 {
   SetValue(theWhere, theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
 }
+#endif
 
 //=================================================================================================
 
@@ -515,19 +564,23 @@ inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_Ascii
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& theString1,
                                                          const std::string_view& theStringView)
 {
   return theString1.IsEqual(theStringView);
 }
+#endif
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::IsEqual(const std::string_view& theStringView,
                                                          const TCollection_AsciiString& theString2)
 {
   return theString2.IsEqual(theStringView);
 }
+#endif
 
 //=================================================================================================
 
@@ -572,6 +625,7 @@ inline Standard_Boolean TCollection_AsciiString::IsSameString(
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::IsSameString(
   const TCollection_AsciiString& theString1,
   const std::string_view&        theStringView,
@@ -583,9 +637,11 @@ inline Standard_Boolean TCollection_AsciiString::IsSameString(
                       static_cast<Standard_Integer>(theStringView.size()),
                       theIsCaseSensitive);
 }
+#endif
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::IsSameString(
   const std::string_view&        theStringView,
   const TCollection_AsciiString& theString2,
@@ -594,6 +650,7 @@ inline Standard_Boolean TCollection_AsciiString::IsSameString(
   // Redirect to the primary static method with swapped arguments
   return IsSameString(theString2, theStringView, theIsCaseSensitive);
 }
+#endif
 
 //=================================================================================================
 
@@ -616,6 +673,7 @@ inline Standard_Boolean TCollection_AsciiString::IsSameString(
 
 //=================================================================================================
 
+#if __cplusplus >= 201703L
 inline Standard_Boolean TCollection_AsciiString::IsSameString(
   const std::string_view& theStringView1,
   const std::string_view& theStringView2,
@@ -627,6 +685,7 @@ inline Standard_Boolean TCollection_AsciiString::IsSameString(
                       static_cast<Standard_Integer>(theStringView2.size()),
                       theIsCaseSensitive);
 }
+#endif
 
 //=================================================================================================
 
@@ -682,4 +741,261 @@ template <std::size_t N>
 inline Standard_Boolean TCollection_AsciiString::operator>(const char (&theLiteral)[N]) const
 {
   return IsGreater(theLiteral);
+}
+
+//=================================================================================================
+
+inline TCollection_AsciiString TCollection_AsciiString::operator+(
+  const Standard_Character theOther) const
+{
+  return Cat(theOther);
+}
+
+//=================================================================================================
+
+inline Standard_Integer TCollection_AsciiString::FirstLocationInSet(
+  const TCollection_AsciiString& theSet,
+  const Standard_Integer         theFromIndex,
+  const Standard_Integer         theToIndex) const
+{
+  return FirstLocationInSet(theSet.ToCString(), theSet.Length(), theFromIndex, theToIndex);
+}
+
+//=================================================================================================
+
+#if __cplusplus >= 201703L
+inline Standard_Integer TCollection_AsciiString::FirstLocationInSet(
+  const std::string_view& theSet,
+  const Standard_Integer  theFromIndex,
+  const Standard_Integer  theToIndex) const
+{
+  return FirstLocationInSet(theSet.data(),
+                            static_cast<Standard_Integer>(theSet.size()),
+                            theFromIndex,
+                            theToIndex);
+}
+#endif
+
+//=================================================================================================
+
+template <std::size_t N>
+inline Standard_Integer TCollection_AsciiString::FirstLocationInSet(
+  const char (&theLiteral)[N],
+  const Standard_Integer theFromIndex,
+  const Standard_Integer theToIndex) const
+{
+  return FirstLocationInSet(theLiteral,
+                            static_cast<Standard_Integer>(N - 1),
+                            theFromIndex,
+                            theToIndex);
+}
+
+//=================================================================================================
+
+inline Standard_Integer TCollection_AsciiString::FirstLocationNotInSet(
+  const TCollection_AsciiString& theSet,
+  const Standard_Integer         theFromIndex,
+  const Standard_Integer         theToIndex) const
+{
+  return FirstLocationNotInSet(theSet.ToCString(), theSet.Length(), theFromIndex, theToIndex);
+}
+
+//=================================================================================================
+
+#if __cplusplus >= 201703L
+inline Standard_Integer TCollection_AsciiString::FirstLocationNotInSet(
+  const std::string_view& theSet,
+  const Standard_Integer  theFromIndex,
+  const Standard_Integer  theToIndex) const
+{
+  return FirstLocationNotInSet(theSet.data(),
+                               static_cast<Standard_Integer>(theSet.size()),
+                               theFromIndex,
+                               theToIndex);
+}
+#endif
+
+//=================================================================================================
+
+template <std::size_t N>
+inline Standard_Integer TCollection_AsciiString::FirstLocationNotInSet(
+  const char (&theLiteral)[N],
+  const Standard_Integer theFromIndex,
+  const Standard_Integer theToIndex) const
+{
+  return FirstLocationNotInSet(theLiteral,
+                               static_cast<Standard_Integer>(N - 1),
+                               theFromIndex,
+                               theToIndex);
+}
+
+//=================================================================================================
+
+inline Standard_Boolean TCollection_AsciiString::IsDifferent(const Standard_CString theString,
+                                                             const Standard_Integer theLength) const
+{
+  return !IsEqual(theString, theLength);
+}
+
+//=================================================================================================
+
+inline TCollection_AsciiString TCollection_AsciiString::operator+(
+  const TCollection_AsciiString& theOther) const
+{
+  return Cat(theOther);
+}
+
+//=================================================================================================
+
+inline TCollection_AsciiString TCollection_AsciiString::operator+(
+  const Standard_CString theCString) const
+{
+  return Cat(theCString);
+}
+
+//=================================================================================================
+
+#if __cplusplus >= 201703L
+inline TCollection_AsciiString TCollection_AsciiString::operator+(
+  const std::string_view& theStringView) const
+{
+  return Cat(theStringView);
+}
+#endif
+
+//=================================================================================================
+
+inline TCollection_AsciiString& TCollection_AsciiString::operator=(
+  const TCollection_AsciiString& theOther)
+{
+  Copy(theOther);
+  return *this;
+}
+
+//=================================================================================================
+
+inline TCollection_AsciiString& TCollection_AsciiString::operator=(
+  TCollection_AsciiString&& theOther) noexcept
+{
+  Move(std::forward<TCollection_AsciiString>(theOther));
+  return *this;
+}
+
+//=================================================================================================
+
+inline Standard_Boolean TCollection_AsciiString::operator==(
+  const TCollection_AsciiString& theOther) const
+{
+  return IsEqual(theOther);
+}
+
+//=================================================================================================
+
+inline Standard_Boolean TCollection_AsciiString::operator==(const Standard_CString theCString) const
+{
+  return IsEqual(theCString);
+}
+
+//=================================================================================================
+
+#if __cplusplus >= 201703L
+inline Standard_Boolean TCollection_AsciiString::operator==(
+  const std::string_view& theStringView) const
+{
+  return IsEqual(theStringView);
+}
+#endif
+
+//=================================================================================================
+
+inline Standard_Boolean TCollection_AsciiString::operator!=(
+  const TCollection_AsciiString& theOther) const
+{
+  return IsDifferent(theOther);
+}
+
+//=================================================================================================
+
+inline Standard_Boolean TCollection_AsciiString::operator!=(const Standard_CString theCString) const
+{
+  return IsDifferent(theCString);
+}
+
+//=================================================================================================
+
+#if __cplusplus >= 201703L
+inline Standard_Boolean TCollection_AsciiString::operator!=(
+  const std::string_view& theStringView) const
+{
+  return IsDifferent(theStringView);
+}
+#endif
+
+//=================================================================================================
+
+inline Standard_Boolean TCollection_AsciiString::operator<(
+  const TCollection_AsciiString& theOther) const
+{
+  return IsLess(theOther);
+}
+
+//=================================================================================================
+
+#if __cplusplus >= 201703L
+inline Standard_Boolean TCollection_AsciiString::operator<(
+  const std::string_view& theStringView) const
+{
+  return IsLess(theStringView);
+}
+#endif
+
+//=================================================================================================
+
+inline Standard_Boolean TCollection_AsciiString::operator>(
+  const TCollection_AsciiString& theOther) const
+{
+  return IsGreater(theOther);
+}
+
+//=================================================================================================
+
+inline Standard_Boolean TCollection_AsciiString::operator>(const Standard_CString theCString) const
+{
+  return IsGreater(theCString);
+}
+
+//=================================================================================================
+
+#if __cplusplus >= 201703L
+inline Standard_Boolean TCollection_AsciiString::operator>(
+  const std::string_view& theStringView) const
+{
+  return IsGreater(theStringView);
+}
+#endif
+
+//=================================================================================================
+
+#if __cplusplus >= 201703L
+inline TCollection_AsciiString::TCollection_AsciiString(const std::string_view& theStringView)
+    : TCollection_AsciiString(theStringView.data(),
+                              static_cast<Standard_Integer>(theStringView.size()))
+{
+}
+#endif
+
+//=================================================================================================
+
+inline TCollection_AsciiString::TCollection_AsciiString(const Standard_CString theMessage)
+    : TCollection_AsciiString(theMessage,
+                              theMessage ? static_cast<Standard_Integer>(strlen(theMessage)) : 0)
+{
+}
+
+//=================================================================================================
+
+template <std::size_t N>
+inline TCollection_AsciiString::TCollection_AsciiString(const char (&theLiteral)[N])
+    : TCollection_AsciiString(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)))
+{
 }

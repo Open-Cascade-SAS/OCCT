@@ -60,20 +60,12 @@ public:
 #if __cplusplus >= 201703L
   //! Initializes a AsciiString with a string_view.
   //! @param[in] theStringView the string view to initialize from
-  explicit TCollection_AsciiString(const std::string_view& theStringView)
-      : TCollection_AsciiString(theStringView.data(),
-                                static_cast<Standard_Integer>(theStringView.size()))
-  {
-  }
+  explicit inline TCollection_AsciiString(const std::string_view& theStringView);
 #endif
 
   //! Initializes a AsciiString with a CString (null-terminated).
   //! @param[in] theMessage the C string to initialize from
-  TCollection_AsciiString(const Standard_CString theMessage)
-      : TCollection_AsciiString(theMessage,
-                                theMessage ? static_cast<Standard_Integer>(strlen(theMessage)) : 0)
-  {
-  }
+  inline TCollection_AsciiString(const Standard_CString theMessage);
 
   //! Initializes a AsciiString with a CString and explicit length.
   //! @param[in] theMessage the C string to initialize from
@@ -151,10 +143,7 @@ public:
   //! Template constructor for string literals or char arrays.
   //! @param[in] theLiteral the string literal or char array
   template <std::size_t N>
-  TCollection_AsciiString(const char (&theLiteral)[N])
-      : TCollection_AsciiString(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)))
-  {
-  }
+  inline TCollection_AsciiString(const char (&theLiteral)[N]);
 
   //! Appends other character to this string. This is an unary operator.
   //! @param[in] theOther the character to append
@@ -262,10 +251,7 @@ public:
   //! @return new string with character appended
   TCollection_AsciiString Cat(const Standard_Character theOther) const { return Cat(&theOther, 1); }
 
-  TCollection_AsciiString operator+(const Standard_Character theOther) const
-  {
-    return Cat(theOther);
-  }
+  inline TCollection_AsciiString operator+(const Standard_Character theOther) const;
 
   //! Appends other integer to this string.
   //!
@@ -308,20 +294,14 @@ public:
   //! @return new string with other string appended
   inline TCollection_AsciiString Cat(const TCollection_AsciiString& theOther) const;
 
-  TCollection_AsciiString operator+(const TCollection_AsciiString& theOther) const
-  {
-    return Cat(theOther);
-  }
+  inline TCollection_AsciiString operator+(const TCollection_AsciiString& theOther) const;
 
   //! Appends C string to this ASCII string.
   //! @param[in] theCString the C string to append
   //! @return new string with C string appended
   inline TCollection_AsciiString Cat(const Standard_CString theCString) const;
 
-  TCollection_AsciiString operator+(const Standard_CString theCString) const
-  {
-    return Cat(theCString);
-  }
+  inline TCollection_AsciiString operator+(const Standard_CString theCString) const;
 
 #if __cplusplus >= 201703L
   //! Appends string view to this ASCII string.
@@ -329,10 +309,7 @@ public:
   //! @return new string with string view appended
   inline TCollection_AsciiString Cat(const std::string_view& theStringView) const;
 
-  TCollection_AsciiString operator+(const std::string_view& theStringView) const
-  {
-    return Cat(theStringView);
-  }
+  inline TCollection_AsciiString operator+(const std::string_view& theStringView) const;
 #endif
 
   //! Template method for concatenating string literals or char arrays.
@@ -447,22 +424,14 @@ public:
   inline void Copy(const TCollection_AsciiString& theFromWhere);
 
   //! Copy assignment operator
-  TCollection_AsciiString& operator=(const TCollection_AsciiString& theOther)
-  {
-    Copy(theOther);
-    return *this;
-  }
+  inline TCollection_AsciiString& operator=(const TCollection_AsciiString& theOther);
 
   //! Moves string without reallocations
   //! @param[in] theOther the string to move from
   Standard_EXPORT void Move(TCollection_AsciiString&& theOther);
 
   //! Move assignment operator
-  TCollection_AsciiString& operator=(TCollection_AsciiString&& theOther) noexcept
-  {
-    Move(std::forward<TCollection_AsciiString>(theOther));
-    return *this;
-  }
+  inline TCollection_AsciiString& operator=(TCollection_AsciiString&& theOther) noexcept;
 
   //! Exchange the data of two strings (without reallocating memory).
   //! @param[in,out] theOther the string to exchange data with
@@ -504,12 +473,9 @@ public:
   //! @param[in] theFromIndex the starting index for search
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character found in set, or 0 if not found
-  Standard_Integer FirstLocationInSet(const TCollection_AsciiString& theSet,
-                                      const Standard_Integer         theFromIndex,
-                                      const Standard_Integer         theToIndex) const
-  {
-    return FirstLocationInSet(theSet.ToCString(), theSet.Length(), theFromIndex, theToIndex);
-  }
+  inline Standard_Integer FirstLocationInSet(const TCollection_AsciiString& theSet,
+                                             const Standard_Integer         theFromIndex,
+                                             const Standard_Integer         theToIndex) const;
 
 #if __cplusplus >= 201703L
   //! Returns the index of the first character of this string that is present in string_view.
@@ -517,15 +483,9 @@ public:
   //! @param[in] theFromIndex the starting index for search
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character found in set, or 0 if not found
-  Standard_Integer FirstLocationInSet(const std::string_view& theSet,
-                                      const Standard_Integer  theFromIndex,
-                                      const Standard_Integer  theToIndex) const
-  {
-    return FirstLocationInSet(theSet.data(),
-                              static_cast<Standard_Integer>(theSet.size()),
-                              theFromIndex,
-                              theToIndex);
-  }
+  inline Standard_Integer FirstLocationInSet(const std::string_view& theSet,
+                                             const Standard_Integer  theFromIndex,
+                                             const Standard_Integer  theToIndex) const;
 #endif
 
   //! Template method for FirstLocationInSet with string literals.
@@ -534,15 +494,9 @@ public:
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character found in set, or 0 if not found
   template <std::size_t N>
-  Standard_Integer FirstLocationInSet(const char (&theLiteral)[N],
-                                      const Standard_Integer theFromIndex,
-                                      const Standard_Integer theToIndex) const
-  {
-    return FirstLocationInSet(theLiteral,
-                              static_cast<Standard_Integer>(N - 1),
-                              theFromIndex,
-                              theToIndex);
-  }
+  inline Standard_Integer FirstLocationInSet(const char (&theLiteral)[N],
+                                             const Standard_Integer theFromIndex,
+                                             const Standard_Integer theToIndex) const;
 
   //! Core implementation: Returns the index of the first character of this string
   //! that is not present in the given character set (pointer and length).
@@ -577,12 +531,9 @@ public:
   //! @param[in] theFromIndex the starting index for search
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character not in set, or 0 if not found
-  Standard_Integer FirstLocationNotInSet(const TCollection_AsciiString& theSet,
-                                         const Standard_Integer         theFromIndex,
-                                         const Standard_Integer         theToIndex) const
-  {
-    return FirstLocationNotInSet(theSet.ToCString(), theSet.Length(), theFromIndex, theToIndex);
-  }
+  inline Standard_Integer FirstLocationNotInSet(const TCollection_AsciiString& theSet,
+                                                const Standard_Integer         theFromIndex,
+                                                const Standard_Integer         theToIndex) const;
 
 #if __cplusplus >= 201703L
   //! Returns the index of the first character of this string that is not present in string_view.
@@ -590,15 +541,9 @@ public:
   //! @param[in] theFromIndex the starting index for search
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character not in set, or 0 if not found
-  Standard_Integer FirstLocationNotInSet(const std::string_view& theSet,
-                                         const Standard_Integer  theFromIndex,
-                                         const Standard_Integer  theToIndex) const
-  {
-    return FirstLocationNotInSet(theSet.data(),
-                                 static_cast<Standard_Integer>(theSet.size()),
-                                 theFromIndex,
-                                 theToIndex);
-  }
+  inline Standard_Integer FirstLocationNotInSet(const std::string_view& theSet,
+                                                const Standard_Integer  theFromIndex,
+                                                const Standard_Integer  theToIndex) const;
 #endif
 
   //! Template method for FirstLocationNotInSet with string literals.
@@ -607,15 +552,9 @@ public:
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character not in set, or 0 if not found
   template <std::size_t N>
-  Standard_Integer FirstLocationNotInSet(const char (&theLiteral)[N],
-                                         const Standard_Integer theFromIndex,
-                                         const Standard_Integer theToIndex) const
-  {
-    return FirstLocationNotInSet(theLiteral,
-                                 static_cast<Standard_Integer>(N - 1),
-                                 theFromIndex,
-                                 theToIndex);
-  }
+  inline Standard_Integer FirstLocationNotInSet(const char (&theLiteral)[N],
+                                                const Standard_Integer theFromIndex,
+                                                const Standard_Integer theToIndex) const;
 
   //! Inserts a Character at position where.
   //!
@@ -723,7 +662,8 @@ public:
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert before
   //! @param[in] theOther the string to insert
-  inline void InsertBefore(const Standard_Integer theIndex, const TCollection_AsciiString& theOther);
+  inline void InsertBefore(const Standard_Integer         theIndex,
+                           const TCollection_AsciiString& theOther);
 
   //! Inserts a C string before a specific index in this string.
   //! Raises an exception if index is out of bounds.
@@ -755,10 +695,7 @@ public:
   //! @return true if strings are equal, false otherwise
   inline Standard_Boolean IsEqual(const TCollection_AsciiString& theOther) const;
 
-  Standard_Boolean operator==(const TCollection_AsciiString& theOther) const
-  {
-    return IsEqual(theOther);
-  }
+  inline Standard_Boolean operator==(const TCollection_AsciiString& theOther) const;
 
   //! Core implementation: Returns true if the characters in this ASCII string
   //! are identical to the string (pointer and length).
@@ -774,10 +711,7 @@ public:
   //! @return true if strings are equal, false otherwise
   inline Standard_Boolean IsEqual(const Standard_CString theCString) const;
 
-  Standard_Boolean operator==(const Standard_CString theCString) const
-  {
-    return IsEqual(theCString);
-  }
+  inline Standard_Boolean operator==(const Standard_CString theCString) const;
 
 #if __cplusplus >= 201703L
   //! Returns true if the characters in this ASCII string
@@ -786,10 +720,7 @@ public:
   //! @return true if strings are equal, false otherwise
   inline Standard_Boolean IsEqual(const std::string_view& theStringView) const;
 
-  Standard_Boolean operator==(const std::string_view& theStringView) const
-  {
-    return IsEqual(theStringView);
-  }
+  inline Standard_Boolean operator==(const std::string_view& theStringView) const;
 #endif
 
   //! Template method for comparing with string literals with compile-time optimization.
@@ -816,10 +747,7 @@ public:
   //! @return true if strings are different, false otherwise
   inline Standard_Boolean IsDifferent(const TCollection_AsciiString& theOther) const;
 
-  Standard_Boolean operator!=(const TCollection_AsciiString& theOther) const
-  {
-    return IsDifferent(theOther);
-  }
+  inline Standard_Boolean operator!=(const TCollection_AsciiString& theOther) const;
 
   //! Core implementation: Returns true if there are differences between this ASCII string
   //! and the string (pointer and length).
@@ -827,21 +755,15 @@ public:
   //! @param[in] theString pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if strings are different, false otherwise
-  Standard_Boolean IsDifferent(const Standard_CString theString,
-                               const Standard_Integer theLength) const
-  {
-    return !IsEqual(theString, theLength);
-  }
+  inline Standard_Boolean IsDifferent(const Standard_CString theString,
+                                      const Standard_Integer theLength) const;
 
   //! Returns true if there are differences between this ASCII string and C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if strings are different, false otherwise
   inline Standard_Boolean IsDifferent(const Standard_CString theCString) const;
 
-  Standard_Boolean operator!=(const Standard_CString theCString) const
-  {
-    return IsDifferent(theCString);
-  }
+  inline Standard_Boolean operator!=(const Standard_CString theCString) const;
 
 #if __cplusplus >= 201703L
   //! Returns true if there are differences between the
@@ -850,10 +772,7 @@ public:
   //! @return true if strings are different, false otherwise
   inline Standard_Boolean IsDifferent(const std::string_view& theStringView) const;
 
-  Standard_Boolean operator!=(const std::string_view& theStringView) const
-  {
-    return IsDifferent(theStringView);
-  }
+  inline Standard_Boolean operator!=(const std::string_view& theStringView) const;
 #endif
 
   //! Template method for comparing difference with string literals or char arrays.
@@ -879,10 +798,7 @@ public:
   //! @return true if this string is lexicographically less than other
   inline Standard_Boolean IsLess(const TCollection_AsciiString& theOther) const;
 
-  Standard_Boolean operator<(const TCollection_AsciiString& theOther) const
-  {
-    return IsLess(theOther);
-  }
+  inline Standard_Boolean operator<(const TCollection_AsciiString& theOther) const;
 
   //! Returns TRUE if this string is lexicographically less than C string.
   //! @param[in] theCString the C string to compare with
@@ -897,10 +813,7 @@ public:
   //! @return true if this string is lexicographically less than theStringView
   inline Standard_Boolean IsLess(const std::string_view& theStringView) const;
 
-  Standard_Boolean operator<(const std::string_view& theStringView) const
-  {
-    return IsLess(theStringView);
-  }
+  inline Standard_Boolean operator<(const std::string_view& theStringView) const;
 #endif
 
   //! Template method for lexicographic comparison with string literals or char arrays.
@@ -926,20 +839,14 @@ public:
   //! @return true if this string is lexicographically greater than other
   inline Standard_Boolean IsGreater(const TCollection_AsciiString& theOther) const;
 
-  Standard_Boolean operator>(const TCollection_AsciiString& theOther) const
-  {
-    return IsGreater(theOther);
-  }
+  inline Standard_Boolean operator>(const TCollection_AsciiString& theOther) const;
 
   //! Returns TRUE if this string is lexicographically greater than C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if this string is lexicographically greater than C string
   inline Standard_Boolean IsGreater(const Standard_CString theCString) const;
 
-  Standard_Boolean operator>(const Standard_CString theCString) const
-  {
-    return IsGreater(theCString);
-  }
+  inline Standard_Boolean operator>(const Standard_CString theCString) const;
 
 #if __cplusplus >= 201703L
   //! Returns TRUE if this ASCII string is lexicographically greater than theStringView.
@@ -947,10 +854,7 @@ public:
   //! @return true if this string is lexicographically greater than theStringView
   inline Standard_Boolean IsGreater(const std::string_view& theStringView) const;
 
-  Standard_Boolean operator>(const std::string_view& theStringView) const
-  {
-    return IsGreater(theStringView);
-  }
+  inline Standard_Boolean operator>(const std::string_view& theStringView) const;
 #endif
 
   //! Template method for lexicographic greater comparison with string literals or char arrays.
@@ -1464,7 +1368,7 @@ public:
   //! @param[in] string2 second string to compare
   //! @return true if strings are equal
   inline static Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
-                                  const TCollection_AsciiString& string2);
+                                         const TCollection_AsciiString& string2);
 
   //! Returns True  when the two  strings are the same.
   //! (Just for HashCode for AsciiString)
@@ -1481,7 +1385,7 @@ public:
   //! @param[in] theStringView second string view to compare
   //! @return true if strings are equal
   inline static Standard_Boolean IsEqual(const TCollection_AsciiString& theString1,
-                                  const std::string_view&        theStringView);
+                                         const std::string_view&        theStringView);
 
   //! Returns True when the string_view and ASCII string are the same.
   //! (Just for HashCode for AsciiString)
@@ -1489,7 +1393,7 @@ public:
   //! @param[in] theString2 second string to compare
   //! @return true if strings are equal
   inline static Standard_Boolean IsEqual(const std::string_view&        theStringView,
-                                  const TCollection_AsciiString& theString2);
+                                         const TCollection_AsciiString& theString2);
 #endif
 
   //! Core implementation: Returns True if the two strings (pointer and length) contain same
@@ -1513,8 +1417,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static Standard_Boolean IsSameString(const TCollection_AsciiString& theString1,
-                                       const TCollection_AsciiString& theString2,
-                                       const Standard_Boolean         theIsCaseSensitive);
+                                              const TCollection_AsciiString& theString2,
+                                              const Standard_Boolean         theIsCaseSensitive);
 
   //! Returns True if the string and C string contain same characters.
   //! @param[in] theString1 first string to compare
@@ -1522,8 +1426,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static Standard_Boolean IsSameString(const TCollection_AsciiString& theString1,
-                                       const Standard_CString         theCString,
-                                       const Standard_Boolean         theIsCaseSensitive);
+                                              const Standard_CString         theCString,
+                                              const Standard_Boolean         theIsCaseSensitive);
 
   //! Returns True if the C string and string contain same characters.
   //! @param[in] theCString first C string to compare
@@ -1531,8 +1435,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static Standard_Boolean IsSameString(const Standard_CString         theCString,
-                                       const TCollection_AsciiString& theString2,
-                                       const Standard_Boolean         theIsCaseSensitive);
+                                              const TCollection_AsciiString& theString2,
+                                              const Standard_Boolean         theIsCaseSensitive);
 
 #if __cplusplus >= 201703L
   //! Returns True if the string and string_view contain same characters.
@@ -1541,8 +1445,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static Standard_Boolean IsSameString(const TCollection_AsciiString& theString1,
-                                       const std::string_view&        theStringView,
-                                       const Standard_Boolean         theIsCaseSensitive);
+                                              const std::string_view&        theStringView,
+                                              const Standard_Boolean         theIsCaseSensitive);
 
   //! Returns True if the string_view and string contain same characters.
   //! @param[in] theStringView first string view to compare
@@ -1550,8 +1454,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static Standard_Boolean IsSameString(const std::string_view&        theStringView,
-                                       const TCollection_AsciiString& theString2,
-                                       const Standard_Boolean         theIsCaseSensitive);
+                                              const TCollection_AsciiString& theString2,
+                                              const Standard_Boolean         theIsCaseSensitive);
 #endif
 
   //! Returns True if the two C strings contain same characters.
@@ -1560,8 +1464,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static Standard_Boolean IsSameString(const Standard_CString theCString1,
-                                       const Standard_CString theCString2,
-                                       const Standard_Boolean theIsCaseSensitive);
+                                              const Standard_CString theCString2,
+                                              const Standard_Boolean theIsCaseSensitive);
 
 #if __cplusplus >= 201703L
   //! Returns True if the two string_views contain same characters.
@@ -1570,8 +1474,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static Standard_Boolean IsSameString(const std::string_view& theStringView1,
-                                       const std::string_view& theStringView2,
-                                       const Standard_Boolean  theIsCaseSensitive);
+                                              const std::string_view& theStringView2,
+                                              const Standard_Boolean  theIsCaseSensitive);
 #endif
 
 private:
@@ -1588,25 +1492,6 @@ private:
   Standard_PCharacter myString{}; //!< NULL-terminated string
   Standard_Integer    myLength{}; //!< length in bytes (excluding terminating NULL symbol)
 };
-
-//! Returns True when the two strings are the same.
-//! @param[in] theString1 first string to compare
-//! @param[in] theString2 second string to compare
-//! @return true if strings are equal
-inline Standard_Boolean IsEqual(const TCollection_AsciiString& theString1,
-                                const TCollection_AsciiString& theString2)
-{
-  return TCollection_AsciiString::IsEqual(theString1, theString2);
-}
-
-namespace std
-{
-template <>
-struct hash<TCollection_AsciiString>
-{
-  size_t operator()(const TCollection_AsciiString& theString) const { return theString.HashCode(); }
-};
-} // namespace std
 
 #include <TCollection_AsciiString.lxx>
 
