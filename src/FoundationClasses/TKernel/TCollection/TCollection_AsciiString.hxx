@@ -191,35 +191,20 @@ public:
   //! // Result: aString == "Hello World"
   //! ```
   //! @param[in] theOther the string to append
-  void AssignCat(const TCollection_AsciiString& theOther)
-  {
-    AssignCat(theOther.ToCString(), theOther.Length());
-  }
+  inline void AssignCat(const TCollection_AsciiString& theOther);
 
   void operator+=(const TCollection_AsciiString& theOther) { AssignCat(theOther); }
 
   //! Appends C string to this ASCII string.
   //! @param[in] theCString the C string to append
-  void AssignCat(const Standard_CString theCString)
-  {
-    if (theCString)
-    {
-      AssignCat(theCString, static_cast<Standard_Integer>(strlen(theCString)));
-    }
-  }
+  inline void AssignCat(const Standard_CString theCString);
 
   void operator+=(const Standard_CString theCString) { AssignCat(theCString); }
 
 #if __cplusplus >= 201703L
   //! Appends string view to this ASCII string. This is an unary operator.
   //! @param[in] theStringView the string view to append
-  void AssignCat(const std::string_view& theStringView)
-  {
-    if (!theStringView.empty())
-    {
-      AssignCat(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
-    }
-  }
+  inline void AssignCat(const std::string_view& theStringView);
 
   void operator+=(const std::string_view& theStringView) { AssignCat(theStringView); }
 #endif
@@ -237,16 +222,10 @@ public:
   //! ```
   //! @param[in] theLiteral the string literal or char array to append
   template <std::size_t N>
-  void AssignCat(const char (&theLiteral)[N])
-  {
-    AssignCat(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline void AssignCat(const char (&theLiteral)[N]);
 
   template <std::size_t N>
-  void operator+=(const char (&theLiteral)[N])
-  {
-    AssignCat(theLiteral);
-  }
+  inline void operator+=(const char (&theLiteral)[N]);
 
   //! Converts the first character into its corresponding
   //! upper-case character and the other characters into lowercase
@@ -327,10 +306,7 @@ public:
   //! ```
   //! @param[in] theOther the string to append
   //! @return new string with other string appended
-  TCollection_AsciiString Cat(const TCollection_AsciiString& theOther) const
-  {
-    return Cat(theOther.ToCString(), theOther.Length());
-  }
+  inline TCollection_AsciiString Cat(const TCollection_AsciiString& theOther) const;
 
   TCollection_AsciiString operator+(const TCollection_AsciiString& theOther) const
   {
@@ -340,11 +316,7 @@ public:
   //! Appends C string to this ASCII string.
   //! @param[in] theCString the C string to append
   //! @return new string with C string appended
-  TCollection_AsciiString Cat(const Standard_CString theCString) const
-  {
-    return theCString ? Cat(theCString, static_cast<Standard_Integer>(strlen(theCString)))
-                      : TCollection_AsciiString(*this);
-  }
+  inline TCollection_AsciiString Cat(const Standard_CString theCString) const;
 
   TCollection_AsciiString operator+(const Standard_CString theCString) const
   {
@@ -355,10 +327,7 @@ public:
   //! Appends string view to this ASCII string.
   //! @param[in] theStringView the string view to append
   //! @return new string with string view appended
-  TCollection_AsciiString Cat(const std::string_view& theStringView) const
-  {
-    return Cat(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
-  }
+  inline TCollection_AsciiString Cat(const std::string_view& theStringView) const;
 
   TCollection_AsciiString operator+(const std::string_view& theStringView) const
   {
@@ -380,16 +349,10 @@ public:
   //! @param[in] theLiteral the string literal or char array to concatenate
   //! @return new string with literal appended
   template <std::size_t N>
-  TCollection_AsciiString Cat(const char (&theLiteral)[N]) const
-  {
-    return Cat(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline TCollection_AsciiString Cat(const char (&theLiteral)[N]) const;
 
   template <std::size_t N>
-  TCollection_AsciiString operator+(const char (&theLiteral)[N]) const
-  {
-    return Cat(theLiteral);
-  }
+  inline TCollection_AsciiString operator+(const char (&theLiteral)[N]) const;
 
   //! Modifies this ASCII string so that its length
   //! becomes equal to Width and the new characters
@@ -440,10 +403,7 @@ public:
   //! Copy C string to this ASCII string.
   //! Used as operator =
   //! @param[in] theCString the C string to copy from
-  void Copy(const Standard_CString theCString)
-  {
-    Copy(theCString, theCString ? static_cast<Standard_Integer>(strlen(theCString)) : 0);
-  }
+  inline void Copy(const Standard_CString theCString);
 
   void operator=(const Standard_CString theCString) { Copy(theCString); }
 
@@ -451,10 +411,7 @@ public:
   //! Copy string view to this ASCII string.
   //! Used as operator =
   //! @param[in] theStringView the string view to copy from
-  void Copy(const std::string_view& theStringView)
-  {
-    Copy(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
-  }
+  inline void Copy(const std::string_view& theStringView);
 
   void operator=(const std::string_view& theStringView) { Copy(theStringView); }
 #endif
@@ -472,16 +429,10 @@ public:
   //! ```
   //! @param[in] theLiteral the string literal or char array to copy from
   template <std::size_t N>
-  void Copy(const char (&theLiteral)[N])
-  {
-    Copy(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline void Copy(const char (&theLiteral)[N]);
 
   template <std::size_t N>
-  void operator=(const char (&theLiteral)[N])
-  {
-    Copy(theLiteral);
-  }
+  inline void operator=(const char (&theLiteral)[N]);
 
   //! Copy fromwhere to this string.
   //! Used as operator =
@@ -493,13 +444,7 @@ public:
   //! aString = anotherString;  // operator=
   //! // Result: aString == "Hello World"
   //! ```
-  void Copy(const TCollection_AsciiString& theFromWhere)
-  {
-    if (&theFromWhere != this)
-    {
-      Copy(theFromWhere.ToCString(), theFromWhere.Length());
-    }
-  }
+  inline void Copy(const TCollection_AsciiString& theFromWhere);
 
   //! Copy assignment operator
   TCollection_AsciiString& operator=(const TCollection_AsciiString& theOther)
@@ -700,30 +645,18 @@ public:
   //! Inserts a AsciiString at position where.
   //! @param[in] theWhere the position to insert at
   //! @param[in] theWhat the ASCII string to insert
-  void Insert(const Standard_Integer theWhere, const TCollection_AsciiString& theWhat)
-  {
-    Insert(theWhere, theWhat.ToCString(), theWhat.Length());
-  }
+  inline void Insert(const Standard_Integer theWhere, const TCollection_AsciiString& theWhat);
 
   //! Inserts a C string at position theWhere.
   //! @param[in] theWhere position to insert at
   //! @param[in] theCString the C string to insert
-  void Insert(const Standard_Integer theWhere, const Standard_CString theCString)
-  {
-    if (theCString)
-    {
-      Insert(theWhere, theCString, static_cast<Standard_Integer>(strlen(theCString)));
-    }
-  }
+  inline void Insert(const Standard_Integer theWhere, const Standard_CString theCString);
 
 #if __cplusplus >= 201703L
   //! Inserts a string_view at position theWhere.
   //! @param[in] theWhere position to insert at
   //! @param[in] theStringView the string view to insert
-  void Insert(const Standard_Integer theWhere, const std::string_view& theStringView)
-  {
-    Insert(theWhere, theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
-  }
+  inline void Insert(const Standard_Integer theWhere, const std::string_view& theStringView);
 #endif
 
   //! Template method for inserting string literals with compile-time size deduction.
@@ -738,10 +671,7 @@ public:
   //! @param[in] theWhere the position to insert at
   //! @param[in] theLiteral the string literal or char array to insert
   template <std::size_t N>
-  void Insert(const Standard_Integer theWhere, const char (&theLiteral)[N])
-  {
-    Insert(theWhere, theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline void Insert(const Standard_Integer theWhere, const char (&theLiteral)[N]);
 
   //! Core implementation: Inserts string (pointer and length) after a specific index in this
   //! string. This is the primary implementation that all other InsertAfter overloads redirect to.
@@ -757,42 +687,27 @@ public:
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert after
   //! @param[in] theOther the string to insert
-  void InsertAfter(const Standard_Integer theIndex, const TCollection_AsciiString& theOther)
-  {
-    InsertAfter(theIndex, theOther.ToCString(), theOther.Length());
-  }
+  inline void InsertAfter(const Standard_Integer theIndex, const TCollection_AsciiString& theOther);
 
   //! Inserts a C string after a specific index in this string.
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert after
   //! @param[in] theCString the C string to insert
-  void InsertAfter(const Standard_Integer theIndex, const Standard_CString theCString)
-  {
-    if (theCString)
-      InsertAfter(theIndex, theCString, static_cast<Standard_Integer>(strlen(theCString)));
-  }
+  inline void InsertAfter(const Standard_Integer theIndex, const Standard_CString theCString);
 
 #if __cplusplus >= 201703L
   //! Inserts a string_view after a specific index in this string.
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert after
   //! @param[in] theStringView the string view to insert
-  void InsertAfter(const Standard_Integer theIndex, const std::string_view& theStringView)
-  {
-    InsertAfter(theIndex,
-                theStringView.data(),
-                static_cast<Standard_Integer>(theStringView.size()));
-  }
+  inline void InsertAfter(const Standard_Integer theIndex, const std::string_view& theStringView);
 #endif
 
   //! Template method for inserting string literals or char arrays after a specific index.
   //! @param[in] theIndex the index to insert after
   //! @param[in] theLiteral the string literal or char array to insert
   template <std::size_t N>
-  void InsertAfter(const Standard_Integer theIndex, const char (&theLiteral)[N])
-  {
-    InsertAfter(theIndex, theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline void InsertAfter(const Standard_Integer theIndex, const char (&theLiteral)[N]);
 
   //! Core implementation: Inserts string (pointer and length) before a specific index in this
   //! string. This is the primary implementation that all other InsertBefore overloads redirect to.
@@ -808,42 +723,27 @@ public:
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert before
   //! @param[in] theOther the string to insert
-  void InsertBefore(const Standard_Integer theIndex, const TCollection_AsciiString& theOther)
-  {
-    InsertBefore(theIndex, theOther.ToCString(), theOther.Length());
-  }
+  inline void InsertBefore(const Standard_Integer theIndex, const TCollection_AsciiString& theOther);
 
   //! Inserts a C string before a specific index in this string.
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert before
   //! @param[in] theCString the C string to insert
-  void InsertBefore(const Standard_Integer theIndex, const Standard_CString theCString)
-  {
-    if (theCString)
-      InsertBefore(theIndex, theCString, static_cast<Standard_Integer>(strlen(theCString)));
-  }
+  inline void InsertBefore(const Standard_Integer theIndex, const Standard_CString theCString);
 
 #if __cplusplus >= 201703L
   //! Inserts a string_view before a specific index in this string.
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert before
   //! @param[in] theStringView the string view to insert
-  void InsertBefore(const Standard_Integer theIndex, const std::string_view& theStringView)
-  {
-    InsertBefore(theIndex,
-                 theStringView.data(),
-                 static_cast<Standard_Integer>(theStringView.size()));
-  }
+  inline void InsertBefore(const Standard_Integer theIndex, const std::string_view& theStringView);
 #endif
 
   //! Template method for inserting string literals or char arrays before a specific index.
   //! @param[in] theIndex the index to insert before
   //! @param[in] theLiteral the string literal or char array to insert
   template <std::size_t N>
-  void InsertBefore(const Standard_Integer theIndex, const char (&theLiteral)[N])
-  {
-    InsertBefore(theIndex, theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline void InsertBefore(const Standard_Integer theIndex, const char (&theLiteral)[N]);
 
   //! Returns True if this string contains zero character.
   Standard_Boolean IsEmpty() const { return myLength == 0; }
@@ -853,10 +753,7 @@ public:
   //! Note that this method is an alias of operator ==.
   //! @param[in] theOther the ASCII string to compare with
   //! @return true if strings are equal, false otherwise
-  Standard_Boolean IsEqual(const TCollection_AsciiString& theOther) const
-  {
-    return IsEqual(theOther.myString, theOther.myLength);
-  }
+  inline Standard_Boolean IsEqual(const TCollection_AsciiString& theOther) const;
 
   Standard_Boolean operator==(const TCollection_AsciiString& theOther) const
   {
@@ -875,11 +772,7 @@ public:
   //! Returns true if the characters in this ASCII string are identical to the C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if strings are equal, false otherwise
-  Standard_Boolean IsEqual(const Standard_CString theCString) const
-  {
-    return theCString ? IsEqual(theCString, static_cast<Standard_Integer>(strlen(theCString)))
-                      : (myLength == 0);
-  }
+  inline Standard_Boolean IsEqual(const Standard_CString theCString) const;
 
   Standard_Boolean operator==(const Standard_CString theCString) const
   {
@@ -891,10 +784,7 @@ public:
   //! are identical to the characters in string_view.
   //! @param[in] theStringView the string view to compare with
   //! @return true if strings are equal, false otherwise
-  Standard_Boolean IsEqual(const std::string_view& theStringView) const
-  {
-    return IsEqual(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
-  }
+  inline Standard_Boolean IsEqual(const std::string_view& theStringView) const;
 
   Standard_Boolean operator==(const std::string_view& theStringView) const
   {
@@ -914,26 +804,17 @@ public:
   //! @param[in] theLiteral the string literal or char array to compare with
   //! @return true if strings are equal, false otherwise
   template <std::size_t N>
-  Standard_Boolean IsEqual(const char (&theLiteral)[N]) const
-  {
-    return IsEqual(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline Standard_Boolean IsEqual(const char (&theLiteral)[N]) const;
 
   template <std::size_t N>
-  Standard_Boolean operator==(const char (&theLiteral)[N]) const
-  {
-    return IsEqual(theLiteral);
-  }
+  inline Standard_Boolean operator==(const char (&theLiteral)[N]) const;
 
   //! Returns true if there are differences between the
   //! characters in this ASCII string and ASCII string other.
   //! Note that this method is an alias of operator !=
   //! @param[in] theOther the ASCII string to compare with
   //! @return true if strings are different, false otherwise
-  Standard_Boolean IsDifferent(const TCollection_AsciiString& theOther) const
-  {
-    return IsDifferent(theOther.myString, theOther.myLength);
-  }
+  inline Standard_Boolean IsDifferent(const TCollection_AsciiString& theOther) const;
 
   Standard_Boolean operator!=(const TCollection_AsciiString& theOther) const
   {
@@ -955,10 +836,7 @@ public:
   //! Returns true if there are differences between this ASCII string and C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if strings are different, false otherwise
-  Standard_Boolean IsDifferent(const Standard_CString theCString) const
-  {
-    return !IsEqual(theCString);
-  }
+  inline Standard_Boolean IsDifferent(const Standard_CString theCString) const;
 
   Standard_Boolean operator!=(const Standard_CString theCString) const
   {
@@ -970,10 +848,7 @@ public:
   //! characters in this ASCII string and string_view.
   //! @param[in] theStringView the string view to compare with
   //! @return true if strings are different, false otherwise
-  Standard_Boolean IsDifferent(const std::string_view& theStringView) const
-  {
-    return !IsEqual(theStringView);
-  }
+  inline Standard_Boolean IsDifferent(const std::string_view& theStringView) const;
 
   Standard_Boolean operator!=(const std::string_view& theStringView) const
   {
@@ -985,16 +860,10 @@ public:
   //! @param[in] theLiteral the string literal or char array to compare with
   //! @return true if strings are different, false otherwise
   template <std::size_t N>
-  Standard_Boolean IsDifferent(const char (&theLiteral)[N]) const
-  {
-    return !IsEqual(theLiteral);
-  }
+  inline Standard_Boolean IsDifferent(const char (&theLiteral)[N]) const;
 
   template <std::size_t N>
-  Standard_Boolean operator!=(const char (&theLiteral)[N]) const
-  {
-    return IsDifferent(theLiteral);
-  }
+  inline Standard_Boolean operator!=(const char (&theLiteral)[N]) const;
 
   //! Core implementation: Returns TRUE if this string is lexicographically less than
   //! the string (pointer and length).
@@ -1008,10 +877,7 @@ public:
   //! Returns TRUE if this string is 'ASCII' less than other.
   //! @param[in] theOther the ASCII string to compare with
   //! @return true if this string is lexicographically less than other
-  Standard_Boolean IsLess(const TCollection_AsciiString& theOther) const
-  {
-    return IsLess(theOther.ToCString(), theOther.Length());
-  }
+  inline Standard_Boolean IsLess(const TCollection_AsciiString& theOther) const;
 
   Standard_Boolean operator<(const TCollection_AsciiString& theOther) const
   {
@@ -1021,11 +887,7 @@ public:
   //! Returns TRUE if this string is lexicographically less than C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if this string is lexicographically less than C string
-  Standard_Boolean IsLess(const Standard_CString theCString) const
-  {
-    return theCString ? IsLess(theCString, static_cast<Standard_Integer>(strlen(theCString)))
-                      : Standard_False;
-  }
+  inline Standard_Boolean IsLess(const Standard_CString theCString) const;
 
   Standard_Boolean operator<(const Standard_CString theCString) const { return IsLess(theCString); }
 
@@ -1033,10 +895,7 @@ public:
   //! Returns TRUE if this ASCII string is lexicographically less than theStringView.
   //! @param[in] theStringView the string view to compare with
   //! @return true if this string is lexicographically less than theStringView
-  Standard_Boolean IsLess(const std::string_view& theStringView) const
-  {
-    return IsLess(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
-  }
+  inline Standard_Boolean IsLess(const std::string_view& theStringView) const;
 
   Standard_Boolean operator<(const std::string_view& theStringView) const
   {
@@ -1048,16 +907,10 @@ public:
   //! @param[in] theLiteral the string literal or char array to compare with
   //! @return true if this string is lexicographically less than literal
   template <std::size_t N>
-  Standard_Boolean IsLess(const char (&theLiteral)[N]) const
-  {
-    return IsLess(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline Standard_Boolean IsLess(const char (&theLiteral)[N]) const;
 
   template <std::size_t N>
-  Standard_Boolean operator<(const char (&theLiteral)[N]) const
-  {
-    return IsLess(theLiteral);
-  }
+  inline Standard_Boolean operator<(const char (&theLiteral)[N]) const;
 
   //! Core implementation: Returns TRUE if this string is lexicographically greater than
   //! the string (pointer and length).
@@ -1071,10 +924,7 @@ public:
   //! Returns TRUE if this string is 'ASCII' greater than other.
   //! @param[in] theOther the ASCII string to compare with
   //! @return true if this string is lexicographically greater than other
-  Standard_Boolean IsGreater(const TCollection_AsciiString& theOther) const
-  {
-    return IsGreater(theOther.ToCString(), theOther.Length());
-  }
+  inline Standard_Boolean IsGreater(const TCollection_AsciiString& theOther) const;
 
   Standard_Boolean operator>(const TCollection_AsciiString& theOther) const
   {
@@ -1084,11 +934,7 @@ public:
   //! Returns TRUE if this string is lexicographically greater than C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if this string is lexicographically greater than C string
-  Standard_Boolean IsGreater(const Standard_CString theCString) const
-  {
-    return theCString ? IsGreater(theCString, static_cast<Standard_Integer>(strlen(theCString)))
-                      : (myLength > 0);
-  }
+  inline Standard_Boolean IsGreater(const Standard_CString theCString) const;
 
   Standard_Boolean operator>(const Standard_CString theCString) const
   {
@@ -1099,10 +945,7 @@ public:
   //! Returns TRUE if this ASCII string is lexicographically greater than theStringView.
   //! @param[in] theStringView the string view to compare with
   //! @return true if this string is lexicographically greater than theStringView
-  Standard_Boolean IsGreater(const std::string_view& theStringView) const
-  {
-    return IsGreater(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
-  }
+  inline Standard_Boolean IsGreater(const std::string_view& theStringView) const;
 
   Standard_Boolean operator>(const std::string_view& theStringView) const
   {
@@ -1114,16 +957,10 @@ public:
   //! @param[in] theLiteral the string literal or char array to compare with
   //! @return true if this string is lexicographically greater than literal
   template <std::size_t N>
-  Standard_Boolean IsGreater(const char (&theLiteral)[N]) const
-  {
-    return IsGreater(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline Standard_Boolean IsGreater(const char (&theLiteral)[N]) const;
 
   template <std::size_t N>
-  Standard_Boolean operator>(const char (&theLiteral)[N]) const
-  {
-    return IsGreater(theLiteral);
-  }
+  inline Standard_Boolean operator>(const char (&theLiteral)[N]) const;
 
   //! Core implementation: Determines whether the beginning of this string instance matches
   //! the specified string (pointer and length).
@@ -1136,28 +973,18 @@ public:
   //! Determines whether the beginning of this string instance matches the specified string.
   //! @param[in] theStartString the string to check for at the beginning
   //! @return true if this string starts with theStartString
-  Standard_Boolean StartsWith(const TCollection_AsciiString& theStartString) const
-  {
-    return StartsWith(theStartString.ToCString(), theStartString.Length());
-  }
+  inline Standard_Boolean StartsWith(const TCollection_AsciiString& theStartString) const;
 
   //! Determines whether the beginning of this string matches the specified C string.
   //! @param[in] theCString the C string to check for at the beginning
   //! @return true if this string starts with theCString
-  Standard_Boolean StartsWith(const Standard_CString theCString) const
-  {
-    return theCString ? StartsWith(theCString, static_cast<Standard_Integer>(strlen(theCString)))
-                      : (myLength == 0);
-  }
+  inline Standard_Boolean StartsWith(const Standard_CString theCString) const;
 
 #if __cplusplus >= 201703L
   //! Determines whether the beginning of this string instance matches the specified string_view.
   //! @param[in] theStartString the string view to check for at the beginning
   //! @return true if this string starts with theStartString
-  Standard_Boolean StartsWith(const std::string_view& theStartString) const
-  {
-    return StartsWith(theStartString.data(), static_cast<Standard_Integer>(theStartString.size()));
-  }
+  inline Standard_Boolean StartsWith(const std::string_view& theStartString) const;
 #endif
 
   //! Core implementation: Determines whether the end of this string instance matches
@@ -1171,38 +998,26 @@ public:
   //! Determines whether the end of this string instance matches the specified string.
   //! @param[in] theEndString the string to check for at the end
   //! @return true if this string ends with theEndString
-  Standard_Boolean EndsWith(const TCollection_AsciiString& theEndString) const
-  {
-    return EndsWith(theEndString.ToCString(), theEndString.Length());
-  }
+  inline Standard_Boolean EndsWith(const TCollection_AsciiString& theEndString) const;
 
 #if __cplusplus >= 201703L
   //! Determines whether the end of this string instance matches the specified string_view.
   //! @param[in] theEndString the string view to check for at the end
   //! @return true if this string ends with theEndString
-  Standard_Boolean EndsWith(const std::string_view& theEndString) const
-  {
-    return EndsWith(theEndString.data(), static_cast<Standard_Integer>(theEndString.size()));
-  }
+  inline Standard_Boolean EndsWith(const std::string_view& theEndString) const;
 #endif
 
   //! Template method for checking if string starts with a literal or char array.
   //! @param[in] theLiteral the string literal or char array to check for at the beginning
   //! @return true if this string starts with literal
   template <std::size_t N>
-  Standard_Boolean StartsWith(const char (&theLiteral)[N]) const
-  {
-    return StartsWith(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline Standard_Boolean StartsWith(const char (&theLiteral)[N]) const;
 
   //! Template method for checking if string ends with a literal or char array.
   //! @param[in] theLiteral the string literal or char array to check for at the end
   //! @return true if this string ends with literal
   template <std::size_t N>
-  Standard_Boolean EndsWith(const char (&theLiteral)[N]) const
-  {
-    return EndsWith(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline Standard_Boolean EndsWith(const char (&theLiteral)[N]) const;
 
   //! Converts a AsciiString containing a numeric expression to an Integer.
   //!
@@ -1432,18 +1247,12 @@ public:
   //! It returns -1 if not found.
   //! @param[in] theWhat the ASCII string to search for
   //! @return the position of first match, or -1 if not found
-  Standard_Integer Search(const TCollection_AsciiString& theWhat) const
-  {
-    return Search(theWhat.ToCString(), theWhat.Length());
-  }
+  inline Standard_Integer Search(const TCollection_AsciiString& theWhat) const;
 
   //! Searches a C string in this string from the beginning.
   //! @param[in] theCString the C string to search for
   //! @return the position of first match, or -1 if not found
-  Standard_Integer Search(const Standard_CString theCString) const
-  {
-    return theCString ? Search(theCString, static_cast<Standard_Integer>(strlen(theCString))) : -1;
-  }
+  inline Standard_Integer Search(const Standard_CString theCString) const;
 
 #if __cplusplus >= 201703L
   //! Searches a string_view in this string from the beginning
@@ -1451,20 +1260,14 @@ public:
   //! It returns -1 if not found.
   //! @param[in] theWhat the string view to search for
   //! @return the position of first match, or -1 if not found
-  Standard_Integer Search(const std::string_view& theWhat) const
-  {
-    return Search(theWhat.data(), static_cast<Standard_Integer>(theWhat.size()));
-  }
+  inline Standard_Integer Search(const std::string_view& theWhat) const;
 #endif
 
   //! Template method for searching string literals or char arrays.
   //! @param[in] theLiteral the string literal or char array to search for
   //! @return the position of first match, or -1 if not found
   template <std::size_t N>
-  Standard_Integer Search(const char (&theLiteral)[N]) const
-  {
-    return Search(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline Standard_Integer Search(const char (&theLiteral)[N]) const;
 
   //! Core implementation: Searches a string (pointer and length) in this string from the end
   //! and returns position of first item matching.
@@ -1480,19 +1283,12 @@ public:
   //! It returns -1 if not found.
   //! @param[in] theWhat the ASCII string to search for
   //! @return the position of first match from end, or -1 if not found
-  Standard_Integer SearchFromEnd(const TCollection_AsciiString& theWhat) const
-  {
-    return SearchFromEnd(theWhat.ToCString(), theWhat.Length());
-  }
+  inline Standard_Integer SearchFromEnd(const TCollection_AsciiString& theWhat) const;
 
   //! Searches a C string in this string from the end.
   //! @param[in] theCString the C string to search for
   //! @return the position of first match from end, or -1 if not found
-  Standard_Integer SearchFromEnd(const Standard_CString theCString) const
-  {
-    return theCString ? SearchFromEnd(theCString, static_cast<Standard_Integer>(strlen(theCString)))
-                      : -1;
-  }
+  inline Standard_Integer SearchFromEnd(const Standard_CString theCString) const;
 
 #if __cplusplus >= 201703L
   //! Searches a string_view in this string from the end
@@ -1500,20 +1296,14 @@ public:
   //! It returns -1 if not found.
   //! @param[in] theWhat the string view to search for
   //! @return the position of first match from end, or -1 if not found
-  Standard_Integer SearchFromEnd(const std::string_view& theWhat) const
-  {
-    return SearchFromEnd(theWhat.data(), static_cast<Standard_Integer>(theWhat.size()));
-  }
+  inline Standard_Integer SearchFromEnd(const std::string_view& theWhat) const;
 #endif
 
   //! Template method for searching string literals or char arrays from end.
   //! @param[in] theLiteral the string literal or char array to search for
   //! @return the position of first match from end, or -1 if not found
   template <std::size_t N>
-  Standard_Integer SearchFromEnd(const char (&theLiteral)[N]) const
-  {
-    return SearchFromEnd(theLiteral, static_cast<Standard_Integer>(strlen(theLiteral)));
-  }
+  inline Standard_Integer SearchFromEnd(const char (&theLiteral)[N]) const;
 
   //! Replaces one character in the AsciiString at position where.
   //! If where is less than zero or greater than the length of this string
@@ -1541,34 +1331,18 @@ public:
   //! Replaces a part of this string by another AsciiString.
   //! @param[in] theWhere the position to start replacement
   //! @param[in] theWhat the ASCII string to replace with
-  void SetValue(const Standard_Integer theWhere, const TCollection_AsciiString& theWhat)
-  {
-    SetValue(theWhere, theWhat.ToCString(), theWhat.Length());
-  }
+  inline void SetValue(const Standard_Integer theWhere, const TCollection_AsciiString& theWhat);
 
   //! Replaces a part of this ASCII string with a C string.
   //! @param[in] theWhere position to start replacement
   //! @param[in] theCString the C string to replace with
-  void SetValue(const Standard_Integer theWhere, const Standard_CString theCString)
-  {
-    if (theCString)
-    {
-      SetValue(theWhere, theCString, static_cast<Standard_Integer>(strlen(theCString)));
-    }
-    else
-    {
-      SetValue(theWhere, "", 0);
-    }
-  }
+  inline void SetValue(const Standard_Integer theWhere, const Standard_CString theCString);
 
 #if __cplusplus >= 201703L
   //! Replaces a part of this ASCII string with a string_view.
   //! @param[in] theWhere position to start replacement
   //! @param[in] theStringView the string view to replace with
-  void SetValue(const Standard_Integer theWhere, const std::string_view& theStringView)
-  {
-    SetValue(theWhere, theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
-  }
+  inline void SetValue(const Standard_Integer theWhere, const std::string_view& theStringView);
 #endif
 
   //! Splits a AsciiString into two sub-strings.
@@ -1682,25 +1456,15 @@ public:
   //! Computes a hash code for the given ASCII string
   //! Returns the same integer value as the hash function for TCollection_ExtendedString
   //! @return a computed hash code
-  size_t HashCode() const
-  {
-    if (myLength < 4)
-    {
-      return opencascade::FNVHash::hash_combine(*myString, myLength);
-    }
-    return opencascade::hashBytes(myString, myLength);
-  }
+  inline size_t HashCode() const;
 
   //! Returns True  when the two  strings are the same.
   //! (Just for HashCode for AsciiString)
   //! @param[in] string1 first string to compare
   //! @param[in] string2 second string to compare
   //! @return true if strings are equal
-  static Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
-                                  const TCollection_AsciiString& string2)
-  {
-    return string1.IsEqual(string2);
-  }
+  inline static Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
+                                  const TCollection_AsciiString& string2);
 
   //! Returns True  when the two  strings are the same.
   //! (Just for HashCode for AsciiString)
@@ -1716,22 +1480,16 @@ public:
   //! @param[in] theString1 first string to compare
   //! @param[in] theStringView second string view to compare
   //! @return true if strings are equal
-  static Standard_Boolean IsEqual(const TCollection_AsciiString& theString1,
-                                  const std::string_view&        theStringView)
-  {
-    return theString1.IsEqual(theStringView);
-  }
+  inline static Standard_Boolean IsEqual(const TCollection_AsciiString& theString1,
+                                  const std::string_view&        theStringView);
 
   //! Returns True when the string_view and ASCII string are the same.
   //! (Just for HashCode for AsciiString)
   //! @param[in] theStringView first string view to compare
   //! @param[in] theString2 second string to compare
   //! @return true if strings are equal
-  static Standard_Boolean IsEqual(const std::string_view&        theStringView,
-                                  const TCollection_AsciiString& theString2)
-  {
-    return theString2.IsEqual(theStringView);
-  }
+  inline static Standard_Boolean IsEqual(const std::string_view&        theStringView,
+                                  const TCollection_AsciiString& theString2);
 #endif
 
   //! Core implementation: Returns True if the two strings (pointer and length) contain same
@@ -1754,47 +1512,27 @@ public:
   //! @param[in] theString2 second string to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  static Standard_Boolean IsSameString(const TCollection_AsciiString& theString1,
+  inline static Standard_Boolean IsSameString(const TCollection_AsciiString& theString1,
                                        const TCollection_AsciiString& theString2,
-                                       const Standard_Boolean         theIsCaseSensitive)
-  {
-    return IsSameString(theString1.ToCString(),
-                        theString1.Length(),
-                        theString2.ToCString(),
-                        theString2.Length(),
-                        theIsCaseSensitive);
-  }
+                                       const Standard_Boolean         theIsCaseSensitive);
 
   //! Returns True if the string and C string contain same characters.
   //! @param[in] theString1 first string to compare
   //! @param[in] theCString second C string to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  static Standard_Boolean IsSameString(const TCollection_AsciiString& theString1,
+  inline static Standard_Boolean IsSameString(const TCollection_AsciiString& theString1,
                                        const Standard_CString         theCString,
-                                       const Standard_Boolean         theIsCaseSensitive)
-  {
-    if (!theCString)
-      return theString1.Length() == 0;
-
-    return IsSameString(theString1.ToCString(),
-                        theString1.Length(),
-                        theCString,
-                        static_cast<Standard_Integer>(strlen(theCString)),
-                        theIsCaseSensitive);
-  }
+                                       const Standard_Boolean         theIsCaseSensitive);
 
   //! Returns True if the C string and string contain same characters.
   //! @param[in] theCString first C string to compare
   //! @param[in] theString2 second string to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  static Standard_Boolean IsSameString(const Standard_CString         theCString,
+  inline static Standard_Boolean IsSameString(const Standard_CString         theCString,
                                        const TCollection_AsciiString& theString2,
-                                       const Standard_Boolean         theIsCaseSensitive)
-  {
-    return IsSameString(theString2, theCString, theIsCaseSensitive);
-  }
+                                       const Standard_Boolean         theIsCaseSensitive);
 
 #if __cplusplus >= 201703L
   //! Returns True if the string and string_view contain same characters.
@@ -1802,29 +1540,18 @@ public:
   //! @param[in] theStringView second string view to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  static Standard_Boolean IsSameString(const TCollection_AsciiString& theString1,
+  inline static Standard_Boolean IsSameString(const TCollection_AsciiString& theString1,
                                        const std::string_view&        theStringView,
-                                       const Standard_Boolean         theIsCaseSensitive)
-  {
-    return IsSameString(theString1.ToCString(),
-                        theString1.Length(),
-                        theStringView.data(),
-                        static_cast<Standard_Integer>(theStringView.size()),
-                        theIsCaseSensitive);
-  }
+                                       const Standard_Boolean         theIsCaseSensitive);
 
   //! Returns True if the string_view and string contain same characters.
   //! @param[in] theStringView first string view to compare
   //! @param[in] theString2 second string to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  static Standard_Boolean IsSameString(const std::string_view&        theStringView,
+  inline static Standard_Boolean IsSameString(const std::string_view&        theStringView,
                                        const TCollection_AsciiString& theString2,
-                                       const Standard_Boolean         theIsCaseSensitive)
-  {
-    // Redirect to the primary static method with swapped arguments
-    return IsSameString(theString2, theStringView, theIsCaseSensitive);
-  }
+                                       const Standard_Boolean         theIsCaseSensitive);
 #endif
 
   //! Returns True if the two C strings contain same characters.
@@ -1832,21 +1559,9 @@ public:
   //! @param[in] theCString2 second C string to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  static Standard_Boolean IsSameString(const Standard_CString theCString1,
+  inline static Standard_Boolean IsSameString(const Standard_CString theCString1,
                                        const Standard_CString theCString2,
-                                       const Standard_Boolean theIsCaseSensitive)
-  {
-    if (!theCString1 && !theCString2)
-      return Standard_True;
-    if (!theCString1 || !theCString2)
-      return Standard_False;
-
-    return IsSameString(theCString1,
-                        static_cast<Standard_Integer>(strlen(theCString1)),
-                        theCString2,
-                        static_cast<Standard_Integer>(strlen(theCString2)),
-                        theIsCaseSensitive);
-  }
+                                       const Standard_Boolean theIsCaseSensitive);
 
 #if __cplusplus >= 201703L
   //! Returns True if the two string_views contain same characters.
@@ -1854,16 +1569,9 @@ public:
   //! @param[in] theStringView2 second string view to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  static Standard_Boolean IsSameString(const std::string_view& theStringView1,
+  inline static Standard_Boolean IsSameString(const std::string_view& theStringView1,
                                        const std::string_view& theStringView2,
-                                       const Standard_Boolean  theIsCaseSensitive)
-  {
-    return IsSameString(theStringView1.data(),
-                        static_cast<Standard_Integer>(theStringView1.size()),
-                        theStringView2.data(),
-                        static_cast<Standard_Integer>(theStringView2.size()),
-                        theIsCaseSensitive);
-  }
+                                       const Standard_Boolean  theIsCaseSensitive);
 #endif
 
 private:
