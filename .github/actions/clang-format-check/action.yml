@@ -53,10 +53,9 @@ runs:
       run: |
         $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
         if ($files.Count -gt 0) {
-          # Ensure $files is always an array and properly join for command line
+          # Pass files as individual arguments
           $files = @($files)
-          $fileArgs = ($files | ForEach-Object { "`"$_`"" }) -join ' '
-          python3 .github/actions/scripts/validate-license.py --files $fileArgs --fix
+          & python3 .github/actions/scripts/validate-license.py --files @files --fix
         }
 
     - name: Check formatting
