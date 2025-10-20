@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cstring>
+#include <functional>
 
 namespace
 {
@@ -278,7 +279,10 @@ void TCollection_AsciiString::AssignCat(const Standard_CString theString,
     return;
 
   // Check if theString points into our own buffer (self-assignment protection)
-  const bool isSelfReference = (theString >= myString && theString < myString + myLength);
+  // Use std::less for well-defined pointer comparison (avoids undefined behavior)
+  const bool isSelfReference =
+    !std::less<const Standard_CString>()(theString, myString)
+    && std::less<const Standard_CString>()(theString, myString + myLength);
 
   if (isSelfReference)
   {
@@ -537,7 +541,10 @@ void TCollection_AsciiString::Insert(const Standard_Integer theWhere,
   const int anInsertIndex = theWhere - 1;
 
   // Check if theString points into our own buffer (self-reference protection)
-  const bool isSelfReference = (theString >= myString && theString < myString + myLength);
+  // Use std::less for well-defined pointer comparison (avoids undefined behavior)
+  const bool isSelfReference =
+    !std::less<const Standard_CString>()(theString, myString)
+    && std::less<const Standard_CString>()(theString, myString + myLength);
 
   if (isSelfReference)
   {
@@ -985,14 +992,12 @@ Standard_Integer TCollection_AsciiString::Search(const Standard_CString theWhat,
   if (theWhatLength == 0)
     return -1;
 
-  int i = 0;
-  while (i <= myLength - theWhatLength)
+  for (int i = 0; i <= myLength - theWhatLength; ++i)
   {
     if (memcmp(myString + i, theWhat, theWhatLength) == 0)
     {
       return i + 1; // Return 1-based position
     }
-    i++;
   }
   return -1;
 }
@@ -1005,14 +1010,12 @@ Standard_Integer TCollection_AsciiString::SearchFromEnd(const Standard_CString t
   if (theWhatLength == 0)
     return -1;
 
-  int i = myLength - theWhatLength;
-  while (i >= 0)
+  for (int i = myLength - theWhatLength; i >= 0; --i)
   {
     if (memcmp(myString + i, theWhat, theWhatLength) == 0)
     {
       return i + 1; // Return 1-based position
     }
-    i--;
   }
   return -1;
 }
