@@ -4,7 +4,7 @@ puts "======="
 puts ""
 
 puts "TODO OCC25588 All: Not connected mesh inside face 893"
-puts "TODO OCC25588 All: Not connected mesh inside face 1094"
+puts "TODO OCC25588 All: Not connected mesh inside face 1097"
 
 pload XDE
 

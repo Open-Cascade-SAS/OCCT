@@ -1,6 +1,7 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 
 
 set filename trj12_ttmouse-pe-214.stp
@@ -8,10 +9,10 @@ set filename trj12_ttmouse-pe-214.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 40  ( 18 )  Summary  = 40  ( 18 )
-CHECKSHAPE  : Wires    = 48  ( 48 )  Faces    = 48  ( 48 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 48  ( 48 )  Faces    = 40  ( 48 )  Shells   = 8  ( 0 )   Solids   = 8 ( 0 )
 NBSHAPES    : Solid    = 15  ( 16 )  Shell    = 17  ( 17 )  Face     = 366  ( 366 ) 
 STATSHAPE   : Solid    = 71  ( 79 )  Shell    = 87  ( 87 )  Face     = 2732  ( 2732 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =    116.4921053  (    5.033069571 )  AvgTol   =     0.562451842  (   0.06578172668 )
+TOLERANCE   : MaxTol   =    116.4921053  (    5.033069571 )  AvgTol   =     1.066335101  (   0.06578172668 )
 LABELS      : N0Labels = 10  ( 10 )  N1Labels = 32  ( 32 )  N2Labels = 0  ( 0 )   TotalLabels = 42  ( 42 )   NameLabels = 22  ( 22 )   ColorLabels = 22  ( 22 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 6 )
