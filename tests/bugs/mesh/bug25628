@@ -20,7 +20,7 @@ if { [llength $log] != 0 } {
   puts "Mesh is OK"
 }
 
-checktrinfo a_36 -tri 37 -nod 39
+checktrinfo a_36 -tri 4551 -nod 2302
 
 vinit
 vdisplay a_36

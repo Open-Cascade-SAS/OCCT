@@ -53,7 +53,9 @@ runs:
       run: |
         $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
         if ($files.Count -gt 0) {
-          python3 .github/actions/scripts/validate-license.py --files @files --fix
+          # Pass files as individual arguments
+          $files = @($files)
+          & python3 .github/actions/scripts/validate-license.py --files @files --fix
         }
 
     - name: Check formatting
