@@ -62,13 +62,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Shell, ShapeFix_Root)
 namespace
 {
 // Type aliases for unordered maps with custom allocators
-using FaceEdgesAllocator =
-  NCollection_Allocator<std::pair<const TopoDS_Face, NCollection_Array1<TopoDS_Edge>>>;
-using FaceEdgesMap = std::unordered_map<TopoDS_Face,
-                                        NCollection_Array1<TopoDS_Edge>,
-                                        TopTools_ShapeMapHasher,
-                                        TopTools_ShapeMapHasher,
-                                        FaceEdgesAllocator>;
+using FaceEdgesMap = NCollection_IndexedDataMap<TopoDS_Face, NCollection_Array1<TopoDS_Edge>>;
 using EdgeFacesAllocator =
   NCollection_Allocator<std::pair<const TopoDS_Edge, NCollection_DynamicArray<TopoDS_Face>>>;
 using EdgeFacesMap = std::unordered_map<TopoDS_Edge,
@@ -212,16 +206,16 @@ static NCollection_List<TopTools_SequenceOfShape> GetConnectedFaceGroups(
 {
   NCollection_List<TopTools_SequenceOfShape> aConnectedGroups;
 
-  if (theFaceEdges.empty())
+  if (theFaceEdges.IsEmpty())
   {
     return aConnectedGroups;
   }
 
-  TopTools_MapOfShape aVisitedFaces(static_cast<int>(theFaceEdges.size()));
+  TopTools_MapOfShape aVisitedFaces(static_cast<int>(theFaceEdges.Size()));
 
   for (auto aFaceIter = theFaceEdges.begin(); aFaceIter != theFaceEdges.end(); ++aFaceIter)
   {
-    const TopoDS_Face& aStartFace = aFaceIter->first;
+    const TopoDS_Face& aStartFace = aFaceIter.ChangeIterator().Key();
 
     if (aVisitedFaces.Contains(aStartFace))
     {
@@ -244,10 +238,10 @@ static NCollection_List<TopTools_SequenceOfShape> GetConnectedFaceGroups(
       aConnectedGroup.Append(aCurrentFace);
 
       // Find connected faces through shared edges
-      auto aFaceEdgesIter = theFaceEdges.find(aCurrentFace);
-      if (aFaceEdgesIter != theFaceEdges.end())
+      auto aFaceEdgesIter = theFaceEdges.Seek(aCurrentFace);
+      if (aFaceEdgesIter)
       {
-        const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdgesIter->second;
+        const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = *aFaceEdgesIter;
 
         for (Standard_Integer anEdgeIdx = aFaceEdgesArray.Lower();
              anEdgeIdx <= aFaceEdgesArray.Upper();
@@ -275,25 +269,7 @@ static NCollection_List<TopTools_SequenceOfShape> GetConnectedFaceGroups(
       }
     }
 
-    // Insert in sorted order (largest groups first)
-    Standard_Boolean anIsInserted = Standard_False;
-
-    for (NCollection_List<TopTools_SequenceOfShape>::Iterator anIter(aConnectedGroups);
-         anIter.More();
-         anIter.Next())
-    {
-      if (aConnectedGroup.Length() > anIter.Value().Length())
-      {
-        aConnectedGroups.InsertBefore(aConnectedGroup, anIter);
-        anIsInserted = Standard_True;
-        break;
-      }
-    }
-
-    if (!anIsInserted)
-    {
-      aConnectedGroups.Append(aConnectedGroup);
-    }
+    aConnectedGroups.Append(aConnectedGroup);
   }
 
   return aConnectedGroups;
@@ -339,7 +315,7 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     theLfaces,
     NCollection_DataMap<TopoDS_Edge, std::pair<bool, bool>, TopTools_ShapeMapHasher>;
 
   FaceEdgesMap aFaceEdges;
-  aFaceEdges.reserve(theLfaces.Length());
+  aFaceEdges.ReSize(theLfaces.Length());
   size_t                                aNumberOfEdges = 0;
   NCollection_DynamicArray<TopoDS_Edge> aTempEdges;
   for (TopTools_SequenceOfShape::Iterator anFaceIter(theLfaces); anFaceIter.More();
@@ -357,16 +333,16 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     theLfaces,
     {
       aFaceEdgesArray.SetValue(idx + 1, aTempEdges.Value(idx));
     }
-    aFaceEdges[aFace] = std::move(aFaceEdgesArray);
+    aFaceEdges.Add(aFace, std::move(aFaceEdgesArray));
   }
 
   EdgeFacesMap aEdgeFaces;
   aEdgeFaces.reserve(aNumberOfEdges);
 
-  for (const auto& aFaceEdgesPair : aFaceEdges)
+  for (Standard_Integer aFaceInd = 1; aFaceInd <= aFaceEdges.Size(); ++aFaceInd)
   {
-    const TopoDS_Face&                     aFace           = aFaceEdgesPair.first;
-    const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdgesPair.second;
+    const TopoDS_Face&                     aFace           = aFaceEdges.FindKey(aFaceInd);
+    const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdges.FindFromIndex(aFaceInd);
 
     for (Standard_Integer anEdgeInd = aFaceEdgesArray.Lower(); anEdgeInd <= aFaceEdgesArray.Upper();
          ++anEdgeInd)
@@ -425,7 +401,7 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     theLfaces,
     Standard_Integer aBadOrientationCount = 0, aGoodOrientationCount = 0;
     TopoDS_Face      F1 = TopoDS::Face(aProcessingFaces.Value(aFaceIdx));
     // Get edges of the face
-    const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdges[F1];
+    const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdges.FindFromKey(F1);
 
     for (Standard_Integer anEdgeInd = aFaceEdgesArray.Lower(); anEdgeInd <= aFaceEdgesArray.Upper();
          ++anEdgeInd)
@@ -631,9 +607,10 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     theLfaces,
       continue; // Skip first group (already processed)
 
     const TopTools_SequenceOfShape& aUnprocessedGroup = aGroupIter.Value();
-    for (Standard_Integer aFaceIdx = 1; aFaceIdx <= aUnprocessedGroup.Length(); ++aFaceIdx)
+    for (Standard_Integer anUnprocFaceIdx = 1; anUnprocFaceIdx <= aUnprocessedGroup.Length();
+         ++anUnprocFaceIdx)
     {
-      aSeqUnconnectFaces.Append(aUnprocessedGroup.Value(aFaceIdx));
+      aSeqUnconnectFaces.Append(aUnprocessedGroup.Value(anUnprocFaceIdx));
     }
   }
 
