@@ -62,7 +62,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepData_StepReaderData, Interface_FileReaderData)
 
 #define Maxlst 64
 
-static Standard_Integer acceptvoid = 0;
+static const Standard_Integer acceptvoid = 0;
 
 // ----------  Fonctions Utilitaires  ----------
 
