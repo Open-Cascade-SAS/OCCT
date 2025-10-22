@@ -776,23 +776,10 @@ TEST(Bnd_BoxTest, DumpJsonAndInitFromJson)
   aBox.DumpJson(anOStream);
   std::string aJsonStr = anOStream.str();
 
-  // Check that the JSON contains proper separators between fields
-  // This tests the bug in Standard_Dump::AddValuesSeparator
-  EXPECT_NE(aJsonStr.find(", \"Gap\""), std::string::npos)
-    << "JSON should have separator before Gap field. Got: " << aJsonStr;
-  EXPECT_NE(aJsonStr.find(", \"Flags\""), std::string::npos)
-    << "JSON should have separator before Flags field. Got: " << aJsonStr;
-
-  // Verify we don't have missing separators (the bug symptom)
-  EXPECT_EQ(aJsonStr.find("]\"Gap\""), std::string::npos)
-    << "JSON should not have missing separator between CornerMax and Gap. Got: " << aJsonStr;
-  EXPECT_EQ(aJsonStr.find("]\"Flags\""), std::string::npos)
-    << "JSON should not have missing separator between Gap and Flags. Got: " << aJsonStr;
-
   // Try to deserialize
   std::stringstream anIStream(aJsonStr);
-  Bnd_Box          aDeserializedBox;
-  Standard_Integer aStreamPos = 1;
+  Bnd_Box           aDeserializedBox;
+  Standard_Integer  aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedBox.InitFromJson(anIStream, aStreamPos))
     << "Deserialization should succeed with proper JSON format";

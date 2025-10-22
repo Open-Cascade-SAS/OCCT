@@ -29,7 +29,7 @@ void Standard_Dump::AddValuesSeparator(Standard_OStream& theOStream)
 
   // Try to cast to Standard_SStream (std::stringstream)
   Standard_SStream* anSStream = dynamic_cast<Standard_SStream*>(&theOStream);
-  if (anSStream != NULL)
+  if (anSStream != nullptr)
   {
     TCollection_AsciiString aStreamStr = Standard_Dump::Text(*anSStream);
     if (!aStreamStr.IsEmpty() && !aStreamStr.EndsWith("{") && !aStreamStr.EndsWith(", "))
@@ -41,7 +41,7 @@ void Standard_Dump::AddValuesSeparator(Standard_OStream& theOStream)
 
   // Try to cast to std::ostringstream (for cases where users use ostringstream directly)
   std::ostringstream* anOStrStream = dynamic_cast<std::ostringstream*>(&theOStream);
-  if (anOStrStream != NULL)
+  if (anOStrStream != nullptr)
   {
     TCollection_AsciiString aStreamStr = anOStrStream->str().c_str();
     if (!aStreamStr.IsEmpty() && !aStreamStr.EndsWith("{") && !aStreamStr.EndsWith(", "))
