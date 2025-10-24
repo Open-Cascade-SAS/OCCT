@@ -1429,9 +1429,12 @@ TDF_Label TNaming_Tool::Label(const Handle(TNaming_UsedShapes)& Shapes,
 
 Handle(TNaming_NamedShape) TNaming_Tool::NamedShape(const TopoDS_Shape& S, const TDF_Label& Acces)
 {
-  Handle(TNaming_UsedShapes) US;
-  Acces.Root().FindAttribute(TNaming_UsedShapes::GetID(), US);
   Handle(TNaming_NamedShape) NS;
+  Handle(TNaming_UsedShapes) US;
+  if (!Acces.Root().FindAttribute(TNaming_UsedShapes::GetID(), US))
+  {
+    return NS;
+  }
 
   if (!TNaming_Tool::HasLabel(US, S))
   {
