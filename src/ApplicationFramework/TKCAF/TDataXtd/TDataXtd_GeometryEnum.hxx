@@ -26,7 +26,8 @@ enum TDataXtd_GeometryEnum
   TDataXtd_ELLIPSE,
   TDataXtd_SPLINE,
   TDataXtd_PLANE,
-  TDataXtd_CYLINDER
+  TDataXtd_CYLINDER,
+  TDataXtd_PLACEMENT
 };
 
 #endif // _TDataXtd_GeometryEnum_HeaderFile

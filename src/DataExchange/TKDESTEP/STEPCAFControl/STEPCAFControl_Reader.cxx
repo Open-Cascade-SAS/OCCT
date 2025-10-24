@@ -18,6 +18,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Line.hxx>
@@ -101,6 +102,7 @@
 #include <StepDimTol_GeometricToleranceWithMaximumTolerance.hxx>
 #include <StepGeom_Plane.hxx>
 #include <StepDimTol_PlacedDatumTargetFeature.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 #include <StepRepr_DerivedShapeAspect.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
 #include <StepRepr_MappedItem.hxx>
@@ -185,6 +187,7 @@
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDataStd_UAttribute.hxx>
+#include <TDataXtd_Placement.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
@@ -293,7 +296,8 @@ STEPCAFControl_Reader::STEPCAFControl_Reader()
       mySHUOMode(Standard_False),
       myGDTMode(Standard_True),
       myMatMode(Standard_True),
-      myViewMode(Standard_True)
+      myViewMode(Standard_True),
+      mySupplementalMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
   if (!myReader.WS().IsNull())
@@ -315,7 +319,8 @@ STEPCAFControl_Reader::STEPCAFControl_Reader(const Handle(XSControl_WorkSession)
       mySHUOMode(Standard_False),
       myGDTMode(Standard_True),
       myMatMode(Standard_True),
-      myViewMode(Standard_True)
+      myViewMode(Standard_True),
+      mySupplementalMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
   Init(WS, scratch);
@@ -760,6 +765,10 @@ Standard_Boolean STEPCAFControl_Reader::Transfer(STEPControl_Reader&            
   // read View entities from STEP model
   if (GetViewMode())
     ReadViews(reader.WS(), doc, aLocalFactors);
+
+  // read Supplemental geometry entities from STEP model
+  if (GetSupplementalMode())
+    ReadSupplemental(reader.WS(), doc, aLocalFactors);
 
   // read metadata
   if (GetMetaMode())
@@ -3990,9 +3999,7 @@ Standard_Boolean STEPCAFControl_Reader::findReferenceGeometry(
 
   if (mySupplementalLabel.IsNull())
   {
-    mySupplementalLabel = theShTool->NewShape();
-    TDataStd_Name::Set(mySupplementalLabel, "Supplemental Geometry");
-    TDataStd_UAttribute::Set(mySupplementalLabel, XCAFDoc::SupplementalContainerGUID());
+    createSupplementalLabel(theShTool);
   }
   TDF_Label aSupGeomLabel = theShTool->AddComponent(mySupplementalLabel, aShape);
   if (aSupGeomLabel.IsNull())
@@ -5484,6 +5491,134 @@ Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSes
 
 //=================================================================================================
 
+void STEPCAFControl_Reader::createSupplementalLabel(const Handle(XCAFDoc_ShapeTool)& theShTool)
+{
+  mySupplementalLabel = theShTool->NewShape();
+  TDataStd_Name::Set(mySupplementalLabel, "Supplemental Geometry");
+  TDataStd_UAttribute::Set(mySupplementalLabel, XCAFDoc::SupplementalContainerGUID());
+}
+
+//=================================================================================================
+
+Standard_Boolean STEPCAFControl_Reader::ReadSupplemental(const Handle(XSControl_WorkSession)& theWS,
+                                                         const Handle(TDocStd_Document)& theDoc,
+                                                         const StepData_Factors& theLocalFactors)
+{
+  const Handle(Interface_InterfaceModel)&  aModel            = theWS->Model();
+  const Handle(XSControl_TransferReader)&  aTransferReader   = myReader.WS()->TransferReader();
+  const Handle(Transfer_TransientProcess)& aTransientProcess = aTransferReader->TransientProcess();
+  const Interface_Graph&                   aGraph            = aTransientProcess->Graph();
+  Handle(XCAFDoc_ShapeTool)                aSTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
+
+  Standard_Integer aNb = aModel->NbEntities();
+  for (Standard_Integer i = 1; i <= aNb; i++)
+  {
+    // Find the entry point of the supplemental data
+    Handle(Standard_Transient) anEnt = aModel->Value(i);
+    if (!anEnt->IsKind(STANDARD_TYPE(StepRepr_ConstructiveGeometryRepresentationRelationship)))
+      continue;
+    Handle(StepRepr_ConstructiveGeometryRepresentationRelationship) aCGRR =
+      Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)::DownCast(anEnt);
+    Handle(StepRepr_Representation) aMainRepr = aCGRR->Rep1();
+    if (aMainRepr.IsNull())
+      continue;
+    Handle(StepRepr_Representation) aSupRepr = aCGRR->Rep2();
+    if (aSupRepr.IsNull())
+      continue;
+    if (mySupplementalLabel.IsNull())
+    {
+      createSupplementalLabel(aSTool);
+    }
+
+    // Iterate through the supplemental representation items
+    for (StepRepr_HArray1OfRepresentationItem::Iterator anIter(aSupRepr->Items()->Array1());
+         anIter.More();
+         anIter.Next())
+    {
+      const Handle(StepRepr_RepresentationItem)& anItem = anIter.Value();
+      if (anItem.IsNull())
+        continue;
+      // Check that the item is not connected to any PMI element, they are processed
+      // during PMI reading
+      Interface_EntityIterator aGISUIter         = aGraph.Sharings(anIter.Value());
+      bool                     aHasPMIConnection = false;
+      for (; aGISUIter.More(); aGISUIter.Next())
+      {
+        if (aGISUIter.Value()->IsKind(STANDARD_TYPE(StepAP242_GeometricItemSpecificUsage)))
+        {
+          // The item is connected to PMI, skip it
+          aHasPMIConnection = true;
+          break;
+        }
+      }
+      if (aHasPMIConnection)
+        continue;
+
+      // Now only Axis2Placement3d is supported
+      if (anItem->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
+      {
+        // Create a coordinate system from the STEP entity
+        Handle(StepGeom_Axis2Placement3d) anAxis2Placement =
+          Handle(StepGeom_Axis2Placement3d)::DownCast(anItem);
+        Handle(Geom_Axis2Placement) anAxis =
+          StepToGeom::MakeAxis2Placement(anAxis2Placement, theLocalFactors);
+
+        // Add created geometry to the supplemental data
+        if (!anAxis.IsNull())
+        {
+          // Create vertex at the location of the placement
+          TopoDS_Vertex             aVertex;
+          gp_Pnt                    aPnt = anAxis->Location();
+          BRepBuilderAPI_MakeVertex aMkVtx(aPnt);
+          if (aMkVtx.IsDone())
+          {
+            aVertex = aMkVtx.Vertex();
+          }
+          TDF_Label aSupGeomLabel = aSTool->AddComponent(mySupplementalLabel, aVertex);
+          TDataStd_UAttribute::Set(aSupGeomLabel, XCAFDoc::SupplementalGeometryGUID());
+          TDF_Label aSupRefShapeL;
+          aSTool->GetReferredShape(aSupGeomLabel, aSupRefShapeL);
+          TDataStd_UAttribute::Set(aSupRefShapeL, XCAFDoc::SupplementalGeometryGUID());
+          TDataXtd_Placement::Set(aSupRefShapeL, anAxis->Ax2());
+
+          if (!anAxis2Placement->Name().IsNull())
+          {
+            TDataStd_Name::Set(aSupGeomLabel, anAxis2Placement->Name()->String());
+            TDataStd_Name::Set(aSupRefShapeL, anAxis2Placement->Name()->String());
+          }
+
+          // set references to main shapes if exist
+          for (int itemIt = 1; itemIt <= aMainRepr->NbItems(); itemIt++)
+          {
+            Handle(StepRepr_RepresentationItem) aMainItem = aMainRepr->ItemsValue(itemIt);
+            if (aMainItem.IsNull())
+              continue;
+            // Get the shape corresponding to the main representation item
+            TopoDS_Shape aShape = TransferBRep::ShapeResult(aTransientProcess, aMainItem);
+            TDF_Label    aShapeLabel;
+            if (!aShape.IsNull())
+            {
+              aSTool->Search(aShape, aShapeLabel, Standard_True, Standard_True, Standard_True);
+            }
+            if (!aShapeLabel.IsNull())
+            {
+              Handle(TDataStd_TreeNode) aMainNode =
+                TDataStd_TreeNode::Set(aShapeLabel, XCAFDoc::SupplementalRefGUID());
+              Handle(TDataStd_TreeNode) aRefNode =
+                TDataStd_TreeNode::Set(aSupRefShapeL, XCAFDoc::SupplementalRefGUID());
+              aRefNode->Remove();
+              aMainNode->Append(aRefNode);
+            }
+          }
+        }
+      }
+    }
+  }
+  return Standard_True;
+}
+
+//=================================================================================================
+
 TDF_Label STEPCAFControl_Reader::SettleShapeData(const Handle(StepRepr_RepresentationItem)& theItem,
                                                  const TDF_Label&                           theLab,
                                                  const Handle(XCAFDoc_ShapeTool)& theShapeTool,
@@ -5894,6 +6029,20 @@ void STEPCAFControl_Reader::SetViewMode(const Standard_Boolean viewmode)
 Standard_Boolean STEPCAFControl_Reader::GetViewMode() const
 {
   return myViewMode;
+}
+
+//=================================================================================================
+
+void STEPCAFControl_Reader::SetSupplementalMode(const Standard_Boolean theMode)
+{
+  mySupplementalMode = theMode;
+}
+
+//=================================================================================================
+
+Standard_Boolean STEPCAFControl_Reader::GetSupplementalMode() const
+{
+  return mySupplementalMode;
 }
 
 //=============================================================================
