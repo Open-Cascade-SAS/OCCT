@@ -23,12 +23,15 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
+#include <TDataStd_RealArray.hxx>
 #include <TDataXtd.hxx>
 #include <TDataXtd_Geometry.hxx>
 #include <TDF_Attribute.hxx>
@@ -313,12 +316,48 @@ Standard_Boolean TDataXtd_Geometry::Cylinder(const Handle(TNaming_NamedShape)& N
 
 //=================================================================================================
 
+Standard_Boolean TDataXtd_Geometry::Placement(const TDF_Label& theL, gp_Ax3& theCS)
+{
+  gp_Pnt                     aLoc;
+  Handle(TNaming_NamedShape) aNS;
+  if (!theL.FindAttribute(TNaming_NamedShape::GetID(), aNS))
+  {
+    return Standard_False;
+  }
+  Point(aNS, aLoc);
+  Handle(TDataStd_RealArray) anArrayAttr;
+  if (!theL.FindAttribute(TDataStd_RealArray::GetID(), anArrayAttr))
+  {
+    return Standard_False;
+  }
+  if (anArrayAttr->Length() < 9)
+  {
+    return Standard_False;
+  }
+  // Get the placement from the array
+  theCS.SetLocation(aLoc);
+  theCS.SetDirection(gp_Dir(anArrayAttr->Value(1), anArrayAttr->Value(2), anArrayAttr->Value(3)));
+  theCS.SetXDirection(gp_Dir(anArrayAttr->Value(4), anArrayAttr->Value(5), anArrayAttr->Value(6)));
+  theCS.SetYDirection(gp_Dir(anArrayAttr->Value(7), anArrayAttr->Value(8), anArrayAttr->Value(9)));
+  return Standard_True;
+}
+
+//=================================================================================================
+
 TDataXtd_GeometryEnum TDataXtd_Geometry::Type(const TDF_Label& L)
 {
   Handle(TNaming_NamedShape) NS;
   if (L.FindAttribute(TNaming_NamedShape::GetID(), NS))
   {
-    return Type(NS);
+    TDataXtd_GeometryEnum aType = Type(NS);
+    if (aType == TDataXtd_POINT)
+    {
+      // Check if it is a point of a placement
+      Handle(TDataStd_RealArray) anArrayAttr;
+      if (L.FindAttribute(TDataStd_RealArray::GetID(), anArrayAttr))
+        aType = TDataXtd_PLACEMENT;
+    }
+    return aType;
   }
   return TDataXtd_ANY_GEOM;
 }

@@ -17,9 +17,12 @@
 #define _TDataXtd_Placement_HeaderFile
 
 #include <TDataStd_GenericEmpty.hxx>
+
+class gp_Ax2;
+class gp_Ax3;
+class TDataXtd_Placement;
 class TDF_Label;
 
-class TDataXtd_Placement;
 DEFINE_STANDARD_HANDLE(TDataXtd_Placement, TDataStd_GenericEmpty)
 
 class TDataXtd_Placement : public TDataStd_GenericEmpty
@@ -35,6 +38,10 @@ public:
   //! Placement methods
   //! =================
   Standard_EXPORT static Handle(TDataXtd_Placement) Set(const TDF_Label& label);
+
+  Standard_EXPORT static Handle(TDataXtd_Placement) Set(const TDF_Label& theL, const gp_Ax3& theCS);
+
+  Standard_EXPORT static Handle(TDataXtd_Placement) Set(const TDF_Label& theL, const gp_Ax2& theCS);
 
   Standard_EXPORT TDataXtd_Placement();
 

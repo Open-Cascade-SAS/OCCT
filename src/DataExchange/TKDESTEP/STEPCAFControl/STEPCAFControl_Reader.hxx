@@ -223,6 +223,12 @@ public:
   //! Get View mode
   Standard_EXPORT Standard_Boolean GetViewMode() const;
 
+  //! Set Supplemental geometry mode to indicate read Supplemental geometry or not.
+  Standard_EXPORT void SetSupplementalMode(const Standard_Boolean theMode);
+
+  //! Get Supplemental geometry mode
+  Standard_EXPORT Standard_Boolean GetSupplementalMode() const;
+
   const XCAFDoc_DataMapOfShapeLabel& GetShapeLabelMap() const { return myMap; }
 
   //! Sets parameters for shape processing.
@@ -357,6 +363,12 @@ protected:
     ReadViews(const Handle(XSControl_WorkSession)& theWS,
               const Handle(TDocStd_Document)&      theDoc,
               const StepData_Factors&              theLocalFactors = StepData_Factors()) const;
+
+  //! Reads non-PMI Supplemental shapes for instances defined in the STEP model
+  Standard_EXPORT Standard_Boolean
+    ReadSupplemental(const Handle(XSControl_WorkSession)& theWS,
+                     const Handle(TDocStd_Document)&      theDoc,
+                     const StepData_Factors&              theLocalFactors = StepData_Factors());
 
   //! Populates the sub-Label of the passed TDF Label with shape
   //! data associated with the given STEP Representation Item,
@@ -511,6 +523,9 @@ private:
                       const Handle(StepRepr_PropertyDefinition)& theSource,
                       NCollection_List<Handle(Transfer_Binder)>& theBinders) const;
 
+  //! Auxiliary method to create supplemental geometry label in the document.
+  void createSupplementalLabel(const Handle(XCAFDoc_ShapeTool)& theShTool);
+
 private:
   STEPControl_Reader                                                              myReader;
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
@@ -526,6 +541,7 @@ private:
   Standard_Boolean                                           myGDTMode;
   Standard_Boolean                                           myMatMode;
   Standard_Boolean                                           myViewMode;
+  Standard_Boolean                                           mySupplementalMode;
   NCollection_DataMap<Handle(Standard_Transient), TDF_Label> myGDTMap;
 };
 

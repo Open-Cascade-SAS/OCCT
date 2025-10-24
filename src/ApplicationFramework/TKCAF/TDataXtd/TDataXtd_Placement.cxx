@@ -13,12 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
+#include <TDataStd_RealArray.hxx>
 #include <TDataXtd_Placement.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TopoDS.hxx>
 
 IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Placement, TDataStd_GenericEmpty)
 
@@ -41,6 +48,44 @@ Handle(TDataXtd_Placement) TDataXtd_Placement::Set(const TDF_Label& L)
     L.AddAttribute(A);
   }
   return A;
+}
+
+//=================================================================================================
+
+Handle(TDataXtd_Placement) TDataXtd_Placement::Set(const TDF_Label& theL, const gp_Ax3& theCS)
+{
+  const Handle(TDataXtd_Placement) anAttr = Set(theL);
+
+  gp_Pnt          aLocPoint = theCS.Location();
+  TNaming_Builder aB(theL);
+  aB.Generated(BRepBuilderAPI_MakeVertex(aLocPoint));
+
+  Handle(TColStd_HArray1OfReal) aCSArr = new TColStd_HArray1OfReal(1, 9);
+  aCSArr->SetValue(1, theCS.Direction().X());
+  aCSArr->SetValue(2, theCS.Direction().Y());
+  aCSArr->SetValue(3, theCS.Direction().Z());
+  aCSArr->SetValue(4, theCS.XDirection().X());
+  aCSArr->SetValue(5, theCS.XDirection().Y());
+  aCSArr->SetValue(6, theCS.XDirection().Z());
+  aCSArr->SetValue(7, theCS.YDirection().X());
+  aCSArr->SetValue(8, theCS.YDirection().Y());
+  aCSArr->SetValue(9, theCS.YDirection().Z());
+
+  Handle(TDataStd_RealArray) aLoc = TDataStd_RealArray::Set(theL, 1, 9);
+  if (!aLoc.IsNull())
+  {
+    aLoc->ChangeArray(aCSArr);
+  }
+
+  return anAttr;
+}
+
+//=================================================================================================
+
+Handle(TDataXtd_Placement) TDataXtd_Placement::Set(const TDF_Label& theL, const gp_Ax2& theCS)
+{
+  gp_Ax3 aCS(theCS.Location(), theCS.Direction(), theCS.XDirection());
+  return Set(theL, aCS);
 }
 
 //=================================================================================================
