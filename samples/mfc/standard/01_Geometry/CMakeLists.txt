@@ -84,7 +84,7 @@ else()
            DESTINATION "${INSTALL_DIR_BIN}d")
 endif()
 
-include_directories (${CMAKE_BINARY_DIR}/inc
+include_directories (${OCCT_BINARY_DIR}/inc
                      ${Geometry_SRC_DIR}
                      ${Geometry_ISESSION2D_DIR}
                      ${Geometry_RESOURCE_DIR}

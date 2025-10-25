@@ -6,7 +6,7 @@ set (USE_QT ON)
 set (RELATIVE_DIR "samples/qt")
 set (TARGET_FOLDER "Samples")
 
-include_directories("${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/${RELATIVE_DIR}")
+include_directories("${OCCT_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/${RELATIVE_DIR}")
 
 OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
 

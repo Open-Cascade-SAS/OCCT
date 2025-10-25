@@ -150,7 +150,7 @@ else()
            LIBRARY DESTINATION "${INSTALL_DIR_LIB}d")
 endif()
 
-include_directories( ${CMAKE_BINARY_DIR}/inc
+include_directories( ${OCCT_BINARY_DIR}/inc
                      ${MFC_STANDARD_COMMON_SAMPLES_DIR}
                      ${COMMON_IE_DIR}
                      ${COMMON_ISESSION2D_DIR}

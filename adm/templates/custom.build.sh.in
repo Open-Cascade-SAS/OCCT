@@ -24,7 +24,7 @@ if [ "$1" == "@BIN_LETTER@" ]; then
     # CSF_OCCTBinPath and CSF_OCCTLibPath are defined differently for 
     # multiple and single configuration builds
     @OCCT_CUSTOM_BUILD_BIN_LIB_PATHS@
-    export CSF_OCCTIncludePath="@CMAKE_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
+    export CSF_OCCTIncludePath="@OCCT_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
     export CSF_OCCTResourcePath="@OCCT_ROOT_DIR@/resources"
     export CSF_OCCTDataPath="@OCCT_ROOT_DIR@/data"
     export CSF_OCCTSamplesPath="@OCCT_ROOT_DIR@/samples"
