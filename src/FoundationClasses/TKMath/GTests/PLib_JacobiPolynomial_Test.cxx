@@ -193,7 +193,10 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionD0)
 {
   Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(6, GeomAbs_C0);
 
-  TColStd_Array1OfReal aBasisValue(0, aJac->WorkDegree());
+  // Calculate actual number of basis functions
+  Standard_Integer aDegree = aJac->WorkDegree() - 2 * (aJac->NivConstr() + 1);
+
+  TColStd_Array1OfReal aBasisValue(0, aDegree);
 
   // Test at various parameter values
   std::vector<Standard_Real> aTestParams = {-1.0, -0.5, 0.0, 0.5, 1.0};
@@ -216,10 +219,13 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionDerivatives)
 {
   Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(8, GeomAbs_C1);
 
-  TColStd_Array1OfReal aBasisValue(0, aJac->WorkDegree());
-  TColStd_Array1OfReal aBasisD1(0, aJac->WorkDegree());
-  TColStd_Array1OfReal aBasisD2(0, aJac->WorkDegree());
-  TColStd_Array1OfReal aBasisD3(0, aJac->WorkDegree());
+  // Calculate actual number of basis functions (same as MaxValue test pattern)
+  Standard_Integer aDegree = aJac->WorkDegree() - 2 * (aJac->NivConstr() + 1);
+
+  TColStd_Array1OfReal aBasisValue(0, aDegree);
+  TColStd_Array1OfReal aBasisD1(0, aDegree);
+  TColStd_Array1OfReal aBasisD2(0, aDegree);
+  TColStd_Array1OfReal aBasisD3(0, aDegree);
 
   Standard_Real aU = 0.5; // Test at middle point
 
@@ -344,8 +350,11 @@ TEST_F(PLibJacobiPolynomialTest, StressTests)
   // Test with maximum degree
   Handle(PLib_JacobiPolynomial) aJacMax = createJacobiPolynomial(30, GeomAbs_C2);
 
+  // Calculate actual number of basis functions
+  Standard_Integer aDegree = aJacMax->WorkDegree() - 2 * (aJacMax->NivConstr() + 1);
+
   // Test that basic operations work with high degrees
-  TColStd_Array1OfReal aBasisValue(0, aJacMax->WorkDegree());
+  TColStd_Array1OfReal aBasisValue(0, aDegree);
 
   aJacMax->D0(0.0, aBasisValue);
   aJacMax->D0(0.5, aBasisValue);

@@ -30,7 +30,7 @@ inline void TCollection_HAsciiString::AssignCat(const Handle(TCollection_HAsciiS
 
 inline Standard_Integer TCollection_HAsciiString::Length() const
 {
-  return myString.mylength;
+  return myString.Length();
 }
 
 //=================================================================================================
