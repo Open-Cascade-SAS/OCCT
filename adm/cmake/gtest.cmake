@@ -26,6 +26,13 @@ if(GTest_FOUND)
 else()
   message(STATUS "Googletest not found in system paths")
   if(GTEST_USE_FETCHCONTENT)
+    # FetchContent requires CMake 3.11 or higher
+    if(CMAKE_VERSION VERSION_LESS "3.11")
+      message(WARNING "FetchContent requires CMake 3.11 or higher (current version: ${CMAKE_VERSION}). "
+                      "Please either upgrade CMake, install Google Test manually, or disable BUILD_GTEST.")
+      set(GOOGLETEST_FOUND FALSE)
+      return()
+    endif()
     include(FetchContent)
 
     # Set option to disable GMock before declaring the content
