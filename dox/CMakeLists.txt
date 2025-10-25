@@ -7,7 +7,7 @@ set (OCCT_OVERVIEW_DIR "${OCCT_ROOT_DIR}/dox")
 set (OCCT_OVERVIEW_RESOURCE_DIR "${OCCT_OVERVIEW_DIR}/resources")
 
 # directory that contains all generated OCCT articles
-set (OCCT_GENERATED_DOC_DIR "${CMAKE_BINARY_DIR}/doc")
+set (OCCT_GENERATED_DOC_DIR "${OCCT_BINARY_DIR}/doc")
 if (NOT EXISTS "${OCCT_GENERATED_DOC_DIR}")
   file (MAKE_DIRECTORY "${OCCT_GENERATED_DOC_DIR}")
 endif()

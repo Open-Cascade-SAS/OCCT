@@ -56,7 +56,7 @@ else()
            DESTINATION "${INSTALL_DIR_BIN}d")
 endif()
 
-include_directories (${CMAKE_BINARY_DIR}/inc
+include_directories (${OCCT_BINARY_DIR}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/02_Modeling
                      ${Modeling_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)

@@ -27,7 +27,7 @@ if /I "%VCVER%" == "@COMPILER@" (
     rem multiple and single configuration builds
     @OCCT_CUSTOM_BUILD_BIN_LIB_PATHS@
 
-    set "CSF_OCCTIncludePath=@CMAKE_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
+    set "CSF_OCCTIncludePath=@OCCT_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
     set "CSF_OCCTResourcePath=@OCCT_ROOT_DIR@/resources"
     set "CSF_OCCTDataPath=@OCCT_ROOT_DIR@/data"
     set "CSF_OCCTSamplesPath=@OCCT_ROOT_DIR@/samples"

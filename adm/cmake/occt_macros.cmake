@@ -414,7 +414,7 @@ endfunction()
 
 # Macro to configure and install Standard_Version.hxx file
 macro (CONFIGURE_AND_INSTALL_VERSION_HEADER)
-  if (DEFINED BUILD_OCCT_VERSION_EXT AND "${BUILD_OCCT_VERSION_EXT}" STREQUAL "${OCC_VERSION_STRING_EXT}" AND EXISTS "${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/Standard_Version.hxx")
+  if (DEFINED BUILD_OCCT_VERSION_EXT AND "${BUILD_OCCT_VERSION_EXT}" STREQUAL "${OCC_VERSION_STRING_EXT}" AND EXISTS "${OCCT_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/Standard_Version.hxx")
     install(FILES "${OCCT_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/Standard_Version.hxx" DESTINATION  "${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}")
   else()
     set(BUILD_OCCT_VERSION_EXT "${OCC_VERSION_STRING_EXT}" CACHE STRING "OCCT Version string. Used only for caching, can't impact on build. For modification of version, please check adm/cmake/version.cmake" FORCE)
