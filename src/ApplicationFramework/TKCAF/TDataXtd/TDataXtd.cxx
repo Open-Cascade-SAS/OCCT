@@ -209,6 +209,10 @@ Standard_OStream& TDataXtd::Print(const TDataXtd_GeometryEnum G, Standard_OStrea
       s << "CYLINDER";
       break;
     }
+    case TDataXtd_PLACEMENT: {
+      s << "PLACEMENT";
+      break;
+    }
     default: {
       s << "UNKNOWN";
       break;

@@ -111,6 +111,18 @@ public:
   Standard_EXPORT static Standard_Boolean Cylinder(const Handle(TNaming_NamedShape)& S,
                                                    gp_Cylinder&                      G);
 
+  //! Retrieve the placement data to theCS from the given label.
+  //! param theL [in]  label
+  //! param theCS [out] placement coordinate system
+  //! return true if placement found
+  Standard_EXPORT static Standard_Boolean Placement(const TDF_Label& theL, gp_Ax3& theCS);
+
+  //! Retrieve the placement data to theCS from the given label.
+  //! param theL [in]  label
+  //! param theCS [out] placement coordinate system
+  //! return true if placement found
+  Standard_EXPORT static Standard_Boolean Placement(const TDF_Label& theL, gp_Ax2& theCS);
+
   //! Returns the GUID for geometry attributes.
   Standard_EXPORT static const Standard_GUID& GetID();
 

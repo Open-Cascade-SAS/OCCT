@@ -36,6 +36,7 @@ IMPLEMENT_DOMSTRING(GeomEllipseString, "ellipse")
 IMPLEMENT_DOMSTRING(GeomSplineString, "slpine")
 IMPLEMENT_DOMSTRING(GeomPlaneString, "plane")
 IMPLEMENT_DOMSTRING(GeomCylinderString, "cylinder")
+IMPLEMENT_DOMSTRING(GeomPlacementString, "placement")
 
 //=================================================================================================
 
@@ -106,6 +107,8 @@ static Standard_Boolean GeometryTypeEnum(const XmlObjMgt_DOMString& theString,
       aResult = TDataXtd_PLANE;
     else if (theString.equals(::GeomCylinderString()))
       aResult = TDataXtd_CYLINDER;
+    else if (theString.equals(::GeomPlacementString()))
+      aResult = TDataXtd_PLACEMENT;
     else
       return Standard_False;
   }
@@ -135,6 +138,8 @@ static const XmlObjMgt_DOMString& GeometryTypeString(const TDataXtd_GeometryEnum
       return ::GeomPlaneString();
     case TDataXtd_CYLINDER:
       return ::GeomCylinderString();
+    case TDataXtd_PLACEMENT:
+      return ::GeomPlacementString();
 
     default:
       throw Standard_DomainError("TDataXtd_GeometryEnum; enum term unknown");
