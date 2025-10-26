@@ -170,7 +170,7 @@ public:
   //! which has a projection on S.
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
-  //! Returns the last parameterof the curve C
+  //! Returns the last parameter of the curve C
   //! which has a projection on S.
   Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
