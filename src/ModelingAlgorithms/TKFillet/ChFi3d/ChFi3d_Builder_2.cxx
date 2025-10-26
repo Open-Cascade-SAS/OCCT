@@ -864,7 +864,7 @@ void ChFi3d_Builder::ConexFaces(const Handle(ChFiDS_Spine)&  Spine,
 //           - one starts by parsing about ten points on the spine,
 //           - in case of fail one finds the solution on neighbor faces;
 //             section plane of edges of the adjacent face
-//             and identication of the face by connection to that edge.
+//             and identification of the face by connection to that edge.
 //=======================================================================
 
 void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
@@ -2908,7 +2908,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe, const Stan
       else
         iedgelastkpart = iedge;
       if (Spine->IsPeriodic())
-      { // debug provisory for SD that arrive in desorder.
+      { // debug provisory for SD that arrive in disorder.
         Standard_Integer nbsd   = LSD.Length();
         Standard_Real    period = Spine->Period();
         Standard_Real    wfp = WStartPeriodic, wlp = WEndPeriodic;

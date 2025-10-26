@@ -22,7 +22,7 @@
 #include <gp_Pnt2d.hxx>
 
 //=========================================================================
-//   Creation d une symetrie de Geom2d par rapport a un point.              +
+//   Creation d une symetrie de Geom2d par rapport a un point.            +
 //=========================================================================
 GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point)
 {
@@ -31,7 +31,7 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point)
 }
 
 //=========================================================================
-//   Creation d une symetrie de Geom2d par rapport a une droite.            +
+//   Creation d une symetrie de Geom2d par rapport a une droite.          +
 //=========================================================================
 
 GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Ax2d& Axis)
@@ -41,7 +41,7 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Ax2d& Axis)
 }
 
 //=========================================================================
-//   Creation d une symetrie de Geom2d par rapport a une droite.            +
+//   Creation d une symetrie de Geom2d par rapport a une droite.          +
 //=========================================================================
 
 GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Lin2d& Line)
@@ -51,8 +51,8 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Lin2d& Line)
 }
 
 //=========================================================================
-//   Creation d une symetrie 3d de Geom2d par rapport a une droite definie  +
-//   par un point et une direction.                                       +
+//   Creation d une symetrie 3d de Geom2d par rapport a une droite        +
+//   definie par un point et une direction.                               +
 //=========================================================================
 
 GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point, const gp_Dir2d& Direc)

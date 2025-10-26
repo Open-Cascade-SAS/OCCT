@@ -3724,7 +3724,7 @@ void BRepOffset_Tool::ExtentFace(const TopoDS_Face&            F,
         TopoDS_Face NullFace;
         BRepOffset_Tool::Inter3D(EF, StopFace, LInt1, LInt2, Side, E, NullFace, NullFace);
         // No intersection, it may happen for example for a chosen (non-offsetted) planar face and
-        // its neighbour offseted cylindrical face, if the offset is directed so that
+        // its neighbour offsetted cylindrical face, if the offset is directed so that
         // the radius of the cylinder becomes smaller.
         if (LInt1.IsEmpty())
           continue;
@@ -4114,7 +4114,7 @@ TopoDS_Shape BRepOffset_Tool::Deboucle3D(const TopoDS_Shape& S, const TopTools_M
   {
     case TopAbs_SHELL: {
       // if the shell contains free borders that do not belong to the
-      // free borders of caps ( Boundary) it is removed.
+      // free borders of caps (Boundary) it is removed.
       TopTools_IndexedDataMapOfShapeListOfShape Map;
       TopExp::MapShapesAndAncestors(S, TopAbs_EDGE, TopAbs_FACE, Map);
 

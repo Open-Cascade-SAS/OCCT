@@ -476,7 +476,7 @@ TopoDS_Face BRepOffset_MakeSimpleOffset::BuildWallFace(const TopoDS_Edge& theOri
 {
   TopoDS_Face aResFace;
 
-  // Get offset edge. offset edge is revered to create correct wire.
+  // Get offset edge. offset edge is reversed to create correct wire.
   TopoDS_Edge aNewEdge = TopoDS::Edge(myBuilder.ModifiedShape(theOrigEdge));
   aNewEdge.Orientation(TopAbs_REVERSED);
 

@@ -46,7 +46,7 @@ public:
   //! Make Preparation to iterative solve
   Standard_EXPORT virtual Standard_Boolean Prepare() = 0;
 
-  //! Iterative solve  of AX = B
+  //! Iterative solve of AX = B
   Standard_EXPORT virtual void Solve(const math_Vector&     B,
                                      const math_Vector&     Init,
                                      math_Vector&           X,

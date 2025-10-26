@@ -22,8 +22,8 @@
 class Adaptor2d_Curve2d;
 
 //! Used to find the points U(t) = U0 or V(t) = V0 in
-//! order to determine the  Cn discontinuities of  an
-//! Adpator_CurveOnSurface  relatively  to    the
+//! order to determine the Cn discontinuities of an
+//! Adpator_CurveOnSurface relatively to the
 //! discontinuities of the surface. Used to
 //! find the roots of the functions
 class Adaptor3d_InterFunc : public math_FunctionWithDerivative
@@ -31,7 +31,7 @@ class Adaptor3d_InterFunc : public math_FunctionWithDerivative
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! build the function  U(t)=FixVal   if Fix =1 or
+  //! build the function U(t)=FixVal if Fix =1 or
   //! V(t)=FixVal if Fix=2
   Standard_EXPORT Adaptor3d_InterFunc(const Handle(Adaptor2d_Curve2d)& C,
                                       const Standard_Real              FixVal,

@@ -87,7 +87,7 @@ public:
   //! @param thePoint point to be added.
   //! @param theParam parameter on the curve corresponding to the given point.
   //! @param theIsReplace if TRUE replaces existing point lying within
-  //! parameteric tolerance of the given point.
+  //! parametric tolerance of the given point.
   //! @return index of new added point or found with parametric tolerance
   Standard_Integer AddPoint(const gp_Pnt&          thePoint,
                             const Standard_Real    theParam,

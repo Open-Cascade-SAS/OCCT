@@ -21,8 +21,8 @@
 
 class Geom_BSplineCurve;
 
-//! Project a curve on a  surface.  The result ( a  3D
-//! Curve)  will be an approximation
+//! Project a curve on a surface. The result
+//! (a 3D Curve) will be an approximation
 class ProjLib_ProjectOnSurface
 {
 public:

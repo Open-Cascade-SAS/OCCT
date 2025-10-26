@@ -1882,7 +1882,7 @@ int AdvApp2Var_MathBase::mmcdriv_(integer*    ndimen,
   /*     ----------- */
   /*      Binomial coeff from 0 to 60. read only . init par block data */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /*     Binomial coefficients form a triangular matrix. */
   /*     This matrix is completed in table CNP by its transposition. */
@@ -2735,7 +2735,7 @@ int mmcvstd_(integer*    ncofmx,
   /*     ----------- */
   /*      Binomial coefficient from 0 to 60. read only . init by block data */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /*     Binomial coefficients form a triangular matrix. */
   /*     This matrix is completed in table CNP by its transposition. */
@@ -3285,7 +3285,7 @@ int AdvApp2Var_MathBase::mmdrvck_(integer*    ncoeff,
   /*     ----------- */
   /*      Binomial Coeff from 0 to 60. read only . init by block data */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /*     Binomial coefficients form a triangular matrix. */
   /*     This matrix is completed in table CNP by its transposition. */
@@ -3427,7 +3427,7 @@ int AdvApp2Var_MathBase::mmeps1_(doublereal* epsilo)
   /*     ----------- */
   /*          PARAMETER , TOLERANCE */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /*       INITIALISATION   :  profile , **VIA MPRFTX** at input in stream */
   /*       loading of default values of the profile in MPRFTX at input */
@@ -4806,7 +4806,7 @@ int mmherm0_(doublereal* debfin, integer* iercod)
   /*     ----------- */
   /*      HERMITE */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /*     The coefficients of hermit polynoms are calculated by */
@@ -5115,7 +5115,7 @@ int mmherm1_(doublereal* debfin,
   /*     ----------- */
   /*      HERMITE */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /*     the coefficients of Hetmit polynoms are calculated by */
@@ -5295,7 +5295,7 @@ int AdvApp2Var_MathBase::mmhjcan_(integer*    ndimen,
   /*     ----------- */
   /*        ALL, INTEGER */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /* > */
   /* ***********************************************************************/
@@ -5709,7 +5709,7 @@ int AdvApp2Var_MathBase::mmjacan_(const integer* ideriv,
   /*     ----------- */
   /*        MATH */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /* > */
@@ -7970,7 +7970,7 @@ int AdvApp2Var_MathBase::mmrtptt_(integer* ndglgd, doublereal* rtlegd)
   /*     ----------- */
   /*        BASE LEGENDRE */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /* > */
@@ -8557,8 +8557,7 @@ int mmtrpj2_(integer*    ncofmx,
     /* L300: */
   }
 
-  /* ------- Cutting of zero coeffs of interpolation (RBD) -------
-   */
+  /* ------- Cutting of zero coeffs of interpolation (RBD) ------- */
 
 L400:
   if (*ncfnew == ia)
@@ -8584,8 +8583,7 @@ L400:
     *ncfnew = 1;
   }
 
-  /* --------------------------------- End --------------------------------
-   */
+  /* --------------------------------- End ------------------------------- */
 
 L9999:
   return 0;
@@ -8644,13 +8642,12 @@ int mmtrpj4_(integer*    ncofmx,
   integer    ia, nd;
   doublereal bid, eps1;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
-  /*        Lowers the degree of a curve defined on (-1,1) in the direction of */
-  /*        Legendre with a given precision. */
+  /*        Lowers the degree of a curve defined on (-1,1) in the direction */
+  /*        of Legendre with a given precision. */
 
   /*     KEYWORDS : */
   /*     ----------- */
@@ -8680,8 +8677,7 @@ int mmtrpj4_(integer*    ncofmx,
   /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Parameter adjustments */
   --ycvmax;
@@ -8691,8 +8687,7 @@ int mmtrpj4_(integer*    ncofmx,
 
   /* Function Body */
 
-  /*   Minimum degree that can be reached : Stop at IA (RBD). -------------
-   */
+  /*   Minimum degree that can be reached : Stop at IA (RBD). ------------ */
   ia      = 4;
   *ncfnew = ia;
   /* Init for error calculation. */
@@ -8708,8 +8703,7 @@ int mmtrpj4_(integer*    ncofmx,
   /*   Cutting of coefficients. */
 
   ncut = ia + 1;
-  /* ------ Loop on the series of Jacobi :NCOEFF --> IA+1 (RBD) ----------
-   */
+  /* ------ Loop on the series of Jacobi :NCOEFF --> IA+1 (RBD) ---------- */
   i__1 = ncut;
   for (i__ = *ncoeff; i__ >= i__1; --i__)
   {
@@ -8736,8 +8730,7 @@ int mmtrpj4_(integer*    ncofmx,
     /* L300: */
   }
 
-  /* ------- Cutting of zero coeffs of the pole of interpolation (RBD) -------
-   */
+  /* ------- Cutting of zero coeffs of the pole of interpolation (RBD) --- */
 
 L400:
   if (*ncfnew == ia)
@@ -8763,8 +8756,7 @@ L400:
     *ncfnew = 1;
   }
 
-  /* --------------------------------- End --------------------------------
-   */
+  /* --------------------------------- End ------------------------------- */
 
 L9999:
   return 0;
@@ -8823,13 +8815,12 @@ int mmtrpj6_(integer*    ncofmx,
   integer    ia, nd;
   doublereal bid, eps1;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
-  /*        Lowers the degree of a curve defined on (-1,1) in the direction of */
-  /*        Legendre to a given precision. */
+  /*        Lowers the degree of a curve defined on (-1,1) in the direction */
+  /*        of Legendre to a given precision. */
 
   /*     KEYWORDS : */
   /*     ----------- */
@@ -8858,8 +8849,7 @@ int mmtrpj6_(integer*    ncofmx,
   /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Parameter adjustments */
   --ycvmax;
@@ -8869,8 +8859,7 @@ int mmtrpj6_(integer*    ncofmx,
 
   /* Function Body */
 
-  /*   Minimum degree that can be reached : Stop at IA (RBD). -------------
-   */
+  /*   Minimum degree that can be reached : Stop at IA (RBD). ------------ */
   ia      = 6;
   *ncfnew = ia;
   /* Init for error calculation. */
@@ -8886,8 +8875,7 @@ int mmtrpj6_(integer*    ncofmx,
   /*   Cutting of coefficients. */
 
   ncut = ia + 1;
-  /* ------ Loop on the series of Jacobi :NCOEFF --> IA+1 (RBD) ----------
-   */
+  /* ------ Loop on the series of Jacobi :NCOEFF --> IA+1 (RBD) ---------- */
   i__1 = ncut;
   for (i__ = *ncoeff; i__ >= i__1; --i__)
   {
@@ -8914,8 +8902,7 @@ int mmtrpj6_(integer*    ncofmx,
     /* L300: */
   }
 
-  /* ------- Cutting of zero coeff. of the pole of interpolation (RBD) -------
-   */
+  /* ------- Cutting of zero coeff. of the pole of interpolation (RBD) --- */
 
 L400:
   if (*ncfnew == ia)
@@ -8941,8 +8928,7 @@ L400:
     *ncfnew = 1;
   }
 
-  /* --------------------------------- End --------------------------------
-   */
+  /* --------------------------------- End ------------------------------- */
 
 L9999:
   return 0;
@@ -8966,13 +8952,12 @@ int AdvApp2Var_MathBase::mmtrpjj_(integer*    ncofmx,
   /* Local variables */
   integer ia;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
-  /*        Lower the degree of a curve defined on (-1,1) in the direction of */
-  /*        Legendre with a given precision. */
+  /*        Lower the degree of a curve defined on (-1,1) in the direction */
+  /*        of Legendre with a given precision. */
 
   /*     KEYWORDS : */
   /*     ----------- */
@@ -9001,8 +8986,7 @@ int AdvApp2Var_MathBase::mmtrpjj_(integer*    ncofmx,
   /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Parameter adjustments */
   --ycvmax;
@@ -9030,8 +9014,7 @@ int AdvApp2Var_MathBase::mmtrpjj_(integer*    ncofmx,
     mmtrpj6_(ncofmx, ndimen, ncoeff, epsi3d, &crvlgd[crvlgd_offset], &ycvmax[1], errmax, ncfnew);
   }
 
-  /* ------------------------ End -----------------------------------------
-   */
+  /* ------------------------ End ----------------------------------------- */
 
   return 0;
 } /* mmtrpjj_ */
@@ -9058,8 +9041,7 @@ int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
   doublereal bid;
   doublereal eps0;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9076,8 +9058,8 @@ int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
   /*        NDIMEN   : DIMENSION OF THE SPACE */
   /*        VECTOR   : VECTOR TO BE NORMED */
   /*        EPSILN   : EPSILON BELOW WHICH IT IS CONSIDERED THAT THE */
-  /*                 NORM OF THE VECTOR IS NULL. IF EPSILN<=0, A DEFAULT VALUE */
-  /*                 IS IMPOSED (10.D-17 ON VAX). */
+  /*                 NORM OF THE VECTOR IS NULL. IF EPSILN<=0, A DEFAULT */
+  /*                 VALUE IS IMPOSED (10.D-17 ON VAX). */
 
   /*     OUTPUT ARGUMENTS : */
   /*     ------------------- */
@@ -9100,8 +9082,7 @@ int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
   /*     vector except for one cost 0 with machine precision. In */
   /*     this case the quasi-null components are set to 0.D0. */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Parameter adjustments */
   --vecnrm;
@@ -9110,8 +9091,7 @@ int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
   /* Function Body */
   *iercod = 0;
 
-  /* -------- Precision by default : zero machine 10.D-17 on Vax ------
-   */
+  /* -------- Precision by default : zero machine 10.D-17 on Vax --------- */
 
   AdvApp2Var_SysBase::maovsr8_(&nchif);
   if (*epsiln <= 0.)
@@ -9124,8 +9104,7 @@ int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
     eps0 = *epsiln;
   }
 
-  /* ------------------------- Calculation of the norm --------------------
-   */
+  /* ------------------------- Calculation of the norm ------------------- */
 
   vnorm = AdvApp2Var_MathBase::mzsnorm_(ndimen, &vector[1]);
   if (vnorm <= eps0)
@@ -9135,8 +9114,7 @@ int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
     goto L9999;
   }
 
-  /* ---------------------- Calculation of the vector norm  ---------------
-   */
+  /* ---------------------- Calculation of the vector norm  -------------- */
 
   izero = 0;
   i__1  = (-nchif - 1) / 2;
@@ -9156,10 +9134,8 @@ int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
     /* L20: */
   }
 
-  /* ------ Case when all coordinates except for one are almost null ----
-   */
-  /* ------------- then one of coordinates costs 1.D0 or -1.D0 --------
-   */
+  /* ------ Case when all coordinates except for one are almost null ----- */
+  /* ------------- then one of coordinates costs 1.D0 or -1.D0 ----------- */
 
   if (izero == *ndimen - 1)
   {
@@ -9180,8 +9156,7 @@ int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
     }
   }
 
-  /* -------------------------------- The end -----------------------------
-   */
+  /* -------------------------------- The end ---------------------------- */
 
 L9999:
   return 0;
@@ -9197,8 +9172,7 @@ int AdvApp2Var_MathBase::mmveps3_(doublereal* eps03)
 
   integer ibb;
 
-  /************************************************************************
-  *******/
+  /*************************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9227,11 +9201,9 @@ int AdvApp2Var_MathBase::mmveps3_(doublereal* eps03)
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9260,8 +9232,7 @@ int AdvApp2Var_MathBase::mmveps3_(doublereal* eps03)
   /*                            MITERR  ...  NITERR */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     NITERM : MAX NB OF ITERATIONS */
   /*     NITERR : NB OF RAPID ITERATIONS */
@@ -9270,8 +9241,7 @@ int AdvApp2Var_MathBase::mmveps3_(doublereal* eps03)
   /*     EPS3   : TOLERANCE TO AVOID DIVISION BY 0.. */
   /*     EPS4   : TOLERANCE ANGULAR */
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   ibb = AdvApp2Var_SysBase::mnfndeb_();
   if (ibb >= 5)
@@ -9303,8 +9273,7 @@ int AdvApp2Var_MathBase::mmvncol_(integer*    ndimen,
   doublereal valaux;
   integer    aux;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9333,17 +9302,13 @@ int AdvApp2Var_MathBase::mmvncol_(integer*    ndimen,
   /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /* > */
-  /* ***********************************************************************
-   */
-  /*                            DECLARATIONS */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                            DECLARATIONS                               */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
-  /*                      INITIALISATIONS */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                      INITIALISATIONS                                  */
+  /* ***********************************************************************/
 
   /* Parameter adjustments */
   --vecout;
@@ -9357,11 +9322,9 @@ int AdvApp2Var_MathBase::mmvncol_(integer*    ndimen,
   }
   *iercod = 0;
 
-  /* ***********************************************************************
-   */
-  /*                     PROCESSING */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                     PROCESSING                                        */
+  /* ***********************************************************************/
 
   if (*ndimen <= 1 || *ndimen > 3)
   {
@@ -9436,21 +9399,17 @@ int AdvApp2Var_MathBase::mmvncol_(integer*    ndimen,
 
   goto L9999;
 
-  /* ***********************************************************************
-   */
-  /*                   ERROR PROCESSING */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                   ERROR PROCESSING                                    */
+  /* ***********************************************************************/
 
 L9101:
   *iercod = 1;
   goto L9999;
 
-  /* ***********************************************************************
-   */
-  /*                   RETURN CALLING PROGRAM */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                   RETURN CALLING PROGRAM                              */
+  /* ***********************************************************************/
 
 L9999:
 
@@ -9473,8 +9432,7 @@ void AdvApp2Var_MathBase::mmwprcs_(doublereal* epsil1,
 
 {
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9507,26 +9465,19 @@ void AdvApp2Var_MathBase::mmwprcs_(doublereal* epsil1,
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
-  /*                            DECLARATIONS */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                            DECLARATIONS                               */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
-  /*                      INITIALIZATIONS */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                      INITIALIZATIONS                                  */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
-  /*                      PROCESSING */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                      PROCESSING                                       */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9555,8 +9506,7 @@ void AdvApp2Var_MathBase::mmwprcs_(doublereal* epsil1,
   /*                            MITERR  ...  NITERR */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     NITERM : MAX NB OF ITERATIONS */
   /*     NITERR : NB OF RAPID ITERATIONS */
@@ -9565,8 +9515,7 @@ void AdvApp2Var_MathBase::mmwprcs_(doublereal* epsil1,
   /*     EPS3   : TOLERANCE TO AVOID DIVISION BY 0.. */
   /*     EPS4   : TOLERANCE ANGULAR */
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
   mmprcsn_.eps1   = *epsil1;
   mmprcsn_.eps2   = *epsil2;
   mmprcsn_.eps3   = *epsil3;
@@ -9603,13 +9552,12 @@ doublereal AdvApp2Var_MathBase::pow__di(doublereal* x, integer* n)
   return result;
 }
 
-/* **********************************************************************
- */
+/* *************************************************************************/
 
 /*     FUNCTION : */
 /*     ---------- */
-/*        Calculate integer function power not obligatory in the most efficient way ;
- */
+/*        Calculate integer function power not obligatory in the most */
+/*        efficient way */
 
 /*     KEYWORDS : */
 /*     ----------- */
@@ -9664,15 +9612,14 @@ integer pow__ii(integer* x, integer* n)
   return result;
 }
 
-/* **********************************************************************
- */
-/* **********************************************************************
- */
+/* *************************************************************************/
+
+/* *************************************************************************/
 
 /*     FUNCTION : */
 /*     ---------- */
-/*        Calculate integer function power not obligatory in the most efficient way ;
- */
+/*        Calculate integer function power not obligatory in the most */
+/*        efficient way */
 
 /*     KEYWORDS : */
 /*     ----------- */
@@ -9712,8 +9659,7 @@ doublereal AdvApp2Var_MathBase::msc_(integer* ndimen, doublereal* vecte1, double
   integer    i__;
   doublereal x;
 
-  /************************************************************************
-  *******/
+  /*************************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9742,8 +9688,7 @@ doublereal AdvApp2Var_MathBase::msc_(integer* ndimen, doublereal* vecte1, double
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     PRODUIT MSCALAIRE */
   /* Parameter adjustments */
@@ -9761,8 +9706,7 @@ doublereal AdvApp2Var_MathBase::msc_(integer* ndimen, doublereal* vecte1, double
   }
   ret_val = x;
 
-  /* ----------------------------------- THE END --------------------------
-   */
+  /* ----------------------------------- THE END ------------------------- */
 
   return ret_val;
 } /* msc_ */
@@ -9780,8 +9724,7 @@ int mvcvin2_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
   doublereal bid;
   doublereal cij1, cij2;
 
-  /************************************************************************
-  *******/
+  /*************************************************************************/
 
   /*     FONCTION : */
   /*     ---------- */
@@ -9818,11 +9761,9 @@ int mvcvin2_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
   /*     NDGCNP+1 = 61. */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9832,7 +9773,7 @@ int mvcvin2_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
   /*     ----------- */
   /*      Coeff of binome from 0 to 60. read only . init par block data */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /*     The coefficients of the binome form a triangular matrix. */
   /*     This matrix is completed in table CNP by transposition. */
@@ -9842,11 +9783,9 @@ int mvcvin2_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
   /*     created by program MQINICNP.FOR (see the team (AC) ). */
 
   /* > */
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Parameter adjustments */
   crvnew -= 3;
@@ -9925,8 +9864,7 @@ int mvcvinv_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
   // extern /* Subroutine */ int maermsg_();
   doublereal cij1, cij2, cij3;
 
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9963,11 +9901,9 @@ int mvcvinv_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
   /*     THE NUMBER OF COEFF OF THE CURVE IS LIMITED TO NDGCNP+1 = 61 */
   /*     BECAUSE OF USE OF COMMON MCCNP. */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -9977,7 +9913,7 @@ int mvcvinv_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
   /*     ----------- */
   /*      Binomial Coeff from 0 to 60. read only . init par block data */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /*     The binomial coefficients form a triangular matrix. */
   /*     This matrix is completed in table CNP by its transposition. */
@@ -9986,11 +9922,9 @@ int mvcvinv_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
   /*     Initialisation is done by block-data MMLLL09.RES, */
   /*     created by program MQINICNP.FOR (see the team (AC) ). */
   /* > */
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Parameter adjustments */
   crvnew -= 4;
@@ -10079,8 +10013,7 @@ int mvgaus0_(integer*    kindic,
   NCollection_Array1<doublereal> tamp(tampc[0], 1, 40);
   integer                        ndegl = 0, kg = 0, ii = 0;
 
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*      FUNCTION : */
   /*      -------- */
@@ -10136,11 +10069,10 @@ int mvgaus0_(integer*    kindic,
 
   /*      See detailed explications on the listing */
   /* > */
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* ------------------------------------ */
-  /* ****** Test  validity of KINDIC ** */
+  /* ****** Test validity of KINDIC ***** */
   /* ------------------------------------ */
 
   /* Parameter adjustments */
@@ -10158,12 +10090,9 @@ int mvgaus0_(integer*    kindic,
   *nbrval = kg << 1;
   ndegl   = *nbrval << 1;
 
-  /* ----------------------------------------------------------------------
-   */
-  /* ****** Load NBRVAL positive roots depending on the degree **
-   */
-  /* ----------------------------------------------------------------------
-   */
+  /* --------------------------------------------------------------------- */
+  /* ****** Load NBRVAL positive roots depending on the degree *********** */
+  /* --------------------------------------------------------------------- */
   /* ATTENTION : Sign minus (-) in the loop is intentional. */
 
   mmextrl_(&ndegl, tamp);
@@ -10175,7 +10104,7 @@ int mvgaus0_(integer*    kindic,
   }
 
   /* ------------------------------------------------------------------- */
-  /* ****** Loading of NBRVAL Gauss weight depending on the degree ** */
+  /* ****** Loading of NBRVAL Gauss weight depending on the degree ***** */
   /* ------------------------------------------------------------------- */
 
   mmexthi_(&ndegl, tamp);
@@ -10187,7 +10116,7 @@ int mvgaus0_(integer*    kindic,
   }
 
   /* ------------------------------- */
-  /* ****** End of sub-program ** */
+  /* ****** End of sub-program ***** */
   /* ------------------------------- */
 
   return 0;
@@ -10204,8 +10133,7 @@ int mvpscr2_(integer* ncoeff, doublereal* curve2, doublereal* tparam, doublereal
   integer    ndeg, kk;
   doublereal xxx, yyy;
 
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -10237,11 +10165,9 @@ int mvpscr2_(integer* ncoeff, doublereal* curve2, doublereal* tparam, doublereal
   /*     MSCHEMA OF HORNER. */
 
   /* > */
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /* -------- INITIALIZATIONS AND PROCESSING OF PARTICULAR CASES ----------
-   */
+  /* -------- INITIALIZATIONS AND PROCESSING OF PARTICULAR CASES --------- */
 
   /* ---> Cas when NCOEFF > 1 (case STANDARD). */
   /* Parameter adjustments */
@@ -10267,8 +10193,7 @@ int mvpscr2_(integer* ncoeff, doublereal* curve2, doublereal* tparam, doublereal
     goto L9999;
   }
 
-  /* -------------------- MSCHEMA OF HORNER (PARTICULAR CASE) --------------
-   */
+  /* -------------------- MSCHEMA OF HORNER (PARTICULAR CASE) ------------ */
 
 L1000:
 
@@ -10292,8 +10217,7 @@ L1000:
     goto L9999;
   }
 
-  /* ---------------------------- MSCHEMA OF HORNER ------------------------
-   */
+  /* ---------------------------- MSCHEMA OF HORNER ---------------------- */
   /* ---> TPARAM is different from 1.D0 and 0.D0. */
 
   ndeg = *ncoeff - 1;
@@ -10307,15 +10231,13 @@ L1000:
   }
   goto L5000;
 
-  /* ------------------------ RECOVER THE CALCULATED POINT ---------------
-   */
+  /* ------------------------ RECOVER THE CALCULATED POINT --------------- */
 
 L5000:
   pntcrb[1] = xxx;
   pntcrb[2] = yyy;
 
-  /* ------------------------------ THE END -------------------------------
-   */
+  /* ------------------------------ THE END ------------------------------ */
 
 L9999:
   return 0;
@@ -10333,8 +10255,7 @@ int mvpscr3_(integer* ncoeff, doublereal* curve3, doublereal* tparam, doublereal
   integer    ndeg, kk;
   doublereal xxx, yyy, zzz;
 
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -10366,14 +10287,11 @@ int mvpscr3_(integer* ncoeff, doublereal* curve3, doublereal* tparam, doublereal
   /*     ----------------------------------- */
   /*     MSCHEMA OF HORNER. */
   /* > */
-  /* **********************************************************************
-   */
-  /*                           DECLARATIONS */
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                           DECLARATIONS                                */
+  /* ***********************************************************************/
 
-  /* -------- INITIALISATIONS AND PROCESSING OF PARTICULAR CASES ----------
-   */
+  /* -------- INITIALISATIONS AND PROCESSING OF PARTICULAR CASES --------- */
 
   /* ---> Case when NCOEFF > 1 (cas STANDARD). */
   /* Parameter adjustments */
@@ -10401,8 +10319,7 @@ int mvpscr3_(integer* ncoeff, doublereal* curve3, doublereal* tparam, doublereal
     goto L9999;
   }
 
-  /* -------------------- MSCHEMA OF HORNER (PARTICULAR CASE) --------------
-   */
+  /* -------------------- MSCHEMA OF HORNER (PARTICULAR CASE) ------------ */
 
 L1000:
 
@@ -10429,8 +10346,7 @@ L1000:
     goto L9999;
   }
 
-  /* ---------------------------- MSCHEMA OF HORNER ------------------------
-   */
+  /* ---------------------------- MSCHEMA OF HORNER ---------------------- */
   /* ---> Here TPARAM is different from 1.D0 and 0.D0. */
 
   ndeg = *ncoeff - 1;
@@ -10446,16 +10362,14 @@ L1000:
   }
   goto L5000;
 
-  /* ------------------------ RETURN THE CALCULATED POINT ------------------
-   */
+  /* ------------------------ RETURN THE CALCULATED POINT ---------------- */
 
 L5000:
   pntcrb[1] = xxx;
   pntcrb[2] = yyy;
   pntcrb[3] = zzz;
 
-  /* ------------------------------ THE END -------------------------------
-   */
+  /* ------------------------------ THE END ------------------------------ */
 
 L9999:
   return 0;
@@ -10474,8 +10388,7 @@ int AdvApp2Var_MathBase::mvsheld_(integer* n, integer* is, doublereal* dtab, int
   doublereal dsave;
   integer    i3, i4, i5, incrp1;
 
-  /************************************************************************
-  *******/
+  /*************************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -10509,8 +10422,7 @@ int AdvApp2Var_MathBase::mvsheld_(integer* n, integer* is, doublereal* dtab, int
   /*     CLASSIC SHELL METHOD : PARSING BY SERIES */
   /*     Declaration DTAB(IS, 1) corresponds to DTAB(IS, *) */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Parameter adjustments */
   dtab_dim1   = *is;
@@ -10603,8 +10515,7 @@ doublereal AdvApp2Var_MathBase::mzsnorm_(integer* ndimen, doublereal* vecteu)
   doublereal xsom;
   integer    i__, irmax;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -10643,17 +10554,13 @@ doublereal AdvApp2Var_MathBase::mzsnorm_(integer* ndimen, doublereal* vecteu)
   /*                  Z = !V(1)! * V  1 + (V(2)/V(1))**2 + ... */
 
   /* > */
-  /* ***********************************************************************
-   */
-  /*                      DECLARATIONS */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                      DECLARATIONS                                     */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
-  /*                     PROCESSING */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                     PROCESSING                                        */
+  /* ***********************************************************************/
 
   /* ___ Find the strongest absolute value term */
 
@@ -10708,11 +10615,9 @@ doublereal AdvApp2Var_MathBase::mzsnorm_(integer* ndimen, doublereal* vecteu)
     ret_val = (d__1 = vecteu[irmax], advapp_abs(d__1)) * sqrt(xsom);
   }
 
-  /* ***********************************************************************
-   */
-  /*                   RETURN CALLING PROGRAM */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                   RETURN CALLING PROGRAM                              */
+  /* ***********************************************************************/
 
   return ret_val;
 } /* mzsnorm_ */

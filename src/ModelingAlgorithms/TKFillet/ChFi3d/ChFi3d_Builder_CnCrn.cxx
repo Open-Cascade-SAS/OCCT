@@ -2245,7 +2245,7 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       }
     }
 
-  // case when the conncting curve between ic and icplus crosses many faces
+  // case when the connecting curve between ic and icplus crosses many faces
 
   TopTools_SequenceOfShape Ecom;
   TopTools_SequenceOfShape Eproj;

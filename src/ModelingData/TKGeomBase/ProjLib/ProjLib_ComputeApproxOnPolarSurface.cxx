@@ -86,7 +86,7 @@ struct aFuncStruct
   Standard_Real             mySqProjOrtTol; // Used to filter non-orthogonal projected point.
   Standard_Real             myTolU;
   Standard_Real             myTolV;
-  Standard_Real             myPeriod[2]; // U and V period correspondingly.
+  Standard_Real             myPeriod[2];    // U and V period correspondingly.
 };
 
 //=======================================================================

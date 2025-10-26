@@ -37,8 +37,8 @@ class Geom2d_BSplineCurve;
 
 DEFINE_STANDARD_HANDLE(ProjLib_ProjectedCurve, Adaptor2d_Curve2d)
 
-//! Compute the 2d-curve.  Try to solve the particular
-//! case if possible.  Otherwise, an approximation  is
+//! Compute the 2d-curve. Try to solve the particular
+//! case if possible. Otherwise, an approximation is
 //! done. For approximation some parameters are used, including
 //! required tolerance of approximation.
 //! Tolerance is maximal possible value of 3d deviation of 3d projection of projected curve from
@@ -133,8 +133,8 @@ public:
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! Returns    a  curve equivalent   of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a curve equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor2d_Curve2d) Trim(const Standard_Real First,
@@ -190,8 +190,8 @@ public:
   //! to the real space resolution <R3d>.
   Standard_EXPORT Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
 
-  //! Returns  the  type of the   curve  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the curve in the current
+  //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   Standard_EXPORT GeomAbs_CurveType GetType() const Standard_OVERRIDE;
 
@@ -213,16 +213,14 @@ public:
 
   Standard_EXPORT Standard_Integer NbKnots() const Standard_OVERRIDE;
 
-  //! Warning ! This will  NOT make a copy  of the -- Bezier Curve -
-  //! If you want to modify -- the Curve  please make a copy
-  //! yourself --  Also it will  NOT trim the surface  to --
-  //! myFirst/Last.
+  //! Warning! This will NOT make a copy of the Bezier Curve
+  //! If you want to modify the Curve please make a copy
+  //! yourself. Also it will NOT trim the surface to myFirst/Last.
   Standard_EXPORT Handle(Geom2d_BezierCurve) Bezier() const Standard_OVERRIDE;
 
-  //! Warning ! This will NOT make a copy of the BSpline Curve - If
-  //! you want to  modify the   Curve  please make a   copy
-  //! yourself Also it   will  NOT  trim   the surface   to
-  //! myFirst/Last.
+  //! Warning! This will NOT make a copy of the BSpline Curve
+  //! If you want to modify the Curve please make a copy
+  //! yourself. Also it will NOT trim the surface to myFirst/Last.
   Standard_EXPORT Handle(Geom2d_BSplineCurve) BSpline() const Standard_OVERRIDE;
 
 private:

@@ -40,17 +40,17 @@ public:
   Standard_EXPORT FEmTool_Assembly(const TColStd_Array2OfInteger&        Dependence,
                                    const Handle(FEmTool_HAssemblyTable)& Table);
 
-  //! Nullify all Matrix 's Coefficient
+  //! Nullify all Matrix's Coefficient
   Standard_EXPORT void NullifyMatrix();
 
   //! Add an elementary Matrix in the assembly Matrix
-  //! if  Dependence(Dimension1,Dimension2)  is  False
+  //! if Dependence(Dimension1,Dimension2) is False
   Standard_EXPORT void AddMatrix(const Standard_Integer Element,
                                  const Standard_Integer Dimension1,
                                  const Standard_Integer Dimension2,
                                  const math_Matrix&     Mat);
 
-  //! Nullify  all  Coordinate of  assembly  Vector (second member)
+  //! Nullify all Coordinate of assembly Vector (second member)
   Standard_EXPORT void NullifyVector();
 
   //! Add an elementary Vector in the assembly Vector (second member)

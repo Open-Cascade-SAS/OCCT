@@ -116,7 +116,7 @@ int AdvApp2Var_SysBase::macinit_(integer* imode, integer* ival)
   /*     INPUT ARGUMENTS  : */
   /*     -------------------- */
   /*        IMODE : MODE of INITIALIZATION :
-        0= DEFAULT, IMP IS 6, IBB 0 and LEC 5 */
+  /*        0= DEFAULT, IMP IS 6, IBB 0 and LEC 5 */
   /*        1= FORCE VALUE OF IMP */
   /*        2= FORCE VALUE OF IBB */
   /*        3= FORCE VALUE OF LEC */
@@ -152,8 +152,7 @@ int AdvApp2Var_SysBase::macinit_(integer* imode, integer* ival)
   /*                NON NULL ERROR CODE INFORM IT AS WELL. */
   /*            (BUT IT IS NOT TRUE FOR ALL ROUTINES OF T) */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   if (*imode == 0)
   {
@@ -174,8 +173,7 @@ int AdvApp2Var_SysBase::macinit_(integer* imode, integer* ival)
     mblank__.lec = *ival;
   }
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* ***********************************************************************/
 
   return 0;
 } /* macinit__ */
@@ -190,8 +188,7 @@ int AdvApp2Var_SysBase::macrai4_(integer*  nbelem,
 
 {
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -228,11 +225,10 @@ int AdvApp2Var_SysBase::macrai4_(integer*  nbelem,
   /*     (Cf description in the heading of MCRRQST) */
 
   /*     Table ITABLO should be dimensioned to MAXELM by the caller. */
-  /*     If the request is lower or equal to MAXELM, IOFSET becomes = 0.    */
+  /*     If the request is lower or equal to MAXELM, IOFSET becomes = 0. */
   /*     Otherwise the demand of allocation is valid and IOFSET > 0. */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   integer iunit;
 
@@ -261,8 +257,7 @@ int AdvApp2Var_SysBase::macrar8_(integer*    nbelem,
 {
   integer c__8 = 8;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -303,8 +298,7 @@ int AdvApp2Var_SysBase::macrar8_(integer*    nbelem,
   /*     Otherwise the demand of allocation is valid and IOFSET > 0. */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Function Body */
   if (*nbelem > *maxelm)
@@ -336,8 +330,7 @@ int AdvApp2Var_SysBase::macrchk_()
   /* Local variables */
   integer i__, j;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -367,13 +360,11 @@ int AdvApp2Var_SysBase::macrchk_()
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /*     FONCTION : */
+  /*     FUNCTION : */
   /*     ---------- */
   /*        TABLE OF MANAGEMENT OF DYNAMIC MEMORY ALLOCATIONS */
 
@@ -381,12 +372,11 @@ int AdvApp2Var_SysBase::macrchk_()
   /*     ----------- */
   /*        SYSTEM, MEMORY, ALLOCATION */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
   /*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
@@ -408,11 +398,9 @@ int AdvApp2Var_SysBase::macrchk_()
   /*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
   /*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
 
   /* CONTROL OF FLAGS IN THE TABLE */
   i__1 = mcrgene_.ncore;
@@ -471,8 +459,7 @@ int AdvApp2Var_SysBase::macrdi4_(integer* nbelem,
 
 {
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FuNCTION : */
   /*     ---------- */
@@ -507,8 +494,7 @@ int AdvApp2Var_SysBase::macrdi4_(integer* nbelem,
   /*     ----------------------------------- */
   /*     (Cf description in the heading of MCRDELT) */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
   integer iunit;
 
   iunit = sizeof(integer);
@@ -535,8 +521,7 @@ int AdvApp2Var_SysBase::macrdr8_(integer* nbelem,
 {
   integer c__8 = 8;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -573,8 +558,7 @@ int AdvApp2Var_SysBase::macrdr8_(integer* nbelem,
   /*     (Cf description in the heading of MCRDELT) */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Function Body */
   if (*iofset != 0)
@@ -601,8 +585,7 @@ int macrerr_(intptr_t*, // iad,
   /* Fortran I/O blocks */
   // cilist io___1 = { 0, 6, 0, "(X,A,I9,A,I3)", 0 };
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -630,8 +613,7 @@ int macrerr_(intptr_t*, // iad,
   /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
   /*
   do__fio(&c__1, "*** ERREUR : Ecrasement de la memoire d'adresse ", 48L);
   do__fio(&c__1, (char *)&(*iad), (ftnlen)sizeof(long int));
@@ -660,8 +642,7 @@ int macrgfl_(intptr_t* iadfld, intptr_t* iadflf, integer* iphase, integer* iznut
   integer ibid, ienr;
   integer novfl = 0;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -696,11 +677,9 @@ int macrgfl_(intptr_t* iadfld, intptr_t* iadflf, integer* iphase, integer* iznut
   /*     ------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -710,12 +689,11 @@ int macrgfl_(intptr_t* iadfld, intptr_t* iadflf, integer* iphase, integer* iznut
   /*     ----------- */
   /*        SYSTEM, MEMORY, ALLOCATION */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
   /*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
   /*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
   /*             (PROTECTED MEANS NOT DESTROYED BY CRRSET .) */
@@ -736,8 +714,7 @@ int macrgfl_(intptr_t* iadfld, intptr_t* iadflf, integer* iphase, integer* iznut
   /*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
   /*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
 
   if (ifois == 0)
   {
@@ -787,8 +764,7 @@ int macrmsg_(const char*, // crout,
   integer           inum;
   char /*cfm[80],*/ cln[3];
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -800,8 +776,7 @@ int macrmsg_(const char*, // crout,
 
   /*     INPUT ARGUMENTSEE : */
   /*     ------------------- */
-  /*       CROUT : NAME OF THE CALLING ROUTINE : MCRRQST, MCRDELT, MCRLIST
-   */
+  /*       CROUT : NAME OF THE CALLING ROUTINE : MCRRQST, MCRDELT, MCRLIST */
   /*                ,CRINCR OR CRPROT */
   /*       NUM :  MESSAGE NUMBER */
   /*       IT : TABLE OF INTEGER DATA */
@@ -832,13 +807,11 @@ int macrmsg_(const char*, // crout,
   /*   THE MESSAGE IS INITIALIZED AT 'MESSAGE MISSING', AND IT IS */
   /*   REPLACED BY THE REQUIRED MESSAGE IF EXISTS. */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*  LOCAL : */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
   /*  FIND MESSAGE DEPENDING ON THE LANGUAGE , THE ROUTINE */
   /*  AND THE MESSAGE NUMBER */
 
@@ -1018,9 +991,8 @@ int macrmsg_(const char*, // crout,
       }
     }
     */
-  /* ----------------------------------------------------------------------*
-   */
-  /*  iMPLEMENTATION OF WRITE , WITH OR WITHOUT DATA : */
+  /* --------------------------------------------------------------------- */
+  /*  IMPLEMENTATION OF WRITE , WITH OR WITHOUT DATA : */
 
   if (inum == 0)
   {
@@ -1086,8 +1058,7 @@ int magtlog_(const char* cnmlog,
   char    cbid[255];
   integer ibid, ier;
 
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -1126,7 +1097,7 @@ int magtlog_(const char* cnmlog,
 
   /*        SPECIFIC SGI ROUTINE */
 
-  /*        IN ALL CASES WHEN IERCOD IS >0, NO RESULT IS RETURNED*/
+  /*        IN ALL CASES WHEN IERCOD IS >0, NO RESULT IS RETURNED */
   /*        NOTION OF  "USER SYNTAX' AND "INTERNAL SYNTAX" */
   /*        --------------------------------------------------- */
 
@@ -1139,17 +1110,13 @@ int magtlog_(const char* cnmlog,
   /*        (OPEN,INQUIRE,...ETC) */
 
   /* > */
-  /* ***********************************************************************
-   */
-  /*              DECLARATIONS */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*              DECLARATIONS                                             */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
-  /*              PROCESSING */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*              PROCESSING                                               */
+  /* ***********************************************************************/
 
   *long__ = 0;
   *iercod = 0;
@@ -1178,11 +1145,9 @@ int magtlog_(const char* cnmlog,
 
   goto L9999;
 
-  /* ***********************************************************************
-   */
-  /*              ERROR PROCESSING */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*              ERROR PROCESSING                                         */
+  /* ***********************************************************************/
 
 L9500:
   *iercod = 5;
@@ -1198,11 +1163,9 @@ L9700:
   *iercod = 7;
   //__s__copy(chaine, " ", chaine_len, 1L);
 
-  /* ***********************************************************************
-   */
-  /*              RETURN TO THE CALLING PROGRAM */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*              RETURN TO THE CALLING PROGRAM                            */
+  /* ***********************************************************************/
 
 L9999:
   return 0;
@@ -1239,8 +1202,7 @@ int AdvApp2Var_SysBase::maitbr8_(integer* itaill, doublereal* xtab, doublereal* 
   doublereal buffx[63];
   integer    nbfois, noffst, nreste, nufois;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -1278,16 +1240,14 @@ int AdvApp2Var_SysBase::maitbr8_(integer* itaill, doublereal* xtab, doublereal* 
   /*   ACCESS : FREE */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Parameter adjustments */
   --xtab;
 
   /* Function Body */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
 
   nbfois = *itaill / 63;
   noffst = nbfois * 63;
@@ -1335,8 +1295,7 @@ int AdvApp2Var_SysBase::maitbr8_(integer* itaill, doublereal* xtab, doublereal* 
     }
   }
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
 
   return 0;
 } /* maitbr8_ */
@@ -1348,8 +1307,7 @@ int mamdlng_(char*,  // cmdlng,
 
 {
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -1384,14 +1342,12 @@ int mamdlng_(char*,  // cmdlng,
   /*                   SO IT IS ENOUGH TO PROVIDE THAT THIS INIT IS */
   /*                   CORRECTLY IMPLEMENTED IN THE RESPECTIVE PROGRAMS */
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     INCLUDE MACETAT */
   /* < */
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -1408,7 +1364,7 @@ int mamdlng_(char*,  // cmdlng,
   /*     ----------- */
   /*        APPLICATION, LANGUAGE */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /*     A) CHLANG*4 : LIST OF POSSIBLE VALUES OF THE LANGUAGE : */
@@ -1451,8 +1407,7 @@ int mamdlng_(char*,  // cmdlng,
   /*       ---------------------------------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     NUMBER OF APPLICATIONS TAKEN INTO ACCOUNT */
 
@@ -1475,8 +1430,7 @@ int maostrd_()
 {
   integer imod;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -1513,8 +1467,7 @@ int maostrd_()
   /*       - EXISTENCE OF FILE 'STRMINIT:STRMTRBK.DAT' */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
   madbtbk_(&imod);
   if (imod == 1)
   {
@@ -1540,8 +1493,7 @@ int maoverf_(integer* nbentr, doublereal* dtable)
   doublereal buff[63];
   integer    ioct, indic, nrest, icompt;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -1592,7 +1544,7 @@ int maoverf_(integer* nbentr, doublereal* dtable)
 
   /*       2) Doc. designer  : */
 
-  /*                  The idea is to minimize the number of calls */
+  /*                The idea is to minimize the number of calls */
   /*                to the routine of transfer of numeric zones, */
   /*   ----------   for the reason of performance. */
   /*  !  buffer  !    For this a table of NLONGR */
@@ -1603,7 +1555,7 @@ int maoverf_(integer* nbentr, doublereal* dtable)
 
   /*                * If NBENTR<NLONGR, a part of the buffer is transferred*/
   /*     DTABLE     in DTABLE. */
-  /*   __________ */
+  /*   __________  */
   /*  !  amorce  !  * Otherwise, the entire buffer is transferred in DTABLE. */
   /*  !__________!  This initiates it. Then a loop is execute, which at each
    */
@@ -1627,15 +1579,13 @@ int maoverf_(integer* nbentr, doublereal* dtable)
   /*  !__________! */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* Inclusion of MAOVPAR.INC */
 
   /*      CONSTANTS */
   /*     INCLUDE MAOVPAR */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -1645,7 +1595,7 @@ int maoverf_(integer* nbentr, doublereal* dtable)
   /*     ----------- */
   /*       SYSTEM, LIMITS, VALUES, SPECIFIC */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   /*     *** THEY CAN'T BE REMOVED DURING EXECUTION. */
 
@@ -1654,8 +1604,7 @@ int maoverf_(integer* nbentr, doublereal* dtable)
   /*     THEY ARE DEFINED AS HEXADECIMAL VALUES */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*    DECLARATION OF THE COMMON FOR NUMERIC TYPES */
 
@@ -1671,8 +1620,7 @@ int maoverf_(integer* nbentr, doublereal* dtable)
 
   /* Function Body */
 
-  /* vJMB R8OVR IS NOT YET initialized, so impossible to use DATA
-   */
+  /* vJMB R8OVR IS NOT YET initialized, so impossible to use DATA */
   /*         DATA BUFF / NLONGR * R8OVR / */
 
   /*    init of BUFF is done only once */
@@ -1763,8 +1711,7 @@ int matrsym_(const char* cnmsym,
   /* Local variables */
   char chainx[255] = {};
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -1802,8 +1749,7 @@ int matrsym_(const char* cnmsym,
   /*       - IN CASE OF ERROR (IERCOD>0), CHAIN = ' ' AND LENGTH = 0 */
   /*       - IF THE INPUT VARIABLE CNMSYM IS EMPTY, THE ROUTINE RETURNS IERCOD=1*/
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* SGI...v */
 
@@ -1828,11 +1774,9 @@ int matrsym_(const char* cnmsym,
   //__s__copy(chaine, chainx, chaine_len, 255L);
   /* SGI...^ */
 
-  /* ***********************************************************************
-   */
-  /*     ERROR PROCESSING */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*     ERROR PROCESSING                                                  */
+  /* ***********************************************************************/
 
   /* L9999: */
   return 0;
@@ -1857,8 +1801,7 @@ int mcrcomm_(integer* kop, integer* noct, intptr_t* iadr, integer* ier)
   intptr_t                     ipre;
   integer                      i__, j, k;
 
-  /************************************************************************
-  *******/
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -1900,12 +1843,10 @@ int mcrcomm_(integer* kop, integer* noct, intptr_t* iadr, integer* ier)
   /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
-  /*   ATTENTION .... ITAB ARE NTAB NOT SAVED BETWEEN 2 CALLS..
-   */
+  /*   ATTENTION .... ITAB ARE NTAB NOT SAVED BETWEEN 2 CALLS.. */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* JPF  PARAMETER ( MAXNUM = 40 , MAXCOM = 500 * 1024 ) */
 
@@ -1917,8 +1858,7 @@ int mcrcomm_(integer* kop, integer* noct, intptr_t* iadr, integer* ier)
 
   /* PP      COMMON / CRGEN2 / DTAB */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* ***********************************************************************/
 
   *ier = 0;
 
@@ -2043,8 +1983,7 @@ int AdvApp2Var_SysBase::mcrdelt_(integer*  iunit,
   intptr_t   iadfd, iadff, iaddr, loc; /* Les adrresses en long*/
   integer    kop;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -2103,16 +2042,14 @@ int AdvApp2Var_SysBase::mcrdelt_(integer*  iunit,
   /*     valid only if the same sub-program uses and destroys the allocation. */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* COMMON OF PARAMETERS */
 
   /* COMMON OF STATISTICS */
   /*     INCLUDE MCRGENE */
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -2122,12 +2059,11 @@ int AdvApp2Var_SysBase::mcrdelt_(integer*  iunit,
   /*     ---------- */
   /*       SYSTEM, MEMORY, ALLOCATION */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
   /*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
   /*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
   /*             (PROTECTED MEANS NOT DESTROYED BY CRRSET .) */
@@ -2148,8 +2084,7 @@ int AdvApp2Var_SysBase::mcrdelt_(integer*  iunit,
   /*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
   /*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
 
   /*     20-10-86 : BF ; INITIAL VERSION  */
 
@@ -2248,8 +2183,7 @@ L1100:
   }
   goto L9900;
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
   /*     ERROR PROCESSING */
 
 L9001:
@@ -2306,7 +2240,7 @@ C
 C     REFERENCES CALLED :
 C     -------------------
 C
-C     DEMSCRIPTION/NOTES/LIMITATIONS :
+C     DESCRIPTION/NOTES/LIMITATIONS :
 C     -----------------------------------
 C        Routine portable UNIX (SGI, ULTRIX, BULL)
 C
@@ -2345,7 +2279,7 @@ int AdvApp2Var_SysBase::mcrfill_(integer* size, void* tin, void* tout)
 /*                                                                        */
 /*   FUNCTION :                                                           */
 /*   ----------                                                           */
-/*               Routines for management of the dynamic memory.               */
+/*               Routines for management of the dynamic memory.           */
 /*                                                                        */
 /*             Routine mcrfree                                            */
 /*             --------------                                             */
@@ -2378,7 +2312,7 @@ int mcrfree_(integer*, // ibyte,
 
 /*........................................................................*/
 /*                                                                        */
-/*   FONCTION :                                                           */
+/*   FUNCTION :                                                           */
 /*   ----------                                                           */
 /*               Routines for management of the dynamic memory.           */
 /*                                                                        */
@@ -2399,7 +2333,6 @@ int mcrfree_(integer*, // ibyte,
 /*                   = 1  ==> Allocation impossible                       */
 /*                   = -1 ==> Offset > 2**31 - 1                          */
 /*                                                                        */
-
 /*                                                                        */
 /*........................................................................*/
 
@@ -2432,8 +2365,7 @@ int AdvApp2Var_SysBase::mcrlist_(integer* ier) const
   integer    ifmt, i__, nufmt, ntotal;
   char       subrou[7];
 
-  /************************************************************************
-  *******/
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -2475,12 +2407,9 @@ int AdvApp2Var_SysBase::mcrlist_(integer* ier) const
   /*         . NONE */
 
   /* > */
-  /* ***********************************************************************
-   */
-
-  /*     INCLUDE MCRGENE */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*     INCLUDE MCRGENE                                                   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -2490,12 +2419,11 @@ int AdvApp2Var_SysBase::mcrlist_(integer* ier) const
   /*     ----------- */
   /*        SYSTEM, MEMORY, ALLOCATION */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
   /*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
@@ -2517,11 +2445,9 @@ int AdvApp2Var_SysBase::mcrlist_(integer* ier) const
   /*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
   /*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* ***********************************************************************/
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* ***********************************************************************/
 
   *ier = 0;
   //__s__copy(subrou, "MCRLIST", 7L, 7L);
@@ -2571,8 +2497,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer*  iunit,
   intptr_t   iadfd, iadff, iaddr, lofset, loc;
   integer    izu;
 
-  /* **********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -2637,8 +2562,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer*  iunit,
 
   /*     IERCOD=3 : REFUSED DYNAMIC ALLOCATION (MORE PLACE IN MEMORY) */
   /*     AND THE FOLLOWING MESSAGE APPEARS IN THE CONSOLE ALPHA : */
-  /*    "The system refuses dynamic allocation of memory of N octets"
-   */
+  /*    "The system refuses dynamic allocation of memory of N octets" */
   /*     with completev display of all allocations carried out till now */
 
   /*     2) DESIGNER */
@@ -2652,15 +2576,13 @@ int AdvApp2Var_SysBase::mcrrqst_(integer*  iunit,
   /* SO THAT THE ALLOCATION WAS AN INTEGER NUMBER OF QUADWORDS. */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* COMMON OF PARAMETRES */
   /* COMMON OF INFORMATION ON STATISTICS */
   /*     INCLUDE MCRGENE */
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
   /*     FUNCTION : */
   /*     ---------- */
   /*        TABLE FOR MANAGEMENT OF DYNAMIC MEMORY ALLOCATIONS */
@@ -2669,12 +2591,11 @@ int AdvApp2Var_SysBase::mcrrqst_(integer*  iunit,
   /*     ----------- */
   /*        SYSTEM, MEMORY, ALLOCATION */
 
-  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
   /*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
@@ -2696,8 +2617,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer*  iunit,
   /*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
   /*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
   /*     20-10-86 : BF ; INITIAL VERSION  */
 
   /*     NRQST : NUMBER OF ALLOCATIONS  */
@@ -2705,8 +2625,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer*  iunit,
   /*     NBYTE : TOTAL NUMBER OF OCTETS OF ALLOCATIONS */
   /*     MBYTE : MAX NUMBER OF OCTETS */
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
 
   /* Function Body */
   *iercod = 0;
@@ -2876,8 +2795,7 @@ L9003:
   mcrlist_(&ier);
   goto L9900;
 
-  /* ----------------------------------------------------------------------*
-   */
+  /* --------------------------------------------------------------------- */
 
 L9900:
   mcrgene_.lprot = 0;
@@ -2930,7 +2848,7 @@ C
 C     REFERENCES CALLED   :
 C     ---------------------
 C
-C     DEMSCRIPTION/NOTES/LIMITATIONS :
+C     DESCRIPTION/NOTES/LIMITATIONS :
 C     -----------------------------------
 C
 C           Portable VAX-SGI
@@ -2961,8 +2879,7 @@ int AdvApp2Var_SysBase::msifill_(integer* nbintg, integer* ivecin, integer* ivec
 {
   integer nocte;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -2991,8 +2908,7 @@ int AdvApp2Var_SysBase::msifill_(integer* nbintg, integer* ivecin, integer* ivec
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* ___ NOCTE : Number of octets to transfer */
 
@@ -3012,10 +2928,9 @@ int AdvApp2Var_SysBase::msrfill_(integer* nbreel, doublereal* vecent, doublereal
 {
   integer nocte;
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
-  /*     FONCTION : */
+  /*     FUNCTION : */
   /*     ---------- */
   /*        Transfer real from one zone to another */
 
@@ -3042,8 +2957,7 @@ int AdvApp2Var_SysBase::msrfill_(integer* nbreel, doublereal* vecent, doublereal
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /* ___ NOCTE : Nb of octets to transfer */
 
@@ -3064,8 +2978,7 @@ int AdvApp2Var_SysBase::mswrdbg_(const char*, // ctexte,
 
 {
 
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
 
   /*     FUNCTION : */
   /*     ---------- */
@@ -3093,17 +3006,13 @@ int AdvApp2Var_SysBase::mswrdbg_(const char*, // ctexte,
   /*     ----------------------------------- */
 
   /* > */
-  /* ***********************************************************************
-   */
-  /*                      DECLARATIONS */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                      DECLARATIONS                                     */
+  /* ***********************************************************************/
 
-  /* ***********************************************************************
-   */
-  /*                      PROCESSING */
-  /* ***********************************************************************
-   */
+  /* ***********************************************************************/
+  /*                      PROCESSING                                       */
+  /* ***********************************************************************/
 
   if (AdvApp2Var_SysBase::mnfndeb_() >= 1)
   {
@@ -3163,7 +3072,7 @@ C
 C     REFERENCES CALLED   :
 C     -----------------------
 C
-C     DEMSCRIPTION/NOTES/LIMITATIONS :
+C     DESCRIPTION/NOTES/LIMITATIONS :
 C     -----------------------------------
 C
 C

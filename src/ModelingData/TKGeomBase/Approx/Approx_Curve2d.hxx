@@ -21,7 +21,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <GeomAbs_Shape.hxx>
 
-//! Makes  an  approximation  for  HCurve2d  from  Adaptor3d
+//! Makes an approximation for HCurve2d from Adaptor3d
 class Approx_Curve2d
 {
 public:

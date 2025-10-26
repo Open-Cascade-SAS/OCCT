@@ -60,7 +60,7 @@ public:
   Standard_EXPORT void GetElement(const Standard_Integer IndexOfElement,
                                   TColStd_Array2OfReal&  Coeffs);
 
-  //! returns  coefficients  of  all  elements  in  canonical  base.
+  //! returns coefficients of all elements in canonical base.
   Standard_EXPORT void GetPolynom(TColStd_Array1OfReal& Coeffs);
 
   Standard_EXPORT Standard_Integer NbElements() const;

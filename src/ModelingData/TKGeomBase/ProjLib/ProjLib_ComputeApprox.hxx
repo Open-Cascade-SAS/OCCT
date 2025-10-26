@@ -42,8 +42,7 @@ public:
   //! Empty constructor, it only sets some initial values for class fields.
   Standard_EXPORT ProjLib_ComputeApprox();
 
-  //! <Tol>    is   the   tolerance   with  which    the
-  //! approximation is performed.
+  //! <Tol> is the tolerance with which the approximation is performed.
   //! Other parameters for approximation have default values.
   Standard_EXPORT ProjLib_ComputeApprox(const Handle(Adaptor3d_Curve)&   C,
                                         const Handle(Adaptor3d_Surface)& S,

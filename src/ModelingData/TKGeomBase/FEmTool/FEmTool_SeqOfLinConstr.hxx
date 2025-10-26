@@ -20,7 +20,7 @@
 #include <FEmTool_ListOfVectors.hxx>
 #include <NCollection_Sequence.hxx>
 
-//! To  define  sequence  of  constraints
+//! To define sequence of constraints
 
 typedef NCollection_Sequence<FEmTool_ListOfVectors> FEmTool_SeqOfLinConstr;
 

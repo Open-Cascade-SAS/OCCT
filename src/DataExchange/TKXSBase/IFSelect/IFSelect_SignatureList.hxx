@@ -74,7 +74,7 @@ public:
   //! Cleared by Clear or Init
   Standard_EXPORT Standard_CString LastValue() const;
 
-  //! Aknowledges the list in once. Name identifies the Signature
+  //! Acknowledges the list in once. Name identifies the Signature
   Standard_EXPORT void Init(
     const Standard_CString                                                                 name,
     const NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>&           count,
