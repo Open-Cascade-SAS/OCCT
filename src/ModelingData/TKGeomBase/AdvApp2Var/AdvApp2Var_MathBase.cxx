@@ -5923,7 +5923,7 @@ int mmloncv_(integer*    ndimax,
   /*                which of is a multidimensional polynom. */
   /*      The polynom is a set of polynoms the coefficients which of are ranked */
   /*      in a table with 2 indices, each line relative to 1 polynom. */
-  /*      The polynom is defined by its coefficients ordered by increasing
+  /*      The polynom is defined by its coefficients ordered by increasing */
   /*      power of the variable. */
   /*      All polynoms have the same number of coefficients (and the same degree). */
 
