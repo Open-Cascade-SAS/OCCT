@@ -29,28 +29,28 @@ class TopoDS_TShape;
 class BRep_TFace;
 DEFINE_STANDARD_HANDLE(BRep_TFace, TopoDS_TFace)
 
-//! The Tface from BRep  is  based  on the TFace  from
-//! TopoDS. The TFace contains :
+//! The Tface from BRep is based on the TFace from
+//! TopoDS. The TFace contains:
 //!
 //! * A surface, a tolerance and a Location.
 //!
-//! * A NaturalRestriction flag,   when this  flag  is
-//! True the  boundary of the  face is known to be the
+//! * A NaturalRestriction flag, when this flag is
+//! True the boundary of the  face is known to be the
 //! parametric space (Umin, UMax, VMin, VMax).
 //!
 //! * An optional list of triangulations. If there are any
 //! triangulations the surface can be absent.
 //!
-//! The  Location is  used   for the Surface.
+//! The Location is used for the Surface.
 //!
-//! The triangulation  is in the same reference system
-//! than the TFace.     A point on mySurface must   be
-//! transformed with myLocation,  but  not a point  on
+//! The triangulation is in the same reference system
+//! than the TFace. A point on mySurface must be
+//! transformed with myLocation, but not a point on
 //! the triangulation.
 //!
-//! The Surface may  be shared by different TFaces but
-//! not the  Triangulation, because the  Triangulation
-//! may be modified by  the edges.
+//! The Surface may be shared by different TFaces but
+//! not the Triangulation, because the Triangulation
+//! may be modified by the edges.
 class BRep_TFace : public TopoDS_TFace
 {
 

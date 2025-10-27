@@ -31,7 +31,7 @@ class BRep_CurveRepresentation;
 class BRep_CurveOnSurface;
 DEFINE_STANDARD_HANDLE(BRep_CurveOnSurface, BRep_GCurve)
 
-//! Representation  of a  curve   by a   curve  in the
+//! Representation of a curve by a curve in the
 //! parametric space of a surface.
 class BRep_CurveOnSurface : public BRep_GCurve
 {

@@ -45,7 +45,7 @@ public:
   //! Clears the content of the set.
   Standard_EXPORT void Clear();
 
-  //! Incorporate a new Location in the  set and returns
+  //! Incorporate a new Location in the set and returns
   //! its index.
   Standard_EXPORT Standard_Integer Add(const TopLoc_Location& L);
 
@@ -58,11 +58,11 @@ public:
   //! Returns number of locations.
   Standard_EXPORT Standard_Integer NbLocations() const;
 
-  //! Writes the content of  me  on the stream <OS> in a
+  //! Writes the content of me on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT void Write(Standard_OStream& OS) const;
 
-  //! Reads the content of me from the  stream  <IS>. me
+  //! Reads the content of me from the stream <IS>. me
   //! is first cleared.
   Standard_EXPORT void Read(Standard_IStream& IS);
 

@@ -28,20 +28,16 @@ class TopoDS_TShape;
 class BRep_TEdge;
 DEFINE_STANDARD_HANDLE(BRep_TEdge, TopoDS_TEdge)
 
-//! The TEdge from BRep is  inherited from  the  TEdge
+//! The TEdge from BRep is inherited from the TEdge
 //! from TopoDS. It contains the geometric data.
 //!
-//! The TEdge contains :
+//! The TEdge contains a:
 //!
-//! * A tolerance.
-//!
-//! * A same parameter flag.
-//!
-//! * A same range flag.
-//!
-//! * A Degenerated flag.
-//!
-//! *  A  list   of curve representation.
+//! * tolerance.
+//! * same parameter flag.
+//! * same range flag.
+//! * Degenerated flag.
+//! * list of curve representation.
 class BRep_TEdge : public TopoDS_TEdge
 {
 
@@ -53,8 +49,8 @@ public:
 
   void Tolerance(const Standard_Real T);
 
-  //! Sets the tolerance  to the   max  of <T>  and  the
-  //! current  tolerance.
+  //! Sets the tolerance to the max of <T> and the
+  //! current tolerance.
   void UpdateTolerance(const Standard_Real T);
 
   Standard_EXPORT Standard_Boolean SameParameter() const;
@@ -73,7 +69,7 @@ public:
 
   BRep_ListOfCurveRepresentation& ChangeCurves();
 
-  //! Returns a copy  of the  TShape  with no sub-shapes.
+  //! Returns a copy of the TShape with no sub-shapes.
   Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream

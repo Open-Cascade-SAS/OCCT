@@ -42,7 +42,7 @@ public:
   //! Clears the content of the set.
   Standard_EXPORT void Clear();
 
-  //! Incorporate a new Surface in the  set and returns
+  //! Incorporate a new Surface in the set and returns
   //! its index.
   Standard_EXPORT Standard_Integer Add(const Handle(Geom_Surface)& S);
 
@@ -52,12 +52,12 @@ public:
   //! Returns the index of <L>.
   Standard_EXPORT Standard_Integer Index(const Handle(Geom_Surface)& S) const;
 
-  //! Writes the content of  me  on the stream <OS> in
+  //! Writes the content of me on the stream <OS> in
   //! binary format that can be read back by Read.
   Standard_EXPORT void Write(Standard_OStream&            OS,
                              const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
-  //! Reads the content of me from the  stream  <IS>. me
+  //! Reads the content of me from the stream <IS>. me
   //! is first cleared.
   Standard_EXPORT void Read(Standard_IStream&            IS,
                             const Message_ProgressRange& therange = Message_ProgressRange());
@@ -66,9 +66,8 @@ public:
   //! format that can be read back.
   Standard_EXPORT static void WriteSurface(const Handle(Geom_Surface)& S, BinTools_OStream& OS);
 
-  //! Reads the surface  from  the stream.  The  surface  is
-  //! assumed   to have  been  written  with  the Write
-  //! method.
+  //! Reads the surface from the stream. The surface is
+  //! assumed to have been written with the Write method.
   Standard_EXPORT static Standard_IStream& ReadSurface(Standard_IStream&     IS,
                                                        Handle(Geom_Surface)& S);
 

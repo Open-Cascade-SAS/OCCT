@@ -106,7 +106,7 @@ public:
   //! Updates the face Tolerance.
   Standard_EXPORT void UpdateFace(const TopoDS_Face& F, const Standard_Real Tol) const;
 
-  //! Sets the  NaturalRestriction flag of  the face.
+  //! Sets the  NaturalRestriction flag of the face.
   Standard_EXPORT void NaturalRestriction(const TopoDS_Face& F, const Standard_Boolean N) const;
 
   //! Makes an undefined Edge (no geometry).
@@ -153,7 +153,7 @@ public:
                   const TopoDS_Face&          F,
                   const Standard_Real         Tol) const;
 
-  //! Sets pcurves for the edge on the  closed face.  If
+  //! Sets pcurves for the edge on the closed face. If
   //! <C1> or <C2> is a null handle, remove any existing
   //! pcurve.
   void UpdateEdge(const TopoDS_Edge&          E,
@@ -299,7 +299,7 @@ public:
                              const Standard_Real    Last,
                              const Standard_Boolean Only3d = Standard_False) const;
 
-  //! Sets the range  of the edge  on the pcurve on  the
+  //! Sets the range  of the edge on the pcurve on the
   //! surface.
   Standard_EXPORT void Range(const TopoDS_Edge&          E,
                              const Handle(Geom_Surface)& S,
@@ -313,8 +313,7 @@ public:
              const Standard_Real First,
              const Standard_Real Last) const;
 
-  //! Add  to <Eout>  the  geometric representations  of
-  //! <Ein>.
+  //! Add to <Eout> the geometric representations of <Ein>.
   Standard_EXPORT void Transfert(const TopoDS_Edge& Ein, const TopoDS_Edge& Eout) const;
 
   //! Makes an udefined vertex without geometry.
@@ -328,23 +327,22 @@ public:
                                     const gp_Pnt&        P,
                                     const Standard_Real  Tol) const;
 
-  //! Sets  the parameter  for the   vertex on the  edge
-  //! curves.
+  //! Sets the parameter for the vertex on the edge curves.
   Standard_EXPORT void UpdateVertex(const TopoDS_Vertex& V,
                                     const Standard_Real  P,
                                     const TopoDS_Edge&   E,
                                     const Standard_Real  Tol) const;
 
-  //! Sets  the parameter  for the  vertex  on the  edge
-  //! pcurve  on the face.
+  //! Sets the parameter for the vertex on the edge
+  //! pcurve on the face.
   void UpdateVertex(const TopoDS_Vertex& V,
                     const Standard_Real  P,
                     const TopoDS_Edge&   E,
                     const TopoDS_Face&   F,
                     const Standard_Real  Tol) const;
 
-  //! Sets  the parameter  for the  vertex  on the  edge
-  //! pcurve  on the surface.
+  //! Sets the parameter for the vertex on the edge
+  //! pcurve on the surface.
   Standard_EXPORT void UpdateVertex(const TopoDS_Vertex&        V,
                                     const Standard_Real         P,
                                     const TopoDS_Edge&          E,
@@ -362,7 +360,7 @@ public:
   //! Updates the vertex tolerance.
   Standard_EXPORT void UpdateVertex(const TopoDS_Vertex& V, const Standard_Real Tol) const;
 
-  //! Transfert the parameters  of   Vin on  Ein as  the
+  //! Transfert the parameters of Vin on Ein as the
   //! parameter of Vout on Eout.
   Standard_EXPORT void Transfert(const TopoDS_Edge&   Ein,
                                  const TopoDS_Edge&   Eout,

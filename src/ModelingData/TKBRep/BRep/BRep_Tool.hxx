@@ -86,7 +86,7 @@ public:
   //! Returns the tolerance of the face.
   Standard_EXPORT static Standard_Real Tolerance(const TopoDS_Face& F);
 
-  //! Returns the  NaturalRestriction  flag of the  face.
+  //! Returns the  NaturalRestriction flag of the face.
   Standard_EXPORT static Standard_Boolean NaturalRestriction(const TopoDS_Face& F);
 
   //! Returns True if <F> has a surface, false otherwise.
@@ -96,7 +96,7 @@ public:
   //! surface.
   Standard_EXPORT static Standard_Boolean IsGeometric(const TopoDS_Edge& E);
 
-  //! Returns the 3D curve  of the edge.  May be  a Null
+  //! Returns the 3D curve of the edge. May be a Null
   //! handle. Returns in <L> the location for the curve.
   //! In <First> and <Last> the parameter range.
   Standard_EXPORT static const Handle(Geom_Curve)& Curve(const TopoDS_Edge& E,
@@ -104,14 +104,14 @@ public:
                                                          Standard_Real&     First,
                                                          Standard_Real&     Last);
 
-  //! Returns the 3D curve  of the edge. May be a Null handle.
+  //! Returns the 3D curve of the edge. May be a Null handle.
   //! In <First> and <Last> the parameter range.
   //! It can be a copy if there is a Location.
   Standard_EXPORT static Handle(Geom_Curve) Curve(const TopoDS_Edge& E,
                                                   Standard_Real&     First,
                                                   Standard_Real&     Last);
 
-  //! Returns the 3D polygon of the edge. May be   a Null
+  //! Returns the 3D polygon of the edge. May be a Null
   //! handle. Returns in <L> the location for the polygon.
   Standard_EXPORT static const Handle(Poly_Polygon3D)& Polygon3D(const TopoDS_Edge& E,
                                                                  TopLoc_Location&   L);

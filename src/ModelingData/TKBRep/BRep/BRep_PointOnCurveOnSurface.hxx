@@ -28,7 +28,7 @@ class TopLoc_Location;
 class BRep_PointOnCurveOnSurface;
 DEFINE_STANDARD_HANDLE(BRep_PointOnCurveOnSurface, BRep_PointsOnSurface)
 
-//! Representation by   a parameter on  a curve   on a
+//! Representation by a parameter on a curve on a
 //! surface.
 class BRep_PointOnCurveOnSurface : public BRep_PointsOnSurface
 {

@@ -29,7 +29,7 @@ class Geom_Surface;
 class BRep_PointRepresentation;
 DEFINE_STANDARD_HANDLE(BRep_PointRepresentation, Standard_Transient)
 
-//! Root  class     for   the points  representations.
+//! Root class for the points representations.
 //! Contains a location and a parameter.
 class BRep_PointRepresentation : public Standard_Transient
 {

@@ -66,7 +66,7 @@ public:
   //! Clears the content of the set.
   Standard_EXPORT virtual void Clear() {}
 
-  //! Writes the content of  me  on the stream <OS> in binary
+  //! Writes the content of me on the stream <OS> in binary
   //! format that can be read back by Read.
   //!
   //! Writes the locations.
@@ -74,7 +74,7 @@ public:
   //! Writes the geometry calling WriteGeometry.
   //!
   //! Dumps the shapes from last to first.
-  //! For each shape  :
+  //! For each shape:
   //! Write the type.
   //! calls WriteGeometry(S).
   //! Write the flags, the subshapes.
@@ -84,7 +84,7 @@ public:
   {
   }
 
-  //! Reads the content of me from the binary stream  <IS>. me
+  //! Reads the content of me from the binary stream <IS>. me
   //! is first cleared.
   //!
   //! Reads the locations.
@@ -102,7 +102,7 @@ public:
   {
   }
 
-  //! Writes   on  <OS>   the shape   <S>.    Writes the
+  //! Writes on <OS> the shape <S>. Writes the
   //! orientation, the index of the TShape and the index
   //! of the Location.
   Standard_EXPORT virtual void Write(const TopoDS_Shape& /*theShape*/,
