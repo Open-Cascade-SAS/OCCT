@@ -115,7 +115,7 @@ int AdvApp2Var_SysBase::macinit_(integer* imode, integer* ival)
 
   /*     INPUT ARGUMENTS  : */
   /*     -------------------- */
-  /*        IMODE : MODE of INITIALIZATION : /*
+  /*        IMODE : MODE of INITIALIZATION : */
   /*        0= DEFAULT, IMP IS 6, IBB 0 and LEC 5 */
   /*        1= FORCE VALUE OF IMP */
   /*        2= FORCE VALUE OF IBB */
