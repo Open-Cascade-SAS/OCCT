@@ -108,15 +108,6 @@ public:
   Standard_EXPORT static const Standard_GUID& ViewRefNoteGUID();
   Standard_EXPORT static const Standard_GUID& ViewRefAnnotationGUID();
 
-  //! Returns GUID for TreeNode representing compound of supplemental geometry
-  Standard_EXPORT static const Standard_GUID& SupplementalContainerGUID();
-
-  //! Returns GUID for TreeNode representing reference for supplemental geometry
-  Standard_EXPORT static const Standard_GUID& SupplementalRefGUID();
-
-  //! Returns GUID for TreeNode representing supplemental geometry
-  Standard_EXPORT static const Standard_GUID& SupplementalGeometryGUID();
-
   //! Returns GUID for UAttribute identifying lock flag
   Standard_EXPORT static const Standard_GUID& LockGUID();
 

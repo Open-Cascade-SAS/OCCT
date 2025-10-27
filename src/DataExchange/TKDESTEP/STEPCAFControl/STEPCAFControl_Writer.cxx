@@ -25,8 +25,6 @@
 #include <BRep_Builder.hxx>
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
-#include <GeomToStep_MakeCurve.hxx>
-#include <GeomToStep_MakeSurface.hxx>
 #include <HeaderSection_FileSchema.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Static.hxx>
@@ -96,7 +94,6 @@
 #include <StepDimTol_TotalRunoutTolerance.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Curve.hxx>
 #include <StepGeom_Direction.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
@@ -181,7 +178,6 @@
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDocStd_Document.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
@@ -224,9 +220,10 @@
 #include <XSControl_WorkSession.hxx>
 #include <UnitsMethods.hxx>
 
-namespace
-{
-// Auxiliary function: take name of label and append it to str
+//=======================================================================
+// function : GetLabelName
+// purpose  : auxiliary function: take name of label and append it to str
+//=======================================================================
 static Standard_Boolean GetLabelName(const TDF_Label&                  theL,
                                      Handle(TCollection_HAsciiString)& theStr)
 {
@@ -246,739 +243,6 @@ static Standard_Boolean GetLabelName(const TDF_Label&                  theL,
   theStr->AssignCat(aBuffer.ToCString());
   return Standard_True;
 }
-
-//==================================================================================================
-
-static Standard_Integer FindEntities(const Handle(Transfer_FinderProcess)& theFP,
-                                     const TopoDS_Shape&                   theShape,
-                                     TopLoc_Location&                      theLocation,
-                                     TColStd_SequenceOfTransient&          theSeqRI)
-{
-  Handle(StepRepr_RepresentationItem) anItem =
-    STEPConstruct::FindEntity(theFP, theShape, theLocation);
-
-  if (!anItem.IsNull())
-  {
-    theSeqRI.Append(anItem);
-    return 1;
-  }
-
-  // may be S was split during shape processing
-  Handle(TransferBRep_ShapeMapper) aMapper = TransferBRep::ShapeMapper(theFP, theShape);
-  Handle(Transfer_Binder)          aBinder = theFP->Find(aMapper);
-  if (aBinder.IsNull())
-    return 0;
-
-  Handle(Transfer_TransientListBinder) aTransientListBinder =
-    // Handle(Transfer_TransientListBinder)::DownCast( bnd->Next(Standard_True) );
-    Handle(Transfer_TransientListBinder)::DownCast(aBinder);
-  Standard_Integer aResCount = 0;
-  if (aTransientListBinder.IsNull())
-  {
-    for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
-    {
-      Handle(StepRepr_RepresentationItem) aLocalItem =
-        STEPConstruct::FindEntity(theFP, anIter.Value(), theLocation);
-      if (aLocalItem.IsNull())
-        continue;
-      aResCount++;
-      theSeqRI.Append(aLocalItem);
-    }
-  }
-  else if (!aTransientListBinder.IsNull())
-  {
-    const Standard_Integer aNbTransient = aTransientListBinder->NbTransients();
-    for (Standard_Integer anInd = 1; anInd <= aNbTransient; anInd++)
-    {
-      Handle(Standard_Transient) anEntity = aTransientListBinder->Transient(anInd);
-      anItem                              = Handle(StepRepr_RepresentationItem)::DownCast(anEntity);
-      if (anItem.IsNull())
-        continue;
-      aResCount++;
-      theSeqRI.Append(anItem);
-    }
-  }
-  return aResCount;
-}
-
-//==================================================================================================
-
-static Standard_Boolean getStyledItem(const TopoDS_Shape&                     theShape,
-                                      const Handle(XCAFDoc_ShapeTool)&        theShapeTool,
-                                      const STEPConstruct_Styles&             theStyles,
-                                      Handle(StepVisual_StyledItem)&          theResSelItem,
-                                      const MoniTool_DataMapOfShapeTransient& theMapCompMDGPR)
-{
-  const TDF_Label  aTopShL   = theShapeTool->FindShape(theShape, Standard_False);
-  TopoDS_Shape     aTopLevSh = theShapeTool->GetShape(aTopShL);
-  Standard_Boolean anIsFound = Standard_False;
-  if (aTopLevSh.IsNull() || !theMapCompMDGPR.IsBound(aTopLevSh))
-  {
-    return Standard_False;
-  }
-  Handle(StepVisual_PresentationRepresentation) aMDGPR =
-    Handle(StepVisual_PresentationRepresentation)::DownCast(theMapCompMDGPR.Find(aTopLevSh));
-  Handle(StepRepr_HArray1OfRepresentationItem) anSelItmHArr = aMDGPR->Items();
-  if (anSelItmHArr.IsNull())
-  {
-    return Standard_False;
-  }
-  // Search for PSA of Manifold solid
-  TColStd_SequenceOfTransient aNewSeqRI;
-  Standard_Boolean            isFilled = Standard_False;
-  for (StepRepr_HArray1OfRepresentationItem::Iterator anIter(anSelItmHArr->Array1());
-       anIter.More() && !anIsFound;
-       anIter.Next())
-  {
-    const Handle(StepVisual_StyledItem)& aSelItm =
-      Handle(StepVisual_StyledItem)::DownCast(anIter.Value());
-
-    if (aSelItm.IsNull())
-    {
-      continue;
-    }
-    // Check that it is a styled item for manifold solid brep
-    if (!isFilled)
-    {
-      TopLoc_Location aLoc;
-      FindEntities(theStyles.FinderProcess(), aTopLevSh, aLoc, aNewSeqRI);
-      isFilled = Standard_True;
-    }
-    if (!aNewSeqRI.IsEmpty())
-    {
-      const Handle(StepRepr_RepresentationItem)& anItem         = aSelItm->Item();
-      Standard_Boolean                           isSameMonSolBR = Standard_False;
-      for (TColStd_SequenceOfTransient::Iterator aIterRI(aNewSeqRI); aIterRI.More(); aIterRI.Next())
-      {
-        if (!anItem.IsNull() && anItem == aIterRI.Value())
-        {
-          isSameMonSolBR = Standard_True;
-          break;
-        }
-      }
-      if (!isSameMonSolBR)
-        continue;
-    }
-    for (StepVisual_HArray1OfPresentationStyleAssignment::Iterator aStyleIter(
-           aSelItm->Styles()->Array1());
-         aStyleIter.More() && !anIsFound;
-         aStyleIter.Next())
-    {
-      const Handle(StepVisual_PresentationStyleAssignment)& aFatherPSA = aStyleIter.Value();
-      // check for PSA for top-level (not Presentation style by context for NAUO)
-      if (aFatherPSA.IsNull()
-          || aFatherPSA->IsKind(STANDARD_TYPE(StepVisual_PresentationStyleByContext)))
-        continue;
-      theResSelItem = aSelItm;
-      anIsFound     = Standard_True;
-    }
-  }
-  return anIsFound;
-}
-
-//==================================================================================================
-
-static Standard_Boolean setDefaultInstanceColor(
-  const Handle(StepVisual_StyledItem)&            theStyleItem,
-  Handle(StepVisual_PresentationStyleAssignment)& thePSA)
-{
-  Standard_Boolean anIsFound = Standard_False;
-  for (StepVisual_HArray1OfPresentationStyleAssignment::Iterator aStyleIter(
-         theStyleItem->Styles()->Array1());
-       aStyleIter.More() && !anIsFound;
-       aStyleIter.Next())
-  {
-    const Handle(StepVisual_PresentationStyleAssignment)& aFatherPSA = aStyleIter.Value();
-    // check for PSA for top-level (not Presentation style by context for NAUO)
-    if (aFatherPSA.IsNull()
-        || aFatherPSA->IsKind(STANDARD_TYPE(StepVisual_PresentationStyleByContext)))
-      return Standard_False;
-
-    // get style select from father PSA
-    if (aFatherPSA->NbStyles() > 0)
-    {
-      Handle(StepVisual_HArray1OfPresentationStyleSelect) aFatherStyles =
-        new StepVisual_HArray1OfPresentationStyleSelect(1, aFatherPSA->NbStyles());
-      Standard_Integer aSettingInd = 1;
-      for (StepVisual_HArray1OfPresentationStyleSelect::Iterator aFatherStyleIter(
-             aFatherPSA->Styles()->Array1());
-           aFatherStyleIter.More();
-           aFatherStyleIter.Next())
-      {
-        StepVisual_PresentationStyleSelect        aPSS;
-        const StepVisual_PresentationStyleSelect& anOlDPSS = aFatherStyleIter.Value();
-        if (!anOlDPSS.PointStyle().IsNull())
-          aPSS.SetValue(anOlDPSS.PointStyle());
-        else if (!anOlDPSS.CurveStyle().IsNull())
-          aPSS.SetValue(anOlDPSS.CurveStyle());
-        else if (!anOlDPSS.SurfaceStyleUsage().IsNull())
-          aPSS.SetValue(anOlDPSS.SurfaceStyleUsage());
-        else
-        {
-          anIsFound = Standard_False;
-          break;
-        }
-        aFatherStyles->SetValue(aSettingInd++, anOlDPSS);
-        anIsFound = Standard_True;
-      }
-      // init PSA of NAUO
-      if (anIsFound)
-      {
-        thePSA->Init(aFatherStyles);
-      }
-    }
-  }
-  return anIsFound;
-}
-
-//==================================================================================================
-
-static void MakeSTEPStyles(STEPConstruct_Styles&                        theStyles,
-                           const TopoDS_Shape&                          theShape,
-                           const XCAFPrs_IndexedDataMapOfShapeStyle&    theSettings,
-                           Handle(StepVisual_StyledItem)&               theOverride,
-                           TopTools_MapOfShape&                         theMap,
-                           const MoniTool_DataMapOfShapeTransient&      theMapCompMDGPR,
-                           STEPConstruct_DataMapOfAsciiStringTransient& theDPDCs,
-                           STEPConstruct_DataMapOfPointTransient&       theColRGBs,
-                           const Handle(XCAFDoc_ShapeTool)&             theShTool,
-                           const XCAFPrs_Style*                         theInherit,
-                           const Standard_Boolean                       theIsComponent,
-                           const Standard_Boolean                       theVisMaterialMode)
-{
-  // skip already processed shapes
-  if (!theMap.Add(theShape))
-    return;
-
-  // check if shape has its own style (r inherits from ancestor)
-  XCAFPrs_Style aStyle;
-  if (theInherit)
-    aStyle = *theInherit;
-  if (theSettings.Contains(theShape))
-  {
-    const XCAFPrs_Style& anOwnStyle = theSettings.FindFromKey(theShape);
-    if (!anOwnStyle.IsVisible())
-      aStyle.SetVisibility(Standard_False);
-    if (anOwnStyle.IsSetColorCurv())
-      aStyle.SetColorCurv(anOwnStyle.GetColorCurv());
-    if (anOwnStyle.IsSetColorSurf())
-      aStyle.SetColorSurf(anOwnStyle.GetColorSurfRGBA());
-    if (!anOwnStyle.Material().IsNull())
-      aStyle.SetMaterial(anOwnStyle.Material());
-  }
-
-  // translate colors to STEP
-  Handle(StepVisual_Colour) aSurfColor, aCurvColor;
-  Standard_Real             aRenderTransp = 0.0;
-  if (aStyle.IsSetColorSurf())
-  {
-    Quantity_ColorRGBA aSurfCol = aStyle.GetColorSurfRGBA();
-    aRenderTransp               = 1.0 - aSurfCol.Alpha();
-    aSurfColor                  = theStyles.EncodeColor(aSurfCol.GetRGB(), theDPDCs, theColRGBs);
-  }
-  if (aStyle.IsSetColorCurv())
-    aCurvColor = theStyles.EncodeColor(aStyle.GetColorCurv(), theDPDCs, theColRGBs);
-
-  Standard_Boolean aHasOwn = (!aSurfColor.IsNull() || !aCurvColor.IsNull() || !aStyle.IsVisible());
-
-  // find target item and assign style to it
-  Handle(StepVisual_StyledItem) aSTEPstyle = theOverride;
-  if (aHasOwn)
-  {
-    if (theShape.ShapeType() != TopAbs_COMPOUND || theIsComponent)
-    { // skip compounds, let subshapes inherit its colors
-      TopLoc_Location             aLocation;
-      TColStd_SequenceOfTransient aSeqRI;
-      Standard_Integer            aNbEntities =
-        FindEntities(theStyles.FinderProcess(), theShape, aLocation, aSeqRI);
-      if (aNbEntities <= 0)
-        Message::SendTrace() << "Warning: Cannot find RI for "
-                             << theShape.TShape()->DynamicType()->Name() << "\n";
-      // Get overridden style gka 10.06.03
-      if (theIsComponent && aNbEntities > 0)
-        getStyledItem(theShape, theShTool, theStyles, theOverride, theMapCompMDGPR);
-
-      for (TColStd_SequenceOfTransient::Iterator anEntIter(aSeqRI); anEntIter.More();
-           anEntIter.Next())
-      {
-        const Handle(StepRepr_RepresentationItem)& anItem =
-          Handle(StepRepr_RepresentationItem)::DownCast(anEntIter.Value());
-        Handle(StepVisual_PresentationStyleAssignment) aPSA;
-        if (aStyle.IsVisible() || !aSurfColor.IsNull() || !aCurvColor.IsNull()
-            || (theVisMaterialMode && !aStyle.Material().IsNull() && !aStyle.Material()->IsEmpty()))
-        {
-          STEPConstruct_RenderingProperties aRenderProps;
-          if (theVisMaterialMode && !aStyle.Material().IsNull() && !aStyle.Material()->IsEmpty())
-          {
-            aRenderProps.Init(aStyle.Material());
-          }
-          else if (aRenderTransp > 0.0)
-          {
-            aRenderProps.Init(aStyle.GetColorSurfRGBA());
-          }
-          aPSA =
-            theStyles.MakeColorPSA(anItem, aSurfColor, aCurvColor, aRenderProps, theIsComponent);
-        }
-        else
-        {
-          // default white color
-          aSurfColor =
-            theStyles.EncodeColor(Quantity_Color(Quantity_NOC_WHITE), theDPDCs, theColRGBs);
-          aPSA = theStyles.MakeColorPSA(anItem,
-                                        aSurfColor,
-                                        aCurvColor,
-                                        STEPConstruct_RenderingProperties(),
-                                        theIsComponent);
-          if (theIsComponent)
-            setDefaultInstanceColor(theOverride, aPSA);
-
-        } // end of component case
-
-        aSTEPstyle = theStyles.AddStyle(anItem, aPSA, theOverride);
-        aHasOwn    = Standard_False;
-      }
-    }
-  }
-
-  // iterate on subshapes (except vertices :)
-  if (theShape.ShapeType() == TopAbs_EDGE)
-    return;
-  if (theIsComponent)
-  {
-    return;
-  }
-  for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
-  {
-    MakeSTEPStyles(theStyles,
-                   anIter.Value(),
-                   theSettings,
-                   aSTEPstyle,
-                   theMap,
-                   theMapCompMDGPR,
-                   theDPDCs,
-                   theColRGBs,
-                   theShTool,
-                   (aHasOwn ? &aStyle : 0),
-                   Standard_False,
-                   theVisMaterialMode);
-  }
-}
-
-//==================================================================================================
-
-// Auxiliary: find PDS for AdvancedFace or EdgeCurve for creation needed ShapeAspect in D&GT
-// structure
-static Standard_Boolean FindPDSforDGT(const Interface_Graph&                   theGraph,
-                                      const Handle(Standard_Transient)&        theEnt,
-                                      Handle(StepRepr_ProductDefinitionShape)& thePDS,
-                                      Handle(StepRepr_RepresentationContext)&  theRC,
-                                      Handle(StepShape_AdvancedFace)&          theAF,
-                                      Handle(StepShape_EdgeCurve)&             theEC)
-{
-  if (theEnt.IsNull())
-    return Standard_False;
-  if (!theEnt->IsKind(STANDARD_TYPE(StepShape_EdgeCurve))
-      && !theEnt->IsKind(STANDARD_TYPE(StepShape_AdvancedFace)))
-  {
-    return Standard_False;
-  }
-
-  theAF = Handle(StepShape_AdvancedFace)::DownCast(theEnt);
-  if (theAF.IsNull())
-  {
-    theEC = Handle(StepShape_EdgeCurve)::DownCast(theEnt);
-    for (Interface_EntityIterator aSharingsIter = theGraph.Sharings(theEC);
-         aSharingsIter.More() && theAF.IsNull();
-         aSharingsIter.Next())
-    {
-      Handle(StepShape_OrientedEdge) anOE =
-        Handle(StepShape_OrientedEdge)::DownCast(aSharingsIter.Value());
-      if (anOE.IsNull())
-        continue;
-      for (Interface_EntityIterator aSubs1 = theGraph.Sharings(anOE);
-           aSubs1.More() && theAF.IsNull();
-           aSubs1.Next())
-      {
-        Handle(StepShape_EdgeLoop) aEL = Handle(StepShape_EdgeLoop)::DownCast(aSubs1.Value());
-        if (aEL.IsNull())
-          continue;
-        for (Interface_EntityIterator aSubs2 = theGraph.Sharings(aEL);
-             aSubs2.More() && theAF.IsNull();
-             aSubs2.Next())
-        {
-          Handle(StepShape_FaceBound) aFB = Handle(StepShape_FaceBound)::DownCast(aSubs2.Value());
-          if (aFB.IsNull())
-            continue;
-          for (Interface_EntityIterator aSubs3 = theGraph.Sharings(aFB);
-               aSubs3.More() && theAF.IsNull();
-               aSubs3.Next())
-          {
-            theAF = Handle(StepShape_AdvancedFace)::DownCast(aSubs3.Value());
-          }
-        }
-      }
-    }
-  }
-  if (theAF.IsNull())
-    return Standard_False;
-
-  for (Interface_EntityIterator aSharingsIter = theGraph.Sharings(theAF);
-       aSharingsIter.More() && thePDS.IsNull();
-       aSharingsIter.Next())
-  {
-    Handle(StepShape_ConnectedFaceSet) aCFS =
-      Handle(StepShape_ConnectedFaceSet)::DownCast(aSharingsIter.Value());
-    if (aCFS.IsNull())
-      continue;
-    for (Interface_EntityIterator aSubs1 = theGraph.Sharings(aCFS);
-         aSubs1.More() && thePDS.IsNull();
-         aSubs1.Next())
-    {
-      Handle(StepRepr_RepresentationItem) aRI =
-        Handle(StepRepr_RepresentationItem)::DownCast(aSubs1.Value());
-      if (aRI.IsNull())
-        continue;
-      for (Interface_EntityIterator aSubs2 = theGraph.Sharings(aRI);
-           aSubs2.More() && thePDS.IsNull();
-           aSubs2.Next())
-      {
-        Handle(StepShape_ShapeRepresentation) aSR =
-          Handle(StepShape_ShapeRepresentation)::DownCast(aSubs2.Value());
-        if (aSR.IsNull())
-          continue;
-        theRC = aSR->ContextOfItems();
-        for (Interface_EntityIterator aSubs3 = theGraph.Sharings(aSR);
-             aSubs3.More() && thePDS.IsNull();
-             aSubs3.Next())
-        {
-          Handle(StepShape_ShapeDefinitionRepresentation) aSDR =
-            Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aSubs3.Value());
-          if (aSDR.IsNull())
-            continue;
-          Handle(StepRepr_PropertyDefinition) aPropD = aSDR->Definition().PropertyDefinition();
-          if (aPropD.IsNull())
-            continue;
-          thePDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(aPropD);
-        }
-      }
-    }
-  }
-  return Standard_True;
-}
-
-//==================================================================================================
-
-// Auxiliary: find Product_definition_shape entity for given entity
-static Handle(StepRepr_ProductDefinitionShape) FindPDS(
-  const Interface_Graph&                  theGraph,
-  const Handle(Standard_Transient)&       theEnt,
-  Handle(StepRepr_RepresentationContext)& theRC)
-{
-  if (theEnt.IsNull())
-    return NULL;
-  Handle(StepRepr_ProductDefinitionShape) aPDS;
-
-  // try to find shape_representation in sharings
-  for (Interface_EntityIterator anIter = theGraph.Sharings(theEnt); anIter.More() && aPDS.IsNull();
-       anIter.Next())
-  {
-    Handle(StepShape_ShapeRepresentation) aSR =
-      Handle(StepShape_ShapeRepresentation)::DownCast(anIter.Value());
-    if (aSR.IsNull())
-      continue;
-    theRC                           = aSR->ContextOfItems();
-    Interface_EntityIterator aSDRIt = theGraph.Sharings(aSR);
-    for (aSDRIt.Start(); aSDRIt.More() && aPDS.IsNull(); aSDRIt.Next())
-    {
-      Handle(StepShape_ShapeDefinitionRepresentation) aSDR =
-        Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aSDRIt.Value());
-      if (aSDR.IsNull())
-        continue;
-      Handle(StepRepr_PropertyDefinition) aPropD = aSDR->Definition().PropertyDefinition();
-      if (aPropD.IsNull())
-        continue;
-      aPDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(aPropD);
-    }
-  }
-  if (!aPDS.IsNull())
-    return aPDS;
-
-  for (Interface_EntityIterator anIter = theGraph.Sharings(theEnt); anIter.More(); anIter.Next())
-  {
-    if (anIter.Value()->IsKind(STANDARD_TYPE(StepShape_TopologicalRepresentationItem))
-        || anIter.Value()->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)))
-    {
-      aPDS = FindPDS(theGraph, anIter.Value(), theRC);
-      if (!aPDS.IsNull())
-        return aPDS;
-    }
-  }
-  return aPDS;
-}
-
-//==================================================================================================
-
-static StepBasic_Unit GetUnit(const Handle(StepRepr_RepresentationContext)& theRC,
-                              const Standard_Boolean theIsAngle = Standard_False)
-{
-  StepBasic_Unit              aUnit;
-  Handle(StepBasic_NamedUnit) aCurrentUnit;
-  if (theIsAngle)
-  {
-    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
-      Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
-    if (!aCtx.IsNull())
-    {
-      for (StepBasic_HArray1OfNamedUnit::Iterator aUnitIter(aCtx->Units()->Array1());
-           aUnitIter.More();
-           aUnitIter.Next())
-      {
-        const Handle(StepBasic_NamedUnit)& aCurUnitValue = aUnitIter.Value();
-        if (aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit))
-            || aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)))
-        {
-          aCurrentUnit = aCurUnitValue;
-          break;
-        }
-      }
-    }
-    if (aCurrentUnit.IsNull())
-    {
-      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
-        Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
-      if (!aCtx1.IsNull())
-      {
-        for (StepBasic_HArray1OfNamedUnit::Iterator aUnitIter(aCtx1->Units()->Array1());
-             aUnitIter.More();
-             aUnitIter.Next())
-        {
-          const Handle(StepBasic_NamedUnit)& aCurUnitValue = aUnitIter.Value();
-          if (aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit))
-              || aCurUnitValue->IsKind(
-                STANDARD_TYPE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)))
-          {
-            aCurrentUnit = aCurUnitValue;
-            break;
-          }
-        }
-      }
-    }
-    if (aCurrentUnit.IsNull())
-      aCurrentUnit = new StepBasic_SiUnitAndPlaneAngleUnit;
-  }
-  else
-  {
-    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
-      Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
-    if (!aCtx.IsNull())
-    {
-      for (StepBasic_HArray1OfNamedUnit::Iterator aUnitIter(aCtx->Units()->Array1());
-           aUnitIter.More();
-           aUnitIter.Next())
-      {
-        const Handle(StepBasic_NamedUnit)& aCurUnitValue = aUnitIter.Value();
-        if (aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))
-            || aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit)))
-        {
-          aCurrentUnit = aCurUnitValue;
-          break;
-        }
-      }
-    }
-    if (aCurrentUnit.IsNull())
-    {
-      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
-        Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
-      if (!aCtx1.IsNull())
-      {
-        for (StepBasic_HArray1OfNamedUnit::Iterator aUnitIter(aCtx1->Units()->Array1());
-             aUnitIter.More();
-             aUnitIter.Next())
-        {
-          const Handle(StepBasic_NamedUnit)& aCurUnitValue = aUnitIter.Value();
-          if (aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))
-              || aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit)))
-          {
-            aCurrentUnit = aCurUnitValue;
-            break;
-          }
-        }
-      }
-    }
-    if (aCurrentUnit.IsNull())
-      aCurrentUnit = new StepBasic_SiUnitAndLengthUnit;
-  }
-
-  aUnit.SetValue(aCurrentUnit);
-  return aUnit;
-}
-
-//==================================================================================================
-
-static Handle(StepRepr_ReprItemAndMeasureWithUnit) CreateDimValue(
-  const Standard_Real                                  theValue,
-  const StepBasic_Unit&                                theUnit,
-  const Handle(TCollection_HAsciiString)&              theName,
-  const Standard_CString                               theMeasureName,
-  const Standard_Boolean                               theIsAngle,
-  const Standard_Boolean                               theIsQualified = Standard_False,
-  const Handle(StepShape_QualifiedRepresentationItem)& theQRI         = NULL)
-{
-  Handle(StepRepr_RepresentationItem) aReprItem = new StepRepr_RepresentationItem();
-  aReprItem->Init(new TCollection_HAsciiString(theName));
-  Handle(StepBasic_MeasureWithUnit)    aMWU         = new StepBasic_MeasureWithUnit();
-  Handle(StepBasic_MeasureValueMember) aValueMember = new StepBasic_MeasureValueMember();
-  aValueMember->SetName(theMeasureName);
-  aValueMember->SetReal(theValue);
-  aMWU->Init(aValueMember, theUnit);
-  if (theIsQualified)
-  {
-    if (theIsAngle)
-    {
-      // Angle & with qualifiers
-      Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI) anItem =
-        new StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI();
-      anItem->Init(aMWU, aReprItem, theQRI);
-      return anItem;
-    }
-    else
-    {
-      // Length & with qualifiers
-      Handle(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI) anItem =
-        new StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI();
-      anItem->Init(aMWU, aReprItem, theQRI);
-      return anItem;
-    }
-  }
-  else
-  {
-    if (theIsAngle)
-    {
-      // Angle & without qualifiers
-      Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit) anItem =
-        new StepRepr_ReprItemAndPlaneAngleMeasureWithUnit();
-      anItem->Init(aMWU, aReprItem);
-      return anItem;
-    }
-    else
-    {
-      // Length & without qualifiers
-      Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) anItem =
-        new StepRepr_ReprItemAndLengthMeasureWithUnit();
-      anItem->Init(aMWU, aReprItem);
-      return anItem;
-    }
-  }
-}
-
-//==================================================================================================
-
-static Handle(StepRepr_ShapeAspect) WriteSupplementalGeometry(
-  const Handle(XSControl_WorkSession)&                              theWS,
-  const Handle(StepRepr_ConstructiveGeometryRepresentation)&        theCGRepr,
-  const TDF_Label&                                                  theLabel,
-  const TopoDS_Shape&                                               theShape,
-  Handle(StepRepr_RepresentationContext)&                           theRC,
-  Handle(StepAP242_GeometricItemSpecificUsage)&                     theGISU,
-  NCollection_Vector<Handle(StepGeom_GeometricRepresentationItem)>& theGeomItems,
-  const StepData_Factors&                                           theLocalFactors)
-{
-  // Get working data
-  const Handle(Interface_InterfaceModel)& aModel  = theWS->Model();
-  const Handle(XSControl_TransferWriter)& aTW     = theWS->TransferWriter();
-  const Handle(Transfer_FinderProcess)&   aFP     = aTW->FinderProcess();
-  const Handle(Interface_HGraph)          aHGraph = theWS->HGraph();
-  if (aHGraph.IsNull())
-  {
-    return nullptr;
-  }
-  Interface_Graph aGraph = aHGraph->Graph();
-
-  // Shape_Aspect
-  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString();
-  Handle(TDataStd_Name)            aNameAttr;
-  if (theLabel.FindAttribute(TDataStd_Name::GetID(), aNameAttr))
-  {
-    aName = new TCollection_HAsciiString(TCollection_AsciiString(aNameAttr->Get()));
-  }
-  // Description is empty
-  const Handle(TCollection_HAsciiString) aDescription = new TCollection_HAsciiString();
-
-  Handle(TDataStd_TreeNode) aRefNode;
-  if (!theLabel.FindAttribute(XCAFDoc::SupplementalRefGUID(), aRefNode)
-      || aRefNode->Father().IsNull() || aRefNode->Father()->Label().IsNull())
-  {
-    return nullptr;
-  }
-
-  TopoDS_Shape                aMainShape = XCAFDoc_ShapeTool::GetShape(aRefNode->Father()->Label());
-  TopLoc_Location             aLoc;
-  TColStd_SequenceOfTransient aSeqRI;
-  FindEntities(aFP, aMainShape, aLoc, aSeqRI);
-  if (aSeqRI.IsEmpty())
-  {
-    aFP->Messenger()->SendInfo() << "Warning: Cannot find RI for "
-                                 << aMainShape.TShape()->DynamicType()->Name() << std::endl;
-    return nullptr;
-  }
-
-  Handle(StepRepr_RepresentationContext)  aRC;
-  Handle(StepRepr_ProductDefinitionShape) aPDS = FindPDS(aGraph, aSeqRI.Value(1), aRC);
-  if (aPDS.IsNull())
-  {
-    return nullptr;
-  }
-
-  theRC = aRC;
-
-  Handle(StepGeom_GeometricRepresentationItem) anIdentifiedItem;
-  if (theShape.ShapeType() == TopAbs_FACE)
-  {
-    const TopoDS_Face&         aFace = TopoDS::Face(theShape);
-    const Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace);
-    GeomToStep_MakeSurface     aMaker(aSurf, theLocalFactors);
-    if (aMaker.IsDone())
-    {
-      anIdentifiedItem = aMaker.Value();
-    }
-  }
-  else if (theShape.ShapeType() == TopAbs_EDGE)
-  {
-    const TopoDS_Edge&       anEdge = TopoDS::Edge(theShape);
-    Standard_Real            aTmpFirst, aTmpLast;
-    const Handle(Geom_Curve) aCurv = BRep_Tool::Curve(anEdge, aTmpFirst, aTmpLast);
-    GeomToStep_MakeCurve     aMaker(aCurv, theLocalFactors);
-    if (aMaker.IsDone())
-    {
-      anIdentifiedItem = aMaker.Value();
-    }
-  }
-  if (anIdentifiedItem.IsNull())
-  {
-    return nullptr;
-  }
-
-  Handle(StepRepr_ShapeAspect) aResSA = new StepRepr_ShapeAspect();
-  aResSA->Init(aName, aDescription, aPDS, StepData_LTrue);
-  // Geometric_Item_Specific_Usage
-  Handle(StepAP242_GeometricItemSpecificUsage) aGISU = new StepAP242_GeometricItemSpecificUsage();
-  StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
-  aDefinition.SetValue(aResSA);
-  Handle(StepRepr_HArray1OfRepresentationItem) anReprItems =
-    new StepRepr_HArray1OfRepresentationItem(1, 1);
-
-  anIdentifiedItem->SetName(aName);
-  theGISU = aGISU;
-  anReprItems->SetValue(1, anIdentifiedItem);
-  theGeomItems.Append(anIdentifiedItem);
-
-  // Set entities to model
-  aGISU->Init(aName, aDescription, aDefinition, theCGRepr, anReprItems);
-  aModel->AddWithRefs(aResSA);
-  aModel->AddWithRefs(aGISU);
-  return aResSA;
-}
-} // namespace
 
 //=================================================================================================
 
@@ -1366,12 +630,6 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer&            
     if (myLabels.IsBound(aCurL))
       continue; // already processed
 
-    Handle(TDataStd_UAttribute) aSupGeomAttr;
-    if (aCurL.FindAttribute(XCAFDoc::SupplementalContainerGUID(), aSupGeomAttr))
-    {
-      continue;
-    }
-
     TopoDS_Shape aCurShape = XCAFDoc_ShapeTool::GetShape(aCurL);
     if (aCurShape.IsNull())
       continue;
@@ -1749,6 +1007,323 @@ Standard_Boolean STEPCAFControl_Writer::writeExternRefs(const Handle(XSControl_W
   }
   anEFTool.WriteExternRefs(aStepSchema);
   return Standard_True;
+}
+
+//=================================================================================================
+
+static Standard_Integer FindEntities(const Handle(Transfer_FinderProcess)& theFP,
+                                     const TopoDS_Shape&                   theShape,
+                                     TopLoc_Location&                      theLocation,
+                                     TColStd_SequenceOfTransient&          theSeqRI)
+{
+  Handle(StepRepr_RepresentationItem) anItem =
+    STEPConstruct::FindEntity(theFP, theShape, theLocation);
+
+  if (!anItem.IsNull())
+  {
+    theSeqRI.Append(anItem);
+    return 1;
+  }
+
+  // may be S was split during shape processing
+  Handle(TransferBRep_ShapeMapper) aMapper = TransferBRep::ShapeMapper(theFP, theShape);
+  Handle(Transfer_Binder)          aBinder = theFP->Find(aMapper);
+  if (aBinder.IsNull())
+    return 0;
+
+  Handle(Transfer_TransientListBinder) aTransientListBinder =
+    // Handle(Transfer_TransientListBinder)::DownCast( bnd->Next(Standard_True) );
+    Handle(Transfer_TransientListBinder)::DownCast(aBinder);
+  Standard_Integer aResCount = 0;
+  if (aTransientListBinder.IsNull())
+  {
+    for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
+    {
+      Handle(StepRepr_RepresentationItem) aLocalItem =
+        STEPConstruct::FindEntity(theFP, anIter.Value(), theLocation);
+      if (aLocalItem.IsNull())
+        continue;
+      aResCount++;
+      theSeqRI.Append(aLocalItem);
+    }
+  }
+  else if (!aTransientListBinder.IsNull())
+  {
+    const Standard_Integer aNbTransient = aTransientListBinder->NbTransients();
+    for (Standard_Integer anInd = 1; anInd <= aNbTransient; anInd++)
+    {
+      Handle(Standard_Transient) anEntity = aTransientListBinder->Transient(anInd);
+      anItem                              = Handle(StepRepr_RepresentationItem)::DownCast(anEntity);
+      if (anItem.IsNull())
+        continue;
+      aResCount++;
+      theSeqRI.Append(anItem);
+    }
+  }
+  return aResCount;
+}
+
+//=================================================================================================
+
+static Standard_Boolean getStyledItem(const TopoDS_Shape&                     theShape,
+                                      const Handle(XCAFDoc_ShapeTool)&        theShapeTool,
+                                      const STEPConstruct_Styles&             theStyles,
+                                      Handle(StepVisual_StyledItem)&          theResSelItem,
+                                      const MoniTool_DataMapOfShapeTransient& theMapCompMDGPR)
+{
+  const TDF_Label  aTopShL   = theShapeTool->FindShape(theShape, Standard_False);
+  TopoDS_Shape     aTopLevSh = theShapeTool->GetShape(aTopShL);
+  Standard_Boolean anIsFound = Standard_False;
+  if (aTopLevSh.IsNull() || !theMapCompMDGPR.IsBound(aTopLevSh))
+  {
+    return Standard_False;
+  }
+  Handle(StepVisual_PresentationRepresentation) aMDGPR =
+    Handle(StepVisual_PresentationRepresentation)::DownCast(theMapCompMDGPR.Find(aTopLevSh));
+  Handle(StepRepr_HArray1OfRepresentationItem) anSelItmHArr = aMDGPR->Items();
+  if (anSelItmHArr.IsNull())
+  {
+    return Standard_False;
+  }
+  // Search for PSA of Manifold solid
+  TColStd_SequenceOfTransient aNewSeqRI;
+  Standard_Boolean            isFilled = Standard_False;
+  for (StepRepr_HArray1OfRepresentationItem::Iterator anIter(anSelItmHArr->Array1());
+       anIter.More() && !anIsFound;
+       anIter.Next())
+  {
+    const Handle(StepVisual_StyledItem)& aSelItm =
+      Handle(StepVisual_StyledItem)::DownCast(anIter.Value());
+
+    if (aSelItm.IsNull())
+    {
+      continue;
+    }
+    // Check that it is a styled item for manifold solid brep
+    if (!isFilled)
+    {
+      TopLoc_Location aLoc;
+      FindEntities(theStyles.FinderProcess(), aTopLevSh, aLoc, aNewSeqRI);
+      isFilled = Standard_True;
+    }
+    if (!aNewSeqRI.IsEmpty())
+    {
+      const Handle(StepRepr_RepresentationItem)& anItem         = aSelItm->Item();
+      Standard_Boolean                           isSameMonSolBR = Standard_False;
+      for (TColStd_SequenceOfTransient::Iterator aIterRI(aNewSeqRI); aIterRI.More(); aIterRI.Next())
+      {
+        if (!anItem.IsNull() && anItem == aIterRI.Value())
+        {
+          isSameMonSolBR = Standard_True;
+          break;
+        }
+      }
+      if (!isSameMonSolBR)
+        continue;
+    }
+    for (StepVisual_HArray1OfPresentationStyleAssignment::Iterator aStyleIter(
+           aSelItm->Styles()->Array1());
+         aStyleIter.More() && !anIsFound;
+         aStyleIter.Next())
+    {
+      const Handle(StepVisual_PresentationStyleAssignment)& aFatherPSA = aStyleIter.Value();
+      // check for PSA for top-level (not Presentation style by context for NAUO)
+      if (aFatherPSA.IsNull()
+          || aFatherPSA->IsKind(STANDARD_TYPE(StepVisual_PresentationStyleByContext)))
+        continue;
+      theResSelItem = aSelItm;
+      anIsFound     = Standard_True;
+    }
+  }
+  return anIsFound;
+}
+
+//=================================================================================================
+
+static Standard_Boolean setDefaultInstanceColor(
+  const Handle(StepVisual_StyledItem)&            theStyleItem,
+  Handle(StepVisual_PresentationStyleAssignment)& thePSA)
+{
+  Standard_Boolean anIsFound = Standard_False;
+  for (StepVisual_HArray1OfPresentationStyleAssignment::Iterator aStyleIter(
+         theStyleItem->Styles()->Array1());
+       aStyleIter.More() && !anIsFound;
+       aStyleIter.Next())
+  {
+    const Handle(StepVisual_PresentationStyleAssignment)& aFatherPSA = aStyleIter.Value();
+    // check for PSA for top-level (not Presentation style by context for NAUO)
+    if (aFatherPSA.IsNull()
+        || aFatherPSA->IsKind(STANDARD_TYPE(StepVisual_PresentationStyleByContext)))
+      return Standard_False;
+
+    // get style select from father PSA
+    if (aFatherPSA->NbStyles() > 0)
+    {
+      Handle(StepVisual_HArray1OfPresentationStyleSelect) aFatherStyles =
+        new StepVisual_HArray1OfPresentationStyleSelect(1, aFatherPSA->NbStyles());
+      Standard_Integer aSettingInd = 1;
+      for (StepVisual_HArray1OfPresentationStyleSelect::Iterator aFatherStyleIter(
+             aFatherPSA->Styles()->Array1());
+           aFatherStyleIter.More();
+           aFatherStyleIter.Next())
+      {
+        StepVisual_PresentationStyleSelect        aPSS;
+        const StepVisual_PresentationStyleSelect& anOlDPSS = aFatherStyleIter.Value();
+        if (!anOlDPSS.PointStyle().IsNull())
+          aPSS.SetValue(anOlDPSS.PointStyle());
+        else if (!anOlDPSS.CurveStyle().IsNull())
+          aPSS.SetValue(anOlDPSS.CurveStyle());
+        else if (!anOlDPSS.SurfaceStyleUsage().IsNull())
+          aPSS.SetValue(anOlDPSS.SurfaceStyleUsage());
+        else
+        {
+          anIsFound = Standard_False;
+          break;
+        }
+        aFatherStyles->SetValue(aSettingInd++, anOlDPSS);
+        anIsFound = Standard_True;
+      }
+      // init PSA of NAUO
+      if (anIsFound)
+      {
+        thePSA->Init(aFatherStyles);
+      }
+    }
+  }
+  return anIsFound;
+}
+
+//=================================================================================================
+
+static void MakeSTEPStyles(STEPConstruct_Styles&                        theStyles,
+                           const TopoDS_Shape&                          theShape,
+                           const XCAFPrs_IndexedDataMapOfShapeStyle&    theSettings,
+                           Handle(StepVisual_StyledItem)&               theOverride,
+                           TopTools_MapOfShape&                         theMap,
+                           const MoniTool_DataMapOfShapeTransient&      theMapCompMDGPR,
+                           STEPConstruct_DataMapOfAsciiStringTransient& theDPDCs,
+                           STEPConstruct_DataMapOfPointTransient&       theColRGBs,
+                           const Handle(XCAFDoc_ShapeTool)&             theShTool,
+                           const XCAFPrs_Style*                         theInherit,
+                           const Standard_Boolean                       theIsComponent,
+                           const Standard_Boolean                       theVisMaterialMode)
+{
+  // skip already processed shapes
+  if (!theMap.Add(theShape))
+    return;
+
+  // check if shape has its own style (r inherits from ancestor)
+  XCAFPrs_Style aStyle;
+  if (theInherit)
+    aStyle = *theInherit;
+  if (theSettings.Contains(theShape))
+  {
+    const XCAFPrs_Style& anOwnStyle = theSettings.FindFromKey(theShape);
+    if (!anOwnStyle.IsVisible())
+      aStyle.SetVisibility(Standard_False);
+    if (anOwnStyle.IsSetColorCurv())
+      aStyle.SetColorCurv(anOwnStyle.GetColorCurv());
+    if (anOwnStyle.IsSetColorSurf())
+      aStyle.SetColorSurf(anOwnStyle.GetColorSurfRGBA());
+    if (!anOwnStyle.Material().IsNull())
+      aStyle.SetMaterial(anOwnStyle.Material());
+  }
+
+  // translate colors to STEP
+  Handle(StepVisual_Colour) aSurfColor, aCurvColor;
+  Standard_Real             aRenderTransp = 0.0;
+  if (aStyle.IsSetColorSurf())
+  {
+    Quantity_ColorRGBA aSurfCol = aStyle.GetColorSurfRGBA();
+    aRenderTransp               = 1.0 - aSurfCol.Alpha();
+    aSurfColor                  = theStyles.EncodeColor(aSurfCol.GetRGB(), theDPDCs, theColRGBs);
+  }
+  if (aStyle.IsSetColorCurv())
+    aCurvColor = theStyles.EncodeColor(aStyle.GetColorCurv(), theDPDCs, theColRGBs);
+
+  Standard_Boolean aHasOwn = (!aSurfColor.IsNull() || !aCurvColor.IsNull() || !aStyle.IsVisible());
+
+  // find target item and assign style to it
+  Handle(StepVisual_StyledItem) aSTEPstyle = theOverride;
+  if (aHasOwn)
+  {
+    if (theShape.ShapeType() != TopAbs_COMPOUND || theIsComponent)
+    { // skip compounds, let subshapes inherit its colors
+      TopLoc_Location             aLocation;
+      TColStd_SequenceOfTransient aSeqRI;
+      Standard_Integer            aNbEntities =
+        FindEntities(theStyles.FinderProcess(), theShape, aLocation, aSeqRI);
+      if (aNbEntities <= 0)
+        Message::SendTrace() << "Warning: Cannot find RI for "
+                             << theShape.TShape()->DynamicType()->Name() << "\n";
+      // Get overridden style gka 10.06.03
+      if (theIsComponent && aNbEntities > 0)
+        getStyledItem(theShape, theShTool, theStyles, theOverride, theMapCompMDGPR);
+
+      for (TColStd_SequenceOfTransient::Iterator anEntIter(aSeqRI); anEntIter.More();
+           anEntIter.Next())
+      {
+        const Handle(StepRepr_RepresentationItem)& anItem =
+          Handle(StepRepr_RepresentationItem)::DownCast(anEntIter.Value());
+        Handle(StepVisual_PresentationStyleAssignment) aPSA;
+        if (aStyle.IsVisible() || !aSurfColor.IsNull() || !aCurvColor.IsNull()
+            || (theVisMaterialMode && !aStyle.Material().IsNull() && !aStyle.Material()->IsEmpty()))
+        {
+          STEPConstruct_RenderingProperties aRenderProps;
+          if (theVisMaterialMode && !aStyle.Material().IsNull() && !aStyle.Material()->IsEmpty())
+          {
+            aRenderProps.Init(aStyle.Material());
+          }
+          else if (aRenderTransp > 0.0)
+          {
+            aRenderProps.Init(aStyle.GetColorSurfRGBA());
+          }
+          aPSA =
+            theStyles.MakeColorPSA(anItem, aSurfColor, aCurvColor, aRenderProps, theIsComponent);
+        }
+        else
+        {
+          // default white color
+          aSurfColor =
+            theStyles.EncodeColor(Quantity_Color(Quantity_NOC_WHITE), theDPDCs, theColRGBs);
+          aPSA = theStyles.MakeColorPSA(anItem,
+                                        aSurfColor,
+                                        aCurvColor,
+                                        STEPConstruct_RenderingProperties(),
+                                        theIsComponent);
+          if (theIsComponent)
+            setDefaultInstanceColor(theOverride, aPSA);
+
+        } // end of component case
+
+        aSTEPstyle = theStyles.AddStyle(anItem, aPSA, theOverride);
+        aHasOwn    = Standard_False;
+      }
+    }
+  }
+
+  // iterate on subshapes (except vertices :)
+  if (theShape.ShapeType() == TopAbs_EDGE)
+    return;
+  if (theIsComponent)
+  {
+    return;
+  }
+  for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
+  {
+    MakeSTEPStyles(theStyles,
+                   anIter.Value(),
+                   theSettings,
+                   aSTEPstyle,
+                   theMap,
+                   theMapCompMDGPR,
+                   theDPDCs,
+                   theColRGBs,
+                   theShTool,
+                   (aHasOwn ? &aStyle : 0),
+                   Standard_False,
+                   theVisMaterialMode);
+  }
 }
 
 //=================================================================================================
@@ -2870,6 +2445,315 @@ Standard_Boolean STEPCAFControl_Writer::writeSHUOs(const Handle(XSControl_WorkSe
 }
 
 //=======================================================================
+// function : FindPDSforDGT
+// purpose  : auxiliary: find PDS for AdvancedFace or EdgeCurve for creation
+//                     needed ShapeAspect in D&GT structure
+//=======================================================================
+static Standard_Boolean FindPDSforDGT(const Interface_Graph&                   theGraph,
+                                      const Handle(Standard_Transient)&        theEnt,
+                                      Handle(StepRepr_ProductDefinitionShape)& thePDS,
+                                      Handle(StepRepr_RepresentationContext)&  theRC,
+                                      Handle(StepShape_AdvancedFace)&          theAF,
+                                      Handle(StepShape_EdgeCurve)&             theEC)
+{
+  if (theEnt.IsNull())
+    return Standard_False;
+  if (!theEnt->IsKind(STANDARD_TYPE(StepShape_EdgeCurve))
+      && !theEnt->IsKind(STANDARD_TYPE(StepShape_AdvancedFace)))
+  {
+    return Standard_False;
+  }
+
+  theAF = Handle(StepShape_AdvancedFace)::DownCast(theEnt);
+  if (theAF.IsNull())
+  {
+    theEC = Handle(StepShape_EdgeCurve)::DownCast(theEnt);
+    for (Interface_EntityIterator aSharingsIter = theGraph.Sharings(theEC);
+         aSharingsIter.More() && theAF.IsNull();
+         aSharingsIter.Next())
+    {
+      Handle(StepShape_OrientedEdge) anOE =
+        Handle(StepShape_OrientedEdge)::DownCast(aSharingsIter.Value());
+      if (anOE.IsNull())
+        continue;
+      for (Interface_EntityIterator aSubs1 = theGraph.Sharings(anOE);
+           aSubs1.More() && theAF.IsNull();
+           aSubs1.Next())
+      {
+        Handle(StepShape_EdgeLoop) aEL = Handle(StepShape_EdgeLoop)::DownCast(aSubs1.Value());
+        if (aEL.IsNull())
+          continue;
+        for (Interface_EntityIterator aSubs2 = theGraph.Sharings(aEL);
+             aSubs2.More() && theAF.IsNull();
+             aSubs2.Next())
+        {
+          Handle(StepShape_FaceBound) aFB = Handle(StepShape_FaceBound)::DownCast(aSubs2.Value());
+          if (aFB.IsNull())
+            continue;
+          for (Interface_EntityIterator aSubs3 = theGraph.Sharings(aFB);
+               aSubs3.More() && theAF.IsNull();
+               aSubs3.Next())
+          {
+            theAF = Handle(StepShape_AdvancedFace)::DownCast(aSubs3.Value());
+          }
+        }
+      }
+    }
+  }
+  if (theAF.IsNull())
+    return Standard_False;
+
+  for (Interface_EntityIterator aSharingsIter = theGraph.Sharings(theAF);
+       aSharingsIter.More() && thePDS.IsNull();
+       aSharingsIter.Next())
+  {
+    Handle(StepShape_ConnectedFaceSet) aCFS =
+      Handle(StepShape_ConnectedFaceSet)::DownCast(aSharingsIter.Value());
+    if (aCFS.IsNull())
+      continue;
+    for (Interface_EntityIterator aSubs1 = theGraph.Sharings(aCFS);
+         aSubs1.More() && thePDS.IsNull();
+         aSubs1.Next())
+    {
+      Handle(StepRepr_RepresentationItem) aRI =
+        Handle(StepRepr_RepresentationItem)::DownCast(aSubs1.Value());
+      if (aRI.IsNull())
+        continue;
+      for (Interface_EntityIterator aSubs2 = theGraph.Sharings(aRI);
+           aSubs2.More() && thePDS.IsNull();
+           aSubs2.Next())
+      {
+        Handle(StepShape_ShapeRepresentation) aSR =
+          Handle(StepShape_ShapeRepresentation)::DownCast(aSubs2.Value());
+        if (aSR.IsNull())
+          continue;
+        theRC = aSR->ContextOfItems();
+        for (Interface_EntityIterator aSubs3 = theGraph.Sharings(aSR);
+             aSubs3.More() && thePDS.IsNull();
+             aSubs3.Next())
+        {
+          Handle(StepShape_ShapeDefinitionRepresentation) aSDR =
+            Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aSubs3.Value());
+          if (aSDR.IsNull())
+            continue;
+          Handle(StepRepr_PropertyDefinition) aPropD = aSDR->Definition().PropertyDefinition();
+          if (aPropD.IsNull())
+            continue;
+          thePDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(aPropD);
+        }
+      }
+    }
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+// function : FindPDS
+// purpose  : auxiliary: find Product_definition_shape entity for given entity
+//=======================================================================
+static Handle(StepRepr_ProductDefinitionShape) FindPDS(
+  const Interface_Graph&                  theGraph,
+  const Handle(Standard_Transient)&       theEnt,
+  Handle(StepRepr_RepresentationContext)& theRC)
+{
+  if (theEnt.IsNull())
+    return NULL;
+  Handle(StepRepr_ProductDefinitionShape) aPDS;
+
+  // try to find shape_representation in sharings
+  for (Interface_EntityIterator anIter = theGraph.Sharings(theEnt); anIter.More() && aPDS.IsNull();
+       anIter.Next())
+  {
+    Handle(StepShape_ShapeRepresentation) aSR =
+      Handle(StepShape_ShapeRepresentation)::DownCast(anIter.Value());
+    if (aSR.IsNull())
+      continue;
+    theRC                           = aSR->ContextOfItems();
+    Interface_EntityIterator aSDRIt = theGraph.Sharings(aSR);
+    for (aSDRIt.Start(); aSDRIt.More() && aPDS.IsNull(); aSDRIt.Next())
+    {
+      Handle(StepShape_ShapeDefinitionRepresentation) aSDR =
+        Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aSDRIt.Value());
+      if (aSDR.IsNull())
+        continue;
+      Handle(StepRepr_PropertyDefinition) aPropD = aSDR->Definition().PropertyDefinition();
+      if (aPropD.IsNull())
+        continue;
+      aPDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(aPropD);
+    }
+  }
+  if (!aPDS.IsNull())
+    return aPDS;
+
+  for (Interface_EntityIterator anIter = theGraph.Sharings(theEnt); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value()->IsKind(STANDARD_TYPE(StepShape_TopologicalRepresentationItem))
+        || anIter.Value()->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)))
+    {
+      aPDS = FindPDS(theGraph, anIter.Value(), theRC);
+      if (!aPDS.IsNull())
+        return aPDS;
+    }
+  }
+  return aPDS;
+}
+
+//=================================================================================================
+
+static StepBasic_Unit GetUnit(const Handle(StepRepr_RepresentationContext)& theRC,
+                              const Standard_Boolean theIsAngle = Standard_False)
+{
+  StepBasic_Unit              aUnit;
+  Handle(StepBasic_NamedUnit) aCurrentUnit;
+  if (theIsAngle)
+  {
+    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
+      Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
+    if (!aCtx.IsNull())
+    {
+      for (StepBasic_HArray1OfNamedUnit::Iterator aUnitIter(aCtx->Units()->Array1());
+           aUnitIter.More();
+           aUnitIter.Next())
+      {
+        const Handle(StepBasic_NamedUnit)& aCurUnitValue = aUnitIter.Value();
+        if (aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit))
+            || aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)))
+        {
+          aCurrentUnit = aCurUnitValue;
+          break;
+        }
+      }
+    }
+    if (aCurrentUnit.IsNull())
+    {
+      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
+        Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
+      if (!aCtx1.IsNull())
+      {
+        for (StepBasic_HArray1OfNamedUnit::Iterator aUnitIter(aCtx1->Units()->Array1());
+             aUnitIter.More();
+             aUnitIter.Next())
+        {
+          const Handle(StepBasic_NamedUnit)& aCurUnitValue = aUnitIter.Value();
+          if (aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit))
+              || aCurUnitValue->IsKind(
+                STANDARD_TYPE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)))
+          {
+            aCurrentUnit = aCurUnitValue;
+            break;
+          }
+        }
+      }
+    }
+    if (aCurrentUnit.IsNull())
+      aCurrentUnit = new StepBasic_SiUnitAndPlaneAngleUnit;
+  }
+  else
+  {
+    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
+      Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
+    if (!aCtx.IsNull())
+    {
+      for (StepBasic_HArray1OfNamedUnit::Iterator aUnitIter(aCtx->Units()->Array1());
+           aUnitIter.More();
+           aUnitIter.Next())
+      {
+        const Handle(StepBasic_NamedUnit)& aCurUnitValue = aUnitIter.Value();
+        if (aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))
+            || aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit)))
+        {
+          aCurrentUnit = aCurUnitValue;
+          break;
+        }
+      }
+    }
+    if (aCurrentUnit.IsNull())
+    {
+      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
+        Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
+      if (!aCtx1.IsNull())
+      {
+        for (StepBasic_HArray1OfNamedUnit::Iterator aUnitIter(aCtx1->Units()->Array1());
+             aUnitIter.More();
+             aUnitIter.Next())
+        {
+          const Handle(StepBasic_NamedUnit)& aCurUnitValue = aUnitIter.Value();
+          if (aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))
+              || aCurUnitValue->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit)))
+          {
+            aCurrentUnit = aCurUnitValue;
+            break;
+          }
+        }
+      }
+    }
+    if (aCurrentUnit.IsNull())
+      aCurrentUnit = new StepBasic_SiUnitAndLengthUnit;
+  }
+
+  aUnit.SetValue(aCurrentUnit);
+  return aUnit;
+}
+
+//=================================================================================================
+
+static Handle(StepRepr_ReprItemAndMeasureWithUnit) CreateDimValue(
+  const Standard_Real                                  theValue,
+  const StepBasic_Unit&                                theUnit,
+  const Handle(TCollection_HAsciiString)&              theName,
+  const Standard_CString                               theMeasureName,
+  const Standard_Boolean                               theIsAngle,
+  const Standard_Boolean                               theIsQualified = Standard_False,
+  const Handle(StepShape_QualifiedRepresentationItem)& theQRI         = NULL)
+{
+  Handle(StepRepr_RepresentationItem) aReprItem = new StepRepr_RepresentationItem();
+  aReprItem->Init(new TCollection_HAsciiString(theName));
+  Handle(StepBasic_MeasureWithUnit)    aMWU         = new StepBasic_MeasureWithUnit();
+  Handle(StepBasic_MeasureValueMember) aValueMember = new StepBasic_MeasureValueMember();
+  aValueMember->SetName(theMeasureName);
+  aValueMember->SetReal(theValue);
+  aMWU->Init(aValueMember, theUnit);
+  if (theIsQualified)
+  {
+    if (theIsAngle)
+    {
+      // Angle & with qualifiers
+      Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI) anItem =
+        new StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI();
+      anItem->Init(aMWU, aReprItem, theQRI);
+      return anItem;
+    }
+    else
+    {
+      // Length & with qualifiers
+      Handle(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI) anItem =
+        new StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI();
+      anItem->Init(aMWU, aReprItem, theQRI);
+      return anItem;
+    }
+  }
+  else
+  {
+    if (theIsAngle)
+    {
+      // Angle & without qualifiers
+      Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit) anItem =
+        new StepRepr_ReprItemAndPlaneAngleMeasureWithUnit();
+      anItem->Init(aMWU, aReprItem);
+      return anItem;
+    }
+    else
+    {
+      // Length & without qualifiers
+      Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) anItem =
+        new StepRepr_ReprItemAndLengthMeasureWithUnit();
+      anItem->Init(aMWU, aReprItem);
+      return anItem;
+    }
+  }
+}
+
+//=======================================================================
 // function : writeShapeAspect
 // purpose  : auxiliary (write Shape_Aspect entity for given shape)
 //=======================================================================
@@ -3626,17 +3510,17 @@ static void WriteDimValues(const Handle(XSControl_WorkSession)&             theW
   }
 }
 
-//==================================================================================================
-
-// Wwrite connection point for dimensions
-static void WriteDerivedGeometry(
-  const Handle(XSControl_WorkSession)&                              theWS,
-  const Handle(XCAFDimTolObjects_DimensionObject)&                  theObject,
-  const Handle(StepRepr_ConstructiveGeometryRepresentation)&        theRepr,
-  Handle(StepRepr_ShapeAspect)&                                     theFirstSA,
-  Handle(StepRepr_ShapeAspect)&                                     theSecondSA,
-  NCollection_Vector<Handle(StepGeom_GeometricRepresentationItem)>& theGeoms,
-  const StepData_Factors&                                           theLocalFactors)
+//=======================================================================
+// function : WriteDerivedGeometry
+// purpose  : auxiliary (write connection point for dimensions)
+//======================================================================
+static void WriteDerivedGeometry(const Handle(XSControl_WorkSession)&             theWS,
+                                 const Handle(XCAFDimTolObjects_DimensionObject)& theObject,
+                                 const Handle(StepRepr_ConstructiveGeometryRepresentation)& theRepr,
+                                 Handle(StepRepr_ShapeAspect)&                        theFirstSA,
+                                 Handle(StepRepr_ShapeAspect)&                        theSecondSA,
+                                 NCollection_Vector<Handle(StepGeom_CartesianPoint)>& thePnts,
+                                 const StepData_Factors& theLocalFactors)
 {
   const Handle(Interface_InterfaceModel)& aModel = theWS->Model();
   // First point
@@ -3645,7 +3529,7 @@ static void WriteDerivedGeometry(
     GeomToStep_MakeCartesianPoint   aPointMaker(theObject->GetPoint(),
                                               theLocalFactors.LengthFactor());
     Handle(StepGeom_CartesianPoint) aPoint = aPointMaker.Value();
-    theGeoms.Append(aPoint);
+    thePnts.Append(aPoint);
     Handle(StepRepr_DerivedShapeAspect) aDSA = new StepRepr_DerivedShapeAspect();
     aDSA->Init(new TCollection_HAsciiString(),
                new TCollection_HAsciiString(),
@@ -3680,7 +3564,7 @@ static void WriteDerivedGeometry(
     GeomToStep_MakeCartesianPoint   aPointMaker(theObject->GetPoint2(),
                                               theLocalFactors.LengthFactor());
     Handle(StepGeom_CartesianPoint) aPoint = aPointMaker.Value();
-    theGeoms.Append(aPoint);
+    thePnts.Append(aPoint);
     Handle(StepRepr_DerivedShapeAspect) aDSA = new StepRepr_DerivedShapeAspect();
     aDSA->Init(new TCollection_HAsciiString(),
                new TCollection_HAsciiString(),
@@ -4001,8 +3885,11 @@ void STEPCAFControl_Writer::writeToleranceZone(
   aModel->AddWithRefs(aPAMWU);
 }
 
-//==================================================================================================
-
+//=======================================================================
+// function : writeGeomTolerance
+// purpose  : auxiliary (write Geometric_Tolerance entity for given shapes,
+//           label and datum system)
+//======================================================================
 void STEPCAFControl_Writer::writeGeomTolerance(
   const Handle(XSControl_WorkSession)&                      theWS,
   const TDF_LabelSequence&                                  theShapeSeqL,
@@ -4029,37 +3916,14 @@ void STEPCAFControl_Writer::writeGeomTolerance(
   aLMWU->Init(aValueMember, aUnit);
   aModel->AddWithRefs(aLMWU);
 
-  // Auxiliary entities for derived geometry
-  Handle(StepRepr_ConstructiveGeometryRepresentation) aCGRepr =
-    new StepRepr_ConstructiveGeometryRepresentation();
-  Handle(StepRepr_ConstructiveGeometryRepresentationRelationship) aCGReprRel =
-    new StepRepr_ConstructiveGeometryRepresentationRelationship();
-  NCollection_Vector<Handle(StepGeom_GeometricRepresentationItem)> aConnectionGeometry;
-
   // Geometric_Tolerance target
   Handle(StepRepr_ShapeAspect)                 aMainSA;
   Handle(StepRepr_RepresentationContext)       dummyRC;
   Handle(StepAP242_GeometricItemSpecificUsage) dummyGISU;
   if (theShapeSeqL.Length() == 1)
   {
-    const TDF_Label&            aShLabel = theShapeSeqL.Value(1);
-    Handle(TDataStd_UAttribute) aSupAttr;
-    TopoDS_Shape                aShape = XCAFDoc_ShapeTool::GetShape(aShLabel);
-    if (aShLabel.FindAttribute(XCAFDoc::SupplementalGeometryGUID(), aSupAttr))
-    {
-      aMainSA = WriteSupplementalGeometry(theWS,
-                                          aCGRepr,
-                                          aShLabel,
-                                          aShape,
-                                          dummyRC,
-                                          dummyGISU,
-                                          aConnectionGeometry,
-                                          theLocalFactors);
-    }
-    else
-    {
-      aMainSA = writeShapeAspect(theWS, theGeomTolL, aShape, dummyRC, dummyGISU);
-    }
+    TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(theShapeSeqL.Value(1));
+    aMainSA             = writeShapeAspect(theWS, theGeomTolL, aShape, dummyRC, dummyGISU);
     aModel->AddWithRefs(aMainSA);
   }
   else
@@ -4067,25 +3931,9 @@ void STEPCAFControl_Writer::writeGeomTolerance(
     Handle(StepRepr_CompositeShapeAspect) aCSA;
     for (TDF_LabelSequence::Iterator aShIter(theShapeSeqL); aShIter.More(); aShIter.Next())
     {
-      const TDF_Label&             aShLabel = aShIter.Value();
-      Handle(TDataStd_UAttribute)  aSupAttr;
-      TopoDS_Shape                 aShape = XCAFDoc_ShapeTool::GetShape(aShLabel);
-      Handle(StepRepr_ShapeAspect) aSA;
-      if (aShLabel.FindAttribute(XCAFDoc::SupplementalGeometryGUID(), aSupAttr))
-      {
-        aSA = WriteSupplementalGeometry(theWS,
-                                        aCGRepr,
-                                        aShLabel,
-                                        aShape,
-                                        dummyRC,
-                                        dummyGISU,
-                                        aConnectionGeometry,
-                                        theLocalFactors);
-      }
-      else
-      {
-        aSA = writeShapeAspect(theWS, theGeomTolL, aShape, dummyRC, dummyGISU);
-      }
+      TopoDS_Shape                 aShape = XCAFDoc_ShapeTool::GetShape(aShIter.Value());
+      Handle(StepRepr_ShapeAspect) aSA =
+        writeShapeAspect(theWS, theGeomTolL, aShape, dummyRC, dummyGISU);
       if (aSA.IsNull())
         continue;
       if (aCSA.IsNull())
@@ -4100,22 +3948,6 @@ void STEPCAFControl_Writer::writeGeomTolerance(
     }
     aMainSA = aCSA;
   }
-
-  // Write Derived geometry
-  if (aConnectionGeometry.Length() > 0)
-  {
-    Handle(StepRepr_HArray1OfRepresentationItem) anItems =
-      new StepRepr_HArray1OfRepresentationItem(1, aConnectionGeometry.Length());
-    for (Standard_Integer i = 0; i < aConnectionGeometry.Length(); ++i)
-      anItems->SetValue(i + 1, aConnectionGeometry(i));
-    aCGRepr->Init(new TCollection_HAsciiString(), anItems, dummyRC);
-    aCGReprRel->Init(new TCollection_HAsciiString(),
-                     new TCollection_HAsciiString(),
-                     dummyGISU->UsedRepresentation(),
-                     aCGRepr);
-    aModel->AddWithRefs(aCGReprRel);
-  }
-
   StepDimTol_GeometricToleranceTarget aGTTarget;
   aGTTarget.SetValue(aMainSA);
 
@@ -4729,9 +4561,9 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
     new StepRepr_ConstructiveGeometryRepresentation();
   Handle(StepRepr_ConstructiveGeometryRepresentationRelationship) aCGReprRel =
     new StepRepr_ConstructiveGeometryRepresentationRelationship();
-  NCollection_Vector<Handle(StepGeom_GeometricRepresentationItem)> aConnectionGeometry;
-  Handle(StepRepr_RepresentationContext)                           dummyRC;
-  Handle(StepAP242_GeometricItemSpecificUsage)                     dummyGISU;
+  NCollection_Vector<Handle(StepGeom_CartesianPoint)> aConnectionPnts;
+  Handle(StepRepr_RepresentationContext)              dummyRC;
+  Handle(StepAP242_GeometricItemSpecificUsage)        dummyGISU;
   for (TDF_LabelSequence::Iterator aDGTIter(aDGTLabels); aDGTIter.More(); aDGTIter.Next())
   {
     const TDF_Label&          aDimensionL = aDGTIter.Value();
@@ -4768,24 +4600,8 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
     Handle(StepRepr_ShapeAspect) aFirstSA, aSecondSA;
     if (aFirstShapeL.Length() == 1)
     {
-      const TDF_Label&            aShLabel = aFirstShapeL.Value(1);
-      TopoDS_Shape                aShape   = XCAFDoc_ShapeTool::GetShape(aShLabel);
-      Handle(TDataStd_UAttribute) aSupAttr;
-      if (aShLabel.FindAttribute(XCAFDoc::SupplementalGeometryGUID(), aSupAttr))
-      {
-        aFirstSA = WriteSupplementalGeometry(theWS,
-                                             aCGRepr,
-                                             aShLabel,
-                                             aShape,
-                                             dummyRC,
-                                             dummyGISU,
-                                             aConnectionGeometry,
-                                             theLocalFactors);
-      }
-      else
-      {
-        aFirstSA = writeShapeAspect(theWS, aDimensionL, aShape, dummyRC, dummyGISU);
-      }
+      TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(aFirstShapeL.Value(1));
+      aFirstSA            = writeShapeAspect(theWS, aDimensionL, aShape, dummyRC, dummyGISU);
       if (aRC.IsNull() && !dummyRC.IsNull())
         aRC = dummyRC;
     }
@@ -4794,25 +4610,9 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
       Handle(StepRepr_CompositeShapeAspect) aCSA;
       for (Standard_Integer shIt = 1; shIt <= aFirstShapeL.Length(); shIt++)
       {
-        const TDF_Label&             aShLabel = aFirstShapeL.Value(shIt);
-        TopoDS_Shape                 aShape   = XCAFDoc_ShapeTool::GetShape(aShLabel);
-        Handle(TDataStd_UAttribute)  aSupAttr;
-        Handle(StepRepr_ShapeAspect) aSA;
-        if (aShLabel.FindAttribute(XCAFDoc::SupplementalGeometryGUID(), aSupAttr))
-        {
-          aSA = WriteSupplementalGeometry(theWS,
-                                          aCGRepr,
-                                          aShLabel,
-                                          aShape,
-                                          dummyRC,
-                                          dummyGISU,
-                                          aConnectionGeometry,
-                                          theLocalFactors);
-        }
-        else
-        {
-          aSA = writeShapeAspect(theWS, aDimensionL, aShape, dummyRC, dummyGISU);
-        }
+        TopoDS_Shape                 aShape = XCAFDoc_ShapeTool::GetShape(aFirstShapeL.Value(shIt));
+        Handle(StepRepr_ShapeAspect) aSA =
+          writeShapeAspect(theWS, aDimensionL, aShape, dummyRC, dummyGISU);
         if (aSA.IsNull())
           continue;
         if (aCSA.IsNull())
@@ -4833,27 +4633,10 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
       }
       aFirstSA = aCSA;
     }
-
     if (aSecondShapeL.Length() == 1)
     {
-      const TDF_Label&            aShLabel = aSecondShapeL.Value(1);
-      TopoDS_Shape                aShape   = XCAFDoc_ShapeTool::GetShape(aShLabel);
-      Handle(TDataStd_UAttribute) aSupAttr;
-      if (aShLabel.FindAttribute(XCAFDoc::SupplementalGeometryGUID(), aSupAttr))
-      {
-        aSecondSA = WriteSupplementalGeometry(theWS,
-                                              aCGRepr,
-                                              aShLabel,
-                                              aShape,
-                                              dummyRC,
-                                              dummyGISU,
-                                              aConnectionGeometry,
-                                              theLocalFactors);
-      }
-      else
-      {
-        aSecondSA = writeShapeAspect(theWS, aDimensionL, aShape, dummyRC, dummyGISU);
-      }
+      TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(aSecondShapeL.Value(1));
+      aSecondSA           = writeShapeAspect(theWS, aDimensionL, aShape, dummyRC, dummyGISU);
       if (aRC.IsNull() && !dummyRC.IsNull())
         aRC = dummyRC;
     }
@@ -4862,25 +4645,9 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
       Handle(StepRepr_CompositeShapeAspect) aCSA;
       for (Standard_Integer shIt = 1; shIt <= aSecondShapeL.Length(); shIt++)
       {
-        const TDF_Label&             aShLabel = aSecondShapeL.Value(shIt);
-        TopoDS_Shape                 aShape   = XCAFDoc_ShapeTool::GetShape(aShLabel);
-        Handle(TDataStd_UAttribute)  aSupAttr;
-        Handle(StepRepr_ShapeAspect) aSA;
-        if (aShLabel.FindAttribute(XCAFDoc::SupplementalGeometryGUID(), aSupAttr))
-        {
-          aSA = WriteSupplementalGeometry(theWS,
-                                          aCGRepr,
-                                          aShLabel,
-                                          aShape,
-                                          dummyRC,
-                                          dummyGISU,
-                                          aConnectionGeometry,
-                                          theLocalFactors);
-        }
-        else
-        {
-          aSA = writeShapeAspect(theWS, aDimensionL, aShape, dummyRC, dummyGISU);
-        }
+        TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(aSecondShapeL.Value(shIt));
+        Handle(StepRepr_ShapeAspect) aSA =
+          writeShapeAspect(theWS, aDimensionL, aShape, dummyRC, dummyGISU);
         if (aCSA.IsNull() && !aSA.IsNull())
         {
           aCSA = new StepRepr_CompositeShapeAspect();
@@ -4924,7 +4691,7 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
                            aCGRepr,
                            aFirstSA,
                            aSecondSA,
-                           aConnectionGeometry,
+                           aConnectionPnts,
                            theLocalFactors);
     XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
     if (XCAFDimTolObjects_DimensionObject::IsDimensionalLocation(aDimType))
@@ -5027,12 +4794,12 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
                       theLocalFactors);
   }
   // Write Derived geometry
-  if (aConnectionGeometry.Length() > 0)
+  if (aConnectionPnts.Length() > 0)
   {
     Handle(StepRepr_HArray1OfRepresentationItem) anItems =
-      new StepRepr_HArray1OfRepresentationItem(1, aConnectionGeometry.Length());
-    for (Standard_Integer i = 0; i < aConnectionGeometry.Length(); i++)
-      anItems->SetValue(i + 1, aConnectionGeometry(i));
+      new StepRepr_HArray1OfRepresentationItem(1, aConnectionPnts.Length());
+    for (Standard_Integer i = 0; i < aConnectionPnts.Length(); i++)
+      anItems->SetValue(i + 1, aConnectionPnts(i));
     aCGRepr->Init(new TCollection_HAsciiString(), anItems, dummyRC);
     aCGReprRel->Init(new TCollection_HAsciiString(),
                      new TCollection_HAsciiString(),

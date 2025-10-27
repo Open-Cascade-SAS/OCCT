@@ -427,17 +427,6 @@ private:
                                   const Handle(XSControl_WorkSession)& theWS,
                                   const StepData_Factors& theLocalFactors = StepData_Factors());
 
-  //! Finds reference geometry or create supplemental geometry label
-  //! @param[in] theShapeStart step entity to get reference
-  //! @param[in] theShTool tool to work with shape labels
-  //! @param[out] theShLabelSeq container to put reference label
-  //! @param[in] theLocalFactors structure to calculate units.
-  //! @return TRUE if a reference is found or supplemental geometry is added
-  Standard_Boolean findReferenceGeometry(const Handle(Standard_Transient)& theShapeStart,
-                                         const Handle(XCAFDoc_ShapeTool)&  theShTool,
-                                         TDF_LabelSequence&                theShLabelSeq,
-                                         const StepData_Factors&           theLocalFactors);
-
   //! Prepares units for transfer
   void prepareUnits(const Handle(StepData_StepModel)& theModel,
                     const Handle(TDocStd_Document)&   theDoc,
@@ -515,18 +504,17 @@ private:
   STEPControl_Reader                                                              myReader;
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
   XCAFDoc_DataMapOfShapeLabel                                                     myMap;
-  TDF_Label                                                  mySupplementalLabel;
-  Standard_Boolean                                           myColorMode;
-  Standard_Boolean                                           myNameMode;
-  Standard_Boolean                                           myLayerMode;
-  Standard_Boolean                                           myPropsMode;
-  Standard_Boolean                                           myMetaMode;
-  Standard_Boolean                                           myProductMetaMode;
-  Standard_Boolean                                           mySHUOMode;
-  Standard_Boolean                                           myGDTMode;
-  Standard_Boolean                                           myMatMode;
-  Standard_Boolean                                           myViewMode;
-  NCollection_DataMap<Handle(Standard_Transient), TDF_Label> myGDTMap;
+  Standard_Boolean                                                                myColorMode;
+  Standard_Boolean                                                                myNameMode;
+  Standard_Boolean                                                                myLayerMode;
+  Standard_Boolean                                                                myPropsMode;
+  Standard_Boolean                                                                myMetaMode;
+  Standard_Boolean                                                                myProductMetaMode;
+  Standard_Boolean                                                                mySHUOMode;
+  Standard_Boolean                                                                myGDTMode;
+  Standard_Boolean                                                                myMatMode;
+  Standard_Boolean                                                                myViewMode;
+  NCollection_DataMap<Handle(Standard_Transient), TDF_Label>                      myGDTMap;
 };
 
 #endif // _STEPCAFControl_Reader_HeaderFile
