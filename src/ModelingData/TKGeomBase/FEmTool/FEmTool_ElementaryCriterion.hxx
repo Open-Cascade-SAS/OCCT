@@ -38,7 +38,7 @@ public:
   //! Empty constructor
   Standard_EXPORT FEmTool_ElementaryCriterion();
 
-  //! Set the coefficient of the Element (the  Curve)
+  //! Set the coefficient of the Element (the Curve)
   Standard_EXPORT void Set(const Handle(TColStd_HArray2OfReal)& Coeff);
 
   //! Set the definition interval of the Element
@@ -52,14 +52,14 @@ public:
 
   //! To Compute J(E)  the coefficients of Hessian matrix of
   //! J(E) which are crossed derivatives in dimensions <Dim1>
-  //! and  <Dim2>.
+  //! and <Dim2>.
   //! If DependenceTable(Dimension1,Dimension2) is False
   Standard_EXPORT virtual void Hessian(const Standard_Integer Dim1,
                                        const Standard_Integer Dim2,
                                        math_Matrix&           H) = 0;
 
-  //! To Compute the  coefficients in the dimension <dim>
-  //! of  the  J(E)'s  Gradient where E  is  the current  Element
+  //! To Compute the coefficients in the dimension <dim>
+  //! of the J(E)'s Gradient where E is the current Element
   Standard_EXPORT virtual void Gradient(const Standard_Integer Dim, math_Vector& G) = 0;
 
   DEFINE_STANDARD_RTTIEXT(FEmTool_ElementaryCriterion, Standard_Transient)

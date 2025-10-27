@@ -266,8 +266,9 @@ STEPControl_Controller::STEPControl_Controller()
 
     // Mode for reading constructive geometry representation relationship to read
     // StepRepr_ConstructiveGeometryRepresentation method implemented only for
-    // StepGeom_MakeAxis2Placement3d for axis placements representing axis for suplemented geometry.
-    // Axis placements are translated to planar faces with CS equal to translated axis placements
+    // StepGeom_MakeAxis2Placement3d for axis placements representing axis for supplemented
+    // geometry. Axis placements are translated to planar faces with CS equal to translated axis
+    // placements
     Interface_Static::Init("step", "read.step.constructivegeom.relationship", 'e', "");
     Interface_Static::Init("step", "read.step.constructivegeom.relationship", '&', "enum 0");
     Interface_Static::Init("step", "read.step.constructivegeom.relationship", '&', "eval OFF");

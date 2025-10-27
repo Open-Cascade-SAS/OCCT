@@ -31,11 +31,11 @@
 #include <Standard_OStream.hxx>
 class PLib_JacobiPolynomial;
 
-//! Approximate  a function on   an interval [First,Last]
-//! The result  is  a simple  polynomial  whose  degree is  as low as
-//! possible  to   satisfy  the required  tolerance  and  the
-//! maximum degree.  The maximum  error and the averrage error
-//! resulting from  approximating the function by the polynomial are computed
+//! Approximate a function on an interval [First,Last]
+//! The result is a simple polynomial whose degree is as low as
+//! possible to satisfy the required tolerance and the
+//! maximum degree. The maximum error and the average error
+//! resulting from approximating the function by the polynomial are computed
 class AdvApprox_SimpleApprox
 {
 public:

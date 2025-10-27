@@ -42,7 +42,7 @@ DEFINE_STANDARD_HANDLE(Adaptor3d_Surface, Standard_Transient)
 //! the surface by algorithms which use it.
 //! A derived concrete class is provided:
 //! GeomAdaptor_Surface for a surface from the Geom package.
-//! The  Surface class describes  the standard behaviour
+//! The Surface class describes the standard behaviour
 //! of a surface for generic algorithms.
 //!
 //! The Surface can  be decomposed in intervals of any
@@ -74,33 +74,33 @@ public:
 
   Standard_EXPORT virtual GeomAbs_Shape VContinuity() const;
 
-  //! Returns the number of U intervals for  continuity
+  //! Returns the number of U intervals for continuity
   //! <S>. May be one if UContinuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbUIntervals(const GeomAbs_Shape S) const;
 
-  //! Returns the number of V intervals for  continuity
+  //! Returns the number of V intervals for continuity
   //! <S>. May be one if VContinuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbVIntervals(const GeomAbs_Shape S) const;
 
-  //! Returns the  intervals with the requested continuity
+  //! Returns the intervals with the requested continuity
   //! in the U direction.
   Standard_EXPORT virtual void UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
 
-  //! Returns the  intervals with the requested continuity
+  //! Returns the intervals with the requested continuity
   //! in the V direction.
   Standard_EXPORT virtual void VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
 
-  //! Returns    a  surface trimmed in the U direction
-  //! equivalent   of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a surface trimmed in the U direction
+  //! equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT virtual Handle(Adaptor3d_Surface) UTrim(const Standard_Real First,
                                                           const Standard_Real Last,
                                                           const Standard_Real Tol) const;
 
-  //! Returns    a  surface trimmed in the V direction  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a surface trimmed in the V direction between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT virtual Handle(Adaptor3d_Surface) VTrim(const Standard_Real First,
@@ -126,7 +126,7 @@ public:
   //! Computes the point of parameters U,V on the surface.
   Standard_EXPORT virtual void D0(const Standard_Real U, const Standard_Real V, gp_Pnt& P) const;
 
-  //! Computes the point  and the first derivatives on the surface.
+  //! Computes the point and the first derivatives on the surface.
   //! Raised if the continuity of the current intervals is not C1.
   //!
   //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
@@ -136,9 +136,9 @@ public:
                                   gp_Vec&             D1U,
                                   gp_Vec&             D1V) const;
 
-  //! Computes   the point,  the  first  and  second
+  //! Computes the point, the first and second
   //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
+  //! Raised if the continuity of the current
   //! intervals is not C2.
   Standard_EXPORT virtual void D2(const Standard_Real U,
                                   const Standard_Real V,
@@ -149,9 +149,9 @@ public:
                                   gp_Vec&             D2V,
                                   gp_Vec&             D2UV) const;
 
-  //! Computes the point,  the first, second and third
+  //! Computes the point, the first, second and third
   //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
+  //! Raised if the continuity of the current
   //! intervals is not C3.
   Standard_EXPORT virtual void D3(const Standard_Real U,
                                   const Standard_Real V,
@@ -176,17 +176,17 @@ public:
                                     const Standard_Integer Nu,
                                     const Standard_Integer Nv) const;
 
-  //! Returns the parametric U  resolution corresponding
+  //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT virtual Standard_Real UResolution(const Standard_Real R3d) const;
 
-  //! Returns the parametric V  resolution corresponding
+  //! Returns the parametric V resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT virtual Standard_Real VResolution(const Standard_Real R3d) const;
 
-  //! Returns the type of the surface : Plane, Cylinder,
-  //! Cone,      Sphere,        Torus,    BezierSurface,
-  //! BSplineSurface,               SurfaceOfRevolution,
+  //! Returns the type of the surface: Plane, Cylinder,
+  //! Cone, Sphere, Torus, BezierSurface,
+  //! BSplineSurface, SurfaceOfRevolution,
   //! SurfaceOfExtrusion, OtherSurface
   Standard_EXPORT virtual GeomAbs_SurfaceType GetType() const;
 

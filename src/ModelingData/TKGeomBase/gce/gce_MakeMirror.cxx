@@ -21,7 +21,7 @@
 #include <gp_Trsf.hxx>
 
 //=========================================================================
-//   Creation d une symetrie  de gp par rapport a un point.             +
+//   Creation d une symetrie  de gp par rapport a un point.               +
 //=========================================================================
 gce_MakeMirror::gce_MakeMirror(const gp_Pnt& Point)
 {
@@ -29,7 +29,7 @@ gce_MakeMirror::gce_MakeMirror(const gp_Pnt& Point)
 }
 
 //=========================================================================
-//   Creation d une symetrie  de gp par rapport a une droite.           +
+//   Creation d une symetrie  de gp par rapport a une droite.             +
 //=========================================================================
 
 gce_MakeMirror::gce_MakeMirror(const gp_Ax1& Axis)
@@ -38,7 +38,7 @@ gce_MakeMirror::gce_MakeMirror(const gp_Ax1& Axis)
 }
 
 //=========================================================================
-//   Creation d une symetrie  de gp par rapport a une droite.           +
+//   Creation d une symetrie  de gp par rapport a une droite.             +
 //=========================================================================
 
 gce_MakeMirror::gce_MakeMirror(const gp_Lin& Line)
@@ -47,7 +47,7 @@ gce_MakeMirror::gce_MakeMirror(const gp_Lin& Line)
 }
 
 //=========================================================================
-//   Creation d une symetrie  de gp par rapport a une droite definie    +
+//   Creation d une symetrie  de gp par rapport a une droite definie      +
 //   par un point et une direction.                                       +
 //=========================================================================
 

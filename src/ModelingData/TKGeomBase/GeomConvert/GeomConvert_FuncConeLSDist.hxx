@@ -26,8 +26,6 @@
 //! Function for search of Cone canonic parameters: coordinates of center local coordinate system,
 //! direction of axis, radius and semi-angle from set of points
 //! by least square method.
-//!
-//!
 class GeomConvert_FuncConeLSDist : public math_MultipleVarFunction
 {
 public:

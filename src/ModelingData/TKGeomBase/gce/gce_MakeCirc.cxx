@@ -27,7 +27,7 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=======================================================================
+//=========================================================================
 // function : gce_MakeCirc
 // purpose  :
 //   Creation d un cercle 3d de gp passant par trois points.              +

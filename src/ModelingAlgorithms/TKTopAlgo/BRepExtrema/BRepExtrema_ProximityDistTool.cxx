@@ -25,7 +25,7 @@
 
 //=======================================================================
 // function : BRepExtrema_ProximityDistTool
-// purpose  : Creates new unitialized tool
+// purpose  : Creates new uninitialized tool
 //=======================================================================
 BRepExtrema_ProximityDistTool::BRepExtrema_ProximityDistTool()
     : myMinDistance(std::numeric_limits<Standard_Real>::max()),

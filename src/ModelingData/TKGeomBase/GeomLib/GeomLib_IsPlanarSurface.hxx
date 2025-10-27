@@ -24,7 +24,7 @@
 #include <gp_Pln.hxx>
 class Geom_Surface;
 
-//! Find if a surface is a planar  surface.
+//! Find if a surface is a planar surface.
 class GeomLib_IsPlanarSurface
 {
 public:

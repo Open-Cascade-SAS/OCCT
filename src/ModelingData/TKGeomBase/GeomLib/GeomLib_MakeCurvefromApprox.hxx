@@ -26,8 +26,8 @@
 class Geom2d_BSplineCurve;
 class Geom_BSplineCurve;
 
-//! this class is used to  construct the BSpline curve
-//! from an Approximation ( ApproxAFunction from AdvApprox).
+//! this class is used to construct the BSpline curve
+//! from an Approximation (ApproxAFunction from AdvApprox).
 class GeomLib_MakeCurvefromApprox
 {
 public:

@@ -41,7 +41,7 @@ public:
   //! Clears the content of the set.
   Standard_EXPORT void Clear();
 
-  //! Incorporate a new Surface in the  set and returns
+  //! Incorporate a new Surface in the set and returns
   //! its index.
   Standard_EXPORT Standard_Integer Add(const Handle(Geom_Surface)& S);
 
@@ -54,14 +54,14 @@ public:
   //! Dumps the content of me on the stream <OS>.
   Standard_EXPORT void Dump(Standard_OStream& OS) const;
 
-  //! Writes the content of  me  on the stream <OS> in a
+  //! Writes the content of me on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT void Write(
     Standard_OStream&            OS,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) const;
 
-  //! Reads the content of me from the  stream  <IS>. me
-  //! is first cleared.
+  //! Reads the content of me from the stream <IS>.
+  //! me is first cleared.
   Standard_EXPORT void Read(Standard_IStream&            IS,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -71,8 +71,8 @@ public:
                                            Standard_OStream&           OS,
                                            const Standard_Boolean      compact = Standard_False);
 
-  //! Reads the surface  from  the stream.  The  surface  is
-  //! assumed   to have  been  written  with  the Print
+  //! Reads the surface from the stream. The surface is
+  //! assumed to have been written with the Print
   //! method (compact = True).
   Standard_EXPORT static Handle(Geom_Surface) ReadSurface(Standard_IStream& IS);
 

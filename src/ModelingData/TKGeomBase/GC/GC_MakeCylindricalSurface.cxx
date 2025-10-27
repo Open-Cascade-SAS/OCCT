@@ -45,7 +45,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax2& A2, const Sta
 }
 
 //=========================================================================
-//   Construction of a cylinder by axis <A1> et radius <Radius>.           +
+//   Construction of a cylinder by axis <A1> et radius <Radius>.          +
 //=========================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax1& A1, const Standard_Real Radius)
@@ -59,7 +59,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax1& A1, const Sta
 }
 
 //=========================================================================
-//   Construction of a cylinder by a circle <Cir>.                      +
+//   Construction of a cylinder by a circle <Cir>.                        +
 //=========================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Circ& Circ)
@@ -70,9 +70,9 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Circ& Circ)
 }
 
 //=========================================================================
-//   Construction of a cylinder by tree points <P1>, <P2>, <P3>.         +
-//   Two first points define the axis.                                   +
-//   The third gives the radius.                                         +
+//   Construction of a cylinder by tree points <P1>, <P2>, <P3>.          +
+//   Two first points define the axis.                                    +
+//   The third gives the radius.                                          +
 //=========================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Pnt& P1,

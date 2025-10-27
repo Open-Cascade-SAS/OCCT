@@ -56,7 +56,7 @@ public:
                                              const Standard_Boolean TwoZForATheta,
                                              const Standard_Boolean ZIsPositive);
 
-  //! Sets  the parameters used    to compute Points  and
+  //! Sets the parameters used to compute Points and
   //! Derivative on the curve.
   Standard_EXPORT void SetConeQuadValues(const gp_Cone&         Cone,
                                          const Standard_Real    Qxx,
@@ -75,7 +75,7 @@ public:
                                          const Standard_Boolean TwoZForATheta,
                                          const Standard_Boolean ZIsPositive);
 
-  //! Returns TRUE if the curve is not  infinite  at the
+  //! Returns TRUE if the curve is not infinite at the
   //! last parameter or at the first parameter of the domain.
   Standard_EXPORT Standard_Boolean IsOpen() const;
 

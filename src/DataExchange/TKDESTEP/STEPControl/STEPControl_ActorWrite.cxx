@@ -1810,7 +1810,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferSubShape(
     GeomToStep_MakeCartesianTransformationOperator aMaker(aLoc, theLocalFactors);
     if (!aMaker.IsDone())
     {
-      FP->AddFail(start, "The transfomation relation creation failed");
+      FP->AddFail(start, "The transformation relation creation failed");
     }
     mkitem.Init(sdr, SDR0, aMaker.Value());
     AX1 = aMaker.Value();

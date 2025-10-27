@@ -35,13 +35,13 @@ class gp_Parab;
 class Geom_BezierCurve;
 class Geom_BSplineCurve;
 
-//! Class  used  to project  a 3d curve   on a plane.  The
+//! Class used to project a 3d curve on a plane. The
 //! result will be a 3d curve.
 //!
-//! You  can ask   the projected curve  to  have  the same
+//! You can ask the projected curve to have the same
 //! parametrization as the original curve.
 //!
-//! The projection can be done  along every direction  not
+//! The projection can be done along every direction not
 //! parallel to the plane.
 class ProjLib_ProjectOnPlane : public Adaptor3d_Curve
 {
@@ -57,17 +57,17 @@ public:
 
   //! The projection will be  along the direction <D> on
   //! the plane defined by the Ax3 <Pl>.
-  //! raises  if the direction  <D>  is parallel  to the
+  //! raises if the direction <D> is parallel to the
   //! plane <Pl>.
   Standard_EXPORT ProjLib_ProjectOnPlane(const gp_Ax3& Pl, const gp_Dir& D);
 
   //! Shallow copy of adaptor
   Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
 
-  //! Sets the  Curve  and perform  the projection.
+  //! Sets the Curve and perform the projection.
   //! if <KeepParametrization> is true, the parametrization
-  //! of the Projected Curve <PC>  will  be the same  as
-  //! the parametrization of the initial  curve <C>.
+  //! of the Projected Curve <PC> will be the same as
+  //! the parametrization of the initial curve <C>.
   //! It means: proj(C(u)) = PC(u) for each u.
   //! Otherwise, the parametrization may change.
   Standard_EXPORT void Load(const Handle(Adaptor3d_Curve)& C,
@@ -88,8 +88,8 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! If necessary,  breaks the  curve in  intervals  of
-  //! continuity  <S>.    And  returns   the number   of
+  //! If necessary, breaks the curve in intervals of
+  //! continuity <S>. And  returns the number of
   //! intervals.
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
@@ -100,8 +100,8 @@ public:
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! Returns    a  curve equivalent   of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a curve equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor3d_Curve) Trim(const Standard_Real First,
@@ -153,12 +153,12 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Integer N) const Standard_OVERRIDE;
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
 
-  //! Returns  the  type of the   curve  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the  curve in the current
+  //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   Standard_EXPORT GeomAbs_CurveType GetType() const Standard_OVERRIDE;
 

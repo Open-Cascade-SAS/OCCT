@@ -127,7 +127,7 @@ public:
 
   //! This is the standard action of Copy : its takes into account
   //! only the remaining entities (noted by Graph Status positive)
-  //! and their proper dependances of course. Produces a new model.
+  //! and their proper dependences of course. Produces a new model.
   Standard_EXPORT void StandardCopy(const Interface_Graph&            G,
                                     Interface_CopyTool&               TC,
                                     Handle(Interface_InterfaceModel)& newmod) const;

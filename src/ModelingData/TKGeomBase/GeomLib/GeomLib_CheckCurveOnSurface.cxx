@@ -66,7 +66,7 @@ public:
   }
 
   // returns the number of parameters of the function
-  //(the function is one-dimension).
+  // (the function is one-dimension).
   virtual Standard_Integer NbVariables() const { return 1; }
 
   // returns value of the function when parameters are equal to theX
@@ -93,7 +93,6 @@ public:
     {
       return Standard_False;
     }
-    //
     return Standard_True;
   }
 

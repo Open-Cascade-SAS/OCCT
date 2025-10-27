@@ -30,7 +30,7 @@
 class FEmTool_LinearJerk;
 DEFINE_STANDARD_HANDLE(FEmTool_LinearJerk, FEmTool_ElementaryCriterion)
 
-//! Criterion of LinearJerk To Hermit-Jacobi  elements
+//! Criterion of LinearJerk To Hermit-Jacobi elements
 class FEmTool_LinearJerk : public FEmTool_ElementaryCriterion
 {
 

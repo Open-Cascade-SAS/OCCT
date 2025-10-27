@@ -72,9 +72,9 @@ public:
   Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) ShallowCopy() const Standard_OVERRIDE;
 
   //! computes a set of projected point and determine the
-  //! continuous parts of the projected  curves. The  points
+  //! continuous parts of the projected curves. The points
   //! corresponding to a projection on the bounds of the surface are
-  //! included  in this set of points.
+  //! included in this set of points.
   Standard_EXPORT void Init();
 
   //! Performs projecting for given curve.
@@ -126,16 +126,16 @@ public:
                               Standard_Real&         Udeb,
                               Standard_Real&         Ufin) const;
 
-  //! returns  True  if  part  of  projection with  number  Index is  a  single  point  and  writes
-  //! its  coordinates in  P
+  //! returns True if part of projection with number Index is a single point and writes
+  //! its coordinates in P
   Standard_EXPORT Standard_Boolean IsSinglePnt(const Standard_Integer Index, gp_Pnt2d& P) const;
 
-  //! returns  True  if  part  of  projection with  number  Index is  an  u-isoparametric curve  of
-  //! input  surface
+  //! returns True if part of projection with number Index is an u-isoparametric curve of
+  //! input surface
   Standard_EXPORT Standard_Boolean IsUIso(const Standard_Integer Index, Standard_Real& U) const;
 
-  //! returns  True  if  part  of  projection with  number  Index is  an  v-isoparametric curve  of
-  //! input  surface
+  //! returns True if part of projection with number Index is an v-isoparametric curve of
+  //! input surface
   Standard_EXPORT Standard_Boolean IsVIso(const Standard_Integer Index, Standard_Real& V) const;
 
   //! Computes the point of parameter U on the curve.
@@ -166,45 +166,45 @@ public:
   Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
                               const Standard_Integer N) const Standard_OVERRIDE;
 
-  //! Returns  the  first  parameter of  the  curve  C
-  //! which  has  a  projection  on  S.
+  //! Returns the first parameter of the curve C
+  //! which has a projection on S.
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
-  //! Returns  the  last  parameter of  the  curve  C
-  //! which  has  a  projection  on  S.
+  //! Returns the last parameter of the curve C
+  //! which has a projection on S.
   Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! Returns the Continuity used in the approximation.
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals which  define
-  //! an  S  continuous  part  of  the  projected  curve
+  //! Returns the number of intervals which define
+  //! an S continuous part of the projected curve
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
-  //! Returns    a  curve equivalent   of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a curve equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 2d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor2d_Curve2d) Trim(const Standard_Real FirstParam,
                                                  const Standard_Real LastParam,
                                                  const Standard_Real Tol) const Standard_OVERRIDE;
 
-  //! Returns  the  parameters  corresponding  to
-  //! S  discontinuities.
+  //! Returns the parameters corresponding to
+  //! S discontinuities.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! returns  the  maximum  distance  between
-  //! curve  to  project  and  surface
+  //! returns the maximum distance between
+  //! curve to project and surface
   Standard_EXPORT Standard_Real MaxDistance(const Standard_Integer Index) const;
 
   Standard_EXPORT const Handle(ProjLib_HSequenceOfHSequenceOfPnt)& GetSequence() const;
 
-  //! Returns  the  type of the   curve  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the curve in the current
+  //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   Standard_EXPORT GeomAbs_CurveType GetType() const Standard_OVERRIDE;
 

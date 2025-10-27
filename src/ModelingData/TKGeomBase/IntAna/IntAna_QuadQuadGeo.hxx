@@ -85,7 +85,7 @@ public:
   //! is a circle or an ellipse. If the maximum distance between
   //! the ellipse solution and the circle centered at the ellipse
   //! center is less than Tol, the result will be the circle.
-  //! H is the height of the cylinder <Cyl>. It is  used to check
+  //! H is the height of the cylinder <Cyl>. It is used to check
   //! whether the plane and cylinder are parallel.
   Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln&       P,
                                      const gp_Cylinder&  C,
@@ -100,7 +100,7 @@ public:
   //! is a circle or an ellipse. If the maximum distance between
   //! the ellipse solution and the circle centered at the ellipse
   //! center is less than Tol, the result will be the circle.
-  //! H is the height of the cylinder <Cyl>. It is  used to check
+  //! H is the height of the cylinder <Cyl>. It is used to check
   //! whether the plane and cylinder are parallel.
   Standard_EXPORT void Perform(const gp_Pln&       P,
                                const gp_Cylinder&  C,

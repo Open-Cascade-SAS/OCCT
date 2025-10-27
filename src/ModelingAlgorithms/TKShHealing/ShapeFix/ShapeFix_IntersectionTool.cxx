@@ -1347,7 +1347,7 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
                 // if( Abs(p12-p11)>Abs(b1-a1)/2 || Abs(p22-p21)>Abs(b2-a2)/2 ) {
                 //  segment is big and we have to split each intersecting edge
                 //  on 3 edges --> middle edge - edge based on segment
-                //  after we can remove edges maked from segment
+                //  after we can remove edges made from segment
                 gp_Pnt        P01((Pnt11.X() + Pnt21.X()) / 2,
                            (Pnt11.Y() + Pnt21.Y()) / 2,
                            (Pnt11.Z() + Pnt21.Z()) / 2);

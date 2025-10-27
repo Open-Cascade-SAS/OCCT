@@ -523,11 +523,11 @@ Geom2dGcc_Circ2d2TanOnGeo::Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedCirc&
 }
 
 //=========================================================================
-//   Creation d un cercle tant a deux Droites L1 et L2.                +
+//   Creation d un cercle tant a deux Droites L1 et L2.                   +
 //                        centre sur une courbe OnCurv.                   +
 //  Nous calculons les bissectrices a L1 et L2 qui nous donnent           +
 //  l ensemble des lieux possibles des centres de tous les cercles        +
-//  tants a L1 et L2.                                                  +
+//  tants a L1 et L2.                                                     +
 //  Nous intersectons ces bissectrices avec la courbe OnCurv ce qui nous  +
 //  donne les points parmis lesquels nous allons choisir les solutions.   +
 //  Les choix s effectuent a partir des Qualifieurs qualifiant L1 et L2.  +
@@ -705,11 +705,11 @@ Geom2dGcc_Circ2d2TanOnGeo::Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedLin& 
 }
 
 //=========================================================================
-//   Creation d un cercle tant a un Cercle C1, passant par un point P2 +
+//   Creation d un cercle tant a un Cercle C1, passant par un point P2    +
 //                        centre sur une courbe OnCurv.                   +
 //  Nous calculons les bissectrices a C1 et Point2 qui nous donnent       +
 //  l ensemble des lieux possibles des centres de tous les cercles        +
-//  tants a C1 et Point2.                                              +
+//  tants a C1 et Point2.                                                 +
 //  Nous intersectons ces bissectrices avec la courbe OnCurv ce qui nous  +
 //  donne les points parmis lesquels nous allons choisir les solutions.   +
 //  Les choix s effectuent a partir des Qualifieurs qualifiant C1.        +
@@ -900,11 +900,11 @@ Geom2dGcc_Circ2d2TanOnGeo::Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedCirc&
 }
 
 //=========================================================================
-//   Creation d un cercle tant a une ligne L1, passant par un point P2 +
+//   Creation d un cercle tant a une ligne L1, passant par un point P2    +
 //                        centre sur une courbe OnCurv.                   +
 //  Nous calculons les bissectrices a L1 et Point2 qui nous donnent       +
 //  l ensemble des lieux possibles des centres de tous les cercles        +
-//  tants a L1 et passant par Point2.                                  +
+//  tants a L1 et passant par Point2.                                     +
 //  Nous intersectons ces bissectrices avec la courbe OnCurv ce qui nous  +
 //  donne les points parmis lesquels nous allons choisir les solutions.   +
 //  Les choix s effectuent a partir des Qualifieurs qualifiant L1.        +

@@ -97,8 +97,8 @@ static void HermiteCoeff(const Handle(Geom2d_BSplineCurve)& BS, TColStd_Array1Of
   Standard_Integer        Degree, Index0, Index1;
   Standard_Real           Denom0, Denom1, // denominateur value for u=0 & u=1
                                           // clang-format off
-                          Deriv0,Deriv1 ;                           // denominator value for u=0 & u=1
-  Standard_Boolean        Periodic;                                 // derivative denominatur value for u=0 & 1
+                          Deriv0,Deriv1 ; // denominator value for u=0 & u=1
+  Standard_Boolean        Periodic;       // derivative denominatur value for u=0 & 1
                                           // clang-format on
 
   BS->Knots(Knots);

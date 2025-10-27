@@ -27,11 +27,11 @@
 #include <TColStd_Array1OfReal.hxx>
 class Geom_BSplineCurve;
 
-//! this class is used to construct a BSpline curve by
-//! interpolation  of points  at given parameters  The
-//! continuity   of the curve   is degree -  1 and the
-//! method used when boundary  condition are not given
-//! is to use odd degrees  and null the derivatives on
+//! This class is used to construct a BSpline curve by
+//! interpolation of points at given parameters. The
+//! continuity of the curve is degree - 1 and the
+//! method used when boundary conditions are not given
+//! is to use odd degrees and null the derivatives on
 //! both sides from degree -1 down to (degree+1) / 2
 //! When even degree is given the returned curve is of
 //! degree - 1 so that the degree of the curve is odd

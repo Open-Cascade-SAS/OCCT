@@ -24,11 +24,11 @@
 class Geom2d_BSplineCurve;
 class Geom2d_Curve;
 
-//! Approximate the  projection  of a  3d curve  on an
-//! polar  surface  and  stores the result  in  Approx.
-//! The result is a  2d curve.  The evaluation of  the
-//! current  point of the  2d  curve is done with  the
-//! evaluation of the extrema  P3d - Surface.
+//! Approximate the projection of a 3d curve on an
+//! polar surface and stores the result in Approx.
+//! The result is a 2d curve. The evaluation of the
+//! current point of the 2d curve is done with the
+//! evaluation of the extrema P3d - Surface.
 //! For approximation some parameters are used, including
 //! required tolerance of approximation.
 //! Tolerance is maximal possible value of 3d deviation of 3d projection of projected curve from

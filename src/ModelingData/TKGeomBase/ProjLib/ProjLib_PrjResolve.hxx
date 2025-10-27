@@ -34,7 +34,7 @@ public:
                                      const Adaptor3d_Surface& S,
                                      const Standard_Integer   Fix);
 
-  //! Calculates the ort from  C(t)  to  S  with a close point.
+  //! Calculates the ort from C(t) to S with a close point.
   //! The close point is defined by the parameter values U0 and V0.
   //! The function F(u,v)=distance(S(u,v),C(t)) has an extremum when gradient(F)=0.
   //! The algorithm searches a zero near the close point.

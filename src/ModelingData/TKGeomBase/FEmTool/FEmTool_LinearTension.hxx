@@ -30,7 +30,7 @@
 class FEmTool_LinearTension;
 DEFINE_STANDARD_HANDLE(FEmTool_LinearTension, FEmTool_ElementaryCriterion)
 
-//! Criterium of LinearTension To Hermit-Jacobi  elements
+//! Criterium of LinearTension To Hermit-Jacobi elements
 class FEmTool_LinearTension : public FEmTool_ElementaryCriterion
 {
 
