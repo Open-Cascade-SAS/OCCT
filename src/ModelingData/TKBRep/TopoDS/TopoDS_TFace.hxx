@@ -25,8 +25,8 @@
 class TopoDS_TFace;
 DEFINE_STANDARD_HANDLE(TopoDS_TFace, TopoDS_TShape)
 
-//! A  topological part  of a surface   or  of the  2D
-//! space.  The  boundary  is  a   set of  wires   and
+//! A topological part of a surface or of the 2D
+//! space. The boundary is a set of wires and
 //! vertices.
 class TopoDS_TFace : public TopoDS_TShape
 {

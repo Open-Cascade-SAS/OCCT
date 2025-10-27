@@ -28,10 +28,10 @@ class TopoDS_TShape;
 class BRep_TVertex;
 DEFINE_STANDARD_HANDLE(BRep_TVertex, TopoDS_TVertex)
 
-//! The TVertex from  BRep inherits  from  the TVertex
+//! The TVertex from BRep inherits from the TVertex
 //! from TopoDS. It contains the geometric data.
 //!
-//! The  TVertex contains a 3d point, location and a tolerance.
+//! The TVertex contains a 3d point, location and a tolerance.
 class BRep_TVertex : public TopoDS_TVertex
 {
 
@@ -42,8 +42,8 @@ public:
 
   void Tolerance(const Standard_Real T);
 
-  //! Sets the tolerance  to the   max  of <T>  and  the
-  //! current  tolerance.
+  //! Sets the tolerance to the max of <T> and the
+  //! current tolerance.
   void UpdateTolerance(const Standard_Real T);
 
   const gp_Pnt& Pnt() const;
@@ -54,7 +54,7 @@ public:
 
   BRep_ListOfPointRepresentation& ChangePoints();
 
-  //! Returns a copy  of the  TShape  with no sub-shapes.
+  //! Returns a copy of the TShape with no sub-shapes.
   Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream

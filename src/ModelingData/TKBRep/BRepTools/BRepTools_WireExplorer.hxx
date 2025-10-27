@@ -49,10 +49,10 @@ public:
   //! Constructs an empty explorer (which can be initialized using Init)
   Standard_EXPORT BRepTools_WireExplorer();
 
-  //! IInitializes an exploration  of the wire <W>.
+  //! IInitializes an exploration of the wire <W>.
   Standard_EXPORT BRepTools_WireExplorer(const TopoDS_Wire& W);
 
-  //! Initializes an exploration  of the wire <W>.
+  //! Initializes an exploration of the wire <W>.
   //! F is used to select the edge connected to the
   //! previous in the parametric representation of <F>.
   Standard_EXPORT BRepTools_WireExplorer(const TopoDS_Wire& W, const TopoDS_Face& F);
@@ -76,7 +76,7 @@ public:
                             const Standard_Real VMin,
                             const Standard_Real VMax);
 
-  //! Returns True if there  is a current  edge.
+  //! Returns True if there is a current edge.
   Standard_EXPORT Standard_Boolean More() const;
 
   //! Proceeds to the next edge.
@@ -88,7 +88,7 @@ public:
   //! Returns an Orientation for the current edge.
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
-  //! Returns the vertex connecting the current  edge to
+  //! Returns the vertex connecting the current edge to
   //! the previous one.
   Standard_EXPORT const TopoDS_Vertex& CurrentVertex() const;
 

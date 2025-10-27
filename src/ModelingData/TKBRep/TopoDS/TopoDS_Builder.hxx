@@ -29,27 +29,27 @@ class TopoDS_Solid;
 class TopoDS_CompSolid;
 class TopoDS_Compound;
 
-//! A  Builder is used   to  create  Topological  Data
-//! Structures.It is the root of the Builder class hierarchy.
+//! A Builder is used to create Topological Data Structures.
+//! It is the root of the Builder class hierarchy.
 //!
-//! There are three groups of methods in the Builder :
+//! There are three groups of methods in the Builder:
 //!
 //! The Make methods create Shapes.
 //!
 //! The Add method includes a Shape in another Shape.
 //!
-//! The Remove  method  removes a  Shape from an other
+//! The Remove method removes a Shape from an other
 //! Shape.
 //!
 //! The methods in Builder are not static. They can be
 //! redefined in inherited builders.
 //!
-//! This   Builder does not  provide   methods to Make
-//! Vertices,  Edges, Faces,  Shells  or Solids. These
-//! methods are  provided  in  the inherited  Builders
+//! This Builder does not provide methods to Make
+//! Vertices, Edges, Faces, Shells or Solids. These
+//! methods are provided in the inherited Builders
 //! as they must provide the geometry.
 //!
-//! The Add method check for the following rules :
+//! The Add method check for the following rules:
 //!
 //! - Any SHAPE can be added in a COMPOUND.
 //!
@@ -100,7 +100,7 @@ public:
   Standard_EXPORT void Remove(TopoDS_Shape& S, const TopoDS_Shape& C) const;
 
 protected:
-  //! The basic method to make  a Shape, used by all the
+  //! The basic method to make a Shape, used by all the
   //! Make methods.
   Standard_EXPORT void MakeShape(TopoDS_Shape& S, const Handle(TopoDS_TShape)& T) const;
 

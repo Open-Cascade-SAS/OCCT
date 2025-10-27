@@ -46,7 +46,7 @@ public:
 
   //! <Oldshape> will be replaced by <NewShapes>.
   //!
-  //! <NewShapes> can be empty , in this case <OldShape>
+  //! <NewShapes> can be empty, in this case <OldShape>
   //! will disparate from its ancestors.
   //!
   //! if an item of <NewShapes> is oriented FORWARD.
@@ -61,7 +61,7 @@ public:
   //! the resul of <Build>
   Standard_EXPORT void Build(const TopoDS_Shape& S);
 
-  //! Returns   True if <S> has   been  replaced .
+  //! Returns True if <S> has been replaced.
   Standard_EXPORT Standard_Boolean IsCopied(const TopoDS_Shape& S) const;
 
   //! Returns the set of shapes substituted to <S>.

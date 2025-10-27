@@ -21,22 +21,22 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
-//! An Explorer is a Tool to visit  a Topological Data
-//! Structure form the TopoDS package.
+//! An Explorer is a Tool to visit a Topological Data
+//! Structure from the TopoDS package.
 //!
-//! An Explorer is built with :
+//! An Explorer is built with:
 //!
 //! * The Shape to explore.
 //!
-//! * The type of Shapes to find : e.g VERTEX, EDGE.
+//! * The type of Shapes to find: e.g VERTEX, EDGE.
 //! This type cannot be SHAPE.
 //!
-//! * The type of Shapes to avoid. e.g  SHELL, EDGE.
-//! By default   this type is  SHAPE which  means no
+//! * The type of Shapes to avoid. e.g SHELL, EDGE.
+//! By default this type is SHAPE which means no
 //! restriction on the exploration.
 //!
-//! The Explorer  visits  all the  structure   to find
-//! shapes of the   requested  type  which   are   not
+//! The Explorer visits all the structure to find
+//! shapes of the requested type which are not
 //! contained in the type to avoid.
 //!
 //! Example to find all the Faces in the Shape S :
@@ -57,7 +57,7 @@
 //!
 //! for (Ex.Init(S,TopAbs_VERTEX,TopAbs_EDGE); ...)
 //!
-//! To  find all the faces  in   a SHELL, then all the
+//! To find all the faces in a SHELL, then all the
 //! faces not in a SHELL :
 //!
 //! TopExp_Explorer Ex1, Ex2;
@@ -73,10 +73,10 @@
 //! // visit all faces not in a shell
 //! }
 //!
-//! If   the type  to avoid  is   the same  or is less
+//! If the type to avoid is the same or is less
 //! complex than the type to find it has no effect.
 //!
-//! For example searching edges  not in a vertex  does
+//! For example searching edges not in a vertex does
 //! not make a difference.
 class TopExp_Explorer
 {
@@ -91,9 +91,9 @@ public:
   //! <ToFind> is the type of shapes to search.
   //! TopAbs_VERTEX, TopAbs_EDGE, ...
   //!
-  //! <ToAvoid>   is the type   of shape to  skip in the
-  //! exploration.   If   <ToAvoid>  is  equal  or  less
-  //! complex than <ToFind> or if  <ToAVoid> is SHAPE it
+  //! <ToAvoid> is the type of shape to skip in the
+  //! exploration. If <ToAvoid> is equal or less
+  //! complex than <ToFind> or if <ToAVoid> is SHAPE it
   //! has no effect on the exploration.
   Standard_EXPORT TopExp_Explorer(const TopoDS_Shape&    S,
                                   const TopAbs_ShapeEnum ToFind,

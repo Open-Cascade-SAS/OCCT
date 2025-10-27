@@ -66,22 +66,21 @@ public:
     const TopoDS_Wire&     W,
     const Standard_Boolean KnotByCurvilinearAbcissa = Standard_False);
 
-  //! Creates a Curve  to  access the geometry of edge
-  //! <W>.
+  //! Creates a Curve to access the geometry of edge <W>.
   Standard_EXPORT BRepAdaptor_CompCurve(const TopoDS_Wire&     W,
                                         const Standard_Boolean KnotByCurvilinearAbcissa,
                                         const Standard_Real    First,
                                         const Standard_Real    Last,
                                         const Standard_Real    Tol);
 
-  //! Shallow copy of adaptor
+  //! Shallow copy of adaptor.
   Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
 
   //! Sets the  wire <W>.
   Standard_EXPORT void Initialize(const TopoDS_Wire&     W,
                                   const Standard_Boolean KnotByCurvilinearAbcissa);
 
-  //! Sets wire <W> and trimmed  parameter.
+  //! Sets wire <W> and trimmed parameter.
   Standard_EXPORT void Initialize(const TopoDS_Wire&     W,
                                   const Standard_Boolean KnotByCurvilinearAbcissa,
                                   const Standard_Real    First,
@@ -91,7 +90,7 @@ public:
   //! Returns the wire.
   Standard_EXPORT const TopoDS_Wire& Wire() const;
 
-  //! returns an  edge  and   one  parameter on them
+  //! returns an edge and one parameter on them
   //! corresponding to the parameter U.
   Standard_EXPORT void Edge(const Standard_Real U, TopoDS_Edge& E, Standard_Real& UonE) const;
 
@@ -101,20 +100,20 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! Returns    a  curve equivalent   of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a curve equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor3d_Curve) Trim(const Standard_Real First,
@@ -135,8 +134,7 @@ public:
 
   //! Computes the point of parameter U on the curve
   //! with its first derivative.
-  //! Raised if the continuity of the current interval
-  //! is not C1.
+  //! Raised if the continuity of the current interval is not C1.
   Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const Standard_OVERRIDE;
 
   //! Returns the point P of parameter U, the first and second
@@ -160,8 +158,7 @@ public:
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
-  //! Raised if the continuity of the current interval
-  //! is not CN.
+  //! Raised if the continuity of the current interval is not CN.
   //! Raised if N < 1.
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Integer N) const Standard_OVERRIDE;

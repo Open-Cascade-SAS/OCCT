@@ -48,39 +48,39 @@ class OSD_FileSystem;
 //! The BRepTools package provides  utilities for BRep
 //! data structures.
 //!
-//! * WireExplorer : A tool to explore the topology of
+//! * WireExplorer: Tool to explore the topology of
 //! a wire in the order of the edges.
 //!
-//! * ShapeSet :  Tools used for  dumping, writing and
+//! * ShapeSet: Tools used for dumping, writing and
 //! reading.
 //!
-//! * UVBounds : Methods to compute the  limits of the
-//! boundary  of a  face,  a wire or   an edge in  the
+//! * UVBounds: Methods to compute the limits of the
+//! boundary of a face, a wire or an edge in the
 //! parametric space of a face.
 //!
-//! *  Update : Methods  to call when   a topology has
-//! been created to compute all missing data.
+//! * Update: Methods to call when a topology has been
+//! created to compute all missing data.
 //!
 //! * UpdateFaceUVPoints: Method to update the UV points
 //! stored with the edges on a face.
 //!
-//! * Compare : Method to compare two vertices.
+//! * Compare: Method to compare two vertices.
 //!
-//! * Compare : Method to compare two edges.
+//! * Compare: Method to compare two edges.
 //!
-//! * OuterWire : A method to find the outer wire of a
+//! * OuterWire: Method to find the outer wire of a
 //! face.
 //!
-//! * Map3DEdges : A method to map all the 3D Edges of
+//! * Map3DEdges: Method to map all the 3D Edges of
 //! a Shape.
 //!
-//! * Dump : A method to dump a BRep object.
+//! * Dump: Method to dump a BRep object.
 class BRepTools
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Returns in UMin,  UMax, VMin,  VMax  the  bounding
+  //! Returns in UMin, UMax, VMin, VMax the bounding
   //! values in the parametric space of F.
   Standard_EXPORT static void UVBounds(const TopoDS_Face& F,
                                        Standard_Real&     UMin,
@@ -88,7 +88,7 @@ public:
                                        Standard_Real&     VMin,
                                        Standard_Real&     VMax);
 
-  //! Returns in UMin,  UMax, VMin,  VMax  the  bounding
+  //! Returns in UMin, UMax, VMin, VMax the bounding
   //! values of the wire in the parametric space of F.
   Standard_EXPORT static void UVBounds(const TopoDS_Face& F,
                                        const TopoDS_Wire& W,
@@ -97,7 +97,7 @@ public:
                                        Standard_Real&     VMin,
                                        Standard_Real&     VMax);
 
-  //! Returns in UMin,  UMax, VMin,  VMax  the  bounding
+  //! Returns in UMin, UMax, VMin, VMax the bounding
   //! values of the edge in the parametric space of F.
   Standard_EXPORT static void UVBounds(const TopoDS_Face& F,
                                        const TopoDS_Edge& E,
@@ -106,15 +106,15 @@ public:
                                        Standard_Real&     VMin,
                                        Standard_Real&     VMax);
 
-  //! Adds  to  the box <B>  the bounding values in  the
+  //! Adds to the box <B> the bounding values in the
   //! parametric space of F.
   Standard_EXPORT static void AddUVBounds(const TopoDS_Face& F, Bnd_Box2d& B);
 
-  //! Adds  to the box  <B>  the bounding  values of the
+  //! Adds to the box <B> the bounding values of the
   //! wire in the parametric space of F.
   Standard_EXPORT static void AddUVBounds(const TopoDS_Face& F, const TopoDS_Wire& W, Bnd_Box2d& B);
 
-  //! Adds to  the box <B>  the  bounding values  of the
+  //! Adds to the box <B> the bounding values of the
   //! edge in the parametric space of F.
   Standard_EXPORT static void AddUVBounds(const TopoDS_Face& F, const TopoDS_Edge& E, Bnd_Box2d& B);
 
@@ -247,11 +247,11 @@ public:
   Standard_EXPORT static Standard_Boolean UnloadAllTriangulations(const TopoDS_Shape& theShape);
 
 public:
-  //! Returns  True if  the    distance between the  two
+  //! Returns True if the distance between the two
   //! vertices is lower than their tolerance.
   Standard_EXPORT static Standard_Boolean Compare(const TopoDS_Vertex& V1, const TopoDS_Vertex& V2);
 
-  //! Returns  True if  the    distance between the  two
+  //! Returns True if the distance between the two
   //! edges is lower than their tolerance.
   Standard_EXPORT static Standard_Boolean Compare(const TopoDS_Edge& E1, const TopoDS_Edge& E2);
 
@@ -259,11 +259,11 @@ public:
   //! wire if <F> has no wires.
   Standard_EXPORT static TopoDS_Wire OuterWire(const TopoDS_Face& F);
 
-  //! Stores in the map  <M> all the 3D topology edges
+  //! Stores in the map <M> all the 3D topology edges
   //! of <S>.
   Standard_EXPORT static void Map3DEdges(const TopoDS_Shape& S, TopTools_IndexedMapOfShape& M);
 
-  //! Verifies that the edge  <E> is found two  times on
+  //! Verifies that the edge <E> is found two times on
   //! the face <F> before calling BRep_Tool::IsClosed.
   Standard_EXPORT static Standard_Boolean IsReallyClosed(const TopoDS_Edge& E,
                                                          const TopoDS_Face& F);
@@ -313,7 +313,7 @@ public:
     const TopTools_FormatVersion theVersion,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  //! Reads a Shape  from <S> in  returns it in  <Sh>.
+  //! Reads a Shape from <S> in returns it in <Sh>.
   //! <B> is used to build the shape.
   Standard_EXPORT static void Read(
     TopoDS_Shape&                Sh,
@@ -357,7 +357,7 @@ public:
     const TopTools_FormatVersion theVersion,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  //! Reads a Shape  from <File>,  returns it in  <Sh>.
+  //! Reads a Shape from <File>, returns it in <Sh>.
   //! <B> is used to build the shape.
   Standard_EXPORT static Standard_Boolean Read(
     TopoDS_Shape&                Sh,
@@ -365,7 +365,7 @@ public:
     const BRep_Builder&          B,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  //! Evals real tolerance of edge  <theE>.
+  //! Evals real tolerance of edge <theE>.
   //! <theC3d>, <theC2d>, <theS>, <theF>, <theL> are
   //! correspondently 3d curve of edge, 2d curve on surface <theS> and
   //! rang of edge
@@ -378,8 +378,8 @@ public:
                                                         const Standard_Real         theF,
                                                         const Standard_Real         theL);
 
-  //! returns the cumul  of the orientation  of <Edge>
-  //! and thc containing wire in <Face>
+  //! returns the cumul of the orientation of <Edge>
+  //! and the containing wire in <Face>
   Standard_EXPORT static TopAbs_Orientation OriEdgeInFace(const TopoDS_Edge& theEdge,
                                                           const TopoDS_Face& theFace);
 

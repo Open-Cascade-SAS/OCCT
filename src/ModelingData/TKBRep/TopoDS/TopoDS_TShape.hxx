@@ -26,19 +26,19 @@
   #undef Convex
 #endif
 
-//! A TShape  is a topological  structure describing a
+//! A TShape is a topological structure describing a
 //! set of points in a 2D or 3D space.
 //!
 //! A topological shape is a structure made from other
-//! shapes.  This is a deferred class  used to support
+//! shapes. This is a deferred class used to support
 //! topological objects.
 //!
-//! TShapes are   defined   by  their  optional domain
-//! (geometry)  and  their  components  (other TShapes
-//! with  Locations and Orientations).  The components
+//! TShapes are defined by their optional domain
+//! (geometry) and their components (other TShapes
+//! with Locations and Orientations). The components
 //! are stored in a List of Shapes.
 //!
-//! A   TShape contains  the   following boolean flags :
+//! A TShape contains the following boolean flags:
 //!
 //! - Free       : Free or Frozen.
 //! - Modified   : Has been modified.
@@ -49,7 +49,7 @@
 //! - Convex     : Is convex.
 //!
 //! Users have no direct access to the classes derived
-//! from TShape.  They  handle them with   the classes
+//! from TShape. They handle them with the classes
 //! derived from Shape.
 class TopoDS_TShape : public Standard_Transient
 {
