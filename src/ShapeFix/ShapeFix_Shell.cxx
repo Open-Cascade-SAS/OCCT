@@ -269,7 +269,25 @@ static NCollection_List<TopTools_SequenceOfShape> GetConnectedFaceGroups(
       }
     }
 
-    aConnectedGroups.Append(aConnectedGroup);
+    // Insert in sorted order (largest groups first)
+    Standard_Boolean anIsInserted = Standard_False;
+
+    for (NCollection_List<TopTools_SequenceOfShape>::Iterator anIter(aConnectedGroups);
+         anIter.More();
+         anIter.Next())
+    {
+      if (aConnectedGroup.Length() > anIter.Value().Length())
+      {
+        aConnectedGroups.InsertBefore(aConnectedGroup, anIter);
+        anIsInserted = Standard_True;
+        break;
+      }
+    }
+
+    if (!anIsInserted)
+    {
+      aConnectedGroups.Append(aConnectedGroup);
+    }
   }
 
   return aConnectedGroups;
