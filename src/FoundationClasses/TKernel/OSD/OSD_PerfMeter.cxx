@@ -225,13 +225,7 @@ Stopwatch* StopwatchStorage::GetStopwatch(const TCollection_AsciiString& theName
 
 Stopwatch& StopwatchStorage::CreateStopwatch(const TCollection_AsciiString& theName)
 {
-  Stopwatch* aStopwatch = myStopwatches.ChangeSeek(theName);
-  if (aStopwatch == nullptr)
-  {
-    myStopwatches.Bind(theName, Stopwatch());
-    aStopwatch = myStopwatches.ChangeSeek(theName);
-  }
-  return *aStopwatch;
+  return *myStopwatches.Bound(theName, Stopwatch());
 }
 
 //===================================================================================================
