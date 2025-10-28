@@ -129,7 +129,7 @@ class Geom_BSplineCurve : public Geom_BoundedCurve
 {
 
 public:
-  //! Creates a  non-rational B_spline curve   on  the
+  //! Creates a non-rational B_spline curve on the
   //! basis <Knots, Multiplicities> of degree <Degree>.
   Standard_EXPORT Geom_BSplineCurve(const TColgp_Array1OfPnt&      Poles,
                                     const TColStd_Array1OfReal&    Knots,
@@ -137,7 +137,7 @@ public:
                                     const Standard_Integer         Degree,
                                     const Standard_Boolean         Periodic = Standard_False);
 
-  //! Creates  a rational B_spline  curve  on the basis
+  //! Creates a rational B_spline curve on the basis
   //! <Knots, Multiplicities> of degree <Degree>.
   //! Raises ConstructionError subject to the following conditions
   //! 0 < Degree <= MaxDegree.
@@ -154,7 +154,7 @@ public:
   //! may be Degree+1 (this is even recommended if you want the
   //! curve to start and finish on the first and last pole).
   //!
-  //! On a periodic  curve the first  and  the last multicities
+  //! On a periodic curve the first and the last multicities
   //! must be the same.
   //!
   //! on non-periodic curves
@@ -186,20 +186,20 @@ public:
   //! Geom_BSplineCurve::MaxDegree().
   Standard_EXPORT void IncreaseDegree(const Standard_Integer Degree);
 
-  //! Increases the multiplicity  of the knot <Index> to
+  //! Increases the multiplicity of the knot <Index> to
   //! <M>.
   //!
-  //! If   <M>   is   lower   or  equal   to  the current
-  //! multiplicity nothing is done. If <M> is higher than
-  //! the degree the degree is used.
+  //! If <M> is lower or equal to the current multiplicity
+  //! nothing is done. If <M> is higher than the degree,
+  //! the degree is used.
   //! If <Index> is not in [FirstUKnotIndex, LastUKnotIndex]
   Standard_EXPORT void IncreaseMultiplicity(const Standard_Integer Index, const Standard_Integer M);
 
-  //! Increases  the  multiplicities   of  the knots  in
+  //! Increases the multiplicities of the knots in
   //! [I1,I2] to <M>.
   //!
-  //! For each knot if  <M>  is  lower  or equal  to  the
-  //! current multiplicity  nothing  is  done. If <M>  is
+  //! For each knot if <M> is lower or equal to the
+  //! current multiplicity nothing is done. If <M> is
   //! higher than the degree the degree is used.
   //! If <I1,I2> are not in [FirstUKnotIndex, LastUKnotIndex]
   Standard_EXPORT void IncreaseMultiplicity(const Standard_Integer I1,

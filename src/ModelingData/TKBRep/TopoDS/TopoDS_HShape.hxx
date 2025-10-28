@@ -25,18 +25,18 @@
 class TopoDS_HShape;
 DEFINE_STANDARD_HANDLE(TopoDS_HShape, Standard_Transient)
 
-//! Class to manipulate a Shape with  handle.
+//! Class to manipulate a Shape with handle.
 class TopoDS_HShape : public Standard_Transient
 {
 
 public:
-  //! Constructs an empty shape object
+  //! Constructs an empty shape object.
   TopoDS_HShape();
 
   //! Constructs a shape object defined by the shape aShape.
   TopoDS_HShape(const TopoDS_Shape& aShape);
 
-  //! Loads this shape with the shape aShape
+  //! Loads this shape with the shape aShape.
   void Shape(const TopoDS_Shape& aShape);
 
   //! Returns a reference to a constant TopoDS_Shape based on this shape.

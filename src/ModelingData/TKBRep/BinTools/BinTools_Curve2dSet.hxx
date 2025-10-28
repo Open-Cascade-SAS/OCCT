@@ -42,7 +42,7 @@ public:
   //! Clears the content of the set.
   Standard_EXPORT void Clear();
 
-  //! Incorporate a new Curve in the  set and returns
+  //! Incorporate a new Curve in the set and returns
   //! its index.
   Standard_EXPORT Standard_Integer Add(const Handle(Geom2d_Curve)& C);
 
@@ -55,12 +55,12 @@ public:
   //! Dumps the content of me on the stream <OS>.
   Standard_EXPORT void Dump(Standard_OStream& OS) const;
 
-  //! Writes the content of  me  on the stream <OS> in a
+  //! Writes the content of me on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT void Write(Standard_OStream&            OS,
                              const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
-  //! Reads the content of me from the  stream  <IS>. me
+  //! Reads the content of me from the stream <IS>. me
   //! is first cleared.
   Standard_EXPORT void Read(Standard_IStream&            IS,
                             const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -68,8 +68,8 @@ public:
   //! Dumps the curve on the binary stream, that can be read back.
   Standard_EXPORT static void WriteCurve2d(const Handle(Geom2d_Curve)& C, BinTools_OStream& OS);
 
-  //! Reads the curve  from  the stream.  The  curve  is
-  //! assumed   to have  been  written  with  the Write
+  //! Reads the curve from the stream. The curve is
+  //! assumed to have been written with the Write
   //! method.
   Standard_EXPORT static Standard_IStream& ReadCurve2d(Standard_IStream&     IS,
                                                        Handle(Geom2d_Curve)& C);

@@ -38,11 +38,11 @@ public:
                                         const Handle(Geom_Surface)&   S,
                                         const TopLoc_Location&        L);
 
-  //! A   2D polygon  representation  in the  parametric
+  //! A 2D polygon representation in the parametric
   //! space of a surface.
   Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface() const Standard_OVERRIDE;
 
-  //! A   2D polygon  representation  in the  parametric
+  //! A 2D polygon representation in the parametric
   //! space of a surface.
   Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface(const Handle(Geom_Surface)& S,
                                                               const TopLoc_Location&      L) const

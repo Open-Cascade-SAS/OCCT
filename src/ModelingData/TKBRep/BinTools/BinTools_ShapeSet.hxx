@@ -60,7 +60,7 @@ public:
   //! Returns number of shapes read from file.
   Standard_EXPORT Standard_Integer NbShapes() const;
 
-  //! Writes the content of  me  on the stream <OS> in binary
+  //! Writes the content of me on the stream <OS> in binary
   //! format that can be read back by Read.
   //!
   //! Writes the locations.
@@ -68,7 +68,7 @@ public:
   //! Writes the geometry calling WriteGeometry.
   //!
   //! Dumps the shapes from last to first.
-  //! For each shape  :
+  //! For each shape:
   //! Write the type.
   //! calls WriteGeometry(S).
   //! Write the flags, the subshapes.
@@ -76,7 +76,7 @@ public:
     Standard_OStream&            OS,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
-  //! Reads the content of me from the binary stream  <IS>. me
+  //! Reads the content of me from the binary stream <IS>. me
   //! is first cleared.
   //!
   //! Reads the locations.
@@ -92,18 +92,18 @@ public:
     Standard_IStream&            IS,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
-  //! Writes   on  <OS>   the shape   <S>.    Writes the
+  //! Writes on <OS> the shape <S>. Writes the
   //! orientation, the index of the TShape and the index
   //! of the Location.
   Standard_EXPORT virtual void Write(const TopoDS_Shape& S, Standard_OStream& OS);
 
-  //! Writes the geometry of  me  on the stream <OS> in a
+  //! Writes the geometry of me on the stream <OS> in a
   //! binary format that can be read back by Read.
   Standard_EXPORT virtual void WriteGeometry(
     Standard_OStream&            OS,
     const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
-  //! Reads the geometry of me from the  stream  <IS>.
+  //! Reads the geometry of me from the stream <IS>.
   Standard_EXPORT virtual void ReadGeometry(
     Standard_IStream&            IS,
     const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -127,7 +127,7 @@ public:
   //! binary format that can be read back by Read.
   Standard_EXPORT virtual void WriteShape(const TopoDS_Shape& S, Standard_OStream& OS) const;
 
-  //! Reads  a shape of type <T> from the stream <IS> and returns it in <S>.
+  //! Reads a shape of type <T> from the stream <IS> and returns it in <S>.
   Standard_EXPORT virtual void ReadShape(const TopAbs_ShapeEnum T,
                                          Standard_IStream&      IS,
                                          TopoDS_Shape&          S);
@@ -135,11 +135,11 @@ public:
   //! Stores the shape <S>.
   Standard_EXPORT virtual void AddShape(const TopoDS_Shape& S);
 
-  //! Inserts  the shape <S2> in the shape <S1>.
+  //! Inserts the shape <S2> in the shape <S1>.
   Standard_EXPORT virtual void AddShapes(TopoDS_Shape& S1, const TopoDS_Shape& S2);
 
-  //! Reads the 3d polygons  of me
-  //! from the  stream  <IS>.
+  //! Reads the 3d polygons of me
+  //! from the stream  <IS>.
   Standard_EXPORT void ReadPolygon3D(
     Standard_IStream&            IS,
     const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -152,7 +152,7 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
   //! Reads the triangulation of me
-  //! from the  stream  <IS>.
+  //! from the  stream <IS>.
   Standard_EXPORT void ReadTriangulation(
     Standard_IStream&            IS,
     const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -165,7 +165,7 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
   //! Reads the polygons on triangulation of me
-  //! from the  stream  <IS>.
+  //! from the  stream <IS>.
   Standard_EXPORT void ReadPolygonOnTriangulation(
     Standard_IStream&            IS,
     const Message_ProgressRange& theRange = Message_ProgressRange());

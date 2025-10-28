@@ -44,7 +44,7 @@ public:
   //! The curve is loaded. The Offset is set to 0.
   Standard_EXPORT Adaptor2d_OffsetCurve(const Handle(Adaptor2d_Curve2d)& C);
 
-  //! Creates  an  OffsetCurve curve.
+  //! Creates an OffsetCurve curve.
   //! The Offset is set to Offset.
   Standard_EXPORT Adaptor2d_OffsetCurve(const Handle(Adaptor2d_Curve2d)& C,
                                         const Standard_Real              Offset);
@@ -56,10 +56,10 @@ public:
                                         const Standard_Real              WFirst,
                                         const Standard_Real              WLast);
 
-  //! Shallow copy of adaptor
+  //! Shallow copy of adaptor.
   Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) ShallowCopy() const Standard_OVERRIDE;
 
-  //! Changes  the curve.  The Offset is reset to 0.
+  //! Changes the curve. The Offset is reset to 0.
   Standard_EXPORT void Load(const Handle(Adaptor2d_Curve2d)& S);
 
   //! Changes the Offset on the current Curve.
@@ -80,21 +80,21 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! If necessary,  breaks the  curve in  intervals  of
-  //! continuity  <S>.    And  returns   the number   of
+  //! If necessary, breaks the curve in intervals of
+  //! continuity <S>. And returns the number of
   //! intervals.
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide  enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! Returns    a  curve equivalent   of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a curve equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor2d_Curve2d) Trim(const Standard_Real First,
@@ -146,12 +146,12 @@ public:
   Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
                               const Standard_Integer N) const Standard_OVERRIDE;
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
 
-  //! Returns  the  type of the   curve  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the curve in the current
+  //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   Standard_EXPORT GeomAbs_CurveType GetType() const Standard_OVERRIDE;
 

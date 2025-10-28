@@ -27,7 +27,7 @@ class gp_Pnt;
 class BRep_GCurve;
 DEFINE_STANDARD_HANDLE(BRep_GCurve, BRep_CurveRepresentation)
 
-//! Root   class    for    the    geometric     curves
+//! Root class for the geometric curves
 //! representation. Contains a range.
 //! Contains a first and a last parameter.
 class BRep_GCurve : public BRep_CurveRepresentation

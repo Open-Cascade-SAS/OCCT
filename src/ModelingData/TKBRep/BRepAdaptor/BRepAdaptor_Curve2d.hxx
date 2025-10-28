@@ -26,14 +26,14 @@
 #include <Geom2dAdaptor_Curve.hxx>
 
 //! The Curve2d from BRepAdaptor allows to use an Edge
-//! on   a Face like   a  2d   curve. (curve  in   the
-//! parametric space).
+//! on a Face like a 2d curve (curve in the parametric
+//! space).
 //!
-//! It  has  the methods    of the class Curve2d  from
+//! It has the methods of the class Curve2d from
 //! Adpator.
 //!
-//! It  is created or  initialized with a  Face and an
-//! Edge.  The methods are  inherited from  Curve from
+//! It is created or initialized with a Face and an
+//! Edge. The methods are inherited from Curve from
 //! Geom2dAdaptor.
 class BRepAdaptor_Curve2d : public Geom2dAdaptor_Curve
 {

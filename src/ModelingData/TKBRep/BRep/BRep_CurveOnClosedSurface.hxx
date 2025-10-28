@@ -28,7 +28,7 @@ class BRep_CurveRepresentation;
 class BRep_CurveOnClosedSurface;
 DEFINE_STANDARD_HANDLE(BRep_CurveOnClosedSurface, BRep_CurveOnSurface)
 
-//! Representation  of a    curve by two  pcurves   on
+//! Representation of a curve by two pcurves on
 //! a closed surface.
 class BRep_CurveOnClosedSurface : public BRep_CurveOnSurface
 {

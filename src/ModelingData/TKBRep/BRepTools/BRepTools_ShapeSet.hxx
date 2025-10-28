@@ -81,13 +81,13 @@ public:
   //! Dumps the geometry of me on the stream <OS>.
   Standard_EXPORT virtual void DumpGeometry(Standard_OStream& OS) const Standard_OVERRIDE;
 
-  //! Writes the geometry of  me  on the stream <OS> in a
+  //! Writes the geometry of me on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT virtual void WriteGeometry(
     Standard_OStream&            OS,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
-  //! Reads the geometry of me from the  stream  <IS>.
+  //! Reads the geometry of me from the stream <IS>.
   Standard_EXPORT virtual void ReadGeometry(
     Standard_IStream&            IS,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
@@ -96,7 +96,7 @@ public:
   Standard_EXPORT virtual void DumpGeometry(const TopoDS_Shape& S,
                                             Standard_OStream&   OS) const Standard_OVERRIDE;
 
-  //! Writes the geometry of <S>  on the stream <OS> in a
+  //! Writes the geometry of <S> on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT virtual void WriteGeometry(const TopoDS_Shape& S,
                                              Standard_OStream&   OS) const Standard_OVERRIDE;
@@ -107,16 +107,16 @@ public:
                                             Standard_IStream&      IS,
                                             TopoDS_Shape&          S) Standard_OVERRIDE;
 
-  //! Inserts  the shape <S2> in  the  shape <S1>.  This
-  //! method must be   redefined  to  use   the  correct
+  //! Inserts the shape <S2> in the shape <S1>. This
+  //! method must be redefined to use the correct
   //! builder.
   Standard_EXPORT virtual void AddShapes(TopoDS_Shape&       S1,
                                          const TopoDS_Shape& S2) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Check(const TopAbs_ShapeEnum T, TopoDS_Shape& S) Standard_OVERRIDE;
 
-  //! Reads the 3d polygons  of me
-  //! from the  stream  <IS>.
+  //! Reads the 3d polygons of me
+  //! from the stream <IS>.
   Standard_EXPORT void ReadPolygon3D(
     Standard_IStream&            IS,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -134,7 +134,7 @@ public:
   Standard_EXPORT void DumpPolygon3D(Standard_OStream& OS) const;
 
   //! Reads the triangulation of me
-  //! from the  stream  <IS>.
+  //! from the stream <IS>.
   Standard_EXPORT void ReadTriangulation(
     Standard_IStream&            IS,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -152,7 +152,7 @@ public:
   Standard_EXPORT void DumpTriangulation(Standard_OStream& OS) const;
 
   //! Reads the polygons on triangulation of me
-  //! from the  stream  <IS>.
+  //! from the stream  <IS>.
   Standard_EXPORT void ReadPolygonOnTriangulation(
     Standard_IStream&            IS,
     const Message_ProgressRange& theProgress = Message_ProgressRange());

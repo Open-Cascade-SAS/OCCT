@@ -64,7 +64,7 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& W)
 
 Geom2d_BezierCurve::Geom2d_BezierCurve(const TColgp_Array1OfPnt2d& Poles)
 {
-  //  copy the poles
+  // copy the poles
 
   Handle(TColgp_HArray1OfPnt2d) npoles = new TColgp_HArray1OfPnt2d(1, Poles.Length());
 
@@ -86,7 +86,7 @@ Geom2d_BezierCurve::Geom2d_BezierCurve(const TColgp_Array1OfPnt2d& Poles,
 
   npoles->ChangeArray1() = Poles;
 
-  // check  the weights
+  // check the weights
 
   Standard_Integer nbpoles = Poles.Length();
 
@@ -348,7 +348,7 @@ void Geom2d_BezierCurve::Segment(const Standard_Real U1, const Standard_Real U2)
 {
   closed = (Abs(Value(U1).Distance(Value(U2))) <= gp::Resolution());
   //
-  //   WARNING : when calling trimming be careful that the cache
+  //   WARNING: when calling trimming be careful that the cache
   //   is computed regarding 0.0e0 and not 1.0e0
   //
   TColStd_Array1OfReal bidflatknots(BSplCLib::FlatBezierKnots(Degree()), 1, 2 * (Degree() + 1));

@@ -48,16 +48,16 @@ public:
   //! A continuity between two surfaces.
   Standard_EXPORT virtual Standard_Boolean IsRegularity() const;
 
-  //! A curve with two parametric   curves  on the  same
+  //! A curve with two parametric curves on the same
   //! surface.
   Standard_EXPORT virtual Standard_Boolean IsCurveOnClosedSurface() const;
 
-  //! Is it a curve in the parametric space  of <S> with
+  //! Is it a curve in the parametric space of <S> with
   //! location <L>.
   Standard_EXPORT virtual Standard_Boolean IsCurveOnSurface(const Handle(Geom_Surface)& S,
                                                             const TopLoc_Location&      L) const;
 
-  //! Is it  a  regularity between  <S1> and   <S2> with
+  //! Is it a regularity between <S1> and <S2> with
   //! location <L1> and <L2>.
   Standard_EXPORT virtual Standard_Boolean IsRegularity(const Handle(Geom_Surface)& S1,
                                                         const Handle(Geom_Surface)& S2,
@@ -84,12 +84,12 @@ public:
   //! A polygon in the parametric space of a surface.
   Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface() const;
 
-  //! Is it a polygon in the parametric space  of <S> with
+  //! Is it a polygon in the parametric space of <S> with
   //! location <L>.
   Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface(const Handle(Geom_Surface)& S,
                                                               const TopLoc_Location&      L) const;
 
-  //! Two   2D polygon  representations  in the  parametric
+  //! Two 2D polygon representations in the parametric
   //! space of a surface.
   Standard_EXPORT virtual Standard_Boolean IsPolygonOnClosedSurface() const;
 

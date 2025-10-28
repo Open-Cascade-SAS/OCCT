@@ -31,8 +31,8 @@
 class TopoDS_Shape;
 class TCollection_AsciiString;
 
-//! A ShapeSets    contains  a  Shape    and all   its
-//! sub-shapes and locations.  It  can be dump,  write
+//! A ShapeSets contains a Shape and all its
+//! sub-shapes and locations. It can be dump, write
 //! and read.
 //!
 //! Methods to handle the geometry can be redefined.
@@ -52,7 +52,7 @@ public:
   //! Returns the TopTools_FormatVersion
   Standard_EXPORT Standard_Integer FormatNb() const;
 
-  //! Clears the content of the set.  This method can be
+  //! Clears the content of the set. This method can be
   //! redefined.
   Standard_EXPORT virtual void Clear();
 
@@ -90,7 +90,7 @@ public:
   //! Dumps the locations.
   Standard_EXPORT virtual void Dump(Standard_OStream& OS) const;
 
-  //! Writes the content of  me  on the stream <OS> in a
+  //! Writes the content of me on the stream <OS> in a
   //! format that can be read back by Read.
   //!
   //! Writes the locations.
@@ -106,7 +106,7 @@ public:
     Standard_OStream&            OS,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  //! Reads the content of me from the  stream  <IS>. me
+  //! Reads the content of me from the stream <IS>. me
   //! is first cleared.
   //!
   //! Reads the locations.
@@ -122,12 +122,12 @@ public:
     Standard_IStream&            IS,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  //! Dumps   on  <OS>    the  shape  <S>.   Dumps   the
+  //! Dumps on <OS> the shape <S>. Dumps the
   //! orientation, the index of the TShape and the index
   //! of the Location.
   Standard_EXPORT void Dump(const TopoDS_Shape& S, Standard_OStream& OS) const;
 
-  //! Writes   on  <OS>   the shape   <S>.    Writes the
+  //! Writes on <OS> the shape <S>. Writes the
   //! orientation, the index of the TShape and the index
   //! of the Location.
   Standard_EXPORT void Write(const TopoDS_Shape& S, Standard_OStream& OS) const;
@@ -141,13 +141,13 @@ public:
   //! Dumps the geometry of me on the stream <OS>.
   Standard_EXPORT virtual void DumpGeometry(Standard_OStream& OS) const;
 
-  //! Writes the geometry of  me  on the stream <OS> in a
+  //! Writes the geometry of me on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT virtual void WriteGeometry(
     Standard_OStream&            OS,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  //! Reads the geometry of me from the  stream  <IS>.
+  //! Reads the geometry of me from the stream <IS>.
   Standard_EXPORT virtual void ReadGeometry(
     Standard_IStream&            IS,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -155,7 +155,7 @@ public:
   //! Dumps the geometry of <S> on the stream <OS>.
   Standard_EXPORT virtual void DumpGeometry(const TopoDS_Shape& S, Standard_OStream& OS) const;
 
-  //! Writes the geometry of <S>  on the stream <OS> in a
+  //! Writes the geometry of <S> on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT virtual void WriteGeometry(const TopoDS_Shape& S, Standard_OStream& OS) const;
 
@@ -165,15 +165,15 @@ public:
                                             Standard_IStream&      IS,
                                             TopoDS_Shape&          S);
 
-  //! Inserts  the shape <S2> in  the  shape <S1>.  This
-  //! method must be   redefined  to  use   the  correct
+  //! Inserts the shape <S2> in the shape <S1>. This
+  //! method must be redefined to use the correct
   //! builder.
   Standard_EXPORT virtual void AddShapes(TopoDS_Shape& S1, const TopoDS_Shape& S2);
 
-  //! This method is   called after  each  new  completed
-  //! shape. <T> is the  type. <S> is  the shape. In this
+  //! This method is called after each new completed
+  //! shape. <T> is the type. <S> is the shape. In this
   //! class it does nothing, but it gives the opportunity
-  //! in derived  classes to perform  extra  treatment on
+  //! in derived classes to perform extra treatment on
   //! shapes.
   Standard_EXPORT virtual void Check(const TopAbs_ShapeEnum T, TopoDS_Shape& S);
 
@@ -184,7 +184,7 @@ public:
   static const Standard_CString THE_ASCII_VERSIONS[TopTools_FormatVersion_VERSION_3 + 1];
 
 private:
-  //! Reads  from <IS>  a shape  and  returns  it in  S.
+  //! Reads from <IS> a shape and returns it in S.
   //! <NbShapes> is the number of tshapes in the set.
   Standard_EXPORT void Read(TopoDS_Shape&          S,
                             Standard_IStream&      IS,

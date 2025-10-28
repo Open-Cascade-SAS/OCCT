@@ -44,7 +44,7 @@ DEFINE_STANDARD_HANDLE(Geom2d_Transformation, Standard_Transient)
 //! and therefore change the real type of the object.
 //! Such a transformation is forbidden in this
 //! environment and cannot be a Geom2d_Transformation.
-//! The transformation can be represented as follow :
+//! The transformation can be represented as follows:
 //!
 //! V1   V2     T
 //! | a11  a12    a14 |   | x |      | x'|
@@ -141,8 +141,8 @@ public:
   //! Computes the reverse transformation.
   Standard_EXPORT Standard_Real Value(const Standard_Integer Row, const Standard_Integer Col) const;
 
-  //! Computes the inverse of this transformation.
-  //! and  assigns the result to this transformatio
+  //! Computes the inverse of this transformation
+  //! and assigns the result to this transformation.
   //!
   //! Raised if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from
@@ -150,7 +150,7 @@ public:
   Standard_EXPORT void Invert();
 
   //! Computes the inverse of this transformation and creates a new one.
-  //! Raises ConstructionError  if the transformation is singular. This means that
+  //! Raises ConstructionError if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from package gp.
   Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Transformation) Inverted() const;
 

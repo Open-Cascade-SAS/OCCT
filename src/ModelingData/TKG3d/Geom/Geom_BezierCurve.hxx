@@ -338,10 +338,10 @@ public:
 
 protected:
 private:
-  //! Set  poles  to  Poles,  weights to  Weights  (not
-  //! copied). If Weights is   null  the  curve is    non
-  //! rational. Create the arrays of coefficients.  Poles
-  //! and    Weights  are   assumed   to  have the  first
+  //! Set poles to Poles, weights to Weights (not copied).
+  //! If Weights is null the curve is non rational.
+  //! Create the arrays of coefficients.
+  //! Poles and Weights are assumed to have the first
   //! coefficient 1.
   //! Update rational and closed.
   //!

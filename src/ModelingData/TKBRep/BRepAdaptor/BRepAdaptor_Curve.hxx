@@ -48,12 +48,12 @@ DEFINE_STANDARD_HANDLE(BRepAdaptor_Curve, Adaptor3d_Curve)
 //!
 //! It has the methods the class Curve from Adaptor3d.
 //!
-//! It  is created or  Initialized  with  an Edge.  It
-//! takes  into account local  coordinate systems.  If
-//! the Edge has a 3D curve it is  use  with priority.
-//! If the edge  has no 3D curve one  of the curves on
+//! It is created or Initialized with an Edge. It
+//! takes into account local coordinate systems. If
+//! the Edge has a 3D curve it is use with priority.
+//! If the edge has no 3D curve one of the curves on
 //! surface is used. It is possible to enforce using a
-//! curve on surface by creating  or initialising with
+//! curve on surface by creating or initialising with
 //! an Edge and a Face.
 class BRepAdaptor_Curve : public Adaptor3d_Curve
 {
@@ -62,14 +62,13 @@ public:
   //! Creates an undefined Curve with no Edge loaded.
   Standard_EXPORT BRepAdaptor_Curve();
 
-  //! Creates a Curve  to  access the geometry of edge
-  //! <E>.
+  //! Creates a Curve to access the geometry of edge <E>.
   Standard_EXPORT BRepAdaptor_Curve(const TopoDS_Edge& E);
 
-  //! Creates a Curve to access  the geometry  of edge
-  //! <E>.   The geometry  will   be  computed using the
-  //! parametric curve of <E> on the face  <F>. An Error
-  //! is  raised if  the edge does  not have a pcurve on
+  //! Creates a Curve to access the geometry of edge
+  //! <E>. The geometry will be computed using the
+  //! parametric curve of <E> on the face <F>. An Error
+  //! is raised if the edge does not have a pcurve on
   //! the face.
   Standard_EXPORT BRepAdaptor_Curve(const TopoDS_Edge& E, const TopoDS_Face& F);
 
@@ -79,14 +78,14 @@ public:
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();
 
-  //! Sets  the Curve <me>  to access the  geometry of
+  //! Sets the Curve <me> to access the geometry of
   //! edge <E>.
   Standard_EXPORT void Initialize(const TopoDS_Edge& E);
 
-  //! Sets the Curve <me>  to access  the  geometry of
-  //! edge <E>.  The geometry will be computed using the
-  //! parametric curve of <E>  on the face <F>. An Error
-  //! is raised if the edge  does not  have a pcurve  on
+  //! Sets the Curve <me> to access the geometry of
+  //! edge <E>. The geometry will be computed using the
+  //! parametric curve of <E> on the face <F>. An Error
+  //! is raised if the edge does not have a pcurve on
   //! the face.
   Standard_EXPORT void Initialize(const TopoDS_Edge& E, const TopoDS_Face& F);
 
@@ -101,7 +100,7 @@ public:
   //! a pcurve on a surface.
   Standard_EXPORT Standard_Boolean IsCurveOnSurface() const;
 
-  //! Returns the Curve of  the  edge.
+  //! Returns the Curve of the edge.
   Standard_EXPORT const GeomAdaptor_Curve& Curve() const;
 
   //! Returns the CurveOnSurface of the edge.
@@ -119,20 +118,20 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! Returns    a  curve equivalent   of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a curve equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor3d_Curve) Trim(const Standard_Real First,

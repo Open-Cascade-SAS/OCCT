@@ -35,7 +35,7 @@ class Geom2d_Curve;
 class BRepTools_GTrsfModification;
 DEFINE_STANDARD_HANDLE(BRepTools_GTrsfModification, BRepTools_Modification)
 
-//! Defines a modification of the  geometry by a  GTrsf
+//! Defines a modification of the geometry by a GTrsf
 //! from gp. All methods return True and transform the
 //! geometry.
 class BRepTools_GTrsfModification : public BRepTools_Modification
@@ -47,16 +47,16 @@ public:
   //! Gives an access on the GTrsf.
   Standard_EXPORT gp_GTrsf& GTrsf();
 
-  //! Returns Standard_True  if  the face  <F> has  been
-  //! modified.  In this  case, <S> is the new geometric
-  //! support of  the  face, <L> the  new location,<Tol>
-  //! the new  tolerance.<RevWires> has  to  be set   to
-  //! Standard_True   when the modification reverses the
-  //! normal of  the   surface.(the wires   have  to  be
-  //! reversed).   <RevFace>   has   to   be   set    to
-  //! Standard_True if  the orientation  of the modified
-  //! face changes in the  shells which contain  it.  --
-  //! Here, <RevFace>  will  return Standard_True if the
+  //! Returns Standard_True if the face <F> has been
+  //! modified. In this case, <S> is the new geometric
+  //! support of the face, <L> the new location,<Tol>
+  //! the new tolerance.<RevWires> has to be set to
+  //! Standard_True when the modification reverses the
+  //! normal of the surface. (the wires have to be
+  //! reversed). <RevFace> has to be set to
+  //! Standard_True if the orientation of the modified
+  //! face changes in the shells which contain it.  --
+  //! Here, <RevFace> will return Standard_True if the
   //! -- gp_Trsf is negative.
   Standard_EXPORT Standard_Boolean NewSurface(const TopoDS_Face&    F,
                                               Handle(Geom_Surface)& S,
@@ -65,31 +65,31 @@ public:
                                               Standard_Boolean&     RevWires,
                                               Standard_Boolean&     RevFace) Standard_OVERRIDE;
 
-  //! Returns Standard_True  if  the edge  <E> has  been
-  //! modified.  In this case,  <C> is the new geometric
-  //! support of the  edge, <L> the  new location, <Tol>
-  //! the         new    tolerance.   Otherwise, returns
-  //! Standard_False,    and  <C>,  <L>,   <Tol> are not
+  //! Returns Standard_True if the edge <E> has been
+  //! modified. In this case, <C> is the new geometric
+  //! support of the edge, <L> the new location, <Tol>
+  //! the new tolerance. Otherwise, returns
+  //! Standard_False, and <C>, <L>, <Tol> are not
   //! significant.
   Standard_EXPORT Standard_Boolean NewCurve(const TopoDS_Edge&  E,
                                             Handle(Geom_Curve)& C,
                                             TopLoc_Location&    L,
                                             Standard_Real&      Tol) Standard_OVERRIDE;
 
-  //! Returns  Standard_True if the  vertex <V> has been
-  //! modified.  In this  case, <P> is the new geometric
-  //! support of the vertex,   <Tol> the new  tolerance.
-  //! Otherwise, returns Standard_False, and <P>,  <Tol>
+  //! Returns Standard_True if the vertex <V> has been
+  //! modified. In this case, <P> is the new geometric
+  //! support of the vertex, <Tol> the new tolerance.
+  //! Otherwise, returns Standard_False, and <P>, <Tol>
   //! are not significant.
   Standard_EXPORT Standard_Boolean NewPoint(const TopoDS_Vertex& V,
                                             gp_Pnt&              P,
                                             Standard_Real&       Tol) Standard_OVERRIDE;
 
-  //! Returns Standard_True if  the edge  <E> has a  new
+  //! Returns Standard_True if the edge <E> has a new
   //! curve on surface on the face <F>.In this case, <C>
-  //! is the new geometric support of  the edge, <L> the
+  //! is the new geometric support of the edge, <L> the
   //! new location, <Tol> the new tolerance.
-  //! Otherwise, returns  Standard_False, and <C>,  <L>,
+  //! Otherwise, returns Standard_False, and <C>, <L>,
   //! <Tol> are not significant.
   Standard_EXPORT Standard_Boolean NewCurve2d(const TopoDS_Edge&    E,
                                               const TopoDS_Face&    F,
@@ -98,21 +98,21 @@ public:
                                               Handle(Geom2d_Curve)& C,
                                               Standard_Real&        Tol) Standard_OVERRIDE;
 
-  //! Returns Standard_True if the Vertex  <V> has a new
-  //! parameter on the  edge <E>. In  this case,  <P> is
-  //! the parameter,    <Tol>  the     new    tolerance.
-  //! Otherwise, returns Standard_False, and <P>,  <Tol>
+  //! Returns Standard_True if the Vertex <V> has a new
+  //! parameter on the edge <E>. In this case, <P> is
+  //! the parameter, <Tol> the new tolerance.
+  //! Otherwise, returns Standard_False, and <P>, <Tol>
   //! are not significant.
   Standard_EXPORT Standard_Boolean NewParameter(const TopoDS_Vertex& V,
                                                 const TopoDS_Edge&   E,
                                                 Standard_Real&       P,
                                                 Standard_Real&       Tol) Standard_OVERRIDE;
 
-  //! Returns the  continuity of  <NewE> between <NewF1>
+  //! Returns the continuity of <NewE> between <NewF1>
   //! and <NewF2>.
   //!
-  //! <NewE> is the new  edge created from <E>.  <NewF1>
-  //! (resp. <NewF2>) is the new  face created from <F1>
+  //! <NewE> is the new edge created from <E>. <NewF1>
+  //! (resp. <NewF2>) is the new face created from <F1>
   //! (resp. <F2>).
   Standard_EXPORT GeomAbs_Shape Continuity(const TopoDS_Edge& E,
                                            const TopoDS_Face& F1,

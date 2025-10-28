@@ -22,7 +22,7 @@
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 
-//! An  attempt was  made to   modify  a Shape  already
+//! An attempt was made to modify a Shape already
 //! shared or protected.
 
 class TopoDS_FrozenShape;

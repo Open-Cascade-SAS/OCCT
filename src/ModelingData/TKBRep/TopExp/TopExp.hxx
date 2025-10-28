@@ -31,16 +31,16 @@ class TopoDS_Shape;
 class TopoDS_Edge;
 class TopoDS_Wire;
 
-//! This package   provides  basic tools  to   explore the
+//! This package provides basic tools to explore the
 //! topological data structures.
 //!
-//! * Explorer : A tool to find all sub-shapes of  a given
+//! * Explorer: A tool to find all sub-shapes of a given
 //! type. e.g. all faces of a solid.
 //!
 //! * Package methods to map sub-shapes of a shape.
 //!
 //! Level : Public
-//! All methods of all  classes will be public.
+//! All methods of all classes will be public.
 class TopExp
 {
 public:
@@ -78,8 +78,8 @@ public:
                                         const Standard_Boolean cumLoc = Standard_True);
 
   //! Stores in the map <M> all the subshape of <S> of
-  //! type <TS>  for each one append  to  the list all
-  //! the ancestors of type <TA>.  For example map all
+  //! type <TS> for each one append to the list all
+  //! the ancestors of type <TA>. For example map all
   //! the edges and bind the list of faces.
   //! Warning: The map is not cleared at first.
   Standard_EXPORT static void MapShapesAndAncestors(const TopoDS_Shape&                        S,
@@ -89,7 +89,7 @@ public:
 
   //! Stores in the map <M> all the subshape of <S> of
   //! type <TS> for each one append to the list all
-  //! unique ancestors of type <TA>.  For example map all
+  //! unique ancestors of type <TA>. For example map all
   //! the edges and bind the list of faces.
   //! useOrientation = True : taking account the ancestor orientation
   //! Warning: The map is not cleared at first.
@@ -120,9 +120,9 @@ public:
                                        TopoDS_Vertex&         Vlast,
                                        const Standard_Boolean CumOri = Standard_False);
 
-  //! Returns  in  Vfirst,  Vlast   the first   and last
+  //! Returns in Vfirst, Vlast the first and last
   //! vertices of the open wire <W>. May be null shapes.
-  //! if   <W>  is closed Vfirst and Vlast  are a same
+  //! if <W> is closed Vfirst and Vlast are a same
   //! vertex on <W>.
   //! if <W> is no manifold. VFirst and VLast are null
   //! shapes.
@@ -130,7 +130,7 @@ public:
                                        TopoDS_Vertex&     Vfirst,
                                        TopoDS_Vertex&     Vlast);
 
-  //! Finds   the  vertex <V> common   to  the two edges
+  //! Finds the vertex <V> common to the two edges
   //! <E1,E2>, returns True if this vertex exists.
   //!
   //! Warning: <V> has sense only if the value <True> is returned

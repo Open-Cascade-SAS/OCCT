@@ -38,17 +38,17 @@ class gp_Dir;
 
 DEFINE_STANDARD_HANDLE(BRepAdaptor_Surface, Adaptor3d_Surface)
 
-//! The Surface from BRepAdaptor allows to  use a Face
+//! The Surface from BRepAdaptor allows to use a Face
 //! of the BRep topology look like a 3D surface.
 //!
-//! It  has  the methods  of  the class   Surface from
+//! It has the methods of the class Surface from
 //! Adaptor3d.
 //!
 //! It is created or initialized with a Face. It takes
 //! into account the local coordinates system.
 //!
-//! The  u,v parameter range is   the minmax value for
-//! the  restriction,  unless  the flag restriction is
+//! The u,v parameter range is the minmax value for
+//! the restriction, unless the flag restriction is
 //! set to false.
 class BRepAdaptor_Surface : public Adaptor3d_Surface
 {
@@ -57,14 +57,14 @@ public:
   //! Creates an undefined surface with no face loaded.
   Standard_EXPORT BRepAdaptor_Surface();
 
-  //! Creates a surface to  access the geometry  of <F>.
-  //! If  <Restriction> is  true  the parameter range is
-  //! the  parameter  range  in   the  UV space  of  the
+  //! Creates a surface to access the geometry of <F>.
+  //! If <Restriction> is true the parameter range is
+  //! the parameter range in the UV space of the
   //! restriction.
   Standard_EXPORT BRepAdaptor_Surface(const TopoDS_Face&     F,
                                       const Standard_Boolean R = Standard_True);
 
-  //! Shallow copy of adaptor
+  //! Shallow copy of adaptor.
   Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const Standard_OVERRIDE;
 
   //! Sets the surface to the geometry of <F>.
@@ -105,7 +105,7 @@ public:
   virtual GeomAbs_Shape VContinuity() const Standard_OVERRIDE { return mySurf.VContinuity(); }
 
   //! If necessary, breaks the surface in U intervals of
-  //! continuity    <S>.  And   returns  the  number  of
+  //! continuity <S>. And returns the number of
   //! intervals.
   virtual Standard_Integer NbUIntervals(const GeomAbs_Shape theSh) const Standard_OVERRIDE
   {
@@ -113,35 +113,35 @@ public:
   }
 
   //! If necessary, breaks the surface in V intervals of
-  //! continuity    <S>.  And   returns  the  number  of
+  //! continuity <S>. And returns the number of
   //! intervals.
   virtual Standard_Integer NbVIntervals(const GeomAbs_Shape theSh) const Standard_OVERRIDE
   {
     return mySurf.NbVIntervals(theSh);
   }
 
-  //! Returns the  intervals with the requested continuity
+  //! Returns the intervals with the requested continuity
   //! in the U direction.
   Standard_EXPORT void UIntervals(TColStd_Array1OfReal& T,
                                   const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! Returns the  intervals with the requested continuity
+  //! Returns the intervals with the requested continuity
   //! in the V direction.
   Standard_EXPORT void VIntervals(TColStd_Array1OfReal& T,
                                   const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! Returns    a  surface trimmed in the U direction
-  //! equivalent   of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
-  //! test for 3d points confusion.
+  //! Returns a surface trimmed in the U direction
+  //! equivalent of <me> between parameters
+  //! <First> and <Last>.
+  //! <Tol> is used to test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor3d_Surface) UTrim(const Standard_Real First,
                                                   const Standard_Real Last,
                                                   const Standard_Real Tol) const Standard_OVERRIDE;
 
-  //! Returns    a  surface trimmed in the V direction  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
-  //! test for 3d points confusion.
+  //! Returns a surface trimmed in the V direction between
+  //! parameters <First> and <Last>.
+  //! <Tol> is used to test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor3d_Surface) VTrim(const Standard_Real First,
                                                   const Standard_Real Last,
@@ -169,7 +169,7 @@ public:
                           const Standard_Real V,
                           gp_Pnt&             P) const Standard_OVERRIDE;
 
-  //! Computes the point  and the first derivatives on the surface.
+  //! Computes the point and the first derivatives on the surface.
   //! Raised if the continuity of the current intervals is not C1.
   //!
   //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
@@ -179,9 +179,9 @@ public:
                           gp_Vec&             D1U,
                           gp_Vec&             D1V) const Standard_OVERRIDE;
 
-  //! Computes   the point,  the  first  and  second
+  //! Computes the point, the first and second
   //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
+  //! Raised if the continuity of the current
   //! intervals is not C2.
   Standard_EXPORT void D2(const Standard_Real U,
                           const Standard_Real V,
@@ -192,9 +192,9 @@ public:
                           gp_Vec&             D2V,
                           gp_Vec&             D2UV) const Standard_OVERRIDE;
 
-  //! Computes the point,  the first, second and third
+  //! Computes the point, the first, second and third
   //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
+  //! Raised if the continuity of the current
   //! intervals is not C3.
   Standard_EXPORT void D3(const Standard_Real U,
                           const Standard_Real V,
@@ -211,7 +211,7 @@ public:
 
   //! Computes the derivative of order Nu in the direction
   //! U and Nv in the direction V at the point P(U, V).
-  //! Raised if the current U  interval is not not CNu
+  //! Raised if the current U interval is not not CNu
   //! and the current V interval is not CNv.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
@@ -219,23 +219,23 @@ public:
                             const Standard_Integer Nu,
                             const Standard_Integer Nv) const Standard_OVERRIDE;
 
-  //! Returns the parametric U  resolution corresponding
+  //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.
   virtual Standard_Real UResolution(const Standard_Real theR3d) const Standard_OVERRIDE
   {
     return mySurf.UResolution(theR3d);
   }
 
-  //! Returns the parametric V  resolution corresponding
+  //! Returns the parametric V resolution corresponding
   //! to the real space resolution <R3d>.
   virtual Standard_Real VResolution(const Standard_Real theR3d) const Standard_OVERRIDE
   {
     return mySurf.VResolution(theR3d);
   }
 
-  //! Returns the type of the surface : Plane, Cylinder,
-  //! Cone,      Sphere,        Torus,    BezierSurface,
-  //! BSplineSurface,               SurfaceOfRevolution,
+  //! Returns the type of the surface: Plane, Cylinder,
+  //! Cone, Sphere, Torus, BezierSurface,
+  //! BSplineSurface, SurfaceOfRevolution,
   //! SurfaceOfExtrusion, OtherSurface
   virtual GeomAbs_SurfaceType GetType() const Standard_OVERRIDE { return mySurf.GetType(); }
 
@@ -267,7 +267,7 @@ public:
 
   Standard_EXPORT Handle(Geom_BezierSurface) Bezier() const Standard_OVERRIDE;
 
-  //! Warning : this will make a copy of the
+  //! Warning: this will make a copy of the
   //! BSpline Surface since it applies
   //! to it the myTsrf transformation
   //! Be Careful when using this method

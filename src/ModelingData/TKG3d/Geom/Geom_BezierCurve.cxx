@@ -110,7 +110,7 @@ Geom_BezierCurve::Geom_BezierCurve(const TColgp_Array1OfPnt&   Poles,
 
   npoles->ChangeArray1() = Poles;
 
-  // check  the weights
+  // check the weights
 
   if (Weights.Length() != nbpoles)
     throw Standard_ConstructionError();
