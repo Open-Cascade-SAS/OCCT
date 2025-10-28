@@ -24,7 +24,7 @@ class Geom_Curve;
 class Geom2d_Curve;
 class Geom_Surface;
 
-//! Approximation of a  PCurve  on a surface to  make its
+//! Approximation of a PCurve on a surface to make its
 //! parameter be the same that the parameter of a given 3d
 //! reference curve.
 class Approx_SameParameter

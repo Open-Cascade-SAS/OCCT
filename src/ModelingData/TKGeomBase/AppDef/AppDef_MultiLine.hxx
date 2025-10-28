@@ -59,7 +59,7 @@ public:
   Standard_EXPORT AppDef_MultiLine();
 
   //! given the number NbMult of MultiPointConstraints of this
-  //! MultiLine , it initializes all the fields.SetValue must be
+  //! MultiLine, it initializes all the fields.SetValue must be
   //! called in order for the values of the multipoint
   //! constraint to be taken into account.
   //! An exception is raised if NbMult < 0.

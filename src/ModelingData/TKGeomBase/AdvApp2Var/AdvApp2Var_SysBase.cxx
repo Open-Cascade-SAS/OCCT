@@ -2284,7 +2284,7 @@ int AdvApp2Var_SysBase::mcrfill_(integer* size, void* tin, void* tout)
 /*             Routine mcrfree                                            */
 /*             --------------                                             */
 /*                                                                        */
-/*             Desallocation of a memory zone  .                          */
+/*             Desallocation of a memory zone.                            */
 /*                                                                        */
 /*             CALL MCRFREE (IBYTE,IADR,IER)                              */
 /*                                                                        */

@@ -33,7 +33,7 @@ public:
 
   CPnts_MyGaussFunction();
 
-  //! F  is a pointer on a  function  D is a client data
+  //! F is a pointer on a function D is a client data
   //!
   //! Each value is computed with F(D)
   Standard_EXPORT void Init(const CPnts_RealFunction& F, const Standard_Address D);

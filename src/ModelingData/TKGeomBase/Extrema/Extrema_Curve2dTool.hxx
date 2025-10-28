@@ -102,12 +102,12 @@ public:
   //! order of derivation N.
   static gp_Vec2d DN(const Adaptor2d_Curve2d& C, const Standard_Real U, const Standard_Integer N);
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   static Standard_Real Resolution(const Adaptor2d_Curve2d& C, const Standard_Real R3d);
 
-  //! Returns  the  type of the   curve  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the curve in the current
+  //! interval : Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   static GeomAbs_CurveType GetType(const Adaptor2d_Curve2d& C);
 

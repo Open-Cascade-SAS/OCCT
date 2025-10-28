@@ -36,7 +36,7 @@ public:
 
   CPnts_MyRootFunction();
 
-  //! F  is a pointer on a  function  D is a client data
+  //! F is a pointer on a function D is a client data
   //! Order is the order of integration to use
   Standard_EXPORT void Init(const CPnts_RealFunction& F,
                             const Standard_Address    D,

@@ -37,7 +37,7 @@ class FEmTool_Assembly;
 class PLib_Base;
 
 //! This class is used to smooth N points with constraints
-//! by   minimization  of quadratic  criterium   but  also
+//! by minimization of quadratic criterium but also
 //! variational criterium in order to obtain " fair Curve "
 //! Computes the approximation of a Multiline by
 //! Variational optimization.
@@ -47,10 +47,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
-  //! Initialization of   the   fields.
+  //! Initialization of the fields.
   //! warning :  Nc0 : number of PassagePoint consraints
-  //! Nc2 : number  of  TangencyPoint constraints
-  //! Nc3 : number of    CurvaturePoint   constraints
+  //! Nc2 : number of TangencyPoint constraints
+  //! Nc3 : number of CurvaturePoint constraints
   //! if
   //! ((MaxDegree-Continuity)*MaxSegment -Nc0  - 2*Nc1
   //! -3*Nc2)
@@ -76,11 +76,11 @@ public:
   Standard_EXPORT void Approximate();
 
   //! returns True if the creation is done
-  //! and correspond  to the current fields.
+  //! and correspond to the current fields.
   Standard_EXPORT Standard_Boolean IsCreated() const;
 
   //! returns True if the  approximation is ok
-  //! and correspond  to the current fields.
+  //! and correspond to the current fields.
   Standard_EXPORT Standard_Boolean IsDone() const;
 
   //! returns True if the problem is overconstrained
@@ -123,8 +123,8 @@ public:
                                  Standard_Real& VSecondOrder,
                                  Standard_Real& VThirdOrder) const;
 
-  //! returns the Weights (as percent) associed  to the criterium used in
-  //! the  optimization.
+  //! returns the Weights (as percent) associed to the criterium used in
+  //! the optimization.
   Standard_EXPORT void CriteriumWeight(Standard_Real& Percent1,
                                        Standard_Real& Percent2,
                                        Standard_Real& Percent3) const;
@@ -138,11 +138,11 @@ public:
   //! returns the Continuity used in the approximation
   Standard_EXPORT GeomAbs_Shape Continuity() const;
 
-  //! returns if the  approximation  search to  minimize the
+  //! returns if the approximation search to minimize the
   //! maximum Error or not.
   Standard_EXPORT Standard_Boolean WithMinMax() const;
 
-  //! returns if the  approximation can insert new Knots or not.
+  //! returns if the approximation can insert new Knots or not.
   Standard_EXPORT Standard_Boolean WithCutting() const;
 
   //! returns the tolerance used in the approximation.
@@ -186,11 +186,11 @@ public:
   //! this method modify nothing and returns false
   Standard_EXPORT Standard_Boolean SetContinuity(const GeomAbs_Shape C);
 
-  //! Define if the  approximation  search to  minimize the
+  //! Define if the approximation search to  minimize the
   //! maximum Error or not.
   Standard_EXPORT void SetWithMinMax(const Standard_Boolean MinMax);
 
-  //! Define if the  approximation can insert new Knots or not.
+  //! Define if the approximation can insert new Knots or not.
   //! If this value is incompatible with the others fields
   //! this method modify nothing and returns false
   Standard_EXPORT Standard_Boolean SetWithCutting(const Standard_Boolean Cutting);
@@ -203,8 +203,8 @@ public:
                                           const Standard_Real Percent2,
                                           const Standard_Real Percent3);
 
-  //! define the  Weight   (as  percent)  associed  to   the
-  //! criterium   Order used in   the optimization  : Others
+  //! define the Weight (as percent) associed to the
+  //! criterium Order used in the optimization : Others
   //! weights are updated.
   //! if Percent < 0
   //! if Order < 1 or Order > 3

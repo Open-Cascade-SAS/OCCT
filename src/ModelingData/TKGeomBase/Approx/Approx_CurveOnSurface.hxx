@@ -24,7 +24,7 @@
 class Geom_BSplineCurve;
 class Geom2d_BSplineCurve;
 
-//! Approximation of   curve on surface
+//! Approximation of curve on surface
 class Approx_CurveOnSurface
 {
 public:
