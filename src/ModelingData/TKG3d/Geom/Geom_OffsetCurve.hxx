@@ -262,7 +262,7 @@ public:
   //! the transform of the point of parameter U on <me>.
   //! me->Transformed(T)->Value(me->TransformedParameter(U,T))
   //! is the same point as
-  //! me->Value(U).Transformed(T)the degree the degree
+  //! me->Value(U).Transformed(T)
   //! This methods calls the basis curve method.
   Standard_EXPORT virtual Standard_Real TransformedParameter(const Standard_Real U,
                                                              const gp_Trsf&      T) const
