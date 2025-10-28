@@ -351,15 +351,15 @@ public:
   //! Creates a new object which is a copy of this offset surface.
   Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
-  //! returns an  equivalent surface of the offset surface
-  //! when  the basis surface   is a canonic  surface or a
-  //! rectangular  limited surface on canonic surface or if
+  //! returns an equivalent surface of the offset surface
+  //! when the basis surface is a canonic surface or a
+  //! rectangular limited surface on canonic surface or if
   //! the offset is null.
   Standard_EXPORT Handle(Geom_Surface) Surface() const;
 
-  //! if Standard_True, L is  the local osculating surface
-  //! along U at  the point U,V.   It means that  DL/DU is
-  //! collinear to DS/DU .  If IsOpposite == Standard_True
+  //! if Standard_True, L is the local osculating surface
+  //! along U at the point U,V. It means that DL/DU is
+  //! collinear to DS/DU. If IsOpposite == Standard_True
   //! these vectors have opposite direction.
   Standard_EXPORT Standard_Boolean
     UOsculatingSurface(const Standard_Real          U,
@@ -369,8 +369,8 @@ public:
 
   //! if Standard_True, L is the local osculating surface
   //! along V at the point U,V.
-  //! It means that  DL/DV is
-  //! collinear to DS/DV .  If IsOpposite == Standard_True
+  //! It means that  DL/DV is collinear to DS/DV.
+  //! If IsOpposite == Standard_True
   //! these vectors have opposite direction.
   Standard_EXPORT Standard_Boolean
     VOsculatingSurface(const Standard_Real          U,

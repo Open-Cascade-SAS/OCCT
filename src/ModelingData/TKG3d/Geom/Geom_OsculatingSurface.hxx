@@ -41,8 +41,8 @@ public:
 
   Standard_EXPORT Geom_OsculatingSurface();
 
-  //! detects if the  surface has punctual U  or  V
-  //! isoparametric  curve along on  the bounds of the surface
+  //! detects if the surface has punctual U or V
+  //! isoparametric curve along on the bounds of the surface
   //! relatively to the tolerance Tol and Builds the corresponding
   //! osculating surfaces.
   Standard_EXPORT Geom_OsculatingSurface(const Handle(Geom_Surface)& BS, const Standard_Real Tol);
@@ -82,8 +82,7 @@ private:
                                                           const Handle(Geom_BSplineSurface)& BS,
                                                           Handle(Geom_BSplineSurface)& L) const;
 
-  //! returns    True    if  the    isoparametric     is
-  //! quasi-punctual
+  //! returns True if the isoparametric is quasi-punctual
   Standard_EXPORT Standard_Boolean IsQPunctual(const Handle(Geom_Surface)& S,
                                                const Standard_Real         Param,
                                                const GeomAbs_IsoType       IT,

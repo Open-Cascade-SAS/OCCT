@@ -227,7 +227,7 @@ public:
   //! Applies the transformation T to this surface of linear extrusion.
   Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
-  //! Computes the  parameters on the  transformed  surface for
+  //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -247,7 +247,7 @@ public:
                                                    Standard_Real& V,
                                                    const gp_Trsf& T) const Standard_OVERRIDE;
 
-  //! Returns a 2d transformation  used to find the  new
+  //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
   //! @code
   //!   me->Transformed(T)->Value(U',V')

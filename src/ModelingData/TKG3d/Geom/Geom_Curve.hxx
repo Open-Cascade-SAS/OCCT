@@ -62,9 +62,9 @@ class Geom_Curve : public Geom_Geometry
 public:
   //! Changes the direction of parametrization of <me>.
   //! The "FirstParameter" and the "LastParameter" are not changed
-  //! but the orientation  of the curve is modified. If the curve
+  //! but the orientation of the curve is modified. If the curve
   //! is bounded the StartPoint of the initial curve becomes the
-  //! EndPoint of the reversed curve  and the EndPoint of the initial
+  //! EndPoint of the reversed curve and the EndPoint of the initial
   //! curve becomes the StartPoint of the reversed curve.
   Standard_EXPORT virtual void Reverse() = 0;
 
@@ -78,7 +78,7 @@ public:
   //! me->Value(U)
   Standard_EXPORT virtual Standard_Real ReversedParameter(const Standard_Real U) const = 0;
 
-  //! Returns the  parameter on the  transformed  curve for
+  //! Returns the parameter on the transformed curve for
   //! the transform of the point of parameter U on <me>.
   //!
   //! me->Transformed(T)->Value(me->TransformedParameter(U,T))
@@ -93,8 +93,8 @@ public:
   Standard_EXPORT virtual Standard_Real TransformedParameter(const Standard_Real U,
                                                              const gp_Trsf&      T) const;
 
-  //! Returns a  coefficient to compute the parameter on
-  //! the transformed  curve  for  the transform  of the
+  //! Returns a coefficient to compute the parameter on
+  //! the transformed curve for the transform of the
   //! point on <me>.
   //!
   //! Transformed(T)->Value(U * ParametricTransformation(T))
@@ -169,8 +169,8 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsCN(const Standard_Integer N) const = 0;
 
   //! Returns in P the point of parameter U.
-  //! If the curve is periodic  then the returned point is P(U) with
-  //! U = Ustart + (U - Uend)  where Ustart and Uend are the
+  //! If the curve is periodic then the returned point is P(U) with
+  //! U = Ustart + (U - Uend) where Ustart and Uend are the
   //! parametric bounds of the curve.
   //!
   //! Raised only for the "OffsetCurve" if it is not possible to
@@ -204,7 +204,7 @@ public:
   //! order of derivation N.
   //! Raised if the continuity of the curve is not CN.
   //!
-  //! Raised if the   derivative  cannot  be  computed
+  //! Raised if the derivative cannot be computed
   //! easily. e.g. rational bspline and n > 3.
   //! Raised if N < 1.
   Standard_EXPORT virtual gp_Vec DN(const Standard_Real U, const Standard_Integer N) const = 0;

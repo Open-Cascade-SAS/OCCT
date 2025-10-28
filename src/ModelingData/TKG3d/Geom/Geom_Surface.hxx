@@ -62,7 +62,7 @@ public:
   //! A copy of <me> is returned.
   Standard_NODISCARD Standard_EXPORT Handle(Geom_Surface) UReversed() const;
 
-  //! Returns the  parameter on the  Ureversed surface for
+  //! Returns the parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
   //! @code
   //!   me->UReversed()->Value(me->UReversedParameter(U),V)
@@ -82,7 +82,7 @@ public:
   //! A copy of <me> is returned.
   Standard_NODISCARD Standard_EXPORT Handle(Geom_Surface) VReversed() const;
 
-  //! Returns the  parameter on the  Vreversed surface for
+  //! Returns the parameter on the Vreversed surface for
   //! the point of parameter V on <me>.
   //! @code
   //!   me->VReversed()->Value(U,me->VReversedParameter(V))
@@ -93,7 +93,7 @@ public:
   //! @endcode
   Standard_EXPORT virtual Standard_Real VReversedParameter(const Standard_Real V) const = 0;
 
-  //! Computes the  parameters on the  transformed  surface for
+  //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -114,7 +114,7 @@ public:
                                                    Standard_Real& V,
                                                    const gp_Trsf& T) const;
 
-  //! Returns a 2d transformation  used to find the  new
+  //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -123,14 +123,14 @@ public:
   //! @code
   //!   me->Value(U,V).Transformed(T)
   //! @endcode
-  //! Where U',V' are  obtained by transforming U,V with
+  //! Where U',V' are obtained by transforming U,V with
   //! the 2d transformation returned by
   //! @code
   //!   me->ParametricTransformation(T)
   //! @endcode
   //! This method returns an identity transformation
   //!
-  //! It  can be redefined.  For  example on  the Plane,
+  //! It can be redefined. For example on the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.
   Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const;
 

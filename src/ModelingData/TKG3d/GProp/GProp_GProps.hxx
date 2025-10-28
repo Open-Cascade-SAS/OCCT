@@ -26,9 +26,9 @@ class gp_Ax1;
 class GProp_PrincipalProps;
 
 //! Implements a general mechanism to compute the global properties of
-//! a "compound geometric system" in 3d space    by composition of the
-//! global properties of "elementary geometric entities"       such as
-//! (curve, surface, solid, set of points).  It is possible to compose
+//! a "compound geometric system" in 3d space by composition of the
+//! global properties of "elementary geometric entities" such as
+//! (curve, surface, solid, set of points). It is possible to compose
 //! the properties of several "compound geometric systems" too.
 //!
 //! To computes the global properties of a compound geometric

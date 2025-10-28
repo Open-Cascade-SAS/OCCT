@@ -124,17 +124,17 @@ public:
   //! properties as <me>.
   Standard_EXPORT gp_Torus Torus() const;
 
-  //! Return the  parameter on the  Ureversed surface for
+  //! Return the parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
   //! Return 2.PI - U.
   Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
-  //! Return the  parameter on the  Ureversed surface for
+  //! Return the parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
   //! Return 2.PI - U.
   Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
-  //! Computes the aera of the surface.
+  //! Computes the area of the surface.
   Standard_EXPORT Standard_Real Area() const;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of this torus.

@@ -77,20 +77,20 @@ public:
   Standard_NODISCARD Standard_EXPORT Handle(Geom_VectorWithMagnitude) Added(
     const Handle(Geom_Vector)& Other) const;
 
-  //! Computes the cross product  between <me> and Other
+  //! Computes the cross product between <me> and Other
   //! <me> ^ Other.
   Standard_EXPORT void Cross(const Handle(Geom_Vector)& Other) Standard_OVERRIDE;
 
-  //! Computes the cross product  between <me> and Other
+  //! Computes the cross product between <me> and Other
   //! <me> ^ Other. A new vector is returned.
   Standard_EXPORT Handle(Geom_Vector) Crossed(const Handle(Geom_Vector)& Other) const
     Standard_OVERRIDE;
 
-  //! Computes the triple vector product  <me> ^ (V1 ^ V2).
+  //! Computes the triple vector product <me> ^ (V1 ^ V2).
   Standard_EXPORT void CrossCross(const Handle(Geom_Vector)& V1,
                                   const Handle(Geom_Vector)& V2) Standard_OVERRIDE;
 
-  //! Computes the triple vector product  <me> ^ (V1 ^ V2).
+  //! Computes the triple vector product <me> ^ (V1 ^ V2).
   //! A new vector is returned.
   Standard_EXPORT Handle(Geom_Vector) CrossCrossed(const Handle(Geom_Vector)& V1,
                                                    const Handle(Geom_Vector)& V2) const

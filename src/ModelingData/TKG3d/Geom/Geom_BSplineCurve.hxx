@@ -206,53 +206,53 @@ public:
                                             const Standard_Integer I2,
                                             const Standard_Integer M);
 
-  //! Increment  the  multiplicities   of  the knots  in
+  //! Increment the multiplicities of the knots in
   //! [I1,I2] by <M>.
   //!
-  //! If <M> is not positive nithing is done.
+  //! If <M> is not positive nothing is done.
   //!
-  //! For   each  knot   the resulting   multiplicity  is
+  //! For each knot the resulting multiplicity is
   //! limited to the Degree.
   //! If <I1,I2> are not in [FirstUKnotIndex, LastUKnotIndex]
   Standard_EXPORT void IncrementMultiplicity(const Standard_Integer I1,
                                              const Standard_Integer I2,
                                              const Standard_Integer M);
 
-  //! Inserts a knot value in the sequence of knots.  If
-  //! <U>  is an  existing knot     the multiplicity  is
+  //! Inserts a knot value in the sequence of knots.
+  //! If <U> is an existing knot the multiplicity is
   //! increased by <M>.
   //!
-  //! If U  is  not  on the parameter  range  nothing is
+  //! If U is not on the parameter range nothing is
   //! done.
   //!
-  //! If the multiplicity is negative or null nothing is
-  //! done. The  new   multiplicity  is limited  to  the
+  //! If the multiplicity is negative or null nothing
+  //! is done. The new multiplicity is limited to the
   //! degree.
   //!
-  //! The  tolerance criterion  for  knots  equality  is
+  //! The tolerance criterion for knots equality is
   //! the max of Epsilon(U) and ParametricTolerance.
   Standard_EXPORT void InsertKnot(const Standard_Real    U,
                                   const Standard_Integer M                   = 1,
                                   const Standard_Real    ParametricTolerance = 0.0,
                                   const Standard_Boolean Add                 = Standard_True);
 
-  //! Inserts a set of knots  values in  the sequence of
+  //! Inserts a set of knots values in the sequence of
   //! knots.
   //!
   //! For each U = Knots(i), M = Mults(i)
   //!
-  //! If <U>  is an existing  knot  the  multiplicity is
-  //! increased by  <M> if  <Add>  is True, increased to
+  //! If <U> is an existing knot the multiplicity is
+  //! increased by <M> if <Add> is True, increased to
   //! <M> if <Add> is False.
   //!
-  //! If U  is  not  on the parameter  range  nothing is
+  //! If U is not on the parameter range nothing is
   //! done.
   //!
-  //! If the multiplicity is negative or null nothing is
-  //! done. The  new   multiplicity  is limited  to  the
+  //! If the multiplicity is negative or null nothing
+  //! is done. The new multiplicity is limited to the
   //! degree.
   //!
-  //! The  tolerance criterion  for  knots  equality  is
+  //! The tolerance criterion for knots equality is
   //! the max of Epsilon(U) and ParametricTolerance.
   Standard_EXPORT void InsertKnots(const TColStd_Array1OfReal&    Knots,
                                    const TColStd_Array1OfInteger& Mults,
@@ -273,8 +273,8 @@ public:
   //! A low tolerance is used to prevent modification of
   //! the curve. A high tolerance is used to "smooth" the curve.
   //! Exceptions
-  //! Standard_OutOfRange if Index is outside the
-  //! bounds of the knots table.
+  //! Standard_OutOfRange if Index is outside the bounds of the
+  //! knots table.
   //! pole insertion and pole removing
   //! this operation is limited to the Uniform or QuasiUniform
   //! BSplineCurve. The knot values are modified . If the BSpline is
@@ -292,7 +292,7 @@ public:
   //! of the reversed curve.
   Standard_EXPORT void Reverse() Standard_OVERRIDE;
 
-  //! Returns the  parameter on the  reversed  curve for
+  //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
   //!
   //! returns UFirst + ULast - U
@@ -555,7 +555,7 @@ public:
   //! for the computation we only use the definition of the curve
   //! between these two knots. This method is useful to compute
   //! local derivative, if the order of continuity of the whole
-  //! curve is not greater enough.    Inside the parametric
+  //! curve is not greater enough. Inside the parametric
   //! domain Knot (FromK1), Knot (ToK2) the evaluations are
   //! the same as if we consider the whole definition of the
   //! curve. Of course the evaluations are different outside
