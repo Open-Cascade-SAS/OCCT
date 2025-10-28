@@ -42,7 +42,7 @@ public:
   Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
                                              const math_Vector&               theXTolerance,
                                              const Standard_Real              theFTolerance,
-                                             const Standard_Integer tehNbIterations = 100);
+                                             const Standard_Integer theNbIterations = 100);
 
   //! This constructor should be used in a sub-class to initialize
   //! correctly all the fields of this class.
