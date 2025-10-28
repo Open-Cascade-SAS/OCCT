@@ -92,17 +92,17 @@ class Geom2d_BezierCurve : public Geom2d_BoundedCurve
 
 public:
   //! Creates a non rational Bezier curve with a set of poles :
-  //! CurvePoles.  The weights are defaulted to all being 1.
+  //! CurvePoles. The weights are defaulted to all being 1.
   //! Raises ConstructionError if the number of poles is greater than MaxDegree + 1
   //! or lower than 2.
   Standard_EXPORT Geom2d_BezierCurve(const TColgp_Array1OfPnt2d& CurvePoles);
 
   //! Creates a rational Bezier curve with the set of poles
-  //! CurvePoles and the set of weights  PoleWeights .
+  //! CurvePoles and the set of weights PoleWeights.
   //! If all the weights are identical the curve is considered
-  //! as non rational.  Raises ConstructionError if
-  //! the number of poles is greater than  MaxDegree + 1 or lower
-  //! than 2 or CurvePoles and CurveWeights have not the same length
+  //! as non rational. Raises ConstructionError if the number
+  //! of poles is greater than  MaxDegree + 1 or lower than 2
+  //! or CurvePoles and CurveWeights have not the same length
   //! or one weight value is lower or equal to Resolution from
   //! package gp.
   Standard_EXPORT Geom2d_BezierCurve(const TColgp_Array1OfPnt2d& CurvePoles,
@@ -145,10 +145,10 @@ public:
   Standard_EXPORT void RemovePole(const Standard_Integer Index);
 
   //! Reverses the direction of parametrization of <me>
-  //! Value (NewU) =  Value (1 - OldU)
+  //! Value (NewU) = Value (1 - OldU)
   Standard_EXPORT void Reverse() Standard_OVERRIDE;
 
-  //! Returns the  parameter on the  reversed  curve for
+  //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
   //!
   //! returns 1-U
@@ -160,7 +160,7 @@ public:
   //! The control points are modified, the first and the last point
   //! are not the same but the parametrization range is [0, 1]
   //! else it could not be a Bezier curve.
-  //! Warnings :
+  //! Warnings:
   //! Even if <me> is not closed it can become closed after the
   //! segmentation for example if U1 or U2 are out of the bounds
   //! of the curve <me> or if the curve makes loop.
@@ -213,7 +213,7 @@ public:
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
   //! Returns the polynomial degree of the curve. It is the number
-  //! of poles less one.  In this package the Degree of a Bezier
+  //! of poles less one. In this package the Degree of a Bezier
   //! curve cannot be greater than "MaxDegree".
   Standard_EXPORT Standard_Integer Degree() const;
 
@@ -246,12 +246,12 @@ public:
   //! Returns the end point or start point of this Bezier curve.
   Standard_EXPORT gp_Pnt2d EndPoint() const Standard_OVERRIDE;
 
-  //! Returns the value of the first  parameter of this
-  //! Bezier curve. This is  0.0, which gives the start point of this Bezier curve.
+  //! Returns the value of the first parameter of this Bezier curve.
+  //! This is 0.0, which gives the start point of this Bezier curve.
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
-  //! Returns the value of the last  parameter of this
-  //! Bezier curve. This is  1.0, which gives the end point of this Bezier curve.
+  //! Returns the value of the last parameter of this Bezier curve.
+  //! This is 1.0, which gives the end point of this Bezier curve.
   Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! Returns the number of poles for this Bezier curve.
@@ -317,10 +317,10 @@ public:
 
 protected:
 private:
-  //! Set  poles  to  Poles,  weights to  Weights  (not
-  //! copied). If Weights is   null  the  curve is    non
-  //! rational. Create the arrays of coefficients.  Poles
-  //! and    Weights  are   assumed   to  have the  first
+  //! Set poles to Poles, weights to Weights (not
+  //! copied). If Weights is null the curve is non
+  //! rational. Create the arrays of coefficients.
+  //! Poles and Weights are assumed to have the first
   //! coefficient 1.
   //!
   //! Update rational and closed.

@@ -23,9 +23,9 @@
 class gp_Pnt2d;
 class gp_Vec2d;
 
-//! The Geom2dEvaluator package provides  utilities for .
+//! The Geom2dEvaluator package provides utilities for
 //! calculating value and derivatives of offset curve
-//! using corresponding values of base curve
+//! using corresponding values of base curve.
 
 class Geom2dEvaluator
 {

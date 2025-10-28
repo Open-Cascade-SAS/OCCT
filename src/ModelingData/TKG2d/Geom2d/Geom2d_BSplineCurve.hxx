@@ -110,13 +110,13 @@ DEFINE_STANDARD_HANDLE(Geom2d_BSplineCurve, Geom2d_BoundedCurve)
 //! - Pole(i+p) = Pole(i)
 //! Note: data structures of a periodic BSpline curve are
 //! more complex than those of a non-periodic one.
-//! Warnings :
+//! Warnings:
 //! In this class we consider that a weight value is zero if
 //! Weight <= Resolution from package gp.
 //! For two parametric values (or two knot values) U1, U2 we
 //! consider that U1 = U2 if Abs (U2 - U1) <= Epsilon (U1).
 //! For two weights values W1, W2 we consider that W1 = W2 if
-//! Abs (W2 - W1) <= Epsilon (W1).  The method Epsilon is
+//! Abs (W2 - W1) <= Epsilon (W1). The method Epsilon is
 //! defined in the class Real from package Standard.
 //!
 //! References :
@@ -133,7 +133,7 @@ class Geom2d_BSplineCurve : public Geom2d_BoundedCurve
 {
 
 public:
-  //! Creates a  non-rational B_spline curve   on  the
+  //! Creates a  non-rational B_spline curve on the
   //! basis <Knots, Multiplicities> of degree <Degree>.
   //! The following conditions must be verified.
   //! 0 < Degree <= MaxDegree.
@@ -148,7 +148,7 @@ public:
   //! may be Degree+1 (this is even recommended if you want the
   //! curve to start and finish on the first and last pole).
   //!
-  //! On a periodic  curve the first  and  the last multicities
+  //! On a periodic curve the first and the last multicities
   //! must be the same.
   //!
   //! on non-periodic curves
@@ -209,20 +209,20 @@ public:
   //! Geom2d_BSplineCurve::MaxDegree().
   Standard_EXPORT void IncreaseDegree(const Standard_Integer Degree);
 
-  //! Increases the multiplicity  of the knot <Index> to
+  //! Increases the multiplicity of the knot <Index> to
   //! <M>.
   //!
-  //! If   <M>   is   lower   or  equal   to  the current
-  //! multiplicity nothing is done. If <M> is higher than
-  //! the degree the degree is used.
+  //! If <M> is lower or equal to the current multiplicity
+  //! nothing is done. If <M> is higher than the degree,
+  //! the degree is used.
   //! If <Index> is not in [FirstUKnotIndex, LastUKnotIndex]
   Standard_EXPORT void IncreaseMultiplicity(const Standard_Integer Index, const Standard_Integer M);
 
-  //! Increases  the  multiplicities   of  the knots  in
+  //! Increases the multiplicities of the knots in
   //! [I1,I2] to <M>.
   //!
-  //! For each knot if  <M>  is  lower  or equal  to  the
-  //! current multiplicity  nothing  is  done. If <M>  is
+  //! For each knot if <M> is lower or equal to the
+  //! current multiplicity nothing is done. If <M> is
   //! higher than the degree the degree is used.
   //! As a result, the poles and weights tables of this curve are modified.
   //! Warning
@@ -253,18 +253,18 @@ public:
                                              const Standard_Integer I2,
                                              const Standard_Integer M);
 
-  //! Inserts a knot value in the sequence of knots.  If
-  //! <U>  is an  existing knot     the multiplicity  is
+  //! Inserts a knot value in the sequence of knots. If
+  //! <U> is an existing knot the multiplicity is
   //! increased by <M>.
   //!
-  //! If U  is  not  on the parameter  range  nothing is
+  //! If U is not on the parameter range nothing is
   //! done.
   //!
   //! If the multiplicity is negative or null nothing is
-  //! done. The  new   multiplicity  is limited  to  the
+  //! done. The new multiplicity is limited to the
   //! degree.
   //!
-  //! The  tolerance criterion  for  knots  equality  is
+  //! The tolerance criterion for knots equality is
   //! the max of Epsilon(U) and ParametricTolerance.
   //! Warning
   //! - If U is less than the first parameter or greater than
@@ -373,7 +373,7 @@ public:
   //! Parameter theTolerance defines the possible proximity of the segment
   //! boundaries and B-spline knots to treat them as equal.
   //!
-  //! Warnings :
+  //! Warnings:
   //! Even if <me> is not closed it can become closed after the
   //! segmentation for example if U1 or U2 are out of the bounds
   //! of the curve <me> or if the curve makes loop.

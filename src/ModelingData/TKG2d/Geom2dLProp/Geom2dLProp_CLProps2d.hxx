@@ -100,7 +100,7 @@ public:
   //! three first derivatives are all null.
   Standard_EXPORT Standard_Boolean IsTangentDefined();
 
-  //! output  the tangent direction <D>
+  //! output the tangent direction <D>
   Standard_EXPORT void Tangent(gp_Dir2d& D);
 
   //! Returns the curvature.

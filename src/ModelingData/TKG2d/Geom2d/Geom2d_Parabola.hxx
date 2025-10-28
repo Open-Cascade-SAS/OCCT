@@ -186,8 +186,8 @@ public:
   Standard_EXPORT Standard_Real TransformedParameter(const Standard_Real U,
                                                      const gp_Trsf2d&    T) const Standard_OVERRIDE;
 
-  //! Returns a  coefficient to compute the parameter on
-  //! the transformed  curve  for  the transform  of the
+  //! Returns a coefficient to compute the parameter on
+  //! the transformed curve for the transform of the
   //! point on <me>.
   //!
   //! Transformed(T)->Value(U * ParametricTransformation(T))
