@@ -21,10 +21,10 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject, Standard_Transient
 
 XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject()
 {
-  myHasPlane   = Standard_False;
-  myHasPntText = Standard_False;
-  myHasPoint1  = Standard_False;
-  myHasPoint2  = Standard_False;
+  myHasPlane       = Standard_False;
+  myHasPntText     = Standard_False;
+  myHasConnection1 = Standard_False;
+  myHasConnection2 = Standard_False;
 }
 
 //=================================================================================================
@@ -32,29 +32,33 @@ XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject()
 XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject(
   const Handle(XCAFDimTolObjects_DimensionObject)& theObj)
 {
-  myType             = theObj->myType;
-  myVal              = theObj->myVal;
-  myQualifier        = theObj->myQualifier;
-  myAngularQualifier = theObj->myAngularQualifier;
-  myIsHole           = theObj->myIsHole;
-  myFormVariance     = theObj->myFormVariance;
-  myGrade            = theObj->myGrade;
-  myL                = theObj->myL;
-  myR                = theObj->myR;
-  myModifiers        = theObj->myModifiers;
-  myPath             = theObj->myPath;
-  myDir              = theObj->myDir;
-  myHasPoint1        = theObj->myHasPoint1;
-  myPnt1             = theObj->myPnt1;
-  myHasPoint2        = theObj->myHasPoint2;
-  myPnt2             = theObj->myPnt2;
-  myPntText          = theObj->myPntText;
-  myHasPlane         = theObj->myHasPlane;
-  myPlane            = theObj->myPlane;
-  myHasPntText       = theObj->myHasPntText;
-  mySemanticName     = theObj->mySemanticName;
-  myPresentation     = theObj->myPresentation;
-  myPresentationName = theObj->myPresentationName;
+  myType               = theObj->myType;
+  myVal                = theObj->myVal;
+  myQualifier          = theObj->myQualifier;
+  myAngularQualifier   = theObj->myAngularQualifier;
+  myIsHole             = theObj->myIsHole;
+  myFormVariance       = theObj->myFormVariance;
+  myGrade              = theObj->myGrade;
+  myL                  = theObj->myL;
+  myR                  = theObj->myR;
+  myModifiers          = theObj->myModifiers;
+  myPath               = theObj->myPath;
+  myDir                = theObj->myDir;
+  myHasConnection1     = theObj->myHasConnection1;
+  myHasConnection2     = theObj->myHasConnection2;
+  myConnection1        = theObj->myConnection1;
+  myConnection2        = theObj->myConnection2;
+  myConnectionName1    = theObj->myConnectionName1;
+  myConnectionName2    = theObj->myConnectionName2;
+  myConnectionIsPoint1 = theObj->myConnectionIsPoint1;
+  myConnectionIsPoint2 = theObj->myConnectionIsPoint2;
+  myPntText            = theObj->myPntText;
+  myHasPlane           = theObj->myHasPlane;
+  myPlane              = theObj->myPlane;
+  myHasPntText         = theObj->myHasPntText;
+  mySemanticName       = theObj->mySemanticName;
+  myPresentation       = theObj->myPresentation;
+  myPresentationName   = theObj->myPresentationName;
   for (int i = 0; i < theObj->myDescriptions.Length(); i++)
   {
     myDescriptions.Append(theObj->myDescriptions(i));
@@ -520,14 +524,14 @@ void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream,
   }
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myDir)
-  if (myHasPoint1)
+  if (myHasConnection1)
   {
-    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPnt1)
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myConnection1)
   }
 
-  if (myHasPoint2)
+  if (myHasConnection2)
   {
-    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPnt2)
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myConnection2)
   }
 
   if (myHasPlane)

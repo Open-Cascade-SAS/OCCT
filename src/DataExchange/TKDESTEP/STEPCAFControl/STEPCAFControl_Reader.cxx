@@ -2587,6 +2587,49 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
 }
 
 //=======================================================================
+// function : retrieveConnectionPointFromGISU
+// purpose  : auxiliary method for reading connection points
+//=======================================================================
+static bool retrieveConnectionPointFromGISU(
+  const Handle(StepAP242_GeometricItemSpecificUsage)& theGISU,
+  const Standard_Real                                 theFact,
+  gp_Ax2&                                             theConnectionCS,
+  bool&                                               theIsPoint,
+  Handle(TCollection_HAsciiString)&                   theConnName)
+{
+  if (theGISU.IsNull() || theGISU->NbIdentifiedItem() == 0)
+    return false;
+
+  Handle(StepGeom_CartesianPoint) aPoint =
+    Handle(StepGeom_CartesianPoint)::DownCast(theGISU->IdentifiedItem()->Value(1));
+  if (!aPoint.IsNull())
+  {
+    theIsPoint  = true;
+    theConnName = aPoint->Name();
+    gp_Pnt aLoc(aPoint->CoordinatesValue(1) * theFact,
+                aPoint->CoordinatesValue(2) * theFact,
+                aPoint->CoordinatesValue(3) * theFact);
+    theConnectionCS.SetLocation(aLoc);
+    return true;
+  }
+  else
+  {
+    // try Axis2Placement3d.location instead of CartesianPoint
+    Handle(StepGeom_Axis2Placement3d) anA2P3D =
+      Handle(StepGeom_Axis2Placement3d)::DownCast(theGISU->IdentifiedItem()->Value(1));
+    if (anA2P3D.IsNull())
+      return false;
+    theIsPoint  = false;
+    theConnName = anA2P3D->Name();
+    Handle(Geom_Axis2Placement) anAxis =
+      StepToGeom::MakeAxis2Placement(anA2P3D, StepData_Factors());
+    theConnectionCS = anAxis->Ax2();
+    return true;
+  }
+  return false;
+}
+
+//=======================================================================
 // function : readConnectionPoints
 // purpose  : read connection points for given dimension
 //=======================================================================
@@ -2636,25 +2679,17 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)&          theTR
     {
       aGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIt.Value());
     }
-    if (aGISU.IsNull() || aGISU->NbIdentifiedItem() == 0)
-      return;
-    Handle(StepGeom_CartesianPoint) aPoint =
-      Handle(StepGeom_CartesianPoint)::DownCast(aGISU->IdentifiedItem()->Value(1));
-    if (aPoint.IsNull())
+    gp_Ax2                           aCS;
+    bool                             aIsPoint = false;
+    Handle(TCollection_HAsciiString) aConnName;
+    if (retrieveConnectionPointFromGISU(aGISU, aFact, aCS, aIsPoint, aConnName))
     {
-      // try Axis2Placement3d.location instead of CartesianPoint
-      Handle(StepGeom_Axis2Placement3d) anA2P3D =
-        Handle(StepGeom_Axis2Placement3d)::DownCast(aGISU->IdentifiedItem()->Value(1));
-      if (anA2P3D.IsNull())
-        return;
-      aPoint = anA2P3D->Location();
+      if (aIsPoint)
+        theDimObject->SetPoint(aCS.Location());
+      else
+        theDimObject->SetConnectionAxis(aCS);
+      theDimObject->SetConnectionName(aConnName);
     }
-
-    // set connection point to object
-    gp_Pnt aPnt(aPoint->CoordinatesValue(1) * aFact,
-                aPoint->CoordinatesValue(2) * aFact,
-                aPoint->CoordinatesValue(3) * aFact);
-    theDimObject->SetPoint(aPnt);
   }
   else if (theGDT->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)))
   {
@@ -2686,48 +2721,25 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)&          theTR
       }
     }
     // first point
-    if (!aGISU1.IsNull() && aGISU1->NbIdentifiedItem() > 0)
+    gp_Ax2                           aCS;
+    bool                             aIsPoint = false;
+    Handle(TCollection_HAsciiString) aConnName;
+    if (retrieveConnectionPointFromGISU(aGISU1, aFact, aCS, aIsPoint, aConnName))
     {
-      Handle(StepGeom_CartesianPoint) aPoint =
-        Handle(StepGeom_CartesianPoint)::DownCast(aGISU1->IdentifiedItem()->Value(1));
-      if (aPoint.IsNull())
-      {
-        // try Axis2Placement3d.location instead of CartesianPoint
-        Handle(StepGeom_Axis2Placement3d) anA2P3D =
-          Handle(StepGeom_Axis2Placement3d)::DownCast(aGISU1->IdentifiedItem()->Value(1));
-        if (!anA2P3D.IsNull())
-          aPoint = anA2P3D->Location();
-      }
-      if (!aPoint.IsNull())
-      {
-        // set connection point to object
-        gp_Pnt aPnt(aPoint->CoordinatesValue(1) * aFact,
-                    aPoint->CoordinatesValue(2) * aFact,
-                    aPoint->CoordinatesValue(3) * aFact);
-        theDimObject->SetPoint(aPnt);
-      }
+      if (aIsPoint)
+        theDimObject->SetPoint(aCS.Location());
+      else
+        theDimObject->SetConnectionAxis(aCS);
+      theDimObject->SetConnectionName(aConnName);
     }
     // second point
-    if (!aGISU2.IsNull() && aGISU2->NbIdentifiedItem() > 0)
+    if (retrieveConnectionPointFromGISU(aGISU2, aFact, aCS, aIsPoint, aConnName))
     {
-      Handle(StepGeom_CartesianPoint) aPoint =
-        Handle(StepGeom_CartesianPoint)::DownCast(aGISU2->IdentifiedItem()->Value(1));
-      if (aPoint.IsNull())
-      {
-        // try Axis2Placement3d.location instead of CartesianPoint
-        Handle(StepGeom_Axis2Placement3d) anA2P3D =
-          Handle(StepGeom_Axis2Placement3d)::DownCast(aGISU2->IdentifiedItem()->Value(1));
-        if (!anA2P3D.IsNull())
-          aPoint = anA2P3D->Location();
-      }
-      if (!aPoint.IsNull())
-      {
-        // set connection point to object
-        gp_Pnt aPnt(aPoint->CoordinatesValue(1) * aFact,
-                    aPoint->CoordinatesValue(2) * aFact,
-                    aPoint->CoordinatesValue(3) * aFact);
-        theDimObject->SetPoint2(aPnt);
-      }
+      if (aIsPoint)
+        theDimObject->SetPoint2(aCS.Location());
+      else
+        theDimObject->SetConnectionAxis2(aCS);
+      theDimObject->SetConnectionName2(aConnName);
     }
   }
 }

@@ -177,6 +177,28 @@ static Standard_Integer DumpDGTs(Draw_Interpretor& di, Standard_Integer argc, co
             }
           }
           di << ", P " << (Standard_Integer)!aDimTolObj->GetPath().IsNull();
+          if (aDimTolObj->HasPoint())
+          {
+            TCollection_AsciiString aName;
+            if (!aDimTolObj->GetConnectionName().IsNull())
+              aName = aDimTolObj->GetConnectionName()->String();
+            di << " Conn1 \"" << aName << "\" ";
+            if (aDimTolObj->IsPointConnection())
+              di << "P,";
+            else
+              di << "CS,";
+          }
+          if (aDimTolObj->HasPoint2())
+          {
+            TCollection_AsciiString aName;
+            if (!aDimTolObj->GetConnectionName2().IsNull())
+              aName = aDimTolObj->GetConnectionName2()->String();
+            di << " Conn2 \"" << aName << "\" ";
+            if (aDimTolObj->IsPointConnection2())
+              di << "P,";
+            else
+              di << "CS,";
+          }
           di << " )";
         }
       }

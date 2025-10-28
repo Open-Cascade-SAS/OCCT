@@ -215,32 +215,86 @@ public:
 
   //! Returns true, if connection point exists (for dimensional_size),
   //! if connection point for the first shape exists (for dimensional_location).
-  Standard_Boolean HasPoint() const { return myHasPoint1; }
+  Standard_Boolean HasPoint() const { return myHasConnection1; }
 
   // Returns true, if connection point for the second shape exists (for dimensional_location only).
-  Standard_Boolean HasPoint2() const { return myHasPoint2; }
+  Standard_Boolean HasPoint2() const { return myHasConnection2; }
+
+  //! Returns true, if the connection is a point not coordinate system (for dimensional_size),
+  //! if connection point for the first shape exists (for dimensional_location).
+  Standard_Boolean IsPointConnection() const { return myConnectionIsPoint1; }
+
+  // Returns true, if the connection for the second shape is a point not coordinate system (for
+  // dimensional_location only).
+  Standard_Boolean IsPointConnection2() const { return myConnectionIsPoint2; }
 
   //! Set connection point (for dimensional_size),
   //! Set connection point for the first shape (for dimensional_location).
   void SetPoint(const gp_Pnt& thePnt)
   {
-    myPnt1      = thePnt;
-    myHasPoint1 = Standard_True;
+    myConnection1.SetLocation(thePnt);
+    myHasConnection1     = Standard_True;
+    myConnectionIsPoint1 = Standard_True;
   }
 
   // Set connection point for the second shape (for dimensional_location only).
   void SetPoint2(const gp_Pnt& thePnt)
   {
-    myPnt2      = thePnt;
-    myHasPoint2 = Standard_True;
+    myConnection2.SetLocation(thePnt);
+    myHasConnection2     = Standard_True;
+    myConnectionIsPoint2 = Standard_True;
+  }
+
+  //! Set connection point as a coordinate system (for dimensional_size),
+  //! Set connection point as a coordinate system for the first shape (for dimensional_location).
+  void SetConnectionAxis(const gp_Ax2& theAxis)
+  {
+    myConnection1        = theAxis;
+    myHasConnection1     = Standard_True;
+    myConnectionIsPoint1 = Standard_False;
+  }
+
+  // Set connection point as a coordinate system for the second shape (for dimensional_location
+  // only).
+  void SetConnectionAxis2(const gp_Ax2& theAxis)
+  {
+    myConnection2        = theAxis;
+    myHasConnection2     = Standard_True;
+    myConnectionIsPoint2 = Standard_False;
   }
 
   //! Get connection point (for dimensional_size),
   //! Get connection point for the first shape (for dimensional_location).
-  gp_Pnt GetPoint() const { return myPnt1; }
+  gp_Pnt GetPoint() const { return myConnection1.Location(); }
 
   // Get connection point for the second shape (for dimensional_location only).
-  gp_Pnt GetPoint2() const { return myPnt2; }
+  gp_Pnt GetPoint2() const { return myConnection2.Location(); }
+
+  //! Get connection point as a coordinate system (for dimensional_size),
+  //! Get connection point as a coordinate system for the first shape (for dimensional_location).
+  gp_Ax2 GetConnectionAxis() const { return myConnection1; }
+
+  // Get connection point as a coordinate system for the second shape (for dimensional_location
+  // only).
+  gp_Ax2 GetConnectionAxis2() const { return myConnection2; }
+
+  //! Returns connection name of the object.
+  Handle(TCollection_HAsciiString) GetConnectionName() const { return myConnectionName1; }
+
+  //! Returns 2nd connection name of the object.
+  Handle(TCollection_HAsciiString) GetConnectionName2() const { return myConnectionName2; }
+
+  //! Sets connection name of the object.
+  void SetConnectionName(const Handle(TCollection_HAsciiString)& theName)
+  {
+    myConnectionName1 = theName;
+  }
+
+  //! Sets 2nd connection name of the object.
+  void SetConnectionName2(const Handle(TCollection_HAsciiString)& theName)
+  {
+    myConnectionName2 = theName;
+  }
 
   //! Set graphical presentation for the object.
   void SetPresentation(const TopoDS_Shape&                     thePresentation,
@@ -318,8 +372,10 @@ private:
   XCAFDimTolObjects_DimensionModifiersSequence         myModifiers;
   TopoDS_Edge                                          myPath;
   gp_Dir                                               myDir;
-  gp_Pnt                                               myPnt1, myPnt2;
-  Standard_Boolean                                     myHasPoint1, myHasPoint2;
+  gp_Ax2                                               myConnection1, myConnection2;
+  Standard_Boolean                                     myHasConnection1, myHasConnection2;
+  Standard_Boolean                                     myConnectionIsPoint1, myConnectionIsPoint2;
+  Handle(TCollection_HAsciiString)                     myConnectionName1, myConnectionName2;
   gp_Ax2                                               myPlane;
   Standard_Boolean                                     myHasPlane;
   Standard_Boolean                                     myHasPntText;

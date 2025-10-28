@@ -174,16 +174,16 @@ set ref_data {
  	 0:1:4:25 Dimension.42.1 ( N "diameter" T 15, V 14, VL 0.10000000000000001, VU 0.10000000000000001, P 0 )
  0:1:1:2:40 Shape.43
  	 0:1:4:25 Dimension.43.1 ( N "diameter" T 15, V 14, VL 0.10000000000000001, VU 0.10000000000000001, P 0 )
- 	 0:1:4:27 Dimension.43.2 ( N "linear distance" T 2, V 75, P 0 )
+ 	 0:1:4:27 Dimension.43.2 ( N "linear distance" T 2, V 75, P 0 Conn1 "" CS, Conn2 "" CS, )
  0:1:1:2:41 Shape.44
  	 0:1:4:25 Dimension.44.1 ( N "diameter" T 15, V 14, VL 0.10000000000000001, VU 0.10000000000000001, P 0 )
- 	 0:1:4:27 Dimension.44.2 ( N "linear distance" T 2, V 75, P 0 )
+ 	 0:1:4:27 Dimension.44.2 ( N "linear distance" T 2, V 75, P 0 Conn1 "" CS, Conn2 "" CS, )
  0:1:1:2:42 Shape.45
  	 0:1:4:25 Dimension.45.1 ( N "diameter" T 15, V 14, VL 0.10000000000000001, VU 0.10000000000000001, P 0 )
- 	 0:1:4:27 Dimension.45.2 ( N "linear distance" T 2, V 75, P 0 )
+ 	 0:1:4:27 Dimension.45.2 ( N "linear distance" T 2, V 75, P 0 Conn1 "" CS, Conn2 "" CS, )
  0:1:1:2:43 Shape.46
  	 0:1:4:25 Dimension.46.1 ( N "diameter" T 15, V 14, VL 0.10000000000000001, VU 0.10000000000000001, P 0 )
- 	 0:1:4:27 Dimension.46.2 ( N "linear distance" T 2, V 75, P 0 )
+ 	 0:1:4:27 Dimension.46.2 ( N "linear distance" T 2, V 75, P 0 Conn1 "" CS, Conn2 "" CS, )
  0:1:1:2:44 Shape.47
  	 0:1:4:25 Dimension.47.1 ( N "diameter" T 15, V 14, VL 0.10000000000000001, VU 0.10000000000000001, P 0 )
  0:1:1:2:45 Shape.48
