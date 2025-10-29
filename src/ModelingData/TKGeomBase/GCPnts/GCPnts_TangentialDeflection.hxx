@@ -25,8 +25,8 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor2d_Curve2d.hxx>
 
-//! Computes a set of  points on a curve from package
-//! Adaptor3d  such  as between  two successive   points
+//! Computes a set of points on a curve from package
+//! Adaptor3d such as between two successive points
 //! P1(u1)and P2(u2) :
 //! @code
 //! . ||P1P3^P3P2||/||P1P3||*||P3P2||<AngularDeflection

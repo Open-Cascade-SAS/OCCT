@@ -168,22 +168,22 @@ public:
   //! result can happen if this is not satisfied. It is the caller
   //! responsibility to check for that property.
   //!
-  //! This  method makes uniform NumPoints segments S1,...SNumPoints out
+  //! This method makes uniform NumPoints segments S1,...SNumPoints out
   //! of the segment defined by the first parameter and the
-  //! last  parameter of the  InParameter ; keeps   only one
+  //! last parameter of the InParameter ; keeps only one
   //! point of the InParameters set of parameter in each of
   //! the uniform segments taking care of the first and the
-  //! last   parameters. For the ith segment the element of
+  //! last parameters. For the ith segment the element of
   //! the InParameter is the one that is the first to exceed
   //! the midpoint of the segment and to fall before the
   //! midpoint of the next segment
-  //! There  will be  at  the  end at   most NumPoints + 1  if
-  //! NumPoints > 2 in the OutParameters Array
+  //! There will be at the end at most NumPoints + 1
+  //! if NumPoints > 2 in the OutParameters Array
   Standard_EXPORT static void RemovePointsFromArray(const Standard_Integer         NumPoints,
                                                     const TColStd_Array1OfReal&    InParameters,
                                                     Handle(TColStd_HArray1OfReal)& OutParameters);
 
-  //! this  makes sure that there  is at least MinNumPoints
+  //! this makes sure that there is at least MinNumPoints
   //! in OutParameters taking into account the parameters in
   //! the InParameters array provided those are in order,
   //! that is the sequence of real in the InParameter is strictly
@@ -207,9 +207,9 @@ public:
     const Standard_Real         Confusion               = 1.0e-9,
     const Standard_Boolean      IsAdjustToFirstInterval = Standard_False);
 
-  //! this  will compute   the   maximum distance  at  the
-  //! parameters  given    in   the Parameters  array    by
-  //! evaluating each parameter  the two curves  and taking
+  //! this will compute the maximum distance at the
+  //! parameters given in the Parameters array by
+  //! evaluating each parameter the two curves and taking
   //! the maximum of the evaluated distance
   Standard_EXPORT static void EvalMaxParametricDistance(const Adaptor3d_Curve&      Curve,
                                                         const Adaptor3d_Curve&      AReferenceCurve,
@@ -227,8 +227,8 @@ public:
                                                             const TColStd_Array1OfReal& Parameters,
                                                             Standard_Real& MaxDistance);
 
-  //! Cancel,on the boundaries,the denominator  first derivative
-  //! in  the directions wished by the user and set its value to 1.
+  //! Cancel,on the boundaries,the denominator first derivative
+  //! in the directions wished by the user and set its value to 1.
   Standard_EXPORT static void CancelDenominatorDerivative(Handle(Geom_BSplineSurface)& BSurf,
                                                           const Standard_Boolean       UDirection,
                                                           const Standard_Boolean       VDirection);

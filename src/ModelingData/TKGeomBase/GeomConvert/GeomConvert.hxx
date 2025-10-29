@@ -278,15 +278,15 @@ public:
   //! or a trimmed sphere or a trimmed torus or a sphere or a torus or
   //! a Bezier surface of a trimmed Bezier surface or a trimmed swept
   //! surface with a corresponding basis curve which can be turned into
-  //! a B-spline curve   (see the method CurveToBSplineCurve).
+  //! a B-spline curve (see the method CurveToBSplineCurve).
   //! Raises DomainError if the type of the surface is not previously defined.
   Standard_EXPORT static Handle(Geom_BSplineSurface) SurfaceToBSplineSurface(
     const Handle(Geom_Surface)& S);
 
   //! This Method concatenates G1 the ArrayOfCurves as far
-  //! as it  is possible.
+  //! as it is possible.
   //! ArrayOfCurves[0..N-1]
-  //! ArrayOfToler contains the  biggest tolerance of the two
+  //! ArrayOfToler contains the biggest tolerance of the two
   //! points shared by two consecutives curves.
   //! Its dimension: [0..N-2]
   //! ClosedFlag     indicates if the ArrayOfCurves is closed.
@@ -340,31 +340,31 @@ public:
                                        const Standard_Real                     ClosedTolerance,
                                        const Standard_Real                     AngularTolerance);
 
-  //! This  Method reduces as far as   it is possible the
-  //! multiplicities of  the  knots of  the BSpline BS.(keeping  the
-  //! geometry).  It returns a new BSpline which  could still be C0.
-  //! tolerance is a  geometrical tolerance.
-  //! The  Angular toleranceis in radians  and measures  the angle of
-  //! the tangents  on  the left and on  the right  to decide if  the
+  //! This Method reduces as far as it is possible the
+  //! multiplicities of the knots of the BSpline BS.(keeping the
+  //! geometry). It returns a new BSpline which could still be C0.
+  //! tolerance is a geometrical tolerance.
+  //! The Angular toleranceis in radians and measures the angle of
+  //! the tangents on the left and on the right to decide if the
   //! curve is G1 or not at a given point
   Standard_EXPORT static void C0BSplineToC1BSplineCurve(
     Handle(Geom_BSplineCurve)& BS,
     const Standard_Real        tolerance,
     const Standard_Real        AngularTolerance = 1.0e-7);
 
-  //! This Method   reduces as far  as  it is possible  the
-  //! multiplicities  of  the knots  of the BSpline  BS.(keeping the geometry).
+  //! This Method reduces as far as it is possible the
+  //! multiplicities of the knots of the BSpline BS.(keeping the geometry).
   //! It returns an array of BSpline C1. tolerance is a geometrical tolerance.
   Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve(
     const Handle(Geom_BSplineCurve)&        BS,
     Handle(TColGeom_HArray1OfBSplineCurve)& tabBS,
     const Standard_Real                     tolerance);
 
-  //! This   Method reduces as far   as it is  possible the
-  //! multiplicities of  the  knots of  the  BSpline BS.(keeping the
-  //! geometry).  It returns an array of BSpline C1.  tolerance is a
-  //! geometrical tolerance : it  allows for the maximum deformation
-  //! The  Angular tolerance is in  radians and measures the angle of
+  //! This Method reduces as far as it is possible the
+  //! multiplicities of the knots of the BSpline BS.(keeping the
+  //! geometry). It returns an array of BSpline C1. tolerance is a
+  //! geometrical tolerance : it allows for the maximum deformation
+  //! The Angular tolerance is in radians and measures the angle of
   //! the tangents on the left and on the right to decide if the curve
   //! is C1 or not at a given point
   Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve(
