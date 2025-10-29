@@ -118,7 +118,7 @@ public:
   //! In the case of a sphere, these functions returns   -U.
   Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
 
-  //! Computes the aera of the spherical surface.
+  //! Computes the area of the spherical surface.
   Standard_EXPORT Standard_Real Area() const;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of this sphere.

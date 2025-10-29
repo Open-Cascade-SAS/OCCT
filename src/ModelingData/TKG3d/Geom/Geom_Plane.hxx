@@ -144,7 +144,7 @@ public:
   //! @code
   //!   me->Value(U,V).Transformed(T)
   //! @endcode
-  //! Where U',V' are  obtained by transforming U,V with the 2d transformation returned by
+  //! Where U',V' are obtained by transforming U,V with the 2d transformation returned by
   //! @code
   //!   me->ParametricTransformation(T)
   //! @endcode

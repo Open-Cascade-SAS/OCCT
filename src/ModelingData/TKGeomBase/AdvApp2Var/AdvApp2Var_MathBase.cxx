@@ -3048,7 +3048,7 @@ int mmdrvcb_(integer*    ideriv,
   /*        TABPNT  : Table of values of consecutive derivatives */
   /*                  of parameter TPARAM. */
   /*        IERCOD  : 0 = OK, */
-  /*                    1 = incoherent input. */
+  /*                  1 = incoherent input. */
 
   /*     COMMONS USED  : */
   /*     ---------------- */
@@ -3237,10 +3237,10 @@ int AdvApp2Var_MathBase::mmdrvck_(integer*    ncoeff,
   /*     INPUT ARGUMENTS  : */
   /*     ------------------ */
   /*   NCOEFF  : Degree +1 of the curve. */
-  /*   NDIMEN   : Dimension of the space (2 or 3 in general) */
+  /*   NDIMEN  : Dimension of the space (2 or 3 in general) */
   /*   COURBE  : Table of coefficients of the curve. */
-  /*   IDERIV : Required order of derivation : 1=1st derivative, etc... */
-  /*   TPARAM : Value of parameter of the curve. */
+  /*   IDERIV  : Required order of derivation : 1=1st derivative, etc... */
+  /*   TPARAM  : Value of parameter of the curve. */
 
   /*     OUTPUT ARGUMENTS  : */
   /*     ------------------- */
@@ -4290,8 +4290,7 @@ int AdvApp2Var_MathBase::mmfmcb5_(integer*    isenmsc,
   /*     -------------------- */
   /*        ISENMSC : required direction of the transfer : */
   /*           1   :  passage of (NDIMEN,.) ---> (.,NDIMEN)  direction to AB  */
-  /*          -1   :  passage of (.,NDIMEN) ---> (NDIMEN,.)  direction to TS,T
-  V*/
+  /*          -1   :  passage of (.,NDIMEN) ---> (NDIMEN,.)  direction to TS,T V*/
   /*        NDIMAX : format / dimension */
   /*        NCF1MX : format by t of COURB1 */
   /*   if ISENMSC= 1 : COURB1: The curve to be processed (NDIMAX,.) */

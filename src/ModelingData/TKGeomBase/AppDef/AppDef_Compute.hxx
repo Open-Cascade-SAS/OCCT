@@ -153,7 +153,7 @@ public:
   //! returns the result of the approximation.
   Standard_EXPORT const AppParCurves_MultiBSpCurve& SplineValue();
 
-  //! returns the type  of  parametrization
+  //! returns the type of parametrization
   Standard_EXPORT Approx_ParametrizationType Parametrization() const;
 
   //! returns the new parameters of the approximation

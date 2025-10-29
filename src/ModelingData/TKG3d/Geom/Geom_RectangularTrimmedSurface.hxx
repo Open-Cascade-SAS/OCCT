@@ -49,9 +49,9 @@ DEFINE_STANDARD_HANDLE(Geom_RectangularTrimmedSurface, Geom_BoundedSurface)
 //! modified the trimmed surface is not changed.
 //! Consequently, the trimmed surface does not
 //! necessarily have the same orientation as the basis surface.
-//! Warning:  The  case of surface   being trimmed is  periodic and
+//! Warning: The case of surface being trimmed is periodic and
 //! parametrics values are outside the domain is possible.
-//! But, domain of the  trimmed surface can be translated
+//! But, domain of the trimmed surface can be translated
 //! by (n X) the period.
 class Geom_RectangularTrimmedSurface : public Geom_BoundedSurface
 {
@@ -67,7 +67,7 @@ public:
   //! surface. By default in this case the surface has the same
   //! orientation as the basis surface S.
   //! The returned surface is not closed and not periodic.
-  //! ConstructionError   Raised if
+  //! ConstructionError Raised if
   //! S is not periodic in the UDirection and U1 or U2 are out of the
   //! bounds of S.
   //! S is not periodic in the VDirection and V1 or V2 are out of the
@@ -344,7 +344,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom_RectangularTrimmedSurface, Geom_BoundedSurface)
 
 private:
-  //! General set trim,  to implement constructors and
+  //! General set trim, to implement constructors and
   //! others set trim.
   Standard_EXPORT void SetTrim(const Standard_Real    U1,
                                const Standard_Real    U2,

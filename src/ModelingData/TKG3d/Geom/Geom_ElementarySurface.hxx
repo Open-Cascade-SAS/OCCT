@@ -89,7 +89,7 @@ public:
   //! Reverses the U parametric direction of the surface.
   Standard_EXPORT virtual void UReverse() Standard_OVERRIDE;
 
-  //! Return the  parameter on the  Ureversed surface for
+  //! Return the parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
   //!
   //! me->UReversed()->Value(me->UReversedParameter(U),V)
@@ -101,7 +101,7 @@ public:
   //! Reverses the V parametric direction of the surface.
   Standard_EXPORT virtual void VReverse() Standard_OVERRIDE;
 
-  //! Return the  parameter on the  Vreversed surface for
+  //! Return the parameter on the Vreversed surface for
   //! the point of parameter V on <me>.
   //!
   //! me->VReversed()->Value(U,me->VReversedParameter(V))

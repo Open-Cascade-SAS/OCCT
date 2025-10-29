@@ -46,7 +46,7 @@ public:
   Standard_EXPORT Extrema_ECC2d(const Adaptor2d_Curve2d& C1, const Adaptor2d_Curve2d& C2);
 
   //! Calculates all the distances as above
-  //! between Uinf and Usup for C1 and  between Vinf and Vsup
+  //! between Uinf and Usup for C1 and between Vinf and Vsup
   //! for C2.
   Standard_EXPORT Extrema_ECC2d(const Adaptor2d_Curve2d& C1,
                                 const Adaptor2d_Curve2d& C2,

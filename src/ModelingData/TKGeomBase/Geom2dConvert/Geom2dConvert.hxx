@@ -231,15 +231,15 @@ public:
     const Standard_Real                       ClosedTolerance,
     const Standard_Real                       AngularTolerance);
 
-  //! This Method reduces as   far as it  is possible the
-  //! multiplicities of  the  knots of  the BSpline BS.(keeping  the geometry).
+  //! This Method reduces as far as it is possible the
+  //! multiplicities of the knots of the BSpline BS.(keeping the geometry).
   //! It returns a new BSpline which could still be C0.
   //! tolerance is a geometrical tolerance
   Standard_EXPORT static void C0BSplineToC1BSplineCurve(Handle(Geom2d_BSplineCurve)& BS,
                                                         const Standard_Real          Tolerance);
 
-  //! This Method   reduces as far  as  it is possible  the
-  //! multiplicities  of  the knots  of the BSpline  BS.(keeping the geometry).
+  //! This Method reduces as far as it is possible the
+  //! multiplicities of the knots of the BSpline BS.(keeping the geometry).
   //! It returns an array of BSpline C1.
   //! Tolerance is a geometrical tolerance
   Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve(
@@ -247,8 +247,8 @@ public:
     Handle(TColGeom2d_HArray1OfBSplineCurve)& tabBS,
     const Standard_Real                       Tolerance);
 
-  //! This Method   reduces as far  as  it is possible  the
-  //! multiplicities  of  the knots  of the BSpline  BS.(keeping the geometry).
+  //! This Method reduces as far as it is possible the
+  //! multiplicities of the knots of the BSpline BS.(keeping the geometry).
   //! It returns an array of BSpline C1.
   //! tolerance is a geometrical tolerance
   Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve(

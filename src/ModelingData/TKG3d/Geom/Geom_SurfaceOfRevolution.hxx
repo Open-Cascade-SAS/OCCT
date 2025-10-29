@@ -154,7 +154,7 @@ public:
 
   //! Computes the u  parameter on the modified
   //! surface, when reversing its u  parametric
-  //! direction, for any point of u parameter U  on this surface of revolution.
+  //! direction, for any point of u parameter U on this surface of revolution.
   //! In the case of a revolved surface:
   //! - UReversedParameter returns 2.*Pi - U
   Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
@@ -177,7 +177,7 @@ public:
   //! ReversedParameter called with V on the meridian.
   Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
 
-  //! Computes the  parameters on the  transformed  surface for
+  //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -195,7 +195,7 @@ public:
                                                    Standard_Real& V,
                                                    const gp_Trsf& T) const Standard_OVERRIDE;
 
-  //! Returns a 2d transformation  used to find the  new
+  //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -204,12 +204,12 @@ public:
   //! @code
   //!   me->Value(U,V).Transformed(T)
   //! @endcode
-  //! Where U',V' are  obtained by transforming U,V with
+  //! Where U',V' are obtained by transforming U,V with
   //! the 2d transformation returned by
   //! @code
   //!   me->ParametricTransformation(T)
   //! @endcode
-  //! This  method  returns  a scale  centered  on  the
+  //! This method returns a scale centered on the
   //! U axis with BasisCurve()->ParametricTransformation(T)
   Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
     Standard_OVERRIDE;
@@ -253,7 +253,7 @@ public:
   //! meridian through an angle U about the axis of revolution.
   Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
 
-  //! Computes the  point P (U, V) on the surface.
+  //! Computes the point P (U, V) on the surface.
   //! U is the angle of the rotation around the revolution axis.
   //! The direction of this axis gives the sense of rotation.
   //! V is the parameter of the revolved curve.
@@ -304,13 +304,12 @@ public:
   //! Raised if the continuity of the surface is not CNu in the u
   //! direction and CNv in the v direction.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  //! The following  functions  evaluates the  local
-  //! derivatives on surface. Useful to manage discontinuities
-  //! on the surface.
+  //! The following functions evaluates the local derivatives
+  //! on surface. Useful to manage discontinuities on the surface.
   //! if    Side  =  1  ->  P  =  S( U+,V )
   //! if    Side  = -1  ->  P  =  S( U-,V )
   //! else  P  is betveen discontinuities
-  //! can be evaluated using methods  of
+  //! can be evaluated using methods of
   //! global evaluations    P  =  S( U ,V )
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Real    V,

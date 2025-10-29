@@ -120,8 +120,8 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! If necessary,  breaks the  curve in  intervals  of
-  //! continuity  <S>.    And  returns   the number   of
+  //! If necessary, breaks the curve in intervals of
+  //! continuity <S>. And returns the number of
   //! intervals.
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
@@ -186,7 +186,7 @@ public:
   Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
                               const Standard_Integer N) const Standard_OVERRIDE;
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
 

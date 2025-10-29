@@ -223,7 +223,7 @@ public:
   //! Warning The basis curve is also modified.
   Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
-  //! Returns the  parameter on the  transformed  curve for
+  //! Returns the parameter on the transformed curve for
   //! the transform of the point of parameter U on <me>.
   //!
   //! me->Transformed(T)->Value(me->TransformedParameter(U,T))
@@ -237,8 +237,8 @@ public:
                                                              const gp_Trsf&      T) const
     Standard_OVERRIDE;
 
-  //! Returns a  coefficient to compute the parameter on
-  //! the transformed  curve  for  the transform  of the
+  //! Returns a coefficient to compute the parameter on
+  //! the transformed curve for the transform of the
   //! point on <me>.
   //!
   //! Transformed(T)->Value(U * ParametricTransformation(T))

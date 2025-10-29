@@ -41,7 +41,7 @@ public:
   Standard_EXPORT Standard_Boolean IsDone() const;
 
   //! returns Standard_True if the approximation did come out
-  //! with a result that is not NECESSARELY within the required
+  //! with a result that is not NECESSARILY within the required
   //! tolerance
   Standard_EXPORT Standard_Boolean HasResult() const;
 

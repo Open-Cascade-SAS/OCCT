@@ -53,25 +53,25 @@ public:
   Standard_EXPORT GProp_PrincipalProps();
 
   //! returns true if the geometric system has an axis of symmetry.
-  //! For  comparing  moments  relative  tolerance  1.e-10  is  used.
-  //! Usually  it  is  enough  for  objects,  restricted  by  faces  with
-  //! analytical  geometry.
+  //! For comparing moments relative tolerance 1.e-10 is used.
+  //! Usually it is enough for objects, restricted by faces with
+  //! analytical geometry.
   Standard_EXPORT Standard_Boolean HasSymmetryAxis() const;
 
   //! returns true if the geometric system has an axis of symmetry.
-  //! aTol  is  relative  tolerance for  checking  equality  of  moments
-  //! If  aTol  ==  0,  relative  tolerance  is  ~  1.e-16  (Epsilon(I))
+  //! aTol is relative tolerance for checking equality of moments
+  //! If aTol == 0, relative tolerance is ~ 1.e-16 (Epsilon(I))
   Standard_EXPORT Standard_Boolean HasSymmetryAxis(const Standard_Real aTol) const;
 
   //! returns true if the geometric system has a point of symmetry.
-  //! For  comparing  moments  relative  tolerance  1.e-10  is  used.
-  //! Usually  it  is  enough  for  objects,  restricted  by  faces  with
-  //! analytical  geometry.
+  //! For comparing moments relative tolerance 1.e-10 is used.
+  //! Usually it is enough for objects, restricted by faces with
+  //! analytical geometry.
   Standard_EXPORT Standard_Boolean HasSymmetryPoint() const;
 
   //! returns true if the geometric system has a point of symmetry.
-  //! aTol  is  relative  tolerance for  checking  equality  of  moments
-  //! If  aTol  ==  0,  relative  tolerance  is  ~  1.e-16  (Epsilon(I))
+  //! aTol is relative tolerance for checking equality of moments
+  //! If aTol == 0, relative tolerance is ~ 1.e-16 (Epsilon(I))
   Standard_EXPORT Standard_Boolean HasSymmetryPoint(const Standard_Real aTol) const;
 
   //! Ixx, Iyy and Izz return the principal moments of inertia

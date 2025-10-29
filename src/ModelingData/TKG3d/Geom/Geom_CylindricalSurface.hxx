@@ -54,9 +54,9 @@ DEFINE_STANDARD_HANDLE(Geom_CylindricalSurface, Geom_ElementarySurface)
 //! @endcode
 //!
 //! The "XAxis" and the "YAxis" define the placement plane of the
-//! surface (Z = 0, and parametric value V = 0)  perpendicular to
+//! surface (Z = 0, and parametric value V = 0) perpendicular to
 //! the symmetry axis. The "XAxis" defines the origin of the
-//! parameter U = 0.  The trigonometric sense gives the positive
+//! parameter U = 0. The trigonometric sense gives the positive
 //! orientation for the parameter U.
 //!
 //! When you create a CylindricalSurface the U and V directions of
@@ -93,17 +93,17 @@ public:
   //! returns a non transient cylinder with the same geometric properties as <me>.
   Standard_EXPORT gp_Cylinder Cylinder() const;
 
-  //! Return the  parameter on the  Ureversed surface for
+  //! Return the  parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
   //! Return 2.PI - U.
   Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
-  //! Return the  parameter on the  Vreversed surface for
+  //! Return the  parameter on the Vreversed surface for
   //! the point of parameter V on <me>.
   //! Return -V
   Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
 
-  //! Computes the  parameters on the  transformed  surface for
+  //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -218,7 +218,7 @@ public:
                           gp_Vec&             D2UV) const Standard_OVERRIDE;
 
   //! Computes the current point, the first, the second and the
-  //! third   derivatives in the directions U and V.
+  //! third derivatives in the directions U and V.
   Standard_EXPORT void D3(const Standard_Real U,
                           const Standard_Real V,
                           gp_Pnt&             P,

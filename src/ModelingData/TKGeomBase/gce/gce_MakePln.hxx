@@ -97,7 +97,7 @@ public:
 
   //! Make a pln  passing through the location of <Axis>and
   //! normal to the Direction of <Axis>.
-  //! Warning -  If an error occurs (that is, when IsDone returns
+  //! Warning - If an error occurs (that is, when IsDone returns
   //! false), the Status function returns:
   //! -   gce_BadEquation if Sqrt(A*A + B*B +
   //! C*C) is less than or equal to gp::Resolution(),

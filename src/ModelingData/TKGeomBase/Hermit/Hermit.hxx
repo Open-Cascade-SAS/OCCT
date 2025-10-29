@@ -24,9 +24,9 @@
 class Geom2d_BSplineCurve;
 class Geom_BSplineCurve;
 
-//! This  is used to  reparameterize Rational  BSpline
-//! Curves so that we can   concatenate them later to
-//! build C1 Curves  It builds and 1D-reparameterizing
+//! This is used to reparameterize Rational BSpline
+//! Curves so that we can concatenate them later to
+//! build C1 Curves It builds and 1D-reparameterizing
 //! function starting from an Hermite interpolation and
 //! adding knots and modifying poles of the 1D BSpline
 //! obtained that way. The goal is to build a(u) so that

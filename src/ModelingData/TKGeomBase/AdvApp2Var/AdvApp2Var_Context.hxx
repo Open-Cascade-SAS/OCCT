@@ -25,8 +25,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
-//! contains  all the  parameters  for approximation
-//! ( tolerancy, computing option, ...)
+//! contains all the parameters for approximation
+//! (tolerancy, computing option, ...)
 class AdvApp2Var_Context
 {
 public:

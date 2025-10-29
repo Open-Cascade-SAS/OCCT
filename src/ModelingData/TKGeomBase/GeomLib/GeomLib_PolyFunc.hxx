@@ -24,7 +24,7 @@
 #include <math_Vector.hxx>
 #include <math_FunctionWithDerivative.hxx>
 
-//! Polynomial  Function
+//! Polynomial Function
 class GeomLib_PolyFunc : public math_FunctionWithDerivative
 {
 public:

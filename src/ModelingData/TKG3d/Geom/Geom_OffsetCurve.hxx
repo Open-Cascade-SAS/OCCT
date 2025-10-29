@@ -177,13 +177,13 @@ public:
 
   //! Warning! this should not be called
   //! if the continuity of the basis curve is not C2.
-  //! Nevertheless, it's OK to use it  on portion
+  //! Nevertheless, it's OK to use it on a portion
   //! where the curve is C2
   Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const Standard_OVERRIDE;
 
   //! Warning! this should not be called
   //! if the continuity of the basis curve is not C3.
-  //! Nevertheless, it's OK to use it  on portion
+  //! Nevertheless, it's OK to use it on a portion
   //! where the curve is C3
   Standard_EXPORT void D2(const Standard_Real U,
                           gp_Pnt&             P,
@@ -268,8 +268,8 @@ public:
                                                              const gp_Trsf&      T) const
     Standard_OVERRIDE;
 
-  //! Returns a  coefficient to compute the parameter on
-  //! the transformed  curve  for  the transform  of the
+  //! Returns a coefficient to compute the parameter on
+  //! the transformed curve for the transform of the
   //! point on <me>.
   //!
   //! Transformed(T)->Value(U * ParametricTransformation(T))

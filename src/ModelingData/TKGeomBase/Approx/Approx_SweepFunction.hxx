@@ -48,8 +48,8 @@ public:
                                               TColgp_Array1OfPnt2d& Poles2d,
                                               TColStd_Array1OfReal& Weigths) = 0;
 
-  //! compute the first  derivative in v direction  of the
-  //! section for v =  param
+  //! compute the first derivative in v direction  of the
+  //! section for v = param
   //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real   Param,
                                               const Standard_Real   First,
@@ -61,8 +61,8 @@ public:
                                               TColStd_Array1OfReal& Weigths,
                                               TColStd_Array1OfReal& DWeigths);
 
-  //! compute the second derivative  in v direction of the
-  //! section  for v = param
+  //! compute the second derivative in v direction of the
+  //! section for v = param
   //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real   Param,
                                               const Standard_Real   First,
@@ -77,10 +77,10 @@ public:
                                               TColStd_Array1OfReal& DWeigths,
                                               TColStd_Array1OfReal& D2Weigths);
 
-  //! get the number of 2d curves to  approximate.
+  //! get the number of 2d curves to approximate.
   Standard_EXPORT virtual Standard_Integer Nb2dCurves() const = 0;
 
-  //! get the format of an  section
+  //! get the format of an section
   Standard_EXPORT virtual void SectionShape(Standard_Integer& NbPoles,
                                             Standard_Integer& NbKnots,
                                             Standard_Integer& Degree) const = 0;
@@ -94,20 +94,20 @@ public:
   //! Returns if the sections are rational or not
   Standard_EXPORT virtual Standard_Boolean IsRational() const = 0;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const = 0;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const = 0;
 
   //! Sets the bounds of the parametric interval on
-  //! the fonction
+  //! the function
   //! This determines the derivatives in these values if the
   //! function is not Cn.
   Standard_EXPORT virtual void SetInterval(const Standard_Real First, const Standard_Real Last) = 0;

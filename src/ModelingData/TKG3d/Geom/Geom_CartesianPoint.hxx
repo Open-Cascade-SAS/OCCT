@@ -51,13 +51,13 @@ public:
   //! Set <me> to P.X(), P.Y(), P.Z() coordinates.
   Standard_EXPORT void SetPnt(const gp_Pnt& P);
 
-  //! Changes the X coordinate of me.
+  //! Changes the X coordinate of <me>.
   Standard_EXPORT void SetX(const Standard_Real X);
 
-  //! Changes the Y coordinate of me.
+  //! Changes the Y coordinate of <me>.
   Standard_EXPORT void SetY(const Standard_Real Y);
 
-  //! Changes the Z coordinate of me.
+  //! Changes the Z coordinate of <me>.
   Standard_EXPORT void SetZ(const Standard_Real Z);
 
   //! Returns the coordinates of <me>.
