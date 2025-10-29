@@ -235,9 +235,10 @@ public:
   //! @param N the degree (n in C(n,k))
   //! @param P the parameter (k in C(n,k))
   //! @return the value of C(N,P)
+  //! @note Caller must ensure N and P are within valid range
   constexpr Standard_Integer Value(const Standard_Integer N, const Standard_Integer P) const
   {
-    return (N <= MaxDegree && P >= 0 && P <= N) ? myBinom[N][P] : 0;
+    return myBinom[N][P];
   }
 
 private:
@@ -259,7 +260,7 @@ inline const BinomAllocator<MaxDegree>& GetBinomAllocator()
 
 Standard_Real PLib::Bin(const Standard_Integer N, const Standard_Integer P)
 {
-  const auto& aBinom = GetBinomAllocator<BSplCLib::MaxDegree()>();
+  const auto& aBinom = GetBinomAllocator();
 
   Standard_OutOfRange_Raise_if(N < 0 || N > BSplCLib::MaxDegree(),
                                "PLib::Bin: degree N is out of supported range [0, 25]");
