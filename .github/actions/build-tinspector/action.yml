@@ -45,7 +45,7 @@ runs:
       run: |
         git clone https://github.com/Open-Cascade-SAS/Inspector.git inspector
         cd inspector
-        git checkout 69e78d56c60cc28937650886f3a8c0fd38a6fe0d
+        git checkout efe00930adc2130a91744ba950c5270986d19739
 
     - name: Configure TInspector - Windows
       if: inputs.platform == 'windows'
