@@ -18,8 +18,7 @@
 #include <OSD_PerfMeter.hxx>
 
 #include <OSD_Chronometer.hxx>
-
-#include <unordered_map>
+#include <NCollection_DataMap.hxx>
 
 // Simple stopwatch class to measure elapsed time
 // and provides methods to start, stop, and get the elapsed time in seconds.
@@ -153,27 +152,27 @@ public:
   // This allows the user to access and manipulate the stopwatch directly.
   // @param theName The name of the stopwatch to retrieve.
   // @return A pointer to the stopwatch if it exists, nullptr otherwise.
-  Stopwatch* GetStopwatch(const std::string& theName);
+  Stopwatch* GetStopwatch(const TCollection_AsciiString& theName);
 
   // Creates a new stopwatch with the specified name.
   // If a stopwatch with the same name already exists, it will be replaced.
   // @param theName The name of the stopwatch to create.
   // @return A reference to the created stopwatch.
-  Stopwatch& CreateStopwatch(const std::string& theName);
+  Stopwatch& CreateStopwatch(const TCollection_AsciiString& theName);
 
   // Checks if a stopwatch with the specified name exists.
   // This method allows the user to check if a stopwatch is already created before attempting to
   // create or retrieve it.
   // @param theName The name of the stopwatch to check.
   // @return True if the stopwatch exists, false otherwise.
-  bool HasStopwatch(const std::string& theName) const;
+  bool HasStopwatch(const TCollection_AsciiString& theName) const;
 
   // Deletes a stopwatch with the specified name.
   // If the stopwatch does not exist, it does nothing.
   // This method allows the user to remove a stopwatch from the storage.
   // @param theName The name of the stopwatch to delete.
   // @return True if the stopwatch was successfully deleted, false otherwise.
-  void KillStopwatch(const std::string& theName);
+  void KillStopwatch(const TCollection_AsciiString& theName);
 
   // Clears all stopwatches from the storage.
   // This method removes all stopwatches and resets the storage to its initial state.
@@ -186,24 +185,25 @@ public:
   // If the stopwatch was never started, it prints a message indicating that.
   // @param theName The name of the stopwatch to print.
   // @return A string containing the results of the stopwatch.
-  std::string Print(const std::string& theName) const;
+  TCollection_AsciiString Print(const TCollection_AsciiString& theName) const;
 
   // Prints the results of all stopwatches in the storage.
   // It iterates through all stopwatches and prints their results.
   // If a stopwatch is still running, it prints a warning message.
   // If a stopwatch was never started, it prints a message indicating that.
   // @return A string containing the results of all stopwatches.
-  std::string PrintAll() const;
+  TCollection_AsciiString PrintAll() const;
 
 private:
   // Helper method to print the results of a specific stopwatch.
   // It formats the output and appends it to the provided output string.
   // @param theName The name of the stopwatch to print.
   // @param theOutput The output string to append the results to.
-  void print(const std::string& theName, std::string& theOutput) const;
+  void print(const TCollection_AsciiString& theName, TCollection_AsciiString& theOutput) const;
 
 private:
-  std::unordered_map<std::string, Stopwatch> myStopwatches; //< Map to store stopwatches by name.
+  // Map to store stopwatches by name.
+  NCollection_DataMap<TCollection_AsciiString, Stopwatch> myStopwatches;
 };
 
 //==================================================================================================
@@ -216,48 +216,45 @@ StopwatchStorage& StopwatchStorage::Instance()
 
 //===================================================================================================
 
-Stopwatch* StopwatchStorage::GetStopwatch(const std::string& theName)
+Stopwatch* StopwatchStorage::GetStopwatch(const TCollection_AsciiString& theName)
 {
-  auto it = myStopwatches.find(theName);
-  return (it != myStopwatches.end()) ? &it->second : nullptr;
+  return myStopwatches.ChangeSeek(theName);
 }
 
 //===================================================================================================
 
-Stopwatch& StopwatchStorage::CreateStopwatch(const std::string& theName)
+Stopwatch& StopwatchStorage::CreateStopwatch(const TCollection_AsciiString& theName)
 {
-  myStopwatches[theName] = Stopwatch();
-  return myStopwatches[theName];
+  return *myStopwatches.Bound(theName, Stopwatch());
 }
 
 //===================================================================================================
 
-bool StopwatchStorage::HasStopwatch(const std::string& theName) const
+bool StopwatchStorage::HasStopwatch(const TCollection_AsciiString& theName) const
 {
-  return myStopwatches.find(theName) != myStopwatches.end();
+  return myStopwatches.IsBound(theName);
 }
 
 //===================================================================================================
 
-void StopwatchStorage::KillStopwatch(const std::string& theName)
+void StopwatchStorage::KillStopwatch(const TCollection_AsciiString& theName)
 {
-  myStopwatches.erase(theName);
+  myStopwatches.UnBind(theName);
 }
 
 //===================================================================================================
 
 void StopwatchStorage::Clear()
 {
-  myStopwatches.clear();
+  myStopwatches.Clear();
 }
 
 //===================================================================================================
 
-std::string StopwatchStorage::Print(const std::string& theName) const
+TCollection_AsciiString StopwatchStorage::Print(const TCollection_AsciiString& theName) const
 {
-  std::string anOutput;
-  auto        it = myStopwatches.find(theName);
-  if (it != myStopwatches.end())
+  TCollection_AsciiString anOutput;
+  if (myStopwatches.IsBound(theName))
   {
     print(theName, anOutput);
   }
@@ -266,38 +263,42 @@ std::string StopwatchStorage::Print(const std::string& theName) const
 
 //===================================================================================================
 
-std::string StopwatchStorage::PrintAll() const
+TCollection_AsciiString StopwatchStorage::PrintAll() const
 {
-  std::string anOutput;
-  for (const auto& aStopwatch : myStopwatches)
+  TCollection_AsciiString anOutput;
+  for (NCollection_DataMap<TCollection_AsciiString, Stopwatch>::Iterator anIter(myStopwatches);
+       anIter.More();
+       anIter.Next())
   {
-    print(aStopwatch.first, anOutput);
+    print(anIter.Key(), anOutput);
   }
   return anOutput;
 }
 
 //===================================================================================================
 
-void StopwatchStorage::print(const std::string& theName, std::string& theOutput) const
+void StopwatchStorage::print(const TCollection_AsciiString& theName,
+                             TCollection_AsciiString&       theOutput) const
 {
-  auto it = myStopwatches.find(theName);
-  if (it == myStopwatches.end())
+  const Stopwatch* aStopwatch = myStopwatches.Seek(theName);
+  if (aStopwatch == nullptr)
   {
     return;
   }
 
-  if (!it->second.IsActive())
+  if (!aStopwatch->IsActive())
   {
-    theOutput += "Stopwatch " + theName + " have never been started.\n";
+    theOutput += TCollection_AsciiString("Stopwatch ") + theName + " have never been started.\n";
     return;
   }
 
-  if (it->second.IsRunning())
+  if (aStopwatch->IsRunning())
   {
-    theOutput += "Warning: Stopwatch " + theName + " is still running.\n";
+    theOutput += TCollection_AsciiString("Warning: Stopwatch ") + theName + " is still running.\n";
     return;
   }
-  theOutput += "Stopwatch " + theName + ": " + std::to_string(it->second.Elapsed()) + " sec\n";
+  theOutput += TCollection_AsciiString("Stopwatch ") + theName + ": "
+               + TCollection_AsciiString(aStopwatch->Elapsed()) + " sec\n";
 }
 
 //==================================================================================================
@@ -321,9 +322,9 @@ OSD_PerfMeter::~OSD_PerfMeter() {}
 void OSD_PerfMeter::Init(const TCollection_AsciiString& theMeterName)
 {
   myMeterName = theMeterName;
-  if (!StopwatchStorage::Instance().HasStopwatch(myMeterName.ToCString()))
+  if (!StopwatchStorage::Instance().HasStopwatch(myMeterName))
   {
-    StopwatchStorage::Instance().CreateStopwatch(myMeterName.ToCString());
+    StopwatchStorage::Instance().CreateStopwatch(myMeterName);
   }
 }
 
@@ -331,7 +332,7 @@ void OSD_PerfMeter::Init(const TCollection_AsciiString& theMeterName)
 
 void OSD_PerfMeter::Start() const
 {
-  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName.ToCString());
+  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName);
   if (aStopwatch != nullptr)
   {
     aStopwatch->Start();
@@ -342,7 +343,7 @@ void OSD_PerfMeter::Start() const
 
 void OSD_PerfMeter::Stop() const
 {
-  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName.ToCString());
+  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName);
   if (aStopwatch != nullptr)
   {
     aStopwatch->Stop();
@@ -353,7 +354,7 @@ void OSD_PerfMeter::Stop() const
 
 double OSD_PerfMeter::Elapsed() const
 {
-  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName.ToCString());
+  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName);
   return aStopwatch ? aStopwatch->Elapsed() : 0.0;
 }
 
@@ -361,18 +362,17 @@ double OSD_PerfMeter::Elapsed() const
 
 void OSD_PerfMeter::Kill() const
 {
-  StopwatchStorage::Instance().KillStopwatch(myMeterName.ToCString());
+  StopwatchStorage::Instance().KillStopwatch(myMeterName);
 }
 
 //==================================================================================================
 
 TCollection_AsciiString OSD_PerfMeter::Print() const
 {
-  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName.ToCString());
+  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName);
   if (aStopwatch != nullptr)
   {
-    const std::string anOutput = StopwatchStorage::Instance().Print(myMeterName.ToCString());
-    return anOutput.c_str();
+    return StopwatchStorage::Instance().Print(myMeterName);
   }
   return "";
 }
@@ -381,8 +381,7 @@ TCollection_AsciiString OSD_PerfMeter::Print() const
 
 TCollection_AsciiString OSD_PerfMeter::PrintALL()
 {
-  const std::string anOutput = StopwatchStorage::Instance().PrintAll();
-  return anOutput.c_str();
+  return StopwatchStorage::Instance().PrintAll();
 }
 
 //==================================================================================================
