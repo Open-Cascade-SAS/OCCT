@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-inline Standard_Integer BSplCLib::MaxDegree()
+inline constexpr Standard_Integer BSplCLib::MaxDegree()
 {
   return 25;
 }

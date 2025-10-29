@@ -20,6 +20,7 @@
 #include <math.hxx>
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
+#include <BSplCLib.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_ConstructionError.hxx>
 
@@ -197,88 +198,75 @@ void PLib::GetPoles(const TColStd_Array1OfReal& FP,
   }
 }
 
-// specialized allocator
+// specialized allocator for binomial coefficients using compile-time computation
 namespace
 {
 
+//! Compile-time Pascal's triangle allocator for binomial coefficients
+//! @tparam MaxDegree Maximum degree N for which C(N,P) can be computed
+template <Standard_Integer MaxDegree>
 class BinomAllocator
 {
 public:
-  //! Main constructor
-  BinomAllocator(const Standard_Integer theMaxBinom)
-      : myBinom(NULL),
-        myMaxBinom(theMaxBinom)
+  //! Constructor - computes Pascal's triangle at compile time
+  //! Uses the recurrence relation: C(n,k) = C(n-1,k-1) + C(n-1,k)
+  constexpr BinomAllocator()
+      : myBinom{}
   {
-    Standard_Integer i, im1, ip1, id2, md2, md3, j, k;
-    Standard_Integer np1 = myMaxBinom + 1;
-    myBinom              = new Standard_Integer*[np1];
-    myBinom[0]           = new Standard_Integer[1];
-    myBinom[0][0]        = 1;
-    for (i = 1; i < np1; ++i)
+    // Initialize first row: C(0,0) = 1
+    myBinom[0][0] = 1;
+
+    // Build Pascal's triangle row by row
+    for (Standard_Integer i = 1; i <= MaxDegree; ++i)
     {
-      im1        = i - 1;
-      ip1        = i + 1;
-      id2        = i >> 1;
-      md2        = im1 >> 1;
-      md3        = ip1 >> 1;
-      k          = 0;
-      myBinom[i] = new Standard_Integer[ip1];
+      // First and last elements are always 1
+      myBinom[i][0] = 1;
+      myBinom[i][i] = 1;
 
-      for (j = 0; j < id2; ++j)
+      // Use recurrence relation for middle elements
+      for (Standard_Integer j = 1; j < i; ++j)
       {
-        myBinom[i][j] = k + myBinom[im1][j];
-        k             = myBinom[im1][j];
-      }
-      j = id2;
-      if (j > md2)
-        j = im1 - j;
-      myBinom[i][id2] = k + myBinom[im1][j];
-
-      for (j = ip1 - md3; j < ip1; j++)
-      {
-        myBinom[i][j] = myBinom[i][i - j];
+        myBinom[i][j] = myBinom[i - 1][j - 1] + myBinom[i - 1][j];
       }
     }
   }
 
-  //! Destructor
-  ~BinomAllocator()
+  //! Returns the binomial coefficient C(N,P)
+  //! @param N the degree (n in C(n,k))
+  //! @param P the parameter (k in C(n,k))
+  //! @return the value of C(N,P)
+  constexpr Standard_Integer Value(const Standard_Integer N, const Standard_Integer P) const
   {
-    // free memory
-    for (Standard_Integer i = 0; i <= myMaxBinom; ++i)
-    {
-      delete[] myBinom[i];
-    }
-    delete[] myBinom;
-  }
-
-  Standard_Real Value(const Standard_Integer N, const Standard_Integer P) const
-  {
-    Standard_OutOfRange_Raise_if(
-      N > myMaxBinom,
-      "PLib, BinomAllocator: requested degree is greater than maximum supported");
-    return Standard_Real(myBinom[N][P]);
+    return (N <= MaxDegree && P >= 0 && P <= N) ? myBinom[N][P] : 0;
   }
 
 private:
-  BinomAllocator(const BinomAllocator&);
-  BinomAllocator& operator=(const BinomAllocator&);
-
-private:
-  Standard_Integer** myBinom;
-  Standard_Integer   myMaxBinom;
+  Standard_Integer myBinom[MaxDegree + 1][MaxDegree + 1];
 };
 
-// we do not call BSplCLib here to avoid Cyclic dependency detection by WOK
-// static BinomAllocator THE_BINOM (BSplCLib::MaxDegree() + 1);
-static BinomAllocator THE_BINOM(25 + 1);
+//! Thread-safe lazy initialization of compile-time computed binomial coefficients
+//! @tparam MaxDegree Maximum degree supported (default 25)
+template <Standard_Integer MaxDegree = BSplCLib::MaxDegree()>
+inline const BinomAllocator<MaxDegree>& GetBinomAllocator()
+{
+  static constexpr BinomAllocator<MaxDegree> THE_ALLOCATOR{};
+  return THE_ALLOCATOR;
+}
+
 } // namespace
 
 //=================================================================================================
 
 Standard_Real PLib::Bin(const Standard_Integer N, const Standard_Integer P)
 {
-  return THE_BINOM.Value(N, P);
+  const auto& aBinom = GetBinomAllocator<BSplCLib::MaxDegree()>();
+
+  Standard_OutOfRange_Raise_if(N < 0 || N > BSplCLib::MaxDegree(),
+                               "PLib::Bin: degree N is out of supported range [0, 25]");
+  Standard_OutOfRange_Raise_if(P < 0 || P > N,
+                               "PLib::Bin: parameter P is out of valid range [0, N]");
+
+  return Standard_Real(aBinom.Value(N, P));
 }
 
 //=================================================================================================
