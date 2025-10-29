@@ -34,8 +34,8 @@ public:
 
   //! Creation of isoparametric curves.
   //! Implements ProgressIndicator for DRAW
-  //! Sets  <S> in the  variable  <Name>.  Overwrite the
-  //! variable if already set.
+  //! Sets <S> in the variable <Name>.
+  //! Overwrite the variable if already set.
   Standard_EXPORT static void Set(const Standard_CString Name, const TopoDS_Shape& S);
 
   //! Returns the shape in the variable.

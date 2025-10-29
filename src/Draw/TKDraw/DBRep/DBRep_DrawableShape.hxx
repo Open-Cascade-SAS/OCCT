@@ -63,15 +63,15 @@ public:
   //! Return const &
   Standard_EXPORT TopoDS_Shape Shape() const;
 
-  //! When True  the orientations  of the edges and free
-  //! vertices  are displayed.
+  //! When True the orientations of the edges and free
+  //! vertices are displayed.
   Standard_EXPORT void DisplayOrientation(const Standard_Boolean D);
 
-  //! When True  the triangulations  of the faces
+  //! When True the triangulations of the faces
   //! are displayed even if there is a surface.
   Standard_EXPORT void DisplayTriangulation(const Standard_Boolean D);
 
-  //! When True  the polygons  of the edges
+  //! When True the polygons of the edges
   //! are displayed even if there is a geometric curve.
   Standard_EXPORT void DisplayPolygons(const Standard_Boolean D);
 

@@ -51,7 +51,7 @@ public: //! @name Tcl variables management tools
                                   const Handle(Draw_Drawable3D)& D,
                                   const Standard_Boolean         Disp);
 
-  //! Sets a    variable,  a  null   handle    clear the
+  //! Sets a variable, a null handle clear the
   //! vartiable. Automatic display is context driven.
   Standard_EXPORT static void Set(const Standard_CString Name, const Handle(Draw_Drawable3D)& D);
 
@@ -76,7 +76,7 @@ public: //! @name Tcl variables management tools
     return getDrawable(aName, Standard_False);
   }
 
-  //! Gets a   numeric  variable. Returns  True   if the
+  //! Gets a numeric variable. Returns True if the
   //! variable exist.
   Standard_EXPORT static Standard_Boolean Get(const Standard_CString Name, Standard_Real& val);
 

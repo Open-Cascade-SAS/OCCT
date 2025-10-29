@@ -44,7 +44,7 @@ public:
   //! Empty Constructor
   Standard_EXPORT IntAna_IntQuadQuad();
 
-  //! Creates the intersection between a cylinder and a quadric .
+  //! Creates the intersection between a cylinder and a quadric.
   //! Tol est a definir plus precisemment.
   Standard_EXPORT IntAna_IntQuadQuad(const gp_Cylinder&    C,
                                      const IntAna_Quadric& Q,
@@ -92,17 +92,17 @@ public:
                                   Standard_Real&         U1,
                                   Standard_Real&         U2) const;
 
-  //! Returns True if the Curve I  shares its last bound
+  //! Returns True if the Curve I shares its last bound
   //! with another curve.
   Standard_EXPORT Standard_Boolean HasNextCurve(const Standard_Integer I) const;
 
-  //! If  HasNextCurve(I)  returns True,  this  function
-  //! returns  the  Index J  of the curve  which   has a
-  //! common bound  with the curve   I.  If  theOpposite ==
-  //! True , then the last parameter of the curve I, and
-  //! the last parameter of  the curve J  give  the same
-  //! point. Else the last  parameter of the curve I and
-  //! the first parameter  of  the curve J are  the same
+  //! If HasNextCurve(I) returns True, this function
+  //! returns the Index J of the curve which has a
+  //! common bound with the curve I. If theOpposite ==
+  //! True, then the last parameter of the curve I, and
+  //! the last parameter of the curve J give the same
+  //! point. Else the last parameter of the curve I and
+  //! the first parameter of the curve J are the same
   //! point.
   Standard_EXPORT Standard_Integer NextCurve(const Standard_Integer I,
                                              Standard_Boolean&      theOpposite) const;
@@ -112,13 +112,13 @@ public:
   Standard_EXPORT Standard_Boolean HasPreviousCurve(const Standard_Integer I) const;
 
   //! if HasPreviousCurve(I) returns True, this function
-  //! returns the   Index  J of the   curve  which has a
-  //! common  bound with the  curve  I.  If theOpposite  ==
-  //! True  , then the  first parameter of  the curve I,
-  //! and the first parameter of the curve  J  give  the
-  //! same point. Else the first  parameter of the curve
-  //! I and the last  parameter  of the curve J  are the
-  //! same point.
+  //! returns the Index J of the curve which has a common
+  //! bound with the curve I. If theOpposite == True
+  //! then the first parameter of the curve I, and the
+  //! first parameter of the curve J give the same
+  //! point. Else the first parameter of the curve I and
+  //! the last parameter of the curve J are the same
+  //! point.
   Standard_EXPORT Standard_Integer PreviousCurve(const Standard_Integer I,
                                                  Standard_Boolean&      theOpposite) const;
 
