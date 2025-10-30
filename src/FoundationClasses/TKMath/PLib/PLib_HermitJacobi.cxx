@@ -227,18 +227,13 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
                                        aDegreeH,
                                        1,
                                        aDegreeH,
-                                       const_cast<Standard_Real&>(aHermiteMatrix(i + 1, 1)),
+                                       aHermiteMatrix(i + 1, 1),
                                        HermitValues(i, 0));
     }
   else
     for (i = 0; i <= aDegreeH; i++)
     {
-      PLib::EvalPolynomial(U,
-                           NDeriv,
-                           aDegreeH,
-                           1,
-                           const_cast<Standard_Real&>(aHermiteMatrix(i + 1, 1)),
-                           HermitValues(i, 0));
+      PLib::EvalPolynomial(U, NDeriv, aDegreeH, 1, aHermiteMatrix(i + 1, 1), HermitValues(i, 0));
     }
 
   // Evaluation des polynomes de Jaccobi
@@ -272,19 +267,9 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
     // Evaluation de W(t)
     const Standard_Real& aWCoeff = GetWCoefficients(aNivConstr);
     if (NDeriv == 0)
-      PLib::NoDerivativeEvalPolynomial(U,
-                                       aDegreeH + 1,
-                                       1,
-                                       aDegreeH + 1,
-                                       const_cast<Standard_Real&>(aWCoeff),
-                                       WValues(0));
+      PLib::NoDerivativeEvalPolynomial(U, aDegreeH + 1, 1, aDegreeH + 1, aWCoeff, WValues(0));
     else
-      PLib::EvalPolynomial(U,
-                           NDeriv,
-                           aDegreeH + 1,
-                           1,
-                           const_cast<Standard_Real&>(aWCoeff),
-                           WValues(0));
+      PLib::EvalPolynomial(U, NDeriv, aDegreeH + 1, 1, aWCoeff, WValues(0));
   }
 
   // Evaluation a l'ordre 0
