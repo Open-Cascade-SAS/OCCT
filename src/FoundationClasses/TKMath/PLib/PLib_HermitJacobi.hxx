@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <math_Matrix.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <PLib_Base.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-class PLib_JacobiPolynomial;
+#include <PLib_JacobiPolynomial.hxx>
 
 class PLib_HermitJacobi;
 DEFINE_STANDARD_HANDLE(PLib_HermitJacobi, PLib_Base)
@@ -128,10 +127,10 @@ public:
                           TColStd_Array1OfReal& BasisD3) Standard_OVERRIDE;
 
   //! returns WorkDegree
-  Standard_Integer WorkDegree() const Standard_OVERRIDE;
+  Standard_Integer WorkDegree() const Standard_OVERRIDE { return myJacobi.WorkDegree(); }
 
   //! returns NivConstr
-  Standard_Integer NivConstr() const;
+  Standard_Integer NivConstr() const { return myJacobi.NivConstr(); }
 
   DEFINE_STANDARD_RTTIEXT(PLib_HermitJacobi, PLib_Base)
 
@@ -146,11 +145,7 @@ private:
                              TColStd_Array1OfReal&  BasisD2,
                              TColStd_Array1OfReal&  BasisD3);
 
-  math_Matrix                   myH;
-  Handle(PLib_JacobiPolynomial) myJacobi;
-  TColStd_Array1OfReal          myWCoeff;
+  PLib_JacobiPolynomial myJacobi;
 };
-
-#include <PLib_HermitJacobi.lxx>
 
 #endif // _PLib_HermitJacobi_HeaderFile
