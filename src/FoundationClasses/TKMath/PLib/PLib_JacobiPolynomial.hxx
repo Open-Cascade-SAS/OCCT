@@ -171,13 +171,9 @@ private:
                              TColStd_Array1OfReal&  BasisD2,
                              TColStd_Array1OfReal&  BasisD3);
 
-  Standard_Integer              myWorkDegree;
-  Standard_Integer              myNivConstr;
-  Standard_Integer              myDegree;
-  Handle(TColStd_HArray1OfReal) myTNorm;
-  Handle(TColStd_HArray1OfReal) myCofA;
-  Handle(TColStd_HArray1OfReal) myCofB;
-  Handle(TColStd_HArray1OfReal) myDenom;
+  const Standard_Integer myWorkDegree;
+  const Standard_Integer myNivConstr;
+  const Standard_Integer myDegree;
 };
 
 #include <PLib_JacobiPolynomial.lxx>
