@@ -37,14 +37,14 @@ protected:
   }
 
   // Helper to create valid HermitJacobi polynomial instances
-  Handle(PLib_HermitJacobi) createHermitJacobi(Standard_Integer theDegree,
-                                               GeomAbs_Shape    theConstraint)
+  PLib_HermitJacobi createHermitJacobi(Standard_Integer theDegree,
+                                        GeomAbs_Shape    theConstraint)
   {
     // Ensure degree is within valid range
     EXPECT_LE(theDegree, 30) << "Degree too high for HermitJacobi polynomial";
     EXPECT_GE(theDegree, 0) << "Degree must be non-negative";
 
-    return new PLib_HermitJacobi(theDegree, theConstraint);
+    return PLib_HermitJacobi(theDegree, theConstraint);
   }
 };
 
@@ -52,38 +52,34 @@ protected:
 TEST_F(PLibHermitJacobiTest, ConstructorAndBasicProperties)
 {
   // Test with different constraint orders
-  Handle(PLib_HermitJacobi) aHermC0 = createHermitJacobi(10, GeomAbs_C0);
-  Handle(PLib_HermitJacobi) aHermC1 = createHermitJacobi(15, GeomAbs_C1);
-  Handle(PLib_HermitJacobi) aHermC2 = createHermitJacobi(20, GeomAbs_C2);
-
-  ASSERT_FALSE(aHermC0.IsNull()) << "Failed to create C0 HermitJacobi polynomial";
-  ASSERT_FALSE(aHermC1.IsNull()) << "Failed to create C1 HermitJacobi polynomial";
-  ASSERT_FALSE(aHermC2.IsNull()) << "Failed to create C2 HermitJacobi polynomial";
+  PLib_HermitJacobi aHermC0 = createHermitJacobi(10, GeomAbs_C0);
+  PLib_HermitJacobi aHermC1 = createHermitJacobi(15, GeomAbs_C1);
+  PLib_HermitJacobi aHermC2 = createHermitJacobi(20, GeomAbs_C2);
 
   // Test WorkDegree property
-  EXPECT_EQ(aHermC0->WorkDegree(), 10);
-  EXPECT_EQ(aHermC1->WorkDegree(), 15);
-  EXPECT_EQ(aHermC2->WorkDegree(), 20);
+  EXPECT_EQ(aHermC0.WorkDegree(), 10);
+  EXPECT_EQ(aHermC1.WorkDegree(), 15);
+  EXPECT_EQ(aHermC2.WorkDegree(), 20);
 
   // Test NivConstr property
-  EXPECT_EQ(aHermC0->NivConstr(), 0);
-  EXPECT_EQ(aHermC1->NivConstr(), 1);
-  EXPECT_EQ(aHermC2->NivConstr(), 2);
+  EXPECT_EQ(aHermC0.NivConstr(), 0);
+  EXPECT_EQ(aHermC1.NivConstr(), 1);
+  EXPECT_EQ(aHermC2.NivConstr(), 2);
 }
 
 // Test basis function evaluation D0
 TEST_F(PLibHermitJacobiTest, BasisFunctionD0)
 {
-  Handle(PLib_HermitJacobi) aHerm = createHermitJacobi(6, GeomAbs_C0);
+  PLib_HermitJacobi aHerm = createHermitJacobi(6, GeomAbs_C0);
 
-  TColStd_Array1OfReal aBasisValue(0, aHerm->WorkDegree());
+  TColStd_Array1OfReal aBasisValue(0, aHerm.WorkDegree());
 
   // Test at various parameter values
   std::vector<Standard_Real> aTestParams = {-1.0, -0.5, 0.0, 0.5, 1.0};
 
   for (Standard_Real aU : aTestParams)
   {
-    EXPECT_NO_THROW({ aHerm->D0(aU, aBasisValue); }) << "D0 evaluation failed at U=" << aU;
+    EXPECT_NO_THROW({ aHerm.D0(aU, aBasisValue); }) << "D0 evaluation failed at U=" << aU;
 
     // Basic sanity checks
     for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
@@ -97,23 +93,23 @@ TEST_F(PLibHermitJacobiTest, BasisFunctionD0)
 // Test basis function evaluation with derivatives
 TEST_F(PLibHermitJacobiTest, BasisFunctionDerivatives)
 {
-  Handle(PLib_HermitJacobi) aHerm = createHermitJacobi(8, GeomAbs_C1);
+  PLib_HermitJacobi aHerm = createHermitJacobi(8, GeomAbs_C1);
 
-  TColStd_Array1OfReal aBasisValue(0, aHerm->WorkDegree());
-  TColStd_Array1OfReal aBasisD1(0, aHerm->WorkDegree());
-  TColStd_Array1OfReal aBasisD2(0, aHerm->WorkDegree());
-  TColStd_Array1OfReal aBasisD3(0, aHerm->WorkDegree());
+  TColStd_Array1OfReal aBasisValue(0, aHerm.WorkDegree());
+  TColStd_Array1OfReal aBasisD1(0, aHerm.WorkDegree());
+  TColStd_Array1OfReal aBasisD2(0, aHerm.WorkDegree());
+  TColStd_Array1OfReal aBasisD3(0, aHerm.WorkDegree());
 
   Standard_Real aU = 0.5; // Test at middle point
 
   // Test D1
-  EXPECT_NO_THROW({ aHerm->D1(aU, aBasisValue, aBasisD1); }) << "D1 evaluation failed";
+  EXPECT_NO_THROW({ aHerm.D1(aU, aBasisValue, aBasisD1); }) << "D1 evaluation failed";
 
   // Test D2
-  EXPECT_NO_THROW({ aHerm->D2(aU, aBasisValue, aBasisD1, aBasisD2); }) << "D2 evaluation failed";
+  EXPECT_NO_THROW({ aHerm.D2(aU, aBasisValue, aBasisD1, aBasisD2); }) << "D2 evaluation failed";
 
   // Test D3
-  EXPECT_NO_THROW({ aHerm->D3(aU, aBasisValue, aBasisD1, aBasisD2, aBasisD3); })
+  EXPECT_NO_THROW({ aHerm.D3(aU, aBasisValue, aBasisD1, aBasisD2, aBasisD3); })
     << "D3 evaluation failed";
 
   // Verify all values are finite
@@ -133,11 +129,11 @@ TEST_F(PLibHermitJacobiTest, BasisFunctionDerivatives)
 TEST_F(PLibHermitJacobiTest, CoefficientConversion)
 {
   const Standard_Integer aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
-  Handle(PLib_HermitJacobi) aHerm    = createHermitJacobi(aWorkDegree, GeomAbs_C0);
+  PLib_HermitJacobi aHerm    = createHermitJacobi(aWorkDegree, GeomAbs_C0);
 
   const Standard_Integer aDimension = 1;
   const Standard_Integer aDegree =
-    aHerm->WorkDegree() - 2 * (aHerm->NivConstr() + 1); // Use computational degree
+    aHerm.WorkDegree() - 2 * (aHerm.NivConstr() + 1); // Use computational degree
 
   // Create test HermitJacobi coefficients with proper size
   // ToCoefficients expects arrays sized based on the degree and dimension
@@ -153,7 +149,7 @@ TEST_F(PLibHermitJacobiTest, CoefficientConversion)
 
   TColStd_Array1OfReal aCoefficients(0, aCoeffSize - 1);
 
-  EXPECT_NO_THROW({ aHerm->ToCoefficients(aDimension, aDegree, aHermJacCoeff, aCoefficients); })
+  EXPECT_NO_THROW({ aHerm.ToCoefficients(aDimension, aDegree, aHermJacCoeff, aCoefficients); })
     << "Coefficient conversion failed";
 
   // Verify output is finite
@@ -167,14 +163,14 @@ TEST_F(PLibHermitJacobiTest, CoefficientConversion)
 // Test degree reduction
 TEST_F(PLibHermitJacobiTest, DegreeReduction)
 {
-  Handle(PLib_HermitJacobi) aHerm = createHermitJacobi(10, GeomAbs_C0);
+  PLib_HermitJacobi aHerm = createHermitJacobi(10, GeomAbs_C0);
 
   const Standard_Integer aDimension = 1;
   const Standard_Integer aMaxDegree = 8;
   const Standard_Real    aTol       = 1e-6;
 
   // Create test coefficients - must be sized for full WorkDegree
-  const Standard_Integer aWorkDegree = aHerm->WorkDegree();
+  const Standard_Integer aWorkDegree = aHerm.WorkDegree();
   TColStd_Array1OfReal   aCoeff(1, (aWorkDegree + 1) * aDimension);
   for (Standard_Integer i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
   {
@@ -185,7 +181,7 @@ TEST_F(PLibHermitJacobiTest, DegreeReduction)
   Standard_Real    aMaxError  = -1.0;
 
   EXPECT_NO_THROW({
-    aHerm->ReduceDegree(aDimension, aMaxDegree, aTol, aCoeff.ChangeValue(1), aNewDegree, aMaxError);
+    aHerm.ReduceDegree(aDimension, aMaxDegree, aTol, aCoeff.ChangeValue(1), aNewDegree, aMaxError);
   }) << "Degree reduction failed";
 
   // Verify results are reasonable
@@ -198,7 +194,7 @@ TEST_F(PLibHermitJacobiTest, DegreeReduction)
 // Test error estimation
 TEST_F(PLibHermitJacobiTest, ErrorEstimation)
 {
-  Handle(PLib_HermitJacobi) aHerm = createHermitJacobi(8, GeomAbs_C1);
+  PLib_HermitJacobi aHerm = createHermitJacobi(8, GeomAbs_C1);
 
   const Standard_Integer aDimension = 1;
 
@@ -213,7 +209,7 @@ TEST_F(PLibHermitJacobiTest, ErrorEstimation)
 
   // Test MaxError
   Standard_Real aMaxErr = -1.0;
-  EXPECT_NO_THROW({ aMaxErr = aHerm->MaxError(aDimension, aCoeff.ChangeValue(1), aNewDegree); })
+  EXPECT_NO_THROW({ aMaxErr = aHerm.MaxError(aDimension, aCoeff.ChangeValue(1), aNewDegree); })
     << "MaxError calculation failed";
 
   EXPECT_GE(aMaxErr, 0.0) << "Max error should be non-negative";
@@ -221,7 +217,7 @@ TEST_F(PLibHermitJacobiTest, ErrorEstimation)
 
   // Test AverageError
   Standard_Real aAvgErr = -1.0;
-  EXPECT_NO_THROW({ aAvgErr = aHerm->AverageError(aDimension, aCoeff.ChangeValue(1), aNewDegree); })
+  EXPECT_NO_THROW({ aAvgErr = aHerm.AverageError(aDimension, aCoeff.ChangeValue(1), aNewDegree); })
     << "AverageError calculation failed";
 
   EXPECT_GE(aAvgErr, 0.0) << "Average error should be non-negative";
@@ -235,16 +231,16 @@ TEST_F(PLibHermitJacobiTest, ErrorEstimation)
 // Test extreme parameter values
 TEST_F(PLibHermitJacobiTest, ExtremeParameterValues)
 {
-  Handle(PLib_HermitJacobi) aHerm = createHermitJacobi(10, GeomAbs_C2);
+  PLib_HermitJacobi aHerm = createHermitJacobi(10, GeomAbs_C2);
 
-  TColStd_Array1OfReal aBasisValue(0, aHerm->WorkDegree());
+  TColStd_Array1OfReal aBasisValue(0, aHerm.WorkDegree());
 
   // Test with boundary values
   std::vector<Standard_Real> aExtremeParams = {-0.99999, -1e-12, 1e-12, 0.99999};
 
   for (Standard_Real aU : aExtremeParams)
   {
-    EXPECT_NO_THROW({ aHerm->D0(aU, aBasisValue); })
+    EXPECT_NO_THROW({ aHerm.D0(aU, aBasisValue); })
       << "Extreme parameter U=" << aU << " should not crash";
 
     // Check that results are finite
@@ -259,20 +255,20 @@ TEST_F(PLibHermitJacobiTest, ExtremeParameterValues)
 // Test consistency between different derivative orders
 TEST_F(PLibHermitJacobiTest, DerivativeConsistency)
 {
-  Handle(PLib_HermitJacobi) aHerm = createHermitJacobi(6, GeomAbs_C2);
+  PLib_HermitJacobi aHerm = createHermitJacobi(6, GeomAbs_C2);
 
-  TColStd_Array1OfReal aBasisValue1(0, aHerm->WorkDegree());
-  TColStd_Array1OfReal aBasisD1_1(0, aHerm->WorkDegree());
+  TColStd_Array1OfReal aBasisValue1(0, aHerm.WorkDegree());
+  TColStd_Array1OfReal aBasisD1_1(0, aHerm.WorkDegree());
 
-  TColStd_Array1OfReal aBasisValue2(0, aHerm->WorkDegree());
-  TColStd_Array1OfReal aBasisD1_2(0, aHerm->WorkDegree());
-  TColStd_Array1OfReal aBasisD2_2(0, aHerm->WorkDegree());
+  TColStd_Array1OfReal aBasisValue2(0, aHerm.WorkDegree());
+  TColStd_Array1OfReal aBasisD1_2(0, aHerm.WorkDegree());
+  TColStd_Array1OfReal aBasisD2_2(0, aHerm.WorkDegree());
 
   Standard_Real aU = 0.3;
 
   // Get values from D1 and D2 calls
-  aHerm->D1(aU, aBasisValue1, aBasisD1_1);
-  aHerm->D2(aU, aBasisValue2, aBasisD1_2, aBasisD2_2);
+  aHerm.D1(aU, aBasisValue1, aBasisD1_1);
+  aHerm.D2(aU, aBasisValue2, aBasisD1_2, aBasisD2_2);
 
   // Values and first derivatives should be consistent
   for (Standard_Integer i = aBasisValue1.Lower(); i <= aBasisValue1.Upper(); i++)
@@ -287,12 +283,12 @@ TEST_F(PLibHermitJacobiTest, DerivativeConsistency)
 // Performance test with maximum degree
 TEST_F(PLibHermitJacobiTest, PerformanceTest)
 {
-  Handle(PLib_HermitJacobi) aHermMax = createHermitJacobi(30, GeomAbs_C2);
+  PLib_HermitJacobi aHermMax = createHermitJacobi(30, GeomAbs_C2);
 
-  TColStd_Array1OfReal aBasisValue(0, aHermMax->WorkDegree());
-  TColStd_Array1OfReal aBasisD1(0, aHermMax->WorkDegree());
-  TColStd_Array1OfReal aBasisD2(0, aHermMax->WorkDegree());
-  TColStd_Array1OfReal aBasisD3(0, aHermMax->WorkDegree());
+  TColStd_Array1OfReal aBasisValue(0, aHermMax.WorkDegree());
+  TColStd_Array1OfReal aBasisD1(0, aHermMax.WorkDegree());
+  TColStd_Array1OfReal aBasisD2(0, aHermMax.WorkDegree());
+  TColStd_Array1OfReal aBasisD3(0, aHermMax.WorkDegree());
 
   // Test that operations complete in reasonable time
   std::vector<Standard_Real> aTestParams = {-0.8, -0.5, 0.0, 0.5, 0.8};
@@ -300,10 +296,10 @@ TEST_F(PLibHermitJacobiTest, PerformanceTest)
   for (Standard_Real aU : aTestParams)
   {
     EXPECT_NO_THROW({
-      aHermMax->D0(aU, aBasisValue);
-      aHermMax->D1(aU, aBasisValue, aBasisD1);
-      aHermMax->D2(aU, aBasisValue, aBasisD1, aBasisD2);
-      aHermMax->D3(aU, aBasisValue, aBasisD1, aBasisD2, aBasisD3);
+      aHermMax.D0(aU, aBasisValue);
+      aHermMax.D1(aU, aBasisValue, aBasisD1);
+      aHermMax.D2(aU, aBasisValue, aBasisD1, aBasisD2);
+      aHermMax.D3(aU, aBasisValue, aBasisD1, aBasisD2, aBasisD3);
     }) << "High degree operations should complete without crashing at U="
        << aU;
   }

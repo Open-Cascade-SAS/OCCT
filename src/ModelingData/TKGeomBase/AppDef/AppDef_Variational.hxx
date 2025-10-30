@@ -30,11 +30,11 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <math_Vector.hxx>
 #include <AppParCurves_Constraint.hxx>
+#include <PLib_HermitJacobi.hxx>
 class AppDef_SmoothCriterion;
 class math_Matrix;
 class FEmTool_Curve;
 class FEmTool_Assembly;
-class PLib_Base;
 
 //! This class is used to smooth N points with constraints
 //! by minimization of quadratic criterium but also
@@ -278,7 +278,7 @@ private:
                                 const Standard_Real    Length,
                                 math_Vector&           VScnd) const;
 
-  Standard_EXPORT void InitCutting(const Handle(PLib_Base)& aBase,
+  Standard_EXPORT void InitCutting(const PLib_HermitJacobi& aBase,
                                    const Standard_Real      CurvTol,
                                    Handle(FEmTool_Curve)&   aCurve) const;
 

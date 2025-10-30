@@ -42,14 +42,14 @@ protected:
   }
 
   // Helper to create valid Jacobi polynomial instances
-  Handle(PLib_JacobiPolynomial) createJacobiPolynomial(Standard_Integer theDegree,
-                                                       GeomAbs_Shape    theConstraint)
+  PLib_JacobiPolynomial createJacobiPolynomial(Standard_Integer theDegree,
+                                                GeomAbs_Shape    theConstraint)
   {
     // Ensure degree is within valid range (typically <= 30)
     EXPECT_LE(theDegree, 30) << "Degree too high for Jacobi polynomial";
     EXPECT_GE(theDegree, 0) << "Degree must be non-negative";
 
-    return new PLib_JacobiPolynomial(theDegree, theConstraint);
+    return PLib_JacobiPolynomial(theDegree, theConstraint);
   }
 };
 
@@ -57,58 +57,52 @@ protected:
 TEST_F(PLibJacobiPolynomialTest, ConstructorAndBasicProperties)
 {
   // Test with different constraint orders
-  Handle(PLib_JacobiPolynomial) aJacC0 = createJacobiPolynomial(10, GeomAbs_C0);
-  Handle(PLib_JacobiPolynomial) aJacC1 = createJacobiPolynomial(15, GeomAbs_C1);
-  Handle(PLib_JacobiPolynomial) aJacC2 = createJacobiPolynomial(20, GeomAbs_C2);
-
-  ASSERT_FALSE(aJacC0.IsNull()) << "Failed to create C0 Jacobi polynomial";
-  ASSERT_FALSE(aJacC1.IsNull()) << "Failed to create C1 Jacobi polynomial";
-  ASSERT_FALSE(aJacC2.IsNull()) << "Failed to create C2 Jacobi polynomial";
+  PLib_JacobiPolynomial aJacC0 = createJacobiPolynomial(10, GeomAbs_C0);
+  PLib_JacobiPolynomial aJacC1 = createJacobiPolynomial(15, GeomAbs_C1);
+  PLib_JacobiPolynomial aJacC2 = createJacobiPolynomial(20, GeomAbs_C2);
 
   // Test WorkDegree property
-  EXPECT_EQ(aJacC0->WorkDegree(), 10);
-  EXPECT_EQ(aJacC1->WorkDegree(), 15);
-  EXPECT_EQ(aJacC2->WorkDegree(), 20);
+  EXPECT_EQ(aJacC0.WorkDegree(), 10);
+  EXPECT_EQ(aJacC1.WorkDegree(), 15);
+  EXPECT_EQ(aJacC2.WorkDegree(), 20);
 
   // Test NivConstr property
-  EXPECT_EQ(aJacC0->NivConstr(), 0);
-  EXPECT_EQ(aJacC1->NivConstr(), 1);
-  EXPECT_EQ(aJacC2->NivConstr(), 2);
+  EXPECT_EQ(aJacC0.NivConstr(), 0);
+  EXPECT_EQ(aJacC1.NivConstr(), 1);
+  EXPECT_EQ(aJacC2.NivConstr(), 2);
 }
 
 // Test constructor with edge cases
 TEST_F(PLibJacobiPolynomialTest, ConstructorEdgeCases)
 {
   // Test minimum degree
-  Handle(PLib_JacobiPolynomial) aJacMin = createJacobiPolynomial(0, GeomAbs_C0);
-  EXPECT_FALSE(aJacMin.IsNull());
-  EXPECT_EQ(aJacMin->WorkDegree(), 0);
+  PLib_JacobiPolynomial aJacMin = createJacobiPolynomial(0, GeomAbs_C0);
+  EXPECT_EQ(aJacMin.WorkDegree(), 0);
 
   // Test maximum recommended degree
-  Handle(PLib_JacobiPolynomial) aJacMax = createJacobiPolynomial(30, GeomAbs_C2);
-  EXPECT_FALSE(aJacMax.IsNull());
-  EXPECT_EQ(aJacMax->WorkDegree(), 30);
+  PLib_JacobiPolynomial aJacMax = createJacobiPolynomial(30, GeomAbs_C2);
+  EXPECT_EQ(aJacMax.WorkDegree(), 30);
 
   // Test reasonable high degrees
-  Handle(PLib_JacobiPolynomial) aJacHigh = createJacobiPolynomial(25, GeomAbs_C0);
-  EXPECT_GT(aJacHigh->WorkDegree(), 20) << "High degree should be supported";
+  PLib_JacobiPolynomial aJacHigh = createJacobiPolynomial(25, GeomAbs_C0);
+  EXPECT_GT(aJacHigh.WorkDegree(), 20) << "High degree should be supported";
 }
 
 // Test Gauss integration points
 TEST_F(PLibJacobiPolynomialTest, GaussIntegrationPoints)
 {
-  Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(10, GeomAbs_C0);
+  PLib_JacobiPolynomial aJac = createJacobiPolynomial(10, GeomAbs_C0);
 
   // Test various numbers of Gauss points (only valid values supported by OCCT)
   std::vector<Standard_Integer> aGaussNumbers = {8, 10, 15, 20, 25, 30, 40, 50, 61};
 
   for (Standard_Integer aNbGauss : aGaussNumbers)
   {
-    if (aNbGauss > aJac->WorkDegree())
+    if (aNbGauss > aJac.WorkDegree())
     {
       TColStd_Array1OfReal aPoints(0, aNbGauss / 2);
 
-      EXPECT_NO_THROW({ aJac->Points(aNbGauss, aPoints); })
+      EXPECT_NO_THROW({ aJac.Points(aNbGauss, aPoints); })
         << "Points calculation failed for " << aNbGauss << " Gauss points";
 
       // Verify points are in valid range and ordered
@@ -143,18 +137,18 @@ TEST_F(PLibJacobiPolynomialTest, GaussIntegrationPoints)
 // Test Gauss integration weights
 TEST_F(PLibJacobiPolynomialTest, GaussIntegrationWeights)
 {
-  Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(8, GeomAbs_C1);
+  PLib_JacobiPolynomial aJac = createJacobiPolynomial(8, GeomAbs_C1);
 
   Standard_Integer     aNbGauss = 15; // Must be > degree for valid computation
-  TColStd_Array2OfReal aWeights(0, aNbGauss / 2, 0, aJac->WorkDegree());
+  TColStd_Array2OfReal aWeights(0, aNbGauss / 2, 0, aJac.WorkDegree());
 
-  aJac->Weights(aNbGauss, aWeights);
+  aJac.Weights(aNbGauss, aWeights);
 
   // Basic sanity checks on weights - the array is 2D with specific bounds
   EXPECT_EQ(aWeights.LowerRow(), 0) << "Lower row should be 0";
   EXPECT_EQ(aWeights.UpperRow(), aNbGauss / 2) << "Upper row mismatch";
   EXPECT_EQ(aWeights.LowerCol(), 0) << "Lower col should be 0";
-  EXPECT_EQ(aWeights.UpperCol(), aJac->WorkDegree()) << "Upper col should match work degree";
+  EXPECT_EQ(aWeights.UpperCol(), aJac.WorkDegree()) << "Upper col should match work degree";
 
   for (Standard_Integer i = aWeights.LowerRow(); i <= aWeights.UpperRow(); i++)
   {
@@ -169,14 +163,14 @@ TEST_F(PLibJacobiPolynomialTest, GaussIntegrationWeights)
 // Test MaxValue computation
 TEST_F(PLibJacobiPolynomialTest, MaxValue)
 {
-  Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(10, GeomAbs_C0);
+  PLib_JacobiPolynomial aJac = createJacobiPolynomial(10, GeomAbs_C0);
 
-  Standard_Integer aTabSize = aJac->WorkDegree() - 2 * (aJac->NivConstr() + 1);
+  Standard_Integer aTabSize = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1);
   if (aTabSize > 0)
   {
     TColStd_Array1OfReal aTabMax(0, aTabSize);
 
-    aJac->MaxValue(aTabMax);
+    aJac.MaxValue(aTabMax);
 
     // Verify all max values are positive (they represent maximum absolute values)
     for (Standard_Integer i = aTabMax.Lower(); i <= aTabMax.Upper(); i++)
@@ -191,10 +185,10 @@ TEST_F(PLibJacobiPolynomialTest, MaxValue)
 // Test basis function evaluation D0
 TEST_F(PLibJacobiPolynomialTest, BasisFunctionD0)
 {
-  Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(6, GeomAbs_C0);
+  PLib_JacobiPolynomial aJac = createJacobiPolynomial(6, GeomAbs_C0);
 
   // Calculate actual number of basis functions
-  Standard_Integer aDegree = aJac->WorkDegree() - 2 * (aJac->NivConstr() + 1);
+  Standard_Integer aDegree = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1);
 
   TColStd_Array1OfReal aBasisValue(0, aDegree);
 
@@ -203,7 +197,7 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionD0)
 
   for (Standard_Real aU : aTestParams)
   {
-    aJac->D0(aU, aBasisValue);
+    aJac.D0(aU, aBasisValue);
 
     // Basic sanity checks
     for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
@@ -217,10 +211,10 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionD0)
 // Test basis function evaluation with derivatives
 TEST_F(PLibJacobiPolynomialTest, BasisFunctionDerivatives)
 {
-  Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(8, GeomAbs_C1);
+  PLib_JacobiPolynomial aJac = createJacobiPolynomial(8, GeomAbs_C1);
 
   // Calculate actual number of basis functions (same as MaxValue test pattern)
-  Standard_Integer aDegree = aJac->WorkDegree() - 2 * (aJac->NivConstr() + 1);
+  Standard_Integer aDegree = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1);
 
   TColStd_Array1OfReal aBasisValue(0, aDegree);
   TColStd_Array1OfReal aBasisD1(0, aDegree);
@@ -230,9 +224,9 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionDerivatives)
   Standard_Real aU = 0.5; // Test at middle point
 
   // Test D1, D2, D3 evaluations
-  aJac->D1(aU, aBasisValue, aBasisD1);
-  aJac->D2(aU, aBasisValue, aBasisD1, aBasisD2);
-  aJac->D3(aU, aBasisValue, aBasisD1, aBasisD2, aBasisD3);
+  aJac.D1(aU, aBasisValue, aBasisD1);
+  aJac.D2(aU, aBasisValue, aBasisD1, aBasisD2);
+  aJac.D3(aU, aBasisValue, aBasisD1, aBasisD2, aBasisD3);
 
   // Verify all values are finite
   for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
@@ -251,11 +245,11 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionDerivatives)
 TEST_F(PLibJacobiPolynomialTest, CoefficientConversion)
 {
   const Standard_Integer aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
-  Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(aWorkDegree, GeomAbs_C0);
+  PLib_JacobiPolynomial aJac = createJacobiPolynomial(aWorkDegree, GeomAbs_C0);
 
   const Standard_Integer aDimension = 1;
   const Standard_Integer aDegree =
-    aJac->WorkDegree() - 2 * (aJac->NivConstr() + 1); // Use computational degree
+    aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1); // Use computational degree
 
   // Create test Jacobi coefficients with proper size
   // ToCoefficients expects arrays sized based on the degree and dimension
@@ -272,7 +266,7 @@ TEST_F(PLibJacobiPolynomialTest, CoefficientConversion)
 
   TColStd_Array1OfReal aCoefficients(0, aCoeffSize - 1);
 
-  aJac->ToCoefficients(aDimension, aDegree, aJacCoeff, aCoefficients);
+  aJac.ToCoefficients(aDimension, aDegree, aJacCoeff, aCoefficients);
 
   // Verify output is finite
   for (Standard_Integer i = aCoefficients.Lower(); i <= aCoefficients.Upper(); i++)
@@ -285,14 +279,14 @@ TEST_F(PLibJacobiPolynomialTest, CoefficientConversion)
 // Test degree reduction
 TEST_F(PLibJacobiPolynomialTest, DegreeReduction)
 {
-  Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(10, GeomAbs_C0);
+  PLib_JacobiPolynomial aJac = createJacobiPolynomial(10, GeomAbs_C0);
 
   const Standard_Integer aDimension = 1;
   const Standard_Integer aMaxDegree = 8;
   const Standard_Real    aTol       = 1e-6;
 
   // Create test coefficients - must be sized for full WorkDegree
-  const Standard_Integer aWorkDegree = aJac->WorkDegree();
+  const Standard_Integer aWorkDegree = aJac.WorkDegree();
   TColStd_Array1OfReal   aCoeff(1, (aWorkDegree + 1) * aDimension);
   for (Standard_Integer i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
   {
@@ -302,7 +296,7 @@ TEST_F(PLibJacobiPolynomialTest, DegreeReduction)
   Standard_Integer aNewDegree = -1;
   Standard_Real    aMaxError  = -1.0;
 
-  aJac->ReduceDegree(aDimension, aMaxDegree, aTol, aCoeff.ChangeValue(1), aNewDegree, aMaxError);
+  aJac.ReduceDegree(aDimension, aMaxDegree, aTol, aCoeff.ChangeValue(1), aNewDegree, aMaxError);
 
   // Verify results are reasonable
   EXPECT_LE(aNewDegree, aMaxDegree) << "New degree should not exceed max degree";
@@ -314,7 +308,7 @@ TEST_F(PLibJacobiPolynomialTest, DegreeReduction)
 // Test error estimation
 TEST_F(PLibJacobiPolynomialTest, ErrorEstimation)
 {
-  Handle(PLib_JacobiPolynomial) aJac = createJacobiPolynomial(8, GeomAbs_C1);
+  PLib_JacobiPolynomial aJac = createJacobiPolynomial(8, GeomAbs_C1);
 
   const Standard_Integer aDimension = 1;
 
@@ -328,13 +322,13 @@ TEST_F(PLibJacobiPolynomialTest, ErrorEstimation)
   Standard_Integer aNewDegree = 6; // Reduced from original
 
   // Test MaxError
-  Standard_Real aMaxErr = aJac->MaxError(aDimension, aCoeff.ChangeValue(1), aNewDegree);
+  Standard_Real aMaxErr = aJac.MaxError(aDimension, aCoeff.ChangeValue(1), aNewDegree);
 
   EXPECT_GE(aMaxErr, 0.0) << "Max error should be non-negative";
   EXPECT_FALSE(Precision::IsInfinite(aMaxErr)) << "Max error should be finite";
 
   // Test AverageError
-  Standard_Real aAvgErr = aJac->AverageError(aDimension, aCoeff.ChangeValue(1), aNewDegree);
+  Standard_Real aAvgErr = aJac.AverageError(aDimension, aCoeff.ChangeValue(1), aNewDegree);
 
   EXPECT_GE(aAvgErr, 0.0) << "Average error should be non-negative";
   EXPECT_FALSE(Precision::IsInfinite(aAvgErr)) << "Average error should be finite";
@@ -348,24 +342,24 @@ TEST_F(PLibJacobiPolynomialTest, ErrorEstimation)
 TEST_F(PLibJacobiPolynomialTest, StressTests)
 {
   // Test with maximum degree
-  Handle(PLib_JacobiPolynomial) aJacMax = createJacobiPolynomial(30, GeomAbs_C2);
+  PLib_JacobiPolynomial aJacMax = createJacobiPolynomial(30, GeomAbs_C2);
 
   // Calculate actual number of basis functions
-  Standard_Integer aDegree = aJacMax->WorkDegree() - 2 * (aJacMax->NivConstr() + 1);
+  Standard_Integer aDegree = aJacMax.WorkDegree() - 2 * (aJacMax.NivConstr() + 1);
 
   // Test that basic operations work with high degrees
   TColStd_Array1OfReal aBasisValue(0, aDegree);
 
-  aJacMax->D0(0.0, aBasisValue);
-  aJacMax->D0(0.5, aBasisValue);
-  aJacMax->D0(1.0, aBasisValue);
+  aJacMax.D0(0.0, aBasisValue);
+  aJacMax.D0(0.5, aBasisValue);
+  aJacMax.D0(1.0, aBasisValue);
 
   // Test with extreme parameter values
   std::vector<Standard_Real> aExtremeParams = {-0.99999, -1e-10, 1e-10, 0.99999};
 
   for (Standard_Real aU : aExtremeParams)
   {
-    aJacMax->D0(aU, aBasisValue);
+    aJacMax.D0(aU, aBasisValue);
     // Verify basis values are finite
     for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
     {

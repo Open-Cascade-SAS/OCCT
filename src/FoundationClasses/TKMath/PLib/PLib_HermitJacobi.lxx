@@ -18,10 +18,10 @@
 
 inline Standard_Integer PLib_HermitJacobi::WorkDegree() const
 {
-  return myJacobi->WorkDegree();
+  return myJacobi.WorkDegree();
 }
 
 inline Standard_Integer PLib_HermitJacobi::NivConstr() const
 {
-  return myJacobi->NivConstr();
+  return myJacobi.NivConstr();
 }

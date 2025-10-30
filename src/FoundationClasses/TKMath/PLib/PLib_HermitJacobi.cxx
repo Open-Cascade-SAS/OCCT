@@ -18,9 +18,6 @@
 #include <PLib.hxx>
 #include <PLib_HermitJacobi.hxx>
 #include <PLib_JacobiPolynomial.hxx>
-#include <Standard_Type.hxx>
-
-IMPLEMENT_STANDARD_RTTIEXT(PLib_HermitJacobi, PLib_Base)
 
 //=================================================================================================
 
@@ -30,12 +27,11 @@ PLib_HermitJacobi::PLib_HermitJacobi(const Standard_Integer WorkDegree,
           2 * (PLib::NivConstr(ConstraintOrder) + 1),
           1,
           2 * (PLib::NivConstr(ConstraintOrder) + 1)),
+      myJacobi(WorkDegree, ConstraintOrder),
       myWCoeff(1, 2 * (PLib::NivConstr(ConstraintOrder) + 1) + 1)
 {
   Standard_Integer NivConstr = PLib::NivConstr(ConstraintOrder);
   PLib::HermiteCoefficients(-1., 1., NivConstr, NivConstr, myH);
-
-  myJacobi = new PLib_JacobiPolynomial(WorkDegree, ConstraintOrder);
 
   myWCoeff.Init(0.);
   myWCoeff(1) = 1.;
@@ -62,7 +58,7 @@ Standard_Real PLib_HermitJacobi::MaxError(const Standard_Integer Dimension,
                                           Standard_Real&         HermJacCoeff,
                                           const Standard_Integer NewDegree) const
 {
-  return myJacobi->MaxError(Dimension, HermJacCoeff, NewDegree);
+  return myJacobi.MaxError(Dimension, HermJacCoeff, NewDegree);
 }
 
 //=================================================================================================
@@ -74,7 +70,7 @@ void PLib_HermitJacobi::ReduceDegree(const Standard_Integer Dimension,
                                      Standard_Integer&      NewDegree,
                                      Standard_Real&         MaxError) const
 {
-  myJacobi->ReduceDegree(Dimension, MaxDegree, Tol, HermJacCoeff, NewDegree, MaxError);
+  myJacobi.ReduceDegree(Dimension, MaxDegree, Tol, HermJacCoeff, NewDegree, MaxError);
 }
 
 //=================================================================================================
@@ -83,7 +79,7 @@ Standard_Real PLib_HermitJacobi::AverageError(const Standard_Integer Dimension,
                                               Standard_Real&         HermJacCoeff,
                                               const Standard_Integer NewDegree) const
 {
-  return myJacobi->AverageError(Dimension, HermJacCoeff, NewDegree);
+  return myJacobi.AverageError(Dimension, HermJacCoeff, NewDegree);
 }
 
 //=================================================================================================
@@ -124,7 +120,7 @@ void PLib_HermitJacobi::ToCoefficients(const Standard_Integer      Dimension,
   }
 
   if (Degree > DegreeH)
-    myJacobi->ToCoefficients(Dimension, Degree, AuxCoeff, Coefficients);
+    myJacobi.ToCoefficients(Dimension, Degree, AuxCoeff, Coefficients);
   else
   {
     Standard_Integer ibegC = Coefficients.Lower();
@@ -144,7 +140,7 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
                               TColStd_Array1OfReal&  BasisValue,
                               TColStd_Array1OfReal&  BasisD1,
                               TColStd_Array1OfReal&  BasisD2,
-                              TColStd_Array1OfReal&  BasisD3)
+                              TColStd_Array1OfReal&  BasisD3) const
 {
   NCollection_LocalArray<Standard_Real> jac0(4 * 20);
   NCollection_LocalArray<Standard_Real> jac1(4 * 20);
@@ -169,12 +165,12 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
   if (NDeriv == 0)
     for (i = 0; i <= DegreeH; i++)
     {
-      PLib::NoDerivativeEvalPolynomial(U, DegreeH, 1, DegreeH, myH(i + 1, 1), HermitValues(i, 0));
+      PLib::NoDerivativeEvalPolynomial(U, DegreeH, 1, DegreeH, const_cast<Standard_Real&>(myH(i + 1, 1)), HermitValues(i, 0));
     }
   else
     for (i = 0; i <= DegreeH; i++)
     {
-      PLib::EvalPolynomial(U, NDeriv, DegreeH, 1, myH(i + 1, 1), HermitValues(i, 0));
+      PLib::EvalPolynomial(U, NDeriv, DegreeH, 1, const_cast<Standard_Real&>(myH(i + 1, 1)), HermitValues(i, 0));
     }
 
   // Evaluation des polynomes de Jaccobi
@@ -184,32 +180,32 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
     switch (NDeriv)
     {
       case 0:
-        myJacobi->D0(U, JacValue0);
+        myJacobi.D0(U, JacValue0);
         break;
       case 1: {
         TColStd_Array1OfReal JacValue1(jac1[0], 0, JacDegree);
-        myJacobi->D1(U, JacValue0, JacValue1);
+        myJacobi.D1(U, JacValue0, JacValue1);
         break;
       }
       case 2: {
         TColStd_Array1OfReal JacValue1(jac1[0], 0, JacDegree);
         TColStd_Array1OfReal JacValue2(jac2[0], 0, JacDegree);
-        myJacobi->D2(U, JacValue0, JacValue1, JacValue2);
+        myJacobi.D2(U, JacValue0, JacValue1, JacValue2);
         break;
       }
       case 3: {
         TColStd_Array1OfReal JacValue1(jac1[0], 0, JacDegree);
         TColStd_Array1OfReal JacValue2(jac2[0], 0, JacDegree);
         TColStd_Array1OfReal JacValue3(jac3[0], 0, JacDegree);
-        myJacobi->D3(U, JacValue0, JacValue1, JacValue2, JacValue3);
+        myJacobi.D3(U, JacValue0, JacValue1, JacValue2, JacValue3);
       }
     }
 
     // Evaluation de W(t)
     if (NDeriv == 0)
-      PLib::NoDerivativeEvalPolynomial(U, DegreeH + 1, 1, DegreeH + 1, myWCoeff(1), WValues(0));
+      PLib::NoDerivativeEvalPolynomial(U, DegreeH + 1, 1, DegreeH + 1, const_cast<Standard_Real&>(myWCoeff(1)), WValues(0));
     else
-      PLib::EvalPolynomial(U, NDeriv, DegreeH + 1, 1, myWCoeff(1), WValues(0));
+      PLib::EvalPolynomial(U, NDeriv, DegreeH + 1, 1, const_cast<Standard_Real&>(myWCoeff(1)), WValues(0));
   }
 
   // Evaluation a l'ordre 0
@@ -267,7 +263,7 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
 
 //=================================================================================================
 
-void PLib_HermitJacobi::D0(const Standard_Real U, TColStd_Array1OfReal& BasisValue)
+void PLib_HermitJacobi::D0(const Standard_Real U, TColStd_Array1OfReal& BasisValue) const
 {
   D0123(0, U, BasisValue, BasisValue, BasisValue, BasisValue);
 }
@@ -276,7 +272,7 @@ void PLib_HermitJacobi::D0(const Standard_Real U, TColStd_Array1OfReal& BasisVal
 
 void PLib_HermitJacobi::D1(const Standard_Real   U,
                            TColStd_Array1OfReal& BasisValue,
-                           TColStd_Array1OfReal& BasisD1)
+                           TColStd_Array1OfReal& BasisD1) const
 {
   D0123(1, U, BasisValue, BasisD1, BasisD1, BasisD1);
 }
@@ -286,7 +282,7 @@ void PLib_HermitJacobi::D1(const Standard_Real   U,
 void PLib_HermitJacobi::D2(const Standard_Real   U,
                            TColStd_Array1OfReal& BasisValue,
                            TColStd_Array1OfReal& BasisD1,
-                           TColStd_Array1OfReal& BasisD2)
+                           TColStd_Array1OfReal& BasisD2) const
 {
   D0123(2, U, BasisValue, BasisD1, BasisD2, BasisD2);
 }
@@ -297,7 +293,7 @@ void PLib_HermitJacobi::D3(const Standard_Real   U,
                            TColStd_Array1OfReal& BasisValue,
                            TColStd_Array1OfReal& BasisD1,
                            TColStd_Array1OfReal& BasisD2,
-                           TColStd_Array1OfReal& BasisD3)
+                           TColStd_Array1OfReal& BasisD3) const
 {
   D0123(3, U, BasisValue, BasisD1, BasisD2, BasisD3);
 }

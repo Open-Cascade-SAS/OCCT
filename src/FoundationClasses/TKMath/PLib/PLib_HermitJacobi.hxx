@@ -18,17 +18,12 @@
 #define _PLib_HermitJacobi_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <math_Matrix.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <PLib_Base.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-class PLib_JacobiPolynomial;
-
-class PLib_HermitJacobi;
-DEFINE_STANDARD_HANDLE(PLib_HermitJacobi, PLib_Base)
+#include <PLib_JacobiPolynomial.hxx>
 
 //! This class provides method  to work with Jacobi Polynomials
 //! relatively to an order of constraint
@@ -61,7 +56,7 @@ DEFINE_STANDARD_HANDLE(PLib_HermitJacobi, PLib_Base)
 //! @code
 //! Q(t) = c2*iordre+2  J0(t) + ...+ cDegree JDegree-2*iordre-2
 //! @endcode
-class PLib_HermitJacobi : public PLib_Base
+class PLib_HermitJacobi
 {
 
 public:
@@ -90,7 +85,7 @@ public:
                                     const Standard_Real    Tol,
                                     Standard_Real&         HermJacCoeff,
                                     Standard_Integer&      NewDegree,
-                                    Standard_Real&         MaxError) const Standard_OVERRIDE;
+                                    Standard_Real&         MaxError) const;
 
   Standard_EXPORT Standard_Real AverageError(const Standard_Integer Dimension,
                                              Standard_Real&         HermJacCoeff,
@@ -100,24 +95,24 @@ public:
   Standard_EXPORT void ToCoefficients(const Standard_Integer      Dimension,
                                       const Standard_Integer      Degree,
                                       const TColStd_Array1OfReal& HermJacCoeff,
-                                      TColStd_Array1OfReal& Coefficients) const Standard_OVERRIDE;
+                                      TColStd_Array1OfReal& Coefficients) const;
 
   //! Compute the values of the basis functions in u
   Standard_EXPORT void D0(const Standard_Real   U,
-                          TColStd_Array1OfReal& BasisValue) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& BasisValue) const;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
   Standard_EXPORT void D1(const Standard_Real   U,
                           TColStd_Array1OfReal& BasisValue,
-                          TColStd_Array1OfReal& BasisD1) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& BasisD1) const;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
   Standard_EXPORT void D2(const Standard_Real   U,
                           TColStd_Array1OfReal& BasisValue,
                           TColStd_Array1OfReal& BasisD1,
-                          TColStd_Array1OfReal& BasisD2) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& BasisD2) const;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
@@ -125,15 +120,13 @@ public:
                           TColStd_Array1OfReal& BasisValue,
                           TColStd_Array1OfReal& BasisD1,
                           TColStd_Array1OfReal& BasisD2,
-                          TColStd_Array1OfReal& BasisD3) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& BasisD3) const;
 
   //! returns WorkDegree
-  Standard_Integer WorkDegree() const Standard_OVERRIDE;
+  Standard_Integer WorkDegree() const;
 
   //! returns NivConstr
   Standard_Integer NivConstr() const;
-
-  DEFINE_STANDARD_RTTIEXT(PLib_HermitJacobi, PLib_Base)
 
 protected:
 private:
@@ -144,11 +137,11 @@ private:
                              TColStd_Array1OfReal&  BasisValue,
                              TColStd_Array1OfReal&  BasisD1,
                              TColStd_Array1OfReal&  BasisD2,
-                             TColStd_Array1OfReal&  BasisD3);
+                             TColStd_Array1OfReal&  BasisD3) const;
 
-  math_Matrix                   myH;
-  Handle(PLib_JacobiPolynomial) myJacobi;
-  TColStd_Array1OfReal          myWCoeff;
+  math_Matrix          myH;
+  PLib_JacobiPolynomial myJacobi;
+  TColStd_Array1OfReal myWCoeff;
 };
 
 #include <PLib_HermitJacobi.lxx>

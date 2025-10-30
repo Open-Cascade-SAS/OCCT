@@ -17,10 +17,7 @@
 #include <PLib.hxx>
 #include <PLib_JacobiPolynomial.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
-
-IMPLEMENT_STANDARD_RTTIEXT(PLib_JacobiPolynomial, PLib_Base)
 
 #include "PLib_JacobiPolynomial_Data.pxx"
 
@@ -364,7 +361,7 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer NDeriv,
                                   TColStd_Array1OfReal&  BasisValue,
                                   TColStd_Array1OfReal&  BasisD1,
                                   TColStd_Array1OfReal&  BasisD2,
-                                  TColStd_Array1OfReal&  BasisD3)
+                                  TColStd_Array1OfReal&  BasisD3) const
 {
   Standard_Integer i, j, HermitNivConstr = 2 * (myNivConstr + 1);
   Standard_Real    Aux1, Aux2;
@@ -519,7 +516,7 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer NDeriv,
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::D0(const Standard_Real U, TColStd_Array1OfReal& BasisValue)
+void PLib_JacobiPolynomial::D0(const Standard_Real U, TColStd_Array1OfReal& BasisValue) const
 {
   D0123(0, U, BasisValue, BasisValue, BasisValue, BasisValue);
 }
@@ -528,7 +525,7 @@ void PLib_JacobiPolynomial::D0(const Standard_Real U, TColStd_Array1OfReal& Basi
 
 void PLib_JacobiPolynomial::D1(const Standard_Real   U,
                                TColStd_Array1OfReal& BasisValue,
-                               TColStd_Array1OfReal& BasisD1)
+                               TColStd_Array1OfReal& BasisD1) const
 {
   D0123(1, U, BasisValue, BasisD1, BasisD1, BasisD1);
 }
@@ -538,7 +535,7 @@ void PLib_JacobiPolynomial::D1(const Standard_Real   U,
 void PLib_JacobiPolynomial::D2(const Standard_Real   U,
                                TColStd_Array1OfReal& BasisValue,
                                TColStd_Array1OfReal& BasisD1,
-                               TColStd_Array1OfReal& BasisD2)
+                               TColStd_Array1OfReal& BasisD2) const
 {
   D0123(2, U, BasisValue, BasisD1, BasisD2, BasisD2);
 }
@@ -549,7 +546,7 @@ void PLib_JacobiPolynomial::D3(const Standard_Real   U,
                                TColStd_Array1OfReal& BasisValue,
                                TColStd_Array1OfReal& BasisD1,
                                TColStd_Array1OfReal& BasisD2,
-                               TColStd_Array1OfReal& BasisD3)
+                               TColStd_Array1OfReal& BasisD3) const
 {
   D0123(3, U, BasisValue, BasisD1, BasisD2, BasisD3);
 }

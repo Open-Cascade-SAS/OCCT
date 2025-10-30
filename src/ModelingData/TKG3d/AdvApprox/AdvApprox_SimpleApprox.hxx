@@ -29,7 +29,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_OStream.hxx>
-class PLib_JacobiPolynomial;
+#include <PLib_JacobiPolynomial.hxx>
 
 //! Approximate a function on an interval [First,Last]
 //! The result is a simple polynomial whose degree is as low as
@@ -41,13 +41,13 @@ class AdvApprox_SimpleApprox
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT AdvApprox_SimpleApprox(const Standard_Integer               TotalDimension,
-                                         const Standard_Integer               TotalNumSS,
-                                         const GeomAbs_Shape                  Continuity,
-                                         const Standard_Integer               WorkDegree,
-                                         const Standard_Integer               NbGaussPoints,
-                                         const Handle(PLib_JacobiPolynomial)& JacobiBase,
-                                         const AdvApprox_EvaluatorFunction&   Func);
+  Standard_EXPORT AdvApprox_SimpleApprox(const Standard_Integer             TotalDimension,
+                                         const Standard_Integer             TotalNumSS,
+                                         const GeomAbs_Shape                Continuity,
+                                         const Standard_Integer             WorkDegree,
+                                         const Standard_Integer             NbGaussPoints,
+                                         const PLib_JacobiPolynomial&       JacobiBase,
+                                         const AdvApprox_EvaluatorFunction& Func);
 
   //! Constructs approximator tool.
   //!
@@ -87,12 +87,12 @@ public:
 
 protected:
 private:
-  Standard_Integer              myTotalNumSS;
-  Standard_Integer              myTotalDimension;
-  Standard_Integer              myNbGaussPoints;
-  Standard_Integer              myWorkDegree;
-  Standard_Integer              myNivConstr;
-  Handle(PLib_JacobiPolynomial) myJacPol;
+  Standard_Integer        myTotalNumSS;
+  Standard_Integer        myTotalDimension;
+  Standard_Integer        myNbGaussPoints;
+  Standard_Integer        myWorkDegree;
+  Standard_Integer        myNivConstr;
+  PLib_JacobiPolynomial   myJacPol;
   Handle(TColStd_HArray1OfReal) myTabPoints;
   Handle(TColStd_HArray2OfReal) myTabWeights;
   Standard_Address              myEvaluator;
