@@ -1207,7 +1207,6 @@ TEST(TCollection_AsciiStringTest, Trunc_NoChange)
 // Tests for std::string_view API
 // ========================================
 
-
 TEST(TCollection_AsciiStringTest, StringView_Constructor)
 {
   std::string_view        aView("Hello World");
