@@ -221,13 +221,12 @@ void PLib_JacobiPolynomial::ReduceDegree(const Standard_Integer Dimension,
     }
 
     const Standard_Real Error = MaxErrDim.Norm();
-    MaxError = Error; // Update MaxError before potentially breaking
-
     if (Error > Tol && i <= MaxDegree)
     {
       NewDegree = i;
       break;
     }
+    MaxError = Error;
   }
 
   // Fallback: find last non-negligible coefficient
