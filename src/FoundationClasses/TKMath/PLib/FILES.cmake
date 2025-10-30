@@ -6,9 +6,6 @@ set(OCCT_PLib_FILES
   PLib.hxx
   PLib_Base.cxx
   PLib_Base.hxx
-  PLib_DoubleJacobiPolynomial.cxx
-  PLib_DoubleJacobiPolynomial.hxx
-  PLib_DoubleJacobiPolynomial.lxx
   PLib_HermitJacobi.cxx
   PLib_HermitJacobi.hxx
   PLib_HermitJacobi.lxx

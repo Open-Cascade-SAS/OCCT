@@ -38,5 +38,4 @@ set(OCCT_TKMath_GTests_FILES
   PLib_Test.cxx
   PLib_JacobiPolynomial_Test.cxx
   PLib_HermitJacobi_Test.cxx
-  PLib_DoubleJacobiPolynomial_Test.cxx
 )
