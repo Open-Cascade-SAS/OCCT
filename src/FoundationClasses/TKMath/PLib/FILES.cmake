@@ -11,6 +11,4 @@ set(OCCT_PLib_FILES
   PLib_HermitJacobi.lxx
   PLib_JacobiPolynomial.cxx
   PLib_JacobiPolynomial.hxx
-  PLib_JacobiPolynomial.lxx
-  PLib_JacobiPolynomial_Data.pxx
 )

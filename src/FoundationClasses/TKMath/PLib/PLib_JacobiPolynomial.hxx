@@ -152,10 +152,10 @@ public:
                           TColStd_Array1OfReal& BasisD3) Standard_OVERRIDE;
 
   //! returns WorkDegree
-  Standard_Integer WorkDegree() const Standard_OVERRIDE;
+  Standard_Integer WorkDegree() const Standard_OVERRIDE { return myWorkDegree; }
 
   //! returns NivConstr
-  Standard_Integer NivConstr() const;
+  Standard_Integer NivConstr() const { return myNivConstr; }
 
   DEFINE_STANDARD_RTTIEXT(PLib_JacobiPolynomial, PLib_Base)
 
@@ -168,13 +168,11 @@ private:
                              TColStd_Array1OfReal&  BasisValue,
                              TColStd_Array1OfReal&  BasisD1,
                              TColStd_Array1OfReal&  BasisD2,
-                             TColStd_Array1OfReal&  BasisD3);
+                             TColStd_Array1OfReal&  BasisD3) const;
 
   const Standard_Integer myWorkDegree;
   const Standard_Integer myNivConstr;
   const Standard_Integer myDegree;
 };
-
-#include <PLib_JacobiPolynomial.lxx>
 
 #endif // _PLib_JacobiPolynomial_HeaderFile

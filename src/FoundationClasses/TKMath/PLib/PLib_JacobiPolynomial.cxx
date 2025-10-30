@@ -352,7 +352,7 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer NDeriv,
                                   TColStd_Array1OfReal&  BasisValue,
                                   TColStd_Array1OfReal&  BasisD1,
                                   TColStd_Array1OfReal&  BasisD2,
-                                  TColStd_Array1OfReal&  BasisD3)
+                                  TColStd_Array1OfReal&  BasisD3) const
 {
   const Standard_Integer HermitNivConstr = 2 * (myNivConstr + 1);
   Standard_Integer       i;
