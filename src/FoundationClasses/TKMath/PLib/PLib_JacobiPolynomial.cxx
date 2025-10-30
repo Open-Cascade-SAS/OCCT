@@ -12,10 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <PLib_JacobiPolynomial.hxx>
+
 #include <math.hxx>
 #include <math_Vector.hxx>
 #include <PLib.hxx>
-#include <PLib_JacobiPolynomial.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
@@ -127,8 +128,13 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer NbGaussPoints,
     if (NbGaussPoints > NDEG25)
       pdb0 += ((NDEG25 - 1 - infdg) / 2 + 1);
 
-    // Fill row 0: zeros everywhere, then overwrite even indices with data
-    std::fill_n(&TabWeights.ChangeValue(0, 0), myDegree + 1, 0.);
+    // Fill row 0: zeros everywhere (explicit column loop for proper 2D array access)
+    for (Standard_Integer j = 0; j <= myDegree; j++)
+    {
+      TabWeights.ChangeValue(0, j) = 0.0;
+    }
+
+    // Overwrite even columns with data from database
     for (Standard_Integer j = 0; j <= myDegree; j += 2)
     {
       TabWeights.ChangeValue(0, j) = *pdb0++;
@@ -136,8 +142,11 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer NbGaussPoints,
   }
   else
   {
-    // Fill row 0 with UNDEFINED for even NbGaussPoints
-    std::fill_n(&TabWeights.ChangeValue(0, 0), myDegree + 1, UNDEFINED);
+    // Fill row 0 with UNDEFINED for even NbGaussPoints (explicit column loop)
+    for (Standard_Integer j = 0; j <= myDegree; j++)
+    {
+      TabWeights.ChangeValue(0, j) = UNDEFINED;
+    }
   }
 }
 
@@ -289,14 +298,14 @@ void PLib_JacobiPolynomial::ToCoefficients(const Standard_Integer      Dimension
   for (Standard_Integer i = 0; i <= HalfDegree; i++)
   {
     const Standard_Integer iptt         = i * MAXM - (i + 1) * i / 2;
-    const Standard_Integer iCoeffOffset = DoubleDim * i;
+    const Standard_Integer iCoeffOffset = ibegC + DoubleDim * i;
 
     for (Standard_Integer idim = 1; idim <= Dimension; idim++)
     {
       Standard_Real Bid = 0.;
       for (Standard_Integer j = i; j <= HalfDegree; j++)
       {
-        Bid += pTr[iptt + j] * JacCoeff(DoubleDim * j + idim - 1);
+        Bid += pTr[iptt + j] * JacCoeff(ibegJC + DoubleDim * j + idim - 1);
       }
       Coefficients(iCoeffOffset + idim - 1) = Bid;
     }

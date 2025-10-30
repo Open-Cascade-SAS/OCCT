@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <PLib_Base.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
