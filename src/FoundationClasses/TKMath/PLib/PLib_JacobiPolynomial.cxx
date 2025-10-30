@@ -21,9 +21,6 @@
 #include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
-#include <algorithm>
-#include <cstring>
-
 IMPLEMENT_STANDARD_RTTIEXT(PLib_JacobiPolynomial, PLib_Base)
 
 namespace
@@ -50,6 +47,8 @@ PLib_JacobiPolynomial::PLib_JacobiPolynomial(const Standard_Integer WorkDegree,
                     : throw Standard_ConstructionError("Invalid ConstraintOrder")),
       myDegree(WorkDegree - 2 * (myNivConstr + 1))
 {
+  if (myDegree < 0)
+    throw Standard_ConstructionError("WorkDegree too small for given ConstraintOrder");
   if (myDegree > 30)
     throw Standard_ConstructionError("Invalid Degree");
 }
@@ -110,12 +109,14 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer NbGaussPoints,
   if (NbGaussPoints > NDEG50)
     pdb += (NDEG50 * (NDEG50 - infdg) / 2);
 
-  // Copy TabWeightsDB into TabWeights using memcpy per column
+  // Copy TabWeightsDB into TabWeights (explicit loops for safe 2D array access)
   const Standard_Integer aHalfPoints = NbGaussPoints / 2;
   for (Standard_Integer j = 0; j <= myDegree; j++)
   {
-    std::memcpy(&TabWeights.ChangeValue(1, j), pdb, aHalfPoints * sizeof(Standard_Real));
-    pdb += aHalfPoints;
+    for (Standard_Integer i = 1; i <= aHalfPoints; i++)
+    {
+      TabWeights.ChangeValue(i, j) = *pdb++;
+    }
   }
 
   if (NbGaussPoints % 2 == 1)
@@ -128,16 +129,16 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer NbGaussPoints,
     if (NbGaussPoints > NDEG25)
       pdb0 += ((NDEG25 - 1 - infdg) / 2 + 1);
 
-    // Fill row 0: zeros everywhere (explicit column loop for proper 2D array access)
-    for (Standard_Integer j = 0; j <= myDegree; j++)
-    {
-      TabWeights.ChangeValue(0, j) = 0.0;
-    }
-
     // Overwrite even columns with data from database
     for (Standard_Integer j = 0; j <= myDegree; j += 2)
     {
       TabWeights.ChangeValue(0, j) = *pdb0++;
+    }
+
+    // Fill row 0: zeros everywhere (explicit column loop for proper 2D array access)
+    for (Standard_Integer j = 0; j <= myDegree; j++)
+    {
+      TabWeights.ChangeValue(0, j) = 0.0;
     }
   }
   else
@@ -159,8 +160,11 @@ void PLib_JacobiPolynomial::MaxValue(TColStd_Array1OfReal& TabMax) const
                                                           MaxValuesDB_C1,
                                                           MaxValuesDB_C2};
 
-  const Standard_Integer aSize = TabMax.Upper() - TabMax.Lower() + 1;
-  std::memcpy(&TabMax.ChangeFirst(), MaxValuesDB[myNivConstr], aSize * sizeof(Standard_Real));
+  Standard_Real const* pdb = MaxValuesDB[myNivConstr];
+  for (Standard_Integer i = TabMax.Lower(); i <= TabMax.Upper(); i++)
+  {
+    TabMax.ChangeValue(i) = *pdb++;
+  }
 }
 
 //=================================================================================================
