@@ -40,11 +40,7 @@ const Standard_Integer UNDEFINED = -999;
 PLib_JacobiPolynomial::PLib_JacobiPolynomial(const Standard_Integer WorkDegree,
                                              const GeomAbs_Shape    ConstraintOrder)
     : myWorkDegree(WorkDegree),
-      myNivConstr(ConstraintOrder == GeomAbs_C0   ? 0
-                  : ConstraintOrder == GeomAbs_C1 ? 1
-                  : ConstraintOrder == GeomAbs_C2
-                    ? 2
-                    : throw Standard_ConstructionError("Invalid ConstraintOrder")),
+      myNivConstr(PLib::NivConstr(ConstraintOrder)),
       myDegree(WorkDegree - 2 * (myNivConstr + 1))
 {
   if (myDegree < 0)
