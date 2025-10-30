@@ -1207,7 +1207,7 @@ TEST(TCollection_AsciiStringTest, Trunc_NoChange)
 // Tests for std::string_view API
 // ========================================
 
-#if defined(__cplusplus) && __cplusplus >= 201703L
+
 TEST(TCollection_AsciiStringTest, StringView_Constructor)
 {
   std::string_view        aView("Hello World");
@@ -1254,7 +1254,6 @@ TEST(TCollection_AsciiStringTest, StringView_Insert)
   aString.Insert(2, aView);
   EXPECT_STREQ("HelloWorld", aString.ToCString());
 }
-#endif
 
 // ========================================
 // Tests for Move semantics

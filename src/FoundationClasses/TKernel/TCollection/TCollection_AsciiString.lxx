@@ -52,7 +52,7 @@ inline void TCollection_AsciiString::AssignCat(const Standard_CString theCString
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline void TCollection_AsciiString::AssignCat(const std::string_view& theStringView)
 {
   if (!theStringView.empty())
@@ -88,7 +88,7 @@ inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_CStri
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline TCollection_AsciiString TCollection_AsciiString::Cat(
   const std::string_view& theStringView) const
 {
@@ -113,7 +113,7 @@ inline void TCollection_AsciiString::Copy(const Standard_CString theCString)
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline void TCollection_AsciiString::Copy(const std::string_view& theStringView)
 {
   Copy(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
@@ -159,7 +159,7 @@ inline void TCollection_AsciiString::Insert(const Standard_Integer theWhere,
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline void TCollection_AsciiString::Insert(const Standard_Integer  theWhere,
                                             const std::string_view& theStringView)
 {
@@ -195,7 +195,7 @@ inline void TCollection_AsciiString::InsertAfter(const Standard_Integer theIndex
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline void TCollection_AsciiString::InsertAfter(const Standard_Integer  theIndex,
                                                  const std::string_view& theStringView)
 {
@@ -231,7 +231,7 @@ inline void TCollection_AsciiString::InsertBefore(const Standard_Integer theInde
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline void TCollection_AsciiString::InsertBefore(const Standard_Integer  theIndex,
                                                   const std::string_view& theStringView)
 {
@@ -266,7 +266,7 @@ inline Standard_Boolean TCollection_AsciiString::IsEqual(const Standard_CString 
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::IsEqual(
   const std::string_view& theStringView) const
 {
@@ -300,7 +300,7 @@ inline Standard_Boolean TCollection_AsciiString::IsDifferent(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::IsDifferent(
   const std::string_view& theStringView) const
 {
@@ -334,7 +334,7 @@ inline Standard_Boolean TCollection_AsciiString::IsLess(const Standard_CString t
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::IsLess(const std::string_view& theStringView) const
 {
   return IsLess(theStringView.data(), static_cast<Standard_Integer>(theStringView.size()));
@@ -367,7 +367,7 @@ inline Standard_Boolean TCollection_AsciiString::IsGreater(const Standard_CStrin
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::IsGreater(
   const std::string_view& theStringView) const
 {
@@ -401,7 +401,7 @@ inline Standard_Boolean TCollection_AsciiString::StartsWith(const Standard_CStri
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::StartsWith(
   const std::string_view& theStartString) const
 {
@@ -419,7 +419,7 @@ inline Standard_Boolean TCollection_AsciiString::EndsWith(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::EndsWith(
   const std::string_view& theEndString) const
 {
@@ -460,7 +460,7 @@ inline Standard_Integer TCollection_AsciiString::Search(const Standard_CString t
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Integer TCollection_AsciiString::Search(const std::string_view& theWhat) const
 {
   return Search(theWhat.data(), static_cast<Standard_Integer>(theWhat.size()));
@@ -494,7 +494,7 @@ inline Standard_Integer TCollection_AsciiString::SearchFromEnd(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Integer TCollection_AsciiString::SearchFromEnd(
   const std::string_view& theWhat) const
 {
@@ -535,7 +535,7 @@ inline void TCollection_AsciiString::SetValue(const Standard_Integer theWhere,
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline void TCollection_AsciiString::SetValue(const Standard_Integer  theWhere,
                                               const std::string_view& theStringView)
 {
@@ -564,7 +564,7 @@ inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_Ascii
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& theString1,
                                                          const std::string_view& theStringView)
 {
@@ -574,7 +574,7 @@ inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_Ascii
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::IsEqual(const std::string_view& theStringView,
                                                          const TCollection_AsciiString& theString2)
 {
@@ -625,7 +625,7 @@ inline Standard_Boolean TCollection_AsciiString::IsSameString(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::IsSameString(
   const TCollection_AsciiString& theString1,
   const std::string_view&        theStringView,
@@ -641,7 +641,7 @@ inline Standard_Boolean TCollection_AsciiString::IsSameString(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::IsSameString(
   const std::string_view&        theStringView,
   const TCollection_AsciiString& theString2,
@@ -673,7 +673,7 @@ inline Standard_Boolean TCollection_AsciiString::IsSameString(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::IsSameString(
   const std::string_view& theStringView1,
   const std::string_view& theStringView2,
@@ -763,7 +763,7 @@ inline Standard_Integer TCollection_AsciiString::FirstLocationInSet(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Integer TCollection_AsciiString::FirstLocationInSet(
   const std::string_view& theSet,
   const Standard_Integer  theFromIndex,
@@ -802,7 +802,7 @@ inline Standard_Integer TCollection_AsciiString::FirstLocationNotInSet(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Integer TCollection_AsciiString::FirstLocationNotInSet(
   const std::string_view& theSet,
   const Standard_Integer  theFromIndex,
@@ -855,7 +855,7 @@ inline TCollection_AsciiString TCollection_AsciiString::operator+(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline TCollection_AsciiString TCollection_AsciiString::operator+(
   const std::string_view& theStringView) const
 {
@@ -898,7 +898,7 @@ inline Standard_Boolean TCollection_AsciiString::operator==(const Standard_CStri
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::operator==(
   const std::string_view& theStringView) const
 {
@@ -923,7 +923,7 @@ inline Standard_Boolean TCollection_AsciiString::operator!=(const Standard_CStri
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::operator!=(
   const std::string_view& theStringView) const
 {
@@ -941,7 +941,7 @@ inline Standard_Boolean TCollection_AsciiString::operator<(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::operator<(
   const std::string_view& theStringView) const
 {
@@ -966,7 +966,7 @@ inline Standard_Boolean TCollection_AsciiString::operator>(const Standard_CStrin
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline Standard_Boolean TCollection_AsciiString::operator>(
   const std::string_view& theStringView) const
 {
@@ -976,7 +976,7 @@ inline Standard_Boolean TCollection_AsciiString::operator>(
 
 //=================================================================================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 inline TCollection_AsciiString::TCollection_AsciiString(const std::string_view& theStringView)
     : TCollection_AsciiString(theStringView.data(),
                               static_cast<Standard_Integer>(theStringView.size()))
