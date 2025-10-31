@@ -360,7 +360,7 @@ public:
   //! // Use anEmptyStr instead of TCollection_ExtendedString()
   //! ```
   //! @return const reference to static empty string
-  Standard_EXPORT static const TCollection_ExtendedString& EmptyString();
+  Standard_EXPORT static const TCollection_ExtendedString& EmptyString() noexcept;
 
   //! Returns true if the characters in this extended
   //! string are identical to the characters in the other extended string.

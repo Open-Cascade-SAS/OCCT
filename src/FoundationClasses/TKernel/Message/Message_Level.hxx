@@ -18,6 +18,7 @@
 #include <Message_AlertExtended.hxx>
 #include <Message_Gravity.hxx>
 #include <Message_Messenger.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <Standard.hxx>
 

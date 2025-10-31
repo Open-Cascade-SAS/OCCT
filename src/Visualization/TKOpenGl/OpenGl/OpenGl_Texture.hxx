@@ -22,6 +22,7 @@
 #include <OpenGl_Sampler.hxx>
 #include <Graphic3d_TextureUnit.hxx>
 #include <Graphic3d_TypeOfTexture.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //! Texture resource.
 class OpenGl_Texture : public OpenGl_NamedResource

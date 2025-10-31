@@ -1372,7 +1372,7 @@ public:
   //! // Use anEmptyStr instead of TCollection_AsciiString()
   //! ```
   //! @return const reference to static empty string
-  Standard_EXPORT static const TCollection_AsciiString& EmptyString();
+  Standard_EXPORT static const TCollection_AsciiString& EmptyString() noexcept;
 
   //! Returns True  when the two  strings are the same.
   //! (Just for HashCode for AsciiString)

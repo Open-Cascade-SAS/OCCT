@@ -15,6 +15,7 @@
 #define _Message_AttributeStream_HeaderFile
 
 #include <Message_Attribute.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <Standard_SStream.hxx>
 

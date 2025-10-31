@@ -19,6 +19,7 @@
 #include <Graphic3d_TypeOfShaderObject.hxx>
 #include <NCollection_Sequence.hxx>
 #include <OSD_Path.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //! Forward declaration
 

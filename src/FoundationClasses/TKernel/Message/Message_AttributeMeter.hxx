@@ -16,6 +16,7 @@
 
 #include <Message_Attribute.hxx>
 #include <Message_MetricType.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <NCollection_IndexedDataMap.hxx>
 

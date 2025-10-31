@@ -953,7 +953,7 @@ void TCollection_ExtendedString::deallocate()
 
 //=================================================================================================
 
-const TCollection_ExtendedString& TCollection_ExtendedString::EmptyString()
+const TCollection_ExtendedString& TCollection_ExtendedString::EmptyString() noexcept
 {
   static const TCollection_ExtendedString THE_EMPTY_STRING;
   return THE_EMPTY_STRING;

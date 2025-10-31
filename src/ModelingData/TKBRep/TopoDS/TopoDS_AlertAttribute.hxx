@@ -19,6 +19,7 @@
 #include <Message_AttributeStream.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Report.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <TopoDS_Shape.hxx>
 

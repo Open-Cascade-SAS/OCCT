@@ -27,6 +27,7 @@
 #include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_TileSampler.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <map>
 #include <set>
