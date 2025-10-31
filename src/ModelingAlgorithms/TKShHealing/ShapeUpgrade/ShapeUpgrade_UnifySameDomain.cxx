@@ -3642,8 +3642,6 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
                            > Vperiod / 2)) // end of parametric space
               {
                 //<edges> do not contain seams => we must reconstruct the seam up to <NextEdge>
-                gp_Pnt2d      StartOfNextEdge;
-                TopoDS_Vertex LastVertexOfSeam;
                 ReconstructMissedSeam(RemovedEdges,
                                       F_RefFace,
                                       CurEdge,

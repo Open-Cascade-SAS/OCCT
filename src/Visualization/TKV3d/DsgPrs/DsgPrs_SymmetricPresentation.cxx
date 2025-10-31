@@ -560,7 +560,6 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
   aPrims = new Graphic3d_ArrayOfPolylines(nbp);
   aPrims->AddVertex(AttachmentPoint1);
   alphaIter = Dalpha;
-  gp_Pnt           PntIter;
   Standard_Integer i;
   for (i = 2; i <= nbp; i++, alphaIter += Dalpha)
     aPrims->AddVertex(ElCLib::Value(ParamPAttach1 + alphaIter, aCircle1));

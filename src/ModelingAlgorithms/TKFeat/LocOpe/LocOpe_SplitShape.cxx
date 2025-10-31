@@ -1504,7 +1504,6 @@ static void GetDirection(const TopoDS_Edge& theEdge,
     ((anOr == TopAbs_FORWARD && isFirstEnd) || (anOr == TopAbs_REVERSED && !isFirstEnd));
 
   Standard_Real dpar = (aLast - aFirst) * 0.01;
-  gp_Pnt2d      aP2d;
   if (takeFirst)
   {
     aC2d->D0(aFirst, thePnt);

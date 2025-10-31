@@ -1648,7 +1648,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
   // reorganize the wires respecting orientation and origin
 
   TopoDS_Vertex Vdeb, Vfin;
-  gp_Pnt        Pdeb, Psuiv, PPs;
+  gp_Pnt        PPs;
 
   BRepTools_WireExplorer anExp;
 
@@ -2000,6 +2000,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
     TopoDS_Wire   newwire;
     BRep_Builder  BW;
     BW.MakeWire(newwire);
+    gp_Pnt Pdeb, Psuiv;
     if (i == ideb)
     {
       anExp.Init(wire);

@@ -1445,7 +1445,6 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&        Vertex,
   // evaluate the Ax3 of the Sphere
   // find 3 different vertices in LEdge
   TopTools_ListIteratorOfListOfShape it;
-  gp_Pnt                             P, P1, P2, P3;
   TopoDS_Vertex                      V1, V2, V3, V4;
 
 #ifdef OCCT_DEBUG
