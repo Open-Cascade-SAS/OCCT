@@ -14,7 +14,7 @@
 #include "BOPTest_Utilities.pxx"
 
 #ifndef M_SQRT2
-#  define M_SQRT2 1.41421356237309504880168872420969808
+  #define M_SQRT2 1.41421356237309504880168872420969808
 #endif
 
 //==================================================================================================
@@ -384,9 +384,9 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusRotatedNarrowBox_D1)
   aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
 
   // Create rotated narrow box: r=sqrt(2), box(0,0,0,r,0.25,1), rotate 45 degrees around Z
-  constexpr Standard_Real r = M_SQRT2;
-  TopoDS_Shape        aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
-  gp_Trsf             aTrsf;
+  constexpr Standard_Real r     = M_SQRT2;
+  TopoDS_Shape            aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
+  gp_Trsf                 aTrsf;
   aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4.0); // 45 degrees
   aBox2.Move(aTrsf);
 
@@ -401,9 +401,9 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusRotatedNarrowBoxVariation_D2)
   aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
 
   // Create rotated narrow box: r=sqrt(31), box(0,0,0,r/4,0.25,1), rotate 34.73 degrees around Z
-  constexpr Standard_Real r = 5.5677643628300219;
-  TopoDS_Shape        aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
-  gp_Trsf             aTrsf;
+  constexpr Standard_Real r     = 5.5677643628300219;
+  TopoDS_Shape            aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
+  gp_Trsf                 aTrsf;
   aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 34.73 * M_PI / 180.0);
   aBox2.Move(aTrsf);
 

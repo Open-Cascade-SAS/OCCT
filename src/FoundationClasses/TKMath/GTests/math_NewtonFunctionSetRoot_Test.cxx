@@ -20,7 +20,7 @@
 #include <Standard_DimensionError.hxx>
 
 #ifndef M_SQRT1_2
-#  define M_SQRT1_2 0.707106781186547524400844362104849039
+  #define M_SQRT1_2 0.707106781186547524400844362104849039
 #endif
 
 namespace
