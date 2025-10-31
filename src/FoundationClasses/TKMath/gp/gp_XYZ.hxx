@@ -135,8 +135,7 @@ public:
   //! Returns True if he coordinates of this XYZ object are
   //! equal to the respective coordinates Other,
   //! within the specified tolerance theTolerance.
-  constexpr Standard_Boolean IsEqual(const gp_XYZ&       theOther,
-                                     const Standard_Real theTolerance) const noexcept
+  Standard_Boolean IsEqual(const gp_XYZ& theOther, const Standard_Real theTolerance) const
 
   {
     return (Abs(x - theOther.x) < theTolerance) && (Abs(y - theOther.y) < theTolerance)

@@ -107,8 +107,7 @@ public:
   //! Returns true if the coordinates of this number pair are
   //! equal to the respective coordinates of the number pair
   //! theOther, within the specified tolerance theTolerance.
-  constexpr Standard_Boolean IsEqual(const gp_XY&        theOther,
-                                     const Standard_Real theTolerance) const noexcept
+  Standard_Boolean IsEqual(const gp_XY& theOther, const Standard_Real theTolerance) const
   {
     return (Abs(x - theOther.x) < theTolerance) && (Abs(y - theOther.y) < theTolerance);
   }
@@ -156,7 +155,7 @@ public:
 
   //! computes the magnitude of the cross product between <me> and
   //! theRight. Returns || <me> ^ theRight ||
-  constexpr Standard_Real CrossMagnitude(const gp_XY& theRight) const noexcept
+  Standard_Real CrossMagnitude(const gp_XY& theRight) const
   {
     return Abs(x * theRight.y - y * theRight.x);
   }

@@ -136,10 +136,7 @@ public:
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raises OutOfRange if theIndex != {1, 2}.
-  constexpr Standard_Real Coord(const Standard_Integer theIndex) const noexcept
-  {
-    return coord.Coord(theIndex);
-  }
+  Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
   //! For this unit vector returns its two coordinates theXv and theYv.
   //! Raises OutOfRange if theIndex != {1, 2}.
