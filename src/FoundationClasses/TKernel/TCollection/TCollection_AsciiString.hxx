@@ -28,7 +28,7 @@
 #include <Standard_IStream.hxx>
 #include <Standard_Macro.hxx>
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   #include <string_view>
 #endif
 
@@ -57,7 +57,7 @@ public:
   //! Initializes a AsciiString to an empty AsciiString.
   Standard_EXPORT TCollection_AsciiString();
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Initializes a AsciiString with a string_view.
   //! @param[in] theStringView the string view to initialize from
   explicit inline TCollection_AsciiString(const std::string_view& theStringView);
@@ -190,7 +190,7 @@ public:
 
   void operator+=(const Standard_CString theCString) { AssignCat(theCString); }
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Appends string view to this ASCII string. This is an unary operator.
   //! @param[in] theStringView the string view to append
   inline void AssignCat(const std::string_view& theStringView);
@@ -303,7 +303,7 @@ public:
 
   inline TCollection_AsciiString operator+(const Standard_CString theCString) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Appends string view to this ASCII string.
   //! @param[in] theStringView the string view to append
   //! @return new string with string view appended
@@ -384,7 +384,7 @@ public:
 
   void operator=(const Standard_CString theCString) { Copy(theCString); }
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Copy string view to this ASCII string.
   //! Used as operator =
   //! @param[in] theStringView the string view to copy from
@@ -477,7 +477,7 @@ public:
                                              const Standard_Integer         theFromIndex,
                                              const Standard_Integer         theToIndex) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns the index of the first character of this string that is present in string_view.
   //! @param[in] theSet the string view of characters to search for
   //! @param[in] theFromIndex the starting index for search
@@ -535,7 +535,7 @@ public:
                                                 const Standard_Integer         theFromIndex,
                                                 const Standard_Integer         theToIndex) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns the index of the first character of this string that is not present in string_view.
   //! @param[in] theSet the string view of characters to check against
   //! @param[in] theFromIndex the starting index for search
@@ -591,7 +591,7 @@ public:
   //! @param[in] theCString the C string to insert
   inline void Insert(const Standard_Integer theWhere, const Standard_CString theCString);
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Inserts a string_view at position theWhere.
   //! @param[in] theWhere position to insert at
   //! @param[in] theStringView the string view to insert
@@ -634,7 +634,7 @@ public:
   //! @param[in] theCString the C string to insert
   inline void InsertAfter(const Standard_Integer theIndex, const Standard_CString theCString);
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Inserts a string_view after a specific index in this string.
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert after
@@ -671,7 +671,7 @@ public:
   //! @param[in] theCString the C string to insert
   inline void InsertBefore(const Standard_Integer theIndex, const Standard_CString theCString);
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Inserts a string_view before a specific index in this string.
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert before
@@ -713,7 +713,7 @@ public:
 
   inline Standard_Boolean operator==(const Standard_CString theCString) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns true if the characters in this ASCII string
   //! are identical to the characters in string_view.
   //! @param[in] theStringView the string view to compare with
@@ -765,7 +765,7 @@ public:
 
   inline Standard_Boolean operator!=(const Standard_CString theCString) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns true if there are differences between the
   //! characters in this ASCII string and string_view.
   //! @param[in] theStringView the string view to compare with
@@ -807,7 +807,7 @@ public:
 
   Standard_Boolean operator<(const Standard_CString theCString) const { return IsLess(theCString); }
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns TRUE if this ASCII string is lexicographically less than theStringView.
   //! @param[in] theStringView the string view to compare with
   //! @return true if this string is lexicographically less than theStringView
@@ -848,7 +848,7 @@ public:
 
   inline Standard_Boolean operator>(const Standard_CString theCString) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns TRUE if this ASCII string is lexicographically greater than theStringView.
   //! @param[in] theStringView the string view to compare with
   //! @return true if this string is lexicographically greater than theStringView
@@ -884,7 +884,7 @@ public:
   //! @return true if this string starts with theCString
   inline Standard_Boolean StartsWith(const Standard_CString theCString) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Determines whether the beginning of this string instance matches the specified string_view.
   //! @param[in] theStartString the string view to check for at the beginning
   //! @return true if this string starts with theStartString
@@ -904,7 +904,7 @@ public:
   //! @return true if this string ends with theEndString
   inline Standard_Boolean EndsWith(const TCollection_AsciiString& theEndString) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Determines whether the end of this string instance matches the specified string_view.
   //! @param[in] theEndString the string view to check for at the end
   //! @return true if this string ends with theEndString
@@ -1158,7 +1158,7 @@ public:
   //! @return the position of first match, or -1 if not found
   inline Standard_Integer Search(const Standard_CString theCString) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Searches a string_view in this string from the beginning
   //! and returns position of first item matching.
   //! It returns -1 if not found.
@@ -1194,7 +1194,7 @@ public:
   //! @return the position of first match from end, or -1 if not found
   inline Standard_Integer SearchFromEnd(const Standard_CString theCString) const;
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Searches a string_view in this string from the end
   //! and returns position of first item matching.
   //! It returns -1 if not found.
@@ -1242,7 +1242,7 @@ public:
   //! @param[in] theCString the C string to replace with
   inline void SetValue(const Standard_Integer theWhere, const Standard_CString theCString);
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Replaces a part of this ASCII string with a string_view.
   //! @param[in] theWhere position to start replacement
   //! @param[in] theStringView the string view to replace with
@@ -1284,7 +1284,7 @@ public:
   //! @return the C string representation
   Standard_CString ToCString() const { return myString; }
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns string_view for this AsciiString.
   //! This provides a lightweight, non-owning view of the string data.
   //! @return the string_view representation
@@ -1378,7 +1378,7 @@ public:
   static Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
                                   const Standard_CString         string2);
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns True when the ASCII string and string_view are the same.
   //! (Just for HashCode for AsciiString)
   //! @param[in] theString1 first string to compare
@@ -1438,7 +1438,7 @@ public:
                                               const TCollection_AsciiString& theString2,
                                               const Standard_Boolean         theIsCaseSensitive);
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns True if the string and string_view contain same characters.
   //! @param[in] theString1 first string to compare
   //! @param[in] theStringView second string view to compare
@@ -1467,7 +1467,7 @@ public:
                                               const Standard_CString theCString2,
                                               const Standard_Boolean theIsCaseSensitive);
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
   //! Returns True if the two string_views contain same characters.
   //! @param[in] theStringView1 first string view to compare
   //! @param[in] theStringView2 second string view to compare

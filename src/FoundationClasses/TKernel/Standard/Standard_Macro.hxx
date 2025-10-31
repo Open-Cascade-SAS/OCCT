@@ -367,4 +367,21 @@
   #endif
 #endif
 
+//! @def Standard_CPP17_OR_HIGHER
+//! Macro to check if C++ standard version is C++17 or higher.
+//!
+//! Expands to 1 if C++17 or higher is available, 0 otherwise.
+//! Uses _MSVC_LANG for MSVC (available since VS 2017.3) which correctly
+//! reports the language standard regardless of /Zc:__cplusplus flag.
+//! For other compilers or as fallback, uses __cplusplus standard macro.
+#if defined(_MSC_VER) && defined(_MSVC_LANG) && _MSVC_LANG >= 201703L
+  // MSVC: _MSVC_LANG correctly reports language standard (available since VS 2017.3)
+  #define Standard_CPP17_OR_HIGHER 1
+#elif defined(__cplusplus) && __cplusplus >= 201703L
+  // Standard __cplusplus check for GCC, Clang, and MSVC when _MSVC_LANG is not available
+  #define Standard_CPP17_OR_HIGHER 1
+#else
+  #define Standard_CPP17_OR_HIGHER 0
+#endif
+
 #endif
