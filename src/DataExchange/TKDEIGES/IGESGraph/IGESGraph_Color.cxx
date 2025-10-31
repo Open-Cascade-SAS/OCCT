@@ -22,6 +22,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_Color, IGESData_ColorEntity)
 
+namespace
+{
+// Precomputed sqrt(3)
+constexpr Standard_Real SQRT_3 = 1.7320508075688772935;
+} // namespace
+
 IGESGraph_Color::IGESGraph_Color() {}
 
 // This class inherits from IGESData_ColorEntity
@@ -61,7 +67,7 @@ void IGESGraph_Color::HLSPercentage(Standard_Real& Hue,
                                     Standard_Real& Saturation) const
 {
   Hue        = ((1.0 / (2.0 * M_PI))
-         * (ATan(((2 * theRed) - theGreen - theBlue) / (Sqrt(3) * (theGreen - theBlue)))));
+         * (ATan(((2 * theRed) - theGreen - theBlue) / (SQRT_3 * (theGreen - theBlue)))));
   Lightness  = ((1.0 / 3.0) * (theRed + theGreen + theBlue));
   Saturation = (Sqrt((theRed * theRed) + (theGreen * theGreen) + (theBlue * theBlue)
                      - (theRed * theGreen) - (theRed * theBlue) - (theBlue * theGreen)));

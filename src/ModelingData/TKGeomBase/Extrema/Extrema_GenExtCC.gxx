@@ -28,6 +28,10 @@
 #include <NCollection_CellFilter.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 
+#ifndef M_SQRT2
+  #define M_SQRT2 1.41421356237309504880168872420969808
+#endif
+
 // Comparator, used in std::sort.
 static Standard_Boolean comp(const gp_XY& theA, const gp_XY& theB)
 {
@@ -334,7 +338,7 @@ void Extrema_GenExtCC::Perform()
   Standard_Real       aLC      = 100.0; // Default value.
   const Standard_Real aMaxDer1 = 1.0 / C1.Resolution(1.0);
   const Standard_Real aMaxDer2 = 1.0 / C2.Resolution(1.0);
-  Standard_Real       aMaxDer  = Max(aMaxDer1, aMaxDer2) * Sqrt(2.0);
+  Standard_Real       aMaxDer  = Max(aMaxDer1, aMaxDer2) * M_SQRT2;
   if (aLC > aMaxDer)
     aLC = aMaxDer;
 
@@ -420,7 +424,7 @@ void Extrema_GenExtCC::Perform()
   // Size computed to have cell index inside of int32 value.
   const Standard_Real aCellSize = Max(
     Max(anIntervals1->Last() - anIntervals1->First(), anIntervals2->Last() - anIntervals2->First())
-      * Precision::PConfusion() / (2.0 * Sqrt(2.0)),
+      * Precision::PConfusion() / (2.0 * M_SQRT2),
     Precision::PConfusion());
   Extrema_CCPointsInspector                         anInspector(aCellSize);
   NCollection_CellFilter<Extrema_CCPointsInspector> aFilter(aCellSize);

@@ -13,6 +13,10 @@
 
 #include "BOPTest_Utilities.pxx"
 
+#ifndef M_SQRT2
+#  define M_SQRT2 1.41421356237309504880168872420969808
+#endif
+
 //==================================================================================================
 // BCut Simple Tests - migrating from /tests/boolean/bcut_simple/
 //==================================================================================================
@@ -622,7 +626,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedRectangularBox_F1)
 {
   TopoDS_Shape aNurbsBox       = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox                    = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  const Standard_Real r        = sqrt(2.0);
+  constexpr Standard_Real r = M_SQRT2;
   TopoDS_Shape aRectangularBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r / 2.0, 1.0);
   aRectangularBox              = BOPTest_Utilities::RotateShape(aRectangularBox,
                                                    gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
@@ -636,7 +640,7 @@ TEST_F(BCutSimpleTest, RotatedRectangularBoxMinusNurbsBox_F2)
 {
   TopoDS_Shape aNurbsBox       = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox                    = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  const Standard_Real r        = sqrt(2.0);
+  constexpr Standard_Real r = M_SQRT2;
   TopoDS_Shape aRectangularBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r / 2.0, 1.0);
   aRectangularBox              = BOPTest_Utilities::RotateShape(aRectangularBox,
                                                    gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
@@ -678,7 +682,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedThinBox_F5)
 {
   TopoDS_Shape aNurbsBox       = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox                    = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  const Standard_Real r        = sqrt(2.0);
+  constexpr Standard_Real r = M_SQRT2;
   TopoDS_Shape        aThinBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
   aThinBox                     = BOPTest_Utilities::RotateShape(aThinBox,
                                             gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
@@ -692,7 +696,7 @@ TEST_F(BCutSimpleTest, RotatedThinBoxMinusNurbsBox_F6)
 {
   TopoDS_Shape aNurbsBox       = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox                    = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  const Standard_Real r        = sqrt(2.0);
+  constexpr Standard_Real r = M_SQRT2;
   TopoDS_Shape        aThinBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
   aThinBox                     = BOPTest_Utilities::RotateShape(aThinBox,
                                             gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
@@ -706,7 +710,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedNarrowBox_F7)
 {
   TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox                  = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  const Standard_Real r      = sqrt(31.0);
+  constexpr Standard_Real r = 5.5677643628300219;
   TopoDS_Shape aNarrowBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
   aNarrowBox                 = BOPTest_Utilities::RotateShape(aNarrowBox,
                                               gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
@@ -720,7 +724,7 @@ TEST_F(BCutSimpleTest, RotatedNarrowBoxMinusNurbsBox_F8)
 {
   TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox                  = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  const Standard_Real r      = sqrt(31.0);
+  constexpr Standard_Real r = 5.5677643628300219;
   TopoDS_Shape aNarrowBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
   aNarrowBox                 = BOPTest_Utilities::RotateShape(aNarrowBox,
                                               gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),

@@ -35,6 +35,10 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <V3d_View.hxx>
 
+#ifndef M_SQRT2
+  #define M_SQRT2 1.41421356237309504880168872420969808
+#endif
+
 IMPLEMENT_STANDARD_HANDLE(AIS_Manipulator, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Manipulator, AIS_InteractiveObject)
 

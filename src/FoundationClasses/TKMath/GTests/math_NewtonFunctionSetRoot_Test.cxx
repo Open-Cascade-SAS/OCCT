@@ -19,6 +19,10 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_DimensionError.hxx>
 
+#ifndef M_SQRT1_2
+#  define M_SQRT1_2 0.707106781186547524400844362104849039
+#endif
+
 namespace
 {
 const Standard_Real TOLERANCE = 1.0e-6;
@@ -221,8 +225,8 @@ TEST(math_NewtonFunctionSetRoot, CircleLineIntersection)
   EXPECT_TRUE(solver.IsDone());
 
   const math_Vector& root = solver.Root();
-  EXPECT_NEAR(fabs(root(1)), 1.0 / sqrt(2.0), 1.0e-5);
-  EXPECT_NEAR(fabs(root(2)), 1.0 / sqrt(2.0), 1.0e-5);
+  EXPECT_NEAR(fabs(root(1)), M_SQRT1_2, 1.0e-5);
+  EXPECT_NEAR(fabs(root(2)), M_SQRT1_2, 1.0e-5);
   EXPECT_NEAR(root(1), root(2), TOLERANCE); // x = y constraint
 }
 

@@ -35,7 +35,11 @@
 #include <TColStd_HArray1OfInteger.hxx>
 
 // for null derivatives
-static Standard_Real BSplSLib_zero[3] = {0.0, 0.0, 0.0};
+static constexpr Standard_Real BSplSLib_zero[3] = {0.0, 0.0, 0.0};
+
+#ifndef M_SQRT2
+  #define M_SQRT2 1.41421356237309504880168872420969808
+#endif
 
 //=======================================================================
 // struct : BSplCLib_DataContainer
