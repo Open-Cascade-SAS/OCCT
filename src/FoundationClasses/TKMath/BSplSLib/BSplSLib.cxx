@@ -982,7 +982,8 @@ void BSplSLib::D2(const Standard_Real            U,
   Standard_Integer       dim, dim2;
   Standard_Real          u1, u2;
   Standard_Integer       d1, d2;
-  Standard_Real *        result, *resVu, *resVv, *resVuu, *resVvv, *resVuv;
+  Standard_Real*         result;
+  const Standard_Real *  resVu, *resVv, *resVuu, *resVvv, *resVuv;
   BSplSLib_DataContainer dc(UDegree, VDegree);
   if (PrepareEval(U,
                   V,
@@ -1145,10 +1146,11 @@ void BSplSLib::D3(const Standard_Real            U,
 {
   Standard_Boolean rational;
   //  Standard_Integer k,dim,dim2;
-  Standard_Integer dim, dim2;
-  Standard_Real    u1, u2;
-  Standard_Integer d1, d2;
-  Standard_Real *  result, *resVu, *resVv, *resVuu, *resVvv, *resVuv, *resVuuu, *resVvvv, *resVuuv,
+  Standard_Integer     dim, dim2;
+  Standard_Real        u1, u2;
+  Standard_Integer     d1, d2;
+  Standard_Real*       result;
+  const Standard_Real *resVu, *resVv, *resVuu, *resVvv, *resVuv, *resVuuu, *resVvvv, *resVuuv,
     *resVuvv;
   BSplSLib_DataContainer dc(UDegree, VDegree);
   if (PrepareEval(U,
