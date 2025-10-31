@@ -1,3 +1,52 @@
+# ============================================================================
+# SINGLE-LEVEL RESTRICTIONS: Only accept what's already tracked in git
+# (These rules apply only at the specified level, deeper levels follow rules below)
+# ============================================================================
+
+# Root level: Ignore everything except tracked items
+/*
+!/.clang-format
+!/.git-blame-ignore-revs
+!/.gitattributes
+!/.gitignore
+!/.tgitconfig
+!/CMakeLists.txt
+!/LICENSE_LGPL_21.txt
+!/OCCT_LGPL_EXCEPTION.txt
+!/README.md
+!/adm/
+!/cmake/
+!/data/
+!/dox/
+!/samples/
+!/src/
+!/tests/
+!/tools/
+!/.github/
+
+# data/ level: Ignore everything except tracked subdirectories
+/data/*
+!/data/iges/
+!/data/images/
+!/data/occ/
+!/data/step/
+!/data/stl/
+!/data/vrml/
+
+# src/ level: Ignore everything except tracked items
+/src/*
+!/src/MODULES.cmake
+!/src/ApplicationFramework/
+!/src/DataExchange/
+!/src/Draw/
+!/src/FoundationClasses/
+!/src/ModelingAlgorithms/
+!/src/ModelingData/
+!/src/Visualization/
+
+# ============================================================================
+# DEEPER LEVEL RULES (applied recursively within allowed directories above)
+# ============================================================================
 
 # standard directories for derived files in CASROOT
 /.adm
