@@ -47,6 +47,8 @@ void StepSelect_StepType::SetProtocol(const Handle(Interface_Protocol)& proto)
 Standard_CString StepSelect_StepType::Value(const Handle(Standard_Transient)&       ent,
                                             const Handle(Interface_InterfaceModel)& model) const
 {
+  std::lock_guard<std::mutex> aLock(myMutex);
+
   Handle(StepData_ReadWriteModule) aModule;
   Standard_Integer                 aCN;
   if (!thelib.Select(ent, aModule, aCN))
