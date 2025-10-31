@@ -32,7 +32,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(RWHeaderSection_ReadWriteModule, StepData_ReadWriteModule)
 
 // -- General Declarations (Recognize, StepType) ---
-static TCollection_AsciiString PasReco(""); // neutralise StartEntity de SW
+// neutralise StartEntity de SW
 static TCollection_AsciiString Reco_FileName("FILE_NAME");
 static TCollection_AsciiString Reco_FileDescription("FILE_DESCRIPTION");
 static TCollection_AsciiString Reco_FileSchema("FILE_SCHEMA");
@@ -98,7 +98,7 @@ const TCollection_AsciiString& RWHeaderSection_ReadWriteModule::StepType(
     case 3:
       return Reco_FileSchema;
     default:
-      return PasReco;
+      return TCollection_AsciiString::EmptyString();
   }
 }
 

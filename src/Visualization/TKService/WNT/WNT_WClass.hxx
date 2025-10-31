@@ -60,7 +60,7 @@ public:
     const Standard_Integer         theWindowExtra = 0,
     const Aspect_Handle            theCursor      = NULL,
     const Aspect_Handle            theIcon        = NULL,
-    const TCollection_AsciiString& theMenuName    = TCollection_AsciiString());
+    const TCollection_AsciiString& theMenuName    = TCollection_AsciiString::EmptyString());
 
   //! Destroys all resources attached to the class
   Standard_EXPORT ~WNT_WClass();

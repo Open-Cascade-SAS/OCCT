@@ -62,8 +62,7 @@ public:
   {
     if (myTextFont.IsNull())
     {
-      static const TCollection_AsciiString anEmpty;
-      return anEmpty;
+      return TCollection_AsciiString::EmptyString();
     }
     return myTextFont->String();
   }

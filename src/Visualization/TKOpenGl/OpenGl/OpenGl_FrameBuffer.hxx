@@ -55,7 +55,7 @@ public:
 public:
   //! Empty constructor
   Standard_EXPORT OpenGl_FrameBuffer(
-    const TCollection_AsciiString& theResourceId = TCollection_AsciiString());
+    const TCollection_AsciiString& theResourceId = TCollection_AsciiString::EmptyString());
 
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_FrameBuffer();

@@ -150,8 +150,7 @@ const TCollection_AsciiString& TDF_DerivedAttribute::TypeName(Standard_CString t
     return **aResult;
   }
 
-  static const TCollection_AsciiString anEmpty;
-  return anEmpty;
+  return TCollection_AsciiString::EmptyString();
 }
 
 //=================================================================================================

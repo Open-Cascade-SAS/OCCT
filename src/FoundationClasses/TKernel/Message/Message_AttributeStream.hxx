@@ -26,7 +26,7 @@ public:
   //! Constructor with string argument
   Standard_EXPORT Message_AttributeStream(
     const Standard_SStream&        theStream,
-    const TCollection_AsciiString& theName = TCollection_AsciiString());
+    const TCollection_AsciiString& theName = TCollection_AsciiString::EmptyString());
 
   //! Returns stream value
   const Standard_SStream& Stream() const { return myStream; }

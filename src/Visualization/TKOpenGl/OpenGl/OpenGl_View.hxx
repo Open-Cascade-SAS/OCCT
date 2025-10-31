@@ -673,9 +673,6 @@ protected: //! @name data types related to ray-tracing
   class ShaderSource
   {
   public:
-    //! Default shader prefix - empty string.
-    static const TCollection_AsciiString EMPTY_PREFIX;
-
     //! Creates new uninitialized shader source.
     ShaderSource()
     {
@@ -698,11 +695,11 @@ protected: //! @name data types related to ray-tracing
 
     //! Loads shader source from specified files.
     Standard_Boolean LoadFromFiles(const TCollection_AsciiString* theFileNames,
-                                   const TCollection_AsciiString& thePrefix = EMPTY_PREFIX);
+                                   const TCollection_AsciiString& thePrefix = TCollection_AsciiString::EmptyString());
 
     //! Loads shader source from specified strings.
     Standard_Boolean LoadFromStrings(const TCollection_AsciiString* theStrings,
-                                     const TCollection_AsciiString& thePrefix = EMPTY_PREFIX);
+                                     const TCollection_AsciiString& thePrefix = TCollection_AsciiString::EmptyString());
 
   private:
     TCollection_AsciiString mySource; //!< Source string of the shader object

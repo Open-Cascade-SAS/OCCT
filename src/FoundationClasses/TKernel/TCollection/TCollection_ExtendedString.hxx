@@ -350,6 +350,18 @@ public:
     return opencascade::hashBytes(mystring, aSize);
   }
 
+  //! Returns a const reference to a single shared empty string instance.
+  //! This method provides access to a static empty string to avoid creating temporary empty strings.
+  //! Use this method instead of constructing empty strings when you need a const reference.
+  //!
+  //! Example:
+  //! ```cpp
+  //! const TCollection_ExtendedString& anEmptyStr = TCollection_ExtendedString::EmptyString();
+  //! // Use anEmptyStr instead of TCollection_ExtendedString()
+  //! ```
+  //! @return const reference to static empty string
+  Standard_EXPORT static const TCollection_ExtendedString& EmptyString();
+
   //! Returns true if the characters in this extended
   //! string are identical to the characters in the other extended string.
   //! Note that this method is an alias of operator ==.

@@ -25,8 +25,7 @@ static const TCollection_ExtendedString& String(Handle(StdObjMgt_Persistent) the
   if (theValue)
     return theValue->ExtString()->String();
 
-  static TCollection_ExtendedString anEmptyString;
-  return anEmptyString;
+  return TCollection_ExtendedString::EmptyString();
 }
 
 template <class HArray>

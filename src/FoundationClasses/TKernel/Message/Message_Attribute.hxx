@@ -28,7 +28,7 @@ class Message_Attribute : public Standard_Transient
 public:
   //! Empty constructor
   Standard_EXPORT Message_Attribute(
-    const TCollection_AsciiString& theName = TCollection_AsciiString());
+    const TCollection_AsciiString& theName = TCollection_AsciiString::EmptyString());
 
   //! Return a C string to be used as a key for generating text user messages describing this alert.
   //! The messages are generated with help of Message_Msg class, in Message_Report::Dump().

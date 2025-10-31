@@ -32,7 +32,7 @@ public:
   //! Constructor with shape argument
   Standard_EXPORT TopoDS_AlertAttribute(
     const TopoDS_Shape&            theShape,
-    const TCollection_AsciiString& theName = TCollection_AsciiString());
+    const TCollection_AsciiString& theName = TCollection_AsciiString::EmptyString());
 
   //! Returns contained shape
   const TopoDS_Shape& GetShape() const { return myShape; }

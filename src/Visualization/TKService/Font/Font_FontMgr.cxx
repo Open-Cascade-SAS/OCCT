@@ -1087,7 +1087,7 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont(const TCollection_AsciiString& th
   if (aFont.IsNull() && theStrictLevel == Font_StrictLevel_Any)
   {
     // try finding ANY font in case if even default fallback alias myFallbackAlias cannot be found
-    aFont = myFontMap.Find(TCollection_AsciiString());
+    aFont = myFontMap.Find(TCollection_AsciiString::EmptyString());
   }
   if (aFont.IsNull())
   {

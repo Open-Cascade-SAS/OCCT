@@ -1362,6 +1362,18 @@ public:
   //! @return a computed hash code
   inline size_t HashCode() const;
 
+  //! Returns a const reference to a single shared empty string instance.
+  //! This method provides access to a static empty string to avoid creating temporary empty strings.
+  //! Use this method instead of constructing empty strings when you need a const reference.
+  //!
+  //! Example:
+  //! ```cpp
+  //! const TCollection_AsciiString& anEmptyStr = TCollection_AsciiString::EmptyString();
+  //! // Use anEmptyStr instead of TCollection_AsciiString()
+  //! ```
+  //! @return const reference to static empty string
+  Standard_EXPORT static const TCollection_AsciiString& EmptyString();
+
   //! Returns True  when the two  strings are the same.
   //! (Just for HashCode for AsciiString)
   //! @param[in] string1 first string to compare

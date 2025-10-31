@@ -81,8 +81,8 @@ public:
     Graphic3d_TypeOfShaderObject   theType,
     const ShaderVariableList&      theUniforms,
     const ShaderVariableList&      theStageInOuts,
-    const TCollection_AsciiString& theInName           = TCollection_AsciiString(),
-    const TCollection_AsciiString& theOutName          = TCollection_AsciiString(),
+    const TCollection_AsciiString& theInName           = TCollection_AsciiString::EmptyString(),
+    const TCollection_AsciiString& theOutName          = TCollection_AsciiString::EmptyString(),
     Standard_Integer               theNbGeomInputVerts = 0);
 
 private:
