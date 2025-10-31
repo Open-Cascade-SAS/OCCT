@@ -55,7 +55,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Initializes a AsciiString to an empty AsciiString.
-  Standard_EXPORT TCollection_AsciiString();
+  Standard_EXPORT TCollection_AsciiString() noexcept;
 
 #if Standard_CPP17_OR_HIGHER
   //! Initializes a AsciiString with a string_view.

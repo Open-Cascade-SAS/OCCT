@@ -61,7 +61,7 @@ struct FormattedReal
 
 //=================================================================================================
 
-TCollection_AsciiString::TCollection_AsciiString()
+TCollection_AsciiString::TCollection_AsciiString() noexcept
 {
   allocate(0);
 }

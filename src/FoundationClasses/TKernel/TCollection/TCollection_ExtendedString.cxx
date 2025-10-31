@@ -94,7 +94,7 @@ inline Standard_ExtCharacter* Standard_UNUSED
 
 //=================================================================================================
 
-TCollection_ExtendedString::TCollection_ExtendedString()
+TCollection_ExtendedString::TCollection_ExtendedString() noexcept
 {
   allocate(0);
 }

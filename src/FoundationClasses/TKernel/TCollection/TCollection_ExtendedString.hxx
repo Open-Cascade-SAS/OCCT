@@ -54,7 +54,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Initializes a ExtendedString to an empty ExtendedString.
-  Standard_EXPORT TCollection_ExtendedString();
+  Standard_EXPORT TCollection_ExtendedString() noexcept;
 
   //! Creation by converting a CString to an extended
   //! string.  If <isMultiByte> is true then the string is
