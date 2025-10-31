@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionPilot, IFSelect_Activator)
 #define MAXWORDS 200
 #define MAXCARS 1000
 
-static int                     THE_IFSelect_SessionPilot_initactor = 0;
+static int THE_IFSelect_SessionPilot_initactor = 0;
 
 // #define DEBUG_TRACE
 

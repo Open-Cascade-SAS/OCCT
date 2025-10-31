@@ -1363,8 +1363,9 @@ public:
   inline size_t HashCode() const;
 
   //! Returns a const reference to a single shared empty string instance.
-  //! This method provides access to a static empty string to avoid creating temporary empty strings.
-  //! Use this method instead of constructing empty strings when you need a const reference.
+  //! This method provides access to a static empty string to avoid creating temporary empty
+  //! strings. Use this method instead of constructing empty strings when you need a const
+  //! reference.
   //!
   //! Example:
   //! ```cpp

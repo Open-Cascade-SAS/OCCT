@@ -506,7 +506,10 @@ Standard_Boolean RWMesh_CafReader::addSubShapeIntoDoc(CafDocumentTools&   theToo
   theTools.ShapeTool->GetReferredShape(aNewLabel, aNewRefLabel);
 
   // put attributes to the Product (shared across Instances)
-  setShapeName(aNewRefLabel, aShapeType, aShapeAttribs.Name, TDF_Label(),
+  setShapeName(aNewRefLabel,
+               aShapeType,
+               aShapeAttribs.Name,
+               TDF_Label(),
                TCollection_AsciiString::EmptyString());
   setShapeStyle(theTools, aNewRefLabel, aShapeAttribs.Style);
   setShapeNamedData(theTools, aNewRefLabel, aShapeAttribs.NamedData);

@@ -54,9 +54,9 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_AngleDimension, PrsDim_Dimension)
 
 namespace
 {
-static const Standard_Real              THE_EMPTY_LABEL_WIDTH = 0.0;
-static const Standard_ExtCharacter      THE_DEGREE_SYMBOL(0x00B0);
-static const Standard_Real              THE_3D_TEXT_MARGIN = 0.1;
+static const Standard_Real         THE_EMPTY_LABEL_WIDTH = 0.0;
+static const Standard_ExtCharacter THE_DEGREE_SYMBOL(0x00B0);
+static const Standard_Real         THE_3D_TEXT_MARGIN = 0.1;
 
 //! Returns true if the given points lie on a same line.
 static Standard_Boolean isSameLine(const gp_Pnt& theFirstPoint,
