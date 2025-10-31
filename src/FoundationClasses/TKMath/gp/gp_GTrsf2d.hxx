@@ -51,12 +51,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! returns identity transformation.
-  gp_GTrsf2d()
+  constexpr gp_GTrsf2d() noexcept
+      : matrix(),
+        loc(0.0, 0.0),
+        shape(gp_Identity),
+        scale(1.0)
   {
-    shape = gp_Identity;
     matrix.SetScale(1.0);
-    loc.SetCoord(0.0, 0.0);
-    scale = 1.0;
   }
 
   //! Converts the gp_Trsf2d transformation theT into a
@@ -66,12 +67,12 @@ public:
   //! Creates   a transformation based on the matrix theM and the
   //! vector theV where theM defines the vectorial part of the
   //! transformation, and theV the translation part.
-  gp_GTrsf2d(const gp_Mat2d& theM, const gp_XY& theV)
+  constexpr gp_GTrsf2d(const gp_Mat2d& theM, const gp_XY& theV) noexcept
       : matrix(theM),
-        loc(theV)
+        loc(theV),
+        shape(gp_Other),
+        scale(0.0)
   {
-    shape = gp_Other;
-    scale = 0.0;
   }
 
   //! Changes this transformation into an affinity of ratio theRatio
@@ -97,7 +98,7 @@ public:
   void SetTrsf2d(const gp_Trsf2d& theT);
 
   //! Replaces the vectorial part of this transformation by theMatrix.
-  void SetVectorialPart(const gp_Mat2d& theMatrix)
+  constexpr void SetVectorialPart(const gp_Mat2d& theMatrix) noexcept
   {
     matrix = theMatrix;
     shape  = gp_Other;
@@ -123,14 +124,14 @@ public:
   //! transformation (relative to a point or axis), a scaling
   //! transformation, a compound transformation or some
   //! other type of transformation.
-  gp_TrsfForm Form() const { return shape; }
+  constexpr gp_TrsfForm Form() const noexcept { return shape; }
 
   //! Returns the translation part of the GTrsf2d.
-  const gp_XY& TranslationPart() const { return loc; }
+  constexpr const gp_XY& TranslationPart() const noexcept { return loc; }
 
   //! Computes the vectorial part of the GTrsf2d. The returned
   //! Matrix is a 2*2 matrix.
-  const gp_Mat2d& VectorialPart() const { return matrix; }
+  constexpr const gp_Mat2d& VectorialPart() const noexcept { return matrix; }
 
   //! Returns the coefficients of the global matrix of transformation.
   //! Raised OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 3

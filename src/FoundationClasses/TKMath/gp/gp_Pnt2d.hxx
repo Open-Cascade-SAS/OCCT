@@ -34,16 +34,19 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a point with zero coordinates.
-  gp_Pnt2d() {}
+  constexpr gp_Pnt2d() noexcept
+      : coord()
+  {
+  }
 
   //! Creates a point with a doublet of coordinates.
-  gp_Pnt2d(const gp_XY& theCoord)
+  constexpr gp_Pnt2d(const gp_XY& theCoord) noexcept
       : coord(theCoord)
   {
   }
 
   //! Creates a  point with its 2 cartesian's coordinates : theXp, theYp.
-  gp_Pnt2d(const Standard_Real theXp, const Standard_Real theYp)
+  constexpr gp_Pnt2d(const Standard_Real theXp, const Standard_Real theYp) noexcept
       : coord(theXp, theYp)
   {
   }
@@ -58,19 +61,19 @@ public:
   }
 
   //! For this point, assigns the values theXp and theYp to its two coordinates
-  void SetCoord(const Standard_Real theXp, const Standard_Real theYp)
+  constexpr void SetCoord(const Standard_Real theXp, const Standard_Real theYp) noexcept
   {
     coord.SetCoord(theXp, theYp);
   }
 
   //! Assigns the given value to the X  coordinate of this point.
-  void SetX(const Standard_Real theX) { coord.SetX(theX); }
+  constexpr void SetX(const Standard_Real theX) noexcept { coord.SetX(theX); }
 
   //! Assigns the given value to the Y  coordinate of this point.
-  void SetY(const Standard_Real theY) { coord.SetY(theY); }
+  constexpr void SetY(const Standard_Real theY) noexcept { coord.SetY(theY); }
 
   //! Assigns the two coordinates of Coord to this point.
-  void SetXY(const gp_XY& theCoord) { coord = theCoord; }
+  constexpr void SetXY(const gp_XY& theCoord) noexcept { coord = theCoord; }
 
   //! Returns the coordinate of range theIndex :
   //! theIndex = 1 => X is returned
@@ -79,23 +82,23 @@ public:
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
   //! For this point returns its two coordinates as a number pair.
-  void Coord(Standard_Real& theXp, Standard_Real& theYp) const { coord.Coord(theXp, theYp); }
+  constexpr void Coord(Standard_Real& theXp, Standard_Real& theYp) const noexcept { coord.Coord(theXp, theYp); }
 
   //! For this point, returns its X  coordinate.
-  Standard_Real X() const { return coord.X(); }
+  constexpr Standard_Real X() const noexcept { return coord.X(); }
 
   //! For this point, returns its Y coordinate.
-  Standard_Real Y() const { return coord.Y(); }
+  constexpr Standard_Real Y() const noexcept { return coord.Y(); }
 
   //! For this point, returns its two coordinates as a number pair.
-  const gp_XY& XY() const { return coord; }
+  constexpr const gp_XY& XY() const noexcept { return coord; }
 
   //! For this point, returns its two coordinates as a number pair.
-  const gp_XY& Coord() const { return coord; }
+  constexpr const gp_XY& Coord() const noexcept { return coord; }
 
   //! Returns the coordinates of this point.
   //! Note: This syntax allows direct modification of the returned value.
-  gp_XY& ChangeCoord() { return coord; }
+  constexpr gp_XY& ChangeCoord() noexcept { return coord; }
 
   //! Comparison
   //! Returns True if the distance between the two
@@ -109,7 +112,7 @@ public:
   Standard_Real Distance(const gp_Pnt2d& theOther) const;
 
   //! Computes the square distance between two points.
-  Standard_Real SquareDistance(const gp_Pnt2d& theOther) const;
+  constexpr Standard_Real SquareDistance(const gp_Pnt2d& theOther) const noexcept;
 
   //! Performs the symmetrical transformation of a point
   //! with respect to the point theP which is the center of
@@ -136,9 +139,9 @@ public:
   }
 
   //! Scales a point. theS is the scaling value.
-  void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
+  constexpr void Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept;
 
-  Standard_NODISCARD gp_Pnt2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
+  Standard_NODISCARD constexpr gp_Pnt2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const noexcept
   {
     gp_Pnt2d aPres = *this;
     aPres.Scale(theP, theS);
@@ -157,18 +160,18 @@ public:
 
   //! Translates a point in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  void Translate(const gp_Vec2d& theV);
+  constexpr void Translate(const gp_Vec2d& theV) noexcept;
 
-  Standard_NODISCARD gp_Pnt2d Translated(const gp_Vec2d& theV) const;
+  Standard_NODISCARD constexpr gp_Pnt2d Translated(const gp_Vec2d& theV) const noexcept;
 
   //! Translates a point from the point theP1 to the point theP2.
-  void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
   {
     coord.Add(theP2.coord);
     coord.Subtract(theP1.coord);
   }
 
-  Standard_NODISCARD gp_Pnt2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD constexpr gp_Pnt2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const noexcept
   {
     gp_Pnt2d aP = *this;
     aP.Translate(theP1, theP2);
@@ -197,7 +200,7 @@ inline Standard_Real gp_Pnt2d::Distance(const gp_Pnt2d& theOther) const
 
 //=================================================================================================
 
-inline Standard_Real gp_Pnt2d::SquareDistance(const gp_Pnt2d& theOther) const
+inline constexpr Standard_Real gp_Pnt2d::SquareDistance(const gp_Pnt2d& theOther) const noexcept
 {
   const gp_XY&  aXY = theOther.coord;
   Standard_Real aX  = coord.X() - aXY.X();
@@ -216,7 +219,7 @@ inline void gp_Pnt2d::Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
 
 //=================================================================================================
 
-inline void gp_Pnt2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
+inline constexpr void gp_Pnt2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept
 {
   gp_XY aXY = theP.coord;
   aXY.Multiply(1.0 - theS);
@@ -226,14 +229,14 @@ inline void gp_Pnt2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 
 //=================================================================================================
 
-inline void gp_Pnt2d::Translate(const gp_Vec2d& theV)
+inline constexpr void gp_Pnt2d::Translate(const gp_Vec2d& theV) noexcept
 {
   coord.Add(theV.XY());
 }
 
 //=================================================================================================
 
-inline gp_Pnt2d gp_Pnt2d::Translated(const gp_Vec2d& theV) const
+inline constexpr gp_Pnt2d gp_Pnt2d::Translated(const gp_Vec2d& theV) const noexcept
 {
   gp_Pnt2d aP = *this;
   aP.coord.Add(theV.XY());

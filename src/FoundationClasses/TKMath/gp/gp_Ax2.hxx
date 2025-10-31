@@ -103,7 +103,7 @@ public:
   void SetDirection(const gp_Dir& V);
 
   //! Changes the "Location" point (origin) of <me>.
-  void SetLocation(const gp_Pnt& theP) { axis.SetLocation(theP); }
+  constexpr void SetLocation(const gp_Pnt& theP) noexcept { axis.SetLocation(theP); }
 
   //! Changes the "Xdirection" of <me>. The main direction
   //! "Direction" is not modified, the "Ydirection" is modified.
@@ -139,19 +139,19 @@ public:
 
   //! Returns the main axis of <me>. It is the "Location" point
   //! and the main "Direction".
-  const gp_Ax1& Axis() const { return axis; }
+  constexpr const gp_Ax1& Axis() const noexcept { return axis; }
 
   //! Returns the main direction of <me>.
-  const gp_Dir& Direction() const { return axis.Direction(); }
+  constexpr const gp_Dir& Direction() const noexcept { return axis.Direction(); }
 
   //! Returns the "Location" point (origin) of <me>.
-  const gp_Pnt& Location() const { return axis.Location(); }
+  constexpr const gp_Pnt& Location() const noexcept { return axis.Location(); }
 
   //! Returns the "XDirection" of <me>.
-  const gp_Dir& XDirection() const { return vxdir; }
+  constexpr const gp_Dir& XDirection() const noexcept { return vxdir; }
 
   //! Returns the "YDirection" of <me>.
-  const gp_Dir& YDirection() const { return vydir; }
+  constexpr const gp_Dir& YDirection() const noexcept { return vydir; }
 
   Standard_Boolean IsCoplanar(const gp_Ax2&       Other,
                               const Standard_Real LinearTolerance,
@@ -336,7 +336,7 @@ public:
     return aTemp;
   }
 
-  void Translate(const gp_Vec& theV) { axis.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { axis.Translate(theV); }
 
   //! Translates an axis plaxement in the direction of the vector <theV>.
   //! The magnitude of the translation is the vector's magnitude.
@@ -347,7 +347,7 @@ public:
     return aTemp;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { axis.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept { axis.Translate(theP1, theP2); }
 
   //! Translates an axis placement from the point <theP1> to the point <theP2>.
   Standard_NODISCARD gp_Ax2 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const

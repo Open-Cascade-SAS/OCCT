@@ -34,16 +34,19 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a point with zero coordinates.
-  gp_Pnt() {}
+  constexpr gp_Pnt() noexcept
+      : coord()
+  {
+  }
 
   //! Creates a point from a XYZ object.
-  gp_Pnt(const gp_XYZ& theCoord)
+  constexpr gp_Pnt(const gp_XYZ& theCoord) noexcept
       : coord(theCoord)
   {
   }
 
   //! Creates a  point with its 3 cartesian's coordinates : theXp, theYp, theZp.
-  gp_Pnt(const Standard_Real theXp, const Standard_Real theYp, const Standard_Real theZp)
+  constexpr gp_Pnt(const Standard_Real theXp, const Standard_Real theYp, const Standard_Real theZp) noexcept
       : coord(theXp, theYp, theZp)
   {
   }
@@ -59,22 +62,22 @@ public:
   }
 
   //! For this point, assigns  the values theXp, theYp and theZp to its three coordinates.
-  void SetCoord(const Standard_Real theXp, const Standard_Real theYp, const Standard_Real theZp)
+  constexpr void SetCoord(const Standard_Real theXp, const Standard_Real theYp, const Standard_Real theZp) noexcept
   {
     coord.SetCoord(theXp, theYp, theZp);
   }
 
   //! Assigns the given value to the X coordinate of this point.
-  void SetX(const Standard_Real theX) { coord.SetX(theX); }
+  constexpr void SetX(const Standard_Real theX) noexcept { coord.SetX(theX); }
 
   //! Assigns the given value to the Y coordinate of this point.
-  void SetY(const Standard_Real theY) { coord.SetY(theY); }
+  constexpr void SetY(const Standard_Real theY) noexcept { coord.SetY(theY); }
 
   //! Assigns the given value to the Z coordinate of this point.
-  void SetZ(const Standard_Real theZ) { coord.SetZ(theZ); }
+  constexpr void SetZ(const Standard_Real theZ) noexcept { coord.SetZ(theZ); }
 
   //! Assigns the three coordinates of theCoord to this point.
-  void SetXYZ(const gp_XYZ& theCoord) { coord = theCoord; }
+  constexpr void SetXYZ(const gp_XYZ& theCoord) noexcept { coord = theCoord; }
 
   //! Returns the coordinate of corresponding to the value of theIndex :
   //! theIndex = 1 => X is returned
@@ -85,33 +88,33 @@ public:
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
   //! For this point gives its three coordinates theXp, theYp and theZp.
-  void Coord(Standard_Real& theXp, Standard_Real& theYp, Standard_Real& theZp) const
+  constexpr void Coord(Standard_Real& theXp, Standard_Real& theYp, Standard_Real& theZp) const noexcept
   {
     coord.Coord(theXp, theYp, theZp);
   }
 
   //! For this point, returns its X coordinate.
-  Standard_Real X() const { return coord.X(); }
+  constexpr Standard_Real X() const noexcept { return coord.X(); }
 
   //! For this point, returns its Y coordinate.
-  Standard_Real Y() const { return coord.Y(); }
+  constexpr Standard_Real Y() const noexcept { return coord.Y(); }
 
   //! For this point, returns its Z coordinate.
-  Standard_Real Z() const { return coord.Z(); }
+  constexpr Standard_Real Z() const noexcept { return coord.Z(); }
 
   //! For this point, returns its three coordinates as a XYZ object.
-  const gp_XYZ& XYZ() const { return coord; }
+  constexpr const gp_XYZ& XYZ() const noexcept { return coord; }
 
   //! For this point, returns its three coordinates as a XYZ object.
-  const gp_XYZ& Coord() const { return coord; }
+  constexpr const gp_XYZ& Coord() const noexcept { return coord; }
 
   //! Returns the coordinates of this point.
   //! Note: This syntax allows direct modification of the returned value.
-  gp_XYZ& ChangeCoord() { return coord; }
+  constexpr gp_XYZ& ChangeCoord() noexcept { return coord; }
 
   //! Assigns the result of the following expression to this point
   //! (theAlpha*this + theBeta*theP) / (theAlpha + theBeta)
-  void BaryCenter(const Standard_Real theAlpha, const gp_Pnt& theP, const Standard_Real theBeta)
+  constexpr void BaryCenter(const Standard_Real theAlpha, const gp_Pnt& theP, const Standard_Real theBeta)
   {
     coord.SetLinearForm(theAlpha, coord, theBeta, theP.coord);
     coord.Divide(theAlpha + theBeta);
@@ -129,7 +132,7 @@ public:
   Standard_Real Distance(const gp_Pnt& theOther) const;
 
   //! Computes the square distance between two points.
-  Standard_Real SquareDistance(const gp_Pnt& theOther) const;
+  constexpr Standard_Real SquareDistance(const gp_Pnt& theOther) const noexcept;
 
   //! Performs the symmetrical transformation of a point
   //! with respect to the point theP which is the center of
@@ -164,9 +167,9 @@ public:
   }
 
   //! Scales a point. theS is the scaling value.
-  void Scale(const gp_Pnt& theP, const Standard_Real theS);
+  constexpr void Scale(const gp_Pnt& theP, const Standard_Real theS) noexcept;
 
-  Standard_NODISCARD gp_Pnt Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+  Standard_NODISCARD constexpr gp_Pnt Scaled(const gp_Pnt& theP, const Standard_Real theS) const noexcept
   {
     gp_Pnt aPres = *this;
     aPres.Scale(theP, theS);
@@ -185,18 +188,18 @@ public:
 
   //! Translates a point in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  void Translate(const gp_Vec& theV);
+  constexpr void Translate(const gp_Vec& theV) noexcept;
 
-  Standard_NODISCARD gp_Pnt Translated(const gp_Vec& theV) const;
+  Standard_NODISCARD constexpr gp_Pnt Translated(const gp_Vec& theV) const noexcept;
 
   //! Translates a point from the point theP1 to the point theP2.
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2)
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
   {
     coord.Add(theP2.coord);
     coord.Subtract(theP1.coord);
   }
 
-  Standard_NODISCARD gp_Pnt Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Pnt Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Pnt aP = *this;
     aP.Translate(theP1, theP2);
@@ -261,7 +264,7 @@ inline Standard_Real gp_Pnt::Distance(const gp_Pnt& theOther) const
 
 //=================================================================================================
 
-inline Standard_Real gp_Pnt::SquareDistance(const gp_Pnt& theOther) const
+inline constexpr Standard_Real gp_Pnt::SquareDistance(const gp_Pnt& theOther) const noexcept
 {
   const gp_XYZ&       aXYZ = theOther.coord;
   const Standard_Real aDx  = coord.X() - aXYZ.X();
@@ -281,7 +284,7 @@ inline void gp_Pnt::Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
 
 //=================================================================================================
 
-inline void gp_Pnt::Scale(const gp_Pnt& theP, const Standard_Real theS)
+inline constexpr void gp_Pnt::Scale(const gp_Pnt& theP, const Standard_Real theS) noexcept
 {
   gp_XYZ aXYZ = theP.coord;
   aXYZ.Multiply(1.0 - theS);
@@ -291,14 +294,14 @@ inline void gp_Pnt::Scale(const gp_Pnt& theP, const Standard_Real theS)
 
 //=================================================================================================
 
-inline void gp_Pnt::Translate(const gp_Vec& theV)
+inline constexpr void gp_Pnt::Translate(const gp_Vec& theV) noexcept
 {
   coord.Add(theV.XYZ());
 }
 
 //=================================================================================================
 
-inline gp_Pnt gp_Pnt::Translated(const gp_Vec& theV) const
+inline constexpr gp_Pnt gp_Pnt::Translated(const gp_Vec& theV) const noexcept
 {
   gp_Pnt aP = *this;
   aP.coord.Add(theV.XYZ());
