@@ -103,7 +103,9 @@ public:
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
   //! Returns for the  unit vector  its three coordinates theXv, theYv, and theZv.
-  constexpr void Coord(Standard_Real& theXv, Standard_Real& theYv, Standard_Real& theZv) const noexcept
+  constexpr void Coord(Standard_Real& theXv,
+                       Standard_Real& theYv,
+                       Standard_Real& theZv) const noexcept
   {
     coord.Coord(theXv, theYv, theZv);
   }
@@ -200,7 +202,10 @@ public:
   Standard_NODISCARD gp_Dir CrossCrossed(const gp_Dir& theV1, const gp_Dir& theV2) const;
 
   //! Computes the scalar product
-  constexpr Standard_Real Dot(const gp_Dir& theOther) const noexcept { return coord.Dot(theOther.coord); }
+  constexpr Standard_Real Dot(const gp_Dir& theOther) const noexcept
+  {
+    return coord.Dot(theOther.coord);
+  }
 
   constexpr Standard_Real operator*(const gp_Dir& theOther) const noexcept { return Dot(theOther); }
 

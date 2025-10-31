@@ -171,7 +171,10 @@ public:
   //! -   operator + creates a new one.
   Standard_NODISCARD constexpr gp_Mat2d Added(const gp_Mat2d& theOther) const noexcept;
 
-  Standard_NODISCARD constexpr gp_Mat2d operator+(const gp_Mat2d& theOther) const noexcept { return Added(theOther); }
+  Standard_NODISCARD constexpr gp_Mat2d operator+(const gp_Mat2d& theOther) const noexcept
+  {
+    return Added(theOther);
+  }
 
   constexpr void Divide(const Standard_Real theScalar);
 
@@ -421,7 +424,8 @@ inline constexpr gp_Mat2d gp_Mat2d::Transposed() const noexcept
 // function : operator*
 // purpose :
 //=======================================================================
-inline constexpr gp_Mat2d operator*(const Standard_Real theScalar, const gp_Mat2d& theMat2D) noexcept
+inline constexpr gp_Mat2d operator*(const Standard_Real theScalar,
+                                    const gp_Mat2d&     theMat2D) noexcept
 {
   return theMat2D.Multiplied(theScalar);
 }

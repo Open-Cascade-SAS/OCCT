@@ -347,7 +347,10 @@ public:
     return aTemp;
   }
 
-  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept { axis.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    axis.Translate(theP1, theP2);
+  }
 
   //! Translates an axis placement from the point <theP1> to the point <theP2>.
   Standard_NODISCARD gp_Ax2 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const

@@ -136,11 +136,17 @@ public:
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raises OutOfRange if theIndex != {1, 2}.
-  constexpr Standard_Real Coord(const Standard_Integer theIndex) const noexcept { return coord.Coord(theIndex); }
+  constexpr Standard_Real Coord(const Standard_Integer theIndex) const noexcept
+  {
+    return coord.Coord(theIndex);
+  }
 
   //! For this unit vector returns its two coordinates theXv and theYv.
   //! Raises OutOfRange if theIndex != {1, 2}.
-  constexpr void Coord(Standard_Real& theXv, Standard_Real& theYv) const noexcept { coord.Coord(theXv, theYv); }
+  constexpr void Coord(Standard_Real& theXv, Standard_Real& theYv) const noexcept
+  {
+    coord.Coord(theXv, theYv);
+  }
 
   //! For this unit vector, returns its X coordinate.
   constexpr Standard_Real X() const noexcept { return coord.X(); }
@@ -193,9 +199,15 @@ public:
   }
 
   //! Computes the scalar product
-  constexpr Standard_Real Dot(const gp_Dir2d& theOther) const noexcept { return coord.Dot(theOther.coord); }
+  constexpr Standard_Real Dot(const gp_Dir2d& theOther) const noexcept
+  {
+    return coord.Dot(theOther.coord);
+  }
 
-  constexpr Standard_Real operator*(const gp_Dir2d& theOther) const noexcept { return Dot(theOther); }
+  constexpr Standard_Real operator*(const gp_Dir2d& theOther) const noexcept
+  {
+    return Dot(theOther);
+  }
 
   constexpr void Reverse() noexcept { coord.Reverse(); }
 

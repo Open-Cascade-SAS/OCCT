@@ -219,7 +219,10 @@ public:
   //! Translates this axis by:
   //! the vector (theP1, theP2) defined from point theP1 to point theP2.
   //! and assigns the result to this axis.
-  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept { loc.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    loc.Translate(theP1, theP2);
+  }
 
   //! Translates this axis by:
   //! the vector (theP1, theP2) defined from point theP1 to point theP2.

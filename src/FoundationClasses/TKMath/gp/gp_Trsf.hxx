@@ -434,7 +434,9 @@ inline Standard_Real gp_Trsf::Value(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline void gp_Trsf::Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const noexcept
+inline void gp_Trsf::Transforms(Standard_Real& theX,
+                                Standard_Real& theY,
+                                Standard_Real& theZ) const noexcept
 {
   gp_XYZ aTriplet(theX, theY, theZ);
   aTriplet.Multiply(matrix);

@@ -82,7 +82,10 @@ public:
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
   //! For this point returns its two coordinates as a number pair.
-  constexpr void Coord(Standard_Real& theXp, Standard_Real& theYp) const noexcept { coord.Coord(theXp, theYp); }
+  constexpr void Coord(Standard_Real& theXp, Standard_Real& theYp) const noexcept
+  {
+    coord.Coord(theXp, theYp);
+  }
 
   //! For this point, returns its X  coordinate.
   constexpr Standard_Real X() const noexcept { return coord.X(); }
@@ -141,7 +144,8 @@ public:
   //! Scales a point. theS is the scaling value.
   constexpr void Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept;
 
-  Standard_NODISCARD constexpr gp_Pnt2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const noexcept
+  Standard_NODISCARD constexpr gp_Pnt2d Scaled(const gp_Pnt2d&     theP,
+                                               const Standard_Real theS) const noexcept
   {
     gp_Pnt2d aPres = *this;
     aPres.Scale(theP, theS);
@@ -171,7 +175,8 @@ public:
     coord.Subtract(theP1.coord);
   }
 
-  Standard_NODISCARD constexpr gp_Pnt2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Pnt2d Translated(const gp_Pnt2d& theP1,
+                                                   const gp_Pnt2d& theP2) const noexcept
   {
     gp_Pnt2d aP = *this;
     aP.Translate(theP1, theP2);

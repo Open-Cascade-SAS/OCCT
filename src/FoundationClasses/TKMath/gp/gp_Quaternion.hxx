@@ -159,7 +159,10 @@ public:
   }
 
   //! Return rotation with reversed direction (conjugated quaternion)
-  Standard_NODISCARD constexpr gp_Quaternion Reversed() const noexcept { return gp_Quaternion(-x, -y, -z, w); }
+  Standard_NODISCARD constexpr gp_Quaternion Reversed() const noexcept
+  {
+    return gp_Quaternion(-x, -y, -z, w);
+  }
 
   //! Inverts quaternion (both rotation direction and norm)
   constexpr void Invert()
@@ -219,7 +222,10 @@ public:
   //! Returns quaternion with all components negated.
   //! Note that this operation does not affect neither
   //! rotation operator defined by quaternion nor its norm.
-  Standard_NODISCARD constexpr gp_Quaternion Negated() const noexcept { return gp_Quaternion(-x, -y, -z, -w); }
+  Standard_NODISCARD constexpr gp_Quaternion Negated() const noexcept
+  {
+    return gp_Quaternion(-x, -y, -z, -w);
+  }
 
   Standard_NODISCARD constexpr gp_Quaternion operator-() const noexcept { return Negated(); }
 
@@ -235,7 +241,8 @@ public:
   }
 
   //! Makes difference of quaternion components; result is "rotations mix"
-  Standard_NODISCARD constexpr gp_Quaternion Subtracted(const gp_Quaternion& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_Quaternion Subtracted(
+    const gp_Quaternion& theOther) const noexcept
   {
     return gp_Quaternion(x - theOther.x, y - theOther.y, z - theOther.z, w - theOther.w);
   }
@@ -255,7 +262,8 @@ public:
   //! qq' != q'q;
   //! qq^-1 = q;
   //! @endcode
-  Standard_NODISCARD constexpr gp_Quaternion Multiplied(const gp_Quaternion& theOther) const noexcept;
+  Standard_NODISCARD constexpr gp_Quaternion Multiplied(
+    const gp_Quaternion& theOther) const noexcept;
 
   Standard_NODISCARD constexpr gp_Quaternion operator*(const gp_Quaternion& theOther) const noexcept
   {

@@ -46,7 +46,9 @@ public:
   }
 
   //! Creates a  point with its 3 cartesian's coordinates : theXp, theYp, theZp.
-  constexpr gp_Pnt(const Standard_Real theXp, const Standard_Real theYp, const Standard_Real theZp) noexcept
+  constexpr gp_Pnt(const Standard_Real theXp,
+                   const Standard_Real theYp,
+                   const Standard_Real theZp) noexcept
       : coord(theXp, theYp, theZp)
   {
   }
@@ -62,7 +64,9 @@ public:
   }
 
   //! For this point, assigns  the values theXp, theYp and theZp to its three coordinates.
-  constexpr void SetCoord(const Standard_Real theXp, const Standard_Real theYp, const Standard_Real theZp) noexcept
+  constexpr void SetCoord(const Standard_Real theXp,
+                          const Standard_Real theYp,
+                          const Standard_Real theZp) noexcept
   {
     coord.SetCoord(theXp, theYp, theZp);
   }
@@ -88,7 +92,9 @@ public:
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
   //! For this point gives its three coordinates theXp, theYp and theZp.
-  constexpr void Coord(Standard_Real& theXp, Standard_Real& theYp, Standard_Real& theZp) const noexcept
+  constexpr void Coord(Standard_Real& theXp,
+                       Standard_Real& theYp,
+                       Standard_Real& theZp) const noexcept
   {
     coord.Coord(theXp, theYp, theZp);
   }
@@ -114,7 +120,9 @@ public:
 
   //! Assigns the result of the following expression to this point
   //! (theAlpha*this + theBeta*theP) / (theAlpha + theBeta)
-  constexpr void BaryCenter(const Standard_Real theAlpha, const gp_Pnt& theP, const Standard_Real theBeta)
+  constexpr void BaryCenter(const Standard_Real theAlpha,
+                            const gp_Pnt&       theP,
+                            const Standard_Real theBeta)
   {
     coord.SetLinearForm(theAlpha, coord, theBeta, theP.coord);
     coord.Divide(theAlpha + theBeta);
@@ -169,7 +177,8 @@ public:
   //! Scales a point. theS is the scaling value.
   constexpr void Scale(const gp_Pnt& theP, const Standard_Real theS) noexcept;
 
-  Standard_NODISCARD constexpr gp_Pnt Scaled(const gp_Pnt& theP, const Standard_Real theS) const noexcept
+  Standard_NODISCARD constexpr gp_Pnt Scaled(const gp_Pnt&       theP,
+                                             const Standard_Real theS) const noexcept
   {
     gp_Pnt aPres = *this;
     aPres.Scale(theP, theS);
@@ -199,7 +208,8 @@ public:
     coord.Subtract(theP1.coord);
   }
 
-  Standard_NODISCARD constexpr gp_Pnt Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Pnt Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Pnt aP = *this;
     aP.Translate(theP1, theP2);
