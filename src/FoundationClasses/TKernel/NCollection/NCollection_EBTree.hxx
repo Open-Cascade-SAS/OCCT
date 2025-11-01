@@ -94,10 +94,7 @@ public:
    * @return
    *   True if the tree contains the object.
    */
-  Standard_Boolean Contains(const TheObjType& theObj) const noexcept
-  {
-    return myObjNodeMap.IsBound(theObj);
-  }
+  Standard_Boolean Contains(const TheObjType& theObj) const { return myObjNodeMap.IsBound(theObj); }
 
   /**
    * @return
@@ -198,15 +195,9 @@ Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObj
                                                                                                    \
     /* Access to the methods of EBTree */                                                          \
                                                                                                    \
-    Standard_Boolean Remove(const _OBJTYPE& theObj)                                                \
-    {                                                                                              \
-      return ChangeETree().Remove(theObj);                                                         \
-    }                                                                                              \
+    Standard_Boolean Remove(const _OBJTYPE& theObj) { return ChangeETree().Remove(theObj); }       \
                                                                                                    \
-    Standard_Boolean Contains(const _OBJTYPE& theObj) const noexcept                               \
-    {                                                                                              \
-      return ETree().Contains(theObj);                                                             \
-    }                                                                                              \
+    Standard_Boolean Contains(const _OBJTYPE& theObj) const { return ETree().Contains(theObj); }   \
                                                                                                    \
     const UBTree::TreeNode& FindNode(const _OBJTYPE& theObj) const                                 \
     {                                                                                              \
@@ -215,14 +206,8 @@ Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObj
                                                                                                    \
     /* Access to the extended tree algorithm */                                                    \
                                                                                                    \
-    const EBTree& ETree() const noexcept                                                           \
-    {                                                                                              \
-      return (const EBTree&)Tree();                                                                \
-    }                                                                                              \
-    EBTree& ChangeETree() noexcept                                                                 \
-    {                                                                                              \
-      return (EBTree&)ChangeTree();                                                                \
-    }                                                                                              \
+    const EBTree& ETree() const noexcept { return (const EBTree&)Tree(); }                         \
+    EBTree&       ChangeETree() noexcept { return (EBTree&)ChangeTree(); }                         \
                                                                                                    \
     DEFINE_STANDARD_RTTI_INLINE(_HEBTREE, _HUBTREE)                                                \
     /* Type management */                                                                          \

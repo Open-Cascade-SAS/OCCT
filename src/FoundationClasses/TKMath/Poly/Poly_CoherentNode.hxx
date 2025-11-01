@@ -117,7 +117,7 @@ public:
    * Check if this is a free node, i.e., a node without a single
    * incident triangle.
    */
-  inline Standard_Boolean IsFreeNode() const { return myTriangles == 0L; }
+  inline Standard_Boolean IsFreeNode() const noexcept { return myTriangles == 0L; }
 
   /**
    * Reset the Node to void.

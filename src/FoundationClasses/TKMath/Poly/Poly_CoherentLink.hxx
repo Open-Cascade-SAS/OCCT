@@ -101,7 +101,7 @@ public:
    * Query the status of the link - if it is an invalid one.
    * An invalid link has Node members equal to -1.
    */
-  inline Standard_Boolean IsEmpty() const { return myNode[0] < 0 || myNode[1] < 0; }
+  inline Standard_Boolean IsEmpty() const noexcept { return myNode[0] < 0 || myNode[1] < 0; }
 
   /**
    * Invalidate this Link.
