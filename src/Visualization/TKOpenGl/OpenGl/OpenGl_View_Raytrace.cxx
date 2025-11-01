@@ -42,7 +42,6 @@
   #include <OSD_Timer.hxx>
 #endif
 
-
 namespace
 {
 //! Defines OpenGL texture samplers.
