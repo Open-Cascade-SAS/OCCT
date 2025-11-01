@@ -150,10 +150,10 @@ public:
     void Init(const NCollection_SparseArray& theVector) { this->init(&theVector); }
 
     //! Constant value access
-    const TheItemType& Value(void) const noexcept { return *(const TheItemType*)this->value(); }
+    const TheItemType& Value(void) const { return *(const TheItemType*)this->value(); }
 
     //! Constant value access operator
-    const TheItemType& operator()(void) const noexcept
+    const TheItemType& operator()(void) const
     {
       return *(const TheItemType*)this->value();
     }
@@ -181,13 +181,13 @@ public:
     void Init(const NCollection_SparseArray& theVector) { this->init(&theVector); }
 
     //! Value access
-    TheItemType& ChangeValue(void) noexcept { return *(TheItemType*)this->value(); }
+    TheItemType& ChangeValue(void) { return *(TheItemType*)this->value(); }
 
     //! Value access operator
-    TheItemType& operator()(void) noexcept { return *(TheItemType*)this->value(); }
+    TheItemType& operator()(void) { return *(TheItemType*)this->value(); }
 
     //! Const access operator - the same as in parent class
-    const TheItemType& operator()(void) const noexcept
+    const TheItemType& operator()(void) const
     {
       return *(const TheItemType*)this->value();
     }

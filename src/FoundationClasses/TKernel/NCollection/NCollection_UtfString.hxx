@@ -299,7 +299,7 @@ private: //! @name low-level methods
   }
 
   //! Release string buffer and nullify the pointer.
-  static void strFree(Type*& thePtr) noexcept { Standard::Free(thePtr); }
+  static void strFree(Type*& thePtr) { Standard::Free(thePtr); }
 
   //! Provides bytes interface to avoid incorrect pointer arithmetics.
   static void strCopy(Standard_Byte*         theStrDst,

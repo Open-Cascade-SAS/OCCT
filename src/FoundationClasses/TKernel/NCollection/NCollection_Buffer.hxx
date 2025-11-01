@@ -92,7 +92,7 @@ public:
   }
 
   //! De-allocate buffer.
-  void Free() noexcept
+  void Free()
   {
     if (!myAllocator.IsNull())
     {

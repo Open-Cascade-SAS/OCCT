@@ -18,6 +18,7 @@
 #include <Standard.hxx>
 
 #include <memory>
+#include <type_traits>
 
 //! Implements allocator requirements as defined in ISO C++ Standard 2003, section 20.1.5.
 /*! The allocator uses a standard OCCT mechanism for memory
@@ -129,13 +130,13 @@ public:
   //! Template version of function Free(), nullifies the argument pointer
   //! @param thePtr - previously allocated memory block to be freed
   template <typename T>
-  void deallocate(T* thePnt, size_type) noexcept
+  void deallocate(T* thePnt, size_type)
   {
     myAllocator.IsNull() ? Standard::Free(thePnt) : myAllocator->Free(thePnt);
   }
 
   //! Frees previously allocated memory.
-  void deallocate(pointer thePnt, size_type) noexcept
+  void deallocate(pointer thePnt, size_type)
   {
     myAllocator.IsNull() ? Standard::Free(thePnt) : myAllocator->Free(thePnt);
   }
@@ -157,7 +158,7 @@ public:
   //! Destroys the object.
   //! Uses the object destructor.
   template <class _Uty>
-  void destroy(_Uty* _Ptr) noexcept
+  void destroy(_Uty* _Ptr) noexcept(std::is_nothrow_destructible<_Uty>::value)
   {
     (void)_Ptr;
     _Ptr->~_Uty();

@@ -26,7 +26,7 @@
     {                                                                                              \
       return Standard::Allocate(theSize);                                                          \
     }                                                                                              \
-    void operator delete[](void* theAddress) noexcept                                              \
+    void operator delete[](void* theAddress)                                                       \
     {                                                                                              \
       Standard::Free(theAddress);                                                                  \
     }
@@ -47,7 +47,7 @@
     {                                                                                              \
       return theAddress;                                                                           \
     }                                                                                              \
-    void operator delete(void*, void*) noexcept {}
+    void operator delete(void*, void*) {}
 #endif
 
 // Macro to override operators new and delete to use OCC memory manager
@@ -56,7 +56,7 @@
   {                                                                                                \
     return Standard::Allocate(theSize);                                                            \
   }                                                                                                \
-  void operator delete(void* theAddress) noexcept                                                  \
+  void operator delete(void* theAddress)                                                           \
   {                                                                                                \
     Standard::Free(theAddress);                                                                    \
   }                                                                                                \

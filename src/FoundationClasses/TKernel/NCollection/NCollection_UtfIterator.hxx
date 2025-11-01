@@ -95,7 +95,7 @@ public:
   constexpr const Type* BufferHere() const noexcept { return myPosition; }
 
   //! Buffer-fetching getter. Dangerous! Iterator should be reinitialized on buffer change.
-  constexpr Type* ChangeBufferHere() noexcept { return (Type*)myPosition; }
+  Type* ChangeBufferHere() noexcept { return (Type*)myPosition; }
 
   //! Buffer-fetching getter.
   constexpr const Type* BufferNext() const noexcept { return myPosNext; }

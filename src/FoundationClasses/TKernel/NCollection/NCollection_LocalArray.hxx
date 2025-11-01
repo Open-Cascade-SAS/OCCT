@@ -36,7 +36,7 @@ public:
   {
   }
 
-  ~NCollection_LocalArray() noexcept { Deallocate(); }
+  ~NCollection_LocalArray() { Deallocate(); }
 
   void Allocate(const size_t theSize)
   {
@@ -58,7 +58,7 @@ private:
   NCollection_LocalArray& operator=(const NCollection_LocalArray&);
 
 protected:
-  void Deallocate() noexcept
+  void Deallocate()
   {
     if (myPtr != myBuffer)
       Standard::Free(myPtr);

@@ -57,7 +57,7 @@ public:
   Standard_EXPORT NCollection_AccAllocator(const size_t theBlockSize = DefaultBlockSize);
 
   //! Destructor
-  Standard_EXPORT ~NCollection_AccAllocator() noexcept;
+  Standard_EXPORT ~NCollection_AccAllocator();
 
   //! Allocate memory with given size
   Standard_EXPORT virtual void* Allocate(const size_t theSize) Standard_OVERRIDE;
@@ -174,7 +174,7 @@ protected:
       return allocStart -= theSize;
     }
 
-    void Free() noexcept { allocCount--; }
+    void Free() { allocCount--; }
 
     Standard_Boolean IsEmpty() const noexcept { return allocCount == 0; }
   };

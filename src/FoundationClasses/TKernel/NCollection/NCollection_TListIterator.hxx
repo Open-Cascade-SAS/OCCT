@@ -35,7 +35,7 @@ public:
   }
 
   //! Constructor with initialisation
-  NCollection_TListIterator(const NCollection_BaseList& theList)
+  NCollection_TListIterator(const NCollection_BaseList& theList) noexcept
       : NCollection_BaseList::Iterator(theList)
   {
   }

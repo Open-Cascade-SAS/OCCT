@@ -29,7 +29,7 @@ NCollection_AccAllocator::NCollection_AccAllocator(const size_t theBlockSize)
 
 //=================================================================================================
 
-NCollection_AccAllocator::~NCollection_AccAllocator() noexcept
+NCollection_AccAllocator::~NCollection_AccAllocator()
 {
   for (Block* aBlock = mypLastBlock; aBlock; aBlock = aBlock->prevBlock)
   {

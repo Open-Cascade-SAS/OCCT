@@ -59,7 +59,7 @@ public:
   void RemoveLast() noexcept { mySize--; }
 
   //! Resets the size
-  void Clear(const bool theReleaseMemory = false) noexcept
+  void Clear(const bool theReleaseMemory = false)
   {
     if (theReleaseMemory)
       clear();
@@ -93,7 +93,7 @@ public:
 
 private:
   //! Deallocate array
-  Standard_EXPORT void clear() noexcept;
+  Standard_EXPORT void clear();
 
 private:
   size_t                       mySize     = 0;       //!< Used length of vector

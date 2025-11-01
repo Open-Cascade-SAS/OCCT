@@ -17,6 +17,7 @@
 #include <Standard.hxx>
 #include <NCollection_BaseAllocator.hxx>
 
+#include <type_traits>
 #include <utility>
 
 //! Implements allocator requirements as defined in ISO C++ Standard 2003, section 20.1.5.
@@ -86,7 +87,7 @@ public:
   }
 
   //! Frees previously allocated memory.
-  void deallocate(pointer thePnt, const size_type) const noexcept
+  void deallocate(pointer thePnt, const size_type) const
   {
     Standard::Free(static_cast<Standard_Address>(thePnt));
   }
@@ -107,7 +108,7 @@ public:
 
   //! Destroys the object.
   //! Uses the object destructor.
-  void destroy(pointer thePnt)
+  void destroy(pointer thePnt) noexcept(std::is_nothrow_destructible<value_type>::value)
   {
     (void)thePnt;
     thePnt->~value_type();
