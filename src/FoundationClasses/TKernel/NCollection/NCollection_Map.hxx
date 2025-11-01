@@ -302,7 +302,7 @@ public:
   }
 
   //! Contains
-  Standard_Boolean Contains(const TheKeyType& theKey) const noexcept
+  Standard_Boolean Contains(const TheKeyType& theKey) const
   {
     MapNode* p;
     return lookup(theKey, p);
@@ -482,7 +482,7 @@ protected:
   //! @return true if key is found
   Standard_Boolean lookup(const TheKeyType& theKey,
                           MapNode*&         theNode,
-                          size_t&           theHash) const noexcept
+                          size_t&           theHash) const
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())
@@ -499,7 +499,7 @@ protected:
   //! @param[in] theKey key to compute hash
   //! @param[out] theNode the detected node with equal key. Can be null.
   //! @return true if key is found
-  Standard_Boolean lookup(const TheKeyType& theKey, MapNode*& theNode) const noexcept
+  Standard_Boolean lookup(const TheKeyType& theKey, MapNode*& theNode) const
   {
     if (IsEmpty())
       return Standard_False; // Not found
@@ -514,12 +514,12 @@ protected:
     return Standard_False; // Not found
   }
 
-  bool IsEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const noexcept
+  bool IsEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const
   {
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const noexcept
+  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
   }

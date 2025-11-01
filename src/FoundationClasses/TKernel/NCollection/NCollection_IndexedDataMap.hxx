@@ -409,7 +409,7 @@ public:
   }
 
   //! Contains
-  Standard_Boolean Contains(const TheKeyType& theKey1) const noexcept
+  Standard_Boolean Contains(const TheKeyType& theKey1) const
   {
     IndexedDataMapNode* aNode;
     if (lookup(theKey1, aNode))
@@ -572,7 +572,7 @@ public:
   TheItemType& operator()(const Standard_Integer theIndex) { return ChangeFromIndex(theIndex); }
 
   //! FindIndex
-  Standard_Integer FindIndex(const TheKeyType& theKey1) const noexcept
+  Standard_Integer FindIndex(const TheKeyType& theKey1) const
   {
     IndexedDataMapNode* aNode;
     if (lookup(theKey1, aNode))
@@ -608,14 +608,14 @@ public:
 
   //! Seek returns pointer to Item by Key. Returns
   //! NULL if Key was not found.
-  const TheItemType* Seek(const TheKeyType& theKey1) const noexcept
+  const TheItemType* Seek(const TheKeyType& theKey1) const
   {
     return const_cast<NCollection_IndexedDataMap*>(this)->ChangeSeek(theKey1);
   }
 
   //! ChangeSeek returns modifiable pointer to Item by Key. Returns
   //! NULL if Key was not found.
-  TheItemType* ChangeSeek(const TheKeyType& theKey1) noexcept
+  TheItemType* ChangeSeek(const TheKeyType& theKey1)
   {
     IndexedDataMapNode* aNode;
     if (lookup(theKey1, aNode))
@@ -667,7 +667,7 @@ protected:
   //! @return true if key is found
   Standard_Boolean lookup(const TheKeyType&    theKey,
                           IndexedDataMapNode*& theNode,
-                          size_t&              theHash) const noexcept
+                          size_t&              theHash) const
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())
@@ -685,7 +685,7 @@ protected:
   //! @param[in] theKey key to compute hash
   //! @param[out] theNode the detected node with equal key. Can be null.
   //! @return true if key is found
-  Standard_Boolean lookup(const TheKeyType& theKey, IndexedDataMapNode*& theNode) const noexcept
+  Standard_Boolean lookup(const TheKeyType& theKey, IndexedDataMapNode*& theNode) const
   {
     if (IsEmpty())
       return Standard_False; // Not found
@@ -700,12 +700,12 @@ protected:
     return Standard_False; // Not found
   }
 
-  bool IsEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const noexcept
+  bool IsEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const
   {
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const noexcept
+  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
   }

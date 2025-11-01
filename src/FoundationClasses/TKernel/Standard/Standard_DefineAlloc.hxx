@@ -47,7 +47,7 @@
     {                                                                                              \
       return theAddress;                                                                           \
     }                                                                                              \
-    void operator delete(void*, void*) {}
+    void operator delete(void*, void*) noexcept {}
 #endif
 
 // Macro to override operators new and delete to use OCC memory manager

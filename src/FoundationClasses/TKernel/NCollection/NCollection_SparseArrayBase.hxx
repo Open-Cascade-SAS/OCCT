@@ -94,9 +94,9 @@ private:
     }
 
     //! Returns address of array from address of block
-    static constexpr char* ToArray(const Standard_Address theAddress,
-                                   const Standard_Size /*theNbItems*/,
-                                   const Standard_Size /*theItemSize*/) noexcept
+    static char* ToArray(const Standard_Address theAddress,
+                         const Standard_Size /*theNbItems*/,
+                         const Standard_Size /*theItemSize*/) noexcept
     {
       return (char*)theAddress + sizeof(Standard_Size);
     }

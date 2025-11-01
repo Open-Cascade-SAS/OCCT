@@ -248,7 +248,7 @@ public:
   }
 
   //!* AreBound
-  Standard_Boolean AreBound(const TheKey1Type& theKey1, const TheKey2Type& theKey2) const noexcept
+  Standard_Boolean AreBound(const TheKey1Type& theKey1, const TheKey2Type& theKey2) const
   {
     if (IsEmpty())
       return Standard_False;
@@ -278,7 +278,7 @@ public:
   }
 
   //! IsBound1
-  Standard_Boolean IsBound1(const TheKey1Type& theKey1) const noexcept
+  Standard_Boolean IsBound1(const TheKey1Type& theKey1) const
   {
     if (IsEmpty())
       return Standard_False;
@@ -295,7 +295,7 @@ public:
   }
 
   //! IsBound2
-  Standard_Boolean IsBound2(const TheKey2Type& theKey2) const noexcept
+  Standard_Boolean IsBound2(const TheKey2Type& theKey2) const
   {
     if (IsEmpty())
       return Standard_False;
@@ -431,7 +431,7 @@ public:
   //! Find the Key1 and return pointer to Key2 or NULL if Key1 is not bound.
   //! @param[in]   theKey1 Key1 to find
   //! @return pointer to Key2 or NULL if Key1 is not found
-  const TheKey2Type* Seek1(const TheKey1Type& theKey1) const noexcept
+  const TheKey2Type* Seek1(const TheKey1Type& theKey1) const
   {
     for (DoubleMapNode* aNode1 =
            !IsEmpty() ? (DoubleMapNode*)myData1[HashCode1(theKey1, NbBuckets())] : NULL;
@@ -474,7 +474,7 @@ public:
   //! Find the Key2 and return pointer to Key1 or NULL if not bound.
   //! @param[in]  theKey2 Key2 to find
   //! @return pointer to Key1 if Key2 has been found
-  const TheKey1Type* Seek2(const TheKey2Type& theKey2) const noexcept
+  const TheKey1Type* Seek2(const TheKey2Type& theKey2) const
   {
     for (DoubleMapNode* aNode2 =
            !IsEmpty() ? (DoubleMapNode*)myData2[HashCode2(theKey2, NbBuckets())] : NULL;
@@ -511,22 +511,22 @@ public:
   Standard_Integer Size(void) const noexcept { return Extent(); }
 
 protected:
-  bool IsEqual1(const TheKey1Type& theKey1, const TheKey1Type& theKey2) const noexcept
+  bool IsEqual1(const TheKey1Type& theKey1, const TheKey1Type& theKey2) const
   {
     return myHasher1(theKey1, theKey2);
   }
 
-  size_t HashCode1(const TheKey1Type& theKey, const int theUpperBound) const noexcept
+  size_t HashCode1(const TheKey1Type& theKey, const int theUpperBound) const
   {
     return myHasher1(theKey) % theUpperBound + 1;
   }
 
-  bool IsEqual2(const TheKey2Type& theKey1, const TheKey2Type& theKey2) const noexcept
+  bool IsEqual2(const TheKey2Type& theKey1, const TheKey2Type& theKey2) const
   {
     return myHasher2(theKey1, theKey2);
   }
 
-  size_t HashCode2(const TheKey2Type& theKey, const int theUpperBound) const noexcept
+  size_t HashCode2(const TheKey2Type& theKey, const int theUpperBound) const
   {
     return myHasher2(theKey) % theUpperBound + 1;
   }

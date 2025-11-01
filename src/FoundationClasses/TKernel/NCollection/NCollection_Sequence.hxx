@@ -187,7 +187,7 @@ public:
 
   //! Static deleter to be passed to BaseSequence
   static void delNode(NCollection_SeqNode*               theNode,
-                      Handle(NCollection_BaseAllocator)& theAl) noexcept
+                      Handle(NCollection_BaseAllocator)& theAl)
   {
     ((Node*)theNode)->~Node();
     theAl->Free(theNode);

@@ -66,7 +66,7 @@ public:
   const Handle(NCollection_BaseAllocator)& Allocator() const noexcept { return myAllocator; }
 
   //! Assign new buffer allocator with de-allocation of buffer.
-  void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc) noexcept
+  void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
   {
     Free();
     myAllocator = theAlloc;
