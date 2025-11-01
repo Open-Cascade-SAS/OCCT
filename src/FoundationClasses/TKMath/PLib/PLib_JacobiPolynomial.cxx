@@ -125,16 +125,16 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer NbGaussPoints,
     if (NbGaussPoints > NDEG25)
       pdb0 += ((NDEG25 - 1 - infdg) / 2 + 1);
 
-    // Overwrite even columns with data from database
-    for (Standard_Integer j = 0; j <= myDegree; j += 2)
-    {
-      TabWeights.ChangeValue(0, j) = *pdb0++;
-    }
-
     // Fill row 0: zeros everywhere (explicit column loop for proper 2D array access)
     for (Standard_Integer j = 0; j <= myDegree; j++)
     {
       TabWeights.ChangeValue(0, j) = 0.0;
+    }
+
+    // Overwrite even columns with data from database
+    for (Standard_Integer j = 0; j <= myDegree; j += 2)
+    {
+      TabWeights.ChangeValue(0, j) = *pdb0++;
     }
   }
   else
