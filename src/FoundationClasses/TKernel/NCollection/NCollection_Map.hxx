@@ -79,7 +79,7 @@ public:
     }
 
     //! Key
-    const TheKeyType& Key(void) { return this->Value(); }
+    const TheKeyType& Key(void) noexcept { return this->Value(); }
   };
 
 public:
@@ -100,10 +100,10 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const { return PMore(); }
+    Standard_Boolean More(void) const noexcept { return PMore(); }
 
     //! Make a step along the collection
-    void Next(void) { PNext(); }
+    void Next(void) noexcept { PNext(); }
 
     //! Value inquiry
     const TheKeyType& Value(void) const
@@ -125,10 +125,10 @@ public:
     const_iterator;
 
   //! Returns a const iterator pointing to the first element in the map.
-  const_iterator cbegin() const { return Iterator(*this); }
+  const_iterator cbegin() const noexcept { return Iterator(*this); }
 
   //! Returns a const iterator referring to the past-the-end element in the map.
-  const_iterator cend() const { return Iterator(); }
+  const_iterator cend() const noexcept { return Iterator(); }
 
 public:
   // ---------- PUBLIC METHODS ------------
@@ -166,7 +166,7 @@ public:
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_Map& theOther) { this->exchangeMapsData(theOther); }
+  void Exchange(NCollection_Map& theOther) noexcept { this->exchangeMapsData(theOther); }
 
   //! Assign.
   //! This method does not change the internal allocator.
@@ -355,7 +355,7 @@ public:
   virtual ~NCollection_Map(void) { Clear(true); }
 
   //! Size
-  Standard_Integer Size(void) const { return Extent(); }
+  Standard_Integer Size(void) const noexcept { return Extent(); }
 
 public:
   //! Checks if two maps contain exactly the same keys.

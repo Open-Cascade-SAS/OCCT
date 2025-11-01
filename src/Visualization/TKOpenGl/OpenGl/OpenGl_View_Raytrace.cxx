@@ -44,12 +44,6 @@
 
 namespace
 {
-static const OpenGl_Vec4 THE_WHITE_COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-static const OpenGl_Vec4 THE_BLACK_COLOR(0.0f, 0.0f, 0.0f, 1.0f);
-} // namespace
-
-namespace
-{
 //! Defines OpenGL texture samplers.
 static const Graphic3d_TextureUnit OpenGl_RT_EnvMapTexture = Graphic3d_TextureUnit_0;
 

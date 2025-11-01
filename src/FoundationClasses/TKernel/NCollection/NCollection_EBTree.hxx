@@ -212,11 +212,11 @@ Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObj
                                                                                                    \
     /* Access to the extended tree algorithm */                                                    \
                                                                                                    \
-    const EBTree& ETree() const                                                                    \
+    const EBTree& ETree() const noexcept                                                           \
     {                                                                                              \
       return (const EBTree&)Tree();                                                                \
     }                                                                                              \
-    EBTree& ChangeETree()                                                                          \
+    EBTree& ChangeETree() noexcept                                                                 \
     {                                                                                              \
       return (EBTree&)ChangeTree();                                                                \
     }                                                                                              \

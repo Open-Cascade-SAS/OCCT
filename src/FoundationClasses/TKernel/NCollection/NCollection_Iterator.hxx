@@ -57,7 +57,7 @@ public:
   {
   }
 
-  ~NCollection_Iterator() {}
+  ~NCollection_Iterator() noexcept {}
 
   void Init(Container& theList)
   {
@@ -67,37 +67,37 @@ public:
 
   void Init(const Container& theList) { Init(const_cast<Container&>(theList)); }
 
-  virtual bool More() const { return myCur != myLast; }
+  virtual bool More() const noexcept { return myCur != myLast; }
 
   void Initialize(Container& theList) { Init(theList); }
 
   void Initialize(const Container& theList) { Init(theList); }
 
-  const typename Container::iterator& ValueIter() const { return myCur; }
+  const typename Container::iterator& ValueIter() const noexcept { return myCur; }
 
-  typename Container::iterator& ChangeValueIter() { return myCur; }
+  typename Container::iterator& ChangeValueIter() noexcept { return myCur; }
 
-  const typename Container::iterator& EndIter() const { return myLast; }
+  const typename Container::iterator& EndIter() const noexcept { return myLast; }
 
-  typename Container::iterator& ChangeEndIter() { return myLast; }
+  typename Container::iterator& ChangeEndIter() noexcept { return myLast; }
 
-  virtual void Next() { ++(myCur); }
+  virtual void Next() noexcept { ++(myCur); }
 
   const typename Container::const_reference Value() const { return *myCur; }
 
   const typename Container::reference ChangeValue() { return *myCur; }
 
-  bool operator==(const NCollection_Iterator& theOther)
+  bool operator==(const NCollection_Iterator& theOther) noexcept
   {
     return myLast == theOther.myLast && myCur == theOther.myCur;
   }
 
-  bool operator!=(const NCollection_Iterator& theOther)
+  bool operator!=(const NCollection_Iterator& theOther) noexcept
   {
     return myLast != theOther.myLast || myCur != theOther.myCur;
   }
 
-  NCollection_Iterator& operator=(const NCollection_Iterator& theOther)
+  NCollection_Iterator& operator=(const NCollection_Iterator& theOther) noexcept
   {
     if (this != &theOther)
     {
@@ -107,7 +107,7 @@ public:
     return *this;
   }
 
-  NCollection_Iterator& operator=(NCollection_Iterator&& theOther)
+  NCollection_Iterator& operator=(NCollection_Iterator&& theOther) noexcept
   {
     if (this != &theOther)
     {

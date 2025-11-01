@@ -147,7 +147,7 @@ void NCollection_BaseSequence::PPrepend(NCollection_BaseSequence& Other)
 // purpose  : reverse the order of a given sequence
 //=======================================================================
 
-void NCollection_BaseSequence::PReverse()
+void NCollection_BaseSequence::PReverse() noexcept
 {
   NCollection_SeqNode* p = myFirstItem;
   while (p)
@@ -444,7 +444,7 @@ void NCollection_BaseSequence::RemoveSeq(const Standard_Integer From,
 
 //=================================================================================================
 
-NCollection_SeqNode* NCollection_BaseSequence::Find(const Standard_Integer theIndex) const
+NCollection_SeqNode* NCollection_BaseSequence::Find(const Standard_Integer theIndex) const noexcept
 {
   Standard_Integer     i;
   NCollection_SeqNode* p;

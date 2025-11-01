@@ -35,7 +35,7 @@ public:
 
 public:
   //! Default constructor
-  NCollection_BasePointerVector() {}
+  NCollection_BasePointerVector() noexcept {}
 
   //! Copy data from another vector
   Standard_EXPORT NCollection_BasePointerVector(const NCollection_BasePointerVector& theOther);
@@ -47,16 +47,16 @@ public:
   ~NCollection_BasePointerVector() { clear(); }
 
   //! Checks for an empty status
-  bool IsEmpty() const { return mySize == 0; }
+  bool IsEmpty() const noexcept { return mySize == 0; }
 
   //! Gets used size
-  size_t Size() const { return mySize; }
+  size_t Size() const noexcept { return mySize; }
 
   //! Gets available capacity
-  size_t Capacity() const { return myCapacity; }
+  size_t Capacity() const noexcept { return myCapacity; }
 
   //! Erases last element, decrements size.
-  void RemoveLast() { mySize--; }
+  void RemoveLast() noexcept { mySize--; }
 
   //! Resets the size
   void Clear(const bool theReleaseMemory = false)
@@ -68,10 +68,10 @@ public:
 
 public:
   //! Gets array, can be null
-  void** GetArray() const { return myArray; }
+  void** GetArray() const noexcept { return myArray; }
 
   //! Gets value by index, no access validation
-  void* Value(const size_t theInd) const { return myArray[theInd]; }
+  void* Value(const size_t theInd) const noexcept { return myArray[theInd]; }
 
 public:
   //! Inserts new element at the end, increase size,

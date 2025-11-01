@@ -67,13 +67,14 @@ protected:
     }
 
     //! Key1
-    TheKeyType& Key1() { return this->ChangeValue(); }
+    TheKeyType& Key1() noexcept { return this->ChangeValue(); }
 
     //! Index
-    Standard_Integer& Index() { return myIndex; }
+    Standard_Integer& Index() noexcept { return myIndex; }
 
     //! Static deleter to be passed to BaseList
-    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl)
+    static void delNode(NCollection_ListNode*              theNode,
+                        Handle(NCollection_BaseAllocator)& theAl) noexcept
     {
       ((IndexedMapNode*)theNode)->~IndexedMapNode();
       theAl->Free(theNode);
@@ -103,10 +104,13 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const { return (myMap != NULL) && (myIndex <= myMap->Extent()); }
+    Standard_Boolean More(void) const noexcept
+    {
+      return (myMap != NULL) && (myIndex <= myMap->Extent());
+    }
 
     //! Make a step along the collection
-    void Next(void) { myIndex++; }
+    void Next(void) noexcept { myIndex++; }
 
     //! Value access
     const TheKeyType& Value(void) const
@@ -116,7 +120,7 @@ public:
     }
 
     //! Performs comparison of two iterators.
-    Standard_Boolean IsEqual(const Iterator& theOther) const
+    Standard_Boolean IsEqual(const Iterator& theOther) const noexcept
     {
       return myMap == theOther.myMap && myIndex == theOther.myIndex;
     }
@@ -131,10 +135,10 @@ public:
     const_iterator;
 
   //! Returns a const iterator pointing to the first element in the map.
-  const_iterator cbegin() const { return Iterator(*this); }
+  const_iterator cbegin() const noexcept { return Iterator(*this); }
 
   //! Returns a const iterator referring to the past-the-end element in the map.
-  const_iterator cend() const { return Iterator(); }
+  const_iterator cend() const noexcept { return Iterator(); }
 
 public:
   // ---------- PUBLIC METHODS ------------
@@ -167,7 +171,7 @@ public:
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_IndexedMap& theOther) { this->exchangeMapsData(theOther); }
+  void Exchange(NCollection_IndexedMap& theOther) noexcept { this->exchangeMapsData(theOther); }
 
   //! Assign.
   //! This method does not change the internal allocator.
@@ -448,7 +452,7 @@ public:
   virtual ~NCollection_IndexedMap(void) { Clear(true); }
 
   //! Size
-  Standard_Integer Size(void) const { return Extent(); }
+  Standard_Integer Size(void) const noexcept { return Extent(); }
 
 protected:
   //! Lookup for particular key in map.

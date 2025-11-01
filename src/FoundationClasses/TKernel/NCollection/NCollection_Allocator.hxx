@@ -17,6 +17,7 @@
 #include <Standard.hxx>
 #include <NCollection_BaseAllocator.hxx>
 
+#include <type_traits>
 #include <utility>
 
 //! Implements allocator requirements as defined in ISO C++ Standard 2003, section 20.1.5.
@@ -74,10 +75,10 @@ public:
   }
 
   //! Returns an object address.
-  pointer address(reference theItem) const { return &theItem; }
+  pointer address(reference theItem) const noexcept { return &theItem; }
 
   //! Returns an object address.
-  const_pointer address(const_reference theItem) const { return &theItem; }
+  const_pointer address(const_reference theItem) const noexcept { return &theItem; }
 
   //! Allocates memory for theSize objects.
   pointer allocate(const size_type theSize, const void* /*hint*/ = 0) const
@@ -107,31 +108,31 @@ public:
 
   //! Destroys the object.
   //! Uses the object destructor.
-  void destroy(pointer thePnt)
+  void destroy(pointer thePnt) noexcept(std::is_nothrow_destructible<value_type>::value)
   {
     (void)thePnt;
     thePnt->~value_type();
   }
 
-  bool operator==(const NCollection_Allocator&) const { return true; }
+  constexpr bool operator==(const NCollection_Allocator&) const noexcept { return true; }
 
   template <class U>
-  bool operator==(const NCollection_Allocator<U>&) const noexcept
+  constexpr bool operator==(const NCollection_Allocator<U>&) const noexcept
   {
     return true;
   }
 
-  bool operator!=(const NCollection_Allocator&) const noexcept { return false; }
+  constexpr bool operator!=(const NCollection_Allocator&) const noexcept { return false; }
 
   template <class U>
-  bool operator!=(const NCollection_Allocator<U>&) const noexcept
+  constexpr bool operator!=(const NCollection_Allocator<U>&) const noexcept
   {
     return false;
   }
 };
 
 template <class U, class V>
-bool operator==(const NCollection_Allocator<U>&, const NCollection_Allocator<V>&)
+constexpr bool operator==(const NCollection_Allocator<U>&, const NCollection_Allocator<V>&) noexcept
 {
   return true;
 }

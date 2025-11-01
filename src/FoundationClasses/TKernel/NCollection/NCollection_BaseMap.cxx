@@ -49,7 +49,7 @@ Standard_Boolean NCollection_BaseMap::BeginResize(const Standard_Integer  NbBuck
 void NCollection_BaseMap::EndResize(const Standard_Integer theNbBuckets,
                                     const Standard_Integer N,
                                     NCollection_ListNode** data1,
-                                    NCollection_ListNode** data2)
+                                    NCollection_ListNode** data2) noexcept
 {
   (void)theNbBuckets; // obsolete parameter
   if (myData1)
@@ -152,7 +152,7 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
 
 //=================================================================================================
 
-Standard_Integer NCollection_BaseMap::NextPrimeForMap(const Standard_Integer N) const
+Standard_Integer NCollection_BaseMap::NextPrimeForMap(const Standard_Integer N) const noexcept
 {
   return NCollection_Primes::NextPrimeForMap(N);
 }

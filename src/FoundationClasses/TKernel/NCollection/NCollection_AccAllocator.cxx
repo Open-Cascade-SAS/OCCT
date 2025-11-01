@@ -159,7 +159,7 @@ void NCollection_AccAllocator::Free(void* theAddress)
 //=======================================================================
 NCollection_AccAllocator::Block* NCollection_AccAllocator::findBlock(
   const Standard_Address theAddress,
-  Key&                   theKey)
+  Key&                   theKey) noexcept
 {
   theKey = getKey(theAddress);
 

@@ -54,10 +54,10 @@ public:
     }
 
     //! Constant value access
-    const TheItemType& Value() const { return myValue; }
+    const TheItemType& Value() const noexcept { return myValue; }
 
     //! Variable value access
-    TheItemType& ChangeValue() { return myValue; }
+    TheItemType& ChangeValue() noexcept { return myValue; }
 
   private:
     TheItemType myValue;
@@ -78,10 +78,10 @@ public:
     }
 
     //! Check end
-    Standard_Boolean More(void) const { return (myCurrent != NULL); }
+    Standard_Boolean More(void) const noexcept { return (myCurrent != NULL); }
 
     //! Make step
-    void Next(void)
+    void Next(void) noexcept
     {
       if (myCurrent)
       {
@@ -91,13 +91,13 @@ public:
     }
 
     //! Constant value access
-    const TheItemType& Value(void) const { return ((const Node*)myCurrent)->Value(); }
+    const TheItemType& Value(void) const noexcept { return ((const Node*)myCurrent)->Value(); }
 
     //! Variable value access
-    TheItemType& ChangeValue(void) const { return ((Node*)myCurrent)->ChangeValue(); }
+    TheItemType& ChangeValue(void) const noexcept { return ((Node*)myCurrent)->ChangeValue(); }
 
     //! Performs comparison of two iterators.
-    Standard_Boolean IsEqual(const Iterator& theOther) const
+    Standard_Boolean IsEqual(const Iterator& theOther) const noexcept
     {
       return myCurrent == theOther.myCurrent;
     }
@@ -112,10 +112,10 @@ public:
     const_iterator;
 
   //! Returns an iterator pointing to the first element in the sequence.
-  iterator begin() const { return Iterator(*this, true); }
+  iterator begin() const noexcept { return Iterator(*this, true); }
 
   //! Returns an iterator referring to the past-the-end element in the sequence.
-  iterator end() const
+  iterator end() const noexcept
   {
     Iterator anIter(*this, false);
     anIter.Next();
@@ -123,10 +123,10 @@ public:
   }
 
   //! Returns a const iterator pointing to the first element in the sequence.
-  const_iterator cbegin() const { return Iterator(*this, true); }
+  const_iterator cbegin() const noexcept { return Iterator(*this, true); }
 
   //! Returns a const iterator referring to the past-the-end element in the sequence.
-  const_iterator cend() const
+  const_iterator cend() const noexcept
   {
     Iterator anIter(*this, false);
     anIter.Next();
@@ -163,21 +163,21 @@ public:
   }
 
   //! Number of items
-  Standard_Integer Size(void) const { return mySize; }
+  Standard_Integer Size(void) const noexcept { return mySize; }
 
   //! Number of items
-  Standard_Integer Length(void) const { return mySize; }
+  Standard_Integer Length(void) const noexcept { return mySize; }
 
   //! Method for consistency with other collections.
   //! @return Lower bound (inclusive) for iteration.
-  Standard_Integer Lower() const { return 1; }
+  static constexpr Standard_Integer Lower() noexcept { return 1; }
 
   //! Method for consistency with other collections.
   //! @return Upper bound (inclusive) for iteration.
-  Standard_Integer Upper() const { return mySize; }
+  Standard_Integer Upper() const noexcept { return mySize; }
 
   //! Empty query
-  Standard_Boolean IsEmpty(void) const { return (mySize == 0); }
+  Standard_Boolean IsEmpty(void) const noexcept { return (mySize == 0); }
 
   //! Reverse sequence
   void Reverse(void) { PReverse(); }

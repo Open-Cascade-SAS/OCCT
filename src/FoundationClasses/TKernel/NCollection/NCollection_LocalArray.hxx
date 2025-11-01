@@ -30,7 +30,7 @@ public:
     Allocate(theSize);
   }
 
-  NCollection_LocalArray()
+  NCollection_LocalArray() noexcept
       : myPtr(myBuffer),
         mySize(0)
   {
@@ -49,9 +49,9 @@ public:
     mySize = theSize;
   }
 
-  size_t Size() const { return mySize; }
+  size_t Size() const noexcept { return mySize; }
 
-  operator theItem*() const { return myPtr; }
+  operator theItem*() const noexcept { return myPtr; }
 
 private:
   NCollection_LocalArray(const NCollection_LocalArray&);

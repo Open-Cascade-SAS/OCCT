@@ -58,7 +58,7 @@ public:
 
 protected:
   //! Constructor - prohibited
-  NCollection_BaseAllocator() {}
+  NCollection_BaseAllocator() noexcept {}
 
 private:
   //! Copy constructor - prohibited

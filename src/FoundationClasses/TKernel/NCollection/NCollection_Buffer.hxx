@@ -51,19 +51,19 @@ public:
   ~NCollection_Buffer() { Free(); }
 
   //! @return buffer data
-  const Standard_Byte* Data() const { return myData; }
+  const Standard_Byte* Data() const noexcept { return myData; }
 
   //! @return buffer data
-  Standard_Byte* ChangeData() { return myData; }
+  Standard_Byte* ChangeData() noexcept { return myData; }
 
   //! @return true if buffer is not allocated
-  bool IsEmpty() const { return myData == NULL; }
+  bool IsEmpty() const noexcept { return myData == NULL; }
 
   //! Return buffer length in bytes.
-  Standard_Size Size() const { return mySize; }
+  Standard_Size Size() const noexcept { return mySize; }
 
   //! @return buffer allocator
-  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
+  const Handle(NCollection_BaseAllocator)& Allocator() const noexcept { return myAllocator; }
 
   //! Assign new buffer allocator with de-allocation of buffer.
   void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)

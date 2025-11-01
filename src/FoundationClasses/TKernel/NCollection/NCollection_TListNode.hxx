@@ -41,10 +41,10 @@ public:
   }
 
   //! Constant value access
-  const TheItemType& Value() const { return myValue; }
+  const TheItemType& Value() const noexcept { return myValue; }
 
   //! Variable value access
-  TheItemType& ChangeValue() { return myValue; }
+  TheItemType& ChangeValue() noexcept { return myValue; }
 
   //! Static deleter to be passed to BaseList
   static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl)

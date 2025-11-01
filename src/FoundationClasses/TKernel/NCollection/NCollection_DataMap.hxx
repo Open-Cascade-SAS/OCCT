@@ -88,10 +88,11 @@ public:
     }
 
     //! Key
-    const TheKeyType& Key(void) const { return myKey; }
+    const TheKeyType& Key(void) const noexcept { return myKey; }
 
     //! Static deleter to be passed to BaseMap
-    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl)
+    static void delNode(NCollection_ListNode*              theNode,
+                        Handle(NCollection_BaseAllocator)& theAl) noexcept
     {
       ((DataMapNode*)theNode)->~DataMapNode();
       theAl->Free(theNode);
@@ -119,10 +120,10 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const { return PMore(); }
+    Standard_Boolean More(void) const noexcept { return PMore(); }
 
     //! Make a step along the collection
-    void Next(void) { PNext(); }
+    void Next(void) noexcept { PNext(); }
 
     //! Value inquiry
     const TheItemType& Value(void) const
@@ -154,16 +155,16 @@ public:
     const_iterator;
 
   //! Returns an iterator pointing to the first element in the map.
-  iterator begin() const { return Iterator(*this); }
+  iterator begin() const noexcept { return Iterator(*this); }
 
   //! Returns an iterator referring to the past-the-end element in the map.
-  iterator end() const { return Iterator(); }
+  iterator end() const noexcept { return Iterator(); }
 
   //! Returns a const iterator pointing to the first element in the map.
-  const_iterator cbegin() const { return Iterator(*this); }
+  const_iterator cbegin() const noexcept { return Iterator(*this); }
 
   //! Returns a const iterator referring to the past-the-end element in the map.
-  const_iterator cend() const { return Iterator(); }
+  const_iterator cend() const noexcept { return Iterator(); }
 
 public:
   // ---------- PUBLIC METHODS ------------
@@ -201,7 +202,7 @@ public:
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_DataMap& theOther) { this->exchangeMapsData(theOther); }
+  void Exchange(NCollection_DataMap& theOther) noexcept { this->exchangeMapsData(theOther); }
 
   //! Assignment.
   //! This method does not change the internal allocator.
@@ -552,7 +553,7 @@ public:
   virtual ~NCollection_DataMap(void) { Clear(true); }
 
   //! Size
-  Standard_Integer Size(void) const { return Extent(); }
+  Standard_Integer Size(void) const noexcept { return Extent(); }
 
 protected:
   //! Lookup for particular key in map.

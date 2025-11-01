@@ -57,7 +57,7 @@ public:
   /**
    * Query if this is a valid triangle.
    */
-  inline Standard_Boolean IsEmpty() const
+  inline Standard_Boolean IsEmpty() const noexcept
   {
     return myNodes[0] < 0 || myNodes[1] < 0 || myNodes[2] < 0;
   }

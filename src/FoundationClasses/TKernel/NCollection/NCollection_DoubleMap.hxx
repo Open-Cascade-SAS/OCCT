@@ -60,16 +60,17 @@ public:
     }
 
     //! Key1
-    const TheKey1Type& Key1(void) { return myKey1; }
+    const TheKey1Type& Key1(void) noexcept { return myKey1; }
 
     //! Key2
-    const TheKey2Type& Key2(void) { return this->myValue; }
+    const TheKey2Type& Key2(void) noexcept { return this->myValue; }
 
     //! Next2
-    DoubleMapNode*& Next2(void) { return myNext2; }
+    DoubleMapNode*& Next2(void) noexcept { return myNext2; }
 
     //! Static deleter to be passed to BaseList
-    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl)
+    static void delNode(NCollection_ListNode*              theNode,
+                        Handle(NCollection_BaseAllocator)& theAl) noexcept
     {
       ((DoubleMapNode*)theNode)->~DoubleMapNode();
       theAl->Free(theNode);
@@ -95,10 +96,10 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const { return PMore(); }
+    Standard_Boolean More(void) const noexcept { return PMore(); }
 
     //! Make a step along the collection
-    void Next(void) { PNext(); }
+    void Next(void) noexcept { PNext(); }
 
     //! Key1 inquiry
     const TheKey1Type& Key1(void) const
@@ -147,7 +148,7 @@ public:
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_DoubleMap& theOther) { this->exchangeMapsData(theOther); }
+  void Exchange(NCollection_DoubleMap& theOther) noexcept { this->exchangeMapsData(theOther); }
 
   //! Assignment.
   //! This method does not change the internal allocator.
@@ -507,7 +508,7 @@ public:
   ~NCollection_DoubleMap(void) { Clear(true); }
 
   //! Size
-  Standard_Integer Size(void) const { return Extent(); }
+  Standard_Integer Size(void) const noexcept { return Extent(); }
 
 protected:
   bool IsEqual1(const TheKey1Type& theKey1, const TheKey1Type& theKey2) const

@@ -67,7 +67,7 @@ public:
   static int BeginPosition(Standard_Integer theRowLower,
                            Standard_Integer /*theRowUpper*/,
                            Standard_Integer theColLower,
-                           Standard_Integer theColUpper)
+                           Standard_Integer theColUpper) noexcept
   {
     // Calculate the offset for the beginning position
     return theColLower + (theRowLower * (theColUpper - theColLower + 1));
@@ -76,7 +76,7 @@ public:
   static int LastPosition(Standard_Integer theRowLower,
                           Standard_Integer theRowUpper,
                           Standard_Integer theColLower,
-                          Standard_Integer theColUpper)
+                          Standard_Integer theColUpper) noexcept
   {
     return ((theRowUpper - theRowLower + 1) * (theColUpper - theColLower + 1)) + theColLower
            + (theRowLower * (theColUpper - theColLower + 1)) - 1;
@@ -87,7 +87,7 @@ public:
 
   //! Empty constructor; should be used with caution.
   //! @sa methods Resize() and Move().
-  NCollection_Array2()
+  NCollection_Array2() noexcept
       : NCollection_Array1<TheItemType>(),
         myLowerRow(1),
         mySizeRow(0),
@@ -170,49 +170,55 @@ public:
   }
 
   //! Size (number of items)
-  Standard_Integer Size() const { return Length(); }
+  Standard_Integer Size() const noexcept { return Length(); }
 
   //! Length (number of items)
-  Standard_Integer Length() const { return NbRows() * NbColumns(); }
+  Standard_Integer Length() const noexcept { return NbRows() * NbColumns(); }
 
   //! Returns number of rows
-  Standard_Integer NbRows() const { return static_cast<int>(mySizeRow); }
+  Standard_Integer NbRows() const noexcept { return static_cast<int>(mySizeRow); }
 
   //! Returns number of columns
-  Standard_Integer NbColumns() const { return static_cast<int>(mySizeCol); }
+  Standard_Integer NbColumns() const noexcept { return static_cast<int>(mySizeCol); }
 
   //! Returns length of the row, i.e. number of columns
-  Standard_Integer RowLength() const { return NbColumns(); }
+  Standard_Integer RowLength() const noexcept { return NbColumns(); }
 
   //! Returns length of the column, i.e. number of rows
-  Standard_Integer ColLength() const { return NbRows(); }
+  Standard_Integer ColLength() const noexcept { return NbRows(); }
 
   //! LowerRow
-  Standard_Integer LowerRow() const { return myLowerRow; }
+  Standard_Integer LowerRow() const noexcept { return myLowerRow; }
 
   //! UpperRow
-  Standard_Integer UpperRow() const { return myLowerRow + static_cast<int>(mySizeRow) - 1; }
+  Standard_Integer UpperRow() const noexcept
+  {
+    return myLowerRow + static_cast<int>(mySizeRow) - 1;
+  }
 
   //! LowerCol
-  Standard_Integer LowerCol() const { return myLowerCol; }
+  Standard_Integer LowerCol() const noexcept { return myLowerCol; }
 
   //! UpperCol
-  Standard_Integer UpperCol() const { return myLowerCol + static_cast<int>(mySizeCol) - 1; }
+  Standard_Integer UpperCol() const noexcept
+  {
+    return myLowerCol + static_cast<int>(mySizeCol) - 1;
+  }
 
   //! Updates lower row
-  void UpdateLowerRow(const Standard_Integer theLowerRow) { myLowerRow = theLowerRow; }
+  void UpdateLowerRow(const Standard_Integer theLowerRow) noexcept { myLowerRow = theLowerRow; }
 
   //! Updates lower column
-  void UpdateLowerCol(const Standard_Integer theLowerCol) { myLowerCol = theLowerCol; }
+  void UpdateLowerCol(const Standard_Integer theLowerCol) noexcept { myLowerCol = theLowerCol; }
 
   //! Updates upper row
-  void UpdateUpperRow(const Standard_Integer theUpperRow)
+  void UpdateUpperRow(const Standard_Integer theUpperRow) noexcept
   {
     myLowerRow = myLowerRow - UpperRow() + theUpperRow;
   }
 
   //! Updates upper column
-  void UpdateUpperCol(const Standard_Integer theUpperCol)
+  void UpdateUpperCol(const Standard_Integer theUpperCol) noexcept
   {
     myLowerCol = myLowerCol - UpperCol() + theUpperCol;
   }
@@ -232,7 +238,7 @@ public:
   //! Move assignment.
   //! This array will borrow all the data from theOther.
   //! The moved object will be left uninitialized and should not be used anymore.
-  NCollection_Array2& Move(NCollection_Array2&& theOther)
+  NCollection_Array2& Move(NCollection_Array2&& theOther) noexcept
   {
     if (&theOther == this)
     {
@@ -253,13 +259,16 @@ public:
   //! Move assignment.
   //! This array will borrow all the data from theOther.
   //! The moved object will be left uninitialized and should not be used anymore.
-  NCollection_Array2& Move(NCollection_Array2& theOther) { return Move(std::move(theOther)); }
+  NCollection_Array2& Move(NCollection_Array2& theOther) noexcept
+  {
+    return Move(std::move(theOther));
+  }
 
   //! Assignment operator
   NCollection_Array2& operator=(const NCollection_Array2& theOther) { return Assign(theOther); }
 
   //! Move assignment operator; @sa Move()
-  NCollection_Array2& operator=(NCollection_Array2&& theOther)
+  NCollection_Array2& operator=(NCollection_Array2&& theOther) noexcept
   {
     return Move(std::forward<NCollection_Array2>(theOther));
   }

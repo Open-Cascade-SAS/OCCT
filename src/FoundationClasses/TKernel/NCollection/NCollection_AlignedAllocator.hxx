@@ -26,7 +26,7 @@ public:
   //! Constructor. The alignment should be specified explicitly:
   //! 16 bytes for SSE instructions
   //! 32 bytes for AVX instructions
-  Standard_EXPORT NCollection_AlignedAllocator(const size_t theAlignment);
+  Standard_EXPORT NCollection_AlignedAllocator(const size_t theAlignment) noexcept;
 
   //! Allocate memory with given size. Returns NULL on failure.
   Standard_EXPORT virtual void* Allocate(const size_t theSize) Standard_OVERRIDE;
@@ -38,8 +38,8 @@ public:
   Standard_EXPORT virtual void Free(void* thePtr) Standard_OVERRIDE;
 
 private:
-  NCollection_AlignedAllocator(const NCollection_AlignedAllocator&);
-  NCollection_AlignedAllocator& operator=(const NCollection_AlignedAllocator&);
+  NCollection_AlignedAllocator(const NCollection_AlignedAllocator&)            = delete;
+  NCollection_AlignedAllocator& operator=(const NCollection_AlignedAllocator&) = delete;
 
 protected:
   size_t myAlignment; //!< alignment in bytes

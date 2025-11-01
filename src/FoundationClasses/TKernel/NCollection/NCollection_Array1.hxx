@@ -81,21 +81,21 @@ public:
   using Iterator       = NCollection_Iterator<NCollection_Array1<TheItemType>>;
 
 public:
-  const_iterator begin() const { return const_iterator(*this); }
+  const_iterator begin() const noexcept { return const_iterator(*this); }
 
-  iterator begin() { return iterator(*this); }
+  iterator begin() noexcept { return iterator(*this); }
 
-  const_iterator cbegin() const { return const_iterator(*this); }
+  const_iterator cbegin() const noexcept { return const_iterator(*this); }
 
-  iterator end() { return iterator(mySize, *this); }
+  iterator end() noexcept { return iterator(mySize, *this); }
 
-  const_iterator end() const { return const_iterator(mySize, *this); }
+  const_iterator end() const noexcept { return const_iterator(mySize, *this); }
 
-  const_iterator cend() const { return const_iterator(mySize, *this); }
+  const_iterator cend() const noexcept { return const_iterator(mySize, *this); }
 
 public:
   // Constructors
-  NCollection_Array1()
+  NCollection_Array1() noexcept
       : myLowerBound(1),
         mySize(0)
   {
@@ -197,19 +197,19 @@ public:
   }
 
   //! Size query
-  Standard_Integer Size() const { return Length(); }
+  Standard_Integer Size() const noexcept { return Length(); }
 
   //! Length query (the same)
-  Standard_Integer Length() const { return static_cast<Standard_Integer>(mySize); }
+  Standard_Integer Length() const noexcept { return static_cast<Standard_Integer>(mySize); }
 
   //! Return TRUE if array has zero length.
-  Standard_Boolean IsEmpty() const { return mySize == 0; }
+  Standard_Boolean IsEmpty() const noexcept { return mySize == 0; }
 
   //! Lower bound
-  Standard_Integer Lower() const { return myLowerBound; }
+  Standard_Integer Lower() const noexcept { return myLowerBound; }
 
   //! Upper bound
-  Standard_Integer Upper() const { return myLowerBound + static_cast<int>(mySize) - 1; }
+  Standard_Integer Upper() const noexcept { return myLowerBound + static_cast<int>(mySize) - 1; }
 
   //! Copies data of theOther array to this.
   //! This array should be pre-allocated and have the same length as theOther;
@@ -255,7 +255,10 @@ public:
     return *this;
   }
 
-  NCollection_Array1& Move(NCollection_Array1& theOther) { return Move(std::move(theOther)); }
+  NCollection_Array1& Move(NCollection_Array1& theOther) noexcept
+  {
+    return Move(std::move(theOther));
+  }
 
   //! Assignment operator; @sa Assign()
   NCollection_Array1& operator=(const NCollection_Array1& theOther) { return Assign(theOther); }
@@ -267,16 +270,16 @@ public:
   }
 
   //! @return first element
-  const_reference First() const { return myPointer[0]; }
+  const_reference First() const noexcept { return myPointer[0]; }
 
   //! @return first element
-  reference ChangeFirst() { return myPointer[0]; }
+  reference ChangeFirst() noexcept { return myPointer[0]; }
 
   //! @return last element
-  const_reference Last() const { return myPointer[mySize - 1]; }
+  const_reference Last() const noexcept { return myPointer[mySize - 1]; }
 
   //! @return last element
-  reference ChangeLast() { return myPointer[mySize - 1]; }
+  reference ChangeLast() noexcept { return myPointer[mySize - 1]; }
 
   //! Constant value access
   const_reference Value(const Standard_Integer theIndex) const
@@ -323,10 +326,10 @@ public:
   }
 
   //! Changes the lowest bound. Do not move data
-  void UpdateLowerBound(const Standard_Integer theLower) { myLowerBound = theLower; }
+  void UpdateLowerBound(const Standard_Integer theLower) noexcept { myLowerBound = theLower; }
 
   //! Changes the upper bound. Do not move data
-  void UpdateUpperBound(const Standard_Integer theUpper)
+  void UpdateUpperBound(const Standard_Integer theUpper) noexcept
   {
     myLowerBound = myLowerBound - Upper() + theUpper;
   }
@@ -382,7 +385,7 @@ public:
     myIsOwner = true;
   }
 
-  bool IsDeletable() const { return myIsOwner; }
+  bool IsDeletable() const noexcept { return myIsOwner; }
 
   friend iterator;
   friend const_iterator;

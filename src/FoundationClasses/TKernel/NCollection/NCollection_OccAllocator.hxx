@@ -18,6 +18,7 @@
 #include <Standard.hxx>
 
 #include <memory>
+#include <type_traits>
 
 //! Implements allocator requirements as defined in ISO C++ Standard 2003, section 20.1.5.
 /*! The allocator uses a standard OCCT mechanism for memory
@@ -54,7 +55,7 @@ public:
   //! Constructor.
   //! Creates an object using the default Open CASCADE allocation mechanism, i.e., which uses
   //! Standard::Allocate() and Standard::Free() underneath.
-  NCollection_OccAllocator()
+  NCollection_OccAllocator() noexcept
       : myAllocator(nullptr)
   {
   }
@@ -116,7 +117,7 @@ public:
 
   void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc) { myAllocator = theAlloc; }
 
-  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
+  const Handle(NCollection_BaseAllocator)& Allocator() const noexcept { return myAllocator; }
 
   //! Allocates memory for theSize objects.
   pointer allocate(size_type theSize, const void* = 0)
@@ -149,15 +150,15 @@ public:
   }
 
   //! Returns an object address.
-  pointer address(reference theItem) const { return &theItem; }
+  pointer address(reference theItem) const noexcept { return &theItem; }
 
   //! Returns an object address.
-  const_pointer address(const_reference theItem) const { return &theItem; }
+  const_pointer address(const_reference theItem) const noexcept { return &theItem; }
 
   //! Destroys the object.
   //! Uses the object destructor.
   template <class _Uty>
-  void destroy(_Uty* _Ptr)
+  void destroy(_Uty* _Ptr) noexcept(std::is_nothrow_destructible<_Uty>::value)
   {
     (void)_Ptr;
     _Ptr->~_Uty();
@@ -166,24 +167,24 @@ public:
   //! Estimate maximum array size
   size_t max_size() const noexcept { return ((size_t)(-1) / sizeof(ItemType)); }
 
-  bool operator==(const NCollection_OccAllocator& theOther) const
+  bool operator==(const NCollection_OccAllocator& theOther) const noexcept
   {
     return theOther.Allocator() == myAllocator;
   }
 
   template <class U>
-  bool operator==(const NCollection_OccAllocator<U>& theOther) const
+  bool operator==(const NCollection_OccAllocator<U>& theOther) const noexcept
   {
     return theOther.Allocator() == myAllocator;
   }
 
-  bool operator!=(const NCollection_OccAllocator& theOther) const
+  bool operator!=(const NCollection_OccAllocator& theOther) const noexcept
   {
     return theOther.Allocator() != myAllocator;
   }
 
   template <class U>
-  bool operator!=(const NCollection_OccAllocator<U>& theOther) const
+  bool operator!=(const NCollection_OccAllocator<U>& theOther) const noexcept
   {
     return theOther.Allocator() != myAllocator;
   }
@@ -194,7 +195,7 @@ private:
 
 template <class U, class V>
 bool operator==(const NCollection_OccAllocator<U>& theFirst,
-                const NCollection_OccAllocator<V>& theSecond)
+                const NCollection_OccAllocator<V>& theSecond) noexcept
 {
   return theFirst.Allocator() == theSecond.Allocator();
 }
