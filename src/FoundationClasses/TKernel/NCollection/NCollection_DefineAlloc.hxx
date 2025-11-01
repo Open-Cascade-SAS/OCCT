@@ -33,8 +33,7 @@
     {                                                                                              \
       return theAllocator->Allocate(theSize);                                                      \
     }                                                                                              \
-    void operator delete(void*                                    theAddress,                      \
-                         const Handle(NCollection_BaseAllocator)& theAllocator)                    \
+    void operator delete(void* theAddress, const Handle(NCollection_BaseAllocator)& theAllocator)  \
     {                                                                                              \
       theAllocator->Free(theAddress);                                                              \
     }
