@@ -460,9 +460,7 @@ protected:
   //! @param[out] theNode the detected node with equal key. Can be null.
   //! @param[out] theHash computed bounded hash code for current key.
   //! @return true if key is found
-  Standard_Boolean lookup(const TheKeyType& theKey,
-                          IndexedMapNode*&  theNode,
-                          size_t&           theHash) const
+  Standard_Boolean lookup(const TheKeyType& theKey, IndexedMapNode*& theNode, size_t& theHash) const
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())
