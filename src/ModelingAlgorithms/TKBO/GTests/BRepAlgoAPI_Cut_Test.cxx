@@ -710,7 +710,7 @@ TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedNarrowBox_F7)
 {
   TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   aNurbsBox                  = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  constexpr Standard_Real r  = 5.5677643628300219;
+  constexpr Standard_Real r  = 5.5677643628300219; // sqrt(31.0)
   TopoDS_Shape aNarrowBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
   aNarrowBox                 = BOPTest_Utilities::RotateShape(aNarrowBox,
                                               gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
