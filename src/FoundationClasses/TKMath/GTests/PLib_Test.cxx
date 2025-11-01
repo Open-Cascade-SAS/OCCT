@@ -190,26 +190,138 @@ TEST_F(PLibTest, ZeroWeightsHandling)
   EXPECT_TRUE(true); // We mainly test that no crash occurs
 }
 
-// Tests for Binomial coefficient function
-TEST_F(PLibTest, BinomialCoefficient)
+// Tests for Binomial coefficient function - Basic values
+TEST_F(PLibTest, BinomialCoefficient_BasicValues)
 {
-  // Test known binomial coefficients
-  EXPECT_NEAR(PLib::Bin(0, 0), 1.0, Precision::Confusion());
+  // Test edge cases
+  EXPECT_NEAR(PLib::Bin(0, 0), 1.0, Precision::Confusion()) << "C(0,0) should be 1";
+
+  // Test row n=1: [1, 1]
+  EXPECT_NEAR(PLib::Bin(1, 0), 1.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(1, 1), 1.0, Precision::Confusion());
+
+  // Test row n=5: [1, 5, 10, 10, 5, 1]
   EXPECT_NEAR(PLib::Bin(5, 0), 1.0, Precision::Confusion());
-  EXPECT_NEAR(PLib::Bin(5, 5), 1.0, Precision::Confusion());
   EXPECT_NEAR(PLib::Bin(5, 1), 5.0, Precision::Confusion());
   EXPECT_NEAR(PLib::Bin(5, 2), 10.0, Precision::Confusion());
   EXPECT_NEAR(PLib::Bin(5, 3), 10.0, Precision::Confusion());
-  EXPECT_NEAR(PLib::Bin(10, 3), 120.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(5, 4), 5.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(5, 5), 1.0, Precision::Confusion());
 
+  // Test row n=10: some specific values
+  EXPECT_NEAR(PLib::Bin(10, 0), 1.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(10, 1), 10.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(10, 2), 45.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(10, 3), 120.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(10, 4), 210.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(10, 5), 252.0, Precision::Confusion());
+}
+
+// Tests for Binomial coefficient - Symmetry property
+TEST_F(PLibTest, BinomialCoefficient_Symmetry)
+{
   // Test symmetry property: C(n,k) = C(n,n-k)
-  for (Standard_Integer n = 1; n <= 10; n++)
+  for (Standard_Integer n = 0; n <= 20; n++)
   {
     for (Standard_Integer k = 0; k <= n; k++)
     {
       EXPECT_NEAR(PLib::Bin(n, k), PLib::Bin(n, n - k), Precision::Confusion())
         << "Binomial coefficient symmetry failed for C(" << n << "," << k << ")";
     }
+  }
+}
+
+// Tests for Binomial coefficient - Pascal's triangle recurrence
+TEST_F(PLibTest, BinomialCoefficient_Recurrence)
+{
+  // Test Pascal's triangle recurrence: C(n,k) = C(n-1,k-1) + C(n-1,k)
+  for (Standard_Integer n = 2; n <= 20; n++)
+  {
+    for (Standard_Integer k = 1; k < n; k++)
+    {
+      Standard_Real expected = PLib::Bin(n - 1, k - 1) + PLib::Bin(n - 1, k);
+      Standard_Real actual   = PLib::Bin(n, k);
+      EXPECT_NEAR(actual, expected, Precision::Confusion())
+        << "Pascal recurrence failed for C(" << n << "," << k << ")";
+    }
+  }
+}
+
+// Tests for Binomial coefficient - Known large values
+TEST_F(PLibTest, BinomialCoefficient_LargeValues)
+{
+  // Test some larger known values
+  EXPECT_NEAR(PLib::Bin(20, 10), 184756.0, Precision::Confusion()) << "C(20,10)";
+  EXPECT_NEAR(PLib::Bin(15, 7), 6435.0, Precision::Confusion()) << "C(15,7)";
+  EXPECT_NEAR(PLib::Bin(25, 5), 53130.0, Precision::Confusion()) << "C(25,5)";
+  EXPECT_NEAR(PLib::Bin(25, 12), 5200300.0, Precision::Confusion()) << "C(25,12)";
+
+  // Test maximum supported degree (25)
+  EXPECT_NEAR(PLib::Bin(25, 0), 1.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(25, 1), 25.0, Precision::Confusion());
+  EXPECT_NEAR(PLib::Bin(25, 25), 1.0, Precision::Confusion());
+}
+
+// Tests for Binomial coefficient - Edge cases with first and last columns
+TEST_F(PLibTest, BinomialCoefficient_EdgeColumns)
+{
+  // Test first column: C(n,0) = 1 for all n
+  for (Standard_Integer n = 0; n <= 25; n++)
+  {
+    EXPECT_NEAR(PLib::Bin(n, 0), 1.0, Precision::Confusion()) << "C(" << n << ",0) should be 1";
+  }
+
+  // Test diagonal: C(n,n) = 1 for all n
+  for (Standard_Integer n = 0; n <= 25; n++)
+  {
+    EXPECT_NEAR(PLib::Bin(n, n), 1.0, Precision::Confusion())
+      << "C(" << n << "," << n << ") should be 1";
+  }
+
+  // Test second column: C(n,1) = n for all n >= 1
+  for (Standard_Integer n = 1; n <= 25; n++)
+  {
+    EXPECT_NEAR(PLib::Bin(n, 1), Standard_Real(n), Precision::Confusion())
+      << "C(" << n << ",1) should be " << n;
+  }
+}
+
+// Tests for Binomial coefficient - Complete rows verification
+TEST_F(PLibTest, BinomialCoefficient_CompleteRows)
+{
+  // Verify complete row n=6: [1, 6, 15, 20, 15, 6, 1]
+  const Standard_Real row6[] = {1.0, 6.0, 15.0, 20.0, 15.0, 6.0, 1.0};
+  for (Standard_Integer k = 0; k <= 6; k++)
+  {
+    EXPECT_NEAR(PLib::Bin(6, k), row6[k], Precision::Confusion())
+      << "C(6," << k << ") verification failed";
+  }
+
+  // Verify complete row n=8: [1, 8, 28, 56, 70, 56, 28, 8, 1]
+  const Standard_Real row8[] = {1.0, 8.0, 28.0, 56.0, 70.0, 56.0, 28.0, 8.0, 1.0};
+  for (Standard_Integer k = 0; k <= 8; k++)
+  {
+    EXPECT_NEAR(PLib::Bin(8, k), row8[k], Precision::Confusion())
+      << "C(8," << k << ") verification failed";
+  }
+}
+
+// Tests for Binomial coefficient - Sum property
+TEST_F(PLibTest, BinomialCoefficient_SumProperty)
+{
+  // Test sum property: Sum of C(n,k) for k=0 to n equals 2^n
+  for (Standard_Integer n = 0; n <= 20; n++)
+  {
+    Standard_Real sum      = 0.0;
+    Standard_Real expected = std::pow(2.0, n);
+
+    for (Standard_Integer k = 0; k <= n; k++)
+    {
+      sum += PLib::Bin(n, k);
+    }
+
+    EXPECT_NEAR(sum, expected, Precision::Confusion())
+      << "Sum property failed for n=" << n << " (sum should be 2^" << n << "=" << expected << ")";
   }
 }
 

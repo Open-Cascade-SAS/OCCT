@@ -349,7 +349,7 @@ public:
                                                      const Standard_Real         Epsilon = 0.0);
 
   //! returns the degree maxima for a BSplineCurve.
-  static Standard_Integer MaxDegree();
+  static inline constexpr Standard_Integer MaxDegree();
 
   //! Perform the Boor  algorithm  to  evaluate a point at
   //! parameter <U>, with <Degree> and <Dimension>.
