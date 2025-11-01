@@ -23,6 +23,10 @@
 #include <Standard_Real.hxx>
 #include <Precision.hxx>
 
+#ifndef M_SQRT2
+  #define M_SQRT2 1.41421356237309504880168872420969808
+#endif
+
 //=================================================================================================
 
 static Standard_Real DistanceToBorder(const math_Vector& theX,
@@ -554,7 +558,7 @@ void math_GlobOptMin::initCellSize()
   for (Standard_Integer anIdx = 1; anIdx <= myN; anIdx++)
   {
     myCellSize(anIdx - 1) =
-      (myGlobB(anIdx) - myGlobA(anIdx)) * Precision::PConfusion() / (2.0 * Sqrt(2.0));
+      (myGlobB(anIdx) - myGlobA(anIdx)) * Precision::PConfusion() / (2.0 * M_SQRT2);
   }
 }
 

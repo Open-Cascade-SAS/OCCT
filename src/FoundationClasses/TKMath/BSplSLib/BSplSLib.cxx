@@ -35,7 +35,11 @@
 #include <TColStd_HArray1OfInteger.hxx>
 
 // for null derivatives
-static Standard_Real BSplSLib_zero[3] = {0.0, 0.0, 0.0};
+static constexpr Standard_Real BSplSLib_zero[3] = {0.0, 0.0, 0.0};
+
+#ifndef M_SQRT2
+  #define M_SQRT2 1.41421356237309504880168872420969808
+#endif
 
 //=======================================================================
 // struct : BSplCLib_DataContainer
@@ -978,7 +982,8 @@ void BSplSLib::D2(const Standard_Real            U,
   Standard_Integer       dim, dim2;
   Standard_Real          u1, u2;
   Standard_Integer       d1, d2;
-  Standard_Real *        result, *resVu, *resVv, *resVuu, *resVvv, *resVuv;
+  Standard_Real*         result;
+  const Standard_Real *  resVu, *resVv, *resVuu, *resVvv, *resVuv;
   BSplSLib_DataContainer dc(UDegree, VDegree);
   if (PrepareEval(U,
                   V,
@@ -1141,10 +1146,11 @@ void BSplSLib::D3(const Standard_Real            U,
 {
   Standard_Boolean rational;
   //  Standard_Integer k,dim,dim2;
-  Standard_Integer dim, dim2;
-  Standard_Real    u1, u2;
-  Standard_Integer d1, d2;
-  Standard_Real *  result, *resVu, *resVv, *resVuu, *resVvv, *resVuv, *resVuuu, *resVvvv, *resVuuv,
+  Standard_Integer     dim, dim2;
+  Standard_Real        u1, u2;
+  Standard_Integer     d1, d2;
+  Standard_Real*       result;
+  const Standard_Real *resVu, *resVv, *resVuu, *resVvv, *resVuv, *resVuuu, *resVvvv, *resVuuv,
     *resVuvv;
   BSplSLib_DataContainer dc(UDegree, VDegree);
   if (PrepareEval(U,

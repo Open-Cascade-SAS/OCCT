@@ -29,6 +29,11 @@
 #include <Standard_Stream.hxx>
 
 #include <stdio.h>
+
+#ifndef M_SQRT2
+  #define M_SQRT2 1.41421356237309504880168872420969808
+#endif
+
 #ifdef _WIN32
 extern Draw_Viewer      dout;
 extern Standard_Boolean Draw_Batch;
@@ -722,9 +727,9 @@ static Standard_Integer hardcopy(Draw_Interpretor&, Standard_Integer n, const ch
       {
         if (!strcmp(a[3], "a7"))
         {
-          cad = cad / (2 * Sqrt(2));
-          dx  = dx / (2 * Sqrt(2));
-          dy  = dy / (2 * Sqrt(2));
+          cad = cad / (2 * M_SQRT2);
+          dx  = dx / (2 * M_SQRT2);
+          dy  = dy / (2 * M_SQRT2);
         }
         else if (!strcmp(a[3], "a6"))
         {
@@ -734,9 +739,9 @@ static Standard_Integer hardcopy(Draw_Interpretor&, Standard_Integer n, const ch
         }
         else if (!strcmp(a[3], "a5"))
         {
-          cad = cad / Sqrt(2);
-          dx  = dx / Sqrt(2);
-          dy  = dy / Sqrt(2);
+          cad = cad / M_SQRT2;
+          dx  = dx / M_SQRT2;
+          dy  = dy / M_SQRT2;
         }
         else if (!strcmp(a[3], "a4"))
         {
@@ -747,9 +752,9 @@ static Standard_Integer hardcopy(Draw_Interpretor&, Standard_Integer n, const ch
         }
         else if (!strcmp(a[3], "a3"))
         {
-          cad = cad * Sqrt(2);
-          dx  = dx * Sqrt(2);
-          dy  = dy * Sqrt(2);
+          cad = cad * M_SQRT2;
+          dx  = dx * M_SQRT2;
+          dy  = dy * M_SQRT2;
         }
         else if (!strcmp(a[3], "a2"))
         {
@@ -759,9 +764,9 @@ static Standard_Integer hardcopy(Draw_Interpretor&, Standard_Integer n, const ch
         }
         else if (!strcmp(a[3], "a1"))
         {
-          cad = cad * 2 * Sqrt(2);
-          dx  = dx * 2 * Sqrt(2);
-          dy  = dy * 2 * Sqrt(2);
+          cad = cad * 2 * M_SQRT2;
+          dx  = dx * 2 * M_SQRT2;
+          dy  = dy * 2 * M_SQRT2;
         }
         else if (!strcmp(a[3], "a0"))
         {

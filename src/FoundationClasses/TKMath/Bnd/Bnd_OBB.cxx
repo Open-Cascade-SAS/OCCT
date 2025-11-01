@@ -27,6 +27,12 @@
 #include <Standard_Dump.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+namespace
+{
+// Precomputed sqrt(3)
+constexpr Standard_Real SQRT_3 = 1.7320508075688772935;
+} // namespace
+
 //! Auxiliary class to select from the points stored in
 //! BVH tree the two points giving the extreme projection
 //! parameters on the axis
@@ -446,14 +452,13 @@ void OBBTool::ComputeExtremePoints()
   //                                              gp_XYZ (1, -a, 0),
   //                                              gp_XYZ (a, 0, 1),
   //                                              gp_XYZ (a, 0, -1) };
-  const Standard_Real aSqrt3                       = Sqrt(3);
-  const gp_XYZ        anInitialAxes7[myNbInitAxes] = {gp_XYZ(1.0, 0.0, 0.0),
-                                                      gp_XYZ(0.0, 1.0, 0.0),
-                                                      gp_XYZ(0.0, 0.0, 1.0),
-                                                      gp_XYZ(1.0, 1.0, 1.0) / aSqrt3,
-                                                      gp_XYZ(1.0, 1.0, -1.0) / aSqrt3,
-                                                      gp_XYZ(1.0, -1.0, 1.0) / aSqrt3,
-                                                      gp_XYZ(1.0, -1.0, -1.0) / aSqrt3};
+  const gp_XYZ anInitialAxes7[myNbInitAxes] = {gp_XYZ(1.0, 0.0, 0.0),
+                                               gp_XYZ(0.0, 1.0, 0.0),
+                                               gp_XYZ(0.0, 0.0, 1.0),
+                                               gp_XYZ(1.0, 1.0, 1.0) / SQRT_3,
+                                               gp_XYZ(1.0, 1.0, -1.0) / SQRT_3,
+                                               gp_XYZ(1.0, -1.0, 1.0) / SQRT_3,
+                                               gp_XYZ(1.0, -1.0, -1.0) / SQRT_3};
 
   // Set of initial axes
   const gp_XYZ* anInitialAxesArray = anInitialAxes7;

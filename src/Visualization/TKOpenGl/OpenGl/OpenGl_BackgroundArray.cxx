@@ -19,6 +19,10 @@
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
 
+#ifndef M_SQRT2
+  #define M_SQRT2 1.41421356237309504880168872420969808
+#endif
+
 //=================================================================================================
 
 OpenGl_BackgroundArray::OpenGl_BackgroundArray(const Graphic3d_TypeOfBackground theType)
@@ -287,8 +291,8 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray(
       for (Standard_Integer anIt = 1; anIt < aSubdiv + 2; ++anIt)
       {
         anEllipVerts[anIt] =
-          OpenGl_Vec2(float(Cos(aParam) * Sqrt(2.0) * myViewWidth / 2.0 + myViewWidth / 2.0f),
-                      float(Sin(aParam) * Sqrt(2.0) * myViewHeight / 2.0 + myViewHeight / 2.0f));
+          OpenGl_Vec2(float(Cos(aParam) * M_SQRT2 * myViewWidth / 2.0 + myViewWidth / 2.0f),
+                      float(Sin(aParam) * M_SQRT2 * myViewHeight / 2.0 + myViewHeight / 2.0f));
 
         aParam += aTetta;
       }

@@ -44,6 +44,10 @@
 #include <GProp_GProps.hxx>
 #include <Standard_ErrorHandler.hxx>
 
+#ifndef M_SQRT2
+  #define M_SQRT2 1.41421356237309504880168872420969808
+#endif
+
 //=================================================================================================
 
 static Standard_Integer OCC332bug(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -86,7 +90,7 @@ static Standard_Integer OCC332bug(Draw_Interpretor& di, Standard_Integer argc, c
   // SUPPORT:
   // 1. There is no need to normalize the direction - it's done automatically
   // gp_Ax2 origin(gp_Pnt(5000.0,-300.0, 1000.0),
-  // gp_Dir(0.0, -1.0/sqrt(2.0), -1.0/sqrt(2.0)));
+  // gp_Dir(0.0, -1.0/M_SQRT2, -1.0/M_SQRT2));
   gp_Ax2 origin(gp_Pnt(5000.0, -300.0, 1000.0), gp_Dir(0.0, -1.0, -1.0));
 
   TopoDS_Face  myFace;
@@ -441,7 +445,7 @@ static Standard_Integer OCC544(Draw_Interpretor& di, Standard_Integer argc, cons
   }
   di << "creating the shape for a bent tube\n";
 
-  gp_Ax2 origin(gp_Pnt(500.0, -300.0, 100.0), gp_Dir(0.0, -1.0 / sqrt(2.0), -1.0 / sqrt(2.0)));
+  gp_Ax2 origin(gp_Pnt(500.0, -300.0, 100.0), gp_Dir(0.0, -1.0 / M_SQRT2, -1.0 / M_SQRT2));
 
   TopoDS_Face  firstFace, lastFace;
   TopoDS_Solid wallSolid, myShape;
