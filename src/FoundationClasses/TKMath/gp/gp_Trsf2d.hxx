@@ -97,7 +97,7 @@ public:
 
   //! Returns true if the determinant of the vectorial part of
   //! this transformation is negative..
-  Standard_Boolean IsNegative() const noexcept { return (matrix.Determinant() < 0.0); }
+  constexpr Standard_Boolean IsNegative() const noexcept { return (matrix.Determinant() < 0.0); }
 
   //! Returns the nature of the transformation. It can be  an
   //! identity transformation, a rotation, a translation, a mirror

@@ -1979,6 +1979,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
 #ifdef OCCT_DEBUG_EFV
 
   gp_Pnt PPs;
+  gp_Pnt Pdeb, Psuiv;
 
   for (i = ideb; i <= myWork.Length(); i++)
   {
@@ -2001,7 +2002,6 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
     TopoDS_Wire   newwire;
     BRep_Builder  BW;
     BW.MakeWire(newwire);
-    gp_Pnt Pdeb, Psuiv;
     if (i == ideb)
     {
       anExp.Init(wire);
