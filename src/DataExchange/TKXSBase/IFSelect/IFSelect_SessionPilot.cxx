@@ -31,8 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionPilot, IFSelect_Activator)
 #define MAXWORDS 200
 #define MAXCARS 1000
 
-static int                     THE_IFSelect_SessionPilot_initactor = 0;
-static TCollection_AsciiString nulword;
+static int THE_IFSelect_SessionPilot_initactor = 0;
 
 // #define DEBUG_TRACE
 
@@ -217,7 +216,7 @@ const TCollection_AsciiString& IFSelect_SessionPilot::Word(const Standard_Intege
 {
   if (num < thenbwords)
     return thewords(num);
-  return nulword;
+  return TCollection_AsciiString::EmptyString();
 }
 
 Standard_CString IFSelect_SessionPilot::Arg(const Standard_Integer num) const

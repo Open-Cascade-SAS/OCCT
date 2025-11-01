@@ -22,6 +22,7 @@
 #include <OpenGl_Sampler.hxx>
 #include <Graphic3d_TextureUnit.hxx>
 #include <Graphic3d_TypeOfTexture.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //! Texture resource.
 class OpenGl_Texture : public OpenGl_NamedResource
@@ -39,7 +40,7 @@ public:
 public:
   //! Create uninitialized texture.
   Standard_EXPORT OpenGl_Texture(
-    const TCollection_AsciiString&         theResourceId = TCollection_AsciiString(),
+    const TCollection_AsciiString&         theResourceId = TCollection_AsciiString::EmptyString(),
     const Handle(Graphic3d_TextureParams)& theParams     = Handle(Graphic3d_TextureParams)());
 
   //! Destroy object.

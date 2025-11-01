@@ -1056,8 +1056,6 @@ Standard_Boolean OpenGl_View::addRaytracePolygonArray(
   return Standard_True;
 }
 
-const TCollection_AsciiString OpenGl_View::ShaderSource::EMPTY_PREFIX;
-
 // =======================================================================
 // function : Source
 // purpose  : Returns shader source combined with prefix

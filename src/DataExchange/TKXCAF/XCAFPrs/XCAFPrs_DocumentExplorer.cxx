@@ -303,7 +303,7 @@ void XCAFPrs_DocumentExplorer::initCurrent(Standard_Boolean theIsAssembly)
     myCurrent.Location  = myCurrent.LocalTrsf;
     myCurrent.Style =
       mergedStyle(myColorTool, myVisMatTool, myDefStyle, myCurrent.Label, myCurrent.RefLabel);
-    myCurrent.Id = DefineChildId(myCurrent.Label, TCollection_AsciiString());
+    myCurrent.Id = DefineChildId(myCurrent.Label, TCollection_AsciiString::EmptyString());
   }
   else
   {
@@ -356,7 +356,7 @@ void XCAFPrs_DocumentExplorer::Next()
     aNodeInStack.Location   = aNodeInStack.LocalTrsf;
     aNodeInStack.Style =
       mergedStyle(myColorTool, myVisMatTool, myDefStyle, aNodeInStack.Label, aNodeInStack.RefLabel);
-    aNodeInStack.Id = DefineChildId(aNodeInStack.Label, TCollection_AsciiString());
+    aNodeInStack.Id = DefineChildId(aNodeInStack.Label, TCollection_AsciiString::EmptyString());
     myNodeStack.SetValue(0, aNodeInStack);
     if ((myFlags & XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes) == 0)
     {

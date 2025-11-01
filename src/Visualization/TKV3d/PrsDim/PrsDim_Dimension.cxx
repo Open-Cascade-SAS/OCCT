@@ -67,10 +67,6 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Dimension, AIS_InteractiveObject)
 
 namespace
 {
-// default text strings
-static const TCollection_ExtendedString THE_EMPTY_LABEL;
-static const TCollection_AsciiString    THE_UNDEFINED_UNITS;
-
 // default text margin and resolution
 static const Standard_Real THE_3D_TEXT_MARGIN = 0.1;
 
@@ -218,14 +214,14 @@ void PrsDim_Dimension::SetFlyout(const Standard_Real theFlyout)
 
 const TCollection_AsciiString& PrsDim_Dimension::GetDisplayUnits() const
 {
-  return THE_UNDEFINED_UNITS;
+  return TCollection_AsciiString::EmptyString();
 }
 
 //=================================================================================================
 
 const TCollection_AsciiString& PrsDim_Dimension::GetModelUnits() const
 {
-  return THE_UNDEFINED_UNITS;
+  return TCollection_AsciiString::EmptyString();
 }
 
 //=================================================================================================
@@ -813,7 +809,7 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
                         aDimensionAspect->ArrowTailSize(),
                         aFirstArrowEnd,
                         aFirstExtensionDir,
-                        THE_EMPTY_LABEL,
+                        TCollection_ExtendedString::EmptyString(),
                         0.0,
                         theMode,
                         LabelPosition_None);
@@ -823,7 +819,7 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
                           aDimensionAspect->ArrowTailSize(),
                           aSecondArrowEnd,
                           aSecondExtensionDir,
-                          THE_EMPTY_LABEL,
+                          TCollection_ExtendedString::EmptyString(),
                           0.0,
                           theMode,
                           LabelPosition_None);
@@ -892,7 +888,7 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
                         aDimensionAspect->ArrowTailSize(),
                         aSecondArrowEnd,
                         aSecondExtensionDir,
-                        THE_EMPTY_LABEL,
+                        TCollection_ExtendedString::EmptyString(),
                         0.0,
                         theMode,
                         LabelPosition_None);
@@ -958,7 +954,7 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
                         aDimensionAspect->ArrowTailSize(),
                         aFirstArrowEnd,
                         aFirstExtensionDir,
-                        THE_EMPTY_LABEL,
+                        TCollection_ExtendedString::EmptyString(),
                         0.0,
                         theMode,
                         LabelPosition_None);

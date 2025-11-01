@@ -125,8 +125,7 @@ const TCollection_ExtendedString& TDataStd_ExtStringArray::Value(const Standard_
 {
   if (myValue.IsNull())
   {
-    static TCollection_ExtendedString staticEmptyValue;
-    return staticEmptyValue;
+    return TCollection_ExtendedString::EmptyString();
   }
   return myValue->Value(index);
 }

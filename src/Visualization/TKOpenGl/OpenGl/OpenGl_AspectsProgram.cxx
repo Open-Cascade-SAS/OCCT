@@ -16,11 +16,6 @@
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 
-namespace
-{
-static const TCollection_AsciiString THE_EMPTY_KEY;
-}
-
 //=================================================================================================
 
 void OpenGl_AspectsProgram::Release(OpenGl_Context* theCtx)
@@ -37,8 +32,9 @@ void OpenGl_AspectsProgram::Release(OpenGl_Context* theCtx)
 
 void OpenGl_AspectsProgram::UpdateRediness(const Handle(Graphic3d_Aspects)& theAspect)
 {
-  const TCollection_AsciiString& aShaderKey =
-    theAspect->ShaderProgram().IsNull() ? THE_EMPTY_KEY : theAspect->ShaderProgram()->GetId();
+  const TCollection_AsciiString& aShaderKey = theAspect->ShaderProgram().IsNull()
+                                                ? TCollection_AsciiString::EmptyString()
+                                                : theAspect->ShaderProgram()->GetId();
   if (aShaderKey.IsEmpty() || myShaderProgramId != aShaderKey)
   {
     myIsShaderReady = Standard_False;

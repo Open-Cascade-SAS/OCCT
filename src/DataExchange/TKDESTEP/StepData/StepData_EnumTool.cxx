@@ -14,8 +14,6 @@
 #include <StepData_EnumTool.hxx>
 #include <TCollection_AsciiString.hxx>
 
-static TCollection_AsciiString nulstr("");
-
 StepData_EnumTool::StepData_EnumTool(const Standard_CString e0,
                                      const Standard_CString e1,
                                      const Standard_CString e2,
@@ -176,7 +174,7 @@ Standard_Integer StepData_EnumTool::NullValue() const
 const TCollection_AsciiString& StepData_EnumTool::Text(const Standard_Integer num) const
 {
   if (num < 0 || num >= thetexts.Length())
-    return nulstr;
+    return TCollection_AsciiString::EmptyString();
   return thetexts.Value(num + 1);
 }
 

@@ -50,12 +50,11 @@ struct StdLPersistent_Collection::stringConverter
 
   const TCollection_ExtendedString& operator()(const Handle(StdObjMgt_Persistent)& theValue) const
   {
-    static TCollection_ExtendedString anEmptyString;
     if (theValue.IsNull())
-      return anEmptyString;
+      return TCollection_ExtendedString::EmptyString();
 
     Handle(TCollection_HExtendedString) aString = theValue->ExtString();
-    return aString ? aString->String() : anEmptyString;
+    return aString ? aString->String() : TCollection_ExtendedString::EmptyString();
   }
 };
 

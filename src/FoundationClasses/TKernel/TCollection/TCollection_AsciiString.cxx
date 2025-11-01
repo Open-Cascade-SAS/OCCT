@@ -61,7 +61,7 @@ struct FormattedReal
 
 //=================================================================================================
 
-TCollection_AsciiString::TCollection_AsciiString()
+TCollection_AsciiString::TCollection_AsciiString() noexcept
 {
   allocate(0);
 }
@@ -1268,4 +1268,12 @@ Standard_Boolean TCollection_AsciiString::IsSameString(const Standard_CString th
     }
     return Standard_True;
   }
+}
+
+//=================================================================================================
+
+const TCollection_AsciiString& TCollection_AsciiString::EmptyString() noexcept
+{
+  static const TCollection_AsciiString THE_EMPTY_STRING;
+  return THE_EMPTY_STRING;
 }

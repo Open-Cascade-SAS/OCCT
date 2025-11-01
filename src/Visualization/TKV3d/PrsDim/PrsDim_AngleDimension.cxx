@@ -54,10 +54,9 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_AngleDimension, PrsDim_Dimension)
 
 namespace
 {
-static const TCollection_ExtendedString THE_EMPTY_LABEL_STRING;
-static const Standard_Real              THE_EMPTY_LABEL_WIDTH = 0.0;
-static const Standard_ExtCharacter      THE_DEGREE_SYMBOL(0x00B0);
-static const Standard_Real              THE_3D_TEXT_MARGIN = 0.1;
+static const Standard_Real         THE_EMPTY_LABEL_WIDTH = 0.0;
+static const Standard_ExtCharacter THE_DEGREE_SYMBOL(0x00B0);
+static const Standard_Real         THE_3D_TEXT_MARGIN = 0.1;
 
 //! Returns true if the given points lie on a same line.
 static Standard_Boolean isSameLine(const gp_Pnt& theFirstPoint,
@@ -776,7 +775,7 @@ void PrsDim_AngleDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
                     aDimensionAspect->ArrowTailSize(),
                     aFirstArrowEnd,
                     aFirstExtensionDir,
-                    THE_EMPTY_LABEL_STRING,
+                    TCollection_ExtendedString::EmptyString(),
                     THE_EMPTY_LABEL_WIDTH,
                     theMode,
                     LabelPosition_None);
@@ -789,7 +788,7 @@ void PrsDim_AngleDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
                     aDimensionAspect->ArrowTailSize(),
                     aSecondArrowEnd,
                     aSecondExtensionDir,
-                    THE_EMPTY_LABEL_STRING,
+                    TCollection_ExtendedString::EmptyString(),
                     THE_EMPTY_LABEL_WIDTH,
                     theMode,
                     LabelPosition_None);

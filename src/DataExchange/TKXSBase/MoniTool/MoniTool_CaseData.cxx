@@ -299,16 +299,10 @@ Standard_Integer MoniTool_CaseData::Kind(const Standard_Integer nd) const
   return thekind(nd);
 }
 
-static const TCollection_AsciiString& nulname()
-{
-  static TCollection_AsciiString nuln;
-  return nuln;
-}
-
 const TCollection_AsciiString& MoniTool_CaseData::Name(const Standard_Integer nd) const
 {
   if (nd < 1 || nd > thednam.Length())
-    return nulname();
+    return TCollection_AsciiString::EmptyString();
   return thednam(nd);
 }
 

@@ -18,6 +18,7 @@
 #include <Message_AlertExtended.hxx>
 #include <Message_Gravity.hxx>
 #include <Message_Messenger.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <Standard.hxx>
 
@@ -40,7 +41,8 @@ public:
   //! Constructor.
   //! One string key is used for all alert meters.
   //! The perf meter is not started automatically, it will be done in AddAlert() method
-  Standard_EXPORT Message_Level(const TCollection_AsciiString& theName = TCollection_AsciiString());
+  Standard_EXPORT Message_Level(
+    const TCollection_AsciiString& theName = TCollection_AsciiString::EmptyString());
 
   //! Assures stopping upon destruction
   Standard_EXPORT ~Message_Level();

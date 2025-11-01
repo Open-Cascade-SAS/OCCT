@@ -21,11 +21,6 @@
 #include <Graphic3d_MarkerImage.hxx>
 #include <TColStd_HArray1OfByte.hxx>
 
-namespace
-{
-static const TCollection_AsciiString THE_EMPTY_KEY;
-}
-
 //=================================================================================================
 
 void OpenGl_AspectsSprite::Release(OpenGl_Context* theCtx)
@@ -98,9 +93,9 @@ void OpenGl_AspectsSprite::UpdateRediness(const Handle(Graphic3d_Aspects)& theAs
              aSpriteKeyNew,
              aSpriteAKeyNew);
   const TCollection_AsciiString& aSpriteKeyOld =
-    !mySprite.IsNull() ? mySprite->ResourceId() : THE_EMPTY_KEY;
+    !mySprite.IsNull() ? mySprite->ResourceId() : TCollection_AsciiString::EmptyString();
   const TCollection_AsciiString& aSpriteAKeyOld =
-    !mySpriteA.IsNull() ? mySpriteA->ResourceId() : THE_EMPTY_KEY;
+    !mySpriteA.IsNull() ? mySpriteA->ResourceId() : TCollection_AsciiString::EmptyString();
   if (aSpriteKeyNew.IsEmpty() || aSpriteKeyOld != aSpriteKeyNew || aSpriteAKeyNew.IsEmpty()
       || aSpriteAKeyOld != aSpriteAKeyNew)
   {
@@ -143,9 +138,9 @@ void OpenGl_AspectsSprite::build(const Handle(OpenGl_Context)&        theCtx,
   spriteKeys(theMarkerImage, theType, theScale, theColor, aNewKey, aNewKeyA);
 
   const TCollection_AsciiString& aSpriteKeyOld =
-    !mySprite.IsNull() ? mySprite->ResourceId() : THE_EMPTY_KEY;
+    !mySprite.IsNull() ? mySprite->ResourceId() : TCollection_AsciiString::EmptyString();
   const TCollection_AsciiString& aSpriteAKeyOld =
-    !mySpriteA.IsNull() ? mySpriteA->ResourceId() : THE_EMPTY_KEY;
+    !mySpriteA.IsNull() ? mySpriteA->ResourceId() : TCollection_AsciiString::EmptyString();
 
   // release old shared resources
   const Standard_Boolean aNewResource = aNewKey.IsEmpty() || aSpriteKeyOld != aNewKey;

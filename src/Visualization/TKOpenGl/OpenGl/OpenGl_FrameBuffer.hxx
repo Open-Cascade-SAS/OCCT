@@ -16,7 +16,7 @@
 #define OpenGl_FrameBuffer_HeaderFile
 
 #include <OpenGl_NamedResource.hxx>
-
+#include <TCollection_AsciiString.hxx>
 #include <Graphic3d_BufferType.hxx>
 #include <Graphic3d_Vec2.hxx>
 #include <NCollection_Vector.hxx>
@@ -55,7 +55,7 @@ public:
 public:
   //! Empty constructor
   Standard_EXPORT OpenGl_FrameBuffer(
-    const TCollection_AsciiString& theResourceId = TCollection_AsciiString());
+    const TCollection_AsciiString& theResourceId = TCollection_AsciiString::EmptyString());
 
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_FrameBuffer();

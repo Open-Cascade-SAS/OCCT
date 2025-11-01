@@ -94,7 +94,7 @@ inline Standard_ExtCharacter* Standard_UNUSED
 
 //=================================================================================================
 
-TCollection_ExtendedString::TCollection_ExtendedString()
+TCollection_ExtendedString::TCollection_ExtendedString() noexcept
 {
   allocate(0);
 }
@@ -949,4 +949,12 @@ void TCollection_ExtendedString::deallocate()
   }
   mylength = 0;
   mystring = THE_DEFAULT_EXT_CHAR_STRING;
+}
+
+//=================================================================================================
+
+const TCollection_ExtendedString& TCollection_ExtendedString::EmptyString() noexcept
+{
+  static const TCollection_ExtendedString THE_EMPTY_STRING;
+  return THE_EMPTY_STRING;
 }

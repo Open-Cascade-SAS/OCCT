@@ -16,6 +16,7 @@
 
 #include <Message_Attribute.hxx>
 #include <Message_MetricType.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <NCollection_IndexedDataMap.hxx>
 
@@ -33,7 +34,7 @@ public:
 public:
   //! Constructor with string argument
   Standard_EXPORT Message_AttributeMeter(
-    const TCollection_AsciiString& theName = TCollection_AsciiString());
+    const TCollection_AsciiString& theName = TCollection_AsciiString::EmptyString());
 
   //! Checks whether the attribute has values for the metric
   //! @param[in] theMetric  metric type

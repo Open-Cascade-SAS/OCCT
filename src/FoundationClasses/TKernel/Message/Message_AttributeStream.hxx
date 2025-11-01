@@ -15,6 +15,7 @@
 #define _Message_AttributeStream_HeaderFile
 
 #include <Message_Attribute.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <Standard_SStream.hxx>
 
@@ -26,7 +27,7 @@ public:
   //! Constructor with string argument
   Standard_EXPORT Message_AttributeStream(
     const Standard_SStream&        theStream,
-    const TCollection_AsciiString& theName = TCollection_AsciiString());
+    const TCollection_AsciiString& theName = TCollection_AsciiString::EmptyString());
 
   //! Returns stream value
   const Standard_SStream& Stream() const { return myStream; }

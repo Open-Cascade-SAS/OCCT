@@ -19,6 +19,7 @@
 #include <Message_AttributeStream.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Report.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <TopoDS_Shape.hxx>
 
@@ -32,7 +33,7 @@ public:
   //! Constructor with shape argument
   Standard_EXPORT TopoDS_AlertAttribute(
     const TopoDS_Shape&            theShape,
-    const TCollection_AsciiString& theName = TCollection_AsciiString());
+    const TCollection_AsciiString& theName = TCollection_AsciiString::EmptyString());
 
   //! Returns contained shape
   const TopoDS_Shape& GetShape() const { return myShape; }

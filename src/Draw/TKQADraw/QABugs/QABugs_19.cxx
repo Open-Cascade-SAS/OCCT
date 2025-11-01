@@ -880,7 +880,7 @@ static Standard_Integer OCC11758(Draw_Interpretor& di, Standard_Integer n, const
     // assert( d.IsDifferent( a ));
     // assert( d.IsDifferent( h ));
     // assert( !d.IsDifferent( d ));
-    QCOMPARE(d.IsDifferent(TCollection_AsciiString()), Standard_True);
+    QCOMPARE(d.IsDifferent(TCollection_AsciiString::EmptyString()), Standard_True);
     QCOMPARE(d.IsDifferent(a), Standard_True);
     QCOMPARE(d.IsDifferent(h), Standard_True);
     QCOMPARE(!d.IsDifferent(d), Standard_True);

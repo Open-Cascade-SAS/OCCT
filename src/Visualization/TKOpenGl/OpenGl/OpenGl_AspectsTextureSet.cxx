@@ -19,11 +19,6 @@
 
 #include <Graphic3d_TextureParams.hxx>
 
-namespace
-{
-static const TCollection_AsciiString THE_EMPTY_KEY;
-}
-
 //=================================================================================================
 
 void OpenGl_AspectsTextureSet::Release(OpenGl_Context* theCtx)
