@@ -129,7 +129,7 @@ public:
 private:
   // Assignment operator is made empty and private in order to
   // avoid warning on MSVC (C4512)
-  void operator=(const NCollection_UBTreeFiller&) {}
+  void operator=(const NCollection_UBTreeFiller&) noexcept {}
 
   static Standard_Real checkNode(const UBTreeNode&      theNode,
                                  const Standard_Integer theLength,

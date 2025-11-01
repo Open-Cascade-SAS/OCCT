@@ -38,10 +38,10 @@ public:
   NCollection_UtfIterator<Type> Iterator() const { return NCollection_UtfIterator<Type>(myString); }
 
   //! @return the size of the buffer in bytes, excluding NULL-termination symbol
-  Standard_Integer Size() const { return mySize; }
+  Standard_Integer Size() const noexcept { return mySize; }
 
   //! @return the length of the string in Unicode symbols
-  Standard_Integer Length() const { return myLength; }
+  Standard_Integer Length() const noexcept { return myLength; }
 
   //! Retrieve Unicode symbol at specified position.
   //! Warning! This is a slow access. Iterator should be used for consecutive parsing.
@@ -139,7 +139,7 @@ public:
   ~NCollection_UtfString();
 
   //! Compares this string with another one.
-  bool IsEqual(const NCollection_UtfString& theCompare) const;
+  bool IsEqual(const NCollection_UtfString& theCompare) const noexcept;
 
   //! Returns the substring.
   //! @param theStart start index (inclusive) of subString
@@ -151,7 +151,7 @@ public:
   //! Returns NULL-terminated Unicode string.
   //! Should not be modified or deleted!
   //! @return (const Type* ) pointer to string
-  const Type* ToCString() const { return myString; }
+  const Type* ToCString() const noexcept { return myString; }
 
   //! @return copy in UTF-8 format
   const NCollection_UtfString<Standard_Utf8Char> ToUtf8() const;
@@ -172,7 +172,7 @@ public:
   bool ToLocale(char* theBuffer, const Standard_Integer theSizeBytes) const;
 
   //! @return true if string is empty
-  bool IsEmpty() const { return myString[0] == Type(0); }
+  bool IsEmpty() const noexcept { return myString[0] == Type(0); }
 
   //! Zero string.
   void Clear();
@@ -182,7 +182,7 @@ public: //! @name assign operators
   const NCollection_UtfString& Assign(const NCollection_UtfString& theOther);
 
   //! Exchange the data of two strings (without reallocating memory).
-  void Swap(NCollection_UtfString& theOther);
+  void Swap(NCollection_UtfString& theOther) noexcept;
 
   //! Copy from another string.
   const NCollection_UtfString& operator=(const NCollection_UtfString& theOther)
@@ -225,9 +225,9 @@ public: //! @name assign operators
   }
 
 public: //! @name compare operators
-  bool operator==(const NCollection_UtfString& theCompare) const { return IsEqual(theCompare); }
+  bool operator==(const NCollection_UtfString& theCompare) const noexcept { return IsEqual(theCompare); }
 
-  bool operator!=(const NCollection_UtfString& theCompare) const;
+  bool operator!=(const NCollection_UtfString& theCompare) const noexcept;
 
 private: //! @name low-level methods
   //! Implementation of copy routine for string of the same type
@@ -296,12 +296,12 @@ private: //! @name low-level methods
   }
 
   //! Release string buffer and nullify the pointer.
-  static void strFree(Type*& thePtr) { Standard::Free(thePtr); }
+  static void strFree(Type*& thePtr) noexcept { Standard::Free(thePtr); }
 
   //! Provides bytes interface to avoid incorrect pointer arithmetics.
   static void strCopy(Standard_Byte*         theStrDst,
                       const Standard_Byte*   theStrSrc,
-                      const Standard_Integer theSizeBytes)
+                      const Standard_Integer theSizeBytes) noexcept
   {
     std::memcpy(theStrDst, theStrSrc, (Standard_Size)theSizeBytes);
   }
@@ -310,7 +310,7 @@ private: //! @name low-level methods
   static bool strAreEqual(const Type*            theString1,
                           const Standard_Integer theSizeBytes1,
                           const Type*            theString2,
-                          const Standard_Integer theSizeBytes2)
+                          const Standard_Integer theSizeBytes2) noexcept
   {
     return (theSizeBytes1 == theSizeBytes2)
            && (std::memcmp(theString1, theString2, (Standard_Size)theSizeBytes1) == 0);

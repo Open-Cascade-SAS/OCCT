@@ -34,7 +34,7 @@
         : _SequenceType_(theOther)                                                                 \
     {                                                                                              \
     }                                                                                              \
-    const _SequenceType_& Sequence() const                                                         \
+    const _SequenceType_& Sequence() const noexcept                                                \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \
@@ -46,7 +46,7 @@
     {                                                                                              \
       _SequenceType_::Append(theSequence);                                                         \
     }                                                                                              \
-    _SequenceType_& ChangeSequence()                                                               \
+    _SequenceType_& ChangeSequence() noexcept                                                      \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \

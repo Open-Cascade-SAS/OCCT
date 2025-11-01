@@ -74,10 +74,10 @@ public:
   }
 
   //! Returns an object address.
-  pointer address(reference theItem) const { return &theItem; }
+  pointer address(reference theItem) const noexcept { return &theItem; }
 
   //! Returns an object address.
-  const_pointer address(const_reference theItem) const { return &theItem; }
+  const_pointer address(const_reference theItem) const noexcept { return &theItem; }
 
   //! Allocates memory for theSize objects.
   pointer allocate(const size_type theSize, const void* /*hint*/ = 0) const
@@ -86,7 +86,7 @@ public:
   }
 
   //! Frees previously allocated memory.
-  void deallocate(pointer thePnt, const size_type) const
+  void deallocate(pointer thePnt, const size_type) const noexcept
   {
     Standard::Free(static_cast<Standard_Address>(thePnt));
   }
@@ -113,25 +113,25 @@ public:
     thePnt->~value_type();
   }
 
-  bool operator==(const NCollection_Allocator&) const { return true; }
+  constexpr bool operator==(const NCollection_Allocator&) const noexcept { return true; }
 
   template <class U>
-  bool operator==(const NCollection_Allocator<U>&) const noexcept
+  constexpr bool operator==(const NCollection_Allocator<U>&) const noexcept
   {
     return true;
   }
 
-  bool operator!=(const NCollection_Allocator&) const noexcept { return false; }
+  constexpr bool operator!=(const NCollection_Allocator&) const noexcept { return false; }
 
   template <class U>
-  bool operator!=(const NCollection_Allocator<U>&) const noexcept
+  constexpr bool operator!=(const NCollection_Allocator<U>&) const noexcept
   {
     return false;
   }
 };
 
 template <class U, class V>
-bool operator==(const NCollection_Allocator<U>&, const NCollection_Allocator<V>&)
+constexpr bool operator==(const NCollection_Allocator<U>&, const NCollection_Allocator<V>&) noexcept
 {
   return true;
 }

@@ -106,7 +106,7 @@ public:
      * @return
      *   True signals that the selection process is stopped
      */
-    Standard_Boolean Stop() const { return myStop; }
+    Standard_Boolean Stop() const noexcept { return myStop; }
 
     /**
      * Destructor
@@ -143,23 +143,23 @@ public:
     {
     }
 
-    Standard_Boolean IsLeaf() const { return !myChildren; }
+    Standard_Boolean IsLeaf() const noexcept { return !myChildren; }
 
-    Standard_Boolean IsRoot() const { return !myParent; }
+    Standard_Boolean IsRoot() const noexcept { return !myParent; }
 
-    const TheBndType& Bnd() const { return myBnd; }
+    const TheBndType& Bnd() const noexcept { return myBnd; }
 
-    TheBndType& ChangeBnd() { return myBnd; }
+    TheBndType& ChangeBnd() noexcept { return myBnd; }
 
-    const TheObjType& Object() const { return myObject; }
+    const TheObjType& Object() const noexcept { return myObject; }
 
-    const TreeNode& Child(const Standard_Integer i) const { return myChildren[i]; }
+    const TreeNode& Child(const Standard_Integer i) const noexcept { return myChildren[i]; }
 
-    TreeNode& ChangeChild(const Standard_Integer i) { return myChildren[i]; }
+    TreeNode& ChangeChild(const Standard_Integer i) noexcept { return myChildren[i]; }
 
-    const TreeNode& Parent() const { return *myParent; }
+    const TreeNode& Parent() const noexcept { return *myParent; }
 
-    TreeNode& ChangeParent() { return *myParent; }
+    TreeNode& ChangeParent() noexcept { return *myParent; }
 
     /**
      * Forces *this node being gemmated such a way that it becomes
@@ -322,13 +322,13 @@ public:
       myAlloc = aNewAlloc;
   }
 
-  Standard_Boolean IsEmpty() const { return !myRoot; }
+  Standard_Boolean IsEmpty() const noexcept { return !myRoot; }
 
   /**
    * @return
    *   the root node of the tree
    */
-  const TreeNode& Root() const { return *myRoot; }
+  const TreeNode& Root() const noexcept { return *myRoot; }
 
   /**
    * Destructor.
@@ -340,7 +340,7 @@ public:
    * @return
    *   Allocator object used in this instance of UBTree.
    */
-  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAlloc; }
+  const Handle(NCollection_BaseAllocator)& Allocator() const noexcept { return myAlloc; }
 
 protected:
   // ---------- PROTECTED METHODS ----------
@@ -349,7 +349,7 @@ protected:
    * @return
    *   the last added node
    */
-  TreeNode& ChangeLastNode() { return *myLastNode; }
+  TreeNode& ChangeLastNode() noexcept { return *myLastNode; }
 
   /**
    * Searches in the branch all objects conforming to the given selector.
@@ -514,7 +514,7 @@ Standard_Integer NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNo
       ChangeTree().Clear();                                                                        \
     }                                                                                              \
                                                                                                    \
-    Standard_Boolean IsEmpty() const                                                               \
+    Standard_Boolean IsEmpty() const noexcept                                                      \
     {                                                                                              \
       return Tree().IsEmpty();                                                                     \
     }                                                                                              \
@@ -526,11 +526,11 @@ Standard_Integer NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNo
                                                                                                    \
     /* Access to the tree algorithm */                                                             \
                                                                                                    \
-    const UBTree& Tree() const                                                                     \
+    const UBTree& Tree() const noexcept                                                            \
     {                                                                                              \
       return *myTree;                                                                              \
     }                                                                                              \
-    UBTree& ChangeTree()                                                                           \
+    UBTree& ChangeTree() noexcept                                                                  \
     {                                                                                              \
       return *myTree;                                                                              \
     }                                                                                              \

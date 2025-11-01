@@ -41,7 +41,7 @@ void NCollection_BaseList::PClear(NCollection_DelListNode fDel)
 // purpose  : Appends one item at the end
 //=======================================================================
 
-void NCollection_BaseList::PAppend(NCollection_ListNode* theNode)
+void NCollection_BaseList::PAppend(NCollection_ListNode* theNode) noexcept
 {
   if (myLength)
     myLast->Next() = theNode;
@@ -57,7 +57,7 @@ void NCollection_BaseList::PAppend(NCollection_ListNode* theNode)
 // purpose  : Appends another list at the end
 //=======================================================================
 
-void NCollection_BaseList::PAppend(NCollection_BaseList& theOther)
+void NCollection_BaseList::PAppend(NCollection_BaseList& theOther) noexcept
 {
   if (this == &theOther || theOther.IsEmpty())
     return;
@@ -78,7 +78,7 @@ void NCollection_BaseList::PAppend(NCollection_BaseList& theOther)
 // purpose  : Prepends one item at the beginning
 //=======================================================================
 
-void NCollection_BaseList::PPrepend(NCollection_ListNode* theNode)
+void NCollection_BaseList::PPrepend(NCollection_ListNode* theNode) noexcept
 {
   theNode->Next() = myFirst;
   myFirst         = theNode;
@@ -89,7 +89,7 @@ void NCollection_BaseList::PPrepend(NCollection_ListNode* theNode)
 
 //=================================================================================================
 
-void NCollection_BaseList::PPrepend(NCollection_BaseList& theOther)
+void NCollection_BaseList::PPrepend(NCollection_BaseList& theOther) noexcept
 {
   if (this == &theOther || theOther.IsEmpty())
     return;
@@ -218,7 +218,7 @@ void NCollection_BaseList::PInsertAfter(NCollection_BaseList& theOther, Iterator
 
 //=================================================================================================
 
-void NCollection_BaseList::PReverse()
+void NCollection_BaseList::PReverse() noexcept
 {
   if (myLength > 1)
   {

@@ -45,16 +45,16 @@ public:
     const_iterator;
 
   //! Returns an iterator pointing to the first element in the list.
-  iterator begin() const { return Iterator(*this); }
+  iterator begin() const noexcept { return Iterator(*this); }
 
   //! Returns an iterator referring to the past-the-end element in the list.
-  iterator end() const { return Iterator(); }
+  iterator end() const noexcept { return Iterator(); }
 
   //! Returns a const iterator pointing to the first element in the list.
-  const_iterator cbegin() const { return Iterator(*this); }
+  const_iterator cbegin() const noexcept { return Iterator(*this); }
 
   //! Returns a const iterator referring to the past-the-end element in the list.
-  const_iterator cend() const { return Iterator(); }
+  const_iterator cend() const noexcept { return Iterator(); }
 
 public:
   // ---------- PUBLIC METHODS ------------
@@ -86,7 +86,7 @@ public:
   }
 
   //! Size - Number of items
-  Standard_Integer Size(void) const { return Extent(); }
+  Standard_Integer Size(void) const noexcept { return Extent(); }
 
   //! Replace this list by the items of another list (theOther parameter).
   //! This method does not change the internal allocator.

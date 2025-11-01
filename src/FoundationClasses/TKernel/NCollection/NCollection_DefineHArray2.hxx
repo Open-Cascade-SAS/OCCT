@@ -49,11 +49,11 @@
         : _Array2Type_(theOther)                                                                   \
     {                                                                                              \
     }                                                                                              \
-    const _Array2Type_& Array2() const                                                             \
+    const _Array2Type_& Array2() const noexcept                                                    \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \
-    _Array2Type_& ChangeArray2()                                                                   \
+    _Array2Type_& ChangeArray2() noexcept                                                          \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \

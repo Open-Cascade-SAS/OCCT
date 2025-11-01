@@ -94,7 +94,7 @@ public:
    * @return
    *   True if the tree contains the object.
    */
-  Standard_Boolean Contains(const TheObjType& theObj) const { return myObjNodeMap.IsBound(theObj); }
+  Standard_Boolean Contains(const TheObjType& theObj) const noexcept { return myObjNodeMap.IsBound(theObj); }
 
   /**
    * @return
@@ -200,7 +200,7 @@ Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObj
       return ChangeETree().Remove(theObj);                                                         \
     }                                                                                              \
                                                                                                    \
-    Standard_Boolean Contains(const _OBJTYPE& theObj) const                                        \
+    Standard_Boolean Contains(const _OBJTYPE& theObj) const noexcept                               \
     {                                                                                              \
       return ETree().Contains(theObj);                                                             \
     }                                                                                              \
@@ -212,11 +212,11 @@ Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObj
                                                                                                    \
     /* Access to the extended tree algorithm */                                                    \
                                                                                                    \
-    const EBTree& ETree() const                                                                    \
+    const EBTree& ETree() const noexcept                                                           \
     {                                                                                              \
       return (const EBTree&)Tree();                                                                \
     }                                                                                              \
-    EBTree& ChangeETree()                                                                          \
+    EBTree& ChangeETree() noexcept                                                                 \
     {                                                                                              \
       return (EBTree&)ChangeTree();                                                                \
     }                                                                                              \

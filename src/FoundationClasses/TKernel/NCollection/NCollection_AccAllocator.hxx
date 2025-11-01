@@ -43,13 +43,13 @@ class NCollection_AccAllocator : public NCollection_BaseAllocator
   // --------- PUBLIC CONSTANTS ---------
 public:
   //! Alignment of all allocated objects: 4 bytes
-  static const Standard_Size Align = 4;
+  static constexpr Standard_Size Align = 4;
 
   //! Default block size
-  static const Standard_Size DefaultBlockSize = 24600;
+  static constexpr Standard_Size DefaultBlockSize = 24600;
 
   //! Number of last blocks to check for free space
-  static const Standard_Integer MaxLookupBlocks = 16;
+  static constexpr Standard_Integer MaxLookupBlocks = 16;
 
   // ---------- PUBLIC METHODS ----------
 public:
@@ -57,7 +57,7 @@ public:
   Standard_EXPORT NCollection_AccAllocator(const size_t theBlockSize = DefaultBlockSize);
 
   //! Destructor
-  Standard_EXPORT ~NCollection_AccAllocator();
+  Standard_EXPORT ~NCollection_AccAllocator() noexcept;
 
   //! Allocate memory with given size
   Standard_EXPORT virtual void* Allocate(const size_t theSize) Standard_OVERRIDE;
@@ -77,17 +77,17 @@ protected:
     Standard_Size myValue;
 
   public:
-    AlignedSize()
+    constexpr AlignedSize() noexcept
         : myValue(0)
     {
     }
 
-    AlignedSize(const Standard_Size theValue)
+    constexpr AlignedSize(const Standard_Size theValue) noexcept
         : myValue((theValue + Align - 1) & ~(Align - 1))
     {
     }
 
-    operator Standard_Size() const { return myValue; }
+    constexpr operator Standard_Size() const noexcept { return myValue; }
   };
 
   //! A pointer aligned to a 4 byte boundary
@@ -96,27 +96,27 @@ protected:
     Standard_Byte* myValue;
 
   public:
-    AlignedPtr()
+    constexpr AlignedPtr() noexcept
         : myValue(0)
     {
     }
 
-    AlignedPtr(const Standard_Address theValue)
+    AlignedPtr(const Standard_Address theValue) noexcept
         : myValue((Standard_Byte*)((Standard_Size)theValue & ~(Align - 1)))
     {
     }
 
-    operator Standard_Address() const { return myValue; }
+    operator Standard_Address() const noexcept { return myValue; }
 
-    operator Standard_Byte*() const { return myValue; }
+    operator Standard_Byte*() const noexcept { return myValue; }
 
-    AlignedPtr operator-(const AlignedSize theValue) const { return myValue - theValue; }
+    AlignedPtr operator-(const AlignedSize theValue) const noexcept { return myValue - theValue; }
 
-    AlignedPtr operator+(const AlignedSize theValue) const { return myValue + theValue; }
+    AlignedPtr operator+(const AlignedSize theValue) const noexcept { return myValue + theValue; }
 
-    AlignedPtr operator-=(const AlignedSize theValue) { return myValue -= theValue; }
+    AlignedPtr operator-=(const AlignedSize theValue) noexcept { return myValue -= theValue; }
 
-    AlignedPtr operator+=(const AlignedSize theValue) { return myValue += theValue; }
+    AlignedPtr operator+=(const AlignedSize theValue) noexcept { return myValue += theValue; }
   };
 
   //! A key for the map of blocks
@@ -148,7 +148,7 @@ protected:
     Block*           prevBlock;
     Standard_Integer allocCount;
 
-    Block(const Standard_Address theAddress, const Standard_Size theSize, Block* thePrevBlock = 0L)
+    Block(const Standard_Address theAddress, const Standard_Size theSize, Block* thePrevBlock = 0L) noexcept
         : address(theAddress),
           prevBlock(thePrevBlock),
           allocCount(0)
@@ -156,43 +156,43 @@ protected:
       SetFreeSize(theSize);
     }
 
-    void SetFreeSize(const Standard_Size theSize)
+    void SetFreeSize(const Standard_Size theSize) noexcept
     {
       allocStart = (Standard_Byte*)address + theSize;
     }
 
-    Standard_Size FreeSize() const { return (Standard_Byte*)allocStart - (Standard_Byte*)address; }
+    Standard_Size FreeSize() const noexcept { return (Standard_Byte*)allocStart - (Standard_Byte*)address; }
 
-    AlignedPtr Allocate(const AlignedSize theSize)
+    AlignedPtr Allocate(const AlignedSize theSize) noexcept
     {
       allocCount++;
       return allocStart -= theSize;
     }
 
-    void Free() { allocCount--; }
+    void Free() noexcept { allocCount--; }
 
-    Standard_Boolean IsEmpty() const { return allocCount == 0; }
+    Standard_Boolean IsEmpty() const noexcept { return allocCount == 0; }
   };
 
   // --------- PROTECTED METHODS ---------
 protected:
   //! Calculate a key for the data map basing on the given address
-  inline Key getKey(const Standard_Address theAddress) const
+  inline Key getKey(const Standard_Address theAddress) const noexcept
   {
     Key aKey = {(Standard_Size)theAddress / myBlockSize};
     return aKey;
   }
 
   //! Find a block that the given allocation unit belongs to
-  Standard_EXPORT Block* findBlock(const Standard_Address theAddress, Key& theKey);
+  Standard_EXPORT Block* findBlock(const Standard_Address theAddress, Key& theKey) noexcept;
 
   //! Allocate a new block and return a pointer to it
   Standard_EXPORT Block* allocateNewBlock(const Standard_Size theSize);
 
   // --------- PROHIBITED METHODS ---------
 private:
-  NCollection_AccAllocator(const NCollection_AccAllocator&);
-  NCollection_AccAllocator& operator=(const NCollection_AccAllocator&);
+  NCollection_AccAllocator(const NCollection_AccAllocator&) = delete;
+  NCollection_AccAllocator& operator=(const NCollection_AccAllocator&) = delete;
 
   // --------- PROTECTED DATA ---------
 protected:

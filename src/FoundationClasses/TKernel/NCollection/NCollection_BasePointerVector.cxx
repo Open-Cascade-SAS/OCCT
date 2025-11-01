@@ -84,7 +84,7 @@ void NCollection_BasePointerVector::SetValue(const size_t theInd, const void* th
 
 //=================================================================================================
 
-void NCollection_BasePointerVector::clear()
+void NCollection_BasePointerVector::clear() noexcept
 {
   if (myCapacity > 0)
   {

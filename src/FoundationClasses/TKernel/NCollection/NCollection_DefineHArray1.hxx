@@ -55,11 +55,11 @@
         : _Array1Type_(theOther)                                                                   \
     {                                                                                              \
     }                                                                                              \
-    const _Array1Type_& Array1() const                                                             \
+    const _Array1Type_& Array1() const noexcept                                                    \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \
-    _Array1Type_& ChangeArray1()                                                                   \
+    _Array1Type_& ChangeArray1() noexcept                                                          \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \

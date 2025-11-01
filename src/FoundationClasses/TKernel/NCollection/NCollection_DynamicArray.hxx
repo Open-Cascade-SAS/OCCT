@@ -84,17 +84,17 @@ public:
   using Iterator       = NCollection_Iterator<NCollection_DynamicArray<TheItemType>>;
 
 public:
-  const_iterator begin() const { return const_iterator(*this); }
+  const_iterator begin() const noexcept { return const_iterator(*this); }
 
-  iterator begin() { return iterator(*this); }
+  iterator begin() noexcept { return iterator(*this); }
 
-  const_iterator cbegin() const { return const_iterator(*this); }
+  const_iterator cbegin() const noexcept { return const_iterator(*this); }
 
-  iterator end() { return iterator(myUsedSize, *this); }
+  iterator end() noexcept { return iterator(myUsedSize, *this); }
 
-  const_iterator end() const { return const_iterator(myUsedSize, *this); }
+  const_iterator end() const noexcept { return const_iterator(myUsedSize, *this); }
 
-  const_iterator cend() const { return const_iterator(myUsedSize, *this); }
+  const_iterator cend() const noexcept { return const_iterator(myUsedSize, *this); }
 
 public: //! @name public methods
   NCollection_DynamicArray(const Standard_Integer theIncrement = 256)
@@ -147,21 +147,21 @@ public: //! @name public methods
   ~NCollection_DynamicArray() { Clear(true); }
 
   //! Total number of items
-  Standard_Integer Length() const { return static_cast<int>(myUsedSize); }
+  Standard_Integer Length() const noexcept { return static_cast<int>(myUsedSize); }
 
   //! Total number of items in the vector
-  Standard_Integer Size() const { return Length(); }
+  Standard_Integer Size() const noexcept { return Length(); }
 
   //! Method for consistency with other collections.
   //! @return Lower bound (inclusive) for iteration.
-  Standard_Integer Lower() const { return 0; }
+  Standard_Integer Lower() const noexcept { return 0; }
 
   //! Method for consistency with other collections.
   //! @return Upper bound (inclusive) for iteration.
-  Standard_Integer Upper() const { return Length() - 1; }
+  Standard_Integer Upper() const noexcept { return Length() - 1; }
 
   //! Empty query
-  Standard_Boolean IsEmpty() const { return myUsedSize == 0; }
+  Standard_Boolean IsEmpty() const noexcept { return myUsedSize == 0; }
 
   //! Assignment to the collection of the same type
   NCollection_DynamicArray& Assign(const NCollection_DynamicArray& theOther,
@@ -262,41 +262,41 @@ public: //! @name public methods
   }
 
   //! Operator() - query the const value
-  const_reference operator()(const Standard_Integer theIndex) const { return Value(theIndex); }
+  const_reference operator()(const Standard_Integer theIndex) const noexcept { return Value(theIndex); }
 
   //! Operator[] - query the const value
-  const_reference operator[](const Standard_Integer theIndex) const { return Value(theIndex); }
+  const_reference operator[](const Standard_Integer theIndex) const noexcept { return Value(theIndex); }
 
   //! Operator[] - query the const value
-  const_reference operator[](const size_t theIndex) const { return at(theIndex); }
+  const_reference operator[](const size_t theIndex) const noexcept { return at(theIndex); }
 
-  const_reference Value(const Standard_Integer theIndex) const
+  const_reference Value(const Standard_Integer theIndex) const noexcept
   {
     return at(static_cast<int>(theIndex));
   }
 
   //! @return first element
-  const_reference First() const { return getArray()[0][0]; }
+  const_reference First() const noexcept { return getArray()[0][0]; }
 
   //! @return first element
-  reference ChangeFirst() { return getArray()[0][0]; }
+  reference ChangeFirst() noexcept { return getArray()[0][0]; }
 
   //! @return last element
-  const_reference Last() const { return at(myUsedSize - 1); }
+  const_reference Last() const noexcept { return at(myUsedSize - 1); }
 
   //! @return last element
-  reference ChangeLast() { return at(myUsedSize - 1); }
+  reference ChangeLast() noexcept { return at(myUsedSize - 1); }
 
   //! Operator() - query the value
-  reference operator()(const Standard_Integer theIndex) { return ChangeValue(theIndex); }
+  reference operator()(const Standard_Integer theIndex) noexcept { return ChangeValue(theIndex); }
 
   //! Operator[] - query the value
-  reference operator[](const Standard_Integer theIndex) { return ChangeValue(theIndex); }
+  reference operator[](const Standard_Integer theIndex) noexcept { return ChangeValue(theIndex); }
 
   //! Operator[] - query the value
-  reference operator[](const size_t theIndex) { return at(theIndex); }
+  reference operator[](const size_t theIndex) noexcept { return at(theIndex); }
 
-  reference ChangeValue(const Standard_Integer theIndex) { return at(static_cast<int>(theIndex)); }
+  reference ChangeValue(const Standard_Integer theIndex) noexcept { return at(static_cast<int>(theIndex)); }
 
   //! SetValue () - set or append a value
   reference SetValue(const Standard_Integer theIndex, const TheItemType& theValue)
@@ -363,7 +363,7 @@ public: //! @name public methods
     myUsedSize = 0;
   }
 
-  void SetIncrement(const Standard_Integer theIncrement)
+  void SetIncrement(const Standard_Integer theIncrement) noexcept
   {
     if (myUsedSize != 0)
     {
@@ -376,7 +376,7 @@ public: //! @name public methods
   friend const_iterator;
 
 protected:
-  size_t availableSize() const { return myContainer.Size() * myInternalSize; }
+  size_t availableSize() const noexcept { return myContainer.Size() * myInternalSize; }
 
   TheItemType* expandArray()
   {
@@ -385,12 +385,12 @@ protected:
     return aNewBlock;
   }
 
-  reference at(const size_t theInd)
+  reference at(const size_t theInd) noexcept
   {
     return getArray()[theInd / myInternalSize][theInd % myInternalSize];
   }
 
-  const_reference at(const size_t theInd) const
+  const_reference at(const size_t theInd) const noexcept
   {
     return getArray()[theInd / myInternalSize][theInd % myInternalSize];
   }
@@ -413,7 +413,7 @@ protected:
   }
 
   //! Wrapper to extract array
-  TheItemType** getArray() const { return (TheItemType**)myContainer.GetArray(); }
+  TheItemType** getArray() const noexcept { return (TheItemType**)myContainer.GetArray(); }
 
 protected:
   vector         myContainer;

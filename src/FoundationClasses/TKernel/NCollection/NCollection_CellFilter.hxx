@@ -283,7 +283,7 @@ protected:
     }
 
     //! Assignment operator: ensure that list is not deleted twice
-    void operator=(const Cell& theOther)
+    void operator=(const Cell& theOther) noexcept
     {
       Standard_Integer aDim = Standard_Integer(theOther.index.Size());
       for (Standard_Integer anIdx = 0; anIdx < aDim; anIdx++)
@@ -303,7 +303,7 @@ protected:
     }
 
     //! Compare cell with other one
-    Standard_Boolean IsEqual(const Cell& theOther) const
+    Standard_Boolean IsEqual(const Cell& theOther) const noexcept
     {
       Standard_Integer aDim = Standard_Integer(theOther.index.Size());
       for (int i = 0; i < aDim; i++)
@@ -312,7 +312,7 @@ protected:
       return Standard_True;
     }
 
-    bool operator==(const Cell& theOther) const { return IsEqual(theOther); }
+    bool operator==(const Cell& theOther) const noexcept { return IsEqual(theOther); }
 
   public:
     NCollection_LocalArray<Cell_IndexType, 10> index;

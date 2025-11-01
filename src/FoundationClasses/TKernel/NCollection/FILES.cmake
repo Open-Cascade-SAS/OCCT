@@ -65,7 +65,6 @@ set(OCCT_NCollection_FILES
   NCollection_String.hxx
   NCollection_TListIterator.hxx
   NCollection_TListNode.hxx
-  NCollection_TypeDef.hxx
   NCollection_UBTree.hxx
   NCollection_UBTreeFiller.hxx
   NCollection_UtfIterator.hxx

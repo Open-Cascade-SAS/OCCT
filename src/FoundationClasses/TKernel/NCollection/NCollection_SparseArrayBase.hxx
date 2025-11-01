@@ -17,9 +17,8 @@
 #define NCollection_SparseArrayBase_HeaderFile
 
 #include <Standard.hxx>
+#include <Standard_TypeDef.hxx>
 #include <Standard_OutOfRange.hxx>
-
-typedef size_t Standard_Size;
 
 /**
  * Base class for NCollection_SparseArray;
@@ -37,7 +36,7 @@ public:
   Standard_EXPORT void Clear();
 
   //! Returns number of currently contained items
-  Standard_Size Size() const { return mySize; }
+  Standard_Size Size() const noexcept { return mySize; }
 
   //! Check whether the value at given index is set
   Standard_EXPORT Standard_Boolean HasValue(const Standard_Size theIndex) const;
@@ -72,7 +71,7 @@ private:
     typedef unsigned char Cell; //!< type of items used to hold bits
 
     //! Number of bits in each cell
-    static Standard_Size BitsPerCell() { return sizeof(Cell) * 8; }
+    static constexpr Standard_Size BitsPerCell() noexcept { return sizeof(Cell) * 8; }
 
   public:
     //! Initializes the block by pointer to block data
@@ -86,7 +85,7 @@ private:
     }
 
     //! Compute required size for block data, in bytes
-    static Standard_Size Size(const Standard_Size theNbItems, const Standard_Size theItemSize)
+    static constexpr Standard_Size Size(const Standard_Size theNbItems, const Standard_Size theItemSize) noexcept
     {
       return sizeof(Standard_Size)
              + sizeof(Cell) * ((theNbItems + BitsPerCell() - 1) / BitsPerCell())
@@ -94,9 +93,9 @@ private:
     }
 
     //! Returns address of array from address of block
-    static char* ToArray(const Standard_Address theAddress,
+    static constexpr char* ToArray(const Standard_Address theAddress,
                          const Standard_Size /*theNbItems*/,
-                         const Standard_Size /*theItemSize*/)
+                         const Standard_Size /*theItemSize*/) noexcept
     {
       return (char*)theAddress + sizeof(Standard_Size);
     }
@@ -104,7 +103,7 @@ private:
   public:
     //! Set bit for i-th item; returns non-null if that bit has
     //! not been set previously
-    Cell Set(Standard_Size i)
+    Cell Set(Standard_Size i) noexcept
     {
       Cell* abyte = Bits + i / BitsPerCell();
       Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
@@ -114,7 +113,7 @@ private:
     }
 
     //! Check bit for i-th item; returns non-null if that bit is set
-    Cell IsSet(Standard_Size i)
+    Cell IsSet(Standard_Size i) noexcept
     {
       Cell* abyte = Bits + i / BitsPerCell();
       Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
@@ -123,7 +122,7 @@ private:
 
     //! Unset bit for i-th item; returns non-null if that bit
     //! has been set previously
-    Cell Unset(Standard_Size i)
+    Cell Unset(Standard_Size i) noexcept
     {
       Cell* abyte = Bits + i / BitsPerCell();
       Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
@@ -152,13 +151,13 @@ public:
     void Restart() { init(myArr); }
 
     //! Returns True if current item is available
-    Standard_Boolean More() const { return myHasMore; }
+    Standard_Boolean More() const noexcept { return myHasMore; }
 
     //! Advances to the next item
     Standard_EXPORT void Next();
 
     //! Returns current index
-    Standard_Size Index() const { return myIBlock * myArr->myBlockSize + myInd; }
+    Standard_Size Index() const noexcept { return myIBlock * myArr->myBlockSize + myInd; }
 
   protected:
     // Methods for descendant
@@ -170,7 +169,7 @@ public:
     Standard_EXPORT void init(const NCollection_SparseArrayBase* theArray);
 
     //! Returns address of the current item
-    Standard_Address value() const { return myArr->getItem(myBlock, myInd); }
+    Standard_Address value() const noexcept { return myArr->getItem(myBlock, myInd); }
 
   private:
     const NCollection_SparseArrayBase* myArr;
@@ -190,7 +189,7 @@ protected:
   // Object life
 
   //! Constructor; initialized by size of item and of block (in items)
-  NCollection_SparseArrayBase(Standard_Size theItemSize, Standard_Size theBlockSize)
+  NCollection_SparseArrayBase(Standard_Size theItemSize, Standard_Size theBlockSize) noexcept
       : myItemSize(theItemSize),
         myBlockSize(theBlockSize),
         myNbBlocks(0),
@@ -206,13 +205,13 @@ protected:
   // Data access interface for descendants
 
   //! Creates Block structure for block pointed by theAddr
-  Block getBlock(const Standard_Address theAddr) const
+  Block getBlock(const Standard_Address theAddr) const noexcept
   {
     return Block(theAddr, myBlockSize, myItemSize);
   }
 
   //! Find address of the item in the block by index (in the block)
-  Standard_Address getItem(const Block& theBlock, Standard_Size theInd) const
+  Standard_Address getItem(const Block& theBlock, Standard_Size theInd) const noexcept
   {
     return ((char*)theBlock.Array) + myItemSize * theInd;
   }

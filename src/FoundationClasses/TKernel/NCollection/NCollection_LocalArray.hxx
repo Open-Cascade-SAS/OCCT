@@ -30,13 +30,13 @@ public:
     Allocate(theSize);
   }
 
-  NCollection_LocalArray()
+  NCollection_LocalArray() noexcept
       : myPtr(myBuffer),
         mySize(0)
   {
   }
 
-  ~NCollection_LocalArray() { Deallocate(); }
+  ~NCollection_LocalArray() noexcept { Deallocate(); }
 
   void Allocate(const size_t theSize)
   {
@@ -49,16 +49,16 @@ public:
     mySize = theSize;
   }
 
-  size_t Size() const { return mySize; }
+  size_t Size() const noexcept { return mySize; }
 
-  operator theItem*() const { return myPtr; }
+  operator theItem*() const noexcept { return myPtr; }
 
 private:
   NCollection_LocalArray(const NCollection_LocalArray&);
   NCollection_LocalArray& operator=(const NCollection_LocalArray&);
 
 protected:
-  void Deallocate()
+  void Deallocate() noexcept
   {
     if (myPtr != myBuffer)
       Standard::Free(myPtr);

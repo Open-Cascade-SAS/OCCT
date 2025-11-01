@@ -24,10 +24,10 @@ class NCollection_Mat3
 {
 public:
   //! Return identity matrix.
-  static NCollection_Mat3 Identity() { return NCollection_Mat3(); }
+  static constexpr NCollection_Mat3 Identity() { return NCollection_Mat3(); }
 
   //! Return zero matrix.
-  static NCollection_Mat3 Zero()
+  static constexpr NCollection_Mat3 Zero()
   {
     NCollection_Mat3 aMat;
     aMat.InitZero();
@@ -36,7 +36,7 @@ public:
 
 public:
   //! Empty constructor for identity matrix.
-  NCollection_Mat3() { InitIdentity(); }
+  constexpr NCollection_Mat3() { InitIdentity(); }
 
   //! Conversion constructor (explicitly converts some 3x3 matrix with other element type
   //! to a new 3x3 matrix with the element type Element_t,
@@ -53,7 +53,7 @@ public:
   //! @param[in] theRow  the row.to address.
   //! @param[in] theCol  the column to address.
   //! @return the value of the addressed element.
-  Element_t GetValue(const size_t theRow, const size_t theCol) const
+  constexpr Element_t GetValue(const size_t theRow, const size_t theCol) const noexcept
   {
     return myMat[theCol * 3 + theRow];
   }
@@ -62,7 +62,7 @@ public:
   //! @param[in] theRow  the row.to access.
   //! @param[in] theCol  the column to access.
   //! @return reference on the matrix element.
-  Element_t& ChangeValue(const size_t theRow, const size_t theCol)
+  constexpr Element_t& ChangeValue(const size_t theRow, const size_t theCol) noexcept
   {
     return myMat[theCol * 3 + theRow];
   }
@@ -71,19 +71,19 @@ public:
   //! @param[in] theRow    the row to change.
   //! @param[in] theCol    the column to change.
   //! @param[in] theValue  the value to set.s
-  void SetValue(const size_t theRow, const size_t theCol, const Element_t theValue)
+  constexpr void SetValue(const size_t theRow, const size_t theCol, const Element_t theValue) noexcept
   {
     myMat[theCol * 3 + theRow] = theValue;
   }
 
   //! Return value.
-  Element_t& operator()(const size_t theRow, const size_t theCol)
+  constexpr Element_t& operator()(const size_t theRow, const size_t theCol) noexcept
   {
     return ChangeValue(theRow, theCol);
   }
 
   //! Return value.
-  Element_t operator()(const size_t theRow, const size_t theCol) const
+  constexpr Element_t operator()(const size_t theRow, const size_t theCol) const noexcept
   {
     return GetValue(theRow, theCol);
   }
@@ -141,37 +141,73 @@ public:
   }
 
   //! Initialize the zero matrix.
-  void InitZero() { std::memcpy(this, MyZeroArray, sizeof(NCollection_Mat3)); }
+  constexpr void InitZero() noexcept
+  {
+    for (int i = 0; i < 9; ++i)
+    {
+      myMat[i] = MyZeroArray[i];
+    }
+  }
 
   //! Checks the matrix for zero (without tolerance).
-  bool IsZero() const { return std::memcmp(this, MyZeroArray, sizeof(NCollection_Mat3)) == 0; }
+  bool IsZero() const noexcept
+  {
+    for (int i = 0; i < 9; ++i)
+    {
+      if (myMat[i] != MyZeroArray[i])
+      {
+        return false;
+      }
+    }
+    return true;
+  }
 
   //! Initialize the identity matrix.
-  void InitIdentity() { std::memcpy(this, MyIdentityArray, sizeof(NCollection_Mat3)); }
+  constexpr void InitIdentity() noexcept
+  {
+    for (int i = 0; i < 9; ++i)
+    {
+      myMat[i] = MyIdentityArray[i];
+    }
+  }
 
   //! Checks the matrix for identity (without tolerance).
-  bool IsIdentity() const
+  bool IsIdentity() const noexcept
   {
-    return std::memcmp(this, MyIdentityArray, sizeof(NCollection_Mat3)) == 0;
+    for (int i = 0; i < 9; ++i)
+    {
+      if (myMat[i] != MyIdentityArray[i])
+      {
+        return false;
+      }
+    }
+    return true;
   }
 
   //! Check this matrix for equality with another matrix (without tolerance!).
-  bool IsEqual(const NCollection_Mat3& theOther) const
+  bool IsEqual(const NCollection_Mat3& theOther) const noexcept
   {
-    return std::memcmp(this, &theOther, sizeof(NCollection_Mat3)) == 0;
+    for (int i = 0; i < 9; ++i)
+    {
+      if (myMat[i] != theOther.myMat[i])
+      {
+        return false;
+      }
+    }
+    return true;
   }
 
   //! Comparison operator.
-  bool operator==(const NCollection_Mat3& theMat) const { return IsEqual(theMat); }
+  bool operator==(const NCollection_Mat3& theMat) const noexcept { return IsEqual(theMat); }
 
   //! Check this vector with another vector for non-equality (without tolerance!).
-  bool operator!=(const NCollection_Mat3& theOther) const { return !IsEqual(theOther); }
+  bool operator!=(const NCollection_Mat3& theOther) const noexcept { return !IsEqual(theOther); }
 
   //! Raw access to the data (for OpenGL exchange).
   //! the data is returned in column-major order.
-  const Element_t* GetData() const { return myMat; }
+  constexpr const Element_t* GetData() const noexcept { return myMat; }
 
-  Element_t* ChangeData() { return myMat; }
+  constexpr Element_t* ChangeData() noexcept { return myMat; }
 
   //! Multiply by the vector (M * V).
   //! @param[in] theVec  the vector to multiply.
@@ -460,13 +496,13 @@ public:
   }
 
   //! Maps plain C array to matrix type.
-  static NCollection_Mat3<Element_t>& Map(Element_t* theData)
+  static NCollection_Mat3<Element_t>& Map(Element_t* theData) noexcept
   {
     return *reinterpret_cast<NCollection_Mat3<Element_t>*>(theData);
   }
 
   //! Maps plain C array to matrix type.
-  static const NCollection_Mat3<Element_t>& Map(const Element_t* theData)
+  static const NCollection_Mat3<Element_t>& Map(const Element_t* theData) noexcept
   {
     return *reinterpret_cast<const NCollection_Mat3<Element_t>*>(theData);
   }
@@ -492,19 +528,13 @@ private:
   Element_t myMat[9];
 
 private:
-  static const Element_t MyZeroArray[9];
-  static const Element_t MyIdentityArray[9];
+  static constexpr Element_t MyZeroArray[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+  static constexpr Element_t MyIdentityArray[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
   // All instantiations are friend to each other
   template <class OtherType>
   friend class NCollection_Mat3;
 };
-
-template <typename Element_t>
-const Element_t NCollection_Mat3<Element_t>::MyZeroArray[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-template <typename Element_t>
-const Element_t NCollection_Mat3<Element_t>::MyIdentityArray[] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900)
   #include <type_traits>

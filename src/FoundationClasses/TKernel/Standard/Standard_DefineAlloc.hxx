@@ -26,7 +26,7 @@
     {                                                                                              \
       return Standard::Allocate(theSize);                                                          \
     }                                                                                              \
-    void operator delete[](void* theAddress)                                                       \
+    void operator delete[](void* theAddress) noexcept                                              \
     {                                                                                              \
       Standard::Free(theAddress);                                                                  \
     }
@@ -37,17 +37,17 @@
 // as it is not supported.
 #if defined(__BORLANDC__) || (defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x530))
   #define DEFINE_STANDARD_ALLOC_PLACEMENT                                                          \
-    void* operator new(size_t, void* theAddress)                                                   \
+    void* operator new(size_t, void* theAddress) noexcept                                          \
     {                                                                                              \
       return theAddress;                                                                           \
     }
 #else
   #define DEFINE_STANDARD_ALLOC_PLACEMENT                                                          \
-    void* operator new(size_t, void* theAddress)                                                   \
+    void* operator new(size_t, void* theAddress) noexcept                                          \
     {                                                                                              \
       return theAddress;                                                                           \
     }                                                                                              \
-    void operator delete(void*, void*) {}
+    void operator delete(void*, void*) noexcept {}
 #endif
 
 // Macro to override operators new and delete to use OCC memory manager
@@ -56,7 +56,7 @@
   {                                                                                                \
     return Standard::Allocate(theSize);                                                            \
   }                                                                                                \
-  void operator delete(void* theAddress)                                                           \
+  void operator delete(void* theAddress) noexcept                                                  \
   {                                                                                                \
     Standard::Free(theAddress);                                                                    \
   }                                                                                                \
@@ -67,7 +67,7 @@
 #ifndef WORKAROUND_SUNPRO_NEW_PLACEMENT
   #define WORKAROUND_SUNPRO_NEW_PLACEMENT
   #if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x420)
-inline void* operator new(size_t, void* anAddress)
+inline void* operator new(size_t, void* anAddress) noexcept
 {
   return anAddress;
 }

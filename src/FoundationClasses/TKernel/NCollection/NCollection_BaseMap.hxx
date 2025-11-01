@@ -47,7 +47,7 @@ public:
   {
   protected:
     //! Empty constructor
-    Iterator(void)
+    Iterator(void) noexcept
         : myNbBuckets(0),
           myBuckets(nullptr),
           myBucket(0),
@@ -56,7 +56,7 @@ public:
     }
 
     //! Constructor
-    Iterator(const NCollection_BaseMap& theMap)
+    Iterator(const NCollection_BaseMap& theMap) noexcept
         : myNbBuckets(theMap.myNbBuckets),
           myBuckets(theMap.myData1),
           myBucket(-1),
@@ -76,7 +76,7 @@ public:
 
   public:
     //! Initialize
-    void Initialize(const NCollection_BaseMap& theMap)
+    void Initialize(const NCollection_BaseMap& theMap) noexcept
     {
       myNbBuckets = theMap.myNbBuckets;
       myBuckets   = theMap.myData1;
@@ -88,7 +88,7 @@ public:
     }
 
     //! Reset
-    void Reset(void)
+    void Reset(void) noexcept
     {
       myBucket = -1;
       myNode   = nullptr;
@@ -96,17 +96,17 @@ public:
     }
 
     //! Performs comparison of two iterators.
-    Standard_Boolean IsEqual(const Iterator& theOther) const
+    Standard_Boolean IsEqual(const Iterator& theOther) const noexcept
     {
       return myBucket == theOther.myBucket && myNode == theOther.myNode;
     }
 
   protected:
     //! PMore
-    Standard_Boolean PMore(void) const { return (myNode != nullptr); }
+    Standard_Boolean PMore(void) const noexcept { return (myNode != nullptr); }
 
     //! PNext
-    void PNext(void)
+    void PNext(void) noexcept
     {
       if (!myBuckets)
         return;
@@ -137,19 +137,19 @@ public:
   // ---------- PUBLIC METHODS ------------
 
   //! NbBuckets
-  Standard_Integer NbBuckets() const { return myNbBuckets; }
+  Standard_Integer NbBuckets() const noexcept { return myNbBuckets; }
 
   //! Extent
-  Standard_Integer Extent() const { return mySize; }
+  Standard_Integer Extent() const noexcept { return mySize; }
 
   //! IsEmpty
-  Standard_Boolean IsEmpty() const { return mySize == 0; }
+  Standard_Boolean IsEmpty() const noexcept { return mySize == 0; }
 
   //! Statistics
   Standard_EXPORT void Statistics(Standard_OStream& S) const;
 
   //! Returns attached allocator
-  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
+  const Handle(NCollection_BaseAllocator)& Allocator() const noexcept { return myAllocator; }
 
 protected:
   // -------- PROTECTED METHODS -----------
@@ -196,26 +196,26 @@ protected:
   Standard_EXPORT void EndResize(const Standard_Integer NbBuckets,
                                  const Standard_Integer NewBuckets,
                                  NCollection_ListNode** data1,
-                                 NCollection_ListNode** data2);
+                                 NCollection_ListNode** data2) noexcept;
 
   //! Resizable
-  Standard_Boolean Resizable() const { return IsEmpty() || (mySize > myNbBuckets); }
+  Standard_Boolean Resizable() const noexcept { return IsEmpty() || (mySize > myNbBuckets); }
 
   //! Increment
-  Standard_Integer Increment() { return ++mySize; }
+  Standard_Integer Increment() noexcept { return ++mySize; }
 
   //! Decrement
-  Standard_Integer Decrement() { return --mySize; }
+  Standard_Integer Decrement() noexcept { return --mySize; }
 
   //! Destroy
   Standard_EXPORT void Destroy(NCollection_DelMapNode fDel,
                                Standard_Boolean       doReleaseMemory = Standard_True);
 
   //! NextPrimeForMap
-  Standard_EXPORT Standard_Integer NextPrimeForMap(const Standard_Integer N) const;
+  Standard_EXPORT Standard_Integer NextPrimeForMap(const Standard_Integer N) const noexcept;
 
   //! Exchange content of two maps without data copying
-  void exchangeMapsData(NCollection_BaseMap& theOther)
+  void exchangeMapsData(NCollection_BaseMap& theOther) noexcept
   {
     std::swap(myAllocator, theOther.myAllocator);
     std::swap(myData1, theOther.myData1);

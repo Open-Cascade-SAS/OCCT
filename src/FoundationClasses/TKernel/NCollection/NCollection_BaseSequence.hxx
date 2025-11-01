@@ -28,19 +28,19 @@ public:
   // define new operator for use with NCollection allocators
   DEFINE_NCOLLECTION_ALLOC
 public:
-  NCollection_SeqNode()
+  NCollection_SeqNode() noexcept
       : myNext(NULL),
         myPrevious(NULL)
   {
   }
 
-  NCollection_SeqNode* Next() const { return myNext; }
+  NCollection_SeqNode* Next() const noexcept { return myNext; }
 
-  NCollection_SeqNode* Previous() const { return myPrevious; }
+  NCollection_SeqNode* Previous() const noexcept { return myPrevious; }
 
-  void SetNext(NCollection_SeqNode* theNext) { myNext = theNext; }
+  void SetNext(NCollection_SeqNode* theNext) noexcept { myNext = theNext; }
 
-  void SetPrevious(NCollection_SeqNode* thePrev) { myPrevious = thePrev; }
+  void SetPrevious(NCollection_SeqNode* thePrev) noexcept { myPrevious = thePrev; }
 
 private:
   NCollection_SeqNode* myNext;
@@ -66,28 +66,28 @@ public:
   {
   public:
     //! Empty constructor
-    Iterator(void)
+    Iterator(void) noexcept
         : myCurrent(NULL),
           myPrevious(NULL)
     {
     }
 
     //! Constructor with initialisation
-    Iterator(const NCollection_BaseSequence& theSeq, const Standard_Boolean isStart)
+    Iterator(const NCollection_BaseSequence& theSeq, const Standard_Boolean isStart) noexcept
     {
       Init(theSeq, isStart);
     }
 
     //! Initialisation
     void Init(const NCollection_BaseSequence& theSeq,
-              const Standard_Boolean          isStart = Standard_True)
+              const Standard_Boolean          isStart = Standard_True) noexcept
     {
       myCurrent  = (isStart ? theSeq.myFirstItem : NULL);
       myPrevious = (isStart ? NULL : theSeq.myLastItem);
     }
 
     //! Switch to previous element; note that it will reset
-    void Previous()
+    void Previous() noexcept
     {
       myCurrent = myPrevious;
       if (myCurrent)
@@ -103,12 +103,12 @@ public:
 public:
   // Methods PUBLIC
   //
-  Standard_Boolean IsEmpty() const { return (mySize == 0); }
+  Standard_Boolean IsEmpty() const noexcept { return (mySize == 0); }
 
-  Standard_Integer Length() const { return mySize; }
+  Standard_Integer Length() const noexcept { return mySize; }
 
   //! Returns attached allocator
-  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
+  const Handle(NCollection_BaseAllocator)& Allocator() const noexcept { return myAllocator; }
 
 protected:
   // Methods PROTECTED
@@ -141,9 +141,9 @@ protected:
   Standard_EXPORT void RemoveSeq(const Standard_Integer From,
                                  const Standard_Integer To,
                                  NCollection_DelSeqNode fDel);
-  Standard_EXPORT void PReverse();
+  Standard_EXPORT void PReverse() noexcept;
   Standard_EXPORT void PExchange(const Standard_Integer I, const Standard_Integer J);
-  Standard_EXPORT NCollection_SeqNode* Find(const Standard_Integer) const;
+  Standard_EXPORT NCollection_SeqNode* Find(const Standard_Integer) const noexcept;
 
 protected:
   // Fields PROTECTED
@@ -160,7 +160,7 @@ private:
   //
   Standard_EXPORT NCollection_BaseSequence(const NCollection_BaseSequence& Other);
 
-  void Nullify()
+  void Nullify() noexcept
   {
     myFirstItem = myLastItem = myCurrentItem = NULL;
     myCurrentIndex = mySize = 0;

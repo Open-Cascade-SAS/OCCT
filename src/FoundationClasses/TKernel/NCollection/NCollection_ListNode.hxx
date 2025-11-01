@@ -30,23 +30,23 @@ public:
   DEFINE_NCOLLECTION_ALLOC
 public:
   //! The only constructor
-  NCollection_ListNode(NCollection_ListNode* theNext)
+  NCollection_ListNode(NCollection_ListNode* theNext) noexcept
       : myNext(theNext)
   {
   }
 
   //! Next pointer access
-  NCollection_ListNode*& Next(void) { return myNext; }
+  NCollection_ListNode*& Next(void) noexcept { return myNext; }
 
   //! Next pointer const access
-  NCollection_ListNode* Next(void) const { return myNext; }
+  NCollection_ListNode* Next(void) const noexcept { return myNext; }
 
 private:
   //! operator= - forbidden
-  NCollection_ListNode& operator=(const NCollection_ListNode&);
+  NCollection_ListNode& operator=(const NCollection_ListNode&) = delete;
 
   //! copy constructor - forbidden
-  NCollection_ListNode(const NCollection_ListNode&);
+  NCollection_ListNode(const NCollection_ListNode&) = delete;
 
 private:
   NCollection_ListNode* myNext; //!< Pointer to the next node

@@ -48,7 +48,7 @@ class NCollection_SparseArray : public NCollection_SparseArrayBase
 {
 public:
   //! Constructor; accepts size of blocks
-  explicit NCollection_SparseArray(Standard_Size theIncrement)
+  explicit NCollection_SparseArray(Standard_Size theIncrement) noexcept
       : NCollection_SparseArrayBase(sizeof(TheItemType), theIncrement)
   {
   }
@@ -103,10 +103,10 @@ public:
   //!@{
 
   //! Returns number of items in the array
-  Standard_Size Extent() const { return Size(); }
+  Standard_Size Extent() const noexcept { return Size(); }
 
   //! Returns True if array is empty
-  Standard_Boolean IsEmpty() const { return Size() == 0; }
+  Standard_Boolean IsEmpty() const noexcept { return Size() == 0; }
 
   //! Direct const access to the item
   const TheItemType& Find(const Standard_Size theIndex) const { return Value(theIndex); }
@@ -150,13 +150,13 @@ public:
     void Init(const NCollection_SparseArray& theVector) { this->init(&theVector); }
 
     //! Constant value access
-    const TheItemType& Value(void) const { return *(const TheItemType*)this->value(); }
+    const TheItemType& Value(void) const noexcept { return *(const TheItemType*)this->value(); }
 
     //! Constant value access operator
-    const TheItemType& operator()(void) const { return *(const TheItemType*)this->value(); }
+    const TheItemType& operator()(void) const noexcept { return *(const TheItemType*)this->value(); }
 
     //! Access current index with 'a-la map' interface
-    Standard_Size Key(void) const { return Index(); }
+    Standard_Size Key(void) const noexcept { return Index(); }
   };
 
   /**
@@ -178,13 +178,13 @@ public:
     void Init(const NCollection_SparseArray& theVector) { this->init(&theVector); }
 
     //! Value access
-    TheItemType& ChangeValue(void) { return *(TheItemType*)this->value(); }
+    TheItemType& ChangeValue(void) noexcept { return *(TheItemType*)this->value(); }
 
     //! Value access operator
-    TheItemType& operator()(void) { return *(TheItemType*)this->value(); }
+    TheItemType& operator()(void) noexcept { return *(TheItemType*)this->value(); }
 
     //! Const access operator - the same as in parent class
-    const TheItemType& operator()(void) const { return *(const TheItemType*)this->value(); }
+    const TheItemType& operator()(void) const noexcept { return *(const TheItemType*)this->value(); }
   };
 
 private:

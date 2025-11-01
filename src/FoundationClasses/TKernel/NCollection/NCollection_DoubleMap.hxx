@@ -60,16 +60,16 @@ public:
     }
 
     //! Key1
-    const TheKey1Type& Key1(void) { return myKey1; }
+    const TheKey1Type& Key1(void) noexcept { return myKey1; }
 
     //! Key2
-    const TheKey2Type& Key2(void) { return this->myValue; }
+    const TheKey2Type& Key2(void) noexcept { return this->myValue; }
 
     //! Next2
-    DoubleMapNode*& Next2(void) { return myNext2; }
+    DoubleMapNode*& Next2(void) noexcept { return myNext2; }
 
     //! Static deleter to be passed to BaseList
-    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl)
+    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl) noexcept
     {
       ((DoubleMapNode*)theNode)->~DoubleMapNode();
       theAl->Free(theNode);
@@ -95,10 +95,10 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const { return PMore(); }
+    Standard_Boolean More(void) const noexcept { return PMore(); }
 
     //! Make a step along the collection
-    void Next(void) { PNext(); }
+    void Next(void) noexcept { PNext(); }
 
     //! Key1 inquiry
     const TheKey1Type& Key1(void) const
@@ -147,7 +147,7 @@ public:
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_DoubleMap& theOther) { this->exchangeMapsData(theOther); }
+  void Exchange(NCollection_DoubleMap& theOther) noexcept { this->exchangeMapsData(theOther); }
 
   //! Assignment.
   //! This method does not change the internal allocator.
@@ -247,7 +247,7 @@ public:
   }
 
   //!* AreBound
-  Standard_Boolean AreBound(const TheKey1Type& theKey1, const TheKey2Type& theKey2) const
+  Standard_Boolean AreBound(const TheKey1Type& theKey1, const TheKey2Type& theKey2) const noexcept
   {
     if (IsEmpty())
       return Standard_False;
@@ -277,7 +277,7 @@ public:
   }
 
   //! IsBound1
-  Standard_Boolean IsBound1(const TheKey1Type& theKey1) const
+  Standard_Boolean IsBound1(const TheKey1Type& theKey1) const noexcept
   {
     if (IsEmpty())
       return Standard_False;
@@ -294,7 +294,7 @@ public:
   }
 
   //! IsBound2
-  Standard_Boolean IsBound2(const TheKey2Type& theKey2) const
+  Standard_Boolean IsBound2(const TheKey2Type& theKey2) const noexcept
   {
     if (IsEmpty())
       return Standard_False;
@@ -430,7 +430,7 @@ public:
   //! Find the Key1 and return pointer to Key2 or NULL if Key1 is not bound.
   //! @param[in]   theKey1 Key1 to find
   //! @return pointer to Key2 or NULL if Key1 is not found
-  const TheKey2Type* Seek1(const TheKey1Type& theKey1) const
+  const TheKey2Type* Seek1(const TheKey1Type& theKey1) const noexcept
   {
     for (DoubleMapNode* aNode1 =
            !IsEmpty() ? (DoubleMapNode*)myData1[HashCode1(theKey1, NbBuckets())] : NULL;
@@ -473,7 +473,7 @@ public:
   //! Find the Key2 and return pointer to Key1 or NULL if not bound.
   //! @param[in]  theKey2 Key2 to find
   //! @return pointer to Key1 if Key2 has been found
-  const TheKey1Type* Seek2(const TheKey2Type& theKey2) const
+  const TheKey1Type* Seek2(const TheKey2Type& theKey2) const noexcept
   {
     for (DoubleMapNode* aNode2 =
            !IsEmpty() ? (DoubleMapNode*)myData2[HashCode2(theKey2, NbBuckets())] : NULL;
@@ -507,25 +507,25 @@ public:
   ~NCollection_DoubleMap(void) { Clear(true); }
 
   //! Size
-  Standard_Integer Size(void) const { return Extent(); }
+  Standard_Integer Size(void) const noexcept { return Extent(); }
 
 protected:
-  bool IsEqual1(const TheKey1Type& theKey1, const TheKey1Type& theKey2) const
+  bool IsEqual1(const TheKey1Type& theKey1, const TheKey1Type& theKey2) const noexcept
   {
     return myHasher1(theKey1, theKey2);
   }
 
-  size_t HashCode1(const TheKey1Type& theKey, const int theUpperBound) const
+  size_t HashCode1(const TheKey1Type& theKey, const int theUpperBound) const noexcept
   {
     return myHasher1(theKey) % theUpperBound + 1;
   }
 
-  bool IsEqual2(const TheKey2Type& theKey1, const TheKey2Type& theKey2) const
+  bool IsEqual2(const TheKey2Type& theKey1, const TheKey2Type& theKey2) const noexcept
   {
     return myHasher2(theKey1, theKey2);
   }
 
-  size_t HashCode2(const TheKey2Type& theKey, const int theUpperBound) const
+  size_t HashCode2(const TheKey2Type& theKey, const int theUpperBound) const noexcept
   {
     return myHasher2(theKey) % theUpperBound + 1;
   }

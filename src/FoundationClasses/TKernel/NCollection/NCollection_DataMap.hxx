@@ -88,10 +88,10 @@ public:
     }
 
     //! Key
-    const TheKeyType& Key(void) const { return myKey; }
+    const TheKeyType& Key(void) const noexcept { return myKey; }
 
     //! Static deleter to be passed to BaseMap
-    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl)
+    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl) noexcept
     {
       ((DataMapNode*)theNode)->~DataMapNode();
       theAl->Free(theNode);
@@ -119,10 +119,10 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const { return PMore(); }
+    Standard_Boolean More(void) const noexcept { return PMore(); }
 
     //! Make a step along the collection
-    void Next(void) { PNext(); }
+    void Next(void) noexcept { PNext(); }
 
     //! Value inquiry
     const TheItemType& Value(void) const
@@ -154,16 +154,16 @@ public:
     const_iterator;
 
   //! Returns an iterator pointing to the first element in the map.
-  iterator begin() const { return Iterator(*this); }
+  iterator begin() const noexcept { return Iterator(*this); }
 
   //! Returns an iterator referring to the past-the-end element in the map.
-  iterator end() const { return Iterator(); }
+  iterator end() const noexcept { return Iterator(); }
 
   //! Returns a const iterator pointing to the first element in the map.
-  const_iterator cbegin() const { return Iterator(*this); }
+  const_iterator cbegin() const noexcept { return Iterator(*this); }
 
   //! Returns a const iterator referring to the past-the-end element in the map.
-  const_iterator cend() const { return Iterator(); }
+  const_iterator cend() const noexcept { return Iterator(); }
 
 public:
   // ---------- PUBLIC METHODS ------------
@@ -201,7 +201,7 @@ public:
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_DataMap& theOther) { this->exchangeMapsData(theOther); }
+  void Exchange(NCollection_DataMap& theOther) noexcept { this->exchangeMapsData(theOther); }
 
   //! Assignment.
   //! This method does not change the internal allocator.
@@ -443,7 +443,7 @@ public:
   }
 
   //! IsBound
-  Standard_Boolean IsBound(const TheKeyType& theKey) const
+  Standard_Boolean IsBound(const TheKeyType& theKey) const noexcept
   {
     DataMapNode* p;
     return lookup(theKey, p);
@@ -479,7 +479,7 @@ public:
 
   //! Seek returns pointer to Item by Key. Returns
   //! NULL is Key was not bound.
-  const TheItemType* Seek(const TheKeyType& theKey) const
+  const TheItemType* Seek(const TheKeyType& theKey) const noexcept
   {
     DataMapNode* p = 0;
     if (!lookup(theKey, p))
@@ -513,7 +513,7 @@ public:
 
   //! ChangeSeek returns modifiable pointer to Item by Key. Returns
   //! NULL is Key was not bound.
-  TheItemType* ChangeSeek(const TheKeyType& theKey)
+  TheItemType* ChangeSeek(const TheKeyType& theKey) noexcept
   {
     DataMapNode* p = 0;
     if (!lookup(theKey, p))
@@ -552,14 +552,14 @@ public:
   virtual ~NCollection_DataMap(void) { Clear(true); }
 
   //! Size
-  Standard_Integer Size(void) const { return Extent(); }
+  Standard_Integer Size(void) const noexcept { return Extent(); }
 
 protected:
   //! Lookup for particular key in map.
   //! @param[in] theKey key to compute hash
   //! @param[out] theNode the detected node with equal key. Can be null.
   //! @return true if key is found
-  Standard_Boolean lookup(const TheKeyType& theKey, DataMapNode*& theNode) const
+  Standard_Boolean lookup(const TheKeyType& theKey, DataMapNode*& theNode) const noexcept
   {
     if (IsEmpty())
       return Standard_False; // Not found
@@ -577,7 +577,7 @@ protected:
   //! @param[out] theNode the detected node with equal key. Can be null.
   //! @param[out] theHash computed bounded hash code for current key.
   //! @return true if key is found
-  Standard_Boolean lookup(const TheKeyType& theKey, DataMapNode*& theNode, size_t& theHash) const
+  Standard_Boolean lookup(const TheKeyType& theKey, DataMapNode*& theNode, size_t& theHash) const noexcept
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())
@@ -592,12 +592,12 @@ protected:
     return Standard_False; // Not found
   }
 
-  bool IsEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const
+  bool IsEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const noexcept
   {
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
+  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const noexcept
   {
     return myHasher(theKey) % theUpperBound + 1;
   }
