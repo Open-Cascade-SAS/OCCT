@@ -236,11 +236,10 @@ public:
   {
     NCollection_Mat3 aMatRes;
 
-    size_t aInputElem;
     for (size_t aResElem = 0; aResElem < 9; ++aResElem)
     {
       aMatRes.myMat[aResElem] = (Element_t)0;
-      for (aInputElem = 0; aInputElem < 3; ++aInputElem)
+      for (size_t aInputElem = 0; aInputElem < 3; ++aInputElem)
       {
         aMatRes.myMat[aResElem] +=
           theMatA.GetValue(aResElem % 3, aInputElem) * theMatB.GetValue(aInputElem, aResElem / 3);

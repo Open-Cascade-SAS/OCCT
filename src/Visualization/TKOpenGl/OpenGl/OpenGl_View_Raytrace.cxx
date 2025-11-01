@@ -42,11 +42,6 @@
   #include <OSD_Timer.hxx>
 #endif
 
-namespace
-{
-static const OpenGl_Vec4 THE_WHITE_COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-static const OpenGl_Vec4 THE_BLACK_COLOR(0.0f, 0.0f, 0.0f, 1.0f);
-} // namespace
 
 namespace
 {

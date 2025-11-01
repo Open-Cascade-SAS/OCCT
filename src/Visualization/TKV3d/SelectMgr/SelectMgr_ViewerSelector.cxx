@@ -71,7 +71,6 @@ private:
   bool                                            myToPreferClosest;
 };
 
-static const Graphic3d_Mat4d SelectMgr_ViewerSelector_THE_IDENTITY_MAT;
 } // namespace
 
 //=================================================================================================

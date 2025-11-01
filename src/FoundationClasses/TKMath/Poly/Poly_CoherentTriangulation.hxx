@@ -115,7 +115,7 @@ public:
     //! Constructor
     Standard_EXPORT IteratorOfTriangle(const Handle(Poly_CoherentTriangulation)& theTri);
     //! Make step
-    Standard_EXPORT virtual void Next();
+    Standard_EXPORT virtual void Next() noexcept;
   };
 
   /**
@@ -127,7 +127,7 @@ public:
     //! Constructor
     Standard_EXPORT IteratorOfNode(const Handle(Poly_CoherentTriangulation)& theTri);
     //! Make step
-    Standard_EXPORT virtual void Next();
+    Standard_EXPORT virtual void Next() noexcept;
   };
 
   /**
@@ -139,7 +139,7 @@ public:
     //! Constructor
     Standard_EXPORT IteratorOfLink(const Handle(Poly_CoherentTriangulation)& theTri);
     //! Make step
-    Standard_EXPORT virtual void Next();
+    Standard_EXPORT virtual void Next() noexcept;
   };
 
   //! Couple of integer indices (used in RemoveDegenerated()).

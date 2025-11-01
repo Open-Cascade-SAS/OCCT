@@ -277,7 +277,7 @@ Poly_CoherentTriangulation::IteratorOfTriangle::IteratorOfTriangle(
 
 //=================================================================================================
 
-void Poly_CoherentTriangulation::IteratorOfTriangle::Next()
+void Poly_CoherentTriangulation::IteratorOfTriangle::Next() noexcept
 {
   Poly_BaseIteratorOfCoherentTriangle::Next();
   while (More())
@@ -308,7 +308,7 @@ Poly_CoherentTriangulation::IteratorOfNode::IteratorOfNode(
 
 //=================================================================================================
 
-void Poly_CoherentTriangulation::IteratorOfNode::Next()
+void Poly_CoherentTriangulation::IteratorOfNode::Next() noexcept
 {
   Poly_BaseIteratorOfCoherentNode::Next();
   while (More())
@@ -338,7 +338,7 @@ Poly_CoherentTriangulation::IteratorOfLink::IteratorOfLink(
 
 //=================================================================================================
 
-void Poly_CoherentTriangulation::IteratorOfLink::Next()
+void Poly_CoherentTriangulation::IteratorOfLink::Next() noexcept
 {
   Poly_BaseIteratorOfCoherentLink::Next();
   while (More())
