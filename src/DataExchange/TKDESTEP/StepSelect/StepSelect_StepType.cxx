@@ -25,8 +25,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepSelect_StepType, IFSelect_Signature)
 
-static TCollection_AsciiString lastvalue;
-
 StepSelect_StepType::StepSelect_StepType()
     : IFSelect_Signature("Step Type")
 {
@@ -49,59 +47,69 @@ void StepSelect_StepType::SetProtocol(const Handle(Interface_Protocol)& proto)
 Standard_CString StepSelect_StepType::Value(const Handle(Standard_Transient)&       ent,
                                             const Handle(Interface_InterfaceModel)& model) const
 {
-  static Standard_Mutex  aMutex;
-  Standard_Mutex::Sentry aSentry(aMutex);
-  lastvalue.Clear();
-  Handle(StepData_ReadWriteModule) module;
-  Standard_Integer                 CN;
-  Standard_Boolean                 ok = thelib.Select(ent, module, CN);
-  if (!ok)
+  std::lock_guard<std::mutex> aLock(myMutex);
+
+  Handle(StepData_ReadWriteModule) aModule;
+  Standard_Integer                 aCN;
+  if (!thelib.Select(ent, aModule, aCN))
   {
-    lastvalue.AssignCat("..NOT FROM SCHEMA ");
-    lastvalue.AssignCat(theproto->SchemaName(model));
-    lastvalue.AssignCat("..");
+    // Build error message for unrecognized entity
+    theLastValue = "..NOT FROM SCHEMA ";
+    theLastValue += theproto->SchemaName(model);
+    theLastValue += "..";
+    return theLastValue.ToCString();
   }
-  else
+
+  // Handle simple (non-complex) type - return direct reference from module
+  if (!aModule->IsComplex(aCN))
+    return aModule->StepType(aCN).ToCString();
+
+  // Handle complex type from module
+  TColStd_SequenceOfAsciiString aList;
+  if (aModule->ComplexType(aCN, aList))
   {
-    Standard_Boolean plex = module->IsComplex(CN);
-    if (!plex)
-      lastvalue = module->StepType(CN);
+    Standard_Integer aNb = aList.Length();
+    if (aNb == 0)
+    {
+      theLastValue = "(..COMPLEX TYPE..)";
+    }
     else
     {
-      lastvalue.AssignCat("(");
-      TColStd_SequenceOfAsciiString list;
-      module->ComplexType(CN, list);
-      Standard_Integer nb = list.Length();
-      if (nb == 0)
-        lastvalue.AssignCat("..COMPLEX TYPE..");
-      for (Standard_Integer i = 1; i <= nb; i++)
+      theLastValue = "(";
+      for (Standard_Integer i = 1; i <= aNb; i++)
       {
         if (i > 1)
-          lastvalue.AssignCat(",");
-        lastvalue.AssignCat(list.Value(i).ToCString());
+          theLastValue += ",";
+        theLastValue += aList.Value(i);
       }
-      lastvalue.AssignCat(")");
+      theLastValue += ")";
     }
+    return theLastValue.ToCString();
   }
-  if (lastvalue.Length() > 0)
-    return lastvalue.ToCString();
 
-  DeclareAndCast(StepData_UndefinedEntity, und, ent);
-  if (und.IsNull())
-    return lastvalue.ToCString();
-  if (und->IsComplex())
+  // Fallback: check for undefined entity
+  DeclareAndCast(StepData_UndefinedEntity, anUnd, ent);
+  if (anUnd.IsNull())
   {
-    lastvalue.AssignCat("(");
-    while (!und.IsNull())
-    {
-      lastvalue.AssignCat(und->StepType());
-      und = und->Next();
-      if (!und.IsNull())
-        lastvalue.AssignCat(",");
-    }
-    lastvalue.AssignCat(")");
+    theLastValue.Clear();
+    return theLastValue.ToCString();
   }
-  else
-    return und->StepType();
-  return lastvalue.ToCString();
+
+  if (!anUnd->IsComplex())
+    return anUnd->StepType(); // Direct return from entity's internal storage
+
+  // Build complex type from undefined entity
+  theLastValue             = "(";
+  Standard_Boolean isFirst = Standard_True;
+  while (!anUnd.IsNull())
+  {
+    if (!isFirst)
+      theLastValue += ",";
+    theLastValue += anUnd->StepType();
+    anUnd   = anUnd->Next();
+    isFirst = Standard_False;
+  }
+  theLastValue += ")";
+
+  return theLastValue.ToCString();
 }

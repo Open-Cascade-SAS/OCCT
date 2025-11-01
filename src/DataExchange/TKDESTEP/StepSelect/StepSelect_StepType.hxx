@@ -23,6 +23,10 @@
 #include <StepData_WriterLib.hxx>
 #include <IFSelect_Signature.hxx>
 #include <Standard_CString.hxx>
+#include <TCollection_AsciiString.hxx>
+
+#include <mutex>
+
 class StepData_Protocol;
 class Interface_Protocol;
 class Standard_Transient;
@@ -65,7 +69,9 @@ protected:
   StepData_WriterLib thelib;
 
 private:
-  Handle(StepData_Protocol) theproto;
+  Handle(StepData_Protocol)       theproto;
+  mutable TCollection_AsciiString theLastValue;
+  mutable std::mutex              myMutex;
 };
 
 #endif // _StepSelect_StepType_HeaderFile
