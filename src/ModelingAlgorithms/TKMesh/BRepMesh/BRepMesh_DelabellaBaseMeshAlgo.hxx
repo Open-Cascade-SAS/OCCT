@@ -33,7 +33,7 @@ public:
 
 protected:
   //! Builds base triangulation using Delabella project.
-  Standard_EXPORT virtual void buildBaseTriangulation() override;
+  Standard_EXPORT virtual void buildBaseTriangulation() Standard_OVERRIDE;
 };
 
 #endif

@@ -316,7 +316,7 @@ protected:
     }
 
     //! Method is executed in the context of thread.
-    virtual void Perform(int theThreadIndex) override
+    virtual void Perform(int theThreadIndex) Standard_OVERRIDE
     {
       for (Standard_Integer anIter = myRange.It(); anIter < myRange.End(); anIter = myRange.It())
       {

@@ -42,13 +42,13 @@ public:
                                const Handle(IGESData_IGESEntity)& ent,
                                const IGESData_IGESDumper&         dumper,
                                Standard_OStream&                  S,
-                               const Standard_Integer             own) const override;
+                               const Standard_Integer             own) const Standard_OVERRIDE;
 
   //! Performs non-ambiguous Corrections on Entities which support
   //! them (AssocGroupType,Hierarchy,Name,SingleParent)
   Standard_EXPORT virtual Standard_Boolean OwnCorrect(const Standard_Integer             CN,
                                                       const Handle(IGESData_IGESEntity)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_SpecificModule, IGESData_SpecificModule)
 

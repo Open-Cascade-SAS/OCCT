@@ -58,10 +58,10 @@ public:
   Standard_EXPORT void Append(const Standard_Integer value);
 
   //! Sets the explicit GUID (user defined) for the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& theGuid) override;
+  Standard_EXPORT void SetID(const Standard_GUID& theGuid) Standard_OVERRIDE;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() override;
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
 
   //! Inserts the <value> before the first meet of <before_value>.
   Standard_EXPORT Standard_Boolean InsertBefore(const Standard_Integer value,
@@ -95,20 +95,20 @@ public:
 
   Standard_EXPORT const TColStd_ListOfInteger& List() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) override;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const override;
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_IntegerList, TDF_Attribute)
 

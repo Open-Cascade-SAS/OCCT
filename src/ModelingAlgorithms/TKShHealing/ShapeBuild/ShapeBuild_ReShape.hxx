@@ -85,7 +85,7 @@ public:
   //! and flag FAIL1 is set in Status.
   Standard_EXPORT virtual TopoDS_Shape Apply(const TopoDS_Shape&    shape,
                                              const TopAbs_ShapeEnum until = TopAbs_SHAPE)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns a complete substitution status for a shape
   //! 0  : not recorded,   <newsh> = original <shape>
@@ -97,7 +97,7 @@ public:
   Standard_EXPORT virtual Standard_Integer Status(const TopoDS_Shape&    shape,
                                                   TopoDS_Shape&          newsh,
                                                   const Standard_Boolean last = Standard_False)
-    override;
+    Standard_OVERRIDE;
 
   //! Queries the status of last call to Apply(shape,enum)
   //! OK   : no (sub)shapes replaced or removed

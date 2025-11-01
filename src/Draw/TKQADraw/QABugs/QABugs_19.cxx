@@ -2266,18 +2266,18 @@ public:
     myResources->SetResource(THE_QATEST_DOC_FORMAT ".FileExtension", "xml");
   }
 
-  virtual Handle(PCDM_Reader) ReaderFromFormat(const TCollection_ExtendedString&) override
+  virtual Handle(PCDM_Reader) ReaderFromFormat(const TCollection_ExtendedString&) Standard_OVERRIDE
   {
     return new XmlDrivers_DocumentRetrievalDriver();
   }
 
   virtual Handle(PCDM_StorageDriver) WriterFromFormat(const TCollection_ExtendedString&)
-    override
+    Standard_OVERRIDE
   {
     return new XmlDrivers_DocumentStorageDriver("Test");
   }
 
-  virtual Standard_CString ResourcesName() override { return ""; }
+  virtual Standard_CString ResourcesName() Standard_OVERRIDE { return ""; }
 
   //! Dumps the content of me into the stream
   void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
@@ -5066,7 +5066,7 @@ public:
 
   virtual void Compute(const Handle(PrsMgr_PresentationManager)&,
                        const Handle(Prs3d_Presentation)& thePresentation,
-                       const Standard_Integer) override
+                       const Standard_Integer) Standard_OVERRIDE
   {
     Handle(Graphic3d_ArrayOfTriangles) aFrame = new Graphic3d_ArrayOfTriangles(6, 6);
     aFrame->AddVertex(gp_Pnt(-1, 0, 0));
@@ -5098,7 +5098,7 @@ public:
   }
 
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)& /*theSelection*/,
-                                const Standard_Integer /*theMode*/) override
+                                const Standard_Integer /*theMode*/) Standard_OVERRIDE
   {
   }
 };

@@ -48,33 +48,33 @@ public:
 
   Standard_EXPORT const TopoDS_Solid& Solid() const;
 
-  Standard_EXPORT virtual void AddShape(const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual void AddShape(const TopoDS_Shape& S) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void AddStartElement(const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual void AddStartElement(const TopoDS_Shape& S) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void AddElement(const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual void AddElement(const TopoDS_Shape& S) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void DumpSS() override;
+  Standard_EXPORT virtual void DumpSS() Standard_OVERRIDE;
 
   Standard_EXPORT virtual TCollection_AsciiString SName(
     const TopoDS_Shape&            S,
     const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const override;
+    const TCollection_AsciiString& sa = "") const Standard_OVERRIDE;
 
   Standard_EXPORT virtual TCollection_AsciiString SName(
     const TopTools_ListOfShape&    S,
     const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const override;
+    const TCollection_AsciiString& sa = "") const Standard_OVERRIDE;
 
   Standard_EXPORT virtual TCollection_AsciiString SNameori(
     const TopoDS_Shape&            S,
     const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const override;
+    const TCollection_AsciiString& sa = "") const Standard_OVERRIDE;
 
   Standard_EXPORT virtual TCollection_AsciiString SNameori(
     const TopTools_ListOfShape&    S,
     const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const override;
+    const TCollection_AsciiString& sa = "") const Standard_OVERRIDE;
 
 protected:
 private:

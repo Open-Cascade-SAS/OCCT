@@ -100,7 +100,7 @@ public:
   /**
    * Returns True if the node is default, so that it should not be written.
    */
-  Standard_EXPORT virtual Standard_Boolean IsDefault() const override;
+  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
 
 protected:
   // ---------- PROTECTED METHODS ----------

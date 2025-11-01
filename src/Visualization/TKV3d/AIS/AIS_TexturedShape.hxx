@@ -100,17 +100,17 @@ public: //! @name methods to alter texture mapping properties
   Standard_EXPORT void UpdateAttributes();
 
   //! Sets the color.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Removes settings for the color.
-  Standard_EXPORT virtual void UnsetColor() override;
+  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
 
   //! Sets the material aspect.
   Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theAspect)
-    override;
+    Standard_OVERRIDE;
 
   //! Removes settings for material aspect.
-  Standard_EXPORT virtual void UnsetMaterial() override;
+  Standard_EXPORT virtual void UnsetMaterial() Standard_OVERRIDE;
 
   //! Enables texture modulation
   Standard_EXPORT void EnableTextureModulate();
@@ -177,7 +177,7 @@ public: //! @name methods to alter texture mapping properties
   Standard_Boolean TextureModulate() const { return myModulate; }
 
   //! Return true if specified display mode is supported (extends AIS_Shape with Display Mode 3).
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return theMode >= 0 && theMode <= 3;
   }
@@ -186,7 +186,7 @@ protected: //! @name overridden methods
   //! Compute presentation with texture mapping support.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT void updateAttributes(const Handle(Prs3d_Presentation)& thePrs);
 

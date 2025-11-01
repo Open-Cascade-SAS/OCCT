@@ -35,18 +35,18 @@ public:
   Standard_EXPORT BRep_Polygon3D(const Handle(Poly_Polygon3D)& P, const TopLoc_Location& L);
 
   //! Returns True.
-  Standard_EXPORT virtual Standard_Boolean IsPolygon3D() const override;
+  Standard_EXPORT virtual Standard_Boolean IsPolygon3D() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual const Handle(Poly_Polygon3D)& Polygon3D() const override;
+  Standard_EXPORT virtual const Handle(Poly_Polygon3D)& Polygon3D() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Polygon3D(const Handle(Poly_Polygon3D)& P) override;
+  Standard_EXPORT virtual void Polygon3D(const Handle(Poly_Polygon3D)& P) Standard_OVERRIDE;
 
   //! Return a copy of this representation.
-  Standard_EXPORT Handle(BRep_CurveRepresentation) Copy() const override;
+  Standard_EXPORT Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRep_Polygon3D, BRep_CurveRepresentation)
 

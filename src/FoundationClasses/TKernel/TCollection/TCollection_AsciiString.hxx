@@ -98,7 +98,7 @@ public:
 
   //! Move constructor
   //! @param[in] theOther the string to move from
-  Standard_EXPORT TCollection_AsciiString(TCollection_AsciiString&& theOther) noexcept;
+  Standard_EXPORT TCollection_AsciiString(TCollection_AsciiString&& theOther) Standard_Noexcept;
 
   //! Initializes a AsciiString with copy of another AsciiString
   //! concatenated with the message character.

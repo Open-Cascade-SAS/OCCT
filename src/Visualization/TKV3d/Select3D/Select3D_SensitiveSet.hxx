@@ -60,7 +60,7 @@ public:
   //! Checks whether one or more entities of the set overlap current selecting volume.
   //! Implements the traverse of BVH tree built for the set
   virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                   SelectBasics_PickResult& thePickResult) override
+                                   SelectBasics_PickResult& thePickResult) Standard_OVERRIDE
   {
     return matches(theMgr, thePickResult, false);
   }
@@ -69,10 +69,10 @@ public:
   //! Must be called manually to build BVH tree for any sensitive set
   //! in case if its content was initialized not in a constructor,
   //! but element by element
-  Standard_EXPORT virtual void BVH() override;
+  Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
   //! Returns TRUE if BVH tree is in invalidated state
-  virtual Standard_Boolean ToBuildBVH() const override { return myContent.IsDirty(); }
+  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return myContent.IsDirty(); }
 
   //! Sets the method (builder) used to construct BVH.
   void SetBuilder(const Handle(Select3D_BVHBuilder3d)& theBuilder)
@@ -86,21 +86,21 @@ public:
 
   //! Returns bounding box of the whole set.
   //! This method should be redefined in Select3D_SensitiveSet descendants
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
   //! Returns center of the whole set.
   //! This method should be redefined in Select3D_SensitiveSet descendants
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
   //! Destroys cross-reference to avoid memory leak
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
   //! Returns a number of nodes in 1 BVH leaf
   Standard_Integer GetLeafNodeSize() const { return myContent.Builder()->LeafNodeSize(); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
   //! Checks whether one or more entities of the set overlap current selecting volume.
@@ -186,10 +186,10 @@ protected:
     }
 
     //! Returns the length of set of sensitives
-    virtual Standard_Integer Size() const override { return mySensitiveSet->Size(); }
+    virtual Standard_Integer Size() const Standard_OVERRIDE { return mySensitiveSet->Size(); }
 
     //! Returns bounding box of sensitive with index theIdx
-    virtual Select3D_BndBox3d Box(const Standard_Integer theIdx) const override
+    virtual Select3D_BndBox3d Box(const Standard_Integer theIdx) const Standard_OVERRIDE
     {
       return mySensitiveSet->Box(theIdx);
     }
@@ -199,14 +199,14 @@ protected:
 
     //! Returns center of sensitive with index theIdx in the set along the given axis theAxis
     virtual Standard_Real Center(const Standard_Integer theIdx,
-                                 const Standard_Integer theAxis) const override
+                                 const Standard_Integer theAxis) const Standard_OVERRIDE
     {
       return mySensitiveSet->Center(theIdx, theAxis);
     }
 
     //! Swaps items with indexes theIdx1 and theIdx2 in the set
     virtual void Swap(const Standard_Integer theIdx1,
-                      const Standard_Integer theIdx2) override
+                      const Standard_Integer theIdx2) Standard_OVERRIDE
     {
       mySensitiveSet->Swap(theIdx1, theIdx2);
     }

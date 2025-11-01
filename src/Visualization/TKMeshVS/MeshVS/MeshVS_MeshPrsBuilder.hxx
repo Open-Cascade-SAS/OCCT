@@ -50,7 +50,7 @@ public:
                                      const TColStd_PackedMapOfInteger& IDs,
                                      TColStd_PackedMapOfInteger&       IDsToExclude,
                                      const Standard_Boolean            IsElement,
-                                     const Standard_Integer DisplayMode) const override;
+                                     const Standard_Integer DisplayMode) const Standard_OVERRIDE;
 
   //! Builds nodes presentation
   Standard_EXPORT virtual void BuildNodes(const Handle(Prs3d_Presentation)& Prs,

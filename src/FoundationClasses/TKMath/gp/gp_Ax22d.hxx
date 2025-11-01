@@ -176,7 +176,7 @@ public:
   //! The main direction of the axis placement is not changed.
   //! The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.
-  [[nodiscard]] Standard_EXPORT gp_Ax22d Mirrored(const gp_Pnt2d& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax22d Mirrored(const gp_Pnt2d& theP) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& theA);
 
@@ -187,14 +187,14 @@ public:
   //! point, on the "XDirection" and "YDirection".
   //! The resulting main "Direction" is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-  [[nodiscard]] Standard_EXPORT gp_Ax22d Mirrored(const gp_Ax2d& theA) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax22d Mirrored(const gp_Ax2d& theA) const;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng);
 
   //! Rotates an axis placement. <theA1> is the axis of the
   //! rotation . theAng is the angular value of the rotation
   //! in radians.
-  [[nodiscard]] gp_Ax22d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
+  Standard_NODISCARD gp_Ax22d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
   {
     gp_Ax22d aTemp = *this;
     aTemp.Rotate(theP, theAng);
@@ -210,7 +210,7 @@ public:
   //! . the main direction of the axis placement is not changed.
   //! . The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.
-  [[nodiscard]] gp_Ax22d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
+  Standard_NODISCARD gp_Ax22d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
   {
     gp_Ax22d aTemp = *this;
     aTemp.Scale(theP, theS);
@@ -224,7 +224,7 @@ public:
   //! "YDirection" are transformed with theT.  The resulting
   //! main "Direction" of <me> is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-  [[nodiscard]] gp_Ax22d Transformed(const gp_Trsf2d& theT) const
+  Standard_NODISCARD gp_Ax22d Transformed(const gp_Trsf2d& theT) const
   {
     gp_Ax22d aTemp = *this;
     aTemp.Transform(theT);
@@ -235,7 +235,7 @@ public:
 
   //! Translates an axis plaxement in the direction of the vector
   //! <theV>. The magnitude of the translation is the vector's magnitude.
-  [[nodiscard]] gp_Ax22d Translated(const gp_Vec2d& theV) const
+  Standard_NODISCARD gp_Ax22d Translated(const gp_Vec2d& theV) const
   {
     gp_Ax22d aTemp = *this;
     aTemp.Translate(theV);
@@ -249,7 +249,7 @@ public:
 
   //! Translates an axis placement from the point <theP1> to the
   //! point <theP2>.
-  [[nodiscard]] gp_Ax22d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD gp_Ax22d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
   {
     gp_Ax22d aTemp = *this;
     aTemp.Translate(theP1, theP2);

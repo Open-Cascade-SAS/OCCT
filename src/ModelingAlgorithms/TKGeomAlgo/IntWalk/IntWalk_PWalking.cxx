@@ -1252,7 +1252,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
               break;
             }
           }
-            [[fallthrough]];
+            Standard_FALLTHROUGH
           case IntWalk_OK:
           case IntWalk_ArretSurPoint: // 006
           {

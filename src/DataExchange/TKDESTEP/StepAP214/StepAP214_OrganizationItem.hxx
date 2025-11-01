@@ -38,7 +38,7 @@ public:
 
   //! Recognizes a OrganizationItem Kind Entity that is :
   Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   //! returns Value as a AppliedOrganizationAssignment (Null if another type)
   Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment()

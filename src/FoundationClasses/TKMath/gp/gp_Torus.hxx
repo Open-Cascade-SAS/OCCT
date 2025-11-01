@@ -184,27 +184,27 @@ public:
   //! Performs the symmetrical transformation of a torus
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  [[nodiscard]] Standard_EXPORT gp_Torus Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Pnt& theP) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
   //! Performs the symmetrical transformation of a torus with
   //! respect to an axis placement which is the axis of the
   //! symmetry.
-  [[nodiscard]] Standard_EXPORT gp_Torus Mirrored(const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Ax1& theA1) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
   //! Performs the symmetrical transformation of a torus with respect
   //! to a plane. The axis placement theA2 locates the plane of the
   //! of the symmetry : (Location, XDirection, YDirection).
-  [[nodiscard]] Standard_EXPORT gp_Torus Mirrored(const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Ax2& theA2) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
 
   //! Rotates a torus. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  [[nodiscard]] gp_Torus Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  Standard_NODISCARD gp_Torus Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
     gp_Torus aC = *this;
     aC.pos.Rotate(theA1, theAng);
@@ -215,18 +215,18 @@ public:
 
   //! Scales a torus. S is the scaling value.
   //! The absolute value of S is used to scale the torus
-  [[nodiscard]] gp_Torus Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
+  Standard_NODISCARD gp_Torus Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
 
   void Transform(const gp_Trsf& theT);
 
   //! Transforms a torus with the transformation theT from class Trsf.
-  [[nodiscard]] gp_Torus Transformed(const gp_Trsf& theT) const;
+  Standard_NODISCARD gp_Torus Transformed(const gp_Trsf& theT) const;
 
   void Translate(const gp_Vec& theV) { pos.Translate(theV); }
 
   //! Translates a torus in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  [[nodiscard]] gp_Torus Translated(const gp_Vec& theV) const
+  Standard_NODISCARD gp_Torus Translated(const gp_Vec& theV) const
   {
     gp_Torus aC = *this;
     aC.pos.Translate(theV);
@@ -236,7 +236,7 @@ public:
   void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
 
   //! Translates a torus from the point theP1 to the point theP2.
-  [[nodiscard]] gp_Torus Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD gp_Torus Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
   {
     gp_Torus aC = *this;
     aC.pos.Translate(theP1, theP2);

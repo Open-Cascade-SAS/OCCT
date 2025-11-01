@@ -132,7 +132,7 @@ public:
   }
 
   //! Returns AABB of primitive set.
-  virtual BVH_BoxNt Box() const override;
+  virtual BVH_BoxNt Box() const Standard_OVERRIDE;
 
   //! Returns AABB of the given object.
   using BVH_Triangulation<Standard_ShortReal, 3>::Box;
@@ -140,7 +140,7 @@ public:
   //! Returns centroid position along the given axis.
   Standard_EXPORT virtual Standard_ShortReal Center(const Standard_Integer theIndex,
                                                     const Standard_Integer theAxis) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns quad BVH (QBVH) tree produced from binary BVH.
   Standard_EXPORT const QuadBvhHandle& QuadBVH();
@@ -206,7 +206,7 @@ public:
   }
 
   //! Clears ray-tracing geometry.
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
 public: //! @name methods related to acceleration structure
   //! Performs post-processing of high-level scene BVH.

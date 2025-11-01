@@ -48,7 +48,7 @@ public:
   //! Calls the class method CVal
   Standard_EXPORT Standard_CString
     Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const override;
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignValidity, IFSelect_Signature)
 

@@ -33,13 +33,13 @@ public:
   Standard_EXPORT virtual ~OpenGl_PointSprite();
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Returns TRUE for point sprite texture.
-  virtual bool IsPointSprite() const override { return true; }
+  virtual bool IsPointSprite() const Standard_OVERRIDE { return true; }
 
   //! @return true if current object was initialized
-  virtual bool IsValid() const override
+  virtual bool IsValid() const Standard_OVERRIDE
   {
     return myBitmapList != 0 || myTextureId != NO_TEXTURE;
   }

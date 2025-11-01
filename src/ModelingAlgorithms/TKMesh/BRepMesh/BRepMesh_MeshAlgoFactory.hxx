@@ -33,7 +33,7 @@ public:
   //! Creates instance of meshing algorithm for the given type of surface.
   Standard_EXPORT virtual Handle(IMeshTools_MeshAlgo) GetAlgo(
     const GeomAbs_SurfaceType    theSurfaceType,
-    const IMeshTools_Parameters& theParameters) const override;
+    const IMeshTools_Parameters& theParameters) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_MeshAlgoFactory, IMeshTools_MeshAlgoFactory)
 };

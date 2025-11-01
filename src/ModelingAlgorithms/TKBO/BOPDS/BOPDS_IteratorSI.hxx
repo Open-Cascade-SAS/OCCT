@@ -61,7 +61,7 @@ protected:
   Standard_EXPORT virtual void Intersect(
     const Handle(IntTools_Context)& theCtx        = Handle(IntTools_Context)(),
     const Standard_Boolean          theCheckOBB   = Standard_False,
-    const Standard_Real             theFuzzyValue = Precision::Confusion()) override;
+    const Standard_Real             theFuzzyValue = Precision::Confusion()) Standard_OVERRIDE;
 
 private:
 };

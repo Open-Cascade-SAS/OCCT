@@ -327,7 +327,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           case '\0':
             if (myEOF == Standard_True)
               continue;
-            [[fallthrough]];
+            Standard_FALLTHROUGH
           default:
             //      Limitation: we do not treat '&' as special character
             aPtr = (const char*)memchr(myPtr, '<', myEndPtr - myPtr);
@@ -569,7 +569,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         {
           case '=':
             aState = STATE_ATTRIBUTE_VALUE;
-            [[fallthrough]];
+            Standard_FALLTHROUGH
           case ' ':
           case '\t':
           case '\n':
@@ -711,7 +711,7 @@ static Standard_Boolean isName(const char* aString, const char* aStringEnd, cons
             aNameEnd = aPtr;
             return Standard_False;
           }
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case '.':
         case '-':
         case '_':

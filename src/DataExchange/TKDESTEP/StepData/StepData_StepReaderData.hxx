@@ -421,13 +421,13 @@ public:
                  const Standard_Boolean   errstat = Standard_False) const;
 
   //! Returns total count of Entities (including Header)
-  Standard_EXPORT virtual Standard_Integer NbEntities() const override;
+  Standard_EXPORT virtual Standard_Integer NbEntities() const Standard_OVERRIDE;
 
   //! determines the first suitable record following a given one
   //! that is, skips SCOPE,ENDSCOPE and SUBLIST records
   //! Note : skips Header records, which are accessed separately
   Standard_EXPORT Standard_Integer
-    FindNextRecord(const Standard_Integer num) const override;
+    FindNextRecord(const Standard_Integer num) const Standard_OVERRIDE;
 
   //! determines reference numbers in EntityNumber fields
   //! called by Prepare from StepReaderTool to prepare later using

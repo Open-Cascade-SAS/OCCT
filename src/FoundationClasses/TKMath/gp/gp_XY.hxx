@@ -130,12 +130,12 @@ public:
   //! new.X() = <me>.X() + theOther.X()
   //! new.Y() = <me>.Y() + theOther.Y()
   //! @endcode
-  [[nodiscard]] constexpr gp_XY Added(const gp_XY& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_XY Added(const gp_XY& theOther) const noexcept
   {
     return gp_XY(x + theOther.X(), y + theOther.Y());
   }
 
-  [[nodiscard]] constexpr gp_XY operator+(const gp_XY& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_XY operator+(const gp_XY& theOther) const noexcept
   {
     return Added(theOther);
   }
@@ -143,12 +143,12 @@ public:
   //! @code
   //! double D = <me>.X() * theOther.Y() - <me>.Y() * theOther.X()
   //! @endcode
-  [[nodiscard]] constexpr Standard_Real Crossed(const gp_XY& theOther) const noexcept
+  Standard_NODISCARD constexpr Standard_Real Crossed(const gp_XY& theOther) const noexcept
   {
     return x * theOther.y - y * theOther.x;
   }
 
-  [[nodiscard]] constexpr Standard_Real operator^(const gp_XY& theOther) const noexcept
+  Standard_NODISCARD constexpr Standard_Real operator^(const gp_XY& theOther) const noexcept
   {
     return Crossed(theOther);
   }
@@ -178,12 +178,12 @@ public:
   constexpr void operator/=(const Standard_Real theScalar) { Divide(theScalar); }
 
   //! Divides <me> by a real.
-  [[nodiscard]] constexpr gp_XY Divided(const Standard_Real theScalar) const
+  Standard_NODISCARD constexpr gp_XY Divided(const Standard_Real theScalar) const
   {
     return gp_XY(x / theScalar, y / theScalar);
   }
 
-  [[nodiscard]] constexpr gp_XY operator/(const Standard_Real theScalar) const
+  Standard_NODISCARD constexpr gp_XY operator/(const Standard_Real theScalar) const
   {
     return Divided(theScalar);
   }
@@ -229,12 +229,12 @@ public:
   //! New.X() = <me>.X() * theScalar;
   //! New.Y() = <me>.Y() * theScalar;
   //! @endcode
-  [[nodiscard]] constexpr gp_XY Multiplied(const Standard_Real theScalar) const noexcept
+  Standard_NODISCARD constexpr gp_XY Multiplied(const Standard_Real theScalar) const noexcept
   {
     return gp_XY(x * theScalar, y * theScalar);
   }
 
-  [[nodiscard]] constexpr gp_XY operator*(const Standard_Real theScalar) const noexcept
+  Standard_NODISCARD constexpr gp_XY operator*(const Standard_Real theScalar) const noexcept
   {
     return Multiplied(theScalar);
   }
@@ -243,19 +243,19 @@ public:
   //! new.X() = <me>.X() * theOther.X();
   //! new.Y() = <me>.Y() * theOther.Y();
   //! @endcode
-  [[nodiscard]] constexpr gp_XY Multiplied(const gp_XY& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_XY Multiplied(const gp_XY& theOther) const noexcept
   {
     return gp_XY(x * theOther.X(), y * theOther.Y());
   }
 
   //! New = theMatrix * <me>
-  [[nodiscard]] gp_XY Multiplied(const gp_Mat2d& theMatrix) const noexcept
+  Standard_NODISCARD gp_XY Multiplied(const gp_Mat2d& theMatrix) const noexcept
   {
     return gp_XY(theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y,
                  theMatrix.myMat[1][0] * x + theMatrix.myMat[1][1] * y);
   }
 
-  [[nodiscard]] gp_XY operator*(const gp_Mat2d& theMatrix) const noexcept
+  Standard_NODISCARD gp_XY operator*(const gp_Mat2d& theMatrix) const noexcept
   {
     return Multiplied(theMatrix);
   }
@@ -272,7 +272,7 @@ public:
   //! New.Y() = <me>.Y()/ <me>.Modulus()
   //! @endcode
   //! Raises ConstructionError if <me>.Modulus() <= Resolution from gp
-  [[nodiscard]] gp_XY Normalized() const
+  Standard_NODISCARD gp_XY Normalized() const
   {
     Standard_Real aD = Modulus();
     Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
@@ -293,9 +293,9 @@ public:
   //! New.X() = -<me>.X()
   //! New.Y() = -<me>.Y()
   //! @endcode
-  [[nodiscard]] constexpr gp_XY Reversed() const noexcept { return gp_XY(-x, -y); }
+  Standard_NODISCARD constexpr gp_XY Reversed() const noexcept { return gp_XY(-x, -y); }
 
-  [[nodiscard]] constexpr gp_XY operator-() const noexcept { return Reversed(); }
+  Standard_NODISCARD constexpr gp_XY operator-() const noexcept { return Reversed(); }
 
   //! Computes  the following linear combination and
   //! assigns the result to this number pair:
@@ -366,12 +366,12 @@ public:
   //! new.X() = <me>.X() - theOther.X()
   //! new.Y() = <me>.Y() - theOther.Y()
   //! @endcode
-  [[nodiscard]] constexpr gp_XY Subtracted(const gp_XY& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_XY Subtracted(const gp_XY& theOther) const noexcept
   {
     return gp_XY(x - theOther.x, y - theOther.y);
   }
 
-  [[nodiscard]] constexpr gp_XY operator-(const gp_XY& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_XY operator-(const gp_XY& theOther) const noexcept
   {
     return Subtracted(theOther);
   }

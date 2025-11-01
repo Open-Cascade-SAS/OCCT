@@ -37,21 +37,21 @@ public:
                                        const gp_Pnt&                        thePnt4);
 
   //! Returns the amount of sub-entities in sensitive
-  virtual Standard_Integer NbSubElements() const override { return 1; };
+  virtual Standard_Integer NbSubElements() const Standard_OVERRIDE { return 1; };
 
   //! Returns a copy of this sensitive quadrangle
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() override;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   //! Checks whether the box overlaps current selecting volume
   Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns center of the box
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
   //! Returns coordinates of the box
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_SensitiveQuad, Select3D_SensitiveEntity)
 

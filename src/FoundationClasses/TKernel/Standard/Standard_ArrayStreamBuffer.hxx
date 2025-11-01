@@ -67,37 +67,37 @@ protected:
   //! Get character on underflow.
   //! Virtual function called by other member functions to get the current character
   //! in the controlled input sequence without changing the current position.
-  Standard_EXPORT virtual int_type underflow() override;
+  Standard_EXPORT virtual int_type underflow() Standard_OVERRIDE;
 
   //! Get character on underflow and advance position.
   //! Virtual function called by other member functions to get the current character
   //! in the controlled input sequence and then advance the position indicator to the next
   //! character.
-  Standard_EXPORT virtual int_type uflow() override;
+  Standard_EXPORT virtual int_type uflow() Standard_OVERRIDE;
 
   //! Put character back in the case of backup underflow.
   //! Virtual function called by other member functions to put a character back
   //! into the controlled input sequence and decrease the position indicator.
-  Standard_EXPORT virtual int_type pbackfail(int_type ch) override;
+  Standard_EXPORT virtual int_type pbackfail(int_type ch) Standard_OVERRIDE;
 
   //! Get number of characters available.
   //! Virtual function (to be read s-how-many-c) called by other member functions
   //! to get an estimate on the number of characters available in the associated input sequence.
-  Standard_EXPORT virtual std::streamsize showmanyc() override;
+  Standard_EXPORT virtual std::streamsize showmanyc() Standard_OVERRIDE;
 
   //! Seek to specified position.
   Standard_EXPORT virtual pos_type seekoff(off_type                theOff,
                                            std::ios_base::seekdir  theWay,
-                                           std::ios_base::openmode theWhich) override;
+                                           std::ios_base::openmode theWhich) Standard_OVERRIDE;
 
   //! Change to specified position, according to mode.
   Standard_EXPORT virtual pos_type seekpos(pos_type                thePosition,
-                                           std::ios_base::openmode theWhich) override;
+                                           std::ios_base::openmode theWhich) Standard_OVERRIDE;
 
 public:
   //! Read a bunch of bytes at once.
   Standard_EXPORT virtual std::streamsize xsgetn(char*           thePtr,
-                                                 std::streamsize theCount) override;
+                                                 std::streamsize theCount) Standard_OVERRIDE;
 
 private:
   // copying is not allowed

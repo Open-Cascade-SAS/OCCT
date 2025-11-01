@@ -110,7 +110,7 @@ public:
   //! Computes the parameter on the reversed ellipse for
   //! the point of parameter U on this ellipse.
   //! For an ellipse, the returned value is: 2.*Pi - U.
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const override;
+  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
   //! This directrix is the line normal to the XAxis of the ellipse
   //! in the local plane (Z = 0) at a distance d = MajorRadius / e
@@ -135,7 +135,7 @@ public:
   //! If f is the distance between the center of the ellipse and
   //! the Focus1 then the eccentricity e = f / MajorRadius.
   //! Returns 0 if MajorRadius = 0
-  Standard_EXPORT Standard_Real Eccentricity() const override;
+  Standard_EXPORT Standard_Real Eccentricity() const Standard_OVERRIDE;
 
   //! Computes the focal distance. It is the distance between the
   //! the two focus of the ellipse.
@@ -164,34 +164,34 @@ public:
   //! ellipse. This is respectively:
   //! - 0.0, which gives the start point of this ellipse, or
   //! The start point and end point of an ellipse are coincident.
-  Standard_EXPORT Standard_Real FirstParameter() const override;
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
   //! Returns the value of the  last parameter of this
   //! ellipse. This is respectively:
   //! - 2.*Pi, which gives the end point of this ellipse.
   //! The start point and end point of an ellipse are coincident.
-  Standard_EXPORT Standard_Real LastParameter() const override;
+  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! return True.
-  Standard_EXPORT Standard_Boolean IsClosed() const override;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
 
   //! return True.
-  Standard_EXPORT Standard_Boolean IsPeriodic() const override;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
 
   //! Returns in P the point of parameter U.
   //! P = C + MajorRadius * Cos (U) * XDir + MinorRadius * Sin (U) * YDir
   //! where C is the center of the ellipse , XDir the direction of
   //! the "XAxis" and "YDir" the "YAxis" of the ellipse.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const override;
+  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
 
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const override;
+  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const Standard_OVERRIDE;
 
   //! Returns the point P of parameter U. The vectors V1 and V2
   //! are the first and second derivatives at this point.
   Standard_EXPORT void D2(const Standard_Real U,
                           gp_Pnt&             P,
                           gp_Vec&             V1,
-                          gp_Vec&             V2) const override;
+                          gp_Vec&             V2) const Standard_OVERRIDE;
 
   //! Returns the point P of parameter U, the first second and
   //! third derivatives V1 V2 and V3.
@@ -199,23 +199,23 @@ public:
                           gp_Pnt&             P,
                           gp_Vec&             V1,
                           gp_Vec&             V2,
-                          gp_Vec&             V3) const override;
+                          gp_Vec&             V3) const Standard_OVERRIDE;
 
   //! For the point of parameter U of this ellipse, computes
   //! the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
-                            const Standard_Integer N) const override;
+                            const Standard_Integer N) const Standard_OVERRIDE;
 
   //! Applies the transformation T to this ellipse.
-  Standard_EXPORT void Transform(const gp_Trsf& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
   //! Creates a new object which is a copy of this ellipse.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Ellipse, Geom_Conic)
 

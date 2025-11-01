@@ -41,7 +41,7 @@ public:
   Standard_EXPORT void Perform(IFSelect_ContextModif&                  ctx,
                                const Handle(Interface_InterfaceModel)& target,
                                const Handle(Interface_Protocol)&       protocol,
-                               Interface_CopyTool&                     TC) const override;
+                               Interface_CopyTool&                     TC) const Standard_OVERRIDE;
 
   //! Specific Perform with Protocol. It is defined to let the
   //! Protocol unused and to call Performing without Protocol

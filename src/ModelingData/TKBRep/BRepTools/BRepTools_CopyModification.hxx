@@ -41,7 +41,7 @@ public:
                                               TopLoc_Location&      theLoc,
                                               Standard_Real&        theTol,
                                               Standard_Boolean&     theRevWires,
-                                              Standard_Boolean&     theRevFace) override;
+                                              Standard_Boolean&     theRevFace) Standard_OVERRIDE;
 
   //! Returns true if theEdge has been modified.
   //! If the edge has been modified:
@@ -53,7 +53,7 @@ public:
   Standard_EXPORT Standard_Boolean NewCurve(const TopoDS_Edge&  theEdge,
                                             Handle(Geom_Curve)& theCurve,
                                             TopLoc_Location&    theLoc,
-                                            Standard_Real&      theTol) override;
+                                            Standard_Real&      theTol) Standard_OVERRIDE;
 
   //! Returns true if theVertex has been modified.
   //! If the vertex has been modified:
@@ -63,7 +63,7 @@ public:
   //! returns false, and the values of thePnt and theTol are not significant.
   Standard_EXPORT Standard_Boolean NewPoint(const TopoDS_Vertex& theVertex,
                                             gp_Pnt&              thePnt,
-                                            Standard_Real&       theTol) override;
+                                            Standard_Real&       theTol) Standard_OVERRIDE;
 
   //! Returns true if theEdge has a new curve on surface on theFace.
   //! If a new curve exists:
@@ -76,7 +76,7 @@ public:
                                               const TopoDS_Edge&    theNewEdge,
                                               const TopoDS_Face&    theNewFace,
                                               Handle(Geom2d_Curve)& theCurve,
-                                              Standard_Real&        theTol) override;
+                                              Standard_Real&        theTol) Standard_OVERRIDE;
 
   //! Returns true if theVertex has a new parameter on theEdge.
   //! If a new parameter exists:
@@ -87,7 +87,7 @@ public:
   Standard_EXPORT Standard_Boolean NewParameter(const TopoDS_Vertex& theVertex,
                                                 const TopoDS_Edge&   theEdge,
                                                 Standard_Real&       thePnt,
-                                                Standard_Real&       theTol) override;
+                                                Standard_Real&       theTol) Standard_OVERRIDE;
 
   //! Returns the continuity of theNewEdge between theNewFace1 and theNewFace2.
   //!
@@ -98,20 +98,20 @@ public:
                                            const TopoDS_Face& theFace2,
                                            const TopoDS_Edge& theNewEdge,
                                            const TopoDS_Face& theNewFace1,
-                                           const TopoDS_Face& theNewFace2) override;
+                                           const TopoDS_Face& theNewFace2) Standard_OVERRIDE;
 
   //! Returns true if the face has been modified according to changed triangulation.
   //! If the face has been modified:
   //! - theTri is a new triangulation on the face
   Standard_EXPORT Standard_Boolean NewTriangulation(const TopoDS_Face&          theFace,
                                                     Handle(Poly_Triangulation)& theTri)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns true if the edge has been modified according to changed polygon.
   //! If the edge has been modified:
   //! - thePoly is a new polygon
   Standard_EXPORT Standard_Boolean NewPolygon(const TopoDS_Edge&      theEdge,
-                                              Handle(Poly_Polygon3D)& thePoly) override;
+                                              Handle(Poly_Polygon3D)& thePoly) Standard_OVERRIDE;
 
   //! Returns true if the edge has been modified according to changed polygon on triangulation.
   //! If the edge has been modified:
@@ -119,7 +119,7 @@ public:
   Standard_EXPORT Standard_Boolean
     NewPolygonOnTriangulation(const TopoDS_Edge&                   theEdge,
                               const TopoDS_Face&                   theFace,
-                              Handle(Poly_PolygonOnTriangulation)& thePoly) override;
+                              Handle(Poly_PolygonOnTriangulation)& thePoly) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRepTools_CopyModification, BRepTools_Modification)
 

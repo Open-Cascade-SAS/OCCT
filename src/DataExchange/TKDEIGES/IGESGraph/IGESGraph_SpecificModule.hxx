@@ -42,14 +42,14 @@ public:
                                const Handle(IGESData_IGESEntity)& ent,
                                const IGESData_IGESDumper&         dumper,
                                Standard_OStream&                  S,
-                               const Standard_Integer             own) const override;
+                               const Standard_Integer             own) const Standard_OVERRIDE;
 
   //! Performs non-ambiguous Corrections on Entities which support
   //! them (DrawingSize,DrawingUnits,HighLight,IntercharacterSpacing,
   //! LineFontPredefined,NominalSize,Pick,UniformRectGrid)
   Standard_EXPORT virtual Standard_Boolean OwnCorrect(const Standard_Integer             CN,
                                                       const Handle(IGESData_IGESEntity)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_SpecificModule, IGESData_SpecificModule)
 

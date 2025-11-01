@@ -65,7 +65,7 @@ public:
 
   //! Puts in an Iterator the Selections from which "me" depends
   //! That is to say, the list of Input Selections
-  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const override;
+  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectCombine, IFSelect_Selection)
 
@@ -74,7 +74,7 @@ protected:
   Standard_EXPORT IFSelect_SelectCombine();
 
   //! Returns always True, because RootResult gives a Unique list
-  Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const override;
+  Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const Standard_OVERRIDE;
 
 private:
   IFSelect_TSeqOfSelection thelist;

@@ -60,7 +60,7 @@ public:
   //! Reverses the U direction of parametrization of <me>.
   //! The bounds of the surface are not modified.
   //! A copy of <me> is returned.
-  [[nodiscard]] Standard_EXPORT Handle(Geom_Surface) UReversed() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Surface) UReversed() const;
 
   //! Returns the parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
@@ -80,7 +80,7 @@ public:
   //! Reverses the V direction of parametrization of <me>.
   //! The bounds of the surface are not modified.
   //! A copy of <me> is returned.
-  [[nodiscard]] Standard_EXPORT Handle(Geom_Surface) VReversed() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Surface) VReversed() const;
 
   //! Returns the parameter on the Vreversed surface for
   //! the point of parameter V on <me>.
@@ -279,7 +279,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Surface, Geom_Geometry)
 };

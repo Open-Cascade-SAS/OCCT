@@ -58,7 +58,7 @@ public:
   //! Note:
   //! - Reverse assigns the result to this axis, while
   //! - Reversed creates a new one.
-  [[nodiscard]] Standard_EXPORT Handle(Geom2d_AxisPlacement) Reversed() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_AxisPlacement) Reversed() const;
 
   //! Changes the complete definition of the axis placement.
   Standard_EXPORT void SetAxis(const gp_Ax2d& A);
@@ -86,10 +86,10 @@ public:
   Standard_EXPORT gp_Pnt2d Location() const;
 
   //! Applies the transformation T to this axis.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
 
   //! Creates a new object which is a copy of this axis.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const override;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_AxisPlacement, Geom2d_Geometry)
 

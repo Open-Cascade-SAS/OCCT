@@ -40,7 +40,7 @@ public:
   Standard_EXPORT Interface_CopyMap(const Handle(Interface_InterfaceModel)& amodel);
 
   //! Clears Transfer List. Gets Ready to begin another Transfer
-  Standard_EXPORT void Clear() override;
+  Standard_EXPORT void Clear() Standard_OVERRIDE;
 
   //! Returns the InterfaceModel used at Creation time
   Standard_EXPORT Handle(Interface_InterfaceModel) Model() const;
@@ -48,14 +48,14 @@ public:
   //! Binds a Starting Entity identified by its Number <num> in the
   //! Starting Model, to a Result of Transfer <res>
   Standard_EXPORT void Bind(const Handle(Standard_Transient)& ent,
-                            const Handle(Standard_Transient)& res) override;
+                            const Handle(Standard_Transient)& res) Standard_OVERRIDE;
 
   //! Search for the result of a Starting Object (i.e. an Entity,
   //! identified by its Number <num> in the Starting Model)
   //! Returns True  if a  Result is Bound (and fills <res>)
   //! Returns False if no result is Bound (and nullifies <res>)
   Standard_EXPORT Standard_Boolean Search(const Handle(Standard_Transient)& ent,
-                                          Handle(Standard_Transient)& res) const override;
+                                          Handle(Standard_Transient)& res) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Interface_CopyMap, Interface_CopyControl)
 

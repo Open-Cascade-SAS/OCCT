@@ -35,7 +35,7 @@ public:
   Standard_EXPORT Draw_Box(const Bnd_OBB& theOBB, const Draw_Color& theColor);
 
   //! Draws myOBB
-  Standard_EXPORT void DrawOn(Draw_Display& theDis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& theDis) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Box, Draw_Drawable3D)
 

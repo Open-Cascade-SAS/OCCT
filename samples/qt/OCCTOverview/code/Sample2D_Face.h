@@ -54,27 +54,27 @@ public:
 private:
 
   //! Return TRUE for supported display modes (only mode 0 is supported).
-  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const override { return theMode == 0; }
+  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode == 0; }
 
   //! Compute presentation.
   virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                         const Handle(Prs3d_Presentation)& thePrs,
-                        const Standard_Integer theMode) override;
+                        const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Compute selection.
   virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                 const Standard_Integer theMode) override;
+                                 const Standard_Integer theMode) Standard_OVERRIDE;
 
-  virtual void ClearSelected() override;
+  virtual void ClearSelected() Standard_OVERRIDE;
 
   //! Method for advanced customizable selection of picked object
   virtual void HilightSelected (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                const SelectMgr_SequenceOfOwner& theOwners) override;
+                                const SelectMgr_SequenceOfOwner& theOwners) Standard_OVERRIDE;
 
   //! Method for advanced customizable highlighting of picked object.
   virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                       const Handle(Prs3d_Drawer)& theStyle,
-                                      const Handle(SelectMgr_EntityOwner)& theOwner) override;
+                                      const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
 
   void DrawMarker (const Handle(Geom2d_TrimmedCurve)& theCurve,
                    const Handle(Prs3d_Presentation)& thePresentation);

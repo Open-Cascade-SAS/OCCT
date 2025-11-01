@@ -52,7 +52,7 @@ public:
   //! selection, when it is given each entity of the list
   //! Can be redefined
   Standard_EXPORT virtual void AddWithGraph(const Handle(TColStd_HSequenceOfTransient)& list,
-                                            const Interface_Graph& graph) override;
+                                            const Interface_Graph& graph) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_GraphCounter, IFSelect_SignCounter)
 

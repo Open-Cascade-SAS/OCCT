@@ -49,38 +49,38 @@ public:
                                            const Standard_Boolean theIsElement,
                                            TColStd_Array1OfReal&  theCoords,
                                            Standard_Integer&      theNbNodes,
-                                           MeshVS_EntityType&     theType) const override;
+                                           MeshVS_EntityType&     theType) const Standard_OVERRIDE;
 
   //! This method returns topology information about 3D-element
   //! Returns false if element with ID isn't 3D or because other troubles
   Standard_EXPORT virtual Standard_Boolean Get3DGeom(
     const Standard_Integer                     theID,
     Standard_Integer&                          theNbNodes,
-    Handle(MeshVS_HArray1OfSequenceOfInteger)& theData) const override;
+    Handle(MeshVS_HArray1OfSequenceOfInteger)& theData) const Standard_OVERRIDE;
 
   //! This method is similar to GetGeom, but returns only element or node type. This method is
   //! provided for a fine performance.
   Standard_EXPORT Standard_Boolean GetGeomType(const Standard_Integer theID,
                                                const Standard_Boolean theIsElement,
-                                               MeshVS_EntityType& theType) const override;
+                                               MeshVS_EntityType& theType) const Standard_OVERRIDE;
 
   //! This method returns by number an address of any entity which represents element or node data
   //! structure.
   Standard_EXPORT Standard_Address
     GetAddr(const Standard_Integer theID,
-            const Standard_Boolean theIsElement) const override;
+            const Standard_Boolean theIsElement) const Standard_OVERRIDE;
 
   //! This method returns information about what node this element consist of.
   Standard_EXPORT virtual Standard_Boolean GetNodesByElement(const Standard_Integer   theID,
                                                              TColStd_Array1OfInteger& theNodeIDs,
                                                              Standard_Integer& theNbNodes) const
-    override;
+    Standard_OVERRIDE;
 
   //! This method returns map of all nodes the object consist of.
-  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllNodes() const override;
+  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllNodes() const Standard_OVERRIDE;
 
   //! This method returns map of all elements the object consist of.
-  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllElements() const override;
+  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllElements() const Standard_OVERRIDE;
 
   //! This method calculates normal of face, which is using for correct reflection presentation.
   //! There is default method, for advance reflection this method can be redefined.
@@ -88,7 +88,7 @@ public:
                                                      const Standard_Integer theMax,
                                                      Standard_Real&         theNx,
                                                      Standard_Real&         theNy,
-                                                     Standard_Real& theNz) const override;
+                                                     Standard_Real& theNz) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XSDRAWSTL_DataSource3D, MeshVS_DataSource)
 

@@ -47,23 +47,23 @@ public:
   //! Checks whether the circle overlaps current selecting volume
   Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns a copy of this sensitive circle
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() override;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   //! Returns bounding box of the circle.
   //! If location transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
   //! Always returns Standard_False
-  virtual Standard_Boolean ToBuildBVH() const override { return Standard_False; }
+  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
 
   //! Returns the amount of points
-  virtual Standard_Integer NbSubElements() const override { return 1; }
+  virtual Standard_Integer NbSubElements() const Standard_OVERRIDE { return 1; }
 
   //! Returns center of the circle with transformation applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
   //! The transformation for gp::XOY() with center in gp::Origin(),
   //! it specifies the position and orientation of the circle.

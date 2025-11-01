@@ -59,18 +59,18 @@ public:
 private:
 
   //! Return TRUE for supported display modes (only mode 0 is supported).
-  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const override { return theMode == 0; }
+  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode == 0; }
 
   //! Compute presentation.
   virtual void Compute (const Handle(PrsMgr_PresentationManager)& /*aPresentationManager*/,
                         const Handle(Prs3d_Presentation)& /*aPresentation*/,
-                        const Standard_Integer theMode) override;
+                        const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Compute selection (not implemented).
   virtual void ComputeSelection (const Handle(SelectMgr_Selection)& ,
-                                 const Standard_Integer ) override {}
+                                 const Standard_Integer ) Standard_OVERRIDE {}
 
-  virtual void SetContext(const Handle(AIS_InteractiveContext)& ) override {}
+  virtual void SetContext(const Handle(AIS_InteractiveContext)& ) Standard_OVERRIDE {}
 
 private:
 

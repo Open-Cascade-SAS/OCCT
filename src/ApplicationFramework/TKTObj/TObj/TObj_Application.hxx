@@ -92,7 +92,7 @@ public:
    */
 
   //! Return name of resource (i.e. "TObj")
-  virtual Standard_EXPORT Standard_CString ResourcesName() override;
+  virtual Standard_EXPORT Standard_CString ResourcesName() Standard_OVERRIDE;
 
 protected:
   /**

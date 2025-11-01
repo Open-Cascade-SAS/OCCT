@@ -45,42 +45,42 @@ public:
   void UVPoints2(gp_Pnt2d& P1, gp_Pnt2d& P2) const;
 
   //! Returns True.
-  Standard_EXPORT virtual Standard_Boolean IsCurveOnClosedSurface() const override;
+  Standard_EXPORT virtual Standard_Boolean IsCurveOnClosedSurface() const Standard_OVERRIDE;
 
   //! Returns True
-  Standard_EXPORT virtual Standard_Boolean IsRegularity() const override;
+  Standard_EXPORT virtual Standard_Boolean IsRegularity() const Standard_OVERRIDE;
 
   //! A curve on two surfaces (continuity).
   Standard_EXPORT virtual Standard_Boolean IsRegularity(const Handle(Geom_Surface)& S1,
                                                         const Handle(Geom_Surface)& S2,
                                                         const TopLoc_Location&      L1,
                                                         const TopLoc_Location&      L2) const
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual const Handle(Geom2d_Curve)& PCurve2() const override;
+  Standard_EXPORT virtual const Handle(Geom2d_Curve)& PCurve2() const Standard_OVERRIDE;
 
   //! Returns Surface()
-  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface2() const override;
+  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface2() const Standard_OVERRIDE;
 
   //! Returns Location()
-  Standard_EXPORT virtual const TopLoc_Location& Location2() const override;
+  Standard_EXPORT virtual const TopLoc_Location& Location2() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual const GeomAbs_Shape& Continuity() const override;
+  Standard_EXPORT virtual const GeomAbs_Shape& Continuity() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Continuity(const GeomAbs_Shape C) override;
+  Standard_EXPORT virtual void Continuity(const GeomAbs_Shape C) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void PCurve2(const Handle(Geom2d_Curve)& C) override;
+  Standard_EXPORT virtual void PCurve2(const Handle(Geom2d_Curve)& C) Standard_OVERRIDE;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const override;
+  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
 
   //! Recomputes any derived data after a modification.
   //! This is called when the range is modified.
-  Standard_EXPORT virtual void Update() override;
+  Standard_EXPORT virtual void Update() Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRep_CurveOnClosedSurface, BRep_CurveOnSurface)
 

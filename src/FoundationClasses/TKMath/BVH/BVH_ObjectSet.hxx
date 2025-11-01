@@ -56,20 +56,20 @@ public:
 
 public:
   //! Return total number of objects.
-  virtual Standard_Integer Size() const override { return myObjects.Size(); }
+  virtual Standard_Integer Size() const Standard_OVERRIDE { return myObjects.Size(); }
 
   //! Returns AABB of entire set of objects.
   using BVH_Set<T, N>::Box;
 
   //! Returns AABB of the given object.
-  virtual BVH_Box<T, N> Box(const Standard_Integer theIndex) const override
+  virtual BVH_Box<T, N> Box(const Standard_Integer theIndex) const Standard_OVERRIDE
   {
     return myObjects.Value(theIndex)->Box();
   }
 
   //! Returns centroid position along the given axis.
   virtual T Center(const Standard_Integer theIndex,
-                   const Standard_Integer theAxis) const override
+                   const Standard_Integer theAxis) const Standard_OVERRIDE
   {
     // Note: general implementation, not optimal
     return BVH::CenterAxis<T, N>::Center(myObjects.Value(theIndex)->Box(), theAxis);
@@ -77,7 +77,7 @@ public:
 
   //! Performs transposing the two given objects in the set.
   virtual void Swap(const Standard_Integer theIndex1,
-                    const Standard_Integer theIndex2) override
+                    const Standard_Integer theIndex2) Standard_OVERRIDE
   {
     std::swap(myObjects.ChangeValue(theIndex1), myObjects.ChangeValue(theIndex2));
   }

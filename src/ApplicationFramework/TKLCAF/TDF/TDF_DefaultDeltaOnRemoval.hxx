@@ -34,7 +34,7 @@ public:
   Standard_EXPORT TDF_DefaultDeltaOnRemoval(const Handle(TDF_Attribute)& anAttribute);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() override;
+  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DefaultDeltaOnRemoval, TDF_DeltaOnRemoval)
 

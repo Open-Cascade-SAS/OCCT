@@ -39,17 +39,17 @@ public:
   //! Recognizes a kind of CurveElementPurpose select type
   //! return 0
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const override;
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   //! Recognizes a items of select member CurveElementPurposeMember
   //! 1 -> EnumeratedCurveElementPurpose
   //! 2 -> ApplicationDefinedElementPurpose
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns a new select member the type CurveElementPurposeMember
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const override;
+  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
 
   //! Set Value for EnumeratedCurveElementPurpose
   Standard_EXPORT void SetEnumeratedCurveElementPurpose(

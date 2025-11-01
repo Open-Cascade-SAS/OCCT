@@ -34,17 +34,17 @@ public:
   Standard_EXPORT StepElement_CurveElementPurposeMember();
 
   //! Returns True if has name
-  Standard_EXPORT virtual Standard_Boolean HasName() const override;
+  Standard_EXPORT virtual Standard_Boolean HasName() const Standard_OVERRIDE;
 
   //! Returns set name
-  Standard_EXPORT virtual Standard_CString Name() const override;
+  Standard_EXPORT virtual Standard_CString Name() const Standard_OVERRIDE;
 
   //! Set name
-  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name) override;
+  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name) Standard_OVERRIDE;
 
   //! Tells if the name of a SelectMember matches a given one;
   Standard_EXPORT virtual Standard_Boolean Matches(const Standard_CString name) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(StepElement_CurveElementPurposeMember, StepData_SelectNamed)
 

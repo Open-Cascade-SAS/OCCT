@@ -54,7 +54,7 @@ public:
                                               TopLoc_Location&      L,
                                               Standard_Real&        Tol,
                                               Standard_Boolean&     RevWires,
-                                              Standard_Boolean&     RevFace) override;
+                                              Standard_Boolean&     RevFace) Standard_OVERRIDE;
 
   //! Calls inherited method.
   //! Sets <Tol> as actual tolerance of <E> multiplied with scale
@@ -62,14 +62,14 @@ public:
   Standard_EXPORT Standard_Boolean NewCurve(const TopoDS_Edge&  E,
                                             Handle(Geom_Curve)& C,
                                             TopLoc_Location&    L,
-                                            Standard_Real&      Tol) override;
+                                            Standard_Real&      Tol) Standard_OVERRIDE;
 
   //! Calls inherited method.
   //! Sets <Tol> as actual tolerance of <V> multiplied with scale
   //! factor.
   Standard_EXPORT Standard_Boolean NewPoint(const TopoDS_Vertex& V,
                                             gp_Pnt&              P,
-                                            Standard_Real&       Tol) override;
+                                            Standard_Real&       Tol) Standard_OVERRIDE;
 
   //! Calls inherited method.
   //! Sets <Tol> as actual tolerance of <E> multiplied with scale
@@ -79,7 +79,7 @@ public:
                                               const TopoDS_Edge&    NewE,
                                               const TopoDS_Face&    NewF,
                                               Handle(Geom2d_Curve)& C,
-                                              Standard_Real&        Tol) override;
+                                              Standard_Real&        Tol) Standard_OVERRIDE;
 
   //! Calls inherited method.
   //! Sets <Tol> as actual tolerance of <V> multiplied with scale
@@ -87,7 +87,7 @@ public:
   Standard_EXPORT Standard_Boolean NewParameter(const TopoDS_Vertex& V,
                                                 const TopoDS_Edge&   E,
                                                 Standard_Real&       P,
-                                                Standard_Real&       Tol) override;
+                                                Standard_Real&       Tol) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(ShapeCustom_TrsfModification, BRepTools_TrsfModification)
 

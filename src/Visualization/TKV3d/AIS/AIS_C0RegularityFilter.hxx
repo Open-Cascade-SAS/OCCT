@@ -35,10 +35,10 @@ public:
   Standard_EXPORT AIS_C0RegularityFilter(const TopoDS_Shape& aShape);
 
   Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aType) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(AIS_C0RegularityFilter, SelectMgr_Filter)
 

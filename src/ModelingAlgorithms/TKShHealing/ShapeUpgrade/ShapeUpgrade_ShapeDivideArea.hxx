@@ -55,7 +55,7 @@ public:
 protected:
   //! Returns the tool for splitting faces.
   Standard_EXPORT virtual Handle(ShapeUpgrade_FaceDivide) GetSplitFaceTool() const
-    override;
+    Standard_OVERRIDE;
 
 private:
   Standard_Real    myMaxArea;

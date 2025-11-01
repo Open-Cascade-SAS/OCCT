@@ -43,7 +43,7 @@ public:
   //! Performs splitting of surface and computes the shell
   //! from source face.
   Standard_EXPORT virtual Standard_Boolean SplitSurface(const Standard_Real theArea = 0.)
-    override;
+    Standard_OVERRIDE;
 
   //! Sets the number of cutting lines by which closed face will be split.
   //! The resulting faces will be num+1.

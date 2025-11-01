@@ -46,13 +46,13 @@ public:
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
 
   //! Must return the count of levels (== NbPropertyValues)
-  Standard_EXPORT Standard_Integer NbLevelNumbers() const override;
+  Standard_EXPORT Standard_Integer NbLevelNumbers() const Standard_OVERRIDE;
 
   //! returns the Level Number of <me> indicated by <LevelIndex>
   //! raises an exception if LevelIndex is <= 0 or
   //! LevelIndex > NbPropertyValues
   Standard_EXPORT Standard_Integer
-    LevelNumber(const Standard_Integer LevelIndex) const override;
+    LevelNumber(const Standard_Integer LevelIndex) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_DefinitionLevel, IGESData_LevelListEntity)
 

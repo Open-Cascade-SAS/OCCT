@@ -106,7 +106,7 @@ public:
   //! complying with rank criterium)
   //! Error if the input list has more than one Item
   Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const override;
+    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
 
   //! Puts into <res>, the sub-entities of the list, from n1 to
   //! n2 included. Remark that adequation with Entity's type and
@@ -121,7 +121,7 @@ public:
   //! then Specific List Label, then, following cases :
   //! " From .. Until .." or "From .." or "Until .." or "Rank no .."
   //! Specific type is given by deferred method ListLabel
-  Standard_EXPORT TCollection_AsciiString Label() const override;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   //! Returns the specific label for the list, which is included as
   //! a part of Label

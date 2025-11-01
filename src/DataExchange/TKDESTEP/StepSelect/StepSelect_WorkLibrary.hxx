@@ -53,7 +53,7 @@ public:
   Standard_EXPORT Standard_Integer
     ReadFile(const Standard_CString            name,
              Handle(Interface_InterfaceModel)& model,
-             const Handle(Interface_Protocol)& protocol) const override;
+             const Handle(Interface_Protocol)& protocol) const Standard_OVERRIDE;
 
   //! Reads a STEP File from stream and returns a STEP Model (into <mod>),
   //! or lets <mod> "Null" in case of Error
@@ -62,12 +62,12 @@ public:
     ReadStream(const Standard_CString            theName,
                std::istream&                     theIStream,
                Handle(Interface_InterfaceModel)& model,
-               const Handle(Interface_Protocol)& protocol) const override;
+               const Handle(Interface_Protocol)& protocol) const Standard_OVERRIDE;
 
   //! Writes a File from a STEP Model
   //! Returns False (and writes no file) if <ctx> does not bring a
   //! STEP Model
-  Standard_EXPORT Standard_Boolean WriteFile(IFSelect_ContextWrite& ctx) const override;
+  Standard_EXPORT Standard_Boolean WriteFile(IFSelect_ContextWrite& ctx) const Standard_OVERRIDE;
 
   //! Performs the copy of entities from an original model to a new
   //! one. Works according <copymode> :
@@ -77,7 +77,7 @@ public:
     const Handle(Interface_InterfaceModel)& original,
     const Handle(Interface_InterfaceModel)& newmodel,
     const Interface_EntityIterator&         list,
-    Interface_CopyTool&                     TC) const override;
+    Interface_CopyTool&                     TC) const Standard_OVERRIDE;
 
   //! Dumps an entity under STEP form, i.e. as a part of a Step file
   //! Works with a StepDumper.
@@ -88,7 +88,7 @@ public:
                                           const Handle(Interface_Protocol)&       protocol,
                                           const Handle(Standard_Transient)&       entity,
                                           Standard_OStream&                       S,
-                                          const Standard_Integer level) const override;
+                                          const Standard_Integer level) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(StepSelect_WorkLibrary, IFSelect_WorkLibrary)
 

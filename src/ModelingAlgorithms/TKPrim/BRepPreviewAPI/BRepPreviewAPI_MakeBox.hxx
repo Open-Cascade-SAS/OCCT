@@ -34,7 +34,7 @@ public:
 
   //! Creates a preview depending on point values.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 private:
   //! Create a vertex if thin box in all directions is a point.

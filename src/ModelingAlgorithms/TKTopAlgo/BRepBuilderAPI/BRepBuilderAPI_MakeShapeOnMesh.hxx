@@ -36,7 +36,7 @@ public:
 
   //! Builds shape on mesh.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 private:
   Handle(Poly_Triangulation) myMesh;

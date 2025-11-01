@@ -26,7 +26,7 @@ public:
 
   //! Creates new empty graphic driver.
   Standard_EXPORT virtual Handle(Graphic3d_GraphicDriver) CreateDriver(
-    const Handle(Aspect_DisplayConnection)& theDisp) override;
+    const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
 };
 
 #endif //_D3DHost_GraphicDriverFactory_Header

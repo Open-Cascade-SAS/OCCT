@@ -207,9 +207,9 @@ public:
   //! Computes the sum of this matrix and
   //! the matrix theOther for each coefficient of the matrix :
   //! <me>.Coef(i,j) + <theOther>.Coef(i,j)
-  [[nodiscard]] constexpr gp_Mat Added(const gp_Mat& theOther) const noexcept;
+  Standard_NODISCARD constexpr gp_Mat Added(const gp_Mat& theOther) const noexcept;
 
-  [[nodiscard]] constexpr gp_Mat operator+(const gp_Mat& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_Mat operator+(const gp_Mat& theOther) const noexcept
   {
     return Added(theOther);
   }
@@ -219,9 +219,9 @@ public:
   constexpr void operator/=(const Standard_Real theScalar) { Divide(theScalar); }
 
   //! Divides all the coefficients of the matrix by Scalar
-  [[nodiscard]] constexpr gp_Mat Divided(const Standard_Real theScalar) const;
+  Standard_NODISCARD constexpr gp_Mat Divided(const Standard_Real theScalar) const;
 
-  [[nodiscard]] constexpr gp_Mat operator/(const Standard_Real theScalar) const
+  Standard_NODISCARD constexpr gp_Mat operator/(const Standard_Real theScalar) const
   {
     return Divided(theScalar);
   }
@@ -238,17 +238,17 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if this matrix is singular,
   //! and therefore cannot be inverted.
-  [[nodiscard]] Standard_EXPORT gp_Mat Inverted() const;
+  Standard_NODISCARD Standard_EXPORT gp_Mat Inverted() const;
 
   //! Computes  the product of two matrices <me> * <Other>
-  [[nodiscard]] constexpr gp_Mat Multiplied(const gp_Mat& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_Mat Multiplied(const gp_Mat& theOther) const noexcept
   {
     gp_Mat aNewMat = *this;
     aNewMat.Multiply(theOther);
     return aNewMat;
   }
 
-  [[nodiscard]] constexpr gp_Mat operator*(const gp_Mat& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_Mat operator*(const gp_Mat& theOther) const noexcept
   {
     return Multiplied(theOther);
   }
@@ -260,9 +260,9 @@ public:
 
   constexpr void PreMultiply(const gp_Mat& theOther) noexcept;
 
-  [[nodiscard]] constexpr gp_Mat Multiplied(const Standard_Real theScalar) const noexcept;
+  Standard_NODISCARD constexpr gp_Mat Multiplied(const Standard_Real theScalar) const noexcept;
 
-  [[nodiscard]] constexpr gp_Mat operator*(const Standard_Real theScalar) const noexcept
+  Standard_NODISCARD constexpr gp_Mat operator*(const Standard_Real theScalar) const noexcept
   {
     return Multiplied(theScalar);
   }
@@ -279,7 +279,7 @@ public:
   //! if theN < 0 <me> = <me>.Invert() *...........* <me>.Invert().
   //! If theN < 0 an exception will be raised if the matrix is not
   //! inversible
-  [[nodiscard]] gp_Mat Powered(const Standard_Integer theN) const
+  Standard_NODISCARD gp_Mat Powered(const Standard_Integer theN) const
   {
     gp_Mat aMatN = *this;
     aMatN.Power(theN);
@@ -292,9 +292,9 @@ public:
 
   //! cOmputes for each coefficient of the matrix :
   //! <me>.Coef(i,j) - <theOther>.Coef(i,j)
-  [[nodiscard]] constexpr gp_Mat Subtracted(const gp_Mat& theOther) const noexcept;
+  Standard_NODISCARD constexpr gp_Mat Subtracted(const gp_Mat& theOther) const noexcept;
 
-  [[nodiscard]] constexpr gp_Mat operator-(const gp_Mat& theOther) const noexcept
+  Standard_NODISCARD constexpr gp_Mat operator-(const gp_Mat& theOther) const noexcept
   {
     return Subtracted(theOther);
   }
@@ -302,7 +302,7 @@ public:
   void Transpose();
 
   //! Transposes the matrix. A(j, i) -> A (i, j)
-  [[nodiscard]] gp_Mat Transposed() const
+  Standard_NODISCARD gp_Mat Transposed() const
   {
     gp_Mat aNewMat = *this;
     aNewMat.Transpose();

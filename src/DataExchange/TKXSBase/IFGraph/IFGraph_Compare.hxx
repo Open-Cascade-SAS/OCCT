@@ -66,7 +66,7 @@ public:
   Standard_EXPORT void ResetData();
 
   //! Recomputes result of comparing to sub-parts
-  Standard_EXPORT virtual void Evaluate() override;
+  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
 
   //! returns entities common to the both parts
   Standard_EXPORT Interface_EntityIterator Common() const;

@@ -38,16 +38,16 @@ public:
   //! 1 -> SizeMember
   //! 0 else (i.e. Real)
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const override;
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   //! Returns a SizeMember (POSITIVE_LENGTH_MEASURE) as preferred
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const override;
+  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
 
   //! Recognizes a SelectMember as Real, named as PARAMETER_VALUE
   //! 1 -> PositiveLengthMeasure i.e. Real
   //! 0 else (i.e. Entity)
   Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT void SetRealValue(const Standard_Real aReal);
 

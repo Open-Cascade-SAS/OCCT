@@ -55,7 +55,7 @@ public:
   //! 16 -> SecurityClassification
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   //! returns Value as a ApprovalPersonOrganization (Null if another type)
   Standard_EXPORT Handle(StepBasic_ApprovalPersonOrganization) ApprovalPersonOrganization() const;

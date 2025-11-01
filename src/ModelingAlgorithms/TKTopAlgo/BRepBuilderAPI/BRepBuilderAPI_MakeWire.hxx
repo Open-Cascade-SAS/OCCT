@@ -149,7 +149,7 @@ public:
   //! IsDone returns false if:
   //! -   there are no edges in the wire, or
   //! -   the last edge which you tried to add was not connectable.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const override;
+  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
 
   //! Returns the construction status
   //! -   BRepBuilderAPI_WireDone if the wire is built, or

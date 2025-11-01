@@ -38,10 +38,10 @@ public:
   }
 
   //! returns FACE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
   //! Returns an empty TFace.
-  Standard_EXPORT virtual Handle(TopoDS_TShape) EmptyCopy() const override;
+  Standard_EXPORT virtual Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TFace, TopoDS_TShape)
 };

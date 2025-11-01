@@ -61,7 +61,7 @@ public:
   //! Object, or if the type of the Interactive Object is not
   //! the same as that stored in the filter.
   Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(AIS_TypeFilter, SelectMgr_Filter)
 

@@ -37,7 +37,7 @@ public:
   //! range Index : A + ((Index-1)/(NbPoints-1))*B.
   //! An exception is raised if Index<=0 or Index>NbPoints.
   Standard_EXPORT virtual Standard_Real GetParameter(const Standard_Integer Index) const
-    override;
+    Standard_OVERRIDE;
 
 protected:
 private:

@@ -42,7 +42,7 @@ public:
                                            const Standard_Boolean      RgNLine,
                                            const Standard_Integer      ViewId);
 
-  Standard_EXPORT void DrawOn(Draw_Display& D) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& D) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(HLRTest_DrawableEdgeTool, Draw_Drawable3D)
 

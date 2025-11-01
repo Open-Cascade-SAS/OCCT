@@ -99,7 +99,7 @@ LDOMBasicString::LDOMBasicString(const LDOMBasicString& anOther)
         memcpy(myVal.ptr, anOther.myVal.ptr, aLen);
         break;
       }
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case LDOM_AsciiDoc:
     case LDOM_AsciiDocClear:
     case LDOM_AsciiHashed:
@@ -157,7 +157,7 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
         memcpy(myVal.ptr, anOther.myVal.ptr, aLen);
         break;
       }
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case LDOM_AsciiDoc:
     case LDOM_AsciiDocClear:
     case LDOM_AsciiHashed:

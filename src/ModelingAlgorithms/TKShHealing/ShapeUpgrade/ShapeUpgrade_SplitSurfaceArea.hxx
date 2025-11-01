@@ -48,7 +48,7 @@ public:
   void SetNumbersUVSplits(const Standard_Integer theNbUsplits, const Standard_Integer theNbVsplits);
 
   Standard_EXPORT virtual void Compute(const Standard_Boolean Segment = Standard_True)
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceArea, ShapeUpgrade_SplitSurface)
 

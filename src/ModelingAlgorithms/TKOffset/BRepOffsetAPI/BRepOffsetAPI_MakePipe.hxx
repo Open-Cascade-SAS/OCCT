@@ -69,16 +69,16 @@ public:
 
   //! Builds the resulting shape (redefined from MakeShape).
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Returns the  TopoDS  Shape of the bottom of the prism.
-  Standard_EXPORT TopoDS_Shape FirstShape() override;
+  Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
 
   //! Returns the TopoDS Shape of the top of the prism.
-  Standard_EXPORT TopoDS_Shape LastShape() override;
+  Standard_EXPORT TopoDS_Shape LastShape() Standard_OVERRIDE;
 
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT TopoDS_Shape Generated(const TopoDS_Shape& SSpine, const TopoDS_Shape& SProfile);
 

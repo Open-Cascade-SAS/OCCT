@@ -40,41 +40,41 @@ public:
   Standard_EXPORT PCDM_ReadWriter_1();
 
   //! returns PCDM_ReadWriter_1.
-  Standard_EXPORT TCollection_AsciiString Version() const override;
+  Standard_EXPORT TCollection_AsciiString Version() const Standard_OVERRIDE;
 
   Standard_EXPORT void WriteReferenceCounter(const Handle(Storage_Data)& aData,
                                              const Handle(CDM_Document)& aDocument) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT void WriteReferences(
     const Handle(Storage_Data)&       aData,
     const Handle(CDM_Document)&       aDocument,
-    const TCollection_ExtendedString& theReferencerFileName) const override;
+    const TCollection_ExtendedString& theReferencerFileName) const Standard_OVERRIDE;
 
   Standard_EXPORT void WriteExtensions(const Handle(Storage_Data)& aData,
                                        const Handle(CDM_Document)& aDocument) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT void WriteVersion(const Handle(Storage_Data)& aData,
-                                    const Handle(CDM_Document)& aDocument) const override;
+                                    const Handle(CDM_Document)& aDocument) const Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Integer
     ReadReferenceCounter(const TCollection_ExtendedString& aFileName,
-                         const Handle(Message_Messenger)&  theMsgDriver) const override;
+                         const Handle(Message_Messenger)&  theMsgDriver) const Standard_OVERRIDE;
 
   Standard_EXPORT void ReadReferences(const TCollection_ExtendedString& aFileName,
                                       PCDM_SequenceOfReference&         theReferences,
                                       const Handle(Message_Messenger)&  theMsgDriver) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT void ReadExtensions(const TCollection_ExtendedString& aFileName,
                                       TColStd_SequenceOfExtendedString& theExtensions,
                                       const Handle(Message_Messenger)&  theMsgDriver) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Integer
     ReadDocumentVersion(const TCollection_ExtendedString& aFileName,
-                        const Handle(Message_Messenger)&  theMsgDriver) const override;
+                        const Handle(Message_Messenger)&  theMsgDriver) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(PCDM_ReadWriter_1, PCDM_ReadWriter)
 

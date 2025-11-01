@@ -55,7 +55,7 @@ public:
   Standard_EXPORT const Handle(IntTools_Context)& Context();
 
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   static void MakeWire(TopTools_ListOfShape& theLE, TopoDS_Wire& theW);
 
@@ -64,7 +64,7 @@ public:
                                          const Handle(IntTools_Context)& theContext);
 
 protected:
-  Standard_EXPORT virtual void CheckData() override;
+  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
 
   Standard_EXPORT void MakeWires(const Message_ProgressRange& theRange);
 

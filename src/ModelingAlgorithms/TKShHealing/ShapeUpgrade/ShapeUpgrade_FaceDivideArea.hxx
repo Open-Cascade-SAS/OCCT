@@ -38,7 +38,7 @@ public:
   //! Performs splitting and computes the resulting shell
   //! The context is used to keep track of former splittings
   Standard_EXPORT virtual Standard_Boolean Perform(const Standard_Real theArea = 0.)
-    override;
+    Standard_OVERRIDE;
 
   //! Set max area allowed for faces
   Standard_Real& MaxArea();

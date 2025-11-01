@@ -36,7 +36,7 @@ public:
 
   //! Resets this splitter.
   virtual void Reset(const IMeshData::IFaceHandle& theDFace,
-                     const IMeshTools_Parameters&  theParameters) override
+                     const IMeshTools_Parameters&  theParameters) Standard_OVERRIDE
   {
     BRepMesh_DefaultRangeSplitter::Reset(theDFace, theParameters);
     myUParams.Clear();

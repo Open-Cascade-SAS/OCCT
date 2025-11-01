@@ -54,7 +54,7 @@ public:
                                               TopLoc_Location&      L,
                                               Standard_Real&        Tol,
                                               Standard_Boolean&     RevWires,
-                                              Standard_Boolean&     RevFace) override;
+                                              Standard_Boolean&     RevFace) Standard_OVERRIDE;
 
   //! Returns Standard_True  if  the edge  <E> has  been
   //! modified.  In this case,  <C> is the new geometric
@@ -65,7 +65,7 @@ public:
   Standard_EXPORT Standard_Boolean NewCurve(const TopoDS_Edge&  E,
                                             Handle(Geom_Curve)& C,
                                             TopLoc_Location&    L,
-                                            Standard_Real&      Tol) override;
+                                            Standard_Real&      Tol) Standard_OVERRIDE;
 
   //! Returns  Standard_True if the  vertex <V> has been
   //! modified.  In this  case, <P> is the new geometric
@@ -74,7 +74,7 @@ public:
   //! are not significant.
   Standard_EXPORT Standard_Boolean NewPoint(const TopoDS_Vertex& V,
                                             gp_Pnt&              P,
-                                            Standard_Real&       Tol) override;
+                                            Standard_Real&       Tol) Standard_OVERRIDE;
 
   //! Returns Standard_True if  the edge  <E> has a  new
   //! curve on surface on the face <F>.In this case, <C>
@@ -91,7 +91,7 @@ public:
                                               const TopoDS_Edge&    NewE,
                                               const TopoDS_Face&    NewF,
                                               Handle(Geom2d_Curve)& C,
-                                              Standard_Real&        Tol) override;
+                                              Standard_Real&        Tol) Standard_OVERRIDE;
 
   //! Returns Standard_True if the Vertex  <V> has a new
   //! parameter on the  edge <E>. In  this case,  <P> is
@@ -101,7 +101,7 @@ public:
   Standard_EXPORT Standard_Boolean NewParameter(const TopoDS_Vertex& V,
                                                 const TopoDS_Edge&   E,
                                                 Standard_Real&       P,
-                                                Standard_Real&       Tol) override;
+                                                Standard_Real&       Tol) Standard_OVERRIDE;
 
   //! Returns the  continuity of  <NewE> between <NewF1>
   //! and <NewF2>.
@@ -114,7 +114,7 @@ public:
                                            const TopoDS_Face& F2,
                                            const TopoDS_Edge& NewE,
                                            const TopoDS_Face& NewF1,
-                                           const TopoDS_Face& NewF2) override;
+                                           const TopoDS_Face& NewF2) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(ShapeCustom_DirectModification, ShapeCustom_Modification)
 

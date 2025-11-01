@@ -77,11 +77,11 @@ public:
   Standard_EXPORT Standard_Boolean
     Sort(const Standard_Integer                  rank,
          const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const override;
+         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
   //! Returns a text defining the criterium : following cases,
   //! " From .. Until .." or "From .." or "Until .." or "Rank no .."
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectRange, IFSelect_SelectExtract)
 

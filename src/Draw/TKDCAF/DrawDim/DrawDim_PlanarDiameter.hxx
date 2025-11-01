@@ -35,7 +35,7 @@ public:
 
   Standard_EXPORT DrawDim_PlanarDiameter(const TopoDS_Shape& circle);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarDiameter, DrawDim_PlanarDimension)
 

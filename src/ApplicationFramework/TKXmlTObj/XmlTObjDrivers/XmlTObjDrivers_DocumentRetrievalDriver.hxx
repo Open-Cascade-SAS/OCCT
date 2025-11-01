@@ -33,7 +33,7 @@ public:
   // Constructor
 
   Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) override;
+    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
 public:
   // Declaration of CASCADE RTTI

@@ -39,7 +39,7 @@ void AdaptorCurve_AIS::Compute (const Handle(PrsMgr_PresentationManager)&,
       aPoleDrawer->SetLineAspect(new Prs3d_LineAspect(Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0));
       StdPrs_PoleCurve::Add(thePrs, anAdaptorCurve, aPoleDrawer);
     }
-    [[fallthrough]];
+    Standard_FALLTHROUGH
     case 0:
     {
       StdPrs_Curve::Add(thePrs, anAdaptorCurve, myDrawer);

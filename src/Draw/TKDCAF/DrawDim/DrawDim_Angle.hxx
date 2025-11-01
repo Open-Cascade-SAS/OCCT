@@ -41,7 +41,7 @@ public:
 
   Standard_EXPORT void Plane2(const TopoDS_Face& plane);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(DrawDim_Angle, DrawDim_Dimension)
 

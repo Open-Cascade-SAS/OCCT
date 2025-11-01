@@ -49,7 +49,7 @@ public:
   static Standard_Boolean IsShadedSample(const TCollection_AsciiString& theSampleName) { return theSampleName == "BackgroungImage2dSample"; }
 
 protected:
-  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) override;
+  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) Standard_OVERRIDE;
 
 private:
 

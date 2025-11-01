@@ -55,7 +55,7 @@ public: //! @name mesher API
 
   //! Performs meshing of the shape.
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Performs meshing using custom context;
   Standard_EXPORT void Perform(const Handle(IMeshTools_Context)& theContext,

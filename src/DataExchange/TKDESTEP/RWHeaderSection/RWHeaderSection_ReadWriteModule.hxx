@@ -42,31 +42,31 @@ public:
   //! associates a positive Case Number to each type of HeaderSection entity,
   //! given as a String defined in the EXPRESS form
   Standard_EXPORT Standard_Integer
-    CaseStep(const TCollection_AsciiString& atype) const override;
+    CaseStep(const TCollection_AsciiString& atype) const Standard_OVERRIDE;
 
   //! associates a positive Case Number to each type of HeaderSection Complex entity,
   //! given as a String defined in the EXPRESS form
   Standard_EXPORT virtual Standard_Integer CaseStep(
-    const TColStd_SequenceOfAsciiString& types) const override;
+    const TColStd_SequenceOfAsciiString& types) const Standard_OVERRIDE;
 
   //! returns True if the Case Number corresponds to a Complex Type
   Standard_EXPORT virtual Standard_Boolean IsComplex(const Standard_Integer CN) const
-    override;
+    Standard_OVERRIDE;
 
   //! returns a StepType (defined in EXPRESS form which belongs to a
   //! Type of Entity, identified by its CaseNumber determined by Protocol
   Standard_EXPORT const TCollection_AsciiString& StepType(const Standard_Integer CN) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT void ReadStep(const Standard_Integer                 CN,
                                 const Handle(StepData_StepReaderData)& data,
                                 const Standard_Integer                 num,
                                 Handle(Interface_Check)&               ach,
-                                const Handle(Standard_Transient)&      ent) const override;
+                                const Handle(Standard_Transient)&      ent) const Standard_OVERRIDE;
 
   Standard_EXPORT void WriteStep(const Standard_Integer            CN,
                                  StepData_StepWriter&              SW,
-                                 const Handle(Standard_Transient)& ent) const override;
+                                 const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(RWHeaderSection_ReadWriteModule, StepData_ReadWriteModule)
 

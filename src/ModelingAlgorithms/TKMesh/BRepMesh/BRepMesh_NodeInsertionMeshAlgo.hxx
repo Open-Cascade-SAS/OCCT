@@ -42,7 +42,7 @@ public:
   //! Performs processing of the given face.
   virtual void Perform(const IMeshData::IFaceHandle& theDFace,
                        const IMeshTools_Parameters&  theParameters,
-                       const Message_ProgressRange&  theRange) override
+                       const Message_ProgressRange&  theRange) Standard_OVERRIDE
   {
     myRangeSplitter.Reset(theDFace, theParameters);
     myClassifier = new BRepMesh_Classifier;
@@ -58,7 +58,7 @@ protected:
   typedef NCollection_Shared<NCollection_Sequence<const gp_Pnt2d*>> SequenceOfPnt2d;
 
   //! Performs initialization of data structure using existing model data.
-  virtual Standard_Boolean initDataStructure() override
+  virtual Standard_Boolean initDataStructure() Standard_OVERRIDE
   {
     Handle(NCollection_IncAllocator) aTmpAlloc = new NCollection_IncAllocator;
 
@@ -117,7 +117,7 @@ protected:
   virtual Standard_Integer addNodeToStructure(const gp_Pnt2d&                thePoint,
                                               const Standard_Integer         theLocation3d,
                                               const BRepMesh_DegreeOfFreedom theMovability,
-                                              const Standard_Boolean isForceAdd) override
+                                              const Standard_Boolean isForceAdd) Standard_OVERRIDE
   {
     return BaseAlgo::addNodeToStructure(myRangeSplitter.Scale(thePoint, Standard_True),
                                         theLocation3d,
@@ -126,7 +126,7 @@ protected:
   }
 
   //! Returns 2d point associated to the given vertex.
-  virtual gp_Pnt2d getNodePoint2d(const BRepMesh_Vertex& theVertex) const override
+  virtual gp_Pnt2d getNodePoint2d(const BRepMesh_Vertex& theVertex) const Standard_OVERRIDE
   {
     return myRangeSplitter.Scale(theVertex.Coord(), Standard_False);
   }

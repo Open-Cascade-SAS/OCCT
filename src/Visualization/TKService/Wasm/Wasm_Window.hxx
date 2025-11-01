@@ -69,34 +69,34 @@ public:
   Standard_EXPORT virtual ~Wasm_Window();
 
   //! Return true if window is not hidden.
-  virtual Standard_Boolean IsMapped() const override { return myIsMapped; }
+  virtual Standard_Boolean IsMapped() const Standard_OVERRIDE { return myIsMapped; }
 
   //! Change window mapped flag to TRUE.
-  virtual void Map() const override { myIsMapped = Standard_True; }
+  virtual void Map() const Standard_OVERRIDE { myIsMapped = Standard_True; }
 
   //! Change window mapped flag to FALSE.
-  virtual void Unmap() const override { myIsMapped = Standard_False; }
+  virtual void Unmap() const Standard_OVERRIDE { myIsMapped = Standard_False; }
 
   //! Resize window.
   //! In case of ToScaleBacking flag, this method will resize the backing store of canvas
   //! basing on DevicePixelRatio() scale factor and CSS canvas size.
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() override;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE;
 
   //! Apply the mapping change to the window.
-  virtual Standard_Boolean DoMapping() const override { return Standard_True; }
+  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE { return Standard_True; }
 
   //! Returns window ratio equal to the physical width/height dimensions.
-  Standard_EXPORT virtual Standard_Real Ratio() const override;
+  Standard_EXPORT virtual Standard_Real Ratio() const Standard_OVERRIDE;
 
   //! Returns The Window POSITION in PIXEL
   Standard_EXPORT virtual void Position(Standard_Integer& theX1,
                                         Standard_Integer& theY1,
                                         Standard_Integer& theX2,
-                                        Standard_Integer& theY2) const override;
+                                        Standard_Integer& theY2) const Standard_OVERRIDE;
 
   //! Return the window size in pixels.
   Standard_EXPORT virtual void Size(Standard_Integer& theWidth,
-                                    Standard_Integer& theHeight) const override;
+                                    Standard_Integer& theHeight) const Standard_OVERRIDE;
 
   //! Set new window size in logical (density-independent units).
   //! Backing store will be resized basing on DevicePixelRatio().
@@ -110,16 +110,16 @@ public:
   const TCollection_AsciiString& CanvasId() const { return myCanvasId; }
 
   //! Current EGL implementation in Emscripten accepts only 0 for native window id.
-  virtual Aspect_Drawable NativeHandle() const override { return 0; }
+  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE { return 0; }
 
   //! Always returns 0 for this class.
-  virtual Aspect_Drawable NativeParentHandle() const override { return 0; }
+  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE { return 0; }
 
   //! Always returns 0 for this class.
-  virtual Aspect_FBConfig NativeFBConfig() const override { return 0; }
+  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return 0; }
 
   //! Return device pixel ratio (logical to backing store scale factor).
-  virtual Standard_Real DevicePixelRatio() const override { return myDevicePixelRatio; }
+  virtual Standard_Real DevicePixelRatio() const Standard_OVERRIDE { return myDevicePixelRatio; }
 
   //! Sets device pixel ratio for a window with IsVirtual() flag.
   void SetDevicePixelRatio(Standard_Real theDevicePixelRatio)
@@ -129,7 +129,7 @@ public:
 
   //! Invalidate entire window content through generation of Expose event.
   Standard_EXPORT virtual void InvalidateContent(const Handle(Aspect_DisplayConnection)& theDisp)
-    override;
+    Standard_OVERRIDE;
 
 public:
   //! Process a single window message.

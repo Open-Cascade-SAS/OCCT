@@ -45,7 +45,7 @@ public:
   Standard_EXPORT void Creates(const Standard_Boolean amode = Standard_True);
 
   //! Useful for debugging.
-  virtual void Dump() const override;
+  virtual void Dump() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Units_UnitsLexicon, Units_Lexicon)
 

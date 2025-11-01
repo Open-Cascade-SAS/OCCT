@@ -49,13 +49,13 @@ public:
 
   Standard_EXPORT const TCollection_ExtendedString& GetRelation() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_Relation, TDataStd_Expression)
 };

@@ -37,7 +37,7 @@ public:
                                               const Standard_Boolean whole);
 
   //! does the computation
-  Standard_EXPORT virtual void Evaluate() override;
+  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
 };
 
 #endif // _IFGraph_ConnectedComponants_HeaderFile

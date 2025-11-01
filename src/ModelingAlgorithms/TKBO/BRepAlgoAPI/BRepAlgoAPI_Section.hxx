@@ -166,7 +166,7 @@ public:
   //! Filling interference Data Structure (if it is necessary)
   //! Building the result of the operation.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! get the face of the first part giving section edge <E>.
   //! Returns True on the 3 following conditions :
@@ -202,7 +202,7 @@ public:
 protected:
   Standard_EXPORT void Init(const Standard_Boolean PerformNow);
 
-  Standard_EXPORT virtual void SetAttributes() override;
+  Standard_EXPORT virtual void SetAttributes() Standard_OVERRIDE;
 
 private:
   Standard_Boolean myApprox;

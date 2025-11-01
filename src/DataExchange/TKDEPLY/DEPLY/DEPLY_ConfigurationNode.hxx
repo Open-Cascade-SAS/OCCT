@@ -45,46 +45,46 @@ public:
   //! @param[in] theResource input resource to use
   //! @return true if theResource loading has ended correctly
   Standard_EXPORT virtual bool Load(const Handle(DE_ConfigurationContext)& theResource)
-    override;
+    Standard_OVERRIDE;
 
   //! Writes configuration to the string
   //! @return result resource string
-  Standard_EXPORT virtual TCollection_AsciiString Save() const override;
+  Standard_EXPORT virtual TCollection_AsciiString Save() const Standard_OVERRIDE;
 
   //! Copies values of all fields
   //! @return new object with the same field values
-  Standard_EXPORT virtual Handle(DE_ConfigurationNode) Copy() const override;
+  Standard_EXPORT virtual Handle(DE_ConfigurationNode) Copy() const Standard_OVERRIDE;
 
   //! Creates new provider for the own format
   //! @return new created provider
-  Standard_EXPORT virtual Handle(DE_Provider) BuildProvider() override;
+  Standard_EXPORT virtual Handle(DE_Provider) BuildProvider() Standard_OVERRIDE;
 
 public:
   //! Checks the import supporting
   //! @return true if import is supported
-  Standard_EXPORT virtual bool IsImportSupported() const override;
+  Standard_EXPORT virtual bool IsImportSupported() const Standard_OVERRIDE;
 
   //! Checks the export supporting
   //! @return true if export is supported
-  Standard_EXPORT virtual bool IsExportSupported() const override;
+  Standard_EXPORT virtual bool IsExportSupported() const Standard_OVERRIDE;
 
   //! Gets CAD format name of associated provider
   //! @return provider CAD format
-  Standard_EXPORT virtual TCollection_AsciiString GetFormat() const override;
+  Standard_EXPORT virtual TCollection_AsciiString GetFormat() const Standard_OVERRIDE;
 
   //! Gets provider's vendor name of associated provider
   //! @return provider's vendor name
-  Standard_EXPORT virtual TCollection_AsciiString GetVendor() const override;
+  Standard_EXPORT virtual TCollection_AsciiString GetVendor() const Standard_OVERRIDE;
 
   //! Gets list of supported file extensions
   //! @return list of extensions
-  Standard_EXPORT virtual TColStd_ListOfAsciiString GetExtensions() const override;
+  Standard_EXPORT virtual TColStd_ListOfAsciiString GetExtensions() const Standard_OVERRIDE;
 
   //! Checks the file content to verify a format
   //! @param[in] theBuffer read stream buffer to check content
   //! @return Standard_True if file is supported by a current provider
   Standard_EXPORT virtual bool CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
-    override;
+    Standard_OVERRIDE;
 
 public:
   struct RWPly_InternalSection

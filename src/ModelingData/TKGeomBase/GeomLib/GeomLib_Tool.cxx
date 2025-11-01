@@ -234,7 +234,7 @@ public:
   Standard_Boolean IsValid() const { return myIsValid; }
 
   //! Returns number of variables
-  virtual Standard_Integer NbVariables() const override { return 1; }
+  virtual Standard_Integer NbVariables() const Standard_OVERRIDE { return 1; }
 
   //! Returns last computed Point in the given curve.
   //! Its value will be recomputed after calling UpdateFields(...) method,
@@ -259,7 +259,7 @@ public:
   }
 
   //! Returns value of *this (square deviation)
-  virtual Standard_Boolean Value(const math_Vector& thePrm, Standard_Real& theVal) override
+  virtual Standard_Boolean Value(const math_Vector& thePrm, Standard_Real& theVal) Standard_OVERRIDE
   {
     Standard_Real aD1;
     Standard_Real aD2;
@@ -269,7 +269,7 @@ public:
   }
 
   //! Always returns 0. It is used for compatibility with the parent class.
-  virtual Standard_Integer GetStateNumber() override { return 0; }
+  virtual Standard_Integer GetStateNumber() Standard_OVERRIDE { return 0; }
 
 private:
   //! The curve

@@ -186,7 +186,7 @@ public:
   //! Prints on the stream o information on the current
   //! state of the object.
   //! Is used to redefine the operator <<.
-  Standard_EXPORT virtual void Dump(Standard_OStream& o) const override;
+  Standard_EXPORT virtual void Dump(Standard_OStream& o) const Standard_OVERRIDE;
 
 private:
   Handle(TColgp_HArray1OfVec)   tabTang;

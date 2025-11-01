@@ -57,7 +57,7 @@ public:
                                       const Standard_Real         ULast);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) ShallowCopy() const override;
+  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) ShallowCopy() const Standard_OVERRIDE;
 
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();
@@ -89,16 +89,16 @@ public:
 
   const Handle(Geom2d_Curve)& Curve() const { return myCurve; }
 
-  virtual Standard_Real FirstParameter() const override { return myFirst; }
+  virtual Standard_Real FirstParameter() const Standard_OVERRIDE { return myFirst; }
 
-  virtual Standard_Real LastParameter() const override { return myLast; }
+  virtual Standard_Real LastParameter() const Standard_OVERRIDE { return myLast; }
 
-  Standard_EXPORT GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
   //! If necessary, breaks the curve in intervals of
   //! continuity <S>. And returns the number of
   //! intervals.
-  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
@@ -106,7 +106,7 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
@@ -114,25 +114,25 @@ public:
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor2d_Curve2d) Trim(const Standard_Real First,
                                                  const Standard_Real Last,
-                                                 const Standard_Real Tol) const override;
+                                                 const Standard_Real Tol) const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Boolean IsClosed() const override;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Boolean IsPeriodic() const override;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Real Period() const override;
+  Standard_EXPORT Standard_Real Period() const Standard_OVERRIDE;
 
   //! Computes the point of parameter U on the curve
-  Standard_EXPORT gp_Pnt2d Value(const Standard_Real U) const override;
+  Standard_EXPORT gp_Pnt2d Value(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Computes the point of parameter U.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const override;
+  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
 
   //! Computes the point of parameter U on the curve with its
   //! first derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const override;
+  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const Standard_OVERRIDE;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
@@ -141,7 +141,7 @@ public:
   Standard_EXPORT void D2(const Standard_Real U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const override;
+                          gp_Vec2d&           V2) const Standard_OVERRIDE;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
@@ -151,7 +151,7 @@ public:
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
                           gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const override;
+                          gp_Vec2d&           V3) const Standard_OVERRIDE;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
@@ -159,36 +159,36 @@ public:
   //! is not CN.
   //! Raised if N < 1.
   Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
-                              const Standard_Integer N) const override;
+                              const Standard_Integer N) const Standard_OVERRIDE;
 
   //! returns the parametric resolution
-  Standard_EXPORT Standard_Real Resolution(const Standard_Real Ruv) const override;
+  Standard_EXPORT Standard_Real Resolution(const Standard_Real Ruv) const Standard_OVERRIDE;
 
-  virtual GeomAbs_CurveType GetType() const override { return myTypeCurve; }
+  virtual GeomAbs_CurveType GetType() const Standard_OVERRIDE { return myTypeCurve; }
 
-  Standard_EXPORT gp_Lin2d Line() const override;
+  Standard_EXPORT gp_Lin2d Line() const Standard_OVERRIDE;
 
-  Standard_EXPORT gp_Circ2d Circle() const override;
+  Standard_EXPORT gp_Circ2d Circle() const Standard_OVERRIDE;
 
-  Standard_EXPORT gp_Elips2d Ellipse() const override;
+  Standard_EXPORT gp_Elips2d Ellipse() const Standard_OVERRIDE;
 
-  Standard_EXPORT gp_Hypr2d Hyperbola() const override;
+  Standard_EXPORT gp_Hypr2d Hyperbola() const Standard_OVERRIDE;
 
-  Standard_EXPORT gp_Parab2d Parabola() const override;
+  Standard_EXPORT gp_Parab2d Parabola() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Integer Degree() const override;
+  Standard_EXPORT Standard_Integer Degree() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Boolean IsRational() const override;
+  Standard_EXPORT Standard_Boolean IsRational() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Integer NbPoles() const override;
+  Standard_EXPORT Standard_Integer NbPoles() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Integer NbKnots() const override;
+  Standard_EXPORT Standard_Integer NbKnots() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Integer NbSamples() const override;
+  Standard_EXPORT virtual Standard_Integer NbSamples() const Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(Geom2d_BezierCurve) Bezier() const override;
+  Standard_EXPORT Handle(Geom2d_BezierCurve) Bezier() const Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(Geom2d_BSplineCurve) BSpline() const override;
+  Standard_EXPORT Handle(Geom2d_BSplineCurve) BSpline() const Standard_OVERRIDE;
 
 private:
   Standard_EXPORT GeomAbs_Shape LocalContinuity(const Standard_Real U1,

@@ -58,7 +58,7 @@ public:
                                      const Handle(Units_Dimensions)& adimensions);
 
   //! Creates and returns a  token, which is a ShiftedToken.
-  Standard_EXPORT virtual Handle(Units_Token) Creates() const override;
+  Standard_EXPORT virtual Handle(Units_Token) Creates() const Standard_OVERRIDE;
 
   //! Returns the gap <themove>
   Standard_EXPORT Standard_Real Move() const;
@@ -67,15 +67,15 @@ public:
   //! methods,  to   compute  the   measurement    during  a
   //! conversion.
   Standard_EXPORT virtual Standard_Real Multiplied(const Standard_Real avalue) const
-    override;
+    Standard_OVERRIDE;
 
   //! This   virtual  method is  called  by  the Measurement
   //! methods,   to   compute   the   measurement   during a
   //! conversion.
-  Standard_EXPORT virtual Standard_Real Divided(const Standard_Real avalue) const override;
+  Standard_EXPORT virtual Standard_Real Divided(const Standard_Real avalue) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Dump(const Standard_Integer ashift,
-                                    const Standard_Integer alevel) const override;
+                                    const Standard_Integer alevel) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Units_ShiftedToken, Units_Token)
 

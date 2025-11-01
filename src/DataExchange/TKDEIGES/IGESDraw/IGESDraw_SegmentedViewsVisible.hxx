@@ -68,10 +68,10 @@ public:
                             const Handle(TColStd_HArray1OfInteger)&          allLineWeights);
 
   //! Returns False (for a complex view)
-  Standard_EXPORT Standard_Boolean IsSingle() const override;
+  Standard_EXPORT Standard_Boolean IsSingle() const Standard_OVERRIDE;
 
   //! Returns the count of Views referenced by <me> (inherited)
-  Standard_EXPORT Standard_Integer NbViews() const override;
+  Standard_EXPORT Standard_Integer NbViews() const Standard_OVERRIDE;
 
   //! returns the number of view/segment blocks in <me>
   //! Similar to NbViews but has a more general significance
@@ -81,7 +81,7 @@ public:
   //! raises an exception if ViewIndex <= 0 or
   //! ViewIndex > NbSegmentBlocks()
   Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem(const Standard_Integer ViewIndex) const
-    override;
+    Standard_OVERRIDE;
 
   //! returns the parameter of the breakpoint indicated by
   //! BreakpointIndex

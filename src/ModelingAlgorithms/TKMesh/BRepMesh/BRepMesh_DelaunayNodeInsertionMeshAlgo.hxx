@@ -52,7 +52,7 @@ public:
 
 protected:
   //! Performs initialization of data structure using existing model data.
-  virtual Standard_Boolean initDataStructure() override
+  virtual Standard_Boolean initDataStructure() Standard_OVERRIDE
   {
     if (!InsertionBaseClass::initDataStructure())
     {
@@ -72,7 +72,7 @@ protected:
 
   //! Returns size of cell to be used by acceleration circles grid structure.
   virtual std::pair<Standard_Integer, Standard_Integer> getCellsCount(
-    const Standard_Integer theVerticesNb) override
+    const Standard_Integer theVerticesNb) Standard_OVERRIDE
   {
     return BRepMesh_GeomTool::CellsCount(this->getDFace()->GetSurface(),
                                          theVerticesNb,
@@ -83,7 +83,7 @@ protected:
   //! Performs processing of generated mesh. Generates surface nodes and inserts them into
   //! structure.
   virtual void postProcessMesh(BRepMesh_Delaun&             theMesher,
-                               const Message_ProgressRange& theRange) override
+                               const Message_ProgressRange& theRange) Standard_OVERRIDE
   {
     if (!theRange.More())
     {

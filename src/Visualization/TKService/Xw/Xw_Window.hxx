@@ -52,50 +52,50 @@ public:
   Standard_EXPORT ~Xw_Window();
 
   //! Opens the window <me>
-  Standard_EXPORT virtual void Map() const override;
+  Standard_EXPORT virtual void Map() const Standard_OVERRIDE;
 
   //! Closes the window <me>
-  Standard_EXPORT virtual void Unmap() const override;
+  Standard_EXPORT virtual void Unmap() const Standard_OVERRIDE;
 
   //! Applies the resizing to the window <me>
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() override;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE;
 
   //! Apply the mapping change to the window <me>
-  virtual Standard_Boolean DoMapping() const override
+  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE
   {
     return Standard_True; // IsMapped()
   }
 
   //! Returns True if the window <me> is opened
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const override;
+  Standard_EXPORT virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
 
   //! Returns The Window RATIO equal to the physical WIDTH/HEIGHT dimensions
-  Standard_EXPORT virtual Standard_Real Ratio() const override;
+  Standard_EXPORT virtual Standard_Real Ratio() const Standard_OVERRIDE;
 
   //! Returns The Window POSITION in PIXEL
   Standard_EXPORT virtual void Position(Standard_Integer& X1,
                                         Standard_Integer& Y1,
                                         Standard_Integer& X2,
-                                        Standard_Integer& Y2) const override;
+                                        Standard_Integer& Y2) const Standard_OVERRIDE;
 
   //! Returns The Window SIZE in PIXEL
   Standard_EXPORT virtual void Size(Standard_Integer& theWidth,
-                                    Standard_Integer& theHeight) const override;
+                                    Standard_Integer& theHeight) const Standard_OVERRIDE;
 
   //! @return native Window handle
   Aspect_Drawable XWindow() const { return myXWindow; }
 
   //! @return native Window handle
-  virtual Aspect_Drawable NativeHandle() const override { return myXWindow; }
+  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE { return myXWindow; }
 
   //! @return parent of native Window handle
-  virtual Aspect_Drawable NativeParentHandle() const override { return 0; }
+  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE { return 0; }
 
   //! @return native Window FB config (GLXFBConfig on Xlib)
-  virtual Aspect_FBConfig NativeFBConfig() const override { return myFBConfig; }
+  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return myFBConfig; }
 
   //! Sets window title.
-  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) override;
+  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
 
   //! Invalidate entire window content through generation of Expose event.
   //! This method does not aggregate multiple calls into single event - dedicated event will be sent
@@ -104,7 +104,7 @@ public:
   //! dedicated display connection opened specifically for this working thread to avoid race
   //! conditions, since Xlib display connection is not thread-safe by default.
   Standard_EXPORT virtual void InvalidateContent(const Handle(Aspect_DisplayConnection)& theDisp)
-    override;
+    Standard_OVERRIDE;
 
   //! Process a single window message.
   //! @param[in][out] theListener  listener to redirect message

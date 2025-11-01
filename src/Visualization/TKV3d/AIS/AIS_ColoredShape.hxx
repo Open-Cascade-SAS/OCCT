@@ -67,34 +67,34 @@ public: //! @name sub-shape aspects
 
 public: //! @name global aspects
   //! Setup color of entire shape.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Setup line width of entire shape.
-  Standard_EXPORT virtual void SetWidth(const Standard_Real theLineWidth) override;
+  Standard_EXPORT virtual void SetWidth(const Standard_Real theLineWidth) Standard_OVERRIDE;
 
   //! Sets transparency value.
-  Standard_EXPORT virtual void SetTransparency(const Standard_Real theValue) override;
+  Standard_EXPORT virtual void SetTransparency(const Standard_Real theValue) Standard_OVERRIDE;
 
   //! Sets the material aspect.
   Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theAspect)
-    override;
+    Standard_OVERRIDE;
 
 public:
   //! Removes the setting for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetTransparency() override;
+  Standard_EXPORT virtual void UnsetTransparency() Standard_OVERRIDE;
 
   //! Setup line width of entire shape.
-  Standard_EXPORT virtual void UnsetWidth() override;
+  Standard_EXPORT virtual void UnsetWidth() Standard_OVERRIDE;
 
 protected: //! @name override presentation computation
   //! Compute presentation considering sub-shape color map.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Compute selection considering sub-shape hidden state.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected:
   typedef NCollection_IndexedDataMap<Handle(AIS_ColoredDrawer), TopoDS_Compound>

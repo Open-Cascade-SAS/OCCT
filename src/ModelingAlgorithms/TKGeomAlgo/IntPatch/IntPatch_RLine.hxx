@@ -59,7 +59,7 @@ public:
   //! vertex will be added before the first element of vertices sequence.
   //! Otherwise, to the end of the sequence
   virtual void AddVertex(const IntPatch_Point&  Pnt,
-                         const Standard_Boolean theIsPrepend = Standard_False) override;
+                         const Standard_Boolean theIsPrepend = Standard_False) Standard_OVERRIDE;
 
   //! Replaces the element of range Index in the list
   //! of points.
@@ -118,24 +118,24 @@ public:
   const IntPatch_Point& LastPoint() const;
 
   //! Returns number of vertices (IntPatch_Point) of the line
-  virtual Standard_Integer NbVertex() const override;
+  virtual Standard_Integer NbVertex() const Standard_OVERRIDE;
 
   //! Returns the vertex of range Index on the line.
-  virtual const IntPatch_Point& Vertex(const Standard_Integer Index) const override;
+  virtual const IntPatch_Point& Vertex(const Standard_Integer Index) const Standard_OVERRIDE;
 
   //! Returns the vertex of range Index on the line.
-  virtual IntPatch_Point& ChangeVertex(const Standard_Integer Index) override;
+  virtual IntPatch_Point& ChangeVertex(const Standard_Integer Index) Standard_OVERRIDE;
 
   //! Removes single vertex from the line
-  virtual void RemoveVertex(const Standard_Integer theIndex) override;
+  virtual void RemoveVertex(const Standard_Integer theIndex) Standard_OVERRIDE;
 
   Standard_Boolean HasPolygon() const;
 
   //! Returns the number of intersection points.
-  virtual Standard_Integer NbPnts() const override;
+  virtual Standard_Integer NbPnts() const Standard_OVERRIDE;
 
   //! Returns the intersection point of range Index.
-  virtual const IntSurf_PntOn2S& Point(const Standard_Integer Index) const override;
+  virtual const IntSurf_PntOn2S& Point(const Standard_Integer Index) const Standard_OVERRIDE;
 
   //! Set the Point of index <Index> in the LineOn2S
   Standard_EXPORT void SetPoint(const Standard_Integer Index, const IntPatch_Point& Pnt);
@@ -147,30 +147,30 @@ public:
   Standard_EXPORT void ComputeVertexParameters(const Standard_Real Tol);
 
   //! Returns set of intersection points
-  virtual Handle(IntSurf_LineOn2S) Curve() const override;
+  virtual Handle(IntSurf_LineOn2S) Curve() const Standard_OVERRIDE;
 
   //! Returns TRUE if theP is out of the box built from
   //! the points on 1st surface
-  virtual Standard_Boolean IsOutSurf1Box(const gp_Pnt2d& theP) const override
+  virtual Standard_Boolean IsOutSurf1Box(const gp_Pnt2d& theP) const Standard_OVERRIDE
   {
     return curv->IsOutSurf1Box(theP);
   }
 
   //! Returns TRUE if theP is out of the box built from
   //! the points on 2nd surface
-  virtual Standard_Boolean IsOutSurf2Box(const gp_Pnt2d& theP) const override
+  virtual Standard_Boolean IsOutSurf2Box(const gp_Pnt2d& theP) const Standard_OVERRIDE
   {
     return curv->IsOutSurf2Box(theP);
   }
 
   //! Returns TRUE if theP is out of the box built from 3D-points.
-  virtual Standard_Boolean IsOutBox(const gp_Pnt& theP) const override
+  virtual Standard_Boolean IsOutBox(const gp_Pnt& theP) const Standard_OVERRIDE
   {
     return curv->IsOutBox(theP);
   }
 
   //! Removes vertices from the line (i.e. cleans svtx member)
-  virtual void ClearVertexes() override { svtx.Clear(); }
+  virtual void ClearVertexes() Standard_OVERRIDE { svtx.Clear(); }
 
   void SetCurve(const Handle(IntSurf_LineOn2S)& theNewCurve) { curv = theNewCurve; }
 

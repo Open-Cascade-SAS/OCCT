@@ -160,11 +160,11 @@ void Intrv_Intervals::Unite(const Intrv_Interval& Tool)
       case Intrv_Similar:
         Tins.FuseAtStart(myInter(index).Start(),
                          myInter(index).TolStart()); // modifier le debut
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case Intrv_JustEnclosingAtEnd:
         Tins.FuseAtEnd(myInter(index).End(),
                        myInter(index).TolEnd()); // modifier la fin
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case Intrv_Enclosing:
         myInter.Remove(index); // detruire et
         index--;               // continuer

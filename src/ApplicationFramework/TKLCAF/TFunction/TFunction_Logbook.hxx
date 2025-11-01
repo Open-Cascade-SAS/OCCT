@@ -101,20 +101,20 @@ public:
   //  ========================================
 
   //! Returns the ID of the attribute.
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
   //! Undos (and redos) the attribute.
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& with) override;
+  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
 
   //! Pastes the attribute to another label.
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       into,
-                                     const Handle(TDF_RelocationTable)& RT) const override;
+                                     const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
   //! Returns a new empty instance of the attribute.
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   //! Prints th data of the attributes (touched, impacted and valid labels).
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TFunction_Logbook, TDF_Attribute)
 

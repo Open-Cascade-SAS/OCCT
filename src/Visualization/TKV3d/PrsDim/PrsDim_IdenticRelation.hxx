@@ -58,15 +58,15 @@ public:
   void ClearUsers() { myUsers.Clear(); }
 
   //! Returns true if the interactive object is movable.
-  virtual Standard_Boolean IsMovable() const override { return Standard_True; }
+  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
 
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT void ComputeOneEdgeOVertexPresentation(
     const Handle(Prs3d_Presentation)& aPresentation);

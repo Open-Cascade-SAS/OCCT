@@ -43,28 +43,28 @@ public:
                               const Standard_Real        First,
                               const Standard_Real        Last);
 
-  Standard_EXPORT GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
   //! Returns  the number  of  intervals for  continuity
   //! <S>. May be one if Continuity(me) >= <S>
-  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
   //! Stores in <T> the parameters bounding the intervals of continuity <S>.
   //! The array must provide enough room to accommodate for the parameters, i.e. T.Length() >
   //! NbIntervals()
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Real Value(const Standard_Real X) override;
+  Standard_EXPORT Standard_Real Value(const Standard_Real X) Standard_OVERRIDE;
 
   Standard_EXPORT void D1(const Standard_Real X,
                           Standard_Real&      F,
-                          Standard_Real&      D) override;
+                          Standard_Real&      D) Standard_OVERRIDE;
 
   Standard_EXPORT void D2(const Standard_Real X,
                           Standard_Real&      F,
                           Standard_Real&      D,
-                          Standard_Real&      D2) override;
+                          Standard_Real&      D2) Standard_OVERRIDE;
 
   //! Returns a  law equivalent of  <me>  between
   //! parameters <First>  and <Last>. <Tol>  is used  to
@@ -74,9 +74,9 @@ public:
   //! the Law is not Cn.
   Standard_EXPORT Handle(Law_Function) Trim(const Standard_Real PFirst,
                                             const Standard_Real PLast,
-                                            const Standard_Real Tol) const override;
+                                            const Standard_Real Tol) const Standard_OVERRIDE;
 
-  Standard_EXPORT void Bounds(Standard_Real& PFirst, Standard_Real& PLast) override;
+  Standard_EXPORT void Bounds(Standard_Real& PFirst, Standard_Real& PLast) Standard_OVERRIDE;
 
   Standard_EXPORT Handle(Law_BSpline) Curve() const;
 

@@ -58,7 +58,7 @@ public:
   //! Plus : mode = 5 to clear Transfers (both ways) only
   //! mode = 6 to clear enforced results
   //! mode = 7 to clear transfers, results
-  Standard_EXPORT virtual void ClearData(const Standard_Integer theMode) override;
+  Standard_EXPORT virtual void ClearData(const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Selects a Norm defined by its name.
   //! A Norm is described and handled by a Controller

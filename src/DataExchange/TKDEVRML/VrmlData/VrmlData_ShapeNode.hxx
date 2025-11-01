@@ -72,22 +72,22 @@ public:
    * is not created, but rather the given one is modified.
    */
   Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
-    override;
+    Standard_OVERRIDE;
 
   /**
    * Fill the Node internal data from the given input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
 
   /**
    * Check if the Shape Node is writeable.
    */
-  Standard_EXPORT virtual Standard_Boolean IsDefault() const override;
+  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
 
 protected:
   // ---------- PROTECTED METHODS ----------

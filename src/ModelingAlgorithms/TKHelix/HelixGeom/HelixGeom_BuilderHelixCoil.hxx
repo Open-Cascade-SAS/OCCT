@@ -32,7 +32,7 @@ public:
   Standard_EXPORT virtual ~HelixGeom_BuilderHelixCoil();
 
   //! Performs calculations
-  Standard_EXPORT virtual void Perform() override;
+  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
 
 protected:
 private:

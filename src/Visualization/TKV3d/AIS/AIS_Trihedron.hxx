@@ -159,56 +159,56 @@ public:
 
 public:
   //! Sets the color theColor for this trihedron object, it changes color of axes.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Returns true if the display mode selected, aMode, is valid for trihedron datums.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return theMode == 0;
   }
 
   //! Returns index 3, selection of the planes XOY, YOZ, XOZ.
-  virtual Standard_Integer Signature() const override { return 3; }
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 3; }
 
   //! Indicates that the type of Interactive Object is datum.
-  virtual AIS_KindOfInteractive Type() const override
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
   {
     return AIS_KindOfInteractive_Datum;
   }
 
   //! Removes the settings for color.
-  Standard_EXPORT virtual void UnsetColor() override;
+  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
 
 public:
   //! Method which clear all selected owners belonging
   //! to this selectable object ( for fast presentation draw ).
-  Standard_EXPORT virtual void ClearSelected() override;
+  Standard_EXPORT virtual void ClearSelected() Standard_OVERRIDE;
 
   //! Method which draws selected owners ( for fast presentation draw ).
   Standard_EXPORT virtual void HilightSelected(const Handle(PrsMgr_PresentationManager)& thePM,
                                                const SelectMgr_SequenceOfOwner&          theOwners)
-    override;
+    Standard_OVERRIDE;
 
   //! Method which hilight an owner belonging to
   //! this selectable object  ( for fast presentation draw ).
   Standard_EXPORT virtual void HilightOwnerWithColor(
     const Handle(PrsMgr_PresentationManager)& thePM,
     const Handle(Prs3d_Drawer)&               theStyle,
-    const Handle(SelectMgr_EntityOwner)&      theOwner) override;
+    const Handle(SelectMgr_EntityOwner)&      theOwner) Standard_OVERRIDE;
 
 protected:
   //! Compute trihedron presentation.
   Standard_EXPORT void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                const Handle(Prs3d_Presentation)&         thePrs,
-                               const Standard_Integer                    theMode) override;
+                               const Standard_Integer                    theMode) Standard_OVERRIDE;
 
   //! Compute selection.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
   //! Creates a sensitive entity for the datum part that will be used in selection owner creation.

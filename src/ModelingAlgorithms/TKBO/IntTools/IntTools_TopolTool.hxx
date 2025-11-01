@@ -41,22 +41,22 @@ public:
   //!
   //! Warning:
   //! Raises the exception NotImplemented
-  Standard_EXPORT virtual void Initialize() override;
+  Standard_EXPORT virtual void Initialize() Standard_OVERRIDE;
 
   //! Initializes me by surface
   Standard_EXPORT virtual void Initialize(const Handle(Adaptor3d_Surface)& theSurface)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void ComputeSamplePoints() override;
-
-  //! Computes the sample-points for the intersections algorithms
-  Standard_EXPORT virtual Standard_Integer NbSamplesU() override;
+  Standard_EXPORT virtual void ComputeSamplePoints() Standard_OVERRIDE;
 
   //! Computes the sample-points for the intersections algorithms
-  Standard_EXPORT virtual Standard_Integer NbSamplesV() override;
+  Standard_EXPORT virtual Standard_Integer NbSamplesU() Standard_OVERRIDE;
 
   //! Computes the sample-points for the intersections algorithms
-  Standard_EXPORT virtual Standard_Integer NbSamples() override;
+  Standard_EXPORT virtual Standard_Integer NbSamplesV() Standard_OVERRIDE;
+
+  //! Computes the sample-points for the intersections algorithms
+  Standard_EXPORT virtual Standard_Integer NbSamples() Standard_OVERRIDE;
 
   //! Returns a 2d point from surface myS
   //! and a corresponded 3d point
@@ -64,7 +64,7 @@ public:
   //! The index should be from 1 to NbSamples()
   Standard_EXPORT virtual void SamplePoint(const Standard_Integer Index,
                                            gp_Pnt2d&              P2d,
-                                           gp_Pnt&                P3d) override;
+                                           gp_Pnt&                P3d) Standard_OVERRIDE;
 
   //! compute the sample-points for the intersections algorithms
   //! by adaptive algorithm for BSpline surfaces. For other surfaces algorithm
@@ -74,7 +74,7 @@ public:
   //! theNUmin, theNVmin are minimal nb points for U and V.
   Standard_EXPORT virtual void SamplePnts(const Standard_Real    theDefl,
                                           const Standard_Integer theNUmin,
-                                          const Standard_Integer theNVmin) override;
+                                          const Standard_Integer theNVmin) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IntTools_TopolTool, Adaptor3d_TopolTool)
 

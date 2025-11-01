@@ -52,7 +52,7 @@ public:
   //! rub out all the isoparametric curves.
   Standard_EXPORT virtual void ClearIsos();
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   //! Iso = True : Draw the isos, the boundaries, the UVMarker.
   //! Iso = False: Only Draw the boundary and the UVMarker.
@@ -80,16 +80,16 @@ public:
   }
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const override;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const override;
+  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
 
   //! For variable whatis command.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
 
 protected:
   Handle(Geom_Surface) surf;

@@ -40,13 +40,13 @@ public:
                                          const TCollection_ExtendedString& aText);
 
   //! Indicates that the dimension we are concerned with is an offset.
-  virtual PrsDim_KindOfDimension KindOfDimension() const override
+  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE
   {
     return PrsDim_KOD_OFFSET;
   }
 
   //! Returns true if the offset datum is movable.
-  virtual Standard_Boolean IsMovable() const override { return Standard_True; }
+  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
 
   //! Sets a transformation aTrsf for presentation and
   //! selection to a relative position.
@@ -55,10 +55,10 @@ public:
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT void ComputeTwoFacesOffset(const Handle(Prs3d_Presentation)& aPresentation,
                                              const gp_Trsf&                    aTrsf);

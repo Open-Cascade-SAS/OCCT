@@ -141,7 +141,7 @@ TCollection_AsciiString::TCollection_AsciiString(const TCollection_AsciiString& 
 //=================================================================================================
 
 TCollection_AsciiString::TCollection_AsciiString(TCollection_AsciiString&& theOther)
-  noexcept
+  Standard_Noexcept
 {
   if (theOther.myString == THE_DEFAULT_CHAR_STRING)
   {

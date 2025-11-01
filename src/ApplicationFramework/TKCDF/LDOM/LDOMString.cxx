@@ -45,7 +45,7 @@ LDOMString::LDOMString(const LDOMBasicString& anOther, const Handle(LDOM_MemMana
       break;
     case LDOM_AsciiFree:
       myType = LDOM_AsciiDoc;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case LDOM_AsciiDocClear:
     case LDOM_AsciiDoc: {
       const char*      aString = anOther.GetString();

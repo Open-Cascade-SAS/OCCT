@@ -58,7 +58,7 @@ public:
   Standard_EXPORT virtual void Compute(const Standard_Real X,
                                        const Standard_Real Y,
                                        Standard_Real&      gridX,
-                                       Standard_Real&      gridY) const override;
+                                       Standard_Real&      gridY) const Standard_OVERRIDE;
 
   //! returns the x step of the grid.
   Standard_EXPORT Standard_Real XStep() const;
@@ -72,11 +72,11 @@ public:
   //! returns the y Angle of the grid, relatively to the vertical.
   Standard_EXPORT Standard_Real SecondAngle() const;
 
-  Standard_EXPORT virtual void Init() override;
+  Standard_EXPORT virtual void Init() Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
   Standard_EXPORT Standard_Boolean CheckAngle(const Standard_Real alpha,

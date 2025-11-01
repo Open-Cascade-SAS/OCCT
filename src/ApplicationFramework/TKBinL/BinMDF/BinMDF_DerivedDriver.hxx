@@ -35,7 +35,7 @@ public:
   }
 
   //! Creates a new instance of the derivative attribute
-  virtual Handle(TDF_Attribute) NewEmpty() const override
+  virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE
   {
     return myDerivative->NewEmpty();
   }
@@ -43,7 +43,7 @@ public:
   //! Reuses the base driver to read the base fields
   virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  theSource,
                                  const Handle(TDF_Attribute)& theTarget,
-                                 BinObjMgt_RRelocationTable&  theRelocTable) const override
+                                 BinObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE
   {
     Standard_Boolean aResult = myBaseDirver->Paste(theSource, theTarget, theRelocTable);
     // clang-format off
@@ -55,7 +55,7 @@ public:
   //! Reuses the base driver to store the base fields
   virtual void Paste(const Handle(TDF_Attribute)& theSource,
                      BinObjMgt_Persistent&        theTarget,
-                     BinObjMgt_SRelocationTable&  theRelocTable) const override
+                     BinObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE
   {
     myBaseDirver->Paste(theSource, theTarget, theRelocTable);
   }

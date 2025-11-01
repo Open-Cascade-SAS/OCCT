@@ -50,10 +50,10 @@ public:
   Standard_EXPORT void Perform(IFSelect_ContextModif&                  ctx,
                                const Handle(Interface_InterfaceModel)& target,
                                const Handle(Interface_Protocol)&       protocol,
-                               Interface_CopyTool&                     TC) const override;
+                               Interface_CopyTool&                     TC) const Standard_OVERRIDE;
 
   //! Returns Label as "Reorder, Roots (last or first)"
-  Standard_EXPORT TCollection_AsciiString Label() const override;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_ModifReorder, IFSelect_Modifier)
 

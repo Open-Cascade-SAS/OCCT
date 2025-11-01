@@ -29,7 +29,7 @@ class AppStdL_Application : public TDocStd_Application
 public:
   //! returns   the file  name  which  contains  application
   //! resources
-  Standard_EXPORT Standard_CString ResourcesName() override;
+  Standard_EXPORT Standard_CString ResourcesName() Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;

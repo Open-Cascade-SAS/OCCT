@@ -32,11 +32,11 @@ class XCAFApp_Application : public TDocStd_Application
 public:
   //! methods from TDocStd_Application
   //! ================================
-  Standard_EXPORT virtual Standard_CString ResourcesName() override;
+  Standard_EXPORT virtual Standard_CString ResourcesName() Standard_OVERRIDE;
 
   //! Set XCAFDoc_DocumentTool attribute
   Standard_EXPORT virtual void InitDocument(const Handle(CDM_Document)& aDoc) const
-    override;
+    Standard_OVERRIDE;
 
   //! Initializes (for the first time) and returns the
   //! static object (XCAFApp_Application)

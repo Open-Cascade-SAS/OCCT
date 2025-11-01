@@ -65,15 +65,15 @@ public:
   FairCurve_AnalysisCode Status() const;
 
   //! compute the variables <X> which correspond with the field <MyPoles>
-  Standard_EXPORT virtual Standard_Boolean Variable(math_Vector& X) const override;
+  Standard_EXPORT virtual Standard_Boolean Variable(math_Vector& X) const Standard_OVERRIDE;
 
 protected:
   //! compute the poles which correspond with the variable X
-  Standard_EXPORT virtual void ComputePoles(const math_Vector& X) override;
+  Standard_EXPORT virtual void ComputePoles(const math_Vector& X) Standard_OVERRIDE;
 
   //! compute the energy in intermediate format
   Standard_EXPORT virtual Standard_Boolean Compute(const Standard_Integer DerivativeOrder,
-                                                   math_Vector&           Result) override;
+                                                   math_Vector&           Result) Standard_OVERRIDE;
 
 private:
   Standard_Real                   MyLengthSliding;

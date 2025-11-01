@@ -42,16 +42,16 @@ public:
   //! Creates new triangular frustum with bases of triangles with vertices theP1, theP2 and theP3
   //! projections onto near and far view frustum planes (only for triangular frustums)
   //! NOTE: it should be called after Init() method
-  Standard_EXPORT virtual void Build() override;
+  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
 
   //! Returns FALSE (not applicable to this volume).
-  virtual Standard_Boolean IsScalable() const override { return false; }
+  virtual Standard_Boolean IsScalable() const Standard_OVERRIDE { return false; }
 
   //! Returns a copy of the frustum transformed according to the matrix given
   Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform(
     const Standard_Integer                  theScale,
     const gp_GTrsf&                         theTrsf,
-    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const override;
+    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
   //! Returns a copy of the frustum using the given frustum builder configuration.
   //! Returned frustum should be re-constructed before being used.
@@ -60,7 +60,7 @@ public:
   //!                        should NOT be NULL.
   //! @return a copy of the frustum with the input builder assigned
   Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) CopyWithBuilder(
-    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const override;
+    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
 public: //! @name SAT Tests for different objects
   //! SAT intersection test between defined volume and given axis-aligned box
@@ -68,23 +68,23 @@ public: //! @name SAT Tests for different objects
                                                        const SelectMgr_Vec3&          theMaxPnt,
                                                        const SelectMgr_ViewClipRange& theClipRange,
                                                        SelectBasics_PickResult& thePickResult) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
   Standard_EXPORT virtual Standard_Boolean OverlapsBox(const SelectMgr_Vec3& theMinPt,
                                                        const SelectMgr_Vec3& theMaxPt,
                                                        Standard_Boolean*     theInside) const
-    override;
+    Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean OverlapsPoint(
     const gp_Pnt&                  thePnt,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const override;
+    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
 
   //! Always returns FALSE (not applicable to this selector).
-  virtual Standard_Boolean OverlapsPoint(const gp_Pnt&) const override
+  virtual Standard_Boolean OverlapsPoint(const gp_Pnt&) const Standard_OVERRIDE
   {
     return Standard_False;
   }
@@ -96,14 +96,14 @@ public: //! @name SAT Tests for different objects
     const TColgp_Array1OfPnt&      theArrayOfPnts,
     Select3D_TypeOfSensitivity     theSensType,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const override;
+    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
   Standard_EXPORT virtual Standard_Boolean OverlapsSegment(
     const gp_Pnt&                  thePnt1,
     const gp_Pnt&                  thePnt2,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const override;
+    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
@@ -114,14 +114,14 @@ public: //! @name SAT Tests for different objects
     const gp_Pnt&                  thePnt3,
     Select3D_TypeOfSensitivity     theSensType,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const override;
+    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
   Standard_EXPORT virtual Standard_Boolean OverlapsSphere(const gp_Pnt&       theCenter,
                                                           const Standard_Real theRadius,
                                                           Standard_Boolean* theInside = NULL) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
@@ -129,7 +129,7 @@ public: //! @name SAT Tests for different objects
     const gp_Pnt&                  theCenter,
     const Standard_Real            theRadius,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const override;
+    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
@@ -140,7 +140,7 @@ public: //! @name SAT Tests for different objects
     const gp_Trsf&                 theTrsf,
     const Standard_Boolean         theIsHollow,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const override;
+    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
@@ -150,7 +150,7 @@ public: //! @name SAT Tests for different objects
     const Standard_Real    theHeight,
     const gp_Trsf&         theTrsf,
     const Standard_Boolean theIsHollow,
-    Standard_Boolean*      theInside = NULL) const override;
+    Standard_Boolean*      theInside = NULL) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
@@ -161,7 +161,7 @@ public: //! @name SAT Tests for different objects
     const gp_Trsf&                 theTrsf,
     const Standard_Boolean         theIsFilled,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const override;
+    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
@@ -171,7 +171,7 @@ public: //! @name SAT Tests for different objects
                                                           const gp_Trsf&         theTrsf,
                                                           const Standard_Boolean theIsFilled,
                                                           Standard_Boolean* theInside = NULL) const
-    override;
+    Standard_OVERRIDE;
 
 public:
   //! Nullifies the handle to corresponding builder instance to prevent memory leaks
@@ -180,11 +180,11 @@ public:
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
   Standard_EXPORT virtual void GetPlanes(
-    NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const override;
+    NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
   //! Creates an empty triangular frustum.

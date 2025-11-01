@@ -36,7 +36,7 @@ public:
     const TCollection_ExtendedString& theCopyright);
 
   Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) override;
+    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentStorageDriver, XmlDrivers_DocumentStorageDriver)
 

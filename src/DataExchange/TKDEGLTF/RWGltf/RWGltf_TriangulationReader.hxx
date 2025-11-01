@@ -61,14 +61,14 @@ protected:
   Standard_EXPORT virtual bool load(const Handle(RWMesh_TriangulationSource)& theSourceMesh,
                                     const Handle(Poly_Triangulation)&         theDestMesh,
                                     const Handle(OSD_FileSystem)&             theFileSystem) const
-    override;
+    Standard_OVERRIDE;
 
   //! Performs additional actions to finalize data loading.
   //! @param theSourceMesh source triangulation
   //! @param theDestMesh   triangulation to be modified
   Standard_EXPORT virtual bool finalizeLoading(
     const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-    const Handle(Poly_Triangulation)&         theDestMesh) const override;
+    const Handle(Poly_Triangulation)&         theDestMesh) const Standard_OVERRIDE;
 
   //! Loads only primitive arrays saved as stream buffer
   //! (it is primarily glTF data encoded in base64 saved to temporary buffer during glTF file

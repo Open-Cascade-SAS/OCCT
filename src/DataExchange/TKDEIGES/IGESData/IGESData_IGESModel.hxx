@@ -48,13 +48,13 @@ public:
   Standard_EXPORT IGESData_IGESModel();
 
   //! Erases all data specific to IGES file Header (Start + Global)
-  Standard_EXPORT void ClearHeader() override;
+  Standard_EXPORT void ClearHeader() Standard_OVERRIDE;
 
   //! Prints the IGES file header
   //! (Start and Global Sections) to the log file. The integer
   //! parameter is intended to be used as a level indicator but is not used at present.
   Standard_EXPORT void DumpHeader(Standard_OStream&      S,
-                                  const Standard_Integer level = 0) const override;
+                                  const Standard_Integer level = 0) const Standard_OVERRIDE;
 
   //! Returns Model's Start Section (list of comment lines)
   Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) StartSection() const;
@@ -117,14 +117,14 @@ public:
 
   //! gets Header (GlobalSection) from another Model
   Standard_EXPORT void GetFromAnother(const Handle(Interface_InterfaceModel)& other)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns a New Empty Model, same type as <me> i.e. IGESModel
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const override;
+  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const Standard_OVERRIDE;
 
   //! Checks that the IGES file Global
   //! section contains valid data that conforms to the IGES specifications.
-  Standard_EXPORT virtual void VerifyCheck(Handle(Interface_Check)& ach) const override;
+  Standard_EXPORT virtual void VerifyCheck(Handle(Interface_Check)& ach) const Standard_OVERRIDE;
 
   //! Sets LineWeights of contained Entities according header data
   //! (MaxLineWeight and LineWeightGrad) or to a default value for
@@ -132,18 +132,18 @@ public:
   Standard_EXPORT void SetLineWeights(const Standard_Real defw);
 
   //! erases specific labels, i.e. does nothing
-  Standard_EXPORT void ClearLabels() override;
+  Standard_EXPORT void ClearLabels() Standard_OVERRIDE;
 
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)
   Standard_EXPORT void PrintLabel(const Handle(Standard_Transient)& ent,
-                                  Standard_OStream&                 S) const override;
+                                  Standard_OStream&                 S) const Standard_OVERRIDE;
 
   //! Prints label specific to IGES norm  for a given -- --
   //! entity,  i.e.  its directory entry number (2*Number-1)
   //! in the log file format.
   Standard_EXPORT virtual void PrintToLog(const Handle(Standard_Transient)& ent,
-                                          Standard_OStream& S) const override;
+                                          Standard_OStream& S) const Standard_OVERRIDE;
 
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)
@@ -152,7 +152,7 @@ public:
   //! Returns a string with the label attached to a given entity,
   //! i.e. a string "Dnn" with nn = directory entry number (2*N-1)
   Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel(
-    const Handle(Standard_Transient)& ent) const override;
+    const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_IGESModel, Interface_InterfaceModel)
 

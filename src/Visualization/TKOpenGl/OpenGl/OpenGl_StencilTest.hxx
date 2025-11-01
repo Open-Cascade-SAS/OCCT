@@ -26,15 +26,15 @@ public:
 
   //! Render primitives to the window
   Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) Standard_OVERRIDE;
 
   Standard_EXPORT void SetOptions(const Standard_Boolean theIsEnabled);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
   //! Destructor

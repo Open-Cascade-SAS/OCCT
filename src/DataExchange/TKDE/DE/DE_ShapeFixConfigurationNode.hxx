@@ -37,11 +37,11 @@ public:
   //! @param[in] theResource input resource to use
   //! @return True if Load was successful
   Standard_EXPORT virtual bool Load(const Handle(DE_ConfigurationContext)& theResource)
-    override;
+    Standard_OVERRIDE;
 
   //! Writes configuration to the string
   //! @return result resource string
-  Standard_EXPORT virtual TCollection_AsciiString Save() const override;
+  Standard_EXPORT virtual TCollection_AsciiString Save() const Standard_OVERRIDE;
 
 public:
   DE_ShapeFixParameters ShapeFixParameters; //!< Shape healing parameters

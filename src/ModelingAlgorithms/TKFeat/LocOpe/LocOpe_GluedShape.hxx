@@ -42,19 +42,19 @@ public:
 
   Standard_EXPORT void GlueOnFace(const TopoDS_Face& F);
 
-  Standard_EXPORT const TopTools_ListOfShape& GeneratingEdges() override;
+  Standard_EXPORT const TopTools_ListOfShape& GeneratingEdges() Standard_OVERRIDE;
 
   //! Returns the  edge  created by  the  vertex <V>. If
   //! none, must return a null shape.
-  Standard_EXPORT TopoDS_Edge Generated(const TopoDS_Vertex& V) override;
+  Standard_EXPORT TopoDS_Edge Generated(const TopoDS_Vertex& V) Standard_OVERRIDE;
 
   //! Returns the face created by the edge <E>. If none,
   //! must return a null shape.
-  Standard_EXPORT TopoDS_Face Generated(const TopoDS_Edge& E) override;
+  Standard_EXPORT TopoDS_Face Generated(const TopoDS_Edge& E) Standard_OVERRIDE;
 
   //! Returns  the  list of correctly oriented generated
   //! faces.
-  Standard_EXPORT const TopTools_ListOfShape& OrientedFaces() override;
+  Standard_EXPORT const TopTools_ListOfShape& OrientedFaces() Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(LocOpe_GluedShape, LocOpe_GeneratedShape)
 

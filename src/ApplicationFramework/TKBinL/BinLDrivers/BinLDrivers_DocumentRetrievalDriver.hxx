@@ -52,7 +52,7 @@ public:
     const Handle(CDM_Document)&       theNewDocument,
     const Handle(CDM_Application)&    theApplication,
     const Handle(PCDM_ReaderFilter)&  theFilter   = Handle(PCDM_ReaderFilter)(),
-    const Message_ProgressRange&      theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&      theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Read(
     Standard_IStream&                theIStream,
@@ -60,7 +60,7 @@ public:
     const Handle(CDM_Document)&      theDoc,
     const Handle(CDM_Application)&   theApplication,
     const Handle(PCDM_ReaderFilter)& theFilter   = Handle(PCDM_ReaderFilter)(),
-    const Message_ProgressRange&     theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&     theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers(
     const Handle(Message_Messenger)& theMsgDriver);

@@ -52,19 +52,19 @@ public:
   Standard_EXPORT void SetPoint(const gp_Pnt2d& P);
 
   //! Calculation of F(U).
-  Standard_EXPORT Standard_Boolean Value(const Standard_Real U, Standard_Real& F) override;
+  Standard_EXPORT Standard_Boolean Value(const Standard_Real U, Standard_Real& F) Standard_OVERRIDE;
 
   //! Calculation of F'(U).
   Standard_EXPORT Standard_Boolean Derivative(const Standard_Real U,
-                                              Standard_Real&      DF) override;
+                                              Standard_Real&      DF) Standard_OVERRIDE;
 
   //! Calculation of F(U) and F'(U).
   Standard_EXPORT Standard_Boolean Values(const Standard_Real U,
                                           Standard_Real&      F,
-                                          Standard_Real&      DF) override;
+                                          Standard_Real&      DF) Standard_OVERRIDE;
 
   //! Save the found extremum.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() override;
+  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
 
   //! Return the number of found extrema.
   Standard_EXPORT Standard_Integer NbExt() const;

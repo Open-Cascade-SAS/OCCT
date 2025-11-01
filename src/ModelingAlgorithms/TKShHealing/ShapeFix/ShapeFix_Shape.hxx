@@ -90,16 +90,16 @@ public:
 
   //! Sets message registrator
   Standard_EXPORT virtual void SetMsgRegistrator(
-    const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg) override;
+    const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg) Standard_OVERRIDE;
 
   //! Sets basic precision value (also to FixSolidTool)
-  Standard_EXPORT virtual void SetPrecision(const Standard_Real preci) override;
+  Standard_EXPORT virtual void SetPrecision(const Standard_Real preci) Standard_OVERRIDE;
 
   //! Sets minimal allowed tolerance (also to FixSolidTool)
-  Standard_EXPORT virtual void SetMinTolerance(const Standard_Real mintol) override;
+  Standard_EXPORT virtual void SetMinTolerance(const Standard_Real mintol) Standard_OVERRIDE;
 
   //! Sets maximal allowed tolerance (also to FixSolidTool)
-  Standard_EXPORT virtual void SetMaxTolerance(const Standard_Real maxtol) override;
+  Standard_EXPORT virtual void SetMaxTolerance(const Standard_Real maxtol) Standard_OVERRIDE;
 
   //! Returns (modifiable) the mode for applying fixes of
   //! ShapeFix_Solid, by default True.

@@ -84,12 +84,12 @@ public:
   //! Specific printing to trace an entity : prints label and type
   //! (if model is set)
   Standard_EXPORT virtual void PrintTrace(const Handle(Standard_Transient)& start,
-                                          Standard_OStream& S) const override;
+                                          Standard_OStream& S) const Standard_OVERRIDE;
 
   //! Specific number of a starting object for check-list : Number
   //! in model
   Standard_EXPORT virtual Standard_Integer CheckNum(const Handle(Standard_Transient)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns the list of sharings entities, AT ANY LEVEL, which are
   //! kind of a given type. Calls TypedSharings from Graph

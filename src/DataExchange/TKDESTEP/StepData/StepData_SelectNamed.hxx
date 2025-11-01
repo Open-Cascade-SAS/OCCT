@@ -38,35 +38,35 @@ class StepData_SelectNamed : public StepData_SelectMember
 public:
   Standard_EXPORT StepData_SelectNamed();
 
-  Standard_EXPORT virtual Standard_Boolean HasName() const override;
+  Standard_EXPORT virtual Standard_Boolean HasName() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_CString Name() const override;
+  Standard_EXPORT virtual Standard_CString Name() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name) override;
+  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name) Standard_OVERRIDE;
 
   Standard_EXPORT const StepData_Field& Field() const;
 
   Standard_EXPORT StepData_Field& CField();
 
-  Standard_EXPORT virtual Standard_Integer Kind() const override;
+  Standard_EXPORT virtual Standard_Integer Kind() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetKind(const Standard_Integer kind) override;
+  Standard_EXPORT virtual void SetKind(const Standard_Integer kind) Standard_OVERRIDE;
 
   //! This internal method gives access to a value implemented by an
   //! Integer (to read it)
-  Standard_EXPORT virtual Standard_Integer Int() const override;
+  Standard_EXPORT virtual Standard_Integer Int() const Standard_OVERRIDE;
 
   //! This internal method gives access to a value implemented by an
   //! Integer (to set it)
-  Standard_EXPORT virtual void SetInt(const Standard_Integer val) override;
+  Standard_EXPORT virtual void SetInt(const Standard_Integer val) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Real Real() const override;
+  Standard_EXPORT virtual Standard_Real Real() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetReal(const Standard_Real val) override;
+  Standard_EXPORT virtual void SetReal(const Standard_Real val) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_CString String() const override;
+  Standard_EXPORT virtual Standard_CString String() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetString(const Standard_CString val) override;
+  Standard_EXPORT virtual void SetString(const Standard_CString val) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(StepData_SelectNamed, StepData_SelectMember)
 

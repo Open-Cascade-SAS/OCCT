@@ -96,11 +96,11 @@ public:
 
   //! Releases all OpenGL resources.
   //! It must be called before destruction.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  virtual Standard_Size EstimatedDataSize() const override
+  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE
   {
     unsigned int aDiffIBLMapSidePixelsCount = 1 << myPow2Size;
     aDiffIBLMapSidePixelsCount *= aDiffIBLMapSidePixelsCount;

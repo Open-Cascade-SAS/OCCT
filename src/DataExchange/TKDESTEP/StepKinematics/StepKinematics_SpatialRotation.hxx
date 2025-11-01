@@ -41,7 +41,7 @@ public:
   //! -- 1 -> RotationAboutDirection
   //! -- 2 -> YprRotation
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const override;
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   //! Returns Value as RotationAboutDirection (or Null if another type)
   Standard_EXPORT Handle(StepKinematics_RotationAboutDirection) RotationAboutDirection() const;

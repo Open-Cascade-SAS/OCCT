@@ -102,10 +102,10 @@ public:
   //! Return the sequence of selections.
   const SelectMgr_SequenceOfSelection& Selections() const { return myselections; }
 
-  Standard_EXPORT void ResetTransformation() override;
+  Standard_EXPORT void ResetTransformation() Standard_OVERRIDE;
 
   //! Recomputes the location of the selection aSelection.
-  Standard_EXPORT virtual void UpdateTransformation() override;
+  Standard_EXPORT virtual void UpdateTransformation() Standard_OVERRIDE;
 
   //! Updates locations in all sensitive entities from <aSelection>
   //! and in corresponding entity owners.
@@ -163,7 +163,7 @@ public:
   //! Set Z layer ID and update all presentations of the selectable object.
   //! The layers mechanism allows drawing objects in higher layers in overlay of objects in lower
   //! layers.
-  Standard_EXPORT virtual void SetZLayer(const Graphic3d_ZLayerId theLayerId) override;
+  Standard_EXPORT virtual void SetZLayer(const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
 
   //! Sets update status FULL to selections of the object. Must be used as the only method of
   //! UpdateSelection from outer classes to prevent BVH structures from being outdated.
@@ -188,7 +188,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
   //! Protected empty constructor.
@@ -202,7 +202,7 @@ protected:
   }
 
   //! Update clipping planes state.
-  Standard_EXPORT virtual void UpdateClipping() override;
+  Standard_EXPORT virtual void UpdateClipping() Standard_OVERRIDE;
 
   //! Sets update status FULL to selections of the object.
   //! Must be used as the only method of UpdateSelection from outer classes to prevent BVH

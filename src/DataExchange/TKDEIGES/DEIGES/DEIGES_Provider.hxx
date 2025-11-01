@@ -51,7 +51,7 @@ public:
     const TCollection_AsciiString&  thePath,
     const Handle(TDocStd_Document)& theDocument,
     Handle(XSControl_WorkSession)&  theWS,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
@@ -63,7 +63,7 @@ public:
     const TCollection_AsciiString&  thePath,
     const Handle(TDocStd_Document)& theDocument,
     Handle(XSControl_WorkSession)&  theWS,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
@@ -73,7 +73,7 @@ public:
   Standard_EXPORT virtual bool Read(
     const TCollection_AsciiString&  thePath,
     const Handle(TDocStd_Document)& theDocument,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
@@ -83,7 +83,7 @@ public:
   Standard_EXPORT virtual bool Write(
     const TCollection_AsciiString&  thePath,
     const Handle(TDocStd_Document)& theDocument,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
@@ -95,7 +95,7 @@ public:
     const TCollection_AsciiString& thePath,
     TopoDS_Shape&                  theShape,
     Handle(XSControl_WorkSession)& theWS,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
@@ -107,7 +107,7 @@ public:
     const TCollection_AsciiString& thePath,
     const TopoDS_Shape&            theShape,
     Handle(XSControl_WorkSession)& theWS,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
@@ -117,7 +117,7 @@ public:
   Standard_EXPORT virtual bool Read(
     const TCollection_AsciiString& thePath,
     TopoDS_Shape&                  theShape,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
@@ -127,16 +127,16 @@ public:
   Standard_EXPORT virtual bool Write(
     const TCollection_AsciiString& thePath,
     const TopoDS_Shape&            theShape,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
 public:
   //! Gets CAD format name of associated provider
   //! @return provider CAD format
-  Standard_EXPORT virtual TCollection_AsciiString GetFormat() const override;
+  Standard_EXPORT virtual TCollection_AsciiString GetFormat() const Standard_OVERRIDE;
 
   //! Gets provider's vendor name of associated provider
   //! @return provider's vendor name
-  Standard_EXPORT virtual TCollection_AsciiString GetVendor() const override;
+  Standard_EXPORT virtual TCollection_AsciiString GetVendor() const Standard_OVERRIDE;
 
 private:
   //! Personizes work session with current format.

@@ -74,15 +74,15 @@ public:
 
   //! Returns true if the Interactive Objects in the relation
   //! are movable.
-  virtual Standard_Boolean IsMovable() const override { return Standard_True; }
+  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
 
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! computes the presentation for <myFixShape> if it's a vertex.
   Standard_EXPORT void ComputeVertex(const TopoDS_Vertex& FixVertex, gp_Pnt& curpos);

@@ -57,7 +57,7 @@ public:                                                                         
                               Base::get_type_descriptor());                                        \
     return THE_TYPE_INSTANCE;                                                                      \
   }                                                                                                \
-  virtual const Handle(Standard_Type)& DynamicType() const override                       \
+  virtual const Handle(Standard_Type)& DynamicType() const Standard_OVERRIDE                       \
   {                                                                                                \
     return get_type_descriptor();                                                                  \
   }
@@ -75,7 +75,7 @@ public:                                                                         
     return #Class;                                                                                 \
   }                                                                                                \
   Standard_EXPORT static const Handle(Standard_Type)&  get_type_descriptor();                      \
-  Standard_EXPORT virtual const Handle(Standard_Type)& DynamicType() const override;
+  Standard_EXPORT virtual const Handle(Standard_Type)& DynamicType() const Standard_OVERRIDE;
 
 //! Defines implementation of type descriptor and DynamicType() function
 #define IMPLEMENT_STANDARD_RTTIEXT(Class, Base)                                                    \

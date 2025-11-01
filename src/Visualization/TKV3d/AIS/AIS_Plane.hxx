@@ -82,9 +82,9 @@ public:
   //! Returns true if transform persistence for zoom is set
   Standard_EXPORT Standard_Boolean HasMinimumSize() const;
 
-  virtual Standard_Integer Signature() const override { return 7; }
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 7; }
 
-  virtual AIS_KindOfInteractive Type() const override
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
   {
     return AIS_KindOfInteractive_Datum;
   }
@@ -148,11 +148,11 @@ public:
 
   //! Returns true if the display mode selected, aMode, is valid for planes.
   Standard_EXPORT virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer aMode) const
-    override;
+    Standard_OVERRIDE;
 
   //! connection to <aCtx> default drawer implies a recomputation of Frame values.
   Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& aCtx)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns the type of sensitivity for the plane;
   Select3D_TypeOfSensitivity TypeOfSensitivity() const { return myTypeOfSensitivity; }
@@ -164,16 +164,16 @@ public:
   }
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& aColor) Standard_OVERRIDE;
 
-  Standard_EXPORT void UnsetColor() override;
+  Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
 
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT void ComputeFrame();
 

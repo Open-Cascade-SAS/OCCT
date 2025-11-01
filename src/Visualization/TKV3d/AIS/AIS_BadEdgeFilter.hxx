@@ -38,10 +38,10 @@ public:
   Standard_EXPORT AIS_BadEdgeFilter();
 
   Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aType) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
-    override;
+    Standard_OVERRIDE;
 
   //! sets  <myContour> with  current  contour. used  by
   //! IsOk.

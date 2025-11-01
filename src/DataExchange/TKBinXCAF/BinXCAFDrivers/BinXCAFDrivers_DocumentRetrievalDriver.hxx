@@ -34,7 +34,7 @@ public:
   Standard_EXPORT BinXCAFDrivers_DocumentRetrievalDriver();
 
   Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) override;
+    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,
                           BinDrivers_DocumentRetrievalDriver)

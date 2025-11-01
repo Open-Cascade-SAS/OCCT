@@ -30,7 +30,7 @@
                                                                                                    \
   class C1 : public C2                                                                             \
   {                                                                                                \
-    void Throw() const override                                                           \
+    void Throw() const Standard_OVERRIDE                                                           \
     {                                                                                              \
       throw *this;                                                                                 \
     }                                                                                              \

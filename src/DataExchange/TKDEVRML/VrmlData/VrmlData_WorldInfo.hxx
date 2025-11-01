@@ -68,22 +68,22 @@ public:
    * is not created, but rather the given one is modified.
    */
   Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
-    override;
+    Standard_OVERRIDE;
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Write the Node to the Scene output.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
 
   /**
    * Returns True if the node is default, then it would not be written.
    */
-  Standard_EXPORT virtual Standard_Boolean IsDefault() const override;
+  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
 
 private:
   // ---------- PRIVATE FIELDS ----------

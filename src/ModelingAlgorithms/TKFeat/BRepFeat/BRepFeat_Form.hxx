@@ -69,14 +69,14 @@ public:
 
   //! returns the list of generated Faces.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& F)
-    override;
+    Standard_OVERRIDE;
 
   //! returns a list of the created faces
   //! from the shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
 
   //! Returns the list  of shapes created  at the bottom  of
   //! the created form.  It may be an empty list.

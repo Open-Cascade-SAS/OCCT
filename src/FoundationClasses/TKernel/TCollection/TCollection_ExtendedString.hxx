@@ -98,7 +98,7 @@ public:
 
   //! Move constructor
   Standard_EXPORT TCollection_ExtendedString(TCollection_ExtendedString&& theOther)
-    noexcept;
+    Standard_Noexcept;
 
   //! Creation by converting an Ascii string to an extended
   //! string. The string is treated as having UTF-8 coding.

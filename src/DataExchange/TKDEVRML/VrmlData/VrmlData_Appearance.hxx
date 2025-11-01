@@ -80,21 +80,21 @@ public:
    * is not created, but rather the given one is modified.<p>
    */
   Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)&) const
-    override;
+    Standard_OVERRIDE;
   /**
    * Read the node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Write the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
 
   /**
    * Returns True if the node is default, so that it should not be written.
    */
-  Standard_EXPORT virtual Standard_Boolean IsDefault() const override;
+  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
 
 protected:
   // ---------- PROTECTED METHODS ----------

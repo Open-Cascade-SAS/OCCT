@@ -45,12 +45,12 @@ public:
   Standard_EXPORT STEPControl_ActorWrite();
 
   Standard_EXPORT virtual Standard_Boolean Recognize(const Handle(Transfer_Finder)& start)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
     const Handle(Transfer_Finder)&        start,
     const Handle(Transfer_FinderProcess)& FP,
-    const Message_ProgressRange&          theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&          theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   Standard_EXPORT Handle(Transfer_Binder) TransferSubShape(
     const Handle(Transfer_Finder)&                         start,

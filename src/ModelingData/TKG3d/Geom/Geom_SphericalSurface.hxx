@@ -110,13 +110,13 @@ public:
   //! surface, when reversing its u  parametric
   //! direction, for any point of u parameter U on this sphere.
   //! In the case of a sphere, these functions returns 2.PI - U.
-  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const override;
+  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Computes the v parameter on the modified
   //! surface, when reversing its v parametric
   //! direction, for any point of v parameter V on this sphere.
   //! In the case of a sphere, these functions returns   -U.
-  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const override;
+  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
 
   //! Computes the area of the spherical surface.
   Standard_EXPORT Standard_Real Area() const;
@@ -126,7 +126,7 @@ public:
   Standard_EXPORT void Bounds(Standard_Real& U1,
                               Standard_Real& U2,
                               Standard_Real& V1,
-                              Standard_Real& V2) const override;
+                              Standard_Real& V2) const Standard_OVERRIDE;
 
   //! Returns the coefficients of the implicit equation of the
   //! quadric in the absolute cartesian coordinates system :
@@ -156,16 +156,16 @@ public:
   Standard_EXPORT Standard_Real Volume() const;
 
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsUClosed() const override;
+  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
 
   //! Returns False.
-  Standard_EXPORT Standard_Boolean IsVClosed() const override;
+  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
 
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const override;
+  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
 
   //! Returns False.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const override;
+  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
 
   //! Computes the U isoparametric curve.
   //! The U isoparametric curves of the surface are defined by the
@@ -174,7 +174,7 @@ public:
   //! defines the origin of parametrization u.
   //! For a SphericalSurface the UIso curve is a Circle.
   //! Warnings : The radius of this circle can be zero.
-  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const override;
+  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Computes the V isoparametric curve.
   //! The V isoparametric curves of the surface  are defined by
@@ -186,7 +186,7 @@ public:
   //! create circle with radius = 0.0
   //! For a SphericalSurface the VIso curve is a Circle.
   //! Warnings : The radius of this circle can be zero.
-  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const override;
+  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
 
   //! Computes the  point P (U, V) on the surface.
   //! P (U, V) = Loc + Radius * Sin (V) * Zdir +
@@ -196,7 +196,7 @@ public:
   //! the YAxis and ZDir the direction of the ZAxis.
   Standard_EXPORT void D0(const Standard_Real U,
                           const Standard_Real V,
-                          gp_Pnt&             P) const override;
+                          gp_Pnt&             P) const Standard_OVERRIDE;
 
   //! Computes the current point and the first derivatives in the
   //! directions U and V.
@@ -204,7 +204,7 @@ public:
                           const Standard_Real V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
-                          gp_Vec&             D1V) const override;
+                          gp_Vec&             D1V) const Standard_OVERRIDE;
 
   //! Computes the current point, the first and the second derivatives
   //! in the directions U and V.
@@ -215,7 +215,7 @@ public:
                           gp_Vec&             D1V,
                           gp_Vec&             D2U,
                           gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const override;
+                          gp_Vec&             D2UV) const Standard_OVERRIDE;
 
   //! Computes the current point, the first,the second and the third
   //! derivatives in the directions U and V.
@@ -230,7 +230,7 @@ public:
                           gp_Vec&             D3U,
                           gp_Vec&             D3V,
                           gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const override;
+                          gp_Vec&             D3UVV) const Standard_OVERRIDE;
 
   //! Computes the derivative of order Nu in the direction u
   //! and Nv in the direction v.
@@ -238,17 +238,17 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Real    V,
                             const Standard_Integer Nu,
-                            const Standard_Integer Nv) const override;
+                            const Standard_Integer Nv) const Standard_OVERRIDE;
 
   //! Applies the transformation T to this sphere.
-  Standard_EXPORT void Transform(const gp_Trsf& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
   //! Creates a new object which is a copy of this sphere.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom_SphericalSurface, Geom_ElementarySurface)
 

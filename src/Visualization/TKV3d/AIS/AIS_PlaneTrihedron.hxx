@@ -72,18 +72,18 @@ public:
 
   //! Returns true if the display mode selected, aMode, is valid.
   Standard_EXPORT Standard_Boolean
-    AcceptDisplayMode(const Standard_Integer aMode) const override;
+    AcceptDisplayMode(const Standard_Integer aMode) const Standard_OVERRIDE;
 
-  virtual Standard_Integer Signature() const override { return 4; }
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 4; }
 
   //! Returns datum as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const override
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
   {
     return AIS_KindOfInteractive_Datum;
   }
 
   //! Allows you to provide settings for the color aColor.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
 
   void SetXLabel(const TCollection_AsciiString& theLabel) { myXLabel = theLabel; }
 
@@ -92,11 +92,11 @@ public:
 protected:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& theprsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
 private:
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
 private:
   Handle(Geom_Plane)            myPlane;

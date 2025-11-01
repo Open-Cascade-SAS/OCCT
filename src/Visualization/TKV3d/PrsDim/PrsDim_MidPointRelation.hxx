@@ -35,7 +35,7 @@ public:
                                           const TopoDS_Shape&       SecondShape,
                                           const Handle(Geom_Plane)& aPlane);
 
-  virtual Standard_Boolean IsMovable() const override { return Standard_True; }
+  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
 
   void SetTool(const TopoDS_Shape& aMidPointTool) { myTool = aMidPointTool; }
 
@@ -44,10 +44,10 @@ public:
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT void ComputeFaceFromPnt(const Handle(Prs3d_Presentation)& aprs,
                                           const Standard_Boolean            first);

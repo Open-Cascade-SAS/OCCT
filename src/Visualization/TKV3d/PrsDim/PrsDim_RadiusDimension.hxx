@@ -107,33 +107,33 @@ public:
                                            const Standard_Boolean theHasAnchor = Standard_True);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const Standard_OVERRIDE;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
+  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
+  Standard_EXPORT virtual gp_Pnt GetTextPosition() const Standard_OVERRIDE;
 
 protected:
   Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if anchor point and the center of the circle are on the plane.
   Standard_EXPORT virtual Standard_Boolean CheckPlane(const gp_Pln& thePlane) const
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Real ComputeValue() const override;
+  Standard_EXPORT virtual Standard_Real ComputeValue() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected:
   Standard_EXPORT Standard_Boolean IsValidCircle(const gp_Circ& theCircle) const;

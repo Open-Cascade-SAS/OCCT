@@ -40,19 +40,19 @@ public:
   //! the valid label scope.
   //! execution of function
   //! ======================
-  Standard_EXPORT virtual void Validate(Handle(TFunction_Logbook)& theLog) const override;
+  Standard_EXPORT virtual void Validate(Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
 
   //! Analyse in <log> if the loaded function must be executed
   //! (i.e.arguments are modified) or not.
   //! If the Function label itself is modified, the function must
   //! be executed.
   Standard_EXPORT virtual Standard_Boolean MustExecute(
-    const Handle(TFunction_Logbook)& theLog) const override;
+    const Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
 
   //! Execute the function and push in <log> the impacted
   //! labels (see method SetImpacted).
   Standard_EXPORT virtual Standard_Integer Execute(Handle(TFunction_Logbook)& theLog) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(DNaming_SelectionDriver, TFunction_Driver)
 

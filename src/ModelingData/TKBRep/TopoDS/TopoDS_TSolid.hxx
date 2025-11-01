@@ -38,10 +38,10 @@ public:
   }
 
   //! returns SOLID.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
   //! Returns an empty TSolid.
-  Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const override;
+  Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TSolid, TopoDS_TShape)
 };

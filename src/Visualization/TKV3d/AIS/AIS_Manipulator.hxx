@@ -197,7 +197,7 @@ public:
     const Handle(SelectMgr_EntityOwner)&  theOwner,
     const Graphic3d_Vec2i&                theDragFrom,
     const Graphic3d_Vec2i&                theDragTo,
-    const AIS_DragAction                  theAction) override;
+    const AIS_DragAction                  theAction) Standard_OVERRIDE;
 
   //! Init start (reference) transformation.
   //! @warning It is used in chain with StartTransform-Transform(gp_Trsf)-StopTransform
@@ -219,7 +219,7 @@ public:
 
   //! Apply camera transformation to flat skin manipulator
   Standard_EXPORT void RecomputeTransformation(const Handle(Graphic3d_Camera)& theCamera)
-    override;
+    Standard_OVERRIDE;
 
   //! Recomputes sensitive primitives for the given selection mode.
   //! @param theMode selection mode to recompute sensitive primitives
@@ -309,7 +309,7 @@ public: //! @name Configuration of graphical transformations
   //! @warning revise use of AdjustSize argument of of \sa AttachToObjects method
   //! when enabling zoom persistence.
   Standard_EXPORT virtual void SetTransformPersistence(
-    const Handle(Graphic3d_TransformPers)& theTrsfPers) override;
+    const Handle(Graphic3d_TransformPers)& theTrsfPers) Standard_OVERRIDE;
 
 public: //! @name Setters for parameters
   enum ManipulatorSkin
@@ -398,32 +398,32 @@ public: //! @name Presentation computation
   //! presentation.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode = 0) override;
+                                       const Standard_Integer theMode = 0) Standard_OVERRIDE;
 
   //! Computes selection sensitive zones (triangulation) for manipulator.
   //! @param[in] theNode  Selection mode that is treated as transformation mode.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden
   //! methods.
-  virtual Standard_Boolean IsAutoHilight() const override { return Standard_False; }
+  virtual Standard_Boolean IsAutoHilight() const Standard_OVERRIDE { return Standard_False; }
 
   //! Method which clear all selected owners belonging
   //! to this selectable object ( for fast presentation draw ).
-  Standard_EXPORT virtual void ClearSelected() override;
+  Standard_EXPORT virtual void ClearSelected() Standard_OVERRIDE;
 
   //! Method which draws selected owners ( for fast presentation draw ).
   Standard_EXPORT virtual void HilightSelected(const Handle(PrsMgr_PresentationManager)& thePM,
                                                const SelectMgr_SequenceOfOwner&          theSeq)
-    override;
+    Standard_OVERRIDE;
 
   //! Method which hilight an owner belonging to
   //! this selectable object  ( for fast presentation draw ).
   Standard_EXPORT virtual void HilightOwnerWithColor(
     const Handle(PrsMgr_PresentationManager)& thePM,
     const Handle(Prs3d_Drawer)&               theStyle,
-    const Handle(SelectMgr_EntityOwner)&      theOwner) override;
+    const Handle(SelectMgr_EntityOwner)&      theOwner) Standard_OVERRIDE;
 
 protected:
   Standard_EXPORT void init();
@@ -451,7 +451,7 @@ protected:
   //! @warning Invokes debug assertion in debug to catch incompatible usage of the
   //! method, silently does nothing in release mode.
   Standard_EXPORT virtual void setLocalTransformation(const Handle(TopLoc_Datum3D)& theTrsf)
-    override;
+    Standard_OVERRIDE;
   using AIS_InteractiveObject::SetLocalTransformation; // hide visibility
 
 protected: //! @name Auxiliary classes to fill presentation with proper primitives

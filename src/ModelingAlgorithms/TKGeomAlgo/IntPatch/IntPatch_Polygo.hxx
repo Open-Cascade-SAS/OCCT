@@ -36,15 +36,15 @@ public:
   Standard_EXPORT virtual gp_Pnt2d Point(const Standard_Integer Index) const = 0;
 
   //! Returns the tolerance of the polygon.
-  virtual Standard_Real DeflectionOverEstimation() const override;
+  virtual Standard_Real DeflectionOverEstimation() const Standard_OVERRIDE;
 
   //! Returns the number of Segments in the polyline.
-  virtual Standard_Integer NbSegments() const override;
+  virtual Standard_Integer NbSegments() const Standard_OVERRIDE;
 
   //! Returns the points of the segment <Index> in the Polygon.
   virtual void Segment(const Standard_Integer theIndex,
                        gp_Pnt2d&              theBegin,
-                       gp_Pnt2d&              theEnd) const override;
+                       gp_Pnt2d&              theEnd) const Standard_OVERRIDE;
 
   Standard_EXPORT void Dump() const;
 

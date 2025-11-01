@@ -65,12 +65,12 @@ public:
 
   Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
                                                 const Handle(Prs3d_Drawer)&               theColor,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& PM,
-                                         const Standard_Integer Mode = 0) override;
+                                         const Standard_Integer Mode = 0) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean IsForcedHilight() const override;
+  Standard_EXPORT virtual Standard_Boolean IsForcedHilight() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_MeshOwner, SelectMgr_EntityOwner)
 

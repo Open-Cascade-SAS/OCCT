@@ -45,7 +45,7 @@ public:
   //! Sets tolerance.
   Standard_EXPORT void SetTolerance(const Standard_Real Tol);
 
-  Standard_EXPORT virtual void Compute(const Standard_Boolean Segment) override;
+  Standard_EXPORT virtual void Compute(const Standard_Boolean Segment) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceContinuity, ShapeUpgrade_SplitSurface)
 

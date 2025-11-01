@@ -40,7 +40,7 @@ protected:
                                                        const TCollection_AsciiString& theFile,
                                                        const Message_ProgressRange&   theProgress,
                                                        const Standard_Boolean         theToProbe)
-    override;
+    Standard_OVERRIDE;
 
 protected:
   //! Create reader context.
@@ -56,7 +56,7 @@ protected:
                                               const TCollection_AsciiString& theName,
                                               const RWObj_Material*          theMaterial,
                                               const Standard_Boolean         theIsRootShape)
-    override;
+    Standard_OVERRIDE;
 
 protected:
   NCollection_DataMap<TCollection_AsciiString, Handle(XCAFDoc_VisMaterial)> myObjMaterialMap;

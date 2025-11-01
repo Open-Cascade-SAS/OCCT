@@ -50,7 +50,7 @@ public: //! @name Rejection/Acceptance rules
   //! Checks if the box should be rejected
   virtual Standard_Boolean RejectNode(const BVH_VecNd&  theCMin,
                                       const BVH_VecNd&  theCMax,
-                                      Standard_Boolean& theIsInside) const override
+                                      Standard_Boolean& theIsInside) const Standard_OVERRIDE
   {
     Standard_Boolean hasOverlap;
     theIsInside = myBox.Contains(theCMin, theCMax, hasOverlap);
@@ -64,14 +64,14 @@ public: //! @name Rejection/Acceptance rules
   }
 
   //! Checks if the metric of the node may be accepted
-  virtual Standard_Boolean AcceptMetric(const Standard_Boolean& theIsInside) const override
+  virtual Standard_Boolean AcceptMetric(const Standard_Boolean& theIsInside) const Standard_OVERRIDE
   {
     return theIsInside;
   }
 
   //! Accepts the element with the index <theIndex> in BVH tree
   virtual Standard_Boolean Accept(const Standard_Integer  theIndex,
-                                  const Standard_Boolean& theIsInside) override
+                                  const Standard_Boolean& theIsInside) Standard_OVERRIDE
   {
     if (theIsInside || !RejectElement(theIndex))
     {

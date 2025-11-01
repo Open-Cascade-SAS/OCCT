@@ -29,13 +29,13 @@ public:
   Standard_EXPORT NCollection_AlignedAllocator(const size_t theAlignment);
 
   //! Allocate memory with given size. Returns NULL on failure.
-  Standard_EXPORT virtual void* Allocate(const size_t theSize) override;
+  Standard_EXPORT virtual void* Allocate(const size_t theSize) Standard_OVERRIDE;
 
   //! Allocate memory with given size. Returns NULL on failure.
-  void* AllocateOptimal(const size_t theSize) override { return Allocate(theSize); }
+  void* AllocateOptimal(const size_t theSize) Standard_OVERRIDE { return Allocate(theSize); }
 
   //! Free a previously allocated memory.
-  Standard_EXPORT virtual void Free(void* thePtr) override;
+  Standard_EXPORT virtual void Free(void* thePtr) Standard_OVERRIDE;
 
 private:
   NCollection_AlignedAllocator(const NCollection_AlignedAllocator&);

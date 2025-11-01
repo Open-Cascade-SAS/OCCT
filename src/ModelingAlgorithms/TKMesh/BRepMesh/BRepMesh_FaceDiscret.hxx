@@ -40,7 +40,7 @@ protected:
   Standard_EXPORT virtual Standard_Boolean performInternal(
     const Handle(IMeshData_Model)& theModel,
     const IMeshTools_Parameters&   theParameters,
-    const Message_ProgressRange&   theRange) override;
+    const Message_ProgressRange&   theRange) Standard_OVERRIDE;
 
 private:
   //! Checks existing discretization of the face and updates data model.

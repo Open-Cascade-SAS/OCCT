@@ -40,11 +40,11 @@ public:
 
   Standard_EXPORT Transfer_TransientListBinder(const Handle(TColStd_HSequenceOfTransient)& list);
 
-  Standard_EXPORT virtual Standard_Boolean IsMultiple() const override;
+  Standard_EXPORT virtual Standard_Boolean IsMultiple() const Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(Standard_Type) ResultType() const override;
+  Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_CString ResultTypeName() const override;
+  Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
 
   //! Adds an item to the result list
   Standard_EXPORT void AddResult(const Handle(Standard_Transient)& res);

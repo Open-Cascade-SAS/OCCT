@@ -117,7 +117,7 @@ public:
                                            const Handle(Interface_Protocol)& protocol,
                                            Interface_CheckIterator&          checks,
                                            Handle(Interface_InterfaceModel)& newmod)
-    override;
+    Standard_OVERRIDE;
 
   //! This the first operation. It calls StandardCopy or OnTheSpot
   //! according the option
@@ -155,12 +155,12 @@ public:
   //! which was filled by Perform.
   Standard_EXPORT Standard_Boolean
     Updated(const Handle(Standard_Transient)& entfrom,
-            Handle(Standard_Transient)&       entto) const override;
+            Handle(Standard_Transient)&       entto) const Standard_OVERRIDE;
 
   //! Returns a text which defines the way a Transformer works :
   //! "On the spot edition" or "Standard Copy" followed by
   //! "<nn> Modifiers"
-  Standard_EXPORT TCollection_AsciiString Label() const override;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_TransformStandard, IFSelect_Transformer)
 

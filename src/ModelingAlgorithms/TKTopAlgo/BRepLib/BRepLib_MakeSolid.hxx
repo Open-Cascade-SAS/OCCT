@@ -66,7 +66,7 @@ public:
   //! returns the status of the Face after
   //! the shape creation.
   Standard_EXPORT virtual BRepLib_ShapeModification FaceStatus(const TopoDS_Face& F) const
-    override;
+    Standard_OVERRIDE;
 
 protected:
   TopTools_ListOfShape myDeletedFaces;

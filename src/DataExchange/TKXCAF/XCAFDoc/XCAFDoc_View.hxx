@@ -43,7 +43,7 @@ public:
 
   Standard_EXPORT static Handle(XCAFDoc_View) Set(const TDF_Label& theLabel);
 
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
   //! Updates parent's label and its sub-labels with data taken from theViewObject.
   //! Old data associated with the label will be lost.

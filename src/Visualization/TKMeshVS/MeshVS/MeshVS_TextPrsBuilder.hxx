@@ -48,7 +48,7 @@ public:
                                      const TColStd_PackedMapOfInteger& IDs,
                                      TColStd_PackedMapOfInteger&       IDsToExclude,
                                      const Standard_Boolean            IsElement,
-                                     const Standard_Integer theDisplayMode) const override;
+                                     const Standard_Integer theDisplayMode) const Standard_OVERRIDE;
 
   //! Returns map of text assigned with nodes ( IsElement = False ) or elements ( IsElement = True )
   Standard_EXPORT const MeshVS_DataMapOfIntegerAsciiString& GetTexts(

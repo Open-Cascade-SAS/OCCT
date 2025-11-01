@@ -41,7 +41,7 @@ protected:
   typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(BVH_Set<T, N>*         theSet,
                                                             BVH_Tree<T, N>*        theBVH,
                                                             const Standard_Integer theNode) const
-    override
+    Standard_OVERRIDE
   {
     const Standard_Integer aNodeBegPrimitive = theBVH->BegPrimitive(theNode);
     const Standard_Integer aNodeEndPrimitive = theBVH->EndPrimitive(theNode);

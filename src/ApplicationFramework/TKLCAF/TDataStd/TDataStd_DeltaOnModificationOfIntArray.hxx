@@ -36,7 +36,7 @@ public:
   Standard_EXPORT TDataStd_DeltaOnModificationOfIntArray(const Handle(TDataStd_IntegerArray)& Arr);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() override;
+  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntArray, TDF_DeltaOnModification)
 

@@ -80,14 +80,14 @@ public:
                             const Standard_Real    aFrontPlaneDistance);
 
   //! Returns True (for a single view)
-  Standard_EXPORT Standard_Boolean IsSingle() const override;
+  Standard_EXPORT Standard_Boolean IsSingle() const Standard_OVERRIDE;
 
   //! Returns 1 (single view)
-  Standard_EXPORT Standard_Integer NbViews() const override;
+  Standard_EXPORT Standard_Integer NbViews() const Standard_OVERRIDE;
 
   //! For a single view, returns <me> whatever <num>
   Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem(const Standard_Integer num) const
-    override;
+    Standard_OVERRIDE;
 
   //! returns the view number associated with <me>
   Standard_EXPORT Standard_Integer ViewNumber() const;

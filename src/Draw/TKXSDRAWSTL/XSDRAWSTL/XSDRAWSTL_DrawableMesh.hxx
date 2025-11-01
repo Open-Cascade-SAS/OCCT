@@ -32,7 +32,7 @@ class XSDRAWSTL_DrawableMesh : public Draw_Drawable3D
 public:
   Standard_EXPORT XSDRAWSTL_DrawableMesh(const Handle(MeshVS_Mesh)& aMesh);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   Standard_EXPORT Handle(MeshVS_Mesh) GetMesh() const;
 

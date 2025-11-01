@@ -138,20 +138,20 @@ public:
                                          const TopoDS_Shape& theSecondShape);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const Standard_OVERRIDE;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
+  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
+  Standard_EXPORT virtual gp_Pnt GetTextPosition() const Standard_OVERRIDE;
 
   //! Set custom direction for dimension. If it is not set, the direction is obtained
   //! from the measured geometry (e.g. line between points of dimension)
@@ -164,19 +164,19 @@ public:
 protected:
   //! Checks if the plane includes first and second points to build dimension.
   Standard_EXPORT virtual Standard_Boolean CheckPlane(const gp_Pln& thePlane) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual gp_Pln ComputePlane(const gp_Dir& theAttachDir) const;
 
   //! Computes distance between dimension points. If custom direction is defined, the distance
   //! is a projection value of the distance between points to this direction
   //! @return dimension value
-  Standard_EXPORT Standard_Real ComputeValue() const override;
+  Standard_EXPORT Standard_Real ComputeValue() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Compute(
     const Handle(PrsMgr_PresentationManager)& thePresentationManager,
     const Handle(Prs3d_Presentation)&         thePresentation,
-    const Standard_Integer                    theMode = 0) override;
+    const Standard_Integer                    theMode = 0) Standard_OVERRIDE;
 
   //! Computes points bounded the flyout line for linear dimension.
   //! Direction of flyout line equal to the custom direction of dimension if defined or
@@ -188,11 +188,11 @@ protected:
   Standard_EXPORT virtual void ComputeFlyoutLinePoints(const gp_Pnt& theFirstPoint,
                                                        const gp_Pnt& theSecondPoint,
                                                        gp_Pnt&       theLineBegPoint,
-                                                       gp_Pnt& theLineEndPoint) override;
+                                                       gp_Pnt& theLineEndPoint) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeFlyoutSelection(
     const Handle(SelectMgr_Selection)&   theSelection,
-    const Handle(SelectMgr_EntityOwner)& theEntityOwner) override;
+    const Handle(SelectMgr_EntityOwner)& theEntityOwner) Standard_OVERRIDE;
 
 protected:
   //! Checks that distance between two points is valid.

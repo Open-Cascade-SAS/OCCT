@@ -65,7 +65,7 @@ public:
 
 public:
   //! Returns AABB of primitive set.
-  virtual BVH_Box<T, N> Box() const override
+  virtual BVH_Box<T, N> Box() const Standard_OVERRIDE
   {
     if (BVH_Object<T, N>::myIsDirty)
     {

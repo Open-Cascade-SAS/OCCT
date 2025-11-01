@@ -46,7 +46,7 @@ public:
                                    const Standard_Real       RadiusMax      = 1.0e3,
                                    const Standard_Real       RatioOfRadius  = 0.1);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   Handle(Geom_Curve) GetCurve() const { return curv; }
 
@@ -71,16 +71,16 @@ public:
   Standard_Real RadiusRatio() const { return radiusratio; }
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const override;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const override;
+  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
 
   //! For variable whatis command. Set as a result the type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
 
 protected:
   Handle(Geom_Curve) curv;

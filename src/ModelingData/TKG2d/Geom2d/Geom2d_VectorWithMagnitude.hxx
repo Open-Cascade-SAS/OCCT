@@ -57,10 +57,10 @@ public:
   Standard_EXPORT void SetY(const Standard_Real Y);
 
   //! Returns the magnitude of <me>.
-  Standard_EXPORT Standard_Real Magnitude() const override;
+  Standard_EXPORT Standard_Real Magnitude() const Standard_OVERRIDE;
 
   //! Returns the square magnitude of <me>.
-  Standard_EXPORT Standard_Real SquareMagnitude() const override;
+  Standard_EXPORT Standard_Real SquareMagnitude() const Standard_OVERRIDE;
 
   //! Adds the Vector Other to <me>.
   Standard_EXPORT void Add(const Handle(Geom2d_Vector)& Other);
@@ -68,10 +68,10 @@ public:
   void operator+=(const Handle(Geom2d_Vector)& Other) { Add(Other); }
 
   //! Adds the vector Other to <me>.
-  [[nodiscard]] Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Added(
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Added(
     const Handle(Geom2d_Vector)& Other) const;
 
-  [[nodiscard]] Handle(Geom2d_VectorWithMagnitude) operator+(
+  Standard_NODISCARD Handle(Geom2d_VectorWithMagnitude) operator+(
     const Handle(Geom2d_Vector)& Other) const
   {
     return Added(Other);
@@ -79,7 +79,7 @@ public:
 
   //! Computes the cross product  between <me> and Other
   //! <me> ^ Other. A new vector is returned.
-  Standard_EXPORT Standard_Real Crossed(const Handle(Geom2d_Vector)& Other) const override;
+  Standard_EXPORT Standard_Real Crossed(const Handle(Geom2d_Vector)& Other) const Standard_OVERRIDE;
 
   Standard_Real operator^(const Handle(Geom2d_Vector)& Other) const { return Crossed(Other); }
 
@@ -89,10 +89,10 @@ public:
   void operator/=(const Standard_Real Scalar) { Divide(Scalar); }
 
   //! Divides <me> by a scalar. A new vector is returned.
-  [[nodiscard]] Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Divided(
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Divided(
     const Standard_Real Scalar) const;
 
-  [[nodiscard]] Handle(Geom2d_VectorWithMagnitude) operator/(const Standard_Real Scalar) const
+  Standard_NODISCARD Handle(Geom2d_VectorWithMagnitude) operator/(const Standard_Real Scalar) const
   {
     return Divided(Scalar);
   }
@@ -102,7 +102,7 @@ public:
   //!
   //! -C++: alias operator *
   //! Collision with same operator defined for the class Vector!
-  [[nodiscard]] Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Multiplied(
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Multiplied(
     const Standard_Real Scalar) const;
 
   //! Computes the product of the vector <me> by a scalar.
@@ -120,7 +120,7 @@ public:
   //!
   //! Raised if the magnitude of the vector is lower or equal to
   //! Resolution from package gp.
-  [[nodiscard]] Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Normalized() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Normalized() const;
 
   //! Subtracts the Vector Other to <me>.
   Standard_EXPORT void Subtract(const Handle(Geom2d_Vector)& Other);
@@ -128,20 +128,20 @@ public:
   void operator-=(const Handle(Geom2d_Vector)& Other) { Subtract(Other); }
 
   //! Subtracts the vector Other to <me>. A new vector is returned.
-  [[nodiscard]] Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Subtracted(
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Subtracted(
     const Handle(Geom2d_Vector)& Other) const;
 
-  [[nodiscard]] Handle(Geom2d_VectorWithMagnitude) operator-(
+  Standard_NODISCARD Handle(Geom2d_VectorWithMagnitude) operator-(
     const Handle(Geom2d_Vector)& Other) const
   {
     return Subtracted(Other);
   }
 
   //! Applies the transformation T to this vector.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
 
   //! Creates a new object which is a copy of this vector.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const override;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_VectorWithMagnitude, Geom2d_Vector)
 

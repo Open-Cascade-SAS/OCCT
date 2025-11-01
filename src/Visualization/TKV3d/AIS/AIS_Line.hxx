@@ -38,10 +38,10 @@ public:
                            const Handle(Geom_Point)& aEndPoint);
 
   //! Returns the signature 5.
-  virtual Standard_Integer Signature() const override { return 5; }
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 5; }
 
   //! Returns the type Datum.
-  virtual AIS_KindOfInteractive Type() const override
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
   {
     return AIS_KindOfInteractive_Datum;
   }
@@ -73,25 +73,25 @@ public:
   }
 
   //! Provides a new color setting aColor for the line in the drawing tool, or "Drawer".
-  Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& aColor) Standard_OVERRIDE;
 
   //! Provides the new width setting aValue for the line in
   //! the drawing tool, or "Drawer".
-  Standard_EXPORT void SetWidth(const Standard_Real aValue) override;
+  Standard_EXPORT void SetWidth(const Standard_Real aValue) Standard_OVERRIDE;
 
   //! Removes the color setting and returns the original color.
-  Standard_EXPORT void UnsetColor() override;
+  Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
 
   //! Removes the width setting and returns the original width.
-  Standard_EXPORT void UnsetWidth() override;
+  Standard_EXPORT void UnsetWidth() Standard_OVERRIDE;
 
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT void ComputeInfiniteLine(const Handle(Prs3d_Presentation)& aPresentation);
 

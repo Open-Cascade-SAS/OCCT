@@ -36,10 +36,10 @@ public:
 
   //! Returns a Case Number for each of the HeaderSection Entities
   Standard_EXPORT virtual Standard_Integer TypeNumber(const Handle(Standard_Type)& atype) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_CString SchemaName(const Handle(Interface_InterfaceModel)&) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(HeaderSection_Protocol, StepData_Protocol)
 

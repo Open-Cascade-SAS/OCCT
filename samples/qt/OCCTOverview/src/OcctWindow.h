@@ -60,44 +60,44 @@ public:
   }
 
   //! Returns native Window handle
-  virtual Aspect_Drawable NativeHandle() const override
+  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE
   {
     return (Aspect_Drawable)myWidget->winId();
   }
 
   //! Returns parent of native Window handle.
-  virtual Aspect_Drawable NativeParentHandle() const override;
+  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE;
 
   //! Applies the resizing to the window <me>
-  virtual Aspect_TypeOfResize DoResize() override;
+  virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE;
 
   //! Returns True if the window <me> is opened
   //! and False if the window is closed.
-  virtual Standard_Boolean IsMapped() const override
+  virtual Standard_Boolean IsMapped() const Standard_OVERRIDE
   {
     return !(myWidget->isMinimized() || myWidget->isHidden());
   }
 
   //! Apply the mapping change to the window <me>
   //! and returns TRUE if the window is mapped at screen.
-  virtual Standard_Boolean DoMapping() const override { return Standard_True; }
+  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE { return Standard_True; }
 
   //! Opens the window <me>.
-  virtual void Map() const override;
+  virtual void Map() const Standard_OVERRIDE;
 
   //! Closes the window <me>.
-  virtual void Unmap() const override;
+  virtual void Unmap() const Standard_OVERRIDE;
 
   virtual void Position( Standard_Integer& theX1, Standard_Integer& theY1,
-                         Standard_Integer& theX2, Standard_Integer& theY2 ) const override;
+                         Standard_Integer& theX2, Standard_Integer& theY2 ) const Standard_OVERRIDE;
 
   //! Returns The Window RATIO equal to the physical
   //! WIDTH/HEIGHT dimensions.
-  virtual Standard_Real Ratio() const override;
+  virtual Standard_Real Ratio() const Standard_OVERRIDE;
 
-  virtual void Size( Standard_Integer& theWidth, Standard_Integer& theHeight ) const override;
+  virtual void Size( Standard_Integer& theWidth, Standard_Integer& theHeight ) const Standard_OVERRIDE;
 
-  virtual Aspect_FBConfig NativeFBConfig() const override { return NULL; }
+  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
 
 protected:
   Standard_Integer myXLeft;

@@ -128,7 +128,7 @@ public:
 
   //! WriteOwnParams is redefined for FreeFormatEntity to take
   //! into account the supplementary information "Negative Pointer"
-  Standard_EXPORT virtual void WriteOwnParams(IGESData_IGESWriter& IW) const override;
+  Standard_EXPORT virtual void WriteOwnParams(IGESData_IGESWriter& IW) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_FreeFormatEntity, IGESData_UndefinedEntity)
 

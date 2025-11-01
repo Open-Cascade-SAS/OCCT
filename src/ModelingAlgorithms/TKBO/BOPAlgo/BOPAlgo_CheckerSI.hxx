@@ -42,7 +42,7 @@ public:
   Standard_EXPORT virtual ~BOPAlgo_CheckerSI();
 
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Sets the level of checking shape on self-interference.<br>
   //! It defines which interferences will be checked:<br>
@@ -59,7 +59,7 @@ public:
   Standard_EXPORT void SetLevelOfCheck(const Standard_Integer theLevel);
 
 protected:
-  Standard_EXPORT virtual void Init(const Message_ProgressRange& theRange) override;
+  Standard_EXPORT virtual void Init(const Message_ProgressRange& theRange) Standard_OVERRIDE;
 
   //! Treats the intersection results
   Standard_EXPORT void PostTreat();

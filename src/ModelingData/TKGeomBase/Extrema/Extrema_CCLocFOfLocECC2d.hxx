@@ -51,25 +51,25 @@ public:
 
   void SetTolerance(const Standard_Real theTol);
 
-  virtual Standard_Integer NbVariables() const override;
+  virtual Standard_Integer NbVariables() const Standard_OVERRIDE;
 
-  virtual Standard_Integer NbEquations() const override;
+  virtual Standard_Integer NbEquations() const Standard_OVERRIDE;
 
   //! Calculate Fi(U,V).
   Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& UV,
-                                                 math_Vector&       F) override;
+                                                 math_Vector&       F) Standard_OVERRIDE;
 
   //! Calculate Fi'(U,V).
   Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& UV,
-                                               math_Matrix&       DF) override;
+                                               math_Matrix&       DF) Standard_OVERRIDE;
 
   //! Calculate Fi(U,V) and Fi'(U,V).
   Standard_EXPORT Standard_Boolean Values(const math_Vector& UV,
                                           math_Vector&       F,
-                                          math_Matrix&       DF) override;
+                                          math_Matrix&       DF) Standard_OVERRIDE;
 
   //! Save the found extremum.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() override;
+  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
 
   //! Return the number of found extrema.
   Standard_Integer NbExt() const;

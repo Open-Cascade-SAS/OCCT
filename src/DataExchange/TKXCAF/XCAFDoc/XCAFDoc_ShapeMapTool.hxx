@@ -49,20 +49,20 @@ public:
   //! Sets representation (TopoDS_Shape) for top-level shape
   Standard_EXPORT void SetShape(const TopoDS_Shape& S);
 
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) override;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       into,
-                             const Handle(TDF_RelocationTable)& RT) const override;
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
   Standard_EXPORT const TopTools_IndexedMapOfShape& GetMap() const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_ShapeMapTool, TDF_Attribute)
 

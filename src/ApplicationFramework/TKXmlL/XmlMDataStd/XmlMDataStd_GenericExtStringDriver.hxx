@@ -34,18 +34,18 @@ public:
   Standard_EXPORT XmlMDataStd_GenericExtStringDriver(
     const Handle(Message_Messenger)& theMessageDriver);
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Handle(Standard_Type) SourceType() const override;
+  Standard_EXPORT virtual Handle(Standard_Type) SourceType() const Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Boolean
     Paste(const XmlObjMgt_Persistent&  Source,
           const Handle(TDF_Attribute)& Target,
-          XmlObjMgt_RRelocationTable&  RelocTable) const override;
+          XmlObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
                              XmlObjMgt_Persistent&        Target,
-                             XmlObjMgt_SRelocationTable&  RelocTable) const override;
+                             XmlObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XmlMDataStd_GenericExtStringDriver, XmlMDF_ADriver)
 

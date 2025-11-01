@@ -98,10 +98,10 @@ protected:
                                                        const TCollection_AsciiString& theFile,
                                                        const Message_ProgressRange&   theProgress,
                                                        const Standard_Boolean         theToProbe)
-    override;
+    Standard_OVERRIDE;
 
   //! Fill document with new root shapes.
-  Standard_EXPORT virtual void fillDocument() override;
+  Standard_EXPORT virtual void fillDocument() Standard_OVERRIDE;
 
   //! Append new shape into the document (recursively).
   Standard_EXPORT Standard_Boolean addShapeIntoDoc(CafDocumentTools&              theTools,

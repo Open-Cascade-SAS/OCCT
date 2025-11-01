@@ -266,20 +266,20 @@ public: //! @name keyboard input
   //! @param theTime event timestamp
   Standard_EXPORT virtual void KeyDown(Aspect_VKey theKey,
                                        double      theTime,
-                                       double      thePressure = 1.0) override;
+                                       double      thePressure = 1.0) Standard_OVERRIDE;
 
   //! Release key.
   //! Default implementation updates internal cache.
   //! @param theKey key pressed
   //! @param theTime event timestamp
-  Standard_EXPORT virtual void KeyUp(Aspect_VKey theKey, double theTime) override;
+  Standard_EXPORT virtual void KeyUp(Aspect_VKey theKey, double theTime) Standard_OVERRIDE;
 
   //! Simulate key up/down events from axis value.
   //! Default implementation updates internal cache.
   Standard_EXPORT virtual void KeyFromAxis(Aspect_VKey theNegative,
                                            Aspect_VKey thePositive,
                                            double      theTime,
-                                           double      thePressure) override;
+                                           double      thePressure) Standard_OVERRIDE;
 
   //! Fetch active navigation actions.
   Standard_EXPORT AIS_WalkDelta FetchNavigationKeys(Standard_Real theCrouchRatio,
@@ -352,7 +352,7 @@ public: //! @name mouse input
   //! @param theDelta mouse cursor position and delta
   //! @return TRUE if new event has been created or FALSE if existing one has been updated
   Standard_EXPORT virtual bool UpdateMouseScroll(const Aspect_ScrollDelta& theDelta)
-    override;
+    Standard_OVERRIDE;
 
   //! Handle mouse button press/release event.
   //! This method is expected to be called from UI thread.
@@ -365,7 +365,7 @@ public: //! @name mouse input
   Standard_EXPORT virtual bool UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
                                                   Aspect_VKeyMouse       theButtons,
                                                   Aspect_VKeyFlags       theModifiers,
-                                                  bool theIsEmulated) override;
+                                                  bool theIsEmulated) Standard_OVERRIDE;
 
   //! Handle mouse cursor movement event.
   //! This method is expected to be called from UI thread.
@@ -378,7 +378,7 @@ public: //! @name mouse input
   Standard_EXPORT virtual bool UpdateMousePosition(const Graphic3d_Vec2i& thePoint,
                                                    Aspect_VKeyMouse       theButtons,
                                                    Aspect_VKeyFlags       theModifiers,
-                                                   bool theIsEmulated) override;
+                                                   bool theIsEmulated) Standard_OVERRIDE;
 
   //! Handle mouse button click event (emulated by UpdateMouseButtons() while releasing single
   //! button). Note that as this method is called by UpdateMouseButtons(), it should be executed
@@ -417,7 +417,7 @@ public: //! @name multi-touch input
   Standard_EXPORT virtual void AddTouchPoint(Standard_Size          theId,
                                              const Graphic3d_Vec2d& thePnt,
                                              Standard_Boolean       theClearBefore = false)
-    override;
+    Standard_OVERRIDE;
 
   //! Remove touch point with the given ID.
   //! This method is expected to be called from UI thread.
@@ -426,7 +426,7 @@ public: //! @name multi-touch input
   //! @return TRUE if point has been removed
   Standard_EXPORT virtual bool RemoveTouchPoint(Standard_Size    theId,
                                                 Standard_Boolean theClearSelectPnts = false)
-    override;
+    Standard_OVERRIDE;
 
   //! Update touch point with the given ID.
   //! If point with specified ID was not registered before, it will be added.
@@ -434,31 +434,31 @@ public: //! @name multi-touch input
   //! @param theId touch unique identifier
   //! @param thePnt touch coordinates
   Standard_EXPORT virtual void UpdateTouchPoint(Standard_Size          theId,
-                                                const Graphic3d_Vec2d& thePnt) override;
+                                                const Graphic3d_Vec2d& thePnt) Standard_OVERRIDE;
 
   using Aspect_WindowInputListener::HasTouchPoints;
 
 public: //! @name 3d mouse input
   //! Process 3d mouse input event (redirects to translation, rotation and keys).
-  Standard_EXPORT virtual bool Update3dMouse(const WNT_HIDSpaceMouse& theEvent) override;
+  Standard_EXPORT virtual bool Update3dMouse(const WNT_HIDSpaceMouse& theEvent) Standard_OVERRIDE;
 
 public: //! @name resize events
   //! Handle expose event (window content has been invalidation and should be redrawn).
   //! Default implementation does nothing.
-  virtual void ProcessExpose() override {}
+  virtual void ProcessExpose() Standard_OVERRIDE {}
 
   //! Handle window resize event.
   //! Default implementation does nothing.
-  virtual void ProcessConfigure(bool theIsResized) override { (void)theIsResized; }
+  virtual void ProcessConfigure(bool theIsResized) Standard_OVERRIDE { (void)theIsResized; }
 
   //! Handle window input event immediately.
   //! Default implementation does nothing - input events are accumulated in internal buffer until
   //! explicit FlushViewEvents() call.
-  virtual void ProcessInput() override {}
+  virtual void ProcessInput() Standard_OVERRIDE {}
 
   //! Handle focus event.
   //! Default implementation resets cached input state (pressed keys).
-  virtual void ProcessFocus(bool theIsActivated) override
+  virtual void ProcessFocus(bool theIsActivated) Standard_OVERRIDE
   {
     if (!theIsActivated)
     {
@@ -468,7 +468,7 @@ public: //! @name resize events
 
   //! Handle window close event.
   //! Default implementation does nothing.
-  virtual void ProcessClose() override {}
+  virtual void ProcessClose() Standard_OVERRIDE {}
 
 public:
   using Aspect_WindowInputListener::EventTime;

@@ -93,13 +93,13 @@ public:
   //! - the reversed basis curve, whose parameter range is still [ 0.,1. ], and
   //! - the two trim values 1. - U2 (first parameter)
   //! and 1. - U1 (last parameter).
-  Standard_EXPORT void Reverse() override;
+  Standard_EXPORT void Reverse() Standard_OVERRIDE;
 
   //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
   //!
   //! returns UFirst + ULast - U
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const override;
+  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Changes this trimmed curve, by redefining the
   //! parameter values U1 and U2, which limit its basis curve.
@@ -136,7 +136,7 @@ public:
   //! C2 : continuity of the second derivative all along the Curve,
   //! C3 : continuity of the third derivative all along the Curve,
   //! CN : the order of continuity is infinite.
-  Standard_EXPORT GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
   //! --- Purpose
   //! Returns True if the order of continuity of the
@@ -146,34 +146,34 @@ public:
   //! the continuity of the basis curve because you consider
   //! only a part of the basis curve.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const override;
+  Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const Standard_OVERRIDE;
 
   //! Returns the end point of <me>. This point is the
   //! evaluation of the curve for the "LastParameter".
-  Standard_EXPORT gp_Pnt2d EndPoint() const override;
+  Standard_EXPORT gp_Pnt2d EndPoint() const Standard_OVERRIDE;
 
   //! Returns the value of the first parameter of <me>.
   //! The first parameter is the parameter of the "StartPoint"
   //! of the trimmed curve.
-  Standard_EXPORT Standard_Real FirstParameter() const override;
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
   //! Returns True if the distance between the StartPoint and
   //! the EndPoint is lower or equal to Resolution from package
   //! gp.
-  Standard_EXPORT Standard_Boolean IsClosed() const override;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
 
   //! Always returns FALSE (independently of the type of basis curve).
-  Standard_EXPORT Standard_Boolean IsPeriodic() const override;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
 
   //! Returns the period of the basis curve of this trimmed curve.
   //! Exceptions
   //! Standard_NoSuchObject if the basis curve is not periodic.
-  Standard_EXPORT virtual Standard_Real Period() const override;
+  Standard_EXPORT virtual Standard_Real Period() const Standard_OVERRIDE;
 
   //! Returns the value of the last parameter of <me>.
   //! The last parameter is the parameter of the "EndPoint" of the
   //! trimmed curve.
-  Standard_EXPORT Standard_Real LastParameter() const override;
+  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! Returns the start point of <me>.
   //! This point is the evaluation of the curve from the
@@ -182,28 +182,28 @@ public:
   //! Warnings :
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis curve.
-  Standard_EXPORT gp_Pnt2d StartPoint() const override;
+  Standard_EXPORT gp_Pnt2d StartPoint() const Standard_OVERRIDE;
 
   //! If the basis curve is an OffsetCurve sometimes it is not
   //! possible to do the evaluation of the curve at the parameter
   //! U (see class OffsetCurve).
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const override;
+  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
 
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
+  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
 
   //! Raised if the continuity of the curve is not C2.
   Standard_EXPORT void D2(const Standard_Real U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const override;
+                          gp_Vec2d&           V2) const Standard_OVERRIDE;
 
   //! Raised if the continuity of the curve is not C3.
   Standard_EXPORT void D3(const Standard_Real U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
                           gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const override;
+                          gp_Vec2d&           V3) const Standard_OVERRIDE;
 
   //! For the point of parameter U of this trimmed curve,
   //! computes the vector corresponding to the Nth derivative.
@@ -216,11 +216,11 @@ public:
   //! Standard_RangeError if N is less than 1.
   //! geometric transformations
   Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
-                              const Standard_Integer N) const override;
+                              const Standard_Integer N) const Standard_OVERRIDE;
 
   //! Applies the transformation T to this trimmed curve.
   //! Warning The basis curve is also modified.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
 
   //! Returns the parameter on the transformed curve for
   //! the transform of the point of parameter U on <me>.
@@ -234,7 +234,7 @@ public:
   //! This methods calls the basis curve method.
   Standard_EXPORT virtual Standard_Real TransformedParameter(const Standard_Real U,
                                                              const gp_Trsf2d&    T) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -248,14 +248,14 @@ public:
   //!
   //! This methods calls the basis curve method.
   Standard_EXPORT virtual Standard_Real ParametricTransformation(const gp_Trsf2d& T) const
-    override;
+    Standard_OVERRIDE;
 
   //! Creates a new object, which is a copy of this trimmed curve.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const override;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_TrimmedCurve, Geom2d_BoundedCurve)
 

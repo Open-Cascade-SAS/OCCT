@@ -4861,10 +4861,10 @@ public:
 private:
   virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                        const Handle(Prs3d_Presentation)&         thePrs,
-                       const Standard_Integer                    theMode) override;
+                       const Standard_Integer                    theMode) Standard_OVERRIDE;
 
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)&,
-                                const Standard_Integer) override
+                                const Standard_Integer) Standard_OVERRIDE
   {
   }
 
@@ -5819,7 +5819,7 @@ public:
   }
 
   //! Returns TRUE for accepted display modes.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return theMode == 0 || theMode == 1;
   }
@@ -5827,7 +5827,7 @@ public:
   //! Compute presentation.
   virtual void Compute(const Handle(PrsMgr_PresentationManager)&,
                        const Handle(Prs3d_Presentation)& thePrs,
-                       const Standard_Integer            theMode) override
+                       const Standard_Integer            theMode) Standard_OVERRIDE
   {
     switch (theMode)
     {
@@ -5854,7 +5854,7 @@ public:
 
   //! Compute selection.
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                const Standard_Integer             theMode) override
+                                const Standard_Integer             theMode) Standard_OVERRIDE
   {
     if (theMode == 0)
     {
@@ -6576,7 +6576,7 @@ public:
 
 protected:
   //! Evaluate the command.
-  virtual void update(const AIS_AnimationProgress& theProgress) override
+  virtual void update(const AIS_AnimationProgress& theProgress) Standard_OVERRIDE
   {
     TCollection_AsciiString aCmd = myCommand;
     replace(aCmd, "%pts", TCollection_AsciiString(theProgress.Pts));
@@ -6649,7 +6649,7 @@ public:
   virtual void StartTimer(const Standard_Real    theStartPts,
                           const Standard_Real    thePlaySpeed,
                           const Standard_Boolean theToUpdate,
-                          const Standard_Boolean theToStopTimer) override
+                          const Standard_Boolean theToStopTimer) Standard_OVERRIDE
   {
     base_type::StartTimer(theStartPts, thePlaySpeed, theToUpdate, theToStopTimer);
     if (theToStopTimer)
@@ -6659,7 +6659,7 @@ public:
   }
 
   //! Pause animation.
-  virtual void Pause() override
+  virtual void Pause() Standard_OVERRIDE
   {
     myState = AnimationState_Paused;
     // default implementation would stop all children,
@@ -6669,7 +6669,7 @@ public:
   }
 
   //! Stop animation.
-  virtual void Stop() override
+  virtual void Stop() Standard_OVERRIDE
   {
     base_type::Stop();
     abortPlayback();
@@ -6677,7 +6677,7 @@ public:
 
   //! Process one step of the animation according to the input time progress, including all
   //! children.
-  virtual void updateWithChildren(const AIS_AnimationProgress& thePosition) override
+  virtual void updateWithChildren(const AIS_AnimationProgress& thePosition) Standard_OVERRIDE
   {
     Handle(V3d_View) aView = myView;
     if (!aView.IsNull() && !myCamStart.IsNull())

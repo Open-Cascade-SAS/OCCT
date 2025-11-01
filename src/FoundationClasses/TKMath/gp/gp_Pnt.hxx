@@ -150,24 +150,24 @@ public:
   //! Performs the symmetrical transformation of a point
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  [[nodiscard]] Standard_EXPORT gp_Pnt Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored(const gp_Pnt& theP) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
   //! Performs the symmetrical transformation of a point
   //! with respect to a plane. The axis placement theA2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  [[nodiscard]] Standard_EXPORT gp_Pnt Mirrored(const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored(const gp_Ax1& theA1) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
   //! Rotates a point. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  [[nodiscard]] Standard_EXPORT gp_Pnt Mirrored(const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored(const gp_Ax2& theA2) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng);
 
-  [[nodiscard]] gp_Pnt Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  Standard_NODISCARD gp_Pnt Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
     gp_Pnt aP = *this;
     aP.Rotate(theA1, theAng);
@@ -177,7 +177,7 @@ public:
   //! Scales a point. theS is the scaling value.
   constexpr void Scale(const gp_Pnt& theP, const Standard_Real theS) noexcept;
 
-  [[nodiscard]] constexpr gp_Pnt Scaled(const gp_Pnt&       theP,
+  Standard_NODISCARD constexpr gp_Pnt Scaled(const gp_Pnt&       theP,
                                              const Standard_Real theS) const noexcept
   {
     gp_Pnt aPres = *this;
@@ -188,7 +188,7 @@ public:
   //! Transforms a point with the transformation T.
   Standard_EXPORT void Transform(const gp_Trsf& theT);
 
-  [[nodiscard]] gp_Pnt Transformed(const gp_Trsf& theT) const
+  Standard_NODISCARD gp_Pnt Transformed(const gp_Trsf& theT) const
   {
     gp_Pnt aP = *this;
     aP.Transform(theT);
@@ -199,7 +199,7 @@ public:
   //! The magnitude of the translation is the vector's magnitude.
   constexpr void Translate(const gp_Vec& theV) noexcept;
 
-  [[nodiscard]] constexpr gp_Pnt Translated(const gp_Vec& theV) const noexcept;
+  Standard_NODISCARD constexpr gp_Pnt Translated(const gp_Vec& theV) const noexcept;
 
   //! Translates a point from the point theP1 to the point theP2.
   constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
@@ -208,7 +208,7 @@ public:
     coord.Subtract(theP1.coord);
   }
 
-  [[nodiscard]] constexpr gp_Pnt Translated(const gp_Pnt& theP1,
+  Standard_NODISCARD constexpr gp_Pnt Translated(const gp_Pnt& theP1,
                                                  const gp_Pnt& theP2) const noexcept
   {
     gp_Pnt aP = *this;

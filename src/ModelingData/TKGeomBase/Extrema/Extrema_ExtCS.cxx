@@ -144,7 +144,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
           myExtElCS.Perform(C.Line(), myS->Plane());
           if (myExtElCS.IsParallel())
             break;
-          [[fallthrough]];
+          Standard_FALLTHROUGH
 
         case GeomAbs_Torus:
         case GeomAbs_Cone:
@@ -276,7 +276,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         break;
       }
     }
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case GeomAbs_Hyperbola: {
       if (myCtype == GeomAbs_Hyperbola && myStype == GeomAbs_Plane)
       {
@@ -285,7 +285,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         break;
       }
     }
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     default: {
       isComputeAnalytic = Standard_False;
       break;

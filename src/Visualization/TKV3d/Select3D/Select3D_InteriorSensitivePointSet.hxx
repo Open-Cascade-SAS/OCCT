@@ -39,36 +39,36 @@ public:
   Standard_EXPORT virtual void GetPoints(Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt);
 
   //! Returns the length of vector of planar convex polygons
-  Standard_EXPORT virtual Standard_Integer Size() const override;
+  Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
   //! Returns bounding box of planar convex polygon with index theIdx
   Standard_EXPORT virtual Select3D_BndBox3d Box(const Standard_Integer theIdx) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns geometry center of planar convex polygon with index
   //! theIdx in the vector along the given axis theAxis
   Standard_EXPORT virtual Standard_Real Center(const Standard_Integer theIdx,
                                                const Standard_Integer theAxis) const
-    override;
+    Standard_OVERRIDE;
 
   //! Swaps items with indexes theIdx1 and theIdx2 in the vector
   Standard_EXPORT virtual void Swap(const Standard_Integer theIdx1,
-                                    const Standard_Integer theIdx2) override;
+                                    const Standard_Integer theIdx2) Standard_OVERRIDE;
 
   //! Returns bounding box of the point set. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
   //! Returns center of the point set. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
   //! Returns the amount of points in set
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const override;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Select3D_InteriorSensitivePointSet, Select3D_SensitiveSet)
 
@@ -79,18 +79,18 @@ protected:
     SelectBasics_PickResult&             thePickResult,
     SelectBasics_SelectingVolumeManager& theMgr,
     Standard_Integer                     theElemIdx,
-    Standard_Boolean                     theIsFullInside) override;
+    Standard_Boolean                     theIsFullInside) Standard_OVERRIDE;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
   Standard_EXPORT virtual Standard_Boolean elementIsInside(
     SelectBasics_SelectingVolumeManager& theMgr,
     Standard_Integer                     theElemIdx,
-    Standard_Boolean                     theIsFullInside) override;
+    Standard_Boolean                     theIsFullInside) Standard_OVERRIDE;
 
   //! Calculates distance from the 3d projection of used-picked
   //! screen point to center of the geometry
   Standard_EXPORT virtual Standard_Real distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
-    override;
+    Standard_OVERRIDE;
 
 protected:
   Select3D_VectorOfHPoly           myPlanarPolygons; //!< Vector of planar polygons

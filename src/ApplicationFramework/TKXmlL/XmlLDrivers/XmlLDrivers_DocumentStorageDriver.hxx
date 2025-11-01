@@ -44,12 +44,12 @@ public:
   Standard_EXPORT virtual void Write(
     const Handle(CDM_Document)&       theDocument,
     const TCollection_ExtendedString& theFileName,
-    const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange&      theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Write(
     const Handle(CDM_Document)&  theDocument,
     Standard_OStream&            theOStream,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
     const Handle(Message_Messenger)& theMsgDriver);

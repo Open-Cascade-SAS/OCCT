@@ -47,7 +47,7 @@ public:
   //! segments of the curve bounded by the SplitValues.  If
   //! Segment is False, the result is composed with trimmed
   //! Curves all based on the same complete curve.
-  Standard_EXPORT virtual void Build(const Standard_Boolean Segment) override;
+  Standard_EXPORT virtual void Build(const Standard_Boolean Segment) Standard_OVERRIDE;
 
   Standard_EXPORT const Handle(TColGeom_HArray1OfCurve)& GetCurves() const;
 

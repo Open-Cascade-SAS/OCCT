@@ -41,7 +41,7 @@ public:
 
   //! Load and return image.
   Standard_EXPORT virtual Handle(Image_PixMap) GetImage(
-    const Handle(Image_SupportedFormats)& theSupported) override;
+    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
 
 protected:
   NCollection_Array1<TCollection_AsciiString> myPaths;

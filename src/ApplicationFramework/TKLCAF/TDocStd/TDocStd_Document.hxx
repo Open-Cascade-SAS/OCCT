@@ -215,9 +215,9 @@ public:
   //! ================
   Standard_EXPORT virtual void Update(const Handle(CDM_Document)& aToDocument,
                                       const Standard_Integer      aReferenceIdentifier,
-                                      const Standard_Address      aModifContext) override;
+                                      const Standard_Address      aModifContext) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const override;
+  Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const Standard_OVERRIDE;
 
   //! Sets saving mode for empty labels. If Standard_True, empty labels will be saved.
   void SetEmptyLabelsSavingMode(const Standard_Boolean isAllowed);

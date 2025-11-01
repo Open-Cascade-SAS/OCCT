@@ -42,10 +42,10 @@ public:
     const AdvApp2Var_CriterionRepartition Repart = AdvApp2Var_Regular);
 
   Standard_EXPORT virtual void Value(AdvApp2Var_Patch&         P,
-                                     const AdvApp2Var_Context& C) const override;
+                                     const AdvApp2Var_Context& C) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean IsSatisfied(const AdvApp2Var_Patch& P) const
-    override;
+    Standard_OVERRIDE;
 
 protected:
 private:

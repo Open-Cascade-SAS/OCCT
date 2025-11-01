@@ -219,7 +219,7 @@ public:
   //! Compute matrix multiplication product.
   //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
-  [[nodiscard]] NCollection_Mat3 operator*(const NCollection_Mat3& theMat) const
+  Standard_NODISCARD NCollection_Mat3 operator*(const NCollection_Mat3& theMat) const
   {
     return Multiplied(theMat);
   }
@@ -227,7 +227,7 @@ public:
   //! Compute matrix multiplication product.
   //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
-  [[nodiscard]] NCollection_Mat3 Multiplied(const NCollection_Mat3& theMat) const
+  Standard_NODISCARD NCollection_Mat3 Multiplied(const NCollection_Mat3& theMat) const
   {
     NCollection_Mat3 aTempMat(*this);
     aTempMat *= theMat;
@@ -255,7 +255,7 @@ public:
   //! Compute per-element multiplication.
   //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
-  [[nodiscard]] NCollection_Mat3 operator*(const Element_t theFactor) const
+  Standard_NODISCARD NCollection_Mat3 operator*(const Element_t theFactor) const
   {
     return Multiplied(theFactor);
   }
@@ -263,7 +263,7 @@ public:
   //! Compute per-element multiplication.
   //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
-  [[nodiscard]] NCollection_Mat3 Multiplied(const Element_t theFactor) const
+  Standard_NODISCARD NCollection_Mat3 Multiplied(const Element_t theFactor) const
   {
     NCollection_Mat3 aTempMat(*this);
     aTempMat *= theFactor;
@@ -289,7 +289,7 @@ public:
   }
 
   //! Divides all the coefficients of the matrix by scalar.
-  [[nodiscard]] NCollection_Mat3 Divided(const Element_t theScalar) const
+  Standard_NODISCARD NCollection_Mat3 Divided(const Element_t theScalar) const
   {
     NCollection_Mat3 aTempMat(*this);
     aTempMat /= theScalar;
@@ -297,7 +297,7 @@ public:
   }
 
   //! Divides all the coefficients of the matrix by scalar.
-  [[nodiscard]] NCollection_Mat3 operator/(const Element_t theScalar) const
+  Standard_NODISCARD NCollection_Mat3 operator/(const Element_t theScalar) const
   {
     return Divided(theScalar);
   }
@@ -335,7 +335,7 @@ public:
   }
 
   //! Per-component addition of another matrix.
-  [[nodiscard]] NCollection_Mat3 Added(const NCollection_Mat3& theMat) const
+  Standard_NODISCARD NCollection_Mat3 Added(const NCollection_Mat3& theMat) const
   {
     NCollection_Mat3 aMat(*this);
     aMat += theMat;
@@ -343,13 +343,13 @@ public:
   }
 
   //! Per-component addition of another matrix.
-  [[nodiscard]] NCollection_Mat3 operator+(const NCollection_Mat3& theMat) const
+  Standard_NODISCARD NCollection_Mat3 operator+(const NCollection_Mat3& theMat) const
   {
     return Added(theMat);
   }
 
   //! Per-component subtraction of another matrix.
-  [[nodiscard]] NCollection_Mat3 Subtracted(const NCollection_Mat3& theMat) const
+  Standard_NODISCARD NCollection_Mat3 Subtracted(const NCollection_Mat3& theMat) const
   {
     NCollection_Mat3 aMat(*this);
     aMat -= theMat;
@@ -357,13 +357,13 @@ public:
   }
 
   //! Per-component subtraction of another matrix.
-  [[nodiscard]] NCollection_Mat3 operator-(const NCollection_Mat3& theMat) const
+  Standard_NODISCARD NCollection_Mat3 operator-(const NCollection_Mat3& theMat) const
   {
     return Subtracted(theMat);
   }
 
   //! Returns matrix with all components negated.
-  [[nodiscard]] NCollection_Mat3 Negated() const
+  Standard_NODISCARD NCollection_Mat3 Negated() const
   {
     NCollection_Mat3 aMat;
     for (size_t i = 0; i < 9; ++i)
@@ -374,11 +374,11 @@ public:
   }
 
   //! Returns matrix with all components negated.
-  [[nodiscard]] NCollection_Mat3 operator-() const { return Negated(); }
+  Standard_NODISCARD NCollection_Mat3 operator-() const { return Negated(); }
 
   //! Transpose the matrix.
   //! @return transposed copy of the matrix.
-  [[nodiscard]] NCollection_Mat3 Transposed() const
+  Standard_NODISCARD NCollection_Mat3 Transposed() const
   {
     NCollection_Mat3 aTempMat;
     aTempMat.SetRow(0, GetColumn(0));
@@ -402,7 +402,7 @@ public:
   }
 
   //! Return adjoint (adjugate matrix, e.g. conjugate transpose).
-  [[nodiscard]] NCollection_Mat3 Adjoint() const
+  Standard_NODISCARD NCollection_Mat3 Adjoint() const
   {
     NCollection_Mat3 aMat;
     aMat.SetRow(0, NCollection_Vec3<Element_t>::Cross(GetRow(1), GetRow(2)));

@@ -40,7 +40,7 @@ public:
   Standard_EXPORT TNaming_DeltaOnModification(const Handle(TNaming_NamedShape)& NS);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() override;
+  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TNaming_DeltaOnModification, TDF_DeltaOnModification)
 

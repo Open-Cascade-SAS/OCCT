@@ -40,7 +40,7 @@ public:
   Standard_EXPORT const gp_Ax2& Position() const;
 
   //! Performs calculations
-  Standard_EXPORT virtual void Perform() override;
+  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
 
 protected:
   gp_Ax2 myPosition;

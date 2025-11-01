@@ -188,7 +188,7 @@ static inline Standard_Boolean loadFile(_Char* theBuffer)
           aMessage += aString;
           break;
         }
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case MsgFile_WaitingMessage:
         if (isKeyword == Standard_False)
         {
@@ -198,7 +198,7 @@ static inline Standard_Boolean loadFile(_Char* theBuffer)
           break;
         }
         //      Pass from here to 'case MsgFile_WaitingKeyword'
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case MsgFile_WaitingKeyword:
         if (isKeyword)
         {

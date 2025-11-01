@@ -44,61 +44,61 @@ public:
                                         const Standard_Integer  LastPoint);
 
   Standard_EXPORT void SetParameters(const Handle(TColStd_HArray1OfReal)& Parameters)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT void SetCurve(const Handle(FEmTool_Curve)& C) override;
+  Standard_EXPORT void SetCurve(const Handle(FEmTool_Curve)& C) Standard_OVERRIDE;
 
-  Standard_EXPORT void GetCurve(Handle(FEmTool_Curve)& C) const override;
+  Standard_EXPORT void GetCurve(Handle(FEmTool_Curve)& C) const Standard_OVERRIDE;
 
   Standard_EXPORT void SetEstimation(const Standard_Real E1,
                                      const Standard_Real E2,
-                                     const Standard_Real E3) override;
+                                     const Standard_Real E3) Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Real& EstLength() override;
+  Standard_EXPORT Standard_Real& EstLength() Standard_OVERRIDE;
 
   Standard_EXPORT void GetEstimation(Standard_Real& E1,
                                      Standard_Real& E2,
-                                     Standard_Real& E3) const override;
+                                     Standard_Real& E3) const Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(FEmTool_HAssemblyTable) AssemblyTable() const override;
+  Standard_EXPORT Handle(FEmTool_HAssemblyTable) AssemblyTable() const Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(TColStd_HArray2OfInteger) DependenceTable() const override;
+  Standard_EXPORT Handle(TColStd_HArray2OfInteger) DependenceTable() const Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Integer QualityValues(const Standard_Real J1min,
                                                  const Standard_Real J2min,
                                                  const Standard_Real J3min,
                                                  Standard_Real&      J1,
                                                  Standard_Real&      J2,
-                                                 Standard_Real&      J3) override;
+                                                 Standard_Real&      J3) Standard_OVERRIDE;
 
   Standard_EXPORT void ErrorValues(Standard_Real& MaxError,
                                    Standard_Real& QuadraticError,
-                                   Standard_Real& AverageError) override;
+                                   Standard_Real& AverageError) Standard_OVERRIDE;
 
   Standard_EXPORT void Hessian(const Standard_Integer Element,
                                const Standard_Integer Dimension1,
                                const Standard_Integer Dimension2,
-                               math_Matrix&           H) override;
+                               math_Matrix&           H) Standard_OVERRIDE;
 
   Standard_EXPORT void Gradient(const Standard_Integer Element,
                                 const Standard_Integer Dimension,
-                                math_Vector&           G) override;
+                                math_Vector&           G) Standard_OVERRIDE;
 
   //! Convert the assembly Vector in an Curve;
   Standard_EXPORT void InputVector(const math_Vector&                    X,
                                    const Handle(FEmTool_HAssemblyTable)& AssTable)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT void SetWeight(const Standard_Real QuadraticWeight,
                                  const Standard_Real QualityWeight,
                                  const Standard_Real percentJ1,
                                  const Standard_Real percentJ2,
-                                 const Standard_Real percentJ3) override;
+                                 const Standard_Real percentJ3) Standard_OVERRIDE;
 
   Standard_EXPORT void GetWeight(Standard_Real& QuadraticWeight,
-                                 Standard_Real& QualityWeight) const override;
+                                 Standard_Real& QualityWeight) const Standard_OVERRIDE;
 
-  Standard_EXPORT void SetWeight(const TColStd_Array1OfReal& Weight) override;
+  Standard_EXPORT void SetWeight(const TColStd_Array1OfReal& Weight) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(AppDef_LinearCriteria, AppDef_SmoothCriterion)
 

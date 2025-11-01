@@ -36,14 +36,14 @@ public:
   Standard_EXPORT BinDrivers_DocumentStorageDriver();
 
   Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) override;
+    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
   //! implements the procedure of writing a shape section to file
   Standard_EXPORT virtual void WriteShapeSection(
     BinLDrivers_DocumentSection& theDocSection,
     Standard_OStream&            theOS,
     const TDocStd_FormatVersion  theDocVer,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Return true if shape should be stored with triangles.
   Standard_EXPORT Standard_Boolean IsWithTriangles() const;
@@ -59,10 +59,10 @@ public:
 
   //! Enables writing in the quick part access mode.
   Standard_EXPORT void EnableQuickPartWriting(const Handle(Message_Messenger)& theMessageDriver,
-                                              const Standard_Boolean theValue) override;
+                                              const Standard_Boolean theValue) Standard_OVERRIDE;
 
   //! Clears the NamedShape driver
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver, BinLDrivers_DocumentStorageDriver)
 };

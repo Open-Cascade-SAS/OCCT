@@ -44,20 +44,20 @@ public:
   //! Default implementation calls first method Send().
   Standard_EXPORT virtual void SendStringStream(const Standard_SStream& theStream,
                                                 const Message_Gravity   theGravity) const
-    override;
+    Standard_OVERRIDE;
 
   //! Send a string message with specified trace level.
   //! The object is converted to string in format: <object kind> : <object pointer>.
   //! The parameter theToPutEol specified whether end-of-line should be added to the end of the
   //! message. Default implementation calls first method Send().
   Standard_EXPORT virtual void SendObject(const Handle(Standard_Transient)& theObject,
-                                          const Message_Gravity theGravity) const override;
+                                          const Message_Gravity theGravity) const Standard_OVERRIDE;
 
 protected:
   //! Send a string message with specified trace level.
   //! This method must be redefined in descendant.
   Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity theGravity) const override;
+                                    const Message_Gravity theGravity) const Standard_OVERRIDE;
 
   //! Send an alert with metrics active in the current report
   Standard_EXPORT void sendMetricAlert(const TCollection_AsciiString& theValue,

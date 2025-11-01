@@ -61,19 +61,19 @@ public:
   Standard_EXPORT void Reset(const Standard_Real theTimeElapsedSec);
 
   //! Stops and reinitializes the timer with zero elapsed time.
-  Standard_EXPORT virtual void Reset() override;
+  Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
 
   //! Restarts the Timer.
-  Standard_EXPORT virtual void Restart() override;
+  Standard_EXPORT virtual void Restart() Standard_OVERRIDE;
 
   //! Shows both the elapsed time and CPU time on the standard output
   //! stream <cout>.The chronometer can be running (Lap Time) or
   //! stopped.
-  Standard_EXPORT virtual void Show() const override;
+  Standard_EXPORT virtual void Show() const Standard_OVERRIDE;
 
   //! Shows both the elapsed time and CPU  time on the
   //! output stream <OS>.
-  Standard_EXPORT virtual void Show(Standard_OStream& os) const override;
+  Standard_EXPORT virtual void Show(Standard_OStream& os) const Standard_OVERRIDE;
 
   //! returns both the elapsed time(seconds,minutes,hours)
   //! and CPU  time.
@@ -83,11 +83,11 @@ public:
                             Standard_Real&    theCPUtime) const;
 
   //! Stops the Timer.
-  Standard_EXPORT virtual void Stop() override;
+  Standard_EXPORT virtual void Stop() Standard_OVERRIDE;
 
   //! Starts (after Create or Reset) or restarts (after Stop)
   //! the Timer.
-  Standard_EXPORT virtual void Start() override;
+  Standard_EXPORT virtual void Start() Standard_OVERRIDE;
 
   //! Returns elapsed time in seconds.
   Standard_EXPORT Standard_Real ElapsedTime() const;

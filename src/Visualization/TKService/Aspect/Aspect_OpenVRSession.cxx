@@ -325,7 +325,7 @@ public:
 protected:
   //! Read image.
   virtual Handle(Image_PixMap) ReadImage(const Handle(Image_SupportedFormats)&) const
-    override
+    Standard_OVERRIDE
   {
     Handle(VRImagePixmap) aPixmap = new VRImagePixmap();
     if (!aPixmap->Load(myVrTextureId, myVrModelName))

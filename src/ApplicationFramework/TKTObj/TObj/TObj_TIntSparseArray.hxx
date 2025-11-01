@@ -42,7 +42,7 @@ public:
   static Standard_EXPORT const Standard_GUID& GetID();
 
   //! Returns the ID of this attribute.
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
   //! Creates TObj_TIntSparseArray attribute on given label.
   static Standard_EXPORT Handle(TObj_TIntSparseArray) Set(const TDF_Label& theLabel);
@@ -81,30 +81,30 @@ public:
 
   //! Returns an new empty TObj_TIntSparseArray attribute. It is used by the
   //! copy algorithm.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   //! Moves this delta into a new other attribute.
-  Standard_EXPORT Handle(TDF_Attribute) BackupCopy() const override;
+  Standard_EXPORT Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
 
   //! Restores the set using info saved in backup attribute theDelta.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theDelta) override;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theDelta) Standard_OVERRIDE;
 
   //! This method is used when copying an attribute from a source structure
   //! into a target structure.
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theInto,
-                             const Handle(TDF_RelocationTable)& theRT) const override;
+                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
 
   //! It is called just before Commit or Abort transaction
   //! and does Backup() to create a delta
-  Standard_EXPORT void BeforeCommitTransaction() override;
+  Standard_EXPORT void BeforeCommitTransaction() Standard_OVERRIDE;
 
   //! Applies theDelta to this.
   Standard_EXPORT void DeltaOnModification(const Handle(TDF_DeltaOnModification)& theDelta)
-    override;
+    Standard_OVERRIDE;
 
   //! Clears my modification delta; called after application of theDelta
   Standard_EXPORT Standard_Boolean AfterUndo(const Handle(TDF_AttributeDelta)& theDelta,
-                                             const Standard_Boolean toForce) override;
+                                             const Standard_Boolean toForce) Standard_OVERRIDE;
 
 public:
   //! Methods to handle the modification delta

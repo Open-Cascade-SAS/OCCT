@@ -43,7 +43,7 @@ public:
   //! -- 2 -> KinematicTopologyNetworkStructure
   //! -- 3 -> KinematicTopologyStructure
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const override;
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   //! Returns Value as KinematicTopologyDirectedStructure (or Null if another type)
   Standard_EXPORT Handle(StepKinematics_KinematicTopologyDirectedStructure)

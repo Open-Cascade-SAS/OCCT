@@ -75,19 +75,19 @@ public:
 
   //! Request limit of graphic resource of specific type.
   Standard_EXPORT virtual Standard_Integer InquireLimit(const Graphic3d_TypeOfLimit theType) const
-    override;
+    Standard_OVERRIDE;
 
 public:
   Standard_EXPORT virtual Handle(Graphic3d_CStructure) CreateStructure(
-    const Handle(Graphic3d_StructureManager)& theManager) override;
+    const Handle(Graphic3d_StructureManager)& theManager) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void RemoveStructure(Handle(Graphic3d_CStructure)& theCStructure)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Handle(Graphic3d_CView) CreateView(
-    const Handle(Graphic3d_StructureManager)& theMgr) override;
+    const Handle(Graphic3d_StructureManager)& theMgr) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void RemoveView(const Handle(Graphic3d_CView)& theView) override;
+  Standard_EXPORT virtual void RemoveView(const Handle(Graphic3d_CView)& theView) Standard_OVERRIDE;
 
   //! Create OpenGL window from native window.
   //! @param[in] theNativeWindow native window holder
@@ -104,12 +104,12 @@ public:
                                 const Standard_ShortReal       theHeight,
                                 Standard_ShortReal&            theWidth,
                                 Standard_ShortReal&            theAscent,
-                                Standard_ShortReal&            theDescent) const override;
+                                Standard_ShortReal&            theDescent) const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_ShortReal DefaultTextHeight() const override;
+  Standard_EXPORT Standard_ShortReal DefaultTextHeight() const Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Boolean ViewExists(const Handle(Aspect_Window)& theWindow,
-                                              Handle(Graphic3d_CView)& theView) override;
+                                              Handle(Graphic3d_CView)& theView) Standard_OVERRIDE;
 
 public:
   //! Adds a layer to all views.
@@ -120,7 +120,7 @@ public:
   Standard_EXPORT virtual void InsertLayerBefore(const Graphic3d_ZLayerId        theNewLayerId,
                                                  const Graphic3d_ZLayerSettings& theSettings,
                                                  const Graphic3d_ZLayerId        theLayerAfter)
-    override;
+    Standard_OVERRIDE;
 
   //! Adds a layer to all views.
   //! @param[in] theNewLayerId  id of created layer
@@ -129,18 +129,18 @@ public:
   Standard_EXPORT virtual void InsertLayerAfter(const Graphic3d_ZLayerId        theNewLayerId,
                                                 const Graphic3d_ZLayerSettings& theSettings,
                                                 const Graphic3d_ZLayerId        theLayerBefore)
-    override;
+    Standard_OVERRIDE;
 
   //! Removes Z layer. All structures displayed at the moment in layer will be displayed in
   //! default layer (the bottom-level z layer). By default, there are always default
   //! bottom-level layer that can't be removed.  The passed theLayerId should be not less than 0
   //! (reserved for default layers that can not be removed).
-  Standard_EXPORT void RemoveZLayer(const Graphic3d_ZLayerId theLayerId) override;
+  Standard_EXPORT void RemoveZLayer(const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
 
   //! Sets the settings for a single Z layer.
   Standard_EXPORT void SetZLayerSettings(const Graphic3d_ZLayerId        theLayerId,
                                          const Graphic3d_ZLayerSettings& theSettings)
-    override;
+    Standard_OVERRIDE;
 
 public:
   //! @return the visualization options
@@ -155,20 +155,20 @@ public:
   //! VBO usage can be forbidden by this method even if it is supported by GL driver.
   //! Notice that disabling of VBO will cause rendering performance degradation.
   //! Warning! This method should be called only before any primitives are displayed in GL scene!
-  Standard_EXPORT virtual void EnableVBO(const Standard_Boolean theToTurnOn) override;
+  Standard_EXPORT virtual void EnableVBO(const Standard_Boolean theToTurnOn) Standard_OVERRIDE;
 
   //! Returns TRUE if vertical synchronization with display refresh rate (VSync) should be used;
   //! TRUE by default.
-  Standard_EXPORT virtual bool IsVerticalSync() const override;
+  Standard_EXPORT virtual bool IsVerticalSync() const Standard_OVERRIDE;
 
   //! Set if vertical synchronization with display refresh rate (VSync) should be used.
-  Standard_EXPORT virtual void SetVerticalSync(bool theToEnable) override;
+  Standard_EXPORT virtual void SetVerticalSync(bool theToEnable) Standard_OVERRIDE;
 
   //! Returns information about GPU memory usage.
   //! Please read OpenGl_Context::MemoryInfo() for more description.
   Standard_EXPORT Standard_Boolean
     MemoryInfo(Standard_Size&           theFreeBytes,
-               TCollection_AsciiString& theInfo) const override;
+               TCollection_AsciiString& theInfo) const Standard_OVERRIDE;
 
 public:
   //! Method to retrieve valid GL context.

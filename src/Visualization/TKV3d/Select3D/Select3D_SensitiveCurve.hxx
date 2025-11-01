@@ -52,7 +52,7 @@ public:
                                           const TColgp_Array1OfPnt&            thePoints);
 
   //! Returns the copy of this
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() override;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
 private:
   void loadPoints(const Handle(Geom_Curve)& theCurve, const Standard_Integer theNbPnts)

@@ -52,10 +52,10 @@ public:
   Standard_EXPORT StepBasic_SiUnitName Name() const;
 
   Standard_EXPORT virtual void SetDimensions(
-    const Handle(StepBasic_DimensionalExponents)& aDimensions) override;
+    const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
 
   Standard_EXPORT virtual Handle(StepBasic_DimensionalExponents) Dimensions() const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnit, StepBasic_NamedUnit)
 

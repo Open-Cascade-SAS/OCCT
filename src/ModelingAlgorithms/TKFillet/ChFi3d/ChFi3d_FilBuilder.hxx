@@ -135,7 +135,7 @@ public:
                                                  const Standard_Integer IS) const;
 
 protected:
-  Standard_EXPORT void SimulKPart(const Handle(ChFiDS_SurfData)& SD) const override;
+  Standard_EXPORT void SimulKPart(const Handle(ChFiDS_SurfData)& SD) const Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Boolean SimulSurf(Handle(ChFiDS_SurfData)&           Data,
                                              const Handle(ChFiDS_ElSpine)&      Guide,
@@ -155,7 +155,7 @@ protected:
                                              const Standard_Boolean             RecOnS2,
                                              const math_Vector&                 Soldep,
                                              Standard_Integer&                  Intf,
-                                             Standard_Integer& Intl) override;
+                                             Standard_Integer& Intl) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SimulSurf(Handle(ChFiDS_SurfData)&           Data,
                                          const Handle(ChFiDS_ElSpine)&      Guide,
@@ -180,7 +180,7 @@ protected:
                                          const Standard_Boolean             RecP,
                                          const Standard_Boolean             RecS,
                                          const Standard_Boolean             RecRst,
-                                         const math_Vector& Soldep) override;
+                                         const math_Vector& Soldep) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SimulSurf(Handle(ChFiDS_SurfData)&           Data,
                                          const Handle(ChFiDS_ElSpine)&      Guide,
@@ -205,7 +205,7 @@ protected:
                                          const Standard_Boolean             RecP,
                                          const Standard_Boolean             RecS,
                                          const Standard_Boolean             RecRst,
-                                         const math_Vector& Soldep) override;
+                                         const math_Vector& Soldep) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SimulSurf(Handle(ChFiDS_SurfData)&           Data,
                                          const Handle(ChFiDS_ElSpine)&      Guide,
@@ -236,7 +236,7 @@ protected:
                                          const Standard_Boolean             RecRst1,
                                          const Standard_Boolean             RecP2,
                                          const Standard_Boolean             RecRst2,
-                                         const math_Vector& Soldep) override;
+                                         const math_Vector& Soldep) Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Boolean PerformFirstSection(const Handle(ChFiDS_Spine)&        S,
                                                        const Handle(ChFiDS_ElSpine)&      HGuide,
@@ -248,7 +248,7 @@ protected:
                                                        const Standard_Real                Par,
                                                        math_Vector&                       SolDep,
                                                        TopAbs_State&                      Pos1,
-                                                       TopAbs_State& Pos2) const override;
+                                                       TopAbs_State& Pos2) const Standard_OVERRIDE;
 
   //! Method calculates the elements of construction of  the
   //! fillet (constant or evolutive).
@@ -272,7 +272,7 @@ protected:
                                                const Standard_Boolean             RecOnS2,
                                                const math_Vector&                 Soldep,
                                                Standard_Integer&                  Intf,
-                                               Standard_Integer& Intl) override;
+                                               Standard_Integer& Intl) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         SeqData,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -298,7 +298,7 @@ protected:
                                            const Standard_Boolean             RecP,
                                            const Standard_Boolean             RecS,
                                            const Standard_Boolean             RecRst,
-                                           const math_Vector& Soldep) override;
+                                           const math_Vector& Soldep) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         SeqData,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -324,7 +324,7 @@ protected:
                                            const Standard_Boolean             RecP,
                                            const Standard_Boolean             RecS,
                                            const Standard_Boolean             RecRst,
-                                           const math_Vector& Soldep) override;
+                                           const math_Vector& Soldep) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         Data,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -356,27 +356,27 @@ protected:
                                            const Standard_Boolean             RecRst1,
                                            const Standard_Boolean             RecP2,
                                            const Standard_Boolean             RecRst2,
-                                           const math_Vector& Soldep) override;
+                                           const math_Vector& Soldep) Standard_OVERRIDE;
 
   //! Method to split an singular SurfData  in  several  non
   //! singular  SurfData..
   Standard_EXPORT void SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
                                  const Handle(BRepBlend_Line)& line);
 
-  Standard_EXPORT void PerformTwoCorner(const Standard_Integer Index) override;
+  Standard_EXPORT void PerformTwoCorner(const Standard_Integer Index) Standard_OVERRIDE;
 
-  Standard_EXPORT void PerformThreeCorner(const Standard_Integer Index) override;
+  Standard_EXPORT void PerformThreeCorner(const Standard_Integer Index) Standard_OVERRIDE;
 
   Standard_EXPORT void ExtentOneCorner(const TopoDS_Vertex&         V,
-                                       const Handle(ChFiDS_Stripe)& S) override;
+                                       const Handle(ChFiDS_Stripe)& S) Standard_OVERRIDE;
 
   Standard_EXPORT void ExtentTwoCorner(const TopoDS_Vertex&       V,
-                                       const ChFiDS_ListOfStripe& LS) override;
+                                       const ChFiDS_ListOfStripe& LS) Standard_OVERRIDE;
 
   Standard_EXPORT void ExtentThreeCorner(const TopoDS_Vertex&       V,
-                                         const ChFiDS_ListOfStripe& LS) override;
+                                         const ChFiDS_ListOfStripe& LS) Standard_OVERRIDE;
 
-  Standard_EXPORT void SetRegul() override;
+  Standard_EXPORT void SetRegul() Standard_OVERRIDE;
 
 private:
   BlendFunc_SectionShape myShape;

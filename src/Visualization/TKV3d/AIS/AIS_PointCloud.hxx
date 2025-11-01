@@ -90,27 +90,27 @@ public:
 public:
   //! Setup custom color. Affects presentation only when no per-point color attribute has been
   //! assigned.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Restore default color.
-  Standard_EXPORT virtual void UnsetColor() override;
+  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
 
   //! Setup custom material. Affects presentation only when normals are defined.
   Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theMat)
-    override;
+    Standard_OVERRIDE;
 
   //! Restore default material.
-  Standard_EXPORT virtual void UnsetMaterial() override;
+  Standard_EXPORT virtual void UnsetMaterial() Standard_OVERRIDE;
 
 protected:
   //! Prepare presentation for this object.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Prepare selection for this object.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
 private:
   Handle(Graphic3d_ArrayOfPoints) myPoints; //!< points array for presentation
@@ -141,20 +141,20 @@ public:
   const Handle(TColStd_HPackedMapOfInteger)& DetectedPoints() const { return myDetPoints; }
 
   //! Always update dynamic highlighting.
-  Standard_EXPORT virtual Standard_Boolean IsForcedHilight() const override;
+  Standard_EXPORT virtual Standard_Boolean IsForcedHilight() const Standard_OVERRIDE;
 
   //! Handle dynamic highlighting.
   Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                                 const Handle(Prs3d_Drawer)&               theStyle,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Removes highlighting.
   Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                         const Standard_Integer theMode) override;
+                                         const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Clears presentation.
   Standard_EXPORT virtual void Clear(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                     const Standard_Integer theMode) override;
+                                     const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected:
   Handle(TColStd_HPackedMapOfInteger) myDetPoints; //!< last detected points

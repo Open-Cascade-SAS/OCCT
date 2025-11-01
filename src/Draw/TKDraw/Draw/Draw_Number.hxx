@@ -34,22 +34,22 @@ public:
   void Value(const Standard_Real theV) { myValue = theV; }
 
   //! Does nothing,
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   //! Returns TRUE if object can be displayed.
-  virtual bool IsDisplayable() const override { return false; }
+  virtual bool IsDisplayable() const Standard_OVERRIDE { return false; }
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const override;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const override;
+  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
 
   //! For variable whatis command. Set as a result the type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
 
 private:
   Standard_Real myValue;

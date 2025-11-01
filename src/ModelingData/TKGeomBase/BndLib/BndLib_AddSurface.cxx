@@ -438,7 +438,7 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
         break;
       }
     }
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     default: {
       Standard_Integer Nu = NbUSamples(S);
       Standard_Integer Nv = NbVSamples(S);

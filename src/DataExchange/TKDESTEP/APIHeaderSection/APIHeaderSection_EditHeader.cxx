@@ -51,7 +51,7 @@ static Standard_Boolean IsTimeStamp(const Handle(TCollection_HAsciiString)& val)
       case 5:
         if (uncar != '-')
           return Standard_False;
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case 6:
         if (uncar != '0' && uncar != '1')
           return Standard_False;
@@ -65,7 +65,7 @@ static Standard_Boolean IsTimeStamp(const Handle(TCollection_HAsciiString)& val)
       case 8:
         if (uncar != '-')
           return Standard_False;
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case 9:
         if (uncar < '0' || uncar > '3')
           return Standard_False;
@@ -79,7 +79,7 @@ static Standard_Boolean IsTimeStamp(const Handle(TCollection_HAsciiString)& val)
       case 11:
         if (uncar != 'T')
           return Standard_False;
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case 12:
         if (uncar < '0' || uncar > '2')
           return Standard_False;
@@ -93,7 +93,7 @@ static Standard_Boolean IsTimeStamp(const Handle(TCollection_HAsciiString)& val)
       case 14:
         if (uncar != ':')
           return Standard_False;
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case 15:
         if (uncar < '0' || uncar > '5')
           return Standard_False;
@@ -105,7 +105,7 @@ static Standard_Boolean IsTimeStamp(const Handle(TCollection_HAsciiString)& val)
       case 17:
         if (uncar != ':')
           return Standard_False;
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case 18:
         if (uncar < '0' || uncar > '5')
           return Standard_False;

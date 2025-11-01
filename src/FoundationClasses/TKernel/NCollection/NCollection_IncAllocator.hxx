@@ -64,13 +64,13 @@ public:
   Standard_EXPORT void SetThreadSafe(const bool theIsThreadSafe = true);
 
   //! Allocate memory with given size. Returns NULL on failure
-  Standard_EXPORT void* Allocate(const size_t size) override;
+  Standard_EXPORT void* Allocate(const size_t size) Standard_OVERRIDE;
 
   //! Allocate memory with given size. Returns NULL on failure
-  Standard_EXPORT void* AllocateOptimal(const size_t size) override;
+  Standard_EXPORT void* AllocateOptimal(const size_t size) Standard_OVERRIDE;
 
   //! Free a previously allocated memory. Does nothing
-  void Free(void*) override
+  void Free(void*) Standard_OVERRIDE
   {
     // Do nothing
   }

@@ -35,7 +35,7 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Returns the ID of the attribute.
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
   //! Returns the ID of the attribute.
   Standard_EXPORT virtual const Standard_GUID& PatternID() const = 0;

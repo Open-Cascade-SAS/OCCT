@@ -188,7 +188,7 @@ public: //! @name Light properties
   void SetNbSplitsArrow(Standard_Integer theNbSplits) { myNbSplitsArrow = theNbSplits; }
 
   //! Returns kind of the object.
-  virtual AIS_KindOfInteractive Type() const override
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
   {
     return AIS_KindOfInteractive_LightSource;
   }
@@ -196,7 +196,7 @@ public: //! @name Light properties
 protected:
   //! Return true if specified display mode is supported: 0 for main presentation and 1 for
   //! highlight.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return theMode == 0 || theMode == 1;
   }
@@ -204,11 +204,11 @@ protected:
   //! Computes selection sensitive zones(triangulation) for light source presentation.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Fills presentation.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Drag object in the viewer.
   //! @param[in] theCtx      interactive context
@@ -224,11 +224,11 @@ protected:
     const Handle(SelectMgr_EntityOwner)&  theOwner,
     const Graphic3d_Vec2i&                theDragFrom,
     const Graphic3d_Vec2i&                theDragTo,
-    const AIS_DragAction                  theAction) override;
+    const AIS_DragAction                  theAction) Standard_OVERRIDE;
 
   //! Sets new local transformation, which is propagated to Graphic3d_CLight instance.
   Standard_EXPORT virtual void setLocalTransformation(const Handle(TopLoc_Datum3D)& theTrsf)
-    override;
+    Standard_OVERRIDE;
 
   //! Updates local transformation basing on a type of light source.
   Standard_EXPORT virtual void updateLightLocalTransformation();
@@ -296,7 +296,7 @@ public:
                                                             Aspect_VKeyMouse       theButton,
                                                             Aspect_VKeyFlags       theModifiers,
                                                             bool                   theIsDoubleClick)
-    override;
+    Standard_OVERRIDE;
 
   //! Highlights selectable object's presentation with display mode in presentation manager with
   //! given highlight style. Also a check for auto-highlight is performed - if selectable object
@@ -304,10 +304,10 @@ public:
   //! SelectMgr_SelectableObject::HilightOwnerWithColor method.
   Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                                 const Handle(Prs3d_Drawer)&               theStyle,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Always update dynamic highlighting.
-  Standard_EXPORT virtual Standard_Boolean IsForcedHilight() const override;
+  Standard_EXPORT virtual Standard_Boolean IsForcedHilight() const Standard_OVERRIDE;
 };
 
 #endif // _AIS_LightSource_HeaderFile

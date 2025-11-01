@@ -62,11 +62,11 @@ public:
   //! service OwnCorrect) : works with a protocol.
   Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const override;
+                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
 
   //! Returns a text which is
   //! "Auto-correction of IGES Entities"
-  Standard_EXPORT TCollection_AsciiString Label() const override;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_AutoCorrect, IGESSelect_ModelModifier)
 

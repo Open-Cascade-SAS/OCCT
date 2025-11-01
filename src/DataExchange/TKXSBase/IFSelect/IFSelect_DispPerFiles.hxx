@@ -55,19 +55,19 @@ public:
   Standard_EXPORT Standard_Integer CountValue() const;
 
   //! Returns as Label, "Maximum <count> Files"
-  Standard_EXPORT TCollection_AsciiString Label() const override;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   //! Returns True, maximum count is given as CountValue
   Standard_EXPORT virtual Standard_Boolean LimitedMax(const Standard_Integer nbent,
                                                       Standard_Integer&      max) const
-    override;
+    Standard_OVERRIDE;
 
   //! Computes the list of produced Packets. It defines Packets in
   //! order to have <Count> Packets, except if the input count of
   //! Entities is lower. Entities are given by RootResult from the
   //! Final Selection.
   Standard_EXPORT void Packets(const Interface_Graph&    G,
-                               IFGraph_SubPartsIterator& packs) const override;
+                               IFGraph_SubPartsIterator& packs) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerFiles, IFSelect_Dispatch)
 

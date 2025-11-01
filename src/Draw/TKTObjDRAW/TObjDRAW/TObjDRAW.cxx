@@ -47,7 +47,7 @@ public:
   {
   }
 
-  virtual Standard_EXPORT Handle(TObj_Model) NewEmpty() override
+  virtual Standard_EXPORT Handle(TObj_Model) NewEmpty() Standard_OVERRIDE
   {
     return new TObjDRAW_Model();
   }

@@ -39,15 +39,15 @@ public:
 public:
   //! Returns TRUE if URL defines a supported protocol.
   Standard_EXPORT virtual bool IsSupportedPath(const TCollection_AsciiString& theUrl) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns TRUE if current input stream is opened for reading operations.
   Standard_EXPORT virtual Standard_Boolean IsOpenIStream(
-    const std::shared_ptr<std::istream>& theStream) const override;
+    const std::shared_ptr<std::istream>& theStream) const Standard_OVERRIDE;
 
   //! Returns TRUE if current output stream is opened for writing operations.
   Standard_EXPORT virtual Standard_Boolean IsOpenOStream(
-    const std::shared_ptr<std::ostream>& theStream) const override;
+    const std::shared_ptr<std::ostream>& theStream) const Standard_OVERRIDE;
 
   //! Opens input stream using one of registered protocols.
   Standard_EXPORT virtual std::shared_ptr<std::istream> OpenIStream(
@@ -55,19 +55,19 @@ public:
     const std::ios_base::openmode        theMode,
     const int64_t                        theOffset    = 0,
     const std::shared_ptr<std::istream>& theOldStream = std::shared_ptr<std::istream>())
-    override;
+    Standard_OVERRIDE;
 
   //! Opens output stream using one of registered protocols.
   Standard_EXPORT virtual std::shared_ptr<std::ostream> OpenOStream(
     const TCollection_AsciiString& theUrl,
-    const std::ios_base::openmode  theMode) override;
+    const std::ios_base::openmode  theMode) Standard_OVERRIDE;
 
   //! Opens stream buffer using one of registered protocols.
   Standard_EXPORT virtual std::shared_ptr<std::streambuf> OpenStreamBuffer(
     const TCollection_AsciiString& theUrl,
     const std::ios_base::openmode  theMode,
     const int64_t                  theOffset     = 0,
-    int64_t*                       theOutBufSize = NULL) override;
+    int64_t*                       theOutBufSize = NULL) Standard_OVERRIDE;
 
 protected:
   NCollection_List<Handle(OSD_FileSystem)> myProtocols;

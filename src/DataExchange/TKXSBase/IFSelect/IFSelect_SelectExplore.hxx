@@ -60,7 +60,7 @@ public:
   //! yet been attained, or if no max level is specified, entities
   //! to be explored are themselves used as if they were input
   Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const override;
+    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
 
   //! Analyses and, if required, Explores an entity, as follows :
   //! The explored list starts as empty, it has to be filled by this
@@ -80,7 +80,7 @@ public:
 
   //! Returns a text saying "(Recursive)" or "(Level nn)" plus
   //! specific criterium returned by ExploreLabel (see below)
-  Standard_EXPORT TCollection_AsciiString Label() const override;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   //! Returns a text defining the way of exploration
   Standard_EXPORT virtual TCollection_AsciiString ExploreLabel() const = 0;

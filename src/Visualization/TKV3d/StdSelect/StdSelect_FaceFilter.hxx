@@ -50,10 +50,10 @@ public:
   Standard_EXPORT StdSelect_TypeOfFace Type() const;
 
   Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(StdSelect_FaceFilter, SelectMgr_Filter)
 

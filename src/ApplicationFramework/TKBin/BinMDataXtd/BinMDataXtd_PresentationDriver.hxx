@@ -35,16 +35,16 @@ class BinMDataXtd_PresentationDriver : public BinMDF_ADriver
 public:
   Standard_EXPORT BinMDataXtd_PresentationDriver(const Handle(Message_Messenger)& theMessageDriver);
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Boolean
     Paste(const BinObjMgt_Persistent&  Source,
           const Handle(TDF_Attribute)& Target,
-          BinObjMgt_RRelocationTable&  RelocTable) const override;
+          BinObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
                              BinObjMgt_Persistent&        Target,
-                             BinObjMgt_SRelocationTable&  RelocTable) const override;
+                             BinObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BinMDataXtd_PresentationDriver, BinMDF_ADriver)
 

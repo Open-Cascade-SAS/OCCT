@@ -48,7 +48,7 @@ public:
 
   //! performs the algorithm
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! returns the loops
   Standard_EXPORT const TopTools_ListOfShape& Shells() const;

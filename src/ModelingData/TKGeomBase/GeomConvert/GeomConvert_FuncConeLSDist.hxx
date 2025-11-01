@@ -42,10 +42,10 @@ public:
   void SetDir(const gp_Dir& theDir) { myDir = theDir; }
 
   //! Number of variables.
-  Standard_EXPORT Standard_Integer NbVariables() const override;
+  Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
 
   //! Value.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F) override;
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F) Standard_OVERRIDE;
 
 private:
   Handle(TColgp_HArray1OfXYZ) myPoints;

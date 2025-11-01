@@ -46,7 +46,7 @@ public:
                                           const Standard_Real              Deflection,
                                           const Standard_Integer           DrawMode);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   Standard_EXPORT void DrawOn(Draw_Display&          dis,
                               const Standard_Boolean ShowPoles,
@@ -97,7 +97,7 @@ public:
   Draw_Color PolesColor() const { return polesLook; }
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const override;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
 
 private:
   Standard_Boolean drawPoles;

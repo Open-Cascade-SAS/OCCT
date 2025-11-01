@@ -53,11 +53,11 @@ protected:
 
   //! Handle view redraw.
   virtual void handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
-                                 const Handle(V3d_View)& theView) override;
+                                 const Handle(V3d_View)& theView) Standard_OVERRIDE;
 
   //! Callback called by handleMoveTo() on Selection in 3D Viewer.
   virtual void OnSelectionChanged (const Handle(AIS_InteractiveContext)& theCtx,
-                                   const Handle(V3d_View)& theView) override;
+                                   const Handle(V3d_View)& theView) Standard_OVERRIDE;
 
   //! Return interactive context.
   virtual const Handle(AIS_InteractiveContext)& GetAISContext() const;
@@ -79,8 +79,8 @@ protected:
 
 public:
 
-  virtual BOOL PreCreateWindow (CREATESTRUCT& cs) override;
-  virtual void PostNcDestroy() override;
+  virtual BOOL PreCreateWindow (CREATESTRUCT& cs) Standard_OVERRIDE;
+  virtual void PostNcDestroy() Standard_OVERRIDE;
 
 protected:
 
@@ -98,8 +98,8 @@ private:
 protected:
   DECLARE_MESSAGE_MAP()
 public:
-  virtual void OnInitialUpdate() override;
-  virtual void OnDraw (CDC* /*pDC*/) override;
+  virtual void OnInitialUpdate() Standard_OVERRIDE;
+  virtual void OnDraw (CDC* /*pDC*/) Standard_OVERRIDE;
   afx_msg void OnSize (UINT nType, int cx, int cy);
   afx_msg BOOL OnMouseWheel (UINT theFlags, short theDelta, CPoint thePoint);
   afx_msg void OnMouseMove (UINT theFlags, CPoint thePoint);

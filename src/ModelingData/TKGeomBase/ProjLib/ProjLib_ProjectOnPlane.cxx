@@ -666,7 +666,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_Curve)& C,
       Axis         = Circ.Position();
       R1 = R2 = Circ.Radius();
     }
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case GeomAbs_Ellipse: {
       if (Type == GeomAbs_Ellipse)
       {

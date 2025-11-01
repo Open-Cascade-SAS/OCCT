@@ -99,34 +99,34 @@ public:
   //! aMode is highlighted in the presentation manager aPM.
   Standard_EXPORT virtual Standard_Boolean IsHilighted(
     const Handle(PrsMgr_PresentationManager)& aPM,
-    const Standard_Integer                    aMode = 0) const override;
+    const Standard_Integer                    aMode = 0) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
                                                 const Handle(Prs3d_Drawer)&               theStyle,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Removes highlighting from the type of shape
   //! identified the selection mode aMode in the presentation manager aPM.
   Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& aPM,
-                                         const Standard_Integer aMode = 0) override;
+                                         const Standard_Integer aMode = 0) Standard_OVERRIDE;
 
   //! Clears the presentation manager object aPM of all
   //! shapes with the selection mode aMode.
   Standard_EXPORT virtual void Clear(const Handle(PrsMgr_PresentationManager)& aPM,
-                                     const Standard_Integer aMode = 0) override;
+                                     const Standard_Integer aMode = 0) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetLocation(const TopLoc_Location& aLoc) override;
+  Standard_EXPORT virtual void SetLocation(const TopLoc_Location& aLoc) Standard_OVERRIDE;
 
   //! Implements immediate application of location transformation of parent object to dynamic
   //! highlight structure
   Standard_EXPORT virtual void UpdateHighlightTrsf(
     const Handle(V3d_Viewer)&                 theViewer,
     const Handle(PrsMgr_PresentationManager)& theManager,
-    const Standard_Integer                    theDispMode) override;
+    const Standard_Integer                    theDispMode) Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
   TopoDS_Shape            myShape;

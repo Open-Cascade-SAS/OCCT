@@ -42,7 +42,7 @@ public:
   //! GeometryType() TopOpeBRepDS_CURVE
   //! returns False else.
   Standard_EXPORT virtual Standard_Boolean MatchInterference(
-    const Handle(TopOpeBRepDS_Interference)& I) const override;
+    const Handle(TopOpeBRepDS_Interference)& I) const Standard_OVERRIDE;
 
   //! Index of the curve in the data structure.
   Standard_EXPORT Standard_Integer Current() const;

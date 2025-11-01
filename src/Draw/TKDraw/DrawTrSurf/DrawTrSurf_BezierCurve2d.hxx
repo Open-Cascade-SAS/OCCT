@@ -38,7 +38,7 @@ public:
                                            const Standard_Boolean            ShowPoles,
                                            const Standard_Integer            Discret);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   void ShowPoles() { drawPoles = Standard_True; }
 
@@ -60,7 +60,7 @@ public:
   Draw_Color PolesColor() const { return polesLook; }
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const override;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
 
 private:
   Standard_Boolean drawPoles;

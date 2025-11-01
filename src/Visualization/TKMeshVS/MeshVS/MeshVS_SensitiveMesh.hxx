@@ -30,11 +30,11 @@ public:
 
   Standard_EXPORT Standard_Integer GetMode() const;
 
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() override;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   //! Checks whether sensitive overlaps current selecting volume.
   virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                   SelectBasics_PickResult& thePickResult) override
+                                   SelectBasics_PickResult& thePickResult) Standard_OVERRIDE
   {
     (void)theMgr;
     (void)thePickResult;
@@ -42,13 +42,13 @@ public:
   }
 
   //! Returns the amount of mesh nodes
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const override;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
 
   //! Returns bounding box of mesh
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
   //! Returns center of mesh
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 

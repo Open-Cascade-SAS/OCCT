@@ -122,11 +122,11 @@ public: //! @name Reject/Accept implementations
   Standard_EXPORT virtual Standard_Boolean RejectNode(const BVH_Vec3d& theCornerMin,
                                                       const BVH_Vec3d& theCornerMax,
                                                       Standard_Real&   theMetric) const
-    override;
+    Standard_OVERRIDE;
 
   //! Defines the rules for leaf acceptance.
   Standard_EXPORT virtual Standard_Boolean Accept(const Standard_Integer theSgmIdx,
-                                                  const Standard_Real&) override;
+                                                  const Standard_Real&) Standard_OVERRIDE;
 
 public:
   //! Returns true if the node is on the boarder.

@@ -24,7 +24,7 @@ class TCollection_AsciiString;
 //! of derived attribute
 #define DEFINE_DERIVED_ATTRIBUTE(Class, Base)                                                      \
   DEFINE_STANDARD_RTTIEXT(Class, Base);                                                            \
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
 //! @def IMPLEMENT_DERIVED_ATTRIBUTE
 //! Defines implementation of Handle method, serialization methods and registers the derived

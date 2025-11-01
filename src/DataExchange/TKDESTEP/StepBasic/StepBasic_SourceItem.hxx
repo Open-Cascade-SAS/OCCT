@@ -39,9 +39,9 @@ public:
   //! 1 -> HAsciiString from TCollection
   //! 0 else
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const override;
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const override;
+  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
 
   //! Returns Value as Identifier (or Null if another type)
   Standard_EXPORT Handle(TCollection_HAsciiString) Identifier() const;

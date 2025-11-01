@@ -98,24 +98,24 @@ public:
   //! Changes the orientation of this plane in the u (or v) parametric direction.
   //! The bounds of the plane are not changed but the given parametric direction is reversed.
   //! Hence the orientation of the surface is reversed.
-  Standard_EXPORT virtual void UReverse() override;
+  Standard_EXPORT virtual void UReverse() Standard_OVERRIDE;
 
   //! Computes the u  parameter on the modified plane,
   //! produced when reversing the u parametric of this plane,
   //! for any point of u parameter U on this plane.
   //! In the case of a plane, these methods return - -U.
-  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const override;
+  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Changes the orientation of this plane in the u (or v) parametric direction.
   //! The bounds of the plane are not changed but the given parametric direction is reversed.
   //! Hence the orientation of the surface is reversed.
-  Standard_EXPORT virtual void VReverse() override;
+  Standard_EXPORT virtual void VReverse() Standard_OVERRIDE;
 
   //! Computes the v parameter on the modified plane,
   //! produced when reversing the v parametric of this plane,
   //! for any point of v parameter V on this plane.
   //! In the case of a plane, these methods return -V.
-  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const override;
+  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
 
   //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
@@ -133,7 +133,7 @@ public:
   //! This method multiplies U and V by T.ScaleFactor()
   Standard_EXPORT virtual void TransformParameters(Standard_Real& U,
                                                    Standard_Real& V,
-                                                   const gp_Trsf& T) const override;
+                                                   const gp_Trsf& T) const Standard_OVERRIDE;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
@@ -150,7 +150,7 @@ public:
   //! @endcode
   //! This method returns a scale centered on the origin with T.ScaleFactor
   Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of this plane.
   //! Because a plane is an infinite surface, the following is always true:
@@ -159,7 +159,7 @@ public:
   Standard_EXPORT void Bounds(Standard_Real& U1,
                               Standard_Real& U2,
                               Standard_Real& V1,
-                              Standard_Real& V2) const override;
+                              Standard_Real& V2) const Standard_OVERRIDE;
 
   //! Computes the normalized coefficients of the plane's cartesian equation:
   //! @code
@@ -171,24 +171,24 @@ public:
                                     Standard_Real& D) const;
 
   //! return False
-  Standard_EXPORT Standard_Boolean IsUClosed() const override;
+  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
 
   //! return False
-  Standard_EXPORT Standard_Boolean IsVClosed() const override;
+  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
 
   //! return False.
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const override;
+  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
 
   //! return False.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const override;
+  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
 
   //! Computes the U isoparametric curve.
   //! This is a Line parallel to the YAxis of the plane.
-  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const override;
+  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Computes the V isoparametric curve.
   //! This is a Line parallel to the XAxis of the plane.
-  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const override;
+  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
 
   //! Computes the point P (U, V) on <me>.
   //! @code
@@ -198,14 +198,14 @@ public:
   //! "XDirection" and YDir the "YDirection" of the plane's local coordinate system.
   Standard_EXPORT void D0(const Standard_Real U,
                           const Standard_Real V,
-                          gp_Pnt&             P) const override;
+                          gp_Pnt&             P) const Standard_OVERRIDE;
 
   //! Computes the current point and the first derivatives in the directions U and V.
   Standard_EXPORT void D1(const Standard_Real U,
                           const Standard_Real V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
-                          gp_Vec&             D1V) const override;
+                          gp_Vec&             D1V) const Standard_OVERRIDE;
 
   //! Computes the current point, the first and the second
   //! derivatives in the directions U and V.
@@ -216,7 +216,7 @@ public:
                           gp_Vec&             D1V,
                           gp_Vec&             D2U,
                           gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const override;
+                          gp_Vec&             D2UV) const Standard_OVERRIDE;
 
   //! Computes the current point, the first,the second and the
   //! third derivatives in the directions U and V.
@@ -231,7 +231,7 @@ public:
                           gp_Vec&             D3U,
                           gp_Vec&             D3V,
                           gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const override;
+                          gp_Vec&             D3UVV) const Standard_OVERRIDE;
 
   //! Computes the derivative of order Nu in the direction u
   //! and Nv in the direction v.
@@ -239,17 +239,17 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Real    V,
                             const Standard_Integer Nu,
-                            const Standard_Integer Nv) const override;
+                            const Standard_Integer Nv) const Standard_OVERRIDE;
 
   //! Applies the transformation T to this plane.
-  Standard_EXPORT void Transform(const gp_Trsf& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
   //! Creates a new object which is a copy of this plane.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Plane, Geom_ElementarySurface)
 };

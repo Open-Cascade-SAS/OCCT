@@ -35,25 +35,25 @@ inline uint64_t load_bytes(const char* thePnt, int theNb) noexcept
   {
     case 7:
       aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[6])) << 48) | aResult;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case 6:
       aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[5])) << 40) | aResult;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case 5:
       aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[4])) << 32) | aResult;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case 4:
       aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[3])) << 24) | aResult;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case 3:
       aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[2])) << 16) | aResult;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case 2:
       aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[1])) << 8) | aResult;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case 1:
       aResult = static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0])) | aResult;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     default:
       break;
   }
@@ -128,11 +128,11 @@ inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed) n
     case 3:
       aKey = static_cast<unsigned char>(aBuf[2]);
       aHash ^= aKey << 16;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case 2:
       aKey = static_cast<unsigned char>(aBuf[1]);
       aHash ^= aKey << 8;
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case 1:
       aKey = static_cast<unsigned char>(aBuf[0]);
       aHash ^= aKey;

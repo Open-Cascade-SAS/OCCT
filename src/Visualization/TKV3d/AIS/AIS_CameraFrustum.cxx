@@ -232,7 +232,7 @@ void AIS_CameraFrustum::Compute(const Handle(PrsMgr_PresentationManager)&,
       aGroup->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
       aGroup->AddPrimitiveArray(myTriangles);
     }
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case AIS_WireFrame: {
       Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
       aGroup->SetGroupPrimitivesAspect(myDrawer->LineAspect()->Aspect());

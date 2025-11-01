@@ -37,10 +37,10 @@ public:
   }
 
   //! Returns COMPOUND.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
   //! Returns an empty TCompound.
-  Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const override;
+  Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TCompound, TopoDS_TShape)
 };

@@ -112,10 +112,10 @@ static Standard_Integer surfaceCcontinuity(Draw_Interpretor& di, Standard_Intege
       {
         case 10:
           epsC0 = Draw::Atof(a[9]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 9:
           epsnl = Draw::Atof(a[8]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 8:
           break;
         default:
@@ -132,13 +132,13 @@ static Standard_Integer surfaceCcontinuity(Draw_Interpretor& di, Standard_Intege
       {
         case 11:
           epsC1 = Draw::Atof(a[10]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 10:
           epsC0 = Draw::Atof(a[9]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 9:
           epsnl = Draw::Atof(a[8]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 8:
           break;
         default:
@@ -155,16 +155,16 @@ static Standard_Integer surfaceCcontinuity(Draw_Interpretor& di, Standard_Intege
       {
         case 12:
           epsC2 = Draw::Atof(a[11]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 11:
           epsC1 = Draw::Atof(a[10]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 10:
           epsC0 = Draw::Atof(a[9]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 9:
           epsnl = Draw::Atof(a[8]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 8:
           break;
         default:
@@ -237,13 +237,13 @@ static Standard_Integer surfaceGcontinuity(Draw_Interpretor& di, Standard_Intege
       {
         case 11:
           epsG1 = Draw::Atof(a[10]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 10:
           epsC0 = Draw::Atof(a[9]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 9:
           epsnl = Draw::Atof(a[8]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 8:
           break;
         default:
@@ -260,19 +260,19 @@ static Standard_Integer surfaceGcontinuity(Draw_Interpretor& di, Standard_Intege
       {
         case 13:
           maxlen = Draw::Atof(a[12]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 12:
           perce = Draw::Atof(a[11]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 11:
           epsG1 = Draw::Atof(a[10]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 10:
           epsC0 = Draw::Atof(a[9]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 9:
           epsnl = Draw::Atof(a[8]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 8:
           break;
         default:
@@ -341,13 +341,13 @@ static Standard_Integer curveGcontinuity(Draw_Interpretor& di, Standard_Integer 
       {
         case 9:
           epsG1 = Draw::Atof(a[8]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 8:
           epsC0 = Draw::Atof(a[7]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 7:
           epsnl = Draw::Atof(a[6]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 6:
           break;
         default:
@@ -363,22 +363,22 @@ static Standard_Integer curveGcontinuity(Draw_Interpretor& di, Standard_Integer 
       {
         case 12:
           maxlen = Draw::Atof(a[11]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 11:
           percent = Draw::Atof(a[10]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 10:
           epsG2 = Draw::Atof(a[9]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 9:
           epsG1 = Draw::Atof(a[8]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 8:
           epsC0 = Draw::Atof(a[7]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 7:
           epsnl = Draw::Atof(a[6]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 6:
           break;
         default:
@@ -448,10 +448,10 @@ static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer 
       {
         case 8:
           epsC0 = Draw::Atof(a[7]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 7:
           epsnl = Draw::Atof(a[6]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 6:
           break;
         default:
@@ -467,13 +467,13 @@ static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer 
       {
         case 9:
           epsC1 = Draw::Atof(a[8]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 8:
           epsC0 = Draw::Atof(a[7]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 7:
           epsnl = Draw::Atof(a[6]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 6:
           break;
         default:
@@ -490,16 +490,16 @@ static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer 
       {
         case 10:
           epsC2 = Draw::Atof(a[9]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 9:
           epsC1 = Draw::Atof(a[8]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 8:
           epsC0 = Draw::Atof(a[7]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 7:
           epsnl = Draw::Atof(a[6]);
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case 6:
           break;
         default:

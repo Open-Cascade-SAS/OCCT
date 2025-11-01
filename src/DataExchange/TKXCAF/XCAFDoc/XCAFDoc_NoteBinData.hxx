@@ -107,12 +107,12 @@ public:
 
 public:
   // Overrides TDF_Attribute virtuals
-  Standard_EXPORT const Standard_GUID&  ID() const override;
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theAttrFrom) override;
+  Standard_EXPORT const Standard_GUID&  ID() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theAttrFrom) Standard_OVERRIDE;
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theAttrInto,
-                             const Handle(TDF_RelocationTable)& theRT) const override;
-  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const override;
+                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const Standard_OVERRIDE;
 
 protected:
   TCollection_ExtendedString    myTitle;    ///< Note title.

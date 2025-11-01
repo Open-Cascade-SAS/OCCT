@@ -36,11 +36,11 @@ public:
 
   //! Gives the count of Resource Protocol. Here, one
   //! (Protocol from IGESGeom)
-  Standard_EXPORT virtual Standard_Integer NbResources() const override;
+  Standard_EXPORT virtual Standard_Integer NbResources() const Standard_OVERRIDE;
 
   //! Returns a Resource, given a rank.
   Standard_EXPORT virtual Handle(Interface_Protocol) Resource(const Standard_Integer num) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns a Case Number, specific of each recognized Type
   //! This Case Number is then used in Libraries : the various
@@ -48,7 +48,7 @@ public:
   //! in accordance (for a given value of TypeNumber, they must
   //! consider the same Type as the Protocol defines)
   Standard_EXPORT virtual Standard_Integer TypeNumber(const Handle(Standard_Type)& atype) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Protocol, IGESData_Protocol)
 

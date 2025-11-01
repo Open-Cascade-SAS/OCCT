@@ -49,10 +49,10 @@ public:
 
   vtkTypeMacro(IVtkDraw_Interactor, vtkRenderWindowInteractor)
 
-    virtual void Initialize() override;
-  virtual void Enable() override;
+    virtual void Initialize() Standard_OVERRIDE;
+  virtual void Enable() Standard_OVERRIDE;
 
-  virtual void Start() override {}
+  virtual void Start() Standard_OVERRIDE {}
 
   const PSelector& Selector() const { return mySelector; }
 
@@ -111,7 +111,7 @@ protected:
   void OnMouseWheelBackward(HWND wnd, UINT nFlags, Standard_Integer X, Standard_Integer Y);
 #else
   static void ProcessEvents(ClientData theData, int);
-  void        GetMousePosition(Standard_Integer* theX, Standard_Integer* theY) override;
+  void        GetMousePosition(Standard_Integer* theX, Standard_Integer* theY) Standard_OVERRIDE;
 #endif
 
 private:

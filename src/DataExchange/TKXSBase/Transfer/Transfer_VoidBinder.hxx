@@ -40,10 +40,10 @@ public:
 
   //! while a VoidBinder admits no Result, its ResultType returns
   //! the type of <me>
-  Standard_EXPORT Handle(Standard_Type) ResultType() const override;
+  Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
 
   //! Returns "(void)"
-  Standard_EXPORT Standard_CString ResultTypeName() const override;
+  Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_VoidBinder, Transfer_Binder)
 

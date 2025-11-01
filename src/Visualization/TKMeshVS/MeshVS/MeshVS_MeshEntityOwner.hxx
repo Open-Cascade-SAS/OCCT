@@ -54,19 +54,19 @@ public:
   //! Returns true if owner is hilighted
   Standard_EXPORT virtual Standard_Boolean IsHilighted(const Handle(PrsMgr_PresentationManager)& PM,
                                                        const Standard_Integer Mode = 0) const
-    override;
+    Standard_OVERRIDE;
 
   //! Hilights owner with the certain color
   Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
                                                 const Handle(Prs3d_Drawer)&               theStyle,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Strip hilight of owner
   Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& PM,
-                                         const Standard_Integer Mode = 0) override;
+                                         const Standard_Integer Mode = 0) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Clear(const Handle(PrsMgr_PresentationManager)& PM,
-                                     const Standard_Integer Mode = 0) override;
+                                     const Standard_Integer Mode = 0) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_MeshEntityOwner, SelectMgr_EntityOwner)
 

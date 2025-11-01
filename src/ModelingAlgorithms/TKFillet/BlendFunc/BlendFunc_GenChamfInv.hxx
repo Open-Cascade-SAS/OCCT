@@ -32,16 +32,16 @@ public:
                                         const Handle(Adaptor3d_Curve)&   C);
 
   Standard_EXPORT virtual void Set(const Standard_Boolean           OnFirst,
-                                   const Handle(Adaptor2d_Curve2d)& COnSurf) override;
+                                   const Handle(Adaptor2d_Curve2d)& COnSurf) Standard_OVERRIDE;
 
   Standard_EXPORT void GetTolerance(math_Vector&        Tolerance,
-                                    const Standard_Real Tol) const override;
+                                    const Standard_Real Tol) const Standard_OVERRIDE;
 
   Standard_EXPORT void GetBounds(math_Vector& InfBound,
-                                 math_Vector& SupBound) const override;
+                                 math_Vector& SupBound) const Standard_OVERRIDE;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT Standard_Integer NbEquations() const override;
+  Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
@@ -49,7 +49,7 @@ public:
   //! False otherwise.
   Standard_EXPORT Standard_Boolean Values(const math_Vector& X,
                                           math_Vector&       F,
-                                          math_Matrix&       D) override;
+                                          math_Matrix&       D) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Set(const Standard_Real    Dist1,
                                    const Standard_Real    Dist2,

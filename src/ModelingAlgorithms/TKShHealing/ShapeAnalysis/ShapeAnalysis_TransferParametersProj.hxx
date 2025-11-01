@@ -47,18 +47,18 @@ public:
 
   Standard_EXPORT ShapeAnalysis_TransferParametersProj(const TopoDS_Edge& E, const TopoDS_Face& F);
 
-  Standard_EXPORT virtual void Init(const TopoDS_Edge& E, const TopoDS_Face& F) override;
+  Standard_EXPORT virtual void Init(const TopoDS_Edge& E, const TopoDS_Face& F) Standard_OVERRIDE;
 
   //! Transfers parameters given by sequence Params from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
   Standard_EXPORT virtual Handle(TColStd_HSequenceOfReal) Perform(
     const Handle(TColStd_HSequenceOfReal)& Papams,
-    const Standard_Boolean                 To2d) override;
+    const Standard_Boolean                 To2d) Standard_OVERRIDE;
 
   //! Transfers parameter given by  Param from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
   Standard_EXPORT virtual Standard_Real Perform(const Standard_Real    Param,
-                                                const Standard_Boolean To2d) override;
+                                                const Standard_Boolean To2d) Standard_OVERRIDE;
 
   //! Returns modifiable flag forcing projection
   //! If it is False (default), projection is done only
@@ -71,10 +71,10 @@ public:
   Standard_EXPORT virtual void TransferRange(TopoDS_Edge&           newEdge,
                                              const Standard_Real    prevPar,
                                              const Standard_Real    currPar,
-                                             const Standard_Boolean Is2d) override;
+                                             const Standard_Boolean Is2d) Standard_OVERRIDE;
 
   //! Returns False;
-  Standard_EXPORT virtual Standard_Boolean IsSameRange() const override;
+  Standard_EXPORT virtual Standard_Boolean IsSameRange() const Standard_OVERRIDE;
 
   //! Make a copy of non-manifold vertex theVert
   //! (i.e. create new  TVertex and replace PointRepresentations for this vertex

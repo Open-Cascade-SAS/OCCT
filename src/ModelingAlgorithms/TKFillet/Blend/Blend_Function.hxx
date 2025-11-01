@@ -45,13 +45,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns 4.
-  Standard_EXPORT Standard_Integer NbVariables() const override;
+  Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
 
   //! Returns the point on the first support.
-  Standard_EXPORT const gp_Pnt& Pnt1() const override;
+  Standard_EXPORT const gp_Pnt& Pnt1() const Standard_OVERRIDE;
 
   //! Returns the point on the seconde support.
-  Standard_EXPORT const gp_Pnt& Pnt2() const override;
+  Standard_EXPORT const gp_Pnt& Pnt2() const Standard_OVERRIDE;
 
   //! Returns the point on the first surface, at parameter
   //! Sol(1),Sol(2) (Sol is the vector used in the call of
@@ -101,7 +101,7 @@ public:
   Standard_EXPORT virtual void Section(const Blend_Point&    P,
                                        TColgp_Array1OfPnt&   Poles,
                                        TColgp_Array1OfPnt2d& Poles2d,
-                                       TColStd_Array1OfReal& Weigths) override = 0;
+                                       TColStd_Array1OfReal& Weigths) Standard_OVERRIDE = 0;
 
   //! Used for the first and last section
   //! The method returns Standard_True if the derivatives
@@ -116,7 +116,7 @@ public:
                                                    TColStd_Array1OfReal& Weigths,
                                                    TColStd_Array1OfReal& DWeigths,
                                                    TColStd_Array1OfReal& D2Weigths)
-    override;
+    Standard_OVERRIDE;
 
 protected:
 private:

@@ -91,7 +91,7 @@ public:
   //! Returns the  list   of shapes generated   from the
   //! shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    override;
+    Standard_OVERRIDE;
 
 protected:
 private:

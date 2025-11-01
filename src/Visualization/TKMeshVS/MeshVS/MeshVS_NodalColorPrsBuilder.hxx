@@ -64,7 +64,7 @@ public:
                                      const TColStd_PackedMapOfInteger& IDs,
                                      TColStd_PackedMapOfInteger&       IDsToExclude,
                                      const Standard_Boolean            IsElement,
-                                     const Standard_Integer DisplayMode) const override;
+                                     const Standard_Integer DisplayMode) const Standard_OVERRIDE;
 
   //! Returns map of colors assigned to nodes.
   Standard_EXPORT const MeshVS_DataMapOfIntegerColor& GetColors() const;

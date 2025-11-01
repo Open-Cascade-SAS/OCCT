@@ -48,27 +48,27 @@ public:
   Standard_EXPORT Standard_CString StepType() const;
 
   //! Returns False
-  Standard_EXPORT Standard_Boolean IsComplex() const override;
+  Standard_EXPORT Standard_Boolean IsComplex() const Standard_OVERRIDE;
 
   //! Tells if a step type is matched by <me>
   //! For a Simple Entity : own type or super type
   //! For a Complex Entity : one of the members
-  Standard_EXPORT Standard_Boolean Matches(const Standard_CString steptype) const override;
+  Standard_EXPORT Standard_Boolean Matches(const Standard_CString steptype) const Standard_OVERRIDE;
 
   //! Returns a Simple Entity which matches with a Type in <me> :
   //! For a Simple Entity : me if it matches, else a null handle
   //! For a Complex Entity : the member which matches, else null
   Standard_EXPORT Handle(StepData_Simple) As(const Standard_CString steptype) const
-    override;
+    Standard_OVERRIDE;
 
   //! Tells if a Field brings a given name
-  Standard_EXPORT Standard_Boolean HasField(const Standard_CString name) const override;
+  Standard_EXPORT Standard_Boolean HasField(const Standard_CString name) const Standard_OVERRIDE;
 
   //! Returns a Field from its name; read-only
-  Standard_EXPORT const StepData_Field& Field(const Standard_CString name) const override;
+  Standard_EXPORT const StepData_Field& Field(const Standard_CString name) const Standard_OVERRIDE;
 
   //! Returns a Field from its name; read or write
-  Standard_EXPORT StepData_Field& CField(const Standard_CString name) override;
+  Standard_EXPORT StepData_Field& CField(const Standard_CString name) Standard_OVERRIDE;
 
   //! Returns the count of fields
   Standard_EXPORT Standard_Integer NbFields() const;
@@ -86,10 +86,10 @@ public:
   Standard_EXPORT StepData_FieldListN& CFields();
 
   //! Fills a Check by using its Description
-  Standard_EXPORT void Check(Handle(Interface_Check)& ach) const override;
+  Standard_EXPORT void Check(Handle(Interface_Check)& ach) const Standard_OVERRIDE;
 
   //! Fills an EntityIterator with entities shared by <me>
-  Standard_EXPORT void Shared(Interface_EntityIterator& list) const override;
+  Standard_EXPORT void Shared(Interface_EntityIterator& list) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(StepData_Simple, StepData_Described)
 

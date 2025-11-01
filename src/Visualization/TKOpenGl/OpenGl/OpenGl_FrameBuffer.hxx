@@ -61,7 +61,7 @@ public:
   Standard_EXPORT virtual ~OpenGl_FrameBuffer();
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) Standard_OVERRIDE;
 
   //! Number of multisampling samples.
   Standard_Integer NbSamples() const { return myNbSamples; }
@@ -260,7 +260,7 @@ public:
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const override;
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
 
 public:
   //! (Re-)initialize FBO with specified dimensions.

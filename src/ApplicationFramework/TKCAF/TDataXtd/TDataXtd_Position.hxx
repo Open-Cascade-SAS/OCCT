@@ -47,18 +47,18 @@ public:
   Standard_EXPORT TDataXtd_Position();
 
   //! Returns the ID of the attribute.
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
   //! Returns the ID of the attribute.
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Restores the contents from <anAttribute> into this
   //! one. It is used when aborting a transaction.
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& anAttribute) override;
+  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& anAttribute) Standard_OVERRIDE;
 
   //! Returns an new empty attribute from the good end
   //! type. It is used by the copy algorithm.
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   //! This method is different from the "Copy" one,
   //! because it is used when copying an attribute from
@@ -69,7 +69,7 @@ public:
   //! of the previous one.
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       intoAttribute,
                                      const Handle(TDF_RelocationTable)& aRelocTationable) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT const gp_Pnt& GetPosition() const;
 

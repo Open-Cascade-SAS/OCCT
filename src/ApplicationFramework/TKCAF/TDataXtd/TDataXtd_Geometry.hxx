@@ -126,16 +126,16 @@ public:
   //! Returns the type of geometric construction.
   Standard_EXPORT TDataXtd_GeometryEnum GetType() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) override;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       into,
-                             const Handle(TDF_RelocationTable)& RT) const override;
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TDataXtd_Geometry, TDF_Attribute)
 

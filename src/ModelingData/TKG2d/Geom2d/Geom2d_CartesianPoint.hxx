@@ -53,26 +53,26 @@ public:
   Standard_EXPORT void SetY(const Standard_Real Y);
 
   //! Returns the coordinates of <me>.
-  Standard_EXPORT void Coord(Standard_Real& X, Standard_Real& Y) const override;
+  Standard_EXPORT void Coord(Standard_Real& X, Standard_Real& Y) const Standard_OVERRIDE;
 
   //! Returns a non persistent cartesian point with
   //! the same coordinates as <me>.
   //! -C++: return const&
-  Standard_EXPORT gp_Pnt2d Pnt2d() const override;
+  Standard_EXPORT gp_Pnt2d Pnt2d() const Standard_OVERRIDE;
 
   //! Returns the X coordinate of <me>.
-  Standard_EXPORT Standard_Real X() const override;
+  Standard_EXPORT Standard_Real X() const Standard_OVERRIDE;
 
   //! Returns the Y coordinate of <me>.
-  Standard_EXPORT Standard_Real Y() const override;
+  Standard_EXPORT Standard_Real Y() const Standard_OVERRIDE;
 
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const override;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_CartesianPoint, Geom2d_Point)
 

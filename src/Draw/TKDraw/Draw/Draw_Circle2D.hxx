@@ -37,7 +37,7 @@ public:
                                 const Standard_Real A2,
                                 const Draw_Color&   col);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Circle2D, Draw_Drawable2D)
 

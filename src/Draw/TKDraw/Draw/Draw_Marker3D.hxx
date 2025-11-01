@@ -46,13 +46,13 @@ public:
   //! myPos field
   Standard_EXPORT gp_Pnt& ChangePos();
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   //! Returns always false
   Standard_EXPORT virtual Standard_Boolean PickReject(const Standard_Real X,
                                                       const Standard_Real Y,
                                                       const Standard_Real Prec) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Marker3D, Draw_Drawable3D)
 

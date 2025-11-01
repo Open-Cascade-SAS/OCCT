@@ -51,21 +51,21 @@ public:
                                           const Standard_Real               anArrowSize = 0.0);
 
   //! Indicates that we are concerned with a 3d length.
-  virtual PrsDim_KindOfDimension KindOfDimension() const override
+  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE
   {
     return PrsDim_KOD_LENGTH;
   }
 
   //! Returns true if the 3d chamfer dimension is movable.
-  virtual Standard_Boolean IsMovable() const override { return Standard_True; }
+  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
 
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
 private:
   gp_Pnt myPntAttach;

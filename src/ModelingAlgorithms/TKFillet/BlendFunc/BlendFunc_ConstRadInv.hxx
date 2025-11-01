@@ -33,32 +33,32 @@ public:
                                         const Handle(Adaptor3d_Curve)&   C);
 
   Standard_EXPORT void Set(const Standard_Boolean           OnFirst,
-                           const Handle(Adaptor2d_Curve2d)& COnSurf) override;
+                           const Handle(Adaptor2d_Curve2d)& COnSurf) Standard_OVERRIDE;
 
   Standard_EXPORT void GetTolerance(math_Vector&        Tolerance,
-                                    const Standard_Real Tol) const override;
+                                    const Standard_Real Tol) const Standard_OVERRIDE;
 
   Standard_EXPORT void GetBounds(math_Vector& InfBound,
-                                 math_Vector& SupBound) const override;
+                                 math_Vector& SupBound) const Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Boolean IsSolution(const math_Vector&  Sol,
-                                              const Standard_Real Tol) override;
+                                              const Standard_Real Tol) Standard_OVERRIDE;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT Standard_Integer NbEquations() const override;
+  Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F) override;
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F) Standard_OVERRIDE;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X,
-                                               math_Matrix&       D) override;
+                                               math_Matrix&       D) Standard_OVERRIDE;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
@@ -66,7 +66,7 @@ public:
   //! False otherwise.
   Standard_EXPORT Standard_Boolean Values(const math_Vector& X,
                                           math_Vector&       F,
-                                          math_Matrix&       D) override;
+                                          math_Matrix&       D) Standard_OVERRIDE;
 
   Standard_EXPORT void Set(const Standard_Real R, const Standard_Integer Choix);
 

@@ -412,7 +412,7 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
         aShapes.Append(aMakeWire.Wire());
         aListIter.Initialize(aShapes);
       }
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case TopAbs_WIRE: {
         // make faceS from wires (one per one)
         if (theType < TopAbs_SOLID)
@@ -433,7 +433,7 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
         aShapes.Assign(aFaces); // don't break: we can do something more of it
         aListIter.Initialize(aShapes);
       }
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case TopAbs_FACE: {
         // make shell from faces
         if (theType < TopAbs_SOLID)
@@ -450,7 +450,7 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
         aShapes.Append(aShell);
         aListIter.Initialize(aShapes);
       }
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case TopAbs_SHELL: {
         // make solids from shells (one per one)
         TopTools_ListOfShape aSolids;
@@ -469,7 +469,7 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_Sha
         aShapes.Assign(aSolids); // don't break: we can do something more of it
         aListIter.Initialize(aShapes);
       }
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case TopAbs_SOLID: {
         // make compsolid from solids
         BRep_Builder     aCompBuilder;

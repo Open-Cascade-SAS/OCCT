@@ -50,7 +50,7 @@ public: //! @name Constructors
 
 public: //! @name Setting expected size of the BVH
   //! Sets the expected size of BVH tree
-  virtual void SetSize(const Standard_Size theSize) override
+  virtual void SetSize(const Standard_Size theSize) Standard_OVERRIDE
   {
     myIndices.reserve(theSize);
     BVH_BoxSet<NumType, Dimension, DataType>::SetSize(theSize);
@@ -59,7 +59,7 @@ public: //! @name Setting expected size of the BVH
 public: //! @name Adding elements in BVH
   //! Adds the element into BVH
   virtual void Add(const DataType&                    theElement,
-                   const BVH_Box<NumType, Dimension>& theBox) override
+                   const BVH_Box<NumType, Dimension>& theBox) Standard_OVERRIDE
   {
     myIndices.push_back(static_cast<Standard_Integer>(myIndices.size()));
     BVH_BoxSet<NumType, Dimension, DataType>::Add(theElement, theBox);
@@ -67,7 +67,7 @@ public: //! @name Adding elements in BVH
 
 public: //! @name Clearing the elements and boxes
   //! Clears the vectors of elements and boxes
-  virtual void Clear() override
+  virtual void Clear() Standard_OVERRIDE
   {
     myIndices.clear();
     BVH_BoxSet<NumType, Dimension, DataType>::Clear();
@@ -78,20 +78,20 @@ public: //! @name Necessary overrides for BVH construction
   using BVH_BoxSet<NumType, Dimension, DataType>::Box;
 
   //! Returns the bounding box with the given index.
-  virtual BVH_Box<NumType, Dimension> Box(const Standard_Integer theIndex) const override
+  virtual BVH_Box<NumType, Dimension> Box(const Standard_Integer theIndex) const Standard_OVERRIDE
   {
     return this->myBoxes[myIndices[theIndex]];
   }
 
   //! Swaps indices of two specified boxes.
   virtual void Swap(const Standard_Integer theIndex1,
-                    const Standard_Integer theIndex2) override
+                    const Standard_Integer theIndex2) Standard_OVERRIDE
   {
     std::swap(myIndices[theIndex1], myIndices[theIndex2]);
   }
 
   //! Returns the Element with the index theIndex.
-  virtual DataType Element(const Standard_Integer theIndex) const override
+  virtual DataType Element(const Standard_Integer theIndex) const Standard_OVERRIDE
   {
     return this->myElements[myIndices[theIndex]];
   }

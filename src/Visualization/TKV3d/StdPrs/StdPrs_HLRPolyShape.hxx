@@ -35,7 +35,7 @@ public:
                                           const TopoDS_Shape&               theShape,
                                           const Handle(Prs3d_Drawer)&       theDrawer,
                                           const Handle(Graphic3d_Camera)&   theProjector) const
-    override;
+    Standard_OVERRIDE;
 };
 
 #endif // _StdPrs_HLRPolyShape_HeaderFile

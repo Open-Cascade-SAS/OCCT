@@ -56,7 +56,7 @@ public:
   Standard_EXPORT void FreeAngle(const Standard_Integer Side);
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(DrawFairCurve_Batten, DrawTrSurf_BSplineCurve2d)
 

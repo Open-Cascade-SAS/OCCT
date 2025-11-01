@@ -31,7 +31,7 @@ class TopoDS_TEdge : public TopoDS_TShape
 {
 public:
   //! Returns EDGE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TEdge, TopoDS_TShape)
 

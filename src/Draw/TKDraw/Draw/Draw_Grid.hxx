@@ -51,7 +51,7 @@ public:
   Standard_Boolean IsActive() const;
 
   //! Displays the grid.
-  Standard_EXPORT void DrawOn(Draw_Display& Out) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& Out) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Grid, Draw_Drawable3D)
 

@@ -37,7 +37,7 @@ public:
 
   //! Dumps the content of me into the stream
   virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
   Handle(Standard_Transient) myObject; //!< alert object

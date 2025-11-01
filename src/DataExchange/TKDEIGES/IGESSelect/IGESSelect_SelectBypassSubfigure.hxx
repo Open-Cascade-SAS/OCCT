@@ -58,10 +58,10 @@ public:
     Explore(const Standard_Integer            level,
             const Handle(Standard_Transient)& ent,
             const Interface_Graph&            G,
-            Interface_EntityIterator&         explored) const override;
+            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
 
   //! Returns a text defining the criterium : "Content of Subfigure"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBypassSubfigure, IFSelect_SelectExplore)
 

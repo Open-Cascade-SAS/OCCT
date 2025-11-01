@@ -109,7 +109,7 @@ public:
   constexpr void Reverse() noexcept { vdir.Reverse(); }
 
   //! Reverses the unit vector of this axis and creates a new one.
-  [[nodiscard]] gp_Ax1 Reversed() const
+  Standard_NODISCARD gp_Ax1 Reversed() const
   {
     gp_Dir D = vdir.Reversed();
     return gp_Ax1(loc, D);
@@ -123,7 +123,7 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point P which is the
   //! center of the symmetry and creates a new axis.
-  [[nodiscard]] Standard_EXPORT gp_Ax1 Mirrored(const gp_Pnt& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Pnt& P) const;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
@@ -133,7 +133,7 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
   //! is the axis of the symmetry and creates a new axis.
-  [[nodiscard]] Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax1& A1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax1& A1) const;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to a plane. The axis placement
@@ -145,7 +145,7 @@ public:
   //! placement with respect to a plane. The axis placement
   //! <A2> locates the plane of the symmetry :
   //! (Location, XDirection, YDirection) and creates a new axis.
-  [[nodiscard]] Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax2& A2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax2& A2) const;
 
   //! Rotates this axis at an angle theAngRad (in radians) about the axis theA1
   //! and assigns the result to this axis.
@@ -157,7 +157,7 @@ public:
 
   //! Rotates this axis at an angle theAngRad (in radians) about the axis theA1
   //! and creates a new one.
-  [[nodiscard]] gp_Ax1 Rotated(const gp_Ax1& theA1, const Standard_Real theAngRad) const
+  Standard_NODISCARD gp_Ax1 Rotated(const gp_Ax1& theA1, const Standard_Real theAngRad) const
   {
     gp_Ax1 A = *this;
     A.Rotate(theA1, theAngRad);
@@ -179,7 +179,7 @@ public:
   //! Applies a scaling transformation to this axis with:
   //! - scale factor theS, and
   //! - center theP and creates a new axis.
-  [[nodiscard]] gp_Ax1 Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+  Standard_NODISCARD gp_Ax1 Scaled(const gp_Pnt& theP, const Standard_Real theS) const
   {
     gp_Ax1 A1 = *this;
     A1.Scale(theP, theS);
@@ -197,7 +197,7 @@ public:
   //!
   //! Translates an axis plaxement in the direction of the vector <V>.
   //! The magnitude of the translation is the vector's magnitude.
-  [[nodiscard]] gp_Ax1 Transformed(const gp_Trsf& theT) const
+  Standard_NODISCARD gp_Ax1 Transformed(const gp_Trsf& theT) const
   {
     gp_Ax1 A1 = *this;
     A1.Transform(theT);
@@ -209,7 +209,7 @@ public:
 
   //! Translates this axis by the vector theV,
   //! and creates a new one.
-  [[nodiscard]] gp_Ax1 Translated(const gp_Vec& theV) const
+  Standard_NODISCARD gp_Ax1 Translated(const gp_Vec& theV) const
   {
     gp_Ax1 A1 = *this;
     (A1.loc).Translate(theV);
@@ -227,7 +227,7 @@ public:
   //! Translates this axis by:
   //! the vector (theP1, theP2) defined from point theP1 to point theP2.
   //! and creates a new one.
-  [[nodiscard]] gp_Ax1 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD gp_Ax1 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
   {
     gp_Ax1 A1 = *this;
     (A1.loc).Translate(theP1, theP2);

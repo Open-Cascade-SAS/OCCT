@@ -55,16 +55,16 @@ public:
   Standard_EXPORT FSD_BinaryFile();
 
   Standard_EXPORT Storage_Error Open(const TCollection_AsciiString& aName,
-                                     const Storage_OpenMode         aMode) override;
+                                     const Storage_OpenMode         aMode) Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Boolean IsEnd() override;
+  Standard_EXPORT Standard_Boolean IsEnd() Standard_OVERRIDE;
 
   //! return position in the file. Return -1 upon error.
-  Standard_EXPORT Storage_Position Tell() override;
+  Standard_EXPORT Storage_Position Tell() Standard_OVERRIDE;
 
   Standard_EXPORT static Storage_Error IsGoodFileType(const TCollection_AsciiString& aName);
 
-  Standard_EXPORT Storage_Error BeginWriteInfoSection() override;
+  Standard_EXPORT Storage_Error BeginWriteInfoSection() Standard_OVERRIDE;
 
   Standard_EXPORT static Standard_Integer WriteInfo(
     Standard_OStream&                    theOStream,
@@ -87,13 +87,13 @@ public:
                                  const TCollection_ExtendedString&    appName,
                                  const TCollection_AsciiString&       appVersion,
                                  const TCollection_ExtendedString&    objectType,
-                                 const TColStd_SequenceOfAsciiString& userInfo) override;
+                                 const TColStd_SequenceOfAsciiString& userInfo) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error EndWriteInfoSection() override;
+  Standard_EXPORT Storage_Error EndWriteInfoSection() Standard_OVERRIDE;
 
   Standard_EXPORT Storage_Error EndWriteInfoSection(Standard_OStream& theOStream);
 
-  Standard_EXPORT Storage_Error BeginReadInfoSection() override;
+  Standard_EXPORT Storage_Error BeginReadInfoSection() Standard_OVERRIDE;
 
   Standard_EXPORT void ReadInfo(Standard_Integer&              nbObj,
                                 TCollection_AsciiString&       dbVersion,
@@ -103,189 +103,189 @@ public:
                                 TCollection_ExtendedString&    appName,
                                 TCollection_AsciiString&       appVersion,
                                 TCollection_ExtendedString&    objectType,
-                                TColStd_SequenceOfAsciiString& userInfo) override;
+                                TColStd_SequenceOfAsciiString& userInfo) Standard_OVERRIDE;
 
   Standard_EXPORT void ReadCompleteInfo(Standard_IStream&     theIStream,
-                                        Handle(Storage_Data)& theData) override;
+                                        Handle(Storage_Data)& theData) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error EndReadInfoSection() override;
+  Standard_EXPORT Storage_Error EndReadInfoSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error BeginWriteCommentSection() override;
+  Standard_EXPORT Storage_Error BeginWriteCommentSection() Standard_OVERRIDE;
 
   Standard_EXPORT Storage_Error BeginWriteCommentSection(Standard_OStream& theOStream);
 
   Standard_EXPORT void WriteComment(const TColStd_SequenceOfExtendedString& userComments)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT static Standard_Integer WriteComment(
     Standard_OStream&                       theOStream,
     const TColStd_SequenceOfExtendedString& theComments,
     const Standard_Boolean                  theOnlyCount = Standard_False);
 
-  Standard_EXPORT Storage_Error EndWriteCommentSection() override;
+  Standard_EXPORT Storage_Error EndWriteCommentSection() Standard_OVERRIDE;
 
   Standard_EXPORT Storage_Error EndWriteCommentSection(Standard_OStream& theOStream);
 
-  Standard_EXPORT Storage_Error BeginReadCommentSection() override;
+  Standard_EXPORT Storage_Error BeginReadCommentSection() Standard_OVERRIDE;
 
   Standard_EXPORT void ReadComment(TColStd_SequenceOfExtendedString& userComments)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT static void ReadComment(Standard_IStream&                 theIStream,
                                           TColStd_SequenceOfExtendedString& userComments);
 
-  Standard_EXPORT Storage_Error EndReadCommentSection() override;
+  Standard_EXPORT Storage_Error EndReadCommentSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error BeginWriteTypeSection() override;
+  Standard_EXPORT Storage_Error BeginWriteTypeSection() Standard_OVERRIDE;
 
-  Standard_EXPORT void SetTypeSectionSize(const Standard_Integer aSize) override;
+  Standard_EXPORT void SetTypeSectionSize(const Standard_Integer aSize) Standard_OVERRIDE;
 
   Standard_EXPORT void WriteTypeInformations(const Standard_Integer         typeNum,
                                              const TCollection_AsciiString& typeName)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error EndWriteTypeSection() override;
+  Standard_EXPORT Storage_Error EndWriteTypeSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error BeginReadTypeSection() override;
+  Standard_EXPORT Storage_Error BeginReadTypeSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Integer TypeSectionSize() override;
+  Standard_EXPORT Standard_Integer TypeSectionSize() Standard_OVERRIDE;
 
   Standard_EXPORT static Standard_Integer TypeSectionSize(Standard_IStream& theIStream);
 
   Standard_EXPORT void ReadTypeInformations(Standard_Integer&        typeNum,
-                                            TCollection_AsciiString& typeName) override;
+                                            TCollection_AsciiString& typeName) Standard_OVERRIDE;
 
   Standard_EXPORT static void ReadTypeInformations(Standard_IStream&        theIStream,
                                                    Standard_Integer&        typeNum,
                                                    TCollection_AsciiString& typeName);
 
-  Standard_EXPORT Storage_Error EndReadTypeSection() override;
+  Standard_EXPORT Storage_Error EndReadTypeSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error BeginWriteRootSection() override;
+  Standard_EXPORT Storage_Error BeginWriteRootSection() Standard_OVERRIDE;
 
-  Standard_EXPORT void SetRootSectionSize(const Standard_Integer aSize) override;
+  Standard_EXPORT void SetRootSectionSize(const Standard_Integer aSize) Standard_OVERRIDE;
 
   Standard_EXPORT void WriteRoot(const TCollection_AsciiString& rootName,
                                  const Standard_Integer         aRef,
-                                 const TCollection_AsciiString& aType) override;
+                                 const TCollection_AsciiString& aType) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error EndWriteRootSection() override;
+  Standard_EXPORT Storage_Error EndWriteRootSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error BeginReadRootSection() override;
+  Standard_EXPORT Storage_Error BeginReadRootSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Integer RootSectionSize() override;
+  Standard_EXPORT Standard_Integer RootSectionSize() Standard_OVERRIDE;
 
   Standard_EXPORT static Standard_Integer RootSectionSize(Standard_IStream& theIStream);
 
   Standard_EXPORT void ReadRoot(TCollection_AsciiString& rootName,
                                 Standard_Integer&        aRef,
-                                TCollection_AsciiString& aType) override;
+                                TCollection_AsciiString& aType) Standard_OVERRIDE;
 
   Standard_EXPORT static void ReadRoot(Standard_IStream&        theIStream,
                                        TCollection_AsciiString& rootName,
                                        Standard_Integer&        aRef,
                                        TCollection_AsciiString& aType);
 
-  Standard_EXPORT Storage_Error EndReadRootSection() override;
+  Standard_EXPORT Storage_Error EndReadRootSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error BeginWriteRefSection() override;
+  Standard_EXPORT Storage_Error BeginWriteRefSection() Standard_OVERRIDE;
 
-  Standard_EXPORT void SetRefSectionSize(const Standard_Integer aSize) override;
+  Standard_EXPORT void SetRefSectionSize(const Standard_Integer aSize) Standard_OVERRIDE;
 
   Standard_EXPORT void WriteReferenceType(const Standard_Integer reference,
-                                          const Standard_Integer typeNum) override;
+                                          const Standard_Integer typeNum) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error EndWriteRefSection() override;
+  Standard_EXPORT Storage_Error EndWriteRefSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error BeginReadRefSection() override;
+  Standard_EXPORT Storage_Error BeginReadRefSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Integer RefSectionSize() override;
+  Standard_EXPORT Standard_Integer RefSectionSize() Standard_OVERRIDE;
 
   Standard_EXPORT static Standard_Integer RefSectionSize(Standard_IStream& theIStream);
 
   Standard_EXPORT void ReadReferenceType(Standard_Integer& reference,
-                                         Standard_Integer& typeNum) override;
+                                         Standard_Integer& typeNum) Standard_OVERRIDE;
 
   Standard_EXPORT static void ReadReferenceType(Standard_IStream& theIStream,
                                                 Standard_Integer& reference,
                                                 Standard_Integer& typeNum);
 
-  Standard_EXPORT Storage_Error EndReadRefSection() override;
+  Standard_EXPORT Storage_Error EndReadRefSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error BeginWriteDataSection() override;
+  Standard_EXPORT Storage_Error BeginWriteDataSection() Standard_OVERRIDE;
 
   Standard_EXPORT void WritePersistentObjectHeader(const Standard_Integer aRef,
-                                                   const Standard_Integer aType) override;
+                                                   const Standard_Integer aType) Standard_OVERRIDE;
 
-  Standard_EXPORT void BeginWritePersistentObjectData() override;
+  Standard_EXPORT void BeginWritePersistentObjectData() Standard_OVERRIDE;
 
-  Standard_EXPORT void BeginWriteObjectData() override;
+  Standard_EXPORT void BeginWriteObjectData() Standard_OVERRIDE;
 
-  Standard_EXPORT void EndWriteObjectData() override;
+  Standard_EXPORT void EndWriteObjectData() Standard_OVERRIDE;
 
-  Standard_EXPORT void EndWritePersistentObjectData() override;
+  Standard_EXPORT void EndWritePersistentObjectData() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error EndWriteDataSection() override;
+  Standard_EXPORT Storage_Error EndWriteDataSection() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error BeginReadDataSection() override;
+  Standard_EXPORT Storage_Error BeginReadDataSection() Standard_OVERRIDE;
 
   Standard_EXPORT void ReadPersistentObjectHeader(Standard_Integer& aRef,
-                                                  Standard_Integer& aType) override;
+                                                  Standard_Integer& aType) Standard_OVERRIDE;
 
-  Standard_EXPORT void BeginReadPersistentObjectData() override;
+  Standard_EXPORT void BeginReadPersistentObjectData() Standard_OVERRIDE;
 
-  Standard_EXPORT void BeginReadObjectData() override;
+  Standard_EXPORT void BeginReadObjectData() Standard_OVERRIDE;
 
-  Standard_EXPORT void EndReadObjectData() override;
+  Standard_EXPORT void EndReadObjectData() Standard_OVERRIDE;
 
-  Standard_EXPORT void EndReadPersistentObjectData() override;
+  Standard_EXPORT void EndReadPersistentObjectData() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error EndReadDataSection() override;
+  Standard_EXPORT Storage_Error EndReadDataSection() Standard_OVERRIDE;
 
-  Standard_EXPORT void SkipObject() override;
+  Standard_EXPORT void SkipObject() Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_BaseDriver& PutReference(const Standard_Integer aValue) override;
+  Standard_EXPORT Storage_BaseDriver& PutReference(const Standard_Integer aValue) Standard_OVERRIDE;
 
   Standard_EXPORT Storage_BaseDriver& PutCharacter(const Standard_Character aValue)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT Storage_BaseDriver& PutExtCharacter(const Standard_ExtCharacter aValue)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT static Standard_Integer PutInteger(
     Standard_OStream&      theOStream,
     const Standard_Integer aValue,
     const Standard_Boolean theOnlyCount = Standard_False);
 
-  Standard_EXPORT Storage_BaseDriver& PutInteger(const Standard_Integer aValue) override;
+  Standard_EXPORT Storage_BaseDriver& PutInteger(const Standard_Integer aValue) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_BaseDriver& PutBoolean(const Standard_Boolean aValue) override;
+  Standard_EXPORT Storage_BaseDriver& PutBoolean(const Standard_Boolean aValue) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_BaseDriver& PutReal(const Standard_Real aValue) override;
+  Standard_EXPORT Storage_BaseDriver& PutReal(const Standard_Real aValue) Standard_OVERRIDE;
 
   Standard_EXPORT Storage_BaseDriver& PutShortReal(const Standard_ShortReal aValue)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_BaseDriver& GetReference(Standard_Integer& aValue) override;
+  Standard_EXPORT Storage_BaseDriver& GetReference(Standard_Integer& aValue) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_BaseDriver& GetCharacter(Standard_Character& aValue) override;
+  Standard_EXPORT Storage_BaseDriver& GetCharacter(Standard_Character& aValue) Standard_OVERRIDE;
 
   Standard_EXPORT static void GetReference(Standard_IStream& theIStream, Standard_Integer& aValue);
 
   Standard_EXPORT Storage_BaseDriver& GetExtCharacter(Standard_ExtCharacter& aValue)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_BaseDriver& GetInteger(Standard_Integer& aValue) override;
+  Standard_EXPORT Storage_BaseDriver& GetInteger(Standard_Integer& aValue) Standard_OVERRIDE;
 
   Standard_EXPORT static void GetInteger(Standard_IStream& theIStream, Standard_Integer& aValue);
 
-  Standard_EXPORT Storage_BaseDriver& GetBoolean(Standard_Boolean& aValue) override;
+  Standard_EXPORT Storage_BaseDriver& GetBoolean(Standard_Boolean& aValue) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_BaseDriver& GetReal(Standard_Real& aValue) override;
+  Standard_EXPORT Storage_BaseDriver& GetReal(Standard_Real& aValue) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_BaseDriver& GetShortReal(Standard_ShortReal& aValue) override;
+  Standard_EXPORT Storage_BaseDriver& GetShortReal(Standard_ShortReal& aValue) Standard_OVERRIDE;
 
-  Standard_EXPORT Storage_Error Close() override;
+  Standard_EXPORT Storage_Error Close() Standard_OVERRIDE;
 
   Standard_EXPORT void Destroy();
 

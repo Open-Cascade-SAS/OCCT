@@ -101,20 +101,20 @@ public:
   Standard_EXPORT void SetMeasuredGeometry(const TopoDS_Shape& theShape);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const Standard_OVERRIDE;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
+  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
+  Standard_EXPORT virtual gp_Pnt GetTextPosition() const Standard_OVERRIDE;
 
 protected:
   //! Override this method to change logic of anchor point computation.
@@ -130,17 +130,17 @@ protected:
 
   //! Checks if the center of the circle is on the plane.
   Standard_EXPORT virtual Standard_Boolean CheckPlane(const gp_Pln& thePlane) const
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Real ComputeValue() const override;
+  Standard_EXPORT virtual Standard_Real ComputeValue() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePresentation,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeFlyoutSelection(
     const Handle(SelectMgr_Selection)&   theSelection,
-    const Handle(SelectMgr_EntityOwner)& theEntityOwner) override;
+    const Handle(SelectMgr_EntityOwner)& theEntityOwner) Standard_OVERRIDE;
 
 protected:
   //! Compute points on the circle sides for the dimension plane.

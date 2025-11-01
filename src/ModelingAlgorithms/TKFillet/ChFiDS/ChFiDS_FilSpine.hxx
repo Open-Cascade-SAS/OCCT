@@ -42,7 +42,7 @@ public:
   Standard_EXPORT ChFiDS_FilSpine(const Standard_Real Tol);
 
   Standard_EXPORT virtual void Reset(const Standard_Boolean AllData = Standard_False)
-    override;
+    Standard_OVERRIDE;
 
   //! initializes the constant vector on edge E.
   Standard_EXPORT void SetRadius(const Standard_Real Radius, const TopoDS_Edge& E);
@@ -85,7 +85,7 @@ public:
   //! all along the edge E.
   Standard_EXPORT Standard_Real Radius(const TopoDS_Edge& E) const;
 
-  Standard_EXPORT virtual void AppendElSpine(const Handle(ChFiDS_ElSpine)& Els) override;
+  Standard_EXPORT virtual void AppendElSpine(const Handle(ChFiDS_ElSpine)& Els) Standard_OVERRIDE;
 
   Standard_EXPORT Handle(Law_Composite) Law(const Handle(ChFiDS_ElSpine)& Els) const;
 

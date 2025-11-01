@@ -49,7 +49,7 @@ public:
   //! OwnSharedCase (which is adapted to each Type of Entity)
   Standard_EXPORT void FillSharedCase(const Standard_Integer            CN,
                                       const Handle(Standard_Transient)& ent,
-                                      Interface_EntityIterator& iter) const override;
+                                      Interface_EntityIterator& iter) const Standard_OVERRIDE;
 
   //! Lists the Entities shared by a given IGESEntity <ent>, from
   //! its specific parameters : specific for each type
@@ -62,7 +62,7 @@ public:
   Standard_EXPORT virtual void ListImpliedCase(const Standard_Integer            CN,
                                                const Handle(Standard_Transient)& ent,
                                                Interface_EntityIterator&         iter) const
-    override;
+    Standard_OVERRIDE;
 
   //! Specific list of Entities implied by a given IGESEntity <ent>
   //! (in addition to Associativities). By default, there are none,
@@ -77,7 +77,7 @@ public:
   Standard_EXPORT void CheckCase(const Standard_Integer            CN,
                                  const Handle(Standard_Transient)& ent,
                                  const Interface_ShareTool&        shares,
-                                 Handle(Interface_Check)&          ach) const override;
+                                 Handle(Interface_Check)&          ach) const Standard_OVERRIDE;
 
   //! Returns a DirChecker, specific for each type of Entity
   //! (identified by its Case Number) : this DirChecker defines
@@ -96,12 +96,12 @@ public:
   //! For IGES, answer is always True
   Standard_EXPORT virtual Standard_Boolean CanCopy(const Standard_Integer            CN,
                                                    const Handle(Standard_Transient)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   //! Specific creation of a new void entity
   Standard_EXPORT virtual Standard_Boolean NewVoid(const Standard_Integer      CN,
                                                    Handle(Standard_Transient)& entto) const
-    override = 0;
+    Standard_OVERRIDE = 0;
 
   //! Copy ("Deep") from <entfrom> to <entto> (same type)
   //! by using a CopyTool which provides its working Map.
@@ -110,7 +110,7 @@ public:
   Standard_EXPORT void CopyCase(const Standard_Integer            CN,
                                 const Handle(Standard_Transient)& entfrom,
                                 const Handle(Standard_Transient)& entto,
-                                Interface_CopyTool&               TC) const override;
+                                Interface_CopyTool&               TC) const Standard_OVERRIDE;
 
   //! Copies parameters which are specific of each Type of Entity
   Standard_EXPORT virtual void OwnCopyCase(const Standard_Integer             CN,
@@ -125,7 +125,7 @@ public:
                                                 const Handle(Standard_Transient)& entfrom,
                                                 const Handle(Standard_Transient)& entto,
                                                 const Interface_CopyTool&         TC) const
-    override;
+    Standard_OVERRIDE;
 
   //! Renews parameters which are specific of each Type of Entity :
   //! the provided default does nothing, but this method may be
@@ -142,7 +142,7 @@ public:
   Standard_EXPORT virtual void WhenDeleteCase(const Standard_Integer            CN,
                                               const Handle(Standard_Transient)& ent,
                                               const Standard_Boolean            dispatched) const
-    override;
+    Standard_OVERRIDE;
 
   //! Specific preparation for delete, acts on own parameters
   //! Default does nothing, to be redefined as required
@@ -154,7 +154,7 @@ public:
   Standard_EXPORT virtual Handle(TCollection_HAsciiString) Name(
     const Standard_Integer            CN,
     const Handle(Standard_Transient)& ent,
-    const Interface_ShareTool&        shares) const override;
+    const Interface_ShareTool&        shares) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_GeneralModule, Interface_GeneralModule)
 

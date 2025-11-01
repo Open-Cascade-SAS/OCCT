@@ -379,7 +379,7 @@ void Approx_CurvlinFunc::Trim(const Standard_Real First,
       myC2D2    = HCurOnSur->GetCurve();
       mySurf2   = HCurOnSur->GetSurface();
 
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     case 2:
       CurOnSur.Load(myC2D1);
       CurOnSur.Load(mySurf1);

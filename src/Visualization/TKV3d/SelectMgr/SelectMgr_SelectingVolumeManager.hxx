@@ -63,7 +63,7 @@ public:
   const Handle(SelectMgr_BaseIntersector)& ActiveVolume() const { return myActiveSelectingVolume; }
 
   // Returns active selection type (point, box, polyline)
-  Standard_EXPORT virtual Standard_Integer GetActiveSelectionType() const override;
+  Standard_EXPORT virtual Standard_Integer GetActiveSelectionType() const Standard_OVERRIDE;
 
   //! IMPORTANT: Scaling makes sense only for frustum built on a single point!
   //!            Note that this method does not perform any checks on type of the frustum.
@@ -121,23 +121,23 @@ public:
   Standard_EXPORT virtual Standard_Boolean OverlapsBox(const SelectMgr_Vec3&    theBoxMin,
                                                        const SelectMgr_Vec3&    theBoxMax,
                                                        SelectBasics_PickResult& thePickResult) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
   Standard_EXPORT virtual Standard_Boolean OverlapsBox(const SelectMgr_Vec3& theBoxMin,
                                                        const SelectMgr_Vec3& theBoxMax,
                                                        Standard_Boolean*     theInside = NULL) const
-    override;
+    Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean OverlapsPoint(
     const gp_Pnt&            thePnt,
-    SelectBasics_PickResult& thePickResult) const override;
+    SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean OverlapsPoint(const gp_Pnt& thePnt) const
-    override;
+    Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
@@ -145,13 +145,13 @@ public:
   Standard_EXPORT virtual Standard_Boolean OverlapsPolygon(
     const TColgp_Array1OfPnt& theArrayOfPts,
     Standard_Integer          theSensType,
-    SelectBasics_PickResult&  thePickResult) const override;
+    SelectBasics_PickResult&  thePickResult) const Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
   Standard_EXPORT virtual Standard_Boolean OverlapsSegment(
     const gp_Pnt&            thePnt1,
     const gp_Pnt&            thePnt2,
-    SelectBasics_PickResult& thePickResult) const override;
+    SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
@@ -161,19 +161,19 @@ public:
     const gp_Pnt&            thePnt2,
     const gp_Pnt&            thePnt3,
     Standard_Integer         theSensType,
-    SelectBasics_PickResult& thePickResult) const override;
+    SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given sphere
   Standard_EXPORT virtual Standard_Boolean OverlapsSphere(
     const gp_Pnt&            theCenter,
     const Standard_Real      theRadius,
-    SelectBasics_PickResult& thePickResult) const override;
+    SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given sphere
   Standard_EXPORT virtual Standard_Boolean OverlapsSphere(const gp_Pnt&       theCenter,
                                                           const Standard_Real theRadius,
                                                           Standard_Boolean* theInside = NULL) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
@@ -183,7 +183,7 @@ public:
     const Standard_Real      theHeight,
     const gp_Trsf&           theTrsf,
     const Standard_Boolean   theIsHollow,
-    SelectBasics_PickResult& thePickResult) const override;
+    SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
@@ -193,7 +193,7 @@ public:
     const Standard_Real    theHeight,
     const gp_Trsf&         theTrsf,
     const Standard_Boolean theIsHollow,
-    Standard_Boolean*      theInside = NULL) const override;
+    Standard_Boolean*      theInside = NULL) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
@@ -203,7 +203,7 @@ public:
     const Standard_Real      theBottomRad,
     const gp_Trsf&           theTrsf,
     const Standard_Boolean   theIsFilled,
-    SelectBasics_PickResult& thePickResult) const override;
+    SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
@@ -213,23 +213,23 @@ public:
                                                           const gp_Trsf&         theTrsf,
                                                           const Standard_Boolean theIsFilled,
                                                           Standard_Boolean* theInside = NULL) const
-    override;
+    Standard_OVERRIDE;
 
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG
   Standard_EXPORT virtual Standard_Real DistToGeometryCenter(const gp_Pnt& theCOG) const
-    override;
+    Standard_OVERRIDE;
 
   //! Calculates the point on a view ray that was detected during the run of selection algo by given
   //! depth. Throws exception if active selection type is not Point.
   Standard_EXPORT virtual gp_Pnt DetectedPoint(const Standard_Real theDepth) const
-    override;
+    Standard_OVERRIDE;
 
   //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the
   //! algorithm will mark both included and overlapped entities as matched
   Standard_EXPORT virtual void AllowOverlapDetection(const Standard_Boolean theIsToAllow);
 
-  Standard_EXPORT virtual Standard_Boolean IsOverlapAllowed() const override;
+  Standard_EXPORT virtual Standard_Boolean IsOverlapAllowed() const Standard_OVERRIDE;
 
   //! Return view clipping planes.
   const Handle(Graphic3d_SequenceOfHClipPlane)& ViewClipping() const { return myViewClipPlanes; }
@@ -265,34 +265,34 @@ public:
   //! Returns projection of 2d mouse picked point or projection
   //! of center of 2d rectangle (for point and rectangular selection
   //! correspondingly) onto near view frustum plane
-  Standard_EXPORT virtual gp_Pnt GetNearPickedPnt() const override;
+  Standard_EXPORT virtual gp_Pnt GetNearPickedPnt() const Standard_OVERRIDE;
 
   //! Valid only for point and rectangular selection.
   //! Returns projection of 2d mouse picked point or projection
   //! of center of 2d rectangle (for point and rectangular selection
   //! correspondingly) onto far view frustum plane
-  Standard_EXPORT virtual gp_Pnt GetFarPickedPnt() const override;
+  Standard_EXPORT virtual gp_Pnt GetFarPickedPnt() const Standard_OVERRIDE;
 
   //! Valid only for point and rectangular selection.
   //! Returns view ray direction
-  Standard_EXPORT virtual gp_Dir GetViewRayDirection() const override;
+  Standard_EXPORT virtual gp_Dir GetViewRayDirection() const Standard_OVERRIDE;
 
   //! Checks if it is possible to scale current active selecting volume
-  Standard_EXPORT virtual Standard_Boolean IsScalableActiveVolume() const override;
+  Standard_EXPORT virtual Standard_Boolean IsScalableActiveVolume() const Standard_OVERRIDE;
 
   //! Returns mouse coordinates for Point selection mode.
   //! @return infinite point in case of unsupport of mouse position for this active selection
   //! volume.
-  Standard_EXPORT virtual gp_Pnt2d GetMousePosition() const override;
+  Standard_EXPORT virtual gp_Pnt2d GetMousePosition() const Standard_OVERRIDE;
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
   Standard_EXPORT virtual void GetPlanes(
-    NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const override;
+    NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 public:
   Standard_DEPRECATED(

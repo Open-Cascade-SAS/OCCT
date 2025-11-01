@@ -47,12 +47,12 @@ public:
   //! Specific action : Sets or Clears the Label
   Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const override;
+                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
 
   //! Returns a text which is
   //! "Clear Short Label"  or  "Set Label to DE"
   //! With possible additional information " (enforced)"
-  Standard_EXPORT TCollection_AsciiString Label() const override;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SetLabel, IGESSelect_ModelModifier)
 

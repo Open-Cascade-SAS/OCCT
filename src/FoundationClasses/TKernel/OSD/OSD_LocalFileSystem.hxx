@@ -26,21 +26,21 @@ public:
 
   //! Returns TRUE if URL defines a supported protocol.
   Standard_EXPORT virtual Standard_Boolean IsSupportedPath(
-    const TCollection_AsciiString& theUrl) const override;
+    const TCollection_AsciiString& theUrl) const Standard_OVERRIDE;
 
   //! Returns TRUE if current input stream is opened for reading operations.
   Standard_EXPORT virtual Standard_Boolean IsOpenIStream(
-    const std::shared_ptr<std::istream>& theStream) const override;
+    const std::shared_ptr<std::istream>& theStream) const Standard_OVERRIDE;
 
   //! Returns TRUE if current output stream is opened for writing operations.
   Standard_EXPORT virtual Standard_Boolean IsOpenOStream(
-    const std::shared_ptr<std::ostream>& theStream) const override;
+    const std::shared_ptr<std::ostream>& theStream) const Standard_OVERRIDE;
 
   //! Opens stream buffer for specified file URL.
   Standard_EXPORT virtual std::shared_ptr<std::streambuf> OpenStreamBuffer(
     const TCollection_AsciiString& theUrl,
     const std::ios_base::openmode  theMode,
     const int64_t                  theOffset     = 0,
-    int64_t*                       theOutBufSize = NULL) override;
+    int64_t*                       theOutBufSize = NULL) Standard_OVERRIDE;
 };
 #endif // _OSD_LocalFileSystem_HeaderFile

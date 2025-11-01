@@ -36,7 +36,7 @@ public:
                                                   Handle(Geom2d_Curve)& Curve2d,
                                                   Handle(Geom2d_Curve)& Curve2dR,
                                                   Standard_Real&        First,
-                                                  Standard_Real&        Last) override;
+                                                  Standard_Real&        Last) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallBezierCurves, ShapeUpgrade_FixSmallCurves)
 

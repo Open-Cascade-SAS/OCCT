@@ -50,7 +50,7 @@ public:
 
 public:
   //! Returns total number of triangles.
-  virtual Standard_Integer Size() const override
+  virtual Standard_Integer Size() const Standard_OVERRIDE
   {
     return BVH::Array<Standard_Integer, 4>::Size(Elements);
   }
@@ -59,7 +59,7 @@ public:
   using BVH_PrimitiveSet<T, N>::Box;
 
   //! Returns AABB of the given triangle.
-  virtual BVH_Box<T, N> Box(const Standard_Integer theIndex) const override
+  virtual BVH_Box<T, N> Box(const Standard_Integer theIndex) const Standard_OVERRIDE
   {
     const BVH_Vec4i& anIndex = BVH::Array<Standard_Integer, 4>::Value(Elements, theIndex);
 
@@ -78,7 +78,7 @@ public:
 
   //! Returns centroid position along the given axis.
   virtual T Center(const Standard_Integer theIndex,
-                   const Standard_Integer theAxis) const override
+                   const Standard_Integer theAxis) const Standard_OVERRIDE
   {
     const BVH_Vec4i& anIndex = BVH::Array<Standard_Integer, 4>::Value(Elements, theIndex);
 
@@ -92,7 +92,7 @@ public:
 
   //! Performs transposing the two given triangles in the set.
   virtual void Swap(const Standard_Integer theIndex1,
-                    const Standard_Integer theIndex2) override
+                    const Standard_Integer theIndex2) Standard_OVERRIDE
   {
     BVH_Vec4i& anIndices1 = BVH::Array<Standard_Integer, 4>::ChangeValue(Elements, theIndex1);
     BVH_Vec4i& anIndices2 = BVH::Array<Standard_Integer, 4>::ChangeValue(Elements, theIndex2);

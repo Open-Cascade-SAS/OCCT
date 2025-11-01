@@ -52,7 +52,7 @@ public:
   Standard_EXPORT virtual void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                TopOpeBRepBuild_LoopClassifier& LC,
                                                const Standard_Boolean ForceClass = Standard_False)
-    override;
+    Standard_OVERRIDE;
 
 protected:
 private:

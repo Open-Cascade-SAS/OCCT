@@ -46,30 +46,30 @@ public:
   //! an UndefinedEntity
   Standard_EXPORT void OwnSharedCase(const Standard_Integer             CN,
                                      const Handle(IGESData_IGESEntity)& ent,
-                                     Interface_EntityIterator& iter) const override;
+                                     Interface_EntityIterator& iter) const Standard_OVERRIDE;
 
   //! Returns a DirChecker, specific for each type of Entity
   //! Here, Returns an empty DirChecker (no constraint to check)
   Standard_EXPORT IGESData_DirChecker
     DirChecker(const Standard_Integer             CN,
-               const Handle(IGESData_IGESEntity)& ent) const override;
+               const Handle(IGESData_IGESEntity)& ent) const Standard_OVERRIDE;
 
   //! Performs Specific Semantic Check for each type of Entity
   //! Here, does nothing (no constraint to check)
   Standard_EXPORT void OwnCheckCase(const Standard_Integer             CN,
                                     const Handle(IGESData_IGESEntity)& ent,
                                     const Interface_ShareTool&         shares,
-                                    Handle(Interface_Check)&           ach) const override;
+                                    Handle(Interface_Check)&           ach) const Standard_OVERRIDE;
 
   //! Specific creation of a new void entity (UndefinedEntity only)
   Standard_EXPORT Standard_Boolean
-    NewVoid(const Standard_Integer CN, Handle(Standard_Transient)& entto) const override;
+    NewVoid(const Standard_Integer CN, Handle(Standard_Transient)& entto) const Standard_OVERRIDE;
 
   //! Copies parameters which are specific of each Type of Entity
   Standard_EXPORT void OwnCopyCase(const Standard_Integer             CN,
                                    const Handle(IGESData_IGESEntity)& entfrom,
                                    const Handle(IGESData_IGESEntity)& entto,
-                                   Interface_CopyTool&                TC) const override;
+                                   Interface_CopyTool&                TC) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_DefaultGeneral, IGESData_GeneralModule)
 

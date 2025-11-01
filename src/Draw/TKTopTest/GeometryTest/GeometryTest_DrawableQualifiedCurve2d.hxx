@@ -57,14 +57,14 @@ public:
 
   //! Paints the drawable presentation in given display
   //! \param theDisplay
-  Standard_EXPORT void DrawOn(Draw_Display& theDisplay) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& theDisplay) const Standard_OVERRIDE;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
 
   //! For variable whatis command. Set  as a result  the
   //! type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(GeometryTest_DrawableQualifiedCurve2d, DrawTrSurf_Curve2d)
 

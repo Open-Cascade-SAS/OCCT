@@ -45,7 +45,7 @@ public:
   }
 
   //! Override method initiating recomputing in V3d_RectangularGrid.
-  virtual void Compute() override
+  virtual void Compute() Standard_OVERRIDE
   {
     GraphicClear(Standard_False);
     myGrid->myGroup         = NewGroup();

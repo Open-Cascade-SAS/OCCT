@@ -201,15 +201,15 @@ public:
 
   //! Builds the resulting faces
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Tests whether computation of the filling plate has been completed.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const override;
+  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns the maximum distance between the result and
   //! the constraints. This is set at construction time.

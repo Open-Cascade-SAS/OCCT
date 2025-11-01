@@ -36,7 +36,7 @@ void UnitsAPI::CheckLoading(const UnitsAPI_SystemUnits aSystemUnits)
       case UnitsAPI_DEFAULT:
         if (!CurrentUnits.IsNull())
           break;
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case UnitsAPI_SI:
         currentSystem = UnitsAPI_SI;
         if (SICurrentUnits.IsNull())

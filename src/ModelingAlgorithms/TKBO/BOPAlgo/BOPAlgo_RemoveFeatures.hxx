@@ -185,12 +185,12 @@ public: //! @name Setting input data for the algorithm
 public: //! @name Performing the operation
   //! Performs the operation
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 public: //! @name Clearing the contents of the algorithm
   //! Clears the contents of the algorithm from previous run,
   //! allowing reusing it for following removals.
-  virtual void Clear() override
+  virtual void Clear() Standard_OVERRIDE
   {
     BOPAlgo_BuilderShape::Clear();
     myInputShape.Nullify();
@@ -206,7 +206,7 @@ protected: //! @name Protected methods performing the removal
   //! If the input shape is not a solid, the method looks for the solids
   //! in <myInputShape> and uses only them. All other shapes are simply removed.
   //! If no solids were found, the Error of unsupported type is returned.
-  Standard_EXPORT virtual void CheckData() override;
+  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
 
   //! Prepares the faces to remove:
   //! - Gets only faces contained in the input solids;
@@ -248,7 +248,7 @@ protected: //! @name Protected methods performing the removal
 
   //! Filling steps for constant operations
   Standard_EXPORT void fillPIConstants(const Standard_Real theWhole,
-                                       BOPAlgo_PISteps&    theSteps) const override;
+                                       BOPAlgo_PISteps&    theSteps) const Standard_OVERRIDE;
 
 protected: //! @name Fields
   // Inputs

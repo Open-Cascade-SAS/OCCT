@@ -52,14 +52,14 @@ public:
   //! Returns the value (see above)
   Standard_EXPORT Standard_CString
     Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const override;
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
   //! Performs the match rule (see above)
   Standard_EXPORT virtual Standard_Boolean Matches(const Handle(Standard_Transient)&       ent,
                                                    const Handle(Interface_InterfaceModel)& model,
                                                    const TCollection_AsciiString&          text,
                                                    const Standard_Boolean exact) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SignStatus, IFSelect_Signature)
 

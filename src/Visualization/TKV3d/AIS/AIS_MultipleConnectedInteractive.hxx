@@ -44,12 +44,12 @@ public:
     return connect(theAnotherObj, theLocation, theTrsfPers);
   }
 
-  virtual AIS_KindOfInteractive Type() const override
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
   {
     return AIS_KindOfInteractive_Object;
   }
 
-  virtual Standard_Integer Signature() const override { return 1; }
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 1; }
 
   //! Returns true if the object is connected to others.
   Standard_EXPORT Standard_Boolean HasConnection() const;
@@ -62,23 +62,23 @@ public:
 
   //! Informs the graphic context that the interactive Object
   //! may be decomposed into sub-shapes for dynamic selection.
-  Standard_EXPORT virtual Standard_Boolean AcceptShapeDecomposition() const override;
+  Standard_EXPORT virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE;
 
   //! Returns common entity owner if the object is an assembly
-  virtual const Handle(SelectMgr_EntityOwner)& GetAssemblyOwner() const override
+  virtual const Handle(SelectMgr_EntityOwner)& GetAssemblyOwner() const Standard_OVERRIDE
   {
     return myAssemblyOwner;
   }
 
   //! Returns the owner of mode for selection of object as a whole
-  virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const override
+  virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE
   {
     return myAssemblyOwner;
   }
 
   //! Assigns interactive context.
   Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& theCtx)
-    override;
+    Standard_OVERRIDE;
 
 public: // short aliases to Connect() method
   //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
@@ -124,7 +124,7 @@ protected:
   //! a transformation if there's one stored.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
   //! reference. Locates instance in theLocation and applies specified transformation persistence
@@ -138,7 +138,7 @@ protected:
 private:
   //! Computes the selection for whole subtree in scene hierarchy.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                                const Standard_Integer aMode) override;
+                                                const Standard_Integer aMode) Standard_OVERRIDE;
 
 protected:
   Handle(SelectMgr_EntityOwner) myAssemblyOwner;

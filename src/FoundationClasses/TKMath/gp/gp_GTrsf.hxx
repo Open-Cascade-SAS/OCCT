@@ -190,7 +190,7 @@ public:
   //! Computes the reverse transformation.
   //! Raises an exception if the matrix of the transformation
   //! is not inversible.
-  [[nodiscard]] gp_GTrsf Inverted() const
+  Standard_NODISCARD gp_GTrsf Inverted() const
   {
     gp_GTrsf aT = *this;
     aT.Invert();
@@ -212,14 +212,14 @@ public:
   //! T1.Transforms(P2);                  //using T1 then T2
   //! T2.Transforms(P2);                  // P1 = P2 !!!
   //! @endcode
-  [[nodiscard]] gp_GTrsf Multiplied(const gp_GTrsf& theT) const
+  Standard_NODISCARD gp_GTrsf Multiplied(const gp_GTrsf& theT) const
   {
     gp_GTrsf aTres = *this;
     aTres.Multiply(theT);
     return aTres;
   }
 
-  [[nodiscard]] gp_GTrsf operator*(const gp_GTrsf& theT) const { return Multiplied(theT); }
+  Standard_NODISCARD gp_GTrsf operator*(const gp_GTrsf& theT) const { return Multiplied(theT); }
 
   //! Computes the transformation composed with <me> and theT.
   //! <me> = <me> * theT
@@ -247,7 +247,7 @@ public:
   //!
   //! Raises an exception if N < 0 and if the matrix of the
   //! transformation not inversible.
-  [[nodiscard]] gp_GTrsf Powered(const Standard_Integer theN) const
+  Standard_NODISCARD gp_GTrsf Powered(const Standard_Integer theN) const
   {
     gp_GTrsf aT = *this;
     aT.Power(theN);

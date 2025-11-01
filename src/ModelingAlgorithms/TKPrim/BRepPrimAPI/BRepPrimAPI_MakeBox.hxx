@@ -100,7 +100,7 @@ public:
 
   //! Stores the solid in myShape.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Returns the constructed box as a shell.
   Standard_EXPORT const TopoDS_Shell& Shell();

@@ -55,7 +55,7 @@ public:
   //! tabulations
   Standard_EXPORT Standard_CString
     Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const override;
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
   //! Specialized Match Rule
   //! If <exact> is False, simply checks if at least one sub-item
@@ -66,7 +66,7 @@ public:
                                                    const Handle(Interface_InterfaceModel)& model,
                                                    const TCollection_AsciiString&          text,
                                                    const Standard_Boolean exact) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignMultiple, IFSelect_Signature)
 

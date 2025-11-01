@@ -60,11 +60,11 @@ public:
     Explore(const Standard_Integer            level,
             const Handle(Standard_Transient)& ent,
             const Interface_Graph&            G,
-            Interface_EntityIterator&         explored) const override;
+            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
 
   //! Returns a text defining the criterium.
   //! "Connected Entities through produced Shapes"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
 
   //! This functions considers a shape from a transfer and performs
   //! the search function explained above

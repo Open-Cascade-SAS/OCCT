@@ -51,22 +51,22 @@ public:
   Standard_EXPORT ChFiDS_ElSpine();
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const override;
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Real FirstParameter() const override;
+  Standard_EXPORT virtual Standard_Real FirstParameter() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Real LastParameter() const override;
+  Standard_EXPORT virtual Standard_Real LastParameter() const Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Real GetSavedFirstParameter() const;
 
   Standard_EXPORT Standard_Real GetSavedLastParameter() const;
 
-  Standard_EXPORT GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
   //! Returns    a  curve equivalent   of  <me>  between
   //! parameters <First>  and <Last>. <Tol>  is used  to
@@ -74,36 +74,36 @@ public:
   Standard_EXPORT virtual Handle(Adaptor3d_Curve) Trim(const Standard_Real First,
                                                        const Standard_Real Last,
                                                        const Standard_Real Tol) const
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Real Resolution(const Standard_Real R3d) const override;
+  Standard_EXPORT virtual Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual GeomAbs_CurveType GetType() const override;
+  Standard_EXPORT virtual GeomAbs_CurveType GetType() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean IsPeriodic() const override;
+  Standard_EXPORT virtual Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
 
   Standard_EXPORT void SetPeriodic(const Standard_Boolean I);
 
-  Standard_EXPORT virtual Standard_Real Period() const override;
+  Standard_EXPORT virtual Standard_Real Period() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual gp_Pnt Value(const Standard_Real AbsC) const override;
+  Standard_EXPORT virtual gp_Pnt Value(const Standard_Real AbsC) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void D0(const Standard_Real AbsC, gp_Pnt& P) const override;
+  Standard_EXPORT virtual void D0(const Standard_Real AbsC, gp_Pnt& P) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void D1(const Standard_Real AbsC,
                                   gp_Pnt&             P,
-                                  gp_Vec&             V1) const override;
+                                  gp_Vec&             V1) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void D2(const Standard_Real AbsC,
                                   gp_Pnt&             P,
                                   gp_Vec&             V1,
-                                  gp_Vec&             V2) const override;
+                                  gp_Vec&             V2) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void D3(const Standard_Real AbsC,
                                   gp_Pnt&             P,
                                   gp_Vec&             V1,
                                   gp_Vec&             V2,
-                                  gp_Vec&             V3) const override;
+                                  gp_Vec&             V3) const Standard_OVERRIDE;
 
   Standard_EXPORT void FirstParameter(const Standard_Real P);
 
@@ -139,19 +139,19 @@ public:
 
   Standard_EXPORT Handle(ChFiDS_SurfData)& ChangeNext();
 
-  Standard_EXPORT gp_Lin Line() const override;
+  Standard_EXPORT gp_Lin Line() const Standard_OVERRIDE;
 
-  Standard_EXPORT gp_Circ Circle() const override;
+  Standard_EXPORT gp_Circ Circle() const Standard_OVERRIDE;
 
-  Standard_EXPORT gp_Elips Ellipse() const override;
+  Standard_EXPORT gp_Elips Ellipse() const Standard_OVERRIDE;
 
-  Standard_EXPORT gp_Hypr Hyperbola() const override;
+  Standard_EXPORT gp_Hypr Hyperbola() const Standard_OVERRIDE;
 
-  Standard_EXPORT gp_Parab Parabola() const override;
+  Standard_EXPORT gp_Parab Parabola() const Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(Geom_BezierCurve) Bezier() const override;
+  Standard_EXPORT Handle(Geom_BezierCurve) Bezier() const Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(Geom_BSplineCurve) BSpline() const override;
+  Standard_EXPORT Handle(Geom_BSplineCurve) BSpline() const Standard_OVERRIDE;
 
 private:
   GeomAdaptor_Curve       curve;

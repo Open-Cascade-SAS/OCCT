@@ -30,13 +30,13 @@ public:
 
   //! Add material
   Standard_EXPORT virtual TCollection_AsciiString AddMaterial(const XCAFPrs_Style& theStyle)
-    override;
+    Standard_OVERRIDE;
 
   //! Virtual method actually defining the material (e.g. export to the file).
   Standard_EXPORT virtual void DefineMaterial(const XCAFPrs_Style&           theStyle,
                                               const TCollection_AsciiString& theKey,
                                               const TCollection_AsciiString& theName)
-    override;
+    Standard_OVERRIDE;
 
 private:
   FILE*                                                               myFile;

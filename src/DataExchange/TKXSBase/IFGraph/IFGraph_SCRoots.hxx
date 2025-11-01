@@ -38,7 +38,7 @@ public:
   Standard_EXPORT IFGraph_SCRoots(IFGraph_StrongComponants& subparts);
 
   //! does the computation
-  Standard_EXPORT virtual void Evaluate() override;
+  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
 
 protected:
 private:

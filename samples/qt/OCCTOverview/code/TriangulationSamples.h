@@ -38,7 +38,7 @@ public:
   }
 
 protected:
-  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) override;
+  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) Standard_OVERRIDE;
 
 private:
   // One function for every sample

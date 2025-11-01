@@ -413,10 +413,10 @@ public: //! @name Style management API
 public:
   //! Set new value of color for the whole object.
   //! @param[in] theColor  input color value.
-  virtual void SetColor(const Quantity_Color& theColor) override { SetBoxColor(theColor); }
+  virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE { SetBoxColor(theColor); }
 
   //! Reset color for the whole object.
-  virtual void UnsetColor() override
+  virtual void UnsetColor() Standard_OVERRIDE
   {
     myDrawer->ShadingAspect()->SetColor(Quantity_NOC_WHITE);
     myBoxEdgeAspect->SetColor(Quantity_NOC_GRAY30);
@@ -426,16 +426,16 @@ public:
 
   //! Set new value of transparency for the whole object.
   //! @param[in] theValue  input transparency value.
-  virtual void SetTransparency(const Standard_Real theValue) override
+  virtual void SetTransparency(const Standard_Real theValue) Standard_OVERRIDE
   {
     SetBoxTransparency(theValue);
   }
 
   //! Reset transparency for the whole object.
-  virtual void UnsetTransparency() override { SetBoxTransparency(0.0f); }
+  virtual void UnsetTransparency() Standard_OVERRIDE { SetBoxTransparency(0.0f); }
 
   //! Sets the material for the interactive object.
-  virtual void SetMaterial(const Graphic3d_MaterialAspect& theMat) override
+  virtual void SetMaterial(const Graphic3d_MaterialAspect& theMat) Standard_OVERRIDE
   {
     myDrawer->ShadingAspect()->SetMaterial(theMat);
     myBoxEdgeAspect->SetMaterial(theMat);
@@ -444,7 +444,7 @@ public:
   }
 
   //! Sets the material for the interactive object.
-  virtual void UnsetMaterial() override
+  virtual void UnsetMaterial() Standard_OVERRIDE
   {
     Graphic3d_MaterialAspect aMat(Graphic3d_NameOfMaterial_UserDefined);
     aMat.SetColor(Quantity_NOC_WHITE);
@@ -516,13 +516,13 @@ protected: //! @name protected virtual API
 
 public: //! @name Presentation computation
   //! Return TRUE for supported display mode.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return theMode == 0;
   }
 
   //! Global selection has no meaning for this class.
-  virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const override
+  virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE
   {
     return Handle(SelectMgr_EntityOwner)();
   }
@@ -534,22 +534,22 @@ public: //! @name Presentation computation
   //! @warning this object accept only 0 display mode.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode = 0) override;
+                                       const Standard_Integer theMode = 0) Standard_OVERRIDE;
 
   //! Redefine computing of sensitive entities for View Cube.
   //! @param[in] theSelection  input selection object that is to be filled with sensitive entities.
   //! @param[in] theMode  selection mode.
   //! @warning object accepts only 0 selection mode.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden
   //! methods.
-  virtual Standard_Boolean IsAutoHilight() const override { return Standard_False; }
+  virtual Standard_Boolean IsAutoHilight() const Standard_OVERRIDE { return Standard_False; }
 
   //! Method which clear all selected owners belonging to this selectable object.
   //! @warning this object does not support selection.
-  virtual void ClearSelected() override {}
+  virtual void ClearSelected() Standard_OVERRIDE {}
 
   //! Method which highlights input owner belonging to this selectable object.
   //! @param[in] thePM  presentation manager
@@ -558,23 +558,23 @@ public: //! @name Presentation computation
   Standard_EXPORT virtual void HilightOwnerWithColor(
     const Handle(PrsMgr_PresentationManager)& thePM,
     const Handle(Prs3d_Drawer)&               theStyle,
-    const Handle(SelectMgr_EntityOwner)&      theOwner) override;
+    const Handle(SelectMgr_EntityOwner)&      theOwner) Standard_OVERRIDE;
 
   //! Method which draws selected owners.
   Standard_EXPORT virtual void HilightSelected(const Handle(PrsMgr_PresentationManager)& thePM,
                                                const SelectMgr_SequenceOfOwner&          theSeq)
-    override;
+    Standard_OVERRIDE;
 
   //! Set default parameters for visual attributes
   //! @sa Attributes()
-  virtual void UnsetAttributes() override
+  virtual void UnsetAttributes() Standard_OVERRIDE
   {
     setDefaultAttributes();
     SetToUpdate();
   }
 
   //! Set default parameters for dynamic highlighting attributes, reset highlight attributes
-  virtual void UnsetHilightAttributes() override
+  virtual void UnsetHilightAttributes() Standard_OVERRIDE
   {
     myHilightDrawer.Nullify();
     setDefaultHighlightAttributes();
@@ -707,7 +707,7 @@ public:
 
   //! @return TRUE. This owner will always call method
   //! Hilight for its Selectable Object when the owner is detected.
-  virtual Standard_Boolean IsForcedHilight() const override { return Standard_True; }
+  virtual Standard_Boolean IsForcedHilight() const Standard_OVERRIDE { return Standard_True; }
 
   //! Return new orientation to set.
   V3d_TypeOfOrientation MainOrientation() const { return myMainOrient; }
@@ -716,7 +716,7 @@ public:
   virtual Standard_Boolean HandleMouseClick(const Graphic3d_Vec2i& thePoint,
                                             Aspect_VKeyMouse       theButton,
                                             Aspect_VKeyFlags       theModifiers,
-                                            bool theIsDoubleClick) override
+                                            bool theIsDoubleClick) Standard_OVERRIDE
   {
     (void)thePoint;
     (void)theButton;
@@ -743,7 +743,7 @@ public:
   //! Checks whether element overlaps current selecting volume.
   Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    override;
+    Standard_OVERRIDE;
 
 protected:
   //! Checks if picking ray can be used for detection.

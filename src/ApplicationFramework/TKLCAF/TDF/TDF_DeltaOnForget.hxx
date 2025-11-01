@@ -37,7 +37,7 @@ public:
   Standard_EXPORT TDF_DeltaOnForget(const Handle(TDF_Attribute)& anAtt);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT void Apply() override;
+  Standard_EXPORT void Apply() Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnForget, TDF_AttributeDelta)
 

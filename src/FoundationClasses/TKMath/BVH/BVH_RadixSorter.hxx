@@ -43,7 +43,7 @@ public:
   }
 
   //! Sorts the set.
-  virtual void Perform(BVH_Set<T, N>* theSet) override
+  virtual void Perform(BVH_Set<T, N>* theSet) Standard_OVERRIDE
   {
     Perform(theSet, 0, theSet->Size() - 1);
   }
@@ -51,7 +51,7 @@ public:
   //! Sorts the given (inclusive) range in the set.
   virtual void Perform(BVH_Set<T, N>*         theSet,
                        const Standard_Integer theStart,
-                       const Standard_Integer theFinal) override;
+                       const Standard_Integer theFinal) Standard_OVERRIDE;
 
   //! Returns Morton codes assigned to BVH primitives.
   const NCollection_Array1<BVH_EncodedLink>& EncodedLinks() const { return *myEncodedLinks; }

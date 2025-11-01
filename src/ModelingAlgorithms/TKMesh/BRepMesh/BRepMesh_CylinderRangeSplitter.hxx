@@ -34,16 +34,16 @@ public:
 
   //! Resets this splitter. Must be called before first use.
   Standard_EXPORT virtual void Reset(const IMeshData::IFaceHandle& theDFace,
-                                     const IMeshTools_Parameters&  theParameters) override;
+                                     const IMeshTools_Parameters&  theParameters) Standard_OVERRIDE;
 
   //! Returns list of nodes generated using surface data and specified parameters.
   Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
-    const IMeshTools_Parameters& theParameters) const override;
+    const IMeshTools_Parameters& theParameters) const Standard_OVERRIDE;
 
 protected:
   //! Computes parametric delta taking length along U and V into account.
   Standard_EXPORT virtual void computeDelta(const Standard_Real theLengthU,
-                                            const Standard_Real theLengthV) override;
+                                            const Standard_Real theLengthV) Standard_OVERRIDE;
 
 private:
   Standard_Real myDu;

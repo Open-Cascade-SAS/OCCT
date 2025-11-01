@@ -385,7 +385,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
       case GeomAbs_Parabola:
         // Four points on other analytical curves
         iNbPoints = 4;
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       default: {
         // Put some points on other curves
         if (iNbPoints == 0)

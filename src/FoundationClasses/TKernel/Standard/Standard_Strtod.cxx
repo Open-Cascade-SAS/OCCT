@@ -2539,7 +2539,7 @@ pcheck:
         case '-':
           esign = 1;
           /* no break */
-          [[fallthrough]];
+          Standard_FALLTHROUGH
         case '+':
           s++;
       }
@@ -3252,12 +3252,12 @@ double Strtod(const char* s00, char** se)
       case '-':
         sign = 1;
         /* no break */
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case '+':
         if (*++s)
           goto break2;
         /* no break */
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case 0:
         goto ret0;
       case '\t':
@@ -3402,7 +3402,7 @@ dig_done:
     {
       case '-':
         esign = 1;
-        [[fallthrough]];
+        Standard_FALLTHROUGH
       case '+':
         c = *++s;
     }

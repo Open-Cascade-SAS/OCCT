@@ -43,18 +43,18 @@ public:
   Standard_EXPORT virtual ~OpenGl_TextureBuffer();
 
   //! Override VBO target
-  Standard_EXPORT virtual unsigned int GetTarget() const override;
+  Standard_EXPORT virtual unsigned int GetTarget() const Standard_OVERRIDE;
 
   //! Returns true if TBO is valid.
   //! Notice that no any real GL call is performed!
   bool IsValid() const { return OpenGl_Buffer::IsValid() && myTextureId != NO_TEXTURE; }
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) Standard_OVERRIDE;
 
   //! Creates VBO and Texture names (ids) if not yet generated.
   //! Data should be initialized by another method.
-  Standard_EXPORT bool Create(const Handle(OpenGl_Context)& theGlCtx) override;
+  Standard_EXPORT bool Create(const Handle(OpenGl_Context)& theGlCtx) Standard_OVERRIDE;
 
   //! Perform TBO initialization with specified data.
   //! Existing data will be deleted.

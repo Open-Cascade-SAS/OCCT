@@ -45,13 +45,13 @@ public:
     const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
   //! Returns KOI_Object
-  virtual AIS_KindOfInteractive Type() const override
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
   {
     return AIS_KindOfInteractive_Object;
   }
 
   //! Returns 0
-  virtual Standard_Integer Signature() const override { return 0; }
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 0; }
 
   //! Establishes the connection between the Connected
   //! Interactive Object, anotherIobj, and its reference.
@@ -91,13 +91,13 @@ public:
 
   //! Informs the graphic context that the interactive Object
   //! may be decomposed into sub-shapes for dynamic selection.
-  virtual Standard_Boolean AcceptShapeDecomposition() const override
+  virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE
   {
     return !myReference.IsNull() && myReference->AcceptShapeDecomposition();
   }
 
   //! Return true if reference presentation accepts specified display mode.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return myReference.IsNull() || myReference->AcceptDisplayMode(theMode);
   }
@@ -114,19 +114,19 @@ protected:
   //! a transformation if there's one stored.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         theprs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Computes the presentation according to a point of view.
   Standard_EXPORT virtual void computeHLR(const Handle(Graphic3d_Camera)&   theProjector,
                                           const Handle(TopLoc_Datum3D)&     theTrsf,
                                           const Handle(Prs3d_Presentation)& thePrs)
-    override;
+    Standard_OVERRIDE;
 
   //! Generates sensitive entities by copying
   //! them from myReference selection, creates and sets an entity
   //! owner for this entities and adds them to theSelection
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Generates sensitive entities by copying
   //! them from myReference sub shapes selection, creates and sets an entity

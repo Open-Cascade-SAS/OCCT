@@ -46,7 +46,7 @@ public:
   //! returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X,
-                                                 math_Vector&       F) override;
+                                                 math_Vector&       F) Standard_OVERRIDE;
 
 protected:
 private:

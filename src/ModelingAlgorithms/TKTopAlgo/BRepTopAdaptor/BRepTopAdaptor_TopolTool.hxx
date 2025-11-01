@@ -42,40 +42,40 @@ public:
 
   Standard_EXPORT BRepTopAdaptor_TopolTool(const Handle(Adaptor3d_Surface)& Surface);
 
-  Standard_EXPORT virtual void Initialize() override;
+  Standard_EXPORT virtual void Initialize() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Initialize(const Handle(Adaptor3d_Surface)& S) override;
+  Standard_EXPORT virtual void Initialize(const Handle(Adaptor3d_Surface)& S) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Initialize(const Handle(Adaptor2d_Curve2d)& Curve) override;
+  Standard_EXPORT virtual void Initialize(const Handle(Adaptor2d_Curve2d)& Curve) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Init() override;
+  Standard_EXPORT virtual void Init() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean More() override;
+  Standard_EXPORT virtual Standard_Boolean More() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) Value() override;
+  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) Value() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Next() override;
+  Standard_EXPORT virtual void Next() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Address Edge() const override;
+  Standard_EXPORT virtual Standard_Address Edge() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void InitVertexIterator() override;
+  Standard_EXPORT virtual void InitVertexIterator() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean MoreVertex() override;
+  Standard_EXPORT virtual Standard_Boolean MoreVertex() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Handle(Adaptor3d_HVertex) Vertex() override;
+  Standard_EXPORT virtual Handle(Adaptor3d_HVertex) Vertex() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void NextVertex() override;
+  Standard_EXPORT virtual void NextVertex() Standard_OVERRIDE;
 
   Standard_EXPORT virtual TopAbs_State Classify(
     const gp_Pnt2d&        P2d,
     const Standard_Real    Tol,
-    const Standard_Boolean RecadreOnPeriodic = Standard_True) override;
+    const Standard_Boolean RecadreOnPeriodic = Standard_True) Standard_OVERRIDE;
 
   //! see the code for specifications)
   Standard_EXPORT virtual Standard_Boolean IsThePointOn(
     const gp_Pnt2d&        P2d,
     const Standard_Real    Tol,
-    const Standard_Boolean RecadreOnPeriodic = Standard_True) override;
+    const Standard_Boolean RecadreOnPeriodic = Standard_True) Standard_OVERRIDE;
 
   //! If the function returns the orientation of the arc.
   //! If the orientation is FORWARD or REVERSED, the arc is
@@ -83,7 +83,7 @@ public:
   //! If the orientation is INTERNAL or EXTERNAL, the arc is
   //! considered as an arc on the surface.
   Standard_EXPORT virtual TopAbs_Orientation Orientation(const Handle(Adaptor2d_Curve2d)& C)
-    override;
+    Standard_OVERRIDE;
 
   //! If the function returns the orientation of the arc.
   //! If the orientation is FORWARD or REVERSED, the arc is
@@ -91,7 +91,7 @@ public:
   //! If the orientation is INTERNAL or EXTERNAL, the arc is
   //! considered as an arc on the surface.
   Standard_EXPORT virtual TopAbs_Orientation Orientation(const Handle(Adaptor3d_HVertex)& C)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT void Destroy();
 
@@ -99,35 +99,35 @@ public:
 
   //! answers if arcs and vertices may have 3d representations,
   //! so that we could use Tol3d and Pnt methods.
-  Standard_EXPORT virtual Standard_Boolean Has3d() const override;
+  Standard_EXPORT virtual Standard_Boolean Has3d() const Standard_OVERRIDE;
 
   //! returns 3d tolerance of the arc C
   Standard_EXPORT virtual Standard_Real Tol3d(const Handle(Adaptor2d_Curve2d)& C) const
-    override;
+    Standard_OVERRIDE;
 
   //! returns 3d tolerance of the vertex V
   Standard_EXPORT virtual Standard_Real Tol3d(const Handle(Adaptor3d_HVertex)& V) const
-    override;
+    Standard_OVERRIDE;
 
   //! returns 3d point of the vertex V
-  Standard_EXPORT virtual gp_Pnt Pnt(const Handle(Adaptor3d_HVertex)& V) const override;
+  Standard_EXPORT virtual gp_Pnt Pnt(const Handle(Adaptor3d_HVertex)& V) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void ComputeSamplePoints() override;
-
-  //! compute the sample-points for the intersections algorithms
-  Standard_EXPORT virtual Standard_Integer NbSamplesU() override;
+  Standard_EXPORT virtual void ComputeSamplePoints() Standard_OVERRIDE;
 
   //! compute the sample-points for the intersections algorithms
-  Standard_EXPORT virtual Standard_Integer NbSamplesV() override;
+  Standard_EXPORT virtual Standard_Integer NbSamplesU() Standard_OVERRIDE;
 
   //! compute the sample-points for the intersections algorithms
-  Standard_EXPORT virtual Standard_Integer NbSamples() override;
+  Standard_EXPORT virtual Standard_Integer NbSamplesV() Standard_OVERRIDE;
+
+  //! compute the sample-points for the intersections algorithms
+  Standard_EXPORT virtual Standard_Integer NbSamples() Standard_OVERRIDE;
 
   Standard_EXPORT virtual void SamplePoint(const Standard_Integer Index,
                                            gp_Pnt2d&              P2d,
-                                           gp_Pnt&                P3d) override;
+                                           gp_Pnt&                P3d) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean DomainIsInfinite() override;
+  Standard_EXPORT virtual Standard_Boolean DomainIsInfinite() Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRepTopAdaptor_TopolTool, Adaptor3d_TopolTool)
 

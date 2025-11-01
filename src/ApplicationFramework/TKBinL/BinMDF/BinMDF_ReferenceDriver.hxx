@@ -35,17 +35,17 @@ class BinMDF_ReferenceDriver : public BinMDF_ADriver
 public:
   Standard_EXPORT BinMDF_ReferenceDriver(const Handle(Message_Messenger)& theMessageDriver);
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  Source,
                                                  const Handle(TDF_Attribute)& Target,
                                                  BinObjMgt_RRelocationTable&  RelocTable) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& Source,
                                      BinObjMgt_Persistent&        Target,
                                      BinObjMgt_SRelocationTable&  RelocTable) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BinMDF_ReferenceDriver, BinMDF_ADriver)
 

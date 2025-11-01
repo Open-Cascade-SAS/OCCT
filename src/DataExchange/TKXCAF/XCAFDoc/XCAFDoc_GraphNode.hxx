@@ -121,25 +121,25 @@ public:
 
   //! Returns the Graph ID (default or explicit one depending
   //! on the Set method used).
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& with) override;
+  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       into,
-                                     const Handle(TDF_RelocationTable)& RT) const override;
+                                     const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void References(const Handle(TDF_DataSet)& aDataSet) const
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void BeforeForget() override;
+  Standard_EXPORT virtual void BeforeForget() Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_GraphNode, TDF_Attribute)
 

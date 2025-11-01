@@ -38,27 +38,27 @@ public:
   void SetOffsetDirection(const gp_Dir& theDirection) { myOffsetDir = theDirection; }
 
   //! Value of curve
-  Standard_EXPORT void D0(const Standard_Real theU, gp_Pnt& theValue) const override;
+  Standard_EXPORT void D0(const Standard_Real theU, gp_Pnt& theValue) const Standard_OVERRIDE;
   //! Value and first derivatives of curve
   Standard_EXPORT void D1(const Standard_Real theU,
                           gp_Pnt&             theValue,
-                          gp_Vec&             theD1) const override;
+                          gp_Vec&             theD1) const Standard_OVERRIDE;
   //! Value, first and second derivatives of curve
   Standard_EXPORT void D2(const Standard_Real theU,
                           gp_Pnt&             theValue,
                           gp_Vec&             theD1,
-                          gp_Vec&             theD2) const override;
+                          gp_Vec&             theD2) const Standard_OVERRIDE;
   //! Value, first, second and third derivatives of curve
   Standard_EXPORT void D3(const Standard_Real theU,
                           gp_Pnt&             theValue,
                           gp_Vec&             theD1,
                           gp_Vec&             theD2,
-                          gp_Vec&             theD3) const override;
+                          gp_Vec&             theD3) const Standard_OVERRIDE;
   //! Calculates N-th derivatives of curve, where N = theDeriv. Raises if N < 1
   Standard_EXPORT gp_Vec DN(const Standard_Real    theU,
-                            const Standard_Integer theDeriv) const override;
+                            const Standard_Integer theDeriv) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Handle(GeomEvaluator_Curve) ShallowCopy() const override;
+  Standard_EXPORT virtual Handle(GeomEvaluator_Curve) ShallowCopy() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(GeomEvaluator_OffsetCurve, GeomEvaluator_Curve)
 

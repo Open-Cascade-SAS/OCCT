@@ -55,14 +55,14 @@ public:
 
   //! Returns True if a starting object is bound with SEVERAL
   //! results : Here, returns always True
-  Standard_EXPORT virtual Standard_Boolean IsMultiple() const override;
+  Standard_EXPORT virtual Standard_Boolean IsMultiple() const Standard_OVERRIDE;
 
   //! Returns the Type permitted for Results, i.e. here Transient
-  Standard_EXPORT Handle(Standard_Type) ResultType() const override;
+  Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
 
   //! Returns the Name of the Type which characterizes the Result
   //! Here, returns "(list)"
-  Standard_EXPORT Standard_CString ResultTypeName() const override;
+  Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
 
   //! Adds a new Item to the Multiple Result
   Standard_EXPORT void AddResult(const Handle(Standard_Transient)& res);

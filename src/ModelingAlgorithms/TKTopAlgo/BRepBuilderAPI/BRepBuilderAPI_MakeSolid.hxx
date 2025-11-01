@@ -111,13 +111,13 @@ public:
   //! If no shell has been added, it could be a whole-space
   //! solid. However, no check was done to verify the
   //! conditions of coherence of the resulting solid.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const override;
+  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
 
   //! Returns the new Solid.
   Standard_EXPORT const TopoDS_Solid& Solid();
   Standard_EXPORT                     operator TopoDS_Solid();
 
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
 
 protected:
 private:

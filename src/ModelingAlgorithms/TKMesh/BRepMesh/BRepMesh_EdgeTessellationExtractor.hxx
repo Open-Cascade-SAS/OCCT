@@ -34,7 +34,7 @@ public:
   Standard_EXPORT virtual ~BRepMesh_EdgeTessellationExtractor();
 
   //! Returns number of tessellation points.
-  Standard_EXPORT virtual Standard_Integer PointsNb() const override;
+  Standard_EXPORT virtual Standard_Integer PointsNb() const Standard_OVERRIDE;
 
   //! Returns parameters of solution with the given index.
   //! @param theIndex index of tessellation point.
@@ -44,7 +44,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Value(const Standard_Integer theIndex,
                                                  gp_Pnt&                thePoint,
                                                  Standard_Real&         theParameter) const
-    override;
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor, IMeshTools_CurveTessellator)
 

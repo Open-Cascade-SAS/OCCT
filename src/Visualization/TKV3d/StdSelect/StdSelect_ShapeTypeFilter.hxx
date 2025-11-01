@@ -36,10 +36,10 @@ public:
   TopAbs_ShapeEnum Type() const { return myType; }
 
   Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const
-    override;
+    Standard_OVERRIDE;
 
 private:
   TopAbs_ShapeEnum myType;

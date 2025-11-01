@@ -50,7 +50,7 @@ public:
   //! Returns the list  of shapes modified from the shape
   //! <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns the modified shape corresponding to <S>.
   //! S can correspond to the entire initial shape or to its subshape.

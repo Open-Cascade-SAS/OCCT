@@ -73,10 +73,10 @@ public:
   Standard_EXPORT void SetValue(const Standard_Integer Index, const Standard_Integer Value);
 
   //! Sets the explicit GUID (user defined) for the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& theGuid) override;
+  Standard_EXPORT void SetID(const Standard_GUID& theGuid) Standard_OVERRIDE;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() override;
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
 
   //! Return the value of  the  <Index>th element of the array
   Standard_EXPORT Standard_Integer Value(const Standard_Integer Index) const;
@@ -112,26 +112,26 @@ public:
 
   Standard_EXPORT TDataStd_IntegerArray();
 
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) override;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   //! Note. Uses inside ChangeArray() method
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const override;
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
   //! Makes a DeltaOnModification between <me> and
   //! <anOldAttribute>.
   Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification(
-    const Handle(TDF_Attribute)& anOldAttribute) const override;
+    const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
   void RemoveArray() { myValue.Nullify(); }

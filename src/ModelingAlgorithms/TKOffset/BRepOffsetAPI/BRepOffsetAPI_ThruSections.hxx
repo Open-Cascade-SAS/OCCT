@@ -137,7 +137,7 @@ public:
                                        Standard_Real& W3) const;
 
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Returns the TopoDS Shape of the bottom of the loft if solid
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
@@ -162,7 +162,7 @@ public:
   //! This function is redefined from BRepBuilderAPI_MakeShape::Generated.
   //! S can be an edge or a vertex of a given Profile (see methods AddWire and AddVertex).
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns the list of original wires
   const TopTools_ListOfShape& Wires() const { return myInputWires; }

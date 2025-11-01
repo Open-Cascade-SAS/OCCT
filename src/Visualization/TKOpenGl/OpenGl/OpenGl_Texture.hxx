@@ -91,7 +91,7 @@ public:
   Standard_EXPORT bool Create(const Handle(OpenGl_Context)& theCtx);
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Return texture sampler.
   const Handle(OpenGl_Sampler)& Sampler() const { return mySampler; }
@@ -205,7 +205,7 @@ public:
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const override;
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
 
   //! Returns TRUE for point sprite texture.
   virtual bool IsPointSprite() const { return false; }

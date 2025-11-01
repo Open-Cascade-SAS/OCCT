@@ -42,7 +42,7 @@ public:
 
 protected:
   //! Shift iterator to the next object
-  virtual Standard_EXPORT void MakeStep() override;
+  virtual Standard_EXPORT void MakeStep() Standard_OVERRIDE;
 
 protected:
   Handle(Standard_Type) myType; //!< type of objects to iterate on

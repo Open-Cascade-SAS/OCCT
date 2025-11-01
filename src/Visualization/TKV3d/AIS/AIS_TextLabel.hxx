@@ -34,22 +34,22 @@ public:
   Standard_EXPORT AIS_TextLabel();
 
   //! Return TRUE for supported display mode.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return theMode == 0;
   }
 
   //! Setup color of entire text.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Setup transparency within [0, 1] range.
-  Standard_EXPORT virtual void SetTransparency(const Standard_Real theValue) override;
+  Standard_EXPORT virtual void SetTransparency(const Standard_Real theValue) Standard_OVERRIDE;
 
   //! Removes the transparency setting.
-  virtual void UnsetTransparency() override { SetTransparency(0.0); }
+  virtual void UnsetTransparency() Standard_OVERRIDE { SetTransparency(0.0); }
 
   //! Material has no effect for text label.
-  virtual void SetMaterial(const Graphic3d_MaterialAspect&) override {}
+  virtual void SetMaterial(const Graphic3d_MaterialAspect&) Standard_OVERRIDE {}
 
   //! Setup text.
   Standard_EXPORT void SetText(const TCollection_ExtendedString& theText);
@@ -142,11 +142,11 @@ protected:
   //! Compute
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& theprsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Compute selection
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Calculate label center, width and height
   Standard_EXPORT Standard_Boolean calculateLabelParams(const gp_Pnt&  thePosition,

@@ -103,13 +103,13 @@ public:
 
   //! Builds the cut and the resulting faces and edges as well.
   Standard_EXPORT void Build(const Message_ProgressRange& theRange = Message_ProgressRange())
-    override;
+    Standard_OVERRIDE;
 
   //! Returns true if the shape has been deleted.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
 
   //! Returns the list of generated Faces.
-  Standard_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& F) override;
+  Standard_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& F) Standard_OVERRIDE;
 
 protected:
 private:

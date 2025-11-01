@@ -408,7 +408,7 @@ public:
 
 public:
   //! Return true if specified display mode is supported.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return theMode == 0;
   }
@@ -416,11 +416,11 @@ public:
   //! Compute presentation.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePresentation,
-                                       const Standard_Integer theMode) override;
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Compute selection - not implemented for color scale.
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
-                                const Standard_Integer /*aMode*/) override
+                                const Standard_Integer /*aMode*/) Standard_OVERRIDE
   {
   }
 

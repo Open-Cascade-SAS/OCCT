@@ -36,9 +36,9 @@ public:
                                                    const Standard_Real prec = 0.0);
 
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean IsDone() const override;
+  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
 
 protected:
 private:

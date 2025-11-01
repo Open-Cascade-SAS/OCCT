@@ -55,16 +55,16 @@ public:
   //! If flag does not exist for the given name, returns an empty
   //! result, whatever the Direct/Reversed sense
   Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
-    override;
+    Standard_OVERRIDE;
 
   //! Returns always False because RootResult has done the work
   Standard_EXPORT Standard_Boolean
     Sort(const Standard_Integer                  rank,
          const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const override;
+         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
   //! Returns a text defining the criterium, includes the flag name
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectFlag, IFSelect_SelectExtract)
 

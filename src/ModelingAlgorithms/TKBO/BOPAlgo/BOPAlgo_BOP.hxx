@@ -72,25 +72,25 @@ public:
   Standard_EXPORT BOPAlgo_BOP(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Clears internal fields and arguments
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
   Standard_EXPORT void SetOperation(const BOPAlgo_Operation theOperation);
 
   Standard_EXPORT BOPAlgo_Operation Operation() const;
 
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 protected:
-  Standard_EXPORT virtual void CheckData() override;
+  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
 
   //! Performs calculations using prepared Filler
   //! object <thePF>
   Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
                                                 const Message_ProgressRange& theRange)
-    override;
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void BuildResult(const TopAbs_ShapeEnum theType) override;
+  Standard_EXPORT virtual void BuildResult(const TopAbs_ShapeEnum theType) Standard_OVERRIDE;
 
   Standard_EXPORT void BuildShape(const Message_ProgressRange& theRange);
 
@@ -119,7 +119,7 @@ protected:
 
   //! Fill PI steps
   Standard_EXPORT virtual void fillPIConstants(const Standard_Real theWhole,
-                                               BOPAlgo_PISteps& theSteps) const override;
+                                               BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
 
 protected:
   BOPAlgo_Operation myOperation;

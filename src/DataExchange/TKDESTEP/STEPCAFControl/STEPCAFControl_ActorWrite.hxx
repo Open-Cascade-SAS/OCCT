@@ -37,7 +37,7 @@ public:
   //! Check whether shape S is assembly
   //! Returns True if shape is registered in assemblies map
   Standard_EXPORT virtual Standard_Boolean IsAssembly(const Handle(StepData_StepModel)& theModel,
-                                                      TopoDS_Shape& S) const override;
+                                                      TopoDS_Shape& S) const Standard_OVERRIDE;
 
   //! Set standard mode of work
   //! In standard mode Actor (default) behaves exactly as its

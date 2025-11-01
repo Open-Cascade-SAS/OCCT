@@ -60,14 +60,14 @@ public:
   Standard_EXPORT ~NCollection_AccAllocator();
 
   //! Allocate memory with given size
-  Standard_EXPORT virtual void* Allocate(const size_t theSize) override;
+  Standard_EXPORT virtual void* Allocate(const size_t theSize) Standard_OVERRIDE;
 
   //! Allocate memory with given size
-  void* AllocateOptimal(const size_t theSize) override { return Allocate(theSize); }
+  void* AllocateOptimal(const size_t theSize) Standard_OVERRIDE { return Allocate(theSize); }
 
   //! Free a previously allocated memory;
   //! memory is returned to the OS when all allocations in some block are freed
-  Standard_EXPORT virtual void Free(void* theAddress) override;
+  Standard_EXPORT virtual void Free(void* theAddress) Standard_OVERRIDE;
 
   // --------- PROTECTED TYPES ---------
 protected:

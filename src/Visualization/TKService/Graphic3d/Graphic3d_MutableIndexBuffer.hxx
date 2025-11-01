@@ -28,19 +28,19 @@ public:
   }
 
   //! Return TRUE if data can be invalidated.
-  virtual Standard_Boolean IsMutable() const override { return Standard_True; }
+  virtual Standard_Boolean IsMutable() const Standard_OVERRIDE { return Standard_True; }
 
   //! Return invalidated range.
-  virtual Graphic3d_BufferRange InvalidatedRange() const override
+  virtual Graphic3d_BufferRange InvalidatedRange() const Standard_OVERRIDE
   {
     return myInvalidatedRange;
   }
 
   //! Reset invalidated range.
-  virtual void Validate() override { myInvalidatedRange.Clear(); }
+  virtual void Validate() Standard_OVERRIDE { myInvalidatedRange.Clear(); }
 
   //! Invalidate the entire buffer data.
-  virtual void Invalidate() override
+  virtual void Invalidate() Standard_OVERRIDE
   {
     invalidate(Graphic3d_BufferRange(0, (Standard_Integer)mySize));
   }

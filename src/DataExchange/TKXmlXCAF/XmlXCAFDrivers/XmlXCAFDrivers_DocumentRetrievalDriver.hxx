@@ -34,7 +34,7 @@ public:
   Standard_EXPORT XmlXCAFDrivers_DocumentRetrievalDriver();
 
   Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) override;
+    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentRetrievalDriver,
                           XmlDrivers_DocumentRetrievalDriver)

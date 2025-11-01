@@ -35,18 +35,18 @@ public:
   //! Highlights selectable object's presentation.
   Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
                                                 const Handle(Prs3d_Drawer)&               theStyle,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Returns true if the presentation manager thePM
   //! highlights selections corresponding to the selection mode aMode.
   Standard_EXPORT Standard_Boolean
     IsHilighted(const Handle(PrsMgr_PresentationManager)& thePM,
-                const Standard_Integer                    theMode) const override;
+                const Standard_Integer                    theMode) const Standard_OVERRIDE;
 
   //! Removes highlighting from the owner of a detected
   //! selectable object in the presentation manager thePM.
   Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
-                                         const Standard_Integer theMode) override;
+                                         const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected:
   Prs3d_DatumParts myDatumPart; //!< part of datum selected

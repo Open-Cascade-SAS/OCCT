@@ -83,32 +83,32 @@ public:
   Standard_EXPORT ~Cocoa_Window();
 
   //! Opens the window <me>
-  Standard_EXPORT virtual void Map() const override;
+  Standard_EXPORT virtual void Map() const Standard_OVERRIDE;
 
   //! Closes the window <me>
-  Standard_EXPORT virtual void Unmap() const override;
+  Standard_EXPORT virtual void Unmap() const Standard_OVERRIDE;
 
   //! Applies the resizing to the window <me>
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() override;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE;
 
   //! Apply the mapping change to the window <me>
-  Standard_EXPORT virtual Standard_Boolean DoMapping() const override;
+  Standard_EXPORT virtual Standard_Boolean DoMapping() const Standard_OVERRIDE;
 
   //! Returns True if the window <me> is opened
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const override;
+  Standard_EXPORT virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
 
   //! Returns The Window RATIO equal to the physical WIDTH/HEIGHT dimensions
-  Standard_EXPORT virtual Standard_Real Ratio() const override;
+  Standard_EXPORT virtual Standard_Real Ratio() const Standard_OVERRIDE;
 
   //! Returns The Window POSITION in PIXEL
   Standard_EXPORT virtual void Position(Standard_Integer& X1,
                                         Standard_Integer& Y1,
                                         Standard_Integer& X2,
-                                        Standard_Integer& Y2) const override;
+                                        Standard_Integer& Y2) const Standard_OVERRIDE;
 
   //! Returns The Window SIZE in PIXEL
   Standard_EXPORT virtual void Size(Standard_Integer& theWidth,
-                                    Standard_Integer& theHeight) const override;
+                                    Standard_Integer& theHeight) const Standard_OVERRIDE;
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //! @return associated UIView
@@ -125,24 +125,24 @@ public:
 #endif
 
   //! @return native Window handle
-  virtual Aspect_Drawable NativeHandle() const override
+  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE
   {
     return (Aspect_Drawable)HView();
   }
 
   //! @return parent of native Window handle
-  virtual Aspect_Drawable NativeParentHandle() const override { return 0; }
+  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE { return 0; }
 
   //! Returns nothing on OS X
-  virtual Aspect_FBConfig NativeFBConfig() const override { return NULL; }
+  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
 
   //! Sets window title.
-  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) override;
+  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
 
   //! Invalidate entire window content by setting NSView::setNeedsDisplay property.
   //! Call will be implicitly redirected to the main thread when called from non-GUI thread.
   Standard_EXPORT virtual void InvalidateContent(
-    const Handle(Aspect_DisplayConnection)& theDisp = NULL) override;
+    const Handle(Aspect_DisplayConnection)& theDisp = NULL) Standard_OVERRIDE;
 
 protected:
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE

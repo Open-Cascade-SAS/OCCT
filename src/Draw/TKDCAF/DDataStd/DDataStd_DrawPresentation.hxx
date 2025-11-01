@@ -61,35 +61,35 @@ public:
 
   Standard_EXPORT Handle(Draw_Drawable3D) GetDrawable() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) override;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
 
   //! call backs for viewer updating
   //! ==============================
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       into,
-                             const Handle(TDF_RelocationTable)& RT) const override;
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void AfterAddition() override;
+  Standard_EXPORT virtual void AfterAddition() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void BeforeRemoval() override;
+  Standard_EXPORT virtual void BeforeRemoval() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void BeforeForget() override;
+  Standard_EXPORT virtual void BeforeForget() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void AfterResume() override;
+  Standard_EXPORT virtual void AfterResume() Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean BeforeUndo(
     const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) override;
+    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
 
   //! update draw viewer according to delta
   //! private methods
   //! ===============
   Standard_EXPORT virtual Standard_Boolean AfterUndo(
     const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) override;
+    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(DDataStd_DrawPresentation, TDF_Attribute)
 

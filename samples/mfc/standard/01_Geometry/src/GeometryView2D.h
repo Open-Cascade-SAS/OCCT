@@ -39,7 +39,7 @@ public:
 #endif
 
   //! Return interactive context for 2d presentations.
-  virtual const Handle(AIS_InteractiveContext)& GetAISContext() const override;
+  virtual const Handle(AIS_InteractiveContext)& GetAISContext() const Standard_OVERRIDE;
 
   // Generated message map functions
 protected:

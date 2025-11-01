@@ -42,35 +42,35 @@ public:
                            const Standard_Real PLast);
 
   //! Returns GeomAbs_CN
-  Standard_EXPORT GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
   //! Returns  1
-  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
   //! Returns the value at parameter X.
-  Standard_EXPORT Standard_Real Value(const Standard_Real X) override;
+  Standard_EXPORT Standard_Real Value(const Standard_Real X) Standard_OVERRIDE;
 
   //! Returns the value and the first derivative at parameter X.
   Standard_EXPORT void D1(const Standard_Real X,
                           Standard_Real&      F,
-                          Standard_Real&      D) override;
+                          Standard_Real&      D) Standard_OVERRIDE;
 
   //! Returns the value, first and second derivatives
   //! at parameter X.
   Standard_EXPORT void D2(const Standard_Real X,
                           Standard_Real&      F,
                           Standard_Real&      D,
-                          Standard_Real&      D2) override;
+                          Standard_Real&      D2) Standard_OVERRIDE;
 
   Standard_EXPORT Handle(Law_Function) Trim(const Standard_Real PFirst,
                                             const Standard_Real PLast,
-                                            const Standard_Real Tol) const override;
+                                            const Standard_Real Tol) const Standard_OVERRIDE;
 
   //! Returns the parametric bounds of the function.
-  Standard_EXPORT void Bounds(Standard_Real& PFirst, Standard_Real& PLast) override;
+  Standard_EXPORT void Bounds(Standard_Real& PFirst, Standard_Real& PLast) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Law_Constant, Law_Function)
 

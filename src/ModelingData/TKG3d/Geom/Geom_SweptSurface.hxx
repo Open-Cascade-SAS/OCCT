@@ -45,7 +45,7 @@ public:
   //! G1 : tangency continuity all along the surface,
   //! G2 : curvature continuity all along the surface,
   //! CN : the order of continuity is infinite.
-  Standard_EXPORT GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
   //! Returns the reference direction of the swept surface.
   //! For a surface of revolution it is the direction of the
@@ -60,7 +60,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom_SweptSurface, Geom_Surface)
 

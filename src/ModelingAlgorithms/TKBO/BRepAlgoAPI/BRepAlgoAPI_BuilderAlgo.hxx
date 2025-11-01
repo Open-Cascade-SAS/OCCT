@@ -106,7 +106,7 @@ public: //! @name Setting options
 public: //! @name Performing the operation
   //! Performs the algorithm
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 public: //! @name Result simplification
   //! Simplification of the result shape is performed by the means of
@@ -141,7 +141,7 @@ public: //! @name History support
   //! If any, the list will contain only those splits of the
   //! given shape, contained in the result.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)
-    override;
+    Standard_OVERRIDE;
 
   //! Returns the list  of shapes generated from the shape <theS>.
   //! In frames of Boolean Operations algorithms only Edges and Faces
@@ -150,12 +150,12 @@ public: //! @name History support
   //! - Edges can generate new vertices;
   //! - Faces can generate new edges and vertices.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS)
-    override;
+    Standard_OVERRIDE;
 
   //! Checks if the shape <theS> has been completely removed from the result,
   //! i.e. the result does not contain the shape itself and any of its splits.
   //! Returns TRUE if the shape has been deleted.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& aS) override;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& aS) Standard_OVERRIDE;
 
   //! Returns true if any of the input shapes has been modified during operation.
   Standard_EXPORT virtual Standard_Boolean HasModified() const;
@@ -205,7 +205,7 @@ protected: //! @name Protected methods for shapes intersection and building resu
 
 protected: //! @name Clearing the contents of the algorithm
   //! Clears the algorithm from previous runs
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
 protected: //! @name Fields
   // Inputs

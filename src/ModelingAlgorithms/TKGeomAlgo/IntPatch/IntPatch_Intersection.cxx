@@ -201,7 +201,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
         break;
       }
     }
-      [[fallthrough]];
+      Standard_FALLTHROUGH
     default: {
       IntPatch_PrmPrmIntersection interpp;
       interpp.Perform(S1, D1, TolTang, TolArc, myFleche, myUVMaxStep);

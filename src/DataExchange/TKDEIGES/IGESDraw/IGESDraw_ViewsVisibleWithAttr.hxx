@@ -71,11 +71,11 @@ public:
   Standard_EXPORT void InitImplied(const Handle(IGESData_HArray1OfIGESEntity)& allDisplayEntity);
 
   //! Returns False (for a complex view)
-  Standard_EXPORT Standard_Boolean IsSingle() const override;
+  Standard_EXPORT Standard_Boolean IsSingle() const Standard_OVERRIDE;
 
   //! returns the number of Views containing the view visible, line font,
   //! color number, and line weight information
-  Standard_EXPORT Standard_Integer NbViews() const override;
+  Standard_EXPORT Standard_Integer NbViews() const Standard_OVERRIDE;
 
   //! returns the number of entities which have this particular set of
   //! display characteristic, or zero if no Entities specified
@@ -84,7 +84,7 @@ public:
   //! returns the Index'th ViewKindEntity entity
   //! raises exception if Index <= 0 or Index > NbViews()
   Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem(const Standard_Integer Index) const
-    override;
+    Standard_OVERRIDE;
 
   //! returns the Index'th Line font value or zero
   //! raises exception if Index <= 0 or Index > NbViews()

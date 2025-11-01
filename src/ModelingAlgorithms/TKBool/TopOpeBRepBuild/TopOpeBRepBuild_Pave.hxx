@@ -56,11 +56,11 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_Kind& InterferenceType();
 
-  Standard_EXPORT virtual Standard_Boolean IsShape() const override;
+  Standard_EXPORT virtual Standard_Boolean IsShape() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual const TopoDS_Shape& Shape() const override;
+  Standard_EXPORT virtual const TopoDS_Shape& Shape() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Dump() const override;
+  Standard_EXPORT virtual void Dump() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_Pave, TopOpeBRepBuild_Loop)
 

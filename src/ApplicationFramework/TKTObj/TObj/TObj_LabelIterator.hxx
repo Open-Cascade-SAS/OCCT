@@ -55,13 +55,13 @@ public:
    */
 
   //! Returns True if there is a current Item in the iteration.
-  virtual Standard_Boolean More() const override { return !myNode.IsNull(); }
+  virtual Standard_Boolean More() const Standard_OVERRIDE { return !myNode.IsNull(); }
 
   //! Move to the next Item
-  virtual Standard_EXPORT void Next() override;
+  virtual Standard_EXPORT void Next() Standard_OVERRIDE;
 
   //! Returns the current item
-  virtual Handle(TObj_Object) Value() const override { return myObject; }
+  virtual Handle(TObj_Object) Value() const Standard_OVERRIDE { return myObject; }
 
   //! Returns the label of the current item
   inline const TDF_Label& LabelValue() const { return myNode; }

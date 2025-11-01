@@ -96,42 +96,42 @@ public:
   //! Computes the parameter on the reversed circle for
   //! the point of parameter U on this circle.
   //! For a circle, the returned value is: 2.*Pi - U.
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const override;
+  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Returns the eccentricity  e = 0 for a circle.
-  Standard_EXPORT Standard_Real Eccentricity() const override;
+  Standard_EXPORT Standard_Real Eccentricity() const Standard_OVERRIDE;
 
   //! Returns the value of the first parameter of this
   //! circle. This is  0.0, which gives the start point of this circle, or
   //! The start point and end point of a circle are coincident.
-  Standard_EXPORT Standard_Real FirstParameter() const override;
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
   //! Returns the value of the last parameter of this
   //! circle. This is 2.*Pi, which gives the end point of this circle.
   //! The start point and end point of a circle are coincident.
-  Standard_EXPORT Standard_Real LastParameter() const override;
+  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! returns True.
-  Standard_EXPORT Standard_Boolean IsClosed() const override;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
 
   //! returns True.
-  Standard_EXPORT Standard_Boolean IsPeriodic() const override;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
 
   //! Returns in P the point of parameter U.
   //! P = C + R * Cos (U) * XDir + R * Sin (U) * YDir
   //! where C is the center of the circle , XDir the XDirection and
   //! YDir the YDirection of the circle's local coordinate system.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const override;
+  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
 
   //! Returns the point P of parameter U and the first derivative V1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const override;
+  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const Standard_OVERRIDE;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   Standard_EXPORT void D2(const Standard_Real U,
                           gp_Pnt&             P,
                           gp_Vec&             V1,
-                          gp_Vec&             V2) const override;
+                          gp_Vec&             V2) const Standard_OVERRIDE;
 
   //! Returns the point P of parameter u, the first second and third
   //! derivatives V1 V2 and V3.
@@ -139,23 +139,23 @@ public:
                           gp_Pnt&             P,
                           gp_Vec&             V1,
                           gp_Vec&             V2,
-                          gp_Vec&             V3) const override;
+                          gp_Vec&             V3) const Standard_OVERRIDE;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
-                            const Standard_Integer N) const override;
+                            const Standard_Integer N) const Standard_OVERRIDE;
 
   //! Applies the transformation T to this circle.
-  Standard_EXPORT void Transform(const gp_Trsf& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
   //! Creates a new object which is a copy of this circle.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Circle, Geom_Conic)
 

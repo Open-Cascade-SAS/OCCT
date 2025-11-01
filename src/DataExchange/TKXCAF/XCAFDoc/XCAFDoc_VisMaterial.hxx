@@ -172,25 +172,25 @@ public:
 
 public: //! @name interface implementation
   //! Return GUID of this attribute type.
-  virtual const Standard_GUID& ID() const override { return GetID(); }
+  virtual const Standard_GUID& ID() const Standard_OVERRIDE { return GetID(); }
 
   //! Restore attribute from specified state.
   //! @param[in] theWith  attribute state to restore (copy into this)
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& theWith) override;
+  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
 
   //! Create a new empty attribute.
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   //! Paste this attribute into another one.
   //! @param theInto [in/out] target attribute to copy this into
   //! @param[in] theRelTable  relocation table
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       theInto,
                                      const Handle(TDF_RelocationTable)& theRelTable) const
-    override;
+    Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
   Handle(TCollection_HAsciiString) myRawName;   //!< material name / tag (transient data)

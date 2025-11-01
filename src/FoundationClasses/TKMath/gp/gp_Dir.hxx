@@ -185,9 +185,9 @@ public:
   //! Raises the exception ConstructionError if V1 and V2 are parallel
   //! or <me> and (V1^V2) are parallel because the computed vector
   //! can't be normalized to create a direction.
-  [[nodiscard]] gp_Dir Crossed(const gp_Dir& theRight) const;
+  Standard_NODISCARD gp_Dir Crossed(const gp_Dir& theRight) const;
 
-  [[nodiscard]] gp_Dir operator^(const gp_Dir& theRight) const { return Crossed(theRight); }
+  Standard_NODISCARD gp_Dir operator^(const gp_Dir& theRight) const { return Crossed(theRight); }
 
   void CrossCross(const gp_Dir& theV1, const gp_Dir& theV2);
 
@@ -199,7 +199,7 @@ public:
   //! -   this unit vector and (theV1 ^ theV2) are parallel.
   //! This is because, in these conditions, the computed vector
   //! is null and cannot be normalized.
-  [[nodiscard]] gp_Dir CrossCrossed(const gp_Dir& theV1, const gp_Dir& theV2) const;
+  Standard_NODISCARD gp_Dir CrossCrossed(const gp_Dir& theV1, const gp_Dir& theV2) const;
 
   //! Computes the scalar product
   constexpr Standard_Real Dot(const gp_Dir& theOther) const noexcept
@@ -226,41 +226,41 @@ public:
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction V which is the center of
   //! the  symmetry.]
-  [[nodiscard]] constexpr gp_Dir Reversed() const noexcept
+  Standard_NODISCARD constexpr gp_Dir Reversed() const noexcept
   {
     gp_Dir aV = *this;
     aV.coord.Reverse();
     return aV;
   }
 
-  [[nodiscard]] constexpr gp_Dir operator-() const noexcept { return Reversed(); }
+  Standard_NODISCARD constexpr gp_Dir operator-() const noexcept { return Reversed(); }
 
   Standard_EXPORT void Mirror(const gp_Dir& theV);
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction theV which is the center of
   //! the  symmetry.
-  [[nodiscard]] Standard_EXPORT gp_Dir Mirrored(const gp_Dir& theV) const;
+  Standard_NODISCARD Standard_EXPORT gp_Dir Mirrored(const gp_Dir& theV) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  [[nodiscard]] Standard_EXPORT gp_Dir Mirrored(const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Dir Mirrored(const gp_Ax1& theA1) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to a plane. The axis placement theA2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  [[nodiscard]] Standard_EXPORT gp_Dir Mirrored(const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Dir Mirrored(const gp_Ax2& theA2) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng);
 
   //! Rotates a direction. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  [[nodiscard]] gp_Dir Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  Standard_NODISCARD gp_Dir Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
     gp_Dir aV = *this;
     aV.Rotate(theA1, theAng);
@@ -273,7 +273,7 @@ public:
   //! Warnings :
   //! If the scale factor of the "Trsf" theT is negative then the
   //! direction <me> is reversed.
-  [[nodiscard]] gp_Dir Transformed(const gp_Trsf& theT) const
+  Standard_NODISCARD gp_Dir Transformed(const gp_Trsf& theT) const
   {
     gp_Dir aV = *this;
     aV.Transform(theT);

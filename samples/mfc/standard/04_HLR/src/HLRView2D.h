@@ -23,7 +23,7 @@ protected: // create from serialization only
   DECLARE_MESSAGE_MAP()
 
   //! Return interactive context for HLR presentations.
-  virtual const Handle(AIS_InteractiveContext)& GetAISContext() const override;
+  virtual const Handle(AIS_InteractiveContext)& GetAISContext() const Standard_OVERRIDE;
 
 // Implementation
 public:

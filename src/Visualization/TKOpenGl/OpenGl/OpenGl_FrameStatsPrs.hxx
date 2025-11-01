@@ -35,10 +35,10 @@ public:
 
   //! Render element.
   Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
-    override;
+    Standard_OVERRIDE;
 
   //! Release OpenGL resources.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Update text.
   Standard_EXPORT void Update(const Handle(OpenGl_Workspace)& theWorkspace);
@@ -51,7 +51,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
   //! Update chart presentation.

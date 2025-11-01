@@ -46,7 +46,7 @@ public:
   Standard_EXPORT void SetTolerance(const Standard_Real Tol);
 
   //! Calculates points for correction/splitting of the curve
-  Standard_EXPORT virtual void Compute() override;
+  Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
 
   Standard_EXPORT const Handle(Geom_Curve)& GetCurve() const;
 

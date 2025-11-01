@@ -34,7 +34,7 @@ class TopoDS_TVertex : public TopoDS_TShape
 {
 public:
   //! Returns VERTEX.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TVertex, TopoDS_TShape)
 

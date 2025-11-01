@@ -298,7 +298,7 @@ public:
   PrsDim_KindOfDimension KindOfDimension() const { return myKindOfDimension; }
 
   //! @return the kind of interactive.
-  virtual AIS_KindOfInteractive Type() const override
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
   {
     return AIS_KindOfInteractive_Dimension;
   }
@@ -306,7 +306,7 @@ public:
   //! Returns true if the class of objects accepts the display mode theMode.
   //! The interactive context can have a default mode of representation for
   //! the set of Interactive Objects. This mode may not be accepted by object.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return theMode == ComputeMode_All;
   }
@@ -564,7 +564,7 @@ protected: //! @name Behavior to implement
   //! @param[in] theSelection  the selection structure to will with primitives.
   //! @param[in] theMode  the selection mode.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected: //! @name Selection geometry
   //! Selection geometry of dimension presentation. The structure is filled with data

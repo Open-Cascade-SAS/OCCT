@@ -22,7 +22,9 @@
 #include <TDF_HAllocator.hxx>
 #include <NCollection_DefineAlloc.hxx>
 
-#include <atomic>
+#ifdef Standard_HASATOMIC
+  #include <atomic>
+#endif
 
 class TDF_Attribute;
 class TDF_Data;
@@ -153,7 +155,7 @@ private:
   TDF_LabelNodePtr myFather;
   TDF_LabelNodePtr myBrother;
   TDF_LabelNodePtr myFirstChild;
-  std::atomic<TDF_LabelNodePtr> myLastFoundChild; // jfa 10.01.2003
+  Standard_ATOMIC(TDF_LabelNodePtr) myLastFoundChild; // jfa 10.01.2003
   Standard_Integer      myTag;
   Standard_Integer      myFlags; // Flags & Depth
   Handle(TDF_Attribute) myFirstAttribute;

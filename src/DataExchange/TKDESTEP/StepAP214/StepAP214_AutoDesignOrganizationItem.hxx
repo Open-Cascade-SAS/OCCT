@@ -35,7 +35,7 @@ public:
   Standard_EXPORT StepAP214_AutoDesignOrganizationItem();
 
   Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT Handle(StepBasic_Document) Document() const;
 

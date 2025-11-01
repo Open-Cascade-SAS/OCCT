@@ -43,7 +43,7 @@ public:
                               const Draw_Color&      col,
                               const Standard_Integer Size = 5);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Axis2D, Draw_Drawable2D)
 

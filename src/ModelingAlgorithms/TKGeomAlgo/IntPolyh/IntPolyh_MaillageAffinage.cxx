@@ -158,14 +158,14 @@ public:
                                       const BVH_Vec3d& theCMax1,
                                       const BVH_Vec3d& theCMin2,
                                       const BVH_Vec3d& theCMax2,
-                                      Standard_Real&) const override
+                                      Standard_Real&) const Standard_OVERRIDE
   {
     return BVH_Box<Standard_Real, 3>(theCMin1, theCMax1).IsOut(theCMin2, theCMax2);
   }
 
   //! Accepts the element
   virtual Standard_Boolean Accept(const Standard_Integer theID1,
-                                  const Standard_Integer theID2) override
+                                  const Standard_Integer theID2) Standard_OVERRIDE
   {
     if (!myBVHSet1->Box(theID1).IsOut(myBVHSet2->Box(theID2)))
     {

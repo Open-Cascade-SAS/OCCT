@@ -54,12 +54,12 @@ public:
   Standard_EXPORT Standard_Integer GetContinuity() const;
 
   Standard_EXPORT virtual Standard_Boolean Recognize(const Handle(Standard_Transient)& start)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
     const Handle(Standard_Transient)&        start,
     const Handle(Transfer_TransientProcess)& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Returns the tolerance which was actually used, either from
   //! the file or from statics

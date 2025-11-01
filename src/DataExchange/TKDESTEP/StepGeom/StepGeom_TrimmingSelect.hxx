@@ -39,16 +39,16 @@ public:
   //! 1 -> CartesianPoint
   //! 0 else (i.e. Real)
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const override;
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   //! Returns a TrimmingMember (for PARAMETER_VALUE) as preferred
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const override;
+  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
 
   //! Recognizes a SelectMember as Real, named as PARAMETER_VALUE
   //! 1 -> ParameterValue i.e. Real
   //! 0 else (i.e. Entity)
   Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    override;
+    Standard_OVERRIDE;
 
   //! returns Value as a CartesianPoint (Null if another type)
   Standard_EXPORT Handle(StepGeom_CartesianPoint) CartesianPoint() const;

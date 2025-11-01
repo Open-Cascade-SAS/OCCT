@@ -69,7 +69,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Copy(const Handle(Standard_Transient)& entfrom,
                                                 Handle(Standard_Transient)&       entto,
                                                 const Standard_Boolean            mapped,
-                                                const Standard_Boolean errstat) override;
+                                                const Standard_Boolean errstat) Standard_OVERRIDE;
 
 protected:
 private:

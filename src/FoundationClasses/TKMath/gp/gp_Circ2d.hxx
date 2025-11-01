@@ -176,7 +176,7 @@ public:
   //! of this circle (the "Y Direction" is reversed) and therefore
   //! changes the implicit orientation of this circle.
   //! Reversed creates a new circle.
-  [[nodiscard]] gp_Circ2d Reversed() const;
+  Standard_NODISCARD gp_Circ2d Reversed() const;
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
@@ -186,19 +186,19 @@ public:
 
   //! Performs the symmetrical transformation of a circle with respect
   //! to the point theP which is the center of the symmetry
-  [[nodiscard]] Standard_EXPORT gp_Circ2d Mirrored(const gp_Pnt2d& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored(const gp_Pnt2d& theP) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& theA);
 
   //! Performs the symmetrical transformation of a circle with respect
   //! to an axis placement which is the axis of the symmetry.
-  [[nodiscard]] Standard_EXPORT gp_Circ2d Mirrored(const gp_Ax2d& theA) const;
+  Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored(const gp_Ax2d& theA) const;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
 
   //! Rotates a circle. theP is the center of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  [[nodiscard]] gp_Circ2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
+  Standard_NODISCARD gp_Circ2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Rotate(theP, theAng);
@@ -212,18 +212,18 @@ public:
   //! If theS is negative the radius stay positive but
   //! the "XAxis" and the "YAxis" are  reversed as for
   //! an ellipse.
-  [[nodiscard]] gp_Circ2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
+  Standard_NODISCARD gp_Circ2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
 
   void Transform(const gp_Trsf2d& theT);
 
   //! Transforms a circle with the transformation theT from class Trsf2d.
-  [[nodiscard]] gp_Circ2d Transformed(const gp_Trsf2d& theT) const;
+  Standard_NODISCARD gp_Circ2d Transformed(const gp_Trsf2d& theT) const;
 
   void Translate(const gp_Vec2d& theV) { pos.Translate(theV); }
 
   //! Translates a circle in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  [[nodiscard]] gp_Circ2d Translated(const gp_Vec2d& theV) const
+  Standard_NODISCARD gp_Circ2d Translated(const gp_Vec2d& theV) const
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Translate(theV);
@@ -233,7 +233,7 @@ public:
   void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) { pos.Translate(theP1, theP2); }
 
   //! Translates a circle from the point theP1 to the point theP2.
-  [[nodiscard]] gp_Circ2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD gp_Circ2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Translate(theP1, theP2);

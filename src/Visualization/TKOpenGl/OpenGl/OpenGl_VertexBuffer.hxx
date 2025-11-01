@@ -30,7 +30,7 @@ public:
   Standard_EXPORT virtual ~OpenGl_VertexBuffer();
 
   //! Return buffer target GL_ARRAY_BUFFER.
-  Standard_EXPORT virtual unsigned int GetTarget() const override;
+  Standard_EXPORT virtual unsigned int GetTarget() const Standard_OVERRIDE;
 
   //! Bind this VBO to active GLSL program.
   Standard_EXPORT void BindVertexAttrib(const Handle(OpenGl_Context)& theGlCtx,

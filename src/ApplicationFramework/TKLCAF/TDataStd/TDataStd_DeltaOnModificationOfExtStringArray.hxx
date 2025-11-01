@@ -38,7 +38,7 @@ public:
     const Handle(TDataStd_ExtStringArray)& Arr);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() override;
+  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfExtStringArray, TDF_DeltaOnModification)
 

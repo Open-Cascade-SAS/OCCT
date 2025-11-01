@@ -45,7 +45,7 @@ public:
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
 
   //! returns the user defined Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Value() const override;
+  Standard_EXPORT Handle(TCollection_HAsciiString) Value() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_Name, IGESData_NameEntity)
 

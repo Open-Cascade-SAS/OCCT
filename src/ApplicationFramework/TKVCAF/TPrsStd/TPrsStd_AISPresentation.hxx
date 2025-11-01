@@ -168,37 +168,37 @@ public:
   //! Clears all selection modes of the attribute.
   Standard_EXPORT void UnsetSelectionMode();
 
-  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) override;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       into,
-                             const Handle(TDF_RelocationTable)& RT) const override;
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) BackupCopy() const override;
+  Standard_EXPORT virtual Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void AfterAddition() override;
+  Standard_EXPORT virtual void AfterAddition() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void BeforeRemoval() override;
+  Standard_EXPORT virtual void BeforeRemoval() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void BeforeForget() override;
+  Standard_EXPORT virtual void BeforeForget() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void AfterResume() override;
+  Standard_EXPORT virtual void AfterResume() Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean BeforeUndo(
     const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) override;
+    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
 
   //! update AIS viewer according to delta
   Standard_EXPORT virtual Standard_Boolean AfterUndo(
     const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) override;
+    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const override;
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_AISPresentation, TDF_Attribute)
 

@@ -42,14 +42,14 @@ public:
 
   //! Returns current cubemap side as compressed PixMap.
   Standard_EXPORT virtual Handle(Image_CompressedPixMap) CompressedValue(
-    const Handle(Image_SupportedFormats)& theSupported) override;
+    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
 
   //! Returns current cubemap side as PixMap.
   //! Resulting PixMap is memory wrapper over original image.
   //! Returns null handle if current side or whole cubemap is invalid.
   //! Origin image has to contain six quad tiles having one sizes without any gaps to be valid.
   Standard_EXPORT virtual Handle(Image_PixMap) Value(
-    const Handle(Image_SupportedFormats)& theSupported) override;
+    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
 
   //! Empty destructor.
   ~Graphic3d_CubeMapPacked() {}

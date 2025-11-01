@@ -36,14 +36,14 @@ public:
 
   Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
                                                 const Handle(Prs3d_Drawer)&               theStyle,
-                                                const Standard_Integer theMode) override;
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Boolean
     IsHilighted(const Handle(PrsMgr_PresentationManager)& thePM,
-                const Standard_Integer                    theMode) const override;
+                const Standard_Integer                    theMode) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
-                                         const Standard_Integer theMode) override;
+                                         const Standard_Integer theMode) Standard_OVERRIDE;
 
   AIS_ManipulatorMode Mode() const { return myMode; }
 

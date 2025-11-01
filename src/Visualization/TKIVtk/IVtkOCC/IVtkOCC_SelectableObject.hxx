@@ -50,7 +50,7 @@ public:
   const IVtkOCC_Shape::Handle& GetShape() const { return myShape; };
 
   //! Returns bounding box of object
-  Standard_EXPORT virtual void BoundingBox(Bnd_Box& theBndBox) override;
+  Standard_EXPORT virtual void BoundingBox(Bnd_Box& theBndBox) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_SelectableObject, SelectMgr_SelectableObject)
 
@@ -60,12 +60,12 @@ private:
   //! @param[in]  selection container for sensitive primitives
   //! @param[in]  mode Selection mode
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                const Standard_Integer             theMode) override;
+                                const Standard_Integer             theMode) Standard_OVERRIDE;
 
   //! Dummy.
   virtual void Compute(const Handle(PrsMgr_PresentationManager)&,
                        const Handle(Prs3d_Presentation)&,
-                       const Standard_Integer) override
+                       const Standard_Integer) Standard_OVERRIDE
   {
   }
 

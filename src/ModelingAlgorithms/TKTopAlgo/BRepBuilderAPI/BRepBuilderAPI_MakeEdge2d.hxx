@@ -195,7 +195,7 @@ public:
                             const Standard_Real         p1,
                             const Standard_Real         p2);
 
-  Standard_EXPORT virtual Standard_Boolean IsDone() const override;
+  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
 
   //! Returns the error description when NotDone.
   Standard_EXPORT BRepBuilderAPI_EdgeError Error() const;

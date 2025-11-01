@@ -68,10 +68,10 @@ public:
   Standard_EXPORT Standard_Real Move() const;
 
   //! This redefined method returns a ShiftedToken object.
-  Standard_EXPORT virtual Handle(Units_Token) Token() const override;
+  Standard_EXPORT virtual Handle(Units_Token) Token() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Dump(const Standard_Integer ashift,
-                                    const Standard_Integer alevel) const override;
+                                    const Standard_Integer alevel) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Units_ShiftedUnit, Units_Unit)
 

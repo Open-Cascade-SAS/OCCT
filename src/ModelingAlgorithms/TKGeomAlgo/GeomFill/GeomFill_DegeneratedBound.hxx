@@ -42,9 +42,9 @@ public:
                                             const Standard_Real Tol3d,
                                             const Standard_Real Tolang);
 
-  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const override;
+  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const Standard_OVERRIDE;
 
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const override;
+  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const Standard_OVERRIDE;
 
   Standard_EXPORT void Reparametrize(const Standard_Real    First,
                                      const Standard_Real    Last,
@@ -52,11 +52,11 @@ public:
                                      const Standard_Boolean HasDL,
                                      const Standard_Real    DF,
                                      const Standard_Real    DL,
-                                     const Standard_Boolean Rev) override;
+                                     const Standard_Boolean Rev) Standard_OVERRIDE;
 
-  Standard_EXPORT void Bounds(Standard_Real& First, Standard_Real& Last) const override;
+  Standard_EXPORT void Bounds(Standard_Real& First, Standard_Real& Last) const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Boolean IsDegenerated() const override;
+  Standard_EXPORT Standard_Boolean IsDegenerated() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_DegeneratedBound, GeomFill_Boundary)
 

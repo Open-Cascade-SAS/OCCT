@@ -118,7 +118,7 @@ public:
   constexpr void Reverse() noexcept { vdir.Reverse(); }
 
   //! Computes a new axis placement with a direction opposite to the direction of <me>.
-  [[nodiscard]] constexpr gp_Ax2d Reversed() const noexcept
+  Standard_NODISCARD constexpr gp_Ax2d Reversed() const noexcept
   {
     gp_Ax2d aTemp = *this;
     aTemp.Reverse();
@@ -130,14 +130,14 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point P which is the
   //! center of the symmetry.
-  [[nodiscard]] Standard_EXPORT gp_Ax2d Mirrored(const gp_Pnt2d& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax2d Mirrored(const gp_Pnt2d& P) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& A);
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
   //! is the axis of the symmetry.
-  [[nodiscard]] Standard_EXPORT gp_Ax2d Mirrored(const gp_Ax2d& A) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax2d Mirrored(const gp_Ax2d& A) const;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
   {
@@ -147,7 +147,7 @@ public:
 
   //! Rotates an axis placement. <theP> is the center of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  [[nodiscard]] gp_Ax2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
+  Standard_NODISCARD gp_Ax2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
   {
     gp_Ax2d anA = *this;
     anA.Rotate(theP, theAng);
@@ -159,7 +159,7 @@ public:
   //! Applies a scaling transformation on the axis placement.
   //! The "Location" point of the axisplacement is modified.
   //! The "Direction" is reversed if the scale is negative.
-  [[nodiscard]] gp_Ax2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
+  Standard_NODISCARD gp_Ax2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
   {
     gp_Ax2d anA = *this;
     anA.Scale(theP, theS);
@@ -173,7 +173,7 @@ public:
   }
 
   //! Transforms an axis placement with a Trsf.
-  [[nodiscard]] gp_Ax2d Transformed(const gp_Trsf2d& theT) const
+  Standard_NODISCARD gp_Ax2d Transformed(const gp_Trsf2d& theT) const
   {
     gp_Ax2d anA = *this;
     anA.Transform(theT);
@@ -184,7 +184,7 @@ public:
 
   //! Translates an axis placement in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  [[nodiscard]] constexpr gp_Ax2d Translated(const gp_Vec2d& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Ax2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Ax2d anA = *this;
     (anA.loc).Translate(theV);
@@ -197,7 +197,7 @@ public:
   }
 
   //! Translates an axis placement from the point theP1 to the point theP2.
-  [[nodiscard]] gp_Ax2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD gp_Ax2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
   {
     gp_Ax2d anA = *this;
     (anA.loc).Translate(gp_Vec2d(theP1, theP2));

@@ -67,7 +67,7 @@ public:
                                       const Standard_Boolean      ExclusionFlagOn = Standard_True);
 
   Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anObj) const
-    override;
+    Standard_OVERRIDE;
 
   //! Adds the type TypeToExclude to the list of types.
   Standard_EXPORT Standard_Boolean Add(const AIS_KindOfInteractive TypeToExclude);

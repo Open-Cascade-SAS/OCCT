@@ -50,13 +50,13 @@ class PrsDim_Relation : public AIS_InteractiveObject
 public:
   //! Allows you to provide settings for the color theColor
   //! of the lines representing the relation between the two shapes.
-  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Allows you to remove settings for the color of the
   //! lines representing the relation between the two shapes.
-  Standard_EXPORT void UnsetColor() override;
+  Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
 
-  virtual AIS_KindOfInteractive Type() const override
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
   {
     return AIS_KindOfInteractive_Relation;
   }
@@ -173,7 +173,7 @@ public:
   //! aWidth   : Real                 from Standard = 2;
   //! aProjTOL : TypeOfLine           from Aspect   = Aspect_TOL_DASH;
   //! aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT)
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
   {
     return theMode == 0;
   }

@@ -39,19 +39,19 @@ public:
   //! Param on the parametrised curve.
   //! Value always returns True.
   Standard_EXPORT Standard_Boolean Value(const Standard_Real Param,
-                                         Standard_Real&      F) override;
+                                         Standard_Real&      F) Standard_OVERRIDE;
 
   //! Computes the derivative of the previous function at
   //! parameter Param.
   //! Derivative always returns True.
   Standard_EXPORT Standard_Boolean Derivative(const Standard_Real Param,
-                                              Standard_Real&      D) override;
+                                              Standard_Real&      D) Standard_OVERRIDE;
 
   //! Computes the value and the derivative of the function.
   //! returns True.
   Standard_EXPORT Standard_Boolean Values(const Standard_Real Param,
                                           Standard_Real&      F,
-                                          Standard_Real&      D) override;
+                                          Standard_Real&      D) Standard_OVERRIDE;
 
 protected:
 private:

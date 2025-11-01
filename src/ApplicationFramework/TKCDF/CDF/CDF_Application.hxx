@@ -212,7 +212,7 @@ private:
     const Handle(CDM_MetaData)&      aMetaData,
     const Standard_Boolean           UseStorageConfiguration,
     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
-    const Message_ProgressRange&     theRange  = Message_ProgressRange()) override;
+    const Message_ProgressRange&     theRange  = Message_ProgressRange()) Standard_OVERRIDE;
 
   Standard_EXPORT Handle(CDM_Document) Retrieve(
     const Handle(CDM_MetaData)&      aMetaData,
@@ -222,7 +222,7 @@ private:
     const Message_ProgressRange&     theRange  = Message_ProgressRange());
 
   Standard_EXPORT Standard_Integer DocumentVersion(const Handle(CDM_MetaData)& theMetaData)
-    override;
+    Standard_OVERRIDE;
 
   Standard_EXPORT CDF_TypeOfActivation TypeOfActivation(const Handle(CDM_MetaData)& aMetaData);
 
