@@ -57,7 +57,7 @@ public:
   //! @tparam OtherElement_t the element type of the other 4 x 4 matrix theOtherVec4
   //! @param theOtherMat4 the 4 x 4 matrix that needs to be converted
   template <typename OtherElement_t>
-  explicit NCollection_Mat4(const NCollection_Mat4<OtherElement_t>& theOtherMat4)
+  explicit constexpr NCollection_Mat4(const NCollection_Mat4<OtherElement_t>& theOtherMat4) noexcept
   {
     ConvertFrom(theOtherMat4);
   }
@@ -106,7 +106,7 @@ public:
   //! Get vector of elements for the specified row.
   //! @param[in] theRow  the row to access.
   //! @return vector of elements.
-  NCollection_Vec4<Element_t> GetRow(const size_t theRow) const
+  constexpr NCollection_Vec4<Element_t> GetRow(const size_t theRow) const noexcept
   {
     return NCollection_Vec4<Element_t>(GetValue(theRow, 0),
                                        GetValue(theRow, 1),
@@ -117,7 +117,7 @@ public:
   //! Change first 3 row values by the passed vector.
   //! @param[in] theRow  the row to change.
   //! @param[in] theVec  the vector of values.
-  void SetRow(const size_t theRow, const NCollection_Vec3<Element_t>& theVec)
+  constexpr void SetRow(const size_t theRow, const NCollection_Vec3<Element_t>& theVec) noexcept
   {
     SetValue(theRow, 0, theVec.x());
     SetValue(theRow, 1, theVec.y());
@@ -127,7 +127,7 @@ public:
   //! Set row values by the passed 4 element vector.
   //! @param[in] theRow  the row to change.
   //! @param[in] theVec  the vector of values.
-  void SetRow(const size_t theRow, const NCollection_Vec4<Element_t>& theVec)
+  constexpr void SetRow(const size_t theRow, const NCollection_Vec4<Element_t>& theVec) noexcept
   {
     SetValue(theRow, 0, theVec.x());
     SetValue(theRow, 1, theVec.y());
@@ -138,7 +138,7 @@ public:
   //! Get vector of elements for the specified column.
   //! @param[in] theCol  the column to access.
   //! @return vector of elements.
-  NCollection_Vec4<Element_t> GetColumn(const size_t theCol) const
+  constexpr NCollection_Vec4<Element_t> GetColumn(const size_t theCol) const noexcept
   {
     return NCollection_Vec4<Element_t>(GetValue(0, theCol),
                                        GetValue(1, theCol),
@@ -149,7 +149,7 @@ public:
   //! Change first 3 column values by the passed vector.
   //! @param[in] theCol  the column to change.
   //! @param[in] theVec  the vector of values.
-  void SetColumn(const size_t theCol, const NCollection_Vec3<Element_t>& theVec)
+  constexpr void SetColumn(const size_t theCol, const NCollection_Vec3<Element_t>& theVec) noexcept
   {
     SetValue(0, theCol, theVec.x());
     SetValue(1, theCol, theVec.y());
@@ -159,7 +159,7 @@ public:
   //! Set column values by the passed 4 element vector.
   //! @param[in] theCol  the column to change.
   //! @param[in] theVec  the vector of values.
-  void SetColumn(const size_t theCol, const NCollection_Vec4<Element_t>& theVec)
+  constexpr void SetColumn(const size_t theCol, const NCollection_Vec4<Element_t>& theVec) noexcept
   {
     SetValue(0, theCol, theVec.x());
     SetValue(1, theCol, theVec.y());
@@ -169,7 +169,7 @@ public:
 
   //! Get vector of diagonal elements.
   //! @return vector of diagonal elements.
-  NCollection_Vec4<Element_t> GetDiagonal() const
+  constexpr NCollection_Vec4<Element_t> GetDiagonal() const noexcept
   {
     return NCollection_Vec4<Element_t>(GetValue(0, 0),
                                        GetValue(1, 1),
@@ -179,7 +179,7 @@ public:
 
   //! Change first 3 elements of the diagonal matrix.
   //! @param theVec the vector of values.
-  void SetDiagonal(const NCollection_Vec3<Element_t>& theVec)
+  constexpr void SetDiagonal(const NCollection_Vec3<Element_t>& theVec) noexcept
   {
     SetValue(0, 0, theVec.x());
     SetValue(1, 1, theVec.y());
@@ -188,7 +188,7 @@ public:
 
   //! Set diagonal elements of the matrix by the passed vector.
   //! @param[in] theVec  the vector of values.
-  void SetDiagonal(const NCollection_Vec4<Element_t>& theVec)
+  constexpr void SetDiagonal(const NCollection_Vec4<Element_t>& theVec) noexcept
   {
     SetValue(0, 0, theVec.x());
     SetValue(1, 1, theVec.y());
@@ -197,7 +197,7 @@ public:
   }
 
   //! Return 3x3 sub-matrix.
-  NCollection_Mat3<Element_t> GetMat3() const
+  constexpr NCollection_Mat3<Element_t> GetMat3() const noexcept
   {
     NCollection_Mat3<Element_t> aMat;
     aMat.SetColumn(0, GetColumn(0).xyz());
@@ -216,9 +216,16 @@ public:
   }
 
   //! Checks the matrix for zero (without tolerance).
-  bool IsZero() const noexcept
+  constexpr bool IsZero() const noexcept
   {
-    return std::memcmp(this, MyZeroArray, sizeof(NCollection_Mat4)) == 0;
+    for (int i = 0; i < 16; ++i)
+    {
+      if (myMat[i] != MyZeroArray[i])
+      {
+        return false;
+      }
+    }
+    return true;
   }
 
   //! Initialize the identity matrix.
@@ -231,22 +238,42 @@ public:
   }
 
   //! Checks the matrix for identity (without tolerance).
-  bool IsIdentity() const noexcept
+  constexpr bool IsIdentity() const noexcept
   {
-    return std::memcmp(this, MyIdentityArray, sizeof(NCollection_Mat4)) == 0;
+    for (int i = 0; i < 16; ++i)
+    {
+      if (myMat[i] != MyIdentityArray[i])
+      {
+        return false;
+      }
+    }
+    return true;
   }
 
   //! Check this matrix for equality with another matrix (without tolerance!).
-  bool IsEqual(const NCollection_Mat4& theOther) const noexcept
+  constexpr bool IsEqual(const NCollection_Mat4& theOther) const noexcept
   {
-    return std::memcmp(this, &theOther, sizeof(NCollection_Mat4)) == 0;
+    for (int i = 0; i < 16; ++i)
+    {
+      if (myMat[i] != theOther.myMat[i])
+      {
+        return false;
+      }
+    }
+    return true;
   }
 
   //! Check this matrix for equality with another matrix (without tolerance!).
-  bool operator==(const NCollection_Mat4& theOther) const noexcept { return IsEqual(theOther); }
+  constexpr bool operator==(const NCollection_Mat4& theOther) const noexcept
+  {
+    return IsEqual(theOther);
+  }
 
   //! Check this matrix for non-equality with another matrix (without tolerance!).
-  bool operator!=(const NCollection_Mat4& theOther) const noexcept { return !IsEqual(theOther); }
+  constexpr bool operator!=(const NCollection_Mat4& theOther) const noexcept
+  {
+    return !IsEqual(theOther);
+  }
 
   //! Raw access to the data (for OpenGL exchange);
   //! the data is returned in column-major order.
@@ -256,7 +283,8 @@ public:
 
   //! Multiply by the vector (M * V).
   //! @param[in] theVec  the vector to multiply.
-  NCollection_Vec4<Element_t> operator*(const NCollection_Vec4<Element_t>& theVec) const
+  constexpr NCollection_Vec4<Element_t> operator*(
+    const NCollection_Vec4<Element_t>& theVec) const noexcept
   {
     return NCollection_Vec4<Element_t>(
       GetValue(0, 0) * theVec.x() + GetValue(0, 1) * theVec.y() + GetValue(0, 2) * theVec.z()
@@ -272,7 +300,8 @@ public:
   //! Compute matrix multiplication product: A * B.
   //! @param[in] theMatA  the matrix "A".
   //! @param[in] theMatB  the matrix "B".
-  static NCollection_Mat4 Multiply(const NCollection_Mat4& theMatA, const NCollection_Mat4& theMatB)
+  static constexpr NCollection_Mat4 Multiply(const NCollection_Mat4& theMatA,
+                                             const NCollection_Mat4& theMatB) noexcept
   {
     NCollection_Mat4 aMatRes;
 
@@ -292,11 +321,14 @@ public:
 
   //! Compute matrix multiplication.
   //! @param[in] theMat  the matrix to multiply.
-  void Multiply(const NCollection_Mat4& theMat) { *this = Multiply(*this, theMat); }
+  constexpr void Multiply(const NCollection_Mat4& theMat) noexcept
+  {
+    *this = Multiply(*this, theMat);
+  }
 
   //! Multiply by the another matrix.
   //! @param[in] theMat  the other matrix.
-  NCollection_Mat4& operator*=(const NCollection_Mat4& theMat)
+  constexpr NCollection_Mat4& operator*=(const NCollection_Mat4& theMat) noexcept
   {
     Multiply(theMat);
     return *this;
@@ -305,7 +337,8 @@ public:
   //! Compute matrix multiplication product.
   //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
-  Standard_NODISCARD NCollection_Mat4 operator*(const NCollection_Mat4& theMat) const
+  Standard_NODISCARD constexpr NCollection_Mat4 operator*(
+    const NCollection_Mat4& theMat) const noexcept
   {
     return Multiplied(theMat);
   }
@@ -313,7 +346,8 @@ public:
   //! Compute matrix multiplication product.
   //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
-  Standard_NODISCARD NCollection_Mat4 Multiplied(const NCollection_Mat4& theMat) const
+  Standard_NODISCARD constexpr NCollection_Mat4 Multiplied(
+    const NCollection_Mat4& theMat) const noexcept
   {
     NCollection_Mat4 aTempMat(*this);
     aTempMat *= theMat;
@@ -322,7 +356,7 @@ public:
 
   //! Compute per-component multiplication.
   //! @param[in] theFactor  the scale factor.
-  void Multiply(const Element_t theFactor)
+  constexpr void Multiply(const Element_t theFactor) noexcept
   {
     for (size_t i = 0; i < 16; ++i)
     {
@@ -332,7 +366,7 @@ public:
 
   //! Compute per-element multiplication.
   //! @param[in] theFactor  the scale factor.
-  NCollection_Mat4& operator*=(const Element_t theFactor)
+  constexpr NCollection_Mat4& operator*=(const Element_t theFactor) noexcept
   {
     Multiply(theFactor);
     return *this;
@@ -341,7 +375,7 @@ public:
   //! Compute per-element multiplication.
   //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
-  Standard_NODISCARD NCollection_Mat4 operator*(const Element_t theFactor) const
+  Standard_NODISCARD constexpr NCollection_Mat4 operator*(const Element_t theFactor) const noexcept
   {
     return Multiplied(theFactor);
   }
@@ -349,7 +383,7 @@ public:
   //! Compute per-element multiplication.
   //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
-  Standard_NODISCARD NCollection_Mat4 Multiplied(const Element_t theFactor) const
+  Standard_NODISCARD constexpr NCollection_Mat4 Multiplied(const Element_t theFactor) const noexcept
   {
     NCollection_Mat4 aTempMat(*this);
     aTempMat *= theFactor;
@@ -358,7 +392,7 @@ public:
 
   //! Compute per-component division.
   //! @param[in] theFactor  the scale factor.
-  void Divide(const Element_t theFactor)
+  constexpr void Divide(const Element_t theFactor)
   {
     for (size_t i = 0; i < 16; ++i)
     {
@@ -368,14 +402,14 @@ public:
 
   //! Per-component division.
   //! @param[in] theScalar  the scale factor.
-  NCollection_Mat4& operator/=(const Element_t theScalar)
+  constexpr NCollection_Mat4& operator/=(const Element_t theScalar)
   {
     Divide(theScalar);
     return *this;
   }
 
   //! Divides all the coefficients of the matrix by scalar.
-  Standard_NODISCARD NCollection_Mat4 Divided(const Element_t theScalar) const
+  Standard_NODISCARD constexpr NCollection_Mat4 Divided(const Element_t theScalar) const
   {
     NCollection_Mat4 aTempMat(*this);
     aTempMat /= theScalar;
@@ -383,13 +417,13 @@ public:
   }
 
   //! Divides all the coefficients of the matrix by scalar.
-  Standard_NODISCARD NCollection_Mat4 operator/(const Element_t theScalar) const
+  Standard_NODISCARD constexpr NCollection_Mat4 operator/(const Element_t theScalar) const
   {
     return Divided(theScalar);
   }
 
   //! Per-component addition of another matrix.
-  void Add(const NCollection_Mat4& theMat)
+  constexpr void Add(const NCollection_Mat4& theMat) noexcept
   {
     for (size_t i = 0; i < 16; ++i)
     {
@@ -398,14 +432,14 @@ public:
   }
 
   //! Per-component addition of another matrix.
-  NCollection_Mat4& operator+=(const NCollection_Mat4& theMat)
+  constexpr NCollection_Mat4& operator+=(const NCollection_Mat4& theMat) noexcept
   {
     Add(theMat);
     return *this;
   }
 
   //! Per-component subtraction of another matrix.
-  void Subtract(const NCollection_Mat4& theMat)
+  constexpr void Subtract(const NCollection_Mat4& theMat) noexcept
   {
     for (size_t i = 0; i < 16; ++i)
     {
@@ -414,14 +448,14 @@ public:
   }
 
   //! Per-component subtraction of another matrix.
-  NCollection_Mat4& operator-=(const NCollection_Mat4& theMat)
+  constexpr NCollection_Mat4& operator-=(const NCollection_Mat4& theMat) noexcept
   {
     Subtract(theMat);
     return *this;
   }
 
   //! Per-component addition of another matrix.
-  Standard_NODISCARD NCollection_Mat4 Added(const NCollection_Mat4& theMat) const
+  Standard_NODISCARD constexpr NCollection_Mat4 Added(const NCollection_Mat4& theMat) const noexcept
   {
     NCollection_Mat4 aMat(*this);
     aMat += theMat;
@@ -429,13 +463,15 @@ public:
   }
 
   //! Per-component addition of another matrix.
-  Standard_NODISCARD NCollection_Mat4 operator+(const NCollection_Mat4& theMat) const
+  Standard_NODISCARD constexpr NCollection_Mat4 operator+(
+    const NCollection_Mat4& theMat) const noexcept
   {
     return Added(theMat);
   }
 
   //! Per-component subtraction of another matrix.
-  Standard_NODISCARD NCollection_Mat4 Subtracted(const NCollection_Mat4& theMat) const
+  Standard_NODISCARD constexpr NCollection_Mat4 Subtracted(
+    const NCollection_Mat4& theMat) const noexcept
   {
     NCollection_Mat4 aMat(*this);
     aMat -= theMat;
@@ -443,13 +479,14 @@ public:
   }
 
   //! Per-component subtraction of another matrix.
-  Standard_NODISCARD NCollection_Mat4 operator-(const NCollection_Mat4& theMat) const
+  Standard_NODISCARD constexpr NCollection_Mat4 operator-(
+    const NCollection_Mat4& theMat) const noexcept
   {
     return Subtracted(theMat);
   }
 
   //! Returns matrix with all components negated.
-  Standard_NODISCARD NCollection_Mat4 Negated() const
+  Standard_NODISCARD constexpr NCollection_Mat4 Negated() const noexcept
   {
     NCollection_Mat4 aMat;
     for (size_t i = 0; i < 16; ++i)
@@ -460,11 +497,11 @@ public:
   }
 
   //! Returns matrix with all components negated.
-  Standard_NODISCARD NCollection_Mat4 operator-() const { return Negated(); }
+  Standard_NODISCARD constexpr NCollection_Mat4 operator-() const noexcept { return Negated(); }
 
   //! Translate the matrix on the passed vector.
   //! @param[in] theVec  the translation vector.
-  void Translate(const NCollection_Vec3<Element_t>& theVec)
+  constexpr void Translate(const NCollection_Vec3<Element_t>& theVec) noexcept
   {
     NCollection_Mat4 aTempMat;
     aTempMat.SetColumn(3, theVec);
@@ -473,7 +510,7 @@ public:
 
   //! Transpose the matrix.
   //! @return transposed copy of the matrix.
-  Standard_NODISCARD NCollection_Mat4 Transposed() const
+  Standard_NODISCARD constexpr NCollection_Mat4 Transposed() const noexcept
   {
     NCollection_Mat4 aTempMat;
     aTempMat.SetRow(0, GetColumn(0));
@@ -484,7 +521,7 @@ public:
   }
 
   //! Transpose the matrix.
-  void Transpose() { *this = Transposed(); }
+  constexpr void Transpose() noexcept { *this = Transposed(); }
 
   //! Compute inverted matrix.
   //! @param[out] theOutMx  the inverted matrix
@@ -581,7 +618,7 @@ public:
   }
 
   //! Return determinant of the 3x3 sub-matrix.
-  Element_t DeterminantMat3() const
+  constexpr Element_t DeterminantMat3() const noexcept
   {
     return (GetValue(0, 0) * GetValue(1, 1) * GetValue(2, 2)
             + GetValue(0, 1) * GetValue(1, 2) * GetValue(2, 0)
@@ -592,7 +629,7 @@ public:
   }
 
   //! Return adjoint (adjugate matrix, e.g. conjugate transpose).
-  Standard_NODISCARD NCollection_Mat4<Element_t> Adjoint() const
+  Standard_NODISCARD constexpr NCollection_Mat4<Element_t> Adjoint() const noexcept
   {
     NCollection_Mat4<Element_t> aMat;
     aMat.SetRow(0, crossVec4(GetRow(1), GetRow(2), GetRow(3)));
@@ -604,7 +641,7 @@ public:
 
   //! Take values from NCollection_Mat4 with a different element type with type conversion.
   template <typename Other_t>
-  void ConvertFrom(const NCollection_Mat4<Other_t>& theFrom)
+  constexpr void ConvertFrom(const NCollection_Mat4<Other_t>& theFrom) noexcept
   {
     for (int anIdx = 0; anIdx < 16; ++anIdx)
     {
@@ -614,7 +651,7 @@ public:
 
   //! Take values from NCollection_Mat4 with a different element type with type conversion.
   template <typename Other_t>
-  void Convert(const NCollection_Mat4<Other_t>& theFrom)
+  constexpr void Convert(const NCollection_Mat4<Other_t>& theFrom) noexcept
   {
     ConvertFrom(theFrom);
   }
@@ -657,9 +694,10 @@ public:
 
 private:
   //! Cross-product has no direct meaning in 4D space - provided for local usage.
-  static NCollection_Vec4<Element_t> crossVec4(const NCollection_Vec4<Element_t>& theA,
-                                               const NCollection_Vec4<Element_t>& theB,
-                                               const NCollection_Vec4<Element_t>& theC)
+  static constexpr NCollection_Vec4<Element_t> crossVec4(
+    const NCollection_Vec4<Element_t>& theA,
+    const NCollection_Vec4<Element_t>& theB,
+    const NCollection_Vec4<Element_t>& theC) noexcept
   {
     const Element_t aD1 = (theB.z() * theC.w()) - (theB.w() * theC.z());
     const Element_t aD2 = (theB.y() * theC.w()) - (theB.w() * theC.y());
