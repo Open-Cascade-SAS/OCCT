@@ -45,7 +45,7 @@ public:
 
 public:
   // Overrides TDF_Attribute virtuals
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 };
 
 DEFINE_STANDARD_HANDLE(XCAFDoc_NoteBalloon, XCAFDoc_NoteComment)

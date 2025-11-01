@@ -33,20 +33,20 @@ public:
                                                           const Handle(Adaptor3d_Curve)&   C);
 
   Standard_EXPORT Standard_Boolean IsSolution(const math_Vector&  Sol,
-                                              const Standard_Real Tol) Standard_OVERRIDE;
+                                              const Standard_Real Tol) override;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F) override;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X,
-                                               math_Matrix&       D) Standard_OVERRIDE;
+                                               math_Matrix&       D) override;
 
 protected:
 private:

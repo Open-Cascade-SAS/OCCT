@@ -183,11 +183,11 @@ public:
   //! to be called when reading this attribute from file
   Standard_EXPORT void Init() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! To init this derived attribute after the attribute restore using the base restore-methods
   Standard_EXPORT Standard_Boolean AfterRetrieval(const Standard_Boolean forceIt = Standard_False)
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_DocumentTool, TDataStd_GenericEmpty)
 };

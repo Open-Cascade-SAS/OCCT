@@ -99,7 +99,7 @@ public:
   Standard_EXPORT const TColStd_Array1OfInteger& Multiplicities() const;
 
   //! returns the degree of the curve(s).
-  Standard_EXPORT virtual Standard_Integer Degree() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Degree() const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
@@ -107,7 +107,7 @@ public:
   //! An exception is raised if the curve dimension is 2d.
   Standard_EXPORT virtual void Value(const Standard_Integer CuIndex,
                                      const Standard_Real    U,
-                                     gp_Pnt&                Pt) const Standard_OVERRIDE;
+                                     gp_Pnt&                Pt) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
@@ -115,7 +115,7 @@ public:
   //! An exception is raised if the curve dimension is 3d.
   Standard_EXPORT virtual void Value(const Standard_Integer CuIndex,
                                      const Standard_Real    U,
-                                     gp_Pnt2d&              Pt) const Standard_OVERRIDE;
+                                     gp_Pnt2d&              Pt) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
@@ -124,7 +124,7 @@ public:
   Standard_EXPORT virtual void D1(const Standard_Integer CuIndex,
                                   const Standard_Real    U,
                                   gp_Pnt&                Pt,
-                                  gp_Vec&                V1) const Standard_OVERRIDE;
+                                  gp_Vec&                V1) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
@@ -133,7 +133,7 @@ public:
   Standard_EXPORT virtual void D1(const Standard_Integer CuIndex,
                                   const Standard_Real    U,
                                   gp_Pnt2d&              Pt,
-                                  gp_Vec2d&              V1) const Standard_OVERRIDE;
+                                  gp_Vec2d&              V1) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
@@ -143,7 +143,7 @@ public:
                                   const Standard_Real    U,
                                   gp_Pnt&                Pt,
                                   gp_Vec&                V1,
-                                  gp_Vec&                V2) const Standard_OVERRIDE;
+                                  gp_Vec&                V2) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
@@ -153,12 +153,12 @@ public:
                                   const Standard_Real    U,
                                   gp_Pnt2d&              Pt,
                                   gp_Vec2d&              V1,
-                                  gp_Vec2d&              V2) const Standard_OVERRIDE;
+                                  gp_Vec2d&              V2) const override;
 
   //! Prints on the stream o information on the current
   //! state of the object.
   //! Is used to redefine the operator <<.
-  Standard_EXPORT virtual void Dump(Standard_OStream& o) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& o) const override;
 
 protected:
 private:

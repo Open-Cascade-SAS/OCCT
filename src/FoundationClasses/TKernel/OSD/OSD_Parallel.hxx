@@ -91,14 +91,14 @@ private:
     {
     }
 
-    virtual bool IsEqual(const IteratorInterface& theOther) const Standard_OVERRIDE
+    virtual bool IsEqual(const IteratorInterface& theOther) const override
     {
       return myValue == dynamic_cast<const IteratorWrapper<Type>&>(theOther).myValue;
     }
 
-    virtual void Increment() Standard_OVERRIDE { ++myValue; }
+    virtual void Increment() override { ++myValue; }
 
-    virtual IteratorInterface* Clone() const Standard_OVERRIDE
+    virtual IteratorInterface* Clone() const override
     {
       return new IteratorWrapper<Type>(myValue);
     }
@@ -208,7 +208,7 @@ private:
     {
     }
 
-    virtual void operator()(IteratorInterface* theIterator) const Standard_OVERRIDE
+    virtual void operator()(IteratorInterface* theIterator) const override
     {
       const Iterator& anIt = DownCast<Iterator>(theIterator);
       myFunctor(*anIt);
@@ -230,7 +230,7 @@ private:
     {
     }
 
-    virtual void operator()(IteratorInterface* theIterator) const Standard_OVERRIDE
+    virtual void operator()(IteratorInterface* theIterator) const override
     {
       Standard_Integer anIndex = DownCast<Standard_Integer>(theIterator);
       myFunctor(anIndex);

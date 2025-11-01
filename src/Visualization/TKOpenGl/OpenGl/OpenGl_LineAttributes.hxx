@@ -41,10 +41,10 @@ public:
   Standard_EXPORT virtual ~OpenGl_LineAttributes();
 
   //! Release GL resources.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) override;
 
   //! Returns estimated GPU memory usage - not implemented.
-  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
+  virtual Standard_Size EstimatedDataSize() const override { return 0; }
 
   //! Sets type of the hatch.
   Standard_EXPORT bool SetTypeOfHatch(const OpenGl_Context*               theGlCtx,

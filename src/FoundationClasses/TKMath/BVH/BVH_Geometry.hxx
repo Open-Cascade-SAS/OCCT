@@ -66,7 +66,7 @@ public:
   using BVH_ObjectSet<T, N>::Box;
 
   //! Returns AABB of the whole geometry.
-  virtual BVH_Box<T, N> Box() const Standard_OVERRIDE
+  virtual BVH_Box<T, N> Box() const override
   {
     if (myIsDirty)
     {

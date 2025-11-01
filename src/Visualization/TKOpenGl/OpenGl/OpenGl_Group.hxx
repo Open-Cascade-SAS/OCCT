@@ -40,10 +40,10 @@ public:
   Standard_EXPORT OpenGl_Group(const Handle(Graphic3d_Structure)& theStruct);
 
   Standard_EXPORT virtual void Clear(const Standard_Boolean theToUpdateStructureMgr)
-    Standard_OVERRIDE;
+    override;
 
   //! Return line aspect.
-  virtual Handle(Graphic3d_Aspects) Aspects() const Standard_OVERRIDE
+  virtual Handle(Graphic3d_Aspects) Aspects() const override
   {
     return myAspects != NULL ? myAspects->Aspect() : Handle(Graphic3d_Aspects)();
   }
@@ -57,18 +57,18 @@ public:
 
   //! Update aspect.
   Standard_EXPORT virtual void SetGroupPrimitivesAspect(const Handle(Graphic3d_Aspects)& theAspect)
-    Standard_OVERRIDE;
+    override;
 
   //! Append aspect as an element.
   Standard_EXPORT virtual void SetPrimitivesAspect(const Handle(Graphic3d_Aspects)& theAspect)
-    Standard_OVERRIDE;
+    override;
 
   //! Update presentation aspects after their modification.
-  Standard_EXPORT virtual void SynchronizeAspects() Standard_OVERRIDE;
+  Standard_EXPORT virtual void SynchronizeAspects() override;
 
   //! Replace aspects specified in the replacement map.
   Standard_EXPORT virtual void ReplaceAspects(const Graphic3d_MapOfAspectsToAspects& theMap)
-    Standard_OVERRIDE;
+    override;
 
   //! Add primitive array element
   Standard_EXPORT virtual void AddPrimitiveArray(const Graphic3d_TypeOfPrimitiveArray theType,
@@ -76,18 +76,18 @@ public:
                                                  const Handle(Graphic3d_Buffer)&      theAttribs,
                                                  const Handle(Graphic3d_BoundBuffer)& theBounds,
                                                  const Standard_Boolean theToEvalMinMax)
-    Standard_OVERRIDE;
+    override;
 
   //! Adds a text for display
   Standard_EXPORT virtual void AddText(const Handle(Graphic3d_Text)& theTextParams,
-                                       const Standard_Boolean theToEvalMinMax) Standard_OVERRIDE;
+                                       const Standard_Boolean theToEvalMinMax) override;
   //! Add flipping element
   Standard_EXPORT virtual void SetFlippingOptions(const Standard_Boolean theIsEnabled,
-                                                  const gp_Ax2& theRefPlane) Standard_OVERRIDE;
+                                                  const gp_Ax2& theRefPlane) override;
 
   //! Add stencil test element
   Standard_EXPORT virtual void SetStencilTestOptions(const Standard_Boolean theIsEnabled)
-    Standard_OVERRIDE;
+    override;
 
 public:
   OpenGl_Structure* GlStruct() const
@@ -111,7 +111,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 protected:
   Standard_EXPORT virtual ~OpenGl_Group();

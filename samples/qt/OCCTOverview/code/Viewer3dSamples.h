@@ -44,7 +44,7 @@ public:
   void ClearExtra();
 
 protected:
-  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) Standard_OVERRIDE;
+  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) override;
 
 private:
 

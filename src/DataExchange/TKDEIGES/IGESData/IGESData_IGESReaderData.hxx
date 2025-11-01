@@ -123,12 +123,12 @@ public:
   Standard_EXPORT IGESData_IGESType DirType(const Standard_Integer num) const;
 
   //! Returns count of recorded Entities (i.e. size of Directory)
-  Standard_EXPORT virtual Standard_Integer NbEntities() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbEntities() const override;
 
   //! determines next suitable record from num; that is num+1 except
   //! for last one which gives 0
   Standard_EXPORT Standard_Integer
-    FindNextRecord(const Standard_Integer num) const Standard_OVERRIDE;
+    FindNextRecord(const Standard_Integer num) const override;
 
   //! determines reference numbers in EntityNumber fields (called by
   //! SetEntities from IGESReaderTool)

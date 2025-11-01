@@ -40,7 +40,7 @@ public:
                                            const TopoDS_Shape& EndShape);
 
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected:
 private:

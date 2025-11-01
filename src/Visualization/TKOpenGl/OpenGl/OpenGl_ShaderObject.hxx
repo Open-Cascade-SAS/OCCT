@@ -70,10 +70,10 @@ public:
   Standard_EXPORT Standard_Boolean Create(const Handle(OpenGl_Context)& theCtx);
 
   //! Destroys shader object.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Returns estimated GPU memory usage - not implemented.
-  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
+  virtual Standard_Size EstimatedDataSize() const override { return 0; }
 
   //! Returns type of shader object.
   GLenum Type() const { return myType; }

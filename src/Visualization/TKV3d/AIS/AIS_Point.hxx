@@ -33,10 +33,10 @@ public:
   Standard_EXPORT AIS_Point(const Handle(Geom_Point)& aComponent);
 
   //! Returns index 1, the default index for a point.
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 1; }
+  virtual Standard_Integer Signature() const override { return 1; }
 
   //! Indicates that a point is a datum.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
+  virtual AIS_KindOfInteractive Type() const override
   {
     return AIS_KindOfInteractive_Datum;
   }
@@ -49,13 +49,13 @@ public:
 
   //! Returns true if the display mode selected is valid for point datums.
   Standard_EXPORT Standard_Boolean
-    AcceptDisplayMode(const Standard_Integer aMode) const Standard_OVERRIDE;
+    AcceptDisplayMode(const Standard_Integer aMode) const override;
 
   //! Allows you to provide settings for the Color.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   //! Allows you to remove color settings.
-  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetColor() override;
 
   //! Allows you to provide settings for a marker. These include
   //! -   type of marker,
@@ -75,11 +75,11 @@ public:
 protected:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
 private:
   Standard_EXPORT void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                        const Standard_Integer             aMode) Standard_OVERRIDE;
+                                        const Standard_Integer             aMode) override;
 
   Standard_EXPORT void UpdatePointValues();
 

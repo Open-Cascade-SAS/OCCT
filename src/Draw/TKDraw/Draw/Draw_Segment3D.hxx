@@ -33,7 +33,7 @@ class Draw_Segment3D : public Draw_Drawable3D
 public:
   Standard_EXPORT Draw_Segment3D(const gp_Pnt& p1, const gp_Pnt& p2, const Draw_Color& col);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   Standard_EXPORT const gp_Pnt& First() const;
 

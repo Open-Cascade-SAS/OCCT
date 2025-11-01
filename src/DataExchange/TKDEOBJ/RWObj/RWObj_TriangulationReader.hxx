@@ -62,16 +62,16 @@ protected:
   //! Flush active sub-mesh.
   Standard_EXPORT virtual Standard_Boolean addMesh(const RWObj_SubMesh&      theMesh,
                                                    const RWObj_SubMeshReason theReason)
-    Standard_OVERRIDE;
+    override;
 
   //! Retrieve sub-mesh node position.
-  virtual gp_Pnt getNode(Standard_Integer theIndex) const Standard_OVERRIDE
+  virtual gp_Pnt getNode(Standard_Integer theIndex) const override
   {
     return myNodes.Value(theIndex - 1);
   }
 
   //! Add new node.
-  virtual Standard_Integer addNode(const gp_Pnt& thePnt) Standard_OVERRIDE
+  virtual Standard_Integer addNode(const gp_Pnt& thePnt) override
   {
     myNodes.Append(thePnt);
     return myNodes.Size();
@@ -79,14 +79,14 @@ protected:
 
   //! Ignore normal.
   virtual void setNodeNormal(const Standard_Integer theIndex,
-                             const Graphic3d_Vec3&  theNormal) Standard_OVERRIDE
+                             const Graphic3d_Vec3&  theNormal) override
   {
     myNormals.SetValue(theIndex - 1, theNormal);
   }
 
   //! Ignore texture coordinates.
   virtual void setNodeUV(const Standard_Integer theIndex,
-                         const Graphic3d_Vec2&  theUV) Standard_OVERRIDE
+                         const Graphic3d_Vec2&  theUV) override
   {
     myNodesUV.SetValue(theIndex - 1, theUV);
   }
@@ -95,7 +95,7 @@ protected:
   virtual void addElement(Standard_Integer theN1,
                           Standard_Integer theN2,
                           Standard_Integer theN3,
-                          Standard_Integer theN4) Standard_OVERRIDE
+                          Standard_Integer theN4) override
   {
     myTriangles.Append(Poly_Triangle(theN1, theN2, theN3));
     if (theN4 != -1)

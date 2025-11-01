@@ -38,23 +38,23 @@ public:
   //! Checks whether the cylinder overlaps current selecting volume
   Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the copy of this
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() override;
 
   //! Returns bounding box of the cylinder.
   //! If location transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
   //! Always returns Standard_False
-  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
+  virtual Standard_Boolean ToBuildBVH() const override { return Standard_False; }
 
   //! Returns the amount of points
-  virtual Standard_Integer NbSubElements() const Standard_OVERRIDE { return 1; }
+  virtual Standard_Integer NbSubElements() const override { return 1; }
 
   //! Returns center of the cylinder with transformation applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   //! Returns cylinder transformation
   const gp_Trsf& Transformation() const { return myTrsf; }

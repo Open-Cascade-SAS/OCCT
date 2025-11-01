@@ -34,17 +34,17 @@ public:
   Standard_EXPORT StepFEA_DegreeOfFreedomMember();
 
   //! Returns True if has name
-  Standard_EXPORT virtual Standard_Boolean HasName() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean HasName() const override;
 
   //! Returns set name
-  Standard_EXPORT virtual Standard_CString Name() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_CString Name() const override;
 
   //! Set name
-  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name) override;
 
   //! Tells if the name of a SelectMember matches a given one;
   Standard_EXPORT virtual Standard_Boolean Matches(const Standard_CString name) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_DegreeOfFreedomMember, StepData_SelectNamed)
 

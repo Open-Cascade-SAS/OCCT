@@ -319,7 +319,7 @@ public:
                             const Standard_Real         p2);
 
   //! Returns true if the edge is built.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDone() const override;
 
   //! Returns the construction status
   //! -   BRepBuilderAPI_EdgeDone if the edge is built, or

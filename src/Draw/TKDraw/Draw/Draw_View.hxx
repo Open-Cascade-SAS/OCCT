@@ -94,7 +94,7 @@ public: //! @name view API
                 Standard_Integer& theY1);
 
   //! Perform window exposing.
-  virtual void WExpose() Standard_OVERRIDE;
+  virtual void WExpose() override;
 
 protected:
   Standard_Integer myId;

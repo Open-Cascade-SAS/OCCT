@@ -121,23 +121,23 @@ public:
   //! Changes the orientation of this offset surface in the u
   //! parametric direction. The bounds of the surface
   //! are not changed but the given parametric direction is reversed.
-  Standard_EXPORT void UReverse() Standard_OVERRIDE;
+  Standard_EXPORT void UReverse() override;
 
   //! Computes the u  parameter on the modified
   //! surface, produced by reversing the u
   //! parametric direction of this offset surface, for any
   //! point of u parameter U  on this offset surface.
-  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const override;
 
   //! Changes the orientation of this offset surface in the v parametric direction. The bounds of
   //! the surface are not changed but the given parametric direction is reversed.
-  Standard_EXPORT void VReverse() Standard_OVERRIDE;
+  Standard_EXPORT void VReverse() override;
 
   //! Computes the  v parameter on the modified
   //! surface, produced by reversing the or v
   //! parametric direction of this offset surface, for any
   //! point of  v parameter V on this offset surface.
-  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const override;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of
   //! this offset surface.
@@ -147,7 +147,7 @@ public:
   Standard_EXPORT void Bounds(Standard_Real& U1,
                               Standard_Real& U2,
                               Standard_Real& V1,
-                              Standard_Real& V2) const Standard_OVERRIDE;
+                              Standard_Real& V2) const override;
 
   //! This method returns the continuity of the basis surface - 1.
   //! Continuity of the Offset surface :
@@ -164,21 +164,21 @@ public:
   //! any point this method gives the continuity of the offset
   //! surface otherwise the effective continuity can be lower than
   //! the continuity of the basis surface - 1.
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! This method answer True if the continuity of the basis surface
   //! is N + 1 in the U parametric direction. We suppose in this
   //! class that a unique normal is defined at any point on the basis
   //! surface.
   //! Raised if N <0.
-  Standard_EXPORT Standard_Boolean IsCNu(const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsCNu(const Standard_Integer N) const override;
 
   //! This method answer True if the continuity of the basis surface
   //! is N + 1 in the V parametric direction. We suppose in this
   //! class that a unique normal is defined at any point on the basis
   //! surface.
   //! Raised if N <0.
-  Standard_EXPORT Standard_Boolean IsCNv(const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsCNv(const Standard_Integer N) const override;
 
   //! Checks whether this offset surface is closed in the u
   //! parametric direction.
@@ -187,7 +187,7 @@ public:
   //! the distance between the points P(uFirst,v)
   //! and P(uLast,v) is less than or equal to
   //! gp::Resolution() for each value of the   parameter v.
-  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsUClosed() const override;
 
   //! Checks whether this offset surface is closed in the u
   //! or v parametric direction. Returns true if taking vFirst and vLast as the
@@ -195,32 +195,32 @@ public:
   //! distance between the points P(u,vFirst) and
   //! P(u,vLast) is less than or equal to
   //! gp::Resolution() for each value of the parameter u.
-  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsVClosed() const override;
 
   //! Returns true if this offset surface is periodic in the u
   //! parametric direction, i.e. if the basis
   //! surface of this offset surface is periodic in this direction.
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsUPeriodic() const override;
 
   //! Returns the period of this offset surface in the u
   //! parametric direction respectively, i.e. the period of the
   //! basis surface of this offset surface in this parametric direction.
   //! raises if the surface is not uperiodic.
-  Standard_EXPORT virtual Standard_Real UPeriod() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real UPeriod() const override;
 
   //! Returns true if this offset surface is periodic in the v
   //! parametric direction, i.e. if the basis
   //! surface of this offset surface is periodic in this direction.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsVPeriodic() const override;
 
   //! Returns the period of this offset surface in the v
   //! parametric direction respectively, i.e. the period of the
   //! basis surface of this offset surface in this parametric direction.
   //! raises if the surface is not vperiodic.
-  Standard_EXPORT virtual Standard_Real VPeriod() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real VPeriod() const override;
 
   //! Computes the U isoparametric curve.
-  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const override;
 
   //! Computes the V isoparametric curve.
   //!
@@ -231,7 +231,7 @@ public:
   //! not defined on the basis surface for the parametric value (U,V).
   //! No check is done at the creation time and we suppose
   //! in this package that the offset surface can be defined at any point.
-  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const override;
 
   //! @code
   //!   P (U, V) = Pbasis + Offset * Ndir
@@ -256,14 +256,14 @@ public:
   //! normal direction is greater than the second order.
   Standard_EXPORT void D0(const Standard_Real U,
                           const Standard_Real V,
-                          gp_Pnt&             P) const Standard_OVERRIDE;
+                          gp_Pnt&             P) const override;
 
   //! Raised if the continuity of the basis surface is not C2.
   Standard_EXPORT void D1(const Standard_Real U,
                           const Standard_Real V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
-                          gp_Vec&             D1V) const Standard_OVERRIDE;
+                          gp_Vec&             D1V) const override;
 
   //! Raised if the continuity of the basis surface is not C3.
   Standard_EXPORT void D2(const Standard_Real U,
@@ -273,7 +273,7 @@ public:
                           gp_Vec&             D1V,
                           gp_Vec&             D2U,
                           gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const Standard_OVERRIDE;
+                          gp_Vec&             D2UV) const override;
 
   //! Raised if the continuity of the basis surface is not C4.
   Standard_EXPORT void D3(const Standard_Real U,
@@ -287,7 +287,7 @@ public:
                           gp_Vec&             D3U,
                           gp_Vec&             D3V,
                           gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const Standard_OVERRIDE;
+                          gp_Vec&             D3UVV) const override;
 
   //! Computes the derivative of order Nu in the direction u and Nv in the direction v.
   //!
@@ -307,11 +307,11 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Real    V,
                             const Standard_Integer Nu,
-                            const Standard_Integer Nv) const Standard_OVERRIDE;
+                            const Standard_Integer Nv) const override;
 
   //! Applies the transformation T to this offset surface.
   //! Note: the basis surface is also modified.
-  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
@@ -329,7 +329,7 @@ public:
   //! This method calls the basis surface method.
   Standard_EXPORT virtual void TransformParameters(Standard_Real& U,
                                                    Standard_Real& V,
-                                                   const gp_Trsf& T) const Standard_OVERRIDE;
+                                                   const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
@@ -346,10 +346,10 @@ public:
   //! @endcode
   //! This method calls the basis surface method.
   Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
-    Standard_OVERRIDE;
+    override;
 
   //! Creates a new object which is a copy of this offset surface.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
 
   //! returns an equivalent surface of the offset surface
   //! when the basis surface is a canonic surface or a
@@ -383,7 +383,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetSurface, Geom_Surface)
 

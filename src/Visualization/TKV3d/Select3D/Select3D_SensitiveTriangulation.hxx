@@ -75,54 +75,54 @@ public:
 
 public:
   //! Returns the amount of nodes in triangulation
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const override;
 
-  Standard_EXPORT Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT Handle(Select3D_SensitiveEntity) GetConnected() override;
 
   const Handle(Poly_Triangulation)& Triangulation() const { return myTriangul; }
 
   //! Returns the length of array of triangles or edges
-  Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Size() const override;
 
   //! Returns bounding box of triangle/edge with index theIdx
   Standard_EXPORT virtual Select3D_BndBox3d Box(const Standard_Integer theIdx) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns geometry center of triangle/edge with index theIdx
   //! in array along the given axis theAxis
   Standard_EXPORT virtual Standard_Real Center(const Standard_Integer theIdx,
                                                const Standard_Integer theAxis) const
-    Standard_OVERRIDE;
+    override;
 
   //! Swaps items with indexes theIdx1 and theIdx2 in array
   Standard_EXPORT virtual void Swap(const Standard_Integer theIdx1,
-                                    const Standard_Integer theIdx2) Standard_OVERRIDE;
+                                    const Standard_Integer theIdx2) override;
 
   //! Returns bounding box of the triangulation. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
   //! Returns center of triangulation. If location transformation
   //! is set, it will be applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   //! Returns true if the shape corresponding to the entity has init location
-  Standard_EXPORT virtual Standard_Boolean HasInitLocation() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean HasInitLocation() const override;
 
   //! Returns inversed location transformation matrix if the shape corresponding
   //! to this entity has init location set. Otherwise, returns identity matrix.
-  Standard_EXPORT virtual gp_GTrsf InvInitLocation() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_GTrsf InvInitLocation() const override;
 
   const TopLoc_Location& GetInitLocation() const { return myInitLocation; }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   //! Checks whether one or more entities of the set overlap current selecting volume.
   Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+    override;
 
 protected:
   //! Compute bounding box.
@@ -138,18 +138,18 @@ private:
     SelectBasics_PickResult&             thePickResult,
     SelectBasics_SelectingVolumeManager& theMgr,
     Standard_Integer                     theElemIdx,
-    Standard_Boolean                     theIsFullInside) Standard_OVERRIDE;
+    Standard_Boolean                     theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the
   //! geometry
   Standard_EXPORT virtual Standard_Real distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
-    Standard_OVERRIDE;
+    override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
   Standard_EXPORT virtual Standard_Boolean elementIsInside(
     SelectBasics_SelectingVolumeManager& theMgr,
     Standard_Integer                     theElemIdx,
-    Standard_Boolean                     theIsFullInside) Standard_OVERRIDE;
+    Standard_Boolean                     theIsFullInside) override;
 
 protected:
   Handle(Poly_Triangulation)       myTriangul;

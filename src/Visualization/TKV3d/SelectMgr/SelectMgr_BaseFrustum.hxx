@@ -38,21 +38,21 @@ public:
 
   //! Saves camera definition and passes it to builder
   Standard_EXPORT virtual void SetCamera(const Handle(Graphic3d_Camera)& theCamera)
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual void SetPixelTolerance(const Standard_Integer theTol) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetPixelTolerance(const Standard_Integer theTol) override;
 
   Standard_EXPORT virtual void SetWindowSize(const Standard_Integer theWidth,
-                                             const Standard_Integer theHeight) Standard_OVERRIDE;
+                                             const Standard_Integer theHeight) override;
 
   Standard_EXPORT virtual void WindowSize(Standard_Integer& theWidth,
-                                          Standard_Integer& theHeight) const Standard_OVERRIDE;
+                                          Standard_Integer& theHeight) const override;
 
   //! Passes viewport parameters to builder
   Standard_EXPORT virtual void SetViewport(const Standard_Real theX,
                                            const Standard_Real theY,
                                            const Standard_Real theWidth,
-                                           const Standard_Real theHeight) Standard_OVERRIDE;
+                                           const Standard_Real theHeight) override;
 
   //! Checks whether the boundary of the current volume selection intersects with a sphere or are
   //! there it's boundaries lying inside the sphere
@@ -65,7 +65,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseFrustum, SelectMgr_BaseIntersector)
 

@@ -82,7 +82,7 @@ public:
 
   //! Return TRUE if there is deferred storage and some triangulation data
   //! that can be loaded using LoadDeferredData().
-  virtual Standard_Boolean HasDeferredData() const Standard_OVERRIDE
+  virtual Standard_Boolean HasDeferredData() const override
   {
     return !myData.IsEmpty() && (NbDeferredTriangles() > 0 || NbDeferredNodes() > 0);
   }

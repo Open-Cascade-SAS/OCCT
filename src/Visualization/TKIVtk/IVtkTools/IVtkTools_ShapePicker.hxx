@@ -50,7 +50,7 @@ public:
   //! Pick entities in the given point.
   //! @return Number of detected entities.
   virtual int Pick(double theX, double theY, double theZ, vtkRenderer* theRenderer = NULL)
-    Standard_OVERRIDE;
+    override;
 
   //! Pick entities in the given rectangle area.
   //! @return Number of detected entities.

@@ -50,15 +50,15 @@ public:
   //! not the same true Type, else contents are compared (by
   //! C++ operator ==)
   Standard_EXPORT Standard_Boolean
-    Equates(const Handle(MoniTool_Element)& other) const Standard_OVERRIDE;
+    Equates(const Handle(MoniTool_Element)& other) const override;
 
   //! Returns the Type of the Value. By default, returns the
   //! DynamicType of <me>, but can be redefined
-  Standard_EXPORT virtual Handle(Standard_Type) ValueType() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Standard_Type) ValueType() const override;
 
   //! Returns the name of the Type of the Value. Default is name
   //! of ValueType, unless it is for a non-handled object
-  Standard_EXPORT virtual Standard_CString ValueTypeName() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_CString ValueTypeName() const override;
 
   DEFINE_STANDARD_RTTIEXT(MoniTool_TransientElem, MoniTool_Element)
 

@@ -59,10 +59,10 @@ public:
   Standard_EXPORT void SetValue(const Standard_Integer index, const Standard_Boolean value);
 
   //! Sets the explicit GUID (user defined) for the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& theGuid) Standard_OVERRIDE;
+  Standard_EXPORT void SetID(const Standard_GUID& theGuid) override;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() Standard_OVERRIDE;
+  Standard_EXPORT void SetID() override;
 
   //! Return the value of the <Index>th element of the array.
   Standard_EXPORT Standard_Boolean Value(const Standard_Integer Index) const;
@@ -84,20 +84,20 @@ public:
 
   Standard_EXPORT TDataStd_BooleanArray();
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+                             const Handle(TDF_RelocationTable)& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& OS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& OS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_BooleanArray, TDF_Attribute)
 

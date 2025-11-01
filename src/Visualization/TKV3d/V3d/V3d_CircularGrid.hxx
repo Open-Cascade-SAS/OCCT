@@ -39,13 +39,13 @@ public:
   Standard_EXPORT virtual ~V3d_CircularGrid();
 
   Standard_EXPORT void SetColors(const Quantity_Color& aColor,
-                                 const Quantity_Color& aTenthColor) Standard_OVERRIDE;
+                                 const Quantity_Color& aTenthColor) override;
 
-  Standard_EXPORT void Display() Standard_OVERRIDE;
+  Standard_EXPORT void Display() override;
 
-  Standard_EXPORT void Erase() const Standard_OVERRIDE;
+  Standard_EXPORT void Erase() const override;
 
-  Standard_EXPORT Standard_Boolean IsDisplayed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsDisplayed() const override;
 
   Standard_EXPORT void GraphicValues(Standard_Real& Radius, Standard_Real& OffSet) const;
 
@@ -53,10 +53,10 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 protected:
-  Standard_EXPORT void UpdateDisplay() Standard_OVERRIDE;
+  Standard_EXPORT void UpdateDisplay() override;
 
 private:
   Standard_EXPORT void DefineLines();

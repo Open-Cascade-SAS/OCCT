@@ -53,7 +53,7 @@ public:
                                      const TColStd_PackedMapOfInteger& IDs,
                                      TColStd_PackedMapOfInteger&       IDsToExclude,
                                      const Standard_Boolean            IsElement,
-                                     const Standard_Integer theDisplayMode) const Standard_OVERRIDE;
+                                     const Standard_Integer theDisplayMode) const override;
 
   //! Adds to array of polygons and polylines some primitive representing single vector
   Standard_EXPORT void DrawVector(const gp_Trsf&                             theTrsf,

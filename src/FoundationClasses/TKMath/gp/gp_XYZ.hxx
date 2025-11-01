@@ -161,12 +161,12 @@ public:
   //! new.Y() = <me>.Y() + theOther.Y()
   //! new.Z() = <me>.Z() + theOther.Z()
   //! @endcode
-  Standard_NODISCARD constexpr gp_XYZ Added(const gp_XYZ& theOther) const noexcept
+  [[nodiscard]] constexpr gp_XYZ Added(const gp_XYZ& theOther) const noexcept
   {
     return gp_XYZ(x + theOther.x, y + theOther.y, z + theOther.z);
   }
 
-  Standard_NODISCARD constexpr gp_XYZ operator+(const gp_XYZ& theOther) const noexcept
+  [[nodiscard]] constexpr gp_XYZ operator+(const gp_XYZ& theOther) const noexcept
   {
     return Added(theOther);
   }
@@ -185,14 +185,14 @@ public:
   //! new.Y() = <me>.Z() * theOther.X() - <me>.X() * theOther.Z()
   //! new.Z() = <me>.X() * theOther.Y() - <me>.Y() * theOther.X()
   //! @endcode
-  Standard_NODISCARD constexpr gp_XYZ Crossed(const gp_XYZ& theOther) const noexcept
+  [[nodiscard]] constexpr gp_XYZ Crossed(const gp_XYZ& theOther) const noexcept
   {
     return gp_XYZ(y * theOther.z - z * theOther.y,
                   z * theOther.x - x * theOther.z,
                   x * theOther.y - y * theOther.x);
   }
 
-  Standard_NODISCARD constexpr gp_XYZ operator^(const gp_XYZ& theOther) const noexcept
+  [[nodiscard]] constexpr gp_XYZ operator^(const gp_XYZ& theOther) const noexcept
   {
     return Crossed(theOther);
   }
@@ -211,7 +211,7 @@ public:
 
   //! Triple vector product
   //! computes New = <me>.Cross(theCoord1.Cross(theCoord2))
-  Standard_NODISCARD constexpr gp_XYZ CrossCrossed(const gp_XYZ& theCoord1,
+  [[nodiscard]] constexpr gp_XYZ CrossCrossed(const gp_XYZ& theCoord1,
                                                    const gp_XYZ& theCoord2) const noexcept
   {
     gp_XYZ aCoord0 = *this;
@@ -230,12 +230,12 @@ public:
   constexpr void operator/=(const Standard_Real theScalar) { Divide(theScalar); }
 
   //! divides <me> by a real.
-  Standard_NODISCARD constexpr gp_XYZ Divided(const Standard_Real theScalar) const
+  [[nodiscard]] constexpr gp_XYZ Divided(const Standard_Real theScalar) const
   {
     return gp_XYZ(x / theScalar, y / theScalar, z / theScalar);
   }
 
-  Standard_NODISCARD constexpr gp_XYZ operator/(const Standard_Real theScalar) const
+  [[nodiscard]] constexpr gp_XYZ operator/(const Standard_Real theScalar) const
   {
     return Divided(theScalar);
   }
@@ -289,12 +289,12 @@ public:
   //! New.Y() = <me>.Y() * theScalar;
   //! New.Z() = <me>.Z() * theScalar;
   //! @endcode
-  Standard_NODISCARD constexpr gp_XYZ Multiplied(const Standard_Real theScalar) const noexcept
+  [[nodiscard]] constexpr gp_XYZ Multiplied(const Standard_Real theScalar) const noexcept
   {
     return gp_XYZ(x * theScalar, y * theScalar, z * theScalar);
   }
 
-  Standard_NODISCARD constexpr gp_XYZ operator*(const Standard_Real theScalar) const noexcept
+  [[nodiscard]] constexpr gp_XYZ operator*(const Standard_Real theScalar) const noexcept
   {
     return Multiplied(theScalar);
   }
@@ -304,13 +304,13 @@ public:
   //! new.Y() = <me>.Y() * theOther.Y();
   //! new.Z() = <me>.Z() * theOther.Z();
   //! @endcode
-  Standard_NODISCARD constexpr gp_XYZ Multiplied(const gp_XYZ& theOther) const noexcept
+  [[nodiscard]] constexpr gp_XYZ Multiplied(const gp_XYZ& theOther) const noexcept
   {
     return gp_XYZ(x * theOther.x, y * theOther.y, z * theOther.z);
   }
 
   //! New = theMatrix * <me>
-  Standard_NODISCARD gp_XYZ Multiplied(const gp_Mat& theMatrix) const noexcept
+  [[nodiscard]] gp_XYZ Multiplied(const gp_Mat& theMatrix) const noexcept
   {
     // Direct access to matrix data for optimal performance (gp_XYZ is friend of gp_Mat)
     return gp_XYZ(theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y + theMatrix.myMat[0][2] * z,
@@ -319,7 +319,7 @@ public:
                     + theMatrix.myMat[2][2] * z);
   }
 
-  Standard_NODISCARD gp_XYZ operator*(const gp_Mat& theMatrix) const noexcept
+  [[nodiscard]] gp_XYZ operator*(const gp_Mat& theMatrix) const noexcept
   {
     return Multiplied(theMatrix);
   }
@@ -338,7 +338,7 @@ public:
   //! New.Z() = <me>.Z()/ <me>.Modulus()
   //! @endcode
   //! Raised if <me>.Modulus() <= Resolution from gp
-  Standard_NODISCARD gp_XYZ Normalized() const
+  [[nodiscard]] gp_XYZ Normalized() const
   {
     const Standard_Real aD = Modulus();
     Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
@@ -363,7 +363,7 @@ public:
   //! New.Y() = -<me>.Y()
   //! New.Z() = -<me>.Z()
   //! @endcode
-  Standard_NODISCARD constexpr gp_XYZ Reversed() const noexcept { return gp_XYZ(-x, -y, -z); }
+  [[nodiscard]] constexpr gp_XYZ Reversed() const noexcept { return gp_XYZ(-x, -y, -z); }
 
   //! @code
   //! <me>.X() = <me>.X() - theOther.X()
@@ -384,12 +384,12 @@ public:
   //! new.Y() = <me>.Y() - theOther.Y()
   //! new.Z() = <me>.Z() - theOther.Z()
   //! @endcode
-  Standard_NODISCARD constexpr gp_XYZ Subtracted(const gp_XYZ& theOther) const noexcept
+  [[nodiscard]] constexpr gp_XYZ Subtracted(const gp_XYZ& theOther) const noexcept
   {
     return gp_XYZ(x - theOther.x, y - theOther.y, z - theOther.z);
   }
 
-  Standard_NODISCARD constexpr gp_XYZ operator-(const gp_XYZ& theOther) const noexcept
+  [[nodiscard]] constexpr gp_XYZ operator-(const gp_XYZ& theOther) const noexcept
   {
     return Subtracted(theOther);
   }

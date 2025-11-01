@@ -66,12 +66,12 @@ public:
   Standard_EXPORT STEPControl_ActorRead(const Handle(Interface_InterfaceModel)& theModel);
 
   Standard_EXPORT virtual Standard_Boolean Recognize(const Handle(Standard_Transient)& start)
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
     const Handle(Standard_Transient)&        start,
     const Handle(Transfer_TransientProcess)& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root
   //! shape

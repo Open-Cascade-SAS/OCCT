@@ -48,10 +48,10 @@ public:
 
   //! gets header from another Model (uses Header Protocol)
   Standard_EXPORT void GetFromAnother(const Handle(Interface_InterfaceModel)& other)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns a New Empty Model, same type as <me>, i.e. StepModel
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const override;
 
   //! returns Header entities under the form of an iterator
   Standard_EXPORT Interface_EntityIterator Header() const;
@@ -63,13 +63,13 @@ public:
   Standard_EXPORT Handle(Standard_Transient) HeaderEntity(const Handle(Standard_Type)& atype) const;
 
   //! Clears the Header
-  Standard_EXPORT void ClearHeader() Standard_OVERRIDE;
+  Standard_EXPORT void ClearHeader() override;
 
   //! Adds an Entity to the Header
   Standard_EXPORT void AddHeaderEntity(const Handle(Standard_Transient)& ent);
 
   //! Specific Check, checks Header Items with HeaderProtocol
-  Standard_EXPORT virtual void VerifyCheck(Handle(Interface_Check)& ach) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void VerifyCheck(Handle(Interface_Check)& ach) const override;
 
   //! Dumps the Header, with the Header Protocol of StepData.
   //! If the Header Protocol is not defined, for each Header Entity,
@@ -77,10 +77,10 @@ public:
   //! HEADER Section of an Ascii Step File
   //! <level> is not used because Header is not so big
   Standard_EXPORT void DumpHeader(Standard_OStream&      S,
-                                  const Standard_Integer level = 0) const Standard_OVERRIDE;
+                                  const Standard_Integer level = 0) const override;
 
   //! erases specific labels, i.e. clears the map (entity-ident)
-  Standard_EXPORT void ClearLabels() Standard_OVERRIDE;
+  Standard_EXPORT void ClearLabels() override;
 
   //! Attaches an ident to an entity to produce a label
   //! (does nothing if <ent> is not in <me>)
@@ -94,12 +94,12 @@ public:
   //! if a LabelIdent has been recorded, its value with '#', else
   //! the number in the model with '#' and between ()
   Standard_EXPORT void PrintLabel(const Handle(Standard_Transient)& ent,
-                                  Standard_OStream&                 S) const Standard_OVERRIDE;
+                                  Standard_OStream&                 S) const override;
 
   //! Returns a string with the label attached to a given entity,
   //! same form as for PrintLabel
   Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel(
-    const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    const Handle(Standard_Transient)& ent) const override;
 
   //! Return the encoding of STEP file for converting names into UNICODE.
   //! Initialized from "read.step.codepage" variable by constructor, which is Resource_UTF8 by

@@ -253,24 +253,24 @@ public:
 
   //! Builds the resulting shape (redefined from MakeShape).
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Transforms the sweeping Shell in Solid.
   //! If a propfile is not closed returns False
   Standard_EXPORT Standard_Boolean MakeSolid();
 
   //! Returns the  TopoDS  Shape of the bottom of the sweep.
-  Standard_EXPORT virtual TopoDS_Shape FirstShape() Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Shape FirstShape() override;
 
   //! Returns the TopoDS Shape of the top of the sweep.
-  Standard_EXPORT virtual TopoDS_Shape LastShape() Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Shape LastShape() override;
 
   //! Returns a list of new shapes generated from the shape
   //! S by the shell-generating algorithm.
   //! This function is redefined from BRepOffsetAPI_MakeShape::Generated.
   //! S can be an edge or a vertex of a given Profile (see methods Add).
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
 

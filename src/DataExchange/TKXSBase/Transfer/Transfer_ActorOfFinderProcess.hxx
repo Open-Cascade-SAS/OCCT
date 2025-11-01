@@ -47,7 +47,7 @@ public:
   Standard_EXPORT virtual Handle(Transfer_Binder) Transferring(
     const Handle(Transfer_Finder)&           start,
     const Handle(Transfer_ProcessForFinder)& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
     const Handle(Transfer_Finder)&        start,

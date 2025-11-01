@@ -175,7 +175,7 @@ bool Quantity_ColorRGBA::ColorFromHex(const char* const   theHexColorString,
   {
     case HexColorLength_ShortRGBA:
       hasAlphaComponent = true;
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case HexColorLength_ShortRGB:
       isShort = true;
       break;

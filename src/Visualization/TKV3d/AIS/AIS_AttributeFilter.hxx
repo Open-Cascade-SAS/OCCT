@@ -92,7 +92,7 @@ public:
   //! when detected by the Local Context selector through
   //! the mouse, the object is kept; if not, it is rejected.
   Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anObj) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_AttributeFilter, SelectMgr_Filter)
 

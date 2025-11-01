@@ -79,7 +79,7 @@ protected: //! @name Interface to override
   //! @param[in] theOutputVector  the pointer to output data, that is filled in this method.
   virtual int RequestData(vtkInformation*        theRequest,
                           vtkInformationVector** theInputVector,
-                          vtkInformationVector*  theOutputVector) Standard_OVERRIDE;
+                          vtkInformationVector*  theOutputVector) override;
 
 protected: //! @name Internals
   //! Transforms the passed polygonal data by the given OCCT transformation

@@ -40,11 +40,11 @@ public:
   Standard_EXPORT virtual ~BinTools_ShapeWriter();
 
   //! Clears the content of the set.
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Writes the shape to stream using previously stored shapes and objects to refer them.
   Standard_EXPORT virtual void Write(const TopoDS_Shape& theShape,
-                                     Standard_OStream&   theStream) Standard_OVERRIDE;
+                                     Standard_OStream&   theStream) override;
 
   //! Writes location to the stream (all the needed sub-information or reference if it is already
   //! used).

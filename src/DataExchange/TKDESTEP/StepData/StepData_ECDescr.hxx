@@ -53,14 +53,14 @@ public:
   Standard_EXPORT Handle(TColStd_HSequenceOfAsciiString) TypeList() const;
 
   //! Tells if a ESDescr matches a step type : exact or super type
-  Standard_EXPORT Standard_Boolean Matches(const Standard_CString steptype) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Matches(const Standard_CString steptype) const override;
 
   //! Returns True
-  Standard_EXPORT Standard_Boolean IsComplex() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsComplex() const override;
 
   //! Creates a described entity (i.e. a complex one, made of one
   //! simple entity per member)
-  Standard_EXPORT Handle(StepData_Described) NewEntity() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(StepData_Described) NewEntity() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepData_ECDescr, StepData_EDescr)
 

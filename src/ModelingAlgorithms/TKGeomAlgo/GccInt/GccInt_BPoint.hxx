@@ -35,10 +35,10 @@ public:
   Standard_EXPORT GccInt_BPoint(const gp_Pnt2d& Point);
 
   //! Returns a 2D point which is the geometry of this bisecting object.
-  Standard_EXPORT virtual gp_Pnt2d Point() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt2d Point() const override;
 
   //! Returns GccInt_Pnt, which is the type of any GccInt_BPoint bisecting object.
-  Standard_EXPORT GccInt_IType ArcType() const Standard_OVERRIDE;
+  Standard_EXPORT GccInt_IType ArcType() const override;
 
   DEFINE_STANDARD_RTTIEXT(GccInt_BPoint, GccInt_Bisec)
 

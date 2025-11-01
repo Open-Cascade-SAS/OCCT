@@ -41,7 +41,7 @@ public:
   //! and AISObject updated.
   Standard_EXPORT virtual Standard_Boolean Update(const TDF_Label&               aLabel,
                                                   Handle(AIS_InteractiveObject)& anAISObject)
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_ConstraintDriver, TPrsStd_Driver)
 

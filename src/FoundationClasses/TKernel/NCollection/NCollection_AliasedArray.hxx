@@ -83,7 +83,7 @@ public:
   }
 
   //! Move constructor
-  NCollection_AliasedArray(NCollection_AliasedArray&& theOther) Standard_Noexcept
+  NCollection_AliasedArray(NCollection_AliasedArray&& theOther) noexcept
       : myData(theOther.myData),
         myStride(theOther.myStride),
         mySize(theOther.mySize),

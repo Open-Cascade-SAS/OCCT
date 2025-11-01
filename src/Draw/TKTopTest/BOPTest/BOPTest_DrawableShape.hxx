@@ -48,7 +48,7 @@ public:
                                         const Standard_CString Text,
                                         const Draw_Color&      TextColor);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
   DEFINE_STANDARD_RTTIEXT(BOPTest_DrawableShape, DBRep_DrawableShape)
 

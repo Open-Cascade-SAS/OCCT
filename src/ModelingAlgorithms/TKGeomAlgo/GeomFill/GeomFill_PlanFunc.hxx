@@ -40,14 +40,14 @@ public:
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X,
-                                                 Standard_Real&      F) Standard_OVERRIDE;
+                                                 Standard_Real&      F) override;
 
   //! computes the derivative <D> of the function
   //! for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Derivative(const Standard_Real X,
-                                                      Standard_Real&      D) Standard_OVERRIDE;
+                                                      Standard_Real&      D) override;
 
   //! computes the value <F> and the derivative <D> of the
   //! function for the variable <X>.
@@ -55,7 +55,7 @@ public:
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Values(const Standard_Real X,
                                                   Standard_Real&      F,
-                                                  Standard_Real&      D) Standard_OVERRIDE;
+                                                  Standard_Real&      D) override;
 
   Standard_EXPORT void D2(const Standard_Real X,
                           Standard_Real&      F,

@@ -1074,16 +1074,16 @@ public:
   {
   }
 
-  virtual Standard_Integer NbVariables() const Standard_OVERRIDE
+  virtual Standard_Integer NbVariables() const override
   {
     return 1;
   }
 
-  virtual Standard_Boolean Value(const math_Vector& X, Standard_Real& F) Standard_OVERRIDE;
-  virtual Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) Standard_OVERRIDE;
+  virtual Standard_Boolean Value(const math_Vector& X, Standard_Real& F) override;
+  virtual Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) override;
   virtual Standard_Boolean Values(const math_Vector& theX,
                                   Standard_Real& theF,
-                                  math_Vector& theG) Standard_OVERRIDE
+                                  math_Vector& theG) override
   {
     if (!Value(theX, theF))
     return Standard_False;
@@ -1097,7 +1097,7 @@ public:
   virtual Standard_Boolean Values(const math_Vector& theX,
                                   Standard_Real& theF,
                                   math_Vector& theG,
-                                  math_Matrix& theH) Standard_OVERRIDE
+                                  math_Matrix& theH) override
   {
     if (!Values(theX, theF, theG))
     return Standard_False;

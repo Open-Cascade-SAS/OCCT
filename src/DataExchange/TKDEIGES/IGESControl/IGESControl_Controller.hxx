@@ -44,13 +44,13 @@ public:
 
   //! Creates a new empty Model ready to receive data of the Norm.
   //! It is taken from IGES Template Model
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const override;
 
   //! Returns the Actor for Read attached to the pair (norm,appli)
   //! It is an Actor from IGESToBRep, adapted from an IGESModel :
   //! Unit, tolerances
   Standard_EXPORT Handle(Transfer_ActorOfTransientProcess) ActorRead(
-    const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+    const Handle(Interface_InterfaceModel)& model) const override;
 
   //! Takes one Shape and transfers it to the InterfaceModel
   //! (already created by NewModel for instance)
@@ -64,7 +64,7 @@ public:
     const Handle(Transfer_FinderProcess)&   FP,
     const Handle(Interface_InterfaceModel)& model,
     const Standard_Integer                  modetrans = 0,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) const Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) const override;
 
   //! Standard Initialisation. It creates a Controller for IGES and
   //! records it to various names, available to select it later
@@ -72,7 +72,7 @@ public:
   //! Also, it creates and records an Adaptor for FNES
   Standard_EXPORT static Standard_Boolean Init();
 
-  Standard_EXPORT virtual void Customise(Handle(XSControl_WorkSession)& WS) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Customise(Handle(XSControl_WorkSession)& WS) override;
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_Controller, XSControl_Controller)
 

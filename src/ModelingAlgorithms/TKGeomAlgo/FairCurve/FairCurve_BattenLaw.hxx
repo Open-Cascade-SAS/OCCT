@@ -50,7 +50,7 @@ public:
 
   //! computes the value of  the heigth for the parameter T
   //! on  the neutral fibber
-  virtual Standard_Boolean Value(const Standard_Real T, Standard_Real& THeigth) Standard_OVERRIDE;
+  virtual Standard_Boolean Value(const Standard_Real T, Standard_Real& THeigth) override;
 
 protected:
 private:

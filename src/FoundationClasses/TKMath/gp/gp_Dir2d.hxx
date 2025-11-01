@@ -185,12 +185,12 @@ public:
   Standard_EXPORT Standard_Real Angle(const gp_Dir2d& theOther) const;
 
   //! Computes the cross product between two directions.
-  Standard_NODISCARD constexpr Standard_Real Crossed(const gp_Dir2d& theRight) const noexcept
+  [[nodiscard]] constexpr Standard_Real Crossed(const gp_Dir2d& theRight) const noexcept
   {
     return coord.Crossed(theRight.coord);
   }
 
-  Standard_NODISCARD constexpr Standard_Real operator^(const gp_Dir2d& theRight) const noexcept
+  [[nodiscard]] constexpr Standard_Real operator^(const gp_Dir2d& theRight) const noexcept
   {
     return Crossed(theRight);
   }
@@ -209,34 +209,34 @@ public:
   constexpr void Reverse() noexcept { coord.Reverse(); }
 
   //! Reverses the orientation of a direction
-  Standard_NODISCARD constexpr gp_Dir2d Reversed() const noexcept
+  [[nodiscard]] constexpr gp_Dir2d Reversed() const noexcept
   {
     gp_Dir2d aV = *this;
     aV.coord.Reverse();
     return aV;
   }
 
-  Standard_NODISCARD constexpr gp_Dir2d operator-() const noexcept { return Reversed(); }
+  [[nodiscard]] constexpr gp_Dir2d operator-() const noexcept { return Reversed(); }
 
   Standard_EXPORT void Mirror(const gp_Dir2d& theV);
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction theV which is the center of
   //! the  symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Dir2d Mirrored(const gp_Dir2d& theV) const;
+  [[nodiscard]] Standard_EXPORT gp_Dir2d Mirrored(const gp_Dir2d& theV) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& theA);
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Dir2d Mirrored(const gp_Ax2d& theA) const;
+  [[nodiscard]] Standard_EXPORT gp_Dir2d Mirrored(const gp_Ax2d& theA) const;
 
   void Rotate(const Standard_Real Ang);
 
   //! Rotates a direction.  theAng is the angular value of
   //! the rotation in radians.
-  Standard_NODISCARD gp_Dir2d Rotated(const Standard_Real theAng) const
+  [[nodiscard]] gp_Dir2d Rotated(const Standard_Real theAng) const
   {
     gp_Dir2d aV = *this;
     aV.Rotate(theAng);
@@ -249,7 +249,7 @@ public:
   //! Warnings :
   //! If the scale factor of the "Trsf" theT is negative then the
   //! direction <me> is reversed.
-  Standard_NODISCARD gp_Dir2d Transformed(const gp_Trsf2d& theT) const
+  [[nodiscard]] gp_Dir2d Transformed(const gp_Trsf2d& theT) const
   {
     gp_Dir2d aV = *this;
     aV.Transform(theT);

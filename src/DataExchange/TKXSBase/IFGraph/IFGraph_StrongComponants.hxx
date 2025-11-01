@@ -39,7 +39,7 @@ public:
                                            const Standard_Boolean whole);
 
   //! does the computation
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 
 protected:
 private:

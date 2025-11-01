@@ -69,9 +69,9 @@ public:
     const Standard_Integer value,
     const Standard_Boolean isExported = Standard_False);
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_NoteBook, TDataStd_GenericEmpty)
 

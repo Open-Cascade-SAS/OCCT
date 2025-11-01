@@ -35,17 +35,17 @@ public:
   Standard_EXPORT BinMDataStd_ExtStringListDriver(
     const Handle(Message_Messenger)& theMessageDriver);
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
 
   Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  Source,
                                                  const Handle(TDF_Attribute)& Target,
                                                  BinObjMgt_RRelocationTable&  RelocTable) const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& Source,
                                      BinObjMgt_Persistent&        Target,
                                      BinObjMgt_SRelocationTable&  RelocTable) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(BinMDataStd_ExtStringListDriver, BinMDF_ADriver)
 

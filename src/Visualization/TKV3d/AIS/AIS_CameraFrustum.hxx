@@ -42,27 +42,27 @@ public:
   Standard_EXPORT void SetCameraFrustum(const Handle(Graphic3d_Camera)& theCamera);
 
   //! Setup custom color.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   //! Restore default color.
-  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetColor() override;
 
   //! Restore transparency setting.
-  Standard_EXPORT virtual void UnsetTransparency() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetTransparency() override;
 
   //! Return true if specified display mode is supported.
   Standard_EXPORT virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const
-    Standard_OVERRIDE;
+    override;
 
 protected:
   //! Computes presentation of camera frustum.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   //! Compute selection.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+                                                const Standard_Integer theMode) override;
 
 private:
   //! Fills triangles primitive array for camera frustum filling.

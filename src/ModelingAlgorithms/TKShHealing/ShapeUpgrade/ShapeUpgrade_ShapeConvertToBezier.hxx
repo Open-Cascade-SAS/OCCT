@@ -106,19 +106,19 @@ public:
 
   //! Performs converting and computes the resulting shape
   Standard_EXPORT virtual Standard_Boolean Perform(
-    const Standard_Boolean newContext = Standard_True) Standard_OVERRIDE;
+    const Standard_Boolean newContext = Standard_True) override;
 
 protected:
   //! Returns the tool for dividing faces.
   Standard_EXPORT virtual Handle(ShapeUpgrade_FaceDivide) GetSplitFaceTool() const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Message_Msg GetFaceMsg() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Message_Msg GetFaceMsg() const override;
 
-  Standard_EXPORT virtual Message_Msg GetWireMsg() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Message_Msg GetWireMsg() const override;
 
   //! Returns a message describing modification of a shape.
-  Standard_EXPORT virtual Message_Msg GetEdgeMsg() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Message_Msg GetEdgeMsg() const override;
 
 private:
   Standard_Boolean my2dMode;

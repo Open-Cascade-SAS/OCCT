@@ -65,13 +65,13 @@ public:
   Standard_EXPORT virtual void Write(
     const Handle(CDM_Document)&       aDocument,
     const TCollection_ExtendedString& aFileName,
-    const Message_ProgressRange&      theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
 
   //! Write <theDocument> to theOStream
   Standard_EXPORT virtual void Write(
     const Handle(CDM_Document)&  theDocument,
     Standard_OStream&            theOStream,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT void SetFormat(const TCollection_ExtendedString& aformat);
 

@@ -76,7 +76,7 @@ public:
 
   virtual void Size( Standard_Integer& theWidth, Standard_Integer& theHeight ) const;
   
-  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
+  virtual Aspect_FBConfig NativeFBConfig() const override { return NULL; }
 
   DEFINE_STANDARD_RTTIEXT(OcctWindow,Aspect_Window)
 

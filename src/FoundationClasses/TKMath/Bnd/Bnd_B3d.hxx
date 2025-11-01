@@ -80,7 +80,7 @@ public:
 
   //! Transform the bounding box with the given transformation.
   //! The resulting box will be larger if theTrsf contains rotation.
-  Standard_NODISCARD Standard_EXPORT Bnd_B3d Transformed(const gp_Trsf& theTrsf) const;
+  [[nodiscard]] Standard_EXPORT Bnd_B3d Transformed(const gp_Trsf& theTrsf) const;
 
   //! Check the given point for the inclusion in the Box.
   //! Returns True if the point is outside.

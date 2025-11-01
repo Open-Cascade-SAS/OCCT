@@ -169,9 +169,9 @@ public:
   //! Note:
   //! -   operator += assigns the result to this matrix, while
   //! -   operator + creates a new one.
-  Standard_NODISCARD constexpr gp_Mat2d Added(const gp_Mat2d& theOther) const noexcept;
+  [[nodiscard]] constexpr gp_Mat2d Added(const gp_Mat2d& theOther) const noexcept;
 
-  Standard_NODISCARD constexpr gp_Mat2d operator+(const gp_Mat2d& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Mat2d operator+(const gp_Mat2d& theOther) const noexcept
   {
     return Added(theOther);
   }
@@ -181,9 +181,9 @@ public:
   constexpr void operator/=(const Standard_Real theScalar) { Divide(theScalar); }
 
   //! Divides all the coefficients of the matrix by a scalar.
-  Standard_NODISCARD constexpr gp_Mat2d Divided(const Standard_Real theScalar) const;
+  [[nodiscard]] constexpr gp_Mat2d Divided(const Standard_Real theScalar) const;
 
-  Standard_NODISCARD constexpr gp_Mat2d operator/(const Standard_Real theScalar) const
+  [[nodiscard]] constexpr gp_Mat2d operator/(const Standard_Real theScalar) const
   {
     return Divided(theScalar);
   }
@@ -192,21 +192,21 @@ public:
 
   //! Inverses the matrix and raises exception if the matrix
   //! is singular.
-  Standard_NODISCARD gp_Mat2d Inverted() const
+  [[nodiscard]] gp_Mat2d Inverted() const
   {
     gp_Mat2d aNewMat = *this;
     aNewMat.Invert();
     return aNewMat;
   }
 
-  Standard_NODISCARD constexpr gp_Mat2d Multiplied(const gp_Mat2d& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Mat2d Multiplied(const gp_Mat2d& theOther) const noexcept
   {
     gp_Mat2d aNewMat2d = *this;
     aNewMat2d.Multiply(theOther);
     return aNewMat2d;
   }
 
-  Standard_NODISCARD constexpr gp_Mat2d operator*(const gp_Mat2d& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Mat2d operator*(const gp_Mat2d& theOther) const noexcept
   {
     return Multiplied(theOther);
   }
@@ -218,9 +218,9 @@ public:
   //! <me> = theOther * <me>.
   constexpr void PreMultiply(const gp_Mat2d& theOther) noexcept;
 
-  Standard_NODISCARD constexpr gp_Mat2d Multiplied(const Standard_Real theScalar) const noexcept;
+  [[nodiscard]] constexpr gp_Mat2d Multiplied(const Standard_Real theScalar) const noexcept;
 
-  Standard_NODISCARD constexpr gp_Mat2d operator*(const Standard_Real theScalar) const noexcept
+  [[nodiscard]] constexpr gp_Mat2d operator*(const Standard_Real theScalar) const noexcept
   {
     return Multiplied(theScalar);
   }
@@ -237,7 +237,7 @@ public:
   //! if theN < 0 <me> = <me>.Invert() *...........* <me>.Invert().
   //! If theN < 0 an exception can be raised if the matrix is not
   //! inversible
-  Standard_NODISCARD gp_Mat2d Powered(const Standard_Integer theN) const
+  [[nodiscard]] gp_Mat2d Powered(const Standard_Integer theN) const
   {
     gp_Mat2d aMat2dN = *this;
     aMat2dN.Power(theN);
@@ -252,9 +252,9 @@ public:
   //! @code
   //! <me>.Coef(i,j) - <theOther>.Coef(i,j)
   //! @endcode
-  Standard_NODISCARD constexpr gp_Mat2d Subtracted(const gp_Mat2d& theOther) const noexcept;
+  [[nodiscard]] constexpr gp_Mat2d Subtracted(const gp_Mat2d& theOther) const noexcept;
 
-  Standard_NODISCARD constexpr gp_Mat2d operator-(const gp_Mat2d& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Mat2d operator-(const gp_Mat2d& theOther) const noexcept
   {
     return Subtracted(theOther);
   }
@@ -262,7 +262,7 @@ public:
   constexpr void Transpose() noexcept;
 
   //! Transposes the matrix. A(j, i) -> A (i, j)
-  Standard_NODISCARD constexpr gp_Mat2d Transposed() const noexcept;
+  [[nodiscard]] constexpr gp_Mat2d Transposed() const noexcept;
 
   friend class gp_Trsf2d;
   friend class gp_GTrsf2d;

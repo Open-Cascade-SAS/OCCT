@@ -53,26 +53,26 @@ public:
                                      const Standard_Boolean          Build = Standard_True);
 
   //! Say if the input shape is a  vertex.
-  Standard_EXPORT virtual Standard_Boolean IsVertex() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsVertex() const override;
 
   //! Say if the Law is  Constant.
-  Standard_EXPORT virtual Standard_Boolean IsConstant() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsConstant() const override;
 
   //! Give the law build on a concatenated section
-  Standard_EXPORT virtual Handle(GeomFill_SectionLaw) ConcatenedLaw() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(GeomFill_SectionLaw) ConcatenedLaw() const override;
 
   Standard_EXPORT virtual GeomAbs_Shape Continuity(const Standard_Integer Index,
                                                    const Standard_Real    TolAngular) const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual Standard_Real VertexTol(const Standard_Integer Index,
                                                   const Standard_Real    Param) const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual TopoDS_Vertex Vertex(const Standard_Integer Index,
-                                               const Standard_Real Param) const Standard_OVERRIDE;
+                                               const Standard_Real Param) const override;
 
-  Standard_EXPORT virtual void D0(const Standard_Real Param, TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual void D0(const Standard_Real Param, TopoDS_Shape& S) override;
 
   DEFINE_STANDARD_RTTIEXT(BRepFill_NSections, BRepFill_SectionLaw)
 

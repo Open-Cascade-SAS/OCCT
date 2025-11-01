@@ -39,16 +39,16 @@ class XmlMXCAFDoc_LocationDriver : public XmlMDF_ADriver
 public:
   Standard_EXPORT XmlMXCAFDoc_LocationDriver(const Handle(Message_Messenger)& theMessageDriver);
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
 
   Standard_EXPORT Standard_Boolean
     Paste(const XmlObjMgt_Persistent&  Source,
           const Handle(TDF_Attribute)& Target,
-          XmlObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
+          XmlObjMgt_RRelocationTable&  RelocTable) const override;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
                              XmlObjMgt_Persistent&        Target,
-                             XmlObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
+                             XmlObjMgt_SRelocationTable&  RelocTable) const override;
 
   //! Translate a non storable Location to a storable Location.
   Standard_EXPORT void Translate(const TopLoc_Location&      theLoc,

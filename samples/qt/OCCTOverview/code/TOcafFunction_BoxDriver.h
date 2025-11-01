@@ -37,11 +37,11 @@ public:
   TOcafFunction_BoxDriver() {}
 
   //! Validation of the object label, its arguments and its results.
-  Standard_EXPORT virtual void Validate (Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Validate (Handle(TFunction_Logbook)& theLog) const override;
 
   //! We call this method to check if the object was modified to be invoked.
   //! If the object label or an argument is modified, we must recompute the object - to call the method Execute().
-  Standard_EXPORT virtual Standard_Boolean MustExecute (const Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean MustExecute (const Handle(TFunction_Logbook)& theLog) const override;
 
   //! We compute the object and topologically name it.
   //! If during the execution we found something wrong, we return the number of the failure.
@@ -50,7 +50,7 @@ public:
   //!  2 - algorithm failed,
   //! if there are no any mistakes occurred we return 0:
   //!  0 - no mistakes were found.
-  Standard_EXPORT virtual Standard_Integer Execute (Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Execute (Handle(TFunction_Logbook)& theLog) const override;
 
 };
 

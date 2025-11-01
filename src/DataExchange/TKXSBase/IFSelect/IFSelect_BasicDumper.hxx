@@ -42,14 +42,14 @@ public:
   //! Returns True if <item> has been processed, False else
   Standard_EXPORT Standard_Boolean
     WriteOwn(IFSelect_SessionFile&             file,
-             const Handle(Standard_Transient)& item) const Standard_OVERRIDE;
+             const Handle(Standard_Transient)& item) const override;
 
   //! Recognizes and Read Own Parameters for Types of package
   //! IFSelect. Returns True if done and <item> created, False else
   Standard_EXPORT Standard_Boolean
     ReadOwn(IFSelect_SessionFile&          file,
             const TCollection_AsciiString& type,
-            Handle(Standard_Transient)&    item) const Standard_OVERRIDE;
+            Handle(Standard_Transient)&    item) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_BasicDumper, IFSelect_SessionDumper)
 

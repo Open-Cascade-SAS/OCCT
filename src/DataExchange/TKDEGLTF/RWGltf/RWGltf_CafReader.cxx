@@ -115,7 +115,7 @@ protected:
   //! Load primitive array.
   virtual Handle(Poly_Triangulation) loadData(
     const Handle(RWGltf_GltfLatePrimitiveArray)& theLateData,
-    int                                          theThreadIndex) const Standard_OVERRIDE
+    int                                          theThreadIndex) const override
   {
     GltfReaderTLS& aTlsData = myTlsData.ChangeValue(theThreadIndex);
     if (aTlsData.FileSystem.IsNull())
@@ -159,7 +159,7 @@ protected:
   //! Load primitive array.
   virtual Handle(Poly_Triangulation) loadData(
     const Handle(RWGltf_GltfLatePrimitiveArray)& theLateData,
-    int                                          theThreadIndex) const Standard_OVERRIDE
+    int                                          theThreadIndex) const override
   {
     (void)theThreadIndex;
     return theLateData->LoadStreamData();

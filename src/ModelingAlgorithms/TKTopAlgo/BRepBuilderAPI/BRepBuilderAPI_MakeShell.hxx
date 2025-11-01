@@ -96,7 +96,7 @@ public:
                             const Standard_Boolean      Segment = Standard_False);
 
   //! Returns true if the shell is built.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDone() const override;
 
   //! Returns the construction status:
   //! -   BRepBuilderAPI_ShellDone if the shell is built, or

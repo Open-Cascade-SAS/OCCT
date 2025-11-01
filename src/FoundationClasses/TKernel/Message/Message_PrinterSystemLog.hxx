@@ -38,7 +38,7 @@ public:
 protected:
   //! Puts a message to the system log.
   Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity theGravity) const Standard_OVERRIDE;
+                                    const Message_Gravity theGravity) const override;
 
 private:
   TCollection_AsciiString myEventSourceName;

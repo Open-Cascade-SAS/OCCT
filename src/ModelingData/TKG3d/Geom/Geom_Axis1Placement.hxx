@@ -60,16 +60,16 @@ public:
   Standard_EXPORT void Reverse();
 
   //! Returns a copy of <me> reversed.
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Axis1Placement) Reversed() const;
+  [[nodiscard]] Standard_EXPORT Handle(Geom_Axis1Placement) Reversed() const;
 
   //! Assigns V to the unit vector of this axis.
-  Standard_EXPORT void SetDirection(const gp_Dir& V) Standard_OVERRIDE;
+  Standard_EXPORT void SetDirection(const gp_Dir& V) override;
 
   //! Applies the transformation T to this axis.
-  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Creates a new object, which is a copy of this axis.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Axis1Placement, Geom_AxisPlacement)
 

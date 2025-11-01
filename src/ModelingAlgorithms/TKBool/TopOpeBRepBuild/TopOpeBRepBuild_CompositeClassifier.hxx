@@ -36,7 +36,7 @@ public:
 
   Standard_EXPORT virtual TopAbs_State Compare(const Handle(TopOpeBRepBuild_Loop)& L1,
                                                const Handle(TopOpeBRepBuild_Loop)& L2)
-    Standard_OVERRIDE;
+    override;
 
   //! classify shape <B1> with shape <B2>
   Standard_EXPORT virtual TopAbs_State CompareShapes(const TopoDS_Shape& B1,

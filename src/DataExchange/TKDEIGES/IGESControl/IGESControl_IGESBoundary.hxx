@@ -53,7 +53,7 @@ public:
   Standard_EXPORT virtual void Check(const Standard_Boolean result,
                                      const Standard_Boolean checkclosure,
                                      const Standard_Boolean okCurve3d,
-                                     const Standard_Boolean okCurve2d) Standard_OVERRIDE;
+                                     const Standard_Boolean okCurve2d) override;
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_IGESBoundary, IGESToBRep_IGESBoundary)
 
@@ -69,7 +69,7 @@ protected:
     const Handle(IGESData_HArray1OfIGESEntity)& curves2d,
     const Standard_Boolean                      toreverse2d,
     const Standard_Integer                      number,
-    Handle(ShapeExtend_WireData)&               lsewd) Standard_OVERRIDE;
+    Handle(ShapeExtend_WireData)&               lsewd) override;
 };
 
 #endif // _IGESControl_IGESBoundary_HeaderFile

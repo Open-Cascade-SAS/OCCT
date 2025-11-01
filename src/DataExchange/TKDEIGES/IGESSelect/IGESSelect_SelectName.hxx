@@ -47,7 +47,7 @@ public:
   Standard_EXPORT Standard_Boolean
     Sort(const Standard_Integer                  rank,
          const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+         const Handle(Interface_InterfaceModel)& model) const override;
 
   //! Sets a Name as a criterium : IGES Entities which have this name
   //! are kept (without regular expression, there should be at most
@@ -58,7 +58,7 @@ public:
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
 
   //! Returns the Selection criterium : "IGES Entity, Name : <name>"
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectName, IFSelect_SelectExtract)
 

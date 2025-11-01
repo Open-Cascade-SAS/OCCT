@@ -41,28 +41,28 @@ public:
 
   //! Release OpenGL resources.
   Standard_EXPORT virtual void ReleaseGlResources(const Handle(OpenGl_Context)& theCtx)
-    Standard_OVERRIDE;
+    override;
 
   //! Creates and maps rendering window to the view.
   Standard_EXPORT virtual void SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
                                          const Handle(Aspect_Window)&   theWindow,
                                          const Aspect_RenderingContext  theContext)
-    Standard_OVERRIDE;
+    override;
 
   //! Resizes the window.
-  Standard_EXPORT virtual void Resized() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Resized() override;
 
   //! Redraw the all content.
-  Standard_EXPORT virtual void Redraw() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Redraw() override;
 
   //! Redraw only immediate layer.
-  Standard_EXPORT virtual void RedrawImmediate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void RedrawImmediate() override;
 
   //! Fill in the dictionary with diagnostic info.
   //! Should be called within rendering thread.
   Standard_EXPORT virtual void DiagnosticInformation(TColStd_IndexedDataMapOfStringString& theDict,
                                                      Graphic3d_DiagnosticInfo theFlags) const
-    Standard_OVERRIDE;
+    override;
 
 public:
   //! @return true if IDirect3DDevice9Ex device has been created

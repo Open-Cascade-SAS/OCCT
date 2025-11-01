@@ -37,15 +37,15 @@ public:
                                       const Handle(Geom_Surface)& S,
                                       const TopLoc_Location&      L);
 
-  Standard_EXPORT virtual Standard_Boolean IsPointOnSurface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsPointOnSurface() const override;
 
   Standard_EXPORT virtual Standard_Boolean IsPointOnSurface(const Handle(Geom_Surface)& S,
                                                             const TopLoc_Location&      L) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Standard_Real Parameter2() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Parameter2() const override;
 
-  Standard_EXPORT virtual void Parameter2(const Standard_Real P) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Parameter2(const Standard_Real P) override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointOnSurface, BRep_PointsOnSurface)
 

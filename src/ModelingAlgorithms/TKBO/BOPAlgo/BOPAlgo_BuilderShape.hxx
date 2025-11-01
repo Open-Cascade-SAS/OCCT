@@ -135,7 +135,7 @@ protected: //! @name Constructors
 
 protected: //! @name Clearing
   //! Clears the content of the algorithm.
-  virtual void Clear() Standard_OVERRIDE
+  virtual void Clear() override
   {
     BOPAlgo_Algo::Clear();
     myHistory.Nullify();

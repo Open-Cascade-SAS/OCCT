@@ -26,11 +26,11 @@ class NCollection_HeapAllocator : public NCollection_BaseAllocator
 {
 public:
   // ---------- PUBLIC METHODS ----------
-  Standard_EXPORT virtual void* Allocate(const Standard_Size theSize) Standard_OVERRIDE;
+  Standard_EXPORT virtual void* Allocate(const Standard_Size theSize) override;
 
-  void* AllocateOptimal(const Standard_Size theSize) Standard_OVERRIDE { return Allocate(theSize); }
+  void* AllocateOptimal(const Standard_Size theSize) override { return Allocate(theSize); }
 
-  Standard_EXPORT virtual void Free(void* anAddress) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Free(void* anAddress) override;
 
   Standard_EXPORT static const Handle(NCollection_HeapAllocator)& GlobalHeapAllocator();
 

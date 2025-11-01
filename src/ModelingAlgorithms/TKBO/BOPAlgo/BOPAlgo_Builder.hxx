@@ -83,7 +83,7 @@ public:
   Standard_EXPORT BOPAlgo_Builder(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Clears the content of the algorithm.
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Returns the PaveFiller, algorithm for sub-shapes intersection.
   BOPAlgo_PPaveFiller PPaveFiller() { return myPaveFiller; }
@@ -135,7 +135,7 @@ public: //! @name Performing the operation
   //! Performs the operation.
   //! The intersection will be performed also.
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Performs the operation with the prepared filler.
   //! The intersection will not be performed in this case.
@@ -359,10 +359,10 @@ protected:
 
   //! Filling steps for constant operations
   Standard_EXPORT void fillPIConstants(const Standard_Real theWhole,
-                                       BOPAlgo_PISteps&    theSteps) const Standard_OVERRIDE;
+                                       BOPAlgo_PISteps&    theSteps) const override;
 
   //! Filling steps for all other operations
-  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const override;
 
 protected: //! @name Methods for building the result
   //! Performs the building of the result.
@@ -383,7 +383,7 @@ protected: //! @name Methods for building the result
 
 protected: //! @name Checking input arguments
   //! Checks the input data.
-  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckData() override;
 
   //! Checks if the intersection algorithm has Errors/Warnings.
   Standard_EXPORT void CheckFiller();

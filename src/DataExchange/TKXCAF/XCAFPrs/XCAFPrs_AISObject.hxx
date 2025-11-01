@@ -46,13 +46,13 @@ public:
   //! This method assigns the new default material without overriding XDE styles.
   //! Re-computation of existing presentation is not required after calling this method.
   Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theMaterial)
-    Standard_OVERRIDE;
+    override;
 
 protected:
   //! Redefined method to compute presentation.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   //! Fills out a default style object which is used when styles are
   //! not explicitly defined in the document.

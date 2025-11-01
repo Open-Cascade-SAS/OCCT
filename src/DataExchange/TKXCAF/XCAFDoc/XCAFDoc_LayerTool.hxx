@@ -209,11 +209,11 @@ public:
   //! Return sequence of strings that associated with shape <Sh>.
   Standard_EXPORT Handle(TColStd_HSequenceOfExtendedString) GetLayers(const TopoDS_Shape& Sh);
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_LayerTool, TDataStd_GenericEmpty)
 

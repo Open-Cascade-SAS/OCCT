@@ -34,11 +34,11 @@ public:
   OpenGl_ShadowMap();
 
   //! Releases all OpenGL resources.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const override;
 
   //! Destructor.
   Standard_EXPORT virtual ~OpenGl_ShadowMap();

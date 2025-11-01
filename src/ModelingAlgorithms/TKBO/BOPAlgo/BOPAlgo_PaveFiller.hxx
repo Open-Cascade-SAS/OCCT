@@ -146,7 +146,7 @@ public:
   Standard_EXPORT Standard_Boolean NonDestructive() const;
 
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Sets the glue option for the algorithm
   Standard_EXPORT void SetGlue(const BOPAlgo_GlueEnum theGlue);
@@ -179,7 +179,7 @@ protected:
 
   Standard_EXPORT virtual void PerformInternal(const Message_ProgressRange& theRange);
 
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   Standard_EXPORT virtual void Init(const Message_ProgressRange& theRange);
 
@@ -611,9 +611,9 @@ protected:
 protected: //! Analyzing Progress steps
   //! Filling steps for constant operations
   Standard_EXPORT void fillPIConstants(const Standard_Real theWhole,
-                                       BOPAlgo_PISteps&    theSteps) const Standard_OVERRIDE;
+                                       BOPAlgo_PISteps&    theSteps) const override;
   //! Filling steps for all other operations
-  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const override;
 
 protected: //! Fields
   TopTools_ListOfShape     myArguments;

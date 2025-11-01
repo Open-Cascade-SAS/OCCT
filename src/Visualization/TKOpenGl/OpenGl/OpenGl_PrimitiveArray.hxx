@@ -53,18 +53,18 @@ public:
 
   //! Render primitives to the window
   Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
-    Standard_OVERRIDE;
+    override;
 
   //! Release OpenGL resources (VBOs)
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const override;
 
   //! Increment draw calls statistics.
   Standard_EXPORT virtual void UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats,
-                                               bool theIsDetailed) const Standard_OVERRIDE;
+                                               bool theIsDetailed) const override;
 
   //! Return true if VBOs initialization has been performed.
   //! VBO initialization is performed during first Render() call.
@@ -78,7 +78,7 @@ public:
   Standard_Integer DrawMode() const { return myDrawMode; }
 
   //! Return TRUE if primitive type generates shaded triangulation.
-  virtual Standard_Boolean IsFillDrawMode() const Standard_OVERRIDE { return myIsFillType; }
+  virtual Standard_Boolean IsFillDrawMode() const override { return myIsFillType; }
 
   //! @return indices array
   const Handle(Graphic3d_IndexBuffer)& Indices() const { return myIndices; }
@@ -108,7 +108,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 protected:
   //! VBO initialization procedures

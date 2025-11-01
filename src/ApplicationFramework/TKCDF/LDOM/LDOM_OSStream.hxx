@@ -67,12 +67,12 @@ public:
 
   // Methods of std::streambuf
 
-  Standard_EXPORT virtual int overflow(int c = EOF) Standard_OVERRIDE;
-  Standard_EXPORT virtual int underflow() Standard_OVERRIDE;
+  Standard_EXPORT virtual int overflow(int c = EOF) override;
+  Standard_EXPORT virtual int underflow() override;
   // virtual int uflow();
 
   Standard_EXPORT virtual std::streamsize xsputn(const char*     s,
-                                                 std::streamsize n) Standard_OVERRIDE;
+                                                 std::streamsize n) override;
   // virtual int xsgetn(char* s, int n);
   // virtual int sync();
 

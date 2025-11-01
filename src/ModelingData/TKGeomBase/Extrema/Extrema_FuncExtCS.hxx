@@ -46,24 +46,24 @@ public:
   //! sets the field mysurf of the function.
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& C, const Adaptor3d_Surface& S);
 
-  Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbVariables() const override;
 
-  Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbEquations() const override;
 
   //! Calculation of Fi(U,V).
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& UV, math_Vector& F) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& UV, math_Vector& F) override;
 
   //! Calculation of Fi'(U,V).
   Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& UV,
-                                               math_Matrix&       DF) Standard_OVERRIDE;
+                                               math_Matrix&       DF) override;
 
   //! Calculation of Fi(U,V) and Fi'(U,V).
   Standard_EXPORT Standard_Boolean Values(const math_Vector& UV,
                                           math_Vector&       F,
-                                          math_Matrix&       DF) Standard_OVERRIDE;
+                                          math_Matrix&       DF) override;
 
   //! Save the found extremum.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer GetStateNumber() override;
 
   //! Return the number of found extrema.
   Standard_EXPORT Standard_Integer NbExt() const;

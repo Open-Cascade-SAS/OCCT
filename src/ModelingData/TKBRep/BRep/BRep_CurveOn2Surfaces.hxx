@@ -39,34 +39,34 @@ public:
                                         const GeomAbs_Shape         C);
 
   //! Returns True.
-  Standard_EXPORT virtual Standard_Boolean IsRegularity() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsRegularity() const override;
 
   //! A curve on two surfaces (continuity).
   Standard_EXPORT virtual Standard_Boolean IsRegularity(const Handle(Geom_Surface)& S1,
                                                         const Handle(Geom_Surface)& S2,
                                                         const TopLoc_Location&      L1,
                                                         const TopLoc_Location&      L2) const
-    Standard_OVERRIDE;
+    override;
 
   //! Raises an error.
   Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const;
 
-  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface() const override;
 
-  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface2() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface2() const override;
 
-  Standard_EXPORT virtual const TopLoc_Location& Location2() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TopLoc_Location& Location2() const override;
 
-  Standard_EXPORT virtual const GeomAbs_Shape& Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const GeomAbs_Shape& Continuity() const override;
 
-  Standard_EXPORT virtual void Continuity(const GeomAbs_Shape C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Continuity(const GeomAbs_Shape C) override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(BRep_CurveRepresentation) Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_CurveOn2Surfaces, BRep_CurveRepresentation)
 

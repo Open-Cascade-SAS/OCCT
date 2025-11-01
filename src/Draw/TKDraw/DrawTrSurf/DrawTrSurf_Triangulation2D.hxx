@@ -43,17 +43,17 @@ public:
 
   Standard_EXPORT Handle(Poly_Triangulation) Triangulation() const;
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
   //! For variable whatis command. Set  as a result  the
   //! type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Triangulation2D, Draw_Drawable2D)
 

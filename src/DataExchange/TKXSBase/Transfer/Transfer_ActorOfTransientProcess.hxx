@@ -40,7 +40,7 @@ public:
   Standard_EXPORT virtual Handle(Transfer_Binder) Transferring(
     const Handle(Standard_Transient)&           start,
     const Handle(Transfer_ProcessForTransient)& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
     const Handle(Standard_Transient)&        start,

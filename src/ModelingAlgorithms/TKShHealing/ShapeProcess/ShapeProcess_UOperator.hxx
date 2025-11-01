@@ -39,7 +39,7 @@ public:
   //! Performs operation and records changes in the context
   Standard_EXPORT virtual Standard_Boolean Perform(
     const Handle(ShapeProcess_Context)& context,
-    const Message_ProgressRange&        theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeProcess_UOperator, ShapeProcess_Operator)
 

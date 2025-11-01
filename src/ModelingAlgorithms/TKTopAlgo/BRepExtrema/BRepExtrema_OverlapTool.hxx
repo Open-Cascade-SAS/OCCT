@@ -88,11 +88,11 @@ public: //! @name Reject/Accept implementations
                                                       const BVH_Vec3d& theCornerMax1,
                                                       const BVH_Vec3d& theCornerMin2,
                                                       const BVH_Vec3d& theCornerMax2,
-                                                      Standard_Real&) const Standard_OVERRIDE;
+                                                      Standard_Real&) const override;
   //! Defines the rules for leaf acceptance
   Standard_EXPORT virtual Standard_Boolean Accept(const Standard_Integer theLeaf1,
                                                   const Standard_Integer theLeaf2)
-    Standard_OVERRIDE;
+    override;
 
 protected:
   //! Performs narrow-phase of overlap test (exact intersection).

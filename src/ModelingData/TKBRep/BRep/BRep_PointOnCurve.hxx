@@ -37,19 +37,19 @@ public:
                                     const TopLoc_Location&    L);
 
   //! Returns True
-  Standard_EXPORT virtual Standard_Boolean IsPointOnCurve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsPointOnCurve() const override;
 
   Standard_EXPORT virtual Standard_Boolean IsPointOnCurve(const Handle(Geom_Curve)& C,
                                                           const TopLoc_Location&    L) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual const Handle(Geom_Curve)& Curve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Geom_Curve)& Curve() const override;
 
-  Standard_EXPORT virtual void Curve(const Handle(Geom_Curve)& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Curve(const Handle(Geom_Curve)& C) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointOnCurve, BRep_PointRepresentation)
 

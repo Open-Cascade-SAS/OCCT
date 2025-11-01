@@ -44,7 +44,7 @@ public:
 
   //! Image reader.
   virtual Handle(Image_PixMap) GetImage(const Handle(Image_SupportedFormats)& theSupported)
-    Standard_OVERRIDE
+    override
   {
     return myImageSource->ReadImage(theSupported);
   }

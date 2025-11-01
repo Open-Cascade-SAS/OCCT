@@ -41,7 +41,7 @@ public:
   //! -- 1 -> Representation
   //! -- 2 -> RepresentationReference
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    CaseNum(const Handle(Standard_Transient)& ent) const override;
 
   //! Returns Value as Representation (or Null if another type)
   Standard_EXPORT Handle(StepRepr_Representation) Representation() const;

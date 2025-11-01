@@ -51,7 +51,7 @@ public:
   Standard_EXPORT virtual ~BRepFeat_Builder();
 
   //! Clears internal fields and arguments.
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Initializes the object of local boolean operation.
   Standard_EXPORT void Init(const TopoDS_Shape& theShape);
@@ -106,16 +106,16 @@ public:
 
 protected:
   //! Prepares builder of local operation.
-  Standard_EXPORT virtual void Prepare() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Prepare() override;
 
   //! Function is redefined to avoid the usage of removed faces.
   Standard_EXPORT virtual void FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids,
                                              const Message_ProgressRange&  theRange)
-    Standard_OVERRIDE;
+    override;
 
   //! Avoid the check for open solids and always use the splits
   //! of solids for building the result shape.
-  virtual Standard_Boolean CheckArgsForOpenSolid() Standard_OVERRIDE { return Standard_False; }
+  virtual Standard_Boolean CheckArgsForOpenSolid() override { return Standard_False; }
 
   TopTools_MapOfShape myShapes;
   TopTools_MapOfShape myRemoved;

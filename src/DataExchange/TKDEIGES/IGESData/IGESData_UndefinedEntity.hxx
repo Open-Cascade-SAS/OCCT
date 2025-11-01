@@ -66,20 +66,20 @@ public:
   Standard_EXPORT void SetOKDirPart();
 
   //! returns Error status if necessary, else calls original method
-  Standard_EXPORT virtual IGESData_DefType DefLineFont() const Standard_OVERRIDE;
+  Standard_EXPORT virtual IGESData_DefType DefLineFont() const override;
 
   //! returns Error status if necessary, else calls original method
-  Standard_EXPORT virtual IGESData_DefList DefLevel() const Standard_OVERRIDE;
+  Standard_EXPORT virtual IGESData_DefList DefLevel() const override;
 
   //! returns Error status if necessary, else calls original method
-  Standard_EXPORT virtual IGESData_DefList DefView() const Standard_OVERRIDE;
+  Standard_EXPORT virtual IGESData_DefList DefView() const override;
 
   //! returns Error status if necessary, else calls original method
-  Standard_EXPORT virtual IGESData_DefType DefColor() const Standard_OVERRIDE;
+  Standard_EXPORT virtual IGESData_DefType DefColor() const override;
 
   //! returns Error status if necessary, else calls original method
   //! (that is, if SubScript field is not blank or positive integer)
-  Standard_EXPORT virtual Standard_Boolean HasSubScriptNumber() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean HasSubScriptNumber() const override;
 
   //! Computes the Directory Error Status, to be called before
   //! standard ReadDir from IGESReaderTool

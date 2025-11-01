@@ -50,29 +50,29 @@ public:
 
   //! Gives the count of Protocols used as Resource (can be zero)
   //! i.e. the count of Protocol recorded by calling the method Add
-  Standard_EXPORT virtual Standard_Integer NbResources() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbResources() const override;
 
   //! Returns a Resource, given a rank. Here, rank of calling Add
   Standard_EXPORT virtual Handle(Interface_Protocol) Resource(const Standard_Integer num) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns a Case Number, specific of each recognized Type
   //! Here, NO Type at all is recognized properly : all Types are
   //! recognized by the resources
   Standard_EXPORT virtual Standard_Integer TypeNumber(const Handle(Standard_Type)& atype) const
-    Standard_OVERRIDE;
+    override;
 
   //! Calls GlobalCheck for each of its recorded resources
   Standard_EXPORT virtual Standard_Boolean GlobalCheck(const Interface_Graph&   G,
                                                        Handle(Interface_Check)& ach) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the Schema Name attached to each class of Protocol
   //! To be redefined by each sub-class
   //! Here, SchemaName returns "" (empty String)
   //! was C++ : return const
   Standard_EXPORT virtual Standard_CString SchemaName(
-    const Handle(Interface_InterfaceModel)& theModel) const Standard_OVERRIDE;
+    const Handle(Interface_InterfaceModel)& theModel) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepData_FileProtocol, StepData_Protocol)
 

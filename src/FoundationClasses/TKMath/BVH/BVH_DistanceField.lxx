@@ -185,7 +185,7 @@ public:
   //! Defines the rules for node rejection
   virtual Standard_Boolean RejectNode(const BVH_VecNt& theCMin,
                                       const BVH_VecNt& theCMax,
-                                      T&               theMetric) const Standard_OVERRIDE
+                                      T&               theMetric) const override
   {
     theMetric = DistanceToBox<T, N>(this->myObject, theCMin, theCMax);
     return theMetric > this->myDistance;
@@ -193,7 +193,7 @@ public:
 
 public:
   //! Redefine the Stop to never stop the selection
-  virtual Standard_Boolean Stop() const Standard_OVERRIDE { return Standard_False; }
+  virtual Standard_Boolean Stop() const override { return Standard_False; }
 
 protected:
   Standard_Boolean myIsOutside;
@@ -218,7 +218,7 @@ public:
 
 public:
   // Accepting the element
-  virtual Standard_Boolean Accept(const Standard_Integer theIndex, const T&) Standard_OVERRIDE
+  virtual Standard_Boolean Accept(const Standard_Integer theIndex, const T&) override
   {
     const BVH_Vec4i aTriangle = this->myBVHSet->Elements[theIndex];
 
@@ -304,7 +304,7 @@ public:
 
 public:
   // Accepting the element
-  virtual Standard_Boolean Accept(const Standard_Integer theIndex, const T&) Standard_OVERRIDE
+  virtual Standard_Boolean Accept(const Standard_Integer theIndex, const T&) override
   {
     Standard_Boolean isOutside = Standard_True;
     const T aDistance = SquareDistanceToObject(this->myBVHSet->Objects()(theIndex).operator->(),

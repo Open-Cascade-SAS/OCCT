@@ -35,22 +35,22 @@ public:
   Standard_EXPORT virtual void Set(const TCollection_ExtendedString& S);
 
   //! Sets the explicit user defined GUID  to the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& guid) Standard_OVERRIDE;
+  Standard_EXPORT void SetID(const Standard_GUID& guid) override;
 
   //! Returns the name contained in this name attribute.
   Standard_EXPORT virtual const TCollection_ExtendedString& Get() const;
 
   //! Returns the ID of the attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) override;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+                             const Handle(TDF_RelocationTable)& RT) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_GenericExtString, TDF_Attribute)
 

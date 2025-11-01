@@ -139,7 +139,7 @@ public:
   void SetSurface(const Handle(Geom_Surface)& surf, const TopLoc_Location& loc);
 
   //! Set working precision (to root and to analyzer)
-  Standard_EXPORT virtual void SetPrecision(const Standard_Real prec) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetPrecision(const Standard_Real prec) override;
 
   //! Sets the maximal allowed angle of the tails in radians.
   Standard_EXPORT void SetMaxTailAngle(const Standard_Real theMaxTailAngle);

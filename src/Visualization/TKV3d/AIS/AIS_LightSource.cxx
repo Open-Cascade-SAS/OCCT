@@ -656,17 +656,17 @@ void AIS_LightSource::computeDirectional(const Handle(Prs3d_Presentation)& thePr
         aPoints.SetValue(8, aLightPos - aDY);
         aPoints.SetValue(9, aLightPos - aDX);
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case 5: {
         aPoints.SetValue(4, aLightPos - aDY + aDX);
         aPoints.SetValue(5, aLightPos + aDY - aDX);
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case 3: {
         aPoints.SetValue(2, aLightPos + aDXY);
         aPoints.SetValue(3, aLightPos - aDXY);
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case 1: {
         aPoints.SetValue(1, aLightPos);
         break;

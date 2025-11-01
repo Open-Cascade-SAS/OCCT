@@ -81,12 +81,12 @@ public:
    * is not created, but rather the given one is modified.
    */
   Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
-    Standard_OVERRIDE;
+    override;
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
 private:
   // ---------- PRIVATE FIELDS ----------

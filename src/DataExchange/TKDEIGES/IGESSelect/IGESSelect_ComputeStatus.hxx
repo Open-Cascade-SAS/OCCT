@@ -49,11 +49,11 @@ public:
   //! Works with a Protocol. Implementation uses BasicEditor
   Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Compute Subordinate Status and Use Flag"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_ComputeStatus, IGESSelect_ModelModifier)
 

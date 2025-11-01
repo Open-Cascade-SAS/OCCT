@@ -186,14 +186,14 @@ public:
   constexpr void operator+=(const gp_Vec& theOther) noexcept { Add(theOther); }
 
   //! Adds two vectors
-  Standard_NODISCARD constexpr gp_Vec Added(const gp_Vec& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Vec Added(const gp_Vec& theOther) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Add(theOther.coord);
     return aV;
   }
 
-  Standard_NODISCARD constexpr gp_Vec operator+(const gp_Vec& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Vec operator+(const gp_Vec& theOther) const noexcept
   {
     return Added(theOther);
   }
@@ -204,14 +204,14 @@ public:
   constexpr void operator-=(const gp_Vec& theRight) noexcept { Subtract(theRight); }
 
   //! Subtracts two vectors
-  Standard_NODISCARD constexpr gp_Vec Subtracted(const gp_Vec& theRight) const noexcept
+  [[nodiscard]] constexpr gp_Vec Subtracted(const gp_Vec& theRight) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Subtract(theRight.coord);
     return aV;
   }
 
-  Standard_NODISCARD constexpr gp_Vec operator-(const gp_Vec& theRight) const noexcept
+  [[nodiscard]] constexpr gp_Vec operator-(const gp_Vec& theRight) const noexcept
   {
     return Subtracted(theRight);
   }
@@ -222,14 +222,14 @@ public:
   constexpr void operator*=(const Standard_Real theScalar) noexcept { Multiply(theScalar); }
 
   //! Multiplies a vector by a scalar
-  Standard_NODISCARD constexpr gp_Vec Multiplied(const Standard_Real theScalar) const noexcept
+  [[nodiscard]] constexpr gp_Vec Multiplied(const Standard_Real theScalar) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Multiply(theScalar);
     return aV;
   }
 
-  Standard_NODISCARD constexpr gp_Vec operator*(const Standard_Real theScalar) const noexcept
+  [[nodiscard]] constexpr gp_Vec operator*(const Standard_Real theScalar) const noexcept
   {
     return Multiplied(theScalar);
   }
@@ -240,14 +240,14 @@ public:
   constexpr void operator/=(const Standard_Real theScalar) { Divide(theScalar); }
 
   //! Divides a vector by a scalar
-  Standard_NODISCARD constexpr gp_Vec Divided(const Standard_Real theScalar) const
+  [[nodiscard]] constexpr gp_Vec Divided(const Standard_Real theScalar) const
   {
     gp_Vec aV = *this;
     aV.coord.Divide(theScalar);
     return aV;
   }
 
-  Standard_NODISCARD constexpr gp_Vec operator/(const Standard_Real theScalar) const
+  [[nodiscard]] constexpr gp_Vec operator/(const Standard_Real theScalar) const
   {
     return Divided(theScalar);
   }
@@ -258,14 +258,14 @@ public:
   constexpr void operator^=(const gp_Vec& theRight) noexcept { Cross(theRight); }
 
   //! computes the cross product between two vectors
-  Standard_NODISCARD constexpr gp_Vec Crossed(const gp_Vec& theRight) const noexcept
+  [[nodiscard]] constexpr gp_Vec Crossed(const gp_Vec& theRight) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Cross(theRight.coord);
     return aV;
   }
 
-  Standard_NODISCARD constexpr gp_Vec operator^(const gp_Vec& theRight) const noexcept
+  [[nodiscard]] constexpr gp_Vec operator^(const gp_Vec& theRight) const noexcept
   {
     return Crossed(theRight);
   }
@@ -295,7 +295,7 @@ public:
 
   //! Computes the triple vector product.
   //! <me> ^ (theV1 ^ theV2)
-  Standard_NODISCARD constexpr gp_Vec CrossCrossed(const gp_Vec& theV1,
+  [[nodiscard]] constexpr gp_Vec CrossCrossed(const gp_Vec& theV1,
                                                    const gp_Vec& theV2) const noexcept
   {
     gp_Vec aV = *this;
@@ -331,20 +331,20 @@ public:
   //! normalizes a vector
   //! Raises an exception if the magnitude of the vector is
   //! lower or equal to Resolution from gp.
-  Standard_NODISCARD gp_Vec Normalized() const;
+  [[nodiscard]] gp_Vec Normalized() const;
 
   //! Reverses the direction of a vector
   constexpr void Reverse() noexcept { coord.Reverse(); }
 
   //! Reverses the direction of a vector
-  Standard_NODISCARD constexpr gp_Vec Reversed() const noexcept
+  [[nodiscard]] constexpr gp_Vec Reversed() const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Reverse();
     return aV;
   }
 
-  Standard_NODISCARD constexpr gp_Vec operator-() const noexcept { return Reversed(); }
+  [[nodiscard]] constexpr gp_Vec operator-() const noexcept { return Reversed(); }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2 + theA3 * theV3 + theV4
@@ -411,27 +411,27 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector theV which is the center of
   //! the  symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Vec& theV) const;
+  [[nodiscard]] Standard_EXPORT gp_Vec Mirrored(const gp_Vec& theV) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax1& theA1) const;
+  [[nodiscard]] Standard_EXPORT gp_Vec Mirrored(const gp_Ax1& theA1) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to a plane. The axis placement theA2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax2& theA2) const;
+  [[nodiscard]] Standard_EXPORT gp_Vec Mirrored(const gp_Ax2& theA2) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng);
 
   //! Rotates a vector. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Vec Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  [[nodiscard]] gp_Vec Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
     gp_Vec aVres = *this;
     aVres.Rotate(theA1, theAng);
@@ -441,7 +441,7 @@ public:
   constexpr void Scale(const Standard_Real theS) noexcept { coord.Multiply(theS); }
 
   //! Scales a vector. theS is the scaling value.
-  Standard_NODISCARD constexpr gp_Vec Scaled(const Standard_Real theS) const noexcept
+  [[nodiscard]] constexpr gp_Vec Scaled(const Standard_Real theS) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Multiply(theS);
@@ -452,7 +452,7 @@ public:
   Standard_EXPORT void Transform(const gp_Trsf& theT);
 
   //! Transforms a vector with the transformation theT.
-  Standard_NODISCARD gp_Vec Transformed(const gp_Trsf& theT) const
+  [[nodiscard]] gp_Vec Transformed(const gp_Trsf& theT) const
   {
     gp_Vec aV = *this;
     aV.Transform(theT);

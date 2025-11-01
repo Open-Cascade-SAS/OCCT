@@ -88,15 +88,15 @@ public:
   //! This is  called by  Shape().  It does  nothing but
   //! may be redefined.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! returns the status of the Face after
   //! the shape creation.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& F) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& F) override;
 
   //! returns the list of generated Faces.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& F)
-    Standard_OVERRIDE;
+    override;
 
 protected:
 private:

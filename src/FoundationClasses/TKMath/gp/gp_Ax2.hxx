@@ -198,7 +198,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored(const gp_Pnt& P) const;
+  [[nodiscard]] Standard_EXPORT gp_Ax2 Mirrored(const gp_Pnt& P) const;
 
   //! Performs a symmetrical transformation of this coordinate
   //! system with respect to:
@@ -232,7 +232,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored(const gp_Ax1& A1) const;
+  [[nodiscard]] Standard_EXPORT gp_Ax2 Mirrored(const gp_Ax1& A1) const;
 
   //! Performs a symmetrical transformation of this coordinate
   //! system with respect to:
@@ -268,7 +268,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored(const gp_Ax2& A2) const;
+  [[nodiscard]] Standard_EXPORT gp_Ax2 Mirrored(const gp_Ax2& A2) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
   {
@@ -282,7 +282,7 @@ public:
 
   //! Rotates an axis placement. <theA1> is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Ax2 Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  [[nodiscard]] gp_Ax2 Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
     gp_Ax2 aTemp = *this;
     aTemp.Rotate(theA1, theAng);
@@ -308,7 +308,7 @@ public:
   //! . the main direction of the axis placement is not changed.
   //! . The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.
-  Standard_NODISCARD gp_Ax2 Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+  [[nodiscard]] gp_Ax2 Scaled(const gp_Pnt& theP, const Standard_Real theS) const
   {
     gp_Ax2 aTemp = *this;
     aTemp.Scale(theP, theS);
@@ -329,7 +329,7 @@ public:
   //! The "Location" point, the "XDirection" and the "YDirection" are transformed with theT.
   //! The resulting main "Direction" of <me> is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-  Standard_NODISCARD gp_Ax2 Transformed(const gp_Trsf& theT) const
+  [[nodiscard]] gp_Ax2 Transformed(const gp_Trsf& theT) const
   {
     gp_Ax2 aTemp = *this;
     aTemp.Transform(theT);
@@ -340,7 +340,7 @@ public:
 
   //! Translates an axis plaxement in the direction of the vector <theV>.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Ax2 Translated(const gp_Vec& theV) const
+  [[nodiscard]] gp_Ax2 Translated(const gp_Vec& theV) const
   {
     gp_Ax2 aTemp = *this;
     aTemp.Translate(theV);
@@ -353,7 +353,7 @@ public:
   }
 
   //! Translates an axis placement from the point <theP1> to the point <theP2>.
-  Standard_NODISCARD gp_Ax2 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  [[nodiscard]] gp_Ax2 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
   {
     gp_Ax2 aTemp = *this;
     aTemp.Translate(theP1, theP2);

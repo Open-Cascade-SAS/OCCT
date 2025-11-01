@@ -45,18 +45,18 @@ public:
 
   void Set(const Handle(Adaptor2d_Curve2d)& A);
 
-  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F) override;
 
   Standard_EXPORT Standard_Boolean Derivative(const Standard_Real X,
-                                              Standard_Real&      D) Standard_OVERRIDE;
+                                              Standard_Real&      D) override;
 
   Standard_EXPORT Standard_Boolean Values(const Standard_Real X,
                                           Standard_Real&      F,
-                                          Standard_Real&      D) Standard_OVERRIDE;
+                                          Standard_Real&      D) override;
 
   Standard_EXPORT Standard_Integer NbSamples() const;
 
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer GetStateNumber() override;
 
   const gp_Pnt& Valpoint(const Standard_Integer Index) const;
 

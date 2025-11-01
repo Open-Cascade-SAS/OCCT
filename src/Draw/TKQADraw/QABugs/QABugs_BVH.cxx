@@ -68,7 +68,7 @@ public:
   //! Defines the rules for node rejection by bounding box
   virtual Standard_Boolean RejectNode(const BVH_Vec3d&  theCornerMin,
                                       const BVH_Vec3d&  theCornerMax,
-                                      Standard_Boolean& theIsInside) const Standard_OVERRIDE
+                                      Standard_Boolean& theIsInside) const override
   {
     Standard_Boolean hasOverlap;
     theIsInside = myBox.Contains(theCornerMin, theCornerMax, hasOverlap);
@@ -76,14 +76,14 @@ public:
   }
 
   //! Defines the rules for leaf acceptance
-  virtual Standard_Boolean AcceptMetric(const Standard_Boolean& theIsInside) const Standard_OVERRIDE
+  virtual Standard_Boolean AcceptMetric(const Standard_Boolean& theIsInside) const override
   {
     return theIsInside;
   }
 
   //! Defines the rules for leaf acceptance
   virtual Standard_Boolean Accept(const Standard_Integer  theIndex,
-                                  const Standard_Boolean& theIsInside) Standard_OVERRIDE
+                                  const Standard_Boolean& theIsInside) override
   {
     if (theIsInside || !myBox.IsOut(myBVHSet->Box(theIndex)))
     {
@@ -126,7 +126,7 @@ public:
   //! Defines the rules for node rejection by bounding box
   virtual Standard_Boolean RejectNode(const BVH_Vec3d&  theCornerMin,
                                       const BVH_Vec3d&  theCornerMax,
-                                      Standard_Boolean& theIsInside) const Standard_OVERRIDE
+                                      Standard_Boolean& theIsInside) const override
   {
     Standard_Boolean hasOverlap;
     theIsInside = myBox.Contains(theCornerMin, theCornerMax, hasOverlap);
@@ -134,14 +134,14 @@ public:
   }
 
   //! Defines the rules for leaf acceptance
-  virtual Standard_Boolean AcceptMetric(const Standard_Boolean& theIsInside) const Standard_OVERRIDE
+  virtual Standard_Boolean AcceptMetric(const Standard_Boolean& theIsInside) const override
   {
     return theIsInside;
   }
 
   //! Defines the rules for leaf acceptance
   virtual Standard_Boolean Accept(const Standard_Integer  theIndex,
-                                  const Standard_Boolean& theIsInside) Standard_OVERRIDE
+                                  const Standard_Boolean& theIsInside) override
   {
     if (theIsInside || !myBox.IsOut(myBoxSet->Box(theIndex)))
     {
@@ -277,7 +277,7 @@ public:
                                       const BVH_Vec3d& theCornerMax1,
                                       const BVH_Vec3d& theCornerMin2,
                                       const BVH_Vec3d& theCornerMax2,
-                                      Standard_Real&) const Standard_OVERRIDE
+                                      Standard_Real&) const override
   {
     return BVH_Box<Standard_Real, 3>(theCornerMin1, theCornerMax1)
       .IsOut(BVH_Box<Standard_Real, 3>(theCornerMin2, theCornerMax2));
@@ -285,7 +285,7 @@ public:
 
   //! Defines the rules for leaf acceptance
   virtual Standard_Boolean Accept(const Standard_Integer theIndex1,
-                                  const Standard_Integer theIndex2) Standard_OVERRIDE
+                                  const Standard_Integer theIndex2) override
   {
     BVH_Box<Standard_Real, 3> aBox1 = myBVHSet1->Box(theIndex1);
     BVH_Box<Standard_Real, 3> aBox2 = myBVHSet2->Box(theIndex2);
@@ -331,7 +331,7 @@ public:
                                       const BVH_Vec3d& theCornerMax1,
                                       const BVH_Vec3d& theCornerMin2,
                                       const BVH_Vec3d& theCornerMax2,
-                                      Standard_Real&) const Standard_OVERRIDE
+                                      Standard_Real&) const override
   {
     return BVH_Box<Standard_Real, 3>(theCornerMin1, theCornerMax1)
       .IsOut(BVH_Box<Standard_Real, 3>(theCornerMin2, theCornerMax2));
@@ -339,7 +339,7 @@ public:
 
   //! Defines the rules for leaf acceptance
   virtual Standard_Boolean Accept(const Standard_Integer theIndex1,
-                                  const Standard_Integer theIndex2) Standard_OVERRIDE
+                                  const Standard_Integer theIndex2) override
   {
     BVH_Box<Standard_Real, 3> aBox1 = mySBSet1->Box(theIndex1);
     BVH_Box<Standard_Real, 3> aBox2 = mySBSet2->Box(theIndex2);
@@ -568,7 +568,7 @@ public:
 public:
   //! Defines the rules for leaf acceptance
   virtual Standard_Boolean Accept(const Standard_Integer theIndex1,
-                                  const Standard_Integer theIndex2) Standard_OVERRIDE
+                                  const Standard_Integer theIndex2) override
   {
     const Triangle& aTri1 = myBVHSet1->Element(theIndex1);
     const Triangle& aTri2 = myBVHSet2->Element(theIndex2);

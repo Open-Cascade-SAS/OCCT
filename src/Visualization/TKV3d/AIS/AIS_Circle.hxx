@@ -41,10 +41,10 @@ public:
                              const Standard_Boolean     theIsFilledCircleSens = Standard_False);
 
   //! Returns index 6 by default.
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 6; }
+  virtual Standard_Integer Signature() const override { return 6; }
 
   //! Indicates that the type of Interactive Object is a datum.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
+  virtual AIS_KindOfInteractive Type() const override
   {
     return AIS_KindOfInteractive_Datum;
   }
@@ -77,16 +77,16 @@ public:
     myCircleIsArc = Standard_True;
   }
 
-  Standard_EXPORT void SetColor(const Quantity_Color& aColor) Standard_OVERRIDE;
+  Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
 
   //! Assigns the width aValue to the solid line boundary of the circle datum.
-  Standard_EXPORT void SetWidth(const Standard_Real aValue) Standard_OVERRIDE;
+  Standard_EXPORT void SetWidth(const Standard_Real aValue) override;
 
   //! Removes color from the solid line boundary of the circle datum.
-  Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT void UnsetColor() override;
 
   //! Removes width settings from the solid line boundary of the circle datum.
-  Standard_EXPORT void UnsetWidth() Standard_OVERRIDE;
+  Standard_EXPORT void UnsetWidth() override;
 
   //! Returns the type of sensitivity for the circle;
   Standard_Boolean IsFilledCircleSens() const { return myIsFilledCircleSens; }
@@ -101,10 +101,10 @@ public:
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         theprs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+                                                const Standard_Integer theMode) override;
 
   Standard_EXPORT void ComputeCircle(const Handle(Prs3d_Presentation)& aPresentation);
 

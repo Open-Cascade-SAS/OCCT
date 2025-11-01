@@ -36,11 +36,11 @@ public:
   Standard_EXPORT Standard_Boolean
     Paste(const BinObjMgt_Persistent&  theSource,
           const Handle(TDF_Attribute)& theTarget,
-          BinObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+          BinObjMgt_RRelocationTable&  theRelocTable) const override;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
                              BinObjMgt_Persistent&        theTarget,
-                             BinObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+                             BinObjMgt_SRelocationTable&  theRelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_NoteDriver, BinMDF_ADriver)
 

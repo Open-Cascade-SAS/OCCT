@@ -48,24 +48,24 @@ public:
   Standard_EXPORT virtual void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                TopOpeBRepBuild_LoopClassifier& LC,
                                                const Standard_Boolean ForceClass = Standard_False)
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual void ADD_Loop_TO_LISTOFLoop(const Handle(TopOpeBRepBuild_Loop)& L,
                                                       TopOpeBRepBuild_ListOfLoop&         LOL,
                                                       const Standard_Address s = NULL) const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual void REM_Loop_FROM_LISTOFLoop(
     TopOpeBRepBuild_ListIteratorOfListOfLoop& ITLOL,
     TopOpeBRepBuild_ListOfLoop&               LOL,
-    const Standard_Address                    s = NULL) const Standard_OVERRIDE;
+    const Standard_Address                    s = NULL) const override;
 
   Standard_EXPORT virtual void ADD_LISTOFLoop_TO_LISTOFLoop(TopOpeBRepBuild_ListOfLoop& LOL1,
                                                             TopOpeBRepBuild_ListOfLoop& LOL2,
                                                             const Standard_Address      s  = NULL,
                                                             const Standard_Address      s1 = NULL,
                                                             const Standard_Address s2 = NULL) const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT static void DumpList(const TopOpeBRepBuild_ListOfLoop& L);
 

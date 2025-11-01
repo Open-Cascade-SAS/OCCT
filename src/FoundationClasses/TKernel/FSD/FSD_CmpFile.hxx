@@ -36,35 +36,35 @@ public:
   Standard_EXPORT FSD_CmpFile();
 
   Standard_EXPORT Storage_Error Open(const TCollection_AsciiString& aName,
-                                     const Storage_OpenMode         aMode) Standard_OVERRIDE;
+                                     const Storage_OpenMode         aMode) override;
 
   Standard_EXPORT static Storage_Error IsGoodFileType(const TCollection_AsciiString& aName);
 
-  Standard_EXPORT Storage_Error BeginWriteInfoSection() Standard_OVERRIDE;
+  Standard_EXPORT Storage_Error BeginWriteInfoSection() override;
 
-  Standard_EXPORT Storage_Error BeginReadInfoSection() Standard_OVERRIDE;
+  Standard_EXPORT Storage_Error BeginReadInfoSection() override;
 
   Standard_EXPORT void WritePersistentObjectHeader(const Standard_Integer aRef,
-                                                   const Standard_Integer aType) Standard_OVERRIDE;
+                                                   const Standard_Integer aType) override;
 
-  Standard_EXPORT void BeginWritePersistentObjectData() Standard_OVERRIDE;
+  Standard_EXPORT void BeginWritePersistentObjectData() override;
 
-  Standard_EXPORT void BeginWriteObjectData() Standard_OVERRIDE;
+  Standard_EXPORT void BeginWriteObjectData() override;
 
-  Standard_EXPORT void EndWriteObjectData() Standard_OVERRIDE;
+  Standard_EXPORT void EndWriteObjectData() override;
 
-  Standard_EXPORT void EndWritePersistentObjectData() Standard_OVERRIDE;
+  Standard_EXPORT void EndWritePersistentObjectData() override;
 
   Standard_EXPORT void ReadPersistentObjectHeader(Standard_Integer& aRef,
-                                                  Standard_Integer& aType) Standard_OVERRIDE;
+                                                  Standard_Integer& aType) override;
 
-  Standard_EXPORT void BeginReadPersistentObjectData() Standard_OVERRIDE;
+  Standard_EXPORT void BeginReadPersistentObjectData() override;
 
-  Standard_EXPORT void BeginReadObjectData() Standard_OVERRIDE;
+  Standard_EXPORT void BeginReadObjectData() override;
 
-  Standard_EXPORT void EndReadObjectData() Standard_OVERRIDE;
+  Standard_EXPORT void EndReadObjectData() override;
 
-  Standard_EXPORT void EndReadPersistentObjectData() Standard_OVERRIDE;
+  Standard_EXPORT void EndReadPersistentObjectData() override;
 
   Standard_EXPORT void Destroy();
 
@@ -74,17 +74,17 @@ public:
 
 protected:
   //! read from the current position to the end of line.
-  Standard_EXPORT void ReadLine(TCollection_AsciiString& buffer) Standard_OVERRIDE;
+  Standard_EXPORT void ReadLine(TCollection_AsciiString& buffer) override;
 
   //! read extended chars (unicode) from the current position to the end of line.
-  Standard_EXPORT void ReadExtendedLine(TCollection_ExtendedString& buffer) Standard_OVERRIDE;
+  Standard_EXPORT void ReadExtendedLine(TCollection_ExtendedString& buffer) override;
 
   //! write from the current position to the end of line.
   Standard_EXPORT void WriteExtendedLine(const TCollection_ExtendedString& buffer)
-    Standard_OVERRIDE;
+    override;
 
   //! read from the first none space character position to the end of line.
-  Standard_EXPORT void ReadString(TCollection_AsciiString& buffer) Standard_OVERRIDE;
+  Standard_EXPORT void ReadString(TCollection_AsciiString& buffer) override;
 };
 
 #endif // _FSD_CmpFile_HeaderFile

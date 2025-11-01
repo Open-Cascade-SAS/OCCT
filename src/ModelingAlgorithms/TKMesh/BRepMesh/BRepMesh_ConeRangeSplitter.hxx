@@ -38,7 +38,7 @@ public:
 
   //! Returns list of nodes generated using surface data and specified parameters.
   Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
-    const IMeshTools_Parameters& theParameters) const Standard_OVERRIDE;
+    const IMeshTools_Parameters& theParameters) const override;
 };
 
 #endif

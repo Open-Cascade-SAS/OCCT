@@ -113,10 +113,10 @@ private:
   // Virtual methods implementation
   virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                        const Handle(Prs3d_Presentation)&         thePrs,
-                       const Standard_Integer                    theMode) Standard_OVERRIDE;
+                       const Standard_Integer                    theMode) override;
 
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                const Standard_Integer             theMode) Standard_OVERRIDE;
+                                const Standard_Integer             theMode) override;
 
   // Called by VUserDrawElement
   void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;

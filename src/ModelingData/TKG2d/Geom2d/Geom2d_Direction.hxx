@@ -70,21 +70,21 @@ public:
   Standard_EXPORT gp_Dir2d Dir2d() const;
 
   //! returns 1.0
-  Standard_EXPORT Standard_Real Magnitude() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real Magnitude() const override;
 
   //! returns 1.0
-  Standard_EXPORT Standard_Real SquareMagnitude() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real SquareMagnitude() const override;
 
   //! Computes the cross product between <me> and <Other>.
-  Standard_EXPORT Standard_Real Crossed(const Handle(Geom2d_Vector)& Other) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real Crossed(const Handle(Geom2d_Vector)& Other) const override;
 
   Standard_Real operator^(const Handle(Geom2d_Vector)& Other) const { return Crossed(Other); }
 
   //! Applies the transformation T to this unit vector, then normalizes it.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
 
   //! Creates a new object which is a copy of this unit vector.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Direction, Geom2d_Vector)
 

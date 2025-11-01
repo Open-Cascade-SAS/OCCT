@@ -33,7 +33,7 @@ public:
   Standard_EXPORT BOPAlgo_ToolsProvider(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Clears internal fields and arguments
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Adds Tool argument of the operation
   Standard_EXPORT virtual void AddTool(const TopoDS_Shape& theShape);

@@ -100,38 +100,38 @@ public:
   //! Computes the parameter on the reversed circle for
   //! the point of parameter U on this circle.
   //! For a circle, the returned value is: 2.*Pi - U.
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const override;
 
   //! Returns 0., which is the eccentricity of any circle.
-  Standard_EXPORT Standard_Real Eccentricity() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real Eccentricity() const override;
 
   //! Returns 0.0
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real FirstParameter() const override;
 
   //! Returns 2*PI.
-  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real LastParameter() const override;
 
   //! returns True.
-  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsClosed() const override;
 
   //! returns True. The period of a circle is 2.*Pi.
-  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const override;
 
   //! Returns in P the point of parameter U.
   //! P = C + R * Cos (U) * XDir + R * Sin (U) * YDir
   //! where C is the center of the circle , XDir the XDirection and
   //! YDir the YDirection of the circle's local coordinate system.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const override;
 
   //! Returns the point P of parameter U and the first derivative V1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   Standard_EXPORT void D2(const Standard_Real U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const Standard_OVERRIDE;
+                          gp_Vec2d&           V2) const override;
 
   //! Returns the point P of parameter u, the first second and third
   //! derivatives V1 V2 and V3.
@@ -139,23 +139,23 @@ public:
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
                           gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const Standard_OVERRIDE;
+                          gp_Vec2d&           V3) const override;
 
   //! For the point of parameter U of this circle, computes
   //! the vector corresponding to the Nth derivative.
   //! Exceptions: Standard_RangeError if N is less than 1.
   Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
-                              const Standard_Integer N) const Standard_OVERRIDE;
+                              const Standard_Integer N) const override;
 
   //! Applies the transformation T to this circle.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
 
   //! Creates a new object which is a copy of this circle.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Circle, Geom2d_Conic)
 

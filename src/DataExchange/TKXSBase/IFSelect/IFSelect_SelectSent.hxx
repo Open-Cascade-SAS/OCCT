@@ -70,13 +70,13 @@ public:
   //!
   //! Query works on the sending count recorded as status in Graph
   Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns always False because RootResult has done the work
   Standard_EXPORT Standard_Boolean
     Sort(const Standard_Integer                  rank,
          const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+         const Handle(Interface_InterfaceModel)& model) const override;
 
   //! Returns a text defining the criterium : query :
   //! SentCount = 0 -> "Remaining (non-sent) entities"
@@ -86,7 +86,7 @@ public:
   //! SentCount = 2, AtLeast = False -> "Sent twice entities"
   //! SentCount > 2, AtLeast = True  -> "Sent at least <count> times entities"
   //! SentCount > 2, AtLeast = False -> "Sent <count> times entities"
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSent, IFSelect_SelectExtract)
 

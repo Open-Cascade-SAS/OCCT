@@ -42,7 +42,7 @@ public:
                                const Handle(IGESData_IGESEntity)& ent,
                                const IGESData_IGESDumper&         dumper,
                                Standard_OStream&                  S,
-                               const Standard_Integer             own) const Standard_OVERRIDE;
+                               const Standard_Integer             own) const override;
 
   //! Performs non-ambiguous Corrections on Entities which support
   //! them (BasicDimension,CenterLine,DimensionDisplayData,
@@ -50,7 +50,7 @@ public:
   //! NewDimensionedGeometry,Section,WitnessLine)
   Standard_EXPORT virtual Standard_Boolean OwnCorrect(const Standard_Integer             CN,
                                                       const Handle(IGESData_IGESEntity)& ent) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_SpecificModule, IGESData_SpecificModule)
 

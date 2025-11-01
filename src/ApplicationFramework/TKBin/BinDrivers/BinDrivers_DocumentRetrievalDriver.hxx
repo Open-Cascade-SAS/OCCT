@@ -37,24 +37,24 @@ public:
   Standard_EXPORT BinDrivers_DocumentRetrievalDriver();
 
   Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+    const Handle(Message_Messenger)& theMsgDriver) override;
 
   Standard_EXPORT virtual void ReadShapeSection(
     BinLDrivers_DocumentSection& theSection,
     Standard_IStream&            theIS,
     const Standard_Boolean       isMess   = Standard_False,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual void CheckShapeSection(const Storage_Position& thePos,
-                                                 Standard_IStream&       theIS) Standard_OVERRIDE;
+                                                 Standard_IStream&       theIS) override;
 
   //! Clears the NamedShape driver
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Enables reading in the quick part access mode.
   Standard_EXPORT virtual void EnableQuickPartReading(
     const Handle(Message_Messenger)& theMessageDriver,
-    Standard_Boolean                 theValue) Standard_OVERRIDE;
+    Standard_Boolean                 theValue) override;
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver, BinLDrivers_DocumentRetrievalDriver)
 };

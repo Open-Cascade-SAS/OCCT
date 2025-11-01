@@ -46,10 +46,10 @@ public:
 protected:
   //! Computes vertex at given parameter location of the surface.
   Standard_EXPORT virtual gp_Pnt Vertex(const Standard_Real theU,
-                                        const Standard_Real theV) const Standard_OVERRIDE;
+                                        const Standard_Real theV) const override;
 
   //! Computes normal at given parameter location of the surface.
-  virtual gp_Dir Normal(const Standard_Real, const Standard_Real) const Standard_OVERRIDE
+  virtual gp_Dir Normal(const Standard_Real, const Standard_Real) const override
   {
     return gp_Dir(0.0, 0.0, -1.0);
   }

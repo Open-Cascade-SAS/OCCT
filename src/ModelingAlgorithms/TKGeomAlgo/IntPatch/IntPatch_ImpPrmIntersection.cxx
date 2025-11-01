@@ -478,7 +478,7 @@ void Recadre(const Standard_Boolean,
         V1 += M_PI + M_PI;
       while (V1 > (V1p + 1.5 * M_PI))
         V1 -= M_PI + M_PI;
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
     case GeomAbs_Sphere:
@@ -497,7 +497,7 @@ void Recadre(const Standard_Boolean,
         V2 += M_PI + M_PI;
       while (V2 > (V2p + 1.5 * M_PI))
         V2 -= M_PI + M_PI;
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
     case GeomAbs_Sphere:

@@ -45,33 +45,33 @@ public:
 
   Standard_EXPORT virtual TopAbs_State Compare(const Handle(TopOpeBRepBuild_Loop)& L1,
                                                const Handle(TopOpeBRepBuild_Loop)& L2)
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT TopoDS_Shape LoopToShape(const Handle(TopOpeBRepBuild_Loop)& L);
 
   //! classify wire <B1> with wire <B2>
   Standard_EXPORT TopAbs_State CompareShapes(const TopoDS_Shape& B1,
-                                             const TopoDS_Shape& B2) Standard_OVERRIDE;
+                                             const TopoDS_Shape& B2) override;
 
   //! classify edge <E> with wire <B>
   Standard_EXPORT TopAbs_State CompareElementToShape(const TopoDS_Shape& E,
-                                                     const TopoDS_Shape& B) Standard_OVERRIDE;
+                                                     const TopoDS_Shape& B) override;
 
   //! prepare classification involving wire <B>
   //! calls ResetElement on first edge of <B>
-  Standard_EXPORT void ResetShape(const TopoDS_Shape& B) Standard_OVERRIDE;
+  Standard_EXPORT void ResetShape(const TopoDS_Shape& B) override;
 
   //! prepare classification involving edge <E>
   //! define 2D point (later used in Compare()) on first vertex of edge <E>.
-  Standard_EXPORT void ResetElement(const TopoDS_Shape& E) Standard_OVERRIDE;
+  Standard_EXPORT void ResetElement(const TopoDS_Shape& E) override;
 
   //! Add the edge <E> in the set of edges used in 2D point
   //! classification.
-  Standard_EXPORT Standard_Boolean CompareElement(const TopoDS_Shape& E) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean CompareElement(const TopoDS_Shape& E) override;
 
   //! Returns state of classification of 2D point, defined by
   //! ResetElement, with the current set of edges, defined by Compare.
-  Standard_EXPORT TopAbs_State State() Standard_OVERRIDE;
+  Standard_EXPORT TopAbs_State State() override;
 
 protected:
 private:

@@ -32,7 +32,7 @@ public: // Operations to override
 
   virtual void Popup (const Standard_Integer theMouseX,
                       const Standard_Integer theMouseY,
-                      const Handle(V3d_View)& theView) Standard_OVERRIDE;
+                      const Handle(V3d_View)& theView) override;
 };
 
 #endif // !defined(AFX_OCC_2dDOC_H__2E048CC7_38F9_11D7_8611_0060B0EE281E__INCLUDED_)

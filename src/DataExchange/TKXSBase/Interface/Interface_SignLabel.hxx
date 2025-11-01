@@ -35,13 +35,13 @@ public:
   Standard_EXPORT Interface_SignLabel();
 
   //! Returns "Entity Label"
-  Standard_EXPORT Standard_CString Name() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_CString Name() const override;
 
   //! Considers context as an InterfaceModel and returns the Label
   //! computed by it
   Standard_EXPORT TCollection_AsciiString
     Text(const Handle(Standard_Transient)& ent,
-         const Handle(Standard_Transient)& context) const Standard_OVERRIDE;
+         const Handle(Standard_Transient)& context) const override;
 
   DEFINE_STANDARD_RTTIEXT(Interface_SignLabel, MoniTool_SignText)
 

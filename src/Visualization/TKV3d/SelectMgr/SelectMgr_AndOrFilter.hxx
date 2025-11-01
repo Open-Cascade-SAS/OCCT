@@ -35,7 +35,7 @@ public:
 
   //! Indicates that the selected Interactive Object passes the filter.
   Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& theObj) const
-    Standard_OVERRIDE;
+    override;
 
   //! Disable selection of specified objects.
   Standard_EXPORT void SetDisabledObjects(const Handle(Graphic3d_NMapOfTransient)& theObjects);

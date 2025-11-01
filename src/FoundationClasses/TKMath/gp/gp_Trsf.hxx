@@ -276,21 +276,21 @@ public:
   //! gp_Pnt P3 = P1.Transformed(T1);    // using T1 then T2
   //! P3.Transform(T2);                  // P3 = P2 !!!
   //! @endcode
-  Standard_NODISCARD gp_Trsf Inverted() const
+  [[nodiscard]] gp_Trsf Inverted() const
   {
     gp_Trsf aT = *this;
     aT.Invert();
     return aT;
   }
 
-  Standard_NODISCARD gp_Trsf Multiplied(const gp_Trsf& theT) const
+  [[nodiscard]] gp_Trsf Multiplied(const gp_Trsf& theT) const
   {
     gp_Trsf aTresult(*this);
     aTresult.Multiply(theT);
     return aTresult;
   }
 
-  Standard_NODISCARD gp_Trsf operator*(const gp_Trsf& theT) const { return Multiplied(theT); }
+  [[nodiscard]] gp_Trsf operator*(const gp_Trsf& theT) const { return Multiplied(theT); }
 
   //! Computes the transformation composed with <me> and theT.
   //! <me> = <me> * theT
@@ -311,7 +311,7 @@ public:
   //!
   //! Raises if theN < 0 and if the matrix of the transformation not
   //! inversible.
-  Standard_NODISCARD gp_Trsf Powered(const Standard_Integer theN) const
+  [[nodiscard]] gp_Trsf Powered(const Standard_Integer theN) const
   {
     gp_Trsf aT = *this;
     aT.Power(theN);

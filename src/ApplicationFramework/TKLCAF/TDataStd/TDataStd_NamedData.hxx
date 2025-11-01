@@ -284,20 +284,20 @@ public:
                                        const Handle(TColStd_HArray1OfReal)& theArrayOfReals);
 
 public: //! @name TDF_Attribute interface
-  Standard_EXPORT virtual const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Standard_GUID& ID() const override;
 
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& With) override;
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
 
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       Into,
-                                     const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+                                     const Handle(TDF_RelocationTable)& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_NamedData, TDF_Attribute)
 

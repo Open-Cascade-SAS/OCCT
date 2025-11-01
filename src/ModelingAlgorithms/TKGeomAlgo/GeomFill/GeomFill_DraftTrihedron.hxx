@@ -36,7 +36,7 @@ public:
 
   Standard_EXPORT void SetAngle(const Standard_Real Angle);
 
-  Standard_EXPORT virtual Handle(GeomFill_TrihedronLaw) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(GeomFill_TrihedronLaw) Copy() const override;
 
   //! compute Triedrhon and derivative Trihedron on curve at
   //! parameter <Param>
@@ -44,7 +44,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean D0(const Standard_Real Param,
                                               gp_Vec&             Tangent,
                                               gp_Vec&             Normal,
-                                              gp_Vec&             BiNormal) Standard_OVERRIDE;
+                                              gp_Vec&             BiNormal) override;
 
   //! compute Trihedron on curve
   //! first and seconde  derivatives.
@@ -55,7 +55,7 @@ public:
                                               gp_Vec&             Normal,
                                               gp_Vec&             DNormal,
                                               gp_Vec&             BiNormal,
-                                              gp_Vec&             DBiNormal) Standard_OVERRIDE;
+                                              gp_Vec&             DBiNormal) override;
 
   Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real Param,
                                               gp_Vec&             Tangent,
@@ -66,13 +66,13 @@ public:
                                               gp_Vec&             D2Normal,
                                               gp_Vec&             BiNormal,
                                               gp_Vec&             DBiNormal,
-                                              gp_Vec&             D2BiNormal) Standard_OVERRIDE;
+                                              gp_Vec&             D2BiNormal) override;
 
   //! Returns  the number  of  intervals for  continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
-    Standard_OVERRIDE;
+    override;
 
   //! Stores in <T> the  parameters bounding the intervals
   //! of continuity <S>.
@@ -80,19 +80,19 @@ public:
   //! The array must provide  enough room to  accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
-                                         const GeomAbs_Shape   S) const Standard_OVERRIDE;
+                                         const GeomAbs_Shape   S) const override;
 
   //! Get average value of Tangent(t) and Normal(t) it is useful to
   //! make fast approximation of rational  surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,
-                                             gp_Vec& ABiNormal) Standard_OVERRIDE;
+                                             gp_Vec& ABiNormal) override;
 
   //! Say if the law is Constant.
-  Standard_EXPORT virtual Standard_Boolean IsConstant() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsConstant() const override;
 
   //! Return True.
-  Standard_EXPORT virtual Standard_Boolean IsOnlyBy3dCurve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsOnlyBy3dCurve() const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_DraftTrihedron, GeomFill_TrihedronLaw)
 

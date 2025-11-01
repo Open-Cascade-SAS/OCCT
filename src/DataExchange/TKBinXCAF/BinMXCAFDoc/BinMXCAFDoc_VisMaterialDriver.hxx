@@ -42,19 +42,19 @@ public:
   Standard_EXPORT BinMXCAFDoc_VisMaterialDriver(const Handle(Message_Messenger)& theMsgDriver);
 
   //! Create new instance of XCAFDoc_VisMaterial.
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
 
   //! Paste attribute from persistence into document.
   Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  theSource,
                                                  const Handle(TDF_Attribute)& theTarget,
                                                  BinObjMgt_RRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+    override;
 
   //! Paste attribute from document into persistence.
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
                                      BinObjMgt_Persistent&        theTarget,
                                      BinObjMgt_SRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+    override;
 };
 
 #endif // _BinMXCAFDoc_VisMaterialDriver_HeaderFile

@@ -43,33 +43,33 @@ public:
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F) override;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X,
-                                               math_Matrix&       D) Standard_OVERRIDE;
+                                               math_Matrix&       D) override;
 
-  Standard_EXPORT void Set(const Standard_Real Param) Standard_OVERRIDE;
+  Standard_EXPORT void Set(const Standard_Real Param) override;
 
   Standard_EXPORT Standard_Boolean IsSolution(const math_Vector&  Sol,
-                                              const Standard_Real Tol) Standard_OVERRIDE;
+                                              const Standard_Real Tol) override;
 
-  Standard_EXPORT const gp_Pnt& PointOnS1() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Pnt& PointOnS1() const override;
 
-  Standard_EXPORT const gp_Pnt& PointOnS2() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Pnt& PointOnS2() const override;
 
-  Standard_EXPORT Standard_Boolean IsTangencyPoint() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsTangencyPoint() const override;
 
-  Standard_EXPORT const gp_Vec& TangentOnS1() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Vec& TangentOnS1() const override;
 
-  Standard_EXPORT const gp_Vec2d& Tangent2dOnS1() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Vec2d& Tangent2dOnS1() const override;
 
-  Standard_EXPORT const gp_Vec& TangentOnS2() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Vec& TangentOnS2() const override;
 
-  Standard_EXPORT const gp_Vec2d& Tangent2dOnS2() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Vec2d& Tangent2dOnS2() const override;
 
   //! Returns the tangent vector at the section,
   //! at the beginning and the end of the section, and
@@ -82,15 +82,15 @@ public:
                                gp_Vec&             TgFirst,
                                gp_Vec&             TgLast,
                                gp_Vec&             NormFirst,
-                               gp_Vec&             NormLast) const Standard_OVERRIDE;
+                               gp_Vec&             NormLast) const override;
 
   //! Sets the distances and the "quadrant".
   Standard_EXPORT void Set(const Standard_Real    Dist1,
                            const Standard_Real    Dist2,
-                           const Standard_Integer Choix) Standard_OVERRIDE;
+                           const Standard_Integer Choix) override;
 
   //! Returns the length of the maximum section
-  Standard_EXPORT Standard_Real GetSectionSize() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real GetSectionSize() const override;
 
 protected:
 private:

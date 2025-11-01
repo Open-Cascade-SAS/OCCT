@@ -362,7 +362,7 @@ public:
                                          const Standard_Boolean deep) const;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& theDumpLog) const
-    Standard_OVERRIDE;
+    override;
 
   //! Print to std::ostream <theDumpLog> type of shape found on <L> label
   //! and the entry of <L>, with <level> tabs before.
@@ -372,7 +372,7 @@ public:
                                         const Standard_Integer level = 0,
                                         const Standard_Boolean deep  = Standard_False);
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Returns True if the label is a label of external references, i.e.
   //! there are some reference on the no-step files, which are
@@ -490,7 +490,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_ShapeTool, TDataStd_GenericEmpty)
 

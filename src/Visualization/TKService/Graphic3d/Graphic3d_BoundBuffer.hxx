@@ -61,7 +61,7 @@ public:
 
   //! Dumps the content of me into the stream
   virtual void DumpJson(Standard_OStream& theOStream,
-                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE
+                        Standard_Integer  theDepth = -1) const override
   {
     OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
     OCCT_DUMP_BASE_CLASS(theOStream, theDepth, NCollection_Buffer)

@@ -46,22 +46,22 @@ public:
   //! calling a Sort routine for each Entity would cost more resources
   //! than to work in once using a Map RootResult takes in account the Direct status.
   Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns always True, because RootResult has done work
   Standard_EXPORT Standard_Boolean
     Sort(const Standard_Integer                  rank,
          const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+         const Handle(Interface_InterfaceModel)& model) const override;
 
   //! Returns a text defining the criterium : "Local Root Entities"
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectRoots, IFSelect_SelectExtract)
 
 protected:
   //! Returns True, because RootResult assures uniqueness
-  Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const override;
 };
 
 #endif // _IFSelect_SelectRoots_HeaderFile

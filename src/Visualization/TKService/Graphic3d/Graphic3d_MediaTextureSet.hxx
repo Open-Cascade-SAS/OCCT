@@ -83,10 +83,10 @@ public:
   //! @name Media_IFrameQueue interface
 private:
   //! Lock the frame for decoding into.
-  Standard_EXPORT virtual Handle(Media_Frame) LockFrame() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Media_Frame) LockFrame() override;
 
   //! Release the frame to present decoding results.
-  Standard_EXPORT virtual void ReleaseFrame(const Handle(Media_Frame)& theFrame) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ReleaseFrame(const Handle(Media_Frame)& theFrame) override;
 
 protected:
   Handle(Media_PlayerContext)     myPlayerCtx;        //!< player context

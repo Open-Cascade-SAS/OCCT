@@ -97,9 +97,9 @@ public:
 
   Standard_EXPORT void Init(const Handle(Geom2d_TrimmedCurve)& bisector);
 
-  Standard_EXPORT Standard_Boolean IsExtendAtStart() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsExtendAtStart() const override;
 
-  Standard_EXPORT Standard_Boolean IsExtendAtEnd() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsExtendAtEnd() const override;
 
   //! Trim <me> by a domain defined by the curve <Cu>.
   //! This domain is the set of the points which are
@@ -109,49 +109,49 @@ public:
   //! Trim <me> by a domain defined by uf  and  ul
   Standard_EXPORT void SetTrim(const Standard_Real uf, const Standard_Real ul);
 
-  Standard_EXPORT void Reverse() Standard_OVERRIDE;
+  Standard_EXPORT void Reverse() override;
 
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const override;
 
   //! Returns the order of continuity of the curve.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const override;
 
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const override;
 
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
 
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real FirstParameter() const override;
 
-  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real LastParameter() const override;
 
-  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsClosed() const override;
 
-  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const override;
 
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const override;
 
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
 
   Standard_EXPORT void D2(const Standard_Real U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const Standard_OVERRIDE;
+                          gp_Vec2d&           V2) const override;
 
   Standard_EXPORT void D3(const Standard_Real U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
                           gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const Standard_OVERRIDE;
+                          gp_Vec2d&           V3) const override;
 
   Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
-                              const Standard_Integer N) const Standard_OVERRIDE;
+                              const Standard_Integer N) const override;
 
   Standard_EXPORT Handle(Geom2d_Curve) Geom2dCurve() const;
 
-  Standard_EXPORT Standard_Real Parameter(const gp_Pnt2d& P) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real Parameter(const gp_Pnt2d& P) const override;
 
   Standard_EXPORT Standard_Real ParameterOfStartPoint() const;
 
@@ -160,15 +160,15 @@ public:
   //! If necessary,  breaks the  curve in  intervals  of
   //! continuity  <C1>.    And  returns   the number   of
   //! intervals.
-  Standard_EXPORT Standard_Integer NbIntervals() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbIntervals() const override;
 
   //! Returns  the  first  parameter    of  the  current
   //! interval.
-  Standard_EXPORT Standard_Real IntervalFirst(const Standard_Integer Index) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real IntervalFirst(const Standard_Integer Index) const override;
 
   //! Returns  the  last  parameter    of  the  current
   //! interval.
-  Standard_EXPORT Standard_Real IntervalLast(const Standard_Integer Index) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real IntervalLast(const Standard_Integer Index) const override;
 
   Standard_EXPORT void Dump(const Standard_Integer Deep   = 0,
                             const Standard_Integer Offset = 0) const;

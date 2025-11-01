@@ -50,7 +50,7 @@ public:
 
   //! Returns bounding box of entity with index theIdx
   Standard_EXPORT virtual Select3D_BndBox3d Box(const Standard_Integer theIndex) const
-    Standard_OVERRIDE;
+    override;
 
   //! Make inherited method Box() visible to avoid CLang warning
   using BVH_PrimitiveSet3d::Box;
@@ -59,14 +59,14 @@ public:
   //! along the given axis theAxis
   Standard_EXPORT virtual Standard_Real Center(const Standard_Integer theIndex,
                                                const Standard_Integer theAxis) const
-    Standard_OVERRIDE;
+    override;
 
   //! Swaps items with indexes theIdx1 and theIdx2
   Standard_EXPORT virtual void Swap(const Standard_Integer theIndex1,
-                                    const Standard_Integer theIndex2) Standard_OVERRIDE;
+                                    const Standard_Integer theIndex2) override;
 
   //! Returns the amount of entities
-  Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Size() const override;
 
   //! Returns the entity with index theIndex in the set
   Standard_EXPORT const Handle(SelectMgr_SensitiveEntity)& GetSensitiveById(

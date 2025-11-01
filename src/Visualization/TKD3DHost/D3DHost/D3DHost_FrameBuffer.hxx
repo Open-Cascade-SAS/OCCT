@@ -32,7 +32,7 @@ public:
   Standard_EXPORT ~D3DHost_FrameBuffer();
 
   //! Releases D3D and OpenGL resources.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Initializes OpenGL FBO for Direct3D interoperability or in fallback mode.
   //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA; depth-stencil pixel format is
@@ -88,7 +88,7 @@ public:
 
   //! Binds Direct3D objects for OpenGL drawing.
   //! Should be called before LockSurface() and followed by UnlockSurface();
-  Standard_EXPORT virtual void BindBuffer(const Handle(OpenGl_Context)& theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void BindBuffer(const Handle(OpenGl_Context)& theCtx) override;
 
   //! Acquires D3D resource for OpenGL usage.
   Standard_EXPORT virtual void LockSurface(const Handle(OpenGl_Context)& theCtx);

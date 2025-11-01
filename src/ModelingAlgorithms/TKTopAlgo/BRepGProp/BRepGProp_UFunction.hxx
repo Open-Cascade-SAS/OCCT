@@ -77,7 +77,7 @@ public:
 
   //! Returns a value of the function.
   Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X,
-                                                 Standard_Real&      F) Standard_OVERRIDE;
+                                                 Standard_Real&      F) override;
 
 private:
   //! Private method. Returns the value for volume computation.

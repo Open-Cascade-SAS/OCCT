@@ -38,17 +38,17 @@ public:
 
   //! Returns a Case Number for each of the StepAP214 Entities
   Standard_EXPORT virtual Standard_Integer TypeNumber(const Handle(Standard_Type)& atype) const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual Standard_CString SchemaName(
-    const Handle(Interface_InterfaceModel)& theModel) const Standard_OVERRIDE;
+    const Handle(Interface_InterfaceModel)& theModel) const override;
 
   //! Returns count of Protocol used as Resources (level one)
-  Standard_EXPORT virtual Standard_Integer NbResources() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbResources() const override;
 
   //! Returns a Resource, given its rank (between 1 and NbResources)
   Standard_EXPORT virtual Handle(Interface_Protocol) Resource(const Standard_Integer num) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_Protocol, StepData_Protocol)
 

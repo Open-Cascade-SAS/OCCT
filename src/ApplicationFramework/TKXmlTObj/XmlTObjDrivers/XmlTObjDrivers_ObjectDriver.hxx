@@ -27,13 +27,13 @@ public:
   Standard_EXPORT XmlTObjDrivers_ObjectDriver(const Handle(Message_Messenger)& theMessageDriver);
   // constructor
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
   // Creates a new attribute
 
   Standard_EXPORT Standard_Boolean
     Paste(const XmlObjMgt_Persistent&  Source,
           const Handle(TDF_Attribute)& Target,
-          XmlObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
+          XmlObjMgt_RRelocationTable&  RelocTable) const override;
   // Translate the contents of <aSource> and put it
   // into <aTarget>, using the relocation table
   // <aRelocTable> to keep the sharings.
@@ -42,7 +42,7 @@ public:
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
                              XmlObjMgt_Persistent&        Target,
-                             XmlObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
+                             XmlObjMgt_SRelocationTable&  RelocTable) const override;
   // Translate the contents of <aSource> and put it
   // into <aTarget>, using the relocation table
   // <aRelocTable> to keep the sharings.

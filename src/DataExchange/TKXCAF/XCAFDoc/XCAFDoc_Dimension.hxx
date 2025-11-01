@@ -45,7 +45,7 @@ public:
 
   Standard_EXPORT static Handle(XCAFDoc_Dimension) Set(const TDF_Label& theLabel);
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Updates parent's label and its sub-labels with data taken from theDimensionObject.
   //! Old data associated with the label will be lost.
@@ -57,7 +57,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_Dimension, TDataStd_GenericEmpty)
 };

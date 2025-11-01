@@ -37,13 +37,13 @@ public:
   //! Value of surface
   Standard_EXPORT void D0(const Standard_Real theU,
                           const Standard_Real theV,
-                          gp_Pnt&             theValue) const Standard_OVERRIDE;
+                          gp_Pnt&             theValue) const override;
   //! Value and first derivatives of surface
   Standard_EXPORT void D1(const Standard_Real theU,
                           const Standard_Real theV,
                           gp_Pnt&             theValue,
                           gp_Vec&             theD1U,
-                          gp_Vec&             theD1V) const Standard_OVERRIDE;
+                          gp_Vec&             theD1V) const override;
   //! Value, first and second derivatives of surface
   Standard_EXPORT void D2(const Standard_Real theU,
                           const Standard_Real theV,
@@ -52,7 +52,7 @@ public:
                           gp_Vec&             theD1V,
                           gp_Vec&             theD2U,
                           gp_Vec&             theD2V,
-                          gp_Vec&             theD2UV) const Standard_OVERRIDE;
+                          gp_Vec&             theD2UV) const override;
   //! Value, first, second and third derivatives of surface
   Standard_EXPORT void D3(const Standard_Real theU,
                           const Standard_Real theV,
@@ -65,16 +65,16 @@ public:
                           gp_Vec&             theD3U,
                           gp_Vec&             theD3V,
                           gp_Vec&             theD3UUV,
-                          gp_Vec&             theD3UVV) const Standard_OVERRIDE;
+                          gp_Vec&             theD3UVV) const override;
   //! Calculates N-th derivatives of surface, where N = theDerU + theDerV.
   //!
   //! Raises if N < 1 or theDerU < 0 or theDerV < 0
   Standard_EXPORT gp_Vec DN(const Standard_Real    theU,
                             const Standard_Real    theV,
                             const Standard_Integer theDerU,
-                            const Standard_Integer theDerV) const Standard_OVERRIDE;
+                            const Standard_Integer theDerV) const override;
 
-  Standard_EXPORT Handle(GeomEvaluator_Surface) ShallowCopy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(GeomEvaluator_Surface) ShallowCopy() const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomEvaluator_SurfaceOfExtrusion, GeomEvaluator_Surface)
 

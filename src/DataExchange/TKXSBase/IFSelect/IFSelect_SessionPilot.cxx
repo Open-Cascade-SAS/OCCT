@@ -454,7 +454,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::Do(const Standard_Integer          
       modhelp = 1;
       std::cout << "  --  Commands candidate for  xsnew  --" << std::endl;
       //  HELP : either complete (by default)  or limited to xsnew
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 0: { //        ****     HELP
       Handle(TColStd_HSequenceOfAsciiString) list;
       //    Complete Help : we give the list of commands, nothing more (already not bad)

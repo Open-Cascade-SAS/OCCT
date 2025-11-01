@@ -34,11 +34,11 @@ public:
   inline const Handle(Graphic3d_ViewAffinity)& ParentAffinity() const { return myParentAffinity; }
 
   //! Do nothing - axis-aligned bounding box should be initialized from parent structure.
-  Standard_EXPORT virtual void CalculateBoundBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CalculateBoundBox() override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 private:
   Handle(Graphic3d_ViewAffinity) myParentAffinity;

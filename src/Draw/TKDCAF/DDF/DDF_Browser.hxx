@@ -39,13 +39,13 @@ class DDF_Browser : public Draw_Drawable3D
 public:
   Standard_EXPORT DDF_Browser(const Handle(TDF_Data)& aDF);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const override;
 
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
   Standard_EXPORT void Data(const Handle(TDF_Data)& aDF);
 

@@ -34,15 +34,15 @@ public:
 
   //! Builds axis according to internal parameters.
   //! NOTE: it should be called after Init() method
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build() override;
 
   //! Saves camera definition.
   //! Do nothing for axis intersector (not applicable to this volume).
   Standard_EXPORT virtual void SetCamera(const Handle(Graphic3d_Camera)& theCamera)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns FALSE (not applicable to this volume).
-  virtual Standard_Boolean IsScalable() const Standard_OVERRIDE { return false; }
+  virtual Standard_Boolean IsScalable() const override { return false; }
 
   //! IMPORTANT: Scaling doesn't make sense for this intersector.
   //! Returns a copy of the intersector transformed using the matrix given.
@@ -51,13 +51,13 @@ public:
   Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform(
     const Standard_Integer                  theScaleFactor,
     const gp_GTrsf&                         theTrsf,
-    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
+    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const override;
 
   //! Returns a copy of the intersector transformed using the builder configuration given.
   //! Builder is an argument that represents corresponding settings for re-constructing transformed
   //! frustum from scratch. In this class, builder is not used and theBuilder parameter is ignored.
   Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) CopyWithBuilder(
-    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
+    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const override;
 
 public:
   //! Intersection test between defined axis and given axis-aligned box
@@ -65,24 +65,24 @@ public:
                                                        const SelectMgr_Vec3&          theBoxMax,
                                                        const SelectMgr_ViewClipRange& theClipRange,
                                                        SelectBasics_PickResult& thePickResult) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns true if selecting axis intersects axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
   Standard_EXPORT virtual Standard_Boolean OverlapsBox(const SelectMgr_Vec3& theBoxMin,
                                                        const SelectMgr_Vec3& theBoxMax,
                                                        Standard_Boolean*     theInside) const
-    Standard_OVERRIDE;
+    override;
 
   //! Intersection test between defined axis and given point
   Standard_EXPORT virtual Standard_Boolean OverlapsPoint(
     const gp_Pnt&                  thePnt,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Intersection test between defined axis and given point
   Standard_EXPORT virtual Standard_Boolean OverlapsPoint(const gp_Pnt& thePnt) const
-    Standard_OVERRIDE;
+    override;
 
   //! Intersection test between defined axis and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
@@ -91,14 +91,14 @@ public:
     const TColgp_Array1OfPnt&      theArrayOfPnts,
     Select3D_TypeOfSensitivity     theSensType,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Checks if selecting axis intersects line segment
   Standard_EXPORT virtual Standard_Boolean OverlapsSegment(
     const gp_Pnt&                  thePnt1,
     const gp_Pnt&                  thePnt2,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Intersection test between defined axis and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
@@ -109,14 +109,14 @@ public:
     const gp_Pnt&                  thePnt3,
     Select3D_TypeOfSensitivity     theSensType,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Intersection test between defined axis and given sphere with center theCenter
   //! and radius theRadius
   Standard_EXPORT virtual Standard_Boolean OverlapsSphere(const gp_Pnt&       theCenter,
                                                           const Standard_Real theRadius,
                                                           Standard_Boolean* theInside = NULL) const
-    Standard_OVERRIDE;
+    override;
 
   //! Intersection test between defined axis and given sphere with center theCenter
   //! and radius theRadius
@@ -124,7 +124,7 @@ public:
     const gp_Pnt&                  theCenter,
     const Standard_Real            theRadius,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
@@ -135,7 +135,7 @@ public:
     const gp_Trsf&                 theTrsf,
     const Standard_Boolean         theIsHollow,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
@@ -145,7 +145,7 @@ public:
     const Standard_Real    theHeight,
     const gp_Trsf&         theTrsf,
     const Standard_Boolean theIsHollow,
-    Standard_Boolean*      theInside = NULL) const Standard_OVERRIDE;
+    Standard_Boolean*      theInside = NULL) const override;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
@@ -156,7 +156,7 @@ public:
     const gp_Trsf&                 theTrsf,
     const Standard_Boolean         theIsFilled,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
@@ -166,30 +166,30 @@ public:
                                                           const gp_Trsf&         theTrsf,
                                                           const Standard_Boolean theIsFilled,
                                                           Standard_Boolean* theInside = NULL) const
-    Standard_OVERRIDE;
+    override;
 
 public:
   //! Measures distance between start axis point and given point theCOG.
   Standard_EXPORT virtual Standard_Real DistToGeometryCenter(const gp_Pnt& theCOG) const
-    Standard_OVERRIDE;
+    override;
 
   //! Calculates the point on a axis ray that was detected during the run of selection algo by given
   //! depth
   Standard_EXPORT virtual gp_Pnt DetectedPoint(const Standard_Real theDepth) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns near point along axis.
-  Standard_EXPORT virtual const gp_Pnt& GetNearPnt() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const gp_Pnt& GetNearPnt() const override;
 
   //! Returns far point along axis (infinite).
-  Standard_EXPORT virtual const gp_Pnt& GetFarPnt() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const gp_Pnt& GetFarPnt() const override;
 
   //! Returns axis direction.
-  Standard_EXPORT virtual const gp_Dir& GetViewRayDirection() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const gp_Dir& GetViewRayDirection() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 protected:
   //! Returns true if selecting axis intersects axis-aligned bounding box

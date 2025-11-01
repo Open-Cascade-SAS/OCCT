@@ -58,16 +58,16 @@ public:
                                    const Standard_Integer        theFontSize);
 
   Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
-    Standard_OVERRIDE;
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) Standard_OVERRIDE;
+    override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const override;
 
   //! Increment draw calls statistics.
   Standard_EXPORT virtual void UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats,
-                                               bool theIsDetailed) const Standard_OVERRIDE;
+                                               bool theIsDetailed) const override;
 
 public: //! @name methods for compatibility with layers
   //! Empty constructor
@@ -107,7 +107,7 @@ public: //! @name methods for compatibility with layers
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   //! @name obsolete methods
 public:

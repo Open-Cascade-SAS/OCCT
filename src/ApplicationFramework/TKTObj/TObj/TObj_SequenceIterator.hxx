@@ -51,13 +51,13 @@ public:
    */
 
   //! Returns True if there is a current Item in the iteration.
-  virtual Standard_EXPORT Standard_Boolean More() const Standard_OVERRIDE;
+  virtual Standard_EXPORT Standard_Boolean More() const override;
 
   //! Move to the next Item
-  virtual Standard_EXPORT void Next() Standard_OVERRIDE;
+  virtual Standard_EXPORT void Next() override;
 
   //! Returns the current item
-  virtual Standard_EXPORT Handle(TObj_Object) Value() const Standard_OVERRIDE;
+  virtual Standard_EXPORT Handle(TObj_Object) Value() const override;
 
 protected:
   /**

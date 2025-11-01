@@ -32,7 +32,7 @@ public:
   //! Empty constructor.
   Standard_EXPORT ShapeUpgrade_ClosedEdgeDivide();
 
-  Standard_EXPORT virtual Standard_Boolean Compute(const TopoDS_Edge& anEdge) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Compute(const TopoDS_Edge& anEdge) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ClosedEdgeDivide, ShapeUpgrade_EdgeDivide)
 

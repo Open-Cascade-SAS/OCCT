@@ -32,7 +32,7 @@ protected:
                                                        const TCollection_AsciiString& theFile,
                                                        const Message_ProgressRange&   theProgress,
                                                        const Standard_Boolean         theToProbe)
-    Standard_OVERRIDE;
+    override;
 };
 
 #endif // _VrmlAPI_Reader_HeaderFile

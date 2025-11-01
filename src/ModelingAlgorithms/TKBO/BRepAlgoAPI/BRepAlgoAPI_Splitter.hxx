@@ -72,7 +72,7 @@ public: //! @name Performing the operation
   //! Performs the intersection of the argument shapes (both objects and tools)
   //! and splits objects by the tools.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected:                      //! @name Fields
   TopTools_ListOfShape myTools; //!< Tool arguments of the operation

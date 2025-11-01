@@ -53,7 +53,7 @@ public:
   //! Adds edge E to the table of edges used by this
   //! algorithm to build chamfers, where the parameters
   //! of the chamfer must be set after the
-  Standard_EXPORT void Add(const TopoDS_Edge& E) Standard_OVERRIDE;
+  Standard_EXPORT void Add(const TopoDS_Edge& E) override;
 
   //! Adds edge E to the table of edges used by this
   //! algorithm to build chamfers, where
@@ -163,11 +163,11 @@ public:
   //! Use the SetDists function to reset this data.
   //! Warning
   //! Nothing is done if IC is outside the bounds of the table of contours.
-  Standard_EXPORT void ResetContour(const Standard_Integer IC) Standard_OVERRIDE;
+  Standard_EXPORT void ResetContour(const Standard_Integer IC) override;
 
   //! Returns the number of contours generated using the
   //! Add function in the internal data structure of this algorithm.
-  Standard_EXPORT Standard_Integer NbContours() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbContours() const override;
 
   //! Returns the index of the contour in the internal data
   //! structure of this algorithm, which contains the edge E of the shape.
@@ -175,13 +175,13 @@ public:
   //! Warning
   //! This index can change if a contour is removed from the
   //! internal data structure of this algorithm using the function Remove.
-  Standard_EXPORT Standard_Integer Contour(const TopoDS_Edge& E) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer Contour(const TopoDS_Edge& E) const override;
 
   //! Returns the number of edges in the contour of index I in
   //! the internal data structure of this algorithm.
   //! Warning
   //! Returns 0 if I is outside the bounds of the table of contours.
-  Standard_EXPORT Standard_Integer NbEdges(const Standard_Integer I) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbEdges(const Standard_Integer I) const override;
 
   //! Returns the edge of index J in the contour of index I in
   //! the internal data structure of this algorithm.
@@ -190,32 +190,32 @@ public:
   //! -   I is outside the bounds of the table of contours, or
   //! -   J is outside the bounds of the table of edges of the contour of index I.
   Standard_EXPORT const TopoDS_Edge& Edge(const Standard_Integer I,
-                                          const Standard_Integer J) const Standard_OVERRIDE;
+                                          const Standard_Integer J) const override;
 
   //! Removes the contour in the internal data structure of
   //! this algorithm which contains the edge E of the shape.
   //! Warning
   //! Nothing is done if the edge E does not belong to the
   //! contour in the internal data structure of this algorithm.
-  Standard_EXPORT void Remove(const TopoDS_Edge& E) Standard_OVERRIDE;
+  Standard_EXPORT void Remove(const TopoDS_Edge& E) override;
 
   //! Returns the length of the contour of index IC in the
   //! internal data structure of this algorithm.
   //! Warning
   //! Returns -1. if IC is outside the bounds of the table of contours.
-  Standard_EXPORT Standard_Real Length(const Standard_Integer IC) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real Length(const Standard_Integer IC) const override;
 
   //! Returns the first vertex of the contour of index IC
   //! in the internal data structure of this algorithm.
   //! Warning
   //! Returns a null shape if IC is outside the bounds of the table of contours.
-  Standard_EXPORT TopoDS_Vertex FirstVertex(const Standard_Integer IC) const Standard_OVERRIDE;
+  Standard_EXPORT TopoDS_Vertex FirstVertex(const Standard_Integer IC) const override;
 
   //! Returns the last vertex of the contour of index IC
   //! in the internal data structure of this algorithm.
   //! Warning
   //! Returns a null shape if IC is outside the bounds of the table of contours.
-  Standard_EXPORT TopoDS_Vertex LastVertex(const Standard_Integer IC) const Standard_OVERRIDE;
+  Standard_EXPORT TopoDS_Vertex LastVertex(const Standard_Integer IC) const override;
 
   //! Returns the curvilinear abscissa of the vertex V on the
   //! contour of index IC in the internal data structure of this algorithm.
@@ -224,7 +224,7 @@ public:
   //! -   IC is outside the bounds of the table of contours, or
   //! -   V is not on the contour of index IC.
   Standard_EXPORT Standard_Real Abscissa(const Standard_Integer IC,
-                                         const TopoDS_Vertex&   V) const Standard_OVERRIDE;
+                                         const TopoDS_Vertex&   V) const override;
 
   //! Returns the relative curvilinear abscissa (i.e. between 0
   //! and 1) of the vertex V on the contour of index IC in the
@@ -234,20 +234,20 @@ public:
   //! -   IC is outside the bounds of the table of contours, or
   //! -   V is not on the contour of index IC.
   Standard_EXPORT Standard_Real RelativeAbscissa(const Standard_Integer IC,
-                                                 const TopoDS_Vertex&   V) const Standard_OVERRIDE;
+                                                 const TopoDS_Vertex&   V) const override;
 
   //! eturns true if the contour of index IC in the internal
   //! data structure of this algorithm is closed and tangential at the point of closure.
   //! Warning
   //! Returns false if IC is outside the bounds of the table of contours.
   Standard_EXPORT Standard_Boolean
-    ClosedAndTangent(const Standard_Integer IC) const Standard_OVERRIDE;
+    ClosedAndTangent(const Standard_Integer IC) const override;
 
   //! Returns true if the contour of index IC in the internal
   //! data structure of this algorithm is closed.
   //! Warning
   //! Returns false if IC is outside the bounds of the table of contours.
-  Standard_EXPORT Standard_Boolean Closed(const Standard_Integer IC) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Closed(const Standard_Integer IC) const override;
 
   //! Builds the chamfers on all the contours in the internal
   //! data structure of this algorithm and constructs the resulting shape.
@@ -268,12 +268,12 @@ public:
   //! -   the intersection of the chamfer with a face which
   //! limits the contour is not fully contained in this face.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Reinitializes this algorithm, thus canceling the effects of the Build function.
   //! This function allows modifications to be made to the
   //! contours and chamfer parameters in order to rebuild the shape.
-  Standard_EXPORT void Reset() Standard_OVERRIDE;
+  Standard_EXPORT void Reset() override;
 
   //! Returns the internal filleting algorithm.
   Standard_EXPORT Handle(TopOpeBRepBuild_HBuilder) Builder() const;
@@ -281,21 +281,21 @@ public:
   //! Returns the  list   of shapes generated   from the
   //! shape <EorV>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& EorV)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the list  of shapes modified from the shape
   //! <F>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& F)
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& F) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& F) override;
 
-  Standard_EXPORT void Simulate(const Standard_Integer IC) Standard_OVERRIDE;
+  Standard_EXPORT void Simulate(const Standard_Integer IC) override;
 
-  Standard_EXPORT Standard_Integer NbSurf(const Standard_Integer IC) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbSurf(const Standard_Integer IC) const override;
 
   Standard_EXPORT Handle(ChFiDS_SecHArray1) Sect(const Standard_Integer IC,
-                                                 const Standard_Integer IS) const Standard_OVERRIDE;
+                                                 const Standard_Integer IS) const override;
 
 protected:
 private:

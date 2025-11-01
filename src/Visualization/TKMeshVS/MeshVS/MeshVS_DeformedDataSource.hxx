@@ -50,31 +50,31 @@ public:
                                                    const Standard_Boolean IsElement,
                                                    TColStd_Array1OfReal&  Coords,
                                                    Standard_Integer&      NbNodes,
-                                                   MeshVS_EntityType& Type) const Standard_OVERRIDE;
+                                                   MeshVS_EntityType& Type) const override;
 
   Standard_EXPORT virtual Standard_Boolean GetGeomType(const Standard_Integer ID,
                                                        const Standard_Boolean IsElement,
                                                        MeshVS_EntityType&     Type) const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual Standard_Boolean Get3DGeom(
     const Standard_Integer                     ID,
     Standard_Integer&                          NbNodes,
-    Handle(MeshVS_HArray1OfSequenceOfInteger)& Data) const Standard_OVERRIDE;
+    Handle(MeshVS_HArray1OfSequenceOfInteger)& Data) const override;
 
   Standard_EXPORT virtual Standard_Address GetAddr(const Standard_Integer ID,
                                                    const Standard_Boolean IsElement) const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual Standard_Boolean GetNodesByElement(const Standard_Integer   ID,
                                                              TColStd_Array1OfInteger& NodeIDs,
                                                              Standard_Integer&        NbNodes) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual const TColStd_PackedMapOfInteger& GetAllNodes() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TColStd_PackedMapOfInteger& GetAllNodes() const override;
 
   Standard_EXPORT virtual const TColStd_PackedMapOfInteger& GetAllElements() const
-    Standard_OVERRIDE;
+    override;
 
   //! This method returns map of nodal displacement vectors
   Standard_EXPORT const MeshVS_DataMapOfIntegerVector& GetVectors() const;

@@ -119,7 +119,7 @@ protected:
 
     //! Handle selection changed event.
     void OnSelectionChanged (const Handle(AIS_InteractiveContext)& theCtx,
-                             const Handle(V3d_View)& theView) Standard_OVERRIDE;
+                             const Handle(V3d_View)& theView) override;
 
 private:
     void                          initCursors();

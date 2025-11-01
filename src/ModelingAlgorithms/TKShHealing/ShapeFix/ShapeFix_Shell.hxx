@@ -98,16 +98,16 @@ public:
 
   //! Sets message registrator
   Standard_EXPORT virtual void SetMsgRegistrator(
-    const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg) Standard_OVERRIDE;
+    const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg) override;
 
   //! Sets basic precision value (also to FixWireTool)
-  Standard_EXPORT virtual void SetPrecision(const Standard_Real preci) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetPrecision(const Standard_Real preci) override;
 
   //! Sets minimal allowed tolerance (also to FixWireTool)
-  Standard_EXPORT virtual void SetMinTolerance(const Standard_Real mintol) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetMinTolerance(const Standard_Real mintol) override;
 
   //! Sets maximal allowed tolerance (also to FixWireTool)
-  Standard_EXPORT virtual void SetMaxTolerance(const Standard_Real maxtol) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetMaxTolerance(const Standard_Real maxtol) override;
 
   //! Returns (modifiable) the mode for applying fixes of
   //! ShapeFix_Face, by default True.

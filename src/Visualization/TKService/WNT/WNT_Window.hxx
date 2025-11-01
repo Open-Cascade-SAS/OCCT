@@ -79,7 +79,7 @@ public:
   Standard_EXPORT void SetCursor(const Aspect_Handle theCursor) const;
 
   //! Opens the window <me>.
-  Standard_EXPORT virtual void Map() const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Map() const override;
 
   //! Opens a window according to the map mode.
   //! This method is specific to Windows NT.
@@ -87,13 +87,13 @@ public:
   Standard_EXPORT void Map(const Standard_Integer theMapMode) const;
 
   //! Closes the window <me>.
-  Standard_EXPORT virtual void Unmap() const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Unmap() const override;
 
   //! Applies the resizing to the window <me>.
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() override;
 
   //! Does nothing on Windows.
-  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE { return Standard_True; }
+  virtual Standard_Boolean DoMapping() const override { return Standard_True; }
 
   //! Changes variables due to window position.
   Standard_EXPORT void SetPos(const Standard_Integer X,
@@ -103,46 +103,46 @@ public:
 
   //! Returns True if the window <me> is opened
   //! and False if the window is closed.
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsMapped() const override;
 
   //! Returns The Window RATIO equal to the physical
   //! WIDTH/HEIGHT dimensions.
-  Standard_EXPORT virtual Standard_Real Ratio() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Ratio() const override;
 
   //! Returns The Window POSITION in PIXEL
   Standard_EXPORT virtual void Position(Standard_Integer& X1,
                                         Standard_Integer& Y1,
                                         Standard_Integer& X2,
-                                        Standard_Integer& Y2) const Standard_OVERRIDE;
+                                        Standard_Integer& Y2) const override;
 
   //! Returns The Window SIZE in PIXEL
   Standard_EXPORT virtual void Size(Standard_Integer& Width,
-                                    Standard_Integer& Height) const Standard_OVERRIDE;
+                                    Standard_Integer& Height) const override;
 
   //! Returns native Window handle (HWND)
-  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE
+  virtual Aspect_Drawable NativeHandle() const override
   {
     return (Aspect_Drawable)myHWindow;
   }
 
   //! Returns parent of native Window handle (HWND on Windows).
-  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE
+  virtual Aspect_Drawable NativeParentHandle() const override
   {
     return (Aspect_Drawable)myHParentWindow;
   }
 
   //! Returns nothing on Windows
-  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
+  virtual Aspect_FBConfig NativeFBConfig() const override { return NULL; }
 
   //! Sets window title.
-  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) override;
 
   //! Invalidate entire window content by calling InvalidateRect() WinAPI function, resulting in
   //! WM_PAINT event put into window message loop. Method can be called from non-window thread, and
   //! system will also automatically aggregate multiple events into single one.
   Standard_EXPORT virtual void InvalidateContent(
     const Handle(Aspect_DisplayConnection)& theDisp = Handle(Aspect_DisplayConnection)())
-    Standard_OVERRIDE;
+    override;
 
 public:
   //! Returns the Windows NT handle of the created window <me>.

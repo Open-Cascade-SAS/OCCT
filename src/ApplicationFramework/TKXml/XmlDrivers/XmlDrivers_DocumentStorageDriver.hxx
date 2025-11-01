@@ -34,12 +34,12 @@ public:
   Standard_EXPORT XmlDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
 
   Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+    const Handle(Message_Messenger)& theMsgDriver) override;
 
   Standard_EXPORT virtual Standard_Boolean WriteShapeSection(
     XmlObjMgt_Element&           thePDoc,
     const TDocStd_FormatVersion  theStorageFormatVersion,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentStorageDriver, XmlLDrivers_DocumentStorageDriver)
 };

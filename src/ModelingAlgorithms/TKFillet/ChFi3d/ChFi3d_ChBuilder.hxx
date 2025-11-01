@@ -163,7 +163,7 @@ public:
                                          const Standard_Boolean             RecP,
                                          const Standard_Boolean             RecS,
                                          const Standard_Boolean             RecRst,
-                                         const math_Vector& Soldep) Standard_OVERRIDE;
+                                         const math_Vector& Soldep) override;
 
   Standard_EXPORT virtual void SimulSurf(Handle(ChFiDS_SurfData)&           Data,
                                          const Handle(ChFiDS_ElSpine)&      Guide,
@@ -188,7 +188,7 @@ public:
                                          const Standard_Boolean             RecP,
                                          const Standard_Boolean             RecS,
                                          const Standard_Boolean             RecRst,
-                                         const math_Vector& Soldep) Standard_OVERRIDE;
+                                         const math_Vector& Soldep) override;
 
   Standard_EXPORT virtual void SimulSurf(Handle(ChFiDS_SurfData)&           Data,
                                          const Handle(ChFiDS_ElSpine)&      Guide,
@@ -219,7 +219,7 @@ public:
                                          const Standard_Boolean             RecRst1,
                                          const Standard_Boolean             RecP2,
                                          const Standard_Boolean             RecRst2,
-                                         const math_Vector& Soldep) Standard_OVERRIDE;
+                                         const math_Vector& Soldep) override;
 
   //! Methode, implemented in inheritants, calculates
   //! the elements of construction of  the surface (fillet
@@ -244,7 +244,7 @@ public:
                                                        const Standard_Boolean             RecOnS2,
                                                        const math_Vector&                 Soldep,
                                                        Standard_Integer&                  Intf,
-                                                       Standard_Integer& Intl) Standard_OVERRIDE;
+                                                       Standard_Integer& Intl) override;
 
   //! Method, implemented in  the inheritants, calculates
   //! the elements of construction of  the surface (fillet
@@ -273,7 +273,7 @@ public:
                                            const Standard_Boolean             RecP,
                                            const Standard_Boolean             RecS,
                                            const Standard_Boolean             RecRst,
-                                           const math_Vector& Soldep) Standard_OVERRIDE;
+                                           const math_Vector& Soldep) override;
 
   //! Method, implemented in inheritants, calculates
   //! the elements of construction of  the surface (fillet
@@ -302,7 +302,7 @@ public:
                                            const Standard_Boolean             RecP,
                                            const Standard_Boolean             RecS,
                                            const Standard_Boolean             RecRst,
-                                           const math_Vector& Soldep) Standard_OVERRIDE;
+                                           const math_Vector& Soldep) override;
 
   //! Method, implemented in  inheritants, calculates
   //! the elements of construction of  the surface (fillet
@@ -337,10 +337,10 @@ public:
                                            const Standard_Boolean             RecRst1,
                                            const Standard_Boolean             RecP2,
                                            const Standard_Boolean             RecRst2,
-                                           const math_Vector& Soldep) Standard_OVERRIDE;
+                                           const math_Vector& Soldep) override;
 
 protected:
-  Standard_EXPORT void SimulKPart(const Handle(ChFiDS_SurfData)& SD) const Standard_OVERRIDE;
+  Standard_EXPORT void SimulKPart(const Handle(ChFiDS_SurfData)& SD) const override;
 
   Standard_EXPORT Standard_Boolean SimulSurf(Handle(ChFiDS_SurfData)&           Data,
                                              const Handle(ChFiDS_ElSpine)&      Guide,
@@ -360,7 +360,7 @@ protected:
                                              const Standard_Boolean             RecOnS2,
                                              const math_Vector&                 Soldep,
                                              Standard_Integer&                  Intf,
-                                             Standard_Integer& Intl) Standard_OVERRIDE;
+                                             Standard_Integer& Intl) override;
 
   Standard_EXPORT Standard_Boolean PerformFirstSection(const Handle(ChFiDS_Spine)&        S,
                                                        const Handle(ChFiDS_ElSpine)&      HGuide,
@@ -372,33 +372,33 @@ protected:
                                                        const Standard_Real                Par,
                                                        math_Vector&                       SolDep,
                                                        TopAbs_State&                      Pos1,
-                                                       TopAbs_State& Pos2) const Standard_OVERRIDE;
+                                                       TopAbs_State& Pos2) const override;
 
   //! computes  the  intersection of two chamfers on
   //! the vertex of index <Index> in myVDataMap.
-  Standard_EXPORT void PerformTwoCorner(const Standard_Integer Index) Standard_OVERRIDE;
+  Standard_EXPORT void PerformTwoCorner(const Standard_Integer Index) override;
 
   //! computes the intersection of three chamfers on
   //! the vertex of index <Index> in myVDataMap.
-  Standard_EXPORT void PerformThreeCorner(const Standard_Integer Index) Standard_OVERRIDE;
+  Standard_EXPORT void PerformThreeCorner(const Standard_Integer Index) override;
 
   //! extends  the spine  of  the Stripe  <S> at  the
   //! extremity of the vertex <V>.
   Standard_EXPORT void ExtentOneCorner(const TopoDS_Vertex&         V,
-                                       const Handle(ChFiDS_Stripe)& S) Standard_OVERRIDE;
+                                       const Handle(ChFiDS_Stripe)& S) override;
 
   //! extends the spine of the 2 stripes of <LS> at the
   //! extremity of the vertex <V>
   Standard_EXPORT void ExtentTwoCorner(const TopoDS_Vertex&       V,
-                                       const ChFiDS_ListOfStripe& LS) Standard_OVERRIDE;
+                                       const ChFiDS_ListOfStripe& LS) override;
 
   //! extends the spine of the 2 stripes of <LS> at the
   //! extremity of the vertex <V>
   Standard_EXPORT void ExtentThreeCorner(const TopoDS_Vertex&       V,
-                                         const ChFiDS_ListOfStripe& LS) Standard_OVERRIDE;
+                                         const ChFiDS_ListOfStripe& LS) override;
 
   //! set the regularities
-  Standard_EXPORT void SetRegul() Standard_OVERRIDE;
+  Standard_EXPORT void SetRegul() override;
 
 private:
   Standard_EXPORT void ConexFaces(const Handle(ChFiDS_Spine)& Sp,

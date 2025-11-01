@@ -52,33 +52,33 @@ public:
   //! Checks whether the face overlaps current selecting volume
   Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() override;
 
   //! Returns bounding box of the face. If location transformation
   //! is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
   //! Returns center of the face. If location transformation
   //! is set, it will be applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   //! Builds BVH tree for the face
-  Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
+  Standard_EXPORT virtual void BVH() override;
 
   //! Returns TRUE if BVH tree is in invalidated state
-  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE
+  virtual Standard_Boolean ToBuildBVH() const override
   {
     return myFacePoints->ToBuildBVH();
   }
 
   //! Returns the amount of sub-entities (points or planar convex polygons)
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 private:
   Select3D_TypeOfSensitivity mySensType; //!< Type of sensitivity: interior or boundary

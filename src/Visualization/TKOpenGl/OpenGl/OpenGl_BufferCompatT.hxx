@@ -49,23 +49,23 @@ public:
   virtual ~OpenGl_BufferCompatT() { Release(NULL); }
 
   //! Return TRUE.
-  virtual bool IsVirtual() const Standard_OVERRIDE { return true; }
+  virtual bool IsVirtual() const override { return true; }
 
   //! Creates VBO name (id) if not yet generated.
   //! Data should be initialized by another method.
-  inline bool Create(const Handle(OpenGl_Context)& theGlCtx) Standard_OVERRIDE;
+  inline bool Create(const Handle(OpenGl_Context)& theGlCtx) override;
 
   //! Destroy object - will release memory if any.
-  inline virtual void Release(OpenGl_Context* theGlCtx) Standard_OVERRIDE;
+  inline virtual void Release(OpenGl_Context* theGlCtx) override;
 
   //! Bind this VBO.
-  virtual void Bind(const Handle(OpenGl_Context)&) const Standard_OVERRIDE
+  virtual void Bind(const Handle(OpenGl_Context)&) const override
   {
     //
   }
 
   //! Unbind this VBO.
-  virtual void Unbind(const Handle(OpenGl_Context)&) const Standard_OVERRIDE
+  virtual void Unbind(const Handle(OpenGl_Context)&) const override
   {
     //
   }
@@ -84,21 +84,21 @@ public: //! @name advanced methods
                            const Standard_Integer        theElemsNb,
                            const void*                   theData,
                            const unsigned int            theDataType,
-                           const Standard_Integer        theStride) Standard_OVERRIDE;
+                           const Standard_Integer        theStride) override;
 
   //! Update part of the buffer with new data.
   inline virtual bool subData(const Handle(OpenGl_Context)& theGlCtx,
                               const Standard_Integer        theElemFrom,
                               const Standard_Integer        theElemsNb,
                               const void*                   theData,
-                              const unsigned int            theDataType) Standard_OVERRIDE;
+                              const unsigned int            theDataType) override;
 
   //! Read back buffer sub-range.
   inline virtual bool getSubData(const Handle(OpenGl_Context)& theGlCtx,
                                  const Standard_Integer        theElemFrom,
                                  const Standard_Integer        theElemsNb,
                                  void*                         theData,
-                                 const unsigned int            theDataType) Standard_OVERRIDE;
+                                 const unsigned int            theDataType) override;
 
 protected:
   Handle(NCollection_Buffer) myData; //!< buffer data

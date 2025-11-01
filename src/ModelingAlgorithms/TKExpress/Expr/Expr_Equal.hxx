@@ -35,22 +35,22 @@ public:
   Standard_EXPORT Expr_Equal(const Handle(Expr_GeneralExpression)& exp1,
                              const Handle(Expr_GeneralExpression)& exp2);
 
-  Standard_EXPORT Standard_Boolean IsSatisfied() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsSatisfied() const override;
 
   //! returns a GeneralRelation after replacement of
   //! NamedUnknowns by an associated expression and after
   //! values computation.
-  Standard_EXPORT Handle(Expr_GeneralRelation) Simplified() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Expr_GeneralRelation) Simplified() const override;
 
   //! Replaces NamedUnknowns by an associated expressions
   //! and computes values in <me>.
-  Standard_EXPORT void Simplify() Standard_OVERRIDE;
+  Standard_EXPORT void Simplify() override;
 
   //! Returns a copy of <me> having the same unknowns and functions.
-  Standard_EXPORT Handle(Expr_GeneralRelation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Expr_GeneralRelation) Copy() const override;
 
   //! returns a string representing <me> in a readable way.
-  Standard_EXPORT TCollection_AsciiString String() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString String() const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_Equal, Expr_SingleRelation)
 

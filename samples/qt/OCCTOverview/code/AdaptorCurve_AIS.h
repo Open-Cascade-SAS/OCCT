@@ -34,16 +34,16 @@ public:
 private:
 
   //! Return TRUE for supported display modes (modes 0 and 1 are supported).
-  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode == 0 || theMode == 1; }
+  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const override { return theMode == 0 || theMode == 1; }
 
   //! Compute presentation.
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                         const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+                                        const Standard_Integer theMode) override;
 
   //! Compute selection (not implemented).
   virtual void ComputeSelection (const Handle(SelectMgr_Selection)&,
-                                 const Standard_Integer) Standard_OVERRIDE {}
+                                 const Standard_Integer) override {}
 
 private:
   Handle(Geom_Curve) myCurve;

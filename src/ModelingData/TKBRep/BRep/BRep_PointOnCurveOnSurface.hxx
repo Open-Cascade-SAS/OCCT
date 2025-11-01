@@ -40,20 +40,20 @@ public:
                                              const TopLoc_Location&      L);
 
   //! Returns True
-  Standard_EXPORT virtual Standard_Boolean IsPointOnCurveOnSurface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsPointOnCurveOnSurface() const override;
 
   Standard_EXPORT virtual Standard_Boolean IsPointOnCurveOnSurface(const Handle(Geom2d_Curve)& PC,
                                                                    const Handle(Geom_Surface)& S,
                                                                    const TopLoc_Location& L) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual const Handle(Geom2d_Curve)& PCurve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Geom2d_Curve)& PCurve() const override;
 
-  Standard_EXPORT virtual void PCurve(const Handle(Geom2d_Curve)& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void PCurve(const Handle(Geom2d_Curve)& C) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointOnCurveOnSurface, BRep_PointsOnSurface)
 

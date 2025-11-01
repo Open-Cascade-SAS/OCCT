@@ -68,22 +68,22 @@ public:
   Standard_EXPORT AIS_Shape(const TopoDS_Shape& shap);
 
   //! Returns index 0. This value refers to SHAPE from TopAbs_ShapeEnum
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 0; }
+  virtual Standard_Integer Signature() const override { return 0; }
 
   //! Returns Object as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
+  virtual AIS_KindOfInteractive Type() const override
   {
     return AIS_KindOfInteractive_Shape;
   }
 
   //! Returns true if the Interactive Object accepts shape decomposition.
-  virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE
+  virtual Standard_Boolean AcceptShapeDecomposition() const override
   {
     return Standard_True;
   }
 
   //! Return true if specified display mode is supported.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
   {
     return theMode >= 0 && theMode <= 2;
   }
@@ -152,30 +152,30 @@ public:
   //! Prs3d_Drawer_SeenLineAspect
   //! -   hidden line color in hidden line mode:
   //! Prs3d_Drawer_HiddenLineAspect.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   //! Removes settings for color in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetColor() override;
 
   //! Sets the value aValue for line width in the reconstructed compound shape.
   //! Changes line aspects for lines presentation.
-  Standard_EXPORT virtual void SetWidth(const Standard_Real aValue) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetWidth(const Standard_Real aValue) override;
 
   //! Removes the setting for line width in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetWidth() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetWidth() override;
 
   //! Allows you to provide settings for the material aName
   //! in the reconstructed compound shape.
-  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& aName) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& aName) override;
 
   //! Removes settings for material in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetMaterial() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetMaterial() override;
 
   //! Sets the value aValue for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void SetTransparency(const Standard_Real aValue = 0.6) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTransparency(const Standard_Real aValue = 0.6) override;
 
   //! Removes the setting for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetTransparency() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetTransparency() override;
 
   //! Constructs a bounding box with which to reconstruct
   //! compound topological shapes for presentation.
@@ -187,15 +187,15 @@ public:
 
   //! Returns the Color attributes of the shape accordingly to
   //! the current facing model;
-  Standard_EXPORT virtual void Color(Quantity_Color& aColor) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Color(Quantity_Color& aColor) const override;
 
   //! Returns the NameOfMaterial attributes of the shape accordingly to
   //! the current facing model;
-  Standard_EXPORT virtual Graphic3d_NameOfMaterial Material() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Graphic3d_NameOfMaterial Material() const override;
 
   //! Returns the transparency attributes of the shape accordingly to
   //! the current facing model;
-  Standard_EXPORT virtual Standard_Real Transparency() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Transparency() const override;
 
   //! Return shape type for specified selection mode.
   static TopAbs_ShapeEnum SelectionType(const Standard_Integer theSelMode)
@@ -280,12 +280,12 @@ protected:
   //! Compute normal presentation.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   //! Compute projected presentation.
   virtual void computeHLR(const Handle(Graphic3d_Camera)&   theProjector,
                           const Handle(TopLoc_Datum3D)&     theTrsf,
-                          const Handle(Prs3d_Presentation)& thePrs) Standard_OVERRIDE
+                          const Handle(Prs3d_Presentation)& thePrs) override
   {
     if (!theTrsf.IsNull() && theTrsf->Form() != gp_Identity)
     {
@@ -301,7 +301,7 @@ protected:
 
   //! Compute selection.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+                                                const Standard_Integer theMode) override;
 
   //! Create own aspects (if they do not exist) and set color to them.
   //! @return TRUE if new aspects have been created
@@ -333,7 +333,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 protected:
   TopoDS_Shape     myshape;    //!< shape to display

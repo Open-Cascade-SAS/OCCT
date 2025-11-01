@@ -76,19 +76,19 @@ public:
 
   Standard_EXPORT XCAFDoc_LengthUnit();
 
-  Standard_EXPORT virtual const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Standard_GUID& ID() const override;
 
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& theWith) override;
 
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       theInto,
                                      const Handle(TDF_RelocationTable)& theRT) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_LengthUnit, TDF_Attribute)
 

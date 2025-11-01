@@ -38,7 +38,7 @@ public:
   Standard_EXPORT TDF_DeltaOnAddition(const Handle(TDF_Attribute)& anAtt);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT void Apply() Standard_OVERRIDE;
+  Standard_EXPORT void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnAddition, TDF_AttributeDelta)
 

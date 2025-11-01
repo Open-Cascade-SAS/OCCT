@@ -38,7 +38,7 @@ public:
   //! Recognizes a kind of SymmetricTensor23d select type
   //! return 0
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    CaseNum(const Handle(Standard_Transient)& ent) const override;
 
   //! Recognizes a items of select member SymmetricTensor23dMember
   //! 1 -> IsotropicSymmetricTensor23d
@@ -46,10 +46,10 @@ public:
   //! 3 -> AnisotropicSymmetricTensor23d
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns a new select member the type SymmetricTensor23dMember
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const override;
 
   //! Set Value for IsotropicSymmetricTensor23d
   Standard_EXPORT void SetIsotropicSymmetricTensor23d(const Standard_Real aVal);

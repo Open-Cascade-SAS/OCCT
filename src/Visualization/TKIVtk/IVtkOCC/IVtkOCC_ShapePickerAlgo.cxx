@@ -125,7 +125,7 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode(const IVtk_IShape::Handle& theSha
         myViewerSelector->RebuildObjectsTree();
         myViewerSelector->RebuildSensitivesTree(aSelObj);
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case SelectMgr_TOU_Partial: {
         if (aSelObj->HasTransformation())
         {

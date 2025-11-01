@@ -1974,10 +1974,10 @@ private:
   // Virtual methods implementation
   virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                        const Handle(Prs3d_Presentation)&         thePrs,
-                       const Standard_Integer                    theMode) Standard_OVERRIDE;
+                       const Standard_Integer                    theMode) override;
 
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                const Standard_Integer             theMode) Standard_OVERRIDE;
+                                const Standard_Integer             theMode) override;
 
 protected:
   Handle(Geom_Circle) myCircle;
@@ -3341,22 +3341,22 @@ public:
 
   DEFINE_STANDARD_RTTI_INLINE(MyPArrayObject, AIS_InteractiveObject);
 
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
   {
     return theMode == 0;
   }
 
   //! Sets color to this interactive object
   //! @param theColor the color to be set
-  virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  virtual void SetColor(const Quantity_Color& theColor) override;
 
 private:
   virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                        const Handle(Prs3d_Presentation)&         thePrs,
-                       const Standard_Integer                    theMode) Standard_OVERRIDE;
+                       const Standard_Integer                    theMode) override;
 
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                const Standard_Integer             theMode) Standard_OVERRIDE;
+                                const Standard_Integer             theMode) override;
 
   bool CheckInputCommand(const TCollection_AsciiString&              theCommand,
                          const Handle(TColStd_HArray1OfAsciiString)& theArgsArray,
@@ -5480,10 +5480,10 @@ public:
 private:
   virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                        const Handle(Prs3d_Presentation)&         thePrs,
-                       const Standard_Integer                    theMode) Standard_OVERRIDE;
+                       const Standard_Integer                    theMode) override;
 
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                const Standard_Integer             theMode) Standard_OVERRIDE;
+                                const Standard_Integer             theMode) override;
 
 protected:
   gp_XYZ                           myStartPoint;
@@ -6384,7 +6384,7 @@ static Standard_Integer VPointCloud(Draw_Interpretor& theDI,
       virtual void addPoint(const gp_Pnt&   thePoint,
                             const gp_Vec&   theNorm,
                             const gp_Pnt2d& theUV,
-                            const TopoDS_Shape&) Standard_OVERRIDE
+                            const TopoDS_Shape&) override
       {
         const Standard_Integer aPntIndex = myPoints->AddVertex(thePoint, theUV);
         if (theNorm.SquareMagnitude() > gp::Resolution())
@@ -6574,7 +6574,7 @@ protected:
   //! Compute presentation.
   virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                        const Handle(Prs3d_Presentation)&         thePrs,
-                       const Standard_Integer                    theMode) Standard_OVERRIDE
+                       const Standard_Integer                    theMode) override
   {
     AIS_Shape::Compute(thePrsMgr, thePrs, theMode);
 

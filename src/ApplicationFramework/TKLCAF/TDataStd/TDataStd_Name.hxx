@@ -70,15 +70,15 @@ public:
   Standard_EXPORT TDataStd_Name();
 
   //! Sets <S> as name. Raises if <S> is not a valid name.
-  Standard_EXPORT void Set(const TCollection_ExtendedString& S) Standard_OVERRIDE;
+  Standard_EXPORT void Set(const TCollection_ExtendedString& S) override;
 
   //! Sets the explicit user defined GUID  to the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& guid) Standard_OVERRIDE;
+  Standard_EXPORT void SetID(const Standard_GUID& guid) override;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() Standard_OVERRIDE;
+  Standard_EXPORT void SetID() override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_Name, TDataStd_GenericExtString)
 };

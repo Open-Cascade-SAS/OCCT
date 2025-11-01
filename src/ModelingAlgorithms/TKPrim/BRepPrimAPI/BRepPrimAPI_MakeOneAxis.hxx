@@ -38,7 +38,7 @@ public:
 
   //! Stores the solid in myShape.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the lateral face of the rotational primitive.
   Standard_EXPORT const TopoDS_Face& Face();

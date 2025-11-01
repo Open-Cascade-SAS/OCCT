@@ -69,7 +69,7 @@ public:
   }
 
   //! Override method to redirect to V3d_Trihedron.
-  virtual void Compute() Standard_OVERRIDE { myTrihedron->compute(); }
+  virtual void Compute() override { myTrihedron->compute(); }
 
 private:
   V3d_Trihedron* myTrihedron;

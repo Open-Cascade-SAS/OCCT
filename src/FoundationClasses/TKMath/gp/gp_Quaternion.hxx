@@ -159,7 +159,7 @@ public:
   }
 
   //! Return rotation with reversed direction (conjugated quaternion)
-  Standard_NODISCARD constexpr gp_Quaternion Reversed() const noexcept
+  [[nodiscard]] constexpr gp_Quaternion Reversed() const noexcept
   {
     return gp_Quaternion(-x, -y, -z, w);
   }
@@ -172,7 +172,7 @@ public:
   }
 
   //! Return inversed quaternion q^-1
-  Standard_NODISCARD constexpr gp_Quaternion Inverted() const
+  [[nodiscard]] constexpr gp_Quaternion Inverted() const
   {
     Standard_Real anIn = 1.0 / SquareNorm();
     return gp_Quaternion(-x * anIn, -y * anIn, -z * anIn, w * anIn);
@@ -191,12 +191,12 @@ public:
   void operator*=(const Standard_Real theScale) { Scale(theScale); }
 
   //! Returns scaled quaternion
-  Standard_NODISCARD constexpr gp_Quaternion Scaled(const Standard_Real theScale) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion Scaled(const Standard_Real theScale) const noexcept
   {
     return gp_Quaternion(x * theScale, y * theScale, z * theScale, w * theScale);
   }
 
-  Standard_NODISCARD constexpr gp_Quaternion operator*(const Standard_Real theScale) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion operator*(const Standard_Real theScale) const noexcept
   {
     return Scaled(theScale);
   }
@@ -212,7 +212,7 @@ public:
   Standard_EXPORT void Normalize();
 
   //! Returns quaternion scaled so that its norm goes to 1.
-  Standard_NODISCARD gp_Quaternion Normalized() const
+  [[nodiscard]] gp_Quaternion Normalized() const
   {
     gp_Quaternion aNormilizedQ(*this);
     aNormilizedQ.Normalize();
@@ -222,32 +222,32 @@ public:
   //! Returns quaternion with all components negated.
   //! Note that this operation does not affect neither
   //! rotation operator defined by quaternion nor its norm.
-  Standard_NODISCARD constexpr gp_Quaternion Negated() const noexcept
+  [[nodiscard]] constexpr gp_Quaternion Negated() const noexcept
   {
     return gp_Quaternion(-x, -y, -z, -w);
   }
 
-  Standard_NODISCARD constexpr gp_Quaternion operator-() const noexcept { return Negated(); }
+  [[nodiscard]] constexpr gp_Quaternion operator-() const noexcept { return Negated(); }
 
   //! Makes sum of quaternion components; result is "rotations mix"
-  Standard_NODISCARD constexpr gp_Quaternion Added(const gp_Quaternion& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion Added(const gp_Quaternion& theOther) const noexcept
   {
     return gp_Quaternion(x + theOther.x, y + theOther.y, z + theOther.z, w + theOther.w);
   }
 
-  Standard_NODISCARD constexpr gp_Quaternion operator+(const gp_Quaternion& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion operator+(const gp_Quaternion& theOther) const noexcept
   {
     return Added(theOther);
   }
 
   //! Makes difference of quaternion components; result is "rotations mix"
-  Standard_NODISCARD constexpr gp_Quaternion Subtracted(
+  [[nodiscard]] constexpr gp_Quaternion Subtracted(
     const gp_Quaternion& theOther) const noexcept
   {
     return gp_Quaternion(x - theOther.x, y - theOther.y, z - theOther.z, w - theOther.w);
   }
 
-  Standard_NODISCARD constexpr gp_Quaternion operator-(const gp_Quaternion& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion operator-(const gp_Quaternion& theOther) const noexcept
   {
     return Subtracted(theOther);
   }
@@ -262,10 +262,10 @@ public:
   //! qq' != q'q;
   //! qq^-1 = q;
   //! @endcode
-  Standard_NODISCARD constexpr gp_Quaternion Multiplied(
+  [[nodiscard]] constexpr gp_Quaternion Multiplied(
     const gp_Quaternion& theOther) const noexcept;
 
-  Standard_NODISCARD constexpr gp_Quaternion operator*(const gp_Quaternion& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion operator*(const gp_Quaternion& theOther) const noexcept
   {
     return Multiplied(theOther);
   }

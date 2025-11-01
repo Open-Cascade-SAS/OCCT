@@ -115,7 +115,7 @@ public:
                                     const Standard_Real    Tol,
                                     Standard_Real&         JacCoeff,
                                     Standard_Integer&      NewDegree,
-                                    Standard_Real&         MaxError) const Standard_OVERRIDE;
+                                    Standard_Real&         MaxError) const override;
 
   Standard_EXPORT Standard_Real AverageError(const Standard_Integer Dimension,
                                              Standard_Real&         JacCoeff,
@@ -125,24 +125,24 @@ public:
   Standard_EXPORT void ToCoefficients(const Standard_Integer      Dimension,
                                       const Standard_Integer      Degree,
                                       const TColStd_Array1OfReal& JacCoeff,
-                                      TColStd_Array1OfReal& Coefficients) const Standard_OVERRIDE;
+                                      TColStd_Array1OfReal& Coefficients) const override;
 
   //! Compute the values of the basis functions in u
   Standard_EXPORT void D0(const Standard_Real   U,
-                          TColStd_Array1OfReal& BasisValue) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& BasisValue) override;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
   Standard_EXPORT void D1(const Standard_Real   U,
                           TColStd_Array1OfReal& BasisValue,
-                          TColStd_Array1OfReal& BasisD1) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& BasisD1) override;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
   Standard_EXPORT void D2(const Standard_Real   U,
                           TColStd_Array1OfReal& BasisValue,
                           TColStd_Array1OfReal& BasisD1,
-                          TColStd_Array1OfReal& BasisD2) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& BasisD2) override;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
@@ -150,10 +150,10 @@ public:
                           TColStd_Array1OfReal& BasisValue,
                           TColStd_Array1OfReal& BasisD1,
                           TColStd_Array1OfReal& BasisD2,
-                          TColStd_Array1OfReal& BasisD3) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& BasisD3) override;
 
   //! returns WorkDegree
-  Standard_Integer WorkDegree() const Standard_OVERRIDE;
+  Standard_Integer WorkDegree() const override;
 
   //! returns NivConstr
   Standard_Integer NivConstr() const;

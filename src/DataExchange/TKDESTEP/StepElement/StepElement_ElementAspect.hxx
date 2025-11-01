@@ -39,7 +39,7 @@ public:
   //! Recognizes a kind of ElementAspect select type
   //! return 0
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    CaseNum(const Handle(Standard_Transient)& ent) const override;
 
   //! Recognizes a items of select member ElementAspectMember
   //! 1 -> ElementVolume
@@ -54,10 +54,10 @@ public:
   //! 10 -> CurveEdge
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns a new select member the type ElementAspectMember
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const override;
 
   //! Set Value for ElementVolume
   Standard_EXPORT void SetElementVolume(const StepElement_ElementVolume aVal);

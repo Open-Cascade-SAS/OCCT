@@ -50,14 +50,14 @@ public:
   //! list, otherwise the object is firstly added to the map.
   Standard_EXPORT virtual void Send(const Handle(Standard_Transient)& object,
                                     const Message_Msg&                message,
-                                    const Message_Gravity             gravity) Standard_OVERRIDE;
+                                    const Message_Gravity             gravity) override;
 
   //! Sends a message to be attached to the shape.
   //! If the shape is in the map then the message is added to the
   //! list, otherwise the shape is firstly added to the map.
   Standard_EXPORT virtual void Send(const TopoDS_Shape&   shape,
                                     const Message_Msg&    message,
-                                    const Message_Gravity gravity) Standard_OVERRIDE;
+                                    const Message_Gravity gravity) override;
 
   //! Returns a Map of objects and message list
   const ShapeExtend_DataMapOfTransientListOfMsg& MapTransient() const;

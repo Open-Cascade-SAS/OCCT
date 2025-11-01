@@ -42,7 +42,7 @@ public:
 
   Standard_EXPORT void Position(const Standard_Real value);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarAngle, DrawDim_PlanarDimension)
 

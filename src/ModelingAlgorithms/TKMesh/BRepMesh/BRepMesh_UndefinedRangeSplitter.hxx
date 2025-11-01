@@ -34,7 +34,7 @@ protected:
   Standard_EXPORT virtual Standard_Integer getUndefinedIntervalNb(
     const Handle(Adaptor3d_Surface)& theSurface,
     const Standard_Boolean           isU,
-    const GeomAbs_Shape              theContinuity) const Standard_OVERRIDE;
+    const GeomAbs_Shape              theContinuity) const override;
 };
 
 #endif

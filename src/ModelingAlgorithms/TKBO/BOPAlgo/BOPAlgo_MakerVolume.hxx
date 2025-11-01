@@ -116,7 +116,7 @@ public:
   BOPAlgo_MakerVolume(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Clears the data.
-  virtual void Clear() Standard_OVERRIDE;
+  virtual void Clear() override;
 
   //! Sets the flag myIntersect:
   //! if <bIntersect> is TRUE the shapes from <myArguments> will be intersected.
@@ -144,16 +144,16 @@ public:
 
   //! Performs the operation.
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected:
   //! Checks the data.
-  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckData() override;
 
   //! Performs the operation.
   Standard_EXPORT virtual void PerformInternal1(
     const BOPAlgo_PaveFiller&    thePF,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Collects all faces.
   Standard_EXPORT void CollectFaces();
@@ -191,7 +191,7 @@ protected:
   };
 
   //! Analyze progress steps
-  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const override;
 
 protected:
   Standard_Boolean     myIntersect;

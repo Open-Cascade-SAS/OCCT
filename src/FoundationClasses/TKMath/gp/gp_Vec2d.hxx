@@ -145,22 +145,22 @@ public:
   void operator+=(const gp_Vec2d& theOther) { Add(theOther); }
 
   //! Adds two vectors
-  Standard_NODISCARD gp_Vec2d Added(const gp_Vec2d& theOther) const
+  [[nodiscard]] gp_Vec2d Added(const gp_Vec2d& theOther) const
   {
     gp_Vec2d aV = *this;
     aV.coord.Add(theOther.coord);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator+(const gp_Vec2d& theOther) const { return Added(theOther); }
+  [[nodiscard]] gp_Vec2d operator+(const gp_Vec2d& theOther) const { return Added(theOther); }
 
   //! Computes the crossing product between two vectors
-  Standard_NODISCARD Standard_Real Crossed(const gp_Vec2d& theRight) const
+  [[nodiscard]] Standard_Real Crossed(const gp_Vec2d& theRight) const
   {
     return coord.Crossed(theRight.coord);
   }
 
-  Standard_NODISCARD Standard_Real operator^(const gp_Vec2d& theRight) const
+  [[nodiscard]] Standard_Real operator^(const gp_Vec2d& theRight) const
   {
     return Crossed(theRight);
   }
@@ -184,14 +184,14 @@ public:
   void operator/=(const Standard_Real theScalar) { Divide(theScalar); }
 
   //! divides a vector by a scalar
-  Standard_NODISCARD gp_Vec2d Divided(const Standard_Real theScalar) const
+  [[nodiscard]] gp_Vec2d Divided(const Standard_Real theScalar) const
   {
     gp_Vec2d aV = *this;
     aV.coord.Divide(theScalar);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator/(const Standard_Real theScalar) const
+  [[nodiscard]] gp_Vec2d operator/(const Standard_Real theScalar) const
   {
     return Divided(theScalar);
   }
@@ -210,14 +210,14 @@ public:
   //! Normalizes a vector
   //! Raises an exception if the magnitude of the vector is
   //! lower or equal to Resolution from package gp.
-  Standard_NODISCARD gp_Vec2d Multiplied(const Standard_Real theScalar) const
+  [[nodiscard]] gp_Vec2d Multiplied(const Standard_Real theScalar) const
   {
     gp_Vec2d aV = *this;
     aV.coord.Multiply(theScalar);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator*(const Standard_Real theScalar) const
+  [[nodiscard]] gp_Vec2d operator*(const Standard_Real theScalar) const
   {
     return Multiplied(theScalar);
   }
@@ -234,19 +234,19 @@ public:
   //! Raises an exception if the magnitude of the vector is
   //! lower or equal to Resolution from package gp.
   //! Reverses the direction of a vector
-  Standard_NODISCARD gp_Vec2d Normalized() const;
+  [[nodiscard]] gp_Vec2d Normalized() const;
 
   void Reverse() { coord.Reverse(); }
 
   //! Reverses the direction of a vector
-  Standard_NODISCARD gp_Vec2d Reversed() const
+  [[nodiscard]] gp_Vec2d Reversed() const
   {
     gp_Vec2d aV = *this;
     aV.coord.Reverse();
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator-() const { return Reversed(); }
+  [[nodiscard]] gp_Vec2d operator-() const { return Reversed(); }
 
   //! Subtracts two vectors
   void Subtract(const gp_Vec2d& theRight) { coord.Subtract(theRight.coord); }
@@ -254,14 +254,14 @@ public:
   void operator-=(const gp_Vec2d& theRight) { Subtract(theRight); }
 
   //! Subtracts two vectors
-  Standard_NODISCARD gp_Vec2d Subtracted(const gp_Vec2d& theRight) const
+  [[nodiscard]] gp_Vec2d Subtracted(const gp_Vec2d& theRight) const
   {
     gp_Vec2d aV = *this;
     aV.coord.Subtract(theRight.coord);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator-(const gp_Vec2d& theRight) const
+  [[nodiscard]] gp_Vec2d operator-(const gp_Vec2d& theRight) const
   {
     return Subtracted(theRight);
   }
@@ -306,7 +306,7 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector theV which is the center of
   //! the  symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec2d Mirrored(const gp_Vec2d& theV) const;
+  [[nodiscard]] Standard_EXPORT gp_Vec2d Mirrored(const gp_Vec2d& theV) const;
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
@@ -316,13 +316,13 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec2d Mirrored(const gp_Ax2d& theA1) const;
+  [[nodiscard]] Standard_EXPORT gp_Vec2d Mirrored(const gp_Ax2d& theA1) const;
 
   void Rotate(const Standard_Real theAng);
 
   //! Rotates a vector. theAng is the angular value of the
   //! rotation in radians.
-  Standard_NODISCARD gp_Vec2d Rotated(const Standard_Real theAng) const
+  [[nodiscard]] gp_Vec2d Rotated(const Standard_Real theAng) const
   {
     gp_Vec2d aV = *this;
     aV.Rotate(theAng);
@@ -332,7 +332,7 @@ public:
   void Scale(const Standard_Real theS) { coord.Multiply(theS); }
 
   //! Scales a vector. theS is the scaling value.
-  Standard_NODISCARD gp_Vec2d Scaled(const Standard_Real theS) const
+  [[nodiscard]] gp_Vec2d Scaled(const Standard_Real theS) const
   {
     gp_Vec2d aV = *this;
     aV.coord.Multiply(theS);
@@ -342,7 +342,7 @@ public:
   Standard_EXPORT void Transform(const gp_Trsf2d& theT);
 
   //! Transforms a vector with a Trsf from gp.
-  Standard_NODISCARD gp_Vec2d Transformed(const gp_Trsf2d& theT) const
+  [[nodiscard]] gp_Vec2d Transformed(const gp_Trsf2d& theT) const
   {
     gp_Vec2d aV = *this;
     aV.Transform(theT);

@@ -47,29 +47,29 @@ public:
 
   //! returns the number of sub-expressions contained
   //! in <me> ( >= 0)
-  Standard_EXPORT Standard_Integer NbSubExpressions() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbSubExpressions() const override;
 
   //! returns the <I>-th sub-expression of <me>
   //! raises OutOfRange if <I> > NbSubExpressions(me)
   Standard_EXPORT const Handle(Expr_GeneralExpression)& SubExpression(
-    const Standard_Integer I) const Standard_OVERRIDE;
+    const Standard_Integer I) const override;
 
   //! Does <me> contain NamedUnknown ?
-  Standard_EXPORT Standard_Boolean ContainsUnknowns() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean ContainsUnknowns() const override;
 
   //! Tests if <me> contains <exp>.
   Standard_EXPORT Standard_Boolean
-    Contains(const Handle(Expr_GeneralExpression)& exp) const Standard_OVERRIDE;
+    Contains(const Handle(Expr_GeneralExpression)& exp) const override;
 
   //! Replaces all occurrences of <var> with <with> in <me>.
   //! Raises InvalidOperand if <with> contains <me>.
   Standard_EXPORT void Replace(const Handle(Expr_NamedUnknown)&      var,
-                               const Handle(Expr_GeneralExpression)& with) Standard_OVERRIDE;
+                               const Handle(Expr_GeneralExpression)& with) override;
 
   //! Returns a GeneralExpression after replacement of
   //! NamedUnknowns by an associated expression and after
   //! values computation.
-  Standard_EXPORT Handle(Expr_GeneralExpression) Simplified() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Expr_GeneralExpression) Simplified() const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_BinaryExpression, Expr_GeneralExpression)
 

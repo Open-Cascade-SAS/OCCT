@@ -45,27 +45,27 @@ public:
   Standard_EXPORT Handle(Expr_GeneralExpression) SecondMember() const;
 
   //! Tests if <me> is linear between its NamedUnknowns.
-  Standard_EXPORT Standard_Boolean IsLinear() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsLinear() const override;
 
   //! Returns the number of relations contained in <me>.
-  Standard_EXPORT Standard_Integer NbOfSubRelations() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbOfSubRelations() const override;
 
   //! Returns the number of SingleRelations contained in
   //! <me> (Always 1).
-  Standard_EXPORT Standard_Integer NbOfSingleRelations() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbOfSingleRelations() const override;
 
   //! Returns the relation denoted by <index> in <me>.
   //! An exception is raised if index is out of range.
   Standard_EXPORT Handle(Expr_GeneralRelation) SubRelation(const Standard_Integer index) const
-    Standard_OVERRIDE;
+    override;
 
   //! Tests if <me> contains <exp>.
   Standard_EXPORT Standard_Boolean
-    Contains(const Handle(Expr_GeneralExpression)& exp) const Standard_OVERRIDE;
+    Contains(const Handle(Expr_GeneralExpression)& exp) const override;
 
   //! Replaces all occurrences of <var> with <with> in <me>.
   Standard_EXPORT void Replace(const Handle(Expr_NamedUnknown)&      var,
-                               const Handle(Expr_GeneralExpression)& with) Standard_OVERRIDE;
+                               const Handle(Expr_GeneralExpression)& with) override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_SingleRelation, Expr_GeneralRelation)
 

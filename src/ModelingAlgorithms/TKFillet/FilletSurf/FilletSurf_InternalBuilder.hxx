@@ -136,7 +136,7 @@ protected:
                                                        const Standard_Boolean             RecOnS2,
                                                        const math_Vector&                 Soldep,
                                                        Standard_Integer&                  Intf,
-                                                       Standard_Integer& Intl) Standard_OVERRIDE;
+                                                       Standard_Integer& Intl) override;
 
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         SeqData,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -162,7 +162,7 @@ protected:
                                            const Standard_Boolean             RecP,
                                            const Standard_Boolean             RecS,
                                            const Standard_Boolean             RecRst,
-                                           const math_Vector& Soldep) Standard_OVERRIDE;
+                                           const math_Vector& Soldep) override;
 
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         SeqData,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -188,7 +188,7 @@ protected:
                                            const Standard_Boolean             RecP,
                                            const Standard_Boolean             RecS,
                                            const Standard_Boolean             RecRst,
-                                           const math_Vector& Soldep) Standard_OVERRIDE;
+                                           const math_Vector& Soldep) override;
 
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         Data,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -220,7 +220,7 @@ protected:
                                            const Standard_Boolean             RecRst1,
                                            const Standard_Boolean             RecP2,
                                            const Standard_Boolean             RecRst2,
-                                           const math_Vector& Soldep) Standard_OVERRIDE;
+                                           const math_Vector& Soldep) override;
 
 private:
 };

@@ -42,11 +42,11 @@ public:
                                    const Standard_Real              Plast,
                                    const Bnd_Box2d&                 BoxOtherPolygon);
 
-  Standard_EXPORT virtual Standard_Boolean Closed() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Closed() const override;
 
-  Standard_EXPORT Standard_Integer NbPoints() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbPoints() const override;
 
-  Standard_EXPORT gp_Pnt2d Point(const Standard_Integer Index) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pnt2d Point(const Standard_Integer Index) const override;
 
   Standard_EXPORT Standard_Real Parameter(const Standard_Integer Index) const;
 

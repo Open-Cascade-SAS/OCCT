@@ -49,7 +49,7 @@ public:
   Standard_EXPORT Handle(TDF_Reference) Update();
 
   //! Returns the ID of the attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Returns the GUID for external links.
   Standard_EXPORT static const Standard_GUID& GetID();
@@ -75,39 +75,39 @@ public:
 
   //! Updates the XLinkRoot attribute by adding <me>
   //! to its list.
-  Standard_EXPORT void AfterAddition() Standard_OVERRIDE;
+  Standard_EXPORT void AfterAddition() override;
 
   //! Updates the XLinkRoot attribute by removing <me>
   //! from its list.
-  Standard_EXPORT void BeforeRemoval() Standard_OVERRIDE;
+  Standard_EXPORT void BeforeRemoval() override;
 
   //! Something to do before applying <anAttDelta>.
   Standard_EXPORT virtual Standard_Boolean BeforeUndo(
     const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
+    const Standard_Boolean            forceIt = Standard_False) override;
 
   //! Something to do after applying <anAttDelta>.
   Standard_EXPORT virtual Standard_Boolean AfterUndo(
     const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
+    const Standard_Boolean            forceIt = Standard_False) override;
 
   //! Returns a null handle. Raise always for it is
   //! nonsense to use this method.
-  Standard_EXPORT Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) BackupCopy() const override;
 
   //! Does nothing.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& anAttribute) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& anAttribute) override;
 
   //! Returns a null handle.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
 
   //! Does nothing.
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       intoAttribute,
                              const Handle(TDF_RelocationTable)& aRelocationTable) const
-    Standard_OVERRIDE;
+    override;
 
   //! Dumps the attribute on <aStream>.
-  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   friend class TDocStd_XLinkRoot;
   friend class TDocStd_XLinkIterator;

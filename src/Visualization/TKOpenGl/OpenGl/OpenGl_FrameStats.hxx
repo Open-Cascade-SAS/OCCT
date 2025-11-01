@@ -40,7 +40,7 @@ public:
 protected:
   //! Method to collect statistics from the View; called by FrameEnd().
   Standard_EXPORT virtual void updateStatistics(const Handle(Graphic3d_CView)& theView,
-                                                bool theIsImmediateOnly) Standard_OVERRIDE;
+                                                bool theIsImmediateOnly) override;
 
   //! Updates counters for structures.
   Standard_EXPORT virtual void updateStructures(

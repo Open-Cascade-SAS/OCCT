@@ -36,10 +36,10 @@ public:
   Standard_EXPORT GccInt_BParab(const gp_Parab2d& Parab);
 
   //! Returns a 2D parabola which is the geometry of this bisecting curve.
-  Standard_EXPORT virtual gp_Parab2d Parabola() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Parab2d Parabola() const override;
 
   //! Returns GccInt_Par, which is the type of any GccInt_BParab bisecting curve.
-  Standard_EXPORT GccInt_IType ArcType() const Standard_OVERRIDE;
+  Standard_EXPORT GccInt_IType ArcType() const override;
 
   DEFINE_STANDARD_RTTIEXT(GccInt_BParab, GccInt_Bisec)
 

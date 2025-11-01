@@ -41,7 +41,7 @@ public:
   //! -- 1 -> Curve
   //! -- 2 -> Edge
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    CaseNum(const Handle(Standard_Transient)& ent) const override;
 
   //! Returns Value as Curve (or Null if another type)
   Standard_EXPORT Handle(StepGeom_Curve) Curve() const;

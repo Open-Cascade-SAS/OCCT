@@ -44,7 +44,7 @@ public:
                                                   const Standard_Boolean withlist = Standard_False);
 
   //! Resets already memorized information : also numeric data
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Adds an entity by considering its lrvrl number(s)
   //! A level is added both in numeric and alphanumeric form,
@@ -54,7 +54,7 @@ public:
   //! " LEVEL LIST", and for each of its constituent levels
   Standard_EXPORT virtual void AddSign(const Handle(Standard_Transient)&       ent,
                                        const Handle(Interface_InterfaceModel)& model)
-    Standard_OVERRIDE;
+    override;
 
   //! The internal action to record a new level number, positive,
   //! null (no level) or negative (level list)
@@ -78,11 +78,11 @@ public:
   //! as AddSign, see this method ("LEVEL LIST" or "nnnnnnn")
   Standard_EXPORT virtual Handle(TCollection_HAsciiString) Sign(
     const Handle(Standard_Transient)&       ent,
-    const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+    const Handle(Interface_InterfaceModel)& model) const override;
 
   //! Prints the counts of items (not the list) then the Highest
   //! Level Number recorded
-  Standard_EXPORT virtual void PrintCount(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void PrintCount(Standard_OStream& S) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_CounterOfLevelNumber, IFSelect_SignCounter)
 

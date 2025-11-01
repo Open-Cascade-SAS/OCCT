@@ -176,7 +176,7 @@ public:
   Standard_EXPORT virtual ~BOPAlgo_CellsBuilder();
 
   //! Redefined method Clear - clears the contents.
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Adding the parts to result.<br>
   //! The parts are defined by two lists of shapes:<br>
@@ -230,13 +230,13 @@ protected:
   //! Prepare information for history support taking into account
   //! local modification map of unified elements - myMapModified.
   Standard_EXPORT virtual const TopTools_ListOfShape* LocModified(const TopoDS_Shape& theS)
-    Standard_OVERRIDE;
+    override;
 
   //! Redefined method PerformInternal1 - makes all split parts,
   //! nullifies the result <myShape>, and index all parts.
   Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
                                                 const Message_ProgressRange& theRange)
-    Standard_OVERRIDE;
+    override;
 
   //! Indexes the parts for quick access to the arguments.
   Standard_EXPORT void IndexParts();

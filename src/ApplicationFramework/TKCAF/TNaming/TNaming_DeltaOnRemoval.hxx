@@ -35,7 +35,7 @@ public:
   Standard_EXPORT TNaming_DeltaOnRemoval(const Handle(TNaming_NamedShape)& NS);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TNaming_DeltaOnRemoval, TDF_DeltaOnRemoval)
 

@@ -73,47 +73,47 @@ public:
   void SetWithNormals(const Standard_Boolean theWithNormals) { myWithNormals = theWithNormals; }
 
   //! Clears the content of the set.
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Stores the geometry of <S>.
-  Standard_EXPORT virtual void AddGeometry(const TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual void AddGeometry(const TopoDS_Shape& S) override;
 
   //! Dumps the geometry of me on the stream <OS>.
-  Standard_EXPORT virtual void DumpGeometry(Standard_OStream& OS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpGeometry(Standard_OStream& OS) const override;
 
   //! Writes the geometry of me on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT virtual void WriteGeometry(
     Standard_OStream&            OS,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! Reads the geometry of me from the stream <IS>.
   Standard_EXPORT virtual void ReadGeometry(
     Standard_IStream&            IS,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! Dumps the geometry of <S> on the stream <OS>.
   Standard_EXPORT virtual void DumpGeometry(const TopoDS_Shape& S,
-                                            Standard_OStream&   OS) const Standard_OVERRIDE;
+                                            Standard_OStream&   OS) const override;
 
   //! Writes the geometry of <S> on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT virtual void WriteGeometry(const TopoDS_Shape& S,
-                                             Standard_OStream&   OS) const Standard_OVERRIDE;
+                                             Standard_OStream&   OS) const override;
 
   //! Reads the geometry of a shape of type <T> from the
   //! stream <IS> and returns it in <S>.
   Standard_EXPORT virtual void ReadGeometry(const TopAbs_ShapeEnum T,
                                             Standard_IStream&      IS,
-                                            TopoDS_Shape&          S) Standard_OVERRIDE;
+                                            TopoDS_Shape&          S) override;
 
   //! Inserts the shape <S2> in the shape <S1>. This
   //! method must be redefined to use the correct
   //! builder.
   Standard_EXPORT virtual void AddShapes(TopoDS_Shape&       S1,
-                                         const TopoDS_Shape& S2) Standard_OVERRIDE;
+                                         const TopoDS_Shape& S2) override;
 
-  Standard_EXPORT virtual void Check(const TopAbs_ShapeEnum T, TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Check(const TopAbs_ShapeEnum T, TopoDS_Shape& S) override;
 
   //! Reads the 3d polygons of me
   //! from the stream <IS>.

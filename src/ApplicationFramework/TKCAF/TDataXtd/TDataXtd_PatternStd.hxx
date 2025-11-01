@@ -89,23 +89,23 @@ public:
 
   Handle(TNaming_NamedShape) Mirror() const;
 
-  Standard_EXPORT Standard_Integer NbTrsfs() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbTrsfs() const override;
 
-  Standard_EXPORT void ComputeTrsfs(TDataXtd_Array1OfTrsf& Trsfs) const Standard_OVERRIDE;
+  Standard_EXPORT void ComputeTrsfs(TDataXtd_Array1OfTrsf& Trsfs) const override;
 
-  Standard_EXPORT const Standard_GUID& PatternID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& PatternID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+                             const Handle(TDF_RelocationTable)& RT) const override;
 
   Standard_EXPORT virtual void References(const Handle(TDF_DataSet)& aDataSet) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataXtd_PatternStd, TDataXtd_Pattern)
 

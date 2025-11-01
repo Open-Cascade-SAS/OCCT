@@ -52,24 +52,24 @@ public:
   Standard_EXPORT static void Remove(const TDocStd_XLinkPtr& anXLinkPtr);
 
   //! Returns the ID of the attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Returns a null handle.
-  Standard_EXPORT Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) BackupCopy() const override;
 
   //! Does nothing.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& anAttribute) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& anAttribute) override;
 
   //! Returns a null handle.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
 
   //! Does nothing.
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       intoAttribute,
                              const Handle(TDF_RelocationTable)& aRelocationTable) const
-    Standard_OVERRIDE;
+    override;
 
   //! Dumps the attribute on <aStream>.
-  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   friend class TDocStd_XLinkIterator;
 

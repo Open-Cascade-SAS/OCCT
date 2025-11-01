@@ -62,19 +62,19 @@ public: //! @name Accessing the results
 public: //! @name Definition of the rules for tree descend
   //! Compares the two metrics and chooses the best one
   virtual Standard_Boolean IsMetricBetter(const NumType& theLeft,
-                                          const NumType& theRight) const Standard_OVERRIDE
+                                          const NumType& theRight) const override
   {
     return theLeft < theRight;
   }
 
   //! Rejects the branch by the metric
-  virtual Standard_Boolean RejectMetric(const NumType& theMetric) const Standard_OVERRIDE
+  virtual Standard_Boolean RejectMetric(const NumType& theMetric) const override
   {
     return theMetric > myDistance;
   }
 
   //! Returns the flag controlling the tree descend
-  virtual Standard_Boolean Stop() const Standard_OVERRIDE
+  virtual Standard_Boolean Stop() const override
   {
     return myDistance == static_cast<NumType>(0);
   }

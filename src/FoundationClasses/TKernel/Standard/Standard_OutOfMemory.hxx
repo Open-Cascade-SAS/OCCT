@@ -47,17 +47,17 @@ DEFINE_STANDARD_HANDLE(Standard_OutOfMemory, Standard_ProgramError)
 
 class Standard_OutOfMemory : public Standard_ProgramError
 {
-  Standard_EXPORT void Throw() const Standard_OVERRIDE;
+  Standard_EXPORT void Throw() const override;
 
 public:
   //! Constructor is kept public for backward compatibility
   Standard_EXPORT Standard_OutOfMemory(const Standard_CString theMessage = 0);
 
   //! Returns error message
-  Standard_EXPORT Standard_CString GetMessageString() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_CString GetMessageString() const override;
 
   //! Sets error message
-  Standard_EXPORT void SetMessageString(const Standard_CString aMessage) Standard_OVERRIDE;
+  Standard_EXPORT void SetMessageString(const Standard_CString aMessage) override;
 
   //! Raises exception with specified message string
   Standard_EXPORT static void Raise(const Standard_CString theMessage = "");

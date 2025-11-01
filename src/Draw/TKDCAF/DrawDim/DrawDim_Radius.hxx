@@ -37,7 +37,7 @@ public:
 
   Standard_EXPORT void Cylinder(const TopoDS_Face& face);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   DEFINE_STANDARD_RTTIEXT(DrawDim_Radius, DrawDim_Dimension)
 

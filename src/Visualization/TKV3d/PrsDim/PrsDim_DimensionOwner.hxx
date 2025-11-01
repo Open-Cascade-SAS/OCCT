@@ -54,17 +54,17 @@ public:
 
   Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
                                                 const Handle(Prs3d_Drawer)&               theStyle,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+                                                const Standard_Integer theMode) override;
 
   //! Returns true if an object with the selection mode
   //! aMode is highlighted in the presentation manager aPM.
   Standard_EXPORT virtual Standard_Boolean IsHilighted(
     const Handle(PrsMgr_PresentationManager)& thePM,
-    const Standard_Integer                    theMode = 0) const Standard_OVERRIDE;
+    const Standard_Integer                    theMode = 0) const override;
 
   //! Removes highlighting from the selected part of dimension.
   Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
-                                         const Standard_Integer theMode = 0) Standard_OVERRIDE;
+                                         const Standard_Integer theMode = 0) override;
 
 private:
   PrsDim_DimensionSelectionMode mySelectionMode;

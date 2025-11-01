@@ -47,10 +47,10 @@ public:
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+                                                const Standard_Integer theMode) override;
 
   Standard_EXPORT void ComputeEllipse(const Handle(Prs3d_Presentation)& aPresentation);
 

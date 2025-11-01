@@ -87,7 +87,7 @@ public:
   //! Builds the result of the projection as a compound of
   //! wires. Tries to build oriented wires.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns true if the object was correctly built by the shape
   //! construction algorithm.
@@ -96,7 +96,7 @@ public:
   //! IsDone returns false and therefore protects the use of
   //! functions to access the result of the construction
   //! (typically the Shape function).
-  Standard_EXPORT Standard_Boolean IsDone() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsDone() const override;
 
   //! Performs the projection.
   //! The construction of the result is performed by Build.
@@ -114,7 +114,7 @@ public:
   //! Returns the  list   of shapes generated   from the
   //! shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the initial edge corresponding to the edge E
   //! resulting from the computation of the projection.

@@ -2815,7 +2815,7 @@ void AIS_ViewController::OnObjectDragged(const Handle(AIS_InteractiveContext)& t
                                     myGL.Dragging.PointStart,
                                     myGL.Dragging.PointTo,
                                     theAction);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     }
     case AIS_DragAction_Stop: {
       if (myDragObject.IsNull())

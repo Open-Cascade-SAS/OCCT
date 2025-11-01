@@ -46,7 +46,7 @@ public:
   OcctHighlighter(QTextDocument* theParent = 0);
 
 protected:
-  void highlightBlock(const QString& theText) Standard_OVERRIDE;
+  void highlightBlock(const QString& theText) override;
 
 private:
   struct HighlightingRule

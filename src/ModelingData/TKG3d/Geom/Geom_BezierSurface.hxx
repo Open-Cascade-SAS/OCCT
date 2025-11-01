@@ -409,7 +409,7 @@ public:
   //! u  parametric direction. The bounds of the
   //! surface are not changed, but the given parametric
   //! direction is reversed. Hence, the orientation of the surface is reversed.
-  Standard_EXPORT void UReverse() Standard_OVERRIDE;
+  Standard_EXPORT void UReverse() override;
 
   //! Computes the u (or v) parameter on the modified
   //! surface, produced by reversing its u (or v) parametric
@@ -417,14 +417,14 @@ public:
   //! parameter V) on this Bezier surface.
   //! In the case of a Bezier surface, these functions return respectively:
   //! - 1.-U, or 1.-V.
-  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const override;
 
   //! Changes the orientation of this Bezier surface in the
   //! v parametric direction. The bounds of the
   //! surface are not changed, but the given parametric
   //! direction is reversed. Hence, the orientation of the
   //! surface is reversed.
-  Standard_EXPORT void VReverse() Standard_OVERRIDE;
+  Standard_EXPORT void VReverse() override;
 
   //! Computes the u (or v) parameter on the modified
   //! surface, produced by reversing its u (or v) parametric
@@ -432,7 +432,7 @@ public:
   //! parameter V) on this Bezier surface.
   //! In the case of a Bezier surface, these functions return respectively:
   //! - 1.-U, or 1.-V.
-  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const override;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of
   //! this Bezier surface.
@@ -441,21 +441,21 @@ public:
   Standard_EXPORT void Bounds(Standard_Real& U1,
                               Standard_Real& U2,
                               Standard_Real& V1,
-                              Standard_Real& V2) const Standard_OVERRIDE;
+                              Standard_Real& V2) const override;
 
   //! Returns the continuity of the surface CN : the order of
   //! continuity is infinite.
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   Standard_EXPORT void D0(const Standard_Real U,
                           const Standard_Real V,
-                          gp_Pnt&             P) const Standard_OVERRIDE;
+                          gp_Pnt&             P) const override;
 
   Standard_EXPORT void D1(const Standard_Real U,
                           const Standard_Real V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
-                          gp_Vec&             D1V) const Standard_OVERRIDE;
+                          gp_Vec&             D1V) const override;
 
   Standard_EXPORT void D2(const Standard_Real U,
                           const Standard_Real V,
@@ -464,7 +464,7 @@ public:
                           gp_Vec&             D1V,
                           gp_Vec&             D2U,
                           gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const Standard_OVERRIDE;
+                          gp_Vec&             D2UV) const override;
 
   //! Computes P, the point of parameters (U, V) of this Bezier surface, and
   //! - one or more of the following sets of vectors:
@@ -485,7 +485,7 @@ public:
                           gp_Vec&             D3U,
                           gp_Vec&             D3V,
                           gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const Standard_OVERRIDE;
+                          gp_Vec&             D3UVV) const override;
 
   //! Computes the derivative of order Nu in the u
   //! parametric direction, and Nv in the v parametric
@@ -497,7 +497,7 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Real    V,
                             const Standard_Integer Nu,
-                            const Standard_Integer Nv) const Standard_OVERRIDE;
+                            const Standard_Integer Nv) const override;
 
   //! Returns the number of poles in the U direction.
   Standard_EXPORT Standard_Integer NbUPoles() const;
@@ -526,7 +526,7 @@ public:
 
   //! Computes the U isoparametric curve. For a Bezier surface the
   //! UIso curve is a Bezier curve.
-  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const override;
 
   //! Returns the degree of the surface in the V direction it is
   //! NbVPoles - 1
@@ -534,7 +534,7 @@ public:
 
   //! Computes the V isoparametric curve. For a Bezier surface the
   //! VIso  curve is a Bezier curve.
-  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const override;
 
   //! Returns the weight of range UIndex, VIndex
   //!
@@ -560,24 +560,24 @@ public:
   //! Returns True if the first control points row and the
   //! last control points row are identical. The tolerance
   //! criterion is Resolution from package gp.
-  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsUClosed() const override;
 
   //! Returns True if the first control points column
   //! and the last control points column are identical.
   //! The tolerance criterion is Resolution from package gp.
-  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsVClosed() const override;
 
   //! Returns True, a Bezier surface is always  CN
-  Standard_EXPORT Standard_Boolean IsCNu(const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsCNu(const Standard_Integer N) const override;
 
   //! Returns True, a BezierSurface is always  CN
-  Standard_EXPORT Standard_Boolean IsCNv(const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsCNv(const Standard_Integer N) const override;
 
   //! Returns False.
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsUPeriodic() const override;
 
   //! Returns False.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsVPeriodic() const override;
 
   //! Returns False if the weights are identical in the U direction,
   //! The tolerance criterion is Resolution from package gp.
@@ -596,7 +596,7 @@ public:
   Standard_EXPORT Standard_Boolean IsVRational() const;
 
   //! Applies the transformation T to this Bezier surface.
-  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Returns the value of the maximum polynomial degree of a
   //! Bezier surface. This value is 25.
@@ -617,11 +617,11 @@ public:
                                   Standard_Real&      VTolerance);
 
   //! Creates a new object which is a copy of this Bezier surface.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 

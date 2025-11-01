@@ -91,7 +91,7 @@ public:
   //! integral of UFunction. It is computed with the predefined
   //! tolerance using the adaptive Gauss-Kronrod method.
   Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X,
-                                                 Standard_Real&      F) Standard_OVERRIDE;
+                                                 Standard_Real&      F) override;
 
   //! Redefined  method. Remembers the error reached during
   //! computation of integral values since the object creation
@@ -99,7 +99,7 @@ public:
   //! algorithm from the package math. Particularly in the
   //! algorithm math_KronrodSingleIntegration that is used to
   //! compute the integral of TFunction.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer GetStateNumber() override;
 
 protected:
 private:

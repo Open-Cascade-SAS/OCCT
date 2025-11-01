@@ -119,18 +119,18 @@ public:
 
   //! Does nothing.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the list of shapes generated from the shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the list of shapes Modified from the shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns true if the shape has been removed from the result.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) override;
 
   //! Returns offset join type.
   Standard_EXPORT GeomAbs_JoinType GetJoinType() const;

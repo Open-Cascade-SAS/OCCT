@@ -138,7 +138,7 @@ public:
 
 protected:
   //! Returns true if the interactive object accepts the display mode.
-  Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
   {
     return theMode == 0;
   }
@@ -146,11 +146,11 @@ protected:
   //! Computes presentation of rubber band.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   //! Does not fill selection primitives for rubber band.
   virtual void ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
-                                const Standard_Integer /*aMode*/) Standard_OVERRIDE {};
+                                const Standard_Integer /*aMode*/) override {};
 
   //! Fills triangles primitive array for rubber band filling.
   //! It uses Delaunay triangulation.

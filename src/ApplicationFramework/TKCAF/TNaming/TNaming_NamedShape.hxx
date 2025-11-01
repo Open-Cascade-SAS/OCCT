@@ -75,32 +75,32 @@ public:
   ~TNaming_NamedShape() { Clear(); }
 
   //! Returns the ID of the attribute.
-  const Standard_GUID& ID() const Standard_OVERRIDE;
+  const Standard_GUID& ID() const override;
 
   //! Copies  the attribute  contents into  a  new other
   //! attribute. It is used by Backup().
-  Standard_EXPORT virtual Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(TDF_Attribute) BackupCopy() const override;
 
   //! Restores the contents from <anAttribute> into this
   //! one. It is used when aborting a transaction.
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& anAttribute) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& anAttribute) override;
 
   //! Makes a DeltaOnModification between <me> and
   //! <anOldAttribute.
   Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification(
-    const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
+    const Handle(TDF_Attribute)& anOldAttribute) const override;
 
   //! Applies a DeltaOnModification to <me>.
   Standard_EXPORT virtual void DeltaOnModification(const Handle(TDF_DeltaOnModification)& aDelta)
-    Standard_OVERRIDE;
+    override;
 
   //! Makes a DeltaOnRemoval on <me> because <me> has
   //! disappeared from the DS.
-  Standard_EXPORT virtual Handle(TDF_DeltaOnRemoval) DeltaOnRemoval() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(TDF_DeltaOnRemoval) DeltaOnRemoval() const override;
 
   //! Returns an new empty attribute from the good end
   //! type. It is used by the copy algorithm.
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
 
   //! This method is different from the "Copy" one,
   //! because it is used when copying an attribute from
@@ -111,32 +111,32 @@ public:
   //! of the previous one.
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       intoAttribute,
                                      const Handle(TDF_RelocationTable)& aRelocTationable) const
-    Standard_OVERRIDE;
+    override;
 
   //! Adds the directly referenced attributes and labels
   //! to <aDataSet>. "Directly" means we have only to
   //! look at the first level of references.
   Standard_EXPORT virtual void References(const Handle(TDF_DataSet)& aDataSet) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual void BeforeRemoval() Standard_OVERRIDE;
+  Standard_EXPORT virtual void BeforeRemoval() override;
 
   //! Something to do before applying <anAttDelta>
   Standard_EXPORT virtual Standard_Boolean BeforeUndo(
     const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
+    const Standard_Boolean            forceIt = Standard_False) override;
 
   //! Something to do after applying <anAttDelta>.
   Standard_EXPORT virtual Standard_Boolean AfterUndo(
     const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
+    const Standard_Boolean            forceIt = Standard_False) override;
 
   //! Dumps the attribute on <aStream>.
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   friend class TNaming_Builder;
   friend class TNaming_Iterator;

@@ -66,7 +66,7 @@ public:
   //! RecognizeByLib
   Standard_EXPORT Standard_Boolean Recognize(const Standard_Integer      num,
                                              Handle(Interface_Check)&    ach,
-                                             Handle(Standard_Transient)& ent) Standard_OVERRIDE;
+                                             Handle(Standard_Transient)& ent) override;
 
   //! bounds empty entities and sub-lists to header records
   //! works like Prepare + SetEntityNumbers, but for header
@@ -78,19 +78,19 @@ public:
   //! fills model's header; that is, gives to it Header entities
   //! and commands their loading. Also fills StepModel's Global
   //! Check from StepReaderData's GlobalCheck
-  Standard_EXPORT void BeginRead(const Handle(Interface_InterfaceModel)& amodel) Standard_OVERRIDE;
+  Standard_EXPORT void BeginRead(const Handle(Interface_InterfaceModel)& amodel) override;
 
   //! fills an entity, given record no; works by using a ReaderLib
   //! to load each entity, which must be a Transient
   //! Actually, returned value is True if no fail, False else
   Standard_EXPORT Standard_Boolean AnalyseRecord(const Standard_Integer            num,
                                                  const Handle(Standard_Transient)& anent,
-                                                 Handle(Interface_Check)& acheck) Standard_OVERRIDE;
+                                                 Handle(Interface_Check)& acheck) override;
 
   //! Ends file reading after reading all the entities
   //! Here, it binds in the model, Idents to Entities (for checks)
   Standard_EXPORT virtual void EndRead(const Handle(Interface_InterfaceModel)& amodel)
-    Standard_OVERRIDE;
+    override;
 
 protected:
 private:

@@ -38,7 +38,7 @@ public:
                                                    const Handle(Interface_InterfaceModel)& model,
                                                    const TCollection_AsciiString&          text,
                                                    const Standard_Boolean exact) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectDerived, StepSelect_StepType)
 

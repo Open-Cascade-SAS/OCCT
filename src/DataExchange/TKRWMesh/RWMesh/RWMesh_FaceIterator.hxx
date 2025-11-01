@@ -49,16 +49,16 @@ public:
                                       const XCAFPrs_Style& theStyle = XCAFPrs_Style());
 
   //! Return true if iterator points to the valid triangulation.
-  bool More() const Standard_OVERRIDE { return !myPolyTriang.IsNull(); }
+  bool More() const override { return !myPolyTriang.IsNull(); }
 
   //! Find next value.
-  Standard_EXPORT void Next() Standard_OVERRIDE;
+  Standard_EXPORT void Next() override;
 
   //! Return current face.
   const TopoDS_Face& Face() const { return myFace; }
 
   //! Return current face.
-  const TopoDS_Shape& Shape() const Standard_OVERRIDE { return myFace; }
+  const TopoDS_Shape& Shape() const override { return myFace; }
 
   //! Return current face triangulation.
   const Handle(Poly_Triangulation)& Triangulation() const { return myPolyTriang; }
@@ -67,7 +67,7 @@ public:
   bool IsEmptyMesh() const { return IsEmpty(); }
 
   //! Return true if mesh data is defined.
-  bool IsEmpty() const Standard_OVERRIDE
+  bool IsEmpty() const override
   {
     return myPolyTriang.IsNull()
            || (myPolyTriang->NbNodes() < 1 && myPolyTriang->NbTriangles() < 1);
@@ -88,10 +88,10 @@ public:
   Standard_Integer NbTriangles() const { return myPolyTriang->NbTriangles(); }
 
   //! Lower element index in current triangulation.
-  Standard_Integer ElemLower() const Standard_OVERRIDE { return 1; }
+  Standard_Integer ElemLower() const override { return 1; }
 
   //! Upper element index in current triangulation.
-  Standard_Integer ElemUpper() const Standard_OVERRIDE { return myPolyTriang->NbTriangles(); }
+  Standard_Integer ElemUpper() const override { return myPolyTriang->NbTriangles(); }
 
   //! Return triangle with specified index with applied Face orientation.
   Poly_Triangle TriangleOriented(Standard_Integer theElemIndex) const
@@ -128,16 +128,16 @@ public:
   }
 
   //! Return number of nodes for the current face.
-  Standard_Integer NbNodes() const Standard_OVERRIDE
+  Standard_Integer NbNodes() const override
   {
     return !myPolyTriang.IsNull() ? myPolyTriang->NbNodes() : 0;
   }
 
   //! Lower node index in current triangulation.
-  Standard_Integer NodeLower() const Standard_OVERRIDE { return 1; }
+  Standard_Integer NodeLower() const override { return 1; }
 
   //! Upper node index in current triangulation.
-  Standard_Integer NodeUpper() const Standard_OVERRIDE { return myPolyTriang->NbNodes(); }
+  Standard_Integer NodeUpper() const override { return myPolyTriang->NbNodes(); }
 
   //! Return texture coordinates for the node.
   gp_Pnt2d NodeTexCoord(const Standard_Integer theNode) const
@@ -147,7 +147,7 @@ public:
 
 public:
   //! Return the node with specified index with applied transformation.
-  gp_Pnt node(const Standard_Integer theNode) const Standard_OVERRIDE
+  gp_Pnt node(const Standard_Integer theNode) const override
   {
     return myPolyTriang->Node(theNode);
   }

@@ -67,7 +67,7 @@ public:
   void SetScale(const Standard_Real theNewScale) { myScale = theNewScale; }
 
   //! Assign new interactive context to the object.
-  Standard_EXPORT virtual void SetContext (const Handle(AIS_InteractiveContext)& theContext) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetContext (const Handle(AIS_InteractiveContext)& theContext) override;
 
 private:
 

@@ -45,11 +45,11 @@ public:
   //! is set to Global Section Item n0 18.
   Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Update IGES Header Creation Date"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_UpdateCreationDate, IGESSelect_ModelModifier)
 

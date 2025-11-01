@@ -5129,14 +5129,14 @@ const TopTools_ListOfShape& BRepOffset_MakeOffset::Generated(const TopoDS_Shape&
         }
       }
     }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case TopAbs_EDGE: {
       if (myInitOffsetEdge.HasImage(theS))
       {
         myInitOffsetEdge.LastImage(theS, myGenerated);
       }
     }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case TopAbs_FACE: {
       TopoDS_Shape        aS        = theS;
       const TopoDS_Shape* aPlanface = myFacePlanfaceMap.Seek(aS);

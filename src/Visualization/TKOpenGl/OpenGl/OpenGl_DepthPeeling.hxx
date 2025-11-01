@@ -30,11 +30,11 @@ public:
   Standard_EXPORT virtual ~OpenGl_DepthPeeling();
 
   //! Release OpenGL resources
-  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const override;
 
   //! Attach a texture image.
   //! Resets the active FBO to 0.

@@ -47,30 +47,30 @@ public:
                                            const Standard_Boolean IsElement,
                                            TColStd_Array1OfReal&  Coords,
                                            Standard_Integer&      NbNodes,
-                                           MeshVS_EntityType&     Type) const Standard_OVERRIDE;
+                                           MeshVS_EntityType&     Type) const override;
 
   //! This method is similar to GetGeom, but returns only element or node type. This method is
   //! provided for a fine performance.
   Standard_EXPORT Standard_Boolean GetGeomType(const Standard_Integer ID,
                                                const Standard_Boolean IsElement,
-                                               MeshVS_EntityType&     Type) const Standard_OVERRIDE;
+                                               MeshVS_EntityType&     Type) const override;
 
   //! This method returns by number an address of any entity which represents element or node data
   //! structure.
   Standard_EXPORT Standard_Address
-    GetAddr(const Standard_Integer ID, const Standard_Boolean IsElement) const Standard_OVERRIDE;
+    GetAddr(const Standard_Integer ID, const Standard_Boolean IsElement) const override;
 
   //! This method returns information about what node this element consist of.
   Standard_EXPORT virtual Standard_Boolean GetNodesByElement(const Standard_Integer   ID,
                                                              TColStd_Array1OfInteger& NodeIDs,
                                                              Standard_Integer&        NbNodes) const
-    Standard_OVERRIDE;
+    override;
 
   //! This method returns map of all nodes the object consist of.
-  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllNodes() const Standard_OVERRIDE;
+  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllNodes() const override;
 
   //! This method returns map of all elements the object consist of.
-  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllElements() const Standard_OVERRIDE;
+  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllElements() const override;
 
   //! This method calculates normal of face, which is using for correct reflection presentation.
   //! There is default method, for advance reflection this method can be redefined.
@@ -78,7 +78,7 @@ public:
                                                      const Standard_Integer Max,
                                                      Standard_Real&         nx,
                                                      Standard_Real&         ny,
-                                                     Standard_Real& nz) const Standard_OVERRIDE;
+                                                     Standard_Real& nz) const override;
 
   DEFINE_STANDARD_RTTIEXT(XSDRAWSTL_DataSource, MeshVS_DataSource)
 

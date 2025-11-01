@@ -37,7 +37,7 @@ public:
 
   //! Recognizes a ShapeMapper
   Standard_EXPORT virtual Standard_Boolean Recognize(const Handle(Transfer_Finder)& start)
-    Standard_OVERRIDE;
+    override;
 
   //! Transfers Shape to IGES Entities
   //!
@@ -46,7 +46,7 @@ public:
   Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
     const Handle(Transfer_Finder)&        start,
     const Handle(Transfer_FinderProcess)& FP,
-    const Message_ProgressRange&          theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&          theProgress = Message_ProgressRange()) override;
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_ActorWrite, Transfer_ActorOfFinderProcess)
 };

@@ -51,7 +51,7 @@ public:
   const CafDataMapOfShapeColor& ShapeColors() const { return myShapeColors; }
 
   //! Override default style.
-  virtual void DefaultStyle (XCAFPrs_Style& theStyle) const Standard_OVERRIDE
+  virtual void DefaultStyle (XCAFPrs_Style& theStyle) const override
   {
     theStyle = myDefStyle;
   }

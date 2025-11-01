@@ -1067,7 +1067,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom
       }
       /* else  AddF("... */
     }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     default: {
       Message_Msg                      msg1156("IGES_1156");
       const Standard_CString           typeName("basis surface");

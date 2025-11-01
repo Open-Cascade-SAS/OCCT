@@ -37,15 +37,15 @@ class DDataStd_TreeBrowser : public Draw_Drawable3D
 public:
   Standard_EXPORT DDataStd_TreeBrowser(const TDF_Label& root);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const override;
 
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
   //! Specific methods
   //! ================
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
   Standard_EXPORT void Label(const TDF_Label& root);
 

@@ -88,7 +88,7 @@
 //!   // Computes the distance from the point to bounding box
 //!   virtual Standard_Boolean RejectNode (const BVH_Vec3d& theCMin,
 //!                                        const BVH_Vec3d& theCMax,
-//!                                        Standard_Real& theDistance) const Standard_OVERRIDE
+//!                                        Standard_Real& theDistance) const override
 //!   {
 //!     theDistance = BVH_Tools<Standard_Real, 3>::PointBoxSquareDistance (myObject, theCMin,
 //!     theCMax); return RejectMetric (theDistance);
@@ -96,7 +96,7 @@
 //!
 //!   // Computes the distance from the point to triangle
 //!   virtual Standard_Boolean Accept (const Standard_Integer theIndex,
-//!                                    const Standard_Real&) Standard_OVERRIDE
+//!                                    const Standard_Real&) override
 //!   {
 //!     const Triangle& aTri = myBVHSet->Element (theIndex);
 //!     Standard_Real aDist = BVH_Tools<Standard_Real, 3>::PointTriangleSquareDistance (myObject,

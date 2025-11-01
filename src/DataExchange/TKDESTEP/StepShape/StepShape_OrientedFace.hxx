@@ -50,14 +50,14 @@ public:
   Standard_EXPORT Standard_Boolean Orientation() const;
 
   Standard_EXPORT virtual void SetBounds(const Handle(StepShape_HArray1OfFaceBound)& aBounds)
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Handle(StepShape_HArray1OfFaceBound) Bounds() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(StepShape_HArray1OfFaceBound) Bounds() const override;
 
   Standard_EXPORT virtual Handle(StepShape_FaceBound) BoundsValue(const Standard_Integer num) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Standard_Integer NbBounds() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbBounds() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedFace, StepShape_Face)
 

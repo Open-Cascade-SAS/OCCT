@@ -38,18 +38,18 @@ public:
     const TColgp_Array1OfPnt&                        theNodes,
     const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo);
 
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() override;
 
   Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the amount of nodes of polyhedron
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const override;
 
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_SensitivePolyhedron, Select3D_SensitiveEntity)
 

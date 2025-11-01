@@ -57,7 +57,7 @@ public:
    * @return
    *   False if the tree already contains theObj.
    */
-  Standard_Boolean Add(const TheObjType& theObj, const TheBndType& theBnd) Standard_OVERRIDE
+  Standard_Boolean Add(const TheObjType& theObj, const TheBndType& theBnd) override
   {
     Standard_Boolean result = Standard_False;
     if (!Contains(theObj))
@@ -105,7 +105,7 @@ public:
   /**
    * Clears the contents of the tree. Redefined virtual method
    */
-  void Clear(const Handle(NCollection_BaseAllocator)& aNewAlloc = 0L) Standard_OVERRIDE
+  void Clear(const Handle(NCollection_BaseAllocator)& aNewAlloc = 0L) override
   {
     myObjNodeMap.Clear();
     UBTree::Clear(aNewAlloc);

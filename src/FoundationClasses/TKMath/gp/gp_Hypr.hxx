@@ -278,26 +278,26 @@ public:
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect  to the point theP which is the center of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Hypr Mirrored(const gp_Pnt& theP) const;
+  [[nodiscard]] Standard_EXPORT gp_Hypr Mirrored(const gp_Pnt& theP) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect to an axis placement which is the axis of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Hypr Mirrored(const gp_Ax1& theA1) const;
+  [[nodiscard]] Standard_EXPORT gp_Hypr Mirrored(const gp_Ax1& theA1) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect to a plane. The axis placement theA2 locates the plane
   //! of the symmetry (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Hypr Mirrored(const gp_Ax2& theA2) const;
+  [[nodiscard]] Standard_EXPORT gp_Hypr Mirrored(const gp_Ax2& theA2) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
 
   //! Rotates an hyperbola. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Hypr Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  [[nodiscard]] gp_Hypr Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
     gp_Hypr aH = *this;
     aH.pos.Rotate(theA1, theAng);
@@ -307,19 +307,19 @@ public:
   void Scale(const gp_Pnt& theP, const Standard_Real theS);
 
   //! Scales an hyperbola. theS is the scaling value.
-  Standard_NODISCARD gp_Hypr Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
+  [[nodiscard]] gp_Hypr Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
 
   void Transform(const gp_Trsf& theT);
 
   //! Transforms an hyperbola with the transformation theT from
   //! class Trsf.
-  Standard_NODISCARD gp_Hypr Transformed(const gp_Trsf& theT) const;
+  [[nodiscard]] gp_Hypr Transformed(const gp_Trsf& theT) const;
 
   void Translate(const gp_Vec& theV) { pos.Translate(theV); }
 
   //! Translates an hyperbola in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Hypr Translated(const gp_Vec& theV) const
+  [[nodiscard]] gp_Hypr Translated(const gp_Vec& theV) const
   {
     gp_Hypr aH = *this;
     aH.pos.Translate(theV);
@@ -329,7 +329,7 @@ public:
   void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
 
   //! Translates an hyperbola from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Hypr Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  [[nodiscard]] gp_Hypr Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
   {
     gp_Hypr aH = *this;
     aH.pos.Translate(theP1, theP2);

@@ -139,7 +139,7 @@ public: //! @name Setting input data for the algorithm
 public: //! @name Performing the operation
   //! Performs the operation
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 public: //! @name History Methods
   //! Defines whether to track the modification of the shapes or not.
@@ -150,16 +150,16 @@ public: //! @name History Methods
 
   //! Returns the list of shapes modified from the shape <theS> during the operation.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the list of shapes generated from the shape <theS> during the operation.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns true if the shape <theS> has been deleted during the operation.
   //! It means that the shape has no any trace in the result.
   //! Otherwise it returns false.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& theS) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& theS) override;
 
   //! Returns true if any of the input shapes has been modified during operation.
   Standard_EXPORT virtual Standard_Boolean HasModified() const;
@@ -174,7 +174,7 @@ public: //! @name History Methods
   Handle(BRepTools_History) History() { return myFeatureRemovalTool.History(); }
 
 protected: //! @name Setting the algorithm into default state
-  virtual void Clear() Standard_OVERRIDE
+  virtual void Clear() override
   {
     BRepAlgoAPI_Algo::Clear();
     myFeatureRemovalTool.Clear();

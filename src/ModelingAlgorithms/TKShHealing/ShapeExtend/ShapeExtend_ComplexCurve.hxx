@@ -53,50 +53,50 @@ public:
                                                       const Standard_Real    Ulocal) const = 0;
 
   //! Applies transformation to each curve
-  Standard_EXPORT virtual void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Transform(const gp_Trsf& T) override;
 
   //! Returns 1 - U
-  virtual Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  virtual Standard_Real ReversedParameter(const Standard_Real U) const override;
 
   //! Returns 0
-  virtual Standard_Real FirstParameter() const Standard_OVERRIDE;
+  virtual Standard_Real FirstParameter() const override;
 
   //! Returns 1
-  virtual Standard_Real LastParameter() const Standard_OVERRIDE;
+  virtual Standard_Real LastParameter() const override;
 
   //! Returns True if the curve is closed
-  virtual Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  virtual Standard_Boolean IsClosed() const override;
 
   //! Returns False
-  virtual Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  virtual Standard_Boolean IsPeriodic() const override;
 
   //! Returns GeomAbs_C0
-  virtual GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  virtual GeomAbs_Shape Continuity() const override;
 
   //! Returns False if N > 0
-  virtual Standard_Boolean IsCN(const Standard_Integer N) const Standard_OVERRIDE;
+  virtual Standard_Boolean IsCN(const Standard_Integer N) const override;
 
   //! Returns point at parameter U.
   //! Finds appropriate curve and local parameter on it.
-  Standard_EXPORT virtual void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void D0(const Standard_Real U, gp_Pnt& P) const override;
 
   Standard_EXPORT virtual void D1(const Standard_Real U,
                                   gp_Pnt&             P,
-                                  gp_Vec&             V1) const Standard_OVERRIDE;
+                                  gp_Vec&             V1) const override;
 
   Standard_EXPORT virtual void D2(const Standard_Real U,
                                   gp_Pnt&             P,
                                   gp_Vec&             V1,
-                                  gp_Vec&             V2) const Standard_OVERRIDE;
+                                  gp_Vec&             V2) const override;
 
   Standard_EXPORT virtual void D3(const Standard_Real U,
                                   gp_Pnt&             P,
                                   gp_Vec&             V1,
                                   gp_Vec&             V2,
-                                  gp_Vec&             V3) const Standard_OVERRIDE;
+                                  gp_Vec&             V3) const override;
 
   Standard_EXPORT virtual gp_Vec DN(const Standard_Real    U,
-                                    const Standard_Integer N) const Standard_OVERRIDE;
+                                    const Standard_Integer N) const override;
 
   //! Returns scale factor for recomputing of deviatives.
   Standard_EXPORT virtual Standard_Real GetScaleFactor(const Standard_Integer ind) const = 0;

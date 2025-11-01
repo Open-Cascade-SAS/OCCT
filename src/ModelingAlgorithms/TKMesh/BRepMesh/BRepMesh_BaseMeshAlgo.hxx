@@ -41,7 +41,7 @@ public:
   Standard_EXPORT virtual void Perform(
     const IMeshData::IFaceHandle& theDFace,
     const IMeshTools_Parameters&  theParameters,
-    const Message_ProgressRange&  theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&  theRange = Message_ProgressRange()) override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_BaseMeshAlgo, IMeshTools_MeshAlgo)
 

@@ -142,7 +142,7 @@ public:
   //! Unlock the given View
   Standard_EXPORT void Unlock(const TDF_Label& theViewL) const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_ViewTool, TDataStd_GenericEmpty)
 };

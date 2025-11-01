@@ -170,12 +170,12 @@ public:
   //! Raised if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from
   //! package gp.
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Transformation) Inverted() const;
+  [[nodiscard]] Standard_EXPORT Handle(Geom_Transformation) Inverted() const;
 
   //! Computes the transformation composed with Other and <me>.
   //! <me> * Other.
   //! Returns a new transformation
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Transformation) Multiplied(
+  [[nodiscard]] Standard_EXPORT Handle(Geom_Transformation) Multiplied(
     const Handle(Geom_Transformation)& Other) const;
 
   //! Computes the transformation composed with Other and <me> .

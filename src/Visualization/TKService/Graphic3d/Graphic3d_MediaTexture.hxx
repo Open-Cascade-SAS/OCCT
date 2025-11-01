@@ -31,7 +31,7 @@ public:
 
   //! Image reader.
   Standard_EXPORT virtual Handle(Image_PixMap) GetImage(
-    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+    const Handle(Image_SupportedFormats)& theSupported) override;
 
   //! Return the frame.
   const Handle(Media_Frame)& Frame() const { return myFrame; }

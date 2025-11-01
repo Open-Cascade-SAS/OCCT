@@ -62,14 +62,14 @@ public:
                             const Handle(IGESGeom_Plane)& aFrontPlane);
 
   //! Returns True (for a single view)
-  Standard_EXPORT Standard_Boolean IsSingle() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsSingle() const override;
 
   //! Returns 1 (single view)
-  Standard_EXPORT Standard_Integer NbViews() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbViews() const override;
 
   //! For a single view, returns <me> whatever <num>
   Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem(const Standard_Integer num) const
-    Standard_OVERRIDE;
+    override;
 
   //! returns integer number identifying view orientation
   Standard_EXPORT Standard_Integer ViewNumber() const;

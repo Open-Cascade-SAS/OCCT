@@ -49,7 +49,7 @@ public:
   Standard_EXPORT void Clear();
 
   Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_CompositionFilter, SelectMgr_Filter)
 

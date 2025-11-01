@@ -62,7 +62,7 @@ public:
                                            const Handle(Interface_Protocol)& protocol,
                                            Interface_CheckIterator&          checks,
                                            Handle(Interface_InterfaceModel)& newmod)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the transformed entities.
   //! If original data contained no Spline Curve or Surface,
@@ -73,12 +73,12 @@ public:
   //! by BSPlines replacing Splines).
   Standard_EXPORT Standard_Boolean
     Updated(const Handle(Standard_Transient)& entfrom,
-            Handle(Standard_Transient)&       entto) const Standard_OVERRIDE;
+            Handle(Standard_Transient)&       entto) const override;
 
   //! Returns a text which defines the way a Transformer works :
   //! "Conversion Spline to BSpline" and as opted,
   //! " trying to upgrade continuity"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SplineToBSpline, IFSelect_Transformer)
 

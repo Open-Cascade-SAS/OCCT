@@ -30,7 +30,7 @@ class Draw_Drawable2D : public Draw_Drawable3D
 
 public:
   //! Returns False.
-  Standard_EXPORT virtual Standard_Boolean Is3D() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Is3D() const override;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Drawable2D, Draw_Drawable3D)
 

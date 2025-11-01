@@ -74,10 +74,10 @@ public:
 
   //! Builds the resulting shape (redefined from MakeShape).
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the  TopoDS  Shape of the bottom of the prism.
-  Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
+  Standard_EXPORT TopoDS_Shape FirstShape() override;
 
   //! Returns the TopoDS Shape of the top of the prism.
   //! In the case of a finite prism, FirstShape returns the
@@ -85,14 +85,14 @@ public:
   //! otherwise, the copy of S belonging to the prism.
   //! LastShape returns the copy of S translated by V at the
   //! time of construction.
-  Standard_EXPORT TopoDS_Shape LastShape() Standard_OVERRIDE;
+  Standard_EXPORT TopoDS_Shape LastShape() override;
 
   //! Returns ListOfShape from TopTools.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns true if the shape S has been deleted.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) override;
 
   //! Returns the TopoDS Shape of the bottom  of the  prism.
   //! generated  with  theShape (subShape of the  generating shape).

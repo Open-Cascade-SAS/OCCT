@@ -36,21 +36,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! returns the number of variables of the energy.
-  virtual Standard_Integer NbVariables() const Standard_OVERRIDE;
+  virtual Standard_Integer NbVariables() const override;
 
   //! computes the values of the Energys E for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X,
-                                                 Standard_Real&     E) Standard_OVERRIDE;
+                                                 Standard_Real&     E) override;
 
   //! computes the gradient <G> of the energys for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Gradient(const math_Vector& X,
-                                                    math_Vector&       G) Standard_OVERRIDE;
+                                                    math_Vector&       G) override;
 
   //! computes the Energy <E> and the gradient <G> of the
   //! energy for the variable <X>.
@@ -58,7 +58,7 @@ public:
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
                                                   Standard_Real&     E,
-                                                  math_Vector&       G) Standard_OVERRIDE;
+                                                  math_Vector&       G) override;
 
   //! computes the Energy  <E>, the gradient <G> and the
   //! Hessian   <H> of  the  energy  for  the   variable <X>.
@@ -67,7 +67,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
                                                   Standard_Real&     E,
                                                   math_Vector&       G,
-                                                  math_Matrix&       H) Standard_OVERRIDE;
+                                                  math_Matrix&       H) override;
 
   //! compute the variables <X> which correspond with the field <MyPoles>
   Standard_EXPORT virtual Standard_Boolean Variable(math_Vector& X) const;

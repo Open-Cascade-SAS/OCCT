@@ -32,47 +32,47 @@ public:
   Standard_EXPORT void Add(const Handle(Select3D_SensitiveEntity)& theSensitive);
 
   //! Returns the amount of sub-entities
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const override;
 
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() override;
 
   //! returns the sensitive edges stored in this wire
   Standard_EXPORT const NCollection_Vector<Handle(Select3D_SensitiveEntity)>& GetEdges();
 
   //! Sets the owner for all entities in wire
   Standard_EXPORT virtual void Set(const Handle(SelectMgr_EntityOwner)& theOwnerId)
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT Handle(Select3D_SensitiveEntity) GetLastDetected() const;
 
   //! Returns bounding box of the wire. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
   //! Returns center of the wire. If location transformation
   //! is set, it will be applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   //! Returns the length of vector of sensitive entities
-  Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Size() const override;
 
   //! Returns bounding box of sensitive entity with index theIdx
   Standard_EXPORT virtual Select3D_BndBox3d Box(const Standard_Integer theIdx) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns geometry center of sensitive entity index theIdx in
   //! the vector along the given axis theAxis
   Standard_EXPORT virtual Standard_Real Center(const Standard_Integer theIdx,
                                                const Standard_Integer theAxis) const
-    Standard_OVERRIDE;
+    override;
 
   //! Swaps items with indexes theIdx1 and theIdx2 in the vector
   Standard_EXPORT virtual void Swap(const Standard_Integer theIdx1,
-                                    const Standard_Integer theIdx2) Standard_OVERRIDE;
+                                    const Standard_Integer theIdx2) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveWire, Select3D_SensitiveSet)
 
@@ -82,18 +82,18 @@ protected:
     SelectBasics_PickResult&             thePickResult,
     SelectBasics_SelectingVolumeManager& theMgr,
     Standard_Integer                     theElemIdx,
-    Standard_Boolean                     theIsFullInside) Standard_OVERRIDE;
+    Standard_Boolean                     theIsFullInside) override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
   Standard_EXPORT virtual Standard_Boolean elementIsInside(
     SelectBasics_SelectingVolumeManager& theMgr,
     Standard_Integer                     theElemIdx,
-    Standard_Boolean                     theIsFullInside) Standard_OVERRIDE;
+    Standard_Boolean                     theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the
   //! geometry
   Standard_EXPORT virtual Standard_Real distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
-    Standard_OVERRIDE;
+    override;
 
 private:
   // clang-format off

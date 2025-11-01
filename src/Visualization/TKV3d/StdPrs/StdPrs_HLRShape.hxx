@@ -27,6 +27,6 @@ public:
                                           const TopoDS_Shape&               theShape,
                                           const Handle(Prs3d_Drawer)&       theDrawer,
                                           const Handle(Graphic3d_Camera)&   theProjector) const
-    Standard_OVERRIDE;
+    override;
 };
 #endif

@@ -41,7 +41,7 @@ public:
                                const Handle(IGESData_IGESEntity)& ent,
                                const IGESData_IGESDumper&         dumper,
                                Standard_OStream&                  S,
-                               const Standard_Integer             own) const Standard_OVERRIDE;
+                               const Standard_Integer             own) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_SpecificModule, IGESData_SpecificModule)
 

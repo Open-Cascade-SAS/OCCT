@@ -39,17 +39,17 @@ public:
   //! Recognizes a kind of VolumeElementPurpose select type
   //! return 0
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    CaseNum(const Handle(Standard_Transient)& ent) const override;
 
   //! Recognizes a items of select member VolumeElementPurposeMember
   //! 1 -> EnumeratedVolumeElementPurpose
   //! 2 -> ApplicationDefinedElementPurpose
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns a new select member the type VolumeElementPurposeMember
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const override;
 
   //! Set Value for EnumeratedVolumeElementPurpose
   Standard_EXPORT void SetEnumeratedVolumeElementPurpose(

@@ -136,21 +136,21 @@ public:
   //! Raises an exception if the matrix of the transformation
   //! is not inversible, it means that the scale factor is lower
   //! or equal to Resolution from package gp.
-  Standard_NODISCARD gp_Trsf2d Inverted() const
+  [[nodiscard]] gp_Trsf2d Inverted() const
   {
     gp_Trsf2d aT = *this;
     aT.Invert();
     return aT;
   }
 
-  Standard_NODISCARD gp_Trsf2d Multiplied(const gp_Trsf2d& theT) const
+  [[nodiscard]] gp_Trsf2d Multiplied(const gp_Trsf2d& theT) const
   {
     gp_Trsf2d aTresult(*this);
     aTresult.Multiply(theT);
     return aTresult;
   }
 
-  Standard_NODISCARD gp_Trsf2d operator*(const gp_Trsf2d& theT) const { return Multiplied(theT); }
+  [[nodiscard]] gp_Trsf2d operator*(const gp_Trsf2d& theT) const { return Multiplied(theT); }
 
   //! Computes the transformation composed from <me> and theT.
   //! <me> = <me> * theT

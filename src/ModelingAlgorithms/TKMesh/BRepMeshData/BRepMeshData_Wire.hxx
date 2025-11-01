@@ -34,21 +34,21 @@ public:
   Standard_EXPORT virtual ~BRepMeshData_Wire();
 
   //! Gets number of children.
-  Standard_EXPORT virtual Standard_Integer EdgesNb() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer EdgesNb() const override;
 
   //! Adds new discrete edge with specified orientation to wire chain.
   //! @return index of added edge in wire chain.
   Standard_EXPORT virtual Standard_Integer AddEdge(const IMeshData::IEdgePtr& theDEdge,
                                                    const TopAbs_Orientation   theOrientation)
-    Standard_OVERRIDE;
+    override;
 
   //! Gets edge with the given index.
   Standard_EXPORT virtual const IMeshData::IEdgePtr& GetEdge(const Standard_Integer theIndex) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns True if orientation of discrete edge with the given index is forward.
   Standard_EXPORT virtual TopAbs_Orientation GetEdgeOrientation(
-    const Standard_Integer theIndex) const Standard_OVERRIDE;
+    const Standard_Integer theIndex) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Wire, IMeshData_Wire)
 

@@ -50,7 +50,7 @@ public:
   //! Builds BVH using specific algorithm.
   virtual void Build(BVH_Set<T, N>*       theSet,
                      BVH_Tree<T, N>*      theBVH,
-                     const BVH_Box<T, N>& theBox) const Standard_OVERRIDE;
+                     const BVH_Box<T, N>& theBox) const override;
 
 protected:
   //! Stores range of primitives belonging to a BVH node.
@@ -129,7 +129,7 @@ protected:
     }
 
     //! Performs splitting of the given BVH node.
-    virtual void Perform(const Standard_Integer theNode) Standard_OVERRIDE
+    virtual void Perform(const Standard_Integer theNode) override
     {
       const typename BVH_QueueBuilder<T, N>::BVH_ChildNodes aChildren =
         myAlgo->buildNode(mySet, myBVH, theNode);

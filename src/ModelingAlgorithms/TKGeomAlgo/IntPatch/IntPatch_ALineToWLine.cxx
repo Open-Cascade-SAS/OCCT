@@ -102,7 +102,7 @@ static IntPatch_SpecPntType IsPoleOrSeam(const Handle(Adaptor3d_Surface)& theS1,
           break;
         }
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case GeomAbs_Torus:
         if (aType == GeomAbs_Torus)
         {
@@ -117,7 +117,7 @@ static IntPatch_SpecPntType IsPoleOrSeam(const Handle(Adaptor3d_Surface)& theS1,
             break;
           }
         }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case GeomAbs_Cylinder:
         theSingularSurfaceID = i + 1;
         AddVertexPoint(theLine, theVertex, theArrPeriods);

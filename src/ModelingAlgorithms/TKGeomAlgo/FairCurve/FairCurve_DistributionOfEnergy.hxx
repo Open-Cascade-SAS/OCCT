@@ -33,10 +33,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! returns the number of variables of the function.
-  Standard_EXPORT virtual Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbVariables() const override;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT virtual Standard_Integer NbEquations() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbEquations() const override;
 
   Standard_EXPORT void SetDerivativeOrder(const Standard_Integer DerivativeOrder);
 

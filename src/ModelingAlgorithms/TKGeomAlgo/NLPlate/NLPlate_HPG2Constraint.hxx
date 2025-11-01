@@ -36,9 +36,9 @@ class NLPlate_HPG2Constraint : public NLPlate_HPG1Constraint
 public:
   Standard_EXPORT NLPlate_HPG2Constraint(const gp_XY& UV, const Plate_D1& D1T, const Plate_D2& D2T);
 
-  Standard_EXPORT virtual Standard_Integer ActiveOrder() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer ActiveOrder() const override;
 
-  Standard_EXPORT virtual const Plate_D2& G2Target() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Plate_D2& G2Target() const override;
 
   DEFINE_STANDARD_RTTIEXT(NLPlate_HPG2Constraint, NLPlate_HPG1Constraint)
 

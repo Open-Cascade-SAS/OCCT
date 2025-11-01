@@ -74,7 +74,7 @@ public:
   //! of each sub-class of Signature. For a Null Handle, it should
   //! provide ""
   //! It can work with the model which contains the entity
-  Standard_EXPORT Standard_CString Name() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_CString Name() const override;
 
   //! The label of a Signature uses its name as follow :
   //! "Signature : <name>"

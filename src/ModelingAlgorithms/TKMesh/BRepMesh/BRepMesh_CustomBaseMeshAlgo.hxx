@@ -37,7 +37,7 @@ public:
 
 protected:
   //! Generates mesh for the contour stored in data structure.
-  virtual void generateMesh(const Message_ProgressRange& theRange) Standard_OVERRIDE
+  virtual void generateMesh(const Message_ProgressRange& theRange) override
   {
     const Handle(BRepMesh_DataStructureOfDelaun)& aStructure = this->getStructure();
     const Standard_Integer                        aNodesNb   = aStructure->NbNodes();

@@ -35,7 +35,7 @@ public:
   : BaseSample(theSampleSourcePath, theContext) {}
 
 protected:
-  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) Standard_OVERRIDE;
+  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) override;
 
 private:
   void DisplayPnt (const gp_Pnt& thePnt, const TCollection_AsciiString& theText,

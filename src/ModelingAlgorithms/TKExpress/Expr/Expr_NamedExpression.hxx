@@ -40,16 +40,16 @@ public:
   //! Tests if <me> can be shared by one or more expressions
   //! or must be copied. This method redefines to a True
   //! value the GeneralExpression method.
-  Standard_EXPORT virtual Standard_Boolean IsShareable() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsShareable() const override;
 
   //! Tests if <me> and <Other> define the same expression.
   //! This method does not include any simplification before
   //! testing.
   Standard_EXPORT Standard_Boolean
-    IsIdentical(const Handle(Expr_GeneralExpression)& Other) const Standard_OVERRIDE;
+    IsIdentical(const Handle(Expr_GeneralExpression)& Other) const override;
 
   //! returns a string representing <me> in a readable way.
-  Standard_EXPORT TCollection_AsciiString String() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString String() const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_NamedExpression, Expr_GeneralExpression)
 

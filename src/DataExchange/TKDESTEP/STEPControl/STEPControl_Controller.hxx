@@ -42,13 +42,13 @@ public:
 
   //! Creates a new empty Model ready to receive data of the Norm.
   //! It is taken from STEP Template Model
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const override;
 
   //! Returns the Actor for Read attached to the pair (norm,appli)
   Standard_EXPORT Handle(Transfer_ActorOfTransientProcess) ActorRead(
-    const Handle(Interface_InterfaceModel)& theModel) const Standard_OVERRIDE;
+    const Handle(Interface_InterfaceModel)& theModel) const override;
 
-  Standard_EXPORT virtual void Customise(Handle(XSControl_WorkSession)& WS) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Customise(Handle(XSControl_WorkSession)& WS) override;
 
   //! Takes one Shape and transfers it to the InterfaceModel
   //! (already created by NewModel for instance)
@@ -61,7 +61,7 @@ public:
     const Handle(Transfer_FinderProcess)&   FP,
     const Handle(Interface_InterfaceModel)& model,
     const Standard_Integer                  modetrans = 0,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) const Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) const override;
 
   //! Standard Initialisation. It creates a Controller for STEP
   //! and records it to various names, available to select it later

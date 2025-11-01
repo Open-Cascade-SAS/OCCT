@@ -43,7 +43,7 @@ public:
   Standard_EXPORT DrawDim_PlanarDistance(const TopoDS_Shape& geom1, const TopoDS_Shape& geom2);
 
   //! private
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarDistance, DrawDim_PlanarDimension)
 

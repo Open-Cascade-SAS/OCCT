@@ -54,33 +54,33 @@ public:
 
   //! Removes all splits and merges already performed.
   //! Does NOT clear the handled DS  (except  ShapeWithStatesMaps).
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   Standard_EXPORT virtual void Perform(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual void Perform(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
                                        const TopoDS_Shape&                        S1,
-                                       const TopoDS_Shape& S2) Standard_OVERRIDE;
+                                       const TopoDS_Shape& S2) override;
 
-  Standard_EXPORT virtual void MergeKPart() Standard_OVERRIDE;
+  Standard_EXPORT virtual void MergeKPart() override;
 
   Standard_EXPORT virtual void MergeKPart(const TopAbs_State TB1,
-                                          const TopAbs_State TB2) Standard_OVERRIDE;
+                                          const TopAbs_State TB2) override;
 
   Standard_EXPORT virtual void GFillSolidSFS(const TopoDS_Shape&           SO1,
                                              const TopTools_ListOfShape&   LSO2,
                                              const TopOpeBRepBuild_GTopo&  G,
-                                             TopOpeBRepBuild_ShellFaceSet& SFS) Standard_OVERRIDE;
+                                             TopOpeBRepBuild_ShellFaceSet& SFS) override;
 
   Standard_EXPORT virtual void GFillShellSFS(const TopoDS_Shape&           SH1,
                                              const TopTools_ListOfShape&   LSO2,
                                              const TopOpeBRepBuild_GTopo&  G,
-                                             TopOpeBRepBuild_ShellFaceSet& SFS) Standard_OVERRIDE;
+                                             TopOpeBRepBuild_ShellFaceSet& SFS) override;
 
   Standard_EXPORT virtual void GWESMakeFaces(const TopoDS_Shape&          FF,
                                              TopOpeBRepBuild_WireEdgeSet& WES,
-                                             TopTools_ListOfShape&        LOF) Standard_OVERRIDE;
+                                             TopTools_ListOfShape&        LOF) override;
 
   Standard_EXPORT void GFillSplitsPVS(const TopoDS_Shape&          anEdge,
                                       const TopOpeBRepBuild_GTopo& G1,

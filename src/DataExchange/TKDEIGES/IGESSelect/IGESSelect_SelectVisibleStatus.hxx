@@ -43,10 +43,10 @@ public:
   Standard_EXPORT Standard_Boolean
     Sort(const Standard_Integer                  rank,
          const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+         const Handle(Interface_InterfaceModel)& model) const override;
 
   //! Returns the Selection criterium : "IGES Entity, Status Visible"
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectVisibleStatus, IFSelect_SelectExtract)
 

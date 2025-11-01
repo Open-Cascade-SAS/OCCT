@@ -157,7 +157,7 @@ public:
 protected:
   //! Puts a message.
   virtual void send(const TCollection_AsciiString& theString,
-                    const Message_Gravity          theGravity) const Standard_OVERRIDE
+                    const Message_Gravity          theGravity) const override
   {
     if (theGravity >= myTraceLevel)
     {

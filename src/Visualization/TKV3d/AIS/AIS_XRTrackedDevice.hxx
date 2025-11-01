@@ -58,7 +58,7 @@ public:
 
 protected:
   //! Returns true for 0 mode.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const override
   {
     return theMode == 0;
   }
@@ -66,11 +66,11 @@ protected:
   //! Compute presentation.
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   //! Compute selection.
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+                                                const Standard_Integer theMode) override;
 
   //! Compute laser ray presentation.
   Standard_EXPORT void computeLaserRay();

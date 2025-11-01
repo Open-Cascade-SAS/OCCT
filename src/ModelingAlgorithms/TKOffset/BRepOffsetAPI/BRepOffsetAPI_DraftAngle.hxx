@@ -175,19 +175,19 @@ public:
 
   //! Builds the resulting shape (redefined from MakeShape).
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT void CorrectWires();
 
   //! Returns the  list   of shapes generated   from the
   //! shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the list  of shapes modified from the shape
   //! <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the modified shape corresponding to <S>.
   //! S can correspond to the entire initial shape or to its subshape.
@@ -195,7 +195,7 @@ public:
   //! Standard_NoSuchObject if S is not the initial shape or
   //! a subshape of the initial shape to which the
   //! transformation has been applied.
-  Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const override;
 
 protected:
 private:

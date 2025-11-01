@@ -1147,13 +1147,13 @@ static Standard_Integer shapeG1continuity(Draw_Interpretor& di, Standard_Integer
   {
     case 7:
       epsG1 = Draw::Atof(a[6]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 6:
       epsC0 = Draw::Atof(a[5]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 5:
       epsnl = Draw::Atof(a[4]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 4:
       break;
     default:
@@ -1346,10 +1346,10 @@ static Standard_Integer shapeG0continuity(Draw_Interpretor& di, Standard_Integer
   {
     case 6:
       epsC0 = Draw::Atof(a[5]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 5:
       epsnl = Draw::Atof(a[4]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 4:
       break;
     default:
@@ -1536,19 +1536,19 @@ static Standard_Integer shapeG2continuity(Draw_Interpretor& di, Standard_Integer
   {
     case 9:
       maxlen = Draw::Atof(a[8]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 8:
       percent = Draw::Atof(a[7]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 7:
       epsG1 = Draw::Atof(a[6]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 6:
       epsC0 = Draw::Atof(a[5]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 5:
       epsnl = Draw::Atof(a[4]);
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 4:
       break;
     default:

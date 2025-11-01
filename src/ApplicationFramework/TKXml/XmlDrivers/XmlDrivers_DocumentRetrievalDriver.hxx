@@ -35,15 +35,15 @@ public:
   Standard_EXPORT XmlDrivers_DocumentRetrievalDriver();
 
   Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+    const Handle(Message_Messenger)& theMsgDriver) override;
 
   Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection(
     const XmlObjMgt_Element&         thePDoc,
     const Handle(Message_Messenger)& theMsgDriver,
-    const Message_ProgressRange&     theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&     theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual void ShapeSetCleaning(const Handle(XmlMDF_ADriver)& theDriver)
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentRetrievalDriver, XmlLDrivers_DocumentRetrievalDriver)
 };

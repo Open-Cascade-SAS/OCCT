@@ -44,9 +44,9 @@ public:
   Standard_EXPORT void Point(const Blend_AppFunction& Func,
                              const Standard_Real      Param,
                              const math_Vector&       Sol,
-                             Blend_Point&             Pnt) const Standard_OVERRIDE;
+                             Blend_Point&             Pnt) const override;
 
-  Standard_EXPORT void Vec(math_Vector& Sol, const Blend_Point& Pnt) const Standard_OVERRIDE;
+  Standard_EXPORT void Vec(math_Vector& Sol, const Blend_Point& Pnt) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRepBlend_AppFunc, BRepBlend_AppFuncRoot)
 

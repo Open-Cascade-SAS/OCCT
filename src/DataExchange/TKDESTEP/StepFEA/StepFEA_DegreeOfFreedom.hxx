@@ -39,17 +39,17 @@ public:
   //! Recognizes a kind of CurveElementFreedom select type
   //! return 0
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    CaseNum(const Handle(Standard_Transient)& ent) const override;
 
   //! Recognizes a items of select member CurveElementFreedomMember
   //! 1 -> EnumeratedCurveElementFreedom
   //! 2 -> ApplicationDefinedDegreeOfFreedom
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns a new select member the type CurveElementFreedomMember
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const override;
 
   //! Returns Value as EnumeratedDegreeOfFreedom (or Null if another type)
   Standard_EXPORT void SetEnumeratedDegreeOfFreedom(const StepFEA_EnumeratedDegreeOfFreedom aVal);

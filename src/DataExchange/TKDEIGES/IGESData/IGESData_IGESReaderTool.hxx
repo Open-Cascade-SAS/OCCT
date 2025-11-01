@@ -60,10 +60,10 @@ public:
   //! recognizes records by asking Protocol (on data of DirType)
   Standard_EXPORT Standard_Boolean Recognize(const Standard_Integer      num,
                                              Handle(Interface_Check)&    ach,
-                                             Handle(Standard_Transient)& ent) Standard_OVERRIDE;
+                                             Handle(Standard_Transient)& ent) override;
 
   //! fills model's header, that is, its GlobalSection
-  Standard_EXPORT void BeginRead(const Handle(Interface_InterfaceModel)& amodel) Standard_OVERRIDE;
+  Standard_EXPORT void BeginRead(const Handle(Interface_InterfaceModel)& amodel) override;
 
   //! fills an entity, given record no; works by calling ReadDirPart
   //! then ReadParams (with help of a ParamReader), then if required
@@ -71,11 +71,11 @@ public:
   //! Returns True if no fail has been recorded
   Standard_EXPORT Standard_Boolean AnalyseRecord(const Standard_Integer            num,
                                                  const Handle(Standard_Transient)& anent,
-                                                 Handle(Interface_Check)& acheck) Standard_OVERRIDE;
+                                                 Handle(Interface_Check)& acheck) override;
 
   //! after reading entities, true line weights can be computed
   Standard_EXPORT virtual void EndRead(const Handle(Interface_InterfaceModel)& amodel)
-    Standard_OVERRIDE;
+    override;
 
   //! Reads directory part components from file; DP is the literal
   //! directory part, IR detains entities referenced by DP

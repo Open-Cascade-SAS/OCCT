@@ -39,10 +39,10 @@ public:
                                    const Draw_MarkerShape Shape,
                                    const Draw_Color&      Col);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
   //! Is a 3D object. (Default True).
-  Standard_EXPORT virtual Standard_Boolean Is3D() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Is3D() const override;
 
   gp_Pnt Point() const { return myPoint; }
 
@@ -61,16 +61,16 @@ public:
   Draw_MarkerShape Shape() const { return myShape; }
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const override;
 
   //! For variable whatis command.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
 private:
   gp_Pnt           myPoint;

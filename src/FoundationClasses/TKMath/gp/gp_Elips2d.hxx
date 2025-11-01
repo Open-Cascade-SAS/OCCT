@@ -224,7 +224,7 @@ public:
     pos.SetAxis(gp_Ax22d(pos.Location(), pos.XDirection(), aTemp));
   }
 
-  Standard_NODISCARD gp_Elips2d Reversed() const;
+  [[nodiscard]] gp_Elips2d Reversed() const;
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
@@ -234,17 +234,17 @@ public:
 
   //! Performs the symmetrical transformation of a ellipse with respect
   //! to the point theP which is the center of the symmetry
-  Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Pnt2d& theP) const;
+  [[nodiscard]] Standard_EXPORT gp_Elips2d Mirrored(const gp_Pnt2d& theP) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& theA);
 
   //! Performs the symmetrical transformation of a ellipse with respect
   //! to an axis placement which is the axis of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Ax2d& theA) const;
+  [[nodiscard]] Standard_EXPORT gp_Elips2d Mirrored(const gp_Ax2d& theA) const;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
 
-  Standard_NODISCARD gp_Elips2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
+  [[nodiscard]] gp_Elips2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
   {
     gp_Elips2d anE = *this;
     anE.pos.Rotate(theP, theAng);
@@ -254,18 +254,18 @@ public:
   void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
 
   //! Scales a ellipse. theS is the scaling value.
-  Standard_NODISCARD gp_Elips2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
+  [[nodiscard]] gp_Elips2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
 
   void Transform(const gp_Trsf2d& theT);
 
   //! Transforms an ellipse with the transformation theT from class Trsf2d.
-  Standard_NODISCARD gp_Elips2d Transformed(const gp_Trsf2d& theT) const;
+  [[nodiscard]] gp_Elips2d Transformed(const gp_Trsf2d& theT) const;
 
   void Translate(const gp_Vec2d& theV) { pos.Translate(theV); }
 
   //! Translates a ellipse in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Elips2d Translated(const gp_Vec2d& theV) const
+  [[nodiscard]] gp_Elips2d Translated(const gp_Vec2d& theV) const
   {
     gp_Elips2d anE = *this;
     anE.pos.Translate(theV);
@@ -275,7 +275,7 @@ public:
   void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) { pos.Translate(theP1, theP2); }
 
   //! Translates a ellipse from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Elips2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  [[nodiscard]] gp_Elips2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
   {
     gp_Elips2d anE = *this;
     anE.pos.Translate(theP1, theP2);

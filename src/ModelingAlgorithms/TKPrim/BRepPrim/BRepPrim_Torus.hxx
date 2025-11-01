@@ -52,7 +52,7 @@ public:
 
   //! The surface normal should be directed  towards the
   //! outside.
-  Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const override;
 
 protected:
 private:

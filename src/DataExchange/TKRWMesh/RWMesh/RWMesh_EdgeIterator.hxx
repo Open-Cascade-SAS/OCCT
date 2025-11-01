@@ -51,49 +51,49 @@ public:
                                       const XCAFPrs_Style& theStyle = XCAFPrs_Style());
 
   //! Return true if iterator points to the valid triangulation.
-  bool More() const Standard_OVERRIDE { return !myPolygon3D.IsNull(); }
+  bool More() const override { return !myPolygon3D.IsNull(); }
 
   //! Find next value.
-  Standard_EXPORT void Next() Standard_OVERRIDE;
+  Standard_EXPORT void Next() override;
 
   //! Return current edge.
   const TopoDS_Edge& Edge() const { return myEdge; }
 
   //! Return current edge.
-  const TopoDS_Shape& Shape() const Standard_OVERRIDE { return myEdge; }
+  const TopoDS_Shape& Shape() const override { return myEdge; }
 
   //! Return current edge data.
   const Handle(Poly_Polygon3D)& Polygon3D() const { return myPolygon3D; }
 
   //! Return true if geometry data is defined.
-  bool IsEmpty() const Standard_OVERRIDE
+  bool IsEmpty() const override
   {
     return myPolygon3D.IsNull() || myPolygon3D->NbNodes() < 1;
   }
 
 public:
   //! Lower element index in current triangulation.
-  Standard_Integer ElemLower() const Standard_OVERRIDE { return 1; }
+  Standard_Integer ElemLower() const override { return 1; }
 
   //! Upper element index in current triangulation.
-  Standard_Integer ElemUpper() const Standard_OVERRIDE { return myPolygon3D->NbNodes(); }
+  Standard_Integer ElemUpper() const override { return myPolygon3D->NbNodes(); }
 
 public:
   //! Return number of nodes for the current edge.
-  Standard_Integer NbNodes() const Standard_OVERRIDE
+  Standard_Integer NbNodes() const override
   {
     return !myPolygon3D.IsNull() ? myPolygon3D->NbNodes() : 0;
   }
 
   //! Lower node index in current triangulation.
-  Standard_Integer NodeLower() const Standard_OVERRIDE { return 1; }
+  Standard_Integer NodeLower() const override { return 1; }
 
   //! Upper node index in current triangulation.
-  Standard_Integer NodeUpper() const Standard_OVERRIDE { return myPolygon3D->NbNodes(); }
+  Standard_Integer NodeUpper() const override { return myPolygon3D->NbNodes(); }
 
 public:
   //! Return the node with specified index with applied transformation.
-  gp_Pnt node(const Standard_Integer theNode) const Standard_OVERRIDE
+  gp_Pnt node(const Standard_Integer theNode) const override
   {
     return myPolygon3D->Nodes().Value(theNode);
   }

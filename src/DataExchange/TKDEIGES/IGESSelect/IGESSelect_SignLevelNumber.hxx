@@ -47,7 +47,7 @@ public:
   //! Returns the value (see above)
   Standard_EXPORT Standard_CString
     Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+          const Handle(Interface_InterfaceModel)& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SignLevelNumber, IFSelect_Signature)
 

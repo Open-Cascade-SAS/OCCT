@@ -41,7 +41,7 @@ public:
   //! -- 1 -> CompositeCurve
   //! -- 2 -> Path
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    CaseNum(const Handle(Standard_Transient)& ent) const override;
 
   //! Returns Value as CompositeCurve (or Null if another type)
   Standard_EXPORT Handle(StepGeom_CompositeCurve) CompositeCurve() const;

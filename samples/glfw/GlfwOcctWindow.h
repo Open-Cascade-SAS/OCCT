@@ -59,28 +59,28 @@ public:
 public:
 
   //! Returns native Window handle
-  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE;
+  virtual Aspect_Drawable NativeHandle() const override;
 
   //! Returns parent of native Window handle.
-  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE { return 0; }
+  virtual Aspect_Drawable NativeParentHandle() const override { return 0; }
 
   //! Applies the resizing to the window <me>
-  virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE;
+  virtual Aspect_TypeOfResize DoResize() override;
 
   //! Returns True if the window <me> is opened and False if the window is closed.
-  virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
+  virtual Standard_Boolean IsMapped() const override;
 
   //! Apply the mapping change to the window <me> and returns TRUE if the window is mapped at screen.
-  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE { return Standard_True; }
+  virtual Standard_Boolean DoMapping() const override { return Standard_True; }
 
   //! Opens the window <me>.
-  virtual void Map() const Standard_OVERRIDE;
+  virtual void Map() const override;
 
   //! Closes the window <me>.
-  virtual void Unmap() const Standard_OVERRIDE;
+  virtual void Unmap() const override;
 
   virtual void Position (Standard_Integer& theX1, Standard_Integer& theY1,
-                         Standard_Integer& theX2, Standard_Integer& theY2) const Standard_OVERRIDE
+                         Standard_Integer& theX2, Standard_Integer& theY2) const override
   {
     theX1 = myXLeft;
     theX2 = myXRight;
@@ -89,19 +89,19 @@ public:
   }
 
   //! Returns The Window RATIO equal to the physical WIDTH/HEIGHT dimensions.
-  virtual Standard_Real Ratio() const Standard_OVERRIDE
+  virtual Standard_Real Ratio() const override
   {
     return Standard_Real (myXRight - myXLeft) / Standard_Real (myYBottom - myYTop);
   }
 
   //! Return window size.
-  virtual void Size (Standard_Integer& theWidth, Standard_Integer& theHeight) const Standard_OVERRIDE
+  virtual void Size (Standard_Integer& theWidth, Standard_Integer& theHeight) const override
   {
     theWidth  = myXRight - myXLeft;
     theHeight = myYBottom - myYTop;
   }
 
-  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
+  virtual Aspect_FBConfig NativeFBConfig() const override { return NULL; }
 
 protected:
   Handle(Aspect_DisplayConnection) myDisplay;

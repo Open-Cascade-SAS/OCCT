@@ -54,7 +54,7 @@ public:
   Standard_EXPORT void FillResult(const Standard_Integer            n1,
                                   const Standard_Integer            n2,
                                   const Handle(Standard_Transient)& ent,
-                                  Interface_EntityIterator&         result) const Standard_OVERRIDE;
+                                  Interface_EntityIterator&         result) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectInList, IFSelect_SelectAnyList)
 

@@ -88,7 +88,7 @@ public:
 
     //! Method is executed in the context of thread,
     //! so this method defines the main calculations.
-    virtual void Perform(int) Standard_OVERRIDE
+    virtual void Perform(int) override
     {
       for (OSD_Parallel::UniversalIterator anIter = myRange.It(); anIter != myRange.End();
            anIter                                 = myRange.It())

@@ -85,7 +85,7 @@ public: //! @name Setting/Getting the type of Boolean operation
 public: //! @name Performing the operation
   //! Performs the Boolean operation.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected: //! @name Constructors
   //! Constructor to perform Boolean operation on only two arguments.

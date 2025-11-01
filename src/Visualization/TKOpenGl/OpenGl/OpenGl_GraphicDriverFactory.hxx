@@ -27,7 +27,7 @@ public:
 
   //! Creates new empty graphic driver.
   Standard_EXPORT virtual Handle(Graphic3d_GraphicDriver) CreateDriver(
-    const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
+    const Handle(Aspect_DisplayConnection)& theDisp) override;
 
   //! Return default driver options.
   const Handle(OpenGl_Caps)& DefaultOptions() const { return myDefaultCaps; }

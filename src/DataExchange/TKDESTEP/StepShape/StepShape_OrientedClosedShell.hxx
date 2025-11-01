@@ -51,14 +51,14 @@ public:
   Standard_EXPORT Standard_Boolean Orientation() const;
 
   Standard_EXPORT virtual void SetCfsFaces(const Handle(StepShape_HArray1OfFace)& aCfsFaces)
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Handle(StepShape_HArray1OfFace) CfsFaces() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(StepShape_HArray1OfFace) CfsFaces() const override;
 
   Standard_EXPORT virtual Handle(StepShape_Face) CfsFacesValue(const Standard_Integer num) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Standard_Integer NbCfsFaces() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbCfsFaces() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedClosedShell, StepShape_ClosedShell)
 

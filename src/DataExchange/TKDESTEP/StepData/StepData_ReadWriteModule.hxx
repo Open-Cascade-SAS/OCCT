@@ -50,7 +50,7 @@ public:
   //! Warning : The methods CaseStep, StepType and Recognize,
   //! must be in phase (triplets CaseNum-StepType-Type of Object)
   Standard_EXPORT Standard_Integer CaseNum(const Handle(Interface_FileReaderData)& data,
-                                           const Standard_Integer num) const Standard_OVERRIDE;
+                                           const Standard_Integer num) const override;
 
   //! Defines Case Numbers corresponding to the recognized Types
   //! Called by CaseNum (data,num) above for a Simple Type Entity
@@ -100,7 +100,7 @@ public:
                             const Handle(Interface_FileReaderData)& data,
                             const Standard_Integer                  num,
                             Handle(Interface_Check)&                ach,
-                            const Handle(Standard_Transient)&       ent) const Standard_OVERRIDE;
+                            const Handle(Standard_Transient)&       ent) const override;
 
   //! Specific Read Function. Works with StepReaderData
   Standard_EXPORT virtual void ReadStep(const Standard_Integer                 CN,

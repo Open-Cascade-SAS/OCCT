@@ -92,7 +92,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Compute(FairCurve_AnalysisCode& ACode,
                                                    const Standard_Integer  NbIterations = 50,
                                                    const Standard_Real     Tolerance    = 1.0e-3)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the first established curvature.
   Standard_Real GetCurvature1() const;
@@ -106,7 +106,7 @@ public:
   //! Prints on the stream o information on the current state
   //! of the object.
   //! Is used to redefine the operator <<.
-  Standard_EXPORT virtual void Dump(Standard_OStream& o) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& o) const override;
 
 protected:
 private:

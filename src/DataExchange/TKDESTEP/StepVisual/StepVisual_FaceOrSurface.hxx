@@ -41,7 +41,7 @@ public:
   //! -- 1 -> Face
   //! -- 2 -> Surface
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    CaseNum(const Handle(Standard_Transient)& ent) const override;
 
   //! Returns Value as Face (or Null if another type)
   Standard_EXPORT Handle(StepShape_Face) Face() const;

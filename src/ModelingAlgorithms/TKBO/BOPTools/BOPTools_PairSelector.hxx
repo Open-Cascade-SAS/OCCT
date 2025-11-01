@@ -81,7 +81,7 @@ public: //! @name Rejection/Acceptance rules
                                       const BVH_VecNd& theCMax1,
                                       const BVH_VecNd& theCMin2,
                                       const BVH_VecNd& theCMax2,
-                                      Standard_Real&) const Standard_OVERRIDE
+                                      Standard_Real&) const override
   {
     return BVH_Box<Standard_Real, 3>(theCMin1, theCMax1).IsOut(theCMin2, theCMax2);
   }
@@ -95,7 +95,7 @@ public: //! @name Rejection/Acceptance rules
 
   //! Checks and accepts the pair of elements.
   virtual Standard_Boolean Accept(const Standard_Integer theID1,
-                                  const Standard_Integer theID2) Standard_OVERRIDE
+                                  const Standard_Integer theID2) override
   {
     if (!RejectElement(theID1, theID2))
     {

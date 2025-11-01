@@ -92,13 +92,13 @@ public:
   Standard_EXPORT Handle(StepData_PDescr) NamedField(const Standard_CString name) const;
 
   //! Tells if a ESDescr matches a step type : exact or super type
-  Standard_EXPORT Standard_Boolean Matches(const Standard_CString steptype) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Matches(const Standard_CString steptype) const override;
 
   //! Returns False
-  Standard_EXPORT Standard_Boolean IsComplex() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsComplex() const override;
 
   //! Creates a described entity (i.e. a simple one)
-  Standard_EXPORT Handle(StepData_Described) NewEntity() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(StepData_Described) NewEntity() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepData_ESDescr, StepData_EDescr)
 

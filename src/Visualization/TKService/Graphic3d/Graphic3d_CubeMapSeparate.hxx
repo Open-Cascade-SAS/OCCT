@@ -36,23 +36,23 @@ public:
 
   //! Returns current cubemap side as compressed PixMap.
   Standard_EXPORT virtual Handle(Image_CompressedPixMap) CompressedValue(
-    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+    const Handle(Image_SupportedFormats)& theSupported) override;
 
   //! Returns current side of cubemap as PixMap.
   //! Returns null handle if current side or whole cubemap is invalid.
   //! All origin images have to have the same sizes, format and quad shapes to form valid cubemap.
   Standard_EXPORT virtual Handle(Image_PixMap) Value(
-    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+    const Handle(Image_SupportedFormats)& theSupported) override;
 
   //! Returns NULL.
-  virtual Handle(Image_PixMap) GetImage(const Handle(Image_SupportedFormats)&) Standard_OVERRIDE
+  virtual Handle(Image_PixMap) GetImage(const Handle(Image_SupportedFormats)&) override
   {
     return Handle(Image_PixMap)();
   }
 
   //! Checks if a texture class is valid or not.
   //! Returns true if the construction of the class is correct.
-  Standard_EXPORT Standard_Boolean IsDone() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsDone() const override;
 
   //! Empty destructor.
   ~Graphic3d_CubeMapSeparate() {}

@@ -563,7 +563,7 @@ A class with virtual function(s) ought to have a virtual destructor.
 ### Overriding virtual methods
 
 Declaration of overriding method should contains specifiers "virtual" and "override"
-(using Standard_OVERRIDE alias for compatibility with old compilers).
+(using override alias for compatibility with old compilers).
 
 ~~~~{.cpp}
 class MyPackage_BaseClass
@@ -580,7 +580,7 @@ class MyPackage_MyClass : public MyPackage_BaseClass
 
 public:
 
-  Standard_EXPORT virtual Standard_Boolean Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Perform() override;
 
 };
 ~~~~

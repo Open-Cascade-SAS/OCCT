@@ -48,11 +48,11 @@ public:
   //! (Item n0 23) to IGES5 if it was older.
   Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Update IGES Header Last Change Date"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_UpdateLastChange, IGESSelect_ModelModifier)
 

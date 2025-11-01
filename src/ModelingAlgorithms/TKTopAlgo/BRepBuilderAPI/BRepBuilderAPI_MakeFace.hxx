@@ -272,7 +272,7 @@ public:
   Standard_EXPORT void Add(const TopoDS_Wire& W);
 
   //! Returns true if this algorithm has a valid face.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDone() const override;
 
   //! Returns the construction status
   //! BRepBuilderAPI_FaceDone if the face is built, or

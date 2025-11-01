@@ -46,11 +46,11 @@ public:
   Standard_EXPORT Standard_Integer
     ReadFile(const Standard_CString            name,
              Handle(Interface_InterfaceModel)& model,
-             const Handle(Interface_Protocol)& protocol) const Standard_OVERRIDE;
+             const Handle(Interface_Protocol)& protocol) const override;
 
   //! Writes a File from a IGES Model (brought by <ctx>)
   //! Returns False (and writes no file) if <ctx> is not for IGES
-  Standard_EXPORT Standard_Boolean WriteFile(IFSelect_ContextWrite& ctx) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean WriteFile(IFSelect_ContextWrite& ctx) const override;
 
   //! Defines a protocol to be adequate for IGES
   //! (encompasses ALL the IGES norm including IGESSolid, IGESAppli)
@@ -62,7 +62,7 @@ public:
                                           const Handle(Interface_Protocol)&       protocol,
                                           const Handle(Standard_Transient)&       entity,
                                           Standard_OStream&                       S,
-                                          const Standard_Integer level) const Standard_OVERRIDE;
+                                          const Standard_Integer level) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_WorkLibrary, IFSelect_WorkLibrary)
 

@@ -42,11 +42,11 @@ public:
   Standard_EXPORT void Add(const Handle(IGESData_Protocol)& protocol);
 
   //! Gives the count of Resources : the count of Added Protocols
-  Standard_EXPORT virtual Standard_Integer NbResources() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbResources() const override;
 
   //! Returns a Resource, given a rank (rank of call to Add)
   Standard_EXPORT virtual Handle(Interface_Protocol) Resource(const Standard_Integer num) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_FileProtocol, IGESData_Protocol)
 

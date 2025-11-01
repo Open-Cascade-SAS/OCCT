@@ -113,12 +113,12 @@ public:
 
   // Does nothing.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the list  of shapes modified from the shape
   //! <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+    override;
 };
 
 #endif // _BRepOffsetAPI_MakeThickSolid_HeaderFile

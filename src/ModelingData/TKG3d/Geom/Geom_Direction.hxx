@@ -74,23 +74,23 @@ public:
   Standard_EXPORT gp_Dir Dir() const;
 
   //! returns 1.0 which is the magnitude of any unit vector.
-  Standard_EXPORT Standard_Real Magnitude() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real Magnitude() const override;
 
   //! returns 1.0 which is the square magnitude of any unit vector.
-  Standard_EXPORT Standard_Real SquareMagnitude() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real SquareMagnitude() const override;
 
   //! Computes the cross product between <me> and <Other>.
   //!
   //! Raised if the two vectors are parallel because it is
   //! not possible to have a direction with null length.
-  Standard_EXPORT void Cross(const Handle(Geom_Vector)& Other) Standard_OVERRIDE;
+  Standard_EXPORT void Cross(const Handle(Geom_Vector)& Other) override;
 
   //! Computes the triple vector product  <me> ^(V1 ^ V2).
   //!
   //! Raised if V1 and V2 are parallel or <me> and (V1 ^ V2) are
   //! parallel
   Standard_EXPORT void CrossCross(const Handle(Geom_Vector)& V1,
-                                  const Handle(Geom_Vector)& V2) Standard_OVERRIDE;
+                                  const Handle(Geom_Vector)& V2) override;
 
   //! Computes the cross product between <me> and <Other>.
   //! A new direction is returned.
@@ -98,7 +98,7 @@ public:
   //! Raised if the two vectors are parallel because it is
   //! not possible to have a direction with null length.
   Standard_EXPORT Handle(Geom_Vector) Crossed(const Handle(Geom_Vector)& Other) const
-    Standard_OVERRIDE;
+    override;
 
   //! Computes the triple vector product <me> ^(V1 ^ V2).
   //!
@@ -106,13 +106,13 @@ public:
   //! parallel
   Standard_EXPORT Handle(Geom_Vector) CrossCrossed(const Handle(Geom_Vector)& V1,
                                                    const Handle(Geom_Vector)& V2) const
-    Standard_OVERRIDE;
+    override;
 
   //! Applies the transformation T to this unit vector, then normalizes it.
-  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Creates a new object which is a copy of this unit vector.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Direction, Geom_Vector)
 

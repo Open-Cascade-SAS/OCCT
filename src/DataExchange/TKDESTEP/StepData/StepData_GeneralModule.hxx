@@ -41,13 +41,13 @@ public:
   Standard_EXPORT virtual void FillSharedCase(const Standard_Integer            casenum,
                                               const Handle(Standard_Transient)& ent,
                                               Interface_EntityIterator&         iter) const
-    Standard_OVERRIDE = 0;
+    override = 0;
 
   //! Specific Checking of an Entity <ent>
   Standard_EXPORT virtual void CheckCase(const Standard_Integer            casenum,
                                          const Handle(Standard_Transient)& ent,
                                          const Interface_ShareTool&        shares,
-                                         Handle(Interface_Check)& ach) const Standard_OVERRIDE = 0;
+                                         Handle(Interface_Check)& ach) const override = 0;
 
   //! Specific Copy ("Deep") from <entfrom> to <entto> (same type)
   //! by using a TransferControl which provides its working Map.
@@ -59,7 +59,7 @@ public:
   Standard_EXPORT virtual void CopyCase(const Standard_Integer            casenum,
                                         const Handle(Standard_Transient)& entfrom,
                                         const Handle(Standard_Transient)& entto,
-                                        Interface_CopyTool& TC) const Standard_OVERRIDE = 0;
+                                        Interface_CopyTool& TC) const override = 0;
 
   DEFINE_STANDARD_RTTIEXT(StepData_GeneralModule, Interface_GeneralModule)
 

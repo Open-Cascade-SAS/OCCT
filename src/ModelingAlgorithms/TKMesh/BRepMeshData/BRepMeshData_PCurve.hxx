@@ -37,37 +37,37 @@ public:
   //! Inserts new discretization point at the given position.
   Standard_EXPORT virtual void InsertPoint(const Standard_Integer thePosition,
                                            const gp_Pnt2d&        thePoint,
-                                           const Standard_Real theParamOnPCurve) Standard_OVERRIDE;
+                                           const Standard_Real theParamOnPCurve) override;
 
   //! Adds new discretization point to pcurve.
   Standard_EXPORT virtual void AddPoint(const gp_Pnt2d&     thePoint,
-                                        const Standard_Real theParamOnPCurve) Standard_OVERRIDE;
+                                        const Standard_Real theParamOnPCurve) override;
 
   //! Returns discretization point with the given index.
-  Standard_EXPORT virtual gp_Pnt2d& GetPoint(const Standard_Integer theIndex) Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt2d& GetPoint(const Standard_Integer theIndex) override;
 
   //! Returns index in mesh corresponded to discretization point with the given index.
   Standard_EXPORT virtual Standard_Integer& GetIndex(const Standard_Integer theIndex)
-    Standard_OVERRIDE;
+    override;
 
   //! Removes point with the given index.
-  Standard_EXPORT virtual void RemovePoint(const Standard_Integer theIndex) Standard_OVERRIDE;
+  Standard_EXPORT virtual void RemovePoint(const Standard_Integer theIndex) override;
 
   //! Returns parameter with the given index.
   Standard_EXPORT virtual Standard_Real& GetParameter(const Standard_Integer theIndex)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns number of parameters stored in pcurve.
-  Standard_EXPORT virtual Standard_Integer ParametersNb() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer ParametersNb() const override;
 
   //! Clears parameters list.
-  Standard_EXPORT virtual void Clear(const Standard_Boolean isKeepEndPoints) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear(const Standard_Boolean isKeepEndPoints) override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_PCurve, IMeshData_PCurve)
 
 protected:
   //! Removes parameter with the given index.
-  Standard_EXPORT virtual void removeParameter(const Standard_Integer theIndex) Standard_OVERRIDE;
+  Standard_EXPORT virtual void removeParameter(const Standard_Integer theIndex) override;
 
 private:
   IMeshData::Model::SequenceOfPnt2d   myPoints2d;

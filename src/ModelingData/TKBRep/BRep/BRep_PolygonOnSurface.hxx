@@ -40,26 +40,26 @@ public:
 
   //! A 2D polygon representation in the parametric
   //! space of a surface.
-  Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface() const override;
 
   //! A 2D polygon representation in the parametric
   //! space of a surface.
   Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface(const Handle(Geom_Surface)& S,
                                                               const TopLoc_Location&      L) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface() const override;
 
-  Standard_EXPORT virtual const Handle(Poly_Polygon2D)& Polygon() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Poly_Polygon2D)& Polygon() const override;
 
-  Standard_EXPORT virtual void Polygon(const Handle(Poly_Polygon2D)& P) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Polygon(const Handle(Poly_Polygon2D)& P) override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnSurface, BRep_CurveRepresentation)
 

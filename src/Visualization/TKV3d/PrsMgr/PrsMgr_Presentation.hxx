@@ -56,10 +56,10 @@ public:
   Standard_Integer Mode() const { return myMode; }
 
   //! Display structure.
-  Standard_EXPORT virtual void Display() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Display() override;
 
   //! Remove structure.
-  Standard_EXPORT virtual void Erase() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Erase() override;
 
   //! Highlight structure.
   Standard_EXPORT void Highlight(const Handle(Prs3d_Drawer)& theStyle);
@@ -68,7 +68,7 @@ public:
   Standard_EXPORT void Unhighlight();
 
   //! Return TRUE if structure has been displayed and in no hidden state.
-  virtual Standard_Boolean IsDisplayed() const Standard_OVERRIDE
+  virtual Standard_Boolean IsDisplayed() const override
   {
     return base_type::IsDisplayed() && base_type::IsVisible();
   }
@@ -76,14 +76,14 @@ public:
   //! removes the whole content of the presentation.
   //! Does not remove the other connected presentations.
   Standard_EXPORT virtual void Clear(const Standard_Boolean theWithDestruction = Standard_True)
-    Standard_OVERRIDE;
+    override;
 
   //! Compute structure using presentation manager.
-  Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute() override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 protected:
   //! Main constructor.
@@ -97,10 +97,10 @@ protected:
 
   Standard_EXPORT virtual void computeHLR(const Handle(Graphic3d_Camera)& theProjector,
                                           Handle(Graphic3d_Structure)&    theGivenStruct)
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual void RecomputeTransformation(const Handle(Graphic3d_Camera)& theProjector)
-    Standard_OVERRIDE;
+    override;
 
 protected:
   Handle(PrsMgr_PresentationManager) myPresentationManager;

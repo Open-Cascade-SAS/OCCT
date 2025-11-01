@@ -52,10 +52,10 @@ public:
   Standard_EXPORT Handle(Poly_Triangulation) GetTriangulation() const;
 
   //! Sets the value aValue for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void SetTransparency(const Standard_Real aValue = 0.6) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTransparency(const Standard_Real aValue = 0.6) override;
 
   //! Removes the setting for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetTransparency() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetTransparency() override;
 
 protected:
   Standard_EXPORT void updatePresentation();
@@ -63,10 +63,10 @@ protected:
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+                                                const Standard_Integer theMode) override;
 
   //! Attenuates 32-bit color by a given attenuation factor (0...1):
   //! aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red

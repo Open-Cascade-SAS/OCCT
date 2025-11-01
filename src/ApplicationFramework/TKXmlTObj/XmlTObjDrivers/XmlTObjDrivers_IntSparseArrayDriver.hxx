@@ -28,19 +28,19 @@ public:
     const Handle(Message_Messenger)& theMessageDriver);
   // constructor
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
   // Creates a new attribute
 
   Standard_EXPORT Standard_Boolean
     Paste(const XmlObjMgt_Persistent&  theSource,
           const Handle(TDF_Attribute)& theTarget,
-          XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+          XmlObjMgt_RRelocationTable&  theRelocTable) const override;
   // Translate the contents of <theSource> and put it
   // into <theTarget>
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
                              XmlObjMgt_Persistent&        theTarget,
-                             XmlObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+                             XmlObjMgt_SRelocationTable&  theRelocTable) const override;
   // Translate the contents of <aSource> and put it
   // into <aTarget>
 

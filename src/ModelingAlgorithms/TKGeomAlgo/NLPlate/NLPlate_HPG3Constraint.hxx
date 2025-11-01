@@ -40,9 +40,9 @@ public:
                                          const Plate_D2& D2T,
                                          const Plate_D3& D3T);
 
-  Standard_EXPORT virtual Standard_Integer ActiveOrder() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer ActiveOrder() const override;
 
-  Standard_EXPORT virtual const Plate_D3& G3Target() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Plate_D3& G3Target() const override;
 
   DEFINE_STANDARD_RTTIEXT(NLPlate_HPG3Constraint, NLPlate_HPG2Constraint)
 

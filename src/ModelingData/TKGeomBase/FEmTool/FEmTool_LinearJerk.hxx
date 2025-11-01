@@ -39,16 +39,16 @@ public:
                                      const GeomAbs_Shape    ConstraintOrder);
 
   Standard_EXPORT virtual Handle(TColStd_HArray2OfInteger) DependenceTable() const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual Standard_Real Value() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Value() override;
 
   Standard_EXPORT virtual void Hessian(const Standard_Integer Dimension1,
                                        const Standard_Integer Dimension2,
-                                       math_Matrix&           H) Standard_OVERRIDE;
+                                       math_Matrix&           H) override;
 
   Standard_EXPORT virtual void Gradient(const Standard_Integer Dimension,
-                                        math_Vector&           G) Standard_OVERRIDE;
+                                        math_Vector&           G) override;
 
   DEFINE_STANDARD_RTTIEXT(FEmTool_LinearJerk, FEmTool_ElementaryCriterion)
 

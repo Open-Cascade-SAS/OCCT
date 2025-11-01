@@ -49,15 +49,15 @@ public:
                                           const Standard_Real       anArrowSize = 0.01);
 
   //! Returns true if the parallelism is movable.
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual Standard_Boolean IsMovable() const override { return Standard_True; }
 
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+                                                const Standard_Integer theMode) override;
 
   Standard_EXPORT void ComputeTwoFacesParallel(const Handle(Prs3d_Presentation)& aPresentation);
 

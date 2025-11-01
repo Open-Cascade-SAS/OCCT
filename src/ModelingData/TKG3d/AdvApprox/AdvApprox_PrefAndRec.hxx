@@ -46,7 +46,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real a,
                                                  const Standard_Real b,
                                                  Standard_Real&      cuttingvalue) const
-    Standard_OVERRIDE;
+    override;
 
 protected:
 private:

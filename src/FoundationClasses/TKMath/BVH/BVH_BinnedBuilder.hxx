@@ -83,7 +83,7 @@ protected:
   virtual typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(
     BVH_Set<T, N>*         theSet,
     BVH_Tree<T, N>*        theBVH,
-    const Standard_Integer theNode) const Standard_OVERRIDE;
+    const Standard_Integer theNode) const override;
 
   //! Arranges node primitives into bins.
   virtual void getSubVolumes(BVH_Set<T, N>*         theSet,

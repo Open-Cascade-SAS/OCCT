@@ -71,7 +71,7 @@ public:
 
 protected:
   //! Executes the mesh generation algorithms. To be defined in implementation class.
-  Standard_EXPORT virtual void internalBuild() Standard_OVERRIDE;
+  Standard_EXPORT virtual void internalBuild() override;
 
 private:
   //! Extracts free vertices from the shape (i.e. those not belonging to any edge)

@@ -59,7 +59,7 @@ public:
   Standard_EXPORT IVtk_IdType GetSubShapeId(const TopoDS_Shape& theSubShape) const;
 
   //! Get ids of sub-shapes composing a sub-shape with the given id
-  Standard_EXPORT IVtk_ShapeIdList GetSubIds(const IVtk_IdType) const Standard_OVERRIDE;
+  Standard_EXPORT IVtk_ShapeIdList GetSubIds(const IVtk_IdType) const override;
 
   //! @brief Get a sub-shape by its local ID.
   //!

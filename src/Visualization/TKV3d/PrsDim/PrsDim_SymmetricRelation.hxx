@@ -45,7 +45,7 @@ public:
                                            const Handle(Geom_Plane)& aPlane);
 
   //! Returns true if the symmetric constraint display is movable.
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual Standard_Boolean IsMovable() const override { return Standard_True; }
 
   //! Sets the tool aSymmetricTool composed of a first
   //! shape, a second shape, and a plane.
@@ -59,10 +59,10 @@ public:
 private:
   Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                        const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+                                       const Standard_Integer theMode) override;
 
   Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+                                                const Standard_Integer theMode) override;
 
   Standard_EXPORT void ComputeTwoFacesSymmetric(const Handle(Prs3d_Presentation)& aprs);
 

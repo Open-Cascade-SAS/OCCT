@@ -38,13 +38,13 @@ public:
                                            const gp_XYZ&   Value,
                                            const Plate_D1& D1T);
 
-  Standard_EXPORT virtual void SetOrientation(const Standard_Integer Orient = 0) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetOrientation(const Standard_Integer Orient = 0) override;
 
-  Standard_EXPORT virtual Standard_Integer ActiveOrder() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer ActiveOrder() const override;
 
-  Standard_EXPORT virtual Standard_Integer Orientation() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Orientation() override;
 
-  Standard_EXPORT virtual const Plate_D1& G1Target() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Plate_D1& G1Target() const override;
 
   DEFINE_STANDARD_RTTIEXT(NLPlate_HPG0G1Constraint, NLPlate_HPG0Constraint)
 

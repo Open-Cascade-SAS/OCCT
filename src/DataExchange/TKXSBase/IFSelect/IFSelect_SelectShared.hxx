@@ -40,10 +40,10 @@ public:
   //! Returns the list of selected entities (list of entities
   //! shared by those of input list)
   Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns a text defining the criterium : "Shared (one level)"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectShared, IFSelect_SelectDeduct)
 

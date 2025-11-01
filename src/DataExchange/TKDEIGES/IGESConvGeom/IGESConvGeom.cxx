@@ -91,10 +91,10 @@ Standard_Integer IGESConvGeom::SplineCurveFromIGES(const Handle(IGESGeom_SplineC
     {
       case 3:
         coeff.SetValue(coeff.Lower() + 3, gp_Pnt(DX * Di3, DY * Di3, DZ * Di3));
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case 2:
         coeff.SetValue(coeff.Lower() + 2, gp_Pnt(CX * Di2, CY * Di2, CZ * Di2));
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case 1:
         coeff.SetValue(coeff.Lower() + 1, gp_Pnt(BX * Di, BY * Di, BZ * Di));
         coeff.SetValue(coeff.Lower() + 0, gp_Pnt(AX, AY, AZ));

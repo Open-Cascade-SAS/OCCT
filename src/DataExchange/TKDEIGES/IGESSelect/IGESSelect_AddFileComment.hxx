@@ -63,11 +63,11 @@ public:
 
   //! Sends the comment lines to the file (Start Section)
   Standard_EXPORT void Perform(IFSelect_ContextWrite& ctx,
-                               IGESData_IGESWriter&   writer) const Standard_OVERRIDE;
+                               IGESData_IGESWriter&   writer) const override;
 
   //! Returns specific Label, which is
   //! "Add <nn> Comment Lines (Start Section)"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_AddFileComment, IGESSelect_FileModifier)
 

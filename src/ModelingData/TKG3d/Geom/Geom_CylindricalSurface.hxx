@@ -96,12 +96,12 @@ public:
   //! Return the  parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
   //! Return 2.PI - U.
-  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const override;
 
   //! Return the  parameter on the Vreversed surface for
   //! the point of parameter V on <me>.
   //! Return -V
-  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const override;
 
   //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
@@ -119,7 +119,7 @@ public:
   //! This method multiplies V by T.ScaleFactor()
   Standard_EXPORT virtual void TransformParameters(Standard_Real& U,
                                                    Standard_Real& V,
-                                                   const gp_Trsf& T) const Standard_OVERRIDE;
+                                                   const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
@@ -136,7 +136,7 @@ public:
   //! @endcode
   //! This method returns a scale centered on the U axis with T.ScaleFactor
   Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
-    Standard_OVERRIDE;
+    override;
 
   //! The CylindricalSurface is infinite in the V direction so
   //! V1 = Realfirst, V2 = RealLast from package Standard.
@@ -144,7 +144,7 @@ public:
   Standard_EXPORT void Bounds(Standard_Real& U1,
                               Standard_Real& U2,
                               Standard_Real& V1,
-                              Standard_Real& V2) const Standard_OVERRIDE;
+                              Standard_Real& V2) const override;
 
   //! Returns the coefficients of the implicit equation of the quadric
   //! in the absolute cartesian coordinate system :
@@ -167,26 +167,26 @@ public:
   Standard_EXPORT Standard_Real Radius() const;
 
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsUClosed() const override;
 
   //! Returns False.
-  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsVClosed() const override;
 
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsUPeriodic() const override;
 
   //! Returns False.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsVPeriodic() const override;
 
   //! The UIso curve is a Line. The location point of this line is
   //! on the placement plane (XAxis, YAxis) of the surface.
   //! This line is parallel to the axis of symmetry of the surface.
-  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const override;
 
   //! The VIso curve is a circle. The start point of this circle
   //! (U = 0) is defined with the "XAxis" of the surface.
   //! The center of the circle is on the symmetry axis.
-  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const override;
 
   //! Computes the  point P (U, V) on the surface.
   //! P (U, V) = Loc + Radius * (cos (U) * XDir + sin (U) * YDir) +
@@ -196,7 +196,7 @@ public:
   //! the YAxis.
   Standard_EXPORT void D0(const Standard_Real U,
                           const Standard_Real V,
-                          gp_Pnt&             P) const Standard_OVERRIDE;
+                          gp_Pnt&             P) const override;
 
   //! Computes the current point and the first derivatives in the
   //! directions U and V.
@@ -204,7 +204,7 @@ public:
                           const Standard_Real V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
-                          gp_Vec&             D1V) const Standard_OVERRIDE;
+                          gp_Vec&             D1V) const override;
 
   //! Computes the current point, the first and the second derivatives
   //! in the directions U and V.
@@ -215,7 +215,7 @@ public:
                           gp_Vec&             D1V,
                           gp_Vec&             D2U,
                           gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const Standard_OVERRIDE;
+                          gp_Vec&             D2UV) const override;
 
   //! Computes the current point, the first, the second and the
   //! third derivatives in the directions U and V.
@@ -230,7 +230,7 @@ public:
                           gp_Vec&             D3U,
                           gp_Vec&             D3V,
                           gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const Standard_OVERRIDE;
+                          gp_Vec&             D3UVV) const override;
 
   //! Computes the derivative of order Nu in the direction u and Nv
   //! in the direction v.
@@ -238,17 +238,17 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Real    V,
                             const Standard_Integer Nu,
-                            const Standard_Integer Nv) const Standard_OVERRIDE;
+                            const Standard_Integer Nv) const override;
 
   //! Applies the transformation T to this cylinder.
-  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Creates a new object which is a copy of this cylinder.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_CylindricalSurface, Geom_ElementarySurface)
 

@@ -57,10 +57,10 @@ public:
   Standard_EXPORT virtual ~OpenGl_Font();
 
   //! Destroy object - will release GPU memory if any
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Returns estimated GPU memory usage.
-  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const override;
 
   //! @return key of shared resource
   inline const TCollection_AsciiString& ResourceKey() const { return myKey; }

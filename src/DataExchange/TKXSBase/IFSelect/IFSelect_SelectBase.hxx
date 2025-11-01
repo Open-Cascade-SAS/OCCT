@@ -34,7 +34,7 @@ class IFSelect_SelectBase : public IFSelect_Selection
 public:
   //! Puts in an Iterator the Selections from which "me" depends
   //! This list is empty for all SelectBase type Selections
-  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const Standard_OVERRIDE;
+  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectBase, IFSelect_Selection)
 

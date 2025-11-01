@@ -40,10 +40,10 @@ public:
   //! Returns the list of selected Entities, which is the addition
   //! result from all input selections. Uniqueness is guaranteed.
   Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns a text defining the criterium : "Union (OR)"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectUnion, IFSelect_SelectCombine)
 

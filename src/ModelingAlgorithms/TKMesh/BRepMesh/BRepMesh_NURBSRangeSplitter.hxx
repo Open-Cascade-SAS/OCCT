@@ -35,11 +35,11 @@ public:
   virtual ~BRepMesh_NURBSRangeSplitter() {}
 
   //! Updates discrete range of surface according to its geometric range.
-  Standard_EXPORT virtual void AdjustRange() Standard_OVERRIDE;
+  Standard_EXPORT virtual void AdjustRange() override;
 
   //! Returns list of nodes generated using surface data and specified parameters.
   Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
-    const IMeshTools_Parameters& theParameters) const Standard_OVERRIDE;
+    const IMeshTools_Parameters& theParameters) const override;
 
 protected:
   //! Initializes U and V parameters lists using CN continuity intervals.

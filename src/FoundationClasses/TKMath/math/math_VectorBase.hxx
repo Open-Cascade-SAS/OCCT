@@ -130,7 +130,7 @@ public:
   //! Exceptions
   //! Standard_NullValue if this vector is null (i.e. if its norm is
   //! less than or equal to Standard_Real::RealEpsilon().
-  Standard_NODISCARD inline math_VectorBase Normalized() const;
+  [[nodiscard]] inline math_VectorBase Normalized() const;
 
   //! Inverts this vector and assigns the result to this vector.
   inline void Invert();
@@ -159,15 +159,15 @@ public:
   void operator*=(const TheItemType theRight) { Multiply(theRight); }
 
   //! returns the product of a vector and a real value.
-  Standard_NODISCARD inline math_VectorBase Multiplied(const TheItemType theRight) const;
+  [[nodiscard]] inline math_VectorBase Multiplied(const TheItemType theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator*(const TheItemType theRight) const
+  [[nodiscard]] math_VectorBase operator*(const TheItemType theRight) const
   {
     return Multiplied(theRight);
   }
 
   //! returns the product of a vector and a real value.
-  Standard_NODISCARD inline math_VectorBase TMultiplied(const TheItemType theRight) const;
+  [[nodiscard]] inline math_VectorBase TMultiplied(const TheItemType theRight) const;
 
   friend inline math_VectorBase operator*(const TheItemType      theLeft,
                                           const math_VectorBase& theRight)
@@ -183,9 +183,9 @@ public:
 
   //! Returns new vector as dividing current vector with the value "theRight".
   //! An exception is raised if "theRight" = 0.
-  Standard_NODISCARD inline math_VectorBase Divided(const TheItemType theRight) const;
+  [[nodiscard]] inline math_VectorBase Divided(const TheItemType theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator/(const TheItemType theRight) const
+  [[nodiscard]] math_VectorBase operator/(const TheItemType theRight) const
   {
     return Divided(theRight);
   }
@@ -202,9 +202,9 @@ public:
   //! Returns new vector as adding current vector with the value "theRight".
   //! An exception is raised if the vectors do not have the same length.
   //! An exception is raised if the lengths are not equal.
-  Standard_NODISCARD inline math_VectorBase Added(const math_VectorBase& theRight) const;
+  [[nodiscard]] inline math_VectorBase Added(const math_VectorBase& theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator+(const math_VectorBase& theRight) const
+  [[nodiscard]] math_VectorBase operator+(const math_VectorBase& theRight) const
   {
     return Added(theRight);
   }
@@ -257,17 +257,17 @@ public:
 
   //! returns the inner product of 2 vectors.
   //! An exception is raised if the lengths are not equal.
-  Standard_NODISCARD inline TheItemType Multiplied(const math_VectorBase& theRight) const;
+  [[nodiscard]] inline TheItemType Multiplied(const math_VectorBase& theRight) const;
 
-  Standard_NODISCARD inline TheItemType operator*(const math_VectorBase& theRight) const
+  [[nodiscard]] inline TheItemType operator*(const math_VectorBase& theRight) const
   {
     return Multiplied(theRight);
   }
 
   //! returns the product of a vector by a matrix.
-  Standard_NODISCARD inline math_VectorBase Multiplied(const math_Matrix& theRight) const;
+  [[nodiscard]] inline math_VectorBase Multiplied(const math_Matrix& theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator*(const math_Matrix& theRight) const
+  [[nodiscard]] math_VectorBase operator*(const math_Matrix& theRight) const
   {
     return Multiplied(theRight);
   }
@@ -285,9 +285,9 @@ public:
 
   //! returns the subtraction of "theRight" from "me".
   //! An exception is raised if the vectors have not the same length.
-  Standard_NODISCARD inline math_VectorBase Subtracted(const math_VectorBase& theRight) const;
+  [[nodiscard]] inline math_VectorBase Subtracted(const math_VectorBase& theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator-(const math_VectorBase& theRight) const
+  [[nodiscard]] math_VectorBase operator-(const math_VectorBase& theRight) const
   {
     return Subtracted(theRight);
   }

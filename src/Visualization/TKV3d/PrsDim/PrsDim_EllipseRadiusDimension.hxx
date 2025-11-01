@@ -35,12 +35,12 @@ class PrsDim_EllipseRadiusDimension : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_EllipseRadiusDimension, PrsDim_Relation)
 public:
-  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE
+  virtual PrsDim_KindOfDimension KindOfDimension() const override
   {
     return PrsDim_KOD_ELLIPSERADIUS;
   }
 
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual Standard_Boolean IsMovable() const override { return Standard_True; }
 
   Standard_EXPORT void ComputeGeometry();
 

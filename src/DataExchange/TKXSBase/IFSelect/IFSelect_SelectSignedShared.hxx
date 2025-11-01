@@ -62,12 +62,12 @@ public:
     Explore(const Standard_Integer            level,
             const Handle(Standard_Transient)& ent,
             const Interface_Graph&            G,
-            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
+            Interface_EntityIterator&         explored) const override;
 
   //! Returns a text defining the criterium.
   //! (it refers to the text and exact flag to be matched, and is
   //! qualified by the Name provided by the Signature)
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSignedShared, IFSelect_SelectExplore)
 

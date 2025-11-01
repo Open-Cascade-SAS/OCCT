@@ -508,8 +508,8 @@ public:
 
 public:
   // Overrides TDF_Attribute virtuals
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  Standard_EXPORT Standard_OStream&    Dump(Standard_OStream& theOS) const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
+  Standard_EXPORT Standard_OStream&    Dump(Standard_OStream& theOS) const override;
 };
 
 DEFINE_STANDARD_HANDLE(XCAFDoc_NotesTool, TDataStd_GenericEmpty)

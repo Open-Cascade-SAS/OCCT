@@ -70,7 +70,7 @@ public:
   }
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const override;
 
   void Load(const Handle(Geom_Surface)& theSurf)
   {
@@ -107,35 +107,35 @@ public:
 
   const Handle(Geom_Surface)& Surface() const { return mySurface; }
 
-  virtual Standard_Real FirstUParameter() const Standard_OVERRIDE { return myUFirst; }
+  virtual Standard_Real FirstUParameter() const override { return myUFirst; }
 
-  virtual Standard_Real LastUParameter() const Standard_OVERRIDE { return myULast; }
+  virtual Standard_Real LastUParameter() const override { return myULast; }
 
-  virtual Standard_Real FirstVParameter() const Standard_OVERRIDE { return myVFirst; }
+  virtual Standard_Real FirstVParameter() const override { return myVFirst; }
 
-  virtual Standard_Real LastVParameter() const Standard_OVERRIDE { return myVLast; }
+  virtual Standard_Real LastVParameter() const override { return myVLast; }
 
-  Standard_EXPORT GeomAbs_Shape UContinuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape UContinuity() const override;
 
-  Standard_EXPORT GeomAbs_Shape VContinuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape VContinuity() const override;
 
   //! Returns the number of U intervals for continuity
   //! <S>. May be one if UContinuity(me) >= <S>
-  Standard_EXPORT Standard_Integer NbUIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbUIntervals(const GeomAbs_Shape S) const override;
 
   //! Returns the number of V intervals for continuity
   //! <S>. May be one if VContinuity(me) >= <S>
-  Standard_EXPORT Standard_Integer NbVIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbVIntervals(const GeomAbs_Shape S) const override;
 
   //! Returns the intervals with the requested continuity
   //! in the U direction.
   Standard_EXPORT void UIntervals(TColStd_Array1OfReal& T,
-                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;
+                                  const GeomAbs_Shape   S) const override;
 
   //! Returns the intervals with the requested continuity
   //! in the V direction.
   Standard_EXPORT void VIntervals(TColStd_Array1OfReal& T,
-                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;
+                                  const GeomAbs_Shape   S) const override;
 
   //! Returns a surface trimmed in the U direction
   //! equivalent of <me> between
@@ -144,7 +144,7 @@ public:
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor3d_Surface) UTrim(const Standard_Real First,
                                                   const Standard_Real Last,
-                                                  const Standard_Real Tol) const Standard_OVERRIDE;
+                                                  const Standard_Real Tol) const override;
 
   //! Returns a surface trimmed in the V direction between
   //! parameters <First> and <Last>. <Tol> is used to
@@ -152,28 +152,28 @@ public:
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor3d_Surface) VTrim(const Standard_Real First,
                                                   const Standard_Real Last,
-                                                  const Standard_Real Tol) const Standard_OVERRIDE;
+                                                  const Standard_Real Tol) const override;
 
-  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsUClosed() const override;
 
-  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsVClosed() const override;
 
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsUPeriodic() const override;
 
-  Standard_EXPORT Standard_Real UPeriod() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real UPeriod() const override;
 
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsVPeriodic() const override;
 
-  Standard_EXPORT Standard_Real VPeriod() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real VPeriod() const override;
 
   //! Computes the point of parameters U,V on the surface.
   Standard_EXPORT gp_Pnt Value(const Standard_Real U,
-                               const Standard_Real V) const Standard_OVERRIDE;
+                               const Standard_Real V) const override;
 
   //! Computes the point of parameters U,V on the surface.
   Standard_EXPORT void D0(const Standard_Real U,
                           const Standard_Real V,
-                          gp_Pnt&             P) const Standard_OVERRIDE;
+                          gp_Pnt&             P) const override;
 
   //! Computes the point and the first derivatives on
   //! the surface.
@@ -186,7 +186,7 @@ public:
                           const Standard_Real V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
-                          gp_Vec&             D1V) const Standard_OVERRIDE;
+                          gp_Vec&             D1V) const override;
 
   //! Computes the point, the first and second derivatives
   //! on the surface.
@@ -202,7 +202,7 @@ public:
                           gp_Vec&             D1V,
                           gp_Vec&             D2U,
                           gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const Standard_OVERRIDE;
+                          gp_Vec&             D2UV) const override;
 
   //! Computes the point, the first, second and third
   //! derivatives on the surface.
@@ -222,7 +222,7 @@ public:
                           gp_Vec&             D3U,
                           gp_Vec&             D3V,
                           gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const Standard_OVERRIDE;
+                          gp_Vec&             D3UVV) const override;
 
   //! Computes the derivative of order Nu in the
   //! direction U and Nv in the direction V at the point P(U, V).
@@ -235,71 +235,71 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Real    V,
                             const Standard_Integer Nu,
-                            const Standard_Integer Nv) const Standard_OVERRIDE;
+                            const Standard_Integer Nv) const override;
 
   //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.
-  Standard_EXPORT Standard_Real UResolution(const Standard_Real R3d) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real UResolution(const Standard_Real R3d) const override;
 
   //! Returns the parametric V resolution corresponding
   //! to the real space resolution <R3d>.
-  Standard_EXPORT Standard_Real VResolution(const Standard_Real R3d) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real VResolution(const Standard_Real R3d) const override;
 
   //! Returns the type of the surface: Plane, Cylinder,
   //! Cone, Sphere, Torus, BezierSurface,
   //! BSplineSurface, SurfaceOfRevolution,
   //! SurfaceOfExtrusion, OtherSurface
-  virtual GeomAbs_SurfaceType GetType() const Standard_OVERRIDE { return mySurfaceType; }
+  virtual GeomAbs_SurfaceType GetType() const override { return mySurfaceType; }
 
-  Standard_EXPORT gp_Pln Plane() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pln Plane() const override;
 
-  Standard_EXPORT gp_Cylinder Cylinder() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Cylinder Cylinder() const override;
 
-  Standard_EXPORT gp_Cone Cone() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Cone Cone() const override;
 
-  Standard_EXPORT gp_Sphere Sphere() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Sphere Sphere() const override;
 
-  Standard_EXPORT gp_Torus Torus() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Torus Torus() const override;
 
-  Standard_EXPORT Standard_Integer UDegree() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer UDegree() const override;
 
-  Standard_EXPORT Standard_Integer NbUPoles() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbUPoles() const override;
 
-  Standard_EXPORT Standard_Integer VDegree() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer VDegree() const override;
 
-  Standard_EXPORT Standard_Integer NbVPoles() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbVPoles() const override;
 
-  Standard_EXPORT Standard_Integer NbUKnots() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbUKnots() const override;
 
-  Standard_EXPORT Standard_Integer NbVKnots() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbVKnots() const override;
 
-  Standard_EXPORT Standard_Boolean IsURational() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsURational() const override;
 
-  Standard_EXPORT Standard_Boolean IsVRational() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsVRational() const override;
 
   //! This will NOT make a copy of the
   //! Bezier Surface : If you want to modify
   //! the Surface please make a copy yourself
   //! Also it will NOT trim the surface to
   //! myU/VFirst/Last.
-  Standard_EXPORT Handle(Geom_BezierSurface) Bezier() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_BezierSurface) Bezier() const override;
 
   //! This will NOT make a copy of the
   //! BSpline Surface : If you want to modify
   //! the Surface please make a copy yourself
   //! Also it will NOT trim the surface to
   //! myU/VFirst/Last.
-  Standard_EXPORT Handle(Geom_BSplineSurface) BSpline() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_BSplineSurface) BSpline() const override;
 
-  Standard_EXPORT gp_Ax1 AxeOfRevolution() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Ax1 AxeOfRevolution() const override;
 
-  Standard_EXPORT gp_Dir Direction() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Dir Direction() const override;
 
-  Standard_EXPORT Handle(Adaptor3d_Curve) BasisCurve() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Curve) BasisCurve() const override;
 
-  Standard_EXPORT Handle(Adaptor3d_Surface) BasisSurface() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Surface) BasisSurface() const override;
 
-  Standard_EXPORT Standard_Real OffsetValue() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real OffsetValue() const override;
 
 private:
   Standard_EXPORT void Span(const Standard_Integer Side,

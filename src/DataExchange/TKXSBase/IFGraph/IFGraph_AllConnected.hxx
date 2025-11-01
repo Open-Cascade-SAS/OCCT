@@ -54,7 +54,7 @@ public:
   Standard_EXPORT void ResetData();
 
   //! does the specific evaluation (Connected entities atall levels)
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 
 protected:
 private:

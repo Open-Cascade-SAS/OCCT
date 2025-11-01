@@ -39,7 +39,7 @@ public:
   Standard_EXPORT virtual Standard_Real persistentScale(
     const Handle(Graphic3d_Camera)& theCamera,
     const Standard_Integer          theViewportWidth,
-    const Standard_Integer          theViewportHeight) const Standard_OVERRIDE;
+    const Standard_Integer          theViewportHeight) const override;
 
 public:
   DEFINE_STANDARD_RTTIEXT(Graphic3d_TransformPersScaledAbove, Graphic3d_TransformPers)

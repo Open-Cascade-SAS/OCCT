@@ -41,15 +41,15 @@ public:
 
   //! Returns TRUE if URL defines a supported protocol.
   Standard_EXPORT virtual Standard_Boolean IsSupportedPath(
-    const TCollection_AsciiString& theUrl) const Standard_OVERRIDE;
+    const TCollection_AsciiString& theUrl) const override;
 
   //! Returns TRUE if current input stream is opened for reading operations.
   Standard_EXPORT virtual Standard_Boolean IsOpenIStream(
-    const std::shared_ptr<std::istream>& theStream) const Standard_OVERRIDE;
+    const std::shared_ptr<std::istream>& theStream) const override;
 
   //! Returns TRUE if current output stream is opened for writing operations.
   Standard_EXPORT virtual Standard_Boolean IsOpenOStream(
-    const std::shared_ptr<std::ostream>& theStream) const Standard_OVERRIDE;
+    const std::shared_ptr<std::ostream>& theStream) const override;
 
   //! Opens stream for specified file URL for reading operations or returns previously created
   //! stream pointing to the same URL.
@@ -57,20 +57,20 @@ public:
     const TCollection_AsciiString&       theUrl,
     const std::ios_base::openmode        theParams,
     const int64_t                        theOffset,
-    const std::shared_ptr<std::istream>& theOldStream) Standard_OVERRIDE;
+    const std::shared_ptr<std::istream>& theOldStream) override;
 
   //! Opens stream for specified file URL for writing operations (std::ostream) by calling parent's
   //! method.
   Standard_EXPORT virtual std::shared_ptr<std::ostream> OpenOStream(
     const TCollection_AsciiString& theUrl,
-    const std::ios_base::openmode  theMode) Standard_OVERRIDE;
+    const std::ios_base::openmode  theMode) override;
 
   //! Opens stream buffer for specified file URL.
   Standard_EXPORT virtual std::shared_ptr<std::streambuf> OpenStreamBuffer(
     const TCollection_AsciiString& theUrl,
     const std::ios_base::openmode  theMode,
     const int64_t                  theOffset     = 0,
-    int64_t*                       theOutBufSize = NULL) Standard_OVERRIDE;
+    int64_t*                       theOutBufSize = NULL) override;
 
 protected:
   // Auxiliary structure to save shared stream with path to it.

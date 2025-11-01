@@ -100,7 +100,7 @@ public:
 
   //! Builds the resulting shape (redefined from MakeShape).
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns   the  shapes  created  from   a  subshape
   //! <SpineShape>  of     the  spine   and   a subshape

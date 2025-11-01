@@ -93,7 +93,7 @@ public:
   //!   - [Format].FileExtension: [Extension]
   //!   - [Format].RetrievalPlugin: [GUID] (optional)
   //!   - [Format].StoragePlugin: [GUID] (optional)
-  Standard_EXPORT virtual Handle(Resource_Manager) Resources() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Resource_Manager) Resources() override;
 
   //! Returns the name of the file containing the
   //! resources of this application, for support of legacy
@@ -177,7 +177,7 @@ public:
   //! application, the new document is handled by the
   //! applicative session.
   Standard_EXPORT virtual void NewDocument(const TCollection_ExtendedString& format,
-                                           Handle(CDM_Document)& aDoc) Standard_OVERRIDE;
+                                           Handle(CDM_Document)& aDoc) override;
 
   //! A non-virtual method taking a TDocStd_Documment object as an input.
   //! Internally it calls a virtual method NewDocument() with CDM_Document object.
@@ -192,7 +192,7 @@ public:
   //! to open/save a document
   //! =======================
   Standard_EXPORT virtual void InitDocument(const Handle(CDM_Document)& aDoc) const
-    Standard_OVERRIDE;
+    override;
 
   //! Close the given document. the document is not any more
   //! handled by the applicative session.

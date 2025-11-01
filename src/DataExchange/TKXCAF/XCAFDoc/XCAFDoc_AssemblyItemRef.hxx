@@ -134,16 +134,16 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 public:
   // Overrides TDF_Attribute pure virtuals
-  Standard_EXPORT const Standard_GUID&  ID() const Standard_OVERRIDE;
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theAttrFrom) Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID&  ID() const override;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const override;
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theAttrFrom) override;
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theAttrInto,
-                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
-  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const Standard_OVERRIDE;
+                             const Handle(TDF_RelocationTable)& theRT) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const override;
 
 private:
   XCAFDoc_AssemblyItemId  myItemId;   ///< Assembly item ID

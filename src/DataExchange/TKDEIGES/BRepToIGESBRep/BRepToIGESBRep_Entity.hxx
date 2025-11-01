@@ -82,7 +82,7 @@ public:
   //! If  the transfer has  failed, this member return a NullEntity.
   Standard_EXPORT virtual Handle(IGESData_IGESEntity) TransferShape(
     const TopoDS_Shape&          start,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! Transfert an Edge entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.

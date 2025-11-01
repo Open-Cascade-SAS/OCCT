@@ -44,7 +44,7 @@ public:
     //
   }
 
-  virtual void Process (const TCollection_AsciiString& theSampleName) Standard_OVERRIDE;
+  virtual void Process (const TCollection_AsciiString& theSampleName) override;
 
   void ClearExtra();
   void SetFileName (const TCollection_AsciiString& theFileName) { myFileName = theFileName; };
@@ -55,7 +55,7 @@ public:
   static Standard_Boolean IsXmlSample    (const TCollection_AsciiString& theSampleName);
 
 protected:
-  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) Standard_OVERRIDE;
+  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) override;
 
 private:
   // One function for every sample

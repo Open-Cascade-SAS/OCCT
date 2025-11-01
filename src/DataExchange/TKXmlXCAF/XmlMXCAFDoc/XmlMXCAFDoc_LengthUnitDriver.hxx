@@ -33,17 +33,17 @@ class XmlMXCAFDoc_LengthUnitDriver : public XmlMDF_ADriver
 public:
   Standard_EXPORT XmlMXCAFDoc_LengthUnitDriver(const Handle(Message_Messenger)& theMessageDriver);
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const override;
 
   Standard_EXPORT virtual Standard_Boolean Paste(const XmlObjMgt_Persistent&  theSource,
                                                  const Handle(TDF_Attribute)& theTarget,
                                                  XmlObjMgt_RRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
                                      XmlObjMgt_Persistent&        theTarget,
                                      XmlObjMgt_SRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_LengthUnitDriver, XmlMDF_ADriver)
 };

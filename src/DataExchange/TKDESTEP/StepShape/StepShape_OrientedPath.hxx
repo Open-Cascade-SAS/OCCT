@@ -50,15 +50,15 @@ public:
   Standard_EXPORT Standard_Boolean Orientation() const;
 
   Standard_EXPORT virtual void SetEdgeList(const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList)
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual Handle(StepShape_HArray1OfOrientedEdge) EdgeList() const
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual Handle(StepShape_OrientedEdge) EdgeListValue(
-    const Standard_Integer num) const Standard_OVERRIDE;
+    const Standard_Integer num) const override;
 
-  Standard_EXPORT virtual Standard_Integer NbEdgeList() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbEdgeList() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedPath, StepShape_Path)
 

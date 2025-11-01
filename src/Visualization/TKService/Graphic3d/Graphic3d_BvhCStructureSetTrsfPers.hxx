@@ -40,20 +40,20 @@ public:
   Standard_EXPORT Graphic3d_BvhCStructureSetTrsfPers(const Handle(BVH_Builder3d)& theBuilder);
 
   //! Returns total number of structures.
-  Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Size() const override;
 
   //! Returns AABB of the structure.
   Standard_EXPORT virtual Graphic3d_BndBox3d Box(const Standard_Integer theIdx) const
-    Standard_OVERRIDE;
+    override;
 
   //! Calculates center of the AABB along given axis.
   Standard_EXPORT virtual Standard_Real Center(const Standard_Integer theIdx,
                                                const Standard_Integer theAxis) const
-    Standard_OVERRIDE;
+    override;
 
   //! Swaps structures with the given indices.
   Standard_EXPORT virtual void Swap(const Standard_Integer theIdx1,
-                                    const Standard_Integer theIdx2) Standard_OVERRIDE;
+                                    const Standard_Integer theIdx2) override;
 
   //! Adds structure to the set.
   //! @return true if structure added, otherwise returns false (structure already in the set).

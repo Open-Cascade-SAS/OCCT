@@ -43,7 +43,7 @@ public:
     //
   }
 
-  virtual void Process (const TCollection_AsciiString& theSampleName) Standard_OVERRIDE;
+  virtual void Process (const TCollection_AsciiString& theSampleName) override;
 
   void AppendBottle();
   void SetFileName(TCollection_AsciiString theFileName) { myFileName = theFileName; };
@@ -66,7 +66,7 @@ public:
   static Standard_Boolean IsImageSample (const TCollection_AsciiString& theSampleName) { return theSampleName == "ImageExportSample"; }
 
 protected:
-  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) Standard_OVERRIDE;
+  virtual void ExecuteSample (const TCollection_AsciiString& theSampleName) override;
 
 private:
   TCollection_AsciiString   myFileName;

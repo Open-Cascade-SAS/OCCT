@@ -39,29 +39,29 @@ public:
                                               const TopLoc_Location&                     L);
 
   //! returns True.
-  Standard_EXPORT virtual Standard_Boolean IsPolygonOnTriangulation() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsPolygonOnTriangulation() const override;
 
   //! Is it a polygon in the definition of <T> with
   //! location <L>.
   Standard_EXPORT virtual Standard_Boolean IsPolygonOnTriangulation(
     const Handle(Poly_Triangulation)& T,
-    const TopLoc_Location&            L) const Standard_OVERRIDE;
+    const TopLoc_Location&            L) const override;
 
   //! returns True.
   Standard_EXPORT virtual void PolygonOnTriangulation(const Handle(Poly_PolygonOnTriangulation)& P)
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual const Handle(Poly_Triangulation)& Triangulation() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Poly_Triangulation)& Triangulation() const override;
 
   Standard_EXPORT virtual const Handle(Poly_PolygonOnTriangulation)& PolygonOnTriangulation() const
-    Standard_OVERRIDE;
+    override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnTriangulation, BRep_CurveRepresentation)
 

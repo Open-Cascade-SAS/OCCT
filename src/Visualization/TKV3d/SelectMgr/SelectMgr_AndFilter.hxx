@@ -37,7 +37,7 @@ public:
   Standard_EXPORT SelectMgr_AndFilter();
 
   Standard_EXPORT Standard_Boolean
-    IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
+    IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_AndFilter, SelectMgr_CompositionFilter)
 

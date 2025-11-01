@@ -190,7 +190,7 @@ public:
   //! Warnings :
   //! The normal direction to the plane is not changed.
   //! The "XAxis" and the "YAxis" are reversed.
-  Standard_NODISCARD Standard_EXPORT gp_Pln Mirrored(const gp_Pnt& theP) const;
+  [[nodiscard]] Standard_EXPORT gp_Pln Mirrored(const gp_Pnt& theP) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
@@ -202,7 +202,7 @@ public:
   //! the "XDirection" and the "YDirection" after transformation
   //! if  the  initial plane was right  handed,  else  it is the
   //! opposite.
-  Standard_NODISCARD Standard_EXPORT gp_Pln Mirrored(const gp_Ax1& theA1) const;
+  [[nodiscard]] Standard_EXPORT gp_Pln Mirrored(const gp_Ax1& theA1) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
@@ -214,13 +214,13 @@ public:
   //! direction is the cross  product between   the "XDirection"
   //! and the "YDirection"  after  transformation if the initial
   //! plane was right handed, else it is the opposite.
-  Standard_NODISCARD Standard_EXPORT gp_Pln Mirrored(const gp_Ax2& theA2) const;
+  [[nodiscard]] Standard_EXPORT gp_Pln Mirrored(const gp_Ax2& theA2) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
 
   //! rotates a plane. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Pln Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  [[nodiscard]] gp_Pln Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
     gp_Pln aPl = *this;
     aPl.pos.Rotate(theA1, theAng);
@@ -230,7 +230,7 @@ public:
   void Scale(const gp_Pnt& theP, const Standard_Real theS) { pos.Scale(theP, theS); }
 
   //! Scales a plane. theS is the scaling value.
-  Standard_NODISCARD gp_Pln Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+  [[nodiscard]] gp_Pln Scaled(const gp_Pnt& theP, const Standard_Real theS) const
   {
     gp_Pln aPl = *this;
     aPl.pos.Scale(theP, theS);
@@ -244,7 +244,7 @@ public:
   //! point, on the "XAxis" and the "YAxis".
   //! The resulting normal direction is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-  Standard_NODISCARD gp_Pln Transformed(const gp_Trsf& theT) const
+  [[nodiscard]] gp_Pln Transformed(const gp_Trsf& theT) const
   {
     gp_Pln aPl = *this;
     aPl.pos.Transform(theT);
@@ -255,7 +255,7 @@ public:
 
   //! Translates a plane in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Pln Translated(const gp_Vec& theV) const
+  [[nodiscard]] gp_Pln Translated(const gp_Vec& theV) const
   {
     gp_Pln aPl = *this;
     aPl.pos.Translate(theV);
@@ -265,7 +265,7 @@ public:
   void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
 
   //! Translates a plane from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Pln Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  [[nodiscard]] gp_Pln Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
   {
     gp_Pln aPl = *this;
     aPl.pos.Translate(theP1, theP2);

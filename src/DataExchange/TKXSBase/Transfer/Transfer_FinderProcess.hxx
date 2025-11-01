@@ -69,7 +69,7 @@ public:
 
   //! Specific printing to trace a Finder (by its method ValueType)
   Standard_EXPORT virtual void PrintTrace(const Handle(Transfer_Finder)& start,
-                                          Standard_OStream&              S) const Standard_OVERRIDE;
+                                          Standard_OStream&              S) const override;
 
   //! Prints statistics on a given output, according mode
   Standard_EXPORT void PrintStats(const Standard_Integer mode, Standard_OStream& S) const;

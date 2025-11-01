@@ -31,7 +31,7 @@ class StepData_SelectArrReal : public StepData_SelectNamed
 public:
   Standard_EXPORT StepData_SelectArrReal();
 
-  Standard_EXPORT virtual Standard_Integer Kind() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Kind() const override;
 
   Standard_EXPORT Handle(TColStd_HArray1OfReal) ArrReal() const;
 

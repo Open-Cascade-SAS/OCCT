@@ -70,11 +70,11 @@ public:
   BRep_ListOfCurveRepresentation& ChangeCurves();
 
   //! Returns a copy of the TShape with no sub-shapes.
-  Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_TEdge, TopoDS_TEdge)
 

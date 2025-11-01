@@ -44,7 +44,7 @@ public:
     const Standard_Integer                NbIterations = 200);
 
   Standard_EXPORT virtual Standard_Boolean IsSolutionReached(
-    math_MultipleVarFunctionWithGradient& F) const Standard_OVERRIDE;
+    math_MultipleVarFunctionWithGradient& F) const override;
 
 protected:
 private:

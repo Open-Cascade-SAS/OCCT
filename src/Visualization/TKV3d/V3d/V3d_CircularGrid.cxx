@@ -47,7 +47,7 @@ public:
   }
 
   //! Override method initiating recomputing in V3d_CircularGrid.
-  virtual void Compute() Standard_OVERRIDE
+  virtual void Compute() override
   {
     GraphicClear(Standard_False);
     myGrid->myGroup         = NewGroup();

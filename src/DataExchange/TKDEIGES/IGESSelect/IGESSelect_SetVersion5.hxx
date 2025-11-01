@@ -47,11 +47,11 @@ public:
   //! global parameter 25 (LastChangeDate) is set to current time
   Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Update IGES Version to 5.1"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SetVersion5, IGESSelect_ModelModifier)
 

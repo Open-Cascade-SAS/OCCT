@@ -43,7 +43,7 @@ public:
   //! Type, with or without package name, according starting option
   Standard_EXPORT Standard_CString
     Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+          const Handle(Interface_InterfaceModel)& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignType, IFSelect_Signature)
 

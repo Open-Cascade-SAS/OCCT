@@ -69,7 +69,7 @@ public:
   //! Returns False if the signature of InteractiveObject
   //! is not the same as the stored one in the filter...
   Standard_EXPORT Standard_Boolean
-    IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
+    IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_SignatureFilter, AIS_TypeFilter)
 

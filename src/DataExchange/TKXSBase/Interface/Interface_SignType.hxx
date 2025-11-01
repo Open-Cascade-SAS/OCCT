@@ -40,7 +40,7 @@ public:
   //! Specialised to consider context as an InterfaceModel
   Standard_EXPORT TCollection_AsciiString
     Text(const Handle(Standard_Transient)& ent,
-         const Handle(Standard_Transient)& context) const Standard_OVERRIDE;
+         const Handle(Standard_Transient)& context) const override;
 
   //! Returns the Signature for a Transient object. It is specific
   //! of each sub-class of Signature. For a Null Handle, it should

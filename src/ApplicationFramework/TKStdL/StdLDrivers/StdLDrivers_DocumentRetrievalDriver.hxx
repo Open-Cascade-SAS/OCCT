@@ -30,7 +30,7 @@ public:
     const Handle(CDM_Document)&       theNewDocument,
     const Handle(CDM_Application)&    theApplication,
     const Handle(PCDM_ReaderFilter)&  theFilter = Handle(PCDM_ReaderFilter)(),
-    const Message_ProgressRange&      theRange  = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&      theRange  = Message_ProgressRange()) override;
 
   //! Override pure virtual method (raises exception Standard_NotImplemented)
   Standard_EXPORT virtual void Read(
@@ -39,7 +39,7 @@ public:
     const Handle(CDM_Document)&      theDoc,
     const Handle(CDM_Application)&   theApplication,
     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
-    const Message_ProgressRange&     theRange  = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&     theRange  = Message_ProgressRange()) override;
 
   DEFINE_STANDARD_RTTIEXT(StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)
 

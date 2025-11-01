@@ -142,12 +142,12 @@ private slots:
 void onTransparencyChanged(int theVal);
 
 protected:
-  virtual void paintEvent( QPaintEvent* ) Standard_OVERRIDE;
-  virtual void resizeEvent( QResizeEvent* ) Standard_OVERRIDE;
-  virtual void mousePressEvent( QMouseEvent* ) Standard_OVERRIDE;
-  virtual void mouseReleaseEvent(QMouseEvent* ) Standard_OVERRIDE;
-  virtual void mouseMoveEvent( QMouseEvent* ) Standard_OVERRIDE;
-  virtual void wheelEvent(QWheelEvent*) Standard_OVERRIDE;
+  virtual void paintEvent( QPaintEvent* ) override;
+  virtual void resizeEvent( QResizeEvent* ) override;
+  virtual void mousePressEvent( QMouseEvent* ) override;
+  virtual void mouseReleaseEvent(QMouseEvent* ) override;
+  virtual void mouseMoveEvent( QMouseEvent* ) override;
+  virtual void wheelEvent(QWheelEvent*) override;
 
   virtual void addItemInPopup( QMenu* );
 
@@ -191,7 +191,7 @@ private:
 
   //! Handle selection changed event.
   void OnSelectionChanged(const Handle(AIS_InteractiveContext)& theCtx,
-                          const Handle(V3d_View)& theView) Standard_OVERRIDE;
+                          const Handle(V3d_View)& theView) override;
   CurrentAction3d                 myCurrentMode;
   Standard_Real                   myCurZoom;
   QMap<ViewAction, QAction*>      myViewActions;

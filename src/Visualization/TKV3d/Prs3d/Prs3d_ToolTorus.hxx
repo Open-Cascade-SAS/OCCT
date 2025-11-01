@@ -202,11 +202,11 @@ private:
 protected:
   //! Computes vertex at given parameter location of the surface.
   Standard_EXPORT virtual gp_Pnt Vertex(const Standard_Real theU,
-                                        const Standard_Real theV) const Standard_OVERRIDE;
+                                        const Standard_Real theV) const override;
 
   //! Computes normal at given parameter location of the surface.
   Standard_EXPORT virtual gp_Dir Normal(const Standard_Real theU,
-                                        const Standard_Real theV) const Standard_OVERRIDE;
+                                        const Standard_Real theV) const override;
 
 protected:
   // clang-format off

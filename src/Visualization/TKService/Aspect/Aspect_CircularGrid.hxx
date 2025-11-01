@@ -48,7 +48,7 @@ public:
   Standard_EXPORT virtual void Compute(const Standard_Real X,
                                        const Standard_Real Y,
                                        Standard_Real&      gridX,
-                                       Standard_Real&      gridY) const Standard_OVERRIDE;
+                                       Standard_Real&      gridY) const override;
 
   //! returns the x step of the grid.
   Standard_EXPORT Standard_Real RadiusStep() const;
@@ -56,11 +56,11 @@ public:
   //! returns the x step of the grid.
   Standard_EXPORT Standard_Integer DivisionNumber() const;
 
-  Standard_EXPORT virtual void Init() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Init() override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 private:
   Standard_Real    myRadiusStep;

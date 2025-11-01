@@ -49,24 +49,24 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns 3 (default value). Can be redefined.
-  Standard_EXPORT virtual Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbVariables() const override;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT virtual Standard_Integer NbEquations() const Standard_OVERRIDE = 0;
+  Standard_EXPORT virtual Standard_Integer NbEquations() const override = 0;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X,
-                                                 math_Vector&       F) Standard_OVERRIDE = 0;
+                                                 math_Vector&       F) override = 0;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Derivatives(const math_Vector& X,
-                                                       math_Matrix&       D) Standard_OVERRIDE = 0;
+                                                       math_Matrix&       D) override = 0;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
@@ -74,32 +74,32 @@ public:
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
                                                   math_Vector&       F,
-                                                  math_Matrix&       D) Standard_OVERRIDE = 0;
+                                                  math_Matrix&       D) override = 0;
 
   //! Sets the value of the parameter along the guide line.
   //! This determines the plane in which the solution has
   //! to be found.
-  Standard_EXPORT virtual void Set(const Standard_Real Param) Standard_OVERRIDE = 0;
+  Standard_EXPORT virtual void Set(const Standard_Real Param) override = 0;
 
   //! Sets the bounds of the parametric interval on
   //! the guide line.
   //! This determines the derivatives in these values if the
   //! function is not Cn.
   Standard_EXPORT virtual void Set(const Standard_Real First,
-                                   const Standard_Real Last) Standard_OVERRIDE = 0;
+                                   const Standard_Real Last) override = 0;
 
   //! Returns in the vector Tolerance the parametric tolerance
   //! for each of the 3 variables;
   //! Tol is the tolerance used in 3d space.
   Standard_EXPORT virtual void GetTolerance(math_Vector&        Tolerance,
-                                            const Standard_Real Tol) const Standard_OVERRIDE = 0;
+                                            const Standard_Real Tol) const override = 0;
 
   //! Returns in the vector InfBound the lowest values allowed
   //! for each of the 3 variables.
   //! Returns in the vector SupBound the greatest values allowed
   //! for each of the 3 variables.
   Standard_EXPORT virtual void GetBounds(math_Vector& InfBound,
-                                         math_Vector& SupBound) const Standard_OVERRIDE = 0;
+                                         math_Vector& SupBound) const override = 0;
 
   //! Returns Standard_True if Sol is a zero of the function.
   //! Tol is the tolerance used in 3d space.
@@ -107,17 +107,17 @@ public:
   //! the parameter on the guide line.
   Standard_EXPORT virtual Standard_Boolean IsSolution(const math_Vector&  Sol,
                                                       const Standard_Real Tol)
-    Standard_OVERRIDE = 0;
+    override = 0;
 
   //! Returns   the    minimal  Distance  between   two
   //! extremities of calculated sections.
-  Standard_EXPORT virtual Standard_Real GetMinimalDistance() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real GetMinimalDistance() const override;
 
   //! Returns the point on the first support.
-  Standard_EXPORT const gp_Pnt& Pnt1() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Pnt& Pnt1() const override;
 
   //! Returns the point on the seconde support.
-  Standard_EXPORT const gp_Pnt& Pnt2() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Pnt& Pnt2() const override;
 
   //! Returns the point on the surface.
   Standard_EXPORT virtual const gp_Pnt& PointOnS() const = 0;
@@ -157,7 +157,7 @@ public:
   Standard_EXPORT virtual void GetShape(Standard_Integer& NbPoles,
                                         Standard_Integer& NbKnots,
                                         Standard_Integer& Degree,
-                                        Standard_Integer& NbPoles2d) Standard_OVERRIDE = 0;
+                                        Standard_Integer& NbPoles2d) override = 0;
 
   //! Returns the tolerance to reach in approximation
   //! to respect
@@ -168,11 +168,11 @@ public:
                                             const Standard_Real SurfTol,
                                             const Standard_Real AngleTol,
                                             math_Vector&        Tol3d,
-                                            math_Vector&        Tol1D) const Standard_OVERRIDE = 0;
+                                            math_Vector&        Tol1D) const override = 0;
 
-  Standard_EXPORT virtual void Knots(TColStd_Array1OfReal& TKnots) Standard_OVERRIDE = 0;
+  Standard_EXPORT virtual void Knots(TColStd_Array1OfReal& TKnots) override = 0;
 
-  Standard_EXPORT virtual void Mults(TColStd_Array1OfInteger& TMults) Standard_OVERRIDE = 0;
+  Standard_EXPORT virtual void Mults(TColStd_Array1OfInteger& TMults) override = 0;
 
   //! Used for the first and last section
   //! The method returns Standard_True if the derivatives
@@ -184,12 +184,12 @@ public:
                                                    TColgp_Array1OfVec2d& DPoles2d,
                                                    TColStd_Array1OfReal& Weigths,
                                                    TColStd_Array1OfReal& DWeigths)
-    Standard_OVERRIDE = 0;
+    override = 0;
 
   Standard_EXPORT virtual void Section(const Blend_Point&    P,
                                        TColgp_Array1OfPnt&   Poles,
                                        TColgp_Array1OfPnt2d& Poles2d,
-                                       TColStd_Array1OfReal& Weigths) Standard_OVERRIDE = 0;
+                                       TColStd_Array1OfReal& Weigths) override = 0;
 
   //! Used for the first and last section
   //! The method returns Standard_True if the derivatives
@@ -204,7 +204,7 @@ public:
                                                    TColStd_Array1OfReal& Weigths,
                                                    TColStd_Array1OfReal& DWeigths,
                                                    TColStd_Array1OfReal& D2Weigths)
-    Standard_OVERRIDE;
+    override;
 
 protected:
 private:

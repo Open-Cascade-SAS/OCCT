@@ -147,7 +147,7 @@ public:
   //! Computes the reverse transformation.
   //! Raised an exception if the matrix of the transformation
   //! is not inversible.
-  Standard_NODISCARD gp_GTrsf2d Inverted() const
+  [[nodiscard]] gp_GTrsf2d Inverted() const
   {
     gp_GTrsf2d aT = *this;
     aT.Invert();
@@ -169,14 +169,14 @@ public:
   //! T1.Transforms(P2);                  //using T1 then T2
   //! T2.Transforms(P2);                  // P1 = P2 !!!
   //! @endcode
-  Standard_NODISCARD gp_GTrsf2d Multiplied(const gp_GTrsf2d& theT) const
+  [[nodiscard]] gp_GTrsf2d Multiplied(const gp_GTrsf2d& theT) const
   {
     gp_GTrsf2d aTres = *this;
     aTres.Multiply(theT);
     return aTres;
   }
 
-  Standard_NODISCARD gp_GTrsf2d operator*(const gp_GTrsf2d& theT) const { return Multiplied(theT); }
+  [[nodiscard]] gp_GTrsf2d operator*(const gp_GTrsf2d& theT) const { return Multiplied(theT); }
 
   Standard_EXPORT void Multiply(const gp_GTrsf2d& theT);
 
@@ -196,7 +196,7 @@ public:
   //!
   //! Raises an exception if theN < 0 and if the matrix of the
   //! transformation is not inversible.
-  Standard_NODISCARD gp_GTrsf2d Powered(const Standard_Integer theN) const
+  [[nodiscard]] gp_GTrsf2d Powered(const Standard_Integer theN) const
   {
     gp_GTrsf2d aT = *this;
     aT.Power(theN);
@@ -205,7 +205,7 @@ public:
 
   void Transforms(gp_XY& theCoord) const;
 
-  Standard_NODISCARD gp_XY Transformed(const gp_XY& theCoord) const
+  [[nodiscard]] gp_XY Transformed(const gp_XY& theCoord) const
   {
     gp_XY aNewCoord = theCoord;
     Transforms(aNewCoord);

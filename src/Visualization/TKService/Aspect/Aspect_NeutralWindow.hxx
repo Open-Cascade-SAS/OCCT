@@ -30,13 +30,13 @@ public:
   Standard_EXPORT Aspect_NeutralWindow();
 
   //! Return native handle of this drawable.
-  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE { return myHandle; }
+  virtual Aspect_Drawable NativeHandle() const override { return myHandle; }
 
   //! Return native handle of the parent drawable.
-  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE { return myParentHandle; }
+  virtual Aspect_Drawable NativeParentHandle() const override { return myParentHandle; }
 
   //! Return FBConfig.
-  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return myFBConfig; }
+  virtual Aspect_FBConfig NativeFBConfig() const override { return myFBConfig; }
 
   //! Set native handle.
   //! @return true if definition has been changed
@@ -52,22 +52,22 @@ public:
                                                     Aspect_FBConfig theFbConfig);
 
   //! Return true if window is not hidden.
-  virtual Standard_Boolean IsMapped() const Standard_OVERRIDE { return myIsMapped; }
+  virtual Standard_Boolean IsMapped() const override { return myIsMapped; }
 
   //! Change window mapped flag to TRUE.
-  virtual void Map() const Standard_OVERRIDE { myIsMapped = Standard_True; }
+  virtual void Map() const override { myIsMapped = Standard_True; }
 
   //! Change window mapped flag to FALSE.
-  virtual void Unmap() const Standard_OVERRIDE { myIsMapped = Standard_False; }
+  virtual void Unmap() const override { myIsMapped = Standard_False; }
 
   //! Resize window - do nothing.
-  virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE { return Aspect_TOR_UNKNOWN; }
+  virtual Aspect_TypeOfResize DoResize() override { return Aspect_TOR_UNKNOWN; }
 
   //! Map window - do nothing.
-  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE { return Standard_True; }
+  virtual Standard_Boolean DoMapping() const override { return Standard_True; }
 
   //! Returns window ratio equal to the physical width/height dimensions.
-  virtual Standard_Real Ratio() const Standard_OVERRIDE
+  virtual Standard_Real Ratio() const override
   {
     return (myWidth != 0 && myHeight != 0) ? Standard_Real(myWidth) / Standard_Real(myHeight) : 1.0;
   }
@@ -76,7 +76,7 @@ public:
   virtual void Position(Standard_Integer& theX1,
                         Standard_Integer& theY1,
                         Standard_Integer& theX2,
-                        Standard_Integer& theY2) const Standard_OVERRIDE
+                        Standard_Integer& theY2) const override
   {
     theX1 = myPosX;
     theX2 = myPosX + myWidth;
@@ -96,7 +96,7 @@ public:
                                                Standard_Integer theY2);
 
   //! Return the window size.
-  virtual void Size(Standard_Integer& theWidth, Standard_Integer& theHeight) const Standard_OVERRIDE
+  virtual void Size(Standard_Integer& theWidth, Standard_Integer& theHeight) const override
   {
     theWidth  = myWidth;
     theHeight = myHeight;

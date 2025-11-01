@@ -63,14 +63,14 @@ public:
 
   //! Clears/erases opened TCL windows if any
   //! and sets myBreak to False
-  Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Reset() override;
 
   //! Defines method Show of Progress Indicator
   Standard_EXPORT virtual void Show(const Message_ProgressScope& theScope,
-                                    const Standard_Boolean force = Standard_True) Standard_OVERRIDE;
+                                    const Standard_Boolean force = Standard_True) override;
 
   //! Redefines method UserBreak of Progress Indicator
-  Standard_EXPORT virtual Standard_Boolean UserBreak() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean UserBreak() override;
 
   //! Get/Set default value for tcl mode
   Standard_EXPORT static Standard_Boolean& DefaultTclMode();

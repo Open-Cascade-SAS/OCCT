@@ -36,11 +36,11 @@ class StepData_SelectReal : public StepData_SelectMember
 public:
   Standard_EXPORT StepData_SelectReal();
 
-  Standard_EXPORT virtual Standard_Integer Kind() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Kind() const override;
 
-  Standard_EXPORT virtual Standard_Real Real() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Real() const override;
 
-  Standard_EXPORT virtual void SetReal(const Standard_Real val) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetReal(const Standard_Real val) override;
 
   DEFINE_STANDARD_RTTIEXT(StepData_SelectReal, StepData_SelectMember)
 

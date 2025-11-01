@@ -74,7 +74,7 @@ public:
   Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
     const Handle(Standard_Transient)&        start,
     const Handle(Transfer_TransientProcess)& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_ActorDispatch, Transfer_ActorOfTransientProcess)
 

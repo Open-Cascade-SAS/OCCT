@@ -152,15 +152,15 @@ public:
   //! Computes the inverse of this transformation and creates a new one.
   //! Raises ConstructionError if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from package gp.
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Transformation) Inverted() const;
+  [[nodiscard]] Standard_EXPORT Handle(Geom2d_Transformation) Inverted() const;
 
   //! Computes the transformation composed with Other and <me>.
   //! <me> * Other.
   //! Returns a new transformation
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Transformation) Multiplied(
+  [[nodiscard]] Standard_EXPORT Handle(Geom2d_Transformation) Multiplied(
     const Handle(Geom2d_Transformation)& Other) const;
 
-  Standard_NODISCARD Handle(Geom2d_Transformation) operator*(
+  [[nodiscard]] Handle(Geom2d_Transformation) operator*(
     const Handle(Geom2d_Transformation)& Other) const
   {
     return Multiplied(Other);

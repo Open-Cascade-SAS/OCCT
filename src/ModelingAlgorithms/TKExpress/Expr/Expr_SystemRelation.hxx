@@ -43,44 +43,44 @@ public:
   Standard_EXPORT void Remove(const Handle(Expr_GeneralRelation)& relation);
 
   //! Tests if <me> is linear between its NamedUnknowns.
-  Standard_EXPORT Standard_Boolean IsLinear() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsLinear() const override;
 
   //! Returns the number of relations contained in <me>.
-  Standard_EXPORT Standard_Integer NbOfSubRelations() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbOfSubRelations() const override;
 
   //! Returns the number of SingleRelations contained in
   //! <me>.
-  Standard_EXPORT Standard_Integer NbOfSingleRelations() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbOfSingleRelations() const override;
 
   //! Returns the relation denoted by <index> in <me>.
   //! An exception is raised if <index> is out of range.
   Standard_EXPORT Handle(Expr_GeneralRelation) SubRelation(const Standard_Integer index) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT Standard_Boolean IsSatisfied() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsSatisfied() const override;
 
   //! Returns a GeneralRelation after replacement of
   //! NamedUnknowns by an associated expression, and after
   //! values computation.
-  Standard_EXPORT Handle(Expr_GeneralRelation) Simplified() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Expr_GeneralRelation) Simplified() const override;
 
   //! Replaces NamedUnknowns by associated expressions,
   //! and computes values in <me>.
-  Standard_EXPORT void Simplify() Standard_OVERRIDE;
+  Standard_EXPORT void Simplify() override;
 
   //! Returns a copy of <me> having the same unknowns and functions.
-  Standard_EXPORT Handle(Expr_GeneralRelation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Expr_GeneralRelation) Copy() const override;
 
   //! Tests if <me> contains <exp>.
   Standard_EXPORT Standard_Boolean
-    Contains(const Handle(Expr_GeneralExpression)& exp) const Standard_OVERRIDE;
+    Contains(const Handle(Expr_GeneralExpression)& exp) const override;
 
   //! Replaces all occurrences of <var> with <with> in <me>.
   Standard_EXPORT void Replace(const Handle(Expr_NamedUnknown)&      var,
-                               const Handle(Expr_GeneralExpression)& with) Standard_OVERRIDE;
+                               const Handle(Expr_GeneralExpression)& with) override;
 
   //! returns a string representing <me> in a readable way.
-  Standard_EXPORT TCollection_AsciiString String() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString String() const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_SystemRelation, Expr_GeneralRelation)
 

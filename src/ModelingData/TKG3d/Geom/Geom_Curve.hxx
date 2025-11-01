@@ -109,7 +109,7 @@ public:
   Standard_EXPORT virtual Standard_Real ParametricTransformation(const gp_Trsf& T) const;
 
   //! Returns a copy of <me> reversed.
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Curve) Reversed() const;
+  [[nodiscard]] Standard_EXPORT Handle(Geom_Curve) Reversed() const;
 
   //! Returns the value of the first parameter.
   //! Warnings :
@@ -222,7 +222,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Curve, Geom_Geometry)
 

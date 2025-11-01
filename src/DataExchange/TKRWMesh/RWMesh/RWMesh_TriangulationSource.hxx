@@ -46,7 +46,7 @@ public:
   Standard_Integer& ChangeDegeneratedTriNb() { return myStatisticOfDegeneratedTriNb; }
 
   //! Returns TRUE if triangulation has some geometry.
-  virtual Standard_Boolean HasGeometry() const Standard_OVERRIDE
+  virtual Standard_Boolean HasGeometry() const override
   {
     return !myNodes.IsEmpty() && (!myTriangles.IsEmpty() || !myEdges.IsEmpty());
   }
@@ -72,7 +72,7 @@ public: //! @name late-load deferred data interface
   //! Note: this is estimated values defined in object header, which might be different from
   //! actually loaded values (due to broken header or extra mesh processing). Always check
   //! triangulation size of actually loaded data in code to avoid out-of-range issues.
-  virtual Standard_Integer NbDeferredNodes() const Standard_OVERRIDE { return myNbDefNodes; }
+  virtual Standard_Integer NbDeferredNodes() const override { return myNbDefNodes; }
 
   //! Sets number of nodes for deferred loading.
   void SetNbDeferredNodes(const Standard_Integer theNbNodes) { myNbDefNodes = theNbNodes; }
@@ -81,7 +81,7 @@ public: //! @name late-load deferred data interface
   //! Note: this is estimated values defined in object header, which might be different from
   //! actually loaded values (due to broken header or extra mesh processing). Always check
   //! triangulation size of actually loaded data in code to avoid out-of-range issues.
-  virtual Standard_Integer NbDeferredTriangles() const Standard_OVERRIDE
+  virtual Standard_Integer NbDeferredTriangles() const override
   {
     return myNbDefTriangles;
   }
@@ -102,7 +102,7 @@ protected:
   //! Loads triangulation data from deferred storage using specified shared input file system.
   Standard_EXPORT virtual Standard_Boolean loadDeferredData(
     const Handle(OSD_FileSystem)&     theFileSystem,
-    const Handle(Poly_Triangulation)& theDestTriangulation) const Standard_OVERRIDE;
+    const Handle(Poly_Triangulation)& theDestTriangulation) const override;
 
 protected:
   Handle(RWMesh_TriangulationReader)   myReader;

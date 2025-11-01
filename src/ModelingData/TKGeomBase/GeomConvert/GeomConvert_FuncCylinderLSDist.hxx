@@ -70,18 +70,18 @@ public:
   void SetDir(const gp_Dir& theDir) { myDir = theDir; }
 
   //! Number of variables.
-  Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer NbVariables() const override;
 
   //! Value.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F) override;
 
   //! Gradient.
-  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) override;
 
   //! Value and gradient.
   Standard_EXPORT Standard_Boolean Values(const math_Vector& X,
                                           Standard_Real&     F,
-                                          math_Vector&       G) Standard_OVERRIDE;
+                                          math_Vector&       G) override;
 
 private:
   Handle(TColgp_HArray1OfXYZ) myPoints;

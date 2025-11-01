@@ -40,11 +40,11 @@ public:
 
   //! Splits a list of beziers computed by Compute method according
   //! the split values and splitting parameters.
-  Standard_EXPORT virtual void Build(const Standard_Boolean Segment) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Standard_Boolean Segment) override;
 
   //! Converts surface into a grid of bezier based surfaces, and
   //! stores this grid.
-  Standard_EXPORT virtual void Compute(const Standard_Boolean Segment) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const Standard_Boolean Segment) override;
 
   //! Returns the grid of bezier based surfaces correspondent to
   //! original surface.

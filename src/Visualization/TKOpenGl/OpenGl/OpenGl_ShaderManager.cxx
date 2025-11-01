@@ -523,7 +523,7 @@ void OpenGl_ShaderManager::pushLightSourceState(
           aLightParams.Direction = Graphic3d_Vec4(aLight.PackedDirection(), 0.0f);
         }
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case Graphic3d_TypeOfLightSource_Positional: {
         if (aLight.IsHeadlight())
         {

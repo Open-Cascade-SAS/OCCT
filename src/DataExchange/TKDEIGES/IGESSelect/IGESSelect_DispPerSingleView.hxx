@@ -44,20 +44,20 @@ public:
   Standard_EXPORT IGESSelect_DispPerSingleView();
 
   //! Returns as Label, "One File per single View or Drawing Frame"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   //! Computes the list of produced Packets. Packets are computed
   //! by a ViewSorter (SortSingleViews with also frames).
   Standard_EXPORT void Packets(const Interface_Graph&    G,
-                               IFGraph_SubPartsIterator& packs) const Standard_OVERRIDE;
+                               IFGraph_SubPartsIterator& packs) const override;
 
   //! Returns True, because of entities attached to no view.
-  Standard_EXPORT virtual Standard_Boolean CanHaveRemainder() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean CanHaveRemainder() const override;
 
   //! Returns Remainder which is a set of Entities.
   //! It is supposed to be called once Packets has been called.
   Standard_EXPORT virtual Interface_EntityIterator Remainder(const Interface_Graph& G) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_DispPerSingleView, IFSelect_Dispatch)
 

@@ -114,7 +114,7 @@ public:
   Standard_EXPORT Standard_Boolean GetCapping(const TDF_Label&  theClippingPlaneL,
                                               Standard_Boolean& theCapping) const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_ClippingPlaneTool, TDataStd_GenericEmpty)
 };

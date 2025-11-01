@@ -38,14 +38,14 @@ public:
   //! Recognizes a MarkerSelect Kind Entity that is :
   //! 0 else
   Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+    CaseNum(const Handle(Standard_Transient)& ent) const override;
 
   //! Returns a new MarkerMember
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const override;
 
   //! Returns 1 for a SelectMember enum, named MARKER_TYPE
   Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& sm) const
-    Standard_OVERRIDE;
+    override;
 
   //! Gives access to the MarkerMember in order to get/set its value
   Standard_EXPORT Handle(StepVisual_MarkerMember) MarkerMember() const;

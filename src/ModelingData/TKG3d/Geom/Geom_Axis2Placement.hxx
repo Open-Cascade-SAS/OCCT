@@ -79,7 +79,7 @@ public:
   //! Raised if V and the previous "XDirection" are parallel
   //! because it is impossible to calculate the new "XDirection"
   //! and the new "YDirection".
-  Standard_EXPORT void SetDirection(const gp_Dir& V) Standard_OVERRIDE;
+  Standard_EXPORT void SetDirection(const gp_Dir& V) override;
 
   //! Changes the "XDirection" of the axis placement, Vx is the
   //! new "XDirection". If Vx is not normal to the main direction
@@ -112,10 +112,10 @@ public:
   //! "YDirection" are transformed with T.  The resulting
   //! main "Direction" of <me> is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Creates a new object which is a copy of this coordinate system.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Axis2Placement, Geom_AxisPlacement)
 

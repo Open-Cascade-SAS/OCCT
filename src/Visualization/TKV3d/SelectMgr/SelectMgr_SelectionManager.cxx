@@ -144,7 +144,7 @@ void SelectMgr_SelectionManager::Activate(const Handle(SelectMgr_SelectableObjec
       theObject->RecomputePrimitives(theMode);
       // pass through SelectMgr_TOU_Partial
     }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case SelectMgr_TOU_Partial: {
       theObject->UpdateTransformations(aSelection);
       mySelector->RebuildObjectsTree();
@@ -464,7 +464,7 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
           RestoreSelectionStructures(theObject, aSelection->Mode());
           // pass through SelectMgr_TOU_Partial
         }
-          Standard_FALLTHROUGH
+          [[fallthrough]];
         case SelectMgr_TOU_Partial: {
           theObject->UpdateTransformations(aSelection);
           mySelector->RebuildObjectsTree();

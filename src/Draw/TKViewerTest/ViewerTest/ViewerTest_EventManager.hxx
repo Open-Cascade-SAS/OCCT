@@ -77,40 +77,40 @@ public:
 
   //! Update mouse scroll event.
   Standard_EXPORT virtual bool UpdateMouseScroll(const Aspect_ScrollDelta& theDelta)
-    Standard_OVERRIDE;
+    override;
 
   //! Handle mouse button click event.
   Standard_EXPORT virtual bool UpdateMouseClick(const Graphic3d_Vec2i& thePoint,
                                                 Aspect_VKeyMouse       theButton,
                                                 Aspect_VKeyFlags       theModifiers,
-                                                bool theIsDoubleClick) Standard_OVERRIDE;
+                                                bool theIsDoubleClick) override;
 
   //! Handle mouse button press/release event.
   Standard_EXPORT virtual bool UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
                                                   Aspect_VKeyMouse       theButtons,
                                                   Aspect_VKeyFlags       theModifiers,
-                                                  bool theIsEmulated) Standard_OVERRIDE;
+                                                  bool theIsEmulated) override;
 
   //! Release key.
   Standard_EXPORT virtual void KeyDown(Aspect_VKey theKey,
                                        double      theTime,
-                                       double      thePressure = 1.0) Standard_OVERRIDE;
+                                       double      thePressure = 1.0) override;
 
   //! Release key.
-  Standard_EXPORT virtual void KeyUp(Aspect_VKey theKey, double theTime) Standard_OVERRIDE;
+  Standard_EXPORT virtual void KeyUp(Aspect_VKey theKey, double theTime) override;
 
   //! Redraw the View on an Expose Event
-  Standard_EXPORT virtual void ProcessExpose() Standard_OVERRIDE;
+  Standard_EXPORT virtual void ProcessExpose() override;
 
   //! Handle redraw.
   Standard_EXPORT virtual void handleViewRedraw(const Handle(AIS_InteractiveContext)& theCtx,
-                                                const Handle(V3d_View)& theView) Standard_OVERRIDE;
+                                                const Handle(V3d_View)& theView) override;
 
   //! Resize View.
-  Standard_EXPORT virtual void ProcessConfigure(bool theIsResized = true) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ProcessConfigure(bool theIsResized = true) override;
 
   //! Handle window input event immediately (flush input buffer).
-  Standard_EXPORT virtual void ProcessInput() Standard_OVERRIDE;
+  Standard_EXPORT virtual void ProcessInput() override;
 
   //! Handle KeyPress event.
   Standard_EXPORT void ProcessKeyPress(Aspect_VKey theKey);
@@ -120,7 +120,7 @@ public:
   Standard_EXPORT virtual void OnSubviewChanged(const Handle(AIS_InteractiveContext)& theCtx,
                                                 const Handle(V3d_View)&               theOldView,
                                                 const Handle(V3d_View)&               theNewView)
-    Standard_OVERRIDE;
+    override;
 
 protected:
   //! Register hot-keys for specified Action.

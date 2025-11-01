@@ -39,12 +39,12 @@ public:
   void SetOptions(const Standard_Boolean theIsEnabled) { myIsEnabled = theIsEnabled; }
 
   Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
-    Standard_OVERRIDE;
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
+    override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        Standard_Integer  theDepth = -1) const override;
 
 public:
   DEFINE_STANDARD_ALLOC

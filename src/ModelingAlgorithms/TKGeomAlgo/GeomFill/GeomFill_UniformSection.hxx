@@ -49,7 +49,7 @@ public:
   //! compute the section for v = param
   Standard_EXPORT virtual Standard_Boolean D0(const Standard_Real   Param,
                                               TColgp_Array1OfPnt&   Poles,
-                                              TColStd_Array1OfReal& Weigths) Standard_OVERRIDE;
+                                              TColStd_Array1OfReal& Weigths) override;
 
   //! compute the first  derivative in v direction  of the
   //! section for v =  param
@@ -58,7 +58,7 @@ public:
                                               TColgp_Array1OfPnt&   Poles,
                                               TColgp_Array1OfVec&   DPoles,
                                               TColStd_Array1OfReal& Weigths,
-                                              TColStd_Array1OfReal& DWeigths) Standard_OVERRIDE;
+                                              TColStd_Array1OfReal& DWeigths) override;
 
   //! compute the second derivative  in v direction of the
   //! section  for v = param
@@ -69,38 +69,38 @@ public:
                                               TColgp_Array1OfVec&   D2Poles,
                                               TColStd_Array1OfReal& Weigths,
                                               TColStd_Array1OfReal& DWeigths,
-                                              TColStd_Array1OfReal& D2Weigths) Standard_OVERRIDE;
+                                              TColStd_Array1OfReal& D2Weigths) override;
 
   //! give if possible an bspline Surface, like iso-v are the
   //! section.  If it is  not possible  this methode have  to
   //! get an Null Surface.  Is it the default implementation.
-  Standard_EXPORT virtual Handle(Geom_BSplineSurface) BSplineSurface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Geom_BSplineSurface) BSplineSurface() const override;
 
   //! get the format of an  section
   Standard_EXPORT virtual void SectionShape(Standard_Integer& NbPoles,
                                             Standard_Integer& NbKnots,
-                                            Standard_Integer& Degree) const Standard_OVERRIDE;
+                                            Standard_Integer& Degree) const override;
 
   //! get the Knots of the section
-  Standard_EXPORT virtual void Knots(TColStd_Array1OfReal& TKnots) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Knots(TColStd_Array1OfReal& TKnots) const override;
 
   //! get the Multplicities of the section
-  Standard_EXPORT virtual void Mults(TColStd_Array1OfInteger& TMults) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Mults(TColStd_Array1OfInteger& TMults) const override;
 
   //! Returns if the sections are rational or not
-  Standard_EXPORT virtual Standard_Boolean IsRational() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsRational() const override;
 
   //! Returns if the sections are periodic or not
-  Standard_EXPORT virtual Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsUPeriodic() const override;
 
   //! Returns if the law  isperiodic or not
-  Standard_EXPORT virtual Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsVPeriodic() const override;
 
   //! Returns  the number  of  intervals for  continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
-    Standard_OVERRIDE;
+    override;
 
   //! Stores in <T> the  parameters bounding the intervals
   //! of continuity <S>.
@@ -108,25 +108,25 @@ public:
   //! The array must provide  enough room to  accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
-                                         const GeomAbs_Shape   S) const Standard_OVERRIDE;
+                                         const GeomAbs_Shape   S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the function
   //! This determines the derivatives in these values if the
   //! function is not Cn.
   Standard_EXPORT virtual void SetInterval(const Standard_Real First,
-                                           const Standard_Real Last) Standard_OVERRIDE;
+                                           const Standard_Real Last) override;
 
   //! Gets the bounds of the parametric interval on
   //! the function
   Standard_EXPORT virtual void GetInterval(Standard_Real& First,
-                                           Standard_Real& Last) const Standard_OVERRIDE;
+                                           Standard_Real& Last) const override;
 
   //! Gets the bounds of the function parametric domain.
   //! Warning: This domain it is  not modified by the
   //! SetValue method
   Standard_EXPORT virtual void GetDomain(Standard_Real& First,
-                                         Standard_Real& Last) const Standard_OVERRIDE;
+                                         Standard_Real& Last) const override;
 
   //! Returns the tolerances associated at each poles to
   //! reach  in approximation, to satisfy: BoundTol error
@@ -136,19 +136,19 @@ public:
   Standard_EXPORT virtual void GetTolerance(const Standard_Real   BoundTol,
                                             const Standard_Real   SurfTol,
                                             const Standard_Real   AngleTol,
-                                            TColStd_Array1OfReal& Tol3d) const Standard_OVERRIDE;
+                                            TColStd_Array1OfReal& Tol3d) const override;
 
   //! Get the barycentre of Surface.
   //! An   very  poor estimation is sufficient.
   //! This information is useful to perform well
   //! conditioned rational approximation.
   //! Warning: Used only if <me> IsRational
-  Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const override;
 
   //! Returns the   length of the greater section. This
   //! information is useful to G1's control.
   //! Warning: With an little value, approximation can be slower.
-  Standard_EXPORT virtual Standard_Real MaximalSection() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real MaximalSection() const override;
 
   //! Compute the minimal value of weight for each poles
   //! in all  sections.
@@ -156,13 +156,13 @@ public:
   //! in rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const
-    Standard_OVERRIDE;
+    override;
 
   //! return True
-  Standard_EXPORT virtual Standard_Boolean IsConstant(Standard_Real& Error) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsConstant(Standard_Real& Error) const override;
 
   //! Return the constant Section if <me>  IsConstant.
-  Standard_EXPORT virtual Handle(Geom_Curve) ConstantSection() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Geom_Curve) ConstantSection() const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_UniformSection, GeomFill_SectionLaw)
 
