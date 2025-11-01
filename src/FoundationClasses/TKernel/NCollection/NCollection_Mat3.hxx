@@ -71,7 +71,9 @@ public:
   //! @param[in] theRow    the row to change.
   //! @param[in] theCol    the column to change.
   //! @param[in] theValue  the value to set.s
-  constexpr void SetValue(const size_t theRow, const size_t theCol, const Element_t theValue) noexcept
+  constexpr void SetValue(const size_t    theRow,
+                          const size_t    theCol,
+                          const Element_t theValue) noexcept
   {
     myMat[theCol * 3 + theRow] = theValue;
   }
@@ -528,7 +530,7 @@ private:
   Element_t myMat[9];
 
 private:
-  static constexpr Element_t MyZeroArray[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+  static constexpr Element_t MyZeroArray[9]     = {0, 0, 0, 0, 0, 0, 0, 0, 0};
   static constexpr Element_t MyIdentityArray[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
   // All instantiations are friend to each other

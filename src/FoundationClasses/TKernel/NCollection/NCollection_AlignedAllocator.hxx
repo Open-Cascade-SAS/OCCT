@@ -38,7 +38,7 @@ public:
   Standard_EXPORT virtual void Free(void* thePtr) Standard_OVERRIDE;
 
 private:
-  NCollection_AlignedAllocator(const NCollection_AlignedAllocator&) = delete;
+  NCollection_AlignedAllocator(const NCollection_AlignedAllocator&)            = delete;
   NCollection_AlignedAllocator& operator=(const NCollection_AlignedAllocator&) = delete;
 
 protected:

@@ -91,7 +91,8 @@ public:
     const TheKeyType& Key(void) const noexcept { return myKey; }
 
     //! Static deleter to be passed to BaseMap
-    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl) noexcept
+    static void delNode(NCollection_ListNode*              theNode,
+                        Handle(NCollection_BaseAllocator)& theAl) noexcept
     {
       ((DataMapNode*)theNode)->~DataMapNode();
       theAl->Free(theNode);
@@ -577,7 +578,9 @@ protected:
   //! @param[out] theNode the detected node with equal key. Can be null.
   //! @param[out] theHash computed bounded hash code for current key.
   //! @return true if key is found
-  Standard_Boolean lookup(const TheKeyType& theKey, DataMapNode*& theNode, size_t& theHash) const noexcept
+  Standard_Boolean lookup(const TheKeyType& theKey,
+                          DataMapNode*&     theNode,
+                          size_t&           theHash) const noexcept
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())

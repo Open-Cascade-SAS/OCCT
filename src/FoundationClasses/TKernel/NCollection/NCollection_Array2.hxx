@@ -191,13 +191,19 @@ public:
   Standard_Integer LowerRow() const noexcept { return myLowerRow; }
 
   //! UpperRow
-  Standard_Integer UpperRow() const noexcept { return myLowerRow + static_cast<int>(mySizeRow) - 1; }
+  Standard_Integer UpperRow() const noexcept
+  {
+    return myLowerRow + static_cast<int>(mySizeRow) - 1;
+  }
 
   //! LowerCol
   Standard_Integer LowerCol() const noexcept { return myLowerCol; }
 
   //! UpperCol
-  Standard_Integer UpperCol() const noexcept { return myLowerCol + static_cast<int>(mySizeCol) - 1; }
+  Standard_Integer UpperCol() const noexcept
+  {
+    return myLowerCol + static_cast<int>(mySizeCol) - 1;
+  }
 
   //! Updates lower row
   void UpdateLowerRow(const Standard_Integer theLowerRow) noexcept { myLowerRow = theLowerRow; }

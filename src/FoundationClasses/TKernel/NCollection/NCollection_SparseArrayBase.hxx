@@ -85,7 +85,8 @@ private:
     }
 
     //! Compute required size for block data, in bytes
-    static constexpr Standard_Size Size(const Standard_Size theNbItems, const Standard_Size theItemSize) noexcept
+    static constexpr Standard_Size Size(const Standard_Size theNbItems,
+                                        const Standard_Size theItemSize) noexcept
     {
       return sizeof(Standard_Size)
              + sizeof(Cell) * ((theNbItems + BitsPerCell() - 1) / BitsPerCell())
@@ -94,8 +95,8 @@ private:
 
     //! Returns address of array from address of block
     static constexpr char* ToArray(const Standard_Address theAddress,
-                         const Standard_Size /*theNbItems*/,
-                         const Standard_Size /*theItemSize*/) noexcept
+                                   const Standard_Size /*theNbItems*/,
+                                   const Standard_Size /*theItemSize*/) noexcept
     {
       return (char*)theAddress + sizeof(Standard_Size);
     }

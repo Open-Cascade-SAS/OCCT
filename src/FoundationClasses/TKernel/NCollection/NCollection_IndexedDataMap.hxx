@@ -111,7 +111,8 @@ private:
     Standard_Integer& Index() noexcept { return myIndex; }
 
     //! Static deleter to be passed to BaseList
-    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl) noexcept
+    static void delNode(NCollection_ListNode*              theNode,
+                        Handle(NCollection_BaseAllocator)& theAl) noexcept
     {
       ((IndexedDataMapNode*)theNode)->~IndexedDataMapNode();
       theAl->Free(theNode);
@@ -142,7 +143,10 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const noexcept { return (myMap != NULL) && (myIndex <= myMap->Extent()); }
+    Standard_Boolean More(void) const noexcept
+    {
+      return (myMap != NULL) && (myIndex <= myMap->Extent());
+    }
 
     //! Make a step along the collection
     void Next(void) noexcept { ++myIndex; }

@@ -69,7 +69,8 @@ public:
     DoubleMapNode*& Next2(void) noexcept { return myNext2; }
 
     //! Static deleter to be passed to BaseList
-    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl) noexcept
+    static void delNode(NCollection_ListNode*              theNode,
+                        Handle(NCollection_BaseAllocator)& theAl) noexcept
     {
       ((DoubleMapNode*)theNode)->~DoubleMapNode();
       theAl->Free(theNode);

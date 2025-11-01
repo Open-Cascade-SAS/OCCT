@@ -86,7 +86,10 @@ public:
   T* get() noexcept { return ((Ptr*)opencascade::handle<Standard_Transient>::get())->myPtr; }
 
   //! Cast handle to contained type
-  const T* get() const noexcept { return ((Ptr*)opencascade::handle<Standard_Transient>::get())->myPtr; }
+  const T* get() const noexcept
+  {
+    return ((Ptr*)opencascade::handle<Standard_Transient>::get())->myPtr;
+  }
 
   //! Cast handle to contained type
   T* operator->() noexcept { return get(); }
@@ -102,7 +105,8 @@ public:
 
   //! Downcast arbitrary Handle to the argument type if contained
   //! object is Handle for this type; returns null otherwise
-  static NCollection_Handle<T> DownCast(const opencascade::handle<Standard_Transient>& theOther) noexcept
+  static NCollection_Handle<T> DownCast(
+    const opencascade::handle<Standard_Transient>& theOther) noexcept
   {
     return NCollection_Handle<T>(dynamic_cast<Ptr*>(theOther.get()), 0);
   }

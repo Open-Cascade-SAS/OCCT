@@ -205,7 +205,10 @@ private:
 
   Standard_Integer advanceBytes(const Standard_Utf16Char*) const { return AdvanceBytesUtf16(); }
 
-  constexpr Standard_Integer advanceBytes(const Standard_Utf32Char*) const noexcept { return AdvanceBytesUtf32(); }
+  constexpr Standard_Integer advanceBytes(const Standard_Utf32Char*) const noexcept
+  {
+    return AdvanceBytesUtf32();
+  }
 
   //! Helper overload methods to dispatch getter function depending on code unit size
   Standard_Utf8Char* getUtf(Standard_Utf8Char* theBuffer) const { return GetUtf8(theBuffer); }
@@ -236,17 +239,17 @@ private: //! @name unicode magic numbers
     {0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
 
   // Magic numbers for UTF encoding/decoding
-  static constexpr Standard_Utf32Char UTF8_BYTE_MASK = 0xBF;
-  static constexpr Standard_Utf32Char UTF8_BYTE_MARK = 0x80;
+  static constexpr Standard_Utf32Char UTF8_BYTE_MASK             = 0xBF;
+  static constexpr Standard_Utf32Char UTF8_BYTE_MARK             = 0x80;
   static constexpr Standard_Utf32Char UTF16_SURROGATE_HIGH_START = 0xD800;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_HIGH_END = 0xDBFF;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_START = 0xDC00;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_END = 0xDFFF;
+  static constexpr Standard_Utf32Char UTF16_SURROGATE_HIGH_END   = 0xDBFF;
+  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_START  = 0xDC00;
+  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_END    = 0xDFFF;
   static constexpr Standard_Utf32Char UTF16_SURROGATE_HIGH_SHIFT = 10;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_BASE = 0x0010000UL;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_MASK = 0x3FFUL;
-  static constexpr Standard_Utf32Char UTF32_MAX_BMP = 0x0000FFFFUL;
-  static constexpr Standard_Utf32Char UTF32_MAX_LEGAL = 0x0010FFFFUL;
+  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_BASE   = 0x0010000UL;
+  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_MASK   = 0x3FFUL;
+  static constexpr Standard_Utf32Char UTF32_MAX_BMP              = 0x0000FFFFUL;
+  static constexpr Standard_Utf32Char UTF32_MAX_LEGAL            = 0x0010FFFFUL;
 
 private:                          //! @name private fields
   const Type*        myPosition;  //!< buffer position of the first element in the current symbol

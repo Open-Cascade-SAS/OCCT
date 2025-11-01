@@ -148,7 +148,9 @@ protected:
     Block*           prevBlock;
     Standard_Integer allocCount;
 
-    Block(const Standard_Address theAddress, const Standard_Size theSize, Block* thePrevBlock = 0L) noexcept
+    Block(const Standard_Address theAddress,
+          const Standard_Size    theSize,
+          Block*                 thePrevBlock = 0L) noexcept
         : address(theAddress),
           prevBlock(thePrevBlock),
           allocCount(0)
@@ -161,7 +163,10 @@ protected:
       allocStart = (Standard_Byte*)address + theSize;
     }
 
-    Standard_Size FreeSize() const noexcept { return (Standard_Byte*)allocStart - (Standard_Byte*)address; }
+    Standard_Size FreeSize() const noexcept
+    {
+      return (Standard_Byte*)allocStart - (Standard_Byte*)address;
+    }
 
     AlignedPtr Allocate(const AlignedSize theSize) noexcept
     {
@@ -191,7 +196,7 @@ protected:
 
   // --------- PROHIBITED METHODS ---------
 private:
-  NCollection_AccAllocator(const NCollection_AccAllocator&) = delete;
+  NCollection_AccAllocator(const NCollection_AccAllocator&)            = delete;
   NCollection_AccAllocator& operator=(const NCollection_AccAllocator&) = delete;
 
   // --------- PROTECTED DATA ---------

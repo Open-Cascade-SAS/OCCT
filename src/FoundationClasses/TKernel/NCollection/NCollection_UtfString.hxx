@@ -225,7 +225,10 @@ public: //! @name assign operators
   }
 
 public: //! @name compare operators
-  bool operator==(const NCollection_UtfString& theCompare) const noexcept { return IsEqual(theCompare); }
+  bool operator==(const NCollection_UtfString& theCompare) const noexcept
+  {
+    return IsEqual(theCompare);
+  }
 
   bool operator!=(const NCollection_UtfString& theCompare) const noexcept;
 

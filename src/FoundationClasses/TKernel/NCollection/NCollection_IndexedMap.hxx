@@ -73,7 +73,8 @@ protected:
     Standard_Integer& Index() noexcept { return myIndex; }
 
     //! Static deleter to be passed to BaseList
-    static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl) noexcept
+    static void delNode(NCollection_ListNode*              theNode,
+                        Handle(NCollection_BaseAllocator)& theAl) noexcept
     {
       ((IndexedMapNode*)theNode)->~IndexedMapNode();
       theAl->Free(theNode);
@@ -103,7 +104,10 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const noexcept { return (myMap != NULL) && (myIndex <= myMap->Extent()); }
+    Standard_Boolean More(void) const noexcept
+    {
+      return (myMap != NULL) && (myIndex <= myMap->Extent());
+    }
 
     //! Make a step along the collection
     void Next(void) noexcept { myIndex++; }
@@ -456,7 +460,9 @@ protected:
   //! @param[out] theNode the detected node with equal key. Can be null.
   //! @param[out] theHash computed bounded hash code for current key.
   //! @return true if key is found
-  Standard_Boolean lookup(const TheKeyType& theKey, IndexedMapNode*& theNode, size_t& theHash) const noexcept
+  Standard_Boolean lookup(const TheKeyType& theKey,
+                          IndexedMapNode*&  theNode,
+                          size_t&           theHash) const noexcept
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())

@@ -84,7 +84,9 @@ public:
   //! @param[in] theRow    the row to change.
   //! @param[in] theCol    the column to change.
   //! @param[in] theValue  the value to set.
-  constexpr void SetValue(const size_t theRow, const size_t theCol, const Element_t theValue) noexcept
+  constexpr void SetValue(const size_t    theRow,
+                          const size_t    theCol,
+                          const Element_t theValue) noexcept
   {
     myMat[theCol * 4 + theRow] = theValue;
   }
@@ -214,7 +216,10 @@ public:
   }
 
   //! Checks the matrix for zero (without tolerance).
-  bool IsZero() const noexcept { return std::memcmp(this, MyZeroArray, sizeof(NCollection_Mat4)) == 0; }
+  bool IsZero() const noexcept
+  {
+    return std::memcmp(this, MyZeroArray, sizeof(NCollection_Mat4)) == 0;
+  }
 
   //! Initialize the identity matrix.
   constexpr void InitIdentity() noexcept
@@ -675,7 +680,7 @@ private:
   Element_t myMat[16];
 
 private:
-  static constexpr Element_t MyZeroArray[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  static constexpr Element_t MyZeroArray[16]     = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   static constexpr Element_t MyIdentityArray[16] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
 
   // All instantiations are friend to each other

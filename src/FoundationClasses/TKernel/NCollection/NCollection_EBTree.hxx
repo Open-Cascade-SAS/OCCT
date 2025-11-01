@@ -94,7 +94,10 @@ public:
    * @return
    *   True if the tree contains the object.
    */
-  Standard_Boolean Contains(const TheObjType& theObj) const noexcept { return myObjNodeMap.IsBound(theObj); }
+  Standard_Boolean Contains(const TheObjType& theObj) const noexcept
+  {
+    return myObjNodeMap.IsBound(theObj);
+  }
 
   /**
    * @return

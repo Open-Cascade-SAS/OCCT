@@ -95,10 +95,16 @@ public:
   }
 
   //! Check this vector with another vector for equality (without tolerance!).
-  constexpr bool operator==(const NCollection_Vec2& theOther) const noexcept { return IsEqual(theOther); }
+  constexpr bool operator==(const NCollection_Vec2& theOther) const noexcept
+  {
+    return IsEqual(theOther);
+  }
 
   //! Check this vector with another vector for non-equality (without tolerance!).
-  constexpr bool operator!=(const NCollection_Vec2& theOther) const noexcept { return !IsEqual(theOther); }
+  constexpr bool operator!=(const NCollection_Vec2& theOther) const noexcept
+  {
+    return !IsEqual(theOther);
+  }
 
   //! Raw access to the data (for OpenGL exchange).
   constexpr const Element_t* GetData() const noexcept { return v; }
@@ -185,7 +191,10 @@ public:
   }
 
   //! Compute component-wise modulus of the vector.
-  NCollection_Vec2 cwiseAbs() const noexcept { return NCollection_Vec2(std::abs(v[0]), std::abs(v[1])); }
+  NCollection_Vec2 cwiseAbs() const noexcept
+  {
+    return NCollection_Vec2(std::abs(v[0]), std::abs(v[1]));
+  }
 
   //! Compute maximum component of the vector.
   constexpr Element_t maxComp() const noexcept { return v[0] > v[1] ? v[0] : v[1]; }
@@ -217,7 +226,10 @@ public:
   }
 
   //! Compute per-component multiplication by scale factor.
-  constexpr NCollection_Vec2 operator*(const Element_t theFactor) const noexcept { return Multiplied(theFactor); }
+  constexpr NCollection_Vec2 operator*(const Element_t theFactor) const noexcept
+  {
+    return Multiplied(theFactor);
+  }
 
   //! Compute per-component division by scale factor.
   constexpr NCollection_Vec2 operator/(const Element_t theInvFactor) const
@@ -246,10 +258,16 @@ public:
   constexpr Element_t SquareModulus() const noexcept { return x() * x() + y() * y(); }
 
   //! Construct DX unit vector.
-  static constexpr NCollection_Vec2 DX() noexcept { return NCollection_Vec2(Element_t(1), Element_t(0)); }
+  static constexpr NCollection_Vec2 DX() noexcept
+  {
+    return NCollection_Vec2(Element_t(1), Element_t(0));
+  }
 
   //! Construct DY unit vector.
-  static constexpr NCollection_Vec2 DY() noexcept { return NCollection_Vec2(Element_t(0), Element_t(1)); }
+  static constexpr NCollection_Vec2 DY() noexcept
+  {
+    return NCollection_Vec2(Element_t(0), Element_t(1));
+  }
 
   //! Dumps the content of me into the stream
   void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const

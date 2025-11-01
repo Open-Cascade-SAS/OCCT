@@ -61,10 +61,15 @@ public:
   NCollection_Vec3() { std::memset(this, 0, sizeof(NCollection_Vec3)); }
 
   //! Initialize ALL components of vector within specified value.
-  explicit constexpr NCollection_Vec3(Element_t theValue) noexcept { v[0] = v[1] = v[2] = theValue; }
+  explicit constexpr NCollection_Vec3(Element_t theValue) noexcept
+  {
+    v[0] = v[1] = v[2] = theValue;
+  }
 
   //! Per-component constructor.
-  explicit constexpr NCollection_Vec3(const Element_t theX, const Element_t theY, const Element_t theZ) noexcept
+  explicit constexpr NCollection_Vec3(const Element_t theX,
+                                      const Element_t theY,
+                                      const Element_t theZ) noexcept
   {
     v[0] = theX;
     v[1] = theY;
@@ -73,7 +78,7 @@ public:
 
   //! Constructor from 2-components vector + optional 3rd value.
   explicit constexpr NCollection_Vec3(const NCollection_Vec2<Element_t>& theVec2,
-                            Element_t                          theZ = Element_t(0)) noexcept
+                                      Element_t theZ = Element_t(0)) noexcept
   {
     v[0] = theVec2[0];
     v[1] = theVec2[1];
@@ -94,7 +99,9 @@ public:
   }
 
   //! Assign new values to the vector.
-  constexpr void SetValues(const Element_t theX, const Element_t theY, const Element_t theZ) noexcept
+  constexpr void SetValues(const Element_t theX,
+                           const Element_t theY,
+                           const Element_t theZ) noexcept
   {
     v[0] = theX;
     v[1] = theY;
@@ -160,10 +167,16 @@ public:
   }
 
   //! Check this vector with another vector for equality (without tolerance!).
-  constexpr bool operator==(const NCollection_Vec3& theOther) const noexcept { return IsEqual(theOther); }
+  constexpr bool operator==(const NCollection_Vec3& theOther) const noexcept
+  {
+    return IsEqual(theOther);
+  }
 
   //! Check this vector with another vector for non-equality (without tolerance!).
-  constexpr bool operator!=(const NCollection_Vec3& theOther) const noexcept { return !IsEqual(theOther); }
+  constexpr bool operator!=(const NCollection_Vec3& theOther) const noexcept
+  {
+    return !IsEqual(theOther);
+  }
 
   //! Raw access to the data (for OpenGL exchange).
   constexpr const Element_t* GetData() const noexcept { return v; }
@@ -185,14 +198,17 @@ public:
 
   //! Compute per-component summary.
   friend constexpr NCollection_Vec3 operator+(const NCollection_Vec3& theLeft,
-                                    const NCollection_Vec3& theRight) noexcept
+                                              const NCollection_Vec3& theRight) noexcept
   {
     NCollection_Vec3 aSumm = NCollection_Vec3(theLeft);
     return aSumm += theRight;
   }
 
   //! Unary -.
-  constexpr NCollection_Vec3 operator-() const noexcept { return NCollection_Vec3(-x(), -y(), -z()); }
+  constexpr NCollection_Vec3 operator-() const noexcept
+  {
+    return NCollection_Vec3(-x(), -y(), -z());
+  }
 
   //! Compute per-component subtraction.
   constexpr NCollection_Vec3& operator-=(const NCollection_Vec3& theDec) noexcept
@@ -205,7 +221,7 @@ public:
 
   //! Compute per-component subtraction.
   friend constexpr NCollection_Vec3 operator-(const NCollection_Vec3& theLeft,
-                                    const NCollection_Vec3& theRight) noexcept
+                                              const NCollection_Vec3& theRight) noexcept
   {
     NCollection_Vec3 aSumm = NCollection_Vec3(theLeft);
     return aSumm -= theRight;
@@ -230,7 +246,7 @@ public:
 
   //! Compute per-component multiplication.
   friend constexpr NCollection_Vec3 operator*(const NCollection_Vec3& theLeft,
-                                    const NCollection_Vec3& theRight) noexcept
+                                              const NCollection_Vec3& theRight) noexcept
   {
     NCollection_Vec3 aResult = NCollection_Vec3(theLeft);
     return aResult *= theRight;
@@ -244,7 +260,10 @@ public:
   }
 
   //! Compute per-component multiplication by scale factor.
-  constexpr NCollection_Vec3 operator*(const Element_t theFactor) const noexcept { return Multiplied(theFactor); }
+  constexpr NCollection_Vec3 operator*(const Element_t theFactor) const noexcept
+  {
+    return Multiplied(theFactor);
+  }
 
   //! Compute per-component multiplication by scale factor.
   constexpr NCollection_Vec3 Multiplied(const Element_t theFactor) const noexcept
@@ -315,7 +334,7 @@ public:
 
   //! Compute per-component division.
   friend constexpr NCollection_Vec3 operator/(const NCollection_Vec3& theLeft,
-                                    const NCollection_Vec3& theRight)
+                                              const NCollection_Vec3& theRight)
   {
     NCollection_Vec3 aResult = NCollection_Vec3(theLeft);
     return aResult /= theRight;
@@ -355,7 +374,8 @@ public:
   }
 
   //! Computes the cross product.
-  static constexpr NCollection_Vec3 Cross(const NCollection_Vec3& theVec1, const NCollection_Vec3& theVec2) noexcept
+  static constexpr NCollection_Vec3 Cross(const NCollection_Vec3& theVec1,
+                                          const NCollection_Vec3& theVec2) noexcept
   {
     return NCollection_Vec3(theVec1.y() * theVec2.z() - theVec1.z() * theVec2.y(),
                             theVec1.z() * theVec2.x() - theVec1.x() * theVec2.z(),
@@ -366,8 +386,8 @@ public:
   //! @param theT - interpolation coefficient 0..1;
   //! @return interpolation result.
   static constexpr NCollection_Vec3 GetLERP(const NCollection_Vec3& theFrom,
-                                  const NCollection_Vec3& theTo,
-                                  const Element_t         theT) noexcept
+                                            const NCollection_Vec3& theTo,
+                                            const Element_t         theT) noexcept
   {
     return theFrom * (Element_t(1) - theT) + theTo * theT;
   }
@@ -403,7 +423,8 @@ private:
 
 //! Optimized concretization for float type.
 template <>
-inline constexpr NCollection_Vec3<float>& NCollection_Vec3<float>::operator/=(const float theInvFactor)
+inline constexpr NCollection_Vec3<float>& NCollection_Vec3<float>::operator/=(
+  const float theInvFactor)
 {
   Multiply(1.0f / theInvFactor);
   return *this;
@@ -411,7 +432,8 @@ inline constexpr NCollection_Vec3<float>& NCollection_Vec3<float>::operator/=(co
 
 //! Optimized concretization for double type.
 template <>
-inline constexpr NCollection_Vec3<double>& NCollection_Vec3<double>::operator/=(const double theInvFactor)
+inline constexpr NCollection_Vec3<double>& NCollection_Vec3<double>::operator/=(
+  const double theInvFactor)
 {
   Multiply(1.0 / theInvFactor);
   return *this;

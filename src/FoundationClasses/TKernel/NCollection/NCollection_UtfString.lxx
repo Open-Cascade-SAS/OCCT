@@ -289,7 +289,8 @@ inline const NCollection_UtfString<Type>& NCollection_UtfString<Type>::operator=
 //=================================================================================================
 
 template <typename Type>
-inline bool NCollection_UtfString<Type>::IsEqual(const NCollection_UtfString& theCompare) const noexcept
+inline bool NCollection_UtfString<Type>::IsEqual(
+  const NCollection_UtfString& theCompare) const noexcept
 {
   return this == &theCompare
          || strAreEqual(myString, mySize, theCompare.myString, theCompare.mySize);
@@ -300,7 +301,8 @@ inline bool NCollection_UtfString<Type>::IsEqual(const NCollection_UtfString& th
 // purpose  :
 // =======================================================================
 template <typename Type>
-inline bool NCollection_UtfString<Type>::operator!=(const NCollection_UtfString& theCompare) const noexcept
+inline bool NCollection_UtfString<Type>::operator!=(
+  const NCollection_UtfString& theCompare) const noexcept
 {
   return (!NCollection_UtfString::operator==(theCompare));
 }

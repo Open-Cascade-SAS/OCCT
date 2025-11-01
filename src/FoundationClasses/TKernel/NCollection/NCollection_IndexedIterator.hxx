@@ -220,13 +220,22 @@ public: //! @name methods related to random access STL iterator
   }
 
   //! Comparison
-  bool operator>(const NCollection_IndexedIterator& theOther) const noexcept { return theOther < *this; }
+  bool operator>(const NCollection_IndexedIterator& theOther) const noexcept
+  {
+    return theOther < *this;
+  }
 
   //! Comparison
-  bool operator<=(const NCollection_IndexedIterator& theOther) const noexcept { return !(theOther < *this); }
+  bool operator<=(const NCollection_IndexedIterator& theOther) const noexcept
+  {
+    return !(theOther < *this);
+  }
 
   //! Comparison
-  bool operator>=(const NCollection_IndexedIterator& theOther) const noexcept { return !(*this < theOther); }
+  bool operator>=(const NCollection_IndexedIterator& theOther) const noexcept
+  {
+    return !(*this < theOther);
+  }
 
   friend class NCollection_IndexedIterator<Category, BaseIndexedMap, ItemType, !IsConstant>;
 

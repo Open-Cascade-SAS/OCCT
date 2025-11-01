@@ -186,7 +186,8 @@ public:
   void Exchange(const Standard_Integer I, const Standard_Integer J) { PExchange(I, J); }
 
   //! Static deleter to be passed to BaseSequence
-  static void delNode(NCollection_SeqNode* theNode, Handle(NCollection_BaseAllocator)& theAl) noexcept
+  static void delNode(NCollection_SeqNode*               theNode,
+                      Handle(NCollection_BaseAllocator)& theAl) noexcept
   {
     ((Node*)theNode)->~Node();
     theAl->Free(theNode);

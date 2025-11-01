@@ -262,10 +262,16 @@ public: //! @name public methods
   }
 
   //! Operator() - query the const value
-  const_reference operator()(const Standard_Integer theIndex) const noexcept { return Value(theIndex); }
+  const_reference operator()(const Standard_Integer theIndex) const noexcept
+  {
+    return Value(theIndex);
+  }
 
   //! Operator[] - query the const value
-  const_reference operator[](const Standard_Integer theIndex) const noexcept { return Value(theIndex); }
+  const_reference operator[](const Standard_Integer theIndex) const noexcept
+  {
+    return Value(theIndex);
+  }
 
   //! Operator[] - query the const value
   const_reference operator[](const size_t theIndex) const noexcept { return at(theIndex); }
@@ -296,7 +302,10 @@ public: //! @name public methods
   //! Operator[] - query the value
   reference operator[](const size_t theIndex) noexcept { return at(theIndex); }
 
-  reference ChangeValue(const Standard_Integer theIndex) noexcept { return at(static_cast<int>(theIndex)); }
+  reference ChangeValue(const Standard_Integer theIndex) noexcept
+  {
+    return at(static_cast<int>(theIndex));
+  }
 
   //! SetValue () - set or append a value
   reference SetValue(const Standard_Integer theIndex, const TheItemType& theValue)

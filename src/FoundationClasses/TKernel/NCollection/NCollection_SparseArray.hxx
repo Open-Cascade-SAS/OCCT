@@ -153,7 +153,10 @@ public:
     const TheItemType& Value(void) const noexcept { return *(const TheItemType*)this->value(); }
 
     //! Constant value access operator
-    const TheItemType& operator()(void) const noexcept { return *(const TheItemType*)this->value(); }
+    const TheItemType& operator()(void) const noexcept
+    {
+      return *(const TheItemType*)this->value();
+    }
 
     //! Access current index with 'a-la map' interface
     Standard_Size Key(void) const noexcept { return Index(); }
@@ -184,7 +187,10 @@ public:
     TheItemType& operator()(void) noexcept { return *(TheItemType*)this->value(); }
 
     //! Const access operator - the same as in parent class
-    const TheItemType& operator()(void) const noexcept { return *(const TheItemType*)this->value(); }
+    const TheItemType& operator()(void) const noexcept
+    {
+      return *(const TheItemType*)this->value();
+    }
   };
 
 private:
