@@ -1648,7 +1648,6 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
   // reorganize the wires respecting orientation and origin
 
   TopoDS_Vertex Vdeb, Vfin;
-  gp_Pnt        PPs;
 
   BRepTools_WireExplorer anExp;
 
@@ -1978,6 +1977,8 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
     PrevBary = CurBary;
   }
 #ifdef OCCT_DEBUG_EFV
+
+  gp_Pnt PPs;
 
   for (i = ideb; i <= myWork.Length(); i++)
   {
