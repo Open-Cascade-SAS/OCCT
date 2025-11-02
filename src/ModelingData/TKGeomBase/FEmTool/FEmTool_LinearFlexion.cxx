@@ -48,8 +48,8 @@ FEmTool_LinearFlexion::FEmTool_LinearFlexion(const Standard_Integer WorkDegree,
     // Calculating RefMatrix
     if (WorkDegree > WDeg)
       throw Standard_ConstructionError("Degree too high");
-    Order                                 = myOrder;
-    Standard_Integer            DerOrder  = 2;
+    Order                                = myOrder;
+    Standard_Integer            DerOrder = 2;
     PLib_HermitJacobi           theBase(WDeg, ConstraintOrder);
     FEmTool_ElementsOfRefMatrix Elem      = FEmTool_ElementsOfRefMatrix(theBase, DerOrder);
     Standard_Integer            maxDegree = WDeg + 1;

@@ -532,7 +532,7 @@ void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
   Standard_Integer ipnt, ii, degH = 2 * Order + 1;
 
   Standard_Integer k1, k2, i, j, i0 = H.LowerRow(), j0 = H.LowerCol(), i1, j1,
-                   di = myPntWeight.Lower() - myParameters->Lower();
+                                 di = myPntWeight.Lower() - myParameters->Lower();
 
   // BuilCache
   if (myE != Element)
@@ -779,7 +779,7 @@ void AppDef_LinearCriteria::BuildCache(const Standard_Integer Element)
   {
     const PLib_HermitJacobi& myBase = myCurve->Base();
     Standard_Integer         order  = myBase.WorkDegree() + 1;
-    myCache                  = new TColStd_HArray1OfReal(1, (IL - IF + 1) * (order));
+    myCache                         = new TColStd_HArray1OfReal(1, (IL - IF + 1) * (order));
 
     for (Standard_Integer ipnt = IF, ii = 1; ipnt <= IL; ipnt++, ii += order)
     {

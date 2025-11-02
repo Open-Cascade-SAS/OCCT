@@ -87,12 +87,12 @@ public:
 
 protected:
 private:
-  Standard_Integer        myTotalNumSS;
-  Standard_Integer        myTotalDimension;
-  Standard_Integer        myNbGaussPoints;
-  Standard_Integer        myWorkDegree;
-  Standard_Integer        myNivConstr;
-  PLib_JacobiPolynomial   myJacPol;
+  Standard_Integer              myTotalNumSS;
+  Standard_Integer              myTotalDimension;
+  Standard_Integer              myNbGaussPoints;
+  Standard_Integer              myWorkDegree;
+  Standard_Integer              myNivConstr;
+  PLib_JacobiPolynomial         myJacPol;
   Handle(TColStd_HArray1OfReal) myTabPoints;
   Handle(TColStd_HArray2OfReal) myTabWeights;
   Standard_Address              myEvaluator;

@@ -276,8 +276,7 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
     }
 
     Standard_Real* JacSS = (Standard_Real*)&JacCoeff.Value(RangJacCoeff);
-    myJacPol
-      .ReduceDegree(Dim, MaxDegree, LocalTolerancesArray(numss), JacSS[0], NewDegree, MaxErr);
+    myJacPol.ReduceDegree(Dim, MaxDegree, LocalTolerancesArray(numss), JacSS[0], NewDegree, MaxErr);
     if (NewDegree > NewDegreeMax)
       NewDegreeMax = NewDegree;
     RangSS       = RangSS + Dim;

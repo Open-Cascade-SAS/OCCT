@@ -50,7 +50,7 @@ FEmTool_LinearJerk::FEmTool_LinearJerk(const Standard_Integer WorkDegree,
     Standard_Integer DerOrder = 3;
 
     PLib_HermitJacobi           theBase(WDeg, ConstraintOrder);
-    FEmTool_ElementsOfRefMatrix Elem    = FEmTool_ElementsOfRefMatrix(theBase, DerOrder);
+    FEmTool_ElementsOfRefMatrix Elem = FEmTool_ElementsOfRefMatrix(theBase, DerOrder);
 
     Standard_Integer maxDegree = WDeg + 1;
 
