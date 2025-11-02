@@ -18,16 +18,11 @@
 #define _PLib_JacobiPolynomial_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <PLib_Base.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
-
-class PLib_JacobiPolynomial;
-DEFINE_STANDARD_HANDLE(PLib_JacobiPolynomial, PLib_Base)
 
 //! This class provides method  to work with Jacobi  Polynomials
 //! relatively to   an order of constraint
@@ -55,7 +50,7 @@ DEFINE_STANDARD_HANDLE(PLib_JacobiPolynomial, PLib_Base)
 //! The following coefficients represents the part of the
 //! polynomial in the Jacobi base ie Q(t)
 //! Q(t) = c2*iordre+2  J0(t) + ...+ cDegree JDegree-2*iordre-2
-class PLib_JacobiPolynomial : public PLib_Base
+class PLib_JacobiPolynomial
 {
 
 public:
@@ -114,7 +109,7 @@ public:
                                     const Standard_Real    theTol,
                                     Standard_Real&         theJacCoeff,
                                     Standard_Integer&      theNewDegree,
-                                    Standard_Real&         theMaxError) const Standard_OVERRIDE;
+                                    Standard_Real&         theMaxError) const;
 
   Standard_EXPORT Standard_Real AverageError(const Standard_Integer theDimension,
                                              Standard_Real&         theJacCoeff,
@@ -124,25 +119,23 @@ public:
   Standard_EXPORT void ToCoefficients(const Standard_Integer      theDimension,
                                       const Standard_Integer      theDegree,
                                       const TColStd_Array1OfReal& theJacCoeff,
-                                      TColStd_Array1OfReal&       theCoefficients) const
-    Standard_OVERRIDE;
+                                      TColStd_Array1OfReal&       theCoefficients) const;
 
   //! Compute the values of the basis functions in u
-  Standard_EXPORT void D0(const Standard_Real   theU,
-                          TColStd_Array1OfReal& theBasisValue) Standard_OVERRIDE;
+  Standard_EXPORT void D0(const Standard_Real theU, TColStd_Array1OfReal& theBasisValue) const;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
   Standard_EXPORT void D1(const Standard_Real   theU,
                           TColStd_Array1OfReal& theBasisValue,
-                          TColStd_Array1OfReal& theBasisD1) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& theBasisD1) const;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
   Standard_EXPORT void D2(const Standard_Real   theU,
                           TColStd_Array1OfReal& theBasisValue,
                           TColStd_Array1OfReal& theBasisD1,
-                          TColStd_Array1OfReal& theBasisD2) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& theBasisD2) const;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
@@ -150,15 +143,13 @@ public:
                           TColStd_Array1OfReal& theBasisValue,
                           TColStd_Array1OfReal& theBasisD1,
                           TColStd_Array1OfReal& theBasisD2,
-                          TColStd_Array1OfReal& theBasisD3) Standard_OVERRIDE;
+                          TColStd_Array1OfReal& theBasisD3) const;
 
   //! returns WorkDegree
-  Standard_Integer WorkDegree() const Standard_OVERRIDE { return myWorkDegree; }
+  Standard_Integer WorkDegree() const noexcept { return myWorkDegree; }
 
   //! returns NivConstr
-  Standard_Integer NivConstr() const { return myNivConstr; }
-
-  DEFINE_STANDARD_RTTIEXT(PLib_JacobiPolynomial, PLib_Base)
+  Standard_Integer NivConstr() const noexcept { return myNivConstr; }
 
 protected:
   //! Compute the values and the derivatives values of

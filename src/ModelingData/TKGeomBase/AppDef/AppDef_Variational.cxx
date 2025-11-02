@@ -1613,7 +1613,7 @@ void AppDef_Variational::Optimization(Handle(AppDef_SmoothCriterion)& J,
                                       Handle(FEmTool_Curve)&          Curve,
                                       const TColStd_Array1OfReal&     Parameters) const
 {
-  Standard_Integer MxDeg = Curve->Base()->WorkDegree(), NbElm = Curve->NbElements(),
+  Standard_Integer MxDeg = Curve->Base().WorkDegree(), NbElm = Curve->NbElements(),
                    NbDim = Curve->Dimension();
 
   Handle(FEmTool_HAssemblyTable) AssTable;
@@ -2064,12 +2064,12 @@ void AppDef_Variational::SplitCurve(const Handle(FEmTool_Curve)& InCurve,
 #ifdef OCCT_DEBUG
   Standard_Integer MaxDegree =
 #endif
-    InCurve->Base()->WorkDegree();
+    InCurve->Base().WorkDegree();
   Standard_Integer     NbElm = NbElmOld;
   TColStd_Array1OfReal NewKnots(NbElm + 1, myMaxSegment);
 #ifndef OCCT_DEBUG
-  GettingKnots(Ti, InCurve, InCurve->Base()->WorkDegree(), NbElm, NewKnots);
-  GettingKnots(Ti, InCurve, InCurve->Base()->WorkDegree() - 1, NbElm, NewKnots);
+  GettingKnots(Ti, InCurve, InCurve->Base().WorkDegree(), NbElm, NewKnots);
+  GettingKnots(Ti, InCurve, InCurve->Base().WorkDegree() - 1, NbElm, NewKnots);
 #else
   GettingKnots(Ti, InCurve, MaxDegree, NbElm, NewKnots);
   GettingKnots(Ti, InCurve, MaxDegree - 1, NbElm, NewKnots);
@@ -2144,7 +2144,7 @@ void AppDef_Variational::InitSmoothCriterion()
 
   mySmoothCriterion->SetWeight(WQuadratic, WQuality, myPercent[0], myPercent[1], myPercent[2]);
 
-  Handle(PLib_Base)     TheBase = new PLib_HermitJacobi(myMaxDegree, myContinuity);
+  PLib_HermitJacobi     TheBase(myMaxDegree, myContinuity);
   Handle(FEmTool_Curve) TheCurve;
   Standard_Integer      NbElem;
   Standard_Real         CurvTol = Eps2 * Length / myNbPoints;
@@ -2604,7 +2604,7 @@ void AppDef_Variational::EstSecnd(const Standard_Integer ipnt,
 //           constraints (see fortran routine MLICUT)
 //=======================================================================
 //
-void AppDef_Variational::InitCutting(const Handle(PLib_Base)& aBase,
+void AppDef_Variational::InitCutting(const PLib_HermitJacobi& aBase,
                                      const Standard_Real      CurvTol,
                                      Handle(FEmTool_Curve)&   aCurve) const
 {
@@ -2898,7 +2898,7 @@ void AppDef_Variational::AssemblingConstraints(const Handle(FEmTool_Curve)& Curv
                                                FEmTool_Assembly&            A) const
 {
 
-  Standard_Integer MxDeg = Curve->Base()->WorkDegree(), NbElm = Curve->NbElements(),
+  Standard_Integer MxDeg = Curve->Base().WorkDegree(), NbElm = Curve->NbElements(),
                    NbDim = Curve->Dimension();
 
   TColStd_Array1OfReal G0(0, MxDeg), G1(0, MxDeg), G2(0, MxDeg);
@@ -2925,9 +2925,8 @@ void AppDef_Variational::AssemblingConstraints(const Handle(FEmTool_Curve)& Curv
 
   Standard_Real t, R1, R2;
 
-  Handle(PLib_Base)         myBase         = Curve->Base();
-  Handle(PLib_HermitJacobi) myHermitJacobi = Handle(PLib_HermitJacobi)::DownCast(myBase);
-  Standard_Integer          Order          = myHermitJacobi->NivConstr() + 1;
+  const PLib_HermitJacobi& myHermitJacobi = Curve->Base();
+  Standard_Integer         Order          = myHermitJacobi.NivConstr() + 1;
 
   Standard_Real UFirst, ULast, coeff, c0, mfact, mfact1;
 
@@ -2964,7 +2963,7 @@ void AppDef_Variational::AssemblingConstraints(const Handle(FEmTool_Curve)& Curv
 
     if (TypOfConstr == 0)
     {
-      myBase->D0(t, G0);
+      myHermitJacobi.D0(t, G0);
       for (k = 1; k < Order; k++)
       {
         mfact = Pow(coeff, k);
@@ -2974,7 +2973,7 @@ void AppDef_Variational::AssemblingConstraints(const Handle(FEmTool_Curve)& Curv
     }
     else if (TypOfConstr == 1)
     {
-      myBase->D1(t, G0, G1);
+      myHermitJacobi.D1(t, G0, G1);
       for (k = 1; k < Order; k++)
       {
         mfact = Pow(coeff, k);
@@ -2991,7 +2990,7 @@ void AppDef_Variational::AssemblingConstraints(const Handle(FEmTool_Curve)& Curv
     }
     else
     {
-      myBase->D2(t, G0, G1, G2);
+      myHermitJacobi.D2(t, G0, G1, G2);
       for (k = 1; k < Order; k++)
       {
         mfact = Pow(coeff, k);

@@ -49,8 +49,8 @@ FEmTool_LinearTension::FEmTool_LinearTension(const Standard_Integer WorkDegree,
       throw Standard_ConstructionError("Degree too high");
     Order                                = myOrder;
     Standard_Integer            DerOrder = 1;
-    Handle(PLib_HermitJacobi)   theBase  = new PLib_HermitJacobi(WDeg, ConstraintOrder);
-    FEmTool_ElementsOfRefMatrix Elem     = FEmTool_ElementsOfRefMatrix(theBase, DerOrder);
+    PLib_HermitJacobi           theBase(WDeg, ConstraintOrder);
+    FEmTool_ElementsOfRefMatrix Elem = FEmTool_ElementsOfRefMatrix(theBase, DerOrder);
 
     Standard_Integer   maxDegree = WDeg + 1;
     math_IntegerVector anOrder(1, 1, Min(4 * (maxDegree / 2 + 1), math::GaussPointsMax()));

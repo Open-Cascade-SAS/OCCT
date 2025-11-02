@@ -24,7 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <math_FunctionSet.hxx>
 #include <math_Vector.hxx>
-class PLib_Base;
+#include <PLib_HermitJacobi.hxx>
 
 //! this class describes the functions needed for calculating
 //! matrix elements of RefMatrix for linear criteriums
@@ -38,7 +38,7 @@ class FEmTool_ElementsOfRefMatrix : public math_FunctionSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT FEmTool_ElementsOfRefMatrix(const Handle(PLib_Base)& TheBase,
+  Standard_EXPORT FEmTool_ElementsOfRefMatrix(const PLib_HermitJacobi& TheBase,
                                               const Standard_Integer   DerOrder);
 
   //! returns the number of variables of the function.
@@ -59,7 +59,7 @@ public:
 
 protected:
 private:
-  Handle(PLib_Base) myBase;
+  PLib_HermitJacobi myBase;
   Standard_Integer  myDerOrder;
   Standard_Integer  myNbEquations;
 };

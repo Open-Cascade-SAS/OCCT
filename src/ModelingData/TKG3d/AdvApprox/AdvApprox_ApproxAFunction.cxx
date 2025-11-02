@@ -499,7 +499,7 @@ void AdvApprox_ApproxAFunction::Approximation(
   // C**********************************************************************
   // C                       APPROXIMATION AVEC DECOUPES
   // C**********************************************************************
-  Handle(PLib_JacobiPolynomial) JacobiBase = new (PLib_JacobiPolynomial)(WorkDegree, Continuity);
+  PLib_JacobiPolynomial JacobiBase(WorkDegree, Continuity);
   // Portage HP le compilateur refuse le debranchement
   Standard_Integer       IS;
   Standard_Boolean       goto_fin_de_boucle;
@@ -607,7 +607,7 @@ void AdvApprox_ApproxAFunction::Approximation(
 
     NumCoeffPerCurveArray(NumCurves) = TheDeg + 1;
     TColStd_Array1OfReal Coefficients(0, (TheDeg + 1) * TotalDimension - 1);
-    JacobiBase->ToCoefficients(TotalDimension, TheDeg, HJacCoeff->Array1(), Coefficients);
+    JacobiBase.ToCoefficients(TotalDimension, TheDeg, HJacCoeff->Array1(), Coefficients);
     Standard_Integer i, j, f = (TheDeg + 1) * TotalDimension;
     for (i = 0, j = (NumCurves - 1) * TotalDimension * NumMaxCoeffs + 1; i < f; i++, j++)
     {

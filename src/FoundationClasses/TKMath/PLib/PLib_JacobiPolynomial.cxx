@@ -23,8 +23,6 @@
 
 #include <array>
 
-IMPLEMENT_STANDARD_RTTIEXT(PLib_JacobiPolynomial, PLib_Base)
-
 namespace
 {
 #include "PLib_JacobiPolynomial_Data.pxx"
@@ -524,7 +522,7 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer theNDeriv,
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::D0(const Standard_Real theU, TColStd_Array1OfReal& theBasisValue)
+void PLib_JacobiPolynomial::D0(const Standard_Real theU, TColStd_Array1OfReal& theBasisValue) const
 {
   D0123(0, theU, theBasisValue, theBasisValue, theBasisValue, theBasisValue);
 }
@@ -533,7 +531,7 @@ void PLib_JacobiPolynomial::D0(const Standard_Real theU, TColStd_Array1OfReal& t
 
 void PLib_JacobiPolynomial::D1(const Standard_Real   theU,
                                TColStd_Array1OfReal& theBasisValue,
-                               TColStd_Array1OfReal& theBasisD1)
+                               TColStd_Array1OfReal& theBasisD1) const
 {
   D0123(1, theU, theBasisValue, theBasisD1, theBasisD1, theBasisD1);
 }
@@ -543,7 +541,7 @@ void PLib_JacobiPolynomial::D1(const Standard_Real   theU,
 void PLib_JacobiPolynomial::D2(const Standard_Real   theU,
                                TColStd_Array1OfReal& theBasisValue,
                                TColStd_Array1OfReal& theBasisD1,
-                               TColStd_Array1OfReal& theBasisD2)
+                               TColStd_Array1OfReal& theBasisD2) const
 {
   D0123(2, theU, theBasisValue, theBasisD1, theBasisD2, theBasisD2);
 }
@@ -554,7 +552,7 @@ void PLib_JacobiPolynomial::D3(const Standard_Real   theU,
                                TColStd_Array1OfReal& theBasisValue,
                                TColStd_Array1OfReal& theBasisD1,
                                TColStd_Array1OfReal& theBasisD2,
-                               TColStd_Array1OfReal& theBasisD3)
+                               TColStd_Array1OfReal& theBasisD3) const
 {
   D0123(3, theU, theBasisValue, theBasisD1, theBasisD2, theBasisD3);
 }

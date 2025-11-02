@@ -35,9 +35,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(AppDef_LinearCriteria, AppDef_SmoothCriterion)
 
-static Standard_Integer order(const Handle(PLib_Base)& B)
+static Standard_Integer order(const PLib_HermitJacobi& B)
 {
-  return (*(Handle(PLib_HermitJacobi)*)&B)->NivConstr();
+  return B.NivConstr();
 }
 
 //=================================================================================================
@@ -76,7 +76,7 @@ void AppDef_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C)
   {
     myCurve = C;
 
-    Standard_Integer MxDeg = myCurve->Base()->WorkDegree(), NbDim = myCurve->Dimension(),
+    Standard_Integer MxDeg = myCurve->Base().WorkDegree(), NbDim = myCurve->Dimension(),
                      Order = order(myCurve->Base());
 
     GeomAbs_Shape ConstraintOrder = GeomAbs_C0;
@@ -105,12 +105,12 @@ void AppDef_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C)
   else if (myCurve != C)
   {
 
-    Standard_Integer OldMxDeg = myCurve->Base()->WorkDegree(), OldNbDim = myCurve->Dimension(),
+    Standard_Integer OldMxDeg = myCurve->Base().WorkDegree(), OldNbDim = myCurve->Dimension(),
                      OldOrder = order(myCurve->Base());
 
     myCurve = C;
 
-    Standard_Integer MxDeg = myCurve->Base()->WorkDegree(), NbDim = myCurve->Dimension(),
+    Standard_Integer MxDeg = myCurve->Base().WorkDegree(), NbDim = myCurve->Dimension(),
                      Order = order(myCurve->Base());
 
     if (MxDeg != OldMxDeg || Order != OldOrder)
@@ -194,7 +194,7 @@ Handle(FEmTool_HAssemblyTable) AppDef_LinearCriteria::AssemblyTable() const
 
   Standard_Integer NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements(),
                    nc1   = order(myCurve->Base()) + 1;
-  Standard_Integer MxDeg = myCurve->Base()->WorkDegree();
+  Standard_Integer MxDeg = myCurve->Base().WorkDegree();
 
   Handle(FEmTool_HAssemblyTable) AssTable = new FEmTool_HAssemblyTable(1, NbDim, 1, NbElm);
 
@@ -499,7 +499,7 @@ void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
     throw Standard_DomainError("AppDef_LinearCriteria::Hessian");
 
   Standard_Integer // NbDim = myCurve->Dimension(),
-    MxDeg = myCurve->Base()->WorkDegree(),
+    MxDeg = myCurve->Base().WorkDegree(),
     //                   Deg   = myCurve->Degree(Element),
     Order = order(myCurve->Base());
 
@@ -531,8 +531,7 @@ void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
   Standard_Real    coeff = (ULast - UFirst) / 2., curcoeff, poid;
   Standard_Integer ipnt, ii, degH = 2 * Order + 1;
 
-  Handle(PLib_Base) myBase = myCurve->Base();
-  Standard_Integer  k1, k2, i, j, i0 = H.LowerRow(), j0 = H.LowerCol(), i1, j1,
+  Standard_Integer k1, k2, i, j, i0 = H.LowerRow(), j0 = H.LowerCol(), i1, j1,
                                  di = myPntWeight.Lower() - myParameters->Lower();
 
   // BuilCache
@@ -640,8 +639,8 @@ void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
   Standard_Integer // Deg   = myCurve->Degree(Element),
     Order = order(myCurve->Base());
 
-  Handle(PLib_Base) myBase = myCurve->Base();
-  Standard_Integer  MxDeg  = myBase->WorkDegree();
+  const PLib_HermitJacobi& myBase = myCurve->Base();
+  Standard_Integer         MxDeg  = myBase.WorkDegree();
 
   Standard_Real    curcoeff;
   Standard_Integer degH = 2 * Order + 1;
@@ -649,10 +648,11 @@ void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
 
   if (myE != Element)
     BuildCache(Element);
-  const Standard_Real* BV = &myCache->Value(1);
-  BV--;
 
   G.Init(0.);
+
+  const Standard_Real* BV = &myCache->Value(1);
+  BV--;
 
   for (ii = 1, ipnt = IF; ipnt <= IL; ipnt++)
   {
@@ -692,7 +692,7 @@ void AppDef_LinearCriteria::InputVector(const math_Vector&                    X,
 {
   Standard_Integer NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements();
   Standard_Integer MxDeg = 0;
-  MxDeg                  = myCurve->Base()->WorkDegree();
+  MxDeg                  = myCurve->Base().WorkDegree();
   TColStd_Array2OfReal CoeffEl(0, MxDeg, 1, NbDim);
 
   Handle(TColStd_HArray1OfInteger) GlobIndex;
@@ -777,9 +777,9 @@ void AppDef_LinearCriteria::BuildCache(const Standard_Integer Element)
 
   if (IF != 0)
   {
-    Handle(PLib_Base) myBase = myCurve->Base();
-    Standard_Integer  order  = myBase->WorkDegree() + 1;
-    myCache                  = new TColStd_HArray1OfReal(1, (IL - IF + 1) * (order));
+    const PLib_HermitJacobi& myBase = myCurve->Base();
+    Standard_Integer         order  = myBase.WorkDegree() + 1;
+    myCache                         = new TColStd_HArray1OfReal(1, (IL - IF + 1) * (order));
 
     for (Standard_Integer ipnt = IF, ii = 1; ipnt <= IL; ipnt++, ii += order)
     {
@@ -788,7 +788,7 @@ void AppDef_LinearCriteria::BuildCache(const Standard_Integer Element)
       t                   = myParameters->Value(ipnt);
       Standard_Real coeff = 2. / (ULast - UFirst), c0 = -(ULast + UFirst) / 2., s;
       s = (t + c0) * coeff;
-      myBase->D0(s, BasicValue);
+      myBase.D0(s, BasicValue);
     }
   }
   else

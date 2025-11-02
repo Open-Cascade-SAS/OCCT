@@ -28,13 +28,13 @@
 
 //=================================================================================================
 
-AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const Standard_Integer               TotalDimension,
-                                               const Standard_Integer               TotalNumSS,
-                                               const GeomAbs_Shape                  Continuity,
-                                               const Standard_Integer               WorkDegree,
-                                               const Standard_Integer               NbGaussPoints,
-                                               const Handle(PLib_JacobiPolynomial)& JacobiBase,
-                                               const AdvApprox_EvaluatorFunction&   Func)
+AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const Standard_Integer             TotalDimension,
+                                               const Standard_Integer             TotalNumSS,
+                                               const GeomAbs_Shape                Continuity,
+                                               const Standard_Integer             WorkDegree,
+                                               const Standard_Integer             NbGaussPoints,
+                                               const PLib_JacobiPolynomial&       JacobiBase,
+                                               const AdvApprox_EvaluatorFunction& Func)
     : myTotalNumSS(TotalNumSS),
       myTotalDimension(TotalDimension),
       myNbGaussPoints(NbGaussPoints),
@@ -64,11 +64,11 @@ AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const Standard_Integer           
 
   // the extraction of the Legendre roots
   myTabPoints = new TColStd_HArray1OfReal(0, NbGaussPoints / 2);
-  JacobiBase->Points(NbGaussPoints, myTabPoints->ChangeArray1());
+  JacobiBase.Points(NbGaussPoints, myTabPoints->ChangeArray1());
 
   // the extraction of the Gauss Weights
   myTabWeights = new TColStd_HArray2OfReal(0, NbGaussPoints / 2, 0, DegreeQ);
-  JacobiBase->Weights(NbGaussPoints, myTabWeights->ChangeArray2());
+  JacobiBase.Weights(NbGaussPoints, myTabWeights->ChangeArray2());
 
   myCoeff       = new TColStd_HArray1OfReal(0, (myWorkDegree + 1) * myTotalDimension - 1);
   myFirstConstr = new TColStd_HArray2OfReal(1, myTotalDimension, 0, myNivConstr);
@@ -276,8 +276,7 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
     }
 
     Standard_Real* JacSS = (Standard_Real*)&JacCoeff.Value(RangJacCoeff);
-    myJacPol
-      ->ReduceDegree(Dim, MaxDegree, LocalTolerancesArray(numss), JacSS[0], NewDegree, MaxErr);
+    myJacPol.ReduceDegree(Dim, MaxDegree, LocalTolerancesArray(numss), JacSS[0], NewDegree, MaxErr);
     if (NewDegree > NewDegreeMax)
       NewDegreeMax = NewDegree;
     RangSS       = RangSS + Dim;
@@ -291,9 +290,9 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
     Dim = LocalDimension(numss);
 
     Standard_Real* JacSS = (Standard_Real*)&JacCoeff.Value(RangJacCoeff);
-    MaxErr               = myJacPol->MaxError(LocalDimension(numss), JacSS[0], NewDegreeMax);
+    MaxErr               = myJacPol.MaxError(LocalDimension(numss), JacSS[0], NewDegreeMax);
     myMaxError->SetValue(numss, MaxErr);
-    AverageErr = myJacPol->AverageError(LocalDimension(numss), JacSS[0], NewDegreeMax);
+    AverageErr = myJacPol.AverageError(LocalDimension(numss), JacSS[0], NewDegreeMax);
     myAverageError->SetValue(numss, AverageErr);
     RangSS       = RangSS + Dim;
     RangJacCoeff = RangJacCoeff + (myWorkDegree + 1) * Dim;

@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 #include <math_Matrix.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(PLib_HermitJacobi, PLib_Base)
-
 namespace
 {
 // W coefficients for C0 continuity (NivConstr = 0, DegreeH = 1)
@@ -196,7 +194,7 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
                               TColStd_Array1OfReal&  BasisValue,
                               TColStd_Array1OfReal&  BasisD1,
                               TColStd_Array1OfReal&  BasisD2,
-                              TColStd_Array1OfReal&  BasisD3)
+                              TColStd_Array1OfReal&  BasisD3) const
 {
   NCollection_LocalArray<Standard_Real> jac0(4 * 20);
   NCollection_LocalArray<Standard_Real> jac1(4 * 20);
@@ -327,7 +325,7 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
 
 //=================================================================================================
 
-void PLib_HermitJacobi::D0(const Standard_Real U, TColStd_Array1OfReal& BasisValue)
+void PLib_HermitJacobi::D0(const Standard_Real U, TColStd_Array1OfReal& BasisValue) const
 {
   D0123(0, U, BasisValue, BasisValue, BasisValue, BasisValue);
 }
@@ -336,7 +334,7 @@ void PLib_HermitJacobi::D0(const Standard_Real U, TColStd_Array1OfReal& BasisVal
 
 void PLib_HermitJacobi::D1(const Standard_Real   U,
                            TColStd_Array1OfReal& BasisValue,
-                           TColStd_Array1OfReal& BasisD1)
+                           TColStd_Array1OfReal& BasisD1) const
 {
   D0123(1, U, BasisValue, BasisD1, BasisD1, BasisD1);
 }
@@ -346,7 +344,7 @@ void PLib_HermitJacobi::D1(const Standard_Real   U,
 void PLib_HermitJacobi::D2(const Standard_Real   U,
                            TColStd_Array1OfReal& BasisValue,
                            TColStd_Array1OfReal& BasisD1,
-                           TColStd_Array1OfReal& BasisD2)
+                           TColStd_Array1OfReal& BasisD2) const
 {
   D0123(2, U, BasisValue, BasisD1, BasisD2, BasisD2);
 }
@@ -357,7 +355,7 @@ void PLib_HermitJacobi::D3(const Standard_Real   U,
                            TColStd_Array1OfReal& BasisValue,
                            TColStd_Array1OfReal& BasisD1,
                            TColStd_Array1OfReal& BasisD2,
-                           TColStd_Array1OfReal& BasisD3)
+                           TColStd_Array1OfReal& BasisD3) const
 {
   D0123(3, U, BasisValue, BasisD1, BasisD2, BasisD3);
 }
