@@ -167,7 +167,7 @@ public:
   //! Returns the "YDirection" of <me>.
   constexpr const gp_Dir2d& YDirection() const noexcept { return vydir; }
 
-  Standard_EXPORT void Mirror(const gp_Pnt2d& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point theP which is the
@@ -176,9 +176,9 @@ public:
   //! The main direction of the axis placement is not changed.
   //! The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.
-  Standard_NODISCARD Standard_EXPORT gp_Ax22d Mirrored(const gp_Pnt2d& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax22d Mirrored(const gp_Pnt2d& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2d& theA);
+  Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
@@ -187,7 +187,7 @@ public:
   //! point, on the "XDirection" and "YDirection".
   //! The resulting main "Direction" is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-  Standard_NODISCARD Standard_EXPORT gp_Ax22d Mirrored(const gp_Ax2d& theA) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax22d Mirrored(const gp_Ax2d& theA) const noexcept;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng);
 
@@ -217,7 +217,7 @@ public:
     return aTemp;
   }
 
-  void Transform(const gp_Trsf2d& theT);
+  void Transform(const gp_Trsf2d& theT) noexcept;
 
   //! Transforms an axis placement with a Trsf.
   //! The "Location" point, the "XDirection" and the
@@ -358,7 +358,7 @@ inline void gp_Ax22d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 
 //=================================================================================================
 
-inline void gp_Ax22d::Transform(const gp_Trsf2d& theT)
+inline void gp_Ax22d::Transform(const gp_Trsf2d& theT) noexcept
 {
   gp_Pnt2d aTemp = point;
   aTemp.Transform(theT);

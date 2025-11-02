@@ -26,7 +26,7 @@
 #include <gp_Vec2d.hxx>
 #include <Standard_Dump.hxx>
 
-void gp_Ax22d::Mirror(const gp_Pnt2d& P)
+void gp_Ax22d::Mirror(const gp_Pnt2d& P) noexcept
 {
   gp_Pnt2d Temp = point;
   Temp.Mirror(P);
@@ -35,14 +35,14 @@ void gp_Ax22d::Mirror(const gp_Pnt2d& P)
   vydir.Reverse();
 }
 
-gp_Ax22d gp_Ax22d::Mirrored(const gp_Pnt2d& P) const
+gp_Ax22d gp_Ax22d::Mirrored(const gp_Pnt2d& P) const noexcept
 {
   gp_Ax22d Temp = *this;
   Temp.Mirror(P);
   return Temp;
 }
 
-void gp_Ax22d::Mirror(const gp_Ax2d& A1)
+void gp_Ax22d::Mirror(const gp_Ax2d& A1) noexcept
 {
   vydir.Mirror(A1);
   vxdir.Mirror(A1);
@@ -51,7 +51,7 @@ void gp_Ax22d::Mirror(const gp_Ax2d& A1)
   point = Temp;
 }
 
-gp_Ax22d gp_Ax22d::Mirrored(const gp_Ax2d& A1) const
+gp_Ax22d gp_Ax22d::Mirrored(const gp_Ax2d& A1) const noexcept
 {
   gp_Ax22d Temp = *this;
   Temp.Mirror(A1);

@@ -339,7 +339,7 @@ public:
     return aV;
   }
 
-  Standard_EXPORT void Transform(const gp_Trsf2d& theT);
+  Standard_EXPORT void Transform(const gp_Trsf2d& theT) noexcept;
 
   //! Transforms a vector with a Trsf from gp.
   Standard_NODISCARD gp_Vec2d Transformed(const gp_Trsf2d& theT) const

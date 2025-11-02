@@ -51,26 +51,26 @@ void gp_Ax2d::Scale(const gp_Pnt2d& P, const Standard_Real S)
     vdir.Reverse();
 }
 
-void gp_Ax2d::Mirror(const gp_Pnt2d& P)
+void gp_Ax2d::Mirror(const gp_Pnt2d& P) noexcept
 {
   loc.Mirror(P);
   vdir.Reverse();
 }
 
-gp_Ax2d gp_Ax2d::Mirrored(const gp_Pnt2d& P) const
+gp_Ax2d gp_Ax2d::Mirrored(const gp_Pnt2d& P) const noexcept
 {
   gp_Ax2d A = *this;
   A.Mirror(P);
   return A;
 }
 
-void gp_Ax2d::Mirror(const gp_Ax2d& A)
+void gp_Ax2d::Mirror(const gp_Ax2d& A) noexcept
 {
   loc.Mirror(A);
   vdir.Mirror(A.vdir);
 }
 
-gp_Ax2d gp_Ax2d::Mirrored(const gp_Ax2d& A) const
+gp_Ax2d gp_Ax2d::Mirrored(const gp_Ax2d& A) const noexcept
 {
   gp_Ax2d AA = *this;
   AA.Mirror(A);

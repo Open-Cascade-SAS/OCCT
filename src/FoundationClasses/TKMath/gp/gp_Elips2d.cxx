@@ -66,24 +66,24 @@ void gp_Elips2d::Coefficients(Standard_Real& A,
   }
 }
 
-void gp_Elips2d::Mirror(const gp_Pnt2d& P)
+void gp_Elips2d::Mirror(const gp_Pnt2d& P) noexcept
 {
   pos.Mirror(P);
 }
 
-gp_Elips2d gp_Elips2d::Mirrored(const gp_Pnt2d& P) const
+gp_Elips2d gp_Elips2d::Mirrored(const gp_Pnt2d& P) const noexcept
 {
   gp_Elips2d E = *this;
   E.pos.Mirror(P);
   return E;
 }
 
-void gp_Elips2d::Mirror(const gp_Ax2d& A)
+void gp_Elips2d::Mirror(const gp_Ax2d& A) noexcept
 {
   pos.Mirror(A);
 }
 
-gp_Elips2d gp_Elips2d::Mirrored(const gp_Ax2d& A) const
+gp_Elips2d gp_Elips2d::Mirrored(const gp_Ax2d& A) const noexcept
 {
   gp_Elips2d E = *this;
   E.pos.Mirror(A);

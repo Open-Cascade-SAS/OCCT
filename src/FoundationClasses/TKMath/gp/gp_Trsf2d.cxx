@@ -28,7 +28,7 @@
 #include <gp_XY.hxx>
 #include <Standard_ConstructionError.hxx>
 
-void gp_Trsf2d::SetMirror(const gp_Ax2d& A)
+void gp_Trsf2d::SetMirror(const gp_Ax2d& A) noexcept
 {
   shape              = gp_Ax1Mirror;
   scale              = -1.0;

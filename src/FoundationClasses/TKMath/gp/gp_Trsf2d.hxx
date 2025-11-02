@@ -55,11 +55,11 @@ public:
 
   //! Changes the transformation into a symmetrical transformation.
   //! theP is the center of the symmetry.
-  void SetMirror(const gp_Pnt2d& theP);
+  void SetMirror(const gp_Pnt2d& theP) noexcept;
 
   //! Changes the transformation into a symmetrical transformation.
   //! theA is the center of the axial symmetry.
-  Standard_EXPORT void SetMirror(const gp_Ax2d& theA);
+  Standard_EXPORT void SetMirror(const gp_Ax2d& theA) noexcept;
 
   //! Changes the transformation into a rotation.
   //! theP is the rotation's center and theAng is the angular value of the
@@ -256,7 +256,7 @@ inline void gp_Trsf2d::SetRotation(const gp_Pnt2d& theP, const Standard_Real the
 
 //=================================================================================================
 
-inline void gp_Trsf2d::SetMirror(const gp_Pnt2d& theP)
+inline void gp_Trsf2d::SetMirror(const gp_Pnt2d& theP) noexcept
 {
   shape = gp_PntMirror;
   scale = -1.0;

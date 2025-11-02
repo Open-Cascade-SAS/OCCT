@@ -66,24 +66,24 @@ void gp_Hypr2d::Coefficients(Standard_Real& A,
   }
 }
 
-void gp_Hypr2d::Mirror(const gp_Pnt2d& P)
+void gp_Hypr2d::Mirror(const gp_Pnt2d& P) noexcept
 {
   pos.Mirror(P);
 }
 
-gp_Hypr2d gp_Hypr2d::Mirrored(const gp_Pnt2d& P) const
+gp_Hypr2d gp_Hypr2d::Mirrored(const gp_Pnt2d& P) const noexcept
 {
   gp_Hypr2d H = *this;
   H.pos.Mirror(P);
   return H;
 }
 
-void gp_Hypr2d::Mirror(const gp_Ax2d& A)
+void gp_Hypr2d::Mirror(const gp_Ax2d& A) noexcept
 {
   pos.Mirror(A);
 }
 
-gp_Hypr2d gp_Hypr2d::Mirrored(const gp_Ax2d& A) const
+gp_Hypr2d gp_Hypr2d::Mirrored(const gp_Ax2d& A) const noexcept
 {
   gp_Hypr2d H = *this;
   H.pos.Mirror(A);

@@ -42,17 +42,17 @@ public:
 
   //! Creates a Line corresponding to X axis of the
   //! reference coordinate system.
-  gp_Lin2d() {}
+  constexpr gp_Lin2d() noexcept {}
 
   //! Creates a line located with theA.
-  gp_Lin2d(const gp_Ax2d& theA)
+  constexpr gp_Lin2d(const gp_Ax2d& theA) noexcept
       : pos(theA)
   {
   }
 
   //! <theP> is the location point (origin) of the line and
   //! <theV> is the direction of the line.
-  gp_Lin2d(const gp_Pnt2d& theP, const gp_Dir2d& theV)
+  constexpr gp_Lin2d(const gp_Pnt2d& theP, const gp_Dir2d& theV) noexcept
       : pos(theP, theV)
   {
   }
@@ -64,13 +64,13 @@ public:
                            const Standard_Real theB,
                            const Standard_Real theC);
 
-  void Reverse() { pos.Reverse(); }
+  constexpr void Reverse() noexcept { pos.Reverse(); }
 
   //! Reverses the positioning axis of this line.
   //! Note:
   //! -   Reverse assigns the result to this line, while
   //! -   Reversed creates a new one.
-  Standard_NODISCARD gp_Lin2d Reversed() const
+  Standard_NODISCARD constexpr gp_Lin2d Reversed() const noexcept
   {
     gp_Lin2d aL = *this;
     aL.pos.Reverse();
@@ -78,19 +78,19 @@ public:
   }
 
   //! Changes the direction of the line.
-  void SetDirection(const gp_Dir2d& theV) { pos.SetDirection(theV); }
+  constexpr void SetDirection(const gp_Dir2d& theV) noexcept { pos.SetDirection(theV); }
 
   //! Changes the origin of the line.
-  void SetLocation(const gp_Pnt2d& theP) { pos.SetLocation(theP); }
+  constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { pos.SetLocation(theP); }
 
   //! Complete redefinition of the line.
   //! The "Location" point of <theA> is the origin of the line.
   //! The "Direction" of <theA> is  the direction of the line.
-  void SetPosition(const gp_Ax2d& theA) { pos = theA; }
+  constexpr void SetPosition(const gp_Ax2d& theA) noexcept { pos = theA; }
 
   //! Returns the normalized coefficients of the line :
   //! theA * X + theB * Y + theC = 0.
-  void Coefficients(Standard_Real& theA, Standard_Real& theB, Standard_Real& theC) const
+  constexpr void Coefficients(Standard_Real& theA, Standard_Real& theB, Standard_Real& theC) const noexcept
   {
     theA = pos.Direction().Y();
     theB = -pos.Direction().X();
@@ -98,14 +98,14 @@ public:
   }
 
   //! Returns the direction of the line.
-  const gp_Dir2d& Direction() const { return pos.Direction(); }
+  constexpr const gp_Dir2d& Direction() const noexcept { return pos.Direction(); }
 
   //! Returns the location point (origin) of the line.
-  const gp_Pnt2d& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt2d& Location() const noexcept { return pos.Location(); }
 
   //! Returns the axis placement one axis with the same
   //! location and direction as <me>.
-  const gp_Ax2d& Position() const { return pos; }
+  constexpr const gp_Ax2d& Position() const noexcept { return pos; }
 
   //! Computes the angle between two lines in radians.
   Standard_Real Angle(const gp_Lin2d& theOther) const
@@ -116,44 +116,44 @@ public:
   //! Returns true if this line contains the point theP, that is, if the
   //! distance between point theP and this line is less than or
   //! equal to theLinearTolerance.
-  Standard_Boolean Contains(const gp_Pnt2d& theP, const Standard_Real theLinearTolerance) const
+  Standard_Boolean Contains(const gp_Pnt2d& theP, const Standard_Real theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
 
   //! Computes the distance between <me> and the point <theP>.
-  Standard_Real Distance(const gp_Pnt2d& theP) const;
+  Standard_Real Distance(const gp_Pnt2d& theP) const noexcept;
 
   //! Computes the distance between two lines.
-  Standard_Real Distance(const gp_Lin2d& theOther) const;
+  Standard_Real Distance(const gp_Lin2d& theOther) const noexcept;
 
   //! Computes the square distance between <me> and the point
   //! <theP>.
-  Standard_Real SquareDistance(const gp_Pnt2d& theP) const;
+  constexpr Standard_Real SquareDistance(const gp_Pnt2d& theP) const noexcept;
 
   //! Computes the square distance between two lines.
-  Standard_Real SquareDistance(const gp_Lin2d& theOther) const;
+  Standard_Real SquareDistance(const gp_Lin2d& theOther) const noexcept;
 
   //! Computes the line normal to the direction of <me>,
   //! passing through the point <theP>.
-  gp_Lin2d Normal(const gp_Pnt2d& theP) const
+  gp_Lin2d Normal(const gp_Pnt2d& theP) const noexcept
   {
     return gp_Lin2d(gp_Ax2d(theP, gp_Dir2d(-(pos.Direction().Y()), pos.Direction().X())));
   }
 
-  Standard_EXPORT void Mirror(const gp_Pnt2d& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
 
   //! Performs the symmetrical transformation of a line
   //! with respect to the point <theP> which is the center
   //! of the symmetry
-  Standard_NODISCARD Standard_EXPORT gp_Lin2d Mirrored(const gp_Pnt2d& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Lin2d Mirrored(const gp_Pnt2d& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2d& theA);
+  Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
 
   //! Performs the symmetrical transformation of a line
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Lin2d Mirrored(const gp_Ax2d& theA) const;
+  Standard_NODISCARD Standard_EXPORT gp_Lin2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
 
@@ -177,31 +177,31 @@ public:
     return aL;
   }
 
-  void Transform(const gp_Trsf2d& theT) { pos.Transform(theT); }
+  void Transform(const gp_Trsf2d& theT) noexcept { pos.Transform(theT); }
 
   //! Transforms a line with the transformation theT from class Trsf2d.
-  Standard_NODISCARD gp_Lin2d Transformed(const gp_Trsf2d& theT) const
+  Standard_NODISCARD gp_Lin2d Transformed(const gp_Trsf2d& theT) const noexcept
   {
     gp_Lin2d aL = *this;
     aL.pos.Transform(theT);
     return aL;
   }
 
-  void Translate(const gp_Vec2d& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a line in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Lin2d Translated(const gp_Vec2d& theV) const
+  Standard_NODISCARD gp_Lin2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Lin2d aL = *this;
     aL.pos.Translate(theV);
     return aL;
   }
 
-  void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept { pos.Translate(theP1, theP2); }
 
   //! Translates a line from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Lin2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD gp_Lin2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const noexcept
   {
     gp_Lin2d aL = *this;
     aL.pos.Translate(gp_Vec2d(theP1, theP2));
@@ -214,7 +214,7 @@ private:
 
 //=================================================================================================
 
-inline Standard_Real gp_Lin2d::Distance(const gp_Pnt2d& theP) const
+inline Standard_Real gp_Lin2d::Distance(const gp_Pnt2d& theP) const noexcept
 {
   gp_XY aCoord = theP.XY();
   aCoord.Subtract((pos.Location()).XY());
@@ -228,7 +228,7 @@ inline Standard_Real gp_Lin2d::Distance(const gp_Pnt2d& theP) const
 
 //=================================================================================================
 
-inline Standard_Real gp_Lin2d::Distance(const gp_Lin2d& theOther) const
+inline Standard_Real gp_Lin2d::Distance(const gp_Lin2d& theOther) const noexcept
 {
   Standard_Real aD = 0.0;
   if (pos.IsParallel(theOther.pos, gp::Resolution()))
@@ -240,7 +240,7 @@ inline Standard_Real gp_Lin2d::Distance(const gp_Lin2d& theOther) const
 
 //=================================================================================================
 
-inline Standard_Real gp_Lin2d::SquareDistance(const gp_Pnt2d& theP) const
+inline constexpr Standard_Real gp_Lin2d::SquareDistance(const gp_Pnt2d& theP) const noexcept
 {
   gp_XY aCoord = theP.XY();
   aCoord.Subtract((pos.Location()).XY());
@@ -250,7 +250,7 @@ inline Standard_Real gp_Lin2d::SquareDistance(const gp_Pnt2d& theP) const
 
 //=================================================================================================
 
-inline Standard_Real gp_Lin2d::SquareDistance(const gp_Lin2d& theOther) const
+inline Standard_Real gp_Lin2d::SquareDistance(const gp_Lin2d& theOther) const noexcept
 {
   Standard_Real aD = 0.0;
   if (pos.IsParallel(theOther.pos, gp::Resolution()))
