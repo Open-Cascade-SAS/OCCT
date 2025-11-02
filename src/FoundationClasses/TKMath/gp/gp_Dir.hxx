@@ -77,18 +77,18 @@ public:
   //! that were not directly modified.
   void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi);
 
-  //! For this unit vector,  assigns the values theXv, theYv and theZv to its three coordinates.
+  //! For this unit vector, assigns the values theXv, theYv and theZv to its three coordinates.
   //! Remember that all the coordinates of a unit vector are
   //! implicitly modified when any single one is changed directly.
   void SetCoord(const Standard_Real theXv, const Standard_Real theYv, const Standard_Real theZv);
 
-  //! Assigns the given value to the X coordinate of this   unit vector.
+  //! Assigns the given value to the X coordinate of this unit vector.
   void SetX(const Standard_Real theX);
 
-  //! Assigns the given value to the Y coordinate of this   unit vector.
+  //! Assigns the given value to the Y coordinate of this unit vector.
   void SetY(const Standard_Real theY);
 
-  //! Assigns the given value to the Z  coordinate of this   unit vector.
+  //! Assigns the given value to the Z coordinate of this unit vector.
   void SetZ(const Standard_Real theZ);
 
   //! Assigns the three coordinates of theCoord to this unit vector.
@@ -102,7 +102,7 @@ public:
   //! Standard_OutOfRange if theIndex is not 1, 2, or 3.
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
-  //! Returns for the  unit vector  its three coordinates theXv, theYv, and theZv.
+  //! Returns for the unit vector its three coordinates theXv, theYv, and theZv.
   constexpr void Coord(Standard_Real& theXv,
                        Standard_Real& theYv,
                        Standard_Real& theZv) const noexcept
@@ -110,16 +110,16 @@ public:
     coord.Coord(theXv, theYv, theZv);
   }
 
-  //! Returns the X coordinate for a  unit vector.
+  //! Returns the X coordinate for a unit vector.
   constexpr Standard_Real X() const noexcept { return coord.X(); }
 
-  //! Returns the Y coordinate for a  unit vector.
+  //! Returns the Y coordinate for a unit vector.
   constexpr Standard_Real Y() const noexcept { return coord.Y(); }
 
-  //! Returns the Z coordinate for a  unit vector.
+  //! Returns the Z coordinate for a unit vector.
   constexpr Standard_Real Z() const noexcept { return coord.Z(); }
 
-  //! for this unit vector, returns  its three coordinates as a number triplea.
+  //! for this unit vector, returns its three coordinates as a number triple.
   constexpr const gp_XYZ& XYZ() const noexcept { return coord; }
 
   //! Returns True if the angle between the two directions is
@@ -129,7 +129,7 @@ public:
     return Angle(theOther) <= theAngularTolerance;
   }
 
-  //! Returns True if  the angle between this unit vector and the unit vector theOther is equal to
+  //! Returns True if the angle between this unit vector and the unit vector theOther is equal to
   //! Pi/2 (normal).
   Standard_Boolean IsNormal(const gp_Dir& theOther, const Standard_Real theAngularTolerance) const
   {
@@ -141,7 +141,7 @@ public:
     return anAng <= theAngularTolerance;
   }
 
-  //! Returns True if  the angle between this unit vector and the unit vector theOther is equal to
+  //! Returns True if the angle between this unit vector and the unit vector theOther is equal to
   //! Pi (opposite).
   Standard_Boolean IsOpposite(const gp_Dir& theOther, const Standard_Real theAngularTolerance) const
   {
@@ -238,8 +238,8 @@ public:
   Standard_EXPORT void Mirror(const gp_Dir& theV);
 
   //! Performs the symmetrical transformation of a direction
-  //! with respect to the direction theV which is the center of
-  //! the  symmetry.
+  //! with respect to the direction theV which is the center
+  //! of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Dir Mirrored(const gp_Dir& theV) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);

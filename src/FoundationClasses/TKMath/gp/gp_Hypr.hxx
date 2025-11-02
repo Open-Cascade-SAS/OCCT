@@ -133,7 +133,7 @@ public:
     majorRadius = theMajorRadius;
   }
 
-  //! Modifies the minor  radius of this hyperbola.
+  //! Modifies the minor radius of this hyperbola.
   //! Exceptions
   //! Standard_ConstructionError if theMinorRadius is negative.
   void SetMinorRadius(const Standard_Real theMinorRadius)
@@ -224,7 +224,7 @@ public:
   //! negative side of the "XAxis" of the hyperbola.
   gp_Pnt Focus2() const;
 
-  //! Returns  the location point of the hyperbola. It is the
+  //! Returns the location point of the hyperbola. It is the
   //! intersection point between the "XAxis" and the "YAxis".
   const gp_Pnt& Location() const { return pos.Location(); }
 
@@ -277,7 +277,7 @@ public:
   Standard_EXPORT void Mirror(const gp_Pnt& theP);
 
   //! Performs the symmetrical transformation of an hyperbola with
-  //! respect  to the point theP which is the center of the symmetry.
+  //! respect to the point theP which is the center of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Hypr Mirrored(const gp_Pnt& theP) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);

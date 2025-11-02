@@ -98,15 +98,15 @@ public:
   //! Changes the local coordinate system of the plane.
   void SetPosition(const gp_Ax3& theA3) { pos = theA3; }
 
-  //! Reverses the   U   parametrization of   the  plane
+  //! Reverses the U parametrization of the plane
   //! reversing the XAxis.
   void UReverse() { pos.XReverse(); }
 
-  //! Reverses the   V   parametrization of   the  plane
+  //! Reverses the V parametrization of the plane
   //! reversing the YAxis.
   void VReverse() { pos.YReverse(); }
 
-  //! returns true if the Ax3 is right handed.
+  //! Returns true if the Ax3 is right handed.
   Standard_Boolean Direct() const { return pos.Direct(); }
 
   //! Returns the plane's normal Axis.
@@ -115,7 +115,7 @@ public:
   //! Returns the plane's location (origin).
   const gp_Pnt& Location() const { return pos.Location(); }
 
-  //! Returns the local coordinate system of the plane .
+  //! Returns the local coordinate system of the plane.
   const gp_Ax3& Position() const { return pos; }
 
   //! Computes the distance between <me> and the point <theP>.
@@ -151,7 +151,7 @@ public:
   //! Returns the X axis of the plane.
   gp_Ax1 XAxis() const { return gp_Ax1(pos.Location(), pos.XDirection()); }
 
-  //! Returns the Y axis  of the plane.
+  //! Returns the Y axis of the plane.
   gp_Ax1 YAxis() const { return gp_Ax1(pos.Location(), pos.YDirection()); }
 
   //! Returns true if this plane contains the point theP. This means that
@@ -194,31 +194,30 @@ public:
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
-  //! Performs   the symmetrical transformation  of a
-  //! plane with respect to an axis placement  which is the axis
-  //! of  the symmetry.  The  transformation is performed on the
-  //! "Location" point, on  the "XAxis"  and the "YAxis".    The
-  //! resulting normal  direction  is  the cross product between
-  //! the "XDirection" and the "YDirection" after transformation
-  //! if  the  initial plane was right  handed,  else  it is the
-  //! opposite.
+  //! Performs the symmetrical transformation of a plane with
+  //! respect to an axis placement which is the axis of the
+  //! symmetry. The transformation is performed on the "Location"
+  //! point, on the "XAxis" and the "YAxis". The resulting normal
+  //! direction is the cross product between the "XDirection" and
+  //! the "YDirection" after transformation if the initial plane
+  //! was right handed, else it is the opposite.
   Standard_NODISCARD Standard_EXPORT gp_Pln Mirrored(const gp_Ax1& theA1) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
-  //! Performs the  symmetrical transformation  of  a
-  //! plane    with respect to    an axis  placement.   The axis
-  //! placement  <A2> locates the plane  of  the symmetry.   The
-  //! transformation is performed  on  the  "Location" point, on
-  //! the  "XAxis" and  the    "YAxis".  The resulting    normal
-  //! direction is the cross  product between   the "XDirection"
-  //! and the "YDirection"  after  transformation if the initial
-  //! plane was right handed, else it is the opposite.
+  //! Performs the symmetrical transformation of a plane with
+  //! respect to an axis placement. The axis placement <A2>
+  //! locates the plane of the symmetry. The transformation is
+  //! performed on the "Location" point, on the "XAxis" and the
+  //! "YAxis". The resulting normal direction is the cross product
+  //! between the "XDirection" and the "YDirection" after
+  //! transformation if the initial plane was right handed,
+  //! else it is the opposite.
   Standard_NODISCARD Standard_EXPORT gp_Pln Mirrored(const gp_Ax2& theA2) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
 
-  //! rotates a plane. theA1 is the axis of the rotation.
+  //! Rotates a plane. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
   Standard_NODISCARD gp_Pln Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
