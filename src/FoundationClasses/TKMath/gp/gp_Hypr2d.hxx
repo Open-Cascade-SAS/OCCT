@@ -359,8 +359,7 @@ public:
   //! If <theS> is positive only the location point is
   //! modified. But if <theS> is negative the "XAxis" is
   //! reversed and the "YAxis" too.
-  Standard_NODISCARD gp_Hypr2d Scaled(const gp_Pnt2d&     theP,
-                                      const Standard_Real theS) const;
+  Standard_NODISCARD gp_Hypr2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
 
   void Transform(const gp_Trsf2d& theT);
 

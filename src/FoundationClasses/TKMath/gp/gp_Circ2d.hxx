@@ -198,15 +198,11 @@ public:
   //! to an axis placement which is the axis of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
-  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
-  {
-    pos.Rotate(theP, theAng);
-  }
+  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
 
   //! Rotates a circle. theP is the center of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Circ2d Rotated(const gp_Pnt2d&     theP,
-                                       const Standard_Real theAng) const
+  Standard_NODISCARD gp_Circ2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Rotate(theP, theAng);
@@ -220,8 +216,7 @@ public:
   //! If theS is negative the radius stay positive but
   //! the "XAxis" and the "YAxis" are  reversed as for
   //! an ellipse.
-  Standard_NODISCARD gp_Circ2d Scaled(const gp_Pnt2d&     theP,
-                                      const Standard_Real theS) const;
+  Standard_NODISCARD gp_Circ2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
 
   void Transform(const gp_Trsf2d& theT);
 

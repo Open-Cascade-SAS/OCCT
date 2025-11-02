@@ -245,13 +245,9 @@ public:
   //! to an axis placement which is the axis of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
-  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
-  {
-    pos.Rotate(theP, theAng);
-  }
+  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
 
-  Standard_NODISCARD gp_Elips2d Rotated(const gp_Pnt2d&     theP,
-                                        const Standard_Real theAng) const
+  Standard_NODISCARD gp_Elips2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
   {
     gp_Elips2d anE = *this;
     anE.pos.Rotate(theP, theAng);
@@ -261,8 +257,7 @@ public:
   void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
 
   //! Scales a ellipse. theS is the scaling value.
-  Standard_NODISCARD gp_Elips2d Scaled(const gp_Pnt2d&     theP,
-                                       const Standard_Real theS) const;
+  Standard_NODISCARD gp_Elips2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
 
   void Transform(const gp_Trsf2d& theT);
 

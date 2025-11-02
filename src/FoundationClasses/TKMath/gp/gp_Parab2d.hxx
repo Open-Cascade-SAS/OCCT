@@ -224,8 +224,7 @@ public:
   //! Scales a parabola. theS is the scaling value.
   //! If theS is negative the direction of the symmetry axis
   //! "XAxis" is reversed and the direction of the "YAxis" too.
-  Standard_NODISCARD gp_Parab2d Scaled(const gp_Pnt2d&     theP,
-                                       const Standard_Real theS) const;
+  Standard_NODISCARD gp_Parab2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
 
   void Transform(const gp_Trsf2d& theT);
 
