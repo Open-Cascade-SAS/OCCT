@@ -1873,7 +1873,6 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingVertex(const gp_Pnt&             
   Standard_Boolean                  bRet;
   Standard_Integer                  nV, iFlag;
   Standard_Real                     aTolCheck;
-  gp_Pnt                            aPV;
   Bnd_Box                           aBoxP;
   TColStd_MapIteratorOfMapOfInteger aIt;
   //

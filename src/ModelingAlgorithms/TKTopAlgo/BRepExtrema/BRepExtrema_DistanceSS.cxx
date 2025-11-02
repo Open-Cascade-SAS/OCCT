@@ -457,7 +457,7 @@ static void PERFORM_C0(const TopoDS_Edge&         S1,
       Standard_Real Udeb, Ufin;
       BRep_Tool::Range(Eother, Udeb, Ufin);
 
-      gp_Pnt                   P1, Pt;
+      gp_Pnt                   Pt;
       Standard_Integer         i, ii;
       BRepClass_FaceClassifier classifier;
       for (i = 1; i <= arrInter.Length(); i++)
@@ -992,7 +992,6 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge&         theS1,
     TColStd_Array1OfReal arrInter(1, 1 + nbIntervals);
     aAdaptorCurve.Intervals(arrInter, GeomAbs_C1);
 
-    gp_Pnt              Pt;
     Standard_Real       U, V;
     const Standard_Real tol = BRep_Tool::Tolerance(theS2);
 

@@ -382,7 +382,7 @@ Standard_Boolean Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
   {
     Standard_Boolean     bTranslate;
     Standard_Real        aD2, aT1, aT2;
-    gp_Pnt2d             PF, NewPF, aP2DT;
+    gp_Pnt2d             PF, NewPF;
     gp_Vec2d             aV2DT, vectra(2. * M_PI, 0.);
     Handle(Geom2d_Curve) aC2DE;
     //

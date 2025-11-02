@@ -38,7 +38,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a direction corresponding to X axis.
-  gp_Dir()
+  constexpr gp_Dir() noexcept
       : coord(1., 0., 0.)
   {
   }
@@ -103,22 +103,24 @@ public:
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
   //! Returns for the  unit vector  its three coordinates theXv, theYv, and theZv.
-  void Coord(Standard_Real& theXv, Standard_Real& theYv, Standard_Real& theZv) const
+  constexpr void Coord(Standard_Real& theXv,
+                       Standard_Real& theYv,
+                       Standard_Real& theZv) const noexcept
   {
     coord.Coord(theXv, theYv, theZv);
   }
 
   //! Returns the X coordinate for a  unit vector.
-  Standard_Real X() const { return coord.X(); }
+  constexpr Standard_Real X() const noexcept { return coord.X(); }
 
   //! Returns the Y coordinate for a  unit vector.
-  Standard_Real Y() const { return coord.Y(); }
+  constexpr Standard_Real Y() const noexcept { return coord.Y(); }
 
   //! Returns the Z coordinate for a  unit vector.
-  Standard_Real Z() const { return coord.Z(); }
+  constexpr Standard_Real Z() const noexcept { return coord.Z(); }
 
   //! for this unit vector, returns  its three coordinates as a number triplea.
-  const gp_XYZ& XYZ() const { return coord; }
+  constexpr const gp_XYZ& XYZ() const noexcept { return coord; }
 
   //! Returns True if the angle between the two directions is
   //! lower or equal to theAngularTolerance.
@@ -200,35 +202,38 @@ public:
   Standard_NODISCARD gp_Dir CrossCrossed(const gp_Dir& theV1, const gp_Dir& theV2) const;
 
   //! Computes the scalar product
-  Standard_Real Dot(const gp_Dir& theOther) const { return coord.Dot(theOther.coord); }
+  constexpr Standard_Real Dot(const gp_Dir& theOther) const noexcept
+  {
+    return coord.Dot(theOther.coord);
+  }
 
-  Standard_Real operator*(const gp_Dir& theOther) const { return Dot(theOther); }
+  constexpr Standard_Real operator*(const gp_Dir& theOther) const noexcept { return Dot(theOther); }
 
   //! Computes the triple scalar product <me> * (theV1 ^ theV2).
   //! Warnings :
   //! The computed vector theV1' = theV1 ^ theV2 is not normalized
   //! to create a unitary vector. So this method never
   //! raises an exception even if theV1 and theV2 are parallel.
-  Standard_Real DotCross(const gp_Dir& theV1, const gp_Dir& theV2) const
+  constexpr Standard_Real DotCross(const gp_Dir& theV1, const gp_Dir& theV2) const noexcept
   {
     return coord.Dot(theV1.coord.Crossed(theV2.coord));
   }
 
-  void Reverse() { coord.Reverse(); }
+  constexpr void Reverse() noexcept { coord.Reverse(); }
 
   //! Reverses the orientation of a direction
   //! geometric transformations
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction V which is the center of
   //! the  symmetry.]
-  Standard_NODISCARD gp_Dir Reversed() const
+  Standard_NODISCARD constexpr gp_Dir Reversed() const noexcept
   {
     gp_Dir aV = *this;
     aV.coord.Reverse();
     return aV;
   }
 
-  Standard_NODISCARD gp_Dir operator-() const { return Reversed(); }
+  Standard_NODISCARD constexpr gp_Dir operator-() const noexcept { return Reversed(); }
 
   Standard_EXPORT void Mirror(const gp_Dir& theV);
 

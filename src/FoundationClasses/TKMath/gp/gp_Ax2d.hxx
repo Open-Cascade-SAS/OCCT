@@ -45,7 +45,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an axis object representing X axis of the reference co-ordinate system.
-  gp_Ax2d()
+  constexpr gp_Ax2d() noexcept
       : loc(0., 0.)
   // vdir(1.,0.) use default ctor of gp_Dir2d, as it creates the same dir (1,0)
   {
@@ -54,23 +54,23 @@ public:
   //! Creates an Ax2d.
   //! <theP> is the "Location" point of the axis placement
   //! and theV is the "Direction" of the axis placement.
-  gp_Ax2d(const gp_Pnt2d& theP, const gp_Dir2d& theV)
+  constexpr gp_Ax2d(const gp_Pnt2d& theP, const gp_Dir2d& theV) noexcept
       : loc(theP),
         vdir(theV)
   {
   }
 
   //! Changes the "Location" point (origin) of <me>.
-  void SetLocation(const gp_Pnt2d& theP) { loc = theP; }
+  constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { loc = theP; }
 
   //! Changes the direction of <me>.
-  void SetDirection(const gp_Dir2d& theV) { vdir = theV; }
+  constexpr void SetDirection(const gp_Dir2d& theV) noexcept { vdir = theV; }
 
   //! Returns the origin of <me>.
-  const gp_Pnt2d& Location() const { return loc; }
+  constexpr const gp_Pnt2d& Location() const noexcept { return loc; }
 
   //! Returns the direction of <me>.
-  const gp_Dir2d& Direction() const { return vdir; }
+  constexpr const gp_Dir2d& Direction() const noexcept { return vdir; }
 
   //! Returns True if  :
   //! . the angle between <me> and <Other> is lower or equal
@@ -115,10 +115,10 @@ public:
   Standard_Real Angle(const gp_Ax2d& theOther) const { return vdir.Angle(theOther.vdir); }
 
   //! Reverses the direction of <me> and assigns the result to this axis.
-  void Reverse() { vdir.Reverse(); }
+  constexpr void Reverse() noexcept { vdir.Reverse(); }
 
   //! Computes a new axis placement with a direction opposite to the direction of <me>.
-  Standard_NODISCARD gp_Ax2d Reversed() const
+  Standard_NODISCARD constexpr gp_Ax2d Reversed() const noexcept
   {
     gp_Ax2d aTemp = *this;
     aTemp.Reverse();
@@ -180,18 +180,21 @@ public:
     return anA;
   }
 
-  void Translate(const gp_Vec2d& theV) { loc.Translate(theV); }
+  constexpr void Translate(const gp_Vec2d& theV) noexcept { loc.Translate(theV); }
 
   //! Translates an axis placement in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Ax2d Translated(const gp_Vec2d& theV) const
+  Standard_NODISCARD constexpr gp_Ax2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Ax2d anA = *this;
     (anA.loc).Translate(theV);
     return anA;
   }
 
-  void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) { loc.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    loc.Translate(theP1, theP2);
+  }
 
   //! Translates an axis placement from the point theP1 to the point theP2.
   Standard_NODISCARD gp_Ax2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const

@@ -48,23 +48,23 @@ public:
   }
 
   //! P is the location point and V is the direction of <me>.
-  gp_Ax1(const gp_Pnt& theP, const gp_Dir& theV)
+  constexpr gp_Ax1(const gp_Pnt& theP, const gp_Dir& theV) noexcept
       : loc(theP),
         vdir(theV)
   {
   }
 
   //! Assigns V as the "Direction"  of this axis.
-  void SetDirection(const gp_Dir& theV) { vdir = theV; }
+  constexpr void SetDirection(const gp_Dir& theV) noexcept { vdir = theV; }
 
   //! Assigns  P as the origin of this axis.
-  void SetLocation(const gp_Pnt& theP) { loc = theP; }
+  constexpr void SetLocation(const gp_Pnt& theP) noexcept { loc = theP; }
 
   //! Returns the direction of <me>.
-  const gp_Dir& Direction() const { return vdir; }
+  constexpr const gp_Dir& Direction() const noexcept { return vdir; }
 
   //! Returns the location point of <me>.
-  const gp_Pnt& Location() const { return loc; }
+  constexpr const gp_Pnt& Location() const noexcept { return loc; }
 
   //! Returns True if  :
   //! . the angle between <me> and <Other> is lower or equal
@@ -106,7 +106,7 @@ public:
   Standard_Real Angle(const gp_Ax1& theOther) const { return vdir.Angle(theOther.vdir); }
 
   //! Reverses the unit vector of this axis and assigns the result to this axis.
-  void Reverse() { vdir.Reverse(); }
+  constexpr void Reverse() noexcept { vdir.Reverse(); }
 
   //! Reverses the unit vector of this axis and creates a new one.
   Standard_NODISCARD gp_Ax1 Reversed() const
@@ -167,7 +167,7 @@ public:
   //! Applies a scaling transformation to this axis with:
   //! - scale factor theS, and
   //! - center theP and assigns the result to this axis.
-  void Scale(const gp_Pnt& theP, const Standard_Real theS)
+  constexpr void Scale(const gp_Pnt& theP, const Standard_Real theS) noexcept
   {
     loc.Scale(theP, theS);
     if (theS < 0.0)
@@ -205,7 +205,7 @@ public:
   }
 
   //! Translates this axis by the vector theV, and assigns the result to this axis.
-  void Translate(const gp_Vec& theV) { loc.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { loc.Translate(theV); }
 
   //! Translates this axis by the vector theV,
   //! and creates a new one.
@@ -219,7 +219,10 @@ public:
   //! Translates this axis by:
   //! the vector (theP1, theP2) defined from point theP1 to point theP2.
   //! and assigns the result to this axis.
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { loc.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    loc.Translate(theP1, theP2);
+  }
 
   //! Translates this axis by:
   //! the vector (theP1, theP2) defined from point theP1 to point theP2.

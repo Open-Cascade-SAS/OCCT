@@ -47,7 +47,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns identity transformation.
-  gp_Trsf2d();
+  constexpr gp_Trsf2d() noexcept;
 
   //! Creates a 2d transformation in the XY plane from a
   //! 3d transformation .
@@ -97,19 +97,19 @@ public:
 
   //! Returns true if the determinant of the vectorial part of
   //! this transformation is negative..
-  Standard_Boolean IsNegative() const { return (matrix.Determinant() < 0.0); }
+  constexpr Standard_Boolean IsNegative() const noexcept { return (matrix.Determinant() < 0.0); }
 
   //! Returns the nature of the transformation. It can be  an
   //! identity transformation, a rotation, a translation, a mirror
   //! (relative to a point or an axis), a scaling transformation,
   //! or a compound transformation.
-  gp_TrsfForm Form() const { return shape; }
+  constexpr gp_TrsfForm Form() const noexcept { return shape; }
 
   //! Returns the scale factor.
-  Standard_Real ScaleFactor() const { return scale; }
+  constexpr Standard_Real ScaleFactor() const noexcept { return scale; }
 
   //! Returns the translation part of the transformation's matrix
-  const gp_XY& TranslationPart() const { return loc; }
+  constexpr const gp_XY& TranslationPart() const noexcept { return loc; }
 
   //! Returns the vectorial part of the transformation. It is a
   //! 2*2 matrix which includes the scale factor.
@@ -119,7 +119,7 @@ public:
   //! It is a 2*2 matrix which doesn't include the scale factor.
   //! The coefficients of this matrix must be multiplied by the
   //! scale factor to obtain the coefficients of the transformation.
-  const gp_Mat2d& HVectorialPart() const { return matrix; }
+  constexpr const gp_Mat2d& HVectorialPart() const noexcept { return matrix; }
 
   //! Returns the angle corresponding to the rotational component
   //! of the transformation matrix (operation opposite to SetRotation()).
@@ -178,10 +178,10 @@ public:
     return aT;
   }
 
-  void Transforms(Standard_Real& theX, Standard_Real& theY) const;
+  void Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept;
 
   //! Transforms  a doublet XY with a Trsf2d
-  void Transforms(gp_XY& theCoord) const;
+  void Transforms(gp_XY& theCoord) const noexcept;
 
   //! Sets the coefficients  of the transformation. The
   //! transformation  of the  point  x,y is  the point
@@ -218,12 +218,13 @@ private:
 
 //=================================================================================================
 
-inline gp_Trsf2d::gp_Trsf2d()
+inline constexpr gp_Trsf2d::gp_Trsf2d() noexcept
+    : scale(1.0),
+      shape(gp_Identity),
+      matrix(),
+      loc(0.0, 0.0)
 {
-  shape = gp_Identity;
-  scale = 1.0;
   matrix.SetIdentity();
-  loc.SetCoord(0.0, 0.0);
 }
 
 //=================================================================================================
@@ -313,7 +314,7 @@ inline Standard_Real gp_Trsf2d::Value(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline void gp_Trsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) const
+inline void gp_Trsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept
 {
   gp_XY aDoublet(theX, theY);
   aDoublet.Multiply(matrix);
@@ -327,7 +328,7 @@ inline void gp_Trsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) cons
 
 //=================================================================================================
 
-inline void gp_Trsf2d::Transforms(gp_XY& theCoord) const
+inline void gp_Trsf2d::Transforms(gp_XY& theCoord) const noexcept
 {
   theCoord.Multiply(matrix);
   if (scale != 1.0)

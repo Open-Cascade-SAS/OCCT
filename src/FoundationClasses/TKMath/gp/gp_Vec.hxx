@@ -32,19 +32,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a zero vector.
-  gp_Vec() {}
+  constexpr gp_Vec() noexcept {}
 
   //! Creates a unitary vector from a direction theV.
   gp_Vec(const gp_Dir& theV);
 
   //! Creates a vector with a triplet of coordinates.
-  gp_Vec(const gp_XYZ& theCoord)
+  constexpr gp_Vec(const gp_XYZ& theCoord) noexcept
       : coord(theCoord)
   {
   }
 
   //! Creates a point with its three cartesian coordinates.
-  gp_Vec(const Standard_Real theXv, const Standard_Real theYv, const Standard_Real theZv)
+  constexpr gp_Vec(const Standard_Real theXv,
+                   const Standard_Real theYv,
+                   const Standard_Real theZv) noexcept
       : coord(theXv, theYv, theZv)
   {
   }
@@ -65,7 +67,9 @@ public:
 
   //! For this vector, assigns
   //! -   the values theXv, theYv and theZv to its three coordinates.
-  void SetCoord(const Standard_Real theXv, const Standard_Real theYv, const Standard_Real theZv)
+  constexpr void SetCoord(const Standard_Real theXv,
+                          const Standard_Real theYv,
+                          const Standard_Real theZv) noexcept
   {
     coord.SetX(theXv);
     coord.SetY(theYv);
@@ -73,16 +77,16 @@ public:
   }
 
   //! Assigns the given value to the X coordinate of this vector.
-  void SetX(const Standard_Real theX) { coord.SetX(theX); }
+  constexpr void SetX(const Standard_Real theX) noexcept { coord.SetX(theX); }
 
   //! Assigns the given value to the X coordinate of this vector.
-  void SetY(const Standard_Real theY) { coord.SetY(theY); }
+  constexpr void SetY(const Standard_Real theY) noexcept { coord.SetY(theY); }
 
   //! Assigns the given value to the X coordinate of this vector.
-  void SetZ(const Standard_Real theZ) { coord.SetZ(theZ); }
+  constexpr void SetZ(const Standard_Real theZ) noexcept { coord.SetZ(theZ); }
 
   //! Assigns the three coordinates of theCoord to this vector.
-  void SetXYZ(const gp_XYZ& theCoord) { coord = theCoord; }
+  constexpr void SetXYZ(const gp_XYZ& theCoord) noexcept { coord = theCoord; }
 
   //! Returns the coordinate of range theIndex :
   //! theIndex = 1 => X is returned
@@ -92,7 +96,9 @@ public:
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
   //! For this vector returns its three coordinates theXv, theYv, and theZv inline
-  void Coord(Standard_Real& theXv, Standard_Real& theYv, Standard_Real& theZv) const
+  constexpr void Coord(Standard_Real& theXv,
+                       Standard_Real& theYv,
+                       Standard_Real& theZv) const noexcept
   {
     theXv = coord.X();
     theYv = coord.Y();
@@ -100,17 +106,17 @@ public:
   }
 
   //! For this vector, returns its X coordinate.
-  Standard_Real X() const { return coord.X(); }
+  constexpr Standard_Real X() const noexcept { return coord.X(); }
 
   //! For this vector, returns its Y coordinate.
-  Standard_Real Y() const { return coord.Y(); }
+  constexpr Standard_Real Y() const noexcept { return coord.Y(); }
 
   //! For this vector, returns its Z  coordinate.
-  Standard_Real Z() const { return coord.Z(); }
+  constexpr Standard_Real Z() const noexcept { return coord.Z(); }
 
   //! For this vector, returns
   //! -   its three coordinates as a number triple
-  const gp_XYZ& XYZ() const { return coord; }
+  constexpr const gp_XYZ& XYZ() const noexcept { return coord; }
 
   //! Returns True if the two vectors have the same magnitude value
   //! and the same direction. The precision values are theLinearTolerance
@@ -172,88 +178,97 @@ public:
   Standard_Real Magnitude() const { return coord.Modulus(); }
 
   //! Computes the square magnitude of this vector.
-  Standard_Real SquareMagnitude() const { return coord.SquareModulus(); }
+  constexpr Standard_Real SquareMagnitude() const noexcept { return coord.SquareModulus(); }
 
   //! Adds two vectors
-  void Add(const gp_Vec& theOther) { coord.Add(theOther.coord); }
+  constexpr void Add(const gp_Vec& theOther) noexcept { coord.Add(theOther.coord); }
 
-  void operator+=(const gp_Vec& theOther) { Add(theOther); }
+  constexpr void operator+=(const gp_Vec& theOther) noexcept { Add(theOther); }
 
   //! Adds two vectors
-  Standard_NODISCARD gp_Vec Added(const gp_Vec& theOther) const
+  Standard_NODISCARD constexpr gp_Vec Added(const gp_Vec& theOther) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Add(theOther.coord);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec operator+(const gp_Vec& theOther) const { return Added(theOther); }
+  Standard_NODISCARD constexpr gp_Vec operator+(const gp_Vec& theOther) const noexcept
+  {
+    return Added(theOther);
+  }
 
   //! Subtracts two vectors
-  void Subtract(const gp_Vec& theRight) { coord.Subtract(theRight.coord); }
+  constexpr void Subtract(const gp_Vec& theRight) noexcept { coord.Subtract(theRight.coord); }
 
-  void operator-=(const gp_Vec& theRight) { Subtract(theRight); }
+  constexpr void operator-=(const gp_Vec& theRight) noexcept { Subtract(theRight); }
 
   //! Subtracts two vectors
-  Standard_NODISCARD gp_Vec Subtracted(const gp_Vec& theRight) const
+  Standard_NODISCARD constexpr gp_Vec Subtracted(const gp_Vec& theRight) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Subtract(theRight.coord);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec operator-(const gp_Vec& theRight) const { return Subtracted(theRight); }
+  Standard_NODISCARD constexpr gp_Vec operator-(const gp_Vec& theRight) const noexcept
+  {
+    return Subtracted(theRight);
+  }
 
   //! Multiplies a vector by a scalar
-  void Multiply(const Standard_Real theScalar) { coord.Multiply(theScalar); }
+  constexpr void Multiply(const Standard_Real theScalar) noexcept { coord.Multiply(theScalar); }
 
-  void operator*=(const Standard_Real theScalar) { Multiply(theScalar); }
+  constexpr void operator*=(const Standard_Real theScalar) noexcept { Multiply(theScalar); }
 
   //! Multiplies a vector by a scalar
-  Standard_NODISCARD gp_Vec Multiplied(const Standard_Real theScalar) const
+  Standard_NODISCARD constexpr gp_Vec Multiplied(const Standard_Real theScalar) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Multiply(theScalar);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec operator*(const Standard_Real theScalar) const
+  Standard_NODISCARD constexpr gp_Vec operator*(const Standard_Real theScalar) const noexcept
   {
     return Multiplied(theScalar);
   }
 
   //! Divides a vector by a scalar
-  void Divide(const Standard_Real theScalar) { coord.Divide(theScalar); }
+  constexpr void Divide(const Standard_Real theScalar) { coord.Divide(theScalar); }
 
-  void operator/=(const Standard_Real theScalar) { Divide(theScalar); }
+  constexpr void operator/=(const Standard_Real theScalar) { Divide(theScalar); }
 
   //! Divides a vector by a scalar
-  Standard_NODISCARD gp_Vec Divided(const Standard_Real theScalar) const
+  Standard_NODISCARD constexpr gp_Vec Divided(const Standard_Real theScalar) const
   {
     gp_Vec aV = *this;
     aV.coord.Divide(theScalar);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec operator/(const Standard_Real theScalar) const
+  Standard_NODISCARD constexpr gp_Vec operator/(const Standard_Real theScalar) const
   {
     return Divided(theScalar);
   }
 
   //! computes the cross product between two vectors
-  void Cross(const gp_Vec& theRight) { coord.Cross(theRight.coord); }
+  constexpr void Cross(const gp_Vec& theRight) noexcept { coord.Cross(theRight.coord); }
 
-  void operator^=(const gp_Vec& theRight) { Cross(theRight); }
+  constexpr void operator^=(const gp_Vec& theRight) noexcept { Cross(theRight); }
 
   //! computes the cross product between two vectors
-  Standard_NODISCARD gp_Vec Crossed(const gp_Vec& theRight) const
+  Standard_NODISCARD constexpr gp_Vec Crossed(const gp_Vec& theRight) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Cross(theRight.coord);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec operator^(const gp_Vec& theRight) const { return Crossed(theRight); }
+  Standard_NODISCARD constexpr gp_Vec operator^(const gp_Vec& theRight) const noexcept
+  {
+    return Crossed(theRight);
+  }
 
   //! Computes the magnitude of the cross
   //! product between <me> and theRight.
@@ -266,21 +281,22 @@ public:
   //! Computes the square magnitude of
   //! the cross product between <me> and theRight.
   //! Returns || <me> ^ theRight ||**2
-  Standard_Real CrossSquareMagnitude(const gp_Vec& theRight) const
+  constexpr Standard_Real CrossSquareMagnitude(const gp_Vec& theRight) const noexcept
   {
     return coord.CrossSquareMagnitude(theRight.coord);
   }
 
   //! Computes the triple vector product.
   //! <me> ^= (theV1 ^ theV2)
-  void CrossCross(const gp_Vec& theV1, const gp_Vec& theV2)
+  constexpr void CrossCross(const gp_Vec& theV1, const gp_Vec& theV2) noexcept
   {
     coord.CrossCross(theV1.coord, theV2.coord);
   }
 
   //! Computes the triple vector product.
   //! <me> ^ (theV1 ^ theV2)
-  Standard_NODISCARD gp_Vec CrossCrossed(const gp_Vec& theV1, const gp_Vec& theV2) const
+  Standard_NODISCARD constexpr gp_Vec CrossCrossed(const gp_Vec& theV1,
+                                                   const gp_Vec& theV2) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.CrossCross(theV1.coord, theV2.coord);
@@ -288,12 +304,15 @@ public:
   }
 
   //! computes the scalar product
-  Standard_Real Dot(const gp_Vec& theOther) const { return coord.Dot(theOther.coord); }
+  constexpr Standard_Real Dot(const gp_Vec& theOther) const noexcept
+  {
+    return coord.Dot(theOther.coord);
+  }
 
-  Standard_Real operator*(const gp_Vec& theOther) const { return Dot(theOther); }
+  constexpr Standard_Real operator*(const gp_Vec& theOther) const noexcept { return Dot(theOther); }
 
   //! Computes the triple scalar product <me> * (theV1 ^ theV2).
-  Standard_Real DotCross(const gp_Vec& theV1, const gp_Vec& theV2) const
+  constexpr Standard_Real DotCross(const gp_Vec& theV1, const gp_Vec& theV2) const noexcept
   {
     return coord.DotCross(theV1.coord, theV2.coord);
   }
@@ -315,72 +334,74 @@ public:
   Standard_NODISCARD gp_Vec Normalized() const;
 
   //! Reverses the direction of a vector
-  void Reverse() { coord.Reverse(); }
+  constexpr void Reverse() noexcept { coord.Reverse(); }
 
   //! Reverses the direction of a vector
-  Standard_NODISCARD gp_Vec Reversed() const
+  Standard_NODISCARD constexpr gp_Vec Reversed() const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Reverse();
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec operator-() const { return Reversed(); }
+  Standard_NODISCARD constexpr gp_Vec operator-() const noexcept { return Reversed(); }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2 + theA3 * theV3 + theV4
-  void SetLinearForm(const Standard_Real theA1,
-                     const gp_Vec&       theV1,
-                     const Standard_Real theA2,
-                     const gp_Vec&       theV2,
-                     const Standard_Real theA3,
-                     const gp_Vec&       theV3,
-                     const gp_Vec&       theV4)
+  constexpr void SetLinearForm(const Standard_Real theA1,
+                               const gp_Vec&       theV1,
+                               const Standard_Real theA2,
+                               const gp_Vec&       theV2,
+                               const Standard_Real theA3,
+                               const gp_Vec&       theV3,
+                               const gp_Vec&       theV4) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord, theA3, theV3.coord, theV4.coord);
   }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2 + theA3 * theV3
-  void SetLinearForm(const Standard_Real theA1,
-                     const gp_Vec&       theV1,
-                     const Standard_Real theA2,
-                     const gp_Vec&       theV2,
-                     const Standard_Real theA3,
-                     const gp_Vec&       theV3)
+  constexpr void SetLinearForm(const Standard_Real theA1,
+                               const gp_Vec&       theV1,
+                               const Standard_Real theA2,
+                               const gp_Vec&       theV2,
+                               const Standard_Real theA3,
+                               const gp_Vec&       theV3) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord, theA3, theV3.coord);
   }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2 + theV3
-  void SetLinearForm(const Standard_Real theA1,
-                     const gp_Vec&       theV1,
-                     const Standard_Real theA2,
-                     const gp_Vec&       theV2,
-                     const gp_Vec&       theV3)
+  constexpr void SetLinearForm(const Standard_Real theA1,
+                               const gp_Vec&       theV1,
+                               const Standard_Real theA2,
+                               const gp_Vec&       theV2,
+                               const gp_Vec&       theV3) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord, theV3.coord);
   }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2
-  void SetLinearForm(const Standard_Real theA1,
-                     const gp_Vec&       theV1,
-                     const Standard_Real theA2,
-                     const gp_Vec&       theV2)
+  constexpr void SetLinearForm(const Standard_Real theA1,
+                               const gp_Vec&       theV1,
+                               const Standard_Real theA2,
+                               const gp_Vec&       theV2) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord);
   }
 
   //! <me> is set to the following linear form : theA1 * theV1 + theV2
-  void SetLinearForm(const Standard_Real theA1, const gp_Vec& theV1, const gp_Vec& theV2)
+  constexpr void SetLinearForm(const Standard_Real theA1,
+                               const gp_Vec&       theV1,
+                               const gp_Vec&       theV2) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theV2.coord);
   }
 
   //! <me> is set to the following linear form : theV1 + theV2
-  void SetLinearForm(const gp_Vec& theV1, const gp_Vec& theV2)
+  constexpr void SetLinearForm(const gp_Vec& theV1, const gp_Vec& theV2) noexcept
   {
     coord.SetLinearForm(theV1.coord, theV2.coord);
   }
@@ -417,10 +438,10 @@ public:
     return aVres;
   }
 
-  void Scale(const Standard_Real theS) { coord.Multiply(theS); }
+  constexpr void Scale(const Standard_Real theS) noexcept { coord.Multiply(theS); }
 
   //! Scales a vector. theS is the scaling value.
-  Standard_NODISCARD gp_Vec Scaled(const Standard_Real theS) const
+  Standard_NODISCARD constexpr gp_Vec Scaled(const Standard_Real theS) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.Multiply(theS);
@@ -518,7 +539,7 @@ inline void gp_Vec::Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
 // function :  operator*
 // purpose :
 //=======================================================================
-inline gp_Vec operator*(const Standard_Real theScalar, const gp_Vec& theV)
+inline constexpr gp_Vec operator*(const Standard_Real theScalar, const gp_Vec& theV) noexcept
 {
   return theV.Multiplied(theScalar);
 }

@@ -61,7 +61,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the identity transformation.
-  gp_Trsf();
+  constexpr gp_Trsf() noexcept;
 
   //! Creates  a 3D transformation from the 2D transformation theT.
   //! The resulting transformation has a homogeneous
@@ -187,7 +187,7 @@ public:
   //! Raises ConstructionError  If theS is null.
   Standard_EXPORT void SetScaleFactor(const Standard_Real theS);
 
-  void SetForm(const gp_TrsfForm theP) { shape = theP; }
+  constexpr void SetForm(const gp_TrsfForm theP) noexcept { shape = theP; }
 
   //! Sets the coefficients  of the transformation.  The
   //! transformation  of the  point  x,y,z is  the point
@@ -215,19 +215,19 @@ public:
 
   //! Returns true if the determinant of the vectorial part of
   //! this transformation is negative.
-  Standard_Boolean IsNegative() const { return (scale < 0.0); }
+  constexpr Standard_Boolean IsNegative() const noexcept { return (scale < 0.0); }
 
   //! Returns the nature of the transformation. It can be: an
   //! identity transformation, a rotation, a translation, a mirror
   //! transformation (relative to a point, an axis or a plane), a
   //! scaling transformation, or a compound transformation.
-  gp_TrsfForm Form() const { return shape; }
+  constexpr gp_TrsfForm Form() const noexcept { return shape; }
 
   //! Returns the scale factor.
-  Standard_Real ScaleFactor() const { return scale; }
+  constexpr Standard_Real ScaleFactor() const noexcept { return scale; }
 
   //! Returns the translation part of the transformation's matrix
-  const gp_XYZ& TranslationPart() const { return loc; }
+  constexpr const gp_XYZ& TranslationPart() const noexcept { return loc; }
 
   //! Returns the boolean True if there is non-zero rotation.
   //! In the presence of rotation, the output parameters store the axis
@@ -251,7 +251,7 @@ public:
   //! to its homogeneous vectorial part, multiplied by the scale factor.
   //! The coefficients of this matrix must be multiplied by the
   //! scale factor to obtain the coefficients of the transformation.
-  const gp_Mat& HVectorialPart() const { return matrix; }
+  constexpr const gp_Mat& HVectorialPart() const noexcept { return matrix; }
 
   //! Returns the coefficients of the transformation's matrix.
   //! It is a 3 rows * 4 columns matrix.
@@ -318,10 +318,10 @@ public:
     return aT;
   }
 
-  void Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const;
+  void Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const noexcept;
 
   //! Transformation of a triplet XYZ with a Trsf
-  void Transforms(gp_XYZ& theCoord) const;
+  void Transforms(gp_XYZ& theCoord) const noexcept;
 
   //! Convert transformation to 4x4 matrix.
   template <class T>
@@ -377,7 +377,7 @@ private:
 
 //=================================================================================================
 
-inline gp_Trsf::gp_Trsf()
+inline constexpr gp_Trsf::gp_Trsf() noexcept
     : scale(1.0),
       shape(gp_Identity),
       matrix(1, 0, 0, 0, 1, 0, 0, 0, 1),
@@ -434,7 +434,9 @@ inline Standard_Real gp_Trsf::Value(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline void gp_Trsf::Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
+inline void gp_Trsf::Transforms(Standard_Real& theX,
+                                Standard_Real& theY,
+                                Standard_Real& theZ) const noexcept
 {
   gp_XYZ aTriplet(theX, theY, theZ);
   aTriplet.Multiply(matrix);
@@ -450,7 +452,7 @@ inline void gp_Trsf::Transforms(Standard_Real& theX, Standard_Real& theY, Standa
 
 //=================================================================================================
 
-inline void gp_Trsf::Transforms(gp_XYZ& theCoord) const
+inline void gp_Trsf::Transforms(gp_XYZ& theCoord) const noexcept
 {
   theCoord.Multiply(matrix);
   if (scale != 1.0)

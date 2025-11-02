@@ -968,7 +968,7 @@ Standard_Boolean BOPTools_AlgoTools::GetFaceOff(const TopoDS_Edge&              
   Standard_Boolean                           bRet, bIsComputed;
   Standard_Real                              aT, aT1, aT2, aAngle, aTwoPI, aAngleMin, aDt3D;
   Standard_Real                              aUmin, aUsup, aVmin, aVsup;
-  gp_Pnt                                     aPn1, aPn2, aPx;
+  gp_Pnt                                     aPx;
   gp_Dir                                     aDN1, aDN2, aDBF, aDBF2, aDTF;
   gp_Vec                                     aVTgt;
   TopAbs_Orientation                         aOr;

@@ -4935,8 +4935,6 @@ Standard_Integer OCC22736(Draw_Interpretor& di, Standard_Integer argc, const cha
   Standard_Real X_p2                = Draw::Atof(argv[7]);
   Standard_Real Y_p2                = Draw::Atof(argv[8]);
 
-  gp_Trsf2d identityTransformation;
-
   gp_Pnt2d mirrorFirstPoint(X_mirrorFirstPoint, Y_mirrorFirstPoint);
   gp_Pnt2d mirrorSecondPoint(X_mirrorSecondPoint, Y_mirrorSecondPoint);
   gp_Ax2d  mirrorAxis(mirrorFirstPoint, gp_Vec2d(mirrorFirstPoint, mirrorSecondPoint));

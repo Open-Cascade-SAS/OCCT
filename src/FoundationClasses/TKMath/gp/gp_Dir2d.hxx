@@ -38,7 +38,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a direction corresponding to X axis.
-  gp_Dir2d()
+  constexpr gp_Dir2d() noexcept
       : coord(1., 0.)
   {
   }
@@ -140,18 +140,21 @@ public:
 
   //! For this unit vector returns its two coordinates theXv and theYv.
   //! Raises OutOfRange if theIndex != {1, 2}.
-  void Coord(Standard_Real& theXv, Standard_Real& theYv) const { coord.Coord(theXv, theYv); }
+  constexpr void Coord(Standard_Real& theXv, Standard_Real& theYv) const noexcept
+  {
+    coord.Coord(theXv, theYv);
+  }
 
   //! For this unit vector, returns its X coordinate.
-  Standard_Real X() const { return coord.X(); }
+  constexpr Standard_Real X() const noexcept { return coord.X(); }
 
   //! For this unit vector, returns its Y coordinate.
-  Standard_Real Y() const { return coord.Y(); }
+  constexpr Standard_Real Y() const noexcept { return coord.Y(); }
 
   //! For this unit vector, returns its two coordinates as a number pair.
   //! Comparison between Directions
   //! The precision value is an input data.
-  const gp_XY& XY() const { return coord; }
+  constexpr const gp_XY& XY() const noexcept { return coord; }
 
   //! Returns True if the two vectors have the same direction
   //! i.e. the angle between this unit vector and the
@@ -182,32 +185,38 @@ public:
   Standard_EXPORT Standard_Real Angle(const gp_Dir2d& theOther) const;
 
   //! Computes the cross product between two directions.
-  Standard_NODISCARD Standard_Real Crossed(const gp_Dir2d& theRight) const
+  Standard_NODISCARD constexpr Standard_Real Crossed(const gp_Dir2d& theRight) const noexcept
   {
     return coord.Crossed(theRight.coord);
   }
 
-  Standard_NODISCARD Standard_Real operator^(const gp_Dir2d& theRight) const
+  Standard_NODISCARD constexpr Standard_Real operator^(const gp_Dir2d& theRight) const noexcept
   {
     return Crossed(theRight);
   }
 
   //! Computes the scalar product
-  Standard_Real Dot(const gp_Dir2d& theOther) const { return coord.Dot(theOther.coord); }
+  constexpr Standard_Real Dot(const gp_Dir2d& theOther) const noexcept
+  {
+    return coord.Dot(theOther.coord);
+  }
 
-  Standard_Real operator*(const gp_Dir2d& theOther) const { return Dot(theOther); }
+  constexpr Standard_Real operator*(const gp_Dir2d& theOther) const noexcept
+  {
+    return Dot(theOther);
+  }
 
-  void Reverse() { coord.Reverse(); }
+  constexpr void Reverse() noexcept { coord.Reverse(); }
 
   //! Reverses the orientation of a direction
-  Standard_NODISCARD gp_Dir2d Reversed() const
+  Standard_NODISCARD constexpr gp_Dir2d Reversed() const noexcept
   {
     gp_Dir2d aV = *this;
     aV.coord.Reverse();
     return aV;
   }
 
-  Standard_NODISCARD gp_Dir2d operator-() const { return Reversed(); }
+  Standard_NODISCARD constexpr gp_Dir2d operator-() const noexcept { return Reversed(); }
 
   Standard_EXPORT void Mirror(const gp_Dir2d& theV);
 

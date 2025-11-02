@@ -52,7 +52,6 @@ Standard_Boolean BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persiste
   Standard_Integer n1, n2, n3;
   Standard_Integer nbNodes(0), nbTriangles(0);
   Standard_Boolean hasUV(Standard_False);
-  gp_Pnt           p;
 
   theSource >> nbNodes;
   theSource >> nbTriangles;

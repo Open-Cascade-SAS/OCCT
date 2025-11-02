@@ -779,9 +779,6 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::SeekPoint(const Standard_Real u1,
                                                        const Standard_Real v2,
                                                        IntSurf_PntOn2S&    Point)
 {
-  gp_Pnt                 aP;
-  gp_Vec                 aT;
-  gp_Vec2d               aTS1, aTS2;
   const IntSurf_Quadric& aQSurf = MyZerImpFunc.ISurface();
   const ThePSurface&     aPSurf = MyZerImpFunc.PSurface();
 

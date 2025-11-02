@@ -960,7 +960,6 @@ Standard_Boolean PrsDim_AngleDimension::InitTwoFacesAngle()
   TopoDS_Face aFirstFace  = TopoDS::Face(myFirstShape);
   TopoDS_Face aSecondFace = TopoDS::Face(mySecondShape);
 
-  gp_Dir               aFirstDir, aSecondDir;
   gp_Pln               aFirstPln, aSecondPln;
   Handle(Geom_Surface) aFirstBasisSurf, aSecondBasisSurf;
   PrsDim_KindOfSurface aFirstSurfType, aSecondSurfType;
@@ -1009,7 +1008,6 @@ Standard_Boolean PrsDim_AngleDimension::InitTwoFacesAngle(const gp_Pnt& thePoint
   TopoDS_Face aFirstFace  = TopoDS::Face(myFirstShape);
   TopoDS_Face aSecondFace = TopoDS::Face(mySecondShape);
 
-  gp_Dir               aFirstDir, aSecondDir;
   gp_Pln               aFirstPln, aSecondPln;
   Handle(Geom_Surface) aFirstBasisSurf, aSecondBasisSurf;
   PrsDim_KindOfSurface aFirstSurfType, aSecondSurfType;

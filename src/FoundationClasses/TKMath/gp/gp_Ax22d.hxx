@@ -113,7 +113,7 @@ public:
 
   //! Assigns the origin and the two unit vectors of the
   //! coordinate system theA1 to this coordinate system.
-  void SetAxis(const gp_Ax22d& theA1)
+  constexpr void SetAxis(const gp_Ax22d& theA1) noexcept
   {
     point = theA1.Location();
     vxdir = theA1.XDirection();
@@ -130,7 +130,7 @@ public:
   void SetYAxis(const gp_Ax2d& theA1);
 
   //! Changes the "Location" point (origin) of <me>.
-  void SetLocation(const gp_Pnt2d& theP) { point = theP; }
+  constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { point = theP; }
 
   //! Assigns theVx to the "X Direction"  of
   //! this coordinate system. The other unit vector of this
@@ -159,13 +159,13 @@ public:
   gp_Ax2d YAxis() const { return gp_Ax2d(point, vydir); }
 
   //! Returns the "Location" point (origin) of <me>.
-  const gp_Pnt2d& Location() const { return point; }
+  constexpr const gp_Pnt2d& Location() const noexcept { return point; }
 
   //! Returns the "XDirection" of <me>.
-  const gp_Dir2d& XDirection() const { return vxdir; }
+  constexpr const gp_Dir2d& XDirection() const noexcept { return vxdir; }
 
   //! Returns the "YDirection" of <me>.
-  const gp_Dir2d& YDirection() const { return vydir; }
+  constexpr const gp_Dir2d& YDirection() const noexcept { return vydir; }
 
   Standard_EXPORT void Mirror(const gp_Pnt2d& theP);
 
@@ -231,7 +231,7 @@ public:
     return aTemp;
   }
 
-  void Translate(const gp_Vec2d& theV) { point.Translate(theV); }
+  constexpr void Translate(const gp_Vec2d& theV) noexcept { point.Translate(theV); }
 
   //! Translates an axis plaxement in the direction of the vector
   //! <theV>. The magnitude of the translation is the vector's magnitude.
@@ -242,7 +242,10 @@ public:
     return aTemp;
   }
 
-  void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) { point.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    point.Translate(theP1, theP2);
+  }
 
   //! Translates an axis placement from the point <theP1> to the
   //! point <theP2>.

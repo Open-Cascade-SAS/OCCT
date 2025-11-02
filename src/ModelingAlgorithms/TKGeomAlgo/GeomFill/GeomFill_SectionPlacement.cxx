@@ -758,7 +758,7 @@ gp_Trsf GeomFill_SectionPlacement::Transformation(const Standard_Boolean WithTra
 {
   gp_Vec V;
   gp_Mat M;
-  gp_Dir DT, DN, D;
+  gp_Dir DN, D;
   // modified by NIZHNY-MKK  Fri Oct 17 15:27:07 2003
   gp_Pnt P(0., 0., 0.), PSection(0., 0., 0.);
 

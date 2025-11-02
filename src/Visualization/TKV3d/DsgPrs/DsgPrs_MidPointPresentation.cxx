@@ -265,8 +265,6 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
 
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
 
-  gp_Pnt Ptmp, ptcur;
-
   gp_Ax2 ax = aCircle.Position();
   ax.SetLocation(MidPoint);
   gp_Circ aCircleM(ax, rad);
