@@ -48,7 +48,7 @@ Standard_Boolean gp_Vec::IsEqual(const gp_Vec&       theOther,
   }
 }
 
-void gp_Vec::Mirror(const gp_Vec& theVec)
+void gp_Vec::Mirror(const gp_Vec& theVec) noexcept
 {
   const Standard_Real aMagnitude = theVec.coord.Modulus();
   if (aMagnitude > gp::Resolution())
@@ -77,7 +77,7 @@ void gp_Vec::Mirror(const gp_Vec& theVec)
   }
 }
 
-void gp_Vec::Mirror(const gp_Ax1& theAxis)
+void gp_Vec::Mirror(const gp_Ax1& theAxis) noexcept
 {
   const gp_XYZ&       aDirectionXYZ = theAxis.Direction().XYZ();
   const Standard_Real aOrigX        = coord.X();
@@ -100,7 +100,7 @@ void gp_Vec::Mirror(const gp_Ax1& theAxis)
   coord.SetZ(aCrossTermXZ * aOrigX + aCrossTermYZ * aOrigY + aZZTerm * aOrigZ);
 }
 
-void gp_Vec::Mirror(const gp_Ax2& theAxis)
+void gp_Vec::Mirror(const gp_Ax2& theAxis) noexcept
 {
   const gp_XYZ& aZDir   = theAxis.Direction().XYZ();
   const gp_XYZ  aMirXYZ = aZDir.Crossed(coord);
@@ -136,21 +136,21 @@ void gp_Vec::Transform(const gp_Trsf& theTransformation)
   }
 }
 
-gp_Vec gp_Vec::Mirrored(const gp_Vec& theVec) const
+gp_Vec gp_Vec::Mirrored(const gp_Vec& theVec) const noexcept
 {
   gp_Vec aResult = *this;
   aResult.Mirror(theVec);
   return aResult;
 }
 
-gp_Vec gp_Vec::Mirrored(const gp_Ax1& theAxis) const
+gp_Vec gp_Vec::Mirrored(const gp_Ax1& theAxis) const noexcept
 {
   gp_Vec aResult = *this;
   aResult.Mirror(theAxis);
   return aResult;
 }
 
-gp_Vec gp_Vec::Mirrored(const gp_Ax2& theAxis) const
+gp_Vec gp_Vec::Mirrored(const gp_Ax2& theAxis) const noexcept
 {
   gp_Vec aResult = *this;
   aResult.Mirror(theAxis);

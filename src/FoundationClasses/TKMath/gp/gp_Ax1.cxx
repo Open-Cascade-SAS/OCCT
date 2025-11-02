@@ -43,39 +43,39 @@ Standard_Boolean gp_Ax1::IsCoaxial(const gp_Ax1&       Other,
           && D2 <= LinearTolerance);
 }
 
-void gp_Ax1::Mirror(const gp_Pnt& P)
+void gp_Ax1::Mirror(const gp_Pnt& P) noexcept
 {
   loc.Mirror(P);
   vdir.Reverse();
 }
 
-gp_Ax1 gp_Ax1::Mirrored(const gp_Pnt& P) const
+gp_Ax1 gp_Ax1::Mirrored(const gp_Pnt& P) const noexcept
 {
   gp_Ax1 A1 = *this;
   A1.Mirror(P);
   return A1;
 }
 
-void gp_Ax1::Mirror(const gp_Ax1& A1)
+void gp_Ax1::Mirror(const gp_Ax1& A1) noexcept
 {
   loc.Mirror(A1);
   vdir.Mirror(A1.vdir);
 }
 
-gp_Ax1 gp_Ax1::Mirrored(const gp_Ax1& A1) const
+gp_Ax1 gp_Ax1::Mirrored(const gp_Ax1& A1) const noexcept
 {
   gp_Ax1 A = *this;
   A.Mirror(A1);
   return A;
 }
 
-void gp_Ax1::Mirror(const gp_Ax2& A2)
+void gp_Ax1::Mirror(const gp_Ax2& A2) noexcept
 {
   loc.Mirror(A2);
   vdir.Mirror(A2);
 }
 
-gp_Ax1 gp_Ax1::Mirrored(const gp_Ax2& A2) const
+gp_Ax1 gp_Ax1::Mirrored(const gp_Ax2& A2) const noexcept
 {
   gp_Ax1 A1 = *this;
   A1.Mirror(A2);

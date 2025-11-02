@@ -90,7 +90,7 @@ public:
 
   //! Modifies this ellipse, by redefining its local coordinate
   //! so that its origin becomes theP.
-  void SetLocation(const gp_Pnt& theP) { pos.SetLocation(theP); }
+  constexpr void SetLocation(const gp_Pnt& theP) noexcept { pos.SetLocation(theP); }
 
   //! The major radius of the ellipse is on the "XAxis" (major axis)
   //! of the ellipse.
@@ -116,13 +116,13 @@ public:
 
   //! Modifies this ellipse, by redefining its local coordinate
   //! so that it becomes theA2.
-  void SetPosition(const gp_Ax2& theA2) { pos = theA2; }
+  constexpr void SetPosition(const gp_Ax2& theA2) noexcept { pos = theA2; }
 
   //! Computes the area of the Ellipse.
-  Standard_Real Area() const { return M_PI * majorRadius * minorRadius; }
+  constexpr Standard_Real Area() const noexcept { return M_PI * majorRadius * minorRadius; }
 
   //! Computes the axis normal to the plane of the ellipse.
-  const gp_Ax1& Axis() const { return pos.Axis(); }
+  constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }
 
   //! Computes the first or second directrix of this ellipse.
   //! These are the lines, in the plane of the ellipse, normal to
@@ -170,13 +170,13 @@ public:
 
   //! Returns the center of the ellipse. It is the "Location"
   //! point of the coordinate system of the ellipse.
-  const gp_Pnt& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
 
   //! Returns the major radius of the ellipse.
-  Standard_Real MajorRadius() const { return majorRadius; }
+  constexpr Standard_Real MajorRadius() const noexcept { return majorRadius; }
 
   //! Returns the minor radius of the ellipse.
-  Standard_Real MinorRadius() const { return minorRadius; }
+  constexpr Standard_Real MinorRadius() const noexcept { return minorRadius; }
 
   //! Returns p = (1 - e * e) * MajorRadius where e is the eccentricity
   //! of the ellipse.
@@ -184,23 +184,23 @@ public:
   Standard_Real Parameter() const;
 
   //! Returns the coordinate system of the ellipse.
-  const gp_Ax2& Position() const { return pos; }
+  constexpr const gp_Ax2& Position() const noexcept { return pos; }
 
   //! Returns the "XAxis" of the ellipse whose origin
   //! is the center of this ellipse. It is the major axis of the
   //! ellipse.
-  gp_Ax1 XAxis() const { return gp_Ax1(pos.Location(), pos.XDirection()); }
+  constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
 
   //! Returns the "YAxis" of the ellipse whose unit vector is the "X Direction" or the "Y Direction"
   //! of the local coordinate system of this ellipse.
   //! This is the minor axis of the ellipse.
-  gp_Ax1 YAxis() const { return gp_Ax1(pos.Location(), pos.YDirection()); }
+  constexpr gp_Ax1 YAxis() const noexcept { return gp_Ax1(pos.Location(), pos.YDirection()); }
 
-  Standard_EXPORT void Mirror(const gp_Pnt& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
   //! Performs the symmetrical transformation of an ellipse with
   //! respect to the point theP which is the center of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Elips Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Elips Mirrored(const gp_Pnt& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
@@ -236,21 +236,21 @@ public:
   //! Transforms an ellipse with the transformation theT from class Trsf.
   Standard_NODISCARD gp_Elips Transformed(const gp_Trsf& theT) const;
 
-  void Translate(const gp_Vec& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates an ellipse in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Elips Translated(const gp_Vec& theV) const
+  Standard_NODISCARD gp_Elips Translated(const gp_Vec& theV) const noexcept
   {
     gp_Elips anE = *this;
     anE.pos.Translate(theV);
     return anE;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept { pos.Translate(theP1, theP2); }
 
   //! Translates an ellipse from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Elips Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD gp_Elips Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Elips anE = *this;
     anE.pos.Translate(theP1, theP2);

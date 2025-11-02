@@ -110,36 +110,36 @@ gp_Pln::gp_Pln(const Standard_Real A,
   }
 }
 
-void gp_Pln::Mirror(const gp_Pnt& P)
+void gp_Pln::Mirror(const gp_Pnt& P) noexcept
 {
   pos.Mirror(P);
 }
 
-gp_Pln gp_Pln::Mirrored(const gp_Pnt& P) const
+gp_Pln gp_Pln::Mirrored(const gp_Pnt& P) const noexcept
 {
   gp_Pln Pl = *this;
   Pl.pos.Mirror(P);
   return Pl;
 }
 
-void gp_Pln::Mirror(const gp_Ax1& A1)
+void gp_Pln::Mirror(const gp_Ax1& A1) noexcept
 {
   pos.Mirror(A1);
 }
 
-gp_Pln gp_Pln::Mirrored(const gp_Ax1& A1) const
+gp_Pln gp_Pln::Mirrored(const gp_Ax1& A1) const noexcept
 {
   gp_Pln Pl = *this;
   Pl.pos.Mirror(A1);
   return Pl;
 }
 
-void gp_Pln::Mirror(const gp_Ax2& A2)
+void gp_Pln::Mirror(const gp_Ax2& A2) noexcept
 {
   pos.Mirror(A2);
 }
 
-gp_Pln gp_Pln::Mirrored(const gp_Ax2& A2) const
+gp_Pln gp_Pln::Mirrored(const gp_Ax2& A2) const noexcept
 {
   gp_Pln Pl = *this;
   Pl.pos.Mirror(A2);

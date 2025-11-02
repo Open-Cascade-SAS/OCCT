@@ -89,7 +89,7 @@ public:
   //! product of theRef and the number triple (X, Y, Z):
   //! this * (X,Y,Z) = theRef.(X,Y,Z)
   //! Note: this matrix is symmetric.
-  Standard_EXPORT void SetDot(const gp_XYZ& theRef);
+  Standard_EXPORT void SetDot(const gp_XYZ& theRef) noexcept;
 
   //! Modifies this matrix so that it represents the Identity matrix.
   constexpr void SetIdentity() noexcept

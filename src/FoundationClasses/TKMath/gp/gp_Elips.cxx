@@ -20,12 +20,12 @@
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
 
-void gp_Elips::Mirror(const gp_Pnt& P)
+void gp_Elips::Mirror(const gp_Pnt& P) noexcept
 {
   pos.Mirror(P);
 }
 
-gp_Elips gp_Elips::Mirrored(const gp_Pnt& P) const
+gp_Elips gp_Elips::Mirrored(const gp_Pnt& P) const noexcept
 {
   gp_Elips E = *this;
   E.pos.Mirror(P);

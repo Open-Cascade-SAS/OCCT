@@ -181,7 +181,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_EXPORT void Mirror(const gp_Pnt& P);
+  Standard_EXPORT void Mirror(const gp_Pnt& P) noexcept;
 
   //! Performs a symmetrical transformation of this coordinate
   //! system with respect to:
@@ -198,7 +198,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored(const gp_Pnt& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored(const gp_Pnt& P) const noexcept;
 
   //! Performs a symmetrical transformation of this coordinate
   //! system with respect to:

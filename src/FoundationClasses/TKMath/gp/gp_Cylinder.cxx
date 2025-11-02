@@ -60,36 +60,36 @@ void gp_Cylinder::Coefficients(Standard_Real& A1,
   D  = T14 * T14 + T24 * T24 - radius * radius;
 }
 
-void gp_Cylinder::Mirror(const gp_Pnt& P)
+void gp_Cylinder::Mirror(const gp_Pnt& P) noexcept
 {
   pos.Mirror(P);
 }
 
-gp_Cylinder gp_Cylinder::Mirrored(const gp_Pnt& P) const
+gp_Cylinder gp_Cylinder::Mirrored(const gp_Pnt& P) const noexcept
 {
   gp_Cylinder C = *this;
   C.pos.Mirror(P);
   return C;
 }
 
-void gp_Cylinder::Mirror(const gp_Ax1& A1)
+void gp_Cylinder::Mirror(const gp_Ax1& A1) noexcept
 {
   pos.Mirror(A1);
 }
 
-gp_Cylinder gp_Cylinder::Mirrored(const gp_Ax1& A1) const
+gp_Cylinder gp_Cylinder::Mirrored(const gp_Ax1& A1) const noexcept
 {
   gp_Cylinder C = *this;
   C.pos.Mirror(A1);
   return C;
 }
 
-void gp_Cylinder::Mirror(const gp_Ax2& A2)
+void gp_Cylinder::Mirror(const gp_Ax2& A2) noexcept
 {
   pos.Mirror(A2);
 }
 
-gp_Cylinder gp_Cylinder::Mirrored(const gp_Ax2& A2) const
+gp_Cylinder gp_Cylinder::Mirrored(const gp_Ax2& A2) const noexcept
 {
   gp_Cylinder C = *this;
   C.pos.Mirror(A2);

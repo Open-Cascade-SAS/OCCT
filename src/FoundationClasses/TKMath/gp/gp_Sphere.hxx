@@ -63,10 +63,10 @@ public:
   }
 
   //! Changes the center of the sphere.
-  void SetLocation(const gp_Pnt& theLoc) { pos.SetLocation(theLoc); }
+  constexpr void SetLocation(const gp_Pnt& theLoc) noexcept { pos.SetLocation(theLoc); }
 
   //! Changes the local coordinate system of the sphere.
-  void SetPosition(const gp_Ax3& theA3) { pos = theA3; }
+  constexpr void SetPosition(const gp_Ax3& theA3) noexcept { pos = theA3; }
 
   //! Assigns theR the radius of the Sphere.
   //! Warnings :
@@ -80,7 +80,7 @@ public:
   }
 
   //! Computes the area of the sphere.
-  Standard_Real Area() const { return 4.0 * M_PI * radius * radius; }
+  constexpr Standard_Real Area() const noexcept { return 4.0 * M_PI * radius * radius; }
 
   //! Computes the coefficients of the implicit equation of the quadric
   //! in the absolute cartesian coordinates system :
@@ -109,47 +109,47 @@ public:
 
   //! Returns true if the local coordinate system of this sphere
   //! is right-handed.
-  Standard_Boolean Direct() const { return pos.Direct(); }
+  constexpr Standard_Boolean Direct() const noexcept { return pos.Direct(); }
 
   //! --- Purpose ;
   //! Returns the center of the sphere.
-  const gp_Pnt& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
 
   //! Returns the local coordinates system of the sphere.
-  const gp_Ax3& Position() const { return pos; }
+  constexpr const gp_Ax3& Position() const noexcept { return pos; }
 
   //! Returns the radius of the sphere.
-  Standard_Real Radius() const { return radius; }
+  constexpr Standard_Real Radius() const noexcept { return radius; }
 
   //! Computes the volume of the sphere
-  Standard_Real Volume() const { return (4.0 * M_PI * radius * radius * radius) / 3.0; }
+  constexpr Standard_Real Volume() const noexcept { return (4.0 * M_PI * radius * radius * radius) / 3.0; }
 
   //! Returns the axis X of the sphere.
-  gp_Ax1 XAxis() const { return gp_Ax1(pos.Location(), pos.XDirection()); }
+  constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
 
   //! Returns the axis Y of the sphere.
-  gp_Ax1 YAxis() const { return gp_Ax1(pos.Location(), pos.YDirection()); }
+  constexpr gp_Ax1 YAxis() const noexcept { return gp_Ax1(pos.Location(), pos.YDirection()); }
 
-  Standard_EXPORT void Mirror(const gp_Pnt& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
   //! Performs the symmetrical transformation of a sphere
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Sphere Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Sphere Mirrored(const gp_Pnt& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax1& theA1);
+  Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
 
   //! Performs the symmetrical transformation of a sphere with
   //! respect to an axis placement which is the axis of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Sphere Mirrored(const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Sphere Mirrored(const gp_Ax1& theA1) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2& theA2);
+  Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Performs the symmetrical transformation of a sphere with respect
   //! to a plane. The axis placement theA2 locates the plane of the
   //! of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Sphere Mirrored(const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Sphere Mirrored(const gp_Ax2& theA2) const noexcept;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
 
@@ -173,11 +173,11 @@ public:
   //! Transforms a sphere with the transformation theT from class Trsf.
   Standard_NODISCARD gp_Sphere Transformed(const gp_Trsf& theT) const;
 
-  void Translate(const gp_Vec& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a sphere in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Sphere Translated(const gp_Vec& theV) const
+  Standard_NODISCARD gp_Sphere Translated(const gp_Vec& theV) const noexcept
   {
     gp_Sphere aC = *this;
     aC.pos.Translate(theV);

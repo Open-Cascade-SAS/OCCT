@@ -92,7 +92,7 @@ public:
   void SetAxis(const gp_Ax1& theA1) { pos.SetAxis(theA1); }
 
   //! Changes the location of the torus.
-  void SetLocation(const gp_Pnt& theLoc) { pos.SetLocation(theLoc); }
+  constexpr void SetLocation(const gp_Pnt& theLoc) noexcept { pos.SetLocation(theLoc); }
 
   //! Assigns value to the major radius  of this torus.
   //! Raises ConstructionError if theMajorRadius - MinorRadius <= Resolution()
@@ -115,10 +115,10 @@ public:
   }
 
   //! Changes the local coordinate system of the surface.
-  void SetPosition(const gp_Ax3& theA3) { pos = theA3; }
+  constexpr void SetPosition(const gp_Ax3& theA3) noexcept { pos = theA3; }
 
   //! Computes the area of the torus.
-  Standard_Real Area() const { return 4.0 * M_PI * M_PI * minorRadius * majorRadius; }
+  constexpr Standard_Real Area() const noexcept { return 4.0 * M_PI * M_PI * minorRadius * majorRadius; }
 
   //! Reverses the   U   parametrization of   the  torus
   //! reversing the YAxis.
@@ -129,10 +129,10 @@ public:
   void VReverse() { pos.ZReverse(); }
 
   //! returns true if the Ax3, the local coordinate system of this torus, is right handed.
-  Standard_Boolean Direct() const { return pos.Direct(); }
+  constexpr Standard_Boolean Direct() const noexcept { return pos.Direct(); }
 
   //! returns the symmetry axis of the torus.
-  const gp_Ax1& Axis() const { return pos.Axis(); }
+  constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }
 
   //! Computes the coefficients of the implicit equation of the surface
   //! in the absolute Cartesian coordinate system:
@@ -156,49 +156,49 @@ public:
   Standard_EXPORT void Coefficients(TColStd_Array1OfReal& theCoef) const;
 
   //! Returns the Torus's location.
-  const gp_Pnt& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
 
   //! Returns the local coordinates system of the torus.
-  const gp_Ax3& Position() const { return pos; }
+  constexpr const gp_Ax3& Position() const noexcept { return pos; }
 
   //! returns the major radius of the torus.
-  Standard_Real MajorRadius() const { return majorRadius; }
+  constexpr Standard_Real MajorRadius() const noexcept { return majorRadius; }
 
   //! returns the minor radius of the torus.
-  Standard_Real MinorRadius() const { return minorRadius; }
+  constexpr Standard_Real MinorRadius() const noexcept { return minorRadius; }
 
   //! Computes the volume of the torus.
-  Standard_Real Volume() const
+  constexpr Standard_Real Volume() const noexcept
   {
     return (M_PI * minorRadius * minorRadius) * (2.0 * M_PI * majorRadius);
   }
 
   //! returns the axis X of the torus.
-  gp_Ax1 XAxis() const { return gp_Ax1(pos.Location(), pos.XDirection()); }
+  constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
 
   //! returns the axis Y of the torus.
-  gp_Ax1 YAxis() const { return gp_Ax1(pos.Location(), pos.YDirection()); }
+  constexpr gp_Ax1 YAxis() const noexcept { return gp_Ax1(pos.Location(), pos.YDirection()); }
 
-  Standard_EXPORT void Mirror(const gp_Pnt& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
   //! Performs the symmetrical transformation of a torus
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Pnt& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax1& theA1);
+  Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
 
   //! Performs the symmetrical transformation of a torus with
   //! respect to an axis placement which is the axis of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Ax1& theA1) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2& theA2);
+  Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Performs the symmetrical transformation of a torus with respect
   //! to a plane. The axis placement theA2 locates the plane of the
   //! of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Ax2& theA2) const noexcept;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
 
@@ -222,11 +222,11 @@ public:
   //! Transforms a torus with the transformation theT from class Trsf.
   Standard_NODISCARD gp_Torus Transformed(const gp_Trsf& theT) const;
 
-  void Translate(const gp_Vec& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a torus in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Torus Translated(const gp_Vec& theV) const
+  Standard_NODISCARD gp_Torus Translated(const gp_Vec& theV) const noexcept
   {
     gp_Torus aC = *this;
     aC.pos.Translate(theV);

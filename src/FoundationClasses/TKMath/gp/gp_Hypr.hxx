@@ -146,7 +146,7 @@ public:
 
   //! Modifies this hyperbola, by redefining its local coordinate
   //! system so that it becomes A2.
-  void SetPosition(const gp_Ax2& theA2) { pos = theA2; }
+  constexpr void SetPosition(const gp_Ax2& theA2) noexcept { pos = theA2; }
 
   //! In the local coordinate system of the hyperbola the equation of
   //! the hyperbola is (X*X)/(A*A) - (Y*Y)/(B*B) = 1.0 and the
@@ -164,7 +164,7 @@ public:
 
   //! Returns the axis passing through the center,
   //! and normal to the plane of this hyperbola.
-  const gp_Ax1& Axis() const { return pos.Axis(); }
+  constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }
 
   //! Computes the branch of hyperbola which is on the positive side of the
   //! "YAxis" of <me>.
@@ -211,7 +211,7 @@ public:
 
   //! Computes the focal distance. It is the distance between the
   //! the two focus of the hyperbola.
-  Standard_Real Focal() const
+  constexpr Standard_Real Focal() const noexcept
   {
     return 2.0 * sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
   }
@@ -226,15 +226,15 @@ public:
 
   //! Returns the location point of the hyperbola. It is the
   //! intersection point between the "XAxis" and the "YAxis".
-  const gp_Pnt& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
 
   //! Returns the major radius of the hyperbola. It is the radius
   //! on the "XAxis" of the hyperbola.
-  Standard_Real MajorRadius() const { return majorRadius; }
+  constexpr Standard_Real MajorRadius() const noexcept { return majorRadius; }
 
   //! Returns the minor radius of the hyperbola. It is the radius
   //! on the "YAxis" of the hyperbola.
-  Standard_Real MinorRadius() const { return minorRadius; }
+  constexpr Standard_Real MinorRadius() const noexcept { return minorRadius; }
 
   //! Returns the branch of hyperbola obtained by doing the
   //! symmetrical transformation of <me> with respect to the
@@ -257,7 +257,7 @@ public:
   }
 
   //! Returns the coordinate system of the hyperbola.
-  const gp_Ax2& Position() const { return pos; }
+  constexpr const gp_Ax2& Position() const noexcept { return pos; }
 
   //! Computes an axis, whose
   //! -   the origin is the center of this hyperbola, and
@@ -265,20 +265,20 @@ public:
   //! of the local coordinate system of this hyperbola.
   //! These axes are, the major axis (the "X
   //! Axis") and  of this hyperboReturns the "XAxis" of the hyperbola.
-  gp_Ax1 XAxis() const { return gp_Ax1(pos.Location(), pos.XDirection()); }
+  constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
 
   //! Computes an axis, whose
   //! -   the origin is the center of this hyperbola, and
   //! -   the unit vector is the "Y Direction"
   //! of the local coordinate system of this hyperbola.
   //! These axes are the minor axis (the "Y Axis") of this hyperbola
-  gp_Ax1 YAxis() const { return gp_Ax1(pos.Location(), pos.YDirection()); }
+  constexpr gp_Ax1 YAxis() const noexcept { return gp_Ax1(pos.Location(), pos.YDirection()); }
 
-  Standard_EXPORT void Mirror(const gp_Pnt& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect to the point theP which is the center of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Hypr Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Hypr Mirrored(const gp_Pnt& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
@@ -315,21 +315,21 @@ public:
   //! class Trsf.
   Standard_NODISCARD gp_Hypr Transformed(const gp_Trsf& theT) const;
 
-  void Translate(const gp_Vec& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates an hyperbola in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Hypr Translated(const gp_Vec& theV) const
+  Standard_NODISCARD gp_Hypr Translated(const gp_Vec& theV) const noexcept
   {
     gp_Hypr aH = *this;
     aH.pos.Translate(theV);
     return aH;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept { pos.Translate(theP1, theP2); }
 
   //! Translates an hyperbola from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Hypr Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD gp_Hypr Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Hypr aH = *this;
     aH.pos.Translate(theP1, theP2);

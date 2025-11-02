@@ -56,7 +56,7 @@ gp_Trsf::gp_Trsf(const gp_Trsf2d& T)
 
 //=================================================================================================
 
-void gp_Trsf::SetMirror(const gp_Ax1& A1)
+void gp_Trsf::SetMirror(const gp_Ax1& A1) noexcept
 {
   shape = gp_Ax1Mirror;
   scale = 1;
@@ -72,7 +72,7 @@ void gp_Trsf::SetMirror(const gp_Ax1& A1)
 
 //=================================================================================================
 
-void gp_Trsf::SetMirror(const gp_Ax2& A2)
+void gp_Trsf::SetMirror(const gp_Ax2& A2) noexcept
 {
   shape = gp_Ax2Mirror;
   scale = -1;
@@ -243,7 +243,7 @@ void gp_Trsf::SetDisplacement(const gp_Ax3& FromA1, const gp_Ax3& ToA2)
 
 //=================================================================================================
 
-void gp_Trsf::SetTranslationPart(const gp_Vec& V)
+void gp_Trsf::SetTranslationPart(const gp_Vec& V) noexcept
 {
 
   loc                            = V.XYZ();

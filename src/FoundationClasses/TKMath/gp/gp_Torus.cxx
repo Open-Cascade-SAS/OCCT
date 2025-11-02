@@ -151,36 +151,36 @@ void gp_Torus::Coefficients(TColStd_Array1OfReal& theCoef) const
                             + aSubRadius * aSubRadius;
 }
 
-void gp_Torus::Mirror(const gp_Pnt& P)
+void gp_Torus::Mirror(const gp_Pnt& P) noexcept
 {
   pos.Mirror(P);
 }
 
-gp_Torus gp_Torus::Mirrored(const gp_Pnt& P) const
+gp_Torus gp_Torus::Mirrored(const gp_Pnt& P) const noexcept
 {
   gp_Torus C = *this;
   C.pos.Mirror(P);
   return C;
 }
 
-void gp_Torus::Mirror(const gp_Ax1& A1)
+void gp_Torus::Mirror(const gp_Ax1& A1) noexcept
 {
   pos.Mirror(A1);
 }
 
-gp_Torus gp_Torus::Mirrored(const gp_Ax1& A1) const
+gp_Torus gp_Torus::Mirrored(const gp_Ax1& A1) const noexcept
 {
   gp_Torus C = *this;
   C.pos.Mirror(A1);
   return C;
 }
 
-void gp_Torus::Mirror(const gp_Ax2& A2)
+void gp_Torus::Mirror(const gp_Ax2& A2) noexcept
 {
   pos.Mirror(A2);
 }
 
-gp_Torus gp_Torus::Mirrored(const gp_Ax2& A2) const
+gp_Torus gp_Torus::Mirrored(const gp_Ax2& A2) const noexcept
 {
   gp_Torus C = *this;
   C.pos.Mirror(A2);

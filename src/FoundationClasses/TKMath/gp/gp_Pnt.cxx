@@ -52,7 +52,7 @@ void gp_Pnt::Transform(const gp_Trsf& T)
   }
 }
 
-void gp_Pnt::Mirror(const gp_Pnt& P)
+void gp_Pnt::Mirror(const gp_Pnt& P) noexcept
 {
   coord.Reverse();
   gp_XYZ XYZ = P.coord;
@@ -60,35 +60,35 @@ void gp_Pnt::Mirror(const gp_Pnt& P)
   coord.Add(XYZ);
 }
 
-gp_Pnt gp_Pnt::Mirrored(const gp_Pnt& P) const
+gp_Pnt gp_Pnt::Mirrored(const gp_Pnt& P) const noexcept
 {
   gp_Pnt Pres = *this;
   Pres.Mirror(P);
   return Pres;
 }
 
-void gp_Pnt::Mirror(const gp_Ax1& A1)
+void gp_Pnt::Mirror(const gp_Ax1& A1) noexcept
 {
   gp_Trsf T;
   T.SetMirror(A1);
   T.Transforms(coord);
 }
 
-gp_Pnt gp_Pnt::Mirrored(const gp_Ax1& A1) const
+gp_Pnt gp_Pnt::Mirrored(const gp_Ax1& A1) const noexcept
 {
   gp_Pnt P = *this;
   P.Mirror(A1);
   return P;
 }
 
-void gp_Pnt::Mirror(const gp_Ax2& A2)
+void gp_Pnt::Mirror(const gp_Ax2& A2) noexcept
 {
   gp_Trsf T;
   T.SetMirror(A2);
   T.Transforms(coord);
 }
 
-gp_Pnt gp_Pnt::Mirrored(const gp_Ax2& A2) const
+gp_Pnt gp_Pnt::Mirrored(const gp_Ax2& A2) const noexcept
 {
   gp_Pnt P = *this;
   P.Mirror(A2);

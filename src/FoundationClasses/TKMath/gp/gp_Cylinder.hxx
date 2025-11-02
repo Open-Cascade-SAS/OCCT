@@ -62,10 +62,10 @@ public:
   void SetAxis(const gp_Ax1& theA1) { pos.SetAxis(theA1); }
 
   //! Changes the location of the surface.
-  void SetLocation(const gp_Pnt& theLoc) { pos.SetLocation(theLoc); }
+  constexpr void SetLocation(const gp_Pnt& theLoc) noexcept { pos.SetLocation(theLoc); }
 
   //! Change the local coordinate system of the surface.
-  void SetPosition(const gp_Ax3& theA3) { pos = theA3; }
+  constexpr void SetPosition(const gp_Ax3& theA3) noexcept { pos = theA3; }
 
   //! Modifies the radius of this cylinder.
   //! Exceptions
@@ -87,10 +87,10 @@ public:
   void VReverse() { pos.ZReverse(); }
 
   //! Returns true if the local coordinate system of this cylinder is right-handed.
-  Standard_Boolean Direct() const { return pos.Direct(); }
+  constexpr Standard_Boolean Direct() const noexcept { return pos.Direct(); }
 
   //! Returns the symmetry axis of the cylinder.
-  const gp_Ax1& Axis() const { return pos.Axis(); }
+  constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }
 
   //! Computes the coefficients of the implicit equation of the quadric
   //! in the absolute cartesian coordinate system :
@@ -108,40 +108,40 @@ public:
                                     Standard_Real& theD) const;
 
   //! Returns the "Location" point of the cylinder.
-  const gp_Pnt& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
 
   //! Returns the local coordinate system of the cylinder.
-  const gp_Ax3& Position() const { return pos; }
+  constexpr const gp_Ax3& Position() const noexcept { return pos; }
 
   //! Returns the radius of the cylinder.
-  Standard_Real Radius() const { return radius; }
+  constexpr Standard_Real Radius() const noexcept { return radius; }
 
   //! Returns the axis X of the cylinder.
-  gp_Ax1 XAxis() const { return gp_Ax1(pos.Location(), pos.XDirection()); }
+  constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
 
   //! Returns the axis Y of the cylinder.
-  gp_Ax1 YAxis() const { return gp_Ax1(pos.Location(), pos.YDirection()); }
+  constexpr gp_Ax1 YAxis() const noexcept { return gp_Ax1(pos.Location(), pos.YDirection()); }
 
-  Standard_EXPORT void Mirror(const gp_Pnt& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
   //! Performs the symmetrical transformation of a cylinder
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Cylinder Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Cylinder Mirrored(const gp_Pnt& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax1& theA1);
+  Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
 
   //! Performs the symmetrical transformation of a cylinder with
   //! respect to an axis placement which is the axis of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Cylinder Mirrored(const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Cylinder Mirrored(const gp_Ax1& theA1) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2& theA2);
+  Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Performs the symmetrical transformation of a cylinder with respect
   //! to a plane. The axis placement theA2 locates the plane of the
   //! of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Cylinder Mirrored(const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Cylinder Mirrored(const gp_Ax2& theA2) const noexcept;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
 
@@ -165,11 +165,11 @@ public:
   //! Transforms a cylinder with the transformation theT from class Trsf.
   Standard_NODISCARD gp_Cylinder Transformed(const gp_Trsf& theT) const;
 
-  void Translate(const gp_Vec& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a cylinder in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Cylinder Translated(const gp_Vec& theV) const
+  Standard_NODISCARD gp_Cylinder Translated(const gp_Vec& theV) const noexcept
   {
     gp_Cylinder aCyl = *this;
     aCyl.pos.Translate(theV);

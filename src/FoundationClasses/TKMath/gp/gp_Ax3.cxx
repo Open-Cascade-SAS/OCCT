@@ -73,42 +73,42 @@ gp_Ax3::gp_Ax3(const gp_Pnt& P, const gp_Dir& V)
   vydir = V.Crossed(vxdir);
 }
 
-void gp_Ax3::Mirror(const gp_Pnt& P)
+void gp_Ax3::Mirror(const gp_Pnt& P) noexcept
 {
   axis.Mirror(P);
   vxdir.Reverse();
   vydir.Reverse();
 }
 
-gp_Ax3 gp_Ax3::Mirrored(const gp_Pnt& P) const
+gp_Ax3 gp_Ax3::Mirrored(const gp_Pnt& P) const noexcept
 {
   gp_Ax3 Temp = *this;
   Temp.Mirror(P);
   return Temp;
 }
 
-void gp_Ax3::Mirror(const gp_Ax1& A1)
+void gp_Ax3::Mirror(const gp_Ax1& A1) noexcept
 {
   vydir.Mirror(A1);
   vxdir.Mirror(A1);
   axis.Mirror(A1);
 }
 
-gp_Ax3 gp_Ax3::Mirrored(const gp_Ax1& A1) const
+gp_Ax3 gp_Ax3::Mirrored(const gp_Ax1& A1) const noexcept
 {
   gp_Ax3 Temp = *this;
   Temp.Mirror(A1);
   return Temp;
 }
 
-void gp_Ax3::Mirror(const gp_Ax2& A2)
+void gp_Ax3::Mirror(const gp_Ax2& A2) noexcept
 {
   vydir.Mirror(A2);
   vxdir.Mirror(A2);
   axis.Mirror(A2);
 }
 
-gp_Ax3 gp_Ax3::Mirrored(const gp_Ax2& A2) const
+gp_Ax3 gp_Ax3::Mirrored(const gp_Ax2& A2) const noexcept
 {
   gp_Ax3 Temp = *this;
   Temp.Mirror(A2);

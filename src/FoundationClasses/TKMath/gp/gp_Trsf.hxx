@@ -83,17 +83,17 @@ public:
 
   //! Makes the transformation into a symmetrical transformation.
   //! theP is the center of the symmetry.
-  void SetMirror(const gp_Pnt& theP);
+  void SetMirror(const gp_Pnt& theP) noexcept;
 
   //! Makes the transformation into a symmetrical transformation.
   //! theA1 is the center of the axial symmetry.
-  Standard_EXPORT void SetMirror(const gp_Ax1& theA1);
+  Standard_EXPORT void SetMirror(const gp_Ax1& theA1) noexcept;
 
   //! Makes the transformation into a symmetrical transformation.
   //! theA2 is the center of the planar symmetry
   //! and defines the plane of symmetry by its origin, "X
   //! Direction" and "Y Direction".
-  Standard_EXPORT void SetMirror(const gp_Ax2& theA2);
+  Standard_EXPORT void SetMirror(const gp_Ax2& theA2) noexcept;
 
   //! Changes the transformation into a rotation.
   //! theA1 is the rotation axis and theAng is the angular value of the
@@ -174,14 +174,14 @@ public:
 
   //! Changes the transformation into a translation.
   //! theV is the vector of the translation.
-  void SetTranslation(const gp_Vec& theV);
+  constexpr void SetTranslation(const gp_Vec& theV) noexcept;
 
   //! Makes the transformation into a translation where the translation vector
   //! is the vector (theP1, theP2) defined from point theP1 to point theP2.
-  void SetTranslation(const gp_Pnt& theP1, const gp_Pnt& theP2);
+  constexpr void SetTranslation(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept;
 
   //! Replaces the translation vector with the vector theV.
-  Standard_EXPORT void SetTranslationPart(const gp_Vec& theV);
+  Standard_EXPORT void SetTranslationPart(const gp_Vec& theV) noexcept;
 
   //! Modifies the scale factor.
   //! Raises ConstructionError  If theS is null.
@@ -387,7 +387,7 @@ inline constexpr gp_Trsf::gp_Trsf() noexcept
 
 //=================================================================================================
 
-inline void gp_Trsf::SetMirror(const gp_Pnt& theP)
+inline void gp_Trsf::SetMirror(const gp_Pnt& theP) noexcept
 {
   shape = gp_PntMirror;
   scale = -1.0;
@@ -398,7 +398,7 @@ inline void gp_Trsf::SetMirror(const gp_Pnt& theP)
 
 //=================================================================================================
 
-inline void gp_Trsf::SetTranslation(const gp_Vec& theV)
+inline constexpr void gp_Trsf::SetTranslation(const gp_Vec& theV) noexcept
 {
   shape = gp_Translation;
   scale = 1.;
@@ -408,7 +408,7 @@ inline void gp_Trsf::SetTranslation(const gp_Vec& theV)
 
 //=================================================================================================
 
-inline void gp_Trsf::SetTranslation(const gp_Pnt& theP1, const gp_Pnt& theP2)
+inline constexpr void gp_Trsf::SetTranslation(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
 {
   shape = gp_Translation;
   scale = 1.0;

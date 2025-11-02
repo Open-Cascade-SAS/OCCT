@@ -145,25 +145,25 @@ public:
   //! Performs the symmetrical transformation of a point
   //! with respect to the point theP which is the center of
   //! the  symmetry.
-  Standard_EXPORT void Mirror(const gp_Pnt& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
   //! Performs the symmetrical transformation of a point
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored(const gp_Pnt& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax1& theA1);
+  Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
 
   //! Performs the symmetrical transformation of a point
   //! with respect to a plane. The axis placement theA2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored(const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored(const gp_Ax1& theA1) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2& theA2);
+  Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Rotates a point. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored(const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored(const gp_Ax2& theA2) const noexcept;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng);
 
