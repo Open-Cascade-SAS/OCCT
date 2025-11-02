@@ -239,7 +239,7 @@ public:
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction theV which is the center
-  //! od the symmetry.
+  //! of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Dir Mirrored(const gp_Dir& theV) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
