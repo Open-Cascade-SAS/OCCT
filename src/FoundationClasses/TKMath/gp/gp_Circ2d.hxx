@@ -127,7 +127,8 @@ public:
   //! Returns True if the distance between theP and any point on
   //! the circumference of the circle is lower of equal to
   //! <theLinearTolerance>.
-  Standard_Boolean Contains(const gp_Pnt2d& theP, const Standard_Real theLinearTolerance) const noexcept
+  Standard_Boolean Contains(const gp_Pnt2d&     theP,
+                            const Standard_Real theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
@@ -180,7 +181,10 @@ public:
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
-  constexpr Standard_Boolean IsDirect() const noexcept { return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0; }
+  constexpr Standard_Boolean IsDirect() const noexcept
+  {
+    return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+  }
 
   Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
 
@@ -194,11 +198,15 @@ public:
   //! to an axis placement which is the axis of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
-  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) noexcept { pos.Rotate(theP, theAng); }
+  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) noexcept
+  {
+    pos.Rotate(theP, theAng);
+  }
 
   //! Rotates a circle. theP is the center of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Circ2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const noexcept
+  Standard_NODISCARD gp_Circ2d Rotated(const gp_Pnt2d&     theP,
+                                       const Standard_Real theAng) const noexcept
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Rotate(theP, theAng);
@@ -212,7 +220,8 @@ public:
   //! If theS is negative the radius stay positive but
   //! the "XAxis" and the "YAxis" are  reversed as for
   //! an ellipse.
-  Standard_NODISCARD gp_Circ2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const noexcept;
+  Standard_NODISCARD gp_Circ2d Scaled(const gp_Pnt2d&     theP,
+                                      const Standard_Real theS) const noexcept;
 
   void Transform(const gp_Trsf2d& theT) noexcept;
 
@@ -230,10 +239,14 @@ public:
     return aCirc;
   }
 
-  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a circle from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Circ2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD gp_Circ2d Translated(const gp_Pnt2d& theP1,
+                                          const gp_Pnt2d& theP2) const noexcept
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Translate(theP1, theP2);

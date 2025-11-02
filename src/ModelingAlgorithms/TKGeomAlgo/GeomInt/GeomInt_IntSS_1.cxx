@@ -1077,7 +1077,6 @@ void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)&      theRL,
   Handle(GeomAdaptor_Surface) aGAHS;
   Handle(Adaptor2d_Curve2d)   anAHC2d;
   Standard_Real               tf, tl;
-  gp_Lin2d                    aL;
   // It is assumed that 2d curve is 2d line (rectangular surface domain)
   if (theRL->IsArcOnS1())
   {

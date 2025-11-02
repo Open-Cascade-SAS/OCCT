@@ -228,7 +228,10 @@ public:
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
-  constexpr Standard_Boolean IsDirect() const noexcept { return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0; }
+  constexpr Standard_Boolean IsDirect() const noexcept
+  {
+    return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+  }
 
   Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
 
@@ -242,9 +245,13 @@ public:
   //! to an axis placement which is the axis of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
-  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) noexcept { pos.Rotate(theP, theAng); }
+  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) noexcept
+  {
+    pos.Rotate(theP, theAng);
+  }
 
-  Standard_NODISCARD gp_Elips2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const noexcept
+  Standard_NODISCARD gp_Elips2d Rotated(const gp_Pnt2d&     theP,
+                                        const Standard_Real theAng) const noexcept
   {
     gp_Elips2d anE = *this;
     anE.pos.Rotate(theP, theAng);
@@ -254,7 +261,8 @@ public:
   void Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept;
 
   //! Scales a ellipse. theS is the scaling value.
-  Standard_NODISCARD gp_Elips2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const noexcept;
+  Standard_NODISCARD gp_Elips2d Scaled(const gp_Pnt2d&     theP,
+                                       const Standard_Real theS) const noexcept;
 
   void Transform(const gp_Trsf2d& theT) noexcept;
 
@@ -272,10 +280,14 @@ public:
     return anE;
   }
 
-  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a ellipse from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Elips2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD gp_Elips2d Translated(const gp_Pnt2d& theP1,
+                                           const gp_Pnt2d& theP2) const noexcept
   {
     gp_Elips2d anE = *this;
     anE.pos.Translate(theP1, theP2);

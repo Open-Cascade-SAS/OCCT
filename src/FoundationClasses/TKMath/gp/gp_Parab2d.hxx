@@ -191,7 +191,10 @@ public:
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
-  constexpr Standard_Boolean IsDirect() const noexcept { return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0; }
+  constexpr Standard_Boolean IsDirect() const noexcept
+  {
+    return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+  }
 
   Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
 
@@ -221,7 +224,8 @@ public:
   //! Scales a parabola. theS is the scaling value.
   //! If theS is negative the direction of the symmetry axis
   //! "XAxis" is reversed and the direction of the "YAxis" too.
-  Standard_NODISCARD gp_Parab2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const noexcept;
+  Standard_NODISCARD gp_Parab2d Scaled(const gp_Pnt2d&     theP,
+                                       const Standard_Real theS) const noexcept;
 
   void Transform(const gp_Trsf2d& theT) noexcept;
 
@@ -239,10 +243,14 @@ public:
     return aPrb;
   }
 
-  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a parabola from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Parab2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD gp_Parab2d Translated(const gp_Pnt2d& theP1,
+                                           const gp_Pnt2d& theP2) const noexcept
   {
     gp_Parab2d aPrb = *this;
     aPrb.pos.Translate(theP1, theP2);

@@ -90,7 +90,9 @@ public:
 
   //! Returns the normalized coefficients of the line :
   //! theA * X + theB * Y + theC = 0.
-  constexpr void Coefficients(Standard_Real& theA, Standard_Real& theB, Standard_Real& theC) const noexcept
+  constexpr void Coefficients(Standard_Real& theA,
+                              Standard_Real& theB,
+                              Standard_Real& theC) const noexcept
   {
     theA = pos.Direction().Y();
     theB = -pos.Direction().X();
@@ -116,7 +118,8 @@ public:
   //! Returns true if this line contains the point theP, that is, if the
   //! distance between point theP and this line is less than or
   //! equal to theLinearTolerance.
-  Standard_Boolean Contains(const gp_Pnt2d& theP, const Standard_Real theLinearTolerance) const noexcept
+  Standard_Boolean Contains(const gp_Pnt2d&     theP,
+                            const Standard_Real theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
@@ -198,10 +201,14 @@ public:
     return aL;
   }
 
-  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a line from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Lin2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD gp_Lin2d Translated(const gp_Pnt2d& theP1,
+                                         const gp_Pnt2d& theP2) const noexcept
   {
     gp_Lin2d aL = *this;
     aL.pos.Translate(gp_Vec2d(theP1, theP2));
