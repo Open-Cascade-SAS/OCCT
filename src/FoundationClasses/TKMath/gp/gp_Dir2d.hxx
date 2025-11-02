@@ -218,19 +218,19 @@ public:
 
   Standard_NODISCARD constexpr gp_Dir2d operator-() const noexcept { return Reversed(); }
 
-  Standard_EXPORT void Mirror(const gp_Dir2d& theV);
+  Standard_EXPORT void Mirror(const gp_Dir2d& theV) noexcept;
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction theV which is the center of
   //! the  symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Dir2d Mirrored(const gp_Dir2d& theV) const;
+  Standard_NODISCARD Standard_EXPORT gp_Dir2d Mirrored(const gp_Dir2d& theV) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2d& theA);
+  Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Dir2d Mirrored(const gp_Ax2d& theA) const;
+  Standard_NODISCARD Standard_EXPORT gp_Dir2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
   void Rotate(const Standard_Real Ang);
 
@@ -243,7 +243,7 @@ public:
     return aV;
   }
 
-  Standard_EXPORT void Transform(const gp_Trsf2d& theT);
+  Standard_EXPORT void Transform(const gp_Trsf2d& theT) noexcept;
 
   //! Transforms a direction with the "Trsf" theT.
   //! Warnings :

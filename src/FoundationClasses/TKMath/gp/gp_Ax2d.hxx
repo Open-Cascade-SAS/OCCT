@@ -125,19 +125,19 @@ public:
     return aTemp;
   }
 
-  Standard_EXPORT void Mirror(const gp_Pnt2d& P);
+  Standard_EXPORT void Mirror(const gp_Pnt2d& P) noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point P which is the
   //! center of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Ax2d Mirrored(const gp_Pnt2d& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax2d Mirrored(const gp_Pnt2d& P) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2d& A);
+  Standard_EXPORT void Mirror(const gp_Ax2d& A) noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
   //! is the axis of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Ax2d Mirrored(const gp_Ax2d& A) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax2d Mirrored(const gp_Ax2d& A) const noexcept;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
   {

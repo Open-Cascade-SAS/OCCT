@@ -67,24 +67,24 @@ void gp_Parab2d::Coefficients(Standard_Real& A,
   F                 = (T23 * T23) - (2.0 * P * T13);
 }
 
-void gp_Parab2d::Mirror(const gp_Pnt2d& P)
+void gp_Parab2d::Mirror(const gp_Pnt2d& P) noexcept
 {
   pos.Mirror(P);
 }
 
-gp_Parab2d gp_Parab2d::Mirrored(const gp_Pnt2d& P) const
+gp_Parab2d gp_Parab2d::Mirrored(const gp_Pnt2d& P) const noexcept
 {
   gp_Parab2d Prb = *this;
   Prb.pos.Mirror(P);
   return Prb;
 }
 
-void gp_Parab2d::Mirror(const gp_Ax2d& A)
+void gp_Parab2d::Mirror(const gp_Ax2d& A) noexcept
 {
   pos.Mirror(A);
 }
 
-gp_Parab2d gp_Parab2d::Mirrored(const gp_Ax2d& A) const
+gp_Parab2d gp_Parab2d::Mirrored(const gp_Ax2d& A) const noexcept
 {
   gp_Parab2d Prb = *this;
   Prb.pos.Mirror(A);

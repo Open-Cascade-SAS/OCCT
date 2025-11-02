@@ -54,7 +54,7 @@ Standard_Real gp_Dir2d::Angle(const gp_Dir2d& Other) const
   }
 }
 
-void gp_Dir2d::Mirror(const gp_Ax2d& A2)
+void gp_Dir2d::Mirror(const gp_Ax2d& A2) noexcept
 {
   const gp_XY&  XY = A2.Direction().XY();
   Standard_Real A  = XY.X();
@@ -67,7 +67,7 @@ void gp_Dir2d::Mirror(const gp_Ax2d& A2)
   coord.SetCoord(XX, YY);
 }
 
-void gp_Dir2d::Transform(const gp_Trsf2d& T)
+void gp_Dir2d::Transform(const gp_Trsf2d& T) noexcept
 {
   if (T.Form() == gp_Identity || T.Form() == gp_Translation)
   {
@@ -95,7 +95,7 @@ void gp_Dir2d::Transform(const gp_Trsf2d& T)
   }
 }
 
-void gp_Dir2d::Mirror(const gp_Dir2d& V)
+void gp_Dir2d::Mirror(const gp_Dir2d& V) noexcept
 {
   const gp_XY&  XY = V.coord;
   Standard_Real A  = XY.X();
@@ -108,14 +108,14 @@ void gp_Dir2d::Mirror(const gp_Dir2d& V)
   coord.SetCoord(XX, YY);
 }
 
-gp_Dir2d gp_Dir2d::Mirrored(const gp_Dir2d& V) const
+gp_Dir2d gp_Dir2d::Mirrored(const gp_Dir2d& V) const noexcept
 {
   gp_Dir2d Vres = *this;
   Vres.Mirror(V);
   return Vres;
 }
 
-gp_Dir2d gp_Dir2d::Mirrored(const gp_Ax2d& A) const
+gp_Dir2d gp_Dir2d::Mirrored(const gp_Ax2d& A) const noexcept
 {
   gp_Dir2d V = *this;
   V.Mirror(A);

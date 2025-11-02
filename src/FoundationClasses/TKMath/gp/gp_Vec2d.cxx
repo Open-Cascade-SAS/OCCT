@@ -103,7 +103,7 @@ gp_Vec2d gp_Vec2d::Mirrored(const gp_Ax2d& theA1) const
   return Vres;
 }
 
-void gp_Vec2d::Transform(const gp_Trsf2d& theT)
+void gp_Vec2d::Transform(const gp_Trsf2d& theT) noexcept
 {
   switch (theT.Form())
   {

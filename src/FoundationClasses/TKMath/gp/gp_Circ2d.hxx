@@ -52,7 +52,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! creates an indefinite circle.
-  gp_Circ2d()
+  gp_Circ2d() noexcept
       : radius(RealLast())
   {
   }
@@ -86,13 +86,13 @@ public:
   }
 
   //! Changes the location point (center) of the circle.
-  void SetLocation(const gp_Pnt2d& theP) { pos.SetLocation(theP); }
+  constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { pos.SetLocation(theP); }
 
   //! Changes the X axis of the circle.
   void SetXAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
 
   //! Changes the X axis of the circle.
-  void SetAxis(const gp_Ax22d& theA) { pos.SetAxis(theA); }
+  constexpr void SetAxis(const gp_Ax22d& theA) noexcept { pos.SetAxis(theA); }
 
   //! Changes the Y axis of the circle.
   void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
@@ -111,61 +111,62 @@ public:
   }
 
   //! Computes the area of the circle.
-  Standard_Real Area() const { return M_PI * radius * radius; }
+  constexpr Standard_Real Area() const noexcept { return M_PI * radius * radius; }
 
   //! Returns the normalized coefficients from the implicit equation
   //! of the circle :
   //! theA * (X**2) + theB * (Y**2) + 2*theC*(X*Y) + 2*theD*X + 2*theE*Y + theF = 0.0
-  void Coefficients(Standard_Real& theA,
-                    Standard_Real& theB,
-                    Standard_Real& theC,
-                    Standard_Real& theD,
-                    Standard_Real& theE,
-                    Standard_Real& theF) const;
+  constexpr void Coefficients(Standard_Real& theA,
+                              Standard_Real& theB,
+                              Standard_Real& theC,
+                              Standard_Real& theD,
+                              Standard_Real& theE,
+                              Standard_Real& theF) const noexcept;
 
   //! Does <me> contain theP ?
   //! Returns True if the distance between theP and any point on
   //! the circumference of the circle is lower of equal to
   //! <theLinearTolerance>.
-  Standard_Boolean Contains(const gp_Pnt2d& theP, const Standard_Real theLinearTolerance) const
+  Standard_Boolean Contains(const gp_Pnt2d&     theP,
+                            const Standard_Real theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
 
   //! Computes the minimum of distance between the point theP and any
   //! point on the circumference of the circle.
-  Standard_Real Distance(const gp_Pnt2d& theP) const;
+  Standard_Real Distance(const gp_Pnt2d& theP) const noexcept;
 
   //! Computes the square distance between <me> and the point theP.
-  Standard_Real SquareDistance(const gp_Pnt2d& theP) const;
+  Standard_Real SquareDistance(const gp_Pnt2d& theP) const noexcept;
 
   //! computes the circumference of the circle.
-  Standard_Real Length() const { return 2. * M_PI * radius; }
+  constexpr Standard_Real Length() const noexcept { return 2. * M_PI * radius; }
 
   //! Returns the location point (center) of the circle.
-  const gp_Pnt2d& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt2d& Location() const noexcept { return pos.Location(); }
 
   //! Returns the radius value of the circle.
-  Standard_Real Radius() const { return radius; }
+  constexpr Standard_Real Radius() const noexcept { return radius; }
 
   //! returns the position of the circle.
-  const gp_Ax22d& Axis() const { return pos; }
+  constexpr const gp_Ax22d& Axis() const noexcept { return pos; }
 
   //! returns the position of the circle. Idem Axis(me).
-  const gp_Ax22d& Position() const { return pos; }
+  constexpr const gp_Ax22d& Position() const noexcept { return pos; }
 
   //! returns the X axis of the circle.
-  gp_Ax2d XAxis() const { return gp_Ax2d(pos.XAxis()); }
+  gp_Ax2d XAxis() const noexcept { return gp_Ax2d(pos.XAxis()); }
 
   //! Returns the Y axis of the circle.
   //! Reverses the direction of the circle.
-  gp_Ax2d YAxis() const { return gp_Ax2d(pos.YAxis()); }
+  gp_Ax2d YAxis() const noexcept { return gp_Ax2d(pos.YAxis()); }
 
   //! Reverses the orientation of the local coordinate system
   //! of this circle (the "Y Direction" is reversed) and therefore
   //! changes the implicit orientation of this circle.
   //! Reverse assigns the result to this circle,
-  void Reverse()
+  void Reverse() noexcept
   {
     gp_Dir2d aTemp = pos.YDirection();
     aTemp.Reverse();
@@ -176,23 +177,26 @@ public:
   //! of this circle (the "Y Direction" is reversed) and therefore
   //! changes the implicit orientation of this circle.
   //! Reversed creates a new circle.
-  Standard_NODISCARD gp_Circ2d Reversed() const;
+  Standard_NODISCARD gp_Circ2d Reversed() const noexcept;
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
-  Standard_Boolean IsDirect() const { return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0; }
+  constexpr Standard_Boolean IsDirect() const noexcept
+  {
+    return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+  }
 
-  Standard_EXPORT void Mirror(const gp_Pnt2d& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
 
   //! Performs the symmetrical transformation of a circle with respect
   //! to the point theP which is the center of the symmetry
-  Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored(const gp_Pnt2d& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored(const gp_Pnt2d& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2d& theA);
+  Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
 
   //! Performs the symmetrical transformation of a circle with respect
   //! to an axis placement which is the axis of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored(const gp_Ax2d& theA) const;
+  Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
 
@@ -219,21 +223,25 @@ public:
   //! Transforms a circle with the transformation theT from class Trsf2d.
   Standard_NODISCARD gp_Circ2d Transformed(const gp_Trsf2d& theT) const;
 
-  void Translate(const gp_Vec2d& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a circle in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Circ2d Translated(const gp_Vec2d& theV) const
+  Standard_NODISCARD gp_Circ2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Translate(theV);
     return aCirc;
   }
 
-  void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a circle from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Circ2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD gp_Circ2d Translated(const gp_Pnt2d& theP1,
+                                          const gp_Pnt2d& theP2) const noexcept
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Translate(theP1, theP2);
@@ -247,12 +255,12 @@ private:
 
 //=================================================================================================
 
-inline void gp_Circ2d::Coefficients(Standard_Real& theA,
-                                    Standard_Real& theB,
-                                    Standard_Real& theC,
-                                    Standard_Real& theD,
-                                    Standard_Real& theE,
-                                    Standard_Real& theF) const
+constexpr inline void gp_Circ2d::Coefficients(Standard_Real& theA,
+                                              Standard_Real& theB,
+                                              Standard_Real& theC,
+                                              Standard_Real& theD,
+                                              Standard_Real& theE,
+                                              Standard_Real& theF) const noexcept
 {
   Standard_Real aXc  = pos.Location().X();
   Standard_Real anYc = pos.Location().Y();
@@ -266,7 +274,7 @@ inline void gp_Circ2d::Coefficients(Standard_Real& theA,
 
 //=================================================================================================
 
-inline Standard_Real gp_Circ2d::Distance(const gp_Pnt2d& theP) const
+inline Standard_Real gp_Circ2d::Distance(const gp_Pnt2d& theP) const noexcept
 {
   gp_XY aCoord = theP.XY();
   aCoord.Subtract(pos.Location().XY());
@@ -280,7 +288,7 @@ inline Standard_Real gp_Circ2d::Distance(const gp_Pnt2d& theP) const
 
 //=================================================================================================
 
-inline gp_Circ2d gp_Circ2d::Reversed() const
+inline gp_Circ2d gp_Circ2d::Reversed() const noexcept
 {
   gp_Circ2d aCirc = *this;
   gp_Dir2d  aTemp = pos.YDirection();
@@ -291,7 +299,7 @@ inline gp_Circ2d gp_Circ2d::Reversed() const
 
 //=================================================================================================
 
-inline Standard_Real gp_Circ2d::SquareDistance(const gp_Pnt2d& theP) const
+inline Standard_Real gp_Circ2d::SquareDistance(const gp_Pnt2d& theP) const noexcept
 {
   gp_XY aCoord = theP.XY();
   aCoord.Subtract(pos.Location().XY());

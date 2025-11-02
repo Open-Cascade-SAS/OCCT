@@ -50,7 +50,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an indefinite parabola.
-  gp_Parab2d()
+  gp_Parab2d() noexcept
       : focalLength(RealLast())
   {
   }
@@ -113,7 +113,7 @@ public:
 
   //! Changes the "Location" point of the parabola. It is the
   //! vertex of the parabola.
-  void SetLocation(const gp_Pnt2d& theP) { pos.SetLocation(theP); }
+  constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { pos.SetLocation(theP); }
 
   //! Modifies this parabola, by redefining its local coordinate system so that
   //! its origin and "X Direction" become those of the axis
@@ -124,7 +124,7 @@ public:
 
   //! Changes the local coordinate system of the parabola.
   //! The "Location" point of A becomes the vertex of the parabola.
-  void SetAxis(const gp_Ax22d& theA) { pos.SetAxis(theA); }
+  constexpr void SetAxis(const gp_Ax22d& theA) noexcept { pos.SetAxis(theA); }
 
   //! Computes the coefficients of the implicit equation of the parabola
   //! (in WCS - World Coordinate System).
@@ -146,35 +146,35 @@ public:
   //! at a distance from the apex which is equal to the focal  length of this parabola.
   //! The directrix is returned as an axis (a gp_Ax2d object),
   //! the origin of which is situated on the "X Axis" of this parabola.
-  gp_Ax2d Directrix() const;
+  gp_Ax2d Directrix() const noexcept;
 
   //! Returns the distance between the vertex and the focus
   //! of the parabola.
-  Standard_Real Focal() const { return focalLength; }
+  constexpr Standard_Real Focal() const noexcept { return focalLength; }
 
   //! Returns the focus of the parabola.
-  gp_Pnt2d Focus() const
+  gp_Pnt2d Focus() const noexcept
   {
     return gp_Pnt2d(pos.Location().X() + focalLength * pos.XDirection().X(),
                     pos.Location().Y() + focalLength * pos.XDirection().Y());
   }
 
   //! Returns the vertex of the parabola.
-  gp_Pnt2d Location() const { return pos.Location(); }
+  constexpr const gp_Pnt2d& Location() const noexcept { return pos.Location(); }
 
   //! Returns the symmetry axis of the parabola.
   //! The "Location" point of this axis is the vertex of the parabola.
-  gp_Ax2d MirrorAxis() const { return pos.XAxis(); }
+  gp_Ax2d MirrorAxis() const noexcept { return pos.XAxis(); }
 
   //! Returns the local coordinate system of the parabola.
   //! The "Location" point of this axis is the vertex of the parabola.
-  gp_Ax22d Axis() const { return pos; }
+  constexpr const gp_Ax22d& Axis() const noexcept { return pos; }
 
   //! Returns the distance between the focus and the
   //! directrix of the parabola.
-  Standard_Real Parameter() const { return 2.0 * focalLength; }
+  constexpr Standard_Real Parameter() const noexcept { return 2.0 * focalLength; }
 
-  void Reverse()
+  void Reverse() noexcept
   {
     gp_Dir2d aTemp = pos.YDirection();
     aTemp.Reverse();
@@ -187,23 +187,26 @@ public:
   //! Note:
   //! -   Reverse assigns the result to this parabola, while
   //! -   Reversed creates a new one.
-  Standard_NODISCARD gp_Parab2d Reversed() const;
+  Standard_NODISCARD gp_Parab2d Reversed() const noexcept;
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
-  Standard_Boolean IsDirect() const { return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0; }
+  constexpr Standard_Boolean IsDirect() const noexcept
+  {
+    return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+  }
 
-  Standard_EXPORT void Mirror(const gp_Pnt2d& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
 
   //! Performs the symmetrical transformation of a parabola with respect
   //! to the point theP which is the center of the symmetry
-  Standard_NODISCARD Standard_EXPORT gp_Parab2d Mirrored(const gp_Pnt2d& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Parab2d Mirrored(const gp_Pnt2d& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2d& theA);
+  Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
 
   //! Performs the symmetrical transformation of a parabola with respect
   //! to an axis placement which is the axis of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Parab2d Mirrored(const gp_Ax2d& theA) const;
+  Standard_NODISCARD Standard_EXPORT gp_Parab2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
 
@@ -228,21 +231,25 @@ public:
   //! Transforms an parabola with the transformation theT from class Trsf2d.
   Standard_NODISCARD gp_Parab2d Transformed(const gp_Trsf2d& theT) const;
 
-  void Translate(const gp_Vec2d& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a parabola in the direction of the vectorthe theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Parab2d Translated(const gp_Vec2d& theV) const
+  Standard_NODISCARD gp_Parab2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Parab2d aPrb = *this;
     aPrb.pos.Translate(theV);
     return aPrb;
   }
 
-  void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a parabola from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Parab2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD gp_Parab2d Translated(const gp_Pnt2d& theP1,
+                                           const gp_Pnt2d& theP2) const noexcept
   {
     gp_Parab2d aPrb = *this;
     aPrb.pos.Translate(theP1, theP2);
@@ -256,7 +263,7 @@ private:
 
 //=================================================================================================
 
-inline gp_Ax2d gp_Parab2d::Directrix() const
+inline gp_Ax2d gp_Parab2d::Directrix() const noexcept
 {
   gp_Pnt2d aP(pos.Location().X() - focalLength * pos.XDirection().X(),
               pos.Location().Y() - focalLength * pos.XDirection().Y());
@@ -266,7 +273,7 @@ inline gp_Ax2d gp_Parab2d::Directrix() const
 
 //=================================================================================================
 
-inline gp_Parab2d gp_Parab2d::Reversed() const
+inline gp_Parab2d gp_Parab2d::Reversed() const noexcept
 {
   gp_Parab2d aP    = *this;
   gp_Dir2d   aTemp = pos.YDirection();

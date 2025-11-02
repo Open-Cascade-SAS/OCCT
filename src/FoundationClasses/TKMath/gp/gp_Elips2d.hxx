@@ -47,7 +47,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an indefinite ellipse.
-  gp_Elips2d()
+  gp_Elips2d() noexcept
       : majorRadius(RealLast()),
         minorRadius(RealSmall())
   {
@@ -101,7 +101,7 @@ public:
 
   //! Modifies this ellipse, by redefining its local coordinate system so that
   //! -   its origin becomes theP.
-  void SetLocation(const gp_Pnt2d& theP) { pos.SetLocation(theP); }
+  constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { pos.SetLocation(theP); }
 
   //! Changes the value of the major radius.
   //! Raises ConstructionError if theMajorRadius < MinorRadius.
@@ -125,7 +125,7 @@ public:
 
   //! Modifies this ellipse, by redefining its local coordinate system so that
   //! it becomes theA.
-  void SetAxis(const gp_Ax22d& theA) { pos.SetAxis(theA); }
+  constexpr void SetAxis(const gp_Ax22d& theA) noexcept { pos.SetAxis(theA); }
 
   //! Modifies this ellipse, by redefining its local coordinate system so that
   //! its origin and its "X Direction"  become those
@@ -142,7 +142,7 @@ public:
   void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
 
   //! Computes the area of the ellipse.
-  Standard_Real Area() const { return M_PI * majorRadius * minorRadius; }
+  constexpr Standard_Real Area() const noexcept { return M_PI * majorRadius * minorRadius; }
 
   //! Returns the coefficients of the implicit equation of the ellipse.
   //! theA * (X**2) + theB * (Y**2) + 2*theC*(X*Y) + 2*theD*X + 2*theE*Y + theF = 0.
@@ -194,53 +194,56 @@ public:
   gp_Pnt2d Focus2() const;
 
   //! Returns the center of the ellipse.
-  const gp_Pnt2d& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt2d& Location() const noexcept { return pos.Location(); }
 
   //! Returns the major radius of the Ellipse.
-  Standard_Real MajorRadius() const { return majorRadius; }
+  constexpr Standard_Real MajorRadius() const noexcept { return majorRadius; }
 
   //! Returns the minor radius of the Ellipse.
-  Standard_Real MinorRadius() const { return minorRadius; }
+  constexpr Standard_Real MinorRadius() const noexcept { return minorRadius; }
 
   //! Returns p = (1 - e * e) * MajorRadius where e is the eccentricity
   //! of the ellipse.
   //! Returns 0 if MajorRadius = 0
-  Standard_Real Parameter() const;
+  constexpr Standard_Real Parameter() const noexcept;
 
   //! Returns the major axis of the ellipse.
-  const gp_Ax22d& Axis() const { return pos; }
+  constexpr const gp_Ax22d& Axis() const noexcept { return pos; }
 
   //! Returns the major axis of the ellipse.
-  gp_Ax2d XAxis() const { return pos.XAxis(); }
+  gp_Ax2d XAxis() const noexcept { return pos.XAxis(); }
 
   //! Returns the minor axis of the ellipse.
   //! Reverses the direction of the circle.
-  gp_Ax2d YAxis() const { return pos.YAxis(); }
+  gp_Ax2d YAxis() const noexcept { return pos.YAxis(); }
 
-  void Reverse()
+  void Reverse() noexcept
   {
     gp_Dir2d aTemp = pos.YDirection();
     aTemp.Reverse();
     pos.SetAxis(gp_Ax22d(pos.Location(), pos.XDirection(), aTemp));
   }
 
-  Standard_NODISCARD gp_Elips2d Reversed() const;
+  Standard_NODISCARD gp_Elips2d Reversed() const noexcept;
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
-  Standard_Boolean IsDirect() const { return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0; }
+  constexpr Standard_Boolean IsDirect() const noexcept
+  {
+    return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+  }
 
-  Standard_EXPORT void Mirror(const gp_Pnt2d& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
 
   //! Performs the symmetrical transformation of a ellipse with respect
   //! to the point theP which is the center of the symmetry
-  Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Pnt2d& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Pnt2d& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2d& theA);
+  Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
 
   //! Performs the symmetrical transformation of a ellipse with respect
   //! to an axis placement which is the axis of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Ax2d& theA) const;
+  Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
 
@@ -261,21 +264,25 @@ public:
   //! Transforms an ellipse with the transformation theT from class Trsf2d.
   Standard_NODISCARD gp_Elips2d Transformed(const gp_Trsf2d& theT) const;
 
-  void Translate(const gp_Vec2d& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a ellipse in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Elips2d Translated(const gp_Vec2d& theV) const
+  Standard_NODISCARD gp_Elips2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Elips2d anE = *this;
     anE.pos.Translate(theV);
     return anE;
   }
 
-  void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a ellipse from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Elips2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD gp_Elips2d Translated(const gp_Pnt2d& theP1,
+                                           const gp_Pnt2d& theP2) const noexcept
   {
     gp_Elips2d anE = *this;
     anE.pos.Translate(theP1, theP2);
@@ -386,7 +393,7 @@ inline gp_Elips2d gp_Elips2d::Scaled(const gp_Pnt2d& theP, const Standard_Real t
 
 //=================================================================================================
 
-inline Standard_Real gp_Elips2d::Parameter() const
+inline constexpr Standard_Real gp_Elips2d::Parameter() const noexcept
 {
   if (majorRadius == 0.0)
   {
@@ -400,7 +407,7 @@ inline Standard_Real gp_Elips2d::Parameter() const
 
 //=================================================================================================
 
-inline gp_Elips2d gp_Elips2d::Reversed() const
+inline gp_Elips2d gp_Elips2d::Reversed() const noexcept
 {
   gp_Elips2d anE   = *this;
   gp_Dir2d   aTemp = pos.YDirection();

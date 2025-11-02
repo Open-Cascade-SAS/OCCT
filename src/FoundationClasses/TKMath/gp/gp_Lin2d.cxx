@@ -52,14 +52,14 @@ gp_Lin2d::gp_Lin2d(const Standard_Real A, const Standard_Real B, const Standard_
 
 //=================================================================================================
 
-void gp_Lin2d::Mirror(const gp_Pnt2d& P)
+void gp_Lin2d::Mirror(const gp_Pnt2d& P) noexcept
 {
   pos.Mirror(P);
 }
 
 //=================================================================================================
 
-gp_Lin2d gp_Lin2d::Mirrored(const gp_Pnt2d& P) const
+gp_Lin2d gp_Lin2d::Mirrored(const gp_Pnt2d& P) const noexcept
 {
   gp_Lin2d L = *this;
   L.pos.Mirror(P);
@@ -68,14 +68,14 @@ gp_Lin2d gp_Lin2d::Mirrored(const gp_Pnt2d& P) const
 
 //=================================================================================================
 
-void gp_Lin2d::Mirror(const gp_Ax2d& A)
+void gp_Lin2d::Mirror(const gp_Ax2d& A) noexcept
 {
   pos.Mirror(A);
 }
 
 //=================================================================================================
 
-gp_Lin2d gp_Lin2d::Mirrored(const gp_Ax2d& A) const
+gp_Lin2d gp_Lin2d::Mirrored(const gp_Ax2d& A) const noexcept
 {
   gp_Lin2d L = *this;
   L.pos.Mirror(A);
