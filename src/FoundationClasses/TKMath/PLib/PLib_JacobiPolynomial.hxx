@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <PLib_Base.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -65,8 +64,8 @@ public:
   //! ConstraintOrder has to be GeomAbs_C0
   //! GeomAbs_C1
   //! GeomAbs_C2
-  Standard_EXPORT PLib_JacobiPolynomial(const Standard_Integer WorkDegree,
-                                        const GeomAbs_Shape    ConstraintOrder);
+  Standard_EXPORT PLib_JacobiPolynomial(const Standard_Integer theWorkDegree,
+                                        const GeomAbs_Shape    theConstraintOrder);
 
   //! returns  the  Jacobi  Points   for  Gauss  integration ie
   //! the positive values of the Legendre roots by increasing values
@@ -77,8 +76,8 @@ public:
   //! The possible values for NbGaussPoints are : 8, 10,
   //! 15, 20, 25, 30, 35, 40, 50, 61
   //! NbGaussPoints must be greater than Degree
-  Standard_EXPORT void Points(const Standard_Integer NbGaussPoints,
-                              TColStd_Array1OfReal&  TabPoints) const;
+  Standard_EXPORT void Points(const Standard_Integer theNbGaussPoints,
+                              TColStd_Array1OfReal&  theTabPoints) const;
 
   //! returns the Jacobi weights for Gauss integration only for
   //! the positive    values of the  Legendre roots   in the order they
@@ -89,97 +88,92 @@ public:
   //! TabWeights (0,.) are only loaded for the odd values of NbGaussPoints
   //! The possible values for NbGaussPoints are : 8 , 10 , 15 ,20 ,25 , 30,
   //! 35 , 40 , 50 , 61 NbGaussPoints must be greater than Degree
-  Standard_EXPORT void Weights(const Standard_Integer NbGaussPoints,
-                               TColStd_Array2OfReal&  TabWeights) const;
+  Standard_EXPORT void Weights(const Standard_Integer theNbGaussPoints,
+                               TColStd_Array2OfReal&  theTabWeights) const;
 
   //! this method loads for k=0,q the maximum value of
   //! abs ( W(t)*Jk(t) )for t bellonging to [-1,1]
   //! This values are loaded is the array TabMax(0,myWorkDegree-2*(myNivConst+1))
   //! MaxValue ( me ; TabMaxPointer : in  out  Real );
-  Standard_EXPORT void MaxValue(TColStd_Array1OfReal& TabMax) const;
+  Standard_EXPORT void MaxValue(TColStd_Array1OfReal& theTabMax) const;
 
   //! This  method computes the  maximum  error on the polynomial
   //! W(t) Q(t)  obtained  by   missing  the   coefficients of  JacCoeff   from
   //! NewDegree +1 to Degree
-  Standard_EXPORT Standard_Real MaxError(const Standard_Integer Dimension,
-                                         Standard_Real&         JacCoeff,
-                                         const Standard_Integer NewDegree) const;
+  Standard_EXPORT Standard_Real MaxError(const Standard_Integer theDimension,
+                                         Standard_Real&         theJacCoeff,
+                                         const Standard_Integer theNewDegree) const;
 
   //! Compute NewDegree <= MaxDegree  so that MaxError is lower
   //! than Tol.
   //! MaxError can be greater than Tol  if it is not possible
   //! to find a NewDegree <= MaxDegree.
   //! In this case NewDegree = MaxDegree
-  Standard_EXPORT void ReduceDegree(const Standard_Integer Dimension,
-                                    const Standard_Integer MaxDegree,
-                                    const Standard_Real    Tol,
-                                    Standard_Real&         JacCoeff,
-                                    Standard_Integer&      NewDegree,
-                                    Standard_Real&         MaxError) const Standard_OVERRIDE;
+  Standard_EXPORT void ReduceDegree(const Standard_Integer theDimension,
+                                    const Standard_Integer theMaxDegree,
+                                    const Standard_Real    theTol,
+                                    Standard_Real&         theJacCoeff,
+                                    Standard_Integer&      theNewDegree,
+                                    Standard_Real&         theMaxError) const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Real AverageError(const Standard_Integer Dimension,
-                                             Standard_Real&         JacCoeff,
-                                             const Standard_Integer NewDegree) const;
+  Standard_EXPORT Standard_Real AverageError(const Standard_Integer theDimension,
+                                             Standard_Real&         theJacCoeff,
+                                             const Standard_Integer theNewDegree) const;
 
   //! Convert the polynomial P(t) = R(t) + W(t) Q(t) in the canonical base.
-  Standard_EXPORT void ToCoefficients(const Standard_Integer      Dimension,
-                                      const Standard_Integer      Degree,
-                                      const TColStd_Array1OfReal& JacCoeff,
-                                      TColStd_Array1OfReal& Coefficients) const Standard_OVERRIDE;
+  Standard_EXPORT void ToCoefficients(const Standard_Integer      theDimension,
+                                      const Standard_Integer      theDegree,
+                                      const TColStd_Array1OfReal& theJacCoeff,
+                                      TColStd_Array1OfReal&       theCoefficients) const
+    Standard_OVERRIDE;
 
   //! Compute the values of the basis functions in u
-  Standard_EXPORT void D0(const Standard_Real   U,
-                          TColStd_Array1OfReal& BasisValue) Standard_OVERRIDE;
+  Standard_EXPORT void D0(const Standard_Real   theU,
+                          TColStd_Array1OfReal& theBasisValue) Standard_OVERRIDE;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
-  Standard_EXPORT void D1(const Standard_Real   U,
-                          TColStd_Array1OfReal& BasisValue,
-                          TColStd_Array1OfReal& BasisD1) Standard_OVERRIDE;
+  Standard_EXPORT void D1(const Standard_Real   theU,
+                          TColStd_Array1OfReal& theBasisValue,
+                          TColStd_Array1OfReal& theBasisD1) Standard_OVERRIDE;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
-  Standard_EXPORT void D2(const Standard_Real   U,
-                          TColStd_Array1OfReal& BasisValue,
-                          TColStd_Array1OfReal& BasisD1,
-                          TColStd_Array1OfReal& BasisD2) Standard_OVERRIDE;
+  Standard_EXPORT void D2(const Standard_Real   theU,
+                          TColStd_Array1OfReal& theBasisValue,
+                          TColStd_Array1OfReal& theBasisD1,
+                          TColStd_Array1OfReal& theBasisD2) Standard_OVERRIDE;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
-  Standard_EXPORT void D3(const Standard_Real   U,
-                          TColStd_Array1OfReal& BasisValue,
-                          TColStd_Array1OfReal& BasisD1,
-                          TColStd_Array1OfReal& BasisD2,
-                          TColStd_Array1OfReal& BasisD3) Standard_OVERRIDE;
+  Standard_EXPORT void D3(const Standard_Real   theU,
+                          TColStd_Array1OfReal& theBasisValue,
+                          TColStd_Array1OfReal& theBasisD1,
+                          TColStd_Array1OfReal& theBasisD2,
+                          TColStd_Array1OfReal& theBasisD3) Standard_OVERRIDE;
 
   //! returns WorkDegree
-  Standard_Integer WorkDegree() const Standard_OVERRIDE;
+  Standard_Integer WorkDegree() const Standard_OVERRIDE { return myWorkDegree; }
 
   //! returns NivConstr
-  Standard_Integer NivConstr() const;
+  Standard_Integer NivConstr() const { return myNivConstr; }
 
   DEFINE_STANDARD_RTTIEXT(PLib_JacobiPolynomial, PLib_Base)
 
 protected:
-private:
   //! Compute the values and the derivatives values of
   //! the basis functions in u
-  Standard_EXPORT void D0123(const Standard_Integer NDerive,
-                             const Standard_Real    U,
-                             TColStd_Array1OfReal&  BasisValue,
-                             TColStd_Array1OfReal&  BasisD1,
-                             TColStd_Array1OfReal&  BasisD2,
-                             TColStd_Array1OfReal&  BasisD3);
+  Standard_EXPORT void D0123(const Standard_Integer theNDeriv,
+                             const Standard_Real    theU,
+                             TColStd_Array1OfReal&  theBasisValue,
+                             TColStd_Array1OfReal&  theBasisD1,
+                             TColStd_Array1OfReal&  theBasisD2,
+                             TColStd_Array1OfReal&  theBasisD3) const;
 
-  Standard_Integer              myWorkDegree;
-  Standard_Integer              myNivConstr;
-  Standard_Integer              myDegree;
-  Handle(TColStd_HArray1OfReal) myTNorm;
-  Handle(TColStd_HArray1OfReal) myCofA;
-  Handle(TColStd_HArray1OfReal) myCofB;
-  Handle(TColStd_HArray1OfReal) myDenom;
+private:
+  const Standard_Integer myWorkDegree;
+  const Standard_Integer myNivConstr;
+  const Standard_Integer myDegree;
 };
-
-#include <PLib_JacobiPolynomial.lxx>
 
 #endif // _PLib_JacobiPolynomial_HeaderFile

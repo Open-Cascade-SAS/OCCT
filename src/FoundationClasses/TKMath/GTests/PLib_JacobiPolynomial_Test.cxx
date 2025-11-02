@@ -79,13 +79,24 @@ TEST_F(PLibJacobiPolynomialTest, ConstructorAndBasicProperties)
 // Test constructor with edge cases
 TEST_F(PLibJacobiPolynomialTest, ConstructorEdgeCases)
 {
-  // Test minimum degree
-  Handle(PLib_JacobiPolynomial) aJacMin = createJacobiPolynomial(0, GeomAbs_C0);
-  EXPECT_FALSE(aJacMin.IsNull());
-  EXPECT_EQ(aJacMin->WorkDegree(), 0);
+  // Test minimum valid WorkDegree for each constraint order
+  // For C0: WorkDegree >= 2 to get myDegree >= 0
+  Handle(PLib_JacobiPolynomial) aJacMinC0 = createJacobiPolynomial(2, GeomAbs_C0);
+  EXPECT_FALSE(aJacMinC0.IsNull());
+  EXPECT_EQ(aJacMinC0->WorkDegree(), 2);
 
-  // Test maximum recommended degree
-  Handle(PLib_JacobiPolynomial) aJacMax = createJacobiPolynomial(30, GeomAbs_C2);
+  // For C1: WorkDegree >= 4 to get myDegree >= 0
+  Handle(PLib_JacobiPolynomial) aJacMinC1 = createJacobiPolynomial(4, GeomAbs_C1);
+  EXPECT_FALSE(aJacMinC1.IsNull());
+  EXPECT_EQ(aJacMinC1->WorkDegree(), 4);
+
+  // For C2: WorkDegree >= 6 to get myDegree >= 0
+  Handle(PLib_JacobiPolynomial) aJacMinC2 = createJacobiPolynomial(6, GeomAbs_C2);
+  EXPECT_FALSE(aJacMinC2.IsNull());
+  EXPECT_EQ(aJacMinC2->WorkDegree(), 6);
+
+  // Test reasonable maximum WorkDegree
+  Handle(PLib_JacobiPolynomial) aJacMax = createJacobiPolynomial(30, GeomAbs_C0);
   EXPECT_FALSE(aJacMax.IsNull());
   EXPECT_EQ(aJacMax->WorkDegree(), 30);
 
