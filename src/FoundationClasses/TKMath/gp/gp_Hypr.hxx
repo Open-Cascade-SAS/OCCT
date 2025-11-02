@@ -211,7 +211,7 @@ public:
 
   //! Computes the focal distance. It is the distance between the
   //! the two focus of the hyperbola.
-  constexpr Standard_Real Focal() const noexcept
+  Standard_Real Focal() const noexcept
   {
     return 2.0 * sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
   }
