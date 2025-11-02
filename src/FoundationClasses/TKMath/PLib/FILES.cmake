@@ -8,7 +8,6 @@ set(OCCT_PLib_FILES
   PLib_Base.hxx
   PLib_HermitJacobi.cxx
   PLib_HermitJacobi.hxx
-  PLib_HermitJacobi.lxx
   PLib_JacobiPolynomial.cxx
   PLib_JacobiPolynomial.hxx
 )

@@ -708,7 +708,7 @@ namespace
 {
 // recursive template for evaluating value or first derivative
 template <int dim>
-inline void eval_step1(double* poly, double par, double* coef)
+inline void eval_step1(double* poly, double par, const double* coef)
 {
   eval_step1<dim - 1>(poly, par, coef);
   poly[dim] = poly[dim] * par + coef[dim];
@@ -716,13 +716,13 @@ inline void eval_step1(double* poly, double par, double* coef)
 
 // recursion end
 template <>
-inline void eval_step1<-1>(double*, double, double*)
+inline void eval_step1<-1>(double*, double, const double*)
 {
 }
 
 // recursive template for evaluating second derivative
 template <int dim>
-inline void eval_step2(double* poly, double par, double* coef)
+inline void eval_step2(double* poly, double par, const double* coef)
 {
   eval_step2<dim - 1>(poly, par, coef);
   poly[dim] = poly[dim] * par + coef[dim] * 2.;
@@ -730,15 +730,16 @@ inline void eval_step2(double* poly, double par, double* coef)
 
 // recursion end
 template <>
-inline void eval_step2<-1>(double*, double, double*)
+inline void eval_step2<-1>(double*, double, const double*)
 {
 }
 
 // evaluation of only value
 template <int dim>
-inline void eval_poly0(double* aRes, double* aCoeffs, int Degree, double Par)
+inline void eval_poly0(double* aRes, const double* theCoeffs, int Degree, double Par)
 {
-  Standard_Real* aRes0 = aRes;
+  Standard_Real*       aRes0   = aRes;
+  const Standard_Real* aCoeffs = theCoeffs;
   memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * dim);
 
   for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
@@ -751,10 +752,11 @@ inline void eval_poly0(double* aRes, double* aCoeffs, int Degree, double Par)
 
 // evaluation of value and first derivative
 template <int dim>
-inline void eval_poly1(double* aRes, double* aCoeffs, int Degree, double Par)
+inline void eval_poly1(double* aRes, const double* theCoeffs, int Degree, double Par)
 {
-  Standard_Real* aRes0 = aRes;
-  Standard_Real* aRes1 = aRes + dim;
+  Standard_Real*       aRes0   = aRes;
+  Standard_Real*       aRes1   = aRes + dim;
+  const Standard_Real* aCoeffs = theCoeffs;
 
   memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * dim);
   memset(aRes1, 0, sizeof(Standard_Real) * dim);
@@ -771,11 +773,12 @@ inline void eval_poly1(double* aRes, double* aCoeffs, int Degree, double Par)
 
 // evaluation of value and first and second derivatives
 template <int dim>
-inline void eval_poly2(double* aRes, double* aCoeffs, int Degree, double Par)
+inline void eval_poly2(double* aRes, const double* theCoeffs, int Degree, double Par)
 {
-  Standard_Real* aRes0 = aRes;
-  Standard_Real* aRes1 = aRes + dim;
-  Standard_Real* aRes2 = aRes + 2 * dim;
+  Standard_Real*       aRes0   = aRes;
+  Standard_Real*       aRes1   = aRes + dim;
+  Standard_Real*       aRes2   = aRes + 2 * dim;
+  const Standard_Real* aCoeffs = theCoeffs;
 
   memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * dim);
   memset(aRes1, 0, sizeof(Standard_Real) * dim);
@@ -803,7 +806,7 @@ void PLib::EvalPolynomial(const Standard_Real    Par,
                           const Standard_Integer DerivativeRequest,
                           const Standard_Integer Degree,
                           const Standard_Integer Dimension,
-                          Standard_Real&         PolynomialCoeff,
+                          const Standard_Real&   PolynomialCoeff,
                           Standard_Real&         Results)
 //
 // the polynomial coefficients are assumed to be stored as follows :
@@ -823,10 +826,10 @@ void PLib::EvalPolynomial(const Standard_Real    Par,
 //  where d is the Degree
 //
 {
-  Standard_Real*   aCoeffs = &PolynomialCoeff + Degree * Dimension;
-  Standard_Real*   aRes    = &Results;
-  Standard_Real*   anOriginal;
-  Standard_Integer ind = 0;
+  const Standard_Real* aCoeffs = &PolynomialCoeff + Degree * Dimension;
+  Standard_Real*       aRes    = &Results;
+  Standard_Real*       anOriginal;
+  Standard_Integer     ind = 0;
   switch (DerivativeRequest)
   {
     case 1: {
@@ -1004,11 +1007,11 @@ void PLib::NoDerivativeEvalPolynomial(const Standard_Real    Par,
                                       const Standard_Integer Degree,
                                       const Standard_Integer Dimension,
                                       const Standard_Integer DegreeDimension,
-                                      Standard_Real&         PolynomialCoeff,
+                                      const Standard_Real&   PolynomialCoeff,
                                       Standard_Real&         Results)
 {
-  Standard_Real* aCoeffs = &PolynomialCoeff + DegreeDimension;
-  Standard_Real* aRes    = &Results;
+  const Standard_Real* aCoeffs = &PolynomialCoeff + DegreeDimension;
+  Standard_Real*       aRes    = &Results;
 
   switch (Dimension)
   {

@@ -185,7 +185,7 @@ public:
                                              const Standard_Integer DerivativeOrder,
                                              const Standard_Integer Degree,
                                              const Standard_Integer Dimension,
-                                             Standard_Real&         PolynomialCoeff,
+                                             const Standard_Real&   PolynomialCoeff,
                                              Standard_Real&         Results);
 
   //! Same as above with DerivativeOrder = 0;
@@ -193,7 +193,7 @@ public:
                                                          const Standard_Integer Degree,
                                                          const Standard_Integer Dimension,
                                                          const Standard_Integer DegreeDimension,
-                                                         Standard_Real&         PolynomialCoeff,
+                                                         const Standard_Real&   PolynomialCoeff,
                                                          Standard_Real&         Results);
 
   //! Applies EvalPolynomial twice to evaluate the derivative
