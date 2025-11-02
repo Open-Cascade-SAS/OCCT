@@ -88,7 +88,7 @@ public:
   //! Assigns the given value to the Y coordinate of this unit vector.
   void SetY(const Standard_Real theY);
 
-  //! Assigns the given value to the Zcoordinate of this unit vector.
+  //! Assigns the given value to the Z coordinate of this unit vector.
   void SetZ(const Standard_Real theZ);
 
   //! Assigns the three coordinates of theCoord to this unit vector.
@@ -102,7 +102,7 @@ public:
   //! Standard_OutOfRange if theIndex is not 1, 2, or 3.
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
-  //! Returns for the  unit vector  its three coordinates theXv, theYv, and theZv.
+  //! Returns for the unit vector its three coordinates theXv, theYv, and theZv.
   constexpr void Coord(Standard_Real& theXv,
                        Standard_Real& theYv,
                        Standard_Real& theZv) const noexcept
@@ -238,8 +238,8 @@ public:
   Standard_EXPORT void Mirror(const gp_Dir& theV);
 
   //! Performs the symmetrical transformation of a direction
-  //! with respect to the direction theV which is the center of
-  //! the  symmetry.
+  //! with respect to the direction theV which is the center
+  //! od the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Dir Mirrored(const gp_Dir& theV) const;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);

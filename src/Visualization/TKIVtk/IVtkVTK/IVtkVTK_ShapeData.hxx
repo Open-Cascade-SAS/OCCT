@@ -98,7 +98,7 @@ public:
                                               const IVtk_PointId  thePointId3,
                                               const IVtk_MeshType theMeshType) Standard_OVERRIDE;
 
-public: //! Assembly@name Specific methods
+public: //! @name Specific methods
   //! Get VTK PolyData.
   //! @return VTK PolyData
   vtkPolyData* getVtkPolyData() const { return myPolyData; }
