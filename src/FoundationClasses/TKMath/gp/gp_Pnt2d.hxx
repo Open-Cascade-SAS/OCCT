@@ -119,7 +119,7 @@ public:
 
   //! Performs the symmetrical transformation of a point
   //! with respect to the point theP which is the center of
-  //! the  symmetry.
+  //! the symmetry.
   Standard_EXPORT void Mirror(const gp_Pnt2d& theP);
 
   //! Performs the symmetrical transformation of a point
