@@ -326,7 +326,10 @@ public:
     return aH;
   }
 
-  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates an hyperbola from the point theP1 to the point theP2.
   Standard_NODISCARD gp_Hypr Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept

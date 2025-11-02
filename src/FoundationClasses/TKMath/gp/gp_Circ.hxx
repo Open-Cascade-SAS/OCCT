@@ -145,7 +145,8 @@ public:
   //! Returns True if the point theP is on the circumference.
   //! The distance between <me> and <theP> must be lower or
   //! equal to theLinearTolerance.
-  Standard_Boolean Contains(const gp_Pnt& theP, const Standard_Real theLinearTolerance) const noexcept
+  Standard_Boolean Contains(const gp_Pnt&       theP,
+                            const Standard_Real theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
@@ -207,7 +208,10 @@ public:
     return aC;
   }
 
-  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a circle from the point theP1 to the point theP2.
   Standard_NODISCARD gp_Circ Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept

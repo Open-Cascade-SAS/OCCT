@@ -122,7 +122,10 @@ public:
   constexpr Standard_Real Radius() const noexcept { return radius; }
 
   //! Computes the volume of the sphere
-  constexpr Standard_Real Volume() const noexcept { return (4.0 * M_PI * radius * radius * radius) / 3.0; }
+  constexpr Standard_Real Volume() const noexcept
+  {
+    return (4.0 * M_PI * radius * radius * radius) / 3.0;
+  }
 
   //! Returns the axis X of the sphere.
   constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }

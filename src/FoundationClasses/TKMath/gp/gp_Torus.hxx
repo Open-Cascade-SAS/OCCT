@@ -118,7 +118,10 @@ public:
   constexpr void SetPosition(const gp_Ax3& theA3) noexcept { pos = theA3; }
 
   //! Computes the area of the torus.
-  constexpr Standard_Real Area() const noexcept { return 4.0 * M_PI * M_PI * minorRadius * majorRadius; }
+  constexpr Standard_Real Area() const noexcept
+  {
+    return 4.0 * M_PI * M_PI * minorRadius * majorRadius;
+  }
 
   //! Reverses the   U   parametrization of   the  torus
   //! reversing the YAxis.

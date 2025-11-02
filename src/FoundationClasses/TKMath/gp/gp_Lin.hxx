@@ -102,7 +102,8 @@ public:
   //! Returns true if this line contains the point theP, that is, if the
   //! distance between point theP and this line is less than or
   //! equal to theLinearTolerance..
-  Standard_Boolean Contains(const gp_Pnt& theP, const Standard_Real theLinearTolerance) const noexcept
+  Standard_Boolean Contains(const gp_Pnt&       theP,
+                            const Standard_Real theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
