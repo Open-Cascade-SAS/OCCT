@@ -219,18 +219,18 @@ public:
     return aPrb;
   }
 
-  void Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept;
+  void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
 
   //! Scales a parabola. theS is the scaling value.
   //! If theS is negative the direction of the symmetry axis
   //! "XAxis" is reversed and the direction of the "YAxis" too.
   Standard_NODISCARD gp_Parab2d Scaled(const gp_Pnt2d&     theP,
-                                       const Standard_Real theS) const noexcept;
+                                       const Standard_Real theS) const;
 
-  void Transform(const gp_Trsf2d& theT) noexcept;
+  void Transform(const gp_Trsf2d& theT);
 
   //! Transforms an parabola with the transformation theT from class Trsf2d.
-  Standard_NODISCARD gp_Parab2d Transformed(const gp_Trsf2d& theT) const noexcept;
+  Standard_NODISCARD gp_Parab2d Transformed(const gp_Trsf2d& theT) const;
 
   constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
@@ -285,7 +285,7 @@ inline gp_Parab2d gp_Parab2d::Reversed() const noexcept
 
 //=================================================================================================
 
-inline void gp_Parab2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept
+inline void gp_Parab2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   focalLength *= theS;
   if (focalLength < 0)
@@ -297,7 +297,7 @@ inline void gp_Parab2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) no
 
 //=================================================================================================
 
-inline gp_Parab2d gp_Parab2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const noexcept
+inline gp_Parab2d gp_Parab2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
 {
   gp_Parab2d aPrb = *this;
   aPrb.focalLength *= theS;
@@ -311,7 +311,7 @@ inline gp_Parab2d gp_Parab2d::Scaled(const gp_Pnt2d& theP, const Standard_Real t
 
 //=================================================================================================
 
-inline void gp_Parab2d::Transform(const gp_Trsf2d& theT) noexcept
+inline void gp_Parab2d::Transform(const gp_Trsf2d& theT)
 {
   focalLength *= theT.ScaleFactor();
   if (focalLength < 0)
@@ -323,7 +323,7 @@ inline void gp_Parab2d::Transform(const gp_Trsf2d& theT) noexcept
 
 //=================================================================================================
 
-inline gp_Parab2d gp_Parab2d::Transformed(const gp_Trsf2d& theT) const noexcept
+inline gp_Parab2d gp_Parab2d::Transformed(const gp_Trsf2d& theT) const
 {
   gp_Parab2d aPrb = *this;
   aPrb.focalLength *= theT.ScaleFactor();

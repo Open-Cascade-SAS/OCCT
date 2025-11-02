@@ -198,7 +198,7 @@ public:
   //! to an axis placement which is the axis of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
-  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) noexcept
+  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
   {
     pos.Rotate(theP, theAng);
   }
@@ -206,14 +206,14 @@ public:
   //! Rotates a circle. theP is the center of the rotation.
   //! Ang is the angular value of the rotation in radians.
   Standard_NODISCARD gp_Circ2d Rotated(const gp_Pnt2d&     theP,
-                                       const Standard_Real theAng) const noexcept
+                                       const Standard_Real theAng) const
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Rotate(theP, theAng);
     return aCirc;
   }
 
-  void Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept;
+  void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
 
   //! Scales a circle. theS is the scaling value.
   //! Warnings :
@@ -221,12 +221,12 @@ public:
   //! the "XAxis" and the "YAxis" are  reversed as for
   //! an ellipse.
   Standard_NODISCARD gp_Circ2d Scaled(const gp_Pnt2d&     theP,
-                                      const Standard_Real theS) const noexcept;
+                                      const Standard_Real theS) const;
 
-  void Transform(const gp_Trsf2d& theT) noexcept;
+  void Transform(const gp_Trsf2d& theT);
 
   //! Transforms a circle with the transformation theT from class Trsf2d.
-  Standard_NODISCARD gp_Circ2d Transformed(const gp_Trsf2d& theT) const noexcept;
+  Standard_NODISCARD gp_Circ2d Transformed(const gp_Trsf2d& theT) const;
 
   constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
@@ -314,7 +314,7 @@ inline Standard_Real gp_Circ2d::SquareDistance(const gp_Pnt2d& theP) const noexc
 
 //=================================================================================================
 
-inline void gp_Circ2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept
+inline void gp_Circ2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   radius *= theS;
   if (radius < 0)
@@ -326,7 +326,7 @@ inline void gp_Circ2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) noe
 
 //=================================================================================================
 
-inline gp_Circ2d gp_Circ2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const noexcept
+inline gp_Circ2d gp_Circ2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
 {
   gp_Circ2d aCirc = *this;
   aCirc.radius *= theS;
@@ -340,7 +340,7 @@ inline gp_Circ2d gp_Circ2d::Scaled(const gp_Pnt2d& theP, const Standard_Real the
 
 //=================================================================================================
 
-inline void gp_Circ2d::Transform(const gp_Trsf2d& theT) noexcept
+inline void gp_Circ2d::Transform(const gp_Trsf2d& theT)
 {
   radius *= theT.ScaleFactor();
   if (radius < 0)
@@ -352,7 +352,7 @@ inline void gp_Circ2d::Transform(const gp_Trsf2d& theT) noexcept
 
 //=================================================================================================
 
-inline gp_Circ2d gp_Circ2d::Transformed(const gp_Trsf2d& theT) const noexcept
+inline gp_Circ2d gp_Circ2d::Transformed(const gp_Trsf2d& theT) const
 {
   gp_Circ2d aCirc = *this;
   aCirc.radius *= theT.ScaleFactor();

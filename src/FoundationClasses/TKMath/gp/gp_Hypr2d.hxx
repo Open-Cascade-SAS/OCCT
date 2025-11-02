@@ -353,20 +353,20 @@ public:
     return aH;
   }
 
-  void Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept;
+  void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
 
   //! Scales an hyperbola. <theS> is the scaling value.
   //! If <theS> is positive only the location point is
   //! modified. But if <theS> is negative the "XAxis" is
   //! reversed and the "YAxis" too.
   Standard_NODISCARD gp_Hypr2d Scaled(const gp_Pnt2d&     theP,
-                                      const Standard_Real theS) const noexcept;
+                                      const Standard_Real theS) const;
 
-  void Transform(const gp_Trsf2d& theT) noexcept;
+  void Transform(const gp_Trsf2d& theT);
 
   //! Transforms an hyperbola with the transformation theT from
   //! class Trsf2d.
-  Standard_NODISCARD gp_Hypr2d Transformed(const gp_Trsf2d& theT) const noexcept;
+  Standard_NODISCARD gp_Hypr2d Transformed(const gp_Trsf2d& theT) const;
 
   constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
@@ -462,7 +462,7 @@ inline gp_Hypr2d gp_Hypr2d::Reversed() const noexcept
 
 //=================================================================================================
 
-inline void gp_Hypr2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept
+inline void gp_Hypr2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   majorRadius *= theS;
   if (majorRadius < 0)
@@ -479,7 +479,7 @@ inline void gp_Hypr2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) noe
 
 //=================================================================================================
 
-inline gp_Hypr2d gp_Hypr2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const noexcept
+inline gp_Hypr2d gp_Hypr2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
 {
   gp_Hypr2d aH = *this;
   aH.majorRadius *= theS;
@@ -498,7 +498,7 @@ inline gp_Hypr2d gp_Hypr2d::Scaled(const gp_Pnt2d& theP, const Standard_Real the
 
 //=================================================================================================
 
-inline void gp_Hypr2d::Transform(const gp_Trsf2d& theT) noexcept
+inline void gp_Hypr2d::Transform(const gp_Trsf2d& theT)
 {
   majorRadius *= theT.ScaleFactor();
   if (majorRadius < 0)
@@ -515,7 +515,7 @@ inline void gp_Hypr2d::Transform(const gp_Trsf2d& theT) noexcept
 
 //=================================================================================================
 
-inline gp_Hypr2d gp_Hypr2d::Transformed(const gp_Trsf2d& theT) const noexcept
+inline gp_Hypr2d gp_Hypr2d::Transformed(const gp_Trsf2d& theT) const
 {
   gp_Hypr2d aH = *this;
   aH.majorRadius *= theT.ScaleFactor();

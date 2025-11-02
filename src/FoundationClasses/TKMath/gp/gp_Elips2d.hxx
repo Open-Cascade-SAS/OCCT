@@ -245,29 +245,29 @@ public:
   //! to an axis placement which is the axis of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
-  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) noexcept
+  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
   {
     pos.Rotate(theP, theAng);
   }
 
   Standard_NODISCARD gp_Elips2d Rotated(const gp_Pnt2d&     theP,
-                                        const Standard_Real theAng) const noexcept
+                                        const Standard_Real theAng) const
   {
     gp_Elips2d anE = *this;
     anE.pos.Rotate(theP, theAng);
     return anE;
   }
 
-  void Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept;
+  void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
 
   //! Scales a ellipse. theS is the scaling value.
   Standard_NODISCARD gp_Elips2d Scaled(const gp_Pnt2d&     theP,
-                                       const Standard_Real theS) const noexcept;
+                                       const Standard_Real theS) const;
 
-  void Transform(const gp_Trsf2d& theT) noexcept;
+  void Transform(const gp_Trsf2d& theT);
 
   //! Transforms an ellipse with the transformation theT from class Trsf2d.
-  Standard_NODISCARD gp_Elips2d Transformed(const gp_Trsf2d& theT) const noexcept;
+  Standard_NODISCARD gp_Elips2d Transformed(const gp_Trsf2d& theT) const;
 
   constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
@@ -362,7 +362,7 @@ inline gp_Pnt2d gp_Elips2d::Focus2() const
 
 //=================================================================================================
 
-inline void gp_Elips2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept
+inline void gp_Elips2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   majorRadius *= theS;
   if (majorRadius < 0)
@@ -379,7 +379,7 @@ inline void gp_Elips2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) no
 
 //=================================================================================================
 
-inline gp_Elips2d gp_Elips2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const noexcept
+inline gp_Elips2d gp_Elips2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
 {
   gp_Elips2d anE = *this;
   anE.majorRadius *= theS;
@@ -423,7 +423,7 @@ inline gp_Elips2d gp_Elips2d::Reversed() const noexcept
 
 //=================================================================================================
 
-inline void gp_Elips2d::Transform(const gp_Trsf2d& theT) noexcept
+inline void gp_Elips2d::Transform(const gp_Trsf2d& theT)
 {
   Standard_Real aTSca = theT.ScaleFactor();
   if (aTSca < 0.0)
@@ -437,7 +437,7 @@ inline void gp_Elips2d::Transform(const gp_Trsf2d& theT) noexcept
 
 //=================================================================================================
 
-inline gp_Elips2d gp_Elips2d::Transformed(const gp_Trsf2d& theT) const noexcept
+inline gp_Elips2d gp_Elips2d::Transformed(const gp_Trsf2d& theT) const
 {
   gp_Elips2d anE = *this;
   anE.majorRadius *= theT.ScaleFactor();
