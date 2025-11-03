@@ -21,7 +21,8 @@
 #include <Message_MetricType.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Standard_Mutex.hxx>
+
+#include <mutex>
 
 class Message_CompositeAlerts;
 class Message_Messenger;
@@ -175,7 +176,7 @@ protected:
                                     const Handle(Message_CompositeAlerts)& theCompositeAlert);
 
 protected:
-  Standard_Mutex myMutex;
+  std::mutex myMutex;
 
   Handle(Message_CompositeAlerts) myCompositAlerts; //!< container of alerts
 

@@ -19,6 +19,8 @@
 #include <Graphic3d_MediaTexture.hxx>
 #include <Graphic3d_TextureSet.hxx>
 
+#include <mutex>
+
 class Graphic3d_ShaderProgram;
 class Media_PlayerContext;
 
@@ -93,7 +95,7 @@ protected:
   Handle(Media_Frame)             myFramePair[2];     //!< front/back frames pair
   Handle(Graphic3d_ShaderProgram) myShaderYUV;        //!< shader program for YUV  texture set
   Handle(Graphic3d_ShaderProgram) myShaderYUVJ;       //!< shader program for YUVJ texture set
-  Handle(Standard_HMutex)         myMutex;            //!< mutex for accessing frames
+  std::mutex                      myMutex;            //!< mutex for accessing frames
   TCollection_AsciiString         myInput;            //!< input media
   CallbackOnUpdate_t              myCallbackFunction; //!< callback function
   void*                           myCallbackUserPtr;  //!< callback data

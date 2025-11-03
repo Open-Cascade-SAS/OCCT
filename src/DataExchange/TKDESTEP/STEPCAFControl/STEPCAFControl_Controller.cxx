@@ -19,6 +19,8 @@
 #include <STEPCAFControl_Controller.hxx>
 #include <XSAlgo.hxx>
 
+#include <mutex>
+
 IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_Controller, STEPControl_Controller)
 
 //=================================================================================================
@@ -33,9 +35,9 @@ STEPCAFControl_Controller::STEPCAFControl_Controller()
 
 Standard_Boolean STEPCAFControl_Controller::Init()
 {
-  static Standard_Mutex theMutex;
+  static std::mutex           aMutex;
+  std::lock_guard<std::mutex> aLock(aMutex);
   {
-    Standard_Mutex::Sentry  aSentry(theMutex);
     static Standard_Boolean inic = Standard_False;
     if (inic)
       return Standard_True;

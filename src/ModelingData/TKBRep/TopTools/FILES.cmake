@@ -49,8 +49,6 @@ set(OCCT_TopTools_FILES
   TopTools_MapIteratorOfMapOfShape.hxx
   TopTools_MapOfOrientedShape.hxx
   TopTools_MapOfShape.hxx
-  TopTools_MutexForShapeProvider.cxx
-  TopTools_MutexForShapeProvider.hxx
   TopTools_SequenceOfShape.hxx
   TopTools_ShapeMapHasher.hxx
   TopTools_ShapeSet.cxx

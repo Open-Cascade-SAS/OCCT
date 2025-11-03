@@ -132,7 +132,7 @@ bool RWMesh_TriangulationReader::finalizeLoading(
   }
   if (myLoadingStatistic)
   {
-    Standard_Mutex::Sentry aLock(myMutex);
+    std::lock_guard<std::mutex> aLock(myMutex);
     myLoadingStatistic->ExpectedNodesNb += theSourceMesh->NbDeferredNodes();
     myLoadingStatistic->ExpectedTrianglesNb += theSourceMesh->NbDeferredTriangles();
     myLoadingStatistic->DegeneratedTrianglesNb += theSourceMesh->DegeneratedTriNb();

@@ -18,8 +18,10 @@
 //============================================================================
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_Mutex.hxx>
 #include <Standard.hxx>
+
+#include <mutex>
+#include <shared_mutex>
 
 #ifndef _WIN32
   #include <pthread.h>
@@ -39,16 +41,19 @@
 //==== The top of the Errors Stack ===========================================
 static Standard_ErrorHandler* Top = 0;
 
-//! A mutex to protect from concurrent access to Top.
-//! Mutex is defined as function to avoid issues caused by
-//! an undefined static variables initialization order across compilation units (@sa #0031681 bug).
-//! Note that we should NOT use Sentry while in this class, as Sentry
-//! would register mutex as callback in the current exception handler.
-static Standard_Mutex& GetMutex()
+//=================================================================================================
+
+namespace
 {
-  static Standard_Mutex theMutex;
-  return theMutex;
-}
+// Using std::shared_mutex to allow concurrent read access from multiple threads.
+// Most FindHandler calls (theUnlink=false) use shared_lock for concurrent searches.
+// Only write operations (constructor, Unlink, FindHandler with theUnlink=true) use unique_lock.
+//
+// TODO: Long-term optimization - use thread_local storage to eliminate locking entirely.
+//       Since each thread only accesses its own error handlers (filtered by thread ID),
+//       this global list could be replaced with thread_local Top pointers.
+//       This would eliminate all mutex overhead for thousands of try blocks in multi-threaded code.
+static std::shared_mutex THE_GLOBAL_MUTEX;
 
 static inline Standard_ThreadId GetThreadID()
 {
@@ -58,6 +63,7 @@ static inline Standard_ThreadId GetThreadID()
   return GetCurrentThreadId();
 #endif
 }
+} // namespace
 
 //============================================================================
 //====  Constructor : Create a ErrorHandler structure. And add it at the
@@ -71,10 +77,9 @@ Standard_ErrorHandler::Standard_ErrorHandler()
   myThread = GetThreadID();
   memset(&myLabel, 0, sizeof(myLabel));
 
-  GetMutex().Lock();
+  std::unique_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
   myPrevious = Top;
   Top        = this;
-  GetMutex().Unlock();
 }
 
 //============================================================================
@@ -96,7 +101,7 @@ void Standard_ErrorHandler::Destroy()
 void Standard_ErrorHandler::Unlink()
 {
   // put a lock on the stack
-  GetMutex().Lock();
+  std::unique_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
 
   Standard_ErrorHandler* aPrevious = 0;
   Standard_ErrorHandler* aCurrent  = Top;
@@ -110,7 +115,6 @@ void Standard_ErrorHandler::Unlink()
 
   if (aCurrent == 0)
   {
-    GetMutex().Unlock();
     return;
   }
 
@@ -124,7 +128,6 @@ void Standard_ErrorHandler::Unlink()
     aPrevious->myPrevious = aCurrent->myPrevious;
   }
   myPrevious = 0;
-  GetMutex().Unlock();
 
   // unlink and destroy all registered callbacks
   Standard_Address aPtr = aCurrent->myCallbackPtr;
@@ -223,32 +226,54 @@ void Standard_ErrorHandler::Error(const Handle(Standard_Failure)& theError)
 Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_HandlerStatus theStatus,
                                                           const Standard_Boolean       theUnlink)
 {
-  // lock the stack
-  GetMutex().Lock();
-
-  // Find the current ErrorHandler according to thread
-  Standard_ErrorHandler* aPrevious = 0;
-  Standard_ErrorHandler* aCurrent  = Top;
-  Standard_ErrorHandler* anActive  = 0;
-  Standard_Boolean       aStop     = Standard_False;
-  Standard_ThreadId      aTreadId  = GetThreadID();
-
-  // searching an exception with correct ID number
-  // which is not processed for the moment
-  while (!aStop)
+  // Use shared lock for read-only access (most common case), exclusive lock only when modifying
+  if (!theUnlink)
   {
-    while (aCurrent != NULL && aTreadId != aCurrent->myThread)
+    // Read-only path - use shared lock to allow concurrent searches from multiple threads
+    std::shared_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
+
+    // Find the current ErrorHandler according to thread
+    Standard_ErrorHandler* aCurrent = Top;
+    Standard_ThreadId      aTreadId = GetThreadID();
+
+    // searching an exception with correct ID number
+    while (aCurrent != NULL)
     {
-      aPrevious = aCurrent;
-      aCurrent  = aCurrent->myPrevious;
+      if (aTreadId == aCurrent->myThread && theStatus == aCurrent->myStatus)
+      {
+        // found one
+        return aCurrent;
+      }
+      aCurrent = aCurrent->myPrevious;
     }
 
-    if (aCurrent != NULL)
-    {
-      if (theStatus != aCurrent->myStatus)
-      {
+    return NULL;
+  }
+  else
+  {
+    // Modifying path - use exclusive lock
+    std::unique_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
 
-        if (theUnlink)
+    // Find the current ErrorHandler according to thread
+    Standard_ErrorHandler* aPrevious = 0;
+    Standard_ErrorHandler* aCurrent  = Top;
+    Standard_ErrorHandler* anActive  = 0;
+    Standard_Boolean       aStop     = Standard_False;
+    Standard_ThreadId      aTreadId  = GetThreadID();
+
+    // searching an exception with correct ID number
+    // which is not processed for the moment
+    while (!aStop)
+    {
+      while (aCurrent != NULL && aTreadId != aCurrent->myThread)
+      {
+        aPrevious = aCurrent;
+        aCurrent  = aCurrent->myPrevious;
+      }
+
+      if (aCurrent != NULL)
+      {
+        if (theStatus != aCurrent->myStatus)
         {
           // unlink current
           if (aPrevious == 0)
@@ -260,27 +285,26 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
           {
             aPrevious->myPrevious = aCurrent->myPrevious;
           }
-        }
 
-        // shift
-        aCurrent = aCurrent->myPrevious;
+          // shift
+          aCurrent = aCurrent->myPrevious;
+        }
+        else
+        {
+          // found one
+          anActive = aCurrent;
+          aStop    = Standard_True;
+        }
       }
       else
       {
-        // found one
-        anActive = aCurrent;
-        aStop    = Standard_True;
+        // Current is NULL, means that no handles
+        aStop = Standard_True;
       }
     }
-    else
-    {
-      // Current is NULL, means that no handlesr
-      aStop = Standard_True;
-    }
-  }
-  GetMutex().Unlock();
 
-  return anActive;
+    return anActive;
+  }
 }
 
 #if defined(OCC_CONVERT_SIGNALS)

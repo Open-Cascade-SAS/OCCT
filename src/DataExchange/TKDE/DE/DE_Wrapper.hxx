@@ -19,8 +19,9 @@
 #include <Message_ProgressRange.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <Standard_Mutex.hxx>
 #include <TColStd_ListOfAsciiString.hxx>
+
+#include <mutex>
 
 class TopoDS_Shape;
 class XSControl_WorkSession;
@@ -73,7 +74,7 @@ public:
   //! @param[in] theWrapper object to set as global configuration
   Standard_EXPORT static void SetGlobalWrapper(const Handle(DE_Wrapper)& theWrapper);
 
-  Standard_EXPORT static Standard_Mutex& GlobalLoadMutex();
+  Standard_EXPORT static std::mutex& GlobalLoadMutex();
 
 public:
   //! Reads a CAD file, according internal configuration

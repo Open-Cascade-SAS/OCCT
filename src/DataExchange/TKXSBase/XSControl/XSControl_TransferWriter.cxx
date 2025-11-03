@@ -18,6 +18,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Standard_Type.hxx>
 #include <Transfer_ActorOfFinderProcess.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>

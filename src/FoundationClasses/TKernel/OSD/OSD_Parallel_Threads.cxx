@@ -19,8 +19,9 @@
 #include <OSD_ThreadPool.hxx>
 
 #include <NCollection_Array1.hxx>
-#include <Standard_Mutex.hxx>
 #include <OSD_Thread.hxx>
+
+#include <mutex>
 
 namespace
 {
@@ -55,7 +56,7 @@ public:
     //! Thread-safe method.
     inline OSD_Parallel::UniversalIterator It() const
     {
-      Standard_Mutex::Sentry aMutex(myMutex);
+      std::lock_guard<std::mutex> aMutex(myMutex);
       return (myIt != myEnd) ? myIt++ : myEnd;
     }
 
@@ -71,7 +72,7 @@ public:
     const OSD_Parallel::UniversalIterator& myEnd;   //!< Last element of range.
                                                     // clang-format off
       mutable OSD_Parallel::UniversalIterator   myIt;    //!< First non processed element of range.
-      mutable Standard_Mutex                 myMutex; //!< Access controller for the first non processed element.
+      mutable std::mutex                        myMutex; //!< Access controller for the first non processed element.
                                                     // clang-format on
   };
 

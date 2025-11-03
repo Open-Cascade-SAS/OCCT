@@ -19,15 +19,23 @@
 #include <ShapeProcess_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_Mutex.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+#include <mutex>
+
 #include <sys/stat.h>
 IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_Context, Standard_Transient)
 
-static Standard_Mutex THE_SHAPE_PROCESS_MUTEX;
+namespace
+{
+static std::mutex& GetShapeProcessMutex()
+{
+  static std::mutex THE_SHAPE_PROCESS_MUTEX;
+  return THE_SHAPE_PROCESS_MUTEX;
+}
+} // namespace
 
 //=================================================================================================
 
@@ -74,7 +82,7 @@ Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager(const Standar
 {
   // Mutex is needed because we are initializing and changing static variables here, so
   // without mutex it leads to race condition.
-  Standard_Mutex::Sentry aLock(&THE_SHAPE_PROCESS_MUTEX);
+  std::lock_guard<std::mutex> aLock(GetShapeProcessMutex());
   // Optimisation of loading resource file: file is load only once
   // and reloaded only if file date has changed
   static Handle(Resource_Manager) sRC;

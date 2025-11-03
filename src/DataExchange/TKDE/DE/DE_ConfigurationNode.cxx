@@ -17,6 +17,7 @@
 #include <DE_Provider.hxx>
 #include <DE_Wrapper.hxx>
 #include <Message.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Protection.hxx>

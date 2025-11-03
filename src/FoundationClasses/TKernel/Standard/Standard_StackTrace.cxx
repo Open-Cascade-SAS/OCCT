@@ -15,7 +15,8 @@
 #include <Standard.hxx>
 
 #include <Message.hxx>
-#include <Standard_Mutex.hxx>
+
+#include <mutex>
 
 #include <Standard_WarningDisableFunctionCast.hxx>
 
@@ -71,9 +72,9 @@ public:
   }
 
   //! Return global mutex.
-  static Standard_Mutex& Mutex()
+  static std::mutex& Mutex()
   {
-    static Standard_Mutex THE_MUTEX_LOCK;
+    static std::mutex THE_MUTEX_LOCK;
     return THE_MUTEX_LOCK;
   }
 
@@ -234,8 +235,8 @@ Standard_Boolean Standard::StackTrace(char*     theBuffer,
   }
 
   // DbgHelp is not thread-safe library, hence global lock is used for serial access
-  Standard_Mutex::Sentry aSentry(Standard_DbgHelper::Mutex());
-  Standard_DbgHelper&    aDbgHelp = Standard_DbgHelper::GetDbgHelper();
+  std::lock_guard<std::mutex> aLock(Standard_DbgHelper::Mutex());
+  Standard_DbgHelper&         aDbgHelp = Standard_DbgHelper::GetDbgHelper();
   if (!aDbgHelp.IsLoaded())
   {
     strcat_s(theBuffer, theBufferSize, "\n==Backtrace==\n");

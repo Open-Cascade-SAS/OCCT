@@ -17,7 +17,8 @@
 #include <NCollection_DataMap.hxx>
 #include <Standard_HashUtils.hxx>
 #include <Standard_Assert.hxx>
-#include <Standard_Mutex.hxx>
+
+#include <mutex>
 
 IMPLEMENT_STANDARD_RTTIEXT(Standard_Type, Standard_Transient)
 
@@ -115,8 +116,8 @@ Standard_Type* Standard_Type::Register(const std::type_info&        theInfo,
 {
   // Access to registry is protected by mutex; it should not happen often because
   // instances are cached by Standard_Type::Instance() (one per binary module)
-  static Standard_Mutex  aMutex;
-  Standard_Mutex::Sentry aSentry(aMutex);
+  static std::mutex           aMutex;
+  std::lock_guard<std::mutex> aLock(aMutex);
 
   // return existing descriptor if already in the registry
   registry_type& aRegistry = GetRegistry();

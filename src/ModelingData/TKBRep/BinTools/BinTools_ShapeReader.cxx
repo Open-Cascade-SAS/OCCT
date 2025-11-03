@@ -20,6 +20,7 @@
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
 #include <BRep_PointOnSurface.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <TopoDS.hxx>
 
 //=================================================================================================

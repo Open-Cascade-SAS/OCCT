@@ -18,8 +18,9 @@
 
 #include <NCollection_Array1.hxx>
 #include <OSD_Timer.hxx>
-#include <Standard_Mutex.hxx>
 #include <Standard_Transient.hxx>
+
+#include <shared_mutex>
 
 //! Structure defining key state.
 class Aspect_VKeySet : public Standard_Transient
@@ -32,42 +33,42 @@ public:
   //! Return active modifiers.
   Aspect_VKeyFlags Modifiers() const
   {
-    Standard_Mutex::Sentry aLock(myLock);
+    std::shared_lock<std::shared_mutex> aLock(myLock);
     return myModifiers;
   }
 
   //! Return timestamp of press event.
   double DownTime(Aspect_VKey theKey) const
   {
-    Standard_Mutex::Sentry aLock(myLock);
+    std::shared_lock<std::shared_mutex> aLock(myLock);
     return myKeys[theKey].TimeDown;
   }
 
   //! Return timestamp of release event.
   double TimeUp(Aspect_VKey theKey) const
   {
-    Standard_Mutex::Sentry aLock(myLock);
+    std::shared_lock<std::shared_mutex> aLock(myLock);
     return myKeys[theKey].TimeUp;
   }
 
   //! Return TRUE if key is in Free state.
   bool IsFreeKey(Aspect_VKey theKey) const
   {
-    Standard_Mutex::Sentry aLock(myLock);
+    std::shared_lock<std::shared_mutex> aLock(myLock);
     return myKeys[theKey].KStatus == KeyStatus_Free;
   }
 
   //! Return TRUE if key is in Pressed state.
   bool IsKeyDown(Aspect_VKey theKey) const
   {
-    Standard_Mutex::Sentry aLock(myLock);
+    std::shared_lock<std::shared_mutex> aLock(myLock);
     return myKeys[theKey].KStatus == KeyStatus_Pressed;
   }
 
   //! Return mutex for thread-safe updates.
   //! All operations in class implicitly locks this mutex,
   //! so this method could be used only for batch processing of keys.
-  Standard_Mutex& Mutex() { return myLock; }
+  std::shared_mutex& Mutex() { return myLock; }
 
 public:
   //! Reset the key state into unpressed state.
@@ -112,6 +113,13 @@ public:
                                     double&     thePressure);
 
 private:
+  //! Press key without locking (assumes lock is already held).
+  void KeyDown_Unlocked(Aspect_VKey theKey, double theTime, double thePressure);
+
+  //! Release key without locking (assumes lock is already held).
+  void KeyUp_Unlocked(Aspect_VKey theKey, double theTime);
+
+private:
   //! Key state.
   enum KeyStatus
   {
@@ -147,7 +155,7 @@ private:
 
 private:
   NCollection_Array1<KeyState> myKeys;      //!< keys state
-  mutable Standard_Mutex       myLock;      //!< mutex for thread-safe updates
+  mutable std::shared_mutex    myLock;      //!< mutex for thread-safe updates
   Aspect_VKeyFlags             myModifiers; //!< active modifiers
 };
 

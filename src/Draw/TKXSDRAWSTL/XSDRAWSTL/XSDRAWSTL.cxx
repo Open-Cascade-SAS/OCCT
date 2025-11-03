@@ -43,6 +43,7 @@
 #include <TopoDS_Shape.hxx>
 #include <V3d_View.hxx>
 #include <ViewerTest.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
 #include <XSDRAWSTL_DataSource.hxx>

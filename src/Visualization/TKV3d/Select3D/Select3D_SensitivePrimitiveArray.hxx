@@ -21,6 +21,8 @@
 #include <Select3D_SensitiveSet.hxx>
 #include <Select3D_BVHIndexBuffer.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Shared.hxx>
 
 //! Sensitive for triangulation or point set defined by Primitive Array.
 //! The primitives can be optionally combined into patches within BVH tree

@@ -18,7 +18,6 @@
 #include <NCollection_Array1.hxx>
 #include <OSD_Thread.hxx>
 #include <Standard_Condition.hxx>
-#include <Standard_Mutex.hxx>
 
 #include <atomic>
 

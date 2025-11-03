@@ -225,7 +225,7 @@ void Media_PlayerContext::SetInput(const TCollection_AsciiString& theInputPath,
                                    Standard_Boolean               theToWait)
 {
   {
-    Standard_Mutex::Sentry aLock(myMutex);
+    std::lock_guard<std::mutex> aLock(myMutex);
     if (theToWait)
     {
       myNextEvent.Reset();
@@ -246,7 +246,7 @@ void Media_PlayerContext::PlaybackState(Standard_Boolean& theIsPaused,
                                         Standard_Real&    theProgress,
                                         Standard_Real&    theDuration)
 {
-  Standard_Mutex::Sentry aLock(myMutex);
+  std::lock_guard<std::mutex> aLock(myMutex);
   theIsPaused = !myTimer.IsStarted();
   theProgress = myTimer.ElapsedTime();
   theDuration = myDuration;
@@ -258,7 +258,7 @@ void Media_PlayerContext::PlayPause(Standard_Boolean& theIsPaused,
                                     Standard_Real&    theProgress,
                                     Standard_Real&    theDuration)
 {
-  Standard_Mutex::Sentry aLock(myMutex);
+  std::lock_guard<std::mutex> aLock(myMutex);
   theProgress = myTimer.ElapsedTime();
   theDuration = myDuration;
   if (myTimer.IsStarted())
@@ -277,16 +277,32 @@ void Media_PlayerContext::PlayPause(Standard_Boolean& theIsPaused,
 
 void Media_PlayerContext::Seek(Standard_Real thePosSec)
 {
-  Standard_Mutex::Sentry aLock(myMutex);
+  std::lock_guard<std::mutex> aLock(myMutex);
   mySeekTo = thePosSec;
   pushPlayEvent(Media_PlayerEvent_SEEK);
 }
 
 //=================================================================================================
 
+void Media_PlayerContext::Pause()
+{
+  std::lock_guard<std::mutex> aLock(myMutex);
+  pushPlayEvent(Media_PlayerEvent_PAUSE);
+}
+
+//=================================================================================================
+
+void Media_PlayerContext::Resume()
+{
+  std::lock_guard<std::mutex> aLock(myMutex);
+  pushPlayEvent(Media_PlayerEvent_RESUME);
+}
+
+//=================================================================================================
+
 void Media_PlayerContext::pushPlayEvent(Media_PlayerEvent thePlayEvent)
 {
-  Standard_Mutex::Sentry aLock(myMutex);
+  // NOTE: Caller must hold myMutex lock before calling this method
   myPlayEvent = thePlayEvent;
   myWakeEvent.Set();
 }
@@ -304,7 +320,7 @@ bool Media_PlayerContext::popPlayEvent(Media_PlayerEvent&                 thePla
     return false;
   }
 
-  Standard_Mutex::Sentry aLock(myMutex);
+  std::lock_guard<std::mutex> aLock(myMutex);
   thePlayEvent = myPlayEvent;
   if (thePlayEvent == Media_PlayerEvent_PAUSE)
   {
@@ -495,7 +511,7 @@ void Media_PlayerContext::doThreadLoop()
 
     TCollection_AsciiString anInput;
     {
-      Standard_Mutex::Sentry aLock(myMutex);
+      std::lock_guard<std::mutex> aLock(myMutex);
       std::swap(anInput, myInputPath);
       if (myPlayEvent == Media_PlayerEvent_NEXT)
       {
@@ -543,7 +559,7 @@ void Media_PlayerContext::doThreadLoop()
     Handle(Media_Packet) aPacket    = new Media_Packet();
     Media_PlayerEvent    aPlayEvent = Media_PlayerEvent_NONE;
     {
-      Standard_Mutex::Sentry aLock(myMutex);
+      std::lock_guard<std::mutex> aLock(myMutex);
       myTimer.Stop();
       myTimer.Start();
       myDuration = aFormatCtx->Duration();

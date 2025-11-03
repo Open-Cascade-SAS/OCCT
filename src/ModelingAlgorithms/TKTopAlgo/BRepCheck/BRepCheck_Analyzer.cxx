@@ -29,13 +29,14 @@
 #include <OSD_Parallel.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_Mutex.hxx>
 #include <Standard_NullObject.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_MapOfShape.hxx>
+
+#include <mutex>
 
 //! Functor for multi-threaded execution.
 class BRepCheck_ParallelAnalyzer
@@ -166,7 +167,10 @@ public:
 
                 if (performwire)
                 {
-                  Standard_Mutex::Sentry aLock(aFaceEdgeRes->GetMutex());
+                  std::unique_lock<std::mutex> aLock =
+                    aFaceEdgeRes->GetMutex()
+                      ? std::unique_lock<std::mutex>(*aFaceEdgeRes->GetMutex())
+                      : std::unique_lock<std::mutex>();
                   if (aFaceEdgeRes->IsStatusOnShape(aShape))
                   {
                     BRepCheck_ListIteratorOfListOfStatus itl(aFaceEdgeRes->StatusOnShape(aShape));
@@ -211,7 +215,9 @@ public:
 
               if (orientofwires)
               {
-                Standard_Mutex::Sentry aLock(aFaceWireRes->GetMutex());
+                std::unique_lock<std::mutex> aLock =
+                  aFaceWireRes->GetMutex() ? std::unique_lock<std::mutex>(*aFaceWireRes->GetMutex())
+                                           : std::unique_lock<std::mutex>();
                 if (aFaceWireRes->IsStatusOnShape(aShape))
                 {
                   const BRepCheck_ListOfStatus& aStatusList = aFaceWireRes->StatusOnShape(aShape);

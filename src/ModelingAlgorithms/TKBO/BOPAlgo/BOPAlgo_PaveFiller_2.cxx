@@ -33,6 +33,7 @@
 #include <NCollection_Vector.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <TopoDS_Vertex.hxx>
 
 //=================================================================================================

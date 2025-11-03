@@ -38,8 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MediaTexture, Graphic3d_Texture2D)
 
 //=================================================================================================
 
-Graphic3d_MediaTexture::Graphic3d_MediaTexture(const Handle(Standard_HMutex)& theMutex,
-                                               Standard_Integer               thePlane)
+Graphic3d_MediaTexture::Graphic3d_MediaTexture(std::mutex& theMutex, Standard_Integer thePlane)
     : Graphic3d_Texture2D("", Graphic3d_TypeOfTexture_2D),
       myMutex(theMutex),
       myPlane(thePlane)
@@ -54,7 +53,8 @@ Graphic3d_MediaTexture::Graphic3d_MediaTexture(const Handle(Standard_HMutex)& th
 
 Handle(Image_PixMap) Graphic3d_MediaTexture::GetImage(const Handle(Image_SupportedFormats)&)
 {
-  Standard_Mutex::Sentry aLock(myMutex.get());
+  std::lock_guard<std::mutex> aLock(myMutex);
+
   if (myFrame.IsNull() || myFrame->IsLocked() || myFrame->IsEmpty() || myFrame->SizeX() < 1
       || myFrame->SizeY() < 1)
   {

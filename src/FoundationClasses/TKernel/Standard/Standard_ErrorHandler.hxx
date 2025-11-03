@@ -26,6 +26,8 @@
 #include <Standard_ThreadId.hxx>
 #include <Standard_Type.hxx>
 
+#include <mutex>
+
 //! @file
 //! Support of handling of C signals as C++-style exceptions, and implementation
 //! of C++ exception handling on platforms that do not implement these natively.

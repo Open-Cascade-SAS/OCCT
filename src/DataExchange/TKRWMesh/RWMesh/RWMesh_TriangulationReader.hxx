@@ -16,7 +16,8 @@
 
 #include <Poly_Triangulation.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
-#include <Standard_Mutex.hxx>
+
+#include <mutex>
 
 class OSD_FileSystem;
 class RWMesh_TriangulationSource;
@@ -306,7 +307,7 @@ protected:
   RWMesh_CoordinateSystemConverter myCoordSysConverter; //!< coordinate system converter
   // clang-format off
   TCollection_AsciiString          myFileName;             //!< file name to use during message printing
-  mutable Standard_Mutex           myMutex;                //!< internal mutex to collect nodes/triangles statistic
+  mutable std::mutex           myMutex;                //!< internal mutex to collect nodes/triangles statistic
   mutable LoadingStatistic*        myLoadingStatistic;     //!< statistic of loaded triangulation
   Standard_Boolean                 myIsDoublePrecision;    //!< flag to fill in triangulation using single or double precision
   Standard_Boolean                 myToSkipDegenerateTris; //!< flag to skip degenerate triangles during loading, FALSE by default

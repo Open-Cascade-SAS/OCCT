@@ -37,7 +37,8 @@
 #include <TopoDS.hxx>
 #include <TopExp.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <Standard_Mutex.hxx>
+
+#include <mutex>
 
 //! Functor for executing StdPrs_Isolines in parallel threads.
 class StdPrs_WFShape_IsoFunctor
@@ -63,7 +64,7 @@ public:
     const TopoDS_Face&         aFace = myFaces[theIndex];
     StdPrs_Isolines::Add(aFace, myDrawer, myShapeDeflection, aPolylinesU, aPolylinesV);
     {
-      Standard_Mutex::Sentry aLock(myMutex);
+      std::lock_guard<std::mutex> aLock(myMutex);
       myPolylinesU.Append(aPolylinesU);
       myPolylinesV.Append(aPolylinesV);
     }
@@ -77,7 +78,7 @@ private:
   Prs3d_NListOfSequenceOfPnt&     myPolylinesV;
   const std::vector<TopoDS_Face>& myFaces;
   const Handle(Prs3d_Drawer)&     myDrawer;
-  mutable Standard_Mutex          myMutex;
+  mutable std::mutex              myMutex;
   const Standard_Real             myShapeDeflection;
 };
 

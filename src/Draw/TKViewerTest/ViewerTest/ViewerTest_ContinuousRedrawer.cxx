@@ -66,7 +66,7 @@ void ViewerTest_ContinuousRedrawer::Start(const Handle(V3d_View)& theView,
   else
   {
     {
-      Standard_Mutex::Sentry aLock(myMutex);
+      std::lock_guard<std::mutex> aLock(myMutex);
       myToStop  = false;
       myToPause = false;
     }
@@ -84,7 +84,7 @@ void ViewerTest_ContinuousRedrawer::Stop(const Handle(V3d_View)& theView)
   }
 
   {
-    Standard_Mutex::Sentry aLock(myMutex);
+    std::lock_guard<std::mutex> aLock(myMutex);
     myToStop  = true;
     myToPause = false;
   }
@@ -100,7 +100,7 @@ void ViewerTest_ContinuousRedrawer::Pause()
 {
   if (!myToPause)
   {
-    Standard_Mutex::Sentry aLock(myMutex);
+    std::lock_guard<std::mutex> aLock(myMutex);
     myToPause = true;
   }
 }
@@ -118,7 +118,7 @@ void ViewerTest_ContinuousRedrawer::doThreadLoop()
   {
     bool toPause = false;
     {
-      Standard_Mutex::Sentry aLock(myMutex);
+      std::lock_guard<std::mutex> aLock(myMutex);
       if (myToStop)
       {
         return;

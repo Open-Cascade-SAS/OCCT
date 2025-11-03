@@ -39,7 +39,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MediaTextureSet, Graphic3d_TextureSet)
 
 Graphic3d_MediaTextureSet::Graphic3d_MediaTextureSet()
     : Graphic3d_TextureSet(4),
-      myMutex(new Standard_HMutex()),
+      myMutex(),
       myCallbackFunction(NULL),
       myCallbackUserPtr(NULL),
       myProgress(0.0),
@@ -156,7 +156,7 @@ void Graphic3d_MediaTextureSet::OpenInput(const TCollection_AsciiString& thePath
 Handle(Media_Frame) Graphic3d_MediaTextureSet::LockFrame()
 {
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::lock_guard<std::mutex> aLock(myMutex);
     if (!myToPresentFrame)
     {
       Handle(Media_Frame) aFrame = myFramePair[myFront == 0 ? 1 : 0];
@@ -179,7 +179,8 @@ Handle(Media_Frame) Graphic3d_MediaTextureSet::LockFrame()
 void Graphic3d_MediaTextureSet::ReleaseFrame(const Handle(Media_Frame)& theFrame)
 {
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::lock_guard<std::mutex> aLock(myMutex);
+
     theFrame->SetLocked(false);
     myToPresentFrame = true;
   }
@@ -201,7 +202,7 @@ Standard_Boolean Graphic3d_MediaTextureSet::SwapFrames()
   Standard_Boolean isPaused = Standard_False;
   myPlayerCtx->PlaybackState(isPaused, myProgress, myDuration);
 
-  Standard_Mutex::Sentry aLock(myMutex.get());
+  std::lock_guard<std::mutex> aLock(myMutex);
   if (!myToPresentFrame)
   {
     return Standard_False;

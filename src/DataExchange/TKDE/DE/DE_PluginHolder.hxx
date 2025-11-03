@@ -15,6 +15,8 @@
 #define _DE_PluginHolder_HeaderFile
 
 #include <DE_Wrapper.hxx>
+
+#include <mutex>
 #include <tuple>
 
 //! Base class to work with DE_Wrapper global registration of components.
@@ -28,14 +30,14 @@ class DE_PluginHolder
 public:
   DE_PluginHolder()
   {
-    Standard_Mutex::Sentry aLock(DE_Wrapper::GlobalLoadMutex());
+    std::lock_guard<std::mutex> aLock(DE_Wrapper::GlobalLoadMutex());
     myInternalConfiguration = new TheConfType;
     myInternalConfiguration->Register(DE_Wrapper::GlobalWrapper());
   }
 
   ~DE_PluginHolder()
   {
-    Standard_Mutex::Sentry aLock(DE_Wrapper::GlobalLoadMutex());
+    std::lock_guard<std::mutex> aLock(DE_Wrapper::GlobalLoadMutex());
     myInternalConfiguration->UnRegister(DE_Wrapper::GlobalWrapper());
   }
 

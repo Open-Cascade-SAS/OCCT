@@ -23,10 +23,11 @@
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_String.hxx>
-#include <Standard_Mutex.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
+
+#include <mutex>
 
 DEFINE_STANDARD_HANDLE(StdPrs_BRepFont, Standard_Transient)
 
@@ -169,7 +170,7 @@ public:
   Standard_Real Scale() const { return myScaleUnits; }
 
   //! Returns mutex.
-  Standard_Mutex& Mutex() { return myMutex; }
+  std::mutex& Mutex() { return myMutex; }
 
 public:
   //! Find (using Font_FontMgr) and initialize the font from the given name.
@@ -206,7 +207,7 @@ private:
 protected:                                                        //! @name Protected fields
   Handle(Font_FTFont)                                   myFTFont; //!< wrapper over FreeType font
   NCollection_DataMap<Standard_Utf32Char, TopoDS_Shape> myCache;  //!< glyphs cache
-  Standard_Mutex                                        myMutex;  //!< lock for thread-safety
+  std::mutex                                            myMutex;  //!< lock for thread-safety
   Handle(Geom_Surface) mySurface;                                 //!< surface to place glyphs on to
   Standard_Real        myPrecision;                               //!< algorithm precision
   Standard_Real        myScaleUnits; //!< scale font rendering units into model units

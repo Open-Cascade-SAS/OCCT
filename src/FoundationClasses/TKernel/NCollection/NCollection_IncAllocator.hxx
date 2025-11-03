@@ -17,10 +17,10 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_OccAllocator.hxx>
 #include <NCollection_Allocator.hxx>
+#include <Standard_MemoryUtils.hxx>
 
 #include <utility>
-
-class Standard_Mutex;
+#include <mutex>
 
 /**
  *  Class NCollection_IncAllocator - incremental memory  allocator. This class
@@ -132,12 +132,12 @@ public:
   static constexpr size_t THE_MINIMUM_BLOCK_SIZE = 1024 * 2;
 
 private:
-  unsigned int    myBlockSize;                //!< Block size to incremental allocations
-  unsigned int    myBlockCount     = 0;       //!< Count of created blocks
-  Standard_Mutex* myMutex          = nullptr; //!< Thread-safety mutex
-  IBlock*         myAllocationHeap = nullptr; //!< Sorted list for allocations
-  IBlock*         myUsedHeap       = nullptr; //!< Sorted list for store empty blocks
-  IBlock*         myOrderedBlocks  = nullptr; //!< Ordered list for store growing size blocks
+  unsigned int                myBlockSize;                //!< Block size to incremental allocations
+  unsigned int                myBlockCount     = 0;       //!< Count of created blocks
+  std::unique_ptr<std::mutex> myMutex          = nullptr; //!< Thread-safety mutex
+  IBlock*                     myAllocationHeap = nullptr; //!< Sorted list for allocations
+  IBlock*                     myUsedHeap       = nullptr; //!< Sorted list for store empty blocks
+  IBlock* myOrderedBlocks = nullptr; //!< Ordered list for store growing size blocks
 
 public:
   // Declaration of CASCADE RTTI

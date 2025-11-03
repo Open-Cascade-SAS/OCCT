@@ -83,7 +83,7 @@ const Handle(VrmlData_Node)& VrmlData_Scene::AddNode(const Handle(VrmlData_Node)
   if (theN.IsNull() == Standard_False)
     if (theN->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)) == Standard_False)
     {
-      myMutex.Lock();
+      std::lock_guard<std::mutex>  aLock(myMutex);
       const Handle(VrmlData_Node)& aNode =
         myAllNodes.Append((&theN->Scene() == this) ? theN : theN->Clone(NULL));
       // Name is checked for uniqueness. If not, letter 'D' is appended until
@@ -93,7 +93,6 @@ const Handle(VrmlData_Node)& VrmlData_Scene::AddNode(const Handle(VrmlData_Node)
           aNode->setName(aNode->Name(), "D");
       if (isTopLevel)
         myLstNodes.Append(aNode);
-      myMutex.Unlock();
       return aNode;
     }
   static Handle(VrmlData_Node) aNullNode;
@@ -108,8 +107,8 @@ const Handle(VrmlData_Node)& VrmlData_Scene::AddNode(const Handle(VrmlData_Node)
 
 Standard_OStream& operator<<(Standard_OStream& theOutput, const VrmlData_Scene& theScene)
 {
-  VrmlData_Scene& aScene = const_cast<VrmlData_Scene&>(theScene);
-  aScene.myMutex.Lock();
+  VrmlData_Scene&             aScene = const_cast<VrmlData_Scene&>(theScene);
+  std::lock_guard<std::mutex> aLock(aScene.myMutex);
   aScene.myCurrentIndent = 0;
   aScene.myLineError     = 0;
   aScene.myOutput        = 0L;
@@ -151,7 +150,6 @@ Standard_OStream& operator<<(Standard_OStream& theOutput, const VrmlData_Scene& 
   aScene.myOutput = 0L;
   aScene.myNamedNodesOut.Clear();
   aScene.myUnnamedNodesOut.Clear();
-  aScene.myMutex.Unlock();
   return theOutput;
 }
 
@@ -326,8 +324,8 @@ VrmlData_ErrorStatus VrmlData_Scene::readHeader(VrmlData_InBuffer& theBuffer)
 
 VrmlData_Scene& VrmlData_Scene::operator<<(Standard_IStream& theInput)
 {
-  VrmlData_InBuffer aBuffer(theInput);
-  myMutex.Lock();
+  VrmlData_InBuffer           aBuffer(theInput);
+  std::lock_guard<std::mutex> aLock(myMutex);
   // Read the VRML header
   myStatus                                     = readHeader(aBuffer);
   const Handle(VrmlData_UnknownNode) aNullNode = new VrmlData_UnknownNode(*this);
@@ -365,7 +363,7 @@ VrmlData_Scene& VrmlData_Scene::operator<<(Standard_IStream& theInput)
   }
   if (myStatus != VrmlData_StatusOK)
     myLineError = aBuffer.LineCount;
-  myMutex.Unlock();
+
   return *this;
 }
 

@@ -56,6 +56,7 @@
 #include <gp_Pnt.hxx>
 #include <IntSurf_ListOfPntOn2S.hxx>
 #include <IntSurf_PntOn2S.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <IntTools.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_Curve.hxx>

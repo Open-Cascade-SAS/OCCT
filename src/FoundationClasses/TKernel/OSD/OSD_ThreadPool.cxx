@@ -16,6 +16,7 @@
 
 #include <OSD.hxx>
 #include <OSD_Parallel.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OSD_ThreadPool, Standard_Transient)

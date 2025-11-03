@@ -91,9 +91,9 @@ void DE_Wrapper::SetGlobalWrapper(const Handle(DE_Wrapper)& theWrapper)
 
 //=================================================================================================
 
-Standard_Mutex& DE_Wrapper::GlobalLoadMutex()
+std::mutex& DE_Wrapper::GlobalLoadMutex()
 {
-  static Standard_Mutex THE_GLOBAL_LOAD_MUTEX;
+  static std::mutex THE_GLOBAL_LOAD_MUTEX;
   return THE_GLOBAL_LOAD_MUTEX;
 }
 

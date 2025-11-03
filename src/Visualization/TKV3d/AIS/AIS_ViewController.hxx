@@ -31,7 +31,6 @@
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
 #include <Quantity_ColorRGBA.hxx>
-#include <Standard_Mutex.hxx>
 
 class AIS_Animation;
 class AIS_AnimationCamera;

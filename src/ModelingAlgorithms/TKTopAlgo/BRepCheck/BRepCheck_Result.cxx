@@ -46,7 +46,8 @@ void BRepCheck_Result::Init(const TopoDS_Shape& S)
 
 void BRepCheck_Result::SetFailStatus(const TopoDS_Shape& S)
 {
-  Standard_Mutex::Sentry          aLock(myMutex.get());
+  std::unique_lock<std::mutex> aLock =
+    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
   Handle(BRepCheck_HListOfStatus) aList;
   if (!myMap.Find(S, aList))
   {
@@ -84,8 +85,8 @@ void BRepCheck_Result::NextShapeInContext()
 
 void BRepCheck_Result::SetParallel(Standard_Boolean theIsParallel)
 {
-  if (theIsParallel && myMutex.IsNull())
+  if (theIsParallel && !myMutex)
   {
-    myMutex.reset(new Standard_HMutex());
+    myMutex = opencascade::make_unique<std::mutex>();
   }
 }
