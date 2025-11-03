@@ -94,10 +94,10 @@ public:
   //! This constructor allows constexpr and noexcept construction when using standard directions.
   constexpr gp_Ax3(const gp_Pnt& theP, const gp_Dir::D theN, const gp_Dir::D theVx) noexcept
       : axis(theP, theN),
-        vydir(theN),
+        vydir(crossStandardDir(theN, theVx)), // Y = Z × X (right-handed)
         vxdir(theVx)
   {
-    // Note: For standard directions, CrossCross is not needed at compile time
+    // Note: For standard directions, cross product is computed at compile time
     // This constructor assumes theN and theVx are orthogonal standard directions
   }
 
@@ -108,16 +108,16 @@ public:
   //! Creates an axis placement with the given location point and standard direction.
   constexpr gp_Ax3(const gp_Pnt& theP, const gp_Dir::D theV) noexcept
       : axis(theP, theV),
-        vydir(GetPerpendicularYDir(theV)),
-        vxdir(GetPerpendicularXDir(theV))
+        vydir(getPerpendicularYDir(theV)),
+        vxdir(getPerpendicularXDir(theV))
   {
   }
 
   //! Creates an axis placement at the origin with the given standard direction.
   constexpr explicit gp_Ax3(const gp_Dir::D theV) noexcept
       : axis(gp_Pnt(0., 0., 0.), theV),
-        vydir(GetPerpendicularYDir(theV)),
-        vxdir(GetPerpendicularXDir(theV))
+        vydir(getPerpendicularYDir(theV)),
+        vxdir(getPerpendicularXDir(theV))
   {
   }
 
@@ -351,28 +351,124 @@ public:
 
 private:
   //! Helper to compute perpendicular X direction for standard main directions
-  static constexpr gp_Dir::D GetPerpendicularXDir(const gp_Dir::D theMainDir) noexcept
-  {
-    return (theMainDir == gp_Dir::D::X || theMainDir == gp_Dir::D::NX)   ? gp_Dir::D::Y
-           : (theMainDir == gp_Dir::D::Y || theMainDir == gp_Dir::D::NY) ? gp_Dir::D::Z
-                                                                         : gp_Dir::D::X;
-  }
+  static constexpr gp_Dir::D getPerpendicularXDir(const gp_Dir::D theMainDir) noexcept;
 
   //! Helper to compute Y direction (main x X) for standard directions
-  static constexpr gp_Dir::D GetPerpendicularYDir(const gp_Dir::D theMainDir) noexcept
-  {
-    return (theMainDir == gp_Dir::D::Z)    ? gp_Dir::D::Y
-           : (theMainDir == gp_Dir::D::NZ) ? gp_Dir::D::NY
-           : (theMainDir == gp_Dir::D::X)  ? gp_Dir::D::Z
-           : (theMainDir == gp_Dir::D::NX) ? gp_Dir::D::NZ
-           : (theMainDir == gp_Dir::D::Y)  ? gp_Dir::D::X
-                                           : gp_Dir::D::NX; // NY case
-  }
+  static constexpr gp_Dir::D getPerpendicularYDir(const gp_Dir::D theMainDir) noexcept;
+
+  //! Helper to compute cross product of two standard directions (right-handed: A × B)
+  static constexpr gp_Dir::D crossStandardDir(const gp_Dir::D theA, const gp_Dir::D theB) noexcept;
 
   gp_Ax1 axis;
   gp_Dir vydir;
   gp_Dir vxdir;
 };
+
+//=================================================================================================
+
+inline constexpr gp_Dir::D gp_Ax3::getPerpendicularXDir(const gp_Dir::D theMainDir) noexcept
+{
+  return (theMainDir == gp_Dir::D::X || theMainDir == gp_Dir::D::NX)   ? gp_Dir::D::Y
+         : (theMainDir == gp_Dir::D::Y || theMainDir == gp_Dir::D::NY) ? gp_Dir::D::Z
+                                                                       : gp_Dir::D::X;
+}
+
+//=================================================================================================
+
+inline constexpr gp_Dir::D gp_Ax3::getPerpendicularYDir(const gp_Dir::D theMainDir) noexcept
+{
+  return (theMainDir == gp_Dir::D::Z)    ? gp_Dir::D::Y
+         : (theMainDir == gp_Dir::D::NZ) ? gp_Dir::D::NY
+         : (theMainDir == gp_Dir::D::X)  ? gp_Dir::D::Z
+         : (theMainDir == gp_Dir::D::NX) ? gp_Dir::D::NZ
+         : (theMainDir == gp_Dir::D::Y)  ? gp_Dir::D::X
+                                         : gp_Dir::D::NX; // NY case
+}
+
+//=================================================================================================
+
+inline constexpr gp_Dir::D gp_Ax3::crossStandardDir(const gp_Dir::D theA,
+                                                    const gp_Dir::D theB) noexcept
+{
+  // Handle positive directions first
+  if (theA == gp_Dir::D::X)
+  {
+    if (theB == gp_Dir::D::Y)
+      return gp_Dir::D::Z;
+    if (theB == gp_Dir::D::Z)
+      return gp_Dir::D::NY;
+    if (theB == gp_Dir::D::NY)
+      return gp_Dir::D::NZ;
+    if (theB == gp_Dir::D::NZ)
+      return gp_Dir::D::Y;
+    // X × X = 0, X × NX = 0 (parallel, should not happen)
+    return gp_Dir::D::Z; // fallback
+  }
+  if (theA == gp_Dir::D::Y)
+  {
+    if (theB == gp_Dir::D::Z)
+      return gp_Dir::D::X;
+    if (theB == gp_Dir::D::X)
+      return gp_Dir::D::NZ;
+    if (theB == gp_Dir::D::NX)
+      return gp_Dir::D::Z;
+    if (theB == gp_Dir::D::NZ)
+      return gp_Dir::D::NX;
+    // Y × Y = 0, Y × NY = 0 (parallel, should not happen)
+    return gp_Dir::D::X; // fallback
+  }
+  if (theA == gp_Dir::D::Z)
+  {
+    if (theB == gp_Dir::D::X)
+      return gp_Dir::D::Y;
+    if (theB == gp_Dir::D::Y)
+      return gp_Dir::D::NX;
+    if (theB == gp_Dir::D::NX)
+      return gp_Dir::D::NY;
+    if (theB == gp_Dir::D::NY)
+      return gp_Dir::D::X;
+    // Z × Z = 0, Z × NZ = 0 (parallel, should not happen)
+    return gp_Dir::D::Y; // fallback
+  }
+  // Handle negative directions: -A × B = -(A × B)
+  if (theA == gp_Dir::D::NX)
+  {
+    if (theB == gp_Dir::D::Y)
+      return gp_Dir::D::NZ;
+    if (theB == gp_Dir::D::Z)
+      return gp_Dir::D::Y;
+    if (theB == gp_Dir::D::NY)
+      return gp_Dir::D::Z;
+    if (theB == gp_Dir::D::NZ)
+      return gp_Dir::D::NY;
+    return gp_Dir::D::NZ; // fallback
+  }
+  if (theA == gp_Dir::D::NY)
+  {
+    if (theB == gp_Dir::D::Z)
+      return gp_Dir::D::NX;
+    if (theB == gp_Dir::D::X)
+      return gp_Dir::D::Z;
+    if (theB == gp_Dir::D::NX)
+      return gp_Dir::D::NZ;
+    if (theB == gp_Dir::D::NZ)
+      return gp_Dir::D::X;
+    return gp_Dir::D::NX; // fallback
+  }
+  if (theA == gp_Dir::D::NZ)
+  {
+    if (theB == gp_Dir::D::X)
+      return gp_Dir::D::NY;
+    if (theB == gp_Dir::D::Y)
+      return gp_Dir::D::X;
+    if (theB == gp_Dir::D::NX)
+      return gp_Dir::D::Y;
+    if (theB == gp_Dir::D::NY)
+      return gp_Dir::D::NX;
+    return gp_Dir::D::NY; // fallback
+  }
+  return gp_Dir::D::Z; // fallback
+}
 
 //=================================================================================================
 

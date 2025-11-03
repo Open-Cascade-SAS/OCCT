@@ -1347,7 +1347,7 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const Handle(Geom2d_Curve)& theC2d
 
     if (!Precision::IsInfinite(aV1l))
     {
-      aCurS1Bounds[3] = new Geom2d_Line(gp_Pnt2d(aU1l, aV1l), gp_Dir2d(gp_Dir2d::D::X));
+      aCurS1Bounds[3] = new Geom2d_Line(gp_Pnt2d(aU1f, aV1l), gp_Dir2d(gp_Dir2d::D::X));
       if (!Precision::IsInfinite(aDelta))
         aCurS1Bounds[3] = new Geom2d_TrimmedCurve(aCurS1Bounds[3], 0, aDelta);
     }
@@ -1383,7 +1383,7 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const Handle(Geom2d_Curve)& theC2d
 
     if (!Precision::IsInfinite(aV2l))
     {
-      aCurS2Bounds[3] = new Geom2d_Line(gp_Pnt2d(aU2l, aV2l), gp_Dir2d(gp_Dir2d::D::X));
+      aCurS2Bounds[3] = new Geom2d_Line(gp_Pnt2d(aU2f, aV2l), gp_Dir2d(gp_Dir2d::D::X));
       if (!Precision::IsInfinite(aDelta))
         aCurS2Bounds[3] = new Geom2d_TrimmedCurve(aCurS2Bounds[3], 0, aDelta);
     }
