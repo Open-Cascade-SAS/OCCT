@@ -157,7 +157,7 @@ void Graphic3d_MediaTextureSet::OpenInput(const TCollection_AsciiString& thePath
 Handle(Media_Frame) Graphic3d_MediaTextureSet::LockFrame()
 {
   {
-    std::unique_lock<std::mutex> aLock(myMutex);
+    std::lock_guard<std::mutex> aLock(myMutex);
     if (!myToPresentFrame)
     {
       Handle(Media_Frame) aFrame = myFramePair[myFront == 0 ? 1 : 0];
@@ -180,7 +180,7 @@ Handle(Media_Frame) Graphic3d_MediaTextureSet::LockFrame()
 void Graphic3d_MediaTextureSet::ReleaseFrame(const Handle(Media_Frame)& theFrame)
 {
   {
-    std::unique_lock<std::mutex> aLock(myMutex);
+    std::lock_guard<std::mutex> aLock(myMutex);
 
     theFrame->SetLocked(false);
     myToPresentFrame = true;
@@ -203,7 +203,7 @@ Standard_Boolean Graphic3d_MediaTextureSet::SwapFrames()
   Standard_Boolean isPaused = Standard_False;
   myPlayerCtx->PlaybackState(isPaused, myProgress, myDuration);
 
-  std::unique_lock<std::mutex> aLock(myMutex);
+  std::lock_guard<std::mutex> aLock(myMutex);
   if (!myToPresentFrame)
   {
     return Standard_False;

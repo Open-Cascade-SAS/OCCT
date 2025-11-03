@@ -28,14 +28,14 @@ class DE_PluginHolder
 public:
   DE_PluginHolder()
   {
-    std::unique_lock<std::mutex> aLock(DE_Wrapper::GlobalLoadMutex());
+    std::lock_guard<std::mutex> aLock(DE_Wrapper::GlobalLoadMutex());
     myInternalConfiguration = new TheConfType;
     myInternalConfiguration->Register(DE_Wrapper::GlobalWrapper());
   }
 
   ~DE_PluginHolder()
   {
-    std::unique_lock<std::mutex> aLock(DE_Wrapper::GlobalLoadMutex());
+    std::lock_guard<std::mutex> aLock(DE_Wrapper::GlobalLoadMutex());
     myInternalConfiguration->UnRegister(DE_Wrapper::GlobalWrapper());
   }
 

@@ -53,7 +53,7 @@ Graphic3d_MediaTexture::Graphic3d_MediaTexture(std::mutex& theMutex, Standard_In
 
 Handle(Image_PixMap) Graphic3d_MediaTexture::GetImage(const Handle(Image_SupportedFormats)&)
 {
-  std::unique_lock<std::mutex> aLock(myMutex);
+  std::lock_guard<std::mutex> aLock(myMutex);
 
   if (myFrame.IsNull() || myFrame->IsLocked() || myFrame->IsEmpty() || myFrame->SizeX() < 1
       || myFrame->SizeY() < 1)

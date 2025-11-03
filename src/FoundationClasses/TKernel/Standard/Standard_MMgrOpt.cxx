@@ -462,16 +462,14 @@ void Standard_MMgrOpt::Free(Standard_Address theStorage)
     // Note that we do not lock fields that do not change during the
     // object life (such as myThreshold), and assume that calls to functions
     // of standard library are already protected by their implementation.
-    // We also do not use Sentry, since in case if OCC signal or exception is
-    // caused by this block we will have deadlock anyway...
-    myMutex.lock();
+    {
+      std::lock_guard<std::mutex> aLock(myMutex);
 
-    // in the memory block header, record address of the next free block
-    *(Standard_Size**)aBlock = myFreeList[Index];
-    // add new block to be first in the list
-    myFreeList[Index] = aBlock;
-
-    myMutex.unlock();
+      // in the memory block header, record address of the next free block
+      *(Standard_Size**)aBlock = myFreeList[Index];
+      // add new block to be first in the list
+      myFreeList[Index] = aBlock;
+    }
   }
   // otherwise, we have block of big size which shall be simply released
   else
