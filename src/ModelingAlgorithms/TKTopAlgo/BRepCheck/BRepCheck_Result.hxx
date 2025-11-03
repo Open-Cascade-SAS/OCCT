@@ -19,10 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <Standard_Mutex.hxx>
 #include <Standard_Transient.hxx>
 #include <BRepCheck_DataMapOfShapeListOfStatus.hxx>
 #include <BRepCheck_ListOfStatus.hxx>
+#include <Standard_MemoryUtils.hxx>
+
+#include <mutex>
 
 DEFINE_STANDARD_HANDLE(BRepCheck_Result, Standard_Transient)
 
@@ -80,10 +82,10 @@ protected:
   Standard_Boolean                     myMin;
   Standard_Boolean                     myBlind;
   BRepCheck_DataMapOfShapeListOfStatus myMap;
-  mutable Handle(Standard_HMutex)      myMutex;
+  mutable std::unique_ptr<std::mutex>  myMutex;
 
 private:
-  Standard_HMutex* GetMutex() { return myMutex.get(); }
+  std::unique_ptr<std::mutex>& GetMutex() { return myMutex; }
 
 private:
   BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus myIter;

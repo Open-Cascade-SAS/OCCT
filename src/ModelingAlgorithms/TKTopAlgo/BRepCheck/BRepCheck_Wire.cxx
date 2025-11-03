@@ -187,7 +187,8 @@ void BRepCheck_Wire::InContext(const TopoDS_Shape& S)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     if (myMap.IsBound(S))
     {
       return;
@@ -273,7 +274,8 @@ BRepCheck_Status BRepCheck_Wire::Closed(const Standard_Boolean Update)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
 
@@ -540,7 +542,8 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace, const Stan
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
   BRepCheck_ListOfStatus& aStatusList = *aHList;
@@ -717,7 +720,8 @@ BRepCheck_Status BRepCheck_Wire::Orientation(const TopoDS_Face& F, const Standar
   BRepCheck_Status                theOstat = Closed();
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
   BRepCheck_ListOfStatus& aStatusList = *aHList;
@@ -1057,7 +1061,8 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face&     F,
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
   BRepCheck_ListOfStatus& aStatusList = *aHList;

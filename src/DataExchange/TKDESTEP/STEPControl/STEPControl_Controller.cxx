@@ -49,15 +49,17 @@
 #include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_WorkSession.hxx>
 
+#include <mutex>
+
 IMPLEMENT_STANDARD_RTTIEXT(STEPControl_Controller, XSControl_Controller)
 
 //  Pour NewModel et Write : definition de produit (temporaire ...)
 STEPControl_Controller::STEPControl_Controller()
     : XSControl_Controller("STEP", "step")
 {
-  static Standard_Boolean init = Standard_False;
-  static Standard_Mutex   aMutex;
-  aMutex.Lock();
+  static Standard_Boolean     init = Standard_False;
+  static std::mutex           aMutex;
+  std::lock_guard<std::mutex> aLock(aMutex);
   if (!init)
   {
     RWHeaderSection::Init();
@@ -338,7 +340,6 @@ STEPControl_Controller::STEPControl_Controller()
 
     init = Standard_True;
   }
-  aMutex.Unlock();
 
   Handle(STEPControl_ActorWrite) ActWrite = new STEPControl_ActorWrite;
   myAdaptorWrite                          = ActWrite;

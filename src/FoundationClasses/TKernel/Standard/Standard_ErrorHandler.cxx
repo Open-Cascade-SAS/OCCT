@@ -18,8 +18,9 @@
 //============================================================================
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_Mutex.hxx>
 #include <Standard.hxx>
+
+#include <mutex>
 
 #ifndef _WIN32
   #include <pthread.h>
@@ -44,9 +45,9 @@ static Standard_ErrorHandler* Top = 0;
 //! an undefined static variables initialization order across compilation units (@sa #0031681 bug).
 //! Note that we should NOT use Sentry while in this class, as Sentry
 //! would register mutex as callback in the current exception handler.
-static Standard_Mutex& GetMutex()
+static std::mutex& GetMutex()
 {
-  static Standard_Mutex theMutex;
+  static std::mutex theMutex;
   return theMutex;
 }
 
@@ -71,10 +72,9 @@ Standard_ErrorHandler::Standard_ErrorHandler()
   myThread = GetThreadID();
   memset(&myLabel, 0, sizeof(myLabel));
 
-  GetMutex().Lock();
+  std::lock_guard<std::mutex> aLock(GetMutex());
   myPrevious = Top;
   Top        = this;
-  GetMutex().Unlock();
 }
 
 //============================================================================
@@ -96,7 +96,7 @@ void Standard_ErrorHandler::Destroy()
 void Standard_ErrorHandler::Unlink()
 {
   // put a lock on the stack
-  GetMutex().Lock();
+  std::lock_guard<std::mutex> aLock(GetMutex());
 
   Standard_ErrorHandler* aPrevious = 0;
   Standard_ErrorHandler* aCurrent  = Top;
@@ -110,7 +110,6 @@ void Standard_ErrorHandler::Unlink()
 
   if (aCurrent == 0)
   {
-    GetMutex().Unlock();
     return;
   }
 
@@ -124,7 +123,7 @@ void Standard_ErrorHandler::Unlink()
     aPrevious->myPrevious = aCurrent->myPrevious;
   }
   myPrevious = 0;
-  GetMutex().Unlock();
+  aLock.~lock_guard();
 
   // unlink and destroy all registered callbacks
   Standard_Address aPtr = aCurrent->myCallbackPtr;
@@ -224,7 +223,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
                                                           const Standard_Boolean       theUnlink)
 {
   // lock the stack
-  GetMutex().Lock();
+  std::lock_guard<std::mutex> aLock(GetMutex());
 
   // Find the current ErrorHandler according to thread
   Standard_ErrorHandler* aPrevious = 0;
@@ -274,11 +273,10 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
     }
     else
     {
-      // Current is NULL, means that no handlesr
+      // Current is NULL, means that no handles
       aStop = Standard_True;
     }
   }
-  GetMutex().Unlock();
 
   return anActive;
 }

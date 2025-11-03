@@ -18,8 +18,9 @@
 #include <OSD_Parallel.hxx>
 #include <OSD_ThreadPool.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Standard_Mutex.hxx>
 #include <OSD_Thread.hxx>
+
+#include <mutex>
 
 //! Implementation of Functors/Starters
 class BOPTools_Parallel
@@ -82,7 +83,7 @@ class BOPTools_Parallel
       opencascade::handle<TypeContext> aContext =
         new TypeContext(NCollection_BaseAllocator::CommonBaseAllocator());
 
-      Standard_Mutex::Sentry aLocker(myMutex);
+      std::lock_guard<std::mutex> aLock(myMutex);
       myContextMap.Bind(aThreadID, aContext);
       return myContextMap(aThreadID);
     }
@@ -104,7 +105,7 @@ class BOPTools_Parallel
   private:
     TypeSolverVector&                                                                mySolverVector;
     mutable NCollection_DataMap<Standard_ThreadId, opencascade::handle<TypeContext>> myContextMap;
-    mutable Standard_Mutex                                                           myMutex;
+    mutable std::mutex                                                               myMutex;
   };
 
   //! Functor storing array of algorithm contexts per thread in pool

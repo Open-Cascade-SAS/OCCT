@@ -18,8 +18,9 @@
 
 #include <BVH_Builder.hxx>
 
-#include <Standard_Mutex.hxx>
 #include <NCollection_Sequence.hxx>
+
+#include <mutex>
 
 //! Command-queue for parallel building of BVH nodes.
 class BVH_BuildQueue
@@ -60,7 +61,7 @@ protected:
 
 protected:
   //! Manages access serialization of working threads.
-  Standard_Mutex myMutex;
+  std::mutex myMutex;
 
   //! Number of active build threads.
   Standard_Integer myNbThreads;

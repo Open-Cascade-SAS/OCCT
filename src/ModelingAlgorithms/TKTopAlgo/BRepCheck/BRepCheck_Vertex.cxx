@@ -64,7 +64,8 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     if (myMap.IsBound(S))
     {
       return;

@@ -3707,7 +3707,6 @@ static Standard_Integer OCC29745(Draw_Interpretor& theDI,
   return 0;
 }
 
-#include <Standard_Mutex.hxx>
 #include <NCollection_Sequence.hxx>
 #include <BinLDrivers.hxx>
 #include <BinDrivers.hxx>

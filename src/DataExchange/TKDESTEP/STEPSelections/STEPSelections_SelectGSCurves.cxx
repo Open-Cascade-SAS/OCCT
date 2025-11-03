@@ -16,7 +16,6 @@
 
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Standard_Mutex.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepGeom_CompositeCurve.hxx>
@@ -28,7 +27,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectGSCurves, IFSelect_SelectExplore)
 
-static Standard_Integer flag;
+namespace
+{
+thread_local Standard_Integer flag;
+} // namespace
 
 STEPSelections_SelectGSCurves::STEPSelections_SelectGSCurves()
     : IFSelect_SelectExplore(-1)
@@ -53,14 +55,11 @@ Standard_Boolean STEPSelections_SelectGSCurves::Explore(const Standard_Integer /
       for (subs.Start(); subs.More() && !isInGeomSet; subs.Next())
         if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_GeometricSet)))
         {
-          static Standard_Mutex aMutex;
-          aMutex.Lock();
           if (flag)
           {
             explored.AddItem(subs.Value());
             flag = 0;
           }
-          aMutex.Unlock();
           isInGeomSet = Standard_True;
         }
       if (isInGeomSet)

@@ -177,7 +177,8 @@ void BRepCheck_Shell::InContext(const TopoDS_Shape& S)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     if (myMap.IsBound(S))
     {
       return;
@@ -247,7 +248,8 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
 
@@ -429,7 +431,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
   BRepCheck_ListOfStatus& aStatusList = *aHList;
@@ -826,7 +829,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
 
 void BRepCheck_Shell::SetUnorientable()
 {
-  Standard_Mutex::Sentry aLock(myMutex.get());
+  std::unique_lock<std::mutex> aLock =
+    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
   BRepCheck::Add(*myMap(myShape), BRepCheck_UnorientableShape);
 }
 
@@ -841,7 +845,8 @@ Standard_Boolean BRepCheck_Shell::IsUnorientable() const
 
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
   BRepCheck_ListOfStatus& aStatusList = *aHList;

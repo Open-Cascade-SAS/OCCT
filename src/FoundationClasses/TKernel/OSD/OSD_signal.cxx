@@ -17,6 +17,8 @@
 #include <Standard_Overflow.hxx>
 #include <Standard_Assert.hxx>
 
+#include <mutex>
+
 #include <Standard_WarningDisableFunctionCast.hxx>
 
 static OSD_SignalMode   OSD_WasSetSignal           = OSD_SignalMode_AsIs;
@@ -76,7 +78,6 @@ void OSD::SetSignalStackTraceLength(Standard_Integer theLength)
   #include <OSD_Environment.hxx>
   #include <Standard_Underflow.hxx>
   #include <Standard_ProgramError.hxx>
-  #include <Standard_Mutex.hxx>
 
   #ifdef _MSC_VER
     #include <eh.h>
@@ -92,10 +93,10 @@ static Standard_Boolean fCtrlBrk;
 static Standard_Boolean fMsgBox;
 
 // used to forbid simultaneous execution of setting / executing handlers
-static Standard_Mutex THE_SIGNAL_MUTEX;
+static std::mutex THE_SIGNAL_MUTEX;
 
 static LONG __fastcall _osd_raise(DWORD theCode, const char* theMsg, const char* theStack);
-static BOOL WINAPI _osd_ctrl_break_handler(DWORD);
+static BOOL WINAPI     _osd_ctrl_break_handler(DWORD);
 
   #if !defined(OCCT_UWP) && !defined(__MINGW32__) && !defined(__CYGWIN32__)
 static Standard_Boolean fDbgLoaded;
@@ -121,9 +122,9 @@ static LONG CallHandler(DWORD theExceptionCode, EXCEPTION_POINTERS* theExcPtr)
     ExceptionInformation0 = theExcPtr->ExceptionRecord->ExceptionInformation[0];
   }
 
-  // clang-format off
-  Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
-  // clang-format on
+  // lock the mutex to prevent simultaneous handling
+  std::lock_guard<std::mutex> aLock(THE_SIGNAL_MUTEX);
+
   static char aBuffer[2048];
 
   bool isFloatErr = false;
@@ -309,9 +310,9 @@ static LONG CallHandler(DWORD theExceptionCode, EXCEPTION_POINTERS* theExcPtr)
 //=======================================================================
 static void SIGWntHandler(int signum, int sub_code)
 {
-  // clang-format off
-  Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
-  // clang-format on
+  // lock the mutex to prevent simultaneous handling
+  std::lock_guard<std::mutex> aLock(THE_SIGNAL_MUTEX);
+
   switch (signum)
   {
     case SIGFPE:
@@ -379,9 +380,9 @@ static void SIGWntHandler(int signum, int sub_code)
 
 static void TranslateSE(unsigned int theCode, EXCEPTION_POINTERS* theExcPtr)
 {
-  // clang-format off
-  Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
-  // clang-format on
+  // lock the mutex to prevent simultaneous handling
+  std::lock_guard<std::mutex> aLock(THE_SIGNAL_MUTEX);
+
   CallHandler(theCode, theExcPtr);
 }
   #endif
@@ -440,9 +441,9 @@ void OSD::SetThreadLocalSignal(OSD_SignalMode theSignalMode, Standard_Boolean th
 
 void OSD::SetSignal(OSD_SignalMode theSignalMode, Standard_Boolean theFloatingSignal)
 {
-  // clang-format off
-  Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
-  // clang-format on
+  // lock the mutex to prevent simultaneous handling
+  std::lock_guard<std::mutex> aLock(THE_SIGNAL_MUTEX);
+
   OSD_WasSetSignal = theSignalMode;
 
   #if !defined(OCCT_UWP) || defined(NTDDI_WIN10_TH2)

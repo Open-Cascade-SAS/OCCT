@@ -14,9 +14,10 @@
 #include <TDF_DerivedAttribute.hxx>
 
 #include <NCollection_DataMap.hxx>
-#include <Standard_Mutex.hxx>
 #include <Standard_CStringHasher.hxx>
 #include <TCollection_AsciiString.hxx>
+
+#include <mutex>
 
 namespace TDF_DerivedAttributeGlobals
 {
@@ -55,9 +56,9 @@ static NCollection_DataMap<Standard_CString, TCollection_AsciiString*, Standard_
 }
 
 //! To minimize simultaneous access to global "DERIVED" maps from parallel threads
-static Standard_Mutex& Mutex()
+static std::mutex& Mutex()
 {
-  static Standard_Mutex THE_DERIVED_MUTEX;
+  static std::mutex THE_DERIVED_MUTEX;
   return THE_DERIVED_MUTEX;
 }
 } // namespace TDF_DerivedAttributeGlobals
@@ -74,7 +75,7 @@ TDF_DerivedAttribute::NewDerived TDF_DerivedAttribute::Register(NewDerived theNe
   TDF_DerivedAttributeGlobals::CreatorData aData = {theNewAttributeFunction,
                                                     theNameSpace,
                                                     theTypeName};
-  Standard_Mutex::Sentry                   aSentry(TDF_DerivedAttributeGlobals::Mutex());
+  std::lock_guard<std::mutex>              aLock(TDF_DerivedAttributeGlobals::Mutex());
   TDF_DerivedAttributeGlobals::Creators().Append(aData);
   return theNewAttributeFunction;
 }
@@ -127,7 +128,7 @@ static void Initialize()
 
 Handle(TDF_Attribute) TDF_DerivedAttribute::Attribute(Standard_CString theType)
 {
-  Standard_Mutex::Sentry aSentry(TDF_DerivedAttributeGlobals::Mutex());
+  std::lock_guard<std::mutex> aLock(TDF_DerivedAttributeGlobals::Mutex());
   Initialize();
   if (const Handle(TDF_Attribute)* aResult =
         TDF_DerivedAttributeGlobals::Attributes().Seek(theType))
@@ -143,7 +144,7 @@ Handle(TDF_Attribute) TDF_DerivedAttribute::Attribute(Standard_CString theType)
 
 const TCollection_AsciiString& TDF_DerivedAttribute::TypeName(Standard_CString theType)
 {
-  Standard_Mutex::Sentry aSentry(TDF_DerivedAttributeGlobals::Mutex());
+  std::lock_guard<std::mutex> aLock(TDF_DerivedAttributeGlobals::Mutex());
   Initialize();
   if (TCollection_AsciiString* const* aResult = TDF_DerivedAttributeGlobals::Types().Seek(theType))
   {
@@ -157,7 +158,7 @@ const TCollection_AsciiString& TDF_DerivedAttribute::TypeName(Standard_CString t
 
 void TDF_DerivedAttribute::Attributes(NCollection_List<Handle(TDF_Attribute)>& theList)
 {
-  Standard_Mutex::Sentry aSentry(TDF_DerivedAttributeGlobals::Mutex());
+  std::lock_guard<std::mutex> aLock(TDF_DerivedAttributeGlobals::Mutex());
   Initialize();
   NCollection_DataMap<Standard_CString, Handle(TDF_Attribute), Standard_CStringHasher>::Iterator
     anAttrIter;

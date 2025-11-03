@@ -12,22 +12,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <OSD_Environment.hxx>
+
+#include <OSD_Environment.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_WhoAmI.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_NullObject.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_UtfString.hxx>
+
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <mutex>
+
 #ifndef _WIN32
 
-  #include <OSD_Environment.hxx>
-  #include <OSD_OSDError.hxx>
-  #include <OSD_WhoAmI.hxx>
-  #include <Standard_ConstructionError.hxx>
-  #include <Standard_Failure.hxx>
-  #include <Standard_Mutex.hxx>
-  #include <Standard_NullObject.hxx>
-  #include <TCollection_AsciiString.hxx>
-  #include <NCollection_UtfString.hxx>
-
-  #include <errno.h>
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <string.h>
 static const OSD_WhoAmI Iam = OSD_WEnvironment;
 
 // ----------------------------------------------------------------------
@@ -120,8 +123,8 @@ void OSD_Environment::Build()
   static int    Ibuffer = 0; // Tout ca pour putenv,getenv
 
   // Use mutex to avoid concurrent access to the buffer
-  static Standard_Mutex  theMutex;
-  Standard_Mutex::Sentry aSentry(theMutex);
+  static std::mutex           aMutex;
+  std::lock_guard<std::mutex> aLock(aMutex);
 
   // check if such variable has already been created in the buffer
   int index = -1, len = myName.Length();
@@ -216,17 +219,13 @@ Standard_Integer OSD_Environment::Error() const
 
   #include <windows.h>
 
-  #include <OSD_Environment.hxx>
-
   #include <NCollection_DataMap.hxx>
-  #include <NCollection_UtfString.hxx>
-  #include <Standard_Mutex.hxx>
 
   #ifdef OCCT_UWP
 namespace
 {
 // emulate global map of environment variables
-static Standard_Mutex                                                        THE_ENV_LOCK;
+static std::mutex                                                            THE_ENV_LOCK;
 static NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> THE_ENV_MAP;
 } // namespace
   #else
@@ -262,7 +261,7 @@ TCollection_AsciiString OSD_Environment::Value()
 {
   myValue.Clear();
   #ifdef OCCT_UWP
-  Standard_Mutex::Sentry aLock(THE_ENV_LOCK);
+  std::lock_guard<std::mutex> aLock(THE_ENV_LOCK);
   THE_ENV_MAP.Find(myName, myValue);
   #else
 
@@ -318,7 +317,7 @@ TCollection_AsciiString OSD_Environment ::Name() const
 void OSD_Environment::Build()
 {
   #ifdef OCCT_UWP
-  Standard_Mutex::Sentry aLock(THE_ENV_LOCK);
+  std::lock_guard<std::mutex> aLock(THE_ENV_LOCK);
   THE_ENV_MAP.Bind(myName, myValue);
   #else
   NCollection_Utf8String aSetVariable =
@@ -330,7 +329,7 @@ void OSD_Environment::Build()
 void OSD_Environment::Remove()
 {
   #ifdef OCCT_UWP
-  Standard_Mutex::Sentry aLock(THE_ENV_LOCK);
+  std::lock_guard<std::mutex> aLock(THE_ENV_LOCK);
   THE_ENV_MAP.UnBind(myName);
   #else
   NCollection_Utf8String aSetVariable = NCollection_Utf8String(myName.ToCString()) + "=";

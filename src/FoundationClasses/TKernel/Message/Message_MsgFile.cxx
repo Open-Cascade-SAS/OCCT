@@ -19,11 +19,11 @@
 #include <NCollection_DataMap.hxx>
 #include <OSD_Environment.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Mutex.hxx>
 #include <OSD_OpenFile.hxx>
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <mutex>
 
 typedef NCollection_DataMap<TCollection_AsciiString, TCollection_ExtendedString>
   Message_DataMapOfExtendedString;
@@ -35,9 +35,9 @@ static Message_DataMapOfExtendedString& msgsDataMap()
 }
 
 // mutex used to prevent concurrent access to message registry
-static Standard_Mutex& Message_MsgFile_Mutex()
+static std::mutex& Message_MsgFile_Mutex()
 {
-  static Standard_Mutex theMutex;
+  static std::mutex theMutex;
   return theMutex;
 }
 
@@ -371,7 +371,7 @@ Standard_Boolean Message_MsgFile::AddMsg(const TCollection_AsciiString&    theKe
 {
   Message_DataMapOfExtendedString& aDataMap = ::msgsDataMap();
 
-  Standard_Mutex::Sentry aSentry(Message_MsgFile_Mutex());
+  std::lock_guard<std::mutex> aLock(Message_MsgFile_Mutex());
   aDataMap.Bind(theKeyword, theMessage);
   return Standard_True;
 }
@@ -390,7 +390,7 @@ const TCollection_ExtendedString& Message_MsgFile::Msg(const Standard_CString th
 
 Standard_Boolean Message_MsgFile::HasMsg(const TCollection_AsciiString& theKeyword)
 {
-  Standard_Mutex::Sentry aSentry(Message_MsgFile_Mutex());
+  std::lock_guard<std::mutex> aLock(Message_MsgFile_Mutex());
   return ::msgsDataMap().IsBound(theKeyword);
 }
 
@@ -402,7 +402,7 @@ const TCollection_ExtendedString& Message_MsgFile::Msg(const TCollection_AsciiSt
 {
   // find message in the map
   Message_DataMapOfExtendedString& aDataMap = ::msgsDataMap();
-  Standard_Mutex::Sentry           aSentry(Message_MsgFile_Mutex());
+  std::lock_guard<std::mutex>      aLock(Message_MsgFile_Mutex());
 
   // if message is not found, generate error message and add it to the map to minimize overhead
   // on consequent calls with the same key

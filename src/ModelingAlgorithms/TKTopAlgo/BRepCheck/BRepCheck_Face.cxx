@@ -115,7 +115,8 @@ void BRepCheck_Face::InContext(const TopoDS_Shape& S)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     if (myMap.IsBound(S))
     {
       return;
@@ -163,7 +164,8 @@ BRepCheck_Status BRepCheck_Face::IntersectWires(const Standard_Boolean Update)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
 
@@ -292,7 +294,8 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const Standard_Boolean Update)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
 
@@ -420,7 +423,8 @@ BRepCheck_Status BRepCheck_Face::OrientationOfWires(const Standard_Boolean Updat
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
 
@@ -535,7 +539,8 @@ BRepCheck_Status BRepCheck_Face::OrientationOfWires(const Standard_Boolean Updat
 
 void BRepCheck_Face::SetUnorientable()
 {
-  Standard_Mutex::Sentry aLock(myMutex.get());
+  std::unique_lock<std::mutex> aLock =
+    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
   BRepCheck::Add(*myMap(myShape), BRepCheck_UnorientableShape);
 }
 
@@ -543,7 +548,8 @@ void BRepCheck_Face::SetUnorientable()
 
 void BRepCheck_Face::SetStatus(const BRepCheck_Status theStatus)
 {
-  Standard_Mutex::Sentry aLock(myMutex.get());
+  std::unique_lock<std::mutex> aLock =
+    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
   BRepCheck::Add(*myMap(myShape), theStatus);
 }
 

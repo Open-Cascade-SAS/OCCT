@@ -25,8 +25,9 @@
 #include <Standard_IStream.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <Standard_Mutex.hxx>
 #include <VrmlData_DataMapOfShapeAppearance.hxx>
+
+#include <mutex>
 
 // resolve name collisions with X11 headers
 #ifdef Status
@@ -344,7 +345,7 @@ private:
 
   // read from stream
   NCollection_List<TCollection_ExtendedString> myVrmlDir;
-  Standard_Mutex                               myMutex;
+  std::mutex                                   myMutex;
   Standard_Integer                             myLineError; ///! #0 if error
 
   // write to stream

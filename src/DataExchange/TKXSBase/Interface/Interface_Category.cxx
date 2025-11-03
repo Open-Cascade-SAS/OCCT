@@ -16,14 +16,14 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Mutex.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Vector.hxx>
 
+namespace
+{
 static int              THE_Interface_Category_init = 0;
 static Standard_CString unspec                      = "unspecified";
 
-static Standard_Mutex            gMapTypesMutex;
 static volatile Standard_Boolean gMapTypesInit = Standard_False;
 
 static NCollection_Vector<TCollection_AsciiString>& theCats()
@@ -31,6 +31,14 @@ static NCollection_Vector<TCollection_AsciiString>& theCats()
   static NCollection_Vector<TCollection_AsciiString> aCat;
   return aCat;
 }
+
+static std::mutex& GetMapTypesMutex()
+{
+  static std::mutex gMapTypesMutex;
+  return gMapTypesMutex;
+}
+
+} // namespace
 
 Standard_Integer Interface_Category::CatNum(const Handle(Standard_Transient)& theEnt,
                                             const Interface_ShareTool&        theShares)
@@ -118,7 +126,7 @@ void Interface_Category::Init()
   // On first call, initialize static map
   if (!gMapTypesInit)
   {
-    gMapTypesMutex.Lock();
+    std::lock_guard<std::mutex> aLock(GetMapTypesMutex());
     if (!gMapTypesInit)
     {
       if (THE_Interface_Category_init)
@@ -139,6 +147,5 @@ void Interface_Category::Init()
 
       gMapTypesInit = Standard_True;
     }
-    gMapTypesMutex.Unlock();
   }
 }

@@ -259,7 +259,8 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
 {
   Handle(BRepCheck_HListOfStatus) aHList;
   {
-    Standard_Mutex::Sentry aLock(myMutex.get());
+    std::unique_lock<std::mutex> aLock =
+      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     if (myMap.IsBound(S))
     {
       return;
@@ -327,7 +328,7 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
 
         BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
         constexpr Standard_Real                      eps           = Precision::PConfusion();
-        Standard_Boolean                             toRunParallel = !myMutex.IsNull();
+        const Standard_Boolean                       toRunParallel = myMutex != nullptr;
         while (itcr.More())
         {
           const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
@@ -571,7 +572,8 @@ Standard_Boolean BRepCheck_Edge::GeometricControls() const
 
 void BRepCheck_Edge::SetStatus(const BRepCheck_Status theStatus)
 {
-  Standard_Mutex::Sentry aLock(myMutex.get());
+  std::unique_lock<std::mutex> aLock =
+    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
   BRepCheck::Add(*myMap(myShape), theStatus);
 }
 

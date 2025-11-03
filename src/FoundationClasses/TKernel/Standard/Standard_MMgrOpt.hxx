@@ -17,7 +17,8 @@
 #define _Standard_MMgrOpt_HeaderFile
 
 #include <Standard_MMgrRoot.hxx>
-#include <Standard_Mutex.hxx>
+
+#include <mutex>
 
 /**
  * @brief Open CASCADE memory manager optimized for speed.
@@ -141,8 +142,8 @@ protected:
   // clang-format on
   Standard_Size myThreshold; //!< large block size
 
-  Standard_Mutex myMutex;      //!< Mutex to protect free lists data
-  Standard_Mutex myMutexPools; //!< Mutex to protect small block pools data
+  std::mutex myMutex;      //!< Mutex to protect free lists data
+  std::mutex myMutexPools; //!< Mutex to protect small block pools data
 };
 
 #endif

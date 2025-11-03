@@ -16,11 +16,12 @@
 #include <IFSelect_SelectModelEntities.hxx>
 #include <IFSelect_SelectModelRoots.hxx>
 #include <IFSelect_SelectSignature.hxx>
-#include <Standard_Mutex.hxx>
 #include <StepAP214.hxx>
 #include <StepAP214_Protocol.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepSelect_StepType.hxx>
+
+#include <mutex>
 
 Handle(Interface_Protocol) STEPEdit::Protocol()
 {
@@ -44,8 +45,8 @@ Handle(StepData_StepModel) STEPEdit::NewModel()
 
 Handle(IFSelect_Signature) STEPEdit::SignType()
 {
-  static Standard_Mutex              aMutex;
-  Standard_Mutex::Sentry             aSentry(aMutex);
+  static std::mutex                  aMutex;
+  std::lock_guard<std::mutex>        aLock(aMutex);
   static Handle(StepSelect_StepType) sty;
   if (!sty.IsNull())
     return sty;

@@ -312,7 +312,7 @@ Standard_Address Standard_MMgrOpt::Allocate(const Standard_Size aSize)
     // The unlock is called as soon as possible, for every treatment case.
     // We also do not use Sentry, since in case if OCC signal or exception is
     // caused by this block we will have deadlock anyway...
-    myMutex.Lock();
+    myMutex.lock();
 
     // if free block of the requested size is available, return it
     if (myFreeList[Index])
@@ -324,7 +324,7 @@ Standard_Address Standard_MMgrOpt::Allocate(const Standard_Size aSize)
       myFreeList[Index]     = *(Standard_Size**)aBlock;
 
       // unlock the mutex
-      myMutex.Unlock();
+      myMutex.unlock();
 
       // record size of the allocated block in the block header and
       // shift the pointer to the beginning of the user part of block
@@ -339,12 +339,12 @@ Standard_Address Standard_MMgrOpt::Allocate(const Standard_Size aSize)
     else if (RoundSize <= myCellSize)
     {
       // unlock the mutex for free lists
-      myMutex.Unlock();
+      myMutex.unlock();
 
       // and lock the specific mutex used to protect access to small blocks pools;
       // note that this is done by sentry class so as to ensure unlocking in case of
       // possible exception that may be thrown from AllocMemory()
-      Standard_Mutex::Sentry aSentry(myMutexPools);
+      std::lock_guard<std::mutex> aLock(myMutexPools);
 
       // check for availability of requested space in the current pool
       Standard_Size* aBlock = myNextAddr;
@@ -362,10 +362,10 @@ Standard_Address Standard_MMgrOpt::Allocate(const Standard_Size aSize)
           const Standard_Size aPIndex = INDEX_CELL(aRPSize);
           if (aPIndex > 0 && aPIndex <= myFreeListMax)
           {
-            myMutex.Lock();
+            myMutex.lock();
             *(Standard_Size**)myNextAddr = myFreeList[aPIndex];
             myFreeList[aPIndex]          = myNextAddr;
-            myMutex.Unlock();
+            myMutex.unlock();
           }
         }
 
@@ -391,7 +391,7 @@ Standard_Address Standard_MMgrOpt::Allocate(const Standard_Size aSize)
     else
     {
       // unlock the mutex immediately, as we do not need further to access any field
-      myMutex.Unlock();
+      myMutex.unlock();
 
       // we use operator ?: instead of if() since it is faster
       Standard_Size* aBlock =
@@ -463,14 +463,14 @@ void Standard_MMgrOpt::Free(Standard_Address theStorage)
     // of standard library are already protected by their implementation.
     // We also do not use Sentry, since in case if OCC signal or exception is
     // caused by this block we will have deadlock anyway...
-    myMutex.Lock();
+    myMutex.lock();
 
     // in the memory block header, record address of the next free block
     *(Standard_Size**)aBlock = myFreeList[Index];
     // add new block to be first in the list
     myFreeList[Index] = aBlock;
 
-    myMutex.Unlock();
+    myMutex.unlock();
   }
   // otherwise, we have block of big size which shall be simply released
   else
@@ -485,7 +485,7 @@ void Standard_MMgrOpt::Free(Standard_Address theStorage)
 Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean)
 {
   // Lock access to critical data by mutex
-  Standard_Mutex::Sentry aSentry(myMutex);
+  std::lock_guard<std::mutex> aLock(myMutex);
 
   // TODO: implement support for isDeleted = True
 
@@ -507,7 +507,7 @@ Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean)
   }
 
   // Lock access to critical data by mutex
-  Standard_Mutex::Sentry aSentry1(myMutexPools);
+  std::lock_guard<std::mutex> aLock1(myMutexPools);
 
   // release memory pools containing no busy memory;
   // for that for each pool count the summary size of blocks
@@ -660,7 +660,7 @@ Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean)
 void Standard_MMgrOpt::FreePools()
 {
   // Lock access to critical data by mutex
-  Standard_Mutex::Sentry aSentry(myMutexPools);
+  std::lock_guard<std::mutex> aLock(myMutexPools);
 
   // last pool is remembered in myAllocList
   Standard_Size* aFree = myAllocList;

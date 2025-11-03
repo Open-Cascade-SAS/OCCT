@@ -177,7 +177,7 @@ void BVH_QueueBuilder<T, N>::addChildren(
 
   // Add child nodes
   {
-    Standard_Mutex::Sentry aSentry(theBuildQueue.myMutex);
+    std::lock_guard<std::mutex> aLock(theBuildQueue.myMutex);
 
     for (Standard_Integer anIdx = 0; anIdx < 2; ++anIdx)
     {

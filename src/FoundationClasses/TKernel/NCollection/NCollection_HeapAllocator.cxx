@@ -15,7 +15,6 @@
 
 #include <NCollection_HeapAllocator.hxx>
 #include <Standard_OutOfMemory.hxx>
-#include <Standard_Mutex.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(NCollection_HeapAllocator, NCollection_BaseAllocator)
 
@@ -47,15 +46,6 @@ void NCollection_HeapAllocator::Free(void* anAddress)
 
 const Handle(NCollection_HeapAllocator)& NCollection_HeapAllocator::GlobalHeapAllocator()
 {
-  static Handle(NCollection_HeapAllocator) pAllocator;
-  if (pAllocator.IsNull())
-  {
-    static Standard_Mutex  theMutex;
-    Standard_Mutex::Sentry aSentry(theMutex);
-    if (pAllocator.IsNull())
-    {
-      pAllocator = new NCollection_HeapAllocator;
-    }
-  }
+  static Handle(NCollection_HeapAllocator) pAllocator = new NCollection_HeapAllocator;
   return pAllocator;
 }
