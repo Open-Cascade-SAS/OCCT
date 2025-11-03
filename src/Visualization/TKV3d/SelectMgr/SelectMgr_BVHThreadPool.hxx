@@ -16,10 +16,11 @@
 
 #include <Standard_Transient.hxx>
 #include <OSD_Thread.hxx>
-#include <Standard_Mutex.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Standard_Condition.hxx>
 #include <Message_Messenger.hxx>
+
+#include <mutex>
 
 //! Class defining a thread pool for building BVH for the list of Select3D_SensitiveEntity within
 //! background thread(s).
@@ -57,7 +58,7 @@ public:
     }
 
     //! Returns mutex used for BVH building
-    Standard_Mutex& BVHMutex() { return myMutex; }
+    std::mutex& BVHMutex() { return myMutex; }
 
     //! Assignment operator.
     BVHThread& operator=(const BVHThread& theCopy)
@@ -83,7 +84,7 @@ public:
 
   private:
     SelectMgr_BVHThreadPool* myPool;
-    Standard_Mutex           myMutex;
+    std::mutex               myMutex;
     bool                     myToCatchFpe;
   };
 
@@ -122,7 +123,7 @@ public:
       {
         for (Standard_Integer i = myPool->Threads().Lower(); i <= myPool->Threads().Upper(); ++i)
         {
-          myPool->Threads().ChangeValue(i).BVHMutex().Lock();
+          myPool->Threads().ChangeValue(i).BVHMutex().lock();
         }
       }
     }
@@ -134,7 +135,7 @@ public:
       {
         for (Standard_Integer i = myPool->Threads().Lower(); i <= myPool->Threads().Upper(); ++i)
         {
-          myPool->Threads().ChangeValue(i).BVHMutex().Unlock();
+          myPool->Threads().ChangeValue(i).BVHMutex().unlock();
         }
       }
     }
@@ -153,7 +154,7 @@ protected:
   NCollection_List<Handle(Select3D_SensitiveEntity)> myBVHToBuildList; //!< list of queued sensitive entities
   NCollection_Array1<BVHThread> myBVHThreads;                          //!< threads to build BVH
   Standard_Boolean myToStopBVHThread;                                  //!< flag to stop BVH threads
-  Standard_Mutex myBVHListMutex;                                       //!< mutex for interaction with myBVHToBuildList
+  std::mutex myBVHListMutex;                                           //!< mutex for interaction with myBVHToBuildList
   Standard_Condition myWakeEvent;                                      //!< raises when any sensitive is added to the BVH list
   Standard_Condition myIdleEvent;                                      //!< raises when BVH list become empty
   Standard_Boolean myIsStarted;                                        //!< indicates that threads are running

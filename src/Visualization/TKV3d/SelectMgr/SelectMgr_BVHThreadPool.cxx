@@ -12,9 +12,11 @@
 // commercial license or contractual agreement.
 
 #include <SelectMgr_BVHThreadPool.hxx>
+
 #include <Message.hxx>
 #include <OSD.hxx>
 #include <OSD_Parallel.hxx>
+#include <Standard_ErrorHandler.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BVHThreadPool, Standard_Transient)
 
@@ -84,7 +86,7 @@ void SelectMgr_BVHThreadPool::AddEntity(const Handle(Select3D_SensitiveEntity)& 
   }
 
   {
-    Standard_Mutex::Sentry aSentry(myBVHListMutex);
+    std::lock_guard<std::mutex> aLock(myBVHListMutex);
     myBVHToBuildList.Append(theEntity);
     myWakeEvent.Set();
     myIdleEvent.Reset();
@@ -115,19 +117,21 @@ void SelectMgr_BVHThreadPool::BVHThread::performThread()
       return;
     }
 
-    myPool->myBVHListMutex.Lock();
-    if (myPool->myBVHToBuildList.IsEmpty())
+    Handle(Select3D_SensitiveEntity) anEntity;
     {
-      myPool->myWakeEvent.Reset();
-      myPool->myIdleEvent.Set();
-      myPool->myBVHListMutex.Unlock();
-      continue;
+      std::lock_guard<std::mutex> aListLock(myPool->myBVHListMutex);
+      if (myPool->myBVHToBuildList.IsEmpty())
+      {
+        myPool->myWakeEvent.Reset();
+        myPool->myIdleEvent.Set();
+        continue;
+      }
+      anEntity = myPool->myBVHToBuildList.First();
+      myPool->myBVHToBuildList.RemoveFirst();
     }
-    Handle(Select3D_SensitiveEntity) anEntity = myPool->myBVHToBuildList.First();
-    myPool->myBVHToBuildList.RemoveFirst();
 
-    Standard_Mutex::Sentry anEntry(myMutex);
-    myPool->myBVHListMutex.Unlock();
+    // Lock thread mutex while building BVH
+    std::lock_guard<std::mutex> aThreadLock(myMutex);
 
     if (!anEntity.IsNull())
     {
