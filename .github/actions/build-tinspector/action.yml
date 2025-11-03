@@ -56,6 +56,8 @@ runs:
         cd build
         cmake -G "Visual Studio 17 2022" -A x64 `
               -D CMAKE_BUILD_TYPE=Release `
+              -D CMAKE_CXX_STANDARD=17 `
+              -D BUILD_CPP_STANDARD="C++17" `
               -D BUILD_SHARED_LIBS=ON `
               -D QtX=Qt5 `
               -D 3RDPARTY_DIR=${{ github.workspace }}//3rdparty-vc14-64 `
@@ -74,6 +76,8 @@ runs:
         export LD_LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib:${{ github.workspace }}/occt-install/lib:$LD_LIBRARY_PATH"
         cmake -G "Unix Makefiles" \
               -D CMAKE_BUILD_TYPE=Release \
+              -D CMAKE_CXX_STANDARD=17 \
+              -D BUILD_CPP_STANDARD="C++17" \
               -D BUILD_SHARED_LIBS=ON \
               -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install \
               -D INSTALL_DIR=${{ github.workspace }}/inspector/install \
