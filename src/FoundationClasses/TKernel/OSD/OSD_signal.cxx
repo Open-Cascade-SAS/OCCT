@@ -380,9 +380,6 @@ static void SIGWntHandler(int signum, int sub_code)
 
 static void TranslateSE(unsigned int theCode, EXCEPTION_POINTERS* theExcPtr)
 {
-  // lock the mutex to prevent simultaneous handling
-  std::lock_guard<std::mutex> aLock(THE_SIGNAL_MUTEX);
-
   CallHandler(theCode, theExcPtr);
 }
   #endif
