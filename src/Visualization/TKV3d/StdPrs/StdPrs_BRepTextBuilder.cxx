@@ -23,10 +23,10 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                  t
                                              const Handle(Font_TextFormatter)& theFormatter,
                                              const gp_Ax3&                     thePenLoc)
 {
-  gp_Trsf                     aTrsf;
-  gp_XYZ                      aPen;
-  TopoDS_Shape                aGlyphShape;
-  TopoDS_Compound             aResult;
+  gp_Trsf         aTrsf;
+  gp_XYZ          aPen;
+  TopoDS_Shape    aGlyphShape;
+  TopoDS_Compound aResult;
 
   myBuilder.MakeCompound(aResult);
 

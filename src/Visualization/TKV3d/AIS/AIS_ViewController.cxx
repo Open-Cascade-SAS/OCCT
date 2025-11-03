@@ -2067,8 +2067,8 @@ void AIS_ViewController::handleViewOrientationKeys(const Handle(AIS_InteractiveC
     {Aspect_VKey_ViewRoll90CCW, (V3d_TypeOfOrientation)-1},
     {Aspect_VKey_ViewFitAll, (V3d_TypeOfOrientation)-1}};
   {
-    const size_t                        aNbKeys = sizeof(THE_VIEW_KEYS) / sizeof(*THE_VIEW_KEYS);
-    const double                        anEventTime = EventTime();
+    const size_t aNbKeys     = sizeof(THE_VIEW_KEYS) / sizeof(*THE_VIEW_KEYS);
+    const double anEventTime = EventTime();
     for (size_t aKeyIter = 0; aKeyIter < aNbKeys; ++aKeyIter)
     {
       const ViewKeyAction& aKeyAction = THE_VIEW_KEYS[aKeyIter];
