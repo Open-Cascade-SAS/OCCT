@@ -56,6 +56,8 @@ public:
   //! Explicit assignment operator
   NCollection_SparseArray& Assign(const NCollection_SparseArray& theOther)
   {
+    if (this == &theOther)
+      return *this;
     this->assign(theOther);
     return *this;
   }
@@ -63,7 +65,7 @@ public:
   //! Exchange the data of two arrays;
   //! can be used primarily to move contents of theOther into the new array
   //! in a fast way (without creation of duplicated data)
-  void Exchange(NCollection_SparseArray& theOther) { this->exchange(theOther); }
+  void Exchange(NCollection_SparseArray& theOther) noexcept { this->exchange(theOther); }
 
   //! Destructor
   virtual ~NCollection_SparseArray() { Clear(); }
@@ -138,7 +140,7 @@ public:
   {
   public:
     //! Empty constructor - for later Init
-    ConstIterator() {}
+    ConstIterator() noexcept {}
 
     //! Constructor with initialisation
     ConstIterator(const NCollection_SparseArray& theVector)
@@ -166,7 +168,7 @@ public:
   {
   public:
     //! Empty constructor - for later Init
-    Iterator() {}
+    Iterator() noexcept {}
 
     //! Constructor with initialisation
     Iterator(NCollection_SparseArray& theVector)

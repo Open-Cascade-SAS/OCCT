@@ -164,7 +164,7 @@ public:
     // Methods for descendant
 
     //! Empty constructor
-    Standard_EXPORT Iterator(const NCollection_SparseArrayBase* theArray = 0);
+    Standard_EXPORT Iterator(const NCollection_SparseArrayBase* theArray = nullptr);
 
     //! Initialize by the specified array
     Standard_EXPORT void init(const NCollection_SparseArrayBase* theArray);
@@ -182,9 +182,9 @@ public:
   friend class Iterator;
 
 private:
-  // Copy constructor and assignment operator are private thus not accessible
-  NCollection_SparseArrayBase(const NCollection_SparseArrayBase&);
-  void operator=(const NCollection_SparseArrayBase&);
+  // Copy constructor and assignment operator are deleted
+  NCollection_SparseArrayBase(const NCollection_SparseArrayBase&)            = delete;
+  NCollection_SparseArrayBase& operator=(const NCollection_SparseArrayBase&) = delete;
 
 protected:
   // Object life
@@ -195,7 +195,7 @@ protected:
         myBlockSize(theBlockSize),
         myNbBlocks(0),
         mySize(0),
-        myData(0)
+        myData(nullptr)
   {
   }
 
@@ -238,7 +238,7 @@ protected:
 
   //! Exchange contents of theOther and this;
   //! assumes that this and theOther have exactly the same type of arguments
-  Standard_EXPORT void exchange(NCollection_SparseArrayBase& theOther);
+  Standard_EXPORT void exchange(NCollection_SparseArrayBase& theOther) noexcept;
 
 protected:
   // Methods to be provided by descendant
