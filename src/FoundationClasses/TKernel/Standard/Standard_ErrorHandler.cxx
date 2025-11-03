@@ -123,7 +123,6 @@ void Standard_ErrorHandler::Unlink()
     aPrevious->myPrevious = aCurrent->myPrevious;
   }
   myPrevious = 0;
-  aLock.~lock_guard();
 
   // unlink and destroy all registered callbacks
   Standard_Address aPtr = aCurrent->myCallbackPtr;
