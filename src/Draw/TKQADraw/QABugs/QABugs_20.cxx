@@ -3022,7 +3022,7 @@ static Standard_Integer OCC28131(Draw_Interpretor&,
 
     Handle(Geom2d_BSplineCurve) c = anInterpolation.Curve();
 
-    gp_Pln pln(gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::NY)));
+    gp_Pln pln{gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::NY))};
 
     Handle(Geom_BSplineCurve) c3d = Handle(Geom_BSplineCurve)::DownCast(GeomAPI::To3d(c, pln));
     curve1                        = c3d;
@@ -3039,7 +3039,7 @@ static Standard_Integer OCC28131(Draw_Interpretor&,
     anInterpolation.Perform();
 
     Handle(Geom2d_BSplineCurve) c = anInterpolation.Curve();
-    gp_Pln                      pln(gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::NY), gp_Dir(gp_Dir::D::NX)));
+    gp_Pln                      pln{gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::NY), gp_Dir(gp_Dir::D::NX))};
     Handle(Geom_BSplineCurve)   c3d = Handle(Geom_BSplineCurve)::DownCast(GeomAPI::To3d(c, pln));
     curve2                          = c3d;
   }

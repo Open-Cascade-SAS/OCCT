@@ -504,7 +504,6 @@ static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/
     return -1;
   }
 
-  gp_Ax2                                 Cone_Ax;
   double                                 R1 = 8, R2 = 16;
   gp_Pnt                                 P1(0, 0, 20), P2(0, 0, 45);
   Handle(Geom_RectangularTrimmedSurface) S = GC_MakeTrimmedCone(P1, P2, R1, R2).Value();

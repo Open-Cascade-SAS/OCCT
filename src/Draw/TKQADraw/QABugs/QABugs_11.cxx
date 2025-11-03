@@ -605,8 +605,6 @@ static Standard_Integer OCC297(Draw_Interpretor& di, Standard_Integer /*argc*/, 
 
   DBRep::Set("Face", sol1_);
 
-  gp_Ax1 ax1_(gp_Pnt(0., 0., -100.), gp_Dir(gp_Dir::D::Z));
-
   Standard_Real x = 0., y = 0., z = -80.;
 
   BRepPrimAPI_MakeBox box(gp_Pnt(x, y, z), gp_Pnt(x + 150, y + 200, z + 200));
