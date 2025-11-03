@@ -116,7 +116,7 @@ Standard_Type* Standard_Type::Register(const std::type_info&        theInfo,
 {
   // Access to registry is protected by mutex; it should not happen often because
   // instances are cached by Standard_Type::Instance() (one per binary module)
-  static std::mutex aMutex;
+  static std::mutex           aMutex;
   std::lock_guard<std::mutex> aLock(aMutex);
 
   // return existing descriptor if already in the registry

@@ -96,7 +96,7 @@ static Standard_Boolean fMsgBox;
 static std::mutex THE_SIGNAL_MUTEX;
 
 static LONG __fastcall _osd_raise(DWORD theCode, const char* theMsg, const char* theStack);
-static BOOL WINAPI     _osd_ctrl_break_handler(DWORD);
+static BOOL WINAPI _osd_ctrl_break_handler(DWORD);
 
   #if !defined(OCCT_UWP) && !defined(__MINGW32__) && !defined(__CYGWIN32__)
 static Standard_Boolean fDbgLoaded;
@@ -760,15 +760,12 @@ ACT_SIGIO_HANDLER* ADR_ACT_SIGIO_HANDLER = NULL;
 
   #ifdef __GNUC__
     #include <stdlib.h>
-    #include <stdio.h>
   #else
     #ifdef SA_SIGINFO
       #include <sys/siginfo.h>
     #endif
   #endif
 typedef void (*SIG_PFV)(int);
-
-  #include <signal.h>
 
   #if !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && defined(__GLIBC__)
     #include <sys/signal.h>

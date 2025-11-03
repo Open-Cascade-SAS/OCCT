@@ -14,7 +14,6 @@
 
 #include <OSD_Environment.hxx>
 
-#include <OSD_Environment.hxx>
 #include <OSD_OSDError.hxx>
 #include <OSD_WhoAmI.hxx>
 #include <Standard_ConstructionError.hxx>

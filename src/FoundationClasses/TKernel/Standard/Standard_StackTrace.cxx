@@ -236,7 +236,7 @@ Standard_Boolean Standard::StackTrace(char*     theBuffer,
 
   // DbgHelp is not thread-safe library, hence global lock is used for serial access
   std::lock_guard<std::mutex> aLock(Standard_DbgHelper::Mutex());
-  Standard_DbgHelper&    aDbgHelp = Standard_DbgHelper::GetDbgHelper();
+  Standard_DbgHelper&         aDbgHelp = Standard_DbgHelper::GetDbgHelper();
   if (!aDbgHelp.IsLoaded())
   {
     strcat_s(theBuffer, theBufferSize, "\n==Backtrace==\n");

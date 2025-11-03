@@ -167,9 +167,10 @@ public:
 
                 if (performwire)
                 {
-                  std::unique_lock<std::mutex> aLock = aFaceEdgeRes->GetMutex()
-                                                         ? std::unique_lock<std::mutex>(*aFaceEdgeRes->GetMutex())
-                                                         : std::unique_lock<std::mutex>();
+                  std::unique_lock<std::mutex> aLock =
+                    aFaceEdgeRes->GetMutex()
+                      ? std::unique_lock<std::mutex>(*aFaceEdgeRes->GetMutex())
+                      : std::unique_lock<std::mutex>();
                   if (aFaceEdgeRes->IsStatusOnShape(aShape))
                   {
                     BRepCheck_ListIteratorOfListOfStatus itl(aFaceEdgeRes->StatusOnShape(aShape));
