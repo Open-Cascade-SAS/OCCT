@@ -18,6 +18,7 @@
 #include <Standard_Assert.hxx>
 
 #include <mutex>
+#include <signal.h>
 
 #include <Standard_WarningDisableFunctionCast.hxx>
 
@@ -85,7 +86,6 @@ void OSD::SetSignalStackTraceLength(Standard_Integer theLength)
   #endif
 
   #include <process.h>
-  #include <signal.h>
   #include <float.h>
 
 static Standard_Boolean fCtrlBrk;
@@ -749,8 +749,6 @@ LONG _osd_debug(void)
     #include <cfenv>
   // #include  <fenv.h>
   #endif
-
-  #include <signal.h>
 
 // variable signalling that Control-C has been pressed (SIGINT signal)
 static Standard_Boolean fCtrlBrk;
