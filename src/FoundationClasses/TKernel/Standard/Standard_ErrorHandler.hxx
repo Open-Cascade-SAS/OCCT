@@ -26,6 +26,8 @@
 #include <Standard_ThreadId.hxx>
 #include <Standard_Type.hxx>
 
+#include <mutex>
+
 //! @file
 //! Support of handling of C signals as C++-style exceptions, and implementation
 //! of C++ exception handling on platforms that do not implement these natively.
@@ -128,6 +130,10 @@ private:
   Standard_EXPORT static Standard_PErrorHandler FindHandler(const Standard_HandlerStatus theStatus,
                                                             const Standard_Boolean       theUnlink);
 
+  //! Returns the mutex used to protect the error handler stack from concurrent access.
+  //! The mutex is never destroyed to avoid issues during static deinitialization.
+  static std::mutex& GetMutex();
+
 public:
   //! Defines a base class for callback objects that can be registered
   //! in the OCC error handler (the class simulating C++ exceptions)
@@ -155,15 +161,13 @@ public:
 #if defined(OCC_CONVERT_SIGNALS)
     Standard_EXPORT
 #endif
-      void
-      RegisterCallback();
+      void RegisterCallback();
 
 //! Unregisters this callback object from the error handler.
 #if defined(OCC_CONVERT_SIGNALS)
     Standard_EXPORT
 #endif
-      void
-      UnregisterCallback();
+      void UnregisterCallback();
 
 //! Destructor
 #if defined(OCC_CONVERT_SIGNALS)

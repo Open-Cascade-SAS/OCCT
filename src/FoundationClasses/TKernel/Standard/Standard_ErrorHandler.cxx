@@ -40,15 +40,14 @@
 //==== The top of the Errors Stack ===========================================
 static Standard_ErrorHandler* Top = 0;
 
-//! A mutex to protect from concurrent access to Top.
-//! Mutex is defined as function to avoid issues caused by
-//! an undefined static variables initialization order across compilation units (@sa #0031681 bug).
-//! Note that we should NOT use Sentry while in this class, as Sentry
-//! would register mutex as callback in the current exception handler.
-static std::mutex& GetMutex()
+
+//=================================================================================================
+
+std::mutex& Standard_ErrorHandler::GetMutex()
 {
-  static std::mutex theMutex;
-  return theMutex;
+  // Use pointer to avoid destruction during static deinitialization.
+  static std::mutex* theMutex = new std::mutex();
+  return *theMutex;
 }
 
 static inline Standard_ThreadId GetThreadID()
