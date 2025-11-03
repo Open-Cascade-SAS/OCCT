@@ -2012,7 +2012,7 @@ static Standard_Boolean RemoveLoop(TopoDS_Edge&                      E,
 
   // direct construction causes error on osf system.
   gp_Pnt p(0, 0, 0);
-  gp_Dir d(0, 0, 1);
+  gp_Dir d(gp_Dir::D::Z);
   gp_Ax3 ax(p, d);
   gp_Pln Pln(ax);
 

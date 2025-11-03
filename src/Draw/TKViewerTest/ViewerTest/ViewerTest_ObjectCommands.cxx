@@ -5677,8 +5677,8 @@ static int TextToBRep(Draw_Interpretor& /*theDI*/,
   Font_FontAspect         aFontAspect        = Font_FA_Regular;
   Standard_Boolean        anIsCompositeCurve = Standard_False;
   gp_Ax3                  aPenAx3(gp::XOY());
-  gp_Dir                  aNormal(0.0, 0.0, 1.0);
-  gp_Dir                  aDirection(1.0, 0.0, 0.0);
+  gp_Dir                  aNormal(gp_Dir::D::Z);
+  gp_Dir                  aDirection(gp_Dir::D::X);
   gp_Pnt                  aPenLoc;
 
   Graphic3d_HorizontalTextAlignment aHJustification = Graphic3d_HTA_LEFT;

@@ -87,7 +87,7 @@ Geom2dGcc_Circ2d2TanOnGeo::Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedCirc&
   gp_Circ2d          C2 = Qualified2.Qualified();
   Standard_Real      R1 = C1.Radius();
   Standard_Real      R2 = C2.Radius();
-  gp_Dir2d           dirx(1., 0.);
+  gp_Dir2d           dirx(gp_Dir2d::D::X);
   gp_Pnt2d           center1(C1.Location());
   gp_Pnt2d           center2(C2.Location());
   GccAna_Circ2dBisec Bis(C1, C2);
@@ -354,7 +354,7 @@ Geom2dGcc_Circ2d2TanOnGeo::Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedCirc&
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Dir2d      dirx(1., 0.);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   gp_Circ2d     C1 = Qualified1.Qualified();
   gp_Lin2d      L2 = Qualified2.Qualified();
   Standard_Real R1 = C1.Radius();
@@ -566,7 +566,7 @@ Geom2dGcc_Circ2d2TanOnGeo::Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedLin& 
   }
   Standard_Real     Tol    = Abs(Tolerance);
   Standard_Real     Radius = 0;
-  gp_Dir2d          dirx(1., 0.);
+  gp_Dir2d          dirx(gp_Dir2d::D::X);
   gp_Lin2d          L1 = Qualified1.Qualified();
   gp_Lin2d          L2 = Qualified2.Qualified();
   gp_Dir2d          dir1(L1.Direction());
@@ -748,7 +748,7 @@ Geom2dGcc_Circ2d2TanOnGeo::Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedCirc&
   }
   Standard_Real         Tol = Abs(Tolerance);
   Standard_Real         Radius;
-  gp_Dir2d              dirx(1., 0.);
+  gp_Dir2d              dirx(gp_Dir2d::D::X);
   gp_Circ2d             C1 = Qualified1.Qualified();
   Standard_Real         R1 = C1.Radius();
   gp_Pnt2d              center1(C1.Location());
@@ -941,7 +941,7 @@ Geom2dGcc_Circ2d2TanOnGeo::Geom2dGcc_Circ2d2TanOnGeo(const GccEnt_QualifiedLin& 
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Dir2d             dirx(1., 0.);
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   gp_Lin2d             L1 = Qualified1.Qualified();
   gp_Pnt2d             origin1(L1.Location());
   gp_Dir2d             dir1(L1.Direction());
@@ -1090,7 +1090,7 @@ Geom2dGcc_Circ2d2TanOnGeo::Geom2dGcc_Circ2d2TanOnGeo(const gp_Pnt2d&            
   Standard_Real lastparam;
   Standard_Real Tol = Abs(Tolerance);
   NbrSol            = 0;
-  gp_Dir2d          dirx(1., 0.);
+  gp_Dir2d          dirx(gp_Dir2d::D::X);
   GccAna_Pnt2dBisec Bis(Point1, Point2);
   if (Bis.IsDone())
   {

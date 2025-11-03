@@ -306,7 +306,7 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
 
         Handle(Geom_BSplineSurface) BSplSurf(Handle(Geom_BSplineSurface)::DownCast(mySurface));
 
-        gp_Dir2d                    D(0., 1.);
+        gp_Dir2d                    D(gp_Dir2d::D::Y);
         gp_Pnt2d                    P(BSplSurf->UKnot(1), 0);
         Handle(Geom2d_Line)         LC1 = new (Geom2d_Line)(P, D);
         Handle(Geom2d_TrimmedCurve) TC1 =
@@ -363,7 +363,7 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
       // les iso Bords.
       if (!myLoc->HasFirstRestriction())
       {
-        gp_Dir2d                    D(0., 1.);
+        gp_Dir2d                    D(gp_Dir2d::D::Y);
         gp_Pnt2d                    P(UKnots(UKnots.Lower()), 0);
         Handle(Geom2d_Line)         LC = new (Geom2d_Line)(P, D);
         Handle(Geom2d_TrimmedCurve) TC = new (Geom2d_TrimmedCurve)(LC, First, Last);
@@ -375,7 +375,7 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
 
       if (!myLoc->HasLastRestriction())
       {
-        gp_Dir2d                    D(0., 1.);
+        gp_Dir2d                    D(gp_Dir2d::D::Y);
         gp_Pnt2d                    P(UKnots(UKnots.Upper()), 0);
         Handle(Geom2d_Line)         LC = new (Geom2d_Line)(P, D);
         Handle(Geom2d_TrimmedCurve) TC = new (Geom2d_TrimmedCurve)(LC, First, Last);

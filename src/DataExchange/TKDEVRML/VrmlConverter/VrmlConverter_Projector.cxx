@@ -170,8 +170,8 @@ VrmlConverter_Projector::VrmlConverter_Projector(const TopTools_Array1OfShape&  
   {
 
     /*
-  gp_Dir Zmain (0,0,1);
-  gp_Dir Xmain (1,0,0);
+  gp_Dir Zmain (gp_Dir::D::Z);
+  gp_Dir Xmain (gp_Dir::D::X);
 
 
   gp_Dir Dturn;

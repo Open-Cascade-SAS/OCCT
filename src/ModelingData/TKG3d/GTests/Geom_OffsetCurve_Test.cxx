@@ -30,7 +30,7 @@ protected:
     Handle(Geom_Circle) aBasisCurve = new Geom_Circle(aCircle);
 
     // Create offset curve
-    gp_Dir        anOffsetDir(0, 0, 1);
+    gp_Dir        anOffsetDir(gp_Dir::D::Z);
     Standard_Real anOffsetValue = 2.0;
 
     myOriginalCurve = new Geom_OffsetCurve(aBasisCurve, anOffsetValue, anOffsetDir);

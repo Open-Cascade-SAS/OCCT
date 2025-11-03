@@ -57,7 +57,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       pararg3(1, 2)
 {
 
-  gp_Dir2d      dirx(1.0, 0.0);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real Tol = Abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;

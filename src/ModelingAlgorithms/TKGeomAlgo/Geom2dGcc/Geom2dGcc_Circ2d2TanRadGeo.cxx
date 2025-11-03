@@ -80,7 +80,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedLin
   Standard_Real        thelast  = 100000.;
   Standard_Real        firstparam;
   Standard_Real        lastparam;
-  gp_Dir2d             dirx(1., 0.);
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   TColStd_Array1OfReal cote1(1, 2);
   TColStd_Array1OfReal cote2(1, 2);
   Standard_Integer     nbrcote1 = 0;
@@ -294,7 +294,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedCir
   Standard_Real        thelast  = 100000.;
   Standard_Real        firstparam;
   Standard_Real        lastparam;
-  gp_Dir2d             dirx(1., 0.);
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   TColStd_Array1OfReal cote1(1, 2);
   TColStd_Array1OfReal cote2(1, 2);
   Standard_Integer     nbrcote1 = 0;
@@ -519,7 +519,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
   Standard_Real        thelast  = 100000.;
   Standard_Real        firstparam;
   Standard_Real        lastparam;
-  gp_Dir2d             dirx(1., 0.);
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   TColStd_Array1OfReal cote1(1, 2);
   Standard_Integer     nbrcote1 = 0;
   WellDone                      = Standard_False;
@@ -812,7 +812,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
   const Standard_Real thefirst = -100000.;
   const Standard_Real thelast  = 100000.;
 #endif
-  gp_Dir2d             dirx(1., 0.);
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   TColStd_Array1OfReal cote1(1, 2);
   TColStd_Array1OfReal cote2(1, 2);
   Standard_Integer     nbrcote1 = 0;

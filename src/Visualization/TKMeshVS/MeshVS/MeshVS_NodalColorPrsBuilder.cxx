@@ -269,7 +269,7 @@ void MeshVS_NodalColorPrsBuilder::Build(const Handle(Prs3d_Presentation)& Prs,
     new Graphic3d_ArrayOfSegments(aNbEdgePrimitives * 2);
 
   Standard_Real aMin = gp::Resolution() * gp::Resolution();
-  gp_Dir        aDefNorm(0., 0., 1.);
+  gp_Dir        aDefNorm(gp_Dir::D::Z);
 
   // Prepare for scaling the incoming colors
   const Standard_Real anColorRatio = 1.0;

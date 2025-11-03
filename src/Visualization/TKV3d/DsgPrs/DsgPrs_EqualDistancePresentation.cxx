@@ -58,7 +58,7 @@ void DsgPrs_EqualDistancePresentation::Add(const Handle(Prs3d_Presentation)& aPr
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // Add presentation of arrows (points)
-  gp_Dir aDir(0, 0, 1);
+  gp_Dir aDir(gp_Dir::D::Z);
   DsgPrs::ComputeSymbol(aPresentation, LA, Middle12, Middle34, aDir, aDir, DsgPrs_AS_BOTHPT);
   // ota -- begin --
   // Two small lines in the middle of this line

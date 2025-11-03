@@ -664,7 +664,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Dir& D)
 static Standard_IStream& operator>>(Standard_IStream& IS, gp_Ax3& A3)
 {
   gp_Pnt P(0., 0., 0.);
-  gp_Dir A(1., 0., 0.), AX(1., 0., 0.), AY(1., 0., 0.);
+  gp_Dir A(gp_Dir::D::X), AX(1., 0., 0.), AY(1., 0., 0.);
   IS >> P >> A >> AX >> AY;
   gp_Ax3 ax3(P, A, AX);
   if (AY.DotCross(A, AX) < 0)
@@ -755,7 +755,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_ToroidalSu
 
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_SurfaceOfLinearExtrusion)& S)
 {
-  gp_Dir D(1., 0., 0.);
+  gp_Dir D(gp_Dir::D::X);
   IS >> D;
   Handle(Geom_Curve) C = GeomTools_CurveSet::ReadCurve(IS);
   S                    = new Geom_SurfaceOfLinearExtrusion(C, D);
@@ -770,7 +770,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_SurfaceOfL
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_SurfaceOfRevolution)& S)
 {
   gp_Pnt P(0., 0., 0.);
-  gp_Dir D(1., 0., 0.);
+  gp_Dir D(gp_Dir::D::X);
   IS >> P >> D;
   Handle(Geom_Curve) C = GeomTools_CurveSet::ReadCurve(IS);
   S                    = new Geom_SurfaceOfRevolution(C, gp_Ax1(P, D));

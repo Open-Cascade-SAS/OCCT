@@ -182,7 +182,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const Standard_Integer FI,
   if (StepU > Confusion)
   {
     Standard_Real UPrm = UMin + StepU / 2.;
-    gp_Dir2d      Dir(0., 1.);
+    gp_Dir2d      Dir(gp_Dir2d::D::Y);
 
     for (IIso = 1; IIso <= nbIsos; IIso++)
     {
@@ -286,7 +286,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const Standard_Integer FI,
   if (StepV > Confusion)
   {
     Standard_Real VPrm = VMin + StepV / 2.;
-    gp_Dir2d      Dir(1., 0.);
+    gp_Dir2d      Dir(gp_Dir2d::D::X);
 
     for (IIso = 1; IIso <= nbIsos; IIso++)
     {

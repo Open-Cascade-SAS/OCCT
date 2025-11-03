@@ -57,7 +57,7 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
   theDist2(2)               = 0.;
   Standard_Integer    i     = 1;
   Standard_Integer    nbsol = 0;
-  gp_Dir2d            dirx(1.0, 0.0);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   Standard_Real       thePar;
   Geom2dAdaptor_Curve curve = Qualified1.Qualified();
   Extrema_ExtPC2d     distmin(Pcenter,

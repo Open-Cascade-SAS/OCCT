@@ -140,7 +140,7 @@ static Standard_Integer BUC60814(Draw_Interpretor& di, Standard_Integer argc, co
 
   // Circle
   gp_Pnt P(10, 10, 10);
-  gp_Dir V(1, 0, 0);
+  gp_Dir V(gp_Dir::D::X);
   gp_Ax2 aAx2(P, V);
 
   Handle(Geom_Circle)           ahCircle = new Geom_Circle(aAx2, 20);
@@ -676,7 +676,7 @@ static Standard_Integer OCC301(Draw_Interpretor& di, Standard_Integer argc, cons
   context->Display(new AIS_Shape(E2), Standard_True);
 
   gp_Pnt             plnpt(0, 0, 0);
-  gp_Dir             plndir(0, 0, 1);
+  gp_Dir             plndir(gp_Dir::D::Z);
   Handle(Geom_Plane) pln = new Geom_Plane(plnpt, plndir);
 
   Handle(PrsDim_AngleDimension) anAngleDimension =

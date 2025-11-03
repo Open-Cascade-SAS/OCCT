@@ -238,9 +238,9 @@ void Compute(const Standard_Real theP1,
 
 static void OpenMin(const gp_Dir& V, Bnd_Box& B)
 {
-  gp_Dir OX(1., 0., 0.);
-  gp_Dir OY(0., 1., 0.);
-  gp_Dir OZ(0., 0., 1.);
+  gp_Dir OX(gp_Dir::D::X);
+  gp_Dir OY(gp_Dir::D::Y);
+  gp_Dir OZ(gp_Dir::D::Z);
   if (V.IsParallel(OX, Precision::Angular()))
     B.OpenXmin();
   else if (V.IsParallel(OY, Precision::Angular()))
@@ -257,9 +257,9 @@ static void OpenMin(const gp_Dir& V, Bnd_Box& B)
 
 static void OpenMax(const gp_Dir& V, Bnd_Box& B)
 {
-  gp_Dir OX(1., 0., 0.);
-  gp_Dir OY(0., 1., 0.);
-  gp_Dir OZ(0., 0., 1.);
+  gp_Dir OX(gp_Dir::D::X);
+  gp_Dir OY(gp_Dir::D::Y);
+  gp_Dir OZ(gp_Dir::D::Z);
   if (V.IsParallel(OX, Precision::Angular()))
     B.OpenXmax();
   else if (V.IsParallel(OY, Precision::Angular()))
@@ -276,9 +276,9 @@ static void OpenMax(const gp_Dir& V, Bnd_Box& B)
 
 static void OpenMinMax(const gp_Dir& V, Bnd_Box& B)
 {
-  gp_Dir OX(1., 0., 0.);
-  gp_Dir OY(0., 1., 0.);
-  gp_Dir OZ(0., 0., 1.);
+  gp_Dir OX(gp_Dir::D::X);
+  gp_Dir OY(gp_Dir::D::Y);
+  gp_Dir OZ(gp_Dir::D::Z);
   if (V.IsParallel(OX, Precision::Angular()))
   {
     B.OpenXmax();
@@ -307,8 +307,8 @@ static void OpenMinMax(const gp_Dir& V, Bnd_Box& B)
 
 static void OpenMin(const gp_Dir2d& V, Bnd_Box2d& B)
 {
-  gp_Dir2d OX(1., 0.);
-  gp_Dir2d OY(0., 1.);
+  gp_Dir2d OX(gp_Dir2d::D::X);
+  gp_Dir2d OY(gp_Dir2d::D::Y);
   if (V.IsParallel(OX, Precision::Angular()))
     B.OpenXmin();
   else if (V.IsParallel(OY, Precision::Angular()))
@@ -322,8 +322,8 @@ static void OpenMin(const gp_Dir2d& V, Bnd_Box2d& B)
 
 static void OpenMax(const gp_Dir2d& V, Bnd_Box2d& B)
 {
-  gp_Dir2d OX(1., 0.);
-  gp_Dir2d OY(0., 1.);
+  gp_Dir2d OX(gp_Dir2d::D::X);
+  gp_Dir2d OY(gp_Dir2d::D::Y);
   if (V.IsParallel(OX, Precision::Angular()))
     B.OpenXmax();
   else if (V.IsParallel(OY, Precision::Angular()))
@@ -337,8 +337,8 @@ static void OpenMax(const gp_Dir2d& V, Bnd_Box2d& B)
 
 static void OpenMinMax(const gp_Dir2d& V, Bnd_Box2d& B)
 {
-  gp_Dir2d OX(1., 0.);
-  gp_Dir2d OY(0., 1.);
+  gp_Dir2d OX(gp_Dir2d::D::X);
+  gp_Dir2d OY(gp_Dir2d::D::Y);
   if (V.IsParallel(OX, Precision::Angular()))
   {
     B.OpenXmax();

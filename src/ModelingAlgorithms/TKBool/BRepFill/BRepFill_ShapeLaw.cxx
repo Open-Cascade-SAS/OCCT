@@ -63,7 +63,7 @@ BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Vertex& V, const Standard_Bool
   {
     myLaws = new (GeomFill_HArray1OfSectionLaw)(1, 1);
     //    gp_Pnt Origine;
-    gp_Dir                    D(1, 0, 0); // Following the normal
+    gp_Dir                    D(gp_Dir::D::X); // Following the normal
     Handle(Geom_Line)         L    = new (Geom_Line)(BRep_Tool::Pnt(V), D);
     Standard_Real             Last = 2 * BRep_Tool::Tolerance(V) + Precision::PConfusion();
     Handle(Geom_TrimmedCurve) TC   = new (Geom_TrimmedCurve)(L, 0, Last);

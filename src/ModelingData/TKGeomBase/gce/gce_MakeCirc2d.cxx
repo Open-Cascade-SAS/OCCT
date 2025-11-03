@@ -46,7 +46,7 @@
 //=========================================================================
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_Pnt2d& P3)
 {
-  gp_Dir2d dirx(1.0, 0.0);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
 
   //=========================================================================
   //   Traitement.                                                          +

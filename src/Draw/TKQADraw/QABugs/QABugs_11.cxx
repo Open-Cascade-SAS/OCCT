@@ -1970,7 +1970,7 @@ static Standard_Integer OCC1487(Draw_Interpretor& di, Standard_Integer argc, con
   Standard_Integer CaseNumber = Draw::Atoi(argv[1]);
 
   // BRepPrimAPI_MakeCylinder o_mc1 (gp_Ax2 (gp_Pnt(0,-50,140), gp_Dir(gp_Dir::D::X)), 50,1000);
-  gp_Dir                   myDir(1, 0, 0);
+  gp_Dir                   myDir(gp_Dir::D::X);
   gp_Pnt                   myPnt(0, -50, 140);
   gp_Ax2                   myAx2(myPnt, myDir);
   BRepPrimAPI_MakeCylinder o_mc1(myAx2, 50, 1000);

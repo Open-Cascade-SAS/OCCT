@@ -157,7 +157,7 @@ TEST_F(Bnd_BoundSortBoxTest, CompareWithPlane)
 
   // Create a plane that intersects the large box but not others
   gp_Pnt point(0.0, 0.0, 9.0);
-  gp_Dir direction(0.0, 0.0, 1.0);
+  gp_Dir direction(gp_Dir::D::Z);
   gp_Pln plane(point, direction);
 
   const TColStd_ListOfInteger& result = sortBox.Compare(plane);

@@ -59,8 +59,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
   //
   if ((dist1 < aResolution) && (dist2 < aResolution) && (dist3 < aResolution))
   {
-    gp_Dir Dirx(1., 0., 0.);
-    gp_Dir Dirz(0., 0., 1.);
+    gp_Dir Dirx(gp_Dir::D::X);
+    gp_Dir Dirz(gp_Dir::D::Z);
     TheCirc = gp_Circ(gp_Ax2(P1, Dirx, Dirz), 0.);
     return;
   }
@@ -151,8 +151,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
       pInt.Coord(x3, y3, z3);
       if (dist1 < aResolution)
       {
-        gp_Dir Dirx(1., 0., 0.);
-        gp_Dir Dirz(0., 0., 1.);
+        gp_Dir Dirx(gp_Dir::D::X);
+        gp_Dir Dirz(gp_Dir::D::Z);
         TheCirc = gp_Circ(gp_Ax2(pInt, Dirx, Dirz), 0.);
         return;
       }

@@ -58,7 +58,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     return;
   }
 
-  gp_Dir2d      dirx(1., 0.);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real Tol = Abs(Tolerance);
 
   // calculation of bisectrices of L1 and L2

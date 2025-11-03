@@ -1158,9 +1158,9 @@ static Standard_Integer EllipsUniformAbscissa(Draw_Interpretor& di,
   {
     gp_Pnt location;
     location = gp_Pnt(0.0, 0.0, 0.0);
-    gp_Dir main_direction(0.0, 0.0, 1.0);
+    gp_Dir main_direction(gp_Dir::D::Z);
 
-    gp_Dir x_direction(1.0, 0.0, 0.0);
+    gp_Dir x_direction(gp_Dir::D::X);
     gp_Ax2 mainaxis(location, main_direction);
 
     mainaxis.SetXDirection(x_direction);

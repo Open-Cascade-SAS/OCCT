@@ -892,7 +892,7 @@ Standard_Integer BOPTools_AlgoTools3D::PointInFace(const TopoDS_Face&           
   //
   theContext->UVBounds(theF, aUMin, aUMax, aVMin, aVMax);
   //
-  gp_Dir2d aD2D(0., 1.);
+  gp_Dir2d aD2D(gp_Dir2d::D::Y);
   aUx = IntTools_Tools::IntermediatePoint(aUMin, aUMax);
   //
   for (i = 0; i < 2; ++i)

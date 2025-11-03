@@ -551,7 +551,7 @@ void IntAna_IntConicQuad::Perform(const gp_Circ&      C,
 
     gp_Lin2d  Ligs(Orig, Dire);
     gp_Pnt2d  Pnt2dBid(0.0, 0.0);
-    gp_Dir2d  Dir2dBid(1.0, 0.0);
+    gp_Dir2d  Dir2dBid(gp_Dir2d::D::X);
     gp_Ax2d   Ax2dBid(Pnt2dBid, Dir2dBid);
     gp_Circ2d Cir(Ax2dBid, C.Radius());
 

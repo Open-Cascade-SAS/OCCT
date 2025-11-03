@@ -2955,7 +2955,7 @@ static Standard_Integer OCC25413(Draw_Interpretor& di, Standard_Integer narg, co
   Bnd_Box aBndBox;
   BRepBndLib::Add(aShape, aBndBox);
 
-  gp_Dir        aDir(0., 1., 0.);
+  gp_Dir        aDir(gp_Dir::D::Y);
   const int     N     = 250;
   Standard_Real xMin  = aBndBox.CornerMin().X();
   Standard_Real zMin  = aBndBox.CornerMin().Z();
@@ -4810,8 +4810,8 @@ static Standard_Integer OCC26750(Draw_Interpretor& theDI,
     theDI << "Error in gp_Vec2d. Vectors should be normal.\n";
   }
 
-  const gp_Dir2d aD1(1.0, 0.0);
-  const gp_Dir2d aD2(0.0, -1.0);
+  const gp_Dir2d aD1(gp_Dir2d::D::X);
+  const gp_Dir2d aD2(gp_Dir2d::D::NY);
 
   if (aD1.IsNormal(aD2, Precision::Angular()))
   {

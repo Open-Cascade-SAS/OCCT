@@ -745,7 +745,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, ExtrudedCylindricalSurfaceRecognitio
   ASSERT_FALSE(anIntCurve.IsNull()) << "Intersection curve is null";
 
   // Create a surface of linear extrusion from the intersection curve
-  gp_Dir                                anExtrusionDir(0, 0, 1);
+  gp_Dir                                anExtrusionDir(gp_Dir::D::Z);
   Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(anIntCurve, anExtrusionDir);
 

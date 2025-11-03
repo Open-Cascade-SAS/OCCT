@@ -2121,8 +2121,8 @@ void CorrectSurfaceBoundaries(const TopoDS_Face&  theFace,
             correct = Standard_False;
             break;
           }
-          gp_Dir2d      anUDir(1., 0.);
-          gp_Dir2d      aVDir(0., 1.);
+          gp_Dir2d      anUDir(gp_Dir2d::D::X);
+          gp_Dir2d      aVDir(gp_Dir2d::D::Y);
           Standard_Real anAngularTolerance = Precision::Angular();
 
           correctU =

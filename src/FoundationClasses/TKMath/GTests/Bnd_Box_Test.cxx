@@ -86,7 +86,7 @@ TEST(Bnd_BoxTest, SetWithPointAndDirection)
 {
   Bnd_Box aBox;
   gp_Pnt  aPnt(1.0, 2.0, 3.0);
-  gp_Dir  aDir(1.0, 0.0, 0.0);
+  gp_Dir  aDir(gp_Dir::D::X);
 
   aBox.Set(aPnt, aDir);
 
@@ -414,7 +414,7 @@ TEST(Bnd_BoxTest, AddDirection)
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 
-  gp_Dir aDir(1.0, 0.0, 0.0);
+  gp_Dir aDir(gp_Dir::D::X);
   aBox.Add(aDir);
 
   EXPECT_TRUE(aBox.IsOpenXmax()) << "Positive X direction should open Xmax";
@@ -427,7 +427,7 @@ TEST(Bnd_BoxTest, AddPointWithDirection)
 {
   Bnd_Box aBox;
   gp_Pnt  aPnt(1.0, 2.0, 3.0);
-  gp_Dir  aDir(-1.0, 0.0, 0.0);
+  gp_Dir  aDir(gp_Dir::D::NX);
 
   aBox.Add(aPnt, aDir);
 
@@ -744,7 +744,7 @@ TEST(Bnd_BoxTest, IsOutLineSegment)
   // Line segment that passes through box
   gp_Pnt aP1(-1.0, 1.0, 1.0);
   gp_Pnt aP2(3.0, 1.0, 1.0);
-  gp_Dir aDir(1.0, 0.0, 0.0);
+  gp_Dir aDir(gp_Dir::D::X);
 
   EXPECT_FALSE(aBox.IsOut(aP1, aP2, aDir)) << "Line segment through box should not be out";
 

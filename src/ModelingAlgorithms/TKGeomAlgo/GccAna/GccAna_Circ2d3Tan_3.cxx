@@ -65,7 +65,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
   TheSame1.Init(0);
   TheSame2.Init(0);
   TheSame3.Init(0);
-  gp_Dir2d dirx(1.0, 0.0);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
   WellDone = Standard_False;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified())

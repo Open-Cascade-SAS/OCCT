@@ -547,7 +547,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Dir& D)
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Line)& L)
 {
   gp_Pnt P(0., 0., 0.);
-  gp_Dir AX(1., 0., 0.);
+  gp_Dir AX(gp_Dir::D::X);
   IS >> P >> AX;
   L = new Geom_Line(P, AX);
   return IS;
@@ -558,7 +558,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Line)& L)
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Circle)& C)
 {
   gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(1., 0., 0.), AX(1., 0., 0.), AY(1., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(1., 0., 0.), AY(1., 0., 0.);
   Standard_Real R = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R);
@@ -571,7 +571,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Circle)& C
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Ellipse)& E)
 {
   gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(1., 0., 0.), AX(1., 0., 0.), AY(1., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(1., 0., 0.), AY(1., 0., 0.);
   Standard_Real R1 = 0., R2 = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R1);
@@ -585,7 +585,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Ellipse)& 
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Parabola)& C)
 {
   gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(1., 0., 0.), AX(1., 0., 0.), AY(1., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(1., 0., 0.), AY(1., 0., 0.);
   Standard_Real R1 = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R1);
@@ -598,7 +598,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Parabola)&
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Hyperbola)& H)
 {
   gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(1., 0., 0.), AX(1., 0., 0.), AY(1., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(1., 0., 0.), AY(1., 0., 0.);
   Standard_Real R1 = 0., R2 = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R1);
@@ -693,7 +693,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_OffsetCurv
 {
   Standard_Real p = 0.;
   GeomTools::GetReal(IS, p);
-  gp_Dir D(1., 0., 0.);
+  gp_Dir D(gp_Dir::D::X);
   IS >> D;
   Handle(Geom_Curve) BC = GeomTools_CurveSet::ReadCurve(IS);
   C                     = new Geom_OffsetCurve(BC, p, D);

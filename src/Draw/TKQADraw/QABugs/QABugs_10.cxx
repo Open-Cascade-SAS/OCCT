@@ -382,7 +382,7 @@ static Standard_Integer OCC712(Draw_Interpretor& di, Standard_Integer argc, cons
   try
   {
     OCC_CATCH_SIGNALS
-    gp_Dir slabDir(0, 0, 1);
+    gp_Dir slabDir(gp_Dir::D::Z);
     gp_Vec slabVect(slabDir);
     slabVect *= slabThick;
 
@@ -494,7 +494,7 @@ static Standard_Integer OCC822_1(Draw_Interpretor& di, Standard_Integer argc, co
   int index = 1;
 
   gp_Pnt P1(0, 0, 0);
-  gp_Dir D1(0, 0, 1);
+  gp_Dir D1(gp_Dir::D::Z);
   gp_Ax2 A1(P1, D1);
 
   BRepPrimAPI_MakeCylinder cylMakerIn(A1, 40, 110);
@@ -503,7 +503,7 @@ static Standard_Integer OCC822_1(Draw_Interpretor& di, Standard_Integer argc, co
   TopoDS_Shape             cylOut = cylMakerOut.Shape();
 
   gp_Pnt P2(0, 0, 0);
-  gp_Dir D2(0, 0, -1);
+  gp_Dir D2(gp_Dir::D::NZ);
   gp_Ax2 A2(P2, D2);
 
   BRepPrimAPI_MakeCone conMakerIn(A2, 40, 60, 110);
@@ -563,8 +563,8 @@ static Standard_Integer OCC822_2(Draw_Interpretor& di, Standard_Integer argc, co
 
   int index = 1;
 
-  gp_Dir              xDir(1, 0, 0);
-  gp_Dir              zDir(0, 0, 1);
+  gp_Dir              xDir(gp_Dir::D::X);
+  gp_Dir              zDir(gp_Dir::D::Z);
   gp_Pnt              cen1(0, 0, 0);
   gp_Ax2              cor1(cen1, zDir, xDir);
   BRepPrimAPI_MakeBox boxMaker(cor1, 100, 100, 100);
@@ -678,7 +678,7 @@ static Standard_Integer OCC824(Draw_Interpretor& di, Standard_Integer argc, cons
   int index = 1;
 
   gp_Pnt                   P1(100, 0, 0);
-  gp_Dir                   D1(-1, 0, 0);
+  gp_Dir                   D1(gp_Dir::D::NX);
   gp_Ax2                   A1(P1, D1);
   BRepPrimAPI_MakeCylinder mkCyl(A1, 20, 100);
   TopoDS_Shape             cyl = mkCyl.Shape();
@@ -1091,7 +1091,7 @@ static Standard_Integer OCC828(Draw_Interpretor& di, Standard_Integer argc, cons
   try
   {
     OCC_CATCH_SIGNALS
-    gp_Dir slabDir(0, 0, 1);
+    gp_Dir slabDir(gp_Dir::D::Z);
     gp_Vec slabVect(slabDir);
     slabVect *= slabThick;
 

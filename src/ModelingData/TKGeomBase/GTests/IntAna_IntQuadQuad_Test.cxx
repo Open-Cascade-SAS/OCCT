@@ -28,8 +28,8 @@ protected:
   {
     // Set up common geometric objects for tests
     gp_Pnt anOrigin(0, 0, 0);
-    gp_Dir aZDir(0, 0, 1);
-    gp_Dir anXDir(1, 0, 0);
+    gp_Dir aZDir(gp_Dir::D::Z);
+    gp_Dir anXDir(gp_Dir::D::X);
     gp_Ax3 anAxis(anOrigin, aZDir, anXDir);
 
     // Create sphere at origin with radius 5
@@ -132,8 +132,8 @@ TEST_F(IntAna_IntQuadQuad_Test, ConnectedCurvesScenario)
   // Create two spheres that intersect in a circle
   gp_Pnt aCenter1(0, 0, 0);
   gp_Pnt aCenter2(3, 0, 0); // Overlapping spheres
-  gp_Dir aZDir(0, 0, 1);
-  gp_Dir anXDir(1, 0, 0);
+  gp_Dir aZDir(gp_Dir::D::Z);
+  gp_Dir anXDir(gp_Dir::D::X);
   gp_Ax3 anAxis1(aCenter1, aZDir, anXDir);
   gp_Ax3 anAxis2(aCenter2, aZDir, anXDir);
 

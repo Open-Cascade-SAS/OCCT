@@ -83,7 +83,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d      dirx(1.0, 0.0);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real Tol      = Abs(Tolerance);
   Standard_Real thefirst = -100000.;
   Standard_Real thelast  = 100000.;
@@ -208,7 +208,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d         dirx(1.0, 0.0);
+  gp_Dir2d         dirx(gp_Dir2d::D::X);
   Standard_Real    thefirst = -100000.;
   Standard_Real    thelast  = 100000.;
   Standard_Real    firstparam;
@@ -339,7 +339,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d         dirx(1.0, 0.0);
+  gp_Dir2d         dirx(gp_Dir2d::D::X);
   Standard_Real    thefirst = -100000.;
   Standard_Real    thelast  = 100000.;
   Standard_Real    firstparam;
@@ -486,7 +486,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d      dirx(1.0, 0.0);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real thefirst = -100000.;
   Standard_Real thelast  = 100000.;
   Standard_Real firstparam;
@@ -624,7 +624,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d         dirx(1.0, 0.0);
+  gp_Dir2d         dirx(gp_Dir2d::D::X);
   Standard_Real    thefirst = -100000.;
   Standard_Real    thelast  = 100000.;
   Standard_Real    firstparam;
@@ -758,7 +758,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&        
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d      dirx(1.0, 0.0);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real thefirst = -100000.;
   Standard_Real thelast  = 100000.;
   Standard_Real firstparam;

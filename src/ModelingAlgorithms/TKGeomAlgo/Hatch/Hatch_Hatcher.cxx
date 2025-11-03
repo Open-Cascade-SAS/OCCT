@@ -56,7 +56,7 @@ void Hatch_Hatcher::AddLine(const gp_Dir2d& D, const Standard_Real Dist)
 void Hatch_Hatcher::AddXLine(const Standard_Real X)
 {
   gp_Pnt2d O(X, 0);
-  gp_Dir2d D(0, 1);
+  gp_Dir2d D(gp_Dir2d::D::Y);
   gp_Lin2d L(O, D);
   AddLine(L, Hatch_XLINE);
 }
@@ -66,7 +66,7 @@ void Hatch_Hatcher::AddXLine(const Standard_Real X)
 void Hatch_Hatcher::AddYLine(const Standard_Real Y)
 {
   gp_Pnt2d O(0, Y);
-  gp_Dir2d D(1, 0);
+  gp_Dir2d D(gp_Dir2d::D::X);
   gp_Lin2d L(O, D);
   AddLine(L, Hatch_YLINE);
 }

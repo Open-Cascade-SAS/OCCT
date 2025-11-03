@@ -226,7 +226,7 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
   if (StepU > confusion)
   {
     Standard_Real UPrm = myUMin + StepU / 2.;
-    gp_Dir2d      Dir(0., 1.);
+    gp_Dir2d      Dir(gp_Dir2d::D::Y);
     for (IIso = 1; IIso <= NbIsos; IIso++)
     {
       myUPrm(IIso) = UPrm;
@@ -241,7 +241,7 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
   if (StepV > confusion)
   {
     Standard_Real VPrm = myVMin + StepV / 2.;
-    gp_Dir2d      Dir(1., 0.);
+    gp_Dir2d      Dir(gp_Dir2d::D::X);
     for (IIso = 1; IIso <= NbIsos; IIso++)
     {
       myVPrm(IIso) = VPrm;

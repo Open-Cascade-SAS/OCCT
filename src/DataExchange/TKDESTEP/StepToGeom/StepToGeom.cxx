@@ -148,7 +148,7 @@ Handle(Geom_Axis1Placement) StepToGeom::MakeAxis1Placement(
   {
     // sln 22.10.2001. CTS23496: If problems with creation of axis direction occur default direction
     // is used
-    gp_Dir D(0., 0., 1.);
+    gp_Dir D(gp_Dir::D::Z);
     if (SA->HasAxis())
     {
       Handle(Geom_Direction) D1 = MakeDirection(SA->Axis());
@@ -175,7 +175,7 @@ Handle(Geom_Axis2Placement) StepToGeom::MakeAxis2Placement(
 
     // sln 22.10.2001. CTS23496: If problems with creation of direction occur default direction is
     // used (MakeLine(...) function)
-    gp_Dir Ngp(0., 0., 1.);
+    gp_Dir Ngp(gp_Dir::D::Z);
     if (SA->HasAxis())
     {
       Handle(Geom_Direction) D = MakeDirection(SA->Axis());
@@ -246,7 +246,7 @@ Handle(Geom2d_AxisPlacement) StepToGeom::MakeAxisPlacement(
   {
     // sln 23.10.2001. CTS23496: If problems with creation of direction occur default direction is
     // used
-    gp_Dir2d Vxgp(1., 0.);
+    gp_Dir2d Vxgp(gp_Dir2d::D::X);
     if (SA->HasRefDirection())
     {
       Handle(Geom2d_Direction) Vx = MakeDirection2d(SA->RefDirection());
@@ -2065,7 +2065,7 @@ Standard_Boolean StepToGeom::MakeTransformation2d(
   Handle(Geom2d_CartesianPoint) CP = MakeCartesianPoint2d(SCTO->LocalOrigin(), theLocalFactors);
   if (!CP.IsNull())
   {
-    gp_Dir2d D1(1., 0.);
+    gp_Dir2d D1(gp_Dir2d::D::X);
     // sln 23.10.2001. CTS23496: If problems with creation of direction occur default direction is
     // used
     const Handle(StepGeom_Direction) A = SCTO->Axis1();
@@ -2097,7 +2097,7 @@ Standard_Boolean StepToGeom::MakeTransformation3d(
 
     // sln 23.10.2001. CTS23496: If problems with creation of direction occur default direction is
     // used
-    gp_Dir                           D1(1., 0., 0.);
+    gp_Dir                           D1(gp_Dir::D::X);
     const Handle(StepGeom_Direction) A1 = SCTO->Axis1();
     if (!A1.IsNull())
     {
@@ -2106,7 +2106,7 @@ Standard_Boolean StepToGeom::MakeTransformation3d(
         D1 = D->Dir();
     }
 
-    gp_Dir                           D2(0., 1., 0.);
+    gp_Dir                           D2(gp_Dir::D::Y);
     const Handle(StepGeom_Direction) A2 = SCTO->Axis2();
     if (!A2.IsNull())
     {

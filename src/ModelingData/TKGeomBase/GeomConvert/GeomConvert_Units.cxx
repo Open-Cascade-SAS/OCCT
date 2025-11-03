@@ -307,7 +307,7 @@ Handle(Geom2d_Curve) GeomConvert_Units::MirrorPCurve(const Handle(Geom2d_Curve)&
   Handle(Geom2d_Curve) theMirrored = Handle(Geom2d_Curve)::DownCast(theCurve->Copy());
   gp_Trsf2d            T;
   gp_Pnt2d             Loc(0., 0.);
-  gp_Dir2d             Dir(1., 0.);
+  gp_Dir2d             Dir(gp_Dir2d::D::X);
   gp_Ax2d              ax2(Loc, Dir);
   T.SetMirror(ax2);
   theMirrored->Transform(T);

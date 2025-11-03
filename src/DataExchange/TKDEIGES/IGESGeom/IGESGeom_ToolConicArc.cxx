@@ -222,7 +222,7 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
       {
         Standard_Real xc = -D / (2 * A);
         Standard_Real yc = -E / (2 * C);
-        gp_Dir2d d0(1, 0);
+        gp_Dir2d d0(gp_Dir2d::D::X);
         gp_Dir2d d1(ent->StartPoint().X() - xc, ent->StartPoint().Y() - yc);
         gp_Dir2d d2(ent->EndPoint().X()   - xc, ent->EndPoint().Y()   - yc);
         Standard_Real t1 = d0.Angle(d1);
@@ -237,7 +237,7 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
       {
         Standard_Real xc = -D / (2 * A);
         Standard_Real yc = -E / (2 * C);
-        gp_Dir2d d0(1, 0);
+        gp_Dir2d d0(gp_Dir2d::D::X);
         gp_Dir2d d1(ent->StartPoint().X() - xc, ent->StartPoint().Y() - yc);
         gp_Dir2d d2(ent->EndPoint().X()   - xc, ent->EndPoint().Y()   - yc);
         Standard_Real t1 = d0.Angle(d1);

@@ -294,7 +294,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   TopoDS_Vertex                 V7 = BRepBuilderAPI_MakeVertex(p7);
   TopoDS_Vertex                 V8 = BRepBuilderAPI_MakeVertex(p8);
   gp_Pnt                        plnpt(0, 0, 0);
-  gp_Dir                        plndir(0, 0, 1);
+  gp_Dir                        plndir(gp_Dir::D::Z);
   Handle(Geom_Plane)            pln      = new Geom_Plane(plnpt, plndir);
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
   anAspect->MakeArrows3d(Standard_True);

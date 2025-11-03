@@ -65,7 +65,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Dir2d         dirx(1.0, 0.0);
+  gp_Dir2d         dirx(gp_Dir2d::D::X);
   Standard_Real    Tol = Abs(Tolerance);
   gp_Circ2d        C1  = Qualified1.Qualified();
   Standard_Real    R1  = C1.Radius();
@@ -210,7 +210,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const gp_Lin2d& Linetan, const gp_Pnt2d
       pararg1(1, 1)
 {
 
-  gp_Dir2d      dirx(1.0, 0.0);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real rayon = Linetan.Distance(Pcenter);
   cirsol(1)           = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
   // ==================================================
@@ -258,7 +258,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const gp_Pnt2d& Point1, const gp_Pnt2d&
       pararg1(1, 1)
 {
 
-  gp_Dir2d      dirx(1.0, 0.0);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real rayon = Point1.Distance(Pcenter);
   cirsol(1)           = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
   // =================================================

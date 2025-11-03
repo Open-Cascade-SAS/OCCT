@@ -123,7 +123,7 @@ TEST(ElClibTests, AdjustPeriodic)
 TEST(ElClibTests, Line3D)
 {
   const gp_Pnt        aLoc(1.0, 2.0, 3.0);
-  const gp_Dir        aDir(0.0, 0.0, 1.0);
+  const gp_Dir        aDir(gp_Dir::D::Z);
   const gp_Lin        aLin(aLoc, aDir);
   const Standard_Real aParam = 5.0;
 
@@ -154,8 +154,8 @@ TEST(ElClibTests, Line3D)
 TEST(ElClibTests, Circle3D)
 {
   const gp_Pnt        aLoc(0.0, 0.0, 0.0);
-  const gp_Dir        aDirZ(0.0, 0.0, 1.0);
-  const gp_Dir        aDirX(1.0, 0.0, 0.0);
+  const gp_Dir        aDirZ(gp_Dir::D::Z);
+  const gp_Dir        aDirX(gp_Dir::D::X);
   const gp_Ax2        anAxis(aLoc, aDirZ, aDirX);
   const Standard_Real aRadius = 2.0;
   const gp_Circ       aCircle(anAxis, aRadius);
@@ -211,8 +211,8 @@ TEST(ElClibTests, Circle3D)
 TEST(ElClibTests, Ellipse3D)
 {
   const gp_Pnt        aLoc(0.0, 0.0, 0.0);
-  const gp_Dir        aDirZ(0.0, 0.0, 1.0);
-  const gp_Dir        aDirX(1.0, 0.0, 0.0);
+  const gp_Dir        aDirZ(gp_Dir::D::Z);
+  const gp_Dir        aDirX(gp_Dir::D::X);
   const gp_Ax2        anAxis(aLoc, aDirZ, aDirX);
   const Standard_Real aMajorRadius = 3.0;
   const Standard_Real aMinorRadius = 2.0;
@@ -240,8 +240,8 @@ TEST(ElClibTests, Ellipse3D)
 TEST(ElClibTests, Hyperbola3D)
 {
   const gp_Pnt        aLoc(0.0, 0.0, 0.0);
-  const gp_Dir        aDirZ(0.0, 0.0, 1.0);
-  const gp_Dir        aDirX(1.0, 0.0, 0.0);
+  const gp_Dir        aDirZ(gp_Dir::D::Z);
+  const gp_Dir        aDirX(gp_Dir::D::X);
   const gp_Ax2        anAxis(aLoc, aDirZ, aDirX);
   const Standard_Real aMajorRadius = 3.0;
   const Standard_Real aMinorRadius = 2.0;
@@ -269,8 +269,8 @@ TEST(ElClibTests, Hyperbola3D)
 TEST(ElClibTests, Parabola3D)
 {
   const gp_Pnt        aLoc(0.0, 0.0, 0.0);
-  const gp_Dir        aDirZ(0.0, 0.0, 1.0);
-  const gp_Dir        aDirX(1.0, 0.0, 0.0);
+  const gp_Dir        aDirZ(gp_Dir::D::Z);
+  const gp_Dir        aDirX(gp_Dir::D::X);
   const gp_Ax2        anAxis(aLoc, aDirZ, aDirX);
   const Standard_Real aFocal = 2.0;
   const gp_Parab      aParabola(anAxis, aFocal);
@@ -297,8 +297,8 @@ TEST(ElClibTests, Parabola3D)
 TEST(ElClibTests, To3dConversion)
 {
   const gp_Pnt aLoc(1.0, 2.0, 3.0);
-  const gp_Dir aDirZ(0.0, 0.0, 1.0);
-  const gp_Dir aDirX(1.0, 0.0, 0.0);
+  const gp_Dir aDirZ(gp_Dir::D::Z);
+  const gp_Dir aDirX(gp_Dir::D::X);
   const gp_Ax2 anAxis(aLoc, aDirZ, aDirX);
 
   // Test conversion of a point
@@ -321,7 +321,7 @@ TEST(ElClibTests, To3dConversion)
 
   // Test conversion of a circle
   const gp_Pnt2d      aLoc2d(0.0, 0.0);
-  const gp_Dir2d      aDir2dX(1.0, 0.0);
+  const gp_Dir2d      aDir2dX(gp_Dir2d::D::X);
   const gp_Ax22d      anAxis2d(aLoc2d, aDir2dX, true);
   const Standard_Real aRadius = 2.0;
   const gp_Circ2d     aCirc2d(anAxis2d, aRadius);

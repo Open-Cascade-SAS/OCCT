@@ -57,7 +57,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
 {
 
   Standard_Real Tol = Abs(Tolerance);
-  gp_Dir2d      dirx(1., 0.);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   WellDone = Standard_False;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
