@@ -16,8 +16,9 @@
 
 #include <OSD_Thread.hxx>
 #include <Standard_Condition.hxx>
-#include <Standard_Mutex.hxx>
 #include <Standard_Type.hxx>
+
+#include <mutex>
 
 class V3d_View;
 
@@ -70,7 +71,7 @@ private:
 private:
   Handle(V3d_View)   myView;      //!< view to invalidate
   OSD_Thread         myThread;    //!< working thread
-  Standard_Mutex     myMutex;     //!< mutex for accessing common variables
+  std::mutex         myMutex;     //!< mutex for accessing common variables
   Standard_Condition myWakeEvent; //!< event to wake up working thread
   Standard_Real      myTargetFps; //!< desired update framerate
   volatile bool      myToStop;    //!< flag to stop working thread
