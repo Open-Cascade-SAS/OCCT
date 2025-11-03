@@ -40,7 +40,6 @@
 //==== The top of the Errors Stack ===========================================
 static Standard_ErrorHandler* Top = 0;
 
-
 //=================================================================================================
 
 std::mutex& Standard_ErrorHandler::GetMutex()
