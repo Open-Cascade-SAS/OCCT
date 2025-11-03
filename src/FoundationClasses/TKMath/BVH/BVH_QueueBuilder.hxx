@@ -20,6 +20,8 @@
 #include <BVH_BuildThread.hxx>
 #include <NCollection_Vector.hxx>
 
+#include <mutex>
+
 //! Abstract BVH builder based on the concept of work queue.
 //! Queue based BVH builders support parallelization with a
 //! fixed number of threads (maximum efficiency is achieved

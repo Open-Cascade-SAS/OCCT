@@ -15,6 +15,8 @@
 #define _DE_PluginHolder_HeaderFile
 
 #include <DE_Wrapper.hxx>
+
+#include <mutex>
 #include <tuple>
 
 //! Base class to work with DE_Wrapper global registration of components.
