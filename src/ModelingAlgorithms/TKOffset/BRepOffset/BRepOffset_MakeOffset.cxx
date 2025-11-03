@@ -3340,10 +3340,10 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
           if (!IsPlanar)
           {
             TopLoc_Location Loc;
-            EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., 0.), gp_Dir2d(1., 0.));
+            EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., 0.), gp_Dir2d(gp_Dir2d::D::X));
             BB.UpdateEdge(anEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
             Standard_Real Coeff = (OffsetDir * CircAxisDir > 0.) ? 1. : -1.;
-            OELine2d = new Geom2d_Line(gp_Pnt2d(0., OffsetVal * Coeff), gp_Dir2d(1., 0.));
+            OELine2d = new Geom2d_Line(gp_Pnt2d(0., OffsetVal * Coeff), gp_Dir2d(gp_Dir2d::D::X));
             BB.UpdateEdge(OE, OELine2d, theSurf, Loc, Precision::Confusion());
             aLine2d  = new Geom2d_Line(gp_Pnt2d(ParV2, 0.), gp_Dir2d(0., Coeff));
             aLine2d2 = new Geom2d_Line(gp_Pnt2d(ParV1, 0.), gp_Dir2d(0., Coeff));
@@ -3427,14 +3427,14 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
           Standard_Real Uf, Ul, Vf, Vl;
           theSurf->Bounds(Uf, Ul, Vf, Vl);
           TopLoc_Location Loc;
-          EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., Vf), gp_Dir2d(1., 0.));
+          EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., Vf), gp_Dir2d(gp_Dir2d::D::X));
           BB.UpdateEdge(anEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
-          OELine2d = new Geom2d_Line(gp_Pnt2d(0., Vl), gp_Dir2d(1., 0.));
+          OELine2d = new Geom2d_Line(gp_Pnt2d(0., Vl), gp_Dir2d(gp_Dir2d::D::X));
           BB.UpdateEdge(OE, OELine2d, theSurf, Loc, Precision::Confusion());
           Standard_Real UonV1 = (ToReverse) ? Ul : Uf;
           Standard_Real UonV2 = (ToReverse) ? Uf : Ul;
-          aLine2d             = new Geom2d_Line(gp_Pnt2d(UonV2, 0.), gp_Dir2d(0., 1.));
-          aLine2d2            = new Geom2d_Line(gp_Pnt2d(UonV1, 0.), gp_Dir2d(0., 1.));
+          aLine2d             = new Geom2d_Line(gp_Pnt2d(UonV2, 0.), gp_Dir2d(gp_Dir2d::D::Y));
+          aLine2d2            = new Geom2d_Line(gp_Pnt2d(UonV1, 0.), gp_Dir2d(gp_Dir2d::D::Y));
           if (E3.IsSame(E4))
           {
             BB.UpdateEdge(E3, aLine2d, aLine2d2, theSurf, Loc, Precision::Confusion());

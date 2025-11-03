@@ -272,7 +272,7 @@ void MeshVS_VectorPrsBuilder::Build(const Handle(Prs3d_Presentation)& Prs,
           continue;
         }
 
-        aTrsf.SetDisplacement(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
+        aTrsf.SetDisplacement(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                               gp_Ax3(gp_Pnt(X, Y, Z), aVec));
 
         DrawVector(aTrsf,

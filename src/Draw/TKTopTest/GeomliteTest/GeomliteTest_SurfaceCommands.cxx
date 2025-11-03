@@ -145,14 +145,14 @@ static Standard_Integer anasurface(Draw_Interpretor&, Standard_Integer n, const 
 
   if (n < 5)
   {
-    loc = gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
+    loc = gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
     i   = 2;
   }
   else if (n < 8)
   {
     loc = gp_Ax3(gp_Pnt(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4])),
-                 gp_Dir(0, 0, 1),
-                 gp_Dir(1, 0, 0));
+                 gp_Dir(gp_Dir::D::Z),
+                 gp_Dir(gp_Dir::D::X));
     i   = 5;
   }
   else if (n < 11)

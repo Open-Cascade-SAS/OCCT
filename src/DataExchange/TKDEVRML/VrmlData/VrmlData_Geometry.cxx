@@ -127,7 +127,7 @@ const Handle(TopoDS_TShape)& VrmlData_Cone::TShape()
   {
     try
     {
-      gp_Ax2        aLocalAxis(gp_Pnt(0., -0.5 * myHeight, 0.), gp_Dir(0., 1., 0.));
+      gp_Ax2        aLocalAxis(gp_Pnt(0., -0.5 * myHeight, 0.), gp_Dir(gp_Dir::D::Y));
       BRepPrim_Cone aBuilder(aLocalAxis, myBottomRadius, 0., myHeight);
       if (!myHasBottom)
         myTShape = aBuilder.LateralFace().TShape();
@@ -241,7 +241,7 @@ const Handle(TopoDS_TShape)& VrmlData_Cylinder::TShape()
   {
     try
     {
-      gp_Ax2            aLocalAxis(gp_Pnt(0., -0.5 * myHeight, 0.), gp_Dir(0., 1., 0.));
+      gp_Ax2            aLocalAxis(gp_Pnt(0., -0.5 * myHeight, 0.), gp_Dir(gp_Dir::D::Y));
       BRepPrim_Cylinder aBuilder(aLocalAxis, myRadius, myHeight);
       BRepPrim_Builder  aShapeBuilder;
       TopoDS_Shell      aShell;

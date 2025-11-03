@@ -1020,7 +1020,7 @@ Handle(Geom2d_Curve) TopOpeBRepTool_CurveTool::MakePCurveOnFace(const TopoDS_Sha
       gp_Pnt2d  po(0, -M_PI / 2);
       if (maxcond)
         po.SetY(M_PI / 2);
-      aTrsf.SetMirror(gp_Ax2d(po, gp_Dir2d(1, 0)));
+      aTrsf.SetMirror(gp_Ax2d(po, gp_Dir2d(gp_Dir2d::D::X)));
       PCT->Transform(aTrsf);
       // add translation along U direction on PI
       gp_Vec2d      vec(M_PI, 0);

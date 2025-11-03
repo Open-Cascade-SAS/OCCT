@@ -154,11 +154,11 @@ static Standard_Integer anacurve(Draw_Interpretor&, Standard_Integer n, const ch
   {
     if (n == 5)
       result2d =
-        new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])), gp_Dir2d(1, 0)),
+        new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])), gp_Dir2d(gp_Dir2d::D::X)),
                           Draw::Atof(a[4]));
     else if (n == 6)
       result = new Geom_Circle(
-        gp_Ax2(gp_Pnt(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4])), gp_Dir(0, 0, 1)),
+        gp_Ax2(gp_Pnt(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4])), gp_Dir(gp_Dir::D::Z)),
         Draw::Atof(a[5]));
     else if (n == 7)
       result2d = new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])),
@@ -182,11 +182,11 @@ static Standard_Integer anacurve(Draw_Interpretor&, Standard_Integer n, const ch
   {
     if (n == 5)
       result2d =
-        new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])), gp_Dir2d(1, 0)),
+        new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])), gp_Dir2d(gp_Dir2d::D::X)),
                             Draw::Atof(a[4]));
     else if (n == 6)
       result = new Geom_Parabola(
-        gp_Ax2(gp_Pnt(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4])), gp_Dir(0, 0, 1)),
+        gp_Ax2(gp_Pnt(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4])), gp_Dir(gp_Dir::D::Z)),
         Draw::Atof(a[5]));
     else if (n == 7)
       result2d = new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])),
@@ -211,12 +211,12 @@ static Standard_Integer anacurve(Draw_Interpretor&, Standard_Integer n, const ch
   {
     if (n == 6)
       result2d =
-        new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])), gp_Dir2d(1, 0)),
+        new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])), gp_Dir2d(gp_Dir2d::D::X)),
                            Draw::Atof(a[4]),
                            Draw::Atof(a[5]));
     else if (n == 7)
       result = new Geom_Ellipse(
-        gp_Ax2(gp_Pnt(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4])), gp_Dir(0, 0, 1)),
+        gp_Ax2(gp_Pnt(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4])), gp_Dir(gp_Dir::D::Z)),
         Draw::Atof(a[5]),
         Draw::Atof(a[6]));
     else if (n == 8)
@@ -245,12 +245,12 @@ static Standard_Integer anacurve(Draw_Interpretor&, Standard_Integer n, const ch
   {
     if (n == 6)
       result2d =
-        new Geom2d_Hyperbola(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])), gp_Dir2d(1, 0)),
+        new Geom2d_Hyperbola(gp_Ax22d(gp_Pnt2d(Draw::Atof(a[2]), Draw::Atof(a[3])), gp_Dir2d(gp_Dir2d::D::X)),
                              Draw::Atof(a[4]),
                              Draw::Atof(a[5]));
     else if (n == 7)
       result = new Geom_Hyperbola(
-        gp_Ax2(gp_Pnt(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4])), gp_Dir(0, 0, 1)),
+        gp_Ax2(gp_Pnt(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4])), gp_Dir(gp_Dir::D::Z)),
         Draw::Atof(a[5]),
         Draw::Atof(a[6]));
     else if (n == 8)

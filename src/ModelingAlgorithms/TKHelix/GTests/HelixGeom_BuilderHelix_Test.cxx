@@ -31,7 +31,7 @@ TEST_F(HelixGeom_BuilderHelix_Test, SingleCoil)
 {
   HelixGeom_BuilderHelix aBuilder;
 
-  gp_Ax2 aPosition(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.), gp_Dir(1., 0., 0.));
+  gp_Ax2 aPosition(gp_Pnt(0., 0., 0.), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   aBuilder.SetPosition(aPosition);
   aBuilder.SetTolerance(myTolerance);
   aBuilder.SetCurveParameters(0.0, 2.0 * M_PI, 10.0, 5.0, 0.0, Standard_True);
@@ -48,7 +48,7 @@ TEST_F(HelixGeom_BuilderHelix_Test, MultipleCoils)
 {
   HelixGeom_BuilderHelix aBuilder;
 
-  gp_Ax2 aPosition(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.), gp_Dir(1., 0., 0.));
+  gp_Ax2 aPosition(gp_Pnt(0., 0., 0.), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   aBuilder.SetPosition(aPosition);
   aBuilder.SetTolerance(myTolerance);
 
@@ -67,7 +67,7 @@ TEST_F(HelixGeom_BuilderHelix_Test, PositionGetterSetter)
 {
   HelixGeom_BuilderHelix aBuilder;
 
-  gp_Ax2 aTestPosition(gp_Pnt(10., 20., 30.), gp_Dir(1., 0., 0.), gp_Dir(0., 1., 0.));
+  gp_Ax2 aTestPosition(gp_Pnt(10., 20., 30.), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::Y));
   aBuilder.SetPosition(aTestPosition);
 
   const gp_Ax2& aRetrievedPosition = aBuilder.Position();

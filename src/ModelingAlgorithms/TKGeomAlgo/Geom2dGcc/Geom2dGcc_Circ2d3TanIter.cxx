@@ -806,7 +806,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Quali
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Circ2d                   C1(gp_Ax2d(Point3, gp_Dir2d(1., 0.)), 0.);
+  gp_Circ2d                   C1(gp_Ax2d(Point3, gp_Dir2d(gp_Dir2d::D::X)), 0.);
   Geom2dAdaptor_Curve         Cu1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve         Cu2 = Qualified2.Qualified();
   Geom2dGcc_FunctionTanCuCuCu Func(C1, Cu1, Cu2);

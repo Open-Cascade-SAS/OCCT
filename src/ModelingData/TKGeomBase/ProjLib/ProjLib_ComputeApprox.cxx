@@ -1407,7 +1407,7 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
         myBSpline->Translate(gp_Vec2d(du, dv));
       if (ToMirror)
       {
-        gp_Ax2d Axe(gp_Pnt2d(0., 0.), gp_Dir2d(1., 0.));
+        gp_Ax2d Axe(gp_Pnt2d(0., 0.), gp_Dir2d(gp_Dir2d::D::X));
         myBSpline->Mirror(Axe);
       }
     }

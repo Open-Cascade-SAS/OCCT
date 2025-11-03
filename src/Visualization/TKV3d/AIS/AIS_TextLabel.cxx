@@ -402,7 +402,7 @@ Standard_Boolean AIS_TextLabel::calculateLabelParams(const gp_Pnt&  thePosition,
 gp_Trsf AIS_TextLabel::calculateLabelTrsf(const gp_Pnt& thePosition, gp_Pnt& theCenterOfLabel) const
 {
   const Standard_Real anAngle = myDrawer->TextAspect()->Aspect()->TextAngle() * M_PI / 180.0;
-  const gp_Ax1        aRotAxis(thePosition, gp_Dir(0.0, 0.0, 1.0));
+  const gp_Ax1        aRotAxis(thePosition, gp_Dir(gp_Dir::D::Z));
 
   gp_Ax2 anOrientation = myOrientation3D;
   anOrientation.Rotate(aRotAxis, anAngle);

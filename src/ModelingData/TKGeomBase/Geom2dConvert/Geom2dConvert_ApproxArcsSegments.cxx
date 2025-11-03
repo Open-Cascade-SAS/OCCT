@@ -174,7 +174,7 @@ Standard_Boolean Geom2dConvert_ApproxArcsSegments::makeArc(
     const gp_Pnt2d              aCenter((prodP1V * aDelta.Y() - prodDeM * aVec.Y()) / vprodVD,
                            (prodDeM * aVec.X() - prodP1V * aDelta.X()) / vprodVD);
     const Standard_Real         aRad = (aCenter.Distance(aP1) + aCenter.Distance(aP2)) * 0.5;
-    const gp_Ax22d              ax22d(aCenter, gp_Dir2d(1., 0.), gp_Dir2d(0., 1.));
+    const gp_Ax22d              ax22d(aCenter, gp_Dir2d(gp_Dir2d::D::X), gp_Dir2d(gp_Dir2d::D::Y));
     const gp_Circ2d             aCir(ax22d, aRad);
     const Handle(Geom2d_Circle) Circ = new Geom2d_Circle(aCir);
 

@@ -141,7 +141,7 @@ TEST_F(CanonicalRecognitionApproxTest, ConicalSurfaceRecognition_A3)
 {
   // Create conical face: cone with half angle 30 degrees
   const Standard_Real         aHalfAngle = M_PI / 6.0; // 30 degrees
-  gp_Ax2                      aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                      aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_ConicalSurface) aConeSurf = new Geom_ConicalSurface(aAxis, aHalfAngle, 2.0);
   BRepBuilderAPI_MakeFace     aFaceMaker(aConeSurf, 0, 2 * M_PI, 0, 3, Precision::Confusion());
 
@@ -167,7 +167,7 @@ TEST_F(CanonicalRecognitionApproxTest, ConicalSurfaceRecognition_A3)
 TEST_F(CanonicalRecognitionApproxTest, SphericalSurfaceRecognition_A4)
 {
   // Create spherical face
-  gp_Ax2                        aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                        aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_SphericalSurface) aSphereSurf = new Geom_SphericalSurface(aAxis, 1.0);
   BRepBuilderAPI_MakeFace aFaceMaker(aSphereSurf, 0, 2 * M_PI, 0, M_PI / 2, Precision::Confusion());
 
@@ -262,7 +262,7 @@ TEST_F(CanonicalRecognitionBaseCurveTest, BezierToCircleRecognition_A2)
 TEST_F(CanonicalRecognitionBaseCurveTest, EllipseToEllipseRecognition_A3)
 {
   // Create ellipse with major radius 1, minor radius 0.5
-  gp_Ax2               aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
+  gp_Ax2               aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   Handle(Geom_Ellipse) aEllipse = new Geom_Ellipse(aAxis, 1.0, 0.5);
 
   // Convert to B-spline curve
@@ -322,7 +322,7 @@ TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentWireToLineRecognition_A4)
 TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentCircleWireRecognition_A5)
 {
   // Create circle and convert to B-spline
-  gp_Ax2              aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2              aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_Circle) aCircle = new Geom_Circle(aAxis, 1.0);
 
   // Convert to B-spline curve
@@ -358,7 +358,7 @@ TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentCircleWireRecognition_A5)
 TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentEllipseWireRecognition_A6)
 {
   // Create ellipse and convert to B-spline
-  gp_Ax2               aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
+  gp_Ax2               aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   Handle(Geom_Ellipse) aEllipse = new Geom_Ellipse(aAxis, 1.0, 0.5);
 
   // Convert to B-spline curve
@@ -440,7 +440,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedPlaneRecognition_B1)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedCylinderRecognition_B2)
 {
   // Create cylindrical surface
-  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_CylindricalSurface) aCylSurf = new Geom_CylindricalSurface(aAxis, 1.0);
 
   // Create face from cylinder
@@ -467,7 +467,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedConeRecognition_B3)
 {
   // Create conical surface (30 degree half-angle)
   const Standard_Real         aSemiAngle = M_PI / 6.0; // 30 degrees
-  gp_Ax2                      aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                      aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_ConicalSurface) aConeSurf = new Geom_ConicalSurface(aAxis, aSemiAngle, 0);
 
   // Create face from cone
@@ -493,7 +493,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedConeRecognition_B3)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, ConvertedSphereRecognition_B4)
 {
   // Create spherical surface and convert to B-spline
-  gp_Ax2                        aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                        aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_SphericalSurface) aSphereSurf = new Geom_SphericalSurface(aAxis, 1.0);
 
   // Convert to B-spline surface
@@ -559,7 +559,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnPlanarSurfaceRecognition_B5)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnCylindricalSurfaceRecognition_B6)
 {
   // Create 4 cylindrical face segments to be sewn together
-  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_CylindricalSurface) aCylSurf = new Geom_CylindricalSurface(aAxis, 1.0);
 
   BRepBuilderAPI_MakeFace aFaceMaker1(aCylSurf, 0, 3, -1, 0, Precision::Confusion());
@@ -601,7 +601,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnConicalSurfaceRecognition_B7)
 {
   // Create 4 conical face segments to be sewn together
   const Standard_Real         aSemiAngle = M_PI / 6.0; // 30 degrees
-  gp_Ax2                      aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                      aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_ConicalSurface) aConeSurf = new Geom_ConicalSurface(aAxis, aSemiAngle, 0);
 
   BRepBuilderAPI_MakeFace aFaceMaker1(aConeSurf, 0, 3, 0, 1, Precision::Confusion());
@@ -642,7 +642,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnConicalSurfaceRecognition_B7)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnSphericalSurfaceRecognition_B8)
 {
   // Create 4 spherical face segments to be sewn together, converted to B-spline
-  gp_Ax2                        aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                        aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_SphericalSurface) aSphereSurf = new Geom_SphericalSurface(aAxis, 1.0);
 
   // Convert to B-spline surface
@@ -681,7 +681,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnSphericalSurfaceRecognition_B8)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, ComplexCylindricalRecognitionWithSection_B9)
 {
   // Create 4 cylindrical face segments and sew them together
-  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_CylindricalSurface) aCylSurf = new Geom_CylindricalSurface(aAxis, 1.0);
 
   // Create 4 face segments with parameter ranges matching the original test
@@ -726,7 +726,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, ComplexCylindricalRecognitionWithSec
 TEST_F(CanonicalRecognitionBaseSurfaceTest, ExtrudedCylindricalSurfaceRecognition_B10)
 {
   // Create cylindrical surface (radius 1)
-  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_CylindricalSurface) aCylSurf = new Geom_CylindricalSurface(aAxis, 1.0);
 
   // Create plane for intersection: plane at origin with normal (1, 0, 1) normalized

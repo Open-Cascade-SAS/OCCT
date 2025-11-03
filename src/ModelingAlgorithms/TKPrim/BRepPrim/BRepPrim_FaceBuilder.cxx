@@ -102,13 +102,13 @@ void BRepPrim_FaceBuilder::Init(const BRep_Builder&         B,
 
   // set the pcurves
   Handle(Geom2d_Line) L;
-  L = new Geom2d_Line(gp_Pnt2d(UMin, VMin), gp_Dir2d(1, 0));
+  L = new Geom2d_Line(gp_Pnt2d(UMin, VMin), gp_Dir2d(gp_Dir2d::D::X));
   B.UpdateEdge(myEdges[0], L, myFace, Precision::Confusion());
-  L = new Geom2d_Line(gp_Pnt2d(UMax, VMin), gp_Dir2d(0, 1));
+  L = new Geom2d_Line(gp_Pnt2d(UMax, VMin), gp_Dir2d(gp_Dir2d::D::Y));
   B.UpdateEdge(myEdges[1], L, myFace, Precision::Confusion());
-  L = new Geom2d_Line(gp_Pnt2d(UMax, VMax), gp_Dir2d(-1, 0));
+  L = new Geom2d_Line(gp_Pnt2d(UMax, VMax), gp_Dir2d(gp_Dir2d::D::NX));
   B.UpdateEdge(myEdges[2], L, myFace, Precision::Confusion());
-  L = new Geom2d_Line(gp_Pnt2d(UMin, VMax), gp_Dir2d(0, -1));
+  L = new Geom2d_Line(gp_Pnt2d(UMin, VMax), gp_Dir2d(gp_Dir2d::D::NY));
   B.UpdateEdge(myEdges[3], L, myFace, Precision::Confusion());
 
   // set the parameters

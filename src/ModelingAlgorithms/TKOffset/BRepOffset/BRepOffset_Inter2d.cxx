@@ -1206,22 +1206,22 @@ Standard_Boolean BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge&  E,
       TColGeom2d_SequenceOfCurve BoundLines;
       if (!Precision::IsInfinite(Vmin))
       {
-        Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(0., Vmin), gp_Dir2d(1., 0.));
+        Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(0., Vmin), gp_Dir2d(gp_Dir2d::D::X));
         BoundLines.Append(aLine);
       }
       if (!Precision::IsInfinite(Umin))
       {
-        Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(Umin, 0.), gp_Dir2d(0., 1.));
+        Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(Umin, 0.), gp_Dir2d(gp_Dir2d::D::Y));
         BoundLines.Append(aLine);
       }
       if (!Precision::IsInfinite(Vmax))
       {
-        Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(0., Vmax), gp_Dir2d(1., 0.));
+        Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(0., Vmax), gp_Dir2d(gp_Dir2d::D::X));
         BoundLines.Append(aLine);
       }
       if (!Precision::IsInfinite(Umax))
       {
-        Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(Umax, 0.), gp_Dir2d(0., 1.));
+        Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(Umax, 0.), gp_Dir2d(gp_Dir2d::D::Y));
         BoundLines.Append(aLine);
       }
 

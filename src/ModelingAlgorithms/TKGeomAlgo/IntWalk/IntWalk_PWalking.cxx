@@ -2174,7 +2174,7 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(
         gp_Dir2d anIsoDir(0, 1);
 
         if ((indexofiso == 1) || (indexofiso == 3))
-          anIsoDir = gp_Dir2d(1, 0);
+          anIsoDir = gp_Dir2d(gp_Dir2d::D::X);
 
         if (aTangentZoneDir.SquareMagnitude() > gp::Resolution())
         {

@@ -2327,7 +2327,7 @@ static Standard_Integer OCC26747_1(Draw_Interpretor& theDI,
   //                  OR
   //  0 * X^2 + 1 * Y^2 + 2*0*X*Y + 2*(-1)*X + 2*(-3)*Y + 10 = 0.
 
-  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 3.0), gp_Dir2d(0.0, 1.0));
+  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 3.0), gp_Dir2d(gp_Dir2d::D::Y));
   Parab2d_Bug26747::FocusPoint.SetCoord(1.0, 3.0);
 
   Parab2d_Bug26747::FocalLength = 0.5;
@@ -2391,7 +2391,7 @@ static Standard_Integer OCC26747_2(Draw_Interpretor& theDI,
   //  A * X^2 + B * (Y^2) + 2*C*(X*Y) + 2*D*X + 2*E*Y    + F = 0.
   //  0 * X^2 + 1 * (Y^2) + 2*0*(X*Y) + 2*1*X + 2*(-3)*Y + 10 = 0.
 
-  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(gp_Dir2d::D::Y));
   Parab2d_Bug26747::FocusPoint.SetCoord(-1.0, 3.0);
 
   Parab2d_Bug26747::FocalLength = 0.5;
@@ -2456,7 +2456,7 @@ static Standard_Integer OCC26747_3(Draw_Interpretor& theDI,
   //  A * X^2 + B * (Y^2) + 2*C*(X*Y) + 2*D*X + 2*E*Y    + F = 0.
   //  0 * X^2 + 1 * (Y^2) + 2*0*(X*Y) + 2*0*X + 2*(-3)*Y + 9 = 0.
 
-  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(gp_Dir2d::D::Y));
   Parab2d_Bug26747::FocusPoint.SetCoord(0.0, 3.0);
 
   Parab2d_Bug26747::FocalLength = 0.0;
@@ -3022,7 +3022,7 @@ static Standard_Integer OCC28131(Draw_Interpretor&,
 
     Handle(Geom2d_BSplineCurve) c = anInterpolation.Curve();
 
-    gp_Pln pln(gp_Ax3(gp_Pnt(), gp_Dir(1, 0, 0), gp_Dir(0, -1, 0)));
+    gp_Pln pln(gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::NY)));
 
     Handle(Geom_BSplineCurve) c3d = Handle(Geom_BSplineCurve)::DownCast(GeomAPI::To3d(c, pln));
     curve1                        = c3d;
@@ -3039,7 +3039,7 @@ static Standard_Integer OCC28131(Draw_Interpretor&,
     anInterpolation.Perform();
 
     Handle(Geom2d_BSplineCurve) c = anInterpolation.Curve();
-    gp_Pln                      pln(gp_Ax3(gp_Pnt(), gp_Dir(0, -1, 0), gp_Dir(-1, 0, 0)));
+    gp_Pln                      pln(gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::NY), gp_Dir(gp_Dir::D::NX)));
     Handle(Geom_BSplineCurve)   c3d = Handle(Geom_BSplineCurve)::DownCast(GeomAPI::To3d(c, pln));
     curve2                          = c3d;
   }
@@ -3080,7 +3080,7 @@ static Standard_Integer OCC28131(Draw_Interpretor&,
 
 static Standard_Integer OCC29289(Draw_Interpretor&, Standard_Integer, const char**)
 {
-  gp_Elips2d             e1(gp_Ax2d(gp_Pnt2d(0., 0.), gp_Dir2d(1., 0)), 2., 1.);
+  gp_Elips2d             e1(gp_Ax2d(gp_Pnt2d(0., 0.), gp_Dir2d(gp_Dir2d::D::X)), 2., 1.);
   Handle(Geom2d_Ellipse) Ge1 = new Geom2d_Ellipse(e1);
   gp_Elips2d             e2(gp_Ax2d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1., 1.)), 2., 1.);
   Handle(Geom2d_Ellipse) Ge2 = new Geom2d_Ellipse(e2);
@@ -3402,7 +3402,7 @@ static Standard_Integer OCC29430(Draw_Interpretor& theDI,
   const Standard_Real r45 = M_PI / 4.0, r225 = 3.0 * M_PI / 4.0;
 
   GC_MakeArcOfCircle arcMaker(
-    gp_Circ(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)), 1.0),
+    gp_Circ(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 1.0),
     r45,
     r225,
     Standard_True);

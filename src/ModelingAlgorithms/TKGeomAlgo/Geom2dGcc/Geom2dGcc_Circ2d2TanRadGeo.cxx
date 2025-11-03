@@ -556,7 +556,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
       cote1(1) = Radius;
       cote1(2) = -Radius;
     }
-    gp_Circ2d       Circ(gp_Ax2d(Point2, gp_Dir2d(1., 0.)), Radius);
+    gp_Circ2d       Circ(gp_Ax2d(Point2, gp_Dir2d(gp_Dir2d::D::X)), Radius);
     IntRes2d_Domain D1(ElCLib::Value(0., Circ),
                        0.,
                        Tol,

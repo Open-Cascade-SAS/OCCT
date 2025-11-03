@@ -350,7 +350,7 @@ void BRepSweep_Translation::SetGeneratingPCurve(const TopoDS_Shape& aNewFace,
     if (aDirV.Index() == 2)
       v = -myVec.Magnitude();
     L.SetLocation(gp_Pnt2d(0, v));
-    L.SetDirection(gp_Dir2d(1, 0));
+    L.SetDirection(gp_Dir2d(gp_Dir2d::D::X));
     //  }
     Handle(Geom2d_Line) GL = new Geom2d_Line(L);
     SetThePCurve(myBuilder.Builder(), TopoDS::Edge(aNewEdge), TopoDS::Face(aNewFace), orien, GL);
@@ -372,7 +372,7 @@ void BRepSweep_Translation::SetDirectingPCurve(const TopoDS_Shape& aNewFace,
   if (AS.GetType() != GeomAbs_Plane)
   {
     L.SetLocation(gp_Pnt2d(BRep_Tool::Parameter(TopoDS::Vertex(aGenV), TopoDS::Edge(aGenE)), 0));
-    L.SetDirection(gp_Dir2d(0, -1));
+    L.SetDirection(gp_Dir2d(gp_Dir2d::D::NY));
     /* JAG
       }
       else{

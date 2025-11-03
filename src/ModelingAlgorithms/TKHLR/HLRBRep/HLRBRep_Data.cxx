@@ -1536,7 +1536,7 @@ void HLRBRep_Data::EdgeState(const Standard_Real p1,
       }
       else
       {
-        V = gp_Dir(0, 0, -1);
+        V = gp_Dir(gp_Dir::D::NZ);
       }
       V.Transform(TI);
       if (NrmFace.Dot(V) > 0.)
@@ -1717,7 +1717,7 @@ Standard_Boolean HLRBRep_Data::OrientOutLine(const Standard_Integer I, HLRBRep_F
           }
           else
           {
-            V = gp_Dir(0, 0, -1);
+            V = gp_Dir(gp_Dir::D::NZ);
           }
           V.Transform(TI);
           if (mySLProps.IsNormalDefined())

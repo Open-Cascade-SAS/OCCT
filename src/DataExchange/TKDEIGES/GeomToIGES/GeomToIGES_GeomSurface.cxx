@@ -680,7 +680,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
 
   // creation of the generatrix : Generatrix
   Handle(Geom_Line) Ligne =
-    new Geom_Line(gp_Pnt(start->Cylinder().Radius(), 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+    new Geom_Line(gp_Pnt(start->Cylinder().Radius(), 0.0, 0.0), gp_Dir(gp_Dir::D::Z));
   GeomToIGES_GeomCurve        GC(*this);
   Handle(IGESData_IGESEntity) Generatrix = GC.TransferCurve(Ligne, V1, V2);
   gp_Pnt                      gen1       = Ligne->Value(V1);

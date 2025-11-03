@@ -184,7 +184,7 @@ Standard_Boolean Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P,
   }
 
   Par = RealLast();
-  L   = gp_Lin2d(P, gp_Dir2d(1, 0));
+  L   = gp_Lin2d(P, gp_Dir2d(gp_Dir2d::D::X));
 
   return Standard_False;
 }

@@ -582,14 +582,14 @@ TopoDS_Face BRepOffset_MakeSimpleOffset::BuildWallFace(const TopoDS_Edge& theOri
     theSurf->Bounds(Uf, Ul, Vf, Vl);
     TopLoc_Location     Loc;
     Handle(Geom2d_Line) EdgeLine2d, OELine2d, aLine2d, aLine2d2;
-    EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., Vf), gp_Dir2d(1., 0.));
+    EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., Vf), gp_Dir2d(gp_Dir2d::D::X));
     aBB.UpdateEdge(theOrigEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
-    OELine2d = new Geom2d_Line(gp_Pnt2d(0., Vl), gp_Dir2d(1., 0.));
+    OELine2d = new Geom2d_Line(gp_Pnt2d(0., Vl), gp_Dir2d(gp_Dir2d::D::X));
     aBB.UpdateEdge(aNewEdge, OELine2d, theSurf, Loc, Precision::Confusion());
     Standard_Real UonV1 = (ToReverse) ? Ul : Uf;
     Standard_Real UonV2 = (ToReverse) ? Uf : Ul;
-    aLine2d             = new Geom2d_Line(gp_Pnt2d(UonV2, 0.), gp_Dir2d(0., 1.));
-    aLine2d2            = new Geom2d_Line(gp_Pnt2d(UonV1, 0.), gp_Dir2d(0., 1.));
+    aLine2d             = new Geom2d_Line(gp_Pnt2d(UonV2, 0.), gp_Dir2d(gp_Dir2d::D::Y));
+    aLine2d2            = new Geom2d_Line(gp_Pnt2d(UonV1, 0.), gp_Dir2d(gp_Dir2d::D::Y));
     if (aWall1.IsSame(aWall2))
     {
       aBB.UpdateEdge(aWall1, aLine2d, aLine2d2, theSurf, Loc, Precision::Confusion());

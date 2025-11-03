@@ -331,9 +331,9 @@ Standard_Real TopOpeBRepTool_ShapeTool::PeriodizeParameter(const Standard_Real p
 
     Standard_Real    tol  = Precision::Angular();
     Standard_Boolean isoU = Standard_False, isoV = Standard_False;
-    if (D.IsParallel(gp_Dir2d(0., 1.), tol))
+    if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::Y), tol))
       isoU = Standard_True;
-    else if (D.IsParallel(gp_Dir2d(1., 0.), tol))
+    else if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::X), tol))
       isoV = Standard_True;
     if (isoU)
     {

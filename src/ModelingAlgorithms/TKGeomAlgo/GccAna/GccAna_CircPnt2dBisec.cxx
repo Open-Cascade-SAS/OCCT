@@ -107,7 +107,7 @@ Handle(GccInt_Bisec) GccAna_CircPnt2dBisec::ThisSolution(const Standard_Integer 
 
   if (dist < myTolerance)
   {
-    gp_Circ2d biscirpnt1(gp_Ax2d(point, gp_Dir2d(1.0, 0.0)), R1 / 2.);
+    gp_Circ2d biscirpnt1(gp_Ax2d(point, gp_Dir2d(gp_Dir2d::D::X)), R1 / 2.);
     bissol = new GccInt_BCirc(biscirpnt1);
     //       ==========================================================
   }

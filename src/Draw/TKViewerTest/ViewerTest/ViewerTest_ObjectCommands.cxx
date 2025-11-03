@@ -2967,7 +2967,7 @@ Handle(Poly_Triangulation) CalculationOfSphere(double X, double Y, double Z, int
     if (modmax > Tol)
       Nor = gp_Dir(eqPlan);
     else
-      Nor = gp_Dir(0., 0., 1.);
+      Nor = gp_Dir(gp_Dir::D::Z);
 
     polyTriangulation->SetNormal(i, Nor.XYZ());
   }

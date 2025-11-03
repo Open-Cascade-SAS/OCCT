@@ -774,7 +774,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&        
   else
   {
     //     gp_Dir2d Dir(-y1dir,x1dir);
-    gp_Circ2d       Circ(gp_Ax2d(Point1, gp_Dir2d(1., 0.)), Radius);
+    gp_Circ2d       Circ(gp_Ax2d(Point1, gp_Dir2d(gp_Dir2d::D::X)), Radius);
     IntRes2d_Domain D1(ElCLib::Value(0., Circ),
                        0.,
                        Tol,

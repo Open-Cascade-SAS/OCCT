@@ -612,13 +612,13 @@ void BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
   // make the lines
   Handle(Geom2d_Line) Lumin, Lumax, Lvmin, Lvmax;
   if (!umininf)
-    Lumin = new Geom2d_Line(gp_Pnt2d(UMin, 0), gp_Dir2d(0, 1));
+    Lumin = new Geom2d_Line(gp_Pnt2d(UMin, 0), gp_Dir2d(gp_Dir2d::D::Y));
   if (!umaxinf)
-    Lumax = new Geom2d_Line(gp_Pnt2d(UMax, 0), gp_Dir2d(0, 1));
+    Lumax = new Geom2d_Line(gp_Pnt2d(UMax, 0), gp_Dir2d(gp_Dir2d::D::Y));
   if (!vmininf)
-    Lvmin = new Geom2d_Line(gp_Pnt2d(0, VMin), gp_Dir2d(1, 0));
+    Lvmin = new Geom2d_Line(gp_Pnt2d(0, VMin), gp_Dir2d(gp_Dir2d::D::X));
   if (!vmaxinf)
-    Lvmax = new Geom2d_Line(gp_Pnt2d(0, VMax), gp_Dir2d(1, 0));
+    Lvmax = new Geom2d_Line(gp_Pnt2d(0, VMax), gp_Dir2d(gp_Dir2d::D::X));
 
   // make the face
   TopoDS_Face& F = TopoDS::Face(myShape);

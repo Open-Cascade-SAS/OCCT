@@ -353,7 +353,7 @@ gp_Lin HLRAlgo_Projector::Shoot(const Standard_Real X, const Standard_Real Y) co
   }
   else
   {
-    L = gp_Lin(gp_Pnt(X, Y, 0), gp_Dir(0, 0, -1));
+    L = gp_Lin(gp_Pnt(X, Y, 0), gp_Dir(gp_Dir::D::NZ));
   }
   L.Transform(myInvTrsf);
   return L;

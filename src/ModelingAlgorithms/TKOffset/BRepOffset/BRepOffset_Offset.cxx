@@ -1125,7 +1125,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
   Handle(Geom2d_Curve) PC;
   if (ExchUV)
   {
-    PC = new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(1, 0));
+    PC = new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(gp_Dir2d::D::X));
     U1 = f1;
     U2 = l1;
     if (!C1is3D)
@@ -1133,7 +1133,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
   }
   else
   {
-    PC = new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(0, 1));
+    PC = new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(gp_Dir2d::D::Y));
     U1 = f2;
     U2 = l2;
     if (!C1is3D)
@@ -1172,7 +1172,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
   // Update de edge2. (Rem : has already a 3d curve)
   if (ExchUV)
   {
-    PC = new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(1, 0));
+    PC = new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(gp_Dir2d::D::X));
     U1 = f1;
     U2 = l1;
     if (!C2is3D)
@@ -1180,7 +1180,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
   }
   else
   {
-    PC = new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(0, 1));
+    PC = new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(gp_Dir2d::D::Y));
     U1 = f2;
     U2 = l2;
     if (!C2is3D)
@@ -1275,15 +1275,15 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
     {
       // rem : si ExchUv, il faut  reverser le Wire.
       // donc l'edge Forward dans la face sera E4 : d'ou L1 et L2
-      L2 = new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(0, 1));
-      L1 = new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(0, 1));
+      L2 = new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(gp_Dir2d::D::Y));
+      L1 = new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(gp_Dir2d::D::Y));
       U1 = f2;
       U2 = l2;
     }
     else
     {
-      L1 = new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(1, 0));
-      L2 = new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(1, 0));
+      L1 = new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(gp_Dir2d::D::X));
+      L2 = new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(gp_Dir2d::D::X));
       U1 = f1;
       U2 = l1;
     }
@@ -1340,13 +1340,13 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
 
     if (ExchUV)
     {
-      L1 = new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(0, 1));
+      L1 = new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(gp_Dir2d::D::Y));
       U1 = f2;
       U2 = l2;
     }
     else
     {
-      L1 = new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(1, 0));
+      L1 = new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(gp_Dir2d::D::X));
       U1 = f1;
       U2 = l1;
     }
@@ -1366,13 +1366,13 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
 
     if (ExchUV)
     {
-      L2 = new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(0, 1));
+      L2 = new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(gp_Dir2d::D::Y));
       U1 = f2;
       U2 = l2;
     }
     else
     {
-      L2 = new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(1, 0));
+      L2 = new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(gp_Dir2d::D::X));
       U1 = f1;
       U2 = l1;
     }

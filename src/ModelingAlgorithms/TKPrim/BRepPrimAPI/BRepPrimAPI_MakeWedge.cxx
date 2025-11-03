@@ -26,7 +26,7 @@ BRepPrimAPI_MakeWedge::BRepPrimAPI_MakeWedge(const Standard_Real dx,
                                              const Standard_Real dy,
                                              const Standard_Real dz,
                                              const Standard_Real ltx)
-    : myWedge(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), dx, dy, dz, ltx)
+    : myWedge(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), dx, dy, dz, ltx)
 {
 }
 
@@ -50,7 +50,7 @@ BRepPrimAPI_MakeWedge::BRepPrimAPI_MakeWedge(const Standard_Real dx,
                                              const Standard_Real zmin,
                                              const Standard_Real xmax,
                                              const Standard_Real zmax)
-    : myWedge(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)),
+    : myWedge(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
               0,
               0,
               0,

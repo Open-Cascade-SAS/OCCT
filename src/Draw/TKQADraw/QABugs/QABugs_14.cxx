@@ -66,7 +66,7 @@ static Standard_Integer BUC60897(Draw_Interpretor& di,
 {
   Standard_Character abuf[16];
 
-  Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(100, 0), gp_Dir2d(-1, 0));
+  Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(100, 0), gp_Dir2d(gp_Dir2d::D::NX));
   Sprintf(abuf, "line");
   Standard_CString st = abuf;
   DrawTrSurf::Set(st, aLine);

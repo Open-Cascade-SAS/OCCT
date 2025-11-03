@@ -63,7 +63,7 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const Standard_Real R,
 //=================================================================================================
 
 BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Standard_Real R)
-    : mySphere(gp_Ax2(Center, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), R)
+    : mySphere(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), R)
 {
 }
 
@@ -72,7 +72,7 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Stand
 BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
                                                const Standard_Real R,
                                                const Standard_Real angle)
-    : mySphere(gp_Ax2(Center, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), R)
+    : mySphere(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), R)
 {
   mySphere.Angle(angle);
 }
@@ -83,7 +83,7 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
                                                const Standard_Real R,
                                                const Standard_Real angle1,
                                                const Standard_Real angle2)
-    : mySphere(gp_Ax2(Center, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), R)
+    : mySphere(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), R)
 {
   mySphere.VMin(angle1);
   mySphere.VMax(angle2);
@@ -96,7 +96,7 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
                                                const Standard_Real angle1,
                                                const Standard_Real angle2,
                                                const Standard_Real angle3)
-    : mySphere(gp_Ax2(Center, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), R)
+    : mySphere(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), R)
 {
   mySphere.VMin(angle1);
   mySphere.VMax(angle2);

@@ -1898,7 +1898,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
         DeclareAndCast(IGESGeom_CircularArc, circ, generatrix);
         gp_Pnt2d startpoint = circ->StartPoint();
         paramv -=
-          ElCLib::Parameter(gp_Circ2d(gp_Ax2d(circ->Center(), gp_Dir2d(1, 0)), circ->Radius()),
+          ElCLib::Parameter(gp_Circ2d(gp_Ax2d(circ->Center(), gp_Dir2d(gp_Dir2d::D::X)), circ->Radius()),
                             startpoint);
         if (Surf->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
           paramv += ShapeAnalysis::AdjustToPeriod(paramv, -M_PI, M_PI);
@@ -1915,7 +1915,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
         DeclareAndCast(IGESGeom_CircularArc, circ, directrix);
         gp_Pnt2d startpoint = circ->StartPoint();
         paramu -=
-          ElCLib::Parameter(gp_Circ2d(gp_Ax2d(circ->Center(), gp_Dir2d(1, 0)), circ->Radius()),
+          ElCLib::Parameter(gp_Circ2d(gp_Ax2d(circ->Center(), gp_Dir2d(gp_Dir2d::D::X)), circ->Radius()),
                             startpoint);
         paramu += ShapeAnalysis::AdjustToPeriod(paramu, 0, M_PI * 2);
       }

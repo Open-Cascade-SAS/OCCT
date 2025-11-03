@@ -322,7 +322,7 @@ TEST(Bnd_BoxTest, TransformationVoidBox)
 {
   Bnd_Box aVoidBox;
   gp_Trsf aRotation;
-  aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4);
+  aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), M_PI / 4);
 
   Bnd_Box aTransformed = aVoidBox.Transformed(aRotation);
 
@@ -510,10 +510,10 @@ TEST(Bnd_BoxTest, IsOutPlane)
   aBox.Update(-1.0, -1.0, -1.0, 1.0, 1.0, 1.0);
 
   // Plane that intersects the box
-  gp_Pln anIntersectingPln(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  gp_Pln anIntersectingPln(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X));
 
   // Plane that doesn't intersect the box
-  gp_Pln aSeparatePln(gp_Pnt(2, 0, 0), gp_Dir(1, 0, 0));
+  gp_Pln aSeparatePln(gp_Pnt(2, 0, 0), gp_Dir(gp_Dir::D::X));
 
   EXPECT_FALSE(aBox.IsOut(anIntersectingPln)) << "Intersecting plane should not be out";
   EXPECT_TRUE(aBox.IsOut(aSeparatePln)) << "Separate plane should be out";
@@ -525,10 +525,10 @@ TEST(Bnd_BoxTest, IsOutLine)
   aBox.Update(0.0, 0.0, 0.0, 2.0, 2.0, 2.0);
 
   // Line that passes through the box
-  gp_Lin anIntersectingLin(gp_Pnt(-1, 1, 1), gp_Dir(1, 0, 0));
+  gp_Lin anIntersectingLin(gp_Pnt(-1, 1, 1), gp_Dir(gp_Dir::D::X));
 
   // Line that misses the box
-  gp_Lin aSeparateLin(gp_Pnt(-1, 3, 1), gp_Dir(1, 0, 0));
+  gp_Lin aSeparateLin(gp_Pnt(-1, 3, 1), gp_Dir(gp_Dir::D::X));
 
   EXPECT_FALSE(aBox.IsOut(anIntersectingLin)) << "Intersecting line should not be out";
   EXPECT_TRUE(aBox.IsOut(aSeparateLin)) << "Separate line should be out";
@@ -641,7 +641,7 @@ TEST(Bnd_BoxTest, TransformationWithOpenBox)
   aBox.OpenXmax();
 
   gp_Trsf aRotation;
-  aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 2);
+  aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), M_PI / 2);
 
   Bnd_Box aTransformed = aBox.Transformed(aRotation);
 

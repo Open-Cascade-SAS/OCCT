@@ -34,7 +34,7 @@ protected:
   void SetUp() override
   {
     // Standard axis aligned with Z
-    myAxis      = gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.), gp_Dir(1., 0., 0.));
+    myAxis      = gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
     myTolerance = 1.e-4;
   }
 

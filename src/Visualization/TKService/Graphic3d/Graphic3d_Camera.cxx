@@ -193,7 +193,7 @@ void Graphic3d_Camera::Copy(const Handle(Graphic3d_Camera)& theOther)
 void Graphic3d_Camera::SetIdentityOrientation()
 {
   SetEyeAndCenter(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(0.0, 0.0, -1.0));
-  SetUp(gp_Dir(0.0, 1.0, 0.0));
+  SetUp(gp_Dir(gp_Dir::D::Y));
 }
 
 //=================================================================================================

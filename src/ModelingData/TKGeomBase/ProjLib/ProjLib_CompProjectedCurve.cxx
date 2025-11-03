@@ -1287,12 +1287,12 @@ void ProjLib_CompProjectedCurve::Perform()
         Ufin = Pfin.Y();
         if (Udeb > Ufin)
         {
-          Dir  = gp_Dir2d(0, -1);
+          Dir  = gp_Dir2d(gp_Dir2d::D::NY);
           Udeb = -Udeb;
           Ufin = -Ufin;
         }
         else
-          Dir = gp_Dir2d(0, 1);
+          Dir = gp_Dir2d(gp_Dir2d::D::Y);
         PCur2d = new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(UIso, 0), Dir), Udeb, Ufin);
         HPCur  = new Geom2dAdaptor_Curve(PCur2d);
       }
@@ -1306,12 +1306,12 @@ void ProjLib_CompProjectedCurve::Perform()
         Ufin = Pfin.X();
         if (Udeb > Ufin)
         {
-          Dir  = gp_Dir2d(-1, 0);
+          Dir  = gp_Dir2d(gp_Dir2d::D::NX);
           Udeb = -Udeb;
           Ufin = -Ufin;
         }
         else
-          Dir = gp_Dir2d(1, 0);
+          Dir = gp_Dir2d(gp_Dir2d::D::X);
         PCur2d = new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(0, VIso), Dir), Udeb, Ufin);
         HPCur  = new Geom2dAdaptor_Curve(PCur2d);
       }

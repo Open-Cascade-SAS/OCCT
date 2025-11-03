@@ -387,7 +387,7 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusRotatedNarrowBox_D1)
   constexpr Standard_Real r     = M_SQRT2;
   TopoDS_Shape            aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
   gp_Trsf                 aTrsf;
-  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4.0); // 45 degrees
+  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), M_PI / 4.0); // 45 degrees
   aBox2.Move(aTrsf);
 
   const TopoDS_Shape aResult = PerformFuse(aBox2, aBox1);
@@ -404,7 +404,7 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusRotatedNarrowBoxVariation_D2)
   constexpr Standard_Real r     = 5.5677643628300219;
   TopoDS_Shape            aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
   gp_Trsf                 aTrsf;
-  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 34.73 * M_PI / 180.0);
+  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), 34.73 * M_PI / 180.0);
   aBox2.Move(aTrsf);
 
   const TopoDS_Shape aResult = PerformFuse(aBox2, aBox1);
@@ -438,8 +438,8 @@ TEST_F(BFuseSimpleTest, RotatedSpherePlusBox_D5)
 
   // Apply rotations: -90 degrees around Z, then -45 degrees around Y
   gp_Trsf aTrsf1, aTrsf2, aTrsfCombined;
-  aTrsf1.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), -M_PI / 2.0); // -90 degrees Z
-  aTrsf2.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), -M_PI / 4.0); // -45 degrees Y
+  aTrsf1.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), -M_PI / 2.0); // -90 degrees Z
+  aTrsf2.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Y)), -M_PI / 4.0); // -45 degrees Y
   aTrsfCombined = aTrsf2 * aTrsf1;
   aSphere.Move(aTrsfCombined);
 
@@ -455,8 +455,8 @@ TEST_F(BFuseSimpleTest, BoxPlusRotatedSphere_D6)
 
   // Apply rotations: -90 degrees around Z, then -45 degrees around Y
   gp_Trsf aTrsf1, aTrsf2, aTrsfCombined;
-  aTrsf1.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), -M_PI / 2.0);
-  aTrsf2.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), -M_PI / 4.0);
+  aTrsf1.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), -M_PI / 2.0);
+  aTrsf2.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Y)), -M_PI / 4.0);
   aTrsfCombined = aTrsf2 * aTrsf1;
   aSphere.Move(aTrsfCombined);
 
@@ -473,7 +473,7 @@ TEST_F(BFuseSimpleTest, SpherePlusRotatedBox_D7)
   TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   // Rotate box 90 degrees around Y axis: "trotate b 0 0 1 0 1 0 90"
   gp_Trsf aTrsf;
-  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 1), gp_Dir(0, 1, 0)), M_PI / 2.0); // 90 degrees Y
+  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 1), gp_Dir(gp_Dir::D::Y)), M_PI / 2.0); // 90 degrees Y
   aBox.Move(aTrsf);
 
   const TopoDS_Shape aResult = PerformFuse(aSphere, aBox);
@@ -488,7 +488,7 @@ TEST_F(BFuseSimpleTest, RotatedBoxPlusSphere_D8)
   TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
   // Rotate box 90 degrees around Y axis: "trotate b 0 0 1 0 1 0 90"
   gp_Trsf aTrsf;
-  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 1), gp_Dir(0, 1, 0)), M_PI / 2.0); // 90 degrees Y
+  aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 1), gp_Dir(gp_Dir::D::Y)), M_PI / 2.0); // 90 degrees Y
   aBox.Move(aTrsf);
 
   const TopoDS_Shape aResult = PerformFuse(aBox, aSphere);
@@ -500,7 +500,7 @@ TEST_F(BFuseSimpleTest, ProfileBasedPrisms_D9)
 {
   // Create first profile: "profile f1 x 100 y 100 x -200 y -200 x 100"
   // This creates a closed rectangular profile starting at origin
-  gp_Pln aPlane1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+  gp_Pln aPlane1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X,
                                         100.0), // move to (100, 0)
@@ -518,7 +518,7 @@ TEST_F(BFuseSimpleTest, ProfileBasedPrisms_D9)
 
   // Create second profile: "profile f2 x -100 y 100 x 100; ttranslate f2 0 0 100"
   // This creates a triangular profile translated to z=100
-  gp_Pln aPlane2(gp_Ax3(gp_Pnt(0, 0, 100), gp_Dir(0, 0, 1)));
+  gp_Pln aPlane2(gp_Ax3(gp_Pnt(0, 0, 100), gp_Dir(gp_Dir::D::Z)));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X,
                                         -100.0), // move to (-100, 0)
@@ -540,7 +540,7 @@ TEST_F(BFuseSimpleTest, ComplexProfileWithScaling_E1)
   const Standard_Real SCALE = 100.0;
 
   // Create first profile: "profile f1 c 50*SCALE 180 x -100*SCALE c 50*SCALE 180"
-  gp_Pln aPlane1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+  gp_Pln aPlane1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps1 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::C, 50.0 * SCALE, 180.0),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, -100.0 * SCALE),
@@ -551,7 +551,7 @@ TEST_F(BFuseSimpleTest, ComplexProfileWithScaling_E1)
 
   // Create second profile: "profile f2 x 300*SCALE y 200*SCALE x -300*SCALE; ttranslate f2
   // -200*SCALE -50*SCALE 0"
-  gp_Pln aPlane2(gp_Ax3(gp_Pnt(-200.0 * SCALE, -50.0 * SCALE, 0), gp_Dir(0, 0, 1)));
+  gp_Pln aPlane2(gp_Ax3(gp_Pnt(-200.0 * SCALE, -50.0 * SCALE, 0), gp_Dir(gp_Dir::D::Z)));
   std::vector<BOPTest_Utilities::ProfileOperation> aProfileOps2 = {
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::X, 300.0 * SCALE),
     BOPTest_Utilities::ProfileOperation(BOPTest_Utilities::ProfileCmd::Y, 200.0 * SCALE),
@@ -595,7 +595,7 @@ TEST_F(BFuseSimpleTest, ComplexVertexEdgeWireRevolution_E3)
   // Create revolution: "revol cyla pa 0 0 0 0 0 1 360"
   const TopoDS_Shape aRevolution =
     BOPTest_Utilities::CreateRevolution(aFace,
-                                        gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
+                                        gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                         2.0 * M_PI);
 
   // Create cylinder: "pcylinder cylb 1 9; ttranslate cylb 5 0 -2"
@@ -627,7 +627,7 @@ TEST_F(BFuseSimpleTest, CylinderWithComplexWireRevolution_E4)
   // Create revolution: "revol ring f 0 0 0 0 0 1 269"
   const TopoDS_Shape aRing =
     BOPTest_Utilities::CreateRevolution(aFace,
-                                        gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)),
+                                        gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                         269.0 * M_PI / 180.0);
 
   const TopoDS_Shape aResult = PerformFuse(aCylinder, aRing);
@@ -1844,7 +1844,7 @@ TEST_F(BFuseSimpleTest, CylinderWithRevolutionRing_J9)
   const TopoDS_Shape  aRingFace = BOPTest_Utilities::CreateFaceFromWire(aRingWire);
 
   // Create revolution: revol ring f 0 0 0 0 0 1 269
-  const gp_Ax1       aAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const gp_Ax1       aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   const TopoDS_Shape aRing =
     BOPTest_Utilities::CreateRevolution(aRingFace, aAxis, 269.0 * M_PI / 180.0);
 
@@ -1868,11 +1868,11 @@ TEST_F(BFuseSimpleTest, ComplexProfileWithRevolution_K1)
     {BOPTest_Utilities::ProfileCmd::Y, -25},
     {BOPTest_Utilities::ProfileCmd::X, -60},
     {BOPTest_Utilities::ProfileCmd::W, {}}};
-  const gp_Pln       aPlane(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)); // pl 1 0 0 0 0 1 (normal 1,0,0)
+  const gp_Pln       aPlane(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X)); // pl 1 0 0 0 0 1 (normal 1,0,0)
   const TopoDS_Shape aProfile = BOPTest_Utilities::CreateProfile(aPlane, aOps);
 
   // Create revolution: revol rv wr 50 100 50 0 0 1 360
-  const gp_Ax1       aRevAxis(gp_Pnt(50, 100, 50), gp_Dir(0, 0, 1));
+  const gp_Ax1       aRevAxis(gp_Pnt(50, 100, 50), gp_Dir(gp_Dir::D::Z));
   const TopoDS_Shape aRevolution =
     BOPTest_Utilities::CreateRevolution(aProfile, aRevAxis, 2 * M_PI);
 
@@ -1893,7 +1893,7 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinder_K2)
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinder(100.0, 50.0);
 
   // Create plane and cylinder: plane pl1 100 100 100 0 0 1 1 0 0, pcylinder pc pl1 100 50
-  // const gp_Ax3 anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
+  // const gp_Ax3 anAx3(gp_Pnt(100, 100, 100), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   // const gp_Pln aPlane(anAx3);
   // const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
@@ -1912,7 +1912,7 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderNegX_K3)
   EXPECT_FALSE(aBlendedBox.IsNull()) << "Blend operation failed";
 
   // Create plane and cylinder: plane pl1 100 100 100 0 0 1 -1 0 0, pcylinder pc pl1 100 50
-  const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(-1, 0, 0));
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::NX));
   const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
   EXPECT_FALSE(aCylinder.IsNull()) << "Cylinder creation failed";
@@ -1931,7 +1931,7 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderY_K4)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 100 0 0 1 0 1 0, pcylinder pc pl1 100 50
-  const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(0, 1, 0));
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::Y));
   const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
@@ -1949,7 +1949,7 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderNegY_K5)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 100 0 0 1 0 -1 0, pcylinder pc pl1 100 50
-  const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(0, 0, 1), gp_Dir(0, -1, 0));
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 100), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::NY));
   const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
@@ -1967,7 +1967,7 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomX_K6)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 0 0 0 -1 1 0 0, pcylinder pc pl1 100 50
-  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(1, 0, 0));
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(gp_Dir::D::NZ), gp_Dir(gp_Dir::D::X));
   const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
@@ -1985,7 +1985,7 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomNegX_K7)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 0 0 0 -1 -1 0 0, pcylinder pc pl1 100 50
-  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(-1, 0, 0));
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(gp_Dir::D::NZ), gp_Dir(gp_Dir::D::NX));
   const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
@@ -2003,7 +2003,7 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomY_K8)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 0 0 0 -1 0 1 0, pcylinder pc pl1 100 50
-  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(0, 1, 0));
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(gp_Dir::D::NZ), gp_Dir(gp_Dir::D::Y));
   const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 
@@ -2021,7 +2021,7 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomNegY_K9)
   const TopoDS_Shape aBlendedBox = BOPTest_Utilities::CreateBlend(aBox, 1, 100.0);
 
   // Create plane and cylinder: plane pl1 100 100 0 0 0 -1 0 -1 0, pcylinder pc pl1 100 50
-  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(0, 0, -1), gp_Dir(0, -1, 0));
+  const gp_Ax3       anAx3(gp_Pnt(100, 100, 0), gp_Dir(gp_Dir::D::NZ), gp_Dir(gp_Dir::D::NY));
   const gp_Pln       aPlane(anAx3);
   const TopoDS_Shape aCylinder = BOPTest_Utilities::CreateCylinderOnPlane(aPlane, 100.0, 50.0);
 

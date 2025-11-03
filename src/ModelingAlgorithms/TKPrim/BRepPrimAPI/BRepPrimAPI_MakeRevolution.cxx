@@ -52,7 +52,7 @@ BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const Handle(Geom_Curve)&
 
 BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const Handle(Geom_Curve)& Meridian,
                                                        const Standard_Real       angle)
-    : myRevolution(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)),
+    : myRevolution(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
                    Meridian->FirstParameter(),
                    Meridian->LastParameter(),
                    Meridian,
@@ -66,7 +66,7 @@ BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const Handle(Geom_Curve)&
 BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const Handle(Geom_Curve)& Meridian,
                                                        const Standard_Real       VMin,
                                                        const Standard_Real       VMax)
-    : myRevolution(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)),
+    : myRevolution(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
                    VMin,
                    VMax,
                    Meridian,
@@ -80,7 +80,7 @@ BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const Handle(Geom_Curve)&
                                                        const Standard_Real       VMin,
                                                        const Standard_Real       VMax,
                                                        const Standard_Real       angle)
-    : myRevolution(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)),
+    : myRevolution(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
                    VMin,
                    VMax,
                    Meridian,

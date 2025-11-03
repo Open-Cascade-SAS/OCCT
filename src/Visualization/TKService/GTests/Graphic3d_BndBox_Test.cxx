@@ -245,7 +245,7 @@ TEST(Graphic3d_BndBox3dTest, TransformationInvalidBox)
   Graphic3d_BndBox3d aBox; // Invalid box
 
   gp_Trsf aRotation;
-  aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4);
+  aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), M_PI / 4);
   Graphic3d_Mat4d aMat;
   aRotation.GetMat4(aMat);
 
