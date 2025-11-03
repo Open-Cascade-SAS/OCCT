@@ -81,6 +81,8 @@ runs:
               -D CMAKE_CXX_COMPILER=clang++ \
               -D CMAKE_CXX_STANDARD=17 \
               -D CMAKE_CXX_STANDARD_REQUIRED=ON \
+              -D CMAKE_CXX_FLAGS_RELEASE="-std=c++17" \
+              -D CMAKE_CXX_FLAGS="-std=c++17" \
               -D CMAKE_CXX_FLAGS="-std=c++17" \
               -D BUILD_CPP_STANDARD="C++17" \
               -D BUILD_SHARED_LIBS=ON \
@@ -110,7 +112,7 @@ runs:
         export LD_LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib:${{ github.workspace }}/occt-install/lib:$LD_LIBRARY_PATH"
         export LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib:${{ github.workspace }}/occt-install/lib:$LIBRARY_PATH"
         export PKG_CONFIG_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib/pkgconfig:$PKG_CONFIG_PATH"
-        make install -j$(nproc)
+        make install VERBOSE=1 -j$(nproc)
 
     - name: Upload TInspector installation
       uses: actions/upload-artifact@v4.6.2
