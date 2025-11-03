@@ -21,53 +21,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Standard_Type, Standard_Transient)
 
-Standard_Type::Standard_Type(const char*                  theSystemName,
-                             const char*                  theName,
-                             Standard_Size                theSize,
-                             const Handle(Standard_Type)& theParent)
-    : mySystemName(theSystemName),
-      myName(theName),
-      mySize(theSize),
-      myParent(theParent)
-{
-}
-
-Standard_Boolean Standard_Type::SubType(const Handle(Standard_Type)& theOther) const
-{
-  if (theOther.IsNull())
-  {
-    return false;
-  }
-  const Standard_Type* aTypeIter = this;
-  while (aTypeIter && theOther->mySize <= aTypeIter->mySize)
-  {
-    if (theOther.get() == aTypeIter)
-    {
-      return true;
-    }
-    aTypeIter = aTypeIter->Parent().get();
-  }
-  return false;
-}
-
-Standard_Boolean Standard_Type::SubType(const Standard_CString theName) const
-{
-  if (!theName)
-  {
-    return false;
-  }
-  const Standard_Type* aTypeIter = this;
-  while (aTypeIter)
-  {
-    if (IsEqual(theName, aTypeIter->Name()))
-    {
-      return true;
-    }
-    aTypeIter = aTypeIter->Parent().get();
-  }
-  return false;
-}
-
 void Standard_Type::Print(Standard_OStream& AStream) const
 {
   AStream << std::hex << (Standard_Address)this << " : " << std::dec << myName;

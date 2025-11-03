@@ -134,11 +134,43 @@ public:
 
   //! Returns True if this type is the same as theOther, or inherits from theOther.
   //! Note that multiple inheritance is not supported.
-  Standard_EXPORT Standard_Boolean SubType(const Handle(Standard_Type)& theOther) const;
+  Standard_Boolean SubType(const Handle(Standard_Type)& theOther) const noexcept
+  {
+    if (theOther.IsNull())
+    {
+      return false;
+    }
+    const Standard_Type* aTypeIter = this;
+    while (aTypeIter && theOther->mySize <= aTypeIter->mySize)
+    {
+      if (theOther.get() == aTypeIter)
+      {
+        return true;
+      }
+      aTypeIter = aTypeIter->Parent().get();
+    }
+    return false;
+  }
 
   //! Returns True if this type is the same as theOther, or inherits from theOther.
   //! Note that multiple inheritance is not supported.
-  Standard_EXPORT Standard_Boolean SubType(const Standard_CString theOther) const;
+  Standard_Boolean SubType(const Standard_CString theOther) const noexcept
+  {
+    if (!theOther)
+    {
+      return false;
+    }
+    const Standard_Type* aTypeIter = this;
+    while (aTypeIter)
+    {
+      if (IsEqual(theOther, aTypeIter->Name()))
+      {
+        return true;
+      }
+      aTypeIter = aTypeIter->Parent().get();
+    }
+    return false;
+  }
 
   //! Prints type (address of descriptor + name) to a stream
   Standard_EXPORT void Print(Standard_OStream& theStream) const;
@@ -178,7 +210,13 @@ private:
   Standard_Type(const char*                  theSystemName,
                 const char*                  theName,
                 Standard_Size                theSize,
-                const Handle(Standard_Type)& theParent);
+                const Handle(Standard_Type)& theParent) noexcept
+      : mySystemName(theSystemName),
+        myName(theName),
+        mySize(theSize),
+        myParent(theParent)
+  {
+  }
 
 private:
   Standard_CString      mySystemName; //!< System name of the class
