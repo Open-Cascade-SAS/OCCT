@@ -31,6 +31,7 @@
 #include <BOPTools_Parallel.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BRep_Builder.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_CommonPrt.hxx>

@@ -41,6 +41,7 @@
 #include <TDataStd_Name.hxx>
 #include <TDataStd_UAttribute.hxx>
 #include <TFunction_Function.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <TFunction_Logbook.hxx>
 #include <TFunction_DriverTable.hxx>
 #include <TNaming_Selector.hxx>

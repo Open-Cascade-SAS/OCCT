@@ -54,6 +54,7 @@
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>

@@ -17,6 +17,7 @@
 #define _IMeshTools_ModelAlgo_HeaderFile
 
 #include <Standard_Transient.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Message_ProgressRange.hxx>
 
 class IMeshData_Model;

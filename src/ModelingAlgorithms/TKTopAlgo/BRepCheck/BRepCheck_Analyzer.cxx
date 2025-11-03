@@ -167,8 +167,8 @@ public:
 
                 if (performwire)
                 {
-                  std::unique_lock<std::mutex> aLock = myMutex
-                                                         ? std::unique_lock<std::mutex>(*myMutex)
+                  std::unique_lock<std::mutex> aLock = aFaceEdgeRes->GetMutex()
+                                                         ? std::unique_lock<std::mutex>(*aFaceEdgeRes->GetMutex())
                                                          : std::unique_lock<std::mutex>();
                   if (aFaceEdgeRes->IsStatusOnShape(aShape))
                   {

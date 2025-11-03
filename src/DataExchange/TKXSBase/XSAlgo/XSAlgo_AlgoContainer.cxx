@@ -22,6 +22,7 @@
 #include <ShapeExtend_MsgRegistrator.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <ShapeProcess_ShapeContext.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <TopExp_Explorer.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <Transfer_TransientListBinder.hxx>

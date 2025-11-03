@@ -29,6 +29,7 @@
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <gp_Pln.hxx>
 #include <GeomAdaptor_Surface.hxx>

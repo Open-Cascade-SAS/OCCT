@@ -29,6 +29,7 @@
 #include <BinTools_Curve2dSet.hxx>
 #include <BinTools_SurfaceSet.hxx>
 #include <BinTools_OStream.hxx>
+#include <Standard_ErrorHandler.hxx>
 
 //=================================================================================================
 

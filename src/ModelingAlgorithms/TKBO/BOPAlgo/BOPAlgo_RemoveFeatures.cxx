@@ -20,6 +20,7 @@
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_MakerVolume.hxx>
 #include <BOPAlgo_Tools.hxx>
+#include <Standard_ErrorHandler.hxx>
 
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Parallel.hxx>

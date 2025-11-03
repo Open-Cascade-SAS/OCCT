@@ -21,15 +21,8 @@
 // =======================================================================
 Standard_Integer BVH_BuildQueue::Size()
 {
-  Standard_Integer aSize;
-
-  myMutex.Lock();
-  {
-    aSize = myQueue.Size();
-  }
-  myMutex.Unlock();
-
-  return aSize;
+  std::lock_guard<std::mutex> aLock(myMutex);
+  return myQueue.Size();
 }
 
 // =======================================================================
@@ -38,11 +31,8 @@ Standard_Integer BVH_BuildQueue::Size()
 // =======================================================================
 void BVH_BuildQueue::Enqueue(const Standard_Integer& theWorkItem)
 {
-  myMutex.Lock();
-  {
-    myQueue.Append(theWorkItem);
-  }
-  myMutex.Unlock();
+  std::lock_guard<std::mutex> aLock(myMutex);
+  myQueue.Append(theWorkItem);
 }
 
 // =======================================================================
@@ -51,10 +41,9 @@ void BVH_BuildQueue::Enqueue(const Standard_Integer& theWorkItem)
 // =======================================================================
 Standard_Integer BVH_BuildQueue::Fetch(Standard_Boolean& wasBusy)
 {
-  Standard_Integer aQuery = -1;
-
   std::lock_guard<std::mutex> aLock(myMutex);
 
+  Standard_Integer aQuery = -1;
   if (!myQueue.IsEmpty())
   {
     aQuery = myQueue.First();

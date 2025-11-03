@@ -47,6 +47,7 @@
 #include <TopoDS_Shape.hxx>
 #include <Transfer_IteratorOfProcessForTransient.hxx>
 #include <Transfer_TransientProcess.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_TransferReader.hxx>

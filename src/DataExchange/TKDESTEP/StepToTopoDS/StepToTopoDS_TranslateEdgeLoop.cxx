@@ -38,6 +38,7 @@
 #include <ShapeAlgo_ToolContainer.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_EdgeProjAux.hxx>

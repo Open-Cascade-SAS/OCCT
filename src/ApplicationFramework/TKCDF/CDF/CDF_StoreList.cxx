@@ -19,6 +19,7 @@
 #include <CDF_StoreList.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <CDM_ReferenceIterator.hxx>
 #include <PCDM_StorageDriver.hxx>
 #include <TCollection_ExtendedString.hxx>

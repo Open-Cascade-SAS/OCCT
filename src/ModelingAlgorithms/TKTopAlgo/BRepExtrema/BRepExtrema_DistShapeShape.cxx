@@ -698,7 +698,7 @@ struct TreatmentFunctor
         DistRef(0),
         InnerSol(NULL),
         IsDone(NULL),
-        Mutex(NULL)
+        Mutex()
   {
     for (Standard_Integer i = 0; i < theArrayOfArrays->Size(); ++i)
     {

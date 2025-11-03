@@ -25,6 +25,7 @@
 #include <errno.h>
 
 #ifndef _WIN32
+  #include <unistd.h>
   #include <sys/mman.h> /* mmap() */
 #endif
 

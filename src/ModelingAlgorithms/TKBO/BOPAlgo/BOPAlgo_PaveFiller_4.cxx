@@ -26,6 +26,7 @@
 #include <BOPDS_VectorOfInterfVF.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <IntTools_Context.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <NCollection_Vector.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <TopoDS_Face.hxx>
