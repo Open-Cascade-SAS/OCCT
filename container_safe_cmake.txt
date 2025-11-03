@@ -1,0 +1,102 @@
+# CMakeLists.txt configuration for container-safe OCCT build
+# This ensures OCCT is compiled with container-safe defaults
+
+cmake_minimum_required(VERSION 3.12)
+project(ContainerSafeOCCT)
+
+# Detect if building for container environment
+option(OCCT_CONTAINER_SAFE "Build OCCT with container-safe signal handling" OFF)
+
+# Azure-specific build options
+option(OCCT_AZURE_CONTAINER "Build for Azure Container Instances" OFF)
+
+# Set container-safe defaults
+if(OCCT_CONTAINER_SAFE OR OCCT_AZURE_CONTAINER)
+    # Disable signal conversion by default in containers
+    add_definitions(-DOCC_CONVERT_SIGNALS=0)
+    add_definitions(-DOCCT_DISABLE_SIGNALS=1)
+    
+    # Disable floating point exceptions in containers
+    add_definitions(-DOCCT_DISABLE_FPE=1)
+    
+    # Add container detection capability
+    add_definitions(-DOCCT_CONTAINER_AWARE=1)
+    
+    message(STATUS "Building OCCT with container-safe configuration")
+endif()
+
+# Azure-specific settings
+if(OCCT_AZURE_CONTAINER)
+    add_definitions(-DOCCT_AZURE_CONTAINER=1)
+    message(STATUS "Building OCCT for Azure Container Instances")
+endif()
+
+# Find OCCT
+find_package(OpenCASCADE REQUIRED)
+
+# Create container-safe wrapper library
+add_library(OCCTContainerSafe STATIC
+    container_safe_occt.cpp
+    container_signal_wrapper.cpp
+)
+
+target_link_libraries(OCCTContainerSafe 
+    ${OpenCASCADE_LIBRARIES}
+)
+
+target_include_directories(OCCTContainerSafe PUBLIC
+    ${OpenCASCADE_INCLUDE_DIR}
+)
+
+# Example application using container-safe OCCT
+add_executable(OCCTContainerApp
+    main.cpp
+)
+
+target_link_libraries(OCCTContainerApp
+    OCCTContainerSafe
+    ${OpenCASCADE_LIBRARIES}
+)
+
+# Install rules
+install(TARGETS OCCTContainerApp OCCTContainerSafe
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+# Create container-safe configuration header
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/occt_container_config.h.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/occt_container_config.h"
+)
+
+---
+
+# occt_container_config.h.in - Configuration header template
+
+#ifndef OCCT_CONTAINER_CONFIG_H
+#define OCCT_CONTAINER_CONFIG_H
+
+// Container safety configuration
+#cmakedefine OCCT_CONTAINER_SAFE
+#cmakedefine OCCT_AZURE_CONTAINER
+#cmakedefine OCCT_DISABLE_SIGNALS
+#cmakedefine OCCT_DISABLE_FPE
+#cmakedefine OCCT_CONTAINER_AWARE
+
+// Signal handling mode for containers
+#ifdef OCCT_CONTAINER_SAFE
+    #define OCCT_DEFAULT_SIGNAL_MODE OSD_SignalMode_AsIs
+    #define OCCT_DEFAULT_FPE_HANDLING Standard_False
+#else
+    #define OCCT_DEFAULT_SIGNAL_MODE OSD_SignalMode_Set
+    #define OCCT_DEFAULT_FPE_HANDLING Standard_True
+#endif
+
+// Azure Container Instance specific settings
+#ifdef OCCT_AZURE_CONTAINER
+    #define OCCT_ACI_SAFE_MODE 1
+#endif
+
+#endif // OCCT_CONTAINER_CONFIG_H
