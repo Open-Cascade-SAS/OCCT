@@ -39,6 +39,7 @@
 #include <StdFail_NotDone.hxx>
 
 #include <algorithm>
+#include <atomic>
 #include <mutex>
 
 namespace
@@ -719,7 +720,7 @@ struct TreatmentFunctor
         break;
       }
       aScope.Next();
-      if (*IsDone)
+      if (IsDone->load(std::memory_order_acquire))
       {
         break;
       }
@@ -731,9 +732,9 @@ struct TreatmentFunctor
       {
         std::unique_lock<std::mutex> aLock =
           Mutex ? std::unique_lock<std::mutex>(*Mutex) : std::unique_lock<std::mutex>();
-        *InnerSol = Standard_True;
-        *DistRef  = 0.;
-        *IsDone   = Standard_True;
+        InnerSol->store(true, std::memory_order_release);
+        *DistRef = 0.;
+        IsDone->store(true, std::memory_order_release);
         BRepExtrema_SolutionElem aSolElem(0, aPnt, BRepExtrema_IsVertex, aVertex);
         SolutionsShape1->Append(aSolElem);
         SolutionsShape2->Append(aSolElem);
@@ -749,8 +750,8 @@ struct TreatmentFunctor
   Message_ProgressScope                                 Scope;
   NCollection_Array1<Message_ProgressRange>             Ranges;
   Standard_Real*                                        DistRef;
-  volatile Standard_Boolean*                            InnerSol;
-  volatile Standard_Boolean*                            IsDone;
+  std::atomic<bool>*                                    InnerSol;
+  std::atomic<bool>*                                    IsDone;
   std::unique_ptr<std::mutex>                           Mutex;
 };
 
@@ -791,20 +792,28 @@ Standard_Boolean BRepExtrema_DistShapeShape::SolidTreatment(
     anArrayOfArray[aVectIndex][aShapeIndex] = theVertexMap(anI);
   }
 
+  // Create local atomic variables for thread-safe communication during parallel section
+  std::atomic<bool> anAtomicInnerSol(myInnerSol);
+  std::atomic<bool> anAtomicIsDone(myIsDone);
+
   Message_ProgressScope aScope(theRange, "Solid treatment", aNbTasks);
   TreatmentFunctor      aFunctor(&anArrayOfArray, aScope.Next());
   aFunctor.SolutionsShape1 = &mySolutionsShape1;
   aFunctor.SolutionsShape2 = &mySolutionsShape2;
   aFunctor.Shape           = theShape;
   aFunctor.DistRef         = &myDistRef;
-  aFunctor.InnerSol        = &myInnerSol;
-  aFunctor.IsDone          = &myIsDone;
+  aFunctor.InnerSol        = &anAtomicInnerSol;
+  aFunctor.IsDone          = &anAtomicIsDone;
   if (myIsMultiThread && !aFunctor.Mutex)
   {
     aFunctor.Mutex = std::make_unique<std::mutex>();
   }
 
   OSD_Parallel::For(0, aNbTasks, aFunctor, !myIsMultiThread);
+
+  // Copy atomic results back to class members after parallel section completes
+  myInnerSol = anAtomicInnerSol.load(std::memory_order_acquire);
+  myIsDone   = anAtomicIsDone.load(std::memory_order_acquire);
 
   if (!aScope.More())
   {

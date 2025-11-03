@@ -22,7 +22,6 @@
 #include <Media_Frame.hxx>
 #include <Media_PlayerContext.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
-#include <Standard_MemoryUtils.hxx>
 
 #ifdef HAVE_FFMPEG
   #include <Standard_WarningsDisable.hxx>

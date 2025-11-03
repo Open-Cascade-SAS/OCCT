@@ -30,6 +30,8 @@
 #include <XSControl_Vars.hxx>
 #include <XSControl_WorkSession.hxx>
 
+#include <mutex>
+
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_WorkSession, IFSelect_WorkSession)
 
 namespace
