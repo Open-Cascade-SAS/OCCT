@@ -50,7 +50,7 @@ public:
 
   //! Creates a plane coincident with OXY plane of the
   //! reference coordinate system.
-  gp_Pln() {}
+  constexpr gp_Pln() noexcept {}
 
   //! The coordinate system of the plane is defined with the axis
   //! placement theA3.
@@ -58,7 +58,7 @@ public:
   //! The "Location" of theA3 defines the location (origin) of the plane.
   //! The "XDirection" and "YDirection" of theA3 define the "XAxis" and
   //! the "YAxis" of the plane used to parametrize the plane.
-  gp_Pln(const gp_Ax3& theA3)
+  constexpr gp_Pln(const gp_Ax3& theA3) noexcept
       : pos(theA3)
   {
   }

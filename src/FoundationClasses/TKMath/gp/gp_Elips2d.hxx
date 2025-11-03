@@ -47,7 +47,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an indefinite ellipse.
-  gp_Elips2d() noexcept
+  constexpr gp_Elips2d() noexcept
       : majorRadius(RealLast()),
         minorRadius(RealSmall())
   {

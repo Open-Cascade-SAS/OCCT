@@ -58,7 +58,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! creates an indefinite Torus.
-  gp_Torus()
+  constexpr gp_Torus() noexcept
       : majorRadius(RealLast()),
         minorRadius(RealSmall())
   {

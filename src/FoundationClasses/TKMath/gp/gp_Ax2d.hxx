@@ -60,6 +60,21 @@ public:
   {
   }
 
+  //! Creates an axis with the given location point and standard direction.
+  constexpr gp_Ax2d(const gp_Pnt2d& theP, const gp_Dir2d::D theDir) noexcept
+      : loc(theP),
+        vdir(theDir)
+  {
+  }
+
+  //! Creates an axis at the origin with the given standard direction.
+  //! Replaces gp::OX2d(), gp::OY2d() static functions.
+  constexpr explicit gp_Ax2d(const gp_Dir2d::D theDir) noexcept
+      : loc(0., 0.),
+        vdir(theDir)
+  {
+  }
+
   //! Changes the "Location" point (origin) of <me>.
   constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { loc = theP; }
 

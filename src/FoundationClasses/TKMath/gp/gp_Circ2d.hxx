@@ -52,7 +52,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! creates an indefinite circle.
-  gp_Circ2d() noexcept
+  constexpr gp_Circ2d() noexcept
       : radius(RealLast())
   {
   }

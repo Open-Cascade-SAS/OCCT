@@ -66,9 +66,10 @@ public:
 
   //! Creates an object corresponding to the reference
   //! coordinate system (OXYZ).
-  gp_Ax3()
-      : vydir(0., 1., 0.)
-  // vxdir(1.,0.,0.) use default ctor of gp_Dir, as it creates the same dir(1,0,0)
+  constexpr gp_Ax3() noexcept
+      : vydir(gp_Dir::D::Y),
+        vxdir(gp_Dir::D::X)
+  // axis uses default ctor which creates Z axis at origin
   {
   }
 
@@ -89,9 +90,36 @@ public:
     vydir.Cross(vxdir);
   }
 
+  //! Creates an axis placement with standard directions.
+  //! This constructor allows constexpr and noexcept construction when using standard directions.
+  constexpr gp_Ax3(const gp_Pnt& theP, const gp_Dir::D theN, const gp_Dir::D theVx) noexcept
+      : axis(theP, theN),
+        vydir(theN),
+        vxdir(theVx)
+  {
+    // Note: For standard directions, CrossCross is not needed at compile time
+    // This constructor assumes theN and theVx are orthogonal standard directions
+  }
+
   //! Creates an axis placement with the "Location" point <theP>
   //! and the normal direction <theV>.
   Standard_EXPORT gp_Ax3(const gp_Pnt& theP, const gp_Dir& theV);
+
+  //! Creates an axis placement with the given location point and standard direction.
+  constexpr gp_Ax3(const gp_Pnt& theP, const gp_Dir::D theV) noexcept
+      : axis(theP, theV),
+        vydir(GetPerpendicularYDir(theV)),
+        vxdir(GetPerpendicularXDir(theV))
+  {
+  }
+
+  //! Creates an axis placement at the origin with the given standard direction.
+  constexpr explicit gp_Ax3(const gp_Dir::D theV) noexcept
+      : axis(gp_Pnt(0., 0., 0.), theV),
+        vydir(GetPerpendicularYDir(theV)),
+        vxdir(GetPerpendicularXDir(theV))
+  {
+  }
 
   //! Reverses the X direction of <me>.
   constexpr void XReverse() noexcept { vxdir.Reverse(); }
@@ -322,6 +350,25 @@ public:
                                                 Standard_Integer&       theStreamPos);
 
 private:
+  //! Helper to compute perpendicular X direction for standard main directions
+  static constexpr gp_Dir::D GetPerpendicularXDir(const gp_Dir::D theMainDir) noexcept
+  {
+    return (theMainDir == gp_Dir::D::X || theMainDir == gp_Dir::D::NX)   ? gp_Dir::D::Y
+           : (theMainDir == gp_Dir::D::Y || theMainDir == gp_Dir::D::NY) ? gp_Dir::D::Z
+                                                                         : gp_Dir::D::X;
+  }
+
+  //! Helper to compute Y direction (main x X) for standard directions
+  static constexpr gp_Dir::D GetPerpendicularYDir(const gp_Dir::D theMainDir) noexcept
+  {
+    return (theMainDir == gp_Dir::D::Z)    ? gp_Dir::D::Y
+           : (theMainDir == gp_Dir::D::NZ) ? gp_Dir::D::NY
+           : (theMainDir == gp_Dir::D::X)  ? gp_Dir::D::Z
+           : (theMainDir == gp_Dir::D::NX) ? gp_Dir::D::NZ
+           : (theMainDir == gp_Dir::D::Y)  ? gp_Dir::D::X
+                                           : gp_Dir::D::NX; // NY case
+  }
+
   gp_Ax1 axis;
   gp_Dir vydir;
   gp_Dir vxdir;

@@ -43,10 +43,10 @@ public:
 
   //! Creates a Line corresponding to Z axis of the
   //! reference coordinate system.
-  gp_Lin() {}
+  constexpr gp_Lin() noexcept {}
 
   //! Creates a line defined by axis theA1.
-  gp_Lin(const gp_Ax1& theA1)
+  constexpr gp_Lin(const gp_Ax1& theA1) noexcept
       : pos(theA1)
   {
   }

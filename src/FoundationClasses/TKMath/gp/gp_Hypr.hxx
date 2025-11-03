@@ -74,7 +74,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates of an indefinite hyperbola.
-  gp_Hypr()
+  constexpr gp_Hypr() noexcept
       : majorRadius(RealLast()),
         minorRadius(RealFirst())
   {

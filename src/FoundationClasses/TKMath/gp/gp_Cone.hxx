@@ -54,7 +54,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an indefinite Cone.
-  gp_Cone()
+  constexpr gp_Cone() noexcept
       : radius(RealLast()),
         semiAngle(M_PI * 0.25)
   {
