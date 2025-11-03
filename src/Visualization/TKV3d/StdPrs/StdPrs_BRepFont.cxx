@@ -256,7 +256,7 @@ bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
 
 TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const Standard_Utf32Char& theChar)
 {
-  TopoDS_Shape aShape;
+  TopoDS_Shape                aShape;
   std::lock_guard<std::mutex> aLock(myMutex);
   renderGlyph(theChar, aShape);
   return aShape;
