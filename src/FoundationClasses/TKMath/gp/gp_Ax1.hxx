@@ -118,34 +118,34 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point P which is the
   //! center of the symmetry and assigns the result to this axis.
-  Standard_EXPORT void Mirror(const gp_Pnt& P);
+  Standard_EXPORT void Mirror(const gp_Pnt& P) noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point P which is the
   //! center of the symmetry and creates a new axis.
-  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Pnt& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Pnt& P) const noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
   //! is the axis of the symmetry and assigns the result to this axis.
-  Standard_EXPORT void Mirror(const gp_Ax1& A1);
+  Standard_EXPORT void Mirror(const gp_Ax1& A1) noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
   //! is the axis of the symmetry and creates a new axis.
-  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax1& A1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax1& A1) const noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to a plane. The axis placement
   //! <A2> locates the plane of the symmetry :
   //! (Location, XDirection, YDirection) and assigns the result to this axis.
-  Standard_EXPORT void Mirror(const gp_Ax2& A2);
+  Standard_EXPORT void Mirror(const gp_Ax2& A2) noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to a plane. The axis placement
   //! <A2> locates the plane of the symmetry :
   //! (Location, XDirection, YDirection) and creates a new axis.
-  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax2& A2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax2& A2) const noexcept;
 
   //! Rotates this axis at an angle theAngRad (in radians) about the axis theA1
   //! and assigns the result to this axis.

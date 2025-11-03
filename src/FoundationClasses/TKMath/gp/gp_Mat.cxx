@@ -99,7 +99,7 @@ void gp_Mat::SetCross(const gp_XYZ& theRef)
 
 //=================================================================================================
 
-void gp_Mat::SetDot(const gp_XYZ& theRef)
+void gp_Mat::SetDot(const gp_XYZ& theRef) noexcept
 {
   const Standard_Real X = theRef.X();
   const Standard_Real Y = theRef.Y();

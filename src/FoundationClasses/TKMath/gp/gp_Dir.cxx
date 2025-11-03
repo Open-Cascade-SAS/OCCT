@@ -67,7 +67,7 @@ Standard_Real gp_Dir::AngleWithRef(const gp_Dir& Other, const gp_Dir& Vref) cons
     return -Ang;
 }
 
-void gp_Dir::Mirror(const gp_Dir& V)
+void gp_Dir::Mirror(const gp_Dir& V) noexcept
 {
   const gp_XYZ& XYZ = V.coord;
   Standard_Real A   = XYZ.X();
@@ -85,7 +85,7 @@ void gp_Dir::Mirror(const gp_Dir& V)
   coord.SetCoord(XX, YY, ZZ);
 }
 
-void gp_Dir::Mirror(const gp_Ax1& A1)
+void gp_Dir::Mirror(const gp_Ax1& A1) noexcept
 {
   const gp_XYZ& XYZ = A1.Direction().coord;
   Standard_Real A   = XYZ.X();
@@ -103,7 +103,7 @@ void gp_Dir::Mirror(const gp_Ax1& A1)
   coord.SetCoord(XX, YY, ZZ);
 }
 
-void gp_Dir::Mirror(const gp_Ax2& A2)
+void gp_Dir::Mirror(const gp_Ax2& A2) noexcept
 {
   const gp_Dir& Vz = A2.Direction();
   Mirror(Vz);
@@ -138,21 +138,21 @@ void gp_Dir::Transform(const gp_Trsf& T)
   }
 }
 
-gp_Dir gp_Dir::Mirrored(const gp_Dir& V) const
+gp_Dir gp_Dir::Mirrored(const gp_Dir& V) const noexcept
 {
   gp_Dir Vres = *this;
   Vres.Mirror(V);
   return Vres;
 }
 
-gp_Dir gp_Dir::Mirrored(const gp_Ax1& A1) const
+gp_Dir gp_Dir::Mirrored(const gp_Ax1& A1) const noexcept
 {
   gp_Dir V = *this;
   V.Mirror(A1);
   return V;
 }
 
-gp_Dir gp_Dir::Mirrored(const gp_Ax2& A2) const
+gp_Dir gp_Dir::Mirrored(const gp_Ax2& A2) const noexcept
 {
   gp_Dir V = *this;
   V.Mirror(A2);

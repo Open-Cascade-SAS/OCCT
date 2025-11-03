@@ -74,7 +74,7 @@ gp_Ax2::gp_Ax2(const gp_Pnt& P, const gp_Dir& V)
   SetXDirection(D);
 }
 
-void gp_Ax2::Mirror(const gp_Pnt& P)
+void gp_Ax2::Mirror(const gp_Pnt& P) noexcept
 {
   gp_Pnt Temp = axis.Location();
   Temp.Mirror(P);
@@ -83,7 +83,7 @@ void gp_Ax2::Mirror(const gp_Pnt& P)
   vydir.Reverse();
 }
 
-gp_Ax2 gp_Ax2::Mirrored(const gp_Pnt& P) const
+gp_Ax2 gp_Ax2::Mirrored(const gp_Pnt& P) const noexcept
 {
   gp_Ax2 Temp = *this;
   Temp.Mirror(P);

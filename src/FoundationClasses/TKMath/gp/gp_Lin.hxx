@@ -73,28 +73,28 @@ public:
   }
 
   //! Changes the direction of the line.
-  void SetDirection(const gp_Dir& theV) { pos.SetDirection(theV); }
+  constexpr void SetDirection(const gp_Dir& theV) noexcept { pos.SetDirection(theV); }
 
   //! Changes the location point (origin) of the line.
-  void SetLocation(const gp_Pnt& theP) { pos.SetLocation(theP); }
+  constexpr void SetLocation(const gp_Pnt& theP) noexcept { pos.SetLocation(theP); }
 
   //! Complete redefinition of the line.
   //! The "Location" point of <theA1> is the origin of the line.
   //! The "Direction" of <theA1> is  the direction of the line.
-  void SetPosition(const gp_Ax1& theA1) { pos = theA1; }
+  constexpr void SetPosition(const gp_Ax1& theA1) noexcept { pos = theA1; }
 
   //! Returns the direction of the line.
-  const gp_Dir& Direction() const { return pos.Direction(); }
+  constexpr const gp_Dir& Direction() const noexcept { return pos.Direction(); }
 
   //! Returns the location point (origin) of the line.
-  const gp_Pnt& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
 
   //! Returns the axis placement one axis with the same
   //! location and direction as <me>.
-  const gp_Ax1& Position() const { return pos; }
+  constexpr const gp_Ax1& Position() const noexcept { return pos; }
 
   //! Computes the angle between two lines in radians.
-  Standard_Real Angle(const gp_Lin& theOther) const
+  Standard_Real Angle(const gp_Lin& theOther) const noexcept
   {
     return pos.Direction().Angle(theOther.pos.Direction());
   }
@@ -102,22 +102,23 @@ public:
   //! Returns true if this line contains the point theP, that is, if the
   //! distance between point theP and this line is less than or
   //! equal to theLinearTolerance..
-  Standard_Boolean Contains(const gp_Pnt& theP, const Standard_Real theLinearTolerance) const
+  Standard_Boolean Contains(const gp_Pnt&       theP,
+                            const Standard_Real theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
 
   //! Computes the distance between <me> and the point theP.
-  Standard_Real Distance(const gp_Pnt& theP) const;
+  Standard_Real Distance(const gp_Pnt& theP) const noexcept;
 
   //! Computes the distance between two lines.
   Standard_EXPORT Standard_Real Distance(const gp_Lin& theOther) const;
 
   //! Computes the square distance between <me> and the point theP.
-  Standard_Real SquareDistance(const gp_Pnt& theP) const;
+  Standard_Real SquareDistance(const gp_Pnt& theP) const noexcept;
 
   //! Computes the square distance between two lines.
-  Standard_Real SquareDistance(const gp_Lin& theOther) const
+  Standard_Real SquareDistance(const gp_Lin& theOther) const noexcept
   {
     Standard_Real aD = Distance(theOther);
     return aD * aD;
@@ -130,27 +131,27 @@ public:
   //! solutions in 3D space.
   gp_Lin Normal(const gp_Pnt& theP) const;
 
-  Standard_EXPORT void Mirror(const gp_Pnt& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
   //! Performs the symmetrical transformation of a line
   //! with respect to the point theP which is the center of
   //! the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Lin Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Lin Mirrored(const gp_Pnt& theP) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax1& theA1);
+  Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
 
   //! Performs the symmetrical transformation of a line
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Lin Mirrored(const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Lin Mirrored(const gp_Ax1& theA1) const noexcept;
 
-  Standard_EXPORT void Mirror(const gp_Ax2& theA2);
+  Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Performs the symmetrical transformation of a line
   //! with respect to a plane. The axis placement  <theA2>
   //! locates the plane of the symmetry :
   //! (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Lin Mirrored(const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Lin Mirrored(const gp_Ax2& theA2) const noexcept;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
 
@@ -185,11 +186,11 @@ public:
     return aL;
   }
 
-  void Translate(const gp_Vec& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a line in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Lin Translated(const gp_Vec& theV) const
+  Standard_NODISCARD gp_Lin Translated(const gp_Vec& theV) const noexcept
   {
     gp_Lin aL = *this;
     aL.pos.Translate(theV);
@@ -212,7 +213,7 @@ private:
 
 //=================================================================================================
 
-inline Standard_Real gp_Lin::Distance(const gp_Pnt& theP) const
+inline Standard_Real gp_Lin::Distance(const gp_Pnt& theP) const noexcept
 {
   gp_XYZ aCoord = theP.XYZ();
   aCoord.Subtract((pos.Location()).XYZ());
@@ -222,7 +223,7 @@ inline Standard_Real gp_Lin::Distance(const gp_Pnt& theP) const
 
 //=================================================================================================
 
-inline Standard_Real gp_Lin::SquareDistance(const gp_Pnt& theP) const
+inline Standard_Real gp_Lin::SquareDistance(const gp_Pnt& theP) const noexcept
 {
   const gp_Pnt& aLoc = pos.Location();
   gp_Vec        aV(theP.X() - aLoc.X(), theP.Y() - aLoc.Y(), theP.Z() - aLoc.Z());

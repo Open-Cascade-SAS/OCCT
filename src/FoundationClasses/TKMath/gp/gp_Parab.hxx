@@ -102,15 +102,15 @@ public:
 
   //! Changes the location of the parabola. It is the vertex of
   //! the parabola.
-  void SetLocation(const gp_Pnt& theP) { pos.SetLocation(theP); }
+  constexpr void SetLocation(const gp_Pnt& theP) noexcept { pos.SetLocation(theP); }
 
   //! Changes the local coordinate system of the parabola.
-  void SetPosition(const gp_Ax2& theA2) { pos = theA2; }
+  constexpr void SetPosition(const gp_Ax2& theA2) noexcept { pos = theA2; }
 
   //! Returns the main axis of the parabola.
   //! It is the axis normal to the plane of the parabola passing
   //! through the vertex of the parabola.
-  const gp_Ax1& Axis() const { return pos.Axis(); }
+  constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }
 
   //! Computes the directrix of this parabola.
   //! The directrix is:
@@ -125,37 +125,37 @@ public:
 
   //! Returns the distance between the vertex and the focus
   //! of the parabola.
-  Standard_Real Focal() const { return focalLength; }
+  constexpr Standard_Real Focal() const noexcept { return focalLength; }
 
   //! -   Computes the focus of the parabola.
   gp_Pnt Focus() const;
 
   //! Returns the vertex of the parabola. It is the "Location"
   //! point of the coordinate system of the parabola.
-  const gp_Pnt& Location() const { return pos.Location(); }
+  constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
 
   //! Computes the parameter of the parabola.
   //! It is the distance between the focus and the directrix of
   //! the parabola. This distance is twice the focal length.
-  Standard_Real Parameter() const { return 2.0 * focalLength; }
+  constexpr Standard_Real Parameter() const noexcept { return 2.0 * focalLength; }
 
   //! Returns the local coordinate system of the parabola.
-  const gp_Ax2& Position() const { return pos; }
+  constexpr const gp_Ax2& Position() const noexcept { return pos; }
 
   //! Returns the symmetry axis of the parabola. The location point
   //! of the axis is the vertex of the parabola.
-  gp_Ax1 XAxis() const { return gp_Ax1(pos.Location(), pos.XDirection()); }
+  constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
 
   //! It is an axis parallel to the directrix of the parabola.
   //! The location point of this axis is the vertex of the parabola.
-  gp_Ax1 YAxis() const { return gp_Ax1(pos.Location(), pos.YDirection()); }
+  constexpr gp_Ax1 YAxis() const noexcept { return gp_Ax1(pos.Location(), pos.YDirection()); }
 
-  Standard_EXPORT void Mirror(const gp_Pnt& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
   //! Performs the symmetrical transformation of a parabola
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Parab Mirrored(const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Parab Mirrored(const gp_Pnt& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
@@ -194,21 +194,24 @@ public:
   //! Transforms a parabola with the transformation theT from class Trsf.
   Standard_NODISCARD gp_Parab Transformed(const gp_Trsf& theT) const;
 
-  void Translate(const gp_Vec& theV) { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a parabola in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Parab Translated(const gp_Vec& theV) const
+  Standard_NODISCARD gp_Parab Translated(const gp_Vec& theV) const noexcept
   {
     gp_Parab aPrb = *this;
     aPrb.pos.Translate(theV);
     return aPrb;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a parabola from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Parab Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD gp_Parab Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Parab aPrb = *this;
     aPrb.pos.Translate(theP1, theP2);
