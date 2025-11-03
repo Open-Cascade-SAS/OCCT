@@ -144,7 +144,7 @@ Standard_Boolean BOPTools_AlgoTools3D::DoSplitSEAMOnFace(const TopoDS_Edge& aSpl
   //
   aT = BOPTools_AlgoTools2D::IntermediatePoint(a, b);
   C2D1->D1(aT, aP2D, aVec2D);
-  gp_Dir2d aDir2D1(aVec2D), aDOX(-1., 0.), aDOY(0., 1.);
+  gp_Dir2d aDir2D1(aVec2D), aDOX(gp_Dir2d::D::NX), aDOY(gp_Dir2d::D::Y);
   //
   anU = aP2D.X();
   anV = aP2D.Y();

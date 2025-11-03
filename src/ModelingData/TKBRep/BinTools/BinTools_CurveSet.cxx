@@ -366,7 +366,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Line)& L)
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Circle)& C)
 {
   gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(gp_Dir::D::X), AX(1., 0., 0.), AY(1., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   Standard_Real R = 0.;
   IS >> P >> A >> AX >> AY;
   BinTools::GetReal(IS, R);
@@ -379,7 +379,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Circle)& C
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Ellipse)& E)
 {
   gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(gp_Dir::D::X), AX(1., 0., 0.), AY(1., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   Standard_Real R1 = 0., R2 = 0.;
   IS >> P >> A >> AX >> AY;
   BinTools::GetReal(IS, R1);
@@ -393,7 +393,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Ellipse)& 
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Parabola)& C)
 {
   gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(gp_Dir::D::X), AX(1., 0., 0.), AY(1., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   Standard_Real R1 = 0.;
   IS >> P >> A >> AX >> AY;
   BinTools::GetReal(IS, R1);
@@ -406,7 +406,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Parabola)&
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom_Hyperbola)& H)
 {
   gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(gp_Dir::D::X), AX(1., 0., 0.), AY(1., 0., 0);
+  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   Standard_Real R1 = 0., R2 = 0.;
   IS >> P >> A >> AX >> AY;
   BinTools::GetReal(IS, R1);

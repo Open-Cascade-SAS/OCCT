@@ -954,7 +954,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
           Handle(Geom_Axis2Placement) aTargAP = StepToGeom::MakeAxis2Placement(aCS, aLocalFactors);
           if (!aTargAP.IsNull())
           {
-            const gp_Ax3 ax3Orig(gp_Pnt(0., 0., 0), gp_Vec(0., 0., 1.), gp_Vec(1., 0., 0.));
+            const gp_Ax3 ax3Orig(gp_Pnt(0., 0., 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
             const gp_Ax3 ax3Targ(aTargAP->Ax2());
             if (ax3Targ.Location().SquareDistance(ax3Orig.Location()) < Precision::SquareConfusion()
                 && ax3Targ.Direction().IsEqual(ax3Orig.Direction(), Precision::Angular())
