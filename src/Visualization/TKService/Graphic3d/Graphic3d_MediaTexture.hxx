@@ -43,7 +43,7 @@ public:
 
 private:
   //! Main constructor.
-  // Accessible only by Graphic3d_MediaTextureSet.
+  //! Accessible only by Graphic3d_MediaTextureSet.
   Standard_EXPORT Graphic3d_MediaTexture(std::mutex& theMutex, Standard_Integer thePlane = -1);
 
 protected:
