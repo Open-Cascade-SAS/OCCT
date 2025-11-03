@@ -750,6 +750,8 @@ LONG _osd_debug(void)
   // #include  <fenv.h>
   #endif
 
+  #include <signal.h>
+
 // variable signalling that Control-C has been pressed (SIGINT signal)
 static Standard_Boolean fCtrlBrk;
 
