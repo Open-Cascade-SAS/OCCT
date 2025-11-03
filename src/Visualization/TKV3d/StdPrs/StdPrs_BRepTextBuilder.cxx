@@ -27,6 +27,7 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                  t
   gp_XYZ                      aPen;
   TopoDS_Shape                aGlyphShape;
   TopoDS_Compound             aResult;
+  std::lock_guard<std::mutex> aLock(theFont.Mutex());
 
   myBuilder.MakeCompound(aResult);
 
