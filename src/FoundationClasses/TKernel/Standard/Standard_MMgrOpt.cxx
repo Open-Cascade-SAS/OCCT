@@ -311,8 +311,6 @@ Standard_Address Standard_MMgrOpt::Allocate(const Standard_Size aSize)
     // object life (such as myThreshold), and assume that calls to functions
     // of standard library are already protected by their implementation.
     // The unlock is called as soon as possible, for every treatment case.
-    // We also do not use Sentry, since in case if OCC signal or exception is
-    // caused by this block we will have deadlock anyway...
     myMutex.lock();
 
     // if free block of the requested size is available, return it

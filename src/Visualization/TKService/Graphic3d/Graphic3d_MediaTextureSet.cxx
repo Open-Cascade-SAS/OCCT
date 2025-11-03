@@ -39,7 +39,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MediaTextureSet, Graphic3d_TextureSet)
 
 Graphic3d_MediaTextureSet::Graphic3d_MediaTextureSet()
     : Graphic3d_TextureSet(4),
-      myMutex(std::mutex()),
+      myMutex(),
       myCallbackFunction(NULL),
       myCallbackUserPtr(NULL),
       myProgress(0.0),
