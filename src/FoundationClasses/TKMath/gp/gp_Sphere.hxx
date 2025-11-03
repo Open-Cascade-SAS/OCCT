@@ -101,15 +101,15 @@ public:
 
   //! Reverses the   U   parametrization of   the sphere
   //! reversing the YAxis.
-  void UReverse() { pos.YReverse(); }
+  constexpr void UReverse() noexcept { pos.YReverse(); }
 
   //! Reverses the   V   parametrization of   the  sphere
   //! reversing the ZAxis.
-  void VReverse() { pos.ZReverse(); }
+  constexpr void VReverse() noexcept { pos.ZReverse(); }
 
   //! Returns true if the local coordinate system of this sphere
   //! is right-handed.
-  constexpr Standard_Boolean Direct() const noexcept { return pos.Direct(); }
+  Standard_Boolean Direct() const { return pos.Direct(); }
 
   //! --- Purpose ;
   //! Returns the center of the sphere.

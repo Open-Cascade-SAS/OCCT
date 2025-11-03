@@ -100,14 +100,14 @@ public:
 
   //! Reverses the U parametrization of the plane
   //! reversing the XAxis.
-  void UReverse() { pos.XReverse(); }
+  constexpr void UReverse() noexcept { pos.XReverse(); }
 
   //! Reverses the V parametrization of the plane
   //! reversing the YAxis.
-  void VReverse() { pos.YReverse(); }
+  constexpr void VReverse() noexcept { pos.YReverse(); }
 
   //! Returns true if the Ax3 is right handed.
-  constexpr Standard_Boolean Direct() const noexcept { return pos.Direct(); }
+  Standard_Boolean Direct() const { return pos.Direct(); }
 
   //! Returns the plane's normal Axis.
   constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }

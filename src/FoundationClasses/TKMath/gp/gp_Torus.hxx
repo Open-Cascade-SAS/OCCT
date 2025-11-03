@@ -125,14 +125,14 @@ public:
 
   //! Reverses the   U   parametrization of   the  torus
   //! reversing the YAxis.
-  void UReverse() { pos.YReverse(); }
+  constexpr void UReverse() noexcept { pos.YReverse(); }
 
   //! Reverses the   V   parametrization of   the  torus
   //! reversing the ZAxis.
-  void VReverse() { pos.ZReverse(); }
+  constexpr void VReverse() noexcept { pos.ZReverse(); }
 
   //! returns true if the Ax3, the local coordinate system of this torus, is right handed.
-  constexpr Standard_Boolean Direct() const noexcept { return pos.Direct(); }
+  Standard_Boolean Direct() const { return pos.Direct(); }
 
   //! returns the symmetry axis of the torus.
   constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }

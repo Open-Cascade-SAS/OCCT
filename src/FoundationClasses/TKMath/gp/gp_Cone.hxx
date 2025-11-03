@@ -112,17 +112,17 @@ public:
 
   //! Reverses the   U   parametrization of   the  cone
   //! reversing the YAxis.
-  void UReverse() { pos.YReverse(); }
+  constexpr void UReverse() noexcept { pos.YReverse(); }
 
   //! Reverses the   V   parametrization of   the  cone  reversing the ZAxis.
-  void VReverse()
+  constexpr void VReverse() noexcept
   {
     pos.ZReverse();
     semiAngle = -semiAngle;
   }
 
   //! Returns true if the local coordinate system of this cone is right-handed.
-  constexpr Standard_Boolean Direct() const noexcept { return pos.Direct(); }
+  Standard_Boolean Direct() const { return pos.Direct(); }
 
   //! returns the symmetry axis of the cone.
   constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }

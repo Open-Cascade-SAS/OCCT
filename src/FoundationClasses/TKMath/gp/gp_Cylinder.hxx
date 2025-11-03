@@ -80,14 +80,14 @@ public:
 
   //! Reverses the   U   parametrization of   the cylinder
   //! reversing the YAxis.
-  void UReverse() { pos.YReverse(); }
+  constexpr void UReverse() noexcept { pos.YReverse(); }
 
   //! Reverses the   V   parametrization of   the  plane
   //! reversing the Axis.
-  void VReverse() { pos.ZReverse(); }
+  constexpr void VReverse() noexcept { pos.ZReverse(); }
 
   //! Returns true if the local coordinate system of this cylinder is right-handed.
-  constexpr Standard_Boolean Direct() const noexcept { return pos.Direct(); }
+  Standard_Boolean Direct() const { return pos.Direct(); }
 
   //! Returns the symmetry axis of the cylinder.
   constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }
