@@ -50,9 +50,10 @@ static Standard_Integer qcurve(Draw_Interpretor&,
   if (!strcmp(theArgVec[0], "qcircle"))
   {
     if (theArgsNb == 5 || theArgsNb == 6)
-      aResult2d = new Geom2d_Circle(
-        gp_Ax22d(gp_Pnt2d(Draw::Atof(theArgVec[2]), Draw::Atof(theArgVec[3])), gp_Dir2d(gp_Dir2d::D::X)),
-        Draw::Atof(theArgVec[4]));
+      aResult2d =
+        new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(Draw::Atof(theArgVec[2]), Draw::Atof(theArgVec[3])),
+                                   gp_Dir2d(gp_Dir2d::D::X)),
+                          Draw::Atof(theArgVec[4]));
     else if (theArgsNb == 7 || theArgsNb == 8)
       aResult2d =
         new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(Draw::Atof(theArgVec[2]), Draw::Atof(theArgVec[3])),

@@ -44,7 +44,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a indefinite cylinder.
-  constexpr gp_Cylinder() noexcept : radius(RealLast()) {}
+  constexpr gp_Cylinder() noexcept
+      : radius(RealLast())
+  {
+  }
 
   //! Creates a cylinder of radius Radius, whose axis is the "main
   //! Axis" of theA3. theA3 is the local coordinate system of the cylinder.   Raises

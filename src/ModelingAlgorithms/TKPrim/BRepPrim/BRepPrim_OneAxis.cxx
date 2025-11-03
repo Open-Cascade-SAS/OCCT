@@ -458,13 +458,15 @@ const TopoDS_Face& BRepPrim_OneAxis::StartFace()
                           myFaces[FSTART],
                           gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::Y)));
     if (EdgesBuilt[ETOPSTART])
-      myBuilder.SetPCurve(myEdges[ETOPSTART],
-                          myFaces[FSTART],
-                          gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMax).Y()), gp_Dir2d(gp_Dir2d::D::X)));
+      myBuilder.SetPCurve(
+        myEdges[ETOPSTART],
+        myFaces[FSTART],
+        gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMax).Y()), gp_Dir2d(gp_Dir2d::D::X)));
     if (EdgesBuilt[EBOTSTART])
-      myBuilder.SetPCurve(myEdges[EBOTSTART],
-                          myFaces[FSTART],
-                          gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMin).Y()), gp_Dir2d(gp_Dir2d::D::X)));
+      myBuilder.SetPCurve(
+        myEdges[EBOTSTART],
+        myFaces[FSTART],
+        gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMin).Y()), gp_Dir2d(gp_Dir2d::D::X)));
 
     myBuilder.CompleteFace(myFaces[FSTART]);
     FacesBuilt[FSTART] = Standard_True;
@@ -496,15 +498,19 @@ const TopoDS_Face& BRepPrim_OneAxis::EndFace()
     // parametric curves
     SetMeridianPCurve(myEdges[EEND], myFaces[FEND]);
     if (EdgesBuilt[EAXIS])
-      myBuilder.SetPCurve(myEdges[EAXIS], myFaces[FEND], gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::Y)));
+      myBuilder.SetPCurve(myEdges[EAXIS],
+                          myFaces[FEND],
+                          gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::Y)));
     if (EdgesBuilt[ETOPEND])
-      myBuilder.SetPCurve(myEdges[ETOPEND],
-                          myFaces[FEND],
-                          gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMax).Y()), gp_Dir2d(gp_Dir2d::D::X)));
+      myBuilder.SetPCurve(
+        myEdges[ETOPEND],
+        myFaces[FEND],
+        gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMax).Y()), gp_Dir2d(gp_Dir2d::D::X)));
     if (EdgesBuilt[EBOTEND])
-      myBuilder.SetPCurve(myEdges[EBOTEND],
-                          myFaces[FEND],
-                          gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMin).Y()), gp_Dir2d(gp_Dir2d::D::X)));
+      myBuilder.SetPCurve(
+        myEdges[EBOTEND],
+        myFaces[FEND],
+        gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMin).Y()), gp_Dir2d(gp_Dir2d::D::X)));
 
     myBuilder.CompleteFace(myFaces[FEND]);
     FacesBuilt[FEND] = Standard_True;

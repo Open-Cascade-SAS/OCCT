@@ -87,28 +87,28 @@ static Handle(Geom2d_Curve) Get2DCurve(const Standard_Integer theIndex,
     switch (theIndex)
     {
       case 0:
-        a2dCurv =
-          new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(0.0, theVfirst), gp_Dir2d(gp_Dir2d::D::X)),
-                                  theUfirst,
-                                  theUlast);
+        a2dCurv = new Geom2d_TrimmedCurve(
+          new Geom2d_Line(gp_Pnt2d(0.0, theVfirst), gp_Dir2d(gp_Dir2d::D::X)),
+          theUfirst,
+          theUlast);
         break;
       case 1:
-        a2dCurv =
-          new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(theUlast, 0.0), gp_Dir2d(gp_Dir2d::D::Y)),
-                                  theVfirst,
-                                  theVlast);
+        a2dCurv = new Geom2d_TrimmedCurve(
+          new Geom2d_Line(gp_Pnt2d(theUlast, 0.0), gp_Dir2d(gp_Dir2d::D::Y)),
+          theVfirst,
+          theVlast);
         break;
       case 2:
-        a2dCurv =
-          new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(0.0, theVlast), gp_Dir2d(gp_Dir2d::D::X)),
-                                  theUfirst,
-                                  theUlast);
+        a2dCurv = new Geom2d_TrimmedCurve(
+          new Geom2d_Line(gp_Pnt2d(0.0, theVlast), gp_Dir2d(gp_Dir2d::D::X)),
+          theUfirst,
+          theUlast);
         break;
       case 3:
-        a2dCurv =
-          new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(theUfirst, 0.0), gp_Dir2d(gp_Dir2d::D::Y)),
-                                  theVfirst,
-                                  theVlast);
+        a2dCurv = new Geom2d_TrimmedCurve(
+          new Geom2d_Line(gp_Pnt2d(theUfirst, 0.0), gp_Dir2d(gp_Dir2d::D::Y)),
+          theVfirst,
+          theVlast);
         break;
       default:
         break;

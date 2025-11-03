@@ -107,21 +107,22 @@ void BRepPrimAPI_MakeBox::Init(const gp_Pnt&       thePnt,
                                const Standard_Real theDY,
                                const Standard_Real theDZ)
 {
-  myWedge =
-    BRepPrim_Wedge(gp_Ax2(pmin(thePnt, theDX, theDY, theDZ), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
-                   Abs(theDX),
-                   Abs(theDY),
-                   Abs(theDZ));
+  myWedge = BRepPrim_Wedge(
+    gp_Ax2(pmin(thePnt, theDX, theDY, theDZ), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
+    Abs(theDX),
+    Abs(theDY),
+    Abs(theDZ));
 }
 
 //=================================================================================================
 
 void BRepPrimAPI_MakeBox::Init(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
 {
-  myWedge = BRepPrim_Wedge(gp_Ax2(pmin(thePnt1, thePnt2), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
-                           Abs(thePnt2.X() - thePnt1.X()),
-                           Abs(thePnt2.Y() - thePnt1.Y()),
-                           Abs(thePnt2.Z() - thePnt1.Z()));
+  myWedge =
+    BRepPrim_Wedge(gp_Ax2(pmin(thePnt1, thePnt2), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
+                   Abs(thePnt2.X() - thePnt1.X()),
+                   Abs(thePnt2.Y() - thePnt1.Y()),
+                   Abs(thePnt2.Z() - thePnt1.Z()));
 }
 
 //=================================================================================================
