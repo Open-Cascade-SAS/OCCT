@@ -80,10 +80,10 @@ public:
   Standard_EXPORT void Seek(Standard_Real thePosSec);
 
   //! Pause playback.
-  void Pause() { pushPlayEvent(Media_PlayerEvent_PAUSE); }
+  Standard_EXPORT void Pause();
 
   //! Resume playback.
-  void Resume() { pushPlayEvent(Media_PlayerEvent_RESUME); }
+  Standard_EXPORT void Resume();
 
   //! Return TRUE if queue requires RGB pixel format or can handle also YUV pixel format; TRUE by
   //! default.

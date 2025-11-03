@@ -284,6 +284,22 @@ void Media_PlayerContext::Seek(Standard_Real thePosSec)
 
 //=================================================================================================
 
+void Media_PlayerContext::Pause()
+{
+  std::lock_guard<std::mutex> aLock(myMutex);
+  pushPlayEvent(Media_PlayerEvent_PAUSE);
+}
+
+//=================================================================================================
+
+void Media_PlayerContext::Resume()
+{
+  std::lock_guard<std::mutex> aLock(myMutex);
+  pushPlayEvent(Media_PlayerEvent_RESUME);
+}
+
+//=================================================================================================
+
 void Media_PlayerContext::pushPlayEvent(Media_PlayerEvent thePlayEvent)
 {
   // NOTE: Caller must hold myMutex lock before calling this method
