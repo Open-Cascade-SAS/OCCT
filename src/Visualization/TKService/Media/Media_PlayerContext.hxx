@@ -19,10 +19,11 @@
 #include <Media_Timer.hxx>
 #include <OSD_Thread.hxx>
 #include <Standard_Condition.hxx>
-#include <Standard_Mutex.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+
+#include <mutex>
 
 class Media_BufferPool;
 class Media_CodecContext;
@@ -130,7 +131,7 @@ private:
 private:
   Media_IFrameQueue* myFrameQueue; //!< frame queue
   OSD_Thread         myThread;     //!< working thread
-  Standard_Mutex     myMutex;      //!< mutex for events
+  std::mutex         myMutex;      //!< mutex for events
                                    // clang-format off
   Standard_Condition          myWakeEvent;      //!< event to wake up working thread and proceed new playback event
   Standard_Condition          myNextEvent;      //!< event to check if working thread processed next file event (e.g. released file handles of previous input)
