@@ -130,10 +130,6 @@ private:
   Standard_EXPORT static Standard_PErrorHandler FindHandler(const Standard_HandlerStatus theStatus,
                                                             const Standard_Boolean       theUnlink);
 
-  //! Returns the mutex used to protect the error handler stack from concurrent access.
-  //! The mutex is never destroyed to avoid issues during static deinitialization.
-  static std::mutex& GetMutex();
-
 public:
   //! Defines a base class for callback objects that can be registered
   //! in the OCC error handler (the class simulating C++ exceptions)

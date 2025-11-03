@@ -28,7 +28,7 @@ Aspect_VKeySet::Aspect_VKeySet()
 
 void Aspect_VKeySet::Reset()
 {
-  Standard_Mutex::Sentry aLock(myLock);
+  std::lock_guard<std::shared_mutex> aLock(myLock);
   myModifiers = 0;
   for (NCollection_Array1<KeyState>::Iterator aKeyIter(myKeys); aKeyIter.More(); aKeyIter.Next())
   {
@@ -38,9 +38,8 @@ void Aspect_VKeySet::Reset()
 
 //=================================================================================================
 
-void Aspect_VKeySet::KeyDown(Aspect_VKey theKey, double theTime, double thePressure)
+void Aspect_VKeySet::KeyDown_Unlocked(Aspect_VKey theKey, double theTime, double thePressure)
 {
-  Standard_Mutex::Sentry aLock(myLock);
   if (myKeys[theKey].KStatus != KeyStatus_Pressed)
   {
     myKeys[theKey].KStatus  = KeyStatus_Pressed;
@@ -54,9 +53,16 @@ void Aspect_VKeySet::KeyDown(Aspect_VKey theKey, double theTime, double thePress
 
 //=================================================================================================
 
-void Aspect_VKeySet::KeyUp(Aspect_VKey theKey, double theTime)
+void Aspect_VKeySet::KeyDown(Aspect_VKey theKey, double theTime, double thePressure)
 {
-  Standard_Mutex::Sentry aLock(myLock);
+  std::lock_guard<std::shared_mutex> aLock(myLock);
+  KeyDown_Unlocked(theKey, theTime, thePressure);
+}
+
+//=================================================================================================
+
+void Aspect_VKeySet::KeyUp_Unlocked(Aspect_VKey theKey, double theTime)
+{
   if (myKeys[theKey].KStatus == KeyStatus_Pressed)
   {
     myKeys[theKey].KStatus = KeyStatus_Released;
@@ -72,32 +78,40 @@ void Aspect_VKeySet::KeyUp(Aspect_VKey theKey, double theTime)
 
 //=================================================================================================
 
+void Aspect_VKeySet::KeyUp(Aspect_VKey theKey, double theTime)
+{
+  std::lock_guard<std::shared_mutex> aLock(myLock);
+  KeyUp_Unlocked(theKey, theTime);
+}
+
+//=================================================================================================
+
 void Aspect_VKeySet::KeyFromAxis(Aspect_VKey theNegative,
                                  Aspect_VKey thePositive,
                                  double      theTime,
                                  double      thePressure)
 {
-  Standard_Mutex::Sentry aLock(myLock);
+  std::lock_guard<std::shared_mutex> aLock(myLock);
   if (thePressure != 0)
   {
     const Aspect_VKey aKeyDown = thePressure > 0 ? thePositive : theNegative;
     const Aspect_VKey aKeyUp   = thePressure < 0 ? thePositive : theNegative;
 
-    KeyDown(aKeyDown, theTime, Abs(thePressure));
+    KeyDown_Unlocked(aKeyDown, theTime, Abs(thePressure));
     if (myKeys[aKeyUp].KStatus == KeyStatus_Pressed)
     {
-      KeyUp(aKeyUp, theTime);
+      KeyUp_Unlocked(aKeyUp, theTime);
     }
   }
   else
   {
     if (myKeys[theNegative].KStatus == KeyStatus_Pressed)
     {
-      KeyUp(theNegative, theTime);
+      KeyUp_Unlocked(theNegative, theTime);
     }
     if (myKeys[thePositive].KStatus == KeyStatus_Pressed)
     {
-      KeyUp(thePositive, theTime);
+      KeyUp_Unlocked(thePositive, theTime);
     }
   }
 }
@@ -109,7 +123,7 @@ bool Aspect_VKeySet::HoldDuration(Aspect_VKey theKey,
                                   double&     theDuration,
                                   double&     thePressure)
 {
-  Standard_Mutex::Sentry aLock(myLock);
+  std::lock_guard<std::shared_mutex> aLock(myLock);
   switch (myKeys[theKey].KStatus)
   {
     case KeyStatus_Free: {
