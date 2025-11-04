@@ -27,7 +27,7 @@ class Geom_Point;
 class Geom_CartesianPoint;
 
 //! This class implements the transfer of the Point Entity from Geom
-//! to IGES . These are :
+//! to IGES. These are:
 //! . Point
 //! * CartesianPoint
 class GeomToIGES_GeomPoint : public GeomToIGES_GeomEntity
@@ -41,11 +41,11 @@ public:
   //! fields as GE's.
   Standard_EXPORT GeomToIGES_GeomPoint(const GeomToIGES_GeomEntity& GE);
 
-  //! Transfert  a  Point from Geom to IGES. If this
+  //! Transfer a Point from Geom to IGES. If this
   //! Entity could not be converted, this member returns a NullEntity.
   Standard_EXPORT Handle(IGESGeom_Point) TransferPoint(const Handle(Geom_Point)& start);
 
-  //! Transfert  a  CartesianPoint from Geom to IGES. If this
+  //! Transfer a CartesianPoint from Geom to IGES. If this
   //! Entity could not be converted, this member returns a NullEntity.
   Standard_EXPORT Handle(IGESGeom_Point) TransferPoint(const Handle(Geom_CartesianPoint)& start);
 

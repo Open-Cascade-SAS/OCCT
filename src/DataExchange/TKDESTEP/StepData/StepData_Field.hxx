@@ -81,7 +81,7 @@ public:
   //! Sets a Logical Value (or predeclares a list as logical)
   Standard_EXPORT void SetLogical(const StepData_Logical val = StepData_LFalse);
 
-  //! Sets a Real    Value (or predeclares a list as Real);
+  //! Sets a Real Value (or predeclares a list as Real);
   Standard_EXPORT void SetReal(const Standard_Real val = 0.0);
 
   //! Sets a String Value (or predeclares a list as String)

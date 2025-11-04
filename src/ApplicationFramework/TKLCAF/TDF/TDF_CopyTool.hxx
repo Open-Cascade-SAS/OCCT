@@ -69,30 +69,30 @@ class TDF_CopyTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Copy   <aSourceDataSet> with using  and  updating
-  //! <aRelocationTable>. This  method ignores   target
+  //! Copy <aSourceDataSet> with using and updating
+  //! <aRelocationTable>. This method ignores target
   //! attributes privilege over source ones.
   Standard_EXPORT static void Copy(const Handle(TDF_DataSet)&         aSourceDataSet,
                                    const Handle(TDF_RelocationTable)& aRelocationTable);
 
-  //! Copy  <aSourceDataSet>  using      and updating
+  //! Copy <aSourceDataSet> using and updating
   //! <aRelocationTable>. Use <aPrivilegeFilter> to give
-  //! a list  of   IDs for which  the target  attribute
+  //! a list of IDs for which the target attribute
   //! prevails over the source one.
   Standard_EXPORT static void Copy(const Handle(TDF_DataSet)&         aSourceDataSet,
                                    const Handle(TDF_RelocationTable)& aRelocationTable,
                                    const TDF_IDFilter&                aPrivilegeFilter);
 
-  //! Copy    <aSourceDataSet>   using and    updating
+  //! Copy <aSourceDataSet> using and updating
   //! <aRelocationTable>. Use <aPrivilegeFilter> to give
-  //! a  list of IDs   for which  the target  attribute
-  //! prevails    over    the    source     one.   If
-  //! <setSelfContained>   is   set  to   true,  every
-  //! TDF_Reference will  be replaced  by the referenced
-  //! structure according to <aRefFilter>.
+  //! a list of IDs for which the target attribute
+  //! prevails over the source one. If <setSelfContained>
+  //! is set to true, every TDF_Reference will be
+  //! replaced by the referenced structure
+  //! according to <aRefFilter>.
   //!
-  //! NB: <aRefFilter> is used only if
-  //! <setSelfContained> is true.
+  //! NB: <aRefFilter> is used only if <setSelfContained>
+  //! is true.
   //! Internal root label copy recursive method.
   Standard_EXPORT static void Copy(const Handle(TDF_DataSet)&         aSourceDataSet,
                                    const Handle(TDF_RelocationTable)& aRelocationTable,

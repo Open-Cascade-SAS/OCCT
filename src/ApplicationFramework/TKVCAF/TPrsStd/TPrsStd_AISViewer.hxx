@@ -41,18 +41,18 @@ public:
   //! =============
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  //! returns True if   there is an AISViewer attribute  in
+  //! returns True if there is an AISViewer attribute in
   //! <acces> Data Framework.
   Standard_EXPORT static Standard_Boolean Has(const TDF_Label& acces);
 
-  //! create and set an  AISViewer at. Raise an exception if
+  //! create and set an AISViewer at. Raise an exception if
   //! Has.
   Standard_EXPORT static Handle(TPrsStd_AISViewer) New(
     const TDF_Label&                      access,
     const Handle(AIS_InteractiveContext)& selector);
 
-  //! create  and set an   AISAttribute at root  label. The
-  //! interactive context is  build.  Raise an exception  if
+  //! create and set an AISAttribute at root label. The
+  //! interactive context is build. Raise an exception if
   //! Has.
   Standard_EXPORT static Handle(TPrsStd_AISViewer) New(const TDF_Label&          acces,
                                                        const Handle(V3d_Viewer)& viewer);

@@ -49,7 +49,7 @@ class TDocStd_Document : public CDM_Document
 
 public:
   //! Will Abort any execution, clear fields
-  //! returns the    document which contains <L>.  raises  an
+  //! returns the document which contains <L>. raises an
   //! exception if the document is not found.
   Standard_EXPORT static Handle(TDocStd_Document) Get(const TDF_Label& L);
 
@@ -81,7 +81,7 @@ public:
   //! raise if <me> is not saved.
   Standard_EXPORT TCollection_ExtendedString GetName() const;
 
-  //! returns the OS  path of the  file, in which one <me> is
+  //! returns the OS path of the file, in which one <me> is
   //! saved. Raise an exception if <me> is not saved.
   Standard_EXPORT TCollection_ExtendedString GetPath() const;
 
@@ -131,17 +131,17 @@ public:
   //! Returns True if a new delta has been added to myUndos.
   Standard_EXPORT Standard_Boolean CommitCommand();
 
-  //! Abort the  Command  transaction. Does nothing If there is
+  //! Abort the Command transaction. Does nothing If there is
   //! no Command transaction open.
   Standard_EXPORT void AbortCommand();
 
   //! The current limit on the number of undos
   Standard_EXPORT Standard_Integer GetUndoLimit() const;
 
-  //! Set the  limit on  the number of  Undo Delta  stored 0
-  //! will disable  Undo  on the  document A negative  value
+  //! Set the limit on the number of Undo Delta stored 0
+  //! will disable Undo on the document A negative value
   //! means no limit. Note that by default Undo is disabled.
-  //! Enabling  it will  take effect with  the next  call to
+  //! Enabling it will take effect with the next call to
   //! NewCommand. Of course this limit is the same for Redo
   Standard_EXPORT void SetUndoLimit(const Standard_Integer L);
 
@@ -156,7 +156,7 @@ public:
   //! can be used.
   Standard_EXPORT Standard_Integer GetAvailableUndos() const;
 
-  //! Will UNDO  one step, returns  False if no undo was
+  //! Will UNDO  one step, returns False if no undo was
   //! done (Undos == 0).
   //! Otherwise, true is returned and one step in the
   //! list of undoes is undone.
@@ -167,7 +167,7 @@ public:
   //! can be used.
   Standard_EXPORT Standard_Integer GetAvailableRedos() const;
 
-  //! Will REDO  one step, returns  False if no redo was
+  //! Will REDO  one step, returns False if no redo was
   //! done (Redos == 0).
   //! Otherwise, true is returned, and one step in the list of redoes is done again.
   Standard_EXPORT Standard_Boolean Redo();
@@ -190,26 +190,26 @@ public:
   //! till the last one to be one delta.
   Standard_EXPORT Standard_Boolean PerformDeltaCompaction();
 
-  //! Set   modifications on  labels  impacted  by  external
-  //! references to the entry.  The document becomes invalid
+  //! Set modifications on labels impacted by external
+  //! references to the entry. The document becomes invalid
   //! and must be recomputed.
   Standard_EXPORT void UpdateReferences(const TCollection_AsciiString& aDocEntry);
 
-  //! Recompute if the document was  not valid and propagate
+  //! Recompute if the document was not valid and propagate
   //! the recorded modification.
   Standard_EXPORT void Recompute();
 
-  //! This method Update   will be called
-  //! to signal the end   of the modified references list.
-  //! The    document     should    be  recomputed     and
-  //! UpdateFromDocuments  should be called.  Update should
-  //! returns True in case  of success, false otherwise.  In
+  //! This method Update will be called
+  //! to signal the end of the modified references list.
+  //! The document should be recomputed and
+  //! UpdateFromDocuments should be called. Update should
+  //! returns True in case of success, false otherwise. In
   //! case of Failure, additional information can be given in
   //! ErrorString.
   //! Update the document by propagation
   //! ==================================
-  //! Update   the    document    from   internal   stored
-  //! modifications.   If   you   want  to   undoing  this
+  //! Update the document from internal stored
+  //! modifications. If you want to undoing this
   //! operation, please call NewCommand before.
   //! to change format (advanced programming)
   //! ================

@@ -52,7 +52,7 @@ public:
   //! - aMirrorFlag    : Mirror Flag
   //! - aRotationFlag  : Rotate internal text flag
   //! - aCorner        : Lower left corner coordinates(Form No. 0),
-  //! Increments from coordinates  (Form No. 1)
+  //! Increments from coordinates (Form No. 1)
   Standard_EXPORT void Init(const Standard_Real                  aWidth,
                             const Standard_Real                  aHeight,
                             const Standard_Integer               aFontCode,
@@ -67,8 +67,8 @@ public:
   //! or Basolute (Form 0) else
   Standard_EXPORT void SetIncremental(const Standard_Boolean mode);
 
-  //! returns True  if entity is Incremental (Form 1).
-  //! False if entity is Absolute    (Form 0).
+  //! returns True if entity is Incremental (Form 1).
+  //! False if entity is Absolute (Form 0).
   Standard_EXPORT Standard_Boolean IsIncremental() const;
 
   //! returns Character Box Width.

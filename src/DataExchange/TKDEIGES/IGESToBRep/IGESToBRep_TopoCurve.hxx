@@ -47,9 +47,9 @@ class IGESToBRep_TopoCurve : public IGESToBRep_CurveAndSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates  a tool TopoCurve  ready  to  run, with
-  //! epsilons  set  to  1.E-04,  TheModeTopo  to  True,  the
-  //! optimization of  the continuity to False.
+  //! Creates a tool TopoCurve ready to run, with
+  //! epsilons set to 1.E-04, TheModeTopo to True, the
+  //! optimization of the continuity to False.
   Standard_EXPORT IGESToBRep_TopoCurve();
 
   //! Creates a tool TopoCurve ready to run and sets its

@@ -40,7 +40,7 @@ class IGESGeom_BSplineSurface;
 
 //! Provides methods to transfer basic geometric surface entities
 //! from IGES to CASCADE.
-//! These can be :
+//! These can be:
 //! * Spline surface
 //! * BSpline surface
 class IGESToBRep_BasicSurface : public IGESToBRep_CurveAndSurface
@@ -48,8 +48,8 @@ class IGESToBRep_BasicSurface : public IGESToBRep_CurveAndSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates  a tool BasicSurface  ready  to  run, with
-  //! epsilons  set  to  1.E-04,  TheModeTopo  to  True,  the
+  //! Creates a tool BasicSurface ready to run, with
+  //! epsilons set to 1.E-04, TheModeTopo to True, the
   //! optimization of  the continuity to False.
   Standard_EXPORT IGESToBRep_BasicSurface();
 
@@ -65,7 +65,7 @@ public:
                                           const Standard_Boolean modeapprox,
                                           const Standard_Boolean optimized);
 
-  //! Returns Surface  from Geom if the last transfer has succeeded.
+  //! Returns Surface from Geom if the last transfer has succeeded.
   Standard_EXPORT Handle(Geom_Surface) TransferBasicSurface(
     const Handle(IGESData_IGESEntity)& start);
 
@@ -89,11 +89,11 @@ public:
   Standard_EXPORT Handle(Geom_ToroidalSurface) TransferToroidalSurface(
     const Handle(IGESSolid_ToroidalSurface)& start);
 
-  //! Returns BSplineSurface  from Geom if the transfer has succeeded.
+  //! Returns BSplineSurface from Geom if the transfer has succeeded.
   Standard_EXPORT Handle(Geom_BSplineSurface) TransferSplineSurface(
     const Handle(IGESGeom_SplineSurface)& start);
 
-  //! Returns BSplineSurface  from Geom if the transfer has succeeded.
+  //! Returns BSplineSurface from Geom if the transfer has succeeded.
   Standard_EXPORT Handle(Geom_BSplineSurface) TransferBSplineSurface(
     const Handle(IGESGeom_BSplineSurface)& start);
 };

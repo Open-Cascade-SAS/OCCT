@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-// purpose  : Members to transfert any IGES Curves into TopoDS_Shape
+// purpose  : Members to transfer any IGES Curves into TopoDS_Shape
 //=======================================================================
 // modif mjm du 23/09/97 : appel a ShapeTool en remplacement a PCurveLib
 // 21.12.98 rln, gka S4054

@@ -25,7 +25,7 @@
 class StepElement_SurfaceElementPurposeMember;
 DEFINE_STANDARD_HANDLE(StepElement_SurfaceElementPurposeMember, StepData_SelectNamed)
 
-//! Representation of member for  STEP SELECT type SurfaceElementPurpose
+//! Representation of member for STEP SELECT type SurfaceElementPurpose
 class StepElement_SurfaceElementPurposeMember : public StepData_SelectNamed
 {
 

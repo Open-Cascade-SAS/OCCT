@@ -30,7 +30,7 @@ class gp_Dir;
 class IGESGeom_ConicArc;
 DEFINE_STANDARD_HANDLE(IGESGeom_ConicArc, IGESData_IGESEntity)
 
-//! defines IGESConicArc, Type <104> Form <0-3>  in package IGESGeom
+//! defines IGESConicArc, Type <104> Form <0-3> in package IGESGeom
 //! A conic arc is a bounded connected portion of a parent
 //! conic curve which consists of more than one point. The
 //! parent conic curve is either an ellipse, a parabola, or

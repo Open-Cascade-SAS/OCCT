@@ -25,7 +25,7 @@
 class StepElement_CurveElementFreedomMember;
 DEFINE_STANDARD_HANDLE(StepElement_CurveElementFreedomMember, StepData_SelectNamed)
 
-//! Representation of member for  STEP SELECT type CurveElementFreedom
+//! Representation of member for STEP SELECT type CurveElementFreedom
 class StepElement_CurveElementFreedomMember : public StepData_SelectNamed
 {
 

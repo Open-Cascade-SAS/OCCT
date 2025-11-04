@@ -113,7 +113,7 @@ public:
   //! returns Value as a PropertyDefinition (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_PropertyDefinition) PropertyDefinition() const;
 
-  //! returns Value as a ShapeRepresentation  (Null if another type)
+  //! returns Value as a ShapeRepresentation (Null if another type)
   Standard_EXPORT virtual Handle(StepShape_ShapeRepresentation) ShapeRepresentation() const;
 
   //! returns Value as a SecurityClassification (Null if another type)

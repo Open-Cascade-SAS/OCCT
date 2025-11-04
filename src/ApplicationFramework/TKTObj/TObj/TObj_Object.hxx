@@ -416,14 +416,14 @@ protected:
    * Internal tools for work with OCAF data
    */
 
-  //! Returns the theRank2-th sub label of the theRank1-th  sublabel of the
+  //! Returns the theRank2-th sub label of the theRank1-th sublabel of the
   //! Data label of the object.
   //! If theRank2 is 0 (default), sub label theRank1 of Data label is returned.
   //! If requested label does not exist, it is created.
   Standard_EXPORT TDF_Label getDataLabel(const Standard_Integer theRank1,
                                          const Standard_Integer theRank2 = 0) const;
 
-  //! Returns the theRank2-th sub label of the theRank1-th  sublabel of the
+  //! Returns the theRank2-th sub label of the theRank1-th sublabel of the
   //! Reference label of the object.
   //! If theRank2 is 0 (default), sub label theRank1 of Reference label is returned.
   //! If requested label does not exist, it is created.

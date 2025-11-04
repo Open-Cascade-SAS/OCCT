@@ -58,7 +58,7 @@ public:
   //! Sets Format for Range to a new value with its range of
   //! application.
   //! To cancel it, give format as "" (empty string)
-  //! Remark that if the condition (0. < Rmin < Rmax)  is not
+  //! Remark that if the condition (0. < Rmin < Rmax) is not
   //! verified, this secondary format will be ignored.
   //! Moreover, this secondary format is intended to be used in a
   //! range around 1.

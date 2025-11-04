@@ -25,10 +25,10 @@ DEFINE_STANDARD_HANDLE(TDataStd_Relation, TDataStd_Expression)
 //! Relation attribute.
 //! ==================
 //!
-//! *  Data Structure of  the  Expression is stored in a
+//! * Data Structure of the Expression is stored in a
 //! string and references to variables used by the string
 //!
-//! Warning:  To be consistent,  each  Variable  referenced by  the
+//! Warning: To be consistent, each Variable referenced by the
 //! relation must have its equivalent in the string
 class TDataStd_Relation : public TDataStd_Expression
 {

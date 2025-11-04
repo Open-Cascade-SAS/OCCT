@@ -28,7 +28,7 @@ class Geom_VectorWithMagnitude;
 class Geom_Direction;
 
 //! This class implements the transfer of the Vector from Geom
-//! to IGES . These can be :
+//! to IGES. These can be:
 //! . Vector
 //! * Direction
 //! * VectorWithMagnitude
@@ -43,8 +43,8 @@ public:
   //! fields as GE's.
   Standard_EXPORT GeomToIGES_GeomVector(const GeomToIGES_GeomEntity& GE);
 
-  //! Transfert  a  GeometryEntity which  answer True  to  the
-  //! member : BRepToIGES::IsGeomVector(Geometry).  If this
+  //! Transfer a GeometryEntity which answer True to the
+  //! member : BRepToIGES::IsGeomVector(Geometry). If this
   //! Entity could not be converted, this member returns a NullEntity.
   Standard_EXPORT Handle(IGESGeom_Direction) TransferVector(const Handle(Geom_Vector)& start);
 

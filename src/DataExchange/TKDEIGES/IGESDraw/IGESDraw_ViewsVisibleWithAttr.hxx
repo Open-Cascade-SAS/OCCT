@@ -36,7 +36,7 @@ DEFINE_STANDARD_HANDLE(IGESDraw_ViewsVisibleWithAttr, IGESData_ViewKindEntity)
 //! defines IGESViewsVisibleWithAttr, Type <402>, Form <4>
 //! in package IGESDraw
 //!
-//! This class is extension of Class ViewsVisible.  It is used
+//! This class is extension of Class ViewsVisible. It is used
 //! for those entities that are visible in multiple views, but
 //! must have a different line font, color number, or
 //! line weight in each view.
@@ -118,7 +118,7 @@ public:
   Standard_EXPORT Standard_Integer LineWeightItem(const Standard_Integer Index) const;
 
   //! returns Index'th Display entity with this particular characteristics
-  //! raises exception if Index  <= 0 or Index > NbEntities()
+  //! raises exception if Index <= 0 or Index > NbEntities()
   Standard_EXPORT Handle(IGESData_IGESEntity) DisplayedEntity(const Standard_Integer Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_ViewsVisibleWithAttr, IGESData_ViewKindEntity)

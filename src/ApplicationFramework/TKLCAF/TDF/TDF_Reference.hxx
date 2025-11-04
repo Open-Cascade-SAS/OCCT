@@ -28,7 +28,7 @@ class TDF_DataSet;
 class TDF_Reference;
 DEFINE_STANDARD_HANDLE(TDF_Reference, TDF_Attribute)
 
-//! This  attribute is  used to  store in the  framework a
+//! This attribute is used to store in the framework a
 //! reference to an other label.
 class TDF_Reference : public TDF_Attribute
 {

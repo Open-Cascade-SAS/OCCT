@@ -23,7 +23,7 @@
 
 #include <TDF_IDList.hxx>
 
-//! This package define  CAF main classes.
+//! This package define CAF main classes.
 //!
 //! * The standard application root class
 //!
@@ -46,9 +46,9 @@
 //! sum up, standard documents alone provide
 //! access to the data framework. They also allow
 //! you to:
-//! -   Update external links
-//! -   Manage the saving and opening of data
-//! -   Manage undo/redo functionality.
+//! - Update external links
+//! - Manage the saving and opening of data
+//! - Manage undo/redo functionality.
 //! Note
 //! For information on the relations between this
 //! component of OCAF and the others, refer to the

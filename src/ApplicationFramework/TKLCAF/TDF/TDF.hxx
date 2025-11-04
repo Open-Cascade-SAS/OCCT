@@ -30,9 +30,9 @@ class TCollection_ExtendedString;
 //! The feature structure is a tree used to bind
 //! semantic information about each feature together.
 //!
-//! The only one concrete   attribute defined in  this
+//! The only one concrete attribute defined in this
 //! package is the TagSource attribute.This attribute
-//! is used for  random creation of child labels under
+//! is used for random creation of child labels under
 //! a given label. Tags are randomly delivered.
 class TDF
 {

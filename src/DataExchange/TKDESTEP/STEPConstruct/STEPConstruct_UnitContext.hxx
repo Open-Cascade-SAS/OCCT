@@ -79,7 +79,7 @@ public:
   Standard_EXPORT Standard_Real SolidAngleFactor() const;
 
   //! Returns the Uncertainty value (for length)
-  //! It has been converted  with LengthFactor
+  //! It has been converted with LengthFactor
   Standard_EXPORT Standard_Real Uncertainty() const;
 
   //! Returns the areaFactor

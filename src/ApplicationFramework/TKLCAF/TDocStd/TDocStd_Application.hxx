@@ -272,8 +272,8 @@ public:
     return Open(theIStream, theDoc, Handle(PCDM_ReaderFilter)(), theRange);
   }
 
-  //! Save the  active document  in the file  <name> in the
-  //! path <path> ; o verwrites  the file  if  it already exists.
+  //! Save the active document in the file <name> in the
+  //! path <path>. overwrites the file if it already exists.
   Standard_EXPORT PCDM_StoreStatus
     SaveAs(const Handle(TDocStd_Document)&   theDoc,
            const TCollection_ExtendedString& path,

@@ -65,7 +65,7 @@ public:
   //! False otherwise.
   Standard_EXPORT Standard_Boolean HasColorName() const;
 
-  //! if HasColorName() is True  returns the Verbal description of
+  //! if HasColorName() is True returns the Verbal description of
   //! the Color.
   Standard_EXPORT Handle(TCollection_HAsciiString) ColorName() const;
 

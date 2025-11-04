@@ -201,7 +201,7 @@ public:
   //! transaction open.
   Standard_EXPORT void CommitCommand() const;
 
-  //! Abort the  Command  transaction. Do nothing If there is no Command
+  //! Abort the Command transaction. Do nothing If there is no Command
   //! transaction open.
   Standard_EXPORT void AbortCommand() const;
 

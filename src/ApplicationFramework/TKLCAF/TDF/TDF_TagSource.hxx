@@ -29,7 +29,7 @@ class TDF_RelocationTable;
 class TDF_TagSource;
 DEFINE_STANDARD_HANDLE(TDF_TagSource, TDF_Attribute)
 
-//! This attribute manage   a tag provider   to create
+//! This attribute manage a tag provider to create
 //! child labels of a given one.
 class TDF_TagSource : public TDF_Attribute
 {
@@ -39,11 +39,11 @@ public:
   //! =============
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  //! Find, or create, a  TagSource attribute. the TagSource
+  //! Find, or create, a TagSource attribute. the TagSource
   //! attribute is returned.
   Standard_EXPORT static Handle(TDF_TagSource) Set(const TDF_Label& label);
 
-  //! Find (or create) a  tagSource attribute located at <L>
+  //! Find (or create) a tagSource attribute located at <L>
   //! and make a new child label.
   //! TagSource methods
   //! =================

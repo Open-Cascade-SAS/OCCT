@@ -50,19 +50,19 @@ public:
   Standard_EXPORT static Standard_Boolean Find(const TDF_Label& L, Handle(TDataStd_TreeNode)& T);
 
   //! Finds or Creates a TreeNode attribute on the label <L>
-  //! with  the  default tree  ID,   returned by the method
-  //! <GetDefaultTreeID>.  Returns the created/found     TreeNode
+  //! with the default tree ID, returned by the method
+  //! <GetDefaultTreeID>. Returns the created/found TreeNode
   //! attribute.
   Standard_EXPORT static Handle(TDataStd_TreeNode) Set(const TDF_Label& L);
 
-  //! Finds  or Creates a   TreeNode attribute on  the label
-  //! <L>, with an   explicit tree ID.  <ExplicitTreeID>  is
-  //! the  ID   returned by    <TDF_Attribute::ID>   method.
+  //! Finds or Creates a TreeNode attribute on the label
+  //! <L>, with an explicit tree ID. <ExplicitTreeID> is
+  //! the ID returned by <TDF_Attribute::ID> method.
   //! Returns the found/created TreeNode attribute.
   Standard_EXPORT static Handle(TDataStd_TreeNode) Set(const TDF_Label&     L,
                                                        const Standard_GUID& ExplicitTreeID);
 
-  //! returns a default  tree ID.  this  ID is  used by the
+  //! returns a default tree ID. this ID is used by the
   //! <Set> method without explicit tree ID.
   //! Instance methods:
   //! ================
@@ -70,19 +70,19 @@ public:
 
   Standard_EXPORT TDataStd_TreeNode();
 
-  //! Insert the TreeNode <Child> as last  child of <me>. If
+  //! Insert the TreeNode <Child> as last child of <me>. If
   //! the insertion is successful <me> becomes the Father of <Child>.
   Standard_EXPORT Standard_Boolean Append(const Handle(TDataStd_TreeNode)& Child);
 
-  //! Insert the   the TreeNode <Child>  as  first child of
+  //! Insert the the TreeNode <Child> as first child of
   //! <me>. If the insertion is successful <me> becomes the Father of <Child>
   Standard_EXPORT Standard_Boolean Prepend(const Handle(TDataStd_TreeNode)& Child);
 
-  //! Inserts the TreeNode  <Node> before <me>. If insertion is successful <me>
+  //! Inserts the TreeNode <Node> before <me>. If insertion is successful <me>
   //! and <Node> belongs to the same Father.
   Standard_EXPORT Standard_Boolean InsertBefore(const Handle(TDataStd_TreeNode)& Node);
 
-  //! Inserts the TreeNode <Node>  after <me>. If insertion is successful  <me>
+  //! Inserts the TreeNode <Node> after <me>. If insertion is successful <me>
   //! and <Node> belongs to the same Father.
   Standard_EXPORT Standard_Boolean InsertAfter(const Handle(TDataStd_TreeNode)& Node);
 

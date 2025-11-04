@@ -25,7 +25,7 @@
 #include <Standard_OStream.hxx>
 #include <TDataStd_RealEnum.hxx>
 
-//! This  package  defines   standard attributes for
+//! This package defines standard attributes for
 //! modelling.
 //! These allow you to create and modify labels
 //! and attributes for many basic data types.

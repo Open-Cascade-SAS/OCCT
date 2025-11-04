@@ -112,7 +112,7 @@ public:
   //! returns pen status(True if 1, False if 0) of Motionnum'th motion
   //! of Chnum'th character.
   //! Exception raised if Chnum <= 0 or Chnum > NbCharacters or
-  //! Motionnum <= 0 or Motionnum >  NbPenMotions
+  //! Motionnum <= 0 or Motionnum > NbPenMotions
   Standard_EXPORT Standard_Boolean IsPenUp(const Standard_Integer Chnum,
                                            const Standard_Integer Motionnum) const;
 

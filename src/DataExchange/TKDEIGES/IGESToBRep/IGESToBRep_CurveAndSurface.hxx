@@ -37,9 +37,9 @@ class IGESToBRep_CurveAndSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates  a tool CurveAndSurface  ready  to  run, with
-  //! epsilons  set  to  1.E-04,  myModeTopo  to  True,  the
-  //! optimization of  the continuity to False.
+  //! Creates a tool CurveAndSurface ready to run, with
+  //! epsilons set to 1.E-04, myModeTopo to True, the
+  //! optimization of the continuity to False.
   Standard_EXPORT IGESToBRep_CurveAndSurface();
 
   //! Creates a tool CurveAndSurface ready to run.

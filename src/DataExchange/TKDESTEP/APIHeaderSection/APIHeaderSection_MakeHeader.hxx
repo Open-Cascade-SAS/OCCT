@@ -31,8 +31,8 @@ class StepData_StepModel;
 class Interface_Protocol;
 class TCollection_HAsciiString;
 
-//! This class allows to consult and prepare/edit  data stored in
-//! a Step Model  Header
+//! This class allows to consult and prepare/edit data stored in
+//! a Step Model Header
 class APIHeaderSection_MakeHeader
 {
 public:

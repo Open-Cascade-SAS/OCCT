@@ -110,8 +110,8 @@ public:
 
   //! Displays the statistics for the
   //! last translation. what defines the kind of statistics that are displayed:
-  //! - 0 gives general statistics   (number of translated roots,
-  //! number of warnings, number of   fail messages),
+  //! - 0 gives general statistics (number of translated roots,
+  //! number of warnings, number of fail messages),
   //! - 1 gives root results,
   //! - 2 gives statistics for all checked entities,
   //! - 3 gives the list of translated entities,

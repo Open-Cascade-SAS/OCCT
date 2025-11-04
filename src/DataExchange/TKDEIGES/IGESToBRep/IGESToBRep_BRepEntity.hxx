@@ -46,9 +46,9 @@ class IGESToBRep_BRepEntity : public IGESToBRep_CurveAndSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates  a tool BRepEntity  ready  to  run, with
-  //! epsilons  set  to  1.E-04,  TheModeTopo  to  True,  the
-  //! optimization of  the continuity to False.
+  //! Creates a tool BRepEntity ready to run, with
+  //! epsilons set to 1.E-04, TheModeTopo to True, the
+  //! optimization of the continuity to False.
   Standard_EXPORT IGESToBRep_BRepEntity();
 
   //! Creates a tool BRepEntity ready to run and sets its

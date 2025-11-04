@@ -65,7 +65,7 @@ public:
   //! add <L> as modified
   Standard_EXPORT Standard_Boolean AddLabel(const TDF_Label& L);
 
-  //! remove  <L> as modified
+  //! remove <L> as modified
   Standard_EXPORT Standard_Boolean RemoveLabel(const TDF_Label& L);
 
   //! returns modified label map

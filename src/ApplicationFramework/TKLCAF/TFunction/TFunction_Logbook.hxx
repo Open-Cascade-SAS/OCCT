@@ -73,7 +73,7 @@ public:
                                 const Standard_Boolean WithChildren = Standard_False);
   Standard_EXPORT void SetValid(const TDF_LabelMap& Ls);
 
-  //! Returns True if the label L is touched  or impacted. This method
+  //! Returns True if the label L is touched or impacted. This method
   //! is called by <TFunction_FunctionDriver::MustExecute>.
   //! If <WithChildren> is set to true, the method checks
   //! all the sublabels of <L> too.

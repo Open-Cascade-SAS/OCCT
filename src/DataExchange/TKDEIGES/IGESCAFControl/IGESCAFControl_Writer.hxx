@@ -40,7 +40,7 @@ class XCAFPrs_Style;
 //! IGESCAFControl_Writer writer();
 //! Methods for writing IGES file:
 //! writer.Transfer (Document);
-//! writer.Write("filename") or writer.Write(OStream)  or
+//! writer.Write("filename") or writer.Write(OStream) or
 //! writer.Perform(Document,"filename");
 //! Methods for managing the writing of attributes.
 //! Colors

@@ -35,7 +35,7 @@ class gp_Pnt2d;
 class TopoDS_Wire;
 
 //! This class implements the transfer of Shape Entities
-//! from Geom To IGES. These can be :
+//! from Geom To IGES. These can be:
 //! . Vertex
 //! . Edge
 //! . Wire
@@ -48,18 +48,18 @@ public:
 
   Standard_EXPORT BRepToIGES_BRWire(const BRepToIGES_BREntity& BR);
 
-  //! Transfert a Shape entity from TopoDS to IGES
+  //! Transfer a Shape entity from TopoDS to IGES
   //! this entity must be a Vertex or an Edge or a Wire.
   //! If this Entity could not be converted,
   //! this member returns a NullEntity.
   Standard_EXPORT Handle(IGESData_IGESEntity) TransferWire(const TopoDS_Shape& start);
 
-  //! Transfert a Vertex entity from TopoDS to IGES
+  //! Transfer a Vertex entity from TopoDS to IGES
   //! If this Entity could not be converted,
   //! this member returns a NullEntity.
   Standard_EXPORT Handle(IGESData_IGESEntity) TransferVertex(const TopoDS_Vertex& myvertex);
 
-  //! Transfert a Vertex entity on an Edge from TopoDS to IGES
+  //! Transfer a Vertex entity on an Edge from TopoDS to IGES
   //! Returns the parameter of myvertex on myedge.
   //! If this Entity could not be converted,
   //! this member returns a NullEntity.
@@ -67,7 +67,7 @@ public:
                                                              const TopoDS_Edge&   myedge,
                                                              Standard_Real&       parameter);
 
-  //! Transfert a Vertex entity of an edge on a Face
+  //! Transfer a Vertex entity of an edge on a Face
   //! from TopoDS to IGES
   //! Returns the parameter of myvertex on the pcurve
   //! of myedge on myface
@@ -78,7 +78,7 @@ public:
                                                              const TopoDS_Face&   myface,
                                                              Standard_Real&       parameter);
 
-  //! Transfert a Vertex entity of an edge on a Surface
+  //! Transfer a Vertex entity of an edge on a Surface
   //! from TopoDS to IGES
   //! Returns the parameter of myvertex on the pcurve
   //! of myedge on mysurface
@@ -90,7 +90,7 @@ public:
                                                              const TopLoc_Location&      myloc,
                                                              Standard_Real&              parameter);
 
-  //! Transfert a Vertex entity on a Face from TopoDS to IGES
+  //! Transfer a Vertex entity on a Face from TopoDS to IGES
   //! Returns the parameters of myvertex on myface
   //! If this Entity could not be converted,
   //! this member returns a NullEntity.
@@ -98,7 +98,7 @@ public:
                                                              const TopoDS_Face&   myface,
                                                              gp_Pnt2d&            mypoint);
 
-  //! Transfert an Edge 3d entity from TopoDS to IGES
+  //! Transfer an Edge 3d entity from TopoDS to IGES
   //! If edge is REVERSED and isBRepMode is False 3D edge curve is reversed
   //! @param[in] theEdge input edge to transfer
   //! @param[in] theOriginMap shapemap contains the original shapes. Should be empty if face is not
@@ -110,7 +110,7 @@ public:
     const TopTools_DataMapOfShapeShape& theOriginMap,
     const Standard_Boolean              theIsBRepMode);
 
-  //! Transfert an Edge 2d entity on a Face from TopoDS to IGES
+  //! Transfer an Edge 2d entity on a Face from TopoDS to IGES
   //! @param[in] theEdge input edge to transfer
   //! @param[in] theFace input face to get the surface and UV coordinates from it
   //! @param[in] theOriginMap shapemap contains the original shapes. Should be empty if face is not
@@ -125,12 +125,12 @@ public:
     const Standard_Real                 theLength,
     const Standard_Boolean              theIsBRepMode);
 
-  //! Transfert a Wire entity from TopoDS to IGES
+  //! Transfer a Wire entity from TopoDS to IGES
   //! If this Entity could not be converted,
   //! this member returns a NullEntity.
   Standard_EXPORT Handle(IGESData_IGESEntity) TransferWire(const TopoDS_Wire& mywire);
 
-  //! Transfert a Wire entity from TopoDS to IGES.
+  //! Transfer a Wire entity from TopoDS to IGES.
   //! @param[in] theWire input wire
   //! @param[in] theFace input face
   //! @param[in] theOriginMap shapemap contains the original shapes. Should be empty if face is not

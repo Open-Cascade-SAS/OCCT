@@ -26,7 +26,7 @@
 class StepFEA_SymmetricTensor23dMember;
 DEFINE_STANDARD_HANDLE(StepFEA_SymmetricTensor23dMember, StepData_SelectArrReal)
 
-//! Representation of member for  STEP SELECT type SymmetricTensor23d
+//! Representation of member for STEP SELECT type SymmetricTensor23d
 class StepFEA_SymmetricTensor23dMember : public StepData_SelectArrReal
 {
 

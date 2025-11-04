@@ -44,7 +44,7 @@ public:
   //! returns Value as a Datum (Null if another type)
   Standard_EXPORT Handle(StepDimTol_Datum) Datum() const;
 
-  //! returns Value as a CommonDatumList  (Null if another type)
+  //! returns Value as a CommonDatumList (Null if another type)
   Standard_EXPORT Handle(StepDimTol_HArray1OfDatumReferenceElement) CommonDatumList() const;
 };
 #endif // _StepDimTol_DatumOrCommonDatum_HeaderFile

@@ -81,7 +81,7 @@ public:
   //!
   //! <anOption> may take the following values:
   //! 1 : labels treatment only;
-  //! 2 : attributes treatment  only(default value);
+  //! 2 : attributes treatment only (default value);
   //! 3 : both labels & attributes treatment.
   Standard_EXPORT static Standard_Boolean TargetUnbound(
     const Handle(TDF_DataSet)&         aRefDataSet,

@@ -25,7 +25,7 @@
 class StepElement_VolumeElementPurposeMember;
 DEFINE_STANDARD_HANDLE(StepElement_VolumeElementPurposeMember, StepData_SelectNamed)
 
-//! Representation of member for  STEP SELECT type VolumeElementPurpose
+//! Representation of member for STEP SELECT type VolumeElementPurpose
 class StepElement_VolumeElementPurposeMember : public StepData_SelectNamed
 {
 

@@ -28,9 +28,9 @@ class TFunction_Logbook;
 class TFunction_Driver;
 DEFINE_STANDARD_HANDLE(TFunction_Driver, Standard_Transient)
 
-//! This  driver  class provide  services  around function
-//! execution.   One instance of  this class is  built for
-//! the whole  session.    The driver  is bound   to   the
+//! This driver class provide services around function
+//! execution. One instance of this class is built for
+//! the whole session. The driver is bound to the
 //! DriverGUID in the DriverTable class.
 //! It allows you to create classes which inherit from
 //! this abstract class.
@@ -43,13 +43,13 @@ class TFunction_Driver : public Standard_Transient
 {
 
 public:
-  //! Initializes the label L for this function prior to its  execution.
+  //! Initializes the label L for this function prior to its execution.
   Standard_EXPORT void Init(const TDF_Label& L);
 
   //! Returns the label of the driver for this function.
   TDF_Label Label() const;
 
-  //! Validates labels of a function  in <log>.
+  //! Validates labels of a function in <log>.
   //! This function is the one initialized in this function driver.
   //! Warning
   //! In regeneration mode, the solver must call this

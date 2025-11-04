@@ -90,7 +90,7 @@ public:
 
   //! Generates and returns name for new object in partition.
   //! if theIsToChangeCount is true partition increase own counter
-  //!  to generate new name next time starting from new counter value
+  //! to generate new name next time starting from new counter value
   Standard_EXPORT Handle(TCollection_HExtendedString) GetNewName(
     const Standard_Boolean theIsToChangeCount = Standard_True);
 

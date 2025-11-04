@@ -30,7 +30,7 @@ class TDF_Data;
 class Standard_GUID;
 class TDF_IDFilter;
 
-//! This class provides basic operations  to define
+//! This class provides basic operations to define
 //! a label in a data structure.
 //! A label is a feature in the feature hierarchy. A
 //! label is always connected to a Data from TDF.
@@ -217,7 +217,7 @@ public:
   Standard_EXPORT TDF_Label FindChild(const Standard_Integer aTag,
                                       const Standard_Boolean create = Standard_True) const;
 
-  //! Create a new child label of me using autoamtic
+  //! Create a new child label of me using automatic
   //! delivery tags provided by TagSource.
   TDF_Label NewChild() const;
 

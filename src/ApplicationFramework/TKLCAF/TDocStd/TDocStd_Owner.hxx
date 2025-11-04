@@ -30,10 +30,10 @@ class TDF_RelocationTable;
 class TDocStd_Owner;
 DEFINE_STANDARD_HANDLE(TDocStd_Owner, TDF_Attribute)
 
-//! This  attribute located  at  the  root label  of the
-//! framework contains  a   back reference to   the  owner
-//! TDocStd_Document, providing access to the document from
-//! any label.  private class Owner;
+//! This attribute located at the root label of the
+//! framework contains a back reference to the owner
+//! TDocStd_Document, providing access to the document
+//! from any label. private class Owner;
 class TDocStd_Owner : public TDF_Attribute
 {
 

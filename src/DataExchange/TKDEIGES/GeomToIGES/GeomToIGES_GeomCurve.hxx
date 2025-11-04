@@ -37,7 +37,7 @@ class Geom_Parabola;
 class Geom_OffsetCurve;
 
 //! This class implements the transfer of the Curve Entity from Geom
-//! To IGES. These can be :
+//! To IGES. These can be:
 //! Curve
 //! . BoundedCurve
 //! * BSplineCurve
@@ -61,8 +61,8 @@ public:
   //! fields as GE's.
   Standard_EXPORT GeomToIGES_GeomCurve(const GeomToIGES_GeomEntity& GE);
 
-  //! Transfert  a  GeometryEntity which  answer True  to  the
-  //! member : BRepToIGES::IsGeomCurve(Geometry).  If this
+  //! Transfer a GeometryEntity which answer True to the
+  //! member : BRepToIGES::IsGeomCurve(Geometry). If this
   //! Entity could not be converted, this member returns a NullEntity.
   Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Curve)& start,
                                                             const Standard_Real       Udeb,

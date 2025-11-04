@@ -38,9 +38,9 @@ DEFINE_STANDARD_HANDLE(TPrsStd_Driver, Standard_Transient)
 //! attributes. These attributes are those found on
 //! the label given as an argument in the method Update.
 //! true is returned if the interactive object was modified by the update.
-//! This class  provide  an algorithm  to  Build with its  default
-//! values (if Null) or Update (if !Null) an AIS_InteractiveObject
-//! .   Resources are found  in  attributes associated to  a given
+//! This class provide an algorithm to Build with its default
+//! values (if Null) or Update (if !Null) an AIS_InteractiveObject.
+//! Resources are found in attributes associated to a given
 //! label.
 class TPrsStd_Driver : public Standard_Transient
 {

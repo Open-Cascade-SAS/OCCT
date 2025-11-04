@@ -60,7 +60,7 @@ public:
   Standard_EXPORT Handle(Transfer_FinderProcess) GetTransferProcess() const;
 
   //! Returns the result of the transfert of any Shape
-  //! If  the transfer has  failed, this member return a NullEntity.
+  //! If  the transfer has failed, this member return a NullEntity.
   Standard_EXPORT virtual Handle(IGESData_IGESEntity) TransferShape(
     const TopoDS_Shape&          start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -84,7 +84,7 @@ public:
   Standard_EXPORT Standard_Boolean HasShapeResult(const TopoDS_Shape& start) const;
 
   //! Returns the result of the transfer of the Shape "start" contained
-  //! in "TheMap" . (if HasShapeResult is True).
+  //! in "TheMap". (if HasShapeResult is True).
   Standard_EXPORT Handle(Standard_Transient) GetShapeResult(const TopoDS_Shape& start) const;
 
   //! set in "TheMap" the result of the transfer of the Shape "start".
@@ -96,7 +96,7 @@ public:
   Standard_EXPORT Standard_Boolean HasShapeResult(const Handle(Standard_Transient)& start) const;
 
   //! Returns the result of the transfer of the Transient "start" contained
-  //! in "TheMap" . (if HasShapeResult is True).
+  //! in "TheMap". (if HasShapeResult is True).
   Standard_EXPORT Handle(Standard_Transient) GetShapeResult(
     const Handle(Standard_Transient)& start) const;
 

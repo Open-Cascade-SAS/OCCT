@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-// purpose  : Members to transfert any BRepEntity into TopoDS_Shape
+// purpose  : Members to transfer any BRepEntity into TopoDS_Shape
 //=======================================================================
 // 21.12.98 rln, gka S4054
 // #62 rln 10.01.99 PRO17015

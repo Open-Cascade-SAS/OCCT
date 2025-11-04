@@ -55,10 +55,10 @@ public:
   //! the Group.
   Standard_EXPORT void Init(const Handle(IGESData_HArray1OfIGESEntity)& allEntities);
 
-  //! Sets a Group to be, or not to be  Ordered (according mode)
+  //! Sets a Group to be, or not to be Ordered (according mode)
   Standard_EXPORT void SetOrdered(const Standard_Boolean mode);
 
-  //! Sets a Group to be, or not to be  WithoutBackP
+  //! Sets a Group to be, or not to be WithoutBackP
   Standard_EXPORT void SetWithoutBackP(const Standard_Boolean mode);
 
   //! Returns True if <me> is Ordered

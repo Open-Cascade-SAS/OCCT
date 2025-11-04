@@ -58,7 +58,7 @@ public:
   Standard_EXPORT Standard_Integer FormNumber() const;
 
   //! Returns the Entity which has been recorded for a given
-  //! Field Number, i.e. without any cast. Maps with :
+  //! Field Number, i.e. without any cast. Maps with:
   //! 3 : Structure   4 : LineFont     5 : LevelList     6 : View
   //! 7 : Transf(ormation Matrix)      8 : LabelDisplay
   //! 13 : Color.  Other values give a null handle
@@ -141,7 +141,7 @@ public:
   //! gives Hierarchy status (0-1-2)
   Standard_EXPORT Standard_Integer HierarchyStatus() const;
 
-  //! Returns the LineWeight Number (0  not defined), see also LineWeight
+  //! Returns the LineWeight Number (0 not defined), see also LineWeight
   Standard_EXPORT Standard_Integer LineWeightNumber() const;
 
   //! Returns the true Line Weight, computed from LineWeightNumber and
@@ -273,7 +273,7 @@ public:
   //! Else, the file contained NO idencation at all about this list.
   Standard_EXPORT Standard_Boolean ArePresentAssociativities() const;
 
-  //! gives number of recorded associativities (0  no list defined)
+  //! gives number of recorded associativities (0 no list defined)
   Standard_EXPORT Standard_Integer NbAssociativities() const;
 
   //! Returns the Associativity List under the form of an EntityIterator.
@@ -298,7 +298,7 @@ public:
   //! Else, the file contained NO idencation at all about this list
   Standard_EXPORT Standard_Boolean ArePresentProperties() const;
 
-  //! Gives number of recorded properties (0  no list defined)
+  //! Gives number of recorded properties (0 no list defined)
   Standard_EXPORT Standard_Integer NbProperties() const;
 
   //! Returns Property List under the form of an EntityIterator

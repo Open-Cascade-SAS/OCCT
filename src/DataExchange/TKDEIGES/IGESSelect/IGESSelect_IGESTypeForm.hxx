@@ -36,7 +36,7 @@ DEFINE_STANDARD_HANDLE(IGESSelect_IGESTypeForm, IFSelect_Signature)
 //! IGESTypeForm is a Signature specific to the IGES Norm :
 //! it gives the signature under two possible forms :
 //! - as "mmm nnn", with "mmm" as IGES Type Number, and "nnn"
-//! as IGES From Number (even if = 0)  [Default]
+//! as IGES From Number (even if = 0) [Default]
 //! - as "mmm" alone, which gives only the IGES Type Number
 class IGESSelect_IGESTypeForm : public IFSelect_Signature
 {

@@ -35,7 +35,7 @@ class TDF_DataSet : public Standard_Transient
 {
 
 public:
-  //! Creates an  empty   DataSet  object.
+  //! Creates an empty DataSet object.
   Standard_EXPORT TDF_DataSet();
 
   //! Clears all information.
@@ -45,23 +45,23 @@ public:
   //! attribute.
   Standard_Boolean IsEmpty() const;
 
-  //! Adds <aLabel> in  the  current  data  set.
+  //! Adds <aLabel> in the current data set.
   void AddLabel(const TDF_Label& aLabel);
 
-  //! Returns true if the label  <alabel>   is in the data set.
+  //! Returns true if the label <alabel> is in the data set.
   Standard_Boolean ContainsLabel(const TDF_Label& aLabel) const;
 
   //! Returns the map of labels in this data set.
   //! This map can be used directly, or updated.
   TDF_LabelMap& Labels();
 
-  //! Adds <anAttribute> into the current data  set.
+  //! Adds <anAttribute> into the current data set.
   void AddAttribute(const Handle(TDF_Attribute)& anAttribute);
 
   //! Returns true if <anAttribute> is in the data set.
   Standard_Boolean ContainsAttribute(const Handle(TDF_Attribute)& anAttribute) const;
 
-  //! Returns the map of attributes in the  current  data   set.
+  //! Returns the map of attributes in the current data set.
   //! This map can be used directly, or updated.
   TDF_AttributeMap& Attributes();
 

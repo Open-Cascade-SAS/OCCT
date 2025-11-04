@@ -28,10 +28,10 @@ class TPrsStd_Driver;
 class TPrsStd_DriverTable;
 DEFINE_STANDARD_HANDLE(TPrsStd_DriverTable, Standard_Transient)
 
-//! This class is   a  container to record  (AddDriver)
-//! binding between  GUID and  TPrsStd_Driver.
+//! This class is a container to record (AddDriver)
+//! binding between GUID and TPrsStd_Driver.
 //! You create a new instance of TPrsStd_Driver
-//! and use the method AddDriver to load it into the driver table. the method
+//! and use the method AddDriver to load it into the driver table.
 class TPrsStd_DriverTable : public Standard_Transient
 {
 
@@ -58,8 +58,8 @@ public:
   //! Returns true if the driver has been removed successfully.
   Standard_EXPORT Standard_Boolean RemoveDriver(const Standard_GUID& guid);
 
-  //! Removes all drivers. Returns
-  //! true if the driver has been removed successfully.
+  //! Removes all drivers.
+  //! Returns true if the driver has been removed successfully.
   //! If this method is used, the InitStandardDrivers method should be
   //! called to fill the table with standard drivers.
   Standard_EXPORT void Clear();

@@ -25,7 +25,7 @@
 class StepElement_ElementAspectMember;
 DEFINE_STANDARD_HANDLE(StepElement_ElementAspectMember, StepData_SelectNamed)
 
-//! Representation of member for  STEP SELECT type ElementAspect
+//! Representation of member for STEP SELECT type ElementAspect
 class StepElement_ElementAspectMember : public StepData_SelectNamed
 {
 

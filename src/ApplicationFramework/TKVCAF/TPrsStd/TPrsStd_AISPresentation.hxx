@@ -96,7 +96,7 @@ public:
   //! Returns the material setting for this presentation attribute.
   Standard_EXPORT Graphic3d_NameOfMaterial Material() const;
 
-  //! Sets the material aName for this presentation  attribute.
+  //! Sets the material aName for this presentation attribute.
   Standard_EXPORT void SetMaterial(const Graphic3d_NameOfMaterial aName);
 
   //! Returns true if this presentation attribute already has a material setting.

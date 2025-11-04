@@ -25,7 +25,7 @@
 class StepElement_CurveElementPurposeMember;
 DEFINE_STANDARD_HANDLE(StepElement_CurveElementPurposeMember, StepData_SelectNamed)
 
-//! Representation of member for  STEP SELECT type CurveElementPurpose
+//! Representation of member for STEP SELECT type CurveElementPurpose
 class StepElement_CurveElementPurposeMember : public StepData_SelectNamed
 {
 

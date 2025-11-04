@@ -64,7 +64,7 @@ public:
   //! Warning : conflicts are not controlled
   Standard_EXPORT Standard_Integer& LabelMode();
 
-  //! TypeMode  controls the type form to use :
+  //! TypeMode controls the type form to use :
   //! 0 (D) for normal long form
   //! 1 for short form (if a type name has no short form, normal
   //! long form is then used)

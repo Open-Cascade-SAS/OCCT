@@ -25,7 +25,7 @@
 class StepElement_MeasureOrUnspecifiedValueMember;
 DEFINE_STANDARD_HANDLE(StepElement_MeasureOrUnspecifiedValueMember, StepData_SelectNamed)
 
-//! Representation of member for  STEP SELECT type MeasureOrUnspecifiedValue
+//! Representation of member for STEP SELECT type MeasureOrUnspecifiedValue
 class StepElement_MeasureOrUnspecifiedValueMember : public StepData_SelectNamed
 {
 

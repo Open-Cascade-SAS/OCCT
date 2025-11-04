@@ -33,12 +33,12 @@ class TDF_ChildIterator
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an empty iterator  object to
+  //! Creates an empty iterator object to
   //! explore the children of a label.
   Standard_EXPORT TDF_ChildIterator();
 
   //! Constructs the iterator object defined by
-  //! the label aLabel.  Iterates on the children of the given label. If
+  //! the label aLabel. Iterates on the children of the given label. If
   //! <allLevels> option is set to true, it explores not
   //! only the first, but all the sub label levels.
   Standard_EXPORT TDF_ChildIterator(const TDF_Label&       aLabel,
@@ -74,7 +74,7 @@ public:
   //! iteration process.
   Standard_Boolean More() const;
 
-  //! Move the  current  iteration  to the next Item.
+  //! Move the current iteration  to the next Item.
   Standard_EXPORT void Next();
 
   //! Moves this iteration to the next brother

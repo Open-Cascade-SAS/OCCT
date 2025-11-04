@@ -26,18 +26,18 @@ class TDF_DataSet;
 class TDF_RelocationTable;
 class TDF_Label;
 
-//! This  tool class  is  used to copy  the content of
-//! source label   under  target label.   Only child
-//! labels and  attributes   of  source are   copied.
-//! attributes located   out of source  scope are  not
+//! This tool class is used to copy the content of
+//! source label under target label. Only child
+//! labels and attributes of source are copied.
+//! attributes located out of source scope are not
 //! copied by this algorithm.
-//! Depending  of   the called  method  an   external
-//! reference is set  in  the target  document  to
+//! Depending of the called method an external
+//! reference is set in the target document to
 //! registered the externallink.
 //! Provide services to set, update and perform
 //! external references.
-//! Warning1: Nothing is provided in this class  about the
-//! opportunity to copy, set a link or  update  it.
+//! Warning1: Nothing is provided in this class about the
+//! opportunity to copy, set a link or update it.
 //! Such decisions must be under application control.
 //! Warning2: If the document manages shapes, use after copy
 //! TNaming::ChangeShapes(target,M) to make copy of
@@ -51,12 +51,12 @@ public:
 
   //! Copies the content of the label <fromsource> to the label <intarget>.
   //! The link is registered with an XLink attribute by <intarget>
-  //! label.  if  the    content  of <fromsource>   is  not
-  //! self-contained,  and/or <intarget> has already an XLink
+  //! label. if the content of <fromsource> is not
+  //! self-contained, and/or <intarget> has already an XLink
   //! attribute, an exception is raised.
   Standard_EXPORT void CopyWithLink(const TDF_Label& intarget, const TDF_Label& fromsource);
 
-  //! Update the external reference set   at <L>.
+  //! Update the external reference set at <L>.
   //! Example
   //! Handle(TDocStd_Document) aDoc;
   //! if
@@ -70,7 +70,7 @@ public:
   //! Standard_DomainError if <L> has no XLink attribute.
   Standard_EXPORT void UpdateLink(const TDF_Label& L);
 
-  //! Copy    the   content     of    <fromsource>   under
+  //! Copy the content of <fromsource> under
   //! <intarget>. No link is registered. No check is done.
   //! Example
   //! Handle(TDocStd_Document) DOC, XDOC;

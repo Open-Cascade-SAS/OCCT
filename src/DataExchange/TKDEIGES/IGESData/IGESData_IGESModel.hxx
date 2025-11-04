@@ -139,8 +139,8 @@ public:
   Standard_EXPORT void PrintLabel(const Handle(Standard_Transient)& ent,
                                   Standard_OStream&                 S) const Standard_OVERRIDE;
 
-  //! Prints label specific to IGES norm  for a given -- --
-  //! entity,  i.e.  its directory entry number (2*Number-1)
+  //! Prints label specific to IGES norm for a given -- --
+  //! entity, i.e. its directory entry number (2*Number-1)
   //! in the log file format.
   Standard_EXPORT virtual void PrintToLog(const Handle(Standard_Transient)& ent,
                                           Standard_OStream& S) const Standard_OVERRIDE;

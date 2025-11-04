@@ -40,7 +40,7 @@ class Geom_SurfaceOfRevolution;
 class Geom_OffsetSurface;
 
 //! This class implements the transfer of the Surface Entity from Geom
-//! To IGES. These can be :
+//! To IGES. These can be:
 //! . BoundedSurface
 //! * BSplineSurface
 //! * BezierSurface
@@ -66,8 +66,8 @@ public:
   //! fields as GE's.
   Standard_EXPORT GeomToIGES_GeomSurface(const GeomToIGES_GeomEntity& GE);
 
-  //! Transfert  a  GeometryEntity which  answer True  to  the
-  //! member : BRepToIGES::IsGeomSurface(Geometry).  If this
+  //! Transfer a GeometryEntity which answer True to the
+  //! member : BRepToIGES::IsGeomSurface(Geometry). If this
   //! Entity could not be converted, this member returns a NullEntity.
   Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(const Handle(Geom_Surface)& start,
                                                               const Standard_Real         Udeb,

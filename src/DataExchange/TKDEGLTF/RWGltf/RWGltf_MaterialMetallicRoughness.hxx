@@ -37,8 +37,8 @@ public:
   TCollection_AsciiString Name;                     //!< material name
   Quantity_ColorRGBA      BaseColor;                //!< base color (or scale factor to the texture); [1.0, 1.0, 1.0, 1.0] by default
   Graphic3d_Vec3          EmissiveFactor;           //!< emissive color; [0.0, 0.0, 0.0] by default
-  Standard_ShortReal      Metallic;                 //!< metalness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
-  Standard_ShortReal      Roughness;                //!< roughness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
+  Standard_ShortReal      Metallic;                 //!< metalness (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
+  Standard_ShortReal      Roughness;                //!< roughness (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
   Standard_ShortReal      AlphaCutOff;              //!< alpha cutoff value; 0.5 by default
   RWGltf_GltfAlphaMode    AlphaMode;                //!< alpha mode; RWGltf_GltfAlphaMode_Opaque by default
   Standard_Boolean        IsDoubleSided;            //!< specifies whether the material is double sided; FALSE by default

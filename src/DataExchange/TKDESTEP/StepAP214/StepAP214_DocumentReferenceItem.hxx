@@ -59,7 +59,7 @@ public:
   //! returns Value as a Approval (Null if another type)
   Standard_EXPORT Handle(StepBasic_Approval) Approval() const;
 
-  //! returns Value as a  (Null if another type)
+  //! returns Value as a (Null if another type)
   Standard_EXPORT Handle(StepRepr_DescriptiveRepresentationItem) DescriptiveRepresentationItem()
     const;
 

@@ -38,14 +38,14 @@ DEFINE_STANDARD_HANDLE(TDataStd_Variable, TDF_Attribute)
 //! Variable attribute.
 //! ==================
 //!
-//! * A variable is  associated to a TDataStd_Real (which
-//! contains its    current  value) and  a   TDataStd_Name
-//! attribute (which  contains  its name).  It  contains a
+//! * A variable is associated to a TDataStd_Real (which
+//! contains its current value) and a TDataStd_Name
+//! attribute (which contains its name). It contains a
 //! constant flag, and a Unit
 //!
-//! * An  expression may  be assigned  to a variable.   In
-//! thatcase the expression  is handled by the  associated
-//! Expression Attribute  and the Variable returns True to
+//! * An expression may be assigned to a variable. In
+//! thatcase the expression is handled by the associated
+//! Expression Attribute and the Variable returns True to
 //! the method <IsAssigned>.
 class TDataStd_Variable : public TDF_Attribute
 {
@@ -55,23 +55,23 @@ public:
   //! =============
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  //! Find, or create, a  Variable attribute.
+  //! Find, or create, a Variable attribute.
   //! Real methods
   //! ============
   Standard_EXPORT static Handle(TDataStd_Variable) Set(const TDF_Label& label);
 
   Standard_EXPORT TDataStd_Variable();
 
-  //! set or change the name  of the variable, in myUnknown
+  //! set or change the name of the variable, in myUnknown
   //! and my associated Name attribute.
   Standard_EXPORT void Name(const TCollection_ExtendedString& string);
 
-  //! returns    string   stored  in   the  associated  Name
+  //! returns string stored in the associated Name
   //! attribute.
   Standard_EXPORT const TCollection_ExtendedString& Name() const;
 
-  //! retrieve or create  the associated real attribute  and
-  //! set the  value  <value>.
+  //! retrieve or create the associated real attribute and
+  //! set the value <value>.
   Standard_EXPORT void Set(const Standard_Real value) const;
 
   //! Obsolete method that will be removed in next versions.
@@ -94,15 +94,15 @@ public:
   //! expression attribute.
   Standard_EXPORT Standard_Boolean IsAssigned() const;
 
-  //! create(if  doesn't exist)  and  returns  the  assigned
+  //! create(if doesn't exist) and returns the assigned
   //! expression  attribute. fill it after.
   Standard_EXPORT Handle(TDataStd_Expression) Assign() const;
 
-  //! if <me> is  assigned delete the associated  expression
+  //! if <me> is assigned delete the associated expression
   //! attribute.
   Standard_EXPORT void Desassign() const;
 
-  //! if <me>  is  assigned, returns  associated  Expression
+  //! if <me> is assigned, returns associated Expression
   //! attribute.
   Standard_EXPORT Handle(TDataStd_Expression) Expression() const;
 
@@ -118,7 +118,7 @@ public:
   //! ===================
   Standard_EXPORT const TCollection_AsciiString& Unit() const;
 
-  //! if  <status> is   True, this  variable  will not   be
+  //! if <status> is True, this variable will not be
   //! modified by the solver.
   Standard_EXPORT void Constant(const Standard_Boolean status);
 

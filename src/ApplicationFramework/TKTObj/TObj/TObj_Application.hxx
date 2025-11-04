@@ -24,7 +24,7 @@
 
 //!
 //! This is a base class for OCAF based TObj models
-//!  with declared virtual methods
+//! with declared virtual methods
 //!
 class TObj_Application : public TDocStd_Application
 {

@@ -123,7 +123,7 @@ DEFINE_STANDARD_HANDLE(TDF_Attribute, Standard_Transient)
 //! ---------------
 //!
 //! An AttributeDelta is the difference between to
-//! attribute values states.  These methods must be
+//! attribute values states. These methods must be
 //! implemented by end use inheriting classes, to
 //! profit from the delta services.
 class TDF_Attribute : public Standard_Transient
@@ -140,10 +140,10 @@ public:
   //! Sets default ID defined in nested class (to be used for attributes having User ID feature).
   virtual void SetID() {}
 
-  //! Returns   the   label to which  the   attribute is
-  //! attached. If the  label is not  included in a  DF,
+  //! Returns the label to which the attribute is
+  //! attached. If the label is not included in a DF,
   //! the label is null. See Label.
-  //! Warning
+  //! Warning:
   //! If the label is not included in a data
   //! framework, it is null.
   //! This function should not be redefined inline.
@@ -173,15 +173,15 @@ public:
   //! =================================================
   Standard_Boolean IsForgotten() const;
 
-  //! Returns true if it  exists an associated attribute
+  //! Returns true if it exists an associated attribute
   //! of <me> with <anID> as ID.
   Standard_EXPORT Standard_Boolean IsAttribute(const Standard_GUID& anID) const;
 
-  //! Finds an associated  attribute of  <me>, according
-  //! to <anID>.  the returned <anAttribute> is a  valid
-  //! one. The  method  returns  True if   found,  False
-  //! otherwise.   A removed attribute  cannot be found using
-  //! this  method.
+  //! Finds an associated attribute of <me>, according
+  //! to <anID>. the returned <anAttribute> is a valid
+  //! one. The method returns True if found, False
+  //! otherwise. A removed attribute cannot be found using
+  //! this method.
   Standard_EXPORT Standard_Boolean FindAttribute(const Standard_GUID&   anID,
                                                  Handle(TDF_Attribute)& anAttribute) const;
 
@@ -193,23 +193,23 @@ public:
     return FindAttribute(theID, anAttr) && !(theAttr = Handle(T)::DownCast(anAttr)).IsNull();
   }
 
-  //! Adds   an   Attribute <other>  to  the   label  of
-  //! <me>.Raises if there is  already  one of the same
-  //! GUID fhan <other>.
+  //! Adds an Attribute <other> to the label of <me>.
+  //! Raises if there is already one of the same GUID
+  //! than <other>.
   Standard_EXPORT void AddAttribute(const Handle(TDF_Attribute)& other) const;
 
-  //! Forgets  the Attribute of  GUID <aguid> associated
-  //! to the label of <me>. Be  careful that if <me> is
+  //! Forgets the Attribute of GUID <aguid> associated
+  //! to the label of <me>. Be careful that if <me> is
   //! the attribute of <guid>, <me> will have a null label
-  //! after this call.  If  the attribute doesn't  exist
+  //! after this call. If the attribute doesn't exist
   //! returns False. Otherwise returns True.
   Standard_EXPORT Standard_Boolean ForgetAttribute(const Standard_GUID& aguid) const;
 
-  //! Forgets all the  attributes attached to  the label
-  //! of <me>.    Does   it   on  the  sub-labels   if
-  //! <clearChildren> is set  to true.  Of  course, this
-  //! method  is  compatible with Transaction  &  Delta
-  //! mechanisms. Be careful  that  if <me> will have a
+  //! Forgets all the attributes attached to the label
+  //! of <me>. Does it on the sub-labels if
+  //! <clearChildren> is set to true. Of course, this
+  //! method is compatible with Transaction & Delta
+  //! mechanisms. Be careful that if <me> will have a
   //! null label after this call
   Standard_EXPORT void ForgetAllAttributes(
     const Standard_Boolean clearChildren = Standard_True) const;

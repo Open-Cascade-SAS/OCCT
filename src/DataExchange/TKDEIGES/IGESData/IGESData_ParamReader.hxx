@@ -76,7 +76,7 @@ public:
 
   //! returns the current parameter number
   //! This notion is involved by the organisation of an IGES list of
-  //! parameter : it can be ended by two lists (Associativities and
+  //! parameters: it can be ended by two lists (Associativities and
   //! Properties), which can be empty, or even absent. Hence, it is
   //! necessary to know, at the end of specific reading, how many
   //! parameters have been read : the optional lists follow
@@ -386,7 +386,7 @@ public:
   //! Remark : Negative or Null Pointers are ignored
   //! Else ("ord" False), order is not guaranteed (faster mode)
   //! If all params cannot be read as Entities, same as above
-  //! Warning  Give "ord" to False ONLY if order is not significant
+  //! Warning: Give "ord" to False ONLY if order is not significant
   Standard_EXPORT Standard_Boolean ReadEntList(const Handle(IGESData_IGESReaderData)& IR,
                                                const IGESData_ParamCursor&            PC,
                                                const Standard_CString                 mess,
