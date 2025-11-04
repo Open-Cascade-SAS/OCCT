@@ -82,7 +82,7 @@ public:
   //! Creates an axis placement with standard directions.
   constexpr gp_Ax2(const gp_Pnt& theP, const gp_Dir::D theN, const gp_Dir::D theVx) noexcept
       : axis(theP, theN),
-        vydir(crossStandardDir(theN, theVx)), // Y = Z × X (right-handed)
+        vydir(crossStandardDir(theN, theVx)), // Y = Z x X (right-handed)
         vxdir(theVx)
   {
     // Note: For standard directions, cross product is computed at compile time
@@ -402,7 +402,7 @@ protected:
   //! Helper to compute Y direction (main x X) for standard directions
   static constexpr gp_Dir::D getPerpendicularYDir(const gp_Dir::D theMainDir) noexcept;
 
-  //! Helper to compute cross product of two standard directions (right-handed: A × B)
+  //! Helper to compute cross product of two standard directions (right-handed: A x B)
   static constexpr gp_Dir::D crossStandardDir(const gp_Dir::D theA, const gp_Dir::D theB) noexcept;
 
 private:
@@ -448,7 +448,7 @@ inline constexpr gp_Dir::D gp_Ax2::crossStandardDir(const gp_Dir::D theA,
       return gp_Dir::D::NZ;
     if (theB == gp_Dir::D::NZ)
       return gp_Dir::D::Y;
-    // X × X = 0, X × NX = 0 (parallel, should not happen)
+    // X x X = 0, X x NX = 0 (parallel, should not happen)
     return gp_Dir::D::Z; // fallback
   }
   if (theA == gp_Dir::D::Y)
@@ -461,7 +461,7 @@ inline constexpr gp_Dir::D gp_Ax2::crossStandardDir(const gp_Dir::D theA,
       return gp_Dir::D::Z;
     if (theB == gp_Dir::D::NZ)
       return gp_Dir::D::NX;
-    // Y × Y = 0, Y × NY = 0 (parallel, should not happen)
+    // Y x Y = 0, Y x NY = 0 (parallel, should not happen)
     return gp_Dir::D::X; // fallback
   }
   if (theA == gp_Dir::D::Z)
@@ -474,10 +474,10 @@ inline constexpr gp_Dir::D gp_Ax2::crossStandardDir(const gp_Dir::D theA,
       return gp_Dir::D::NY;
     if (theB == gp_Dir::D::NY)
       return gp_Dir::D::X;
-    // Z × Z = 0, Z × NZ = 0 (parallel, should not happen)
+    // Z x Z = 0, Z x NZ = 0 (parallel, should not happen)
     return gp_Dir::D::Y; // fallback
   }
-  // Handle negative directions: -A × B = -(A × B)
+  // Handle negative directions: -A x B = -(A x B)
   if (theA == gp_Dir::D::NX)
   {
     if (theB == gp_Dir::D::Y)
