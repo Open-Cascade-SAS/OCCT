@@ -111,23 +111,23 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("-Y+X", theType))
   {
-    const gp_Dir aD(0., 0., 1.);
+    const gp_Dir aD(gp_Dir::D::Z);
     myMatrix.SetRotation(gp_Ax1(Pvise, aD), 0.5 * M_PI);
   }
   else if (!strcmp("-X-Y", theType))
   {
-    const gp_Dir aD(0., 0., 1.);
+    const gp_Dir aD(gp_Dir::D::Z);
     myMatrix.SetRotation(gp_Ax1(Pvise, aD), M_PI);
   }
   else if (!strcmp("+Y-X", theType))
   {
-    const gp_Dir aD(0., 0., 1.);
+    const gp_Dir aD(gp_Dir::D::Z);
     myMatrix.SetRotation(gp_Ax1(Pvise, aD), -0.5 * M_PI);
   }
   else if (!strcmp("+Y+X", theType))
   {
-    const gp_Dir aD1(0., 0., 1.);
-    const gp_Dir aD2(0., 1., 0.);
+    const gp_Dir aD1(gp_Dir::D::Z);
+    const gp_Dir aD2(gp_Dir::D::Y);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
@@ -135,13 +135,13 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("-X+Y", theType))
   {
-    const gp_Dir aD(0., 1., 0.);
+    const gp_Dir aD(gp_Dir::D::Y);
     myMatrix.SetRotation(gp_Ax1(Pvise, aD), M_PI);
   }
   else if (!strcmp("-Y-X", theType))
   {
-    const gp_Dir aD1(0., 0., 1.);
-    const gp_Dir aD2(1., 0., 0.);
+    const gp_Dir aD1(gp_Dir::D::Z);
+    const gp_Dir aD2(gp_Dir::D::X);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
@@ -149,18 +149,18 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("+X-Y", theType))
   {
-    const gp_Dir aD(1., 0., 0.);
+    const gp_Dir aD(gp_Dir::D::X);
     myMatrix.SetRotation(gp_Ax1(Pvise, aD), M_PI);
   }
   else if (!strcmp("+X+Z", theType))
   {
-    const gp_Dir aD(1., 0., 0.);
+    const gp_Dir aD(gp_Dir::D::X);
     myMatrix.SetRotation(gp_Ax1(Pvise, aD), -0.5 * M_PI);
   }
   else if (!strcmp("-Z+X", theType))
   {
-    const gp_Dir aD1(1., 0., 0.);
-    const gp_Dir aD2(0., 1., 0.);
+    const gp_Dir aD1(gp_Dir::D::X);
+    const gp_Dir aD2(gp_Dir::D::Y);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.5 * M_PI);
@@ -168,8 +168,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("-X-Z", theType))
   {
-    const gp_Dir aD1(1., 0., 0.);
-    const gp_Dir aD2(0., 1., 0.);
+    const gp_Dir aD1(gp_Dir::D::X);
+    const gp_Dir aD2(gp_Dir::D::Y);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -M_PI);
@@ -177,8 +177,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("+Z-X", theType))
   {
-    const gp_Dir aD1(1., 0., 0.);
-    const gp_Dir aD2(0., 1., 0.);
+    const gp_Dir aD1(gp_Dir::D::X);
+    const gp_Dir aD2(gp_Dir::D::Y);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), 0.5 * M_PI);
@@ -186,8 +186,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("+Z+X", theType))
   {
-    const gp_Dir aD1(1., 0., 0.);
-    const gp_Dir aD2(0., 1., 0.);
+    const gp_Dir aD1(gp_Dir::D::X);
+    const gp_Dir aD2(gp_Dir::D::Y);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), 0.5 * M_PI);
@@ -195,8 +195,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("-X+Z", theType))
   {
-    const gp_Dir aD1(1., 0., 0.);
-    const gp_Dir aD2(0., 1., 0.);
+    const gp_Dir aD1(gp_Dir::D::X);
+    const gp_Dir aD2(gp_Dir::D::Y);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
@@ -204,8 +204,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("-Z-X", theType))
   {
-    const gp_Dir aD1(1., 0., 0.);
-    const gp_Dir aD2(0., 1., 0.);
+    const gp_Dir aD1(gp_Dir::D::X);
+    const gp_Dir aD2(gp_Dir::D::Y);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.5 * M_PI);
@@ -213,13 +213,13 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("+X-Z", theType))
   {
-    const gp_Dir aD(1., 0., 0.);
+    const gp_Dir aD(gp_Dir::D::X);
     myMatrix.SetRotation(gp_Ax1(Pvise, aD), 0.5 * M_PI);
   }
   else if (!strcmp("+Y+Z", theType))
   {
-    const gp_Dir aD1(0., 1., 0.);
-    const gp_Dir aD2(1., 0., 0.);
+    const gp_Dir aD1(gp_Dir::D::Y);
+    const gp_Dir aD2(gp_Dir::D::X);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.5 * M_PI);
@@ -227,13 +227,13 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("-Z+Y", theType))
   {
-    const gp_Dir aD(0., 1., 0.);
+    const gp_Dir aD(gp_Dir::D::Y);
     myMatrix.SetRotation(gp_Ax1(Pvise, aD), -0.5 * M_PI);
   }
   else if (!strcmp("-Y-Z", theType))
   {
-    const gp_Dir aD1(0., 1., 0.);
-    const gp_Dir aD2(1., 0., 0.);
+    const gp_Dir aD1(gp_Dir::D::Y);
+    const gp_Dir aD2(gp_Dir::D::X);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), 0.5 * M_PI);
@@ -241,8 +241,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("+Z-Y", theType))
   {
-    const gp_Dir aD1(0., 1., 0.);
-    const gp_Dir aD2(1., 0., 0.);
+    const gp_Dir aD1(gp_Dir::D::Y);
+    const gp_Dir aD2(gp_Dir::D::X);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
@@ -250,13 +250,13 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("+Z+Y", theType))
   {
-    const gp_Dir aD(0., 1., 0.);
+    const gp_Dir aD(gp_Dir::D::Y);
     myMatrix.SetRotation(gp_Ax1(Pvise, aD), 0.5 * M_PI);
   }
   else if (!strcmp("-Y+Z", theType))
   {
-    const gp_Dir aD1(0., 1., 0.);
-    const gp_Dir aD2(1., 0., 0.);
+    const gp_Dir aD1(gp_Dir::D::Y);
+    const gp_Dir aD2(gp_Dir::D::X);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.5 * M_PI);
@@ -264,8 +264,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("-Z-Y", theType))
   {
-    const gp_Dir aD1(0., 1., 0.);
-    const gp_Dir aD2(1., 0., 0.);
+    const gp_Dir aD1(gp_Dir::D::Y);
+    const gp_Dir aD2(gp_Dir::D::X);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
@@ -273,8 +273,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("+Y-Z", theType))
   {
-    const gp_Dir aD1(0., 1., 0.);
-    const gp_Dir aD2(1., 0., 0.);
+    const gp_Dir aD1(gp_Dir::D::Y);
+    const gp_Dir aD2(gp_Dir::D::X);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), 0.5 * M_PI);
@@ -282,8 +282,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("AXON", theType))
   {
-    const gp_Dir aD1(1., 0., 0.);
-    const gp_Dir aD2(0., 0., 1.);
+    const gp_Dir aD1(gp_Dir::D::X);
+    const gp_Dir aD2(gp_Dir::D::Z);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.25 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.25 * M_PI);
@@ -291,8 +291,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
   }
   else if (!strcmp("PERS", theType))
   {
-    const gp_Dir aD1(1., 0., 0.);
-    const gp_Dir aD2(0., 0., 1.);
+    const gp_Dir aD1(gp_Dir::D::X);
+    const gp_Dir aD2(gp_Dir::D::Z);
 
     myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.25 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.25 * M_PI);

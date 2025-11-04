@@ -35,11 +35,36 @@ class gp_Trsf;
 class gp_Dir
 {
 public:
+  //! Standard directions in 3D space for optimized constexpr construction
+  enum class D
+  {
+    X,  //!< Direction along positive X axis (1, 0, 0)
+    Y,  //!< Direction along positive Y axis (0, 1, 0)
+    Z,  //!< Direction along positive Z axis (0, 0, 1)
+    NX, //!< Direction along negative X axis (-1, 0, 0)
+    NY, //!< Direction along negative Y axis (0, -1, 0)
+    NZ  //!< Direction along negative Z axis (0, 0, -1)
+  };
+
   DEFINE_STANDARD_ALLOC
 
   //! Creates a direction corresponding to X axis.
   constexpr gp_Dir() noexcept
       : coord(1., 0., 0.)
+  {
+  }
+
+  //! Creates a direction from a standard direction enumeration.
+  constexpr explicit gp_Dir(const D theDir) noexcept
+      : coord(theDir == D::X    ? 1.0
+              : theDir == D::NX ? -1.0
+                                : 0.0,
+              theDir == D::Y    ? 1.0
+              : theDir == D::NY ? -1.0
+                                : 0.0,
+              theDir == D::Z    ? 1.0
+              : theDir == D::NZ ? -1.0
+                                : 0.0)
   {
   }
 

@@ -682,7 +682,7 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
   TColStd_SequenceOfReal       EmptySeqOfReal;
 
   // mark of the profile.
-  gp_Ax3 AxeRef(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.), gp_Dir(1., 0., 0.));
+  gp_Ax3 AxeRef(gp_Pnt(0., 0., 0.), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
 
   //---------------------------------------------------------------
   // Construction of revolutions and tubes.
@@ -2446,7 +2446,7 @@ TopLoc_Location BRepFill_Evolved::FindLocation(const TopoDS_Face& Face) const
   gp_Ax3             Axis = P->Position();
 
   gp_Trsf T;
-  gp_Ax3  AxeRef(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.), gp_Dir(1., 0., 0.));
+  gp_Ax3  AxeRef(gp_Pnt(0., 0., 0.), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   T.SetTransformation(AxeRef, Axis);
 
   return TopLoc_Location(T);

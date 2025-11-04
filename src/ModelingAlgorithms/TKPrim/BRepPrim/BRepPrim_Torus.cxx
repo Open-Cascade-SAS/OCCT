@@ -53,7 +53,7 @@ BRepPrim_Torus::BRepPrim_Torus(const Standard_Real Major, const Standard_Real Mi
 BRepPrim_Torus::BRepPrim_Torus(const gp_Pnt&       Center,
                                const Standard_Real Major,
                                const Standard_Real Minor)
-    : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), 0, 2 * M_PI),
+    : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 0, 2 * M_PI),
       myMajor(Major),
       myMinor(Minor)
 {
@@ -82,6 +82,6 @@ void BRepPrim_Torus::SetMeridian()
   A.Translate(V);
   Handle(Geom_Circle)   C = new Geom_Circle(A, myMinor);
   Handle(Geom2d_Circle) C2d =
-    new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(myMajor, 0), gp_Dir2d(1, 0)), myMinor);
+    new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(myMajor, 0), gp_Dir2d(gp_Dir2d::D::X)), myMinor);
   Meridian(C, C2d);
 }

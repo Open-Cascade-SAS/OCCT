@@ -384,7 +384,7 @@ Standard_Boolean Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin&  theLin,
   // Center of 2D-circle
   const gp_Pnt2d aPC(0.0, 0.0);
 
-  gp_Ax22d  aCircAxis(aPC, gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
+  gp_Ax22d  aCircAxis(aPC, gp_Dir2d(gp_Dir2d::D::X), gp_Dir2d(gp_Dir2d::D::Y));
   gp_Circ2d aCirc2d(aCircAxis, theCirc.Radius());
 
   gp_Pnt2d aPL(aVecCL.Dot(aDCx), aVecCL.Dot(aDCy));

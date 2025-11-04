@@ -130,11 +130,11 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
     Standard_Real    x = D1.X(), y = D1.Y(), z = D1.Z(), tol = Precision::Confusion();
     Standard_Boolean nullx = (Abs(x) < tol), nully = (Abs(y) < tol), nullz = (Abs(z) < tol);
     if (nullx && nully)
-      D2 = gp_Dir(1, 0, 0);
+      D2 = gp_Dir(gp_Dir::D::X);
     else if (nullx && nullz)
-      D2 = gp_Dir(1, 0, 0);
+      D2 = gp_Dir(gp_Dir::D::X);
     else if (nully && nullz)
-      D2 = gp_Dir(0, 1, 0);
+      D2 = gp_Dir(gp_Dir::D::Y);
     else
       D2 = gp_Dir(y * z, x * z, -2. * x * y);
   }

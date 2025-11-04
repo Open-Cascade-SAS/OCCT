@@ -45,7 +45,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an indefinite sphere.
-  gp_Sphere()
+  constexpr gp_Sphere() noexcept
       : radius(RealLast())
   {
   }

@@ -51,7 +51,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
   WellDone = Standard_False;
   NbrSol   = 0;
 
-  gp_Dir2d dirx(1., 0.);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsOutside() || Qualified2.IsUnqualified()))
   {

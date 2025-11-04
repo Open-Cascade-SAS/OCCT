@@ -2618,13 +2618,13 @@ static void MakeFace(const Handle(Geom_Surface)& S,
   // make the lines
   Handle(Geom2d_Line) Lumin, Lumax, Lvmin, Lvmax;
   if (!umininf)
-    Lumin = new Geom2d_Line(gp_Pnt2d(UMin, 0), gp_Dir2d(0, 1));
+    Lumin = new Geom2d_Line(gp_Pnt2d(UMin, 0), gp_Dir2d(gp_Dir2d::D::Y));
   if (!umaxinf)
-    Lumax = new Geom2d_Line(gp_Pnt2d(UMax, 0), gp_Dir2d(0, 1));
+    Lumax = new Geom2d_Line(gp_Pnt2d(UMax, 0), gp_Dir2d(gp_Dir2d::D::Y));
   if (!vmininf)
-    Lvmin = new Geom2d_Line(gp_Pnt2d(0, VMin), gp_Dir2d(1, 0));
+    Lvmin = new Geom2d_Line(gp_Pnt2d(0, VMin), gp_Dir2d(gp_Dir2d::D::X));
   if (!vmaxinf)
-    Lvmax = new Geom2d_Line(gp_Pnt2d(0, VMax), gp_Dir2d(1, 0));
+    Lvmax = new Geom2d_Line(gp_Pnt2d(0, VMax), gp_Dir2d(gp_Dir2d::D::X));
 
   Handle(Geom_Curve) Cumin, Cumax, Cvmin, Cvmax;
   Standard_Real      TolApex = 1.e-5;

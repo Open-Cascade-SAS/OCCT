@@ -91,10 +91,10 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
       psup = myInfinite;
     }
 
-    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(0.,Vinf),gp_Dir2d(1.,0.),pinf,psup);
+    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(0.,Vinf),gp_Dir2d(gp_Dir2d::D::X),pinf,psup);
     // myRestr[nbRestr] = new Adaptor2d_Line2d(*Line2dPtr);
-    myRestr[nbRestr] =
-      new Adaptor2d_Line2d(Adaptor2d_Line2d(gp_Pnt2d(0., Vinf), gp_Dir2d(1., 0.), pinf, psup));
+    myRestr[nbRestr] = new Adaptor2d_Line2d(
+      Adaptor2d_Line2d(gp_Pnt2d(0., Vinf), gp_Dir2d(gp_Dir2d::D::X), pinf, psup));
     nbRestr++;
   }
 
@@ -117,10 +117,10 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
       psup = myInfinite;
     }
 
-    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(Usup,0.),gp_Dir2d(0.,1.),pinf,psup);
+    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(Usup,0.),gp_Dir2d(gp_Dir2d::D::Y),pinf,psup);
     // myRestr[nbRestr] = new Adaptor2d_Line2d(*Line2dPtr);
-    myRestr[nbRestr] =
-      new Adaptor2d_Line2d(Adaptor2d_Line2d(gp_Pnt2d(Usup, 0.), gp_Dir2d(0., 1.), pinf, psup));
+    myRestr[nbRestr] = new Adaptor2d_Line2d(
+      Adaptor2d_Line2d(gp_Pnt2d(Usup, 0.), gp_Dir2d(gp_Dir2d::D::Y), pinf, psup));
     nbRestr++;
   }
 
@@ -143,10 +143,10 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
       psup = myInfinite;
     }
 
-    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(0.,Vsup),gp_Dir2d(-1.,0.),pinf,psup);
+    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(0.,Vsup),gp_Dir2d(gp_Dir2d::D::NX),pinf,psup);
     // myRestr[nbRestr] = new Adaptor2d_Line2d(*Line2dPtr);
-    myRestr[nbRestr] =
-      new Adaptor2d_Line2d(Adaptor2d_Line2d(gp_Pnt2d(0., Vsup), gp_Dir2d(-1., 0.), pinf, psup));
+    myRestr[nbRestr] = new Adaptor2d_Line2d(
+      Adaptor2d_Line2d(gp_Pnt2d(0., Vsup), gp_Dir2d(gp_Dir2d::D::NX), pinf, psup));
     nbRestr++;
   }
 
@@ -169,10 +169,10 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
       psup = myInfinite;
     }
 
-    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(Uinf,0.),gp_Dir2d(0.,-1),pinf,psup);
+    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(Uinf,0.),gp_Dir2d(gp_Dir2d::D::NY),pinf,psup);
     // myRestr[nbRestr] = new Adaptor2d_Line2d(*Line2dPtr);
-    myRestr[nbRestr] =
-      new Adaptor2d_Line2d(Adaptor2d_Line2d(gp_Pnt2d(Uinf, 0.), gp_Dir2d(0., -1), pinf, psup));
+    myRestr[nbRestr] = new Adaptor2d_Line2d(
+      Adaptor2d_Line2d(gp_Pnt2d(Uinf, 0.), gp_Dir2d(gp_Dir2d::D::NY), pinf, psup));
     nbRestr++;
   }
 
@@ -200,10 +200,10 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
       psup = myInfinite;
     }
 
-    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(U,V),gp_Dir2d(1.,0.),pinf,psup);
+    // Line2dPtr = new Adaptor2d_Line2d(gp_Pnt2d(U,V),gp_Dir2d(gp_Dir2d::D::X),pinf,psup);
     // myRestr[nbRestr] = new Adaptor2d_Line2d(*Line2dPtr);
     myRestr[nbRestr] =
-      new Adaptor2d_Line2d(Adaptor2d_Line2d(gp_Pnt2d(U, V), gp_Dir2d(1., 0.), pinf, psup));
+      new Adaptor2d_Line2d(Adaptor2d_Line2d(gp_Pnt2d(U, V), gp_Dir2d(gp_Dir2d::D::X), pinf, psup));
     nbRestr++;
   }
 }

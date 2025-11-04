@@ -172,7 +172,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
     aSurf->Bounds(U1, U2, V1, V2);
     Standard_Real aCenter = 0.5 * (U1 + U2);
     gp_Trsf2d     T;
-    gp_Ax2d       axis(gp_Pnt2d(aCenter, V1), gp_Dir2d(0., 1.));
+    gp_Ax2d       axis(gp_Pnt2d(aCenter, V1), gp_Dir2d(gp_Dir2d::D::Y));
     T.SetMirror(axis);
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap(101, new NCollection_IncAllocator);
     for (ex.Init(start, TopAbs_EDGE); ex.More(); ex.Next())

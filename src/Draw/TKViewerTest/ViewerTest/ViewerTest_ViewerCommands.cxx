@@ -5797,7 +5797,7 @@ public:
       myDrawer->SetTextAspect(aTextAspect);
     }
     {
-      const gp_Dir aNorm(0.0, 0.0, 1.0);
+      const gp_Dir aNorm(gp_Dir::D::Z);
       myTris = new Graphic3d_ArrayOfTriangles(4, 6, true, false, true);
       myTris->AddVertex(gp_Pnt(-myWidth * 0.5, -myHeight * 0.5, 0.0), aNorm, gp_Pnt2d(0.0, 0.0));
       myTris->AddVertex(gp_Pnt(myWidth * 0.5, -myHeight * 0.5, 0.0), aNorm, gp_Pnt2d(1.0, 0.0));

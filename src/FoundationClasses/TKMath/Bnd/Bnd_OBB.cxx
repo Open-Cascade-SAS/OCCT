@@ -695,9 +695,9 @@ void OBBTool::BuildBox(Bnd_OBB& theBox)
   const Standard_Boolean isOBB =
     myAxes[0].SquareModulus() * myAxes[1].SquareModulus() * myAxes[2].SquareModulus() > 1.0e-14;
 
-  const gp_Dir aXDir = isOBB ? myAxes[0] : gp_Dir(1, 0, 0);
-  const gp_Dir aYDir = isOBB ? myAxes[1] : gp_Dir(0, 1, 0);
-  const gp_Dir aZDir = isOBB ? myAxes[2] : gp_Dir(0, 0, 1);
+  const gp_Dir aXDir = isOBB ? myAxes[0] : gp_Dir(gp_Dir::D::X);
+  const gp_Dir aYDir = isOBB ? myAxes[1] : gp_Dir(gp_Dir::D::Y);
+  const gp_Dir aZDir = isOBB ? myAxes[2] : gp_Dir(gp_Dir::D::Z);
 
   const Standard_Integer aNbPoints = 6;
   Standard_Real          aParams[aNbPoints];

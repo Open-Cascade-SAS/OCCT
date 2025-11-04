@@ -94,7 +94,7 @@ protected:
     Handle(Poly_Triangulation) aTriangulation = new Poly_Triangulation(aNodes, aTriangles);
 
     // Create a simple planar face
-    gp_Pln                  aPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0, 0, 1));
+    gp_Pln                  aPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::Z));
     BRepBuilderAPI_MakeFace aFaceBuilder(aPlane, 0.0, 10.0, 0.0, 10.0);
 
     if (!aFaceBuilder.IsDone())
@@ -510,7 +510,7 @@ TEST_F(DESTL_ProviderTest, MultipleTriangulatedFaces)
 
   Handle(Poly_Triangulation) aTriangulation = new Poly_Triangulation(aNodes, aTriangles);
 
-  gp_Pln                  aPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0, 0, 1));
+  gp_Pln                  aPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::Z));
   BRepBuilderAPI_MakeFace aFaceBuilder(aPlane, 0.0, 5.0, 0.0, 5.0);
   TopoDS_Face             aTriangleFace = aFaceBuilder.Face();
 

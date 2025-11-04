@@ -2853,7 +2853,7 @@ Standard_Boolean ShapeFix_Face::FixPeriodicDegenerated()
   // Apex curve below the wire
   if (anApexV < aMinLoopV)
   {
-    anApexCurve2d = new Geom2d_Line(gp_Pnt2d(aMinLoopU, anApexV), gp_Dir2d(1, 0));
+    anApexCurve2d = new Geom2d_Line(gp_Pnt2d(aMinLoopU, anApexV), gp_Dir2d(gp_Dir2d::D::X));
     if (!isUDecrease)
       aSoleWire.Reverse();
   }
@@ -2861,7 +2861,7 @@ Standard_Boolean ShapeFix_Face::FixPeriodicDegenerated()
   // Apex curve above the wire
   if (anApexV > aMaxLoopV)
   {
-    anApexCurve2d = new Geom2d_Line(gp_Pnt2d(aMaxLoopU, anApexV), gp_Dir2d(-1, 0));
+    anApexCurve2d = new Geom2d_Line(gp_Pnt2d(aMaxLoopU, anApexV), gp_Dir2d(gp_Dir2d::D::NX));
     if (isUDecrease)
       aSoleWire.Reverse();
   }

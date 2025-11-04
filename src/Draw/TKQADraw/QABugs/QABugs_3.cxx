@@ -93,7 +93,7 @@ static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, c
   myAIScontext->Display(Ve1, Standard_False);
   myAIScontext->Display(Ve2, Standard_False);
 
-  Handle(Geom_Plane)             Plane1 = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(Geom_Plane)             Plane1 = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   TCollection_ExtendedString     Ext1("Dim1");
   Handle(PrsDim_LengthDimension) Dim1 = new PrsDim_LengthDimension(V1, V2, Plane1->Pln());
   Dim1->SetCustomValue(Draw::Atof(a[2]));
@@ -215,10 +215,10 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
   }
 
   gp_Pnt               pt3d(0, 20, 150);
-  gp_Ax2               anAx2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2               anAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::Z));
   gp_Circ              circ(anAx2, 50.0);
   Handle(Geom_Circle)  gcir  = new Geom_Circle(circ);
-  Handle(Geom_Plane)   pln   = new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)));
+  Handle(Geom_Plane)   pln   = new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X)));
   Handle(Geom2d_Curve) gcir1 = GeomAPI::To2d(gcir, pln->Pln());
   TopoDS_Shape         sh1   = BRepBuilderAPI_MakeEdge(gcir1, pln).Shape();
   Handle(AIS_Shape)    ais1  = new AIS_Shape(sh1);
@@ -504,7 +504,6 @@ static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/
     return -1;
   }
 
-  gp_Ax2                                 Cone_Ax;
   double                                 R1 = 8, R2 = 16;
   gp_Pnt                                 P1(0, 0, 20), P2(0, 0, 45);
   Handle(Geom_RectangularTrimmedSurface) S = GC_MakeTrimmedCone(P1, P2, R1, R2).Value();
@@ -798,9 +797,9 @@ static Standard_Integer BUC60841(Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  gp_Ax2                   Ax2 = gp_Ax2(gp_Pnt(0, 621, 78), gp_Dir(0, 1, 0));
+  gp_Ax2                   Ax2 = gp_Ax2(gp_Pnt(0, 621, 78), gp_Dir(gp_Dir::D::Y));
   BRepPrimAPI_MakeCylinder cyl(Ax2, 260, 150);
-  // BRepPrimAPI_MakeCylinder cyl(gp_Ax2(gp_Pnt(0, 621, 78), gp_Dir(0, 1,0)), 260, 150);
+  // BRepPrimAPI_MakeCylinder cyl(gp_Ax2(gp_Pnt(0, 621, 78), gp_Dir(gp_Dir::D::Y)), 260, 150);
 
   TopoDS_Shape sh1 = cyl.Shape();
   DBRep::Set("sh1", sh1);
@@ -1398,7 +1397,7 @@ static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, c
 
   BRepPrimAPI_MakeHalfSpace half(shell, gp_Pnt(0, 0, 20));
   const TopoDS_Solid&       sol = half.Solid();
-  gp_Ax2                    anAx2(gp_Pnt(-800.0, 0.0, 0), gp_Dir(0, 0, -1));
+  gp_Ax2                    anAx2(gp_Pnt(-800.0, 0.0, 0), gp_Dir(gp_Dir::D::NZ));
   BRepPrimAPI_MakeCylinder  cyl(anAx2, 50, 300);
   TopoDS_Shape              sh = cyl.Shape();
 

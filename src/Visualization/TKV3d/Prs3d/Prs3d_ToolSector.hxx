@@ -51,7 +51,7 @@ protected:
   //! Computes normal at given parameter location of the surface.
   virtual gp_Dir Normal(const Standard_Real, const Standard_Real) const Standard_OVERRIDE
   {
-    return gp_Dir(0.0, 0.0, -1.0);
+    return gp_Dir(gp_Dir::D::NZ);
   }
 
 protected:

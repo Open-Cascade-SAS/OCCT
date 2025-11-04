@@ -104,7 +104,7 @@ void BRepLib_MakeShell::Init(const Handle(Geom_Surface)& S,
   Standard_Integer iu, iv;
 
   GS.UIntervals(upars, GeomAbs_C2);
-  gp_Dir2d dv(0, 1);
+  gp_Dir2d dv(gp_Dir2d::D::Y);
   for (iu = 1; iu <= nu + 1; iu++)
   {
     Standard_Real u = upars(iu);
@@ -113,7 +113,7 @@ void BRepLib_MakeShell::Init(const Handle(Geom_Surface)& S,
   }
 
   GS.VIntervals(vpars, GeomAbs_C2);
-  gp_Dir2d du(1, 0);
+  gp_Dir2d du(gp_Dir2d::D::X);
   for (iv = 1; iv <= nv + 1; iv++)
   {
     Standard_Real v = vpars(iv);

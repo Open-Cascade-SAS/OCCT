@@ -69,7 +69,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   gp_Lin2d            L1  = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
   math_Vector         Umin(1, 4);
@@ -178,7 +178,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     return;
   }
   Standard_Real       Tol = Abs(Tolerance);
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
   math_Vector         Umin(1, 4);
@@ -296,7 +296,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     return;
   }
   Standard_Real       Tol = Abs(Tolerance);
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   math_Vector         Umin(1, 3);
   math_Vector         Umax(1, 3);
@@ -391,7 +391,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
     return;
   }
   Standard_Real       Tol = Abs(Tolerance);
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   gp_Circ2d           C1  = Qualified1.Qualified();
   Standard_Real       R1  = C1.Radius();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
@@ -507,7 +507,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
     return;
   }
   Standard_Real       Tol = Abs(Tolerance);
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   gp_Circ2d           C1  = Qualified1.Qualified();
   Standard_Real       R1  = C1.Radius();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
@@ -620,7 +620,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
     return;
   }
   Standard_Real       Tol = Abs(Tolerance);
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   gp_Lin2d            L1  = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
   math_Vector         Umin(1, 4);
@@ -731,7 +731,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     return;
   }
   Standard_Real       Tol = Abs(Tolerance);
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
   math_Vector         Umin(1, 4);
@@ -849,7 +849,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     return;
   }
   Standard_Real       Tol = Abs(Tolerance);
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   math_Vector         Umin(1, 3);
   math_Vector         Umax(1, 3);
@@ -944,7 +944,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&  
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
   math_Vector         Umin(1, 4);
@@ -1102,7 +1102,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
     Standard_Real dist2 = point3.Distance(point2);
     if (Abs(dist1 - dist2) / 2. <= Tol)
     {
-      gp_Dir2d dirx(1., 0.);
+      gp_Dir2d dirx(gp_Dir2d::D::X);
       cirsol                  = gp_Circ2d(gp_Ax2d(point3, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan2 = Tan2.Magnitude();
       gp_Vec2d      Vec1(point1.XY(), point3.XY());
@@ -1170,7 +1170,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
     return;
   }
   Standard_Real       Tol = Abs(Tolerance);
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   gp_Lin2d            L1  = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
   math_Vector         Umin(1, 4);
@@ -1274,7 +1274,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&  
     return;
   }
   Standard_Real       Tol = Abs(Tolerance);
-  gp_Dir2d            dirx(1., 0.);
+  gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   math_Vector         Umin(1, 3);
   math_Vector         Umax(1, 3);

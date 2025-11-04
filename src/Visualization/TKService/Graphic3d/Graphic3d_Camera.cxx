@@ -74,7 +74,7 @@ gp_Ax3 cameraToAx3(const Graphic3d_Camera& theCamera)
 
 Graphic3d_Camera::Graphic3d_Camera()
     : myUp(0.0, 1.0, 0.0),
-      myDirection(0.0, 0.0, 1.0),
+      myDirection(gp_Dir::D::Z),
       myEye(0.0, 0.0, -1500.0),
       myDistance(1500.0),
       myAxialScale(1.0, 1.0, 1.0),
@@ -103,7 +103,7 @@ Graphic3d_Camera::Graphic3d_Camera()
 
 Graphic3d_Camera::Graphic3d_Camera(const Handle(Graphic3d_Camera)& theOther)
     : myUp(0.0, 1.0, 0.0),
-      myDirection(0.0, 0.0, 1.0),
+      myDirection(gp_Dir::D::Z),
       myEye(0.0, 0.0, -1500.0),
       myDistance(1500.0),
       myAxialScale(1.0, 1.0, 1.0),
@@ -193,7 +193,7 @@ void Graphic3d_Camera::Copy(const Handle(Graphic3d_Camera)& theOther)
 void Graphic3d_Camera::SetIdentityOrientation()
 {
   SetEyeAndCenter(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(0.0, 0.0, -1.0));
-  SetUp(gp_Dir(0.0, 1.0, 0.0));
+  SetUp(gp_Dir(gp_Dir::D::Y));
 }
 
 //=================================================================================================

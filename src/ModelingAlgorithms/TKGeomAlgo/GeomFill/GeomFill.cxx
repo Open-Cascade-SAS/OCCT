@@ -240,7 +240,7 @@ void GeomFill::GetMinimalWeights(const Convert_ParameterisationType TConv,
     Weights.Init(1);
   else
   {
-    gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+    gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
     gp_Circ                   C(popAx2, 1);
     Handle(Geom_TrimmedCurve) Sect1   = new Geom_TrimmedCurve(new Geom_Circle(C), 0., MaxAng);
     Handle(Geom_BSplineCurve) CtoBspl = GeomConvert::CurveToBSplineCurve(Sect1, TConv);
@@ -326,7 +326,7 @@ Standard_Real GeomFill::GetTolerance(const Convert_ParameterisationType TConv,
                                      const Standard_Real                AngularTol,
                                      const Standard_Real                SpatialTol)
 {
-  gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   gp_Circ                   C(popAx2, Radius);
   Handle(Geom_Circle)       popCircle = new Geom_Circle(C);
   Handle(Geom_TrimmedCurve) Sect      = new Geom_TrimmedCurve(popCircle, 0., Max(AngleMin, 0.02));

@@ -52,7 +52,7 @@ Standard_EXPORT gp_Dir2d FUN_tool_nC2dINSIDES(const gp_Dir2d& tgC2d)
   // X = (tgC2d,0),Y = (xx,0),Z =(0,0,1)
   // ------------------------------------------------------------
   gp_Dir X, Y, Z;
-  Z = gp_Dir(0., 0., 1.);
+  Z = gp_Dir(gp_Dir::D::Z);
   X = gp_Dir(tgC2d.X(), tgC2d.Y(), 0.);
   Y = Z ^ X;
   gp_Dir2d xx(Y.X(), Y.Y());

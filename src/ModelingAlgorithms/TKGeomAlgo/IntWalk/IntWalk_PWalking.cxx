@@ -2171,10 +2171,10 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(
           gp_Pnt2d(FirstParams.Value(afirstindex), FirstParams.Value(afirstindex + 1)),
           gp_Pnt2d(LastParams.Value(afirstindex), LastParams.Value(afirstindex + 1)));
 
-        gp_Dir2d anIsoDir(0, 1);
+        gp_Dir2d anIsoDir(gp_Dir2d::D::Y);
 
         if ((indexofiso == 1) || (indexofiso == 3))
-          anIsoDir = gp_Dir2d(1, 0);
+          anIsoDir = gp_Dir2d(gp_Dir2d::D::X);
 
         if (aTangentZoneDir.SquareMagnitude() > gp::Resolution())
         {

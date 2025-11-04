@@ -833,7 +833,7 @@ Standard_Real Angle2D(const TopoDS_Vertex&            aV,
 
 Standard_Real Angle(const gp_Dir2d& aDir2D)
 {
-  gp_Dir2d      aRefDir(1., 0.);
+  gp_Dir2d      aRefDir(gp_Dir2d::D::X);
   Standard_Real anAngle;
 
   anAngle = aRefDir.Angle(aDir2D);

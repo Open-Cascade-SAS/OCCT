@@ -605,8 +605,6 @@ static Standard_Integer OCC297(Draw_Interpretor& di, Standard_Integer /*argc*/, 
 
   DBRep::Set("Face", sol1_);
 
-  gp_Ax1 ax1_(gp_Pnt(0., 0., -100.), gp_Dir(0., 0., 1.));
-
   Standard_Real x = 0., y = 0., z = -80.;
 
   BRepPrimAPI_MakeBox box(gp_Pnt(x, y, z), gp_Pnt(x + 150, y + 200, z + 200));
@@ -1422,7 +1420,7 @@ static Standard_Integer OCC578(Draw_Interpretor& di, Standard_Integer argc, cons
   //				      0.1,  0.1  , 0.4, 0.4 );
   TopoDS_Shape wedge1 = BRepPrimAPI_MakeWedge(0.5, 0.05, 0.5, 0.1, 0.1, 0.4, 0.4).Shape();
 
-  gp_Trsf rotate = gce_MakeRotation(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 1.570795);
+  gp_Trsf rotate = gce_MakeRotation(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::X), 1.570795);
 
   gp_Trsf translate = gce_MakeTranslation(gp_Pnt(0.0, -0.5, 0.0), gp_Pnt(0.25, 0.25, 0.5));
 
@@ -1444,7 +1442,7 @@ static Standard_Integer OCC578(Draw_Interpretor& di, Standard_Integer argc, cons
   //				      0.1,  0.1  , 0.4, 0.4 );
   TopoDS_Shape wedge2 = BRepPrimAPI_MakeWedge(0.5, 0.3, 0.5, 0.1, 0.1, 0.4, 0.4).Shape();
 
-  gp_Trsf rotate2 = gce_MakeRotation(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 1.570795 * 3.0);
+  gp_Trsf rotate2 = gce_MakeRotation(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::X), 1.570795 * 3.0);
 
   gp_Trsf translate2 = gce_MakeTranslation(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(0.25, 0.25, 0.5));
 
@@ -1971,8 +1969,8 @@ static Standard_Integer OCC1487(Draw_Interpretor& di, Standard_Integer argc, con
 
   Standard_Integer CaseNumber = Draw::Atoi(argv[1]);
 
-  // BRepPrimAPI_MakeCylinder o_mc1 (gp_Ax2 (gp_Pnt(0,-50,140), gp_Dir(1,0,0)), 50,1000);
-  gp_Dir                   myDir(1, 0, 0);
+  // BRepPrimAPI_MakeCylinder o_mc1 (gp_Ax2 (gp_Pnt(0,-50,140), gp_Dir(gp_Dir::D::X)), 50,1000);
+  gp_Dir                   myDir(gp_Dir::D::X);
   gp_Pnt                   myPnt(0, -50, 140);
   gp_Ax2                   myAx2(myPnt, myDir);
   BRepPrimAPI_MakeCylinder o_mc1(myAx2, 50, 1000);
@@ -2090,11 +2088,11 @@ TopoDS_Shape OCC1077_Bug()
 
   TopoDS_Shape theCommon = BRepAlgoAPI_Common(theBox, theSphere);
   TopoDS_Shape theCylinder1 =
-    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, 0, -10), gp_Dir(0, 0, 1)), 3, 20).Shape();
+    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, 0, -10), gp_Dir(gp_Dir::D::Z)), 3, 20).Shape();
   TopoDS_Shape theCylinder2 =
-    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0)), 3, 20).Shape();
+    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(-10, 0, 0), gp_Dir(gp_Dir::D::X)), 3, 20).Shape();
   TopoDS_Shape theCylinder3 =
-    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, -10, 0), gp_Dir(0, 1, 0)), 3, 20).Shape();
+    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, -10, 0), gp_Dir(gp_Dir::D::Y)), 3, 20).Shape();
   TopoDS_Shape           theTmp1 = OCC1077_cut_blend(theCommon, theCylinder1, 0.7);
   Handle(ShapeFix_Shape) fixer   = new ShapeFix_Shape(theTmp1);
   fixer->Perform();

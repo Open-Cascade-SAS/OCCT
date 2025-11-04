@@ -373,7 +373,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve,
         else
         {
           // radius is equal to 0. No matter what direction to chose.
-          line = gp_Lin2d(circle1.Location(), gp_Dir2d(1., 0.));
+          line = gp_Lin2d(circle1.Location(), gp_Dir2d(gp_Dir2d::D::X));
         }
         //  Modified by skv - Fri Jul  1 16:23:32 2005 IDEM(Airbus) End
         Handle(GccInt_Bisec) solution = new GccInt_BLine(line);

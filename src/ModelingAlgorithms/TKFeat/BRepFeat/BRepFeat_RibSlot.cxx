@@ -496,7 +496,7 @@ gp_Dir BRepFeat_RibSlot::Normal(const TopoDS_Face& F, const gp_Pnt& P)
       break;
 
     default: {
-      return gp_Dir(1., 0., 0.);
+      return gp_Dir(gp_Dir::D::X);
     }
   }
 

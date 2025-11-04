@@ -608,9 +608,9 @@ Standard_Boolean FUN_makeUisoLineOnSphe(const TopoDS_Face& F, // with geometry t
   Standard_Boolean isvgrowing = (vsup - vinf > -tol);
   gp_Dir2d         vdir;
   if (isvgrowing)
-    vdir = gp_Dir2d(0, 1);
+    vdir = gp_Dir2d(gp_Dir2d::D::Y);
   else
-    vdir = gp_Dir2d(0, -1);
+    vdir = gp_Dir2d(gp_Dir2d::D::NY);
 
   gp_Pnt2d origin(uinf, vinf);
   origin.Translate(gp_Vec2d(vdir).Scaled(p3df - par3dinf));

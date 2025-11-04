@@ -53,7 +53,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an indefinite Parabola.
-  gp_Parab()
+  constexpr gp_Parab() noexcept
       : focalLength(RealLast())
   {
   }

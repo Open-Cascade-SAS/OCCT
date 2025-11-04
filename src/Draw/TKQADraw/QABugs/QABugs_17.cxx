@@ -294,7 +294,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   TopoDS_Vertex                 V7 = BRepBuilderAPI_MakeVertex(p7);
   TopoDS_Vertex                 V8 = BRepBuilderAPI_MakeVertex(p8);
   gp_Pnt                        plnpt(0, 0, 0);
-  gp_Dir                        plndir(0, 0, 1);
+  gp_Dir                        plndir(gp_Dir::D::Z);
   Handle(Geom_Plane)            pln      = new Geom_Plane(plnpt, plndir);
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
   anAspect->MakeArrows3d(Standard_True);
@@ -323,7 +323,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   /***************************************/
   // dimension "R 88.58"
   /***************************************/
-  gp_Circ     cir = gp_Circ(gp_Ax2(gp_Pnt(191.09, -88.58, 0), gp_Dir(0, 0, 1)), 88.58);
+  gp_Circ     cir = gp_Circ(gp_Ax2(gp_Pnt(191.09, -88.58, 0), gp_Dir(gp_Dir::D::Z)), 88.58);
   TopoDS_Edge E1 = BRepBuilderAPI_MakeEdge(cir, gp_Pnt(191.09, 0, 0.), gp_Pnt(191.09, -177.16, 0.));
   Handle(PrsDim_RadiusDimension) dim1 = new PrsDim_RadiusDimension(E1);
   dim1->SetDimensionAspect(anAspect);
@@ -331,7 +331,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   /***************************************/
   // dimension "R 43.80"
   /***************************************/
-  gp_Circ     cir1   = gp_Circ(gp_Ax2(gp_Pnt(191.09, -88.58, 0), gp_Dir(0, 0, 1)), 43.80);
+  gp_Circ     cir1   = gp_Circ(gp_Ax2(gp_Pnt(191.09, -88.58, 0), gp_Dir(gp_Dir::D::Z)), 43.80);
   TopoDS_Edge E_cir1 = BRepBuilderAPI_MakeEdge(cir1);
   dim1               = new PrsDim_RadiusDimension(E_cir1);
   anAspect->ArrowAspect()->SetLength(60.0);
@@ -340,7 +340,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   /***************************************/
   // dimension "R 17.86"
   /***************************************/
-  gp_Circ     cir2   = gp_Circ(gp_Ax2(gp_Pnt(566.11, -88.58, 0), gp_Dir(0, 0, -1)), 17.86);
+  gp_Circ     cir2   = gp_Circ(gp_Ax2(gp_Pnt(566.11, -88.58, 0), gp_Dir(gp_Dir::D::NZ)), 17.86);
   TopoDS_Edge E_cir2 = BRepBuilderAPI_MakeEdge(cir2);
   dim1               = new PrsDim_RadiusDimension(E_cir2);
   anAspect->ArrowAspect()->SetLength(40.0);
@@ -416,13 +416,13 @@ static int geom_get_2Dpt_from_3Dpt(const gp_Pnt& pnt3d, const gp_Pln& pln, gp_Pn
 
 static Standard_Integer OCC353(Draw_Interpretor& di, Standard_Integer, const char**)
 {
-  gp_Ax2              ax21(gp_Pnt(100, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2              ax21(gp_Pnt(100, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_Circle) h_cir1 = new Geom_Circle(ax21, 25);
 
-  gp_Ax2              ax22(gp_Pnt(-100, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2              ax22(gp_Pnt(-100, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom_Circle) h_cir2 = new Geom_Circle(ax22, 25);
 
-  gp_Pln               refpln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Pln               refpln(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   Handle(Geom2d_Curve) cir2d1 = GeomAPI::To2d(h_cir1, refpln);
   Handle(Geom2d_Curve) cir2d2 = GeomAPI::To2d(h_cir2, refpln);
 

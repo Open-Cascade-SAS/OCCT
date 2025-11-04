@@ -698,7 +698,6 @@ static int VTrihedron(Draw_Interpretor&, Standard_Integer theArgsNb, const char*
   }
 
   TCollection_AsciiString aName(theArgVec[1]);
-  gp_Pln                  aWorkingPlane;
   Standard_Boolean        toUpdate = Standard_True;
 
   NCollection_DataMap<TCollection_AsciiString, Standard_Real>           aRealParams;
@@ -2967,7 +2966,7 @@ Handle(Poly_Triangulation) CalculationOfSphere(double X, double Y, double Z, int
     if (modmax > Tol)
       Nor = gp_Dir(eqPlan);
     else
-      Nor = gp_Dir(0., 0., 1.);
+      Nor = gp_Dir(gp_Dir::D::Z);
 
     polyTriangulation->SetNormal(i, Nor.XYZ());
   }
@@ -5678,8 +5677,8 @@ static int TextToBRep(Draw_Interpretor& /*theDI*/,
   Font_FontAspect         aFontAspect        = Font_FA_Regular;
   Standard_Boolean        anIsCompositeCurve = Standard_False;
   gp_Ax3                  aPenAx3(gp::XOY());
-  gp_Dir                  aNormal(0.0, 0.0, 1.0);
-  gp_Dir                  aDirection(1.0, 0.0, 0.0);
+  gp_Dir                  aNormal(gp_Dir::D::Z);
+  gp_Dir                  aDirection(gp_Dir::D::X);
   gp_Pnt                  aPenLoc;
 
   Graphic3d_HorizontalTextAlignment aHJustification = Graphic3d_HTA_LEFT;

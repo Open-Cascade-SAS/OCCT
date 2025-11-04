@@ -47,7 +47,7 @@
 #include <BRepTest.hxx>
 
 Standard_IMPORT Draw_Viewer dout;
-static gp_Ax3               theHelixAxis(gp_Pnt(0., 0., 0), gp_Dir(0., 0., 1.), gp_Dir(1., 0., 0.));
+static gp_Ax3 theHelixAxis(gp_Pnt(0., 0., 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
 
 static Standard_Integer comphelix(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer helix(Draw_Interpretor&, Standard_Integer, const char**);

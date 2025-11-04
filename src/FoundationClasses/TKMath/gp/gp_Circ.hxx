@@ -54,7 +54,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an indefinite circle.
-  gp_Circ()
+  constexpr gp_Circ() noexcept
       : radius(RealLast())
   {
   }

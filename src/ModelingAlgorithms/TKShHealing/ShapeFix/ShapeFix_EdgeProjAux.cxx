@@ -140,8 +140,8 @@ Standard_Boolean ShapeFix_EdgeProjAux::IsIso(const Handle(Geom2d_Curve)& /*theCu
       Handle(Geom2d_Line) theLine2d = Handle(Geom2d_Line)::DownCast(theCurve2d);
       gp_Dir2d theDir2d = theLine2d->Direction();
 
-      gp_Dir2d dir1(0.,1.);
-      gp_Dir2d dir2(0.,-1.);
+      gp_Dir2d dir1(gp_Dir2d::D::Y);
+      gp_Dir2d dir2(gp_Dir2d::D::NY);
 
       return (theDir2d.IsEqual(dir1,Precision::Angular()) ||
           theDir2d.IsEqual(dir2,Precision::Angular()) ||

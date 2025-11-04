@@ -172,7 +172,7 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const Handle(Geom_Surfa
 #ifdef OCCT_DEBUG
     std::cout << "FUN_tool_nggeomF NYI" << std::endl;
 #endif
-    return gp_Dir(0, 0, 1);
+    return gp_Dir(gp_Dir::D::Z);
   }
 
   gp_Dir udir(d1u);

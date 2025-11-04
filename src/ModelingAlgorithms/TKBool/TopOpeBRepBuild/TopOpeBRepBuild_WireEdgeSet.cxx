@@ -593,9 +593,9 @@ void TopOpeBRepBuild_WireEdgeSet::IsUVISO(const TopoDS_Edge& E,
     const gp_Dir2d&     D   = HL->Direction();
     Standard_Real       tol = Precision::Angular();
 
-    if (D.IsParallel(gp_Dir2d(0., 1.), tol))
+    if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::Y), tol))
       uiso = Standard_True;
-    else if (D.IsParallel(gp_Dir2d(1., 0.), tol))
+    else if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::X), tol))
       viso = Standard_True;
   }
 }

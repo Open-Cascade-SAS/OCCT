@@ -105,7 +105,7 @@ Standard_Integer DNaming_SphereDriver::Execute(Handle(TFunction_Logbook)& theLog
   {
     aCenter = BRep_Tool::Pnt(TopoDS::Vertex(aCntShape));
   }
-  gp_Ax2                 anAxis = gp_Ax2(aCenter, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
+  gp_Ax2                 anAxis = gp_Ax2(aCenter, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   BRepPrimAPI_MakeSphere aMakeSphere(anAxis, aRadius);
 
   aMakeSphere.Build();

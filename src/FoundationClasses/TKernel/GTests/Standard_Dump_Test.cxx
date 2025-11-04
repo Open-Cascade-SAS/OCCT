@@ -129,7 +129,7 @@ TEST(Standard_DumpTest, gp_Pnt_DumpAndInit)
 TEST(Standard_DumpTest, gp_Ax3_DumpAndInit_MultipleSeparators)
 {
   // Test gp_Ax3 which has multiple fields requiring separators
-  gp_Ax3 anAxis(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
+  gp_Ax3 anAxis(gp_Pnt(1, 2, 3), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
 
   // Serialize
   std::ostringstream anOStream;

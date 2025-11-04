@@ -175,7 +175,7 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
       dircen.SetCoord(xcencir2 - xcencir1, ycencir2 - ycencir1);
       medcen.SetCoord(ycencir2 - ycencir1, xcencir1 - xcencir2);
     }
-    gp_Dir2d dirx(1.0, 0.0);
+    gp_Dir2d dirx(gp_Dir2d::D::X);
     gp_Ax2d  acenx(pcen, dirx);
     gp_Ax2d  acencen(pcen, dircen);
 

@@ -49,7 +49,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
       parcen3(1, 2)
 {
 
-  gp_Dir2d      dirx(1.0, 0.0);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real Tol     = Abs(Tolerance);
   WellDone              = Standard_False;
   NbrSol                = 0;

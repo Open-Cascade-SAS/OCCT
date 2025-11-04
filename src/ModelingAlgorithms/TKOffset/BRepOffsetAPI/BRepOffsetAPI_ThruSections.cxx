@@ -906,8 +906,8 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     if (vClosed)
     {
       B.UpdateEdge(edge1,
-                   new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(1, 0)),
-                   new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(1, 0)),
+                   new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(gp_Dir2d::D::X)),
+                   new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(gp_Dir2d::D::X)),
                    face,
                    Precision::Confusion());
       B.Range(edge1, face, f1, l1);
@@ -915,12 +915,12 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     else
     {
       B.UpdateEdge(edge1,
-                   new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(1, 0)),
+                   new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(gp_Dir2d::D::X)),
                    face,
                    Precision::Confusion());
       B.Range(edge1, face, f1, l1);
       B.UpdateEdge(edge2,
-                   new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(1, 0)),
+                   new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(gp_Dir2d::D::X)),
                    face,
                    Precision::Confusion());
       B.Range(edge2, face, f1, l1);
@@ -929,8 +929,8 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     if (uClosed && nbEdges == 1)
     {
       B.UpdateEdge(edge3,
-                   new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(0, 1)),
-                   new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(0, 1)),
+                   new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(gp_Dir2d::D::Y)),
+                   new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(gp_Dir2d::D::Y)),
                    face,
                    Precision::Confusion());
       B.Range(edge3, face, f2, l2);
@@ -938,12 +938,12 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     else
     {
       B.UpdateEdge(edge3,
-                   new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(0, 1)),
+                   new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(gp_Dir2d::D::Y)),
                    face,
                    Precision::Confusion());
       B.Range(edge3, face, f2, l2);
       B.UpdateEdge(edge4,
-                   new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(0, 1)),
+                   new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(gp_Dir2d::D::Y)),
                    face,
                    Precision::Confusion());
       B.Range(edge4, face, f2, l2);

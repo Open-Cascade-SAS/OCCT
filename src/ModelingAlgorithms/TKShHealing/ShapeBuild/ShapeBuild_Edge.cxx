@@ -585,7 +585,7 @@ Handle(Geom2d_Curve) ShapeBuild_Edge::TransformPCurve(const Handle(Geom2d_Curve)
     Handle(Geom2d_BSplineCurve) aBSpline2d;
     if (result->IsKind(STANDARD_TYPE(Geom2d_Conic)))
     {
-      // gp_Pln pln(gp_Pnt(0,0,0),gp_Dir(0,0,1));
+      // gp_Pln pln(gp_Pnt(0,0,0),gp_Dir(gp_Dir::D::Z));
       // Handle(Geom_Curve) curve = GeomAPI::To3d(result,pln);
       // clang-format off
       Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(result,aFirst,aLast); //protection against parabols ets

@@ -45,9 +45,9 @@ public:
 
   //! Creates an object representing the reference
   //! coordinate system (OXY).
-  gp_Ax22d()
-      : vydir(0., 1.)
-  // vxdir(1.,0.) use default ctor of gp_Dir2d, as it creates the same dir(1, 0)
+  constexpr gp_Ax22d() noexcept
+      : vydir(gp_Dir2d::D::Y)
+  // vxdir default ctor creates X direction (1, 0)
   {
   }
 

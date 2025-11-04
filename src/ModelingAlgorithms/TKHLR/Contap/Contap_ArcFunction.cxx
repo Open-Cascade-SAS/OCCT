@@ -24,7 +24,7 @@
 Contap_ArcFunction::Contap_ArcFunction()
     : myMean(1.),
       myType(Contap_ContourStd),
-      myDir(0., 0., 1.),
+      myDir(gp_Dir::D::Z),
       myCosAng(0.0)
 {
 }

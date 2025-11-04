@@ -526,7 +526,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Dir2d& D)
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom2d_Line)& L)
 {
   gp_Pnt2d P(0., 0.);
-  gp_Dir2d AX(1., 0.);
+  gp_Dir2d AX(gp_Dir2d::D::X);
   IS >> P >> AX;
   L = new Geom2d_Line(P, AX);
   return IS;
@@ -537,7 +537,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom2d_Line)& L
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom2d_Circle)& C)
 {
   gp_Pnt2d      P(0., 0.);
-  gp_Dir2d      AX(1., 0.), AY(1., 0.);
+  gp_Dir2d      AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
   Standard_Real R = 0.;
   IS >> P >> AX >> AY;
   GeomTools::GetReal(IS, R);
@@ -550,7 +550,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom2d_Circle)&
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom2d_Ellipse)& E)
 {
   gp_Pnt2d      P(0., 0.);
-  gp_Dir2d      AX(1., 0.), AY(1., 0.);
+  gp_Dir2d      AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
   Standard_Real R1 = 0., R2 = 0.;
   IS >> P >> AX >> AY;
   GeomTools::GetReal(IS, R1);
@@ -564,7 +564,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom2d_Ellipse)
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom2d_Parabola)& C)
 {
   gp_Pnt2d      P(0., 0.);
-  gp_Dir2d      AX(1., 0.), AY(1., 0.);
+  gp_Dir2d      AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
   Standard_Real R1 = 0.;
   IS >> P >> AX >> AY;
   GeomTools::GetReal(IS, R1);
@@ -577,7 +577,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom2d_Parabola
 static Standard_IStream& operator>>(Standard_IStream& IS, Handle(Geom2d_Hyperbola)& H)
 {
   gp_Pnt2d      P(0., 0.);
-  gp_Dir2d      AX(1., 0.), AY(1., 0.);
+  gp_Dir2d      AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
   Standard_Real R1 = 0., R2 = 0.;
   IS >> P >> AX >> AY;
   GeomTools::GetReal(IS, R1);

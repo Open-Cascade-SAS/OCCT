@@ -859,7 +859,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(
   anAxis.Transform(theTrsf);
   Handle(Geom_Circle) aCirc = new Geom_Circle(anAxis, theRadius);
 
-  gp_Dir               aCircNorm  = gp_Dir(0, 0, 1).Transformed(theTrsf);
+  gp_Dir               aCircNorm  = gp_Dir(gp_Dir::D::Z).Transformed(theTrsf);
   Handle(Geom_Surface) aCircPlane = new Geom_Plane(aCircCenter, aCircNorm);
 
   for (Standard_Integer anIdx = myBoundaryPoints.Lower();

@@ -60,7 +60,7 @@ void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager)&
     }
     case 1: {
       aPrims->AddVertex(gp_Pnt(5.0, 0.0, 0.0),
-                        gp_Dir(0.0, 0.0, 1.0),
+                        gp_Dir(gp_Dir::D::Z),
                         Quantity_Color(Quantity_NOC_RED));
       aPrims->AddVertex(gp_Pnt(5.0, 5.0, 1.0),
                         gp_Dir(1.0, 1.0, 1.0),
@@ -73,7 +73,7 @@ void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager)&
                         gp_Dir(1.0, 1.0, 1.0),
                         Quantity_Color(Quantity_NOC_BLUE1));
       aPrims->AddVertex(gp_Pnt(10.0, 5.0, -1.0),
-                        gp_Dir(0.0, 0.0, -1.0),
+                        gp_Dir(gp_Dir::D::NZ),
                         Quantity_Color(Quantity_NOC_GREEN));
       aPrims->AddVertex(gp_Pnt(10.0, 0.0, 1.0),
                         gp_Dir(0.0, 1.0, 1.0),

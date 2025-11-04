@@ -48,7 +48,7 @@ BRepPrim_Cylinder::BRepPrim_Cylinder(const Standard_Real Radius)
 //=================================================================================================
 
 BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Pnt& Center, const Standard_Real Radius)
-    : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)),
+    : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
                           RealFirst(),
                           RealLast()),
       myRadius(Radius)
@@ -79,7 +79,7 @@ BRepPrim_Cylinder::BRepPrim_Cylinder(const Standard_Real R, const Standard_Real 
 BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Pnt&       Center,
                                      const Standard_Real R,
                                      const Standard_Real H)
-    : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), 0, H),
+    : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 0, H),
       myRadius(R)
 {
   SetMeridian();
@@ -104,6 +104,6 @@ void BRepPrim_Cylinder::SetMeridian()
   gp_Ax1 A = Axes().Axis();
   A.Translate(V);
   Handle(Geom_Line)   L   = new Geom_Line(A);
-  Handle(Geom2d_Line) L2d = new Geom2d_Line(gp_Pnt2d(myRadius, 0), gp_Dir2d(0, 1));
+  Handle(Geom2d_Line) L2d = new Geom2d_Line(gp_Pnt2d(myRadius, 0), gp_Dir2d(gp_Dir2d::D::Y));
   Meridian(L, L2d);
 }

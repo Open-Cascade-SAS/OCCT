@@ -29,7 +29,7 @@
 Contap_SurfFunction::Contap_SurfFunction()
     : myMean(1.),
       myType(Contap_ContourStd),
-      myDir(0., 0., 1.),
+      myDir(gp_Dir::D::Z),
       myAng(0.0),
       myCosAng(0.), // PI/2 - Angle de depouille
       tol(1.e-6),

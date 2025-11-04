@@ -68,7 +68,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
 {
 
   TheSame1.Init(0);
-  gp_Dir2d      dirx(1.0, 0.0);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real Tol = Abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;

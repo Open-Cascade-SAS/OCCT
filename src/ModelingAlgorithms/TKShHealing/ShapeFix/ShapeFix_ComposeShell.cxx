@@ -2031,7 +2031,7 @@ void ShapeFix_ComposeShell::SplitByGrid(ShapeFix_SequenceOfWireSegment& seqw)
     // clang-format off
     gp_Pnt2d pos ( myGrid->UJointValue(i), 0. ); // 0. - for infinite ranges: myGrid->VJointValue(1) ;
     // clang-format on
-    gp_Lin2d line(pos, gp_Dir2d(0., 1.));
+    gp_Lin2d line(pos, gp_Dir2d(gp_Dir2d::D::Y));
     if (!myClosedMode && myUClosed)
     {
       Standard_Real period = Umax - Umin;
@@ -2053,7 +2053,7 @@ void ShapeFix_ComposeShell::SplitByGrid(ShapeFix_SequenceOfWireSegment& seqw)
   for (i = (myVClosed ? 1 : 2); i <= myGrid->NbVPatches(); i++)
   {
     gp_Pnt2d pos(0., myGrid->VJointValue(i));
-    gp_Lin2d line(pos, gp_Dir2d(1., 0.));
+    gp_Lin2d line(pos, gp_Dir2d(gp_Dir2d::D::X));
     if (!myClosedMode && myVClosed)
     {
       Standard_Real period = Vmax - Vmin;

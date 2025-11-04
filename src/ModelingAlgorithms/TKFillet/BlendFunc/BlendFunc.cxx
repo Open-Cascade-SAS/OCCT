@@ -109,7 +109,7 @@ void BlendFunc::GetMinimalWeights(const BlendFunc_SectionShape       SShape,
     break;
     case BlendFunc_Rational:
     case BlendFunc_QuasiAngular: {
-      gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+      gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
       gp_Circ                   C(popAx2, 1);
       Handle(Geom_TrimmedCurve) Sect1   = new Geom_TrimmedCurve(new Geom_Circle(C), 0., MaxAng);
       Handle(Geom_BSplineCurve) CtoBspl = GeomConvert::CurveToBSplineCurve(Sect1, TConv);

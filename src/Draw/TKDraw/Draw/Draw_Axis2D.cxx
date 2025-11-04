@@ -29,7 +29,7 @@ extern Standard_Boolean Draw_Bounds;
 //=================================================================================================
 
 Draw_Axis2D::Draw_Axis2D(const Draw_Color& col, const Standard_Integer Size)
-    : myAxes(gp_Pnt2d(0, 0), gp_Dir2d(1, 0)),
+    : myAxes(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::X)),
       myColor(col),
       mySize(Size)
 {
@@ -38,7 +38,7 @@ Draw_Axis2D::Draw_Axis2D(const Draw_Color& col, const Standard_Integer Size)
 //=================================================================================================
 
 Draw_Axis2D::Draw_Axis2D(const gp_Pnt2d& p, const Draw_Color& col, const Standard_Integer Size)
-    : myAxes(p, gp_Dir2d(1, 0)),
+    : myAxes(p, gp_Dir2d(gp_Dir2d::D::X)),
       myColor(col),
       mySize(Size)
 {

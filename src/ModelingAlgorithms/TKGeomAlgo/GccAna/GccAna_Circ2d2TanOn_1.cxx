@@ -77,7 +77,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
   Standard_Real    Tol    = Abs(Tolerance);
   Standard_Real    Radius = 0;
   Standard_Boolean ok     = Standard_False;
-  gp_Dir2d         dirx(1., 0.);
+  gp_Dir2d         dirx(gp_Dir2d::D::X);
   gp_Circ2d        C1 = Qualified1.Qualified();
   gp_Lin2d         L2 = Qualified2.Qualified();
   Standard_Real    R1 = C1.Radius();

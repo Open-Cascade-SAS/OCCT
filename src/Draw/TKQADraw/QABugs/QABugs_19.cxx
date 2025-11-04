@@ -111,8 +111,8 @@ static Standard_Integer OCC23361(Draw_Interpretor& di,
   gp_Pnt p(0, 0, 2);
 
   gp_Trsf t1, t2;
-  t1.SetRotation(gp_Ax1(p, gp_Dir(0, 1, 0)), -0.49328285294022267);
-  t2.SetRotation(gp_Ax1(p, gp_Dir(0, 0, 1)), 0.87538474718473880);
+  t1.SetRotation(gp_Ax1(p, gp_Dir(gp_Dir::D::Y)), -0.49328285294022267);
+  t2.SetRotation(gp_Ax1(p, gp_Dir(gp_Dir::D::Z)), 0.87538474718473880);
 
   gp_Trsf tComp = t2 * t1;
 
@@ -1348,7 +1348,7 @@ static Standard_Integer OCC24945(Draw_Interpretor& di, Standard_Integer argc, co
   }
 
   gp_Pnt              aP3D(-1725.97, 843.257, -4.22741e-013);
-  gp_Ax2              aAxis(gp_Pnt(0, 843.257, 0), gp_Dir(0, -1, 0), gp::DX());
+  gp_Ax2              aAxis(gp_Pnt(0, 843.257, 0), gp_Dir(gp_Dir::D::NY), gp::DX());
   Handle(Geom_Circle) aCircle = new Geom_Circle(aAxis, 1725.9708621929999);
   GeomAdaptor_Curve   aC3D(aCircle);
 
@@ -2054,10 +2054,10 @@ static Standard_Integer OCC24889(Draw_Interpretor& theDI,
 {
   // Curves
   Handle(Geom2d_Circle) aCircle1 =
-    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(25, -25), gp_Dir2d(1, 0), gp_Dir2d(-0, 1)), 155);
+    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(25, -25), gp_Dir2d(gp_Dir2d::D::X), gp_Dir2d(-0, 1)), 155);
 
   Handle(Geom2d_Circle) aCircle2 =
-    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(25, 25), gp_Dir2d(1, 0), gp_Dir2d(-0, 1)), 155);
+    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(25, 25), gp_Dir2d(gp_Dir2d::D::X), gp_Dir2d(-0, 1)), 155);
 
   Handle(Geom2d_TrimmedCurve) aTrim[2] = {
     new Geom2d_TrimmedCurve(aCircle1, 1.57079632679490, 2.97959469729228),
@@ -2955,7 +2955,7 @@ static Standard_Integer OCC25413(Draw_Interpretor& di, Standard_Integer narg, co
   Bnd_Box aBndBox;
   BRepBndLib::Add(aShape, aBndBox);
 
-  gp_Dir        aDir(0., 1., 0.);
+  gp_Dir        aDir(gp_Dir::D::Y);
   const int     N     = 250;
   Standard_Real xMin  = aBndBox.CornerMin().X();
   Standard_Real zMin  = aBndBox.CornerMin().Z();
@@ -4706,7 +4706,7 @@ static TopoDS_Shape taper(const TopoDS_Shape& shape,
                           Standard_Real       angle)
 {
   // Use maximum face-to-taper z-offset.
-  const gp_Pln neutral_plane(gp_Ax3(gp_Pnt(0.0, 0.0, 140.0), gp_Dir(0.0, 0.0, 1.0)));
+  const gp_Pln neutral_plane(gp_Ax3(gp_Pnt(0.0, 0.0, 140.0), gp_Dir(gp_Dir::D::Z)));
 
   // Draft angle needs to be in radians, and flipped to adhere to our own (arbitrary) draft
   // angle definition.
@@ -4715,8 +4715,8 @@ static TopoDS_Shape taper(const TopoDS_Shape& shape,
   // Add face to draft. The first argument indicates that all material added/removed during
   // drafting is located below the neutral plane
   BRepOffsetAPI_DraftAngle drafter(shape);
-  drafter.Add(face_a, gp_Dir(0.0, 0.0, -1.0), draft_angle, neutral_plane);
-  drafter.Add(face_b, gp_Dir(0.0, 0.0, -1.0), draft_angle, neutral_plane);
+  drafter.Add(face_a, gp_Dir(gp_Dir::D::NZ), draft_angle, neutral_plane);
+  drafter.Add(face_b, gp_Dir(gp_Dir::D::NZ), draft_angle, neutral_plane);
   drafter.Build();
 
   return drafter.Shape();
@@ -4810,8 +4810,8 @@ static Standard_Integer OCC26750(Draw_Interpretor& theDI,
     theDI << "Error in gp_Vec2d. Vectors should be normal.\n";
   }
 
-  const gp_Dir2d aD1(1.0, 0.0);
-  const gp_Dir2d aD2(0.0, -1.0);
+  const gp_Dir2d aD1(gp_Dir2d::D::X);
+  const gp_Dir2d aD2(gp_Dir2d::D::NY);
 
   if (aD1.IsNormal(aD2, Precision::Angular()))
   {

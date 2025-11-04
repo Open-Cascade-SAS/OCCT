@@ -56,7 +56,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
       pararg2(1, 4)
 {
 
-  gp_Dir2d             dirx(1.0, 0.0);
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   TColStd_Array1OfReal cote1(1, 2);
   TColStd_Array1OfReal cote2(1, 2);
   Standard_Integer     nbrcote1 = 0;

@@ -26,7 +26,7 @@ protected:
   void SetUp() override
   {
     // Create a plane as basis surface
-    gp_Pln             aPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+    gp_Pln             aPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)));
     Handle(Geom_Plane) aBasisSurface = new Geom_Plane(aPlane);
 
     // Create offset surface

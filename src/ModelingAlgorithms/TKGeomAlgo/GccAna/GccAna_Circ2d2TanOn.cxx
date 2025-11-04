@@ -79,7 +79,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
   gp_Circ2d            C2 = Qualified2.Qualified();
   Standard_Real        R1 = C1.Radius();
   Standard_Real        R2 = C2.Radius();
-  gp_Dir2d             dirx(1., 0.);
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   gp_Pnt2d             center1(C1.Location());
   gp_Pnt2d             center2(C2.Location());
   TColStd_Array1OfReal Radius(1, 2);

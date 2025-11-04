@@ -73,7 +73,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     return;
   }
   Standard_Real Tol = Abs(Tolerance);
-  gp_Dir2d      dirx(1., 0.);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   gp_Lin2d      L1 = Qualified1.Qualified();
   gp_Pnt2d      originL1(L1.Location());
   gp_Dir2d      dirL1(L1.Direction());

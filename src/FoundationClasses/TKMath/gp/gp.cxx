@@ -14,6 +14,7 @@
 
 #include <gp.hxx>
 
+#include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir.hxx>
@@ -23,120 +24,120 @@
 
 //=================================================================================================
 
-const gp_Pnt& gp::Origin()
+const gp_Pnt& gp::Origin() noexcept
 {
-  static gp_Pnt gp_Origin(0, 0, 0);
+  static const gp_Pnt gp_Origin(0, 0, 0);
   return gp_Origin;
 }
 
 //=================================================================================================
 
-const gp_Dir& gp::DX()
+const gp_Dir& gp::DX() noexcept
 {
-  static gp_Dir gp_DX(1, 0, 0);
+  static const gp_Dir gp_DX(gp_Dir::D::X);
   return gp_DX;
 }
 
 //=================================================================================================
 
-const gp_Dir& gp::DY()
+const gp_Dir& gp::DY() noexcept
 {
-  static gp_Dir gp_DY(0, 1, 0);
+  static const gp_Dir gp_DY(gp_Dir::D::Y);
   return gp_DY;
 }
 
 //=================================================================================================
 
-const gp_Dir& gp::DZ()
+const gp_Dir& gp::DZ() noexcept
 {
-  static gp_Dir gp_DZ(0, 0, 1);
+  static const gp_Dir gp_DZ(gp_Dir::D::Z);
   return gp_DZ;
 }
 
 //=================================================================================================
 
-const gp_Ax1& gp::OX()
+const gp_Ax1& gp::OX() noexcept
 {
-  static gp_Ax1 gp_OX(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  static const gp_Ax1 gp_OX(gp_Pnt(0, 0, 0), gp_Dir::D::X);
   return gp_OX;
 }
 
 //=================================================================================================
 
-const gp_Ax1& gp::OY()
+const gp_Ax1& gp::OY() noexcept
 {
-  static gp_Ax1 gp_OY(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
+  static const gp_Ax1 gp_OY(gp_Pnt(0, 0, 0), gp_Dir::D::Y);
   return gp_OY;
 }
 
 //=================================================================================================
 
-const gp_Ax1& gp::OZ()
+const gp_Ax1& gp::OZ() noexcept
 {
-  static gp_Ax1 gp_OZ(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  static const gp_Ax1 gp_OZ(gp_Pnt(0, 0, 0), gp_Dir::D::Z);
   return gp_OZ;
 }
 
 //=================================================================================================
 
-const gp_Ax2& gp::XOY()
+const gp_Ax2& gp::XOY() noexcept
 {
-  static gp_Ax2 gp_XOY(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
+  static const gp_Ax2 gp_XOY(gp_Pnt(0, 0, 0), gp_Dir::D::Z);
   return gp_XOY;
 }
 
 //=================================================================================================
 
-const gp_Ax2& gp::ZOX()
+const gp_Ax2& gp::ZOX() noexcept
 {
-  static gp_Ax2 gp_ZOX(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1));
+  static const gp_Ax2 gp_ZOX(gp_Pnt(0, 0, 0), gp_Dir::D::Y);
   return gp_ZOX;
 }
 
 //=================================================================================================
 
-const gp_Ax2& gp::YOZ()
+const gp_Ax2& gp::YOZ() noexcept
 {
-  static gp_Ax2 gp_YOZ(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0));
+  static const gp_Ax2 gp_YOZ(gp_Pnt(0, 0, 0), gp_Dir::D::X);
   return gp_YOZ;
 }
 
 //=================================================================================================
 
-const gp_Pnt2d& gp::Origin2d()
+const gp_Pnt2d& gp::Origin2d() noexcept
 {
-  static gp_Pnt2d gp_Origin2d(0, 0);
+  static const gp_Pnt2d gp_Origin2d(0, 0);
   return gp_Origin2d;
 }
 
 //=================================================================================================
 
-const gp_Dir2d& gp::DX2d()
+const gp_Dir2d& gp::DX2d() noexcept
 {
-  static gp_Dir2d gp_DX2d(1, 0);
+  static const gp_Dir2d gp_DX2d(gp_Dir2d::D::X);
   return gp_DX2d;
 }
 
 //=================================================================================================
 
-const gp_Dir2d& gp::DY2d()
+const gp_Dir2d& gp::DY2d() noexcept
 {
-  static gp_Dir2d gp_DY2d(0, 1);
+  static const gp_Dir2d gp_DY2d(gp_Dir2d::D::Y);
   return gp_DY2d;
 }
 
 //=================================================================================================
 
-const gp_Ax2d& gp::OX2d()
+const gp_Ax2d& gp::OX2d() noexcept
 {
-  static gp_Ax2d gp_OX2d(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
+  static const gp_Ax2d gp_OX2d(gp_Pnt2d(0, 0), gp_Dir2d::D::X);
   return gp_OX2d;
 }
 
 //=================================================================================================
 
-const gp_Ax2d& gp::OY2d()
+const gp_Ax2d& gp::OY2d() noexcept
 {
-  static gp_Ax2d gp_OY2d(gp_Pnt2d(0, 0), gp_Dir2d(0, 1));
+  static const gp_Ax2d gp_OY2d(gp_Pnt2d(0, 0), gp_Dir2d::D::Y);
   return gp_OY2d;
 }

@@ -46,7 +46,7 @@
 //=========================================================================
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_Pnt2d& P3)
 {
-  gp_Dir2d dirx(1.0, 0.0);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
 
   //=========================================================================
   //   Traitement.                                                          +
@@ -169,7 +169,7 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d&        Center,
 {
   if (Radius >= 0.)
   {
-    TheCirc2d = gp_Circ2d(gp_Ax2d(Center, gp_Dir2d(1.0, 0.0)), Radius, Sense);
+    TheCirc2d = gp_Circ2d(gp_Ax2d(Center, gp_Dir2d(gp_Dir2d::D::X)), Radius, Sense);
     TheError  = gce_Done;
   }
   else
@@ -187,7 +187,7 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d&        Center,
                                const gp_Pnt2d&        Point,
                                const Standard_Boolean Sense)
 {
-  TheCirc2d = gp_Circ2d(gp_Ax2d(Center, gp_Dir2d(1.0, 0.0)), Point.Distance(Center), Sense);
+  TheCirc2d = gp_Circ2d(gp_Ax2d(Center, gp_Dir2d(gp_Dir2d::D::X)), Point.Distance(Center), Sense);
   TheError  = gce_Done;
 }
 

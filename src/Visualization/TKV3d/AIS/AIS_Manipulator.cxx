@@ -1747,7 +1747,7 @@ void AIS_Manipulator::Sector::Init(const Standard_ShortReal theRadius,
     gp_Pnt              aV2      = gp_Pnt(anIndent, anIndent * 2.0, 0.0).Transformed(aTrsf);
     gp_Pnt              aV3      = gp_Pnt(anIndent * 2.0, anIndent * 2.0, 0.0).Transformed(aTrsf);
     gp_Pnt              aV4      = gp_Pnt(anIndent * 2.0, anIndent, 0.0).Transformed(aTrsf);
-    gp_Dir              aNormal  = gp_Dir(0.0, 0.0, -1.0).Transformed(aTrsf);
+    gp_Dir              aNormal  = gp_Dir(gp_Dir::D::NZ).Transformed(aTrsf);
 
     myArray->AddVertex(aV1, aNormal);
     myArray->AddVertex(aV2, aNormal);
@@ -1836,7 +1836,7 @@ void AIS_Manipulator::Axis::Compute(const Handle(PrsMgr_PresentationManager)& th
       gp_Trsf aTrsf;
       aTrsf.SetTransformation(aSystem, gp_Ax3());
 
-      gp_Dir        aNormal = gp_Dir(1.0, 0.0, 0.0).Transformed(aTrsf);
+      gp_Dir        aNormal = gp_Dir(gp_Dir::D::X).Transformed(aTrsf);
       Standard_Real aLength = myLength + myIndent * 4.0f;
 
       const Standard_Real aStepV = 1.0f / aStripsNb;

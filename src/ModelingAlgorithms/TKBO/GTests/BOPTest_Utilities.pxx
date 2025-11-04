@@ -567,7 +567,7 @@ public:
     const std::vector<ProfileOperation>& theOperations)
   {
     // Use default plane (XY plane)
-    const gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+    const gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
     return CreateProfile(aPlane, theOperations);
   }
 
@@ -649,7 +649,8 @@ public:
   static TopoDS_Shape RotateZ(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)
   {
     gp_Trsf aRotation;
-    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), theAngleDeg * M_PI / 180.0);
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
+                          theAngleDeg * M_PI / 180.0);
     BRepBuilderAPI_Transform aTransform(theShape, aRotation);
     return aTransform.Shape();
   }
@@ -658,7 +659,8 @@ public:
   static TopoDS_Shape RotateY(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)
   {
     gp_Trsf aRotation;
-    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), theAngleDeg * M_PI / 180.0);
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Y)),
+                          theAngleDeg * M_PI / 180.0);
     BRepBuilderAPI_Transform aTransform(theShape, aRotation);
     return aTransform.Shape();
   }
@@ -667,7 +669,8 @@ public:
   static TopoDS_Shape RotateX(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)
   {
     gp_Trsf aRotation;
-    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), theAngleDeg * M_PI / 180.0);
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X)),
+                          theAngleDeg * M_PI / 180.0);
     BRepBuilderAPI_Transform aTransform(theShape, aRotation);
     return aTransform.Shape();
   }
@@ -695,7 +698,7 @@ public:
   static TopoDS_Shape RotateY90(const TopoDS_Shape& theShape)
   {
     gp_Trsf aRotation;
-    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 1), gp_Dir(0, 1, 0)), 90.0 * M_PI / 180.0);
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 1), gp_Dir(gp_Dir::D::Y)), 90.0 * M_PI / 180.0);
     BRepBuilderAPI_Transform aTransform(theShape, aRotation);
     return aTransform.Shape();
   }

@@ -216,7 +216,7 @@ TopTools_ListOfShape& losplits)
   Vl.Orientation(oriVsup);   BB.Add(Esup2pi,Vl);   BT.Parameter(Esup2pi,Vl,pl);
   gp_Pnt2d tmp = PC->Value(pf); Standard_Real v = tmp.Y();
   Handle(Geom2d_Line) L2d =
-    new Geom2d_Line(gp_Pnt2d(-paronE,v),gp_Dir2d(1.,0.));
+    new Geom2d_Line(gp_Pnt2d(-paronE,v),gp_Dir2d(gp_Dir2d::D::X));
   Handle(Geom2d_TrimmedCurve) PCsup2pi = new Geom2d_TrimmedCurve(L2d,paronE,pl);
   TopOpeBRepDS_SetThePCurve(BB,Esup2pi,F,oriE,PCsup2pi);
 

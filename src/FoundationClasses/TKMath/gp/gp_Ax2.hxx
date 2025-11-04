@@ -57,9 +57,10 @@ public:
 
   //! Creates an object corresponding to the reference
   //! coordinate system (OXYZ).
-  gp_Ax2()
-      : vydir(0., 1., 0.)
-  // vxdir(1.,0.,0.) use default ctor of gp_Dir, as it creates the same dir(1,0,0)
+  constexpr gp_Ax2() noexcept
+      : vydir(gp_Dir::D::Y),
+        vxdir(gp_Dir::D::X)
+  // axis uses default ctor which creates Z axis at origin
   {
   }
 
@@ -78,10 +79,37 @@ public:
     vydir.Cross(vxdir);
   }
 
+  //! Creates an axis placement with standard directions.
+  constexpr gp_Ax2(const gp_Pnt& theP, const gp_Dir::D theN, const gp_Dir::D theVx) noexcept
+      : axis(theP, theN),
+        vydir(crossStandardDir(theN, theVx)), // Y = Z x X (right-handed)
+        vxdir(theVx)
+  {
+    // Note: For standard directions, cross product is computed at compile time
+    // This constructor assumes theN and theVx are orthogonal standard directions
+  }
+
   //! Creates -   a coordinate system with an origin P, where V
   //! gives the "main Direction" (here, "X Direction" and "Y
   //! Direction" are defined automatically).
   Standard_EXPORT gp_Ax2(const gp_Pnt& P, const gp_Dir& V);
+
+  //! Creates a coordinate system with an origin P and standard main direction.
+  constexpr gp_Ax2(const gp_Pnt& theP, const gp_Dir::D theV) noexcept
+      : axis(theP, theV),
+        vydir(getPerpendicularYDir(theV)),
+        vxdir(getPerpendicularXDir(theV))
+  {
+  }
+
+  //! Creates a coordinate system at the origin with the given standard main direction.
+  //! Replaces gp::XOY(), gp::YOZ(), gp::ZOX() static functions.
+  constexpr explicit gp_Ax2(const gp_Dir::D theV) noexcept
+      : axis(gp_Pnt(0., 0., 0.), theV),
+        vydir(getPerpendicularYDir(theV)),
+        vxdir(getPerpendicularXDir(theV))
+  {
+  }
 
   //! Assigns the origin and "main Direction" of the axis A1 to
   //! this coordinate system, then recomputes its "X Direction" and "Y Direction".
@@ -367,11 +395,127 @@ public:
   Standard_EXPORT Standard_Boolean InitFromJson(const Standard_SStream& theSStream,
                                                 Standard_Integer&       theStreamPos);
 
+protected:
+  //! Helper to compute perpendicular X direction for standard main directions
+  static constexpr gp_Dir::D getPerpendicularXDir(const gp_Dir::D theMainDir) noexcept;
+
+  //! Helper to compute Y direction (main x X) for standard directions
+  static constexpr gp_Dir::D getPerpendicularYDir(const gp_Dir::D theMainDir) noexcept;
+
+  //! Helper to compute cross product of two standard directions (right-handed: A x B)
+  static constexpr gp_Dir::D crossStandardDir(const gp_Dir::D theA, const gp_Dir::D theB) noexcept;
+
 private:
   gp_Ax1 axis;
   gp_Dir vydir;
   gp_Dir vxdir;
 };
+
+//=================================================================================================
+
+inline constexpr gp_Dir::D gp_Ax2::getPerpendicularXDir(const gp_Dir::D theMainDir) noexcept
+{
+  return (theMainDir == gp_Dir::D::X || theMainDir == gp_Dir::D::NX)   ? gp_Dir::D::Y
+         : (theMainDir == gp_Dir::D::Y || theMainDir == gp_Dir::D::NY) ? gp_Dir::D::Z
+                                                                       : gp_Dir::D::X;
+}
+
+//=================================================================================================
+
+inline constexpr gp_Dir::D gp_Ax2::getPerpendicularYDir(const gp_Dir::D theMainDir) noexcept
+{
+  return (theMainDir == gp_Dir::D::Z)    ? gp_Dir::D::Y
+         : (theMainDir == gp_Dir::D::NZ) ? gp_Dir::D::NY
+         : (theMainDir == gp_Dir::D::X)  ? gp_Dir::D::Z
+         : (theMainDir == gp_Dir::D::NX) ? gp_Dir::D::NZ
+         : (theMainDir == gp_Dir::D::Y)  ? gp_Dir::D::X
+                                         : gp_Dir::D::NX; // NY case
+}
+
+//=================================================================================================
+
+inline constexpr gp_Dir::D gp_Ax2::crossStandardDir(const gp_Dir::D theA,
+                                                    const gp_Dir::D theB) noexcept
+{
+  // Handle positive directions first
+  if (theA == gp_Dir::D::X)
+  {
+    if (theB == gp_Dir::D::Y)
+      return gp_Dir::D::Z;
+    if (theB == gp_Dir::D::Z)
+      return gp_Dir::D::NY;
+    if (theB == gp_Dir::D::NY)
+      return gp_Dir::D::NZ;
+    if (theB == gp_Dir::D::NZ)
+      return gp_Dir::D::Y;
+    // X x X = 0, X x NX = 0 (parallel, should not happen)
+    return gp_Dir::D::Z; // fallback
+  }
+  if (theA == gp_Dir::D::Y)
+  {
+    if (theB == gp_Dir::D::Z)
+      return gp_Dir::D::X;
+    if (theB == gp_Dir::D::X)
+      return gp_Dir::D::NZ;
+    if (theB == gp_Dir::D::NX)
+      return gp_Dir::D::Z;
+    if (theB == gp_Dir::D::NZ)
+      return gp_Dir::D::NX;
+    // Y x Y = 0, Y x NY = 0 (parallel, should not happen)
+    return gp_Dir::D::X; // fallback
+  }
+  if (theA == gp_Dir::D::Z)
+  {
+    if (theB == gp_Dir::D::X)
+      return gp_Dir::D::Y;
+    if (theB == gp_Dir::D::Y)
+      return gp_Dir::D::NX;
+    if (theB == gp_Dir::D::NX)
+      return gp_Dir::D::NY;
+    if (theB == gp_Dir::D::NY)
+      return gp_Dir::D::X;
+    // Z x Z = 0, Z x NZ = 0 (parallel, should not happen)
+    return gp_Dir::D::Y; // fallback
+  }
+  // Handle negative directions: -A x B = -(A x B)
+  if (theA == gp_Dir::D::NX)
+  {
+    if (theB == gp_Dir::D::Y)
+      return gp_Dir::D::NZ;
+    if (theB == gp_Dir::D::Z)
+      return gp_Dir::D::Y;
+    if (theB == gp_Dir::D::NY)
+      return gp_Dir::D::Z;
+    if (theB == gp_Dir::D::NZ)
+      return gp_Dir::D::NY;
+    return gp_Dir::D::NZ; // fallback
+  }
+  if (theA == gp_Dir::D::NY)
+  {
+    if (theB == gp_Dir::D::Z)
+      return gp_Dir::D::NX;
+    if (theB == gp_Dir::D::X)
+      return gp_Dir::D::Z;
+    if (theB == gp_Dir::D::NX)
+      return gp_Dir::D::NZ;
+    if (theB == gp_Dir::D::NZ)
+      return gp_Dir::D::X;
+    return gp_Dir::D::NX; // fallback
+  }
+  if (theA == gp_Dir::D::NZ)
+  {
+    if (theB == gp_Dir::D::X)
+      return gp_Dir::D::NY;
+    if (theB == gp_Dir::D::Y)
+      return gp_Dir::D::X;
+    if (theB == gp_Dir::D::NX)
+      return gp_Dir::D::Y;
+    if (theB == gp_Dir::D::NY)
+      return gp_Dir::D::NX;
+    return gp_Dir::D::NY; // fallback
+  }
+  return gp_Dir::D::Z; // fallback
+}
 
 //=================================================================================================
 

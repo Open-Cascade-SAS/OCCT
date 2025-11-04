@@ -313,7 +313,7 @@ Standard_Integer Intf_Tool::Inters2d(const gp_Hypr2d& theCurv, const Bnd_Box2d& 
 
   if (!Domain.IsOpenYmax())
   {
-    gp_Lin2d                 L1(gp_Pnt2d(0., ymax), gp_Dir2d(-1., 0.));
+    gp_Lin2d                 L1(gp_Pnt2d(0., ymax), gp_Dir2d(gp_Dir2d::D::NX));
     IntAna2d_AnaIntersection Inters1(theCurv, IntAna2d_Conic(L1));
     if (Inters1.IsDone())
     {
@@ -336,7 +336,7 @@ Standard_Integer Intf_Tool::Inters2d(const gp_Hypr2d& theCurv, const Bnd_Box2d& 
 
   if (!Domain.IsOpenXmin())
   {
-    gp_Lin2d                 L2(gp_Pnt2d(xmin, 0.), gp_Dir2d(0., -1.));
+    gp_Lin2d                 L2(gp_Pnt2d(xmin, 0.), gp_Dir2d(gp_Dir2d::D::NY));
     IntAna2d_AnaIntersection Inters2(theCurv, IntAna2d_Conic(L2));
     if (Inters2.IsDone())
     {
@@ -359,7 +359,7 @@ Standard_Integer Intf_Tool::Inters2d(const gp_Hypr2d& theCurv, const Bnd_Box2d& 
 
   if (!Domain.IsOpenYmin())
   {
-    gp_Lin2d                 L3(gp_Pnt2d(0., ymin), gp_Dir2d(1., 0.));
+    gp_Lin2d                 L3(gp_Pnt2d(0., ymin), gp_Dir2d(gp_Dir2d::D::X));
     IntAna2d_AnaIntersection Inters3(theCurv, IntAna2d_Conic(L3));
     if (Inters3.IsDone())
     {
@@ -382,7 +382,7 @@ Standard_Integer Intf_Tool::Inters2d(const gp_Hypr2d& theCurv, const Bnd_Box2d& 
 
   if (!Domain.IsOpenXmax())
   {
-    gp_Lin2d                 L4(gp_Pnt2d(xmax, 0.), gp_Dir2d(0., 1.));
+    gp_Lin2d                 L4(gp_Pnt2d(xmax, 0.), gp_Dir2d(gp_Dir2d::D::Y));
     IntAna2d_AnaIntersection Inters4(theCurv, IntAna2d_Conic(L4));
     if (Inters4.IsDone())
     {
@@ -554,7 +554,7 @@ Standard_Integer Intf_Tool::Inters2d(const gp_Parab2d& theCurv, const Bnd_Box2d&
 
   if (!Domain.IsOpenYmax())
   {
-    gp_Lin2d                 L1(gp_Pnt2d(0., ymax), gp_Dir2d(-1., 0.));
+    gp_Lin2d                 L1(gp_Pnt2d(0., ymax), gp_Dir2d(gp_Dir2d::D::NX));
     IntAna2d_AnaIntersection Inters1(theCurv, IntAna2d_Conic(L1));
     if (Inters1.IsDone())
     {
@@ -577,7 +577,7 @@ Standard_Integer Intf_Tool::Inters2d(const gp_Parab2d& theCurv, const Bnd_Box2d&
 
   if (!Domain.IsOpenXmin())
   {
-    gp_Lin2d                 L2(gp_Pnt2d(xmin, 0.), gp_Dir2d(0., -1.));
+    gp_Lin2d                 L2(gp_Pnt2d(xmin, 0.), gp_Dir2d(gp_Dir2d::D::NY));
     IntAna2d_AnaIntersection Inters2(theCurv, IntAna2d_Conic(L2));
     if (Inters2.IsDone())
     {
@@ -600,7 +600,7 @@ Standard_Integer Intf_Tool::Inters2d(const gp_Parab2d& theCurv, const Bnd_Box2d&
 
   if (!Domain.IsOpenYmin())
   {
-    gp_Lin2d                 L3(gp_Pnt2d(0., ymin), gp_Dir2d(1., 0.));
+    gp_Lin2d                 L3(gp_Pnt2d(0., ymin), gp_Dir2d(gp_Dir2d::D::X));
     IntAna2d_AnaIntersection Inters3(theCurv, IntAna2d_Conic(L3));
     if (Inters3.IsDone())
     {
@@ -623,7 +623,7 @@ Standard_Integer Intf_Tool::Inters2d(const gp_Parab2d& theCurv, const Bnd_Box2d&
 
   if (!Domain.IsOpenXmax())
   {
-    gp_Lin2d                 L4(gp_Pnt2d(xmax, 0.), gp_Dir2d(0., 1.));
+    gp_Lin2d                 L4(gp_Pnt2d(xmax, 0.), gp_Dir2d(gp_Dir2d::D::Y));
     IntAna2d_AnaIntersection Inters4(theCurv, IntAna2d_Conic(L4));
     if (Inters4.IsDone())
     {

@@ -41,9 +41,9 @@ public:
 
   //! Creates an axis object representing Z axis of
   //! the reference coordinate system.
-  gp_Ax1()
+  constexpr gp_Ax1() noexcept
       : loc(0., 0., 0.),
-        vdir(0., 0., 1.)
+        vdir(gp_Dir::D::Z)
   {
   }
 
@@ -51,6 +51,21 @@ public:
   constexpr gp_Ax1(const gp_Pnt& theP, const gp_Dir& theV) noexcept
       : loc(theP),
         vdir(theV)
+  {
+  }
+
+  //! Creates an axis with the given location point and standard direction.
+  constexpr gp_Ax1(const gp_Pnt& theP, const gp_Dir::D theDir) noexcept
+      : loc(theP),
+        vdir(theDir)
+  {
+  }
+
+  //! Creates an axis at the origin with the given standard direction.
+  //! Replaces gp::OX(), gp::OY(), gp::OZ() static functions.
+  constexpr explicit gp_Ax1(const gp_Dir::D theDir) noexcept
+      : loc(0., 0., 0.),
+        vdir(theDir)
   {
   }
 

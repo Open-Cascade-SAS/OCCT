@@ -983,23 +983,23 @@ void BRepFill_Generator::Perform()
       {
         if (Edge1.Orientation() == TopAbs_REVERSED)
         {
-          B.UpdateEdge(Edge1, new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(-1, 0)), Face, T);
+          B.UpdateEdge(Edge1, new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(gp_Dir2d::D::NX)), Face, T);
           B.Range(Edge1, Face, -l1, -f1);
         }
         else
         {
-          B.UpdateEdge(Edge1, new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(1, 0)), Face, T);
+          B.UpdateEdge(Edge1, new Geom2d_Line(gp_Pnt2d(0, f2), gp_Dir2d(gp_Dir2d::D::X)), Face, T);
           B.Range(Edge1, Face, f1, l1);
         }
 
         if (Edge2.Orientation() == TopAbs_REVERSED)
         {
-          B.UpdateEdge(Edge2, new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(-1, 0)), Face, T);
+          B.UpdateEdge(Edge2, new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(gp_Dir2d::D::NX)), Face, T);
           B.Range(Edge2, Face, -l1, -f1);
         }
         else
         {
-          B.UpdateEdge(Edge2, new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(1, 0)), Face, T);
+          B.UpdateEdge(Edge2, new Geom2d_Line(gp_Pnt2d(0, l2), gp_Dir2d(gp_Dir2d::D::X)), Face, T);
           B.Range(Edge2, Face, f1, l1);
         }
       }
@@ -1009,15 +1009,15 @@ void BRepFill_Generator::Perform()
         if (Periodic)
         {
           B.UpdateEdge(Edge3,
-                       new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(0, 1)),
-                       new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(0, 1)),
+                       new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(gp_Dir2d::D::Y)),
+                       new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(gp_Dir2d::D::Y)),
                        Face,
                        T);
         }
         else
         {
-          B.UpdateEdge(Edge3, new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(0, 1)), Face, T);
-          B.UpdateEdge(Edge4, new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(0, 1)), Face, T);
+          B.UpdateEdge(Edge3, new Geom2d_Line(gp_Pnt2d(f1, 0), gp_Dir2d(gp_Dir2d::D::Y)), Face, T);
+          B.UpdateEdge(Edge4, new Geom2d_Line(gp_Pnt2d(l1, 0), gp_Dir2d(gp_Dir2d::D::Y)), Face, T);
         }
       }
       else

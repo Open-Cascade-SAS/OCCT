@@ -576,12 +576,12 @@ static Standard_Integer isoedge(Draw_Interpretor&, Standard_Integer n, const cha
   if (uiso)
   {
     C = TS->UIso(p);
-    L = new Geom2d_Line(gp_Pnt2d(p, 0), gp_Dir2d(0, 1));
+    L = new Geom2d_Line(gp_Pnt2d(p, 0), gp_Dir2d(gp_Dir2d::D::Y));
   }
   else
   {
     C = TS->VIso(p);
-    L = new Geom2d_Line(gp_Pnt2d(0, p), gp_Dir2d(1, 0));
+    L = new Geom2d_Line(gp_Pnt2d(0, p), gp_Dir2d(gp_Dir2d::D::X));
   }
 
   TopoDS_Edge E = BRepBuilderAPI_MakeEdge(C, p1, p2);

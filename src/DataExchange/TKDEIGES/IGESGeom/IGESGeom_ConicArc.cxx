@@ -170,7 +170,7 @@ Standard_Boolean IGESGeom_ConicArc::IsClosed() const
 
 gp_Dir IGESGeom_ConicArc::Axis() const
 {
-  gp_Dir axis(0.0, 0.0, 1.0);
+  gp_Dir axis(gp_Dir::D::Z);
   return axis;
 }
 
