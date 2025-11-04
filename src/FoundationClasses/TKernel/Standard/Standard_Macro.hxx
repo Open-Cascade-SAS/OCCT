@@ -52,7 +52,7 @@
 //!   Standard_MACRO_DEPRECATED("Use NEW_MACRO instead") \
 //!   ((x) * 2)
 //! @endcode
-#if 0 // Disabled untill global renames for 8.0.0 are completed.
+#if 0 // Disabled until global renames for 8.0.0 are completed.
   #define Standard_MACRO_DEPRECATED(theMsg) Standard_DEPRECATED_WARNING(theMsg)
 #else
   #define Standard_MACRO_DEPRECATED(theMsg)
