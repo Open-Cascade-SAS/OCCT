@@ -24,7 +24,7 @@ class TDataXtd_Plane;
 DEFINE_STANDARD_HANDLE(TDataXtd_Plane, TDataStd_GenericEmpty)
 
 //! The basis to define a plane attribute.
-//! Warning:  Use TDataXtd_Geometry  attribute  to retrieve  the
+//! Warning:  Use TDataXtd_Geometry attribute to retrieve the
 //! gp_Pln of the Plane attribute
 class TDataXtd_Plane : public TDataStd_GenericEmpty
 {
@@ -43,7 +43,7 @@ public:
   //! planar face should already be associated with label.
   Standard_EXPORT static Handle(TDataXtd_Plane) Set(const TDF_Label& label);
 
-  //! Finds,  or creates,  a Plane  attribute  and sets <P>  as
+  //! Finds, or creates, a Plane attribute and sets <P> as
   //! generated the associated NamedShape.
   //! Plane methods
   //! =============

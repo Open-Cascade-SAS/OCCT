@@ -99,36 +99,36 @@ class TNaming
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Subtituter les  shapes  sur les structures de   source
+  //! Subtituter les shapes sur les structures de source
   //! vers cible
   Standard_EXPORT static void Substitute(const TDF_Label&              labelsource,
                                          const TDF_Label&              labelcible,
                                          TopTools_DataMapOfShapeShape& mapOldNew);
 
-  //! Mise a jour des shapes du label  et de ses fils en
-  //! tenant compte des  substitutions decrite par
+  //! Mise a jour des shapes du label et de ses fils en
+  //! tenant compte des substitutions decrite par
   //! mapOldNew.
   //!
-  //! Warning: le  remplacement du shape est  fait    dans tous
-  //! les    attributs  qui  le contiennent meme si ceux
+  //! Warning: le remplacement du shape est fait dans tous
+  //! les attributs qui le contiennent meme si ceux
   //! ci ne sont pas associees a des sous-labels de <Label>.
   Standard_EXPORT static void Update(const TDF_Label&              label,
                                      TopTools_DataMapOfShapeShape& mapOldNew);
 
   //! Application de la Location sur les shapes du label
-  //! et  de   ses   sous   labels.
+  //! et de ses sous labels.
   Standard_EXPORT static void Displace(const TDF_Label&       label,
                                        const TopLoc_Location& aLocation,
                                        const Standard_Boolean WithOld = Standard_True);
 
-  //! Remplace  les  shapes du label et  des sous-labels
+  //! Remplace les shapes du label et des sous-labels
   //! par des copies.
   Standard_EXPORT static void ChangeShapes(const TDF_Label& label, TopTools_DataMapOfShapeShape& M);
 
   //! Application de la transformation sur les shapes du
   //! label et de ses sous labels.
-  //! Warning: le  remplacement du shape est  fait    dans tous
-  //! les    attributs  qui  le contiennent meme si ceux
+  //! Warning: le remplacement du shape est fait dans tous
+  //! les attributs qui le contiennent meme si ceux
   //! ci ne sont pas associees a des sous-labels de <Label>.
   Standard_EXPORT static void Transform(const TDF_Label& label, const gp_Trsf& aTransformation);
 
@@ -176,11 +176,11 @@ public:
                                                      TopoDS_Shell&       theShell);
 
   //! Appends to <anIDList> the list of the attributes
-  //! IDs of this package. CAUTION: <anIDList> is NOT
-  //! cleared before use.
+  //! IDs of this package.
+  //! CAUTION: <anIDList> is NOTcleared before use.
   Standard_EXPORT static void IDList(TDF_IDList& anIDList);
 
-  //! Prints the  evolution  <EVOL> as  a String on  the
+  //! Prints the evolution <EVOL> as a String on the
   //! Stream <S> and returns <S>.
   Standard_EXPORT static Standard_OStream& Print(const TNaming_Evolution EVOL, Standard_OStream& S);
 
@@ -188,7 +188,7 @@ public:
   //! the Stream <S> and returns <S>.
   Standard_EXPORT static Standard_OStream& Print(const TNaming_NameType NAME, Standard_OStream& S);
 
-  //! Prints the content of UsedShapes private  attribute as a String Table on
+  //! Prints the content of UsedShapes private attribute as a String Table on
   //! the Stream <S> and returns <S>.
   Standard_EXPORT static Standard_OStream& Print(const TDF_Label& ACCESS, Standard_OStream& S);
 };

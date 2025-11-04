@@ -50,11 +50,11 @@ public:
   //! <anAtt>.
   Standard_EXPORT TNaming_Iterator(const Handle(TNaming_NamedShape)& anAtt);
 
-  //! Iterates on all  the history records in
+  //! Iterates on all the history records in
   //! the current transaction
   Standard_EXPORT TNaming_Iterator(const TDF_Label& aLabel);
 
-  //! Iterates on all  the history records in
+  //! Iterates on all the history records in
   //! the transaction <aTrans>
   Standard_EXPORT TNaming_Iterator(const TDF_Label& aLabel, const Standard_Integer aTrans);
 
@@ -72,8 +72,8 @@ public:
   //! Returns the new shape in this iterator object.
   Standard_EXPORT const TopoDS_Shape& NewShape() const;
 
-  //! Returns true if the  new  shape is a modification  (split,
-  //! fuse,etc...) of the old shape.
+  //! Returns true if the new shape is a modification 
+  //! (split, fuse, etc...) of the old shape.
   Standard_EXPORT Standard_Boolean IsModification() const;
 
   Standard_EXPORT TNaming_Evolution Evolution() const;

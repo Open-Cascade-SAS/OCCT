@@ -25,8 +25,8 @@
 #include <TDataXtd_GeometryEnum.hxx>
 #include <TDataXtd_ConstraintEnum.hxx>
 
-//! This  package  defines  extension of standard attributes for
-//! modelling  (mainly for work with geometry).
+//! This package defines extension of standard attributes for
+//! modelling (mainly for work with geometry).
 class TDataXtd
 {
 public:

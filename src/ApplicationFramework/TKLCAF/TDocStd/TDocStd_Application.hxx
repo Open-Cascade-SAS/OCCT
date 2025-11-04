@@ -294,9 +294,8 @@ public:
     Save(const Handle(TDocStd_Document)& theDoc,
          const Message_ProgressRange&    theRange = Message_ProgressRange());
 
-  //! Save the  active document  in the file  <name> in the
-  //! path <path>  .  overwrite  the file  if  it
-  //! already exist.
+  //! Save the active document in the file <name> in the
+  //! path <path>. overwrite the file if it already exists.
   Standard_EXPORT PCDM_StoreStatus
     SaveAs(const Handle(TDocStd_Document)&   theDoc,
            const TCollection_ExtendedString& path,

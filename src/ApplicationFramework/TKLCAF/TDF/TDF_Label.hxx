@@ -101,19 +101,19 @@ public:
   //! Returns true if <me> owns an attribute with <anID> as ID.
   Standard_EXPORT Standard_Boolean IsAttribute(const Standard_GUID& anID) const;
 
-  //! Adds an Attribute  to the current label. Raises if
+  //! Adds an Attribute to the current label. Raises if
   //! there is already one.
   Standard_EXPORT void AddAttribute(const Handle(TDF_Attribute)& anAttribute,
                                     const Standard_Boolean       append = Standard_True) const;
 
-  //! Forgets an  Attribute   from the  current  label,
-  //! setting its   forgotten status true and  its valid
-  //! status false. Raises if   the attribute is not in
+  //! Forgets an Attribute from the current label,
+  //! setting its forgotten status true and  its valid
+  //! status false. Raises if the attribute is not in
   //! the structure.
   Standard_EXPORT void ForgetAttribute(const Handle(TDF_Attribute)& anAttribute) const;
 
-  //! Forgets the  Attribute of  GUID <aguid> from   the
-  //! current label   . If the   attribute doesn't exist
+  //! Forgets the Attribute of GUID <aguid> from the
+  //! current label. If the attribute doesn't exist
   //! returns False. Otherwise returns True.
   Standard_EXPORT Standard_Boolean ForgetAttribute(const Standard_GUID& aguid) const;
 
@@ -217,7 +217,7 @@ public:
   Standard_EXPORT TDF_Label FindChild(const Standard_Integer aTag,
                                       const Standard_Boolean create = Standard_True) const;
 
-  //! Create  a new child   label of me  using autoamtic
+  //! Create a new child label of me using autoamtic
   //! delivery tags provided by TagSource.
   TDF_Label NewChild() const;
 
@@ -272,12 +272,12 @@ private:
                                  const Handle(TDF_Attribute)& anAttribute,
                                  const Standard_Boolean       append) const;
 
-  //! Forgets an Attribute from <fromNode>.  Raises if
+  //! Forgets an Attribute from <fromNode>. Raises if
   //! the attribute is not in the structure.
   Standard_EXPORT void ForgetFromNode(const TDF_LabelNodePtr&      fromNode,
                                       const Handle(TDF_Attribute)& anAttribute) const;
 
-  //! Resumes a forgotten Attribute to <toNode>.  Raises
+  //! Resumes a forgotten Attribute to <toNode>. Raises
   //! if the attribute is not in the structure.
   Standard_EXPORT void ResumeToNode(const TDF_LabelNodePtr&      fromNode,
                                     const Handle(TDF_Attribute)& anAttribute) const;

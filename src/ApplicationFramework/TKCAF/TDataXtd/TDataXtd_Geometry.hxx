@@ -41,8 +41,8 @@ DEFINE_STANDARD_HANDLE(TDataXtd_Geometry, TDF_Attribute)
 //! The specific geometric construction of the
 //! attribute is defined by an element of the
 //! enumeration TDataXtd_GeometryEnum.
-//! This attribute may  also be used to qualify  underlying
-//! geometry  of   the  associated NamedShape.     for
+//! This attribute may also be used to qualify underlying
+//! geometry of the associated NamedShape. for
 //! Constructuion element by example.
 class TDataXtd_Geometry : public TDF_Attribute
 {
@@ -50,7 +50,7 @@ class TDataXtd_Geometry : public TDF_Attribute
 public:
   //! API class methods
   //! =================
-  //! Finds, or  creates, a Geometry attribute  defined by the label label.
+  //! Finds, or creates, a Geometry attribute defined by the label label.
   //! The default type of geometry is the value
   //! ANY_GEOM of the enumeration TDataXtd_GeometryEnum.
   //! To specify another value of this enumeration, use
