@@ -177,7 +177,7 @@ public:
 
   //! Appends to <anIDList> the list of the attributes
   //! IDs of this package.
-  //! CAUTION: <anIDList> is NOTcleared before use.
+  //! CAUTION: <anIDList> is NOT cleared before use.
   Standard_EXPORT static void IDList(TDF_IDList& anIDList);
 
   //! Prints the evolution <EVOL> as a String on the
