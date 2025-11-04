@@ -15,6 +15,9 @@
 
 #include <NCollection_SparseArrayBase.hxx>
 #include <Standard_ProgramError.hxx>
+#include <Standard.hxx>
+
+#include <algorithm>
 
 //=================================================================================================
 
@@ -29,12 +32,13 @@ void NCollection_SparseArrayBase::allocData(const Standard_Size iBlock)
   while (iBlock >= newNbBlocks)
     newNbBlocks *= 2;
 
-  Standard_Address* newData = (Standard_Address*)malloc(newNbBlocks * sizeof(Standard_Address));
+  Standard_Address* newData =
+    (Standard_Address*)Standard::AllocateOptimal(newNbBlocks * sizeof(Standard_Address));
   if (myNbBlocks > 0)
     memcpy(newData, myData, myNbBlocks * sizeof(Standard_Address));
   memset(newData + myNbBlocks, 0, (newNbBlocks - myNbBlocks) * sizeof(Standard_Address));
 
-  free(myData);
+  Standard::Free(myData);
   myData     = newData;
   myNbBlocks = newNbBlocks;
 }
@@ -44,15 +48,21 @@ void NCollection_SparseArrayBase::allocData(const Standard_Size iBlock)
 void NCollection_SparseArrayBase::freeBlock(const Standard_Size iBlock)
 {
   Standard_Address& anAddr = myData[iBlock];
-  Block             aBlock = getBlock(anAddr);
+  if (!anAddr)
+    return;
+
+  Block aBlock = getBlock(anAddr);
+  // Destroy all items in the block
   for (Standard_Size anInd = 0; anInd < myBlockSize; anInd++)
+  {
     if (aBlock.IsSet(anInd))
     {
       destroyItem(getItem(aBlock, anInd));
       mySize--;
     }
-  free(anAddr);
-  anAddr = 0;
+  }
+  Standard::Free(anAddr);
+  anAddr = nullptr;
 }
 
 //=================================================================================================
@@ -61,13 +71,18 @@ void NCollection_SparseArrayBase::Clear()
 {
   // free block data
   for (Standard_Size iBlock = 0; iBlock < myNbBlocks; iBlock++)
+  {
     if (myData[iBlock])
+    {
       freeBlock(iBlock);
+    }
+  }
 
-  // free blocks and reset counters
-  free(myData);
-  myData     = 0;
+  // free blocks array and reset counters
+  Standard::Free(myData);
+  myData     = nullptr;
   myNbBlocks = 0;
+  mySize     = 0;
 
   // consistency check
   Standard_ProgramError_Raise_if(
@@ -107,7 +122,9 @@ void NCollection_SparseArrayBase::assign(const NCollection_SparseArrayBase& theO
     Standard_Address& anAddr = myData[iBlock];
     if (!anAddr)
     {
-      anAddr = calloc(Block::Size(myBlockSize, myItemSize), sizeof(char));
+      const Standard_Size aBlockSize = Block::Size(myBlockSize, myItemSize);
+      anAddr                         = Standard::AllocateOptimal(aBlockSize);
+      memset(anAddr, 0, aBlockSize);
       Block aBlock(getBlock(anAddr));
       for (Standard_Size anInd = 0; anInd < myBlockSize; anInd++)
         if (anOtherBlock.IsSet(anInd))
@@ -165,25 +182,17 @@ void NCollection_SparseArrayBase::assign(const NCollection_SparseArrayBase& theO
 
 //=================================================================================================
 
-template <class T>
-static inline void sswap(T& a, T& b)
-{
-  T c = a;
-  a   = b;
-  b   = c;
-}
-
-void NCollection_SparseArrayBase::exchange(NCollection_SparseArrayBase& theOther)
+void NCollection_SparseArrayBase::exchange(NCollection_SparseArrayBase& theOther) noexcept
 {
   if (this == &theOther)
     return;
 
-  // swap fields of this and theOther
-  sswap(myItemSize, theOther.myItemSize);
-  sswap(myBlockSize, theOther.myBlockSize);
-  sswap(myNbBlocks, theOther.myNbBlocks);
-  sswap(mySize, theOther.mySize);
-  sswap(myData, theOther.myData);
+  // swap fields of this and theOther using std::swap for better optimization
+  std::swap(myItemSize, theOther.myItemSize);
+  std::swap(myBlockSize, theOther.myBlockSize);
+  std::swap(myNbBlocks, theOther.myNbBlocks);
+  std::swap(mySize, theOther.mySize);
+  std::swap(myData, theOther.myData);
 }
 
 //=================================================================================================
@@ -200,16 +209,19 @@ Standard_Address NCollection_SparseArrayBase::setValue(const Standard_Size    th
   // allocate block if necessary
   Standard_Address& anAddr = myData[iBlock];
   if (!anAddr)
-    anAddr = calloc(Block::Size(myBlockSize, myItemSize), sizeof(char));
+  {
+    const Standard_Size aBlockSize = Block::Size(myBlockSize, myItemSize);
+    anAddr                         = Standard::AllocateOptimal(aBlockSize);
+    memset(anAddr, 0, aBlockSize);
+  }
 
-  // get a block
-  Block aBlock(getBlock(anAddr));
-
-  // mark item as defined
+  // get a block and calculate item index
+  Block            aBlock(getBlock(anAddr));
   Standard_Size    anInd  = theIndex % myBlockSize;
   Standard_Address anItem = getItem(aBlock, anInd);
 
   // either create an item by copy constructor if it is new, or assign it
+  // Optimize: Set() returns non-zero if bit was not set previously
   if (aBlock.Set(anInd))
   {
     (*aBlock.Count)++;
@@ -217,7 +229,10 @@ Standard_Address NCollection_SparseArrayBase::setValue(const Standard_Size    th
     createItem(anItem, theValue);
   }
   else
+  {
+    // Item already exists, just copy the value
     copyItem(anItem, theValue);
+  }
 
   return anItem;
 }
