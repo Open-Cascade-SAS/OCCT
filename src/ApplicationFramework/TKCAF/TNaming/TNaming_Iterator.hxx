@@ -72,7 +72,7 @@ public:
   //! Returns the new shape in this iterator object.
   Standard_EXPORT const TopoDS_Shape& NewShape() const;
 
-  //! Returns true if the new shape is a modification 
+  //! Returns true if the new shape is a modification
   //! (split, fuse, etc...) of the old shape.
   Standard_EXPORT Standard_Boolean IsModification() const;
 

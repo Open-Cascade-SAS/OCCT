@@ -174,7 +174,7 @@ public:
     const TCollection_ExtendedString& aFormat);
 
   //! try to retrieve a Format directly in the file or in
-  //! application resource by using extension. 
+  //! application resource by using extension.
   //! returns True if found
   Standard_EXPORT Standard_Boolean Format(const TCollection_ExtendedString& aFileName,
                                           TCollection_ExtendedString&       theFormat);
