@@ -29,29 +29,15 @@
 //! derived classes, to cause compilation error in the case if that virtual
 //! function disappears or changes its signature in the base class.
 //!
-//! Expands to C++11 keyword "override" on compilers that are known to
-//! support it; empty in other cases.
-#if defined(__cplusplus) && (__cplusplus >= 201100L)
-  // part of C++11 standard
-  #define Standard_OVERRIDE override
-#elif defined(_MSC_VER) && (_MSC_VER >= 1700)
-  // MSVC extension since VS2012
-  #define Standard_OVERRIDE override
-#else
-  #define Standard_OVERRIDE
-#endif
+//! @deprecated Use C++11 keyword "override" directly instead (guaranteed in C++17)
+#define Standard_OVERRIDE                                                                          \
+  Standard_MACRO_DEPRECATED("Standard_OVERRIDE is deprecated, use override directly") override
 
 //! @def Standard_DELETE
 //! Alias for C++11 keyword "=delete" marking methods to be deleted.
-#if defined(__cplusplus) && (__cplusplus >= 201100L)
-  // part of C++11 standard
-  #define Standard_DELETE = delete
-#elif defined(_MSC_VER) && (_MSC_VER >= 1800)
-  // implemented since VS2013
-  #define Standard_DELETE = delete
-#else
-  #define Standard_DELETE
-#endif
+//! @deprecated Use C++11 "= delete" directly instead (guaranteed in C++17)
+#define Standard_DELETE                                                                            \
+  Standard_MACRO_DEPRECATED("Standard_DELETE is deprecated, use = delete directly") = delete
 
 //! @def Standard_FALLTHROUGH
 //! Should be used in a switch statement immediately before a case label,
@@ -60,50 +46,20 @@
 //! This macro indicates that the fall through is intentional and should not be
 //! diagnosed by a compiler that warns on fallthrough.
 //!
-//! Expands to C++17 attribute statement "[[fallthrough]];" on compilers that
-//! declare support of C++17, or to "__attribute__((fallthrough));" on
-//! GCC 7+.
-#if defined(__has_cpp_attribute)
-  #if __has_cpp_attribute(fallthrough)
-    // C++17 standard attribute is supported
-    #define Standard_FALLTHROUGH [[fallthrough]];
-  #elif __has_cpp_attribute(clang::fallthrough)
-    // Clang-specific attribute
-    #define Standard_FALLTHROUGH [[clang::fallthrough]];
-  #elif __has_cpp_attribute(gnu::fallthrough)
-    // GCC-specific attribute (rare, but possible)
-    #define Standard_FALLTHROUGH [[gnu::fallthrough]];
-  #else
-    #define Standard_FALLTHROUGH
-  #endif
-#elif defined(__GNUC__) && (__GNUC__ >= 7)
-  // GCC 7+ supports __attribute__((fallthrough))
-  #define Standard_FALLTHROUGH __attribute__((fallthrough));
-#else
-  #define Standard_FALLTHROUGH
-#endif
+//! @deprecated Use C++17 "[[fallthrough]];" directly instead (guaranteed in C++17)
+#define Standard_FALLTHROUGH                                                                       \
+  Standard_MACRO_DEPRECATED("Standard_FALLTHROUGH is deprecated, use [[fallthrough]]; directly")   \
+    [[fallthrough]];
 
 //! @def Standard_NODISCARD
 //! This attribute may appear in a function declaration,
 //! enumeration declaration or class declaration. It tells the compiler to
 //! issue a warning, if a return value marked by that attribute is discarded.
 //!
-//! Expands to C++17 attribute statement "[[nodiscard]]" on compilers that
-//! declare support of this attribute, or equivalent attribute on GCC.
-#if defined(__has_cpp_attribute)
-  #if __has_cpp_attribute(nodiscard)
-    #define Standard_NODISCARD [[nodiscard]]
-  #else
-    #define Standard_NODISCARD
-  #endif
-#elif defined(__GNUC__) && !defined(INTEL_COMPILER)
-  // According to available documentation, GCC-style __attribute__ ((warn_unused_result))
-  // should be available in GCC since version 3.4, and in CLang since 3.9;
-  // Intel compiler does not seem to support this
-  #define Standard_NODISCARD __attribute__((warn_unused_result))
-#else
-  #define Standard_NODISCARD
-#endif
+//! @deprecated Use C++17 "[[nodiscard]]" directly instead (guaranteed in C++17)
+#define Standard_NODISCARD                                                                         \
+  Standard_MACRO_DEPRECATED("Standard_NODISCARD is deprecated, use [[nodiscard]] directly")        \
+    [[nodiscard]]
 
 //! @def Standard_UNUSED
 //! Macro for marking variables / functions as possibly unused
@@ -130,30 +86,10 @@
 
 //! @def Standard_THREADLOCAL
 //! Define Standard_THREADLOCAL modifier as C++11 thread_local keyword where it is available.
-#if defined(__clang__)
-  // CLang version: standard CLang > 3.3 or XCode >= 8 (but excluding 32-bit ARM)
-  // Note: this has to be in separate #if to avoid failure of preprocessor on other platforms
-  #if __has_feature(cxx_thread_local)
-    #define Standard_THREADLOCAL thread_local
-  #endif
-#elif defined(__INTEL_COMPILER)
-  #if (defined(_MSC_VER) && _MSC_VER >= 1900 && __INTEL_COMPILER > 1400)
-    // requires msvcrt vc14+ (Visual Studio 2015+)
-    #define Standard_THREADLOCAL thread_local
-  #elif (!defined(_MSC_VER) && __INTEL_COMPILER > 1500)
-    #define Standard_THREADLOCAL thread_local
-  #endif
-#elif (defined(_MSC_VER) && _MSC_VER >= 1900)
-  // msvcrt coming with vc14+ (VS2015+)
-  #define Standard_THREADLOCAL thread_local
-#elif (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)))
-  // GCC >= 4.8
-  #define Standard_THREADLOCAL thread_local
-#endif
-
-#ifndef Standard_THREADLOCAL
-  #define Standard_THREADLOCAL
-#endif
+//! @deprecated Use C++11 "thread_local" directly instead (guaranteed in C++17)
+#define Standard_THREADLOCAL                                                                       \
+  Standard_MACRO_DEPRECATED(                                                                       \
+    "Standard_THREADLOCAL is deprecated, use thread_local directly") thread_local
 
 //! @def Standard_DEPRECATED("message")
 //! Can be used in declaration of a method or a class to mark it as deprecated.
@@ -173,6 +109,31 @@
   #else
     #define Standard_DEPRECATED(theMsg)
   #endif
+#endif
+
+//! @def Standard_MACRO_DEPRECATED(theMessage)
+//! Macro for marking preprocessor macros as deprecated.
+//! When a deprecated macro is used, a compile-time warning will be issued.
+//! Unlike Standard_DEPRECATED which marks functions/classes, this is for deprecating macros
+//! themselves. If macro OCCT_NO_DEPRECATED is defined, Standard_MACRO_DEPRECATED is defined empty.
+//!
+//! Usage example:
+//! @code
+//! #define OLD_MACRO(x) \
+//!   Standard_MACRO_DEPRECATED("Use NEW_MACRO instead") \
+//!   ((x) * 2)
+//! @endcode
+#ifdef OCCT_NO_DEPRECATED
+  #define Standard_MACRO_DEPRECATED(theMsg)
+#elif defined(__GNUC__) || defined(__clang__)
+  // Helper macro to properly stringify the pragma argument
+  #define Standard_MACRO_DEPRECATED_IMPL(x) _Pragma(#x)
+  #define Standard_MACRO_DEPRECATED(theMsg) Standard_MACRO_DEPRECATED_IMPL(GCC warning theMsg)
+#elif defined(_MSC_VER)
+  #define Standard_MACRO_DEPRECATED(theMsg)                                                        \
+    __pragma(message(__FILE__ "(" _CRT_STRINGIZE(__LINE__) "): warning: " theMsg))
+#else
+  #define Standard_MACRO_DEPRECATED(theMsg)
 #endif
 
 //! @def Standard_DISABLE_DEPRECATION_WARNINGS
@@ -336,36 +297,25 @@
   #endif
 #endif
 
+//! @def Standard_HASATOMIC
+//! @deprecated Always defined in C++17, no need to check for it
+#define Standard_HASATOMIC                                                                         \
+  Standard_MACRO_DEPRECATED(                                                                       \
+    "Standard_HASATOMIC is deprecated, std::atomic is always available in C++17")
+
 //! @def Standard_ATOMIC
 //! Definition of Standard_ATOMIC for C++11 or visual studio that supports it.
-//! Before usage there must be "atomic" included in the following way:
-//! #ifdef Standard_HASATOMIC
-//!   #include <atomic>
-//! #endif
-#if (defined(__cplusplus) && __cplusplus >= 201100L) || (defined(_MSC_VER) && _MSC_VER >= 1800)    \
-  || (defined(__GNUC__) && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)))
-  #define Standard_HASATOMIC
-  #define Standard_ATOMIC(theType) std::atomic<theType>
-#else
-  #define Standard_ATOMIC(theType) theType
-#endif
+//! @deprecated Use std::atomic<T> directly instead (guaranteed in C++17)
+//! Before usage, include <atomic> header.
+#define Standard_ATOMIC(theType)                                                                   \
+  Standard_MACRO_DEPRECATED("Standard_ATOMIC is deprecated, use std::atomic<T> directly")          \
+    std::atomic<theType>
 
 //! @def Standard_Noexcept
 //! Definition of Standard_Noexcept:
-//! if noexcept is accessible, Standard_Noexcept is "noexcept" and "throw()" otherwise.
-#ifdef _MSC_VER
-  #if _MSC_VER >= 1900
-    #define Standard_Noexcept noexcept
-  #else
-    #define Standard_Noexcept throw()
-  #endif
-#else
-  #if __cplusplus >= 201103L
-    #define Standard_Noexcept noexcept
-  #else
-    #define Standard_Noexcept throw()
-  #endif
-#endif
+//! @deprecated Use noexcept keyword directly instead
+#define Standard_Noexcept                                                                          \
+  Standard_MACRO_DEPRECATED("Standard_Noexcept is deprecated, use noexcept directly") noexcept
 
 //! @def Standard_CPP17_OR_HIGHER
 //! Macro to check if C++ standard version is C++17 or higher.
