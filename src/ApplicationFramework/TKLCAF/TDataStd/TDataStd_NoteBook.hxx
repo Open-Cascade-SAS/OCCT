@@ -41,12 +41,12 @@ public:
   //! class methods
   //! =============
   //! try to retrieve a NoteBook attribute at <current> label
-  //! or in  fathers  label of  <current>. Returns True  if
+  //! or in fathers label of <current>. Returns True if
   //! found and set <N>.
   Standard_EXPORT static Standard_Boolean Find(const TDF_Label&           current,
                                                Handle(TDataStd_NoteBook)& N);
 
-  //! Create  an  enpty   NoteBook attribute,  located  at
+  //! Create an enpty NoteBook attribute, located at
   //! <label>. Raises if <label> has attribute
   Standard_EXPORT static Handle(TDataStd_NoteBook) New(const TDF_Label& label);
 
@@ -56,14 +56,14 @@ public:
 
   Standard_EXPORT TDataStd_NoteBook();
 
-  //! Tool to Create  an  Integer  attribute from  <value>,
-  //! Insert it in   a  new son  label   of <me>. The   Real
+  //! Tool to Create an Integer attribute from <value>,
+  //! Insert it in a new son label of <me>. The Real
   //! attribute is returned.
   Standard_EXPORT Handle(TDataStd_Real) Append(const Standard_Real    value,
                                                const Standard_Boolean isExported = Standard_False);
 
-  //! Tool to Create  an Real attribute from <value>, Insert
-  //! it  in a new son label  of <me>. The Integer attribute
+  //! Tool to Create an Real attribute from <value>, Insert
+  //! it in a new son label  of <me>. The Integer attribute
   //! is returned.
   Standard_EXPORT Handle(TDataStd_Integer) Append(
     const Standard_Integer value,

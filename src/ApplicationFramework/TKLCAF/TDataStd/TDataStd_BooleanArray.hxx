@@ -55,7 +55,7 @@ public:
 
   //! Sets the <Index>th element of the array to <Value>
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the
-  //! internal  array.
+  //! internal array.
   Standard_EXPORT void SetValue(const Standard_Integer index, const Standard_Boolean value);
 
   //! Sets the explicit GUID (user defined) for the attribute.

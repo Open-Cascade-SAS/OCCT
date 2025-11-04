@@ -33,10 +33,10 @@ DEFINE_STANDARD_HANDLE(TDataStd_Expression, TDF_Attribute)
 //! Expression attribute.
 //! ====================
 //!
-//! * Data Structure  of the Expression   is stored in a
+//! * Data Structure of the Expression is stored in a
 //! string and references to variables used by the string
 //!
-//! Warning:  To be consistent,  each  Variable  referenced by  the
+//! Warning: To be consistent, each Variable referenced by the
 //! expression must have its equivalent in the string
 class TDataStd_Expression : public TDF_Attribute
 {

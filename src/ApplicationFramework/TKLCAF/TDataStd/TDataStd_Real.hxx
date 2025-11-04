@@ -42,7 +42,7 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Finds, or creates, a Real attribute with default GUID and sets <value>.
-  //! The Real attribute  is  returned. The  Real  dimension is Scalar by default.
+  //! The Real attribute is returned. The Real dimension is Scalar by default.
   //! Use SetDimension to overwrite.
   //! Real methods
   //! ============
@@ -50,7 +50,7 @@ public:
                                                    const Standard_Real value);
 
   //! Finds, or creates, a Real attribute with explicit GUID and sets <value>.
-  //! The Real attribute  is  returned.
+  //! The Real attribute is returned.
   //! Real methods
   //! ============
   Standard_EXPORT static Handle(TDataStd_Real) Set(const TDF_Label&     label,

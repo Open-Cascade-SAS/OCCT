@@ -36,7 +36,7 @@ class CDF_Store
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! creates a store list  from the document of the current selection.
+  //! creates a store list from the document of the current selection.
   Standard_EXPORT CDF_Store(const Handle(CDM_Document)& aDocument);
 
   //! returns the folder in which the current document will be stored.
@@ -62,8 +62,8 @@ public:
   //! of the current selection.
   Standard_EXPORT Standard_Boolean IsMainDocument() const;
 
-  //! defines the   folder in which  the document  should be
-  //! stored.  returns  Standard_True if  the Folder exists,
+  //! defines the folder in which the document should be
+  //! stored. returns Standard_True if the Folder exists,
   //! Standard_False otherwise.
   Standard_EXPORT Standard_Boolean SetFolder(const TCollection_ExtendedString& aFolder);
 
@@ -85,7 +85,7 @@ public:
   //! returns the complete path of the created meta-data.
   Standard_EXPORT Standard_ExtString Path() const;
 
-  //! returns the path of  the previous store is the object
+  //! returns the path of the previous store is the object
   //! is already stored, otherwise an empty string;
   Standard_EXPORT Handle(TCollection_HExtendedString) MetaDataPath() const;
 
@@ -94,9 +94,9 @@ public:
 
   Standard_EXPORT void SetCurrent(const Standard_ExtString aPresentation);
 
-  //! the two following methods can
-  //! be used just after Realize  or Import --  method to know if
-  //! thes methods worked correctly, and if not why.
+  //! the two following methods can be used just after
+  //! Realize or Import -- method to know if
+  //! these methods worked correctly, and if not why.
   Standard_EXPORT void SetMain();
 
   Standard_EXPORT PCDM_StoreStatus StoreStatus() const;
@@ -106,8 +106,8 @@ public:
   //! defines the name under which the document should be stored.
   Standard_EXPORT CDF_StoreSetNameStatus SetName(const TCollection_ExtendedString& aName);
 
-  //! defines the   folder in which  the document  should be
-  //! stored.  returns  Standard_True if  the Folder exists,
+  //! defines the folder in which the document should be
+  //! stored. returns Standard_True if the Folder exists,
   //! Standard_False otherwise.
   Standard_EXPORT Standard_Boolean SetFolder(const Standard_ExtString aFolder);
 

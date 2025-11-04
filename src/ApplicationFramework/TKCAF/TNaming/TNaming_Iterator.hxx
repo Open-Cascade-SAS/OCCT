@@ -46,7 +46,7 @@ class TNaming_Iterator
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Iterates on all  the history records in
+  //! Iterates on all the history records in
   //! <anAtt>.
   Standard_EXPORT TNaming_Iterator(const Handle(TNaming_NamedShape)& anAtt);
 

@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(TDataXtd_Point, TDataStd_GenericEmpty)
 //! The topological attribute must contain a vertex.
 //! You use this class to create reference points in a design.
 //!
-//! Warning:  Use TDataXtd_Geometry  attribute  to retrieve the
+//! Warning: Use TDataXtd_Geometry attribute to retrieve the
 //! gp_Pnt of the Point attribute
 class TDataXtd_Point : public TDataStd_GenericEmpty
 {

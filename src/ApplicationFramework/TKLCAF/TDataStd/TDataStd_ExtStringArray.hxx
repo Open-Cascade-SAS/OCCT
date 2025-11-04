@@ -57,7 +57,7 @@ public:
     const Standard_Boolean isDelta = Standard_False);
 
   //! Finds, or creates, an ExtStringArray attribute with explicit user defined <guid>.
-  //! The ExtStringArray attribute  is  returned.
+  //! The ExtStringArray attribute is returned.
   Standard_EXPORT static Handle(TDataStd_ExtStringArray) Set(
     const TDF_Label&       label,
     const Standard_GUID&   theGuid,
@@ -68,9 +68,9 @@ public:
   //! Initializes the inner array with bounds from <lower> to <upper>
   Standard_EXPORT void Init(const Standard_Integer lower, const Standard_Integer upper);
 
-  //! Sets  the   <Index>th  element  of   the  array to <Value>
+  //! Sets the <Index>th element of the array to <Value>
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the
-  //! internal  array.
+  //! internal array.
   Standard_EXPORT void SetValue(const Standard_Integer            Index,
                                 const TCollection_ExtendedString& Value);
 
@@ -80,7 +80,7 @@ public:
   //! Sets default GUID for the attribute.
   Standard_EXPORT void SetID() Standard_OVERRIDE;
 
-  //! Returns the value of  the  <Index>th element of the array
+  //! Returns the value of the <Index>th element of the array
   Standard_EXPORT const TCollection_ExtendedString& Value(const Standard_Integer Index) const;
 
   const TCollection_ExtendedString& operator()(const Standard_Integer Index) const
@@ -110,7 +110,7 @@ public:
 
   Standard_Boolean GetDelta() const { return myIsDelta; }
 
-  //! for  internal  use  only!
+  //! for internal use only!
   void SetDelta(const Standard_Boolean isDelta) { myIsDelta = isDelta; }
 
   Standard_EXPORT TDataStd_ExtStringArray();

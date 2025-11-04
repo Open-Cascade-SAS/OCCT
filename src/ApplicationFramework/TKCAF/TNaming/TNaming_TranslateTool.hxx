@@ -29,8 +29,8 @@ DEFINE_STANDARD_HANDLE(TNaming_TranslateTool, Standard_Transient)
 
 //! tool to copy underlying TShape of a Shape.
 //! The TranslateTool class is provided to support the
-//! translation of topological data structures  Transient
-//! to  Transient.
+//! translation of topological data structures Transient
+//! to Transient.
 class TNaming_TranslateTool : public Standard_Transient
 {
 

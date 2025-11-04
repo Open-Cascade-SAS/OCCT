@@ -34,31 +34,31 @@ class TNaming_NamedShape;
 //! solve its identifications.
 //! This class is the user interface for topological
 //! naming resources.
-//! * The   <IsIdentified> method returns  (if exists)
-//! the NamedShape which  contains a given shape. The
-//! definition of  an  identified shape is :   a Shape
-//! handled by a NamedShape  (this shape  is the only
-//! one stored) , which  has the TNaming_PRImITIVE evolution
+//! * The <IsIdentified> method returns (if exists)
+//! the NamedShape which contains a given shape. The
+//! definition of an identified shape is: a Shape
+//! handled by a NamedShape (this shape is the only
+//! one stored), which has the TNaming_PRImITIVE evolution
 //!
-//! *  The   <Select> method  returns   ALWAYS a  new
-//! NamedShape at the given  label, which contains the
-//! argument  selected  shape.    When  calling  this
+//! * The <Select> method returns ALWAYS a new
+//! NamedShape at the given label, which contains the
+//! argument selected shape. When calling this
 //! method, the sub-hierarchy of <label> is first cleared,
-//! then a TNaming_NamedShape   is ALWAYS created  at
+//! then a TNaming_NamedShape is ALWAYS created  at
 //! this <label>, with the TNaming_SELECTED evolution.
 //! The <Naming attribute> is associated to the selected
-//! shape which store the arguments of the selection .
+//! shape which store the arguments of the selection.
 //! If the given selected shape was already identified
-//! (method IsIdentified)   , this   Naming attribute
-//! contains  the reference (Identity  code)  to the
+//! (method IsIdentified), this Naming attribute
+//! contains the reference (Identity code) to the
 //! argument shape.
 //!
-//! * The <Solve> method  update the current value of
+//! * The <Solve> method update the current value of
 //! the NamedShape, according to the <Naming> attribute.
-//! A boolean status  is    returned to say  if  the
-//! algorithm succeed   or not.  To read   the current
-//! value    of the selected    Named  Shape  use the
-//! TNaming_Tool::GetShape    method,    as  for  any
+//! A boolean status is returned to say if the
+//! algorithm succeed or not. To read the current
+//! value of the selected Named Shape use the
+//! TNaming_Tool::GetShape method, as for any
 //! NamedShape attribute.
 class TNaming_Selector
 {

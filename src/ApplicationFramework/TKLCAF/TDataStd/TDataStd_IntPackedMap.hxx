@@ -78,7 +78,7 @@ public:
 
   Standard_Boolean GetDelta() const { return myIsDelta; }
 
-  //! for  internal  use  only!
+  //! for internal use only!
   void SetDelta(const Standard_Boolean isDelta) { myIsDelta = isDelta; }
 
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;

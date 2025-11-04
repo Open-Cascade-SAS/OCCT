@@ -46,7 +46,7 @@ public:
   Standard_EXPORT static Standard_Boolean Find(const TDF_Label&            current,
                                                Handle(TDataStd_Directory)& D);
 
-  //! Creates  an  empty   Directory attribute,  located  at
+  //! Creates an empty Directory attribute, located at
   //! <label>. Raises if <label> has attribute
   Standard_EXPORT static Handle(TDataStd_Directory) New(const TDF_Label& label);
 

@@ -63,7 +63,7 @@ public:
   //! Warning! Can be a Null Shape if a descendant is deleted.
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  //! True if the new  shape is a modification  (split,
+  //! True if the new shape is a modification (split,
   //! fuse,etc...) of the old shape.
   Standard_EXPORT Standard_Boolean IsModification() const;
 

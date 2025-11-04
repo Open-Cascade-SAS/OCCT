@@ -25,7 +25,7 @@ DEFINE_STANDARD_HANDLE(TDataXtd_Axis, TDataStd_GenericEmpty)
 
 //! The basis to define an axis attribute.
 //!
-//! Warning: Use TDataXtd_Geometry  attribute  to retrieve  the
+//! Warning: Use TDataXtd_Geometry attribute to retrieve the
 //! gp_Lin of the Axis attribute
 class TDataXtd_Axis : public TDataStd_GenericEmpty
 {

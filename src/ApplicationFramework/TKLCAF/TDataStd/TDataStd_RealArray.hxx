@@ -57,7 +57,7 @@ public:
     const Standard_Boolean isDelta = Standard_False);
 
   //! Finds, or creates, an RealArray attribute with explicit user defined <guid>.
-  //! The RealArray attribute  is  returned.
+  //! The RealArray attribute is returned.
   Standard_EXPORT static Handle(TDataStd_RealArray) Set(
     const TDF_Label&       label,
     const Standard_GUID&   theGuid,
@@ -74,12 +74,12 @@ public:
   //! Sets default GUID for the attribute.
   Standard_EXPORT void SetID() Standard_OVERRIDE;
 
-  //! Sets  the   <Index>th  element  of   the  array to <Value>
+  //! Sets the <Index>th element of the array to <Value>
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the
-  //! internal  array.
+  //! internal array.
   Standard_EXPORT void SetValue(const Standard_Integer Index, const Standard_Real Value);
 
-  //! Return the value of  the  <Index>th element of the array
+  //! Return the value of the <Index>th element of the array
   Standard_EXPORT Standard_Real Value(const Standard_Integer Index) const;
 
   Standard_Real operator()(const Standard_Integer Index) const { return Value(Index); }
@@ -108,7 +108,7 @@ public:
 
   Standard_Boolean GetDelta() const { return myIsDelta; }
 
-  //! for  internal  use  only!
+  //! for internal use only!
   void SetDelta(const Standard_Boolean isDelta) { myIsDelta = isDelta; }
 
   Standard_EXPORT TDataStd_RealArray();

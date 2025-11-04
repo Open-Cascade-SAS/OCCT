@@ -92,7 +92,7 @@ public:
   //!
   //! Handle(CDM_Document) theDocument=myApplication->Retrieve("|user|cascade","box");
   //!
-  //! Since  the version is not specified in  this syntax, the  latest will be used.
+  //! Since the version is not specified in this syntax, the latest will be used.
   //! A link is kept with the database through an instance of CDM_MetaData
   Standard_EXPORT Handle(CDM_Document) Retrieve(
     const TCollection_ExtendedString& aFolder,
@@ -101,15 +101,15 @@ public:
     const Handle(PCDM_ReaderFilter)&  theFilter               = Handle(PCDM_ReaderFilter)(),
     const Message_ProgressRange&      theRange                = Message_ProgressRange());
 
-  //! This method retrieves  a  document from the database.
-  //! If the  Document references other documents which have
-  //! been  updated, the  latest version of  these documents
-  //! will    be   used  if   {UseStorageConfiguration}  is
-  //! Standard_True.  --  If the DBMS is  only  based on the
-  //! OS, this syntax  should not be used.
+  //! This method retrieves a document from the database.
+  //! If the Document references other documents which have
+  //! been updated, the latest version of these documents
+  //! will be used if {UseStorageConfiguration} is
+  //! Standard_True. If the DBMS is only based on the OS,
+  //! this syntax should not be used.
   //!
   //! If the DBMS is EUCLID/Design Manager, {aFolder}, {aName}
-  //! and  {aVersion} have the form they have in
+  //! and {aVersion} have the form they have in
   //! EUCLID/Design Manager. For example:
   //!
   //! Handle(CDM_Document) theDocument=myApplication->Retrieve("|user|cascade","box","2");
@@ -132,7 +132,7 @@ public:
                                                 const TCollection_ExtendedString& theVersion,
                                                 const bool                        theAppendMode);
 
-  //! Checks  status  after  Retrieve
+  //! Checks status after Retrieve
   PCDM_ReaderStatus GetRetrieveStatus() const { return myRetrievableStatus; }
 
   //! Reads theDocument from standard SEEKABLE stream theIStream,
@@ -173,9 +173,9 @@ public:
   Standard_EXPORT virtual Handle(PCDM_StorageDriver) WriterFromFormat(
     const TCollection_ExtendedString& aFormat);
 
-  //! try to  retrieve a Format  directly in the  file or in
-  //! application   resource  by using   extension. returns
-  //! True if found;
+  //! try to retrieve a Format directly in the file or in
+  //! application resource by using extension. 
+  //! returns True if found
   Standard_EXPORT Standard_Boolean Format(const TCollection_ExtendedString& aFileName,
                                           TCollection_ExtendedString&       theFormat);
 
@@ -192,7 +192,7 @@ public:
   Handle(CDF_Directory)      myDirectory;
 
 private:
-  //! Informs the  application that aDocument has  been
+  //! Informs the application that aDocument has been
   //! activated. A document is activated when it is created or
   //! retrieved.
   //! aTypeOfActivation will be:

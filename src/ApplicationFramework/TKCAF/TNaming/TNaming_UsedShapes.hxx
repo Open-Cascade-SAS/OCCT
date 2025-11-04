@@ -54,7 +54,7 @@ public:
   //! Returns the ID: 2a96b614-ec8b-11d0-bee7-080009dc3333.
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  //! Copies  the attribute  contents into  a  new other
+  //! Copies the attribute contents into a new other
   //! attribute. It is used by Backup().
   Standard_EXPORT virtual Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
 

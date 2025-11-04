@@ -24,8 +24,8 @@
 #include <Standard_Boolean.hxx>
 class TDataStd_TreeNode;
 
-//! Iterates on the  ChildStepren step of  a step, at the
-//! first level  only.   It  is possible  to ask  the
+//! Iterates on the ChildStepren step of a step, at the
+//! first level only. It is possible to ask the
 //! iterator to explore all the sub step levels of the
 //! given one, with the option "allLevels".
 class TDataStd_ChildNodeIterator
@@ -42,9 +42,9 @@ public:
   Standard_EXPORT TDataStd_ChildNodeIterator(const Handle(TDataStd_TreeNode)& aTreeNode,
                                              const Standard_Boolean allLevels = Standard_False);
 
-  //! Initializes the iteration on  the Children Step of
-  //! the  given Step. If <allLevels>  option is  set to
-  //! true, it explores not  only the first, but all the
+  //! Initializes the iteration on the Children Step of
+  //! the given Step. If <allLevels> option is set to
+  //! true, it explores not only the first, but all the
   //! sub Step levels.
   Standard_EXPORT void Initialize(const Handle(TDataStd_TreeNode)& aTreeNode,
                                   const Standard_Boolean           allLevels = Standard_False);
