@@ -51,7 +51,7 @@ public:
 
   Standard_EXPORT static Handle(TNaming_Naming) Insert(const TDF_Label& under);
 
-  //! Creates a Namimg attribute at label <where> to identify
+  //! Creates a Naming attribute at label <where> to identify
   //! the shape <Selection>. Geometry is Standard_True if we
   //! are only interested by the underlying geometry (e.g.
   //! setting a constraint).
