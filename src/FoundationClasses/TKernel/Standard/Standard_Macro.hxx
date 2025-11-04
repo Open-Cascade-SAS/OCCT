@@ -301,7 +301,7 @@
 //! @deprecated Always defined in C++17, no need to check for it
 #define Standard_HASATOMIC                                                                         \
   Standard_MACRO_DEPRECATED(                                                                       \
-    "Standard_HASATOMIC is deprecated, std::atomic is always available in C++17")
+    "Standard_HASATOMIC is deprecated, std::atomic is always available in C++17") 1
 
 //! @def Standard_ATOMIC
 //! Definition of Standard_ATOMIC for C++11 or visual studio that supports it.
