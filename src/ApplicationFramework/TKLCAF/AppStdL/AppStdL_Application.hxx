@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(AppStdL_Application, TDocStd_Application)
 class AppStdL_Application : public TDocStd_Application
 {
 public:
-  //! returns   the file  name  which  contains  application
+  //! returns the file name which contains application
   //! resources
   Standard_EXPORT Standard_CString ResourcesName() Standard_OVERRIDE;
 

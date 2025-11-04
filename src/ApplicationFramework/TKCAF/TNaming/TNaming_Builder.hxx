@@ -39,8 +39,8 @@ class TNaming_Builder
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Create an   Builder.
-  //! Warning:  Before Addition copies the current Value, and clear
+  //! Create a Builder.
+  //! Warning: Before Addition copies the current Value, and clear
   Standard_EXPORT TNaming_Builder(const TDF_Label& aLabel);
 
   //! Records the shape newShape which was
@@ -65,8 +65,8 @@ public:
   //! or merged in a Boolean operation.
   Standard_EXPORT void Modify(const TopoDS_Shape& oldShape, const TopoDS_Shape& newShape);
 
-  //! Add a  Shape to the current label ,  This Shape is
-  //! unmodified.  Used for example  to define a set
+  //! Add a Shape to the current label, This Shape is
+  //! unmodified. Used for example to define a set
   //! of shapes under a label.
   Standard_EXPORT void Select(const TopoDS_Shape& aShape, const TopoDS_Shape& inShape);
 

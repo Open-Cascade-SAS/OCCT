@@ -36,10 +36,10 @@ class TDF_IDFilter;
 class TNaming_Naming;
 DEFINE_STANDARD_HANDLE(TNaming_Naming, TDF_Attribute)
 
-//! This attribute  store the  topological  naming of any
-//! selected   shape,  when this  shape  is  not  already
+//! This attribute store the topological naming of any
+//! selected shape, when this shape is not already
 //! attached to a specific label. This class is also used
-//! to solve  it when  the argumentsof the  toipological
+//! to solve it when the arguments of the topological
 //! naming are modified.
 class TNaming_Naming : public TDF_Attribute
 {
@@ -51,15 +51,16 @@ public:
 
   Standard_EXPORT static Handle(TNaming_Naming) Insert(const TDF_Label& under);
 
-  //! Creates  a   Namimg  attribute  at  label <where>   to
-  //! identify  the   shape   <Selection>.    Geometry is
-  //! Standard_True  if   we  are  only  interested  by  the
-  //! underlying   geometry     (e.g.     setting   a
-  //! constraint). <Context> is  used to find neighbours  of
-  //! <S> when required by the naming.
-  //! If KeepOrientation is True the Selection orientation is taken
-  //! into  account. BNproblem == True points out that Context sub-shapes
-  //! in  DF have orientation differences with Context shape itself.
+  //! Creates a Naming attribute at label <where> to identify
+  //! the shape <Selection>. Geometry is Standard_True if we
+  //! are only interested by the underlying geometry (e.g.
+  //! setting a constraint).
+  //! <Context> is used to find neighbours of <S> when required
+  //! by the naming. If KeepOrientation is True the Selection
+  //! orientation is taken into account.
+  //! BNproblem == True points out that Context sub-shapes in
+  //! DF have orientation differences with Context shape itself.
+
   //! instance method
   //! ===============
   Standard_EXPORT static Handle(TNaming_NamedShape) Name(
@@ -81,8 +82,8 @@ public:
   //! regenerate only the Name associated to me
   Standard_EXPORT Standard_Boolean Regenerate(TDF_LabelMap& scope);
 
-  //! Regenerate recursively the  whole name with scope.  If
-  //! scope  is empty it  means that  all the labels  of the
+  //! Regenerate recursively the whole name with scope. If
+  //! scope is empty it means that all the labels of the
   //! framework are valid.
   Standard_EXPORT Standard_Boolean Solve(TDF_LabelMap& scope);
 

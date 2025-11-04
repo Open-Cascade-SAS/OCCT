@@ -65,7 +65,7 @@ public:
 
   Standard_EXPORT TDF_LabelMap& ChangeValid();
 
-  //! Returns  the current  value of  <NS> according to the
+  //! Returns the current value of <NS> according to the
   //! Valid Scope.
   Standard_EXPORT TopoDS_Shape CurrentShape(const Handle(TNaming_NamedShape)& NS) const;
 

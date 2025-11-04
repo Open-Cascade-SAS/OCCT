@@ -26,10 +26,10 @@ ApplicationWindow::~ApplicationWindow()
 void ApplicationWindow::createTranslatePopups()
 {
     if ( !myImportPopup )
-        myImportPopup = new QMenu( QObject::tr( "MNU_FILE_IMPORT" ), this );
+        myImportPopup = new QMenu( QObject::tr("MNU_FILE_IMPORT"), this );
 
     if ( !myExportPopup )
-	    myExportPopup = new QMenu( QObject::tr( "MNU_FILE_EXPORT" ), this );
+	    myExportPopup = new QMenu( QObject::tr("MNU_FILE_EXPORT"), this );
 
 	QAction* a;
 	a = new QAction( QObject::tr("MNU_IMPORT_BREP"), this );

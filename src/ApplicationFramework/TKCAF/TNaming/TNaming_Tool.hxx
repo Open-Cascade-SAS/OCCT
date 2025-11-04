@@ -136,8 +136,8 @@ public:
   Standard_EXPORT static Standard_Boolean HasLabel(const TDF_Label&    access,
                                                    const TopoDS_Shape& aShape);
 
-  //! Returns  the label  of   the first apparition  of
-  //! <aShape>.  Transdef  is a value of the transaction
+  //! Returns the label of the first apparition  of
+  //! <aShape>. Transdef is a value of the transaction
   //! of the first apparition of <aShape>.
   Standard_EXPORT static TDF_Label Label(const TDF_Label&    access,
                                          const TopoDS_Shape& aShape,
@@ -177,8 +177,8 @@ private:
   Standard_EXPORT static Standard_Integer ValidUntil(const TopoDS_Shape&               S,
                                                      const Handle(TNaming_UsedShapes)& US);
 
-  //! Returns  the label  of   the first apparition  of
-  //! <aShape>.  Transdef  is a value of the transaction
+  //! Returns the label of the first apparition of
+  //! <aShape>. Transdef  is a value of the transaction
   //! of the first apparition of <aShape>.
   Standard_EXPORT static TDF_Label Label(const Handle(TNaming_UsedShapes)& Shapes,
                                          const TopoDS_Shape&               aShape,

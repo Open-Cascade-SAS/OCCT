@@ -77,7 +77,7 @@ public:
   //! Returns the ID of the attribute.
   const Standard_GUID& ID() const Standard_OVERRIDE;
 
-  //! Copies  the attribute  contents into  a  new other
+  //! Copies the attribute contents into a new other
   //! attribute. It is used by Backup().
   Standard_EXPORT virtual Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
 

@@ -41,7 +41,7 @@ public:
   //! Adds the Shape <S>
   Standard_Boolean Add(const TopoDS_Shape& S);
 
-  //! Returns True  if <S> is in <me>
+  //! Returns True if <S> is in <me>
   Standard_Boolean Contains(const TopoDS_Shape& S) const;
 
   //! Removes <S> in <me>.

@@ -39,7 +39,7 @@ public:
   //! By default, returns Standard_False.
   Standard_EXPORT virtual Standard_Boolean HasVersionCapability();
 
-  //! Creates a "Depends On"  relation between two Datas.
+  //! Creates a "Depends On" relation between two Datas.
   //! By default does nothing
   Standard_EXPORT virtual void CreateDependsOn(const Handle(CDM_MetaData)& aFirstData,
                                                const Handle(CDM_MetaData)& aSecondData);
@@ -56,9 +56,9 @@ public:
   Standard_EXPORT virtual TCollection_ExtendedString BuildFileName(
     const Handle(CDM_Document)& aDocument) = 0;
 
-  //! this method is useful if the name of an object --
-  //! depends on the metadatadriver. For  example a Driver
-  //! -- based  on the operating  system can choose to  add
+  //! this method is useful if the name of an object
+  //! depends on the metadatadriver. For example a Driver
+  //! based on the operating system can choose to add
   //! the extension of file to create to the object.
   Standard_EXPORT virtual TCollection_ExtendedString SetName(
     const Handle(CDM_Document)&       aDocument,
@@ -81,7 +81,7 @@ public:
   //! the version has to be set in the returned MetaData.
   //! aVersion may be NULL
   //! MetaData is called by GetMetaData
-  //! If the version is  set to NULL, MetaData should return
+  //! If the version is set to NULL, MetaData should return
   //! the last version of the metadata
   Standard_EXPORT virtual Handle(CDM_MetaData) MetaData(
     const TCollection_ExtendedString& aFolder,
@@ -93,7 +93,7 @@ public:
   //! corresponding to the path. If the MetaDataDriver has version management capabilities
   //! the version has to be set in the returned MetaData.
   //! MetaData is called by GetMetaData
-  //! If the version is not included in the path , MetaData should return
+  //! If the version is not included in the path, MetaData should return
   //! the last version of the metadata
   //! is deferred;
   Standard_EXPORT virtual Handle(CDM_MetaData) LastVersion(const Handle(CDM_MetaData)& aMetaData);

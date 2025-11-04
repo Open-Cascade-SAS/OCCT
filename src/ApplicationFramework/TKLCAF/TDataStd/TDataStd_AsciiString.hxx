@@ -47,7 +47,7 @@ public:
                                                           const TCollection_AsciiString& string);
 
   //! Finds, or creates, an AsciiString attribute with explicit user defined <guid> and sets
-  //! <string>. The Name attribute  is  returned.
+  //! <string>. The Name attribute is returned.
   Standard_EXPORT static Handle(TDataStd_AsciiString) Set(const TDF_Label&               label,
                                                           const Standard_GUID&           guid,
                                                           const TCollection_AsciiString& string);
@@ -56,7 +56,7 @@ public:
 
   Standard_EXPORT void Set(const TCollection_AsciiString& S);
 
-  //! Sets the explicit user defined GUID  to the attribute.
+  //! Sets the explicit user defined GUID to the attribute.
   Standard_EXPORT void SetID(const Standard_GUID& guid) Standard_OVERRIDE;
 
   //! Sets default GUID for the attribute.

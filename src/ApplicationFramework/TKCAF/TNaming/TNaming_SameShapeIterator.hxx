@@ -29,7 +29,7 @@ class TopoDS_Shape;
 class TNaming_UsedShapes;
 class TDF_Label;
 
-//! To iterate on   all  the label which contained  a
+//! To iterate on all the label which contained a
 //! given shape.
 class TNaming_SameShapeIterator
 {

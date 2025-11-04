@@ -91,8 +91,8 @@ public:
 
   friend class CDM_Reference;
   friend
-    //! associates database  information to  a document which
-    //! has been stored.  The name of the  document is now the
+    //! associates database information to a document which
+    //! has been stored. The name of the document is now the
     //! name which has beenused to store the data.
     Standard_EXPORT void
                               CDM_Document::SetMetaData(const Handle(CDM_MetaData)& aMetaData);

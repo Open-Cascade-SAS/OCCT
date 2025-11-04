@@ -17,7 +17,7 @@
 #define _TDataXtd_ConstraintEnum_HeaderFile
 
 //! The terms of this enumeration define the types
-//! of  available constraint.
+//! of available constraint.
 //! ==================
 enum TDataXtd_ConstraintEnum
 {

@@ -76,7 +76,7 @@ private:
   Standard_EXPORT void UnsetToDocument(const Handle(CDM_MetaData)&    aMetaData,
                                        const Handle(CDM_Application)& anApplication);
 
-  //! returns  true if the  ToDocument has been retrieved
+  //! returns true if the ToDocument has been retrieved
   //! and opened.
   Standard_EXPORT Standard_Boolean IsOpened() const;
 

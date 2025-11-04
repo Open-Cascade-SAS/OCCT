@@ -41,12 +41,12 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Finds, or creates, an Integer attribute and sets <value>
-  //! the Integer  attribute is returned.
+  //! the Integer attribute is returned.
   Standard_EXPORT static Handle(TDataStd_Integer) Set(const TDF_Label&       label,
                                                       const Standard_Integer value);
 
   //! Finds, or creates, an Integer attribute with explicit user defined <guid> and sets <value>.
-  //! The Integer attribute  is  returned.
+  //! The Integer attribute is returned.
   Standard_EXPORT static Handle(TDataStd_Integer) Set(const TDF_Label&       label,
                                                       const Standard_GUID&   guid,
                                                       const Standard_Integer value);

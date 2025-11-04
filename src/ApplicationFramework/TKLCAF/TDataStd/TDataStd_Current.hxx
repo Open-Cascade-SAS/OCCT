@@ -29,7 +29,7 @@ class TDF_RelocationTable;
 class TDataStd_Current;
 DEFINE_STANDARD_HANDLE(TDataStd_Current, TDF_Attribute)
 
-//! this attribute,  located at root label,  manage an
+//! this attribute, located at root label, manage an
 //! access to a current label.
 class TDataStd_Current : public TDF_Attribute
 {
@@ -45,7 +45,7 @@ public:
   //! returns current of <acces> Framework. raise if (!Has)
   Standard_EXPORT static TDF_Label Get(const TDF_Label& acces);
 
-  //! returns True if a  current label is managed in <acces>
+  //! returns True if a current label is managed in <acces>
   //! Framework.
   //! class methods
   //! =============

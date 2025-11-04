@@ -84,7 +84,7 @@ protected:
                                             const Handle(CDM_Document)& /*theDoc*/,
                                             Standard_OStream& /*theOS*/);
 
-  //! defines the procedure of writing a shape  section to file
+  //! defines the procedure of writing a shape section to file
   Standard_EXPORT virtual void WriteShapeSection(
     BinLDrivers_DocumentSection& theDocSection,
     Standard_OStream&            theOS,

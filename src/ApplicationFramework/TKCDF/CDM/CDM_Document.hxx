@@ -40,18 +40,18 @@ DEFINE_STANDARD_HANDLE(CDM_Document, Standard_Transient)
 //! - they can have references to other documents.
 //! - the modifications of a document are propagated to the referencing
 //! documents.
-//! - a  document can be   stored in different formats, with  or
+//! - a document can be stored in different formats, with or
 //! without a persistent model.
-//! - the drivers  for  storing  and retrieving documents  are
+//! - the drivers for storing and retrieving documents are
 //! plugged in when necessary.
-//! - a  document has a modification counter. This counter is
-//! incremented when the document is  modified.  When a document
-//! is stored,  the current  counter  value is memorized as the
-//! last storage  version of the   document.  A document  is
-//! considered to be  modified   when the  counter value  is
-//! different from the storage version.  Once  the document is
-//! saved  the storage  version  and the  counter  value are
-//! identical.  The document  is  now  not considered  to  be
+//! - a document has a modification counter. This counter is
+//! incremented when the document is modified. When a document
+//! is stored, the current counter value is memorized as the
+//! last storage version of the document. A document is
+//! considered to be modified when the counter value is
+//! different from the storage version. Once the document is
+//! saved the storage version and the counter value are
+//! identical. The document is now not considered to be
 //! modified.
 //! - a reference is a link between two documents. A reference has two
 //! components: the "From Document" and the "To Document". When
@@ -64,24 +64,24 @@ DEFINE_STANDARD_HANDLE(CDM_Document, Standard_Transient)
 //! the reference is created. The From Document is considered to
 //! be up to date relative to the To Document when the
 //! reference counter value is equal to the To Document counter value.
-//! -  retrieval of a document  having references does not imply
+//! -  retrieval of a document having references does not imply
 //! the retrieving of the referenced documents.
 class CDM_Document : public Standard_Transient
 {
 
 public:
-  //! The Update  method  will be called  once  for each
-  //! reference, but it  should not perform any computation,
+  //! The Update method will be called once for each
+  //! reference, but it should not perform any computation,
   //! to avoid multiple computation of a same document.
   Standard_EXPORT virtual void Update(const Handle(CDM_Document)& aToDocument,
                                       const Standard_Integer      aReferenceIdentifier,
                                       const Standard_Address      aModifContext);
 
-  //! This method Update   will be called
-  //! to signal the end   of the modified references list.
-  //! The    document     should    be  recomputed     and
-  //! UpdateFromDocuments  should be called.  Update should
-  //! returns True in case  of success, false otherwise.  In
+  //! This method Update will be called
+  //! to signal the end of the modified references list.
+  //! The document should be recomputed and
+  //! UpdateFromDocuments should be called. Update should
+  //! returns True in case of success, false otherwise. In
   //! case of Failure, additional information can be given in
   //! ErrorString.
   Standard_EXPORT virtual Standard_Boolean Update(TCollection_ExtendedString& ErrorString);
@@ -117,19 +117,19 @@ public:
   //! Removes all references having this document for From Document.
   Standard_EXPORT void RemoveAllReferences();
 
-  //! Returns the To Document  of the reference identified by
+  //! Returns the To Document of the reference identified by
   //! aReferenceIdentifier. If the ToDocument is stored and
   //! has not yet been retrieved, this method will retrieve it.
   Standard_EXPORT Handle(CDM_Document) Document(const Standard_Integer aReferenceIdentifier) const;
 
-  //! returns True if   the  To Document of the  reference
-  //! identified by aReferenceIdentifier is in session,  False
+  //! returns True if the To Document of the  reference
+  //! identified by aReferenceIdentifier is in session, False
   //! if it corresponds to a not yet retrieved document.
   Standard_EXPORT Standard_Boolean IsInSession(const Standard_Integer aReferenceIdentifier) const;
 
-  //! returns True if   the  To Document of the  reference
+  //! returns True if the To Document of the reference
   //! identified by aReferenceIdentifier has already been stored,
-  //! False  otherwise.
+  //! False otherwise.
   Standard_EXPORT Standard_Boolean IsStored(const Standard_Integer aReferenceIdentifier) const;
 
   //! returns the name of the metadata of the To Document of
@@ -137,11 +137,11 @@ public:
   Standard_EXPORT TCollection_ExtendedString
     Name(const Standard_Integer aReferenceIdentifier) const;
 
-  //! call  virtual  method   Update  on  all   referencing
-  //! documents.   This method keeps  the list  of the --
-  //! documents  to process.It may  be the starting of an
-  //! update -- cycle. If  not,  the reentrant calls made by
-  //! Update  method (without argument)  will append the
+  //! call virtual method Update on all referencing
+  //! documents. This method keeps the list of the
+  //! documents to process. It may be the starting of an
+  //! update cycle. If not, the reentrant calls made by
+  //! Update method (without argument) will append the
   //! referencing documents to the list and call the Update method
   //! (with arguments). Only the first call to UpdateFromDocuments
   //! generate call to Update().
@@ -161,14 +161,14 @@ public:
   //! returns True is this document references aDocument;
   Standard_EXPORT Standard_Boolean DeepReferences(const Handle(CDM_Document)& aDocument) const;
 
-  //! Copies a  reference  to  this document.   This  method
-  //! avoid retrieval of referenced document.  The arguments
-  //! are  the  original  document  and a  valid  reference
+  //! Copies a reference to this document. This method
+  //! avoid retrieval of referenced document. The arguments
+  //! are the original document and a valid reference
   //! identifier Returns the  local identifier.
   Standard_EXPORT Standard_Integer CopyReference(const Handle(CDM_Document)& aFromDocument,
                                                  const Standard_Integer      aReferenceIdentifier);
 
-  //! indicates  that  this document cannot be   modified.
+  //! indicates that this document cannot be modified.
   Standard_EXPORT Standard_Boolean IsReadOnly() const;
 
   //! indicates that the referenced document cannot be modified,
@@ -218,12 +218,12 @@ public:
 
   Standard_EXPORT Standard_Boolean IsStored() const;
 
-  //! returns  the value of  the modification counter at the
+  //! returns the value of the modification counter at the
   //! time of storage. By default returns 0.
   Standard_EXPORT Standard_Integer StorageVersion() const;
 
-  //! associates database  information to  a document which
-  //! has been stored.  The name of the  document is now the
+  //! associates database information to a document which
+  //! has been stored. The name of the document is now the
   //! name which has beenused to store the data.
   Standard_EXPORT void SetMetaData(const Handle(CDM_MetaData)& aMetaData);
 
@@ -257,7 +257,7 @@ public:
 
   Standard_EXPORT TCollection_ExtendedString RequestedPreviousVersion() const;
 
-  //! defines the Comment with  which the object should be stored.
+  //! defines the Comment with which the object should be stored.
   Standard_EXPORT void SetRequestedComment(const TCollection_ExtendedString& aComment);
 
   Standard_EXPORT TCollection_ExtendedString RequestedComment() const;
@@ -275,7 +275,7 @@ public:
   //! gets the `FileFormat`.Description resource.
   Standard_EXPORT TCollection_ExtendedString Description();
 
-  //! returns  true  if the   version is greater  than   the
+  //! returns true if the version is greater than the
   //! storage version
   Standard_EXPORT Standard_Boolean IsModified() const;
 
@@ -292,9 +292,9 @@ public:
 
   Standard_EXPORT const Handle(CDM_Application)& Application() const;
 
-  //! A  referenced  document  may  indicate   through  this
-  //! virtual  method that it does  not allow the closing of
-  //! aDocument  which  it references through  the reference
+  //! A referenced document may indicate through this
+  //! virtual method that it does not allow the closing of
+  //! aDocument which it references through the reference
   //! aReferenceIdentifier. By default returns Standard_True.
   Standard_EXPORT virtual Standard_Boolean CanCloseReference(
     const Handle(CDM_Document)& aDocument,
@@ -307,8 +307,8 @@ public:
   Standard_EXPORT virtual void CloseReference(const Handle(CDM_Document)& aDocument,
                                               const Standard_Integer      aReferenceIdentifier);
 
-  //! returns true if  the   document corresponding to  the
-  //! given   reference has    been retrieved  and  opened.
+  //! returns true if the document corresponding to the
+  //! given reference has been retrieved and opened.
   //! Otherwise returns false. This method does not retrieve
   //! the referenced document
   Standard_EXPORT Standard_Boolean IsOpened(const Standard_Integer aReferenceIdentifier) const;
@@ -356,7 +356,7 @@ protected:
   Standard_Boolean myResourcesAreLoaded;
 
 private:
-  //! the manager returned by  this method will be
+  //! the manager returned by this method will be
   //! used to search for the following resource items.
   Standard_EXPORT Handle(Resource_Manager) StorageResource();
 

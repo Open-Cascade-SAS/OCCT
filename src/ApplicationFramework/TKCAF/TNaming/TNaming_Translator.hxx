@@ -24,7 +24,7 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 class TopoDS_Shape;
 
-//! only  for  Shape  Copy  test - to move in DNaming
+//! only for Shape Copy test - to move in DNaming
 class TNaming_Translator
 {
 public:
@@ -38,10 +38,10 @@ public:
 
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-  //! returns copied  shape
+  //! returns copied shape
   Standard_EXPORT const TopoDS_Shape Copied(const TopoDS_Shape& aShape) const;
 
-  //! returns  DataMap  of  results;  (shape <-> copied  shape)
+  //! returns DataMap of results; (shape <-> copied shape)
   Standard_EXPORT const TopTools_DataMapOfShapeShape& Copied() const;
 
   Standard_EXPORT void DumpMap(const Standard_Boolean isWrite = Standard_False) const;

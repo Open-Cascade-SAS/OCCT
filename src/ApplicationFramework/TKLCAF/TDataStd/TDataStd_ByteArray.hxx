@@ -67,7 +67,7 @@ public:
 
   //! Sets the <Index>th element of the array to <Value>
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the
-  //! internal  array.
+  //! internal array.
   Standard_EXPORT void SetValue(const Standard_Integer index, const Standard_Byte value);
 
   //! Sets the explicit GUID (user defined) for the attribute.
@@ -92,7 +92,7 @@ public:
 
   const Handle(TColStd_HArray1OfByte)& InternalArray() const { return myValue; }
 
-  //! Sets the inner array <myValue>  of the attribute to
+  //! Sets the inner array <myValue> of the attribute to
   //! <newArray>. If value of <newArray> differs from <myValue>, Backup performed
   //! and myValue refers to new instance of HArray1OfInteger that holds <newArray>
   //! values.
@@ -103,7 +103,7 @@ public:
 
   Standard_Boolean GetDelta() const { return myIsDelta; }
 
-  //! for internal  use  only!
+  //! for internal use only!
   void SetDelta(const Standard_Boolean isDelta) { myIsDelta = isDelta; }
 
   Standard_EXPORT TDataStd_ByteArray();

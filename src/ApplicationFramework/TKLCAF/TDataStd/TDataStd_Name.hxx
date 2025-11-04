@@ -37,15 +37,15 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Creates (if does not exist) and sets the name in the name attribute.
-  //! from any label <L>  search in father  labels (L is not
-  //! concerned) the first name attribute.if found set it in
+  //! from any label <L> search in father labels (L is not
+  //! concerned) the first name attribute. if found set it in
   //! <father>.
   //! class methods working on the name tree
   //! ======================================
-  //! Search in the  whole TDF_Data the Name attribute which
+  //! Search in the whole TDF_Data the Name attribute which
   //! fit with <fullPath>. Returns True if found.
-  //! Search  under <currentLabel>  a  label which fit with
-  //! <name>. Returns True if  found. Shortcut which  avoids
+  //! Search under <currentLabel> a label which fit with
+  //! <name>. Returns True if found. Shortcut which avoids
   //! building a ListOfExtendedStrin.
   //! Search in the whole TDF_Data the label which fit with name
   //! Returns True if found.
@@ -62,7 +62,7 @@ public:
                                                    const TCollection_ExtendedString& string);
 
   //! Finds, or creates, a Name attribute with explicit user defined <guid> and sets <string>.
-  //! The Name attribute  is  returned.
+  //! The Name attribute is returned.
   Standard_EXPORT static Handle(TDataStd_Name) Set(const TDF_Label&                  label,
                                                    const Standard_GUID&              guid,
                                                    const TCollection_ExtendedString& string);
@@ -72,7 +72,7 @@ public:
   //! Sets <S> as name. Raises if <S> is not a valid name.
   Standard_EXPORT void Set(const TCollection_ExtendedString& S) Standard_OVERRIDE;
 
-  //! Sets the explicit user defined GUID  to the attribute.
+  //! Sets the explicit user defined GUID to the attribute.
   Standard_EXPORT void SetID(const Standard_GUID& guid) Standard_OVERRIDE;
 
   //! Sets default GUID for the attribute.

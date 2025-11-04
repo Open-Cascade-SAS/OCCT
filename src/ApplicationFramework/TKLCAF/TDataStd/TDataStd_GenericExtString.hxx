@@ -34,7 +34,7 @@ public:
   //! Sets <S> as name. Raises if <S> is not a valid name.
   Standard_EXPORT virtual void Set(const TCollection_ExtendedString& S);
 
-  //! Sets the explicit user defined GUID  to the attribute.
+  //! Sets the explicit user defined GUID to the attribute.
   Standard_EXPORT void SetID(const Standard_GUID& guid) Standard_OVERRIDE;
 
   //! Returns the name contained in this name attribute.

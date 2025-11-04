@@ -30,7 +30,7 @@ public:
   //! =============
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  //! Find, or    create,   an Placement  attribute.     the
+  //! Find, or create, a Placement attribute.
   //! Placement attribute is returned.
   //! Placement methods
   //! =================

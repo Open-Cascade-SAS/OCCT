@@ -44,7 +44,7 @@ class TDataXtd_PatternStd : public TDataXtd_Pattern
 public:
   Standard_EXPORT static const Standard_GUID& GetPatternID();
 
-  //! Find, or  create,  a PatternStd  attribute
+  //! Find, or create, a PatternStd attribute
   Standard_EXPORT static Handle(TDataXtd_PatternStd) Set(const TDF_Label& label);
 
   Standard_EXPORT TDataXtd_PatternStd();

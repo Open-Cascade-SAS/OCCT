@@ -37,8 +37,8 @@ class CDM_Application : public Standard_Transient
 {
 
 public:
-  //! The manager returned by  this virtual  method will be
-  //! used to search for Format.Retrieval  resource items.
+  //! The manager returned by this virtual method will be
+  //! used to search for Format.Retrieval resource items.
   Standard_EXPORT virtual Handle(Resource_Manager) Resources() = 0;
 
   //! Returns default messenger;
