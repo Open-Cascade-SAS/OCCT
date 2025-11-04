@@ -24,6 +24,45 @@
   #error C++11 compatible compiler is required (Visual Studio 2010 or newer)
 #endif
 
+//! @def Standard_DEPRECATED_WARNING(theMessage)
+//! Core helper emitting a compile-time warning about deprecated usage. Honors OCCT_NO_DEPRECATED
+//! and provides a single backend used by other deprecation macros.
+#ifdef OCCT_NO_DEPRECATED
+  #define Standard_DEPRECATED_WARNING(theMsg)
+#elif defined(__GNUC__) || defined(__clang__)
+  // Helper macro to properly stringify the pragma argument
+  #define Standard_DEPRECATED_WARNING_PRAGMA(x) _Pragma(#x)
+  #define Standard_DEPRECATED_WARNING(theMsg) Standard_DEPRECATED_WARNING_PRAGMA(GCC warning theMsg)
+#elif defined(_MSC_VER)
+  #define Standard_DEPRECATED_WARNING(theMsg)                                                      \
+    __pragma(message(__FILE__ "(" _CRT_STRINGIZE(__LINE__) "): warning: " theMsg))
+#else
+  #define Standard_DEPRECATED_WARNING(theMsg)
+#endif
+
+//! @def Standard_MACRO_DEPRECATED(theMessage)
+//! Macro for marking preprocessor macros as deprecated.
+//! When a deprecated macro is used, a compile-time warning will be issued.
+//! Unlike Standard_DEPRECATED which marks functions/classes, this is for deprecating macros
+//! themselves.
+//!
+//! Usage example:
+//! @code
+//! #define OLD_MACRO(x) \
+//!   Standard_MACRO_DEPRECATED("Use NEW_MACRO instead") \
+//!   ((x) * 2)
+//! @endcode
+#if 0 // Disabled untill global renames for 8.0.0 are completed.
+  #define Standard_MACRO_DEPRECATED(theMsg) Standard_DEPRECATED_WARNING(theMsg)
+#else
+  #define Standard_MACRO_DEPRECATED(theMsg)
+#endif
+
+//! @def Standard_HEADER_DEPRECATED(theMessage)
+//! Macro for marking header inclusions as deprecated; place near the top of a deprecated header
+//! to emit a compile-time warning when it is included.
+#define Standard_HEADER_DEPRECATED(theMsg) Standard_DEPRECATED_WARNING(theMsg)
+
 //! @def Standard_OVERRIDE
 //! Should be used in declarations of virtual methods overridden in the
 //! derived classes, to cause compilation error in the case if that virtual
@@ -109,31 +148,6 @@
   #else
     #define Standard_DEPRECATED(theMsg)
   #endif
-#endif
-
-//! @def Standard_MACRO_DEPRECATED(theMessage)
-//! Macro for marking preprocessor macros as deprecated.
-//! When a deprecated macro is used, a compile-time warning will be issued.
-//! Unlike Standard_DEPRECATED which marks functions/classes, this is for deprecating macros
-//! themselves. If macro OCCT_NO_DEPRECATED is defined, Standard_MACRO_DEPRECATED is defined empty.
-//!
-//! Usage example:
-//! @code
-//! #define OLD_MACRO(x) \
-//!   Standard_MACRO_DEPRECATED("Use NEW_MACRO instead") \
-//!   ((x) * 2)
-//! @endcode
-#ifdef OCCT_NO_DEPRECATED
-  #define Standard_MACRO_DEPRECATED(theMsg)
-#elif defined(__GNUC__) || defined(__clang__)
-  // Helper macro to properly stringify the pragma argument
-  #define Standard_MACRO_DEPRECATED_IMPL(x) _Pragma(#x)
-  #define Standard_MACRO_DEPRECATED(theMsg) Standard_MACRO_DEPRECATED_IMPL(GCC warning theMsg)
-#elif defined(_MSC_VER)
-  #define Standard_MACRO_DEPRECATED(theMsg)                                                        \
-    __pragma(message(__FILE__ "(" _CRT_STRINGIZE(__LINE__) "): warning: " theMsg))
-#else
-  #define Standard_MACRO_DEPRECATED(theMsg)
 #endif
 
 //! @def Standard_DISABLE_DEPRECATION_WARNINGS
