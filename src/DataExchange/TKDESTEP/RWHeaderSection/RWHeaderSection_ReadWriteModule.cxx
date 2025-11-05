@@ -29,13 +29,15 @@
 #include <StepData_WriterLib.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <string_view>
+
 IMPLEMENT_STANDARD_RTTIEXT(RWHeaderSection_ReadWriteModule, StepData_ReadWriteModule)
 
 // -- General Declarations (Recognize, StepType) ---
-// neutralise StartEntity de SW
-static TCollection_AsciiString Reco_FileName("FILE_NAME");
-static TCollection_AsciiString Reco_FileDescription("FILE_DESCRIPTION");
-static TCollection_AsciiString Reco_FileSchema("FILE_SCHEMA");
+static constexpr std::string_view PasReco(""); // neutralise StartEntity de SW
+static constexpr std::string_view Reco_FileName("FILE_NAME");
+static constexpr std::string_view Reco_FileDescription("FILE_DESCRIPTION");
+static constexpr std::string_view Reco_FileSchema("FILE_SCHEMA");
 
 // -- Definition of the libraries --
 
@@ -86,8 +88,7 @@ Standard_Boolean RWHeaderSection_ReadWriteModule::IsComplex(const Standard_Integ
   return Standard_False;
 }
 
-const TCollection_AsciiString& RWHeaderSection_ReadWriteModule::StepType(
-  const Standard_Integer CN) const
+const std::string_view& RWHeaderSection_ReadWriteModule::StepType(const Standard_Integer CN) const
 {
   switch (CN)
   {
@@ -98,7 +99,7 @@ const TCollection_AsciiString& RWHeaderSection_ReadWriteModule::StepType(
     case 3:
       return Reco_FileSchema;
     default:
-      return TCollection_AsciiString::EmptyString();
+      return PasReco;
   }
 }
 
