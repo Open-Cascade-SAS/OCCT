@@ -1615,2189 +1615,2693 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule
 #include <StepRepr_RepresentationContextReference.hxx>
 #include <StepRepr_RepresentationReference.hxx>
 
-// -- General Declarations (Recognize, StepType) ---
+#include <NCollection_IncAllocator.hxx>
 
-static TCollection_AsciiString PasReco("?");
-static TCollection_AsciiString Reco_Address("ADDRESS");
-static TCollection_AsciiString Reco_AdvancedBrepShapeRepresentation(
+#include <string_view>
+#include <mutex>
+
+// -- General Declarations (Recognize, StepType) ---
+namespace
+{
+
+static constexpr std::string_view PasReco("?");
+static constexpr std::string_view Reco_Address("ADDRESS");
+static constexpr std::string_view Reco_AdvancedBrepShapeRepresentation(
   "ADVANCED_BREP_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_AdvancedFace("ADVANCED_FACE");
-static TCollection_AsciiString Reco_AnnotationCurveOccurrence("ANNOTATION_CURVE_OCCURRENCE");
-static TCollection_AsciiString Reco_AnnotationFillArea("ANNOTATION_FILL_AREA");
-static TCollection_AsciiString Reco_AnnotationFillAreaOccurrence("ANNOTATION_FILL_AREA_OCCURRENCE");
-static TCollection_AsciiString Reco_AnnotationOccurrence("ANNOTATION_OCCURRENCE");
-static TCollection_AsciiString Reco_AnnotationSubfigureOccurrence(
+static constexpr std::string_view Reco_AdvancedFace("ADVANCED_FACE");
+static constexpr std::string_view Reco_AnnotationCurveOccurrence("ANNOTATION_CURVE_OCCURRENCE");
+static constexpr std::string_view Reco_AnnotationFillArea("ANNOTATION_FILL_AREA");
+static constexpr std::string_view Reco_AnnotationFillAreaOccurrence(
+  "ANNOTATION_FILL_AREA_OCCURRENCE");
+static constexpr std::string_view Reco_AnnotationOccurrence("ANNOTATION_OCCURRENCE");
+static constexpr std::string_view Reco_AnnotationSubfigureOccurrence(
   "ANNOTATION_SUBFIGURE_OCCURRENCE");
-static TCollection_AsciiString Reco_AnnotationSymbol("ANNOTATION_SYMBOL");
-static TCollection_AsciiString Reco_AnnotationSymbolOccurrence("ANNOTATION_SYMBOL_OCCURRENCE");
-static TCollection_AsciiString Reco_AnnotationText("ANNOTATION_TEXT");
-static TCollection_AsciiString Reco_AnnotationTextOccurrence("ANNOTATION_TEXT_OCCURRENCE");
-static TCollection_AsciiString Reco_ApplicationContext("APPLICATION_CONTEXT");
-static TCollection_AsciiString Reco_ApplicationContextElement("APPLICATION_CONTEXT_ELEMENT");
-static TCollection_AsciiString Reco_ApplicationProtocolDefinition(
+static constexpr std::string_view Reco_AnnotationSymbol("ANNOTATION_SYMBOL");
+static constexpr std::string_view Reco_AnnotationSymbolOccurrence("ANNOTATION_SYMBOL_OCCURRENCE");
+static constexpr std::string_view Reco_AnnotationText("ANNOTATION_TEXT");
+static constexpr std::string_view Reco_AnnotationTextOccurrence("ANNOTATION_TEXT_OCCURRENCE");
+static constexpr std::string_view Reco_ApplicationContext("APPLICATION_CONTEXT");
+static constexpr std::string_view Reco_ApplicationContextElement("APPLICATION_CONTEXT_ELEMENT");
+static constexpr std::string_view Reco_ApplicationProtocolDefinition(
   "APPLICATION_PROTOCOL_DEFINITION");
-static TCollection_AsciiString Reco_Approval("APPROVAL");
-static TCollection_AsciiString Reco_ApprovalAssignment("APPROVAL_ASSIGNMENT");
-static TCollection_AsciiString Reco_ApprovalPersonOrganization("APPROVAL_PERSON_ORGANIZATION");
-static TCollection_AsciiString Reco_ApprovalRelationship("APPROVAL_RELATIONSHIP");
-static TCollection_AsciiString Reco_ApprovalRole("APPROVAL_ROLE");
-static TCollection_AsciiString Reco_ApprovalStatus("APPROVAL_STATUS");
-static TCollection_AsciiString Reco_AreaInSet("AREA_IN_SET");
-static TCollection_AsciiString Reco_AutoDesignActualDateAndTimeAssignment(
+static constexpr std::string_view Reco_Approval("APPROVAL");
+static constexpr std::string_view Reco_ApprovalAssignment("APPROVAL_ASSIGNMENT");
+static constexpr std::string_view Reco_ApprovalPersonOrganization("APPROVAL_PERSON_ORGANIZATION");
+static constexpr std::string_view Reco_ApprovalRelationship("APPROVAL_RELATIONSHIP");
+static constexpr std::string_view Reco_ApprovalRole("APPROVAL_ROLE");
+static constexpr std::string_view Reco_ApprovalStatus("APPROVAL_STATUS");
+static constexpr std::string_view Reco_AreaInSet("AREA_IN_SET");
+static constexpr std::string_view Reco_AutoDesignActualDateAndTimeAssignment(
   "AUTO_DESIGN_ACTUAL_DATE_AND_TIME_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignActualDateAssignment(
+static constexpr std::string_view Reco_AutoDesignActualDateAssignment(
   "AUTO_DESIGN_ACTUAL_DATE_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignApprovalAssignment("AUTO_DESIGN_APPROVAL_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignDateAndPersonAssignment(
+static constexpr std::string_view Reco_AutoDesignApprovalAssignment(
+  "AUTO_DESIGN_APPROVAL_ASSIGNMENT");
+static constexpr std::string_view Reco_AutoDesignDateAndPersonAssignment(
   "AUTO_DESIGN_DATE_AND_PERSON_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignGroupAssignment("AUTO_DESIGN_GROUP_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignNominalDateAndTimeAssignment(
+static constexpr std::string_view Reco_AutoDesignGroupAssignment("AUTO_DESIGN_GROUP_ASSIGNMENT");
+static constexpr std::string_view Reco_AutoDesignNominalDateAndTimeAssignment(
   "AUTO_DESIGN_NOMINAL_DATE_AND_TIME_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignNominalDateAssignment(
+static constexpr std::string_view Reco_AutoDesignNominalDateAssignment(
   "AUTO_DESIGN_NOMINAL_DATE_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignOrganizationAssignment(
+static constexpr std::string_view Reco_AutoDesignOrganizationAssignment(
   "AUTO_DESIGN_ORGANIZATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignPersonAndOrganizationAssignment(
+static constexpr std::string_view Reco_AutoDesignPersonAndOrganizationAssignment(
   "AUTO_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignPresentedItem("AUTO_DESIGN_PRESENTED_ITEM");
-static TCollection_AsciiString Reco_AutoDesignSecurityClassificationAssignment(
+static constexpr std::string_view Reco_AutoDesignPresentedItem("AUTO_DESIGN_PRESENTED_ITEM");
+static constexpr std::string_view Reco_AutoDesignSecurityClassificationAssignment(
   "AUTO_DESIGN_SECURITY_CLASSIFICATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_AutoDesignViewArea("AUTO_DESIGN_VIEW_AREA");
-static TCollection_AsciiString Reco_Axis1Placement("AXIS1_PLACEMENT");
-static TCollection_AsciiString Reco_Axis2Placement2d("AXIS2_PLACEMENT_2D");
-static TCollection_AsciiString Reco_Axis2Placement3d("AXIS2_PLACEMENT_3D");
-static TCollection_AsciiString Reco_BSplineCurve("B_SPLINE_CURVE");
-static TCollection_AsciiString Reco_BSplineCurveWithKnots("B_SPLINE_CURVE_WITH_KNOTS");
-static TCollection_AsciiString Reco_BSplineSurface("B_SPLINE_SURFACE");
-static TCollection_AsciiString Reco_BSplineSurfaceWithKnots("B_SPLINE_SURFACE_WITH_KNOTS");
-static TCollection_AsciiString Reco_BackgroundColour("BACKGROUND_COLOUR");
-static TCollection_AsciiString Reco_BezierCurve("BEZIER_CURVE");
-static TCollection_AsciiString Reco_BezierSurface("BEZIER_SURFACE");
-static TCollection_AsciiString Reco_Block("BLOCK");
-static TCollection_AsciiString Reco_BooleanResult("BOOLEAN_RESULT");
-static TCollection_AsciiString Reco_BoundaryCurve("BOUNDARY_CURVE");
-static TCollection_AsciiString Reco_BoundedCurve("BOUNDED_CURVE");
-static TCollection_AsciiString Reco_BoundedSurface("BOUNDED_SURFACE");
-static TCollection_AsciiString Reco_BoxDomain("BOX_DOMAIN");
-static TCollection_AsciiString Reco_BoxedHalfSpace("BOXED_HALF_SPACE");
-static TCollection_AsciiString Reco_BrepWithVoids("BREP_WITH_VOIDS");
-static TCollection_AsciiString Reco_CalendarDate("CALENDAR_DATE");
-static TCollection_AsciiString Reco_CameraImage("CAMERA_IMAGE");
-static TCollection_AsciiString Reco_CameraModel("CAMERA_MODEL");
-static TCollection_AsciiString Reco_CameraModelD2("CAMERA_MODEL_D2");
-static TCollection_AsciiString Reco_CameraModelD3("CAMERA_MODEL_D3");
-static TCollection_AsciiString Reco_CameraUsage("CAMERA_USAGE");
-static TCollection_AsciiString Reco_CartesianPoint("CARTESIAN_POINT");
-static TCollection_AsciiString Reco_CartesianTransformationOperator(
+static constexpr std::string_view Reco_AutoDesignViewArea("AUTO_DESIGN_VIEW_AREA");
+static constexpr std::string_view Reco_Axis1Placement("AXIS1_PLACEMENT");
+static constexpr std::string_view Reco_Axis2Placement2d("AXIS2_PLACEMENT_2D");
+static constexpr std::string_view Reco_Axis2Placement3d("AXIS2_PLACEMENT_3D");
+static constexpr std::string_view Reco_BSplineCurve("B_SPLINE_CURVE");
+static constexpr std::string_view Reco_BSplineCurveWithKnots("B_SPLINE_CURVE_WITH_KNOTS");
+static constexpr std::string_view Reco_BSplineSurface("B_SPLINE_SURFACE");
+static constexpr std::string_view Reco_BSplineSurfaceWithKnots("B_SPLINE_SURFACE_WITH_KNOTS");
+static constexpr std::string_view Reco_BackgroundColour("BACKGROUND_COLOUR");
+static constexpr std::string_view Reco_BezierCurve("BEZIER_CURVE");
+static constexpr std::string_view Reco_BezierSurface("BEZIER_SURFACE");
+static constexpr std::string_view Reco_Block("BLOCK");
+static constexpr std::string_view Reco_BooleanResult("BOOLEAN_RESULT");
+static constexpr std::string_view Reco_BoundaryCurve("BOUNDARY_CURVE");
+static constexpr std::string_view Reco_BoundedCurve("BOUNDED_CURVE");
+static constexpr std::string_view Reco_BoundedSurface("BOUNDED_SURFACE");
+static constexpr std::string_view Reco_BoxDomain("BOX_DOMAIN");
+static constexpr std::string_view Reco_BoxedHalfSpace("BOXED_HALF_SPACE");
+static constexpr std::string_view Reco_BrepWithVoids("BREP_WITH_VOIDS");
+static constexpr std::string_view Reco_CalendarDate("CALENDAR_DATE");
+static constexpr std::string_view Reco_CameraImage("CAMERA_IMAGE");
+static constexpr std::string_view Reco_CameraModel("CAMERA_MODEL");
+static constexpr std::string_view Reco_CameraModelD2("CAMERA_MODEL_D2");
+static constexpr std::string_view Reco_CameraModelD3("CAMERA_MODEL_D3");
+static constexpr std::string_view Reco_CameraUsage("CAMERA_USAGE");
+static constexpr std::string_view Reco_CartesianPoint("CARTESIAN_POINT");
+static constexpr std::string_view Reco_CartesianTransformationOperator(
   "CARTESIAN_TRANSFORMATION_OPERATOR");
-static TCollection_AsciiString Reco_CartesianTransformationOperator3d(
+static constexpr std::string_view Reco_CartesianTransformationOperator3d(
   "CARTESIAN_TRANSFORMATION_OPERATOR_3D");
-static TCollection_AsciiString Reco_Circle("CIRCLE");
-static TCollection_AsciiString Reco_ClosedShell("CLOSED_SHELL");
-static TCollection_AsciiString Reco_Colour("COLOUR");
-static TCollection_AsciiString Reco_ColourRgb("COLOUR_RGB");
-static TCollection_AsciiString Reco_ColourSpecification("COLOUR_SPECIFICATION");
-static TCollection_AsciiString Reco_CompositeCurve("COMPOSITE_CURVE");
-static TCollection_AsciiString Reco_CompositeCurveOnSurface("COMPOSITE_CURVE_ON_SURFACE");
-static TCollection_AsciiString Reco_CompositeCurveSegment("COMPOSITE_CURVE_SEGMENT");
-static TCollection_AsciiString Reco_CompositeText("COMPOSITE_TEXT");
-static TCollection_AsciiString Reco_CompositeTextWithAssociatedCurves(
+static constexpr std::string_view Reco_Circle("CIRCLE");
+static constexpr std::string_view Reco_ClosedShell("CLOSED_SHELL");
+static constexpr std::string_view Reco_Colour("COLOUR");
+static constexpr std::string_view Reco_ColourRgb("COLOUR_RGB");
+static constexpr std::string_view Reco_ColourSpecification("COLOUR_SPECIFICATION");
+static constexpr std::string_view Reco_CompositeCurve("COMPOSITE_CURVE");
+static constexpr std::string_view Reco_CompositeCurveOnSurface("COMPOSITE_CURVE_ON_SURFACE");
+static constexpr std::string_view Reco_CompositeCurveSegment("COMPOSITE_CURVE_SEGMENT");
+static constexpr std::string_view Reco_CompositeText("COMPOSITE_TEXT");
+static constexpr std::string_view Reco_CompositeTextWithAssociatedCurves(
   "COMPOSITE_TEXT_WITH_ASSOCIATED_CURVES");
-static TCollection_AsciiString Reco_CompositeTextWithBlankingBox(
+static constexpr std::string_view Reco_CompositeTextWithBlankingBox(
   "COMPOSITE_TEXT_WITH_BLANKING_BOX");
-static TCollection_AsciiString Reco_CompositeTextWithExtent("COMPOSITE_TEXT_WITH_EXTENT");
-static TCollection_AsciiString Reco_Conic("CONIC");
-static TCollection_AsciiString Reco_ConicalSurface("CONICAL_SURFACE");
-static TCollection_AsciiString Reco_ConnectedFaceSet("CONNECTED_FACE_SET");
-static TCollection_AsciiString Reco_ContextDependentInvisibility("CONTEXT_DEPENDENT_INVISIBILITY");
-static TCollection_AsciiString Reco_ContextDependentOverRidingStyledItem(
+static constexpr std::string_view Reco_CompositeTextWithExtent("COMPOSITE_TEXT_WITH_EXTENT");
+static constexpr std::string_view Reco_Conic("CONIC");
+static constexpr std::string_view Reco_ConicalSurface("CONICAL_SURFACE");
+static constexpr std::string_view Reco_ConnectedFaceSet("CONNECTED_FACE_SET");
+static constexpr std::string_view Reco_ContextDependentInvisibility(
+  "CONTEXT_DEPENDENT_INVISIBILITY");
+static constexpr std::string_view Reco_ContextDependentOverRidingStyledItem(
   "CONTEXT_DEPENDENT_OVER_RIDING_STYLED_ITEM");
-static TCollection_AsciiString Reco_ConversionBasedUnit("CONVERSION_BASED_UNIT");
-static TCollection_AsciiString Reco_CoordinatedUniversalTimeOffset(
+static constexpr std::string_view Reco_ConversionBasedUnit("CONVERSION_BASED_UNIT");
+static constexpr std::string_view Reco_CoordinatedUniversalTimeOffset(
   "COORDINATED_UNIVERSAL_TIME_OFFSET");
-static TCollection_AsciiString Reco_CsgRepresentation("CSG_REPRESENTATION");
-static TCollection_AsciiString Reco_CsgShapeRepresentation("CSG_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_CsgSolid("CSG_SOLID");
-static TCollection_AsciiString Reco_Curve("CURVE");
-static TCollection_AsciiString Reco_CurveBoundedSurface("CURVE_BOUNDED_SURFACE");
-static TCollection_AsciiString Reco_CurveReplica("CURVE_REPLICA");
-static TCollection_AsciiString Reco_CurveStyle("CURVE_STYLE");
-static TCollection_AsciiString Reco_CurveStyleFont("CURVE_STYLE_FONT");
-static TCollection_AsciiString Reco_CurveStyleFontPattern("CURVE_STYLE_FONT_PATTERN");
-static TCollection_AsciiString Reco_CylindricalSurface("CYLINDRICAL_SURFACE");
-static TCollection_AsciiString Reco_Date("DATE");
-static TCollection_AsciiString Reco_DateAndTime("DATE_AND_TIME");
-static TCollection_AsciiString Reco_DateAndTimeAssignment("DATE_AND_TIME_ASSIGNMENT");
-static TCollection_AsciiString Reco_DateAssignment("DATE_ASSIGNMENT");
-static TCollection_AsciiString Reco_DateRole("DATE_ROLE");
-static TCollection_AsciiString Reco_DateTimeRole("DATE_TIME_ROLE");
-static TCollection_AsciiString Reco_DefinedSymbol("DEFINED_SYMBOL");
-static TCollection_AsciiString Reco_DefinitionalRepresentation("DEFINITIONAL_REPRESENTATION");
-static TCollection_AsciiString Reco_DegeneratePcurve("DEGENERATE_PCURVE");
-static TCollection_AsciiString Reco_DegenerateToroidalSurface("DEGENERATE_TOROIDAL_SURFACE");
-static TCollection_AsciiString Reco_DescriptiveRepresentationItem(
+static constexpr std::string_view Reco_CsgRepresentation("CSG_REPRESENTATION");
+static constexpr std::string_view Reco_CsgShapeRepresentation("CSG_SHAPE_REPRESENTATION");
+static constexpr std::string_view Reco_CsgSolid("CSG_SOLID");
+static constexpr std::string_view Reco_Curve("CURVE");
+static constexpr std::string_view Reco_CurveBoundedSurface("CURVE_BOUNDED_SURFACE");
+static constexpr std::string_view Reco_CurveReplica("CURVE_REPLICA");
+static constexpr std::string_view Reco_CurveStyle("CURVE_STYLE");
+static constexpr std::string_view Reco_CurveStyleFont("CURVE_STYLE_FONT");
+static constexpr std::string_view Reco_CurveStyleFontPattern("CURVE_STYLE_FONT_PATTERN");
+static constexpr std::string_view Reco_CylindricalSurface("CYLINDRICAL_SURFACE");
+static constexpr std::string_view Reco_Date("DATE");
+static constexpr std::string_view Reco_DateAndTime("DATE_AND_TIME");
+static constexpr std::string_view Reco_DateAndTimeAssignment("DATE_AND_TIME_ASSIGNMENT");
+static constexpr std::string_view Reco_DateAssignment("DATE_ASSIGNMENT");
+static constexpr std::string_view Reco_DateRole("DATE_ROLE");
+static constexpr std::string_view Reco_DateTimeRole("DATE_TIME_ROLE");
+static constexpr std::string_view Reco_DefinedSymbol("DEFINED_SYMBOL");
+static constexpr std::string_view Reco_DefinitionalRepresentation("DEFINITIONAL_REPRESENTATION");
+static constexpr std::string_view Reco_DegeneratePcurve("DEGENERATE_PCURVE");
+static constexpr std::string_view Reco_DegenerateToroidalSurface("DEGENERATE_TOROIDAL_SURFACE");
+static constexpr std::string_view Reco_DescriptiveRepresentationItem(
   "DESCRIPTIVE_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_DimensionCurve("DIMENSION_CURVE");
-static TCollection_AsciiString Reco_DimensionCurveTerminator("DIMENSION_CURVE_TERMINATOR");
-static TCollection_AsciiString Reco_DimensionalExponents("DIMENSIONAL_EXPONENTS");
-static TCollection_AsciiString Reco_Direction("DIRECTION");
-static TCollection_AsciiString Reco_DraughtingAnnotationOccurrence(
+static constexpr std::string_view Reco_DimensionCurve("DIMENSION_CURVE");
+static constexpr std::string_view Reco_DimensionCurveTerminator("DIMENSION_CURVE_TERMINATOR");
+static constexpr std::string_view Reco_DimensionalExponents("DIMENSIONAL_EXPONENTS");
+static constexpr std::string_view Reco_Direction("DIRECTION");
+static constexpr std::string_view Reco_DraughtingAnnotationOccurrence(
   "DRAUGHTING_ANNOTATION_OCCURRENCE");
-static TCollection_AsciiString Reco_DraughtingCallout("DRAUGHTING_CALLOUT");
-static TCollection_AsciiString Reco_DraughtingPreDefinedColour("DRAUGHTING_PRE_DEFINED_COLOUR");
-static TCollection_AsciiString Reco_DraughtingPreDefinedCurveFont(
+static constexpr std::string_view Reco_DraughtingCallout("DRAUGHTING_CALLOUT");
+static constexpr std::string_view Reco_DraughtingPreDefinedColour("DRAUGHTING_PRE_DEFINED_COLOUR");
+static constexpr std::string_view Reco_DraughtingPreDefinedCurveFont(
   "DRAUGHTING_PRE_DEFINED_CURVE_FONT");
-static TCollection_AsciiString Reco_DraughtingSubfigureRepresentation(
+static constexpr std::string_view Reco_DraughtingSubfigureRepresentation(
   "DRAUGHTING_SUBFIGURE_REPRESENTATION");
-static TCollection_AsciiString Reco_DraughtingSymbolRepresentation(
+static constexpr std::string_view Reco_DraughtingSymbolRepresentation(
   "DRAUGHTING_SYMBOL_REPRESENTATION");
-static TCollection_AsciiString Reco_DraughtingTextLiteralWithDelineation(
+static constexpr std::string_view Reco_DraughtingTextLiteralWithDelineation(
   "DRAUGHTING_TEXT_LITERAL_WITH_DELINEATION");
-static TCollection_AsciiString Reco_DrawingDefinition("DRAWING_DEFINITION");
-static TCollection_AsciiString Reco_DrawingRevision("DRAWING_REVISION");
-static TCollection_AsciiString Reco_Edge("EDGE");
-static TCollection_AsciiString Reco_EdgeCurve("EDGE_CURVE");
-static TCollection_AsciiString Reco_EdgeLoop("EDGE_LOOP");
-static TCollection_AsciiString Reco_ElementarySurface("ELEMENTARY_SURFACE");
-static TCollection_AsciiString Reco_Ellipse("ELLIPSE");
-static TCollection_AsciiString Reco_EvaluatedDegeneratePcurve("EVALUATED_DEGENERATE_PCURVE");
-static TCollection_AsciiString Reco_ExternalSource("EXTERNAL_SOURCE");
-static TCollection_AsciiString Reco_ExternallyDefinedCurveFont("EXTERNALLY_DEFINED_CURVE_FONT");
-static TCollection_AsciiString Reco_ExternallyDefinedHatchStyle("EXTERNALLY_DEFINED_HATCH_STYLE");
-static TCollection_AsciiString Reco_ExternallyDefinedItem("EXTERNALLY_DEFINED_ITEM");
-static TCollection_AsciiString Reco_ExternallyDefinedSymbol("EXTERNALLY_DEFINED_SYMBOL");
-static TCollection_AsciiString Reco_ExternallyDefinedTextFont("EXTERNALLY_DEFINED_TEXT_FONT");
-static TCollection_AsciiString Reco_ExternallyDefinedTileStyle("EXTERNALLY_DEFINED_TILE_STYLE");
-static TCollection_AsciiString Reco_ExtrudedAreaSolid("EXTRUDED_AREA_SOLID");
-static TCollection_AsciiString Reco_Face("FACE");
-static TCollection_AsciiString Reco_FaceBound("FACE_BOUND");
-static TCollection_AsciiString Reco_FaceOuterBound("FACE_OUTER_BOUND");
-static TCollection_AsciiString Reco_FaceSurface("FACE_SURFACE");
-static TCollection_AsciiString Reco_FacetedBrep("FACETED_BREP");
-static TCollection_AsciiString Reco_FacetedBrepShapeRepresentation(
+static constexpr std::string_view Reco_DrawingDefinition("DRAWING_DEFINITION");
+static constexpr std::string_view Reco_DrawingRevision("DRAWING_REVISION");
+static constexpr std::string_view Reco_Edge("EDGE");
+static constexpr std::string_view Reco_EdgeCurve("EDGE_CURVE");
+static constexpr std::string_view Reco_EdgeLoop("EDGE_LOOP");
+static constexpr std::string_view Reco_ElementarySurface("ELEMENTARY_SURFACE");
+static constexpr std::string_view Reco_Ellipse("ELLIPSE");
+static constexpr std::string_view Reco_EvaluatedDegeneratePcurve("EVALUATED_DEGENERATE_PCURVE");
+static constexpr std::string_view Reco_ExternalSource("EXTERNAL_SOURCE");
+static constexpr std::string_view Reco_ExternallyDefinedCurveFont("EXTERNALLY_DEFINED_CURVE_FONT");
+static constexpr std::string_view Reco_ExternallyDefinedHatchStyle(
+  "EXTERNALLY_DEFINED_HATCH_STYLE");
+static constexpr std::string_view Reco_ExternallyDefinedItem("EXTERNALLY_DEFINED_ITEM");
+static constexpr std::string_view Reco_ExternallyDefinedSymbol("EXTERNALLY_DEFINED_SYMBOL");
+static constexpr std::string_view Reco_ExternallyDefinedTextFont("EXTERNALLY_DEFINED_TEXT_FONT");
+static constexpr std::string_view Reco_ExternallyDefinedTileStyle("EXTERNALLY_DEFINED_TILE_STYLE");
+static constexpr std::string_view Reco_ExtrudedAreaSolid("EXTRUDED_AREA_SOLID");
+static constexpr std::string_view Reco_Face("FACE");
+static constexpr std::string_view Reco_FaceBound("FACE_BOUND");
+static constexpr std::string_view Reco_FaceOuterBound("FACE_OUTER_BOUND");
+static constexpr std::string_view Reco_FaceSurface("FACE_SURFACE");
+static constexpr std::string_view Reco_FacetedBrep("FACETED_BREP");
+static constexpr std::string_view Reco_FacetedBrepShapeRepresentation(
   "FACETED_BREP_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_FillAreaStyle("FILL_AREA_STYLE");
-static TCollection_AsciiString Reco_FillAreaStyleColour("FILL_AREA_STYLE_COLOUR");
-static TCollection_AsciiString Reco_FillAreaStyleHatching("FILL_AREA_STYLE_HATCHING");
-static TCollection_AsciiString Reco_FillAreaStyleTileSymbolWithStyle(
+static constexpr std::string_view Reco_FillAreaStyle("FILL_AREA_STYLE");
+static constexpr std::string_view Reco_FillAreaStyleColour("FILL_AREA_STYLE_COLOUR");
+static constexpr std::string_view Reco_FillAreaStyleHatching("FILL_AREA_STYLE_HATCHING");
+static constexpr std::string_view Reco_FillAreaStyleTileSymbolWithStyle(
   "FILL_AREA_STYLE_TILE_SYMBOL_WITH_STYLE");
-static TCollection_AsciiString Reco_FillAreaStyleTiles("FILL_AREA_STYLE_TILES");
-static TCollection_AsciiString Reco_FunctionallyDefinedTransformation(
+static constexpr std::string_view Reco_FillAreaStyleTiles("FILL_AREA_STYLE_TILES");
+static constexpr std::string_view Reco_FunctionallyDefinedTransformation(
   "FUNCTIONALLY_DEFINED_TRANSFORMATION");
-static TCollection_AsciiString Reco_GeometricCurveSet("GEOMETRIC_CURVE_SET");
-static TCollection_AsciiString Reco_GeometricRepresentationContext(
+static constexpr std::string_view Reco_GeometricCurveSet("GEOMETRIC_CURVE_SET");
+static constexpr std::string_view Reco_GeometricRepresentationContext(
   "GEOMETRIC_REPRESENTATION_CONTEXT");
-static TCollection_AsciiString Reco_GeometricRepresentationItem("GEOMETRIC_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_GeometricSet("GEOMETRIC_SET");
-static TCollection_AsciiString Reco_GeometricallyBoundedSurfaceShapeRepresentation(
+static constexpr std::string_view Reco_GeometricRepresentationItem("GEOMETRIC_REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_GeometricSet("GEOMETRIC_SET");
+static constexpr std::string_view Reco_GeometricallyBoundedSurfaceShapeRepresentation(
   "GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_GeometricallyBoundedWireframeShapeRepresentation(
+static constexpr std::string_view Reco_GeometricallyBoundedWireframeShapeRepresentation(
   "GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_GlobalUncertaintyAssignedContext(
+static constexpr std::string_view Reco_GlobalUncertaintyAssignedContext(
   "GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT");
-static TCollection_AsciiString Reco_GlobalUnitAssignedContext("GLOBAL_UNIT_ASSIGNED_CONTEXT");
-static TCollection_AsciiString Reco_Group("GROUP");
-static TCollection_AsciiString Reco_GroupAssignment("GROUP_ASSIGNMENT");
-static TCollection_AsciiString Reco_GroupRelationship("GROUP_RELATIONSHIP");
-static TCollection_AsciiString Reco_HalfSpaceSolid("HALF_SPACE_SOLID");
-static TCollection_AsciiString Reco_Hyperbola("HYPERBOLA");
-static TCollection_AsciiString Reco_IntersectionCurve("INTERSECTION_CURVE");
-static TCollection_AsciiString Reco_Invisibility("INVISIBILITY");
-static TCollection_AsciiString Reco_LengthMeasureWithUnit("LENGTH_MEASURE_WITH_UNIT");
-static TCollection_AsciiString Reco_LengthUnit("LENGTH_UNIT");
-static TCollection_AsciiString Reco_Line("LINE");
-static TCollection_AsciiString Reco_LocalTime("LOCAL_TIME");
-static TCollection_AsciiString Reco_Loop("LOOP");
-static TCollection_AsciiString Reco_ManifoldSolidBrep("MANIFOLD_SOLID_BREP");
-static TCollection_AsciiString Reco_ManifoldSurfaceShapeRepresentation(
+static constexpr std::string_view Reco_GlobalUnitAssignedContext("GLOBAL_UNIT_ASSIGNED_CONTEXT");
+static constexpr std::string_view Reco_Group("GROUP");
+static constexpr std::string_view Reco_GroupAssignment("GROUP_ASSIGNMENT");
+static constexpr std::string_view Reco_GroupRelationship("GROUP_RELATIONSHIP");
+static constexpr std::string_view Reco_HalfSpaceSolid("HALF_SPACE_SOLID");
+static constexpr std::string_view Reco_Hyperbola("HYPERBOLA");
+static constexpr std::string_view Reco_IntersectionCurve("INTERSECTION_CURVE");
+static constexpr std::string_view Reco_Invisibility("INVISIBILITY");
+static constexpr std::string_view Reco_LengthMeasureWithUnit("LENGTH_MEASURE_WITH_UNIT");
+static constexpr std::string_view Reco_LengthUnit("LENGTH_UNIT");
+static constexpr std::string_view Reco_Line("LINE");
+static constexpr std::string_view Reco_LocalTime("LOCAL_TIME");
+static constexpr std::string_view Reco_Loop("LOOP");
+static constexpr std::string_view Reco_ManifoldSolidBrep("MANIFOLD_SOLID_BREP");
+static constexpr std::string_view Reco_ManifoldSurfaceShapeRepresentation(
   "MANIFOLD_SURFACE_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_MappedItem("MAPPED_ITEM");
-static TCollection_AsciiString Reco_MeasureWithUnit("MEASURE_WITH_UNIT");
-static TCollection_AsciiString Reco_MechanicalDesignGeometricPresentationArea(
+static constexpr std::string_view Reco_MappedItem("MAPPED_ITEM");
+static constexpr std::string_view Reco_MeasureWithUnit("MEASURE_WITH_UNIT");
+static constexpr std::string_view Reco_MechanicalDesignGeometricPresentationArea(
   "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_AREA");
-static TCollection_AsciiString Reco_MechanicalDesignGeometricPresentationRepresentation(
+static constexpr std::string_view Reco_MechanicalDesignGeometricPresentationRepresentation(
   "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION");
-static TCollection_AsciiString Reco_MechanicalDesignPresentationArea(
+static constexpr std::string_view Reco_MechanicalDesignPresentationArea(
   "MECHANICAL_DESIGN_PRESENTATION_AREA");
-static TCollection_AsciiString Reco_NamedUnit("NAMED_UNIT");
-static TCollection_AsciiString Reco_OffsetCurve3d("OFFSET_CURVE_3D");
-static TCollection_AsciiString Reco_OffsetSurface("OFFSET_SURFACE");
-static TCollection_AsciiString Reco_OneDirectionRepeatFactor("ONE_DIRECTION_REPEAT_FACTOR");
-static TCollection_AsciiString Reco_OpenShell("OPEN_SHELL");
-static TCollection_AsciiString Reco_OrdinalDate("ORDINAL_DATE");
-static TCollection_AsciiString Reco_Organization("ORGANIZATION");
-static TCollection_AsciiString Reco_OrganizationAssignment("ORGANIZATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_OrganizationRole("ORGANIZATION_ROLE");
-static TCollection_AsciiString Reco_OrganizationalAddress("ORGANIZATIONAL_ADDRESS");
-static TCollection_AsciiString Reco_OrientedClosedShell("ORIENTED_CLOSED_SHELL");
-static TCollection_AsciiString Reco_OrientedEdge("ORIENTED_EDGE");
-static TCollection_AsciiString Reco_OrientedFace("ORIENTED_FACE");
-static TCollection_AsciiString Reco_OrientedOpenShell("ORIENTED_OPEN_SHELL");
-static TCollection_AsciiString Reco_OrientedPath("ORIENTED_PATH");
-static TCollection_AsciiString Reco_OuterBoundaryCurve("OUTER_BOUNDARY_CURVE");
-static TCollection_AsciiString Reco_OverRidingStyledItem("OVER_RIDING_STYLED_ITEM");
-static TCollection_AsciiString Reco_Parabola("PARABOLA");
-static TCollection_AsciiString Reco_ParametricRepresentationContext(
+static constexpr std::string_view Reco_NamedUnit("NAMED_UNIT");
+static constexpr std::string_view Reco_OffsetCurve3d("OFFSET_CURVE_3D");
+static constexpr std::string_view Reco_OffsetSurface("OFFSET_SURFACE");
+static constexpr std::string_view Reco_OneDirectionRepeatFactor("ONE_DIRECTION_REPEAT_FACTOR");
+static constexpr std::string_view Reco_OpenShell("OPEN_SHELL");
+static constexpr std::string_view Reco_OrdinalDate("ORDINAL_DATE");
+static constexpr std::string_view Reco_Organization("ORGANIZATION");
+static constexpr std::string_view Reco_OrganizationAssignment("ORGANIZATION_ASSIGNMENT");
+static constexpr std::string_view Reco_OrganizationRole("ORGANIZATION_ROLE");
+static constexpr std::string_view Reco_OrganizationalAddress("ORGANIZATIONAL_ADDRESS");
+static constexpr std::string_view Reco_OrientedClosedShell("ORIENTED_CLOSED_SHELL");
+static constexpr std::string_view Reco_OrientedEdge("ORIENTED_EDGE");
+static constexpr std::string_view Reco_OrientedFace("ORIENTED_FACE");
+static constexpr std::string_view Reco_OrientedOpenShell("ORIENTED_OPEN_SHELL");
+static constexpr std::string_view Reco_OrientedPath("ORIENTED_PATH");
+static constexpr std::string_view Reco_OuterBoundaryCurve("OUTER_BOUNDARY_CURVE");
+static constexpr std::string_view Reco_OverRidingStyledItem("OVER_RIDING_STYLED_ITEM");
+static constexpr std::string_view Reco_Parabola("PARABOLA");
+static constexpr std::string_view Reco_ParametricRepresentationContext(
   "PARAMETRIC_REPRESENTATION_CONTEXT");
-static TCollection_AsciiString Reco_Path("PATH");
-static TCollection_AsciiString Reco_Pcurve("PCURVE");
-static TCollection_AsciiString Reco_Person("PERSON");
-static TCollection_AsciiString Reco_PersonAndOrganization("PERSON_AND_ORGANIZATION");
-static TCollection_AsciiString Reco_PersonAndOrganizationAssignment(
+static constexpr std::string_view Reco_Path("PATH");
+static constexpr std::string_view Reco_Pcurve("PCURVE");
+static constexpr std::string_view Reco_Person("PERSON");
+static constexpr std::string_view Reco_PersonAndOrganization("PERSON_AND_ORGANIZATION");
+static constexpr std::string_view Reco_PersonAndOrganizationAssignment(
   "PERSON_AND_ORGANIZATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_PersonAndOrganizationRole("PERSON_AND_ORGANIZATION_ROLE");
-static TCollection_AsciiString Reco_PersonalAddress("PERSONAL_ADDRESS");
-static TCollection_AsciiString Reco_Placement("PLACEMENT");
-static TCollection_AsciiString Reco_PlanarBox("PLANAR_BOX");
-static TCollection_AsciiString Reco_PlanarExtent("PLANAR_EXTENT");
-static TCollection_AsciiString Reco_Plane("PLANE");
-static TCollection_AsciiString Reco_PlaneAngleMeasureWithUnit("PLANE_ANGLE_MEASURE_WITH_UNIT");
-static TCollection_AsciiString Reco_PlaneAngleUnit("PLANE_ANGLE_UNIT");
-static TCollection_AsciiString Reco_Point("POINT");
-static TCollection_AsciiString Reco_PointOnCurve("POINT_ON_CURVE");
-static TCollection_AsciiString Reco_PointOnSurface("POINT_ON_SURFACE");
-static TCollection_AsciiString Reco_PointReplica("POINT_REPLICA");
-static TCollection_AsciiString Reco_PointStyle("POINT_STYLE");
-static TCollection_AsciiString Reco_PolyLoop("POLY_LOOP");
-static TCollection_AsciiString Reco_Polyline("POLYLINE");
-static TCollection_AsciiString Reco_PreDefinedColour("PRE_DEFINED_COLOUR");
-static TCollection_AsciiString Reco_PreDefinedCurveFont("PRE_DEFINED_CURVE_FONT");
-static TCollection_AsciiString Reco_PreDefinedItem("PRE_DEFINED_ITEM");
-static TCollection_AsciiString Reco_PreDefinedSymbol("PRE_DEFINED_SYMBOL");
-static TCollection_AsciiString Reco_PreDefinedTextFont("PRE_DEFINED_TEXT_FONT");
-static TCollection_AsciiString Reco_PresentationArea("PRESENTATION_AREA");
-static TCollection_AsciiString Reco_PresentationLayerAssignment("PRESENTATION_LAYER_ASSIGNMENT");
-static TCollection_AsciiString Reco_PresentationRepresentation("PRESENTATION_REPRESENTATION");
-static TCollection_AsciiString Reco_PresentationSet("PRESENTATION_SET");
-static TCollection_AsciiString Reco_PresentationSize("PRESENTATION_SIZE");
-static TCollection_AsciiString Reco_PresentationStyleAssignment("PRESENTATION_STYLE_ASSIGNMENT");
-static TCollection_AsciiString Reco_PresentationStyleByContext("PRESENTATION_STYLE_BY_CONTEXT");
-static TCollection_AsciiString Reco_PresentationView("PRESENTATION_VIEW");
-static TCollection_AsciiString Reco_PresentedItem("PRESENTED_ITEM");
-static TCollection_AsciiString Reco_Product("PRODUCT");
-static TCollection_AsciiString Reco_ProductCategory("PRODUCT_CATEGORY");
-static TCollection_AsciiString Reco_ProductContext("PRODUCT_CONTEXT");
-static TCollection_AsciiString Reco_ProductDataRepresentationView(
+static constexpr std::string_view Reco_PersonAndOrganizationRole("PERSON_AND_ORGANIZATION_ROLE");
+static constexpr std::string_view Reco_PersonalAddress("PERSONAL_ADDRESS");
+static constexpr std::string_view Reco_Placement("PLACEMENT");
+static constexpr std::string_view Reco_PlanarBox("PLANAR_BOX");
+static constexpr std::string_view Reco_PlanarExtent("PLANAR_EXTENT");
+static constexpr std::string_view Reco_Plane("PLANE");
+static constexpr std::string_view Reco_PlaneAngleMeasureWithUnit("PLANE_ANGLE_MEASURE_WITH_UNIT");
+static constexpr std::string_view Reco_PlaneAngleUnit("PLANE_ANGLE_UNIT");
+static constexpr std::string_view Reco_Point("POINT");
+static constexpr std::string_view Reco_PointOnCurve("POINT_ON_CURVE");
+static constexpr std::string_view Reco_PointOnSurface("POINT_ON_SURFACE");
+static constexpr std::string_view Reco_PointReplica("POINT_REPLICA");
+static constexpr std::string_view Reco_PointStyle("POINT_STYLE");
+static constexpr std::string_view Reco_PolyLoop("POLY_LOOP");
+static constexpr std::string_view Reco_Polyline("POLYLINE");
+static constexpr std::string_view Reco_PreDefinedColour("PRE_DEFINED_COLOUR");
+static constexpr std::string_view Reco_PreDefinedCurveFont("PRE_DEFINED_CURVE_FONT");
+static constexpr std::string_view Reco_PreDefinedItem("PRE_DEFINED_ITEM");
+static constexpr std::string_view Reco_PreDefinedSymbol("PRE_DEFINED_SYMBOL");
+static constexpr std::string_view Reco_PreDefinedTextFont("PRE_DEFINED_TEXT_FONT");
+static constexpr std::string_view Reco_PresentationArea("PRESENTATION_AREA");
+static constexpr std::string_view Reco_PresentationLayerAssignment("PRESENTATION_LAYER_ASSIGNMENT");
+static constexpr std::string_view Reco_PresentationRepresentation("PRESENTATION_REPRESENTATION");
+static constexpr std::string_view Reco_PresentationSet("PRESENTATION_SET");
+static constexpr std::string_view Reco_PresentationSize("PRESENTATION_SIZE");
+static constexpr std::string_view Reco_PresentationStyleAssignment("PRESENTATION_STYLE_ASSIGNMENT");
+static constexpr std::string_view Reco_PresentationStyleByContext("PRESENTATION_STYLE_BY_CONTEXT");
+static constexpr std::string_view Reco_PresentationView("PRESENTATION_VIEW");
+static constexpr std::string_view Reco_PresentedItem("PRESENTED_ITEM");
+static constexpr std::string_view Reco_Product("PRODUCT");
+static constexpr std::string_view Reco_ProductCategory("PRODUCT_CATEGORY");
+static constexpr std::string_view Reco_ProductContext("PRODUCT_CONTEXT");
+static constexpr std::string_view Reco_ProductDataRepresentationView(
   "PRODUCT_DATA_REPRESENTATION_VIEW");
-static TCollection_AsciiString Reco_ProductDefinition("PRODUCT_DEFINITION");
-static TCollection_AsciiString Reco_ProductDefinitionContext("PRODUCT_DEFINITION_CONTEXT");
-static TCollection_AsciiString Reco_ProductDefinitionFormation("PRODUCT_DEFINITION_FORMATION");
-static TCollection_AsciiString Reco_ProductDefinitionFormationWithSpecifiedSource(
+static constexpr std::string_view Reco_ProductDefinition("PRODUCT_DEFINITION");
+static constexpr std::string_view Reco_ProductDefinitionContext("PRODUCT_DEFINITION_CONTEXT");
+static constexpr std::string_view Reco_ProductDefinitionFormation("PRODUCT_DEFINITION_FORMATION");
+static constexpr std::string_view Reco_ProductDefinitionFormationWithSpecifiedSource(
   "PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE");
-static TCollection_AsciiString Reco_ProductDefinitionShape("PRODUCT_DEFINITION_SHAPE");
-static TCollection_AsciiString Reco_ProductRelatedProductCategory(
+static constexpr std::string_view Reco_ProductDefinitionShape("PRODUCT_DEFINITION_SHAPE");
+static constexpr std::string_view Reco_ProductRelatedProductCategory(
   "PRODUCT_RELATED_PRODUCT_CATEGORY");
-static TCollection_AsciiString Reco_ProductType("PRODUCT_TYPE");
-static TCollection_AsciiString Reco_PropertyDefinition("PROPERTY_DEFINITION");
-static TCollection_AsciiString Reco_PropertyDefinitionRepresentation(
+static constexpr std::string_view Reco_ProductType("PRODUCT_TYPE");
+static constexpr std::string_view Reco_PropertyDefinition("PROPERTY_DEFINITION");
+static constexpr std::string_view Reco_PropertyDefinitionRepresentation(
   "PROPERTY_DEFINITION_REPRESENTATION");
-static TCollection_AsciiString Reco_QuasiUniformCurve("QUASI_UNIFORM_CURVE");
-static TCollection_AsciiString Reco_QuasiUniformSurface("QUASI_UNIFORM_SURFACE");
-static TCollection_AsciiString Reco_RatioMeasureWithUnit("RATIO_MEASURE_WITH_UNIT");
-static TCollection_AsciiString Reco_RationalBSplineCurve("RATIONAL_B_SPLINE_CURVE");
-static TCollection_AsciiString Reco_RationalBSplineSurface("RATIONAL_B_SPLINE_SURFACE");
-static TCollection_AsciiString Reco_RectangularCompositeSurface("RECTANGULAR_COMPOSITE_SURFACE");
-static TCollection_AsciiString Reco_RectangularTrimmedSurface("RECTANGULAR_TRIMMED_SURFACE");
-static TCollection_AsciiString Reco_RepItemGroup("REP_ITEM_GROUP");
-static TCollection_AsciiString Reco_ReparametrisedCompositeCurveSegment(
+static constexpr std::string_view Reco_QuasiUniformCurve("QUASI_UNIFORM_CURVE");
+static constexpr std::string_view Reco_QuasiUniformSurface("QUASI_UNIFORM_SURFACE");
+static constexpr std::string_view Reco_RatioMeasureWithUnit("RATIO_MEASURE_WITH_UNIT");
+static constexpr std::string_view Reco_RationalBSplineCurve("RATIONAL_B_SPLINE_CURVE");
+static constexpr std::string_view Reco_RationalBSplineSurface("RATIONAL_B_SPLINE_SURFACE");
+static constexpr std::string_view Reco_RectangularCompositeSurface("RECTANGULAR_COMPOSITE_SURFACE");
+static constexpr std::string_view Reco_RectangularTrimmedSurface("RECTANGULAR_TRIMMED_SURFACE");
+static constexpr std::string_view Reco_RepItemGroup("REP_ITEM_GROUP");
+static constexpr std::string_view Reco_ReparametrisedCompositeCurveSegment(
   "REPARAMETRISED_COMPOSITE_CURVE_SEGMENT");
-static TCollection_AsciiString Reco_Representation("REPRESENTATION");
-static TCollection_AsciiString Reco_RepresentationContext("REPRESENTATION_CONTEXT");
-static TCollection_AsciiString Reco_RepresentationItem("REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_RepresentationMap("REPRESENTATION_MAP");
-static TCollection_AsciiString Reco_RepresentationRelationship("REPRESENTATION_RELATIONSHIP");
-static TCollection_AsciiString Reco_RevolvedAreaSolid("REVOLVED_AREA_SOLID");
-static TCollection_AsciiString Reco_RightAngularWedge("RIGHT_ANGULAR_WEDGE");
-static TCollection_AsciiString Reco_RightCircularCone("RIGHT_CIRCULAR_CONE");
-static TCollection_AsciiString Reco_RightCircularCylinder("RIGHT_CIRCULAR_CYLINDER");
-static TCollection_AsciiString Reco_SeamCurve("SEAM_CURVE");
-static TCollection_AsciiString Reco_SecurityClassification("SECURITY_CLASSIFICATION");
-static TCollection_AsciiString Reco_SecurityClassificationAssignment(
+static constexpr std::string_view Reco_Representation("REPRESENTATION");
+static constexpr std::string_view Reco_RepresentationContext("REPRESENTATION_CONTEXT");
+static constexpr std::string_view Reco_RepresentationItem("REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_RepresentationMap("REPRESENTATION_MAP");
+static constexpr std::string_view Reco_RepresentationRelationship("REPRESENTATION_RELATIONSHIP");
+static constexpr std::string_view Reco_RevolvedAreaSolid("REVOLVED_AREA_SOLID");
+static constexpr std::string_view Reco_RightAngularWedge("RIGHT_ANGULAR_WEDGE");
+static constexpr std::string_view Reco_RightCircularCone("RIGHT_CIRCULAR_CONE");
+static constexpr std::string_view Reco_RightCircularCylinder("RIGHT_CIRCULAR_CYLINDER");
+static constexpr std::string_view Reco_SeamCurve("SEAM_CURVE");
+static constexpr std::string_view Reco_SecurityClassification("SECURITY_CLASSIFICATION");
+static constexpr std::string_view Reco_SecurityClassificationAssignment(
   "SECURITY_CLASSIFICATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_SecurityClassificationLevel("SECURITY_CLASSIFICATION_LEVEL");
-static TCollection_AsciiString Reco_ShapeAspect("SHAPE_ASPECT");
-static TCollection_AsciiString Reco_ShapeAspectRelationship("SHAPE_ASPECT_RELATIONSHIP");
-static TCollection_AsciiString Reco_ShapeAspectTransition("SHAPE_ASPECT_TRANSITION");
-static TCollection_AsciiString Reco_ShapeDefinitionRepresentation(
+static constexpr std::string_view Reco_SecurityClassificationLevel("SECURITY_CLASSIFICATION_LEVEL");
+static constexpr std::string_view Reco_ShapeAspect("SHAPE_ASPECT");
+static constexpr std::string_view Reco_ShapeAspectRelationship("SHAPE_ASPECT_RELATIONSHIP");
+static constexpr std::string_view Reco_ShapeAspectTransition("SHAPE_ASPECT_TRANSITION");
+static constexpr std::string_view Reco_ShapeDefinitionRepresentation(
   "SHAPE_DEFINITION_REPRESENTATION");
-static TCollection_AsciiString Reco_ShapeRepresentation("SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_ShellBasedSurfaceModel("SHELL_BASED_SURFACE_MODEL");
-static TCollection_AsciiString Reco_SiUnit("SI_UNIT");
-static TCollection_AsciiString Reco_SolidAngleMeasureWithUnit("SOLID_ANGLE_MEASURE_WITH_UNIT");
-static TCollection_AsciiString Reco_SolidModel("SOLID_MODEL");
-static TCollection_AsciiString Reco_SolidReplica("SOLID_REPLICA");
-static TCollection_AsciiString Reco_Sphere("SPHERE");
-static TCollection_AsciiString Reco_SphericalSurface("SPHERICAL_SURFACE");
-static TCollection_AsciiString Reco_StyledItem("STYLED_ITEM");
-static TCollection_AsciiString Reco_Surface("SURFACE");
-static TCollection_AsciiString Reco_SurfaceCurve("SURFACE_CURVE");
-static TCollection_AsciiString Reco_SurfaceOfLinearExtrusion("SURFACE_OF_LINEAR_EXTRUSION");
-static TCollection_AsciiString Reco_SurfaceOfRevolution("SURFACE_OF_REVOLUTION");
-static TCollection_AsciiString Reco_SurfacePatch("SURFACE_PATCH");
-static TCollection_AsciiString Reco_SurfaceReplica("SURFACE_REPLICA");
-static TCollection_AsciiString Reco_SurfaceSideStyle("SURFACE_SIDE_STYLE");
-static TCollection_AsciiString Reco_SurfaceStyleBoundary("SURFACE_STYLE_BOUNDARY");
-static TCollection_AsciiString Reco_SurfaceStyleControlGrid("SURFACE_STYLE_CONTROL_GRID");
-static TCollection_AsciiString Reco_SurfaceStyleFillArea("SURFACE_STYLE_FILL_AREA");
-static TCollection_AsciiString Reco_SurfaceStyleParameterLine("SURFACE_STYLE_PARAMETER_LINE");
-static TCollection_AsciiString Reco_SurfaceStyleSegmentationCurve(
+static constexpr std::string_view Reco_ShapeRepresentation("SHAPE_REPRESENTATION");
+static constexpr std::string_view Reco_ShellBasedSurfaceModel("SHELL_BASED_SURFACE_MODEL");
+static constexpr std::string_view Reco_SiUnit("SI_UNIT");
+static constexpr std::string_view Reco_SolidAngleMeasureWithUnit("SOLID_ANGLE_MEASURE_WITH_UNIT");
+static constexpr std::string_view Reco_SolidModel("SOLID_MODEL");
+static constexpr std::string_view Reco_SolidReplica("SOLID_REPLICA");
+static constexpr std::string_view Reco_Sphere("SPHERE");
+static constexpr std::string_view Reco_SphericalSurface("SPHERICAL_SURFACE");
+static constexpr std::string_view Reco_StyledItem("STYLED_ITEM");
+static constexpr std::string_view Reco_Surface("SURFACE");
+static constexpr std::string_view Reco_SurfaceCurve("SURFACE_CURVE");
+static constexpr std::string_view Reco_SurfaceOfLinearExtrusion("SURFACE_OF_LINEAR_EXTRUSION");
+static constexpr std::string_view Reco_SurfaceOfRevolution("SURFACE_OF_REVOLUTION");
+static constexpr std::string_view Reco_SurfacePatch("SURFACE_PATCH");
+static constexpr std::string_view Reco_SurfaceReplica("SURFACE_REPLICA");
+static constexpr std::string_view Reco_SurfaceSideStyle("SURFACE_SIDE_STYLE");
+static constexpr std::string_view Reco_SurfaceStyleBoundary("SURFACE_STYLE_BOUNDARY");
+static constexpr std::string_view Reco_SurfaceStyleControlGrid("SURFACE_STYLE_CONTROL_GRID");
+static constexpr std::string_view Reco_SurfaceStyleFillArea("SURFACE_STYLE_FILL_AREA");
+static constexpr std::string_view Reco_SurfaceStyleParameterLine("SURFACE_STYLE_PARAMETER_LINE");
+static constexpr std::string_view Reco_SurfaceStyleSegmentationCurve(
   "SURFACE_STYLE_SEGMENTATION_CURVE");
-static TCollection_AsciiString Reco_SurfaceStyleSilhouette("SURFACE_STYLE_SILHOUETTE");
-static TCollection_AsciiString Reco_SurfaceStyleUsage("SURFACE_STYLE_USAGE");
-static TCollection_AsciiString Reco_SweptAreaSolid("SWEPT_AREA_SOLID");
-static TCollection_AsciiString Reco_SweptSurface("SWEPT_SURFACE");
-static TCollection_AsciiString Reco_SymbolColour("SYMBOL_COLOUR");
-static TCollection_AsciiString Reco_SymbolRepresentation("SYMBOL_REPRESENTATION");
-static TCollection_AsciiString Reco_SymbolRepresentationMap("SYMBOL_REPRESENTATION_MAP");
-static TCollection_AsciiString Reco_SymbolStyle("SYMBOL_STYLE");
-static TCollection_AsciiString Reco_SymbolTarget("SYMBOL_TARGET");
-static TCollection_AsciiString Reco_Template("TEMPLATE");
-static TCollection_AsciiString Reco_TemplateInstance("TEMPLATE_INSTANCE");
-static TCollection_AsciiString Reco_TerminatorSymbol("TERMINATOR_SYMBOL");
-static TCollection_AsciiString Reco_TextLiteral("TEXT_LITERAL");
-static TCollection_AsciiString Reco_TextLiteralWithAssociatedCurves(
+static constexpr std::string_view Reco_SurfaceStyleSilhouette("SURFACE_STYLE_SILHOUETTE");
+static constexpr std::string_view Reco_SurfaceStyleUsage("SURFACE_STYLE_USAGE");
+static constexpr std::string_view Reco_SweptAreaSolid("SWEPT_AREA_SOLID");
+static constexpr std::string_view Reco_SweptSurface("SWEPT_SURFACE");
+static constexpr std::string_view Reco_SymbolColour("SYMBOL_COLOUR");
+static constexpr std::string_view Reco_SymbolRepresentation("SYMBOL_REPRESENTATION");
+static constexpr std::string_view Reco_SymbolRepresentationMap("SYMBOL_REPRESENTATION_MAP");
+static constexpr std::string_view Reco_SymbolStyle("SYMBOL_STYLE");
+static constexpr std::string_view Reco_SymbolTarget("SYMBOL_TARGET");
+static constexpr std::string_view Reco_Template("TEMPLATE");
+static constexpr std::string_view Reco_TemplateInstance("TEMPLATE_INSTANCE");
+static constexpr std::string_view Reco_TerminatorSymbol("TERMINATOR_SYMBOL");
+static constexpr std::string_view Reco_TextLiteral("TEXT_LITERAL");
+static constexpr std::string_view Reco_TextLiteralWithAssociatedCurves(
   "TEXT_LITERAL_WITH_ASSOCIATED_CURVES");
-static TCollection_AsciiString Reco_TextLiteralWithBlankingBox("TEXT_LITERAL_WITH_BLANKING_BOX");
-static TCollection_AsciiString Reco_TextLiteralWithDelineation("TEXT_LITERAL_WITH_DELINEATION");
-static TCollection_AsciiString Reco_TextLiteralWithExtent("TEXT_LITERAL_WITH_EXTENT");
-static TCollection_AsciiString Reco_TextStyle("TEXT_STYLE");
-static TCollection_AsciiString Reco_TextStyleForDefinedFont("TEXT_STYLE_FOR_DEFINED_FONT");
-static TCollection_AsciiString Reco_TextStyleWithBoxCharacteristics(
+static constexpr std::string_view Reco_TextLiteralWithBlankingBox("TEXT_LITERAL_WITH_BLANKING_BOX");
+static constexpr std::string_view Reco_TextLiteralWithDelineation("TEXT_LITERAL_WITH_DELINEATION");
+static constexpr std::string_view Reco_TextLiteralWithExtent("TEXT_LITERAL_WITH_EXTENT");
+static constexpr std::string_view Reco_TextStyle("TEXT_STYLE");
+static constexpr std::string_view Reco_TextStyleForDefinedFont("TEXT_STYLE_FOR_DEFINED_FONT");
+static constexpr std::string_view Reco_TextStyleWithBoxCharacteristics(
   "TEXT_STYLE_WITH_BOX_CHARACTERISTICS");
-static TCollection_AsciiString Reco_TextStyleWithMirror("TEXT_STYLE_WITH_MIRROR");
-static TCollection_AsciiString Reco_TopologicalRepresentationItem(
+static constexpr std::string_view Reco_TextStyleWithMirror("TEXT_STYLE_WITH_MIRROR");
+static constexpr std::string_view Reco_TopologicalRepresentationItem(
   "TOPOLOGICAL_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_ToroidalSurface("TOROIDAL_SURFACE");
-static TCollection_AsciiString Reco_Torus("TORUS");
-static TCollection_AsciiString Reco_TransitionalShapeRepresentation(
+static constexpr std::string_view Reco_ToroidalSurface("TOROIDAL_SURFACE");
+static constexpr std::string_view Reco_Torus("TORUS");
+static constexpr std::string_view Reco_TransitionalShapeRepresentation(
   "TRANSITIONAL_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_TrimmedCurve("TRIMMED_CURVE");
-static TCollection_AsciiString Reco_TwoDirectionRepeatFactor("TWO_DIRECTION_REPEAT_FACTOR");
-static TCollection_AsciiString Reco_UncertaintyMeasureWithUnit("UNCERTAINTY_MEASURE_WITH_UNIT");
-static TCollection_AsciiString Reco_UniformCurve("UNIFORM_CURVE");
-static TCollection_AsciiString Reco_UniformSurface("UNIFORM_SURFACE");
-static TCollection_AsciiString Reco_Vector("VECTOR");
-static TCollection_AsciiString Reco_Vertex("VERTEX");
-static TCollection_AsciiString Reco_VertexLoop("VERTEX_LOOP");
-static TCollection_AsciiString Reco_VertexPoint("VERTEX_POINT");
-static TCollection_AsciiString Reco_ViewVolume("VIEW_VOLUME");
-static TCollection_AsciiString Reco_WeekOfYearAndDayDate("WEEK_OF_YEAR_AND_DAY_DATE");
+static constexpr std::string_view Reco_TrimmedCurve("TRIMMED_CURVE");
+static constexpr std::string_view Reco_TwoDirectionRepeatFactor("TWO_DIRECTION_REPEAT_FACTOR");
+static constexpr std::string_view Reco_UncertaintyMeasureWithUnit("UNCERTAINTY_MEASURE_WITH_UNIT");
+static constexpr std::string_view Reco_UniformCurve("UNIFORM_CURVE");
+static constexpr std::string_view Reco_UniformSurface("UNIFORM_SURFACE");
+static constexpr std::string_view Reco_Vector("VECTOR");
+static constexpr std::string_view Reco_Vertex("VERTEX");
+static constexpr std::string_view Reco_VertexLoop("VERTEX_LOOP");
+static constexpr std::string_view Reco_VertexPoint("VERTEX_POINT");
+static constexpr std::string_view Reco_ViewVolume("VIEW_VOLUME");
+static constexpr std::string_view Reco_WeekOfYearAndDayDate("WEEK_OF_YEAR_AND_DAY_DATE");
 
 // Added by FMA for Rev4
 
-static TCollection_AsciiString Reco_SolidAngleUnit("SOLID_ANGLE_UNIT");
-static TCollection_AsciiString Reco_MechanicalContext("MECHANICAL_CONTEXT");
-static TCollection_AsciiString Reco_DesignContext("DESIGN_CONTEXT");
+static constexpr std::string_view Reco_SolidAngleUnit("SOLID_ANGLE_UNIT");
+static constexpr std::string_view Reco_MechanicalContext("MECHANICAL_CONTEXT");
+static constexpr std::string_view Reco_DesignContext("DESIGN_CONTEXT");
 
 // Added for full Rev4
-static TCollection_AsciiString Reco_TimeMeasureWithUnit("TIME_MEASURE_WITH_UNIT");
-static TCollection_AsciiString Reco_RatioUnit("RATIO_UNIT");
-static TCollection_AsciiString Reco_TimeUnit("TIME_UNIT");
-static TCollection_AsciiString Reco_ApprovalDateTime("APPROVAL_DATE_TIME");
-static TCollection_AsciiString Reco_CameraImage2dWithScale("CAMERA_IMAGE_2D_WITH_SCALE");
-static TCollection_AsciiString Reco_CameraImage3dWithScale("CAMERA_IMAGE_3D_WITH_SCALE");
-static TCollection_AsciiString Reco_CartesianTransformationOperator2d(
+static constexpr std::string_view Reco_TimeMeasureWithUnit("TIME_MEASURE_WITH_UNIT");
+static constexpr std::string_view Reco_RatioUnit("RATIO_UNIT");
+static constexpr std::string_view Reco_TimeUnit("TIME_UNIT");
+static constexpr std::string_view Reco_ApprovalDateTime("APPROVAL_DATE_TIME");
+static constexpr std::string_view Reco_CameraImage2dWithScale("CAMERA_IMAGE_2D_WITH_SCALE");
+static constexpr std::string_view Reco_CameraImage3dWithScale("CAMERA_IMAGE_3D_WITH_SCALE");
+static constexpr std::string_view Reco_CartesianTransformationOperator2d(
   "CARTESIAN_TRANSFORMATION_OPERATOR_2D");
-static TCollection_AsciiString Reco_DerivedUnit("DERIVED_UNIT");
-static TCollection_AsciiString Reco_DerivedUnitElement("DERIVED_UNIT_ELEMENT");
-static TCollection_AsciiString Reco_ItemDefinedTransformation("ITEM_DEFINED_TRANSFORMATION");
-static TCollection_AsciiString Reco_PresentedItemRepresentation("PRESENTED_ITEM_REPRESENTATION");
-static TCollection_AsciiString Reco_PresentationLayerUsage("PRESENTATION_LAYER_USAGE");
+static constexpr std::string_view Reco_DerivedUnit("DERIVED_UNIT");
+static constexpr std::string_view Reco_DerivedUnitElement("DERIVED_UNIT_ELEMENT");
+static constexpr std::string_view Reco_ItemDefinedTransformation("ITEM_DEFINED_TRANSFORMATION");
+static constexpr std::string_view Reco_PresentedItemRepresentation("PRESENTED_ITEM_REPRESENTATION");
+static constexpr std::string_view Reco_PresentationLayerUsage("PRESENTATION_LAYER_USAGE");
 
 // Added for AP214 : CC1 -> CC2
 
-static TCollection_AsciiString Reco_AutoDesignDocumentReference("AUTO_DESIGN_DOCUMENT_REFERENCE");
-static TCollection_AsciiString Reco_Document("DOCUMENT");
-static TCollection_AsciiString Reco_DigitalDocument("DIGITAL_DOCUMENT");
-static TCollection_AsciiString Reco_DocumentRelationship("DOCUMENT_RELATIONSHIP");
-static TCollection_AsciiString Reco_DocumentType("DOCUMENT_TYPE");
-static TCollection_AsciiString Reco_DocumentUsageConstraint("DOCUMENT_USAGE_CONSTRAINT");
-static TCollection_AsciiString Reco_Effectivity("EFFECTIVITY");
-static TCollection_AsciiString Reco_ProductDefinitionEffectivity("PRODUCT_DEFINITION_EFFECTIVITY");
-static TCollection_AsciiString Reco_ProductDefinitionRelationship(
+static constexpr std::string_view Reco_AutoDesignDocumentReference(
+  "AUTO_DESIGN_DOCUMENT_REFERENCE");
+static constexpr std::string_view Reco_Document("DOCUMENT");
+static constexpr std::string_view Reco_DigitalDocument("DIGITAL_DOCUMENT");
+static constexpr std::string_view Reco_DocumentRelationship("DOCUMENT_RELATIONSHIP");
+static constexpr std::string_view Reco_DocumentType("DOCUMENT_TYPE");
+static constexpr std::string_view Reco_DocumentUsageConstraint("DOCUMENT_USAGE_CONSTRAINT");
+static constexpr std::string_view Reco_Effectivity("EFFECTIVITY");
+static constexpr std::string_view Reco_ProductDefinitionEffectivity(
+  "PRODUCT_DEFINITION_EFFECTIVITY");
+static constexpr std::string_view Reco_ProductDefinitionRelationship(
   "PRODUCT_DEFINITION_RELATIONSHIP");
-static TCollection_AsciiString Reco_ProductDefinitionWithAssociatedDocuments(
+static constexpr std::string_view Reco_ProductDefinitionWithAssociatedDocuments(
   "PRODUCT_DEFINITION_WITH_ASSOCIATED_DOCUMENTS");
-static TCollection_AsciiString Reco_PhysicallyModeledProductDefinition(
+static constexpr std::string_view Reco_PhysicallyModeledProductDefinition(
   "PHYSICALLY_MODELED_PRODUCT_DEFINITION");
 
-static TCollection_AsciiString Reco_ProductDefinitionUsage("PRODUCT_DEFINITION_USAGE");
-static TCollection_AsciiString Reco_MakeFromUsageOption("MAKE_FROM_USAGE_OPTION");
-static TCollection_AsciiString Reco_AssemblyComponentUsage("ASSEMBLY_COMPONENT_USAGE");
-static TCollection_AsciiString Reco_NextAssemblyUsageOccurrence("NEXT_ASSEMBLY_USAGE_OCCURRENCE");
-static TCollection_AsciiString Reco_PromissoryUsageOccurrence("PROMISSORY_USAGE_OCCURRENCE");
-static TCollection_AsciiString Reco_QuantifiedAssemblyComponentUsage(
+static constexpr std::string_view Reco_ProductDefinitionUsage("PRODUCT_DEFINITION_USAGE");
+static constexpr std::string_view Reco_MakeFromUsageOption("MAKE_FROM_USAGE_OPTION");
+static constexpr std::string_view Reco_AssemblyComponentUsage("ASSEMBLY_COMPONENT_USAGE");
+static constexpr std::string_view Reco_NextAssemblyUsageOccurrence(
+  "NEXT_ASSEMBLY_USAGE_OCCURRENCE");
+static constexpr std::string_view Reco_PromissoryUsageOccurrence("PROMISSORY_USAGE_OCCURRENCE");
+static constexpr std::string_view Reco_QuantifiedAssemblyComponentUsage(
   "QUANTIFIED_ASSEMBLY_COMPONENT_USAGE");
-static TCollection_AsciiString Reco_SpecifiedHigherUsageOccurrence(
+static constexpr std::string_view Reco_SpecifiedHigherUsageOccurrence(
   "SPECIFIED_HIGHER_USAGE_OCCURRENCE");
-static TCollection_AsciiString Reco_AssemblyComponentUsageSubstitute(
+static constexpr std::string_view Reco_AssemblyComponentUsageSubstitute(
   "ASSEMBLY_COMPONENT_USAGE_SUBSTITUTE");
-static TCollection_AsciiString Reco_SuppliedPartRelationship("SUPPLIED_PART_RELATIONSHIP");
-static TCollection_AsciiString Reco_ExternallyDefinedRepresentation(
+static constexpr std::string_view Reco_SuppliedPartRelationship("SUPPLIED_PART_RELATIONSHIP");
+static constexpr std::string_view Reco_ExternallyDefinedRepresentation(
   "EXTERNALLY_DEFINED_REPRESENTATION");
-static TCollection_AsciiString Reco_ShapeRepresentationRelationship(
+static constexpr std::string_view Reco_ShapeRepresentationRelationship(
   "SHAPE_REPRESENTATION_RELATIONSHIP");
-static TCollection_AsciiString Reco_RepresentationRelationshipWithTransformation(
+static constexpr std::string_view Reco_RepresentationRelationshipWithTransformation(
   "REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION");
-static TCollection_AsciiString Reco_MaterialDesignation("MATERIAL_DESIGNATION");
-static TCollection_AsciiString Reco_ContextDependentShapeRepresentation(
+static constexpr std::string_view Reco_MaterialDesignation("MATERIAL_DESIGNATION");
+static constexpr std::string_view Reco_ContextDependentShapeRepresentation(
   "CONTEXT_DEPENDENT_SHAPE_REPRESENTATION");
 
 // Added from CD To DIS (S4134)
-static TCollection_AsciiString Reco_AppliedDateAndTimeAssignment(
+static constexpr std::string_view Reco_AppliedDateAndTimeAssignment(
   "APPLIED_DATE_AND_TIME_ASSIGNMENT");
-static TCollection_AsciiString Reco_AppliedDateAssignment("APPLIED_DATE_ASSIGNMENT");
-static TCollection_AsciiString Reco_AppliedApprovalAssignment("APPLIED_APPROVAL_ASSIGNMENT");
-static TCollection_AsciiString Reco_AppliedDocumentReference("APPLIED_DOCUMENT_REFERENCE");
-static TCollection_AsciiString Reco_AppliedGroupAssignment("APPLIED_GROUP_ASSIGNMENT");
-static TCollection_AsciiString Reco_AppliedOrganizationAssignment(
+static constexpr std::string_view Reco_AppliedDateAssignment("APPLIED_DATE_ASSIGNMENT");
+static constexpr std::string_view Reco_AppliedApprovalAssignment("APPLIED_APPROVAL_ASSIGNMENT");
+static constexpr std::string_view Reco_AppliedDocumentReference("APPLIED_DOCUMENT_REFERENCE");
+static constexpr std::string_view Reco_AppliedGroupAssignment("APPLIED_GROUP_ASSIGNMENT");
+static constexpr std::string_view Reco_AppliedOrganizationAssignment(
   "APPLIED_ORGANIZATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_AppliedPersonAndOrganizationAssignment(
+static constexpr std::string_view Reco_AppliedPersonAndOrganizationAssignment(
   "APPLIED_PERSON_AND_ORGANIZATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_AppliedPresentedItem("APPLIED_PRESENTED_ITEM");
-static TCollection_AsciiString Reco_AppliedSecurityClassificationAssignment(
+static constexpr std::string_view Reco_AppliedPresentedItem("APPLIED_PRESENTED_ITEM");
+static constexpr std::string_view Reco_AppliedSecurityClassificationAssignment(
   "APPLIED_SECURITY_CLASSIFICATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_DocumentFile("DOCUMENT_FILE");
-static TCollection_AsciiString Reco_CharacterizedObject("CHARACTERIZED_OBJECT");
-static TCollection_AsciiString Reco_ExtrudedFaceSolid("EXTRUDED_FACE_SOLID");
-static TCollection_AsciiString Reco_RevolvedFaceSolid("REVOLVED_FACE_SOLID");
-static TCollection_AsciiString Reco_SweptFaceSolid("SWEPT_FACE_SOLID");
+static constexpr std::string_view Reco_DocumentFile("DOCUMENT_FILE");
+static constexpr std::string_view Reco_CharacterizedObject("CHARACTERIZED_OBJECT");
+static constexpr std::string_view Reco_ExtrudedFaceSolid("EXTRUDED_FACE_SOLID");
+static constexpr std::string_view Reco_RevolvedFaceSolid("REVOLVED_FACE_SOLID");
+static constexpr std::string_view Reco_SweptFaceSolid("SWEPT_FACE_SOLID");
 
 // Added by ABV 08.09.99 for CAX TRJ 2 (validation properties)
-static TCollection_AsciiString Reco_MeasureRepresentationItem("MEASURE_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_AreaUnit("AREA_UNIT");
-static TCollection_AsciiString Reco_VolumeUnit("VOLUME_UNIT");
+static constexpr std::string_view Reco_MeasureRepresentationItem("MEASURE_REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_AreaUnit("AREA_UNIT");
+static constexpr std::string_view Reco_VolumeUnit("VOLUME_UNIT");
 
 // Added by ABV 10.11.99 for AP203
-static TCollection_AsciiString Reco_Action("ACTION");
-static TCollection_AsciiString Reco_ActionAssignment("ACTION_ASSIGNMENT");
-static TCollection_AsciiString Reco_ActionMethod("ACTION_METHOD");
-static TCollection_AsciiString Reco_ActionRequestAssignment("ACTION_REQUEST_ASSIGNMENT");
-static TCollection_AsciiString Reco_CcDesignApproval("CC_DESIGN_APPROVAL");
-static TCollection_AsciiString Reco_CcDesignCertification("CC_DESIGN_CERTIFICATION");
-static TCollection_AsciiString Reco_CcDesignContract("CC_DESIGN_CONTRACT");
-static TCollection_AsciiString Reco_CcDesignDateAndTimeAssignment(
+static constexpr std::string_view Reco_Action("ACTION");
+static constexpr std::string_view Reco_ActionAssignment("ACTION_ASSIGNMENT");
+static constexpr std::string_view Reco_ActionMethod("ACTION_METHOD");
+static constexpr std::string_view Reco_ActionRequestAssignment("ACTION_REQUEST_ASSIGNMENT");
+static constexpr std::string_view Reco_CcDesignApproval("CC_DESIGN_APPROVAL");
+static constexpr std::string_view Reco_CcDesignCertification("CC_DESIGN_CERTIFICATION");
+static constexpr std::string_view Reco_CcDesignContract("CC_DESIGN_CONTRACT");
+static constexpr std::string_view Reco_CcDesignDateAndTimeAssignment(
   "CC_DESIGN_DATE_AND_TIME_ASSIGNMENT");
-static TCollection_AsciiString Reco_CcDesignPersonAndOrganizationAssignment(
+static constexpr std::string_view Reco_CcDesignPersonAndOrganizationAssignment(
   "CC_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_CcDesignSecurityClassification(
+static constexpr std::string_view Reco_CcDesignSecurityClassification(
   "CC_DESIGN_SECURITY_CLASSIFICATION");
-static TCollection_AsciiString Reco_CcDesignSpecificationReference(
+static constexpr std::string_view Reco_CcDesignSpecificationReference(
   "CC_DESIGN_SPECIFICATION_REFERENCE");
-static TCollection_AsciiString Reco_Certification("CERTIFICATION");
-static TCollection_AsciiString Reco_CertificationAssignment("CERTIFICATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_CertificationType("CERTIFICATION_TYPE");
-static TCollection_AsciiString Reco_Change("CHANGE");
-static TCollection_AsciiString Reco_ChangeRequest("CHANGE_REQUEST");
-static TCollection_AsciiString Reco_ConfigurationDesign("CONFIGURATION_DESIGN");
-static TCollection_AsciiString Reco_ConfigurationEffectivity("CONFIGURATION_EFFECTIVITY");
-static TCollection_AsciiString Reco_Contract("CONTRACT");
-static TCollection_AsciiString Reco_ContractAssignment("CONTRACT_ASSIGNMENT");
-static TCollection_AsciiString Reco_ContractType("CONTRACT_TYPE");
-static TCollection_AsciiString Reco_ProductConcept("PRODUCT_CONCEPT");
-static TCollection_AsciiString Reco_ProductConceptContext("PRODUCT_CONCEPT_CONTEXT");
-static TCollection_AsciiString Reco_StartRequest("START_REQUEST");
-static TCollection_AsciiString Reco_StartWork("START_WORK");
-static TCollection_AsciiString Reco_VersionedActionRequest("VERSIONED_ACTION_REQUEST");
-static TCollection_AsciiString Reco_ProductCategoryRelationship("PRODUCT_CATEGORY_RELATIONSHIP");
-static TCollection_AsciiString Reco_ActionRequestSolution("ACTION_REQUEST_SOLUTION");
-static TCollection_AsciiString Reco_DraughtingModel("DRAUGHTING_MODEL");
+static constexpr std::string_view Reco_Certification("CERTIFICATION");
+static constexpr std::string_view Reco_CertificationAssignment("CERTIFICATION_ASSIGNMENT");
+static constexpr std::string_view Reco_CertificationType("CERTIFICATION_TYPE");
+static constexpr std::string_view Reco_Change("CHANGE");
+static constexpr std::string_view Reco_ChangeRequest("CHANGE_REQUEST");
+static constexpr std::string_view Reco_ConfigurationDesign("CONFIGURATION_DESIGN");
+static constexpr std::string_view Reco_ConfigurationEffectivity("CONFIGURATION_EFFECTIVITY");
+static constexpr std::string_view Reco_Contract("CONTRACT");
+static constexpr std::string_view Reco_ContractAssignment("CONTRACT_ASSIGNMENT");
+static constexpr std::string_view Reco_ContractType("CONTRACT_TYPE");
+static constexpr std::string_view Reco_ProductConcept("PRODUCT_CONCEPT");
+static constexpr std::string_view Reco_ProductConceptContext("PRODUCT_CONCEPT_CONTEXT");
+static constexpr std::string_view Reco_StartRequest("START_REQUEST");
+static constexpr std::string_view Reco_StartWork("START_WORK");
+static constexpr std::string_view Reco_VersionedActionRequest("VERSIONED_ACTION_REQUEST");
+static constexpr std::string_view Reco_ProductCategoryRelationship("PRODUCT_CATEGORY_RELATIONSHIP");
+static constexpr std::string_view Reco_ActionRequestSolution("ACTION_REQUEST_SOLUTION");
+static constexpr std::string_view Reco_DraughtingModel("DRAUGHTING_MODEL");
 // Added by ABV 18.04.00 for CAX-IF TRJ4
-static TCollection_AsciiString Reco_AngularLocation("ANGULAR_LOCATION");
-static TCollection_AsciiString Reco_AngularSize("ANGULAR_SIZE");
-static TCollection_AsciiString Reco_DimensionalCharacteristicRepresentation(
+static constexpr std::string_view Reco_AngularLocation("ANGULAR_LOCATION");
+static constexpr std::string_view Reco_AngularSize("ANGULAR_SIZE");
+static constexpr std::string_view Reco_DimensionalCharacteristicRepresentation(
   "DIMENSIONAL_CHARACTERISTIC_REPRESENTATION");
-static TCollection_AsciiString Reco_DimensionalLocation("DIMENSIONAL_LOCATION");
-static TCollection_AsciiString Reco_DimensionalLocationWithPath("DIMENSIONAL_LOCATION_WITH_PATH");
-static TCollection_AsciiString Reco_DimensionalSize("DIMENSIONAL_SIZE");
-static TCollection_AsciiString Reco_DimensionalSizeWithPath("DIMENSIONAL_SIZE_WITH_PATH");
-static TCollection_AsciiString Reco_ShapeDimensionRepresentation("SHAPE_DIMENSION_REPRESENTATION");
+static constexpr std::string_view Reco_DimensionalLocation("DIMENSIONAL_LOCATION");
+static constexpr std::string_view Reco_DimensionalLocationWithPath(
+  "DIMENSIONAL_LOCATION_WITH_PATH");
+static constexpr std::string_view Reco_DimensionalSize("DIMENSIONAL_SIZE");
+static constexpr std::string_view Reco_DimensionalSizeWithPath("DIMENSIONAL_SIZE_WITH_PATH");
+static constexpr std::string_view Reco_ShapeDimensionRepresentation(
+  "SHAPE_DIMENSION_REPRESENTATION");
 // Added by ABV 10.05.00 for CAX-IF TRJ4 (external references)
-static TCollection_AsciiString Reco_DocumentRepresentationType("DOCUMENT_REPRESENTATION_TYPE");
-static TCollection_AsciiString Reco_ObjectRole("OBJECT_ROLE");
-static TCollection_AsciiString Reco_RoleAssociation("ROLE_ASSOCIATION");
-static TCollection_AsciiString Reco_IdentificationRole("IDENTIFICATION_ROLE");
-static TCollection_AsciiString Reco_IdentificationAssignment("IDENTIFICATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_ExternalIdentificationAssignment(
+static constexpr std::string_view Reco_DocumentRepresentationType("DOCUMENT_REPRESENTATION_TYPE");
+static constexpr std::string_view Reco_ObjectRole("OBJECT_ROLE");
+static constexpr std::string_view Reco_RoleAssociation("ROLE_ASSOCIATION");
+static constexpr std::string_view Reco_IdentificationRole("IDENTIFICATION_ROLE");
+static constexpr std::string_view Reco_IdentificationAssignment("IDENTIFICATION_ASSIGNMENT");
+static constexpr std::string_view Reco_ExternalIdentificationAssignment(
   "EXTERNAL_IDENTIFICATION_ASSIGNMENT");
-static TCollection_AsciiString Reco_EffectivityAssignment("EFFECTIVITY_ASSIGNMENT");
-static TCollection_AsciiString Reco_NameAssignment("NAME_ASSIGNMENT");
-static TCollection_AsciiString Reco_GeneralProperty("GENERAL_PROPERTY");
-static TCollection_AsciiString Reco_Class("CLASS");
-static TCollection_AsciiString Reco_ExternallyDefinedClass("EXTERNALLY_DEFINED_Class");
-static TCollection_AsciiString Reco_ExternallyDefinedGeneralProperty(
+static constexpr std::string_view Reco_EffectivityAssignment("EFFECTIVITY_ASSIGNMENT");
+static constexpr std::string_view Reco_NameAssignment("NAME_ASSIGNMENT");
+static constexpr std::string_view Reco_GeneralProperty("GENERAL_PROPERTY");
+static constexpr std::string_view Reco_Class("CLASS");
+static constexpr std::string_view Reco_ExternallyDefinedClass("EXTERNALLY_DEFINED_Class");
+static constexpr std::string_view Reco_ExternallyDefinedGeneralProperty(
   "EXTERNALLY_DEFINED_GENERAL_PROPERTY");
-static TCollection_AsciiString Reco_AppliedExternalIdentificationAssignment(
+static constexpr std::string_view Reco_AppliedExternalIdentificationAssignment(
   "APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT");
 // Added by CKY , 25 APR 2001 for Dimensional Tolerances (CAX-IF TRJ7)
-static TCollection_AsciiString Reco_CompositeShapeAspect("COMPOSITE_SHAPE_ASPECT");
-static TCollection_AsciiString Reco_DerivedShapeAspect("DERIVED_SHAPE_ASPECT");
-static TCollection_AsciiString Reco_Extension("EXTENSION");
-static TCollection_AsciiString Reco_DirectedDimensionalLocation("DIRECTED_DIMENSIONAL_LOCATION");
-static TCollection_AsciiString Reco_LimitsAndFits("LIMITS_AND_FITS");
-static TCollection_AsciiString Reco_ToleranceValue("TOLERANCE_VALUE");
-static TCollection_AsciiString Reco_MeasureQualification("MEASURE_QUALIFICATION");
-static TCollection_AsciiString Reco_PlusMinusTolerance("PLUS_MINUS_TOLERANCE");
-static TCollection_AsciiString Reco_PrecisionQualifier("PRECISION_QUALIFIER");
-static TCollection_AsciiString Reco_TypeQualifier("TYPE_QUALIFIER");
-static TCollection_AsciiString Reco_QualifiedRepresentationItem("QUALIFIED_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_CompoundRepresentationItem("COMPOUND_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_ValueRange("VALUE_RANGE");
-static TCollection_AsciiString Reco_ShapeAspectDerivingRelationship(
+static constexpr std::string_view Reco_CompositeShapeAspect("COMPOSITE_SHAPE_ASPECT");
+static constexpr std::string_view Reco_DerivedShapeAspect("DERIVED_SHAPE_ASPECT");
+static constexpr std::string_view Reco_Extension("EXTENSION");
+static constexpr std::string_view Reco_DirectedDimensionalLocation("DIRECTED_DIMENSIONAL_LOCATION");
+static constexpr std::string_view Reco_LimitsAndFits("LIMITS_AND_FITS");
+static constexpr std::string_view Reco_ToleranceValue("TOLERANCE_VALUE");
+static constexpr std::string_view Reco_MeasureQualification("MEASURE_QUALIFICATION");
+static constexpr std::string_view Reco_PlusMinusTolerance("PLUS_MINUS_TOLERANCE");
+static constexpr std::string_view Reco_PrecisionQualifier("PRECISION_QUALIFIER");
+static constexpr std::string_view Reco_TypeQualifier("TYPE_QUALIFIER");
+static constexpr std::string_view Reco_QualifiedRepresentationItem("QUALIFIED_REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_CompoundRepresentationItem("COMPOUND_REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_ValueRange("VALUE_RANGE");
+static constexpr std::string_view Reco_ShapeAspectDerivingRelationship(
   "SHAPE_ASPECT_DERIVING_RELATIONSHIP");
 
-static TCollection_AsciiString Reco_CompoundShapeRepresentation("COMPOUND_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_ConnectedEdgeSet("CONNECTED_EDGE_SET");
-static TCollection_AsciiString Reco_ConnectedFaceShapeRepresentation(
+static constexpr std::string_view Reco_CompoundShapeRepresentation("COMPOUND_SHAPE_REPRESENTATION");
+static constexpr std::string_view Reco_ConnectedEdgeSet("CONNECTED_EDGE_SET");
+static constexpr std::string_view Reco_ConnectedFaceShapeRepresentation(
   "CONNECTED_FACE_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_EdgeBasedWireframeModel("EDGE_BASED_WIREFRAME_MODEL");
-static TCollection_AsciiString Reco_EdgeBasedWireframeShapeRepresentation(
+static constexpr std::string_view Reco_EdgeBasedWireframeModel("EDGE_BASED_WIREFRAME_MODEL");
+static constexpr std::string_view Reco_EdgeBasedWireframeShapeRepresentation(
   "EDGE_BASED_WIREFRAME_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_FaceBasedSurfaceModel("FACE_BASED_SURFACE_MODEL");
-static TCollection_AsciiString Reco_NonManifoldSurfaceShapeRepresentation(
+static constexpr std::string_view Reco_FaceBasedSurfaceModel("FACE_BASED_SURFACE_MODEL");
+static constexpr std::string_view Reco_NonManifoldSurfaceShapeRepresentation(
   "NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION");
 
 // gka 08.01.02
-static TCollection_AsciiString Reco_OrientedSurface("ORIENTED_SURFACE");
-static TCollection_AsciiString Reco_Subface("SUBFACE");
-static TCollection_AsciiString Reco_Subedge("SUBEDGE");
-static TCollection_AsciiString Reco_SeamEdge("SEAM_EDGE");
-static TCollection_AsciiString Reco_ConnectedFaceSubSet("CONNECTED_FACE_SUB_SET");
+static constexpr std::string_view Reco_OrientedSurface("ORIENTED_SURFACE");
+static constexpr std::string_view Reco_Subface("SUBFACE");
+static constexpr std::string_view Reco_Subedge("SUBEDGE");
+static constexpr std::string_view Reco_SeamEdge("SEAM_EDGE");
+static constexpr std::string_view Reco_ConnectedFaceSubSet("CONNECTED_FACE_SUB_SET");
 
 // Added for AP209
-static TCollection_AsciiString Reco_EulerAngles("EULER_ANGLES");
-static TCollection_AsciiString Reco_MassUnit("MASS_UNIT");
-static TCollection_AsciiString Reco_MassMeasureWithUnit("MASS_MEASURE_WITH_UNIT");
-static TCollection_AsciiString Reco_ThermodynamicTemperatureUnit("THERMODYNAMIC_TEMPERATURE_UNIT");
-static TCollection_AsciiString Reco_AnalysisItemWithinRepresentation(
+static constexpr std::string_view Reco_EulerAngles("EULER_ANGLES");
+static constexpr std::string_view Reco_MassUnit("MASS_UNIT");
+static constexpr std::string_view Reco_MassMeasureWithUnit("MASS_MEASURE_WITH_UNIT");
+static constexpr std::string_view Reco_ThermodynamicTemperatureUnit(
+  "THERMODYNAMIC_TEMPERATURE_UNIT");
+static constexpr std::string_view Reco_AnalysisItemWithinRepresentation(
   "ANALYSIS_ITEM_WITHIN_REPRESENTATION");
-static TCollection_AsciiString Reco_Curve3dElementDescriptor("CURVE_3D_ELEMENT_DESCRIPTOR");
-static TCollection_AsciiString Reco_CurveElementEndReleasePacket(
+static constexpr std::string_view Reco_Curve3dElementDescriptor("CURVE_3D_ELEMENT_DESCRIPTOR");
+static constexpr std::string_view Reco_CurveElementEndReleasePacket(
   "CURVE_ELEMENT_END_RELEASE_PACKET");
-static TCollection_AsciiString Reco_CurveElementSectionDefinition(
+static constexpr std::string_view Reco_CurveElementSectionDefinition(
   "CURVE_ELEMENT_SECTION_DEFINITION");
-static TCollection_AsciiString Reco_CurveElementSectionDerivedDefinitions(
+static constexpr std::string_view Reco_CurveElementSectionDerivedDefinitions(
   "CURVE_ELEMENT_SECTION_DERIVED_DEFINITIONS");
-static TCollection_AsciiString Reco_ElementDescriptor("ELEMENT_DESCRIPTOR");
-static TCollection_AsciiString Reco_ElementMaterial("ELEMENT_MATERIAL");
-static TCollection_AsciiString Reco_Surface3dElementDescriptor("SURFACE_3D_ELEMENT_DESCRIPTOR");
-static TCollection_AsciiString Reco_SurfaceElementProperty("SURFACE_ELEMENT_PROPERTY");
-static TCollection_AsciiString Reco_SurfaceSection("SURFACE_SECTION");
-static TCollection_AsciiString Reco_SurfaceSectionField("SURFACE_SECTION_FIELD");
-static TCollection_AsciiString Reco_SurfaceSectionFieldConstant("SURFACE_SECTION_FIELD_CONSTANT");
-static TCollection_AsciiString Reco_SurfaceSectionFieldVarying("SURFACE_SECTION_FIELD_VARYING");
-static TCollection_AsciiString Reco_UniformSurfaceSection("UNIFORM_SURFACE_SECTION");
-static TCollection_AsciiString Reco_Volume3dElementDescriptor("VOLUME_3D_ELEMENT_DESCRIPTOR");
-static TCollection_AsciiString Reco_AlignedCurve3dElementCoordinateSystem(
+static constexpr std::string_view Reco_ElementDescriptor("ELEMENT_DESCRIPTOR");
+static constexpr std::string_view Reco_ElementMaterial("ELEMENT_MATERIAL");
+static constexpr std::string_view Reco_Surface3dElementDescriptor("SURFACE_3D_ELEMENT_DESCRIPTOR");
+static constexpr std::string_view Reco_SurfaceElementProperty("SURFACE_ELEMENT_PROPERTY");
+static constexpr std::string_view Reco_SurfaceSection("SURFACE_SECTION");
+static constexpr std::string_view Reco_SurfaceSectionField("SURFACE_SECTION_FIELD");
+static constexpr std::string_view Reco_SurfaceSectionFieldConstant(
+  "SURFACE_SECTION_FIELD_CONSTANT");
+static constexpr std::string_view Reco_SurfaceSectionFieldVarying("SURFACE_SECTION_FIELD_VARYING");
+static constexpr std::string_view Reco_UniformSurfaceSection("UNIFORM_SURFACE_SECTION");
+static constexpr std::string_view Reco_Volume3dElementDescriptor("VOLUME_3D_ELEMENT_DESCRIPTOR");
+static constexpr std::string_view Reco_AlignedCurve3dElementCoordinateSystem(
   "ALIGNED_CURVE_3D_ELEMENT_COORDINATE_SYSTEM");
-static TCollection_AsciiString Reco_ArbitraryVolume3dElementCoordinateSystem(
+static constexpr std::string_view Reco_ArbitraryVolume3dElementCoordinateSystem(
   "ARBITRARY_VOLUME_3D_ELEMENT_COORDINATE_SYSTEM");
-static TCollection_AsciiString Reco_Curve3dElementProperty("CURVE_3D_ELEMENT_PROPERTY");
-static TCollection_AsciiString Reco_Curve3dElementRepresentation("CURVE_3D_ELEMENT_REPRESENTATION");
-static TCollection_AsciiString Reco_Node("NODE");
-// static TCollection_AsciiString Reco_CurveElementEndCoordinateSystem(" ");
-static TCollection_AsciiString Reco_CurveElementEndOffset("CURVE_ELEMENT_END_OFFSET");
-static TCollection_AsciiString Reco_CurveElementEndRelease("CURVE_ELEMENT_END_RELEASE");
-static TCollection_AsciiString Reco_CurveElementInterval("CURVE_ELEMENT_INTERVAL");
-static TCollection_AsciiString Reco_CurveElementIntervalConstant("CURVE_ELEMENT_INTERVAL_CONSTANT");
-static TCollection_AsciiString Reco_DummyNode("DUMMY_NODE");
-static TCollection_AsciiString Reco_CurveElementLocation("CURVE_ELEMENT_LOCATION");
-static TCollection_AsciiString Reco_ElementGeometricRelationship("ELEMENT_GEOMETRIC_RELATIONSHIP");
-static TCollection_AsciiString Reco_ElementGroup("ELEMENT_GROUP");
-static TCollection_AsciiString Reco_ElementRepresentation("ELEMENT_REPRESENTATION");
-static TCollection_AsciiString Reco_FeaAreaDensity("FEA_AREA_DENSITY");
-static TCollection_AsciiString Reco_FeaAxis2Placement3d("FEA_AXIS2_PLACEMENT_3D");
-static TCollection_AsciiString Reco_FeaGroup("FEA_GROUP");
-static TCollection_AsciiString Reco_FeaLinearElasticity("FEA_LINEAR_ELASTICITY");
-static TCollection_AsciiString Reco_FeaMassDensity("FEA_MASS_DENSITY");
-static TCollection_AsciiString Reco_FeaMaterialPropertyRepresentation(
+static constexpr std::string_view Reco_Curve3dElementProperty("CURVE_3D_ELEMENT_PROPERTY");
+static constexpr std::string_view Reco_Curve3dElementRepresentation(
+  "CURVE_3D_ELEMENT_REPRESENTATION");
+static constexpr std::string_view Reco_Node("NODE");
+// static constexpr std::string_view Reco_CurveElementEndCoordinateSystem(" ");
+static constexpr std::string_view Reco_CurveElementEndOffset("CURVE_ELEMENT_END_OFFSET");
+static constexpr std::string_view Reco_CurveElementEndRelease("CURVE_ELEMENT_END_RELEASE");
+static constexpr std::string_view Reco_CurveElementInterval("CURVE_ELEMENT_INTERVAL");
+static constexpr std::string_view Reco_CurveElementIntervalConstant(
+  "CURVE_ELEMENT_INTERVAL_CONSTANT");
+static constexpr std::string_view Reco_DummyNode("DUMMY_NODE");
+static constexpr std::string_view Reco_CurveElementLocation("CURVE_ELEMENT_LOCATION");
+static constexpr std::string_view Reco_ElementGeometricRelationship(
+  "ELEMENT_GEOMETRIC_RELATIONSHIP");
+static constexpr std::string_view Reco_ElementGroup("ELEMENT_GROUP");
+static constexpr std::string_view Reco_ElementRepresentation("ELEMENT_REPRESENTATION");
+static constexpr std::string_view Reco_FeaAreaDensity("FEA_AREA_DENSITY");
+static constexpr std::string_view Reco_FeaAxis2Placement3d("FEA_AXIS2_PLACEMENT_3D");
+static constexpr std::string_view Reco_FeaGroup("FEA_GROUP");
+static constexpr std::string_view Reco_FeaLinearElasticity("FEA_LINEAR_ELASTICITY");
+static constexpr std::string_view Reco_FeaMassDensity("FEA_MASS_DENSITY");
+static constexpr std::string_view Reco_FeaMaterialPropertyRepresentation(
   "FEA_MATERIAL_PROPERTY_REPRESENTATION");
-static TCollection_AsciiString Reco_FeaMaterialPropertyRepresentationItem(
+static constexpr std::string_view Reco_FeaMaterialPropertyRepresentationItem(
   "FEA_MATERIAL_PROPERTY_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_FeaModel("FEA_MODEL");
-static TCollection_AsciiString Reco_FeaModel3d("FEA_MODEL_3D");
-static TCollection_AsciiString Reco_FeaMoistureAbsorption("FEA_MOISTURE_ABSORPTION");
-static TCollection_AsciiString Reco_FeaParametricPoint("FEA_PARAMETRIC_POINT");
-static TCollection_AsciiString Reco_FeaRepresentationItem("FEA_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_FeaSecantCoefficientOfLinearThermalExpansion(
+static constexpr std::string_view Reco_FeaModel("FEA_MODEL");
+static constexpr std::string_view Reco_FeaModel3d("FEA_MODEL_3D");
+static constexpr std::string_view Reco_FeaMoistureAbsorption("FEA_MOISTURE_ABSORPTION");
+static constexpr std::string_view Reco_FeaParametricPoint("FEA_PARAMETRIC_POINT");
+static constexpr std::string_view Reco_FeaRepresentationItem("FEA_REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_FeaSecantCoefficientOfLinearThermalExpansion(
   "FEA_SECANT_COEFFICIENT_OF_LINEAR_THERMAL_EXPANSION");
-static TCollection_AsciiString Reco_FeaShellBendingStiffness("FEA_SHELL_BENDING_STIFFNESS");
-static TCollection_AsciiString Reco_FeaShellMembraneBendingCouplingStiffness(
+static constexpr std::string_view Reco_FeaShellBendingStiffness("FEA_SHELL_BENDING_STIFFNESS");
+static constexpr std::string_view Reco_FeaShellMembraneBendingCouplingStiffness(
   "FEA_SHELL_MEMBRANE_BENDING_COUPLING_STIFFNESS");
-static TCollection_AsciiString Reco_FeaShellMembraneStiffness("FEA_SHELL_MEMBRANE_STIFFNESS");
-static TCollection_AsciiString Reco_FeaShellShearStiffness("FEA_SHELL_SHEAR_STIFFNESS");
-static TCollection_AsciiString Reco_GeometricNode("GEOMETRIC_NODE");
-static TCollection_AsciiString Reco_FeaTangentialCoefficientOfLinearThermalExpansion(
+static constexpr std::string_view Reco_FeaShellMembraneStiffness("FEA_SHELL_MEMBRANE_STIFFNESS");
+static constexpr std::string_view Reco_FeaShellShearStiffness("FEA_SHELL_SHEAR_STIFFNESS");
+static constexpr std::string_view Reco_GeometricNode("GEOMETRIC_NODE");
+static constexpr std::string_view Reco_FeaTangentialCoefficientOfLinearThermalExpansion(
   "FEA_TANGENTIAL_COEFFICIENT_OF_LINEAR_THERMAL_EXPANSION");
-static TCollection_AsciiString Reco_NodeGroup("NODE_GROUP");
-static TCollection_AsciiString Reco_NodeRepresentation("NODE_REPRESENTATION");
-static TCollection_AsciiString Reco_NodeSet("NODE_SET");
-static TCollection_AsciiString Reco_NodeWithSolutionCoordinateSystem(
+static constexpr std::string_view Reco_NodeGroup("NODE_GROUP");
+static constexpr std::string_view Reco_NodeRepresentation("NODE_REPRESENTATION");
+static constexpr std::string_view Reco_NodeSet("NODE_SET");
+static constexpr std::string_view Reco_NodeWithSolutionCoordinateSystem(
   "NODE_WITH_SOLUTION_COORDINATE_SYSTEM");
-static TCollection_AsciiString Reco_NodeWithVector("NODE_WITH_VECTOR");
-static TCollection_AsciiString Reco_ParametricCurve3dElementCoordinateDirection(
+static constexpr std::string_view Reco_NodeWithVector("NODE_WITH_VECTOR");
+static constexpr std::string_view Reco_ParametricCurve3dElementCoordinateDirection(
   "PARAMETRIC_CURVE_3D_ELEMENT_COORDINATE_DIRECTION");
-static TCollection_AsciiString Reco_ParametricCurve3dElementCoordinateSystem(
+static constexpr std::string_view Reco_ParametricCurve3dElementCoordinateSystem(
   "PARAMETRIC_CURVE_3D_ELEMENT_COORDINATE_SYSTEM");
-static TCollection_AsciiString Reco_ParametricSurface3dElementCoordinateSystem(
+static constexpr std::string_view Reco_ParametricSurface3dElementCoordinateSystem(
   "PARAMETRIC_SURFACE_3D_ELEMENT_COORDINATE_SYSTEM");
-static TCollection_AsciiString Reco_Surface3dElementRepresentation(
+static constexpr std::string_view Reco_Surface3dElementRepresentation(
   "SURFACE_3D_ELEMENT_REPRESENTATION");
-// static TCollection_AsciiString Reco_SymmetricTensor22d(" ");
-// static TCollection_AsciiString Reco_SymmetricTensor42d(" ");
-// static TCollection_AsciiString Reco_SymmetricTensor43d(" ");
-static TCollection_AsciiString Reco_Volume3dElementRepresentation(
+// static constexpr std::string_view Reco_SymmetricTensor22d(" ");
+// static constexpr std::string_view Reco_SymmetricTensor42d(" ");
+// static constexpr std::string_view Reco_SymmetricTensor43d(" ");
+static constexpr std::string_view Reco_Volume3dElementRepresentation(
   "VOLUME_3D_ELEMENT_REPRESENTATION");
-static TCollection_AsciiString Reco_DataEnvironment("DATA_ENVIRONMENT");
-static TCollection_AsciiString Reco_MaterialPropertyRepresentation(
+static constexpr std::string_view Reco_DataEnvironment("DATA_ENVIRONMENT");
+static constexpr std::string_view Reco_MaterialPropertyRepresentation(
   "MATERIAL_PROPERTY_REPRESENTATION");
-static TCollection_AsciiString Reco_PropertyDefinitionRelationship(
+static constexpr std::string_view Reco_PropertyDefinitionRelationship(
   "PROPERTY_DEFINITION_RELATIONSHIP");
-static TCollection_AsciiString Reco_PointRepresentation("POINT_REPRESENTATION");
-static TCollection_AsciiString Reco_MaterialProperty("MATERIAL_PROPERTY");
-static TCollection_AsciiString Reco_FeaModelDefinition("FEA_MODEL_DEFINITION");
-static TCollection_AsciiString Reco_FreedomAndCoefficient("FREEDOM_AND_COEFFICIENT");
-static TCollection_AsciiString Reco_FreedomsList("FREEDOMS_LIST");
-static TCollection_AsciiString Reco_ProductDefinitionFormationRelationship(
+static constexpr std::string_view Reco_PointRepresentation("POINT_REPRESENTATION");
+static constexpr std::string_view Reco_MaterialProperty("MATERIAL_PROPERTY");
+static constexpr std::string_view Reco_FeaModelDefinition("FEA_MODEL_DEFINITION");
+static constexpr std::string_view Reco_FreedomAndCoefficient("FREEDOM_AND_COEFFICIENT");
+static constexpr std::string_view Reco_FreedomsList("FREEDOMS_LIST");
+static constexpr std::string_view Reco_ProductDefinitionFormationRelationship(
   "PRODUCT_DEFINITION_FORMATION_RELATIONSHIP");
-// static TCollection_AsciiString Reco_FeaModelDefinition("FEA_MODEL_DEFINITION");
-static TCollection_AsciiString Reco_NodeDefinition("NODE_DEFINITION");
-static TCollection_AsciiString Reco_StructuralResponseProperty("STRUCTURAL_RESPONSE_PROPERTY");
-static TCollection_AsciiString Reco_StructuralResponsePropertyDefinitionRepresentation(
+// static constexpr std::string_view Reco_FeaModelDefinition("FEA_MODEL_DEFINITION");
+static constexpr std::string_view Reco_NodeDefinition("NODE_DEFINITION");
+static constexpr std::string_view Reco_StructuralResponseProperty("STRUCTURAL_RESPONSE_PROPERTY");
+static constexpr std::string_view Reco_StructuralResponsePropertyDefinitionRepresentation(
   "STRUCTURAL_RESPONSE_PROPERTY_DEFINITION_REPRESENTATION");
-static TCollection_AsciiString Reco_AlignedSurface3dElementCoordinateSystem(
+static constexpr std::string_view Reco_AlignedSurface3dElementCoordinateSystem(
   "ALIGNED_SURFACE_3D_ELEMENT_COORDINATE_SYSTEM");
-static TCollection_AsciiString Reco_ConstantSurface3dElementCoordinateSystem(
+static constexpr std::string_view Reco_ConstantSurface3dElementCoordinateSystem(
   "CONSTANT_SURFACE_3D_ELEMENT_COORDINATE_SYSTEM");
-static TCollection_AsciiString Reco_CurveElementIntervalLinearlyVarying(
+static constexpr std::string_view Reco_CurveElementIntervalLinearlyVarying(
   "CURVE_ELEMENT_INTERVAL_LINEARLY_VARYING");
-static TCollection_AsciiString Reco_FeaCurveSectionGeometricRelationship(
+static constexpr std::string_view Reco_FeaCurveSectionGeometricRelationship(
   "FEA_CURVE_SECTION_GEOMETRIC_RELATIONSHIP");
-static TCollection_AsciiString Reco_FeaSurfaceSectionGeometricRelationship(
+static constexpr std::string_view Reco_FeaSurfaceSectionGeometricRelationship(
   "FEA_SURFACE_SECTION_GEOMETRIC_RELATIONSHIP");
 
 // PTV 28.01.2003 TRJ11 AP214 external references
-static TCollection_AsciiString Reco_DocumentProductAssociation("DOCUMENT_PRODUCT_ASSOCIATION");
-static TCollection_AsciiString Reco_DocumentProductEquivalence("DOCUMENT_PRODUCT_EQUIVALENCE");
+static constexpr std::string_view Reco_DocumentProductAssociation("DOCUMENT_PRODUCT_ASSOCIATION");
+static constexpr std::string_view Reco_DocumentProductEquivalence("DOCUMENT_PRODUCT_EQUIVALENCE");
 
 // Added by SKL 18.06.2003 for Dimensional Tolerances (CAX-IF TRJ11)
-static TCollection_AsciiString Reco_ShapeRepresentationWithParameters(
+static constexpr std::string_view Reco_ShapeRepresentationWithParameters(
   "SHAPE_REPRESENTATION_WITH_PARAMETERS");
-static TCollection_AsciiString Reco_AngularityTolerance("ANGULARITY_TOLERANCE");
-static TCollection_AsciiString Reco_ConcentricityTolerance("CONCENTRICITY_TOLERANCE");
-static TCollection_AsciiString Reco_CircularRunoutTolerance("CIRCULAR_RUNOUT_TOLERANCE");
-static TCollection_AsciiString Reco_CoaxialityTolerance("COAXIALITY_TOLERANCE");
-static TCollection_AsciiString Reco_CylindricityTolerance("CYLINDRICITY_TOLERANCE");
-static TCollection_AsciiString Reco_FlatnessTolerance("FLATNESS_TOLERANCE");
-static TCollection_AsciiString Reco_LineProfileTolerance("LINE_PROFILE_TOLERANCE");
-static TCollection_AsciiString Reco_ParallelismTolerance("PARALLELISM_TOLERANCE");
-static TCollection_AsciiString Reco_PerpendicularityTolerance("PERPENDICULARITY_TOLERANCE");
-static TCollection_AsciiString Reco_PositionTolerance("POSITION_TOLERANCE");
-static TCollection_AsciiString Reco_RoundnessTolerance("ROUNDNESS_TOLERANCE");
-static TCollection_AsciiString Reco_StraightnessTolerance("STRAIGHTNESS_TOLERANCE");
-static TCollection_AsciiString Reco_SurfaceProfileTolerance("SURFACE_PROFILE_TOLERANCE");
-static TCollection_AsciiString Reco_SymmetryTolerance("SYMMETRY_TOLERANCE");
-static TCollection_AsciiString Reco_TotalRunoutTolerance("TOTAL_RUNOUT_TOLERANCE");
-static TCollection_AsciiString Reco_GeometricTolerance("GEOMETRIC_TOLERANCE");
-static TCollection_AsciiString Reco_GeometricToleranceRelationship(
+static constexpr std::string_view Reco_AngularityTolerance("ANGULARITY_TOLERANCE");
+static constexpr std::string_view Reco_ConcentricityTolerance("CONCENTRICITY_TOLERANCE");
+static constexpr std::string_view Reco_CircularRunoutTolerance("CIRCULAR_RUNOUT_TOLERANCE");
+static constexpr std::string_view Reco_CoaxialityTolerance("COAXIALITY_TOLERANCE");
+static constexpr std::string_view Reco_CylindricityTolerance("CYLINDRICITY_TOLERANCE");
+static constexpr std::string_view Reco_FlatnessTolerance("FLATNESS_TOLERANCE");
+static constexpr std::string_view Reco_LineProfileTolerance("LINE_PROFILE_TOLERANCE");
+static constexpr std::string_view Reco_ParallelismTolerance("PARALLELISM_TOLERANCE");
+static constexpr std::string_view Reco_PerpendicularityTolerance("PERPENDICULARITY_TOLERANCE");
+static constexpr std::string_view Reco_PositionTolerance("POSITION_TOLERANCE");
+static constexpr std::string_view Reco_RoundnessTolerance("ROUNDNESS_TOLERANCE");
+static constexpr std::string_view Reco_StraightnessTolerance("STRAIGHTNESS_TOLERANCE");
+static constexpr std::string_view Reco_SurfaceProfileTolerance("SURFACE_PROFILE_TOLERANCE");
+static constexpr std::string_view Reco_SymmetryTolerance("SYMMETRY_TOLERANCE");
+static constexpr std::string_view Reco_TotalRunoutTolerance("TOTAL_RUNOUT_TOLERANCE");
+static constexpr std::string_view Reco_GeometricTolerance("GEOMETRIC_TOLERANCE");
+static constexpr std::string_view Reco_GeometricToleranceRelationship(
   "GEOMETRIC_TOLERANCE_RELATIONSHIP");
-static TCollection_AsciiString Reco_GeometricToleranceWithDatumReference(
+static constexpr std::string_view Reco_GeometricToleranceWithDatumReference(
   "GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE");
-static TCollection_AsciiString Reco_ModifiedGeometricTolerance("MODIFIED_GEOMETRIC_TOLERANCE");
-static TCollection_AsciiString Reco_Datum("DATUM");
-static TCollection_AsciiString Reco_DatumFeature("DATUM_FEATURE");
-static TCollection_AsciiString Reco_DatumReference("DATUM_REFERENCE");
-static TCollection_AsciiString Reco_CommonDatum("COMMON_DATUM");
-static TCollection_AsciiString Reco_DatumTarget("DATUM_TARGET");
-static TCollection_AsciiString Reco_PlacedDatumTargetFeature("PLACED_DATUM_TARGET_FEATURE");
+static constexpr std::string_view Reco_ModifiedGeometricTolerance("MODIFIED_GEOMETRIC_TOLERANCE");
+static constexpr std::string_view Reco_Datum("DATUM");
+static constexpr std::string_view Reco_DatumFeature("DATUM_FEATURE");
+static constexpr std::string_view Reco_DatumReference("DATUM_REFERENCE");
+static constexpr std::string_view Reco_CommonDatum("COMMON_DATUM");
+static constexpr std::string_view Reco_DatumTarget("DATUM_TARGET");
+static constexpr std::string_view Reco_PlacedDatumTargetFeature("PLACED_DATUM_TARGET_FEATURE");
 
 // Added by ika for GD&T AP242
-static TCollection_AsciiString Reco_Apex("APEX");
-static TCollection_AsciiString Reco_CentreOfSymmetry("CENTRE_OF_SYMMETRY");
-static TCollection_AsciiString Reco_GeometricAlignment("GEOMETRIC_ALIGNMENT");
-static TCollection_AsciiString Reco_PerpendicularTo("PERPENDICULAR_TO");
-static TCollection_AsciiString Reco_Tangent("TANGENT");
-static TCollection_AsciiString Reco_ParallelOffset("PARALLEL_OFFSET");
-static TCollection_AsciiString Reco_GeometricItemSpecificUsage("GEOMETRIC_ITEM_SPECIFIC_USAGE");
-static TCollection_AsciiString Reco_IdAttribute("ID_ATTRIBUTE");
-static TCollection_AsciiString Reco_ItemIdentifiedRepresentationUsage(
+static constexpr std::string_view Reco_Apex("APEX");
+static constexpr std::string_view Reco_CentreOfSymmetry("CENTRE_OF_SYMMETRY");
+static constexpr std::string_view Reco_GeometricAlignment("GEOMETRIC_ALIGNMENT");
+static constexpr std::string_view Reco_PerpendicularTo("PERPENDICULAR_TO");
+static constexpr std::string_view Reco_Tangent("TANGENT");
+static constexpr std::string_view Reco_ParallelOffset("PARALLEL_OFFSET");
+static constexpr std::string_view Reco_GeometricItemSpecificUsage("GEOMETRIC_ITEM_SPECIFIC_USAGE");
+static constexpr std::string_view Reco_IdAttribute("ID_ATTRIBUTE");
+static constexpr std::string_view Reco_ItemIdentifiedRepresentationUsage(
   "ITEM_IDENTIFIED_REPRESENTATION_USAGE");
-static TCollection_AsciiString Reco_AllAroundShapeAspect("ALL_AROUND_SHAPE_ASPECT");
-static TCollection_AsciiString Reco_BetweenShapeAspect("BETWEEN_SHAPE_ASPECT");
-static TCollection_AsciiString Reco_CompositeGroupShapeAspect("COMPOSITE_GROUP_SHAPE_ASPECT");
-static TCollection_AsciiString Reco_ContinuosShapeAspect("CONTINUOUS_SHAPE_ASPECT");
-static TCollection_AsciiString Reco_GeometricToleranceWithDefinedAreaUnit(
+static constexpr std::string_view Reco_AllAroundShapeAspect("ALL_AROUND_SHAPE_ASPECT");
+static constexpr std::string_view Reco_BetweenShapeAspect("BETWEEN_SHAPE_ASPECT");
+static constexpr std::string_view Reco_CompositeGroupShapeAspect("COMPOSITE_GROUP_SHAPE_ASPECT");
+static constexpr std::string_view Reco_ContinuosShapeAspect("CONTINUOUS_SHAPE_ASPECT");
+static constexpr std::string_view Reco_GeometricToleranceWithDefinedAreaUnit(
   "GEOMETRIC_TOLERANCE_WITH_DEFINED_AREA_UNIT");
-static TCollection_AsciiString Reco_GeometricToleranceWithDefinedUnit(
+static constexpr std::string_view Reco_GeometricToleranceWithDefinedUnit(
   "GEOMETRIC_TOLERANCE_WITH_DEFINED_UNIT");
-static TCollection_AsciiString Reco_GeometricToleranceWithMaximumTolerance(
+static constexpr std::string_view Reco_GeometricToleranceWithMaximumTolerance(
   "GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE");
-static TCollection_AsciiString Reco_GeometricToleranceWithModifiers(
+static constexpr std::string_view Reco_GeometricToleranceWithModifiers(
   "GEOMETRIC_TOLERANCE_WITH_MODIFIERS");
-static TCollection_AsciiString Reco_UnequallyDisposedGeometricTolerance(
+static constexpr std::string_view Reco_UnequallyDisposedGeometricTolerance(
   "UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE");
-static TCollection_AsciiString Reco_NonUniformZoneDefinition("NON_UNIFORM_ZONE_DEFINITION");
-static TCollection_AsciiString Reco_ProjectedZoneDefinition("PROJECTED_ZONE_DEFINITION");
-static TCollection_AsciiString Reco_RunoutZoneDefinition("RUNOUT_ZONE_DEFINITION");
-static TCollection_AsciiString Reco_RunoutZoneOrientation("RUNOUT_ZONE_ORIENTATION");
-static TCollection_AsciiString Reco_ToleranceZone("TOLERANCE_ZONE");
-static TCollection_AsciiString Reco_ToleranceZoneDefinition("TOLERANCE_ZONE_DEFINITION");
-static TCollection_AsciiString Reco_ToleranceZoneForm("TOLERANCE_ZONE_FORM");
-static TCollection_AsciiString Reco_ValueFormatTypeQualifier("VALUE_FORMAT_TYPE_QUALIFIER");
-static TCollection_AsciiString Reco_DatumReferenceCompartment("DATUM_REFERENCE_COMPARTMENT");
-static TCollection_AsciiString Reco_DatumReferenceElement("DATUM_REFERENCE_ELEMENT");
-static TCollection_AsciiString Reco_DatumReferenceModifierWithValue(
+static constexpr std::string_view Reco_NonUniformZoneDefinition("NON_UNIFORM_ZONE_DEFINITION");
+static constexpr std::string_view Reco_ProjectedZoneDefinition("PROJECTED_ZONE_DEFINITION");
+static constexpr std::string_view Reco_RunoutZoneDefinition("RUNOUT_ZONE_DEFINITION");
+static constexpr std::string_view Reco_RunoutZoneOrientation("RUNOUT_ZONE_ORIENTATION");
+static constexpr std::string_view Reco_ToleranceZone("TOLERANCE_ZONE");
+static constexpr std::string_view Reco_ToleranceZoneDefinition("TOLERANCE_ZONE_DEFINITION");
+static constexpr std::string_view Reco_ToleranceZoneForm("TOLERANCE_ZONE_FORM");
+static constexpr std::string_view Reco_ValueFormatTypeQualifier("VALUE_FORMAT_TYPE_QUALIFIER");
+static constexpr std::string_view Reco_DatumReferenceCompartment("DATUM_REFERENCE_COMPARTMENT");
+static constexpr std::string_view Reco_DatumReferenceElement("DATUM_REFERENCE_ELEMENT");
+static constexpr std::string_view Reco_DatumReferenceModifierWithValue(
   "DATUM_REFERENCE_MODIFIER_WITH_VALUE");
-static TCollection_AsciiString Reco_DatumSystem("DATUM_SYSTEM");
-static TCollection_AsciiString Reco_GeneralDatumReference("GENERAL_DATUM_REFERENCE");
-static TCollection_AsciiString Reco_IntegerRepresentationItem("INTEGER_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_ValueRepresentationItem("VALUE_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_FeatureForDatumTargetRelationship(
+static constexpr std::string_view Reco_DatumSystem("DATUM_SYSTEM");
+static constexpr std::string_view Reco_GeneralDatumReference("GENERAL_DATUM_REFERENCE");
+static constexpr std::string_view Reco_IntegerRepresentationItem("INTEGER_REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_ValueRepresentationItem("VALUE_REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_FeatureForDatumTargetRelationship(
   "FEATURE_FOR_DATUM_TARGET_RELATIONSHIP");
-static TCollection_AsciiString Reco_DraughtingModelItemAssociation(
+static constexpr std::string_view Reco_DraughtingModelItemAssociation(
   "DRAUGHTING_MODEL_ITEM_ASSOCIATION");
-static TCollection_AsciiString Reco_AnnotationPlane("ANNOTATION_PLANE");
+static constexpr std::string_view Reco_AnnotationPlane("ANNOTATION_PLANE");
 
-static TCollection_AsciiString Reco_TessellatedAnnotationOccurrence(
+static constexpr std::string_view Reco_TessellatedAnnotationOccurrence(
   "TESSELLATED_ANNOTATION_OCCURRENCE");
-static TCollection_AsciiString Reco_TessellatedGeometricSet("TESSELLATED_GEOMETRIC_SET");
-static TCollection_AsciiString Reco_TessellatedCurveSet("TESSELLATED_CURVE_SET");
-static TCollection_AsciiString Reco_TessellatedItem("TESSELLATED_ITEM");
-static TCollection_AsciiString Reco_RepositionedTessellatedItem("REPOSITIONED_TESSELLATED_ITEM");
-static TCollection_AsciiString Reco_CoordinatesList("COORDINATES_LIST");
-static TCollection_AsciiString Reco_ConstructiveGeometryRepresentation(
+static constexpr std::string_view Reco_TessellatedGeometricSet("TESSELLATED_GEOMETRIC_SET");
+static constexpr std::string_view Reco_TessellatedCurveSet("TESSELLATED_CURVE_SET");
+static constexpr std::string_view Reco_TessellatedItem("TESSELLATED_ITEM");
+static constexpr std::string_view Reco_RepositionedTessellatedItem("REPOSITIONED_TESSELLATED_ITEM");
+static constexpr std::string_view Reco_CoordinatesList("COORDINATES_LIST");
+static constexpr std::string_view Reco_ConstructiveGeometryRepresentation(
   "CONSTRUCTIVE_GEOMETRY_REPRESENTATION");
-static TCollection_AsciiString Reco_ConstructiveGeometryRepresentationRelationship(
+static constexpr std::string_view Reco_ConstructiveGeometryRepresentationRelationship(
   "CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP");
-static TCollection_AsciiString Reco_CharacterizedRepresentation("CHARACTERIZED_REPRESENTATION");
-static TCollection_AsciiString Reco_CameraModelD3MultiClipping("CAMERA_MODEL_D3_MULTI_CLIPPING");
-static TCollection_AsciiString Reco_CameraModelD3MultiClippingIntersection(
+static constexpr std::string_view Reco_CharacterizedRepresentation("CHARACTERIZED_REPRESENTATION");
+static constexpr std::string_view Reco_CameraModelD3MultiClipping("CAMERA_MODEL_D3_MULTI_CLIPPING");
+static constexpr std::string_view Reco_CameraModelD3MultiClippingIntersection(
   "CAMERA_MODEL_D3_MULTI_CLIPPING_INTERSECTION");
-static TCollection_AsciiString Reco_CameraModelD3MultiClippingUnion(
+static constexpr std::string_view Reco_CameraModelD3MultiClippingUnion(
   "CAMERA_MODEL_D3_MULTI_CLIPPING_UNION");
 
-static TCollection_AsciiString Reco_SurfaceStyleTransparent("SURFACE_STYLE_TRANSPARENT");
-static TCollection_AsciiString Reco_SurfaceStyleReflectanceAmbient(
+static constexpr std::string_view Reco_SurfaceStyleTransparent("SURFACE_STYLE_TRANSPARENT");
+static constexpr std::string_view Reco_SurfaceStyleReflectanceAmbient(
   "SURFACE_STYLE_REFLECTANCE_AMBIENT");
-static TCollection_AsciiString Reco_SurfaceStyleRendering("SURFACE_STYLE_RENDERING");
-static TCollection_AsciiString Reco_SurfaceStyleRenderingWithProperties(
+static constexpr std::string_view Reco_SurfaceStyleRendering("SURFACE_STYLE_RENDERING");
+static constexpr std::string_view Reco_SurfaceStyleRenderingWithProperties(
   "SURFACE_STYLE_RENDERING_WITH_PROPERTIES");
 
-static TCollection_AsciiString Reco_RepresentationContextReference(
+static constexpr std::string_view Reco_RepresentationContextReference(
   "REPRESENTATION_CONTEXT_REFERENCE");
-static TCollection_AsciiString Reco_RepresentationReference("REPRESENTATION_REFERENCE");
-static TCollection_AsciiString Reco_SuParameters("SU_PARAMETERS");
-static TCollection_AsciiString Reco_RotationAboutDirection("ROTATION_ABOUT_DIRECTION");
-static TCollection_AsciiString Reco_KinematicJoint("KINEMATIC_JOINT");
-static TCollection_AsciiString Reco_ActuatedKinematicPair("ACTUATED_KINEMATIC_PAIR");
-static TCollection_AsciiString Reco_ContextDependentKinematicLinkRepresentation(
+static constexpr std::string_view Reco_RepresentationReference("REPRESENTATION_REFERENCE");
+static constexpr std::string_view Reco_SuParameters("SU_PARAMETERS");
+static constexpr std::string_view Reco_RotationAboutDirection("ROTATION_ABOUT_DIRECTION");
+static constexpr std::string_view Reco_KinematicJoint("KINEMATIC_JOINT");
+static constexpr std::string_view Reco_ActuatedKinematicPair("ACTUATED_KINEMATIC_PAIR");
+static constexpr std::string_view Reco_ContextDependentKinematicLinkRepresentation(
   "CONTEXT_DEPENDENT_KINEMATIC_LINK_REPRESENTATION");
-static TCollection_AsciiString Reco_CylindricalPair("CYLINDRICAL_PAIR");
-static TCollection_AsciiString Reco_CylindricalPairValue("CYLINDRICAL_PAIR_VALUE");
-static TCollection_AsciiString Reco_CylindricalPairWithRange("CYLINDRICAL_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_FullyConstrainedPair("FULLY_CONSTRAINED_PAIR");
-static TCollection_AsciiString Reco_GearPair("GEAR_PAIR");
-static TCollection_AsciiString Reco_GearPairValue("GEAR_PAIR_VALUE");
-static TCollection_AsciiString Reco_GearPairWithRange("GEAR_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_HomokineticPair("HOMOKINETIC_PAIR");
-static TCollection_AsciiString Reco_KinematicLink("KINEMATIC_LINK");
-static TCollection_AsciiString Reco_KinematicLinkRepresentationAssociation(
+static constexpr std::string_view Reco_CylindricalPair("CYLINDRICAL_PAIR");
+static constexpr std::string_view Reco_CylindricalPairValue("CYLINDRICAL_PAIR_VALUE");
+static constexpr std::string_view Reco_CylindricalPairWithRange("CYLINDRICAL_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_FullyConstrainedPair("FULLY_CONSTRAINED_PAIR");
+static constexpr std::string_view Reco_GearPair("GEAR_PAIR");
+static constexpr std::string_view Reco_GearPairValue("GEAR_PAIR_VALUE");
+static constexpr std::string_view Reco_GearPairWithRange("GEAR_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_HomokineticPair("HOMOKINETIC_PAIR");
+static constexpr std::string_view Reco_KinematicLink("KINEMATIC_LINK");
+static constexpr std::string_view Reco_KinematicLinkRepresentationAssociation(
   "KINEMATIC_LINK_REPRESENTATION_ASSOCIATION");
-static TCollection_AsciiString Reco_KinematicPropertyMechanismRepresentation(
+static constexpr std::string_view Reco_KinematicPropertyMechanismRepresentation(
   "KINEMATIC_PROPERTY_MECHANISM_REPRESENTATION");
-static TCollection_AsciiString Reco_KinematicTopologyDirectedStructure(
+static constexpr std::string_view Reco_KinematicTopologyDirectedStructure(
   "KINEMATIC_TOPOLOGY_DIRECTED_STRUCTURE");
-static TCollection_AsciiString Reco_KinematicTopologyNetworkStructure(
+static constexpr std::string_view Reco_KinematicTopologyNetworkStructure(
   "KINEMATIC_TOPOLOGY_NETWORK_STRUCTURE");
-static TCollection_AsciiString Reco_KinematicTopologyStructure("KINEMATIC_TOPOLOGY_STRUCTURE");
-static TCollection_AsciiString Reco_LinearFlexibleAndPinionPair("LINEAR_FLEXIBLE_AND_PINION_PAIR");
-static TCollection_AsciiString Reco_LinearFlexibleAndPlanarCurvePair(
+static constexpr std::string_view Reco_KinematicTopologyStructure("KINEMATIC_TOPOLOGY_STRUCTURE");
+static constexpr std::string_view Reco_LinearFlexibleAndPinionPair(
+  "LINEAR_FLEXIBLE_AND_PINION_PAIR");
+static constexpr std::string_view Reco_LinearFlexibleAndPlanarCurvePair(
   "LINEAR_FLEXIBLE_AND_PLANAR_CURVE_PAIR");
-static TCollection_AsciiString Reco_LinearFlexibleLinkRepresentation(
+static constexpr std::string_view Reco_LinearFlexibleLinkRepresentation(
   "LINEAR_FLEXIBLE_LINK_REPRESENTATION");
-static TCollection_AsciiString Reco_LowOrderKinematicPair("LOW_ORDER_KINEMATIC_PAIR");
-static TCollection_AsciiString Reco_LowOrderKinematicPairValue("LOW_ORDER_KINEMATIC_PAIR_VALUE");
-static TCollection_AsciiString Reco_LowOrderKinematicPairWithRange(
+static constexpr std::string_view Reco_LowOrderKinematicPair("LOW_ORDER_KINEMATIC_PAIR");
+static constexpr std::string_view Reco_LowOrderKinematicPairValue("LOW_ORDER_KINEMATIC_PAIR_VALUE");
+static constexpr std::string_view Reco_LowOrderKinematicPairWithRange(
   "LOW_ORDER_KINEMATIC_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_MechanismRepresentation("MECHANISM_REPRESENTATION");
-static TCollection_AsciiString Reco_OrientedJoint("ORIENTED_JOINT");
-static TCollection_AsciiString Reco_PairRepresentationRelationship(
+static constexpr std::string_view Reco_MechanismRepresentation("MECHANISM_REPRESENTATION");
+static constexpr std::string_view Reco_OrientedJoint("ORIENTED_JOINT");
+static constexpr std::string_view Reco_PairRepresentationRelationship(
   "PAIR_REPRESENTATION_RELATIONSHIP");
-static TCollection_AsciiString Reco_PlanarCurvePair("PLANAR_CURVE_PAIR");
-static TCollection_AsciiString Reco_PlanarCurvePairRange("PLANAR_CURVE_PAIR_RANGE");
-static TCollection_AsciiString Reco_PlanarPair("PLANAR_PAIR");
-static TCollection_AsciiString Reco_PlanarPairValue("PLANAR_PAIR_VALUE");
-static TCollection_AsciiString Reco_PlanarPairWithRange("PLANAR_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_PointOnPlanarCurvePair("POINT_ON_PLANAR_CURVE_PAIR");
-static TCollection_AsciiString Reco_PointOnPlanarCurvePairValue("POINT_ON_PLANAR_CURVE_PAIR_VALUE");
-static TCollection_AsciiString Reco_PointOnPlanarCurvePairWithRange(
+static constexpr std::string_view Reco_PlanarCurvePair("PLANAR_CURVE_PAIR");
+static constexpr std::string_view Reco_PlanarCurvePairRange("PLANAR_CURVE_PAIR_RANGE");
+static constexpr std::string_view Reco_PlanarPair("PLANAR_PAIR");
+static constexpr std::string_view Reco_PlanarPairValue("PLANAR_PAIR_VALUE");
+static constexpr std::string_view Reco_PlanarPairWithRange("PLANAR_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_PointOnPlanarCurvePair("POINT_ON_PLANAR_CURVE_PAIR");
+static constexpr std::string_view Reco_PointOnPlanarCurvePairValue(
+  "POINT_ON_PLANAR_CURVE_PAIR_VALUE");
+static constexpr std::string_view Reco_PointOnPlanarCurvePairWithRange(
   "POINT_ON_PLANAR_CURVE_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_PointOnSurfacePair("POINT_ON_SURFACE_PAIR");
-static TCollection_AsciiString Reco_PointOnSurfacePairValue("POINT_ON_SURFACE_PAIR_VALUE");
-static TCollection_AsciiString Reco_PointOnSurfacePairWithRange("POINT_ON_SURFACE_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_PrismaticPair("PRISMATIC_PAIR");
-static TCollection_AsciiString Reco_PrismaticPairValue("PRISMATIC_PAIR_VALUE");
-static TCollection_AsciiString Reco_PrismaticPairWithRange("PRISMATIC_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_ProductDefinitionKinematics("PRODUCT_DEFINITION_KINEMATICS");
-static TCollection_AsciiString Reco_ProductDefinitionRelationshipKinematics(
+static constexpr std::string_view Reco_PointOnSurfacePair("POINT_ON_SURFACE_PAIR");
+static constexpr std::string_view Reco_PointOnSurfacePairValue("POINT_ON_SURFACE_PAIR_VALUE");
+static constexpr std::string_view Reco_PointOnSurfacePairWithRange(
+  "POINT_ON_SURFACE_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_PrismaticPair("PRISMATIC_PAIR");
+static constexpr std::string_view Reco_PrismaticPairValue("PRISMATIC_PAIR_VALUE");
+static constexpr std::string_view Reco_PrismaticPairWithRange("PRISMATIC_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_ProductDefinitionKinematics("PRODUCT_DEFINITION_KINEMATICS");
+static constexpr std::string_view Reco_ProductDefinitionRelationshipKinematics(
   "PRODUCT_DEFINITION_RELATIONSHIP_KINEMATICS");
-static TCollection_AsciiString Reco_RackAndPinionPair("RACK_AND_PINION_PAIR");
-static TCollection_AsciiString Reco_RackAndPinionPairValue("RACK_AND_PINION_PAIR_VALUE");
-static TCollection_AsciiString Reco_RackAndPinionPairWithRange("RACK_AND_PINION_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_RevolutePair("REVOLUTE_PAIR");
-static TCollection_AsciiString Reco_RevolutePairValue("REVOLUTE_PAIR_VALUE");
-static TCollection_AsciiString Reco_RevolutePairWithRange("REVOLUTE_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_RigidLinkRepresentation("RIGID_LINK_REPRESENTATION");
-static TCollection_AsciiString Reco_RollingCurvePair("ROLLING_CURVE_PAIR");
-static TCollection_AsciiString Reco_RollingCurvePairValue("ROLLING_CURVE_PAIR_VALUE");
-static TCollection_AsciiString Reco_RollingSurfacePair("ROLLING_SURFACE_PAIR");
-static TCollection_AsciiString Reco_RollingSurfacePairValue("ROLLING_SURFACE_PAIR_VALUE");
-static TCollection_AsciiString Reco_ScrewPair("SCREW_PAIR");
-static TCollection_AsciiString Reco_ScrewPairValue("SCREW_PAIR_VALUE");
-static TCollection_AsciiString Reco_ScrewPairWithRange("SCREW_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_SlidingCurvePair("SLIDING_CURVE_PAIR");
-static TCollection_AsciiString Reco_SlidingCurvePairValue("SLIDING_CURVE_PAIR_VALUE");
-static TCollection_AsciiString Reco_SlidingSurfacePair("SLIDING_SURFACE_PAIR");
-static TCollection_AsciiString Reco_SlidingSurfacePairValue("SLIDING_SURFACE_PAIR_VALUE");
-static TCollection_AsciiString Reco_SphericalPair("SPHERICAL_PAIR");
-static TCollection_AsciiString Reco_SphericalPairValue("SPHERICAL_PAIR_VALUE");
-static TCollection_AsciiString Reco_SphericalPairWithPin("SPHERICAL_PAIR_WITH_PIN");
-static TCollection_AsciiString Reco_SphericalPairWithPinAndRange(
+static constexpr std::string_view Reco_RackAndPinionPair("RACK_AND_PINION_PAIR");
+static constexpr std::string_view Reco_RackAndPinionPairValue("RACK_AND_PINION_PAIR_VALUE");
+static constexpr std::string_view Reco_RackAndPinionPairWithRange(
+  "RACK_AND_PINION_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_RevolutePair("REVOLUTE_PAIR");
+static constexpr std::string_view Reco_RevolutePairValue("REVOLUTE_PAIR_VALUE");
+static constexpr std::string_view Reco_RevolutePairWithRange("REVOLUTE_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_RigidLinkRepresentation("RIGID_LINK_REPRESENTATION");
+static constexpr std::string_view Reco_RollingCurvePair("ROLLING_CURVE_PAIR");
+static constexpr std::string_view Reco_RollingCurvePairValue("ROLLING_CURVE_PAIR_VALUE");
+static constexpr std::string_view Reco_RollingSurfacePair("ROLLING_SURFACE_PAIR");
+static constexpr std::string_view Reco_RollingSurfacePairValue("ROLLING_SURFACE_PAIR_VALUE");
+static constexpr std::string_view Reco_ScrewPair("SCREW_PAIR");
+static constexpr std::string_view Reco_ScrewPairValue("SCREW_PAIR_VALUE");
+static constexpr std::string_view Reco_ScrewPairWithRange("SCREW_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_SlidingCurvePair("SLIDING_CURVE_PAIR");
+static constexpr std::string_view Reco_SlidingCurvePairValue("SLIDING_CURVE_PAIR_VALUE");
+static constexpr std::string_view Reco_SlidingSurfacePair("SLIDING_SURFACE_PAIR");
+static constexpr std::string_view Reco_SlidingSurfacePairValue("SLIDING_SURFACE_PAIR_VALUE");
+static constexpr std::string_view Reco_SphericalPair("SPHERICAL_PAIR");
+static constexpr std::string_view Reco_SphericalPairValue("SPHERICAL_PAIR_VALUE");
+static constexpr std::string_view Reco_SphericalPairWithPin("SPHERICAL_PAIR_WITH_PIN");
+static constexpr std::string_view Reco_SphericalPairWithPinAndRange(
   "SPHERICAL_PAIR_WITH_PIN_AND_RANGE");
-static TCollection_AsciiString Reco_SphericalPairWithRange("SPHERICAL_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_SurfacePairWithRange("SURFACE_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_UnconstrainedPair("UNCONSTRAINED_PAIR");
-static TCollection_AsciiString Reco_UnconstrainedPairValue("UNCONSTRAINED_PAIR_VALUE");
-static TCollection_AsciiString Reco_UniversalPair("UNIVERSAL_PAIR");
-static TCollection_AsciiString Reco_UniversalPairValue("UNIVERSAL_PAIR_VALUE");
-static TCollection_AsciiString Reco_UniversalPairWithRange("UNIVERSAL_PAIR_WITH_RANGE");
-static TCollection_AsciiString Reco_KinematicPair("KINEMATIC_PAIR");
-static TCollection_AsciiString Reco_MechanismStateRepresentation("MECHANISM_STATE_REPRESENTATION");
+static constexpr std::string_view Reco_SphericalPairWithRange("SPHERICAL_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_SurfacePairWithRange("SURFACE_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_UnconstrainedPair("UNCONSTRAINED_PAIR");
+static constexpr std::string_view Reco_UnconstrainedPairValue("UNCONSTRAINED_PAIR_VALUE");
+static constexpr std::string_view Reco_UniversalPair("UNIVERSAL_PAIR");
+static constexpr std::string_view Reco_UniversalPairValue("UNIVERSAL_PAIR_VALUE");
+static constexpr std::string_view Reco_UniversalPairWithRange("UNIVERSAL_PAIR_WITH_RANGE");
+static constexpr std::string_view Reco_KinematicPair("KINEMATIC_PAIR");
+static constexpr std::string_view Reco_MechanismStateRepresentation(
+  "MECHANISM_STATE_REPRESENTATION");
 
-static TCollection_AsciiString Reco_TessellatedConnectingEdge("TESSELLATED_CONNECTING_EDGE");
-static TCollection_AsciiString Reco_TessellatedEdge("TESSELLATED_EDGE");
-static TCollection_AsciiString Reco_TessellatedPointSet("TESSELLATED_POINT_SET");
-static TCollection_AsciiString Reco_TessellatedShapeRepresentation(
+static constexpr std::string_view Reco_TessellatedConnectingEdge("TESSELLATED_CONNECTING_EDGE");
+static constexpr std::string_view Reco_TessellatedEdge("TESSELLATED_EDGE");
+static constexpr std::string_view Reco_TessellatedPointSet("TESSELLATED_POINT_SET");
+static constexpr std::string_view Reco_TessellatedShapeRepresentation(
   "TESSELLATED_SHAPE_REPRESENTATION");
-static TCollection_AsciiString Reco_TessellatedShapeRepresentationWithAccuracyParameters(
+static constexpr std::string_view Reco_TessellatedShapeRepresentationWithAccuracyParameters(
   "TESSELLATED_SHAPE_REPRESENTATION_WITH_ACCURACY_PARAMETERS");
-static TCollection_AsciiString Reco_TessellatedShell("TESSELLATED_SHELL");
-static TCollection_AsciiString Reco_TessellatedSolid("TESSELLATED_SOLID");
-static TCollection_AsciiString Reco_TessellatedStructuredItem("TESSELLATED_STRUCTURED_ITEM");
-static TCollection_AsciiString Reco_TessellatedVertex("TESSELLATED_VERTEX");
-static TCollection_AsciiString Reco_TessellatedWire("TESSELLATED_WIRE");
-static TCollection_AsciiString Reco_TriangulatedFace("TRIANGULATED_FACE");
-static TCollection_AsciiString Reco_ComplexTriangulatedFace("COMPLEX_TRIANGULATED_FACE");
-static TCollection_AsciiString Reco_ComplexTriangulatedSurfaceSet(
+static constexpr std::string_view Reco_TessellatedShell("TESSELLATED_SHELL");
+static constexpr std::string_view Reco_TessellatedSolid("TESSELLATED_SOLID");
+static constexpr std::string_view Reco_TessellatedStructuredItem("TESSELLATED_STRUCTURED_ITEM");
+static constexpr std::string_view Reco_TessellatedVertex("TESSELLATED_VERTEX");
+static constexpr std::string_view Reco_TessellatedWire("TESSELLATED_WIRE");
+static constexpr std::string_view Reco_TriangulatedFace("TRIANGULATED_FACE");
+static constexpr std::string_view Reco_ComplexTriangulatedFace("COMPLEX_TRIANGULATED_FACE");
+static constexpr std::string_view Reco_ComplexTriangulatedSurfaceSet(
   "COMPLEX_TRIANGULATED_SURFACE_SET");
-static TCollection_AsciiString Reco_CubicBezierTessellatedEdge("CUBIC_BEZIER_TESSELLATED_EDGE");
-static TCollection_AsciiString Reco_CubicBezierTriangulatedFace("CUBIC_BEZIER_TRIANGULATED_FACE");
-static TCollection_AsciiString Reco_TriangulatedSurfaceSet("TRIANGULATED_SURFACE_SET");
-static TCollection_AsciiString Reco_GeneralPropertyAssociation("GENERAL_PROPERTY_ASSOCIATION");
-static TCollection_AsciiString Reco_GeneralPropertyRelationship("GENERAL_PROPERTY_RELATIONSHIP");
-static TCollection_AsciiString Reco_BooleanRepresentationItem("BOOLEAN_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_RealRepresentationItem("REAL_REPRESENTATION_ITEM");
-static TCollection_AsciiString Reco_MechanicalDesignAndDraughtingRelationship(
+static constexpr std::string_view Reco_CubicBezierTessellatedEdge("CUBIC_BEZIER_TESSELLATED_EDGE");
+static constexpr std::string_view Reco_CubicBezierTriangulatedFace(
+  "CUBIC_BEZIER_TRIANGULATED_FACE");
+static constexpr std::string_view Reco_TriangulatedSurfaceSet("TRIANGULATED_SURFACE_SET");
+static constexpr std::string_view Reco_GeneralPropertyAssociation("GENERAL_PROPERTY_ASSOCIATION");
+static constexpr std::string_view Reco_GeneralPropertyRelationship("GENERAL_PROPERTY_RELATIONSHIP");
+static constexpr std::string_view Reco_BooleanRepresentationItem("BOOLEAN_REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_RealRepresentationItem("REAL_REPRESENTATION_ITEM");
+static constexpr std::string_view Reco_MechanicalDesignAndDraughtingRelationship(
   "MECHANICAL_DESIGN_AND_DRAUGHTING_RELATIONSHIP");
+
+static constexpr std::string_view s_ADDRSS("ADDRSS");
+static constexpr std::string_view s_ABSR("ABSR");
+static constexpr std::string_view s_ADVFC("ADVFC");
+static constexpr std::string_view s_ANCROC("ANCROC");
+static constexpr std::string_view s_ANFLAR("ANFLAR");
+static constexpr std::string_view s_AFAO("AFAO");
+static constexpr std::string_view s_ANNOCC("ANNOCC");
+static constexpr std::string_view s_ANSBOC("ANSBOC");
+static constexpr std::string_view s_ANNSYM("ANNSYM");
+static constexpr std::string_view s_ANSYOC("ANSYOC");
+static constexpr std::string_view s_ANNTXT("ANNTXT");
+static constexpr std::string_view s_ANTXOC("ANTXOC");
+static constexpr std::string_view s_APPCNT("APPCNT");
+static constexpr std::string_view s_APCNEL("APCNEL");
+static constexpr std::string_view s_APPRDF("APPRDF");
+static constexpr std::string_view s_APPRVL("APPRVL");
+static constexpr std::string_view s_APPASS("APPASS");
+static constexpr std::string_view s_APDTTM("APDTTM");
+static constexpr std::string_view s_APPROR("APPROR");
+static constexpr std::string_view s_APPRLT("APPRLT");
+static constexpr std::string_view s_APPRL("APPRL");
+static constexpr std::string_view s_APPSTT("APPSTT");
+static constexpr std::string_view s_ARINST("ARINST");
+static constexpr std::string_view s_ASCMUS("ASCMUS");
+static constexpr std::string_view s_ACUS("ACUS");
+static constexpr std::string_view s_AX1PLC("AX1PLC");
+static constexpr std::string_view s_A2PL2D("A2PL2D");
+static constexpr std::string_view s_A2PL3D("A2PL3D");
+static constexpr std::string_view s_BZRCRV("BZRCRV");
+static constexpr std::string_view s_BZRSRF("BZRSRF");
+static constexpr std::string_view s_BLNRSL("BLNRSL");
+static constexpr std::string_view s_BNDCR("BNDCR");
+static constexpr std::string_view s_BNDCRV("BNDCRV");
+static constexpr std::string_view s_BNDSRF("BNDSRF");
+static constexpr std::string_view s_BRWTVD("BRWTVD");
+static constexpr std::string_view s_BSPCR("BSPCR");
+static constexpr std::string_view s_BSCWK("BSCWK");
+static constexpr std::string_view s_BSPSR("BSPSR");
+static constexpr std::string_view s_BSSWK("BSSWK");
+static constexpr std::string_view s_BXDMN("BXDMN");
+static constexpr std::string_view s_BXHLSP("BXHLSP");
+static constexpr std::string_view s_CLNDT("CLNDT");
+static constexpr std::string_view s_CMRIMG("CMRIMG");
+static constexpr std::string_view s_CMRMDL("CMRMDL");
+static constexpr std::string_view s_CMMDD3("CMMDD3");
+static constexpr std::string_view s_CMRUSG("CMRUSG");
+static constexpr std::string_view s_CRTPNT("CRTPNT");
+static constexpr std::string_view s_CRTROP("CRTROP");
+static constexpr std::string_view s_CTO3("CTO3");
+static constexpr std::string_view s_CLSSHL("CLSSHL");
+static constexpr std::string_view s_CLRRGB("CLRRGB");
+static constexpr std::string_view s_CLRSPC("CLRSPC");
+static constexpr std::string_view s_CMPCRV("CMPCRV");
+static constexpr std::string_view s_CCOS("CCOS");
+static constexpr std::string_view s_CMCRSG("CMCRSG");
+static constexpr std::string_view s_CMPTXT("CMPTXT");
+static constexpr std::string_view s_CTWAC("CTWAC");
+static constexpr std::string_view s_CTWBB("CTWBB");
+static constexpr std::string_view s_CTWE("CTWE");
+static constexpr std::string_view s_CNCSRF("CNCSRF");
+static constexpr std::string_view s_CNFCST("CNFCST");
+static constexpr std::string_view s_CNDPIN("CNDPIN");
+static constexpr std::string_view s_CDORSI("CDORSI");
+static constexpr std::string_view s_CDSR("CDSR");
+static constexpr std::string_view s_CNBSUN("CNBSUN");
+static constexpr std::string_view s_CUTO("CUTO");
+static constexpr std::string_view s_CSSHRP("CSSHRP");
+static constexpr std::string_view s_CSGSLD("CSGSLD");
+static constexpr std::string_view s_CRBNSR("CRBNSR");
+static constexpr std::string_view s_CRVRPL("CRVRPL");
+static constexpr std::string_view s_CRVSTY("CRVSTY");
+static constexpr std::string_view s_CRSTFN("CRSTFN");
+static constexpr std::string_view s_CSFP("CSFP");
+static constexpr std::string_view s_CYLSRF("CYLSRF");
+static constexpr std::string_view s_DTANTM("DTANTM");
+static constexpr std::string_view s_DATA("DATA");
+static constexpr std::string_view s_DTASS("DTASS");
+static constexpr std::string_view s_DTRL("DTRL");
+static constexpr std::string_view s_DTTMRL("DTTMRL");
+static constexpr std::string_view s_DFNSYM("DFNSYM");
+static constexpr std::string_view s_DFNRPR("DFNRPR");
+static constexpr std::string_view s_DGNPCR("DGNPCR");
+static constexpr std::string_view s_DGTRSR("DGTRSR");
+static constexpr std::string_view s_DSRPIT("DSRPIT");
+static constexpr std::string_view s_DMNCRV("DMNCRV");
+static constexpr std::string_view s_DMCRTR("DMCRTR");
+static constexpr std::string_view s_DSGCNT("DSGCNT");
+static constexpr std::string_view s_DMNEXP("DMNEXP");
+static constexpr std::string_view s_DRCTN("DRCTN");
+static constexpr std::string_view s_DRANOC("DRANOC");
+static constexpr std::string_view s_DRGCLL("DRGCLL");
+static constexpr std::string_view s_DPDC("DPDC");
+static constexpr std::string_view s_DPDCF("DPDCF");
+static constexpr std::string_view s_DRSBRP("DRSBRP");
+static constexpr std::string_view s_DRSYRP("DRSYRP");
+static constexpr std::string_view s_DTLWD("DTLWD");
+static constexpr std::string_view s_DRWDFN("DRWDFN");
+static constexpr std::string_view s_DRWRVS("DRWRVS");
+static constexpr std::string_view s_DCMNT("DCMNT");
+static constexpr std::string_view s_DCMRLT("DCMRLT");
+static constexpr std::string_view s_DCMTYP("DCMTYP");
+static constexpr std::string_view s_DCUSCN("DCUSCN");
+static constexpr std::string_view s_EDGCRV("EDGCRV");
+static constexpr std::string_view s_EDGLP("EDGLP");
+static constexpr std::string_view s_EFFCTV("EFFCTV");
+static constexpr std::string_view s_ELMSRF("ELMSRF");
+static constexpr std::string_view s_ELLPS("ELLPS");
+static constexpr std::string_view s_EVDGPC("EVDGPC");
+static constexpr std::string_view s_EXTSRC("EXTSRC");
+static constexpr std::string_view s_EDCF("EDCF");
+static constexpr std::string_view s_EDHS("EDHS");
+static constexpr std::string_view s_EXDFIT("EXDFIT");
+static constexpr std::string_view s_EXDFSY("EXDFSY");
+static constexpr std::string_view s_EDTF("EDTF");
+static constexpr std::string_view s_EDTS("EDTS");
+static constexpr std::string_view s_EXARSL("EXARSL");
+static constexpr std::string_view s_FCBND("FCBND");
+static constexpr std::string_view s_FCOTBN("FCOTBN");
+static constexpr std::string_view s_FCSRF("FCSRF");
+static constexpr std::string_view s_FCTBR("FCTBR");
+static constexpr std::string_view s_FBSR("FBSR");
+static constexpr std::string_view s_FLARST("FLARST");
+static constexpr std::string_view s_FASC("FASC");
+static constexpr std::string_view s_FASH("FASH");
+static constexpr std::string_view s_FASTSW("FASTSW");
+static constexpr std::string_view s_FAST("FAST");
+static constexpr std::string_view s_FNDFTR("FNDFTR");
+static constexpr std::string_view s_GBSSR("GBSSR");
+static constexpr std::string_view s_GBWSR("GBWSR");
+static constexpr std::string_view s_GMCRST("GMCRST");
+static constexpr std::string_view s_GMRPCN("GMRPCN");
+static constexpr std::string_view s_GMRPIT("GMRPIT");
+static constexpr std::string_view s_GMTST("GMTST");
+static constexpr std::string_view s_GC("GC");
+static constexpr std::string_view s_GUAC("GUAC");
+static constexpr std::string_view s_GRPASS("GRPASS");
+static constexpr std::string_view s_GRPRLT("GRPRLT");
+static constexpr std::string_view s_HLSPSL("HLSPSL");
+static constexpr std::string_view s_HYPRBL("HYPRBL");
+static constexpr std::string_view s_INTCRV("INTCRV");
+static constexpr std::string_view s_INVSBL("INVSBL");
+static constexpr std::string_view s_ITDFTR("ITDFTR");
+static constexpr std::string_view s_LMWU("LMWU");
+static constexpr std::string_view s_LNGUNT("LNGUNT");
+static constexpr std::string_view s_LCLTM("LCLTM");
+static constexpr std::string_view s_MNSLBR("MNSLBR");
+static constexpr std::string_view s_MSSR("MSSR");
+static constexpr std::string_view s_MPPITM("MPPITM");
+static constexpr std::string_view s_MDGPA("MDGPA");
+static constexpr std::string_view s_MDGPR("MDGPR");
+static constexpr std::string_view s_MSWTUN("MSWTUN");
+static constexpr std::string_view s_MCHCNT("MCHCNT");
+static constexpr std::string_view s_NMDUNT("NMDUNT");
+static constexpr std::string_view s_NAUO("NAUO");
+static constexpr std::string_view s_OFCR3D("OFCR3D");
+static constexpr std::string_view s_OFFSRF("OFFSRF");
+static constexpr std::string_view s_ODRF("ODRF");
+static constexpr std::string_view s_OPNSHL("OPNSHL");
+static constexpr std::string_view s_ORDDT("ORDDT");
+static constexpr std::string_view s_ORGNZT("ORGNZT");
+static constexpr std::string_view s_ORGASS("ORGASS");
+static constexpr std::string_view s_ORGRL("ORGRL");
+static constexpr std::string_view s_ORGADD("ORGADD");
+static constexpr std::string_view s_ORCLSH("ORCLSH");
+static constexpr std::string_view s_ORNEDG("ORNEDG");
+static constexpr std::string_view s_ORNFC("ORNFC");
+static constexpr std::string_view s_OROPSH("OROPSH");
+static constexpr std::string_view s_ORNPTH("ORNPTH");
+static constexpr std::string_view s_OTBNCR("OTBNCR");
+static constexpr std::string_view s_ORSI("ORSI");
+static constexpr std::string_view s_PRBL("PRBL");
+static constexpr std::string_view s_PRRPCN("PRRPCN");
+static constexpr std::string_view s_PRANOR("PRANOR");
+static constexpr std::string_view s_PAOA("PAOA");
+static constexpr std::string_view s_PAOR("PAOR");
+static constexpr std::string_view s_PRSADD("PRSADD");
+static constexpr std::string_view s_PLCMNT("PLCMNT");
+static constexpr std::string_view s_PLNBX("PLNBX");
+static constexpr std::string_view s_PLNEXT("PLNEXT");
+static constexpr std::string_view s_PAMWU("PAMWU");
+static constexpr std::string_view s_PLANUN("PLANUN");
+static constexpr std::string_view s_PNONCR("PNONCR");
+static constexpr std::string_view s_PNONSR("PNONSR");
+static constexpr std::string_view s_PNTRPL("PNTRPL");
+static constexpr std::string_view s_PNTSTY("PNTSTY");
+static constexpr std::string_view s_PLYLP("PLYLP");
+static constexpr std::string_view s_PLYLN("PLYLN");
+static constexpr std::string_view s_PRDFCL("PRDFCL");
+static constexpr std::string_view s_PDCF("PDCF");
+static constexpr std::string_view s_PRDFIT("PRDFIT");
+static constexpr std::string_view s_PRDFSY("PRDFSY");
+static constexpr std::string_view s_PDTF("PDTF");
+static constexpr std::string_view s_PRSAR("PRSAR");
+static constexpr std::string_view s_PRLYAS("PRLYAS");
+static constexpr std::string_view s_PRSRPR("PRSRPR");
+static constexpr std::string_view s_PRSST("PRSST");
+static constexpr std::string_view s_PRSSZ("PRSSZ");
+static constexpr std::string_view s_PRSTAS("PRSTAS");
+static constexpr std::string_view s_PSBC("PSBC");
+static constexpr std::string_view s_PRSVW("PRSVW");
+static constexpr std::string_view s_PRSITM("PRSITM");
+static constexpr std::string_view s_PRDCT("PRDCT");
+static constexpr std::string_view s_PRDCTG("PRDCTG");
+static constexpr std::string_view s_PRDCNT("PRDCNT");
+static constexpr std::string_view s_PRDDFN("PRDDFN");
+static constexpr std::string_view s_PRDFCN("PRDFCN");
+static constexpr std::string_view s_PRDFEF("PRDFEF");
+static constexpr std::string_view s_PRDFFR("PRDFFR");
+static constexpr std::string_view s_PDFWSS("PDFWSS");
+static constexpr std::string_view s_PRDFRL("PRDFRL");
+static constexpr std::string_view s_PRDFSH("PRDFSH");
+static constexpr std::string_view s_PRDFUS("PRDFUS");
+static constexpr std::string_view s_PDWAD("PDWAD");
+static constexpr std::string_view s_PRPC("PRPC");
+static constexpr std::string_view s_PRUSOC("PRUSOC");
+static constexpr std::string_view s_PRPDFN("PRPDFN");
+static constexpr std::string_view s_PRDFRP("PRDFRP");
+static constexpr std::string_view s_QACU("QACU");
+static constexpr std::string_view s_QSUNCR("QSUNCR");
+static constexpr std::string_view s_QSUNSR("QSUNSR");
+static constexpr std::string_view s_RMWU("RMWU");
+static constexpr std::string_view s_RBSC("RBSC");
+static constexpr std::string_view s_RBSS("RBSS");
+static constexpr std::string_view s_RCCMSR("RCCMSR");
+static constexpr std::string_view s_RCTRSR("RCTRSR");
+static constexpr std::string_view s_RPITGR("RPITGR");
+static constexpr std::string_view s_RCCS("RCCS");
+static constexpr std::string_view s_RPRSNT("RPRSNT");
+static constexpr std::string_view s_RPRCNT("RPRCNT");
+static constexpr std::string_view s_RPRITM("RPRITM");
+static constexpr std::string_view s_RPRMP("RPRMP");
+static constexpr std::string_view s_RPRRLT("RPRRLT");
+static constexpr std::string_view s_RVARSL("RVARSL");
+static constexpr std::string_view s_RGANWD("RGANWD");
+static constexpr std::string_view s_RGCRCN("RGCRCN");
+static constexpr std::string_view s_RGCRCY("RGCRCY");
+static constexpr std::string_view s_RRWT("RRWT");
+static constexpr std::string_view s_SMCRV("SMCRV");
+static constexpr std::string_view s_SCRCLS("SCRCLS");
+static constexpr std::string_view s_SCCLAS("SCCLAS");
+static constexpr std::string_view s_SCCLLV("SCCLLV");
+static constexpr std::string_view s_SHPASP("SHPASP");
+static constexpr std::string_view s_SHASRL("SHASRL");
+static constexpr std::string_view s_SHDFRP("SHDFRP");
+static constexpr std::string_view s_SHPRPR("SHPRPR");
+static constexpr std::string_view s_SHRPRL("SHRPRL");
+static constexpr std::string_view s_SBSM("SBSM");
+static constexpr std::string_view s_SUNT("SUNT");
+static constexpr std::string_view s_SAMWU("SAMWU");
+static constexpr std::string_view s_SLANUN("SLANUN");
+static constexpr std::string_view s_SLDMDL("SLDMDL");
+static constexpr std::string_view s_SLDRPL("SLDRPL");
+static constexpr std::string_view s_SHUO("SHUO");
+static constexpr std::string_view s_SPHSRF("SPHSRF");
+static constexpr std::string_view s_STYITM("STYITM");
+static constexpr std::string_view s_SPPRRL("SPPRRL");
+static constexpr std::string_view s_SRFC("SRFC");
+static constexpr std::string_view s_SRFCRV("SRFCRV");
+static constexpr std::string_view s_SL("SL");
+static constexpr std::string_view s_SROFRV("SROFRV");
+static constexpr std::string_view s_SRFPTC("SRFPTC");
+static constexpr std::string_view s_SRFRPL("SRFRPL");
+static constexpr std::string_view s_SRSDST("SRSDST");
+static constexpr std::string_view s_SRSTBN("SRSTBN");
+static constexpr std::string_view s_SSCG("SSCG");
+static constexpr std::string_view s_SSFA("SSFA");
+static constexpr std::string_view s_SSPL("SSPL");
+static constexpr std::string_view s_SSSC("SSSC");
+static constexpr std::string_view s_SRSTSL("SRSTSL");
+static constexpr std::string_view s_SRSTUS("SRSTUS");
+static constexpr std::string_view s_SWARSL("SWARSL");
+static constexpr std::string_view s_SWPSRF("SWPSRF");
+static constexpr std::string_view s_SYMCLR("SYMCLR");
+static constexpr std::string_view s_SYMRPR("SYMRPR");
+static constexpr std::string_view s_SYRPMP("SYRPMP");
+static constexpr std::string_view s_SYMSTY("SYMSTY");
+static constexpr std::string_view s_SYMTRG("SYMTRG");
+static constexpr std::string_view s_TRMSYM("TRMSYM");
+static constexpr std::string_view s_TXTLTR("TXTLTR");
+static constexpr std::string_view s_TLWAC("TLWAC");
+static constexpr std::string_view s_TLWBB("TLWBB");
+static constexpr std::string_view s_TLWD("TLWD");
+static constexpr std::string_view s_TLWE("TLWE");
+static constexpr std::string_view s_TXTSTY("TXTSTY");
+static constexpr std::string_view s_TSFDF("TSFDF");
+static constexpr std::string_view s_TSWBC("TSWBC");
+static constexpr std::string_view s_TSWM("TSWM");
+static constexpr std::string_view s_TPRPIT("TPRPIT");
+static constexpr std::string_view s_TRDSRF("TRDSRF");
+static constexpr std::string_view s_TRMCRV("TRMCRV");
+static constexpr std::string_view s_TDRF("TDRF");
+static constexpr std::string_view s_UMWU("UMWU");
+static constexpr std::string_view s_UNFCRV("UNFCRV");
+static constexpr std::string_view s_UNFSRF("UNFSRF");
+static constexpr std::string_view s_VRTLP("VRTLP");
+static constexpr std::string_view s_VRTPNT("VRTPNT");
+static constexpr std::string_view s_VWVLM("VWVLM");
+static constexpr std::string_view s_WOYADD("WOYADD");
+static constexpr std::string_view s_TMWU("TMWU");
+static constexpr std::string_view s_RTUNT("RTUNT");
+static constexpr std::string_view s_TMUNT("TMUNT");
+static constexpr std::string_view s_CI3WS("CI3WS");
+static constexpr std::string_view s_CTO2("CTO2");
+static constexpr std::string_view s_DRVUNT("DRVUNT");
+static constexpr std::string_view s_DRUNEL("DRUNEL");
+static constexpr std::string_view s_PRITRP("PRITRP");
+static constexpr std::string_view s_MFUO("MFUO");
+static constexpr std::string_view s_MTRDSG("MTRDSG");
+static constexpr std::string_view s_ADATA("ADATA");
+static constexpr std::string_view s_APDTAS("APDTAS");
+static constexpr std::string_view s_APGRAS("APGRAS");
+static constexpr std::string_view s_APORAS("APORAS");
+static constexpr std::string_view s_APAOA("APAOA");
+static constexpr std::string_view s_APPRIT("APPRIT");
+static constexpr std::string_view s_ASCA("ASCA");
+static constexpr std::string_view s_APDCRF("APDCRF");
+static constexpr std::string_view s_DCMFL("DCMFL");
+static constexpr std::string_view s_CHROBJ("CHROBJ");
+static constexpr std::string_view s_EXFCSL("EXFCSL");
+static constexpr std::string_view s_RVFCSL("RVFCSL");
+static constexpr std::string_view s_SWFCSL("SWFCSL");
+static constexpr std::string_view s_MSRPIT("MSRPIT");
+static constexpr std::string_view s_ARUNT("ARUNT");
+static constexpr std::string_view s_VLMUNT("VLMUNT");
+static constexpr std::string_view s_ACTION("ACTION");
+static constexpr std::string_view s_ACTASS("ACTASS");
+static constexpr std::string_view s_ACTMTH("ACTMTH");
+static constexpr std::string_view s_ACRQAS("ACRQAS");
+static constexpr std::string_view s_CCDSAP("CCDSAP");
+static constexpr std::string_view s_CCDSCR("CCDSCR");
+static constexpr std::string_view s_CCDSCN("CCDSCN");
+static constexpr std::string_view s_CDDATA("CDDATA");
+static constexpr std::string_view s_CDPAOA("CDPAOA");
+static constexpr std::string_view s_CDSC("CDSC");
+static constexpr std::string_view s_CDS("CDS");
+static constexpr std::string_view s_CRTFCT("CRTFCT");
+static constexpr std::string_view s_CRTASS("CRTASS");
+static constexpr std::string_view s_CRTTYP("CRTTYP");
+static constexpr std::string_view s_CHANGE("CHANGE");
+static constexpr std::string_view s_CHNRQS("CHNRQS");
+static constexpr std::string_view s_CNFDSG("CNFDSG");
+static constexpr std::string_view s_CNFEFF("CNFEFF");
+static constexpr std::string_view s_CNTRCT("CNTRCT");
+static constexpr std::string_view s_CNTASS("CNTASS");
+static constexpr std::string_view s_CNTTYP("CNTTYP");
+static constexpr std::string_view s_PRDCNC("PRDCNC");
+static constexpr std::string_view s_PRCNCN("PRCNCN");
+static constexpr std::string_view s_STRRQS("STRRQS");
+static constexpr std::string_view s_STRWRK("STRWRK");
+static constexpr std::string_view s_VRACRQ("VRACRQ");
+static constexpr std::string_view s_PRCTRL("PRCTRL");
+static constexpr std::string_view s_ACRQSL("ACRQSL");
+static constexpr std::string_view s_DRGMDL("DRGMDL");
+static constexpr std::string_view s_ANGLCT("ANGLCT");
+static constexpr std::string_view s_ANGSZ("ANGSZ");
+static constexpr std::string_view s_DMCHRP("DMCHRP");
+static constexpr std::string_view s_DMNLCT("DMNLCT");
+static constexpr std::string_view s_DLWP("DLWP");
+static constexpr std::string_view s_DMNSZ("DMNSZ");
+static constexpr std::string_view s_DSWP("DSWP");
+static constexpr std::string_view s_SHDMRP("SHDMRP");
+static constexpr std::string_view s_DCRPTY("DCRPTY");
+static constexpr std::string_view s_OBJRL("OBJRL");
+static constexpr std::string_view s_RLASS("RLASS");
+static constexpr std::string_view s_IDNRL("IDNRL");
+static constexpr std::string_view s_IDNASS("IDNASS");
+static constexpr std::string_view s_EXIDAS("EXIDAS");
+static constexpr std::string_view s_EFFASS("EFFASS");
+static constexpr std::string_view s_NMASS("NMASS");
+static constexpr std::string_view s_GNRPRP("GNRPRP");
+static constexpr std::string_view s_EDGP("EDGP");
+static constexpr std::string_view s_AEIA("AEIA");
+static constexpr std::string_view s_CMSHAS("CMSHAS");
+static constexpr std::string_view s_DRSHAS("DRSHAS");
+static constexpr std::string_view s_EXTNSN("EXTNSN");
+static constexpr std::string_view s_DRDMLC("DRDMLC");
+static constexpr std::string_view s_LMANFT("LMANFT");
+static constexpr std::string_view s_TLRVL("TLRVL");
+static constexpr std::string_view s_MSRQLF("MSRQLF");
+static constexpr std::string_view s_PLMNTL("PLMNTL");
+static constexpr std::string_view s_PRCQLF("PRCQLF");
+static constexpr std::string_view s_TYPQLF("TYPQLF");
+static constexpr std::string_view s_QLRPIT("QLRPIT");
+static constexpr std::string_view s_CMRPIT("CMRPIT");
+static constexpr std::string_view s_CMS0("CMS0");
+static constexpr std::string_view s_CNEDST("CNEDST");
+static constexpr std::string_view s_EBWM("EBWM");
+static constexpr std::string_view s_EBWSR("EBWSR");
+static constexpr std::string_view s_NMSSR("NMSSR");
+static constexpr std::string_view s_ORNSRF("ORNSRF");
+static constexpr std::string_view s_SBFC("SBFC");
+static constexpr std::string_view s_SBDG("SBDG");
+static constexpr std::string_view s_CFSS("CFSS");
+static constexpr std::string_view s_MSSUNT("MSSUNT");
+static constexpr std::string_view s_THTMUN("THTMUN");
+static constexpr std::string_view s_DTENV("DTENV");
+static constexpr std::string_view s_MTPRRP("MTPRRP");
+static constexpr std::string_view s_PRDFR("PRDFR");
+static constexpr std::string_view s_MTRPRP("MTRPRP");
+static constexpr std::string_view s_PDFR("PDFR");
+static constexpr std::string_view s_DCP1("DCP1");
+static constexpr std::string_view s_DCPREQ("DCPREQ");
+static constexpr std::string_view s_CYLTLR("CYLTLR");
+static constexpr std::string_view s_SRWP("SRWP");
+static constexpr std::string_view s_ANGTLR("ANGTLR");
+static constexpr std::string_view s_CNCTLR("CNCTLR");
+static constexpr std::string_view s_CRRNTL("CRRNTL");
+static constexpr std::string_view s_CXLTLR("CXLTLR");
+static constexpr std::string_view s_FLTTLR("FLTTLR");
+static constexpr std::string_view s_LNP0("LNP0");
+static constexpr std::string_view s_PRLTLR("PRLTLR");
+static constexpr std::string_view s_PRPTLR("PRPTLR");
+static constexpr std::string_view s_PSTTLR("PSTTLR");
+static constexpr std::string_view s_RNDTLR("RNDTLR");
+static constexpr std::string_view s_STRTLR("STRTLR");
+static constexpr std::string_view s_SRPRTL("SRPRTL");
+static constexpr std::string_view s_SYMTLR("SYMTLR");
+static constexpr std::string_view s_TTRNTL("TTRNTL");
+static constexpr std::string_view s_GMTTLR("GMTTLR");
+static constexpr std::string_view s_GMTLRL("GMTLRL");
+static constexpr std::string_view s_GTWDR("GTWDR");
+static constexpr std::string_view s_MDGMTL("MDGMTL");
+static constexpr std::string_view s_DTMFTR("DTMFTR");
+static constexpr std::string_view s_DTMRFR("DTMRFR");
+static constexpr std::string_view s_CMMDTM("CMMDTM");
+static constexpr std::string_view s_DTMTRG("DTMTRG");
+static constexpr std::string_view s_PDT0("PDT0");
+static constexpr std::string_view s_MMWU("MMWU");
+static constexpr std::string_view s_CNOFSY("CNOFSY");
+static constexpr std::string_view s_GMTALG("GMTALG");
+static constexpr std::string_view s_PRPT("PRPT");
+static constexpr std::string_view s_TNGNT("TNGNT");
+static constexpr std::string_view s_PRLOFF("PRLOFF");
+static constexpr std::string_view s_GISU("GISU");
+static constexpr std::string_view s_IDATT("IDATT");
+static constexpr std::string_view s_IIRU("IIRU");
+static constexpr std::string_view s_GTWDU("GTWDU");
+static constexpr std::string_view s_PRZNDF("PRZNDF");
+static constexpr std::string_view s_RNZNDF("RNZNDF");
+static constexpr std::string_view s_RNZNOR("RNZNOR");
+static constexpr std::string_view s_TLRZN("TLRZN");
+static constexpr std::string_view s_TLZNDF("TLZNDF");
+static constexpr std::string_view s_TLZNFR("TLZNFR");
+static constexpr std::string_view s_INRPIT("INRPIT");
+static constexpr std::string_view s_VLRPIT("VLRPIT");
+static constexpr std::string_view s_DMIA("DMIA");
+static constexpr std::string_view s_ANNPLN("ANNPLN");
+static constexpr std::string_view s_CNGMRP("CNGMRP");
+static constexpr std::string_view s_CGRR("CGRR");
 
 // -- Definition of the libraries --
 
-static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> typenums;
-static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> typeshor;
+// Static maps for theTypenums and theTypeshor
+NCollection_DataMap<std::string_view, Standard_Integer> THE_TYPENUMS;
+// Static map for theTypeshor
+NCollection_DataMap<std::string_view, Standard_Integer> THE_TYPESHOR;
+// Static allocator for the maps
+Handle(NCollection_IncAllocator) THE_INC_ALLOCATOR;
 
-RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule()
+// Initialize theTypenums map
+static void initializeTypenums(NCollection_DataMap<std::string_view, Standard_Integer>& theTypenums)
 {
-  if (!typenums.IsEmpty())
-    return;
-  typenums.Bind(Reco_CartesianPoint, 59);
-  typenums.Bind(Reco_VertexPoint, 316);
-  typenums.Bind(Reco_OrientedEdge, 181);
-  typenums.Bind(Reco_EdgeCurve, 116);
-  typenums.Bind(Reco_SurfaceCurve, 272);
-  typenums.Bind(Reco_EdgeLoop, 117);
-  typenums.Bind(Reco_AdvancedFace, 3);
-  typenums.Bind(Reco_FaceBound, 131);
-  typenums.Bind(Reco_FaceOuterBound, 132);
-  typenums.Bind(Reco_Direction, 105);
-  typenums.Bind(Reco_Vector, 313);
-  typenums.Bind(Reco_BSplineCurve, 38);
-  typenums.Bind(Reco_BSplineCurveWithKnots, 39);
-  typenums.Bind(Reco_BezierCurve, 43);
-  typenums.Bind(Reco_Pcurve, 190);
-  typenums.Bind(Reco_QuasiUniformCurve, 236);
-  typenums.Bind(Reco_RationalBSplineCurve, 239);
-  typenums.Bind(Reco_TrimmedCurve, 308);
-  typenums.Bind(Reco_UniformCurve, 311);
+  theTypenums.Clear(THE_INC_ALLOCATOR);
+  theTypenums.ReSize(1024);
+  theTypenums.Bind(Reco_CartesianPoint, 59);
+  theTypenums.Bind(Reco_VertexPoint, 316);
+  theTypenums.Bind(Reco_OrientedEdge, 181);
+  theTypenums.Bind(Reco_EdgeCurve, 116);
+  theTypenums.Bind(Reco_SurfaceCurve, 272);
+  theTypenums.Bind(Reco_EdgeLoop, 117);
+  theTypenums.Bind(Reco_AdvancedFace, 3);
+  theTypenums.Bind(Reco_FaceBound, 131);
+  theTypenums.Bind(Reco_FaceOuterBound, 132);
+  theTypenums.Bind(Reco_Direction, 105);
+  theTypenums.Bind(Reco_Vector, 313);
+  theTypenums.Bind(Reco_BSplineCurve, 38);
+  theTypenums.Bind(Reco_BSplineCurveWithKnots, 39);
+  theTypenums.Bind(Reco_BezierCurve, 43);
+  theTypenums.Bind(Reco_Pcurve, 190);
+  theTypenums.Bind(Reco_QuasiUniformCurve, 236);
+  theTypenums.Bind(Reco_RationalBSplineCurve, 239);
+  theTypenums.Bind(Reco_TrimmedCurve, 308);
+  theTypenums.Bind(Reco_UniformCurve, 311);
 
-  typenums.Bind(Reco_BSplineSurface, 40);
-  typenums.Bind(Reco_BSplineSurfaceWithKnots, 41);
-  typenums.Bind(Reco_QuasiUniformSurface, 237);
-  typenums.Bind(Reco_RationalBSplineSurface, 240);
-  typenums.Bind(Reco_UniformSurface, 312);
-  typenums.Bind(Reco_BezierSurface, 44);
-  typenums.Bind(Reco_ConicalSurface, 75);
-  typenums.Bind(Reco_CylindricalSurface, 90);
-  typenums.Bind(Reco_SphericalSurface, 269);
-  typenums.Bind(Reco_ToroidalSurface, 305);
-  typenums.Bind(Reco_SurfaceOfLinearExtrusion, 273);
-  typenums.Bind(Reco_SurfaceOfRevolution, 274);
+  theTypenums.Bind(Reco_BSplineSurface, 40);
+  theTypenums.Bind(Reco_BSplineSurfaceWithKnots, 41);
+  theTypenums.Bind(Reco_QuasiUniformSurface, 237);
+  theTypenums.Bind(Reco_RationalBSplineSurface, 240);
+  theTypenums.Bind(Reco_UniformSurface, 312);
+  theTypenums.Bind(Reco_BezierSurface, 44);
+  theTypenums.Bind(Reco_ConicalSurface, 75);
+  theTypenums.Bind(Reco_CylindricalSurface, 90);
+  theTypenums.Bind(Reco_SphericalSurface, 269);
+  theTypenums.Bind(Reco_ToroidalSurface, 305);
+  theTypenums.Bind(Reco_SurfaceOfLinearExtrusion, 273);
+  theTypenums.Bind(Reco_SurfaceOfRevolution, 274);
 
-  typenums.Bind(Reco_Address, 1);
-  typenums.Bind(Reco_AdvancedBrepShapeRepresentation, 2);
-  typenums.Bind(Reco_AnnotationCurveOccurrence, 4);
-  typenums.Bind(Reco_AnnotationFillArea, 5);
-  typenums.Bind(Reco_AnnotationFillAreaOccurrence, 6);
-  typenums.Bind(Reco_AnnotationOccurrence, 7);
-  typenums.Bind(Reco_AnnotationSubfigureOccurrence, 8);
-  typenums.Bind(Reco_AnnotationSymbol, 9);
-  typenums.Bind(Reco_AnnotationSymbolOccurrence, 10);
-  typenums.Bind(Reco_AnnotationText, 11);
-  typenums.Bind(Reco_AnnotationTextOccurrence, 12);
-  typenums.Bind(Reco_ApplicationContext, 13);
-  typenums.Bind(Reco_ApplicationContextElement, 14);
-  typenums.Bind(Reco_ApplicationProtocolDefinition, 15);
-  typenums.Bind(Reco_Approval, 16);
-  typenums.Bind(Reco_ApprovalAssignment, 17);
-  typenums.Bind(Reco_ApprovalPersonOrganization, 18);
-  typenums.Bind(Reco_ApprovalRelationship, 19);
-  typenums.Bind(Reco_ApprovalRole, 20);
-  typenums.Bind(Reco_ApprovalStatus, 21);
-  typenums.Bind(Reco_AreaInSet, 22);
-  typenums.Bind(Reco_AutoDesignActualDateAndTimeAssignment, 23);
-  typenums.Bind(Reco_AutoDesignActualDateAssignment, 24);
-  typenums.Bind(Reco_AutoDesignApprovalAssignment, 25);
-  typenums.Bind(Reco_AutoDesignDateAndPersonAssignment, 26);
-  typenums.Bind(Reco_AutoDesignGroupAssignment, 27);
-  typenums.Bind(Reco_AutoDesignNominalDateAndTimeAssignment, 28);
-  typenums.Bind(Reco_AutoDesignNominalDateAssignment, 29);
-  typenums.Bind(Reco_AutoDesignOrganizationAssignment, 30);
-  typenums.Bind(Reco_AutoDesignPersonAndOrganizationAssignment, 31);
-  typenums.Bind(Reco_AutoDesignPresentedItem, 32);
-  typenums.Bind(Reco_AutoDesignSecurityClassificationAssignment, 33);
-  typenums.Bind(Reco_AutoDesignViewArea, 34);
-  typenums.Bind(Reco_Axis1Placement, 35);
-  typenums.Bind(Reco_Axis2Placement2d, 36);
-  typenums.Bind(Reco_Axis2Placement3d, 37);
-  typenums.Bind(Reco_BackgroundColour, 42);
-  typenums.Bind(Reco_Block, 45);
-  typenums.Bind(Reco_BooleanResult, 46);
-  typenums.Bind(Reco_BoundaryCurve, 47);
-  typenums.Bind(Reco_BoundedCurve, 48);
-  typenums.Bind(Reco_BoundedSurface, 49);
-  typenums.Bind(Reco_BoxDomain, 50);
-  typenums.Bind(Reco_BoxedHalfSpace, 51);
-  typenums.Bind(Reco_BrepWithVoids, 52);
-  typenums.Bind(Reco_CalendarDate, 53);
-  typenums.Bind(Reco_CameraImage, 54);
-  typenums.Bind(Reco_CameraModel, 55);
-  typenums.Bind(Reco_CameraModelD2, 56);
-  typenums.Bind(Reco_CameraModelD3, 57);
-  typenums.Bind(Reco_CameraUsage, 58);
-  typenums.Bind(Reco_CartesianTransformationOperator, 60);
-  typenums.Bind(Reco_CartesianTransformationOperator3d, 61);
-  typenums.Bind(Reco_Circle, 62);
-  typenums.Bind(Reco_ClosedShell, 63);
-  typenums.Bind(Reco_Colour, 64);
-  typenums.Bind(Reco_ColourRgb, 65);
-  typenums.Bind(Reco_ColourSpecification, 66);
-  typenums.Bind(Reco_CompositeCurve, 67);
-  typenums.Bind(Reco_CompositeCurveOnSurface, 68);
-  typenums.Bind(Reco_CompositeCurveSegment, 69);
-  typenums.Bind(Reco_CompositeText, 70);
-  typenums.Bind(Reco_CompositeTextWithAssociatedCurves, 71);
-  typenums.Bind(Reco_CompositeTextWithBlankingBox, 72);
-  typenums.Bind(Reco_CompositeTextWithExtent, 73);
-  typenums.Bind(Reco_Conic, 74);
-  typenums.Bind(Reco_ConnectedFaceSet, 76);
-  typenums.Bind(Reco_ContextDependentInvisibility, 77);
-  typenums.Bind(Reco_ContextDependentOverRidingStyledItem, 78);
-  typenums.Bind(Reco_ConversionBasedUnit, 79);
-  typenums.Bind(Reco_CoordinatedUniversalTimeOffset, 80);
-  typenums.Bind(Reco_CsgRepresentation, 81);
-  typenums.Bind(Reco_CsgShapeRepresentation, 82);
-  typenums.Bind(Reco_CsgSolid, 83);
-  typenums.Bind(Reco_Curve, 84);
-  typenums.Bind(Reco_CurveBoundedSurface, 85);
-  typenums.Bind(Reco_CurveReplica, 86);
-  typenums.Bind(Reco_CurveStyle, 87);
-  typenums.Bind(Reco_CurveStyleFont, 88);
-  typenums.Bind(Reco_CurveStyleFontPattern, 89);
-  typenums.Bind(Reco_Date, 91);
-  typenums.Bind(Reco_DateAndTime, 92);
-  typenums.Bind(Reco_DateAndTimeAssignment, 93);
-  typenums.Bind(Reco_DateAssignment, 94);
-  typenums.Bind(Reco_DateRole, 95);
-  typenums.Bind(Reco_DateTimeRole, 96);
-  typenums.Bind(Reco_DefinedSymbol, 97);
-  typenums.Bind(Reco_DefinitionalRepresentation, 98);
-  typenums.Bind(Reco_DegeneratePcurve, 99);
-  typenums.Bind(Reco_DegenerateToroidalSurface, 100);
-  typenums.Bind(Reco_DescriptiveRepresentationItem, 101);
-  typenums.Bind(Reco_DimensionCurve, 102);
-  typenums.Bind(Reco_DimensionCurveTerminator, 103);
-  typenums.Bind(Reco_DimensionalExponents, 104);
-  typenums.Bind(Reco_DraughtingAnnotationOccurrence, 106);
-  typenums.Bind(Reco_DraughtingCallout, 107);
-  typenums.Bind(Reco_DraughtingPreDefinedColour, 108);
-  typenums.Bind(Reco_DraughtingPreDefinedCurveFont, 109);
-  typenums.Bind(Reco_DraughtingSubfigureRepresentation, 110);
-  typenums.Bind(Reco_DraughtingSymbolRepresentation, 111);
-  typenums.Bind(Reco_DraughtingTextLiteralWithDelineation, 112);
-  typenums.Bind(Reco_DrawingDefinition, 113);
-  typenums.Bind(Reco_DrawingRevision, 114);
-  typenums.Bind(Reco_Edge, 115);
-  typenums.Bind(Reco_ElementarySurface, 118);
-  typenums.Bind(Reco_Ellipse, 119);
-  typenums.Bind(Reco_EvaluatedDegeneratePcurve, 120);
-  typenums.Bind(Reco_ExternalSource, 121);
-  typenums.Bind(Reco_ExternallyDefinedCurveFont, 122);
-  typenums.Bind(Reco_ExternallyDefinedHatchStyle, 123);
-  typenums.Bind(Reco_ExternallyDefinedItem, 124);
-  typenums.Bind(Reco_ExternallyDefinedSymbol, 125);
-  typenums.Bind(Reco_ExternallyDefinedTextFont, 126);
-  typenums.Bind(Reco_ExternallyDefinedTileStyle, 127);
-  typenums.Bind(Reco_ExtrudedAreaSolid, 128);
-  typenums.Bind(Reco_Face, 129);
-  typenums.Bind(Reco_FaceSurface, 133);
-  typenums.Bind(Reco_FacetedBrep, 134);
-  typenums.Bind(Reco_FacetedBrepShapeRepresentation, 135);
-  typenums.Bind(Reco_FillAreaStyle, 136);
-  typenums.Bind(Reco_FillAreaStyleColour, 137);
-  typenums.Bind(Reco_FillAreaStyleHatching, 138);
-  typenums.Bind(Reco_FillAreaStyleTileSymbolWithStyle, 139);
-  typenums.Bind(Reco_FillAreaStyleTiles, 140);
-  typenums.Bind(Reco_FunctionallyDefinedTransformation, 141);
-  typenums.Bind(Reco_GeometricCurveSet, 142);
-  typenums.Bind(Reco_GeometricRepresentationContext, 143);
-  typenums.Bind(Reco_GeometricRepresentationItem, 144);
-  typenums.Bind(Reco_GeometricSet, 145);
-  typenums.Bind(Reco_GeometricallyBoundedSurfaceShapeRepresentation, 146);
-  typenums.Bind(Reco_GeometricallyBoundedWireframeShapeRepresentation, 147);
-  typenums.Bind(Reco_GlobalUncertaintyAssignedContext, 148);
-  typenums.Bind(Reco_GlobalUnitAssignedContext, 149);
-  typenums.Bind(Reco_Group, 150);
-  typenums.Bind(Reco_GroupAssignment, 151);
-  typenums.Bind(Reco_GroupRelationship, 152);
-  typenums.Bind(Reco_HalfSpaceSolid, 153);
-  typenums.Bind(Reco_Hyperbola, 154);
-  typenums.Bind(Reco_IntersectionCurve, 155);
-  typenums.Bind(Reco_Invisibility, 156);
-  typenums.Bind(Reco_LengthMeasureWithUnit, 157);
-  typenums.Bind(Reco_LengthUnit, 158);
-  typenums.Bind(Reco_Line, 159);
-  typenums.Bind(Reco_LocalTime, 160);
-  typenums.Bind(Reco_Loop, 161);
-  typenums.Bind(Reco_ManifoldSolidBrep, 162);
-  typenums.Bind(Reco_ManifoldSurfaceShapeRepresentation, 163);
-  typenums.Bind(Reco_MappedItem, 164);
-  typenums.Bind(Reco_MeasureWithUnit, 165);
-  typenums.Bind(Reco_MechanicalDesignGeometricPresentationArea, 166);
-  typenums.Bind(Reco_MechanicalDesignGeometricPresentationRepresentation, 167);
-  typenums.Bind(Reco_MechanicalDesignPresentationArea, 168);
-  typenums.Bind(Reco_NamedUnit, 169);
-  typenums.Bind(Reco_OffsetCurve3d, 171);
-  typenums.Bind(Reco_OffsetSurface, 172);
-  typenums.Bind(Reco_OneDirectionRepeatFactor, 173);
-  typenums.Bind(Reco_OpenShell, 174);
-  typenums.Bind(Reco_OrdinalDate, 175);
-  typenums.Bind(Reco_Organization, 176);
-  typenums.Bind(Reco_OrganizationAssignment, 177);
-  typenums.Bind(Reco_OrganizationRole, 178);
-  typenums.Bind(Reco_OrganizationalAddress, 179);
-  typenums.Bind(Reco_OrientedClosedShell, 180);
-  typenums.Bind(Reco_OrientedFace, 182);
-  typenums.Bind(Reco_OrientedOpenShell, 183);
-  typenums.Bind(Reco_OrientedPath, 184);
-  typenums.Bind(Reco_OuterBoundaryCurve, 185);
-  typenums.Bind(Reco_OverRidingStyledItem, 186);
-  typenums.Bind(Reco_Parabola, 187);
-  typenums.Bind(Reco_ParametricRepresentationContext, 188);
-  typenums.Bind(Reco_Path, 189);
-  typenums.Bind(Reco_Person, 191);
-  typenums.Bind(Reco_PersonAndOrganization, 192);
-  typenums.Bind(Reco_PersonAndOrganizationAssignment, 193);
-  typenums.Bind(Reco_PersonAndOrganizationRole, 194);
-  typenums.Bind(Reco_PersonalAddress, 195);
-  typenums.Bind(Reco_Placement, 196);
-  typenums.Bind(Reco_PlanarBox, 197);
-  typenums.Bind(Reco_PlanarExtent, 198);
-  typenums.Bind(Reco_Plane, 199);
-  typenums.Bind(Reco_PlaneAngleMeasureWithUnit, 200);
-  typenums.Bind(Reco_PlaneAngleUnit, 201);
-  typenums.Bind(Reco_Point, 202);
-  typenums.Bind(Reco_PointOnCurve, 203);
-  typenums.Bind(Reco_PointOnSurface, 204);
-  typenums.Bind(Reco_PointReplica, 205);
-  typenums.Bind(Reco_PointStyle, 206);
-  typenums.Bind(Reco_PolyLoop, 207);
-  typenums.Bind(Reco_Polyline, 208);
-  typenums.Bind(Reco_PreDefinedColour, 209);
-  typenums.Bind(Reco_PreDefinedCurveFont, 210);
-  typenums.Bind(Reco_PreDefinedItem, 211);
-  typenums.Bind(Reco_PreDefinedSymbol, 212);
-  typenums.Bind(Reco_PreDefinedTextFont, 213);
-  typenums.Bind(Reco_PresentationArea, 214);
-  typenums.Bind(Reco_PresentationLayerAssignment, 215);
-  typenums.Bind(Reco_PresentationRepresentation, 216);
-  typenums.Bind(Reco_PresentationSet, 217);
-  typenums.Bind(Reco_PresentationSize, 218);
-  typenums.Bind(Reco_PresentationStyleAssignment, 219);
-  typenums.Bind(Reco_PresentationStyleByContext, 220);
-  typenums.Bind(Reco_PresentationView, 221);
-  typenums.Bind(Reco_PresentedItem, 222);
-  typenums.Bind(Reco_Product, 223);
-  typenums.Bind(Reco_ProductCategory, 224);
-  typenums.Bind(Reco_ProductContext, 225);
-  typenums.Bind(Reco_ProductDataRepresentationView, 226);
-  typenums.Bind(Reco_ProductDefinition, 227);
-  typenums.Bind(Reco_ProductDefinitionContext, 228);
-  typenums.Bind(Reco_ProductDefinitionFormation, 229);
-  typenums.Bind(Reco_ProductDefinitionFormationWithSpecifiedSource, 230);
-  typenums.Bind(Reco_ProductDefinitionShape, 231);
-  typenums.Bind(Reco_ProductRelatedProductCategory, 232);
-  typenums.Bind(Reco_ProductType, 233);
-  typenums.Bind(Reco_PropertyDefinition, 234);
-  typenums.Bind(Reco_PropertyDefinitionRepresentation, 235);
-  typenums.Bind(Reco_RatioMeasureWithUnit, 238);
-  typenums.Bind(Reco_RectangularCompositeSurface, 241);
-  typenums.Bind(Reco_RectangularTrimmedSurface, 242);
-  typenums.Bind(Reco_RepItemGroup, 243);
-  typenums.Bind(Reco_ReparametrisedCompositeCurveSegment, 244);
-  typenums.Bind(Reco_Representation, 245);
-  typenums.Bind(Reco_RepresentationContext, 246);
-  typenums.Bind(Reco_RepresentationItem, 247);
-  typenums.Bind(Reco_RepresentationMap, 248);
-  typenums.Bind(Reco_RepresentationRelationship, 249);
-  typenums.Bind(Reco_RevolvedAreaSolid, 250);
-  typenums.Bind(Reco_RightAngularWedge, 251);
-  typenums.Bind(Reco_RightCircularCone, 252);
-  typenums.Bind(Reco_RightCircularCylinder, 253);
-  typenums.Bind(Reco_SeamCurve, 254);
-  typenums.Bind(Reco_SecurityClassification, 255);
-  typenums.Bind(Reco_SecurityClassificationAssignment, 256);
-  typenums.Bind(Reco_SecurityClassificationLevel, 257);
-  typenums.Bind(Reco_ShapeAspect, 258);
-  typenums.Bind(Reco_ShapeAspectRelationship, 259);
-  typenums.Bind(Reco_ShapeAspectTransition, 260);
-  typenums.Bind(Reco_ShapeDefinitionRepresentation, 261);
-  typenums.Bind(Reco_ShapeRepresentation, 262);
-  typenums.Bind(Reco_ShellBasedSurfaceModel, 263);
-  typenums.Bind(Reco_SiUnit, 264);
-  typenums.Bind(Reco_SolidAngleMeasureWithUnit, 265);
-  typenums.Bind(Reco_SolidModel, 266);
-  typenums.Bind(Reco_SolidReplica, 267);
-  typenums.Bind(Reco_Sphere, 268);
-  typenums.Bind(Reco_StyledItem, 270);
-  typenums.Bind(Reco_Surface, 271);
-  typenums.Bind(Reco_SurfacePatch, 275);
-  typenums.Bind(Reco_SurfaceReplica, 276);
-  typenums.Bind(Reco_SurfaceSideStyle, 277);
-  typenums.Bind(Reco_SurfaceStyleBoundary, 278);
-  typenums.Bind(Reco_SurfaceStyleControlGrid, 279);
-  typenums.Bind(Reco_SurfaceStyleFillArea, 280);
-  typenums.Bind(Reco_SurfaceStyleParameterLine, 281);
-  typenums.Bind(Reco_SurfaceStyleSegmentationCurve, 282);
-  typenums.Bind(Reco_SurfaceStyleSilhouette, 283);
-  typenums.Bind(Reco_SurfaceStyleUsage, 284);
-  typenums.Bind(Reco_SweptAreaSolid, 285);
-  typenums.Bind(Reco_SweptSurface, 286);
-  typenums.Bind(Reco_SymbolColour, 287);
-  typenums.Bind(Reco_SymbolRepresentation, 288);
-  typenums.Bind(Reco_SymbolRepresentationMap, 289);
-  typenums.Bind(Reco_SymbolStyle, 290);
-  typenums.Bind(Reco_SymbolTarget, 291);
-  typenums.Bind(Reco_Template, 292);
-  typenums.Bind(Reco_TemplateInstance, 293);
-  typenums.Bind(Reco_TerminatorSymbol, 294);
-  typenums.Bind(Reco_TextLiteral, 295);
-  typenums.Bind(Reco_TextLiteralWithAssociatedCurves, 296);
-  typenums.Bind(Reco_TextLiteralWithBlankingBox, 297);
-  typenums.Bind(Reco_TextLiteralWithDelineation, 298);
-  typenums.Bind(Reco_TextLiteralWithExtent, 299);
-  typenums.Bind(Reco_TextStyle, 300);
-  typenums.Bind(Reco_TextStyleForDefinedFont, 301);
-  typenums.Bind(Reco_TextStyleWithBoxCharacteristics, 302);
-  typenums.Bind(Reco_TextStyleWithMirror, 303);
-  typenums.Bind(Reco_TopologicalRepresentationItem, 304);
-  typenums.Bind(Reco_Torus, 306);
-  typenums.Bind(Reco_TransitionalShapeRepresentation, 307);
-  typenums.Bind(Reco_TwoDirectionRepeatFactor, 309);
-  typenums.Bind(Reco_UncertaintyMeasureWithUnit, 310);
-  typenums.Bind(Reco_Vertex, 314);
-  typenums.Bind(Reco_VertexLoop, 315);
-  typenums.Bind(Reco_ViewVolume, 317);
-  typenums.Bind(Reco_WeekOfYearAndDayDate, 318);
+  theTypenums.Bind(Reco_Address, 1);
+  theTypenums.Bind(Reco_AdvancedBrepShapeRepresentation, 2);
+  theTypenums.Bind(Reco_AnnotationCurveOccurrence, 4);
+  theTypenums.Bind(Reco_AnnotationFillArea, 5);
+  theTypenums.Bind(Reco_AnnotationFillAreaOccurrence, 6);
+  theTypenums.Bind(Reco_AnnotationOccurrence, 7);
+  theTypenums.Bind(Reco_AnnotationSubfigureOccurrence, 8);
+  theTypenums.Bind(Reco_AnnotationSymbol, 9);
+  theTypenums.Bind(Reco_AnnotationSymbolOccurrence, 10);
+  theTypenums.Bind(Reco_AnnotationText, 11);
+  theTypenums.Bind(Reco_AnnotationTextOccurrence, 12);
+  theTypenums.Bind(Reco_ApplicationContext, 13);
+  theTypenums.Bind(Reco_ApplicationContextElement, 14);
+  theTypenums.Bind(Reco_ApplicationProtocolDefinition, 15);
+  theTypenums.Bind(Reco_Approval, 16);
+  theTypenums.Bind(Reco_ApprovalAssignment, 17);
+  theTypenums.Bind(Reco_ApprovalPersonOrganization, 18);
+  theTypenums.Bind(Reco_ApprovalRelationship, 19);
+  theTypenums.Bind(Reco_ApprovalRole, 20);
+  theTypenums.Bind(Reco_ApprovalStatus, 21);
+  theTypenums.Bind(Reco_AreaInSet, 22);
+  theTypenums.Bind(Reco_AutoDesignActualDateAndTimeAssignment, 23);
+  theTypenums.Bind(Reco_AutoDesignActualDateAssignment, 24);
+  theTypenums.Bind(Reco_AutoDesignApprovalAssignment, 25);
+  theTypenums.Bind(Reco_AutoDesignDateAndPersonAssignment, 26);
+  theTypenums.Bind(Reco_AutoDesignGroupAssignment, 27);
+  theTypenums.Bind(Reco_AutoDesignNominalDateAndTimeAssignment, 28);
+  theTypenums.Bind(Reco_AutoDesignNominalDateAssignment, 29);
+  theTypenums.Bind(Reco_AutoDesignOrganizationAssignment, 30);
+  theTypenums.Bind(Reco_AutoDesignPersonAndOrganizationAssignment, 31);
+  theTypenums.Bind(Reco_AutoDesignPresentedItem, 32);
+  theTypenums.Bind(Reco_AutoDesignSecurityClassificationAssignment, 33);
+  theTypenums.Bind(Reco_AutoDesignViewArea, 34);
+  theTypenums.Bind(Reco_Axis1Placement, 35);
+  theTypenums.Bind(Reco_Axis2Placement2d, 36);
+  theTypenums.Bind(Reco_Axis2Placement3d, 37);
+  theTypenums.Bind(Reco_BackgroundColour, 42);
+  theTypenums.Bind(Reco_Block, 45);
+  theTypenums.Bind(Reco_BooleanResult, 46);
+  theTypenums.Bind(Reco_BoundaryCurve, 47);
+  theTypenums.Bind(Reco_BoundedCurve, 48);
+  theTypenums.Bind(Reco_BoundedSurface, 49);
+  theTypenums.Bind(Reco_BoxDomain, 50);
+  theTypenums.Bind(Reco_BoxedHalfSpace, 51);
+  theTypenums.Bind(Reco_BrepWithVoids, 52);
+  theTypenums.Bind(Reco_CalendarDate, 53);
+  theTypenums.Bind(Reco_CameraImage, 54);
+  theTypenums.Bind(Reco_CameraModel, 55);
+  theTypenums.Bind(Reco_CameraModelD2, 56);
+  theTypenums.Bind(Reco_CameraModelD3, 57);
+  theTypenums.Bind(Reco_CameraUsage, 58);
+  theTypenums.Bind(Reco_CartesianTransformationOperator, 60);
+  theTypenums.Bind(Reco_CartesianTransformationOperator3d, 61);
+  theTypenums.Bind(Reco_Circle, 62);
+  theTypenums.Bind(Reco_ClosedShell, 63);
+  theTypenums.Bind(Reco_Colour, 64);
+  theTypenums.Bind(Reco_ColourRgb, 65);
+  theTypenums.Bind(Reco_ColourSpecification, 66);
+  theTypenums.Bind(Reco_CompositeCurve, 67);
+  theTypenums.Bind(Reco_CompositeCurveOnSurface, 68);
+  theTypenums.Bind(Reco_CompositeCurveSegment, 69);
+  theTypenums.Bind(Reco_CompositeText, 70);
+  theTypenums.Bind(Reco_CompositeTextWithAssociatedCurves, 71);
+  theTypenums.Bind(Reco_CompositeTextWithBlankingBox, 72);
+  theTypenums.Bind(Reco_CompositeTextWithExtent, 73);
+  theTypenums.Bind(Reco_Conic, 74);
+  theTypenums.Bind(Reco_ConnectedFaceSet, 76);
+  theTypenums.Bind(Reco_ContextDependentInvisibility, 77);
+  theTypenums.Bind(Reco_ContextDependentOverRidingStyledItem, 78);
+  theTypenums.Bind(Reco_ConversionBasedUnit, 79);
+  theTypenums.Bind(Reco_CoordinatedUniversalTimeOffset, 80);
+  theTypenums.Bind(Reco_CsgRepresentation, 81);
+  theTypenums.Bind(Reco_CsgShapeRepresentation, 82);
+  theTypenums.Bind(Reco_CsgSolid, 83);
+  theTypenums.Bind(Reco_Curve, 84);
+  theTypenums.Bind(Reco_CurveBoundedSurface, 85);
+  theTypenums.Bind(Reco_CurveReplica, 86);
+  theTypenums.Bind(Reco_CurveStyle, 87);
+  theTypenums.Bind(Reco_CurveStyleFont, 88);
+  theTypenums.Bind(Reco_CurveStyleFontPattern, 89);
+  theTypenums.Bind(Reco_Date, 91);
+  theTypenums.Bind(Reco_DateAndTime, 92);
+  theTypenums.Bind(Reco_DateAndTimeAssignment, 93);
+  theTypenums.Bind(Reco_DateAssignment, 94);
+  theTypenums.Bind(Reco_DateRole, 95);
+  theTypenums.Bind(Reco_DateTimeRole, 96);
+  theTypenums.Bind(Reco_DefinedSymbol, 97);
+  theTypenums.Bind(Reco_DefinitionalRepresentation, 98);
+  theTypenums.Bind(Reco_DegeneratePcurve, 99);
+  theTypenums.Bind(Reco_DegenerateToroidalSurface, 100);
+  theTypenums.Bind(Reco_DescriptiveRepresentationItem, 101);
+  theTypenums.Bind(Reco_DimensionCurve, 102);
+  theTypenums.Bind(Reco_DimensionCurveTerminator, 103);
+  theTypenums.Bind(Reco_DimensionalExponents, 104);
+  theTypenums.Bind(Reco_DraughtingAnnotationOccurrence, 106);
+  theTypenums.Bind(Reco_DraughtingCallout, 107);
+  theTypenums.Bind(Reco_DraughtingPreDefinedColour, 108);
+  theTypenums.Bind(Reco_DraughtingPreDefinedCurveFont, 109);
+  theTypenums.Bind(Reco_DraughtingSubfigureRepresentation, 110);
+  theTypenums.Bind(Reco_DraughtingSymbolRepresentation, 111);
+  theTypenums.Bind(Reco_DraughtingTextLiteralWithDelineation, 112);
+  theTypenums.Bind(Reco_DrawingDefinition, 113);
+  theTypenums.Bind(Reco_DrawingRevision, 114);
+  theTypenums.Bind(Reco_Edge, 115);
+  theTypenums.Bind(Reco_ElementarySurface, 118);
+  theTypenums.Bind(Reco_Ellipse, 119);
+  theTypenums.Bind(Reco_EvaluatedDegeneratePcurve, 120);
+  theTypenums.Bind(Reco_ExternalSource, 121);
+  theTypenums.Bind(Reco_ExternallyDefinedCurveFont, 122);
+  theTypenums.Bind(Reco_ExternallyDefinedHatchStyle, 123);
+  theTypenums.Bind(Reco_ExternallyDefinedItem, 124);
+  theTypenums.Bind(Reco_ExternallyDefinedSymbol, 125);
+  theTypenums.Bind(Reco_ExternallyDefinedTextFont, 126);
+  theTypenums.Bind(Reco_ExternallyDefinedTileStyle, 127);
+  theTypenums.Bind(Reco_ExtrudedAreaSolid, 128);
+  theTypenums.Bind(Reco_Face, 129);
+  theTypenums.Bind(Reco_FaceSurface, 133);
+  theTypenums.Bind(Reco_FacetedBrep, 134);
+  theTypenums.Bind(Reco_FacetedBrepShapeRepresentation, 135);
+  theTypenums.Bind(Reco_FillAreaStyle, 136);
+  theTypenums.Bind(Reco_FillAreaStyleColour, 137);
+  theTypenums.Bind(Reco_FillAreaStyleHatching, 138);
+  theTypenums.Bind(Reco_FillAreaStyleTileSymbolWithStyle, 139);
+  theTypenums.Bind(Reco_FillAreaStyleTiles, 140);
+  theTypenums.Bind(Reco_FunctionallyDefinedTransformation, 141);
+  theTypenums.Bind(Reco_GeometricCurveSet, 142);
+  theTypenums.Bind(Reco_GeometricRepresentationContext, 143);
+  theTypenums.Bind(Reco_GeometricRepresentationItem, 144);
+  theTypenums.Bind(Reco_GeometricSet, 145);
+  theTypenums.Bind(Reco_GeometricallyBoundedSurfaceShapeRepresentation, 146);
+  theTypenums.Bind(Reco_GeometricallyBoundedWireframeShapeRepresentation, 147);
+  theTypenums.Bind(Reco_GlobalUncertaintyAssignedContext, 148);
+  theTypenums.Bind(Reco_GlobalUnitAssignedContext, 149);
+  theTypenums.Bind(Reco_Group, 150);
+  theTypenums.Bind(Reco_GroupAssignment, 151);
+  theTypenums.Bind(Reco_GroupRelationship, 152);
+  theTypenums.Bind(Reco_HalfSpaceSolid, 153);
+  theTypenums.Bind(Reco_Hyperbola, 154);
+  theTypenums.Bind(Reco_IntersectionCurve, 155);
+  theTypenums.Bind(Reco_Invisibility, 156);
+  theTypenums.Bind(Reco_LengthMeasureWithUnit, 157);
+  theTypenums.Bind(Reco_LengthUnit, 158);
+  theTypenums.Bind(Reco_Line, 159);
+  theTypenums.Bind(Reco_LocalTime, 160);
+  theTypenums.Bind(Reco_Loop, 161);
+  theTypenums.Bind(Reco_ManifoldSolidBrep, 162);
+  theTypenums.Bind(Reco_ManifoldSurfaceShapeRepresentation, 163);
+  theTypenums.Bind(Reco_MappedItem, 164);
+  theTypenums.Bind(Reco_MeasureWithUnit, 165);
+  theTypenums.Bind(Reco_MechanicalDesignGeometricPresentationArea, 166);
+  theTypenums.Bind(Reco_MechanicalDesignGeometricPresentationRepresentation, 167);
+  theTypenums.Bind(Reco_MechanicalDesignPresentationArea, 168);
+  theTypenums.Bind(Reco_NamedUnit, 169);
+  theTypenums.Bind(Reco_OffsetCurve3d, 171);
+  theTypenums.Bind(Reco_OffsetSurface, 172);
+  theTypenums.Bind(Reco_OneDirectionRepeatFactor, 173);
+  theTypenums.Bind(Reco_OpenShell, 174);
+  theTypenums.Bind(Reco_OrdinalDate, 175);
+  theTypenums.Bind(Reco_Organization, 176);
+  theTypenums.Bind(Reco_OrganizationAssignment, 177);
+  theTypenums.Bind(Reco_OrganizationRole, 178);
+  theTypenums.Bind(Reco_OrganizationalAddress, 179);
+  theTypenums.Bind(Reco_OrientedClosedShell, 180);
+  theTypenums.Bind(Reco_OrientedFace, 182);
+  theTypenums.Bind(Reco_OrientedOpenShell, 183);
+  theTypenums.Bind(Reco_OrientedPath, 184);
+  theTypenums.Bind(Reco_OuterBoundaryCurve, 185);
+  theTypenums.Bind(Reco_OverRidingStyledItem, 186);
+  theTypenums.Bind(Reco_Parabola, 187);
+  theTypenums.Bind(Reco_ParametricRepresentationContext, 188);
+  theTypenums.Bind(Reco_Path, 189);
+  theTypenums.Bind(Reco_Person, 191);
+  theTypenums.Bind(Reco_PersonAndOrganization, 192);
+  theTypenums.Bind(Reco_PersonAndOrganizationAssignment, 193);
+  theTypenums.Bind(Reco_PersonAndOrganizationRole, 194);
+  theTypenums.Bind(Reco_PersonalAddress, 195);
+  theTypenums.Bind(Reco_Placement, 196);
+  theTypenums.Bind(Reco_PlanarBox, 197);
+  theTypenums.Bind(Reco_PlanarExtent, 198);
+  theTypenums.Bind(Reco_Plane, 199);
+  theTypenums.Bind(Reco_PlaneAngleMeasureWithUnit, 200);
+  theTypenums.Bind(Reco_PlaneAngleUnit, 201);
+  theTypenums.Bind(Reco_Point, 202);
+  theTypenums.Bind(Reco_PointOnCurve, 203);
+  theTypenums.Bind(Reco_PointOnSurface, 204);
+  theTypenums.Bind(Reco_PointReplica, 205);
+  theTypenums.Bind(Reco_PointStyle, 206);
+  theTypenums.Bind(Reco_PolyLoop, 207);
+  theTypenums.Bind(Reco_Polyline, 208);
+  theTypenums.Bind(Reco_PreDefinedColour, 209);
+  theTypenums.Bind(Reco_PreDefinedCurveFont, 210);
+  theTypenums.Bind(Reco_PreDefinedItem, 211);
+  theTypenums.Bind(Reco_PreDefinedSymbol, 212);
+  theTypenums.Bind(Reco_PreDefinedTextFont, 213);
+  theTypenums.Bind(Reco_PresentationArea, 214);
+  theTypenums.Bind(Reco_PresentationLayerAssignment, 215);
+  theTypenums.Bind(Reco_PresentationRepresentation, 216);
+  theTypenums.Bind(Reco_PresentationSet, 217);
+  theTypenums.Bind(Reco_PresentationSize, 218);
+  theTypenums.Bind(Reco_PresentationStyleAssignment, 219);
+  theTypenums.Bind(Reco_PresentationStyleByContext, 220);
+  theTypenums.Bind(Reco_PresentationView, 221);
+  theTypenums.Bind(Reco_PresentedItem, 222);
+  theTypenums.Bind(Reco_Product, 223);
+  theTypenums.Bind(Reco_ProductCategory, 224);
+  theTypenums.Bind(Reco_ProductContext, 225);
+  theTypenums.Bind(Reco_ProductDataRepresentationView, 226);
+  theTypenums.Bind(Reco_ProductDefinition, 227);
+  theTypenums.Bind(Reco_ProductDefinitionContext, 228);
+  theTypenums.Bind(Reco_ProductDefinitionFormation, 229);
+  theTypenums.Bind(Reco_ProductDefinitionFormationWithSpecifiedSource, 230);
+  theTypenums.Bind(Reco_ProductDefinitionShape, 231);
+  theTypenums.Bind(Reco_ProductRelatedProductCategory, 232);
+  theTypenums.Bind(Reco_ProductType, 233);
+  theTypenums.Bind(Reco_PropertyDefinition, 234);
+  theTypenums.Bind(Reco_PropertyDefinitionRepresentation, 235);
+  theTypenums.Bind(Reco_RatioMeasureWithUnit, 238);
+  theTypenums.Bind(Reco_RectangularCompositeSurface, 241);
+  theTypenums.Bind(Reco_RectangularTrimmedSurface, 242);
+  theTypenums.Bind(Reco_RepItemGroup, 243);
+  theTypenums.Bind(Reco_ReparametrisedCompositeCurveSegment, 244);
+  theTypenums.Bind(Reco_Representation, 245);
+  theTypenums.Bind(Reco_RepresentationContext, 246);
+  theTypenums.Bind(Reco_RepresentationItem, 247);
+  theTypenums.Bind(Reco_RepresentationMap, 248);
+  theTypenums.Bind(Reco_RepresentationRelationship, 249);
+  theTypenums.Bind(Reco_RevolvedAreaSolid, 250);
+  theTypenums.Bind(Reco_RightAngularWedge, 251);
+  theTypenums.Bind(Reco_RightCircularCone, 252);
+  theTypenums.Bind(Reco_RightCircularCylinder, 253);
+  theTypenums.Bind(Reco_SeamCurve, 254);
+  theTypenums.Bind(Reco_SecurityClassification, 255);
+  theTypenums.Bind(Reco_SecurityClassificationAssignment, 256);
+  theTypenums.Bind(Reco_SecurityClassificationLevel, 257);
+  theTypenums.Bind(Reco_ShapeAspect, 258);
+  theTypenums.Bind(Reco_ShapeAspectRelationship, 259);
+  theTypenums.Bind(Reco_ShapeAspectTransition, 260);
+  theTypenums.Bind(Reco_ShapeDefinitionRepresentation, 261);
+  theTypenums.Bind(Reco_ShapeRepresentation, 262);
+  theTypenums.Bind(Reco_ShellBasedSurfaceModel, 263);
+  theTypenums.Bind(Reco_SiUnit, 264);
+  theTypenums.Bind(Reco_SolidAngleMeasureWithUnit, 265);
+  theTypenums.Bind(Reco_SolidModel, 266);
+  theTypenums.Bind(Reco_SolidReplica, 267);
+  theTypenums.Bind(Reco_Sphere, 268);
+  theTypenums.Bind(Reco_StyledItem, 270);
+  theTypenums.Bind(Reco_Surface, 271);
+  theTypenums.Bind(Reco_SurfacePatch, 275);
+  theTypenums.Bind(Reco_SurfaceReplica, 276);
+  theTypenums.Bind(Reco_SurfaceSideStyle, 277);
+  theTypenums.Bind(Reco_SurfaceStyleBoundary, 278);
+  theTypenums.Bind(Reco_SurfaceStyleControlGrid, 279);
+  theTypenums.Bind(Reco_SurfaceStyleFillArea, 280);
+  theTypenums.Bind(Reco_SurfaceStyleParameterLine, 281);
+  theTypenums.Bind(Reco_SurfaceStyleSegmentationCurve, 282);
+  theTypenums.Bind(Reco_SurfaceStyleSilhouette, 283);
+  theTypenums.Bind(Reco_SurfaceStyleUsage, 284);
+  theTypenums.Bind(Reco_SweptAreaSolid, 285);
+  theTypenums.Bind(Reco_SweptSurface, 286);
+  theTypenums.Bind(Reco_SymbolColour, 287);
+  theTypenums.Bind(Reco_SymbolRepresentation, 288);
+  theTypenums.Bind(Reco_SymbolRepresentationMap, 289);
+  theTypenums.Bind(Reco_SymbolStyle, 290);
+  theTypenums.Bind(Reco_SymbolTarget, 291);
+  theTypenums.Bind(Reco_Template, 292);
+  theTypenums.Bind(Reco_TemplateInstance, 293);
+  theTypenums.Bind(Reco_TerminatorSymbol, 294);
+  theTypenums.Bind(Reco_TextLiteral, 295);
+  theTypenums.Bind(Reco_TextLiteralWithAssociatedCurves, 296);
+  theTypenums.Bind(Reco_TextLiteralWithBlankingBox, 297);
+  theTypenums.Bind(Reco_TextLiteralWithDelineation, 298);
+  theTypenums.Bind(Reco_TextLiteralWithExtent, 299);
+  theTypenums.Bind(Reco_TextStyle, 300);
+  theTypenums.Bind(Reco_TextStyleForDefinedFont, 301);
+  theTypenums.Bind(Reco_TextStyleWithBoxCharacteristics, 302);
+  theTypenums.Bind(Reco_TextStyleWithMirror, 303);
+  theTypenums.Bind(Reco_TopologicalRepresentationItem, 304);
+  theTypenums.Bind(Reco_Torus, 306);
+  theTypenums.Bind(Reco_TransitionalShapeRepresentation, 307);
+  theTypenums.Bind(Reco_TwoDirectionRepeatFactor, 309);
+  theTypenums.Bind(Reco_UncertaintyMeasureWithUnit, 310);
+  theTypenums.Bind(Reco_Vertex, 314);
+  theTypenums.Bind(Reco_VertexLoop, 315);
+  theTypenums.Bind(Reco_ViewVolume, 317);
+  theTypenums.Bind(Reco_WeekOfYearAndDayDate, 318);
   // Added by FMA  for Rev4
-  typenums.Bind(Reco_SolidAngleUnit, 336);
-  typenums.Bind(Reco_MechanicalContext, 339);
-  typenums.Bind(Reco_DesignContext, 340); // by CKY
+  theTypenums.Bind(Reco_SolidAngleUnit, 336);
+  theTypenums.Bind(Reco_MechanicalContext, 339);
+  theTypenums.Bind(Reco_DesignContext, 340); // by CKY
   // full Rev4 (simple types)
-  typenums.Bind(Reco_TimeMeasureWithUnit, 341);
-  typenums.Bind(Reco_RatioUnit, 342);
-  typenums.Bind(Reco_TimeUnit, 343);
-  typenums.Bind(Reco_ApprovalDateTime, 348);
-  typenums.Bind(Reco_CameraImage2dWithScale, 349);
-  typenums.Bind(Reco_CameraImage3dWithScale, 350);
-  typenums.Bind(Reco_CartesianTransformationOperator2d, 351);
-  typenums.Bind(Reco_DerivedUnit, 352);
-  typenums.Bind(Reco_DerivedUnitElement, 353);
-  typenums.Bind(Reco_ItemDefinedTransformation, 354);
-  typenums.Bind(Reco_PresentedItemRepresentation, 355);
-  typenums.Bind(Reco_PresentationLayerUsage, 356);
+  theTypenums.Bind(Reco_TimeMeasureWithUnit, 341);
+  theTypenums.Bind(Reco_RatioUnit, 342);
+  theTypenums.Bind(Reco_TimeUnit, 343);
+  theTypenums.Bind(Reco_ApprovalDateTime, 348);
+  theTypenums.Bind(Reco_CameraImage2dWithScale, 349);
+  theTypenums.Bind(Reco_CameraImage3dWithScale, 350);
+  theTypenums.Bind(Reco_CartesianTransformationOperator2d, 351);
+  theTypenums.Bind(Reco_DerivedUnit, 352);
+  theTypenums.Bind(Reco_DerivedUnitElement, 353);
+  theTypenums.Bind(Reco_ItemDefinedTransformation, 354);
+  theTypenums.Bind(Reco_PresentedItemRepresentation, 355);
+  theTypenums.Bind(Reco_PresentationLayerUsage, 356);
 
   //  AP214 : CC1 -> CC2
 
-  typenums.Bind(Reco_AutoDesignDocumentReference, 366);
+  theTypenums.Bind(Reco_AutoDesignDocumentReference, 366);
 
-  typenums.Bind(Reco_Document, 367);
-  typenums.Bind(Reco_DigitalDocument, 368);
-  typenums.Bind(Reco_DocumentRelationship, 369);
-  typenums.Bind(Reco_DocumentType, 370);
-  typenums.Bind(Reco_DocumentUsageConstraint, 371);
-  typenums.Bind(Reco_Effectivity, 372);
-  typenums.Bind(Reco_ProductDefinitionEffectivity, 373);
-  typenums.Bind(Reco_ProductDefinitionRelationship, 374);
+  theTypenums.Bind(Reco_Document, 367);
+  theTypenums.Bind(Reco_DigitalDocument, 368);
+  theTypenums.Bind(Reco_DocumentRelationship, 369);
+  theTypenums.Bind(Reco_DocumentType, 370);
+  theTypenums.Bind(Reco_DocumentUsageConstraint, 371);
+  theTypenums.Bind(Reco_Effectivity, 372);
+  theTypenums.Bind(Reco_ProductDefinitionEffectivity, 373);
+  theTypenums.Bind(Reco_ProductDefinitionRelationship, 374);
 
-  typenums.Bind(Reco_ProductDefinitionWithAssociatedDocuments, 375);
-  typenums.Bind(Reco_PhysicallyModeledProductDefinition, 376);
+  theTypenums.Bind(Reco_ProductDefinitionWithAssociatedDocuments, 375);
+  theTypenums.Bind(Reco_PhysicallyModeledProductDefinition, 376);
 
-  typenums.Bind(Reco_ProductDefinitionUsage, 377);
-  typenums.Bind(Reco_MakeFromUsageOption, 378);
-  typenums.Bind(Reco_AssemblyComponentUsage, 379);
-  typenums.Bind(Reco_NextAssemblyUsageOccurrence, 380);
-  typenums.Bind(Reco_PromissoryUsageOccurrence, 381);
-  typenums.Bind(Reco_QuantifiedAssemblyComponentUsage, 382);
-  typenums.Bind(Reco_SpecifiedHigherUsageOccurrence, 383);
-  typenums.Bind(Reco_AssemblyComponentUsageSubstitute, 384);
-  typenums.Bind(Reco_SuppliedPartRelationship, 385);
-  typenums.Bind(Reco_ExternallyDefinedRepresentation, 386);
-  typenums.Bind(Reco_ShapeRepresentationRelationship, 387);
-  typenums.Bind(Reco_RepresentationRelationshipWithTransformation, 388);
-  typenums.Bind(Reco_MaterialDesignation, 390);
+  theTypenums.Bind(Reco_ProductDefinitionUsage, 377);
+  theTypenums.Bind(Reco_MakeFromUsageOption, 378);
+  theTypenums.Bind(Reco_AssemblyComponentUsage, 379);
+  theTypenums.Bind(Reco_NextAssemblyUsageOccurrence, 380);
+  theTypenums.Bind(Reco_PromissoryUsageOccurrence, 381);
+  theTypenums.Bind(Reco_QuantifiedAssemblyComponentUsage, 382);
+  theTypenums.Bind(Reco_SpecifiedHigherUsageOccurrence, 383);
+  theTypenums.Bind(Reco_AssemblyComponentUsageSubstitute, 384);
+  theTypenums.Bind(Reco_SuppliedPartRelationship, 385);
+  theTypenums.Bind(Reco_ExternallyDefinedRepresentation, 386);
+  theTypenums.Bind(Reco_ShapeRepresentationRelationship, 387);
+  theTypenums.Bind(Reco_RepresentationRelationshipWithTransformation, 388);
+  theTypenums.Bind(Reco_MaterialDesignation, 390);
 
-  typenums.Bind(Reco_ContextDependentShapeRepresentation, 391);
+  theTypenums.Bind(Reco_ContextDependentShapeRepresentation, 391);
   // Added from CD to DIS (S4134)
-  typenums.Bind(Reco_AppliedDateAndTimeAssignment, 392);
-  typenums.Bind(Reco_AppliedDateAssignment, 393);
-  typenums.Bind(Reco_AppliedApprovalAssignment, 394);
-  typenums.Bind(Reco_AppliedGroupAssignment, 395);
-  typenums.Bind(Reco_AppliedOrganizationAssignment, 396);
-  typenums.Bind(Reco_AppliedPersonAndOrganizationAssignment, 397);
-  typenums.Bind(Reco_AppliedPresentedItem, 398);
-  typenums.Bind(Reco_AppliedSecurityClassificationAssignment, 399);
-  typenums.Bind(Reco_AppliedDocumentReference, 400);
-  typenums.Bind(Reco_DocumentFile, 401);
-  typenums.Bind(Reco_CharacterizedObject, 402);
-  typenums.Bind(Reco_ExtrudedFaceSolid, 403);
-  typenums.Bind(Reco_RevolvedFaceSolid, 404);
-  typenums.Bind(Reco_SweptFaceSolid, 405);
+  theTypenums.Bind(Reco_AppliedDateAndTimeAssignment, 392);
+  theTypenums.Bind(Reco_AppliedDateAssignment, 393);
+  theTypenums.Bind(Reco_AppliedApprovalAssignment, 394);
+  theTypenums.Bind(Reco_AppliedGroupAssignment, 395);
+  theTypenums.Bind(Reco_AppliedOrganizationAssignment, 396);
+  theTypenums.Bind(Reco_AppliedPersonAndOrganizationAssignment, 397);
+  theTypenums.Bind(Reco_AppliedPresentedItem, 398);
+  theTypenums.Bind(Reco_AppliedSecurityClassificationAssignment, 399);
+  theTypenums.Bind(Reco_AppliedDocumentReference, 400);
+  theTypenums.Bind(Reco_DocumentFile, 401);
+  theTypenums.Bind(Reco_CharacterizedObject, 402);
+  theTypenums.Bind(Reco_ExtrudedFaceSolid, 403);
+  theTypenums.Bind(Reco_RevolvedFaceSolid, 404);
+  theTypenums.Bind(Reco_SweptFaceSolid, 405);
 
   // Added by ABV 08.09.99 for CAX TRJ 2 (validation properties)
-  typenums.Bind(Reco_MeasureRepresentationItem, 406);
-  typenums.Bind(Reco_AreaUnit, 407);
-  typenums.Bind(Reco_VolumeUnit, 408);
+  theTypenums.Bind(Reco_MeasureRepresentationItem, 406);
+  theTypenums.Bind(Reco_AreaUnit, 407);
+  theTypenums.Bind(Reco_VolumeUnit, 408);
 
   // Added by ABV 10.11.99 for AP203
-  typenums.Bind(Reco_Action, 413);
-  typenums.Bind(Reco_ActionAssignment, 414);
-  typenums.Bind(Reco_ActionMethod, 415);
-  typenums.Bind(Reco_ActionRequestAssignment, 416);
-  typenums.Bind(Reco_CcDesignApproval, 417);
-  typenums.Bind(Reco_CcDesignCertification, 418);
-  typenums.Bind(Reco_CcDesignContract, 419);
-  typenums.Bind(Reco_CcDesignDateAndTimeAssignment, 420);
-  typenums.Bind(Reco_CcDesignPersonAndOrganizationAssignment, 421);
-  typenums.Bind(Reco_CcDesignSecurityClassification, 422);
-  typenums.Bind(Reco_CcDesignSpecificationReference, 423);
-  typenums.Bind(Reco_Certification, 424);
-  typenums.Bind(Reco_CertificationAssignment, 425);
-  typenums.Bind(Reco_CertificationType, 426);
-  typenums.Bind(Reco_Change, 427);
-  typenums.Bind(Reco_ChangeRequest, 428);
-  typenums.Bind(Reco_ConfigurationDesign, 429);
-  typenums.Bind(Reco_ConfigurationEffectivity, 430);
-  typenums.Bind(Reco_Contract, 431);
-  typenums.Bind(Reco_ContractAssignment, 432);
-  typenums.Bind(Reco_ContractType, 433);
-  typenums.Bind(Reco_ProductConcept, 434);
-  typenums.Bind(Reco_ProductConceptContext, 435);
-  typenums.Bind(Reco_StartRequest, 436);
-  typenums.Bind(Reco_StartWork, 437);
-  typenums.Bind(Reco_VersionedActionRequest, 438);
-  typenums.Bind(Reco_ProductCategoryRelationship, 439);
-  typenums.Bind(Reco_ActionRequestSolution, 440);
-  typenums.Bind(Reco_DraughtingModel, 441);
+  theTypenums.Bind(Reco_Action, 413);
+  theTypenums.Bind(Reco_ActionAssignment, 414);
+  theTypenums.Bind(Reco_ActionMethod, 415);
+  theTypenums.Bind(Reco_ActionRequestAssignment, 416);
+  theTypenums.Bind(Reco_CcDesignApproval, 417);
+  theTypenums.Bind(Reco_CcDesignCertification, 418);
+  theTypenums.Bind(Reco_CcDesignContract, 419);
+  theTypenums.Bind(Reco_CcDesignDateAndTimeAssignment, 420);
+  theTypenums.Bind(Reco_CcDesignPersonAndOrganizationAssignment, 421);
+  theTypenums.Bind(Reco_CcDesignSecurityClassification, 422);
+  theTypenums.Bind(Reco_CcDesignSpecificationReference, 423);
+  theTypenums.Bind(Reco_Certification, 424);
+  theTypenums.Bind(Reco_CertificationAssignment, 425);
+  theTypenums.Bind(Reco_CertificationType, 426);
+  theTypenums.Bind(Reco_Change, 427);
+  theTypenums.Bind(Reco_ChangeRequest, 428);
+  theTypenums.Bind(Reco_ConfigurationDesign, 429);
+  theTypenums.Bind(Reco_ConfigurationEffectivity, 430);
+  theTypenums.Bind(Reco_Contract, 431);
+  theTypenums.Bind(Reco_ContractAssignment, 432);
+  theTypenums.Bind(Reco_ContractType, 433);
+  theTypenums.Bind(Reco_ProductConcept, 434);
+  theTypenums.Bind(Reco_ProductConceptContext, 435);
+  theTypenums.Bind(Reco_StartRequest, 436);
+  theTypenums.Bind(Reco_StartWork, 437);
+  theTypenums.Bind(Reco_VersionedActionRequest, 438);
+  theTypenums.Bind(Reco_ProductCategoryRelationship, 439);
+  theTypenums.Bind(Reco_ActionRequestSolution, 440);
+  theTypenums.Bind(Reco_DraughtingModel, 441);
 
-  typenums.Bind(Reco_AngularLocation, 442);
-  typenums.Bind(Reco_AngularSize, 443);
-  typenums.Bind(Reco_DimensionalCharacteristicRepresentation, 444);
-  typenums.Bind(Reco_DimensionalLocation, 445);
-  typenums.Bind(Reco_DimensionalLocationWithPath, 446);
-  typenums.Bind(Reco_DimensionalSize, 447);
-  typenums.Bind(Reco_DimensionalSizeWithPath, 448);
-  typenums.Bind(Reco_ShapeDimensionRepresentation, 449);
+  theTypenums.Bind(Reco_AngularLocation, 442);
+  theTypenums.Bind(Reco_AngularSize, 443);
+  theTypenums.Bind(Reco_DimensionalCharacteristicRepresentation, 444);
+  theTypenums.Bind(Reco_DimensionalLocation, 445);
+  theTypenums.Bind(Reco_DimensionalLocationWithPath, 446);
+  theTypenums.Bind(Reco_DimensionalSize, 447);
+  theTypenums.Bind(Reco_DimensionalSizeWithPath, 448);
+  theTypenums.Bind(Reco_ShapeDimensionRepresentation, 449);
 
   // Added by ABV 10.05.00 for CAX-IF TRJ4 (external references)
-  typenums.Bind(Reco_DocumentRepresentationType, 450);
-  typenums.Bind(Reco_ObjectRole, 451);
-  typenums.Bind(Reco_RoleAssociation, 452);
-  typenums.Bind(Reco_IdentificationRole, 453);
-  typenums.Bind(Reco_IdentificationAssignment, 454);
-  typenums.Bind(Reco_ExternalIdentificationAssignment, 455);
-  typenums.Bind(Reco_EffectivityAssignment, 456);
-  typenums.Bind(Reco_NameAssignment, 457);
-  typenums.Bind(Reco_GeneralProperty, 458);
-  typenums.Bind(Reco_Class, 459);
-  typenums.Bind(Reco_ExternallyDefinedClass, 460);
-  typenums.Bind(Reco_ExternallyDefinedGeneralProperty, 461);
-  typenums.Bind(Reco_AppliedExternalIdentificationAssignment, 462);
+  theTypenums.Bind(Reco_DocumentRepresentationType, 450);
+  theTypenums.Bind(Reco_ObjectRole, 451);
+  theTypenums.Bind(Reco_RoleAssociation, 452);
+  theTypenums.Bind(Reco_IdentificationRole, 453);
+  theTypenums.Bind(Reco_IdentificationAssignment, 454);
+  theTypenums.Bind(Reco_ExternalIdentificationAssignment, 455);
+  theTypenums.Bind(Reco_EffectivityAssignment, 456);
+  theTypenums.Bind(Reco_NameAssignment, 457);
+  theTypenums.Bind(Reco_GeneralProperty, 458);
+  theTypenums.Bind(Reco_Class, 459);
+  theTypenums.Bind(Reco_ExternallyDefinedClass, 460);
+  theTypenums.Bind(Reco_ExternallyDefinedGeneralProperty, 461);
+  theTypenums.Bind(Reco_AppliedExternalIdentificationAssignment, 462);
 
   // Added by CKY, 25 APR 2001 for CAX-IF TRJ7 (dimensional tolerances)
-  typenums.Bind(Reco_CompositeShapeAspect, 470);
-  typenums.Bind(Reco_DerivedShapeAspect, 471);
-  typenums.Bind(Reco_Extension, 472);
-  typenums.Bind(Reco_DirectedDimensionalLocation, 473);
-  typenums.Bind(Reco_LimitsAndFits, 474);
-  typenums.Bind(Reco_ToleranceValue, 475);
-  typenums.Bind(Reco_MeasureQualification, 476);
-  typenums.Bind(Reco_PlusMinusTolerance, 477);
-  typenums.Bind(Reco_PrecisionQualifier, 478);
-  typenums.Bind(Reco_TypeQualifier, 479);
-  typenums.Bind(Reco_QualifiedRepresentationItem, 480);
+  theTypenums.Bind(Reco_CompositeShapeAspect, 470);
+  theTypenums.Bind(Reco_DerivedShapeAspect, 471);
+  theTypenums.Bind(Reco_Extension, 472);
+  theTypenums.Bind(Reco_DirectedDimensionalLocation, 473);
+  theTypenums.Bind(Reco_LimitsAndFits, 474);
+  theTypenums.Bind(Reco_ToleranceValue, 475);
+  theTypenums.Bind(Reco_MeasureQualification, 476);
+  theTypenums.Bind(Reco_PlusMinusTolerance, 477);
+  theTypenums.Bind(Reco_PrecisionQualifier, 478);
+  theTypenums.Bind(Reco_TypeQualifier, 479);
+  theTypenums.Bind(Reco_QualifiedRepresentationItem, 480);
 
-  typenums.Bind(Reco_CompoundRepresentationItem, 482);
-  typenums.Bind(Reco_ValueRange, 483);
-  typenums.Bind(Reco_ShapeAspectDerivingRelationship, 484);
+  theTypenums.Bind(Reco_CompoundRepresentationItem, 482);
+  theTypenums.Bind(Reco_ValueRange, 483);
+  theTypenums.Bind(Reco_ShapeAspectDerivingRelationship, 484);
 
   // abv 27.12.01
-  typenums.Bind(Reco_CompoundShapeRepresentation, 485);
-  typenums.Bind(Reco_ConnectedEdgeSet, 486);
-  typenums.Bind(Reco_ConnectedFaceShapeRepresentation, 487);
-  typenums.Bind(Reco_EdgeBasedWireframeModel, 488);
-  typenums.Bind(Reco_EdgeBasedWireframeShapeRepresentation, 489);
-  typenums.Bind(Reco_FaceBasedSurfaceModel, 490);
-  typenums.Bind(Reco_NonManifoldSurfaceShapeRepresentation, 491);
+  theTypenums.Bind(Reco_CompoundShapeRepresentation, 485);
+  theTypenums.Bind(Reco_ConnectedEdgeSet, 486);
+  theTypenums.Bind(Reco_ConnectedFaceShapeRepresentation, 487);
+  theTypenums.Bind(Reco_EdgeBasedWireframeModel, 488);
+  theTypenums.Bind(Reco_EdgeBasedWireframeShapeRepresentation, 489);
+  theTypenums.Bind(Reco_FaceBasedSurfaceModel, 490);
+  theTypenums.Bind(Reco_NonManifoldSurfaceShapeRepresentation, 491);
 
   // gka 08.01.02
-  typenums.Bind(Reco_OrientedSurface, 492);
-  typenums.Bind(Reco_Subface, 493);
-  typenums.Bind(Reco_Subedge, 494);
-  typenums.Bind(Reco_SeamEdge, 495);
-  typenums.Bind(Reco_ConnectedFaceSubSet, 496);
+  theTypenums.Bind(Reco_OrientedSurface, 492);
+  theTypenums.Bind(Reco_Subface, 493);
+  theTypenums.Bind(Reco_Subedge, 494);
+  theTypenums.Bind(Reco_SeamEdge, 495);
+  theTypenums.Bind(Reco_ConnectedFaceSubSet, 496);
 
   // AP209
-  typenums.Bind(Reco_EulerAngles, 500);
-  typenums.Bind(Reco_MassUnit, 501);
-  typenums.Bind(Reco_ThermodynamicTemperatureUnit, 502);
-  typenums.Bind(Reco_AnalysisItemWithinRepresentation, 503);
-  typenums.Bind(Reco_Curve3dElementDescriptor, 504);
-  typenums.Bind(Reco_CurveElementEndReleasePacket, 505);
-  typenums.Bind(Reco_CurveElementSectionDefinition, 506);
-  typenums.Bind(Reco_CurveElementSectionDerivedDefinitions, 507);
-  typenums.Bind(Reco_ElementDescriptor, 508);
-  typenums.Bind(Reco_ElementMaterial, 509);
-  typenums.Bind(Reco_Surface3dElementDescriptor, 510);
-  typenums.Bind(Reco_SurfaceElementProperty, 511);
-  typenums.Bind(Reco_SurfaceSection, 512);
-  typenums.Bind(Reco_SurfaceSectionField, 513);
-  typenums.Bind(Reco_SurfaceSectionFieldConstant, 514);
-  typenums.Bind(Reco_SurfaceSectionFieldVarying, 515);
-  typenums.Bind(Reco_UniformSurfaceSection, 516);
-  typenums.Bind(Reco_Volume3dElementDescriptor, 517);
-  typenums.Bind(Reco_AlignedCurve3dElementCoordinateSystem, 518);
-  typenums.Bind(Reco_ArbitraryVolume3dElementCoordinateSystem, 519);
-  typenums.Bind(Reco_Curve3dElementProperty, 520);
-  typenums.Bind(Reco_Curve3dElementRepresentation, 521);
-  typenums.Bind(Reco_Node, 522);
-  //  typenums.Bind (Reco_CurveElementEndCoordinateSystem,523);
-  typenums.Bind(Reco_CurveElementEndOffset, 524);
-  typenums.Bind(Reco_CurveElementEndRelease, 525);
-  typenums.Bind(Reco_CurveElementInterval, 526);
-  typenums.Bind(Reco_CurveElementIntervalConstant, 527);
-  typenums.Bind(Reco_DummyNode, 528);
-  typenums.Bind(Reco_CurveElementLocation, 529);
-  typenums.Bind(Reco_ElementGeometricRelationship, 530);
-  typenums.Bind(Reco_ElementGroup, 531);
-  typenums.Bind(Reco_ElementRepresentation, 532);
-  typenums.Bind(Reco_FeaAreaDensity, 533);
-  typenums.Bind(Reco_FeaAxis2Placement3d, 534);
-  typenums.Bind(Reco_FeaGroup, 535);
-  typenums.Bind(Reco_FeaLinearElasticity, 536);
-  typenums.Bind(Reco_FeaMassDensity, 537);
-  typenums.Bind(Reco_FeaMaterialPropertyRepresentation, 538);
-  typenums.Bind(Reco_FeaMaterialPropertyRepresentationItem, 539);
-  typenums.Bind(Reco_FeaModel, 540);
-  typenums.Bind(Reco_FeaModel3d, 541);
-  typenums.Bind(Reco_FeaMoistureAbsorption, 542);
-  typenums.Bind(Reco_FeaParametricPoint, 543);
-  typenums.Bind(Reco_FeaRepresentationItem, 544);
-  typenums.Bind(Reco_FeaSecantCoefficientOfLinearThermalExpansion, 545);
-  typenums.Bind(Reco_FeaShellBendingStiffness, 546);
-  typenums.Bind(Reco_FeaShellMembraneBendingCouplingStiffness, 547);
-  typenums.Bind(Reco_FeaShellMembraneStiffness, 548);
-  typenums.Bind(Reco_FeaShellShearStiffness, 549);
-  typenums.Bind(Reco_GeometricNode, 550);
-  typenums.Bind(Reco_FeaTangentialCoefficientOfLinearThermalExpansion, 551);
-  typenums.Bind(Reco_NodeGroup, 552);
-  typenums.Bind(Reco_NodeRepresentation, 553);
-  typenums.Bind(Reco_NodeSet, 554);
-  typenums.Bind(Reco_NodeWithSolutionCoordinateSystem, 555);
-  typenums.Bind(Reco_NodeWithVector, 556);
-  typenums.Bind(Reco_ParametricCurve3dElementCoordinateDirection, 557);
-  typenums.Bind(Reco_ParametricCurve3dElementCoordinateSystem, 558);
-  typenums.Bind(Reco_ParametricSurface3dElementCoordinateSystem, 559);
-  typenums.Bind(Reco_Surface3dElementRepresentation, 560);
-  //  typenums.Bind (Reco_SymmetricTensor22d,561);
-  //  typenums.Bind (Reco_SymmetricTensor42d,562);
-  //  typenums.Bind (Reco_SymmetricTensor43d,563);
-  typenums.Bind(Reco_Volume3dElementRepresentation, 564);
-  typenums.Bind(Reco_DataEnvironment, 565);
-  typenums.Bind(Reco_MaterialPropertyRepresentation, 566);
-  typenums.Bind(Reco_PropertyDefinitionRelationship, 567);
-  typenums.Bind(Reco_PointRepresentation, 568);
-  typenums.Bind(Reco_MaterialProperty, 569);
-  typenums.Bind(Reco_FeaModelDefinition, 570);
-  typenums.Bind(Reco_FreedomAndCoefficient, 571);
-  typenums.Bind(Reco_FreedomsList, 572);
-  typenums.Bind(Reco_ProductDefinitionFormationRelationship, 573);
-  //  typenums.Bind (Reco_FeaModelDefinition,574);
-  typenums.Bind(Reco_NodeDefinition, 575);
-  typenums.Bind(Reco_StructuralResponseProperty, 576);
-  typenums.Bind(Reco_StructuralResponsePropertyDefinitionRepresentation, 577);
-  typenums.Bind(Reco_AlignedSurface3dElementCoordinateSystem, 579);
-  typenums.Bind(Reco_ConstantSurface3dElementCoordinateSystem, 580);
-  typenums.Bind(Reco_CurveElementIntervalLinearlyVarying, 581);
-  typenums.Bind(Reco_FeaCurveSectionGeometricRelationship, 582);
-  typenums.Bind(Reco_FeaSurfaceSectionGeometricRelationship, 583);
+  theTypenums.Bind(Reco_EulerAngles, 500);
+  theTypenums.Bind(Reco_MassUnit, 501);
+  theTypenums.Bind(Reco_ThermodynamicTemperatureUnit, 502);
+  theTypenums.Bind(Reco_AnalysisItemWithinRepresentation, 503);
+  theTypenums.Bind(Reco_Curve3dElementDescriptor, 504);
+  theTypenums.Bind(Reco_CurveElementEndReleasePacket, 505);
+  theTypenums.Bind(Reco_CurveElementSectionDefinition, 506);
+  theTypenums.Bind(Reco_CurveElementSectionDerivedDefinitions, 507);
+  theTypenums.Bind(Reco_ElementDescriptor, 508);
+  theTypenums.Bind(Reco_ElementMaterial, 509);
+  theTypenums.Bind(Reco_Surface3dElementDescriptor, 510);
+  theTypenums.Bind(Reco_SurfaceElementProperty, 511);
+  theTypenums.Bind(Reco_SurfaceSection, 512);
+  theTypenums.Bind(Reco_SurfaceSectionField, 513);
+  theTypenums.Bind(Reco_SurfaceSectionFieldConstant, 514);
+  theTypenums.Bind(Reco_SurfaceSectionFieldVarying, 515);
+  theTypenums.Bind(Reco_UniformSurfaceSection, 516);
+  theTypenums.Bind(Reco_Volume3dElementDescriptor, 517);
+  theTypenums.Bind(Reco_AlignedCurve3dElementCoordinateSystem, 518);
+  theTypenums.Bind(Reco_ArbitraryVolume3dElementCoordinateSystem, 519);
+  theTypenums.Bind(Reco_Curve3dElementProperty, 520);
+  theTypenums.Bind(Reco_Curve3dElementRepresentation, 521);
+  theTypenums.Bind(Reco_Node, 522);
+  //  theTypenums.Bind (Reco_CurveElementEndCoordinateSystem,523);
+  theTypenums.Bind(Reco_CurveElementEndOffset, 524);
+  theTypenums.Bind(Reco_CurveElementEndRelease, 525);
+  theTypenums.Bind(Reco_CurveElementInterval, 526);
+  theTypenums.Bind(Reco_CurveElementIntervalConstant, 527);
+  theTypenums.Bind(Reco_DummyNode, 528);
+  theTypenums.Bind(Reco_CurveElementLocation, 529);
+  theTypenums.Bind(Reco_ElementGeometricRelationship, 530);
+  theTypenums.Bind(Reco_ElementGroup, 531);
+  theTypenums.Bind(Reco_ElementRepresentation, 532);
+  theTypenums.Bind(Reco_FeaAreaDensity, 533);
+  theTypenums.Bind(Reco_FeaAxis2Placement3d, 534);
+  theTypenums.Bind(Reco_FeaGroup, 535);
+  theTypenums.Bind(Reco_FeaLinearElasticity, 536);
+  theTypenums.Bind(Reco_FeaMassDensity, 537);
+  theTypenums.Bind(Reco_FeaMaterialPropertyRepresentation, 538);
+  theTypenums.Bind(Reco_FeaMaterialPropertyRepresentationItem, 539);
+  theTypenums.Bind(Reco_FeaModel, 540);
+  theTypenums.Bind(Reco_FeaModel3d, 541);
+  theTypenums.Bind(Reco_FeaMoistureAbsorption, 542);
+  theTypenums.Bind(Reco_FeaParametricPoint, 543);
+  theTypenums.Bind(Reco_FeaRepresentationItem, 544);
+  theTypenums.Bind(Reco_FeaSecantCoefficientOfLinearThermalExpansion, 545);
+  theTypenums.Bind(Reco_FeaShellBendingStiffness, 546);
+  theTypenums.Bind(Reco_FeaShellMembraneBendingCouplingStiffness, 547);
+  theTypenums.Bind(Reco_FeaShellMembraneStiffness, 548);
+  theTypenums.Bind(Reco_FeaShellShearStiffness, 549);
+  theTypenums.Bind(Reco_GeometricNode, 550);
+  theTypenums.Bind(Reco_FeaTangentialCoefficientOfLinearThermalExpansion, 551);
+  theTypenums.Bind(Reco_NodeGroup, 552);
+  theTypenums.Bind(Reco_NodeRepresentation, 553);
+  theTypenums.Bind(Reco_NodeSet, 554);
+  theTypenums.Bind(Reco_NodeWithSolutionCoordinateSystem, 555);
+  theTypenums.Bind(Reco_NodeWithVector, 556);
+  theTypenums.Bind(Reco_ParametricCurve3dElementCoordinateDirection, 557);
+  theTypenums.Bind(Reco_ParametricCurve3dElementCoordinateSystem, 558);
+  theTypenums.Bind(Reco_ParametricSurface3dElementCoordinateSystem, 559);
+  theTypenums.Bind(Reco_Surface3dElementRepresentation, 560);
+  //  theTypenums.Bind (Reco_SymmetricTensor22d,561);
+  //  theTypenums.Bind (Reco_SymmetricTensor42d,562);
+  //  theTypenums.Bind (Reco_SymmetricTensor43d,563);
+  theTypenums.Bind(Reco_Volume3dElementRepresentation, 564);
+  theTypenums.Bind(Reco_DataEnvironment, 565);
+  theTypenums.Bind(Reco_MaterialPropertyRepresentation, 566);
+  theTypenums.Bind(Reco_PropertyDefinitionRelationship, 567);
+  theTypenums.Bind(Reco_PointRepresentation, 568);
+  theTypenums.Bind(Reco_MaterialProperty, 569);
+  theTypenums.Bind(Reco_FeaModelDefinition, 570);
+  theTypenums.Bind(Reco_FreedomAndCoefficient, 571);
+  theTypenums.Bind(Reco_FreedomsList, 572);
+  theTypenums.Bind(Reco_ProductDefinitionFormationRelationship, 573);
+  //  theTypenums.Bind (Reco_FeaModelDefinition,574);
+  theTypenums.Bind(Reco_NodeDefinition, 575);
+  theTypenums.Bind(Reco_StructuralResponseProperty, 576);
+  theTypenums.Bind(Reco_StructuralResponsePropertyDefinitionRepresentation, 577);
+  theTypenums.Bind(Reco_AlignedSurface3dElementCoordinateSystem, 579);
+  theTypenums.Bind(Reco_ConstantSurface3dElementCoordinateSystem, 580);
+  theTypenums.Bind(Reco_CurveElementIntervalLinearlyVarying, 581);
+  theTypenums.Bind(Reco_FeaCurveSectionGeometricRelationship, 582);
+  theTypenums.Bind(Reco_FeaSurfaceSectionGeometricRelationship, 583);
 
   // ptv 28.01.2003
-  typenums.Bind(Reco_DocumentProductAssociation, 600);
-  typenums.Bind(Reco_DocumentProductEquivalence, 601);
+  theTypenums.Bind(Reco_DocumentProductAssociation, 600);
+  theTypenums.Bind(Reco_DocumentProductEquivalence, 601);
 
   // Added by SKL 18.06.2003 for Dimensional Tolerances (CAX-IF TRJ11)
-  typenums.Bind(Reco_CylindricityTolerance, 609);
-  typenums.Bind(Reco_ShapeRepresentationWithParameters, 610);
-  typenums.Bind(Reco_AngularityTolerance, 611);
-  typenums.Bind(Reco_ConcentricityTolerance, 612);
-  typenums.Bind(Reco_CircularRunoutTolerance, 613);
-  typenums.Bind(Reco_CoaxialityTolerance, 614);
-  typenums.Bind(Reco_FlatnessTolerance, 615);
-  typenums.Bind(Reco_LineProfileTolerance, 616);
-  typenums.Bind(Reco_ParallelismTolerance, 617);
-  typenums.Bind(Reco_PerpendicularityTolerance, 618);
-  typenums.Bind(Reco_PositionTolerance, 619);
-  typenums.Bind(Reco_RoundnessTolerance, 620);
-  typenums.Bind(Reco_StraightnessTolerance, 621);
-  typenums.Bind(Reco_SurfaceProfileTolerance, 622);
-  typenums.Bind(Reco_SymmetryTolerance, 623);
-  typenums.Bind(Reco_TotalRunoutTolerance, 624);
-  typenums.Bind(Reco_GeometricTolerance, 625);
-  typenums.Bind(Reco_GeometricToleranceRelationship, 626);
-  typenums.Bind(Reco_GeometricToleranceWithDatumReference, 627);
-  typenums.Bind(Reco_ModifiedGeometricTolerance, 628);
-  typenums.Bind(Reco_Datum, 629);
-  typenums.Bind(Reco_DatumFeature, 630);
-  typenums.Bind(Reco_DatumReference, 631);
-  typenums.Bind(Reco_CommonDatum, 632);
-  typenums.Bind(Reco_DatumTarget, 633);
-  typenums.Bind(Reco_PlacedDatumTargetFeature, 634);
+  theTypenums.Bind(Reco_CylindricityTolerance, 609);
+  theTypenums.Bind(Reco_ShapeRepresentationWithParameters, 610);
+  theTypenums.Bind(Reco_AngularityTolerance, 611);
+  theTypenums.Bind(Reco_ConcentricityTolerance, 612);
+  theTypenums.Bind(Reco_CircularRunoutTolerance, 613);
+  theTypenums.Bind(Reco_CoaxialityTolerance, 614);
+  theTypenums.Bind(Reco_FlatnessTolerance, 615);
+  theTypenums.Bind(Reco_LineProfileTolerance, 616);
+  theTypenums.Bind(Reco_ParallelismTolerance, 617);
+  theTypenums.Bind(Reco_PerpendicularityTolerance, 618);
+  theTypenums.Bind(Reco_PositionTolerance, 619);
+  theTypenums.Bind(Reco_RoundnessTolerance, 620);
+  theTypenums.Bind(Reco_StraightnessTolerance, 621);
+  theTypenums.Bind(Reco_SurfaceProfileTolerance, 622);
+  theTypenums.Bind(Reco_SymmetryTolerance, 623);
+  theTypenums.Bind(Reco_TotalRunoutTolerance, 624);
+  theTypenums.Bind(Reco_GeometricTolerance, 625);
+  theTypenums.Bind(Reco_GeometricToleranceRelationship, 626);
+  theTypenums.Bind(Reco_GeometricToleranceWithDatumReference, 627);
+  theTypenums.Bind(Reco_ModifiedGeometricTolerance, 628);
+  theTypenums.Bind(Reco_Datum, 629);
+  theTypenums.Bind(Reco_DatumFeature, 630);
+  theTypenums.Bind(Reco_DatumReference, 631);
+  theTypenums.Bind(Reco_CommonDatum, 632);
+  theTypenums.Bind(Reco_DatumTarget, 633);
+  theTypenums.Bind(Reco_PlacedDatumTargetFeature, 634);
 
-  typenums.Bind(Reco_MassMeasureWithUnit, 651);
+  theTypenums.Bind(Reco_MassMeasureWithUnit, 651);
 
   // Added by ika for GD&T AP242
-  typenums.Bind(Reco_Apex, 660);
-  typenums.Bind(Reco_CentreOfSymmetry, 661);
-  typenums.Bind(Reco_GeometricAlignment, 662);
-  typenums.Bind(Reco_PerpendicularTo, 663);
-  typenums.Bind(Reco_Tangent, 664);
-  typenums.Bind(Reco_ParallelOffset, 665);
-  typenums.Bind(Reco_GeometricItemSpecificUsage, 666);
-  typenums.Bind(Reco_IdAttribute, 667);
-  typenums.Bind(Reco_ItemIdentifiedRepresentationUsage, 668);
-  typenums.Bind(Reco_AllAroundShapeAspect, 669);
-  typenums.Bind(Reco_BetweenShapeAspect, 670);
-  typenums.Bind(Reco_CompositeGroupShapeAspect, 671);
-  typenums.Bind(Reco_ContinuosShapeAspect, 672);
-  typenums.Bind(Reco_GeometricToleranceWithDefinedAreaUnit, 673);
-  typenums.Bind(Reco_GeometricToleranceWithDefinedUnit, 674);
-  typenums.Bind(Reco_GeometricToleranceWithMaximumTolerance, 675);
-  typenums.Bind(Reco_GeometricToleranceWithModifiers, 676);
-  typenums.Bind(Reco_UnequallyDisposedGeometricTolerance, 677);
-  typenums.Bind(Reco_NonUniformZoneDefinition, 678);
-  typenums.Bind(Reco_ProjectedZoneDefinition, 679);
-  typenums.Bind(Reco_RunoutZoneDefinition, 680);
-  typenums.Bind(Reco_RunoutZoneOrientation, 681);
-  typenums.Bind(Reco_ToleranceZone, 682);
-  typenums.Bind(Reco_ToleranceZoneDefinition, 683);
-  typenums.Bind(Reco_ToleranceZoneForm, 684);
-  typenums.Bind(Reco_ValueFormatTypeQualifier, 685);
-  typenums.Bind(Reco_DatumReferenceCompartment, 686);
-  typenums.Bind(Reco_DatumReferenceElement, 687);
-  typenums.Bind(Reco_DatumReferenceModifierWithValue, 688);
-  typenums.Bind(Reco_DatumSystem, 689);
-  typenums.Bind(Reco_GeneralDatumReference, 690);
-  typenums.Bind(Reco_IntegerRepresentationItem, 700);
-  typenums.Bind(Reco_ValueRepresentationItem, 701);
-  typenums.Bind(Reco_FeatureForDatumTargetRelationship, 702);
-  typenums.Bind(Reco_DraughtingModelItemAssociation, 703);
-  typenums.Bind(Reco_AnnotationPlane, 704);
+  theTypenums.Bind(Reco_Apex, 660);
+  theTypenums.Bind(Reco_CentreOfSymmetry, 661);
+  theTypenums.Bind(Reco_GeometricAlignment, 662);
+  theTypenums.Bind(Reco_PerpendicularTo, 663);
+  theTypenums.Bind(Reco_Tangent, 664);
+  theTypenums.Bind(Reco_ParallelOffset, 665);
+  theTypenums.Bind(Reco_GeometricItemSpecificUsage, 666);
+  theTypenums.Bind(Reco_IdAttribute, 667);
+  theTypenums.Bind(Reco_ItemIdentifiedRepresentationUsage, 668);
+  theTypenums.Bind(Reco_AllAroundShapeAspect, 669);
+  theTypenums.Bind(Reco_BetweenShapeAspect, 670);
+  theTypenums.Bind(Reco_CompositeGroupShapeAspect, 671);
+  theTypenums.Bind(Reco_ContinuosShapeAspect, 672);
+  theTypenums.Bind(Reco_GeometricToleranceWithDefinedAreaUnit, 673);
+  theTypenums.Bind(Reco_GeometricToleranceWithDefinedUnit, 674);
+  theTypenums.Bind(Reco_GeometricToleranceWithMaximumTolerance, 675);
+  theTypenums.Bind(Reco_GeometricToleranceWithModifiers, 676);
+  theTypenums.Bind(Reco_UnequallyDisposedGeometricTolerance, 677);
+  theTypenums.Bind(Reco_NonUniformZoneDefinition, 678);
+  theTypenums.Bind(Reco_ProjectedZoneDefinition, 679);
+  theTypenums.Bind(Reco_RunoutZoneDefinition, 680);
+  theTypenums.Bind(Reco_RunoutZoneOrientation, 681);
+  theTypenums.Bind(Reco_ToleranceZone, 682);
+  theTypenums.Bind(Reco_ToleranceZoneDefinition, 683);
+  theTypenums.Bind(Reco_ToleranceZoneForm, 684);
+  theTypenums.Bind(Reco_ValueFormatTypeQualifier, 685);
+  theTypenums.Bind(Reco_DatumReferenceCompartment, 686);
+  theTypenums.Bind(Reco_DatumReferenceElement, 687);
+  theTypenums.Bind(Reco_DatumReferenceModifierWithValue, 688);
+  theTypenums.Bind(Reco_DatumSystem, 689);
+  theTypenums.Bind(Reco_GeneralDatumReference, 690);
+  theTypenums.Bind(Reco_IntegerRepresentationItem, 700);
+  theTypenums.Bind(Reco_ValueRepresentationItem, 701);
+  theTypenums.Bind(Reco_FeatureForDatumTargetRelationship, 702);
+  theTypenums.Bind(Reco_DraughtingModelItemAssociation, 703);
+  theTypenums.Bind(Reco_AnnotationPlane, 704);
 
-  typenums.Bind(Reco_TessellatedAnnotationOccurrence, 707);
-  typenums.Bind(Reco_TessellatedGeometricSet, 709);
+  theTypenums.Bind(Reco_TessellatedAnnotationOccurrence, 707);
+  theTypenums.Bind(Reco_TessellatedGeometricSet, 709);
 
-  typenums.Bind(Reco_TessellatedCurveSet, 710);
-  typenums.Bind(Reco_CoordinatesList, 711);
-  typenums.Bind(Reco_ConstructiveGeometryRepresentation, 712);
-  typenums.Bind(Reco_ConstructiveGeometryRepresentationRelationship, 713);
-  typenums.Bind(Reco_CharacterizedRepresentation, 714);
-  typenums.Bind(Reco_CameraModelD3MultiClipping, 716);
-  typenums.Bind(Reco_CameraModelD3MultiClippingIntersection, 717);
-  typenums.Bind(Reco_CameraModelD3MultiClippingUnion, 718);
+  theTypenums.Bind(Reco_TessellatedCurveSet, 710);
+  theTypenums.Bind(Reco_CoordinatesList, 711);
+  theTypenums.Bind(Reco_ConstructiveGeometryRepresentation, 712);
+  theTypenums.Bind(Reco_ConstructiveGeometryRepresentationRelationship, 713);
+  theTypenums.Bind(Reco_CharacterizedRepresentation, 714);
+  theTypenums.Bind(Reco_CameraModelD3MultiClipping, 716);
+  theTypenums.Bind(Reco_CameraModelD3MultiClippingIntersection, 717);
+  theTypenums.Bind(Reco_CameraModelD3MultiClippingUnion, 718);
 
-  typenums.Bind(Reco_SurfaceStyleTransparent, 720);
-  typenums.Bind(Reco_SurfaceStyleReflectanceAmbient, 721);
-  typenums.Bind(Reco_SurfaceStyleRendering, 722);
-  typenums.Bind(Reco_SurfaceStyleRenderingWithProperties, 723);
+  theTypenums.Bind(Reco_SurfaceStyleTransparent, 720);
+  theTypenums.Bind(Reco_SurfaceStyleReflectanceAmbient, 721);
+  theTypenums.Bind(Reco_SurfaceStyleRendering, 722);
+  theTypenums.Bind(Reco_SurfaceStyleRenderingWithProperties, 723);
 
-  typenums.Bind(Reco_RepresentationContextReference, 724);
-  typenums.Bind(Reco_RepresentationReference, 725);
-  typenums.Bind(Reco_SuParameters, 726);
-  typenums.Bind(Reco_RotationAboutDirection, 727);
-  typenums.Bind(Reco_KinematicJoint, 728);
-  typenums.Bind(Reco_ActuatedKinematicPair, 729);
-  typenums.Bind(Reco_ContextDependentKinematicLinkRepresentation, 730);
-  typenums.Bind(Reco_CylindricalPair, 731);
-  typenums.Bind(Reco_CylindricalPairValue, 732);
-  typenums.Bind(Reco_CylindricalPairWithRange, 733);
-  typenums.Bind(Reco_FullyConstrainedPair, 734);
-  typenums.Bind(Reco_GearPair, 735);
-  typenums.Bind(Reco_GearPairValue, 736);
-  typenums.Bind(Reco_GearPairWithRange, 737);
-  typenums.Bind(Reco_HomokineticPair, 738);
-  typenums.Bind(Reco_KinematicLink, 739);
-  typenums.Bind(Reco_KinematicLinkRepresentationAssociation, 740);
-  typenums.Bind(Reco_KinematicPropertyMechanismRepresentation, 741);
-  typenums.Bind(Reco_KinematicTopologyStructure, 742);
-  typenums.Bind(Reco_LowOrderKinematicPair, 743);
-  typenums.Bind(Reco_LowOrderKinematicPairValue, 744);
-  typenums.Bind(Reco_LowOrderKinematicPairWithRange, 745);
-  typenums.Bind(Reco_MechanismRepresentation, 746);
-  typenums.Bind(Reco_OrientedJoint, 747);
-  typenums.Bind(Reco_PlanarCurvePair, 748);
-  typenums.Bind(Reco_PlanarCurvePairRange, 749);
-  typenums.Bind(Reco_PlanarPair, 750);
-  typenums.Bind(Reco_PlanarPairValue, 751);
-  typenums.Bind(Reco_PlanarPairWithRange, 752);
-  typenums.Bind(Reco_PointOnPlanarCurvePair, 753);
-  typenums.Bind(Reco_PointOnPlanarCurvePairValue, 754);
-  typenums.Bind(Reco_PointOnPlanarCurvePairWithRange, 755);
-  typenums.Bind(Reco_PointOnSurfacePair, 756);
-  typenums.Bind(Reco_PointOnSurfacePairValue, 757);
-  typenums.Bind(Reco_PointOnSurfacePairWithRange, 758);
-  typenums.Bind(Reco_PrismaticPair, 759);
-  typenums.Bind(Reco_PrismaticPairValue, 760);
-  typenums.Bind(Reco_PrismaticPairWithRange, 761);
-  typenums.Bind(Reco_ProductDefinitionKinematics, 762);
-  typenums.Bind(Reco_ProductDefinitionRelationshipKinematics, 763);
-  typenums.Bind(Reco_RackAndPinionPair, 764);
-  typenums.Bind(Reco_RackAndPinionPairValue, 765);
-  typenums.Bind(Reco_RackAndPinionPairWithRange, 766);
-  typenums.Bind(Reco_RevolutePair, 767);
-  typenums.Bind(Reco_RevolutePairValue, 768);
-  typenums.Bind(Reco_RevolutePairWithRange, 769);
-  typenums.Bind(Reco_RollingCurvePair, 770);
-  typenums.Bind(Reco_RollingCurvePairValue, 771);
-  typenums.Bind(Reco_RollingSurfacePair, 772);
-  typenums.Bind(Reco_RollingSurfacePairValue, 773);
-  typenums.Bind(Reco_ScrewPair, 774);
-  typenums.Bind(Reco_ScrewPairValue, 775);
-  typenums.Bind(Reco_ScrewPairWithRange, 776);
-  typenums.Bind(Reco_SlidingCurvePair, 777);
-  typenums.Bind(Reco_SlidingCurvePairValue, 778);
-  typenums.Bind(Reco_SlidingSurfacePair, 779);
-  typenums.Bind(Reco_SlidingSurfacePairValue, 780);
-  typenums.Bind(Reco_SphericalPair, 781);
-  typenums.Bind(Reco_SphericalPairValue, 782);
-  typenums.Bind(Reco_SphericalPairWithPin, 783);
-  typenums.Bind(Reco_SphericalPairWithPinAndRange, 784);
-  typenums.Bind(Reco_SphericalPairWithRange, 785);
-  typenums.Bind(Reco_SurfacePairWithRange, 786);
-  typenums.Bind(Reco_UnconstrainedPair, 787);
-  typenums.Bind(Reco_UnconstrainedPairValue, 788);
-  typenums.Bind(Reco_UniversalPair, 789);
-  typenums.Bind(Reco_UniversalPairValue, 790);
-  typenums.Bind(Reco_UniversalPairWithRange, 791);
-  typenums.Bind(Reco_PairRepresentationRelationship, 792);
-  typenums.Bind(Reco_RigidLinkRepresentation, 793);
-  typenums.Bind(Reco_KinematicTopologyDirectedStructure, 794);
-  typenums.Bind(Reco_KinematicTopologyNetworkStructure, 795);
-  typenums.Bind(Reco_LinearFlexibleAndPinionPair, 796);
-  typenums.Bind(Reco_LinearFlexibleAndPlanarCurvePair, 797);
-  typenums.Bind(Reco_LinearFlexibleLinkRepresentation, 798);
-  typenums.Bind(Reco_KinematicPair, 799);
-  typenums.Bind(Reco_MechanismStateRepresentation, 801);
-  typenums.Bind(Reco_RepositionedTessellatedItem, 803);
-  typenums.Bind(Reco_TessellatedConnectingEdge, 804);
-  typenums.Bind(Reco_TessellatedEdge, 805);
-  typenums.Bind(Reco_TessellatedPointSet, 806);
-  typenums.Bind(Reco_TessellatedShapeRepresentation, 807);
-  typenums.Bind(Reco_TessellatedShapeRepresentationWithAccuracyParameters, 808);
-  typenums.Bind(Reco_TessellatedShell, 809);
-  typenums.Bind(Reco_TessellatedSolid, 810);
-  typenums.Bind(Reco_TessellatedStructuredItem, 811);
-  typenums.Bind(Reco_TessellatedVertex, 812);
-  typenums.Bind(Reco_TessellatedWire, 813);
-  typenums.Bind(Reco_TriangulatedFace, 814);
-  typenums.Bind(Reco_ComplexTriangulatedFace, 815);
-  typenums.Bind(Reco_ComplexTriangulatedSurfaceSet, 816);
-  typenums.Bind(Reco_CubicBezierTessellatedEdge, 817);
-  typenums.Bind(Reco_CubicBezierTriangulatedFace, 818);
-  typenums.Bind(Reco_TriangulatedSurfaceSet, 819);
-  typenums.Bind(Reco_GeneralPropertyAssociation, 820);
-  typenums.Bind(Reco_GeneralPropertyRelationship, 821);
-  typenums.Bind(Reco_BooleanRepresentationItem, 822);
-  typenums.Bind(Reco_RealRepresentationItem, 823);
-  typenums.Bind(Reco_MechanicalDesignAndDraughtingRelationship, 824);
+  theTypenums.Bind(Reco_RepresentationContextReference, 724);
+  theTypenums.Bind(Reco_RepresentationReference, 725);
+  theTypenums.Bind(Reco_SuParameters, 726);
+  theTypenums.Bind(Reco_RotationAboutDirection, 727);
+  theTypenums.Bind(Reco_KinematicJoint, 728);
+  theTypenums.Bind(Reco_ActuatedKinematicPair, 729);
+  theTypenums.Bind(Reco_ContextDependentKinematicLinkRepresentation, 730);
+  theTypenums.Bind(Reco_CylindricalPair, 731);
+  theTypenums.Bind(Reco_CylindricalPairValue, 732);
+  theTypenums.Bind(Reco_CylindricalPairWithRange, 733);
+  theTypenums.Bind(Reco_FullyConstrainedPair, 734);
+  theTypenums.Bind(Reco_GearPair, 735);
+  theTypenums.Bind(Reco_GearPairValue, 736);
+  theTypenums.Bind(Reco_GearPairWithRange, 737);
+  theTypenums.Bind(Reco_HomokineticPair, 738);
+  theTypenums.Bind(Reco_KinematicLink, 739);
+  theTypenums.Bind(Reco_KinematicLinkRepresentationAssociation, 740);
+  theTypenums.Bind(Reco_KinematicPropertyMechanismRepresentation, 741);
+  theTypenums.Bind(Reco_KinematicTopologyStructure, 742);
+  theTypenums.Bind(Reco_LowOrderKinematicPair, 743);
+  theTypenums.Bind(Reco_LowOrderKinematicPairValue, 744);
+  theTypenums.Bind(Reco_LowOrderKinematicPairWithRange, 745);
+  theTypenums.Bind(Reco_MechanismRepresentation, 746);
+  theTypenums.Bind(Reco_OrientedJoint, 747);
+  theTypenums.Bind(Reco_PlanarCurvePair, 748);
+  theTypenums.Bind(Reco_PlanarCurvePairRange, 749);
+  theTypenums.Bind(Reco_PlanarPair, 750);
+  theTypenums.Bind(Reco_PlanarPairValue, 751);
+  theTypenums.Bind(Reco_PlanarPairWithRange, 752);
+  theTypenums.Bind(Reco_PointOnPlanarCurvePair, 753);
+  theTypenums.Bind(Reco_PointOnPlanarCurvePairValue, 754);
+  theTypenums.Bind(Reco_PointOnPlanarCurvePairWithRange, 755);
+  theTypenums.Bind(Reco_PointOnSurfacePair, 756);
+  theTypenums.Bind(Reco_PointOnSurfacePairValue, 757);
+  theTypenums.Bind(Reco_PointOnSurfacePairWithRange, 758);
+  theTypenums.Bind(Reco_PrismaticPair, 759);
+  theTypenums.Bind(Reco_PrismaticPairValue, 760);
+  theTypenums.Bind(Reco_PrismaticPairWithRange, 761);
+  theTypenums.Bind(Reco_ProductDefinitionKinematics, 762);
+  theTypenums.Bind(Reco_ProductDefinitionRelationshipKinematics, 763);
+  theTypenums.Bind(Reco_RackAndPinionPair, 764);
+  theTypenums.Bind(Reco_RackAndPinionPairValue, 765);
+  theTypenums.Bind(Reco_RackAndPinionPairWithRange, 766);
+  theTypenums.Bind(Reco_RevolutePair, 767);
+  theTypenums.Bind(Reco_RevolutePairValue, 768);
+  theTypenums.Bind(Reco_RevolutePairWithRange, 769);
+  theTypenums.Bind(Reco_RollingCurvePair, 770);
+  theTypenums.Bind(Reco_RollingCurvePairValue, 771);
+  theTypenums.Bind(Reco_RollingSurfacePair, 772);
+  theTypenums.Bind(Reco_RollingSurfacePairValue, 773);
+  theTypenums.Bind(Reco_ScrewPair, 774);
+  theTypenums.Bind(Reco_ScrewPairValue, 775);
+  theTypenums.Bind(Reco_ScrewPairWithRange, 776);
+  theTypenums.Bind(Reco_SlidingCurvePair, 777);
+  theTypenums.Bind(Reco_SlidingCurvePairValue, 778);
+  theTypenums.Bind(Reco_SlidingSurfacePair, 779);
+  theTypenums.Bind(Reco_SlidingSurfacePairValue, 780);
+  theTypenums.Bind(Reco_SphericalPair, 781);
+  theTypenums.Bind(Reco_SphericalPairValue, 782);
+  theTypenums.Bind(Reco_SphericalPairWithPin, 783);
+  theTypenums.Bind(Reco_SphericalPairWithPinAndRange, 784);
+  theTypenums.Bind(Reco_SphericalPairWithRange, 785);
+  theTypenums.Bind(Reco_SurfacePairWithRange, 786);
+  theTypenums.Bind(Reco_UnconstrainedPair, 787);
+  theTypenums.Bind(Reco_UnconstrainedPairValue, 788);
+  theTypenums.Bind(Reco_UniversalPair, 789);
+  theTypenums.Bind(Reco_UniversalPairValue, 790);
+  theTypenums.Bind(Reco_UniversalPairWithRange, 791);
+  theTypenums.Bind(Reco_PairRepresentationRelationship, 792);
+  theTypenums.Bind(Reco_RigidLinkRepresentation, 793);
+  theTypenums.Bind(Reco_KinematicTopologyDirectedStructure, 794);
+  theTypenums.Bind(Reco_KinematicTopologyNetworkStructure, 795);
+  theTypenums.Bind(Reco_LinearFlexibleAndPinionPair, 796);
+  theTypenums.Bind(Reco_LinearFlexibleAndPlanarCurvePair, 797);
+  theTypenums.Bind(Reco_LinearFlexibleLinkRepresentation, 798);
+  theTypenums.Bind(Reco_KinematicPair, 799);
+  theTypenums.Bind(Reco_MechanismStateRepresentation, 801);
+  theTypenums.Bind(Reco_RepositionedTessellatedItem, 803);
+  theTypenums.Bind(Reco_TessellatedConnectingEdge, 804);
+  theTypenums.Bind(Reco_TessellatedEdge, 805);
+  theTypenums.Bind(Reco_TessellatedPointSet, 806);
+  theTypenums.Bind(Reco_TessellatedShapeRepresentation, 807);
+  theTypenums.Bind(Reco_TessellatedShapeRepresentationWithAccuracyParameters, 808);
+  theTypenums.Bind(Reco_TessellatedShell, 809);
+  theTypenums.Bind(Reco_TessellatedSolid, 810);
+  theTypenums.Bind(Reco_TessellatedStructuredItem, 811);
+  theTypenums.Bind(Reco_TessellatedVertex, 812);
+  theTypenums.Bind(Reco_TessellatedWire, 813);
+  theTypenums.Bind(Reco_TriangulatedFace, 814);
+  theTypenums.Bind(Reco_ComplexTriangulatedFace, 815);
+  theTypenums.Bind(Reco_ComplexTriangulatedSurfaceSet, 816);
+  theTypenums.Bind(Reco_CubicBezierTessellatedEdge, 817);
+  theTypenums.Bind(Reco_CubicBezierTriangulatedFace, 818);
+  theTypenums.Bind(Reco_TriangulatedSurfaceSet, 819);
+  theTypenums.Bind(Reco_GeneralPropertyAssociation, 820);
+  theTypenums.Bind(Reco_GeneralPropertyRelationship, 821);
+  theTypenums.Bind(Reco_BooleanRepresentationItem, 822);
+  theTypenums.Bind(Reco_RealRepresentationItem, 823);
+  theTypenums.Bind(Reco_MechanicalDesignAndDraughtingRelationship, 824);
+}
 
+// Initialize theTypeshor map
+static void initializeTypeshor(NCollection_DataMap<std::string_view, Standard_Integer>& theTypeshor)
+{
+  theTypeshor.Clear(THE_INC_ALLOCATOR);
+  theTypeshor.ReSize(528);
   //    SHORT NAMES
   //    NB : la liste est celle de AP203
   //    Directement exploite pour les types simples
   //    Pour les types complexes, l option prise est de convertir les noms courts
   //    en noms longs et de refaire l essai
 
-  // 203  typeshor.Bind ("ACTASS",ACTION_ASSIGNMENT);
-  // 203  typeshor.Bind ("ACTDRC",ACTION_DIRECTIVE);
-  // 203  typeshor.Bind ("ACTMTH",ACTION_METHOD);
-  // 203  typeshor.Bind ("ACRQAS",ACTION_REQUEST_ASSIGNMENT);
-  // 203  typeshor.Bind ("ACRQSL",ACTION_REQUEST_SOLUTION);
-  // 203  typeshor.Bind ("ACRQST",ACTION_REQUEST_STATUS);
-  // 203  typeshor.Bind ("ACTSTT",ACTION_STATUS);
-  typeshor.Bind("ADDRSS", 1);
-  typeshor.Bind("ABSR", 2);
-  typeshor.Bind("ADVFC", 3);
-  typeshor.Bind("ANCROC", 4);
-  typeshor.Bind("ANFLAR", 5);
-  typeshor.Bind("AFAO", 6);
-  typeshor.Bind("ANNOCC", 7);
-  typeshor.Bind("ANSBOC", 8);
-  typeshor.Bind("ANNSYM", 9);
-  typeshor.Bind("ANSYOC", 10);
-  typeshor.Bind("ANNTXT", 11);
-  typeshor.Bind("ANTXOC", 12);
-  // 203  typeshor.Bind ("ALPRRL",ALTERNATE_PRODUCT_RELATIONSHIP);
-  typeshor.Bind("APPCNT", 13);
-  typeshor.Bind("APCNEL", 14);
-  typeshor.Bind("APPRDF", 15);
-  typeshor.Bind("APPRVL", 16);
-  typeshor.Bind("APPASS", 17);
-  typeshor.Bind("APDTTM", 348);
-  typeshor.Bind("APPROR", 18);
-  typeshor.Bind("APPRLT", 19);
-  typeshor.Bind("APPRL", 20);
-  typeshor.Bind("APPSTT", 21);
-  typeshor.Bind("ARINST", 22);
-  // 203  typeshor.Bind ("AMWU",AREA_MEASURE_WITH_UNIT);
-  // 203  typeshor.Bind ("ARUNT",AREA_UNIT);
-  typeshor.Bind("ASCMUS", 379);
-  typeshor.Bind("ACUS", 384);
-  typeshor.Bind("AX1PLC", 35);
-  typeshor.Bind("A2PL2D", 36);
-  typeshor.Bind("A2PL3D", 37);
-  typeshor.Bind("BZRCRV", 43);
-  typeshor.Bind("BZRSRF", 44);
-  typeshor.Bind("BLNRSL", 46);
-  typeshor.Bind("BNDCR", 47);
-  typeshor.Bind("BNDCRV", 48);
-  typeshor.Bind("BNDSRF", 49);
-  typeshor.Bind("BRWTVD", 52);
-  typeshor.Bind("BSPCR", 38);
-  typeshor.Bind("BSCWK", 39);
-  typeshor.Bind("BSPSR", 40);
-  typeshor.Bind("BSSWK", 41);
-  typeshor.Bind("BXDMN", 50);
-  typeshor.Bind("BXHLSP", 51);
-  typeshor.Bind("CLNDT", 53);
-  typeshor.Bind("CMRIMG", 54);
-  typeshor.Bind("CMRMDL", 55);
-  typeshor.Bind("CMMDD3", 57);
-  typeshor.Bind("CMRUSG", 58);
-  typeshor.Bind("CRTPNT", 59);
-  typeshor.Bind("CRTROP", 60);
-  // 203  typeshor.Bind ("CTO2",CARTESIAN_TRANSFORMATION_OPERATOR_2D);
-  typeshor.Bind("CTO3", 61);
-  // 203  typeshor.Bind ("CCDSAP",CC_DESIGN_APPROVAL);
-  // 203  typeshor.Bind ("CCDSCR",CC_DESIGN_CERTIFICATION);
-  // 203  typeshor.Bind ("CCDSCN",CC_DESIGN_CONTRACT);
-  // 203  typeshor.Bind ("CDDATA",CC_DESIGN_DATE_AND_TIME_ASSIGNMENT);
-  // 203  typeshor.Bind ("CDPAOA",CC_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT);
-  // 203  typeshor.Bind ("CDSC",CC_DESIGN_SECURITY_CLASSIFICATION);
-  // 203  typeshor.Bind ("CDS",CC_DESIGN_SPECIFICATION_REFERENCE);
-  // 203  typeshor.Bind ("CRTFCT",CERTIFICATION);
-  // 203  typeshor.Bind ("CRTASS",CERTIFICATION_ASSIGNMENT);
-  // 203  typeshor.Bind ("CRTTYP",CERTIFICATION_TYPE);
+  // 203  theTypeshor.Bind ("ACTASS",ACTION_ASSIGNMENT);
+  // 203  theTypeshor.Bind ("ACTDRC",ACTION_DIRECTIVE);
+  // 203  theTypeshor.Bind ("ACTMTH",ACTION_METHOD);
+  // 203  theTypeshor.Bind ("ACRQAS",ACTION_REQUEST_ASSIGNMENT);
+  // 203  theTypeshor.Bind ("ACRQSL",ACTION_REQUEST_SOLUTION);
+  // 203  theTypeshor.Bind ("ACRQST",ACTION_REQUEST_STATUS);
+  // 203  theTypeshor.Bind ("ACTSTT",ACTION_STATUS);
+  theTypeshor.Bind(s_ADDRSS, 1);
+  theTypeshor.Bind(s_ABSR, 2);
+  theTypeshor.Bind(s_ADVFC, 3);
+  theTypeshor.Bind(s_ANCROC, 4);
+  theTypeshor.Bind(s_ANFLAR, 5);
+  theTypeshor.Bind(s_AFAO, 6);
+  theTypeshor.Bind(s_ANNOCC, 7);
+  theTypeshor.Bind(s_ANSBOC, 8);
+  theTypeshor.Bind(s_ANNSYM, 9);
+  theTypeshor.Bind(s_ANSYOC, 10);
+  theTypeshor.Bind(s_ANNTXT, 11);
+  theTypeshor.Bind(s_ANTXOC, 12);
+  // 203  theTypeshor.Bind ("ALPRRL",ALTERNATE_PRODUCT_RELATIONSHIP);
+  theTypeshor.Bind(s_APPCNT, 13);
+  theTypeshor.Bind(s_APCNEL, 14);
+  theTypeshor.Bind(s_APPRDF, 15);
+  theTypeshor.Bind(s_APPRVL, 16);
+  theTypeshor.Bind(s_APPASS, 17);
+  theTypeshor.Bind(s_APDTTM, 348);
+  theTypeshor.Bind(s_APPROR, 18);
+  theTypeshor.Bind(s_APPRLT, 19);
+  theTypeshor.Bind(s_APPRL, 20);
+  theTypeshor.Bind(s_APPSTT, 21);
+  theTypeshor.Bind(s_ARINST, 22);
+  // 203  theTypeshor.Bind ("AMWU",AREA_MEASURE_WITH_UNIT);
+  // 203  theTypeshor.Bind ("ARUNT",AREA_UNIT);
+  theTypeshor.Bind(s_ASCMUS, 379);
+  theTypeshor.Bind(s_ACUS, 384);
+  theTypeshor.Bind(s_AX1PLC, 35);
+  theTypeshor.Bind(s_A2PL2D, 36);
+  theTypeshor.Bind(s_A2PL3D, 37);
+  theTypeshor.Bind(s_BZRCRV, 43);
+  theTypeshor.Bind(s_BZRSRF, 44);
+  theTypeshor.Bind(s_BLNRSL, 46);
+  theTypeshor.Bind(s_BNDCR, 47);
+  theTypeshor.Bind(s_BNDCRV, 48);
+  theTypeshor.Bind(s_BNDSRF, 49);
+  theTypeshor.Bind(s_BRWTVD, 52);
+  theTypeshor.Bind(s_BSPCR, 38);
+  theTypeshor.Bind(s_BSCWK, 39);
+  theTypeshor.Bind(s_BSPSR, 40);
+  theTypeshor.Bind(s_BSSWK, 41);
+  theTypeshor.Bind(s_BXDMN, 50);
+  theTypeshor.Bind(s_BXHLSP, 51);
+  theTypeshor.Bind(s_CLNDT, 53);
+  theTypeshor.Bind(s_CMRIMG, 54);
+  theTypeshor.Bind(s_CMRMDL, 55);
+  theTypeshor.Bind(s_CMMDD3, 57);
+  theTypeshor.Bind(s_CMRUSG, 58);
+  theTypeshor.Bind(s_CRTPNT, 59);
+  theTypeshor.Bind(s_CRTROP, 60);
+  // 203  theTypeshor.Bind ("CTO2",CARTESIAN_TRANSFORMATION_OPERATOR_2D);
+  theTypeshor.Bind(s_CTO3, 61);
+  // 203  theTypeshor.Bind ("CCDSAP",CC_DESIGN_APPROVAL);
+  // 203  theTypeshor.Bind ("CCDSCR",CC_DESIGN_CERTIFICATION);
+  // 203  theTypeshor.Bind ("CCDSCN",CC_DESIGN_CONTRACT);
+  // 203  theTypeshor.Bind ("CDDATA",CC_DESIGN_DATE_AND_TIME_ASSIGNMENT);
+  // 203  theTypeshor.Bind ("CDPAOA",CC_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT);
+  // 203  theTypeshor.Bind ("CDSC",CC_DESIGN_SECURITY_CLASSIFICATION);
+  // 203  theTypeshor.Bind ("CDS",CC_DESIGN_SPECIFICATION_REFERENCE);
+  // 203  theTypeshor.Bind ("CRTFCT",CERTIFICATION);
+  // 203  theTypeshor.Bind ("CRTASS",CERTIFICATION_ASSIGNMENT);
+  // 203  theTypeshor.Bind ("CRTTYP",CERTIFICATION_TYPE);
 
-  // 203  typeshor.Bind ("CHNRQS",CHANGE_REQUEST);
+  // 203  theTypeshor.Bind ("CHNRQS",CHANGE_REQUEST);
 
-  typeshor.Bind("CLSSHL", 63);
-  typeshor.Bind("CLRRGB", 65);
-  typeshor.Bind("CLRSPC", 66);
-  typeshor.Bind("CMPCRV", 67);
-  typeshor.Bind("CCOS", 68);
-  typeshor.Bind("CMCRSG", 69);
-  // 203  typeshor.Bind ("CNFDSG",CONFIGURATION_DESIGN);
-  // 203  typeshor.Bind ("CNFEFF",CONFIGURATION_EFFECTIVITY);
-  // 203  typeshor.Bind ("CNFITM",CONFIGURATION_ITEM);
+  theTypeshor.Bind(s_CLSSHL, 63);
+  theTypeshor.Bind(s_CLRRGB, 65);
+  theTypeshor.Bind(s_CLRSPC, 66);
+  theTypeshor.Bind(s_CMPCRV, 67);
+  theTypeshor.Bind(s_CCOS, 68);
+  theTypeshor.Bind(s_CMCRSG, 69);
+  // 203  theTypeshor.Bind ("CNFDSG",CONFIGURATION_DESIGN);
+  // 203  theTypeshor.Bind ("CNFEFF",CONFIGURATION_EFFECTIVITY);
+  // 203  theTypeshor.Bind ("CNFITM",CONFIGURATION_ITEM);
 
-  typeshor.Bind("CMPTXT", 70);
-  typeshor.Bind("CTWAC", 71);
-  typeshor.Bind("CTWBB", 72);
-  typeshor.Bind("CTWE", 73);
-  typeshor.Bind("CNCSRF", 75);
-  // 203  typeshor.Bind ("CNEDST",CONNECTED_EDGE_SET);
-  typeshor.Bind("CNFCST", 76);
-  typeshor.Bind("CNDPIN", 77);
-  typeshor.Bind("CDORSI", 78);
-  typeshor.Bind("CDSR", 391);
-  // 203  typeshor.Bind ("CNDPUN",CONTEXT_DEPENDENT_UNIT);
-  // 203  typeshor.Bind ("CNTRCT",CONTRACT);
-  // 203  typeshor.Bind ("CNTASS",CONTRACT_ASSIGNMENT);
-  // 203  typeshor.Bind ("CNTTYP",CONTRACT_TYPE);
-  typeshor.Bind("CNBSUN", 79);
-  typeshor.Bind("CUTO", 80);
-  typeshor.Bind("CSSHRP", 82);
-  typeshor.Bind("CSGSLD", 83);
+  theTypeshor.Bind(s_CMPTXT, 70);
+  theTypeshor.Bind(s_CTWAC, 71);
+  theTypeshor.Bind(s_CTWBB, 72);
+  theTypeshor.Bind(s_CTWE, 73);
+  theTypeshor.Bind(s_CNCSRF, 75);
+  // 203  theTypeshor.Bind ("CNEDST",CONNECTED_EDGE_SET);
+  theTypeshor.Bind(s_CNFCST, 76);
+  theTypeshor.Bind(s_CNDPIN, 77);
+  theTypeshor.Bind(s_CDORSI, 78);
+  theTypeshor.Bind(s_CDSR, 391);
+  // 203  theTypeshor.Bind ("CNDPUN",CONTEXT_DEPENDENT_UNIT);
+  // 203  theTypeshor.Bind ("CNTRCT",CONTRACT);
+  // 203  theTypeshor.Bind ("CNTASS",CONTRACT_ASSIGNMENT);
+  // 203  theTypeshor.Bind ("CNTTYP",CONTRACT_TYPE);
+  theTypeshor.Bind(s_CNBSUN, 79);
+  theTypeshor.Bind(s_CUTO, 80);
+  theTypeshor.Bind(s_CSSHRP, 82);
+  theTypeshor.Bind(s_CSGSLD, 83);
 
-  typeshor.Bind("CRBNSR", 85);
-  typeshor.Bind("CRVRPL", 86);
-  typeshor.Bind("CRVSTY", 87);
-  typeshor.Bind("CRSTFN", 88);
-  typeshor.Bind("CSFP", 89);
-  typeshor.Bind("CYLSRF", 90);
+  theTypeshor.Bind(s_CRBNSR, 85);
+  theTypeshor.Bind(s_CRVRPL, 86);
+  theTypeshor.Bind(s_CRVSTY, 87);
+  theTypeshor.Bind(s_CRSTFN, 88);
+  theTypeshor.Bind(s_CSFP, 89);
+  theTypeshor.Bind(s_CYLSRF, 90);
 
-  // 203  typeshor.Bind ("DTDEFF",DATED_EFFECTIVITY);
-  typeshor.Bind("DTANTM", 92);
-  typeshor.Bind("DATA", 93);
-  typeshor.Bind("DTASS", 94);
-  typeshor.Bind("DTRL", 95);
-  typeshor.Bind("DTTMRL", 96);
-  typeshor.Bind("DFNSYM", 97);
-  typeshor.Bind("DFNRPR", 98);
-  typeshor.Bind("DGNPCR", 99);
-  typeshor.Bind("DGTRSR", 100);
-  typeshor.Bind("DSRPIT", 101);
-  typeshor.Bind("DMNCRV", 102);
-  typeshor.Bind("DMCRTR", 103);
-  typeshor.Bind("DSGCNT", 340);
-  // 203  typeshor.Bind ("DMFR",DESIGN_MAKE_FROM_RELATIONSHIP);
-  typeshor.Bind("DMNEXP", 104);
-  // 203  typeshor.Bind ("DRCACT",DIRECTED_ACTION);
-  typeshor.Bind("DRCTN", 105);
-  typeshor.Bind("DRANOC", 106);
-  typeshor.Bind("DRGCLL", 107);
-  typeshor.Bind("DPDC", 108);
-  typeshor.Bind("DPDCF", 109);
-  typeshor.Bind("DRSBRP", 110);
-  typeshor.Bind("DRSYRP", 111);
-  typeshor.Bind("DTLWD", 112);
-  typeshor.Bind("DRWDFN", 113);
-  typeshor.Bind("DRWRVS", 114);
-  typeshor.Bind("DCMNT", 367);
-  // 203  typeshor.Bind ("DCMRFR",DOCUMENT_REFERENCE);
-  typeshor.Bind("DCMRLT", 369);
-  typeshor.Bind("DCMTYP", 370);
-  typeshor.Bind("DCUSCN", 371);
-  // 203  typeshor.Bind ("DCWTCL",DOCUMENT_WITH_CLASS);
+  // 203  theTypeshor.Bind ("DTDEFF",DATED_EFFECTIVITY);
+  theTypeshor.Bind(s_DTANTM, 92);
+  theTypeshor.Bind(s_DATA, 93);
+  theTypeshor.Bind(s_DTASS, 94);
+  theTypeshor.Bind(s_DTRL, 95);
+  theTypeshor.Bind(s_DTTMRL, 96);
+  theTypeshor.Bind(s_DFNSYM, 97);
+  theTypeshor.Bind(s_DFNRPR, 98);
+  theTypeshor.Bind(s_DGNPCR, 99);
+  theTypeshor.Bind(s_DGTRSR, 100);
+  theTypeshor.Bind(s_DSRPIT, 101);
+  theTypeshor.Bind(s_DMNCRV, 102);
+  theTypeshor.Bind(s_DMCRTR, 103);
+  theTypeshor.Bind(s_DSGCNT, 340);
+  // 203  theTypeshor.Bind ("DMFR",DESIGN_MAKE_FROM_RELATIONSHIP);
+  theTypeshor.Bind(s_DMNEXP, 104);
+  // 203  theTypeshor.Bind ("DRCACT",DIRECTED_ACTION);
+  theTypeshor.Bind(s_DRCTN, 105);
+  theTypeshor.Bind(s_DRANOC, 106);
+  theTypeshor.Bind(s_DRGCLL, 107);
+  theTypeshor.Bind(s_DPDC, 108);
+  theTypeshor.Bind(s_DPDCF, 109);
+  theTypeshor.Bind(s_DRSBRP, 110);
+  theTypeshor.Bind(s_DRSYRP, 111);
+  theTypeshor.Bind(s_DTLWD, 112);
+  theTypeshor.Bind(s_DRWDFN, 113);
+  theTypeshor.Bind(s_DRWRVS, 114);
+  theTypeshor.Bind(s_DCMNT, 367);
+  // 203  theTypeshor.Bind ("DCMRFR",DOCUMENT_REFERENCE);
+  theTypeshor.Bind(s_DCMRLT, 369);
+  theTypeshor.Bind(s_DCMTYP, 370);
+  theTypeshor.Bind(s_DCUSCN, 371);
+  // 203  theTypeshor.Bind ("DCWTCL",DOCUMENT_WITH_CLASS);
 
-  // 203  typeshor.Bind ("EBWM",EDGE_BASED_WIREFRAME_MODEL);
-  // 203  typeshor.Bind ("EBWSR",EDGE_BASED_WIREFRAME_SHAPE_REPRESENTATION);
-  typeshor.Bind("EDGCRV", 116);
-  typeshor.Bind("EDGLP", 117);
-  typeshor.Bind("EFFCTV", 372);
-  typeshor.Bind("ELMSRF", 118);
-  typeshor.Bind("ELLPS", 119);
-  typeshor.Bind("EVDGPC", 120);
-  typeshor.Bind("EXTSRC", 121);
-  typeshor.Bind("EDCF", 122);
-  typeshor.Bind("EDHS", 123);
-  typeshor.Bind("EXDFIT", 124);
-  typeshor.Bind("EXDFSY", 125);
-  typeshor.Bind("EDTF", 126);
-  typeshor.Bind("EDTS", 127);
-  typeshor.Bind("EXARSL", 128);
-  // 203  typeshor.Bind ("EXCACT",EXECUTED_ACTION);
+  // 203  theTypeshor.Bind ("EBWM",EDGE_BASED_WIREFRAME_MODEL);
+  // 203  theTypeshor.Bind ("EBWSR",EDGE_BASED_WIREFRAME_SHAPE_REPRESENTATION);
+  theTypeshor.Bind(s_EDGCRV, 116);
+  theTypeshor.Bind(s_EDGLP, 117);
+  theTypeshor.Bind(s_EFFCTV, 372);
+  theTypeshor.Bind(s_ELMSRF, 118);
+  theTypeshor.Bind(s_ELLPS, 119);
+  theTypeshor.Bind(s_EVDGPC, 120);
+  theTypeshor.Bind(s_EXTSRC, 121);
+  theTypeshor.Bind(s_EDCF, 122);
+  theTypeshor.Bind(s_EDHS, 123);
+  theTypeshor.Bind(s_EXDFIT, 124);
+  theTypeshor.Bind(s_EXDFSY, 125);
+  theTypeshor.Bind(s_EDTF, 126);
+  theTypeshor.Bind(s_EDTS, 127);
+  theTypeshor.Bind(s_EXARSL, 128);
+  // 203  theTypeshor.Bind ("EXCACT",EXECUTED_ACTION);
 
-  typeshor.Bind("FCBND", 131);
-  typeshor.Bind("FCOTBN", 132);
-  typeshor.Bind("FCSRF", 133);
-  typeshor.Bind("FCTBR", 134);
-  typeshor.Bind("FBSR", 135);
-  typeshor.Bind("FLARST", 136);
-  typeshor.Bind("FASC", 137);
-  typeshor.Bind("FASH", 138);
-  typeshor.Bind("FASTSW", 139);
-  typeshor.Bind("FAST", 140);
-  typeshor.Bind("FNDFTR", 141);
-  typeshor.Bind("GBSSR", 146);
-  typeshor.Bind("GBWSR", 147);
-  typeshor.Bind("GMCRST", 142);
-  typeshor.Bind("GMRPCN", 143);
-  typeshor.Bind("GMRPIT", 144);
-  typeshor.Bind("GMTST", 145);
-  typeshor.Bind("GC", 148);
-  typeshor.Bind("GUAC", 149);
-  typeshor.Bind("GRPASS", 151);
-  typeshor.Bind("GRPRLT", 152);
-  typeshor.Bind("HLSPSL", 153);
-  typeshor.Bind("HYPRBL", 154);
-  typeshor.Bind("INTCRV", 155);
-  typeshor.Bind("INVSBL", 156);
-  typeshor.Bind("ITDFTR", 354);
-  typeshor.Bind("LMWU", 157);
-  typeshor.Bind("LNGUNT", 158);
+  theTypeshor.Bind(s_FCBND, 131);
+  theTypeshor.Bind(s_FCOTBN, 132);
+  theTypeshor.Bind(s_FCSRF, 133);
+  theTypeshor.Bind(s_FCTBR, 134);
+  theTypeshor.Bind(s_FBSR, 135);
+  theTypeshor.Bind(s_FLARST, 136);
+  theTypeshor.Bind(s_FASC, 137);
+  theTypeshor.Bind(s_FASH, 138);
+  theTypeshor.Bind(s_FASTSW, 139);
+  theTypeshor.Bind(s_FAST, 140);
+  theTypeshor.Bind(s_FNDFTR, 141);
+  theTypeshor.Bind(s_GBSSR, 146);
+  theTypeshor.Bind(s_GBWSR, 147);
+  theTypeshor.Bind(s_GMCRST, 142);
+  theTypeshor.Bind(s_GMRPCN, 143);
+  theTypeshor.Bind(s_GMRPIT, 144);
+  theTypeshor.Bind(s_GMTST, 145);
+  theTypeshor.Bind(s_GC, 148);
+  theTypeshor.Bind(s_GUAC, 149);
+  theTypeshor.Bind(s_GRPASS, 151);
+  theTypeshor.Bind(s_GRPRLT, 152);
+  theTypeshor.Bind(s_HLSPSL, 153);
+  theTypeshor.Bind(s_HYPRBL, 154);
+  theTypeshor.Bind(s_INTCRV, 155);
+  theTypeshor.Bind(s_INVSBL, 156);
+  theTypeshor.Bind(s_ITDFTR, 354);
+  theTypeshor.Bind(s_LMWU, 157);
+  theTypeshor.Bind(s_LNGUNT, 158);
 
-  typeshor.Bind("LCLTM", 160);
+  theTypeshor.Bind(s_LCLTM, 160);
 
-  // 203  typeshor.Bind ("LTEFF",LOT_EFFECTIVITY);
-  typeshor.Bind("MNSLBR", 162);
-  typeshor.Bind("MSSR", 163);
-  typeshor.Bind("MPPITM", 164);
-  typeshor.Bind("MDGPA", 166);
-  typeshor.Bind("MDGPR", 167);
-  // 203  typeshor.Bind ("MMWU",MASS_MEASURE_WITH_UNIT);
-  // 203  typeshor.Bind ("MSSUNT",MASS_UNIT);
-  typeshor.Bind("MSWTUN", 165);
-  typeshor.Bind("MCHCNT", 339);
-  typeshor.Bind("NMDUNT", 169);
-  typeshor.Bind("NAUO", 380);
-  // 203  typeshor.Bind ("OFCR2D",OFFSET_CURVE_2D);
-  typeshor.Bind("OFCR3D", 171);
-  typeshor.Bind("OFFSRF", 172);
-  typeshor.Bind("ODRF", 173);
-  typeshor.Bind("OPNSHL", 174);
-  typeshor.Bind("ORDDT", 175);
-  typeshor.Bind("ORGNZT", 176);
-  typeshor.Bind("ORGASS", 177);
-  typeshor.Bind("ORGRL", 178);
-  typeshor.Bind("ORGADD", 179);
-  // 203  typeshor.Bind ("ORGPRJ",ORGANIZATIONAL_PROJECT);
-  // 203  typeshor.Bind ("ORGRLT",ORGANIZATION_RELATIONSHIP);
-  typeshor.Bind("ORCLSH", 180);
-  typeshor.Bind("ORNEDG", 181);
-  typeshor.Bind("ORNFC", 182);
-  typeshor.Bind("OROPSH", 183);
-  typeshor.Bind("ORNPTH", 184);
-  typeshor.Bind("OTBNCR", 185);
-  typeshor.Bind("ORSI", 186);
-  typeshor.Bind("PRBL", 187);
-  typeshor.Bind("PRRPCN", 188);
+  // 203  theTypeshor.Bind ("LTEFF",LOT_EFFECTIVITY);
+  theTypeshor.Bind(s_MNSLBR, 162);
+  theTypeshor.Bind(s_MSSR, 163);
+  theTypeshor.Bind(s_MPPITM, 164);
+  theTypeshor.Bind(s_MDGPA, 166);
+  theTypeshor.Bind(s_MDGPR, 167);
+  // 203  theTypeshor.Bind ("MMWU",MASS_MEASURE_WITH_UNIT);
+  // 203  theTypeshor.Bind ("MSSUNT",MASS_UNIT);
+  theTypeshor.Bind(s_MSWTUN, 165);
+  theTypeshor.Bind(s_MCHCNT, 339);
+  theTypeshor.Bind(s_NMDUNT, 169);
+  theTypeshor.Bind(s_NAUO, 380);
+  // 203  theTypeshor.Bind ("OFCR2D",OFFSET_CURVE_2D);
+  theTypeshor.Bind(s_OFCR3D, 171);
+  theTypeshor.Bind(s_OFFSRF, 172);
+  theTypeshor.Bind(s_ODRF, 173);
+  theTypeshor.Bind(s_OPNSHL, 174);
+  theTypeshor.Bind(s_ORDDT, 175);
+  theTypeshor.Bind(s_ORGNZT, 176);
+  theTypeshor.Bind(s_ORGASS, 177);
+  theTypeshor.Bind(s_ORGRL, 178);
+  theTypeshor.Bind(s_ORGADD, 179);
+  // 203  theTypeshor.Bind ("ORGPRJ",ORGANIZATIONAL_PROJECT);
+  // 203  theTypeshor.Bind ("ORGRLT",ORGANIZATION_RELATIONSHIP);
+  theTypeshor.Bind(s_ORCLSH, 180);
+  theTypeshor.Bind(s_ORNEDG, 181);
+  theTypeshor.Bind(s_ORNFC, 182);
+  theTypeshor.Bind(s_OROPSH, 183);
+  theTypeshor.Bind(s_ORNPTH, 184);
+  theTypeshor.Bind(s_OTBNCR, 185);
+  theTypeshor.Bind(s_ORSI, 186);
+  theTypeshor.Bind(s_PRBL, 187);
+  theTypeshor.Bind(s_PRRPCN, 188);
 
-  typeshor.Bind("PRANOR", 192);
-  typeshor.Bind("PAOA", 193);
-  typeshor.Bind("PAOR", 194);
-  typeshor.Bind("PRSADD", 195);
-  typeshor.Bind("PLCMNT", 196);
-  typeshor.Bind("PLNBX", 197);
-  typeshor.Bind("PLNEXT", 198);
+  theTypeshor.Bind(s_PRANOR, 192);
+  theTypeshor.Bind(s_PAOA, 193);
+  theTypeshor.Bind(s_PAOR, 194);
+  theTypeshor.Bind(s_PRSADD, 195);
+  theTypeshor.Bind(s_PLCMNT, 196);
+  theTypeshor.Bind(s_PLNBX, 197);
+  theTypeshor.Bind(s_PLNEXT, 198);
 
-  typeshor.Bind("PAMWU", 200);
-  typeshor.Bind("PLANUN", 201);
+  theTypeshor.Bind(s_PAMWU, 200);
+  theTypeshor.Bind(s_PLANUN, 201);
 
-  typeshor.Bind("PNONCR", 203);
-  typeshor.Bind("PNONSR", 204);
-  typeshor.Bind("PNTRPL", 205);
-  typeshor.Bind("PNTSTY", 206);
-  typeshor.Bind("PLYLP", 207);
-  typeshor.Bind("PLYLN", 208);
-  typeshor.Bind("PRDFCL", 209);
-  typeshor.Bind("PDCF", 210);
-  typeshor.Bind("PRDFIT", 211);
-  typeshor.Bind("PRDFSY", 212);
-  typeshor.Bind("PDTF", 213);
-  typeshor.Bind("PRSAR", 214);
-  typeshor.Bind("PRLYAS", 215);
-  typeshor.Bind("PRSRPR", 216);
-  typeshor.Bind("PRSST", 217);
-  typeshor.Bind("PRSSZ", 218);
-  typeshor.Bind("PRSTAS", 219);
-  typeshor.Bind("PSBC", 220);
-  typeshor.Bind("PRSVW", 221);
-  typeshor.Bind("PRSITM", 222);
-  typeshor.Bind("PRDCT", 223);
-  typeshor.Bind("PRDCTG", 224);
-  // 203  typeshor.Bind ("PRCTRL",PRODUCT_CATEGORY_RELATIONSHIP);
-  // 203  typeshor.Bind ("PRDCNC",PRODUCT_CONCEPT);
-  // 203  typeshor.Bind ("PRCNCN",PRODUCT_CONCEPT_CONTEXT);
-  typeshor.Bind("PRDCNT", 225);
-  typeshor.Bind("PRDDFN", 227);
-  typeshor.Bind("PRDFCN", 228);
-  typeshor.Bind("PRDFEF", 373);
-  typeshor.Bind("PRDFFR", 229);
-  typeshor.Bind("PDFWSS", 230);
-  typeshor.Bind("PRDFRL", 374);
-  typeshor.Bind("PRDFSH", 231);
-  typeshor.Bind("PRDFUS", 377);
-  typeshor.Bind("PDWAD", 375);
-  typeshor.Bind("PRPC", 232);
-  typeshor.Bind("PRUSOC", 381);
-  typeshor.Bind("PRPDFN", 234);
-  typeshor.Bind("PRDFRP", 235);
-  typeshor.Bind("QACU", 382);
-  typeshor.Bind("QSUNCR", 236);
-  typeshor.Bind("QSUNSR", 237);
-  typeshor.Bind("RMWU", 238);
-  typeshor.Bind("RBSC", 239);
-  typeshor.Bind("RBSS", 240);
-  typeshor.Bind("RCCMSR", 241);
-  typeshor.Bind("RCTRSR", 242);
-  typeshor.Bind("RPITGR", 243);
-  typeshor.Bind("RCCS", 244);
-  typeshor.Bind("RPRSNT", 245);
-  typeshor.Bind("RPRCNT", 246);
-  typeshor.Bind("RPRITM", 247);
-  typeshor.Bind("RPRMP", 248);
-  typeshor.Bind("RPRRLT", 249);
-  typeshor.Bind("RVARSL", 250);
-  typeshor.Bind("RGANWD", 251);
-  typeshor.Bind("RGCRCN", 252);
-  typeshor.Bind("RGCRCY", 253);
-  typeshor.Bind("RRWT", 388);
-  typeshor.Bind("SMCRV", 254);
-  typeshor.Bind("SCRCLS", 255);
-  typeshor.Bind("SCCLAS", 256);
-  typeshor.Bind("SCCLLV", 257);
-  // 203  typeshor.Bind ("SRNMEF",SERIAL_NUMBERED_EFFECTIVITY);
-  typeshor.Bind("SHPASP", 258);
-  typeshor.Bind("SHASRL", 259);
-  typeshor.Bind("SHDFRP", 261);
-  typeshor.Bind("SHPRPR", 262);
-  typeshor.Bind("SHRPRL", 387);
-  typeshor.Bind("SBSM", 263);
-  // 203  typeshor.Bind ("SBWM",SHELL_BASED_WIREFRAME_MODEL);
-  // 203  typeshor.Bind ("SBWSR",SHELL_BASED_WIREFRAME_SHAPE_REPRESENTATION);
-  typeshor.Bind("SUNT", 264);
-  typeshor.Bind("SAMWU", 265);
-  typeshor.Bind("SLANUN", 336);
-  typeshor.Bind("SLDMDL", 266);
-  typeshor.Bind("SLDRPL", 267);
-  typeshor.Bind("SHUO", 383);
-  typeshor.Bind("SPHSRF", 269);
-  typeshor.Bind("STYITM", 270);
-  // 203  typeshor.Bind ("STRRQS",START_REQUEST);
-  // 203  typeshor.Bind ("STRWRK",START_WORK);
-  typeshor.Bind("SPPRRL", 385);
-  typeshor.Bind("SRFC", 271);
-  typeshor.Bind("SRFCRV", 272);
-  typeshor.Bind("SL", 273);
-  typeshor.Bind("SROFRV", 274);
-  typeshor.Bind("SRFPTC", 275);
-  typeshor.Bind("SRFRPL", 276);
-  typeshor.Bind("SRSDST", 277);
-  typeshor.Bind("SRSTBN", 278);
-  typeshor.Bind("SSCG", 279);
-  typeshor.Bind("SSFA", 280);
-  typeshor.Bind("SSPL", 281);
-  typeshor.Bind("SSSC", 282);
-  typeshor.Bind("SRSTSL", 283);
-  typeshor.Bind("SRSTUS", 284);
-  typeshor.Bind("SWARSL", 285);
-  typeshor.Bind("SWPSRF", 286);
-  typeshor.Bind("SYMCLR", 287);
-  typeshor.Bind("SYMRPR", 288);
-  typeshor.Bind("SYRPMP", 289);
-  typeshor.Bind("SYMSTY", 290);
-  typeshor.Bind("SYMTRG", 291);
-  typeshor.Bind("TRMSYM", 294);
-  typeshor.Bind("TXTLTR", 295);
-  typeshor.Bind("TLWAC", 296);
-  typeshor.Bind("TLWBB", 297);
-  typeshor.Bind("TLWD", 298);
-  typeshor.Bind("TLWE", 299);
-  typeshor.Bind("TXTSTY", 300);
-  typeshor.Bind("TSFDF", 301);
-  typeshor.Bind("TSWBC", 302);
-  typeshor.Bind("TSWM", 303);
-  typeshor.Bind("TPRPIT", 304);
-  typeshor.Bind("TRDSRF", 305);
-  typeshor.Bind("TRMCRV", 308);
-  typeshor.Bind("TDRF", 309);
-  typeshor.Bind("UMWU", 310);
-  typeshor.Bind("UNFCRV", 311);
-  typeshor.Bind("UNFSRF", 312);
+  theTypeshor.Bind(s_PNONCR, 203);
+  theTypeshor.Bind(s_PNONSR, 204);
+  theTypeshor.Bind(s_PNTRPL, 205);
+  theTypeshor.Bind(s_PNTSTY, 206);
+  theTypeshor.Bind(s_PLYLP, 207);
+  theTypeshor.Bind(s_PLYLN, 208);
+  theTypeshor.Bind(s_PRDFCL, 209);
+  theTypeshor.Bind(s_PDCF, 210);
+  theTypeshor.Bind(s_PRDFIT, 211);
+  theTypeshor.Bind(s_PRDFSY, 212);
+  theTypeshor.Bind(s_PDTF, 213);
+  theTypeshor.Bind(s_PRSAR, 214);
+  theTypeshor.Bind(s_PRLYAS, 215);
+  theTypeshor.Bind(s_PRSRPR, 216);
+  theTypeshor.Bind(s_PRSST, 217);
+  theTypeshor.Bind(s_PRSSZ, 218);
+  theTypeshor.Bind(s_PRSTAS, 219);
+  theTypeshor.Bind(s_PSBC, 220);
+  theTypeshor.Bind(s_PRSVW, 221);
+  theTypeshor.Bind(s_PRSITM, 222);
+  theTypeshor.Bind(s_PRDCT, 223);
+  theTypeshor.Bind(s_PRDCTG, 224);
+  // 203  theTypeshor.Bind ("PRCTRL",PRODUCT_CATEGORY_RELATIONSHIP);
+  // 203  theTypeshor.Bind ("PRDCNC",PRODUCT_CONCEPT);
+  // 203  theTypeshor.Bind ("PRCNCN",PRODUCT_CONCEPT_CONTEXT);
+  theTypeshor.Bind(s_PRDCNT, 225);
+  theTypeshor.Bind(s_PRDDFN, 227);
+  theTypeshor.Bind(s_PRDFCN, 228);
+  theTypeshor.Bind(s_PRDFEF, 373);
+  theTypeshor.Bind(s_PRDFFR, 229);
+  theTypeshor.Bind(s_PDFWSS, 230);
+  theTypeshor.Bind(s_PRDFRL, 374);
+  theTypeshor.Bind(s_PRDFSH, 231);
+  theTypeshor.Bind(s_PRDFUS, 377);
+  theTypeshor.Bind(s_PDWAD, 375);
+  theTypeshor.Bind(s_PRPC, 232);
+  theTypeshor.Bind(s_PRUSOC, 381);
+  theTypeshor.Bind(s_PRPDFN, 234);
+  theTypeshor.Bind(s_PRDFRP, 235);
+  theTypeshor.Bind(s_QACU, 382);
+  theTypeshor.Bind(s_QSUNCR, 236);
+  theTypeshor.Bind(s_QSUNSR, 237);
+  theTypeshor.Bind(s_RMWU, 238);
+  theTypeshor.Bind(s_RBSC, 239);
+  theTypeshor.Bind(s_RBSS, 240);
+  theTypeshor.Bind(s_RCCMSR, 241);
+  theTypeshor.Bind(s_RCTRSR, 242);
+  theTypeshor.Bind(s_RPITGR, 243);
+  theTypeshor.Bind(s_RCCS, 244);
+  theTypeshor.Bind(s_RPRSNT, 245);
+  theTypeshor.Bind(s_RPRCNT, 246);
+  theTypeshor.Bind(s_RPRITM, 247);
+  theTypeshor.Bind(s_RPRMP, 248);
+  theTypeshor.Bind(s_RPRRLT, 249);
+  theTypeshor.Bind(s_RVARSL, 250);
+  theTypeshor.Bind(s_RGANWD, 251);
+  theTypeshor.Bind(s_RGCRCN, 252);
+  theTypeshor.Bind(s_RGCRCY, 253);
+  theTypeshor.Bind(s_RRWT, 388);
+  theTypeshor.Bind(s_SMCRV, 254);
+  theTypeshor.Bind(s_SCRCLS, 255);
+  theTypeshor.Bind(s_SCCLAS, 256);
+  theTypeshor.Bind(s_SCCLLV, 257);
+  // 203  theTypeshor.Bind ("SRNMEF",SERIAL_NUMBERED_EFFECTIVITY);
+  theTypeshor.Bind(s_SHPASP, 258);
+  theTypeshor.Bind(s_SHASRL, 259);
+  theTypeshor.Bind(s_SHDFRP, 261);
+  theTypeshor.Bind(s_SHPRPR, 262);
+  theTypeshor.Bind(s_SHRPRL, 387);
+  theTypeshor.Bind(s_SBSM, 263);
+  // 203  theTypeshor.Bind ("SBWM",SHELL_BASED_WIREFRAME_MODEL);
+  // 203  theTypeshor.Bind ("SBWSR",SHELL_BASED_WIREFRAME_SHAPE_REPRESENTATION);
+  theTypeshor.Bind(s_SUNT, 264);
+  theTypeshor.Bind(s_SAMWU, 265);
+  theTypeshor.Bind(s_SLANUN, 336);
+  theTypeshor.Bind(s_SLDMDL, 266);
+  theTypeshor.Bind(s_SLDRPL, 267);
+  theTypeshor.Bind(s_SHUO, 383);
+  theTypeshor.Bind(s_SPHSRF, 269);
+  theTypeshor.Bind(s_STYITM, 270);
+  // 203  theTypeshor.Bind ("STRRQS",START_REQUEST);
+  // 203  theTypeshor.Bind ("STRWRK",START_WORK);
+  theTypeshor.Bind(s_SPPRRL, 385);
+  theTypeshor.Bind(s_SRFC, 271);
+  theTypeshor.Bind(s_SRFCRV, 272);
+  theTypeshor.Bind(s_SL, 273);
+  theTypeshor.Bind(s_SROFRV, 274);
+  theTypeshor.Bind(s_SRFPTC, 275);
+  theTypeshor.Bind(s_SRFRPL, 276);
+  theTypeshor.Bind(s_SRSDST, 277);
+  theTypeshor.Bind(s_SRSTBN, 278);
+  theTypeshor.Bind(s_SSCG, 279);
+  theTypeshor.Bind(s_SSFA, 280);
+  theTypeshor.Bind(s_SSPL, 281);
+  theTypeshor.Bind(s_SSSC, 282);
+  theTypeshor.Bind(s_SRSTSL, 283);
+  theTypeshor.Bind(s_SRSTUS, 284);
+  theTypeshor.Bind(s_SWARSL, 285);
+  theTypeshor.Bind(s_SWPSRF, 286);
+  theTypeshor.Bind(s_SYMCLR, 287);
+  theTypeshor.Bind(s_SYMRPR, 288);
+  theTypeshor.Bind(s_SYRPMP, 289);
+  theTypeshor.Bind(s_SYMSTY, 290);
+  theTypeshor.Bind(s_SYMTRG, 291);
+  theTypeshor.Bind(s_TRMSYM, 294);
+  theTypeshor.Bind(s_TXTLTR, 295);
+  theTypeshor.Bind(s_TLWAC, 296);
+  theTypeshor.Bind(s_TLWBB, 297);
+  theTypeshor.Bind(s_TLWD, 298);
+  theTypeshor.Bind(s_TLWE, 299);
+  theTypeshor.Bind(s_TXTSTY, 300);
+  theTypeshor.Bind(s_TSFDF, 301);
+  theTypeshor.Bind(s_TSWBC, 302);
+  theTypeshor.Bind(s_TSWM, 303);
+  theTypeshor.Bind(s_TPRPIT, 304);
+  theTypeshor.Bind(s_TRDSRF, 305);
+  theTypeshor.Bind(s_TRMCRV, 308);
+  theTypeshor.Bind(s_TDRF, 309);
+  theTypeshor.Bind(s_UMWU, 310);
+  theTypeshor.Bind(s_UNFCRV, 311);
+  theTypeshor.Bind(s_UNFSRF, 312);
 
-  // 203  typeshor.Bind ("VRACRQ",VERSIONED_ACTION_REQUEST);
+  // 203  theTypeshor.Bind ("VRACRQ",VERSIONED_ACTION_REQUEST);
 
-  typeshor.Bind("VRTLP", 315);
-  typeshor.Bind("VRTPNT", 316);
-  // 203  typeshor.Bind ("VRTSHL",VERTEX_SHELL);
-  // 203  typeshor.Bind ("VMWU",VOLUME_MEASURE_WITH_UNIT);
-  // 203  typeshor.Bind ("VLMUNT",VOLUME_UNIT);
-  typeshor.Bind("VWVLM", 317);
-  typeshor.Bind("WOYADD", 318);
-  typeshor.Bind("TMWU", 341);
-  typeshor.Bind("RTUNT", 342);
-  typeshor.Bind("TMUNT", 343);
-  typeshor.Bind("CI3WS", 350);
-  typeshor.Bind("CTO2", 351);
-  typeshor.Bind("DRVUNT", 352);
-  typeshor.Bind("DRUNEL", 353);
-  typeshor.Bind("PRITRP", 355);
-  typeshor.Bind("MFUO", 378);
-  // 203  typeshor.Bind ("WRSHL",WIRE_SHELL);
-  typeshor.Bind("MTRDSG", 390);
-  typeshor.Bind("ADATA", 392);
-  typeshor.Bind("APDTAS", 393);
-  typeshor.Bind("APGRAS", 395);
-  typeshor.Bind("APORAS", 396);
-  typeshor.Bind("APAOA", 397);
-  typeshor.Bind("APPRIT", 398);
-  typeshor.Bind("ASCA", 399);
-  typeshor.Bind("APDCRF", 400);
-  typeshor.Bind("DCMFL", 401);
-  typeshor.Bind("CHROBJ", 402);
-  typeshor.Bind("EXFCSL", 403);
-  typeshor.Bind("RVFCSL", 404);
-  typeshor.Bind("SWFCSL", 405);
+  theTypeshor.Bind(s_VRTLP, 315);
+  theTypeshor.Bind(s_VRTPNT, 316);
+  // 203  theTypeshor.Bind ("VRTSHL",VERTEX_SHELL);
+  // 203  theTypeshor.Bind ("VMWU",VOLUME_MEASURE_WITH_UNIT);
+  // 203  theTypeshor.Bind ("VLMUNT",VOLUME_UNIT);
+  theTypeshor.Bind(s_VWVLM, 317);
+  theTypeshor.Bind(s_WOYADD, 318);
+  theTypeshor.Bind(s_TMWU, 341);
+  theTypeshor.Bind(s_RTUNT, 342);
+  theTypeshor.Bind(s_TMUNT, 343);
+  theTypeshor.Bind(s_CI3WS, 350);
+  theTypeshor.Bind(s_CTO2, 351);
+  theTypeshor.Bind(s_DRVUNT, 352);
+  theTypeshor.Bind(s_DRUNEL, 353);
+  theTypeshor.Bind(s_PRITRP, 355);
+  theTypeshor.Bind(s_MFUO, 378);
+  // 203  theTypeshor.Bind ("WRSHL",WIRE_SHELL);
+  theTypeshor.Bind(s_MTRDSG, 390);
+  theTypeshor.Bind(s_ADATA, 392);
+  theTypeshor.Bind(s_APDTAS, 393);
+  theTypeshor.Bind(s_APGRAS, 395);
+  theTypeshor.Bind(s_APORAS, 396);
+  theTypeshor.Bind(s_APAOA, 397);
+  theTypeshor.Bind(s_APPRIT, 398);
+  theTypeshor.Bind(s_ASCA, 399);
+  theTypeshor.Bind(s_APDCRF, 400);
+  theTypeshor.Bind(s_DCMFL, 401);
+  theTypeshor.Bind(s_CHROBJ, 402);
+  theTypeshor.Bind(s_EXFCSL, 403);
+  theTypeshor.Bind(s_RVFCSL, 404);
+  theTypeshor.Bind(s_SWFCSL, 405);
 
   // Added by ABV 08.09.99 for CAX TRJ 2 (validation properties)
-  typeshor.Bind("MSRPIT", 406);
-  typeshor.Bind("ARUNT", 407);
-  typeshor.Bind("VLMUNT", 408);
+  theTypeshor.Bind(s_MSRPIT, 406);
+  theTypeshor.Bind(s_ARUNT, 407);
+  theTypeshor.Bind(s_VLMUNT, 408);
 
   // Added by ABV 10.11.99 for AP203
-  typeshor.Bind("ACTION", 413);
-  typeshor.Bind("ACTASS", 414);
-  typeshor.Bind("ACTMTH", 415);
-  typeshor.Bind("ACRQAS", 416);
-  typeshor.Bind("CCDSAP", 417);
-  typeshor.Bind("CCDSCR", 418);
-  typeshor.Bind("CCDSCN", 419);
-  typeshor.Bind("CDDATA", 420);
-  typeshor.Bind("CDPAOA", 421);
-  typeshor.Bind("CDSC", 422);
-  typeshor.Bind("CDS", 423);
-  typeshor.Bind("CRTFCT", 424);
-  typeshor.Bind("CRTASS", 425);
-  typeshor.Bind("CRTTYP", 426);
-  typeshor.Bind("CHANGE", 427);
-  typeshor.Bind("CHNRQS", 428);
-  typeshor.Bind("CNFDSG", 429);
-  typeshor.Bind("CNFEFF", 430);
-  typeshor.Bind("CNTRCT", 431);
-  typeshor.Bind("CNTASS", 432);
-  typeshor.Bind("CNTTYP", 433);
-  typeshor.Bind("PRDCNC", 434);
-  typeshor.Bind("PRCNCN", 435);
-  typeshor.Bind("STRRQS", 436);
-  typeshor.Bind("STRWRK", 437);
-  typeshor.Bind("VRACRQ", 438);
-  typeshor.Bind("PRCTRL", 439);
-  typeshor.Bind("ACRQSL", 440);
-  typeshor.Bind("DRGMDL", 441);
-  typeshor.Bind("ANGLCT", 442);
-  typeshor.Bind("ANGSZ", 443);
-  typeshor.Bind("DMCHRP", 444);
-  typeshor.Bind("DMNLCT", 445);
-  typeshor.Bind("DLWP", 446);
-  typeshor.Bind("DMNSZ", 447);
-  typeshor.Bind("DSWP", 448);
-  typeshor.Bind("SHDMRP", 449);
-  typeshor.Bind("DCRPTY", 450);
-  typeshor.Bind("OBJRL", 451);
-  typeshor.Bind("RLASS", 452);
-  typeshor.Bind("IDNRL", 453);
-  typeshor.Bind("IDNASS", 454);
-  typeshor.Bind("EXIDAS", 455);
-  typeshor.Bind("EFFASS", 456);
-  typeshor.Bind("NMASS", 457);
-  typeshor.Bind("GNRPRP", 458);
-  typeshor.Bind("EDGP", 461);
-  typeshor.Bind("AEIA", 462);
-  typeshor.Bind("CMSHAS", 470);
-  typeshor.Bind("DRSHAS", 471);
-  typeshor.Bind("EXTNSN", 472);
-  typeshor.Bind("DRDMLC", 473);
-  typeshor.Bind("LMANFT", 474);
-  typeshor.Bind("TLRVL", 475);
-  typeshor.Bind("MSRQLF", 476);
-  typeshor.Bind("PLMNTL", 477);
-  typeshor.Bind("PRCQLF", 478);
-  typeshor.Bind("TYPQLF", 479);
-  typeshor.Bind("QLRPIT", 480);
-  typeshor.Bind("CMRPIT", 482);
-  typeshor.Bind("CMRPIT", 483);
-  typeshor.Bind("CMS0", 485);
-  typeshor.Bind("CNEDST", 486);
-  typeshor.Bind("EBWM", 488);
-  typeshor.Bind("EBWSR", 489);
-  typeshor.Bind("NMSSR", 491);
-  typeshor.Bind("ORNSRF", 492);
-  typeshor.Bind("SBFC", 493);
-  typeshor.Bind("SBDG", 494);
-  typeshor.Bind("CFSS", 496);
-  typeshor.Bind("MSSUNT", 501);
-  typeshor.Bind("THTMUN", 502);
-  typeshor.Bind("DTENV", 565);
-  typeshor.Bind("MTPRRP", 566);
-  typeshor.Bind("PRDFR", 567);
-  typeshor.Bind("MTRPRP", 569);
-  typeshor.Bind("PDFR", 573);
-  typeshor.Bind("DCP1", 600);
-  typeshor.Bind("DCPREQ", 601);
-  //  typeshor.Bind (AngularLocation);
-  //  typeshor.Bind (AngularSize);
-  //  typeshor.Bind (DimensionalCharacteristicRepresentation);
-  //  typeshor.Bind (DimensionalLocation);
-  //  typeshor.Bind (DimensionalLocationWithPath);
-  //  typeshor.Bind (DimensionalSize);
-  //  typeshor.Bind (DimensionalSizeWithPath);
-  //  typeshor.Bind (ShapeDimensionRepresentation);
-  typeshor.Bind("CYLTLR", 609);
-  typeshor.Bind("SRWP", 610);
-  typeshor.Bind("ANGTLR", 611);
-  typeshor.Bind("CNCTLR", 612);
-  typeshor.Bind("CRRNTL", 613);
-  typeshor.Bind("CXLTLR", 614);
-  typeshor.Bind("FLTTLR", 615);
-  typeshor.Bind("LNP0", 616);
-  typeshor.Bind("PRLTLR", 617);
-  typeshor.Bind("PRPTLR", 618);
-  typeshor.Bind("PSTTLR", 619);
-  typeshor.Bind("RNDTLR", 620);
-  typeshor.Bind("STRTLR", 621);
-  typeshor.Bind("SRPRTL", 622);
-  typeshor.Bind("SYMTLR", 623);
-  typeshor.Bind("TTRNTL", 624);
-  typeshor.Bind("GMTTLR", 625);
-  typeshor.Bind("GMTLRL", 626);
-  typeshor.Bind("GTWDR", 627);
-  typeshor.Bind("MDGMTL", 628);
-  typeshor.Bind("DTMFTR", 630);
-  typeshor.Bind("DTMRFR", 631);
-  typeshor.Bind("CMMDTM", 632);
-  typeshor.Bind("DTMTRG", 633);
-  typeshor.Bind("PDT0", 634);
-  typeshor.Bind("MMWU", 651);
-  typeshor.Bind("CNOFSY", 661);
-  typeshor.Bind("GMTALG", 662);
-  typeshor.Bind("PRPT", 663);
-  typeshor.Bind("TNGNT", 664);
-  typeshor.Bind("PRLOFF", 665);
-  typeshor.Bind("GISU", 666);
-  typeshor.Bind("IDATT", 667);
-  typeshor.Bind("IIRU", 668);
-  typeshor.Bind("GTWDU", 674);
-  typeshor.Bind("PRZNDF", 679);
-  typeshor.Bind("RNZNDF", 680);
-  typeshor.Bind("RNZNOR", 681);
-  typeshor.Bind("TLRZN", 682);
-  typeshor.Bind("TLZNDF", 683);
-  typeshor.Bind("TLZNFR", 684);
-  typeshor.Bind("INRPIT", 700);
-  typeshor.Bind("VLRPIT", 701);
-  typeshor.Bind("DMIA", 703);
-  typeshor.Bind("ANNPLN", 704);
-  typeshor.Bind("CNGMRP", 712);
-  typeshor.Bind("CGRR", 713);
+  theTypeshor.Bind(s_ACTION, 413);
+  theTypeshor.Bind(s_ACTASS, 414);
+  theTypeshor.Bind(s_ACTMTH, 415);
+  theTypeshor.Bind(s_ACRQAS, 416);
+  theTypeshor.Bind(s_CCDSAP, 417);
+  theTypeshor.Bind(s_CCDSCR, 418);
+  theTypeshor.Bind(s_CCDSCN, 419);
+  theTypeshor.Bind(s_CDDATA, 420);
+  theTypeshor.Bind(s_CDPAOA, 421);
+  theTypeshor.Bind(s_CDSC, 422);
+  theTypeshor.Bind(s_CDS, 423);
+  theTypeshor.Bind(s_CRTFCT, 424);
+  theTypeshor.Bind(s_CRTASS, 425);
+  theTypeshor.Bind(s_CRTTYP, 426);
+  theTypeshor.Bind(s_CHANGE, 427);
+  theTypeshor.Bind(s_CHNRQS, 428);
+  theTypeshor.Bind(s_CNFDSG, 429);
+  theTypeshor.Bind(s_CNFEFF, 430);
+  theTypeshor.Bind(s_CNTRCT, 431);
+  theTypeshor.Bind(s_CNTASS, 432);
+  theTypeshor.Bind(s_CNTTYP, 433);
+  theTypeshor.Bind(s_PRDCNC, 434);
+  theTypeshor.Bind(s_PRCNCN, 435);
+  theTypeshor.Bind(s_STRRQS, 436);
+  theTypeshor.Bind(s_STRWRK, 437);
+  theTypeshor.Bind(s_VRACRQ, 438);
+  theTypeshor.Bind(s_PRCTRL, 439);
+  theTypeshor.Bind(s_ACRQSL, 440);
+  theTypeshor.Bind(s_DRGMDL, 441);
+  theTypeshor.Bind(s_ANGLCT, 442);
+  theTypeshor.Bind(s_ANGSZ, 443);
+  theTypeshor.Bind(s_DMCHRP, 444);
+  theTypeshor.Bind(s_DMNLCT, 445);
+  theTypeshor.Bind(s_DLWP, 446);
+  theTypeshor.Bind(s_DMNSZ, 447);
+  theTypeshor.Bind(s_DSWP, 448);
+  theTypeshor.Bind(s_SHDMRP, 449);
+  theTypeshor.Bind(s_DCRPTY, 450);
+  theTypeshor.Bind(s_OBJRL, 451);
+  theTypeshor.Bind(s_RLASS, 452);
+  theTypeshor.Bind(s_IDNRL, 453);
+  theTypeshor.Bind(s_IDNASS, 454);
+  theTypeshor.Bind(s_EXIDAS, 455);
+  theTypeshor.Bind(s_EFFASS, 456);
+  theTypeshor.Bind(s_NMASS, 457);
+  theTypeshor.Bind(s_GNRPRP, 458);
+  theTypeshor.Bind(s_EDGP, 461);
+  theTypeshor.Bind(s_AEIA, 462);
+  theTypeshor.Bind(s_CMSHAS, 470);
+  theTypeshor.Bind(s_DRSHAS, 471);
+  theTypeshor.Bind(s_EXTNSN, 472);
+  theTypeshor.Bind(s_DRDMLC, 473);
+  theTypeshor.Bind(s_LMANFT, 474);
+  theTypeshor.Bind(s_TLRVL, 475);
+  theTypeshor.Bind(s_MSRQLF, 476);
+  theTypeshor.Bind(s_PLMNTL, 477);
+  theTypeshor.Bind(s_PRCQLF, 478);
+  theTypeshor.Bind(s_TYPQLF, 479);
+  theTypeshor.Bind(s_QLRPIT, 480);
+  theTypeshor.Bind(s_CMRPIT, 482);
+  theTypeshor.Bind(s_CMRPIT, 483);
+  theTypeshor.Bind(s_CMS0, 485);
+  theTypeshor.Bind(s_CNEDST, 486);
+  theTypeshor.Bind(s_EBWM, 488);
+  theTypeshor.Bind(s_EBWSR, 489);
+  theTypeshor.Bind(s_NMSSR, 491);
+  theTypeshor.Bind(s_ORNSRF, 492);
+  theTypeshor.Bind(s_SBFC, 493);
+  theTypeshor.Bind(s_SBDG, 494);
+  theTypeshor.Bind(s_CFSS, 496);
+  theTypeshor.Bind(s_MSSUNT, 501);
+  theTypeshor.Bind(s_THTMUN, 502);
+  theTypeshor.Bind(s_DTENV, 565);
+  theTypeshor.Bind(s_MTPRRP, 566);
+  theTypeshor.Bind(s_PRDFR, 567);
+  theTypeshor.Bind(s_MTRPRP, 569);
+  theTypeshor.Bind(s_PDFR, 573);
+  theTypeshor.Bind(s_DCP1, 600);
+  theTypeshor.Bind(s_DCPREQ, 601);
+  //  theTypeshor.Bind (AngularLocation);
+  //  theTypeshor.Bind (AngularSize);
+  //  theTypeshor.Bind (DimensionalCharacteristicRepresentation);
+  //  theTypeshor.Bind (DimensionalLocation);
+  //  theTypeshor.Bind (DimensionalLocationWithPath);
+  //  theTypeshor.Bind (DimensionalSize);
+  //  theTypeshor.Bind (DimensionalSizeWithPath);
+  //  theTypeshor.Bind (ShapeDimensionRepresentation);
+  theTypeshor.Bind(s_CYLTLR, 609);
+  theTypeshor.Bind(s_SRWP, 610);
+  theTypeshor.Bind(s_ANGTLR, 611);
+  theTypeshor.Bind(s_CNCTLR, 612);
+  theTypeshor.Bind(s_CRRNTL, 613);
+  theTypeshor.Bind(s_CXLTLR, 614);
+  theTypeshor.Bind(s_FLTTLR, 615);
+  theTypeshor.Bind(s_LNP0, 616);
+  theTypeshor.Bind(s_PRLTLR, 617);
+  theTypeshor.Bind(s_PRPTLR, 618);
+  theTypeshor.Bind(s_PSTTLR, 619);
+  theTypeshor.Bind(s_RNDTLR, 620);
+  theTypeshor.Bind(s_STRTLR, 621);
+  theTypeshor.Bind(s_SRPRTL, 622);
+  theTypeshor.Bind(s_SYMTLR, 623);
+  theTypeshor.Bind(s_TTRNTL, 624);
+  theTypeshor.Bind(s_GMTTLR, 625);
+  theTypeshor.Bind(s_GMTLRL, 626);
+  theTypeshor.Bind(s_GTWDR, 627);
+  theTypeshor.Bind(s_MDGMTL, 628);
+  theTypeshor.Bind(s_DTMFTR, 630);
+  theTypeshor.Bind(s_DTMRFR, 631);
+  theTypeshor.Bind(s_CMMDTM, 632);
+  theTypeshor.Bind(s_DTMTRG, 633);
+  theTypeshor.Bind(s_PDT0, 634);
+  theTypeshor.Bind(s_MMWU, 651);
+  theTypeshor.Bind(s_CNOFSY, 661);
+  theTypeshor.Bind(s_GMTALG, 662);
+  theTypeshor.Bind(s_PRPT, 663);
+  theTypeshor.Bind(s_TNGNT, 664);
+  theTypeshor.Bind(s_PRLOFF, 665);
+  theTypeshor.Bind(s_GISU, 666);
+  theTypeshor.Bind(s_IDATT, 667);
+  theTypeshor.Bind(s_IIRU, 668);
+  theTypeshor.Bind(s_GTWDU, 674);
+  theTypeshor.Bind(s_PRZNDF, 679);
+  theTypeshor.Bind(s_RNZNDF, 680);
+  theTypeshor.Bind(s_RNZNOR, 681);
+  theTypeshor.Bind(s_TLRZN, 682);
+  theTypeshor.Bind(s_TLZNDF, 683);
+  theTypeshor.Bind(s_TLZNFR, 684);
+  theTypeshor.Bind(s_INRPIT, 700);
+  theTypeshor.Bind(s_VLRPIT, 701);
+  theTypeshor.Bind(s_DMIA, 703);
+  theTypeshor.Bind(s_ANNPLN, 704);
+  theTypeshor.Bind(s_CNGMRP, 712);
+  theTypeshor.Bind(s_CGRR, 713);
+}
+} // namespace
+
+RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule()
+{
+  static std::mutex           THE_MUTEX;
+  std::lock_guard<std::mutex> aLock(THE_MUTEX);
+  static bool                 anInitialized = false;
+  if (!anInitialized)
+  {
+    THE_INC_ALLOCATOR =
+      new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
+    initializeTypenums(THE_TYPENUMS);
+    initializeTypeshor(THE_TYPESHOR);
+    anInitialized = true;
+  }
 }
 
 // --- Case Recognition ---
@@ -3809,9 +4313,9 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(const TCollection_AsciiSt
   Standard_Integer num;
   if (key.IsEqual(Reco_CartesianPoint))
     return 59; // car tres courant
-  if (typenums.Find(key, num))
+  if (THE_TYPENUMS.Find(static_cast<std::string_view>(key), num))
     return num;
-  if (typeshor.Find(key, num))
+  if (THE_TYPESHOR.Find(static_cast<std::string_view>(key), num))
     return num; // AJOUT DES TYPES COURTS
   return 0;
 }
@@ -3842,7 +4346,7 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(
     Standard_Integer i, num = 0;
     for (i = 1; i <= NbComp; i++)
     {
-      if (typeshor.IsBound(theTypes(i)))
+      if (THE_TYPESHOR.IsBound(static_cast<std::string_view>(theTypes(i))))
       {
         num = 1;
         break;
@@ -3853,8 +4357,8 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(
       TColStd_SequenceOfAsciiString longs;
       for (i = 1; i <= NbComp; i++)
       {
-        if (typeshor.Find(theTypes(i), num))
-          longs.Append(StepType(num));
+        if (THE_TYPESHOR.Find(static_cast<std::string_view>(theTypes(i)), num))
+          longs.Append(TCollection_AsciiString(StepType(num)));
         else
           longs.Append(theTypes(i));
       }
@@ -4406,8 +4910,7 @@ Standard_Boolean RWStepAP214_ReadWriteModule::IsComplex(const Standard_Integer C
 
 //=================================================================================================
 
-const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType(
-  const Standard_Integer CN) const
+const std::string_view& RWStepAP214_ReadWriteModule::StepType(const Standard_Integer CN) const
 {
   switch (CN)
   {
@@ -5881,326 +6384,326 @@ Standard_Boolean RWStepAP214_ReadWriteModule::ComplexType(
   switch (CN)
   {
     case 319:
-      types.Append(StepType(48));
-      types.Append(StepType(38));
-      types.Append(StepType(84));
-      types.Append(StepType(144));
-      types.Append(StepType(239));
-      types.Append(StepType(247));
-      types.Append(StepType(311));
+      types.Append(TCollection_AsciiString(StepType(48)));
+      types.Append(TCollection_AsciiString(StepType(38)));
+      types.Append(TCollection_AsciiString(StepType(84)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(239)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(311)));
       break;
     case 320:
-      types.Append(StepType(48));
-      types.Append(StepType(38));
-      types.Append(StepType(39));
-      types.Append(StepType(84));
-      types.Append(StepType(144));
-      types.Append(StepType(239));
-      types.Append(StepType(247));
+      types.Append(TCollection_AsciiString(StepType(48)));
+      types.Append(TCollection_AsciiString(StepType(38)));
+      types.Append(TCollection_AsciiString(StepType(39)));
+      types.Append(TCollection_AsciiString(StepType(84)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(239)));
+      types.Append(TCollection_AsciiString(StepType(247)));
       break;
     case 321:
-      types.Append(StepType(48));
-      types.Append(StepType(38));
-      types.Append(StepType(84));
-      types.Append(StepType(144));
-      types.Append(StepType(236));
-      types.Append(StepType(239));
-      types.Append(StepType(247));
+      types.Append(TCollection_AsciiString(StepType(48)));
+      types.Append(TCollection_AsciiString(StepType(38)));
+      types.Append(TCollection_AsciiString(StepType(84)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(236)));
+      types.Append(TCollection_AsciiString(StepType(239)));
+      types.Append(TCollection_AsciiString(StepType(247)));
       break;
     case 322:
-      types.Append(StepType(43));
-      types.Append(StepType(48));
-      types.Append(StepType(38));
-      types.Append(StepType(84));
-      types.Append(StepType(144));
-      types.Append(StepType(239));
-      types.Append(StepType(247));
+      types.Append(TCollection_AsciiString(StepType(43)));
+      types.Append(TCollection_AsciiString(StepType(48)));
+      types.Append(TCollection_AsciiString(StepType(38)));
+      types.Append(TCollection_AsciiString(StepType(84)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(239)));
+      types.Append(TCollection_AsciiString(StepType(247)));
       break;
     case 323:
-      types.Append(StepType(49));
-      types.Append(StepType(40));
-      types.Append(StepType(41));
-      types.Append(StepType(144));
-      types.Append(StepType(240));
-      types.Append(StepType(247));
-      types.Append(StepType(271));
+      types.Append(TCollection_AsciiString(StepType(49)));
+      types.Append(TCollection_AsciiString(StepType(40)));
+      types.Append(TCollection_AsciiString(StepType(41)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(240)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(271)));
       break;
     case 324:
-      types.Append(StepType(49));
-      types.Append(StepType(40));
-      types.Append(StepType(144));
-      types.Append(StepType(240));
-      types.Append(StepType(247));
-      types.Append(StepType(271));
-      types.Append(StepType(312));
+      types.Append(TCollection_AsciiString(StepType(49)));
+      types.Append(TCollection_AsciiString(StepType(40)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(240)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(271)));
+      types.Append(TCollection_AsciiString(StepType(312)));
       break;
     case 325:
-      types.Append(StepType(49));
-      types.Append(StepType(40));
-      types.Append(StepType(144));
-      types.Append(StepType(237));
-      types.Append(StepType(240));
-      types.Append(StepType(247));
-      types.Append(StepType(271));
+      types.Append(TCollection_AsciiString(StepType(49)));
+      types.Append(TCollection_AsciiString(StepType(40)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(237)));
+      types.Append(TCollection_AsciiString(StepType(240)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(271)));
       break;
     case 326:
-      types.Append(StepType(44));
-      types.Append(StepType(49));
-      types.Append(StepType(40));
-      types.Append(StepType(144));
-      types.Append(StepType(240));
-      types.Append(StepType(247));
-      types.Append(StepType(271));
+      types.Append(TCollection_AsciiString(StepType(44)));
+      types.Append(TCollection_AsciiString(StepType(49)));
+      types.Append(TCollection_AsciiString(StepType(40)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(240)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(271)));
       break;
     case 327:
-      types.Append(StepType(158));
-      types.Append(StepType(169));
-      types.Append(StepType(264));
+      types.Append(TCollection_AsciiString(StepType(158)));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(264)));
       break;
     case 328:
-      types.Append(StepType(169));
-      types.Append(StepType(201));
-      types.Append(StepType(264));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(201)));
+      types.Append(TCollection_AsciiString(StepType(264)));
       break;
     case 329:
-      types.Append(StepType(79));
-      types.Append(StepType(158));
-      types.Append(StepType(169));
+      types.Append(TCollection_AsciiString(StepType(79)));
+      types.Append(TCollection_AsciiString(StepType(158)));
+      types.Append(TCollection_AsciiString(StepType(169)));
       break;
     case 330:
-      types.Append(StepType(79));
-      types.Append(StepType(169));
-      types.Append(StepType(201));
+      types.Append(TCollection_AsciiString(StepType(79)));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(201)));
       break;
     case 331:
-      types.Append(StepType(143));
-      types.Append(StepType(149));
-      types.Append(StepType(246));
+      types.Append(TCollection_AsciiString(StepType(143)));
+      types.Append(TCollection_AsciiString(StepType(149)));
+      types.Append(TCollection_AsciiString(StepType(246)));
       break;
     case 332:
-      types.Append(StepType(161));
-      types.Append(StepType(189));
-      types.Append(StepType(247));
-      types.Append(StepType(304));
+      types.Append(TCollection_AsciiString(StepType(161)));
+      types.Append(TCollection_AsciiString(StepType(189)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(304)));
       break;
     case 333:
-      types.Append(StepType(143));
-      types.Append(StepType(148));
-      types.Append(StepType(149));
-      types.Append(StepType(246));
+      types.Append(TCollection_AsciiString(StepType(143)));
+      types.Append(TCollection_AsciiString(StepType(148)));
+      types.Append(TCollection_AsciiString(StepType(149)));
+      types.Append(TCollection_AsciiString(StepType(246)));
       break;
     case 334:
-      types.Append(StepType(79));
-      types.Append(StepType(169));
-      types.Append(StepType(336));
+      types.Append(TCollection_AsciiString(StepType(79)));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(336)));
       break;
     case 335:
-      types.Append(StepType(169));
-      types.Append(StepType(264));
-      types.Append(StepType(336));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(264)));
+      types.Append(TCollection_AsciiString(StepType(336)));
       break;
     case 337:
-      types.Append(StepType(52));
-      types.Append(StepType(134));
-      types.Append(StepType(144));
-      types.Append(StepType(162));
-      types.Append(StepType(247));
-      types.Append(StepType(266));
+      types.Append(TCollection_AsciiString(StepType(52)));
+      types.Append(TCollection_AsciiString(StepType(134)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(162)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(266)));
       break;
     case 338:
-      types.Append(StepType(143));
-      types.Append(StepType(188));
-      types.Append(StepType(246));
+      types.Append(TCollection_AsciiString(StepType(143)));
+      types.Append(TCollection_AsciiString(StepType(188)));
+      types.Append(TCollection_AsciiString(StepType(246)));
       break;
     case 344:
-      types.Append(StepType(169));
-      types.Append(StepType(342));
-      types.Append(StepType(264));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(342)));
+      types.Append(TCollection_AsciiString(StepType(264)));
       break;
     case 345:
-      types.Append(StepType(169));
-      types.Append(StepType(264));
-      types.Append(StepType(343));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(264)));
+      types.Append(TCollection_AsciiString(StepType(343)));
       break;
     case 346:
-      types.Append(StepType(79));
-      types.Append(StepType(169));
-      types.Append(StepType(342));
+      types.Append(TCollection_AsciiString(StepType(79)));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(342)));
       break;
     case 347:
-      types.Append(StepType(79));
-      types.Append(StepType(169));
-      types.Append(StepType(343));
+      types.Append(TCollection_AsciiString(StepType(79)));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(343)));
       break;
     case 357:
-      types.Append(StepType(157));
-      types.Append(StepType(165));
-      types.Append(StepType(310));
+      types.Append(TCollection_AsciiString(StepType(157)));
+      types.Append(TCollection_AsciiString(StepType(165)));
+      types.Append(TCollection_AsciiString(StepType(310)));
       break;
     case 358: //: n5
-      types.Append(StepType(48));
-      types.Append(StepType(84));
-      types.Append(StepType(144));
-      types.Append(StepType(247));
-      types.Append(StepType(272));
+      types.Append(TCollection_AsciiString(StepType(48)));
+      types.Append(TCollection_AsciiString(StepType(84)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(272)));
       break;
     case 389:
-      types.Append(StepType(249));
-      types.Append(StepType(388));
-      types.Append(StepType(387));
+      types.Append(TCollection_AsciiString(StepType(249)));
+      types.Append(TCollection_AsciiString(StepType(388)));
+      types.Append(TCollection_AsciiString(StepType(387)));
       break;
     case 409:
-      types.Append(StepType(407));
-      types.Append(StepType(169));
-      types.Append(StepType(264));
+      types.Append(TCollection_AsciiString(StepType(407)));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(264)));
       break;
     case 410:
-      types.Append(StepType(169));
-      types.Append(StepType(264));
-      types.Append(StepType(408));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(264)));
+      types.Append(TCollection_AsciiString(StepType(408)));
       break;
     case 411:
-      types.Append(StepType(407));
-      types.Append(StepType(79));
-      types.Append(StepType(169));
+      types.Append(TCollection_AsciiString(StepType(407)));
+      types.Append(TCollection_AsciiString(StepType(79)));
+      types.Append(TCollection_AsciiString(StepType(169)));
       break;
     case 412:
-      types.Append(StepType(79));
-      types.Append(StepType(169));
-      types.Append(StepType(408));
+      types.Append(TCollection_AsciiString(StepType(79)));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(408)));
       break;
     case 463:
-      types.Append(StepType(98));
-      types.Append(StepType(245));
-      types.Append(StepType(262));
+      types.Append(TCollection_AsciiString(StepType(98)));
+      types.Append(TCollection_AsciiString(StepType(245)));
+      types.Append(TCollection_AsciiString(StepType(262)));
       break;
     case 481:
-      types.Append(StepType(406));
-      types.Append(StepType(480));
-      types.Append(StepType(247));
+      types.Append(TCollection_AsciiString(StepType(406)));
+      types.Append(TCollection_AsciiString(StepType(480)));
+      types.Append(TCollection_AsciiString(StepType(247)));
       break;
     case 574:
-      types.Append(StepType(501));
-      types.Append(StepType(169));
-      types.Append(StepType(264));
+      types.Append(TCollection_AsciiString(StepType(501)));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(264)));
       break;
     case 578:
-      types.Append(StepType(169));
-      types.Append(StepType(264));
-      types.Append(StepType(502));
+      types.Append(TCollection_AsciiString(StepType(169)));
+      types.Append(TCollection_AsciiString(StepType(264)));
+      types.Append(TCollection_AsciiString(StepType(502)));
       break;
     case 635:
-      types.Append(StepType(157));
-      types.Append(StepType(406));
-      types.Append(StepType(165));
-      types.Append(StepType(247));
+      types.Append(TCollection_AsciiString(StepType(157)));
+      types.Append(TCollection_AsciiString(StepType(406)));
+      types.Append(TCollection_AsciiString(StepType(165)));
+      types.Append(TCollection_AsciiString(StepType(247)));
       break;
     case 636:
-      types.Append(StepType(625));
-      types.Append(StepType(627));
-      types.Append(StepType(628));
-      types.Append(StepType(619));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(627)));
+      types.Append(TCollection_AsciiString(StepType(628)));
+      types.Append(TCollection_AsciiString(StepType(619)));
       break;
     case 650:
-      types.Append(StepType(79));
-      types.Append(StepType(501));
-      types.Append(StepType(169));
+      types.Append(TCollection_AsciiString(StepType(79)));
+      types.Append(TCollection_AsciiString(StepType(501)));
+      types.Append(TCollection_AsciiString(StepType(169)));
       break;
     case 691:
-      types.Append(StepType(406));
-      types.Append(StepType(165));
-      types.Append(StepType(200));
-      types.Append(StepType(247));
+      types.Append(TCollection_AsciiString(StepType(406)));
+      types.Append(TCollection_AsciiString(StepType(165)));
+      types.Append(TCollection_AsciiString(StepType(200)));
+      types.Append(TCollection_AsciiString(StepType(247)));
       break;
     case 692:
-      types.Append(StepType(157));
-      types.Append(StepType(406));
-      types.Append(StepType(165));
-      types.Append(StepType(480));
-      types.Append(StepType(247));
+      types.Append(TCollection_AsciiString(StepType(157)));
+      types.Append(TCollection_AsciiString(StepType(406)));
+      types.Append(TCollection_AsciiString(StepType(165)));
+      types.Append(TCollection_AsciiString(StepType(480)));
+      types.Append(TCollection_AsciiString(StepType(247)));
       break;
     case 693:
-      types.Append(StepType(406));
-      types.Append(StepType(165));
-      types.Append(StepType(200));
-      types.Append(StepType(480));
-      types.Append(StepType(247));
+      types.Append(TCollection_AsciiString(StepType(406)));
+      types.Append(TCollection_AsciiString(StepType(165)));
+      types.Append(TCollection_AsciiString(StepType(200)));
+      types.Append(TCollection_AsciiString(StepType(480)));
+      types.Append(TCollection_AsciiString(StepType(247)));
       break;
     case 694:
-      types.Append(StepType(625));
-      types.Append(StepType(627));
-      types.Append(StepType(625));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(627)));
+      types.Append(TCollection_AsciiString(StepType(625)));
       break;
     case 695:
-      types.Append(StepType(625));
-      types.Append(StepType(627));
-      types.Append(StepType(676));
-      types.Append(StepType(625));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(627)));
+      types.Append(TCollection_AsciiString(StepType(676)));
+      types.Append(TCollection_AsciiString(StepType(625)));
       break;
     case 696:
-      types.Append(StepType(625));
-      types.Append(StepType(676));
-      types.Append(StepType(625));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(676)));
+      types.Append(TCollection_AsciiString(StepType(625)));
       break;
     case 697:
-      types.Append(StepType(625));
-      types.Append(StepType(627));
-      types.Append(StepType(625));
-      types.Append(StepType(677));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(627)));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(677)));
       break;
     case 698:
-      types.Append(StepType(671));
-      types.Append(StepType(470));
-      types.Append(StepType(630));
-      types.Append(StepType(258));
+      types.Append(TCollection_AsciiString(StepType(671)));
+      types.Append(TCollection_AsciiString(StepType(470)));
+      types.Append(TCollection_AsciiString(StepType(630)));
+      types.Append(TCollection_AsciiString(StepType(258)));
       break;
     case 699:
-      types.Append(StepType(470));
-      types.Append(StepType(630));
-      types.Append(StepType(258));
+      types.Append(TCollection_AsciiString(StepType(470)));
+      types.Append(TCollection_AsciiString(StepType(630)));
+      types.Append(TCollection_AsciiString(StepType(258)));
       break;
     case 705:
-      types.Append(StepType(625));
-      types.Append(StepType(627));
-      types.Append(StepType(675));
-      types.Append(StepType(676));
-      types.Append(StepType(625));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(627)));
+      types.Append(TCollection_AsciiString(StepType(675)));
+      types.Append(TCollection_AsciiString(StepType(676)));
+      types.Append(TCollection_AsciiString(StepType(625)));
       break;
     case 706:
-      types.Append(StepType(625));
-      types.Append(StepType(675));
-      types.Append(StepType(676));
-      types.Append(StepType(625));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(675)));
+      types.Append(TCollection_AsciiString(StepType(676)));
+      types.Append(TCollection_AsciiString(StepType(625)));
       break;
     case 715:
-      types.Append(StepType(402));
-      types.Append(StepType(714));
-      types.Append(StepType(441));
-      types.Append(StepType(245));
+      types.Append(TCollection_AsciiString(StepType(402)));
+      types.Append(TCollection_AsciiString(StepType(714)));
+      types.Append(TCollection_AsciiString(StepType(441)));
+      types.Append(TCollection_AsciiString(StepType(245)));
       break;
     case 719:
-      types.Append(StepType(4));
-      types.Append(StepType(7));
-      types.Append(StepType(144));
-      types.Append(StepType(247));
-      types.Append(StepType(270));
+      types.Append(TCollection_AsciiString(StepType(4)));
+      types.Append(TCollection_AsciiString(StepType(7)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(270)));
       break;
     case 800:
-      types.Append(StepType(729));
-      types.Append(StepType(144));
-      types.Append(StepType(354));
-      types.Append(StepType(799));
-      types.Append(StepType(743));
-      types.Append(StepType(757));
-      types.Append(StepType(759));
-      types.Append(StepType(247));
+      types.Append(TCollection_AsciiString(StepType(729)));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(354)));
+      types.Append(TCollection_AsciiString(StepType(799)));
+      types.Append(TCollection_AsciiString(StepType(743)));
+      types.Append(TCollection_AsciiString(StepType(757)));
+      types.Append(TCollection_AsciiString(StepType(759)));
+      types.Append(TCollection_AsciiString(StepType(247)));
       break;
     case 802:
-      types.Append(StepType(144));
-      types.Append(StepType(803));
-      types.Append(StepType(247));
-      types.Append(StepType(709));
-      types.Append(StepType(708));
+      types.Append(TCollection_AsciiString(StepType(144)));
+      types.Append(TCollection_AsciiString(StepType(803)));
+      types.Append(TCollection_AsciiString(StepType(247)));
+      types.Append(TCollection_AsciiString(StepType(709)));
+      types.Append(TCollection_AsciiString(StepType(708)));
       break;
     default:
       return Standard_False;

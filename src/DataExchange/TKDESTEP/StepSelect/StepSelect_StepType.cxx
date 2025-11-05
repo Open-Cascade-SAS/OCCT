@@ -61,7 +61,7 @@ Standard_CString StepSelect_StepType::Value(const Handle(Standard_Transient)&   
 
   // Handle simple (non-complex) type - return direct reference from module
   if (!aModule->IsComplex(aCN))
-    return aModule->StepType(aCN).ToCString();
+    return aModule->StepType(aCN).data();
 
   // Handle complex type from module
   TColStd_SequenceOfAsciiString aList;

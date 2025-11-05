@@ -21,6 +21,9 @@
 
 #include <Interface_ReaderModule.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
+
+#include <string_view>
+
 class Interface_FileReaderData;
 class TCollection_AsciiString;
 class Interface_Check;
@@ -78,8 +81,7 @@ public:
   //! Returns an empty String if <CN> is zero.
   //! Warning : For a Complex Type Entity, returns an Empty String
   //! (Complex Type must be managed by users)
-  Standard_EXPORT virtual const TCollection_AsciiString& StepType(
-    const Standard_Integer CN) const = 0;
+  Standard_EXPORT virtual const std::string_view& StepType(const Standard_Integer CN) const = 0;
 
   //! Function specific to STEP. Some STEP Types have a short form
   //! This method can be redefined to fill it

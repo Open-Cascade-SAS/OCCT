@@ -23,6 +23,9 @@
 #include <StepData_ReadWriteModule.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
+
+#include <string_view>
+
 class TCollection_AsciiString;
 class StepData_StepReaderData;
 class Interface_Check;
@@ -55,7 +58,7 @@ public:
 
   //! returns a StepType (defined in EXPRESS form which belongs to a
   //! Type of Entity, identified by its CaseNumber determined by Protocol
-  Standard_EXPORT const TCollection_AsciiString& StepType(const Standard_Integer CN) const
+  Standard_EXPORT const std::string_view& StepType(const Standard_Integer CN) const
     Standard_OVERRIDE;
 
   Standard_EXPORT void ReadStep(const Standard_Integer                 CN,
