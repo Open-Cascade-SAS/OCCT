@@ -63,15 +63,15 @@ public:
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
 
   //! returns False if <me> is an infinite grid,
-  //! True  if <me> is a finite grid.
+  //! True if <me> is a finite grid.
   Standard_EXPORT Standard_Boolean IsFinite() const;
 
   //! returns False if <me> is a Point grid,
-  //! True  if <me> is a Line grid.
+  //! True if <me> is a Line grid.
   Standard_EXPORT Standard_Boolean IsLine() const;
 
   //! returns False if <me> is a Weighted grid,
-  //! True  if <me> is not a Weighted grid.
+  //! True if <me> is not a Weighted grid.
   Standard_EXPORT Standard_Boolean IsWeighted() const;
 
   //! returns coordinates of lower left corner,

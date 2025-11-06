@@ -84,7 +84,7 @@ public:
 
   //! returns the Index'th IGESEntity in subfigure exclusive of primary
   //! reference designator and Control Points
-  //! raises exception if Index  <=0 or Index > NbEntities()
+  //! raises exception if Index <=0 or Index > NbEntities()
   Standard_EXPORT Handle(IGESData_IGESEntity) Entity(const Standard_Integer Index) const;
 
   //! return value = 0 : Not Specified

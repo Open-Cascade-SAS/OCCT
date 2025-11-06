@@ -87,7 +87,7 @@ public:
   //! Returns a text which begins by
   //! "Changes Level Lists containing <old>", or
   //! "Changes all Level Lists in D.E.", and ends by
-  //! " to Number <new>"  or  " to Number = first value in List"
+  //! " to Number <new>"  or  src/DataExchange/TKDEIGES/IGESSolid/IGESSolid_ManifoldSolid.hxx" to Number = first value in List"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_ChangeLevelList, IGESSelect_ModelModifier)

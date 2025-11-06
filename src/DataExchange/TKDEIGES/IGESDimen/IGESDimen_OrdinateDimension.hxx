@@ -30,7 +30,7 @@ DEFINE_STANDARD_HANDLE(IGESDimen_OrdinateDimension, IGESData_IGESEntity)
 
 //! defines IGES Ordinate Dimension, Type <218> Form <0, 1>,
 //! in package IGESDimen
-//! Note   : The ordinate dimension entity is used to
+//! Note: The ordinate dimension entity is used to
 //! indicate dimensions from a common base line.
 //! Dimensioning is only permitted along the XT
 //! or YT axis.

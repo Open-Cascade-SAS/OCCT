@@ -156,7 +156,7 @@ public:
   //! can be used.
   Standard_EXPORT Standard_Integer GetAvailableUndos() const;
 
-  //! Will UNDO  one step, returns False if no undo was
+  //! Will UNDO one step, returns False if no undo was
   //! done (Undos == 0).
   //! Otherwise, true is returned and one step in the
   //! list of undoes is undone.
@@ -167,7 +167,7 @@ public:
   //! can be used.
   Standard_EXPORT Standard_Integer GetAvailableRedos() const;
 
-  //! Will REDO  one step, returns False if no redo was
+  //! Will REDO one step, returns False if no redo was
   //! done (Redos == 0).
   //! Otherwise, true is returned, and one step in the list of redoes is done again.
   Standard_EXPORT Standard_Boolean Redo();

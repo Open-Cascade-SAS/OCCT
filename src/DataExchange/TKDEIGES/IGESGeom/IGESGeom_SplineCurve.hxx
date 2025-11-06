@@ -34,8 +34,8 @@ DEFINE_STANDARD_HANDLE(IGESGeom_SplineCurve, IGESData_IGESEntity)
 //! polynomial segments. The curve could be of the type
 //! Linear, Quadratic, Cubic, Wilson-Fowler, Modified
 //! Wilson-Fowler, B-Spline. The N polynomial segments
-//! are delimited by the break points  T(1), T(2), T(3),
-//! ..., T(N+1).
+//! are delimited by the break points:
+//! T(1), T(2), T(3), ..., T(N+1).
 class IGESGeom_SplineCurve : public IGESData_IGESEntity
 {
 

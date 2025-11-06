@@ -22,15 +22,15 @@
 
 class VrmlConverter_Drawer;
 
-//! WFRestrictedFace -     computes     the  wireframe
-//! presentation  of faces  with   restrictions by
-//! displaying   a  given  number    of  U   and/or  V
-//! isoparametric  curves,  converts this  one into VRML
-//! objects  and writes  (adds)  into anOStream.
-//! All requested  properties  of the representation
-//! are specify in  aDrawer.
+//! WFRestrictedFace - computes the wireframe
+//! presentation of faces with restrictions by
+//! displaying a given number of U and/or V
+//! isoparametric curves, converts this one into VRML
+//! objects and writes (adds) into anOStream.
+//! All requested properties of the representation
+//! are specify in aDrawer.
 //! This kind of the presentation is converted into
-//! IndexedLineSet ( VRML ).
+//! IndexedLineSet (VRML).
 class VrmlConverter_WFRestrictedFace
 {
 public:

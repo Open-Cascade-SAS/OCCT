@@ -68,8 +68,8 @@ public:
   Standard_EXPORT void Init(const Standard_Integer lower, const Standard_Integer upper);
 
   //! Sets the <Index>th element of the array to <Value>
-  //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the
-  //! internal  array.
+  //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds
+  //! of the internal array.
   Standard_EXPORT void SetValue(const Standard_Integer Index, const Standard_Integer Value);
 
   //! Sets the explicit GUID (user defined) for the attribute.

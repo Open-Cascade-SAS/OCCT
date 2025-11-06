@@ -67,7 +67,7 @@ public:
   Standard_EXPORT Standard_Real WidthOfMetalization() const;
 
   //! returns the cornering code
-  //! 0 = Rounded  /   1 = Squared
+  //! 0 = Rounded  / 1 = Squared
   Standard_EXPORT Standard_Integer CorneringCode() const;
 
   //! returns the extension flag

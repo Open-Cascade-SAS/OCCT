@@ -107,7 +107,7 @@ public:
                                     const Standard_Boolean       append = Standard_True) const;
 
   //! Forgets an Attribute from the current label,
-  //! setting its forgotten status true and  its valid
+  //! setting its forgotten status true and its valid
   //! status false. Raises if the attribute is not in
   //! the structure.
   Standard_EXPORT void ForgetAttribute(const Handle(TDF_Attribute)& anAttribute) const;

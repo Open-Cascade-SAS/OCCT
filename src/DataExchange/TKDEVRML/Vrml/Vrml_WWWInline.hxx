@@ -25,15 +25,15 @@
 #include <Standard_OStream.hxx>
 
 //! defines a WWWInline node of VRML specifying group properties.
-//! The  WWWInline  group  node  reads  its  children  from  anywhere  in  the
-//! World  Wide  Web.
-//! Exactly  when  its  children  are  read  is  not  defined;
-//! reading  the  children  may  be  delayed  until  the  WWWInline  is  actually
+//! The WWWInline group node reads its children from anywhere in the
+//! World Wide Web.
+//! Exactly when its children are read is not defined;
+//! reading the children may be delayed until the WWWInline is actually
 //! displayed.
-//! WWWInline  with  an  empty  ("")  name  does  nothing.
-//! WWWInline  behaves  like  a  Separator,  pushing  the  traversal  state
-//! before  traversing  its  children  and  popping  it  afterwards.
-//! By  defaults:
+//! WWWInline with an empty ("") name does nothing.
+//! WWWInline behaves like a Separator, pushing the traversal state
+//! before traversing its children and popping it afterwards.
+//! By defaults:
 //! myName  ("")
 //! myBboxSize (0,0,0)
 //! myBboxCenter  (0,0,0)

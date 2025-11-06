@@ -38,7 +38,7 @@ class StepRepr_RepresentationContext;
 //! For the translation of iges files it is possible to use next sequence:
 //! To change translation parameters
 //! class Interface_Static should be used before beginning of
-//! translation  (see STEP Parameters and General Parameters)
+//! translation (see STEP Parameters and General Parameters)
 //! Creation of reader - STEPControl_Reader reader;
 //! To load s file in a model use method reader.ReadFile("filename.stp")
 //! To print load results reader.PrintCheckLoad(failsonly,mode)
@@ -142,7 +142,7 @@ protected:
     Standard_OVERRIDE;
 
 private:
-  //! Returns  units for length , angle and solidangle for shape representations
+  //! Returns units for length, angle and solidangle for shape representations
   Standard_EXPORT Standard_Boolean
     findUnits(const Handle(StepRepr_RepresentationContext)& theReprContext,
               TColStd_Array1OfAsciiString&                  theNameUnits,

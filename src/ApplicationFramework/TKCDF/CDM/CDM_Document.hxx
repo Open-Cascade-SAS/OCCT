@@ -122,7 +122,7 @@ public:
   //! has not yet been retrieved, this method will retrieve it.
   Standard_EXPORT Handle(CDM_Document) Document(const Standard_Integer aReferenceIdentifier) const;
 
-  //! returns True if the To Document of the  reference
+  //! returns True if the To Document of the reference
   //! identified by aReferenceIdentifier is in session, False
   //! if it corresponds to a not yet retrieved document.
   Standard_EXPORT Standard_Boolean IsInSession(const Standard_Integer aReferenceIdentifier) const;
@@ -164,7 +164,7 @@ public:
   //! Copies a reference to this document. This method
   //! avoid retrieval of referenced document. The arguments
   //! are the original document and a valid reference
-  //! identifier Returns the  local identifier.
+  //! identifier Returns the local identifier.
   Standard_EXPORT Standard_Integer CopyReference(const Handle(CDM_Document)& aFromDocument,
                                                  const Standard_Integer      aReferenceIdentifier);
 

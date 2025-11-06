@@ -31,7 +31,7 @@ class Message_ProgressRange;
 //! Call method Read() to read the file. In the process of reading, the tool will call methods
 //! addNode() and addTriangle() to fill the mesh data structure.
 //!
-//! The nodes with equal coordinates are merged automatically  on the fly.
+//! The nodes with equal coordinates are merged automatically on the fly.
 class RWStl_Reader : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(RWStl_Reader, Standard_Transient)

@@ -38,26 +38,26 @@ class XCAFDoc_GraphNode : public TDF_Attribute
 {
 
 public:
-  //! class  methods working on the node
-  //! ===================================
-  //! Shortcut to search  a Graph node attribute with default
-  //! GraphID.  Returns true if found.
+  //! class methods working on the node
+  //! =================================
+  //! Shortcut to search a Graph node attribute with default
+  //! GraphID. Returns true if found.
   Standard_EXPORT static Standard_Boolean Find(const TDF_Label& L, Handle(XCAFDoc_GraphNode)& G);
 
   //! Finds or Creates a GraphNode attribute on the label <L>
-  //! with  the  default Graph  ID,   returned by the method
-  //! <GetDefaultGraphID>.  Returns the created/found     GraphNode
+  //! with the default Graph ID, returned by the method
+  //! <GetDefaultGraphID>. Returns the created/found GraphNode
   //! attribute.
   Standard_EXPORT static Handle(XCAFDoc_GraphNode) Set(const TDF_Label& L);
 
-  //! Finds  or Creates a   GraphNode attribute on  the label
-  //! <L>, with an   explicit tree ID.  <ExplicitGraphID>  is
-  //! the  ID   returned by    <TDF_Attribute::ID>   method.
+  //! Finds or Creates a GraphNode attribute on the label
+  //! <L>, with an explicit tree ID. <ExplicitGraphID> is
+  //! the ID returned by <TDF_Attribute::ID> method.
   //! Returns the found/created GraphNode attribute.
   Standard_EXPORT static Handle(XCAFDoc_GraphNode) Set(const TDF_Label&     L,
                                                        const Standard_GUID& ExplicitGraphID);
 
-  //! returns a default  Graph ID.  this  ID is  used by the
+  //! returns a default Graph ID. this ID is used by the
   //! <Set> method without explicit tree ID.
   //! Instance methods:
   //! ================

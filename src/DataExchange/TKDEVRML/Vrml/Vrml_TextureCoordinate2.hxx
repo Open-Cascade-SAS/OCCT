@@ -29,14 +29,14 @@ DEFINE_STANDARD_HANDLE(Vrml_TextureCoordinate2, Standard_Transient)
 
 //! defines a TextureCoordinate2 node of VRML specifying properties of geometry
 //! and its appearance.
-//! This  node  defines  a  set  of  2D  coordinates  to  be  used  to  map  textures
-//! to  the  vertices  of  subsequent  PointSet,  IndexedLineSet,  or  IndexedFaceSet
-//! objects.  It  replaces  the  current  texture  coordinates  in  the  rendering
-//! state  for  the  shapes  to  use.
-//! Texture  coordinates  range  from  0  to  1  across  the  texture.
-//! The  horizontal  coordinate,  called  S,  is  specified  first,  followed
-//! by  vertical  coordinate,  T.
-//! By  default  :
+//! This node defines a set of 2D coordinates to be used to map textures
+//! to the vertices of subsequent PointSet, IndexedLineSet, or IndexedFaceSet
+//! objects. It replaces the current texture coordinates in the rendering
+//! state for the shapes to use.
+//! Texture coordinates range from 0 to 1 across the texture.
+//! The horizontal coordinate, called S, is specified first, followed
+//! by vertical coordinate, T.
+//! By default:
 //! myPoint (0 0)
 class Vrml_TextureCoordinate2 : public Standard_Transient
 {

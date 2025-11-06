@@ -26,13 +26,13 @@
 #include <Standard_OStream.hxx>
 
 //! defines a WWWAnchor node of VRML specifying group properties.
-//! The  WWWAnchor  group  node  loads  a  new  scene  into  a  VRML  browser
-//! when  one  of  its  children  is  closen.  Exactly  how  a  user  "chooses"
-//! a  child  of  the  WWWAnchor  is  up  to  the  VRML browser.
-//! WWWAnchor  with  an  empty  ("")  name  does  nothing  when  its
-//! children  are  chosen.
-//! WWWAnchor  behaves  like  a  Separator,  pushing  the  traversal  state
-//! before  traversing  its  children  and  popping  it  afterwards.
+//! The WWWAnchor group node loads a new scene into a VRML browser
+//! when one of its children is closen. Exactly how a user "chooses"
+//! a child of the WWWAnchor is up to the VRML browser.
+//! WWWAnchor with an empty ("") name does nothing when its
+//! children are chosen.
+//! WWWAnchor behaves like a Separator, pushing the traversal state
+//! before traversing its children and popping it afterwards.
 class Vrml_WWWAnchor
 {
 public:

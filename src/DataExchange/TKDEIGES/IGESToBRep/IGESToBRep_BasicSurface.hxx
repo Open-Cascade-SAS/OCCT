@@ -50,7 +50,7 @@ public:
 
   //! Creates a tool BasicSurface ready to run, with
   //! epsilons set to 1.E-04, TheModeTopo to True, the
-  //! optimization of  the continuity to False.
+  //! optimization of the continuity to False.
   Standard_EXPORT IGESToBRep_BasicSurface();
 
   //! Creates a tool BasicSurface ready to run and sets its

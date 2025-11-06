@@ -26,20 +26,20 @@ class TopoDS_Shape;
 class VrmlConverter_Drawer;
 class VrmlConverter_Projector;
 
-//! HLRShape  -  computes the presentation  of objects
+//! HLRShape - computes the presentation of objects
 //! with removal of their hidden  lines for a specific
-//! projector, converts them into VRML  objects  and
-//! writes (adds) them into anOStream.  All requested
-//! properties of  the representation  are  specify in
-//! aDrawer of Drawer class.  This kind  of the presentation
-//! is  converted  into  IndexedLineSet  and   if  they  are  defined
-//! in  Projector into :
+//! projector, converts them into VRML objects and
+//! writes (adds) them into anOStream. All requested
+//! properties of the representation are specify in
+//! aDrawer of Drawer class. This kind of the presentation
+//! is converted into IndexedLineSet and if they are defined
+//! in Projectorinto:
 //! PerspectiveCamera,
 //! OrthographicCamera,
 //! DirectionLight,
 //! PointLight,
 //! SpotLight
-//! from  Vrml  package.
+//! from Vrml package.
 class VrmlConverter_HLRShape
 {
 public:

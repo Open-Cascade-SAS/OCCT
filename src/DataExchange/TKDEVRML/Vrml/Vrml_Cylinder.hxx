@@ -26,11 +26,11 @@
 #include <Standard_OStream.hxx>
 
 //! defines a Cylinder node of VRML specifying geometry shapes.
-//! This  node  represents  a  simple  capped  cylinder  centred  around the  y-axis.
-//! By  default ,  the  cylinder  is  centred  at  (0,0,0)
-//! and  has  size  of  -1  to  +1  in  the  all  three  dimensions.
-//! The  cylinder  has  three  parts:
-//! the  sides,  the  top  (y=+1)  and  the  bottom (y=-1)
+//! This node represents a simple capped cylinder centred around the y-axis.
+//! By default, the cylinder is centred at (0,0,0)
+//! and has size of -1 to +1 in the all three dimensions.
+//! The cylinder has three parts:
+//! the sides, the top (y=+1) and the bottom (y=-1)
 class Vrml_Cylinder
 {
 public:

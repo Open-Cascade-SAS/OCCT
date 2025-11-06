@@ -61,11 +61,11 @@ public:
   Standard_EXPORT Standard_Integer NbVoidShells() const;
 
   //! returns Index'th void shell.
-  //! raises exception if Index  <= 0 or Index > NbVoidShells()
+  //! raises exception if Index <= 0 or Index > NbVoidShells()
   Standard_EXPORT Handle(IGESSolid_Shell) VoidShell(const Standard_Integer Index) const;
 
   //! returns Index'th orientation flag.
-  //! raises exception if Index  <= 0 or Index > NbVoidShells()
+  //! raises exception if Index <= 0 or Index > NbVoidShells()
   Standard_EXPORT Standard_Boolean VoidOrientationFlag(const Standard_Integer Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_ManifoldSolid, IGESData_IGESEntity)

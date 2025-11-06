@@ -37,7 +37,7 @@ DEFINE_STANDARD_HANDLE(Vrml_IndexedLineSet, Standard_Transient)
 //! specifies a material or normal for each polyline. PER_VERTEX specifies a material or
 //! normal for each vertex. The corresponding _INDEXED bindings are the same, but use
 //! the materialIndex or normalIndex indices. The DEFAULT material binding is equal
-//! to OVERALL. The DEFAULT normal binding is equal to  PER_VERTEX_INDEXED;
+//! to OVERALL. The DEFAULT normal binding is equal to PER_VERTEX_INDEXED;
 //! if insufficient normals exist in the state, the lines will be drawn unlit. The same
 //! rules for texture coordinate generation as IndexedFaceSet are used.
 class Vrml_IndexedLineSet : public Standard_Transient

@@ -27,13 +27,13 @@
 class Adaptor3d_Curve;
 class VrmlConverter_Drawer;
 
-//! DeflectionCurve    -  computes the presentation of
-//! objects to be seen as  curves,   converts this  one into
-//! VRML    objects    and    writes (adds)  into
-//! anOStream.     All  requested properties  of   the
-//! representation  are specify in  aDrawer.
-//! This  kind of the presentation
-//! is converted into IndexedLineSet ( VRML ).
+//! DeflectionCurve - computes the presentation of
+//! objects to be seen as curves, converts this one into
+//! VRML objects and writes (adds) into
+//! anOStream. All requested properties of the
+//! representation are specify in aDrawer.
+//! This kind of the presentation
+//! is converted into IndexedLineSet (VRML).
 //! The computation will be made according to a maximal
 //! chordial deviation.
 class VrmlConverter_DeflectionCurve

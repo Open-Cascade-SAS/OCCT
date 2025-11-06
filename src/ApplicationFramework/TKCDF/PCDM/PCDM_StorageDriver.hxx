@@ -39,8 +39,8 @@ DEFINE_STANDARD_HANDLE(PCDM_StorageDriver, PCDM_Writer)
 //! The second method should be redefined to put
 //! additional document that could be used by the
 //! retrieval instead of the principal document, depending
-//! on the schema used during the retrieval. For example,
-//! a second document could  be a standard
+//! on the schema used during the retrieval.
+//! For example, a second document could be a standard
 //! CDMShape_Document. This means that a client
 //! application will already be able to extract a CDMShape_Document
 //! of the file, if the Shape Schema remains unchanged.

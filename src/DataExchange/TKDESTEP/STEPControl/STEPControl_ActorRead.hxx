@@ -155,7 +155,7 @@ protected:
     const StepData_Factors&      theLocalFactors = StepData_Factors(),
     const Message_ProgressRange& theProgress     = Message_ProgressRange());
 
-  //! Transfers  shape representation relationship entity
+  //! Transfers shape representation relationship entity
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root
   //! shape
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
@@ -166,7 +166,7 @@ protected:
     const Standard_Boolean                                  theUseTrsf  = Standard_False,
     const Message_ProgressRange&                            theProgress = Message_ProgressRange());
 
-  //! Transfers  geometric representation item entity such as ManifoldSolidBRep ,...etc
+  //! Transfers geometric representation item entity such as ManifoldSolidBRep ,...etc
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
     const Handle(StepGeom_GeometricRepresentationItem)& git,
     const Handle(Transfer_TransientProcess)&            TP,
@@ -174,14 +174,14 @@ protected:
     const Standard_Boolean                              isManifold,
     const Message_ProgressRange&                        theProgress);
 
-  //! Transfers  mapped item
+  //! Transfers mapped item
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
     const Handle(StepRepr_MappedItem)&       mapit,
     const Handle(Transfer_TransientProcess)& TP,
     const StepData_Factors&                  theLocalFactors,
     const Message_ProgressRange&             theProgress);
 
-  //! Transfers  FaceSurface entity
+  //! Transfers FaceSurface entity
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
     const Handle(StepShape_FaceSurface)&     fs,
     const Handle(Transfer_TransientProcess)& TP,
@@ -200,8 +200,8 @@ protected:
     const StepData_Factors&                                           theLocalFactors,
     const Message_ProgressRange&                                      theProgress);
 
-  //! Translates file by old way when CDSR are roots . Acts only if "read.step.product_mode" is
-  //! equal Off.
+  //! Translates file by old way when CDSR are roots.
+  //! Acts only if "read.step.product_mode" is equal Off.
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) OldWay(
     const Handle(Standard_Transient)&        start,
     const Handle(Transfer_TransientProcess)& TP,

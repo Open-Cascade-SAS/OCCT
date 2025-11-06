@@ -41,14 +41,14 @@ public:
   Standard_EXPORT VrmlConverter_Drawer();
 
   //! by default: TOD_Relative; however, except for the shapes,
-  //! the drawing  will be made using the absolute deviation.
+  //! the drawing will be made using the absolute deviation.
   Standard_EXPORT void SetTypeOfDeflection(const Aspect_TypeOfDeflection aTypeOfDeflection);
 
   Standard_EXPORT Aspect_TypeOfDeflection TypeOfDeflection() const;
 
   //! Defines the maximal chordial deviation when drawing any curve;
-  //! If this  value is  one  of  the  obvious  parameters  of  methods,
-  //! current  value  from  Drawer won't be used.
+  //! If this value is one of the obvious parameters of methods,
+  //! current value from Drawer won't be used.
   //! This value is used by:
   //!
   //! VrmlConverter_DeflectionCurve
@@ -66,9 +66,9 @@ public:
   Standard_EXPORT Standard_Real DeviationCoefficient() const;
 
   //! default: 17 points.
-  //! Defines the Discretisation  (myNbPoints) when drawing any curve;
-  //! If this  value is  one  of  the  obvious  parameters  of  methods,
-  //! current  value  from  Drawer won't be used.
+  //! Defines the Discretisation (myNbPoints) when drawing any curve;
+  //! If this value is one of the obvious parameters of methods,
+  //! current value from Drawer won't be used.
   //! This value is used by:
   //!
   //! VrmlConverter_Curve
@@ -78,7 +78,7 @@ public:
 
   Standard_EXPORT Standard_Integer Discretisation() const;
 
-  //! defines the maximum value allowed  for the first and last
+  //! defines the maximum value allowed for the first and last
   //! parameters of an infinite curve.
   //! Default value: 500.
   //! VrmlConverter_Curve
@@ -128,7 +128,7 @@ public:
   Standard_EXPORT void SetFreeBoundaryAspect(const Handle(VrmlConverter_LineAspect)& anAspect);
 
   //! enables the drawing the free boundaries
-  //! By default the free boundaries  are drawn.
+  //! By default the free boundaries are drawn.
   Standard_EXPORT void SetFreeBoundaryDraw(const Standard_Boolean OnOff);
 
   //! returns True if the drawing of the free boundaries is enabled.
@@ -143,7 +143,7 @@ public:
   Standard_EXPORT void SetWireAspect(const Handle(VrmlConverter_LineAspect)& anAspect);
 
   //! enables the drawing the wire
-  //! By default the wire  are drawn.
+  //! By default the wire are drawn.
   Standard_EXPORT void SetWireDraw(const Standard_Boolean OnOff);
 
   //! returns True if the drawing of the wire is enabled.
@@ -158,7 +158,7 @@ public:
   Standard_EXPORT void SetUnFreeBoundaryAspect(const Handle(VrmlConverter_LineAspect)& anAspect);
 
   //! enables the drawing the unfree boundaries
-  //! By default the unfree boundaries  are drawn.
+  //! By default the unfree boundaries are drawn.
   Standard_EXPORT void SetUnFreeBoundaryDraw(const Standard_Boolean OnOff);
 
   //! returns True if the drawing of the unfree boundaries is enabled.
@@ -182,24 +182,24 @@ public:
   //! By default the hidden lines are not drawn.
   Standard_EXPORT Standard_Boolean DrawHiddenLine() const;
 
-  //! sets DrawHiddenLine  =  Standard_True  -  the hidden lines are drawn.
+  //! sets DrawHiddenLine = Standard_True  - the hidden lines are drawn.
   Standard_EXPORT void EnableDrawHiddenLine();
 
-  //! sets DrawHiddenLine  =  Standard_False  -  the hidden lines are not drawn.
+  //! sets DrawHiddenLine = Standard_False - the hidden lines are not drawn.
   Standard_EXPORT void DisableDrawHiddenLine();
 
-  //! returns LineAspect  for  the hidden lines.
+  //! returns LineAspect for the hidden lines.
   //! The default values are the same default values from Vrml package.
   Standard_EXPORT Handle(VrmlConverter_LineAspect) HiddenLineAspect();
 
-  //! sets LineAspect  for  the hidden lines.
+  //! sets LineAspect for the hidden lines.
   Standard_EXPORT void SetHiddenLineAspect(const Handle(VrmlConverter_LineAspect)& anAspect);
 
-  //! returns LineAspect  for  the seen lines.
+  //! returns LineAspect for the seen lines.
   //! The default values are the same default values from Vrml package.
   Standard_EXPORT Handle(VrmlConverter_LineAspect) SeenLineAspect();
 
-  //! sets LineAspect  for  the seen lines.
+  //! sets LineAspect for the seen lines.
   Standard_EXPORT void SetSeenLineAspect(const Handle(VrmlConverter_LineAspect)& anAspect);
 
   DEFINE_STANDARD_RTTIEXT(VrmlConverter_Drawer, Standard_Transient)

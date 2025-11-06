@@ -29,7 +29,7 @@ class BinObjMgt_Persistent;
 class BinMNaming_NamingDriver;
 DEFINE_STANDARD_HANDLE(BinMNaming_NamingDriver, BinMDF_ADriver)
 
-//! Naming  Attribute Driver.
+//! Naming Attribute Driver.
 class BinMNaming_NamingDriver : public BinMDF_ADriver
 {
 
