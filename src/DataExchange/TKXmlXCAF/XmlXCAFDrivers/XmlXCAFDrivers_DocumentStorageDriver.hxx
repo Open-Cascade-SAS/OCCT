@@ -27,7 +27,7 @@ class Message_Messenger;
 class XmlXCAFDrivers_DocumentStorageDriver;
 DEFINE_STANDARD_HANDLE(XmlXCAFDrivers_DocumentStorageDriver, XmlDrivers_DocumentStorageDriver)
 
-//! storage driver of a  XS document
+//! storage driver of a XS document
 class XmlXCAFDrivers_DocumentStorageDriver : public XmlDrivers_DocumentStorageDriver
 {
 

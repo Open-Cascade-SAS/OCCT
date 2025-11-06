@@ -43,7 +43,7 @@ public:
   //! set/get position attribute
   Standard_EXPORT static void BasicCommands(Draw_Interpretor& I);
 
-  //! Loads all Draw commands of  TKDCAF. Used for plugin.
+  //! Loads all Draw commands of TKDCAF. Used for plugin.
   Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
 
 protected:

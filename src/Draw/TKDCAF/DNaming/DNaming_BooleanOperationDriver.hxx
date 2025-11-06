@@ -29,7 +29,7 @@ class TFunction_Function;
 class DNaming_BooleanOperationDriver;
 DEFINE_STANDARD_HANDLE(DNaming_BooleanOperationDriver, TFunction_Driver)
 
-//! Driver  for Fuse,  Cut,  Common
+//! Driver for Fuse, Cut, Common
 class DNaming_BooleanOperationDriver : public TFunction_Driver
 {
 

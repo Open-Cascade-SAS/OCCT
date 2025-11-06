@@ -35,11 +35,11 @@ class gp_Pln;
 //! This package provides Drawable Dimensions.
 //!
 //! The classes PlanarDimension and subclasses provide
-//! services  to  build  drawable dimensions between
+//! services to build drawable dimensions between
 //! point line and circle in a given 3d plane.
 //!
-//! The   classes  Dimension and   subclasses provide
-//! services  to build  drawable  dimensions between
+//! The classes Dimension and subclasses provide
+//! services to build drawable dimensions between
 //! plane and cylindrical surfaces.
 class DrawDim
 {

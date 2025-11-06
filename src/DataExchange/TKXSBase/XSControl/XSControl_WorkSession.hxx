@@ -100,7 +100,8 @@ public:
                                                        Standard_OStream&      theS) const;
 
   //! Sets a Transfer Reader, by internal ways, according mode :
-  //! 0 recreates it clear,  1 clears it (does not recreate)
+  //! 0 recreates it clear
+  //! 1 clears it (does not recreate)
   //! 2 aligns Roots of TransientProcess from final Results
   //! 3 aligns final Results from Roots of TransientProcess
   //! 4 begins a new transfer (by BeginTransfer)

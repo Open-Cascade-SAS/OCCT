@@ -123,7 +123,7 @@ public:
 
   //! Same as above but directly on an Entity <ent> : if it is not
   //! contained in the Model, returns False. Else calls
-  //! IsPresent(num)  with <num> given by EntityNumber
+  //! IsPresent(num) with <num> given by EntityNumber
   Standard_EXPORT Standard_Boolean IsPresent(const Handle(Standard_Transient)& ent) const;
 
   //! Returns mapped Entity given its no (if it is present)

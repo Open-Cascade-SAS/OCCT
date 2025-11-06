@@ -52,7 +52,7 @@ public:
   //! with operator () attached to Value
   //! Then, to have a translated message, write in C++ :
   //!
-  //! Interface_MSG("...mykey...")  which returns a CString
+  //! Interface_MSG("...mykey...") which returns a CString
   //! See also some help which follow
   Standard_EXPORT Interface_MSG(const Standard_CString key);
 
@@ -62,14 +62,14 @@ public:
   //! then  AddFail(mess);
   //! replaced by  AddFail (Interface_MSG("code",ival));
   //!
-  //! The basic message is intended to be in  C-Sprintf  format,
+  //! The basic message is intended to be in C-Sprintf format,
   //! with one %d form in it
   Standard_EXPORT Interface_MSG(const Standard_CString key, const Standard_Integer i1);
 
   //! Translates a message which contains two integer variables
   //! As for one integer, it is just a writing help
   //!
-  //! The basic message is intended to be in  C-Sprintf  format
+  //! The basic message is intended to be in C-Sprintf format
   //! with two %d forms in it
   Standard_EXPORT Interface_MSG(const Standard_CString key,
                                 const Standard_Integer i1,
@@ -80,7 +80,7 @@ public:
   //! interval (see below, method Intervals)
   //! As for one integer, it is just a writing help
   //!
-  //! The basic message is intended to be in  C-Sprintf  format
+  //! The basic message is intended to be in C-Sprintf format
   //! with one %f form (or equivalent : %e etc) in it
   Standard_EXPORT Interface_MSG(const Standard_CString key,
                                 const Standard_Real    r1,
@@ -89,7 +89,7 @@ public:
   //! Translates a message which contains one string variable
   //! As for one integer, it is just a writing help
   //!
-  //! The basic message is intended to be in  C-Sprintf  format
+  //! The basic message is intended to be in C-Sprintf format
   //! with one %s form in it
   Standard_EXPORT Interface_MSG(const Standard_CString key, const Standard_CString str);
 
@@ -98,7 +98,7 @@ public:
   //! As for one integer, it is just a writing help
   //! Used for instance to say "Param n0.<ival> i.e. <str> is not.."
   //!
-  //! The basic message is intended to be in  C-Sprintf  format
+  //! The basic message is intended to be in C-Sprintf format
   //! with one %d then one %s forms in it
   Standard_EXPORT Interface_MSG(const Standard_CString key,
                                 const Standard_Integer ival,
@@ -184,9 +184,9 @@ public:
                                                    const Standard_Boolean upper = Standard_False);
 
   //! Codes a date as a text, from its numeric value (-> seconds) :
-  //! YYYY-MM-DD:HH-MN-SS  fixed format, completed by leading zeros
+  //! YYYY-MM-DD:HH-MN-SS fixed format, completed by leading zeros
   //! Another format can be provided, as follows :
-  //! C:%d ...   C like format, preceded by  C:
+  //! C:%d ...   C like format, preceded by C:
   //! S:...      format to call system (not yet implemented)
   Standard_EXPORT static void TDate(const Standard_CString text,
                                     const Standard_Integer yy,

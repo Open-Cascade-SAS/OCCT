@@ -32,7 +32,7 @@ DEFINE_STANDARD_HANDLE(MoniTool_TransientElem, MoniTool_Element)
 //!
 //! Transient from Standard defines the class to be keyed
 //! MapTransientHasher from TColStd is the associated Hasher
-//! DataInfo from MoniTool   is an additional class which helps to provide
+//! DataInfo from MoniTool is an additional class which helps to provide
 //! information on the value (template : see DataInfo)
 class MoniTool_TransientElem : public MoniTool_Element
 {

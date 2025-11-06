@@ -52,7 +52,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_SessionPilot, IFSelect_Activator)
 //! -> such a command may be called :
 //! - directly, it will add an item with no name
 //! - by command xset, in the following form :
-//! xset name command ...  calls the command and adds the item
+//! xset name command ... calls the command and adds the item
 //! to the session under the specified name (if not yet known)
 //!
 //! Thus, to a specific Norm or way of working, only Activators

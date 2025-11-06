@@ -83,7 +83,7 @@ public:
   //! - Name
   //! - Family,
   //! - Wildcard (if it has one)
-  //! - Current status (empty  string if it was updated or
+  //! - Current status (empty string if it was updated or
   //! if it is the original one)
   //! - Value
   Standard_EXPORT void PrintStatic(Standard_OStream& S) const;

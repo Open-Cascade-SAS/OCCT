@@ -28,7 +28,7 @@
 class Draw_Display;
 class Draw_Color;
 
-//! This  class stores all the information  concerning
+//! This class stores all the information concerning
 //! hidden lines on a view.
 //!
 //! * View number
@@ -36,9 +36,9 @@ class Draw_Color;
 //! * Type of projection, focal
 //! * Arrays of 3d points
 //!
-//! A drawable shape contains a  list of such  objects
-//! to store  the  hidden lines  for  each view.   The
-//! IsSame method is  used  to check if   hidden lines
+//! A drawable shape contains a list of such objects
+//! to store the hidden lines for each view. The
+//! IsSame method is used to check if hidden lines
 //! must be recompiled.
 class DBRep_HideData
 {

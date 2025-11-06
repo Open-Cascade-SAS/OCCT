@@ -47,7 +47,7 @@ public:
   //! Assigns the value <Value> to the <Index>-th item of this array.
   Standard_EXPORT void SetValue(const Standard_Integer Index, const Interface_FileParameter& Value);
 
-  //! Return the value of  the  <Index>th element of the
+  //! Return the value of the <Index>th element of the
   //! array.
   Standard_EXPORT const Interface_FileParameter& Value(const Standard_Integer Index) const;
 
@@ -56,7 +56,7 @@ public:
     return Value(Index);
   }
 
-  //! return the value  of the <Index>th element  of the
+  //! return the value of the <Index>th element of the
   //! array.
   Standard_EXPORT Interface_FileParameter& ChangeValue(const Standard_Integer Index);
 

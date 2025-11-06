@@ -25,7 +25,7 @@ class TDocStd_Application;
 class XmlXCAFDrivers
 {
 public:
-  //! Depending from the  ID, returns a list of  storage
+  //! Depending from the ID, returns a list of storage
   //! or retrieval attribute drivers. Used for plugin.
   //!
   //! Standard data model drivers

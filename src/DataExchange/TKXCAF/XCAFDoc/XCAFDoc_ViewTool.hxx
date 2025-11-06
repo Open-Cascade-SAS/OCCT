@@ -77,7 +77,7 @@ public:
                                const TDF_LabelSequence& theGDTs,
                                const TDF_Label&         theViewL) const;
 
-  //! Set Clipping planes to  given View
+  //! Set Clipping planes to given View
   Standard_EXPORT void SetClippingPlanes(const TDF_LabelSequence& theClippingPlaneLabels,
                                          const TDF_Label&         theViewL) const;
 

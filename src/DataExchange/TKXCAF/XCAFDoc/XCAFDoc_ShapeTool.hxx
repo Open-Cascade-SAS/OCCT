@@ -120,7 +120,7 @@ public:
   //! Returns True if the label is not used by any assembly, i.e.
   //! contains sublabels which are assembly components
   //! This is relevant only if IsShape() is True
-  //! (There  is  no  Father TreeNode on  this  <L>)
+  //! (There is no Father TreeNode on this <L>)
   Standard_EXPORT static Standard_Boolean IsFree(const TDF_Label& L);
 
   //! Returns True if the label represents a shape (simple shape,

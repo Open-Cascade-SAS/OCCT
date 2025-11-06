@@ -36,7 +36,7 @@ class Interface_FloatWriter
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates a FloatWriter ready to work, with default options  -
+  //! Creates a FloatWriter ready to work, with default options
   //! - zero suppress option is set
   //! - main format is set to "%E"
   //! - secondary format is set to "%f" for values between 0.1 and
