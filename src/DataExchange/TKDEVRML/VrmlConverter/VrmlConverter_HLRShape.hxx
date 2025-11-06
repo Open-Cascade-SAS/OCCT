@@ -33,7 +33,7 @@ class VrmlConverter_Projector;
 //! properties of the representation are specify in
 //! aDrawer of Drawer class. This kind of the presentation
 //! is converted into IndexedLineSet and if they are defined
-//! in Projectorinto:
+//! in Projector info:
 //! PerspectiveCamera,
 //! OrthographicCamera,
 //! DirectionLight,
