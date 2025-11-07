@@ -35,7 +35,7 @@
 //!
 //! Examples:
 //! @code
-//! Item tab[100]; //  an example with a C array
+//! Item tab[100]; // an example with a C array
 //! NCollection_Array1<Item> ttab (tab[0], 1, 100);
 //!
 //! NCollection_Array1<Item> tttab (ttab(10), 10, 20); // a slice of ttab

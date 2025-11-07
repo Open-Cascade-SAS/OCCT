@@ -27,7 +27,7 @@ class HLRAlgo_Projector;
 class TopoDS_Shape;
 class HLRTopoBRep_OutLiner;
 
-//! This package   is  a test  of  the    Hidden Lines
+//! This package is a test of the Hidden Lines
 //! algorithms instantiated on the BRep Data Structure
 //! and using the Draw package to display the results.
 class HLRTest

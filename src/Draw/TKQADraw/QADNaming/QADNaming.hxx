@@ -42,8 +42,8 @@ public:
                                        const Handle(TDF_Data)& Data,
                                        TopTools_ListOfShape&   Shapes);
 
-  //! theStatus = 0  Not  found,
-  //! theStatus = 1  One  shape,
+  //! theStatus = 0  Not found,
+  //! theStatus = 1  One shape,
   //! theStatus = 2  More than one shape.
   Standard_EXPORT static TCollection_AsciiString GetEntry(const TopoDS_Shape&     Shape,
                                                           const Handle(TDF_Data)& Data,

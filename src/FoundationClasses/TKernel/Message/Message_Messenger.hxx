@@ -88,7 +88,7 @@ public:
     //! In practice it should never be called because modern compilers
     //! create such instances in place.
     //! However note that if this constructor is called, the buffer
-    //! content (string) will not be copied  (move is not supported for
+    //! content (string) will not be copied (move is not supported for
     //! std::stringstream class on old compilers such as gcc 4.4, msvc 9).
     StreamBuffer(const StreamBuffer& theOther)
         : myMessenger(theOther.myMessenger),

@@ -47,7 +47,7 @@ public:
   //!
   //! FILE SYNTAX
   //! The syntax of a resource file is a sequence of resource
-  //! lines terminated by newline characters or end of file.  The
+  //! lines terminated by newline characters or end of file. The
   //! syntax of an individual resource line is:
   Standard_EXPORT Resource_Manager(const Standard_CString aName,
                                    const Standard_Boolean Verbose = Standard_False);

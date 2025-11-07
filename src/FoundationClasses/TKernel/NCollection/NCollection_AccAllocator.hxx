@@ -20,22 +20,22 @@
 #include <NCollection_DataMap.hxx>
 
 //!
-//! Class  NCollection_AccAllocator  -  accumulating  memory  allocator.  This
-//! class  allocates  memory on request returning the pointer to the allocated
-//! space.  The  allocation  units  are  grouped  in blocks requested from the
-//! system  as  required.  This  memory  is  returned  to  the system when all
+//! Class NCollection_AccAllocator - accumulating memory allocator. This
+//! class allocates memory on request returning the pointer to the allocated
+//! space. The allocation units are grouped in blocks requested from the
+//! system as required. This memory is returned to the system when all
 //! allocations in a block are freed.
 //!
-//! By comparison with  the standard new() and malloc()  calls, this method is
+//! By comparison with the standard new() and malloc() calls, this method is
 //! faster and consumes very small additional memory to maintain the heap.
 //!
-//! By comparison with NCollection_IncAllocator,  this class requires some more
-//! additional memory  and a little more time for allocation and deallocation.
+//! By comparison with NCollection_IncAllocator, this class requires some more
+//! additional memory and a little more time for allocation and deallocation.
 //! Memory overhead for NCollection_IncAllocator is 12 bytes per block;
 //! average memory overhead for NCollection_AccAllocator is 28 bytes per block.
 //!
-//! All pointers  returned by Allocate() are aligned to 4 byte boundaries.
-//! To  define  the size  of  memory  blocks  requested  from the OS,  use the
+//! All pointers returned by Allocate() are aligned to 4 byte boundaries.
+//! To define the sizeof memory blocks requested from the OS, use the
 //! parameter of the constructor (measured in bytes).
 
 class NCollection_AccAllocator : public NCollection_BaseAllocator

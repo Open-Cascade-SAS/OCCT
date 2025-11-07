@@ -23,7 +23,7 @@
 
 #include <Draw_Interpretor.hxx>
 
-//! this  package  provides  elementary commands for  curves  and
+//! this package provides elementary commands for curves and
 //! surface.
 class GeomliteTest
 {

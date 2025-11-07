@@ -94,7 +94,7 @@ public:
   //! Converts Unicode ExtendedString <fromstr> to non-ASCII
   //! CString <tostr> in ANSI format, limited to <maxsize>
   //! characters. To translate the whole <fromstr>, use more
-  //! than twice the length of <fromstr>.  Returns true if
+  //! than twice the length of <fromstr>. Returns true if
   //! <maxsize> has not been reached before end of conversion.
   Standard_EXPORT static Standard_Boolean ConvertUnicodeToANSI(
     const TCollection_ExtendedString& fromstr,

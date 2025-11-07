@@ -50,7 +50,7 @@ public:
   //! Save drawable into stream.
   Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
 
-  //! For variable whatis command. Set  as a result  the
+  //! For variable whatis command. Set as a result the
   //! type of the variable.
   Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
 

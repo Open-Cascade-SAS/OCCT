@@ -207,8 +207,8 @@ public:
   //! algorithm, but this option might be costly.
   static constexpr Standard_Real Approximation() { return Confusion() * 10.0; }
 
-  //! Convert a real  space precision  to  a  parametric
-  //! space precision.   <T>  is the mean  value  of the
+  //! Convert a real space precision to a parametric
+  //! space precision. <T> is the mean value of the
   //! length of the tangent of the curve or the surface.
   //!
   //! Value is P / T
@@ -246,7 +246,7 @@ public:
   //! parameter u of this curve is ten times greater than the
   //! previous one. This shows that for two different curves,
   //! the distance between two points on the curve, resulting
-  //! from the same variation of parameter du, may vary   considerably.
+  //! from the same variation of parameter du, may vary considerably.
   //! -   Moreover, the variation of the parameter along the
   //! curve is generally not proportional to the curvilinear
   //! abscissa along the curve. So the distance between two
@@ -306,25 +306,25 @@ public:
     return Parametric(Approximation(), T);
   }
 
-  //! Convert a real  space precision  to  a  parametric
+  //! Convert a real space precision to a parametric
   //! space precision on a default curve.
   //!
   //! Value is Parametric(P,1.e+2)
   static constexpr Standard_Real Parametric(const Standard_Real P) { return P * 0.01; }
 
-  //! Used  to test distances  in parametric  space on a
+  //! Used to test distances in parametric space on a
   //! default curve.
   //!
   //! This is Precision::Parametric(Precision::Confusion())
   static constexpr Standard_Real PConfusion() { return Confusion() * 0.01; }
 
-  //! Used for Intersections  in parametric  space  on a
+  //! Used for Intersections in parametric space on a
   //! default curve.
   //!
   //! This is Precision::Parametric(Precision::Intersection())
   static constexpr Standard_Real PIntersection() { return Intersection() * 0.01; }
 
-  //! Used for  Approximations  in parametric space on a
+  //! Used for Approximations in parametric space on a
   //! default curve.
   //!
   //! This is Precision::Parametric(Precision::Approximation())
@@ -337,21 +337,21 @@ public:
     return Abs(R) >= (0.5 * Precision::Infinite());
   }
 
-  //! Returns True if R may be considered as  a positive
+  //! Returns True if R may be considered as a positive
   //! infinite number. Currently R > 1e100
   static constexpr Standard_Boolean IsPositiveInfinite(const Standard_Real R)
   {
     return R >= (0.5 * Precision::Infinite());
   }
 
-  //! Returns True if R may  be considered as a negative
+  //! Returns True if R may be considered as a negative
   //! infinite number. Currently R < -1e100
   static constexpr Standard_Boolean IsNegativeInfinite(const Standard_Real R)
   {
     return R <= -(0.5 * Precision::Infinite());
   }
 
-  //! Returns a  big number that  can  be  considered as
+  //! Returns a big number thatcan be considered as
   //! infinite. Use -Infinite() for a negative big number.
   static constexpr Standard_Real Infinite() { return 2.e+100; }
 };

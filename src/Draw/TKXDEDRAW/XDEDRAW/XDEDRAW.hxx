@@ -30,7 +30,7 @@ public:
   //! Initializes all the functions
   Standard_EXPORT static void Init(Draw_Interpretor& di);
 
-  //! Loads all Draw commands of  TKXDEDRAW. Used for plugin.
+  //! Loads all Draw commands of TKXDEDRAW. Used for plugin.
   Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
 };
 
