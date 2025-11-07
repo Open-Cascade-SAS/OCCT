@@ -351,7 +351,7 @@ public:
     return R <= -(0.5 * Precision::Infinite());
   }
 
-  //! Returns a big number thatcan be considered as
+  //! Returns a big number that can be considered as
   //! infinite. Use -Infinite() for a negative big number.
   static constexpr Standard_Real Infinite() { return 2.e+100; }
 };
