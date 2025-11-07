@@ -33,19 +33,19 @@ public:
   //! It is the empty constructor of the class.
   Standard_EXPORT Units_Measurement();
 
-  //! Returns an instance  of this class.   <avalue> defines
-  //! the measurement, and <atoken>  the token which defines
+  //! Returns an instance of this class. <avalue> defines
+  //! the measurement, and <atoken> the token which defines
   //! the unit used.
   Standard_EXPORT Units_Measurement(const Standard_Real avalue, const Handle(Units_Token)& atoken);
 
-  //! Returns an  instance of this  class.  <avalue> defines
-  //! the  measurement, and <aunit> the   unit used,
+  //! Returns an instance of this class. <avalue> defines
+  //! the measurement, and <aunit> the unit used,
   //! described in natural language.
   Standard_EXPORT Units_Measurement(const Standard_Real avalue, const Standard_CString aunit);
 
-  //! Converts (if   possible)  the  measurement   object into
-  //! another   unit.      <aunit>   must  have    the  same
-  //! dimensionality as  the  unit  contained in   the token
+  //! Converts (if possible) the measurement object into
+  //! another unit. <aunit> must have the same
+  //! dimensionality as the unit contained in the token
   //! <thetoken>.
   Standard_EXPORT void Convert(const Standard_CString aunit);
 
@@ -64,7 +64,7 @@ public:
   Standard_EXPORT Handle(Units_Token) Token() const;
 
   //! Returns (if it is possible) a measurement which is the
-  //! addition  of  <me>  and  <ameasurement>.  The   chosen
+  //! addition of <me> and <ameasurement>. The chosen
   //! returned unit is the unit of <me>.
   Standard_EXPORT Units_Measurement Add(const Units_Measurement& ameasurement) const;
 
@@ -74,7 +74,7 @@ public:
   }
 
   //! Returns (if it is possible) a measurement which is the
-  //! subtraction of  <me>  and <ameasurement>.   The chosen
+  //! subtraction of <me> and <ameasurement>. The chosen
   //! returned unit is the unit of <me>.
   Standard_EXPORT Units_Measurement Subtract(const Units_Measurement& ameasurement) const;
 
@@ -83,7 +83,7 @@ public:
     return Subtract(ameasurement);
   }
 
-  //! Returns  a measurement which  is the multiplication of
+  //! Returns a measurement which is the multiplication of
   //! <me> and <ameasurement>.
   Standard_EXPORT Units_Measurement Multiply(const Units_Measurement& ameasurement) const;
 
@@ -92,13 +92,13 @@ public:
     return Multiply(ameasurement);
   }
 
-  //! Returns  a measurement which  is the multiplication of
-  //! <me> with the value  <avalue>.
+  //! Returns a measurement which is the multiplication of
+  //! <me> with the value <avalue>.
   Standard_EXPORT Units_Measurement Multiply(const Standard_Real avalue) const;
 
   Units_Measurement operator*(const Standard_Real avalue) const { return Multiply(avalue); }
 
-  //! Returns a measurement which  is the division of  <me> by
+  //! Returns a measurement which is the division of <me> by
   //! <ameasurement>.
   Standard_EXPORT Units_Measurement Divide(const Units_Measurement& ameasurement) const;
 
@@ -107,13 +107,13 @@ public:
     return Divide(ameasurement);
   }
 
-  //! Returns  a measurement which  is the division of <me> by
+  //! Returns a measurement which is the division of <me> by
   //! the constant <avalue>.
   Standard_EXPORT Units_Measurement Divide(const Standard_Real avalue) const;
 
   Units_Measurement operator/(const Standard_Real avalue) const { return Divide(avalue); }
 
-  //! Returns   a    measurement  which   is <me>    powered
+  //! Returns a measurement which is <me> powered
   //! <anexponent>.
   Standard_EXPORT Units_Measurement Power(const Standard_Real anexponent) const;
 

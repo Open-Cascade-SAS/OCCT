@@ -30,15 +30,15 @@ class Units_Dimensions;
 class Units_Quantity;
 DEFINE_STANDARD_HANDLE(Units_Quantity, Standard_Transient)
 
-//! This  class stores  in its  field all the possible
+//! This class stores in its field all the possible
 //! units of all the unit systems for a given physical
-//! quantity. Each unit's  value  is  expressed in the
+//! quantity. Each unit's value is expressed in the
 //! S.I. unit system.
 class Units_Quantity : public Standard_Transient
 {
 
 public:
-  //! Creates  a new Quantity  object with <aname> which  is
+  //! Creates a new Quantity object with <aname> which  is
   //! the name of the physical quantity, <adimensions> which
   //! is the physical dimensions, and <aunitssequence> which
   //! describes all the units known for this quantity.
@@ -52,7 +52,7 @@ public:
   //! Returns the physical dimensions of the quantity.
   Handle(Units_Dimensions) Dimensions() const;
 
-  //! Returns <theunitssequence>, which  is the  sequence of
+  //! Returns <theunitssequence>, which is the sequence of
   //! all the units stored for this physical quantity.
   Handle(Units_UnitsSequence) Sequence() const;
 

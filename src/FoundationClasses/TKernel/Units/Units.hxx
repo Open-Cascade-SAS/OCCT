@@ -29,8 +29,8 @@ class Units_Quantity;
 class Units_Lexicon;
 class Units_Dimensions;
 
-//! This  package provides all the  facilities  to create
-//! and question a dictionary of  units,  and also  to
+//! This package provides all the facilities to create
+//! and question a dictionary of units, and also to
 //! manipulate measurements which are real values with
 //! units.
 class Units

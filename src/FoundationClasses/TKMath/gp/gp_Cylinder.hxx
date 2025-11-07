@@ -50,8 +50,8 @@ public:
   }
 
   //! Creates a cylinder of radius Radius, whose axis is the "main
-  //! Axis" of theA3. theA3 is the local coordinate system of the cylinder.   Raises
-  //! ConstructionErrord if theRadius < 0.0
+  //! Axis" of theA3. theA3 is the local coordinate system of the cylinder.
+  //! Raises ConstructionErrord if theRadius < 0.0
   gp_Cylinder(const gp_Ax3& theA3, const Standard_Real theRadius)
       : pos(theA3),
         radius(theRadius)
@@ -81,11 +81,11 @@ public:
     radius = theR;
   }
 
-  //! Reverses the   U   parametrization of   the cylinder
+  //! Reverses the U parametrization of the cylinder
   //! reversing the YAxis.
   constexpr void UReverse() noexcept { pos.YReverse(); }
 
-  //! Reverses the   V   parametrization of   the  plane
+  //! Reverses the V parametrization of the plane
   //! reversing the Axis.
   constexpr void VReverse() noexcept { pos.ZReverse(); }
 

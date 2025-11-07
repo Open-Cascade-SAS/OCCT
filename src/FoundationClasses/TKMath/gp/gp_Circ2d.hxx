@@ -45,7 +45,7 @@
 //! complex circle constructions
 //! Geom2d_Circle which provides additional functions for
 //! constructing circles and works, with the parametric
-//! equations of circles in particular  gp_Ax22d
+//! equations of circles in particular gp_Ax22d
 class gp_Circ2d
 {
 public:
@@ -58,9 +58,9 @@ public:
   }
 
   //! The location point of theXAxis is the center of the circle.
-  //! Warnings :
-  //! It is not forbidden to create a circle with theRadius = 0.0   Raises ConstructionError if
-  //! theRadius < 0.0. Raised if theRadius < 0.0.
+  //! Warnings:
+  //! It is not forbidden to create a circle with theRadius = 0.0
+  //! Raises ConstructionError if theRadius < 0.0.
   gp_Circ2d(const gp_Ax2d&         theXAxis,
             const Standard_Real    theRadius,
             const Standard_Boolean theIsSense = Standard_True)
@@ -74,9 +74,9 @@ public:
   //! theAxis defines the Xaxis and Yaxis of the circle which defines
   //! the origin and the sense of parametrization.
   //! The location point of theAxis is the center of the circle.
-  //! Warnings :
-  //! It is not forbidden to create a circle with theRadius = 0.0 Raises ConstructionError if
-  //! theRadius < 0.0. Raised if theRadius < 0.0.
+  //! Warnings:
+  //! It is not forbidden to create a circle with theRadius = 0.0
+  //! Raises ConstructionError if theRadius < 0.0.
   gp_Circ2d(const gp_Ax22d& theAxis, const Standard_Real theRadius)
       : pos(theAxis),
         radius(theRadius)
@@ -212,9 +212,9 @@ public:
   void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
 
   //! Scales a circle. theS is the scaling value.
-  //! Warnings :
+  //! Warnings:
   //! If theS is negative the radius stay positive but
-  //! the "XAxis" and the "YAxis" are  reversed as for
+  //! the "XAxis" and the "YAxis" are reversed as for
   //! an ellipse.
   Standard_NODISCARD gp_Circ2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
 

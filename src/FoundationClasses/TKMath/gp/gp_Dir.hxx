@@ -84,12 +84,12 @@ public:
   //! exception ConstructionError.
   gp_Dir(const Standard_Real theXv, const Standard_Real theYv, const Standard_Real theZv);
 
-  //! For this unit vector,  assigns the value Xi to:
+  //! For this unit vector, assigns the value Xi to:
   //! -   the X coordinate if theIndex is 1, or
   //! -   the Y coordinate if theIndex is 2, or
   //! -   the Z coordinate if theIndex is 3,
   //! and then normalizes it.
-  //! Warning
+  //! Warning:
   //! Remember that all the coordinates of a unit vector are
   //! implicitly modified when any single one is changed directly.
   //! Exceptions
@@ -192,7 +192,7 @@ public:
   //! and its orientation gives the positive sense of rotation.
   //! If the cross product <me> ^ <theOther> has the same orientation
   //! as <theVRef> the angular value is positive else negative.
-  //! Returns the angular value in the range -PI and PI (in radians). Raises  DomainError if <me>
+  //! Returns the angular value in the range -PI and PI (in radians). Raises DomainError if <me>
   //! and <theOther> are not parallel this exception is raised when <theVRef> is in the same plane
   //! as <me> and <theOther> The tolerance criterion is Resolution from package gp.
   Standard_EXPORT Standard_Real AngleWithRef(const gp_Dir& theOther, const gp_Dir& theVRef) const;
@@ -250,7 +250,7 @@ public:
   //! geometric transformations
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction V which is the center of
-  //! the  symmetry.]
+  //! the symmetry.
   Standard_NODISCARD constexpr gp_Dir Reversed() const noexcept
   {
     gp_Dir aV = *this;

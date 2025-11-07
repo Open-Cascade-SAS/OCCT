@@ -126,7 +126,7 @@ public:
   //! Warning
   //! Take particular care not to use this function before the
   //! computation is performed (Perform function), as this
-  //! condition is not checked and an error may  therefore occur.
+  //! condition is not checked and an error may therefore occur.
   Standard_EXPORT Standard_Integer Degree() const;
 
   //! Returns the number of poles of the BSpline curve whose

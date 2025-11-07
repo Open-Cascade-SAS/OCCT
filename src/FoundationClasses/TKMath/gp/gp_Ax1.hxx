@@ -69,10 +69,10 @@ public:
   {
   }
 
-  //! Assigns V as the "Direction"  of this axis.
+  //! Assigns V as the "Direction" of this axis.
   constexpr void SetDirection(const gp_Dir& theV) noexcept { vdir = theV; }
 
-  //! Assigns  P as the origin of this axis.
+  //! Assigns P as the origin of this axis.
   constexpr void SetLocation(const gp_Pnt& theP) noexcept { loc = theP; }
 
   //! Returns the direction of <me>.
@@ -81,7 +81,7 @@ public:
   //! Returns the location point of <me>.
   constexpr const gp_Pnt& Location() const noexcept { return loc; }
 
-  //! Returns True if  :
+  //! Returns True if:
   //! . the angle between <me> and <Other> is lower or equal
   //! to <AngularTolerance> and
   //! . the distance between <me>.Location() and <Other> is lower

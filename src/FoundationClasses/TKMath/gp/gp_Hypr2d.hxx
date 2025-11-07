@@ -80,8 +80,8 @@ public:
   //! Direction" of the local coordinate system of the
   //! hyperbola. This coordinate system is direct if theIsSense
   //! is true (the default value), and indirect if theIsSense is false.
-  //! Warnings :
-  //! It is yet  possible to create an Hyperbola with
+  //! Warnings:
+  //! It is yet possible to create an Hyperbola with
   //! theMajorRadius <= theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
   gp_Hypr2d(const gp_Ax2d&         theMajorAxis,
@@ -107,8 +107,8 @@ public:
   //! theMinorRadius is measured along this axis, and
   //! -   the orientation (direct or indirect sense) of theA
   //! gives the implicit orientation of the hyperbola.
-  //! Warnings :
-  //! It is yet  possible to create an Hyperbola with
+  //! Warnings:
+  //! It is yet possible to create an Hyperbola with
   //! theMajorRadius <= theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
   gp_Hypr2d(const gp_Ax22d&     theA,
@@ -256,7 +256,7 @@ public:
                     pos.Location().Y() - aC * pos.XDirection().Y());
   }
 
-  //! Returns  the location point of the hyperbola.
+  //! Returns the location point of the hyperbola.
   //! It is the intersection point between the "XAxis" and
   //! the "YAxis".
   constexpr const gp_Pnt2d& Location() const noexcept { return pos.Location(); }
@@ -333,7 +333,7 @@ public:
   Standard_EXPORT void Mirror(const gp_Pnt2d& theP) noexcept;
 
   //! Performs the symmetrical transformation of an hyperbola with
-  //! respect  to the point theP which is the center of the symmetry.
+  //! respect to the point theP which is the center of the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Hypr2d Mirrored(const gp_Pnt2d& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;

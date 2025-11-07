@@ -64,7 +64,7 @@ public:
   //! general transformation.
   gp_GTrsf2d(const gp_Trsf2d& theT);
 
-  //! Creates   a transformation based on the matrix theM and the
+  //! Creates a transformation based on the matrix theM and the
   //! vector theV where theM defines the vectorial part of the
   //! transformation, and theV the translation part.
   constexpr gp_GTrsf2d(const gp_Mat2d& theM, const gp_XY& theV) noexcept
@@ -83,7 +83,7 @@ public:
   //! HP and HP' satisfy: HP' = theRatio * HP.
   Standard_EXPORT void SetAffinity(const gp_Ax2d& theA, const Standard_Real theRatio);
 
-  //! Replaces   the coefficient (theRow, theCol) of the matrix representing
+  //! Replaces the coefficient (theRow, theCol) of the matrix representing
   //! this transformation by theValue,
   //! Raises OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 3
   void SetValue(const Standard_Integer theRow,
@@ -119,7 +119,7 @@ public:
   //! If this transformation is singular, it cannot be inverted.
   Standard_Boolean IsSingular() const { return matrix.IsSingular(); }
 
-  //! Returns the nature of the transformation.  It can be
+  //! Returns the nature of the transformation. It can be
   //! an identity transformation, a rotation, a translation, a mirror
   //! transformation (relative to a point or axis), a scaling
   //! transformation, a compound transformation or some

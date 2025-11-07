@@ -60,9 +60,9 @@ public:
   }
 
   //! A2 locates the circle and gives its orientation in 3D space.
-  //! Warnings :
-  //! It is not forbidden to create a circle with theRadius = 0.0  Raises ConstructionError if
-  //! theRadius < 0.0
+  //! Warnings:
+  //! It is not forbidden to create a circle with theRadius = 0.0
+  //! Raises ConstructionError if theRadius < 0.0
   gp_Circ(const gp_Ax2& theA2, const Standard_Real theRadius)
       : pos(theA2),
         radius(theRadius)
@@ -84,7 +84,7 @@ public:
   constexpr void SetPosition(const gp_Ax2& theA2) noexcept { pos = theA2; }
 
   //! Modifies the radius of this circle.
-  //! Warning. This class does not prevent the creation of a circle where theRadius is null.
+  //! Warning: This class does not prevent the creation of a circle where theRadius is null.
   //! Exceptions
   //! Standard_ConstructionError if theRadius is negative.
   void SetRadius(const Standard_Real theRadius)
@@ -188,7 +188,7 @@ public:
   //! Scales a circle. theS is the scaling value.
   //! Warnings :
   //! If theS is negative the radius stay positive but
-  //! the "XAxis" and the "YAxis" are  reversed as for
+  //! the "XAxis" and the "YAxis" are reversed as for
   //! an ellipse.
   Standard_NODISCARD gp_Circ Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
 

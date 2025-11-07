@@ -37,38 +37,38 @@ public:
   //! Creates and returns a empty token.
   Standard_EXPORT Units_Token();
 
-  //! Creates  and returns  a token.   <aword>  is  a string
+  //! Creates and returns a token. <aword> is a string
   //! containing the available word.
   Standard_EXPORT Units_Token(const Standard_CString aword);
 
-  //! Creates and returns a  token.  <atoken> is  copied  in
+  //! Creates and returns a token. <atoken> is copied in
   //! the returned token.
   Standard_EXPORT Units_Token(const Handle(Units_Token)& atoken);
 
-  //! Creates  and  returns a  token.   <aword> is  a string
-  //! containing the  available word and  <amean>  gives the
+  //! Creates and returns a token. <aword> is a string
+  //! containing the available word and <amean> gives the
   //! signification of the token.
   Standard_EXPORT Units_Token(const Standard_CString aword, const Standard_CString amean);
 
-  //! Creates   and  returns a  token.   <aword> is a string
-  //! containing   the available  word,  <amean> gives   the
+  //! Creates and returns a token. <aword> is a string
+  //! containing the available word, <amean> gives the
   //! signification of the token and <avalue> is the numeric
   //! value of the dimension.
   Standard_EXPORT Units_Token(const Standard_CString aword,
                               const Standard_CString amean,
                               const Standard_Real    avalue);
 
-  //! Creates and returns  a  token.  <aword> is   a  string
-  //! containing the   available   word, <amean>   gives the
-  //! signification of  the  token, <avalue> is  the numeric
-  //! value  of the dimension,  and <adimensions>   is   the
+  //! Creates and returns a token. <aword> is a string
+  //! containing the available word, <amean> gives the
+  //! signification of the token, <avalue> is the numeric
+  //! value of the dimension, and <adimensions> is the
   //! dimension of the given word <aword>.
   Standard_EXPORT Units_Token(const Standard_CString          aword,
                               const Standard_CString          amean,
                               const Standard_Real             avalue,
                               const Handle(Units_Dimensions)& adimension);
 
-  //! Creates and returns a  token, which is a ShiftedToken.
+  //! Creates and returns a token, which is a ShiftedToken.
   Standard_EXPORT virtual Handle(Units_Token) Creates() const;
 
   //! Returns the length of the word.
@@ -80,7 +80,7 @@ public:
   //! Sets the field <theword> to <aword>.
   void Word(const Standard_CString aword);
 
-  //! Returns the significance of the word  <theword>, which
+  //! Returns the significance of the word <theword>, which
   //! is in the field <themean>.
   TCollection_AsciiString Mean() const;
 
@@ -99,17 +99,17 @@ public:
   //! Sets the field <thedimensions> to <adimensions>.
   Standard_EXPORT void Dimensions(const Handle(Units_Dimensions)& adimensions);
 
-  //! Updates     the  token  <me>    with  the   additional
-  //! signification  <amean> by  concatenation   of the  two
-  //! strings   <themean>    and   <amean>.   If    the  two
-  //! significations are  the same  , an information message
+  //! Updates the token <me> with the additional
+  //! signification <amean> by concatenation of the two
+  //! strings <themean> and <amean>. If the two
+  //! significations are the same, an information message
   //! is written in the output device.
   Standard_EXPORT void Update(const Standard_CString amean);
 
   Standard_EXPORT Handle(Units_Token) Add(const Standard_Integer aninteger) const;
 
-  //! Returns a  token which is  the addition  of  <me>  and
-  //! another token <atoken>. The  addition  is  possible if
+  //! Returns a token which is the addition of <me> and
+  //! another token <atoken>. The addition is possible if
   //! and only if the dimensions are the same.
   Standard_EXPORT Handle(Units_Token) Add(const Handle(Units_Token)& atoken) const;
 
@@ -118,12 +118,12 @@ public:
   //! and only if the dimensions are the same.
   Standard_EXPORT Handle(Units_Token) Subtract(const Handle(Units_Token)& atoken) const;
 
-  //! Returns a  token  which  is the  product of   <me> and
+  //! Returns a token which is the product of <me> and
   //! another token <atoken>.
   Standard_EXPORT Handle(Units_Token) Multiply(const Handle(Units_Token)& atoken) const;
 
-  //! This   virtual method is   called  by  the Measurement
-  //! methods,  to  compute    the   measurement   during  a
+  //! This virtual method is called by the Measurement
+  //! methods, to compute the measurement during a
   //! conversion.
   Standard_NODISCARD Standard_EXPORT virtual Standard_Real Multiplied(
     const Standard_Real avalue) const;
@@ -132,55 +132,55 @@ public:
   //! token <atoken>.
   Standard_EXPORT Handle(Units_Token) Divide(const Handle(Units_Token)& atoken) const;
 
-  //! This  virtual  method  is  called by  the  Measurement
-  //! methods,   to   compute   the measurement  during    a
+  //! This virtual method is called by the Measurement
+  //! methods, to compute the measurement during a
   //! conversion.
   Standard_NODISCARD Standard_EXPORT virtual Standard_Real Divided(
     const Standard_Real avalue) const;
 
-  //! Returns a token which is <me> to the power  of another
-  //! token <atoken>.  The computation  is possible  only if
+  //! Returns a token which is <me> to the power of another
+  //! token <atoken>. The computation is possible only if
   //! <atoken> is a dimensionless constant.
   Standard_EXPORT Handle(Units_Token) Power(const Handle(Units_Token)& atoken) const;
 
-  //! Returns a token which is <me> to the power  of <anexponent>.
+  //! Returns a token which is <me> to the power of <anexponent>.
   Standard_EXPORT Handle(Units_Token) Power(const Standard_Real anexponent) const;
 
-  //! Returns true if  the  field <theword> and  the  string
+  //! Returns true if the field <theword> and the string
   //! <astring> are the same, false otherwise.
   Standard_EXPORT Standard_Boolean IsEqual(const Standard_CString astring) const;
 
-  //! Returns true  if the  field  <theword> and  the string
-  //! <theword> contained  in  the  token <atoken>  are  the
+  //! Returns true if the field <theword> and the string
+  //! <theword> contained in the token <atoken> are the
   //! same, false otherwise.
   Standard_EXPORT Standard_Boolean IsEqual(const Handle(Units_Token)& atoken) const;
 
-  //! Returns false if  the field <theword>  and the  string
+  //! Returns false if the field <theword> and the string
   //! <astring> are the same, true otherwise.
   Standard_Boolean IsNotEqual(const Standard_CString astring) const;
 
-  //! Returns false if  the field <theword>  and the  string
-  //! <theword> contained  in the  token  <atoken>  are  the
+  //! Returns false if the field <theword> and the string
+  //! <theword> contained in the token <atoken> are the
   //! same, true otherwise.
   Standard_Boolean IsNotEqual(const Handle(Units_Token)& atoken) const;
 
-  //! Returns   true  if the   field <theword>  is  strictly
-  //! contained at  the beginning  of the string  <astring>,
+  //! Returns true if the field <theword> is strictly
+  //! contained at the beginning of the string <astring>,
   //! false otherwise.
   Standard_Boolean IsLessOrEqual(const Standard_CString astring) const;
 
-  //! Returns false  if   the field   <theword> is  strictly
-  //! contained at  the  beginning  of the string <astring>,
+  //! Returns false if the field <theword> is strictly
+  //! contained at the beginning of the string <astring>,
   //! true otherwise.
   Standard_Boolean IsGreater(const Standard_CString astring) const;
 
-  //! Returns false  if   the field   <theword> is  strictly
-  //! contained at  the  beginning  of the string <astring>,
+  //! Returns false if the field <theword> is strictly
+  //! contained at the beginning of the string <astring>,
   //! true otherwise.
   Standard_Boolean IsGreater(const Handle(Units_Token)& atoken) const;
 
-  //! Returns true  if  the string <astring>   is   strictly
-  //! contained   at the  beginning  of  the field <theword>
+  //! Returns true if the string <astring> is strictly
+  //! contained at the beginning of the field <theword>
   //! false otherwise.
   Standard_Boolean IsGreaterOrEqual(const Handle(Units_Token)& atoken) const;
 

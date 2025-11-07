@@ -96,7 +96,7 @@ public:
   //! the half-line defined by point P and direction D, i.e. all
   //! points M defined by M=P+u*D, where u is greater than
   //! or equal to 0, are inside the bounding volume. This
-  //! involves first setting this box to be void and then adding   the half-line.
+  //! involves first setting this box to be void and then adding the half-line.
   Standard_EXPORT void Set(const gp_Pnt& P, const gp_Dir& D);
 
   //! Enlarges this bounding box, if required, so that it
@@ -120,7 +120,7 @@ public:
   //! Set the gap of this bounding box to abs(Tol).
   Standard_EXPORT void SetGap(const Standard_Real Tol);
 
-  //! Enlarges the      box    with    a   tolerance   value.
+  //! Enlarges the box with a tolerance value.
   //! (minvalues-Abs(<tol>) and maxvalues+Abs(<tol>))
   //! This means that the minimum values of its X, Y and Z
   //! intervals of definition, when they are finite, are reduced by
@@ -154,49 +154,49 @@ public:
   //! if IsVoid()
   Standard_EXPORT gp_Pnt CornerMax() const;
 
-  //! The   Box will be   infinitely   long  in the Xmin
+  //! The Box will be infinitely long in the Xmin
   //! direction.
   void OpenXmin() { Flags |= XminMask; }
 
-  //! The   Box will be   infinitely   long  in the Xmax
+  //! The Box will be infinitely long in the Xmax
   //! direction.
   void OpenXmax() { Flags |= XmaxMask; }
 
-  //! The   Box will be   infinitely   long  in the Ymin
+  //! The Box will be infinitely long in the Ymin
   //! direction.
   void OpenYmin() { Flags |= YminMask; }
 
-  //! The   Box will be   infinitely   long  in the Ymax
+  //! The Box will be infinitely long in the Ymax
   //! direction.
   void OpenYmax() { Flags |= YmaxMask; }
 
-  //! The   Box will be   infinitely   long  in the Zmin
+  //! The Box will be infinitely long in the Zmin
   //! direction.
   void OpenZmin() { Flags |= ZminMask; }
 
-  //! The   Box will be   infinitely   long  in the Zmax
+  //! The Box will be infinitely long in the Zmax
   //! direction.
   void OpenZmax() { Flags |= ZmaxMask; }
 
   //! Returns true if this bounding box has at least one open direction.
   Standard_Boolean IsOpen() const { return (Flags & WholeMask) != 0; }
 
-  //! Returns true if this bounding box is open in the  Xmin direction.
+  //! Returns true if this bounding box is open in the Xmin direction.
   Standard_Boolean IsOpenXmin() const { return (Flags & XminMask) != 0; }
 
-  //! Returns true if this bounding box is open in the  Xmax direction.
+  //! Returns true if this bounding box is open in the Xmax direction.
   Standard_Boolean IsOpenXmax() const { return (Flags & XmaxMask) != 0; }
 
-  //! Returns true if this bounding box is open in the  Ymix direction.
+  //! Returns true if this bounding box is open in the Ymix direction.
   Standard_Boolean IsOpenYmin() const { return (Flags & YminMask) != 0; }
 
-  //! Returns true if this bounding box is open in the  Ymax direction.
+  //! Returns true if this bounding box is open in the Ymax direction.
   Standard_Boolean IsOpenYmax() const { return (Flags & YmaxMask) != 0; }
 
-  //! Returns true if this bounding box is open in the  Zmin direction.
+  //! Returns true if this bounding box is open in the Zmin direction.
   Standard_Boolean IsOpenZmin() const { return (Flags & ZminMask) != 0; }
 
-  //! Returns true if this bounding box is open in the  Zmax  direction.
+  //! Returns true if this bounding box is open in the Zmax  direction.
   Standard_Boolean IsOpenZmax() const { return (Flags & ZmaxMask) != 0; }
 
   //! Returns true if this bounding box is infinite in all 6 directions (WholeSpace flag).
@@ -232,11 +232,11 @@ public:
   //! Adds a Pnt to the box.
   Standard_EXPORT void Add(const gp_Pnt& P);
 
-  //! Extends  <me> from the Pnt <P> in the direction <D>.
+  //! Extends <me> from the Pnt <P> in the direction <D>.
   Standard_EXPORT void Add(const gp_Pnt& P, const gp_Dir& D);
 
-  //! Extends the Box  in the given Direction, i.e. adds
-  //! an  half-line. The   box  may become   infinite in
+  //! Extends the Box in the given Direction, i.e. adds
+  //! an half-line. The box may become infinite in
   //! 1,2 or 3 directions.
   Standard_EXPORT void Add(const gp_Dir& D);
 
@@ -252,17 +252,17 @@ public:
   //! Returns False if the <Box> intersects or is inside <me>.
   Standard_EXPORT Standard_Boolean IsOut(const Bnd_Box& Other) const;
 
-  //! Returns False if  the transformed <Box> intersects
-  //! or  is inside <me>.
+  //! Returns False if the transformed <Box> intersects
+  //! or is inside <me>.
   Standard_EXPORT Standard_Boolean IsOut(const Bnd_Box& Other, const gp_Trsf& T) const;
 
-  //! Returns False  if the transformed <Box> intersects
-  //! or  is inside the transformed box <me>.
+  //! Returns False if the transformed <Box> intersects
+  //! or is inside the transformed box <me>.
   Standard_EXPORT Standard_Boolean IsOut(const gp_Trsf& T1,
                                          const Bnd_Box& Other,
                                          const gp_Trsf& T2) const;
 
-  //! Returns False  if the flat band lying between two parallel
+  //! Returns False if the flat band lying between two parallel
   //! lines represented by their reference points <P1>, <P2> and
   //! direction <D> intersects the box.
   Standard_EXPORT Standard_Boolean IsOut(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Dir& D) const;

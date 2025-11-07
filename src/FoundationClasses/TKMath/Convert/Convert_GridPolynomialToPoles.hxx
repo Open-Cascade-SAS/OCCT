@@ -36,12 +36,12 @@ class Convert_GridPolynomialToPoles
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! To    only  one   polynomial  Surface.
-  //! The  Length  of  <PolynomialUIntervals> and <PolynomialVIntervals>
+  //! To only one polynomial Surface.
+  //! The Length of <PolynomialUIntervals> and <PolynomialVIntervals>
   //! have to be 2.
   //! This values defined the parametric domain of the Polynomial Equation.
   //!
-  //! Coefficients :
+  //! Coefficients:
   //! The <Coefficients> have to be formatted than an "C array"
   //! [MaxUDegree+1] [MaxVDegree+1] [3]
   Standard_EXPORT Convert_GridPolynomialToPoles(
@@ -60,10 +60,10 @@ public:
   //! <TrueUIntervals>, <TrueVIntervals> :
   //! this is the true parameterisation for the composite surface
   //!
-  //! Coefficients :
+  //! Coefficients:
   //! The Coefficients have to be formatted than an "C array"
   //! [NbVSurfaces] [NBUSurfaces] [MaxUDegree+1] [MaxVDegree+1] [3]
-  //! raises DomainError    if <NumCoeffPerSurface> is not a
+  //! raises DomainError if <NumCoeffPerSurface> is not a
   //! [1, NbVSurfaces*NbUSurfaces, 1,2] array.
   //! if <Coefficients> is not a
   Standard_EXPORT Convert_GridPolynomialToPoles(

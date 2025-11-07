@@ -73,7 +73,7 @@ public:
     }
   }
 
-  //! Creates -   a coordinate system with origin theP and "X Direction"
+  //! Creates a coordinate system with origin theP and "X Direction"
   //! theV, which is:
   //! -   right-handed if theIsSense is true (default value), or
   //! -   left-handed if theIsSense is false
@@ -93,8 +93,8 @@ public:
     }
   }
 
-  //! Creates -   a coordinate system where its origin is the origin of
-  //! theA and its "X Direction" is the unit vector of theA, which   is:
+  //! Creates a coordinate system where its origin is the origin of
+  //! theA and its "X Direction" is the unit vector of theA, which is:
   //! -   right-handed if theIsSense is true (default value), or
   //! -   left-handed if theIsSense is false.
   gp_Ax22d(const gp_Ax2d& theA, const Standard_Boolean theIsSense = Standard_True)
@@ -132,14 +132,14 @@ public:
   //! Changes the "Location" point (origin) of <me>.
   constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { point = theP; }
 
-  //! Assigns theVx to the "X Direction"  of
+  //! Assigns theVx to the "X Direction" of
   //! this coordinate system. The other unit vector of this
   //! coordinate system is recomputed, normal to theVx ,
   //! without modifying the orientation (right-handed or
   //! left-handed) of this coordinate system.
   void SetXDirection(const gp_Dir2d& theVx);
 
-  //! Assignsr theVy to the  "Y Direction" of
+  //! Assigns theVy to the "Y Direction" of
   //! this coordinate system. The other unit vector of this
   //! coordinate system is recomputed, normal to theVy,
   //! without modifying the orientation (right-handed or
@@ -148,13 +148,13 @@ public:
 
   //! Returns an axis, for which
   //! -   the origin is that of this coordinate system, and
-  //! -   the unit vector is either the "X Direction"  of this coordinate system.
+  //! -   the unit vector is either the "X Direction" of this coordinate system.
   //! Note: the result is the "X Axis" of this coordinate system.
   gp_Ax2d XAxis() const { return gp_Ax2d(point, vxdir); }
 
   //! Returns an axis, for which
   //! -   the origin is that of this coordinate system, and
-  //! - the unit vector is either the  "Y Direction" of this coordinate system.
+  //! - the unit vector is either the "Y Direction" of this coordinate system.
   //! Note: the result is the "Y Axis" of this coordinate system.
   gp_Ax2d YAxis() const { return gp_Ax2d(point, vydir); }
 
@@ -221,7 +221,7 @@ public:
 
   //! Transforms an axis placement with a Trsf.
   //! The "Location" point, the "XDirection" and the
-  //! "YDirection" are transformed with theT.  The resulting
+  //! "YDirection" are transformed with theT. The resulting
   //! main "Direction" of <me> is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
   Standard_NODISCARD gp_Ax22d Transformed(const gp_Trsf2d& theT) const

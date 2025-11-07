@@ -23,7 +23,7 @@
 //! A cone is defined by its half-angle (can be negative) at the apex and
 //! positioned in space with a coordinate system (a gp_Ax3
 //! object) and a "reference radius" where:
-//! -   the "main Axis" of the coordinate system is the axis of   revolution of the cone,
+//! -   the "main Axis" of the coordinate system is the axis of revolution of the cone,
 //! -   the plane defined by the origin, the "X Direction" and
 //! the "Y Direction" of the coordinate system is the
 //! reference plane of the cone; the intersection of the
@@ -31,7 +31,7 @@
 //! equal to the reference radius,
 //! if the half-angle is positive, the apex of the cone is on
 //! the negative side of the "main Axis" of the coordinate
-//! system. If the half-angle is negative, the apex is on the   positive side.
+//! system. If the half-angle is negative, the apex is on the positive side.
 //! This coordinate system is the "local coordinate system" of the cone.
 //! Note: when a gp_Cone cone is converted into a
 //! Geom_ConicalSurface cone, some implicit properties of
@@ -68,10 +68,10 @@ public:
   //! the cone.
   //! theRaises ConstructionError
   //! * if theRadius is lower than 0.0
-  //! * Abs(theAng) < Resolution from gp  or Abs(theAng) >= (PI/2) - Resolution.
+  //! * Abs(theAng) < Resolution from gp or Abs(theAng) >= (PI/2) - Resolution.
   gp_Cone(const gp_Ax3& theA3, const Standard_Real theAng, const Standard_Real theRadius);
 
-  //! Changes the symmetry axis of the cone.  Raises ConstructionError
+  //! Changes the symmetry axis of the cone. Raises ConstructionError
   //! the direction of theA1 is parallel to the "XDirection"
   //! of the coordinate system of the cone.
   void SetAxis(const gp_Ax1& theA1) { pos.SetAxis(theA1); }
@@ -110,11 +110,11 @@ public:
     return gp_Pnt(aCoord);
   }
 
-  //! Reverses the   U   parametrization of   the  cone
+  //! Reverses the U parametrization of the cone
   //! reversing the YAxis.
   constexpr void UReverse() noexcept { pos.YReverse(); }
 
-  //! Reverses the   V   parametrization of   the  cone  reversing the ZAxis.
+  //! Reverses the V parametrization of the cone reversing the ZAxis.
   constexpr void VReverse() noexcept
   {
     pos.ZReverse();

@@ -89,7 +89,7 @@ public:
     // This constructor assumes theN and theVx are orthogonal standard directions
   }
 
-  //! Creates -   a coordinate system with an origin P, where V
+  //! Creates a coordinate system with an origin P, where V
   //! gives the "main Direction" (here, "X Direction" and "Y
   //! Direction" are defined automatically).
   Standard_EXPORT gp_Ax2(const gp_Pnt& P, const gp_Dir& V);
@@ -149,7 +149,7 @@ public:
   //! Changes the "Ydirection" of <me>. The main direction is not
   //! modified but the "Xdirection" is changed.
   //! If <Vy> is not normal to the main direction then "YDirection"
-  //! is computed as  follows
+  //! is computed as follows
   //! YDirection = Direction ^ (<Vy> ^ Direction).
   //! Exceptions
   //! Standard_ConstructionError if Vx or Vy is parallel to
@@ -185,7 +185,7 @@ public:
                               const Standard_Real LinearTolerance,
                               const Standard_Real AngularTolerance) const;
 
-  //! Returns True if
+  //! Returns True if:
   //! . the distance between <me> and the "Location" point of A1
   //! is lower of equal to LinearTolerance and
   //! . the main direction of <me> and the direction of A1 are normal.
@@ -206,7 +206,7 @@ public:
   //! -   the transformation is applied to the "X Direction"
   //! and the "Y Direction", then
   //! -   the "main Direction" is recomputed as the cross
-  //! product "X Direction" ^ "Y   Direction".
+  //! product "X Direction" ^ "Y Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
   Standard_EXPORT void Mirror(const gp_Pnt& P) noexcept;
@@ -223,7 +223,7 @@ public:
   //! -   the transformation is applied to the "X Direction"
   //! and the "Y Direction", then
   //! -   the "main Direction" is recomputed as the cross
-  //! product "X Direction" ^ "Y   Direction".
+  //! product "X Direction" ^ "Y Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
   Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored(const gp_Pnt& P) const noexcept;
@@ -240,14 +240,14 @@ public:
   //! -   the transformation is applied to the "X Direction"
   //! and the "Y Direction", then
   //! -   the "main Direction" is recomputed as the cross
-  //! product "X Direction" ^ "Y   Direction".
+  //! product "X Direction" ^ "Y Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
   Standard_EXPORT void Mirror(const gp_Ax1& A1);
 
   //! Performs a symmetrical transformation of this coordinate
   //! system with respect to:
-  //! -   the axis A1, and  creates a new one.
+  //! -   the axis A1, and creates a new one.
   //! Warning
   //! This transformation is always performed on the origin.
   //! In case of a reflection with respect to a point:
@@ -257,7 +257,7 @@ public:
   //! -   the transformation is applied to the "X Direction"
   //! and the "Y Direction", then
   //! -   the "main Direction" is recomputed as the cross
-  //! product "X Direction" ^ "Y   Direction".
+  //! product "X Direction" ^ "Y Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
   Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored(const gp_Ax1& A1) const;
@@ -265,7 +265,7 @@ public:
   //! Performs a symmetrical transformation of this coordinate
   //! system with respect to:
   //! -   the plane defined by the origin, "X Direction" and "Y
-  //! Direction" of coordinate system A2 and  assigns the result to this coordinate systeme.
+  //! Direction" of coordinate system A2 and assigns the result to this coordinate systeme.
   //! Warning
   //! This transformation is always performed on the origin.
   //! In case of a reflection with respect to a point:
@@ -275,7 +275,7 @@ public:
   //! -   the transformation is applied to the "X Direction"
   //! and the "Y Direction", then
   //! -   the "main Direction" is recomputed as the cross
-  //! product "X Direction" ^ "Y   Direction".
+  //! product "X Direction" ^ "Y Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
   Standard_EXPORT void Mirror(const gp_Ax2& A2);
@@ -293,7 +293,7 @@ public:
   //! -   the transformation is applied to the "X Direction"
   //! and the "Y Direction", then
   //! -   the "main Direction" is recomputed as the cross
-  //! product "X Direction" ^ "Y   Direction".
+  //! product "X Direction" ^ "Y Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
   Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored(const gp_Ax2& A2) const;
@@ -331,8 +331,8 @@ public:
 
   //! Applies a scaling transformation on the axis placement.
   //! The "Location" point of the axisplacement is modified.
-  //! Warnings :
-  //! If the scale <S> is negative :
+  //! Warnings:
+  //! If the scale <S> is negative:
   //! . the main direction of the axis placement is not changed.
   //! . The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.

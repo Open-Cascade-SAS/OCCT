@@ -109,7 +109,7 @@ public:
   //! Raises OutOfRange if theIndex != {1, 2}.
   void SetCoord(const Standard_Real theXv, const Standard_Real theYv);
 
-  //! Assigns the given value to the X coordinate of this unit   vector,
+  //! Assigns the given value to the X coordinate of this unit vector,
   //! and then normalizes it.
   //! Warning
   //! Remember that all the coordinates of a unit vector are
@@ -123,7 +123,7 @@ public:
   //! vector that was not directly modified.
   void SetX(const Standard_Real theX);
 
-  //! Assigns  the given value to the Y coordinate of this unit   vector,
+  //! Assigns the given value to the Y coordinate of this unit vector,
   //! and then normalizes it.
   //! Warning
   //! Remember that all the coordinates of a unit vector are
@@ -193,7 +193,7 @@ public:
   Standard_Boolean IsOpposite(const gp_Dir2d&     theOther,
                               const Standard_Real theAngularTolerance) const;
 
-  //! returns true if the angle between this unit vector and unit
+  //! Returns True if the angle between this unit vector and unit
   //! vector theOther is equal to 0, Pi or -Pi.
   //! i.e.  Abs(Angle(<me>, theOther)) <= theAngularTolerance or
   //! PI - Abs(Angle(<me>, theOther)) <= theAngularTolerance
@@ -242,7 +242,7 @@ public:
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction theV which is the center of
-  //! the  symmetry.
+  //! the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Dir2d Mirrored(const gp_Dir2d& theV) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
@@ -254,7 +254,7 @@ public:
 
   void Rotate(const Standard_Real Ang);
 
-  //! Rotates a direction.  theAng is the angular value of
+  //! Rotates a direction. theAng is the angular value of
   //! the rotation in radians.
   Standard_NODISCARD gp_Dir2d Rotated(const Standard_Real theAng) const
   {

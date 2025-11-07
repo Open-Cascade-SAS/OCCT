@@ -51,7 +51,7 @@ public:
   //! Returns reference to the array of geometric objects.
   BVH_ObjectList& Objects() { return myObjects; }
 
-  //! Returns reference to the  array of geometric objects.
+  //! Returns reference to the array of geometric objects.
   const BVH_ObjectList& Objects() const { return myObjects; }
 
 public:

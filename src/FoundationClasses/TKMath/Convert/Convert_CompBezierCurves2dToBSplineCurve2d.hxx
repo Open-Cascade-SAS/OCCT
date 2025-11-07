@@ -28,7 +28,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
-//! Converts a list  of connecting Bezier Curves 2d to  a
+//! Converts a list of connecting Bezier Curves 2d to a
 //! BSplineCurve 2d.
 //! if possible, the continuity of the BSpline will be
 //! increased to more than C0.

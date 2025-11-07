@@ -55,12 +55,12 @@ public:
                                      CSLib_DerivativeStatus& theStatus,
                                      gp_Dir&                 Normal);
 
-  //! If there is a singularity on the surface  the previous method
+  //! If there is a singularity on the surface the previous method
   //! cannot compute the local normal.
   //! This method computes an approached normal direction of a surface.
   //! It does a limited development and needs the second derivatives
   //! on the surface as input data.
-  //! It computes the normal as follow :
+  //! It computes the normal as follows:
   //! N(u, v) = D1U ^ D1V
   //! N(u0+du,v0+dv) = N0 + DN/du(u0,v0) * du + DN/dv(u0,v0) * dv + Eps
   //! with Eps->0 so we can have the equivalence N ~ dN/du + dN/dv.
@@ -100,8 +100,8 @@ public:
                                      CSLib_NormalStatus& theStatus,
                                      gp_Dir&             Normal);
 
-  //! find the first  order k0  of deriviative of NUV
-  //! where: foreach order < k0  all the derivatives of NUV  are
+  //! find the first order k0  of deriviative of NUV
+  //! where: foreach order < k0 all the derivatives of NUV are
   //! null all the derivatives of NUV corresponding to the order
   //! k0 are collinear and have the same sens.
   //! In this case, normal at U,V is unique.
@@ -119,9 +119,9 @@ public:
                                      Standard_Integer&         OrderU,
                                      Standard_Integer&         OrderV);
 
-  //! -- Computes the derivative  of order Nu in the --
-  //! direction U and Nv in the direction V of the not --
-  //! normalized  normal vector at  the point  P(U,V) The
+  //! Computes the derivative of order Nu in the
+  //! direction U and Nv in the direction V of the not
+  //! normalized normal vector at the point P(U,V) The
   //! array DerSurf contain the derivative (i,j) of the surface
   //! for i=0,Nu+1 ; j=0,Nv+1
   Standard_EXPORT static gp_Vec DNNUV(const Standard_Integer    Nu,
@@ -137,14 +137,14 @@ public:
                                       const TColgp_Array2OfVec& DerSurf1,
                                       const TColgp_Array2OfVec& DerSurf2);
 
-  //! -- Computes the derivative  of order Nu in the --
-  //! direction   U and  Nv in the  direction  V  of the
-  //! normalized normal vector  at the point P(U,V) array
-  //! DerNUV contain the  derivative  (i+Iduref,j+Idvref)
-  //! of D1U ^ D1V for i=0,Nu  ; j=0,Nv Iduref and Idvref
-  //! correspond to a derivative  of D1U ^ D1V  which can
+  //! Computes the derivative of order Nu in the
+  //! direction U and Nv in the direction V of the
+  //! normalized normal vector at the point P(U,V) array
+  //! DerNUV contain the derivative (i+Iduref,j+Idvref)
+  //! of D1U ^ D1V for i=0,Nu ; j=0, Nv Iduref and Idvref
+  //! correspond to a derivative of D1U ^ D1V which can
   //! be used to compute the normalized normal vector.
-  //! In the regular cases , Iduref=Idvref=0.
+  //! In the regular cases, Iduref=Idvref=0.
   Standard_EXPORT static gp_Vec DNNormal(const Standard_Integer    Nu,
                                          const Standard_Integer    Nv,
                                          const TColgp_Array2OfVec& DerNUV,

@@ -24,7 +24,7 @@ class Units_Dimensions;
 class Units_UnitsDictionary;
 DEFINE_STANDARD_HANDLE(Units_UnitsDictionary, Standard_Transient)
 
-//! This class creates  a dictionary of all  the units
+//! This class creates a dictionary of all the units
 //! you want to know.
 class Units_UnitsDictionary : public Standard_Transient
 {
@@ -33,25 +33,25 @@ public:
   //! Returns an empty instance of UnitsDictionary.
   Standard_EXPORT Units_UnitsDictionary();
 
-  //! Returns a  UnitsDictionary object  which  contains the
-  //! sequence  of all   the  units  you want to   consider,
+  //! Returns a UnitsDictionary object which contains the
+  //! sequence of all the units you want to consider,
   //! physical quantity by physical quantity.
   Standard_EXPORT void Creates();
 
-  //! Returns   the  head   of   the  sequence  of  physical
+  //! Returns the head of the sequence of physical
   //! quantities.
   Handle(Units_QuantitiesSequence) Sequence() const;
 
   //! Returns for <aquantity> the active unit.
   Standard_EXPORT TCollection_AsciiString ActiveUnit(const Standard_CString aquantity) const;
 
-  //! Dumps only  the sequence   of  quantities without  the
-  //! units  if  <alevel> is  equal  to zero,  and  for each
-  //! quantity all the units stored if <alevel>  is equal to
+  //! Dumps only the sequence of quantities without the
+  //! units if <alevel> is equal to zero, and for each
+  //! quantity all the units stored if <alevel> is equal to
   //! one.
   void Dump(const Standard_Integer alevel) const;
 
-  //! Dumps  for a     designated  physical       dimensions
+  //! Dumps for a designated physical dimensions
   //! <adimensions> all the previously stored units.
   void Dump(const Handle(Units_Dimensions)& adimensions) const;
 

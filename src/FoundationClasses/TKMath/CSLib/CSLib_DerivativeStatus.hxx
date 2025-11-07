@@ -22,7 +22,7 @@
 //! D1vIsNull : ||D1V|| <= Resolution
 //!
 //! D1IsNull  : the first derivatives in the U and V parametric
-//! directions have null length  :
+//! directions have null length:
 //! ||D1U|| <= Resolution and ||D1V|| <= Resolution
 //!
 //! D1uD1vRatioIsNull : the first derivative in the U direction has

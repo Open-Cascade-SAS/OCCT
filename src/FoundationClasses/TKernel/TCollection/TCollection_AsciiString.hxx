@@ -1375,7 +1375,7 @@ public:
   //! @return const reference to static empty string
   Standard_EXPORT static const TCollection_AsciiString& EmptyString() noexcept;
 
-  //! Returns True  when the two  strings are the same.
+  //! Returns True when the two strings are the same.
   //! (Just for HashCode for AsciiString)
   //! @param[in] string1 first string to compare
   //! @param[in] string2 second string to compare
@@ -1383,7 +1383,7 @@ public:
   inline static Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
                                          const TCollection_AsciiString& string2);
 
-  //! Returns True  when the two  strings are the same.
+  //! Returns True when the two strings are the same.
   //! (Just for HashCode for AsciiString)
   //! @param[in] string1 first string to compare
   //! @param[in] string2 second C string to compare
