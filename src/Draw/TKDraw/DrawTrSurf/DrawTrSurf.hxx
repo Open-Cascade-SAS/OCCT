@@ -103,8 +103,8 @@ public:
   //! Sets <P> in the variable <Name>. Overwrite the
   //! variable if already set.
   Standard_EXPORT static void Set(const Standard_CString Name, const Handle(Poly_Polygon2D)& P);
-  //!Getthe variable <S>. Returns a null handle if
-  //! none, and print a warning message.
+  //! Getthe variable <S>. Returns a null handle if
+  //!  none, and print a warning message.
   Standard_EXPORT static Handle(Geom_Geometry) Get(Standard_CString& Name);
 
   //! Gets the variable. Returns False if none and print

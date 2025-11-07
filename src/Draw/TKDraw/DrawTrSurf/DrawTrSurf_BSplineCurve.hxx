@@ -67,7 +67,7 @@ public:
 
   void ClearKnots() { drawKnots = Standard_False; }
 
-//! Returns in <Index> the index of the first pole of the
+  //! Returns in <Index> the index of the first pole of the
   //! curve projected by the Display <D> at a distance lower
   //! than <Prec> from <X,Y>. If no pole is found index is
   //! set to 0, else index is always greater than the input
