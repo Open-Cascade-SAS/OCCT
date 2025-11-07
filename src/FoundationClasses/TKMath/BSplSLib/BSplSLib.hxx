@@ -742,7 +742,7 @@ public:
   //! N(u,v) or D(u,v)
   //! Warning: it is the caller's responsibility to
   //! insure that conditions 1. and 2. above are satisfied
-  //! no check whatsoever is made in this method 
+  //! no check whatsoever is made in this method
   //! theStatus will return 0 if OK else it will return the
   //! pivot index of the matrix that was inverted to
   //! compute the multiplied BSpline : the method used
