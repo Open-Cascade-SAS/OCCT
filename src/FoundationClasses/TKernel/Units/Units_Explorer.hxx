@@ -95,7 +95,6 @@ public:
 
   //! Sets the next Unit current.
   Standard_EXPORT void NextUnit();
-src/FoundationClasses/TKernel/Units/Units_Explorer.hxx
   //! Returns the name of the current unit.
   Standard_EXPORT TCollection_AsciiString Unit() const;
 
