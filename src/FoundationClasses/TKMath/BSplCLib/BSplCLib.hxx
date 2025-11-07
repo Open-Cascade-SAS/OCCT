@@ -1638,7 +1638,7 @@ public:
   //! WeightsResult one has the result of the evaluation of
   //! the denominator
   //!
-  //! Warning: <PolesResult> and <WeightsResult> must be 
+  //! Warning: <PolesResult> and <WeightsResult> must be
   //! dimensioned properly.
   Standard_EXPORT static void Eval(const Standard_Real         U,
                                    const Standard_Boolean      PeriodicFlag,
