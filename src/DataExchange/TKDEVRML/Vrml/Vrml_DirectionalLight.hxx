@@ -25,11 +25,11 @@
 #include <gp_Vec.hxx>
 #include <Standard_OStream.hxx>
 
-//! defines a directional  light node of VRML specifying
+//! defines a directional light node of VRML specifying
 //! properties of lights.
-//! This  node  defines  a  directional  light  source  that  illuminates
-//! along  rays  parallel  to  a  given  3-dimensional  vector
-//! Color is  written  as  an  RGB  triple.
+//! This node defines a directional light source that illuminates
+//! along rays parallel to a given 3-dimensional vector
+//! Color is written as an RGB triple.
 //! Light intensity must be in the range 0.0 to 1.0, inclusive.
 class Vrml_DirectionalLight
 {

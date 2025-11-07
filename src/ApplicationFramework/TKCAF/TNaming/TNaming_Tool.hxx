@@ -178,7 +178,7 @@ private:
                                                      const Handle(TNaming_UsedShapes)& US);
 
   //! Returns the label of the first apparition of
-  //! <aShape>. Transdef  is a value of the transaction
+  //! <aShape>. Transdef is a value of the transaction
   //! of the first apparition of <aShape>.
   Standard_EXPORT static TDF_Label Label(const Handle(TNaming_UsedShapes)& Shapes,
                                          const TopoDS_Shape&               aShape,

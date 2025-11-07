@@ -26,14 +26,14 @@
 
 //! defines a Texture2Transform node of VRML specifying properties of geometry
 //! and its appearance.
-//! This  node  defines  a 2D  transformation  applied  to  texture  coordinates.
-//! This  affect  the  way  textures  are  applied  to  the  surfaces  of  subsequent
+//! This node defines a 2D transformation applied to texture coordinates.
+//! This affect the way textures are applied to the surfaces of subsequent
 //! shapes.
-//! Transformation  consisits  of(in  order)  a  non-uniform  scale  about  an
-//! arbitrary  center  point,  a  rotation  about  that  same  point,  and
-//! a  translation.  This  allows  a  user  to  change  the  size  and  position  of
-//! the  textures  on  the  shape.
-//! By  default  :
+//! Transformation consisits of (in order) a non-uniform scale about an
+//! arbitrary center point, a rotation about that same point, and
+//! a translation. This allows a user to change the size and position of
+//! the textures on the shape.
+//! By default:
 //! myTranslation (0 0)
 //! myRotation (0)
 //! myScaleFactor (1 1)

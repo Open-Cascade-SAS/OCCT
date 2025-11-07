@@ -25,8 +25,8 @@
 #include <Standard_OStream.hxx>
 
 //! defines a Rotation node of VRML specifying matrix and transform properties.
-//! This  node  defines  a  3D  rotation  about  an  arbitrary  axis  through  the  origin.
-//! By  default  :  myRotation  =  (0 0 1 0)
+//! This node defines a 3D rotation about an arbitrary axis through the origin.
+//! Bydefault: myRotation = (0 0 1 0)
 class Vrml_Rotation
 {
 public:

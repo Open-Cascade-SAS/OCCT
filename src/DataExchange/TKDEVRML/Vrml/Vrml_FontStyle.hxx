@@ -28,9 +28,9 @@
 
 //! defines a FontStyle node of VRML of properties of geometry
 //! and its appearance.
-//! The  size  field  specifies  the  height  (in  object  space  units)
-//! of  glyphs  rendered  and  determines  the  vertical  spacing  of
-//! adjacent  lines  of  text.
+//! The size field specifies the height (in object space units)
+//! of glyphs rendered and determines the vertical spacing of
+//! adjacent lines of text.
 class Vrml_FontStyle
 {
 public:

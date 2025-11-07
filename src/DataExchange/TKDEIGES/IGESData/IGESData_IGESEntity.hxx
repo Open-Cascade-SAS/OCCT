@@ -88,7 +88,7 @@ public:
   Standard_EXPORT virtual IGESData_DefList DefLevel() const;
 
   //! Returns the level the entity
-  //! belongs to. Returns -1 if the entity belongs to more than one  level.
+  //! belongs to. Returns -1 if the entity belongs to more than one level.
   Standard_EXPORT Standard_Integer Level() const;
 
   //! Returns LevelList if Level is

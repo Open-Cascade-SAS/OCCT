@@ -43,8 +43,8 @@ class TDataStd_TreeNode : public TDF_Attribute
 {
 
 public:
-  //! class  methods working on the node
-  //! ===================================
+  //! class methods working on the node
+  //! =================================
   //! Returns true if the tree node T is found on the label L.
   //! Otherwise, false is returned.
   Standard_EXPORT static Standard_Boolean Find(const TDF_Label& L, Handle(TDataStd_TreeNode)& T);

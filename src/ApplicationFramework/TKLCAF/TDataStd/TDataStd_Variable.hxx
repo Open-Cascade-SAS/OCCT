@@ -95,7 +95,7 @@ public:
   Standard_EXPORT Standard_Boolean IsAssigned() const;
 
   //! create(if doesn't exist) and returns the assigned
-  //! expression  attribute. fill it after.
+  //! expression attribute. fill it after.
   Standard_EXPORT Handle(TDataStd_Expression) Assign() const;
 
   //! if <me> is assigned delete the associated expression
@@ -115,7 +115,7 @@ public:
   Standard_EXPORT void Unit(const TCollection_AsciiString& unit);
 
   //! to read/write fields
-  //! ===================
+  //! ====================
   Standard_EXPORT const TCollection_AsciiString& Unit() const;
 
   //! if <status> is True, this variable will not be

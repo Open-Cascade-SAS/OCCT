@@ -74,7 +74,7 @@ public:
   //! iteration process.
   Standard_Boolean More() const;
 
-  //! Move the current iteration  to the next Item.
+  //! Move the current iteration to the next Item.
   Standard_EXPORT void Next();
 
   //! Moves this iteration to the next brother

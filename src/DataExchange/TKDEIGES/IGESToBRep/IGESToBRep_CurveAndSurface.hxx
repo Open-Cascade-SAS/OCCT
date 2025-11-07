@@ -142,14 +142,14 @@ public:
   Handle(Transfer_TransientProcess) GetTransferProcess() const;
 
   //! Returns the result of the transfert of any IGES Curve
-  //! or Surface Entity.  If  the transfer has  failed,  this
+  //! or Surface Entity. If the transfer has failed, this
   //! member return a NullEntity.
   Standard_EXPORT TopoDS_Shape
     TransferCurveAndSurface(const Handle(IGESData_IGESEntity)& start,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Returns the result of the transfert the geometry of
-  //! any IGESEntity.  If  the transfer has  failed,  this
+  //! any IGESEntity. If the transfer has failed, this
   //! member return a NullEntity.
   Standard_EXPORT TopoDS_Shape
     TransferGeometry(const Handle(IGESData_IGESEntity)& start,
@@ -178,7 +178,7 @@ public:
                                       const TopoDS_Shape&                result);
 
   //! Returns the number of shapes results contained in "myMap" for the
-  //! IGESEntity start ( type VertexList or EdgeList).
+  //! IGESEntity start (type VertexList or EdgeList).
   Standard_EXPORT Standard_Integer NbShapeResult(const Handle(IGESData_IGESEntity)& start) const;
 
   //! Returns the numth result of the IGESEntity start (type VertexList or
@@ -187,7 +187,7 @@ public:
                                               const Standard_Integer             num) const;
 
   //! set in "myMap" the result of the transfer of the entity of the
-  //! IGESEntity start ( type VertexList or EdgeList).
+  //! IGESEntity start (type VertexList or EdgeList).
   Standard_EXPORT void AddShapeResult(const Handle(IGESData_IGESEntity)& start,
                                       const TopoDS_Shape&                result);
 

@@ -63,7 +63,7 @@ public:
                                                const Standard_Boolean isExported = Standard_False);
 
   //! Tool to Create an Real attribute from <value>, Insert
-  //! it in a new son label  of <me>. The Integer attribute
+  //! it in a new son label of <me>. The Integer attribute
   //! is returned.
   Standard_EXPORT Handle(TDataStd_Integer) Append(
     const Standard_Integer value,

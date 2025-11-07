@@ -41,7 +41,7 @@ public:
     const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
   //! write the meshing in a file following the
-  //! Ascii  format of an STL file.
+  //! Ascii format of an STL file.
   //! Returns false if the cannot be opened;
   Standard_EXPORT static Standard_Boolean WriteAscii(
     const Handle(Poly_Triangulation)& theMesh,

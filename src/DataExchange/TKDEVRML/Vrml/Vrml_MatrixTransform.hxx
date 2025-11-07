@@ -25,15 +25,15 @@
 
 //! defines a MatrixTransform node of VRML specifying matrix and transform
 //! properties.
-//! This  node  defines  3D  transformation  with  a  4  by  4  matrix.
-//! By  default  :
+//! This node defines 3D transformation with a 4 by 4 matrix.
+//! By default:
 //! a11=1  a12=0  a13=0  a14=0
 //! a21=0  a22=1  a23=0  a24=0
 //! a31=0  a32=0  a33=1  a34=0
 //! a41=0  a42=0  a43=0  a44=1
-//! It  is  written  to  the  file  in  row-major  order  as  16  Real numbers
-//! separated  by  whitespace.  For  example ,  matrix  expressing  a  translation
-//! of  7.3  units  along  the  X  axis  is  written  as:
+//! It is written to the file in row-major order as 16 Real numbers
+//! separated by whitespace. For example , matrix expressing a translation
+//! of 7.3 units along the X axis is written as:
 //! 1  0  0  0   0  1  0  0   0  0  1  0   7.3 0  0  1
 class Vrml_MatrixTransform
 {

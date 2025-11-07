@@ -25,9 +25,9 @@
 #include <Standard_OStream.hxx>
 
 //! defines a Cube node of VRML specifying geometry shapes.
-//! This  node  represents  a  cuboid aligned with  the coordinate  axes.
-//! By  default ,  the  cube  is  centred  at  (0,0,0) and  measures  2  units
-//! in  each  dimension, from -1  to  +1.
+//! This node represents a cuboid aligned with the coordinate axes.
+//! By default, the cube is centred at (0,0,0) and measures 2 units
+//! in each dimension, from -1 to +1.
 //! A cube's width is its extent along its object-space X axis, its height is
 //! its extent along the object-space Y axis, and its depth is its extent along its
 //! object-space Z axis.

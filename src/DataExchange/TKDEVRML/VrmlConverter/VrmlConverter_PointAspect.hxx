@@ -33,7 +33,7 @@ class VrmlConverter_PointAspect : public Standard_Transient
 
 public:
   //! create a default PointAspect.
-  //! Default value: HasMaterial  =  False  - a  line  hasn't  own  material (color)
+  //! Default value: HasMaterial = False - a line hasn't own material (color)
   Standard_EXPORT VrmlConverter_PointAspect();
 
   Standard_EXPORT VrmlConverter_PointAspect(const Handle(Vrml_Material)& aMaterial,
@@ -43,12 +43,12 @@ public:
 
   Standard_EXPORT Handle(Vrml_Material) Material() const;
 
-  //! defines the necessary of writing  own  Material from Vrml into  output  OStream.
-  //! By default False  -  the material is not writing into OStream,
-  //! True  -  the material is writing.
+  //! defines the necessary of writing own Material from Vrml into output OStream.
+  //! By default False - the material is not writing into OStream,
+  //! True - the material is writing.
   Standard_EXPORT void SetHasMaterial(const Standard_Boolean OnOff);
 
-  //! returns True if the  materials is  writing into OStream.
+  //! returns True if the materials is writing into OStream.
   Standard_EXPORT Standard_Boolean HasMaterial() const;
 
   DEFINE_STANDARD_RTTIEXT(VrmlConverter_PointAspect, Standard_Transient)

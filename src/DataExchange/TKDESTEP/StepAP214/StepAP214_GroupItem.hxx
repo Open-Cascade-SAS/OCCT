@@ -65,51 +65,51 @@ public:
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
 
-  //! returns Value as a  GeometricRepresentationItem (Null if another type)
+  //! returns Value as a GeometricRepresentationItem (Null if another type)
   Standard_EXPORT virtual Handle(StepGeom_GeometricRepresentationItem) GeometricRepresentationItem()
     const;
 
-  //! returns Value as a  GroupRelationship (Null if another type)
+  //! returns Value as a GroupRelationship (Null if another type)
   Standard_EXPORT virtual Handle(StepBasic_GroupRelationship) GroupRelationship() const;
 
-  //! returns Value as a  MappedItem (Null if another type)
+  //! returns Value as a MappedItem (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_MappedItem) MappedItem() const;
 
-  //! returns Value as a  ProductDefinition (Null if another type)
+  //! returns Value as a ProductDefinition (Null if another type)
   Standard_EXPORT virtual Handle(StepBasic_ProductDefinition) ProductDefinition() const;
 
-  //! returns Value as a  ProductDefinitionFormation (Null if another type)
+  //! returns Value as a ProductDefinitionFormation (Null if another type)
   Standard_EXPORT virtual Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation()
     const;
 
-  //! returns Value as a  PropertyDefinitionRepresentation (Null if another type)
+  //! returns Value as a PropertyDefinitionRepresentation (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_PropertyDefinitionRepresentation)
     PropertyDefinitionRepresentation() const;
 
-  //! returns Value as a  Representation (Null if another type)
+  //! returns Value as a Representation (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_Representation) Representation() const;
 
-  //! returns Value as a  RepresentationItem (Null if another type)
+  //! returns Value as a RepresentationItem (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_RepresentationItem) RepresentationItem() const;
 
-  //! returns Value as a  RepresentationRelationshipWithTransformation (Null if another type)
+  //! returns Value as a RepresentationRelationshipWithTransformation (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_RepresentationRelationshipWithTransformation)
     RepresentationRelationshipWithTransformation() const;
 
-  //! returns Value as a  ShapeAspect (Null if another type)
+  //! returns Value as a ShapeAspect (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_ShapeAspect) ShapeAspect() const;
 
-  //! returns Value as a  ShapeAspectRelationship (Null if another type)
+  //! returns Value as a ShapeAspectRelationship (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
 
-  //! returns Value as a  ShapeRepresentationRelationship (Null if another type)
+  //! returns Value as a ShapeRepresentationRelationship (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_ShapeRepresentationRelationship)
     ShapeRepresentationRelationship() const;
 
-  //! returns Value as a  StyledItem (Null if another type)
+  //! returns Value as a StyledItem (Null if another type)
   Standard_EXPORT virtual Handle(StepVisual_StyledItem) StyledItem() const;
 
-  //! returns Value as a  TopologicalRepresentationItem (Null if another type)
+  //! returns Value as a TopologicalRepresentationItem (Null if another type)
   Standard_EXPORT virtual Handle(StepShape_TopologicalRepresentationItem)
     TopologicalRepresentationItem() const;
 

@@ -27,14 +27,14 @@ class Adaptor3d_Curve;
 class VrmlConverter_Drawer;
 
 //! Curve - computes the presentation of objects to be
-//! seen  as curves  (the  computation  will  be  made
-//! with a constant  number  of  points),  converts this one
-//! into  VRML  objects  and  writes (adds) them  into
-//! anOStream.   All  requested   properties  of   the
-//! representation are specify  in aDrawer  of  Drawer
+//! seen as curves (the computation will be made
+//! with a constant number of points), converts this one
+//! into VRML objects and writes (adds) them into
+//! anOStream. All requested properties of the
+//! representation are specify in aDrawer of Drawer
 //! class (VrmlConverter).
 //! This kind of the presentation is converted into
-//! IndexedLineSet ( VRML ).
+//! IndexedLineSet (VRML).
 class VrmlConverter_Curve
 {
 public:

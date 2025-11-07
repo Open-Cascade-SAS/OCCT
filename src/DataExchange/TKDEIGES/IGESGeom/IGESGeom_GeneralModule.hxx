@@ -73,7 +73,7 @@ public:
 
   //! Returns a category number which characterizes an entity
   //! Shape for all, but Drawing for :
-  //! Flash;  Point with a symbol;  Plane with a symbol
+  //! Flash; Point with a symbol; Plane with a symbol
   Standard_EXPORT virtual Standard_Integer CategoryNumber(const Standard_Integer            CN,
                                                           const Handle(Standard_Transient)& ent,
                                                           const Interface_ShareTool& shares) const

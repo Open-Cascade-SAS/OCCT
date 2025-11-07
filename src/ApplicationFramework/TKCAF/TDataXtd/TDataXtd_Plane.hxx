@@ -24,7 +24,7 @@ class TDataXtd_Plane;
 DEFINE_STANDARD_HANDLE(TDataXtd_Plane, TDataStd_GenericEmpty)
 
 //! The basis to define a plane attribute.
-//! Warning:  Use TDataXtd_Geometry attribute to retrieve the
+//! Warning: Use TDataXtd_Geometry attribute to retrieve the
 //! gp_Pln of the Plane attribute
 class TDataXtd_Plane : public TDataStd_GenericEmpty
 {

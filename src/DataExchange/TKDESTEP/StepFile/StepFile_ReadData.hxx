@@ -54,18 +54,18 @@
 //!    Now current record has ident, but args and types are empty.
 //! 4. Flex rule detected "ADVANCED_FACE" call CreateNewText and send a token "TYPE".
 //!    Now class contains "ADVANCED_FACE", as current text value.
-//! 5. Bison receive  a token and call RecordType (), it
+//! 5. Bison receive a token and call RecordType (), it
 //!    set "ADVANCED_FACE" to the current record as a type.
 //!    Now current record has ident and type, but args are empty.
 //! 6. Flex rule detected "(" send token "(".
 //!    Now class continues to contain "ADVANCED_FACE", as current text value.
-//! 7. Bison receive  a token and call RecordListStart (),
+//! 7. Bison receive a token and call RecordListStart (),
 //!    it does nothing via the current state.
 //!    Now current record is not update.
 //! 8. Flex rule detected ('') call CreateNewText and SetTypeArg and
 //!    send token TEXT.
 //!    Now class contains empty current text value.
-//! 9. Bison receive  a token and call CreateNewArg (), it
+//! 9. Bison receive a token and call CreateNewArg (), it
 //!    creates a new argument with empty text value and 'Text' type.
 //!    Now current record has ident, type and one argument.
 //! 10. Flex rule detected "," call PrepareNewArg(",",1), it
@@ -73,29 +73,29 @@
 //!     Bison does nothing and the current text value and record are not updated.
 //! 11. Flex rule detected "(" send token "(".
 //!     Now class continues to contain empty current text value.
-//! 12. Bison receive  a token and call RecordListStart (), it
+//! 12. Bison receive a token and call RecordListStart (), it
 //!     creates a new record with "$1" ident and "ADVANCED_FACE" type
 //!     old record is the next of the new record.
 //!     Now current record has ident, type, but args are empty.
 //! 13. Flex  rule detected "#124" call CreateNewText("#124",4) and send token "IDENT",
 //!     Now class contains "#124", as current text value.
-//! 14. Bison receive  a token and call CreateNewArg (), it
+//! 14. Bison receive a token and call CreateNewArg (), it
 //!     creates a new argument with "#124" text value and 'Ident' type.
 //!     Now current record has ident, type and one argument.
 //! 15. Flex rule detected ")" send token ")".
 //!     Now class continues to contain "#124", as a current text value.
-//! 16. Bison receive  a token and call RecordNewEntity (), it
+//! 16. Bison receive a token and call RecordNewEntity (), it
 //!     contain record to the records page, prepare to the new record
 //!     and get next record as a current record and set a new arg as a sub_record.
 //!     Now current record is a old record, it has ident, type and two args.
 //! 17. Flex rule detected "#125" call CreateNewText, SetTypeArg and send token IDEND.
 //!     Now class contains "#125", as a current text value.
-//! 18. Bison receive  a token and call CreateNewArg (), it
+//! 18. Bison receive a token and call CreateNewArg (), it
 //!     creates a new argument with "#125" text value and 'Ident' type.
 //!     Now current record has ident, type and three argument.
 //! 19. Flex rule detected "#125" call CreateNewText, SetTypeArg and send token IDEND.
 //!     Now class contains "#125", as a current text value.
-//! 20. Bison receive  a token and call CreateNewArg (), it
+//! 20. Bison receive a token and call CreateNewArg (), it
 //!     creates a new argument with "#125" text value and 'Ident' type.
 //!     Now current record has ident, type and three argument.
 //! ...

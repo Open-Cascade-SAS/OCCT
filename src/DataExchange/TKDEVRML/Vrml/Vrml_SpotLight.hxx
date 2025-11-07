@@ -27,15 +27,15 @@
 
 //! specifies a spot light node of VRML nodes specifying
 //! properties of lights.
-//! This  node  defines  a  spotlight  light  source.
-//! A  spotlight  is  placed  at  a  fixed  location  in  3D-space
-//! and  illuminates in  a  cone  along  a  particular  direction.
-//! The  intensity  of  the  illumination  drops  off  exponentially
-//! as  a  ray  of  light  diverges  from  this  direction  toward
-//! the  edges  of  cone.
-//! The  rate  of  drop-off  and  agle  of  the  cone  are  controlled
-//! by  the  dropOfRate  and  cutOffAngle
-//! Color is  written  as  an  RGB  triple.
+//! This node defines a spotlight light source.
+//! A spotlight is placed at a fixed location in 3D-space
+//! and illuminates in a cone along a particular direction.
+//! The intensity of the illumination drops off exponentially
+//! as a ray of light diverges from this direction toward
+//! the edges of cone.
+//! The rate of drop-off and agle of the cone are controlled
+//! by the dropOfRate and cutOffAngle
+//! Color is written as an RGB triple.
 //! Light intensity must be in the range 0.0 to 1.0, inclusive.
 class Vrml_SpotLight
 {

@@ -25,15 +25,15 @@
 class TopoDS_Shape;
 class VrmlConverter_Drawer;
 
-//! WFDeflectionShape -   computes    the    wireframe
-//! presentation of compound set  of faces,  edges and
-//! vertices by displaying a  given number of U and/or
-//! V isoparametric  curves,   converts this  one into  VRML
+//! WFDeflectionShape - computes the wireframe
+//! presentation of compound set of faces, edges and
+//! vertices by displaying a given number of U and/or
+//! V isoparametric curves, converts this one into VRML
 //! objects and writes (adds) them into anOStream.
 //! All requested properties of the representation are
 //! specify in aDrawer.
-//! This kind of the presentation  is  converted  into
-//! IndexedLineSet and PointSet ( VRML ).
+//! This kind of the presentation is converted into
+//! IndexedLineSet and PointSet (VRML).
 class VrmlConverter_WFDeflectionShape
 {
 public:

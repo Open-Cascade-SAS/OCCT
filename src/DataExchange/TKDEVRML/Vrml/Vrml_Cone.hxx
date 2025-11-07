@@ -26,12 +26,12 @@
 #include <Standard_OStream.hxx>
 
 //! defines a Cone node of VRML specifying geometry shapes.
-//! This  node  represents  a  simple  cone,  whose  central  axis  is  aligned
-//! with  the  y-axis.  By  default ,  the  cone  is  centred  at  (0,0,0)
-//! and  has  size  of  -1  to  +1  in  the  all  three  directions.
-//! the  cone  has  a  radius  of  1  at  the  bottom  and  height  of  2,
-//! with  its  apex  at  1  and  its  bottom  at  -1.  The  cone  has  two  parts:
-//! the  sides  and  the  bottom
+//! This node represents a simple cone, whose central axis is aligned
+//! with the y-axis. By default, the cone is centred at (0,0,0)
+//! and has size of -1 to +1 in the all three directions.
+//! the cone has a radius of 1 at the bottom and height of 2,
+//! with its apex at 1 and its bottom at -1. The cone has two parts:
+//! the sides and the bottom
 class Vrml_Cone
 {
 public:

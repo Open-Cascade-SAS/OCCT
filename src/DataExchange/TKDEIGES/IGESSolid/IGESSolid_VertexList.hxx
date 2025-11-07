@@ -48,7 +48,7 @@ public:
   Standard_EXPORT Standard_Integer NbVertices() const;
 
   //! returns the num'th vertex in the list
-  //! raises exception if num  <= 0 or num > NbVertices()
+  //! raises exception if num <= 0 or num > NbVertices()
   Standard_EXPORT gp_Pnt Vertex(const Standard_Integer num) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_VertexList, IGESData_IGESEntity)

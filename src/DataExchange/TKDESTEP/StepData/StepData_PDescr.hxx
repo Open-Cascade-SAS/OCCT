@@ -84,7 +84,7 @@ public:
   Standard_EXPORT void SetType(const Handle(Standard_Type)& atype);
 
   //! Sets <me> for a Described Entity, whose Description must match
-  //! the type name  <dscnam>
+  //! the type name <dscnam>
   Standard_EXPORT void SetDescr(const Standard_CString dscnam);
 
   //! Adds an arity count to <me>, by default 1

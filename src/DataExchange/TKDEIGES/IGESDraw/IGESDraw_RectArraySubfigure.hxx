@@ -97,7 +97,7 @@ public:
   //! returns 0 if all replicated entities to be displayed
   Standard_EXPORT Standard_Integer ListCount() const;
 
-  //! returns 0 if half or fewer of the elements of  the array are defined
+  //! returns 0 if half or fewer of the elements of the array are defined
   //! 1 if half or more of the elements are defined
   Standard_EXPORT Standard_Boolean DoDontFlag() const;
 

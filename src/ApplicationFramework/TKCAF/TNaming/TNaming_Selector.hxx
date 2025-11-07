@@ -44,7 +44,7 @@ class TNaming_NamedShape;
 //! NamedShape at the given label, which contains the
 //! argument selected shape. When calling this
 //! method, the sub-hierarchy of <label> is first cleared,
-//! then a TNaming_NamedShape is ALWAYS created  at
+//! then a TNaming_NamedShape is ALWAYS created at
 //! this <label>, with the TNaming_SELECTED evolution.
 //! The <Naming attribute> is associated to the selected
 //! shape which store the arguments of the selection.

@@ -28,13 +28,13 @@ class VrmlConverter_Drawer;
 class TopoDS_Face;
 class Poly_Connect;
 
-//! ShadedShape - computes  the  shading presentation of shapes
+//! ShadedShape - computes the shading presentation of shapes
 //! by triangulation algorithms, converts this one into VRML objects
 //! and writes (adds) into anOStream.
 //! All requested properties of the representation including
-//! the maximal chordial deviation  are specify in aDrawer.
-//! This  kind  of  the  presentation  is  converted  into
-//! IndexedFaceSet ( VRML ).
+//! the maximal chordial deviation are specify in aDrawer.
+//! This kind of the presentation is converted into
+//! IndexedFaceSet (VRML).
 class VrmlConverter_ShadedShape
 {
 public:

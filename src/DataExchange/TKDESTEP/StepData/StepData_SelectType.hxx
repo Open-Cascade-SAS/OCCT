@@ -60,7 +60,7 @@ public:
   //! Returns True if the Type of an Entity complies with the
   //! definition list of the SelectType.
   //! Also checks for a SelectMember
-  //! Default Implementation looks for CaseNum  or CaseMem positive
+  //! Default Implementation looks for CaseNum or CaseMem positive
   Standard_EXPORT Standard_Boolean Matches(const Handle(Standard_Transient)& ent) const;
 
   //! Stores an Entity. This allows to define a specific SelectType

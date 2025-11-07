@@ -27,13 +27,13 @@ class VrmlConverter_LineAspect;
 DEFINE_STANDARD_HANDLE(VrmlConverter_LineAspect, Standard_Transient)
 
 //! qualifies the aspect properties for
-//! the VRML conversation of a Curve and  a  DeflectionCurve .
+//! the VRML conversation of a Curve and a DeflectionCurve.
 class VrmlConverter_LineAspect : public Standard_Transient
 {
 
 public:
   //! create a default LineAspect.
-  //! Default value: HasMaterial  =  False  - a  line  hasn't  own  material (color)
+  //! Default value: HasMaterial  = False - a line hasn't own material (color)
   Standard_EXPORT VrmlConverter_LineAspect();
 
   Standard_EXPORT VrmlConverter_LineAspect(const Handle(Vrml_Material)& aMaterial,
@@ -43,12 +43,12 @@ public:
 
   Standard_EXPORT Handle(Vrml_Material) Material() const;
 
-  //! defines the necessary of writing  own  Material from Vrml into  output  OStream.
-  //! By default False  -  the material is not writing into OStream,
-  //! True  -  the material is writing.
+  //! defines the necessary of writing own Material from Vrml into output OStream.
+  //! By default False - the material is not writing into OStream,
+  //! True - the material is writing.
   Standard_EXPORT void SetHasMaterial(const Standard_Boolean OnOff);
 
-  //! returns True if the  materials is  writing into OStream.
+  //! returns True if the materials is writing into OStream.
   Standard_EXPORT Standard_Boolean HasMaterial() const;
 
   DEFINE_STANDARD_RTTIEXT(VrmlConverter_LineAspect, Standard_Transient)
