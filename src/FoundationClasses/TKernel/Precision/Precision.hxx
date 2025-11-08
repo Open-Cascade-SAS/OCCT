@@ -176,7 +176,7 @@ public:
   //!
   //! Typical use cases include:
   //! -   Checking if squared magnitudes are effectively zero (e.g., vector.SquareMagnitude() <
-  //! Computational())
+  //! SquareComputational())
   //! -   Division-by-zero protection in numerical algorithms
   //! -   Convergence criteria in iterative solvers at machine precision level
   //! -   Detecting numerical degeneracies in low-level computations
