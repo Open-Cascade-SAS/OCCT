@@ -1514,8 +1514,8 @@ void ElSLib::ConeParameters(const gp_Ax3&       Pos,
   T.SetTransformation(Pos);
   gp_Pnt Ploc = P.Transformed(T);
 
-  // Check if point is at the apex (use epsilon comparison)
-  if (Ploc.X() * Ploc.X() + Ploc.Y() * Ploc.Y() < Precision::SquareComputational())
+  // Check if point is at the apex
+  if (Abs(Ploc.X()) < gp::Resolution() && Abs(Ploc.Y()) < gp::Resolution())
   {
     U = 0.0;
   }
