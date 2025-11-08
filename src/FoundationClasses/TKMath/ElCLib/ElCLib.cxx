@@ -53,10 +53,18 @@ static constexpr Standard_Real NEGATIVE_RESOLUTION = -1.e-16;
 // for values very close to zero to avoid discontinuity.
 static inline void normalizeAngle(Standard_Real& theAngle)
 {
-  if (theAngle < NEGATIVE_RESOLUTION)
+  while (theAngle < NEGATIVE_RESOLUTION)
+  {
     theAngle += PIPI;
-  else if (theAngle < 0.)
+  }
+  while (theAngle >= PIPI)
+  {
+    theAngle -= PIPI;
+  }
+  if (theAngle < 0.)
+  {
     theAngle = 0.;
+  }
 }
 } // namespace
 
