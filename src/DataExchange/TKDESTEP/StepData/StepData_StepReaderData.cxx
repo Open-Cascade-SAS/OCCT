@@ -62,8 +62,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepData_StepReaderData, Interface_FileReaderData)
 
 #define Maxlst 64
 
-static const Standard_Integer acceptvoid = 0;
-
 // ----------  Fonctions Utilitaires  ----------
 
 //! Convert unsigned character to hexadecimal system,
@@ -700,14 +698,8 @@ Standard_Boolean StepData_StepReaderData::ReadSubList(const Standard_Integer   n
 
   Standard_CString errmess = "Parameter n0.%d (%s) not a LIST";
   Sprintf(txtmes, errmess, nump, mess);
-  if constexpr (acceptvoid && isvoid)
-    ach->AddWarning(txtmes, errmess);
-  else
-  {
-    ach->AddFail(txtmes, errmess);
-    return Standard_False;
-  }
-  return Standard_True;
+  ach->AddFail(txtmes, errmess);
+  return Standard_False;
 }
 
 //  ...   Utilities for LateBinding
@@ -1446,14 +1438,12 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer     
 {
   char             txtmes[200];
   Standard_CString errmess = nullptr; // Null if no error
-  Standard_Boolean warn    = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
     const Interface_FileParameter& FP   = Param(num, nump);
     Standard_Integer               nent = FP.EntityNumber();
     if (FP.ParamType() == Interface_ParamIdent)
     {
-      warn = (acceptvoid > 0);
       if (nent > 0)
       {
         Handle(Standard_Transient) entent = BoundEntity(nent);
@@ -1471,14 +1461,11 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer     
     }
     else
     {
-      if constexpr (acceptvoid && FP.ParamType() == Interface_ParamVoid)
-        warn = Standard_True;
       errmess = "Parameter n0.%d (%s) not an Entity";
     }
   }
   else
   {
-    warn    = (acceptvoid > 0);
     errmess = "Parameter n0.%d (%s) absent";
   }
 
@@ -1486,10 +1473,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer     
     return Standard_True;
 
   Sprintf(txtmes, errmess, nump, mess);
-  if (warn)
-    ach->AddWarning(txtmes, errmess);
-  else
-    ach->AddFail(txtmes, errmess);
+  ach->AddFail(txtmes, errmess);
   return Standard_False;
 }
 
@@ -1503,14 +1487,12 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer   nu
 {
   char             txtmes[200];
   Standard_CString errmess = nullptr; // Null if no error
-  Standard_Boolean warn    = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
     const Interface_FileParameter& FP   = Param(num, nump);
     Standard_Integer               nent = FP.EntityNumber();
     if (FP.ParamType() == Interface_ParamIdent)
     {
-      warn = (acceptvoid > 0);
       if (nent > 0)
       {
         Handle(Standard_Transient) entent = BoundEntity(nent);
@@ -1529,8 +1511,6 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer   nu
     }
     else if (FP.ParamType() == Interface_ParamVoid)
     {
-      if (acceptvoid)
-        warn = Standard_True;
       errmess = "Parameter n0.%d (%s) not an Entity";
     }
     else
@@ -1548,7 +1528,6 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer   nu
   }
   else
   {
-    warn    = (acceptvoid > 0);
     errmess = "Parameter n0.%d (%s) absent";
   }
 
@@ -1556,10 +1535,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer   nu
     return Standard_True;
 
   Sprintf(txtmes, errmess, nump, mess);
-  if (warn)
-    ach->AddWarning(txtmes, errmess);
-  else
-    ach->AddFail(txtmes, errmess);
+  ach->AddFail(txtmes, errmess);
   return Standard_False;
 }
 
@@ -1575,7 +1551,6 @@ Standard_Boolean StepData_StepReaderData::ReadInteger(const Standard_Integer   n
 {
   char             txtmes[200];
   Standard_CString errmess = nullptr; // Null if no error
-  Standard_Boolean warn    = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
     const Interface_FileParameter& FP = Param(num, nump);
@@ -1585,8 +1560,6 @@ Standard_Boolean StepData_StepReaderData::ReadInteger(const Standard_Integer   n
     {
       val =
         static_cast<Standard_Integer>(std::round(Interface_FileReaderData::Fastof(FP.CValue())));
-      if (acceptvoid)
-        warn = Standard_True;
       errmess = "Parameter n0.%d (%s) was rounded";
     }
     if (FP.ParamType() != Interface_ParamInteger && FP.ParamType() != Interface_ParamReal)
@@ -1599,10 +1572,7 @@ Standard_Boolean StepData_StepReaderData::ReadInteger(const Standard_Integer   n
     return Standard_True;
 
   Sprintf(txtmes, errmess, nump, mess);
-  if (warn)
-    ach->AddWarning(txtmes, errmess);
-  else
-    ach->AddFail(txtmes, errmess);
+  ach->AddFail(txtmes, errmess);
   return Standard_False;
 }
 
@@ -1693,7 +1663,6 @@ Standard_Boolean StepData_StepReaderData::ReadString(const Standard_Integer     
 {
   char             txtmes[200];
   Standard_CString errmess = nullptr; // Null if no error
-  Standard_Boolean warn    = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
     const Interface_FileParameter& FP = Param(num, nump);
@@ -1711,8 +1680,6 @@ Standard_Boolean StepData_StepReaderData::ReadString(const Standard_Integer     
     }
     else
     {
-      if constexpr (acceptvoid && FP.ParamType() == Interface_ParamVoid)
-        warn = Standard_True;
       errmess = "Parameter n0.%d (%s) not a quoted String";
     }
   }
@@ -1723,10 +1690,7 @@ Standard_Boolean StepData_StepReaderData::ReadString(const Standard_Integer     
     return Standard_True;
 
   Sprintf(txtmes, errmess, nump, mess);
-  if (warn)
-    ach->AddWarning(txtmes, errmess);
-  else
-    ach->AddFail(txtmes, errmess);
+  ach->AddFail(txtmes, errmess);
   return Standard_False;
 }
 
@@ -1740,19 +1704,16 @@ Standard_Boolean StepData_StepReaderData::ReadEnumParam(const Standard_Integer  
 {
   char             txtmes[200];
   Standard_CString errmess = nullptr; // Null if no error
-  Standard_Boolean warn    = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
     const Interface_FileParameter& FP = Param(num, nump);
     if (FP.ParamType() == Interface_ParamEnum)
     {
       text = FP.CValue();
-      warn = (acceptvoid > 0);
     }
     else if (FP.ParamType() == Interface_ParamVoid)
     {
       errmess = "Parameter n0.%d (%s) : Undefined Enumeration not allowed";
-      warn    = (acceptvoid > 0);
     }
     else
       errmess = "Parameter n0.%d (%s) not an Enumeration";
@@ -1764,10 +1725,7 @@ Standard_Boolean StepData_StepReaderData::ReadEnumParam(const Standard_Integer  
     return Standard_True;
 
   Sprintf(txtmes, errmess, nump, mess);
-  if (warn)
-    ach->AddWarning(txtmes, errmess);
-  else
-    ach->AddFail(txtmes, errmess);
+  ach->AddFail(txtmes, errmess);
   return Standard_False;
 }
 
@@ -1796,7 +1754,6 @@ Standard_Boolean StepData_StepReaderData::ReadEnum(const Standard_Integer   num,
   //  resume with ReadEnumParam?
   char             txtmes[200];
   Standard_CString errmess = nullptr; // Null if no error
-  Standard_Boolean warn    = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
     const Interface_FileParameter& FP = Param(num, nump);
@@ -1807,14 +1764,12 @@ Standard_Boolean StepData_StepReaderData::ReadEnum(const Standard_Integer   num,
         return Standard_True;
       else
         errmess = "Parameter n0.%d (%s) : Incorrect Enumeration Value";
-      warn = (acceptvoid > 0);
     }
     else if (FP.ParamType() == Interface_ParamVoid)
     {
       val = enumtool.NullValue();
       if (val < 0)
         errmess = "Parameter n0.%d (%s) : Undefined Enumeration not allowed";
-      warn = (acceptvoid > 0);
     }
     else
       errmess = "Parameter n0.%d (%s) not an Enumeration";
@@ -1826,10 +1781,7 @@ Standard_Boolean StepData_StepReaderData::ReadEnum(const Standard_Integer   num,
     return Standard_True;
 
   Sprintf(txtmes, errmess, nump, mess);
-  if (warn)
-    ach->AddWarning(txtmes, errmess);
-  else
-    ach->AddFail(txtmes, errmess);
+  ach->AddFail(txtmes, errmess);
   return Standard_False;
 }
 
@@ -1897,8 +1849,6 @@ Standard_Boolean StepData_StepReaderData::CheckDerived(const Standard_Integer   
       return Standard_True;
     else
       errmess = "Parameter n0.%d (%s) not Derived";
-    if (acceptvoid)
-      warn = Standard_True;
   }
   else
     errmess = "Parameter n0.%d (%s) absent";
