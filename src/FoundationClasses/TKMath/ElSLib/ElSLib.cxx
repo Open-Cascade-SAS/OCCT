@@ -47,7 +47,7 @@ static inline void normalizeAngle(Standard_Real& theAngle)
   }
   // Only normalize angles strictly greater than 2*PI (with small tolerance)
   // to preserve the closing seam value of exactly 2*PI
-  while (theAngle > PIPI * (1.0 + Precision::Confusion()))
+  while (theAngle > PIPI * (1.0 + gp::Resolution()))
   {
     theAngle -= PIPI;
   }
