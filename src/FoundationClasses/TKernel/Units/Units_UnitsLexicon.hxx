@@ -29,8 +29,8 @@ class Units_UnitsLexicon;
 DEFINE_STANDARD_HANDLE(Units_UnitsLexicon, Units_Lexicon)
 
 //! This class defines a lexicon useful to analyse and
-//! recognize the different key  words  included  in a
-//! sentence. The  lexicon is stored  in a sequence of
+//! recognize the different key words included in a
+//! sentence. The lexicon is stored in a sequence of
 //! tokens.
 class Units_UnitsLexicon : public Units_Lexicon
 {
@@ -39,8 +39,8 @@ public:
   //! Returns an empty instance of UnitsLexicon
   Standard_EXPORT Units_UnitsLexicon();
 
-  //! Reads  the files  <afilename1>  and  <afilename2>   to
-  //! create     a   sequence     of    tokens   stored   in
+  //! Reads the files <afilename1> and <afilename2> to
+  //! create a sequence of tokens stored in
   //! <thesequenceoftokens>.
   Standard_EXPORT void Creates(const Standard_Boolean amode = Standard_True);
 

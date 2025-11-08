@@ -101,7 +101,7 @@ public:
   void SetAffinity(const gp_Ax1& theA1, const Standard_Real theRatio);
 
   //! Changes this transformation into an affinity of ratio theRatio
-  //! with respect to  the plane defined by the origin, the "X Direction" and
+  //! with respect to the plane defined by the origin, the "X Direction" and
   //! the "Y Direction" of coordinate system theA2.
   //! Note: an affinity is a point-by-point transformation that
   //! transforms any point P into a point P' such that if H is
@@ -110,9 +110,9 @@ public:
   //! HP' = theRatio * HP.
   void SetAffinity(const gp_Ax2& theA2, const Standard_Real theRatio);
 
-  //! Replaces  the coefficient (theRow, theCol) of the matrix representing
-  //! this transformation by theValue.  Raises OutOfRange
-  //! if  theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
+  //! Replaces the coefficient (theRow, theCol) of the matrix representing
+  //! this transformation by theValue. Raises OutOfRange
+  //! if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
   void SetValue(const Standard_Integer theRow,
                 const Standard_Integer theCol,
                 const Standard_Real    theValue);
@@ -152,7 +152,7 @@ public:
   //! If this transformation is singular, it cannot be inverted.
   Standard_Boolean IsSingular() const { return matrix.IsSingular(); }
 
-  //! Returns the nature of the transformation.  It can be an
+  //! Returns the nature of the transformation. It can be an
   //! identity transformation, a rotation, a translation, a mirror
   //! transformation (relative to a point, an axis or a plane), a
   //! scaling transformation, a compound transformation or
@@ -173,7 +173,7 @@ public:
   constexpr const gp_XYZ& TranslationPart() const noexcept { return loc; }
 
   //! Computes the vectorial part of the GTrsf. The returned Matrix
-  //! is a  3*3 matrix.
+  //! is a 3*3 matrix.
   constexpr const gp_Mat& VectorialPart() const noexcept { return matrix; }
 
   //! Returns the coefficients of the global matrix of transformation.

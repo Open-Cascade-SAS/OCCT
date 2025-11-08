@@ -147,7 +147,7 @@ public:
   //! (the ellipse has degenerated into a circle).
   gp_Ax1 Directrix2() const;
 
-  //! Returns the eccentricity of the ellipse  between 0.0 and 1.0
+  //! Returns the eccentricity of the ellipse between 0.0 and 1.0
   //! If f is the distance between the center of the ellipse and
   //! the Focus1 then the eccentricity e = f / MajorRadius.
   //! Raises ConstructionError if MajorRadius = 0.0

@@ -70,8 +70,8 @@ class ElCLib
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Return a value in   the  range <UFirst, ULast>  by
-  //! adding or removing the period <ULast -  UFirst> to
+  //! Return a value in the range <UFirst, ULast> by
+  //! adding or removing the period <ULast - UFirst> to
   //! <U>.
   //! ATTENTION!!!
   //!   It is expected but not checked that (ULast > UFirst)
@@ -79,7 +79,7 @@ public:
                                                 const Standard_Real UFirst,
                                                 const Standard_Real ULast);
 
-  //! Adjust U1 and  U2 in the  parametric range  UFirst
+  //! Adjust U1 and U2 in the parametric range UFirst
   //! Ulast of a periodic curve, where ULast -
   //! UFirst is its period. To do this, this function:
   //! -   sets U1 in the range [ UFirst, ULast ] by
@@ -113,7 +113,7 @@ public:
   //! -   the point P of parameter U, and
   //! -   the first derivative vector V1 at this point.
   //! The results P and V1 are either:
-  //! -   a gp_Pnt point and a gp_Vec vector, for a curve in 3D  space, or
+  //! -   a gp_Pnt point and a gp_Vec vector, for a curve in 3D space, or
   //! -   a gp_Pnt2d point and a gp_Vec2d vector, for a curve in 2D space.
   static void D1(const Standard_Real U, const gp_Lin& L, gp_Pnt& P, gp_Vec& V1);
 
@@ -649,7 +649,7 @@ public:
   //! In the local coordinate system of the parabola
   //! Y**2 = (2*P) * X where P is the distance between the focus
   //! and the directrix.
-  //! The following functions build  a 3d curve from a
+  //! The following functions build a 3d curve from a
   //! 2d curve at a given position defined with an Ax2.
   Standard_EXPORT static Standard_Real ParabolaParameter(const gp_Ax22d& Pos, const gp_Pnt2d& P);
 

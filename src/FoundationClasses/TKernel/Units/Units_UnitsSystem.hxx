@@ -28,7 +28,7 @@ class TCollection_AsciiString;
 class Units_UnitsSystem;
 DEFINE_STANDARD_HANDLE(Units_UnitsSystem, Standard_Transient)
 
-//! This class  allows  the  user  to  define his  own
+//! This class allows the user to define his own
 //! system of units.
 class Units_UnitsSystem : public Standard_Transient
 {

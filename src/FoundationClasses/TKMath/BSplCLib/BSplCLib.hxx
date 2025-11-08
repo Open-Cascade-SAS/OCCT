@@ -39,49 +39,49 @@ class gp_Vec;
 class gp_Vec2d;
 class math_Matrix;
 
-//! BSplCLib   B-spline curve Library.
+//! BSplCLib B-spline curve Library.
 //!
-//! The BSplCLib package is  a basic library  for BSplines. It
+//! The BSplCLib package is a basic library for BSplines. It
 //! provides three categories of functions.
 //!
-//! * Management methods to  process knots and multiplicities.
+//! * Management methods to process knots and multiplicities.
 //!
-//! * Multi-Dimensions  spline methods.  BSpline methods where
+//! * Multi-Dimensions spline methods. BSpline methods where
 //! poles have an arbitrary number of dimensions. They divides
-//! in two groups :
+//! in two groups:
 //!
-//! - Global methods modifying the  whole set of  poles. The
-//! poles are    described   by an array   of   Reals and  a
-//! Dimension. Example : Inserting knots.
+//! - Global methods modifying the whole set of poles. The
+//! poles are described by an array of Reals and a
+//! Dimension. Example: Inserting knots.
 //!
-//! - Local methods  computing  points and derivatives.  The
-//! poles  are described by a pointer  on  a local array  of
+//! - Local methods computing points and derivatives. The
+//! poles are described by a pointer on a local array of
 //! Reals and a Dimension. The local array is modified.
 //!
-//! *  2D  and 3D spline   curves  methods.
+//! *  2D and 3D spline curves methods.
 //!
-//! Methods  for 2d and 3d BSplines  curves  rational or not
+//! Methods for 2d and 3d BSplines curves rational or not
 //! rational.
 //!
-//! Those methods have the following structure :
+//! Those methods have the following structure:
 //!
 //! - They extract the pole information in a working array.
 //!
-//! -  They      process the  working   array    with   the
-//! multi-dimension  methods. (for example  a  3d  rational
-//! curve is processed as a 4 dimension curve).
+//! - They process the working array with the multi-
+//! dimension methods. (for example a 3d rational curve
+//! is processed as a 4 dimension curve).
 //!
 //! - They get back the result in the original dimension.
 //!
-//! Note that the  bspline   surface methods found   in the
-//! package BSplSLib  uses  the same  structure and rely on
+//! Note that the bspline surface methods found in the
+//! package BSplSLib uses the same structure and rely on
 //! BSplCLib.
 //!
-//! In the following list  of methods the  2d and 3d  curve
-//! methods   will be  described   with  the  corresponding
+//! In the following list of methods the 2d and 3d curve
+//! methods will be described with the corresponding
 //! multi-dimension method.
 //!
-//! The 3d or 2d B-spline curve is defined with :
+//! The 3d or 2d B-spline curve is defined with:
 //!
 //! . its control points : TColgp_Array1OfPnt(2d)        Poles
 //! . its weights        : TColStd_Array1OfReal          Weights
@@ -92,7 +92,7 @@ class math_Matrix;
 //!
 //! Warnings :
 //! The bounds of Poles and Weights should be the same.
-//! The bounds of Knots and Mults   should be the same.
+//! The bounds of Knots and Mults should be the same.
 //!
 //! Note: weight and multiplicity arrays can be passed by pointer for
 //! some functions so that NULL pointer is valid.
@@ -140,28 +140,28 @@ public:
   Standard_EXPORT static Standard_Integer LastUKnotIndex(const Standard_Integer         Degree,
                                                          const TColStd_Array1OfInteger& Mults);
 
-  //! Computes the index  of  the  flats knots  sequence
-  //! corresponding  to  <Index> in  the  knots sequence
+  //! Computes the index of the flats knots sequence
+  //! corresponding to <Index> in the knots sequence
   //! which multiplicities are <Mults>.
   Standard_EXPORT static Standard_Integer FlatIndex(const Standard_Integer         Degree,
                                                     const Standard_Integer         Index,
                                                     const TColStd_Array1OfInteger& Mults,
                                                     const Standard_Boolean         Periodic);
 
-  //! Locates  the parametric value    U  in the knots
-  //! sequence  between  the  knot K1   and the knot  K2.
+  //! Locates the parametric value U in the knots
+  //! sequence between the knot K1 and the knot K2.
   //! The value return in Index verifies.
   //!
   //! Knots(Index) <= U < Knots(Index + 1)
   //! if U <= Knots (K1) then Index = K1
   //! if U >= Knots (K2) then Index = K2 - 1
   //!
-  //! If Periodic is True U  may be  modified  to fit in
-  //! the range  Knots(K1), Knots(K2).  In any case  the
+  //! If Periodic is True U may be modified to fit in
+  //! the range Knots(K1), Knots(K2). In any case the
   //! correct value is returned in NewU.
   //!
-  //! Warnings :Index is used  as input   data to initialize  the
-  //! searching  function.
+  //! Warnings: Index is used as input data to initialize the
+  //! searching function.
   //! Warning: Knots have to be "with repetitions"
   Standard_EXPORT static void LocateParameter(const Standard_Integer         Degree,
                                               const TColStd_Array1OfReal&    Knots,
@@ -173,20 +173,20 @@ public:
                                               Standard_Integer&              KnotIndex,
                                               Standard_Real&                 NewU);
 
-  //! Locates  the parametric value    U  in the knots
-  //! sequence  between  the  knot K1   and the knot  K2.
+  //! Locates the parametric value U in the knots
+  //! sequence between the knot K1 and the knot K2.
   //! The value return in Index verifies.
   //!
   //! Knots(Index) <= U < Knots(Index + 1)
   //! if U <= Knots (K1) then Index = K1
   //! if U >= Knots (K2) then Index = K2 - 1
   //!
-  //! If Periodic is True U  may be  modified  to fit in
-  //! the range  Knots(K1), Knots(K2).  In any case  the
+  //! If Periodic is True U may be modified to fit in
+  //! the range Knots(K1), Knots(K2). In any case the
   //! correct value is returned in NewU.
   //!
-  //! Warnings :Index is used  as input   data to initialize  the
-  //! searching  function.
+  //! Warnings: Index is used as input data to initialize the
+  //! searching function.
   //! Warning: Knots have to be "flat"
   Standard_EXPORT static void LocateParameter(const Standard_Integer      Degree,
                                               const TColStd_Array1OfReal& Knots,
@@ -206,14 +206,14 @@ public:
                                               Standard_Real&                 NewU);
 
   //! Finds the greatest multiplicity in a set of knots
-  //! between  K1  and K2.   Mults  is  the  multiplicity
+  //! between K1 and K2. Mults is the multiplicity
   //! associated with each knot value.
   Standard_EXPORT static Standard_Integer MaxKnotMult(const TColStd_Array1OfInteger& Mults,
                                                       const Standard_Integer         K1,
                                                       const Standard_Integer         K2);
 
-  //! Finds the lowest multiplicity in  a  set of knots
-  //! between   K1  and K2.   Mults is  the  multiplicity
+  //! Finds the lowest multiplicity in a set of knots
+  //! between K1 and K2. Mults is the multiplicity
   //! associated with each knot value.
   Standard_EXPORT static Standard_Integer MinKnotMult(const TColStd_Array1OfInteger& Mults,
                                                       const Standard_Integer         K1,
@@ -224,16 +224,16 @@ public:
   //!
   //! * Non positive.
   //!
-  //! * Greater than Degree,  or  Degree+1  at the first and
+  //! * Greater than Degree, or Degree+1 at the first and
   //! last knot of a non periodic curve.
   //!
-  //! *  The  last periodicity  on  a periodic  curve is not
+  //! *  The last periodicity on a periodic curve is not
   //! equal to the first.
   Standard_EXPORT static Standard_Integer NbPoles(const Standard_Integer         Degree,
                                                   const Standard_Boolean         Periodic,
                                                   const TColStd_Array1OfInteger& Mults);
 
-  //! Returns the length  of the sequence  of knots with
+  //! Returns the length of the sequence of knots with
   //! repetition.
   //!
   //! Periodic :
@@ -253,8 +253,8 @@ public:
                                            TColStd_Array1OfReal&          KnotSeq,
                                            const Standard_Boolean Periodic = Standard_False);
 
-  //! Computes  the  sequence   of knots KnotSeq  with
-  //! repetition  of the  knots  of multiplicity  greater
+  //! Computes the sequence of knots KnotSeq with
+  //! repetition of the knots of multiplicity greater
   //! than 1.
   //!
   //! Length of KnotSeq must be KnotSequenceLength(Mults,Degree,Periodic)
@@ -264,26 +264,26 @@ public:
                                            const Standard_Boolean         Periodic,
                                            TColStd_Array1OfReal&          KnotSeq);
 
-  //! Returns the  length  of the   sequence of  knots  (and
-  //! Mults)  without repetition.
+  //! Returns thelength of the sequence of knots (and
+  //! Mults) without repetition.
   Standard_EXPORT static Standard_Integer KnotsLength(
     const TColStd_Array1OfReal& KnotSeq,
     const Standard_Boolean      Periodic = Standard_False);
 
-  //! Computes  the  sequence   of knots Knots  without
-  //! repetition  of the  knots  of multiplicity  greater
+  //! Computes the sequence of knots Knots without
+  //! repetition of the knots of multiplicity greater
   //! than 1.
   //!
-  //! Length  of <Knots> and  <Mults> must be
+  //! Length of <Knots> and <Mults> must be
   //! KnotsLength(KnotSequence,Periodic)
   Standard_EXPORT static void Knots(const TColStd_Array1OfReal& KnotSeq,
                                     TColStd_Array1OfReal&       Knots,
                                     TColStd_Array1OfInteger&    Mults,
                                     const Standard_Boolean      Periodic = Standard_False);
 
-  //! Analyses if the  knots distribution is "Uniform"
-  //! or  "NonUniform" between  the  knot  FromK1 and the
-  //! knot ToK2.  There is  no repetition of  knot in the
+  //! Analyses if the knots distribution is "Uniform"
+  //! or "NonUniform" between the knot FromK1 and the
+  //! knot ToK2. There is no repetition of knot in the
   //! knots'sequence <Knots>.
   Standard_EXPORT static BSplCLib_KnotDistribution KnotForm(const TColStd_Array1OfReal& Knots,
                                                             const Standard_Integer      FromK1,
@@ -306,31 +306,30 @@ public:
 
   //! Reparametrizes a B-spline curve to [U1, U2].
   //! The knot values are recomputed such that Knots (Lower) = U1
-  //! and Knots (Upper) = U2   but the knot form is not modified.
-  //! Warnings :
+  //! and Knots (Upper) = U2 but the knot form is not modified.
+  //! Warnings:
   //! In the array Knots the values must be in ascending order.
   //! U1 must not be equal to U2 to avoid division by zero.
   Standard_EXPORT static void Reparametrize(const Standard_Real   U1,
                                             const Standard_Real   U2,
                                             TColStd_Array1OfReal& Knots);
 
-  //! Reverses  the  array   knots  to  become  the knots
+  //! Reverses the array knots to become the knots
   //! sequence of the reversed curve.
   Standard_EXPORT static void Reverse(TColStd_Array1OfReal& Knots);
 
-  //! Reverses  the  array of multiplicities.
+  //! Reverses the array of multiplicities.
   Standard_EXPORT static void Reverse(TColStd_Array1OfInteger& Mults);
 
-  //! Reverses the array of poles. Last is the  index of
-  //! the new first pole. On  a  non periodic curve last
+  //! Reverses the array of poles. Last is the index of
+  //! the new first pole. On a non periodic curve last
   //! is Poles.Upper(). On a periodic curve last is
   //!
   //! (number of flat knots - degree - 1)
   //!
   //! or
   //!
-  //! (sum of multiplicities(but  for the last) + degree
-  //! - 1)
+  //! (sum of multiplicities(but for the last) + degree - 1)
   Standard_EXPORT static void Reverse(TColgp_Array1OfPnt& Poles, const Standard_Integer Last);
 
   //! Reverses the array of poles.
@@ -339,9 +338,9 @@ public:
   //! Reverses the array of poles.
   Standard_EXPORT static void Reverse(TColStd_Array1OfReal& Weights, const Standard_Integer Last);
 
-  //! Returns False if all the weights  of the  array <Weights>
-  //! between   I1 an I2   are  identic.   Epsilon  is used for
-  //! comparing  weights. If Epsilon  is 0. the  Epsilon of the
+  //! Returns False if all the weights of the array <Weights>
+  //! between I1 an I2 are identic. Epsilon is used for
+  //! comparing weights. If Epsilon is 0. the Epsilon of the
   //! first weight is used.
   Standard_EXPORT static Standard_Boolean IsRational(const TColStd_Array1OfReal& Weights,
                                                      const Standard_Integer      I1,
@@ -351,14 +350,14 @@ public:
   //! returns the degree maxima for a BSplineCurve.
   static inline constexpr Standard_Integer MaxDegree();
 
-  //! Perform the Boor  algorithm  to  evaluate a point at
+  //! Perform the Boor algorithm to evaluate a point at
   //! parameter <U>, with <Degree> and <Dimension>.
   //!
-  //! Poles is  an array of  Reals of size
+  //! Poles is an array of Reals of size
   //!
-  //! <Dimension> *  <Degree>+1
+  //! <Dimension> * <Degree>+1
   //!
-  //! Containing  the poles.  At  the end <Poles> contains
+  //! Containing the poles. At the end <Poles> contains
   //! the current point.
   Standard_EXPORT static void Eval(const Standard_Real    U,
                                    const Standard_Integer Degree,
@@ -366,17 +365,17 @@ public:
                                    const Standard_Integer Dimension,
                                    Standard_Real&         Poles);
 
-  //! Performs the  Boor Algorithm  at  parameter <U> with
-  //! the given <Degree> and the  array of <Knots> on  the
-  //! poles <Poles> of dimension  <Dimension>.  The schema
-  //! is  computed  until  level  <Depth>  on a   basis of
+  //! Performs the Boor Algorithm at parameter <U> with
+  //! the given <Degree> and the  array of <Knots> on the
+  //! poles <Poles> of dimension <Dimension>. The schema
+  //! is computed until level <Depth> on a basis of
   //! <Length+1> poles.
   //!
-  //! * Knots is an array of reals of length :
+  //! * Knots is an array of reals of length:
   //!
   //! <Length> + <Degree>
   //!
-  //! * Poles is an array of reals of length :
+  //! * Poles is an array of reals of length:
   //!
   //! (2 * <Length> + 1) * <Dimension>
   //!
@@ -403,16 +402,16 @@ public:
                                          const Standard_Integer Depth,
                                          const Standard_Integer Length);
 
-  //! Compute  the content of  Pole before the BoorScheme.
+  //! Compute the content of Pole before the BoorScheme.
   //! This method is used to remove poles.
   //!
-  //! U is the poles to  remove, Knots should contains the
+  //! U is the poles to remove, Knots should contains the
   //! knots of the curve after knot removal.
   //!
-  //! The first  and last poles  do not  change, the other
+  //! The first and last poles do not change, the other
   //! poles are computed by averaging two possible values.
-  //! The distance between  the  two   possible  poles  is
-  //! computed, if it  is higher than <Tolerance> False is
+  //! The distance between the two possible poles is
+  //! computed, if it is higher than <Tolerance> False is
   //! returned.
   Standard_EXPORT static Standard_Boolean AntiBoorScheme(const Standard_Real    U,
                                                          const Standard_Integer Degree,
@@ -423,7 +422,7 @@ public:
                                                          const Standard_Integer Length,
                                                          const Standard_Real    Tolerance);
 
-  //! Computes   the   poles of  the    BSpline  giving the
+  //! Computes the poles of the BSpline giving the
   //! derivatives of order <Order>.
   //!
   //! The formula for the first order is
@@ -431,7 +430,7 @@ public:
   //! Pole(i) = Degree * (Pole(i+1) - Pole(i)) /
   //! (Knots(i+Degree+1) - Knots(i+1))
   //!
-  //! This formula  is repeated  (Degree  is decremented at
+  //! This formula is repeated (Degree is decremented at
   //! each step).
   Standard_EXPORT static void Derivative(const Standard_Integer Degree,
                                          Standard_Real&         Knots,
@@ -440,15 +439,15 @@ public:
                                          const Standard_Integer Order,
                                          Standard_Real&         Poles);
 
-  //! Performs the Bohm  Algorithm at  parameter <U>. This
+  //! Performs the Bohm Algorithm at parameter <U>. This
   //! algorithm computes the value and all the derivatives
   //! up to order N (N <= Degree).
   //!
   //! <Poles> is the original array of poles.
   //!
-  //! The   result in  <Poles>  is    the value and    the
-  //! derivatives.  Poles[0] is  the value,  Poles[Degree]
-  //! is the last  derivative.
+  //! The result in <Poles> is the value and the
+  //! derivatives. Poles[0] is the value, Poles[Degree]
+  //! is the last derivative.
   Standard_EXPORT static void Bohm(const Standard_Real    U,
                                    const Standard_Integer Degree,
                                    const Standard_Integer N,
@@ -471,8 +470,8 @@ public:
                                          const TColStd_Array1OfInteger* Mults,
                                          Standard_Real&                 LK);
 
-  //! Return the index of the  first Pole to  use on the
-  //! span  Mults(Index)  - Mults(Index+1).  This  index
+  //! Return the index of the first Pole to use on the
+  //! span Mults(Index) - Mults(Index+1). This index
   //! must be added to Poles.Lower().
   Standard_EXPORT static Standard_Integer PoleIndex(const Standard_Integer         Degree,
                                                     const Standard_Integer         Index,
@@ -491,16 +490,16 @@ public:
                                         const TColStd_Array1OfReal* Weights,
                                         Standard_Real&              LP);
 
-  //! Copy in <LP>  the poles and  weights for  the Eval
-  //! scheme. starting from  Poles(Poles.Lower()+Index)
+  //! Copy in <LP> the poles and weights for the Eval
+  //! scheme. starting from Poles(Poles.Lower()+Index)
   Standard_EXPORT static void BuildEval(const Standard_Integer      Degree,
                                         const Standard_Integer      Index,
                                         const TColgp_Array1OfPnt2d& Poles,
                                         const TColStd_Array1OfReal* Weights,
                                         Standard_Real&              LP);
 
-  //! Copy in <LP>  poles for <Dimension>  Boor  scheme.
-  //! Starting  from    <Index>     *  <Dimension>, copy
+  //! Copy in <LP> poles for <Dimension> Boor scheme.
+  //! Starting from <Index> * <Dimension>, copy
   //! <Length+1> poles.
   Standard_EXPORT static void BuildBoor(const Standard_Integer      Index,
                                         const Standard_Integer      Length,
@@ -508,15 +507,15 @@ public:
                                         const TColStd_Array1OfReal& Poles,
                                         Standard_Real&              LP);
 
-  //! Returns the index in  the Boor result array of the
-  //! poles <Index>. If  the Boor  algorithm was perform
+  //! Returns the index in the Boor result array of the
+  //! poles <Index>. If the Boor algorithm was perform
   //! with <Length> and <Depth>.
   Standard_EXPORT static Standard_Integer BoorIndex(const Standard_Integer Index,
                                                     const Standard_Integer Length,
                                                     const Standard_Integer Depth);
 
-  //! Copy  the  pole at  position  <Index>  in  the Boor
-  //! scheme of   dimension <Dimension> to  <Position> in
+  //! Copy the pole at position <Index> in the Boor
+  //! scheme of dimension <Dimension> to <Position> in
   //! the array <Pole>. <Position> is updated.
   Standard_EXPORT static void GetPole(const Standard_Integer Index,
                                       const Standard_Integer Length,
@@ -526,19 +525,19 @@ public:
                                       Standard_Integer&      Position,
                                       TColStd_Array1OfReal&  Pole);
 
-  //! Returns in <NbPoles, NbKnots> the  new number of poles
-  //! and  knots    if  the  sequence   of  knots <AddKnots,
+  //! Returns in <NbPoles, NbKnots> the new number of poles
+  //! and knots if the sequence of knots <AddKnots,
   //! AddMults> is inserted in the sequence <Knots, Mults>.
   //!
   //! Epsilon is used to compare knots for equality.
   //!
-  //! If Add is True  the multiplicities on  equal knots are
+  //! If Add is True the multiplicities on equal knots are
   //! added.
   //!
   //! If Add is False the max value of the multiplicities is
   //! kept.
   //!
-  //! Return False if :
+  //! Return False if:
   //! The knew knots are knot increasing.
   //! The new knots are not in the range.
   Standard_EXPORT static Standard_Boolean PrepareInsertKnots(
@@ -582,31 +581,31 @@ public:
                                           const Standard_Real            Epsilon,
                                           const Standard_Boolean         Add = Standard_True);
 
-  //! Insert   a  sequence  of  knots <AddKnots> with
-  //! multiplicities   <AddMults>. <AddKnots>   must  be a   non
-  //! decreasing sequence and verifies :
+  //! Insert a sequence of knots <AddKnots> with
+  //! multiplicities <AddMults>. <AddKnots> must be a non
+  //! decreasing sequence and verifies:
   //!
   //! Knots(Knots.Lower()) <= AddKnots(AddKnots.Lower())
   //! Knots(Knots.Upper()) >= AddKnots(AddKnots.Upper())
   //!
-  //! The NewPoles and NewWeights arrays must have a length :
+  //! The NewPoles and NewWeights arrays must have a length:
   //! Poles.Length() + Sum(AddMults())
   //!
-  //! When a knot  to insert is identic  to an existing knot the
-  //! multiplicities   are added.
+  //! When a knot to insert is identic to an existing knot the
+  //! multiplicities are added.
   //!
   //! Epsilon is used to test knots for equality.
   //!
   //! When AddMult is negative or null the knot is not inserted.
   //! No multiplicity will becomes higher than the degree.
   //!
-  //! The new Knots and Multiplicities  are copied in <NewKnots>
+  //! The new Knots and Multiplicities are copied in <NewKnots>
   //! and  <NewMults>.
   //!
   //! All the New arrays should be correctly dimensioned.
   //!
-  //! When all  the new knots  are existing knots, i.e. only the
-  //! multiplicities  will  change it is   safe to  use the same
+  //! When all the new knots are existing knots, i.e. only the
+  //! multiplicities  will change it is safe to use the same
   //! arrays as input and output.
   Standard_EXPORT static void InsertKnots(const Standard_Integer         Degree,
                                           const Standard_Boolean         Periodic,
@@ -635,11 +634,11 @@ public:
                                          TColgp_Array1OfPnt&            NewPoles,
                                          TColStd_Array1OfReal*          NewWeights);
 
-  //! Insert a new knot U of multiplicity UMult in the
-  //! knot sequence.
+  //! Insert a new knot U of multiplicity UMult in the knot
+  //! sequence.
   //!
-  //! The  location of the new Knot  should be given as an input
-  //! data.  UIndex locates the new knot U  in the knot sequence
+  //! The location of the new Knot should be given as an input
+  //! data. UIndex locates the new knot U in the knot sequence
   //! and Knots (UIndex) < U < Knots (UIndex + 1).
   //!
   //! The new control points corresponding to this insertion are
@@ -669,7 +668,7 @@ public:
 
   //! Raise the multiplicity of knot to <UMult>.
   //!
-  //! The new control points  are  returned. Knots and Mults are
+  //! The new control points are returned. Knots and Mults are
   //! not updated.
   Standard_EXPORT static void RaiseMultiplicity(const Standard_Integer         KnotIndex,
                                                 const Standard_Integer         Mult,
@@ -709,23 +708,23 @@ public:
                                                      TColStd_Array1OfInteger&       NewMults,
                                                      const Standard_Real            Tolerance);
 
-  //! Decrement the  multiplicity  of <Knots(Index)>
-  //! to <Mult>. If <Mult>   is  null the   knot  is
+  //! Decrement the multiplicity of <Knots(Index)>
+  //! to <Mult>. If <Mult> is null the knot is
   //! removed.
   //!
   //! As there are two ways to compute the new poles
-  //! the midlle   will  be used  as  long    as the
+  //! the midlle will be used as long as the
   //! distance is lower than Tolerance.
   //!
-  //! If a  distance is  bigger  than  tolerance the
-  //! methods returns False  and  the new arrays are
+  //! If a distance is bigger than tolerance the
+  //! methods returns False and the new arrays are
   //! not modified.
   //!
-  //! A low  tolerance can be  used  to test  if the
-  //! knot  can be  removed  without  modifying  the
+  //! A low tolerance can be used to test if the
+  //! knot can be removed without modifying the
   //! curve.
   //!
-  //! A high tolerance  can be used  to "smooth" the
+  //! A high tolerance can be used to "smooth" the
   //! curve.
   Standard_EXPORT static Standard_Boolean RemoveKnot(const Standard_Integer         Index,
                                                      const Standard_Integer         Mult,
@@ -741,7 +740,7 @@ public:
                                                      TColStd_Array1OfInteger&       NewMults,
                                                      const Standard_Real            Tolerance);
 
-  //! Returns the   number   of  knots   of  a  curve   with
+  //! Returns the number of knots of a curve with
   //! multiplicities <Mults> after elevating the degree from
   //! <Degree> to <NewDegree>. See the IncreaseDegree method
   //! for more comments.
@@ -855,8 +854,8 @@ public:
                                              TColStd_Array1OfReal*       theNewWeights);
 
   //! Set in <NbKnots> and <NbPolesToAdd> the number of Knots and
-  //! Poles   of  the NotPeriodic  Curve   identical  at the
-  //! periodic     curve with    a  degree    <Degree>  ,  a
+  //! Poles of the NotPeriodic Curve identical at the
+  //! periodic curve with a degree <Degree>, a
   //! knots-distribution with Multiplicities <Mults>.
   Standard_EXPORT static void PrepareUnperiodize(const Standard_Integer         Degree,
                                                  const TColStd_Array1OfInteger& Mults,
@@ -893,7 +892,7 @@ public:
                                           TColStd_Array1OfReal*          NewWeights);
 
   //! Set in <NbKnots> and <NbPoles> the number of Knots and
-  //! Poles of the curve resulting from  the trimming of the
+  //! Poles of the curve resulting from the trimming of the
   //! BSplinecurve defined with <degree>, <knots>, <mults>
   Standard_EXPORT static void PrepareTrimming(const Standard_Integer         Degree,
                                               const Standard_Boolean         Periodic,
@@ -1172,22 +1171,22 @@ public:
                                  gp_Pnt&                     P,
                                  gp_Vec&                     VN);
 
-  //! The  above  functions  compute   values and
-  //! derivatives in the following situations :
+  //! The above functions compute values and
+  //! derivatives in the following situations:
   //!
   //! * 3D, 2D and 1D
   //!
   //! * Rational or not Rational.
   //!
-  //! * Knots  and multiplicities or "flat knots" without
+  //! * Knots and multiplicities or "flat knots" without
   //! multiplicities.
   //!
-  //! * The  <Index>  is   the localization  of  the
-  //! parameter in the knot sequence.  If <Index> is  out
+  //! * The <Index> is the localization of the
+  //! parameter in the knot sequence. If <Index> is out
   //! of range the correct value will be searched.
   //!
   //! VERY IMPORTANT!!!
-  //! USE  BSplCLib::NoWeights()  as Weights argument for non
+  //! USE BSplCLib::NoWeights() as Weights argument for non
   //! rational curves computations.
   Standard_EXPORT static void DN(const Standard_Real         U,
                                  const Standard_Integer      N,
@@ -1196,21 +1195,21 @@ public:
                                  gp_Pnt2d&                   P,
                                  gp_Vec2d&                   VN);
 
-  //! This  evaluates  the Bspline  Basis  at  a
-  //! given  parameter  Parameter   up   to  the
-  //! requested   DerivativeOrder  and store the
-  //! result  in the  array BsplineBasis  in the
-  //! following   fashion
+  //! This evaluates the Bspline Basis at a
+  //! given parameter Parameter up to the
+  //! requested DerivativeOrder and store the
+  //! result in the array BsplineBasis in the
+  //! following fashion
   //! BSplineBasis(1,1)   =
   //! value of first non vanishing
   //! Bspline function which has Index FirstNonZeroBsplineIndex
   //! BsplineBasis(1,2)   =
   //! value of second non vanishing
-  //! Bspline   function which  has   Index
+  //! Bspline function which has Index
   //! FirstNonZeroBsplineIndex + 1
   //! BsplineBasis(1,n)   =
   //! value of second non vanishing non vanishing
-  //! Bspline   function which  has   Index
+  //! Bspline function which has Index
   //! FirstNonZeroBsplineIndex + n (n <= Order)
   //! BSplineBasis(2,1)   =
   //! value of derivative of first non vanishing
@@ -1228,12 +1227,12 @@ public:
     math_Matrix&                BsplineBasis,
     const Standard_Boolean      isPeriodic = Standard_False);
 
-  //! This Builds   a fully  blown   Matrix of
+  //! This Builds a fully blown Matrix of
   //! (ni)
   //! Bi    (tj)
   //!
-  //! with i  and j within 1..Order + NumPoles
-  //! The  integer ni is   the ith slot of the
+  //! with i and j within 1..Order + NumPoles
+  //! The integer ni is the ith slot of the
   //! array OrderArray, tj is the jth slot of
   //! the array Parameters
   Standard_EXPORT static Standard_Integer BuildBSpMatrix(const TColStd_Array1OfReal&    Parameters,
@@ -1256,13 +1255,13 @@ public:
                                                              const Standard_Integer LowerBandWidth,
                                                              Standard_Integer& PivotIndexProblem);
 
-  //! This solves  the system Matrix.X =  B
+  //! This solves the system Matrix.X = B
   //! with when Matrix is factored in LU form
-  //! The  Array   is    an   seen   as    an
+  //! The Array is an seen as an
   //! Array[1..N][1..ArrayDimension] with N =
-  //! the  rank  of the  matrix  Matrix.  The
-  //! result is stored   in Array  when  each
-  //! coordinate is  solved that is  B is the
+  //! the rank of the matrix Matrix. The
+  //! result is stored in Array when each
+  //! coordinate is solved that is B is the
   //! array whose values are
   //! B[i] = Array[i][p] for each p in 1..ArrayDimension
   Standard_EXPORT static Standard_Integer SolveBandedSystem(const math_Matrix&     Matrix,
@@ -1271,12 +1270,12 @@ public:
                                                             const Standard_Integer ArrayDimension,
                                                             Standard_Real&         Array);
 
-  //! This solves  the system Matrix.X =  B
+  //! This solves the system Matrix.X = B
   //! with when Matrix is factored in LU form
-  //! The  Array   has the length of
-  //! the  rank  of the  matrix  Matrix.  The
-  //! result is stored   in Array  when  each
-  //! coordinate is  solved that is  B is the
+  //! The Array has the length of
+  //! the rank of the matrix Matrix. The
+  //! result is stored in Array when each
+  //! coordinate is solved that is B is the
   //! array whose values are
   //! B[i] = Array[i][p] for each p in 1..ArrayDimension
   Standard_EXPORT static Standard_Integer SolveBandedSystem(const math_Matrix&     Matrix,
@@ -1284,12 +1283,12 @@ public:
                                                             const Standard_Integer LowerBandWidth,
                                                             TColgp_Array1OfPnt2d&  Array);
 
-  //! This solves  the system Matrix.X =  B
+  //! This solves the system Matrix.X = B
   //! with when Matrix is factored in LU form
-  //! The  Array   has the length of
-  //! the  rank  of the  matrix  Matrix.  The
-  //! result is stored   in Array  when  each
-  //! coordinate is  solved that is  B is the
+  //! The Array has the length of
+  //! the rank of the matrix Matrix. The
+  //! result is stored in Array when each
+  //! coordinate is solved that is B is the
   //! array whose values are
   //! B[i] = Array[i][p] for each p in 1..ArrayDimension
   Standard_EXPORT static Standard_Integer SolveBandedSystem(const math_Matrix&     Matrix,
@@ -1305,21 +1304,21 @@ public:
                                                             Standard_Real&         Array,
                                                             Standard_Real&         Weights);
 
-  //! This solves the  system Matrix.X =  B
+  //! This solves the system Matrix.X = B
   //! with when Matrix is factored in LU form
-  //! The    Array   is    an   seen  as   an
+  //! The Array is an seen as an
   //! Array[1..N][1..ArrayDimension] with N =
-  //! the  rank  of  the  matrix Matrix.  The
-  //! result is  stored   in Array when  each
-  //! coordinate is  solved that is B  is the
-  //! array  whose   values     are   B[i]  =
-  //! Array[i][p]       for     each  p    in
-  //! 1..ArrayDimension. If  HomogeneousFlag ==
-  //! 0  the  Poles  are  multiplied by   the
-  //! Weights   upon   Entry   and      once
-  //! interpolation   is    carried  over the
-  //! result of the  poles are divided by the
-  //! result of   the   interpolation of  the
+  //! the rank of the matrix Matrix. The
+  //! result is stored in Array when each
+  //! coordinate is solved that is B is the
+  //! array whose values are B[i] = Array[i][p]
+  //! for each p in 1..ArrayDimension.
+  //! If HomogeneousFlag == 0
+  //! the Poles are multiplied by the
+  //! Weights upon Entry and once
+  //! interpolation is carried over the
+  //! result of the poles are divided by the
+  //! result of the interpolation of the
   //! weights. Otherwise if HomogenousFlag == 1
   //! the Poles and Weights are treated homogeneously
   //! that is that those are interpolated as they
@@ -1332,21 +1331,21 @@ public:
                                                             TColgp_Array1OfPnt2d&  Array,
                                                             TColStd_Array1OfReal&  Weights);
 
-  //! This solves  the system Matrix.X =  B
+  //! This solves the system Matrix.X = B
   //! with when Matrix is factored in LU form
-  //! The  Array   is    an   seen   as    an
+  //! The Array is an seen as an
   //! Array[1..N][1..ArrayDimension] with N =
-  //! the  rank  of the  matrix  Matrix.  The
-  //! result is stored   in Array  when  each
-  //! coordinate is  solved that is  B is the
-  //! array whose values are
-  //! B[i] = Array[i][p] for each p in 1..ArrayDimension
-  //! If  HomogeneousFlag ==
-  //! 0  the  Poles  are  multiplied by   the
-  //! Weights   upon   Entry   and      once
-  //! interpolation   is    carried  over the
-  //! result of the  poles are divided by the
-  //! result of   the   interpolation of  the
+  //! the rank of the matrix Matrix. The
+  //! result is stored in Array when each
+  //! coordinate is solved that is B is the
+  //! array whose values are B[i] = Array[i][p]
+  //! for each p in 1..ArrayDimension
+  //! If HomogeneousFlag == 0
+  //! the Poles are multiplied by the
+  //! Weights upon Entry and once
+  //! interpolation is carried over the
+  //! result of the poles are divided by the
+  //! result of the interpolation of the
   //! weights. Otherwise if HomogenousFlag == 1
   //! the Poles and Weights are treated homogeneously
   //! that is that those are interpolated as they
@@ -1359,7 +1358,7 @@ public:
                                                             TColgp_Array1OfPnt&    Array,
                                                             TColStd_Array1OfReal&  Weights);
 
-  //! Merges  two knot vector by   setting the starting and
+  //! Merges two knot vector by setting the starting and
   //! ending values to StartValue and EndValue
   Standard_EXPORT static void MergeBSplineKnots(const Standard_Real               Tolerance,
                                                 const Standard_Real               StartValue,
@@ -1374,15 +1373,15 @@ public:
                                                 Handle(TColStd_HArray1OfReal)&    NewKnots,
                                                 Handle(TColStd_HArray1OfInteger)& NewMults);
 
-  //! This function will compose  a given Vectorial BSpline F(t)
-  //! defined  by its  BSplineDegree and BSplineFlatKnotsl,
-  //! its Poles  array which are coded as  an array of Real
-  //! of  the  form  [1..NumPoles][1..PolesDimension] with  a
-  //! function     a(t) which is   assumed to   satisfy the
+  //! This function will compose a given Vectorial BSpline F(t)
+  //! defined by its BSplineDegree and BSplineFlatKnotsl,
+  //! its Poles array which are coded as an array of Real
+  //! of the form [1..NumPoles][1..PolesDimension] with a
+  //! function a(t) which is assumed to satisfy the
   //! following:
   //!
-  //! 1. F(a(t))  is a polynomial BSpline
-  //! that can be expressed  exactly as a BSpline of degree
+  //! 1. F(a(t)) is a polynomial BSpline
+  //! that can be expressed exactly as a BSpline of degree
   //! NewDegree on the knots FlatKnots
   //!
   //! 2. a(t) defines a differentiable
@@ -1392,12 +1391,12 @@ public:
   //!
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are  satisfied : no check whatsoever
+  //! 1. and  2. above are satisfied: no check whatsoever
   //! is made in this method
   //!
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
-  //! BSpline : the method used is interpolation at Schoenenberg
+  //! BSpline: the method used is interpolation at Schoenenberg
   //! points of F(a(t))
   Standard_EXPORT static void FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function,
                                                      const Standard_Integer      BSplineDegree,
@@ -1409,15 +1408,15 @@ public:
                                                      Standard_Real&              NewPoles,
                                                      Standard_Integer&           theStatus);
 
-  //! This function will compose  a given Vectorial BSpline F(t)
-  //! defined  by its  BSplineDegree and BSplineFlatKnotsl,
-  //! its Poles  array which are coded as  an array of Real
-  //! of  the  form  [1..NumPoles][1..PolesDimension] with  a
-  //! function     a(t) which is   assumed to   satisfy the
+  //! This function will compose a given Vectorial BSpline F(t)
+  //! defined by its BSplineDegree and BSplineFlatKnotsl,
+  //! its Poles array which are coded as an array of Real
+  //! of the form [1..NumPoles][1..PolesDimension] with a
+  //! function a(t) which is assumed to satisfy the
   //! following:
   //!
-  //! 1. F(a(t))  is a polynomial BSpline
-  //! that can be expressed  exactly as a BSpline of degree
+  //! 1. F(a(t)) is a polynomial BSpline
+  //! that can be expressed exactly as a BSpline of degree
   //! NewDegree on the knots FlatKnots
   //!
   //! 2. a(t) defines a differentiable
@@ -1427,12 +1426,12 @@ public:
   //!
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are  satisfied : no check whatsoever
+  //! 1. and  2. above are satisfied: no check whatsoever
   //! is made in this method
   //!
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
-  //! BSpline : the method used is interpolation at Schoenenberg
+  //! BSpline: the method used is interpolation at Schoenenberg
   //! points of F(a(t))
   Standard_EXPORT static void FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function,
                                                      const Standard_Integer      BSplineDegree,
@@ -1443,25 +1442,25 @@ public:
                                                      TColStd_Array1OfReal&       NewPoles,
                                                      Standard_Integer&           theStatus);
 
-  //! this will compose  a given Vectorial BSpline F(t)
-  //! defined  by its  BSplineDegree and BSplineFlatKnotsl,
-  //! its Poles  array which are coded as  an array of Real
-  //! of  the  form  [1..NumPoles][1..PolesDimension] with  a
-  //! function     a(t) which is   assumed to   satisfy the
-  //! following  : 1. F(a(t))  is a polynomial BSpline
-  //! that can be expressed  exactly as a BSpline of degree
+  //! this will compose a given Vectorial BSpline F(t)
+  //! defined by its BSplineDegree and BSplineFlatKnotsl,
+  //! its Poles array which are coded as an array of Real
+  //! of the form [1..NumPoles][1..PolesDimension] with a
+  //! function a(t) which is assumed to satisfy the
+  //! following: 1. F(a(t)) is a polynomial BSpline
+  //! that can be expressed exactly as a BSpline of degree
   //! NewDegree on the knots FlatKnots
   //! 2. a(t) defines a differentiable
   //! isomorphism between the range of FlatKnots to the range
   //! of BSplineFlatKnots which is the
-  //! same as the  range of F(t)
+  //! same as the range of F(t)
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are  satisfied : no check whatsoever
+  //! 1. and 2. above are satisfied: no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
-  //! BSpline : the method used is interpolation at Schoenenberg
+  //! BSpline: the method used is interpolation at Schoenenberg
   //! points of F(a(t))
   Standard_EXPORT static void FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function,
                                                      const Standard_Integer      BSplineDegree,
@@ -1472,25 +1471,25 @@ public:
                                                      TColgp_Array1OfPnt&         NewPoles,
                                                      Standard_Integer&           theStatus);
 
-  //! this will compose  a given Vectorial BSpline F(t)
-  //! defined  by its  BSplineDegree and BSplineFlatKnotsl,
-  //! its Poles  array which are coded as  an array of Real
-  //! of  the  form  [1..NumPoles][1..PolesDimension] with  a
-  //! function     a(t) which is   assumed to   satisfy the
-  //! following  : 1. F(a(t))  is a polynomial BSpline
-  //! that can be expressed  exactly as a BSpline of degree
+  //! this will compose a given Vectorial BSpline F(t)
+  //! defined by its BSplineDegree and BSplineFlatKnotsl,
+  //! its Poles array which are coded as an array of Real
+  //! of the form [1..NumPoles][1..PolesDimension] with a
+  //! function a(t) which is assumed to satisfy the
+  //! following: 1. F(a(t)) is a polynomial BSpline
+  //! that can be expressed exactly as a BSpline of degree
   //! NewDegree on the knots FlatKnots
   //! 2. a(t) defines a differentiable
   //! isomorphism between the range of FlatKnots to the range
   //! of BSplineFlatKnots which is the
-  //! same as the  range of F(t)
+  //! same as the range of F(t)
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are  satisfied : no check whatsoever
+  //! 1. and  2. above are satisfied: no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
-  //! BSpline : the method used is interpolation at Schoenenberg
+  //! BSpline: the method used is interpolation at Schoenenberg
   //! points of F(a(t))
   Standard_EXPORT static void FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function,
                                                      const Standard_Integer      BSplineDegree,
@@ -1501,22 +1500,22 @@ public:
                                                      TColgp_Array1OfPnt2d&       NewPoles,
                                                      Standard_Integer&           theStatus);
 
-  //! this will  multiply a given Vectorial BSpline F(t)
-  //! defined  by its  BSplineDegree and BSplineFlatKnotsl,
-  //! its Poles  array which are coded as  an array of Real
-  //! of  the  form  [1..NumPoles][1..PolesDimension] by  a
-  //! function     a(t) which is   assumed to   satisfy the
-  //! following  : 1. a(t)  * F(t)  is a polynomial BSpline
-  //! that can be expressed  exactly as a BSpline of degree
+  //! this will multiply a given Vectorial BSpline F(t)
+  //! defined by its BSplineDegree and BSplineFlatKnotsl,
+  //! its Poles array which are coded as an array of Real
+  //! of the form [1..NumPoles][1..PolesDimension] by a
+  //! function a(t) which is assumed to satisfy the
+  //! following: 1. a(t) * F(t) is a polynomial BSpline
+  //! that can be expressed exactly as a BSpline of degree
   //! NewDegree on the knots FlatKnots 2. the range of a(t)
-  //! is the same as the  range of F(t)
+  //! is the same as the range of F(t)
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are  satisfied : no check whatsoever
+  //! 1. and 2. above are satisfied: no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
-  //! BSpline : the method used is interpolation at Schoenenberg
+  //! BSpline: the method used is interpolation at Schoenenberg
   //! points of a(t)*F(t)
   Standard_EXPORT static void FunctionMultiply(const BSplCLib_EvaluatorFunction& Function,
                                                const Standard_Integer            BSplineDegree,
@@ -1528,22 +1527,22 @@ public:
                                                Standard_Real&                    NewPoles,
                                                Standard_Integer&                 theStatus);
 
-  //! this will  multiply a given Vectorial BSpline F(t)
-  //! defined  by its  BSplineDegree and BSplineFlatKnotsl,
-  //! its Poles  array which are coded as  an array of Real
-  //! of  the  form  [1..NumPoles][1..PolesDimension] by  a
-  //! function     a(t) which is   assumed to   satisfy the
-  //! following  : 1. a(t)  * F(t)  is a polynomial BSpline
-  //! that can be expressed  exactly as a BSpline of degree
+  //! this will multiply a given Vectorial BSpline F(t)
+  //! defined by its BSplineDegree and BSplineFlatKnotsl,
+  //! its Poles array which are coded as an array of Real
+  //! of the form [1..NumPoles][1..PolesDimension] by a
+  //! function a(t) which is assumed to satisfy the
+  //! following: 1. a(t) * F(t) is a polynomial BSpline
+  //! that can be expressed exactly as a BSpline of degree
   //! NewDegree on the knots FlatKnots 2. the range of a(t)
-  //! is the same as the  range of F(t)
+  //! is the same as the range of F(t)
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are  satisfied : no check whatsoever
+  //! 1. and 2. above are satisfied: no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
-  //! BSpline : the method used is interpolation at Schoenenberg
+  //! BSpline: the method used is interpolation at Schoenenberg
   //! points of a(t)*F(t)
   Standard_EXPORT static void FunctionMultiply(const BSplCLib_EvaluatorFunction& Function,
                                                const Standard_Integer            BSplineDegree,
@@ -1554,22 +1553,22 @@ public:
                                                TColStd_Array1OfReal&             NewPoles,
                                                Standard_Integer&                 theStatus);
 
-  //! this will  multiply a given Vectorial BSpline F(t)
-  //! defined  by its  BSplineDegree and BSplineFlatKnotsl,
-  //! its Poles  array which are coded as  an array of Real
-  //! of  the  form  [1..NumPoles][1..PolesDimension] by  a
-  //! function     a(t) which is   assumed to   satisfy the
-  //! following  : 1. a(t)  * F(t)  is a polynomial BSpline
-  //! that can be expressed  exactly as a BSpline of degree
+  //! this will multiply a given Vectorial BSpline F(t)
+  //! defined by its BSplineDegree and BSplineFlatKnotsl,
+  //! its Poles array which are coded as an array of Real
+  //! of the form [1..NumPoles][1..PolesDimension] by a
+  //! function a(t) which is assumed to satisfy the
+  //! following: 1. a(t) * F(t) is a polynomial BSpline
+  //! that can be expressed exactly as a BSpline of degree
   //! NewDegree on the knots FlatKnots 2. the range of a(t)
-  //! is the same as the  range of F(t)
+  //! is the same as the range of F(t)
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are  satisfied : no check whatsoever
+  //! 1. and 2. above are satisfied: no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
-  //! BSpline : the method used is interpolation at Schoenenberg
+  //! BSpline: the method used is interpolation at Schoenenberg
   //! points of a(t)*F(t)
   Standard_EXPORT static void FunctionMultiply(const BSplCLib_EvaluatorFunction& Function,
                                                const Standard_Integer            BSplineDegree,
@@ -1580,22 +1579,22 @@ public:
                                                TColgp_Array1OfPnt2d&             NewPoles,
                                                Standard_Integer&                 theStatus);
 
-  //! this will  multiply a given Vectorial BSpline F(t)
-  //! defined  by its  BSplineDegree and BSplineFlatKnotsl,
-  //! its Poles  array which are coded as  an array of Real
-  //! of  the  form  [1..NumPoles][1..PolesDimension] by  a
-  //! function     a(t) which is   assumed to   satisfy the
-  //! following  : 1. a(t)  * F(t)  is a polynomial BSpline
-  //! that can be expressed  exactly as a BSpline of degree
+  //! this will multiply a given Vectorial BSpline F(t)
+  //! defined by its BSplineDegree and BSplineFlatKnotsl,
+  //! its Poles array which are coded as an array of Real
+  //! of the form [1..NumPoles][1..PolesDimension] by a
+  //! function a(t) which is assumed to satisfy the
+  //! following: 1. a(t) * F(t) is a polynomial BSpline
+  //! that can be expressed exactly as a BSpline of degree
   //! NewDegree on the knots FlatKnots 2. the range of a(t)
-  //! is the same as the  range of F(t)
+  //! is the same as the range of F(t)
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are  satisfied : no check whatsoever
+  //! 1. and 2. above are satisfied: no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
-  //! BSpline : the method used is interpolation at Schoenenberg
+  //! BSpline: the method used is interpolation at Schoenenberg
   //! points of a(t)*F(t)
   Standard_EXPORT static void FunctionMultiply(const BSplCLib_EvaluatorFunction& Function,
                                                const Standard_Integer            BSplineDegree,
@@ -1606,20 +1605,20 @@ public:
                                                TColgp_Array1OfPnt&               NewPoles,
                                                Standard_Integer&                 theStatus);
 
-  //! Perform the De Boor   algorithm  to  evaluate a point at
+  //! Perform the De Boor algorithm to evaluate a point at
   //! parameter <U>, with <Degree> and <Dimension>.
   //!
-  //! Poles is  an array of  Reals of size
+  //! Poles is an array of Reals of size
   //!
-  //! <Dimension> *  <Degree>+1
+  //! <Dimension> * <Degree>+1
   //!
-  //! Containing the  poles.  At  the end <Poles> contains
-  //! the current point.   Poles Contain all  the poles of
-  //! the BsplineCurve, Knots  also Contains all the knots
-  //! of the BsplineCurve.  ExtrapMode has two slots [0] =
+  //! Containing the poles. At the end <Poles> contains
+  //! the current point. Poles Contain all the poles of
+  //! the BsplineCurve, Knots also Contains all the knots
+  //! of the BsplineCurve. ExtrapMode has two slots [0] =
   //! Degree used to extrapolate before the first knot [1]
-  //! = Degre used to  extrapolate after the last knot has
-  //! to be between 1 and  Degree
+  //! = Degre used to extrapolate after the last knot has
+  //! to be between 1 and Degree
   Standard_EXPORT static void Eval(const Standard_Real         U,
                                    const Standard_Boolean      PeriodicFlag,
                                    const Standard_Integer      DerivativeRequest,
@@ -1631,16 +1630,16 @@ public:
                                    Standard_Real&              Result);
 
   //! Perform the  De Boor algorithm  to evaluate a point at
-  //! parameter   <U>,  with   <Degree>    and  <Dimension>.
-  //! Evaluates by multiplying the  Poles by the Weights and
-  //! gives  the homogeneous  result  in PolesResult that is
+  //! parameter <U>, with <Degree> and <Dimension>.
+  //! Evaluates by multiplying the Poles by the Weights and
+  //! gives the homogeneous result in PolesResult that is
   //! the results of the evaluation of the numerator once it
-  //! has     been  multiplied   by  the     weights and  in
-  //! WeightsResult one has  the result of the evaluation of
+  //! has been multiplied by the weights and in
+  //! WeightsResult one has the result of the evaluation of
   //! the denominator
   //!
-  //! Warning:   <PolesResult> and <WeightsResult>  must be   dimensioned
-  //! properly.
+  //! Warning: <PolesResult> and <WeightsResult> must be
+  //! dimensioned properly.
   Standard_EXPORT static void Eval(const Standard_Real         U,
                                    const Standard_Boolean      PeriodicFlag,
                                    const Standard_Integer      DerivativeRequest,
@@ -1798,7 +1797,7 @@ public:
                                       gp_Pnt2d&                   Point,
                                       gp_Vec2d&                   Vec);
 
-  //! Calls CacheD1 for Bezier  Curves Arrays computed with
+  //! Calls CacheD1 for Bezier Curves Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for Beziercurves ONLY!!!
   static void CoefsD1(const Standard_Real         U,
@@ -1807,7 +1806,7 @@ public:
                       gp_Pnt&                     Point,
                       gp_Vec&                     Vec);
 
-  //! Calls CacheD1 for Bezier  Curves Arrays computed with
+  //! Calls CacheD1 for Bezier Curves Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for Beziercurves ONLY!!!
   static void CoefsD1(const Standard_Real         U,
@@ -1859,7 +1858,7 @@ public:
                                       gp_Vec2d&                   Vec1,
                                       gp_Vec2d&                   Vec2);
 
-  //! Calls CacheD1 for Bezier  Curves Arrays computed with
+  //! Calls CacheD1 for Bezier Curves Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for Beziercurves ONLY!!!
   static void CoefsD2(const Standard_Real         U,
@@ -1869,7 +1868,7 @@ public:
                       gp_Vec&                     Vec1,
                       gp_Vec&                     Vec2);
 
-  //! Calls CacheD1 for Bezier  Curves Arrays computed with
+  //! Calls CacheD1 for Bezier Curves Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for Beziercurves ONLY!!!
   static void CoefsD2(const Standard_Real         U,
@@ -1924,7 +1923,7 @@ public:
                                       gp_Vec2d&                   Vec2,
                                       gp_Vec2d&                   Vec3);
 
-  //! Calls CacheD1 for Bezier  Curves Arrays computed with
+  //! Calls CacheD1 for Bezier Curves Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for Beziercurves ONLY!!!
   static void CoefsD3(const Standard_Real         U,
@@ -1935,7 +1934,7 @@ public:
                       gp_Vec&                     Vec2,
                       gp_Vec&                     Vec3);
 
-  //! Calls CacheD1 for Bezier  Curves Arrays computed with
+  //! Calls CacheD1 for Bezier Curves Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for Beziercurves ONLY!!!
   static void CoefsD3(const Standard_Real         U,
@@ -2010,8 +2009,8 @@ public:
 
   static void PolesCoefficients(const TColgp_Array1OfPnt& Poles, TColgp_Array1OfPnt& CachePoles);
 
-  //! Encapsulation   of  BuildCache    to   perform   the
-  //! evaluation  of the Taylor expansion for beziercurves
+  //! Encapsulation of BuildCache to perform the
+  //! evaluation of the Taylor expansion for beziercurves
   //! at parameter 0.
   //! Warning: To be used for Beziercurves ONLY!!!
   Standard_EXPORT static void PolesCoefficients(const TColgp_Array1OfPnt&   Poles,
@@ -2031,13 +2030,13 @@ public:
                                                     const TColStd_Array1OfReal& FlatKnots,
                                                     TColStd_Array1OfReal&       Parameters);
 
-  //! Performs the interpolation of  the data given in
-  //! the Poles  array  according  to the  requests in
-  //! ContactOrderArray    that is      :           if
-  //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   contains the dth  derivative of  the
+  //! Performs the interpolation of the data given in
+  //! the Poles array according to the requests in
+  //! ContactOrderArray that is: if
+  //! ContactOrderArray(i) has value d it means that
+  //! Poles(i) contains the dth derivative of the
   //! function to be interpolated. The length L of the
-  //! following arrays must be the same :
+  //! following arrays must be the same:
   //! Parameters, ContactOrderArray, Poles,
   //! The length of FlatKnots is Degree + L + 1
   //! Warning:
@@ -2057,13 +2056,13 @@ public:
                                           TColgp_Array1OfPnt&            Poles,
                                           Standard_Integer&              InversionProblem);
 
-  //! Performs the interpolation of  the data given in
-  //! the Poles  array  according  to the  requests in
-  //! ContactOrderArray    that is      :           if
-  //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   contains the dth  derivative of  the
+  //! Performs the interpolation of the data given in
+  //! the Poles array according to the requests in
+  //! ContactOrderArray that is: if
+  //! ContactOrderArray(i) has value d it means that
+  //! Poles(i) contains the dth derivative of the
   //! function to be interpolated. The length L of the
-  //! following arrays must be the same :
+  //! following arrays must be the same:
   //! Parameters, ContactOrderArray, Poles,
   //! The length of FlatKnots is Degree + L + 1
   //! Warning:
@@ -2071,10 +2070,9 @@ public:
   //! gauss elimination WITHOUT pivoting. Thus if the
   //! diagonal is not dominant there is no guarantee
   //! that the algorithm will work. Nevertheless for
-  //! Cubic interpolation at knots or interpolation at Scheonberg
-  //! points the method will work.
-  //! The InversionProblem w
-  //! ll report 0 if there was no
+  //! Cubic interpolation at knots or interpolation at
+  //! Scheonberg points the method will work.
+  //! The InversionProblem will report 0 if there was no
   //! problem else it will give the index of the faulty
   //! pivot
   Standard_EXPORT static void Interpolate(const Standard_Integer         Degree,
@@ -2084,13 +2082,13 @@ public:
                                           TColgp_Array1OfPnt2d&          Poles,
                                           Standard_Integer&              InversionProblem);
 
-  //! Performs the interpolation of  the data given in
-  //! the Poles  array  according  to the  requests in
-  //! ContactOrderArray    that is      :           if
-  //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   contains the dth  derivative of  the
+  //! Performs the interpolation of the data given in
+  //! the Poles array according to the requests in
+  //! ContactOrderArray that is: if
+  //! ContactOrderArray(i) has value d it means that
+  //! Poles(i) contains the dth derivative of the
   //! function to be interpolated. The length L of the
-  //! following arrays must be the same :
+  //! following arrays must be the same:
   //! Parameters, ContactOrderArray, Poles,
   //! The length of FlatKnots is Degree + L + 1
   //! Warning:
@@ -2098,8 +2096,8 @@ public:
   //! gauss elimination WITHOUT pivoting. Thus if the
   //! diagonal is not dominant there is no guarantee
   //! that the algorithm will work. Nevertheless for
-  //! Cubic interpolation at knots or interpolation at Scheonberg
-  //! points the method will work.
+  //! Cubic interpolation at knots or interpolation at
+  //! Scheonberg points the method will work.
   //! The InversionProblem will report 0 if there was no
   //! problem else it will give the index of the faulty
   //! pivot
@@ -2111,13 +2109,13 @@ public:
                                           TColStd_Array1OfReal&          Weights,
                                           Standard_Integer&              InversionProblem);
 
-  //! Performs the interpolation of  the data given in
-  //! the Poles  array  according  to the  requests in
-  //! ContactOrderArray    that is      :           if
-  //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   contains the dth  derivative of  the
+  //! Performs the interpolation of the data given in
+  //! the Poles array according to the requests in
+  //! ContactOrderArray that is: if
+  //! ContactOrderArray(i) has value d it means that
+  //! Poles(i) contains the dth derivative of the
   //! function to be interpolated. The length L of the
-  //! following arrays must be the same :
+  //! following arrays must be the same:
   //! Parameters, ContactOrderArray, Poles,
   //! The length of FlatKnots is Degree + L + 1
   //! Warning:
@@ -2125,11 +2123,10 @@ public:
   //! gauss elimination WITHOUT pivoting. Thus if the
   //! diagonal is not dominant there is no guarantee
   //! that the algorithm will work. Nevertheless for
-  //! Cubic interpolation at knots or interpolation at Scheonberg
-  //! points the method will work.
-  //! The InversionProblem w
-  //! ll report 0 if there was no
-  //! problem else it will give the i
+  //! Cubic interpolation at knots or interpolation at
+  //! Scheonberg points the method will work.
+  //! The InversionProblem will report 0 if there was
+  //! no problem else it will give the i
   Standard_EXPORT static void Interpolate(const Standard_Integer         Degree,
                                           const TColStd_Array1OfReal&    FlatKnots,
                                           const TColStd_Array1OfReal&    Parameters,
@@ -2138,16 +2135,16 @@ public:
                                           TColStd_Array1OfReal&          Weights,
                                           Standard_Integer&              InversionProblem);
 
-  //! Performs the interpolation of  the data given in
-  //! the Poles  array  according  to the  requests in
-  //! ContactOrderArray    that is      :           if
-  //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   contains the dth  derivative of  the
+  //! Performs the interpolation of the data given in
+  //! the Poles array according to the requests in
+  //! ContactOrderArray that is: if
+  //! ContactOrderArray(i) has value d it means that
+  //! Poles(i) contains the dth derivative of the
   //! function to be interpolated. The length L of the
-  //! following arrays must be the same :
+  //! following arrays must be the same:
   //! Parameters, ContactOrderArray
   //! The length of FlatKnots is Degree + L + 1
-  //! The  PolesArray   is    an   seen   as    an
+  //! The PolesArray is an seen as an
   //! Array[1..N][1..ArrayDimension] with N = tge length
   //! of the parameters array
   //! Warning:
@@ -2177,8 +2174,8 @@ public:
                                           Standard_Real&                 Weights,
                                           Standard_Integer&              InversionProblem);
 
-  //! Find the new poles which allows  an old point (with a
-  //! given  u as parameter) to reach a new position
+  //! Find the new poles which allows an old point (with a
+  //! given <u> as parameter) to reach a new position
   //! Index1 and Index2 indicate the range of poles we can move
   //! (1, NbPoles-1) or (2, NbPoles) -> no constraint for one side
   //! don't enter (1,NbPoles) -> error: rigid move
@@ -2198,8 +2195,8 @@ public:
                                         Standard_Integer&           LastIndex,
                                         TColgp_Array1OfPnt2d&       NewPoles);
 
-  //! Find the new poles which allows  an old point (with a
-  //! given  u as parameter) to reach a new position
+  //! Find the new poles which allows an old point (with a
+  //! given <u> as parameter) to reach a new position
   //! Index1 and Index2 indicate the range of poles we can move
   //! (1, NbPoles-1) or (2, NbPoles) -> no constraint for one side
   //! don't enter (1,NbPoles) -> error: rigid move
@@ -2220,15 +2217,15 @@ public:
                                         TColgp_Array1OfPnt&         NewPoles);
 
   //! This is the dimension free version of the utility
-  //! U is the parameter  must be within the  first FlatKnots and the
-  //! last FlatKnots  Delta is the amount the  curve has  to be moved
-  //! DeltaDerivative is the  amount the derivative  has to be moved.
-  //! Delta  and   DeltaDerivative   must be    array   of  dimension
-  //! ArrayDimension  Degree  is the degree  of   the BSpline and the
-  //! FlatKnots are the knots of the BSpline  Starting Condition if =
+  //! U is the parameter must be within the first FlatKnots and the
+  //! last FlatKnots Delta is the amount the curve has to be moved
+  //! DeltaDerivative is the amount the derivative has to be moved.
+  //! Delta and DeltaDerivative must be array of dimension
+  //! ArrayDimension Degree is the degree of the BSpline and the
+  //! FlatKnots are the knots of the BSpline Starting Condition if =
   //! -1 means the starting point of the curve can move
   //! = 0 means the
-  //! starting  point  of the curve  cannot  move but  tangent  starting
+  //! starting point of the curve cannot move but tangent starting
   //! point of the curve cannot move
   //! = 1 means the starting point and tangents cannot move
   //! = 2 means the starting point tangent and curvature cannot move
@@ -2259,15 +2256,15 @@ public:
                                                   Standard_Integer&           ErrorStatus);
 
   //! This is the dimension free version of the utility
-  //! U is the parameter  must be within the  first FlatKnots and the
-  //! last FlatKnots  Delta is the amount the  curve has  to be moved
-  //! DeltaDerivative is the  amount the derivative  has to be moved.
-  //! Delta  and   DeltaDerivative   must be    array   of  dimension
-  //! ArrayDimension  Degree  is the degree  of   the BSpline and the
-  //! FlatKnots are the knots of the BSpline  Starting Condition if =
+  //! U is the parameter must be within the first FlatKnots and the
+  //! last FlatKnots Delta is the amount the curve has to be moved
+  //! DeltaDerivative is the amount the derivative has to be moved.
+  //! Delta and DeltaDerivative must be array of dimension
+  //! ArrayDimension Degree is the degree of the BSpline and the
+  //! FlatKnots are the knots of the BSpline Starting Condition if =
   //! -1 means the starting point of the curve can move
   //! = 0 means the
-  //! starting  point  of the curve  cannot  move but  tangent  starting
+  //! starting point of the curve cannot move but tangent starting
   //! point of the curve cannot move
   //! = 1 means the starting point and tangents cannot move
   //! = 2 means the starting point tangent and curvature cannot move
@@ -2297,15 +2294,15 @@ public:
                                                   Standard_Integer&           ErrorStatus);
 
   //! This is the dimension free version of the utility
-  //! U is the parameter  must be within the  first FlatKnots and the
-  //! last FlatKnots  Delta is the amount the  curve has  to be moved
-  //! DeltaDerivative is the  amount the derivative  has to be moved.
-  //! Delta  and   DeltaDerivative   must be    array   of  dimension
-  //! ArrayDimension  Degree  is the degree  of   the BSpline and the
-  //! FlatKnots are the knots of the BSpline  Starting Condition if =
+  //! U is the parameter must be within the first FlatKnots and the
+  //! last FlatKnots Delta is the amount the curve has to be moved
+  //! DeltaDerivative is the amount the derivative has to be moved.
+  //! Delta and DeltaDerivative must be array of dimension
+  //! ArrayDimension Degree is the degree of the BSpline and the
+  //! FlatKnots are the knots of the BSpline Starting Condition if =
   //! -1 means the starting point of the curve can move
   //! = 0 means the
-  //! starting  point  of the curve  cannot  move but  tangent  starting
+  //! starting point of the curve cannot move but tangent starting
   //! point of the curve cannot move
   //! = 1 means the starting point and tangents cannot move
   //! = 2 means the starting point tangent and curvature cannot move
@@ -2335,7 +2332,7 @@ public:
                                                   Standard_Integer&           ErrorStatus);
 
   //! given a tolerance in 3D space returns a
-  //! tolerance    in U parameter space such that
+  //! tolerance in U parameter space such that
   //! all u1 and u0 in the domain of the curve f(u)
   //! | u1 - u0 | < UTolerance and
   //! we have |f (u1) - f (u0)| < Tolerance3D
@@ -2349,7 +2346,7 @@ public:
                                          Standard_Real&              UTolerance);
 
   //! given a tolerance in 3D space returns a
-  //! tolerance    in U parameter space such that
+  //! tolerance in U parameter space such that
   //! all u1 and u0 in the domain of the curve f(u)
   //! | u1 - u0 | < UTolerance and
   //! we have |f (u1) - f (u0)| < Tolerance3D
@@ -2362,7 +2359,7 @@ public:
                                          Standard_Real&              UTolerance);
 
   //! given a tolerance in 3D space returns a
-  //! tolerance    in U parameter space such that
+  //! tolerance in U parameter space such that
   //! all u1 and u0 in the domain of the curve f(u)
   //! | u1 - u0 | < UTolerance and
   //! we have |f (u1) - f (u0)| < Tolerance3D

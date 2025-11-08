@@ -122,7 +122,7 @@ public:
   //! system so that its origin becomes theP.
   void SetLocation(const gp_Pnt& theP) { pos = gp_Ax2(theP, pos.Direction(), pos.XDirection()); }
 
-  //! Modifies the major  radius of this hyperbola.
+  //! Modifies the major radius of this hyperbola.
   //! Exceptions
   //! Standard_ConstructionError if theMajorRadius is negative.
   void SetMajorRadius(const Standard_Real theMajorRadius)
@@ -238,7 +238,7 @@ public:
 
   //! Returns the branch of hyperbola obtained by doing the
   //! symmetrical transformation of <me> with respect to the
-  //! "YAxis"  of <me>.
+  //! "YAxis" of <me>.
   gp_Hypr OtherBranch() const
   {
     gp_Dir aD = pos.XDirection();
@@ -264,7 +264,7 @@ public:
   //! -   the unit vector is the "X Direction"
   //! of the local coordinate system of this hyperbola.
   //! These axes are, the major axis (the "X
-  //! Axis") and  of this hyperboReturns the "XAxis" of the hyperbola.
+  //! Axis") and of this hyperboReturns the "XAxis" of the hyperbola.
   constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
 
   //! Computes an axis, whose

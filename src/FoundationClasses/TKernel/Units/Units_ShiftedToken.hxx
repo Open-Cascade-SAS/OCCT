@@ -27,29 +27,29 @@ class Units_Dimensions;
 class Units_ShiftedToken;
 DEFINE_STANDARD_HANDLE(Units_ShiftedToken, Units_Token)
 
-//! The  ShiftedToken class  inherits   from Token and
-//! describes tokens which have  a gap in  addition of
-//! the  multiplicative factor.   This kind  of  token
-//! allows  the  description of linear functions which
-//! do not pass through the origin, of the form :
+//! The ShiftedToken class inherits from Token and
+//! describes tokens which have a gap in addition of
+//! the multiplicative factor. This kind of token
+//! allows the description of linear functions which
+//! do not pass through the origin, of the form:
 //!
-//! y = ax  +b
+//! y = ax +b
 //!
-//! where <x> and  <y>  are the unknown variables, <a>
+//! where <x> and <y> are the unknown variables, <a>
 //! the mutiplicative factor, and <b> the gap relative
 //! to the ordinate axis.
 //!
-//! An example is the  translation between the  Celsius
+//! An example is the translation between the Celsius
 //! and Fahrenheit degree of temperature.
 class Units_ShiftedToken : public Units_Token
 {
 
 public:
-  //! Creates and returns a  shifted   token.  <aword> is  a
-  //! string containing the   available word, <amean>  gives
-  //! the signification   of the   token,  <avalue> is   the
-  //! numeric value  of the  dimension, <amove> is  the gap,
-  //! and <adimensions> is  the dimension of the given  word
+  //! Creates and returns a shifted token. <aword> is a
+  //! string containing the available word, <amean> gives
+  //! the signification of the token, <avalue> is the
+  //! numeric value of the dimension, <amove> is the gap,
+  //! and <adimensions> is the dimension of the given word
   //! <aword>.
   Standard_EXPORT Units_ShiftedToken(const Standard_CString          aword,
                                      const Standard_CString          amean,
@@ -57,20 +57,20 @@ public:
                                      const Standard_Real             amove,
                                      const Handle(Units_Dimensions)& adimensions);
 
-  //! Creates and returns a  token, which is a ShiftedToken.
+  //! Creates and returns a token, which is a ShiftedToken.
   Standard_EXPORT virtual Handle(Units_Token) Creates() const Standard_OVERRIDE;
 
   //! Returns the gap <themove>
   Standard_EXPORT Standard_Real Move() const;
 
-  //! This  virtual   method  is  called  by the Measurement
-  //! methods,  to   compute  the   measurement    during  a
+  //! This virtual method is called by the Measurement
+  //! methods, to compute the measurement during a
   //! conversion.
   Standard_EXPORT virtual Standard_Real Multiplied(const Standard_Real avalue) const
     Standard_OVERRIDE;
 
-  //! This   virtual  method is  called  by  the Measurement
-  //! methods,   to   compute   the   measurement   during a
+  //! This virtual method is called by the Measurement
+  //! methods, to compute the measurement during a
   //! conversion.
   Standard_EXPORT virtual Standard_Real Divided(const Standard_Real avalue) const Standard_OVERRIDE;
 

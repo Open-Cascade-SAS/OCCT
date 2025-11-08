@@ -23,7 +23,7 @@ class gp_Vec2d;
 
 //! Describes an axis in the plane (2D space).
 //! An axis is defined by:
-//! -   its origin (also referred to as its "Location point"),   and
+//! -   its origin (also referred to as its "Location point"), and
 //! -   its unit vector (referred to as its "Direction").
 //! An axis implicitly defines a direct, right-handed
 //! coordinate system in 2D space by:
@@ -87,7 +87,7 @@ public:
   //! Returns the direction of <me>.
   constexpr const gp_Dir2d& Direction() const noexcept { return vdir; }
 
-  //! Returns True if  :
+  //! Returns True if:
   //! . the angle between <me> and <Other> is lower or equal
   //! to <AngularTolerance> and
   //! . the distance between <me>.Location() and <Other> is lower

@@ -57,8 +57,8 @@ public:
   Standard_EXPORT TCollection_ExtendedString() noexcept;
 
   //! Creation by converting a CString to an extended
-  //! string.  If <isMultiByte> is true then the string is
-  //! treated as having UTF-8 coding.  If it is not a UTF-8
+  //! string. If <isMultiByte> is true then the string is
+  //! treated as having UTF-8 coding. If it is not a UTF-8
   //! then <isMultiByte> is ignored and each character is
   //! copied to ExtCharacter.
   Standard_EXPORT TCollection_ExtendedString(const Standard_CString astring,

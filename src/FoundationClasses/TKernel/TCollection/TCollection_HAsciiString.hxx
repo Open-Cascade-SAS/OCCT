@@ -81,11 +81,11 @@ public:
   Standard_EXPORT TCollection_HAsciiString(const Handle(TCollection_HExtendedString)& aString,
                                            const Standard_Character replaceNonAscii);
 
-  //! Appends <other>  to me.
+  //! Appends <other> to me.
   void AssignCat(const Standard_CString other);
 
-  //! Appends <other>  to me.
-  //! Example:  aString = aString + anotherString
+  //! Appends <other> to me.
+  //! Example: aString = aString + anotherString
   void AssignCat(const Handle(TCollection_HAsciiString)& other);
 
   //! Converts the first character into its corresponding
@@ -113,7 +113,7 @@ public:
 
   //! Creates a new string by concatenation of this
   //! ASCII string and the other ASCII string.
-  //! Example:  aString = aString + anotherString
+  //! Example: aString = aString + anotherString
   Standard_EXPORT Handle(TCollection_HAsciiString) Cat(
     const Handle(TCollection_HAsciiString)& other) const;
 
@@ -462,7 +462,7 @@ public:
                                                          const Standard_Integer whichone = 1) const;
 
   //! Truncates <me> to <ahowmany> characters.
-  //! Example:  me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
+  //! Example: me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
   Standard_EXPORT void Trunc(const Standard_Integer ahowmany);
 
   //! Converts <me> to its upper-case equivalent.

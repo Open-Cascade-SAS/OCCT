@@ -78,7 +78,7 @@ public:
 
   //! Sets this 2D bounding box so that it bounds
   //! the point P. This involves first setting this bounding box
-  //! to be void and then adding the point PThe rectangle bounds   the  point <P>.
+  //! to be void and then adding the point PThe rectangle bounds the point <P>.
   void Set(const gp_Pnt2d& thePnt)
   {
     Flags = VoidMask;
@@ -90,7 +90,7 @@ public:
   //! the half-line defined by point P and direction D, i.e. all
   //! points M defined by M=P+u*D, where u is greater than
   //! or equal to 0, are inside the bounding area. This involves
-  //! first setting this 2D box to be void and then adding the   half-line.
+  //! first setting this 2D box to be void and then adding the half-line.
   void Set(const gp_Pnt2d& thePnt, const gp_Dir2d& theDir)
   {
     Flags = VoidMask;
@@ -116,7 +116,7 @@ public:
   //! Set the gap of this 2D bounding box to abs(Tol).
   void SetGap(const Standard_Real Tol) { Gap = Tol; }
 
-  //! Enlarges     the  box  with    a  tolerance  value.
+  //! Enlarges the box with a tolerance value.
   //! This means that the minimum values of its X and Y
   //! intervals of definition, when they are finite, are reduced by
   //! the absolute value of Tol, while the maximum values are
@@ -189,7 +189,7 @@ public:
     Add(theDir);
   }
 
-  //! Extends the Box  in the given Direction, i.e. adds
+  //! Extends the Box in the given Direction, i.e. adds
   //! a half-line. The box may become infinite in 1 or 2
   //! directions.
   Standard_EXPORT void Add(const gp_Dir2d& D);
@@ -212,8 +212,8 @@ public:
     return IsOut(theOther.Transformed(theTrsf));
   }
 
-  //! Compares  a transformed  bounding with  a    transformed
-  //! bounding. The default implementation is  to make a copy
+  //! Compares a transformed bounding with a transformed
+  //! bounding. The default implementation is to make a copy
   //! of <me> and <Other>, to transform them and to test.
   Standard_Boolean IsOut(const gp_Trsf2d& T1, const Bnd_Box2d& Other, const gp_Trsf2d& T2) const
   {

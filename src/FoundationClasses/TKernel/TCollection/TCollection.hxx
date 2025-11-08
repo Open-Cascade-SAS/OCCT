@@ -31,12 +31,12 @@ class Standard_DEPRECATED(
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Returns a  prime number greater than  <I> suitable
-  //! to dimension a Map.  When  <I> becomes great there
-  //! is  a  limit on  the  result (today  the  limit is
-  //! around 1 000 000). This is not a limit of the number of
-  //! items but a limit in the number  of buckets.  i.e.
-  //! there will be more collisions  in  the map.
+  //! Returns a prime number greater than <I> suitable
+  //! to dimension a Map. When <I> becomes great there
+  //! is a limit on the result (today the limit is
+  //! around 1 000 000). This is not a limit of the number
+  //! of items but a limit in the number of buckets. i.e.
+  //! there will be more collisions in the map.
   static Standard_Integer NextPrimeForMap(const Standard_Integer I)
   {
     return NCollection_Primes::NextPrimeForMap(I);

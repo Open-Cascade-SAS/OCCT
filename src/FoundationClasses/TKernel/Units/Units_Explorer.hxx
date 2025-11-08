@@ -53,28 +53,28 @@ public:
   Standard_EXPORT Units_Explorer(const Handle(Units_UnitsSystem)& aunitssystem,
                                  const Standard_CString           aquantity);
 
-  //! Creates a  new instance of the class,  initialized with
-  //! the  UnitsDictionary <aunitsdictionary> and positioned
+  //! Creates a new instance of the class, initialized with
+  //! the UnitsDictionary <aunitsdictionary> and positioned
   //! at the quantity <aquantity>.
   Standard_EXPORT Units_Explorer(const Handle(Units_UnitsDictionary)& aunitsdictionary,
                                  const Standard_CString               aquantity);
 
-  //! Initializes  the  instance  of  the  class  with  the
+  //! Initializes the instance of the class with the
   //! UnitsSystem <aunitssystem>.
   Standard_EXPORT void Init(const Handle(Units_UnitsSystem)& aunitssystem);
 
-  //! Initializes  the  instance  of  the  class  with  the
+  //! Initializes the instance of the class with the
   //! UnitsDictionary <aunitsdictionary>.
   Standard_EXPORT void Init(const Handle(Units_UnitsDictionary)& aunitsdictionary);
 
-  //! Initializes  the  instance  of  the   class  with  the
-  //! UnitsSystem  <aunitssystem>  and   positioned  at  the
+  //! Initializes the instance of the class with the
+  //! UnitsSystem <aunitssystem> and positioned at the
   //! quantity <aquantity>.
   Standard_EXPORT void Init(const Handle(Units_UnitsSystem)& aunitssystem,
                             const Standard_CString           aquantity);
 
-  //! Initializes  the  instance   of  the  class  with  the
-  //! UnitsDictionary  <aunitsdictionary> and positioned  at
+  //! Initializes the instance of the class with the
+  //! UnitsDictionary <aunitsdictionary> and positioned at
   //! the quantity <aquantity>.
   Standard_EXPORT void Init(const Handle(Units_UnitsDictionary)& aunitsdictionary,
                             const Standard_CString               aquantity);
@@ -95,16 +95,15 @@ public:
 
   //! Sets the next Unit current.
   Standard_EXPORT void NextUnit();
-
   //! Returns the name of the current unit.
   Standard_EXPORT TCollection_AsciiString Unit() const;
 
-  //! If the  units system  to  explore  is  a user  system,
-  //! returns True  if  the  current unit  is  active, False
+  //! If the units system to explore is a user system,
+  //! returns True if the current unit is active, False
   //! otherwise.
   //!
-  //! If   the   units  system  to  explore  is   the  units
-  //! dictionary,  returns True if the  current unit is  the
+  //! If the units system to explore is the units
+  //! dictionary, returns True if the current unit is the
   //! S.I. unit.
   Standard_EXPORT Standard_Boolean IsActive() const;
 

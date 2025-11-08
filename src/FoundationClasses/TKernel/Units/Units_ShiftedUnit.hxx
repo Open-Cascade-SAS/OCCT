@@ -28,37 +28,37 @@ class Units_Token;
 class Units_ShiftedUnit;
 DEFINE_STANDARD_HANDLE(Units_ShiftedUnit, Units_Unit)
 
-//! This class is useful   to describe  units  with  a
+//! This class is useful to describe units with a
 //! shifted origin in relation to another unit. A well
-//! known example  is the  Celsius degrees in relation
+//! known example is the Celsius degrees in relation
 //! to Kelvin degrees. The shift of the Celsius origin
 //! is 273.15 Kelvin degrees.
 class Units_ShiftedUnit : public Units_Unit
 {
 
 public:
-  //! Creates  and  returns a  shifted unit.   <aname> is the
-  //! name of the unit,  <asymbol> is the usual abbreviation
-  //! of the unit, <avalue> is the  value in relation to the
-  //! International System of Units, and <amove>  is the gap
+  //! Creates and returns a shifted unit. <aname> is the
+  //! name of the unit, <asymbol> is the usual abbreviation
+  //! of the unit, <avalue> is the value in relation to the
+  //! International System of Units, and <amove> is the gap
   //! in relation to another unit.
   //!
-  //! For  example Celsius   degree   of temperature  is  an
-  //! instance of ShiftedUnit  with <avalue> equal to 1. and
-  //! <amove> equal to 273.15.
+  //! For example Celsius degree of temperature is an
+  //! instance of ShiftedUnit with <avalue> equal to 1.
+  //! and <amove> equal to 273.15.
   Standard_EXPORT Units_ShiftedUnit(const Standard_CString        aname,
                                     const Standard_CString        asymbol,
                                     const Standard_Real           avalue,
                                     const Standard_Real           amove,
                                     const Handle(Units_Quantity)& aquantity);
 
-  //! Creates  and returns a  unit.  <aname> is  the name of
-  //! the  unit, <asymbol> is the  usual abbreviation of the
+  //! Creates and returns a unit. <aname> is the name of
+  //! the unit, <asymbol> is the usual abbreviation of the
   //! unit.
   Standard_EXPORT Units_ShiftedUnit(const Standard_CString aname, const Standard_CString asymbol);
 
-  //! Creates  and returns a  unit.  <aname> is  the name of
-  //! the  unit.
+  //! Creates and returns a unit. <aname> is the name of
+  //! the unit.
   Standard_EXPORT Units_ShiftedUnit(const Standard_CString aname);
 
   //! Sets the field <themove> to <amove>

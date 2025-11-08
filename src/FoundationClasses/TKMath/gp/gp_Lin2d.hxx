@@ -85,7 +85,7 @@ public:
 
   //! Complete redefinition of the line.
   //! The "Location" point of <theA> is the origin of the line.
-  //! The "Direction" of <theA> is  the direction of the line.
+  //! The "Direction" of <theA> is the direction of the line.
   constexpr void SetPosition(const gp_Ax2d& theA) noexcept { pos = theA; }
 
   //! Returns the normalized coefficients of the line :

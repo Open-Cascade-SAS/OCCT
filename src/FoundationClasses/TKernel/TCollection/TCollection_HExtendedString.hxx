@@ -77,10 +77,10 @@ public:
   //! Initializes a HExtendedString with a HExtendedString.
   Standard_EXPORT TCollection_HExtendedString(const Handle(TCollection_HExtendedString)& aString);
 
-  //! Appends <other>  to me.
+  //! Appends <other> to me.
   Standard_EXPORT void AssignCat(const Handle(TCollection_HExtendedString)& other);
 
-  //! Returns a string appending <other>  to me.
+  //! Returns a string appending <other> to me.
   Standard_EXPORT Handle(TCollection_HExtendedString) Cat(
     const Handle(TCollection_HExtendedString)& other) const;
 
@@ -117,7 +117,7 @@ public:
   Standard_EXPORT Standard_Boolean
     IsGreater(const Handle(TCollection_HExtendedString)& other) const;
 
-  //! Returns True if the string contains only "Ascii Range"  characters
+  //! Returns True if the string contains only "Ascii Range" characters
   Standard_EXPORT Standard_Boolean IsAscii() const;
 
   //! Returns number of characters in <me>.
@@ -140,7 +140,7 @@ public:
   //! an exception is raised.
   //! Example:
   //! aString contains "Garbake"
-  //! astring.Replace(6,'g')  gives <me> = "Garbage"
+  //! astring.Replace(6,'g') gives <me> = "Garbage"
   Standard_EXPORT void SetValue(const Standard_Integer where, const Standard_ExtCharacter what);
 
   //! Replaces a part of <me> by another string.
@@ -187,7 +187,7 @@ public:
     const Standard_Integer   whichone = 1) const;
 
   //! Truncates <me> to <ahowmany> characters.
-  //! Example:  me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
+  //! Example: me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
   Standard_EXPORT void Trunc(const Standard_Integer ahowmany);
 
   //! Returns ExtCharacter at position <where> in <me>.
@@ -201,7 +201,7 @@ public:
   //! Returns the field myString
   Standard_EXPORT const TCollection_ExtendedString& String() const;
 
-  //! Displays <me> .
+  //! Displays <me>.
   Standard_EXPORT void Print(Standard_OStream& astream) const;
 
   Standard_EXPORT Standard_Boolean

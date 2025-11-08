@@ -33,7 +33,7 @@ class Units_Sentence
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates and  returns  a   Sentence, by  analyzing  the
+  //! Createsand returns a Sentence, by analyzing the
   //! string <astring> with the lexicon <alexicon>.
   Standard_EXPORT Units_Sentence(const Handle(Units_Lexicon)& alexicon,
                                  const Standard_CString       astring);
@@ -47,7 +47,7 @@ public:
   //! Sets the field <thesequenceoftokens> to <asequenceoftokens>.
   void Sequence(const Handle(Units_TokensSequence)& asequenceoftokens);
 
-  //! Computes and  returns in a   token the result  of  the
+  //! Computes and returns in a token the result of the
   //! expression.
   Standard_EXPORT Handle(Units_Token) Evaluate();
 

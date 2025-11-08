@@ -55,9 +55,9 @@ public:
 
   //! Creates an ellipse with the major axis, the major and the
   //! minor radius. The location of the theMajorAxis is the center
-  //! of the  ellipse.
+  //! of the ellipse.
   //! The sense of parametrization is given by theIsSense.
-  //! Warnings :
+  //! Warnings:
   //! It is possible to create an ellipse with
   //! theMajorRadius = theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.0
@@ -128,15 +128,15 @@ public:
   constexpr void SetAxis(const gp_Ax22d& theA) noexcept { pos.SetAxis(theA); }
 
   //! Modifies this ellipse, by redefining its local coordinate system so that
-  //! its origin and its "X Direction"  become those
-  //! of the axis theA. The "Y  Direction"  is then
+  //! its origin and its "X Direction" become those
+  //! of the axis theA. The "Y Direction" is then
   //! recomputed. The orientation of the local coordinate
   //! system is not modified.
   void SetXAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
 
   //! Modifies this ellipse, by redefining its local coordinate system so that
-  //! its origin and its "Y Direction"  become those
-  //! of the axis theA. The "X  Direction"  is then
+  //! its origin and its "Y Direction" become those
+  //! of the axis theA. The "X Direction" is then
   //! recomputed. The orientation of the local coordinate
   //! system is not modified.
   void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
@@ -172,7 +172,7 @@ public:
   //! circle).
   gp_Ax2d Directrix2() const;
 
-  //! Returns the eccentricity of the ellipse  between 0.0 and 1.0
+  //! Returns the eccentricity of the ellipse between 0.0 and 1.0
   //! If f is the distance between the center of the ellipse and
   //! the Focus1 then the eccentricity e = f / MajorRadius.
   //! Returns 0 if MajorRadius = 0.

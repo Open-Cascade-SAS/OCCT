@@ -260,8 +260,8 @@ public:
   //! derivatives on elementary surfaces defined with their
   //! geometric characteristics.
   //! You don't need to create the surface to use these functions.
-  //! These functions are called by the previous  ones.
-  //! Example :
+  //! These functions are called by the previous ones.
+  //! Example:
   //! A cylinder is defined with its position and its radius.
   static void D3(const Standard_Real U,
                  const Standard_Real V,

@@ -80,7 +80,7 @@ public:
 
   //! Complete redefinition of the line.
   //! The "Location" point of <theA1> is the origin of the line.
-  //! The "Direction" of <theA1> is  the direction of the line.
+  //! The "Direction" of <theA1> is the direction of the line.
   constexpr void SetPosition(const gp_Ax1& theA1) noexcept { pos = theA1; }
 
   //! Returns the direction of the line.
@@ -125,7 +125,7 @@ public:
   }
 
   //! Computes the line normal to the direction of <me>, passing
-  //! through the point theP.  Raises ConstructionError
+  //! through the point theP. Raises ConstructionError
   //! if the distance between <me> and the point theP is lower
   //! or equal to Resolution from gp because there is an infinity of
   //! solutions in 3D space.
@@ -148,8 +148,8 @@ public:
   Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Performs the symmetrical transformation of a line
-  //! with respect to a plane. The axis placement  <theA2>
-  //! locates the plane of the symmetry :
+  //! with respect to a plane. The axis placement <theA2>
+  //! locates the plane of the symmetry:
   //! (Location, XDirection, YDirection).
   Standard_NODISCARD Standard_EXPORT gp_Lin Mirrored(const gp_Ax2& theA2) const noexcept;
 

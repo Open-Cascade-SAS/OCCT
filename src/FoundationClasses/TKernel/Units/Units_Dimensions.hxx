@@ -26,20 +26,20 @@
 class Units_Dimensions;
 DEFINE_STANDARD_HANDLE(Units_Dimensions, Standard_Transient)
 
-//! This class includes all  the methods to create and
-//! manipulate    the   dimensions  of the    physical
+//! This class includes all the methods to create and
+//! manipulate the dimensions of the physical
 //! quantities.
 class Units_Dimensions : public Standard_Transient
 {
 
 public:
-  //! Returns  a  Dimensions  object  which  represents  the
-  //! dimension  of  a  physical  quantity.    Each  of  the
-  //! <amass>,  <alength>,   <atime>,   <anelectriccurrent>,
-  //! <athermodynamictemperature>,    <anamountofsubstance>,
+  //! Returns a Dimensions object which represents the
+  //! dimension of a physical quantity. Each of the
+  //! <amass>, <alength>, <atime>, <anelectriccurrent>,
+  //! <athermodynamictemperature>, <anamountofsubstance>,
   //! <aluminousintensity>, <aplaneangle>, <asolidangle> are
-  //! the powers for  the 7  fundamental  units of  physical
-  //! quantity and  the 2  secondary  fundamental  units  of
+  //! the powers for the 7 fundamental units of physical
+  //! quantity and the 2 secondary fundamental units of
   //! physical quantity.
   Standard_EXPORT Units_Dimensions(const Standard_Real amass,
                                    const Standard_Real alength,
@@ -60,53 +60,53 @@ public:
   //! Returns the power of time stored in the dimensions.
   Standard_Real Time() const;
 
-  //! Returns the  power of  electrical  intensity (current)
+  //! Returns the power of electrical intensity (current)
   //! stored in the dimensions.
   Standard_Real ElectricCurrent() const;
 
-  //! Returns  the  power  of   temperature stored  in   the
+  //! Returns the power of temperature stored in the
   //! dimensions.
   Standard_Real ThermodynamicTemperature() const;
 
-  //! Returns  the power   of quantity   of  material (mole)
+  //! Returns the power of quantity of material (mole)
   //! stored in the dimensions.
   Standard_Real AmountOfSubstance() const;
 
-  //! Returns the  power of light   intensity stored  in the
+  //! Returns the power of light intensity stored in the
   //! dimensions.
   Standard_Real LuminousIntensity() const;
 
-  //! Returns  the power   of plane   angle  stored  in  the
+  //! Returns the power of plane angle stored in the
   //! dimensions.
   Standard_Real PlaneAngle() const;
 
-  //! Returns the   power   of  solid angle stored   in  the
+  //! Returns the power of solid angle stored in the
   //! dimensions.
   Standard_Real SolidAngle() const;
 
   //! Returns the quantity string of the dimension
   Standard_EXPORT Standard_CString Quantity() const;
 
-  //! Creates and returns  a new Dimensions  object which is
-  //! the   result   of the  multiplication    of  <me>  and
+  //! Creates and returns a new Dimensions object which is
+  //! the result of the multiplication of <me> and
   //! <adimensions>.
   Standard_EXPORT Handle(Units_Dimensions) Multiply(
     const Handle(Units_Dimensions)& adimensions) const;
 
-  //! Creates and returns a new  Dimensions object which  is
+  //! Creates and returns a new Dimensions object which  is
   //! the result of the division of <me> by <adimensions>.
   Standard_EXPORT Handle(Units_Dimensions) Divide(
     const Handle(Units_Dimensions)& adimensions) const;
 
-  //! Creates  and returns a new  Dimensions object which is
+  //! Creates  and returns a new Dimensions object which is
   //! the result of the power of <me> and <anexponent>.
   Standard_EXPORT Handle(Units_Dimensions) Power(const Standard_Real anexponent) const;
 
-  //! Returns true if  <me>  and <adimensions> have the same
+  //! Returns true if <me> and <adimensions> have the same
   //! dimensions, false otherwise.
   Standard_EXPORT Standard_Boolean IsEqual(const Handle(Units_Dimensions)& adimensions) const;
 
-  //! Returns false if <me> and  <adimensions> have the same
+  //! Returns false if <me> and <adimensions> have the same
   //! dimensions, true otherwise.
   Standard_EXPORT Standard_Boolean IsNotEqual(const Handle(Units_Dimensions)& adimensions) const;
 

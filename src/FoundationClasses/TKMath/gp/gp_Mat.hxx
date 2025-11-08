@@ -29,7 +29,7 @@ class gp_Mat
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! creates  a matrix with null coefficients.
+  //! Creates a matrix with null coefficients.
   constexpr gp_Mat() noexcept
       : myMat{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}
   {
@@ -58,12 +58,12 @@ public:
   //! columns of this matrix.
   Standard_EXPORT void SetCols(const gp_XYZ& theCol1, const gp_XYZ& theCol2, const gp_XYZ& theCol3);
 
-  //! Modifies the matrix  M so that applying it to any number
+  //! Modifies the matrix M so that applying it to any number
   //! triple (X, Y, Z) produces the same result as the cross
   //! product of theRef and the number triple (X, Y, Z):
   //! i.e.: M * {X,Y,Z}t = theRef.Cross({X, Y ,Z})
   //! this matrix is anti symmetric. To apply this matrix to the
-  //! triplet  {XYZ} is the same as to do the cross product between the
+  //! triplet {XYZ} is the same as to do the cross product between the
   //! triplet theRef and the triplet {XYZ}.
   //! Note: this matrix is anti-symmetric.
   Standard_EXPORT void SetCross(const gp_XYZ& theRef);
@@ -125,7 +125,7 @@ public:
     myMat[0][1] = myMat[0][2] = myMat[1][0] = myMat[1][2] = myMat[2][0] = myMat[2][1] = 0.0;
   }
 
-  //! Assigns <theValue> to the coefficient of row theRow, column theCol of   this matrix.
+  //! Assigns <theValue> to the coefficient of row theRow, column theCol of this matrix.
   //! Raises OutOfRange if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 3
   void SetValue(const Standard_Integer theRow,
                 const Standard_Integer theCol,
@@ -240,7 +240,7 @@ public:
   //! and therefore cannot be inverted.
   Standard_NODISCARD Standard_EXPORT gp_Mat Inverted() const;
 
-  //! Computes  the product of two matrices <me> * <Other>
+  //! Computes the product of two matrices <me> * <Other>
   Standard_NODISCARD constexpr gp_Mat Multiplied(const gp_Mat& theOther) const noexcept
   {
     gp_Mat aNewMat = *this;
@@ -274,7 +274,7 @@ public:
 
   Standard_EXPORT void Power(const Standard_Integer N);
 
-  //! Computes <me> = <me> * <me> * .......* <me>,   theN time.
+  //! Computes <me> = <me> * <me> * .......* <me>, theN time.
   //! if theN = 0 <me> = Identity
   //! if theN < 0 <me> = <me>.Invert() *...........* <me>.Invert().
   //! If theN < 0 an exception will be raised if the matrix is not

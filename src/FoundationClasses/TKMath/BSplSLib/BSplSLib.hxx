@@ -29,41 +29,41 @@
 class gp_Pnt;
 class gp_Vec;
 
-//! BSplSLib   B-spline surface Library
-//! This  package provides   an  implementation  of  geometric
-//! functions for rational and non rational, periodic  and non
+//! BSplSLib B-spline surface Library
+//! This package provides an implementation of geometric
+//! functions for rational and non rational, periodic and non
 //! periodic B-spline surface computation.
 //!
-//! this package uses   the  multi-dimensions splines  methods
+//! this package uses the multi-dimensions splines methods
 //! provided in the package BSplCLib.
 //!
-//! In this package the B-spline surface is defined with :
+//! In this package the B-spline surface is defined with:
 //! . its control points :  Array2OfPnt     Poles
 //! . its weights        :  Array2OfReal    Weights
 //! . its knots and their multiplicity in the two parametric
-//! direction U and V  :  Array1OfReal    UKnots, VKnots and
+//! direction U and V: Array1OfReal UKnots, VKnots and
 //! Array1OfInteger UMults, VMults.
-//! . the degree of the normalized Spline functions :
+//! . the degree of the normalized Spline functions:
 //! UDegree, VDegree
 //!
 //! . the Booleans URational, VRational to know if the weights
 //! are constant in the U or V direction.
 //!
-//! . the Booleans UPeriodic,   VRational  to know if the  the
-//! surface is periodic in the U or V direction.
+//! . the Booleans UPeriodic, VRational to know if the surface
+//! is periodic in the U or V direction.
 //!
-//! Warnings : The  bounds of UKnots  and UMults should be the
-//! same, the bounds of VKnots and VMults should be  the same,
+//! Warnings: The bounds of UKnots and UMults should be the
+//! same, the bounds of VKnots and VMults should be the same,
 //! the bounds of Poles and Weights should be the same.
 //!
-//! The Control points representation is :
+//! The Control points representation is:
 //! Poles(Uorigin,Vorigin) ...................Poles(Uorigin,Vend)
 //! .                                     .
 //! .                                     .
 //! Poles(Uend, Vorigin) .....................Poles(Uend, Vend)
 //!
-//! For  the double array  the row indice   corresponds to the
-//! parametric U direction  and the columns indice corresponds
+//! For the double array the row indice corresponds to the
+//! parametric U direction and the columns indice corresponds
 //! to the parametric V direction.
 //!
 //! Note: weight and multiplicity arrays can be passed by pointer for
@@ -101,25 +101,24 @@ public:
   //! Standard_Real    &   // Result
   //! Standard_Integer &) ;// Error Code
   //! serves to multiply a given vectorial BSpline by a function
-  //! Computes  the     derivatives   of  a    ratio  of
-  //! two-variables functions  x(u,v) / w(u,v) at orders
-  //! <N,M>,    x(u,v)    is   a  vector in    dimension
-  //! <3>.
+  //! Computes the derivatives of a ratio of two-variables
+  //! functions x(u,v) / w(u,v) at orders
+  //! <N,M>, x(u,v) is a vector in dimension <3>.
   //!
-  //! <Ders> is  an array  containing the values  of the
-  //! input derivatives from 0  to Min(<N>,<UDeg>), 0 to
-  //! Min(<M>,<VDeg>).    For orders    higher      than
-  //! <UDeg,VDeg>  the  input derivatives are assumed to
+  //! <Ders> is an array containing the values of the
+  //! input derivatives from 0 to Min(<N>,<UDeg>), 0 to
+  //! Min(<M>,<VDeg>). For orders higher than
+  //! <UDeg,VDeg> the input derivatives are assumed to
   //! be 0.
   //!
-  //! The <Ders> is a 2d array and the  dimension of the
+  //! The <Ders> is a 2d array and the dimension of the
   //! lines is always (<VDeg>+1) * (<3>+1), even
-  //! if   <N> is smaller  than  <Udeg> (the derivatives
+  //! if <N> is smaller than <Udeg> (the derivatives
   //! higher than <N> are not used).
   //!
-  //! Content of <Ders> :
+  //! Content of <Ders>:
   //!
-  //! x(i,j)[k] means :  the composant  k of x derivated
+  //! x(i,j)[k] means: the composant k of x derivated
   //! (i) times in u and (j) times in v.
   //!
   //! ... First line ...
@@ -151,11 +150,10 @@ public:
   //!
   //! x(1)/w , x(2)/w ,  ... derivated <N> <M> times
   //!
-  //! If   <All>    is  true  multiples  derivatives are
-  //! computed. All the  derivatives (i,j) with 0 <= i+j
-  //! <= Max(N,M) are  computed.  <RDers> is an array of
-  //! length 3 *  (<N>+1)  * (<M>+1) which  will
-  //! contains :
+  //! If <All> is true multiples derivatives are
+  //! computed. All the derivatives (i,j) with 0 <= i+j
+  //! <= Max(N,M) are computed. <RDers> is an array of
+  //! length 3 * (<N>+1) * (<M>+1) which will contains:
   //!
   //! x(1)/w , x(2)/w ,  ...
   //! x(1)/w , x(2)/w ,  ... derivated <0,1> times
@@ -303,18 +301,18 @@ public:
 
   //! Reverses the array of poles. Last is the Index of
   //! the new first Row( Col) of Poles.
-  //! On  a  non periodic surface Last is
+  //! On a non periodic surface Last is
   //! Poles.Upper().
   //! On a periodic curve last is
   //! (number of flat knots - degree - 1)
   //! or
-  //! (sum of multiplicities(but  for the last) + degree
+  //! (sum of multiplicities(but for the last) + degree
   //! - 1)
   Standard_EXPORT static void Reverse(TColgp_Array2OfPnt&    Poles,
                                       const Standard_Integer Last,
                                       const Standard_Boolean UDirection);
 
-  //! Makes an homogeneous  evaluation of Poles and Weights
+  //! Makes an homogeneous evaluation of Poles and Weights
   //! any and returns in P the Numerator value and
   //! in W the Denominator value if Weights are present
   //! otherwise returns 1.0e0
@@ -337,7 +335,7 @@ public:
                                             Standard_Real&                 W,
                                             gp_Pnt&                        P);
 
-  //! Makes an homogeneous  evaluation of Poles and Weights
+  //! Makes an homogeneous evaluation of Poles and Weights
   //! any and returns in P the Numerator value and
   //! in W the Denominator value if Weights are present
   //! otherwise returns 1.0e0
@@ -369,10 +367,10 @@ public:
                                       const Standard_Integer Last,
                                       const Standard_Boolean UDirection);
 
-  //! Returns False if all the weights  of the  array <Weights>
-  //! in the area [I1,I2] * [J1,J2] are  identic.
-  //! Epsilon  is used for comparing  weights.
-  //! If Epsilon  is 0. the  Epsilon of the first weight is used.
+  //! Returns False if all the weights of the array <Weights>
+  //! in the area [I1,I2] * [J1,J2] are identic.
+  //! Epsilon is used for comparing weights.
+  //! If Epsilon is 0. the Epsilon of the first weight is used.
   Standard_EXPORT static Standard_Boolean IsRational(const TColStd_Array2OfReal& Weights,
                                                      const Standard_Integer      I1,
                                                      const Standard_Integer      I2,
@@ -403,12 +401,12 @@ public:
                                        const Standard_Boolean      UDirection);
 
   //! Find the new poles which allows an old point (with a
-  //! given u,v  as parameters)  to  reach a  new position
-  //! UIndex1,UIndex2 indicate the  range of poles we can
+  //! given u,v as parameters) to reach a new position
+  //! UIndex1,UIndex2 indicate the range of poles we can
   //! move for U
   //! (1, UNbPoles-1) or (2, UNbPoles) -> no constraint
   //! for one side in U
-  //! (2, UNbPoles-1)   -> the ends are enforced for U
+  //! (2, UNbPoles-1) -> the ends are enforced for U
   //! don't enter (1,NbPoles) and (1,VNbPoles)
   //! -> error: rigid move
   //! if problem in BSplineBasis calculation, no change
@@ -646,8 +644,8 @@ public:
   //! Warning! To be used for BezierSurfaces ONLY!!!
   static void PolesCoefficients(const TColgp_Array2OfPnt& Poles, TColgp_Array2OfPnt& CachePoles);
 
-  //! Encapsulation   of  BuildCache    to   perform   the
-  //! evaluation  of the Taylor expansion for beziersurfaces
+  //! Encapsulation of BuildCache to perform the
+  //! evaluation of the Taylor expansion for beziersurfaces
   //! at parameters 0.,0.;
   //! Warning: To be used for BezierSurfaces ONLY!!!
   Standard_EXPORT static void PolesCoefficients(const TColgp_Array2OfPnt&   Poles,
@@ -679,21 +677,21 @@ public:
                                          Standard_Real&                 VTolerance);
 
   //! Performs the interpolation of the data points given in
-  //! the   Poles       array      in   the      form
-  //! [1,...,RL][1,...,RC][1...PolesDimension]    .    The
+  //! the Poles array in the form
+  //! [1,...,RL][1,...,RC][1...PolesDimension]. The
   //! ColLength CL and the Length of UParameters must be the
   //! same. The length of VFlatKnots is VDegree + CL + 1.
   //!
-  //! The  RowLength RL and the Length of VParameters must be
-  //! the  same. The length of VFlatKnots is Degree + RL + 1.
+  //! The RowLength RL and the Length of VParameters must be
+  //! the same. The length of VFlatKnots is Degree + RL + 1.
   //!
-  //! Warning: the method used  to do that  interpolation
-  //! is gauss  elimination  WITHOUT pivoting.  Thus if  the
-  //! diagonal is not  dominant  there is no guarantee  that
-  //! the   algorithm will    work.  Nevertheless  for Cubic
-  //! interpolation  at knots or interpolation at Scheonberg
-  //! points  the method   will work.  The  InversionProblem
-  //! will  report 0 if there   was no problem  else it will
+  //! Warning: the method used to do that interpolation
+  //! is gauss elimination WITHOUT pivoting. Thus if the
+  //! diagonal is not dominant there is no guarantee that
+  //! the algorithm will work. Nevertheless for Cubic
+  //! interpolation at knots or interpolation at Scheonberg
+  //! points the method will work. The InversionProblem
+  //! will report 0 if there was no problem else it will
   //! give the index of the faulty pivot
   Standard_EXPORT static void Interpolate(const Standard_Integer      UDegree,
                                           const Standard_Integer      VDegree,
@@ -706,20 +704,20 @@ public:
                                           Standard_Integer&           InversionProblem);
 
   //! Performs the interpolation of the data points given in
-  //! the  Poles array.
-  //! The  ColLength CL and the Length of UParameters must be
-  //! the  same. The length of VFlatKnots is VDegree + CL + 1.
+  //! the Poles array.
+  //! The ColLength CL and the Length of UParameters must be
+  //! the same. The length of VFlatKnots is VDegree + CL + 1.
   //!
-  //! The  RowLength RL and the Length of VParameters must be
-  //! the  same. The length of VFlatKnots is Degree + RL + 1.
+  //! The RowLength RL and the Length of VParameters must be
+  //! the same. The length of VFlatKnots is Degree + RL + 1.
   //!
-  //! Warning: the method used  to do that  interpolation
-  //! is gauss  elimination  WITHOUT pivoting.  Thus if  the
-  //! diagonal is not  dominant  there is no guarantee  that
-  //! the   algorithm will    work.  Nevertheless  for Cubic
-  //! interpolation  at knots or interpolation at Scheonberg
-  //! points  the method   will work.  The  InversionProblem
-  //! will  report 0 if there   was no problem  else it will
+  //! Warning: the method used to do that interpolation
+  //! is gauss elimination WITHOUT pivoting. Thus if the
+  //! diagonal is not dominant there is no guarantee that
+  //! the algorithm will work. Nevertheless for Cubic
+  //! interpolation at knots or interpolation at Scheonberg
+  //! points the method will work. The InversionProblem
+  //! will report 0 if there was no problem else it will
   //! give the index of the faulty pivot
   Standard_EXPORT static void Interpolate(const Standard_Integer      UDegree,
                                           const Standard_Integer      VDegree,
@@ -730,29 +728,29 @@ public:
                                           TColgp_Array2OfPnt&         Poles,
                                           Standard_Integer&           InversionProblem);
 
-  //! this will multiply  a given BSpline numerator  N(u,v)
-  //! and    denominator    D(u,v)  defined     by   its
-  //! U/VBSplineDegree   and    U/VBSplineKnots,     and
-  //! U/VMults. Its Poles  and Weights are arrays which are
-  //! coded   as      array2      of      the    form
-  //! [1..UNumPoles][1..VNumPoles]  by  a function a(u,v)
-  //! which  is assumed  to satisfy    the following :  1.
-  //! a(u,v)  * N(u,v) and a(u,v) *  D(u,v)  is a polynomial
+  //! this will multiply a given BSpline numerator N(u,v)
+  //! and denominator D(u,v) defined by its
+  //! U/VBSplineDegree and U/VBSplineKnots, and
+  //! U/VMults. Its Poles and Weights are arrays which are
+  //! coded as array2 of the form
+  //! [1..UNumPoles][1..VNumPoles] by a function a(u,v)
+  //! which is assumed to satisfy the following:
+  //! 1. a(u,v) * N(u,v) and a(u,v) * D(u,v) is a polynomial
   //! BSpline that can be expressed exactly as a BSpline of
-  //! degree U/VNewDegree  on  the knots U/VFlatKnots 2. the range
-  //! of a(u,v) is   the   same as  the range   of  N(u,v)
-  //! or D(u,v)
-  //! ---Warning:  it is   the caller's  responsibility  to
-  //! insure that conditions 1. and  2. above are satisfied
-  //! : no  check  whatsoever is made   in  this method  --
-  //! theStatus will  return 0 if  OK else it will return  the
-  //! pivot index -- of the   matrix that was inverted to
-  //! compute the multiplied -- BSpline  : the method used
-  //! is  interpolation   at Schoenenberg   --  points  of
+  //! degree U/VNewDegree on the knots U/VFlatKnots
+  //! 2. the range of a(u,v) is the same as the range of
+  //! N(u,v) or D(u,v)
+  //! Warning: it is the caller's responsibility to
+  //! insure that conditions 1. and 2. above are satisfied
+  //! no check whatsoever is made in this method
+  //! theStatus will return 0 if OK else it will return the
+  //! pivot index of the matrix that was inverted to
+  //! compute the multiplied BSpline : the method used
+  //! is interpolation at Schoenenberg points of
   //! a(u,v)* N(u,v) and a(u,v) * D(u,v)
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
-  //! BSpline : the method used is interpolation at Schoenenberg
+  //! BSpline: the method used is interpolation at Schoenenberg
   //! points of a(u,v)*F(u,v)
   //! --
   Standard_EXPORT static void FunctionMultiply(const BSplSLib_EvaluatorFunction& Function,

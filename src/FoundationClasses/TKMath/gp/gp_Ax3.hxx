@@ -73,12 +73,12 @@ public:
   {
   }
 
-  //! Creates  a  coordinate  system from a right-handed
+  //! Creates a coordinate system from a right-handed
   //! coordinate system.
   gp_Ax3(const gp_Ax2& theA);
 
-  //! Creates a  right handed axis placement with the
-  //! "Location" point theP and  two directions, theN gives the
+  //! Creates a right handed axis placement with the
+  //! "Location" point theP and two directions, theN gives the
   //! "Direction" and theVx gives the "XDirection".
   //! Raises ConstructionError if theN and theVx are parallel (same or opposite orientation).
   gp_Ax3(const gp_Pnt& theP, const gp_Dir& theN, const gp_Dir& theVx)
@@ -138,7 +138,7 @@ public:
   //! where V is the "Direction" of theA1.
   //! -   The orientation of this coordinate system
   //! (right-handed or left-handed) is not modified.
-  //! Raises ConstructionError  if the "Direction" of <theA1> and the "XDirection" of <me>
+  //! Raises ConstructionError if the "Direction" of <theA1> and the "XDirection" of <me>
   //! are parallel (same or opposite orientation) because it is
   //! impossible to calculate the new "XDirection" and the new
   //! "YDirection".
@@ -169,7 +169,7 @@ public:
   //! Changes the "Ydirection" of <me>. The main direction is not
   //! modified but the "Xdirection" is changed.
   //! If <theVy> is not normal to the main direction then "YDirection"
-  //! is computed as  follows
+  //! is computed as follows
   //! YDirection = Direction ^ (<theVy> ^ Direction).
   //! Raises ConstructionError if <theVy> is parallel to the main direction of <me>
   void SetYDirection(const gp_Dir& theVy);
@@ -203,7 +203,7 @@ public:
   //! Returns the "YDirection" of <me>.
   constexpr const gp_Dir& YDirection() const noexcept { return vydir; }
 
-  //! Returns  True if  the  coordinate  system is right-handed. i.e.
+  //! Returns True if the coordinate system is right-handed. i.e.
   //! XDirection().Crossed(YDirection()).Dot(Direction()) > 0
   Standard_Boolean Direct() const { return (vxdir.Crossed(vydir).Dot(axis.Direction()) > 0.); }
 
@@ -254,7 +254,7 @@ public:
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to a plane.
-  //! The axis placement  <theA2> locates the plane of the symmetry :
+  //! The axis placement <theA2> locates the plane of the symmetry:
   //! (Location, XDirection, YDirection).
   //! The transformation is performed on the "Location"
   //! point, on the "XDirection" and "YDirection".
@@ -270,7 +270,7 @@ public:
   }
 
   //! Rotates an axis placement. <theA1> is the axis of the
-  //! rotation . theAng is the angular value of the rotation
+  //! rotation. theAng is the angular value of the rotation
   //! in radians.
   Standard_NODISCARD gp_Ax3 Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
@@ -291,7 +291,7 @@ public:
 
   //! Applies a scaling transformation on the axis placement.
   //! The "Location" point of the axisplacement is modified.
-  //! Warnings :
+  //! Warnings:
   //! If the scale <theS> is negative :
   //! . the main direction of the axis placement is not changed.
   //! . The "XDirection" and the "YDirection" are reversed.
@@ -312,7 +312,7 @@ public:
 
   //! Transforms an axis placement with a Trsf.
   //! The "Location" point, the "XDirection" and the
-  //! "YDirection" are transformed with theT.  The resulting
+  //! "YDirection" are transformed with theT. The resulting
   //! main "Direction" of <me> is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
   Standard_NODISCARD gp_Ax3 Transformed(const gp_Trsf& theT) const

@@ -32,16 +32,16 @@ class TCollection_AsciiString;
 //! reading a container is the following:
 //! -   open the driver in reading mode,
 //! -   call the Read function from the schema,
-//! setting the driver as a parameter. This   function returns
-//! an instance of the   Storage_Data class which contains the   data being read,
+//! setting the driver as a parameter. This function returns
+//! an instance of the Storage_Data class which contains the data being read,
 //! -   close the driver.
 //! The standard procedure for an application in writing a container is the following:
 //! -   open the driver in writing mode,
-//! -   create an instance of the Storage_Data   class, then
-//! add the persistent data to write   with the function AddRoot,
+//! -   create an instance of the Storage_Data class, then
+//! add the persistent data to write with the function AddRoot,
 //! -   call the function Write from the schema,
-//! setting the driver and the Storage_Data   instance as parameters,
-//! -      close the driver.
+//! setting the driver and the Storage_Data instance as parameters,
+//! -   close the driver.
 class Storage
 {
 public:

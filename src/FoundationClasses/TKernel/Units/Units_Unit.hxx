@@ -37,22 +37,22 @@ class Units_Unit : public Standard_Transient
 {
 
 public:
-  //! Creates  and returns a  unit.  <aname> is  the name of
-  //! the  unit, <asymbol> is the  usual abbreviation of the
-  //! unit,  and  <avalue> is the  value in relation to  the
+  //! Creates and returns a unit. <aname> is the name of
+  //! the unit, <asymbol> is the usual abbreviation of the
+  //! unit, and <avalue> is the value in relation to the
   //! International System of Units.
   Standard_EXPORT Units_Unit(const Standard_CString        aname,
                              const Standard_CString        asymbol,
                              const Standard_Real           avalue,
                              const Handle(Units_Quantity)& aquantity);
 
-  //! Creates  and returns a  unit.  <aname> is  the name of
-  //! the  unit, <asymbol> is the  usual abbreviation of the
+  //! Creates and returns a unit. <aname> is the name of
+  //! the unit, <asymbol> is the usual abbreviation of the
   //! unit.
   Standard_EXPORT Units_Unit(const Standard_CString aname, const Standard_CString asymbol);
 
-  //! Creates  and returns a  unit.  <aname> is  the name of
-  //! the  unit.
+  //! Creates and returns a unit. <aname> is the name of
+  //! the unit.
   Standard_EXPORT Units_Unit(const Standard_CString aname);
 
   //! Returns the name of the unit <thename>
@@ -61,7 +61,7 @@ public:
   //! Adds a new symbol <asymbol> attached to <me>.
   Standard_EXPORT void Symbol(const Standard_CString asymbol);
 
-  //! Returns the  value in relation  with the International
+  //! Returns the value in relation with the International
   //! System of Units.
   Standard_Real Value() const;
 
@@ -80,8 +80,8 @@ public:
   //! Starting with <me>, returns a new Token object.
   Standard_EXPORT virtual Handle(Units_Token) Token() const;
 
-  //! Compares all the symbols  linked  within <me> with the
-  //! name of <atoken>,  and returns  True  if there is  one
+  //! Compares all the symbols linked within <me> with the
+  //! name of <atoken>, and returns True if there is one
   //! symbol equal to the name, False otherwise.
   Standard_EXPORT Standard_Boolean IsEqual(const Standard_CString astring) const;
 

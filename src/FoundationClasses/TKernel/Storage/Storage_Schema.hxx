@@ -82,7 +82,7 @@ public:
   Standard_EXPORT TCollection_AsciiString Name() const;
 
   //! Writes the data aggregated in aData into the
-  //! container defined by the driver s. The storage
+  //! container defined by the driver <s>. The storage
   //! operation is performed according to the data
   //! schema with which this algorithm is working.
   //! Note: aData may aggregate several root objects
@@ -96,13 +96,13 @@ public:
   //! returns True if theType migration is identified
   //! the callback support provides a way to read a file
   //! with a incomplete schema.
-  //! ex. : A file contains 3 types a, b, and c.
-  //! The  application's  schema  contains  only 2
+  //! ex. A file contains 3 types a, b, and c.
+  //! The application's schema contains only 2
   //! type a and b. If you try to read the file in
-  //! the application, you  will  have an error.To
-  //! bypass this  problem  you  can  give to your
-  //! application's schema  a  callback  used when
-  //! the schema doesn't know  how  to handle this
+  //! the application, you will have an error. To
+  //! bypass this problem you can give to your
+  //! application's schema a callback used when
+  //! the schema doesn't know how to handle this
   //! type.
   Standard_EXPORT static Standard_Boolean CheckTypeMigration(
     const TCollection_AsciiString& theTypeName,
@@ -115,15 +115,15 @@ public:
   //! remove a callback for a type
   Standard_EXPORT void RemoveReadUnknownTypeCallBack(const TCollection_AsciiString& aTypeName);
 
-  //! returns  a  list  of   type  name  with  installed
+  //! returns a list of type name with installed
   //! callback.
   Standard_EXPORT Handle(TColStd_HSequenceOfAsciiString) InstalledCallBackList() const;
 
   //! clear all callback from schema instance.
   Standard_EXPORT void ClearCallBackList();
 
-  //! install  a  callback  for  all  unknown  type. the
-  //! objects with unknown types  will be skipped. (look
+  //! install a callback for all unknown type. the
+  //! objects with unknown types will be skipped. (look
   //! SkipObject method in BaseDriver)
   Standard_EXPORT void UseDefaultCallBack();
 
@@ -133,16 +133,16 @@ public:
   //! ask if the schema is using the default callback.
   Standard_EXPORT Standard_Boolean IsUsingDefaultCallBack() const;
 
-  //! overload the  default  function  for build.(use to
-  //! set an  error  message  or  skip  an  object while
+  //! overload the default function for build. (use to
+  //! set an error message or skip an object while
   //! reading an unknown type).
   Standard_EXPORT void SetDefaultCallBack(const Handle(Storage_CallBack)& f);
 
-  //! reset  the  default  function  defined  by Storage
+  //! reset the default function defined by Storage
   //! package.
   Standard_EXPORT void ResetDefaultCallBack();
 
-  //! returns   the   read   function   used   when  the
+  //! returns the read function used when the
   //! UseDefaultCallBack() is set.
   Standard_EXPORT Handle(Storage_CallBack) DefaultCallBack() const;
 
