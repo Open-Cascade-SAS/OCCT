@@ -50,8 +50,8 @@ public:
                                        const TopoDS_Shape&          F,
                                        const Standard_Boolean       ForceClass);
 
-  //! Removes   are  non 3d-closed  wires.
-  //! Fills  up maps <mapVVsameG> and  <mapVon1Edge>,  in order to
+  //! Removes are non 3d-closed wires.
+  //! Fills up maps <mapVVsameG> and <mapVon1Edge>, in order to
   //! correct 3d-closed but unclosed (topologic connexity) wires.
   //! modifies myBlockBuilder
   Standard_EXPORT void DetectUnclosedWire(TopTools_IndexedDataMapOfShapeShape& mapVVsameG,

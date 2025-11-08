@@ -78,7 +78,7 @@ public:
 
   friend class math_VectorBase<>;
 
-  //! Constructs a non-initialized  matrix of range [LowerRow..UpperRow,
+  //! Constructs a non-initialized matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]
   //! For the constructed matrix:
   //! -   LowerRow and UpperRow are the indexes of the
@@ -115,7 +115,7 @@ public:
   //! Initialize all the elements of a matrix to InitialValue.
   Standard_EXPORT void Init(const Standard_Real InitialValue);
 
-  //! Returns the number of rows  of this matrix.
+  //! Returns the number of rows of this matrix.
   //! Note that for a matrix A you always have the following relations:
   //! - A.RowNumber() = A.UpperRow() -   A.LowerRow() + 1
   //! - A.ColNumber() = A.UpperCol() -   A.LowerCol() + 1
@@ -124,7 +124,7 @@ public:
   //! rows of A.returns the row range of a matrix.
   Standard_Integer RowNumber() const;
 
-  //! Returns the number of rows  of this matrix.
+  //! Returns the number of rows of this matrix.
   //! Note that for a matrix A you always have the following relations:
   //! - A.RowNumber() = A.UpperRow() -   A.LowerRow() + 1
   //! - A.ColNumber() = A.UpperCol() -   A.LowerCol() + 1
@@ -244,7 +244,7 @@ public:
 
   Standard_NODISCARD math_Matrix operator+(const math_Matrix& Right) const { return Added(Right); }
 
-  //! sets a  matrix to the addition of <Left> and <Right>.
+  //! sets a matrix to the addition of <Left> and <Right>.
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT void Add(const math_Matrix& Left, const math_Matrix& Right);
 

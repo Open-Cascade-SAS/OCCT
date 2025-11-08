@@ -58,8 +58,8 @@ public:
 
   //! Defines the texture projection plane for both S and T texture coordinate
   //! default is NOTP_XY meaning:
-  //! <1.0, 0.0, 0.0, 0.0> for S
-  //! and  <0.0, 1.0, 0.0, 0.0> for T
+  //! <1.0, 0.0, 0.0, 0.0> for S and
+  //! <0.0, 1.0, 0.0, 0.0> for T
   Standard_EXPORT void SetPlane(const Graphic3d_NameOfTexturePlane thePlane);
 
   //! Defines the texture scale for the S texture coordinate
@@ -103,13 +103,13 @@ public:
                               Standard_ShortReal& C,
                               Standard_ShortReal& D) const;
 
-  //! Returns   the current texture plane T equation
+  //! Returns the current texture plane T equation
   Standard_EXPORT void PlaneT(Standard_ShortReal& A,
                               Standard_ShortReal& B,
                               Standard_ShortReal& C,
                               Standard_ShortReal& D) const;
 
-  //! Returns  the current texture S translation value
+  //! Returns the current texture S translation value
   Standard_EXPORT void TranslateS(Standard_ShortReal& theVal) const;
 
   //! Returns the current texture T translation value

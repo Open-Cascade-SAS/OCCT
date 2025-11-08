@@ -37,21 +37,21 @@ class TopoDS_Shape;
 class BRepFill_LocationLaw;
 DEFINE_STANDARD_HANDLE(BRepFill_LocationLaw, Standard_Transient)
 
-//! Location Law on a  Wire.
+//! Location Law on a Wire.
 class BRepFill_LocationLaw : public Standard_Transient
 {
 
 public:
-  //! Return a error status, if the  status is not PipeOk then
+  //! Return a error status, if the status is not PipeOk then
   //! it exist a parameter tlike the law is not valuable for t.
   Standard_EXPORT GeomFill_PipeError GetStatus() const;
 
-  //! Apply a linear   transformation  on each law, to  have
+  //! Apply a linear transformation on each law, to have
   //! continuity of the global law between the edges.
   Standard_EXPORT virtual void TransformInG0Law();
 
   //! Apply a linear transformation on each law, to reduce
-  //! the   dicontinuities  of law at one  rotation.
+  //! the dicontinuities of law at one rotation.
   Standard_EXPORT virtual void TransformInCompatibleLaw(const Standard_Real AngularTolerance);
 
   Standard_EXPORT void DeleteTransform();
@@ -79,10 +79,10 @@ public:
   Standard_EXPORT TopoDS_Vertex Vertex(const Standard_Integer Index) const;
 
   //! Compute <OutputVertex> like a transformation of
-  //! <InputVertex>  the  transformation   is given by
-  //! evaluation of the location law   in the vertex of
-  //! rank   <Index>.
-  //! <Location> is used to manage discontinuities :
+  //! <InputVertex> the transformation is given by
+  //! evaluation of the location law in the vertex of
+  //! rank <Index>.
+  //! <Location> is used to manage discontinuities:
   //! - -1 : The law before the vertex is used.
   //! -  1 : The law after the vertex is used.
   //! -  0 : Average of the both laws is used.
@@ -116,9 +116,9 @@ public:
                                  Standard_Integer&   Index,
                                  Standard_Real&      Param);
 
-  //! Return the curvilinear abscissa  corresponding to a point
-  //! of  the path, defined by  <Index>  of  Edge and a
-  //! parameter on the edge.
+  //! Return the curvilinear abscissa corresponding to a point
+  //! of the path, defined by <Index> of Edge and a parameter
+  //! on the edge.
   Standard_EXPORT Standard_Real Abscissa(const Standard_Integer Index, const Standard_Real Param);
 
   DEFINE_STANDARD_RTTIEXT(BRepFill_LocationLaw, Standard_Transient)

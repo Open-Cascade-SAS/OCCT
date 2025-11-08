@@ -29,10 +29,10 @@
 class gp_Dir;
 class gp_Pnt;
 
-//! The  Projection   class provides  conical  and
-//! cylindrical projections of  Edge  or  Wire  on
+//! The Projection class provides conical and
+//! cylindrical projections of Edge or Wire on
 //! a Shape from TopoDS. The result will be a Edge
-//! or  Wire  from  TopoDS.
+//! or Wire from TopoDS.
 class BRepProj_Projection
 {
 public:

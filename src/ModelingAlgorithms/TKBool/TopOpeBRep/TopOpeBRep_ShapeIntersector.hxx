@@ -33,21 +33,21 @@ class TopOpeBRepTool_HBoxTool;
 
 //! Intersect two shapes.
 //!
-//! A GeomShape is a  shape with a geometric domain, i.e.
+//! A GeomShape is a shape with a geometric domain, i.e.
 //! a Face or an Edge.
 //!
-//! The purpose   of  the  ShapeIntersector is   to  find
-//! couples  of  intersecting   GeomShape  in  two Shapes
-//! (which can   be  any kind of  topologies  : Compound,
+//! The purpose of the ShapeIntersector is to find
+//! couples of intersecting GeomShape in two Shapes
+//! (which can be any kind of topologies : Compound,
 //! Solid, Shell, etc... )
 //!
-//! It  is in charge  of  exploration  of the shapes  and
-//! rejection. For this it is provided with two tools :
+//! It is in charge of exploration of the shapes and
+//! rejection. For this it is provided with two tools:
 //!
 //! - ShapeExplorer from TopOpeBRepTool.
 //! - ShapeScanner from TopOpeBRep which implements bounding boxes.
 //!
-//! Let S1,S2 the shapes sent to InitIntersection(S1,S2) method :
+//! Let S1,S2 the shapes sent to InitIntersection(S1,S2) method:
 //! - S1 is always SCANNED by a ShapeScanner from TopOpeBRep.
 //! - S2 is always EXPLORED by a ShapeExplorer from TopOpeBRepTool.
 class TopOpeBRep_ShapeIntersector
@@ -66,7 +66,7 @@ public:
                                         const TopoDS_Face&  F1,
                                         const TopoDS_Face&  F2);
 
-  //! return  the shape  <Index> ( = 1 or 2) given to
+  //! return the shape <Index> ( = 1 or 2) given to
   //! InitIntersection().
   //! Index = 1 will return S1, Index = 2 will return S2.
   Standard_EXPORT const TopoDS_Shape& Shape(const Standard_Integer Index) const;
@@ -87,11 +87,11 @@ public:
   //! return the current intersection of a Face and an Edge.
   Standard_EXPORT TopOpeBRep_FaceEdgeIntersector& ChangeFaceEdgeIntersector();
 
-  //! return  geometric  shape <Index> ( = 1 or 2 )  of
+  //! return geometric shape <Index> ( = 1 or 2 ) of
   //! current intersection.
   Standard_EXPORT const TopoDS_Shape& CurrentGeomShape(const Standard_Integer Index) const;
 
-  //! return  MAX of intersection tolerances with
+  //! return MAX of intersection tolerances with
   //! which FacesIntersector from TopOpeBRep was working.
   Standard_EXPORT void GetTolerances(Standard_Real& tol1, Standard_Real& tol2) const;
 

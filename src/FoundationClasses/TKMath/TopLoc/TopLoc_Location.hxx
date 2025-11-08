@@ -57,28 +57,28 @@ public:
   //! Resets this location to the Identity transformation.
   void Identity();
 
-  //! Returns    the  first   elementary  datum  of  the
-  //! Location.  Use the NextLocation function recursively to access
+  //! Returns the first elementary datum of the
+  //! Location. Use the NextLocation function recursively to access
   //! the other data comprising this location.
   //! Exceptions
   //! Standard_NoSuchObject if this location is empty.
   const Handle(TopLoc_Datum3D)& FirstDatum() const;
 
-  //! Returns   the  power  elevation  of    the   first
+  //! Returns the power elevation of the first
   //! elementary datum.
   //! Exceptions
   //! Standard_NoSuchObject if this location is empty.
   Standard_Integer FirstPower() const;
 
-  //! Returns  a Location representing  <me> without the
-  //! first datum. We have the relation :
+  //! Returns a Location representing  <me> without the
+  //! first datum. We have the relation:
   //!
   //! <me> = NextLocation() * FirstDatum() ^ FirstPower()
   //! Exceptions
   //! Standard_NoSuchObject if this location is empty.
   const TopLoc_Location& NextLocation() const;
 
-  //! Returns  the transformation    associated  to  the
+  //! Returns the transformation associated to the
   //! coordinate system.
   Standard_EXPORT const gp_Trsf& Transformation() const;
   Standard_EXPORT                operator gp_Trsf() const;
@@ -88,7 +88,7 @@ public:
   //! <me> * Inverted() is an Identity.
   Standard_NODISCARD Standard_EXPORT TopLoc_Location Inverted() const;
 
-  //! Returns <me> * <Other>, the  elementary datums are
+  //! Returns <me> * <Other>, the elementary datums are
   //! concatenated.
   Standard_NODISCARD Standard_EXPORT TopLoc_Location Multiplied(const TopLoc_Location& Other) const;
 
@@ -97,7 +97,7 @@ public:
     return Multiplied(Other);
   }
 
-  //! Returns  <me> / <Other>.
+  //! Returns <me> / <Other>.
   Standard_NODISCARD Standard_EXPORT TopLoc_Location Divided(const TopLoc_Location& Other) const;
 
   Standard_NODISCARD TopLoc_Location operator/(const TopLoc_Location& Other) const
@@ -108,8 +108,8 @@ public:
   //! Returns <Other>.Inverted() * <me>.
   Standard_NODISCARD Standard_EXPORT TopLoc_Location Predivided(const TopLoc_Location& Other) const;
 
-  //! Returns me at the power <pwr>.   If <pwr>  is zero
-  //! returns  Identity.  <pwr> can  be lower  than zero
+  //! Returns me at the power <pwr>. If <pwr> is zero
+  //! returns Identity. <pwr> can be lower than zero
   //! (usual meaning for powers).
   Standard_NODISCARD Standard_EXPORT TopLoc_Location Powered(const Standard_Integer pwr) const;
 

@@ -97,12 +97,12 @@ public:
 
   //! Query
   //! Returns true if the pave block has pave indices
-  //! that equal to the  pave indices of the pave block
+  //! that equal to the pave indices of the pave block
   //! <theOther>
   Standard_EXPORT Standard_Boolean HasSameBounds(const Handle(BOPDS_PaveBlock)& theOther) const;
 
   //! Selector
-  //! Returns the pave indices  <theIndex1,theIndex2>
+  //! Returns the pave indices <theIndex1,theIndex2>
   //! of the pave block
   Standard_EXPORT void Indices(Standard_Integer& theIndex1, Standard_Integer& theIndex2) const;
 
@@ -123,7 +123,7 @@ public:
   Standard_EXPORT void RemoveExtPave(const Standard_Integer theVertNum);
 
   //! Selector
-  //! Returns the  extra paves
+  //! Returns the extra paves
   Standard_EXPORT const BOPDS_ListOfPave& ExtPaves() const;
 
   //! Selector / Modifier
@@ -133,7 +133,7 @@ public:
   //! Modifier
   //! Updates the pave block. The extra paves are used
   //! to create new pave blocks <theLPB>.
-  //! <theFlag> - if true, the first pave and the second
+  //! <theFlag> - if true, the first and second
   //! pave are used to produce new pave blocks.
   Standard_EXPORT void Update(BOPDS_ListOfPaveBlock& theLPB,
                               const Standard_Boolean theFlag = Standard_True);
@@ -149,7 +149,7 @@ public:
 
   //! Modifier
   //! Sets the shrunk data for the pave block
-  //! <theTS1>,  <theTS2> - shrunk range
+  //! <theTS1>, <theTS2> - shrunk range
   //! <theBox> - the bounding box
   //! <theIsSplittable> - defines whether the edge can be split
   Standard_EXPORT void SetShrunkData(const Standard_Real    theTS1,
@@ -158,8 +158,8 @@ public:
                                      const Standard_Boolean theIsSplittable);
 
   //! Selector
-  //! Returns  the shrunk data for the pave block
-  //! <theTS1>,  <theTS2> - shrunk range
+  //! Returns the shrunk data for the pave block
+  //! <theTS1>, <theTS2> - shrunk range
   //! <theBox> - the bounding box
   //! <theIsSplittable> - defines whether the edge can be split
   Standard_EXPORT void ShrunkData(Standard_Real&    theTS1,

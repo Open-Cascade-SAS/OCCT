@@ -31,17 +31,17 @@ class TopoDS_Shape;
 class TopOpeBRepDS_HDataStructure;
 class TopoDS_Face;
 
-//! Provides class  methods  to  fill  a datastructure
-//! with  results  of intersections.
+//! Provides class methods to fill a datastructure
+//! with results of intersections.
 //!
-//! 1.  Use  an    Intersector  to   find    pairs  of
+//! 1. Use an Intersector to find pairs of
 //! intersecting GeomShapes
 //!
-//! 2. For each  pair fill the DataStructure using the
+//! 2. For each pair fill the DataStructure using the
 //! appropriate Filler.
 //!
-//! 3. Complete the  DataStructure to record shapes to
-//! rebuild (shells, wires )
+//! 3. Complete the DataStructure to record shapes to
+//! rebuild (shells, wires)
 class TopOpeBRep_DSFiller
 {
 public:
@@ -57,7 +57,7 @@ public:
 
   //! Stores in <DS> the intersections of <S1> and <S2>.
   //! if orientFORWARD = True
-  //! S FORWARD,REVERSED   --> FORWARD
+  //! S FORWARD,REVERSED  --> FORWARD
   //! S EXTERNAL,INTERNAL --> EXTERNAL,INTERNAL
   Standard_EXPORT void Insert(const TopoDS_Shape&                        S1,
                               const TopoDS_Shape&                        S2,
@@ -76,14 +76,14 @@ public:
   Standard_EXPORT void Complete(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
 
   //! Stores in <DS> the intersections of <S1> and <S2>.
-  //! S1 et S2 contain only SameDomain Face
+  //! S1 and S2 contain only SameDomain Face
   Standard_EXPORT void Insert2d(const TopoDS_Shape&                        S1,
                                 const TopoDS_Shape&                        S2,
                                 const Handle(TopOpeBRepDS_HDataStructure)& HDS);
 
   //! S1, S2 set of tangent face
-  //! lance les intersections 2d pour coder correctement
-  //! les faces SameDomain.
+  //! Launches 2D intersection calculations to correctly
+  //! code the SameDomain faces.
   Standard_EXPORT void InsertIntersection2d(const TopoDS_Shape&                        S1,
                                             const TopoDS_Shape&                        S2,
                                             const Handle(TopOpeBRepDS_HDataStructure)& HDS);
@@ -120,7 +120,7 @@ public:
 
   Standard_EXPORT void GapFiller(const Handle(TopOpeBRepDS_HDataStructure)& HDS) const;
 
-  //! Update   the  data      structure  with   relevant
+  //! Update the data structure with relevant
   //! information deduced from the intersections.
   //!
   //! Shells containing an intersected face.
@@ -135,7 +135,7 @@ public:
 
   Standard_EXPORT void Checker(const Handle(TopOpeBRepDS_HDataStructure)& HDS) const;
 
-  //! Update   the  data      structure  with   relevant
+  //! Update the data structure with relevant
   //! information deduced from the intersections 2d.
   //!
   //! Shells containing an intersected face.

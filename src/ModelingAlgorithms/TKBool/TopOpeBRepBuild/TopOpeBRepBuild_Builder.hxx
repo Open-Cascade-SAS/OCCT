@@ -67,12 +67,12 @@ class gp_Pnt;
   #undef FillSolid
 #endif
 
-//! The Builder  algorithm    constructs   topological
-//! objects  from   an    existing  topology  and  new
+//! The Builder algorithm constructs topological
+//! objects from an existing topology and new
 //! geometries attached to the topology. It is used to
 //! construct the result of a topological operation;
-//! the existing  topologies are the parts involved in
-//! the  topological  operation and the new geometries
+//! the existing topologies are the parts involved in
+//! the topological operation and the new geometries
 //! are the intersection lines and points.
 class TopOpeBRepBuild_Builder
 {
@@ -106,7 +106,7 @@ public:
   //! Does NOT clear the handled DS.
   Standard_EXPORT virtual void Clear();
 
-  //! Merges  the two edges <S1> and <S2> keeping the
+  //! Merges the two edges <S1> and <S2> keeping the
   //! parts in each edge of states <TB1> and <TB2>.
   //! Booleans onA, onB, onAB indicate whether parts of edges
   //! found as state ON respectively on first, second, and both
@@ -119,7 +119,7 @@ public:
                                   const Standard_Boolean      onB  = Standard_False,
                                   const Standard_Boolean      onAB = Standard_False);
 
-  //! Merges  the two faces <S1>   and <S2> keeping the
+  //! Merges the two faces <S1> and <S2> keeping the
   //! parts in each face of states <TB1> and <TB2>.
   Standard_EXPORT void MergeFaces(const TopTools_ListOfShape& S1,
                                   const TopAbs_State          TB1,
@@ -129,7 +129,7 @@ public:
                                   const Standard_Boolean      onB  = Standard_False,
                                   const Standard_Boolean      onAB = Standard_False);
 
-  //! Merges  the two solids <S1>   and <S2> keeping the
+  //! Merges the two solids <S1> and <S2> keeping the
   //! parts in each solid of states <TB1> and <TB2>.
   Standard_EXPORT void MergeSolids(const TopoDS_Shape& S1,
                                    const TopAbs_State  TB1,
@@ -149,7 +149,7 @@ public:
 
   Standard_EXPORT void ChangeClassify(const Standard_Boolean B);
 
-  //! Merges the solid <S>  keeping the
+  //! Merges the solid <S> keeping the
   //! parts of state <TB>.
   Standard_EXPORT void MergeSolid(const TopoDS_Shape& S, const TopAbs_State TB);
 
@@ -750,8 +750,8 @@ protected:
                                   const TopAbs_State  TB1,
                                   const TopAbs_State  TB2);
 
-  //! Split <F1> keeping the  parts of state  <TB1>.
-  //! Merge faces with same domain, keeping parts  of
+  //! Split <F1> keeping the parts of state <TB1>.
+  //! Merge faces with same domain, keeping parts of
   //! state <TB2>.
   Standard_EXPORT void SplitFace(const TopoDS_Shape& F1,
                                  const TopAbs_State  TB1,
@@ -770,8 +770,8 @@ protected:
                                   const TopAbs_State  TB1,
                                   const TopAbs_State  TB2);
 
-  //! Explore shapes of given  by explorer <Ex> to split them.
-  //! Store  new shapes in the set <SS>.
+  //! Explore shapes of given by explorer <Ex> to split them.
+  //! Store new shapes in the set <SS>.
   //! According to RevOri, reverse or not their orientation.
   Standard_EXPORT void SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
                                    const TopAbs_State            TB1,
@@ -779,7 +779,7 @@ protected:
                                    TopOpeBRepBuild_ShapeSet&     SS,
                                    const Standard_Boolean        RevOri);
 
-  //! Split edges of <F1> and store  wires and edges in
+  //! Split edges of <F1> and store wires and edges in
   //! the set <WES>. According to RevOri, reverse (or not) orientation.
   Standard_EXPORT void FillFace(const TopoDS_Shape&          F1,
                                 const TopAbs_State           TB1,
@@ -788,7 +788,7 @@ protected:
                                 TopOpeBRepBuild_WireEdgeSet& WES,
                                 const Standard_Boolean       RevOri);
 
-  //! Split faces of <S1> and store shells  and faces in
+  //! Split faces of <S1> and store shells and faces in
   //! the set <SS>. According to RevOri, reverse (or not) orientation.
   Standard_EXPORT void FillSolid(const TopoDS_Shape&         S1,
                                  const TopAbs_State          TB1,
@@ -816,7 +816,7 @@ protected:
 
   //! fills vertex set PVS with the current value of IT.
   //! I geometry is a point or a vertex.
-  //! TB  indicates the orientation to give to geometries found I
+  //! TB indicates the orientation to give to geometries found I
   Standard_EXPORT void FillVertexSetOnValue(const TopOpeBRepDS_PointIterator& IT,
                                             const TopAbs_State                TB,
                                             TopOpeBRepBuild_PaveSet&          PVS) const;

@@ -30,7 +30,7 @@ DEFINE_STANDARD_HANDLE(IGESGraph_LineFontDefTemplate, IGESData_LineFontEntity)
 //! defines IGESLineFontDefTemplate, Type <304> Form <1>
 //! in package IGESGraph
 //!
-//! Line Font can be defined as a repetition od Template figure
+//! Line Font can be defined as a repetition of Template figure
 //! that is displayed at regularly spaced locations along a
 //! planer anchoring curve. The anchoring curve itself has
 //! no visual purpose.

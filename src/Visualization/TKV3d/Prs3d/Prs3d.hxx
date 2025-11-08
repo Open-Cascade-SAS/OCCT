@@ -33,7 +33,7 @@ class Poly_Triangulation;
 //! as color, width, and type of line are displayed;
 //! these are generic objects, whereas those in
 //! StdPrs are specific geometries and topologies.
-//! -   generic   algorithms providing default settings for
+//! -   generic algorithms providing default settings for
 //! objects such as points, curves, surfaces and shapes
 //! -   a root object which provides the abstract
 //! framework for the DsgPrs definitions at work in

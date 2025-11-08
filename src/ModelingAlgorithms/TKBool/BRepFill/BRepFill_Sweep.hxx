@@ -36,7 +36,7 @@ class BRepFill_SectionLaw;
 class TopoDS_Edge;
 
 //! Topological Sweep Algorithm
-//! Computes an  Sweep  shell using a  generating
+//! Computes an Sweep shell using a generating
 //! wire, an SectionLaw and an LocationLaw.
 class BRepFill_Sweep
 {
@@ -101,10 +101,10 @@ public:
   //! Say if the Shape is Build.
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-  //! returns the Sweeping Shape
+  //! Returns the Sweeping Shape
   Standard_EXPORT TopoDS_Shape Shape() const;
 
-  //! Get the Approximation  error.
+  //! Get the Approximation error.
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
 
   Standard_EXPORT Handle(TopTools_HArray2OfShape) SubShape() const;
@@ -113,7 +113,7 @@ public:
 
   Standard_EXPORT Handle(TopTools_HArray2OfShape) Sections() const;
 
-  //! returns the Tape corresponding to Index-th edge of section
+  //! Returns the Tape corresponding to Index-th edge of section
   Standard_EXPORT TopoDS_Shape Tape(const Standard_Integer Index) const;
 
 protected:

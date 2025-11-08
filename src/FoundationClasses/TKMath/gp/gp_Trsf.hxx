@@ -63,7 +63,7 @@ public:
   //! Returns the identity transformation.
   constexpr gp_Trsf() noexcept;
 
-  //! Creates  a 3D transformation from the 2D transformation theT.
+  //! Creates a 3D transformation from the 2D transformation theT.
   //! The resulting transformation has a homogeneous
   //! vectorial part, V3, and a translation part, T3, built from theT:
   //! a11    a12
@@ -110,7 +110,7 @@ public:
 
   //! Changes the transformation into a scale.
   //! theP is the center of the scale and theS is the scaling value.
-  //! Raises ConstructionError  If <theS> is null.
+  //! Raises ConstructionError If <theS> is null.
   Standard_EXPORT void SetScale(const gp_Pnt& theP, const Standard_Real theS);
 
   //! Modifies this transformation so that it transforms the
@@ -165,7 +165,7 @@ public:
   //! {P(0.,0.,0.), VX (1.,0.,0.), VY (0.,1.,0.), VZ (0., 0. ,1.) }
   //! @endcode
   //! to the local coordinate system defined with the Ax3 theToSystem.
-  //! Use in the same way  as the previous method. FromSystem1 is
+  //! Use in the same way as the previous method. FromSystem1 is
   //! defaulted to the absolute coordinate system.
   Standard_EXPORT void SetTransformation(const gp_Ax3& theToSystem);
 
@@ -184,13 +184,13 @@ public:
   Standard_EXPORT void SetTranslationPart(const gp_Vec& theV) noexcept;
 
   //! Modifies the scale factor.
-  //! Raises ConstructionError  If theS is null.
+  //! Raises ConstructionError If theS is null.
   Standard_EXPORT void SetScaleFactor(const Standard_Real theS);
 
   constexpr void SetForm(const gp_TrsfForm theP) noexcept { shape = theP; }
 
-  //! Sets the coefficients  of the transformation.  The
-  //! transformation  of the  point  x,y,z is  the point
+  //! Sets the coefficients of the transformation. The
+  //! transformation of the point x,y,z is the point
   //! x',y',z' with :
   //! @code
   //! x' = a11 x + a12 y + a13 z + a14
@@ -198,7 +198,7 @@ public:
   //! z' = a31 x + a32 y + a33 z + a34
   //! @endcode
   //! The method Value(i,j) will return aij.
-  //! Raises ConstructionError if the determinant of  the aij is null.
+  //! Raises ConstructionError if the determinant of the aij is null.
   //! The matrix is orthogonalized before future using.
   Standard_EXPORT void SetValues(const Standard_Real a11,
                                  const Standard_Real a12,
@@ -265,7 +265,7 @@ public:
   //! Raises an exception if the matrix of the transformation
   //! is not inversible, it means that the scale factor is lower
   //! or equal to Resolution from package gp.
-  //! Computes the transformation composed with T and  <me>.
+  //! Computes the transformation composed with T and <me>.
   //! In a C++ implementation you can also write Tcomposed = <me> * T.
   //! Example :
   //! @code

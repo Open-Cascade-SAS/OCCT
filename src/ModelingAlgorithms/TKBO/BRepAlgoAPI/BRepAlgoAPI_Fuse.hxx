@@ -25,7 +25,7 @@ class BOPAlgo_PaveFiller;
 class TopoDS_Shape;
 
 //! The class provides Boolean fusion operation
-//! between arguments and tools  (Boolean Union).
+//! between arguments and tools (Boolean Union).
 class BRepAlgoAPI_Fuse : public BRepAlgoAPI_BooleanOperation
 {
 public:

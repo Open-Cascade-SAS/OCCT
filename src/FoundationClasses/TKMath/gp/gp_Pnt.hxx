@@ -45,7 +45,7 @@ public:
   {
   }
 
-  //! Creates a  point with its 3 cartesian's coordinates : theXp, theYp, theZp.
+  //! Creates a point with its 3 cartesian's coordinates: theXp, theYp, theZp.
   constexpr gp_Pnt(const Standard_Real theXp,
                    const Standard_Real theYp,
                    const Standard_Real theZp) noexcept
@@ -53,7 +53,7 @@ public:
   {
   }
 
-  //! Changes the coordinate of range theIndex :
+  //! Changes the coordinate of range theIndex:
   //! theIndex = 1 => X is modified
   //! theIndex = 2 => Y is modified
   //! theIndex = 3 => Z is modified
@@ -63,7 +63,7 @@ public:
     coord.SetCoord(theIndex, theXi);
   }
 
-  //! For this point, assigns  the values theXp, theYp and theZp to its three coordinates.
+  //! For this point, assigns the values theXp, theYp and theZp to its three coordinates.
   constexpr void SetCoord(const Standard_Real theXp,
                           const Standard_Real theYp,
                           const Standard_Real theZp) noexcept
@@ -144,7 +144,7 @@ public:
 
   //! Performs the symmetrical transformation of a point
   //! with respect to the point theP which is the center of
-  //! the  symmetry.
+  //! the symmetry.
   Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
   //! Performs the symmetrical transformation of a point

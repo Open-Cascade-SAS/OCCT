@@ -104,7 +104,7 @@ public:
   //! domain <I> (= 1 or 2).
   Standard_EXPORT TopAbs_State State(const Standard_Integer I) const;
 
-  //! Set the state of VPoint within the  domain of
+  //! Set the state of VPoint within the domain of
   //! the geometric shape <I> (= 1 or 2).
   Standard_EXPORT void State(const TopAbs_State S, const Standard_Integer I);
 

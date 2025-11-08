@@ -99,7 +99,7 @@ public:
   //! this transformation is negative..
   constexpr Standard_Boolean IsNegative() const noexcept { return (matrix.Determinant() < 0.0); }
 
-  //! Returns the nature of the transformation. It can be  an
+  //! Returns the nature of the transformation. It can be an
   //! identity transformation, a rotation, a translation, a mirror
   //! (relative to a point or an axis), a scaling transformation,
   //! or a compound transformation.
@@ -165,7 +165,7 @@ public:
   Standard_EXPORT void Power(const Standard_Integer theN);
 
   //! Computes the following composition of transformations
-  //! <me> * <me> * .......* <me>,  theN time.
+  //! <me> * <me> * .......* <me>, theN time.
   //! if theN = 0 <me> = Identity
   //! if theN < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
   //!
@@ -180,11 +180,11 @@ public:
 
   void Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept;
 
-  //! Transforms  a doublet XY with a Trsf2d
+  //! Transforms a doublet XY with a Trsf2d
   void Transforms(gp_XY& theCoord) const noexcept;
 
-  //! Sets the coefficients  of the transformation. The
-  //! transformation  of the  point  x,y is  the point
+  //! Sets the coefficients of the transformation. The
+  //! transformation of the point x,y is the point
   //! x',y' with :
   //! @code
   //! x' = a11 x + a12 y + a13

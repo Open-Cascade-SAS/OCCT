@@ -29,7 +29,7 @@ class Geom2d_Curve;
 class gp_Pnt2d;
 class Geom_Curve;
 
-//! Compute the Pcurves and  the 3d curves resulting
+//! Compute the Pcurves and the 3d curves resulting
 //! of the trimming of a face by an extruded surface.
 class BRepFill_TrimSurfaceTool
 {
@@ -44,7 +44,7 @@ public:
                                            const Standard_Boolean      Inv1,
                                            const Standard_Boolean      Inv2);
 
-  //! Intersect <Bis>  with the  projection of the edges
+  //! Intersect <Bis> with the projection of the edges
   //! <EdgeOnFi> and returns the intersecting parameters
   //! on Bis and on the edges
   //! P.X() : Parameter on Bis
@@ -58,7 +58,7 @@ public:
   //! returns True if the Line (P, DZ) intersect the Faces
   Standard_EXPORT Standard_Boolean IsOnFace(const gp_Pnt2d& Point) const;
 
-  //! returns the parameter of the  point <Point> on the
+  //! returns the parameter of the point <Point> on the
   //! Edge <Edge>, assuming that the point is on the edge.
   Standard_EXPORT Standard_Real ProjOn(const gp_Pnt2d& Point, const TopoDS_Edge& Edge) const;
 

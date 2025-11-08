@@ -53,9 +53,9 @@ public:
                                                   Standard_Real&     F,
                                                   math_Vector&       G) = 0;
 
-  //! computes the value  <F>, the gradient <G> and  the
-  //! hessian   <H> of  the functions  for the  variable <X>.
-  //! Returns  True  if  the computation  was  done
+  //! computes the value <F>, the gradient <G> and the
+  //! hessian <H> of the functions for the variable <X>.
+  //! Returns True if the computation was done
   //! successfully, False otherwise.
   Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
                                                   Standard_Real&     F,

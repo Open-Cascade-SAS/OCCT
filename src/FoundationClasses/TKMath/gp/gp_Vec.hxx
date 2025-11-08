@@ -111,7 +111,7 @@ public:
   //! For this vector, returns its Y coordinate.
   constexpr Standard_Real Y() const noexcept { return coord.Y(); }
 
-  //! For this vector, returns its Z  coordinate.
+  //! For this vector, returns its Z coordinate.
   constexpr Standard_Real Z() const noexcept { return coord.Z(); }
 
   //! For this vector, returns
@@ -410,7 +410,7 @@ public:
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector theV which is the center of
-  //! the  symmetry.
+  //! the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Vec& theV) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;

@@ -76,12 +76,12 @@ public:
   //! of the curve
   BOPDS_ListOfPaveBlock& ChangePaveBlocks();
 
-  //! Creates  initial pave block
+  //! Creates initial pave block
   //! of the curve
   void InitPaveBlock1();
 
   //! Selector/Modifier
-  //! Returns  initial pave block
+  //! Returns initial pave block
   //! of the curve
   Handle(BOPDS_PaveBlock)& ChangePaveBlock1();
 

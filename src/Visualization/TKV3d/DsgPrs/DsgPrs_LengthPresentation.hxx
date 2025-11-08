@@ -33,7 +33,7 @@ class Geom_Surface;
 //! Framework for displaying lengths.
 //! The length displayed is indicated by line segments
 //! and text alone or by a combination of line segment,
-//! text and   arrows at either or both of its ends.
+//! text and arrows at either or both of its ends.
 class DsgPrs_LengthPresentation
 {
 public:
@@ -98,7 +98,7 @@ public:
   //! display aPresentation.
   //! This segment joins the points AttachmentPoint1 and
   //! AttachmentPoint2, along the direction
-  //! aDirection.   AttachmentPoint2 lies on the curvilinear
+  //! aDirection. AttachmentPoint2 lies on the curvilinear
   //! faces SecondSurf. The text aText will be displayed at
   //! the offset point OffsetPoint. The value of the
   //! enumeration ArrowSide controls whether arrows will

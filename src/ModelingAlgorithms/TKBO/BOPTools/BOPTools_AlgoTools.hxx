@@ -96,7 +96,7 @@ public: //! @name Vertices construction
                                             const Standard_Real aTol,
                                             TopoDS_Vertex&      aNewVertex);
 
-  //! Make a vertex using couple of vertices  <aV1, aV2>
+  //! Make a vertex using couple of vertices <aV1, aV2>
   Standard_EXPORT static void MakeNewVertex(const TopoDS_Vertex& aV1,
                                             const TopoDS_Vertex& aV2,
                                             TopoDS_Vertex&       aNewVertex);
@@ -117,21 +117,21 @@ public: //! @name Vertices construction
                                             TopoDS_Vertex&      aNewVertex);
 
 public: //! @name Updating the vertex
-  //! Update the tolerance value for vertex  <aV>
+  //! Update the tolerance value for vertex <aV>
   //! taking into account the fact that <aV> lays on
   //! the curve <aIC>
   Standard_EXPORT static void UpdateVertex(const IntTools_Curve& aIC,
                                            const Standard_Real   aT,
                                            const TopoDS_Vertex&  aV);
 
-  //! Update the tolerance value for vertex  <aV>
+  //! Update the tolerance value for vertex <aV>
   //! taking into account the fact that <aV> lays on
   //! the edge <aE>
   Standard_EXPORT static void UpdateVertex(const TopoDS_Edge&   aE,
                                            const Standard_Real  aT,
                                            const TopoDS_Vertex& aV);
 
-  //! Update the tolerance value for vertex  <aVN>
+  //! Update the tolerance value for vertex <aVN>
   //! taking into account the fact that <aVN> should
   //! cover tolerance zone of <aVF>
   Standard_EXPORT static void UpdateVertex(const TopoDS_Vertex& aVF, const TopoDS_Vertex& aVN);
@@ -158,7 +158,7 @@ public: //! @name Edge construction
                                             const Standard_Real  aP2,
                                             TopoDS_Edge&         aNewEdge);
 
-  //! Make the edge from 3D-Curve <aIC>  and two vertices <aV1,aV2>
+  //! Make the edge from 3D-Curve <aIC> and two vertices <aV1,aV2>
   //! at parameters <aP1,aP2>
   Standard_EXPORT static void MakeSectEdge(const IntTools_Curve& aIC,
                                            const TopoDS_Vertex&  aV1,
@@ -234,7 +234,7 @@ public: //! @name Face classification relatively solid
 
   //! Returns True if the face theFace is inside of the
   //! couple of faces theFace1, theFace2.
-  //! The faces theFace, theFace1, theFace2  must
+  //! The faces theFace, theFace1, theFace2 must
   //! share the edge theEdge
   //! Return values:
   //!  * 0 state is not IN
@@ -248,9 +248,9 @@ public: //! @name Face classification relatively solid
     const Handle(IntTools_Context)& theContext);
 
   //! Returns True if the face theFace is inside of the
-  //! appropriate couple of faces (from the set theLF)    .
-  //! The faces of the set theLF and theFace  must
-  //! share the edge theEdge
+  //! appropriate couple of faces (from the set theLF).
+  //! The faces of the set theLF and theFace must share
+  //! the edge theEdge
   //!  * 0 state is not IN
   //!  * 1 state is IN
   //!  * 2 state can not be found by the method of angles
@@ -438,8 +438,8 @@ public: //! @name Orienting elements in container
 public: //! @name Methods for shape validation (correction)
   //! Provides valid values of tolerances for the shape <theS>
   //! <theTolMax> is max value of the tolerance that can be
-  //! accepted for correction.  If real value of the tolerance
-  //! will be greater than  <aTolMax>, the correction does not
+  //! accepted for correction. If real value of the tolerance
+  //! will be greater than <aTolMax>, the correction does not
   //! perform.
   Standard_EXPORT static void CorrectTolerances(
     const TopoDS_Shape&               theS,
@@ -448,7 +448,7 @@ public: //! @name Methods for shape validation (correction)
     const Standard_Boolean            theRunParallel = Standard_False);
 
   //! Provides valid values of tolerances for the shape <theS>
-  //! in  terms of BRepCheck_InvalidCurveOnSurface.
+  //! in terms of BRepCheck_InvalidCurveOnSurface.
   Standard_EXPORT static void CorrectCurveOnSurface(
     const TopoDS_Shape&               theS,
     const TopTools_IndexedMapOfShape& theMapToAvoid,
@@ -456,7 +456,7 @@ public: //! @name Methods for shape validation (correction)
     const Standard_Boolean            theRunParallel = Standard_False);
 
   //! Provides valid values of tolerances for the shape <theS>
-  //! in  terms of BRepCheck_InvalidPointOnCurve.
+  //! in terms of BRepCheck_InvalidPointOnCurve.
   Standard_EXPORT static void CorrectPointOnCurve(
     const TopoDS_Shape&               theS,
     const TopTools_IndexedMapOfShape& theMapToAvoid,
@@ -480,7 +480,7 @@ public: //! Checking if the faces are coinciding
 public: //! @name Looking for the edge in the face
   //! Returns True if the face theFace contains
   //! the edge theEdge but with opposite orientation.
-  //! If the method  returns True theEdgeOff is the
+  //! If the method returns True theEdgeOff is the
   //! edge founded
   Standard_EXPORT static Standard_Boolean GetEdgeOff(const TopoDS_Edge& theEdge,
                                                      const TopoDS_Face& theFace,
@@ -561,7 +561,7 @@ public: //! @name Other methods
                                             TopTools_ListOfShape& theList,
                                             TopTools_MapOfShape*  theMap = NULL);
 
-  //! Returns true if the  shell <theShell> is open
+  //! Returns true if the shell <theShell> is open
   Standard_EXPORT static Standard_Boolean IsOpenShell(const TopoDS_Shell& theShell);
 };
 

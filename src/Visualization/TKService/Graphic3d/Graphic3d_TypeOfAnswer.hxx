@@ -18,7 +18,7 @@
 #define _Graphic3d_TypeOfAnswer_HeaderFile
 
 //! The answer of the method AcceptDisplay
-//! AcceptDisplay  means is it possible to display the
+//! AcceptDisplay means is it possible to display the
 //! specified structure in the specified view ?
 //! TOA_YES yes
 //! TOA_NO  no

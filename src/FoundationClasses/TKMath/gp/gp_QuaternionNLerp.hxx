@@ -17,7 +17,7 @@
 #include <gp_Quaternion.hxx>
 
 //! Class perform linear interpolation (approximate rotation interpolation),
-//! result quaternion nonunit, its length lay between. sqrt(2)/2  and 1.0
+//! result quaternion nonunit, its length lay between. sqrt(2)/2 and 1.0
 class gp_QuaternionNLerp
 {
 public:

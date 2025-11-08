@@ -36,13 +36,13 @@
 //! To build solids : shapes are shells, elements are faces.
 //! The ShapeSet stores a list of shapes, a list of elements
 //! to start reconstructions, and a map to search neighbours.
-//! The map stores the connection  between elements through
+//! The map stores the connection between elements through
 //! subshapes of type <SubShapeType> given in constructor.
-//! <SubShapeType> is :
+//! <SubShapeType> is:
 //! - TopAbs_VERTEX to connect edges
 //! - TopAbs_EDGE to connect faces
 //!
-//! Signature needed by the BlockBuilder :
+//! Signature needed by the BlockBuilder:
 //! InitStartElements(me : in out)
 //! MoreStartElements(me) returns Boolean;
 //! NextStartElement(me : in out);
@@ -56,8 +56,8 @@ class TopOpeBRepBuild_ShapeSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates a ShapeSet  in order to build shapes connected
-  //! by <SubShapeType>  shapes.
+  //! Creates a ShapeSet in order to build shapes connected
+  //! by <SubShapeType> shapes.
   //! <checkshape>:check (or not) the shapes, startelements, elements added.
   Standard_EXPORT TopOpeBRepBuild_ShapeSet(const TopAbs_ShapeEnum SubShapeType,
                                            const Standard_Boolean checkshape = Standard_True);

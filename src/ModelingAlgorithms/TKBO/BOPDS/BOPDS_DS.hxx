@@ -59,20 +59,19 @@ class Bnd_Box;
 //! The class BOPDS_DS provides the control
 //! of data structure for the algorithms in the
 //! Boolean Component such as General Fuse, Boolean operations,
-//! Section, Maker Volume, Splitter and Cells Builder.<br>
+//! Section, Maker Volume, Splitter and Cells Builder.
 //!
-//! The data structure has the  following contents:<br>
-//! 1. the arguments of an operation [myArguments];<br>
-//! 2  the information about arguments/new shapes
+//! The data structure has the following contents:
+//! 1. the arguments of an operation [myArguments];
+//! 2. the information about arguments/new shapes
 //! and their sub-shapes (type of the shape,
-//! bounding box, etc) [myLines];<br>
+//! bounding box, etc) [myLines];
 //! 3. each argument shape(and its subshapes)
-//! has/have own range of indices (rank);<br>
-//! 4. pave blocks on source edges [myPaveBlocksPool];<br>
-//! 5. the state of source faces  [myFaceInfoPool];<br>
-//! 6  the collection of same domain shapes [myShapesSD];<br>
-//! 7  the collection of interferences  [myInterfTB,
-//! myInterfVV,..myInterfFF]
+//! has/have own range of indices (rank);
+//! 4. pave blocks on source edges [myPaveBlocksPool];
+//! 5. the state of source faces [myFaceInfoPool];
+//! 6. the collection of same domain shapes [myShapesSD];
+//! 7. the collection of interferences [myInterfTB, myInterfVV,..myInterfFF]
 class BOPDS_DS
 {
 public:
@@ -157,7 +156,7 @@ public:
   Standard_EXPORT const TopoDS_Shape& Shape(const Standard_Integer theIndex) const;
 
   //! Selector
-  //! Returns the index  of the shape theS
+  //! Returns the index of the shape theS
   Standard_EXPORT Standard_Integer Index(const TopoDS_Shape& theS) const;
 
   //! Selector
@@ -282,7 +281,7 @@ public:
                                      BOPDS_IndexedMapOfPaveBlock& thePBOnIn,
                                      BOPDS_MapOfPaveBlock&        theCommonPB) const;
 
-  //! Returns the indices of edges that are  shared
+  //! Returns the indices of edges that are shared
   //! for the faces with indices theF1, theF2
   //!
   //! same domain shapes

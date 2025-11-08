@@ -44,11 +44,11 @@ public:
   //! returns the approximation of the 3d Curve
   Standard_EXPORT const Handle(Geom_Curve)& Curve() const;
 
-  //! returns the  approximation  of the  PCurve  on the
+  //! returns the approximation of the PCurve on the
   //! first face of the MultiLine
   Standard_EXPORT const Handle(Geom2d_Curve)& CurveOnF1() const;
 
-  //! returns the  approximation  of the  PCurve  on the
+  //! returns the approximation of the PCurve on the
   //! first face of the MultiLine
   Standard_EXPORT const Handle(Geom2d_Curve)& CurveOnF2() const;
 

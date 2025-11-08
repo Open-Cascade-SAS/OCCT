@@ -51,8 +51,8 @@ public:
   }
 
   //! Constructs a sphere with radius theRadius, centered on the origin
-  //! of theA3.  theA3 is the local coordinate system of the sphere.
-  //! Warnings :
+  //! of theA3. theA3 is the local coordinate system of the sphere.
+  //! Warnings:
   //! It is not forbidden to create a sphere with null radius.
   //! Raises ConstructionError if theRadius < 0.0
   gp_Sphere(const gp_Ax3& theA3, const Standard_Real theRadius)
@@ -99,11 +99,11 @@ public:
                                     Standard_Real& theC3,
                                     Standard_Real& theD) const;
 
-  //! Reverses the   U   parametrization of   the sphere
+  //! Reverses the U parametrization of the sphere
   //! reversing the YAxis.
   constexpr void UReverse() noexcept { pos.YReverse(); }
 
-  //! Reverses the   V   parametrization of   the  sphere
+  //! Reverses the V parametrization of the sphere
   //! reversing the ZAxis.
   constexpr void VReverse() noexcept { pos.ZReverse(); }
 

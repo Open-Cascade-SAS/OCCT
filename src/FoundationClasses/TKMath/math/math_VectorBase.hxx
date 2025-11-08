@@ -106,7 +106,7 @@ public:
   //! Returns the upper index of the vector
   inline Standard_Integer Upper() const { return Array.Upper(); }
 
-  //! Returns the value or the square  of the norm of this vector.
+  //! Returns the value or the square of the norm of this vector.
   inline Standard_Real Norm() const;
 
   //! Returns the value of the square of the norm of a vector.
@@ -115,7 +115,7 @@ public:
   //! Returns the index of the maximum element of a vector. (first found)
   inline Standard_Integer Max() const;
 
-  //!  Returns the index of the  minimum element  of a vector. (first found)
+  //! Returns the index of the minimum element of a vector. (first found)
   inline Standard_Integer Min() const;
 
   //! Normalizes this vector (the norm of the result

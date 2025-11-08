@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! The tolerance required on the solution is given by Tolerance.
-  //! Iteration are  stopped if (!WithSingularity) and H(F(Xi)) is not definite
+  //! Iteration are stopped if (!WithSingularity) and H(F(Xi)) is not definite
   //! positive (if the smaller eigenvalue of H < Convexity)
   //! or IsConverged() returns True for 2 successives Iterations.
   //! Warning: This constructor does not perform computation.

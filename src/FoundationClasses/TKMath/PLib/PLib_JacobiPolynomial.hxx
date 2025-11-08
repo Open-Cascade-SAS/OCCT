@@ -24,11 +24,11 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
-//! This class provides method  to work with Jacobi  Polynomials
-//! relatively to   an order of constraint
+//! This class provides method to work with Jacobi Polynomials
+//! relatively to an order of constraint
 //! q  = myWorkDegree-2*(myNivConstr+1)
-//! Jk(t)  for k=0,q compose  the   Jacobi Polynomial  base relatively  to  the weight W(t)
-//! iorder is the integer  value for the constraints:
+//! Jk(t)  for k=0,q compose the Jacobi Polynomial base relatively to the weight W(t)
+//! iorder is the integer value for the constraints:
 //! iorder = 0 <=> ConstraintOrder  = GeomAbs_C0
 //! iorder = 1 <=>  ConstraintOrder = GeomAbs_C1
 //! iorder = 2 <=> ConstraintOrder = GeomAbs_C2
@@ -44,7 +44,7 @@
 //! c0(1)                  c0(2) ....            c0(Dimension)
 //! c2*ordre+1(1)                ...          c2*ordre+1(dimension)
 //!
-//! represents the  part  of the polynomial in  the
+//! represents the part of the polynomial in the
 //! canonical base: R(t)
 //! R(t) = c0 + c1   t + ...+ c2*iordre+1 t**2*iordre+1
 //! The following coefficients represents the part of the
@@ -62,9 +62,9 @@ public:
   Standard_EXPORT PLib_JacobiPolynomial(const Standard_Integer theWorkDegree,
                                         const GeomAbs_Shape    theConstraintOrder);
 
-  //! returns  the  Jacobi  Points   for  Gauss  integration ie
+  //! returns the Jacobi Points for Gauss integration ie
   //! the positive values of the Legendre roots by increasing values
-  //! NbGaussPoints is the number of   points chosen for the  integral
+  //! NbGaussPoints is the number of points chosen for the integral
   //! computation.
   //! TabPoints (0,NbGaussPoints/2)
   //! TabPoints (0) is loaded only for the odd values of NbGaussPoints
@@ -75,33 +75,33 @@ public:
                               TColStd_Array1OfReal&  theTabPoints) const;
 
   //! returns the Jacobi weights for Gauss integration only for
-  //! the positive    values of the  Legendre roots   in the order they
+  //! the positive values of the Legendre roots in the order they
   //! are given by the method Points
-  //! NbGaussPoints   is the number of points chosen   for  the integral
+  //! NbGaussPoints is the number of points chosen for the integral
   //! computation.
-  //! TabWeights  (0,NbGaussPoints/2,0,Degree)
+  //! TabWeights (0,NbGaussPoints/2,0,Degree)
   //! TabWeights (0,.) are only loaded for the odd values of NbGaussPoints
-  //! The possible values for NbGaussPoints are : 8 , 10 , 15 ,20 ,25 , 30,
-  //! 35 , 40 , 50 , 61 NbGaussPoints must be greater than Degree
+  //! The possible values for NbGaussPoints are: 8, 10, 15, 20, 25, 30,
+  //! 35, 40, 50, 61 NbGaussPoints must be greater than Degree
   Standard_EXPORT void Weights(const Standard_Integer theNbGaussPoints,
                                TColStd_Array2OfReal&  theTabWeights) const;
 
   //! this method loads for k=0,q the maximum value of
-  //! abs ( W(t)*Jk(t) )for t bellonging to [-1,1]
+  //! abs ( W(t)*Jk(t) ) for t bellonging to [-1,1]
   //! This values are loaded is the array TabMax(0,myWorkDegree-2*(myNivConst+1))
   //! MaxValue ( me ; TabMaxPointer : in  out  Real );
   Standard_EXPORT void MaxValue(TColStd_Array1OfReal& theTabMax) const;
 
-  //! This  method computes the  maximum  error on the polynomial
-  //! W(t) Q(t)  obtained  by   missing  the   coefficients of  JacCoeff   from
+  //! This method computes the maximum error on the polynomial
+  //! W(t) Q(t) obtained by missing the coefficients of JacCoeff from
   //! NewDegree +1 to Degree
   Standard_EXPORT Standard_Real MaxError(const Standard_Integer theDimension,
                                          Standard_Real&         theJacCoeff,
                                          const Standard_Integer theNewDegree) const;
 
-  //! Compute NewDegree <= MaxDegree  so that MaxError is lower
+  //! Compute NewDegree <= MaxDegree so that MaxError is lower
   //! than Tol.
-  //! MaxError can be greater than Tol  if it is not possible
+  //! MaxError can be greater than Tol if it is not possible
   //! to find a NewDegree <= MaxDegree.
   //! In this case NewDegree = MaxDegree
   Standard_EXPORT void ReduceDegree(const Standard_Integer theDimension,

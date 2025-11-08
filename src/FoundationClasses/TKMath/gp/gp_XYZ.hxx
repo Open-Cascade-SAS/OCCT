@@ -25,7 +25,7 @@
 //! This class describes a cartesian coordinate entity in
 //! 3D space {X,Y,Z}. This entity is used for algebraic
 //! calculation. This entity can be transformed
-//! with a "Trsf" or a  "GTrsf" from package "gp".
+//! with a "Trsf" or a "GTrsf" from package "gp".
 //! It is used in vectorial computations or for holding this type
 //! of information in data structures.
 class gp_XYZ

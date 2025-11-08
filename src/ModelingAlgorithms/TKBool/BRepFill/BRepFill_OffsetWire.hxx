@@ -61,12 +61,12 @@ public:
                             const GeomAbs_JoinType Join         = GeomAbs_Arc,
                             const Standard_Boolean IsOpenResult = Standard_False);
 
-  //! Performs  an OffsetWire at  an altitude <Alt> from
-  //! the  face ( According  to  the orientation of  the
+  //! Performs an OffsetWire at an altitude <Alt> from
+  //! the face (According to the orientation of the
   //! face)
   Standard_EXPORT void Perform(const Standard_Real Offset, const Standard_Real Alt = 0.0);
 
-  //! Performs an  OffsetWire
+  //! Performs an OffsetWire
   Standard_EXPORT void PerformWithBiLo(const TopoDS_Face&              WSP,
                                        const Standard_Real             Offset,
                                        const BRepMAT2d_BisectingLocus& Locus,
@@ -81,7 +81,7 @@ public:
   //! returns the generated shape.
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  //! Returns   the  shapes  created  from   a  subshape
+  //! Returns the shapes created from a subshape
   //! <SpineShape> of the spine.
   //! Returns the last computed Offset.
   Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Shape& SpineShape);

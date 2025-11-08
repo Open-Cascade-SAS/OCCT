@@ -143,7 +143,7 @@ public: //! @name History support
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)
     Standard_OVERRIDE;
 
-  //! Returns the list  of shapes generated from the shape <theS>.
+  //! Returns the list of shapes generated from the shape <theS>.
   //! In frames of Boolean Operations algorithms only Edges and Faces
   //! could have Generated elements, as only they produce new elements
   //! during intersection:

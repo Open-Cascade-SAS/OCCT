@@ -36,12 +36,12 @@ class TopOpeBRepBuild_Builder;
 class TopOpeBRepBuild_HBuilder;
 DEFINE_STANDARD_HANDLE(TopOpeBRepBuild_HBuilder, Standard_Transient)
 
-//! The HBuilder  algorithm    constructs   topological
-//! objects  from   an    existing  topology  and  new
+//! The HBuilder algorithm constructs topological
+//! objects from an existing topology and new
 //! geometries attached to the topology. It is used to
 //! construct the result of a topological operation;
-//! the existing  topologies are the parts involved in
-//! the  topological  operation and the new geometries
+//! the existing topologies are the parts involved in
+//! the topological operation and the new geometries
 //! are the intersection lines and points.
 class TopOpeBRepBuild_HBuilder : public Standard_Transient
 {
@@ -77,14 +77,14 @@ public:
                                    const TopoDS_Shape& S2,
                                    const TopAbs_State  TB2);
 
-  //! Merges  the two solids <S1>   and <S2> keeping the
+  //! Merges the two solids <S1> and <S2> keeping the
   //! parts in each solid of states <TB1> and <TB2>.
   Standard_EXPORT void MergeSolids(const TopoDS_Shape& S1,
                                    const TopAbs_State  TB1,
                                    const TopoDS_Shape& S2,
                                    const TopAbs_State  TB2);
 
-  //! Merges the solid <S>  keeping the
+  //! Merges the solid <S> keeping the
   //! parts of state <TB>.
   Standard_EXPORT void MergeSolid(const TopoDS_Shape& S, const TopAbs_State TB);
 
@@ -153,7 +153,7 @@ public:
 
   //! search for the couple of face F1,F2
   //! (from arguments of supra Perform(S1,S2,HDS)) method which
-  //! intersection gives section edge E built on at least one edge .
+  //! intersection gives section edge E built on at least one edge.
   //! returns True if F1,F2 have been valued.
   //! returns False if E is not a section edge built
   //! on at least one edge of S1 and/or S2.

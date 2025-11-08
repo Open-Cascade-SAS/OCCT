@@ -54,7 +54,7 @@ public:
 
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-  //! Say if the input shape is a  vertex.
+  //! Say if the input shape is a vertex.
   Standard_EXPORT virtual Standard_Boolean IsVertex() const = 0;
 
   Standard_EXPORT virtual Handle(GeomFill_SectionLaw) ConcatenedLaw() const = 0;

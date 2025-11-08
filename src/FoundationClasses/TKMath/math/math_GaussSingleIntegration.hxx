@@ -41,7 +41,7 @@ public:
                                               const Standard_Real    Upper,
                                               const Standard_Integer Order);
 
-  //! The Gauss-Legendre integration with N = Order points of integration  and
+  //! The Gauss-Legendre integration with N = Order points of integration and
   //! given tolerance = Tol is done on the function F between the bounds
   //! Lower and Upper.
   Standard_EXPORT math_GaussSingleIntegration(math_Function&         F,
@@ -61,7 +61,7 @@ public:
 
 protected:
 private:
-  //! performs  actual  computation
+  //! performs actual computation
   Standard_EXPORT void Perform(math_Function&         F,
                                const Standard_Real    Lower,
                                const Standard_Real    Upper,

@@ -30,8 +30,8 @@ class TopOpeBRepBuild_LoopClassifier;
 //! where the Loop is the composite topological object of the boundary,
 //! here wire or block of edges.
 //! The LoopSet gives an iteration on Loops.
-//! For each Loop  it indicates if it is on the boundary (wire) or if it
-//! results from  an interference (block of edges).
+//! For each Loop it indicates if it is on the boundary (wire) or if it
+//! results from an interference (block of edges).
 //! The result of the Area3dBuilder is an iteration on areas.
 //! An area is described by a set of Loops.
 class TopOpeBRepBuild_Area3dBuilder : public TopOpeBRepBuild_AreaBuilder

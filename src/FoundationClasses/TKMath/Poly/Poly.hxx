@@ -32,23 +32,19 @@ class Poly_Polygon3D;
 class Poly_Polygon2D;
 class Poly_Triangle;
 
-//! This  package  provides  classes  and services  to
-//! handle :
-//!
+//! This package provides classes and services to
+//! handle:
 //! * 3D triangular polyhedrons.
-//!
 //! * 3D polygons.
-//!
 //! * 2D polygon.
-//!
 //! * Tools to dump, save and restore those objects.
 class Poly
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Computes and  stores  the    link from   nodes  to
-  //! triangles     and from triangles to   neighbouring
+  //! Computes and stores the link from nodes to
+  //! triangles and from triangles to neighbouring
   //! triangles.
   //! This tool is obsolete, replaced by Poly_CoherentTriangulation
   //! Algorithm to make minimal loops in a graph
@@ -61,40 +57,40 @@ public:
 
   //! Writes the content of the triangulation <T> on the
   //! stream <OS>. If <Compact> is true this is a "save"
-  //! format  intended  to  be read back   with the Read
-  //! method. If compact is False  it is a "Dump" format
+  //! format intended to be read back with the Read
+  //! method. If compact is False it is a "Dump" format
   //! intended to be informative.
   Standard_EXPORT static void Write(const Handle(Poly_Triangulation)& T,
                                     Standard_OStream&                 OS,
                                     const Standard_Boolean            Compact = Standard_True);
 
-  //! Writes  the  content  of the 3D polygon <P> on the
+  //! Writes the content of the 3D polygon <P> on the
   //! stream <OS>. If <Compact> is true this is a "save"
-  //! format  intended  to  be read back   with the Read
-  //! method. If compact is False  it is a "Dump" format
+  //! format intended to be read back with the Read
+  //! method. If compact is False it is a "Dump" format
   //! intended to be informative.
   Standard_EXPORT static void Write(const Handle(Poly_Polygon3D)& P,
                                     Standard_OStream&             OS,
                                     const Standard_Boolean        Compact = Standard_True);
 
-  //! Writes the  content  of the 2D polygon  <P> on the
+  //! Writes the content of the 2D polygon <P> on the
   //! stream <OS>. If <Compact> is true this is a "save"
-  //! format  intended  to  be read back   with the Read
-  //! method. If compact is False  it is a "Dump" format
+  //! format intended to be read back with the Read
+  //! method. If compact is False it is a "Dump" format
   //! intended to be informative.
   Standard_EXPORT static void Write(const Handle(Poly_Polygon2D)& P,
                                     Standard_OStream&             OS,
                                     const Standard_Boolean        Compact = Standard_True);
 
-  //! Dumps  the triangulation.  This   is a call to  the
+  //! Dumps the triangulation. This is a call to the
   //! previous method with Comapct set to False.
   Standard_EXPORT static void Dump(const Handle(Poly_Triangulation)& T, Standard_OStream& OS);
 
-  //! Dumps  the  3D  polygon.  This   is a call to  the
+  //! Dumps the 3D polygon. This is a call to the
   //! previous method with Comapct set to False.
   Standard_EXPORT static void Dump(const Handle(Poly_Polygon3D)& P, Standard_OStream& OS);
 
-  //! Dumps  the  2D  polygon.  This   is a call to  the
+  //! Dumps the 2D polygon. This is a call to the
   //! previous method with Comapct set to False.
   Standard_EXPORT static void Dump(const Handle(Poly_Polygon2D)& P, Standard_OStream& OS);
 

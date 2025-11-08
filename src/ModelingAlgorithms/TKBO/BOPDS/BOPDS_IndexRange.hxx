@@ -32,11 +32,11 @@ public:
   BOPDS_IndexRange();
 
   //! Modifier
-  //! Sets the first index <theI1>  of the range
+  //! Sets the first index <theI1> of the range
   void SetFirst(const Standard_Integer theI1);
 
   //! Modifier
-  //! Sets the second index <theI2>  of the range
+  //! Sets the second index <theI2> of the range
   void SetLast(const Standard_Integer theI2);
 
   //! Selector

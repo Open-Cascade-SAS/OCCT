@@ -143,7 +143,7 @@ public:
   //! -   a line parallel to the "Y Direction" of the local
   //! coordinate system of this parabola, and
   //! -   located on the negative side of the axis of symmetry,
-  //! at a distance from the apex which is equal to the focal  length of this parabola.
+  //! at a distance from the apex which is equal to the focal length of this parabola.
   //! The directrix is returned as an axis (a gp_Ax2d object),
   //! the origin of which is situated on the "X Axis" of this parabola.
   gp_Ax2d Directrix() const noexcept;

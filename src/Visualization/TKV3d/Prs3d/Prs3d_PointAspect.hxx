@@ -21,7 +21,7 @@
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_MarkerImage.hxx>
 
-//! This  class  defines  attributes for the points
+//! This class defines attributes for the points
 //! The points are drawn using markers, whose size does not depend on
 //! the zoom value of the views.
 class Prs3d_PointAspect : public Prs3d_BasicAspect

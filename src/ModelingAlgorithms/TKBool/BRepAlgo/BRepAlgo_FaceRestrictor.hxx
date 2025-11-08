@@ -24,10 +24,10 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 class TopoDS_Wire;
 
-//! Builds all  the faces  limited  with a set of non
-//! jointing   and     planars     wires.    if
-//! <ControlOrientation> is false  The Wires must have
-//! correct orientations.  Sinon orientation des wires
+//! Builds all the faces limited with a set of non
+//! jointing and planars wires.
+//! if <ControlOrientation> is false The Wires must have
+//! correct orientations. Sinon orientation des wires
 //! de telle sorte que les faces ne soient pas infinies
 //! et qu'elles soient disjointes.
 class BRepAlgo_FaceRestrictor

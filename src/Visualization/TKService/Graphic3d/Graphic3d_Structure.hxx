@@ -315,7 +315,7 @@ public:
   Standard_EXPORT void Ancestors(Graphic3d_MapOfStructure& SG) const;
 
   //! If Atype is TOC_DESCENDANT then add <AStructure>
-  //! as a child structure of  <me>.
+  //! as a child structure of <me>.
   //! If Atype is TOC_ANCESTOR then add <AStructure>
   //! as a parent structure of <me>.
   //! The connection propagates Display, Highlight, Erase,

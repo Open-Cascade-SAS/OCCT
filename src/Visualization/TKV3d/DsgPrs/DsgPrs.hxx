@@ -101,10 +101,10 @@ public:
                                                 gp_Pnt&                aRadLineOrign,
                                                 gp_Pnt&                aRadLineEnd);
 
-  //! computes Geometry for  fillet radius  presentation;
-  //! special case flag  SpecCase equal Standard_True if
-  //! radius of  fillet circle  =  0  or if  anngle between
-  //! Vec1(Center, FirstPoint)  and Vec2(Center,SecondPoint) equal 0 or PI
+  //! computes Geometry for fillet radius presentation;
+  //! special case flag SpecCase equal Standard_True if
+  //! radius of fillet circle = 0 or if angle between
+  //! Vec1(Center, FirstPoint) and Vec2(Center,SecondPoint) equal 0 or PI
   Standard_EXPORT static void ComputeFilletRadiusPresentation(const Standard_Real    ArrowLength,
                                                               const Standard_Real    Value,
                                                               const gp_Pnt&          Position,
@@ -122,7 +122,7 @@ public:
                                                               gp_Dir&                DirOfArrow,
                                                               gp_Pnt&                DrawPosition);
 
-  //! computes  length  of  ellipse  arc  in  parametric  units
+  //! computes length of ellipse arc in parametric units
   Standard_EXPORT static Standard_Real DistanceFromApex(const gp_Elips&     elips,
                                                         const gp_Pnt&       Apex,
                                                         const Standard_Real par);

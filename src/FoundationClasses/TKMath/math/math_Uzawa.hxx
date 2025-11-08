@@ -28,7 +28,7 @@
 //! This class implements a system resolution C*X = B with
 //! an approach solution X0. There are no conditions on the
 //! number of equations. The algorithm used is the Uzawa
-//! algorithm. It is possible to have equal or inequal  (<)
+//! algorithm. It is possible to have equal or inequal (<)
 //! equations to solve. The resolution is done with a
 //! minimization of Norm(X-X0).
 //! If there are only equal equations, the resolution is directly

@@ -28,9 +28,9 @@ class Geom_Surface;
 
 DEFINE_STANDARD_HANDLE(PrsDim_EllipseRadiusDimension, PrsDim_Relation)
 
-//! Computes  geometry  (  basis  curve  and  plane  of  dimension)
-//! for  input  shape  aShape  from  TopoDS
-//! Root  class  for MinRadiusDimension  and  MaxRadiusDimension
+//! Computes geometry (basis curve and plane of dimension)
+//! for input shape aShape from TopoDS
+//! Root class for MinRadiusDimension and MaxRadiusDimension
 class PrsDim_EllipseRadiusDimension : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_EllipseRadiusDimension, PrsDim_Relation)

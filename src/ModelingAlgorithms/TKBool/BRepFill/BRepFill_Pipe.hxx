@@ -37,10 +37,10 @@ class TopoDS_Vertex;
 class gp_Pnt;
 class BRepFill_Sweep;
 
-//! Create a  shape by sweeping a shape  (the profile)
+//! Create a shape by sweeping a shape (the profile)
 //! along a wire (the spine).
 //!
-//! For each edge  or vertex from the spine  the  user
+//! For each edge or vertex from the spine the user
 //! may ask for the shape generated from each subshape
 //! of the profile.
 class BRepFill_Pipe
@@ -72,7 +72,7 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& LastShape() const;
 
-  //! Returns the  list   of shapes generated   from the
+  //! Returns the list of shapes generated from the
   //! shape <S>.
   Standard_EXPORT void Generated(const TopoDS_Shape& S, TopTools_ListOfShape& L);
 
@@ -83,11 +83,11 @@ public:
 
   //! Returns the edge created from an edge of the spine
   //! and a vertex of the profile.
-  //! if the edge or the vertex are not in  the spine or
+  //! if the edge or the vertex are not in the spine or
   //! the profile.
   Standard_EXPORT TopoDS_Edge Edge(const TopoDS_Edge& ESpine, const TopoDS_Vertex& VProfile);
 
-  //! Returns  the shape created from the profile at the
+  //! Returns the shape created from the profile at the
   //! position of the vertex VSpine.
   //! if the vertex is not in the Spine
   Standard_EXPORT TopoDS_Shape Section(const TopoDS_Vertex& VSpine) const;
@@ -98,8 +98,7 @@ public:
 
 protected:
 private:
-  //! Auxiliary  recursive  method  used  to  build  the
-  //! result.
+  //! Auxiliary recursive method used to build the result.
   Standard_EXPORT TopoDS_Shape MakeShape(const TopoDS_Shape& S,
                                          const TopoDS_Shape& theOriginalS,
                                          const TopoDS_Shape& FirstShape,

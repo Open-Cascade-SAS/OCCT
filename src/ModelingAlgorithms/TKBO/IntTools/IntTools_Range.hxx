@@ -22,7 +22,7 @@
 
 #include <Standard_Real.hxx>
 
-//! The class describes the  1-d range
+//! The class describes the 1-d range
 //! [myFirst, myLast].
 class IntTools_Range
 {

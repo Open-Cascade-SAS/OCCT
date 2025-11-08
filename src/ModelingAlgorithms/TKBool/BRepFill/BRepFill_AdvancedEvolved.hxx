@@ -29,7 +29,7 @@ class BOPAlgo_MakerVolume;
 class TopoDS_Face;
 
 //! Constructs an evolved volume from a spine (wire or face)
-//! and  a profile ( wire).
+//! and a profile (wire).
 class BRepFill_AdvancedEvolved
 {
 public:

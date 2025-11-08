@@ -47,7 +47,7 @@ public:
   //! considers that it is working with a true polygon and not with
   //! an approximate representation of a curve. The Deflection
   //! function is used to modify the deflection value of this polygon.
-  //! The deflection value can be used by any algorithm working  with 2D polygons.
+  //! The deflection value can be used by any algorithm working with 2D polygons.
   //! For example:
   //! -   An algorithm may use a unique deflection value for all
   //! its polygons. In this case it is not necessary to use the

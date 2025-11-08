@@ -28,7 +28,7 @@ class gp_Mat2d
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates  a matrix with null coefficients.
+  //! Creates a matrix with null coefficients.
   constexpr gp_Mat2d() noexcept
       : myMat{{0.0, 0.0}, {0.0, 0.0}}
   {
@@ -42,7 +42,7 @@ public:
   //! Raises OutOfRange if theCol < 1 or theCol > 2.
   Standard_EXPORT void SetCol(const Standard_Integer theCol, const gp_XY& theValue);
 
-  //! Assigns the number pairs theCol1, theCol2 to the two columns of   this matrix
+  //! Assigns the number pairs theCol1, theCol2 to the two columns of this matrix
   Standard_EXPORT void SetCols(const gp_XY& theCol1, const gp_XY& theCol2);
 
   //! Modifies the main diagonal of the matrix.
@@ -76,7 +76,7 @@ public:
   Standard_EXPORT void SetRows(const gp_XY& theRow1, const gp_XY& theRow2);
 
   //! Modifies the matrix such that it
-  //! represents a scaling transformation, where theS is the scale   factor :
+  //! represents a scaling transformation, where theS is the scale factor:
   //! @code
   //!         | theS    0.0 |
   //! <me> =  | 0.0   theS  |

@@ -27,7 +27,7 @@ class GeomFill_LocationLaw;
 class BRepFill_Edge3DLaw;
 DEFINE_STANDARD_HANDLE(BRepFill_Edge3DLaw, BRepFill_LocationLaw)
 
-//! Build Location Law, with a  Wire.
+//! Build Location Law, with a Wire.
 class BRepFill_Edge3DLaw : public BRepFill_LocationLaw
 {
 

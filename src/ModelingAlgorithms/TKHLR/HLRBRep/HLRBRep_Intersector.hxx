@@ -28,7 +28,7 @@ class IntCurveSurface_IntersectionPoint;
 class IntRes2d_IntersectionSegment;
 class IntCurveSurface_IntersectionSegment;
 
-//! The Intersector  computes 2D  intersections of the projections of 3D curves.
+//! The Intersector computes 2D intersections of the projections of 3D curves.
 //! It can also computes the intersection of a 3D line and a surface.
 class HLRBRep_Intersector
 {

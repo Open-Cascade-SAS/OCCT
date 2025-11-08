@@ -32,21 +32,21 @@ class TopOpeBRepBuild_LoopSet;
 class TopOpeBRepBuild_LoopClassifier;
 class TopOpeBRepBuild_Loop;
 
-//! The AreaBuilder algorithm is  used  to
-//! reconstruct complex  topological objects as  Faces
+//! The AreaBuilder algorithm is used to
+//! reconstruct complex topological objects as Faces
 //! or Solids.
-//! * Loop is  the  composite topological object of
+//! * Loop is the composite topological object of
 //! the boundary. Wire for a Face. Shell for a Solid.
-//! *  LoopSet is a  tool describing the object  to
-//! build.  It gives an iteration  on Loops.  For each
+//! * LoopSet is a tool describing the object to
+//! build. It gives an iteration on Loops. For each
 //! Loop it tells if it is on the boundary or if it is
 //! an interference.
-//! * LoopClassifier  is an algorithm  used to test
-//! if a Loop is inside  another  Loop.
-//! The  result of the  reconstruction is an iteration
-//! on the reconstructed areas.  An  area is described
+//! * LoopClassifier is an algorithm used to test
+//! if a Loop is inside another Loop.
+//! The result of the reconstruction is an iteration
+//! on the reconstructed areas. An area is described
 //! by a set of Loops.
-//! A AreaBuilder is built with :
+//! A AreaBuilder is built with:
 //! - a LoopSet describing the object to reconstruct.
 //! - a LoopClassifier providing the classification algorithm.
 class TopOpeBRepBuild_AreaBuilder

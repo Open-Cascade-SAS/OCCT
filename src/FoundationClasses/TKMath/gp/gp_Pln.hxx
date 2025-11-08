@@ -63,7 +63,7 @@ public:
   {
   }
 
-  //! Creates a plane with the  "Location" point <theP>
+  //! Creates a plane with the "Location" point <theP>
   //! and the normal direction <theV>.
   Standard_EXPORT gp_Pln(const gp_Pnt& theP, const gp_Dir& theV);
 
@@ -77,7 +77,7 @@ public:
                          const Standard_Real theC,
                          const Standard_Real theD);
 
-  //! Returns the coefficients of the plane's cartesian equation :
+  //! Returns the coefficients of the plane's cartesian equation:
   //! @code
   //! theA * X + theB * Y + theC * Z + theD = 0.
   //! @endcode
