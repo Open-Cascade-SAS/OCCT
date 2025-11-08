@@ -25,8 +25,8 @@
 #include <Standard_Boolean.hxx>
 
 //! The class is to describe the root of
-//! function of one variable  for  Edge/Edge
-//! and  Edge/Surface  algorithms.
+//! function of one variable for Edge/Edge
+//! and Edge/Surface algorithms.
 class IntTools_Root
 {
 public:
@@ -45,33 +45,33 @@ public:
   //! Sets the Root's Type
   Standard_EXPORT void SetType(const Standard_Integer aType);
 
-  //! Set  the  value of the state before the root
-  //! (at  t=Root-dt)
+  //! Set the value of the state before the root
+  //! (at t=Root-dt)
   Standard_EXPORT void SetStateBefore(const TopAbs_State aState);
 
-  //! Set  the  value of the state after the root
-  //! (at  t=Root-dt)
+  //! Set the value of the state after the root
+  //! (at t=Root-dt)
   Standard_EXPORT void SetStateAfter(const TopAbs_State aState);
 
-  //! Not  used  in  Edge/Edge  algorithm
+  //! Not used in Edge/Edge algorithm
   Standard_EXPORT void SetLayerHeight(const Standard_Real aHeight);
 
-  //! Sets the  interval  from which the Root was
-  //! found [t1,t2] and the  corresponding  values
-  //! of  the  function  on  the  bounds f(t1), f(t2).
+  //! Sets the interval from which the Root was
+  //! found [t1,t2] and the corresponding values
+  //! of the function on the bounds f(t1), f(t2).
   Standard_EXPORT void SetInterval(const Standard_Real t1,
                                    const Standard_Real t2,
                                    const Standard_Real f1,
                                    const Standard_Real f2);
 
-  //! Returns the Root  value
+  //! Returns the Root value
   Standard_EXPORT Standard_Real Root() const;
 
-  //! Returns the  type  of  the  root
-  //! =0  -  Simple (was  found  by  bisection  method);
-  //! =2  -  Smart when f1=0, f2!=0 or  vice  versa
-  //! (was  found  by  Fibbonacci method);
-  //! =1  -  Pure   (pure  zero  for all t [t1,t2] );
+  //! Returns the type of the root
+  //! =0 - Simple (was found by bisection method);
+  //! =2 - Smart when f1=0, f2!=0 or vice versa
+  //! (was found by Fibbonacci method);
+  //! =1 - Pure (pure zero for all t [t1,t2]);
   Standard_EXPORT Standard_Integer Type() const;
 
   //! Returns the state before the root
@@ -80,7 +80,7 @@ public:
   //! Returns the state after the root
   Standard_EXPORT TopAbs_State StateAfter() const;
 
-  //! Not  used  in  Edge/Edge  algorithm
+  //! Not used in Edge/Edge algorithm
   Standard_EXPORT Standard_Real LayerHeight() const;
 
   //! Returns the validity flag for the root,
@@ -88,13 +88,13 @@ public:
   //! myStateBefore==TopAbs_OUT && myStateAfter==TopAbs_IN or
   //! myStateBefore==TopAbs_OUT && myStateAfter==TopAbs_ON or
   //! myStateBefore==TopAbs_ON  && myStateAfter==TopAbs_OUT or
-  //! myStateBefore==TopAbs_IN  && myStateAfter==TopAbs_OUT  .
-  //! For  other  cases it  returns  False.
+  //! myStateBefore==TopAbs_IN  && myStateAfter==TopAbs_OUT
+  //! For other cases it returns False.
   Standard_EXPORT Standard_Boolean IsValid() const;
 
-  //! Returns the values of interval  from which the Root was
-  //! found [t1,t2] and the  corresponding  values
-  //! of  the  function  on  the  bounds f(t1), f(t2).
+  //! Returns the values of interval from which the Root was
+  //! found [t1,t2] and the corresponding values
+  //! of the function on the bounds f(t1), f(t2).
   Standard_EXPORT void Interval(Standard_Real& t1,
                                 Standard_Real& t2,
                                 Standard_Real& f1,
