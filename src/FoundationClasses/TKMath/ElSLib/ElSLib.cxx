@@ -34,7 +34,7 @@ namespace
 {
 static constexpr Standard_Real PIPI = M_PI + M_PI;
 // Threshold for angle normalization to avoid discontinuity near zero
-static constexpr Standard_Real NEGATIVE_RESOLUTION = -1.e-16;
+static constexpr Standard_Real NEGATIVE_RESOLUTION = -Precision::Computational();
 
 // Normalize angle to [0, 2*PI] range, with special handling
 // for values very close to zero to avoid discontinuity.
@@ -1515,7 +1515,7 @@ void ElSLib::ConeParameters(const gp_Ax3&       Pos,
   gp_Pnt Ploc = P.Transformed(T);
 
   // Check if point is at the apex (use epsilon comparison)
-  if (Ploc.X() * Ploc.X() + Ploc.Y() * Ploc.Y() < gp::Resolution() * gp::Resolution())
+  if (Ploc.X() * Ploc.X() + Ploc.Y() * Ploc.Y() < Precision::SquareComputational())
   {
     U = 0.0;
   }
@@ -1591,29 +1591,29 @@ void ElSLib::TorusParameters(const gp_Ax3&       Pos,
   U = atan2(y, x);
   if (MajorRadius < MinorRadius)
   {
-    Standard_Real cosu  = cos(U);
-    Standard_Real sinu  = sin(U);
-    Standard_Real z2    = z * z;
-    Standard_Real MinR2 = MinorRadius * MinorRadius;
-    Standard_Real RCosU = MajorRadius * cosu;
-    Standard_Real RSinU = MajorRadius * sinu;
-    Standard_Real xm    = x - RCosU;
-    Standard_Real ym    = y - RSinU;
-    Standard_Real xp    = x + RCosU;
-    Standard_Real yp    = y + RSinU;
-    Standard_Real D1    = xm * xm + ym * ym + z2 - MinR2;
-    Standard_Real D2    = xp * xp + yp * yp + z2 - MinR2;
-    Standard_Real AD1   = Abs(D1);
-    Standard_Real AD2   = Abs(D2);
+    const Standard_Real cosu  = cos(U);
+    const Standard_Real sinu  = sin(U);
+    const Standard_Real z2    = z * z;
+    const Standard_Real MinR2 = MinorRadius * MinorRadius;
+    const Standard_Real RCosU = MajorRadius * cosu;
+    const Standard_Real RSinU = MajorRadius * sinu;
+    const Standard_Real xm    = x - RCosU;
+    const Standard_Real ym    = y - RSinU;
+    const Standard_Real xp    = x + RCosU;
+    const Standard_Real yp    = y + RSinU;
+    const Standard_Real D1    = xm * xm + ym * ym + z2 - MinR2;
+    const Standard_Real D2    = xp * xp + yp * yp + z2 - MinR2;
+    const Standard_Real AD1   = Abs(D1);
+    const Standard_Real AD2   = Abs(D2);
     if (AD2 < AD1)
       U += M_PI;
   }
   normalizeAngle(U);
-  Standard_Real cosu = cos(U);
-  Standard_Real sinu = sin(U);
-  gp_Dir        dx(cosu, sinu, 0.);
-  gp_XYZ        dPV(x - MajorRadius * cosu, y - MajorRadius * sinu, z);
-  Standard_Real aMag = dPV.Modulus();
+  const Standard_Real cosu = cos(U);
+  const Standard_Real sinu = sin(U);
+  const gp_Dir        dx(cosu, sinu, 0.);
+  const gp_XYZ        dPV(x - MajorRadius * cosu, y - MajorRadius * sinu, z);
+  const Standard_Real aMag = dPV.Modulus();
   if (aMag <= gp::Resolution())
   {
     V = 0.;

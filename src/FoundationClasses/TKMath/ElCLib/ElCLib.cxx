@@ -47,7 +47,7 @@ namespace
 {
 static constexpr Standard_Real PIPI = M_PI + M_PI;
 // Threshold for angle normalization to avoid discontinuity near zero
-static constexpr Standard_Real NEGATIVE_RESOLUTION = -1.e-16;
+static constexpr Standard_Real NEGATIVE_RESOLUTION = -Precision::Computational();
 
 // Normalize angle to [0, 2*PI] range, with special handling
 // for values very close to zero to avoid discontinuity.
