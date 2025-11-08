@@ -29,26 +29,26 @@
 class TopOpeBRepDS_Interference;
 DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Interference, Standard_Transient)
 
-//! An interference    is   the   description  of  the
-//! attachment of  a new  geometry on a  geometry. For
-//! example an intersection point  on an Edge or on  a
+//! An interference is the description of the
+//! attachment of a new geometry on a geometry. For
+//! example an intersection point on an Edge or on a
 //! Curve.
 //!
-//! The Interference contains the following data :
+//! The Interference contains the following data:
 //!
-//! - Transition :  How the interference  separates the
+//! - Transition: How the interference separates the
 //! existing geometry in INSIDE and OUTSIDE.
 //!
-//! - SupportType : Type of  the object supporting the
+//! - SupportType: Type of the object supporting the
 //! interference. (FACE, EDGE, VERTEX, SURFACE, CURVE).
 //!
-//! - Support :  Index  in the data  structure  of the
+//! - Support: Index in the data structure of the
 //! object supporting the interference.
 //!
-//! - GeometryType  :   Type  of the  geometry of  the
+//! - GeometryType: Type ofthe geometry of the
 //! interference (SURFACE, CURVE, POINT).
 //!
-//! - Geometry : Index  in the data structure  of the
+//! - Geometry: Index in the data structure of the
 //! geometry.
 class TopOpeBRepDS_Interference : public Standard_Transient
 {

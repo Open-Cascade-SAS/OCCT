@@ -48,7 +48,7 @@ class BRepAlgoAPI_BooleanOperation;
 //! The semantics of form feature creation is based on the construction of shapes:
 //! -      along a length
 //! -      up to a limiting face
-//! -      from a limiting face to a  height
+//! -      from a limiting face to a height
 //! -      above and/or below a plane
 //! The shape defining construction of the feature can be either the
 //! supporting edge or the concerned area of a face.
@@ -78,12 +78,12 @@ public:
 
   Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
 
-  //! Returns the list  of shapes created  at the bottom  of
-  //! the created form.  It may be an empty list.
+  //! Returns the list of shapes created at the bottom of
+  //! the created form. It may be an empty list.
   Standard_EXPORT const TopTools_ListOfShape& FirstShape() const;
 
-  //! Returns  the list of shapes  created at the top of the
-  //! created form.  It may be an empty list.
+  //! Returns the list of shapes created at the top of the
+  //! created form. It may be an empty list.
   Standard_EXPORT const TopTools_ListOfShape& LastShape() const;
 
   //! Returns a list of the limiting and glueing edges

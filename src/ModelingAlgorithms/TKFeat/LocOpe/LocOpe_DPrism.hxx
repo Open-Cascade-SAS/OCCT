@@ -31,7 +31,7 @@
 #include <TopTools_ListOfShape.hxx>
 class Geom_Curve;
 
-//! Defines a  pipe  (near from   Pipe from BRepFill),
+//! Defines a pipe (near from Pipe from BRepFill),
 //! with modifications provided for the Pipe feature.
 class LocOpe_DPrism
 {

@@ -51,9 +51,9 @@ public:
   //! Returns the initial shape
   const TopoDS_Shape& Shape() const;
 
-  //! Returns  the  descendant  face  of <F>.    <F> may
+  //! Returns the descendant face of <F>. <F> may
   //! belong to the original shape or to the "generated"
-  //! shape.  The returned    face may be   a null shape
+  //! shape. The returned face may be a null shape
   //! (when <F> disappears).
   Standard_EXPORT const TopTools_ListOfShape& DescendantFace(const TopoDS_Face& F);
 

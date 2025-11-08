@@ -40,20 +40,20 @@ public:
 
   Standard_EXPORT void Perform();
 
-  //! Recherche parmi  l'ensemble  des points  d'Interference
+  //! Recherche parmi l'ensemble des points d'Interference
   //! la Liste <LI> des points qui correspondent au point d'indice <Index>
   Standard_EXPORT void FindAssociatedPoints(const Handle(TopOpeBRepDS_Interference)& I,
                                             TopOpeBRepDS_ListOfInterference&         LI);
 
-  //! Enchaine les sections   via  les points d'Interferences  deja
-  //! associe; Renvoit  dans   <L> les points extremites des Lignes.
-  //! Methodes pour  construire la liste des Points qui
+  //! Enchaine les sections via les points d'Interferences deja
+  //! associe; Renvoit dans <L> les points extremites des Lignes.
+  //! Methodes pour construire la liste des Points qui
   //! peuvent correspondre a une Point donne.
   Standard_EXPORT Standard_Boolean CheckConnexity(TopOpeBRepDS_ListOfInterference& LI);
 
   Standard_EXPORT void AddPointsOnShape(const TopoDS_Shape& S, TopOpeBRepDS_ListOfInterference& LI);
 
-  //! Methodes pour  reduire la liste des Points qui
+  //! Methodes pour reduire la liste des Points qui
   //! peuvent correspondre a une Point donne.
   Standard_EXPORT void AddPointsOnConnexShape(const TopoDS_Shape&                    F,
                                               const TopOpeBRepDS_ListOfInterference& LI);
@@ -71,9 +71,9 @@ public:
   Standard_EXPORT Standard_Boolean IsOnFace(const Handle(TopOpeBRepDS_Interference)& I,
                                             const TopoDS_Face&                       F) const;
 
-  //! Return TRUE  si I ou une  de  ses representaions a
+  //! Return TRUE si I ou une de ses representaions a
   //! pour support <E>.
-  //! Methodes de  reconstructions des  geometries des point
+  //! Methodes de reconstructions des geometries des point
   //! et des courbes de section
   Standard_EXPORT Standard_Boolean IsOnEdge(const Handle(TopOpeBRepDS_Interference)& I,
                                             const TopoDS_Edge&                       E) const;

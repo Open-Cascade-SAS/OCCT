@@ -64,9 +64,9 @@ public:
   //! si la liste est vide, renvoie vrai
   Standard_EXPORT Standard_Boolean CheckShapes(const TopTools_ListOfShape& LS) const;
 
-  //! Verifie que les Vertex   non   SameDomain sont bien
-  //! nonSameDomain, que  les  vertex sameDomain sont  bien
-  //! SameDomain,  que    les  Points sont  non    confondus
+  //! Verifie que les Vertex non SameDomain sont bien
+  //! nonSameDomain, que les vertex sameDomain sont bien
+  //! SameDomain, que les Points sont non confondus
   //! ni entre eux, ni avec des Vertex.
   Standard_EXPORT Standard_Boolean OneVertexOnPnt();
 
@@ -76,13 +76,13 @@ public:
 
   Standard_EXPORT Standard_OStream& PrintIntg(Standard_OStream& S);
 
-  //! Prints the name  of CheckStatus  <stat>  as  a String
+  //! Prints the name of CheckStatus <stat> as a String
   Standard_EXPORT Standard_OStream& Print(const TopOpeBRepDS_CheckStatus stat, Standard_OStream& S);
 
-  //! Prints the name  of CheckStatus  <stat>  as  a String
+  //! Prints the name of CheckStatus <stat> as a String
   Standard_EXPORT Standard_OStream& PrintShape(const TopAbs_ShapeEnum SE, Standard_OStream& S);
 
-  //! Prints the name  of CheckStatus  <stat>  as  a String
+  //! Prints the name of CheckStatus <stat> as a String
   Standard_EXPORT Standard_OStream& PrintShape(const Standard_Integer index, Standard_OStream& S);
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Check, Standard_Transient)

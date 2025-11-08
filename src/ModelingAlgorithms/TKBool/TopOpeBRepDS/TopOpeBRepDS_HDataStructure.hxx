@@ -48,7 +48,7 @@ public:
 
   Standard_EXPORT void AddAncestors(const TopoDS_Shape& S);
 
-  //! Update  the data structure with  shapes of type T1
+  //! Update the data structure with shapes of type T1
   //! containing a subshape of type T2 which is stored
   //! in the DS.
   //! Used by the previous one.
@@ -72,7 +72,7 @@ public:
   //! Returns the surface of index <I>.
   Standard_EXPORT const TopOpeBRepDS_Surface& Surface(const Standard_Integer I) const;
 
-  //! Returns an iterator  on the curves on  the surface
+  //! Returns an iterator on the curves on the surface
   //! <I>.
   Standard_EXPORT TopOpeBRepDS_CurveIterator SurfaceCurves(const Standard_Integer I) const;
 
@@ -82,7 +82,7 @@ public:
   //! Returns the Curve of index <I>.
   Standard_EXPORT TopOpeBRepDS_Curve& ChangeCurve(const Standard_Integer I);
 
-  //! Returns an iterator   on the points on  the  curve
+  //! Returns an iterator on the points on the curve
   //! <I>.
   Standard_EXPORT TopOpeBRepDS_PointIterator CurvePoints(const Standard_Integer I) const;
 
@@ -126,23 +126,23 @@ public:
   //! reference shape
   Standard_EXPORT Standard_Integer SameDomainReference(const TopoDS_Shape& S) const;
 
-  //! Returns an iterator on the  surfaces attached to the
+  //! Returns an iterator on the surfaces attached to the
   //! solid <S>.
   Standard_EXPORT TopOpeBRepDS_SurfaceIterator SolidSurfaces(const TopoDS_Shape& S) const;
 
-  //! Returns an iterator on the  surfaces attached to the
+  //! Returns an iterator on the surfaces attached to the
   //! solid <I>.
   Standard_EXPORT TopOpeBRepDS_SurfaceIterator SolidSurfaces(const Standard_Integer I) const;
 
-  //! Returns an iterator on the  curves attached to the
+  //! Returns an iterator on the curves attached to the
   //! face <F>.
   Standard_EXPORT TopOpeBRepDS_CurveIterator FaceCurves(const TopoDS_Shape& F) const;
 
-  //! Returns an iterator on the  curves attached to the
+  //! Returns an iterator on the curves attached to the
   //! face <I>.
   Standard_EXPORT TopOpeBRepDS_CurveIterator FaceCurves(const Standard_Integer I) const;
 
-  //! Returns an iterator on the points  attached to the
+  //! Returns an iterator on the points attached to the
   //! edge <E>.
   Standard_EXPORT TopOpeBRepDS_PointIterator EdgePoints(const TopoDS_Shape& E) const;
 

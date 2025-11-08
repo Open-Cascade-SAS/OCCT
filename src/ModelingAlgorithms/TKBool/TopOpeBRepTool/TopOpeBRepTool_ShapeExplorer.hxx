@@ -37,9 +37,9 @@ public:
   //! <ToFind> is the type of shapes to search.
   //! TopAbs_VERTEX, TopAbs_EDGE, ...
   //!
-  //! <ToAvoid>   is the type   of shape to  skip in the
-  //! exploration.   If   <ToAvoid>  is  equal  or  less
-  //! complex than <ToFind> or if  <ToAVoid> is SHAPE it
+  //! <ToAvoid> is the type of shape to skip in the
+  //! exploration. If <ToAvoid> is equal or less
+  //! complex than <ToFind> or if <ToAVoid> is SHAPE it
   //! has no effect on the exploration.
   TopOpeBRepTool_ShapeExplorer(const TopoDS_Shape&    S,
                                const TopAbs_ShapeEnum ToFind,

@@ -33,11 +33,11 @@ class TopOpeBRepDS_PointIterator : public TopOpeBRepDS_InterferenceIterator
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an  iterator on the  points on curves
+  //! Creates an iterator on the points on curves
   //! described by the interferences in <L>.
   Standard_EXPORT TopOpeBRepDS_PointIterator(const TopOpeBRepDS_ListOfInterference& L);
 
-  //! Returns  True if the Interference <I>  has a
+  //! Returns True if the Interference <I> has a
   //! GeometryType() TopOpeBRepDS_POINT or TopOpeBRepDS_VERTEX
   //! returns False else.
   Standard_EXPORT virtual Standard_Boolean MatchInterference(

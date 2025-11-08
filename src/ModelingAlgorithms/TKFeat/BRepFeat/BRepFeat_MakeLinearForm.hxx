@@ -70,7 +70,7 @@ public:
                           const gp_Vec&             Direction,
                           const gp_Vec&             Direction1,
                           const Standard_Integer    Fuse,
-                          const Standard_Boolean    Modify);
+                          const Standard_Boolean    Msrc/ModelingAlgorithms/TKFeat/BRepFeat/BRepFeat_MakePipe.hxxodify);
 
   //! Initializes this construction algorithm.
   //! A contour W, a shape Sbase and a plane P are
@@ -93,7 +93,7 @@ public:
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>.
-  //! Raises ConstructionError if the  face does not belong to the
+  //! Raises ConstructionError if the face does not belong to the
   //! basis shape, or the edge to the prismed shape.
   Standard_EXPORT void Add(const TopoDS_Edge& E, const TopoDS_Face& OnFace);
 
