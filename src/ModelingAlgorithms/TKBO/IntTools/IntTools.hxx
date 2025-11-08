@@ -33,15 +33,15 @@ public:
   //! returns the length of the edge;
   Standard_EXPORT static Standard_Real Length(const TopoDS_Edge& E);
 
-  //! Remove from  the  sequence aSeq the Roots  that  have
-  //! values ti and tj such as  |ti-tj]  <  anEpsT.
+  //! Remove from the sequence aSeq the Roots that have
+  //! values ti and tj such as |ti-tj] < anEpsT.
   Standard_EXPORT static void RemoveIdenticalRoots(IntTools_SequenceOfRoots& aSeq,
                                                    const Standard_Real       anEpsT);
 
   //! Sort the sequence aSeq of the Roots to arrange the Roots in increasing order.
   Standard_EXPORT static void SortRoots(IntTools_SequenceOfRoots& aSeq, const Standard_Real anEpsT);
 
-  //! Find the states (before and after) for each Root from  the sequence aSeq
+  //! Find the states (before and after) for each Root from the sequence aSeq
   Standard_EXPORT static void FindRootStates(IntTools_SequenceOfRoots& aSeq,
                                              const Standard_Real       anEpsNull);
 

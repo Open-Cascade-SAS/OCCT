@@ -58,12 +58,12 @@ public:
   //! Returns the data structure
   Standard_EXPORT const BOPDS_DS& DS() const;
 
-  //! Initializes the  iterator
+  //! Initializes the iterator
   //! theType1 - the first type of shape
   //! theType2 - the second type of shape
   Standard_EXPORT void Initialize(const TopAbs_ShapeEnum theType1, const TopAbs_ShapeEnum theType2);
 
-  //! Returns  true if still there are pairs
+  //! Returns true if still there are pairs
   //! of intersected shapes
   Standard_EXPORT Standard_Boolean More() const;
 

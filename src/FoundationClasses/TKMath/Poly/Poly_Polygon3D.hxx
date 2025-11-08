@@ -71,7 +71,7 @@ public:
   TColgp_Array1OfPnt& ChangeNodes() { return myNodes; }
 
   //! Returns the table of the parameters associated with each node in this polygon.
-  //! HasParameters function checks if   parameters are associated with the nodes of this polygon.
+  //! HasParameters function checks if parameters are associated with the nodes of this polygon.
   Standard_Boolean HasParameters() const { return !myParameters.IsNull(); }
 
   //! Returns true if parameters are associated with the nodes

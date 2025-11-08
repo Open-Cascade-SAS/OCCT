@@ -63,8 +63,8 @@ public:
   //! Remove theS from me.
   Standard_EXPORT void Remove(const TopoDS_Shape& theS);
 
-  //! Returns  True if (S1> and <S2>  has  common
-  //! Descendants.  Stores in <LC> the Commons Descendants.
+  //! Returns True if (S1> and <S2> has common
+  //! Descendants. Stores in <LC> the Commons Descendants.
   Standard_EXPORT Standard_Boolean HasCommonDescendant(const TopoDS_Shape&   S1,
                                                        const TopoDS_Shape&   S2,
                                                        TopTools_ListOfShape& LC) const;

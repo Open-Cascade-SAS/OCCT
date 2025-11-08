@@ -38,7 +38,7 @@ public:
   //! to integer value, that is returned
   static Standard_Integer TypeToInteger(const TopAbs_ShapeEnum theT);
 
-  //! Returns true if the type  <theT> correspond
+  //! Returns true if the type <theT> correspond
   //! to a shape having boundary representation
   static Standard_Boolean HasBRep(const TopAbs_ShapeEnum theT);
 

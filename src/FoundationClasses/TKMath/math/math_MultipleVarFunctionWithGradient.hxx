@@ -34,12 +34,12 @@ public:
   //! Returns the number of variables of the function.
   Standard_EXPORT virtual Standard_Integer NbVariables() const = 0;
 
-  //! Computes the values of the Functions <F> for the   variable <X>.
+  //! Computes the values of the Functions <F> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X, Standard_Real& F) = 0;
 
-  //! Computes the gradient <G> of the functions for the   variable <X>.
+  //! Computes the gradient <G> of the functions for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT virtual Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) = 0;

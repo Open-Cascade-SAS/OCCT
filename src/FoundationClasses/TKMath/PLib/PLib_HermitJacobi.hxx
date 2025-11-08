@@ -24,11 +24,11 @@
 #include <GeomAbs_Shape.hxx>
 #include <PLib_JacobiPolynomial.hxx>
 
-//! This class provides method  to work with Jacobi Polynomials
+//! This class provides method to work with Jacobi Polynomials
 //! relatively to an order of constraint
 //! q = myWorkDegree-2*(myNivConstr+1)
 //! Jk(t) for k=0,q compose the Jacobi Polynomial base relatively to the weight W(t)
-//! iorder is the integer  value for the constraints:
+//! iorder is the integer value for the constraints:
 //! iorder = 0 <=> ConstraintOrder = GeomAbs_C0
 //! iorder = 1 <=> ConstraintOrder = GeomAbs_C1
 //! iorder = 2 <=> ConstraintOrder = GeomAbs_C2
@@ -45,7 +45,7 @@
 //! c0(1)                  c0(2) ....            c0(Dimension)
 //! c2*ordre+1(1)                ...          c2*ordre+1(dimension)
 //! @endcode
-//! represents the  part  of the polynomial in  the
+//! represents the part of the polynomial in the
 //! Hermit's base: H(t)
 //! @code
 //! H(t) = c0H00(t) + c1H01(t) + ...c(iordre)H(0 ;iorder)+ c(iordre+1)H10(t)+...
@@ -67,7 +67,7 @@ public:
   Standard_EXPORT PLib_HermitJacobi(const Standard_Integer WorkDegree,
                                     const GeomAbs_Shape    ConstraintOrder);
 
-  //! This  method computes the  maximum  error on the polynomial
+  //! This method computes the maximum error on the polynomial
   //! W(t) Q(t) obtained by missing the coefficients of JacCoeff from
   //! NewDegree +1 to Degree
   Standard_EXPORT Standard_Real MaxError(const Standard_Integer Dimension,

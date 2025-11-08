@@ -29,12 +29,9 @@ class TopLoc_Datum3D;
 //! An ItemLocation is an elementary coordinate system
 //! in a Location.
 //!
-//! The  ItemLocation     contains :
-//!
+//! The ItemLocation contains:
 //! * The elementary Datum.
-//!
 //! * The exponent of the elementary Datum.
-//!
 //! * The transformation associated to the composition.
 class TopLoc_ItemLocation
 {

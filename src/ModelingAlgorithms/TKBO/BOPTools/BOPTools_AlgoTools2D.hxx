@@ -38,24 +38,24 @@ class BOPTools_AlgoTools2D
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Compute P-Curve for the edge <aE> on the face <aF>.<br>
-  //! Raises exception Standard_ConstructionError if projection algorithm fails.<br>
+  //! Compute P-Curve for the edge <aE> on the face <aF>.
+  //! Raises exception Standard_ConstructionError if projection algorithm fails.
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void BuildPCurveForEdgeOnFace(
     const TopoDS_Edge&              aE,
     const TopoDS_Face&              aF,
     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
-  //! Compute tangent for the edge  <aE> [in 3D]  at parameter <aT>
+  //! Compute tangent for the edge <aE> [in 3D] at parameter <aT>
   Standard_EXPORT static Standard_Boolean EdgeTangent(const TopoDS_Edge&  anE,
                                                       const Standard_Real aT,
                                                       gp_Vec&             Tau);
 
   //! Compute surface parameters <U,V> of the face <aF>
-  //! for  the point from the edge <aE> at parameter <aT>.<br>
+  //! for the point from the edge <aE> at parameter <aT>.
   //! If <aE> has't pcurve on surface, algorithm tries to get it by
-  //! projection and can
-  //! raise exception Standard_ConstructionError if projection algorithm fails.<br>
+  //! projection and can raise exception
+  //! Standard_ConstructionError if projection algorithm fails.
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void PointOnSurface(
     const TopoDS_Edge&              aE,
@@ -65,10 +65,10 @@ public:
     Standard_Real&                  V,
     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
-  //! Get P-Curve <aC>  for the edge <aE> on surface <aF> .<br>
-  //! If the P-Curve does not exist, build  it using Make2D().<br>
+  //! Get P-Curve <aC> for the edge <aE> on surface <aF>.
+  //! If the P-Curve does not exist, build it using Make2D().
   //! [aToler] - reached tolerance
-  //! Raises exception Standard_ConstructionError if algorithm Make2D() fails.<br>
+  //! Raises exception Standard_ConstructionError if algorithm Make2D() fails.
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void CurveOnSurface(
     const TopoDS_Edge&              aE,
@@ -77,11 +77,11 @@ public:
     Standard_Real&                  aToler,
     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
-  //! Get P-Curve <aC>  for the edge <aE> on surface <aF> .<br>
-  //! If the P-Curve does not exist, build  it using Make2D().<br>
+  //! Get P-Curve <aC> for the edge <aE> on surface <aF>.
+  //! If the P-Curve does not exist, build it using Make2D().
   //! [aFirst, aLast] - range of the P-Curve<br>
-  //! [aToler] - reached tolerance<br>
-  //! Raises exception Standard_ConstructionError if algorithm Make2D() fails.<br>
+  //! [aToler] - reached tolerance
+  //! Raises exception Standard_ConstructionError if algorithm Make2D() fails.
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void CurveOnSurface(
     const TopoDS_Edge&              aE,
@@ -92,8 +92,8 @@ public:
     Standard_Real&                  aToler,
     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
-  //! Returns TRUE if the edge <aE>  has  P-Curve <aC>
-  //! on surface <aF> .
+  //! Returns TRUE if the edge <aE> has P-Curve <aC>
+  //! on surface <aF>.
   //! [aFirst, aLast] - range of the P-Curve
   //! [aToler] - reached tolerance
   //! If the P-Curve does not exist, aC.IsNull()=TRUE.
@@ -104,13 +104,13 @@ public:
                                                             Standard_Real&        aLast,
                                                             Standard_Real&        aToler);
 
-  //! Returns TRUE if the edge <aE>  has  P-Curve <aC>
-  //! on surface <aF> .
+  //! Returns TRUE if the edge <aE> has P-Curve <aC>
+  //! on surface <aF>.
   //! If the P-Curve does not exist, aC.IsNull()=TRUE.
   Standard_EXPORT static Standard_Boolean HasCurveOnSurface(const TopoDS_Edge& aE,
                                                             const TopoDS_Face& aF);
 
-  //! Adjust P-Curve <theC2D> (3D-curve <theC3D>) on surface of the face <theF>.<br>
+  //! Adjust P-Curve <theC2D> (3D-curve <theC3D>) on surface of the face <theF>.
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void AdjustPCurveOnFace(
     const TopoDS_Face&              theF,
@@ -119,8 +119,8 @@ public:
     Handle(Geom2d_Curve)&           theC2DA,
     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
-  //! Adjust P-Curve <aC2D> (3D-curve <C3D>) on surface <aF> .<br>
-  //! [aT1,  aT2] - range to adjust<br>
+  //! Adjust P-Curve <aC2D> (3D-curve <C3D>) on surface <aF>.
+  //! [aT1, aT2] - range to adjust
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void AdjustPCurveOnFace(
     const TopoDS_Face&              theF,
@@ -130,7 +130,7 @@ public:
     Handle(Geom2d_Curve)&           theC2DA,
     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
-  //! Adjust P-Curve <aC2D> (3D-curve <C3D>) on surface <aF> .
+  //! Adjust P-Curve <aC2D> (3D-curve <C3D>) on surface <aF>.
   //! [aT1,  aT2] - range to adjust
   Standard_EXPORT static void AdjustPCurveOnSurf(const BRepAdaptor_Surface&  aF,
                                                  const Standard_Real         aT1,
@@ -138,17 +138,17 @@ public:
                                                  const Handle(Geom2d_Curve)& aC2D,
                                                  Handle(Geom2d_Curve)&       aC2DA);
 
-  //! Compute intermediate  value in  between [aFirst, aLast] .
+  //! Compute intermediate value in between [aFirst, aLast].
   Standard_EXPORT static Standard_Real IntermediatePoint(const Standard_Real aFirst,
                                                          const Standard_Real aLast);
 
   //! Compute intermediate value of parameter for the edge <anE>.
   Standard_EXPORT static Standard_Real IntermediatePoint(const TopoDS_Edge& anE);
 
-  //! Make P-Curve <aC> for the edge <aE> on surface <aF> .<br>
-  //! [aFirst, aLast] - range of the P-Curve<br>
-  //! [aToler] - reached tolerance<br>
-  //! Raises exception Standard_ConstructionError if algorithm fails.<br>
+  //! Make P-Curve <aC> for the edge <aE> on surface <aF>.
+  //! [aFirst, aLast] - range of the P-Curve
+  //! [aToler] - reached tolerance
+  //! Raises exception Standard_ConstructionError if algorithm fails.
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void Make2D(
     const TopoDS_Edge&              aE,
@@ -159,9 +159,9 @@ public:
     Standard_Real&                  aToler,
     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
-  //! Make P-Curve <aC> for the 3D-curve <C3D> on surface <aF> .<br>
-  //! [aToler] - reached tolerance<br>
-  //! Raises exception Standard_ConstructionError if projection algorithm fails.<br>
+  //! Make P-Curve <aC> for the 3D-curve <C3D> on surface <aF>.
+  //! [aToler] - reached tolerance
+  //! Raises exception Standard_ConstructionError if projection algorithm fails.
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void MakePCurveOnFace(
     const TopoDS_Face&              aF,
@@ -170,10 +170,10 @@ public:
     Standard_Real&                  aToler,
     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
-  //! Make P-Curve <aC> for the 3D-curve <C3D> on surface <aF> .<br>
-  //! [aT1,  aT2] - range to build<br>
-  //! [aToler] - reached tolerance<br>
-  //! Raises exception Standard_ConstructionError if projection algorithm fails.<br>
+  //! Make P-Curve <aC> for the 3D-curve <C3D> on surface <aF>.
+  //! [aT1, aT2] - range to build
+  //! [aToler] - reached tolerance
+  //! Raises exception Standard_ConstructionError if projection algorithm fails.
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void MakePCurveOnFace(
     const TopoDS_Face&              aF,

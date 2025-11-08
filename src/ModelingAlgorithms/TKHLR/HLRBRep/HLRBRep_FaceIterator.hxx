@@ -45,7 +45,7 @@ public:
   //! wire.
   Standard_Boolean BeginningOfWire() const;
 
-  //! Returns True if the current edge is the  last of a
+  //! Returns True if the current edge is the last of a
   //! wire.
   Standard_Boolean EndOfWire() const;
 

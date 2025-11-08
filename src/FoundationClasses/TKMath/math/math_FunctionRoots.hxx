@@ -67,7 +67,7 @@ public:
   //! StdFail_NotDone if the algorithm fails (and IsDone returns false).
   Standard_Real Value(const Standard_Integer Nieme) const;
 
-  //! returns the StateNumber  of the Nieme root.
+  //! returns the StateNumber of the Nieme root.
   //! Exception RangeError is raised if Nieme is < 1
   //! or Nieme > NbSolutions.
   Standard_Integer StateNumber(const Standard_Integer Nieme) const;

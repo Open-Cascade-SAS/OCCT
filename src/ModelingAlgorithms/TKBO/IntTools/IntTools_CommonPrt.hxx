@@ -26,8 +26,8 @@
 #include <Standard_Boolean.hxx>
 #include <gp_Pnt.hxx>
 
-//! The class  is  to  describe a  common  part
-//! between two edges in  3-d space.
+//! The class is to describe a common part
+//! between two edges in 3D space.
 class IntTools_CommonPrt
 {
 public:
@@ -36,7 +36,7 @@ public:
   //! Empty constructor
   Standard_EXPORT IntTools_CommonPrt();
 
-  //! Copy  constructor
+  //! Copy constructor
   Standard_EXPORT IntTools_CommonPrt(const IntTools_CommonPrt& aCPrt);
 
   Standard_EXPORT IntTools_CommonPrt& Assign(const IntTools_CommonPrt& Other);
@@ -49,8 +49,8 @@ public:
   //! Sets the second edge.
   Standard_EXPORT void SetEdge2(const TopoDS_Edge& anE);
 
-  //! Sets the type of  the common  part
-  //! Vertex  or  Edge
+  //! Sets the type of the common part
+  //! Vertex or Edge
   Standard_EXPORT void SetType(const TopAbs_ShapeEnum aType);
 
   //! Sets the range of first edge.
@@ -77,7 +77,7 @@ public:
   //! Returns the second edge
   Standard_EXPORT const TopoDS_Edge& Edge2() const;
 
-  //! Returns the type of  the common  part
+  //! Returns the type of the common  part
   Standard_EXPORT TopAbs_ShapeEnum Type() const;
 
   //! Returns the range of first edge
@@ -86,10 +86,10 @@ public:
   //! Returns the range of first edge.
   Standard_EXPORT void Range1(Standard_Real& tf, Standard_Real& tl) const;
 
-  //! Returns the  ranges of second edge.
+  //! Returns the ranges of second edge.
   Standard_EXPORT const IntTools_SequenceOfRanges& Ranges2() const;
 
-  //! Returns the  ranges of second edge.
+  //! Returns the ranges of second edge.
   Standard_EXPORT IntTools_SequenceOfRanges& ChangeRanges2();
 
   //! Returns parameter of first vertex

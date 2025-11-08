@@ -58,13 +58,13 @@ public:
 
   //! Selector
   //! Returns the pave blocks of the face
-  //! that  have state In
+  //! that have state In
   const BOPDS_IndexedMapOfPaveBlock& PaveBlocksIn() const;
 
   //! Selector/Modifier
   //! Returns the pave blocks
   //! of the face
-  //! that  have state In
+  //! that have state In
   BOPDS_IndexedMapOfPaveBlock& ChangePaveBlocksIn();
 
   //! Selector
@@ -83,13 +83,13 @@ public:
 
   //! Selector
   //! Returns the pave blocks of the face
-  //! that  have state On
+  //! that have state On
   const BOPDS_IndexedMapOfPaveBlock& PaveBlocksOn() const;
 
   //! Selector/Modifier
   //! Returns the pave blocks
   //! of the face
-  //! that  have state On
+  //! that have state On
   BOPDS_IndexedMapOfPaveBlock& ChangePaveBlocksOn();
 
   //! Selector
@@ -108,18 +108,18 @@ public:
 
   //! Selector
   //! Returns the pave blocks of the face
-  //! that are  pave blocks of section edges
+  //! that are pave blocks of section edges
   const BOPDS_IndexedMapOfPaveBlock& PaveBlocksSc() const;
 
   BOPDS_IndexedMapOfPaveBlock& ChangePaveBlocksSc();
 
   //! Selector
-  //! Returns the list of indices for section  vertices
+  //! Returns the list of indices for section vertices
   //! of the face
   const TColStd_MapOfInteger& VerticesSc() const;
 
   //! Selector/Modifier
-  //! Returns the list of indices for section  vertices
+  //! Returns the list of indices for section vertices
   //! of the face
   //!
   //! Others

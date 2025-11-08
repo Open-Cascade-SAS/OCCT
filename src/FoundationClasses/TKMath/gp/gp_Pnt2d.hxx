@@ -27,7 +27,7 @@ class gp_Ax2d;
 class gp_Trsf2d;
 class gp_Vec2d;
 
-//! Defines  a non-persistent 2D cartesian point.
+//! Defines a non-persistent 2D cartesian point.
 class gp_Pnt2d
 {
 public:
@@ -45,7 +45,7 @@ public:
   {
   }
 
-  //! Creates a  point with its 2 cartesian's coordinates : theXp, theYp.
+  //! Creates a point with its 2 cartesian's coordinates: theXp, theYp.
   constexpr gp_Pnt2d(const Standard_Real theXp, const Standard_Real theYp) noexcept
       : coord(theXp, theYp)
   {
@@ -66,10 +66,10 @@ public:
     coord.SetCoord(theXp, theYp);
   }
 
-  //! Assigns the given value to the X  coordinate of this point.
+  //! Assigns the given value to the X coordinate of this point.
   constexpr void SetX(const Standard_Real theX) noexcept { coord.SetX(theX); }
 
-  //! Assigns the given value to the Y  coordinate of this point.
+  //! Assigns the given value to the Y coordinate of this point.
   constexpr void SetY(const Standard_Real theY) noexcept { coord.SetY(theY); }
 
   //! Assigns the two coordinates of Coord to this point.
@@ -87,7 +87,7 @@ public:
     coord.Coord(theXp, theYp);
   }
 
-  //! For this point, returns its X  coordinate.
+  //! For this point, returns its X coordinate.
   constexpr Standard_Real X() const noexcept { return coord.X(); }
 
   //! For this point, returns its Y coordinate.

@@ -30,8 +30,8 @@
 #include <GeomAbs_Shape.hxx>
 class math_Matrix;
 
-//! PLib means Polynomial  functions library.  This pk
-//! provides  basic       computation    functions for
+//! PLib means Polynomial functions library. This pk
+//! provides basic computation functions for
 //! polynomial functions.
 //! Note: weight arrays can be passed by pointer for
 //! some functions so that NULL pointer is valid.
@@ -85,26 +85,26 @@ public:
   //! Computes the derivatives of a ratio at order
   //! <N> in dimension <Dimension>.
   //!
-  //! <Ders> is an  array containing the  values  of the
-  //! input   derivatives from  0 to  Min(<N>,<Degree>).
-  //! For   orders   higher  than <Degree>    the  inputcd /s2d1/BMDL/
-  //! derivatives   are assumed to be  0.
+  //! <Ders> is an array containing the values of the
+  //! input derivatives from 0 to Min(<N>,<Degree>).
+  //! For orders higher than <Degree> the inputcd /s2d1/BMDL/
+  //! derivatives are assumed to be 0.
   //!
-  //! Content of <Ders> :
+  //! Content of <Ders>:
   //!
   //! x(1),x(2),...,x(Dimension),w
   //! x'(1),x'(2),...,x'(Dimension),w'
   //! x''(1),x''(2),...,x''(Dimension),w''
   //!
-  //! If  <All> is false, only the   derivative at order
-  //! <N> is computed.  <RDers>  is an array   of length
-  //! Dimension which will contain the result :
+  //! If <All> is false, only the derivative at order
+  //! <N> is computed. <RDers> is an array of length
+  //! Dimension which will contain the result:
   //!
   //! x(1)/w , x(2)/w ,  ... derivated <N> times
   //!
-  //! If <All> is  true all the  derivatives up to order
-  //! <N> are computed.   <RDers> is an array of  length
-  //! Dimension * (N+1) which will contains :
+  //! If <All> is true all the derivatives up to order
+  //! <N> are computed. <RDers> is an array of length
+  //! Dimension * (N+1) which will contains:
   //!
   //! x(1)/w , x(2)/w ,  ...
   //! x(1)/w , x(2)/w ,  ... derivated <1> times
@@ -124,10 +124,10 @@ public:
   //! of a BSpline function of degree <Degree>
   //! dimension <Dimension>.
   //!
-  //! <PolesDerivatives> is an  array containing the  values
-  //! of the input   derivatives from  0 to  <DerivativeRequest>
-  //! For   orders   higher  than <Degree>    the  input
-  //! derivatives   are assumed to be  0.
+  //! <PolesDerivatives> is an array containing the values
+  //! of the input derivatives from 0 to <DerivativeRequest>
+  //! For orders higher than <Degree> the input
+  //! derivatives are assumed to be 0.
   //!
   //! Content of <PoleasDerivatives> :
   //!
@@ -136,12 +136,12 @@ public:
   //! x''(1),x''(2),...,x''(Dimension)
   //!
   //! WeightsDerivatives is an array that contains derivatives
-  //! from 0 to  <DerivativeRequest>
+  //! from 0 to <DerivativeRequest>
   //! After returning from the routine the array
   //! RationalDerivatives contains the following
   //! x(1)/w , x(2)/w ,  ...
-  //! x(1)/w , x(2)/w ,  ...   derivated once
-  //! x(1)/w , x(2)/w ,  ...   twice
+  //! x(1)/w , x(2)/w ,  ... derivated once
+  //! x(1)/w , x(2)/w ,  ... twice
   //! x(1)/w , x(2)/w ,  ... derivated <DerivativeRequest> times
   //!
   //! The array RationalDerivatives and PolesDerivatives

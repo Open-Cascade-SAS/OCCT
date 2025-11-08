@@ -31,7 +31,7 @@ class gp_Dir2d;
 class gp_Ax2d;
 
 //! The geometric processor package, called gp, provides an
-//! implementation of entities used  :
+//! implementation of entities used:
 //! . for algebraic calculation such as "XYZ" coordinates, "Mat"
 //! matrix
 //! . for basis analytic geometry such as Transformations, point,
@@ -72,15 +72,15 @@ public:
   Standard_EXPORT static const gp_Dir& DZ() noexcept;
 
   //! Identifies an axis where its origin is Origin
-  //! and its unit vector coordinates  X = 1.0,  Y = Z = 0.0
+  //! and its unit vector coordinates X = 1.0, Y = Z = 0.0
   Standard_EXPORT static const gp_Ax1& OX() noexcept;
 
   //! Identifies an axis where its origin is Origin
-  //! and its unit vector coordinates Y = 1.0,  X = Z = 0.0
+  //! and its unit vector coordinates Y = 1.0, X = Z = 0.0
   Standard_EXPORT static const gp_Ax1& OY() noexcept;
 
   //! Identifies an axis where its origin is Origin
-  //! and its unit vector coordinates Z = 1.0,  Y = X = 0.0
+  //! and its unit vector coordinates Z = 1.0, Y = X = 0.0
   Standard_EXPORT static const gp_Ax1& OZ() noexcept;
 
   //! Identifies a coordinate system where its origin is Origin,
@@ -109,11 +109,11 @@ public:
   Standard_EXPORT static const gp_Dir2d& DY2d() noexcept;
 
   //! Identifies an axis where its origin is Origin2d
-  //! and its unit vector coordinates are: X = 1.0,  Y = 0.0
+  //! and its unit vector coordinates are: X = 1.0, Y = 0.0
   Standard_EXPORT static const gp_Ax2d& OX2d() noexcept;
 
   //! Identifies an axis where its origin is Origin2d
-  //! and its unit vector coordinates are Y = 1.0,  X = 0.0
+  //! and its unit vector coordinates are Y = 1.0, X = 0.0
   Standard_EXPORT static const gp_Ax2d& OY2d() noexcept;
 };
 

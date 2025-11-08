@@ -82,13 +82,13 @@ public:
   //! Raised if theIndex != {1, 2}.
   Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
-  //! For this vector, returns  its two coordinates theXv and theYv
+  //! For this vector, returns its two coordinates theXv and theYv
   void Coord(Standard_Real& theXv, Standard_Real& theYv) const { coord.Coord(theXv, theYv); }
 
-  //! For this vector, returns its X  coordinate.
+  //! For this vector, returns its X coordinate.
   constexpr Standard_Real X() const noexcept { return coord.X(); }
 
-  //! For this vector, returns its Y  coordinate.
+  //! For this vector, returns its Y coordinate.
   constexpr Standard_Real Y() const noexcept { return coord.Y(); }
 
   //! For this vector, returns its two coordinates as a number pair
@@ -300,12 +300,12 @@ public:
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector theV which is the center of
-  //! the  symmetry.
+  //! the symmetry.
   Standard_EXPORT void Mirror(const gp_Vec2d& theV);
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector theV which is the center of
-  //! the  symmetry.
+  //! the symmetry.
   Standard_NODISCARD Standard_EXPORT gp_Vec2d Mirrored(const gp_Vec2d& theV) const;
 
   //! Performs the symmetrical transformation of a vector

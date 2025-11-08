@@ -26,14 +26,14 @@ class TopLoc_SListNodeOfItemLocation;
 class TopLoc_ItemLocation;
 
 //! An SListOfItemLocation is a LISP like list of Items.
-//! An SListOfItemLocation is :
+//! An SListOfItemLocation is:
 //! . Empty.
-//! . Or it has a Value and a  Tail  which is an other SListOfItemLocation.
+//! . Or it has a Value and a Tail which is an other SListOfItemLocation.
 //!
 //! The Tail of an empty list is an empty list.
-//! SListOfItemLocation are  shared.  It  means   that they  can  be
+//! SListOfItemLocation are shared. It means that they can be
 //! modified through other lists.
-//! SListOfItemLocation may  be used  as Iterators. They  have Next,
+//! SListOfItemLocation may be used as Iterators. They have Next,
 //! More, and value methods. To iterate on the content
 //! of the list S just do.
 //!
@@ -48,17 +48,17 @@ public:
   //! Creates an empty List.
   TopLoc_SListOfItemLocation() {}
 
-  //! Creates a List with <anItem> as value  and <aTail> as tail.
+  //! Creates a List with <anItem> as value and <aTail> as tail.
   Standard_EXPORT TopLoc_SListOfItemLocation(const TopLoc_ItemLocation&        anItem,
                                              const TopLoc_SListOfItemLocation& aTail);
 
-  //! Creates a list from an other one. The lists  are shared.
+  //! Creates a list from an other one. The lists are shared.
   TopLoc_SListOfItemLocation(const TopLoc_SListOfItemLocation& Other)
       : myNode(Other.myNode)
   {
   }
 
-  //! Sets  a list  from  an  other  one. The  lists are
+  //! Sets a list from an other one. The  lists are
   //! shared. The list itself is returned.
   Standard_EXPORT TopLoc_SListOfItemLocation& Assign(const TopLoc_SListOfItemLocation& Other);
 
@@ -91,15 +91,15 @@ public:
   ~TopLoc_SListOfItemLocation() { Clear(); }
 
   //! Returns the current value of the list. An error is
-  //! raised  if the list is empty.
+  //! raised if the list is empty.
   Standard_EXPORT const TopLoc_ItemLocation& Value() const;
 
-  //! Returns the current tail of  the list. On an empty
+  //! Returns the current tail of the list. On an empty
   //! list the tail is the list itself.
   Standard_EXPORT const TopLoc_SListOfItemLocation& Tail() const;
 
   //! Replaces the list by a list with <anItem> as Value
-  //! and the  list <me> as  tail.
+  //! and the list <me> as tail.
   void Construct(const TopLoc_ItemLocation& anItem)
   {
     Assign(TopLoc_SListOfItemLocation(anItem, *this));
@@ -108,7 +108,7 @@ public:
   //! Replaces the list <me> by its tail.
   void ToTail() { Assign(Tail()); }
 
-  //! Returns True if the iterator  has a current value.
+  //! Returns True if the iterator has a current value.
   //! This is !IsEmpty()
   Standard_Boolean More() const { return !IsEmpty(); }
 

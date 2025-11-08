@@ -54,15 +54,15 @@ public:
   void Contents(Standard_Integer& theIndex, Standard_Real& theParameter) const;
 
   //! Query
-  //! Returns true if thr parameter od this is less
-  //! than the parameter of  <theOther>
+  //! Returns true if the parameter of this is less
+  //! than the parameter of <theOther>
   Standard_Boolean IsLess(const BOPDS_Pave& theOther) const;
 
   Standard_Boolean operator<(const BOPDS_Pave& theOther) const { return IsLess(theOther); }
 
   //! Query
-  //! Returns true if thr parameter od this is equal
-  //! to the parameter of  <theOther>
+  //! Returns true if the parameter of this is equal
+  //! to the parameter of <theOther>
   Standard_Boolean IsEqual(const BOPDS_Pave& theOther) const;
 
   Standard_Boolean operator==(const BOPDS_Pave& theOther) const { return IsEqual(theOther); }

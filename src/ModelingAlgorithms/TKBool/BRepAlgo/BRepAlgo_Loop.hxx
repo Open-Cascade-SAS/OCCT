@@ -58,7 +58,7 @@ public:
   //! Update VE map according to Image Vertex - Vertex
   Standard_EXPORT void UpdateVEmap(TopTools_IndexedDataMapOfShapeListOfShape& theVEmap);
 
-  //! Cut the  edge <E>  in  several edges  <NE> on the
+  //! Cut the edge <E> in several edges <NE> on the
   //! vertices<VonE>.
   Standard_EXPORT void CutEdge(const TopoDS_Edge&          E,
                                const TopTools_ListOfShape& VonE,

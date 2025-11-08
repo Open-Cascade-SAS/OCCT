@@ -81,7 +81,7 @@ public:
   Standard_EXPORT const TopTools_ListOfShape& Image(const TopoDS_Shape& S) const;
 
   //! Stores in <L> the images of images of...images of <S>.
-  //! <L> contains only <S> if  HasImage(S) is false.
+  //! <L> contains only <S> if HasImage(S) is false.
   Standard_EXPORT void LastImage(const TopoDS_Shape& S, TopTools_ListOfShape& L) const;
 
   //! Keeps only the link between roots and lastimage.
@@ -89,7 +89,7 @@ public:
 
   //! Deletes in the images the shape of type <ShapeType>
   //! which are not in <S>.
-  //! Warning:  Compact() must be call before.
+  //! Warning: Compact() must be call before.
   Standard_EXPORT void Filter(const TopoDS_Shape& S, const TopAbs_ShapeEnum ShapeType);
 
 protected:

@@ -49,7 +49,7 @@ public:
   //! Give the number of triangles in this polyhedral surface.
   static Standard_Integer NbTriangles(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh);
 
-  //! Give the indices  of  the 3 points of  the triangle of
+  //! Give the indices of the 3 points of the triangle of
   //! address Index in the PolyhedronTool.
   static void Triangle(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh,
                        const Standard_Integer                   Index,
@@ -63,7 +63,7 @@ public:
 
   //! Give the address Tricon of the triangle connexe to
   //! the triangle of address Triang by the edge Pivot Pedge
-  //! and the third point of this  connexe triangle.
+  //! and the third point of this connexe triangle.
   //! When we are on a free edge TriCon==0 but the function return
   //! the value of the triangle in the other side of Pivot on the free edge.
   //! Used to turn around a vertex.

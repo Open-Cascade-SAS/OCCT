@@ -28,7 +28,7 @@ class GeomFill_LocationGuide;
 class BRepFill_ACRLaw;
 DEFINE_STANDARD_HANDLE(BRepFill_ACRLaw, BRepFill_LocationLaw)
 
-//! Build Location Law,  with a Wire.   In the case
+//! Build Location Law, with a Wire. In the case
 //! of guided contour and trihedron by reduced
 //! curvilinear abscissa
 class BRepFill_ACRLaw : public BRepFill_LocationLaw

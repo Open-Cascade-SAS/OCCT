@@ -29,7 +29,7 @@ class IGESSelect_SelectDrawingFrom;
 DEFINE_STANDARD_HANDLE(IGESSelect_SelectDrawingFrom, IFSelect_SelectDeduct)
 
 //! This selection gets the Drawings attached to its input IGES
-//! entities. They are read through thr Single Views, referenced
+//! entities. They are read through the Single Views, referenced
 //! in Directory Parts of the entities
 class IGESSelect_SelectDrawingFrom : public IFSelect_SelectDeduct
 {
@@ -43,7 +43,7 @@ public:
   Standard_EXPORT Interface_EntityIterator
     RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
 
-  //! Returns the label, with is "Drawings attached"
+  //! Returns the label, with its "Drawings attached"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectDrawingFrom, IFSelect_SelectDeduct)

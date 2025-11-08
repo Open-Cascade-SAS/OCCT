@@ -32,7 +32,7 @@
 //! Direction" and the "main Direction" of the coordinate
 //! system. It is centered on the "X Axis" of this coordinate
 //! system, and located at a distance, from the origin of
-//! this coordinate system, equal to the major radius of the   torus;
+//! this coordinate system, equal to the major radius of the torus;
 //! -   The "X Direction" and "Y Direction" define the
 //! reference plane of the torus.
 //! The coordinate system described above is the "local
@@ -94,7 +94,7 @@ public:
   //! Changes the location of the torus.
   constexpr void SetLocation(const gp_Pnt& theLoc) noexcept { pos.SetLocation(theLoc); }
 
-  //! Assigns value to the major radius  of this torus.
+  //! Assigns value to the major radius of this torus.
   //! Raises ConstructionError if theMajorRadius - MinorRadius <= Resolution()
   void SetMajorRadius(const Standard_Real theMajorRadius)
   {
@@ -103,7 +103,7 @@ public:
     majorRadius = theMajorRadius;
   }
 
-  //! Assigns value to the  minor radius of this torus.
+  //! Assigns value to the minor radius of this torus.
   //! Raises ConstructionError if theMinorRadius < 0.0 or if
   //! MajorRadius - theMinorRadius <= Resolution from gp.
   void SetMinorRadius(const Standard_Real theMinorRadius)
@@ -123,11 +123,11 @@ public:
     return 4.0 * M_PI * M_PI * minorRadius * majorRadius;
   }
 
-  //! Reverses the   U   parametrization of   the  torus
+  //! Reverses the U parametrization of the torus
   //! reversing the YAxis.
   constexpr void UReverse() noexcept { pos.YReverse(); }
 
-  //! Reverses the   V   parametrization of   the  torus
+  //! Reverses the V parametrization of the torus
   //! reversing the ZAxis.
   constexpr void VReverse() noexcept { pos.ZReverse(); }
 
@@ -152,7 +152,7 @@ public:
   //!     Coef(25) * X * Y * Z +
   //!     Coef(26) * X^2 + Coef(27) * Y^2 + Coef(28) * Z^2 +
   //!     Coef(29) * X * Y + Coef(30) * X * Z + Coef(31) * Y * Z +
-  //!     Coef(32) * X + Coef(33) * Y + Coef(34) *  Z +
+  //!     Coef(32) * X + Coef(33) * Y + Coef(34) * Z +
   //!     Coef(35) = 0.0
   //! @endcode
   //! Raises DimensionError if the length of theCoef is lower than 35.

@@ -106,12 +106,12 @@ public:
 
   //! Query
   //! Returns true if the common block contains
-  //! a pave block that is equal  to <thePB>
+  //! a pave block that is equal to <thePB>
   Standard_EXPORT Standard_Boolean Contains(const Handle(BOPDS_PaveBlock)& thePB) const;
 
   //! Query
   //! Returns true if the common block contains
-  //! the face with index equal  to <theF>
+  //! the face with index equal to <theF>
   Standard_EXPORT Standard_Boolean Contains(const Standard_Integer theF) const;
 
   //! Modifier
@@ -121,7 +121,7 @@ public:
 
   //! Selector
   //! Returns the index of the edge
-  //! of  all pave blocks of the common block
+  //! of all pave blocks of the common block
   Standard_EXPORT Standard_Integer Edge() const;
 
   Standard_EXPORT void Dump() const;

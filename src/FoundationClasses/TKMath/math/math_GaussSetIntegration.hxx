@@ -25,10 +25,10 @@
 #include <Standard_OStream.hxx>
 class math_FunctionSet;
 
-//! -- This class implements the integration of a set of N
-//! functions of M  variables variables between the
+//! This class implements the integration of a set of N
+//! functions of M variables variables between the
 //! parameter bounds Lower[a..b] and Upper[a..b].
-//! Warning: - The case M>1 is not implemented.
+//! Warning: The case M>1 is not implemented.
 class math_GaussSetIntegration
 {
 public:

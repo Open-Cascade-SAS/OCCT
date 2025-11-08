@@ -23,7 +23,7 @@
 //! This class describes a cartesian coordinate entity in 2D
 //! space {X,Y}. This class is non persistent. This entity used
 //! for algebraic calculation. An XY can be transformed with a
-//! Trsf2d or a  GTrsf2d from package gp.
+//! Trsf2d or a GTrsf2d from package gp.
 //! It is used in vectorial computations or for holding this type
 //! of information in data structures.
 class gp_XY
@@ -66,7 +66,7 @@ public:
   //! Assigns the given value to the X coordinate of this number pair.
   constexpr void SetX(const Standard_Real theX) noexcept { x = theX; }
 
-  //! Assigns the given value to the Y  coordinate of this number pair.
+  //! Assigns the given value to the Y coordinate of this number pair.
   constexpr void SetY(const Standard_Real theY) noexcept { y = theY; }
 
   //! returns the coordinate of range theIndex :
@@ -297,7 +297,7 @@ public:
 
   Standard_NODISCARD constexpr gp_XY operator-() const noexcept { return Reversed(); }
 
-  //! Computes  the following linear combination and
+  //! Computes the following linear combination and
   //! assigns the result to this number pair:
   //! @code
   //! theA1 * theXY1 + theA2 * theXY2
@@ -311,7 +311,7 @@ public:
     y = theA1 * theXY1.y + theA2 * theXY2.y;
   }
 
-  //! --  Computes  the following linear combination and
+  //! Computes the following linear combination and
   //! assigns the result to this number pair:
   //! @code
   //! theA1 * theXY1 + theA2 * theXY2 + theXY3
@@ -326,7 +326,7 @@ public:
     y = theA1 * theXY1.y + theA2 * theXY2.y + theXY3.y;
   }
 
-  //! Computes  the following linear combination and
+  //! Computes the following linear combination and
   //! assigns the result to this number pair:
   //! @code
   //! theA1 * theXY1 + theXY2
@@ -339,7 +339,7 @@ public:
     y = theA1 * theXY1.y + theXY2.y;
   }
 
-  //! Computes  the following linear combination and
+  //! Computes the following linear combination and
   //! assigns the result to this number pair:
   //! @code
   //! theXY1 + theXY2

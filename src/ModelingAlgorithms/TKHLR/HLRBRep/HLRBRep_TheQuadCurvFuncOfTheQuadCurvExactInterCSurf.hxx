@@ -38,8 +38,8 @@ public:
   Standard_EXPORT HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf(const IntSurf_Quadric& Q,
                                                                       const gp_Lin&          C);
 
-  //! Computes the value of the signed  distance between
-  //! the  implicit surface and  the point  at parameter
+  //! Computes the value of the signed distance between
+  //! the implicit surface and the point at parameter
   //! Param on the parametrised curve.
   //! Value always returns True.
   Standard_EXPORT Standard_Boolean Value(const Standard_Real Param,
