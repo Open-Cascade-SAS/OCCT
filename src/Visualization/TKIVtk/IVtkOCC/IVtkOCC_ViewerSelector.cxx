@@ -138,7 +138,6 @@ void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXMin,
   }
 
   Standard_Integer aWidth = 0, aHeight = 0;
-  Graphic3d_Mat4d  aProj, anOrient;
   Standard_Real    aX = RealLast(), aY = RealLast();
   Standard_Real    aVpWidth = RealLast(), aVpHeight = RealLast();
 
@@ -184,7 +183,6 @@ void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
   }
 
   Standard_Integer aWidth = 0, aHeight = 0;
-  Graphic3d_Mat4d  aProj, anOrient;
   Standard_Real    aX = RealLast(), aY = RealLast();
   Standard_Real    aVpWidth = RealLast(), aVpHeight = RealLast();
 
