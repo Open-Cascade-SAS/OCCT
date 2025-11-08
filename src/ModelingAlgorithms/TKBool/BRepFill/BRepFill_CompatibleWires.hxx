@@ -42,8 +42,8 @@ public:
 
   Standard_EXPORT void SetPercent(const Standard_Real percent = 0.01);
 
-  //! Performs  CompatibleWires According  to  the orientation
-  //! and the origin of  each other
+  //! Performs CompatibleWires According to the orientation
+  //! and the origin of each other
   Standard_EXPORT void Perform(const Standard_Boolean WithRotation = Standard_True);
 
   Standard_EXPORT Standard_Boolean IsDone() const;
@@ -53,7 +53,7 @@ public:
   //! returns the generated sequence.
   Standard_EXPORT const TopTools_SequenceOfShape& Shape() const;
 
-  //! Returns   the  shapes  created  from   a  subshape
+  //! Returns the shapes created from a subshape
   //! <SubSection> of a section.
   Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Edge& SubSection) const;
 
@@ -65,23 +65,23 @@ public:
 
 protected:
 private:
-  //! Insert cutting  points  on  closed wires to  have same
+  //! Insert cutting points on closed wires to have same
   //! number of edges. The sequence of shapes must
   //! be a sequence of wires.
   Standard_EXPORT void SameNumberByPolarMethod(const Standard_Boolean WithRotation = Standard_True);
 
-  //! Insert cutting  points  on  open wires to  have same
+  //! Insert cutting points on open wires to have same
   //! number of edges. The sequence of shapes must
   //! be a sequence of wires.
   Standard_EXPORT void SameNumberByACR(const Standard_Boolean report);
 
-  //! Computes  origins and orientation  on closed wires to
+  //! Computes origins and orientation on closed wires to
   //! avoid twisted results. The sequence of shapes must
   //! be a sequence of wires. <polar> must be true
   //! if SameNumberByPolarMethod was used before.
   Standard_EXPORT void ComputeOrigin(const Standard_Boolean polar);
 
-  //! Computes  origins and orientation  on open wires to
+  //! Computes origins and orientation on open wires to
   //! avoid twisted results. The sequence of shapes must
   //! be a sequence of wires.
   Standard_EXPORT void SearchOrigin();

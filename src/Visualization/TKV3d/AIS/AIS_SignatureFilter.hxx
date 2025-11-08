@@ -30,16 +30,16 @@ DEFINE_STANDARD_HANDLE(AIS_SignatureFilter, AIS_TypeFilter)
 
 //! Selects Interactive Objects through their signatures
 //! and types. The signature provides an
-//! additional   characterization of an object's type, and
+//! additional characterization of an object's type, and
 //! takes the form of an index. The filter questions each
 //! Interactive Object in local context to determine
 //! whether it has an non-null owner, and if so, whether
 //! it has the desired signature. If the object returns true
 //! in each case, it is kept. If not, it is rejected.
-//! By default, the   interactive object has a None   type
+//! By default, the interactive object has a None type
 //! and a signature of 0. If you want to give a particular
 //! type and signature to your Interactive Object, you
-//! must redefine two virtual methods:   Type and Signature.
+//! must redefine two virtual methods: Type and Signature.
 //! This filter is only used in an open local contexts.
 //! In the Collector viewer, you can only locate
 //! Interactive Objects which answer positively to the

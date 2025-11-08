@@ -26,7 +26,7 @@
 
 //! A framework to manage presentation and selection of shapes.
 //! AIS_Shape is the interactive object which is used the
-//! most by   applications. There are standard functions
+//! most by applications. There are standard functions
 //! available which allow you to prepare selection
 //! operations on the constituent elements of shapes -
 //! vertices, edges, faces etc - in an open local context.

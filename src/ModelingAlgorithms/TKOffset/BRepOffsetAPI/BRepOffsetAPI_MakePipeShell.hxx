@@ -64,36 +64,36 @@ public:
   Standard_EXPORT BRepOffsetAPI_MakePipeShell(const TopoDS_Wire& Spine);
 
   //! Sets a Frenet or a CorrectedFrenet trihedron
-  //! to  perform  the  sweeping
+  //! to perform the sweeping
   //! If IsFrenet is false, a corrected Frenet trihedron is used.
   Standard_EXPORT void SetMode(const Standard_Boolean IsFrenet = Standard_False);
 
   //! Sets a Discrete trihedron
-  //! to  perform  the  sweeping
+  //! to perform the sweeping
   Standard_EXPORT void SetDiscreteMode();
 
-  //! Sets  a  fixed  trihedron  to  perform  the  sweeping
+  //! Sets a fixed trihedron to perform the sweeping
   //! all sections will be parallel.
   Standard_EXPORT void SetMode(const gp_Ax2& Axe);
 
-  //! Sets a fixed BiNormal  direction to perform the --
-  //! sweeping.   Angular   relations   between  the
+  //! Sets a fixed BiNormal direction to perform the
+  //! sweeping. Angular relations between the
   //! section(s) and <BiNormal> will be constant
   Standard_EXPORT void SetMode(const gp_Dir& BiNormal);
 
   //! Sets support to the spine to define the BiNormal of
-  //! the trihedron, like the normal  to the surfaces.
-  //! Warning:  To be effective, Each  edge of the <spine> must
+  //! the trihedron, like the normal to the surfaces.
+  //! Warning: To be effective, Each edge of the <spine> must
   //! have a representation on one face of<SpineSupport>
   Standard_EXPORT Standard_Boolean SetMode(const TopoDS_Shape& SpineSupport);
 
-  //! Sets  an  auxiliary  spine  to  define  the Normal
-  //! For  each  Point  of  the  Spine  P,  an  Point  Q  is  evalued
-  //! on  <AuxiliarySpine>
+  //! Sets an auxiliary spine to define the Normal
+  //! For each Point of the Spine P, an Point Q is evaluated
+  //! on <AuxiliarySpine>
   //! If <CurvilinearEquivalence>
-  //! Q split <AuxiliarySpine> with  the  same  length ratio
-  //! than P split  <Spline>.
-  //! Else  the  plan  define  by  P  and  the  tangent  to  the  <Spine>
+  //! Q split <AuxiliarySpine> with the same length ratio
+  //! than P split <Spline>.
+  //! Else the plan define by P and the tangent to the <Spine>
   //! intersect <AuxiliarySpine> in Q.
   //! If <KeepContact> equals BRepFill_NoContact: The Normal is defined
   //! by the vector PQ.
@@ -108,7 +108,7 @@ public:
   //! becomes a boundary of the swept surface and the width of section varies
   //! along the path.
   //! Give section to sweep.
-  //! Possibilities are :
+  //! Possibilities are:
   //! - Give one or several section
   //! - Give one profile and an homotetic law.
   //! - Automatic compute of correspondence between spine, and section

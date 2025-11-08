@@ -203,7 +203,7 @@ public:
   //! object. The triangles are formed from chords of the
   //! curves in the shape. The deviation coefficient gives
   //! the highest value of the angle with which a chord can
-  //! deviate from a tangent to a   curve. If this limit is
+  //! deviate from a tangent to a curve. If this limit is
   //! reached, a new triangle is begun.
   //! This deviation is absolute and is set through the
   //! method: SetMaximalChordialDeviation. The default value is 0.001.

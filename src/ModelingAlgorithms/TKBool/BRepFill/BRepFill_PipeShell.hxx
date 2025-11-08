@@ -58,34 +58,33 @@ public:
   Standard_EXPORT BRepFill_PipeShell(const TopoDS_Wire& Spine);
 
   //! Set an Frenet or an CorrectedFrenet trihedron
-  //! to  perform  the  sweeping
+  //! to perform the sweeping
   Standard_EXPORT void Set(const Standard_Boolean Frenet = Standard_False);
 
-  //! Set a Discrete trihedron
-  //! to  perform  the  sweeping
+  //! Set a Discrete trihedron to perform the sweeping
   Standard_EXPORT void SetDiscrete();
 
-  //! Set  an  fixed  trihedron  to  perform  the  sweeping
+  //! Set an fixed trihedron to perform the sweeping
   //! all sections will be parallel.
   Standard_EXPORT void Set(const gp_Ax2& Axe);
 
-  //! Set an fixed  BiNormal  direction to  perform
+  //! Set an fixed BiNormal direction to perform
   //! the sweeping
   Standard_EXPORT void Set(const gp_Dir& BiNormal);
 
   //! Set support to the spine to define the BiNormal
-  //! at   the spine, like    the  normal the surfaces.
-  //! Warning: To  be  effective,  Each  edge  of  the  <spine>  must
-  //! have an  representation  on   one   face  of<SpineSupport>
+  //! at the spine, like the normal the surfaces.
+  //! Warning: To be effective, Each edge of the <spine> must
+  //! have an representation on one face of<SpineSupport>
   Standard_EXPORT Standard_Boolean Set(const TopoDS_Shape& SpineSupport);
 
-  //! Set  an  auxiliary  spine  to  define  the Normal
-  //! For  each  Point  of  the  Spine  P,  an  Point  Q  is  evalued
-  //! on  <AuxiliarySpine>
+  //! Set an auxiliary spine to define the Normal
+  //! For each Point of the Spine P, an Point Q is evaluated
+  //! on <AuxiliarySpine>
   //! If <CurvilinearEquivalence>
-  //! Q split <AuxiliarySpine> with  the  same  length ratio
-  //! than P split  <Spline>.
-  //! Else  the  plan  define  by  P  and  the  tangent  to  the  <Spine>
+  //! Q split <AuxiliarySpine> with the same length ratio
+  //! than P split <Spline>.
+  //! Else the plan define by P and the tangent to the <Spine>
   //! intersect <AuxiliarySpine> in Q.
   //! If <KeepContact> equals BRepFill_NoContact: The Normal is defined
   //! by the vector PQ.
@@ -114,7 +113,7 @@ public:
   //! a C1-continuous surface if a swept surface proved
   //! to be C0.
   //! Give section to sweep.
-  //! Possibilities are :
+  //! Possibilities are:
   //! - Give one or several profile
   //! - Give one profile and an homotetic law.
   //! - Automatic compute of correspondence between profile, and section on the sweeped shape
@@ -145,15 +144,15 @@ public:
                            const Standard_Boolean WithContact    = Standard_False,
                            const Standard_Boolean WithCorrection = Standard_False);
 
-  //! Set  an    section  and  an   homotetic    law.
-  //! The  homotetie's  centers  is  given  by  point  on  the  <Spine>.
+  //! Set an section and an homotetic law.
+  //! The homotetie's centers is given by point on the <Spine>.
   Standard_EXPORT void SetLaw(const TopoDS_Shape&         Profile,
                               const Handle(Law_Function)& L,
                               const Standard_Boolean      WithContact    = Standard_False,
                               const Standard_Boolean      WithCorrection = Standard_False);
 
-  //! Set  an    section  and  an   homotetic    law.
-  //! The  homotetie  center  is  given  by  point  on  the  <Spine>
+  //! Set an section and an homotetic law.
+  //! The homotetie center is given by point on the <Spine>
   Standard_EXPORT void SetLaw(const TopoDS_Shape&         Profile,
                               const Handle(Law_Function)& L,
                               const TopoDS_Vertex&        Location,
@@ -174,13 +173,13 @@ public:
                                     const Standard_Real BoundTol   = 1.0e-4,
                                     const Standard_Real TolAngular = 1.0e-2);
 
-  //! Set the  Transition Mode to manage discontinuities
+  //! Set the Transition Mode to manage discontinuities
   //! on the sweep.
   Standard_EXPORT void SetTransition(const BRepFill_TransitionStyle Mode   = BRepFill_Modified,
                                      const Standard_Real            Angmin = 1.0e-2,
                                      const Standard_Real            Angmax = 6.0);
 
-  //! Perform simulation of the sweep :
+  //! Perform simulation of the sweep:
   //! Some Section are returned.
   Standard_EXPORT void Simulate(const Standard_Integer NumberOfSection,
                                 TopTools_ListOfShape&  Sections);
@@ -197,7 +196,7 @@ public:
 
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
 
-  //! Returns the  TopoDS  Shape of the bottom of the sweep.
+  //! Returns the TopoDS Shape of the bottom of the sweep.
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
 
   //! Returns the TopoDS Shape of the top of the sweep.
@@ -213,7 +212,7 @@ public:
   //! Returns the spine
   const TopoDS_Wire& Spine() { return mySpine; }
 
-  //! Returns the  list   of shapes generated   from the
+  //! Returns the list of shapes generated from the
   //! shape <S>.
   Standard_EXPORT void Generated(const TopoDS_Shape& S, TopTools_ListOfShape& L);
 

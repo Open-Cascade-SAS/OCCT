@@ -44,7 +44,7 @@ class gp_Pnt;
 //! Fills a DataStructure from TopOpeBRepDS with the result
 //! of Face/Face intersection described by FacesIntersector from TopOpeBRep.
 //! if the faces have same Domain, record it in the DS.
-//! else record lines and  points and attach list of interferences
+//! else record lines and points and attach list of interferences
 //! to the faces, the lines and the edges.
 class TopOpeBRep_FacesFiller
 {
@@ -99,13 +99,13 @@ public:
   //! and computing face/edge interference.
   Standard_EXPORT void ProcessRLine();
 
-  //! VP processing for restriction  line  and line sharing
-  //! same domain with  section edges :
-  //! - if restriction :
-  //! Adds restriction edges as  section edges and compute
-  //! face/edge  interference.
-  //! - if  same domain :
-  //! If line share same domain  with section edges, compute
+  //! VP processing for restriction line and line sharing
+  //! same domain with section edges:
+  //! - if restriction:
+  //! Adds restriction edges as section edges and compute
+  //! face/edge interference.
+  //! - if same domain:
+  //! If line share same domain with section edges, compute
   //! parts of line IN/IN the two faces, and compute curve/point
   //! interference for VP boundaries.
   Standard_EXPORT void FillLineVPonR();
@@ -129,7 +129,7 @@ public:
                                      const TopoDS_Shape&             F1,
                                      const Standard_Integer          ShapeIndex);
 
-  //! adds <VP>'s   geometric   point (if not   stored)  and
+  //! adds <VP>'s geometric point (if not stored) and
   //! computes (curve or edge)/(point or vertex) interference.
   Standard_EXPORT void ProcessVPonR(const TopOpeBRep_VPointInter&  VP,
                                     const TopOpeBRepDS_Transition& trans1,
@@ -159,7 +159,7 @@ public:
   //! processing ProcessVPnotonR for VPI.
   Standard_EXPORT void ProcessVPInotonR(TopOpeBRep_VPointInterIterator& VPI);
 
-  //! adds <VP>'s  geometrical point to the DS (if not stored)
+  //! adds <VP>'s geometrical point to the DS (if not stored)
   //! and computes curve point interference.
   Standard_EXPORT void ProcessVPnotonR(const TopOpeBRep_VPointInter& VP);
 
@@ -184,14 +184,14 @@ public:
 
   //! search for G = geometry of Point which is identical to <DSP>
   //! among the DS Points created in the CURRENT face/face
-  //! intersection ( current Insert() call).
+  //! intersection (current Insert() call).
   Standard_EXPORT Standard_Boolean GetFFGeometry(const TopOpeBRepDS_Point& DSP,
                                                  TopOpeBRepDS_Kind&        K,
                                                  Standard_Integer&         G) const;
 
   //! search for G = geometry of Point which is identical to <VP>
   //! among the DS Points created in the CURRENT face/face
-  //! intersection ( current Insert() call).
+  //! intersection (current Insert() call).
   Standard_EXPORT Standard_Boolean GetFFGeometry(const TopOpeBRep_VPointInter& VP,
                                                  TopOpeBRepDS_Kind&            K,
                                                  Standard_Integer&             G) const;
@@ -237,8 +237,8 @@ public:
                                                        const Standard_Integer      SI12,
                                                        TopOpeBRepDS_Transition&    T);
 
-  //! Computes   transition   on line for  VP<iVP>   on edge
-  //! restriction of <SI>.  If <isINOUT>  :  returns <true> if
+  //! Computes transition on line for VP<iVP> on edge
+  //! restriction of <SI>. If <isINOUT> : returns <true> if
   //! transition computed is IN/OUT else : returns <true> if
   //! transition computed is OUT/IN.
   Standard_EXPORT static Standard_Boolean TransvpOK(const TopOpeBRep_LineInter& L,
@@ -270,8 +270,8 @@ private:
   Standard_EXPORT TopAbs_State StateVPonFace(const TopOpeBRep_VPointInter& VP) const;
 
   //! <VP> is of geometry <P>.
-  //! Looks after a   VPoint on RESTRICTION <Lrest>  with
-  //! geometric value  <P>. If true, updates states ON for <VP>.
+  //! Looks after a VPoint on RESTRICTION <Lrest> with
+  //! geometric value <P>. If true, updates states ON for <VP>.
   Standard_EXPORT Standard_Boolean PequalVPonR(const gp_Pnt&           P3D,
                                                const Standard_Integer  VPshapeindex,
                                                TopOpeBRep_VPointInter& VP,

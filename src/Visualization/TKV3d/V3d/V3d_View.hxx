@@ -547,7 +547,7 @@ public:
 
   //! Defines the Depth size of the view
   //! Front Plane will be set to Size/2.
-  //! Back  Plane will be set to -Size/2.
+  //! Back Plane will be set to -Size/2.
   //! Any Object located Above the Front Plane or
   //! behind the Back Plane will be Clipped .
   //! NOTE than the XY Size of the View is NOT modified .

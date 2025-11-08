@@ -52,10 +52,10 @@ public:
                                     const Handle(Law_Function)& L,
                                     const Standard_Boolean      Build = Standard_True);
 
-  //! Say if the input shape is a  vertex.
+  //! Say if the input shape is a vertex.
   Standard_EXPORT virtual Standard_Boolean IsVertex() const Standard_OVERRIDE;
 
-  //! Say if the Law is  Constant.
+  //! Say if the Law is Constant.
   Standard_EXPORT virtual Standard_Boolean IsConstant() const Standard_OVERRIDE;
 
   //! Give the law build on a concatenated section

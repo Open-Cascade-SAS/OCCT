@@ -34,7 +34,7 @@ class TopOpeBRep_GeomTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Make the  DS curve <C> and the pcurves <PC1,PC2> from
+  //! Make the DS curve <C> and the pcurves <PC1,PC2> from
   //! intersection line <L> lying on shapes <S1,S2>. <min,max> = <L> bounds
   Standard_EXPORT static void MakeCurves(const Standard_Real         min,
                                          const Standard_Real         max,

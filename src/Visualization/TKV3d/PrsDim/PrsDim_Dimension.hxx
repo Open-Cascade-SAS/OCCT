@@ -136,7 +136,7 @@ DEFINE_STANDARD_HANDLE(PrsDim_Dimension, AIS_InteractiveObject)
 //!
 //! Such set of parameters that consists of:
 //! - flyout size and direction,
-//! - user-defined  dimension plane,
+//! - user-defined dimension plane,
 //! - horizontal and vertical text alignment
 //! can be uniquely replaced with text position in 3d space. Therefore, there are methods to convert
 //! this set of parameters to the text position and vice versa:

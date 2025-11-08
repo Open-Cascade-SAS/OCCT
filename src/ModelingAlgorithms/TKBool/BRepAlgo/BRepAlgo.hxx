@@ -63,17 +63,17 @@ public:
   static Standard_EXPORT TopoDS_Face ConvertFace(const TopoDS_Face&  theFace,
                                                  const Standard_Real theAngleTolerance);
 
-  //! Checks if the  shape is "correct". If not, returns
+  //! Checks if the shape is "correct". If not, returns
   //! <Standard_False>, else returns <Standard_True>.
   Standard_EXPORT static Standard_Boolean IsValid(const TopoDS_Shape& S);
 
-  //! Checks if  the  Generated and Modified Faces  from
-  //! the shapes <arguments> in  the shape <result>  are
-  //! "correct". The args   may be empty, then all faces
+  //! Checks if the Generated and Modified Faces  from
+  //! the shapes <arguments> in  the shape <result> are
+  //! "correct". The args  may be empty, then all faces
   //! will be checked.
-  //! If <Closed> is True,  only  closed shape are valid.
-  //! If <GeomCtrl>  is    False the geometry  of   new
-  //! vertices and edges   are   not verified and  the
+  //! If <Closed> is True, only closed shape are valid.
+  //! If <GeomCtrl> is False the geometry of new
+  //! vertices and edges are not verified and the
   //! auto-intersection of new wires are not searched.
   Standard_EXPORT static Standard_Boolean IsValid(
     const TopTools_ListOfShape& theArgs,

@@ -40,9 +40,9 @@ class gp_Pnt2d;
 //! two 2d curves resulting from the intersection of a
 //! surface of linear extrusion( Bissec, Dz) and the 2
 //! faces.
-//! This 3 curves will  have  the same parametrization
+//! These 3 curves will have the same parametrization
 //! as the Bissectrice.
-//! This  class  is  to  be  send  to an approximation
+//! This class is to be sent to an approximation
 //! routine.
 class BRepFill_MultiLine : public AppCont_Function
 {
@@ -64,8 +64,8 @@ public:
   //! Returns true if the approximation is not needed.
   Standard_EXPORT Standard_Boolean IsParticularCase() const;
 
-  //! Returns   the continuity  between  the two  faces
-  //! seShape         from GeomAbsparated by myBis.
+  //! Returns the continuity between the two faces
+  //! seShape from GeomAbsparated by myBis.
   Standard_EXPORT GeomAbs_Shape Continuity() const;
 
   //! raises if IsParticularCase is <False>.

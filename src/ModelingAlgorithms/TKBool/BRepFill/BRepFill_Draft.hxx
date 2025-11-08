@@ -63,7 +63,7 @@ public:
   //! you have to use the Shape() methode.
   Standard_EXPORT TopoDS_Shell Shell() const;
 
-  //! Returns the  list   of shapes generated   from the
+  //! Returns the list of shapes generated from the
   //! shape <S>.
   Standard_EXPORT const TopTools_ListOfShape& Generated(const TopoDS_Shape& S);
 

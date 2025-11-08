@@ -30,7 +30,7 @@
 class TopoDS_Wire;
 class TopoDS_Shape;
 
-//! Compute a topological surface ( a  shell) using
+//! Compute a topological surface (a shell) using
 //! generating wires. The face of the shell will be
 //! ruled surfaces passing by the wires.
 //! The wires must have the same number of edges.
@@ -43,16 +43,16 @@ public:
 
   Standard_EXPORT void AddWire(const TopoDS_Wire& Wire);
 
-  //! Compute the  shell.
+  //! Compute the shell.
   Standard_EXPORT void Perform();
 
   const TopoDS_Shell& Shell() const;
 
-  //! Returns  all   the shapes created
+  //! Returns all the shapes created
   Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Generated() const;
 
-  //! Returns   the  shapes  created  from   a  subshape
-  //! <SSection>  of a  section.
+  //! Returns the shapes created from a subshape
+  //! <SSection> of a section.
   Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Shape& SSection) const;
 
   //! Returns a modified shape in the constructed shell,

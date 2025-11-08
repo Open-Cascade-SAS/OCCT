@@ -36,7 +36,7 @@ class TopoDS_Edge;
 class TopoDS_Vertex;
 
 //! Constructs an evolved volume from a spine (wire or face)
-//! and  a profile ( wire).
+//! and a profile ( wire).
 class BRepFill_Evolved
 {
 public:
@@ -45,8 +45,8 @@ public:
   Standard_EXPORT BRepFill_Evolved();
 
   //! Creates an evolved shape by sweeping the <Profile>
-  //! along the  <Spine>.  <AxeProf> is  used to set the
-  //! position of <Profile> along  <Spine> as  follows:
+  //! along the <Spine>. <AxeProf> is used to set the
+  //! position of <Profile> along <Spine> as follows:
   //! <AxeProf> slides on the profile with direction
   //! colinear to the normal to <Spine>, and its
   //! <XDirection> mixed with the tangent to <Spine>.
@@ -56,7 +56,7 @@ public:
                                    const GeomAbs_JoinType Join  = GeomAbs_Arc,
                                    const Standard_Boolean Solid = Standard_False);
 
-  //! Creates an  evolved shape  by sweeping the <Profile>
+  //! Creates an  evolved shape by sweeping the <Profile>
   //! along the <Spine>
   Standard_EXPORT BRepFill_Evolved(const TopoDS_Face&     Spine,
                                    const TopoDS_Wire&     Profile,
@@ -64,7 +64,7 @@ public:
                                    const GeomAbs_JoinType Join  = GeomAbs_Arc,
                                    const Standard_Boolean Solid = Standard_False);
 
-  //! Performs an  evolved shape  by sweeping the <Profile>
+  //! Performs an evolved shape by sweeping the <Profile>
   //! along the <Spine>
   Standard_EXPORT void Perform(const TopoDS_Wire&     Spine,
                                const TopoDS_Wire&     Profile,
@@ -72,7 +72,7 @@ public:
                                const GeomAbs_JoinType Join  = GeomAbs_Arc,
                                const Standard_Boolean Solid = Standard_False);
 
-  //! Performs an  evolved shape  by sweeping the <Profile>
+  //! Performs an evolved shape by sweeping the <Profile>
   //! along the <Spine>
   Standard_EXPORT void Perform(const TopoDS_Face&     Spine,
                                const TopoDS_Wire&     Profile,
@@ -85,8 +85,8 @@ public:
   //! returns the generated shape.
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  //! Returns   the  shapes  created  from   a  subshape
-  //! <SpineShape>  of     the  spine   and   a subshape
+  //! Returns the shapes created from a subshape
+  //! <SpineShape> of the spine and a subshape
   //! <ProfShape> on the profile.
   Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Shape& SpineShape,
                                                               const TopoDS_Shape& ProfShape) const;
@@ -96,7 +96,7 @@ public:
   //! Return the face Top if <Solid> is True in the constructor.
   Standard_EXPORT const TopoDS_Shape& Top() const;
 
-  //! Return the face Bottom  if <Solid> is True in the constructor.
+  //! Return the face Bottom if <Solid> is True in the constructor.
   Standard_EXPORT const TopoDS_Shape& Bottom() const;
 
 protected:
@@ -165,7 +165,7 @@ private:
   //! if the Shape is not planar.
   Standard_EXPORT TopLoc_Location FindLocation(const TopoDS_Face& Face) const;
 
-  //! Apply the Location <LS> to <mySpine> and  <LP> to
+  //! Apply the Location <LS> to <mySpine> and <LP> to
   //! <myProfil>
   //! in order to set the Shapes in the work space.
   Standard_EXPORT void TransformInitWork(const TopLoc_Location& LS, const TopLoc_Location& LP);

@@ -31,7 +31,7 @@ public:
   //! -   the color attribute aColor
   //! -   the type of line aType
   //! -   the width value aWidth
-  //! -   aNumber, the number of isoparameters to be   displayed.
+  //! -   aNumber, the number of isoparameters to be displayed.
   Prs3d_IsoAspect(const Quantity_Color&   theColor,
                   const Aspect_TypeOfLine theType,
                   const Standard_Real     theWidth,
