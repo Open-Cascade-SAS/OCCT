@@ -30,6 +30,8 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 
+namespace
+{
 static constexpr Standard_Real PIPI = M_PI + M_PI;
 // Threshold for angle normalization to avoid discontinuity near zero
 static constexpr Standard_Real NEGATIVE_RESOLUTION = -1.e-16;
@@ -43,6 +45,7 @@ static inline void normalizeAngle(Standard_Real& theAngle)
   else if (theAngle < 0.)
     theAngle = 0.;
 }
+} // namespace
 
 gp_Pnt ElSLib::PlaneValue(const Standard_Real U, const Standard_Real V, const gp_Ax3& Pos)
 {
