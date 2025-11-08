@@ -168,6 +168,33 @@ public:
   //! Created for speed and convenience.
   static constexpr Standard_Real SquareConfusion() { return Confusion() * Confusion(); }
 
+  //! Returns a precision value at machine epsilon level, used for
+  //! low-level numerical computations and floating-point comparisons.
+  //! Unlike the geometric tolerances (Confusion, Intersection, Approximation)
+  //! which are application-level values for modeling operations, this value
+  //! represents the fundamental limit of floating-point arithmetic precision.
+  //!
+  //! Typical use cases include:
+  //! -   Checking if squared magnitudes are effectively zero (e.g., vector.SquareMagnitude() <
+  //! Computational())
+  //! -   Division-by-zero protection in numerical algorithms
+  //! -   Convergence criteria in iterative solvers at machine precision level
+  //! -   Detecting numerical degeneracies in low-level computations
+  //!
+  //! The computational tolerance is equal to DBL_EPSILON (approximately 2.22e-16),
+  //! which is the smallest positive value such that 1.0 + ε ≠ 1.0 in double
+  //! precision floating-point arithmetic. This is the fundamental machine epsilon
+  //! for Standard_Real (double) type.
+  //!
+  //! Note: This value should NOT be used for geometric comparisons.
+  //! Use Precision::Confusion() for comparing geometric distances,
+  //! Precision::Angular() for angles, etc.
+  static constexpr Standard_Real Computational() { return RealEpsilon(); }
+
+  //! Returns square of Computational.
+  //! Created for speed and convenience when comparing squared values.
+  static constexpr Standard_Real SquareComputational() { return Computational() * Computational(); }
+
   //! Returns the precision value in real space, frequently
   //! used by intersection algorithms to decide that a solution is reached.
   //! This function provides an acceptable level of precision
