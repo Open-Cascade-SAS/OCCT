@@ -36,15 +36,18 @@ static constexpr Standard_Real PIPI = M_PI + M_PI;
 // Threshold for angle normalization to avoid discontinuity near zero
 static constexpr Standard_Real NEGATIVE_RESOLUTION = -1.e-16;
 
-// Normalize angle to [0, 2*PI) range, with special handling
+// Normalize angle to [0, 2*PI] range, with special handling
 // for values very close to zero to avoid discontinuity.
+// Preserves values at exactly 2*PI for proper seam handling.
 static inline void normalizeAngle(Standard_Real& theAngle)
 {
   while (theAngle < NEGATIVE_RESOLUTION)
   {
     theAngle += PIPI;
   }
-  while (theAngle >= PIPI)
+  // Only normalize angles strictly greater than 2*PI (with small tolerance)
+  // to preserve the closing seam value of exactly 2*PI
+  while (theAngle > PIPI * (1.0 + Precision::Confusion()))
   {
     theAngle -= PIPI;
   }
