@@ -58,7 +58,7 @@ static inline void normalizeAngle(Standard_Real& theAngle)
   else if (theAngle < 0.)
     theAngle = 0.;
 }
-}
+} // namespace
 
 //=======================================================================
 // function : InPeriod
