@@ -182,7 +182,7 @@ public:
   //! -   Detecting numerical degeneracies in low-level computations
   //!
   //! The computational tolerance is equal to DBL_EPSILON (approximately 2.22e-16),
-  //! which is the smallest positive value such that 1.0 + ε ≠ 1.0 in double
+  //! which is the smallest positive value such that 1.0 + eps != 1.0 in double
   //! precision floating-point arithmetic. This is the fundamental machine epsilon
   //! for Standard_Real (double) type.
   //!
