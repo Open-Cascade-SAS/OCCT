@@ -98,7 +98,7 @@ public:
   // szv:{ return mySignType; }
 
   //! Returns the WorkLibrary attached to the Norm. Remark that it
-  //! has to be in phase with the Protocol  (read from field)
+  //! has to be in phase with the Protocol (read from field)
   const Handle(IFSelect_WorkLibrary)& WorkLibrary() const { return myAdaptorLibrary; }
 
   //! Creates a new empty Model ready to receive data of the Norm
@@ -220,7 +220,7 @@ public:
 
 protected:
   //! Initializing with names
-  //! <theLongName>  is for the complete, official, long  name
+  //! <theLongName>  is for the complete, official, long name
   //! <theShortName> is for the short name used for resources
   Standard_EXPORT XSControl_Controller(const Standard_CString theLongName,
                                        const Standard_CString theShortName);

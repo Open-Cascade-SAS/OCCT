@@ -151,7 +151,7 @@ public:
   //! For an enumeration, precises the starting value (default 0)
   //! and the match condition : if True (D), the string value must
   //! match the definition, else it may take another value : in that
-  //! case, the Integer Value will be  Start - 1.
+  //! case, the Integer Value will be Start - 1.
   //! (empty value remains allowed)
   Standard_EXPORT void StartEnum(const Standard_Integer start = 0,
                                  const Standard_Boolean match = Standard_True);

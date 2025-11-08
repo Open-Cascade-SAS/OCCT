@@ -46,7 +46,7 @@ public:
 
   //! The DlOpen method provides an interface to the
   //! dynamic library loader to allow shared libraries
-  //! to be loaded and called at runtime.  The DlOpen
+  //! to be loaded and called at runtime. The DlOpen
   //! function attempts to load Filename, in the address
   //! space of the process, resolving symbols as appropriate.
   //! Any libraries that Filename depends upon are also loaded.

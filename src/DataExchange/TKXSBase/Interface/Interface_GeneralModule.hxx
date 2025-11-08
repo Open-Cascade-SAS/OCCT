@@ -37,7 +37,7 @@ DEFINE_STANDARD_HANDLE(Interface_GeneralModule, Standard_Transient)
 //! by an Interface) : Shared List, Check, Copy, Delete, Category
 //!
 //! To optimise processing (e.g. firstly bind an Entity to a Module
-//! then calls  Module), each recognized Entity Type corresponds
+//! then calls Module), each recognized Entity Type corresponds
 //! to a Case Number, determined by the Protocol each class of
 //! GeneralModule belongs to.
 class Interface_GeneralModule : public Standard_Transient

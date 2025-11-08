@@ -118,9 +118,9 @@ public:
 
   //! Returns the Number of an Entity in the Model if it contains it.
   //! Else returns 0. For a ReportEntity, looks at Concerned Entity.
-  //! Returns the Directory entry   Number of  an Entity in
-  //! the  Model if it contains it.   Else returns  0.  For a
-  //! ReportEntity, looks at Concerned Entity.
+  //! Returns the Directory entry Number of an Entity in
+  //! the Model if it contains it. Else returns 0.
+  //! For a ReportEntity, looks at Concerned Entity.
   Standard_EXPORT Standard_Integer Number(const Handle(Standard_Transient)& anentity) const;
 
   //! Returns an Entity identified by its number in the Model

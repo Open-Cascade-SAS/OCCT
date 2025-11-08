@@ -26,10 +26,10 @@ class Adaptor3d_IsoCurve;
 
 DEFINE_STANDARD_HANDLE(DrawTrSurf_Drawable, Draw_Drawable3D)
 
-//! this  class adds   to   the Drawable3D methods  to
+//! this class adds to the Drawable3D methods to
 //! display Curves and Curves on Surface.
 //!
-//! The discretisation,  number  of points on a Curve,
+//! The discretisation, number of points on a Curve,
 //! is stored in this class.
 class DrawTrSurf_Drawable : public Draw_Drawable3D
 {
@@ -41,7 +41,7 @@ public:
   //! Draw a polygon of the curve on the Display
   Standard_EXPORT void DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& D) const;
 
-  //! Load C  with the specified iso  and Draw a polygon
+  //! Load C with the specified iso  and Draw a polygon
   //! of the curve on the Display
   Standard_EXPORT void DrawIsoCurveOn(Adaptor3d_IsoCurve&   C,
                                       const GeomAbs_IsoType T,

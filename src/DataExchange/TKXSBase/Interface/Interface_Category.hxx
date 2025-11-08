@@ -42,10 +42,10 @@ class Interface_InterfaceModel;
 //! Drawing (Drawing, Views, Annotations, Pictures, Sketches ...)
 //! Structure (Component & Part, Groups & Patterns ...)
 //! Description (Meta-Data : Relations, Properties, Product ...)
-//! Auxiliary   (those which do not enter in the above list)
+//! Auxiliary (those which do not enter in the above list)
 //! and some dedicated categories
-//! FEA , Kinematics , Piping , etc...
-//! plus Professional  for other dedicated non-classed categories
+//! FEA, Kinematics, Piping, etc...
+//! plus Professional for other dedicated non-classed categories
 //!
 //! In addition, this class provides a way to compute then quickly
 //! query category numbers for an entire model.

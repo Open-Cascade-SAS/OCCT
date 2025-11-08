@@ -21,7 +21,7 @@
 #include <Draw_Interpretor.hxx>
 #include <TopoDS_Shape.hxx>
 
-//! Used to display BRep objects  using the DrawTrSurf
+//! Used to display BRep objects using the DrawTrSurf
 //! package.
 //! The DrawableShape is a Display object build from a
 //! Shape.

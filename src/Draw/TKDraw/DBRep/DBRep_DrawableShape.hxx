@@ -32,7 +32,7 @@ class Draw_Display;
 class Poly_Triangulation;
 class gp_Trsf;
 
-//! Drawable structure to display a  shape. Contains a
+//! Drawable structure to display a shape. Contains a
 //! list of edges and a list of faces.
 class DBRep_DrawableShape : public Draw_Drawable3D
 {

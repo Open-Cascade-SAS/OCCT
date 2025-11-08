@@ -150,7 +150,7 @@ public:
   //! commands relatives to Naming
   Standard_EXPORT static void SelectionCommands(Draw_Interpretor& DI);
 
-  //! commands for  testing Naming
+  //! commands for testing Naming
   Standard_EXPORT static void ModelingCommands(Draw_Interpretor& DI);
 };
 

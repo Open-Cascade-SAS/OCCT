@@ -143,7 +143,7 @@ public:
                                 const Standard_CString name = "");
 
   //! Adds the CPU time between lastCPU and now
-  //! if <curCPU> is given, the CPU amount is  curCPU-lastCPU
+  //! if <curCPU> is given, the CPU amount is curCPU-lastCPU
   //! else it is currently measured CPU - lastCPU
   //! lastCPU has been read by call to GetCPU
   //! See GetCPU to get amount, and LargeCPU to test large amount

@@ -34,15 +34,15 @@ class DDF
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Search in draw  directory the framewok  identified
+  //! Search in draw directory the framewok identified
   //! by its name <Name>. returns True if found. In that
   //! case <DF> is set.
   Standard_EXPORT static Standard_Boolean GetDF(Standard_CString&      Name,
                                                 Handle(TDF_Data)&      DF,
                                                 const Standard_Boolean Complain = Standard_True);
 
-  //! Search in <DF>  the label identified by its  entry
-  //! <Entry>.  returns  <True> if  found. In  that case
+  //! Search in <DF> the label identified by its entry
+  //! <Entry>. returns <True> if found. In that case
   //! <Label> is set.
   Standard_EXPORT static Standard_Boolean FindLabel(
     const Handle(TDF_Data)& DF,
@@ -50,15 +50,15 @@ public:
     TDF_Label&              Label,
     const Standard_Boolean  Complain = Standard_True);
 
-  //! Search in <DF> the  label identified by its entry
-  //! <Entry>.   if label doesn't  exist, create  and add
+  //! Search in <DF> the label identified by its entry
+  //! <Entry>. if label doesn't exist, create and add
   //! the Label in <DF>. In that case return True.
   Standard_EXPORT static Standard_Boolean AddLabel(const Handle(TDF_Data)& DF,
                                                    const Standard_CString  Entry,
                                                    TDF_Label&              Label);
 
-  //! Search   in <DF> the  attribute  identified by its
-  //! <ID> and its <entry>.  returns <True> if found. In
+  //! Search in <DF> the attribute identified by its
+  //! <ID> and its <entry>. returns <True> if found. In
   //! that case A is set.
   Standard_EXPORT static Standard_Boolean Find(const Handle(TDF_Data)& DF,
                                                const Standard_CString  Entry,

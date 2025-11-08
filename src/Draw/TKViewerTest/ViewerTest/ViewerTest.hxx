@@ -63,7 +63,7 @@ class ViewerTest
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Loads all Draw commands of  V2d & V3d. Used for plugin.
+  //! Loads all Draw commands of V2d & V3d. Used for plugin.
   Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
 
   //! Creates view with default or custom name and adds this name in map to manage multiple views.
@@ -136,13 +136,13 @@ public:
 
   //! waits until a shape of type <aType> is picked in the AIS Viewer and returns it.
   //! if <aType> == TopAbs_Shape, any shape can be picked...
-  //! MaxPick  is the Max number before exiting, if no pick is successful
+  //! MaxPick is the Max number before exiting, if no pick is successful
   Standard_EXPORT static TopoDS_Shape PickShape(const TopAbs_ShapeEnum aType,
                                                 const Standard_Integer MaxPick = 5);
 
   //! wait until the array is filled with picked shapes.
   //! returns True if the array is filled.
-  //! exit if number of unsuccessful picks =  <MaxPick>
+  //! exit if number of unsuccessful picks = <MaxPick>
   Standard_EXPORT static Standard_Boolean PickShapes(const TopAbs_ShapeEnum           aType,
                                                      Handle(TopTools_HArray1OfShape)& thepicked,
                                                      const Standard_Integer           MaxPick = 5);

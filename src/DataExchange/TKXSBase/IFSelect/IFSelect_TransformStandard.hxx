@@ -70,7 +70,7 @@ public:
   Standard_EXPORT IFSelect_TransformStandard();
 
   //! Sets the Copy option to a new value :
-  //! - True for StandardCopy  - False for OnTheSpot
+  //! True for StandardCopy. False for OnTheSpot
   Standard_EXPORT void SetCopyOption(const Standard_Boolean option);
 
   //! Returns the Copy option

@@ -26,7 +26,7 @@ class TFunction_Logbook;
 class DNaming_PointDriver;
 DEFINE_STANDARD_HANDLE(DNaming_PointDriver, TFunction_Driver)
 
-//! Driver for PointXYZ  and  RelativePoint
+//! Driver for PointXYZ and RelativePoint
 class DNaming_PointDriver : public TFunction_Driver
 {
 

@@ -23,7 +23,7 @@
 
 #include <Draw_Interpretor.hxx>
 
-//! this  package  provides  commands for  curves  and
+//! this package provides commands for curves and
 //! surface.
 class GeometryTest
 {
@@ -59,7 +59,7 @@ public:
   //! continuity between curves or surfaces
   Standard_EXPORT static void ContinuityCommands(Draw_Interpretor& I);
 
-  //! defines     command  to    test  the    polyhedral
+  //! defines command to test the polyhedral
   //! triangulations and the polygons from the Poly package.
   Standard_EXPORT static void PolyCommands(Draw_Interpretor& I);
 

@@ -51,11 +51,11 @@ public:
 
   Standard_EXPORT TDF_Label Label() const;
 
-  //! Returns   a   string composed with  the   TreeNode  of
+  //! Returns a string composed with the TreeNode of
   //! <myLabel>.
   Standard_EXPORT TCollection_AsciiString OpenRoot() const;
 
-  //! Returns a string composed   with the sub-TreeNodes of
+  //! Returns a string composed with the sub-TreeNodes of
   //! <L>
   Standard_EXPORT TCollection_AsciiString OpenNode(const TDF_Label& L) const;
 

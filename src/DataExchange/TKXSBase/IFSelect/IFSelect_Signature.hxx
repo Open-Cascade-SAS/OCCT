@@ -64,7 +64,7 @@ public:
 
   //! Returns the predefined list of possible cases, filled by AddCase
   //! Null Handle if no predefined list (hence, to be counted)
-  //! Useful to filter on  really possible vase, for instance, or
+  //! Useful to filter on really possible vase, for instance, or
   //! for a help
   Standard_EXPORT Handle(TColStd_HSequenceOfAsciiString) CaseList() const;
 

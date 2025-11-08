@@ -30,8 +30,8 @@
 //! This function is portable and it measures ELAPSED
 //! time and CPU time in seconds and microseconds.
 //! Example: OSD_Timer aTimer;
-//! aTimer.Start();   // Start  the timers (t1).
-//! .....            // Do something.
+//! aTimer.Start();   // Start the timers (t1).
+//! .....             // Do something.
 //! aTimer.Stop();    // Stop the timers (t2).
 //! aTimer.Show();    // Give the elapsed time between t1 and t2.
 //! // Give also the process CPU time between
@@ -71,12 +71,12 @@ public:
   //! stopped.
   Standard_EXPORT virtual void Show() const Standard_OVERRIDE;
 
-  //! Shows both the elapsed time and CPU  time on the
+  //! Shows both the elapsed time and CPU time on the
   //! output stream <OS>.
   Standard_EXPORT virtual void Show(Standard_OStream& os) const Standard_OVERRIDE;
 
   //! returns both the elapsed time(seconds,minutes,hours)
-  //! and CPU  time.
+  //! and CPU time.
   Standard_EXPORT void Show(Standard_Real&    theSeconds,
                             Standard_Integer& theMinutes,
                             Standard_Integer& theHours,

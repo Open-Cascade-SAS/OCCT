@@ -38,8 +38,8 @@ public:
   //! Defines the commands to build edges and wires.
   Standard_EXPORT static void CurveCommands(Draw_Interpretor& DI);
 
-  //! Defines the  commands  to perform add  fillets on
-  //! wires and  edges.
+  //! Defines the commands to perform add fillets on
+  //! wires and edges.
   Standard_EXPORT static void Fillet2DCommands(Draw_Interpretor& DI);
 
   //! Defines the commands to build faces and shells.
@@ -54,15 +54,15 @@ public:
   //! Defines the commands to sweep shapes.
   Standard_EXPORT static void SweepCommands(Draw_Interpretor& DI);
 
-  //! Defines  the    commands   to perform  topological
+  //! Defines the commands to perform topological
   //! operations.
   Standard_EXPORT static void TopologyCommands(Draw_Interpretor& DI);
 
-  //! Defines  the commands  to perform  add  fillets on
+  //! Defines the commands to perform add fillets on
   //! shells.
   Standard_EXPORT static void FilletCommands(Draw_Interpretor& DI);
 
-  //! Defines  the commands  to perform  add chamfers on
+  //! Defines the commands to perform add chamfers on
   //! shells.
   Standard_EXPORT static void ChamferCommands(Draw_Interpretor& DI);
 
@@ -89,7 +89,7 @@ public:
   //! Defines the checkshape command.
   Standard_EXPORT static void CheckCommands(Draw_Interpretor& DI);
 
-  //! Defines the placement  command.
+  //! Defines the placement command.
   Standard_EXPORT static void PlacementCommands(Draw_Interpretor& DI);
 
   //! Defines the commands to project a wire on a shape.

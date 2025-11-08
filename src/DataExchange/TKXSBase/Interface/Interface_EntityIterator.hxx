@@ -50,7 +50,7 @@ public:
   //! same as AddItem (kept for compatibility)
   Standard_EXPORT void GetOneItem(const Handle(Standard_Transient)& anentity);
 
-  //! Selects entities with are Kind of a given type,  keep only
+  //! Selects entities with are Kind of a given type, keep only
   //! them (is keep is True) or reject only them (if keep is False)
   Standard_EXPORT void SelectType(const Handle(Standard_Type)& atype, const Standard_Boolean keep);
 

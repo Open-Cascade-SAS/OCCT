@@ -120,7 +120,7 @@ public:
   //! Performs a Read Operation from a file to a WorkSession
   //! i.e. calls ReadFile, then ReadSession and ReadEnd
   //! Returned Value is : 0 for OK, -1 File could not be opened,
-  //! >0 Error during Read  (see WriteSession)
+  //! >0 Error during Read (see WriteSession)
   //! IsDone can be called too (will return True for OK)
   Standard_EXPORT Standard_Integer Read(const Standard_CString filename);
 

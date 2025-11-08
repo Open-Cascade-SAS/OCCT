@@ -23,7 +23,7 @@
 #include <Standard_Handle.hxx>
 
 //! FindHasher defines HashCode for Finder, which is : ask a
-//! Finder its HashCode !  Because this is the Finder itself which
+//! Finder its HashCode! Because this is the Finder itself which
 //! brings the HashCode for its Key
 //!
 //! This class complies to the template given in TCollection by

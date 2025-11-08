@@ -122,7 +122,8 @@ public:
 
   //! Changes the mode of working with the selection :
   //! -1 just clears optimisation data and nothing else
-  //! 0 clears it   1 inhibits it for computing (but no clearing)
+  //! 0 clears it
+  //! 1 inhibits it for computing (but no clearing)
   //! 2 sets it active for computing
   //! Default at creation is 0, after SetSelection (not null) is 2
   Standard_EXPORT void SetSelMode(const Standard_Integer selmode);
