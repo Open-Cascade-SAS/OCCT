@@ -700,7 +700,7 @@ Standard_Boolean StepData_StepReaderData::ReadSubList(const Standard_Integer   n
 
   Standard_CString errmess = "Parameter n0.%d (%s) not a LIST";
   Sprintf(txtmes, errmess, nump, mess);
-  if (acceptvoid && isvoid)
+  if constexpr (acceptvoid && isvoid)
     ach->AddWarning(txtmes, errmess);
   else
   {
@@ -1471,7 +1471,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer     
     }
     else
     {
-      if (acceptvoid && FP.ParamType() == Interface_ParamVoid)
+      if constexpr (acceptvoid && FP.ParamType() == Interface_ParamVoid)
         warn = Standard_True;
       errmess = "Parameter n0.%d (%s) not an Entity";
     }
@@ -1711,7 +1711,7 @@ Standard_Boolean StepData_StepReaderData::ReadString(const Standard_Integer     
     }
     else
     {
-      if (acceptvoid && FP.ParamType() == Interface_ParamVoid)
+      if constexpr (acceptvoid && FP.ParamType() == Interface_ParamVoid)
         warn = Standard_True;
       errmess = "Parameter n0.%d (%s) not a quoted String";
     }
