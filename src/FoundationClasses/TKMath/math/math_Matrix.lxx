@@ -19,76 +19,90 @@
 #include <Standard_DimensionError.hxx>
 #include <Standard_DivideByZero.hxx>
 
-//=======================================================================
+#include <utility>
+
+//==================================================================================================
+
 inline Standard_OStream& operator<<(Standard_OStream& o, const math_Matrix& mat)
 {
   mat.Dump(o);
   return o;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix operator*(const Standard_Real Left, const math_Matrix& Right)
 {
   return Right.Multiplied(Left);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline const Standard_Real& math_Matrix::Value(const Standard_Integer Row,
                                                const Standard_Integer Col) const
 {
   return Array.Value(Row, Col);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline Standard_Real& math_Matrix::Value(const Standard_Integer Row, const Standard_Integer Col)
 {
   return Array.Value(Row, Col);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline Standard_Integer math_Matrix::RowNumber() const noexcept
 {
   return Array.NbRows();
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline Standard_Integer math_Matrix::ColNumber() const noexcept
 {
   return Array.NbColumns();
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline Standard_Integer math_Matrix::LowerRow() const noexcept
 {
   return Array.LowerRow();
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline Standard_Integer math_Matrix::UpperRow() const noexcept
 {
   return Array.UpperRow();
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline Standard_Integer math_Matrix::LowerCol() const noexcept
 {
   return Array.LowerCol();
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline Standard_Integer math_Matrix::UpperCol() const noexcept
 {
   return Array.UpperCol();
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::SetLower(const Standard_Integer LowerRow, const Standard_Integer LowerCol) noexcept
 {
   SetLowerRow(LowerRow);
   SetLowerCol(LowerCol);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix::math_Matrix(const Standard_Integer LowerRow,
                                  const Standard_Integer UpperRow,
                                  const Standard_Integer LowerCol,
@@ -97,7 +111,8 @@ inline math_Matrix::math_Matrix(const Standard_Integer LowerRow,
 {
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix::math_Matrix(const Standard_Integer LowerRow,
                                  const Standard_Integer UpperRow,
                                  const Standard_Integer LowerCol,
@@ -108,7 +123,8 @@ inline math_Matrix::math_Matrix(const Standard_Integer LowerRow,
   Array.Init(InitialValue);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix::math_Matrix(const Standard_Address Tab,
                                  const Standard_Integer LowerRow,
                                  const Standard_Integer UpperRow,
@@ -118,31 +134,43 @@ inline math_Matrix::math_Matrix(const Standard_Address Tab,
 {
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix::math_Matrix(const math_Matrix& Other)
     : Array(Other.Array)
 {
 }
 
-//=======================================================================
+//==================================================================================================
+
+inline math_Matrix::math_Matrix(math_Matrix&& Other) noexcept
+    : Array(std::move(Other.Array))
+{
+}
+
+//==================================================================================================
+
 inline void math_Matrix::Init(const Standard_Real InitialValue) noexcept
 {
   Array.Init(InitialValue);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::SetLowerRow(const Standard_Integer LowerRow) noexcept
 {
   Array.SetLowerRow(LowerRow);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::SetLowerCol(const Standard_Integer LowerCol) noexcept
 {
   Array.SetLowerCol(LowerCol);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Multiply(const Standard_Real Right) noexcept
 {
   const Standard_Integer aLowerRow = Array.LowerRow();
@@ -159,7 +187,8 @@ inline void math_Matrix::Multiply(const Standard_Real Right) noexcept
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix math_Matrix::Multiplied(const Standard_Real Right) const noexcept
 {
   const Standard_Integer aLowerRow = Array.LowerRow();
@@ -178,7 +207,8 @@ inline math_Matrix math_Matrix::Multiplied(const Standard_Real Right) const noex
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix math_Matrix::TMultiplied(const Standard_Real Right) const noexcept
 {
   const Standard_Integer aLowerRow = Array.LowerRow();
@@ -197,7 +227,8 @@ inline math_Matrix math_Matrix::TMultiplied(const Standard_Real Right) const noe
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Divide(const Standard_Real Right)
 {
   Standard_DivideByZero_Raise_if(Abs(Right) <= RealEpsilon(),
@@ -217,7 +248,8 @@ inline void math_Matrix::Divide(const Standard_Real Right)
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix math_Matrix::Divided(const Standard_Real Right) const
 {
   Standard_DivideByZero_Raise_if(Abs(Right) <= RealEpsilon(),
@@ -226,7 +258,8 @@ inline math_Matrix math_Matrix::Divided(const Standard_Real Right) const
   return temp;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Add(const math_Matrix& Right)
 {
   Standard_DimensionError_Raise_if((RowNumber() != Right.RowNumber())
@@ -251,7 +284,8 @@ inline void math_Matrix::Add(const math_Matrix& Right)
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix math_Matrix::Added(const math_Matrix& Right) const
 {
   Standard_DimensionError_Raise_if((RowNumber() != Right.RowNumber())
@@ -279,7 +313,8 @@ inline math_Matrix math_Matrix::Added(const math_Matrix& Right) const
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Add(const math_Matrix& Left, const math_Matrix& Right)
 {
   Standard_DimensionError_Raise_if(
@@ -309,7 +344,8 @@ inline void math_Matrix::Add(const math_Matrix& Left, const math_Matrix& Right)
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Subtract(const math_Matrix& Right)
 {
   Standard_DimensionError_Raise_if(
@@ -334,7 +370,8 @@ inline void math_Matrix::Subtract(const math_Matrix& Right)
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix math_Matrix::Subtracted(const math_Matrix& Right) const
 {
   Standard_DimensionError_Raise_if(
@@ -362,7 +399,8 @@ inline math_Matrix math_Matrix::Subtracted(const math_Matrix& Right) const
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Subtract(const math_Matrix& Left, const math_Matrix& Right)
 {
   Standard_DimensionError_Raise_if(
@@ -392,8 +430,9 @@ inline void math_Matrix::Subtract(const math_Matrix& Left, const math_Matrix& Ri
   }
 }
 
-//=======================================================================
-inline math_Matrix math_Matrix::Opposite()
+//==================================================================================================
+
+inline math_Matrix math_Matrix::Opposite() const
 {
   const Standard_Integer aLowerRow = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
@@ -412,7 +451,8 @@ inline math_Matrix math_Matrix::Opposite()
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Set(const Standard_Integer I1,
                               const Standard_Integer I2,
                               const Standard_Integer J1,
@@ -436,7 +476,8 @@ inline void math_Matrix::Set(const Standard_Integer I1,
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::SetRow(const Standard_Integer Row, const math_Vector& V)
 {
   Standard_DimensionError_Raise_if(ColNumber() != V.Length(),
@@ -453,7 +494,8 @@ inline void math_Matrix::SetRow(const Standard_Integer Row, const math_Vector& V
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::SetCol(const Standard_Integer Col, const math_Vector& V)
 {
   Standard_DimensionError_Raise_if(RowNumber() != V.Length(),
@@ -470,7 +512,8 @@ inline void math_Matrix::SetCol(const Standard_Integer Col, const math_Vector& V
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::SetDiag(const Standard_Real Value)
 {
   math_NotSquare_Raise_if(RowNumber() != ColNumber(),
@@ -485,7 +528,8 @@ inline void math_Matrix::SetDiag(const Standard_Real Value)
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Vector math_Matrix::Row(const Standard_Integer Row) const
 {
   const Standard_Integer aLowerCol = Array.LowerCol();
@@ -500,7 +544,8 @@ inline math_Vector math_Matrix::Row(const Standard_Integer Row) const
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Vector math_Matrix::Col(const Standard_Integer Col) const
 {
   const Standard_Integer aLowerRow = Array.LowerRow();
@@ -515,7 +560,8 @@ inline math_Vector math_Matrix::Col(const Standard_Integer Col) const
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::SwapRow(const Standard_Integer Row1, const Standard_Integer Row2)
 {
   math_Vector V1 = Row(Row1);
@@ -524,7 +570,8 @@ inline void math_Matrix::SwapRow(const Standard_Integer Row1, const Standard_Int
   SetRow(Row2, V1);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::SwapCol(const Standard_Integer Col1, const Standard_Integer Col2)
 {
   math_Vector V1 = Col(Col1);
@@ -533,7 +580,8 @@ inline void math_Matrix::SwapCol(const Standard_Integer Col1, const Standard_Int
   SetCol(Col2, V1);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix math_Matrix::Transposed() const
 {
   const Standard_Integer aLowerRow = Array.LowerRow();
@@ -553,7 +601,8 @@ inline math_Matrix math_Matrix::Transposed() const
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Multiply(const math_Vector& Left, const math_Vector& Right)
 {
   Standard_DimensionError_Raise_if(
@@ -574,7 +623,8 @@ inline void math_Matrix::Multiply(const math_Vector& Left, const math_Vector& Ri
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Multiply(const math_Matrix& Left, const math_Matrix& Right)
 {
   Standard_DimensionError_Raise_if(
@@ -610,7 +660,8 @@ inline void math_Matrix::Multiply(const math_Matrix& Left, const math_Matrix& Ri
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Multiply(const math_Matrix& Right)
 {
   Standard_DimensionError_Raise_if(
@@ -647,7 +698,8 @@ inline void math_Matrix::Multiply(const math_Matrix& Right)
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix math_Matrix::Multiplied(const math_Matrix& Right) const
 {
   Standard_DimensionError_Raise_if(
@@ -679,7 +731,8 @@ inline math_Matrix math_Matrix::Multiplied(const math_Matrix& Right) const
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Vector math_Matrix::Multiplied(const math_VectorBase<>& Right) const
 {
   Standard_DimensionError_Raise_if(
@@ -706,13 +759,15 @@ inline math_Vector math_Matrix::Multiplied(const math_VectorBase<>& Right) const
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_VectorBase<> math_Matrix::operator*(const math_VectorBase<>& Right) const
 {
   return Multiplied(Right);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix math_Matrix::TMultiply(const math_Matrix& Right) const
 {
   Standard_DimensionError_Raise_if(
@@ -744,7 +799,8 @@ inline math_Matrix math_Matrix::TMultiply(const math_Matrix& Right) const
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::TMultiply(const math_Matrix& TLeft, const math_Matrix& Right)
 {
   Standard_DimensionError_Raise_if(
@@ -780,7 +836,8 @@ inline void math_Matrix::TMultiply(const math_Matrix& TLeft, const math_Matrix& 
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix& math_Matrix::Initialized(const math_Matrix& Other)
 {
   Standard_DimensionError_Raise_if(
@@ -791,7 +848,19 @@ inline math_Matrix& math_Matrix::Initialized(const math_Matrix& Other)
   return *this;
 }
 
-//=======================================================================
+//==================================================================================================
+
+inline math_Matrix& math_Matrix::operator=(math_Matrix&& Other) noexcept
+{
+  if (this != &Other)
+  {
+    Array = std::move(Other.Array);
+  }
+  return *this;
+}
+
+//==================================================================================================
+
 inline Standard_Real math_Matrix::Determinant() const
 {
   math_Gauss Sol(*this);
@@ -806,7 +875,8 @@ inline Standard_Real math_Matrix::Determinant() const
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Transpose()
 {
   math_NotSquare_Raise_if(RowNumber() != ColNumber(),
@@ -834,7 +904,8 @@ inline void math_Matrix::Transpose()
   SetLowerCol(Row);
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Invert()
 {
   math_NotSquare_Raise_if(RowNumber() != ColNumber(),
@@ -851,7 +922,8 @@ inline void math_Matrix::Invert()
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline math_Matrix math_Matrix::Inverse() const
 {
   math_Matrix Result = *this;
@@ -859,7 +931,8 @@ inline math_Matrix math_Matrix::Inverse() const
   return Result;
 }
 
-//=======================================================================
+//==================================================================================================
+
 inline void math_Matrix::Dump(Standard_OStream& o) const
 {
   const Standard_Integer aLowerRow = Array.LowerRow();

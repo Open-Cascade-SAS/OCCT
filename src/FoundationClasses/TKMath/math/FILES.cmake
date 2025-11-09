@@ -84,7 +84,6 @@ set(OCCT_math_FILES
   math_KronrodSingleIntegration.cxx
   math_KronrodSingleIntegration.hxx
   math_KronrodSingleIntegration.lxx
-  math_Matrix.cxx
   math_Matrix.hxx
   math_Matrix.lxx
   math_MultipleVarFunction.cxx

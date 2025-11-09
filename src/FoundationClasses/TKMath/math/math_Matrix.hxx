@@ -112,6 +112,9 @@ public:
   //! An exception is raised if the matrixes have not the same dimensions.
   inline math_Matrix(const math_Matrix& Other);
 
+  //! Move constructor
+  inline math_Matrix(math_Matrix&& Other) noexcept;
+
   //! Initialize all the elements of a matrix to InitialValue.
   inline void Init(const Standard_Real InitialValue) noexcept;
 
@@ -377,6 +380,9 @@ public:
 
   math_Matrix& operator=(const math_Matrix& Other) { return Initialized(Other); }
 
+  //! Move assignment operator
+  inline math_Matrix& operator=(math_Matrix&& Other) noexcept;
+
   //! Returns the product of 2 matrices.
   //! An exception is raised if the dimensions are different.
   inline void Multiply(const math_Matrix& Right);
@@ -401,9 +407,9 @@ public:
 
   //! Returns the opposite of a matrix.
   //! An exception is raised if the dimensions are different.
-  inline math_Matrix Opposite();
+  inline math_Matrix Opposite() const;
 
-  math_Matrix operator-() { return Opposite(); }
+  math_Matrix operator-() const { return Opposite(); }
 
   //! Prints information on the current state of the object.
   //! Is used to redefine the operator <<.
