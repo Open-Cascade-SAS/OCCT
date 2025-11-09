@@ -1,0 +1,86 @@
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <math_Matrix.hxx>
+#include <Standard_DimensionError.hxx>
+
+//==================================================================================================
+
+void math_Matrix::SwapRow(const Standard_Integer Row1, const Standard_Integer Row2)
+{
+  math_VectorBase<> V1 = Row(Row1);
+  math_VectorBase<> V2 = Row(Row2);
+  SetRow(Row1, V2);
+  SetRow(Row2, V1);
+}
+
+//==================================================================================================
+
+void math_Matrix::SwapCol(const Standard_Integer Col1, const Standard_Integer Col2)
+{
+  math_VectorBase<> V1 = Col(Col1);
+  math_VectorBase<> V2 = Col(Col2);
+  SetCol(Col1, V2);
+  SetCol(Col2, V1);
+}
+
+//==================================================================================================
+
+void math_Matrix::Multiply(const math_VectorBase<>& Left, const math_VectorBase<>& Right)
+{
+  Standard_DimensionError_Raise_if(
+    (RowNumber() != Left.Length()) || (ColNumber() != Right.Length()),
+    "math_Matrix::Multiply() - input vectors have incompatible dimensions");
+
+  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer anUpperRow = Array.UpperRow();
+  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer anUpperCol = Array.UpperCol();
+
+  for (Standard_Integer I = aLowerRow; I <= anUpperRow; I++)
+  {
+    for (Standard_Integer J = aLowerCol; J <= anUpperCol; J++)
+    {
+      Array(I, J) = Left(I) * Right(J);
+    }
+  }
+}
+
+//==================================================================================================
+
+math_VectorBase<> math_Matrix::Multiplied(const math_VectorBase<>& Right) const
+{
+  Standard_DimensionError_Raise_if(
+    ColNumber() != Right.Length(),
+    "math_Matrix::Multiplied() - input vector has incompatible dimensions");
+
+  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer anUpperRow = Array.UpperRow();
+  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer anUpperCol = Array.UpperCol();
+
+  math_VectorBase<> Result(aLowerRow, anUpperRow);
+
+  for (Standard_Integer I = aLowerRow; I <= anUpperRow; I++)
+  {
+    Result(I)           = 0.0;
+    Standard_Integer II = Right.Lower();
+    for (Standard_Integer J = aLowerCol; J <= anUpperCol; J++)
+    {
+      Result(I) = Result(I) + Array(I, J) * Right(II);
+      II++;
+    }
+  }
+  return Result;
+}

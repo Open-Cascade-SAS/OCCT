@@ -313,11 +313,11 @@ public:
 
   //! Swaps the rows of index Row1 and Row2.
   //! An exception is raised if <Row1> or <Row2> is out of range.
-  inline void SwapRow(const Standard_Integer Row1, const Standard_Integer Row2);
+  Standard_EXPORT void SwapRow(const Standard_Integer Row1, const Standard_Integer Row2);
 
   //! Swaps the columns of index <Col1> and <Col2>.
   //! An exception is raised if <Col1> or <Col2> is out of range.
-  inline void SwapCol(const Standard_Integer Col1, const Standard_Integer Col2);
+  Standard_EXPORT void SwapCol(const Standard_Integer Col1, const Standard_Integer Col2);
 
   //! Teturns the transposed of a matrix.
   //! An exception is raised if the matrix is not a square matrix.
@@ -336,7 +336,7 @@ public:
   //! Computes a matrix as the product of 2 vectors.
   //! An exception is raised if the dimensions are different.
   //! <me> = <Left> * <Right>.
-  inline void Multiply(const math_VectorBase<>& Left, const math_VectorBase<>& Right);
+  Standard_EXPORT void Multiply(const math_VectorBase<>& Left, const math_VectorBase<>& Right);
 
   //! Computes a matrix as the product of 2 matrixes.
   //! An exception is raised if the dimensions are different.
@@ -400,7 +400,7 @@ public:
 
   //! Returns the product of a matrix by a vector.
   //! An exception is raised if the dimensions are different.
-  Standard_NODISCARD inline math_VectorBase<> Multiplied(
+  Standard_NODISCARD Standard_EXPORT math_VectorBase<> Multiplied(
     const math_VectorBase<>& Right) const;
   Standard_NODISCARD inline math_VectorBase<> operator*(
     const math_VectorBase<>& Right) const;
