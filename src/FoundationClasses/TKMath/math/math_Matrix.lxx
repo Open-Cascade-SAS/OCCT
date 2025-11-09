@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 #include <math_NotSquare.hxx>
-#include <math_SingularMatrix.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_DivideByZero.hxx>
 
