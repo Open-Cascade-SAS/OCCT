@@ -13,7 +13,76 @@
 // commercial license or contractual agreement.
 
 #include <math_Matrix.hxx>
+#include <math_VectorBase.hxx>
 #include <Standard_DimensionError.hxx>
+
+//==================================================================================================
+
+void math_Matrix::SetRow(const Standard_Integer Row, const math_VectorBase<>& V)
+{
+  Standard_DimensionError_Raise_if(ColNumber() != V.Length(),
+                                   "math_Matrix::SetRow() - input vector has wrong dimensions");
+
+  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer anUpperCol = Array.UpperCol();
+
+  Standard_Integer I = V.Lower();
+  for (Standard_Integer Index = aLowerCol; Index <= anUpperCol; Index++)
+  {
+    Array(Row, Index) = V(I);
+    I++;
+  }
+}
+
+//==================================================================================================
+
+void math_Matrix::SetCol(const Standard_Integer Col, const math_VectorBase<>& V)
+{
+  Standard_DimensionError_Raise_if(RowNumber() != V.Length(),
+                                   "math_Matrix::SetCol() - input vector has wrong dimensions");
+
+  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer anUpperRow = Array.UpperRow();
+
+  Standard_Integer I = V.Lower();
+  for (Standard_Integer Index = aLowerRow; Index <= anUpperRow; Index++)
+  {
+    Array(Index, Col) = V(I);
+    I++;
+  }
+}
+
+//==================================================================================================
+
+math_VectorBase<> math_Matrix::Row(const Standard_Integer Row) const
+{
+  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer anUpperCol = Array.UpperCol();
+
+  math_VectorBase<> Result(aLowerCol, anUpperCol);
+
+  for (Standard_Integer Index = aLowerCol; Index <= anUpperCol; Index++)
+  {
+    Result(Index) = Array(Row, Index);
+  }
+  return Result;
+}
+
+//==================================================================================================
+
+math_VectorBase<> math_Matrix::Col(const Standard_Integer Col) const
+{
+  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer anUpperRow = Array.UpperRow();
+
+  math_VectorBase<> Result(aLowerRow, anUpperRow);
+
+  for (Standard_Integer Index = aLowerRow; Index <= anUpperRow; Index++)
+  {
+    Result(Index) = Array(Index, Col);
+  }
+  return Result;
+}
 
 //==================================================================================================
 

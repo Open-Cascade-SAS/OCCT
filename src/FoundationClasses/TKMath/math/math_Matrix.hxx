@@ -292,24 +292,24 @@ public:
   //! An exception is raised if the dimensions are different.
   //! An exception is raises if <Row> is inferior to the lower
   //! row of the matrix or <Row> is superior to the upper row.
-  inline void SetRow(const Standard_Integer Row, const math_VectorBase<>& V);
+  Standard_EXPORT void SetRow(const Standard_Integer Row, const math_VectorBase<>& V);
 
   //! Sets the column of index Col of a matrix to the vector <V>.
   //! An exception is raised if the dimensions are different.
   //! An exception is raises if <Col> is inferior to the lower
   //! column of the matrix or <Col> is superior to the upper
   //! column.
-  inline void SetCol(const Standard_Integer Col, const math_VectorBase<>& V);
+  Standard_EXPORT void SetCol(const Standard_Integer Col, const math_VectorBase<>& V);
 
   //! Sets the diagonal of a matrix to the value <Value>.
   //! An exception is raised if the matrix is not square.
   inline void SetDiag(const Standard_Real Value);
 
   //! Returns the row of index Row of a matrix.
-  inline math_VectorBase<> Row(const Standard_Integer Row) const;
+  Standard_EXPORT math_VectorBase<> Row(const Standard_Integer Row) const;
 
   //! Returns the column of index <Col> of a matrix.
-  inline math_VectorBase<> Col(const Standard_Integer Col) const;
+  Standard_EXPORT math_VectorBase<> Col(const Standard_Integer Col) const;
 
   //! Swaps the rows of index Row1 and Row2.
   //! An exception is raised if <Row1> or <Row2> is out of range.
