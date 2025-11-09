@@ -14,6 +14,9 @@
 
 #include <math_Matrix.hxx>
 #include <math_VectorBase.hxx>
+#include <math_Gauss.hxx>
+#include <math_NotSquare.hxx>
+#include <math_SingularMatrix.hxx>
 #include <Standard_DimensionError.hxx>
 
 //==================================================================================================
@@ -159,4 +162,47 @@ math_VectorBase<> math_Matrix::Multiplied(const math_VectorBase<>& Right) const
 math_VectorBase<> math_Matrix::operator*(const math_VectorBase<>& Right) const
 {
   return Multiplied(Right);
+}
+
+//==================================================================================================
+
+Standard_Real math_Matrix::Determinant() const
+{
+  math_Gauss Sol(*this);
+
+  if (Sol.IsDone())
+  {
+    return Sol.Determinant();
+  }
+  else
+  {
+    return 0.0;
+  }
+}
+
+//==================================================================================================
+
+void math_Matrix::Invert()
+{
+  math_NotSquare_Raise_if(RowNumber() != ColNumber(),
+                          "math_Matrix::Invert() - matrix is not square");
+
+  math_Gauss Sol(*this);
+  if (Sol.IsDone())
+  {
+    Sol.Invert(*this);
+  }
+  else
+  {
+    throw math_SingularMatrix();
+  }
+}
+
+//==================================================================================================
+
+math_Matrix math_Matrix::Inverse() const
+{
+  math_Matrix Result = *this;
+  Result.Invert();
+  return Result;
 }

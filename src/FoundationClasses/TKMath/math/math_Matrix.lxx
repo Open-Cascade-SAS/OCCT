@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_Gauss.hxx>
 #include <math_NotSquare.hxx>
 #include <math_SingularMatrix.hxx>
 #include <Standard_DimensionError.hxx>
@@ -715,22 +714,6 @@ inline math_Matrix& math_Matrix::operator=(math_Matrix&& Other) noexcept
 
 //==================================================================================================
 
-inline Standard_Real math_Matrix::Determinant() const
-{
-  math_Gauss Sol(*this);
-
-  if (Sol.IsDone())
-  {
-    return Sol.Determinant();
-  }
-  else
-  {
-    return 0.0;
-  }
-}
-
-//==================================================================================================
-
 inline void math_Matrix::Transpose()
 {
   math_NotSquare_Raise_if(RowNumber() != ColNumber(),
@@ -756,33 +739,6 @@ inline void math_Matrix::Transpose()
   }
   SetLowerRow(Col);
   SetLowerCol(Row);
-}
-
-//==================================================================================================
-
-inline void math_Matrix::Invert()
-{
-  math_NotSquare_Raise_if(RowNumber() != ColNumber(),
-                          "math_Matrix::Invert() - matrix is not square");
-
-  math_Gauss Sol(*this);
-  if (Sol.IsDone())
-  {
-    Sol.Invert(*this);
-  }
-  else
-  {
-    throw math_SingularMatrix();
-  }
-}
-
-//==================================================================================================
-
-inline math_Matrix math_Matrix::Inverse() const
-{
-  math_Matrix Result = *this;
-  Result.Invert();
-  return Result;
 }
 
 //==================================================================================================

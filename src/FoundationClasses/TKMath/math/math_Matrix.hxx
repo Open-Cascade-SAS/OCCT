@@ -154,7 +154,7 @@ public:
 
   //! Computes the determinant of a matrix.
   //! An exception is raised if the matrix is not a square matrix.
-  inline Standard_Real Determinant() const;
+  Standard_EXPORT Standard_Real Determinant() const;
 
   //! Transposes a given matrix.
   //! An exception is raised if the matrix is not a square matrix.
@@ -163,7 +163,7 @@ public:
   //! Inverts a matrix using Gauss algorithm.
   //! Exception NotSquare is raised if the matrix is not square.
   //! Exception SingularMatrix is raised if the matrix is singular.
-  inline void Invert();
+  Standard_EXPORT void Invert();
 
   //! Sets this matrix to the product of the matrix Left, and the matrix Right.
   //! Example
@@ -326,7 +326,7 @@ public:
   //! Returns the inverse of a matrix.
   //! Exception NotSquare is raised if the matrix is not square.
   //! Exception SingularMatrix is raised if the matrix is singular.
-  inline math_Matrix Inverse() const;
+  Standard_EXPORT math_Matrix Inverse() const;
 
   //! Returns the product of the transpose of a matrix with
   //! the matrix <Right>.
