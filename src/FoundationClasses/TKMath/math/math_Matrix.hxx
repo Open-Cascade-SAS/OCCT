@@ -151,16 +151,16 @@ public:
 
   //! Computes the determinant of a matrix.
   //! An exception is raised if the matrix is not a square matrix.
-  Standard_EXPORT Standard_Real Determinant() const;
+  inline Standard_Real Determinant() const;
 
   //! Transposes a given matrix.
   //! An exception is raised if the matrix is not a square matrix.
-  Standard_EXPORT void Transpose();
+  inline void Transpose();
 
   //! Inverts a matrix using Gauss algorithm.
   //! Exception NotSquare is raised if the matrix is not square.
   //! Exception SingularMatrix is raised if the matrix is singular.
-  Standard_EXPORT void Invert();
+  inline void Invert();
 
   //! Sets this matrix to the product of the matrix Left, and the matrix Right.
   //! Example
@@ -323,7 +323,7 @@ public:
   //! Returns the inverse of a matrix.
   //! Exception NotSquare is raised if the matrix is not square.
   //! Exception SingularMatrix is raised if the matrix is singular.
-  Standard_EXPORT math_Matrix Inverse() const;
+  inline math_Matrix Inverse() const;
 
   //! Returns the product of the transpose of a matrix with
   //! the matrix <Right>.
@@ -407,7 +407,7 @@ public:
 
   //! Prints information on the current state of the object.
   //! Is used to redefine the operator <<.
-  Standard_EXPORT void Dump(Standard_OStream& o) const;
+  inline void Dump(Standard_OStream& o) const;
 
 protected:
   //! The new lower row of the matrix is set to <LowerRow>
