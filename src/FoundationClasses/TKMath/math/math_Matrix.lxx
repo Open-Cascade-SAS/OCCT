@@ -92,7 +92,8 @@ inline Standard_Integer math_Matrix::UpperCol() const noexcept
 
 //==================================================================================================
 
-inline void math_Matrix::SetLower(const Standard_Integer LowerRow, const Standard_Integer LowerCol) noexcept
+inline void math_Matrix::SetLower(const Standard_Integer LowerRow,
+                                  const Standard_Integer LowerCol) noexcept
 {
   SetLowerRow(LowerRow);
   SetLowerCol(LowerCol);
@@ -101,9 +102,9 @@ inline void math_Matrix::SetLower(const Standard_Integer LowerRow, const Standar
 //==================================================================================================
 
 inline math_Matrix::math_Matrix(const Standard_Integer LowerRow,
-                                 const Standard_Integer UpperRow,
-                                 const Standard_Integer LowerCol,
-                                 const Standard_Integer UpperCol)
+                                const Standard_Integer UpperRow,
+                                const Standard_Integer LowerCol,
+                                const Standard_Integer UpperCol)
     : Array(LowerRow, UpperRow, LowerCol, UpperCol)
 {
 }
@@ -111,10 +112,10 @@ inline math_Matrix::math_Matrix(const Standard_Integer LowerRow,
 //==================================================================================================
 
 inline math_Matrix::math_Matrix(const Standard_Integer LowerRow,
-                                 const Standard_Integer UpperRow,
-                                 const Standard_Integer LowerCol,
-                                 const Standard_Integer UpperCol,
-                                 const Standard_Real    InitialValue)
+                                const Standard_Integer UpperRow,
+                                const Standard_Integer LowerCol,
+                                const Standard_Integer UpperCol,
+                                const Standard_Real    InitialValue)
     : Array(LowerRow, UpperRow, LowerCol, UpperCol)
 {
   Array.Init(InitialValue);
@@ -123,10 +124,10 @@ inline math_Matrix::math_Matrix(const Standard_Integer LowerRow,
 //==================================================================================================
 
 inline math_Matrix::math_Matrix(const Standard_Address Tab,
-                                 const Standard_Integer LowerRow,
-                                 const Standard_Integer UpperRow,
-                                 const Standard_Integer LowerCol,
-                                 const Standard_Integer UpperCol)
+                                const Standard_Integer LowerRow,
+                                const Standard_Integer UpperRow,
+                                const Standard_Integer LowerCol,
+                                const Standard_Integer UpperCol)
     : Array(Tab, LowerRow, UpperRow, LowerCol, UpperCol)
 {
 }
@@ -170,9 +171,9 @@ inline void math_Matrix::SetLowerCol(const Standard_Integer LowerCol) noexcept
 
 inline void math_Matrix::Multiply(const Standard_Real Right) noexcept
 {
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   for (Standard_Integer I = aLowerRow; I <= anUpperRow; I++)
@@ -188,9 +189,9 @@ inline void math_Matrix::Multiply(const Standard_Real Right) noexcept
 
 inline math_Matrix math_Matrix::Multiplied(const Standard_Real Right) const noexcept
 {
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_Matrix Result(aLowerRow, anUpperRow, aLowerCol, anUpperCol);
@@ -208,9 +209,9 @@ inline math_Matrix math_Matrix::Multiplied(const Standard_Real Right) const noex
 
 inline math_Matrix math_Matrix::TMultiplied(const Standard_Real Right) const noexcept
 {
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_Matrix Result(aLowerRow, anUpperRow, aLowerCol, anUpperCol);
@@ -231,9 +232,9 @@ inline void math_Matrix::Divide(const Standard_Real Right)
   Standard_DivideByZero_Raise_if(Abs(Right) <= RealEpsilon(),
                                  "math_Matrix::Divide() - zero divisor");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   for (Standard_Integer I = aLowerRow; I <= anUpperRow; I++)
@@ -263,9 +264,9 @@ inline void math_Matrix::Add(const math_Matrix& Right)
                                      || (ColNumber() != Right.ColNumber()),
                                    "math_Matrix::Add() - input matrix has different dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   Standard_Integer I2 = Right.LowerRow();
@@ -289,9 +290,9 @@ inline math_Matrix math_Matrix::Added(const math_Matrix& Right) const
                                      || (ColNumber() != Right.ColNumber()),
                                    "math_Matrix::Added() - input matrix has different dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_Matrix Result(aLowerRow, anUpperRow, aLowerCol, anUpperCol);
@@ -319,9 +320,9 @@ inline void math_Matrix::Add(const math_Matrix& Left, const math_Matrix& Right)
       || (Right.RowNumber() != Left.RowNumber()) || (Right.ColNumber() != Left.ColNumber()),
     "math_Matrix::Add() - matrices have incompatible dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   Standard_Integer I1 = Left.LowerRow();
@@ -349,9 +350,9 @@ inline void math_Matrix::Subtract(const math_Matrix& Right)
     (RowNumber() != Right.RowNumber()) || (ColNumber() != Right.ColNumber()),
     "math_Matrix::Subtract() - input matrix has different dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   Standard_Integer I2 = Right.LowerRow();
@@ -375,9 +376,9 @@ inline math_Matrix math_Matrix::Subtracted(const math_Matrix& Right) const
     (RowNumber() != Right.RowNumber()) || (ColNumber() != Right.ColNumber()),
     "math_Matrix::Subtracted() - input matrix has different dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_Matrix Result(aLowerRow, anUpperRow, aLowerCol, anUpperCol);
@@ -405,9 +406,9 @@ inline void math_Matrix::Subtract(const math_Matrix& Left, const math_Matrix& Ri
       || (Right.RowNumber() != Left.RowNumber()) || (Right.ColNumber() != Left.ColNumber()),
     "math_Matrix::Subtract() - matrices have incompatible dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   Standard_Integer I1 = Left.LowerRow();
@@ -431,9 +432,9 @@ inline void math_Matrix::Subtract(const math_Matrix& Left, const math_Matrix& Ri
 
 inline math_Matrix math_Matrix::Opposite() const
 {
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_Matrix Result(aLowerRow, anUpperRow, aLowerCol, anUpperCol);
@@ -451,14 +452,14 @@ inline math_Matrix math_Matrix::Opposite() const
 //==================================================================================================
 
 inline void math_Matrix::Set(const Standard_Integer I1,
-                              const Standard_Integer I2,
-                              const Standard_Integer J1,
-                              const Standard_Integer J2,
-                              const math_Matrix&     M)
+                             const Standard_Integer I2,
+                             const Standard_Integer J1,
+                             const Standard_Integer J2,
+                             const math_Matrix&     M)
 {
-  Standard_DimensionError_Raise_if(
-    (I1 > I2) || (J1 > J2) || (I2 - I1 + 1 != M.RowNumber()) || (J2 - J1 + 1 != M.ColNumber()),
-    "math_Matrix::Set() - invalid indices");
+  Standard_DimensionError_Raise_if((I1 > I2) || (J1 > J2) || (I2 - I1 + 1 != M.RowNumber())
+                                     || (J2 - J1 + 1 != M.ColNumber()),
+                                   "math_Matrix::Set() - invalid indices");
 
   Standard_Integer II = M.LowerRow();
   for (Standard_Integer I = I1; I <= I2; I++)
@@ -480,7 +481,7 @@ inline void math_Matrix::SetDiag(const Standard_Real Value)
   math_NotSquare_Raise_if(RowNumber() != ColNumber(),
                           "math_Matrix::SetDiag() - matrix is not square");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
 
   for (Standard_Integer I = aLowerRow; I <= anUpperRow; I++)
@@ -493,9 +494,9 @@ inline void math_Matrix::SetDiag(const Standard_Real Value)
 
 inline math_Matrix math_Matrix::Transposed() const
 {
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_Matrix Result(aLowerCol, anUpperCol, aLowerRow, anUpperRow);
@@ -519,9 +520,9 @@ inline void math_Matrix::Multiply(const math_Matrix& Left, const math_Matrix& Ri
       || (ColNumber() != Right.ColNumber()),
     "math_Matrix::Multiply() - matrices have incompatible dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   Standard_Real    Som;
@@ -555,9 +556,9 @@ inline void math_Matrix::Multiply(const math_Matrix& Right)
     ColNumber() != Right.RowNumber(),
     "math_Matrix::Multiply() - input matrix has incompatible dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   // Create a temporary copy to avoid corrupting our own data during calculation
@@ -593,9 +594,9 @@ inline math_Matrix math_Matrix::Multiplied(const math_Matrix& Right) const
     ColNumber() != Right.RowNumber(),
     "math_Matrix::Multiplied() - matrices have incompatible dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_Matrix Result(aLowerRow, anUpperRow, Right.LowerCol(), Right.UpperCol());
@@ -626,9 +627,9 @@ inline math_Matrix math_Matrix::TMultiply(const math_Matrix& Right) const
     RowNumber() != Right.RowNumber(),
     "math_Matrix::TMultiply() - matrices have incompatible dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_Matrix Result(aLowerCol, anUpperCol, Right.LowerCol(), Right.UpperCol());
@@ -660,9 +661,9 @@ inline void math_Matrix::TMultiply(const math_Matrix& TLeft, const math_Matrix& 
       || (ColNumber() != Right.ColNumber()),
     "math_Matrix::TMultiply() - matrices have incompatible dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   Standard_Real    Som;
@@ -718,9 +719,9 @@ inline void math_Matrix::Transpose()
   math_NotSquare_Raise_if(RowNumber() != ColNumber(),
                           "math_Matrix::Transpose() - matrix is not square");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   Standard_Integer Row = aLowerRow;
@@ -744,9 +745,9 @@ inline void math_Matrix::Transpose()
 
 inline void math_Matrix::Dump(Standard_OStream& o) const
 {
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   o << "math_Matrix of RowNumber = " << RowNumber();

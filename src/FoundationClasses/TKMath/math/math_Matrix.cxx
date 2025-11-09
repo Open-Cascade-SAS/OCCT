@@ -26,7 +26,7 @@ void math_Matrix::SetRow(const Standard_Integer Row, const math_VectorBase<>& V)
   Standard_DimensionError_Raise_if(ColNumber() != V.Length(),
                                    "math_Matrix::SetRow() - input vector has wrong dimensions");
 
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   Standard_Integer I = V.Lower();
@@ -44,7 +44,7 @@ void math_Matrix::SetCol(const Standard_Integer Col, const math_VectorBase<>& V)
   Standard_DimensionError_Raise_if(RowNumber() != V.Length(),
                                    "math_Matrix::SetCol() - input vector has wrong dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
 
   Standard_Integer I = V.Lower();
@@ -59,7 +59,7 @@ void math_Matrix::SetCol(const Standard_Integer Col, const math_VectorBase<>& V)
 
 math_VectorBase<> math_Matrix::Row(const Standard_Integer Row) const
 {
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_VectorBase<> Result(aLowerCol, anUpperCol);
@@ -75,7 +75,7 @@ math_VectorBase<> math_Matrix::Row(const Standard_Integer Row) const
 
 math_VectorBase<> math_Matrix::Col(const Standard_Integer Col) const
 {
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
 
   math_VectorBase<> Result(aLowerRow, anUpperRow);
@@ -115,9 +115,9 @@ void math_Matrix::Multiply(const math_VectorBase<>& Left, const math_VectorBase<
     (RowNumber() != Left.Length()) || (ColNumber() != Right.Length()),
     "math_Matrix::Multiply() - input vectors have incompatible dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   for (Standard_Integer I = aLowerRow; I <= anUpperRow; I++)
@@ -137,9 +137,9 @@ math_VectorBase<> math_Matrix::Multiplied(const math_VectorBase<>& Right) const
     ColNumber() != Right.Length(),
     "math_Matrix::Multiplied() - input vector has incompatible dimensions");
 
-  const Standard_Integer aLowerRow = Array.LowerRow();
+  const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol = Array.LowerCol();
+  const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
   math_VectorBase<> Result(aLowerRow, anUpperRow);
