@@ -394,7 +394,7 @@ void math_VectorBase<TheItemType>::Multiply(const math_Matrix&                  
     Standard_Integer K = theRight.Lower();
     for (Standard_Integer J = theLeft.LowerCol(); J <= theLeft.UpperCol(); J++)
     {
-      Array(Index) = Array(Index) + theLeft.Array(I, J) * theRight.Array(K);
+      Array(Index) = Array(Index) + theLeft(I, J) * theRight.Array(K);
       K++;
     }
     Index++;
@@ -416,7 +416,7 @@ void math_VectorBase<TheItemType>::Multiply(const math_VectorBase<TheItemType>& 
     Standard_Integer K = theLeft.Lower();
     for (Standard_Integer I = theRight.LowerRow(); I <= theRight.UpperRow(); I++)
     {
-      Array(Index) = Array(Index) + theLeft.Array(K) * theRight.Array(I, J);
+      Array(Index) = Array(Index) + theLeft.Array(K) * theRight(I, J);
       K++;
     }
     Index++;
@@ -438,7 +438,7 @@ void math_VectorBase<TheItemType>::TMultiply(const math_Matrix&                 
     Standard_Integer K = theRight.Lower();
     for (Standard_Integer J = theTLeft.LowerRow(); J <= theTLeft.UpperRow(); J++)
     {
-      Array(Index) = Array(Index) + theTLeft.Array(J, I) * theRight.Array(K);
+      Array(Index) = Array(Index) + theTLeft(J, I) * theRight.Array(K);
       K++;
     }
     Index++;
@@ -460,7 +460,7 @@ void math_VectorBase<TheItemType>::TMultiply(const math_VectorBase<TheItemType>&
     Standard_Integer K = theLeft.Lower();
     for (Standard_Integer I = theTRight.LowerCol(); I <= theTRight.UpperCol(); I++)
     {
-      Array(Index) = Array(Index) + theLeft.Array(K) * theTRight.Array(J, I);
+      Array(Index) = Array(Index) + theLeft.Array(K) * theTRight(J, I);
       K++;
     }
     Index++;
@@ -512,7 +512,7 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Multiplied(
     Standard_Integer theI2 = theRight.LowerRow();
     for (Standard_Integer I = Lower(); I <= Upper(); I++)
     {
-      Result.Array(J2) = Result.Array(J2) + Array(I) * theRight.Array(theI2, J2);
+      Result.Array(J2) = Result.Array(J2) + Array(I) * theRight(theI2, J2);
       theI2++;
     }
   }
