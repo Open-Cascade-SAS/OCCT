@@ -70,7 +70,7 @@ public:
                           const gp_Vec&             Direction,
                           const gp_Vec&             Direction1,
                           const Standard_Integer    Fuse,
-                          const Standard_Boolean    Msrc/ModelingAlgorithms/TKFeat/BRepFeat/BRepFeat_MakePipe.hxxodify);
+                          const Standard_Boolean    Modify);
 
   //! Initializes this construction algorithm.
   //! A contour W, a shape Sbase and a plane P are
