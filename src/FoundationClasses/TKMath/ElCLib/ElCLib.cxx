@@ -46,7 +46,30 @@
 namespace
 {
 static constexpr Standard_Real PIPI = M_PI + M_PI;
+// Threshold for angle normalization to avoid discontinuity near zero
+static constexpr Standard_Real NEGATIVE_RESOLUTION = -Precision::Computational();
+
+// Normalize angle to [0, 2*PI] range, with special handling
+// for values very close to zero to avoid discontinuity.
+// Preserves values at exactly 2*PI for proper seam handling.
+static inline void normalizeAngle(Standard_Real& theAngle)
+{
+  while (theAngle < NEGATIVE_RESOLUTION)
+  {
+    theAngle += PIPI;
+  }
+  // Only normalize angles strictly greater than 2*PI (with small tolerance)
+  // to preserve the closing seam value of exactly 2*PI
+  while (theAngle > PIPI * (1.0 + gp::Resolution()))
+  {
+    theAngle -= PIPI;
+  }
+  if (theAngle < 0.)
+  {
+    theAngle = 0.;
+  }
 }
+} // namespace
 
 //=======================================================================
 // function : InPeriod
@@ -1209,10 +1232,7 @@ Standard_Real ElCLib::CircleParameter(const gp_Ax2& Pos, const gp_Pnt& P)
   // Angle between X direction and projected vector
   Standard_Real Teta = (Pos.XDirection()).AngleWithRef(aVProj, dir);
 
-  if (Teta < -1.e-16)
-    Teta += PIPI;
-  else if (Teta < 0)
-    Teta = 0;
+  normalizeAngle(Teta);
   return Teta;
 }
 
@@ -1237,10 +1257,7 @@ Standard_Real ElCLib::EllipseParameter(const gp_Ax2&       Pos,
   gp_XYZ Om = xaxis.Multiplied(NX);
   Om.Add(yaxis);
   Standard_Real Teta = gp_Vec(xaxis).AngleWithRef(gp_Vec(Om), gp_Vec(Pos.Direction()));
-  if (Teta < -1.e-16)
-    Teta += PIPI;
-  else if (Teta < 0)
-    Teta = 0;
+  normalizeAngle(Teta);
   return Teta;
 }
 
@@ -1282,10 +1299,7 @@ Standard_Real ElCLib::CircleParameter(const gp_Ax22d& Pos, const gp_Pnt2d& P)
 {
   Standard_Real Teta = (Pos.XDirection()).Angle(gp_Vec2d(Pos.Location(), P));
   Teta               = ((Pos.XDirection() ^ Pos.YDirection()) >= 0.0) ? Teta : -Teta;
-  if (Teta < -1.e-16)
-    Teta += PIPI;
-  else if (Teta < 0)
-    Teta = 0;
+  normalizeAngle(Teta);
   return Teta;
 }
 
@@ -1305,10 +1319,7 @@ Standard_Real ElCLib::EllipseParameter(const gp_Ax22d&     Pos,
   Om.Add(yaxis);
   Standard_Real Teta = gp_Vec2d(xaxis).Angle(gp_Vec2d(Om));
   Teta               = ((Pos.XDirection() ^ Pos.YDirection()) >= 0.0) ? Teta : -Teta;
-  if (Teta < -1.e-16)
-    Teta += PIPI;
-  else if (Teta < 0)
-    Teta = 0;
+  normalizeAngle(Teta);
   return Teta;
 }
 

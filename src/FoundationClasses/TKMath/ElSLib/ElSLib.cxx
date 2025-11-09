@@ -30,7 +30,33 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 
-static Standard_Real PIPI = M_PI + M_PI;
+namespace
+{
+static constexpr Standard_Real PIPI = M_PI + M_PI;
+// Threshold for angle normalization to avoid discontinuity near zero
+static constexpr Standard_Real NEGATIVE_RESOLUTION = -Precision::Computational();
+
+// Normalize angle to [0, 2*PI] range, with special handling
+// for values very close to zero to avoid discontinuity.
+// Preserves values at exactly 2*PI for proper seam handling.
+static inline void normalizeAngle(Standard_Real& theAngle)
+{
+  while (theAngle < NEGATIVE_RESOLUTION)
+  {
+    theAngle += PIPI;
+  }
+  // Only normalize angles strictly greater than 2*PI (with small tolerance)
+  // to preserve the closing seam value of exactly 2*PI
+  while (theAngle > PIPI * (1.0 + gp::Resolution()))
+  {
+    theAngle -= PIPI;
+  }
+  if (theAngle < 0.)
+  {
+    theAngle = 0.;
+  }
+}
+} // namespace
 
 gp_Pnt ElSLib::PlaneValue(const Standard_Real U, const Standard_Real V, const gp_Ax3& Pos)
 {
@@ -1471,10 +1497,7 @@ void ElSLib::CylinderParameters(const gp_Ax3& Pos,
   T.SetTransformation(Pos);
   gp_Pnt Ploc = P.Transformed(T);
   U           = atan2(Ploc.Y(), Ploc.X());
-  if (U < -1.e-16)
-    U += PIPI;
-  else if (U < 0)
-    U = 0;
+  normalizeAngle(U);
   V = Ploc.Z();
 }
 
@@ -1491,7 +1514,8 @@ void ElSLib::ConeParameters(const gp_Ax3&       Pos,
   T.SetTransformation(Pos);
   gp_Pnt Ploc = P.Transformed(T);
 
-  if (Ploc.X() == 0.0 && Ploc.Y() == 0.0)
+  // Check if point is at the apex
+  if (Abs(Ploc.X()) < gp::Resolution() && Abs(Ploc.Y()) < gp::Resolution())
   {
     U = 0.0;
   }
@@ -1504,10 +1528,7 @@ void ElSLib::ConeParameters(const gp_Ax3&       Pos,
   {
     U = atan2(Ploc.Y(), Ploc.X());
   }
-  if (U < -1.e-16)
-    U += PIPI;
-  else if (U < 0)
-    U = 0;
+  normalizeAngle(U);
 
   // Evaluate V as follows :
   // P0 = Cone.Value(U,0)
@@ -1547,10 +1568,7 @@ void ElSLib::SphereParameters(const gp_Ax3& Pos,
   {
     V = atan(z / l);
     U = atan2(y, x);
-    if (U < -1.e-16)
-      U += PIPI;
-    else if (U < 0)
-      U = 0;
+    normalizeAngle(U);
   }
 }
 
@@ -1573,36 +1591,29 @@ void ElSLib::TorusParameters(const gp_Ax3&       Pos,
   U = atan2(y, x);
   if (MajorRadius < MinorRadius)
   {
-    Standard_Real cosu  = cos(U);
-    Standard_Real sinu  = sin(U);
-    Standard_Real z2    = z * z;
-    Standard_Real MinR2 = MinorRadius * MinorRadius;
-    Standard_Real RCosU = MajorRadius * cosu;
-    Standard_Real RSinU = MajorRadius * sinu;
-    Standard_Real xm    = x - RCosU;
-    Standard_Real ym    = y - RSinU;
-    Standard_Real xp    = x + RCosU;
-    Standard_Real yp    = y + RSinU;
-    Standard_Real D1    = xm * xm + ym * ym + z2 - MinR2;
-    Standard_Real D2    = xp * xp + yp * yp + z2 - MinR2;
-    Standard_Real AD1   = D1;
-    if (AD1 < 0)
-      AD1 = -AD1;
-    Standard_Real AD2 = D2;
-    if (AD2 < 0)
-      AD2 = -AD2;
+    const Standard_Real cosu  = cos(U);
+    const Standard_Real sinu  = sin(U);
+    const Standard_Real z2    = z * z;
+    const Standard_Real MinR2 = MinorRadius * MinorRadius;
+    const Standard_Real RCosU = MajorRadius * cosu;
+    const Standard_Real RSinU = MajorRadius * sinu;
+    const Standard_Real xm    = x - RCosU;
+    const Standard_Real ym    = y - RSinU;
+    const Standard_Real xp    = x + RCosU;
+    const Standard_Real yp    = y + RSinU;
+    const Standard_Real D1    = xm * xm + ym * ym + z2 - MinR2;
+    const Standard_Real D2    = xp * xp + yp * yp + z2 - MinR2;
+    const Standard_Real AD1   = Abs(D1);
+    const Standard_Real AD2   = Abs(D2);
     if (AD2 < AD1)
       U += M_PI;
   }
-  if (U < -1.e-16)
-    U += PIPI;
-  else if (U < 0)
-    U = 0;
-  Standard_Real cosu = cos(U);
-  Standard_Real sinu = sin(U);
-  gp_Dir        dx(cosu, sinu, 0.);
-  gp_XYZ        dPV(x - MajorRadius * cosu, y - MajorRadius * sinu, z);
-  Standard_Real aMag = dPV.Modulus();
+  normalizeAngle(U);
+  const Standard_Real cosu = cos(U);
+  const Standard_Real sinu = sin(U);
+  const gp_Dir        dx(cosu, sinu, 0.);
+  const gp_XYZ        dPV(x - MajorRadius * cosu, y - MajorRadius * sinu, z);
+  const Standard_Real aMag = dPV.Modulus();
   if (aMag <= gp::Resolution())
   {
     V = 0.;
@@ -1612,10 +1623,7 @@ void ElSLib::TorusParameters(const gp_Ax3&       Pos,
     gp_Dir dP(dPV);
     V = dx.AngleWithRef(dP, dx ^ gp::DZ());
   }
-  if (V < -1.e-16)
-    V += PIPI;
-  else if (V < 0)
-    V = 0;
+  normalizeAngle(V);
 }
 
 //=================================================================================================
