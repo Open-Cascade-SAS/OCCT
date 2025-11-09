@@ -41,7 +41,7 @@ class Blend_Point;
 //! using a guide line.
 //! The vector <X> used in Value, Values and Derivatives methods
 //! may be the vector of the parametric coordinates U,V,
-//! W of the extremities of a section on the surface  and
+//! W of the extremities of a section on the surface and
 //! the curve.
 class Blend_RstRstFunction : public Blend_AppFunction
 {
@@ -104,14 +104,14 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsSolution(const math_Vector&  Sol,
                                                       const Standard_Real Tol) = 0;
 
-  //! Returns   the    minimal  Distance  between   two
+  //! Returns the minimal Distance between two
   //! extremities of calculated sections.
   Standard_EXPORT Standard_Real GetMinimalDistance() const;
 
   //! Returns the point on the first support.
   Standard_EXPORT const gp_Pnt& Pnt1() const;
 
-  //! Returns the point on the seconde support.
+  //! Returns the point on the second support.
   Standard_EXPORT const gp_Pnt& Pnt2() const;
 
   //! Returns the point on the surface.
@@ -123,7 +123,7 @@ public:
   //! Returns U,V coordinates of the point on the surface.
   Standard_EXPORT virtual const gp_Pnt2d& Pnt2dOnRst1() const = 0;
 
-  //! Returns  U,V coordinates of the point  on the curve on
+  //! Returns U,V coordinates of the point on the curve on
   //! surface.
   Standard_EXPORT virtual const gp_Pnt2d& Pnt2dOnRst2() const = 0;
 
@@ -151,17 +151,17 @@ public:
   //! parametric space of the second surface.
   Standard_EXPORT virtual const gp_Vec2d& Tangent2dOnRst2() const = 0;
 
-  //! Enables to implement a  criterion  of  decrochage
+  //! Enables to implement a criterion of decrochage
   //! specific to the function.
-  //! Warning: Can  be  called  without  previous  call  of issolution
-  //! but  the  values  calculated can  be  senseless.
+  //! Warning: Can be called without previous call of IsSolution
+  //! but the values calculated can be senseless.
   Standard_EXPORT virtual Blend_DecrochStatus Decroch(const math_Vector& Sol,
                                                       gp_Vec&            NRst1,
                                                       gp_Vec&            TgRst1,
                                                       gp_Vec&            NRst2,
                                                       gp_Vec&            TgRst2) const = 0;
 
-  //! Returns  if the section is rational
+  //! Returns if the section is rational
   Standard_EXPORT virtual Standard_Boolean IsRational() const = 0;
 
   //! Returns the length of the maximum section
@@ -171,14 +171,14 @@ public:
   //! of all sections.
   Standard_EXPORT virtual void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const = 0;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const = 0;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const = 0;
 

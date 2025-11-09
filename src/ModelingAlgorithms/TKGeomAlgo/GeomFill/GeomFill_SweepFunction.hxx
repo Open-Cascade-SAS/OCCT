@@ -123,7 +123,7 @@ public:
                                            const Standard_Real Last) Standard_OVERRIDE;
 
   //! Returns the resolutions in the sub-space 2d <Index>
-  //! This information is usfull to find an good tolerance in
+  //! This information is useful to find a good tolerance in
   //! 2d approximation.
   //! Warning: Used only if Nb2dCurve > 0
   Standard_EXPORT virtual void Resolution(const Standard_Integer Index,
@@ -141,7 +141,7 @@ public:
                                             const Standard_Real   AngleTol,
                                             TColStd_Array1OfReal& Tol3d) const Standard_OVERRIDE;
 
-  //! Is usfull, if (me) have to  be run numerical
+  //! Is useful, if (me) have to  be run numerical
   //! algorithme to perform D0, D1 or D2
   Standard_EXPORT virtual void SetTolerance(const Standard_Real Tol3d,
                                             const Standard_Real Tol2d) Standard_OVERRIDE;

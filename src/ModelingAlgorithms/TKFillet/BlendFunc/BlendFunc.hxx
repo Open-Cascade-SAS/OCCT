@@ -54,7 +54,7 @@ public:
                                                 const Standard_Real                AngleMax,
                                                 TColStd_Array1OfReal&              Weigths);
 
-  //! Used  to obtain the next level of continuity.
+  //! Used to obtain the next level of continuity.
   Standard_EXPORT static GeomAbs_Shape NextShape(const GeomAbs_Shape S);
 
   Standard_EXPORT static Standard_Boolean ComputeNormal(const Handle(Adaptor3d_Surface)& Surf,

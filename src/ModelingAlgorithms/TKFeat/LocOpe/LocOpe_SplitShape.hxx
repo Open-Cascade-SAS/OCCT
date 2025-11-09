@@ -29,10 +29,10 @@ class TopoDS_Vertex;
 class TopoDS_Wire;
 class TopoDS_Face;
 
-//! Provides a tool to cut  :
+//! Provides a tool to cut:
 //! - edges with a vertices,
 //! - faces with wires,
-//! and  rebuilds  the shape containing the edges and
+//! and rebuilds the shape containing the edges and
 //! the faces.
 class LocOpe_SplitShape
 {
@@ -67,10 +67,10 @@ public:
   Standard_EXPORT const TopTools_ListOfShape& DescendantShapes(const TopoDS_Shape& S);
 
   //! Returns the "left" part defined by the wire <W> on
-  //! the face <F>.   The  returned list of shape  is in
-  //! fact  a list of faces. The  face <F> is considered
-  //! with its topological  orientation  in the original
-  //! shape.  <W> is considered with its orientation.
+  //! the face <F>. The returned list of shape is in
+  //! fact a list of faces. The face <F> is considered
+  //! with its topological orientation in the original
+  //! shape. <W> is considered with its orientation.
   Standard_EXPORT const TopTools_ListOfShape& LeftOf(const TopoDS_Wire& W, const TopoDS_Face& F);
 
 protected:

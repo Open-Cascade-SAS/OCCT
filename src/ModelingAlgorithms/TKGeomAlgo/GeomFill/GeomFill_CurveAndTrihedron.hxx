@@ -127,10 +127,10 @@ public:
                                          Standard_Real& Last) const Standard_OVERRIDE;
 
   //! Get the maximum Norm  of the matrix-location part.  It
-  //! is usful to find an good Tolerance to approx M(t).
+  //! is usful to find a good Tolerance to approx M(t).
   Standard_EXPORT virtual Standard_Real GetMaximalNorm() Standard_OVERRIDE;
 
-  //! Get average value of M(t) and V(t) it is usfull to
+  //! Get average value of M(t) and V(t) it is useful to
   //! make fast approximation of rational  surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Mat& AM, gp_Vec& AV) Standard_OVERRIDE;
 

@@ -50,7 +50,7 @@ public:
   //! Returns the point on the first support.
   Standard_EXPORT const gp_Pnt& Pnt1() const Standard_OVERRIDE;
 
-  //! Returns the point on the seconde support.
+  //! Returns the point on the second support.
   Standard_EXPORT const gp_Pnt& Pnt2() const Standard_OVERRIDE;
 
   //! Returns the point on the first surface, at parameter

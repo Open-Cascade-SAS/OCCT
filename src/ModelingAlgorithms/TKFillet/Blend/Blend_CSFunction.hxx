@@ -41,7 +41,7 @@ class Blend_Point;
 //! surface between a surface and a curve, using a guide line.
 //! The vector <X> used in Value, Values and Derivatives methods
 //! may be the vector of the parametric coordinates U,V,
-//! W of the extremities of a section on the surface  and
+//! W of the extremities of a section on the surface and
 //! the curve.
 class Blend_CSFunction : public Blend_AppFunction
 {
@@ -109,14 +109,14 @@ public:
                                                       const Standard_Real Tol)
     Standard_OVERRIDE = 0;
 
-  //! Returns   the    minimal  Distance  between   two
+  //! Returns the minimal Distance between two
   //! extremities of calculated sections.
   Standard_EXPORT virtual Standard_Real GetMinimalDistance() const Standard_OVERRIDE;
 
   //! Returns the point on the first support.
   Standard_EXPORT const gp_Pnt& Pnt1() const Standard_OVERRIDE;
 
-  //! Returns the point on the seconde support.
+  //! Returns the point on the second support.
   Standard_EXPORT const gp_Pnt& Pnt2() const Standard_OVERRIDE;
 
   //! Returns the point on the surface.

@@ -113,7 +113,7 @@ public:
   Standard_EXPORT virtual void SetInterval(const Standard_Real First, const Standard_Real Last) = 0;
 
   //! Returns the resolutions in the  sub-space 2d <Index>
-  //! This information is usfull to find an good tolerance in
+  //! This information is useful to find a good tolerance in
   //! 2d approximation.
   Standard_EXPORT virtual void Resolution(const Standard_Integer Index,
                                           const Standard_Real    Tol,

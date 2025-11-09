@@ -29,8 +29,8 @@ class TopoDS_Wire;
 class gp_Dir;
 class gp_Pln;
 
-//! This  class  provides  a    tool to   realize  the
-//! following operations on a shape :
+//! This class provides a tool to realize the
+//! following operations on a shape:
 //! - split a face of the shape with a wire,
 //! - put draft angle on both side of the wire.
 //! For each side, the draft angle may be different.
@@ -52,19 +52,19 @@ public:
   Standard_EXPORT void Init(const TopoDS_Shape& S);
 
   //! Splits the face <F> of the former given shape with
-  //! the wire  <W>.  The wire is  assumed to lie on the
-  //! face.    Puts a draft  angle on  both parts of the
-  //! wire.    <Extractg>,  <Nplg>, <Angleg> define  the
-  //! arguments  for   the   left  part   of the   wire.
-  //! <Extractd>,  <Npld>, <Angled> define the arguments
+  //! the wire <W>. The wire is assumed to lie on the
+  //! face. Puts a draft angle on both parts of the
+  //! wire. <Extractg>, <Nplg>, <Angleg> define the
+  //! arguments for the left part of the wire.
+  //! <Extractd>, <Npld>, <Angled> define the arguments
   //! for the right part of the wire. The draft angle is
-  //! measured    with the  direction  <Extract>.  <Npl>
+  //! measured with the direction <Extract>. <Npl>
   //! defines the neutral plane (points belonging to the
-  //! neutral plane are not  modified).  <Angle> is  the
-  //! value of the draft  angle.  If <ModifyLeft> is set
-  //! to <Standard_False>, no draft  angle is applied to
+  //! neutral plane are not modified). <Angle> is the
+  //! value of the draft angle. If <ModifyLeft> is set
+  //! to <Standard_False>, no draft angle is applied to
   //! the left part of the wire. If <ModifyRight> is set
-  //! to <Standard_False>,no draft  angle  is applied to
+  //! to <Standard_False>,no draft angle is applied to
   //! the right part of the wire.
   Standard_EXPORT void Perform(const TopoDS_Face&     F,
                                const TopoDS_Wire&     W,
@@ -78,12 +78,12 @@ public:
                                const Standard_Boolean ModifyRight = Standard_True);
 
   //! Splits the face <F> of the former given shape with
-  //! the  wire <W>.  The wire is  assumed to lie on the
-  //! face.  Puts a draft angle  on the left part of the
-  //! wire.   The draft    angle is   measured  with the
-  //! direction  <Extract>.   <Npl> defines the  neutral
-  //! plane (points belonging  to the neutral plane  are
-  //! not modified). <Angle> is  the value of  the draft
+  //! the wire <W>. The wire is assumed to lie on the
+  //! face. Puts a draft angle on the left part of the
+  //! wire. The draft angle is measured with the
+  //! direction <Extract>. <Npl> defines the neutral
+  //! plane (points belonging to the neutral plane are
+  //! not modified). <Angle> is the value of the draft
   //! angle.
   Standard_EXPORT void Perform(const TopoDS_Face&  F,
                                const TopoDS_Wire&  W,

@@ -40,7 +40,7 @@ class Blend_Point;
 //! using a guide line.
 //! The vector <X> used in Value, Values and Derivatives methods
 //! may be the vector of the parametric coordinates U,V,
-//! W of the extremities of a section on the surface  and
+//! W of the extremities of a section on the surface and
 //! the curve.
 class Blend_SurfRstFunction : public Blend_AppFunction
 {
@@ -85,13 +85,13 @@ public:
   Standard_EXPORT virtual void Set(const Standard_Real First, const Standard_Real Last) = 0;
 
   //! Returns in the vector Tolerance the parametric tolerance
-  //! for each variable;
+  //! for each variable.
   //! Tol is the tolerance used in 3d space.
   Standard_EXPORT virtual void GetTolerance(math_Vector&        Tolerance,
                                             const Standard_Real Tol) const = 0;
 
   //! Returns in the vector InfBound the lowest values allowed
-  //! for each variables.
+  //! for each variable.
   //! Returns in the vector SupBound the greatest values allowed
   //! for each of the 3 variables.
   Standard_EXPORT virtual void GetBounds(math_Vector& InfBound, math_Vector& SupBound) const = 0;
@@ -103,14 +103,14 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsSolution(const math_Vector&  Sol,
                                                       const Standard_Real Tol) = 0;
 
-  //! Returns   the    minimal  Distance  between   two
+  //! Returns the minimal Distance between two
   //! extremities of calculated sections.
   Standard_EXPORT Standard_Real GetMinimalDistance() const;
 
   //! Returns the point on the first support.
   Standard_EXPORT const gp_Pnt& Pnt1() const;
 
-  //! Returns the point on the seconde support.
+  //! Returns the point on the second support.
   Standard_EXPORT const gp_Pnt& Pnt2() const;
 
   //! Returns the point on the surface.
@@ -122,7 +122,7 @@ public:
   //! Returns U,V coordinates of the point on the surface.
   Standard_EXPORT virtual const gp_Pnt2d& Pnt2dOnS() const = 0;
 
-  //! Returns  U,V coordinates of the point  on the curve on
+  //! Returns U,V coordinates of the point on the curve on
   //! surface.
   Standard_EXPORT virtual const gp_Pnt2d& Pnt2dOnRst() const = 0;
 
@@ -147,13 +147,13 @@ public:
   //! parametric space of the second surface.
   Standard_EXPORT virtual const gp_Vec2d& Tangent2dOnRst() const = 0;
 
-  //! Enables implementation  of a criterion of decrochage
-  //! specific to  the function.
+  //! Enables implementation of a criterion of decrochage
+  //! specific to the function.
   Standard_EXPORT virtual Standard_Boolean Decroch(const math_Vector& Sol,
                                                    gp_Vec&            NS,
                                                    gp_Vec&            TgS) const = 0;
 
-  //! Returns  if the section is rational
+  //! Returns if the section is rational
   Standard_EXPORT virtual Standard_Boolean IsRational() const = 0;
 
   //! Returns the length of the maximum section
@@ -163,14 +163,14 @@ public:
   //! of all sections.
   Standard_EXPORT virtual void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const = 0;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const = 0;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const = 0;
 

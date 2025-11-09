@@ -16,9 +16,9 @@
 #include <math_Function.hxx>
 #include <StdFail_NotDone.hxx>
 
-// reference algorithme:
+// reference algorithm:
 //                   Brent method
-//                   numerical recipes in C  p 269
+//                   numerical recipes in C (p. 269)
 math_BracketedRoot::math_BracketedRoot(math_Function&         F,
                                        const Standard_Real    Bound1,
                                        const Standard_Real    Bound2,

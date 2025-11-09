@@ -102,7 +102,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsSolution(const math_Vector&  Sol,
                                                       const Standard_Real Tol) = 0;
 
-  //! Returns   the    minimal  Distance  between   two
+  //! Returns the minimal Distance between two
   //! extremities of calculated sections.
   Standard_EXPORT virtual Standard_Real GetMinimalDistance() const = 0;
 
@@ -112,7 +112,7 @@ public:
   //! Returns the point on the first support.
   Standard_EXPORT virtual const gp_Pnt& Pnt2() const = 0;
 
-  //! Returns  if the section is rational
+  //! Returns if the section is rational
   Standard_EXPORT virtual Standard_Boolean IsRational() const = 0;
 
   //! Returns the length of the maximum section
@@ -122,14 +122,14 @@ public:
   //! of all sections.
   Standard_EXPORT virtual void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const = 0;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const = 0;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   //! raises
   //! OutOfRange from Standard
@@ -190,7 +190,7 @@ public:
                                           Standard_Real&         TolU,
                                           Standard_Real&         TolV) const = 0;
 
-  //! Returns  the parameter  of  the point  P. Used  to
+  //! Returns the parameter of the point P. Used to
   //! impose the parameters in the approximation.
   Standard_EXPORT Standard_Real Parameter(const Blend_Point& P) const;
 

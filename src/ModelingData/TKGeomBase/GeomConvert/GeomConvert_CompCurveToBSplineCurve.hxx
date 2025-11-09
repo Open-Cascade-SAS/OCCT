@@ -32,20 +32,20 @@ class GeomConvert_CompCurveToBSplineCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Initialize the algorithme
+  //! Initialize the algorithm
   //! - Parameterisation is used to convert
   Standard_EXPORT GeomConvert_CompCurveToBSplineCurve(
     const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
-  //! Initialize the algorithme with one curve
+  //! Initialize the algorithm with one curve
   //! - Parameterisation is used to convert
   Standard_EXPORT GeomConvert_CompCurveToBSplineCurve(
     const Handle(Geom_BoundedCurve)&   BasisCurve,
     const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
-  //! Append a curve in  the BSpline Return False if the
-  //! curve is not G0  with the BSplineCurve.  Tolerance
-  //! is   used to   check   continuity  and decrease
+  //! Append a curve in the BSpline Return False if the
+  //! curve is not G0 with the BSplineCurve. Tolerance
+  //! is used to check continuity and decrease
   //! Multiplicity at the common Knot until MinM
   //! if MinM = 0, the common Knot can be removed
   //!

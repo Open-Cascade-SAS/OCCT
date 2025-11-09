@@ -28,7 +28,7 @@ class math_Matrix;
 
 //! This function calculates point (pts) on the curve of
 //! intersection between the normal to a curve (guide)
-//! in a chosen parameter and a surface  (surf), so
+//! in a chosen parameter and a surface (surf), so
 //! that pts was at a given distance from the guide.
 //! X(1),X(2) are the parameters U,V of pts on surf.
 class BlendFunc_Corde

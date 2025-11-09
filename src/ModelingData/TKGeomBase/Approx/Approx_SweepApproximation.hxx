@@ -44,14 +44,14 @@
 class Approx_SweepFunction;
 class AdvApprox_Cutting;
 
-//! Approximation  of  an  Surface   S(u,v)
-//! (and eventually associate  2d Curves) defined
+//! Approximation of an Surface S(u,v)
+//! (and eventually associate 2d Curves) defined
 //! by section's law.
 //!
 //! This surface is defined by a function F(u, v)
 //! where Ft(u) = F(u, t) is a bspline curve.
-//! To use this algorithme, you  have to implement Ft(u)
-//! as a derivative class  of Approx_SweepFunction.
+//! To use this algorithm, you have to implement Ft(u)
+//! as a derivative class of Approx_SweepFunction.
 //! This algorithm can be used by blending, sweeping...
 class Approx_SweepApproximation
 {
@@ -158,7 +158,7 @@ public:
   //! 2d curve approximation.
   Standard_EXPORT Standard_Real Average2dError(const Standard_Integer Index) const;
 
-  //! returns the  maximum 3d  error  of the  <Index>
+  //! returns the maximum 3d error of the <Index>
   //! 2d curve approximation on the Surface.
   Standard_EXPORT Standard_Real TolCurveOnSurf(const Standard_Integer Index) const;
 

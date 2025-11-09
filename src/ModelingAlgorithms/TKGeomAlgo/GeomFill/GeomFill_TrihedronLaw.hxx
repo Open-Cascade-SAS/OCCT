@@ -95,7 +95,7 @@ public:
   //! the function
   Standard_EXPORT void GetInterval(Standard_Real& First, Standard_Real& Last);
 
-  //! Get average value of M(t) and V(t) it is usfull to
+  //! Get average value of M(t) and V(t) it is useful to
   //! make fast approximation of rational  surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,

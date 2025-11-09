@@ -141,7 +141,7 @@ public:
                                          Standard_Real& Last) const Standard_OVERRIDE;
 
   //! Returns the resolutions in the  sub-space 2d <Index>
-  //! This information is usfull to find an good tolerance in
+  //! This information is useful to find a good tolerance in
   //! 2d approximation.
   //! Warning: Used only if Nb2dCurve > 0
   Standard_EXPORT virtual void Resolution(const Standard_Integer Index,
@@ -150,10 +150,10 @@ public:
                                           Standard_Real&         TolV) const Standard_OVERRIDE;
 
   //! Get the maximum Norm  of the matrix-location part.  It
-  //! is usful to find an good Tolerance to approx M(t).
+  //! is usful to find a good Tolerance to approx M(t).
   Standard_EXPORT virtual Standard_Real GetMaximalNorm() Standard_OVERRIDE;
 
-  //! Get average value of M(t) and V(t) it is usfull to
+  //! Get average value of M(t) and V(t) it is useful to
   //! make fast approximation of rational  surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Mat& AM, gp_Vec& AV) Standard_OVERRIDE;
 

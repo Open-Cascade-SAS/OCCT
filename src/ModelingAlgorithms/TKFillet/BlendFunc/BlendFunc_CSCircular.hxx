@@ -45,12 +45,12 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a function for a circular blending between
-  //! a curve  <C> and a surface  <S>.  The direction of
-  //! the planes are given by <CGuide>.  The position of
-  //! the plane is  determined on  the  curve <C>.   <L>
-  //! defines  the change of  parameter between  <C> and
-  //! <CGuide>.  So, the planes are defined as described
-  //! below :
+  //! a curve <C> and a surface <S>. The direction of
+  //! the planes are given by <CGuide>. The position of
+  //! the plane is determined on the curve <C>. <L>
+  //! defines the change of parameter between <C> and
+  //! <CGuide>. So, the planes are defined as described
+  //! below:
   //! t is the current parameter on the guide line.
   //! Pguide = C(L(t)); Nguide = CGuide'(t)/||CGuide'(t)||
   Standard_EXPORT BlendFunc_CSCircular(const Handle(Adaptor3d_Surface)& S,
@@ -170,14 +170,14 @@ public:
   //! of all sections.
   Standard_EXPORT void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   //! raises
   //! OutOfRange from Standard

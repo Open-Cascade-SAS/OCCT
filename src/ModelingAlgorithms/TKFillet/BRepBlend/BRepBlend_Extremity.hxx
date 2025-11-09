@@ -85,14 +85,14 @@ public:
   //! This method returns the value of the point in 3d space.
   const gp_Pnt& Value() const;
 
-  //! Set the tangent   vector  for an extremity on  a
+  //! Set the tangent vector for an extremity on a
   //! surface.
   void SetTangent(const gp_Vec& Tangent);
 
-  //! Returns TRUE if the Tangent is  stored.
+  //! Returns TRUE if the Tangent is stored.
   Standard_Boolean HasTangent() const;
 
-  //! This  method returns the   value of tangent  in 3d
+  //! This method returns the value of tangent in 3d
   //! space.
   const gp_Vec& Tangent() const;
 

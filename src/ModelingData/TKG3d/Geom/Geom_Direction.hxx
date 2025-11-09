@@ -85,7 +85,7 @@ public:
   //! not possible to have a direction with null length.
   Standard_EXPORT void Cross(const Handle(Geom_Vector)& Other) Standard_OVERRIDE;
 
-  //! Computes the triple vector product  <me> ^(V1 ^ V2).
+  //! Computes the triple vector product <me> ^(V1 ^ V2).
   //!
   //! Raised if V1 and V2 are parallel or <me> and (V1 ^ V2) are
   //! parallel
