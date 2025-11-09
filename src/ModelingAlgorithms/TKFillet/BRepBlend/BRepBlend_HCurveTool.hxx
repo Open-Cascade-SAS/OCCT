@@ -40,14 +40,14 @@ public:
 
   static GeomAbs_Shape Continuity(const Handle(Adaptor3d_Curve)& C);
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(myclass) >= <S>
   static Standard_Integer NbIntervals(const Handle(Adaptor3d_Curve)& C, const GeomAbs_Shape S);
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   static void Intervals(const Handle(Adaptor3d_Curve)& C,
                         TColStd_Array1OfReal&          T,
@@ -101,12 +101,12 @@ public:
                    const Standard_Real            U,
                    const Standard_Integer         N);
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   static Standard_Real Resolution(const Handle(Adaptor3d_Curve)& C, const Standard_Real R3d);
 
-  //! Returns  the  type of the   curve  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the curve in the current
+  //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   static GeomAbs_CurveType GetType(const Handle(Adaptor3d_Curve)& C);
 

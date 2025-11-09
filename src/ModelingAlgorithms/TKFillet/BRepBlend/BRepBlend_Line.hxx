@@ -45,7 +45,7 @@ public:
   //! Adds a point in the line at the first place.
   void InsertBefore(const Standard_Integer Index, const Blend_Point& P);
 
-  //! Removes  from  <me>    all  the  items  of
+  //! Removes from <me> all the items of
   //! positions between <FromIndex> and <ToIndex>.
   //! Raises an exception if the indices are out of bounds.
   void Remove(const Standard_Integer FromIndex, const Standard_Integer ToIndex);
@@ -78,7 +78,7 @@ public:
   //! N is the normal to the first surface at a point P,
   //! DRac is a vector tangent to the blending patch,
   //! oriented towards the valid part of this patch,
-  //! T  is the tangent to the line on S1 at P.
+  //! T is the tangent to the line on S1 at P.
   //! The transitioon is OUT when the system of vectors is
   //! left-handed.
   IntSurf_TypeTrans TransitionOnS1() const;

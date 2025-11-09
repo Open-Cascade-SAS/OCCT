@@ -25,12 +25,12 @@ class math_Matrix;
 
 //! Function of reframing between a restriction surface of the
 //! surface and a curve.
-//! Class     used   to   compute  a    solution   of  the
-//! surfRstConstRad  problem  on a done restriction of the
+//! Class used to compute a solution of the
+//! surfRstConstRad problem on a done restriction of the
 //! surface.
-//! The vector  <X> used in  Value, Values and Derivatives
-//! methods  has   to  be the   vector  of  the parametric
-//! coordinates  wguide, wcurv, wrst  where  wguide is the
+//! The vector <X> used in Value, Values and Derivatives
+//! methods has to be the vector of the parametric
+//! coordinates wguide, wcurv, wrst where wguide is the
 //! parameter on the guide line, wcurv is the parameter on
 //! the curve, wrst is the parameter on the restriction on
 //! the surface.

@@ -102,7 +102,7 @@ public:
   Standard_EXPORT Standard_Boolean IsSolution(const math_Vector&  Sol,
                                               const Standard_Real Tol) Standard_OVERRIDE;
 
-  //! Returns   the    minimal  Distance  between   two
+  //! Returns the minimal Distance between two
   //! extremities of calculated sections.
   Standard_EXPORT virtual Standard_Real GetMinimalDistance() const Standard_OVERRIDE;
 
@@ -113,7 +113,7 @@ public:
   //! Returns U,V coordinates of the point on the surface.
   Standard_EXPORT const gp_Pnt2d& Pnt2dOnRst1() const Standard_OVERRIDE;
 
-  //! Returns  U,V coordinates of the point  on the curve on
+  //! Returns U,V coordinates of the point on the curve on
   //! surface.
   Standard_EXPORT const gp_Pnt2d& Pnt2dOnRst2() const Standard_OVERRIDE;
 
@@ -133,8 +133,8 @@ public:
 
   Standard_EXPORT const gp_Vec2d& Tangent2dOnRst2() const Standard_OVERRIDE;
 
-  //! Permet  d ' implementer   un   critere  de  decrochage
-  //! specifique a la fonction.
+  //! Allows implementing a specific termination criterion
+  //! for the function.
   Standard_EXPORT Blend_DecrochStatus Decroch(const math_Vector& Sol,
                                               gp_Vec&            NRst1,
                                               gp_Vec&            TgRst1,
@@ -143,7 +143,7 @@ public:
 
   Standard_EXPORT void Set(const Standard_Real Radius, const Standard_Integer Choix);
 
-  //! Sets  the  type  of   section generation   for the
+  //! Sets the type of section generation for the
   //! approximations.
   Standard_EXPORT void Set(const BlendFunc_SectionShape TypeSection);
 
@@ -162,7 +162,7 @@ public:
                                Standard_Real&      Pfin,
                                gp_Circ&            C);
 
-  //! Returns  if the section is rational
+  //! Returns if the section is rational
   Standard_EXPORT Standard_Boolean IsRational() const Standard_OVERRIDE;
 
   //! Returns the length of the maximum section
@@ -172,13 +172,13 @@ public:
   //! of all sections.
   Standard_EXPORT void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;

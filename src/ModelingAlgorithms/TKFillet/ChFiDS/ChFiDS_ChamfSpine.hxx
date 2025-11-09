@@ -26,8 +26,8 @@
 class ChFiDS_ChamfSpine;
 DEFINE_STANDARD_HANDLE(ChFiDS_ChamfSpine, ChFiDS_Spine)
 
-//! Provides  data specific to chamfers
-//! distances on  each  of faces.
+//! Provides data specific to chamfers
+//! distances on each of faces.
 class ChFiDS_ChamfSpine : public ChFiDS_Spine
 {
 

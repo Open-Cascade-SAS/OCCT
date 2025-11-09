@@ -26,7 +26,7 @@
 #include <Standard_Real.hxx>
 class Geom_Curve;
 
-//! Searches   singularities on fillet.
+//! Searches singularities on fillet.
 //! F(t) = (C1(t) - C2(t)).(C1'(t) - C2'(t));
 class ChFi3d_SearchSing : public math_FunctionWithDerivative
 {

@@ -33,25 +33,25 @@ class Adaptor3d_HVertex;
 class IntSurf_Transition;
 class BRepBlend_Extremity;
 
-//! This  class processes the  data  resulting from
-//! Blend_CSWalking  but  it  takes  in  consideration the Surface
-//! supporting  the  curve to detect the  breakpoint.
+//! This class processes the data resulting from
+//! Blend_CSWalking but it takes in consideration the Surface
+//! supporting the curve to detect the breakpoint.
 //!
-//! As  a  result, the  criteria of distribution of
-//! points on  the line become  more flexible  because  it
-//! should  calculate values  approached
-//! by an approximation of continued  functions based on the
+//! As a result, the criteria of distribution of
+//! points on the line become more flexible because it
+//! should calculate values approached
+//! by an approximation of continued functions based on the
 //! Blend_RstRstFunction.
 //!
-//! Thus this pseudo path necessitates 3 criteria  of
-//! regrouping :
+//! Thus this pseudo path necessitates 3 criteria of
+//! regrouping:
 //!
-//! 1) exit of  the domain of  the  curve
+//! 1) exit of the domain of the curve
 //!
-//! 2) exit of  the domain of  the surface
+//! 2) exit of the domain of the surface
 //!
-//! 3) stall as there  is a solution of problem
-//! surf/surf  within the domain  of the  surface
+//! 3) stall as there is a solution of problem
+//! surf/surf within the domain of the surface
 //! of support of the restriction.
 //!
 //! Construction of a BRepBlend_Line between two pcurves

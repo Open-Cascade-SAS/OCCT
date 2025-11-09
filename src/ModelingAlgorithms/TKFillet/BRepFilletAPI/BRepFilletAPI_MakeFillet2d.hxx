@@ -89,7 +89,7 @@ public:
 
   //! This initialize method allow to init the builder
   //! from a face RefFace and another face ModFace which derive from RefFace.
-  //! This  is useful to modify a fillet or a chamfer already created on ModFace.
+  //! This is useful to modify a fillet or a chamfer already created on ModFace.
   Standard_EXPORT void Init(const TopoDS_Face& RefFace, const TopoDS_Face& ModFace);
 
   //! Adds a fillet of radius Radius between the two edges
@@ -259,7 +259,7 @@ public:
   //! Returns the number of chamfers on the face modified by this algorithm.
   Standard_Integer NbChamfer() const;
 
-  //! Returns the list  of shapes modified from the shape
+  //! Returns the list of shapes modified from the shape
   //! <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
     Standard_OVERRIDE;
