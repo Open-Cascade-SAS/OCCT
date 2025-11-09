@@ -16,8 +16,6 @@
 #include <Standard_DimensionError.hxx>
 #include <Standard_DivideByZero.hxx>
 
-#include <utility>
-
 //==================================================================================================
 
 inline Standard_OStream& operator<<(Standard_OStream& o, const math_Matrix& mat)

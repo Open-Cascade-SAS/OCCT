@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 #include <math_Matrix.hxx>
-#include <math_VectorBase.hxx>
+#include <math_Vector.hxx>
 #include <math_Gauss.hxx>
 #include <math_NotSquare.hxx>
 #include <math_SingularMatrix.hxx>
@@ -21,7 +21,7 @@
 
 //==================================================================================================
 
-void math_Matrix::SetRow(const Standard_Integer Row, const math_VectorBase<>& V)
+void math_Matrix::SetRow(const Standard_Integer Row, const math_Vector& V)
 {
   Standard_DimensionError_Raise_if(ColNumber() != V.Length(),
                                    "math_Matrix::SetRow() - input vector has wrong dimensions");
@@ -39,7 +39,7 @@ void math_Matrix::SetRow(const Standard_Integer Row, const math_VectorBase<>& V)
 
 //==================================================================================================
 
-void math_Matrix::SetCol(const Standard_Integer Col, const math_VectorBase<>& V)
+void math_Matrix::SetCol(const Standard_Integer Col, const math_Vector& V)
 {
   Standard_DimensionError_Raise_if(RowNumber() != V.Length(),
                                    "math_Matrix::SetCol() - input vector has wrong dimensions");
@@ -57,12 +57,12 @@ void math_Matrix::SetCol(const Standard_Integer Col, const math_VectorBase<>& V)
 
 //==================================================================================================
 
-math_VectorBase<> math_Matrix::Row(const Standard_Integer Row) const
+math_Vector math_Matrix::Row(const Standard_Integer Row) const
 {
   const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
-  math_VectorBase<> Result(aLowerCol, anUpperCol);
+  math_Vector Result(aLowerCol, anUpperCol);
 
   for (Standard_Integer Index = aLowerCol; Index <= anUpperCol; Index++)
   {
@@ -73,12 +73,12 @@ math_VectorBase<> math_Matrix::Row(const Standard_Integer Row) const
 
 //==================================================================================================
 
-math_VectorBase<> math_Matrix::Col(const Standard_Integer Col) const
+math_Vector math_Matrix::Col(const Standard_Integer Col) const
 {
   const Standard_Integer aLowerRow  = Array.LowerRow();
   const Standard_Integer anUpperRow = Array.UpperRow();
 
-  math_VectorBase<> Result(aLowerRow, anUpperRow);
+  math_Vector Result(aLowerRow, anUpperRow);
 
   for (Standard_Integer Index = aLowerRow; Index <= anUpperRow; Index++)
   {
@@ -91,8 +91,8 @@ math_VectorBase<> math_Matrix::Col(const Standard_Integer Col) const
 
 void math_Matrix::SwapRow(const Standard_Integer Row1, const Standard_Integer Row2)
 {
-  math_VectorBase<> V1 = Row(Row1);
-  math_VectorBase<> V2 = Row(Row2);
+  math_Vector V1 = Row(Row1);
+  math_Vector V2 = Row(Row2);
   SetRow(Row1, V2);
   SetRow(Row2, V1);
 }
@@ -101,15 +101,15 @@ void math_Matrix::SwapRow(const Standard_Integer Row1, const Standard_Integer Ro
 
 void math_Matrix::SwapCol(const Standard_Integer Col1, const Standard_Integer Col2)
 {
-  math_VectorBase<> V1 = Col(Col1);
-  math_VectorBase<> V2 = Col(Col2);
+  math_Vector V1 = Col(Col1);
+  math_Vector V2 = Col(Col2);
   SetCol(Col1, V2);
   SetCol(Col2, V1);
 }
 
 //==================================================================================================
 
-void math_Matrix::Multiply(const math_VectorBase<>& Left, const math_VectorBase<>& Right)
+void math_Matrix::Multiply(const math_Vector& Left, const math_Vector& Right)
 {
   Standard_DimensionError_Raise_if(
     (RowNumber() != Left.Length()) || (ColNumber() != Right.Length()),
@@ -131,7 +131,7 @@ void math_Matrix::Multiply(const math_VectorBase<>& Left, const math_VectorBase<
 
 //==================================================================================================
 
-math_VectorBase<> math_Matrix::Multiplied(const math_VectorBase<>& Right) const
+math_Vector math_Matrix::Multiplied(const math_Vector& Right) const
 {
   Standard_DimensionError_Raise_if(
     ColNumber() != Right.Length(),
@@ -142,7 +142,7 @@ math_VectorBase<> math_Matrix::Multiplied(const math_VectorBase<>& Right) const
   const Standard_Integer aLowerCol  = Array.LowerCol();
   const Standard_Integer anUpperCol = Array.UpperCol();
 
-  math_VectorBase<> Result(aLowerRow, anUpperRow);
+  math_Vector Result(aLowerRow, anUpperRow);
 
   for (Standard_Integer I = aLowerRow; I <= anUpperRow; I++)
   {
@@ -159,7 +159,7 @@ math_VectorBase<> math_Matrix::Multiplied(const math_VectorBase<>& Right) const
 
 //==================================================================================================
 
-math_VectorBase<> math_Matrix::operator*(const math_VectorBase<>& Right) const
+math_Vector math_Matrix::operator*(const math_Vector& Right) const
 {
   return Multiplied(Right);
 }

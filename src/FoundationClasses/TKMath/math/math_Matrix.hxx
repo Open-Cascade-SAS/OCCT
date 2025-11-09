@@ -76,8 +76,6 @@ class math_Matrix
 public:
   DEFINE_STANDARD_ALLOC
 
-  friend class math_VectorBase<>;
-
   //! Constructs a non-initialized matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]
   //! For the constructed matrix:
