@@ -388,11 +388,11 @@ void math_VectorBase<TheItemType>::Multiply(const math_Matrix&                  
     "math_VectorBase::Multiply() - input matrix and /or vector have wrong dimensions");
 
   Standard_Integer Index = Lower();
-  for (Standard_Integer I = theLeft.LowerRowIndex; I <= theLeft.UpperRowIndex; I++)
+  for (Standard_Integer I = theLeft.LowerRow(); I <= theLeft.UpperRow(); I++)
   {
     Array(Index)       = 0.0;
     Standard_Integer K = theRight.Lower();
-    for (Standard_Integer J = theLeft.LowerColIndex; J <= theLeft.UpperColIndex; J++)
+    for (Standard_Integer J = theLeft.LowerCol(); J <= theLeft.UpperCol(); J++)
     {
       Array(Index) = Array(Index) + theLeft.Array(I, J) * theRight.Array(K);
       K++;
@@ -410,11 +410,11 @@ void math_VectorBase<TheItemType>::Multiply(const math_VectorBase<TheItemType>& 
     "math_VectorBase::Multiply() - input matrix and /or vector have wrong dimensions");
 
   Standard_Integer Index = Lower();
-  for (Standard_Integer J = theRight.LowerColIndex; J <= theRight.UpperColIndex; J++)
+  for (Standard_Integer J = theRight.LowerCol(); J <= theRight.UpperCol(); J++)
   {
     Array(Index)       = 0.0;
     Standard_Integer K = theLeft.Lower();
-    for (Standard_Integer I = theRight.LowerRowIndex; I <= theRight.UpperRowIndex; I++)
+    for (Standard_Integer I = theRight.LowerRow(); I <= theRight.UpperRow(); I++)
     {
       Array(Index) = Array(Index) + theLeft.Array(K) * theRight.Array(I, J);
       K++;
@@ -432,11 +432,11 @@ void math_VectorBase<TheItemType>::TMultiply(const math_Matrix&                 
     "math_VectorBase::TMultiply() - input matrix and /or vector have wrong dimensions");
 
   Standard_Integer Index = Lower();
-  for (Standard_Integer I = theTLeft.LowerColIndex; I <= theTLeft.UpperColIndex; I++)
+  for (Standard_Integer I = theTLeft.LowerCol(); I <= theTLeft.UpperCol(); I++)
   {
     Array(Index)       = 0.0;
     Standard_Integer K = theRight.Lower();
-    for (Standard_Integer J = theTLeft.LowerRowIndex; J <= theTLeft.UpperRowIndex; J++)
+    for (Standard_Integer J = theTLeft.LowerRow(); J <= theTLeft.UpperRow(); J++)
     {
       Array(Index) = Array(Index) + theTLeft.Array(J, I) * theRight.Array(K);
       K++;
@@ -454,11 +454,11 @@ void math_VectorBase<TheItemType>::TMultiply(const math_VectorBase<TheItemType>&
     "math_VectorBase::TMultiply() - input matrix and /or vector have wrong dimensions");
 
   Standard_Integer Index = Lower();
-  for (Standard_Integer J = theTRight.LowerRowIndex; J <= theTRight.UpperRowIndex; J++)
+  for (Standard_Integer J = theTRight.LowerRow(); J <= theTRight.UpperRow(); J++)
   {
     Array(Index)       = 0.0;
     Standard_Integer K = theLeft.Lower();
-    for (Standard_Integer I = theTRight.LowerColIndex; I <= theTRight.UpperColIndex; I++)
+    for (Standard_Integer I = theTRight.LowerCol(); I <= theTRight.UpperCol(); I++)
     {
       Array(Index) = Array(Index) + theLeft.Array(K) * theTRight.Array(J, I);
       K++;
@@ -505,11 +505,11 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Multiplied(
     Length() != theRight.RowNumber(),
     "math_VectorBase::Multiplied() - input matrix has wrong dimensions");
 
-  math_VectorBase Result(theRight.LowerColIndex, theRight.UpperColIndex);
-  for (Standard_Integer J2 = theRight.LowerColIndex; J2 <= theRight.UpperColIndex; J2++)
+  math_VectorBase Result(theRight.LowerCol(), theRight.UpperCol());
+  for (Standard_Integer J2 = theRight.LowerCol(); J2 <= theRight.UpperCol(); J2++)
   {
     Result.Array(J2)       = 0.0;
-    Standard_Integer theI2 = theRight.LowerRowIndex;
+    Standard_Integer theI2 = theRight.LowerRow();
     for (Standard_Integer I = Lower(); I <= Upper(); I++)
     {
       Result.Array(J2) = Result.Array(J2) + Array(I) * theRight.Array(theI2, J2);
