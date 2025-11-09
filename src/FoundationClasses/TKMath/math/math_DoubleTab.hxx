@@ -86,6 +86,24 @@ public:
   //! Set lower column index
   void SetLowerCol(const Standard_Integer theLowerCol) { myArray.UpdateLowerCol(theLowerCol); }
 
+  //! Get lower row index
+  Standard_Integer LowerRow() const noexcept { return myArray.LowerRow(); }
+
+  //! Get upper row index
+  Standard_Integer UpperRow() const noexcept { return myArray.UpperRow(); }
+
+  //! Get lower column index
+  Standard_Integer LowerCol() const noexcept { return myArray.LowerCol(); }
+
+  //! Get upper column index
+  Standard_Integer UpperCol() const noexcept { return myArray.UpperCol(); }
+
+  //! Get number of rows
+  Standard_Integer NbRows() const noexcept { return myArray.NbRows(); }
+
+  //! Get number of columns
+  Standard_Integer NbColumns() const noexcept { return myArray.NbColumns(); }
+
   //! Access element at (theRowIndex, theColIndex)
   const Standard_Real& Value(const Standard_Integer theRowIndex,
                              const Standard_Integer theColIndex) const
