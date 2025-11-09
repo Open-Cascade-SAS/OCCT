@@ -28,7 +28,7 @@ class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Shape;
 
-//! Providestools to implement local topological
+//! Provides tools to implement local topological
 //! operations on a shape.
 class LocOpe
 {
