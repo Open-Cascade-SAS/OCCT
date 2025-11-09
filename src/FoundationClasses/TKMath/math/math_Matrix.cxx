@@ -153,3 +153,10 @@ math_VectorBase<> math_Matrix::Multiplied(const math_VectorBase<>& Right) const
   }
   return Result;
 }
+
+//==================================================================================================
+
+math_VectorBase<> math_Matrix::operator*(const math_VectorBase<>& Right) const
+{
+  return Multiplied(Right);
+}

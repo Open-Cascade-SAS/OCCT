@@ -622,13 +622,6 @@ inline math_Matrix math_Matrix::Multiplied(const math_Matrix& Right) const
 
 //==================================================================================================
 
-inline math_VectorBase<> math_Matrix::operator*(const math_VectorBase<>& Right) const
-{
-  return Multiplied(Right);
-}
-
-//==================================================================================================
-
 inline math_Matrix math_Matrix::TMultiply(const math_Matrix& Right) const
 {
   Standard_DimensionError_Raise_if(

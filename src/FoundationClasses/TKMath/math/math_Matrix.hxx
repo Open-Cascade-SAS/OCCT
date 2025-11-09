@@ -402,7 +402,7 @@ public:
   //! An exception is raised if the dimensions are different.
   Standard_NODISCARD Standard_EXPORT math_VectorBase<> Multiplied(
     const math_VectorBase<>& Right) const;
-  Standard_NODISCARD inline math_VectorBase<> operator*(
+  Standard_NODISCARD Standard_EXPORT math_VectorBase<> operator*(
     const math_VectorBase<>& Right) const;
 
   //! Returns the opposite of a matrix.
