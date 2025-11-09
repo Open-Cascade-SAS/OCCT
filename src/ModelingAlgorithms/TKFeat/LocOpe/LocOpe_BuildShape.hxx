@@ -30,11 +30,11 @@ public:
 
   LocOpe_BuildShape();
 
-  //! Builds shape(s) from  the list <L>.  Uses only the
+  //! Builds shape(s) from the list <L>. Uses only the
   //! faces of <L>.
   LocOpe_BuildShape(const TopTools_ListOfShape& L);
 
-  //! Builds shape(s) from  the list <L>.  Uses only the
+  //! Builds shape(s) from the list <L>. Uses only the
   //! faces of <L>.
   Standard_EXPORT void Perform(const TopTools_ListOfShape& L);
 

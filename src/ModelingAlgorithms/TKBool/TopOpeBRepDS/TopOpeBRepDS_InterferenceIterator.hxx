@@ -28,13 +28,13 @@
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 class TopOpeBRepDS_Interference;
 
-//! Iterate  on  interferences  of  a  list,  matching
-//! conditions  on   interferences.
-//! Nota   :
-//! inheritance  of   ListIteratorOfListOfInterference  from
-//! TopOpeBRepDS  has  not   been  done   because  of  the
-//! impossibility of naming  the classical  More, Next
-//! methods  which are declared as static in
+//! Iterate on interferences of a list, matching
+//! conditions on interferences.
+//! Nota:
+//! inheritance of ListIteratorOfListOfInterference from
+//! TopOpeBRepDS has not been done because of the
+//! impossibility of naming the classical More, Next
+//! methods which are declared as static in
 //! TCollection_ListIteratorOfList ... . ListIteratorOfList
 //! has benn placed as a field of InterferenceIterator.
 class TopOpeBRepDS_InterferenceIterator
@@ -47,7 +47,7 @@ public:
   //! Creates an iterator on the Interference of list <L>.
   Standard_EXPORT TopOpeBRepDS_InterferenceIterator(const TopOpeBRepDS_ListOfInterference& L);
 
-  //! re-initialize  interference iteration  process  on
+  //! re-initialize interference iteration process on
   //! the list of interference <L>.
   //! Conditions are not modified.
   Standard_EXPORT void Init(const TopOpeBRepDS_ListOfInterference& L);
@@ -68,11 +68,11 @@ public:
   //! Interference must match the Support <S>
   Standard_EXPORT void Support(const Standard_Integer S);
 
-  //! reach for an interference  matching the conditions
-  //! (if  defined).
+  //! reach for an interference matching the conditions
+  //! (if defined).
   Standard_EXPORT void Match();
 
-  //! Returns  True if the Interference <I>  matches the
+  //! Returns True if the Interference <I> matches the
   //! conditions (if defined).
   //! If no conditions defined, returns True.
   Standard_EXPORT virtual Standard_Boolean MatchInterference(
@@ -85,8 +85,8 @@ public:
   //! Move to the next Interference.
   Standard_EXPORT void Next();
 
-  //! Returns   the   current   Interference,   matching   the
-  //! conditions  (if defined).
+  //! Returns the current Interference, matching the
+  //! conditions (if defined).
   Standard_EXPORT const Handle(TopOpeBRepDS_Interference)& Value() const;
 
   Standard_EXPORT TopOpeBRepDS_ListIteratorOfListOfInterference& ChangeIterator();

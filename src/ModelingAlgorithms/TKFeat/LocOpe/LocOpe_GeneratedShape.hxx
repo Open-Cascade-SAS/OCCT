@@ -34,7 +34,7 @@ class LocOpe_GeneratedShape : public Standard_Transient
 public:
   Standard_EXPORT virtual const TopTools_ListOfShape& GeneratingEdges() = 0;
 
-  //! Returns the  edge  created by  the  vertex <V>. If
+  //! Returns the edge created by the vertex <V>. If
   //! none, must return a null shape.
   Standard_EXPORT virtual TopoDS_Edge Generated(const TopoDS_Vertex& V) = 0;
 
@@ -42,7 +42,7 @@ public:
   //! must return a null shape.
   Standard_EXPORT virtual TopoDS_Face Generated(const TopoDS_Edge& E) = 0;
 
-  //! Returns  the  list of correctly oriented generated
+  //! Returns the list of correctly oriented generated
   //! faces.
   Standard_EXPORT virtual const TopTools_ListOfShape& OrientedFaces() = 0;
 

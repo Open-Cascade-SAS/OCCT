@@ -42,20 +42,20 @@ public:
   //! Sets the axis of the hole(s).
   void Init(const gp_Ax1& Axis);
 
-  //! Sets the shape and  axis on which hole(s)  will be
+  //! Sets the shape and axis on which hole(s) will be
   //! performed.
   void Init(const TopoDS_Shape& S, const gp_Ax1& Axis);
 
-  //! Performs every  hole of    radius  <Radius>.  This
-  //! command  has the  same effect as   a cut operation
-  //! with an  infinite cylinder   defined by the  given
+  //! Performs every hole of radius <Radius>. This
+  //! command has the same effect as a cut operation
+  //! with an infinite cylinder defined by the given
   //! axis and <Radius>.
   Standard_EXPORT void Perform(const Standard_Real Radius);
 
-  //! Performs every  hole  of  radius  <Radius> located
-  //! between PFrom  and  PTo  on the  given  axis.   If
-  //! <WithControl> is set  to Standard_False no control
-  //! are  done  on   the  resulting  shape   after  the
+  //! Performs every hole of radius <Radius> located
+  //! between PFrom and PTo on the given axis. If
+  //! <WithControl> is set to Standard_False no control
+  //! are done on the resulting shape after the
   //! operation is performed.
   Standard_EXPORT void Perform(const Standard_Real    Radius,
                                const Standard_Real    PFrom,
@@ -63,26 +63,26 @@ public:
                                const Standard_Boolean WithControl = Standard_True);
 
   //! Performs the first hole of radius <Radius>, in the
-  //! direction of  the defined axis. First hole signify
+  //! direction of the defined axis. First hole signify
   //! first encountered after the origin of the axis. If
-  //! <WithControl> is set  to Standard_False no control
-  //! are  done  on   the  resulting  shape   after  the
+  //! <WithControl> is set to Standard_False no control
+  //! are done on the resulting shape after the
   //! operation is performed.
   Standard_EXPORT void PerformThruNext(const Standard_Real    Radius,
                                        const Standard_Boolean WithControl = Standard_True);
 
-  //! Performs every  hole of   radius  <Radius> located
-  //! after  the   origin  of   the given    axis.    If
-  //! <WithControl> is  set to Standard_False no control
-  //! are done   on   the  resulting  shape   after  the
+  //! Performs every hole of radius <Radius> located
+  //! after the origin of the given axis. If
+  //! <WithControl> is set to Standard_False no control
+  //! are done on the resulting shape after the
   //! operation is performed.
   Standard_EXPORT void PerformUntilEnd(const Standard_Real    Radius,
                                        const Standard_Boolean WithControl = Standard_True);
 
-  //! Performs a  blind   hole of radius    <Radius> and
-  //! length <Length>.  The length is  measured from the
-  //! origin of the given  axis. If <WithControl> is set
-  //! to  Standard_False no  control  are done after the
+  //! Performs a blind hole of radius <Radius> and
+  //! length <Length>. The length is measured from the
+  //! origin of the given axis. If <WithControl> is set
+  //! to Standard_False no control are done after the
   //! operation is performed.
   Standard_EXPORT void PerformBlind(const Standard_Real    Radius,
                                     const Standard_Real    Length,
@@ -91,9 +91,9 @@ public:
   //! Returns the status after a hole is performed.
   BRepFeat_Status Status() const;
 
-  //! Builds the    resulting shape  (redefined     from
-  //! MakeShape). Invalidates the  given parts  of tools
-  //! if  any,   and performs the  result   of the local
+  //! Builds the resulting shape (redefined from
+  //! MakeShape). Invalidates the given parts of tools
+  //! if any, and performs the result of the local
   //! operation.
   Standard_EXPORT void Build();
 

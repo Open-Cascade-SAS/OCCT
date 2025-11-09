@@ -41,7 +41,7 @@ public:
   //! if support type <ST> == EDGE : <S> is edge E
   //! FACE : <S> is the face with bound E.
   //! <T> is the transition along the edge, crossing the crossed edge.
-  //! E  is the crossed edge.
+  //! E is the crossed edge.
   //! <GIsBound> indicates if <G> is a bound of the edge.
   //! <P> is the parameter of <G> on the edge.
   //!

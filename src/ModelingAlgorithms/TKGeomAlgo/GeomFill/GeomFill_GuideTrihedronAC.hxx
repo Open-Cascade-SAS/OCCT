@@ -93,7 +93,7 @@ public:
   Standard_EXPORT virtual void SetInterval(const Standard_Real First,
                                            const Standard_Real Last) Standard_OVERRIDE;
 
-  //! Get average value of M(t) and V(t) it is usfull to
+  //! Get average value of M(t) and V(t) it is useful to
   //! make fast approximation of rational  surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,

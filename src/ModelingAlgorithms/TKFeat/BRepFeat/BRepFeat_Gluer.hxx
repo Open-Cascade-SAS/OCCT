@@ -85,16 +85,16 @@ public:
   //! Returns the resulting compound shape.
   const TopoDS_Shape& GluedShape() const;
 
-  //! This is  called by  Shape().  It does  nothing but
+  //! This is called by Shape(). It does nothing but
   //! may be redefined.
   Standard_EXPORT virtual void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
-  //! returns the status of the Face after
+  //! Returns the status of the Face after
   //! the shape creation.
   Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& F) Standard_OVERRIDE;
 
-  //! returns the list of generated Faces.
+  //! Returns the list of generated Faces.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& F)
     Standard_OVERRIDE;
 

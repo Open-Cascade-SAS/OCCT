@@ -38,15 +38,15 @@ class TopOpeBRepTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Fuse  edges (in a   wire) of a  shape   where we have
+  //! Fuse edges (in a wire) of a shape where we have
   //! useless vertex.
-  //! In case face <FF> is built on UV-non-connexed  wires
-  //! (with the two closing edges  FORWARD and REVERSED, in
+  //! In case face <FF> is built on UV-non-connexed wires
+  //! (with the two closing edges FORWARD and REVERSED, in
   //! spite of one only), we find out the faulty edge, add
   //! the faulty shapes (edge,wire,face) to <MshNOK>.
   //! <FF> is a face descendant of <F>.
   //! <MWisOld>(wire) = 1 if wire is wire of <F>
-  //! 0    wire results from <F>'s wire split.
+  //! 0 wire results from <F>'s wire split.
   //! returns false if purge fails
   Standard_EXPORT static Standard_Boolean PurgeClosingEdges(
     const TopoDS_Face&                    F,
@@ -72,19 +72,19 @@ public:
     const TopTools_IndexedMapOfOrientedShape& MshNOK,
     TopTools_ListOfShape&                     LOFF);
 
-  //! Returns <False>  if  the  face is  valid (the UV
-  //! representation  of  the  face is   a set   of  pcurves
-  //! connexed by points with   connexity 2).
-  //! Else,  splits <aFace> in order to return a list of valid
+  //! Returns <False> if the face is valid (the UV
+  //! representation of the face is a set of pcurves
+  //! connexed by points with connexity 2).
+  //! Else, splits <aFace> in order to return a list of valid
   //! faces.
   Standard_EXPORT static Standard_Boolean Regularize(const TopoDS_Face&    aFace,
                                                      TopTools_ListOfShape& aListOfFaces,
                                                      TopTools_DataMapOfShapeListOfShape& ESplits);
 
-  //! Returns <False>  if  the  face is  valid (the UV
-  //! representation  of  the  face is   a set   of  pcurves
-  //! connexed by points with   connexity 2).
-  //! Else,  splits wires of the face, these are boundaries of the
+  //! Returns <False> if the face is valid (the UV
+  //! representation of the face is a set of pcurves
+  //! connexed by points with connexity 2).
+  //! Else, splits wires of the face, these are boundaries of the
   //! new faces to build up; <OldWiresNewWires> describes (wire,
   //! splits of wire); <ESplits> describes (edge, edge's splits)
   Standard_EXPORT static Standard_Boolean RegularizeWires(

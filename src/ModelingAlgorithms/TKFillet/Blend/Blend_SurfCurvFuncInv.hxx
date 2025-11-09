@@ -26,14 +26,14 @@
 #include <math_Vector.hxx>
 class math_Matrix;
 
-//! Deferred   class  for a  function  used  to compute  a
-//! blending surface between a  surface and a curve, using
-//! a  guide  line.   This   function is  used  to find  a
+//! Deferred class for a function used to compute a
+//! blending surface between a surface and a curve, using
+//! a guide line. This function is used to find a
 //! solution on a done restriction of the surface.
 //!
-//! The vector  <X> used in  Value, Values and Derivatives
-//! methods  has   to  be the   vector  of  the parametric
-//! coordinates  wguide, wcurv, wrst  where  wguide is the
+//! The vector <X> used in Value, Values and Derivatives
+//! methods has to be the vector of the parametric
+//! coordinates wguide, wcurv, wrst where wguide is the
 //! parameter on the guide line, wcurv is the parameter on
 //! the curve, wrst is the parameter on the restriction on
 //! the surface.

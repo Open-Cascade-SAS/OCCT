@@ -39,13 +39,13 @@ class BRepBlend_AppSurface : public AppBlend_Approx
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Approximation     of   the   new  Surface  (and
-  //! eventually the  2d    Curves   on the   support
+  //! Approximation of the new Surface (and
+  //! eventually the 2d Curves on the support
   //! surfaces).
-  //! Normally     the  2d    curve are
-  //! approximated  with an  tolerance   given  by   the
-  //! resolution on   support surfaces,  but  if this
-  //! tolerance is too large Tol2d  is used.
+  //! Normally the 2d curve are
+  //! approximated with a tolerance given by the
+  //! resolution on support surfaces, but if this
+  //! tolerance is too large Tol2d is used.
   Standard_EXPORT BRepBlend_AppSurface(const Handle(Approx_SweepFunction)& Funct,
                                        const Standard_Real                 First,
                                        const Standard_Real                 Last,

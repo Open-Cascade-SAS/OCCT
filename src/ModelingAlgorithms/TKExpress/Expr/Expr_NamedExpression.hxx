@@ -25,7 +25,7 @@
 class Expr_NamedExpression;
 DEFINE_STANDARD_HANDLE(Expr_NamedExpression, Expr_GeneralExpression)
 
-//! Describe an expression used  by its name (as constants
+//! Describe an expression used by its name (as constants
 //! or variables). A single reference is made to a
 //! NamedExpression in every Expression (i.e. a
 //! NamedExpression is shared).

@@ -32,13 +32,13 @@
 class TopoDS_Vertex;
 class TopoDS_Edge;
 
-//! This class can detect  vertices in a face that can
+//! This class can detect vertices in a face that can
 //! be considered useless and then perform the fuse of
-//! the  edges and remove  the  useless vertices.  By
-//! useles vertices,  we mean :
-//! * vertices that  have  exactly two connex edges
+//! the edges and remove the useless vertices. By
+//! useles vertices, we mean:
+//! * vertices that have exactly two connex edges
 //! * the edges connex to the vertex must have
-//! exactly the same 2 connex faces .
+//! exactly the same 2 connex faces.
 //! * The edges connex to the vertex must have the
 //! same geometric support.
 class TopOpeBRepTool_FuseEdges
@@ -46,7 +46,7 @@ class TopOpeBRepTool_FuseEdges
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Initialise members  and build  construction of map
+  //! Initialise members and build construction of map
   //! of ancestors.
   Standard_EXPORT TopOpeBRepTool_FuseEdges(const TopoDS_Shape&    theShape,
                                            const Standard_Boolean PerformNow = Standard_False);
@@ -54,15 +54,15 @@ public:
   //! set edges to avoid being fused
   Standard_EXPORT void AvoidEdges(const TopTools_IndexedMapOfShape& theMapEdg);
 
-  //! returns  all the list of edges to be fused
+  //! returns all the list of edges to be fused
   //! each list of the map represent a set of connex edges
   //! that can be fused.
   Standard_EXPORT void Edges(TopTools_DataMapOfIntegerListOfShape& theMapLstEdg);
 
   //! returns all the fused edges. each integer entry in
-  //! the   map  corresponds  to  the  integer   in the
-  //! DataMapOfIntegerListOfShape  we    get in  method
-  //! Edges.   That is to say, to  the list  of edges in
+  //! the map corresponds to the integer in the
+  //! DataMapOfIntegerListOfShape we get in method
+  //! Edges. That is to say, to the list of edges in
   //! theMapLstEdg(i) corresponds the resulting edge theMapEdge(i)
   Standard_EXPORT void ResultEdges(TopTools_DataMapOfIntegerShape& theMapEdg);
 
@@ -76,7 +76,7 @@ public:
   //! returns the number of vertices candidate to be removed
   Standard_EXPORT Standard_Integer NbVertices();
 
-  //! Using  map of list of connex  edges, fuse each list to
+  //! Using map of list of connex edges, fuse each list to
   //! one edge and then update myShape
   Standard_EXPORT void Perform();
 
@@ -85,7 +85,7 @@ private:
   //! Build the all the lists of edges that are to be fused
   Standard_EXPORT void BuildListEdges();
 
-  //! Build result   fused edges according  to  the list
+  //! Build result fused edges according to the list
   //! builtin BuildLisEdges
   Standard_EXPORT void BuildListResultEdges();
 

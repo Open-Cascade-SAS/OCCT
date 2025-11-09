@@ -31,12 +31,12 @@ class Geom2dConvert_CompCurveToBSplineCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Initialize the algorithme
+  //! Initialize the algorithm
   //! - Parameterisation is used to convert
   Standard_EXPORT Geom2dConvert_CompCurveToBSplineCurve(
     const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
-  //! Initialize the algorithme with one curve
+  //! Initialize the algorithm with one curve
   //! - Parameterisation is used to convert
   Standard_EXPORT Geom2dConvert_CompCurveToBSplineCurve(
     const Handle(Geom2d_BoundedCurve)& BasisCurve,

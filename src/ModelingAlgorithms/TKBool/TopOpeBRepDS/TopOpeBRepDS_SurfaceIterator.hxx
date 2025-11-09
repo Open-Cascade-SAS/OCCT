@@ -31,7 +31,7 @@ class TopOpeBRepDS_SurfaceIterator : public TopOpeBRepDS_InterferenceIterator
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an  iterator on the  Surfaces on solid
+  //! Creates an iterator on the Surfaces on solid
   //! described by the interferences in <L>.
   Standard_EXPORT TopOpeBRepDS_SurfaceIterator(const TopOpeBRepDS_ListOfInterference& L);
 

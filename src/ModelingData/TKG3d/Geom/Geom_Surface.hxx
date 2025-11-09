@@ -108,7 +108,7 @@ public:
   //! @endcode
   //! This method does not change <U> and <V>
   //!
-  //! It  can be redefined.  For  example on  the Plane,
+  //! It can be redefined. For example on the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.
   Standard_EXPORT virtual void TransformParameters(Standard_Real& U,
                                                    Standard_Real& V,

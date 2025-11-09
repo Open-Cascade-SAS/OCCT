@@ -113,7 +113,7 @@ public:
 
   Standard_EXPORT void Set(const Standard_Real Radius, const Standard_Integer Choix);
 
-  //! Sets  the  type  of   section generation   for the
+  //! Sets the type of section generation for the
   //! approximations.
   Standard_EXPORT void Set(const BlendFunc_SectionShape TypeSection);
 
@@ -147,7 +147,7 @@ public:
                                               TColgp_Array1OfPnt& tabP,
                                               TColgp_Array1OfVec& tabV);
 
-  //! Returns  if the section is rational
+  //! Returns if the section is rational
   Standard_EXPORT Standard_Boolean IsRational() const Standard_OVERRIDE;
 
   //! Returns the length of the maximum section
@@ -157,13 +157,13 @@ public:
   //! of all sections.
   Standard_EXPORT void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   //! raises
   //! OutOfRange from Standard

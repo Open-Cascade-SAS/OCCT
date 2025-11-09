@@ -30,7 +30,7 @@ class Blend_Point;
 class BRepBlend_AppFuncRst;
 DEFINE_STANDARD_HANDLE(BRepBlend_AppFuncRst, BRepBlend_AppFuncRoot)
 
-//! Function  to approximate by AppSurface  for Curve/Surface contact.
+//! Function to approximate by AppSurface for Curve/Surface contact.
 class BRepBlend_AppFuncRst : public BRepBlend_AppFuncRoot
 {
 

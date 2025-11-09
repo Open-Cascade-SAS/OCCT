@@ -54,7 +54,7 @@ public:
   //! Empty constructor
   BRepFeat_SplitShape();
 
-  //! Creates the process  with the shape <S>.
+  //! Creates the process with the shape <S>.
   BRepFeat_SplitShape(const TopoDS_Shape& S);
 
   //! Add splitting edges or wires for whole initial shape
@@ -70,7 +70,7 @@ public:
   void SetCheckInterior(const Standard_Boolean ToCheckInterior);
 
   //! Adds the wire <W> on the face <F>.
-  //! Raises NoSuchObject  if <F> does not belong to the original shape.
+  //! Raises NoSuchObject if <F> does not belong to the original shape.
   void Add(const TopoDS_Wire& W, const TopoDS_Face& F);
 
   //! Adds the edge <E> on the face <F>.
@@ -82,18 +82,18 @@ public:
   //! they must be connected topologically, i.e. they
   //! must share common vertices.
   //!
-  //! Raises NoSuchObject  if <F> does not belong to the original shape.
+  //! Raises NoSuchObject if <F> does not belong to the original shape.
   void Add(const TopoDS_Compound& Comp, const TopoDS_Face& F);
 
   //! Adds the edge <E> on the existing edge <EOn>.
   void Add(const TopoDS_Edge& E, const TopoDS_Edge& EOn);
 
-  //! Returns  the faces   which  are the  left of   the
+  //! Returns the faces which are the left of the
   //! projected wires.
   Standard_EXPORT const TopTools_ListOfShape& DirectLeft() const;
 
   //! Returns the faces of the "left" part on the shape.
-  //! (It  is build   from  DirectLeft,  with  the faces
+  //! (It is build from DirectLeft, with the faces
   //! connected to this set, and so on...).
   //! Raises NotDone if IsDone returns <Standard_False>.
   Standard_EXPORT const TopTools_ListOfShape& Left() const;

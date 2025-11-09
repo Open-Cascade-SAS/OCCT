@@ -58,7 +58,7 @@ public:
   Standard_EXPORT Standard_Boolean EdgeSupport(const Handle(TopOpeBRepDS_Interference)& I,
                                                TopoDS_Shape&                            E) const;
 
-  //! Return les faces qui  ont genere la section origine
+  //! Return les faces qui ont genere la section origine
   //! de I
   Standard_EXPORT Standard_Boolean FacesSupport(const Handle(TopOpeBRepDS_Interference)& I,
                                                 TopoDS_Shape&                            F1,

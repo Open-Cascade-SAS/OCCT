@@ -82,7 +82,7 @@ public:
   //! serve as the basis from the draft prism. The draft will be
   //! defined by the angle Angle and Fuse offers a choice between:
   //! -   removing matter with a Boolean cut using the setting 0
-  //! -   adding matter with Boolean fusion using the setting  1.
+  //! -   adding matter with Boolean fusion using the setting 1.
   //! The sketch face Skface serves to determine the type of
   //! operation. If it is inside the basis shape, a local
   //! operation such as glueing can be performed.
@@ -95,7 +95,7 @@ public:
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>.
-  //! Raises ConstructionError if the  face does not belong to the
+  //! Raises ConstructionError if the face does not belong to the
   //! basis shape, or the edge to the prismed shape.
   Standard_EXPORT void Add(const TopoDS_Edge& E, const TopoDS_Face& OnFace);
 

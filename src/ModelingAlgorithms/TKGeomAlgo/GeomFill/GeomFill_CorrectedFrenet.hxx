@@ -110,7 +110,7 @@ public:
   //! the curve must be set by method SetCurve.
   Standard_EXPORT GeomFill_Trihedron EvaluateBestMode();
 
-  //! Get average value of Tangent(t) and Normal(t) it is usfull to
+  //! Get average value of Tangent(t) and Normal(t) it is useful to
   //! make fast approximation of rational  surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,

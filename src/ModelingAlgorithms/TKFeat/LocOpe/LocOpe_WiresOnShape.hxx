@@ -76,7 +76,7 @@ public:
   //! edge is projected.
   Standard_EXPORT TopoDS_Face OnFace();
 
-  //! If the   current  edge is  projected  on  an edge,
+  //! If the current edge is projected on an edge,
   //! returns <Standard_True> and sets the value of <E>.
   //! Otherwise, returns <Standard_False>.
   Standard_EXPORT Standard_Boolean OnEdge(TopoDS_Edge& E);
@@ -85,16 +85,16 @@ public:
 
   Standard_EXPORT Standard_Boolean OnVertex(const TopoDS_Vertex& Vwire, TopoDS_Vertex& Vshape);
 
-  //! If the vertex <V> lies on  an edge of the original
-  //! shape,  returns     <Standard_True> and   sets the
-  //! concerned edge in  <E>,  and the parameter on  the
+  //! If the vertex <V> lies on an edge of the original
+  //! shape, returns <Standard_True> and sets the
+  //! concerned edge in <E>, and the parameter on the
   //! edge in <P>.
   //! Else returns <Standard_False>.
   Standard_EXPORT Standard_Boolean OnEdge(const TopoDS_Vertex& V, TopoDS_Edge& E, Standard_Real& P);
 
-  //! If the vertex <V> lies on  an edge of the original
-  //! shape,  returns     <Standard_True> and   sets the
-  //! concerned edge in  <E>,  and the parameter on  the
+  //! If the vertex <V> lies on an edge of the original
+  //! shape, returns <Standard_True> and sets the
+  //! concerned edge in <E>, and the parameter on the
   //! edge in <P>.
   //! Else returns <Standard_False>.
   Standard_EXPORT Standard_Boolean OnEdge(const TopoDS_Vertex& V,

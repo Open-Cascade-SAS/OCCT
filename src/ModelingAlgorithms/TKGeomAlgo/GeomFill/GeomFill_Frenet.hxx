@@ -91,7 +91,7 @@ public:
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
                                          const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! Get average value of Tangent(t) and Normal(t) it is usfull to
+  //! Get average value of Tangent(t) and Normal(t) it is useful to
   //! make fast approximation of rational  surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,

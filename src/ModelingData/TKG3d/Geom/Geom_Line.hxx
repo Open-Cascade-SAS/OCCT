@@ -93,7 +93,7 @@ public:
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
   //! Returns the value of the last parameter of this
-  //! line. This is  Standard_Real::RealLast().
+  //! line. This is Standard_Real::RealLast().
   Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! returns False
@@ -155,7 +155,7 @@ public:
                                                              const gp_Trsf&      T) const
     Standard_OVERRIDE;
 
-  //! Returns a  coefficient to compute the parameter on
+  //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
   //! point on <me>.
   //!

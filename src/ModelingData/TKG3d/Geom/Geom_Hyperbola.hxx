@@ -100,7 +100,7 @@ public:
   //! - the "Y Direction" of A2 defines the minor axis
   //! of the hyperbola, i.e. the minor radius
   //! MinorRadius is measured along this axis,
-  //! - A2 is the local coordinate system of the   hyperbola.
+  //! - A2 is the local coordinate system of the hyperbola.
   //! Exceptions
   //! Standard_ConstructionError if:
   //! - MajorRadius is less than 0.0,

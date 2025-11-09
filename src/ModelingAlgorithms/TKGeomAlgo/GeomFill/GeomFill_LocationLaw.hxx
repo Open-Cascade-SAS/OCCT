@@ -135,7 +135,7 @@ public:
   Standard_EXPORT virtual void GetDomain(Standard_Real& First, Standard_Real& Last) const = 0;
 
   //! Returns the resolutions in the  sub-space 2d <Index>
-  //! This information is usfull to find an good tolerance in
+  //! This information is useful to find a good tolerance in
   //! 2d approximation.
   Standard_EXPORT virtual void Resolution(const Standard_Integer Index,
                                           const Standard_Real    Tol,
@@ -148,10 +148,10 @@ public:
   Standard_EXPORT virtual void SetTolerance(const Standard_Real Tol3d, const Standard_Real Tol2d);
 
   //! Get the maximum Norm  of the matrix-location part.  It
-  //! is usful to find an good Tolerance to approx M(t).
+  //! is usful to find a good Tolerance to approx M(t).
   Standard_EXPORT virtual Standard_Real GetMaximalNorm() = 0;
 
-  //! Get average value of M(t) and V(t) it is usfull to
+  //! Get average value of M(t) and V(t) it is useful to
   //! make fast approximation of rational surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Mat& AM, gp_Vec& AV) = 0;
 

@@ -67,12 +67,12 @@ public:
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
     Standard_OVERRIDE;
 
-  //! Returns the list  of shapes created  at the bottom  of
-  //! the created form.  It may be an empty list.
+  //! Returns the list of shapes created at the bottom of
+  //! the created form. It may be an empty list.
   Standard_EXPORT const TopTools_ListOfShape& FirstShape() const;
 
-  //! Returns  the list of shapes  created at the top of the
-  //! created form.  It may be an empty list.
+  //! Returns the list of shapes created at the top of the
+  //! created form. It may be an empty list.
   Standard_EXPORT const TopTools_ListOfShape& LastShape() const;
 
   //! Returns a list of the limiting and glueing faces

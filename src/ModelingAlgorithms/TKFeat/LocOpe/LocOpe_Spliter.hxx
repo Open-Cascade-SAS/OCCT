@@ -50,12 +50,12 @@ public:
   //! Returns the initial shape
   const TopoDS_Shape& Shape() const;
 
-  //! Returns  the faces   which  are the  left of   the
+  //! Returns the faces which are the left of the
   //! projected wires and which are
   Standard_EXPORT const TopTools_ListOfShape& DirectLeft() const;
 
   //! Returns the faces of the "left" part on the shape.
-  //! (It  is build   from  DirectLeft,  with  the faces
+  //! (It is build from DirectLeft, with the faces
   //! connected to this set, and so on...).
   Standard_EXPORT const TopTools_ListOfShape& Left() const;
 

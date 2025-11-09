@@ -27,15 +27,15 @@
 class math_Matrix;
 class gp_Pnt;
 
-//! Deferred   class  for a  function  used  to compute  a
-//! blending surface between a  surface and a curve, using
-//! a  guide  line.   This   function is  used  to find  a
+//! Deferred class for a function used to compute a
+//! blending surface between a surface and a curve, using
+//! a guide line. This function is used to find a
 //! solution on a done point of the curve.
 //!
-//! The vector <X>  used in Value, Values and  Derivatives
-//! methods  has  to   be the  vector   of the  parametric
-//! coordinates w, U,  V where w is  the parameter  on the
-//! guide line, U,V   are the parametric coordinates of  a
+//! The vector <X> used in Value, Values and Derivatives
+//! methods has to be the vector of the parametric
+//! coordinates w, U, V where w is the parameter on the
+//! guide line, U,V are the parametric coordinates of a
 //! point on the partner surface.
 class Blend_SurfPointFuncInv : public math_FunctionSetWithDerivatives
 {

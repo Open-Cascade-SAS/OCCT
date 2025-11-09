@@ -67,7 +67,7 @@ public:
   //! If theFlag = TRUE it means that no selection of parts
   //! of the tool is needed, t.e. no second part. In that case
   //! if theFuse = 0 than operation is COMMON, otherwise CUT21.
-  //! If theFlag = FALSE SetOperation(theFuse) function  is called.
+  //! If theFlag = FALSE SetOperation(theFuse) function is called.
   Standard_EXPORT void SetOperation(const Standard_Integer theFuse, const Standard_Boolean theFlag);
 
   //! Collects parts of the tool.

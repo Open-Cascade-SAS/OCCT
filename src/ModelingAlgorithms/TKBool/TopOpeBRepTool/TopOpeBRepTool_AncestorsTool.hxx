@@ -29,7 +29,7 @@ class TopoDS_Shape;
 //!
 //! This class has been created because it is not possible
 //! to instantiate the argument TheAncestorsTool (of
-//! DSFiller from TopOpeInter) with a  package (TopExp)
+//! DSFiller from TopOpeInter) with a package (TopExp)
 //! giving services as package methods.
 class TopOpeBRepTool_AncestorsTool
 {

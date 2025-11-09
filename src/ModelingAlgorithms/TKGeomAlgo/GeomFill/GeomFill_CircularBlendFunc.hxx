@@ -41,15 +41,15 @@ class GeomFill_CircularBlendFunc : public Approx_SweepFunction
 {
 
 public:
-  //! Create a Blend  with a  constant  radius with 2
-  //! guide-line.   <FShape>  sets the type of  fillet
-  //! surface. The --  default value is  Convert_TgtThetaOver2 (classical --
-  //! nurbs    --   representation  of   circles).
-  //! ChFi3d_QuasiAngular  --  corresponds  to a nurbs
-  //! representation   of  circles     --     which
-  //! parameterisation  matches  the  circle  one.  --
-  //! ChFi3d_Polynomial corresponds to a polynomial --
-  //! representation of circles.
+  //! Create a Blend with a constant radius with 2
+  //! guide-line. <FShape> sets the type of fillet
+  //! surface. The default value is Convert_TgtThetaOver2
+  //! (classical nurbs representation of circles).
+  //! ChFi3d_QuasiAngular corresponds to a nurbs
+  //! representation of circles which parameterisation
+  //! matches the circle one. ChFi3d_Polynomial
+  //! corresponds to a polynomial representation of
+  //! circles.
   Standard_EXPORT GeomFill_CircularBlendFunc(const Handle(Adaptor3d_Curve)& Path,
                                              const Handle(Adaptor3d_Curve)& Curve1,
                                              const Handle(Adaptor3d_Curve)& Curve2,
@@ -64,7 +64,7 @@ public:
                                               TColgp_Array1OfPnt2d& Poles2d,
                                               TColStd_Array1OfReal& Weigths) Standard_OVERRIDE;
 
-  //! compute the first  derivative in v direction  of the
+  //! compute the first derivative in v direction of the
   //! section for v =  param
   Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real   Param,
                                               const Standard_Real   First,
@@ -76,8 +76,8 @@ public:
                                               TColStd_Array1OfReal& Weigths,
                                               TColStd_Array1OfReal& DWeigths) Standard_OVERRIDE;
 
-  //! compute the second derivative  in v direction of the
-  //! section  for v = param
+  //! compute the second derivative in v direction of the
+  //! section for v = param
   Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real   Param,
                                               const Standard_Real   First,
                                               const Standard_Real   Last,
@@ -91,10 +91,10 @@ public:
                                               TColStd_Array1OfReal& DWeigths,
                                               TColStd_Array1OfReal& D2Weigths) Standard_OVERRIDE;
 
-  //! get the number of 2d curves to  approximate.
+  //! get the number of 2d curves to approximate.
   Standard_EXPORT virtual Standard_Integer Nb2dCurves() const Standard_OVERRIDE;
 
-  //! get the format of an  section
+  //! get the format of an section
   Standard_EXPORT virtual void SectionShape(Standard_Integer& NbPoles,
                                             Standard_Integer& NbKnots,
                                             Standard_Integer& Degree) const Standard_OVERRIDE;
@@ -108,15 +108,15 @@ public:
   //! Returns if the section is rational or not
   Standard_EXPORT virtual Standard_Boolean IsRational() const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
     Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
                                          const GeomAbs_Shape   S) const Standard_OVERRIDE;
@@ -138,23 +138,23 @@ public:
                                             const Standard_Real   AngleTol,
                                             TColStd_Array1OfReal& Tol3d) const Standard_OVERRIDE;
 
-  //! Is usfull, if (me) have to  be run numerical
-  //! algorithme to perform D0, D1 or D2
+  //! Is useful, if (me) have to  be run numerical
+  //! algorithm to perform D0, D1 or D2
   Standard_EXPORT virtual void SetTolerance(const Standard_Real Tol3d,
                                             const Standard_Real Tol2d) Standard_OVERRIDE;
 
-  //! Get    the   barycentre of   Surface.   An   very  poor
+  //! Get the barycentre of Surface. An very poor
   //! estimation is sufficient. This information is useful
   //! to perform well conditioned rational approximation.
   Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const Standard_OVERRIDE;
 
-  //! Returns the   length of the maximum section. This
+  //! Returns the length of the maximum section. This
   //! information is useful to perform well conditioned rational
   //! approximation.
   Standard_EXPORT virtual Standard_Real MaximalSection() const Standard_OVERRIDE;
 
   //! Compute the minimal value of weight for each poles
-  //! of all  sections.  This information is  useful to
+  //! of all sections. This information is useful to
   //! perform well conditioned rational approximation.
   Standard_EXPORT virtual void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const
     Standard_OVERRIDE;

@@ -30,14 +30,14 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Boolean flags <CompC3D>, <CompPC1>, <CompPC2>
-  //! indicate whether  the  corresponding result curves
-  //! <C3D>, <PC1>, <PC2> of MakeCurves method  must or not
+  //! indicate whether the corresponding result curves
+  //! <C3D>, <PC1>, <PC2> of MakeCurves method must or not
   //! be computed from an intersection line <L>.
-  //! When  the line <L> is a walking one, <TypeC3D> is the
-  //! kind  of the 3D curve <C3D>  to  compute  :
-  //! - BSPLINE1 to compute  a BSpline of  degree 1 on the
-  //! walking   points  of  <L>,
-  //! - APPROX  to build  an  approximation curve on the
+  //! When the line <L> is a walking one, <TypeC3D> is the
+  //! kind of the 3D curve <C3D> to compute:
+  //! - BSPLINE1 to compute a BSpline of degree 1 on the
+  //! walking points of <L>,
+  //! - APPROX to build an approximation curve on the
   //! walking points of <L>.
   Standard_EXPORT TopOpeBRepTool_GeomTool(
     const TopOpeBRepTool_OutCurveType TypeC3D = TopOpeBRepTool_BSPLINE1,

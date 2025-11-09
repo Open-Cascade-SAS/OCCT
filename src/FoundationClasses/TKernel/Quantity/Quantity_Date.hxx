@@ -46,8 +46,9 @@ public:
   //! Constructs a date from the year yyyy, the
   //! month mm, the day dd, the hour hh, the minute
   //! mn, the second ss, the millisecond mis
-  //! (defaulted to 0) and the microsecond mics (defaulted to 0)..
-  //! With:      1 <= mm <= 12
+  //! (defaulted to 0) and the microsecond mics (defaulted to 0).
+  //! With:
+  //! 1 <= mm <= 12
   //! 1 <= dd <= max number of days of <mm>
   //! 1979 <= yyyy
   //! 0 <= hh <= 23
@@ -134,7 +135,7 @@ public:
   //! Returns minute of a Date.
   Standard_EXPORT Standard_Integer Minute();
 
-  //! Returns seconde of a Date.
+  //! Returns second of a Date.
   Standard_EXPORT Standard_Integer Second();
 
   //! Returns millisecond of a Date.

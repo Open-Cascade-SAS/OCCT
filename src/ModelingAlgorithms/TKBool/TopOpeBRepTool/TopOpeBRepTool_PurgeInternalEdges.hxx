@@ -25,16 +25,16 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <Standard_Integer.hxx>
 
-//! remove from  a shape, the  internal edges that are
-//! not  connected to any face in  the shape.   We can
-//! get  the    list   of      the    edges  as   a
+//! remove from a shape, the internal edges that are
+//! not connected to any face in the shape. We can
+//! get the list of the edges as a
 //! DataMapOfShapeListOfShape with a Face of the Shape
-//! as  the key and  a  list of internal  edges as the
-//! value.  The list   of internal edges  means edges
-//! that are  not connected to any  face in the shape.
+//! as the key and a list of internal edges as the
+//! value. The list of internal edges means edges
+//! that are not connected to any face in the shape.
 //!
-//! Example of use          :
-//! TopTools_DataMapOfShapeListOfShape     mymap;
+//! Example of use:
+//! TopTools_DataMapOfShapeListOfShape mymap;
 //! TopOpeBRepTool_PurgeInternalEdges
 //! mypurgealgo(mysolid); mypurgealgo.GetFaces(mymap);
 class TopOpeBRepTool_PurgeInternalEdges
@@ -42,14 +42,14 @@ class TopOpeBRepTool_PurgeInternalEdges
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Initialize   members and  begin  exploration   of  shape
+  //! Initialize members and begin exploration of shape
   //! depending of the value of PerformNow
   Standard_EXPORT TopOpeBRepTool_PurgeInternalEdges(
     const TopoDS_Shape&    theShape,
     const Standard_Boolean PerformNow = Standard_True);
 
-  //! returns  the list  internal edges associated  with
-  //! the faces of the  myShape. If PerformNow was False
+  //! returns the list internal edges associated with
+  //! the faces of the myShape. If PerformNow was False
   //! when created, then call the private Perform method
   //! that do the main job.
   Standard_EXPORT void Faces(TopTools_DataMapOfShapeListOfShape& theMapFacLstEdg);
@@ -61,7 +61,7 @@ public:
   //! returns the number of edges candidate to be removed
   Standard_EXPORT Standard_Integer NbEdges() const;
 
-  //! returns False  if the list  of internal  edges has
+  //! returns False if the list of internal edges has
   //! not been extracted
   Standard_Boolean IsDone() const { return myIsDone; }
 
@@ -73,8 +73,8 @@ protected:
   TopTools_IndexedDataMapOfShapeListOfShape myMapEdgLstFac;
 
 private:
-  //! Do the main job. Explore all the  edges of myShape and
-  //! build a map with  faces as a key  and list of internal
+  //! Do the main job. Explore all the edges of myShape and
+  //! build a map with faces as a key and list of internal
   //! edges(without connected faces) as value.
   Standard_EXPORT void BuildList();
 
