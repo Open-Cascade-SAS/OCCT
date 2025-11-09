@@ -1334,41 +1334,6 @@ static Standard_Integer OCC24086(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-#include <Geom_Circle.hxx>
-#include <Extrema_ExtPC.hxx>
-#include <gp_Cylinder.hxx>
-#include <ElSLib.hxx>
-
-static Standard_Integer OCC24945(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage: " << argv[0] << " invalid number of arguments\n";
-    return 1;
-  }
-
-  gp_Pnt              aP3D(-1725.97, 843.257, -4.22741e-013);
-  gp_Ax2              aAxis(gp_Pnt(0, 843.257, 0), gp_Dir(gp_Dir::D::NY), gp::DX());
-  Handle(Geom_Circle) aCircle = new Geom_Circle(aAxis, 1725.9708621929999);
-  GeomAdaptor_Curve   aC3D(aCircle);
-
-  Extrema_ExtPC aExtPC(aP3D, aC3D);
-  // Standard_Real aParam = (aExtPC.Point(1)).Parameter();
-  gp_Pnt aProj = (aExtPC.Point(1)).Value();
-  di << "Projected point: X = " << aProj.X() << "; Y = " << aProj.Y() << "; Z = " << aProj.Z()
-     << "\n";
-
-  // Result of deviation
-  gp_Ax2      aCylAxis(gp_Pnt(0, 2103.87, 0), -gp::DY(), -gp::DX());
-  gp_Cylinder aCylinder(aCylAxis, 1890.);
-
-  Standard_Real aU = 0., aV = 0.;
-  ElSLib::Parameters(aCylinder, aProj, aU, aV);
-  di << "Parameters on cylinder: U = " << aU << "; V = " << aV << "\n";
-
-  return 0;
-}
-
 #include <math_FunctionSetRoot.hxx>
 #include <math_Vector.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
@@ -3168,6 +3133,7 @@ static Standard_Integer OCC25545(Draw_Interpretor& di, Standard_Integer, const c
 //=================================================================================================
 
 #include <BRepMesh_GeomTool.hxx>
+#include <Geom_Circle.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -5439,7 +5405,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC24889", "OCC24889", __FILE__, OCC24889, group);
   theCommands.Add("OCC23951", "OCC23951 path to saved step file", __FILE__, OCC23951, group);
   theCommands.Add("OCC24931", "OCC24931 path to saved xml file", __FILE__, OCC24931, group);
-  theCommands.Add("OCC24945", "OCC24945", __FILE__, OCC24945, group);
   theCommands.Add("OCC23950", "OCC23950 step_file", __FILE__, OCC23950, group);
   theCommands.Add("OCC25004", "OCC25004", __FILE__, OCC25004, group);
   theCommands.Add("OCC24925",
