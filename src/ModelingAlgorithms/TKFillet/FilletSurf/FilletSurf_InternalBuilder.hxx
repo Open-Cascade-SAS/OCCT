@@ -109,7 +109,7 @@ public:
 
   Standard_EXPORT Standard_Integer NbSection(const Standard_Integer IndexSurf) const;
 
-  Standard_EXPORT void Section(const Standard_Integer     IndexSusrc/ModelingAlgorithms/TKFillet/FilletSurf/FilletSurf_InternalBuilder.hxxrf,
+  Standard_EXPORT void Section(const Standard_Integer     IndexSurf,
                                const Standard_Integer     IndexSec,
                                Handle(Geom_TrimmedCurve)& Circ) const;
 
