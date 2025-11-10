@@ -400,64 +400,7 @@ static Standard_Integer OCC49(Draw_Interpretor& di, Standard_Integer argc, const
   return 0;
 }
 
-static Standard_Integer OCC132(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  /*
-     OCC132:
-     =======
-
-     ... the validation of the name of files in Analyse_DOS and Analyse_UNIX is :
-
-     characters not allowed in DOS/WNT names are
-     /
-     :
-     *
-     ?
-     "
-     <
-     >
-     |
-     and  more than one dot in filename.
-     */
-
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " DependentName\n";
-    return 1;
-  }
-
-  OSD_SysType SysType1 = OSD_OS2;
-  OSD_SysType SysType2 = OSD_WindowsNT;
-
-  {
-    try
-    {
-      OCC_CATCH_SIGNALS
-      OSD_Path Path(argv[1], SysType1);
-    }
-    catch (Standard_ProgramError const&)
-    {
-      di << "1\n";
-      return 0;
-    }
-  }
-
-  {
-    try
-    {
-      OCC_CATCH_SIGNALS
-      OSD_Path Path(argv[1], SysType2);
-    }
-    catch (Standard_ProgramError const&)
-    {
-      di << "2\n";
-      return 0;
-    }
-  }
-
-  di << "0\n";
-  return 0;
-}
+// OCC132 command has been migrated to OSD_Path_Test.cxx
 
 static Standard_Integer OCC405(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -746,7 +689,7 @@ void QABugs::Commands_16(Draw_Interpretor& theCommands)
   theCommands.Add("OCC218", "OCC218 name plane Xlabel Ylabel", __FILE__, OCC218bug, group);
   theCommands.Add("OCC295", "OCC295 edge_result edge1 edge2", __FILE__, OCC295, group);
   theCommands.Add("OCC49", "OCC49 name", __FILE__, OCC49, group);
-  theCommands.Add("OCC132", "OCC132 DependentName", __FILE__, OCC132, group);
+  // OCC132 command has been migrated to OSD_Path_Test.cxx
   theCommands.Add("OCC405",
                   "OCC405 edge_result edge1 edge2; merge two edges",
                   __FILE__,

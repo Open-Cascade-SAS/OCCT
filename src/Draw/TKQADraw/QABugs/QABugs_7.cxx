@@ -248,78 +248,10 @@ const Standard_Integer Glob_Mults[Glob_NbKnots] =
 
 //=================================================================================================
 
-static Standard_Integer OCC862(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 3)
-  {
-    di << "ERROR : Usage : " << argv[0] << " curve1 curve2\n";
-    return 1;
-  }
-
-  Standard_Integer i;
-  // Fill array of poles
-  TColgp_Array1OfPnt aPoles(1, Glob_NbPoles);
-  for (i = 0; i < Glob_NbPoles; i++)
-    aPoles.SetValue(i + 1, gp_Pnt(Glob_Poles[i][0], Glob_Poles[i][1], Glob_Poles[i][2]));
-  // Fill array of knots
-  TColStd_Array1OfReal aKnots(1, Glob_NbKnots);
-  for (i = 0; i < Glob_NbKnots; i++)
-    aKnots.SetValue(i + 1, Glob_Knots[i]);
-  // Fill array of mults
-  TColStd_Array1OfInteger aMults(1, Glob_NbKnots);
-  for (i = 0; i < Glob_NbKnots; i++)
-    aMults.SetValue(i + 1, Glob_Mults[i]);
-  // Create B-Spline curve
-  const Standard_Integer    aDegree = 14;
-  Handle(Geom_BSplineCurve) C1      = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
-
-  // Create trimmed line
-  gp_XYZ                    p1(60000, -7504.83, 6000);
-  gp_XYZ                    p2(60000, 7504.83, 6000);
-  Handle(Geom_Line)         L  = new Geom_Line(gp_Pnt(p1), gp_Dir(p2 - p1));
-  Handle(Geom_TrimmedCurve) C2 = new Geom_TrimmedCurve(L, 0.0, (p2 - p1).Modulus());
-
-  DrawTrSurf::Set(argv[1], C1);
-  DrawTrSurf::Set(argv[2], C2);
-
-  // Try to find extrema
-  // IMPORTANT: it is not allowed to input infinite curves !
-  GeomAPI_ExtremaCurveCurve Ex(C1, C2 /*,C1f,C1l,C2f,C2l*/);
-  if (Ex.Extrema().IsParallel())
-  {
-    di << "Info: Infinite number of extrema, distance = " << Ex.LowerDistance() << "\n";
-  }
-  else
-  {
-    // Check if extrema were found
-    const Standard_Integer nbEx = Ex.NbExtrema();
-    if (nbEx)
-    {
-      // Get minimal distance data
-      gp_Pnt P1, P2;
-      Ex.NearestPoints(P1, P2);
-      Standard_Real U1, U2;
-      Ex.LowerDistanceParameters(U1, U2);
-      const Standard_Real D = Ex.LowerDistance();
-      // IMPORTANT: minimal distance here means accuracy reached in intersection
-      di << "Info: Minimal distance is " << D << "\n";
-      di << "Info: Minimal points are (" << P1.X() << "," << P1.Y() << "," << P1.Z() << "), ("
-         << P2.X() << "," << P2.Y() << "," << P2.Z() << ")\n";
-      di << "Info: Minimal parameters are (" << U1 << "), (" << U2 << ")\n";
-    }
-    else
-    {
-      di << "Error: extrema not found\n";
-    }
-  }
-
-  return 0;
-}
-
 void QABugs::Commands_7(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";
 
-  theCommands.Add("OCC862", "OCC862 curve1 curve2", __FILE__, OCC862, group);
+  // OCC862 command has been migrated to GeomAPI_ExtremaCurveCurve_Test.cxx
   return;
 }

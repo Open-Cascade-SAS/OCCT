@@ -244,3 +244,64 @@ TEST_F(OSD_PathTest, MixedSeparators)
   // The exact behavior might depend on implementation, but it should handle this gracefully
   EXPECT_FALSE(aFolder.IsEmpty() || aFileName.IsEmpty());
 }
+
+//==================================================================================================
+// Validation Tests
+//==================================================================================================
+
+// Test OCC132: OSD_Path validation for DOS/WindowsNT systems
+// Migrated from QABugs_16.cxx
+TEST_F(OSD_PathTest, OCC132_PathValidation_InvalidCharacters)
+{
+  // Test paths with invalid characters for DOS/Windows systems
+  // According to Windows file system rules, these characters are invalid: / : * ? " < > |
+
+  // Test path with forward slash (invalid for OS2/DOS paths)
+  EXPECT_THROW({
+    OSD_Path aPath("C:/test", OSD_OS2);
+  }, Standard_ProgramError) << "Forward slash should be invalid for OSD_OS2";
+
+  // Test path with colon in filename (invalid)
+  EXPECT_THROW({
+    OSD_Path aPath("C:\\file:name", OSD_OS2);
+  }, Standard_ProgramError) << "Colon in filename should be invalid for OSD_OS2";
+
+  // Test path with asterisk (invalid)
+  EXPECT_THROW({
+    OSD_Path aPath("C:\\file*name", OSD_WindowsNT);
+  }, Standard_ProgramError) << "Asterisk should be invalid for OSD_WindowsNT";
+
+  // Test path with question mark (invalid)
+  EXPECT_THROW({
+    OSD_Path aPath("C:\\file?name", OSD_WindowsNT);
+  }, Standard_ProgramError) << "Question mark should be invalid for OSD_WindowsNT";
+
+  // Test path with double quote (invalid)
+  EXPECT_THROW({
+    OSD_Path aPath("C:\\file\"name", OSD_OS2);
+  }, Standard_ProgramError) << "Double quote should be invalid for OSD_OS2";
+
+  // Test path with less-than sign (invalid)
+  EXPECT_THROW({
+    OSD_Path aPath("C:\\file<name", OSD_WindowsNT);
+  }, Standard_ProgramError) << "Less-than sign should be invalid for OSD_WindowsNT";
+
+  // Test path with greater-than sign (invalid)
+  EXPECT_THROW({
+    OSD_Path aPath("C:\\file>name", OSD_OS2);
+  }, Standard_ProgramError) << "Greater-than sign should be invalid for OSD_OS2";
+
+  // Test path with pipe (invalid)
+  EXPECT_THROW({
+    OSD_Path aPath("C:\\file|name", OSD_WindowsNT);
+  }, Standard_ProgramError) << "Pipe should be invalid for OSD_WindowsNT";
+
+  // Test valid path (should not throw)
+  EXPECT_NO_THROW({
+    OSD_Path aPath("C:\\valid\\path\\file.txt", OSD_OS2);
+  }) << "Valid path should not throw exception";
+
+  EXPECT_NO_THROW({
+    OSD_Path aPath("C:\\valid\\path\\file.txt", OSD_WindowsNT);
+  }) << "Valid path should not throw exception";
+}

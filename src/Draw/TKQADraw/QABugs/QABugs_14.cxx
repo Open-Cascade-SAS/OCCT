@@ -384,66 +384,7 @@ static Standard_Integer BUC60870(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer BUC60902(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, 5);
-  gp_Pnt                      aP(0., 0., 0.);
-  for (Standard_Integer i = 1; i <= 5; i++)
-  {
-    aP.SetX((i - 1) * 1.57);
-    aP.SetY(Sin((i - 1) * 1.57));
-    aPnts->SetValue(i, aP);
-  }
-  GeomAPI_Interpolate anInterpolater(aPnts, Standard_False, Precision::Confusion());
-  anInterpolater.Perform();
-  if (!anInterpolater.IsDone())
-  {
-    di << "Faulty : error in interpolation\n";
-    return 1;
-  }
-  Handle(Geom_BSplineCurve) aCur = anInterpolater.Curve();
-  gp_Vec                    aFirstTang, aLastTang;
-  aCur->D1(aCur->FirstParameter(), aP, aFirstTang);
-  aCur->D1(aCur->LastParameter(), aP, aLastTang);
-  di << " Used Tang1 = " << aFirstTang.X() << " " << aFirstTang.Y() << " " << aFirstTang.Z()
-     << "\n";
-  di << " Used Tang2 = " << aLastTang.X() << " " << aLastTang.Y() << " " << aLastTang.Z() << "\n";
-  GeomAPI_Interpolate anInterpolater1(aPnts, Standard_False, Precision::Confusion());
-  anInterpolater1.Load(aFirstTang, aLastTang, Standard_False);
-  anInterpolater1.Perform();
-  if (!anInterpolater1.IsDone())
-  {
-    di << "Faulty : error in interpolation 1\n";
-    return 1;
-  }
-  aCur = anInterpolater1.Curve();
-  gp_Vec aFirstTang1, aLastTang1;
-  aCur->D1(aCur->FirstParameter(), aP, aFirstTang1);
-  aCur->D1(aCur->LastParameter(), aP, aLastTang1);
-  di << " Tang1 after compute = " << aFirstTang1.X() << " " << aFirstTang1.Y() << " "
-     << aFirstTang1.Z() << "\n";
-  di << " Tang2 after compute = " << aLastTang1.X() << " " << aLastTang1.Y() << " "
-     << aLastTang1.Z() << "\n";
-  if (aFirstTang.IsEqual(aFirstTang1, Precision::Confusion(), Precision::Angular()))
-  {
-    di << "First tangent is OK\n";
-  }
-  else
-  {
-    di << "Faulty : first tangent is wrong\n";
-  }
-  if (aLastTang.IsEqual(aLastTang1, Precision::Confusion(), Precision::Angular()))
-  {
-    di << "Last tangent is OK\n";
-  }
-  else
-  {
-    di << "Faulty : last tangent is wrong\n";
-  }
-  return 0;
-}
+// BUC60902 command has been migrated to GeomAPI_Interpolate_Test.cxx
 
 static Standard_Integer BUC60944(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -1140,7 +1081,7 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
                   __FILE__,
                   BUC60870,
                   group);
-  theCommands.Add("BUC60902", "BUC60902", __FILE__, BUC60902, group);
+  // BUC60902 command has been migrated to GeomAPI_Interpolate_Test.cxx
   theCommands.Add("BUC60944", "BUC60944 path", __FILE__, BUC60944, group);
   theCommands.Add("BUC60868", "BUC60868 Result Shell", __FILE__, BUC60868, group);
   theCommands.Add("BUC60924", "BUC60924 curve X Y Z", __FILE__, BUC60924, group);
