@@ -80,6 +80,8 @@
 #include <IGESData_IGESEntity.hxx>
 #include <V3d_View.hxx>
 #include <BRepFeat_SplitShape.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <Message.hxx>
 #include <Draw_Printer.hxx>
