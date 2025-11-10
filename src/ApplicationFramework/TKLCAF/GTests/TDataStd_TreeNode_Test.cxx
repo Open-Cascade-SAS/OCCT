@@ -18,7 +18,6 @@
 #include <TDF_Label.hxx>
 
 // Test BUC60817: TDataStd_TreeNode descendant relationship
-// Migrated from QABugs_3.cxx
 TEST(TDataStd_TreeNode_Test, BUC60817_DescendantRelationship)
 {
   // Create TDF document

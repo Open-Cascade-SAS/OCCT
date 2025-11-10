@@ -23,7 +23,6 @@
 #include <cmath>
 
 // Test BUC60902: GeomAPI_Interpolate tangent computation
-// Migrated from QABugs_14.cxx
 TEST(GeomAPI_Interpolate_Test, BUC60902_TangentPreservation)
 {
   // Create 5 points along a sine wave

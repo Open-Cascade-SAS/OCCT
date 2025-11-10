@@ -250,7 +250,6 @@ TEST_F(OSD_PathTest, MixedSeparators)
 //==================================================================================================
 
 // Test OCC132: OSD_Path validation for DOS/WindowsNT systems
-// Migrated from QABugs_16.cxx
 TEST_F(OSD_PathTest, OCC132_PathValidation_InvalidCharacters)
 {
   // Test paths with invalid characters for DOS/Windows systems

@@ -20,7 +20,6 @@
 #include <TNaming_NamedShape.hxx>
 
 // Test BUC60925: TNaming_Name solve with empty NamedShape
-// Migrated from QABugs_3.cxx
 TEST(TNaming_Name_Test, BUC60925_SolveWithEmptyNamedShape)
 {
   // Create TDF document

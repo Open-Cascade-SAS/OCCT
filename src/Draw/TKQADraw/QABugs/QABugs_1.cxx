@@ -374,8 +374,6 @@ static Standard_Integer OCC74bug_get(Draw_Interpretor& di, Standard_Integer argc
 #include <TNaming_NamedShape.hxx>
 #include <AIS_InteractiveObject.hxx>
 
-// OCC361bug command has been migrated to TNaming_Builder_Test.cxx
-
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OSD_FileSystem.hxx>
@@ -642,7 +640,6 @@ void QABugs::Commands_1(Draw_Interpretor& theCommands)
                   OCC74bug_get,
                   group);
 
-  // OCC361bug command has been migrated to TNaming_Builder_Test.cxx
   theCommands.Add("OCC30182",
                   "OCC30182 name image [-offset Start] [-fileName] [-stream] [-memory]\n"
                   "Decodes image either by passing file name, file stream or memory stream",

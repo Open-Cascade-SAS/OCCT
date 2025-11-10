@@ -20,7 +20,6 @@
 #include <gp_Pnt.hxx>
 
 // Test OCC361bug: TNaming_Builder preservation of shape orientation
-// Migrated from QABugs_1.cxx
 TEST(TNaming_Builder_Test, OCC361_ShapeOrientationPreservation)
 {
   // Create a document

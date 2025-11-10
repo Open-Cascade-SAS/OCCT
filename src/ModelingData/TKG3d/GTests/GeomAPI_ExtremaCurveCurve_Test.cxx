@@ -24,7 +24,6 @@
 #include <gp_XYZ.hxx>
 
 // Test OCC862: GeomAPI_ExtremaCurveCurve - Extrema between BSpline and line
-// Migrated from QABugs_7.cxx
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
 {
   // Define BSpline curve data (from Glob_Poles, Glob_Knots, Glob_Mults)

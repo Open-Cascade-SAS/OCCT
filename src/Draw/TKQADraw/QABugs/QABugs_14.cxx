@@ -384,8 +384,6 @@ static Standard_Integer BUC60870(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-// BUC60902 command has been migrated to GeomAPI_Interpolate_Test.cxx
-
 static Standard_Integer BUC60944(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 2)
@@ -1081,7 +1079,6 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
                   __FILE__,
                   BUC60870,
                   group);
-  // BUC60902 command has been migrated to GeomAPI_Interpolate_Test.cxx
   theCommands.Add("BUC60944", "BUC60944 path", __FILE__, BUC60944, group);
   theCommands.Add("BUC60868", "BUC60868 Result Shell", __FILE__, BUC60868, group);
   theCommands.Add("BUC60924", "BUC60924 curve X Y Z", __FILE__, BUC60924, group);

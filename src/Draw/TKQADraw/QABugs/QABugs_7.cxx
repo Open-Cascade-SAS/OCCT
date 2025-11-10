@@ -251,7 +251,6 @@ const Standard_Integer Glob_Mults[Glob_NbKnots] =
 void QABugs::Commands_7(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";
-
-  // OCC862 command has been migrated to GeomAPI_ExtremaCurveCurve_Test.cxx
-  return;
+  (void)group;
+  (void)theCommands;
 }

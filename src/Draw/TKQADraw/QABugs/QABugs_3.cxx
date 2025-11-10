@@ -382,59 +382,6 @@ static int BUC60825(Draw_Interpretor& di, Standard_Integer argc, const char** ar
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 
-static int OCC10006(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  double bottompoints1[12] = {10, -10, 0, 100, -10, 0, 100, -100, 0, 10, -100, 0};
-  double toppoints1[12]    = {0, 0, 10, 100, 0, 10, 100, -100, 10, 0, -100, 10};
-  double bottompoints2[12] = {0, 0, 10.00, 100, 0, 10.00, 100, -100, 10.00, 0, -100, 10.00};
-  double toppoints2[12]    = {0, 0, 250, 100, 0, 250, 100, -100, 250, 0, -100, 250};
-  BRepBuilderAPI_MakePolygon bottompolygon1, toppolygon1, bottompolygon2, toppolygon2;
-  gp_Pnt                     tmppnt;
-  for (int i = 0; i < 4; i++)
-  {
-    tmppnt.SetCoord(bottompoints1[3 * i], bottompoints1[3 * i + 1], bottompoints1[3 * i + 2]);
-    bottompolygon1.Add(tmppnt);
-    tmppnt.SetCoord(toppoints1[3 * i], toppoints1[3 * i + 1], toppoints1[3 * i + 2]);
-    toppolygon1.Add(tmppnt);
-    tmppnt.SetCoord(bottompoints2[3 * i], bottompoints2[3 * i + 1], bottompoints2[3 * i + 2]);
-    bottompolygon2.Add(tmppnt);
-    tmppnt.SetCoord(toppoints2[3 * i], toppoints2[3 * i + 1], toppoints2[3 * i + 2]);
-    toppolygon2.Add(tmppnt);
-  }
-  bottompolygon1.Close();
-  DBRep::Set("B1", bottompolygon1.Shape());
-  toppolygon1.Close();
-  DBRep::Set("T1", toppolygon1.Shape());
-  bottompolygon2.Close();
-  DBRep::Set("B2", bottompolygon2.Shape());
-  toppolygon2.Close();
-  DBRep::Set("T2", toppolygon2.Shape());
-  BRepOffsetAPI_ThruSections loft1(Standard_True, Standard_True);
-  loft1.AddWire(bottompolygon1.Wire());
-  loft1.AddWire(toppolygon1.Wire());
-  loft1.Build();
-  BRepOffsetAPI_ThruSections loft2(Standard_True, Standard_True);
-  loft2.AddWire(bottompolygon2.Wire());
-  loft2.AddWire(toppolygon2.Wire());
-  loft2.Build();
-  if (loft1.Shape().IsNull() || loft2.Shape().IsNull())
-    return 1;
-  DBRep::Set("TS1", loft1.Shape());
-  DBRep::Set("TS2", loft2.Shape());
-
-  di << "BRepAlgoAPI_Fuse result(loft1.Shape(), loft2.Shape())\n";
-  BRepAlgoAPI_Fuse result(loft1.Shape(), loft2.Shape());
-  DBRep::Set("F", result.Shape());
-
-  return 0;
-}
-
 #include <GC_MakeTrimmedCone.hxx>
 
 static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
@@ -782,8 +729,6 @@ static Standard_Integer BUC60874(Draw_Interpretor& /*di*/,
 #include <TNaming_Naming.hxx>
 #include <TNaming_NamedShape.hxx>
 
-// BUC60817 command has been migrated to TDataStd_TreeNode_Test.cxx
-
 static int BUC60831_1(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 2)
@@ -1077,8 +1022,6 @@ static int BUC60910(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-// BUC60925 command has been migrated to TNaming_Name_Test.cxx
-
 static int BUC60932(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 2)
@@ -1270,8 +1213,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
 
   theCommands.Add("BUC60825", "BUC60825", __FILE__, BUC60825, group);
 
-  theCommands.Add("OCC10006", "OCC10006", __FILE__, OCC10006, group);
-
   theCommands.Add("BUC60856", "BUC60856", __FILE__, BUC60856, group);
 
   theCommands.Add("coordload", "load coord from file", __FILE__, coordload, group);
@@ -1285,8 +1226,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60841", "BUC60841", __FILE__, BUC60841, group);
 
   theCommands.Add("BUC60874", "BUC60874", __FILE__, BUC60874, group);
-
-  // BUC60817 command has been migrated to TDataStd_TreeNode_Test.cxx
   theCommands.Add("BUC60831_1", "BUC60831_1 D", __FILE__, BUC60831_1, group);
   theCommands.Add("BUC60831_2", "BUC60831_2 D Label", __FILE__, BUC60831_2, group);
   theCommands.Add("BUC60836", "BUC60836 D", __FILE__, BUC60836, group);
@@ -1294,7 +1233,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60862", "BUC60862 D Shape", __FILE__, BUC60862, group);
   theCommands.Add("BUC60867", "BUC60867", __FILE__, BUC60867, group);
   theCommands.Add("BUC60910", "BUC60910 D", __FILE__, BUC60910, group);
-  // BUC60925 command has been migrated to TNaming_Name_Test.cxx
   theCommands.Add("BUC60932", "BUC60932 D", __FILE__, BUC60932, group);
   theCommands.Add("AISWidth", "AISWidth (DOC,entry,[width])", __FILE__, AISWidth, group);
   theCommands.Add("BUC60921", "BUC60921 Doc label brep_file", __FILE__, BUC60921, group);

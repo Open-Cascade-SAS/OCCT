@@ -400,8 +400,6 @@ static Standard_Integer OCC49(Draw_Interpretor& di, Standard_Integer argc, const
   return 0;
 }
 
-// OCC132 command has been migrated to OSD_Path_Test.cxx
-
 static Standard_Integer OCC405(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 4)
@@ -689,7 +687,6 @@ void QABugs::Commands_16(Draw_Interpretor& theCommands)
   theCommands.Add("OCC218", "OCC218 name plane Xlabel Ylabel", __FILE__, OCC218bug, group);
   theCommands.Add("OCC295", "OCC295 edge_result edge1 edge2", __FILE__, OCC295, group);
   theCommands.Add("OCC49", "OCC49 name", __FILE__, OCC49, group);
-  // OCC132 command has been migrated to OSD_Path_Test.cxx
   theCommands.Add("OCC405",
                   "OCC405 edge_result edge1 edge2; merge two edges",
                   __FILE__,
