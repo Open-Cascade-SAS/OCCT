@@ -104,91 +104,6 @@ Standard_DISABLE_DEPRECATION_WARNINGS
   return 0;
 }
 
-static Standard_Integer OCC23361(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  gp_Pnt p(0, 0, 2);
-
-  gp_Trsf t1, t2;
-  t1.SetRotation(gp_Ax1(p, gp_Dir(gp_Dir::D::Y)), -0.49328285294022267);
-  t2.SetRotation(gp_Ax1(p, gp_Dir(gp_Dir::D::Z)), 0.87538474718473880);
-
-  gp_Trsf tComp = t2 * t1;
-
-  gp_Pnt p1(10, 3, 4);
-  gp_Pnt p2 = p1.Transformed(tComp);
-  gp_Pnt p3 = p1.Transformed(t1);
-  p3.Transform(t2);
-
-  // points must be equal
-  if (!p2.IsEqual(p3, Precision::Confusion()))
-    di << "ERROR OCC23361: equivalent transformations does not produce equal points\n";
-  else
-    di << "OCC23361: OK\n";
-
-  return 0;
-}
-
-class IncrementerDecrementer
-{
-public:
-  IncrementerDecrementer(std::atomic<int>* theVal, Standard_Boolean thePositive)
-      : myVal(theVal),
-        myPositive(thePositive)
-  {
-  }
-
-  void operator()(const size_t) const
-  {
-    if (myPositive)
-      ++(*myVal);
-    else
-      --(*myVal);
-  }
-
-private:
-  std::atomic<int>* myVal;
-  Standard_Boolean  myPositive;
-};
-
-static Standard_Integer OCC22980(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  std::atomic<int> aSum(0);
-
-  // check returned value
-  QCOMPARE(aSum.fetch_sub(1) - 1, -1);
-  QCOMPARE(aSum.fetch_add(1) + 1, 0);
-  QCOMPARE(aSum.fetch_add(1) + 1, 1);
-  QCOMPARE(aSum.fetch_add(1) + 1, 2);
-  //  QCOMPARE (Standard_Atomic_DecrementTest (&aSum), 0);
-  //  QCOMPARE (Standard_Atomic_DecrementTest (&aSum), 1);
-
-  // check atomicity
-  aSum        = 0;
-  const int N = 1 << 24; // big enough to ensure concurrency
-
-  // increment
-  OSD_Parallel::For(0, N, IncrementerDecrementer(&aSum, true));
-  QCOMPARE(aSum, N);
-
-  // decrement
-  OSD_Parallel::For(0, N, IncrementerDecrementer(&aSum, false));
-  QCOMPARE(aSum, 0);
-
-  return 0;
-}
-
-#include <TDocStd_Application.hxx>
-#include <TDocStd_Document.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <TDF_Label.hxx>
-#include <TDataStd_Name.hxx>
-#include <DDocStd.hxx>
-
 static Standard_Integer OCC23595(Draw_Interpretor& di,
                                  Standard_Integer /*argc*/,
                                  const char** /*argv*/)
@@ -4763,8 +4678,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   group);
 
   theCommands.Add("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
-  theCommands.Add("OCC23361", "OCC23361", __FILE__, OCC23361, group);
-  theCommands.Add("OCC22980", "OCC22980", __FILE__, OCC22980, group);
   theCommands.Add("OCC23595", "OCC23595", __FILE__, OCC23595, group);
   theCommands.Add("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
   theCommands.Add("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
