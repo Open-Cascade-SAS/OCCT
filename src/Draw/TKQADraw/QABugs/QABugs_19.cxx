@@ -66,6 +66,8 @@
 #include <IntTools_SequenceOfCurves.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Extrema_FuncPSNorm.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -86,6 +88,21 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 
 #define QCOMPARE(val1, val2)                                                                       \
   di << "Checking " #val1 " == " #val2 << ((val1) == (val2) ? ": OK\n" : ": Error\n")
+
+#define QVERIFY(val) \
+  if (!(val)) { std::cout << "Error: " #val " is false\n"; }
+
+// Helper function to create conical surface
+static Handle(Geom_Surface) CreateCone(const gp_Pnt& theApex,
+                                        const gp_Dir& theDir,
+                                        const gp_Dir& theXDir,
+                                        Standard_Real theR,
+                                        Standard_Real theSemiAngle,
+                                        Standard_Real /*theH*/)
+{
+  gp_Ax3 anAxis(theApex, theDir, theXDir);
+  return new Geom_ConicalSurface(anAxis, theSemiAngle, theR);
+}
 
   static Standard_Integer
   OCC230(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -2388,7 +2405,7 @@ struct OCC25545_Functor
 // purpose  : Tests data race when concurrently accessing TopLoc_Location::Transformation()
 //=======================================================================
 
-static Standard_Integer OCC25545(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer OCC25545(Draw_Interpretor& /*di*/, Standard_Integer, const char**)
 {
   // Place vertices in a vector, giving the i-th vertex the
   // transformation that translates it on the vector (i,0,0) from the origin.
