@@ -428,21 +428,20 @@ TEST(TCollection_ExtendedStringTest, TestMem_LargeStringAllocation)
 }
 
 // Test OCC3277: TCollection_ExtendedString Cat operation
-// Migrated from QABugs_14.cxx
 TEST(TCollection_ExtendedStringTest, OCC3277_CatOperation)
 {
   // Test concatenation of an input string to an empty extended string
   TCollection_ExtendedString anExtendedString;
   TCollection_ExtendedString anInputString("TestString");
 
-  // Concatenate the input string
-  anExtendedString.Cat(anInputString);
+  // Cat() returns a new string, it doesn't modify the original
+  TCollection_ExtendedString aResult = anExtendedString.Cat(anInputString);
 
   // Verify the result
-  EXPECT_EQ(anInputString.Length(), anExtendedString.Length())
+  EXPECT_EQ(anInputString.Length(), aResult.Length())
     << "Concatenated string should have same length as input";
-  EXPECT_FALSE(anExtendedString.IsEmpty()) << "Concatenated string should not be empty";
+  EXPECT_FALSE(aResult.IsEmpty()) << "Concatenated string should not be empty";
 
   // Verify the content matches
-  EXPECT_EQ(anInputString, anExtendedString) << "Concatenated string should match input string";
+  EXPECT_EQ(anInputString, aResult) << "Concatenated string should match input string";
 }
