@@ -27,8 +27,8 @@
 class gp_Pnt;
 class Geom_Curve;
 
-//! This class implements methods for  computing all the orthogonal
-//! projections of a 3D point onto a  3D curve.
+//! This class implements methods for computing all the orthogonal
+//! projections of a 3D point onto a 3D curve.
 class GeomAPI_ProjectPointOnCurve
 {
 public:
@@ -38,29 +38,29 @@ public:
   //! Init function for further initialization.
   Standard_EXPORT GeomAPI_ProjectPointOnCurve();
 
-  //! Create the projection  of a  point  <P> on a curve
+  //! Create the projection of a point <P> on a curve
   //! <Curve>
   Standard_EXPORT GeomAPI_ProjectPointOnCurve(const gp_Pnt& P, const Handle(Geom_Curve)& Curve);
 
-  //! Create  the projection  of a point <P>  on a curve
+  //! Create the projection of a point <P> on a curve
   //! <Curve> limited by the two points of parameter Umin and Usup.
   Standard_EXPORT GeomAPI_ProjectPointOnCurve(const gp_Pnt&             P,
                                               const Handle(Geom_Curve)& Curve,
                                               const Standard_Real       Umin,
                                               const Standard_Real       Usup);
 
-  //! Init the projection  of a  point  <P> on a curve
+  //! Init the projection of a point <P> on a curve
   //! <Curve>
   Standard_EXPORT void Init(const gp_Pnt& P, const Handle(Geom_Curve)& Curve);
 
-  //! Init  the  projection  of a  point <P>  on a curve
+  //! Init the projection of a point <P> on a curve
   //! <Curve> limited by the two points of parameter Umin and Usup.
   Standard_EXPORT void Init(const gp_Pnt&             P,
                             const Handle(Geom_Curve)& Curve,
                             const Standard_Real       Umin,
                             const Standard_Real       Usup);
 
-  //! Init  the  projection  of a  point <P>  on a curve
+  //! Init the projection of a point <P> on a curve
   //! <Curve> limited by the two points of parameter Umin and Usup.
   Standard_EXPORT void Init(const Handle(Geom_Curve)& Curve,
                             const Standard_Real       Umin,

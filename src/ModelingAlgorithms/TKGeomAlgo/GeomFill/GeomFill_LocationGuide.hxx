@@ -76,7 +76,7 @@ public:
                                               gp_Vec&               V,
                                               TColgp_Array1OfPnt2d& Poles2d) Standard_OVERRIDE;
 
-  //! compute location 2d  points and  associated
+  //! compute location 2d points and associated
   //! first derivatives.
   //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real   Param,
@@ -87,8 +87,8 @@ public:
                                               TColgp_Array1OfPnt2d& Poles2d,
                                               TColgp_Array1OfVec2d& DPoles2d) Standard_OVERRIDE;
 
-  //! compute location 2d  points and associated
-  //! first and seconde  derivatives.
+  //! compute location 2d points and associated
+  //! first and second derivatives.
   //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real   Param,
                                               gp_Mat&               M,
@@ -102,13 +102,13 @@ public:
                                               TColgp_Array1OfVec2d& D2Poles2d) Standard_OVERRIDE;
 
   //! Say if the first restriction is defined in this class.
-  //! If it  is true the  first element  of poles array   in
+  //! If it is true the first element of poles array in
   //! D0,D1,D2... Correspond to this restriction.
   //! Returns Standard_False (default implementation)
   Standard_EXPORT virtual Standard_Boolean HasFirstRestriction() const Standard_OVERRIDE;
 
   //! Say if the last restriction is defined in this class.
-  //! If it is  true the  last element  of poles array in
+  //! If it is true the last element of poles array in
   //! D0,D1,D2... Correspond to this restriction.
   //! Returns Standard_False (default implementation)
   Standard_EXPORT virtual Standard_Boolean HasLastRestriction() const Standard_OVERRIDE;
@@ -121,16 +121,15 @@ public:
   //! Returns PipeOk (default implementation)
   Standard_EXPORT virtual GeomFill_PipeError ErrorStatus() const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
-  //! <S>.
+  //! Returns the number of intervals for continuity <S>.
   //! May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
     Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
                                          const GeomAbs_Shape   S) const Standard_OVERRIDE;
@@ -148,7 +147,7 @@ public:
                                            Standard_Real& Last) const Standard_OVERRIDE;
 
   //! Gets the bounds of the function parametric domain.
-  //! Warning: This domain it is  not modified by the
+  //! Warning: This domain it is not modified by the
   //! SetValue method
   Standard_EXPORT virtual void GetDomain(Standard_Real& First,
                                          Standard_Real& Last) const Standard_OVERRIDE;
@@ -159,7 +158,7 @@ public:
   Standard_EXPORT virtual void SetTolerance(const Standard_Real Tol3d,
                                             const Standard_Real Tol2d) Standard_OVERRIDE;
 
-  //! Returns the resolutions in the  sub-space 2d <Index>
+  //! Returns the resolutions in the sub-space 2d <Index>
   //! This information is useful to find a good tolerance in
   //! 2d approximation.
   //! Warning: Used only if Nb2dCurve > 0
@@ -168,20 +167,20 @@ public:
                                           Standard_Real&         TolU,
                                           Standard_Real&         TolV) const Standard_OVERRIDE;
 
-  //! Get the maximum Norm  of the matrix-location part.  It
+  //! Get the maximum Norm of the matrix-location part. It
   //! is usful to find a good Tolerance to approx M(t).
   Standard_EXPORT virtual Standard_Real GetMaximalNorm() Standard_OVERRIDE;
 
   //! Get average value of M(t) and V(t) it is useful to
-  //! make fast approximation of rational  surfaces.
+  //! make fast approximation of rational surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Mat& AM, gp_Vec& AV) Standard_OVERRIDE;
 
-  //! Say if the Location  Law, is an translation of  Location
+  //! Say if the Location Law, is an translation of Location
   //! The default implementation is " returns False ".
   Standard_EXPORT virtual Standard_Boolean IsTranslation(Standard_Real& Error) const
     Standard_OVERRIDE;
 
-  //! Say if the Location  Law, is a rotation of Location
+  //! Say if the Location Law, is a rotation of Location
   //! The default implementation is " returns False ".
   Standard_EXPORT virtual Standard_Boolean IsRotation(Standard_Real& Error) const Standard_OVERRIDE;
 

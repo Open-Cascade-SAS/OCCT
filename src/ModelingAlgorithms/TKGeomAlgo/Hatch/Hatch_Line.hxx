@@ -25,13 +25,13 @@
 #include <Hatch_LineForm.hxx>
 #include <Hatch_SequenceOfParameter.hxx>
 
-//! Stores a Line in the Hatcher. Represented by :
+//! Stores a Line in the Hatcher. Represented by:
 //!
 //! * A Lin2d from gp, the geometry of the line.
 //!
 //! * Bounding parameters for the line.
 //!
-//! * A sorted List  of Parameters, the  intersections
+//! * A sorted List of Parameters, the intersections
 //! on the line.
 class Hatch_Line
 {

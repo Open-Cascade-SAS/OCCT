@@ -38,7 +38,7 @@ class Units_Quantity : public Standard_Transient
 {
 
 public:
-  //! Creates a new Quantity object with <aname> which  is
+  //! Creates a new Quantity object with <aname> which is
   //! the name of the physical quantity, <adimensions> which
   //! is the physical dimensions, and <aunitssequence> which
   //! describes all the units known for this quantity.

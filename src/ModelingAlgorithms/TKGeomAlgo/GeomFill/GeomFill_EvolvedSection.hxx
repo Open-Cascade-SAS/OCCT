@@ -41,7 +41,7 @@ class GeomFill_EvolvedSection : public GeomFill_SectionLaw
 {
 
 public:
-  //! Make an SectionLaw with a Curve and a real  Law.
+  //! Make an SectionLaw with a Curve and a real Law.
   Standard_EXPORT GeomFill_EvolvedSection(const Handle(Geom_Curve)&   C,
                                           const Handle(Law_Function)& L);
 
@@ -50,8 +50,8 @@ public:
                                               TColgp_Array1OfPnt&   Poles,
                                               TColStd_Array1OfReal& Weigths) Standard_OVERRIDE;
 
-  //! compute the first  derivative in v direction  of the
-  //! section for v =  param
+  //! compute the first derivative in v direction of the
+  //! section for v = param
   //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real   Param,
                                               TColgp_Array1OfPnt&   Poles,
@@ -59,8 +59,8 @@ public:
                                               TColStd_Array1OfReal& Weigths,
                                               TColStd_Array1OfReal& DWeigths) Standard_OVERRIDE;
 
-  //! compute the second derivative  in v direction of the
-  //! section  for v = param
+  //! compute the second derivative in v direction of the
+  //! section for v = param
   //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real   Param,
                                               TColgp_Array1OfPnt&   Poles,
@@ -71,11 +71,11 @@ public:
                                               TColStd_Array1OfReal& D2Weigths) Standard_OVERRIDE;
 
   //! give if possible an bspline Surface, like iso-v are the
-  //! section.  If it is  not possible  this methode have  to
-  //! get an Null Surface.  Is it the default implementation.
+  //! section. If it is not possible this methode have to
+  //! get an Null Surface. Is it the default implementation.
   Standard_EXPORT virtual Handle(Geom_BSplineSurface) BSplineSurface() const Standard_OVERRIDE;
 
-  //! get the format of an  section
+  //! get the format of an section
   Standard_EXPORT virtual void SectionShape(Standard_Integer& NbPoles,
                                             Standard_Integer& NbKnots,
                                             Standard_Integer& Degree) const Standard_OVERRIDE;
@@ -92,19 +92,19 @@ public:
   //! Returns if the sections are periodic or not
   Standard_EXPORT virtual Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
 
-  //! Returns if the law  isperiodic or not
+  //! Returns if the law isperiodic or not
   Standard_EXPORT virtual Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
     Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
                                          const GeomAbs_Shape   S) const Standard_OVERRIDE;
@@ -122,15 +122,15 @@ public:
                                            Standard_Real& Last) const Standard_OVERRIDE;
 
   //! Gets the bounds of the function parametric domain.
-  //! Warning: This domain it is  not modified by the
+  //! Warning: This domain it is not modified by the
   //! SetValue method
   Standard_EXPORT virtual void GetDomain(Standard_Real& First,
                                          Standard_Real& Last) const Standard_OVERRIDE;
 
   //! Returns the tolerances associated at each poles to
-  //! reach  in approximation, to satisfy: BoundTol error
-  //! at the   Boundary  AngleTol tangent error  at  the
-  //! Boundary  (in radian)  SurfTol   error inside the
+  //! reach in approximation, to satisfy: BoundTol error
+  //! at the Boundary AngleTol tangent error at the
+  //! Boundary (in radian) SurfTol error inside the
   //! surface.
   Standard_EXPORT virtual void GetTolerance(const Standard_Real   BoundTol,
                                             const Standard_Real   SurfTol,
@@ -138,20 +138,20 @@ public:
                                             TColStd_Array1OfReal& Tol3d) const Standard_OVERRIDE;
 
   //! Get the barycentre of Surface.
-  //! An   very  poor estimation is sufficient.
+  //! An very poor estimation is sufficient.
   //! This information is useful to perform well
   //! conditioned rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const Standard_OVERRIDE;
 
-  //! Returns the   length of the greater section. This
+  //! Returns the length of the greater section. This
   //! information is useful to G1's control.
   //! Warning: With an little value, approximation can be slower.
   Standard_EXPORT virtual Standard_Real MaximalSection() const Standard_OVERRIDE;
 
   //! Compute the minimal value of weight for each poles
-  //! in all  sections.
-  //! This information is  useful to control error
+  //! in all sections.
+  //! This information is useful to control error
   //! in rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const
@@ -160,7 +160,7 @@ public:
   //! return True If the Law isConstant
   Standard_EXPORT virtual Standard_Boolean IsConstant(Standard_Real& Error) const Standard_OVERRIDE;
 
-  //! Return the constant Section if <me>  IsConstant.
+  //! Return the constant Section if <me> IsConstant.
   Standard_EXPORT virtual Handle(Geom_Curve) ConstantSection() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_EvolvedSection, GeomFill_SectionLaw)

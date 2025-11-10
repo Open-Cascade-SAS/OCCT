@@ -29,7 +29,7 @@ class Plate_D2;
 class NLPlate_HPG3Constraint;
 DEFINE_STANDARD_HANDLE(NLPlate_HPG3Constraint, NLPlate_HPG2Constraint)
 
-//! define a PinPoint (no G0)  G3 Constraint used to load a Non
+//! define a PinPoint (no G0) G3 Constraint used to load a Non
 //! Linear Plate
 class NLPlate_HPG3Constraint : public NLPlate_HPG2Constraint
 {

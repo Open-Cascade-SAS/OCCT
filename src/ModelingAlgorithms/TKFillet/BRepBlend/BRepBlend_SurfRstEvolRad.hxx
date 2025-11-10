@@ -40,8 +40,8 @@ class math_Matrix;
 class gp_Circ;
 class Blend_Point;
 
-//! Function  to approximate by AppSurface  for
-//! Edge/Face  and  evolutif  radius
+//! Function to approximate by AppSurface for
+//! Edge/Face and evolutif radius
 class BRepBlend_SurfRstEvolRad : public Blend_SurfRstFunction
 {
 public:
@@ -100,7 +100,7 @@ public:
   Standard_EXPORT Standard_Boolean IsSolution(const math_Vector&  Sol,
                                               const Standard_Real Tol) Standard_OVERRIDE;
 
-  //! Returns   the    minimal  Distance  between   two
+  //! Returns the minimal Distance between two
   //! extremities of calculated sections.
   Standard_EXPORT virtual Standard_Real GetMinimalDistance() const Standard_OVERRIDE;
 
@@ -111,7 +111,7 @@ public:
   //! Returns U,V coordinates of the point on the surface.
   Standard_EXPORT const gp_Pnt2d& Pnt2dOnS() const Standard_OVERRIDE;
 
-  //! Returns  U,V coordinates of the point  on the curve on
+  //! Returns U,V coordinates of the point on the curve on
   //! surface.
   Standard_EXPORT const gp_Pnt2d& Pnt2dOnRst() const Standard_OVERRIDE;
 
@@ -128,7 +128,7 @@ public:
 
   Standard_EXPORT const gp_Vec2d& Tangent2dOnRst() const Standard_OVERRIDE;
 
-  //! Permet  d ' implementer   un   critere  de  decrochage
+  //! Permet d'implementer un critere de decrochage
   //! specifique a la fonction.
   Standard_EXPORT Standard_Boolean Decroch(const math_Vector& Sol,
                                            gp_Vec&            NS,
@@ -136,7 +136,7 @@ public:
 
   Standard_EXPORT void Set(const Standard_Integer Choix);
 
-  //! Sets  the  type  of   section generation   for the
+  //! Sets the type of section generation for the
   //! approximations.
   Standard_EXPORT void Set(const BlendFunc_SectionShape TypeSection);
 
@@ -148,7 +148,7 @@ public:
                                Standard_Real&      Pfin,
                                gp_Circ&            C);
 
-  //! Returns  if the section is rational
+  //! Returns if the section is rational
   Standard_EXPORT Standard_Boolean IsRational() const Standard_OVERRIDE;
 
   //! Returns the length of the maximum section
@@ -158,7 +158,7 @@ public:
   //! of all sections.
   Standard_EXPORT void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 

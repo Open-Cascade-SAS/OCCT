@@ -191,7 +191,7 @@ public:
   //! if (theMode == 0) then prints the information about WLine
   //! if (theMode == 1) then prints the list of 3d-points
   //! if (theMode == 2) then prints the list of 2d-points on the 1st surface
-  //! Otherwise,             prints list of 2d-points on the 2nd surface
+  //! Otherwise, prints list of 2d-points on the 2nd surface
   Standard_EXPORT void Dump(const Standard_Integer theMode) const;
 
   //! Allows or forbids purging of existing WLine

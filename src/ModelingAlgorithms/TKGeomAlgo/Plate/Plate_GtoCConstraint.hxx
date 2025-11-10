@@ -28,7 +28,7 @@ class gp_XYZ;
 class Plate_D2;
 class Plate_D3;
 
-//! define a G1, G2  or G3 constraint on the Plate
+//! define a G1, G2 or G3 constraint on the Plate
 class Plate_GtoCConstraint
 {
 public:

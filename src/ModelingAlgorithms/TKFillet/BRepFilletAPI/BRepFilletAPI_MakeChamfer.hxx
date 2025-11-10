@@ -123,8 +123,8 @@ public:
                              Standard_Real&         Dis1,
                              Standard_Real&         Dis2) const;
 
-  //! Adds a  fillet contour in  the  builder  (builds a
-  //! contour  of tangent edges to <E> and sets the
+  //! Adds a fillet contour in the builder (builds a
+  //! contour of tangent edges to <E> and sets the
   //! distance <Dis1> and angle <Angle> ( parameters of the chamfer ) ).
   Standard_EXPORT void AddDA(const Standard_Real Dis,
                              const Standard_Real Angle,
@@ -278,12 +278,12 @@ public:
   //! Returns the internal filleting algorithm.
   Standard_EXPORT Handle(TopOpeBRepBuild_HBuilder) Builder() const;
 
-  //! Returns the  list   of shapes generated   from the
+  //! Returns the list of shapes generated from the
   //! shape <EorV>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& EorV)
     Standard_OVERRIDE;
 
-  //! Returns the list  of shapes modified from the shape
+  //! Returns the list of shapes modified from the shape
   //! <F>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& F)
     Standard_OVERRIDE;

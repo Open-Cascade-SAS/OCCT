@@ -32,11 +32,11 @@ DEFINE_STANDARD_HANDLE(GeomFill_BoundWithSurf, GeomFill_Boundary)
 //! Defines a 3d curve as a boundary for a
 //! GeomFill_ConstrainedFilling algorithm.
 //! This curve is attached to an existing surface.
-//! Defines a  constrained boundary for  filling
+//! Defines a constrained boundary for filling
 //! the computations are done with a CurveOnSurf and a
-//! normals field  defined by the normalized normal to
+//! normals field defined by the normalized normal to
 //! the surface along the PCurve.
-//! Contains fields  to allow a reparametrization of curve
+//! Contains fields to allow a reparametrization of curve
 //! and normals field.
 class GeomFill_BoundWithSurf : public GeomFill_Boundary
 {
@@ -70,7 +70,7 @@ public:
   //! The boundary is then constructed with the CurveOnSurf object:
   //! Standard_Real Tol = ... ;
   //! Standard_Real TolAng = ... ;
-  //! myBoundary =  GeomFill_BoundWithSurf (
+  //! myBoundary = GeomFill_BoundWithSurf (
   //! CurveOnSurf, Tol, TolAng );
   Standard_EXPORT GeomFill_BoundWithSurf(const Adaptor3d_CurveOnSurface& CurveOnSurf,
                                          const Standard_Real             Tol3d,

@@ -31,7 +31,7 @@
 //! construction algorithm using the qualified circle (as an argument):
 //! -   encloses the circle, or
 //! -   is enclosed by the circle, or
-//! -   is built so that both the circle and it are external to   one another, or
+//! -   is built so that both the circle and it are external to one another, or
 //! -   is undefined (all solutions apply).
 class GccEnt_QualifiedCirc
 {

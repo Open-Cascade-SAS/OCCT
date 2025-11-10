@@ -30,14 +30,14 @@ class gp_Vec;
 class GeomFill_CoonsAlgPatch;
 DEFINE_STANDARD_HANDLE(GeomFill_CoonsAlgPatch, Standard_Transient)
 
-//! Provides  evaluation   methods on an   algorithmic
-//! patch (based on 4 Curves) defined by  its   boundaries and  blending
+//! Provides evaluation methods on an algorithmic
+//! patch (based on 4 Curves) defined by its boundaries and blending
 //! functions.
 class GeomFill_CoonsAlgPatch : public Standard_Transient
 {
 
 public:
-  //! Constructs the  algorithmic   patch. By   Default  the
+  //! Constructs the algorithmic patch. By Default the
   //! constructed blending functions are linear.
   //! Warning: No control is done on the bounds.
   //! B1/B3 and B2/B4 must be same range and well oriented.
@@ -52,20 +52,20 @@ public:
   //! Set the blending functions.
   Standard_EXPORT void SetFunc(const Handle(Law_Function)& f1, const Handle(Law_Function)& f2);
 
-  //! Computes  the  value   on the  algorithmic    patch at
+  //! Computes the value on the algorithmic patch at
   //! parameters U and V.
   Standard_EXPORT gp_Pnt Value(const Standard_Real U, const Standard_Real V) const;
 
-  //! Computes   the  d/dU   partial   derivative  on    the
+  //! Computes the d/dU partial derivative on the
   //! algorithmic patch at parameters U and V.
   Standard_EXPORT gp_Vec D1U(const Standard_Real U, const Standard_Real V) const;
 
-  //! Computes    the  d/dV    partial    derivative on  the
+  //! Computes the d/dV partial derivative on the
   //! algorithmic patch at parameters U and V.
   Standard_EXPORT gp_Vec D1V(const Standard_Real U, const Standard_Real V) const;
 
-  //! Computes the   d2/dUdV  partial  derivative   on   the
-  //! algorithmic  patch made with linear blending functions
+  //! Computes the d2/dUdV partial derivative on the
+  //! algorithmic patch made with linear blending functions
   //! at parameter U and V.
   Standard_EXPORT gp_Vec DUV(const Standard_Real U, const Standard_Real V) const;
 

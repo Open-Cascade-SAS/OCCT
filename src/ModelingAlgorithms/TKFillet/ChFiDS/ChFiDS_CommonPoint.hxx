@@ -28,9 +28,9 @@
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 
-//! point    start/end of  fillet common  to  2 adjacent  filets
-//! and  to an edge on  one of 2 faces participating
-//! in  the construction of  the  fillet
+//! point start/end of fillet common to 2 adjacent filets
+//! and to an edge on one of 2 faces participating
+//! in the construction of the fillet
 class ChFiDS_CommonPoint
 {
 public:
@@ -65,7 +65,7 @@ public:
   //! a vertex or on an arc.
   void SetPoint(const gp_Pnt& thePoint) { point = thePoint; }
 
-  //! Set the output 3d  vector
+  //! Set the output 3d vector
   void SetVector(const gp_Vec& theVector)
   {
     hasvector = Standard_True;
@@ -123,10 +123,10 @@ public:
   //! Returns the 3d point
   const gp_Pnt& Point() const { return point; }
 
-  //! Returns TRUE if the output vector is  stored.
+  //! Returns TRUE if the output vector is stored.
   Standard_Boolean HasVector() const { return hasvector; }
 
-  //! Returns the output  3d vector
+  //! Returns the output 3d vector
   const gp_Vec& Vector() const
   {
     if (!hasvector)

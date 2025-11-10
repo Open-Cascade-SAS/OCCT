@@ -33,8 +33,8 @@ class BRepFilletAPI_LocalOperation : public BRepBuilderAPI_MakeShape
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Adds a  contour in  the  builder  (builds a
-  //! contour  of tangent edges).
+  //! Adds a contour in the builder (builds a
+  //! contour of tangent edges).
   Standard_EXPORT virtual void Add(const TopoDS_Edge& E) = 0;
 
   //! Reset the contour of index IC, there is nomore
@@ -44,7 +44,7 @@ public:
   //! Number of contours.
   Standard_EXPORT virtual Standard_Integer NbContours() const = 0;
 
-  //! Returns the index of  the  contour containing the edge
+  //! Returns the index of the contour containing the edge
   //! E, returns 0 if E doesn't belong to any contour.
   Standard_EXPORT virtual Standard_Integer Contour(const TopoDS_Edge& E) const = 0;
 
@@ -84,10 +84,10 @@ public:
   //! returns true if the contour of index IC is closed
   Standard_EXPORT virtual Standard_Boolean Closed(const Standard_Integer IC) const = 0;
 
-  //! Reset all the fields updated   by Build operation  and
-  //! leave the  algorithm in  the  same state  than  before
-  //! build    call.  It   allows   contours    and   radius
-  //! modifications  to build the result another time.
+  //! Reset all the fields updated by Build operation and
+  //! leave the algorithm in the same state than before
+  //! build call. It allows contours and radius
+  //! modifications to build the result another time.
   Standard_EXPORT virtual void Reset() = 0;
 
   Standard_EXPORT virtual void Simulate(const Standard_Integer IC) = 0;

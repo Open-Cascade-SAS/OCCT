@@ -25,7 +25,7 @@
 #include <Standard_Boolean.hxx>
 class Intf_SectionPoint;
 
-//! Describe    a  polyline  of   intersection  between two
+//! Describe a polyline of intersection between two
 //! polyhedra as a sequence of points of intersection.
 class Intf_SectionLine
 {
@@ -35,7 +35,7 @@ public:
   //! Returns number of points in this SectionLine.
   Standard_Integer NumberOfPoints() const;
 
-  //! Gives the point of intersection of  address <Index>  in the
+  //! Gives the point of intersection of address <Index> in the
   //! SectionLine.
   Standard_EXPORT const Intf_SectionPoint& GetPoint(const Standard_Integer Index) const;
 
@@ -45,7 +45,7 @@ public:
   //! Returns True if ThePI is in the SectionLine <me>.
   Standard_EXPORT Standard_Boolean Contains(const Intf_SectionPoint& ThePI) const;
 
-  //! Checks if <ThePI>  is an end of  the SectionLine. Returns 1
+  //! Checks if <ThePI> is an end of the SectionLine. Returns 1
   //! for the beginning, 2 for the end, otherwise 0.
   Standard_EXPORT Standard_Integer IsEnd(const Intf_SectionPoint& ThePI) const;
 
@@ -71,14 +71,14 @@ public:
   //! Adds a point at the end of the SectionLine.
   Standard_EXPORT void Append(const Intf_SectionPoint& Pi);
 
-  //! Concatenates   the SectionLine  <LS>  at  the  end  of  the
+  //! Concatenates the SectionLine <LS> at the end of the
   //! SectionLine <me>.
   Standard_EXPORT void Append(Intf_SectionLine& LS);
 
   //! Adds a point to the beginning of the SectionLine <me>.
   Standard_EXPORT void Prepend(const Intf_SectionPoint& Pi);
 
-  //! Concatenates a SectionLine  <LS>  at the  beginning  of the
+  //! Concatenates a SectionLine <LS> at the beginning of the
   //! SectionLine <me>.
   Standard_EXPORT void Prepend(Intf_SectionLine& LS);
 

@@ -42,7 +42,7 @@ class HelixGeom_BuilderHelixGen : public HelixGeom_BuilderApproxCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Sets parameters  for  building  helix  curves
+  //! Sets parameters for building helix curves
   Standard_EXPORT void SetCurveParameters(const Standard_Real    aT1,
                                           const Standard_Real    aT2,
                                           const Standard_Real    aPitch,
@@ -50,7 +50,7 @@ public:
                                           const Standard_Real    aTaperAngle,
                                           const Standard_Boolean bIsClockwise);
 
-  //! Gets parameters  for  building  helix  curves
+  //! Gets parameters for building helix curves
   Standard_EXPORT void CurveParameters(Standard_Real&    aT1,
                                        Standard_Real&    aT2,
                                        Standard_Real&    aPitch,
@@ -59,7 +59,7 @@ public:
                                        Standard_Boolean& bIsClockwise) const;
 
 protected:
-  //! Sets default  parameters
+  //! Sets default parameters
   Standard_EXPORT HelixGeom_BuilderHelixGen();
   Standard_EXPORT virtual ~HelixGeom_BuilderHelixGen();
 

@@ -25,7 +25,7 @@
 class math_Matrix;
 
 //! this function is associated to the intersection between
-//! a curve on surface and a surface  .
+//! a curve on surface and a surface.
 class IntPatch_CSFunction : public math_FunctionSetWithDerivatives
 {
 public:

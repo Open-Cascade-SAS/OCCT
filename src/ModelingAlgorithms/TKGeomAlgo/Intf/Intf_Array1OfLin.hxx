@@ -20,7 +20,7 @@
 #include <gp_Lin.hxx>
 #include <NCollection_Array1.hxx>
 
-//! Describes  a set of Straight Lines  to  intersect with the Polyhedron.
+//! Describes a set of Straight Lines to intersect with the Polyhedron.
 
 typedef NCollection_Array1<gp_Lin> Intf_Array1OfLin;
 

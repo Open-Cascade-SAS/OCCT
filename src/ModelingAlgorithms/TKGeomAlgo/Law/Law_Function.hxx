@@ -36,7 +36,7 @@ class Law_Function : public Standard_Transient
 public:
   Standard_EXPORT virtual GeomAbs_Shape Continuity() const = 0;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const = 0;
 
@@ -52,15 +52,15 @@ public:
   //! function at the point of parameter X.
   Standard_EXPORT virtual void D1(const Standard_Real X, Standard_Real& F, Standard_Real& D) = 0;
 
-  //! Returns the value, first and seconde derivatives
+  //! Returns the value, first and second derivatives
   //! at parameter X.
   Standard_EXPORT virtual void D2(const Standard_Real X,
                                   Standard_Real&      F,
                                   Standard_Real&      D,
                                   Standard_Real&      D2) = 0;
 
-  //! Returns a  law equivalent of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a law equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! It is usfule to determines the derivatives
   //! in these values <First> and <Last> if

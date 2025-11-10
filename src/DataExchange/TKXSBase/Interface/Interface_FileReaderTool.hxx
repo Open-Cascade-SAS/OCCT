@@ -167,7 +167,7 @@ public:
   //! calling arguments)
   //! To work, each Interface can define a method in its proper
   //! Transient class, like this (given as an example) :
-  //! AnalyseRecord (me  : mutable; FR     : in out FileReaderTool;
+  //! AnalyseRecord (me : mutable; FR : in out FileReaderTool;
   //! num : Integer; acheck : in out Check)
   //! returns Boolean;
   //! and call it from AnalyseRecord

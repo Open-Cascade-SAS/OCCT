@@ -54,7 +54,7 @@ public:
   //! The bounds of the surface are not modified.
   Standard_EXPORT void UReverse() Standard_OVERRIDE;
 
-  //! Return the  parameter on the  Ureversed surface for
+  //! Return the parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
   //! @code
   //!   me->UReversed()->Value(me->UReversedParameter(U),V)
@@ -69,7 +69,7 @@ public:
   //! The bounds of the surface are not modified.
   Standard_EXPORT void VReverse() Standard_OVERRIDE;
 
-  //! Return the  parameter on the  Vreversed surface for
+  //! Return the parameter on the Vreversed surface for
   //! the point of parameter V on <me>.
   //! @code
   //!   me->VReversed()->Value(U,me->VReversedParameter(V))
@@ -80,7 +80,7 @@ public:
   //! @endcode
   Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
 
-  //! Computes the  parameters on the  transformed  surface for
+  //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -95,13 +95,13 @@ public:
   //! @endcode
   //! This methods does not change <U> and <V>
   //!
-  //! It  can be redefined.  For  example on  the Plane,
+  //! It can be redefined. For example on the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.
   Standard_EXPORT virtual void TransformParameters(Standard_Real& U,
                                                    Standard_Real& V,
                                                    const gp_Trsf& T) const Standard_OVERRIDE;
 
-  //! Returns a 2d transformation  used to find the  new
+  //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -110,14 +110,14 @@ public:
   //! @code
   //!   me->Value(U,V).Transformed(T)
   //! @endcode
-  //! Where U',V' are  obtained by transforming U,V with
+  //! Where U',V' are obtained by transforming U,V with
   //! the 2d transformation returned by
   //! @code
   //!   me->ParametricTransformation(T)
   //! @endcode
   //! This method returns an identity transformation
   //!
-  //! It  can be redefined.  For  example on  the Plane,
+  //! It can be redefined. For example on the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.
   Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
     Standard_OVERRIDE;
@@ -128,16 +128,16 @@ public:
                               Standard_Real& V2) const Standard_OVERRIDE;
 
   //! Is the surface closed in the parametric direction U ?
-  //! Returns True if for each parameter V  the distance
+  //! Returns True if for each parameter V the distance
   //! between the point P (UFirst, V) and P (ULast, V) is
-  //! lower or equal to Resolution from gp.  UFirst and ULast
+  //! lower or equal to Resolution from gp. UFirst and ULast
   //! are the parametric bounds in the U direction.
   Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
 
   //! Is the surface closed in the parametric direction V ?
-  //! Returns True if for each parameter U  the distance
-  //! between the point P (U, VFirst) and  P (U, VLast) is
-  //! lower or equal to Resolution from gp.  VFirst and VLast
+  //! Returns True if for each parameter U the distance
+  //! between the point P (U, VFirst) and P (U, VLast) is
+  //! lower or equal to Resolution from gp. VFirst and VLast
   //! are the parametric bounds in the V direction.
   Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
 
@@ -147,7 +147,7 @@ public:
   //! parametric direction and if the following relation is
   //! satisfied :
   //! for each parameter V the distance between the point
-  //! P (U, V)  and the point  P (U + T, V) is lower or equal
+  //! P (U, V) and the point P (U + T, V) is lower or equal
   //! to Resolution from package gp. T is the parametric period
   //! and must be a constant.
   Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
@@ -162,7 +162,7 @@ public:
   //! parametric direction and if the following relation is
   //! satisfied :
   //! for each parameter V the distance between the point
-  //! P (U, V)  and the point  P (U + T, V) is lower or equal
+  //! P (U, V) and the point P (U + T, V) is lower or equal
   //! to Resolution from package gp. T is the parametric period
   //! and must be a constant.
   Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;

@@ -58,9 +58,9 @@ class TopoDS_Face;
 class AppBlend_Approx;
 class Geom2d_Curve;
 
-//! Root  class  for calculation of  surfaces (fillets,
-//! chamfers)  destined  to smooth edges  of
-//! a gap on a Shape and the reconstruction of  the   Shape.
+//! Root class for calculation of surfaces (fillets,
+//! chamfers) destined to smooth edges of
+//! a gap on a Shape and the reconstruction of the Shape.
 class ChFi3d_Builder
 {
 public:
@@ -78,28 +78,28 @@ public:
   Standard_EXPORT void SetContinuity(const GeomAbs_Shape InternalContinuity,
                                      const Standard_Real AngularTolerance);
 
-  //! extracts from  the list the contour containing edge E.
+  //! extracts from the list the contour containing edge E.
   Standard_EXPORT void Remove(const TopoDS_Edge& E);
 
-  //! gives the number of  the contour containing E or 0
-  //! if E does  not  belong to  any  contour.
+  //! gives the number of the contour containing E or 0
+  //! if E does not belong to any contour.
   Standard_EXPORT Standard_Integer Contains(const TopoDS_Edge& E) const;
 
-  //! gives  the number of  the contour containing E or 0
-  //! if E does  not  belong  to  any  contour.
+  //! gives the number of the contour containing E or 0
+  //! if E does not belong to any contour.
   //! Sets in IndexInSpine the index of E in the contour if it's found
   Standard_EXPORT Standard_Integer Contains(const TopoDS_Edge& E,
                                             Standard_Integer&  IndexInSpine) const;
 
-  //! gives the number of  disjoint contours on  which
-  //! the  fillets  are  calculated
+  //! gives the number of disjoint contours on which
+  //! the fillets are calculated
   Standard_EXPORT Standard_Integer NbElements() const;
 
-  //! gives the n'th set  of edges (contour)
+  //! gives the n'th set of edges (contour)
   //! if I >NbElements()
   Standard_EXPORT Handle(ChFiDS_Spine) Value(const Standard_Integer I) const;
 
-  //! returns the length of  the contour of index IC.
+  //! returns the length of the contour of index IC.
   Standard_EXPORT Standard_Real Length(const Standard_Integer IC) const;
 
   //! returns the First vertex V of
@@ -130,39 +130,39 @@ public:
   //! topologic reconstruction.
   Standard_EXPORT void Compute();
 
-  //! returns True if the computation  is  success
+  //! returns True if the computation is success
   Standard_EXPORT Standard_Boolean IsDone() const;
 
   //! if (Isdone()) makes the result.
   //! if (!Isdone())
   Standard_EXPORT TopoDS_Shape Shape() const;
 
-  //! Advanced  function for the history
+  //! Advanced function for the history
   Standard_EXPORT const TopTools_ListOfShape& Generated(const TopoDS_Shape& EouV);
 
-  //! Returns the number of contours on  which the calculation
+  //! Returns the number of contours on which the calculation
   //! has failed.
   Standard_EXPORT Standard_Integer NbFaultyContours() const;
 
-  //! Returns the number of  I'th contour on  which the calculation
+  //! Returns the number of I'th contour on which the calculation
   //! has failed.
   Standard_EXPORT Standard_Integer FaultyContour(const Standard_Integer I) const;
 
-  //! Returns the number of  surfaces calculated  on  the contour IC.
+  //! Returns the number of surfaces calculated on the contour IC.
   Standard_EXPORT Standard_Integer NbComputedSurfaces(const Standard_Integer IC) const;
 
-  //! Returns the IS'th surface calculated on  the contour IC.
+  //! Returns the IS'th surface calculated on the contour IC.
   Standard_EXPORT Handle(Geom_Surface) ComputedSurface(const Standard_Integer IC,
                                                        const Standard_Integer IS) const;
 
-  //! Returns the number of vertices on  which the calculation
+  //! Returns the number of vertices on which the calculation
   //! has failed.
   Standard_EXPORT Standard_Integer NbFaultyVertices() const;
 
-  //! Returns the IV'th vertex on  which the calculation has failed.
+  //! Returns the IV'th vertex on which the calculation has failed.
   Standard_EXPORT TopoDS_Vertex FaultyVertex(const Standard_Integer IV) const;
 
-  //! returns True if  a partial result has  been  calculated
+  //! returns True if a partial result has been calculated
   Standard_EXPORT Standard_Boolean HasResult() const;
 
   //! if (HasResult()) returns partial result
@@ -170,14 +170,14 @@ public:
   Standard_EXPORT TopoDS_Shape BadShape() const;
 
   //! for the stripe IC ,indication on the cause
-  //! of  failure WalkingFailure,TwistedSurface,Error, Ok
+  //! of failure WalkingFailure,TwistedSurface,Error, Ok
   Standard_EXPORT ChFiDS_ErrorStatus StripeStatus(const Standard_Integer IC) const;
 
   //! Reset all results of compute and returns the algorithm
   //! in the state of the last acquisition to enable modification of contours or areas.
   Standard_EXPORT void Reset();
 
-  //! Returns the Builder of  topologic operations.
+  //! Returns the Builder of topologic operations.
   Standard_EXPORT Handle(TopOpeBRepBuild_HBuilder) Builder() const;
 
   //! Method, implemented in the inheritants, calculates
@@ -468,8 +468,8 @@ protected:
                                                        Standard_Integer&                  Intf,
                                                        Standard_Integer&                  Intl) = 0;
 
-  //! Method, implemented  in inheritants, calculates
-  //! the elements of construction of  the surface (fillet
+  //! Method, implemented in inheritants, calculates
+  //! the elements of construction of the surface (fillet
   //! or chamfer) contact edge/face.
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         Data,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -497,8 +497,8 @@ protected:
                                            const Standard_Boolean             RecRst,
                                            const math_Vector&                 Soldep);
 
-  //! Method, implemented in  inheritants, calculates
-  //! the elements of construction of  the surface (fillet
+  //! Method, implemented in inheritants, calculates
+  //! the elements of construction of the surface (fillet
   //! or chamfer) contact edge/face.
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         Data,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -527,7 +527,7 @@ protected:
                                            const math_Vector&                 Soldep);
 
   //! Method, implemented in inheritants, calculates
-  //! the elements of construction of  the surface (fillet
+  //! the elements of construction of the surface (fillet
   //! or chamfer) contact edge/edge.
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         Data,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -600,7 +600,7 @@ protected:
                                                       TopAbs_Orientation&         Or2,
                                                       Standard_Integer&           ChoixConge) const;
 
-  //! Calculates  a Line of contact face/face.
+  //! Calculates a Line of contact face/face.
   Standard_EXPORT Standard_Boolean ComputeData(Handle(ChFiDS_SurfData)&           Data,
                                                const Handle(ChFiDS_ElSpine)&      Guide,
                                                const Handle(ChFiDS_Spine)&        Spine,

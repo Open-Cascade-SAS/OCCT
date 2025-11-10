@@ -17,15 +17,15 @@
 #ifndef _ChFiDS_State_HeaderFile
 #define _ChFiDS_State_HeaderFile
 
-//! This enum describe the  different kinds of extremities
-//! of   a   fillet.   OnSame,   Ondiff and  AllSame   are
-//! particular cases of BreakPoint   for a corner   with 3
+//! This enum describe the different kinds of extremities
+//! of a fillet. OnSame, Ondiff and AllSame are
+//! particular cases of BreakPoint for a corner with 3
 //! edges and three faces :
-//! - AllSame means that  the three concavities are on the
+//! - AllSame means that the three concavities are on the
 //! same side of the Shape,
-//! - OnDiff  means  that the  edge of  the  fillet  has a
+//! - OnDiff means that the edge of the fillet has a
 //! concave side different than the two other edges,
-//! - OnSame  means  that the  edge of  the  fillet  has a
+//! - OnSame means that the edge of the fillet has a
 //! concave side different than one of the two other edges
 //! and identical to the third edge.
 enum ChFiDS_State

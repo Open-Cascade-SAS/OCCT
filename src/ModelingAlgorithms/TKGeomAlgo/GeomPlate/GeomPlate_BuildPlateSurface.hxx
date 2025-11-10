@@ -55,16 +55,16 @@ class GeomPlate_BuildPlateSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor  compatible  with  the  old  version
+  //! Constructor compatible with the old version
   //! with this constructor the constraint are given in a Array of Curve on Surface
-  //! The array NbPoints  contains the number of points for each constraint.
+  //! The array NbPoints contains the number of points for each constraint.
   //! The Array Tang contains the order of constraint for each Constraint: The possible values for
   //! this order has to be -1 , 0 , 1 , 2 . Order i means constraint Gi. NbIter is the maximum
   //! number of iteration to optimise the number of points for resolution Degree is the degree of
   //! resolution for Plate Tol2d is the tolerance used to test if two points of different constraint
   //! are identical in the parametric space of the initial surface Tol3d is used to test if two
   //! identical points in the 2d space are identical in 3d space TolAng is used to compare the angle
-  //! between normal of two identical points in the 2d space Raises  ConstructionError;
+  //! between normal of two identical points in the 2d space Raises ConstructionError;
   Standard_EXPORT GeomPlate_BuildPlateSurface(const Handle(TColStd_HArray1OfInteger)&  NPoints,
                                               const Handle(GeomPlate_HArray1OfHCurve)& TabCurve,
                                               const Handle(TColStd_HArray1OfInteger)&  Tang,
@@ -189,13 +189,13 @@ public:
   //! Returns the max distance between the result and the constraints
   Standard_EXPORT Standard_Real G0Error() const;
 
-  //! Returns  the max angle between the result and the constraints
+  //! Returns the max angle between the result and the constraints
   Standard_EXPORT Standard_Real G1Error() const;
 
-  //! Returns  the max difference of curvature between the result and the constraints
+  //! Returns the max difference of curvature between the result and the constraints
   Standard_EXPORT Standard_Real G2Error() const;
 
-  //! Returns   the max distance between the result and the constraint Index
+  //! Returns the max distance between the result and the constraint Index
   Standard_EXPORT Standard_Real G0Error(const Standard_Integer Index);
 
   //! Returns the max angle between the result and the constraint Index

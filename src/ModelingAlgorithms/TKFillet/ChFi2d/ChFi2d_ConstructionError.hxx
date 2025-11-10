@@ -22,7 +22,7 @@ enum ChFi2d_ConstructionError
 {
   ChFi2d_NotPlanar,           //!< the face is not planar
   ChFi2d_NoFace,              //!< the face is null
-  ChFi2d_InitialisationError, //!< the two  faces used for the initialisation are uncompatible
+  ChFi2d_InitialisationError, //!< the two faces used for the initialisation are uncompatible
   ChFi2d_ParametersError, //!< the parameters as distances or angle for chamfer are less or equal to
                           //!< zero
   ChFi2d_Ready,           //!< the initialization has been successful

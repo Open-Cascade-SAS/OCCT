@@ -27,7 +27,7 @@ class gp_XY;
 class NLPlate_HPG1Constraint;
 DEFINE_STANDARD_HANDLE(NLPlate_HPG1Constraint, NLPlate_HGPPConstraint)
 
-//! define a PinPoint (no G0)  G1 Constraint used to load a Non
+//! define a PinPoint (no G0) G1 Constraint used to load a Non
 //! Linear Plate
 class NLPlate_HPG1Constraint : public NLPlate_HGPPConstraint
 {

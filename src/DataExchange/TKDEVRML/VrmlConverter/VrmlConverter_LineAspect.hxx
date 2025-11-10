@@ -33,7 +33,7 @@ class VrmlConverter_LineAspect : public Standard_Transient
 
 public:
   //! create a default LineAspect.
-  //! Default value: HasMaterial  = False - a line hasn't own material (color)
+  //! Default value: HasMaterial = False - a line hasn't own material (color)
   Standard_EXPORT VrmlConverter_LineAspect();
 
   Standard_EXPORT VrmlConverter_LineAspect(const Handle(Vrml_Material)& aMaterial,

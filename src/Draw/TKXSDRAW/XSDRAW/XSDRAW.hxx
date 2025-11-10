@@ -72,11 +72,11 @@ public:
   //! "Set" commands are accessed under command xset
   //! SDS>xset name command ...
   //! Other commands can be accessed directly or under command xstep
-  //! SDS>command ...  and  SDS>xstep command ...  are equivalent
+  //! SDS>command ... and SDS>xstep command ... are equivalent
   //!
-  //! Only the command xinit is accessed directly only :
-  //! SDS>xinit  (from the already defined Controller)
-  //! SDS>xinit iges  (first defines the Controller as for "iges")
+  //! Only the command xinit is accessed directly only:
+  //! SDS>xinit (from the already defined Controller)
+  //! SDS>xinit iges (first defines the Controller as for "iges")
   //!
   //! It also records the function to be called by DRAW (not
   //! declared because specific).
@@ -89,9 +89,9 @@ public:
   Standard_EXPORT static void LoadDraw(Draw_Interpretor& theCommands);
 
   //! Allows to execute a xstep-draw command from C++ program
-  //! Fixed form :  Execute("command args...");
+  //! Fixed form: Execute("command args...");
   //! Form with a variable text part : add %s for the variable :
-  //! Execute ("command args %s args..",var)  [var is a CString]
+  //! Execute ("command args %s args..",var) [var is a CString]
   //! Returns the same value as returned by call from DRAW
   Standard_EXPORT static Standard_Integer Execute(const Standard_CString command,
                                                   const Standard_CString var = "");

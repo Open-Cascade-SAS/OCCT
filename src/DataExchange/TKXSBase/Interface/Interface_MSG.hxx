@@ -215,26 +215,26 @@ public:
                                                 const Standard_CString text2);
 
   //! Returns a blank string, of length between 0 and <max>, to fill
-  //! the printing of a numeric value <val>, i.e. :
+  //! the printing of a numeric value <val>, i.e.
   //! If val < 10 , max-1 blanks
-  //! If val between 10 and 99, max-2 blanks  ...   etc...
+  //! If val between 10 and 99, max-2 blanks ... etc...
   Standard_EXPORT static Standard_CString Blanks(const Standard_Integer val,
                                                  const Standard_Integer max);
 
   //! Returns a blank string, to complete a given string <val> up to
-  //! <max> characters :
+  //! <max> characters:
   //! If strlen(val) is 0, max blanks
-  //! If strlen(val) is 5, max-5 blanks    etc...
+  //! If strlen(val) is 5, max-5 blanks etc...
   Standard_EXPORT static Standard_CString Blanks(const Standard_CString val,
                                                  const Standard_Integer max);
 
   //! Returns a blank string of <count> blanks (mini 0, maxi 76)
   Standard_EXPORT static Standard_CString Blanks(const Standard_Integer count);
 
-  //! Prints a String on an Output Stream, as follows :
-  //! Accompanied with blanks, to give up to <max> charis at all,
-  //! justified according just :
-  //! -1 (D) : left     0 : center    1 : right
+  //! Prints a String on an Output Stream, as follows:
+  //! Accompanied with blanks, to give up to <max> chars at all,
+  //! justified accordingly:
+  //! -1 (D) : left 0 : center 1 : right
   //! Maximum 76 characters
   Standard_EXPORT static void Print(Standard_OStream&      S,
                                     const Standard_CString val,

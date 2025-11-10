@@ -62,15 +62,15 @@ public:
   //! which it is going to work.
   Standard_EXPORT GeomAPI_ExtremaCurveSurface();
 
-  //! Computes  the  extrema  distances  between  the
-  //! curve <C> and the surface  <S>.
+  //! Computes the extrema distances between the
+  //! curve <C> and the surface <S>.
   Standard_EXPORT GeomAPI_ExtremaCurveSurface(const Handle(Geom_Curve)&   Curve,
                                               const Handle(Geom_Surface)& Surface);
 
-  //! Computes  the  extrema  distances  between  the
-  //! curve <C>  and the  surface  <S>.  The solution
+  //! Computes the extrema distances between the
+  //! curve <C> and the surface <S>. The solution
   //! point are computed in the domain [Wmin,Wmax] of
-  //! the  curve   and  in  the  domain   [Umin,Umax]
+  //! the curve and in the domain [Umin,Umax]
   //! [Vmin,Vmax] of the surface.
   //! Warning
   //! Use the function NbExtrema to obtain the number
@@ -84,14 +84,14 @@ public:
                                               const Standard_Real         Vmin,
                                               const Standard_Real         Vmax);
 
-  //! Computes  the  extrema  distances  between  the
-  //! curve <C> and the surface  <S>.
+  //! Computes the extrema distances between the
+  //! curve <C> and the surface <S>.
   Standard_EXPORT void Init(const Handle(Geom_Curve)& Curve, const Handle(Geom_Surface)& Surface);
 
-  //! Computes  the  extrema  distances  between  the
-  //! curve <C>  and the  surface  <S>.  The solution
+  //! Computes the extrema distances between the
+  //! curve <C> and the surface <S>. The solution
   //! point are computed in the domain [Wmin,Wmax] of
-  //! the  curve   and  in  the  domain   [Umin,Umax]
+  //! the curve and in the domain [Umin,Umax]
   //! [Vmin,Vmax] of the surface.
   //! Warning
   //! Use the function NbExtrema to obtain the number

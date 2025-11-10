@@ -66,7 +66,7 @@ public:
   //! its numeric limits.
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-  //! Returns the number of  of lines, representing solutions computed by this algorithm.
+  //! Returns the number of lines, representing solutions computed by this algorithm.
   //! Raises NotDone if the construction algorithm didn't succeed.
   Standard_EXPORT Standard_Integer NbSolutions() const;
 
@@ -75,7 +75,7 @@ public:
   //! solutions, but is not associated to these outside the
   //! context of the algorithm-object.
   //! raises NotDone if the construction algorithm didn't succeed.
-  //! It raises OutOfRange if Index is greater than the   number of solutions.
+  //! It raises OutOfRange if Index is greater than the number of solutions.
   Standard_EXPORT gp_Lin2d ThisSolution(const Standard_Integer Index) const;
 
   //! Returns the qualifier Qualif1 of the tangency argument
@@ -101,7 +101,7 @@ public:
   //! ParArg is the intrinsic parameter of the point ParArg on
   //! the argument curv. Raises NotDone if the construction algorithm
   //! didn't succeed.
-  //! It raises OutOfRange if Index is greater than the  number of solutions.
+  //! It raises OutOfRange if Index is greater than the number of solutions.
   Standard_EXPORT void Tangency1(const Standard_Integer Index,
                                  Standard_Real&         ParSol,
                                  Standard_Real&         ParArg,
@@ -109,7 +109,7 @@ public:
 
   //! Returns information about the intersection between the
   //! result number Index and the third argument.
-  //! Raises NotDone if the construction algorithm  didn't succeed.
+  //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the number of solutions.
   Standard_EXPORT void Intersection2(const Standard_Integer Index,
                                      Standard_Real&         ParSol,

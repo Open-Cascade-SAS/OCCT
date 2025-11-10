@@ -175,7 +175,7 @@ public:
   //! Returns True if the solution number Index is equal to
   //! the second argument. Raises OutOfRange if Index is greater than the number
   //! of solutions.
-  //! It raises NotDone if the construction algorithm did not  succeed.
+  //! It raises NotDone if the construction algorithm did not succeed.
   Standard_EXPORT Standard_Boolean IsTheSame2(const Standard_Integer Index) const;
 
 protected:

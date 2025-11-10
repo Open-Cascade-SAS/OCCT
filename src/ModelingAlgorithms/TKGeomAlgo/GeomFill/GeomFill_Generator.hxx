@@ -24,9 +24,9 @@
 #include <GeomFill_Profiler.hxx>
 class Geom_Surface;
 
-//! Create a surface using generating lines.  Inherits
-//! profiler.  The  surface will be  a  BSplineSurface
-//! passing  by   all  the  curves  described  in  the
+//! Create a surface using generating lines. Inherits
+//! profiler. The surface will be a BSplineSurface
+//! passing by all the curves described in the
 //! generator. The VDegree of the resulting surface is
 //! 1.
 class GeomFill_Generator : public GeomFill_Profiler

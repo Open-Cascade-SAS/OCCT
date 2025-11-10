@@ -31,8 +31,8 @@ class gp_Pnt;
 class GeomFill_LocationLaw;
 DEFINE_STANDARD_HANDLE(GeomFill_LocationLaw, Standard_Transient)
 
-//! To define location  law in Sweeping location is --
-//! defined   by an  Matrix  M and  an Vector  V,  and
+//! To define location law in Sweeping location is
+//! defined by an Matrix M and an Vector V, and
 //! transform an point P in MP+V.
 class GeomFill_LocationLaw : public Standard_Transient
 {
@@ -43,7 +43,7 @@ public:
 
   Standard_EXPORT virtual const Handle(Adaptor3d_Curve)& GetCurve() const = 0;
 
-  //! Set a transformation Matrix like   the law M(t) become
+  //! Set a transformation Matrix like the law M(t) become
   //! Mat * M(t)
   Standard_EXPORT virtual void SetTrsf(const gp_Mat& Transfo) = 0;
 
@@ -58,9 +58,9 @@ public:
                                               gp_Vec&               V,
                                               TColgp_Array1OfPnt2d& Poles2d) = 0;
 
-  //! compute location 2d  points and  associated
+  //! compute location 2d points and associated
   //! first derivatives.
-  //! Warning : It used only for C1 or C2 approximation
+  //! Warning: It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real   Param,
                                               gp_Mat&               M,
                                               gp_Vec&               V,
@@ -69,9 +69,9 @@ public:
                                               TColgp_Array1OfPnt2d& Poles2d,
                                               TColgp_Array1OfVec2d& DPoles2d);
 
-  //! compute location 2d  points and associated
-  //! first and seconde  derivatives.
-  //! Warning : It used only for C2 approximation
+  //! compute location 2d points and associated
+  //! first and second derivatives.
+  //! Warning: It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real   Param,
                                               gp_Mat&               M,
                                               gp_Vec&               V,
@@ -83,18 +83,18 @@ public:
                                               TColgp_Array1OfVec2d& DPoles2d,
                                               TColgp_Array1OfVec2d& D2Poles2d);
 
-  //! get the number of  2d  curves (Restrictions  +  Traces)
+  //! get the number of 2d curves (Restrictions + Traces)
   //! to approximate.
   Standard_EXPORT Standard_Integer Nb2dCurves() const;
 
   //! Say if the first restriction is defined in this class.
-  //! If it  is true the  first element  of poles array   in
+  //! If it is true the first element of poles array in
   //! D0,D1,D2... Correspond to this restriction.
   //! Returns Standard_False (default implementation)
   Standard_EXPORT virtual Standard_Boolean HasFirstRestriction() const;
 
   //! Say if the last restriction is defined in this class.
-  //! If it is  true the  last element  of poles array in
+  //! If it is true the last element of poles array in
   //! D0,D1,D2... Correspond to this restriction.
   //! Returns Standard_False (default implementation)
   Standard_EXPORT virtual Standard_Boolean HasLastRestriction() const;
@@ -107,15 +107,14 @@ public:
   //! Returns PipeOk (default implementation)
   Standard_EXPORT virtual GeomFill_PipeError ErrorStatus() const;
 
-  //! Returns  the number  of  intervals for  continuity
-  //! <S>.
+  //! Returns the number of intervals for continuity <S>.
   //! May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const = 0;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const = 0;
 
@@ -130,11 +129,11 @@ public:
   Standard_EXPORT virtual void GetInterval(Standard_Real& First, Standard_Real& Last) const = 0;
 
   //! Gets the bounds of the function parametric domain.
-  //! Warning: This domain it is  not modified by the
+  //! Warning: This domain it is not modified by the
   //! SetValue method
   Standard_EXPORT virtual void GetDomain(Standard_Real& First, Standard_Real& Last) const = 0;
 
-  //! Returns the resolutions in the  sub-space 2d <Index>
+  //! Returns the resolutions in the sub-space 2d <Index>
   //! This information is useful to find a good tolerance in
   //! 2d approximation.
   Standard_EXPORT virtual void Resolution(const Standard_Integer Index,
@@ -147,7 +146,7 @@ public:
   //! The default implementation make nothing.
   Standard_EXPORT virtual void SetTolerance(const Standard_Real Tol3d, const Standard_Real Tol2d);
 
-  //! Get the maximum Norm  of the matrix-location part.  It
+  //! Get the maximum Norm of the matrix-location part. It
   //! is usful to find a good Tolerance to approx M(t).
   Standard_EXPORT virtual Standard_Real GetMaximalNorm() = 0;
 
@@ -155,11 +154,11 @@ public:
   //! make fast approximation of rational surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Mat& AM, gp_Vec& AV) = 0;
 
-  //! Say if the Location  Law, is an translation of  Location
+  //! Say if the Location Law, is an translation of Location
   //! The default implementation is " returns False ".
   Standard_EXPORT virtual Standard_Boolean IsTranslation(Standard_Real& Error) const;
 
-  //! Say if the Location  Law, is a rotation of Location
+  //! Say if the Location Law, is a rotation of Location
   //! The default implementation is " returns False ".
   Standard_EXPORT virtual Standard_Boolean IsRotation(Standard_Real& Error) const;
 

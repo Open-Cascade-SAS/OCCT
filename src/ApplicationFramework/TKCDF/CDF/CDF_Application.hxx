@@ -203,7 +203,7 @@ private:
   //! retrieved but had no changes since the previous retrieval.
   //! - CDF_TOA_Modified if the document was already
   //! retrieved and modified since the previous retrieval.
-  //! You do not need to call <Activate>, but you should  redefine
+  //! You do not need to call <Activate>, but you should redefine
   //! this method to implement application specific behavior.
   Standard_EXPORT virtual void Activate(const Handle(CDM_Document)& aDocument,
                                         const CDF_TypeOfActivation  aTypeOfActivation);

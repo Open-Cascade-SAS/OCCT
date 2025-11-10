@@ -72,7 +72,7 @@ public:
                                           const Standard_Real             Tolerance);
 
   //! These constructors create one or more 2D circles of radius Radius either
-  //! -   tangential to the 2 curves Qualified1 and Qualified2,   or
+  //! -   tangential to the 2 curves Qualified1 and Qualified2, or
   //! -   tangential to the curve Qualified1 and passing through the point Point, or
   //! -   passing through two points Point1 and Point2.
   //! Tolerance is a tolerance criterion used by the algorithm

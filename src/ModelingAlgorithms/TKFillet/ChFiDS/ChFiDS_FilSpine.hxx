@@ -31,8 +31,8 @@ class Law_Composite;
 class ChFiDS_FilSpine;
 DEFINE_STANDARD_HANDLE(ChFiDS_FilSpine, ChFiDS_Spine)
 
-//! Provides  data specific to  the fillets -
-//! vector or rule  of evolution (C2).
+//! Provides data specific to the fillets -
+//! vector or rule of evolution (C2).
 class ChFiDS_FilSpine : public ChFiDS_Spine
 {
 
@@ -47,10 +47,10 @@ public:
   //! initializes the constant vector on edge E.
   Standard_EXPORT void SetRadius(const Standard_Real Radius, const TopoDS_Edge& E);
 
-  //! resets the constant vector  on   edge E.
+  //! resets the constant vector on edge E.
   Standard_EXPORT void UnSetRadius(const TopoDS_Edge& E);
 
-  //! initializes the  vector on Vertex V.
+  //! initializes the vector on Vertex V.
   Standard_EXPORT void SetRadius(const Standard_Real Radius, const TopoDS_Vertex& V);
 
   //! resets the vector on Vertex V.

@@ -73,7 +73,7 @@ public:
   //! Compute the Section, in the coordinate system given by
   //! the Location Law.
   //! To have the Normal to section equal to the Location
-  //! Law Normal.  If <WithTranslation> contact between
+  //! Law Normal. If <WithTranslation> contact between
   //! <Section> and <Path> is forced.
   Standard_EXPORT Handle(Geom_Curve) ModifiedSection(const Standard_Boolean WithTranslation) const;
 

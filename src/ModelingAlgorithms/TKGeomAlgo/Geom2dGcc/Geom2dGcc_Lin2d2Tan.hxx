@@ -117,7 +117,7 @@ public:
   //! -   those computed during construction (i.e. enclosing or
   //! outside) when the solutions are defined as unqualified
   //! with respect to the arguments, or
-  //! -   GccEnt_noqualifier if the tangency argument is a   point.
+  //! -   GccEnt_noqualifier if the tangency argument is a point.
   //! Exceptions
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.

@@ -28,8 +28,8 @@
 #include <TColStd_Array1OfReal.hxx>
 class Geom_BSplineCurve;
 
-//! This  class  is  used  to  approximate a  BsplineCurve
-//! passing  through an  array  of points,  with  a  given Continuity.
+//! This class is used to approximate a BsplineCurve
+//! passing through an array of points, with a given Continuity.
 //! Describes functions for building a 3D BSpline
 //! curve which approximates a set of points.
 //! A PointsToBSpline object provides a framework for:
@@ -44,11 +44,11 @@ public:
   //! Use an Init function to define and build the BSpline curve.
   Standard_EXPORT GeomAPI_PointsToBSpline();
 
-  //! Approximate  a BSpline  Curve passing  through  an
-  //! array of  Point.  The resulting BSpline will  have
+  //! Approximate a BSpline Curve passing through an
+  //! array of Point. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D
   Standard_EXPORT GeomAPI_PointsToBSpline(const TColgp_Array1OfPnt& Points,
@@ -57,11 +57,11 @@ public:
                                           const GeomAbs_Shape       Continuity = GeomAbs_C2,
                                           const Standard_Real       Tol3D      = 1.0e-3);
 
-  //! Approximate  a BSpline  Curve passing  through  an
-  //! array of  Point.  The resulting BSpline will  have
+  //! Approximate a BSpline Curve passing through an
+  //! array of Point. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D
   Standard_EXPORT GeomAPI_PointsToBSpline(const TColgp_Array1OfPnt&        Points,
@@ -71,13 +71,13 @@ public:
                                           const GeomAbs_Shape              Continuity = GeomAbs_C2,
                                           const Standard_Real              Tol3D      = 1.0e-3);
 
-  //! Approximate  a  BSpline  Curve  passing through an
-  //! array of Point,  which parameters are given by the
+  //! Approximate a BSpline Curve passing through an
+  //! array of Point, which parameters are given by the
   //! array <Parameters>.
-  //! The resulting  BSpline   will have the   following
+  //! The resulting BSpline will have the following
   //! properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D
   Standard_EXPORT GeomAPI_PointsToBSpline(const TColgp_Array1OfPnt&   Points,
@@ -87,7 +87,7 @@ public:
                                           const GeomAbs_Shape         Continuity = GeomAbs_C2,
                                           const Standard_Real         Tol3D      = 1.0e-3);
 
-  //! Approximate a BSpline Curve  passing through an
+  //! Approximate a BSpline Curve passing through an
   //! array of Point using variational smoothing algorithm,
   //! which tries to minimize additional criterium:
   //! Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion
@@ -99,11 +99,11 @@ public:
                                           const GeomAbs_Shape       Continuity = GeomAbs_C2,
                                           const Standard_Real       Tol3D      = 1.0e-3);
 
-  //! Approximate  a BSpline  Curve passing  through  an
-  //! array of  Point.  The resulting BSpline will  have
+  //! Approximate a BSpline Curve passing through an
+  //! array of Point. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D
   Standard_EXPORT void Init(const TColgp_Array1OfPnt& Points,
@@ -112,11 +112,11 @@ public:
                             const GeomAbs_Shape       Continuity = GeomAbs_C2,
                             const Standard_Real       Tol3D      = 1.0e-3);
 
-  //! Approximate  a BSpline  Curve passing  through  an
-  //! array of  Point.  The resulting BSpline will  have
+  //! Approximate a BSpline Curve passing through an
+  //! array of Point. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D
   Standard_EXPORT void Init(const TColgp_Array1OfPnt&        Points,
@@ -126,13 +126,13 @@ public:
                             const GeomAbs_Shape              Continuity = GeomAbs_C2,
                             const Standard_Real              Tol3D      = 1.0e-3);
 
-  //! Approximate  a  BSpline  Curve  passing through an
-  //! array of Point,  which parameters are given by the
+  //! Approximate a BSpline Curve passing through an
+  //! array of Point, which parameters are given by the
   //! array <Parameters>.
-  //! The resulting  BSpline   will have the   following
+  //! The resulting BSpline will have the following
   //! properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D
   Standard_EXPORT void Init(const TColgp_Array1OfPnt&   Points,
@@ -142,7 +142,7 @@ public:
                             const GeomAbs_Shape         Continuity = GeomAbs_C2,
                             const Standard_Real         Tol3D      = 1.0e-3);
 
-  //! Approximate a BSpline Curve  passing through an
+  //! Approximate a BSpline Curve passing through an
   //! array of Point using variational smoothing algorithm,
   //! which tries to minimize additional criterium:
   //! Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion

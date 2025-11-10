@@ -38,7 +38,7 @@ class FairCurve_MinimalVariation : public FairCurve_Batten
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs the two contact points P1 and P2  and the geometrical
+  //! Constructs the two contact points P1 and P2 and the geometrical
   //! characteristics of the batten (elastic beam)
   //! These include the real number values for height of
   //! deformation Height, slope value Slope, and kind of
@@ -82,7 +82,7 @@ public:
   //! 0 is only "Jerk" Energy
   //! 1 is only "Sagging" Energy like batten
   //! Warning: if Ratio is 1 it is impossible to impose curvature constraints.
-  //! Raises  DomainError if Ratio < 0 or Ratio > 1
+  //! Raises DomainError if Ratio < 0 or Ratio > 1
   void SetPhysicalRatio(const Standard_Real Ratio);
 
   //! Computes the curve with respect to the constraints,

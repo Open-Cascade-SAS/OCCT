@@ -138,7 +138,7 @@ public:
   //! Be careful: the Index is only a way to get all the
   //! solutions, but is not associated to these outside the
   //! context of the algorithm-object.
-  //! Raises NotDone if the construction algorithm  didn't succeed.
+  //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions
   Standard_EXPORT gp_Circ2d ThisSolution(const Standard_Integer Index) const;
@@ -180,7 +180,7 @@ public:
   //! ParArg is the intrinsic parameter of the point on
   //! the argument curv.
   //! PntSol is the center point of the solution curv.
-  //! Raises NotDone if the construction algorithm  didn't succeed.
+  //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
   Standard_EXPORT void CenterOn3(const Standard_Integer Index,
@@ -189,7 +189,7 @@ public:
 
   //! Returns True if the solution number Index is equal to
   //! the first argument and False in the other cases.
-  //! Raises NotDone if the construction algorithm  didn't succeed.
+  //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
   Standard_EXPORT Standard_Boolean IsTheSame1(const Standard_Integer Index) const;

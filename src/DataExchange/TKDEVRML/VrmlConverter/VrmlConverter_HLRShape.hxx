@@ -27,7 +27,7 @@ class VrmlConverter_Drawer;
 class VrmlConverter_Projector;
 
 //! HLRShape - computes the presentation of objects
-//! with removal of their hidden  lines for a specific
+//! with removal of their hidden lines for a specific
 //! projector, converts them into VRML objects and
 //! writes (adds) them into anOStream. All requested
 //! properties of the representation are specify in

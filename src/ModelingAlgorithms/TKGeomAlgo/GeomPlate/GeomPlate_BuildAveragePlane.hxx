@@ -67,8 +67,8 @@ public:
   //! return OK if is a line.
   Standard_EXPORT Standard_Boolean IsLine() const;
 
-  //! computes the   minimal box  to include  all normal
-  //! projection points of the initial array  on the plane.
+  //! computes the minimal box to include all normal
+  //! projection points of the initial array on the plane.
   Standard_EXPORT void MinMaxBox(Standard_Real& Umin,
                                  Standard_Real& Umax,
                                  Standard_Real& Vmin,

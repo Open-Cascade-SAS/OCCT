@@ -75,7 +75,7 @@ public:
 
   //! Returns information about the intersection point between
   //! the result number Index and the first argument.
-  //! Raises NotDone if the construction algorithm  didn't succeed.
+  //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
   Standard_EXPORT void Intersection1(const Standard_Integer Index,

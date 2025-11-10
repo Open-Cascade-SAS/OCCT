@@ -56,12 +56,12 @@ public:
   //! to define the surfaces on which it is going to work.
   Standard_EXPORT GeomAPI_ExtremaSurfaceSurface();
 
-  //! Computes  the  extrema  distances  between  the
-  //! surfaces <S1>  and <S2>
+  //! Computes the extrema distances between the
+  //! surfaces <S1> and <S2>
   Standard_EXPORT GeomAPI_ExtremaSurfaceSurface(const Handle(Geom_Surface)& S1,
                                                 const Handle(Geom_Surface)& S2);
 
-  //! Computes  the  extrema  distances  between
+  //! Computes the extrema distances between
   //! the portion of the surface S1 limited by the
   //! two values of parameter (U1min,U1max) in
   //! the u parametric direction, and by the two
@@ -84,12 +84,12 @@ public:
                                                 const Standard_Real         V2max);
 
   //! Initializes this algorithm with the given arguments
-  //! and computes  the  extrema  distances  between  the
-  //! surfaces <S1>  and <S2>
+  //! and computes the extrema distances between the
+  //! surfaces <S1> and <S2>
   Standard_EXPORT void Init(const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2);
 
   //! Initializes this algorithm with the given arguments
-  //! and computes  the  extrema  distances  between -
+  //! and computes the extrema distances between -
   //! the portion of the surface S1 limited by the two
   //! values of parameter (U1min,U1max) in the u
   //! parametric direction, and by the two values of

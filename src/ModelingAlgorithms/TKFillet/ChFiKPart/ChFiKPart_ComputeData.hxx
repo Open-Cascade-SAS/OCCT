@@ -25,8 +25,8 @@ class ChFiDS_SurfData;
 class ChFiDS_Spine;
 class gp_Pnt2d;
 
-//! Methodes de classe   permettant de  remplir    une
-//! SurfData dans  les cas  particuliers  de  conges
+//! Methodes de classe permettant de remplir une
+//! SurfData dans les cas particuliers de conges
 //! suivants:
 //! - cylindre entre 2 surfaces planes,
 //! - tore/sphere entre un plan et un cylindre othogonal,

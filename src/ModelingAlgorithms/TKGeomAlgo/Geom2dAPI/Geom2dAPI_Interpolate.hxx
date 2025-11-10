@@ -29,11 +29,11 @@
 class Geom2d_BSplineCurve;
 class gp_Vec2d;
 
-//! This  class  is  used  to  interpolate a  BsplineCurve
-//! passing   through  an  array  of  points,  with  a  C2
+//! This class is used to interpolate a BsplineCurve
+//! passing through an array of points, with a C2
 //! Continuity if tangency is not requested at the point.
 //! If tangency is requested at the point the continuity will
-//! be C1.  If Perodicity is requested the curve will be closed
+//! be C1. If Perodicity is requested the curve will be closed
 //! and the junction will be the first point given. The curve will than be only C1
 //! The curve is defined by a table of points through which it passes, and if required
 //! by a parallel table of reals which gives the value of the parameter of each point through
@@ -98,7 +98,7 @@ public:
   //! computation is successful, and then the function Curve to obtain the result.
   Standard_EXPORT void Perform();
 
-  //! Returns the computed BSpline curve. Raises  StdFail_NotDone if the interpolation fails.
+  //! Returns the computed BSpline curve. Raises StdFail_NotDone if the interpolation fails.
   Standard_EXPORT const Handle(Geom2d_BSplineCurve)& Curve() const;
   Standard_EXPORT                                    operator Handle(Geom2d_BSplineCurve)() const;
 

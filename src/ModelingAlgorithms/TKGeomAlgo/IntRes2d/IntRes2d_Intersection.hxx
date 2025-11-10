@@ -27,8 +27,8 @@
 class IntRes2d_IntersectionPoint;
 class IntRes2d_IntersectionSegment;
 
-//! Defines  the root   class  of  all  the  Intersections
-//! between  two 2D-Curves, and  provides all  the methods
+//! Defines the root class of all the Intersections
+//! between two 2D-Curves, and provides all the methods
 //! about the results of the Intersections Algorithms.
 class IntRes2d_Intersection
 {

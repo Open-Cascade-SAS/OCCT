@@ -26,13 +26,13 @@ class Law_Function;
 class math_Matrix;
 
 //! Function of reframing between a point and a surface.
-//! This function  is used  to find a  solution on  a done
-//! point   of   the curve when   using  SurfRstConsRad or
+//! This function is used to find a solution on a done
+//! point of the curve when using SurfRstConsRad or
 //! CSConstRad...
-//! The vector <X>  used in Value, Values and  Derivatives
-//! methods  has  to   be the  vector   of the  parametric
-//! coordinates w, U,  V where w is  the parameter  on the
-//! guide line, U,V   are the parametric coordinates of  a
+//! The vector <X> used in Value, Values and Derivatives
+//! methods has to be the vector of the parametric
+//! coordinates w, U, V where w is the parameter on the
+//! guide line, U,V are the parametric coordinates of a
 //! point on the partner surface.
 class BRepBlend_SurfPointEvolRadInv : public Blend_SurfPointFuncInv
 {

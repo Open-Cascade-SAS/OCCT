@@ -70,7 +70,7 @@ public:
                                               TColStd_Array1OfReal& Weigths,
                                               TColStd_Array1OfReal& DWeigths) Standard_OVERRIDE;
 
-  //! compute the second derivative  in v direction of the
+  //! compute the second derivative in v direction of the
   //! section for v = param
   Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real   Param,
                                               const Standard_Real   First,
@@ -110,7 +110,7 @@ public:
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
                                          const GeomAbs_Shape   S) const Standard_OVERRIDE;
@@ -141,24 +141,24 @@ public:
                                             const Standard_Real   AngleTol,
                                             TColStd_Array1OfReal& Tol3d) const Standard_OVERRIDE;
 
-  //! Is useful, if (me) have to  be run numerical
+  //! Is useful, if <me> has to be run numerical
   //! algorithme to perform D0, D1 or D2
   Standard_EXPORT virtual void SetTolerance(const Standard_Real Tol3d,
                                             const Standard_Real Tol2d) Standard_OVERRIDE;
 
-  //! Get    the   barycentre of   Surface.   An   very  poor
+  //! Get the barycentre of Surface. An very poor
   //! estimation is sufficient. This information is useful
   //! to perform well conditioned rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const Standard_OVERRIDE;
 
-  //! Returns the   length of the maximum section. This
+  //! Returns the length of the maximum section. This
   //! information is useful to perform well conditioned rational
   //! approximation.
   Standard_EXPORT virtual Standard_Real MaximalSection() const Standard_OVERRIDE;
 
   //! Compute the minimal value of weight for each poles
-  //! of all  sections.  This information is  useful to
+  //! of all sections. This information is useful to
   //! perform well conditioned rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const

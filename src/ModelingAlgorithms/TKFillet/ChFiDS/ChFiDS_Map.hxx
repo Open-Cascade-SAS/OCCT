@@ -37,7 +37,7 @@ public:
   Standard_EXPORT ChFiDS_Map();
 
   //! Fills the map with the subshapes of type T1 as keys
-  //! and the list of ancestors  of type T2 as items.
+  //! and the list of ancestors of type T2 as items.
   Standard_EXPORT void Fill(const TopoDS_Shape&    S,
                             const TopAbs_ShapeEnum T1,
                             const TopAbs_ShapeEnum T2);

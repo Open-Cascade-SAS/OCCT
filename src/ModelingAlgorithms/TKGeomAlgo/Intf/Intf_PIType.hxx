@@ -17,7 +17,7 @@
 #ifndef _Intf_PIType_HeaderFile
 #define _Intf_PIType_HeaderFile
 
-//! Describes the different intersection  point types for this
+//! Describes the different intersection point types for this
 //! application.
 enum Intf_PIType
 {

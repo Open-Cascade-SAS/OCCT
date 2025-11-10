@@ -62,8 +62,8 @@ public:
   //! returns the finish diameter size
   Standard_EXPORT Standard_Real FinishDiaSize() const;
 
-  //! Returns Plating Status :
-  //! False = not plating  /  True = is plating
+  //! Returns Plating Status:
+  //! False = not plating / True = is plating
   Standard_EXPORT Standard_Boolean IsPlating() const;
 
   //! returns the lower numbered layer

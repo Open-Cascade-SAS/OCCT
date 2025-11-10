@@ -66,8 +66,8 @@ public:
   Standard_EXPORT Standard_Boolean IsLower(const HatchGen_PointOnHatching& Point,
                                            const Standard_Real             Confusion) const;
 
-  //! Tests if the  point is equal to an other.
-  //! A  point on hatching P1 is said to be equal to an
+  //! Tests if the point is equal to an other.
+  //! A point on hatching P1 is said to be equal to an
   //! other P2 if :
   //! | P2.myParam - P1.myParam | <= Confusion
   Standard_EXPORT Standard_Boolean IsEqual(const HatchGen_PointOnHatching& Point,

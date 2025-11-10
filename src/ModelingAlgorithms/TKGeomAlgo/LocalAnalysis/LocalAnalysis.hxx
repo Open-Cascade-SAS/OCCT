@@ -26,13 +26,13 @@ class LocalAnalysis_SurfaceContinuity;
 class LocalAnalysis_CurveContinuity;
 
 //! This package gives tools to check the local continuity
-//! between two  points situated  on two curves or two surfaces.
+//! between two points situated on two curves or two surfaces.
 class LocalAnalysis
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! This  class  compute s and gives tools to check the local
+  //! This class computes and gives tools to check the local
   //! continuity between two points situated on 2 curves.
   //!
   //! This function gives information about a variable CurveContinuity

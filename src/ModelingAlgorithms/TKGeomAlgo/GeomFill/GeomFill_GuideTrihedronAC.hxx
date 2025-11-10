@@ -31,8 +31,8 @@ class gp_Vec;
 class GeomFill_GuideTrihedronAC;
 DEFINE_STANDARD_HANDLE(GeomFill_GuideTrihedronAC, GeomFill_TrihedronWithGuide)
 
-//! Trihedron in  the  case of a sweeping along a guide  curve.
-//! defined by curviline  absciss
+//! Trihedron in the case of a sweeping along a guide curve.
+//! defined by curviline absciss
 class GeomFill_GuideTrihedronAC : public GeomFill_TrihedronWithGuide
 {
 
@@ -72,16 +72,16 @@ public:
                                               gp_Vec&             DBiNormal,
                                               gp_Vec&             D2BiNormal) Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
     Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
                                          const GeomAbs_Shape   S) const Standard_OVERRIDE;
@@ -94,7 +94,7 @@ public:
                                            const Standard_Real Last) Standard_OVERRIDE;
 
   //! Get average value of M(t) and V(t) it is useful to
-  //! make fast approximation of rational  surfaces.
+  //! make fast approximation of rational surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,
                                              gp_Vec& ABiNormal) Standard_OVERRIDE;
