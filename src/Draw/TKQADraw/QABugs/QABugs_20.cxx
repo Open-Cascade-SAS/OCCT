@@ -63,6 +63,7 @@
 #include <BRepBndLib.hxx>
 #include <OSD_MemInfo.hxx>
 #include <OSD_Timer.hxx>
+#include <TDataStd_AsciiString.hxx>
 #include <TDataStd_Name.hxx>
 #include <AppCont_Function.hxx>
 #include <math_ComputeKronrodPointsAndWeights.hxx>
