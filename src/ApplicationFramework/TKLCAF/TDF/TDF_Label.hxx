@@ -150,8 +150,8 @@ public:
   //! Finds an attribute of the current label, according
   //! to <anID> and <aTransaction>. This attribute
   //! has/had to be a valid one for the given
-  //! transaction index . So, this attribute is not
-  //! necessary a valid one.
+  //! transaction index. So, this attribute is not
+  //! necessarily a valid one.
   //!
   //! The method returns True if found, False otherwise.
   //!

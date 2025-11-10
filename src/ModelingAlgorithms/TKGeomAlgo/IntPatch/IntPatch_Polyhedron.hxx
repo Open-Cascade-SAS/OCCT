@@ -21,7 +21,7 @@
 #include <Bnd_HArray1OfBox.hxx>
 
 //! This class provides a linear approximation of the PSurface.
-//! preview a constructor on a zone of  a surface
+//! preview a constructor on a zone of a surface
 class IntPatch_Polyhedron
 {
 public:

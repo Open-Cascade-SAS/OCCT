@@ -31,7 +31,7 @@ class gp_Pnt;
 //! This class implements an algorithm to determine the
 //! intersection between 2 parametrized surfaces, marching from
 //! a starting point. The intersection line
-//! starts and ends on the natural surface's  boundaries .
+//! starts and ends on the natural surface's boundaries.
 class IntWalk_PWalking
 {
 public:
@@ -88,7 +88,7 @@ public:
 
   //! calculate the line of intersection. The regulation
   //! of steps is done using min and max values on u and
-  //! v.  (if this data is not presented as in the
+  //! v. (if this data is not presented as in the
   //! previous method, the initial steps are calculated
   //! starting from min and max uv of faces).
   Standard_EXPORT void Perform(const TColStd_Array1OfReal& ParDep,

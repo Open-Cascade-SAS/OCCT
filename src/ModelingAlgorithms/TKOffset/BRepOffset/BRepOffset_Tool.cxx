@@ -2045,7 +2045,7 @@ static void ExtentEdge(const TopoDS_Face& F,
   Standard_Real        f, l;
   Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(E, F, f, l);
 
-  // calcul point cible . ie point d'intersection du prolongement tangent et des bords.
+  // calcul point cible. ie point d'intersection du prolongement tangent et des bords.
   gp_Pnt2d P;
   gp_Vec2d Tang;
   C2d->D1(CE.FirstParameter(), P, Tang);

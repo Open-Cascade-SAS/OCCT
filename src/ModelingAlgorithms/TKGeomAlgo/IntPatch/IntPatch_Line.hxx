@@ -61,7 +61,7 @@ public:
   //! a way that the system of vector (N1,N2,T) is right-handed,
   //! where N1 is the normal to the first surface at a point P,
   //! N2 is the normal to the second surface at a point P,
-  //! T  is the tangent to the intersection line at P.
+  //! T is the tangent to the intersection line at P.
   //! If the system of vector is left-handed, the transition
   //! is OUT.
   //! When N1 and N2 are colinear all along the intersection

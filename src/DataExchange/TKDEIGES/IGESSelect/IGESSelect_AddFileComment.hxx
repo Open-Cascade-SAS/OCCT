@@ -44,8 +44,8 @@ public:
   Standard_EXPORT void Clear();
 
   //! Adds a line for file comment
-  //! Remark : Lines are limited to 72 useful char.s . A line of more than
-  //! 72 char.s will be splited into several ones of 72 max each.
+  //! Remark: Lines are limited to 72 useful chars. A line of more than
+  //! 72 chars will be split into several ones of 72 max each.
   Standard_EXPORT void AddLine(const Standard_CString line);
 
   //! Adds a list of lines for file comment
