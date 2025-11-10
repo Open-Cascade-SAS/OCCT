@@ -723,6 +723,7 @@ Handle(Transfer_Binder) Transfer_ProcessForFinder::Transferring(
 
   // We consider that this new Transfer request therefore corresponds to a
   // additional use: note "AlreadyUsed", therefore non-modifiable result
+  Standard_Boolean hasDeadLoop = Standard_False;
   if (!former.IsNull())
   {
     if (former->HasResult())
@@ -760,9 +761,11 @@ Handle(Transfer_Binder) Transfer_ProcessForFinder::Transferring(
         }
         else
           StartTrace(former, start, thelevel, 4);
-        throw Transfer_TransferDeadLoop("TransferProcess : Transfer at Head of a Dead Loop");
+        hasDeadLoop = Standard_True;
+        break;
     }
-    former->SetStatusExec(Transfer_StatusRun);
+    if (!hasDeadLoop)
+      former->SetStatusExec(Transfer_StatusRun);
   }
 #ifdef TRANSLOG
   std::cout << " GO .." << std::endl;
@@ -770,52 +773,35 @@ Handle(Transfer_Binder) Transfer_ProcessForFinder::Transferring(
 
   Handle(Transfer_Binder) binder;
   Standard_Boolean        newbind = Standard_False;
-  if (theerrh)
+
+  // Handle dead loop condition detected before calling TransferProduct
+  // When hasDeadLoop is true, we know:
+  // 1. former is NOT null (hasDeadLoop only set inside !former.IsNull() block)
+  // 2. former->StatusExec() == Transfer_StatusLoop (that's what triggered hasDeadLoop)
+  if (hasDeadLoop)
+  {
+    Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
+    if (thetrace)
+    {
+      aSender << "                  *** Dead Loop : Finding head of Loop :" << std::endl;
+      StartTrace(former, start, thelevel - 1, 0);
+    }
+    else
+      StartTrace(former, start, thelevel - 1, 4);
+    binder = former;
+    binder->AddFail("Transfer: Head of Dead Loop");
+    binder->AddFail("Transfer in dead Loop");
+  }
+  else if (theerrh)
   {
     Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
 
-    // Transfer under protection for exceptions (for notification in fact
+    // Transfer under protection for exceptions (for notification in fact)
     Standard_Integer oldlev = thelevel;
     try
     {
       OCC_CATCH_SIGNALS
       binder = TransferProduct(start, theProgress);
-    }
-
-    // Exceptions to catch up on: they are not all the same
-    catch (Transfer_TransferDeadLoop const&)
-    {
-      if (binder.IsNull())
-      {
-        aSender << "                  *** Dead Loop with no Result" << std::endl;
-        if (thetrace)
-          StartTrace(binder, start, thelevel - 1, 0);
-        binder = new Transfer_VoidBinder;
-        Bind(start, binder);
-        newbind = Standard_True;
-      }
-      else if (binder->StatusExec() == Transfer_StatusLoop)
-      {
-        if (thetrace)
-        {
-          aSender << "                  *** Dead Loop : Finding head of Loop :" << std::endl;
-          StartTrace(binder, start, thelevel - 1, 0);
-        }
-        else
-          StartTrace(binder, start, thelevel - 1, 4);
-        throw Transfer_TransferFailure("TransferProcess : Head of Dead Loop");
-        // In other words, we change the exception (we exit the loop)
-      }
-      else
-      {
-        if (thetrace)
-        {
-          aSender << "                  *** Dead Loop : Actor in Loop :" << std::endl;
-          StartTrace(binder, start, thelevel - 1, 0);
-        }
-      }
-      binder->AddFail("Transfer in dead Loop");
-      thelevel = oldlev;
     }
     catch (Standard_Failure const& anException)
     {
