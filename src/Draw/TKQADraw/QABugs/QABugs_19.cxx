@@ -247,16 +247,6 @@ Standard_Integer OCC22611(Draw_Interpretor& di, Standard_Integer argc, const cha
   return 0;
 }
 
-Standard_Integer OCC22595(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** /*argv*/)
-{
-  gp_Mat M0;
-  di << "M0 = "
-     << " {" << M0(1, 1) << "} {" << M0(1, 2) << "} {" << M0(1, 3) << "}"
-     << " {" << M0(2, 1) << "} {" << M0(2, 2) << "} {" << M0(2, 3) << "}"
-     << " {" << M0(1, 1) << "} {" << M0(1, 2) << "} {" << M0(1, 3) << "}";
-  return 0;
-}
-
 #include <TopoDS_Face.hxx>
 #include <TopoDS.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
@@ -4777,7 +4767,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC22980", "OCC22980", __FILE__, OCC22980, group);
   theCommands.Add("OCC23595", "OCC23595", __FILE__, OCC23595, group);
   theCommands.Add("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
-  theCommands.Add("OCC22595", "OCC22595", __FILE__, OCC22595, group);
   theCommands.Add("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
   theCommands.Add("OCC23683", "OCC23683 shape", __FILE__, OCC23683, group);
   theCommands.Add("OCC23952sweep", "OCC23952sweep nbupoles shape", __FILE__, OCC23952sweep, group);

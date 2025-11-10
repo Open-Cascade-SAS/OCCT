@@ -5,6 +5,7 @@ set(OCCT_TKMath_GTests_FILES
   Bnd_BoundSortBox_Test.cxx
   Bnd_Box_Test.cxx
   ElCLib_Test.cxx
+  gp_Mat_Test.cxx
   math_BFGS_Test.cxx
   math_BissecNewton_Test.cxx
   math_BracketMinimum_Test.cxx
