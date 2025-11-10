@@ -137,37 +137,6 @@ static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, co
 #include <BRepBndLib.hxx>
 #include <TopExp_Explorer.hxx>
 
-static Standard_Integer BUC60729(Draw_Interpretor& /*di*/,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  Bnd_Box      aMainBox;
-  TopoDS_Shape aShape = BRepPrimAPI_MakeBox(1, 1, 1).Solid();
-
-  BRepBndLib::Add(aShape, aMainBox);
-
-  Standard_Integer siMaxNbrBox = 6;
-  Bnd_BoundSortBox m_BoundSortBox;
-  m_BoundSortBox.Initialize(aMainBox, siMaxNbrBox);
-  TopExp_Explorer  aExplorer(aShape, TopAbs_FACE);
-  Standard_Integer i;
-
-  //  Bnd_Box __emptyBox; // Box is void !
-  //  Handle(Bnd_HArray1OfBox) __aSetOfBox = new Bnd_HArray1OfBox( 1, siMaxNbrBox, __emptyBox );
-
-  for (i = 1, aExplorer.ReInit(); aExplorer.More(); aExplorer.Next(), i++)
-  {
-    const TopoDS_Shape& aFace = aExplorer.Current();
-    Bnd_Box             aBox;
-    BRepBndLib::Add(aFace, aBox);
-    m_BoundSortBox.Add(aBox, i);
-    //      __aSetOfBox->SetValue( i, aBox );
-  }
-  //  m_BoundSortBox.Initialize( aMainBox, siMaxNbrBox );
-
-  return 0;
-}
-
 
 #include <gp_Circ.hxx>
 #include <Geom_Circle.hxx>
@@ -1371,7 +1340,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60632", "BUC60632 mode length", __FILE__, BUC60632, group);
   theCommands.Add("BUC60652", "BUC60652 face", __FILE__, BUC60652, group);
 
-  theCommands.Add("BUC60729", "BUC60729", __FILE__, BUC60729, group);
   theCommands.Add("BUC60792", "BUC60792", __FILE__, BUC60792, group);
   theCommands.Add("BUC60811", "BUC60811", __FILE__, BUC60811, group);
 

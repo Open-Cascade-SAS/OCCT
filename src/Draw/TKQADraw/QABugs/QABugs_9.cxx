@@ -71,80 +71,12 @@ static Standard_Integer BUC60857(Draw_Interpretor& di, Standard_Integer /*argc*/
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Circle.hxx>
 
-static Standard_Integer OCC24303(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if (n < 2)
-    return 1;
-
-  const Standard_Integer SolID = Draw::Atoi(a[1]);
-
-  // Ellipses
-  Standard_Real majorRadius = 2.0;
-  Standard_Real minorRadius = 1.0;
-  gp_Pnt2d      p0(gp::Origin2d());
-  gp_Pnt2d      p1(4.0, 0.0);
-
-  gp_Elips2d ellipse1 = gp_Elips2d(gp_Ax2d(p0, gp::DX2d()), majorRadius, minorRadius, true);
-  gp_Elips2d ellipse2 = gp_Elips2d(gp_Ax2d(p1, gp::DX2d()), majorRadius, minorRadius, true);
-
-  Handle(Geom2d_Curve) curve1 = new Geom2d_Ellipse(ellipse1);
-  Handle(Geom2d_Curve) curve2 = new Geom2d_Ellipse(ellipse2);
-  DrawTrSurf::Set("c1", curve1);
-  DrawTrSurf::Set("c2", curve2);
-  // Expected tangent
-  gp_Pnt2d      centre(5.0, 0.0);
-  Standard_Real radius            = 3.0;
-  gp_Circ2d     theorical_tangent = gp_Circ2d(gp_Ax2d(centre, gp::DX2d()), radius);
-
-  // Calculate the tangent with Geom2dGcc_Circ2dTanRan
-
-  const Geom2dAdaptor_Curve AdaptedCurve1(curve1);
-  const Geom2dAdaptor_Curve AdaptedCurve2(curve2);
-
-  GccEnt_Position curveQualif1 = GccEnt_unqualified;
-  GccEnt_Position curveQualif2 = GccEnt_unqualified;
-
-  const Geom2dGcc_QualifiedCurve qualifiedCurve1(AdaptedCurve1, curveQualif1);
-  const Geom2dGcc_QualifiedCurve qualifiedCurve2(AdaptedCurve2, curveQualif2);
-
-  const Geom2dGcc_Circ2d2TanRad circCalc(qualifiedCurve1,
-                                         qualifiedCurve2,
-                                         radius,
-                                         /*Precision::Approximation()*/ 1.0e-9);
-
-  const Standard_Integer aNbSol = circCalc.NbSolutions();
-  di << "Solutions " << aNbSol << "\n";
-
-  if ((SolID < 1) || (SolID > aNbSol))
-  {
-    di << "Wrong SolID value\n";
-    return 1;
-  }
-
-  gp_Circ2d calculated_tangent = circCalc.ThisSolution(SolID);
-
-  char Buf[10];
-  for (Standard_Integer i = 1; i <= aNbSol; i++)
-  {
-    gp_Circ2d             ct   = circCalc.ThisSolution(i);
-    Handle(Geom2d_Circle) GSol = new Geom2d_Circle(ct);
-    Sprintf(Buf, "Sol%d", i);
-    DrawTrSurf::Set(Buf, GSol);
-  }
-
-  // This distance is different in OC 6.5.4 and OC 6.6.0
-  Standard_Real dist = theorical_tangent.Location().Distance(calculated_tangent.Location());
-  di << "Distance = " << dist << "\n";
-
-  return 0;
-}
 
 void QABugs::Commands_9(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";
 
   theCommands.Add("BUC60857", "BUC60857", __FILE__, BUC60857, group);
-  theCommands.Add("OCC24303", "OCC24303 SolID ", __FILE__, OCC24303, group);
 
   return;
 }
