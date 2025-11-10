@@ -4,7 +4,9 @@ set(OCCT_TKMath_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TKMath_GTests_FILES
   Bnd_BoundSortBox_Test.cxx
   Bnd_Box_Test.cxx
+  Bnd_OBB_Test.cxx
   ElCLib_Test.cxx
+  gp_Ax3_Test.cxx
   gp_Mat_Test.cxx
   gp_Trsf_Test.cxx
   math_BFGS_Test.cxx
@@ -13,6 +15,7 @@ set(OCCT_TKMath_GTests_FILES
   math_BracketedRoot_Test.cxx
   math_Crout_Test.cxx
   math_BrentMinimum_Test.cxx
+  math_ComputeKronrodPointsAndWeights_Test.cxx
   math_DirectPolynomialRoots_Test.cxx
   math_DoubleTab_Test.cxx
   math_EigenValuesSearcher_Test.cxx

@@ -4290,128 +4290,6 @@ static Standard_Integer QANullifyShape(Draw_Interpretor& di, Standard_Integer n,
   return 0;
 }
 
-static void CheckAx3Dir(gp_Ax3& theAxis, const gp_Dir& theDir)
-{
-  Standard_Boolean bDirect = theAxis.Direct();
-  theAxis.SetDirection(theDir);
-  if (bDirect != theAxis.Direct())
-  {
-    std::cout << "Error: coordinate system is reversed\n";
-  }
-  if (!theDir.IsEqual(theAxis.Direction(), Precision::Angular()))
-  {
-    std::cout << "Error: main dir was not set properly\n";
-  }
-}
-
-static void CheckAx3DirX(gp_Ax3& theAxis, const gp_Dir& theDir)
-{
-  Standard_Boolean bDirect = theAxis.Direct();
-  theAxis.SetXDirection(theDir);
-  if (bDirect != theAxis.Direct())
-  {
-    std::cout << "Error: coordinate system is reversed\n";
-  }
-  gp_Dir aGoodY = theAxis.Direction().Crossed(theDir);
-  if (theAxis.Direct())
-  {
-    if (!aGoodY.IsEqual(theAxis.YDirection(), Precision::Angular()))
-    {
-      std::cout << "Error: X dir was not set properly\n";
-    }
-  }
-  else
-  {
-    if (!aGoodY.IsOpposite(theAxis.YDirection(), Precision::Angular()))
-    {
-      std::cout << "Error: X dir was not set properly\n";
-    }
-  }
-}
-
-static void CheckAx3DirY(gp_Ax3& theAxis, const gp_Dir& theDir)
-{
-  Standard_Boolean bDirect = theAxis.Direct();
-  theAxis.SetYDirection(theDir);
-  if (bDirect != theAxis.Direct())
-  {
-    std::cout << "Error: coordinate system is reversed\n";
-  }
-  gp_Dir aGoodX = theAxis.Direction().Crossed(theDir);
-  if (theAxis.Direct())
-  {
-    if (!aGoodX.IsOpposite(theAxis.XDirection(), Precision::Angular()))
-    {
-      std::cout << "Error: Y dir was not set properly\n";
-    }
-  }
-  else
-  {
-    if (!aGoodX.IsEqual(theAxis.XDirection(), Precision::Angular()))
-    {
-      std::cout << "Error: Y dir was not set properly\n";
-    }
-  }
-}
-
-static void CheckAx3Ax1(gp_Ax3& theAx, const gp_Ax1& theAx0)
-{
-  Standard_Boolean bDirect = theAx.Direct();
-  theAx.SetAxis(theAx0);
-  if (bDirect != theAx.Direct())
-  {
-    std::cout << "Error: coordinate system is reversed\n";
-  }
-  if (!theAx0.Direction().IsEqual(theAx.Direction(), Precision::Angular()))
-  {
-    std::cout << "Error: main dir was not set properly\n";
-  }
-}
-
-static Standard_Integer OCC29406(Draw_Interpretor&, Standard_Integer, const char**)
-{
-  // Main (Z) direction
-  {
-    // gp_Ax3::SetDirection() test
-    gp_Ax3 anAx1, anAx2, anAx3, anAx4, anAx5, anAx6;
-    anAx3.ZReverse();
-    anAx4.ZReverse();
-    CheckAx3Dir(anAx1, gp::DX());
-    CheckAx3Dir(anAx2, -gp::DX());
-    CheckAx3Dir(anAx3, gp::DX());
-    CheckAx3Dir(anAx4, -gp::DX());
-    // gp_Ax3::SetAxis() test
-    gp_Ax1 anAx0_1(gp::Origin(), gp::DX());
-    gp_Ax1 anAx0_2(gp::Origin(), -gp::DX());
-    CheckAx3Ax1(anAx5, anAx0_1);
-    CheckAx3Ax1(anAx6, anAx0_2);
-  }
-  // X direction
-  {
-    // gp_Ax3::SetXDirection() test
-    gp_Ax3 anAx1, anAx2, anAx3, anAx4;
-    anAx3.XReverse();
-    anAx4.XReverse();
-    CheckAx3DirX(anAx1, gp::DZ());
-    CheckAx3DirX(anAx2, -gp::DZ());
-    CheckAx3DirX(anAx3, gp::DZ());
-    CheckAx3DirX(anAx4, -gp::DZ());
-  }
-  // Y direction
-  {
-    // gp_Ax3::SetYDirection() test
-    gp_Ax3 anAx1, anAx2, anAx3, anAx4;
-    anAx3.YReverse();
-    anAx4.YReverse();
-    CheckAx3DirY(anAx1, gp::DZ());
-    CheckAx3DirY(anAx2, -gp::DZ());
-    CheckAx3DirY(anAx3, gp::DZ());
-    CheckAx3DirY(anAx4, -gp::DZ());
-  }
-
-  return 0;
-}
-
 #include <BRepCheck_Analyzer.hxx>
 #include <GCPnts_UniformDeflection.hxx>
 
@@ -4446,46 +4324,6 @@ static Standard_Integer OCC32744(Draw_Interpretor& theDi,
     GeomAdaptor_Curve        curveAdaptor(pCurve, firstParam, lastParam);
     GCPnts_UniformDeflection uniformAbs(curveAdaptor, 0.001, firstParam, lastParam);
   }
-
-  return 0;
-}
-
-static Standard_Integer OCC33009(Draw_Interpretor&, Standard_Integer, const char**)
-{
-  Bnd_OBB aBndBox;
-
-  TColgp_Array1OfPnt aPoints(1, 5);
-
-  aPoints.ChangeValue(1) = gp_Pnt(1, 2, 3);
-  aPoints.ChangeValue(2) = gp_Pnt(3, 2, 1);
-  aPoints.ChangeValue(3) = gp_Pnt(2, 3, 1);
-  aPoints.ChangeValue(4) = gp_Pnt(1, 3, 2);
-  aPoints.ChangeValue(5) = gp_Pnt(2, 1, 3);
-
-  aBndBox.ReBuild(aPoints, (const TColStd_Array1OfReal*)0, true);
-
-  return 0;
-}
-
-static Standard_Integer OCC33048(Draw_Interpretor&, Standard_Integer, const char**)
-{
-  Standard_Real isOK = true;
-  try
-  {
-    // This method uses raw pointers for memory manipulations and not used in OCCT.
-    math_ComputeKronrodPointsAndWeights aCalc(125);
-    isOK = aCalc.IsDone();
-  }
-  catch (...)
-  {
-    isOK = false;
-  }
-
-  if (isOK)
-    std::cout << "OK: Kronrod points and weights are calculated successfully." << std::endl;
-  else
-    std::cout << "Error: Problem occurred during calculation of Kronrod points and weights."
-              << std::endl;
 
   return 0;
 }
@@ -4941,22 +4779,11 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   QANullifyShape,
                   group);
 
-  theCommands.Add(
-    "OCC29406",
-    "Tests the case when newly set axis for gp_Ax3 is parallel to one of current axis",
-    __FILE__,
-    OCC29406,
-    group);
-
   theCommands.Add("OCC32744",
                   "Tests avoid Endless loop in GCPnts_UniformDeflection",
                   __FILE__,
                   OCC32744,
                   group);
-
-  theCommands.Add("OCC33009", "Tests the case when", __FILE__, OCC33009, group);
-
-  theCommands.Add("OCC33048", "Kronrod points and weights calculation", __FILE__, OCC33048, group);
 
   theCommands.Add("QACheckBends",
                   "QACheckBends curve [CosMaxAngle [theNbPoints]]",

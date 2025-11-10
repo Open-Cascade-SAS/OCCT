@@ -1,9 +1,0 @@
-puts "============"
-puts "0033048: Foundation Classes - math_ComputeKronrodPointsAndWeights indexation go beyond the limit"
-puts "============"
-puts ""
-
-cpulimit 30
-
-pload QAcommands
-OCC33048
