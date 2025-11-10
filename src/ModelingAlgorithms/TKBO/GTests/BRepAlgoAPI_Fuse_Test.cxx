@@ -2028,3 +2028,24 @@ TEST_F(BFuseSimpleTest, BlendBoxWithCylinderBottomNegY_K9)
   const TopoDS_Shape aResult = PerformFuse(aBlendedBox, aCylinder);
   ValidateResult(aResult, 322832);
 }
+
+//==================================================================================================
+// Additional Tests
+//==================================================================================================
+
+TEST_F(BFuseSimpleTest, OCC277_FuseAndCommonOfOverlappingBoxes)
+{
+  BRepPrimAPI_MakeBox aBox1Maker(100, 100, 100);
+  BRepPrimAPI_MakeBox aBox2Maker(gp_Pnt(50, 50, 50), 200, 200, 200);
+
+  TopoDS_Shape aShape1 = aBox1Maker.Shape();
+  TopoDS_Shape aShape2 = aBox2Maker.Shape();
+
+  BRepAlgoAPI_Fuse aFuseOp(aShape1, aShape2);
+  TopoDS_Shape aFuseResult = aFuseOp.Shape();
+  EXPECT_FALSE(aFuseResult.IsNull());
+
+  BRepAlgoAPI_Common aCommonOp(aShape1, aShape2);
+  TopoDS_Shape aCommonResult = aCommonOp.Shape();
+  EXPECT_FALSE(aCommonResult.IsNull());
+}

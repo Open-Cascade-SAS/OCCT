@@ -861,46 +861,6 @@ static Standard_Integer OCC309bug(Draw_Interpretor& di, Standard_Integer nb, con
   return 0;
 }
 
-static Standard_Integer OCC310bug(Draw_Interpretor& di, Standard_Integer nb, const char** a)
-{
-  if (nb != 1)
-  {
-    di << "Usage: " << a[0] << "\n";
-    return 1;
-  }
-  OSD_Path p("/where/you/want/tmp/qwerty/tmp/");
-  di << p.Trek().ToCString() << "\n";
-  p.UpTrek();
-  di << p.Trek().ToCString() << "\n";
-  return 0;
-}
-
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-
-static Standard_Integer OCC277bug(Draw_Interpretor& di, Standard_Integer nb, const char** a)
-{
-  if (nb != 1)
-  {
-    di << "Usage : " << a[0] << "\n";
-    return 1;
-  }
-
-  BRepPrimAPI_MakeBox box1(100, 100, 100);
-  BRepPrimAPI_MakeBox box2(gp_Pnt(50, 50, 50), 200, 200, 200);
-
-  TopoDS_Shape shape1 = box1.Shape();
-  TopoDS_Shape shape2 = box2.Shape();
-
-  TopoDS_Shape fuse, comm;
-  di << "fuse = BRepAlgoAPI_Fuse( shape1, shape2 )\n";
-  di << "comm = BRepAlgoAPI_Common( shape1, shape2 )\n";
-  fuse = BRepAlgoAPI_Fuse(shape1, shape2).Shape();
-  comm = BRepAlgoAPI_Common(shape1, shape2).Shape();
-
-  return 0;
-}
-
 #include <DDocStd_DrawDocument.hxx>
 #include <TDataStd_Name.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
@@ -1369,25 +1329,6 @@ static Standard_Integer OCC524(Draw_Interpretor& di, Standard_Integer argc, cons
 #include <GeomPlate_BuildPlateSurface.hxx>
 
 //=================================================================================================
-
-static Standard_Integer OCC525(Draw_Interpretor& di,
-                               Standard_Integer /*argc*/,
-                               const char** /*argv*/)
-{
-  GeomPlate_BuildPlateSurface aBuilder;
-  aBuilder.Perform();
-
-  if (aBuilder.IsDone())
-  {
-    di << "Error in OCC525. Null result is expected.\n";
-  }
-  else
-  {
-    di << "OCC525 OK \n";
-  }
-
-  return 0;
-}
 
 #include <gce_MakeRotation.hxx>
 #include <gce_MakeTranslation.hxx>
@@ -5237,10 +5178,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
 
   theCommands.Add("OCC299", "OCC299 Solid Point [Tolerance=1.e-7]", __FILE__, OCC299bug, group);
   theCommands.Add("OCC309", "OCC309", __FILE__, OCC309bug, group);
-  theCommands.Add("OCC310", "OCC310", __FILE__, OCC310bug, group);
-
-  // theCommands.Add("OCC277","OCC277", __FILE__, OCC277bug, group);
-  theCommands.Add("OCC277", "OCC277", __FILE__, OCC277bug, group);
 
   theCommands.Add("OCC363", "OCC363 document filename ", __FILE__, OCC363, group);
   // Must use OCC299
@@ -5263,7 +5200,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC524,
                   group);
-  theCommands.Add("OCC525", "OCC525", __FILE__, OCC525, group);
   // theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC669", "OCC669 GUID", __FILE__, OCC669, group);

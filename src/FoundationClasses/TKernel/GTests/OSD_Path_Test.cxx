@@ -245,6 +245,17 @@ TEST_F(OSD_PathTest, MixedSeparators)
   EXPECT_FALSE(aFolder.IsEmpty() || aFileName.IsEmpty());
 }
 
+TEST_F(OSD_PathTest, OCC310_TrekAndUpTrek)
+{
+  OSD_Path aPath("/where/you/want/tmp/qwerty/tmp/");
+  TCollection_AsciiString aTrek = aPath.Trek();
+  EXPECT_STREQ("/where/you/want/tmp/qwerty/tmp/", aTrek.ToCString());
+
+  aPath.UpTrek();
+  aTrek = aPath.Trek();
+  EXPECT_STREQ("/where/you/want/tmp/qwerty/", aTrek.ToCString());
+}
+
 //==================================================================================================
 // Validation Tests
 //==================================================================================================
