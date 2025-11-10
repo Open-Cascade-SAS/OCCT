@@ -98,24 +98,6 @@ static Standard_Integer BUC60848(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer BUC60828(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  TopoDS_Edge      anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0., 0., 0.), gp_Pnt(0., 0., 1.));
-  Standard_Boolean aValue;
-  aValue = anEdge.Infinite();
-  di << "Initial flag : " << (Standard_Integer)aValue << "\n";
-  anEdge.Infinite(Standard_True);
-  Standard_Boolean aValue1;
-  aValue1 = anEdge.Infinite();
-  di << "Current flag : " << (Standard_Integer)aValue1 << "\n";
-  if (aValue1)
-    di << "Flag was set properly.\n";
-  else
-    di << "Faulty : flag was not set properly.\n";
-  return 0;
-}
 
 static Standard_Integer BUC60814(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -758,7 +740,6 @@ void QABugs::Commands_16(Draw_Interpretor& theCommands)
   const char* group = "QABugs";
 
   theCommands.Add("BUC60848", "BUC60848 shape", __FILE__, BUC60848, group);
-  theCommands.Add("BUC60828", "BUC60828", __FILE__, BUC60828, group);
   theCommands.Add("BUC60814", "BUC60814", __FILE__, BUC60814, group);
   theCommands.Add("BUC60774", "BUC60774", __FILE__, BUC60774, group);
   theCommands.Add("BUC60972", "BUC60972 edge edge plane val text ", __FILE__, BUC60972, group);

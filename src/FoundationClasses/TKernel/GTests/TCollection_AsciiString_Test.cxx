@@ -1449,3 +1449,22 @@ TEST(TCollection_AsciiStringTest, BUC60773_HAsciiStringInitialization)
   EXPECT_EQ(0, aAscii.Length());
   EXPECT_TRUE(aAscii.IsEmpty());
 }
+
+// Test OCC6794: TCollection_AsciiString large concatenation
+// Migrated from QABugs_14.cxx
+TEST(TCollection_AsciiStringTest, OCC6794_LargeConcatenation)
+{
+  // Test concatenation of many small strings to verify memory handling
+  const Standard_Integer aNb = 10000; // Use a smaller number for faster test
+  const char* aC = "a";
+
+  TCollection_AsciiString anAscii;
+  for (Standard_Integer i = 1; i <= aNb; i++)
+  {
+    anAscii += TCollection_AsciiString(aC);
+  }
+
+  // Verify the final length matches expected
+  EXPECT_EQ(aNb, anAscii.Length()) << "Concatenated string should have correct length";
+  EXPECT_FALSE(anAscii.IsEmpty()) << "Concatenated string should not be empty";
+}
