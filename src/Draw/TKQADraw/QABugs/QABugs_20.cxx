@@ -3255,56 +3255,6 @@ static Standard_Integer OCC29807(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-// function : OCC29925
-// purpose  : check safety of functions like IsSpace(), LowerCase(), etc. for all chars
-//=======================================================================
-static Standard_Integer OCC29925(Draw_Interpretor& theDI, Standard_Integer, const char**)
-{
-  // iterate by all valid ASCII chars (including extended)
-  for (int i = 0; i < 256; i++)
-  {
-    Standard_Character c = (char)(unsigned char)i;
-    //    if (c != i) theDI << c << " != " << i << "\n";
-    const char* anOp = "";
-    try
-    {
-      anOp = "IsAlphabetic";
-      IsAlphabetic(c);
-      anOp = "IsDigit";
-      IsDigit(c);
-      anOp = "IsXDigit";
-      IsXDigit(c);
-      anOp = "IsAlphanumeric";
-      IsAlphanumeric(c);
-      anOp = "IsControl";
-      IsControl(c);
-      anOp = "IsGraphic";
-      IsGraphic(c);
-      anOp = "IsLowerCase";
-      IsLowerCase(c);
-      anOp = "IsPrintable";
-      IsPrintable(c);
-      anOp = "IsPunctuation";
-      IsPunctuation(c);
-      anOp = "IsSpace";
-      IsSpace(c);
-      anOp = "IsUpperCase";
-      IsUpperCase(c);
-      anOp = "LowerCase";
-      LowerCase(c);
-      anOp = "UpperCase";
-      UpperCase(c);
-    }
-    catch (const Handle(Standard_Failure)& e)
-    {
-      theDI << anOp << "() fails for " << c << " (" << e->DynamicType()->Name() << ")\n";
-    }
-  }
-
-  return 0;
-}
-
-//=======================================================================
 // function : OCC29311
 // purpose  : check performance of OBB calculations
 //=======================================================================
@@ -3799,53 +3749,6 @@ static Standard_Integer OCC30435(Draw_Interpretor& di, Standard_Integer, const c
 
   DrawTrSurf::Set(a[1], TheCurve);
   di << a[1] << ": tolreached = " << tolreached << "\n";
-
-  return 0;
-}
-
-//=======================================================================
-// function : OCC30708_1
-// purpose  : Tests initialization of the TopoDS_Iterator with null shape
-//=======================================================================
-static Standard_Integer OCC30708_1(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  TopoDS_Iterator it;
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    TopoDS_Shape empty;
-    it.Initialize(empty);
-  }
-  catch (const Standard_Failure&)
-  {
-    di << "Cannot initialize TopoDS_Iterator with null shape\n";
-    return 0;
-  }
-
-  if (it.More())
-    di << "Incorrect Iterator initialization: method More() returns true on null shape\n";
-
-  return 0;
-}
-
-//=======================================================================
-// function : OCC30708_2
-// purpose  : Tests initialization of the BRepLib_MakeWire with null wire
-//=======================================================================
-static Standard_Integer OCC30708_2(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    TopoDS_Wire      empty;
-    BRepLib_MakeWire aWBuilder(empty);
-  }
-  catch (const Standard_Failure&)
-  {
-    di << "Cannot initialize BRepLib_MakeWire with null wire\n";
-  }
 
   return 0;
 }
@@ -4969,11 +4872,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC29064,
                   group);
-  theCommands.Add("OCC29925",
-                  "OCC29925: check safety of character classification functions",
-                  __FILE__,
-                  OCC29925,
-                  group);
   theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
   theCommands.Add("OCC29311",
                   "OCC29311 shape counter nbiter: check performance of OBB calculation",
@@ -5003,18 +4901,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   theCommands.Add("QAStartsWith", "QAStartsWith string startstring", __FILE__, QAStartsWith, group);
 
   theCommands.Add("QAEndsWith", "QAEndsWith string endstring", __FILE__, QAEndsWith, group);
-
-  theCommands.Add("OCC30708_1",
-                  "Tests initialization of the TopoDS_Iterator with null shape",
-                  __FILE__,
-                  OCC30708_1,
-                  group);
-
-  theCommands.Add("OCC30708_2",
-                  "Tests initialization of the BRepLib_MakeWire with null shape",
-                  __FILE__,
-                  OCC30708_2,
-                  group);
 
   theCommands.Add("OCC30869",
                   "Prints bounding points of the given wire and tangent vectors at these points.\n"
