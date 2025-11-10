@@ -19,16 +19,17 @@ TEST(gp_MatTest, OCC22595_DefaultConstructor)
 {
   gp_Mat aM0;
 
-  // Default constructor should create an identity matrix
-  EXPECT_DOUBLE_EQ(1.0, aM0(1, 1));
+  // Bug OCC22595: gp_Mat's constructors incompletely initialize memory
+  // Test that default constructor properly initializes all matrix elements to zero
+  EXPECT_DOUBLE_EQ(0.0, aM0(1, 1));
   EXPECT_DOUBLE_EQ(0.0, aM0(1, 2));
   EXPECT_DOUBLE_EQ(0.0, aM0(1, 3));
 
   EXPECT_DOUBLE_EQ(0.0, aM0(2, 1));
-  EXPECT_DOUBLE_EQ(1.0, aM0(2, 2));
+  EXPECT_DOUBLE_EQ(0.0, aM0(2, 2));
   EXPECT_DOUBLE_EQ(0.0, aM0(2, 3));
 
   EXPECT_DOUBLE_EQ(0.0, aM0(3, 1));
   EXPECT_DOUBLE_EQ(0.0, aM0(3, 2));
-  EXPECT_DOUBLE_EQ(1.0, aM0(3, 3));
+  EXPECT_DOUBLE_EQ(0.0, aM0(3, 3));
 }
