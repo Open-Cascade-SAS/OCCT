@@ -98,25 +98,6 @@ static Standard_Integer BUC60848(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer BUC60828(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  TopoDS_Edge      anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0., 0., 0.), gp_Pnt(0., 0., 1.));
-  Standard_Boolean aValue;
-  aValue = anEdge.Infinite();
-  di << "Initial flag : " << (Standard_Integer)aValue << "\n";
-  anEdge.Infinite(Standard_True);
-  Standard_Boolean aValue1;
-  aValue1 = anEdge.Infinite();
-  di << "Current flag : " << (Standard_Integer)aValue1 << "\n";
-  if (aValue1)
-    di << "Flag was set properly.\n";
-  else
-    di << "Faulty : flag was not set properly.\n";
-  return 0;
-}
-
 static Standard_Integer BUC60814(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 1)
@@ -418,65 +399,6 @@ static Standard_Integer OCC49(Draw_Interpretor& di, Standard_Integer argc, const
   return 0;
 }
 
-static Standard_Integer OCC132(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  /*
-     OCC132:
-     =======
-
-     ... the validation of the name of files in Analyse_DOS and Analyse_UNIX is :
-
-     characters not allowed in DOS/WNT names are
-     /
-     :
-     *
-     ?
-     "
-     <
-     >
-     |
-     and  more than one dot in filename.
-     */
-
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " DependentName\n";
-    return 1;
-  }
-
-  OSD_SysType SysType1 = OSD_OS2;
-  OSD_SysType SysType2 = OSD_WindowsNT;
-
-  {
-    try
-    {
-      OCC_CATCH_SIGNALS
-      OSD_Path Path(argv[1], SysType1);
-    }
-    catch (Standard_ProgramError const&)
-    {
-      di << "1\n";
-      return 0;
-    }
-  }
-
-  {
-    try
-    {
-      OCC_CATCH_SIGNALS
-      OSD_Path Path(argv[1], SysType2);
-    }
-    catch (Standard_ProgramError const&)
-    {
-      di << "2\n";
-      return 0;
-    }
-  }
-
-  di << "0\n";
-  return 0;
-}
-
 static Standard_Integer OCC405(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 4)
@@ -758,14 +680,12 @@ void QABugs::Commands_16(Draw_Interpretor& theCommands)
   const char* group = "QABugs";
 
   theCommands.Add("BUC60848", "BUC60848 shape", __FILE__, BUC60848, group);
-  theCommands.Add("BUC60828", "BUC60828", __FILE__, BUC60828, group);
   theCommands.Add("BUC60814", "BUC60814", __FILE__, BUC60814, group);
   theCommands.Add("BUC60774", "BUC60774", __FILE__, BUC60774, group);
   theCommands.Add("BUC60972", "BUC60972 edge edge plane val text ", __FILE__, BUC60972, group);
   theCommands.Add("OCC218", "OCC218 name plane Xlabel Ylabel", __FILE__, OCC218bug, group);
   theCommands.Add("OCC295", "OCC295 edge_result edge1 edge2", __FILE__, OCC295, group);
   theCommands.Add("OCC49", "OCC49 name", __FILE__, OCC49, group);
-  theCommands.Add("OCC132", "OCC132 DependentName", __FILE__, OCC132, group);
   theCommands.Add("OCC405",
                   "OCC405 edge_result edge1 edge2; merge two edges",
                   __FILE__,

@@ -384,67 +384,6 @@ static Standard_Integer BUC60870(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer BUC60902(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, 5);
-  gp_Pnt                      aP(0., 0., 0.);
-  for (Standard_Integer i = 1; i <= 5; i++)
-  {
-    aP.SetX((i - 1) * 1.57);
-    aP.SetY(Sin((i - 1) * 1.57));
-    aPnts->SetValue(i, aP);
-  }
-  GeomAPI_Interpolate anInterpolater(aPnts, Standard_False, Precision::Confusion());
-  anInterpolater.Perform();
-  if (!anInterpolater.IsDone())
-  {
-    di << "Faulty : error in interpolation\n";
-    return 1;
-  }
-  Handle(Geom_BSplineCurve) aCur = anInterpolater.Curve();
-  gp_Vec                    aFirstTang, aLastTang;
-  aCur->D1(aCur->FirstParameter(), aP, aFirstTang);
-  aCur->D1(aCur->LastParameter(), aP, aLastTang);
-  di << " Used Tang1 = " << aFirstTang.X() << " " << aFirstTang.Y() << " " << aFirstTang.Z()
-     << "\n";
-  di << " Used Tang2 = " << aLastTang.X() << " " << aLastTang.Y() << " " << aLastTang.Z() << "\n";
-  GeomAPI_Interpolate anInterpolater1(aPnts, Standard_False, Precision::Confusion());
-  anInterpolater1.Load(aFirstTang, aLastTang, Standard_False);
-  anInterpolater1.Perform();
-  if (!anInterpolater1.IsDone())
-  {
-    di << "Faulty : error in interpolation 1\n";
-    return 1;
-  }
-  aCur = anInterpolater1.Curve();
-  gp_Vec aFirstTang1, aLastTang1;
-  aCur->D1(aCur->FirstParameter(), aP, aFirstTang1);
-  aCur->D1(aCur->LastParameter(), aP, aLastTang1);
-  di << " Tang1 after compute = " << aFirstTang1.X() << " " << aFirstTang1.Y() << " "
-     << aFirstTang1.Z() << "\n";
-  di << " Tang2 after compute = " << aLastTang1.X() << " " << aLastTang1.Y() << " "
-     << aLastTang1.Z() << "\n";
-  if (aFirstTang.IsEqual(aFirstTang1, Precision::Confusion(), Precision::Angular()))
-  {
-    di << "First tangent is OK\n";
-  }
-  else
-  {
-    di << "Faulty : first tangent is wrong\n";
-  }
-  if (aLastTang.IsEqual(aLastTang1, Precision::Confusion(), Precision::Angular()))
-  {
-    di << "Last tangent is OK\n";
-  }
-  else
-  {
-    di << "Faulty : last tangent is wrong\n";
-  }
-  return 0;
-}
-
 static Standard_Integer BUC60944(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 2)
@@ -1109,103 +1048,6 @@ static Standard_Integer OCC2932_SetRelation(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer OCC3277(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " string\n";
-    return 1;
-  }
-  TCollection_ExtendedString ExtendedString;
-  TCollection_ExtendedString InputString(argv[1]);
-  ExtendedString.Cat(InputString);
-  // ExtendedString.Print(std::cout);
-  Standard_SStream aSStream;
-  ExtendedString.Print(aSStream);
-  di << aSStream;
-  return 0;
-}
-
-static Standard_Integer OCC6794(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc > 2)
-  {
-    di << "Usage: " << argv[0] << " [nb]\n";
-    return 1;
-  }
-
-  char* max = ::getenv("MMGT_THRESHOLD");
-
-  Standard_Integer aNb = 1;
-  if (max)
-    aNb += Draw::Atoi(max);
-  else
-    aNb += 40000;
-
-  if (argc > 1)
-    aNb = Draw::Atoi(argv[1]);
-
-  di << "Use nb = " << aNb << "\n";
-
-  const char* c = "a";
-  {
-    TCollection_AsciiString anAscii;
-    for (int i = 1; i <= aNb; i++)
-    {
-      anAscii += TCollection_AsciiString(c);
-    }
-    Standard_Integer aLength = anAscii.Length();
-    di << "aLength = " << aLength << "\n";
-  }
-  return 0;
-}
-
-static Standard_Integer OCC16485(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc > 1)
-  {
-    di << "Usage: " << argv[0] << "\n";
-    return 1;
-  }
-
-  // Create points with X coordinate from varying from 0. to 1000.
-  // anc compute cumulative bounding box by adding boxes for all the
-  // points, enlarged on tolerance
-
-  Standard_Real tol    = 1e-3;
-  int           nbstep = 1000;
-  Bnd_Box       Box;
-  for (int i = 0; i <= nbstep; i++)
-  {
-    gp_Pnt  p(i, 0., 0.);
-    Bnd_Box B;
-    B.Add(p);
-    B.Enlarge(tol);
-    B.Add(Box);
-    Box = B; // in this case XMin of Box will grow each time
-  }
-
-  Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
-  Box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-  // std::cout.precision(16);
-  // std::cout << "Resulting dimensions: Xmin = " << xmin << " , Xmax = " << xmax << " , Tolerance =
-  // " << tol << std::endl;
-  di << "Resulting dimensions: Xmin = " << xmin << " , Xmax = " << xmax << " , Tolerance = " << tol
-     << "\n";
-  if (Abs(xmin + tol) > 1e-10)
-    di << "TEST FAILED: Xmin must be equal to -1e3!\n";
-  else
-    di << "TEST OK\n";
-  // std::cout << "TEST FAILED: Xmin must be equal to -1e3!" << std::endl;
-  // std::cout << "TEST OK" << std::endl;
-  // di << "TEST FAILED: Xmin must be equal to -1e3!\n";
-  // di << "TEST OK\n";
-  return 0;
-}
-
-// Resulting dimensions: Xmin = -0.001 , Xmax = 1000.001 , Tolerance = 0.001
-// TEST OK
-
 void QABugs::Commands_14(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";
@@ -1236,7 +1078,6 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
                   __FILE__,
                   BUC60870,
                   group);
-  theCommands.Add("BUC60902", "BUC60902", __FILE__, BUC60902, group);
   theCommands.Add("BUC60944", "BUC60944 path", __FILE__, BUC60944, group);
   theCommands.Add("BUC60868", "BUC60868 Result Shell", __FILE__, BUC60868, group);
   theCommands.Add("BUC60924", "BUC60924 curve X Y Z", __FILE__, BUC60924, group);
@@ -1281,12 +1122,6 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC2932_SetRelation,
                   group);
-
-  theCommands.Add("OCC3277", "OCC3277 string", __FILE__, OCC3277, group);
-
-  theCommands.Add("OCC6794", "OCC6794 [nb]", __FILE__, OCC6794, group);
-
-  theCommands.Add("OCC16485", "OCC16485", __FILE__, OCC16485, group);
 
   return;
 }

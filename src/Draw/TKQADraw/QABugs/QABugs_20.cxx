@@ -63,6 +63,7 @@
 #include <BRepBndLib.hxx>
 #include <OSD_MemInfo.hxx>
 #include <OSD_Timer.hxx>
+#include <TDataStd_AsciiString.hxx>
 #include <TDataStd_Name.hxx>
 #include <AppCont_Function.hxx>
 #include <math_ComputeKronrodPointsAndWeights.hxx>
@@ -3075,259 +3076,6 @@ static Standard_Integer OCC28131(Draw_Interpretor&,
 #include <math_NewtonFunctionRoot.hxx>
 #include <math_TrigonometricEquationFunction.hxx>
 #include <gp_Elips2d.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2dAPI_InterCurveCurve.hxx>
-
-static Standard_Integer OCC29289(Draw_Interpretor&, Standard_Integer, const char**)
-{
-  gp_Elips2d             e1(gp_Ax2d(gp_Pnt2d(0., 0.), gp_Dir2d(gp_Dir2d::D::X)), 2., 1.);
-  Handle(Geom2d_Ellipse) Ge1 = new Geom2d_Ellipse(e1);
-  gp_Elips2d             e2(gp_Ax2d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1., 1.)), 2., 1.);
-  Handle(Geom2d_Ellipse) Ge2 = new Geom2d_Ellipse(e2);
-
-  Standard_Integer          err = 0;
-  Geom2dAPI_InterCurveCurve Intersector;
-  Intersector.Init(Ge1, Ge2, 1.e-7);
-  if (Intersector.NbPoints() == 0)
-  {
-    std::cout << "Error: intersector is not done  \n";
-    err = 1;
-  }
-
-  Standard_Real A, B, C, D, E;
-  A = 1.875;
-  B = -.75;
-  C = -.5;
-  D = -.25;
-  E = -.25;
-  math_TrigonometricEquationFunction MyF(A, B, C, D, E);
-  Standard_Real                      X, Tol1, Eps, Teta, TetaNewton;
-  Tol1                   = 1.e-15;
-  Eps                    = 1.5e-12;
-  Standard_Integer Nit[] = {5, 6, 7, 6};
-
-  Standard_Real    TetaPrev = 0.;
-  Standard_Integer i;
-  for (i = 1; i <= Intersector.NbPoints(); i++)
-  {
-    Teta     = Intersector.Intersector().Point(i).ParamOnFirst();
-    X        = Teta - 0.1 * (Teta - TetaPrev);
-    TetaPrev = Teta;
-    math_NewtonFunctionRoot Resol(MyF, X, Tol1, Eps, Nit[i - 1]);
-    if (Resol.IsDone())
-    {
-      TetaNewton = Resol.Root();
-      if (Abs(Teta - TetaNewton) > 1.e-7)
-      {
-        std::cout << "Error: Newton root is wrong for " << Teta << " \n";
-        err = 1;
-      }
-    }
-    else
-    {
-      std::cout << "Error: Newton is not done for " << Teta << " \n";
-      err = 1;
-    }
-  }
-
-  return err;
-}
-
-//===============================================================================================
-Standard_Boolean IsSameGuid(const Standard_GUID& aGuidNull, const Standard_GUID& aGuid2)
-{
-  Standard_Boolean isSame(Standard_False);
-  if (aGuidNull == aGuid2)
-  {
-    aGuid2.ShallowDump(std::cout);
-    isSame = Standard_True;
-  }
-  else
-  {
-    aGuid2.ShallowDump(std::cout);
-    std::cout << std::endl;
-  }
-  return isSame;
-}
-
-#include <TDataStd_AsciiString.hxx>
-#include <TDataStd_BooleanArray.hxx>
-#include <TDataStd_BooleanList.hxx>
-#include <TDataStd_ByteArray.hxx>
-#include <TDataStd_ExtStringArray.hxx>
-#include <TDataStd_ExtStringList.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDataStd_IntegerArray.hxx>
-#include <TDataStd_IntegerList.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_RealArray.hxx>
-#include <TDataStd_RealList.hxx>
-#include <TDataStd_ReferenceArray.hxx>
-#include <TDataStd_ReferenceList.hxx>
-
-#define QCOMPARE(val1, val2)                                                                       \
-  di << "Checking " #val1 " == " #val2 << ((val1) == (val2) ? ": OK\n" : ": Error\n")
-
-static Standard_Integer OCC29371(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if (n != 1)
-  {
-    std::cout << "Usage : " << a[0] << "\n";
-    return 1;
-  }
-
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
-  Handle(TDocStd_Document)    aDoc;
-  anApp->NewDocument("BinOcaf", aDoc);
-  TDF_Label        aLab = aDoc->Main();
-  Standard_GUID    aNullGuid("00000000-0000-0000-0000-000000000000");
-  Standard_Boolean IsNullGuid(Standard_False);
-
-  try
-  {
-    // 1. Set TDataStd_AsciiString
-    Handle(TDataStd_AsciiString) aStrAtt = new TDataStd_AsciiString();
-    aLab.AddAttribute(aStrAtt);
-    if (!aStrAtt.IsNull())
-    {
-      Standard_GUID aGuid = aStrAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 2. Set TDataStd_BooleanArray
-    Handle(TDataStd_BooleanArray) aBArAtt = new TDataStd_BooleanArray();
-    aLab.AddAttribute(aBArAtt);
-    if (!aBArAtt.IsNull())
-    {
-      Standard_GUID aGuid = aBArAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 3. Set TDataStd_BooleanList
-    Handle(TDataStd_BooleanList) aBListAtt = new TDataStd_BooleanList();
-    aLab.AddAttribute(aBListAtt);
-    if (!aBListAtt.IsNull())
-    {
-      Standard_GUID aGuid = aBListAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 4. Set TDataStd_ByteArray
-    Handle(TDataStd_ByteArray) aByteArAtt = new TDataStd_ByteArray();
-    aLab.AddAttribute(aByteArAtt);
-    if (!aByteArAtt.IsNull())
-    {
-      Standard_GUID aGuid = aByteArAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 5. Set TDataStd_ExtStringArray
-    Handle(TDataStd_ExtStringArray) anExtStrArAtt = new TDataStd_ExtStringArray();
-    aLab.AddAttribute(anExtStrArAtt);
-    if (!anExtStrArAtt.IsNull())
-    {
-      Standard_GUID aGuid = anExtStrArAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 6. Set TDataStd_ExtStringList
-    Handle(TDataStd_ExtStringList) anExtStrListAtt = new TDataStd_ExtStringList();
-    aLab.AddAttribute(anExtStrListAtt);
-    if (!anExtStrListAtt.IsNull())
-    {
-      Standard_GUID aGuid = anExtStrListAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 7. Set TDataStd_Integer
-    Handle(TDataStd_Integer) anIntAtt = new TDataStd_Integer();
-    aLab.AddAttribute(anIntAtt);
-    if (!anIntAtt.IsNull())
-    {
-      Standard_GUID aGuid = anIntAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 8. Set TDataStd_IntegerArray
-    Handle(TDataStd_IntegerArray) anIntArrAtt = new TDataStd_IntegerArray();
-    aLab.AddAttribute(anIntArrAtt);
-    if (!anIntArrAtt.IsNull())
-    {
-      Standard_GUID aGuid = anIntArrAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 9. Set TDataStd_IntegerList
-    Handle(TDataStd_IntegerList) anIntListAtt = new TDataStd_IntegerList();
-    aLab.AddAttribute(anIntListAtt);
-    if (!anIntListAtt.IsNull())
-    {
-      Standard_GUID aGuid = anIntListAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 10. Set TDataStd_Name
-    Handle(TDataStd_Name) aNameAtt = new TDataStd_Name();
-    aLab.AddAttribute(aNameAtt);
-    if (!aNameAtt.IsNull())
-    {
-      Standard_GUID aGuid = aNameAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 11. Set TDataStd_Real
-    Handle(TDataStd_Real) aRealAtt = new TDataStd_Real();
-    aLab.AddAttribute(aRealAtt);
-    if (!aRealAtt.IsNull())
-    {
-      Standard_GUID aGuid = aRealAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 12. Set TDataStd_RealArray
-    Handle(TDataStd_RealArray) aRealArrAtt = new TDataStd_RealArray();
-    aLab.AddAttribute(aRealArrAtt);
-    if (!aRealArrAtt.IsNull())
-    {
-      Standard_GUID aGuid = aRealArrAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 13. Set TDataStd_RealList
-    Handle(TDataStd_RealList) aRealListAtt = new TDataStd_RealList();
-    aLab.AddAttribute(aRealListAtt);
-    if (!aRealListAtt.IsNull())
-    {
-      Standard_GUID aGuid = aRealListAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 14. Set TDataStd_ReferenceArray
-    Handle(TDataStd_ReferenceArray) aRefArrAtt = new TDataStd_ReferenceArray();
-    aLab.AddAttribute(aRefArrAtt);
-    if (!aRefArrAtt.IsNull())
-    {
-      Standard_GUID aGuid = aRefArrAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-
-    // 15. Set TDataStd_ReferenceList
-    Handle(TDataStd_ReferenceList) aRefListAtt = new TDataStd_ReferenceList();
-    aLab.AddAttribute(aRefListAtt);
-    if (!aRefListAtt.IsNull())
-    {
-      Standard_GUID aGuid = aRefListAtt->ID();
-      IsNullGuid          = IsSameGuid(aNullGuid, aGuid);
-    }
-  }
-  catch (...)
-  {
-    IsNullGuid = Standard_True;
-  }
-  QCOMPARE(IsNullGuid, Standard_False);
-  anApp->Close(aDoc);
-  return 0;
-}
 
 #include <NCollection_DoubleMap.hxx>
 #include <NCollection_IndexedMap.hxx>
@@ -3504,56 +3252,6 @@ static Standard_Integer OCC29807(Draw_Interpretor& theDI,
   const Standard_Real aCurvatureRadius =
     IntPatch_PointLine::CurvatureRadiusOfIntersLine(anAS1, anAS2, aPOn2S);
   theDI << "Radius of curvature is " << aCurvatureRadius << "\n";
-  return 0;
-}
-
-//=======================================================================
-// function : OCC29925
-// purpose  : check safety of functions like IsSpace(), LowerCase(), etc. for all chars
-//=======================================================================
-static Standard_Integer OCC29925(Draw_Interpretor& theDI, Standard_Integer, const char**)
-{
-  // iterate by all valid ASCII chars (including extended)
-  for (int i = 0; i < 256; i++)
-  {
-    Standard_Character c = (char)(unsigned char)i;
-    //    if (c != i) theDI << c << " != " << i << "\n";
-    const char* anOp = "";
-    try
-    {
-      anOp = "IsAlphabetic";
-      IsAlphabetic(c);
-      anOp = "IsDigit";
-      IsDigit(c);
-      anOp = "IsXDigit";
-      IsXDigit(c);
-      anOp = "IsAlphanumeric";
-      IsAlphanumeric(c);
-      anOp = "IsControl";
-      IsControl(c);
-      anOp = "IsGraphic";
-      IsGraphic(c);
-      anOp = "IsLowerCase";
-      IsLowerCase(c);
-      anOp = "IsPrintable";
-      IsPrintable(c);
-      anOp = "IsPunctuation";
-      IsPunctuation(c);
-      anOp = "IsSpace";
-      IsSpace(c);
-      anOp = "IsUpperCase";
-      IsUpperCase(c);
-      anOp = "LowerCase";
-      LowerCase(c);
-      anOp = "UpperCase";
-      UpperCase(c);
-    }
-    catch (const Handle(Standard_Failure)& e)
-    {
-      theDI << anOp << "() fails for " << c << " (" << e->DynamicType()->Name() << ")\n";
-    }
-  }
-
   return 0;
 }
 
@@ -4052,53 +3750,6 @@ static Standard_Integer OCC30435(Draw_Interpretor& di, Standard_Integer, const c
 
   DrawTrSurf::Set(a[1], TheCurve);
   di << a[1] << ": tolreached = " << tolreached << "\n";
-
-  return 0;
-}
-
-//=======================================================================
-// function : OCC30708_1
-// purpose  : Tests initialization of the TopoDS_Iterator with null shape
-//=======================================================================
-static Standard_Integer OCC30708_1(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  TopoDS_Iterator it;
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    TopoDS_Shape empty;
-    it.Initialize(empty);
-  }
-  catch (const Standard_Failure&)
-  {
-    di << "Cannot initialize TopoDS_Iterator with null shape\n";
-    return 0;
-  }
-
-  if (it.More())
-    di << "Incorrect Iterator initialization: method More() returns true on null shape\n";
-
-  return 0;
-}
-
-//=======================================================================
-// function : OCC30708_2
-// purpose  : Tests initialization of the BRepLib_MakeWire with null wire
-//=======================================================================
-static Standard_Integer OCC30708_2(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    TopoDS_Wire      empty;
-    BRepLib_MakeWire aWBuilder(empty);
-  }
-  catch (const Standard_Failure&)
-  {
-    di << "Cannot initialize BRepLib_MakeWire with null wire\n";
-  }
 
   return 0;
 }
@@ -4640,128 +4291,6 @@ static Standard_Integer QANullifyShape(Draw_Interpretor& di, Standard_Integer n,
   return 0;
 }
 
-static void CheckAx3Dir(gp_Ax3& theAxis, const gp_Dir& theDir)
-{
-  Standard_Boolean bDirect = theAxis.Direct();
-  theAxis.SetDirection(theDir);
-  if (bDirect != theAxis.Direct())
-  {
-    std::cout << "Error: coordinate system is reversed\n";
-  }
-  if (!theDir.IsEqual(theAxis.Direction(), Precision::Angular()))
-  {
-    std::cout << "Error: main dir was not set properly\n";
-  }
-}
-
-static void CheckAx3DirX(gp_Ax3& theAxis, const gp_Dir& theDir)
-{
-  Standard_Boolean bDirect = theAxis.Direct();
-  theAxis.SetXDirection(theDir);
-  if (bDirect != theAxis.Direct())
-  {
-    std::cout << "Error: coordinate system is reversed\n";
-  }
-  gp_Dir aGoodY = theAxis.Direction().Crossed(theDir);
-  if (theAxis.Direct())
-  {
-    if (!aGoodY.IsEqual(theAxis.YDirection(), Precision::Angular()))
-    {
-      std::cout << "Error: X dir was not set properly\n";
-    }
-  }
-  else
-  {
-    if (!aGoodY.IsOpposite(theAxis.YDirection(), Precision::Angular()))
-    {
-      std::cout << "Error: X dir was not set properly\n";
-    }
-  }
-}
-
-static void CheckAx3DirY(gp_Ax3& theAxis, const gp_Dir& theDir)
-{
-  Standard_Boolean bDirect = theAxis.Direct();
-  theAxis.SetYDirection(theDir);
-  if (bDirect != theAxis.Direct())
-  {
-    std::cout << "Error: coordinate system is reversed\n";
-  }
-  gp_Dir aGoodX = theAxis.Direction().Crossed(theDir);
-  if (theAxis.Direct())
-  {
-    if (!aGoodX.IsOpposite(theAxis.XDirection(), Precision::Angular()))
-    {
-      std::cout << "Error: Y dir was not set properly\n";
-    }
-  }
-  else
-  {
-    if (!aGoodX.IsEqual(theAxis.XDirection(), Precision::Angular()))
-    {
-      std::cout << "Error: Y dir was not set properly\n";
-    }
-  }
-}
-
-static void CheckAx3Ax1(gp_Ax3& theAx, const gp_Ax1& theAx0)
-{
-  Standard_Boolean bDirect = theAx.Direct();
-  theAx.SetAxis(theAx0);
-  if (bDirect != theAx.Direct())
-  {
-    std::cout << "Error: coordinate system is reversed\n";
-  }
-  if (!theAx0.Direction().IsEqual(theAx.Direction(), Precision::Angular()))
-  {
-    std::cout << "Error: main dir was not set properly\n";
-  }
-}
-
-static Standard_Integer OCC29406(Draw_Interpretor&, Standard_Integer, const char**)
-{
-  // Main (Z) direction
-  {
-    // gp_Ax3::SetDirection() test
-    gp_Ax3 anAx1, anAx2, anAx3, anAx4, anAx5, anAx6;
-    anAx3.ZReverse();
-    anAx4.ZReverse();
-    CheckAx3Dir(anAx1, gp::DX());
-    CheckAx3Dir(anAx2, -gp::DX());
-    CheckAx3Dir(anAx3, gp::DX());
-    CheckAx3Dir(anAx4, -gp::DX());
-    // gp_Ax3::SetAxis() test
-    gp_Ax1 anAx0_1(gp::Origin(), gp::DX());
-    gp_Ax1 anAx0_2(gp::Origin(), -gp::DX());
-    CheckAx3Ax1(anAx5, anAx0_1);
-    CheckAx3Ax1(anAx6, anAx0_2);
-  }
-  // X direction
-  {
-    // gp_Ax3::SetXDirection() test
-    gp_Ax3 anAx1, anAx2, anAx3, anAx4;
-    anAx3.XReverse();
-    anAx4.XReverse();
-    CheckAx3DirX(anAx1, gp::DZ());
-    CheckAx3DirX(anAx2, -gp::DZ());
-    CheckAx3DirX(anAx3, gp::DZ());
-    CheckAx3DirX(anAx4, -gp::DZ());
-  }
-  // Y direction
-  {
-    // gp_Ax3::SetYDirection() test
-    gp_Ax3 anAx1, anAx2, anAx3, anAx4;
-    anAx3.YReverse();
-    anAx4.YReverse();
-    CheckAx3DirY(anAx1, gp::DZ());
-    CheckAx3DirY(anAx2, -gp::DZ());
-    CheckAx3DirY(anAx3, gp::DZ());
-    CheckAx3DirY(anAx4, -gp::DZ());
-  }
-
-  return 0;
-}
-
 #include <BRepCheck_Analyzer.hxx>
 #include <GCPnts_UniformDeflection.hxx>
 
@@ -4796,46 +4325,6 @@ static Standard_Integer OCC32744(Draw_Interpretor& theDi,
     GeomAdaptor_Curve        curveAdaptor(pCurve, firstParam, lastParam);
     GCPnts_UniformDeflection uniformAbs(curveAdaptor, 0.001, firstParam, lastParam);
   }
-
-  return 0;
-}
-
-static Standard_Integer OCC33009(Draw_Interpretor&, Standard_Integer, const char**)
-{
-  Bnd_OBB aBndBox;
-
-  TColgp_Array1OfPnt aPoints(1, 5);
-
-  aPoints.ChangeValue(1) = gp_Pnt(1, 2, 3);
-  aPoints.ChangeValue(2) = gp_Pnt(3, 2, 1);
-  aPoints.ChangeValue(3) = gp_Pnt(2, 3, 1);
-  aPoints.ChangeValue(4) = gp_Pnt(1, 3, 2);
-  aPoints.ChangeValue(5) = gp_Pnt(2, 1, 3);
-
-  aBndBox.ReBuild(aPoints, (const TColStd_Array1OfReal*)0, true);
-
-  return 0;
-}
-
-static Standard_Integer OCC33048(Draw_Interpretor&, Standard_Integer, const char**)
-{
-  Standard_Real isOK = true;
-  try
-  {
-    // This method uses raw pointers for memory manipulations and not used in OCCT.
-    math_ComputeKronrodPointsAndWeights aCalc(125);
-    isOK = aCalc.IsDone();
-  }
-  catch (...)
-  {
-    isOK = false;
-  }
-
-  if (isOK)
-    std::cout << "OK: Kronrod points and weights are calculated successfully." << std::endl;
-  else
-    std::cout << "Error: Problem occurred during calculation of Kronrod points and weights."
-              << std::endl;
 
   return 0;
 }
@@ -5209,12 +4698,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC28131,
                   group);
-  theCommands.Add("OCC29289",
-                  "OCC29289 : searching trigonometric root by Newton iterations",
-                  __FILE__,
-                  OCC29289,
-                  group);
-  theCommands.Add("OCC29371", "OCC29371", __FILE__, OCC29371, group);
   theCommands.Add("OCC29430",
                   "OCC29430 <result wire> "
                   "<result first point> <result last point>",
@@ -5227,11 +4710,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   "OCC29064: test memory usage by copying empty maps",
                   __FILE__,
                   OCC29064,
-                  group);
-  theCommands.Add("OCC29925",
-                  "OCC29925: check safety of character classification functions",
-                  __FILE__,
-                  OCC29925,
                   group);
   theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
   theCommands.Add("OCC29311",
@@ -5262,18 +4740,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   theCommands.Add("QAStartsWith", "QAStartsWith string startstring", __FILE__, QAStartsWith, group);
 
   theCommands.Add("QAEndsWith", "QAEndsWith string endstring", __FILE__, QAEndsWith, group);
-
-  theCommands.Add("OCC30708_1",
-                  "Tests initialization of the TopoDS_Iterator with null shape",
-                  __FILE__,
-                  OCC30708_1,
-                  group);
-
-  theCommands.Add("OCC30708_2",
-                  "Tests initialization of the BRepLib_MakeWire with null shape",
-                  __FILE__,
-                  OCC30708_2,
-                  group);
 
   theCommands.Add("OCC30869",
                   "Prints bounding points of the given wire and tangent vectors at these points.\n"
@@ -5314,22 +4780,11 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   QANullifyShape,
                   group);
 
-  theCommands.Add(
-    "OCC29406",
-    "Tests the case when newly set axis for gp_Ax3 is parallel to one of current axis",
-    __FILE__,
-    OCC29406,
-    group);
-
   theCommands.Add("OCC32744",
                   "Tests avoid Endless loop in GCPnts_UniformDeflection",
                   __FILE__,
                   OCC32744,
                   group);
-
-  theCommands.Add("OCC33009", "Tests the case when", __FILE__, OCC33009, group);
-
-  theCommands.Add("OCC33048", "Kronrod points and weights calculation", __FILE__, OCC33048, group);
 
   theCommands.Add("QACheckBends",
                   "QACheckBends curve [CosMaxAngle [theNbPoints]]",

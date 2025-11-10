@@ -16,10 +16,14 @@
 #include <Bnd_BoundSortBox.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <TColStd_ListOfInteger.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopExp_Explorer.hxx>
 
 #include <random>
 #include <chrono>
@@ -276,4 +280,42 @@ TEST_F(Bnd_BoundSortBoxTest, DegenerateBoxes)
 
   EXPECT_EQ(1, pointResult.Extent()) << "Expected to find only the point box";
   EXPECT_EQ(1, pointResult.First()) << "Point box (index 1) should be the only result";
+}
+
+//==================================================================================================
+
+// Test BUC60729: Initialize Bnd_BoundSortBox with face boxes from a solid
+// Migrated from QABugs_3.cxx
+TEST(Bnd_BoundSortBox_Test, BUC60729_InitializeWithFaceBoxes)
+{
+  // Create a simple box solid
+  TopoDS_Shape aShape = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Solid();
+
+  // Create main bounding box for the shape
+  Bnd_Box aMainBox;
+  BRepBndLib::Add(aShape, aMainBox);
+
+  // Initialize BoundSortBox with 6 boxes (for 6 faces of the cube)
+  const Standard_Integer aMaxNbrBox = 6;
+  Bnd_BoundSortBox       aBoundSortBox;
+  aBoundSortBox.Initialize(aMainBox, aMaxNbrBox);
+
+  // Iterate through faces and add their bounding boxes
+  TopExp_Explorer  aExplorer(aShape, TopAbs_FACE);
+  Standard_Integer i;
+
+  for (i = 1, aExplorer.ReInit(); aExplorer.More(); aExplorer.Next(), i++)
+  {
+    const TopoDS_Shape& aFace = aExplorer.Current();
+    Bnd_Box             aBox;
+    BRepBndLib::Add(aFace, aBox);
+    aBoundSortBox.Add(aBox, i);
+  }
+
+  // Verify that 6 faces were processed
+  EXPECT_EQ(7, i) << "Expected to process 6 faces (i should be 7 after loop)";
+
+  // The test passes if no exceptions occurred during initialization and addition
+  // This test originally verified that the Bnd_BoundSortBox could handle
+  // initialization and addition of multiple boxes without crashing
 }

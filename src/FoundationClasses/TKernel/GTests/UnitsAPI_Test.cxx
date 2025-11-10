@@ -1,6 +1,4 @@
-// Created on: 2002-10-11
-// Created by: Michael KUZMITCHEV
-// Copyright (c) 2002-2014 OPEN CASCADE SAS
+// Copyright (c) 2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,17 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QABugs.hxx>
+#include <UnitsAPI.hxx>
 
-#include <Draw_Interpretor.hxx>
-#include <DrawTrSurf.hxx>
-#include <AIS_InteractiveContext.hxx>
+#include <gtest/gtest.h>
 
-//=================================================================================================
-
-void QABugs::Commands_7(Draw_Interpretor& theCommands)
+// Test BUC60727: UnitsAPI unit conversion
+// Migrated from QABugs_3.cxx
+TEST(UnitsAPI_Test, BUC60727_AnyToLS_Conversion)
 {
-  const char* group = "QABugs";
-  (void)group;
-  (void)theCommands;
+  // Set local system to MDTV (Millimeter, Degree, Ton, Velocity)
+  UnitsAPI::SetLocalSystem(UnitsAPI_MDTV);
+
+  // Test conversion: 3 mm in the MDTV system should remain 3
+  // (since the base unit for length in MDTV is millimeter)
+  Standard_Real aResult = UnitsAPI::AnyToLS(3.0, "mm");
+  EXPECT_DOUBLE_EQ(3.0, aResult);
 }

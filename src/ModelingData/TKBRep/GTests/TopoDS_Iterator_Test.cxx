@@ -1,6 +1,4 @@
-// Created on: 2002-10-11
-// Created by: Michael KUZMITCHEV
-// Copyright (c) 2002-2014 OPEN CASCADE SAS
+// Copyright (c) 2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,17 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QABugs.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
-#include <Draw_Interpretor.hxx>
-#include <DrawTrSurf.hxx>
-#include <AIS_InteractiveContext.hxx>
+#include <gtest/gtest.h>
 
-//=================================================================================================
-
-void QABugs::Commands_7(Draw_Interpretor& theCommands)
+TEST(TopoDS_Iterator_Test, OCC30708_1_InitializeWithNullShape)
 {
-  const char* group = "QABugs";
-  (void)group;
-  (void)theCommands;
+  TopoDS_Iterator it;
+  TopoDS_Shape    empty;
+
+  // Should not throw exception when initializing with null shape
+  EXPECT_NO_THROW(it.Initialize(empty));
+
+  // More() should return false on null shape
+  EXPECT_FALSE(it.More());
 }

@@ -80,37 +80,6 @@ static Standard_Integer OCC6001(Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-static Standard_Integer OCC5696(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-  TopoDS_Edge           edge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(2, 0, 0));
-  TopoDS_Wire           wire = BRepBuilderAPI_MakeWire(edge);
-  BRepAdaptor_CompCurve curve(wire);
-  Standard_Real         first = curve.FirstParameter();
-  Standard_Real         last  = curve.LastParameter();
-  Standard_Real         par   = (first + last) / 2;
-  Standard_Real         par_edge;
-  TopoDS_Edge           edge_found;
-  try
-  {
-    OCC_CATCH_SIGNALS
-    curve.Edge(par, edge_found, par_edge); // exception is here
-    di << "par_edge = " << par_edge << "\n";
-  }
-
-  catch (Standard_Failure const&)
-  {
-    di << "OCC5696 Exception \n";
-    return 0;
-  }
-
-  return 0;
-}
-
 void QABugs::Commands_5(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";
@@ -120,8 +89,6 @@ void QABugs::Commands_5(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC6001,
                   group);
-
-  theCommands.Add("OCC5696", "OCC5696", __FILE__, OCC5696, group);
 
   return;
 }

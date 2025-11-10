@@ -413,3 +413,35 @@ TEST(TCollection_ExtendedStringTest, BoundaryValues)
   EXPECT_EQ(1, aStringMaxBMP.Length());
   EXPECT_FALSE(aStringMaxBMP.IsAscii());
 }
+
+// Test TestMem: Large string memory allocation
+// Migrated from QABugs_3.cxx
+TEST(TCollection_ExtendedStringTest, TestMem_LargeStringAllocation)
+{
+  // Test allocation of a large extended string (1MB of characters)
+  // This test verifies that the string can handle large allocations without crashing
+  const Standard_Integer     aLargeSize = 1024 * 1024;
+  TCollection_ExtendedString aString(aLargeSize, 'A');
+
+  EXPECT_EQ(aLargeSize, aString.Length());
+  EXPECT_FALSE(aString.IsEmpty());
+}
+
+// Test OCC3277: TCollection_ExtendedString Cat operation
+TEST(TCollection_ExtendedStringTest, OCC3277_CatOperation)
+{
+  // Test concatenation of an input string to an empty extended string
+  TCollection_ExtendedString anExtendedString;
+  TCollection_ExtendedString anInputString("TestString");
+
+  // Cat() returns a new string, it doesn't modify the original
+  TCollection_ExtendedString aResult = anExtendedString.Cat(anInputString);
+
+  // Verify the result
+  EXPECT_EQ(anInputString.Length(), aResult.Length())
+    << "Concatenated string should have same length as input";
+  EXPECT_FALSE(aResult.IsEmpty()) << "Concatenated string should not be empty";
+
+  // Verify the content matches
+  EXPECT_EQ(anInputString, aResult) << "Concatenated string should match input string";
+}

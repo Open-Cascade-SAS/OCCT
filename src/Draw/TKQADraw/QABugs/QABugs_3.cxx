@@ -137,65 +137,6 @@ static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, co
 #include <BRepBndLib.hxx>
 #include <TopExp_Explorer.hxx>
 
-static Standard_Integer BUC60729(Draw_Interpretor& /*di*/,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  Bnd_Box      aMainBox;
-  TopoDS_Shape aShape = BRepPrimAPI_MakeBox(1, 1, 1).Solid();
-
-  BRepBndLib::Add(aShape, aMainBox);
-
-  Standard_Integer siMaxNbrBox = 6;
-  Bnd_BoundSortBox m_BoundSortBox;
-  m_BoundSortBox.Initialize(aMainBox, siMaxNbrBox);
-  TopExp_Explorer  aExplorer(aShape, TopAbs_FACE);
-  Standard_Integer i;
-
-  //  Bnd_Box __emptyBox; // Box is void !
-  //  Handle(Bnd_HArray1OfBox) __aSetOfBox = new Bnd_HArray1OfBox( 1, siMaxNbrBox, __emptyBox );
-
-  for (i = 1, aExplorer.ReInit(); aExplorer.More(); aExplorer.Next(), i++)
-  {
-    const TopoDS_Shape& aFace = aExplorer.Current();
-    Bnd_Box             aBox;
-    BRepBndLib::Add(aFace, aBox);
-    m_BoundSortBox.Add(aBox, i);
-    //      __aSetOfBox->SetValue( i, aBox );
-  }
-  //  m_BoundSortBox.Initialize( aMainBox, siMaxNbrBox );
-
-  return 0;
-}
-
-static Standard_Integer BUC60724(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  TCollection_AsciiString as1("");
-  TCollection_AsciiString as2('\0');
-  if (as1.ToCString() == NULL || as1.Length() != 0 || as1.ToCString()[0] != '\0')
-    di << "Error : the first string is not zero string : " << as1.ToCString() << "\n";
-
-  if (as2.ToCString() == NULL || as2.Length() != 0 || as2.ToCString()[0] != '\0')
-    di << "Error : the second string is not zero string : " << as2.ToCString() << "\n";
-
-  return 0;
-}
-
-#include <UnitsAPI.hxx>
-
-static Standard_Integer BUC60727(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  di << "Program Test\n";
-  UnitsAPI::SetLocalSystem(UnitsAPI_MDTV);                          // length is mm
-  di << "AnyToLS (3,mm) = " << UnitsAPI::AnyToLS(3., "mm") << "\n"; // result was WRONG.
-
-  return 0;
-}
-
 #include <gp_Circ.hxx>
 #include <Geom_Circle.hxx>
 #include <GeomAPI.hxx>
@@ -440,59 +381,6 @@ static int BUC60825(Draw_Interpretor& di, Standard_Integer argc, const char** ar
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 
-static int OCC10006(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  double bottompoints1[12] = {10, -10, 0, 100, -10, 0, 100, -100, 0, 10, -100, 0};
-  double toppoints1[12]    = {0, 0, 10, 100, 0, 10, 100, -100, 10, 0, -100, 10};
-  double bottompoints2[12] = {0, 0, 10.00, 100, 0, 10.00, 100, -100, 10.00, 0, -100, 10.00};
-  double toppoints2[12]    = {0, 0, 250, 100, 0, 250, 100, -100, 250, 0, -100, 250};
-  BRepBuilderAPI_MakePolygon bottompolygon1, toppolygon1, bottompolygon2, toppolygon2;
-  gp_Pnt                     tmppnt;
-  for (int i = 0; i < 4; i++)
-  {
-    tmppnt.SetCoord(bottompoints1[3 * i], bottompoints1[3 * i + 1], bottompoints1[3 * i + 2]);
-    bottompolygon1.Add(tmppnt);
-    tmppnt.SetCoord(toppoints1[3 * i], toppoints1[3 * i + 1], toppoints1[3 * i + 2]);
-    toppolygon1.Add(tmppnt);
-    tmppnt.SetCoord(bottompoints2[3 * i], bottompoints2[3 * i + 1], bottompoints2[3 * i + 2]);
-    bottompolygon2.Add(tmppnt);
-    tmppnt.SetCoord(toppoints2[3 * i], toppoints2[3 * i + 1], toppoints2[3 * i + 2]);
-    toppolygon2.Add(tmppnt);
-  }
-  bottompolygon1.Close();
-  DBRep::Set("B1", bottompolygon1.Shape());
-  toppolygon1.Close();
-  DBRep::Set("T1", toppolygon1.Shape());
-  bottompolygon2.Close();
-  DBRep::Set("B2", bottompolygon2.Shape());
-  toppolygon2.Close();
-  DBRep::Set("T2", toppolygon2.Shape());
-  BRepOffsetAPI_ThruSections loft1(Standard_True, Standard_True);
-  loft1.AddWire(bottompolygon1.Wire());
-  loft1.AddWire(toppolygon1.Wire());
-  loft1.Build();
-  BRepOffsetAPI_ThruSections loft2(Standard_True, Standard_True);
-  loft2.AddWire(bottompolygon2.Wire());
-  loft2.AddWire(toppolygon2.Wire());
-  loft2.Build();
-  if (loft1.Shape().IsNull() || loft2.Shape().IsNull())
-    return 1;
-  DBRep::Set("TS1", loft1.Shape());
-  DBRep::Set("TS2", loft2.Shape());
-
-  di << "BRepAlgoAPI_Fuse result(loft1.Shape(), loft2.Shape())\n";
-  BRepAlgoAPI_Fuse result(loft1.Shape(), loft2.Shape());
-  DBRep::Set("F", result.Shape());
-
-  return 0;
-}
-
 #include <GC_MakeTrimmedCone.hxx>
 
 static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
@@ -581,14 +469,6 @@ static Standard_Integer coordload(Draw_Interpretor& theDi,
   return 0;
 }
 
-static Standard_Integer TestMem(Draw_Interpretor& /*di*/,
-                                Standard_Integer /*nb*/,
-                                const char** /*arg*/)
-{
-  TCollection_ExtendedString aString(1024 * 1024, 'A');
-  return 0;
-}
-
 static Standard_Integer BUC60876_(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
@@ -610,19 +490,6 @@ static Standard_Integer BUC60876_(Draw_Interpretor& di, Standard_Integer argc, c
 }
 
 //=================================================================================================
-
-#include <TCollection_HAsciiString.hxx>
-
-static Standard_Integer BUC60773(Draw_Interpretor& /*di*/,
-                                 Standard_Integer /*n*/,
-                                 const char** /*a*/)
-{
-  Handle(TCollection_HAsciiString) hAscii = new TCollection_HAsciiString();
-  Standard_CString                 aStr   = hAscii->ToCString();
-  TCollection_AsciiString          aAscii(aStr);
-
-  return 0;
-}
 
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
@@ -859,47 +726,6 @@ static Standard_Integer BUC60874(Draw_Interpretor& /*di*/,
 #include <TNaming_Builder.hxx>
 #include <TNaming_Naming.hxx>
 #include <TNaming_NamedShape.hxx>
-
-static int BUC60817(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " D\n";
-    di << 1;
-    return 0;
-  }
-
-  Handle(TDF_Data) DF;
-  if (!DDF::GetDF(argv[1], DF))
-  {
-    di << 2;
-    return 0;
-  }
-
-  TDF_Label                 L1, L2;
-  Handle(TDataStd_TreeNode) TN1, TN2;
-
-  DDF::AddLabel(DF, "0:2", L1);
-  TN1 = TDataStd_TreeNode::Set(L1);
-
-  DDF::AddLabel(DF, "0:3", L2);
-  TN2 = TDataStd_TreeNode::Set(L2);
-
-  TN1->Append(TN2);
-  if (!(TN2->IsDescendant(TN1)))
-  {
-    di << 3;
-    return 0;
-  }
-  if ((TN1->IsDescendant(TN2)))
-  {
-    di << 4;
-    return 0;
-  }
-
-  di << 0;
-  return 0;
-}
 
 static int BUC60831_1(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -1194,44 +1020,6 @@ static int BUC60910(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-static int BUC60925(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " D\n";
-    di << 1;
-    return 0;
-  }
-
-  Handle(TDF_Data) aDF;
-  if (!DDF::GetDF(argv[1], aDF))
-  {
-    di << 2;
-    return 0;
-  }
-
-  TDF_Label L;
-  DDF::AddLabel(aDF, "0:2", L);
-  TDF_LabelMap LM;
-  LM.Add(L);
-
-  Handle(TNaming_NamedShape) NS = new TNaming_NamedShape;
-  //  Handle(TNaming_Name) NN = new TNaming_Name;
-  TNaming_Name NN;
-
-  NN.Type(TNaming_IDENTITY);
-  NN.Append(NS);
-  Standard_Boolean Res = NN.Solve(L, LM);
-
-  if (Res != Standard_False)
-  {
-    di << 3;
-    return 0;
-  }
-  di << 0;
-  return 0;
-}
-
 static int BUC60932(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 2)
@@ -1418,24 +1206,16 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60632", "BUC60632 mode length", __FILE__, BUC60632, group);
   theCommands.Add("BUC60652", "BUC60652 face", __FILE__, BUC60652, group);
 
-  theCommands.Add("BUC60729", "BUC60729", __FILE__, BUC60729, group);
-  theCommands.Add("BUC60724", "BUC60724", __FILE__, BUC60724, group);
-  theCommands.Add("BUC60727", "BUC60727", __FILE__, BUC60727, group);
   theCommands.Add("BUC60792", "BUC60792", __FILE__, BUC60792, group);
   theCommands.Add("BUC60811", "BUC60811", __FILE__, BUC60811, group);
 
   theCommands.Add("BUC60825", "BUC60825", __FILE__, BUC60825, group);
 
-  theCommands.Add("OCC10006", "OCC10006", __FILE__, OCC10006, group);
-
   theCommands.Add("BUC60856", "BUC60856", __FILE__, BUC60856, group);
 
   theCommands.Add("coordload", "load coord from file", __FILE__, coordload, group);
 
-  theCommands.Add("TestMem", "TestMem", __FILE__, TestMem, group);
-  theCommands.Add("BUC60945", "BUC60945", __FILE__, TestMem, group);
   theCommands.Add("BUC60876", "BUC60876 shape", __FILE__, BUC60876_, group);
-  theCommands.Add("BUC60773", "BUC60773", __FILE__, BUC60773, group);
 
   theCommands.Add("TestCMD", "TestCMD", __FILE__, TestCMD, group);
 
@@ -1444,8 +1224,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60841", "BUC60841", __FILE__, BUC60841, group);
 
   theCommands.Add("BUC60874", "BUC60874", __FILE__, BUC60874, group);
-
-  theCommands.Add("BUC60817", "BUC60817 D", __FILE__, BUC60817, group);
   theCommands.Add("BUC60831_1", "BUC60831_1 D", __FILE__, BUC60831_1, group);
   theCommands.Add("BUC60831_2", "BUC60831_2 D Label", __FILE__, BUC60831_2, group);
   theCommands.Add("BUC60836", "BUC60836 D", __FILE__, BUC60836, group);
@@ -1453,7 +1231,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60862", "BUC60862 D Shape", __FILE__, BUC60862, group);
   theCommands.Add("BUC60867", "BUC60867", __FILE__, BUC60867, group);
   theCommands.Add("BUC60910", "BUC60910 D", __FILE__, BUC60910, group);
-  theCommands.Add("BUC60925", "BUC60925 D", __FILE__, BUC60925, group);
   theCommands.Add("BUC60932", "BUC60932 D", __FILE__, BUC60932, group);
   theCommands.Add("AISWidth", "AISWidth (DOC,entry,[width])", __FILE__, AISWidth, group);
   theCommands.Add("BUC60921", "BUC60921 Doc label brep_file", __FILE__, BUC60921, group);

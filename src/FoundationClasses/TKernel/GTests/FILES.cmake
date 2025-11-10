@@ -22,7 +22,11 @@ set(OCCT_TKernel_GTests_FILES
   OSD_Path_Test.cxx
   OSD_PerfMeter_Test.cxx
   Standard_ArrayStreamBuffer_Test.cxx
+  Standard_Atomic_Test.cxx
+  Standard_Character_Test.cxx
   Standard_Dump_Test.cxx
+  Standard_Handle_Test.cxx
   TCollection_AsciiString_Test.cxx
   TCollection_ExtendedString_Test.cxx
+  UnitsAPI_Test.cxx
 )

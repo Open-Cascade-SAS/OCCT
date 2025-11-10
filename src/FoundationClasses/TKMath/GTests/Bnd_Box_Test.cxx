@@ -813,3 +813,36 @@ TEST(Bnd_BoxTest, DumpJsonAndInitFromJson)
   EXPECT_DOUBLE_EQ(aBox.GetGap(), aDeserializedBox.GetGap())
     << "Deserialized gap should match original";
 }
+
+//==================================================================================================
+// Regression Tests
+//==================================================================================================
+
+// Test OCC16485: Bnd_Box tolerance issue with cumulative enlargement
+// Migrated from QABugs_14.cxx
+TEST(Bnd_BoxTest, OCC16485_CumulativeEnlargeTolerance)
+{
+  // Create points with X coordinate varying from 0 to 1000
+  // and compute cumulative bounding box by adding boxes for all the
+  // points, enlarged on tolerance
+  const Standard_Real    aTol    = 1e-3;
+  const Standard_Integer aNbStep = 1000;
+  Bnd_Box                aBox;
+
+  for (Standard_Integer i = 0; i <= aNbStep; i++)
+  {
+    gp_Pnt  aP(i, 0., 0.);
+    Bnd_Box aB;
+    aB.Add(aP);
+    aB.Enlarge(aTol);
+    aB.Add(aBox);
+    aBox = aB; // This was causing XMin to grow each time (regression)
+  }
+
+  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+
+  // Verify that Xmin is approximately -tolerance (not growing with iterations)
+  EXPECT_NEAR(-aTol, aXmin, 1e-10) << "Xmin should be equal to -tolerance";
+  EXPECT_NEAR(aNbStep + aTol, aXmax, 1e-10) << "Xmax should be equal to nbstep + tolerance";
+}
