@@ -778,34 +778,35 @@ Handle(Transfer_Binder) Transfer_ProcessForFinder::Transferring(
   if (hasDeadLoop)
   {
     Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
-    if (binder.IsNull())
+    if (former.IsNull())
     {
       aSender << "                  *** Dead Loop with no Result" << std::endl;
       if (thetrace)
-        StartTrace(binder, start, thelevel - 1, 0);
+        StartTrace(former, start, thelevel - 1, 0);
       binder = new Transfer_VoidBinder;
       Bind(start, binder);
       newbind = Standard_True;
     }
-    else if (binder->StatusExec() == Transfer_StatusLoop)
+    else if (former->StatusExec() == Transfer_StatusLoop)
     {
       if (thetrace)
       {
         aSender << "                  *** Dead Loop : Finding head of Loop :" << std::endl;
-        StartTrace(binder, start, thelevel - 1, 0);
+        StartTrace(former, start, thelevel - 1, 0);
       }
       else
-        StartTrace(binder, start, thelevel - 1, 4);
-      throw Transfer_TransferFailure("TransferProcess : Head of Dead Loop");
-      // In other words, we change the exception (we exit the loop)
+        StartTrace(former, start, thelevel - 1, 4);
+      binder = former;
+      binder->AddFail("Transfer: Head of Dead Loop");
     }
     else
     {
       if (thetrace)
       {
         aSender << "                  *** Dead Loop : Actor in Loop :" << std::endl;
-        StartTrace(binder, start, thelevel - 1, 0);
+        StartTrace(former, start, thelevel - 1, 0);
       }
+      binder = former;
     }
     if (!binder.IsNull())
       binder->AddFail("Transfer in dead Loop");
