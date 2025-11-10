@@ -13,6 +13,7 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 #include <gtest/gtest.h>
 
