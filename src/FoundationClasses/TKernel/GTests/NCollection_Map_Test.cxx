@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <NCollection_Map.hxx>
+#include <NCollection_MapAlgo.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -215,4 +216,80 @@ TEST(NCollection_MapTest, ExhaustiveIterator)
   // Calculate expected sum: 0 + 1 + 2 + ... + (NUM_ELEMENTS-1)
   int expectedSum = (NUM_ELEMENTS * (NUM_ELEMENTS - 1)) / 2;
   EXPECT_EQ(expectedSum, sum);
+}
+TEST(NCollection_MapTest, OCC24271_BooleanOperations)
+{
+  const Standard_Integer aLeftLower  = 1;
+  const Standard_Integer aLeftUpper  = 10;
+  const Standard_Integer aRightLower = 5;
+  const Standard_Integer aRightUpper = 15;
+
+  NCollection_Map<Standard_Integer> aMapLeft;
+  for (Standard_Integer aKeyIter = aLeftLower; aKeyIter <= aLeftUpper; ++aKeyIter)
+  {
+    aMapLeft.Add(aKeyIter);
+  }
+
+  NCollection_Map<Standard_Integer> aMapRight;
+  for (Standard_Integer aKeyIter = aRightLower; aKeyIter <= aRightUpper; ++aKeyIter)
+  {
+    aMapRight.Add(aKeyIter);
+  }
+
+  EXPECT_FALSE(NCollection_MapAlgo::Contains(aMapLeft, aMapRight));
+  EXPECT_FALSE(NCollection_MapAlgo::Contains(aMapRight, aMapLeft));
+
+  NCollection_Map<Standard_Integer> aMapUnion;
+  NCollection_MapAlgo::Union(aMapUnion, aMapLeft, aMapRight);
+  EXPECT_EQ(aRightUpper - aLeftLower + 1, aMapUnion.Extent());
+  for (Standard_Integer aKeyIter = aLeftLower; aKeyIter <= aRightUpper; ++aKeyIter)
+  {
+    EXPECT_TRUE(aMapUnion.Contains(aKeyIter));
+  }
+
+  NCollection_Map<Standard_Integer> aMapSect;
+  NCollection_MapAlgo::Intersection(aMapSect, aMapLeft, aMapRight);
+  EXPECT_EQ(aLeftUpper - aRightLower + 1, aMapSect.Extent());
+  for (Standard_Integer aKeyIter = aRightLower; aKeyIter <= aLeftUpper; ++aKeyIter)
+  {
+    EXPECT_TRUE(aMapSect.Contains(aKeyIter));
+  }
+  EXPECT_TRUE(NCollection_MapAlgo::Contains(aMapLeft, aMapSect));
+  EXPECT_TRUE(NCollection_MapAlgo::Contains(aMapRight, aMapSect));
+
+  NCollection_Map<Standard_Integer> aMapSubsLR;
+  NCollection_MapAlgo::Subtraction(aMapSubsLR, aMapLeft, aMapRight);
+  EXPECT_EQ(aRightLower - aLeftLower, aMapSubsLR.Extent());
+  for (Standard_Integer aKeyIter = aLeftLower; aKeyIter < aRightLower; ++aKeyIter)
+  {
+    EXPECT_TRUE(aMapSubsLR.Contains(aKeyIter));
+  }
+
+  NCollection_Map<Standard_Integer> aMapSubsRL;
+  NCollection_MapAlgo::Subtraction(aMapSubsRL, aMapRight, aMapLeft);
+  EXPECT_EQ(aRightUpper - aLeftUpper, aMapSubsRL.Extent());
+  for (Standard_Integer aKeyIter = aLeftUpper + 1; aKeyIter <= aRightUpper; ++aKeyIter)
+  {
+    EXPECT_TRUE(aMapSubsRL.Contains(aKeyIter));
+  }
+
+  NCollection_Map<Standard_Integer> aMapDiff;
+  NCollection_MapAlgo::Difference(aMapDiff, aMapLeft, aMapRight);
+  EXPECT_EQ(aRightLower - aLeftLower + aRightUpper - aLeftUpper, aMapDiff.Extent());
+  for (Standard_Integer aKeyIter = aLeftLower; aKeyIter < aRightLower; ++aKeyIter)
+  {
+    EXPECT_TRUE(aMapDiff.Contains(aKeyIter));
+  }
+  for (Standard_Integer aKeyIter = aLeftUpper + 1; aKeyIter <= aRightUpper; ++aKeyIter)
+  {
+    EXPECT_TRUE(aMapDiff.Contains(aKeyIter));
+  }
+
+  NCollection_Map<Standard_Integer> aMapSwap;
+  aMapSwap.Exchange(aMapSect);
+  for (Standard_Integer aKeyIter = aRightLower; aKeyIter <= aLeftUpper; ++aKeyIter)
+  {
+    EXPECT_TRUE(aMapSwap.Contains(aKeyIter));
+  }
+  EXPECT_TRUE(aMapSect.IsEmpty());
 }

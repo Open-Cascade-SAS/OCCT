@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <OSD_Path.hxx>
+#include <OSD_Process.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
@@ -254,6 +255,22 @@ TEST_F(OSD_PathTest, OCC310_TrekAndUpTrek)
   aPath.UpTrek();
   aTrek = aPath.Trek();
   EXPECT_STREQ("/where/you/want/tmp/qwerty/", aTrek.ToCString());
+}
+
+TEST_F(OSD_PathTest, OCC309_CurrentDirectoryAndUpTrek)
+{
+  OSD_Process aProcess;
+  OSD_Path aPath = aProcess.CurrentDirectory();
+  TCollection_AsciiString aSystemName1;
+  aPath.SystemName(aSystemName1);
+  EXPECT_FALSE(aSystemName1.IsEmpty());
+
+  aPath.UpTrek();
+  TCollection_AsciiString aSystemName2;
+  aPath.SystemName(aSystemName2);
+  EXPECT_FALSE(aSystemName2.IsEmpty());
+  EXPECT_NE(aSystemName1, aSystemName2);
+  EXPECT_LT(aSystemName2.Length(), aSystemName1.Length());
 }
 
 //==================================================================================================

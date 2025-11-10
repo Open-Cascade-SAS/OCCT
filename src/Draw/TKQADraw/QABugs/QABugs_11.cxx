@@ -841,26 +841,6 @@ Standard_Integer OCC299bug(Draw_Interpretor& theDi,
 }
 
 #include <OSD_Process.hxx>
-#include <OSD_Path.hxx>
-
-static Standard_Integer OCC309bug(Draw_Interpretor& di, Standard_Integer nb, const char** a)
-{
-  if (nb != 1)
-  {
-    di << "Usage: " << a[0] << "\n";
-    return 1;
-  }
-  OSD_Process             p;
-  OSD_Path                d = p.CurrentDirectory();
-  TCollection_AsciiString s;
-  d.SystemName(s);
-  di << "*" << s.ToCString() << "*\n";
-  d.UpTrek();
-  d.SystemName(s);
-  di << "*" << s.ToCString() << "*\n";
-  return 0;
-}
-
 #include <DDocStd_DrawDocument.hxx>
 #include <TDataStd_Name.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
@@ -5177,7 +5157,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
   theCommands.Add("OCC381_SaveAs", "OCC381_SaveAs Doc Path", __FILE__, OCC381_SaveAs, group);
 
   theCommands.Add("OCC299", "OCC299 Solid Point [Tolerance=1.e-7]", __FILE__, OCC299bug, group);
-  theCommands.Add("OCC309", "OCC309", __FILE__, OCC309bug, group);
 
   theCommands.Add("OCC363", "OCC363 document filename ", __FILE__, OCC363, group);
   // Must use OCC299
