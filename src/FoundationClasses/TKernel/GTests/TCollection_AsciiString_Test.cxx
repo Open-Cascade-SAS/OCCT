@@ -1414,3 +1414,38 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
   EXPECT_TRUE(strstr(aResult, "1:On") != nullptr);
   EXPECT_TRUE(strstr(aResult, "alpha:") != nullptr);
 }
+
+// Test BUC60724: Empty string initialization
+// Migrated from QABugs_3.cxx
+TEST(TCollection_AsciiStringTest, BUC60724_EmptyStringInitialization)
+{
+  // Test empty string initialization with empty C string
+  TCollection_AsciiString as1("");
+  EXPECT_NE(nullptr, as1.ToCString());
+  EXPECT_EQ(0, as1.Length());
+  EXPECT_EQ('\0', as1.ToCString()[0]);
+
+  // Test empty string initialization with null character
+  TCollection_AsciiString as2('\0');
+  EXPECT_NE(nullptr, as2.ToCString());
+  EXPECT_EQ(0, as2.Length());
+  EXPECT_EQ('\0', as2.ToCString()[0]);
+}
+
+// Test BUC60773: TCollection_HAsciiString initialization
+// Migrated from QABugs_3.cxx
+TEST(TCollection_AsciiStringTest, BUC60773_HAsciiStringInitialization)
+{
+  // Create empty HAsciiString
+  Handle(TCollection_HAsciiString) hAscii = new TCollection_HAsciiString();
+  EXPECT_FALSE(hAscii.IsNull());
+
+  // Get C string from HAsciiString
+  Standard_CString aStr = hAscii->ToCString();
+  EXPECT_NE(nullptr, aStr);
+
+  // Create AsciiString from C string
+  TCollection_AsciiString aAscii(aStr);
+  EXPECT_EQ(0, aAscii.Length());
+  EXPECT_TRUE(aAscii.IsEmpty());
+}

@@ -168,33 +168,6 @@ static Standard_Integer BUC60729(Draw_Interpretor& /*di*/,
   return 0;
 }
 
-static Standard_Integer BUC60724(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  TCollection_AsciiString as1("");
-  TCollection_AsciiString as2('\0');
-  if (as1.ToCString() == NULL || as1.Length() != 0 || as1.ToCString()[0] != '\0')
-    di << "Error : the first string is not zero string : " << as1.ToCString() << "\n";
-
-  if (as2.ToCString() == NULL || as2.Length() != 0 || as2.ToCString()[0] != '\0')
-    di << "Error : the second string is not zero string : " << as2.ToCString() << "\n";
-
-  return 0;
-}
-
-#include <UnitsAPI.hxx>
-
-static Standard_Integer BUC60727(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  di << "Program Test\n";
-  UnitsAPI::SetLocalSystem(UnitsAPI_MDTV);                          // length is mm
-  di << "AnyToLS (3,mm) = " << UnitsAPI::AnyToLS(3., "mm") << "\n"; // result was WRONG.
-
-  return 0;
-}
 
 #include <gp_Circ.hxx>
 #include <Geom_Circle.hxx>
@@ -581,13 +554,6 @@ static Standard_Integer coordload(Draw_Interpretor& theDi,
   return 0;
 }
 
-static Standard_Integer TestMem(Draw_Interpretor& /*di*/,
-                                Standard_Integer /*nb*/,
-                                const char** /*arg*/)
-{
-  TCollection_ExtendedString aString(1024 * 1024, 'A');
-  return 0;
-}
 
 static Standard_Integer BUC60876_(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -610,19 +576,6 @@ static Standard_Integer BUC60876_(Draw_Interpretor& di, Standard_Integer argc, c
 }
 
 //=================================================================================================
-
-#include <TCollection_HAsciiString.hxx>
-
-static Standard_Integer BUC60773(Draw_Interpretor& /*di*/,
-                                 Standard_Integer /*n*/,
-                                 const char** /*a*/)
-{
-  Handle(TCollection_HAsciiString) hAscii = new TCollection_HAsciiString();
-  Standard_CString                 aStr   = hAscii->ToCString();
-  TCollection_AsciiString          aAscii(aStr);
-
-  return 0;
-}
 
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
@@ -1419,8 +1372,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60652", "BUC60652 face", __FILE__, BUC60652, group);
 
   theCommands.Add("BUC60729", "BUC60729", __FILE__, BUC60729, group);
-  theCommands.Add("BUC60724", "BUC60724", __FILE__, BUC60724, group);
-  theCommands.Add("BUC60727", "BUC60727", __FILE__, BUC60727, group);
   theCommands.Add("BUC60792", "BUC60792", __FILE__, BUC60792, group);
   theCommands.Add("BUC60811", "BUC60811", __FILE__, BUC60811, group);
 
@@ -1432,10 +1383,7 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
 
   theCommands.Add("coordload", "load coord from file", __FILE__, coordload, group);
 
-  theCommands.Add("TestMem", "TestMem", __FILE__, TestMem, group);
-  theCommands.Add("BUC60945", "BUC60945", __FILE__, TestMem, group);
   theCommands.Add("BUC60876", "BUC60876 shape", __FILE__, BUC60876_, group);
-  theCommands.Add("BUC60773", "BUC60773", __FILE__, BUC60773, group);
 
   theCommands.Add("TestCMD", "TestCMD", __FILE__, TestCMD, group);
 

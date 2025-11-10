@@ -25,4 +25,5 @@ set(OCCT_TKernel_GTests_FILES
   Standard_Dump_Test.cxx
   TCollection_AsciiString_Test.cxx
   TCollection_ExtendedString_Test.cxx
+  UnitsAPI_Test.cxx
 )

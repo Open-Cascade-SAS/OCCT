@@ -413,3 +413,16 @@ TEST(TCollection_ExtendedStringTest, BoundaryValues)
   EXPECT_EQ(1, aStringMaxBMP.Length());
   EXPECT_FALSE(aStringMaxBMP.IsAscii());
 }
+
+// Test TestMem: Large string memory allocation
+// Migrated from QABugs_3.cxx
+TEST(TCollection_ExtendedStringTest, TestMem_LargeStringAllocation)
+{
+  // Test allocation of a large extended string (1MB of characters)
+  // This test verifies that the string can handle large allocations without crashing
+  const Standard_Integer aLargeSize = 1024 * 1024;
+  TCollection_ExtendedString aString(aLargeSize, 'A');
+
+  EXPECT_EQ(aLargeSize, aString.Length());
+  EXPECT_FALSE(aString.IsEmpty());
+}
