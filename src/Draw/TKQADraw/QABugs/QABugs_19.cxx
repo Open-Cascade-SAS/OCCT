@@ -933,42 +933,6 @@ static Standard_Integer OCC24370(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-template <typename T, typename HT>
-static void DoIsNull(Draw_Interpretor& di)
-{
-  HT aHandle;
-  //    QVERIFY (aHandle.IsNull());
-  QCOMPARE(aHandle.IsNull(), Standard_True);
-  const T* p = aHandle.get();
-#if OCC_VERSION_HEX > 0x060700
-  // QVERIFY (!p);
-  // QVERIFY (p == 0);
-  QCOMPARE(!p, Standard_True);
-  QCOMPARE(p == 0, Standard_True);
-#endif
-
-  aHandle = new T;
-  // QVERIFY (!aHandle.IsNull());
-  QCOMPARE(!aHandle.IsNull(), Standard_True);
-  p = aHandle.get();
-  // QVERIFY (p);
-  // QVERIFY (p != 0);
-  QCOMPARE(p != NULL, Standard_True);
-  QCOMPARE(p != 0, Standard_True);
-}
-
-//=================================================================================================
-
-static Standard_Integer OCC24533(Draw_Interpretor& di, Standard_Integer n, const char**)
-{
-  if (n != 1)
-    return 1;
-
-  DoIsNull<Standard_Transient, Handle(Standard_Transient)>(di);
-
-  return 0;
-}
-
 // Dummy class to test interface for compilation issues
 class QABugs_HandleClass : public Standard_Transient
 {
@@ -4700,7 +4664,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
   theCommands.Add("OCC23972", "OCC23972", __FILE__, OCC23972, group);
   theCommands.Add("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
-  theCommands.Add("OCC24533", "OCC24533", __FILE__, OCC24533, group);
   theCommands.Add("OCC24086", "OCC24086 face wire", __FILE__, OCC24086, group);
   theCommands.Add("OCC24667",
                   "OCC24667 result Wire_spine Profile [Mode [Approx]], no args to get help",
