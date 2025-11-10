@@ -374,49 +374,7 @@ static Standard_Integer OCC74bug_get(Draw_Interpretor& di, Standard_Integer argc
 #include <TNaming_NamedShape.hxx>
 #include <AIS_InteractiveObject.hxx>
 
-static Standard_Integer OCC361bug(Draw_Interpretor& di, Standard_Integer nb, const char** a)
-{
-  if (nb != 2)
-  {
-    di << "ERROR : Usage : " << a[0] << " Doc\n";
-    di << "-1\n";
-    return -1;
-  }
-
-  Handle(TDocStd_Document) D;
-  if (!DDocStd::GetDocument(a[1], D))
-  {
-    di << "-2\n";
-    return 1;
-  }
-
-  BRepPrimAPI_MakeBox aBox(gp_Pnt(0, 0, 0), 100, 100, 100);
-  TopoDS_Shape        aTBox = aBox.Shape();
-  aTBox.Orientation(TopAbs_FORWARD);
-
-  TDF_Label aTestLabel = D->Main();
-
-  TNaming_Builder aBuilder(aTestLabel);
-  aBuilder.Generated(aTBox);
-
-  TopoDS_Shape aTBox1 = aTBox;
-  aTBox1.Orientation(TopAbs_REVERSED);
-  aTestLabel.ForgetAllAttributes();
-
-  TNaming_Builder aBuilder2(aTestLabel);
-  aBuilder2.Generated(aTBox1);
-
-  aTBox = aBuilder2.NamedShape()->Get();
-  if (aTBox.Orientation() != TopAbs_REVERSED)
-  {
-    di << "1\n";
-  }
-  else
-  {
-    di << "0\n";
-  }
-  return 0;
-}
+// OCC361bug command has been migrated to TNaming_Builder_Test.cxx
 
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Image_AlienPixMap.hxx>
@@ -684,7 +642,7 @@ void QABugs::Commands_1(Draw_Interpretor& theCommands)
                   OCC74bug_get,
                   group);
 
-  theCommands.Add("OCC361", "OCC361 Doc ", __FILE__, OCC361bug, group);
+  // OCC361bug command has been migrated to TNaming_Builder_Test.cxx
   theCommands.Add("OCC30182",
                   "OCC30182 name image [-offset Start] [-fileName] [-stream] [-memory]\n"
                   "Decodes image either by passing file name, file stream or memory stream",

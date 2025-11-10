@@ -782,46 +782,7 @@ static Standard_Integer BUC60874(Draw_Interpretor& /*di*/,
 #include <TNaming_Naming.hxx>
 #include <TNaming_NamedShape.hxx>
 
-static int BUC60817(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " D\n";
-    di << 1;
-    return 0;
-  }
-
-  Handle(TDF_Data) DF;
-  if (!DDF::GetDF(argv[1], DF))
-  {
-    di << 2;
-    return 0;
-  }
-
-  TDF_Label                 L1, L2;
-  Handle(TDataStd_TreeNode) TN1, TN2;
-
-  DDF::AddLabel(DF, "0:2", L1);
-  TN1 = TDataStd_TreeNode::Set(L1);
-
-  DDF::AddLabel(DF, "0:3", L2);
-  TN2 = TDataStd_TreeNode::Set(L2);
-
-  TN1->Append(TN2);
-  if (!(TN2->IsDescendant(TN1)))
-  {
-    di << 3;
-    return 0;
-  }
-  if ((TN1->IsDescendant(TN2)))
-  {
-    di << 4;
-    return 0;
-  }
-
-  di << 0;
-  return 0;
-}
+// BUC60817 command has been migrated to TDataStd_TreeNode_Test.cxx
 
 static int BUC60831_1(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -1116,43 +1077,7 @@ static int BUC60910(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-static int BUC60925(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " D\n";
-    di << 1;
-    return 0;
-  }
-
-  Handle(TDF_Data) aDF;
-  if (!DDF::GetDF(argv[1], aDF))
-  {
-    di << 2;
-    return 0;
-  }
-
-  TDF_Label L;
-  DDF::AddLabel(aDF, "0:2", L);
-  TDF_LabelMap LM;
-  LM.Add(L);
-
-  Handle(TNaming_NamedShape) NS = new TNaming_NamedShape;
-  //  Handle(TNaming_Name) NN = new TNaming_Name;
-  TNaming_Name NN;
-
-  NN.Type(TNaming_IDENTITY);
-  NN.Append(NS);
-  Standard_Boolean Res = NN.Solve(L, LM);
-
-  if (Res != Standard_False)
-  {
-    di << 3;
-    return 0;
-  }
-  di << 0;
-  return 0;
-}
+// BUC60925 command has been migrated to TNaming_Name_Test.cxx
 
 static int BUC60932(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -1361,7 +1286,7 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
 
   theCommands.Add("BUC60874", "BUC60874", __FILE__, BUC60874, group);
 
-  theCommands.Add("BUC60817", "BUC60817 D", __FILE__, BUC60817, group);
+  // BUC60817 command has been migrated to TDataStd_TreeNode_Test.cxx
   theCommands.Add("BUC60831_1", "BUC60831_1 D", __FILE__, BUC60831_1, group);
   theCommands.Add("BUC60831_2", "BUC60831_2 D Label", __FILE__, BUC60831_2, group);
   theCommands.Add("BUC60836", "BUC60836 D", __FILE__, BUC60836, group);
@@ -1369,7 +1294,7 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60862", "BUC60862 D Shape", __FILE__, BUC60862, group);
   theCommands.Add("BUC60867", "BUC60867", __FILE__, BUC60867, group);
   theCommands.Add("BUC60910", "BUC60910 D", __FILE__, BUC60910, group);
-  theCommands.Add("BUC60925", "BUC60925 D", __FILE__, BUC60925, group);
+  // BUC60925 command has been migrated to TNaming_Name_Test.cxx
   theCommands.Add("BUC60932", "BUC60932 D", __FILE__, BUC60932, group);
   theCommands.Add("AISWidth", "AISWidth (DOC,entry,[width])", __FILE__, AISWidth, group);
   theCommands.Add("BUC60921", "BUC60921 Doc label brep_file", __FILE__, BUC60921, group);
