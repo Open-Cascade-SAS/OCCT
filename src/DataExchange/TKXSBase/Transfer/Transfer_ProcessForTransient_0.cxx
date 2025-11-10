@@ -780,42 +780,22 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
   Standard_Boolean        newbind = Standard_False;
 
   // Handle dead loop condition detected before calling TransferProduct
+  // When hasDeadLoop is true, we know:
+  // 1. former is NOT null (hasDeadLoop only set inside !former.IsNull() block)
+  // 2. former->StatusExec() == Transfer_StatusLoop (that's what triggered hasDeadLoop)
   if (hasDeadLoop)
   {
     Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
-    if (former.IsNull())
+    if (thetrace)
     {
-      aSender << "                  *** Dead Loop with no Result" << std::endl;
-      binder = new Transfer_VoidBinder;
-      binder->SetStatusExec(Transfer_StatusLoop);
-      Bind(start, binder);
-      newbind = Standard_True;
-      if (thetrace)
-        StartTrace(binder, start, thelevel - 1, 0);
-    }
-    else if (former->StatusExec() == Transfer_StatusLoop)
-    {
-      if (thetrace)
-      {
-        aSender << "                  *** Dead Loop : Finding head of Loop :" << std::endl;
-        StartTrace(former, start, thelevel - 1, 0);
-      }
-      else
-        StartTrace(former, start, thelevel - 1, 4);
-      binder = former;
-      binder->AddFail("Transfer: Head of Dead Loop");
+      aSender << "                  *** Dead Loop : Finding head of Loop :" << std::endl;
+      StartTrace(former, start, thelevel - 1, 0);
     }
     else
-    {
-      if (thetrace)
-      {
-        aSender << "                  *** Dead Loop : Actor in Loop :" << std::endl;
-        StartTrace(former, start, thelevel - 1, 0);
-      }
-      binder = former;
-    }
-    if (!binder.IsNull())
-      binder->AddFail("Transfer in dead Loop");
+      StartTrace(former, start, thelevel - 1, 4);
+    binder = former;
+    binder->AddFail("Transfer: Head of Dead Loop");
+    binder->AddFail("Transfer in dead Loop");
   }
   else if (theerrh)
   {
