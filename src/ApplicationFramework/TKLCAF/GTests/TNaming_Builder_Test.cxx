@@ -16,6 +16,7 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TDocStd_Document.hxx>
 #include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 

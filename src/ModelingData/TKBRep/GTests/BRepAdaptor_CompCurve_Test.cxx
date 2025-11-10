@@ -39,7 +39,7 @@ TEST(BRepAdaptor_CompCurve_Test, OCC5696_EdgeMethod)
   Standard_Real aPar   = (aFirst + aLast) / 2.0;
 
   // Test the Edge() method
-  Standard_Real aParEdge;
+  Standard_Real aParEdge = 0.0;
   TopoDS_Edge   anEdgeFound;
 
   // The original test was checking that this method doesn't throw an exception
