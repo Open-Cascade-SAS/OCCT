@@ -25,5 +25,6 @@ TEST(GeomPlate_BuildPlateSurface, OCC525_PerformWithoutConstraints)
   // The resulting surface is null, which is the expected behavior.
   // Original bug OCC525: Bug in GeomPlate_BuildPlateSurface::ComputeSurfInit()
   EXPECT_TRUE(aBuilder.IsDone());
-  EXPECT_TRUE(aBuilder.Surface().IsNull()) << "Surface should be null when Perform() is called without constraints";
+  EXPECT_TRUE(aBuilder.Surface().IsNull())
+    << "Surface should be null when Perform() is called without constraints";
 }

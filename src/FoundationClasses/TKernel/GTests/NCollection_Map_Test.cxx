@@ -217,6 +217,7 @@ TEST(NCollection_MapTest, ExhaustiveIterator)
   int expectedSum = (NUM_ELEMENTS * (NUM_ELEMENTS - 1)) / 2;
   EXPECT_EQ(expectedSum, sum);
 }
+
 TEST(NCollection_MapTest, OCC24271_BooleanOperations)
 {
   const Standard_Integer aLeftLower  = 1;

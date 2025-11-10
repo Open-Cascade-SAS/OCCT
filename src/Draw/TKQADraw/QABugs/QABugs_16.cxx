@@ -98,7 +98,6 @@ static Standard_Integer BUC60848(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-
 static Standard_Integer BUC60814(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 1)

@@ -2042,10 +2042,10 @@ TEST_F(BFuseSimpleTest, OCC277_FuseAndCommonOfOverlappingBoxes)
   TopoDS_Shape aShape2 = aBox2Maker.Shape();
 
   BRepAlgoAPI_Fuse aFuseOp(aShape1, aShape2);
-  TopoDS_Shape aFuseResult = aFuseOp.Shape();
+  TopoDS_Shape     aFuseResult = aFuseOp.Shape();
   EXPECT_FALSE(aFuseResult.IsNull());
 
   BRepAlgoAPI_Common aCommonOp(aShape1, aShape2);
-  TopoDS_Shape aCommonResult = aCommonOp.Shape();
+  TopoDS_Shape       aCommonResult = aCommonOp.Shape();
   EXPECT_FALSE(aCommonResult.IsNull());
 }

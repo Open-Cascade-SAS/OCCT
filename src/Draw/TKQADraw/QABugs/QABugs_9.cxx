@@ -71,7 +71,6 @@ static Standard_Integer BUC60857(Draw_Interpretor& di, Standard_Integer /*argc*/
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Circle.hxx>
 
-
 void QABugs::Commands_9(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";

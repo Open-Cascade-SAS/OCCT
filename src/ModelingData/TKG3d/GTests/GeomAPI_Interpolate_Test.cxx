@@ -27,7 +27,7 @@ TEST(GeomAPI_Interpolate_Test, BUC60902_TangentPreservation)
 {
   // Create 5 points along a sine wave
   Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, 5);
-  gp_Pnt aP(0., 0., 0.);
+  gp_Pnt                      aP(0., 0., 0.);
   for (Standard_Integer i = 1; i <= 5; i++)
   {
     aP.SetX((i - 1) * 1.57);

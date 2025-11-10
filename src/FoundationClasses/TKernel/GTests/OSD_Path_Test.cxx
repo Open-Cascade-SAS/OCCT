@@ -248,7 +248,7 @@ TEST_F(OSD_PathTest, MixedSeparators)
 
 TEST_F(OSD_PathTest, OCC310_TrekAndUpTrek)
 {
-  OSD_Path aPath("/where/you/want/tmp/qwerty/tmp/");
+  OSD_Path                aPath("/where/you/want/tmp/qwerty/tmp/");
   TCollection_AsciiString aTrek = aPath.Trek();
 
   // OSD_Path uses | as the internal portable trek separator on all platforms
@@ -262,8 +262,8 @@ TEST_F(OSD_PathTest, OCC310_TrekAndUpTrek)
 
 TEST_F(OSD_PathTest, OCC309_CurrentDirectoryAndUpTrek)
 {
-  OSD_Process aProcess;
-  OSD_Path aPath = aProcess.CurrentDirectory();
+  OSD_Process             aProcess;
+  OSD_Path                aPath = aProcess.CurrentDirectory();
   TCollection_AsciiString aSystemName1;
   aPath.SystemName(aSystemName1);
   EXPECT_FALSE(aSystemName1.IsEmpty());

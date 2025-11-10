@@ -80,7 +80,6 @@ static Standard_Integer OCC6001(Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-
 void QABugs::Commands_5(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";

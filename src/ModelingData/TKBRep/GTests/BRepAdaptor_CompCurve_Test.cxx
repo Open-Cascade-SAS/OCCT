@@ -44,9 +44,8 @@ TEST(BRepAdaptor_CompCurve_Test, OCC5696_EdgeMethod)
 
   // The original test was checking that this method doesn't throw an exception
   // and returns valid parameter
-  EXPECT_NO_THROW({
-    aCurve.Edge(aPar, anEdgeFound, aParEdge);
-  }) << "Edge() method should not throw an exception";
+  EXPECT_NO_THROW({ aCurve.Edge(aPar, anEdgeFound, aParEdge); })
+    << "Edge() method should not throw an exception";
 
   // Verify that the returned edge is valid
   EXPECT_FALSE(anEdgeFound.IsNull()) << "Returned edge should not be null";

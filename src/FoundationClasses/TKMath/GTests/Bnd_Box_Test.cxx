@@ -825,9 +825,9 @@ TEST(Bnd_BoxTest, OCC16485_CumulativeEnlargeTolerance)
   // Create points with X coordinate varying from 0 to 1000
   // and compute cumulative bounding box by adding boxes for all the
   // points, enlarged on tolerance
-  const Standard_Real aTol    = 1e-3;
+  const Standard_Real    aTol    = 1e-3;
   const Standard_Integer aNbStep = 1000;
-  Bnd_Box aBox;
+  Bnd_Box                aBox;
 
   for (Standard_Integer i = 0; i <= aNbStep; i++)
   {

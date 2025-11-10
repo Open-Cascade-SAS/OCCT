@@ -44,8 +44,8 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
   E = -.25;
   math_TrigonometricEquationFunction MyF(A, B, C, D, E);
 
-  Standard_Real    Tol1 = 1.e-15;
-  Standard_Real    Eps  = 1.5e-12;
+  Standard_Real    Tol1  = 1.e-15;
+  Standard_Real    Eps   = 1.5e-12;
   Standard_Integer Nit[] = {5, 6, 7, 6};
 
   // For each intersection point, verify Newton root finding
@@ -61,7 +61,6 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
     ASSERT_TRUE(Resol.IsDone()) << "Error: Newton is not done for " << Teta;
 
     Standard_Real TetaNewton = Resol.Root();
-    EXPECT_LE(Abs(Teta - TetaNewton), 1.e-7)
-      << "Error: Newton root is wrong for " << Teta;
+    EXPECT_LE(Abs(Teta - TetaNewton), 1.e-7) << "Error: Newton root is wrong for " << Teta;
   }
 }

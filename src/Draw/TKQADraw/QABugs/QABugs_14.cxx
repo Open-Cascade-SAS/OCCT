@@ -1048,7 +1048,6 @@ static Standard_Integer OCC2932_SetRelation(Draw_Interpretor& di,
   return 0;
 }
 
-
 void QABugs::Commands_14(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";

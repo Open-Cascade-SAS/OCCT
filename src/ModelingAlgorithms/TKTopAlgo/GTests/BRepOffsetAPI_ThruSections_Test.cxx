@@ -75,5 +75,6 @@ TEST(BRepOffsetAPI_ThruSections_Test, OCC10006_LoftAndFusion)
   BRepAlgoAPI_Fuse aFusion(aLoft1.Shape(), aLoft2.Shape());
 
   // Verify that fusion operation succeeded
-  EXPECT_FALSE(aFusion.Shape().IsNull()) << "Boolean fusion of lofted shapes should produce a valid shape";
+  EXPECT_FALSE(aFusion.Shape().IsNull())
+    << "Boolean fusion of lofted shapes should produce a valid shape";
 }

@@ -27,8 +27,8 @@
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
 {
   // Define BSpline curve data (from Glob_Poles, Glob_Knots, Glob_Mults)
-  const Standard_Integer aNbPoles = 195;
-  const Standard_Real aPoles[195][3] = {
+  const Standard_Integer aNbPoles       = 195;
+  const Standard_Real    aPoles[195][3] = {
     {60000, 31.937047503393231, 799.36226142892554},
     {60000.000000027772, 16.712487623992825, 799.97053069028755},
     {59999.999999875639, 7.3723603687660546, 799.97042131653711},
@@ -225,26 +225,27 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
     {59999.999999990541, 7306.414330937022, 10560.108503883888},
     {60000, 7397.0783263606427, 11218.963217145942}};
 
-  const Standard_Integer aNbKnots = 17;
-  const Standard_Real aKnots[17] = {0,
-                                     0.0087664292723375857,
-                                     0.015654339342331427,
-                                     0.019098294377328347,
-                                     0.020820271894826808,
-                                     0.021681260653576038,
-                                     0.022111755032950653,
-                                     0.022327002222637962,
-                                     0.022434625817481617,
-                                     0.022488437614903441,
-                                     0.022542249412325268,
-                                     0.037523693790797889,
-                                     0.071526893170125505,
-                                     0.1421299556831544,
-                                     0.26514857375331263,
-                                     0.51350664396810353,
-                                     1};
+  const Standard_Integer aNbKnots   = 17;
+  const Standard_Real    aKnots[17] = {0,
+                                       0.0087664292723375857,
+                                       0.015654339342331427,
+                                       0.019098294377328347,
+                                       0.020820271894826808,
+                                       0.021681260653576038,
+                                       0.022111755032950653,
+                                       0.022327002222637962,
+                                       0.022434625817481617,
+                                       0.022488437614903441,
+                                       0.022542249412325268,
+                                       0.037523693790797889,
+                                       0.071526893170125505,
+                                       0.1421299556831544,
+                                       0.26514857375331263,
+                                       0.51350664396810353,
+                                       1};
 
-  const Standard_Integer aMults[17] = {15, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 15};
+  const Standard_Integer aMults[17] =
+    {15, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 15};
 
   // Fill array of poles
   TColgp_Array1OfPnt aPolesArray(1, aNbPoles);
@@ -269,7 +270,8 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
 
   // Create B-Spline curve
   const Standard_Integer    aDegree = 14;
-  Handle(Geom_BSplineCurve) aC1     = new Geom_BSplineCurve(aPolesArray, aKnotsArray, aMultsArray, aDegree);
+  Handle(Geom_BSplineCurve) aC1 =
+    new Geom_BSplineCurve(aPolesArray, aKnotsArray, aMultsArray, aDegree);
 
   // Create trimmed line
   gp_XYZ                    aP1(60000, -7504.83, 6000);
@@ -313,7 +315,8 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
       EXPECT_GE(aU2, 0.0) << "Parameter U2 should be non-negative";
 
       // Verify nearest points are valid
-      EXPECT_FALSE(aPoint1.IsEqual(gp_Pnt(0, 0, 0), 1e-10) && aPoint2.IsEqual(gp_Pnt(0, 0, 0), 1e-10))
+      EXPECT_FALSE(aPoint1.IsEqual(gp_Pnt(0, 0, 0), 1e-10)
+                   && aPoint2.IsEqual(gp_Pnt(0, 0, 0), 1e-10))
         << "Nearest points should not both be at origin";
     }
   }

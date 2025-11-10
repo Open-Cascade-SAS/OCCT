@@ -40,7 +40,7 @@ TEST(Geom2dGcc_Circ2d2TanRad_Test, OCC24303_CircleTangentToTwoEllipses)
 
   // Expected tangent circle
   gp_Pnt2d      aCentre(5.0, 0.0);
-  Standard_Real aRadius            = 3.0;
+  Standard_Real aRadius           = 3.0;
   gp_Circ2d     aTheoricalTangent = gp_Circ2d(gp_Ax2d(aCentre, gp::DX2d()), aRadius);
 
   // Calculate the tangent circles with Geom2dGcc_Circ2d2TanRad
@@ -53,10 +53,7 @@ TEST(Geom2dGcc_Circ2d2TanRad_Test, OCC24303_CircleTangentToTwoEllipses)
   const Geom2dGcc_QualifiedCurve aQualifiedCurve1(anAdaptedCurve1, aCurveQualif1);
   const Geom2dGcc_QualifiedCurve aQualifiedCurve2(anAdaptedCurve2, aCurveQualif2);
 
-  const Geom2dGcc_Circ2d2TanRad aCircCalc(aQualifiedCurve1,
-                                          aQualifiedCurve2,
-                                          aRadius,
-                                          1.0e-9);
+  const Geom2dGcc_Circ2d2TanRad aCircCalc(aQualifiedCurve1, aQualifiedCurve2, aRadius, 1.0e-9);
 
   const Standard_Integer aNbSol = aCircCalc.NbSolutions();
 
@@ -67,7 +64,8 @@ TEST(Geom2dGcc_Circ2d2TanRad_Test, OCC24303_CircleTangentToTwoEllipses)
   for (Standard_Integer i = 1; i <= aNbSol; i++)
   {
     gp_Circ2d aCt = aCircCalc.ThisSolution(i);
-    EXPECT_NEAR(aRadius, aCt.Radius(), 1.0e-6) << "Solution " << i << " should have radius " << aRadius;
+    EXPECT_NEAR(aRadius, aCt.Radius(), 1.0e-6)
+      << "Solution " << i << " should have radius " << aRadius;
   }
 
   // For the first solution, check the distance from theoretical tangent

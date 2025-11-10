@@ -420,7 +420,7 @@ TEST(TCollection_ExtendedStringTest, TestMem_LargeStringAllocation)
 {
   // Test allocation of a large extended string (1MB of characters)
   // This test verifies that the string can handle large allocations without crashing
-  const Standard_Integer aLargeSize = 1024 * 1024;
+  const Standard_Integer     aLargeSize = 1024 * 1024;
   TCollection_ExtendedString aString(aLargeSize, 'A');
 
   EXPECT_EQ(aLargeSize, aString.Length());

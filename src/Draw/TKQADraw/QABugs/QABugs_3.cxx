@@ -137,7 +137,6 @@ static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, co
 #include <BRepBndLib.hxx>
 #include <TopExp_Explorer.hxx>
 
-
 #include <gp_Circ.hxx>
 #include <Geom_Circle.hxx>
 #include <GeomAPI.hxx>
@@ -469,7 +468,6 @@ static Standard_Integer coordload(Draw_Interpretor& theDi,
   DBRep::Set(theArgVec[1], aMakeFace.IsDone() ? aMakeFace.Face() : TopoDS_Face());
   return 0;
 }
-
 
 static Standard_Integer BUC60876_(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {

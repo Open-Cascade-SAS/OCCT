@@ -89,23 +89,26 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #define QCOMPARE(val1, val2)                                                                       \
   di << "Checking " #val1 " == " #val2 << ((val1) == (val2) ? ": OK\n" : ": Error\n")
 
-#define QVERIFY(val) \
-  if (!(val)) { std::cout << "Error: " #val " is false\n"; }
+#define QVERIFY(val)                                                                               \
+  if (!(val))                                                                                      \
+  {                                                                                                \
+    std::cout << "Error: " #val " is false\n";                                                     \
+  }
 
-// Helper function to create conical surface
-static Handle(Geom_Surface) CreateCone(const gp_Pnt& theApex,
-                                        const gp_Dir& theDir,
-                                        const gp_Dir& theXDir,
-                                        Standard_Real theR,
-                                        Standard_Real theSemiAngle,
-                                        Standard_Real /*theH*/)
+  // Helper function to create conical surface
+  static Handle(Geom_Surface)
+    CreateCone(const gp_Pnt& theApex,
+               const gp_Dir& theDir,
+               const gp_Dir& theXDir,
+               Standard_Real theR,
+               Standard_Real theSemiAngle,
+               Standard_Real /*theH*/)
 {
   gp_Ax3 anAxis(theApex, theDir, theXDir);
   return new Geom_ConicalSurface(anAxis, theSemiAngle, theR);
 }
 
-  static Standard_Integer
-  OCC230(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer OCC230(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 4)
   {

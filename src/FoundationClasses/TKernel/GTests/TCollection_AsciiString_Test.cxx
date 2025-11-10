@@ -1457,7 +1457,7 @@ TEST(TCollection_AsciiStringTest, OCC6794_LargeConcatenation)
 {
   // Test concatenation of many small strings to verify memory handling
   const Standard_Integer aNb = 10000; // Use a smaller number for faster test
-  const char* aC = "a";
+  const char*            aC  = "a";
 
   TCollection_AsciiString anAscii;
   for (Standard_Integer i = 1; i <= aNb; i++)
@@ -1473,96 +1473,96 @@ TEST(TCollection_AsciiStringTest, OCC6794_LargeConcatenation)
 TEST(TCollection_AsciiStringTest, OCC11758_ComprehensiveConstructorsAndMethods)
 {
   const char* theStr = "0123456789";
-  
+
   for (Standard_Integer i = 0; i < 5; ++i)
   {
     // TCollection_AsciiString(const Standard_CString astring)
     TCollection_AsciiString a(theStr + i);
     EXPECT_STREQ(theStr + i, a.ToCString());
-    
+
     // TCollection_AsciiString(const Standard_CString astring, const Standard_Integer aLen)
     TCollection_AsciiString b(theStr + i, 3);
     EXPECT_EQ(3, b.Length());
     EXPECT_EQ(0, strncmp(b.ToCString(), theStr + i, 3));
-    
+
     // TCollection_AsciiString(const Standard_Integer aValue)
     TCollection_AsciiString c(i);
     EXPECT_TRUE(c.IsIntegerValue());
     EXPECT_EQ(i, c.IntegerValue());
-    
+
     // TCollection_AsciiString(const Standard_Real aValue)
     TCollection_AsciiString d(0.1 * i);
     EXPECT_TRUE(d.IsRealValue(Standard_True));
     EXPECT_FALSE(TCollection_AsciiString("3.3!").IsRealValue(Standard_True));
     EXPECT_TRUE(TCollection_AsciiString("3.3!").IsRealValue(Standard_False));
     EXPECT_STREQ("3.3", TCollection_AsciiString(3.3).ToCString());
-    
+
     // Copy constructor
     TCollection_AsciiString e(d);
     EXPECT_STREQ(d.ToCString(), e.ToCString());
     EXPECT_EQ(d.Length(), e.Length());
-    
+
     // Concatenation with char
     TCollection_AsciiString f(e, '\a');
     EXPECT_EQ(e.Length() + 1, f.Length());
     EXPECT_EQ(0, strncmp(f.ToCString(), e.ToCString(), e.Length()));
     EXPECT_EQ('\a', f.Value(f.Length()));
-    
+
     // Concatenation with C string
     TCollection_AsciiString g(f, theStr);
     EXPECT_EQ(f.Length() + (Standard_Integer)strlen(theStr), g.Length());
     EXPECT_EQ(0, strncmp(g.ToCString(), f.ToCString(), f.Length()));
     EXPECT_EQ(f.Length() + 1, g.Search(theStr));
-    
+
     // Concatenation with TCollection_AsciiString
     TCollection_AsciiString h(d, a);
     EXPECT_EQ(d.Length() + a.Length(), h.Length());
     EXPECT_EQ(0, strncmp(h.ToCString(), d.ToCString(), d.Length()));
     EXPECT_EQ(0, strncmp(h.ToCString() + d.Length(), a.ToCString(), a.Length()));
-    
+
     // AssignCat with C string
     c.AssignCat(a.ToCString());
     EXPECT_EQ(1 + a.Length(), c.Length());
     EXPECT_EQ(2, c.Search(a));
-    
+
     // AssignCat with TCollection_AsciiString
     Standard_Integer dl = d.Length();
     d.AssignCat(a);
     EXPECT_EQ(dl + a.Length(), d.Length());
     EXPECT_EQ(dl + 1, d.Search(a));
-    
+
     // Capitalize
     TCollection_AsciiString capitalize("aBC");
     capitalize.Capitalize();
     EXPECT_STREQ("Abc", capitalize.ToCString());
-    
+
     // Copy assignment
     d = theStr + i;
     EXPECT_STREQ(theStr + i, d.ToCString());
-    
+
     d = h;
     EXPECT_STREQ(h.ToCString(), d.ToCString());
-    
+
     // Insert C string
     dl = d.Length();
     d.Insert(2, theStr);
     EXPECT_EQ(dl + (Standard_Integer)strlen(theStr), d.Length());
     EXPECT_EQ(0, strncmp(d.ToCString() + 1, theStr, strlen(theStr)));
-    
+
     // Insert char
     d = theStr;
     d.Insert(i + 1, 'i');
     EXPECT_EQ((Standard_Integer)strlen(theStr) + 1, d.Length());
     EXPECT_EQ('i', d.Value(i + 1));
     EXPECT_STREQ(theStr + i, d.ToCString() + i + 1);
-    
+
     // Insert TCollection_AsciiString
     d = theStr;
     d.Insert(i + 1, TCollection_AsciiString("i"));
     EXPECT_EQ((Standard_Integer)strlen(theStr) + 1, d.Length());
     EXPECT_EQ('i', d.Value(i + 1));
     EXPECT_STREQ(theStr + i, d.ToCString() + i + 1);
-    
+
     // IsDifferent
     EXPECT_TRUE(d.IsDifferent(theStr));
     EXPECT_TRUE(d.IsDifferent("theStr"));
