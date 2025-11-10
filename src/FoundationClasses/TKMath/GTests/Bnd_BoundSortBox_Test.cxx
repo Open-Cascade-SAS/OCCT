@@ -296,9 +296,9 @@ TEST(Bnd_BoundSortBox_Test, BUC60729_InitializeWithFaceBoxes)
   BRepBndLib::Add(aShape, aMainBox);
 
   // Initialize BoundSortBox with 6 boxes (for 6 faces of the cube)
-  const Standard_Integer siMaxNbrBox = 6;
-  Bnd_BoundSortBox       m_BoundSortBox;
-  m_BoundSortBox.Initialize(aMainBox, siMaxNbrBox);
+  const Standard_Integer aMaxNbrBox = 6;
+  Bnd_BoundSortBox       aBoundSortBox;
+  aBoundSortBox.Initialize(aMainBox, aMaxNbrBox);
 
   // Iterate through faces and add their bounding boxes
   TopExp_Explorer  aExplorer(aShape, TopAbs_FACE);
@@ -309,7 +309,7 @@ TEST(Bnd_BoundSortBox_Test, BUC60729_InitializeWithFaceBoxes)
     const TopoDS_Shape& aFace = aExplorer.Current();
     Bnd_Box             aBox;
     BRepBndLib::Add(aFace, aBox);
-    m_BoundSortBox.Add(aBox, i);
+    aBoundSortBox.Add(aBox, i);
   }
 
   // Verify that 6 faces were processed

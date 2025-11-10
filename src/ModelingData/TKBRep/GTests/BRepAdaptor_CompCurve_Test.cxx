@@ -25,36 +25,36 @@
 TEST(BRepAdaptor_CompCurve_Test, OCC5696_EdgeMethod)
 {
   // Create a simple edge from two points
-  TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(2, 0, 0));
+  TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(2, 0, 0));
 
   // Create a wire from the edge
-  TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edge);
+  TopoDS_Wire aWire = BRepBuilderAPI_MakeWire(anEdge);
 
   // Create a composite curve adaptor
-  BRepAdaptor_CompCurve curve(wire);
+  BRepAdaptor_CompCurve aCurve(aWire);
 
   // Get curve parameters
-  Standard_Real first = curve.FirstParameter();
-  Standard_Real last  = curve.LastParameter();
-  Standard_Real par   = (first + last) / 2.0;
+  Standard_Real aFirst = aCurve.FirstParameter();
+  Standard_Real aLast  = aCurve.LastParameter();
+  Standard_Real aPar   = (aFirst + aLast) / 2.0;
 
   // Test the Edge() method
-  Standard_Real par_edge;
-  TopoDS_Edge   edge_found;
+  Standard_Real aParEdge;
+  TopoDS_Edge   anEdgeFound;
 
   // The original test was checking that this method doesn't throw an exception
   // and returns valid parameter
   EXPECT_NO_THROW({
-    curve.Edge(par, edge_found, par_edge);
+    aCurve.Edge(aPar, anEdgeFound, aParEdge);
   }) << "Edge() method should not throw an exception";
 
   // Verify that the returned edge is valid
-  EXPECT_FALSE(edge_found.IsNull()) << "Returned edge should not be null";
+  EXPECT_FALSE(anEdgeFound.IsNull()) << "Returned edge should not be null";
 
   // Verify that the parameter is within valid range [0, edge length]
-  EXPECT_GE(par_edge, 0.0) << "Edge parameter should be non-negative";
-  EXPECT_LE(par_edge, 2.0) << "Edge parameter should not exceed edge length";
+  EXPECT_GE(aParEdge, 0.0) << "Edge parameter should be non-negative";
+  EXPECT_LE(aParEdge, 2.0) << "Edge parameter should not exceed edge length";
 
   // The parameter should be approximately half of the edge length
-  EXPECT_NEAR(1.0, par_edge, 0.01) << "Edge parameter should be approximately 1.0";
+  EXPECT_NEAR(1.0, aParEdge, 0.01) << "Edge parameter should be approximately 1.0";
 }

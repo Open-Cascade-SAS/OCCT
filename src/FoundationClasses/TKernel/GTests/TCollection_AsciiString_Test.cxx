@@ -1420,16 +1420,16 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
 TEST(TCollection_AsciiStringTest, BUC60724_EmptyStringInitialization)
 {
   // Test empty string initialization with empty C string
-  TCollection_AsciiString as1("");
-  EXPECT_NE(nullptr, as1.ToCString());
-  EXPECT_EQ(0, as1.Length());
-  EXPECT_EQ('\0', as1.ToCString()[0]);
+  TCollection_AsciiString aString1("");
+  EXPECT_NE(nullptr, aString1.ToCString());
+  EXPECT_EQ(0, aString1.Length());
+  EXPECT_EQ('\0', aString1.ToCString()[0]);
 
   // Test empty string initialization with null character
-  TCollection_AsciiString as2('\0');
-  EXPECT_NE(nullptr, as2.ToCString());
-  EXPECT_EQ(0, as2.Length());
-  EXPECT_EQ('\0', as2.ToCString()[0]);
+  TCollection_AsciiString aString2('\0');
+  EXPECT_NE(nullptr, aString2.ToCString());
+  EXPECT_EQ(0, aString2.Length());
+  EXPECT_EQ('\0', aString2.ToCString()[0]);
 }
 
 // Test BUC60773: TCollection_HAsciiString initialization
@@ -1437,11 +1437,11 @@ TEST(TCollection_AsciiStringTest, BUC60724_EmptyStringInitialization)
 TEST(TCollection_AsciiStringTest, BUC60773_HAsciiStringInitialization)
 {
   // Create empty HAsciiString
-  Handle(TCollection_HAsciiString) hAscii = new TCollection_HAsciiString();
-  EXPECT_FALSE(hAscii.IsNull());
+  Handle(TCollection_HAsciiString) anHAscii = new TCollection_HAsciiString();
+  EXPECT_FALSE(anHAscii.IsNull());
 
   // Get C string from HAsciiString
-  Standard_CString aStr = hAscii->ToCString();
+  Standard_CString aStr = anHAscii->ToCString();
   EXPECT_NE(nullptr, aStr);
 
   // Create AsciiString from C string
