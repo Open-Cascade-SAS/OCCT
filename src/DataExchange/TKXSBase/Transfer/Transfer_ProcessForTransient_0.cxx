@@ -786,11 +786,12 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
     if (former.IsNull())
     {
       aSender << "                  *** Dead Loop with no Result" << std::endl;
-      if (thetrace)
-        StartTrace(former, start, thelevel - 1, 0);
       binder = new Transfer_VoidBinder;
+      binder->SetStatusExec(Transfer_StatusLoop);
       Bind(start, binder);
       newbind = Standard_True;
+      if (thetrace)
+        StartTrace(binder, start, thelevel - 1, 0);
     }
     else if (former->StatusExec() == Transfer_StatusLoop)
     {
