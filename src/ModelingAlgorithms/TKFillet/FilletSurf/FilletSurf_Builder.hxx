@@ -35,10 +35,10 @@ class Geom_Curve;
 class Geom2d_Curve;
 class Geom_TrimmedCurve;
 
-//! API giving the  following  geometric information about fillets
+//! API giving the following geometric information about fillets
 //! list of corresponding NUBS surfaces
 //! for each surface:
-//! the 2  support faces
+//! the 2 support faces
 //! on each face: the 3d curve and the corresponding 2d curve
 //! the 2d curves on the fillet
 //! status of start and end section of the fillet
@@ -48,8 +48,8 @@ class FilletSurf_Builder
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! initialize  of the information  necessary for  the
-  //! computation of  the fillet on the
+  //! initialize of the information necessary for the
+  //! computation of the fillet on the
   //! Shape S from a list of edges E and a radius R.
   //!
   //! Ta is the angular tolerance
@@ -62,7 +62,7 @@ public:
                                      const Standard_Real         Tapp3d = 1.0e-4,
                                      const Standard_Real         Tapp2d = 1.0e-5);
 
-  //! ---Purpose computation  of the fillet (list of NUBS)
+  //! ---Purpose computation of the fillet (list of NUBS)
   Standard_EXPORT void Perform();
 
   Standard_EXPORT void Simulate();
@@ -74,55 +74,55 @@ public:
   //! IsPartial: the result is partial
   Standard_EXPORT FilletSurf_StatusDone IsDone() const;
 
-  //! gives    information     about   error   status     if
+  //! gives information about error status if
   //! IsDone=IsNotOk
   //! returns
   //! EdgeNotG1: the edges are not G1
   //! FacesNotG1 : two connected faces on a same support are
-  //! not  G1
-  //! EdgeNotOnShape: the  edge   is  not on  shape
-  //! NotSharpEdge: the  edge is not sharp
+  //! not G1
+  //! EdgeNotOnShape: the edge is not on shape
+  //! NotSharpEdge: the edge is not sharp
   //! PbFilletCompute: problem during the computation of the fillet
   Standard_EXPORT FilletSurf_ErrorTypeStatus StatusError() const;
 
-  //! gives the number of NUBS surfaces  of the Fillet.
+  //! gives the number of NUBS surfaces of the Fillet.
   Standard_EXPORT Standard_Integer NbSurface() const;
 
   //! gives the NUBS surface of index Index.
   Standard_EXPORT const Handle(Geom_Surface)& SurfaceFillet(const Standard_Integer Index) const;
 
-  //! gives  the  3d  tolerance reached during approximation
+  //! gives the 3d tolerance reached during approximation
   //! of surface of index Index
   Standard_EXPORT Standard_Real TolApp3d(const Standard_Integer Index) const;
 
-  //! gives the first support  face relative to SurfaceFillet(Index);
+  //! gives the first support face relative to SurfaceFillet(Index);
   Standard_EXPORT const TopoDS_Face& SupportFace1(const Standard_Integer Index) const;
 
-  //! gives the second support  face relative to SurfaceFillet(Index);
+  //! gives the second support face relative to SurfaceFillet(Index);
   Standard_EXPORT const TopoDS_Face& SupportFace2(const Standard_Integer Index) const;
 
-  //! gives  the 3d curve  of SurfaceFillet(Index)  on SupportFace1(Index)
+  //! gives the 3d curve of SurfaceFillet(Index) on SupportFace1(Index)
   Standard_EXPORT const Handle(Geom_Curve)& CurveOnFace1(const Standard_Integer Index) const;
 
-  //! gives the     3d  curve of  SurfaceFillet(Index) on SupportFace2(Index)
+  //! gives the 3d curve of SurfaceFillet(Index) on SupportFace2(Index)
   Standard_EXPORT const Handle(Geom_Curve)& CurveOnFace2(const Standard_Integer Index) const;
 
-  //! gives the  PCurve associated to CurvOnSup1(Index)  on the support face
+  //! gives the PCurve associated to CurvOnSup1(Index) on the support face
   Standard_EXPORT const Handle(Geom2d_Curve)& PCurveOnFace1(const Standard_Integer Index) const;
 
   //! gives the PCurve associated to CurveOnFace1(Index) on the Fillet
   Standard_EXPORT const Handle(Geom2d_Curve)& PCurve1OnFillet(const Standard_Integer Index) const;
 
-  //! gives the PCurve  associated to CurveOnSup2(Index) on  the  support face
+  //! gives the PCurve associated to CurveOnSup2(Index) on the support face
   Standard_EXPORT const Handle(Geom2d_Curve)& PCurveOnFace2(const Standard_Integer Index) const;
 
-  //! gives the PCurve  associated to CurveOnSup2(Index) on  the  fillet
+  //! gives the PCurve associated to CurveOnSup2(Index) on the fillet
   Standard_EXPORT const Handle(Geom2d_Curve)& PCurve2OnFillet(const Standard_Integer Index) const;
 
-  //! gives the parameter of the fillet  on the first edge.
+  //! gives the parameter of the fillet on the first edge.
   Standard_EXPORT Standard_Real FirstParameter() const;
 
-  //! gives the  parameter of the fillet  on the last edge
+  //! gives the parameter of the fillet on the last edge
   Standard_EXPORT Standard_Real LastParameter() const;
 
   Standard_EXPORT FilletSurf_StatusType StartSectionStatus() const;

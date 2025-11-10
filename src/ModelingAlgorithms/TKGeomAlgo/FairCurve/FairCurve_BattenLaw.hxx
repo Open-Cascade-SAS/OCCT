@@ -32,8 +32,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor of linear batten with
-  //! Heigth : the Heigth at the middle point
-  //! Slope  : the geometric slope of the batten
+  //! Heigth  : the Heigth at the middle point
+  //! Slope   : the geometric slope of the batten
   //! Sliding : Active Length of the batten without extension
   Standard_EXPORT FairCurve_BattenLaw(const Standard_Real Heigth,
                                       const Standard_Real Slope,
@@ -48,8 +48,8 @@ public:
   //! Change the value of the geometric slope.
   void SetSlope(const Standard_Real Slope);
 
-  //! computes the value of  the heigth for the parameter T
-  //! on  the neutral fibber
+  //! computes the value of the heigth for the parameter T
+  //! on the neutral fibber
   virtual Standard_Boolean Value(const Standard_Real T, Standard_Real& THeigth) Standard_OVERRIDE;
 
 protected:

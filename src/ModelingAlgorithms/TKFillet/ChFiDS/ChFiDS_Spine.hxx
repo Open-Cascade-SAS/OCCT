@@ -58,8 +58,8 @@ DEFINE_STANDARD_HANDLE(ChFiDS_Spine, Standard_Transient)
 //! information about the nature of extremities
 //! of the fillet ( on free border , on section or closed ).
 //!
-//! IMPORTANT NOTE  :    the guideline
-//! represented in this way is not C2, although the path
+//! IMPORTANT NOTE: the guideline represented
+//! in this way is not C2, although the path
 //! claims it. Several palliative workarounds
 //! (see the methods at the end) are planned,
 //! but they are not enough. It is necessary to change
@@ -93,11 +93,11 @@ public:
   const TopoDS_Edge& OffsetEdges(const Standard_Integer I) const;
 
   //! stores if the start of a set of edges starts on a
-  //! section of free border or forms  a closed contour
+  //! section of free border or forms a closed contour
   void SetFirstStatus(const ChFiDS_State S);
 
   //! stores if the end of a set of edges starts on a
-  //! section of free border or forms  a closed contour
+  //! section of free border or forms a closed contour
   void SetLastStatus(const ChFiDS_State S);
 
   Standard_EXPORT virtual void AppendElSpine(const Handle(ChFiDS_ElSpine)& Els);
@@ -207,7 +207,7 @@ public:
   //! sets the type of concavity in the connection
   void SetTypeOfConcavity(const ChFiDS_TypeOfConcavity theType);
 
-  //! returns   if the  set  of  edges starts (or   end) on
+  //! returns if the set of edges starts (or end) on
   //! Tangency point.
   Standard_Boolean IsTangencyExtremity(const Standard_Boolean IsFirst) const;
 
@@ -230,8 +230,8 @@ public:
   //! set a parameter reference for the approx.
   Standard_EXPORT void SetReference(const Standard_Real W);
 
-  //! set  a  parameter  reference  for  the approx,  at the
-  //! middle  of edge I.
+  //! set a parameter reference for the approx, at the
+  //! middle of edge I.
   Standard_EXPORT void SetReference(const Standard_Integer I);
 
   Standard_EXPORT Standard_Integer Index(const Standard_Real    W,

@@ -30,7 +30,7 @@
 class ChFiDS_SurfData;
 DEFINE_STANDARD_HANDLE(ChFiDS_SurfData, Standard_Transient)
 
-//! data structure for all information related to  the
+//! data structure for all information related to the
 //! fillet and to 2 faces vis a vis
 class ChFiDS_SurfData : public Standard_Transient
 {
@@ -98,12 +98,12 @@ public:
 
   Standard_EXPORT Standard_Integer Index(const Standard_Integer OfS) const;
 
-  //! returns one of the four vertices  whether First is true
+  //! returns one of the four vertices whether First is true
   //! or wrong and OnS equals 1 or 2.
   Standard_EXPORT const ChFiDS_CommonPoint& Vertex(const Standard_Boolean First,
                                                    const Standard_Integer OnS) const;
 
-  //! returns one of the four vertices  whether First is true
+  //! returns one of the four vertices whether First is true
   //! or wrong and OnS equals 1 or 2.
   Standard_EXPORT ChFiDS_CommonPoint& ChangeVertex(const Standard_Boolean First,
                                                    const Standard_Integer OnS);

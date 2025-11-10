@@ -56,7 +56,7 @@ public:
   Standard_EXPORT void Add(const TopoDS_Edge& E);
 
   //! initializes a new contour with the edge <E> as first
-  //! (the next are found by propagation ), and  the
+  //! (the next are found by propagation ), and the
   //! distance <Dis>
   //! if the edge <E> has more than 2 adjacent faces
   Standard_EXPORT void Add(const Standard_Real Dis, const TopoDS_Edge& E);
@@ -74,7 +74,7 @@ public:
   Standard_EXPORT void GetDist(const Standard_Integer IC, Standard_Real& Dis) const;
 
   //! initializes a new contour with the edge <E> as first
-  //! (the next are found by propagation ), and  the
+  //! (the next are found by propagation ), and the
   //! distance <Dis1> and <Dis2>
   //! if the edge <E> has more than 2 adjacent faces
   Standard_EXPORT void Add(const Standard_Real Dis1,
@@ -98,7 +98,7 @@ public:
                              Standard_Real&         Dis2) const;
 
   //! initializes a new contour with the edge <E> as first
-  //! (the next are found by propagation ), and  the
+  //! (the next are found by propagation ), and the
   //! distance <Dis1> and <Angle>
   //! if the edge <E> has more than 2 adjacent faces
   Standard_EXPORT void AddDA(const Standard_Real Dis,
@@ -222,7 +222,7 @@ public:
                                          const math_Vector& Soldep) Standard_OVERRIDE;
 
   //! Methode, implemented in inheritants, calculates
-  //! the elements of construction of  the surface (fillet
+  //! the elements of construction of the surface (fillet
   //! or chamfer).
   Standard_EXPORT virtual Standard_Boolean PerformSurf(ChFiDS_SequenceOfSurfData&         Data,
                                                        const Handle(ChFiDS_ElSpine)&      Guide,
@@ -246,8 +246,8 @@ public:
                                                        Standard_Integer&                  Intf,
                                                        Standard_Integer& Intl) Standard_OVERRIDE;
 
-  //! Method, implemented in  the inheritants, calculates
-  //! the elements of construction of  the surface (fillet
+  //! Method, implemented in the inheritants, calculates
+  //! the elements of construction of the surface (fillet
   //! or chamfer) contact edge/face.
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         Data,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -276,7 +276,7 @@ public:
                                            const math_Vector& Soldep) Standard_OVERRIDE;
 
   //! Method, implemented in inheritants, calculates
-  //! the elements of construction of  the surface (fillet
+  //! the elements of construction of the surface (fillet
   //! or chamfer) contact edge/face.
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         Data,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -304,8 +304,8 @@ public:
                                            const Standard_Boolean             RecRst,
                                            const math_Vector& Soldep) Standard_OVERRIDE;
 
-  //! Method, implemented in  inheritants, calculates
-  //! the elements of construction of  the surface (fillet
+  //! Method, implemented in inheritants, calculates
+  //! the elements of construction of the surface (fillet
   //! or chamfer) contact edge/edge.
   Standard_EXPORT virtual void PerformSurf(ChFiDS_SequenceOfSurfData&         Data,
                                            const Handle(ChFiDS_ElSpine)&      Guide,
@@ -374,7 +374,7 @@ protected:
                                                        TopAbs_State&                      Pos1,
                                                        TopAbs_State& Pos2) const Standard_OVERRIDE;
 
-  //! computes  the  intersection of two chamfers on
+  //! computes the intersection of two chamfers on
   //! the vertex of index <Index> in myVDataMap.
   Standard_EXPORT void PerformTwoCorner(const Standard_Integer Index) Standard_OVERRIDE;
 
@@ -382,7 +382,7 @@ protected:
   //! the vertex of index <Index> in myVDataMap.
   Standard_EXPORT void PerformThreeCorner(const Standard_Integer Index) Standard_OVERRIDE;
 
-  //! extends  the spine  of  the Stripe  <S> at  the
+  //! extends the spine of the Stripe <S> at the
   //! extremity of the vertex <V>.
   Standard_EXPORT void ExtentOneCorner(const TopoDS_Vertex&         V,
                                        const Handle(ChFiDS_Stripe)& S) Standard_OVERRIDE;

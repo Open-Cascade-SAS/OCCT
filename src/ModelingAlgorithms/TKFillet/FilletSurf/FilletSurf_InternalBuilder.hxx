@@ -35,7 +35,7 @@ class Geom_TrimmedCurve;
 class TopoDS_Shape;
 class TopoDS_Face;
 
-//! This class is private. It is  used by the class Builder
+//! This class is private. It is used by the class Builder
 //! from FilletSurf. It computes geometric information about fillets.
 class FilletSurf_InternalBuilder : public ChFi3d_FilBuilder
 {
@@ -53,52 +53,52 @@ public:
   //! 1 : empty list
   //! 2 : the edges are not G1
   //! 3 : two connected faces on a same support are not G1
-  //! 4 : the  edge   is  not on  shape
-  //! 5 :  NotSharpEdge: the  edge is not sharp
+  //! 4 : the edge is not on shape
+  //! 5 : NotSharpEdge: the edge is not sharp
   Standard_EXPORT Standard_Integer Add(const TopTools_ListOfShape& E, const Standard_Real R);
 
   Standard_EXPORT void Perform();
 
   Standard_EXPORT Standard_Boolean Done() const;
 
-  //! gives the number of NUBS surfaces  of the Fillet.
+  //! gives the number of NUBS surfaces of the Fillet.
   Standard_EXPORT Standard_Integer NbSurface() const;
 
   //! gives the NUBS surface of index Index.
   Standard_EXPORT const Handle(Geom_Surface)& SurfaceFillet(const Standard_Integer Index) const;
 
-  //! gives  the  3d  tolerance reached during approximation
+  //! gives the 3d tolerance reached during approximation
   //! of the surface of index Index
   Standard_EXPORT Standard_Real TolApp3d(const Standard_Integer Index) const;
 
-  //! gives the first support  face relative to SurfaceFillet(Index);
+  //! gives the first support face relative to SurfaceFillet(Index);
   Standard_EXPORT const TopoDS_Face& SupportFace1(const Standard_Integer Index) const;
 
-  //! gives the second support  face relative to SurfaceFillet(Index);
+  //! gives the second support face relative to SurfaceFillet(Index);
   Standard_EXPORT const TopoDS_Face& SupportFace2(const Standard_Integer Index) const;
 
-  //! gives  the 3d curve  of SurfaceFillet(Index)  on SupportFace1(Index)
+  //! gives the 3d curve of SurfaceFillet(Index) on SupportFace1(Index)
   Standard_EXPORT const Handle(Geom_Curve)& CurveOnFace1(const Standard_Integer Index) const;
 
-  //! gives the     3d  curve of  SurfaceFillet(Index) on SupportFace2(Index)
+  //! gives the 3d curve of SurfaceFillet(Index) on SupportFace2(Index)
   Standard_EXPORT const Handle(Geom_Curve)& CurveOnFace2(const Standard_Integer Index) const;
 
-  //! gives the  PCurve associated to CurvOnSup1(Index)  on the support face
+  //! gives the PCurve associated to CurvOnSup1(Index) on the support face
   Standard_EXPORT const Handle(Geom2d_Curve)& PCurveOnFace1(const Standard_Integer Index) const;
 
   //! gives the PCurve associated to CurveOnFace1(Index) on the Fillet
   Standard_EXPORT const Handle(Geom2d_Curve)& PCurve1OnFillet(const Standard_Integer Index) const;
 
-  //! gives the PCurve  associated to CurveOnSup2(Index) on  the  support face
+  //! gives the PCurve associated to CurveOnSup2(Index) on the support face
   Standard_EXPORT const Handle(Geom2d_Curve)& PCurveOnFace2(const Standard_Integer Index) const;
 
-  //! gives the PCurve  associated to CurveOnSup2(Index) on  the  fillet
+  //! gives the PCurve associated to CurveOnSup2(Index) on the fillet
   Standard_EXPORT const Handle(Geom2d_Curve)& PCurve2OnFillet(const Standard_Integer Index) const;
 
-  //! gives the parameter of the fillet  on the first edge.
+  //! gives the parameter of the fillet on the first edge.
   Standard_EXPORT Standard_Real FirstParameter() const;
 
-  //! gives the  parameter of the fillet  on the last edge
+  //! gives the parameter of the fillet on the last edge
   Standard_EXPORT Standard_Real LastParameter() const;
 
   Standard_EXPORT FilletSurf_StatusType StartSectionStatus() const;
@@ -109,12 +109,12 @@ public:
 
   Standard_EXPORT Standard_Integer NbSection(const Standard_Integer IndexSurf) const;
 
-  Standard_EXPORT void Section(const Standard_Integer     IndexSurf,
+  Standard_EXPORT void Section(const Standard_Integer     IndexSusrc/ModelingAlgorithms/TKFillet/FilletSurf/FilletSurf_InternalBuilder.hxxrf,
                                const Standard_Integer     IndexSec,
                                Handle(Geom_TrimmedCurve)& Circ) const;
 
 protected:
-  //! This  method calculates the elements of construction of the
+  //! This method calculates the elements of construction of the
   //! fillet (constant or evolutive).
   Standard_EXPORT virtual Standard_Boolean PerformSurf(ChFiDS_SequenceOfSurfData&         SeqData,
                                                        const Handle(ChFiDS_ElSpine)&      Guide,

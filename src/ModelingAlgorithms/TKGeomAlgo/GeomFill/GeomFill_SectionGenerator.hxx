@@ -31,8 +31,8 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
 
-//! gives  the  functions  needed  for  instantiation from
-//! AppSurf in AppBlend.   Allow  to  evaluate  a  surface
+//! gives the functions needed for instantiation from
+//! AppSurf in AppBlend. Allow to evaluate a surface
 //! passing by all the curves if the Profiler.
 class GeomFill_SectionGenerator : public GeomFill_Profiler
 {
@@ -68,7 +68,7 @@ public:
                                TColgp_Array1OfPnt2d&  Poles2d,
                                TColStd_Array1OfReal&  Weigths) const;
 
-  //! Returns  the parameter of   Section<P>, to impose  it for the
+  //! Returns the parameter of Section<P>, to impose it for the
   //! approximation.
   Standard_EXPORT Standard_Real Parameter(const Standard_Integer P) const;
 

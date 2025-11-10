@@ -40,7 +40,7 @@ class TopoDS_Edge;
 class TopoDS_Shape;
 class TopoDS_Vertex;
 
-//! Tool  of  construction of  fillets 3d on  edges (on a solid).
+//! Tool of construction of fillets 3d on edges (on a solid).
 class ChFi3d_FilBuilder : public ChFi3d_Builder
 {
 public:
@@ -56,9 +56,9 @@ public:
   //! Returns the type of fillet surface.
   Standard_EXPORT ChFi3d_FilletShape GetFilletShape() const;
 
-  //! initialisation of  a contour with the first edge
-  //! (the following are found  by propagation).
-  //! Attention, you  need  to start  with  SetRadius.
+  //! initialisation of a contour with the first edge
+  //! (the following are found by propagation).
+  //! Attention, you need to start with SetRadius.
   Standard_EXPORT void Add(const TopoDS_Edge& E);
 
   //! initialisation of the constant vector the corresponding  1st  edge.
@@ -79,8 +79,8 @@ public:
   //! Reset all vectors of contour IC.
   Standard_EXPORT void ResetContour(const Standard_Integer IC);
 
-  //! Set a constant on edge E of  the contour of
-  //! index IC. Since  then  E is flagged as constant.
+  //! Set a constant on edge E of the contour of
+  //! index IC. Since then E is flagged as constant.
   Standard_EXPORT void SetRadius(const Standard_Real    Radius,
                                  const Standard_Integer IC,
                                  const TopoDS_Edge&     E);
@@ -88,16 +88,16 @@ public:
   //! Extracts the flag constant and the vector of edge E.
   Standard_EXPORT void UnSet(const Standard_Integer IC, const TopoDS_Edge& E);
 
-  //! Set a vector on vertex  V of  the contour of index IC.
+  //! Set a vector on vertex V of the contour of index IC.
   Standard_EXPORT void SetRadius(const Standard_Real    Radius,
                                  const Standard_Integer IC,
                                  const TopoDS_Vertex&   V);
 
-  //! Extracts the vector of  the vertex V.
+  //! Extracts the vector of the vertex V.
   Standard_EXPORT void UnSet(const Standard_Integer IC, const TopoDS_Vertex& V);
 
-  //! Set  a vertex on the point of parametre U in the edge IinC
-  //! of  the contour of index IC
+  //! Set a vertex on the point of parameter U in the edge IinC
+  //! of the contour of index IC
   Standard_EXPORT void SetRadius(const gp_XY&           UandR,
                                  const Standard_Integer IC,
                                  const Standard_Integer IinC);
@@ -108,21 +108,21 @@ public:
   //! Returns the vector if E is flagged as edge constant.
   Standard_EXPORT Standard_Real Radius(const Standard_Integer IC, const TopoDS_Edge& E);
 
-  //! Returns in First and Last  les extremities of  the
-  //! part of variable  vector framing E, returns
-  //! False  if  E is flagged as edge constant.
+  //! Returns in First and Last extremities of the
+  //! part of variable vector framing E, returns
+  //! False if E is flagged as edge constant.
   Standard_EXPORT Standard_Boolean GetBounds(const Standard_Integer IC,
                                              const TopoDS_Edge&     E,
                                              Standard_Real&         First,
                                              Standard_Real&         Last);
 
-  //! Returns the rule of  elementary  evolution of  the
-  //! part to  variable vector framing E, returns a
+  //! Returns the rule of elementary evolution of the
+  //! part to variable vector framing E, returns a
   //! rule zero if E is flagged as edge constant.
   Standard_EXPORT Handle(Law_Function) GetLaw(const Standard_Integer IC, const TopoDS_Edge& E);
 
-  //! Sets the rule of elementary evolution of  the
-  //! part to variable  vector framing E.
+  //! Sets the rule of elementary evolution of the
+  //! part to variable vector framing E.
   Standard_EXPORT void SetLaw(const Standard_Integer      IC,
                               const TopoDS_Edge&          E,
                               const Handle(Law_Function)& L);
@@ -250,7 +250,7 @@ protected:
                                                        TopAbs_State&                      Pos1,
                                                        TopAbs_State& Pos2) const Standard_OVERRIDE;
 
-  //! Method calculates the elements of construction of  the
+  //! Method calculates the elements of construction of the
   //! fillet (constant or evolutive).
   Standard_EXPORT Standard_Boolean PerformSurf(ChFiDS_SequenceOfSurfData&         SeqData,
                                                const Handle(ChFiDS_ElSpine)&      Guide,
@@ -358,8 +358,8 @@ protected:
                                            const Standard_Boolean             RecRst2,
                                            const math_Vector& Soldep) Standard_OVERRIDE;
 
-  //! Method to split an singular SurfData  in  several  non
-  //! singular  SurfData..
+  //! Method to split an singular SurfData in several non
+  //! singular SurfData..
   Standard_EXPORT void SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
                                  const Handle(BRepBlend_Line)& line);
 

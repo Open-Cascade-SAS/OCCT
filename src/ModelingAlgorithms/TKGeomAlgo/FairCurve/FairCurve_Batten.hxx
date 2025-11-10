@@ -40,7 +40,7 @@ class FairCurve_Batten
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor  with the two points and the geometrical
+  //! Constructor with the two points and the geometrical
   //! characteristics of the batten (elastic beam)
   //! Height is the height of the deformation, and Slope is the
   //! slope value, initialized at 0. The user can then supply the
@@ -132,8 +132,8 @@ public:
   void SetAngle2(const Standard_Real Angle2);
 
   //! Allows you to change the height of the deformation.
-  //! Raises  NegativeValue; -- if  Height <= 0
-  //! if  Height <= 0
+  //! Raises NegativeValue; -- if Height <= 0
+  //! if Height <= 0
   void SetHeight(const Standard_Real Height);
 
   //! Allows you to set the slope value, Slope.
@@ -213,7 +213,7 @@ public:
   //! Prints on the stream o information on the current state
   //! of the object.
   //!
-  //! Private methodes  --------------------------------------
+  //! Private methodes --------------------------------------
   Standard_EXPORT virtual void Dump(Standard_OStream& o) const;
 
 protected:
@@ -225,8 +225,8 @@ protected:
                                         const Standard_Real A1,
                                         const Standard_Real A2) const;
 
-  //! Returns the effective geometrical constraints at  the
-  //! last batten  computation.  This effectives values may
+  //! Returns the effective geometrical constraints at the
+  //! last batten computation. This effectives values may
   //! be not equal with the wanted values if
   //! - if the value is "free"
   //! - in the case of incomplete computation : collapse,

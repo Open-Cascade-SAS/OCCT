@@ -31,7 +31,7 @@
 //!
 //! * Bounding parameters for the line.
 //!
-//! * A sorted List  of Parameters, the  intersections
+//! * A sorted List of Parameters, the intersections
 //! on the line.
 class Hatch_Line
 {

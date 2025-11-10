@@ -38,14 +38,14 @@ public:
                                       const Standard_Real First,
                                       const Standard_Real Last);
 
-  //! compute the first  derivative in v direction  of the
-  //! section for v =  param
+  //! compute the first derivative in v direction of the
+  //! section for v = param
   Standard_EXPORT Standard_Boolean D1(const Standard_Real Param,
                                       const Standard_Real First,
                                       const Standard_Real Last);
 
-  //! compute the second derivative  in v direction of the
-  //! section  for v = param
+  //! compute the second derivative in v direction of the
+  //! section for v = param
   Standard_EXPORT Standard_Boolean D2(const Standard_Real Param,
                                       const Standard_Real First,
                                       const Standard_Real Last);

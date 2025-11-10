@@ -50,13 +50,13 @@ class BRepFilletAPI_MakeFillet : public BRepFilletAPI_LocalOperation
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Initializes   the computation    of   the  fillets.
-  //! <FShape> sets   the type   of fillet  surface. The
-  //! default value is ChFi3d_Rational (classical  nurbs
-  //! representation of  circles).   ChFi3d_QuasiAngular
-  //! corresponds to  a  nurbs representation of circles
-  //! which   parameterisation matches  the  circle one.
-  //! ChFi3d_Polynomial  corresponds to  a    polynomial
+  //! Initializes the computation of the fillets.
+  //! <FShape> sets the type of fillet surface. The
+  //! default value is ChFi3d_Rational (classical nurbs
+  //! representation of circles). ChFi3d_QuasiAngular
+  //! corresponds to a nurbs representation of circles
+  //! which parameterisation matches the circle one.
+  //! ChFi3d_Polynomial corresponds to a polynomial
   //! representation of circles.
   Standard_EXPORT BRepFilletAPI_MakeFillet(const TopoDS_Shape&      S,
                                            const ChFi3d_FilletShape FShape = ChFi3d_Rational);
@@ -68,38 +68,38 @@ public:
                                  const Standard_Real TolApp2d,
                                  const Standard_Real Fleche);
 
-  //! Changes     the      parameters     of  continiuity
+  //! Changes the parameters of continiuity
   //! InternalContinuity to produce fillet'surfaces with
-  //! an continuity   Ci (i=0,1 or    2).
+  //! an continuity Ci (i=0,1 or 2).
   //! By defaultInternalContinuity = GeomAbs_C1.
   //! AngularTolerance  is the G1 tolerance between fillet
   //! and support'faces.
   Standard_EXPORT void SetContinuity(const GeomAbs_Shape InternalContinuity,
                                      const Standard_Real AngularTolerance);
 
-  //! Adds a  fillet contour in  the  builder  (builds a
-  //! contour  of tangent edges).
+  //! Adds a fillet contour in the builder (builds a
+  //! contour of tangent edges).
   //! The Radius must be set after.
   Standard_EXPORT void Add(const TopoDS_Edge& E) Standard_OVERRIDE;
 
-  //! Adds a  fillet description in  the  builder
-  //! - builds a contour  of tangent edges,
+  //! Adds a fillet description in the builder
+  //! - builds a contour of tangent edges,
   //! - sets the radius.
   Standard_EXPORT void Add(const Standard_Real Radius, const TopoDS_Edge& E);
 
-  //! Adds a  fillet description in  the  builder
-  //! - builds a contour  of tangent edges,
+  //! Adds a fillet description in the builder
+  //! - builds a contour of tangent edges,
   //! - sets a linear radius evolution law between
   //! the first and last vertex of the spine.
   Standard_EXPORT void Add(const Standard_Real R1, const Standard_Real R2, const TopoDS_Edge& E);
 
-  //! Adds a  fillet description in  the  builder
-  //! - builds a contour  of tangent edges,
+  //! Adds a fillet description in the builder
+  //! - builds a contour of tangent edges,
   //! - sest the radius evolution law.
   Standard_EXPORT void Add(const Handle(Law_Function)& L, const TopoDS_Edge& E);
 
-  //! Adds a  fillet description in  the  builder
-  //! - builds a contour  of tangent edges,
+  //! Adds a fillet description in the builder
+  //! - builds a contour of tangent edges,
   //! - sets the radius evolution law interpolating the values
   //! given in the array UandR :
   //!
@@ -259,7 +259,7 @@ public:
   //! Returns a null shape if IC is outside the bounds of the table of contours.
   Standard_EXPORT TopoDS_Vertex FirstVertex(const Standard_Integer IC) const Standard_OVERRIDE;
 
-  //! Returns the  last vertex of the contour of index IC
+  //! Returns the last vertex of the contour of index IC
   //! in the internal data structure of this algorithm.
   //! Warning
   //! Returns a null shape if IC is outside the bounds of the table of contours.
@@ -327,12 +327,12 @@ public:
   //! Returns the internal topology building algorithm.
   Standard_EXPORT Handle(TopOpeBRepBuild_HBuilder) Builder() const;
 
-  //! Returns the  list   of shapes generated   from the
+  //! Returns the list of shapes generated from the
   //! shape <EorV>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& EorV)
     Standard_OVERRIDE;
 
-  //! Returns the list  of shapes modified from the shape
+  //! Returns the list of shapes modified from the shape
   //! <F>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& F)
     Standard_OVERRIDE;
@@ -391,7 +391,7 @@ public:
   //! ChFiDS_TwistedSurface : the computation failed because of a twisted
   //! surface
   //! ChFiDS_WalkingFailure : there is a problem in the walking
-  //! ChFiDS_Error:  other error different from above
+  //! ChFiDS_Error: other error different from above
   Standard_EXPORT ChFiDS_ErrorStatus StripeStatus(const Standard_Integer IC) const;
 
 protected:

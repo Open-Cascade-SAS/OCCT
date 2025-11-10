@@ -60,9 +60,9 @@ public:
                                                   Standard_Real&     E,
                                                   math_Vector&       G) Standard_OVERRIDE;
 
-  //! computes the Energy  <E>, the gradient <G> and the
-  //! Hessian   <H> of  the  energy  for  the   variable <X>.
-  //! Returns   True  if    the  computation   was  done
+  //! computes the Energy <E>, the gradient <G> and the
+  //! Hessian <H> of the energy for the variable <X>.
+  //! Returns True if the computation was done
   //! successfully, False otherwise.
   Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
                                                   Standard_Real&     E,
@@ -72,7 +72,7 @@ public:
   //! compute the variables <X> which correspond with the field <MyPoles>
   Standard_EXPORT virtual Standard_Boolean Variable(math_Vector& X) const;
 
-  //! return  the  poles
+  //! return the poles
   const Handle(TColgp_HArray1OfPnt2d)& Poles() const;
 
 protected:
@@ -94,7 +94,7 @@ protected:
   //! It is use internally to make the Hessian Matrix <H>
   Standard_EXPORT void Hessian1(const math_Vector& TheVector, math_Matrix& H);
 
-  //! compute  the  poles which correspond with the variable X
+  //! compute the poles which correspond with the variable X
   Standard_EXPORT virtual void ComputePoles(const math_Vector& X);
 
   Standard_Integer Indice(const Standard_Integer i, const Standard_Integer j) const;

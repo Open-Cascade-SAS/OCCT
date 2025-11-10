@@ -23,7 +23,7 @@
 
 #include <Standard_Boolean.hxx>
 
-//! Storage of  a curve  and its 2 faces or surfaces of  support.
+//! Storage of a curve and its 2 faces or surfaces of support.
 class ChFiDS_Regul
 {
 public:

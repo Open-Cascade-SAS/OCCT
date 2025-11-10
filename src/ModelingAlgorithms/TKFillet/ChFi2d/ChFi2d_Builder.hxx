@@ -34,7 +34,7 @@ class TopoDS_Vertex;
   #undef Status
 #endif
 
-//! This  class contains  the algorithm  used to build
+//! This class contains the algorithm used to build
 //! fillet on planar wire.
 class ChFi2d_Builder
 {
@@ -43,7 +43,7 @@ public:
 
   Standard_EXPORT ChFi2d_Builder();
 
-  //! The face  <F> can be build  on a closed or an open
+  //! The face <F> can be build on a closed or an open
   //! wire.
   Standard_EXPORT ChFi2d_Builder(const TopoDS_Face& F);
 
@@ -51,36 +51,36 @@ public:
 
   Standard_EXPORT void Init(const TopoDS_Face& RefFace, const TopoDS_Face& ModFace);
 
-  //! Add  a fillet  of   radius  <Radius> on  the  wire
+  //! Add a fillet of radius <Radius> on the wire
   //! between the two edges connected to the vertex <V>.
-  //! <AddFillet> returns the  fillet edge. The returned
-  //! edge has  sense only   if the status   <status> is
+  //! <AddFillet> returns the fillet edge. The returned
+  //! edge has sense only if the status <status> is
   //! <IsDone>
   Standard_EXPORT TopoDS_Edge AddFillet(const TopoDS_Vertex& V, const Standard_Real Radius);
 
   //! modify the fillet radius and return the new fillet
-  //! edge. this    edge has sense  only if   the status
+  //! edge. this edge has sense only if the status
   //! <status> is <IsDone>.
   Standard_EXPORT TopoDS_Edge ModifyFillet(const TopoDS_Edge& Fillet, const Standard_Real Radius);
 
   //! removes the fillet <Fillet> and returns the vertex
-  //! connecting the two adjacent edges to  this fillet.
+  //! connecting the two adjacent edges to this fillet.
   Standard_EXPORT TopoDS_Vertex RemoveFillet(const TopoDS_Edge& Fillet);
 
-  //! Add a chamfer on  the  wire between the two  edges
-  //! connected <E1> and  <E2>. <AddChamfer> returns the
-  //! chamfer  edge. This  edge  has  sense only if  the
+  //! Add a chamfer on the wire between the two edges
+  //! connected <E1> and <E2>. <AddChamfer> returns the
+  //! chamfer edge. This edge has sense only if the
   //! status <status> is <IsDone>.
   Standard_EXPORT TopoDS_Edge AddChamfer(const TopoDS_Edge&  E1,
                                          const TopoDS_Edge&  E2,
                                          const Standard_Real D1,
                                          const Standard_Real D2);
 
-  //! Add  a chamfer on the   wire between the two edges
+  //! Add a chamfer on the wire between the two edges
   //! connected to the vertex <V>. The chamfer will make
-  //! an  angle <Ang> with the edge  <E>, and one of its
-  //! extremities  will be on  <E>  at distance <D>. The
-  //! returned   edge has sense   only   if the   status
+  //! an angle <Ang> with the edge <E>, and one of its
+  //! extremities will be on <E> at distance <D>. The
+  //! returned edge has sense only if the status
   //! <status> is <IsDone>.
   //! Warning: The value of <Ang> must be expressed in Radian.
   Standard_EXPORT TopoDS_Edge AddChamfer(const TopoDS_Edge&   E,
@@ -88,9 +88,9 @@ public:
                                          const Standard_Real  D,
                                          const Standard_Real  Ang);
 
-  //! modify the chamfer <Chamfer>  and returns  the new
+  //! modify the chamfer <Chamfer> and returns the new
   //! chamfer edge.
-  //! This edge as sense only  if the status <status> is
+  //! This edge as sense only if the status <status> is
   //! <IsDone>.
   Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge&  Chamfer,
                                             const TopoDS_Edge&  E1,
@@ -98,17 +98,17 @@ public:
                                             const Standard_Real D1,
                                             const Standard_Real D2);
 
-  //! modify the  chamfer <Chamfer>  and returns the new
-  //! chamfer edge. This    edge as sense  only   if the
-  //! status <status>   is  <IsDone>.
+  //! modify the chamfer <Chamfer> and returns the new
+  //! chamfer edge. This edge as sense only if the
+  //! status <status> is <IsDone>.
   //! Warning: The value of <Ang> must be expressed in Radian.
   Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge&  Chamfer,
                                             const TopoDS_Edge&  E,
                                             const Standard_Real D,
                                             const Standard_Real Ang);
 
-  //! removes   the chamfer  <Chamfer>   and returns the
-  //! vertex connecting  the two adjacent  edges to this
+  //! removes the chamfer <Chamfer> and returns the
+  //! vertex connecting the two adjacent edges to this
   //! chamfer.
   Standard_EXPORT TopoDS_Vertex RemoveChamfer(const TopoDS_Edge& Chamfer);
 
@@ -133,8 +133,8 @@ public:
   //! <E> in the other case.
   const TopoDS_Edge& DescendantEdge(const TopoDS_Edge& E) const;
 
-  //! Returns the parent edge of  <E>
-  //! Warning: If <E>is a basis edge,  the returned edge would be
+  //! Returns the parent edge of <E>
+  //! Warning: If <E>is a basis edge, the returned edge would be
   //! equal to <E>
   Standard_EXPORT const TopoDS_Edge& BasisEdge(const TopoDS_Edge& E) const;
 
@@ -153,8 +153,8 @@ private:
                                      TopoDS_Edge&         TrimE2,
                                      TopoDS_Edge&         Fillet);
 
-  //! Is internally used by  <AddChamfer>. The chamfer is
-  //! computed  from  a  vertex,   two  edges   and  two
+  //! Is internally used by <AddChamfer>. The chamfer is
+  //! computed from a vertex, two edges and two
   //! distances
   //! Warning: <TrimE1>, <TrimE2> and <Chamfer> has sense only if
   //! if the status <status> is equal to <IsDone>
@@ -167,11 +167,11 @@ private:
                                       TopoDS_Edge&         TrimE2,
                                       TopoDS_Edge&         Chamfer);
 
-  //! Is internally used by <AddChamfer>.  The chamfer is
-  //! computed from   an  edge,  a  vertex,   a distance
+  //! Is internally used by <AddChamfer>. The chamfer is
+  //! computed from an edge, a vertex, a distance
   //! and an angle
-  //! Warning: <TrimE1>,  <TrimE2>, and <Chamfer> has
-  //! sense only   if  the status <status> is   equal to
+  //! Warning: <TrimE1>, <TrimE2>, and <Chamfer> has
+  //! sense only if the status <status> is equal to
   //! <IsDone>
   Standard_EXPORT void ComputeChamfer(const TopoDS_Vertex& V,
                                       const TopoDS_Edge&   E1,
@@ -182,12 +182,12 @@ private:
                                       TopoDS_Edge&         TrimE2,
                                       TopoDS_Edge&         Chamfer);
 
-  //! Is   internally  used     by  <ComputeFillet>.
-  //! <NewExtr1> and  <NewExtr2>  will  contains the new
+  //! Is internally used by <ComputeFillet>.
+  //! <NewExtr1> and <NewExtr2> will contains the new
   //! extremities of <AdjEdge1> and <AdjEdge2>
-  //! Warning: The  returned  edge has sense   only if the status
+  //! Warning: The returned edge has sense only if the status
   //! <status> is equal to <IsDone>
-  //! or to one of those specific cases :
+  //! or to one of those specific cases:
   //! <FirstEdgeDegenerated>
   //! <LastEdgeDegenerated>
   //! <BothEdgesDegenerated>
@@ -198,10 +198,10 @@ private:
                                               TopoDS_Vertex&       NewExtr1,
                                               TopoDS_Vertex&       NewExtr2);
 
-  //! Is   internally  used     by  <ComputeFillet>.
-  //! <NewExtr1> and  <NewExtr2>  will  contains the new
+  //! Is internally used by <ComputeFillet>.
+  //! <NewExtr1> and <NewExtr2> will contains the new
   //! extremities of <AdjEdge1> and <AdjEdge2>
-  //! Warning: The  returned  edge has sense   only if the status
+  //! Warning: The returned edge has sense only if the status
   //! <status> is equal to <IsDone>
   Standard_EXPORT TopoDS_Edge BuildChamferEdge(const TopoDS_Vertex& V,
                                                const TopoDS_Edge&   AdjEdge1,
@@ -211,10 +211,10 @@ private:
                                                TopoDS_Vertex&       NewExtr1,
                                                TopoDS_Vertex&       NewExtr2);
 
-  //! Is   internally  used     by  <ComputeFillet>.
-  //! <NewExtr1> and  <NewExtr2>  will  contains the new
+  //! Is internally used by <ComputeFillet>.
+  //! <NewExtr1> and <NewExtr2> will contains the new
   //! extremities of <AdjEdge1> and <AdjEdge2>
-  //! Warning: The  returned  edge has sense   only if the status
+  //! Warning: The returned edge has sense only if the status
   //! <status> is equal to <IsDone>
   Standard_EXPORT TopoDS_Edge BuildChamferEdge(const TopoDS_Vertex& V,
                                                const TopoDS_Edge&   AdjEdge2,
@@ -224,11 +224,11 @@ private:
                                                TopoDS_Vertex&       NewExtr1,
                                                TopoDS_Vertex&       NewExtr2);
 
-  //! replaces in  the  new face  <newFace> <OldE1>  and
-  //! <OldE2>  by <E1>, <Fillet> and <E2>
+  //! replaces in the new face <newFace> <OldE1> and
+  //! <OldE2> by <E1>, <Fillet> and <E2>
   //! or by <Fillet> and <E2> if <E1> is degenerated
   //! or by <E1> and <Fillet> if <E2> is degenerated
-  //! or by <Fillet> if <E1> and <E2> are degenerated .
+  //! or by <Fillet> if <E1> and <E2> are degenerated.
   Standard_EXPORT void BuildNewWire(const TopoDS_Edge& OldE1,
                                     const TopoDS_Edge& OldE2,
                                     const TopoDS_Edge& E1,
@@ -248,9 +248,9 @@ private:
                                            const TopoDS_Vertex& NewExtr,
                                            Standard_Boolean&    IsDegenerated) const;
 
-  //! Writes <NewEdge> in  <fillets> if <Id> is equal to
+  //! Writes <NewEdge> in <fillets> if <Id> is equal to
   //! 1, or in <chamfers> if <Id> is Equal to 2.
-  //! Writes  the  modifications  in  <history> :
+  //! Writes the modifications in <history>:
   //! <TrimE1> is given by <E1>, <TrimE2> by <E2>
   //! if <TrimE1> and <TrimE2> are not degenerated.
   Standard_EXPORT void UpDateHistory(const TopoDS_Edge&     E1,
@@ -260,8 +260,8 @@ private:
                                      const TopoDS_Edge&     NewEdge,
                                      const Standard_Integer Id);
 
-  //! Writes the  modifications in  <history> . <TrimE1>
-  //! is given by <E1>, <TrimE2> by <E2>.
+  //! Writes the modifications in <history>.
+  //! <TrimE1> is given by <E1>, <TrimE2> by <E2>.
   Standard_EXPORT void UpDateHistory(const TopoDS_Edge& E1,
                                      const TopoDS_Edge& E2,
                                      const TopoDS_Edge& TrimE1,
