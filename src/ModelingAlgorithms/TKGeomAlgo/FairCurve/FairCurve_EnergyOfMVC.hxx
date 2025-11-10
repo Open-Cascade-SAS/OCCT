@@ -58,10 +58,10 @@ public:
                                         const Standard_Real    Curvature1  = 0,
                                         const Standard_Real    Curvature2  = 0);
 
-  //! return  the  lengthSliding = P1P2 + Sliding
+  //! return the lengthSliding = P1P2 + Sliding
   Standard_Real LengthSliding() const;
 
-  //! return  the status
+  //! return the status
   FairCurve_AnalysisCode Status() const;
 
   //! compute the variables <X> which correspond with the field <MyPoles>

@@ -16,7 +16,7 @@
 #ifndef _IntPatch_SpecPntType_HeaderFile
 #define _IntPatch_SpecPntType_HeaderFile
 
-//! This enum describe the  different kinds of
+//! This enum describes the different kinds of
 //! special (singular) points of Surface-Surface
 //! intersection algorithm. Such as pole of sphere,
 //! apex of cone, point on U- or V-seam etc.

@@ -64,7 +64,7 @@ public:
 
   //! Returns Contap_Lin for a line, Contap_Circle for
   //! a circle, and Contap_Walking for a Walking line,
-  //! Contap_Restriction for a part of  boundarie.
+  //! Contap_Restriction for a part of boundary.
   Contap_IType TypeContour() const;
 
   Standard_Integer NbPnts() const;

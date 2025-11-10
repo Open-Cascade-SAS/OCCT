@@ -35,8 +35,8 @@ class gp_Pnt;
 class TopoDS_Wire;
 class TopoDS_Edge;
 
-//! Implementation  of  building  helix  wire
-//! Values  of  Error  Status  returned  by  algo:
+//! Implementation of building helix wire
+//! Values of Error Status returned by algo:
 //! 0 - OK
 //! 1 - object is just initialized, it means that no input parameters were set
 //! 2 - approximation fails
@@ -45,9 +45,9 @@ class TopoDS_Edge;
 //! 11 - step (Pitch) < tolerance
 //! 12 - Height < tolerance
 //! 13 - TaperAngle < 0 or TaperAngle > Pi/2 - TolAng
-//! Warning  Status:
-//! 0  -  OK
-//! 1  -  tolerance  reached  by  approximation  >  requested  tolerance.
+//! Warning Status:
+//! 0 - OK
+//! 1 - tolerance reached by approximation > requested tolerance.
 class HelixBRep_BuilderHelix
 {
 public:

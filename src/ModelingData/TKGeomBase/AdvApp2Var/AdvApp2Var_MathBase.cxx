@@ -7795,7 +7795,7 @@ int AdvApp2Var_MathBase::mmmrslwd_(integer*    normax,
   /*     KEYWORDS : */
   /*     ----------- */
   /*        ALL, MATH_ACCES :: */
-  /*        SYSTEME&,EQUATION&, RESOLUTION,GAUSS ,&VECTEUR */
+  /*        SYSTEM&, EQUATION&, RESOLUTION, GAUSS, &VECTEUR */
 
   /*     INPUT ARGUMENTS : */
   /*     ------------------ */

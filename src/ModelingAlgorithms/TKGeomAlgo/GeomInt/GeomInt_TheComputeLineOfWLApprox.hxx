@@ -125,7 +125,7 @@ public:
   Standard_EXPORT void Perform(const GeomInt_TheMultiLineOfWLApprox& Line);
 
   //! The approximation will begin with the
-  //! set of  parameters <ThePar>.
+  //! set of parameters <ThePar>.
   Standard_EXPORT void SetParameters(const math_Vector& ThePar);
 
   //! The approximation will be done with the

@@ -59,7 +59,7 @@ public:
   //! adds to the OStream the drawing of the curve aCurve.
   //! The aspect is the current aspect.
   //! The drawing will be limited between the points of parameter
-  //! U1 and U2. aNbPoints defines  number of points on  one interval.
+  //! U1 and U2. aNbPoints defines number of points on one interval.
   Standard_EXPORT static void Add(const Adaptor3d_Curve& aCurve,
                                   const Standard_Real    U1,
                                   const Standard_Real    U2,

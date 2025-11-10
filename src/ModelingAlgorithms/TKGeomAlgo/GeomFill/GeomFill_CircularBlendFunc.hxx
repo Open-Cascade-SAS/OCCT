@@ -35,7 +35,7 @@
 class GeomFill_CircularBlendFunc;
 DEFINE_STANDARD_HANDLE(GeomFill_CircularBlendFunc, Approx_SweepFunction)
 
-//! Circular     Blend Function  to    approximate by
+//! Circular Blend Function to approximate by
 //! SweepApproximation from Approx
 class GeomFill_CircularBlendFunc : public Approx_SweepFunction
 {
@@ -65,7 +65,7 @@ public:
                                               TColStd_Array1OfReal& Weigths) Standard_OVERRIDE;
 
   //! compute the first derivative in v direction of the
-  //! section for v =  param
+  //! section for v = param
   Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real   Param,
                                               const Standard_Real   First,
                                               const Standard_Real   Last,
@@ -138,12 +138,12 @@ public:
                                             const Standard_Real   AngleTol,
                                             TColStd_Array1OfReal& Tol3d) const Standard_OVERRIDE;
 
-  //! Is useful, if (me) have to  be run numerical
+  //! Is useful, if (me) has to be run numerical
   //! algorithm to perform D0, D1 or D2
   Standard_EXPORT virtual void SetTolerance(const Standard_Real Tol3d,
                                             const Standard_Real Tol2d) Standard_OVERRIDE;
 
-  //! Get the barycentre of Surface. An very poor
+  //! Get the barycentre of Surface. A very poor
   //! estimation is sufficient. This information is useful
   //! to perform well conditioned rational approximation.
   Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const Standard_OVERRIDE;

@@ -36,7 +36,7 @@ class GeomPlate_PointConstraint : public Standard_Transient
 {
 
 public:
-  //! Constructs a point constraint object defined by  Pt, a 3D point
+  //! Constructs a point constraint object defined by Pt, a 3D point
   //! Order gives the order of constraint, one of:
   //! -   -1 i.e. none, or 0 i.e.G0 when assigned to Pt
   //! -   -1 i.e. none, 0 i.e. G0, 1 i.e. G1, 2 i.e. G2 when
@@ -48,7 +48,7 @@ public:
   //! between the constraint and the target surface. Curvature
   //! tolerance represents the greatest difference in curvature
   //! allowed between the constraint and the target surface.
-  //! Raises   ConstructionError if Order  is  not  0  or  -1
+  //! Raises ConstructionError if Order is not 0 or -1
   Standard_EXPORT GeomPlate_PointConstraint(const gp_Pnt&          Pt,
                                             const Standard_Integer Order,
                                             const Standard_Real    TolDist = 0.0001);
@@ -94,7 +94,7 @@ public:
   //! defining the greatest angle allowed between the
   //! constraint and the target surface. If this criterion is not
   //! set, TolAng, the angular tolerance from the constructor, is used.
-  //! Raises   ConstructionError  if  the  point  is  not  on  the  surface
+  //! Raises ConstructionError if the point is not on the surface
   Standard_EXPORT void SetG1Criterion(const Standard_Real TolAng);
 
   //! Allows you to set the G2 criterion. This is the law
@@ -102,7 +102,7 @@ public:
   //! between the constraint and the target surface. If this
   //! criterion is not set, TolCurv, the curvature tolerance from
   //! the constructor, is used.
-  //! Raises   ConstructionError if  the  point  is  not  on  the  surface
+  //! Raises ConstructionError if the point is not on the surface
   Standard_EXPORT void SetG2Criterion(const Standard_Real TolCurv);
 
   //! Returns the G0 criterion. This is the greatest distance
@@ -111,12 +111,12 @@ public:
 
   //! Returns the G1 criterion. This is the greatest angle
   //! allowed between the constraint and the target surface.
-  //! Raises   ConstructionError if  the  point  is  not  on  the  surface.
+  //! Raises ConstructionError if the point is not on the surface.
   Standard_EXPORT Standard_Real G1Criterion() const;
 
   //! Returns the G2 criterion. This is the greatest difference
   //! in curvature allowed between the constraint and the target surface.
-  //! Raises   ConstructionError if  the  point  is  not  on  the  surface
+  //! Raises ConstructionError if the point is not on the surface
   Standard_EXPORT Standard_Real G2Criterion() const;
 
   Standard_EXPORT void D0(gp_Pnt& P) const;

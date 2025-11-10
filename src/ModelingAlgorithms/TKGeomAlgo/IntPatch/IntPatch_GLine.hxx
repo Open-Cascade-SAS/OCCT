@@ -129,7 +129,7 @@ public:
                                  const IntSurf_Situation Situ1,
                                  const IntSurf_Situation Situ2);
 
-  //! Creates an hyperbola as  intersection line
+  //! Creates an hyperbola as intersection line
   //! when the transitions are Undecided.
   Standard_EXPORT IntPatch_GLine(const gp_Hypr& H, const Standard_Boolean Tang);
 

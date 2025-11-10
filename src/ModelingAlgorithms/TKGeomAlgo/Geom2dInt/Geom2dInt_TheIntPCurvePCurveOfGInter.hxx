@@ -75,7 +75,7 @@ protected:
 
 private:
   //! Method to find intersection between two curves
-  //! :  returns false for case when some points of polygon
+  //! : returns false for case when some points of polygon
   //! : were replaced on line and exact point of intersection was not found
   //! : for case when point of intersection was found
   //! : during prelimanary search for line (case of bad parameterization of Bspline for example).

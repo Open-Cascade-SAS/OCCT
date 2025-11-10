@@ -55,20 +55,20 @@ public:
 
   Standard_EXPORT Geom2dHatch_Intersector();
 
-  //! Performs the intersection   between the  2d   line
-  //! segment (<L>, <P>) and  the  Curve <E>.  The  line
-  //! segment  is the  part  of  the  2d   line   <L> of
+  //! Performs the intersection between the 2d line
+  //! segment (<L>, <P>) and the Curve <E>. The line
+  //! segment is the part of the 2d line <L> of
   //! parameter range [0, <P>] (P is positive and can be
-  //! RealLast()). Tol is the  Tolerance on the segment.
-  //! The order  is relevant, the  first argument is the
+  //! RealLast()). Tol is the Tolerance on the segment.
+  //! The order is relevant, the first argument is the
   //! segment, the second the Edge.
   Standard_EXPORT void Perform(const gp_Lin2d&            L,
                                const Standard_Real        P,
                                const Standard_Real        Tol,
                                const Geom2dAdaptor_Curve& E);
 
-  //! Returns in <T>,  <N> and <C>  the tangent,  normal
-  //! and  curvature of the edge  <E> at parameter value
+  //! Returns in <T>, <N> and <C> the tangent, normal
+  //! and curvature of the edge <E> at parameter value
   //! <U>.
   Standard_EXPORT void LocalGeometry(const Geom2dAdaptor_Curve& E,
                                      const Standard_Real        U,

@@ -63,7 +63,7 @@ public:
   Standard_EXPORT Standard_Boolean IsDone() const;
 
   //! Returns the number of solutions.
-  //! Raises NotDone if the construction algorithm  didn't succeed.
+  //! Raises NotDone if the construction algorithm didn't succeed.
   Standard_EXPORT Standard_Integer NbSolutions() const;
 
   //! Returns the solution number Index and raises OutOfRange

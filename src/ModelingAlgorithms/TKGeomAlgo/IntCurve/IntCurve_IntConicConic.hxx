@@ -30,11 +30,11 @@ class gp_Parab2d;
 class gp_Hypr2d;
 
 //! Provides methods to intersect two conics.
-//! The exception ConstructionError is raised  in constructors
-//! or in Perform methods  when a domain  (Domain from IntRes2d)
-//! is not correct, i-e when a Circle (Circ2d from  gp) or
-//! an Ellipse (i-e Elips2d from  gp) do not have a closed
-//! domain (use the  SetEquivalentParameters method for a domain
+//! The exception ConstructionError is raised in constructors
+//! or in Perform methods when a domain (Domain from IntRes2d)
+//! is not correct, i-e when a Circle (Circ2d from gp) or
+//! an Ellipse (i-e Elips2d from gp) do not have a closed
+//! domain (use the SetEquivalentParameters method for a domain
 //! on a circle or an ellipse).
 class IntCurve_IntConicConic : public IntRes2d_Intersection
 {

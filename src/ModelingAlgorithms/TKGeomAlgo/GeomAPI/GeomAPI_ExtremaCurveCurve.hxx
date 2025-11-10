@@ -63,7 +63,7 @@ public:
   Standard_EXPORT GeomAPI_ExtremaCurveCurve(const Handle(Geom_Curve)& C1,
                                             const Handle(Geom_Curve)& C2);
 
-  //! Computes   the portion of the curve C1 limited by the two
+  //! Computes the portion of the curve C1 limited by the two
   //! points of parameter (U1min,U1max), and
   //! -   the portion of the curve C2 limited by the two
   //! points of parameter (U2min,U2max).
@@ -154,18 +154,18 @@ public:
   //! return the algorithmic object from Extrema
   const Extrema_ExtCC& Extrema() const;
 
-  //! set  in  <P1>  and <P2> the couple solution points
-  //! such a the distance [P1,P2] is the minimum. taking  in  account
-  //! extremity  points  of  curves.
+  //! set in <P1> and <P2> the couple solution points
+  //! such a the distance [P1,P2] is the minimum. taking in account
+  //! extremity points of curves.
   Standard_EXPORT Standard_Boolean TotalNearestPoints(gp_Pnt& P1, gp_Pnt& P2);
 
-  //! set  in <U1> and <U2> the parameters of the couple
-  //! solution   points  which  represents  the  total  nearest
+  //! set in <U1> and <U2> the parameters of the couple
+  //! solution points which represents the total nearest
   //! solution.
   Standard_EXPORT Standard_Boolean TotalLowerDistanceParameters(Standard_Real& U1,
                                                                 Standard_Real& U2);
 
-  //! return the distance of the total  nearest couple solution
+  //! return the distance of the total nearest couple solution
   //! point.
   //! if <myExtCC> is not done
   Standard_EXPORT Standard_Real TotalLowerDistance();

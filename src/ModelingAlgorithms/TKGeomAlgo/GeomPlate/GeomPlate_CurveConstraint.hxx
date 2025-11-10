@@ -44,7 +44,7 @@ public:
   //! TolAng is the maximum error to satisfy for G1 constraints
   //! TolCurv is the maximum error to satisfy for G2 constraints
   //! These errors can be replaced by laws of criterion.
-  //! Raises    ConstructionError if Order is not -1 , 0,  1,  2
+  //! Raises ConstructionError if Order is not -1 , 0, 1, 2
   Standard_EXPORT GeomPlate_CurveConstraint(const Handle(Adaptor3d_Curve)& Boundary,
                                             const Standard_Integer         Order,
                                             const Standard_Integer         NPt     = 10,
@@ -83,7 +83,7 @@ public:
   //! defining the greatest angle allowed between the
   //! constraint and the target surface. If this criterion is not
   //! set, TolAng, the angular tolerance from the constructor, is used.
-  //! Raises  ConstructionError if  the  curve  is  not  on  a  surface
+  //! Raises ConstructionError if the curve is not on a surface
   Standard_EXPORT void SetG1Criterion(const Handle(Law_Function)& G1Crit);
 
   Standard_EXPORT void SetG2Criterion(const Handle(Law_Function)& G2Crit);
@@ -96,13 +96,13 @@ public:
   //! Returns the G1 criterion at the parametric point U on
   //! the curve. This is the greatest angle allowed between
   //! the constraint and the target surface at U.
-  //! Raises  ConstructionError if  the  curve  is  not  on  a  surface
+  //! Raises ConstructionError if the curve is not on a surface
   Standard_EXPORT Standard_Real G1Criterion(const Standard_Real U) const;
 
   //! Returns the G2 criterion at the parametric point U on
   //! the curve. This is the greatest difference in curvature
   //! allowed between the constraint and the target surface at U.
-  //! Raises  ConstructionError if  the  curve  is  not  on  a  surface
+  //! Raises ConstructionError if the curve is not on a surface
   Standard_EXPORT Standard_Real G2Criterion(const Standard_Real U) const;
 
   Standard_EXPORT Standard_Real FirstParameter() const;
@@ -133,7 +133,7 @@ public:
   //! Returns a 2d curve associated the surface resulting of the constraints
   Standard_EXPORT Handle(Geom2d_Curve) Curve2dOnSurf() const;
 
-  //! loads a 2d curve  resulting from the normal projection of
+  //! loads a 2d curve resulting from the normal projection of
   //! the curve on the initial surface
   Standard_EXPORT void SetProjectedCurve(const Handle(Adaptor2d_Curve2d)& Curve2d,
                                          const Standard_Real              TolU,

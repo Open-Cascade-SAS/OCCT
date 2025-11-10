@@ -58,12 +58,12 @@ public:
 
   Standard_EXPORT void D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& T, gp_Vec2d& N) const;
 
-  //! Computes the value of the signed  distance between
+  //! Computes the value of the signed distance between
   //! the point P and the implicit curve.
   Standard_EXPORT Standard_Real Distance(const gp_Pnt2d& P) const;
 
-  //! Computes  the   Gradient  of  the  Signed Distance
-  //! between  a  point and  the  implicit curve, at the
+  //! Computes the Gradient of the Signed Distance
+  //! between a point and the implicit curve, at the
   //! point P.
   Standard_EXPORT gp_Vec2d GradDistance(const gp_Pnt2d& P) const;
 

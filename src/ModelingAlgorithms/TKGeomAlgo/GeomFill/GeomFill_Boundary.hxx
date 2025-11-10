@@ -28,9 +28,9 @@ class gp_Vec;
 class GeomFill_Boundary;
 DEFINE_STANDARD_HANDLE(GeomFill_Boundary, Standard_Transient)
 
-//! Root class to define a boundary  which will form part of a
+//! Root class to define a boundary which will form part of a
 //! contour around a gap requiring filling.
-//! Any  new type  of  constrained boundary must inherit this class.
+//! Any new type of constrained boundary must inherit this class.
 //! The GeomFill package provides two classes to define constrained boundaries:
 //! -   GeomFill_SimpleBound to define an unattached boundary
 //! -   GeomFill_BoundWithSurf to define a boundary attached to a surface.

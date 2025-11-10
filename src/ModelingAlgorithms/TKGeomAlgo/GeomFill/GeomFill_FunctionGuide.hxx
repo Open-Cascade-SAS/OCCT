@@ -86,12 +86,12 @@ public:
 
   //! returns the values <F> of the T2 derivatives for
   //! the parameter Param .
-  //! returns the values <D> of  the TX derivatives for
+  //! returns the values <D> of the TX derivatives for
   //! the parameter Param .
-  //! returns Boolean  is static;
-  //! returns the values <T> of  the X2 derivatives for
+  //! returns Boolean is static;
+  //! returns the values <T> of the X2 derivatives for
   //! the parameter Param .
-  //! returns Boolean  is static;
+  //! returns Boolean is static;
   Standard_EXPORT Standard_Boolean Deriv2T(const gp_XYZ& DCentre,
                                            const gp_XYZ& DDir,
                                            math_Vector&  DFDT,

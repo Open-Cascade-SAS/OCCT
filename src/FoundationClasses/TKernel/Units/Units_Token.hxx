@@ -113,7 +113,7 @@ public:
   //! and only if the dimensions are the same.
   Standard_EXPORT Handle(Units_Token) Add(const Handle(Units_Token)& atoken) const;
 
-  //! Returns a token  which is the  subtraction of <me> and
+  //! Returns a token which is the subtraction of <me> and
   //! another token <atoken>. The subtraction is possible if
   //! and only if the dimensions are the same.
   Standard_EXPORT Handle(Units_Token) Subtract(const Handle(Units_Token)& atoken) const;

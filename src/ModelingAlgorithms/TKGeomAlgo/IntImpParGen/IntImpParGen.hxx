@@ -40,7 +40,7 @@ class IntImpParGen
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Template class for an implicit  curve.
+  //! Template class for an implicit curve.
   //! Math function, instantiated inside the Intersector.
   //! Tool used by the package IntCurve and IntImpParGen
   Standard_EXPORT static void DetermineTransition(const IntRes2d_Position Pos1,

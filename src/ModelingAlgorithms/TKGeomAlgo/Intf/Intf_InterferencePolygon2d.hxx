@@ -26,8 +26,8 @@
 class Intf_Polygon2d;
 class gp_Pnt2d;
 
-//! Computes the  interference between two  polygons or
-//! the    self intersection of    a  polygon  in  two
+//! Computes the interference between two polygons or
+//! the self intersection of a polygon in two
 //! dimensions.
 class Intf_InterferencePolygon2d : public Intf_Interference
 {
@@ -50,7 +50,7 @@ public:
   //! Computes the self interference of a Polygon.
   Standard_EXPORT void Perform(const Intf_Polygon2d& Obje);
 
-  //! Gives the  geometrical 2d point   of the  intersection
+  //! Gives the geometrical 2d point of the intersection
   //! point at address <Index> in the interference.
   Standard_EXPORT gp_Pnt2d Pnt2dValue(const Standard_Integer Index) const;
 

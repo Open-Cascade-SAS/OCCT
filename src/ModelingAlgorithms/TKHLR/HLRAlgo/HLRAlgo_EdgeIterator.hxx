@@ -28,8 +28,7 @@ class HLRAlgo_EdgeIterator
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Iterator  on the  visible or  hidden  parts of  an
-  //! edge.
+  //! Iterator on the visible or hidden parts of an edge.
   Standard_EXPORT HLRAlgo_EdgeIterator();
 
   Standard_EXPORT void InitHidden(HLRAlgo_EdgeStatus& status);

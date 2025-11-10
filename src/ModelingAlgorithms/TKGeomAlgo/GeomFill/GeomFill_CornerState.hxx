@@ -24,9 +24,9 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 
-//! Class  (should    be  a  structure)   storing  the
-//! information         about     continuity, normals
-//! parallelism,  coons conditions and bounds tangents
+//! Class (should be a structure) storing the
+//! information about continuity, normals
+//! parallelism, coons conditions and bounds tangents
 //! angle on the corner of contour to be filled.
 class GeomFill_CornerState
 {

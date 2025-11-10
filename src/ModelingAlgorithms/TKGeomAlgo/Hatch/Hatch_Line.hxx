@@ -25,7 +25,7 @@
 #include <Hatch_LineForm.hxx>
 #include <Hatch_SequenceOfParameter.hxx>
 
-//! Stores a Line in the Hatcher. Represented by :
+//! Stores a Line in the Hatcher. Represented by:
 //!
 //! * A Lin2d from gp, the geometry of the line.
 //!

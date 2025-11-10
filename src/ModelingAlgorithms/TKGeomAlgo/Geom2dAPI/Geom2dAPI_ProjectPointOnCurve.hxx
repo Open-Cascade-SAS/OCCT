@@ -38,13 +38,13 @@ public:
   //! function to define the point and the curve on which it is going to work.
   Standard_EXPORT Geom2dAPI_ProjectPointOnCurve();
 
-  //! Create the projection  of a  point  <P> on a curve
+  //! Create the projection of a point <P> on a curve
   //! <Curve>
   Standard_EXPORT Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&             P,
                                                 const Handle(Geom2d_Curve)& Curve);
 
-  //! Create  the projection  of a point <P>  on a curve
-  //! <Curve> limited by the two   points of parameter Umin and Usup.
+  //! Create the projection of a point <P> on a curve
+  //! <Curve> limited by the two points of parameter Umin and Usup.
   //! Warning
   //! Use the function NbPoints to obtain the number of solutions. If
   //! projection fails, NbPoints returns 0.
@@ -54,7 +54,7 @@ public:
                                                 const Standard_Real         Usup);
 
   //! Initializes this algorithm with the given arguments, and
-  //! computes the orthogonal  projections  of a  point  <P> on a curve <Curve>
+  //! computes the orthogonal projections of a point <P> on a curve <Curve>
   Standard_EXPORT void Init(const gp_Pnt2d& P, const Handle(Geom2d_Curve)& Curve);
 
   //! Initializes this algorithm with the given arguments, and

@@ -29,10 +29,10 @@ class Geom_Surface;
 class Geom_Curve;
 
 //! This class implements methods for
-//! computing the intersection curves   between two surfaces.
-//! The result is curves from Geom.  The "domain" used for
-//! a surface   is the natural  parametric domain
-//! unless the surface is a  RectangularTrimmedSurface
+//! computing the intersection curves between two surfaces.
+//! The result is curves from Geom. The "domain" used for
+//! a surface is the natural parametric domain
+//! unless the surface is a RectangularTrimmedSurface
 //! from Geom.
 class GeomAPI_IntSS
 {

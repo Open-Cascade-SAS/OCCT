@@ -48,7 +48,7 @@ public:
                                               gp_Vec&             Normal,
                                               gp_Vec&             BiNormal) = 0;
 
-  //! compute Triedrhon and  derivative Trihedron  on curve
+  //! compute Triedrhon and derivative Trihedron on curve
   //! at parameter <Param>
   //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real Param,
@@ -59,8 +59,8 @@ public:
                                               gp_Vec&             BiNormal,
                                               gp_Vec&             DBiNormal);
 
-  //! compute  Trihedron on curve
-  //! first and seconde  derivatives.
+  //! compute Trihedron on curve
+  //! first and second derivatives.
   //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real Param,
                                               gp_Vec&             Tangent,
@@ -73,15 +73,15 @@ public:
                                               gp_Vec&             DBiNormal,
                                               gp_Vec&             D2BiNormal);
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const = 0;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const = 0;
 
@@ -96,7 +96,7 @@ public:
   Standard_EXPORT void GetInterval(Standard_Real& First, Standard_Real& Last);
 
   //! Get average value of M(t) and V(t) it is useful to
-  //! make fast approximation of rational  surfaces.
+  //! make fast approximation of rational surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,
                                              gp_Vec& ABiNormal) = 0;

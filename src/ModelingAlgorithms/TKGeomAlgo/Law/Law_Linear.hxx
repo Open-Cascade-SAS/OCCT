@@ -48,7 +48,7 @@ public:
   //! Returns GeomAbs_CN
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! Returns  1
+  //! Returns 1
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
@@ -70,8 +70,8 @@ public:
                           Standard_Real&      D,
                           Standard_Real&      D2) Standard_OVERRIDE;
 
-  //! Returns a  law equivalent of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a law equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! It is usfule to determines the derivatives
   //! in these values <First> and <Last> if

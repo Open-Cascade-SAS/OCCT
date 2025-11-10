@@ -33,7 +33,7 @@
 //! Surf =====-----=====
 //!
 //! ( Tangent )
-//! Crb and Surf are  C1
+//! Crb and Surf are C1
 enum IntCurveSurface_TransitionOnCurve
 {
   IntCurveSurface_Tangent,

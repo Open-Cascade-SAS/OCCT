@@ -86,18 +86,18 @@ public:
                             const Standard_Boolean           NoCheck = Standard_False);
 
   //! Allows to modify domain on witch the blending function
-  //! associated to  the constrained boundary B  will propag
-  //! the  influence   of the  field   of  tangency.  Can be
-  //! useful to  reduce  influence of boundaries  on which
-  //! the Coons compatibility  conditions are not respected.
-  //! l is a  relative value of  the parametric range of  B.
+  //! associated to the constrained boundary B will propag
+  //! the influence of the field of tangency. Can be
+  //! useful to reduce influence of boundaries on which
+  //! the Coons compatibility conditions are not respected.
+  //! l is a relative value of the parametric range of B.
   //! Default value for l is 1 (used in Init).
-  //! Warning: Must be called after  Init with a constrained boundary
+  //! Warning: Must be called after Init with a constrained boundary
   //! used in the call to Init.
   Standard_EXPORT void SetDomain(const Standard_Real l, const Handle(GeomFill_BoundWithSurf)& B);
 
-  //! Computes the  new poles  of  the surface using the  new
-  //! blending  functions set by several calls to SetDomain.
+  //! Computes the new poles of the surface using the new
+  //! blending functions set by several calls to SetDomain.
   Standard_EXPORT void ReBuild();
 
   //! Returns the bound of index i after sort.
@@ -112,38 +112,38 @@ public:
                                         Standard_Real&         Result) const;
 
   //! Computes the fields of tangents on 30 points along the
-  //! bound  I, these  are  not the  constraint tangents but
+  //! bound I, these are not the constraint tangents but
   //! gives an idea of the coonsAlgPatch regularity.
   Standard_EXPORT void CheckCoonsAlgPatch(const Standard_Integer I);
 
-  //! Computes  the fields  of tangents  and  normals on  30
-  //! points along the bound  I, draw them, and computes the
+  //! Computes the fields of tangents and normals on 30
+  //! points along the bound I, draw them, and computes the
   //! max dot product that must be near than 0.
   Standard_EXPORT void CheckTgteField(const Standard_Integer I);
 
-  //! Computes  values  and normals  along  the bound  I and
-  //! compare  them to the  approx  result curves (bound and
-  //! tgte field) , draw  the normals and tangents.
+  //! Computes values and normals along the bound I and
+  //! compare them to the approx result curves (bound and
+  //! tgte field) , draw the normals and tangents.
   Standard_EXPORT void CheckApprox(const Standard_Integer I);
 
-  //! Computes values and normals along the  bound I on both
-  //! constraint  surface    and result  surface,  draw  the
-  //! normals, and  computes the max distance between values
-  //! and the max angle  between normals.
+  //! Computes values and normals along the bound I on both
+  //! constraint surface and result surface, draw the
+  //! normals, and computes the max distance between values
+  //! and the max angle between normals.
   Standard_EXPORT void CheckResult(const Standard_Integer I);
 
 protected:
 private:
-  //! Performs the approximation an compute  the poles of the
+  //! Performs the approximation an compute the poles of the
   //! surface.
   Standard_EXPORT void Build();
 
-  //! Performs  the  parallel approximation  on two  oppsite
+  //! Performs the parallel approximation on two oppsite
   //! bounds
   Standard_EXPORT void PerformApprox();
 
-  //! matches  the nodal vectors  of the  blending functions
-  //! and the results  of the approx   to allow the  surface
+  //! matches the nodal vectors of the blending functions
+  //! and the results of the approx to allow the surface
   //! computation.
   Standard_EXPORT void MatchKnots();
 
@@ -153,7 +153,7 @@ private:
   //! performs the poles of the partial construction S1.
   Standard_EXPORT void PerformS1();
 
-  //! performs  the poles of  the  surface using the partial
+  //! performs the poles of the surface using the partial
   //! constructions S0 and S1.
   Standard_EXPORT void PerformSurface();
 
@@ -161,8 +161,8 @@ private:
   //! boundary.
   Standard_EXPORT Standard_Boolean CheckTgte(const Standard_Integer I);
 
-  //! Evaluates  the min magnitude  of  the field of tangency
-  //! along bound  I  to allow a   simple evaluation of  the
+  //! Evaluates the min magnitude of the field of tangency
+  //! along bound I to allow a simple evaluation of the
   //! tolerance needed for the approximation of the field of
   //! tangency.
   Standard_EXPORT void MinTgte(const Standard_Integer I);

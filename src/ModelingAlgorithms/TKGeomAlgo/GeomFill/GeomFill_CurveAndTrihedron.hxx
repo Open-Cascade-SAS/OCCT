@@ -34,11 +34,11 @@ DEFINE_STANDARD_HANDLE(GeomFill_CurveAndTrihedron, GeomFill_LocationLaw)
 
 //! Define location law with an TrihedronLaw and an
 //! curve
-//! Definition Location is :
-//! transformed  section   coordinates  in  (Curve(v)),
-//! (Normal(v),   BiNormal(v), Tangente(v))) systeme are
-//! the  same like section  shape coordinates in
-//! (O,(OX, OY, OZ)) systeme.
+//! Definition Location is:
+//! transformed section coordinates in (Curve(v)),
+//! (Normal(v), BiNormal(v), Tangente(v))) systems are
+//! the same like section shape coordinates in
+//! (O,(OX, OY, OZ)) system.
 class GeomFill_CurveAndTrihedron : public GeomFill_LocationLaw
 {
 
@@ -52,7 +52,7 @@ public:
 
   Standard_EXPORT virtual const Handle(Adaptor3d_Curve)& GetCurve() const Standard_OVERRIDE;
 
-  //! Set a transformation Matrix like   the law M(t) become
+  //! Set a transformation Matrix like the law M(t) become
   //! Mat * M(t)
   Standard_EXPORT virtual void SetTrsf(const gp_Mat& Transfo) Standard_OVERRIDE;
 
@@ -69,7 +69,7 @@ public:
                                               gp_Vec&               V,
                                               TColgp_Array1OfPnt2d& Poles2d) Standard_OVERRIDE;
 
-  //! compute location 2d  points and  associated
+  //! compute location 2d points and associated
   //! first derivatives.
   //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real   Param,
@@ -80,8 +80,8 @@ public:
                                               TColgp_Array1OfPnt2d& Poles2d,
                                               TColgp_Array1OfVec2d& DPoles2d) Standard_OVERRIDE;
 
-  //! compute location 2d  points and associated
-  //! first and seconde  derivatives.
+  //! compute location 2d points and associated
+  //! first and second derivatives.
   //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real   Param,
                                               gp_Mat&               M,
@@ -94,16 +94,15 @@ public:
                                               TColgp_Array1OfVec2d& DPoles2d,
                                               TColgp_Array1OfVec2d& D2Poles2d) Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
-  //! <S>.
+  //! Returns the number of intervals for continuity <S>.
   //! May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
     Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
                                          const GeomAbs_Shape   S) const Standard_OVERRIDE;
@@ -121,25 +120,25 @@ public:
                                            Standard_Real& Last) const Standard_OVERRIDE;
 
   //! Gets the bounds of the function parametric domain.
-  //! Warning: This domain it is  not modified by the
+  //! Warning: This domain it is not modified by the
   //! SetValue method
   Standard_EXPORT virtual void GetDomain(Standard_Real& First,
                                          Standard_Real& Last) const Standard_OVERRIDE;
 
-  //! Get the maximum Norm  of the matrix-location part.  It
+  //! Get the maximum Norm of the matrix-location part. It
   //! is usful to find a good Tolerance to approx M(t).
   Standard_EXPORT virtual Standard_Real GetMaximalNorm() Standard_OVERRIDE;
 
   //! Get average value of M(t) and V(t) it is useful to
-  //! make fast approximation of rational  surfaces.
+  //! make fast approximation of rational surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Mat& AM, gp_Vec& AV) Standard_OVERRIDE;
 
-  //! Say if the Location  Law, is an translation of  Location
+  //! Say if the Location Law, is an translation of Location
   //! The default implementation is " returns False ".
   Standard_EXPORT virtual Standard_Boolean IsTranslation(Standard_Real& Error) const
     Standard_OVERRIDE;
 
-  //! Say if the Location  Law, is a rotation of Location
+  //! Say if the Location Law, is a rotation of Location
   //! The default implementation is " returns False ".
   Standard_EXPORT virtual Standard_Boolean IsRotation(Standard_Real& Error) const Standard_OVERRIDE;
 

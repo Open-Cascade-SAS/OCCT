@@ -109,8 +109,8 @@ public:
   //! lines.
   Standard_Boolean IsMultiple() const;
 
-  //! Returns True if the point  is an internal one, i.e
-  //! if the  tangent to the line on  the point  and the
+  //! Returns True if the point is an internal one, i.e
+  //! if the tangent to the line on the point and the
   //! eye direction are parallel.
   Standard_Boolean IsInternal() const;
 

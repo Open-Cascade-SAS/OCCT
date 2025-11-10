@@ -29,8 +29,8 @@
 class gp_Pnt;
 class Geom_Surface;
 
-//! This class implements methods for  computing all the orthogonal
-//! projections of a point onto a  surface.
+//! This class implements methods for computing all the orthogonal
+//! projections of a point onto a surface.
 class GeomAPI_ProjectPointOnSurf
 {
 public:
@@ -40,15 +40,15 @@ public:
   //! Init function for further initialization.
   Standard_EXPORT GeomAPI_ProjectPointOnSurf();
 
-  //! Create the projection  of a point <P> on a surface
+  //! Create the projection of a point <P> on a surface
   //! <Surface>
   Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
                                              const Handle(Geom_Surface)& Surface,
                                              const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
 
-  //! Create the projection  of a point <P> on a surface
+  //! Create the projection of a point <P> on a surface
   //! <Surface>
-  //! Create the projection of a point <P>  on a surface
+  //! Create the projection of a point <P> on a surface
   //! <Surface>. The solution are computed in the domain
   //! [Umin,Usup] [Vmin,Vsup] of the surface.
   Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
@@ -65,7 +65,7 @@ public:
                                              const Standard_Real         Tolerance,
                                              const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
 
-  //! Init the projection  of a point <P> on a surface
+  //! Init the projection of a point <P> on a surface
   //! <Surface>
   Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
                                              const Handle(Geom_Surface)& Surface,
@@ -80,7 +80,7 @@ public:
                             const Standard_Real         Tolerance,
                             const Extrema_ExtAlgo       Algo = Extrema_ExtAlgo_Grad);
 
-  //! Init the projection of a point <P>  on a surface
+  //! Init the projection of a point <P> on a surface
   //! <Surface>. The solution are computed in the domain
   //! [Umin,Usup] [Vmin,Vsup] of the surface.
   Standard_EXPORT void Init(const gp_Pnt&               P,

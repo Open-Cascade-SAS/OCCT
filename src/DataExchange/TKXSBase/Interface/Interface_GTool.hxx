@@ -72,7 +72,7 @@ public:
   Standard_EXPORT void SetProtocol(const Handle(Interface_Protocol)& proto,
                                    const Standard_Boolean            enforce = Standard_False);
 
-  //! Returns the Protocol.  Warning : it can be Null
+  //! Returns the Protocol. Warning: it can be Null
   Standard_EXPORT Handle(Interface_Protocol) Protocol() const;
 
   //! Returns the GeneralLib itself

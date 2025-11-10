@@ -54,14 +54,14 @@ public:
                                                  const Handle(Geom_Curve)& FirstSect,
                                                  const Handle(Geom_Curve)& LastSect);
 
-  //! Create  a pipe  with  a constant  radius with  2
+  //! Create a pipe with a constant radius with 2
   //! guide-line.
   Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path,
                                                  const Handle(Geom_Curve)& Curve1,
                                                  const Handle(Geom_Curve)& Curve2,
                                                  const Standard_Real       Radius);
 
-  //! Create  a pipe  with  a constant  radius with  2
+  //! Create a pipe with a constant radius with 2
   //! guide-line.
   Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Adaptor3d_Curve)& Path,
                                                  const Handle(Adaptor3d_Curve)& Curve1,
@@ -118,7 +118,7 @@ public:
   //! raised if <Index> not in the range [1,NbSections()]
   Standard_EXPORT const gp_Trsf& Transformation(const Standard_Integer Index) const;
 
-  //! Returns  the parameter of   <P>, to impose  it for the
+  //! Returns the parameter of <P>, to impose it for the
   //! approximation.
   Standard_EXPORT Standard_Real Parameter(const Standard_Integer P) const;
 

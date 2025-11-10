@@ -29,11 +29,11 @@
 
 class gp_Vec;
 
-//! This  class  is  used  to  interpolate a  BsplineCurve
-//! passing   through  an  array  of  points,  with  a  C2
+//! This class is used to interpolate a BsplineCurve
+//! passing through an array of points, with a C2
 //! Continuity if tangency is not requested at the point.
 //! If tangency is requested at the point the continuity will
-//! be C1.  If Perodicity is requested the curve will be closed
+//! be C1. If Perodicity is requested the curve will be closed
 //! and the junction will be the first point given. The curve
 //! will than be only C1
 //! Describes functions for building a constrained 3D BSpline curve.
@@ -53,7 +53,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Initializes an algorithm for constructing a
-  //! constrained BSpline curve passing through the points of the table   Points.
+  //! constrained BSpline curve passing through the points of the table Points.
   //! Tangential vectors can then be assigned, using the function Load.
   //! If PeriodicFlag is true, the constrained BSpline
   //! curve will be periodic and closed. In this case,

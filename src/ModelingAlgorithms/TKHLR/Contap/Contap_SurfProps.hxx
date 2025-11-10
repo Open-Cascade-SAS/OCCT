@@ -22,14 +22,14 @@
 class gp_Pnt;
 class gp_Vec;
 
-//! Internal tool used  to compute the  normal and its
+//! Internal tool used to compute the normal and its
 //! derivatives.
 class Contap_SurfProps
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Computes  the point <P>, and  normal vector <N> on
+  //! Computes the point <P>, and normal vector <N> on
   //! <S> at parameters U,V.
   Standard_EXPORT static void Normale(const Handle(Adaptor3d_Surface)& S,
                                       const Standard_Real              U,
@@ -37,7 +37,7 @@ public:
                                       gp_Pnt&                          P,
                                       gp_Vec&                          N);
 
-  //! Computes  the point <P>, and  normal vector <N> on
+  //! Computes the point <P>, and normal vector <N> on
   //! <S> at parameters U,V.
   Standard_EXPORT static void DerivAndNorm(const Handle(Adaptor3d_Surface)& S,
                                            const Standard_Real              U,

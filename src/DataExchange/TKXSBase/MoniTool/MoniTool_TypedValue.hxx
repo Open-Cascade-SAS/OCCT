@@ -274,7 +274,7 @@ public:
   //! Changes the value as an integer, only for Integer or Enum
   Standard_EXPORT virtual Standard_Boolean SetIntegerValue(const Standard_Integer ival);
 
-  //! Returns the value as real,  for a Real type TypedValue
+  //! Returns the value as real, for a Real type TypedValue
   //! Else, returns 0.
   Standard_EXPORT Standard_Real RealValue() const;
 
@@ -314,7 +314,7 @@ public:
 
   //! Returns the TypedValue bound with a given Name
   //! Null Handle if none recorded
-  //! Warning : it is the original, not duplicated
+  //! Warning: it is the original, not duplicated
   Standard_EXPORT static Handle(MoniTool_TypedValue) Lib(const Standard_CString def);
 
   //! Returns a COPY of the TypedValue bound with a given Name
@@ -322,9 +322,8 @@ public:
   Standard_EXPORT static Handle(MoniTool_TypedValue) FromLib(const Standard_CString def);
 
   //! Returns the list of names of items of the Library of Types
-  //! --    Library of TypedValue as Valued Parameters,    -- --
-  //! accessed by parameter name
-  //! for use by management of Static Parameters
+  //! Library of TypedValue as Valued Parameters, accessed by
+  //! parameter name for use by management of Static Parameters
   Standard_EXPORT static Handle(TColStd_HSequenceOfAsciiString) LibList();
 
   //! Returns a static value from its name, null if unknown

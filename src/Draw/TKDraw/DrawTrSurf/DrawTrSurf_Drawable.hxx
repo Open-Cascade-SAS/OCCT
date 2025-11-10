@@ -41,7 +41,7 @@ public:
   //! Draw a polygon of the curve on the Display
   Standard_EXPORT void DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& D) const;
 
-  //! Load C with the specified iso  and Draw a polygon
+  //! Load C with the specified iso and Draw a polygon
   //! of the curve on the Display
   Standard_EXPORT void DrawIsoCurveOn(Adaptor3d_IsoCurve&   C,
                                       const GeomAbs_IsoType T,

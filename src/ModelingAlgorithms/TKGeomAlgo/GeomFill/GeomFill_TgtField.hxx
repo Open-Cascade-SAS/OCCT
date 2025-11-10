@@ -38,15 +38,15 @@ public:
 
   Standard_EXPORT virtual void Scale(const Handle(Law_BSpline)& Func);
 
-  //! Computes  the value  of the    field of tangency    at
+  //! Computes the value of the field of tangency at
   //! parameter W.
   Standard_EXPORT virtual gp_Vec Value(const Standard_Real W) const = 0;
 
-  //! Computes the  derivative of  the field of  tangency at
+  //! Computes the derivative of the field of tangency at
   //! parameter W.
   Standard_EXPORT virtual gp_Vec D1(const Standard_Real W) const = 0;
 
-  //! Computes the value and the  derivative of the field of
+  //! Computes the value and the derivative of the field of
   //! tangency at parameter W.
   Standard_EXPORT virtual void D1(const Standard_Real W, gp_Vec& V, gp_Vec& DV) const = 0;
 

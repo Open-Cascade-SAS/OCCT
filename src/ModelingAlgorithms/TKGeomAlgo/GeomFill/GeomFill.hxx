@@ -121,7 +121,7 @@ public:
                                                 const Standard_Real                AngleMax,
                                                 TColStd_Array1OfReal&              Weigths);
 
-  //! Used  by  the  generical classes to determine
+  //! Used by the generical classes to determine
   //! Tolerance for approximation
   Standard_EXPORT static Standard_Real GetTolerance(const Convert_ParameterisationType TConv,
                                                     const Standard_Real                AngleMin,

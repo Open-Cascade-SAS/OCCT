@@ -28,7 +28,7 @@ class Geom_Surface;
 class gp_Pnt;
 
 //! This class implements methods for
-//! computing intersection points and  segments between a
+//! computing intersection points and segments between a
 class GeomAPI_IntCS
 {
 public:

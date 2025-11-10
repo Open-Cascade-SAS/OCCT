@@ -230,7 +230,7 @@ public:
 
   //! Performs a symmetrical transformation of this coordinate
   //! system with respect to:
-  //! -   the axis A1, and assigns the result to this coordinate systeme.
+  //! -   the axis A1, and assigns the result to this coordinate system.
   //! Warning
   //! This transformation is always performed on the origin.
   //! In case of a reflection with respect to a point:
@@ -265,7 +265,7 @@ public:
   //! Performs a symmetrical transformation of this coordinate
   //! system with respect to:
   //! -   the plane defined by the origin, "X Direction" and "Y
-  //! Direction" of coordinate system A2 and assigns the result to this coordinate systeme.
+  //! Direction" of coordinate system A2 and assigns the result to this coordinate system.
   //! Warning
   //! This transformation is always performed on the origin.
   //! In case of a reflection with respect to a point:

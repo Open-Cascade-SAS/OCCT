@@ -26,29 +26,29 @@
 
 class gp_Pln;
 
-//! The   GeomAPI   package  provides  an  Application
+//! The GeomAPI package provides an Application
 //! Programming Interface for the Geometry.
 //!
-//! The API is a set of  classes and methods aiming to
+//! The API is a set of classes and methods aiming to
 //! provide :
 //!
-//! * High level and simple calls  for the most common
+//! * High level and simple calls for the most common
 //! operations.
 //!
-//! *    Keeping   an   access  on    the    low-level
+//! * Keeping an access on the low-level
 //! implementation of high-level calls.
 //!
-//! The API  provides classes to  call the algorithms
+//! The API provides classes to call the algorithms
 //! of the Geometry
 //!
-//! * The  constructors  of the classes  provides  the
+//! * The constructors of the classes provides the
 //! different constructions methods.
 //!
-//! * The  class keeps as fields the   different tools
+//! * The class keeps as fields the different tools
 //! used by the algorithms
 //!
-//! *   The class  provides  a  casting  method to get
-//! automatically the  result  with  a   function-like
+//! * The class provides a casting method to get
+//! automatically the result with a function-like
 //! call.
 //!
 //! For example to evaluate the distance <D> between a

@@ -32,15 +32,16 @@ DEFINE_STANDARD_HANDLE(HLRAlgo_EdgesBlock, Standard_Transient)
 //! An EdgesBlock is a set of Edges. It is used by the
 //! DataStructure to structure the Edges.
 //!
-//! An EdgesBlock contains :
+//! An EdgesBlock contains:
 //!
-//! * An Array  of index of Edges.
+//! * An Array of index of Edges.
 //!
-//! * An Array of flagsf ( Orientation
-//! OutLine
-//! Internal
-//! Double
-//! IsoLine)
+//! * An Array of flagsf
+//! (Orientation
+//!  OutLine
+//!  Internal
+//!  Double
+//!  IsoLine)
 class HLRAlgo_EdgesBlock : public Standard_Transient
 {
 

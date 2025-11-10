@@ -45,10 +45,10 @@ class gp_Dir;
 //! -   implementing the construction algorithm, and
 //! -   consulting the resulting surface.
 //! There are several methods to instantiate a Pipe:
-//! 1) give a path and  a radius : the section is
-//! a circle.  This location  is the first  point
-//! of the path,  and this direction is the first
-//! derivate (calculate at  the  first point ) of
+//! 1) give a path and a radius: the section is
+//! a circle. This location is the first point
+//! of the path, and this direction is the first
+//! derivate (calculate at the first point ) of
 //! the path.
 //!
 //! 2) give a path and a section.
@@ -64,15 +64,15 @@ class gp_Dir;
 //! 2.c) Define the path by a surface and a 2dcurve,
 //! the surface is used to define the trihedron's normal.
 //! It is useful to keep a constant angle between
-//! input surface and the pipe.                           --
-//! 3) give a  path and two sections. The section
+//! input surface and the pipe.
+//! 3) give a path and two sections. The section
 //! evaluate from First to Last Section.
 //!
-//! 3) give a  path and N sections. The section
+//! 3) give a path and N sections. The section
 //! evaluate from First to Last Section.
 //!
 //! In general case the result is a NURBS. But we
-//! can  generate plane,  cylindrical, spherical,
+//! can generate plane, cylindrical, spherical,
 //! conical, toroidal surface in some particular case.
 //!
 //! The natural parametrization of the result is:
@@ -94,23 +94,23 @@ public:
 
   Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)& Path, const Standard_Real Radius);
 
-  //! Create  a  pipe  with  a  constant  section
-  //! (<FirstSection>)  and a path (<Path>)
-  //! Option can be  - GeomFill_IsCorrectedFrenet
+  //! Create a pipe with a constant section
+  //! (<FirstSection>) and a path (<Path>)
+  //! Option can be - GeomFill_IsCorrectedFrenet
   //! - GeomFill_IsFrenet
   //! - GeomFill_IsConstant
   Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)& Path,
                                 const Handle(Geom_Curve)& FirstSect,
                                 const GeomFill_Trihedron  Option = GeomFill_IsCorrectedFrenet);
 
-  //! Create  a  pipe  with  a  constant  section
-  //! (<FirstSection>)  and a path defined by <Path> and <Support>
+  //! Create a pipe with a constant section
+  //! (<FirstSection>) and a path defined by <Path> and <Support>
   Standard_EXPORT GeomFill_Pipe(const Handle(Geom2d_Curve)& Path,
                                 const Handle(Geom_Surface)& Support,
                                 const Handle(Geom_Curve)&   FirstSect);
 
-  //! Create  a  pipe with  a  constant section
-  //! (<FirstSection>) and a   path <Path>  and a fixed
+  //! Create a pipe with a constant section
+  //! (<FirstSection>) and a path <Path> and a fixed
   //! binormal direction <Dir>
   Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)& Path,
                                 const Handle(Geom_Curve)& FirstSect,
@@ -122,26 +122,26 @@ public:
                                 const Handle(Geom_Curve)& FirstSect,
                                 const Handle(Geom_Curve)& LastSect);
 
-  //! Create a pipe with N  sections
+  //! Create a pipe with N sections
   //! The section evaluate from First to Last Section
   Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)&       Path,
                                 const TColGeom_SequenceOfCurve& NSections);
 
-  //! Create  a pipe  with  a constant  radius with  2
+  //! Create a pipe with a constant radius with 2
   //! guide-line.
   Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)& Path,
                                 const Handle(Geom_Curve)& Curve1,
                                 const Handle(Geom_Curve)& Curve2,
                                 const Standard_Real       Radius);
 
-  //! Create  a pipe  with  a constant  radius with  2
+  //! Create a pipe with a constant radius with 2
   //! guide-line.
   Standard_EXPORT GeomFill_Pipe(const Handle(Adaptor3d_Curve)& Path,
                                 const Handle(Adaptor3d_Curve)& Curve1,
                                 const Handle(Adaptor3d_Curve)& Curve2,
                                 const Standard_Real            Radius);
 
-  //! Create a pipe with a constant section and  with 1
+  //! Create a pipe with a constant section and with 1
   //! guide-line.
   //! Use the function Perform to build the surface.
   //! All standard specific cases are detected in order to
@@ -206,7 +206,7 @@ public:
   Standard_EXPORT void Init(const Handle(Geom_Curve)&       Path,
                             const TColGeom_SequenceOfCurve& NSections);
 
-  //! Create  a pipe  with  a constant  radius with  2
+  //! Create a pipe with a constant radius with 2
   //! guide-line.
   Standard_EXPORT void Init(const Handle(Adaptor3d_Curve)& Path,
                             const Handle(Adaptor3d_Curve)& Curve1,
@@ -239,8 +239,8 @@ public:
   Standard_EXPORT void Perform(const Standard_Boolean WithParameters = Standard_False,
                                const Standard_Boolean myPolynomial   = Standard_False);
 
-  //! detects the  particular cases.  And compute the surface.
-  //! if  none   particular  case  is  detected we make an approximation
+  //! Detects the particular cases, and computes the surface.
+  //! if none particular case is detected we make an approximation
   //! with respect of the Tolerance <Tol>, the continuty <Conti>, the
   //! maximum degree <MaxDegree>, the maximum number of span <NbMaxSegment>
   //! and the spine parametrization.
@@ -252,7 +252,7 @@ public:
                                const Standard_Integer NbMaxSegment = 30);
 
   //! Returns the surface built by this algorithm.
-  //! Warning
+  //! Warning:
   //! Do not use this function before the surface is built (in this
   //! case the function will return a null handle).
   const Handle(Geom_Surface)& Surface() const;
@@ -267,19 +267,19 @@ public:
   //! parameterization is inversed.
   //! The ExchangeUV function checks for this, and returns
   //! true in all these specific cases.
-  //! Warning
+  //! Warning:
   //! Do not use this function before the surface is built.
   Standard_Boolean ExchangeUV() const;
 
-  //! Sets a flag  to  try to   create as many   planes,
-  //! cylinder,...    as  possible.  Default  value   is
+  //! Sets a flag to try to create as many planes,
+  //! cylinder,... as possible. Default value is
   //! <Standard_False>.
   void GenerateParticularCase(const Standard_Boolean B);
 
   //! Returns the flag.
   Standard_Boolean GenerateParticularCase() const;
 
-  //! Returns the approximation's error.  if the Surface
+  //! Returns the approximation's error. if the Surface
   //! is plane, cylinder ... this error can be 0.
   Standard_Real ErrorOnSurf() const;
 
@@ -293,10 +293,10 @@ protected:
 private:
   Standard_EXPORT void Init();
 
-  //! The result  (<mySurface>)  is an approximation.  Using
-  //! <SweepSectionGenerator>  to      do    that.        If
-  //! <WithParameters>    is   set  to <Standard_True>,  the
-  //! apprxoximation will be   done in respect to  the spine
+  //! The result (<mySurface>) is an approximation. Using
+  //! <SweepSectionGenerator> to do that. If
+  //! <WithParameters> is set to <Standard_True>, the
+  //! apprxoximation will be done in respect to the spine
   //! parametrization.
   Standard_EXPORT void ApproxSurf(const Standard_Boolean WithParameters);
 

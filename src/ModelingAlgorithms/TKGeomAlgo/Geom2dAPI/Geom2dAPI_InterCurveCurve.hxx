@@ -27,10 +27,10 @@ class Geom2d_Curve;
 class gp_Pnt2d;
 
 //! This class implements methods for computing
-//! -       the intersections between  two 2D curves,
-//! -       the self-intersections of a  2D curve.
+//! -       the intersections between two 2D curves,
+//! -       the self-intersections of a 2D curve.
 //! Using the InterCurveCurve algorithm allows to get the following results:
-//! -      intersection points in the  case of cross intersections,
+//! -      intersection points in the case of cross intersections,
 //! -      intersection segments in the case of tangential intersections,
 //! -       nothing in the case of no intersections.
 class Geom2dAPI_InterCurveCurve

@@ -92,9 +92,8 @@ public:
 
   const Contap_Line& Line(const Standard_Integer Index) const;
 
-  //! Returns    a     reference   on     the   internal
-  //! SurfaceFunction.  This is used to compute tangents
-  //! on the lines.
+  //! Returns a reference on the internal SurfaceFunction.
+  //! This is used to compute tangents on the lines.
   Contap_SurfFunction& SurfaceFunction();
 
 protected:
