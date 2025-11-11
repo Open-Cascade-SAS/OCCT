@@ -45,13 +45,6 @@
 //! When a deprecated macro is used, a compile-time warning will be issued.
 //! Unlike Standard_DEPRECATED which marks functions/classes, this is for deprecating macros
 //! themselves.
-//!
-//! Usage example:
-//! @code
-//! #define OLD_MACRO(x) \
-//!   Standard_MACRO_DEPRECATED("Use NEW_MACRO instead") \
-//!   ((x) * 2)
-//! @endcode
 #if 0 // Disabled until global renames for 8.0.0 are completed.
   #define Standard_MACRO_DEPRECATED(theMsg) Standard_DEPRECATED_WARNING(theMsg)
 #else

@@ -19,6 +19,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Vector.hxx>
 
+#include <mutex>
+
 namespace
 {
 static int              THE_Interface_Category_init = 0;

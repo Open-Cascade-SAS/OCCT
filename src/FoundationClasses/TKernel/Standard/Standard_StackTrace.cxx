@@ -35,6 +35,7 @@
 #elif defined(_WIN32) && !defined(OCCT_UWP)
 
   #include <Standard_WarningsDisable.hxx>
+  #include <windows.h>
   #include <dbghelp.h>
   #include <Standard_WarningsRestore.hxx>
 
