@@ -129,15 +129,13 @@ protected:
   RealType myHSize[2];
 
 private:
+  //! Constant representing a very large value for void box initialization
+  static constexpr RealType THE_RealLast = RealType(1e30);
 };
 
 //=======================================================================
 // Inline implementations
-//=======================================================================
-
-#ifndef Bnd_B2_RealLast
-  #define Bnd_B2_RealLast RealType(1e30);
-#endif
+//======================================================================='
 
 //! Empty constructor
 template<typename RealType>
@@ -160,10 +158,10 @@ inline Bnd_B2<RealType>::Bnd_B2(const gp_XY& theCenter, const gp_XY& theHSize)
 template<typename RealType>
 inline void Bnd_B2<RealType>::Clear()
 {
-  myCenter[0] = Bnd_B2_RealLast;
-  myCenter[1] = Bnd_B2_RealLast;
-  myHSize[0]  = -Bnd_B2_RealLast;
-  myHSize[1]  = -Bnd_B2_RealLast;
+  myCenter[0] = THE_RealLast;
+  myCenter[1] = THE_RealLast;
+  myHSize[0]  = -THE_RealLast;
+  myHSize[1]  = -THE_RealLast;
 }
 
 //! Check if the box is empty.
