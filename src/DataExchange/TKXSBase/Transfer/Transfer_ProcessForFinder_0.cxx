@@ -39,7 +39,6 @@
 #include <Transfer_MultipleBinder.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_StatusResult.hxx>
-#include <Transfer_TransferDeadLoop.hxx>
 #include <Transfer_TransferFailure.hxx>
 #include <Transfer_TransferMapOfProcessForFinder.hxx>
 #include <Transfer_VoidBinder.hxx>
