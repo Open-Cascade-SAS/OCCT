@@ -18,8 +18,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Standard_Real.hxx>
+#include <Standard_ShortReal.hxx>
 #include <gp_XY.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
@@ -592,5 +592,15 @@ Standard_Boolean Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox,
   }
   return aResult;
 }
+
+//=======================================================================
+// Standard type aliases
+//=======================================================================
+
+//! 2D bounding box with double precision
+using Bnd_B2d = Bnd_B2<Standard_Real>;
+
+//! 2D bounding box with single precision
+using Bnd_B2f = Bnd_B2<Standard_ShortReal>;
 
 #endif // _Bnd_B2_HeaderFile

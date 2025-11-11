@@ -18,7 +18,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-
+#include <Standard_Real.hxx>
+#include <Standard_ShortReal.hxx>
 #include <gp_XYZ.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -750,5 +751,15 @@ Standard_Boolean Bnd_B3<RealType>::IsIn(const Bnd_B3<RealType>& theBox,
   }
   return aResult;
 }
+
+//=======================================================================
+// Standard type aliases
+//=======================================================================
+
+//! 3D bounding box with double precision
+using Bnd_B3d = Bnd_B3<Standard_Real>;
+
+//! 3D bounding box with single precision
+using Bnd_B3f = Bnd_B3<Standard_ShortReal>;
 
 #endif // _Bnd_B3_HeaderFile
