@@ -17,10 +17,8 @@
 #ifndef _Bnd_B2d_HeaderFile
 #define _Bnd_B2d_HeaderFile
 
+// Backward compatibility header - includes the main template header
+// which defines Bnd_B2d as a type alias for Bnd_B2<Standard_Real>
 #include <Bnd_B2.hxx>
-#include <Standard_Real.hxx>
-
-//! 2D bounding box with double precision.
-using Bnd_B2d = Bnd_B2<Standard_Real>;
 
 #endif // _Bnd_B2d_HeaderFile

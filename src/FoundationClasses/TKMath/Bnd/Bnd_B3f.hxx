@@ -17,10 +17,8 @@
 #ifndef _Bnd_B3f_HeaderFile
 #define _Bnd_B3f_HeaderFile
 
+// Backward compatibility header - includes the main template header
+// which defines Bnd_B3f as a type alias for Bnd_B3<Standard_ShortReal>
 #include <Bnd_B3.hxx>
-#include <Standard_ShortReal.hxx>
-
-//! 3D bounding box with single precision.
-using Bnd_B3f = Bnd_B3<Standard_ShortReal>;
 
 #endif // _Bnd_B3f_HeaderFile

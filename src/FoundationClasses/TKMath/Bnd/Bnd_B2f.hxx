@@ -17,10 +17,8 @@
 #ifndef _Bnd_B2f_HeaderFile
 #define _Bnd_B2f_HeaderFile
 
+// Backward compatibility header - includes the main template header
+// which defines Bnd_B2f as a type alias for Bnd_B2<Standard_ShortReal>
 #include <Bnd_B2.hxx>
-#include <Standard_ShortReal.hxx>
-
-//! 2D bounding box with single precision.
-using Bnd_B2f = Bnd_B2<Standard_ShortReal>;
 
 #endif // _Bnd_B2f_HeaderFile
