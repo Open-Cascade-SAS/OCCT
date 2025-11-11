@@ -46,7 +46,7 @@ class HLRAlgo
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Iterator on the visible orhidden parts of an
+  //! Iterator on the visible or hidden parts of an
   //! EdgeStatus.
   Standard_EXPORT static void UpdateMinMax(const Standard_Real x,
                                            const Standard_Real y,

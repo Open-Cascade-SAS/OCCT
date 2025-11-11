@@ -51,7 +51,7 @@ public:
   //! the same orientation on both curves.
   Standard_Boolean IsOpposite() const;
 
-  //! Returns True if the segment islimited by a first
+  //! Returns True if the segment is limited by a first
   //! point. This point defines the lowest parameter
   //! admitted on the first curve for the segment. If
   //! IsOpposite returns False, it defines the lowest
