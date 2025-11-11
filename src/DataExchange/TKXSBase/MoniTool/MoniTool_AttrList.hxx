@@ -61,14 +61,14 @@ public:
                                                 Handle(Standard_Transient)&  val) const;
 
   //! Returns an attribute from its name. Null Handle if not
-  //! recorded         (whatever Transient, Integer, Real ...)
+  //! recorded (whatever Transient, Integer, Real ...)
   //! Integer is recorded as IntVal
   //! Real is recorded as RealVal
   //! Text is recorded as HAsciiString
   Standard_EXPORT Handle(Standard_Transient) Attribute(const Standard_CString name) const;
 
-  //! Returns the type of an attribute :
-  //! ValueInt , ValueReal , ValueText (String) , ValueIdent (any)
+  //! Returns the type of an attribute:
+  //! ValueInt, ValueReal, ValueText (String), ValueIdent (any)
   //! or ValueVoid (not recorded)
   Standard_EXPORT MoniTool_ValueType AttributeType(const Standard_CString name) const;
 

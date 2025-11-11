@@ -29,7 +29,7 @@
 class Geom_BSplineSurface;
 
 //! This class is used to approximate or interpolate
-//! a BSplineSurface passing through an  Array2 of
+//! a BSplineSurface passing through an Array2 of
 //! points, with a given continuity.
 //! Describes functions for building a BSpline
 //! surface which approximates or interpolates a set of points.
@@ -56,7 +56,7 @@ class Geom_BSplineSurface;
 //! type of parametrization, which can be Approx_ChordLength, Approx_Centripetal
 //! or Approx_IsoParametric. Default value is Approx_ChordLength.
 //! For ChordLength parametrisation U(i) = U(i-1) + P(i).Distance(P(i-1)),
-//! For Centripetal type  U(i) = U(i-1) + Sqrt(P(i).Distance(P(i-1))).
+//! For Centripetal type U(i) = U(i-1) + Sqrt(P(i).Distance(P(i-1))).
 //! Centripetal type can get better result for irregular distances between points.
 //!
 //! Approximation and interpolation algorithms can build periodical surface along U
@@ -81,11 +81,11 @@ public:
   //! the BSpline surface by interpolation.
   Standard_EXPORT GeomAPI_PointsToBSplineSurface();
 
-  //! Approximates  a BSpline  Surface passing  through  an
-  //! array of  Points.  The resulting BSpline will  have
+  //! Approximates a BSpline Surface passing through an
+  //! array of Points. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D.
 
@@ -95,11 +95,11 @@ public:
                                                  const GeomAbs_Shape       Continuity = GeomAbs_C2,
                                                  const Standard_Real       Tol3D      = 1.0e-3);
 
-  //! Approximates  a BSpline  Surface passing  through  an
-  //! array of  Points.  The resulting BSpline will  have
+  //! Approximates a BSpline Surface passing through an
+  //! array of Points. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D.
 
@@ -110,8 +110,8 @@ public:
                                                  const GeomAbs_Shape Continuity = GeomAbs_C2,
                                                  const Standard_Real Tol3D      = 1.0e-3);
 
-  //! Approximates  a BSpline  Surface passing  through  an
-  //! array of  points using variational smoothing algorithm,
+  //! Approximates a BSpline Surface passing through an
+  //! array of points using variational smoothing algorithm,
   //! which tries to minimize additional criterium:
   //! Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion.
 
@@ -123,18 +123,16 @@ public:
                                                  const GeomAbs_Shape       Continuity = GeomAbs_C2,
                                                  const Standard_Real       Tol3D      = 1.0e-3);
 
-  //! Approximates  a BSpline  Surface passing  through  an
-  //! array of  Points.
+  //! Approximates a BSpline Surface passing through an
+  //! array of Points.
   //!
   //! The points will be constructed as follow:
-  //! P(i,j) = gp_Pnt( X0 + (i-1)*dX ,
-  //! Y0 + (j-1)*dY ,
-  //! ZPoints(i,j)   )
+  //! P(i,j) = gp_Pnt( X0 + (i-1)*dX, Y0 + (j-1)*dY, ZPoints(i,j) )
   //!
-  //! The resulting BSpline will  have the following
+  //! The resulting BSpline will have the following
   //! properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D
   //! 4- the parametrization of the surface will verify:
@@ -150,11 +148,11 @@ public:
                                                  const GeomAbs_Shape Continuity     = GeomAbs_C2,
                                                  const Standard_Real Tol3D          = 1.0e-3);
 
-  //! Approximates  a BSpline Surface passing  through  an
-  //! array of  Point.  The resulting BSpline will  have
+  //! Approximates a BSpline Surface passing through an
+  //! array of Point. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D.
 
@@ -164,37 +162,35 @@ public:
                             const GeomAbs_Shape       Continuity = GeomAbs_C2,
                             const Standard_Real       Tol3D      = 1.0e-3);
 
-  //! Interpolates  a BSpline Surface passing  through  an
-  //! array of  Point.  The resulting BSpline will  have
+  //! Interpolates a BSpline Surface passing through an
+  //! array of Point. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be 3.
-  //! 2- his  continuity will be  C2.
+  //! 2- his continuity will be C2.
 
   Standard_EXPORT void Interpolate(const TColgp_Array2OfPnt& Points,
                                    const Standard_Boolean    thePeriodic = Standard_False);
 
-  //! Interpolates  a BSpline Surface passing  through  an
-  //! array of  Point.  The resulting BSpline will  have
+  //! Interpolates a BSpline Surface passing through an
+  //! array of Point. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be 3.
-  //! 2- his  continuity will be  C2.
+  //! 2- his continuity will be C2.
 
   Standard_EXPORT void Interpolate(const TColgp_Array2OfPnt&        Points,
                                    const Approx_ParametrizationType ParType,
                                    const Standard_Boolean           thePeriodic = Standard_False);
 
-  //! Approximates  a BSpline  Surface passing  through  an
-  //! array of  Points.
+  //! Approximates a BSpline Surface passing through an
+  //! array of Points.
   //!
   //! The points will be constructed as follow:
-  //! P(i,j) = gp_Pnt( X0 + (i-1)*dX ,
-  //! Y0 + (j-1)*dY ,
-  //! ZPoints(i,j)   )
+  //! P(i,j) = gp_Pnt( X0 + (i-1)*dX, Y0 + (j-1)*dY, ZPoints(i,j) )
   //!
-  //! The resulting BSpline will  have the following
+  //! The resulting BSpline will have the following
   //! properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D
   //! 4- the parametrization of the surface will verify:
@@ -210,18 +206,16 @@ public:
                             const GeomAbs_Shape         Continuity = GeomAbs_C2,
                             const Standard_Real         Tol3D      = 1.0e-3);
 
-  //! Interpolates  a BSpline  Surface passing  through  an
-  //! array of  Points.
+  //! Interpolates a BSpline Surface passing through an
+  //! array of Points.
   //!
   //! The points will be constructed as follow:
-  //! P(i,j) = gp_Pnt( X0 + (i-1)*dX ,
-  //! Y0 + (j-1)*dY ,
-  //! ZPoints(i,j)   )
+  //! P(i,j) = gp_Pnt( X0 + (i-1)*dX, Y0 + (j-1)*dY, ZPoints(i,j) )
   //!
-  //! The resulting BSpline will  have the following
+  //! The resulting BSpline will have the following
   //! properties:
   //! 1- his degree will be 3
-  //! 2- his  continuity will be  C2.
+  //! 2- his continuity will be C2.
   //! 4- the parametrization of the surface will verify:
   //! S->Value( U, V) = gp_Pnt( U, V, Z(U,V) );
 
@@ -231,11 +225,11 @@ public:
                                    const Standard_Real         Y0,
                                    const Standard_Real         dY);
 
-  //! Approximates  a BSpline Surface passing  through  an
-  //! array of  Point.  The resulting BSpline will  have
+  //! Approximates a BSpline Surface passing through an
+  //! array of Point. The resulting BSpline will have
   //! the following properties:
   //! 1- his degree will be in the range [Degmin,Degmax]
-  //! 2- his  continuity will be  at  least <Continuity>
+  //! 2- his continuity will be at least <Continuity>
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D.
 
@@ -247,8 +241,8 @@ public:
                             const Standard_Real              Tol3D       = 1.0e-3,
                             const Standard_Boolean           thePeriodic = Standard_False);
 
-  //! Approximates  a BSpline Surface passing  through  an
-  //! array of  point using variational smoothing algorithm,
+  //! Approximates a BSpline Surface passing through an
+  //! array of point using variational smoothing algorithm,
   //! which tries to minimize additional criterium:
   //! Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion.
 

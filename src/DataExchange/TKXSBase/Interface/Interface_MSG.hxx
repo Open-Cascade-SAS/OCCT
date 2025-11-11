@@ -58,9 +58,9 @@ public:
 
   //! Translates a message which contains one integer variable
   //! It is just a help which avoid the following :
-  //! char mess[100];  Sprintf(mess,Interface_MSG("code"),ival);
-  //! then  AddFail(mess);
-  //! replaced by  AddFail (Interface_MSG("code",ival));
+  //! char mess[100]; Sprintf(mess,Interface_MSG("code"),ival);
+  //! then AddFail(mess);
+  //! replaced by AddFail (Interface_MSG("code",ival));
   //!
   //! The basic message is intended to be in C-Sprintf format,
   //! with one %d form in it

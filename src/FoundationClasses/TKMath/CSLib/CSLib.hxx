@@ -100,7 +100,7 @@ public:
                                      CSLib_NormalStatus& theStatus,
                                      gp_Dir&             Normal);
 
-  //! find the first order k0  of deriviative of NUV
+  //! find the first order k0 of deriviative of NUV
   //! where: foreach order < k0 all the derivatives of NUV are
   //! null all the derivatives of NUV corresponding to the order
   //! k0 are collinear and have the same sens.

@@ -85,7 +85,7 @@ public:
                             const Handle(GeomFill_Boundary)& B4,
                             const Standard_Boolean           NoCheck = Standard_False);
 
-  //! Allows to modify domain on witch the blending function
+  //! Allows to modify domain on which the blending function
   //! associated to the constrained boundary B will propag
   //! the influence of the field of tangency. Can be
   //! useful to reduce influence of boundaries on which

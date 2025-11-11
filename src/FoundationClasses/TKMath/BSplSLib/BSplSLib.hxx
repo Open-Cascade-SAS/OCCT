@@ -144,8 +144,8 @@ public:
   //! ...
   //! x(Udeg,VDeg)[1],...,x(UDeg,VDeg)[3],w(Udeg,VDeg)
   //!
-  //! If <All>  is false, only  the derivative  at order
-  //! <N,M> is computed.  <RDers> is an  array of length
+  //! If <All> is false, only the derivative at order
+  //! <N,M> is computed. <RDers> is an array of length
   //! 3 which will contain the result :
   //!
   //! x(1)/w , x(2)/w ,  ... derivated <N> <M> times
@@ -285,9 +285,9 @@ public:
                                  const Standard_Boolean         VPer,
                                  gp_Vec&                        Vn);
 
-  //! Computes the  poles and weights of an isoparametric
-  //! curve at parameter  <Param> (UIso if <IsU> is True,
-  //! VIso  else).
+  //! Computes the poles and weights of an isoparametric
+  //! curve at parameter <Param> (UIso if <IsU> is True,
+  //! VIso else).
   Standard_EXPORT static void Iso(const Standard_Real            Param,
                                   const Standard_Boolean         IsU,
                                   const TColgp_Array2OfPnt&      Poles,
@@ -410,7 +410,7 @@ public:
   //! don't enter (1,NbPoles) and (1,VNbPoles)
   //! -> error: rigid move
   //! if problem in BSplineBasis calculation, no change
-  //! for the curve  and
+  //! for the curve and
   //! UFirstIndex, VLastIndex = 0
   //! VFirstIndex, VLastIndex = 0
   Standard_EXPORT static void MovePoint(const Standard_Real         U,
@@ -656,7 +656,7 @@ public:
   //! Given a tolerance in 3D space returns two
   //! tolerances, one in U one in V such that for
   //! all (u1,v1) and (u0,v0) in the domain of
-  //! the surface f(u,v)  we have :
+  //! the surface f(u,v) we have :
   //! | u1 - u0 | < UTolerance and
   //! | v1 - v0 | < VTolerance
   //! we have |f (u1,v1) - f (u0,v0)| < Tolerance3D

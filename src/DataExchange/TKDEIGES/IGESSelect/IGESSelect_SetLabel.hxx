@@ -50,7 +50,7 @@ public:
                                   Interface_CopyTool&               TC) const Standard_OVERRIDE;
 
   //! Returns a text which is
-  //! "Clear Short Label"  or  "Set Label to DE"
+  //! "Clear Short Label" or "Set Label to DE"
   //! With possible additional information " (enforced)"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 

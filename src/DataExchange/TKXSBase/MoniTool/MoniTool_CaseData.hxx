@@ -240,11 +240,11 @@ public:
   //! Returns False if not the good type
   Standard_EXPORT Standard_Boolean XYZ(const Standard_Integer nd, gp_XYZ& val) const;
 
-  //! Returns a data as a XY  (i.e. Geom2d_CartesianPoint)
+  //! Returns a data as a XY (i.e. Geom2d_CartesianPoint)
   //! Returns False if not the good type
   Standard_EXPORT Standard_Boolean XY(const Standard_Integer nd, gp_XY& val) const;
 
-  //! Returns a couple of reals  (stored in Geom2d_CartesianPoint)
+  //! Returns a couple of reals (stored in Geom2d_CartesianPoint)
   Standard_EXPORT Standard_Boolean Reals(const Standard_Integer nd,
                                          Standard_Real&         v1,
                                          Standard_Real&         v2) const;

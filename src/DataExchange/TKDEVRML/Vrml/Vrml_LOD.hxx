@@ -29,7 +29,7 @@ class Vrml_LOD;
 DEFINE_STANDARD_HANDLE(Vrml_LOD, Standard_Transient)
 
 //! defines a LOD (level of detailization) node of VRML specifying properties
-//! of geometry  and its appearance.
+//! of geometry and its appearance.
 //! This group node is used to allow applications to switch between
 //! various representations of objects automatically. The children of this
 //! node typically represent the same object or objects at the varying

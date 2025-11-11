@@ -26,7 +26,7 @@ class TopoDS_Shape;
 
 //! The XmlMNaming_Shape1 is the Persistent view of a TopoDS_Shape.
 //!
-//! a  Shape1 contains :
+//! Shape1 contains:
 //! - a reference to a TShape
 //! - a reference to Location
 //! - an Orientation.

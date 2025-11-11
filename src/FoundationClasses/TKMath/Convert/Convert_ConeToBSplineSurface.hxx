@@ -27,7 +27,7 @@ class gp_Cone;
 //! This algorithm converts a bounded Cone into a rational
 //! B-spline surface.
 //! The cone a Cone from package gp. Its parametrization is:
-//! P (U, V) =  Loc + V * Zdir +
+//! P (U, V) = Loc + V * Zdir +
 //! (R + V*Tan(Ang)) * (Cos(U)*Xdir + Sin(U)*Ydir)
 //! where Loc is the location point of the cone, Xdir, Ydir and Zdir
 //! are the normalized directions of the local cartesian coordinate

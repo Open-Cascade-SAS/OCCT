@@ -103,8 +103,8 @@ public:
   //! of the surfaces inside that common box for possible intersection
   Standard_EXPORT void CommonBox();
 
-  //! Compute the common box  witch is the intersection
-  //! of the two bounding boxes,  and mark the points of
+  //! Compute the common box which is the intersection
+  //! of the two bounding boxes, and mark the points of
   //! the two surfaces that are inside.
   Standard_EXPORT void CommonBox(const Bnd_Box& B1,
                                  const Bnd_Box& B2,
@@ -118,8 +118,8 @@ public:
   //! Compute edges from the array of points
   Standard_EXPORT void FillArrayOfEdges(const Standard_Integer SurfID);
 
-  //! Compute triangles from the array of points, and --
-  //! mark the triangles  that use marked points by the
+  //! Compute triangles from the array of points, and
+  //! mark the triangles that use marked points by the
   //! CommonBox function.
   Standard_EXPORT void FillArrayOfTriangles(const Standard_Integer SurfID);
 
@@ -129,14 +129,14 @@ public:
   //! Refine systematicaly all marked triangles of ONE surface
   Standard_EXPORT void LocalSurfaceRefinement(const Standard_Integer SurfId);
 
-  //! Compute deflection  for   all  triangles  of  one
+  //! Compute deflection for all triangles of one
   //! surface,and sort min and max of deflections
   Standard_EXPORT void ComputeDeflections(const Standard_Integer SurfID);
 
-  //! Refine  both  surfaces using  BoundSortBox  as --
-  //! rejection.  The  criterions  used to refine a  --
-  //! triangle are:  The deflection The  size of the --
-  //! bounding boxes   (one surface may be   very small
+  //! Refine both surfaces using BoundSortBox as
+  //! rejection. The criterions used to refine a
+  //! triangle are: The deflection The size of the 
+  //! bounding boxes (one surface may be very small
   //! compared to the other)
   Standard_EXPORT void TrianglesDeflectionsRefinementBSB();
 
@@ -189,13 +189,13 @@ public:
   Standard_EXPORT Standard_Integer TriangleCompare();
 
   //! Loop on the array of couples. Compute StartPoints.
-  //! Try to chain  the StartPoints into SectionLines or
-  //! put  the  point  in  the    ArrayOfTangentZones if
+  //! Try to chain the StartPoints into SectionLines or
+  //! put the point in the ArrayOfTangentZones if
   //! chaining it, is not possible.
   Standard_EXPORT Standard_Integer StartPointsChain(IntPolyh_ArrayOfSectionLines& TSectionLines,
                                                     IntPolyh_ArrayOfTangentZones& TTangentZones);
 
-  //! Mainly  used  by StartPointsChain(), this function
+  //! Mainly used by StartPointsChain(), this function
   //! try to compute the next StartPoint.
   Standard_EXPORT Standard_Integer
     GetNextChainStartPoint(const IntPolyh_StartPoint&    SPInit,
