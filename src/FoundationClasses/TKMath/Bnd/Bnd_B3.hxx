@@ -13,15 +13,289 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Boolean _compareDist(const RealType aHSize[3], const RealType aDist[3])
+#ifndef _Bnd_B3_HeaderFile
+#define _Bnd_B3_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+
+#include <gp_XYZ.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax3.hxx>
+
+//! Template class for 3D bounding box.
+//! This is a base template that is instantiated for Standard_Real and Standard_ShortReal.
+template<typename RealType>
+class Bnd_B3
 {
-  return (Abs(aDist[0]) > aHSize[0] || Abs(aDist[1]) > aHSize[1] || Abs(aDist[2]) > aHSize[2]);
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Empty constructor.
+  Bnd_B3();
+
+  //! Constructor.
+  Bnd_B3(const gp_XYZ& theCenter, const gp_XYZ& theHSize);
+
+  //! Returns True if the box is void (non-initialized).
+  Standard_Boolean IsVoid() const;
+
+  //! Reset the box data.
+  void Clear();
+
+  //! Update the box by a point.
+  void Add(const gp_XYZ& thePnt);
+
+  //! Update the box by a point.
+  void Add(const gp_Pnt& thePnt);
+
+  //! Update the box by another box.
+  void Add(const Bnd_B3<RealType>& theBox);
+
+  //! Query the lower corner: (Center - HSize). You must make sure that
+  //! the box is NOT VOID (see IsVoid()), otherwise the method returns
+  //! irrelevant result.
+  gp_XYZ CornerMin() const;
+
+  //! Query the upper corner: (Center + HSize). You must make sure that
+  //! the box is NOT VOID (see IsVoid()), otherwise the method returns
+  //! irrelevant result.
+  gp_XYZ CornerMax() const;
+
+  //! Query the square diagonal. If the box is VOID (see method IsVoid())
+  //! then a very big real value is returned.
+  Standard_Real SquareExtent() const;
+
+  //! Extend the Box by the absolute value of theDiff.
+  void Enlarge(const Standard_Real theDiff);
+
+  //! Limit the Box by the internals of theOtherBox.
+  //! Returns True if the limitation takes place, otherwise False
+  //! indicating that the boxes do not intersect.
+  Standard_Boolean Limit(const Bnd_B3<RealType>& theOtherBox);
+
+  //! Transform the bounding box with the given transformation.
+  //! The resulting box will be larger if theTrsf contains rotation.
+  Standard_NODISCARD Bnd_B3<RealType> Transformed(const gp_Trsf& theTrsf) const;
+
+  //! Check the given point for the inclusion in the Box.
+  //! Returns True if the point is outside.
+  Standard_Boolean IsOut(const gp_XYZ& thePnt) const;
+
+  //! Check a sphere for the intersection with the current box.
+  //! Returns True if there is no intersection between boxes. If the
+  //! parameter 'IsSphereHollow' is True, then the intersection is not
+  //! reported for a box that is completely inside the sphere (otherwise
+  //! this method would report an intersection).
+  Standard_Boolean IsOut(const gp_XYZ&          theCenter,
+                         const Standard_Real    theRadius,
+                         const Standard_Boolean isSphereHollow = Standard_False) const;
+
+  //! Check the given box for the intersection with the current box.
+  //! Returns True if there is no intersection between boxes.
+  Standard_Boolean IsOut(const Bnd_B3<RealType>& theOtherBox) const;
+
+  //! Check the given box oriented by the given transformation
+  //! for the intersection with the current box.
+  //! Returns True if there is no intersection between boxes.
+  Standard_Boolean IsOut(const Bnd_B3<RealType>& theOtherBox, const gp_Trsf& theTrsf) const;
+
+  //! Check the given Line for the intersection with the current box.
+  //! Returns True if there is no intersection.
+  //! isRay==True means intersection check with the positive half-line
+  //! theOverthickness is the addition to the size of the current box
+  //! (may be negative). If positive, it can be treated as the thickness
+  //! of the line 'theLine' or the radius of the cylinder along 'theLine'
+  Standard_Boolean IsOut(const gp_Ax1&          theLine,
+                         const Standard_Boolean isRay            = Standard_False,
+                         const Standard_Real    theOverthickness = 0.0) const;
+
+  //! Check the given Plane for the intersection with the current box.
+  //! Returns True if there is no intersection.
+  Standard_Boolean IsOut(const gp_Ax3& thePlane) const;
+
+  //! Check that the box 'this' is inside the given box 'theBox'. Returns
+  //! True if 'this' box is fully inside 'theBox'.
+  Standard_Boolean IsIn(const Bnd_B3<RealType>& theBox) const;
+
+  //! Check that the box 'this' is inside the given box 'theBox'
+  //! transformed by 'theTrsf'. Returns True if 'this' box is fully
+  //! inside the transformed 'theBox'.
+  Standard_Boolean IsIn(const Bnd_B3<RealType>& theBox, const gp_Trsf& theTrsf) const;
+
+  //! Set the Center coordinates
+  void SetCenter(const gp_XYZ& theCenter);
+
+  //! Set the HSize (half-diagonal) coordinates.
+  //! All components of theHSize must be non-negative.
+  void SetHSize(const gp_XYZ& theHSize);
+
+protected:
+  RealType myCenter[3];
+  RealType myHSize[3];
+
+private:
+};
+
+//=======================================================================
+// Inline implementations
+//=======================================================================
+
+#ifndef Bnd_B3_RealLast
+  #define Bnd_B3_RealLast RealType(1e30);
+#endif
+
+//! Empty constructor
+template<typename RealType>
+inline Bnd_B3<RealType>::Bnd_B3()
+{
+  Clear();
 }
 
-inline Standard_Boolean _compareDistD(const gp_XYZ& aHSize, const gp_XYZ& aDist)
+//! Constructor.
+template<typename RealType>
+inline Bnd_B3<RealType>::Bnd_B3(const gp_XYZ& theCenter, const gp_XYZ& theHSize)
 {
-  return (Abs(aDist.X()) > aHSize.X() || Abs(aDist.Y()) > aHSize.Y()
-          || Abs(aDist.Z()) > aHSize.Z());
+  myCenter[0] = RealType(theCenter.X());
+  myCenter[1] = RealType(theCenter.Y());
+  myCenter[2] = RealType(theCenter.Z());
+  myHSize[0]  = RealType(theHSize.X());
+  myHSize[1]  = RealType(theHSize.Y());
+  myHSize[2]  = RealType(theHSize.Z());
+}
+
+//! Reset the box data.
+template<typename RealType>
+inline void Bnd_B3<RealType>::Clear()
+{
+  myCenter[0] = Bnd_B3_RealLast;
+  myCenter[1] = Bnd_B3_RealLast;
+  myCenter[2] = Bnd_B3_RealLast;
+  myHSize[0]  = -Bnd_B3_RealLast;
+  myHSize[1]  = -Bnd_B3_RealLast;
+  myHSize[2]  = -Bnd_B3_RealLast;
+}
+
+//! Check if the box is empty.
+template<typename RealType>
+inline Standard_Boolean Bnd_B3<RealType>::IsVoid() const
+{
+  return (myHSize[0] < -1e-5);
+}
+
+//! Update the box by point.
+template<typename RealType>
+inline void Bnd_B3<RealType>::Add(const gp_Pnt& thePnt)
+{
+  Add(thePnt.XYZ());
+}
+
+//! Update the box by another box.
+template<typename RealType>
+inline void Bnd_B3<RealType>::Add(const Bnd_B3<RealType>& theBox)
+{
+  if (theBox.IsVoid() == Standard_False)
+  {
+    Add(theBox.CornerMin());
+    Add(theBox.CornerMax());
+  }
+}
+
+//! Query a box corner.
+template<typename RealType>
+inline gp_XYZ Bnd_B3<RealType>::CornerMin() const
+{
+  return gp_XYZ(myCenter[0] - myHSize[0], myCenter[1] - myHSize[1], myCenter[2] - myHSize[2]);
+}
+
+//! Query a box corner.
+template<typename RealType>
+inline gp_XYZ Bnd_B3<RealType>::CornerMax() const
+{
+  return gp_XYZ(myCenter[0] + myHSize[0], myCenter[1] + myHSize[1], myCenter[2] + myHSize[2]);
+}
+
+//! Query the square diagonal.
+template<typename RealType>
+inline Standard_Real Bnd_B3<RealType>::SquareExtent() const
+{
+  return 4 * (myHSize[0] * myHSize[0] + myHSize[1] * myHSize[1] + myHSize[2] * myHSize[2]);
+}
+
+//! Set the Center coordinates.
+template<typename RealType>
+inline void Bnd_B3<RealType>::SetCenter(const gp_XYZ& theCenter)
+{
+  myCenter[0] = RealType(theCenter.X());
+  myCenter[1] = RealType(theCenter.Y());
+  myCenter[2] = RealType(theCenter.Z());
+}
+
+//! Set the Center coordinates.
+template<typename RealType>
+inline void Bnd_B3<RealType>::SetHSize(const gp_XYZ& theHSize)
+{
+  myHSize[0] = RealType(theHSize.X());
+  myHSize[1] = RealType(theHSize.Y());
+  myHSize[2] = RealType(theHSize.Z());
+}
+
+//! Increase the box.
+template<typename RealType>
+inline void Bnd_B3<RealType>::Enlarge(const Standard_Real aDiff)
+{
+  const Standard_Real aD = Abs(aDiff);
+  myHSize[0] += RealType(aD);
+  myHSize[1] += RealType(aD);
+  myHSize[2] += RealType(aD);
+}
+
+//! Intersection Box - Point
+template<typename RealType>
+inline Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_XYZ& thePnt) const
+{
+  return (Abs(RealType(thePnt.X()) - myCenter[0]) > myHSize[0]
+          || Abs(RealType(thePnt.Y()) - myCenter[1]) > myHSize[1]
+          || Abs(RealType(thePnt.Z()) - myCenter[2]) > myHSize[2]);
+}
+
+//! Intersection Box-Box.
+template<typename RealType>
+inline Standard_Boolean Bnd_B3<RealType>::IsOut(const Bnd_B3<RealType>& theBox) const
+{
+  return (Abs(theBox.myCenter[0] - myCenter[0]) > theBox.myHSize[0] + myHSize[0]
+          || Abs(theBox.myCenter[1] - myCenter[1]) > theBox.myHSize[1] + myHSize[1]
+          || Abs(theBox.myCenter[2] - myCenter[2]) > theBox.myHSize[2] + myHSize[2]);
+}
+
+//! Test the complete inclusion of this box in theBox.
+template<typename RealType>
+inline Standard_Boolean Bnd_B3<RealType>::IsIn(const Bnd_B3<RealType>& theBox) const
+{
+  return (Abs(theBox.myCenter[0] - myCenter[0]) < theBox.myHSize[0] - myHSize[0]
+          && Abs(theBox.myCenter[1] - myCenter[1]) < theBox.myHSize[1] - myHSize[1]
+          && Abs(theBox.myCenter[2] - myCenter[2]) < theBox.myHSize[2] - myHSize[2]);
+}
+
+//=======================================================================
+// Non-inline implementations
+//=======================================================================
+
+namespace
+{
+  template<typename RealType>
+  inline Standard_Boolean _compareDist(const RealType aHSize[3], const RealType aDist[3])
+  {
+    return (Abs(aDist[0]) > aHSize[0] || Abs(aDist[1]) > aHSize[1] || Abs(aDist[2]) > aHSize[2]);
+  }
+
+  inline Standard_Boolean _compareDistD(const gp_XYZ& aHSize, const gp_XYZ& aDist)
+  {
+    return (Abs(aDist.X()) > aHSize.X() || Abs(aDist.Y()) > aHSize.Y()
+            || Abs(aDist.Z()) > aHSize.Z());
+  }
 }
 
 //=======================================================================
@@ -29,7 +303,8 @@ inline Standard_Boolean _compareDistD(const gp_XYZ& aHSize, const gp_XYZ& aDist)
 // purpose  : Update the box by a point
 //=======================================================================
 
-void Bnd_B3x::Add(const gp_XYZ& thePnt)
+template<typename RealType>
+void Bnd_B3<RealType>::Add(const gp_XYZ& thePnt)
 {
   if (IsVoid())
   {
@@ -89,7 +364,8 @@ void Bnd_B3x::Add(const gp_XYZ& thePnt)
 // purpose  : limit the current box with the internals of theBox
 //=======================================================================
 
-Standard_Boolean Bnd_B3x::Limit(const Bnd_B3x& theBox)
+template<typename RealType>
+Standard_Boolean Bnd_B3<RealType>::Limit(const Bnd_B3<RealType>& theBox)
 {
   Standard_Boolean aResult(Standard_False);
   const RealType   diffC[3] = {theBox.myCenter[0] - myCenter[0],
@@ -147,9 +423,10 @@ Standard_Boolean Bnd_B3x::Limit(const Bnd_B3x& theBox)
 
 //=================================================================================================
 
-Bnd_B3x Bnd_B3x::Transformed(const gp_Trsf& theTrsf) const
+template<typename RealType>
+Bnd_B3<RealType> Bnd_B3<RealType>::Transformed(const gp_Trsf& theTrsf) const
 {
-  Bnd_B3x             aResult;
+  Bnd_B3<RealType>    aResult;
   const gp_TrsfForm   aForm     = theTrsf.Form();
   const Standard_Real aScale    = theTrsf.ScaleFactor();
   const Standard_Real aScaleAbs = Abs(aScale);
@@ -193,9 +470,10 @@ Bnd_B3x Bnd_B3x::Transformed(const gp_Trsf& theTrsf) const
 // purpose  : Intersection Box - Sphere
 //=======================================================================
 
-Standard_Boolean Bnd_B3x::IsOut(const gp_XYZ&          theCenter,
-                                const Standard_Real    theRadius,
-                                const Standard_Boolean isSphereHollow) const
+template<typename RealType>
+Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_XYZ&          theCenter,
+                                         const Standard_Real    theRadius,
+                                         const Standard_Boolean isSphereHollow) const
 {
   Standard_Boolean aResult(Standard_True);
   if (isSphereHollow == Standard_False)
@@ -249,7 +527,9 @@ Standard_Boolean Bnd_B3x::IsOut(const gp_XYZ&          theCenter,
 // purpose  : Intersection Box - transformed Box
 //=======================================================================
 
-Standard_Boolean Bnd_B3x::IsOut(const Bnd_B3x& theBox, const gp_Trsf& theTrsf) const
+template<typename RealType>
+Standard_Boolean Bnd_B3<RealType>::IsOut(const Bnd_B3<RealType>& theBox,
+                                         const gp_Trsf&          theTrsf) const
 {
   Standard_Boolean    aResult(Standard_False);
   const gp_TrsfForm   aForm     = theTrsf.Form();
@@ -262,7 +542,7 @@ Standard_Boolean Bnd_B3x::IsOut(const Bnd_B3x& theBox, const gp_Trsf& theTrsf) c
          > RealType(theBox.myHSize[0] * aScaleAbs) + myHSize[0]
        || Abs(RealType(theBox.myCenter[1] * aScale + theTrsf.TranslationPart().Y()) - myCenter[1])
             > RealType(theBox.myHSize[1] * aScaleAbs) + myHSize[1]
-       || Abs(RealType(theBox.myCenter[2] * aScale + theTrsf.TranslationPart().Y()) - myCenter[2])
+       || Abs(RealType(theBox.myCenter[2] * aScale + theTrsf.TranslationPart().Z()) - myCenter[2])
             > RealType(theBox.myHSize[2] * aScaleAbs) + myHSize[2]);
   }
   else
@@ -322,7 +602,8 @@ Standard_Boolean Bnd_B3x::IsOut(const Bnd_B3x& theBox, const gp_Trsf& theTrsf) c
 
 //=================================================================================================
 
-Standard_Boolean Bnd_B3x::IsOut(const gp_Ax3& thePlane) const
+template<typename RealType>
+Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_Ax3& thePlane) const
 {
   if (IsVoid())
     return Standard_True;
@@ -342,9 +623,10 @@ Standard_Boolean Bnd_B3x::IsOut(const gp_Ax3& thePlane) const
 
 //=================================================================================================
 
-Standard_Boolean Bnd_B3x::IsOut(const gp_Ax1&          theLine,
-                                const Standard_Boolean isRay,
-                                const Standard_Real    theOverthickness) const
+template<typename RealType>
+Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_Ax1&          theLine,
+                                         const Standard_Boolean isRay,
+                                         const Standard_Real    theOverthickness) const
 {
   const Standard_Real aRes = gp::Resolution() * 100.;
   if (IsVoid())
@@ -425,7 +707,9 @@ Standard_Boolean Bnd_B3x::IsOut(const gp_Ax1&          theLine,
 // purpose  : Test the complete inclusion of this box in transformed theOtherBox
 //=======================================================================
 
-Standard_Boolean Bnd_B3x::IsIn(const Bnd_B3x& theBox, const gp_Trsf& theTrsf) const
+template<typename RealType>
+Standard_Boolean Bnd_B3<RealType>::IsIn(const Bnd_B3<RealType>& theBox,
+                                        const gp_Trsf&          theTrsf) const
 {
   Standard_Boolean    aResult(Standard_False);
   const gp_TrsfForm   aForm     = theTrsf.Form();
@@ -438,7 +722,7 @@ Standard_Boolean Bnd_B3x::IsIn(const Bnd_B3x& theBox, const gp_Trsf& theTrsf) co
          < RealType(theBox.myHSize[0] * aScaleAbs) - myHSize[0]
        && Abs(RealType(theBox.myCenter[1] * aScale + theTrsf.TranslationPart().Y()) - myCenter[1])
             < RealType(theBox.myHSize[1] * aScaleAbs) - myHSize[1]
-       && Abs(RealType(theBox.myCenter[2] * aScale + theTrsf.TranslationPart().Y()) - myCenter[2])
+       && Abs(RealType(theBox.myCenter[2] * aScale + theTrsf.TranslationPart().Z()) - myCenter[2])
             < RealType(theBox.myHSize[2] * aScaleAbs) - myHSize[2]);
   }
   else
@@ -468,3 +752,5 @@ Standard_Boolean Bnd_B3x::IsIn(const Bnd_B3x& theBox, const gp_Trsf& theTrsf) co
   }
   return aResult;
 }
+
+#endif // _Bnd_B3_HeaderFile
