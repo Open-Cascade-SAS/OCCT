@@ -46,7 +46,7 @@ public:
   //! Sets default values for parameters
   Standard_EXPORT void Load();
 
-  //! Sets helix parametes
+  //! Sets helix parameters
   Standard_EXPORT void Load(const Standard_Real    aT1,
                             const Standard_Real    aT2,
                             const Standard_Real    aPitch,
