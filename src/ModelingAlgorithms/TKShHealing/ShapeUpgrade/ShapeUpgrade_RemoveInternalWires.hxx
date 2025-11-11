@@ -40,7 +40,7 @@ class ShapeUpgrade_RemoveInternalWires : public ShapeUpgrade_Tool
 {
 
 public:
-  //! Creates empty  constructor.
+  //! Creates empty constructor.
   Standard_EXPORT ShapeUpgrade_RemoveInternalWires();
 
   Standard_EXPORT ShapeUpgrade_RemoveInternalWires(const TopoDS_Shape& theShape);

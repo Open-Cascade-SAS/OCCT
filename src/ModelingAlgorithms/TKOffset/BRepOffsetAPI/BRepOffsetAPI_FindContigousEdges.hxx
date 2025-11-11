@@ -144,7 +144,7 @@ public:
   Standard_EXPORT Standard_Boolean IsModified(const TopoDS_Shape& shape) const;
 
   //! Gives a modifieded shape
-  //! Raises   NoSuchObject if shape has not been modified
+  //! Raises NoSuchObject if shape has not been modified
   Standard_EXPORT const TopoDS_Shape& Modified(const TopoDS_Shape& shape) const;
 
   //! Dump properties of resulting shape.

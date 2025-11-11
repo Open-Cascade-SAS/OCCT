@@ -52,18 +52,18 @@ public:
                                     const Standard_Boolean OffsetOutside = Standard_True,
                                     const GeomAbs_JoinType JoinType      = GeomAbs_Arc);
 
-  //! This method will be  called when you want to share
-  //! the  edges  soon generated  from  an other  face.
-  //! e.g. when two faces are  tangents the common  edge
+  //! This method will be called when you want to share
+  //! the edges soon generated from an other face.
+  //! e.g. when two faces are tangents the common edge
   //! will generate only one edge ( no pipe).
   //!
-  //! The Map  will be fill  as  follow:
+  //! The Map will be fill as follow:
   //!
   //! Created(E) = E'
-  //! with: E  = an edge of <Face>
-  //! E' = the image of E in the offsetting  of
-  //! another  face  sharing E  with a
-  //! continuity at least G1
+  //! with:
+  //! E = an edge of <Face>
+  //! E' = the image of E in the offsetting of another
+  //! face sharing E with a continuity at least G1
   Standard_EXPORT BRepOffset_Offset(const TopoDS_Face&                  Face,
                                     const Standard_Real                 Offset,
                                     const TopTools_DataMapOfShapeShape& Created,

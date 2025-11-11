@@ -27,8 +27,8 @@
 class HLRBRep_AreaLimit;
 DEFINE_STANDARD_HANDLE(HLRBRep_AreaLimit, Standard_Transient)
 
-//! The  private  nested class AreaLimit represents   a --
-//! vertex on  the Edge with the  state on the left and --
+//! The private nested class AreaLimit represents a 
+//! vertex on the Edge with the state on the left and 
 //! the right.
 class HLRBRep_AreaLimit : public Standard_Transient
 {

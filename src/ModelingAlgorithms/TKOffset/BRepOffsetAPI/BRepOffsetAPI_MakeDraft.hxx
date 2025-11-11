@@ -88,7 +88,7 @@ public:
   //! draft along the wire.
   Standard_EXPORT TopoDS_Shell Shell() const;
 
-  //! Returns the  list   of shapes generated   from the
+  //! Returns the list of shapes generated from the
   //! shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
     Standard_OVERRIDE;

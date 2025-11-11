@@ -55,15 +55,15 @@ public:
   //! surface
   Standard_EXPORT void Perform(const gp_Lin& Curve, const Standard_Address& Surface);
 
-  //! Compute the Intersection  between the curve  and
-  //! the surface. The   Curve is already  sampled and
+  //! Compute the Intersection between the curve and
+  //! the surface. The Curve is already sampled and
   //! its polygon : <Polygon> is given.
   Standard_EXPORT void Perform(const gp_Lin&                         Curve,
                                const HLRBRep_ThePolygonOfInterCSurf& Polygon,
                                const Standard_Address&               Surface);
 
-  //! Compute the Intersection  between the curve  and
-  //! the surface. The   Curve is already  sampled and
+  //! Compute the Intersection between the curve and
+  //! the surface. The Curve is already sampled and
   //! its polygon : <Polygon> is given. The Surface is
   //! also sampled and <Polyhedron> is given.
   Standard_EXPORT void Perform(const gp_Lin&                            Curve,
@@ -71,8 +71,8 @@ public:
                                const Standard_Address&                  Surface,
                                const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron);
 
-  //! Compute the Intersection  between the curve  and
-  //! the surface. The   Curve is already  sampled and
+  //! Compute the Intersection between the curve and
+  //! the surface. The Curve is already sampled and
   //! its polygon : <Polygon> is given. The Surface is
   //! also sampled and <Polyhedron> is given.
   Standard_EXPORT void Perform(const gp_Lin&                            Curve,
@@ -81,8 +81,8 @@ public:
                                const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron,
                                Bnd_BoundSortBox&                        BndBSB);
 
-  //! Compute the Intersection  between the curve  and
-  //! the surface. The Surface is already  sampled and
+  //! Compute the Intersection between the curve and
+  //! the surface. The Surface is already sampled and
   //! its polyhedron : <Polyhedron> is given.
   Standard_EXPORT void Perform(const gp_Lin&                            Curve,
                                const Standard_Address&                  Surface,

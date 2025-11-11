@@ -31,13 +31,13 @@ class TopoDS_Face;
 class BRepOffset
 {
 public:
-  //! returns   the  Offset  surface  computed from  the
+  //! returns the Offset surface computed from the
   //! surface <Surface> at an OffsetDistance <Offset>.
   //!
-  //! If possible, this method returns  the real type of
+  //! If possible, this method returns the real type of
   //! the surface ( e.g. An Offset of a plane is a plane).
   //!
-  //! If  no particular  case  is detected, the returned
+  //! If no particular case is detected, the returned
   //! surface will have the Type Geom_OffsetSurface.
   //! Parameter allowC0 is then passed as last argument to
   //! constructor of Geom_OffsetSurface.

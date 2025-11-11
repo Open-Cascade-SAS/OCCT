@@ -39,14 +39,14 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! This algorithm searches the knot values corresponding to the
-  //! splitting of a given B-spline law into  several arcs with
+  //! splitting of a given B-spline law into several arcs with
   //! the same continuity. The continuity order is given at the
   //! construction time.
-  //! Builds a 1d bspline that   is near from Lin with  null
+  //! Builds a 1d bspline that is near from Lin with null
   //! derivatives at the extremities.
   Standard_EXPORT static Handle(Law_BSpFunc) MixBnd(const Handle(Law_Linear)& Lin);
 
-  //! Builds  the poles of the 1d  bspline that is near from
+  //! Builds the poles of the 1d bspline that is near from
   //! Lin with null derivatives at the extremities.
   Standard_EXPORT static Handle(TColStd_HArray1OfReal) MixBnd(const Standard_Integer         Degree,
                                                               const TColStd_Array1OfReal&    Knots,
@@ -54,12 +54,12 @@ public:
                                                               const Handle(Law_Linear)&      Lin);
 
   //! Builds the poles of the 1d bspline that is null on the
-  //! right    side   of   Knots(Index)  (on  the    left if
-  //! NulOnTheRight  is  false)    and   that is     like  a
-  //! t*(1-t)(1-t) curve  on the  left side of  Knots(Index)
-  //! (on the right  if NulOnTheRight is false).  The result
-  //! curve is  C1 with  a derivative  equal  to 1. at first
-  //! parameter (-1 at last  parameter  if  NulOnTheRight is
+  //! right side of Knots(Index) (on the left if
+  //! NulOnTheRight is false) and that is like a
+  //! t*(1-t)(1-t) curve on the left side of Knots(Index)
+  //! (on the right if NulOnTheRight is false). The result
+  //! curve is C1 with a derivative equal to 1. at first
+  //! parameter (-1 at last parameter if NulOnTheRight is
   //! false).
   //! Warning: Mults(Index) must greater or equal to degree-1.
   Standard_EXPORT static Handle(TColStd_HArray1OfReal) MixTgt(const Standard_Integer         Degree,
@@ -68,8 +68,8 @@ public:
                                                               const Standard_Boolean NulOnTheRight,
                                                               const Standard_Integer Index);
 
-  //! Computes a 1 d curve to  reparametrize a curve. Its an
-  //! interpolation of NbPoints  points calculated  at quasi
+  //! Computes a 1d curve to reparametrize a curve. Its an
+  //! interpolation of NbPoints points calculated at quasi
   //! constant abscissa.
   Standard_EXPORT static Handle(Law_BSpline) Reparametrize(const Adaptor3d_Curve& Curve,
                                                            const Standard_Real    First,
@@ -81,7 +81,7 @@ public:
                                                            const Standard_Boolean Rev,
                                                            const Standard_Integer NbPoints);
 
-  //! Computes a 1  d curve to  scale  a field of  tangency.
+  //! Computes a 1d curve to scale a field of tangency.
   //! Value is 1. for t = (First+Last)/2 .
   //! If HasFirst value for t = First is VFirst (null derivative).
   //! If HasLast value for t = Last is VLast (null derivative).

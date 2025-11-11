@@ -43,7 +43,7 @@ class gp_Vec;
 class Geom_BezierCurve;
 class Geom_BSplineCurve;
 
-//! The  LineTool  class  provides  class  methods to
+//! The LineTool class provides class methods to
 //! access the methodes of the Line.
 class HLRBRep_LineTool
 {
@@ -56,19 +56,19 @@ public:
 
   static GeomAbs_Shape Continuity(const gp_Lin& C);
 
-  //! If necessary,   breaks the line  in  intervals of
-  //! continuity <S>.     And   returns  the  number  of
+  //! If necessary, breaks the line in intervals of
+  //! continuity <S>. And returns the number of
   //! intervals.
   static Standard_Integer NbIntervals(const gp_Lin& C, const GeomAbs_Shape S);
 
   //! Sets the current working interval.
   static void Intervals(const gp_Lin& C, TColStd_Array1OfReal& T, const GeomAbs_Shape Sh);
 
-  //! Returns  the  first  parameter    of  the  current
+  //! Returns the first parameter of the current
   //! interval.
   static Standard_Real IntervalFirst(const gp_Lin& C);
 
-  //! Returns  the  last  parameter    of  the  current
+  //! Returns the last parameter of the current
   //! interval.
   static Standard_Real IntervalLast(const gp_Lin& C);
 
@@ -116,12 +116,12 @@ public:
   //! Raised if N < 1.
   static gp_Vec DN(const gp_Lin& C, const Standard_Real U, const Standard_Integer N);
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   static Standard_Real Resolution(const gp_Lin& C, const Standard_Real R3d);
 
-  //! Returns  the  type of the   line  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the line in the current
+  //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   static GeomAbs_CurveType GetType(const gp_Lin& C);
 

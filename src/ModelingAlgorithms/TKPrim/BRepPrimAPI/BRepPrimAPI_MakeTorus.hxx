@@ -103,7 +103,7 @@ public:
   //! Make a section of a torus of radii R1 R2.
   //! For all algorithms The resulting shape is composed of
   //! -      a lateral toroidal face,
-  //! -      two conical faces (defined  by the equation v = angle1 and
+  //! -      two conical faces (defined by the equation v = angle1 and
   //! v = angle2) if the sphere is truncated in the v parametric
   //! direction (they may be cylindrical faces in some
   //! particular conditions), and in case of a portion

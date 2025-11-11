@@ -30,7 +30,7 @@ class TopoDS_Shape;
 //! explore shapes and convert different representations
 //! (list, sequence, compound) of complex shapes. It provides tools for:
 //! - obtaining type of the shapes in context of TopoDS_Compound,
-//! - exploring shapes in context of  TopoDS_Compound,
+//! - exploring shapes in context of TopoDS_Compound,
 //! - converting different representations of shapes (list, sequence, compound).
 class ShapeExtend_Explorer
 {

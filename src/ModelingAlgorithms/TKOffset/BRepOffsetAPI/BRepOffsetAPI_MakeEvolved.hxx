@@ -45,8 +45,8 @@ class TopoDS_Shape;
 //! (which lies in infinite number of planes).
 //!
 //! The profile is defined in a Referential R. The position of
-//! the profile at the current point of the  spine is given by
-//! confusing R  and the local  referential given by (  D0, D1
+//! the profile at the current point of the spine is given by
+//! confusing R and the local referential given by (D0, D1
 //! and the normal of the Spine).
 //!
 //! The coordinate system is determined by theIsAxeProf argument:
@@ -102,8 +102,8 @@ public:
   Standard_EXPORT virtual void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
-  //! Returns   the  shapes  created  from   a  subshape
-  //! <SpineShape>  of     the  spine   and   a subshape
+  //! Returns the shapes created from a subshape
+  //! <SpineShape> of the spine and a subshape
   //! <ProfShape> on the profile.
   Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Shape& SpineShape,
                                                               const TopoDS_Shape& ProfShape) const;
@@ -111,7 +111,7 @@ public:
   //! Return the face Top if <Solid> is True in the constructor.
   Standard_EXPORT const TopoDS_Shape& Top() const;
 
-  //! Return the face Bottom  if <Solid> is True in the constructor.
+  //! Return the face Bottom if <Solid> is True in the constructor.
   Standard_EXPORT const TopoDS_Shape& Bottom() const;
 
 protected:
