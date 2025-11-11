@@ -6,11 +6,7 @@ set(OCCT_Bnd_FILES
   Bnd_Array1OfBox2d.hxx
   Bnd_Array1OfSphere.hxx
   Bnd_B2.hxx
-  Bnd_B2d.hxx
-  Bnd_B2f.hxx
   Bnd_B3.hxx
-  Bnd_B3d.hxx
-  Bnd_B3f.hxx
   Bnd_BoundSortBox.cxx
   Bnd_BoundSortBox.hxx
   Bnd_Box.cxx
