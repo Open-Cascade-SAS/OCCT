@@ -3680,7 +3680,6 @@ static Standard_Integer OCC24537(Draw_Interpretor& theDI, Standard_Integer argc,
 }
 
 #include <BRepOffsetAPI_DraftAngle.hxx>
-#include <vector>
 
 static TopoDS_Shape taper(const TopoDS_Shape& shape,
                           const TopoDS_Face&  face_a,
