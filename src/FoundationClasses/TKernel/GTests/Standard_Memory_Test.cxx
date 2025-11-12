@@ -38,8 +38,8 @@ int testOutOfMemory()
 }
 
 #ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 template <>
 int testOutOfMemory<4>()
@@ -78,7 +78,7 @@ int testOutOfMemory<4>()
   return aStatus;
 }
 #ifdef __GNUC__
-#pragma GCC diagnostic pop
+  #pragma GCC diagnostic pop
 #endif
 } // namespace
 

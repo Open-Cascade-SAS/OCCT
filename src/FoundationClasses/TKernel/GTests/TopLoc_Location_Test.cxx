@@ -87,5 +87,5 @@ TEST(TopLoc_Location_Test, OCC25545_ConcurrentTransformationAccess)
 
   // Verify no data race was detected
   EXPECT_EQ(aFunc.myIsRaceDetected, 0)
-      << "Data race detected in concurrent TopLoc_Location::Transformation() access";
+    << "Data race detected in concurrent TopLoc_Location::Transformation() access";
 }

@@ -2457,7 +2457,6 @@ static Standard_Integer OCC26270(Draw_Interpretor& theDI,
   return 0;
 }
 
-
 #include <NCollection_IncAllocator.hxx>
 
 static Standard_Integer OCC27875(Draw_Interpretor& theDI,

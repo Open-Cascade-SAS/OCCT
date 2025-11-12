@@ -59,7 +59,7 @@ TEST(Geom2dGcc_Circ2d2TanOn_Test, OCC27357_NoExceptions)
       double                        g1 = aProjPc1.LowerDistanceParameter();
       Geom2dAPI_ProjectPointOnCurve aProjPc3(aP1, aNormalLine);
       double                        g3 = aProjPc3.LowerDistanceParameter();
-      Geom2dGcc_Circ2d2TanOn aCircleBuilder(aQualifiedC1,
+      Geom2dGcc_Circ2d2TanOn        aCircleBuilder(aQualifiedC1,
                                             aQualifiedC2,
                                             Geom2dAdaptor_Curve(aNormalLine),
                                             1e-9,

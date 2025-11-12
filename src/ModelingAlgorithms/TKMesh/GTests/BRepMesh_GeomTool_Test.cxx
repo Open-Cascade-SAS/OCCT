@@ -45,8 +45,8 @@ TEST(BRepMesh_GeomTool_Test, OCC25547_StaticMethodsExportAndFunctionality)
   BRepAdaptor_Surface         aSurf(aFace);
   Handle(BRepAdaptor_Surface) aHSurf = new BRepAdaptor_Surface(aSurf);
 
-  gp_Pnt aPnt;
-  gp_Dir aNormal;
+  gp_Pnt           aPnt;
+  gp_Dir           aNormal;
   Standard_Boolean isNormalComputed = BRepMesh_GeomTool::Normal(aHSurf, 10., 10., aPnt, aNormal);
 
   EXPECT_TRUE(isNormalComputed) << "BRepMesh_GeomTool failed to compute a normal of surface";
@@ -57,11 +57,11 @@ TEST(BRepMesh_GeomTool_Test, OCC25547_StaticMethodsExportAndFunctionality)
   gp_Pnt2d                   anIntPnt;
   Standard_Real              aParams[2];
   BRepMesh_GeomTool::IntFlag anIntFlag = BRepMesh_GeomTool::IntLinLin(aRefPnts[0],
-                                                                       aRefPnts[1],
-                                                                       aRefPnts[2],
-                                                                       aRefPnts[3],
-                                                                       anIntPnt.ChangeCoord(),
-                                                                       aParams);
+                                                                      aRefPnts[1],
+                                                                      aRefPnts[2],
+                                                                      aRefPnts[3],
+                                                                      anIntPnt.ChangeCoord(),
+                                                                      aParams);
 
   Standard_Real aDiff = anIntPnt.Distance(gp::Origin2d());
   EXPECT_EQ(anIntFlag, BRepMesh_GeomTool::Cross)

@@ -48,30 +48,29 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC24889_IntersectionParameterWithinLimits)
 
   const IntRes2d_IntersectionPoint& aIntPnt = aIntTool.Intersector().Point(1);
 
-  gp_Pnt2d      aIntRes   = aIntTool.Point(1);
-  Standard_Real aParOnC1  = aIntPnt.ParamOnFirst();
-  Standard_Real aParOnC2  = aIntPnt.ParamOnSecond();
+  gp_Pnt2d      aIntRes    = aIntTool.Point(1);
+  Standard_Real aParOnC1   = aIntPnt.ParamOnFirst();
+  Standard_Real aParOnC2   = aIntPnt.ParamOnSecond();
   Standard_Real aFirstPar1 = aTrim1->FirstParameter();
   Standard_Real aLastPar1  = aTrim1->LastParameter();
   Standard_Real aFirstPar2 = aTrim2->FirstParameter();
   Standard_Real aLastPar2  = aTrim2->LastParameter();
 
   // Verify that intersection parameters are within the curve limits
-  EXPECT_GE(aParOnC1, aFirstPar1)
-    << "IntParameter on curve 1 (" << aParOnC1 << ") should be >= FirstParam (" << aFirstPar1 << ")";
-  EXPECT_LE(aParOnC1, aLastPar1)
-    << "IntParameter on curve 1 (" << aParOnC1 << ") should be <= LastParam (" << aLastPar1 << ")";
+  EXPECT_GE(aParOnC1, aFirstPar1) << "IntParameter on curve 1 (" << aParOnC1
+                                  << ") should be >= FirstParam (" << aFirstPar1 << ")";
+  EXPECT_LE(aParOnC1, aLastPar1) << "IntParameter on curve 1 (" << aParOnC1
+                                 << ") should be <= LastParam (" << aLastPar1 << ")";
 
-  EXPECT_GE(aParOnC2, aFirstPar2)
-    << "IntParameter on curve 2 (" << aParOnC2 << ") should be >= FirstParam (" << aFirstPar2 << ")";
-  EXPECT_LE(aParOnC2, aLastPar2)
-    << "IntParameter on curve 2 (" << aParOnC2 << ") should be <= LastParam (" << aLastPar2 << ")";
+  EXPECT_GE(aParOnC2, aFirstPar2) << "IntParameter on curve 2 (" << aParOnC2
+                                  << ") should be >= FirstParam (" << aFirstPar2 << ")";
+  EXPECT_LE(aParOnC2, aLastPar2) << "IntParameter on curve 2 (" << aParOnC2
+                                 << ") should be <= LastParam (" << aLastPar2 << ")";
 
   // Verify that both curves evaluate to the same point at the intersection parameters
   gp_Pnt2d aP1 = aTrim1->Value(aParOnC1);
   gp_Pnt2d aP2 = aTrim2->Value(aParOnC2);
 
   Standard_Real aDist2 = aP1.SquareDistance(aP2);
-  EXPECT_LT(aDist2, 1.0e-14)
-    << "Points on both curves at intersection parameters should coincide";
+  EXPECT_LT(aDist2, 1.0e-14) << "Points on both curves at intersection parameters should coincide";
 }

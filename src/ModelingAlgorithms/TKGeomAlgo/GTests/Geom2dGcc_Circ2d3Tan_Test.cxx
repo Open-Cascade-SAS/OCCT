@@ -53,7 +53,7 @@ TEST(Geom2dGcc_Circ2d3Tan_Test, OCC353_TangentCircleDoesNotHang)
   Geom2dGcc_QualifiedCurve aQCur2(anAdap2, GccEnt_enclosing);
 
   // Create a 2D point
-  gp_Pnt2d aPt2d(0, 175);
+  gp_Pnt2d                      aPt2d(0, 175);
   Handle(Geom2d_CartesianPoint) aPt = new Geom2d_CartesianPoint(aPt2d);
 
   // Compute tangent circle - this should not hang

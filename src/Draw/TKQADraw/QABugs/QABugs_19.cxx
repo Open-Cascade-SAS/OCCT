@@ -1165,7 +1165,6 @@ static Standard_Integer OCC24931(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-
 struct MyStubObject
 {
   MyStubObject()
@@ -1244,7 +1243,6 @@ static Standard_Integer OCC24834(Draw_Interpretor& di, Standard_Integer n, const
   }
   return 0;
 }
-
 
 #include <math_GlobOptMin.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>

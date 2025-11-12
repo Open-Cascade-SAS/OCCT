@@ -503,9 +503,7 @@ public:
     return Standard_True;
   }
 
-  Standard_Boolean Values(const math_Vector&   theX,
-                         Standard_Real&       theF,
-                         math_Vector&         theG) override
+  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }

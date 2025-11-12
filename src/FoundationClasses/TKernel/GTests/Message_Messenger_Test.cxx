@@ -25,10 +25,13 @@ namespace
 class TestMessagePrinter : public Message_Printer
 {
 public:
-  TestMessagePrinter(std::ostringstream& theStream) : myStream(theStream) {}
+  TestMessagePrinter(std::ostringstream& theStream)
+      : myStream(theStream)
+  {
+  }
 
-  virtual void send(const TCollection_AsciiString&    theString,
-                   const Message_Gravity              theGravity) const override
+  virtual void send(const TCollection_AsciiString& theString,
+                    const Message_Gravity          theGravity) const override
   {
     if (theGravity >= Message_Info)
     {
@@ -46,9 +49,9 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
   // Bug OCC31189: Test consistency of messages output using stream buffer interface
   // Verify that messages sent via stream buffers and directly to messenger don't intermix
 
-  std::ostringstream           anOutput;
-  Handle(TestMessagePrinter)   aPrinter = new TestMessagePrinter(anOutput);
-  const Handle(Message_Messenger)& aMsgMgr = ::Message::DefaultMessenger();
+  std::ostringstream               anOutput;
+  Handle(TestMessagePrinter)       aPrinter = new TestMessagePrinter(anOutput);
+  const Handle(Message_Messenger)& aMsgMgr  = ::Message::DefaultMessenger();
 
   // Save original printers
   Message_SequenceOfPrinters anOriginalPrinters;
@@ -108,20 +111,17 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
   size_t aDirect2Pos = anOutputStr.find("Direct message 2");
   size_t aSender2Pos = anOutputStr.find("Sender message 2");
 
-  EXPECT_LT(aDirect1Pos, aSender1Pos)
-    << "Direct message 1 should appear before Sender message 1";
-  EXPECT_LT(aSender1Pos, aDirect2Pos)
-    << "Sender message 1 should appear before Direct message 2";
-  EXPECT_LT(aDirect2Pos, aSender2Pos)
-    << "Direct message 2 should appear before Sender message 2";
+  EXPECT_LT(aDirect1Pos, aSender1Pos) << "Direct message 1 should appear before Sender message 1";
+  EXPECT_LT(aSender1Pos, aDirect2Pos) << "Sender message 1 should appear before Direct message 2";
+  EXPECT_LT(aDirect2Pos, aSender2Pos) << "Direct message 2 should appear before Sender message 2";
 }
 
 TEST(Message_Messenger_Test, StreamBufferBasicUsage)
 {
   // Test basic stream buffer functionality
-  std::ostringstream                   anOutput;
-  Handle(TestMessagePrinter)           aPrinter = new TestMessagePrinter(anOutput);
-  const Handle(Message_Messenger)& aMsgMgr = ::Message::DefaultMessenger();
+  std::ostringstream               anOutput;
+  Handle(TestMessagePrinter)       aPrinter = new TestMessagePrinter(anOutput);
+  const Handle(Message_Messenger)& aMsgMgr  = ::Message::DefaultMessenger();
 
   Message_SequenceOfPrinters anOriginalPrinters;
   anOriginalPrinters.Append(aMsgMgr->ChangePrinters());

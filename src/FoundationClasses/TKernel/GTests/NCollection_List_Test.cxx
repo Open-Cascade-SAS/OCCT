@@ -478,8 +478,7 @@ TEST_F(NCollection_ListTest, OCC25348_AssignDoesNotChangeAllocator)
 
     // Verify that the allocator of aList1 hasn't changed
     Handle(NCollection_BaseAllocator) anAllocAfter = aList1.Allocator();
-    EXPECT_EQ(anAllocBefore, anAllocAfter)
-      << "Assign() should not change the target's allocator";
+    EXPECT_EQ(anAllocBefore, anAllocAfter) << "Assign() should not change the target's allocator";
 
     // Verify the content was copied correctly
     EXPECT_EQ(1, aList1.Size());
