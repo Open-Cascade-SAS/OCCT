@@ -37,6 +37,10 @@ int testOutOfMemory()
   return NotApplicable;
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 template <>
 int testOutOfMemory<4>()
 {
@@ -73,6 +77,9 @@ int testOutOfMemory<4>()
 
   return aStatus;
 }
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 } // namespace
 
 TEST(StandardMemoryTest, OCC24836_OutOfMemoryExceptionHandling)

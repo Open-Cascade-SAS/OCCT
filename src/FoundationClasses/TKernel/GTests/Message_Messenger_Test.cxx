@@ -48,7 +48,7 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
 
   std::ostringstream           anOutput;
   Handle(TestMessagePrinter)   aPrinter = new TestMessagePrinter(anOutput);
-  const Handle(Message_Messenger)& aMsgMgr = Message::DefaultMessenger();
+  const Handle(Message_Messenger)& aMsgMgr = ::Message::DefaultMessenger();
 
   // Save original printers
   Message_SequenceOfPrinters anOriginalPrinters;
@@ -60,7 +60,7 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
 
   // Scope block to test output of message on destruction of a stream buffer
   {
-    Message_Messenger::StreamBuffer aSender = Message::SendInfo();
+    Message_Messenger::StreamBuffer aSender = ::Message::SendInfo();
 
     // Check that messages output to sender and directly to messenger do not intermix
     aSender << "Sender message 1: start ...";
@@ -68,13 +68,13 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
     aSender << "... end" << std::endl; // endl should send the message
 
     // Check that empty stream buffer does not produce output on destruction
-    Message::SendInfo();
+    ::Message::SendInfo();
 
     // Additional message to check that they go in expected order
     aMsgMgr->Send("Direct message 2");
 
     // Check that empty stream buffer does produce empty line if std::endl is passed
-    Message::SendInfo() << std::endl;
+    ::Message::SendInfo() << std::endl;
 
     // Last message should be sent on destruction of a sender
     aSender << "Sender message 2";
@@ -121,7 +121,7 @@ TEST(Message_Messenger_Test, StreamBufferBasicUsage)
   // Test basic stream buffer functionality
   std::ostringstream                   anOutput;
   Handle(TestMessagePrinter)           aPrinter = new TestMessagePrinter(anOutput);
-  const Handle(Message_Messenger)& aMsgMgr = Message::DefaultMessenger();
+  const Handle(Message_Messenger)& aMsgMgr = ::Message::DefaultMessenger();
 
   Message_SequenceOfPrinters anOriginalPrinters;
   anOriginalPrinters.Append(aMsgMgr->ChangePrinters());
@@ -130,7 +130,7 @@ TEST(Message_Messenger_Test, StreamBufferBasicUsage)
   aMsgMgr->AddPrinter(aPrinter);
 
   {
-    Message_Messenger::StreamBuffer aBuffer = Message::SendInfo();
+    Message_Messenger::StreamBuffer aBuffer = ::Message::SendInfo();
     aBuffer << "Test message" << std::endl;
   }
 
