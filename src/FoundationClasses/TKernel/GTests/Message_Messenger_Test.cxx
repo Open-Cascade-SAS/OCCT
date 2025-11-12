@@ -14,7 +14,6 @@
 #include <Message_Messenger.hxx>
 #include <Message_Printer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 
 #include <gtest/gtest.h>
 
@@ -35,12 +34,6 @@ public:
     {
       myStream << theString << "\n";
     }
-  }
-
-  virtual void send(const TCollection_ExtendedString& theString,
-                   const Message_Gravity              theGravity) const override
-  {
-    send(TCollection_AsciiString(theString), theGravity);
   }
 
 private:

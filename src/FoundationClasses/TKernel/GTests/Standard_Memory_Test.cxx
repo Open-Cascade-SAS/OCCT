@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <Standard.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_Failure.hxx>
 #include <NCollection_List.hxx>
 
