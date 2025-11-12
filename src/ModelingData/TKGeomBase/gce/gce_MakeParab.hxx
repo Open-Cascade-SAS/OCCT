@@ -29,7 +29,7 @@ class gp_Pnt;
 
 //! This class implements the following algorithms used to
 //! create Parab from gp.
-//! Defines the parabola in the parameterization range  :
+//! Defines the parabola in the parameterization range:
 //! ]-infinite, +infinite[
 //! The vertex of the parabola is the "Location" point of the
 //! local coordinate system (axis placement) of the parabola.

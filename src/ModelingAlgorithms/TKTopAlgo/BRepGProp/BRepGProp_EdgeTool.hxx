@@ -27,7 +27,7 @@ class BRepAdaptor_Curve;
 class gp_Pnt;
 class gp_Vec;
 
-//! Provides  the required  methods    to instantiate
+//! Provides the required methods to instantiate
 //! CGProps from GProp with a Curve from BRepAdaptor.
 class BRepGProp_EdgeTool
 {
@@ -35,18 +35,18 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the parametric value of the start point of
-  //! the curve.  The curve is oriented from the start point
+  //! the curve. The curve is oriented from the start point
   //! to the end point.
   Standard_EXPORT static Standard_Real FirstParameter(const BRepAdaptor_Curve& C);
 
   //! Returns the parametric value of the end point of
-  //! the curve.  The curve is oriented from the start point
+  //! the curve. The curve is oriented from the start point
   //! to the end point.
   Standard_EXPORT static Standard_Real LastParameter(const BRepAdaptor_Curve& C);
 
   //! Returns the number of Gauss points required to do
   //! the integration with a good accuracy using the
-  //! Gauss method.  For a polynomial curve of degree n
+  //! Gauss method. For a polynomial curve of degree n
   //! the maxima of accuracy is obtained with an order
   //! of integration equal to 2*n-1.
   Standard_EXPORT static Standard_Integer IntegrationOrder(const BRepAdaptor_Curve& C);
@@ -61,15 +61,15 @@ public:
                                  gp_Pnt&                  P,
                                  gp_Vec&                  V1);
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT static Standard_Integer NbIntervals(const BRepAdaptor_Curve& C,
                                                       const GeomAbs_Shape      S);
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT static void Intervals(const BRepAdaptor_Curve& C,
                                         TColStd_Array1OfReal&    T,

@@ -47,7 +47,7 @@ class gp_Pnt2d;
 //! The focal length F = P/2 is the distance between the vertex
 //! and the focus of the parabola.
 //!
-//! * Create a Parab2d from one apex  and the center.
+//! * Create a Parab2d from one apex and the center.
 //! * Create a Parab2d with the directrix and the focus point.
 //! * Create a Parab2d with its vertex point and its axis
 //! of symmetry and its focus length.

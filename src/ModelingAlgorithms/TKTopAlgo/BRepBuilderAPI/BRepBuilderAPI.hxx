@@ -24,22 +24,22 @@
 #include <Standard_Real.hxx>
 class Geom_Plane;
 
-//! The  BRepBuilderAPI  package   provides  an   Application
-//! Programming Interface  for the BRep  topology data
+//! The BRepBuilderAPI package provides an Application
+//! Programming Interface for the BRep topology data
 //! structure.
 //!
-//! The API is a set of classes aiming to provide :
+//! The API is a set of classes aiming to provide:
 //!
-//! * High level and simple calls  for the most common
+//! * High level and simple calls for the most common
 //! operations.
 //!
-//! *    Keeping   an   access  on    the    low-level
+//! * Keeping an access on the low-level
 //! implementation of high-level calls.
 //!
-//! * Examples  of programming of high-level operations
+//! * Examples of programming of high-level operations
 //! from low-level operations.
 //!
-//! * A complete coverage of modelling :
+//! * A complete coverage of modelling:
 //!
 //! - Creating vertices ,edges, faces, solids.
 //!
@@ -49,20 +49,20 @@ class Geom_Plane;
 //!
 //! - Global properties computation.
 //!
-//! The API provides  classes to  build  objects:
+//! The API provides classes to build objects:
 //!
-//! * The  constructors  of the classes  provides  the
+//! * The constructors of the classes provides the
 //! different constructions methods.
 //!
-//! * The  class keeps as fields the   different tools
+//! * The class keeps as fields the different tools
 //! used to build the object.
 //!
-//! *   The class  provides  a  casting  method to get
-//! automatically the  result  with  a   function-like
+//! * The class provides a casting method to get
+//! automatically the result with a function-like
 //! call.
 //!
-//! For example to make a  vertex <V> from a point <P>
-//! one can writes :
+//! For example to make a vertex <V> from a point <P>
+//! one can write:
 //!
 //! V = BRepBuilderAPI_MakeVertex(P);
 //!
@@ -71,8 +71,8 @@ class Geom_Plane;
 //! BRepBuilderAPI_MakeVertex MV(P);
 //! V = MV.Vertex();
 //!
-//! For tolerances  a default precision is  used which
-//! can    be   changed    by    the   packahe  method
+//! For tolerances a default precision is used which
+//! can be changed by the packahe method
 //! BRepBuilderAPI::Precision.
 //!
 //! For error handling the BRepBuilderAPI commands raise only
@@ -87,13 +87,13 @@ class BRepBuilderAPI
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Sets    the current plane.
+  //! Sets the current plane.
   Standard_EXPORT static void Plane(const Handle(Geom_Plane)& P);
 
   //! Returns the current plane.
   Standard_EXPORT static const Handle(Geom_Plane)& Plane();
 
-  //! Sets the default precision.  The current Precision
+  //! Sets the default precision. The current Precision
   //! is returned.
   Standard_EXPORT static void Precision(const Standard_Real P);
 

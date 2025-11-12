@@ -28,10 +28,10 @@
 class BRep_Builder;
 class Geom_Surface;
 
-//! The  FaceBuilder is an algorithm   to build a BRep
+//! The FaceBuilder is an algorithm to build a BRep
 //! Face from a Geom Surface.
 //!
-//! The  face covers  the  whole surface or  the  area
+//! The face covers the whole surface or the area
 //! delimited by UMin, UMax, VMin, VMax
 class BRepPrim_FaceBuilder
 {

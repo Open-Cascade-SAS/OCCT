@@ -27,14 +27,14 @@ class Geom_Curve;
 class Geom2d_Curve;
 class gp_Pnt;
 
-//! The class is a container of one 3D curve, two 2D curves and two Tolerance values.<br>
+//! The class is a container of one 3D curve, two 2D curves and two Tolerance values.
 //! It is used in the Face/Face intersection algorithm to store the results
-//! of intersection. In this context:<br>
-//! **the 3D curve** is the intersection curve;<br>
-//! **the 2D curves** are the PCurves of the 3D curve on the intersecting faces;<br>
+//! of intersection. In this context:
+//! **the 3D curve** is the intersection curve;
+//! **the 2D curves** are the PCurves of the 3D curve on the intersecting faces;
 //! **the tolerance** is the valid tolerance for 3D curve computed as
 //! maximal deviation between 3D curve and 2D curves (or surfaces in case there are no 2D
-//! curves);<br>
+//! curves);
 //! **the tangential tolerance** is the maximal distance from 3D curve to the
 //! end of the tangential zone between faces in terms of their tolerance values.
 class IntTools_Curve
@@ -100,7 +100,7 @@ public:
 
   //! If the 3d curve is bounded curve the method will return TRUE
   //! and modify the output parameters with boundary parameters of
-  //! the curve and corresponded 3d points.<br>
+  //! the curve and corresponded 3d points.
   //! If the curve does not have bounds, the method will return false
   //! and the output parameters will stay untouched.
   Standard_EXPORT Standard_Boolean Bounds(Standard_Real& theFirst,
@@ -110,7 +110,7 @@ public:
 
   //! Computes 3d point corresponded to the given parameter if this
   //! parameter is inside the boundaries of the curve.
-  //! Returns TRUE in this case. <br>
+  //! Returns TRUE in this case.
   //! Otherwise, the point will not be computed and the method will return FALSE.
   Standard_EXPORT Standard_Boolean D0(const Standard_Real& thePar, gp_Pnt& thePnt) const;
 

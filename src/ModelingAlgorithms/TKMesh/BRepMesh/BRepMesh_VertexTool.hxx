@@ -112,7 +112,7 @@ public:
   //! Returns a number of vertices.
   Standard_Integer Extent() const { return mySelector.NbVertices(); }
 
-  //! Returns True when the map contains no keys. <br>
+  //! Returns True when the map contains no keys.
   Standard_Boolean IsEmpty() const { return (Extent() == 0); }
 
   //! Substitutes vertex with the given by the given vertex with attributes.

@@ -58,7 +58,7 @@ public:
   //! the "YAxis" of the plane used to parametrize the plane.
   Standard_EXPORT gce_MakePln(const gp_Ax2& A2);
 
-  //! Creates a plane with the  "Location" point <P>
+  //! Creates a plane with the "Location" point <P>
   //! and the normal direction <V>.
   Standard_EXPORT gce_MakePln(const gp_Pnt& P, const gp_Dir& V);
 
@@ -95,7 +95,7 @@ public:
   //! The status is "ConfusedPoints" if <P1> <P2> are confused.
   Standard_EXPORT gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2);
 
-  //! Make a pln  passing through the location of <Axis>and
+  //! Make a pln passing through the location of <Axis>and
   //! normal to the Direction of <Axis>.
   //! Warning - If an error occurs (that is, when IsDone returns
   //! false), the Status function returns:

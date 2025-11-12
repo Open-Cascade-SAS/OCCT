@@ -51,8 +51,8 @@ public:
   //! Should return True if P outside of bounding vol. of the shape
   Standard_EXPORT virtual Standard_Boolean Reject(const gp_Pnt& P) const;
 
-  //! compute a point P in the face  F. Param is a Real in
-  //! ]0,1[ and   is  used to  initialise  the algorithm. For
+  //! compute a point P in the face F. Param is a Real in
+  //! ]0,1[ and is used to initialise the algorithm. For
   //! different values , different points are returned.
   Standard_EXPORT static Standard_Boolean FindAPointInTheFace(const TopoDS_Face& F,
                                                               gp_Pnt&            P,
@@ -102,7 +102,7 @@ public:
                                                   const Standard_Real                u2,
                                                   const Standard_Real                v2) const;
 
-  //! <Index> gives point index  to  search from and returns
+  //! <Index> gives point index to search from and returns
   //! point index of succeseful search
   Standard_EXPORT Standard_Boolean PointInTheFace(const TopoDS_Face&                 F,
                                                   gp_Pnt&                            P,
@@ -148,14 +148,14 @@ public:
   //! returns True if the face is rejected.
   Standard_EXPORT virtual Standard_Boolean RejectFace(const gp_Lin& L) const;
 
-  //! Returns  in <L>, <Par>  a segment having at least
-  //! one  intersection  with  the  shape  boundary  to
-  //! compute  intersections.
+  //! Returns in <L>, <Par> a segment having at least
+  //! one intersection with the shape boundary to
+  //! compute intersections.
   Standard_EXPORT Standard_Integer Segment(const gp_Pnt& P, gp_Lin& L, Standard_Real& Par);
 
-  //! Returns  in <L>, <Par>  a segment having at least
-  //! one  intersection  with  the  shape  boundary  to
-  //! compute  intersections.
+  //! Returns in <L>, <Par> a segment having at least
+  //! one intersection with the shape boundary to
+  //! compute intersections.
   //!
   //! The First Call to this method returns a line which
   //! point to a point of the first face of the shape.

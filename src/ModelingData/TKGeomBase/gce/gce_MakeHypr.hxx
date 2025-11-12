@@ -57,7 +57,7 @@ class gp_Pnt;
 //! to the hyperbola's plane.
 //!
 //! The "XAxis" of the hyperbola ("Location", "XDirection") is the
-//! major axis  and the  "YAxis" of the hyperbola ("Location",
+//! major axis and the "YAxis" of the hyperbola ("Location",
 //! "YDirection") is the minor axis.
 //!
 //! Warnings :

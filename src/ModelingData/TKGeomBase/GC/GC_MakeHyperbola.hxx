@@ -63,7 +63,7 @@ class GC_MakeHyperbola : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates  an Hyperbola from a non persistent hyperbola  from package gp by conversion.
+  //! Creates an Hyperbola from a non persistent hyperbola from package gp by conversion.
   Standard_EXPORT GC_MakeHyperbola(const gp_Hypr& H);
 
   //! Constructs a hyperbola centered on the origin of the coordinate system

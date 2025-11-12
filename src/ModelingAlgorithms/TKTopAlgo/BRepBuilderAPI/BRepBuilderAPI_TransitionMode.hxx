@@ -17,7 +17,7 @@
 #ifndef _BRepBuilderAPI_TransitionMode_HeaderFile
 #define _BRepBuilderAPI_TransitionMode_HeaderFile
 
-//! Option to manage  discontinuities in  Sweep
+//! Option to manage discontinuities in Sweep
 enum BRepBuilderAPI_TransitionMode
 {
   BRepBuilderAPI_Transformed,

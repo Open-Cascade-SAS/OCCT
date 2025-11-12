@@ -34,10 +34,10 @@ class TopoDS_Shape;
 //! remaining faces of the solid become the walls of the
 //! hollowed solid, their thickness defined at the time of construction.
 //! the solid is built from an initial
-//! solid  <S> and a  set of  faces {Fi} from  <S>,
-//! builds a   solid  composed  by two shells closed  by
-//! the {Fi}. First shell <SS>   is composed by all
-//! the faces of <S> expected {Fi}.  Second shell is
+//! solid <S> and a set of faces {Fi} from <S>,
+//! builds a solid composed by two shells closed by
+//! the {Fi}. First shell <SS> is composed by all
+//! the faces of <S> expected {Fi}. Second shell is
 //! the offset shell of <SS>.
 //! A MakeThickSolid object provides a framework for:
 //! - defining the cross-section of a hollowed solid,
@@ -115,7 +115,7 @@ public:
   Standard_EXPORT virtual void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
-  //! Returns the list  of shapes modified from the shape
+  //! Returns the list of shapes modified from the shape
   //! <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
     Standard_OVERRIDE;
