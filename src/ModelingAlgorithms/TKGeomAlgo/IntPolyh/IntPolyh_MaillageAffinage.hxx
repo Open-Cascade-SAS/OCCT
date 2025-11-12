@@ -135,7 +135,7 @@ public:
 
   //! Refine both surfaces using BoundSortBox as
   //! rejection. The criterions used to refine a
-  //! triangle are: The deflection The size of the 
+  //! triangle are: The deflection The size of the
   //! bounding boxes (one surface may be very small
   //! compared to the other)
   Standard_EXPORT void TrianglesDeflectionsRefinementBSB();
