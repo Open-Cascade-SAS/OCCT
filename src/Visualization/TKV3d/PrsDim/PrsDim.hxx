@@ -108,7 +108,7 @@ public:
                                                           gp_Pnt&                   theLastPnt2,
                                                           const Handle(Geom_Plane)& thePlane);
 
-  //! Used  by  dimensions  only.Computes  the  3d geometry
+  //! Used by dimensions only.Computes the 3d geometry
   //! of<anEdge1> and <anEdge2> and checks if they are infinite.
   Standard_EXPORT static Standard_Boolean ComputeGeometry(const TopoDS_Edge&  theFirstEdge,
                                                           const TopoDS_Edge&  theSecondEdge,
@@ -121,15 +121,15 @@ public:
                                                           Standard_Boolean&   theIsinfinite1,
                                                           Standard_Boolean&   theIsinfinite2);
 
-  //! Used  by  2d Relation  only Computes  the  3d geometry
+  //! Used by 2d Relation only Computes the 3d geometry
   //! of<anEdge1> and <anEdge2> in the current Plane and the
-  //! extremities if any.   Return in ExtCurve  the 3d curve
-  //! (not projected  in the  plane)  of the  first edge  if
+  //! extremities if any. Return in ExtCurve the 3d curve
+  //! (not projected in the plane) of the first edge if
   //! <indexExt> =1 or of the 2nd edge if <indexExt> = 2. If
-  //! <indexExt> = 0, ExtCurve is Null.  if there is an edge
-  //! external to the  plane,  <isinfinite> is true if  this
-  //! edge is infinite.  So, the extremities of it are not
-  //! significant.  Return TRUE if ok
+  //! <indexExt> = 0, ExtCurve is Null. if there is an edge
+  //! external to the plane, <isinfinite> is true if this
+  //! edge is infinite. So, the extremities of it are not
+  //! significant. Return TRUE if ok
   Standard_EXPORT static Standard_Boolean ComputeGeometry(const TopoDS_Edge&        theFirstEdge,
                                                           const TopoDS_Edge&        theSecondEdge,
                                                           Standard_Integer&         theExtIndex,
@@ -160,11 +160,11 @@ public:
                                                           const Handle(Geom_Plane)& aPlane,
                                                           Standard_Boolean&         isOnPlane);
 
-  //! Tries to get Plane from Face.  Returns Surface of Face
-  //! in aSurf.  Returns Standard_True  and Plane of Face in
-  //! aPlane in following  cases:
+  //! Tries to get Plane from Face. Returns Surface of Face
+  //! in aSurf. Returns Standard_True and Plane of Face in
+  //! aPlane in following cases:
   //! Face is Plane, Offset of Plane,
-  //! Extrusion of Line  and Offset of  Extrusion of Line
+  //! Extrusion of Line and Offset of Extrusion of Line
   //! Returns pure type of Surface which can be:
   //! Plane, Cylinder, Cone, Sphere, Torus,
   //! SurfaceOfRevolution, SurfaceOfExtrusion
@@ -222,13 +222,13 @@ public:
                                                       const gp_Dir&  aDir,
                                                       const Bnd_Box& aBndBox);
 
-  //! returns  True  if  point  with anAttachPar  is
-  //! in  domain  of  arc
+  //! returns True if point with anAttachPar is
+  //! in domain of arc
   Standard_EXPORT static Standard_Boolean InDomain(const Standard_Real aFirstPar,
                                                    const Standard_Real aLastPar,
                                                    const Standard_Real anAttachPar);
 
-  //! computes  nearest  to  ellipse  arc  apex
+  //! computes nearest to ellipse arc apex
   Standard_EXPORT static gp_Pnt NearestApex(const gp_Elips&     elips,
                                             const gp_Pnt&       pApex,
                                             const gp_Pnt&       nApex,
@@ -236,7 +236,7 @@ public:
                                             const Standard_Real lpara,
                                             Standard_Boolean&   IsInDomain);
 
-  //! computes  length  of  ellipse  arc  in  parametric  units
+  //! computes length of ellipse arc in parametric units
   Standard_EXPORT static Standard_Real DistanceFromApex(const gp_Elips&     elips,
                                                         const gp_Pnt&       Apex,
                                                         const Standard_Real par);

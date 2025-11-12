@@ -410,16 +410,16 @@ public: //! @name Presentation computation
   virtual Standard_Boolean IsAutoHilight() const Standard_OVERRIDE { return Standard_False; }
 
   //! Method which clear all selected owners belonging
-  //! to this selectable object ( for fast presentation draw ).
+  //! to this selectable object (for fast presentation draw).
   Standard_EXPORT virtual void ClearSelected() Standard_OVERRIDE;
 
-  //! Method which draws selected owners ( for fast presentation draw ).
+  //! Method which draws selected owners (for fast presentation draw).
   Standard_EXPORT virtual void HilightSelected(const Handle(PrsMgr_PresentationManager)& thePM,
                                                const SelectMgr_SequenceOfOwner&          theSeq)
     Standard_OVERRIDE;
 
   //! Method which hilight an owner belonging to
-  //! this selectable object  ( for fast presentation draw ).
+  //! this selectable object (for fast presentation draw).
   Standard_EXPORT virtual void HilightOwnerWithColor(
     const Handle(PrsMgr_PresentationManager)& thePM,
     const Handle(Prs3d_Drawer)&               theStyle,

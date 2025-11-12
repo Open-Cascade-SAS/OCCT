@@ -157,8 +157,8 @@ public:
   //! change if Center and Eye translation will be interpolated independently). E.g.:
   //!  - When both Center and Eye are moved at the same vector -> both will be just translated by
   //!  straight line;
-  //!  - When Center is not moved -> camera Eye    will move around Center through arc;
-  //!  - When Eye    is not moved -> camera Center will move around Eye    through arc;
+  //!  - When Center is not moved -> camera Eye will move around Center through arc;
+  //!  - When Eye    is not moved -> camera Center will move around Eye through arc;
   //!  - When both Center and Eye are move by different vectors -> transformation will be something
   //!  in between,
   //!    and will try interpolate linearly the distance between Center and Eye.
@@ -283,7 +283,7 @@ public:
   Standard_EXPORT Standard_Real Scale() const;
 
   //! Sets camera scale. For orthographic projection the scale factor
-  //! corresponds to parallel scale of view mapping  (i.e. size
+  //! corresponds to parallel scale of view mapping (i.e. size
   //! of viewport). For perspective camera scale is converted to
   //! distance. The scale specifies equal size of the view projection in
   //! both dimensions assuming that the aspect is 1.0. The projection height

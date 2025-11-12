@@ -209,7 +209,7 @@ public:
   //! Returns horizontal alignment style
   Graphic3d_HorizontalTextAlignment HorizontalTextAlignment() const { return myAlignX; }
 
-  //! Returns vertical   alignment style
+  //! Returns vertical alignment style
   Graphic3d_VerticalTextAlignment VerticalTextAlignment() const { return myAlignY; }
 
   //! Sets text wrapping width, zero means that the text is not bounded by width

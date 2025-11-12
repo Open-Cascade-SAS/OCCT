@@ -23,7 +23,7 @@ class Poly_Triangulation;
 
 DEFINE_STANDARD_HANDLE(AIS_Triangulation, AIS_InteractiveObject)
 
-//! Interactive object that draws data from  Poly_Triangulation, optionally with colors associated
+//! Interactive object that draws data from Poly_Triangulation, optionally with colors associated
 //! with each triangulation vertex. For maximum efficiency colors are represented as 32-bit integers
 //! instead of classic Quantity_Color values.
 //! Interactive selection of triangles and vertices is not yet implemented.
