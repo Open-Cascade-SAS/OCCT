@@ -1521,29 +1521,6 @@ static Standard_Integer OCC708(Draw_Interpretor& di, Standard_Integer argc, cons
 
 //=================================================================================================
 
-#include <TColStd_Array2OfInteger.hxx>
-
-static Standard_Integer OCC670(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return -1;
-  }
-
-  // check that exception initialized without message string can be safely handled and printed
-  try
-  {
-    throw Standard_OutOfRange();
-  }
-  catch (Standard_Failure const& anException)
-  {
-    std::cout << "Caught successfully: ";
-    std::cout << anException << std::endl;
-  }
-  return 0;
-}
-
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 
 //=================================================================================================
@@ -5191,7 +5168,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC708,
                   group);
-  theCommands.Add("OCC670", "OCC670", __FILE__, OCC670, group);
   theCommands.Add("OCC867", "OCC867 Point Surface Umin Usup Vmin Vsup", __FILE__, OCC867, group);
   theCommands.Add("OCC909", "OCC909 wire face", __FILE__, OCC909, group);
   theCommands.Add("OCC921", "OCC921 face", __FILE__, OCC921, group);
