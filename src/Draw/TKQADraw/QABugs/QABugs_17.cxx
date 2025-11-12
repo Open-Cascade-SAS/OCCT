@@ -414,66 +414,6 @@ static int geom_get_2Dpt_from_3Dpt(const gp_Pnt& pnt3d, const gp_Pln& pln, gp_Pn
   return ret;
 }
 
-static Standard_Integer OCC353(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  gp_Ax2              ax21(gp_Pnt(100, 0, 0), gp_Dir(gp_Dir::D::Z));
-  Handle(Geom_Circle) h_cir1 = new Geom_Circle(ax21, 25);
-
-  gp_Ax2              ax22(gp_Pnt(-100, 0, 0), gp_Dir(gp_Dir::D::Z));
-  Handle(Geom_Circle) h_cir2 = new Geom_Circle(ax22, 25);
-
-  gp_Pln               refpln(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
-  Handle(Geom2d_Curve) cir2d1 = GeomAPI::To2d(h_cir1, refpln);
-  Handle(Geom2d_Curve) cir2d2 = GeomAPI::To2d(h_cir2, refpln);
-
-  Geom2dAdaptor_Curve adop1(cir2d1);
-  Geom2dAdaptor_Curve adop2(cir2d2);
-
-  Geom2dGcc_QualifiedCurve qcur1(adop1, GccEnt_enclosing);
-  Geom2dGcc_QualifiedCurve qcur2(adop2, GccEnt_enclosing);
-
-  Handle(Geom_CartesianPoint) h_carpt = new Geom_CartesianPoint(0, 175, 0);
-
-  gp_Pnt   pt3d = h_carpt->Pnt();
-  gp_Pnt2d pt2d;
-  geom_get_2Dpt_from_3Dpt(pt3d, refpln, pt2d);
-
-  Standard_CString st;
-  st = "cir2d1";
-  DrawTrSurf::Set(st, cir2d1);
-  st = "cir2d2";
-  DrawTrSurf::Set(st, cir2d2);
-  st = "pt2d";
-  DrawTrSurf::Set(st, pt2d);
-
-  Handle(Geom2d_CartesianPoint) pt = new Geom2d_CartesianPoint(pt2d);
-  Geom2dGcc_Circ2d3Tan          sol(qcur1, qcur2, pt, 0.001, 0.0, 0.0);
-
-  int                res = 0;
-  Standard_Character buf[10];
-  buf[0] = '\0';
-
-  if (sol.IsDone())
-  {
-    res = sol.NbSolutions();
-    for (Standard_Integer i = 1; i <= res; i++)
-    {
-      Handle(Geom2d_Circle) aC = new Geom2d_Circle(sol.ThisSolution(i));
-      Sprintf(buf, "Result_%d", i);
-      st = buf;
-      DrawTrSurf::Set(st, aC);
-    }
-  }
-  else
-    di << "\n Faulty: no solutions found ";
-  // printf("\n Faulty: no solutions found ");
-
-  // printf("\n Num of solutions are %d ", res );
-  di << "\n Num of solutions are " << res << " ";
-
-  return 0;
-}
-
 static Standard_Integer OCC138LC(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
@@ -1438,7 +1378,6 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60970", "BUC60970 shape result", __FILE__, BUC60970, group);
   theCommands.Add("BUC60915", "BUC60915", __FILE__, BUC60915_1, group);
   theCommands.Add("OCC138", "OCC138", __FILE__, OCC138, group);
-  theCommands.Add("OCC353", "OCC353", __FILE__, OCC353, group);
   theCommands.Add("OCC138LC", "OCC138LC", __FILE__, OCC138LC, group);
   theCommands.Add("OCC566",
                   "OCC566 shape [ xmin ymin zmin xmax ymax zmax] ; print bounding box",
