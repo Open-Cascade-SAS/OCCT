@@ -13,6 +13,8 @@
 
 #include <Standard_GUID.hxx>
 
+#include <Standard_Failure.hxx>
+
 #include <gtest/gtest.h>
 
 TEST(Standard_GUID_Test, OCC669_ValidGUIDConstruction)

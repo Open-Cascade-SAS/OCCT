@@ -85,6 +85,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <cmath>
 #include <iostream>
 #include <random>
+#include <vector>
 
 #define QCOMPARE(val1, val2)                                                                       \
   di << "Checking " #val1 " == " #val2 << ((val1) == (val2) ? ": OK\n" : ": Error\n")

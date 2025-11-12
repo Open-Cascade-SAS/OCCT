@@ -48,11 +48,33 @@ TEST(XCAFDoc_Test, OCC738_AssemblyGUID)
   EXPECT_NE(aGUID, aNullGUID) << "AssemblyGUID should not be null";
 }
 
-TEST(XCAFDoc_ShapeTool_Test, OCC23595_AutoNaming)
+// RAII guard to save and restore XCAFDoc_ShapeTool AutoNaming state
+class AutoNamingGuard
+{
+public:
+  AutoNamingGuard()
+      : mySavedValue(XCAFDoc_ShapeTool::AutoNaming())
+  {
+  }
+
+  ~AutoNamingGuard() { XCAFDoc_ShapeTool::SetAutoNaming(mySavedValue); }
+
+  // Disable copy and move
+  AutoNamingGuard(const AutoNamingGuard&)            = delete;
+  AutoNamingGuard& operator=(const AutoNamingGuard&) = delete;
+
+private:
+  Standard_Boolean mySavedValue;
+};
+
+TEST(XCAFDoc_Test, OCC23595_AutoNaming)
 {
   // Bug OCC23595: XCAFDoc_ShapeTool extended with two methods -
   // SetAutoNaming() and AutoNaming()
   // This test verifies that the AutoNaming feature works correctly
+
+  // RAII guard to automatically restore AutoNaming state on exit (exception-safe)
+  AutoNamingGuard aGuard;
 
   // Create a new XmlXCAF document
   Handle(TDocStd_Application) anApp = new TDocStd_Application();
@@ -81,6 +103,5 @@ TEST(XCAFDoc_ShapeTool_Test, OCC23595_AutoNaming)
   EXPECT_FALSE(aLabel2.FindAttribute(TDataStd_Name::GetID(), anAttr))
     << "Shape should not have a name attribute when AutoNaming is false";
 
-  // Restore the original value
-  XCAFDoc_ShapeTool::SetAutoNaming(aValue);
+  // AutoNaming state will be automatically restored by the RAII guard
 }
