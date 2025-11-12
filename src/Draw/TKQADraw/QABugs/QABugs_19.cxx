@@ -3029,6 +3029,7 @@ Standard_Integer OCC26446(Draw_Interpretor& di, Standard_Integer n, const char**
 
 //=================================================================================================
 
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <TCollection_AsciiString.hxx>
 

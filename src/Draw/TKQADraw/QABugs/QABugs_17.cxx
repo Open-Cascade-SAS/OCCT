@@ -393,27 +393,6 @@ static Standard_Integer OCC138(Draw_Interpretor& di, Standard_Integer /*argc*/, 
   return 0;
 }
 
-static int geom_get_2Dpt_from_3Dpt(const gp_Pnt& pnt3d, const gp_Pln& pln, gp_Pnt2d& pnt2d)
-{
-  int                 ret  = 0;
-  Handle(Geom_Plane)  gpln = new Geom_Plane(pln);
-  GeomAdaptor_Surface adsur(gpln);
-  Extrema_ExtPS       extps(pnt3d, adsur, 0.001, 0.001);
-  if (extps.IsDone())
-  {
-    int index;
-    for (index = 1; index <= extps.NbExt(); index++)
-    {
-      Extrema_POnSurf pons = extps.Point(index);
-      Standard_Real   U, V;
-      pons.Parameter(U, V);
-      pnt2d.SetCoord(U, V);
-      ret = 1;
-    }
-  }
-  return ret;
-}
-
 static Standard_Integer OCC138LC(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();

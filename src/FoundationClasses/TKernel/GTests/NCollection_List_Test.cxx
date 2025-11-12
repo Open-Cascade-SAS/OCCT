@@ -459,14 +459,14 @@ TEST_F(NCollection_ListTest, OCC25348_AssignDoesNotChangeAllocator)
   // This test verifies that calling Assign() doesn't change the allocator
   // of the target list
 
-  Handle(NCollection_IncAllocator) anAlloc1;
+  Handle(NCollection_IncAllocator) anAlloc1 = new NCollection_IncAllocator();
   NCollection_List<int>            aList1(anAlloc1);
 
   // Perform multiple assign operations with different source lists,
   // each having their own allocator
   for (int i = 0; i < 10; i++)
   {
-    Handle(NCollection_IncAllocator) anAlloc2;
+    Handle(NCollection_IncAllocator) anAlloc2 = new NCollection_IncAllocator();
     NCollection_List<int>            aList2(anAlloc2);
     aList2.Append(i);
 
