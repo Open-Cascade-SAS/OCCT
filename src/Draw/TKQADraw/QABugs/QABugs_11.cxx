@@ -1417,45 +1417,7 @@ static Standard_Integer OCC669(Draw_Interpretor& di, Standard_Integer argc, cons
   return 0;
 }
 
-#include <XCAFDoc.hxx>
-
 //=================================================================================================
-
-static Standard_Integer OCC738_ShapeRef(Draw_Interpretor& di,
-                                        Standard_Integer  argc,
-                                        const char**      argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return -1;
-  }
-  const Standard_GUID& guid = XCAFDoc::ShapeRefGUID();
-  // guid.ShallowDump(std::cout);
-  Standard_SStream aSStream;
-  guid.ShallowDump(aSStream);
-  di << aSStream;
-  return 0;
-}
-
-//=================================================================================================
-
-static Standard_Integer OCC738_Assembly(Draw_Interpretor& di,
-                                        Standard_Integer  argc,
-                                        const char**      argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return -1;
-  }
-  const Standard_GUID& guid = XCAFDoc::AssemblyGUID();
-  // guid.ShallowDump(std::cout);
-  Standard_SStream aSStream;
-  guid.ShallowDump(aSStream);
-  di << aSStream;
-  return 0;
-}
 
 #if defined(DDataStd_def01)
   #include <DDataStd_DrawPresentation.hxx>
@@ -5161,8 +5123,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
   // theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC669", "OCC669 GUID", __FILE__, OCC669, group);
-  theCommands.Add("OCC738_ShapeRef", "OCC738_ShapeRef", __FILE__, OCC738_ShapeRef, group);
-  theCommands.Add("OCC738_Assembly", "OCC738_Assembly", __FILE__, OCC738_Assembly, group);
   theCommands.Add("OCC708",
                   "OCC708 shape ; Deactivate the current transformation",
                   __FILE__,
