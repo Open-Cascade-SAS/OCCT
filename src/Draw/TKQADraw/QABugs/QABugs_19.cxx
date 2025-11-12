@@ -2243,72 +2243,6 @@ static Standard_Integer OCC25446(Draw_Interpretor& theDI, Standard_Integer argc,
   return 0;
 }
 
-//====================================================
-// Auxiliary functor class for the command OCC25545;
-// it gets access to a vertex with the given index and
-// checks that X coordinate of the point is equal to index;
-// if it is not so then a data race is reported.
-//====================================================
-struct OCC25545_Functor
-{
-  OCC25545_Functor(const std::vector<TopoDS_Shape>& theShapeVec)
-      : myShapeVec(&theShapeVec),
-        myIsRaceDetected(0)
-  {
-  }
-
-  void operator()(size_t i) const
-  {
-    if (!myIsRaceDetected)
-    {
-      const TopoDS_Vertex& aV = TopoDS::Vertex(myShapeVec->at(i));
-      gp_Pnt               aP = BRep_Tool::Pnt(aV);
-      if (aP.X() != static_cast<double>(i))
-      {
-        ++myIsRaceDetected;
-      }
-    }
-  }
-
-  const std::vector<TopoDS_Shape>* myShapeVec;
-  mutable std::atomic<int>         myIsRaceDetected;
-};
-
-//=======================================================================
-// function : OCC25545
-// purpose  : Tests data race when concurrently accessing TopLoc_Location::Transformation()
-//=======================================================================
-
-static Standard_Integer OCC25545(Draw_Interpretor& /*di*/, Standard_Integer, const char**)
-{
-  // Place vertices in a vector, giving the i-th vertex the
-  // transformation that translates it on the vector (i,0,0) from the origin.
-  Standard_Integer             n = 1000;
-  std::vector<TopoDS_Shape>    aShapeVec(n);
-  std::vector<TopLoc_Location> aLocVec(n);
-  TopoDS_Shape                 aShape = BRepBuilderAPI_MakeVertex(gp::Origin());
-  aShapeVec[0]                        = aShape;
-  for (Standard_Integer i = 1; i < n; ++i)
-  {
-    gp_Trsf aT;
-    aT.SetTranslation(gp_Vec(1, 0, 0));
-    aLocVec[i]   = aLocVec[i - 1] * aT;
-    aShapeVec[i] = aShape.Moved(aLocVec[i]);
-  }
-
-  // Evaluator function will access vertices geometry
-  // concurrently
-  OCC25545_Functor aFunc(aShapeVec);
-
-  // concurrently process
-  OSD_Parallel::For(0, n, aFunc);
-
-  QVERIFY(!aFunc.myIsRaceDetected);
-  return 0;
-}
-
-//=================================================================================================
-
 static Standard_Integer OCC26139(Draw_Interpretor& theDI, Standard_Integer argc, const char** argv)
 {
 
@@ -4448,12 +4382,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC25340", "OCC25340", __FILE__, OCC25340, group);
   theCommands.Add("OCC25413", "OCC25413 shape", __FILE__, OCC25413, group);
   theCommands.Add("OCC25446", "OCC25446 res b1 b2 op", __FILE__, OCC25446, group);
-  theCommands.Add("OCC25545",
-                  "no args; tests data race when concurrently accessing \n"
-                  "\t\tTopLoc_Location::Transformation()",
-                  __FILE__,
-                  OCC25545,
-                  group);
   theCommands.Add("OCC24881", "OCC24881 shape", __FILE__, OCC24881, group);
   theCommands.Add("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
   theCommands.Add("OCC24923", "OCC24923", __FILE__, OCC24923, group);

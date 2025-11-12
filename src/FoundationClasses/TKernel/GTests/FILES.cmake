@@ -32,5 +32,6 @@ set(OCCT_TKernel_GTests_FILES
   Standard_Memory_Test.cxx
   TCollection_AsciiString_Test.cxx
   TCollection_ExtendedString_Test.cxx
+  TopLoc_Location_Test.cxx
   UnitsAPI_Test.cxx
 )
