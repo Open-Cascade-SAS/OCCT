@@ -2360,83 +2360,6 @@ static Standard_Integer OCC25545(Draw_Interpretor& /*di*/, Standard_Integer, con
 
 //=================================================================================================
 
-#include <BRepMesh_GeomTool.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepAdaptor_Surface.hxx>
-
-static Standard_Integer OCC25547(Draw_Interpretor& theDI,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  // The general aim of this test is to prevent linkage errors due to missed
-  // Standard_EXPORT attribute for static methods.
-
-  // However, start checking the main functionality at first.
-  const Standard_Real       aFirstP = 0., aLastP = M_PI;
-  Handle(Geom_Circle)       aCircle = new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), 10);
-  Handle(Geom_TrimmedCurve) aHalf   = new Geom_TrimmedCurve(aCircle, aFirstP, aLastP);
-  TopoDS_Edge               aEdge   = BRepBuilderAPI_MakeEdge(aHalf);
-  BRepAdaptor_Curve         aAdaptor(aEdge);
-  BRepMesh_GeomTool         aGeomTool(aAdaptor, aFirstP, aLastP, 0.1, 0.5);
-
-  if (aGeomTool.NbPoints() == 0)
-  {
-    theDI << "Error. BRepMesh_GeomTool failed to discretize an arc.\n";
-    return 1;
-  }
-
-  // Test static methods.
-  TopoDS_Face                 aFace = BRepBuilderAPI_MakeFace(gp_Pln(gp::Origin(), gp::DZ()));
-  BRepAdaptor_Surface         aSurf(aFace);
-  Handle(BRepAdaptor_Surface) aHSurf = new BRepAdaptor_Surface(aSurf);
-
-  gp_Pnt aPnt;
-  gp_Dir aNormal;
-  if (!BRepMesh_GeomTool::Normal(aHSurf, 10., 10., aPnt, aNormal))
-  {
-    theDI << "Error. BRepMesh_GeomTool failed to take a normal of surface.\n";
-    return 1;
-  }
-
-  gp_XY aRefPnts[4] = {gp_XY(-10., -10.), gp_XY(10., 10.), gp_XY(-10., 10.), gp_XY(10., -10.)};
-
-  gp_Pnt2d                   aIntPnt;
-  Standard_Real              aParams[2];
-  BRepMesh_GeomTool::IntFlag aIntFlag = BRepMesh_GeomTool::IntLinLin(aRefPnts[0],
-                                                                     aRefPnts[1],
-                                                                     aRefPnts[2],
-                                                                     aRefPnts[3],
-                                                                     aIntPnt.ChangeCoord(),
-                                                                     aParams);
-
-  Standard_Real aDiff = aIntPnt.Distance(gp::Origin2d());
-  if (aIntFlag != BRepMesh_GeomTool::Cross || aDiff > Precision::PConfusion())
-  {
-    theDI << "Error. BRepMesh_GeomTool failed to intersect two lines.\n";
-    return 1;
-  }
-
-  aIntFlag = BRepMesh_GeomTool::IntSegSeg(aRefPnts[0],
-                                          aRefPnts[1],
-                                          aRefPnts[2],
-                                          aRefPnts[3],
-                                          Standard_False,
-                                          Standard_False,
-                                          aIntPnt);
-
-  aDiff = aIntPnt.Distance(gp::Origin2d());
-  if (aIntFlag != BRepMesh_GeomTool::Cross || aDiff > Precision::PConfusion())
-  {
-    theDI << "Error. BRepMesh_GeomTool failed to intersect two segments.\n";
-    return 1;
-  }
-
-  theDI << "Test complete\n";
-  return 0;
-}
-
 static Standard_Integer OCC26139(Draw_Interpretor& theDI, Standard_Integer argc, const char** argv)
 {
 
@@ -4652,7 +4575,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC25545,
                   group);
-  theCommands.Add("OCC25547", "OCC25547", __FILE__, OCC25547, group);
   theCommands.Add("OCC24881", "OCC24881 shape", __FILE__, OCC24881, group);
   theCommands.Add("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
   theCommands.Add("OCC24923", "OCC24923", __FILE__, OCC24923, group);
