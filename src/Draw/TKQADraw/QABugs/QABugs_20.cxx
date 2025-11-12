@@ -2533,39 +2533,6 @@ static Standard_Integer OCC26270(Draw_Interpretor& theDI,
   return 0;
 }
 
-#include "BRepBuilderAPI_MakeWire.hxx"
-#include "BRepBuilderAPI_MakeEdge.hxx"
-
-static Standard_Integer OCC27552(Draw_Interpretor&, Standard_Integer, const char**)
-{
-  BRep_Builder  BB;
-  TopoDS_Vertex V1, V2, V3;
-  TopoDS_Edge   E1, E2;
-  BB.MakeVertex(V1, gp_Pnt(0, 0, 0), 0.1);
-  BB.MakeVertex(V2, gp_Pnt(5, 0, 0), 0.1);
-  BB.MakeVertex(V3, gp_Pnt(10, 0, 0), 0.1);
-  E1 = BRepBuilderAPI_MakeEdge(V1, V2).Edge();
-  E2 = BRepBuilderAPI_MakeEdge(V2, V3).Edge();
-  BRepBuilderAPI_MakeWire MW;
-  MW.Add(E1);
-  MW.Add(E2);
-  TopoDS_Vertex V4, V5, V6, V7;
-  TopoDS_Edge   E3, E4;
-  BB.MakeVertex(V4, gp_Pnt(10, 0 + 0.05, 0), 0.07);
-  BB.MakeVertex(V5, gp_Pnt(10, 0 - 0.05, 0), 0.07);
-  BB.MakeVertex(V6, gp_Pnt(10, 0 + 2, 0), 0.07);
-  BB.MakeVertex(V7, gp_Pnt(10, 0 - 2, 0), 0.07);
-  E3 = BRepBuilderAPI_MakeEdge(V4, V6).Edge();
-  E4 = BRepBuilderAPI_MakeEdge(V5, V7).Edge();
-  TopTools_ListOfShape LLE;
-  LLE.Append(E3);
-  LLE.Append(E4);
-  MW.Add(LLE);
-  TopoDS_Shape W = MW.Wire();
-  DBRep::Set("outw", W);
-
-  return 0;
-}
 
 #include <NCollection_IncAllocator.hxx>
 
@@ -4636,7 +4603,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   theCommands.Add("OCC26747_2", "OCC26747_2 result", __FILE__, OCC26747_2, group);
   theCommands.Add("OCC26747_3", "OCC26747_3 result", __FILE__, OCC26747_3, group);
   theCommands.Add("OCC26270", "OCC26270 shape result", __FILE__, OCC26270, group);
-  theCommands.Add("OCC27552", "OCC27552", __FILE__, OCC27552, group);
   theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
   theCommands.Add("OCC27884",
                   "OCC27884: Possible improvement for 2d classifier",
