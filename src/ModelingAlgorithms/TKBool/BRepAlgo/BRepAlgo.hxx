@@ -67,9 +67,9 @@ public:
   //! <Standard_False>, else returns <Standard_True>.
   Standard_EXPORT static Standard_Boolean IsValid(const TopoDS_Shape& S);
 
-  //! Checks if the Generated and Modified Faces  from
-  //! the shapes <arguments> in  the shape <result> are
-  //! "correct". The args  may be empty, then all faces
+  //! Checks if the Generated and Modified Faces from
+  //! the shapes <arguments> in the shape <result> are
+  //! "correct". The args may be empty, then all faces
   //! will be checked.
   //! If <Closed> is True, only closed shape are valid.
   //! If <GeomCtrl> is False the geometry of new

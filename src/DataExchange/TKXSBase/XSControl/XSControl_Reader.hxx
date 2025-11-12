@@ -46,7 +46,7 @@ class TopoDS_Shape;
 //! computes a list of entities from a list given in input. To
 //! specify the input, you can use:
 //! - A predefined selection such as "xst-transferrable-roots"
-//! - A filter based on a  signature.
+//! - A filter based on a signature.
 //! A signature is an operator which returns a string from an
 //! entity according to its type.
 //! For example:

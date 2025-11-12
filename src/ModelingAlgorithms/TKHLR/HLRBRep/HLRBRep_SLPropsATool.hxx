@@ -30,14 +30,14 @@ class HLRBRep_SLPropsATool
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Computes the point  <P> of 	parameter <U> and <V>
+  //! Computes the point <P> of parameter <U> and <V>
   //! on the Surface <A>.
   static void Value(const Standard_Address A,
                     const Standard_Real    U,
                     const Standard_Real    V,
                     gp_Pnt&                P);
 
-  //! Computes the point <P>  and first derivative <D1*>
+  //! Computes the point <P> and first derivative <D1*>
   //! of parameter <U> and <V> on the Surface <A>.
   static void D1(const Standard_Address A,
                  const Standard_Real    U,
@@ -47,7 +47,7 @@ public:
                  gp_Vec&                D1V);
 
   //! Computes the point <P>, the first derivative <D1*>
-  //! and second  derivative <D2*> of parameter  <U> and
+  //! and second derivative <D2*> of parameter <U> and
   //! <V> on the Surface <A>.
   static void D2(const Standard_Address A,
                  const Standard_Real    U,
@@ -65,10 +65,10 @@ public:
                    const Standard_Integer Nu,
                    const Standard_Integer Nv);
 
-  //! returns the order of   continuity of the   Surface
-  //! <A>.  returns  1   :  first  derivative    only is
-  //! computable returns 2 : first and second derivative
-  //! only are computable.
+  //! returns the order of continuity of the Surface <A>.
+  //! returns 1 : first derivative only is computable
+  //! returns 2 : first and second derivative only are
+  //! computable.
   static Standard_Integer Continuity(const Standard_Address A);
 
   //! returns the bounds of the Surface.

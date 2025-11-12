@@ -29,7 +29,7 @@ class IntPatch_Polyhedron;
 class gp_Pnt;
 
 //! Describe the signature of a polyhedral surface with
-//! only triangular  facets and the necessary information
+//! only triangular facets and the necessary information
 //! to compute the interferences.
 class IntPatch_PolyhedronTool
 {
@@ -49,7 +49,7 @@ public:
   //! Give the number of triangles in this polyhedral surface.
   static Standard_Integer NbTriangles(const IntPatch_Polyhedron& thePolyh);
 
-  //! Give the indices  of  the 3 points of  the triangle of
+  //! Give the indices of the 3 points of the triangle of
   //! address Index in the Polyhedron.
   static void Triangle(const IntPatch_Polyhedron& thePolyh,
                        const Standard_Integer     Index,
@@ -62,10 +62,10 @@ public:
 
   //! Gives the address Tricon of the triangle connexe to
   //! the triangle of address Triang by the edge Pivot Pedge
-  //! and the third point of this  connexe triangle. When we
-  //! are on  a free edge TriCon==0  but the function return
-  //! the value of  the triangle in the  other side of Pivot
-  //! on the free edge.  Used to turn around a vertex.
+  //! and the third point of this connexe triangle. When we
+  //! are on a free edge TriCon==0 but the function return
+  //! the value of the triangle in the other side of Pivot
+  //! on the free edge. Used to turn around a vertex.
   static Standard_Integer TriConnex(const IntPatch_Polyhedron& thePolyh,
                                     const Standard_Integer     Triang,
                                     const Standard_Integer     Pivot,

@@ -69,8 +69,8 @@ public:
                      const Standard_Integer   Index,
                      const IntSurf_PathPoint& P);
 
-  //! associer a l 'indice du point sur la ligne l'indice du point
-  //! passant dans l'iterateur de depart
+  //! associate the index of the point on the line with the index of the point
+  //! passing through the starting iterator
   void AddIndexPassing(const Standard_Integer Index);
 
   void SetTangentVector(const gp_Vec& V, const Standard_Integer Index);
@@ -94,15 +94,15 @@ public:
   Standard_Boolean IsClosed() const;
 
   //! Returns True if the first point of the line is a
-  //! marching point . when is HasFirstPoint==False ,the line
-  //! begins on the natural bound of the surface.the line can be
-  //! too long
+  //! marching point. when is HasFirstPoint==False ,the line
+  //! begins on the natural bound of the surface. The line can
+  //! be too long
   Standard_Boolean HasFirstPoint() const;
 
   //! Returns True if the end point of the line is a
   //! marching point (Point from IntWS).
-  //! when is HasFirstPoint==False ,the line ends
-  //! on the natural bound of the surface.the line can be
+  //! when is HasFirstPoint==False the line ends
+  //! on the natural bound of the surface. The line can be
   //! too long.
   Standard_Boolean HasLastPoint() const;
 
@@ -112,7 +112,7 @@ public:
   const IntSurf_PathPoint& FirstPoint() const;
 
   //! Returns the Index of first point of the line when it is a
-  //! marching point.This index is the index in the
+  //! marching point. This index is the index in the
   //! PointStartIterator.
   //! An exception is raised if HasFirstPoint returns False.
   Standard_Integer FirstPointIndex() const;
@@ -123,7 +123,7 @@ public:
   const IntSurf_PathPoint& LastPoint() const;
 
   //! Returns the index of last point of the line when it is a
-  //! marching point.This index is the index in the
+  //! marching point. This index is the index in the
   //! PointStartIterator.
   //! An exception is raised if HasLastPoint returns False.
   Standard_Integer LastPointIndex() const;

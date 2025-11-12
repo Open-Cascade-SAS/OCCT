@@ -63,7 +63,7 @@ public:
   Standard_Boolean& ModifyOffsetCurveMode() { return myOffsetCurveMode; }
 
   //! Returns (modifiable) the flag which defines whether to store faces
-  //! with edges if its  pcurves are trimmed curves
+  //! with edges if its pcurves are trimmed curves
   Standard_Boolean& ModifyTrimmed2dMode() { return myTrimmed2dMode; }
 
   Standard_Integer NbSolids() const { return myNbSolids; }

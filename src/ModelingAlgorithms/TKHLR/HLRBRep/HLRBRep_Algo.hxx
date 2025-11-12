@@ -27,7 +27,7 @@ class Standard_Transient;
 class HLRBRep_Algo;
 DEFINE_STANDARD_HANDLE(HLRBRep_Algo, HLRBRep_InternalAlgo)
 
-//! Inherited  from InternalAlgo  to  provide  methods with Shape from TopoDS.
+//! Inherited from InternalAlgo to provide methods with Shape from TopoDS.
 //! A framework to compute a shape as seen in a projection plane. This is done by
 //! calculating the visible and the hidden parts of the shape.
 //! HLRBRep_Algo works with three types of entity:
@@ -84,7 +84,7 @@ public:
   //! You may add as many shapes as you wish. Use the function Add once for each shape.
   Standard_EXPORT void Add(const TopoDS_Shape& S, const Standard_Integer nbIso = 0);
 
-  //! return  the index  of  the  Shape <S>  and
+  //! return the index of the Shape <S> and
   //! return 0 if the Shape <S> is not found.
   Standard_EXPORT Standard_Integer Index(const TopoDS_Shape& S);
 

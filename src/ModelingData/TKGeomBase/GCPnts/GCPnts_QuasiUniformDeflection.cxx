@@ -105,7 +105,7 @@ static void QuasiFleche(const TheCurve&         theC,
   Standard_Boolean    isFlecheOk = Standard_False;
   if (aNorme > theEps && aNorme > 16. * theDeflection2)
   {
-    // Evaluation de la fleche par interpolation . Voir IntWalk_IWalking::TestDeflection
+    // Evaluation de la fleche par interpolation. Voir IntWalk_IWalking::TestDeflection
     Standard_Real N1 = theVdeb.SquareMagnitude();
     Standard_Real N2 = aVdelta.SquareMagnitude();
     if (N1 > theEps && N2 > theEps)

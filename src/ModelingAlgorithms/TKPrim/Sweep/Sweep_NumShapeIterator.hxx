@@ -25,7 +25,7 @@
 #include <TopAbs_Orientation.hxx>
 
 //! This class provides iteration services required by
-//! the   Swept Primitives  for   a Directing NumShape
+//! the Swept Primitives for a Directing NumShape
 //! Line.
 class Sweep_NumShapeIterator
 {

@@ -149,7 +149,7 @@ public:
   Standard_EXPORT virtual Standard_Real MaximalSection() const Standard_OVERRIDE;
 
   //! Compute the minimal value of weight for each poles
-  //! of all  sections.  This information is  useful to
+  //! of all sections. This information is useful to
   //! perform well conditioned rational approximation.
   Standard_EXPORT virtual void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const
     Standard_OVERRIDE;

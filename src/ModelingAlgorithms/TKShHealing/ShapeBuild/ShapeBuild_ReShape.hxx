@@ -58,7 +58,7 @@ public:
   //! <until> gives the level of type until which requests are taken
   //! into account. For subshapes of the type <until> no rebuild
   //! and further exploring are done.
-  //! ACTUALLY, NOT IMPLEMENTED BELOW  TopAbs_FACE
+  //! ACTUALLY, NOT IMPLEMENTED BELOW TopAbs_FACE
   //!
   //! <buildmode> says how to do on a SOLID,SHELL ... if one of its
   //! sub-shapes has been changed:

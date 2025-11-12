@@ -32,11 +32,11 @@ class TopoDS_Shape;
 //! -      Edges generate Faces.
 //! -      Wires generate Shells.
 //! -      Faces generate Solids.
-//! -      Shells generate Composite  Solids.
+//! -      Shells generate Composite Solids.
 //! You are not allowed to sweep Solids and Composite Solids.
 //! Two kinds of sweeps are implemented in the BRepPrimAPI package:
-//! -      The linear sweep called a   Prism
-//! -      The rotational sweep    called a Revol
+//! -      The linear sweep called a Prism
+//! -      The rotational sweep called a Revol
 //! Swept constructions along complex profiles such as BSpline curves
 //! are also available in the BRepOffsetAPI package..
 class BRepPrimAPI_MakeSweep : public BRepBuilderAPI_MakeShape
@@ -44,7 +44,7 @@ class BRepPrimAPI_MakeSweep : public BRepBuilderAPI_MakeShape
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Returns the  TopoDS  Shape of the bottom of the sweep.
+  //! Returns the TopoDS Shape of the bottom of the sweep.
   Standard_EXPORT virtual TopoDS_Shape FirstShape() = 0;
 
   //! Returns the TopoDS Shape of the top of the sweep.

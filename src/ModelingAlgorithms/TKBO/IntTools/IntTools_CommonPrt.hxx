@@ -77,7 +77,7 @@ public:
   //! Returns the second edge
   Standard_EXPORT const TopoDS_Edge& Edge2() const;
 
-  //! Returns the type of the common  part
+  //! Returns the type of the common part
   Standard_EXPORT TopAbs_ShapeEnum Type() const;
 
   //! Returns the range of first edge

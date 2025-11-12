@@ -26,30 +26,30 @@
 #include <TColStd_Array1OfReal.hxx>
 class Law_BSpline;
 
-//! This  class   is used  to   interpolate a BsplineCurve
-//! passing through    an  array of  points,   with   a C2
-//! Continuity if tangency  is not requested at the point.
-//! If tangency is  requested at the  point the continuity
-//! will be C1.  If Perodicity is requested the curve will
-//! be  closed  and the junction will  be  the first point
+//! This class is used to interpolate a BsplineCurve
+//! passing through an array of points, with a C2
+//! Continuity if tangency is not requested at the point.
+//! If tangency is requested at the point the continuity
+//! will be C1. If Perodicity is requested the curve will
+//! be closed and the junction will be the first point
 //! given. The curve will than be only C1
 class Law_Interpolate
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Tolerance is to check if  the points are not too close
-  //! to one an  other.  It is  also  used to check   if the
-  //! tangent vector  is not too small.   There should be at
+  //! Tolerance is to check if the points are not too close
+  //! to one an other. It is also used to check if the
+  //! tangent vector is not too small. There should be at
   //! least 2 points. If PeriodicFlag is True then the curve
   //! will be periodic be periodic
   Standard_EXPORT Law_Interpolate(const Handle(TColStd_HArray1OfReal)& Points,
                                   const Standard_Boolean               PeriodicFlag,
                                   const Standard_Real                  Tolerance);
 
-  //! Tolerance is to check if  the points are not too close
-  //! to one an  other.  It is  also  used to check   if the
-  //! tangent vector  is not too small.   There should be at
+  //! Tolerance is to check if the points are not too close
+  //! to one an other. It is also used to check if the
+  //! tangent vector is not too small. There should be at
   //! least 2 points. If PeriodicFlag is True then the curve
   //! will be periodic be periodic
   Standard_EXPORT Law_Interpolate(const Handle(TColStd_HArray1OfReal)& Points,
@@ -61,8 +61,8 @@ public:
   Standard_EXPORT void Load(const Standard_Real InitialTangent, const Standard_Real FinalTangent);
 
   //! loads the tangents. We should have as many tangents as
-  //! they are points  in the array if TangentFlags.Value(i)
-  //! is    Standard_True  use the tangent Tangents.Value(i)
+  //! they are points in the array if TangentFlags.Value(i)
+  //! is Standard_True use the tangent Tangents.Value(i)
   //! otherwise the tangent is not constrained.
   Standard_EXPORT void Load(const TColStd_Array1OfReal&             Tangents,
                             const Handle(TColStd_HArray1OfBoolean)& TangentFlags);

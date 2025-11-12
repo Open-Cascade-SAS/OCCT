@@ -40,13 +40,13 @@ class HelixGeom_HelixCurve : public Adaptor3d_Curve
 {
   DEFINE_STANDARD_RTTIEXT(HelixGeom_HelixCurve, Adaptor3d_Curve)
 public:
-  //! implementation of analytical  expressions
+  //! implementation of analytical expressions
   Standard_EXPORT HelixGeom_HelixCurve();
 
-  //! Sets default  values  for  parameters
+  //! Sets default values for parameters
   Standard_EXPORT void Load();
 
-  //! Sets helix  parameters
+  //! Sets helix parameters
   Standard_EXPORT void Load(const Standard_Real    aT1,
                             const Standard_Real    aT2,
                             const Standard_Real    aPitch,
@@ -54,24 +54,24 @@ public:
                             const Standard_Real    aTaperAngle,
                             const Standard_Boolean aIsCW);
 
-  //! Gets first  parameter
+  //! Gets first parameter
   Standard_EXPORT virtual Standard_Real FirstParameter() const Standard_OVERRIDE;
 
-  //! Gets last  parameter
+  //! Gets last parameter
   Standard_EXPORT virtual Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! Gets continuity
   Standard_EXPORT virtual GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! Gets number  of  intervals
+  //! Gets number of intervals
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
     Standard_OVERRIDE;
 
-  //! Gets parametric  intervals
+  //! Gets parametric intervals
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
                                          const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
-  //! Gets parametric  resolution
+  //! Gets parametric resolution
   Standard_EXPORT virtual Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
 
   //! Returns False

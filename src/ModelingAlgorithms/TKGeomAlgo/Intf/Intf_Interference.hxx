@@ -29,24 +29,24 @@ class Intf_SectionPoint;
 class Intf_SectionLine;
 class Intf_TangentZone;
 
-//! Describes the   Interference  computation    result
+//! Describes the Interference computation result
 //! between polygon2d or polygon3d or polyhedron
-//! (as  three sequences   of  points  of  intersection,
+//! (as three sequences of points of intersection,
 //! polylines of intersection and zones de tangence).
 class Intf_Interference
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Gives the number   of  points of  intersection  in the
+  //! Gives the number of points of intersection in the
   //! interference.
   Standard_Integer NbSectionPoints() const;
 
-  //! Gives the point of  intersection of address  Index in
+  //! Gives the point of intersection of address Index in
   //! the interference.
   const Intf_SectionPoint& PntValue(const Standard_Integer Index) const;
 
-  //! Gives the number  of polylines of  intersection in the
+  //! Gives the number of polylines of intersection in the
   //! interference.
   Standard_Integer NbSectionLines() const;
 
@@ -57,23 +57,23 @@ public:
   //! Gives the number of zones of tangence in the interference.
   Standard_Integer NbTangentZones() const;
 
-  //! Gives  the zone of  tangence at address   Index in the
+  //! Gives the zone of tangence at address Index in the
   //! interference.
   const Intf_TangentZone& ZoneValue(const Standard_Integer Index) const;
 
   //! Gives the tolerance used for the calculation.
   Standard_Real GetTolerance() const;
 
-  //! Tests if the polylines of  intersection or the zones of
+  //! Tests if the polylines of intersection or the zones of
   //! tangence contain the point of intersection <ThePnt>.
   Standard_EXPORT Standard_Boolean Contains(const Intf_SectionPoint& ThePnt) const;
 
-  //! Inserts a new zone of tangence in  the current list of
-  //! tangent zones of  the interference  and  returns  True
+  //! Inserts a new zone of tangence in the current list of
+  //! tangent zones of the interference and returns True
   //! when done.
   Standard_EXPORT Standard_Boolean Insert(const Intf_TangentZone& TheZone);
 
-  //! Insert a new segment of intersection in the current  list of
+  //! Insert a new segment of intersection in the current list of
   //! polylines of intersection of the interference.
   Standard_EXPORT void Insert(const Intf_SectionPoint& pdeb, const Intf_SectionPoint& pfin);
 

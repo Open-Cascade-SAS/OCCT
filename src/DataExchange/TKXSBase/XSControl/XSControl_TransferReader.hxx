@@ -294,7 +294,7 @@ public:
 
   //! Transfers the content of the current Interface Model to
   //! data handled by Imagine, starting from its Roots (determined
-  //! by the Graph <G>),  using the selected Actor for Read
+  //! by the Graph <G>), using the selected Actor for Read
   //! Returns the count of performed root transfers (i.e. 0 if none)
   //! or -1 if no actor is defined
   Standard_EXPORT Standard_Integer
@@ -307,7 +307,7 @@ public:
                                      const Standard_Integer            theLevel = 0);
 
   //! Prints statistics on current Trace File, according <what> and
-  //! <mode>.  See PrintStatsProcess for details
+  //! <mode>. See PrintStatsProcess for details
   Standard_EXPORT void PrintStats(Standard_OStream&      theStream,
                                   const Standard_Integer theWhat,
                                   const Standard_Integer theMode = 0) const;

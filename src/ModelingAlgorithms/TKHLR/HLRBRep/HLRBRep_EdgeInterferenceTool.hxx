@@ -28,7 +28,7 @@ class HLRBRep_Data;
 class gp_Dir;
 class HLRAlgo_Interference;
 
-//! Implements the  methods required  to  instantiates
+//! Implements the methods required to instantiates
 //! the EdgeInterferenceList from HLRAlgo.
 class HLRBRep_EdgeInterferenceTool
 {
@@ -54,7 +54,7 @@ public:
   Standard_Boolean IsPeriodic() const;
 
   //! Returns local geometric description of the Edge at
-  //! parameter   <Para>.  See  method  Reset  of  class
+  //! parameter <Para>. See method Reset of class
   //! EdgeFaceTransition from TopCnx for other arguments.
   Standard_EXPORT void EdgeGeometry(const Standard_Real Param,
                                     gp_Dir&             Tgt,
@@ -63,18 +63,18 @@ public:
 
   Standard_Real ParameterOfInterference(const HLRAlgo_Interference& I) const;
 
-  //! True if   the  two interferences are on   the same
+  //! True if the two interferences are on the same
   //! geometric locus.
   Standard_EXPORT Standard_Boolean SameInterferences(const HLRAlgo_Interference& I1,
                                                      const HLRAlgo_Interference& I2) const;
 
-  //! True if the  Interference and the  current  Vertex
+  //! True if the Interference and the current Vertex
   //! are on the same geometric locus.
   Standard_EXPORT Standard_Boolean SameVertexAndInterference(const HLRAlgo_Interference& I) const;
 
-  //! Returns   the  geometry of  the   boundary  at the
-  //! interference  <I>.  See the AddInterference method
-  //! of the class  EdgeFaceTransition  from  TopCnx for
+  //! Returns the geometry of the boundary at the
+  //! interference <I>. See the AddInterference method
+  //! of the class EdgeFaceTransition from TopCnx for
   //! the other arguments.
   Standard_EXPORT void InterferenceBoundaryGeometry(const HLRAlgo_Interference& I,
                                                     gp_Dir&                     Tang,

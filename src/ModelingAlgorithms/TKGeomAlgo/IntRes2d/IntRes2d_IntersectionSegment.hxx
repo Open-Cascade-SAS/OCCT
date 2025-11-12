@@ -51,31 +51,31 @@ public:
   //! the same orientation on both curves.
   Standard_Boolean IsOpposite() const;
 
-  //! Returns True if the segment is  limited by a first
-  //! point.   This  point defines  the lowest parameter
-  //! admitted on the first  curve for the  segment.  If
-  //! IsOpposite  returns  False, it  defines the lowest
-  //! parameter on the  second curve, otherwise,  it  is
+  //! Returns True if the segment is limited by a first
+  //! point. This point defines the lowest parameter
+  //! admitted on the first curve for the segment. If
+  //! IsOpposite returns False, it defines the lowest
+  //! parameter on the second curve, otherwise, it is
   //! the highest parameter on the second curve.
   Standard_Boolean HasFirstPoint() const;
 
-  //! Returns the  first point   of the segment    as an
-  //! IntersectionPoint (with    a    transition).   The
-  //! exception  DomainError  is raised if HasFirstPoint
+  //! Returns the first point of the segment as an
+  //! IntersectionPoint (with a transition). The
+  //! exception DomainError is raised if HasFirstPoint
   //! returns False.
   const IntRes2d_IntersectionPoint& FirstPoint() const;
 
-  //! Returns True if the segment  is  limited by a last
-  //! point.  This point  defines  the highest parameter
-  //! admitted on the  first curve for  the segment.  If
-  //! IsOpposite returns  False, it  defines the highest
-  //! parameter on  the  second curve, otherwise, it  is
+  //! Returns True if the segment is limited by a last
+  //! point. This point defines the highest parameter
+  //! admitted on the first curve for the segment. If
+  //! IsOpposite returns False, it defines the highest
+  //! parameter on the second curve, otherwise, it is
   //! the lowest parameter on the second curve.
   Standard_Boolean HasLastPoint() const;
 
-  //! Returns   the  last point  of the    segment as an
-  //! IntersectionPoint   (with  a    transition).   The
-  //! exception        DomainError     is   raised    if
+  //! Returns the last point of the segment as an
+  //! IntersectionPoint (with a transition). The
+  //! exception DomainError is raised if
   //! HasLastExtremity returns False.
   const IntRes2d_IntersectionPoint& LastPoint() const;
 

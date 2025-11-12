@@ -33,7 +33,7 @@ public:
   //! Default constructor
   BRepPrim_Wedge() {}
 
-  //! Creates a  Wedge  algorithm.   <Axes> is  the axis
+  //! Creates a Wedge algorithm. <Axes> is the axis
   //! system for the primitive.
   //!
   //! XMin, YMin, ZMin are set to 0
@@ -49,7 +49,7 @@ public:
                                  const Standard_Real dy,
                                  const Standard_Real dz);
 
-  //! Creates  a Wedge  primitive. <Axes> is   the  axis
+  //! Creates a Wedge primitive. <Axes> is the axis
   //! system for the primitive.
   //!
   //! XMin, YMin, ZMin are set to 0
@@ -67,7 +67,7 @@ public:
                                  const Standard_Real dz,
                                  const Standard_Real ltx);
 
-  //! Create  a Wedge primitive.   <Axes>  is  the  axis
+  //! Create a Wedge primitive. <Axes> is the axis
   //! system for the primitive.
   //!
   //! all the fields are set to the corresponding value

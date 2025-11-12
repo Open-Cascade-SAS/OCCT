@@ -58,8 +58,8 @@ public:
                                         const Standard_Boolean Canonize = Standard_True);
 
   //! Builds a semi-infinite or an infinite prism of base S.
-  //! If Inf is true the prism  is infinite, if Inf is false
-  //! the prism is semi-infinite (in the direction D).  If C
+  //! If Inf is true the prism is infinite, if Inf is false
+  //! the prism is semi-infinite (in the direction D). If C
   //! is true S is copied (for semi-infinite prisms).
   //! If Canonize is true then generated surfaces
   //! are attempted to be canonized in simple types
@@ -76,7 +76,7 @@ public:
   Standard_EXPORT virtual void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
-  //! Returns the  TopoDS  Shape of the bottom of the prism.
+  //! Returns the TopoDS Shape of the bottom of the prism.
   Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
 
   //! Returns the TopoDS Shape of the top of the prism.
@@ -94,12 +94,12 @@ public:
   //! Returns true if the shape S has been deleted.
   Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
 
-  //! Returns the TopoDS Shape of the bottom  of the  prism.
-  //! generated  with  theShape (subShape of the  generating shape).
+  //! Returns the TopoDS Shape of the bottom of the prism.
+  //! generated with theShape (subShape of the generating shape).
   Standard_EXPORT TopoDS_Shape FirstShape(const TopoDS_Shape& theShape);
 
-  //! Returns the  TopoDS  Shape of the top  of  the  prism.
-  //! generated  with  theShape (subShape of the  generating shape).
+  //! Returns the TopoDS Shape of the top of the prism.
+  //! generated with theShape (subShape of the generating shape).
   Standard_EXPORT TopoDS_Shape LastShape(const TopoDS_Shape& theShape);
 
 protected:

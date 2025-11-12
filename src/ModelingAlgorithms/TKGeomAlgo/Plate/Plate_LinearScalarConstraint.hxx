@@ -30,7 +30,7 @@
 class Plate_PinpointConstraint;
 class gp_XYZ;
 
-//! define on or several constraints  as linear combination of
+//! define on or several constraints as linear combination of
 //! the X,Y and Z components of a set of PinPointConstraint
 class Plate_LinearScalarConstraint
 {
@@ -55,13 +55,13 @@ public:
 
   const TColgp_Array2OfXYZ& Coeff() const;
 
-  //! Sets   the PinPointConstraint of   index Index to
+  //! Sets the PinPointConstraint of index Index to
   //! Value raise if Index is greater than the length of
-  //! PPC or the Row length of coeff or lower  than 1
+  //! PPC or the Row length of coeff or lower than 1
   Standard_EXPORT void SetPPC(const Standard_Integer Index, const Plate_PinpointConstraint& Value);
 
-  //! Sets the coeff  of index (Row,Col)  to Value
-  //! raise if  Row (respectively Col)  is greater than the
+  //! Sets the coeff of index (Row,Col) to Value
+  //! raise if Row (respectively Col) is greater than the
   //! Row (respectively Column) length of coeff
   Standard_EXPORT void SetCoeff(const Standard_Integer Row,
                                 const Standard_Integer Col,

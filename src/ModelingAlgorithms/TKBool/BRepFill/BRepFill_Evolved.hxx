@@ -56,7 +56,7 @@ public:
                                    const GeomAbs_JoinType Join  = GeomAbs_Arc,
                                    const Standard_Boolean Solid = Standard_False);
 
-  //! Creates an  evolved shape by sweeping the <Profile>
+  //! Creates an evolved shape by sweeping the <Profile>
   //! along the <Spine>
   Standard_EXPORT BRepFill_Evolved(const TopoDS_Face&     Spine,
                                    const TopoDS_Wire&     Profile,

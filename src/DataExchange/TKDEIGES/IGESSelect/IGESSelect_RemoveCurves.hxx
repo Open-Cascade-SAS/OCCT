@@ -46,7 +46,7 @@ public:
                                   Interface_CopyTool&               TC) const Standard_OVERRIDE;
 
   //! Returns a text which is
-  //! "Remove Curves UV on Face"  or  "Remove Curves 3D on Face"
+  //! "Remove Curves UV on Face" or "Remove Curves 3D on Face"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_RemoveCurves, IGESSelect_ModelModifier)

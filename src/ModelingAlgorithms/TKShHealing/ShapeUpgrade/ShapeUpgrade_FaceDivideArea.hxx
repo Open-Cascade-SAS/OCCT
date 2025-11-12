@@ -30,7 +30,7 @@ class ShapeUpgrade_FaceDivideArea : public ShapeUpgrade_FaceDivide
 {
 
 public:
-  //! Creates empty  constructor.
+  //! Creates empty constructor.
   Standard_EXPORT ShapeUpgrade_FaceDivideArea();
 
   Standard_EXPORT ShapeUpgrade_FaceDivideArea(const TopoDS_Face& F);

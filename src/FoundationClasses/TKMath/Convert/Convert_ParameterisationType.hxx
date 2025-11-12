@@ -41,7 +41,7 @@
 //! t = tan ( Theta / 2 )
 //! The result of this definition is:
 //! cos ( Theta ) = ( 1. - t**2 ) / ( 1. + t**2 )
-//! sin ( Theta ) =      2. * t / ( 1. + t**2 )
+//! sin ( Theta ) = 2. * t / ( 1. + t**2 )
 //! which ensures the rational parameterization of the circle or the ellipse. However, this is not
 //! the most suitable parameterization method where the arc of the circle or ellipse has a large
 //! opening angle. In such cases, the curve will be represented by a BSpline with intermediate

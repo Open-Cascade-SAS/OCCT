@@ -44,7 +44,7 @@ public:
                                                                    const Standard_Real     Tol);
 
   //! The current polygon is modified if most
-  //! of the points of the  polygon are
+  //! of the points of the polygon are
   //! outside the box <OtherBox>. In this
   //! situation, bounds are computed to build
   //! a polygon inside or near the OtherBox.

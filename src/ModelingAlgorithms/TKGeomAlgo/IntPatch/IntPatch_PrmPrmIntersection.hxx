@@ -39,8 +39,8 @@ public:
   //! Empty Constructor
   Standard_EXPORT IntPatch_PrmPrmIntersection();
 
-  //! Performs the intersection between <Caro1>  and
-  //! <Caro2>.  Associated Polyhedrons <Polyhedron1>
+  //! Performs the intersection between <Caro1> and
+  //! <Caro2>. Associated Polyhedrons <Polyhedron1>
   //! and <Polyhedron2> are given.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
                                const IntPatch_Polyhedron&         Polyhedron1,
@@ -61,7 +61,7 @@ public:
                                const Standard_Real                Deflection,
                                const Standard_Real                Increment);
 
-  //! Performs the intersection between <Caro1>  and
+  //! Performs the intersection between <Caro1> and
   //! <Caro2>. The method computes the polyhedron on
   //! each surface.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
@@ -74,7 +74,7 @@ public:
                                const Standard_Real                Increment,
                                const Standard_Boolean             ClearFlag = Standard_True);
 
-  //! Performs the intersection between <Caro1>  and
+  //! Performs the intersection between <Caro1> and
   //! <Caro2>. The method computes the polyhedron on
   //! each surface.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
@@ -87,7 +87,7 @@ public:
                                const Standard_Real                Increment,
                                IntSurf_ListOfPntOn2S&             ListOfPnts);
 
-  //! Performs the intersection between <Caro1>  and
+  //! Performs the intersection between <Caro1> and
   //! <Caro2>. The method computes the polyhedron on
   //! each surface.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
@@ -103,7 +103,7 @@ public:
                                const Standard_Real                Deflection,
                                const Standard_Real                Increment);
 
-  //! Performs the intersection between <Caro1>  and
+  //! Performs the intersection between <Caro1> and
   //! <Caro2>. The method computes the polyhedron on
   //! each surface.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
@@ -113,10 +113,10 @@ public:
                                const Standard_Real                Deflection,
                                const Standard_Real                Increment);
 
-  //! Performs  the intersection between <Caro1> and
+  //! Performs the intersection between <Caro1> and
   //! <Caro2>.
   //!
-  //! The polyhedron which approximates     <Caro2>,
+  //! The polyhedron which approximates <Caro2>,
   //! <Polyhedron2> is given. The other one is
   //! computed.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
@@ -129,10 +129,10 @@ public:
                                const Standard_Real                Deflection,
                                const Standard_Real                Increment);
 
-  //! Performs  the intersection between <Caro1> and
+  //! Performs the intersection between <Caro1> and
   //! <Caro2>.
   //!
-  //! The polyhedron which approximates     <Caro1>,
+  //! The polyhedron which approximates <Caro1>,
   //! <Polyhedron1> is given. The other one is
   //! computed.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
@@ -158,14 +158,14 @@ public:
   //! An exception is raised if Index<=0 or Index>NbLine.
   const Handle(IntPatch_Line)& Line(const Standard_Integer Index) const;
 
-  //! Computes about <NbPoints>  Intersection Points  on
-  //! the Line <IndexLine> between  the Points of  Index
+  //! Computes about <NbPoints> Intersection Points on
+  //! the Line <IndexLine> between the Points of Index
   //! <LowPoint> and <HighPoint>.
   //!
-  //! All  the points  of the line  of index <IndexLine>
-  //! with an index  between <LowPoint>  and <HighPoint>
-  //! are in the returned  line. New Points are inserted
-  //! between existing points  if  those  points are not
+  //! All the points of the line of index <IndexLine>
+  //! with an index between <LowPoint> and <HighPoint>
+  //! are in the returned line. New Points are inserted
+  //! between existing points if those points are not
   //! too closed.
   //!
   //! An exception is raised if Index<=0 or Index>NbLine.

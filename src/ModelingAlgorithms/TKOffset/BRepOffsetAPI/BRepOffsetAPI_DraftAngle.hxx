@@ -158,18 +158,18 @@ public:
   //! the non-empty constructor or the Init function.
   Standard_EXPORT const TopoDS_Shape& ProblematicShape() const;
 
-  //! Returns an error  status when an error has occurred
-  //! (Face,   Edge    or Vertex  recomputation problem).
+  //! Returns an error status when an error has occurred
+  //! (Face, Edge or Vertex recomputation problem).
   //! Otherwise returns Draft_NoError. The method may be
-  //! called if AddDone  returns Standard_False, or when
+  //! called if AddDone returns Standard_False, or when
   //! IsDone returns Standard_False.
   Standard_EXPORT Draft_ErrorStatus Status() const;
 
-  //! Returns all  the  faces   which  have been   added
+  //! Returns all the faces which have been added
   //! together with the face <F>.
   Standard_EXPORT const TopTools_ListOfShape& ConnectedFaces(const TopoDS_Face& F) const;
 
-  //! Returns all the faces  on which a modification has
+  //! Returns all the faces on which a modification has
   //! been given.
   Standard_EXPORT const TopTools_ListOfShape& ModifiedFaces() const;
 
@@ -179,12 +179,12 @@ public:
 
   Standard_EXPORT void CorrectWires();
 
-  //! Returns the  list   of shapes generated   from the
+  //! Returns the list of shapes generated from the
   //! shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
     Standard_OVERRIDE;
 
-  //! Returns the list  of shapes modified from the shape
+  //! Returns the list of shapes modified from the shape
   //! <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
     Standard_OVERRIDE;
