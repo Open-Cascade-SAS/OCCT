@@ -28,6 +28,7 @@ set(OCCT_TKernel_GTests_FILES
   Standard_Failure_Test.cxx
   Standard_GUID_Test.cxx
   Standard_Handle_Test.cxx
+  Standard_Memory_Test.cxx
   TCollection_AsciiString_Test.cxx
   TCollection_ExtendedString_Test.cxx
   UnitsAPI_Test.cxx
