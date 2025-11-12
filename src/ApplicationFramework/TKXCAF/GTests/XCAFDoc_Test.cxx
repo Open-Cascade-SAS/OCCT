@@ -11,8 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepPrimAPI_MakeBox.hxx>
 #include <Standard_GUID.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDocStd_Application.hxx>
+#include <TDocStd_Document.hxx>
 #include <XCAFDoc.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 
 #include <gtest/gtest.h>
 
@@ -40,4 +46,41 @@ TEST(XCAFDoc_Test, OCC738_AssemblyGUID)
   // Verify the GUID is not null (all zeros)
   Standard_GUID aNullGUID("00000000-0000-0000-0000-000000000000");
   EXPECT_NE(aGUID, aNullGUID) << "AssemblyGUID should not be null";
+}
+
+TEST(XCAFDoc_ShapeTool_Test, OCC23595_AutoNaming)
+{
+  // Bug OCC23595: XCAFDoc_ShapeTool extended with two methods -
+  // SetAutoNaming() and AutoNaming()
+  // This test verifies that the AutoNaming feature works correctly
+
+  // Create a new XmlXCAF document
+  Handle(TDocStd_Application) anApp = new TDocStd_Application();
+  Handle(TDocStd_Document)    aDoc;
+  anApp->NewDocument("XmlXCAF", aDoc);
+  ASSERT_FALSE(aDoc.IsNull());
+
+  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+
+  // Check default value of AutoNaming
+  Standard_Boolean aValue = XCAFDoc_ShapeTool::AutoNaming();
+  EXPECT_TRUE(aValue) << "AutoNaming should be true by default";
+
+  // Test with AutoNaming enabled (true)
+  XCAFDoc_ShapeTool::SetAutoNaming(Standard_True);
+  TopoDS_Shape          aShape1 = BRepPrimAPI_MakeBox(100., 200., 300.).Shape();
+  TDF_Label             aLabel1 = aShTool->AddShape(aShape1);
+  Handle(TDataStd_Name) anAttr;
+  EXPECT_TRUE(aLabel1.FindAttribute(TDataStd_Name::GetID(), anAttr))
+    << "Shape should have a name attribute when AutoNaming is true";
+
+  // Test with AutoNaming disabled (false)
+  XCAFDoc_ShapeTool::SetAutoNaming(Standard_False);
+  TopoDS_Shape aShape2 = BRepPrimAPI_MakeBox(300., 200., 100.).Shape();
+  TDF_Label    aLabel2 = aShTool->AddShape(aShape2);
+  EXPECT_FALSE(aLabel2.FindAttribute(TDataStd_Name::GetID(), anAttr))
+    << "Shape should not have a name attribute when AutoNaming is false";
+
+  // Restore the original value
+  XCAFDoc_ShapeTool::SetAutoNaming(aValue);
 }

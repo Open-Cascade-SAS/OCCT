@@ -134,40 +134,6 @@ static Standard_Integer OCC230(Draw_Interpretor& di, Standard_Integer argc, cons
   return 0;
 }
 
-static Standard_Integer OCC23595(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
-  Handle(TDocStd_Document)    aDoc;
-  anApp->NewDocument("XmlXCAF", aDoc);
-  QCOMPARE(!aDoc.IsNull(), Standard_True);
-
-  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
-
-  // check default value
-  Standard_Boolean aValue = XCAFDoc_ShapeTool::AutoNaming();
-  QCOMPARE(aValue, Standard_True);
-
-  // true
-  XCAFDoc_ShapeTool::SetAutoNaming(Standard_True);
-  TopoDS_Shape          aShape = BRepPrimAPI_MakeBox(100., 200., 300.).Shape();
-  TDF_Label             aLabel = aShTool->AddShape(aShape);
-  Handle(TDataStd_Name) anAttr;
-  QCOMPARE(aLabel.FindAttribute(TDataStd_Name::GetID(), anAttr), Standard_True);
-
-  // false
-  XCAFDoc_ShapeTool::SetAutoNaming(Standard_False);
-  aShape = BRepPrimAPI_MakeBox(300., 200., 100.).Shape();
-  aLabel = aShTool->AddShape(aShape);
-  QCOMPARE(!aLabel.FindAttribute(TDataStd_Name::GetID(), anAttr), Standard_True);
-
-  // restore
-  XCAFDoc_ShapeTool::SetAutoNaming(aValue);
-
-  return 0;
-}
-
 #include <ExprIntrp_GenExp.hxx>
 
 Standard_Integer OCC22611(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -4501,7 +4467,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   group);
 
   theCommands.Add("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
-  theCommands.Add("OCC23595", "OCC23595", __FILE__, OCC23595, group);
   theCommands.Add("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
   theCommands.Add("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
   theCommands.Add("OCC23683", "OCC23683 shape", __FILE__, OCC23683, group);
