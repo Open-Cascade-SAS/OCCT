@@ -2077,23 +2077,6 @@ static Standard_Integer OCC25100(Draw_Interpretor& di, Standard_Integer argc, co
 
 //=================================================================================================
 
-static Standard_Integer OCC25348(Draw_Interpretor& theDI,
-                                 Standard_Integer /*theArgNb*/,
-                                 const char** /*theArgVec*/)
-{
-  Handle(NCollection_IncAllocator) anAlloc1;
-  NCollection_List<int>            aList1(anAlloc1);
-  for (int i = 0; i < 10; i++)
-  {
-    Handle(NCollection_IncAllocator) anAlloc2;
-    NCollection_List<int>            aList2(anAlloc2);
-    aList2.Append(i);
-    aList1.Assign(aList2);
-  }
-  theDI << "Test complete\n";
-  return 0;
-}
-
 #include <IntCurvesFace_ShapeIntersector.hxx>
 #include <BRepBndLib.hxx>
 
@@ -4531,7 +4514,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC7570", "OCC7570 shape", __FILE__, OCC7570, group);
   theCommands.Add("OCC25100", "OCC25100 shape", __FILE__, OCC25100, group);
   theCommands.Add("OCC25340", "OCC25340", __FILE__, OCC25340, group);
-  theCommands.Add("OCC25348", "OCC25348", __FILE__, OCC25348, group);
   theCommands.Add("OCC25413", "OCC25413 shape", __FILE__, OCC25413, group);
   theCommands.Add("OCC25446", "OCC25446 res b1 b2 op", __FILE__, OCC25446, group);
   theCommands.Add("OCC25545",

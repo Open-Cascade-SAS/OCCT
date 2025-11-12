@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <NCollection_List.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
@@ -449,4 +450,39 @@ TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_Replace)
   std::replace(aStdList.begin(), aStdList.end(), aTargetValue, aNewValue);
 
   EXPECT_TRUE(std::equal(aList.begin(), aList.end(), aStdList.begin()));
+}
+
+TEST_F(NCollection_ListTest, OCC25348_AssignDoesNotChangeAllocator)
+{
+  // Bug OCC25348: Method Assign of NCollection containers must not change
+  // own allocator of the target
+  // This test verifies that calling Assign() doesn't change the allocator
+  // of the target list
+
+  Handle(NCollection_IncAllocator) anAlloc1;
+  NCollection_List<int>            aList1(anAlloc1);
+
+  // Perform multiple assign operations with different source lists,
+  // each having their own allocator
+  for (int i = 0; i < 10; i++)
+  {
+    Handle(NCollection_IncAllocator) anAlloc2;
+    NCollection_List<int>            aList2(anAlloc2);
+    aList2.Append(i);
+
+    // Store the allocator before Assign
+    Handle(NCollection_BaseAllocator) anAllocBefore = aList1.Allocator();
+
+    // Assign aList2 to aList1
+    aList1.Assign(aList2);
+
+    // Verify that the allocator of aList1 hasn't changed
+    Handle(NCollection_BaseAllocator) anAllocAfter = aList1.Allocator();
+    EXPECT_EQ(anAllocBefore, anAllocAfter)
+      << "Assign() should not change the target's allocator";
+
+    // Verify the content was copied correctly
+    EXPECT_EQ(1, aList1.Size());
+    EXPECT_EQ(i, aList1.First());
+  }
 }
