@@ -4,6 +4,7 @@ set(OCCT_TKernel_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TKernel_GTests_FILES
   Handle_Advanced_Test.cxx
   Handle_Operations_Test.cxx
+  Message_Messenger_Test.cxx
   NCollection_Array1_Test.cxx
   NCollection_Array2_Test.cxx
   NCollection_BaseAllocator_Test.cxx
