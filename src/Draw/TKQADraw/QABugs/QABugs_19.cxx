@@ -1279,49 +1279,6 @@ static Standard_Integer OCC24834(Draw_Interpretor& di, Standard_Integer n, const
   return 0;
 }
 
-#include <Geom2dAPI_InterCurveCurve.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-
-//=================================================================================================
-
-static Standard_Integer OCC24889(Draw_Interpretor& theDI,
-                                 Standard_Integer /*theNArg*/,
-                                 const char** /*theArgs*/)
-{
-  // Curves
-  Handle(Geom2d_Circle) aCircle1 =
-    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(25, -25), gp_Dir2d(gp_Dir2d::D::X), gp_Dir2d(-0, 1)), 155);
-
-  Handle(Geom2d_Circle) aCircle2 =
-    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(25, 25), gp_Dir2d(gp_Dir2d::D::X), gp_Dir2d(-0, 1)), 155);
-
-  Handle(Geom2d_TrimmedCurve) aTrim[2] = {
-    new Geom2d_TrimmedCurve(aCircle1, 1.57079632679490, 2.97959469729228),
-    new Geom2d_TrimmedCurve(aCircle2, 3.30359060633978, 4.71238898038469)};
-
-  DrawTrSurf::Set("c_1", aTrim[0]);
-  DrawTrSurf::Set("c_2", aTrim[1]);
-
-  // Intersection
-  constexpr Standard_Real   aTol = Precision::Confusion();
-  Geom2dAPI_InterCurveCurve aIntTool(aTrim[0], aTrim[1], aTol);
-
-  const IntRes2d_IntersectionPoint& aIntPnt = aIntTool.Intersector().Point(1);
-
-  gp_Pnt2d      aIntRes = aIntTool.Point(1);
-  Standard_Real aPar[2] = {aIntPnt.ParamOnFirst(), aIntPnt.ParamOnSecond()};
-
-  // theDI.precision( 5 );
-  theDI << "Int point: X = " << aIntRes.X() << "; Y = " << aIntRes.Y() << "\n";
-  for (int i = 0; i < 2; ++i)
-  {
-    theDI << "Curve " << i << ": FirstParam = " << aTrim[i]->FirstParameter()
-          << "; LastParam = " << aTrim[i]->LastParameter() << "; IntParameter = " << aPar[i]
-          << "\n";
-  }
-
-  return 0;
-}
 
 #include <math_GlobOptMin.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
@@ -4666,7 +4623,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   OCC24667,
                   group);
   theCommands.Add("OCC24834", "OCC24834", __FILE__, OCC24834, group);
-  theCommands.Add("OCC24889", "OCC24889", __FILE__, OCC24889, group);
   theCommands.Add("OCC23951", "OCC23951 path to saved step file", __FILE__, OCC23951, group);
   theCommands.Add("OCC24931", "OCC24931 path to saved xml file", __FILE__, OCC24931, group);
   theCommands.Add("OCC23950", "OCC23950 step_file", __FILE__, OCC23950, group);
