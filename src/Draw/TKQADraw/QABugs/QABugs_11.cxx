@@ -1572,47 +1572,6 @@ static Standard_Integer OCC921(Draw_Interpretor& di, Standard_Integer argc, cons
 
 //=================================================================================================
 
-static Standard_Integer OCC902(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " expression\n";
-    return 1;
-  }
-
-  TCollection_AsciiString anExpStr(argv[1]);
-  anExpStr.AssignCat("*x");
-  anExpStr.Prepend("Exp(");
-  anExpStr.AssignCat(")");
-
-  Handle(ExprIntrp_GenExp) exprIntrp = ExprIntrp_GenExp::Create();
-
-  //
-  // Create the expression
-  exprIntrp->Process(anExpStr);
-
-  if (!exprIntrp->IsDone())
-  {
-    di << "Interpretation of expression " << argv[1] << " failed\n";
-    return 1;
-  }
-
-  Handle(Expr_GeneralExpression) anExpr  = exprIntrp->Expression();
-  Handle(Expr_NamedUnknown)      aVar    = new Expr_NamedUnknown("x");
-  Handle(Expr_GeneralExpression) newExpr = anExpr->Derivative(aVar);
-
-  TCollection_AsciiString res        = newExpr->String();
-  Standard_CString        resStr     = res.ToCString();
-  TCollection_AsciiString res_old    = anExpr->String();
-  Standard_CString        res_oldStr = res_old.ToCString();
-
-  di << "X = " << argv[1] << "\n";
-  di << "Y = " << res_oldStr << "\n";
-  di << "Y' = " << resStr << "\n";
-
-  return 0;
-}
-
 #include <DDF.hxx>
 #include <TPrsStd_AISViewer.hxx>
 
@@ -5131,7 +5090,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
   theCommands.Add("OCC867", "OCC867 Point Surface Umin Usup Vmin Vsup", __FILE__, OCC867, group);
   theCommands.Add("OCC909", "OCC909 wire face", __FILE__, OCC909, group);
   theCommands.Add("OCC921", "OCC921 face", __FILE__, OCC921, group);
-  theCommands.Add("OCC902", "OCC902 expression", __FILE__, OCC902, group);
 
   theCommands.Add("OCC1029_AISTransparency",
                   "OCC1029_AISTransparency (DOC, entry, [real])",
