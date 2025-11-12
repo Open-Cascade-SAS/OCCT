@@ -3839,38 +3839,6 @@ static Standard_Integer OCC30880(Draw_Interpretor& theDI,
 
 #include <BRepPrimAPI_MakeBox.hxx>
 
-static Standard_Integer OCC30704(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  // Make a shape somewhere far from (0, 0, 0).
-  BRepPrimAPI_MakeBox mkBox(gp_Pnt(100, 100, 100), 100, 100, 100);
-  const TopoDS_Shape& box = mkBox.Shape();
-
-  // Add a bounding box of a shape to a void bounding box.
-  Bnd_OBB aVoidBox, aBox;
-  BRepBndLib::AddOBB(box, aBox, Standard_False, Standard_False, Standard_False);
-  aVoidBox.Add(aBox);
-
-  // Print the center point of the bounding box.
-  const gp_XYZ& center = aVoidBox.Center();
-  di << center.X() << " " << center.Y() << " " << center.Z();
-  return 0;
-}
-
-static Standard_Integer OCC30704_1(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  // A point.
-  gp_Pnt aP(100, 200, 300);
-
-  // Add the point to a void bounding box.
-  Bnd_OBB aVoidBox;
-  aVoidBox.Add(aP);
-
-  // Print the center point of the bounding box.
-  const gp_XYZ& center = aVoidBox.Center();
-  di << center.X() << " " << center.Y() << " " << center.Z();
-  return 0;
-}
-
 //=======================================================================
 // function : OCC30990
 // purpose  : check consistency of implementation of cache in B-Spline surfaces
@@ -4675,8 +4643,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   OCC30880,
                   group);
 
-  theCommands.Add("OCC30704", "OCC30704", __FILE__, OCC30704, group);
-  theCommands.Add("OCC30704_1", "OCC30704_1", __FILE__, OCC30704_1, group);
   theCommands.Add("OCC31294", "OCC31294", __FILE__, OCC31294, group);
 
   theCommands.Add("OCC31697", "OCC31697 expression variable", __FILE__, OCC31697, group);
