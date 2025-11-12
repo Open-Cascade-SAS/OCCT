@@ -2482,51 +2482,6 @@ static Standard_Integer OCC26747_3(Draw_Interpretor& theDI,
 #include "Geom2d_BezierCurve.hxx"
 #include "Geom2dGcc_QualifiedCurve.hxx"
 #include "Geom2dAdaptor_Curve.hxx"
-#include "Geom2dAPI_ProjectPointOnCurve.hxx"
-#include "Geom2dGcc_Circ2d2TanOn.hxx"
-
-//=================================================================================================
-
-static Standard_Integer OCC27357(Draw_Interpretor& theDI, Standard_Integer, const char**)
-{
-  TColgp_Array1OfPnt2d aPoles(1, 3);
-  aPoles.SetValue(1, gp_Pnt2d(0., 0.));
-  aPoles.SetValue(2, gp_Pnt2d(0., 1.));
-  aPoles.SetValue(3, gp_Pnt2d(6., 0.));
-
-  Handle(Geom2d_BezierCurve) aCurve1 = new Geom2d_BezierCurve(aPoles);
-  aPoles.SetValue(2, gp_Pnt2d(0., 1.5));
-  Handle(Geom2d_BezierCurve)         aCurve2 = new Geom2d_BezierCurve(aPoles);
-  NCollection_List<Standard_Integer> aDuumyList;
-  int                                nP = 100;
-  for (int i = 0; i < nP; i++)
-  {
-    Standard_Real u = i / (nP - 1.);
-    gp_Pnt2d      aP1;
-    gp_Vec2d      aTangent;
-    aCurve1->D1(u, aP1, aTangent);
-    gp_Vec2d                 aNormal(-aTangent.Y(), aTangent.X());
-    Handle(Geom2d_Line)      normalLine = new Geom2d_Line(aP1, gp_Dir2d(aNormal));
-    Geom2dGcc_QualifiedCurve qualifiedC1(Geom2dAdaptor_Curve(aCurve1), GccEnt_unqualified);
-    Geom2dGcc_QualifiedCurve qualifiedC2(Geom2dAdaptor_Curve(aCurve2), GccEnt_unqualified);
-
-    try
-    {
-      Geom2dAPI_ProjectPointOnCurve projPc1(aP1, aCurve1);
-      double                        g1 = projPc1.LowerDistanceParameter();
-      Geom2dAPI_ProjectPointOnCurve projPc3(aP1, normalLine);
-      double                        g3 = projPc3.LowerDistanceParameter();
-      Geom2dGcc_Circ2d2TanOn
-        aCircleBuilder(qualifiedC1, qualifiedC2, Geom2dAdaptor_Curve(normalLine), 1e-9, g1, g1, g3);
-      aDuumyList.Append(aCircleBuilder.NbSolutions());
-    }
-    catch (Standard_Failure const&)
-    {
-      theDI << "Exception was caught\n";
-    }
-  }
-  return 0;
-}
 
 #include <Standard_ErrorHandler.hxx>
 #include <GeomFill_NSections.hxx>
@@ -4680,7 +4635,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   theCommands.Add("OCC26747_1", "OCC26747_1 result", __FILE__, OCC26747_1, group);
   theCommands.Add("OCC26747_2", "OCC26747_2 result", __FILE__, OCC26747_2, group);
   theCommands.Add("OCC26747_3", "OCC26747_3 result", __FILE__, OCC26747_3, group);
-  theCommands.Add("OCC27357", "OCC27357", __FILE__, OCC27357, group);
   theCommands.Add("OCC26270", "OCC26270 shape result", __FILE__, OCC26270, group);
   theCommands.Add("OCC27552", "OCC27552", __FILE__, OCC27552, group);
   theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);

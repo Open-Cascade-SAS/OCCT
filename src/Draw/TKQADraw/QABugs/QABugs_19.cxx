@@ -1199,41 +1199,6 @@ static Standard_Integer OCC24931(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-#include <TDF_AttributeIterator.hxx>
-
-//=================================================================================================
-
-static Standard_Integer OCC24755(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if (n != 1)
-  {
-    std::cout << "Usage : " << a[0] << "\n";
-    return 1;
-  }
-
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
-  Handle(TDocStd_Document)    aDoc;
-  anApp->NewDocument("BinOcaf", aDoc);
-  TDF_Label aLab = aDoc->Main();
-  // Prepend an int value.
-  TDataStd_Integer::Set(aLab, 0);
-  // Prepend a name.
-  TDataStd_Name::Set(aLab, "test");
-  // Append a double value.
-  aLab.AddAttribute(new TDataStd_Real(), true /*append*/);
-
-  TDF_AttributeIterator i(aLab);
-  Handle(TDF_Attribute) anAttr = i.Value();
-  QCOMPARE(anAttr->IsKind(STANDARD_TYPE(TDataStd_Integer)), Standard_True);
-  i.Next();
-  anAttr = i.Value();
-  QCOMPARE(anAttr->IsKind(STANDARD_TYPE(TDataStd_Name)), Standard_True);
-  i.Next();
-  anAttr = i.Value();
-  QCOMPARE(anAttr->IsKind(STANDARD_TYPE(TDataStd_Real)), Standard_True);
-
-  return 0;
-}
 
 struct MyStubObject
 {
@@ -4700,7 +4665,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC24667,
                   group);
-  theCommands.Add("OCC24755", "OCC24755", __FILE__, OCC24755, group);
   theCommands.Add("OCC24834", "OCC24834", __FILE__, OCC24834, group);
   theCommands.Add("OCC24889", "OCC24889", __FILE__, OCC24889, group);
   theCommands.Add("OCC23951", "OCC23951 path to saved step file", __FILE__, OCC23951, group);
