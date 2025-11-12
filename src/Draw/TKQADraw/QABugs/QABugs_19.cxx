@@ -3155,22 +3155,6 @@ Standard_Integer OCC26446(Draw_Interpretor& di, Standard_Integer n, const char**
   return 0;
 }
 
-static Standard_Integer OCC26448(Draw_Interpretor& theDI, Standard_Integer, const char**)
-{
-  TColStd_SequenceOfReal aSeq1, aSeq2;
-  aSeq1.Append(11.);
-  aSeq1.Prepend(aSeq2);
-  theDI << "TCollection: 11 -> " << aSeq1.First() << "\n";
-
-  NCollection_Sequence<Standard_Real> nSeq1, nSeq2;
-  nSeq1.Append(11.);
-  nSeq1.Prepend(nSeq2);
-  theDI << "NCollection: 11 -> " << nSeq1.First() << "\n";
-
-  theDI << "OK";
-  return 0;
-}
-
 //=================================================================================================
 
 #include <BRepMesh_IncrementalMesh.hxx>
@@ -4679,11 +4663,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   group);
   theCommands.Add("OCC26284", "OCC26284", __FILE__, OCC26284, group);
   theCommands.Add("OCC26446", "OCC26446 r c1 c2", __FILE__, OCC26446, group);
-  theCommands.Add("OCC26448",
-                  "OCC26448: check method Prepend() of sequence",
-                  __FILE__,
-                  OCC26448,
-                  group);
   theCommands.Add("OCC26407", "OCC26407 result_name", __FILE__, OCC26407, group);
   theCommands.Add("OCC26485", "OCC26485 shape", __FILE__, OCC26485, group);
   theCommands.Add("OCC26553", "OCC26553 file_path", __FILE__, OCC26553, group);
