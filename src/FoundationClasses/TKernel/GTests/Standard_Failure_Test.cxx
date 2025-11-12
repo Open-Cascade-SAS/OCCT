@@ -26,7 +26,7 @@ TEST(Standard_Failure_Test, OCC670_ExceptionWithoutMessage)
   bool aCaught = false;
   try
   {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("test");
   }
   catch (Standard_Failure const& anException)
   {

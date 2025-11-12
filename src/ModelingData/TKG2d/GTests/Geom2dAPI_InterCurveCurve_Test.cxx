@@ -48,7 +48,6 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC24889_IntersectionParameterWithinLimits)
 
   const IntRes2d_IntersectionPoint& aIntPnt = aIntTool.Intersector().Point(1);
 
-  gp_Pnt2d      aIntRes    = aIntTool.Point(1);
   Standard_Real aParOnC1   = aIntPnt.ParamOnFirst();
   Standard_Real aParOnC2   = aIntPnt.ParamOnSecond();
   Standard_Real aFirstPar1 = aTrim1->FirstParameter();

@@ -13,6 +13,7 @@
 
 #include <Message_Messenger.hxx>
 #include <Message_Printer.hxx>
+#include <Message.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
@@ -121,16 +122,15 @@ TEST(Message_Messenger_Test, StreamBufferBasicUsage)
   // Test basic stream buffer functionality
   std::ostringstream               anOutput;
   Handle(TestMessagePrinter)       aPrinter = new TestMessagePrinter(anOutput);
-  const Handle(Message_Messenger)& aMsgMgr  = ::Message::DefaultMessenger();
+  const Handle(Message_Messenger)& aMsgMgr  = Message::DefaultMessenger();
 
   Message_SequenceOfPrinters anOriginalPrinters;
   anOriginalPrinters.Append(aMsgMgr->ChangePrinters());
 
   aMsgMgr->ChangePrinters().Clear();
   aMsgMgr->AddPrinter(aPrinter);
-
   {
-    Message_Messenger::StreamBuffer aBuffer = ::Message::SendInfo();
+    Message_Messenger::StreamBuffer aBuffer = Message::SendInfo();
     aBuffer << "Test message" << std::endl;
   }
 

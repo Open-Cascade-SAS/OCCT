@@ -2073,8 +2073,6 @@ static Standard_Integer OCC25100(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-//=================================================================================================
-
 #include <IntCurvesFace_ShapeIntersector.hxx>
 #include <BRepBndLib.hxx>
 

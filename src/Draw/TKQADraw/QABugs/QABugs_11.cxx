@@ -1399,10 +1399,6 @@ static Standard_Integer OCC578(Draw_Interpretor& di, Standard_Integer argc, cons
 
 #include <Standard_GUID.hxx>
 
-//=================================================================================================
-
-//=================================================================================================
-
 #if defined(DDataStd_def01)
   #include <DDataStd_DrawPresentation.hxx>
 
