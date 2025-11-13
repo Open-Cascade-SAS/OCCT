@@ -106,6 +106,21 @@ struct BSplCLib_CurveTraits
     }
   }
 
+  static void CoordsToVectorDirect(Vector& vec, const Standard_Real* carr)
+  {
+    if constexpr (Dimension == 2)
+    {
+      vec.SetX(carr[0]);
+      vec.SetY(carr[1]);
+    }
+    else if constexpr (Dimension == 3)
+    {
+      vec.SetX(carr[0]);
+      vec.SetY(carr[1]);
+      vec.SetZ(carr[2]);
+    }
+  }
+
   static void NullifyPoint(Point& pnt)
   {
     if constexpr (Dimension == 2)
@@ -115,6 +130,18 @@ struct BSplCLib_CurveTraits
     else if constexpr (Dimension == 3)
     {
       pnt.SetCoord(0., 0., 0.);
+    }
+  }
+
+  static void NullifyVector(Vector& vec)
+  {
+    if constexpr (Dimension == 2)
+    {
+      vec.SetCoord(0., 0.);
+    }
+    else if constexpr (Dimension == 3)
+    {
+      vec.SetCoord(0., 0., 0.);
     }
   }
 
@@ -388,7 +415,8 @@ void BSplCLib_InsertKnot(const Standard_Integer,
               NewWeights,
               nk,
               nm,
-              BSplCLib::Epsilon(U));
+              Epsilon(U),
+              Standard_True);
 }
 
 // Raises the multiplicity of a knot in the B-spline curve
@@ -433,7 +461,8 @@ void BSplCLib_RaiseMultiplicity(const Standard_Integer         KnotIndex,
               NewWeights,
               nk,
               nm,
-              BSplCLib::Epsilon(k(1)));
+              Epsilon(k(1)),
+              Standard_True);
 }
 
 // Increases the degree of the B-spline curve
@@ -765,7 +794,7 @@ void BSplCLib_D1(const Standard_Real            U,
   }
 
   Traits::CoordsToPointDirect(P, result);
-  Traits::CoordsToPointDirect(V, result + Dimension);
+  Traits::CoordsToVectorDirect(V, result + Dimension);
 }
 
 // Evaluates the point and first two derivatives on the B-spline curve at parameter U
@@ -809,11 +838,11 @@ void BSplCLib_D2(const Standard_Real            U,
   }
 
   Traits::CoordsToPointDirect(P, result);
-  Traits::CoordsToPointDirect(V1, result + Dimension);
+  Traits::CoordsToVectorDirect(V1, result + Dimension);
   if (!rational && (Degree < 2))
-    Traits::NullifyPoint(V2);
+    Traits::NullifyVector(V2);
   else
-    Traits::CoordsToPointDirect(V2, result + 2 * Dimension);
+    Traits::CoordsToVectorDirect(V2, result + 2 * Dimension);
 }
 
 // Evaluates the point and first three derivatives on the B-spline curve at parameter U
@@ -859,15 +888,15 @@ void BSplCLib_D3(const Standard_Real            U,
   }
 
   Traits::CoordsToPointDirect(P, result);
-  Traits::CoordsToPointDirect(V1, result + Dimension);
+  Traits::CoordsToVectorDirect(V1, result + Dimension);
   if (!rational && (Degree < 2))
-    Traits::NullifyPoint(V2);
+    Traits::NullifyVector(V2);
   else
-    Traits::CoordsToPointDirect(V2, result + 2 * Dimension);
+    Traits::CoordsToVectorDirect(V2, result + 2 * Dimension);
   if (!rational && (Degree < 3))
-    Traits::NullifyPoint(V3);
+    Traits::NullifyVector(V3);
   else
-    Traits::CoordsToPointDirect(V3, result + 3 * Dimension);
+    Traits::CoordsToVectorDirect(V3, result + 3 * Dimension);
 }
 
 // Evaluates the Nth derivative on the B-spline curve at parameter U
@@ -906,16 +935,16 @@ void BSplCLib_DN(const Standard_Real            U,
   {
     Standard_Real v[Dimension];
     PLib::RationalDerivative(Degree, N, Dimension, *dc.poles, v[0], Standard_False);
-    Traits::CoordsToPointDirect(VN, v);
+    Traits::CoordsToVectorDirect(VN, v);
   }
   else
   {
     if (N > Degree)
-      Traits::NullifyPoint(VN);
+      Traits::NullifyVector(VN);
     else
     {
       Standard_Real* DN = dc.poles + N * Dimension;
-      Traits::CoordsToPointDirect(VN, DN);
+      Traits::CoordsToVectorDirect(VN, DN);
     }
   }
 }
