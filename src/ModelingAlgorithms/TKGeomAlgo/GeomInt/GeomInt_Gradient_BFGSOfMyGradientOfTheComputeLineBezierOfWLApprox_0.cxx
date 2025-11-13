@@ -24,23 +24,33 @@
 #include <GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
 
-#define MultiLine GeomInt_TheMultiLineOfWLApprox
-#define MultiLine_hxx <GeomInt_TheMultiLineOfWLApprox.hxx>
-#define ToolLine GeomInt_TheMultiLineToolOfWLApprox
-#define ToolLine_hxx <GeomInt_TheMultiLineToolOfWLApprox.hxx>
-#define AppParCurves_ParLeastSquare                                                                \
-  GeomInt_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_ParLeastSquare_hxx                                                            \
-  <GeomInt_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
-#define AppParCurves_ResConstraint GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_ResConstraint_hxx                                                             \
-  <GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
-#define AppParCurves_ParFunction GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_ParFunction_hxx                                                               \
-  <GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
-#define AppParCurves_Gradient_BFGS GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_Gradient_BFGS_hxx                                                             \
-  <GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
-#define AppParCurves_Gradient GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_Gradient_hxx <GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox.hxx>
-#include <AppParCurves_Gradient_BFGS.gxx>
+GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox::
+  GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox(
+    math_MultipleVarFunctionWithGradient& F,
+    const math_Vector&                    StartingPoint,
+    const Standard_Real                   Tolerance3d,
+    const Standard_Real                   Tolerance2d,
+    const Standard_Real                   Eps,
+    const Standard_Integer                NbIterations)
+    : math_BFGS(F.NbVariables(), Eps, NbIterations, Eps),
+      myTol3d(Tolerance3d),
+      myTol2d(Tolerance2d)
+{
+  Perform(F, StartingPoint);
+}
+
+Standard_Boolean GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox::IsSolutionReached(
+  math_MultipleVarFunctionWithGradient& F) const
+{
+  GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox* F1 =
+    (GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox*)&F;
+  Standard_Boolean Result, Result2;
+
+  Result               = (2.0 * fabs(TheMinimum - PreviousMinimum)
+            <= 1.e-10 * (fabs(TheMinimum) + fabs(PreviousMinimum)) + 1.e-12);
+  Standard_Real MErr3d = F1->MaxError3d();
+  Standard_Real MErr2d = F1->MaxError2d();
+
+  Result2 = ((MErr3d <= myTol3d) && (MErr2d <= myTol2d));
+  return (Result || Result2);
+}

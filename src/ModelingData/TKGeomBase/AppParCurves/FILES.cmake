@@ -15,7 +15,6 @@ set(OCCT_AppParCurves_FILES
   AppParCurves_ConstraintCouple.hxx
   AppParCurves_Function.gxx
   AppParCurves_Gradient.gxx
-  AppParCurves_Gradient_BFGS.gxx
   AppParCurves_HArray1OfConstraintCouple.hxx
   AppParCurves_HArray1OfMultiBSpCurve.hxx
   AppParCurves_HArray1OfMultiCurve.hxx
