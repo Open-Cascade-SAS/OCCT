@@ -24,20 +24,43 @@
 #include <Interface_ReaderLib.hxx>
 #include <Interface_NodeOfReaderLib.hxx>
 
-#define TheObject Handle(Standard_Transient)
-#define TheObject_hxx <Standard_Transient.hxx>
-#define Handle_TheModule Handle(Interface_ReaderModule)
-#define TheModule Interface_ReaderModule
-#define TheModule_hxx <Interface_ReaderModule.hxx>
-#define Handle_TheProtocol Handle(Interface_Protocol)
-#define TheProtocol Interface_Protocol
-#define TheProtocol_hxx <Interface_Protocol.hxx>
-#define LibCtl_GlobalNode Interface_GlobalNodeOfReaderLib
-#define LibCtl_GlobalNode_hxx <Interface_GlobalNodeOfReaderLib.hxx>
-#define LibCtl_Node Interface_NodeOfReaderLib
-#define LibCtl_Node_hxx <Interface_NodeOfReaderLib.hxx>
-#define Handle_LibCtl_GlobalNode Handle(Interface_GlobalNodeOfReaderLib)
-#define Handle_LibCtl_Node Handle(Interface_NodeOfReaderLib)
-#define LibCtl_Library Interface_ReaderLib
-#define LibCtl_Library_hxx <Interface_ReaderLib.hxx>
-#include <LibCtl_GlobalNode.gxx>
+Interface_GlobalNodeOfReaderLib::Interface_GlobalNodeOfReaderLib() {}
+
+void Interface_GlobalNodeOfReaderLib::Add(const Handle(Interface_ReaderModule)& amodule,
+                                           const Handle(Interface_Protocol)&     aprotocol)
+{
+  if (themod == amodule)
+    return;
+  if (theprot == aprotocol)
+    themod = amodule;
+  else if (thenext.IsNull())
+  {
+    if (themod.IsNull())
+    {
+      themod  = amodule;
+      theprot = aprotocol;
+    }
+    else
+    {
+      thenext = new Interface_GlobalNodeOfReaderLib;
+      thenext->Add(amodule, aprotocol);
+    }
+  }
+  else
+    thenext->Add(amodule, aprotocol);
+}
+
+const Handle(Interface_ReaderModule)& Interface_GlobalNodeOfReaderLib::Module() const
+{
+  return themod;
+}
+
+const Handle(Interface_Protocol)& Interface_GlobalNodeOfReaderLib::Protocol() const
+{
+  return theprot;
+}
+
+const Handle(Interface_GlobalNodeOfReaderLib)& Interface_GlobalNodeOfReaderLib::Next() const
+{
+  return thenext;
+}

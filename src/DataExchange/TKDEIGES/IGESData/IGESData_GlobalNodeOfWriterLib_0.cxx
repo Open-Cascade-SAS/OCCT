@@ -24,20 +24,43 @@
 #include <IGESData_WriterLib.hxx>
 #include <IGESData_NodeOfWriterLib.hxx>
 
-#define TheObject Handle(IGESData_IGESEntity)
-#define TheObject_hxx <IGESData_IGESEntity.hxx>
-#define Handle_TheModule Handle(IGESData_ReadWriteModule)
-#define TheModule IGESData_ReadWriteModule
-#define TheModule_hxx <IGESData_ReadWriteModule.hxx>
-#define Handle_TheProtocol Handle(IGESData_Protocol)
-#define TheProtocol IGESData_Protocol
-#define TheProtocol_hxx <IGESData_Protocol.hxx>
-#define LibCtl_GlobalNode IGESData_GlobalNodeOfWriterLib
-#define LibCtl_GlobalNode_hxx <IGESData_GlobalNodeOfWriterLib.hxx>
-#define LibCtl_Node IGESData_NodeOfWriterLib
-#define LibCtl_Node_hxx <IGESData_NodeOfWriterLib.hxx>
-#define Handle_LibCtl_GlobalNode Handle(IGESData_GlobalNodeOfWriterLib)
-#define Handle_LibCtl_Node Handle(IGESData_NodeOfWriterLib)
-#define LibCtl_Library IGESData_WriterLib
-#define LibCtl_Library_hxx <IGESData_WriterLib.hxx>
-#include <LibCtl_GlobalNode.gxx>
+IGESData_GlobalNodeOfWriterLib::IGESData_GlobalNodeOfWriterLib() {}
+
+void IGESData_GlobalNodeOfWriterLib::Add(const Handle(IGESData_ReadWriteModule)& amodule,
+                                          const Handle(IGESData_Protocol)&        aprotocol)
+{
+  if (themod == amodule)
+    return;
+  if (theprot == aprotocol)
+    themod = amodule;
+  else if (thenext.IsNull())
+  {
+    if (themod.IsNull())
+    {
+      themod  = amodule;
+      theprot = aprotocol;
+    }
+    else
+    {
+      thenext = new IGESData_GlobalNodeOfWriterLib;
+      thenext->Add(amodule, aprotocol);
+    }
+  }
+  else
+    thenext->Add(amodule, aprotocol);
+}
+
+const Handle(IGESData_ReadWriteModule)& IGESData_GlobalNodeOfWriterLib::Module() const
+{
+  return themod;
+}
+
+const Handle(IGESData_Protocol)& IGESData_GlobalNodeOfWriterLib::Protocol() const
+{
+  return theprot;
+}
+
+const Handle(IGESData_GlobalNodeOfWriterLib)& IGESData_GlobalNodeOfWriterLib::Next() const
+{
+  return thenext;
+}

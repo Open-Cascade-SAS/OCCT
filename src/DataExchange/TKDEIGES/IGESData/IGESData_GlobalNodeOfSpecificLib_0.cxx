@@ -24,20 +24,43 @@
 #include <IGESData_SpecificLib.hxx>
 #include <IGESData_NodeOfSpecificLib.hxx>
 
-#define TheObject Handle(IGESData_IGESEntity)
-#define TheObject_hxx <IGESData_IGESEntity.hxx>
-#define Handle_TheModule Handle(IGESData_SpecificModule)
-#define TheModule IGESData_SpecificModule
-#define TheModule_hxx <IGESData_SpecificModule.hxx>
-#define Handle_TheProtocol Handle(IGESData_Protocol)
-#define TheProtocol IGESData_Protocol
-#define TheProtocol_hxx <IGESData_Protocol.hxx>
-#define LibCtl_GlobalNode IGESData_GlobalNodeOfSpecificLib
-#define LibCtl_GlobalNode_hxx <IGESData_GlobalNodeOfSpecificLib.hxx>
-#define LibCtl_Node IGESData_NodeOfSpecificLib
-#define LibCtl_Node_hxx <IGESData_NodeOfSpecificLib.hxx>
-#define Handle_LibCtl_GlobalNode Handle(IGESData_GlobalNodeOfSpecificLib)
-#define Handle_LibCtl_Node Handle(IGESData_NodeOfSpecificLib)
-#define LibCtl_Library IGESData_SpecificLib
-#define LibCtl_Library_hxx <IGESData_SpecificLib.hxx>
-#include <LibCtl_GlobalNode.gxx>
+IGESData_GlobalNodeOfSpecificLib::IGESData_GlobalNodeOfSpecificLib() {}
+
+void IGESData_GlobalNodeOfSpecificLib::Add(const Handle(IGESData_SpecificModule)& amodule,
+                                            const Handle(IGESData_Protocol)&       aprotocol)
+{
+  if (themod == amodule)
+    return;
+  if (theprot == aprotocol)
+    themod = amodule;
+  else if (thenext.IsNull())
+  {
+    if (themod.IsNull())
+    {
+      themod  = amodule;
+      theprot = aprotocol;
+    }
+    else
+    {
+      thenext = new IGESData_GlobalNodeOfSpecificLib;
+      thenext->Add(amodule, aprotocol);
+    }
+  }
+  else
+    thenext->Add(amodule, aprotocol);
+}
+
+const Handle(IGESData_SpecificModule)& IGESData_GlobalNodeOfSpecificLib::Module() const
+{
+  return themod;
+}
+
+const Handle(IGESData_Protocol)& IGESData_GlobalNodeOfSpecificLib::Protocol() const
+{
+  return theprot;
+}
+
+const Handle(IGESData_GlobalNodeOfSpecificLib)& IGESData_GlobalNodeOfSpecificLib::Next() const
+{
+  return thenext;
+}
