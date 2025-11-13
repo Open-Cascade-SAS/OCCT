@@ -20,6 +20,7 @@
 
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -120,6 +121,10 @@ void TopExp::MapShapesAndUniqueAncestors(const TopoDS_Shape&                    
 {
   TopTools_ListOfShape empty;
 
+  // Map to track unique ancestors for each shape (by index in M)
+  // This avoids O(m) list traversal for duplicate checking
+  NCollection_DataMap<Standard_Integer, TopTools_MapOfShape> ancestorSets;
+
   // visit ancestors
   TopExp_Explorer exa(S, TA);
   while (exa.More())
@@ -132,14 +137,37 @@ void TopExp::MapShapesAndUniqueAncestors(const TopoDS_Shape&                    
       Standard_Integer index = M.FindIndex(exs.Current());
       if (index == 0)
         index = M.Add(exs.Current(), empty);
-      TopTools_ListOfShape& aList = M(index);
-      // check if anc already exists in a list
-      TopTools_ListIteratorOfListOfShape it(aList);
-      for (; it.More(); it.Next())
-        if (useOrientation ? anc.IsEqual(it.Value()) : anc.IsSame(it.Value()))
-          break;
-      if (!it.More())
-        aList.Append(anc);
+
+      // Get or create the ancestor set for this shape
+      if (!ancestorSets.IsBound(index))
+        ancestorSets.Bind(index, TopTools_MapOfShape());
+
+      TopTools_MapOfShape& ancSet = ancestorSets(index);
+
+      // Check if ancestor already exists using O(1) map lookup
+      Standard_Boolean found = Standard_False;
+      if (useOrientation)
+      {
+        // For orientation-sensitive check, need to iterate
+        for (TopTools_MapIteratorOfMapOfShape mapIt(ancSet); mapIt.More(); mapIt.Next())
+        {
+          if (anc.IsEqual(mapIt.Value()))
+          {
+            found = Standard_True;
+            break;
+          }
+        }
+      }
+      else
+      {
+        found = ancSet.Contains(anc);
+      }
+
+      if (!found)
+      {
+        ancSet.Add(anc);
+        M(index).Append(anc);
+      }
       exs.Next();
     }
     exa.Next();

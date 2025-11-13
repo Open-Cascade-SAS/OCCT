@@ -29,19 +29,15 @@
 #define AVOID(x, y) (((x) == TopAbs_SHAPE) ? Standard_False : (x) == (y))
 #define LESSCOMPLEX(x, y) ((x) > (y))
 
-static const Standard_Integer theStackSize = 20;
-
 //=================================================================================================
 
 TopExp_Explorer::TopExp_Explorer()
-    : myStack(0L),
+    : myStack(),
       myTop(-1),
-      mySizeOfStack(theStackSize),
       toFind(TopAbs_SHAPE),
       toAvoid(TopAbs_SHAPE),
       hasMore(Standard_False)
 {
-  myStack = (TopoDS_Iterator*)Standard::Allocate(theStackSize * sizeof(TopoDS_Iterator));
 }
 
 //=================================================================================================
@@ -49,15 +45,12 @@ TopExp_Explorer::TopExp_Explorer()
 TopExp_Explorer::TopExp_Explorer(const TopoDS_Shape&    theS,
                                  const TopAbs_ShapeEnum theToFind,
                                  const TopAbs_ShapeEnum theToAvoid)
-    : myStack(0L),
+    : myStack(),
       myTop(-1),
-      mySizeOfStack(theStackSize),
       toFind(theToFind),
       toAvoid(theToAvoid),
       hasMore(Standard_False)
 {
-  myStack = (TopoDS_Iterator*)Standard::Allocate(theStackSize * sizeof(TopoDS_Iterator));
-
   Init(theS, theToFind, theToAvoid);
 }
 
@@ -114,23 +107,8 @@ void TopExp_Explorer::Init(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-const TopoDS_Shape& TopExp_Explorer::Current() const
-{
-  Standard_NoSuchObject_Raise_if(!hasMore, "TopExp_Explorer::Current");
-  if (myTop >= 0)
-  {
-    const TopoDS_Shape& S = myStack[myTop].Value();
-    return S;
-  }
-  else
-    return myShape;
-}
-
-//=================================================================================================
-
 void TopExp_Explorer::Next()
 {
-  Standard_Integer NewSize;
   TopoDS_Shape     ShapTop;
   TopAbs_ShapeEnum ty;
   Standard_NoMoreObject_Raise_if(!hasMore, "TopExp_Explorer::Next");
@@ -155,22 +133,8 @@ void TopExp_Explorer::Next()
     else
     {
       // push and try to find
-      if (++myTop >= mySizeOfStack)
-      {
-        NewSize = mySizeOfStack + theStackSize;
-        TopExp_Stack newStack =
-          (TopoDS_Iterator*)Standard::Allocate(NewSize * sizeof(TopoDS_Iterator));
-        Standard_Integer i;
-        for (i = 0; i < myTop; i++)
-        {
-          new (&newStack[i]) TopoDS_Iterator(myStack[i]);
-          myStack[i].~TopoDS_Iterator();
-        }
-        Standard::Free(myStack);
-        mySizeOfStack = NewSize;
-        myStack       = newStack;
-      }
-      new (&myStack[myTop]) TopoDS_Iterator(myShape);
+      myStack.Append(TopoDS_Iterator(myShape));
+      myTop = myStack.Length() - 1;
     }
   }
   else
@@ -189,22 +153,8 @@ void TopExp_Explorer::Next()
       }
       else if (LESSCOMPLEX(toFind, ty) && !AVOID(toAvoid, ty))
       {
-        if (++myTop >= mySizeOfStack)
-        {
-          NewSize = mySizeOfStack + theStackSize;
-          TopExp_Stack newStack =
-            (TopoDS_Iterator*)Standard::Allocate(NewSize * sizeof(TopoDS_Iterator));
-          Standard_Integer i;
-          for (i = 0; i < myTop; i++)
-          {
-            new (&newStack[i]) TopoDS_Iterator(myStack[i]);
-            myStack[i].~TopoDS_Iterator();
-          }
-          Standard::Free(myStack);
-          mySizeOfStack = NewSize;
-          myStack       = newStack;
-        }
-        new (&myStack[myTop]) TopoDS_Iterator(ShapTop);
+        myStack.Append(TopoDS_Iterator(ShapTop));
+        myTop = myStack.Length() - 1;
       }
       else
       {
@@ -213,7 +163,6 @@ void TopExp_Explorer::Next()
     }
     else
     {
-      myStack[myTop].~TopoDS_Iterator();
       myTop--;
       if (myTop < 0)
         break;
@@ -235,12 +184,6 @@ void TopExp_Explorer::ReInit()
 TopExp_Explorer::~TopExp_Explorer()
 {
   Clear();
-  if (myStack)
-  {
-    Standard::Free(myStack);
-  }
-  mySizeOfStack = 0;
-  myStack       = 0L;
 }
 
 //=================================================================================================
@@ -248,9 +191,6 @@ TopExp_Explorer::~TopExp_Explorer()
 void TopExp_Explorer::Clear()
 {
   hasMore = Standard_False;
-  for (int i = 0; i <= myTop; ++i)
-  {
-    myStack[i].~TopoDS_Iterator();
-  }
+  myStack.Clear();
   myTop = -1;
 }

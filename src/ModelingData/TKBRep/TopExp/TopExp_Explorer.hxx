@@ -17,7 +17,8 @@
 #ifndef _TopExp_Explorer_HeaderFile
 #define _TopExp_Explorer_HeaderFile
 
-#include <TopExp_Stack.hxx>
+#include <NCollection_Vector.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -125,7 +126,11 @@ public:
   //! Returns the current shape in the exploration.
   //! Exceptions
   //! Standard_NoSuchObject if this explorer has no more shapes to explore.
-  Standard_EXPORT const TopoDS_Shape& Current() const;
+  const TopoDS_Shape& Current() const
+  {
+    Standard_NoSuchObject_Raise_if(!hasMore, "TopExp_Explorer::Current");
+    return (myTop >= 0) ? myStack[myTop].Value() : myShape;
+  }
 
   //! Reinitialize the exploration with the original arguments.
   Standard_EXPORT void ReInit();
@@ -145,13 +150,12 @@ public:
   Standard_EXPORT ~TopExp_Explorer();
 
 private:
-  TopExp_Stack     myStack;
-  TopoDS_Shape     myShape;
-  Standard_Integer myTop;
-  Standard_Integer mySizeOfStack;
-  TopAbs_ShapeEnum toFind;
-  TopAbs_ShapeEnum toAvoid;
-  Standard_Boolean hasMore;
+  NCollection_Vector<TopoDS_Iterator> myStack;
+  TopoDS_Shape                        myShape;
+  Standard_Integer                    myTop;
+  TopAbs_ShapeEnum                    toFind;
+  TopAbs_ShapeEnum                    toAvoid;
+  Standard_Boolean                    hasMore;
 };
 
 #endif // _TopExp_Explorer_HeaderFile
