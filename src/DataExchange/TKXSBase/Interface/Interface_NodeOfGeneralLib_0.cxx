@@ -24,20 +24,37 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_GeneralLib.hxx>
 
-#define TheObject Handle(Standard_Transient)
-#define TheObject_hxx <Standard_Transient.hxx>
-#define Handle_TheModule Handle(Interface_GeneralModule)
-#define TheModule Interface_GeneralModule
-#define TheModule_hxx <Interface_GeneralModule.hxx>
-#define Handle_TheProtocol Handle(Interface_Protocol)
-#define TheProtocol Interface_Protocol
-#define TheProtocol_hxx <Interface_Protocol.hxx>
-#define LibCtl_GlobalNode Interface_GlobalNodeOfGeneralLib
-#define LibCtl_GlobalNode_hxx <Interface_GlobalNodeOfGeneralLib.hxx>
-#define LibCtl_Node Interface_NodeOfGeneralLib
-#define LibCtl_Node_hxx <Interface_NodeOfGeneralLib.hxx>
-#define Handle_LibCtl_GlobalNode Handle(Interface_GlobalNodeOfGeneralLib)
-#define Handle_LibCtl_Node Handle(Interface_NodeOfGeneralLib)
-#define LibCtl_Library Interface_GeneralLib
-#define LibCtl_Library_hxx <Interface_GeneralLib.hxx>
-#include <LibCtl_Node.gxx>
+Interface_NodeOfGeneralLib::Interface_NodeOfGeneralLib() {}
+
+void Interface_NodeOfGeneralLib::AddNode(const Handle(Interface_GlobalNodeOfGeneralLib)& anode)
+{
+  if (thenode == anode)
+    return;
+  if (thenext.IsNull())
+  {
+    if (thenode.IsNull())
+      thenode = anode;
+    else
+    {
+      thenext = new Interface_NodeOfGeneralLib;
+      thenext->AddNode(anode);
+    }
+  }
+  else
+    thenext->AddNode(anode);
+}
+
+const Handle(Interface_GeneralModule)& Interface_NodeOfGeneralLib::Module() const
+{
+  return thenode->Module();
+}
+
+const Handle(Interface_Protocol)& Interface_NodeOfGeneralLib::Protocol() const
+{
+  return thenode->Protocol();
+}
+
+const Handle(Interface_NodeOfGeneralLib)& Interface_NodeOfGeneralLib::Next() const
+{
+  return thenext;
+}

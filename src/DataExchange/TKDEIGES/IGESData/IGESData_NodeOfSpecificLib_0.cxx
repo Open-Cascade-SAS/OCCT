@@ -24,20 +24,37 @@
 #include <IGESData_Protocol.hxx>
 #include <IGESData_SpecificLib.hxx>
 
-#define TheObject Handle(IGESData_IGESEntity)
-#define TheObject_hxx <IGESData_IGESEntity.hxx>
-#define Handle_TheModule Handle(IGESData_SpecificModule)
-#define TheModule IGESData_SpecificModule
-#define TheModule_hxx <IGESData_SpecificModule.hxx>
-#define Handle_TheProtocol Handle(IGESData_Protocol)
-#define TheProtocol IGESData_Protocol
-#define TheProtocol_hxx <IGESData_Protocol.hxx>
-#define LibCtl_GlobalNode IGESData_GlobalNodeOfSpecificLib
-#define LibCtl_GlobalNode_hxx <IGESData_GlobalNodeOfSpecificLib.hxx>
-#define LibCtl_Node IGESData_NodeOfSpecificLib
-#define LibCtl_Node_hxx <IGESData_NodeOfSpecificLib.hxx>
-#define Handle_LibCtl_GlobalNode Handle(IGESData_GlobalNodeOfSpecificLib)
-#define Handle_LibCtl_Node Handle(IGESData_NodeOfSpecificLib)
-#define LibCtl_Library IGESData_SpecificLib
-#define LibCtl_Library_hxx <IGESData_SpecificLib.hxx>
-#include <LibCtl_Node.gxx>
+IGESData_NodeOfSpecificLib::IGESData_NodeOfSpecificLib() {}
+
+void IGESData_NodeOfSpecificLib::AddNode(const Handle(IGESData_GlobalNodeOfSpecificLib)& anode)
+{
+  if (thenode == anode)
+    return;
+  if (thenext.IsNull())
+  {
+    if (thenode.IsNull())
+      thenode = anode;
+    else
+    {
+      thenext = new IGESData_NodeOfSpecificLib;
+      thenext->AddNode(anode);
+    }
+  }
+  else
+    thenext->AddNode(anode);
+}
+
+const Handle(IGESData_SpecificModule)& IGESData_NodeOfSpecificLib::Module() const
+{
+  return thenode->Module();
+}
+
+const Handle(IGESData_Protocol)& IGESData_NodeOfSpecificLib::Protocol() const
+{
+  return thenode->Protocol();
+}
+
+const Handle(IGESData_NodeOfSpecificLib)& IGESData_NodeOfSpecificLib::Next() const
+{
+  return thenext;
+}
