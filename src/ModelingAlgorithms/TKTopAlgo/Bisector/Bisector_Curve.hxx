@@ -38,16 +38,16 @@ public:
 
   Standard_EXPORT virtual Standard_Boolean IsExtendAtEnd() const = 0;
 
-  //! If necessary,  breaks the  curve in  intervals  of
-  //! continuity  <C1>.    And  returns   the number   of
+  //! If necessary, breaks the curve in intervals of
+  //! continuity <C1>. And returns the number of
   //! intervals.
   Standard_EXPORT virtual Standard_Integer NbIntervals() const = 0;
 
-  //! Returns  the  first  parameter    of  the  current
+  //! Returns the first parameter of the current
   //! interval.
   Standard_EXPORT virtual Standard_Real IntervalFirst(const Standard_Integer Index) const = 0;
 
-  //! Returns  the  last  parameter    of  the  current
+  //! Returns the last parameter of the current
   //! interval.
   Standard_EXPORT virtual Standard_Real IntervalLast(const Standard_Integer Index) const = 0;
 

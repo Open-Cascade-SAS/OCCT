@@ -533,7 +533,7 @@ public:
   static void Parameters(const gp_Cylinder& C, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
 
   //! parametrization
-  //! P (U, V) =  Location + V * ZDirection +
+  //! P (U, V) = Location + V * ZDirection +
   //! (Radius + V * Tan (SemiAngle)) *
   //! (Cos(U) * XDirection + Sin(U) * YDirection)
   static void Parameters(const gp_Cone& C, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
@@ -569,7 +569,7 @@ public:
                                                  Standard_Real&      V);
 
   //! parametrization
-  //! P (U, V) =  Location + V * ZDirection +
+  //! P (U, V) = Location + V * ZDirection +
   //! (Radius + V * Tan (SemiAngle)) *
   //! (Cos(U) * XDirection + Sin(U) * YDirection)
   Standard_EXPORT static void ConeParameters(const gp_Ax3&       Pos,

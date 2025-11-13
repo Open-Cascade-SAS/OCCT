@@ -71,14 +71,14 @@ public:
   //! necessary to check the continuity in the following cases:
   //!
   //! case C0
-  //! --------
+  //! -------
   //! - the distance between P1 and P2 with P1=Curv1 (u1) and
   //! P2=Curv2(u2)
   //!
   //! case C1
   //! -------
   //!
-  //! - the angle  between  the first derivatives
+  //! - the angle between the first derivatives
   //! dCurv1(u1)           dCurv2(u2)
   //! --------     and     ---------
   //! du                   du

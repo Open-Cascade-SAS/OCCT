@@ -27,22 +27,22 @@ class Font_FTFont;
 
 DEFINE_STANDARD_HANDLE(Font_TextFormatter, Standard_Transient)
 
-//! This class is intended to prepare formatted text by using:<br>
-//! - font to string combination,<br>
-//! - alignment,<br>
-//! - wrapping.<br>
+//! This class is intended to prepare formatted text by using:
+//! - font to string combination,
+//! - alignment,
+//! - wrapping.
 //!
 //! After text formatting, each symbol of formatted text is placed in some position.
 //! Further work with the formatter is using an iterator.
 //! The iterator gives an access to each symbol inside the initial row.
-//! Also it's possible to get only significant/writable symbols of the text.<br>
+//! Also it's possible to get only significant/writable symbols of the text.
 //! Formatter gives an access to geometrical position of a symbol by the symbol index in the
-//! text.<br> Example of correspondence of some text symbol to an index in "row_1\n\nrow_2\n":<br>
-//! "row_1\n"  - 0-5 indices;<br>
-//! "\n"       - 6 index;<br>
-//! "\n"       - 7 index;<br>
-//! "row_2\n"  - 8-13 indices.<br>
-//! Pay attention that fonts should have the same LineSpacing value for correct formatting.<br>
+//! text. Example of correspondence of some text symbol to an index in "row_1\n\nrow_2\n":
+//! "row_1\n"  - 0-5 indices;
+//! "\n"       - 6 index;
+//! "\n"       - 7 index;
+//! "row_2\n"  - 8-13 indices.
+//! Pay attention that fonts should have the same LineSpacing value for correct formatting.
 //! Example of the formatter using:
 //! @code
 //!   Handle(Font_TextFormatter) aFormatter = new Font_TextFormatter();
@@ -209,7 +209,7 @@ public:
   //! Returns horizontal alignment style
   Graphic3d_HorizontalTextAlignment HorizontalTextAlignment() const { return myAlignX; }
 
-  //! Returns vertical   alignment style
+  //! Returns vertical alignment style
   Graphic3d_VerticalTextAlignment VerticalTextAlignment() const { return myAlignY; }
 
   //! Sets text wrapping width, zero means that the text is not bounded by width

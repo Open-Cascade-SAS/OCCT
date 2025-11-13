@@ -36,7 +36,7 @@ class TopoDS_Wire;
 
 //! Provides methods to build faces.
 //!
-//! A face may be built :
+//! A face may be built:
 //!
 //! * From a surface.
 //!
@@ -53,7 +53,7 @@ class TopoDS_Wire;
 //! * From a surface and a wire.
 //!
 //! - A flag Inside is given, when this flag is True
-//! the  wire is  oriented to bound a finite area on
+//! the wire is oriented to bound a finite area on
 //! the surface.
 //!
 //! * From a face and a wire.

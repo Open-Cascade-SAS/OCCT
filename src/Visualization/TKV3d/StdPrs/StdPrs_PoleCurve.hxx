@@ -50,7 +50,7 @@ public:
                                                 const Adaptor3d_Curve&      aCurve,
                                                 const Handle(Prs3d_Drawer)& aDrawer);
 
-  //! returns the pole  the most near of the point (X,Y,Z) and
+  //! returns the pole the most near of the point (X,Y,Z) and
   //! returns its range. The distance between the pole and
   //! (X,Y,Z) must be less then aDistance. If no pole corresponds, 0 is returned.
   Standard_EXPORT static Standard_Integer Pick(const Standard_Real         X,

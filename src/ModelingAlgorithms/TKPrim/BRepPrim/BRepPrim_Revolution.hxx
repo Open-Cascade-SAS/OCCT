@@ -30,15 +30,15 @@ class TopoDS_Face;
 class TopoDS_Edge;
 class gp_Pnt2d;
 
-//! Implement  the OneAxis algorithm   for a revolution
+//! Implement the OneAxis algorithm for a revolution
 //! surface.
 class BRepPrim_Revolution : public BRepPrim_OneAxis
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Create a  revolution body <M>  is the  meridian nd
-  //! must   be in the XZ  plane   of <A>. <PM>  is  the
+  //! Create a revolution body <M> is the meridian nd
+  //! must be in the XZ plane of <A>. <PM> is the
   //! meridian in the XZ plane.
   Standard_EXPORT BRepPrim_Revolution(const gp_Ax2&               A,
                                       const Standard_Real         VMin,
@@ -46,12 +46,12 @@ public:
                                       const Handle(Geom_Curve)&   M,
                                       const Handle(Geom2d_Curve)& PM);
 
-  //! The surface normal should be directed  towards the
+  //! The surface normal should be directed towards the
   //! outside.
   Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const;
 
-  //! Returns  an  edge with  a 3D curve   made from the
-  //! meridian  in the XZ  plane rotated by <Ang> around
+  //! Returns an edge with a 3D curve made from the
+  //! meridian in the XZ plane rotated by <Ang> around
   //! the Z-axis. Ang may be 0 or myAngle.
   Standard_EXPORT virtual TopoDS_Edge MakeEmptyMeridianEdge(const Standard_Real Ang) const;
 
@@ -59,13 +59,13 @@ public:
   //! plane XZ.
   Standard_EXPORT virtual gp_Pnt2d MeridianValue(const Standard_Real V) const;
 
-  //! Sets the  parametric urve of  the edge <E>  in the
-  //! face <F>   to be  the  2d  representation  of  the
+  //! Sets the parametric urve of the edge <E> in the
+  //! face <F> to be the 2d representation of the
   //! meridian.
   Standard_EXPORT virtual void SetMeridianPCurve(TopoDS_Edge& E, const TopoDS_Face& F) const;
 
 protected:
-  //! Create a  revolution   body.  The meridian  is set
+  //! Create a revolution body. The meridian is set
   //! later. Reserved for derivated classes.
   Standard_EXPORT BRepPrim_Revolution(const gp_Ax2&       A,
                                       const Standard_Real VMin,

@@ -38,7 +38,7 @@ class Geom_Plane;
 //! value for the representation of the axes. If you modify
 //! these dimensions, you must temporarily recover the
 //! Drawer object. From inside it, take the Aspects in
-//! which   the values for length are stocked, for example,
+//! which the values for length are stocked, for example,
 //! PlaneAspect for planes and LineAspect for
 //! trihedra. Change these values and recalculate the presentation.
 class AIS_PlaneTrihedron : public AIS_InteractiveObject

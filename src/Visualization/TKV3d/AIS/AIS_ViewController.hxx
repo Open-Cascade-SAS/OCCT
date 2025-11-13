@@ -50,7 +50,7 @@ class WNT_HIDSpaceMouse;
 //! - Mapping mouse/multi-touch input to View camera manipulations (panning/rotating/zooming).
 //! - Input events are not applied immediately but queued for separate processing from two working
 //! threads
-//!   UI thread receiving user input and Rendering thread for OCCT 3D Viewer drawing.
+//! UI thread receiving user input and Rendering thread for OCCT 3D Viewer drawing.
 class AIS_ViewController : public Aspect_WindowInputListener
 {
 public:

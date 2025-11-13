@@ -28,7 +28,7 @@
 
 class gp_Circ2d;
 
-//! Create sort and destroy the circles used in triangulation. <br>
+//! Create sort and destroy the circles used in triangulation.
 class BRepMesh_CircleTool
 {
 public:

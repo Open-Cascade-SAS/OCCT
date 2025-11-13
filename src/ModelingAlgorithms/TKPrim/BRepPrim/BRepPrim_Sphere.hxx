@@ -32,8 +32,8 @@ class BRepPrim_Sphere : public BRepPrim_Revolution
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates a Sphere at  origin with  Radius. The axes
-  //! of the sphere are the  reference axes. An error is
+  //! Creates a Sphere at origin with Radius. The axes
+  //! of the sphere are the reference axes. An error is
   //! raised if the radius is < Resolution.
   Standard_EXPORT BRepPrim_Sphere(const Standard_Real Radius);
 
@@ -45,7 +45,7 @@ public:
   //! Creates a sphere with given axes system.
   Standard_EXPORT BRepPrim_Sphere(const gp_Ax2& Axes, const Standard_Real Radius);
 
-  //! The surface normal should be directed  towards the
+  //! The surface normal should be directed towards the
   //! outside.
   Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const Standard_OVERRIDE;
 

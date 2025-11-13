@@ -74,12 +74,12 @@ public:
   GeomAbs_Shape VContinuity() const;
 
   //! If necessary, breaks the surface in U intervals of
-  //! continuity    <S>.  And   returns  the  number  of
+  //! continuity <S>. And returns the number of
   //! intervals.
   Standard_Integer NbUIntervals(const GeomAbs_Shape S);
 
   //! If necessary, breaks the surface in V intervals of
-  //! continuity    <S>.  And   returns  the  number  of
+  //! continuity <S>. And returns the number of
   //! intervals.
   Standard_Integer NbVIntervals(const GeomAbs_Shape S);
 
@@ -105,15 +105,15 @@ public:
   //! Computes the point of parameters U,V on the surface.
   void D0(const Standard_Real U, const Standard_Real V, gp_Pnt& P) const;
 
-  //! Computes the point  and the first derivatives on
+  //! Computes the point and the first derivatives on
   //! the surface.
-  //! Raised   if  the continuity  of   the  current
+  //! Raised if the continuity of the current
   //! intervals is not C1.
   void D1(const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const;
 
-  //! Computes   the point,  the  first  and  second
+  //! Computes the point, the first and second
   //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
+  //! Raised if the continuity of the current
   //! intervals is not C2.
   void D2(const Standard_Real U,
           const Standard_Real V,
@@ -124,9 +124,9 @@ public:
           gp_Vec&             D2V,
           gp_Vec&             D2UV) const;
 
-  //! Computes the point,  the first, second and third
+  //! Computes the point, the first, second and third
   //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
+  //! Raised if the continuity of the current
   //! intervals is not C3.
   void D3(const Standard_Real U,
           const Standard_Real V,
@@ -141,10 +141,10 @@ public:
           gp_Vec&             D3UUV,
           gp_Vec&             D3UVV) const;
 
-  //! Computes  the  derivative of order   Nu  in the
-  //! direction U and Nv in the  direction  V  at the point P(U,
+  //! Computes the derivative of order Nu in the
+  //! direction U and Nv in the direction V at the point P(U,
   //! V).
-  //! Raised if the current U  interval is not not CNu
+  //! Raised if the current U interval is not not CNu
   //! and the current V interval is not CNv.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
   gp_Vec DN(const Standard_Real    U,
@@ -153,8 +153,8 @@ public:
             const Standard_Integer Nv) const;
 
   //! Returns the type of the surface : Plane, Cylinder,
-  //! Cone,      Sphere,        Torus,    BezierSurface,
-  //! BSplineSurface,               SurfaceOfRevolution,
+  //! Cone, Sphere, Torus, BezierSurface,
+  //! BSplineSurface, SurfaceOfRevolution,
   //! SurfaceOfExtrusion, OtherSurface
   GeomAbs_SurfaceType GetType() const;
 

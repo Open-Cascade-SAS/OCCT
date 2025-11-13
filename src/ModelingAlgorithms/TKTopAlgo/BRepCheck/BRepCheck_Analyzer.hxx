@@ -39,21 +39,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructs a shape validation object defined by the shape S.
-  //! <S> is the  shape  to control.  <GeomControls>  If
-  //! False   only topological informaions  are checked.
+  //! <S> is the shape to control. <GeomControls> If
+  //! False only topological informaions are checked.
   //! The geometricals controls are
-  //! For a Vertex :
-  //! BRepCheck_InvalidToleranceValue  NYI
-  //! For an Edge :
+  //! For a Vertex:
+  //! BRepCheck_InvalidToleranceValue NYI
+  //! For an Edge:
   //! BRepCheck_InvalidCurveOnClosedSurface,
   //! BRepCheck_InvalidCurveOnSurface,
   //! BRepCheck_InvalidSameParameterFlag,
-  //! BRepCheck_InvalidToleranceValue  NYI
-  //! For a face :
+  //! BRepCheck_InvalidToleranceValue NYI
+  //! For a face:
   //! BRepCheck_UnorientableShape,
   //! BRepCheck_IntersectingWires,
-  //! BRepCheck_InvalidToleranceValue  NYI
-  //! For a wire :
+  //! BRepCheck_InvalidToleranceValue NYI
+  //! For a wire:
   //! BRepCheck_SelfIntersectingWire
   BRepCheck_Analyzer(const TopoDS_Shape&    S,
                      const Standard_Boolean GeomControls  = Standard_True,
@@ -65,21 +65,21 @@ public:
     Init(S, GeomControls);
   }
 
-  //! <S> is the  shape  to control.  <GeomControls>  If
-  //! False   only topological informaions  are checked.
+  //! <S> is the shape to control. <GeomControls> If
+  //! False only topological informaions are checked.
   //! The geometricals controls are
-  //! For a Vertex :
-  //! BRepCheck_InvalidTolerance  NYI
-  //! For an Edge :
+  //! For a Vertex:
+  //! BRepCheck_InvalidTolerance NYI
+  //! For an Edge:
   //! BRepCheck_InvalidCurveOnClosedSurface,
   //! BRepCheck_InvalidCurveOnSurface,
   //! BRepCheck_InvalidSameParameterFlag,
-  //! BRepCheck_InvalidTolerance  NYI
-  //! For a face :
+  //! BRepCheck_InvalidTolerance NYI
+  //! For a face:
   //! BRepCheck_UnorientableShape,
   //! BRepCheck_IntersectingWires,
-  //! BRepCheck_InvalidTolerance  NYI
-  //! For a wire :
+  //! BRepCheck_InvalidTolerance NYI
+  //! For a wire:
   //! BRepCheck_SelfIntersectingWire
   Standard_EXPORT void Init(const TopoDS_Shape&    S,
                             const Standard_Boolean GeomControls = Standard_True);
@@ -100,7 +100,7 @@ public:
   //! Returns true if parallel flag is set
   Standard_Boolean IsParallel() { return myIsParallel; }
 
-  //! <S> is a  subshape of the  original shape. Returns
+  //! <S> is a subshape of the original shape. Returns
   //! <STandard_True> if no default has been detected on
   //! <S> and any of its subshape.
   Standard_EXPORT Standard_Boolean IsValid(const TopoDS_Shape& S) const;
@@ -128,7 +128,7 @@ public:
   //! the edge?s contextual situation.
   //! -      if the edge is either single, or it is in the context
   //! of a wire or a compound, its parameterization is defined by
-  //! the parameterization of its 3D curve and is considered as    valid.
+  //! the parameterization of its 3D curve and is considered as valid.
   //! -      If the edge is in the context of a face, it should
   //! have SameParameter and SameRange flags set to Standard_True. To
   //! check these flags, you should call the function

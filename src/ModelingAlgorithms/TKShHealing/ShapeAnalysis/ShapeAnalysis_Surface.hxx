@@ -349,7 +349,7 @@ private:
   //!
   //! The singularities and corresponding precisions are the
   //! following:
-  //! - ConicalSurface -  one degenerated point (apex of the cone),
+  //! - ConicalSurface - one degenerated point (apex of the cone),
   //! precision is 0.,
   //! - ToroidalSurface - two degenerated points, precision is
   //! Max (0, majorR-minorR),

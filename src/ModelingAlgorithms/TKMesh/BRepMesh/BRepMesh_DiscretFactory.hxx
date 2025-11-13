@@ -26,9 +26,9 @@
 
 class TopoDS_Shape;
 
-//! This class intended to setup / retrieve default triangulation algorithm. <br>
-//! Use BRepMesh_DiscretFactory::Get() static method to retrieve global Factory instance. <br>
-//! Use BRepMesh_DiscretFactory::Discret() method to retrieve meshing tool. <br>
+//! This class intended to setup / retrieve default triangulation algorithm.
+//! Use BRepMesh_DiscretFactory::Get() static method to retrieve global Factory instance.
+//! Use BRepMesh_DiscretFactory::Discret() method to retrieve meshing tool.
 class BRepMesh_DiscretFactory
 {
 public:
@@ -40,8 +40,8 @@ public:
   //! Returns the list of registered meshing algorithms.
   const TColStd_MapOfAsciiString& Names() const { return myNames; }
 
-  //! Setup meshing algorithm by name. <br>
-  //! Returns TRUE if requested tool is available. <br>
+  //! Setup meshing algorithm by name.
+  //! Returns TRUE if requested tool is available.
   //! On fail Factory will continue to use previous algo.
   Standard_Boolean SetDefaultName(const TCollection_AsciiString& theName)
   {
@@ -51,8 +51,8 @@ public:
   //! Returns name for current meshing algorithm.
   const TCollection_AsciiString& DefaultName() const { return myDefaultName; }
 
-  //! Advanced function. Changes function name to retrieve from plugin. <br>
-  //! Returns TRUE if requested tool is available. <br>
+  //! Advanced function. Changes function name to retrieve from plugin.
+  //! Returns TRUE if requested tool is available.
   //! On fail Factory will continue to use previous algo.
   Standard_Boolean SetFunctionName(const TCollection_AsciiString& theFuncName)
   {
@@ -65,9 +65,9 @@ public:
   //! Returns error status for last meshing algorithm switch.
   BRepMesh_FactoryError ErrorStatus() const { return myErrorStatus; }
 
-  //! Setup meshing algorithm that should be created by this Factory. <br>
-  //! Returns TRUE if requested tool is available. <br>
-  //! On fail Factory will continue to use previous algo. <br>
+  //! Setup meshing algorithm that should be created by this Factory.
+  //! Returns TRUE if requested tool is available.
+  //! On fail Factory will continue to use previous algo.
   //! Call ::ErrorStatus() method to retrieve fault reason.
   Standard_EXPORT Standard_Boolean
     SetDefault(const TCollection_AsciiString& theName,

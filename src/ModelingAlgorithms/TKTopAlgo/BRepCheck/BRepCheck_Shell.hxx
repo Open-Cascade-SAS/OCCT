@@ -41,15 +41,15 @@ public:
 
   Standard_EXPORT void Blind() Standard_OVERRIDE;
 
-  //! Checks if the oriented  faces of the shell  give a
-  //! closed shell.    If the  wire is  closed,  returns
-  //! BRepCheck_NoError.If      <Update>     is  set  to
+  //! Checks if the oriented faces of the shell give a
+  //! closed shell. If the wire is closed, returns
+  //! BRepCheck_NoError. If <Update> is set to
   //! Standard_True, registers the status in the list.
   Standard_EXPORT BRepCheck_Status Closed(const Standard_Boolean Update = Standard_False);
 
-  //! Checks if the   oriented faces  of  the shell  are
-  //! correctly oriented.  An internal  call is  made to
-  //! the  method  Closed.   If  <Update>    is set   to
+  //! Checks if the oriented faces of the shell are
+  //! correctly oriented. An internal call is made to
+  //! the method Closed. If <Update> is set to
   //! Standard_True, registers the status in the list.
   Standard_EXPORT BRepCheck_Status Orientation(const Standard_Boolean Update = Standard_False);
 

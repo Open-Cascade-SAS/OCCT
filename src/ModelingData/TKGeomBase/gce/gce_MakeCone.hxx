@@ -50,7 +50,7 @@ public:
   //! Radius is the radius of the circle in the reference plane of
   //! the cone.
   //! If Radius is lower than 0.0 the status is "
-  //! If Ang < Resolution from gp  or Ang >= (PI/2) - Resolution.
+  //! If Ang < Resolution from gp or Ang >= (PI/2) - Resolution.
   Standard_EXPORT gce_MakeCone(const gp_Ax2&       A2,
                                const Standard_Real Ang,
                                const Standard_Real Radius);

@@ -43,7 +43,7 @@ public:
   //! particular, the number of U and V isoparameters - are
   //! set in the attribute manager aDrawer.
   //! aFace is BRepAdaptor_Surface surface created
-  //! from a face in a topological shape.   which is passed
+  //! from a face in a topological shape. which is passed
   //! as an argument through the
   //! BRepAdaptor_Surface surface created from it.
   //! This is what allows the topological face to be treated
@@ -60,7 +60,7 @@ public:
   //! particular, the number of U isoparameters -
   //! are set in the attribute manager aDrawer.
   //! aFace is BRepAdaptor_Surface surface
-  //! created from a face in a topological shape.   which
+  //! created from a face in a topological shape. which
   //! is passed to the function as an argument through
   //! the BRepAdaptor_Surface surface created from
   //! it. This is what allows the topological face to be
@@ -77,7 +77,7 @@ public:
   //! particular, the number of V isoparameters -
   //! are set in the attribute manager aDrawer.
   //! aFace is BRepAdaptor_Surface surface
-  //! created from a face in a topological shape.   which
+  //! created from a face in a topological shape. which
   //! is passed to the function as an argument through
   //! the BRepAdaptor_Surface surface created from
   //! it. This is what allows the topological face to be
@@ -97,7 +97,7 @@ public:
   //! isoparameters, NBUiso and NBViso, in the shape. To
   //! do this, the arguments DrawUIso and DrawVIso must be true.
   //! aFace is BRepAdaptor_Surface surface created
-  //! from a face in a topological shape.   which is passed
+  //! from a face in a topological shape. which is passed
   //! as an argument through the
   //! BRepAdaptor_Surface surface created from it.
   //! This is what allows the topological face to be treated
