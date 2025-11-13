@@ -10,7 +10,6 @@ set(OCCT_AppParCurves_FILES
   AppParCurves_Array1OfMultiPoint.hxx
   AppParCurves_BSpFunction.gxx
   AppParCurves_BSpGradient.gxx
-  AppParCurves_BSpGradient_BFGS.gxx
   AppParCurves_Constraint.hxx
   AppParCurves_ConstraintCouple.cxx
   AppParCurves_ConstraintCouple.hxx
