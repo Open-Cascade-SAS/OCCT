@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <math_BFGS.hxx>
+#include <math_FRPR.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
 #include <math_Vector.hxx>
 
@@ -473,5 +474,73 @@ TEST(MathBFGSTest, MultipleOptimizations)
     EXPECT_TRUE(anOptimizer.IsDone()) << "Each optimization should succeed";
     EXPECT_NEAR(anOptimizer.Location()(1), 1.0, 1.0e-6) << "Each should find correct X minimum";
     EXPECT_NEAR(anOptimizer.Location()(2), 2.0, 1.0e-6) << "Each should find correct Y minimum";
+  }
+}
+
+// Simple 1D square function: f(x) = x^2 (minimum at x=0, value = 0)
+class SquareFunction1D : public math_MultipleVarFunctionWithGradient
+{
+public:
+  SquareFunction1D() {}
+
+  Standard_Integer NbVariables() const override { return 1; }
+
+  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  {
+    if (theX.Length() != 1)
+      return Standard_False;
+    const Standard_Real x = theX(1);
+    theF                  = x * x;
+    return Standard_True;
+  }
+
+  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  {
+    if (theX.Length() != 1 || theG.Length() != 1)
+      return Standard_False;
+    const Standard_Real x = theX(1);
+    theG(1)               = 2.0 * x;
+    return Standard_True;
+  }
+
+  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  {
+    return Value(theX, theF) && Gradient(theX, theG);
+  }
+};
+
+TEST(MathBFGSTest, OCC30492_StartingPointAtMinimum)
+{
+  // Bug OCC30492: BFGS and FRPR fail if starting point is exactly the minimum
+  // Test that both BFGS and FRPR work correctly when the starting point is at the minimum
+  SquareFunction1D aFunc;
+  math_Vector      aStartPnt(1, 1);
+  aStartPnt(1) = 0.0; // Start exactly at the minimum
+
+  // Test FRPR
+  math_FRPR aFRPR(aFunc, Precision::Confusion());
+  aFRPR.Perform(aFunc, aStartPnt);
+  EXPECT_TRUE(aFRPR.IsDone()) << "FRPR optimization should succeed when starting at minimum";
+
+  // Test BFGS
+  math_BFGS aBFGS(1, Precision::Confusion());
+  aBFGS.Perform(aFunc, aStartPnt);
+  EXPECT_TRUE(aBFGS.IsDone()) << "BFGS optimization should succeed when starting at minimum";
+
+  // Verify that both found the minimum (or stayed at it)
+  if (aFRPR.IsDone())
+  {
+    EXPECT_NEAR(aFRPR.Location()(1), 0.0, Precision::Confusion())
+      << "FRPR should stay at/find the minimum";
+    EXPECT_NEAR(aFRPR.Minimum(), 0.0, Precision::Confusion())
+      << "FRPR should report minimum value of 0";
+  }
+
+  if (aBFGS.IsDone())
+  {
+    EXPECT_NEAR(aBFGS.Location()(1), 0.0, Precision::Confusion())
+      << "BFGS should stay at/find the minimum";
+    EXPECT_NEAR(aBFGS.Minimum(), 0.0, Precision::Confusion())
+      << "BFGS should report minimum value of 0";
   }
 }

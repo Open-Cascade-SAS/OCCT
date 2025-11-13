@@ -1862,82 +1862,6 @@ static Standard_Integer SurfaceGenOCC26675_1(Draw_Interpretor& theDI,
   return 0;
 }
 
-namespace AllocTest
-{
-// The test is based of occupying of all available virtual memory.
-// Obviously it has no sense on 64-bit platforms.
-
-enum AllocTestStatus
-{
-  NotApplicable = 0x1,
-  OUMCatchOK    = 0x2,
-  OUMCatchFail  = 0x4
-};
-
-template <int>
-int test()
-{
-  // non-32-bit implementation
-  return NotApplicable;
-}
-
-template <>
-int test<4>()
-{
-  // 32-bit implementation
-  NCollection_List<Standard_Address> aList;
-  const Standard_Integer             aBlockSizes[] = {100000, 10000, 10};
-  int                                aStatus       = 0;
-
-  // start populate memory with blocks of large size, then
-  // smaller ones and so on according to content of the array aBlockSizes
-  for (size_t i = 0; i < sizeof(aBlockSizes) / sizeof(int); i++)
-  {
-    try
-    {
-      for (;;)
-        aList.Append(Standard::Allocate(aBlockSizes[i]));
-    }
-    catch (Standard_Failure const&)
-    {
-      aStatus |= OUMCatchOK;
-    }
-    catch (...)
-    {
-      aStatus |= OUMCatchFail;
-      break;
-    }
-  }
-  // release all allocated blocks
-  for (NCollection_List<Standard_Address>::Iterator it(aList); it.More(); it.Next())
-  {
-    Standard::Free(it.Value());
-  }
-  return aStatus;
-}
-} // namespace AllocTest
-
-//=================================================================================================
-
-static Standard_Integer OCC24836(Draw_Interpretor& theDI, Standard_Integer n, const char** a)
-{
-  if (n != 1)
-  {
-    theDI << "Usage : " << a[0] << "\n";
-    return 1;
-  }
-
-  int aStatus = AllocTest::test<sizeof(size_t)>();
-
-  if (aStatus & AllocTest::NotApplicable)
-    theDI << "This test case is not applicable for 64-bit and higher platforms\n";
-  if (aStatus & AllocTest::OUMCatchOK)
-    theDI << "out-of-memory has been caught: OK\n";
-  if (aStatus & AllocTest::OUMCatchFail)
-    theDI << "Error: out-of-memory is not always caught\n";
-  return 0;
-}
-
 //=======================================================================
 // function : OCC27021
 // purpose  : Tests performance of obtaining geometry (points) via topological
@@ -2482,51 +2406,6 @@ static Standard_Integer OCC26747_3(Draw_Interpretor& theDI,
 #include "Geom2d_BezierCurve.hxx"
 #include "Geom2dGcc_QualifiedCurve.hxx"
 #include "Geom2dAdaptor_Curve.hxx"
-#include "Geom2dAPI_ProjectPointOnCurve.hxx"
-#include "Geom2dGcc_Circ2d2TanOn.hxx"
-
-//=================================================================================================
-
-static Standard_Integer OCC27357(Draw_Interpretor& theDI, Standard_Integer, const char**)
-{
-  TColgp_Array1OfPnt2d aPoles(1, 3);
-  aPoles.SetValue(1, gp_Pnt2d(0., 0.));
-  aPoles.SetValue(2, gp_Pnt2d(0., 1.));
-  aPoles.SetValue(3, gp_Pnt2d(6., 0.));
-
-  Handle(Geom2d_BezierCurve) aCurve1 = new Geom2d_BezierCurve(aPoles);
-  aPoles.SetValue(2, gp_Pnt2d(0., 1.5));
-  Handle(Geom2d_BezierCurve)         aCurve2 = new Geom2d_BezierCurve(aPoles);
-  NCollection_List<Standard_Integer> aDuumyList;
-  int                                nP = 100;
-  for (int i = 0; i < nP; i++)
-  {
-    Standard_Real u = i / (nP - 1.);
-    gp_Pnt2d      aP1;
-    gp_Vec2d      aTangent;
-    aCurve1->D1(u, aP1, aTangent);
-    gp_Vec2d                 aNormal(-aTangent.Y(), aTangent.X());
-    Handle(Geom2d_Line)      normalLine = new Geom2d_Line(aP1, gp_Dir2d(aNormal));
-    Geom2dGcc_QualifiedCurve qualifiedC1(Geom2dAdaptor_Curve(aCurve1), GccEnt_unqualified);
-    Geom2dGcc_QualifiedCurve qualifiedC2(Geom2dAdaptor_Curve(aCurve2), GccEnt_unqualified);
-
-    try
-    {
-      Geom2dAPI_ProjectPointOnCurve projPc1(aP1, aCurve1);
-      double                        g1 = projPc1.LowerDistanceParameter();
-      Geom2dAPI_ProjectPointOnCurve projPc3(aP1, normalLine);
-      double                        g3 = projPc3.LowerDistanceParameter();
-      Geom2dGcc_Circ2d2TanOn
-        aCircleBuilder(qualifiedC1, qualifiedC2, Geom2dAdaptor_Curve(normalLine), 1e-9, g1, g1, g3);
-      aDuumyList.Append(aCircleBuilder.NbSolutions());
-    }
-    catch (Standard_Failure const&)
-    {
-      theDI << "Exception was caught\n";
-    }
-  }
-  return 0;
-}
 
 #include <Standard_ErrorHandler.hxx>
 #include <GeomFill_NSections.hxx>
@@ -2578,40 +2457,6 @@ static Standard_Integer OCC26270(Draw_Interpretor& theDI,
   return 0;
 }
 
-#include "BRepBuilderAPI_MakeWire.hxx"
-#include "BRepBuilderAPI_MakeEdge.hxx"
-
-static Standard_Integer OCC27552(Draw_Interpretor&, Standard_Integer, const char**)
-{
-  BRep_Builder  BB;
-  TopoDS_Vertex V1, V2, V3;
-  TopoDS_Edge   E1, E2;
-  BB.MakeVertex(V1, gp_Pnt(0, 0, 0), 0.1);
-  BB.MakeVertex(V2, gp_Pnt(5, 0, 0), 0.1);
-  BB.MakeVertex(V3, gp_Pnt(10, 0, 0), 0.1);
-  E1 = BRepBuilderAPI_MakeEdge(V1, V2).Edge();
-  E2 = BRepBuilderAPI_MakeEdge(V2, V3).Edge();
-  BRepBuilderAPI_MakeWire MW;
-  MW.Add(E1);
-  MW.Add(E2);
-  TopoDS_Vertex V4, V5, V6, V7;
-  TopoDS_Edge   E3, E4;
-  BB.MakeVertex(V4, gp_Pnt(10, 0 + 0.05, 0), 0.07);
-  BB.MakeVertex(V5, gp_Pnt(10, 0 - 0.05, 0), 0.07);
-  BB.MakeVertex(V6, gp_Pnt(10, 0 + 2, 0), 0.07);
-  BB.MakeVertex(V7, gp_Pnt(10, 0 - 2, 0), 0.07);
-  E3 = BRepBuilderAPI_MakeEdge(V4, V6).Edge();
-  E4 = BRepBuilderAPI_MakeEdge(V5, V7).Edge();
-  TopTools_ListOfShape LLE;
-  LLE.Append(E3);
-  LLE.Append(E4);
-  MW.Add(LLE);
-  TopoDS_Shape W = MW.Wire();
-  DBRep::Set("outw", W);
-
-  return 0;
-}
-
 #include <NCollection_IncAllocator.hxx>
 
 static Standard_Integer OCC27875(Draw_Interpretor& theDI,
@@ -2639,6 +2484,8 @@ static Standard_Integer OCC27875(Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 
 static Standard_Integer OCC27884(Draw_Interpretor& theDI,
@@ -3917,38 +3764,6 @@ static Standard_Integer OCC30880(Draw_Interpretor& theDI,
 
 #include <BRepPrimAPI_MakeBox.hxx>
 
-static Standard_Integer OCC30704(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  // Make a shape somewhere far from (0, 0, 0).
-  BRepPrimAPI_MakeBox mkBox(gp_Pnt(100, 100, 100), 100, 100, 100);
-  const TopoDS_Shape& box = mkBox.Shape();
-
-  // Add a bounding box of a shape to a void bounding box.
-  Bnd_OBB aVoidBox, aBox;
-  BRepBndLib::AddOBB(box, aBox, Standard_False, Standard_False, Standard_False);
-  aVoidBox.Add(aBox);
-
-  // Print the center point of the bounding box.
-  const gp_XYZ& center = aVoidBox.Center();
-  di << center.X() << " " << center.Y() << " " << center.Z();
-  return 0;
-}
-
-static Standard_Integer OCC30704_1(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  // A point.
-  gp_Pnt aP(100, 200, 300);
-
-  // Add the point to a void bounding box.
-  Bnd_OBB aVoidBox;
-  aVoidBox.Add(aP);
-
-  // Print the center point of the bounding box.
-  const gp_XYZ& center = aVoidBox.Center();
-  di << center.X() << " " << center.Y() << " " << center.Z();
-  return 0;
-}
-
 //=======================================================================
 // function : OCC30990
 // purpose  : check consistency of implementation of cache in B-Spline surfaces
@@ -4056,31 +3871,6 @@ static Standard_Integer OCC30990(Draw_Interpretor& theDI,
   }
 
   theDI << "Total " << aNbErr << " deviations detected";
-  return 0;
-}
-
-//=======================================================================
-// function : OCC31294
-// purpose  : check list of shapes generated from shape, which is not any subshape
-//           of input shape for prism algorithm
-//=======================================================================
-#include <BRepPrimAPI_MakePrism.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
-
-static Standard_Integer OCC31294(Draw_Interpretor& di, Standard_Integer, const char**)
-{
-  BRepBuilderAPI_MakeVertex mkVert(gp_Pnt(0., 0., 0.));
-  BRepBuilderAPI_MakeVertex mkDummy(gp_Pnt(0., 0., 0.));
-  BRepPrimAPI_MakePrism     mkPrism(mkVert.Shape(), gp_Vec(0., 0., 1.));
-
-  Standard_Integer nbgen   = mkPrism.Generated(mkVert.Shape()).Extent();
-  Standard_Integer nbdummy = mkPrism.Generated(mkDummy.Shape()).Extent();
-
-  if (nbgen != 1 || nbdummy != 0)
-  {
-    di << "Error: wrong generated list \n";
-  }
-
   return 0;
 }
 
@@ -4672,7 +4462,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   const char* group = "QABugs";
 
   theCommands.Add("OCC26675_1", "OCC26675_1 result", __FILE__, SurfaceGenOCC26675_1, group);
-  theCommands.Add("OCC24836", "OCC24836", __FILE__, OCC24836, group);
   theCommands.Add("OCC27021", "OCC27021", __FILE__, OCC27021, group);
   theCommands.Add("OCC27235", "OCC27235", __FILE__, OCC27235, group);
   theCommands.Add("OCC26930", "OCC26930", __FILE__, OCC26930, group);
@@ -4680,9 +4469,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   theCommands.Add("OCC26747_1", "OCC26747_1 result", __FILE__, OCC26747_1, group);
   theCommands.Add("OCC26747_2", "OCC26747_2 result", __FILE__, OCC26747_2, group);
   theCommands.Add("OCC26747_3", "OCC26747_3 result", __FILE__, OCC26747_3, group);
-  theCommands.Add("OCC27357", "OCC27357", __FILE__, OCC27357, group);
   theCommands.Add("OCC26270", "OCC26270 shape result", __FILE__, OCC26270, group);
-  theCommands.Add("OCC27552", "OCC27552", __FILE__, OCC27552, group);
   theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
   theCommands.Add("OCC27884",
                   "OCC27884: Possible improvement for 2d classifier",
@@ -4754,10 +4541,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC30880,
                   group);
-
-  theCommands.Add("OCC30704", "OCC30704", __FILE__, OCC30704, group);
-  theCommands.Add("OCC30704_1", "OCC30704_1", __FILE__, OCC30704_1, group);
-  theCommands.Add("OCC31294", "OCC31294", __FILE__, OCC31294, group);
 
   theCommands.Add("OCC31697", "OCC31697 expression variable", __FILE__, OCC31697, group);
 
