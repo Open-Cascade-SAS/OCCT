@@ -50,16 +50,18 @@ private:
   gp_Pnt2d      myP;
 };
 
-#define Pnt gp_Pnt2d
-#define Pnt_hxx <gp_Pnt2d.hxx>
-#define Extrema_Point Extrema_POnCurv2d
-#define Extrema_Point_hxx <Extrema_POnCurv2d.hxx>
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <Extrema_Point.lxx>
+inline Standard_Real Extrema_POnCurv2d::Parameter() const
+{
+  return myU;
+}
 
-#undef Pnt
-#undef Pnt_hxx
-#undef Extrema_Point
-#undef Extrema_Point_hxx
+inline const gp_Pnt2d& Extrema_POnCurv2d::Value() const
+{
+  return myP;
+}
 
 #endif // _Extrema_POnCurv2d_HeaderFile
