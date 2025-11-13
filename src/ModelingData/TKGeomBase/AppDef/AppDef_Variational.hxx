@@ -48,13 +48,12 @@ public:
 
   //! Constructor.
   //! Initialization of the fields.
-  //! warning :  Nc0 : number of PassagePoint consraints
+  //! Warning:
+  //! Nc0 : number of PassagePoint consraints
   //! Nc2 : number of TangencyPoint constraints
   //! Nc3 : number of CurvaturePoint constraints
-  //! if
-  //! ((MaxDegree-Continuity)*MaxSegment -Nc0  - 2*Nc1
-  //! -3*Nc2)
-  //! is  negative
+  //! if ((MaxDegree-Continuity)*MaxSegment -Nc0 - 2*Nc1 -3*Nc2)
+  //! is negative
   //! The problem is over-constrained.
   //!
   //! Limitation : The MultiLine from AppDef has to be composed by
@@ -79,7 +78,7 @@ public:
   //! and correspond to the current fields.
   Standard_EXPORT Standard_Boolean IsCreated() const;
 
-  //! returns True if the  approximation is ok
+  //! returns True if the approximation is ok
   //! and correspond to the current fields.
   Standard_EXPORT Standard_Boolean IsDone() const;
 
@@ -186,7 +185,7 @@ public:
   //! this method modify nothing and returns false
   Standard_EXPORT Standard_Boolean SetContinuity(const GeomAbs_Shape C);
 
-  //! Define if the approximation search to  minimize the
+  //! Define if the approximation search to minimize the
   //! maximum Error or not.
   Standard_EXPORT void SetWithMinMax(const Standard_Boolean MinMax);
 
@@ -196,7 +195,7 @@ public:
   Standard_EXPORT Standard_Boolean SetWithCutting(const Standard_Boolean Cutting);
 
   //! define the Weights (as percent) associed to the criterium used in
-  //! the  optimization.
+  //! the optimization.
   //!
   //! if Percent <= 0
   Standard_EXPORT void SetCriteriumWeight(const Standard_Real Percent1,

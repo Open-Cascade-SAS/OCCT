@@ -106,7 +106,7 @@ public:
   //! Updates the face Tolerance.
   Standard_EXPORT void UpdateFace(const TopoDS_Face& F, const Standard_Real Tol) const;
 
-  //! Sets the  NaturalRestriction flag of the face.
+  //! Sets the NaturalRestriction flag of the face.
   Standard_EXPORT void NaturalRestriction(const TopoDS_Face& F, const Standard_Boolean N) const;
 
   //! Makes an undefined Edge (no geometry).
@@ -299,7 +299,7 @@ public:
                              const Standard_Real    Last,
                              const Standard_Boolean Only3d = Standard_False) const;
 
-  //! Sets the range  of the edge on the pcurve on the
+  //! Sets the range of the edge on the pcurve on the
   //! surface.
   Standard_EXPORT void Range(const TopoDS_Edge&          E,
                              const Handle(Geom_Surface)& S,

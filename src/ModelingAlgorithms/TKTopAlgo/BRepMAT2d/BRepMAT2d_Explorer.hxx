@@ -50,11 +50,11 @@ public:
   //! Returns the Number of contours.
   Standard_EXPORT Standard_Integer NumberOfContours() const;
 
-  //! Returns the Number of Curves in the Contour  number
+  //! Returns the Number of Curves in the Contour number
   //! <IndexContour>.
   Standard_EXPORT Standard_Integer NumberOfCurves(const Standard_Integer IndexContour) const;
 
-  //! Initialisation of  an Iterator on  the curves of
+  //! Initialisation of an Iterator on the curves of
   //! the Contour number <IndexContour>.
   Standard_EXPORT void Init(const Standard_Integer IndexContour);
 
@@ -83,7 +83,7 @@ public:
 protected:
 private:
   //! Construction from a set of curves from Geom2d.
-  //! Assume  the   orientation  of  the  closed   lines are
+  //! Assume the orientation of the closed lines are
   //! compatible. (ie if A is in B, the orientation of A and B
   //! has to be different.
   //!
@@ -98,7 +98,7 @@ private:
   //! afirst point of a curve in a contour is equal to the last
   //! point of the precedent curve.
   //!
-  //! No  control of this  rules is done in the construction
+  //! No control of this rules is done in the construction
   //! of the explorer
   Standard_EXPORT void Add(const TopoDS_Wire& Spine,
                            const TopoDS_Face& aFace,

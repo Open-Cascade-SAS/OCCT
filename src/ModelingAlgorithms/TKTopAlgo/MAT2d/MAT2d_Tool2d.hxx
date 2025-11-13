@@ -62,7 +62,7 @@ public:
   Standard_EXPORT Standard_Real ToleranceOfConfusion() const;
 
   //! Creates the point at the origin of the bisector between
-  //! anitem and the previous  item.
+  //! anitem and the previous item.
   //! dist is the distance from the FirstPoint to <anitem>.
   //! Returns the index of this point in <theGeomPnts>.
   Standard_EXPORT Standard_Integer FirstPoint(const Standard_Integer anitem, Standard_Real& dist);
@@ -100,10 +100,10 @@ public:
   Standard_EXPORT Standard_Boolean TrimBisector(const Handle(MAT_Bisector)& abisector,
                                                 const Standard_Integer      apoint);
 
-  //! Computes  the point  of  intersection between  the
-  //! bisectors defined  by  <bisectorone>  and
+  //! Computes the point of intersection between the
+  //! bisectors defined by <bisectorone> and
   //! <bisectortwo> .
-  //! If this point exists,  <intpnt> is its  index
+  //! If this point exists, <intpnt> is its index
   //! in <theGeomPnts> and Return the distance of the point
   //! from the bisector else Return <RealLast>.
   Standard_EXPORT Standard_Real IntersectBisector(const Handle(MAT_Bisector)& bisectorone,
@@ -130,7 +130,7 @@ public:
   //! Returns the point of index <Index> in the <theGeomPnts>.
   Standard_EXPORT const gp_Pnt2d& GeomPnt(const Standard_Integer Index) const;
 
-  //! Returns the  vector  of index <Index> in the
+  //! Returns the vector of index <Index> in the
   //! <theGeomVecs>.
   Standard_EXPORT const gp_Vec2d& GeomVec(const Standard_Integer Index) const;
 

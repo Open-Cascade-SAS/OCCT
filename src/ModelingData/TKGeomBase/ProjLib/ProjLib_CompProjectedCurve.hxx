@@ -109,7 +109,7 @@ public:
   //! Changes the surface.
   Standard_EXPORT void Load(const Handle(Adaptor3d_Surface)& S);
 
-  //! Changes the  curve.
+  //! Changes the curve.
   Standard_EXPORT void Load(const Handle(Adaptor3d_Curve)& C);
 
   Standard_EXPORT const Handle(Adaptor3d_Surface)& GetSurface() const;

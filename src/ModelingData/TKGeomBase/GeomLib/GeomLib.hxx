@@ -41,23 +41,23 @@ class Geom_Surface;
 
 typedef class Adaptor2d_Curve2d Adaptor2d_Curve2d;
 
-//! Geom    Library.    This   package   provides   an
-//! implementation of  functions for basic computation
+//! Geom Library. This package provides an
+//! implementation of functions for basic computation
 //! on geometric entity from packages Geom and Geom2d.
 class GeomLib
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Computes     the  curve  3d    from  package  Geom
-  //! corresponding to curve 2d  from package Geom2d, on
+  //! Computes the curve 3d from package Geom
+  //! corresponding to curve 2d from package Geom2d, on
   //! the plan defined with the local coordinate system
   //! Position.
   Standard_EXPORT static Handle(Geom_Curve) To3d(const gp_Ax2&               Position,
                                                  const Handle(Geom2d_Curve)& Curve2d);
 
-  //! Computes the    curve    3d  from   package   Geom
-  //! corresponding  to the curve  3d from package Geom,
+  //! Computes the curve 3d from package Geom
+  //! corresponding to the curve 3d from package Geom,
   //! transformed with the transformation <GTrsf>
   //! WARNING : this method may return a null Handle if
   //! it's impossible to compute the transformation of
@@ -120,7 +120,7 @@ public:
   //! Extends the bounded surface Surf along one of its
   //! boundaries. The chord length of the extension is equal to Length.
   //! The direction of the extension is given as:
-  //! -   the u parametric direction of Surf, if InU equals true,   or
+  //! -   the u parametric direction of Surf, if InU equals true, or
   //! -   the v parametric direction of Surf, if InU equals false.
   //! In this parametric direction, the extension is built on the side of:
   //! -   the last parameter of Surf, if After equals true, or
@@ -142,19 +142,19 @@ public:
                                                  const Standard_Boolean       InU,
                                                  const Standard_Boolean       After);
 
-  //! Compute   axes of inertia,  of some  points --  -- --
-  //! <Axe>.Location() is the   BaryCentre -- -- --   -- --
-  //! <Axe>.XDirection is the axe of upper inertia -- -- --
-  //! -- <Axe>.Direction is the Normal to the average plane
-  //! -- -- -- IsSingular is True if  points are on line --
+  //! Compute axes of inertia, of some points
+  //! <Axe>.Location() is the BaryCentre
+  //! <Axe>.XDirection is the axe of upper inertia
+  //! <Axe>.Direction is the Normal to the average plane
+  //! IsSingular is True if points are on line
   //! Tol is used to determine singular cases.
   Standard_EXPORT static void AxeOfInertia(const TColgp_Array1OfPnt& Points,
                                            gp_Ax2&                   Axe,
                                            Standard_Boolean&         IsSingular,
                                            const Standard_Real       Tol = 1.0e-7);
 
-  //! Compute principale axes  of  inertia, and dispersion
-  //! value  of some  points.
+  //! Compute principale axes of inertia, and dispersion
+  //! value of some points.
   Standard_EXPORT static void Inertia(const TColgp_Array1OfPnt& Points,
                                       gp_Pnt&                   Bary,
                                       gp_Dir&                   XDir,
@@ -163,7 +163,7 @@ public:
                                       Standard_Real&            YGap,
                                       Standard_Real&            ZGap);
 
-  //! Warning!  This assume that the InParameter is an increasing sequence
+  //! Warning! This assume that the InParameter is an increasing sequence
   //! of real number and it will not check for that : Unpredictable
   //! result can happen if this is not satisfied. It is the caller
   //! responsibility to check for that property.

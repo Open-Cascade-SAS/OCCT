@@ -47,7 +47,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Tool to explore a topological data structure.
-  //! Stores in the map <M> all  the sub-shapes of <S>
+  //! Stores in the map <M> all the sub-shapes of <S>
   //! of type <T>.
   //!
   //! Warning: The map is not cleared at first.
@@ -55,7 +55,7 @@ public:
                                         const TopAbs_ShapeEnum      T,
                                         TopTools_IndexedMapOfShape& M);
 
-  //! Stores in the map <M> all  the sub-shapes of <S>.
+  //! Stores in the map <M> all the sub-shapes of <S>.
   //! - If cumOri is true, the function composes all
   //! sub-shapes with the orientation of S.
   //! - If cumLoc is true, the function multiplies all
@@ -66,7 +66,7 @@ public:
                                         const Standard_Boolean      cumOri = Standard_True,
                                         const Standard_Boolean      cumLoc = Standard_True);
 
-  //! Stores in the map <M> all  the sub-shapes of <S>.
+  //! Stores in the map <M> all the sub-shapes of <S>.
   //! - If cumOri is true, the function composes all
   //! sub-shapes with the orientation of S.
   //! - If cumLoc is true, the function multiplies all
@@ -112,7 +112,7 @@ public:
   Standard_EXPORT static TopoDS_Vertex LastVertex(const TopoDS_Edge&     E,
                                                   const Standard_Boolean CumOri = Standard_False);
 
-  //! Returns in Vfirst, Vlast the  FORWARD and REVERSED
+  //! Returns in Vfirst, Vlast the FORWARD and REVERSED
   //! vertices of the edge <E>. May be null shapes.
   //! CumOri = True : taking account the edge orientation
   Standard_EXPORT static void Vertices(const TopoDS_Edge&     E,

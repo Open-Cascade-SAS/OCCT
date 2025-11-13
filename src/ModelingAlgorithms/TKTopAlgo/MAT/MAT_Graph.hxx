@@ -75,22 +75,22 @@ public:
   //! Return the number of infinites nodes of <me>.
   Standard_EXPORT Standard_Integer NumberOfInfiniteNodes() const;
 
-  //! Merge two BasicElts.  The End of the BasicElt Elt1
-  //! of  IndexElt1 becomes The End of the BasicElt Elt2
-  //! of  IndexElt2.   Elt2 is replaced in  the  arcs  by
+  //! Merge two BasicElts. The End of the BasicElt Elt1
+  //! of IndexElt1 becomes The End of the BasicElt Elt2
+  //! of IndexElt2. Elt2 is replaced in the arcs by
   //! Elt1, Elt2 is eliminated.
   //!
-  //! <MergeArc1> is True  if the fusion  of the BasicElts  =>
-  //! a fusion  of two Arcs which separated  the same  elements.
-  //! In this case <GeomIndexArc1> and  <GeomIndexArc2>  are the
-  //! Geometric  Index of this  arcs.
+  //! <MergeArc1> is True if the fusion of the BasicElts =>
+  //! a fusion of two Arcs which separated the same elements.
+  //! In this case <GeomIndexArc1> and <GeomIndexArc2> are the
+  //! Geometric Index of this arcs.
   //!
-  //! If the  BasicElt corresponds to a close line ,
+  //! If the BasicElt corresponds to a close line,
   //! the StartArc and the EndArc of Elt1 can separate the same
-  //! elements .
+  //! elements.
   //! In this case there is a fusion of this arcs, <MergeArc2>
-  //! is true and <GeomIndexArc3> and  <GeomIndexArc4>  are the
-  //! Geometric  Index of this  arcs.
+  //! is true and <GeomIndexArc3> and <GeomIndexArc4> are the
+  //! Geometric Index of this arcs.
   Standard_EXPORT void FusionOfBasicElts(const Standard_Integer IndexElt1,
                                          const Standard_Integer IndexElt2,
                                          Standard_Boolean&      MergeArc1,
@@ -112,8 +112,8 @@ public:
 
 protected:
 private:
-  //! Merge two Arcs.  the second node of <Arc2> becomes
-  //! the  first node  of <Arc1>.  Update  of the  first
+  //! Merge two Arcs. the second node of <Arc2> becomes
+  //! the first node of <Arc1>. Update of the first
   //! node and the neighbours of <Arc1>.
   //! <Arc2> is eliminated.
   Standard_EXPORT void FusionOfArcs(const Handle(MAT_Arc)& Arc1, const Handle(MAT_Arc)& Arc2);

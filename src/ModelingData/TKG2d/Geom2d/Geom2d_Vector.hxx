@@ -52,7 +52,7 @@ public:
   //! Returns the coordinates of <me>.
   Standard_EXPORT void Coord(Standard_Real& X, Standard_Real& Y) const;
 
-  //! Returns the  Magnitude of <me>.
+  //! Returns the Magnitude of <me>.
   Standard_EXPORT virtual Standard_Real Magnitude() const = 0;
 
   //! Returns the square magnitude of <me>.

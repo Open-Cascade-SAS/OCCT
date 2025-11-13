@@ -60,7 +60,7 @@ public:
   //! False otherwise.
   Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
-  //! returns  point  on  surface
+  //! returns point on surface
   Standard_EXPORT gp_Pnt2d Solution() const;
 
 private:

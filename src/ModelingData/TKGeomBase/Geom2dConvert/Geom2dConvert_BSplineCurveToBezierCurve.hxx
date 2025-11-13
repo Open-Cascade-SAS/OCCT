@@ -57,7 +57,7 @@ public:
   //! limited by the two parameter values U1 and U2
   //! for Example if there is a Knot Uk and
   //! Uk < U < Uk + ParametricTolerance/2 the last curve
-  //! corresponds to the span [Uk-1, Uk] and not to  [Uk, Uk+1]
+  //! corresponds to the span [Uk-1, Uk] and not to [Uk, Uk+1]
   //! The result consists of a series of BasisCurve arcs
   //! limited by points corresponding to knot values of the curve.
   //! Use the available interrogation functions to ascertain
@@ -100,8 +100,8 @@ public:
 
   //! This methode returns the bspline's knots associated to
   //! the converted arcs
-  //! Raises DimensionError if the length  of Curves is not equal to
-  //! NbArcs +  1
+  //! Raises DimensionError if the length of Curves is not equal to
+  //! NbArcs + 1
   Standard_EXPORT void Knots(TColStd_Array1OfReal& TKnots) const;
 
   //! Returns the number of BezierCurve arcs.

@@ -28,13 +28,13 @@
 #include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
 class MAT2d_Connexion;
 
-//! MiniPath computes a path to link all the  lines in
-//! a set of lines. The path is described as a  set of
+//! MiniPath computes a path to link all the lines in
+//! a set of lines. The path is described as a set of
 //! connexions.
 //!
-//! The set of connexions can be  seen as an arbitrary Tree.
-//! The node of the  tree are the  lines.  The arcs of the
-//! tree are the connexions.  The ancestror  of  a line is
+//! The set of connexions can be seen as an arbitrary Tree.
+//! The node of the tree are the lines. The arcs of the
+//! tree are the connexions. The ancestror of a line is
 //! the connexion which ends on it. The children of a line
 //! are the connexions which start on it.
 //!
@@ -48,10 +48,10 @@ public:
 
   Standard_EXPORT MAT2d_MiniPath();
 
-  //! Computes the path  to link the  lines in <Figure>.
-  //! the path   starts on the  line  of index <IndStart>
-  //! <Sense>  = True    if  the Circuit turns in the
-  //! trigonometric  sense.
+  //! Computes the path to link the lines in <Figure>.
+  //! the path starts on the line of index <IndStart>
+  //! <Sense> = True if the Circuit turns in the
+  //! trigonometric sense.
   Standard_EXPORT void Perform(const MAT2d_SequenceOfSequenceOfGeometry& Figure,
                                const Standard_Integer                    IndStart,
                                const Standard_Boolean                    Sense);
@@ -70,24 +70,24 @@ public:
   //! E->F, F->E, E->A.
   Standard_EXPORT void RunOnConnexions();
 
-  //! Returns  the  sequence of  connexions corresponding to
-  //! the  path.
+  //! Returns the sequence of connexions corresponding to
+  //! the path.
   Standard_EXPORT const MAT2d_SequenceOfConnexion& Path() const;
 
   //! Returns <True> if there is one Connexion which starts
   //! on line designed by <Index>.
   Standard_EXPORT Standard_Boolean IsConnexionsFrom(const Standard_Integer Index) const;
 
-  //! Returns    the  connexions  which   start  on line
-  //! designed  by <Index>.
+  //! Returns the connexions which start on line
+  //! designed by <Index>.
   Standard_EXPORT MAT2d_SequenceOfConnexion& ConnexionsFrom(const Standard_Integer Index);
 
   //! Returns <True> if the line designed by <Index> is
   //! the root.
   Standard_EXPORT Standard_Boolean IsRoot(const Standard_Integer Index) const;
 
-  //! Returns    the  connexion  which ends  on line
-  //! designed  by <Index>.
+  //! Returns the connexion which ends on line
+  //! designed by <Index>.
   Standard_EXPORT Handle(MAT2d_Connexion) Father(const Standard_Integer Index);
 
 protected:

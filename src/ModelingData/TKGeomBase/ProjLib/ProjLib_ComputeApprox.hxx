@@ -24,7 +24,7 @@
 class Geom2d_BSplineCurve;
 class Geom2d_BezierCurve;
 
-//! Approximate the  projection of  a 3d curve   on an
+//! Approximate the projection of a 3d curve on an
 //! analytic surface and stores the result in Approx.
 //! The result is a 2d curve.
 //! For approximation some parameters are used, including

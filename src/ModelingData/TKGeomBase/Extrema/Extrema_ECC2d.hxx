@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Calculates all the distances as above
-  //! between Uinf and Usup for C1 and  between Vinf and Vsup
+  //! between Uinf and Usup for C1 and between Vinf and Vsup
   //! for C2.
   Standard_EXPORT Extrema_ECC2d();
 

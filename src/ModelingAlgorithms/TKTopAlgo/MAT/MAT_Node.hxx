@@ -49,7 +49,7 @@ public:
   //! Returns in <S> the Arcs linked to <me>.
   Standard_EXPORT void LinkedArcs(MAT_SequenceOfArc& S) const;
 
-  //! Returns  in <S> the BasicElts equidistant
+  //! Returns in <S> the BasicElts equidistant
   //! to <me>.
   Standard_EXPORT void NearElts(MAT_SequenceOfBasicElt& S) const;
 

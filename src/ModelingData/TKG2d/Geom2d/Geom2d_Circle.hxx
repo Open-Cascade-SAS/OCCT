@@ -59,7 +59,7 @@ DEFINE_STANDARD_HANDLE(Geom2d_Circle, Geom2d_Conic)
 //! See Also
 //! GCE2d_MakeCircle which provides functions for
 //! more complex circle constructions
-//! gp_Ax22d and  gp_Circ2d for an equivalent, non-parameterized data structure.
+//! gp_Ax22d and gp_Circ2d for an equivalent, non-parameterized data structure.
 class Geom2d_Circle : public Geom2d_Conic
 {
 

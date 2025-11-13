@@ -89,8 +89,8 @@ public:
 
   //! This methode returns the bspline's knots associated to
   //! the converted arcs
-  //! Raised  if the length  of Curves is not equal to
-  //! NbArcs +  1.
+  //! Raised if the length of Curves is not equal to
+  //! NbArcs + 1
   Standard_EXPORT void Knots(TColStd_Array1OfReal& TKnots) const;
 
   //! Returns the number of BezierCurve arcs.

@@ -49,7 +49,7 @@ public:
 
   //! Binds <Enew> to be the new edge instead of <Eold>.
   //!
-  //! The faces of the added shape containing  <Eold>
+  //! The faces of the added shape containing <Eold>
   //! will be copied to substitute <Eold> by <Enew>.
   //!
   //! The vertices of <Eold> will be bound to the

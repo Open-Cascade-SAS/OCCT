@@ -83,7 +83,7 @@ public:
                                  const GeomAbs_Shape   S) const Standard_OVERRIDE;
 
   //! Returns a curve equivalent of <me> between
-  //! parameters <First> and <Last>. <Tol> is used  to
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT Handle(Adaptor3d_Curve) Trim(const Standard_Real First,
@@ -135,7 +135,7 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Integer N) const Standard_OVERRIDE;
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
 
