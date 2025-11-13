@@ -48,14 +48,14 @@ public:
 
   static GeomAbs_Shape Continuity(const Standard_Address C);
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(myclass) >= <S>
   static Standard_Integer NbIntervals(const Standard_Address C);
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   static void Intervals(const Standard_Address C, TColStd_Array1OfReal& T);
 
@@ -79,7 +79,7 @@ public:
   //! Computes the point of parameter U on the curve.
   static void D0(const Standard_Address C, const Standard_Real U, gp_Pnt2d& P);
 
-  //! Computes the point  of parameter U on the curve
+  //! Computes the point of parameter U on the curve
   //! with its first derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
@@ -113,17 +113,17 @@ public:
   //! Raised if N < 1.
   static gp_Vec2d DN(const Standard_Address C, const Standard_Real U, const Standard_Integer N);
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   static Standard_Real Resolution(const Standard_Address C, const Standard_Real R3d);
 
-  //! Returns  the  type of the   curve  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the curve in the current
+  //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   static GeomAbs_CurveType GetType(const Standard_Address C);
 
-  //! Returns  the  type of the   curve  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the curve in the current
+  //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   static GeomAbs_CurveType TheType(const Standard_Address C);
 
