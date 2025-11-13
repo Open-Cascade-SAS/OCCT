@@ -46,7 +46,7 @@ public:
   //! returns the X coordinate of <me>.
   Standard_EXPORT virtual Standard_Real X() const = 0;
 
-  //! returns  the Y coordinate of <me>.
+  //! returns the Y coordinate of <me>.
   Standard_EXPORT virtual Standard_Real Y() const = 0;
 
   //! returns the Z coordinate of <me>.

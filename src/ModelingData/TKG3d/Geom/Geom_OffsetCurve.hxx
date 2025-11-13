@@ -43,7 +43,7 @@ DEFINE_STANDARD_HANDLE(Geom_OffsetCurve, Geom_Curve)
 //! a basis curve in a reference direction V. The offset curve
 //! takes its parametrization from the basis curve.
 //! The Offset curve is in the direction of the normal N
-//! defined with the cross product  T^V, where the vector T
+//! defined with the cross product T^V, where the vector T
 //! is given by the first derivative on the basis curve with
 //! non zero length.
 //! The distance offset may be positive or negative to indicate the
@@ -84,8 +84,8 @@ public:
   //! direction (offset direction). If P is a point on the basis
   //! curve and T the first derivative with non zero length
   //! at this point, the corresponding point on the offset curve is
-  //! in the direction of the vector-product N = V ^ T   where
-  //! N is a unitary vector.
+  //! in the direction of the vector-product N = V ^ T
+  //! where N is a unitary vector.
   //! If isNotCheckC0 = TRUE checking if basis curve has C0-continuity
   //! is not made.
   //! Warnings :
@@ -238,7 +238,7 @@ public:
   //! Returns true if the degree of continuity of the basis
   //! curve of this offset curve is at least N + 1.
   //! This method answer True if the continuity of the basis curve
-  //! is N + 1.  We suppose in this class that a normal direction
+  //! is N + 1. We suppose in this class that a normal direction
   //! to the basis curve (used to compute the offset curve) is
   //! defined at any point on the basis curve.
   //! Raised if N < 0.
@@ -258,7 +258,7 @@ public:
   //! Note: the basis curve is also modified.
   Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
-  //! Returns the  parameter on the  transformed  curve for
+  //! Returns the parameter on the transformed curve for
   //! the transform of the point of parameter U on <me>.
   //! me->Transformed(T)->Value(me->TransformedParameter(U,T))
   //! is the same point as

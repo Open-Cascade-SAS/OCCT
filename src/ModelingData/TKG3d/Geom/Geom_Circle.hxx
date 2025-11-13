@@ -98,11 +98,11 @@ public:
   //! For a circle, the returned value is: 2.*Pi - U.
   Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
-  //! Returns the eccentricity  e = 0 for a circle.
+  //! Returns the eccentricity e = 0 for a circle.
   Standard_EXPORT Standard_Real Eccentricity() const Standard_OVERRIDE;
 
   //! Returns the value of the first parameter of this
-  //! circle. This is  0.0, which gives the start point of this circle, or
+  //! circle. This is 0.0, which gives the start point of this circle, or
   //! The start point and end point of a circle are coincident.
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 

@@ -92,8 +92,8 @@ public:
   //! INTERNAL         EXTERNAL
   //! EXTERNAL         INTERNAL
   //!
-  //! Complement  complements   the  material  side.  Inside
-  //! becomes outside.
+  //! Complement complements the material side.
+  //! Inside becomes outside.
   Standard_EXPORT static TopAbs_Orientation Complement(const TopAbs_Orientation Or);
 
   //! Prints the name of Shape type as a String on the Stream.

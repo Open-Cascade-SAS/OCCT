@@ -88,7 +88,7 @@ public:
   Standard_EXPORT void SetBasisCurve(const Handle(Geom_Curve)& C);
 
   //! Changes the orientation of this surface of linear
-  //! extrusion in the u  parametric direction. The
+  //! extrusion in the u parametric direction. The
   //! bounds of the surface are not changed, but the given
   //! parametric direction is reversed. Hence the
   //! orientation of the surface is reversed.
@@ -98,12 +98,12 @@ public:
   Standard_EXPORT void UReverse() Standard_OVERRIDE;
 
   //! Computes the u parameter on the modified
-  //! surface, produced by reversing its u  parametric
-  //! direction, for any point of u parameter U  on this surface of linear extrusion.
+  //! surface, produced by reversing its u parametric
+  //! direction, for any point of u parameter U on this surface of linear extrusion.
   //! In the case of an extruded surface:
   //! - UReverseParameter returns the reversed
   //! parameter given by the function
-  //! ReversedParameter called with U on the basis   curve,
+  //! ReversedParameter called with U on the basis curve,
   Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Changes the orientation of this surface of linear
@@ -167,7 +167,7 @@ public:
   //! extrusion, with the magnitude V.
   Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
 
-  //! Computes the  point P (U, V) on the surface.
+  //! Computes the point P (U, V) on the surface.
   //! The parameter U is the parameter on the extruded curve.
   //! The parametrization V is a linear parametrization, and
   //! the direction of parametrization is the direction of
@@ -256,7 +256,7 @@ public:
   //! @code
   //!   me->Value(U,V).Transformed(T)
   //! @endcode
-  //! Where U',V' are  obtained by transforming U,V with
+  //! Where U',V' are obtained by transforming U,V with
   //! the 2d transformation returned by
   //! @code
   //!   me->ParametricTransformation(T)

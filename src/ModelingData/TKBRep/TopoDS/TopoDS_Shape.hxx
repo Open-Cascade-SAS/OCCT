@@ -102,7 +102,7 @@ public:
     myLocation = theLoc;
   }
 
-  //! Returns a  shape  similar to <me> with the local
+  //! Returns a shape similar to <me> with the local
   //! coordinate system set to <Loc>.
   //! @param theLoc the new local coordinate system.
   //! @param theRaiseExc flag to raise exception in case of transformation with scale or negative.
@@ -121,7 +121,7 @@ public:
   //! Sets the shape orientation.
   void Orientation(TopAbs_Orientation theOrient) { myOrient = theOrient; }
 
-  //! Returns  a    shape  similar  to  <me>   with  the
+  //! Returns a shape similar to <me> with the
   //! orientation set to <Or>.
   TopoDS_Shape Oriented(TopAbs_Orientation theOrient) const
   {
@@ -217,8 +217,8 @@ public:
   //! from the TopAbs package.
   void Reverse() { myOrient = TopAbs::Reverse(myOrient); }
 
-  //! Returns    a shape  similar    to  <me>  with  the
-  //! orientation  reversed, using  the   Reverse method
+  //! Returns a shape similar to <me> with the
+  //! orientation reversed, using the Reverse method
   //! from the TopAbs package.
   TopoDS_Shape Reversed() const
   {
@@ -227,12 +227,12 @@ public:
     return aShape;
   }
 
-  //! Complements the orientation, using the  Complement
+  //! Complements the orientation, using the Complement
   //! method from the TopAbs package.
   void Complement() { myOrient = TopAbs::Complement(myOrient); }
 
-  //! Returns  a   shape  similar  to   <me>   with  the
-  //! orientation complemented,  using   the  Complement
+  //! Returns a shape similar to <me> with the
+  //! orientation complemented, using the Complement
   //! method from the TopAbs package.
   TopoDS_Shape Complemented() const
   {
@@ -245,7 +245,7 @@ public:
   //! using the Compose method from the TopAbs package.
   void Compose(TopAbs_Orientation theOrient) { myOrient = TopAbs::Compose(myOrient, theOrient); }
 
-  //! Returns  a  shape   similar   to  <me>   with  the
+  //! Returns a shape similar to <me> with the
   //! orientation composed with theOrient, using the
   //! Compose method from the TopAbs package.
   TopoDS_Shape Composed(TopAbs_Orientation theOrient) const
@@ -259,16 +259,16 @@ public:
   //! @sa TopoDS_Iterator for accessing sub-shapes
   Standard_Integer NbChildren() const { return myTShape.IsNull() ? 0 : myTShape->NbChildren(); }
 
-  //! Returns True if two shapes  are partners, i.e.  if
-  //! they   share   the   same  TShape.  Locations  and
+  //! Returns True if two shapes are partners, i.e. if
+  //! they share the same TShape. Locations and
   //! Orientations may differ.
   Standard_Boolean IsPartner(const TopoDS_Shape& theOther) const
   {
     return (myTShape == theOther.myTShape);
   }
 
-  //! Returns True if two shapes are same, i.e.  if they
-  //! share  the  same TShape  with the same  Locations.
+  //! Returns True if two shapes are same, i.e. if they
+  //! share the same TShape with the same Locations.
   //! Orientations may differ.
   Standard_Boolean IsSame(const TopoDS_Shape& theOther) const
   {
@@ -276,7 +276,7 @@ public:
   }
 
   //! Returns True if two shapes are equal, i.e. if they
-  //! share the same TShape with  the same Locations and
+  //! share the same TShape with the same Locations and
   //! Orientations.
   Standard_Boolean IsEqual(const TopoDS_Shape& theOther) const
   {
@@ -291,13 +291,13 @@ public:
 
   Standard_Boolean operator!=(const TopoDS_Shape& theOther) const { return IsNotEqual(theOther); }
 
-  //! Replace   <me> by  a  new   Shape with the    same
+  //! Replace <me> by a new Shape with the same
   //! Orientation and Location and a new TShape with the
   //! same geometry and no sub-shapes.
   void EmptyCopy() { myTShape = myTShape->EmptyCopy(); }
 
-  //! Returns a new Shape with the  same Orientation and
-  //! Location and  a new TShape  with the same geometry
+  //! Returns a new Shape with the same Orientation and
+  //! Location and a new TShape with the same geometry
   //! and no sub-shapes.
   TopoDS_Shape EmptyCopied() const
   {

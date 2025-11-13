@@ -48,7 +48,7 @@ class Interface_EntityIterator;
 //! copy different parts of a starting Model to several Targets),
 //! or incremental : in that case, it is possible to know what is
 //! the content of the last increment (defined by last call to
-//! ClearLastFlags  and queried by call to LastCopiedAfter)
+//! ClearLastFlags and queried by call to LastCopiedAfter)
 //!
 //! Works in two times : first, create the list of copied Entities
 //! second, pushes them to a target Model (manages also Model's
@@ -128,7 +128,7 @@ public:
                             const Handle(Standard_Transient)& res);
 
   //! Search for the result of a Starting Object (i.e. an Entity)
-  //! Returns True  if a  Result is Bound (and fills "result")
+  //! Returns True if a Result is Bound (and fills "result")
   //! Returns False if no result is Bound
   Standard_EXPORT Standard_Boolean Search(const Handle(Standard_Transient)& ent,
                                           Handle(Standard_Transient)&       res) const;

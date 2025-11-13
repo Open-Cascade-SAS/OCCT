@@ -384,7 +384,7 @@ public:
   Standard_EXPORT void SetOrigin(const Standard_Integer Index);
 
   //! Set the origin of a periodic curve at Knot U. If U
-  //! is  not a  knot  of  the  BSpline  a  new knot  is
+  //! is not a knot of the BSpline a new knot is
   //! inserted. KnotVector and poles are modified.
   //! Raised if the curve is not periodic
   Standard_EXPORT void SetOrigin(const Standard_Real U, const Standard_Real Tol);

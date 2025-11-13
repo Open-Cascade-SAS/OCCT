@@ -34,7 +34,7 @@ class TopoDS_Face;
 class TopoDS_Shape;
 class TopoDS_Vertex;
 
-//! Stores  the results  of  the  OutLine and  IsoLine
+//! Stores the results of the OutLine and IsoLine
 //! processes.
 class HLRTopoBRep_Data
 {
@@ -46,7 +46,7 @@ public:
   //! Clear of all the maps.
   Standard_EXPORT void Clear();
 
-  //! Clear of all the data  not needed during and after
+  //! Clear of all the data not needed during and after
   //! the hiding process.
   Standard_EXPORT void Clean();
 
@@ -85,7 +85,7 @@ public:
   //! Returns the list of the IsoLines.
   const TopTools_ListOfShape& FaceIsoL(const TopoDS_Face& F) const;
 
-  //! Returns  True   if V is  an   outline vertex  on a
+  //! Returns True if V is an outline vertex on a
   //! restriction.
   Standard_Boolean IsOutV(const TopoDS_Vertex& V) const;
 

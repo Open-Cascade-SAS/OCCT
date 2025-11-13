@@ -65,11 +65,11 @@ public:
   //! Returns the 3D curve.
   const BRepAdaptor_Curve& GetCurve() const;
 
-  //! Returns the parameter   on the 2d  curve  from the
+  //! Returns the parameter on the 2d curve from the
   //! parameter on the 3d curve.
   Standard_EXPORT Standard_Real Parameter2d(const Standard_Real P3d) const;
 
-  //! Returns the parameter   on the 3d  curve  from the
+  //! Returns the parameter on the 3d curve from the
   //! parameter on the 2d curve.
   Standard_EXPORT Standard_Real Parameter3d(const Standard_Real P2d) const;
 
@@ -79,25 +79,25 @@ public:
   //! Update the minmax returns tol for enlarge;
   Standard_EXPORT Standard_Real UpdateMinMax(Standard_Real TotMin[16], Standard_Real TotMax[16]);
 
-  //! Computes the Z    coordinate  of the  point  of
+  //! Computes the Z coordinate of the point of
   //! parameter U on the curve in the viewing coordinate system
   Standard_EXPORT Standard_Real Z(const Standard_Real U) const;
 
-  //! Computes the 3D point   of parameter U  on the
+  //! Computes the 3D point of parameter U on the
   //! curve.
   gp_Pnt Value3D(const Standard_Real U) const;
 
-  //! Computes the 3D point   of parameter U  on the
+  //! Computes the 3D point of parameter U on the
   //! curve.
   void D0(const Standard_Real U, gp_Pnt& P) const;
 
-  //! Computes the point of parameter  U on the curve
+  //! Computes the point of parameter U on the curve
   //! with its first derivative.
   void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const;
 
   //! Depending on <AtStart> computes the 2D point and
-  //! tangent on the curve  at sart (or at  end).  If the  first
-  //! derivative is null look after  at start (or before at end)
+  //! tangent on the curve at sart (or at end). If the first
+  //! derivative is null look after at start (or before at end)
   //! with the second derivative.
   Standard_EXPORT void Tangent(const Standard_Boolean AtStart, gp_Pnt2d& P, gp_Dir2d& D) const;
 
@@ -107,15 +107,15 @@ public:
 
   GeomAbs_Shape Continuity() const;
 
-  //! If necessary,  breaks the  curve in  intervals  of
-  //! continuity  <S>.    And  returns   the number   of
+  //! If necessary, breaks the curve in intervals of
+  //! continuity <S>. And returns the number of
   //! intervals.
   Standard_Integer NbIntervals(const GeomAbs_Shape S) const;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
 
@@ -131,7 +131,7 @@ public:
   //! Computes the point of parameter U on the curve.
   Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const;
 
-  //! Computes the point  of  parameter U on the curve
+  //! Computes the point of parameter U on the curve
   //! with its first derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
@@ -158,12 +158,12 @@ public:
   //! Raised if N < 1.
   Standard_EXPORT gp_Vec2d DN(const Standard_Real U, const Standard_Integer N) const;
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_Real Resolution(const Standard_Real R3d) const;
 
-  //! Returns  the  type of the   curve  in the  current
-  //! interval :   Line,   Circle,   Ellipse, Hyperbola,
+  //! Returns the type of the curve in the current
+  //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   GeomAbs_CurveType GetType() const;
 

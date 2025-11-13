@@ -159,7 +159,7 @@ public:
 
   //! Increases the degree of this Bezier surface in the two parametric directions.
   //!
-  //! Raised if UDegree < UDegree <me>  or VDegree < VDegree <me>
+  //! Raised if UDegree < UDegree <me> or VDegree < VDegree <me>
   //! Raised if the degree of the surface is greater than MaxDegree
   //! in one of the two directions U or V.
   Standard_EXPORT void Increase(const Standard_Integer UDeg, const Standard_Integer VDeg);
@@ -302,7 +302,7 @@ public:
   //! If the surface is rational the weight of range (UIndex, VIndex)
   //! is not modified.
   //!
-  //! Raised if  UIndex < 1 or UIndex > NbUPoles  or  VIndex < 1
+  //! Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1
   //! or VIndex > NbVPoles.
   Standard_EXPORT void SetPole(const Standard_Integer UIndex,
                                const Standard_Integer VIndex,
@@ -312,7 +312,7 @@ public:
   //! If the surface <me> is not rational it can become rational.
   //! if the surface was rational it can become non-rational.
   //!
-  //! raises if  UIndex < 1 or UIndex > NbUPoles  or  VIndex < 1
+  //! raises if UIndex < 1 or UIndex > NbUPoles or VIndex < 1
   //! or VIndex > NbVPoles.
   //! Raised if Weight <= Resolution from package gp.
   Standard_EXPORT void SetPole(const Standard_Integer UIndex,
@@ -323,7 +323,7 @@ public:
   //! Modifies a column of poles.
   //! The length of CPoles can be lower but not greater than NbUPoles
   //! so you can modify just a part of the column.
-  //! Raised if VIndex < 1 or  VIndex > NbVPoles
+  //! Raised if VIndex < 1 or VIndex > NbVPoles
   //!
   //! Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbUPoles
   Standard_EXPORT void SetPoleCol(const Standard_Integer VIndex, const TColgp_Array1OfPnt& CPoles);
@@ -333,7 +333,7 @@ public:
   //! If the surface was non-rational it can become rational.
   //! The length of CPoles can be lower but not greater than NbUPoles
   //! so you can modify just a part of the column.
-  //! Raised if VIndex < 1 or  VIndex > NbVPoles
+  //! Raised if VIndex < 1 or VIndex > NbVPoles
   //!
   //! Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbUPoles
   //! Raised if CPoleWeights and CPoles have not the same bounds.
@@ -346,7 +346,7 @@ public:
   //! Modifies a row of poles.
   //! The length of CPoles can be lower but not greater than NbVPoles
   //! so you can modify just a part of the row.
-  //! Raised if UIndex < 1 or  UIndex > NbUPoles
+  //! Raised if UIndex < 1 or UIndex > NbUPoles
   //!
   //! Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbVPoles
   Standard_EXPORT void SetPoleRow(const Standard_Integer UIndex, const TColgp_Array1OfPnt& CPoles);
@@ -356,7 +356,7 @@ public:
   //! If the surface was non-rational it can become rational.
   //! The length of CPoles can be lower but not greater than NbVPoles
   //! so you can modify just a part of the row.
-  //! Raised if UIndex < 1 or  UIndex > NbUPoles
+  //! Raised if UIndex < 1 or UIndex > NbUPoles
   //!
   //! Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbVPoles
   //! Raised if CPoleWeights and CPoles have not the same bounds.
@@ -370,7 +370,7 @@ public:
   //! If the surface was non-rational it can become rational.
   //! If the surface was rational it can become non-rational.
   //!
-  //! Raised if UIndex < 1  or  UIndex > NbUPoles or VIndex < 1 or
+  //! Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1 or
   //! VIndex > NbVPoles.
   //! Raised if Weight <= Resolution from package gp.
   Standard_EXPORT void SetWeight(const Standard_Integer UIndex,
@@ -382,7 +382,7 @@ public:
   //! If the surface was non-rational it can become rational.
   //! The length of CPoleWeights can be lower but not greater than
   //! NbUPoles.
-  //! Raised if VIndex < 1 or  VIndex > NbVPoles
+  //! Raised if VIndex < 1 or VIndex > NbVPoles
   //!
   //! Raised if CPoleWeights.Lower() < 1 or CPoleWeights.Upper() >
   //! NbUPoles
@@ -396,7 +396,7 @@ public:
   //! If the surface was non-rational it can become rational.
   //! The length of CPoleWeights can be lower but not greater than
   //! NbVPoles.
-  //! Raised if UIndex < 1 or  UIndex > NbUPoles
+  //! Raised if UIndex < 1 or UIndex > NbUPoles
   //!
   //! Raised if CPoleWeights.Lower() < 1 or CPoleWeights.Upper() >
   //! NbVPoles
@@ -406,7 +406,7 @@ public:
                                     const TColStd_Array1OfReal& CPoleWeights);
 
   //! Changes the orientation of this Bezier surface in the
-  //! u  parametric direction. The bounds of the
+  //! u parametric direction. The bounds of the
   //! surface are not changed, but the given parametric
   //! direction is reversed. Hence, the orientation of the surface is reversed.
   Standard_EXPORT void UReverse() Standard_OVERRIDE;
@@ -533,7 +533,7 @@ public:
   Standard_EXPORT Standard_Integer VDegree() const;
 
   //! Computes the V isoparametric curve. For a Bezier surface the
-  //! VIso  curve is a Bezier curve.
+  //! VIso curve is a Bezier curve.
   Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
 
   //! Returns the weight of range UIndex, VIndex
@@ -567,10 +567,10 @@ public:
   //! The tolerance criterion is Resolution from package gp.
   Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
 
-  //! Returns True, a Bezier surface is always  CN
+  //! Returns True, a Bezier surface is always CN
   Standard_EXPORT Standard_Boolean IsCNu(const Standard_Integer N) const Standard_OVERRIDE;
 
-  //! Returns True, a BezierSurface is always  CN
+  //! Returns True, a BezierSurface is always CN
   Standard_EXPORT Standard_Boolean IsCNv(const Standard_Integer N) const Standard_OVERRIDE;
 
   //! Returns False.
@@ -632,11 +632,9 @@ private:
                      const Standard_Boolean               IsURational,
                      const Standard_Boolean               IsVRational);
 
-  //! Set  poles  to  Poles,  weights to  Weights  (not
-  //! copied).
-  //! Create the arrays of coefficients.  Poles
-  //! and    Weights  are   assumed   to  have the  first
-  //! coefficient 1.
+  //! Set poles to Poles, weights to Weights (not copied).
+  //! Create the arrays of coefficients. Poles and Weights
+  //! are assumed to have the first coefficient 1.
   //!
   //! if nbpoles < 2 or nbpoles > MaDegree
   void Init(const Handle(TColgp_HArray2OfPnt)& Poles, const Handle(TColStd_HArray2OfReal)& Weights);

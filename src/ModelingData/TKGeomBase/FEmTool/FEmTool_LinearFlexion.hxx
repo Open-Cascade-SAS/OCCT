@@ -30,7 +30,7 @@
 class FEmTool_LinearFlexion;
 DEFINE_STANDARD_HANDLE(FEmTool_LinearFlexion, FEmTool_ElementaryCriterion)
 
-//! Criterium of LinearFlexion To Hermit-Jacobi  elements
+//! Criterium of LinearFlexion To Hermit-Jacobi elements
 class FEmTool_LinearFlexion : public FEmTool_ElementaryCriterion
 {
 

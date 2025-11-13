@@ -47,12 +47,12 @@ class gp_Circ;
 //! it gives the direction of increasing parametric value V.
 //!
 //! The parametrization range is :
-//! U [0, 2*PI],  V ]- infinite, + infinite[
+//! U [0, 2*PI], V ]- infinite, + infinite[
 //!
 //! The "XAxis" and the "YAxis" define the placement plane of the
-//! surface (Z = 0, and parametric value V = 0)  perpendicular to
+//! surface (Z = 0, and parametric value V = 0) perpendicular to
 //! the symmetry axis. The "XAxis" defines the origin of the
-//! parameter U = 0.  The trigonometric sense gives the positive
+//! parameter U = 0. The trigonometric sense gives the positive
 //! orientation for the parameter U.
 class GC_MakeCylindricalSurface : public GC_Root
 {

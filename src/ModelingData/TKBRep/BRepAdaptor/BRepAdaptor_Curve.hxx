@@ -43,7 +43,7 @@ class Geom_OffsetCurve;
 
 DEFINE_STANDARD_HANDLE(BRepAdaptor_Curve, Adaptor3d_Curve)
 
-//! The Curve from BRepAdaptor  allows to use  an Edge
+//! The Curve from BRepAdaptor allows to use an Edge
 //! of the BRep topology like a 3D curve.
 //!
 //! It has the methods the class Curve from Adaptor3d.

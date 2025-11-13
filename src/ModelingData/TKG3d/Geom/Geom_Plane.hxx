@@ -67,7 +67,7 @@ class Geom_Plane : public Geom_ElementarySurface
 public:
   //! Creates a plane located in 3D space with an axis placement three axis.
   //! The "ZDirection" of "A3" is the direction normal
-  //! to the plane.  The "Location" point of "A3" is the origin of the plane.
+  //! to the plane. The "Location" point of "A3" is the origin of the plane.
   //! The "XDirection" and "YDirection" of "A3" define
   //! the directions of the U isoparametric and V isoparametric curves.
   Standard_EXPORT Geom_Plane(const gp_Ax3& A3);
@@ -100,7 +100,7 @@ public:
   //! Hence the orientation of the surface is reversed.
   Standard_EXPORT virtual void UReverse() Standard_OVERRIDE;
 
-  //! Computes the u  parameter on the modified plane,
+  //! Computes the u parameter on the modified plane,
   //! produced when reversing the u parametric of this plane,
   //! for any point of u parameter U on this plane.
   //! In the case of a plane, these methods return - -U.
@@ -154,8 +154,8 @@ public:
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of this plane.
   //! Because a plane is an infinite surface, the following is always true:
-  //! - U1 = V1 =   Standard_Real::RealFirst()
-  //! - U2 = V2 =   Standard_Real::RealLast().
+  //! - U1 = V1 = Standard_Real::RealFirst()
+  //! - U2 = V2 = Standard_Real::RealLast().
   Standard_EXPORT void Bounds(Standard_Real& U1,
                               Standard_Real& U2,
                               Standard_Real& V1,

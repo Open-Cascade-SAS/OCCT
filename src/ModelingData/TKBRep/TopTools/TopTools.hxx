@@ -24,10 +24,10 @@
 #include <Standard_OStream.hxx>
 class TopoDS_Shape;
 
-//! The  TopTools package provides   utilities for the
+//! The TopTools package provides utilities for the
 //! topological data structure.
 //!
-//! * ShapeMapHasher. Hash a  Shape base on the TShape
+//! * ShapeMapHasher. Hash a Shape base on the TShape
 //! and the Location. The Orientation is not used.
 //!
 //! * OrientedShapeMapHasher. Hash a Shape base on the

@@ -35,7 +35,7 @@ DEFINE_STANDARD_HANDLE(BRep_TFace, TopoDS_TFace)
 //! * A surface, a tolerance and a Location.
 //!
 //! * A NaturalRestriction flag, when this flag is
-//! True the boundary of the  face is known to be the
+//! True the boundary of the face is known to be the
 //! parametric space (Umin, UMax, VMin, VMax).
 //!
 //! * An optional list of triangulations. If there are any
@@ -106,7 +106,7 @@ public:
   Standard_EXPORT void Triangulation(const Handle(Poly_Triangulation)& theTriangulation,
                                      const Standard_Boolean            theToReset = true);
 
-  //! Returns a copy  of the  TShape  with no sub-shapes.
+  //! Returns a copy of the TShape with no sub-shapes.
   //! The new Face has no triangulation.
   Standard_EXPORT virtual Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 

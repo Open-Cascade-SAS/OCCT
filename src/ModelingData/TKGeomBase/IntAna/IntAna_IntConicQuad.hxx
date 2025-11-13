@@ -40,10 +40,10 @@ class gp_Pln;
 //! The result of the intersection are points (Pnt from
 //! gp), associated with the parameter on the conic.
 //!
-//! A call to an Intersection  L:Lin from gp and
-//! SPH: Sphere from gp can be written either :
+//! A call to an Intersection L:Lin from gp and
+//! SPH: Sphere from gp can be written either:
 //! IntAna_IntConicQuad Inter(L,IntAna_Quadric(SPH))
-//! or :
+//! or:
 //! IntAna_IntConicQuad Inter(L,SPH) (it is necessary
 //! to include IntAna_Quadric.hxx in this case)
 class IntAna_IntConicQuad

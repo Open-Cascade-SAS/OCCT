@@ -154,7 +154,7 @@ private:
   Standard_Integer                         myCappedSubPlane; //!< sub-plane index within filtered chain; positive number for DisableAllExcept and negative for EnableAllExcept
 
   Standard_Integer                         myNbClipping;     //!< number of enabled clipping-only planes (NOT capping)
-  Standard_Integer                         myNbCapping;      //!< number of enabled capping  planes
+  Standard_Integer                         myNbCapping;      //!< number of enabled capping planes
   Standard_Integer                         myNbChains;       //!< number of enabled chains
   Standard_Integer                         myNbDisabled;     //!< number of defined but disabled planes
   // clang-format on

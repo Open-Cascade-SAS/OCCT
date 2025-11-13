@@ -155,7 +155,7 @@ public:
   //! Coef(18) * Y**2 * X + Coef(19) * Y**2 * Z + Coef(20) * Z**2 * X +
   //! Coef(21) * Z**2 * Y + Coef(22) * X**2 + Coef(23) * Y**2 +
   //! Coef(24) * Z**2 + Coef(25) * X * Y + Coef(26) * X * Z +
-  //! Coef(27) * Y * Z + Coef(28) * X + Coef(29) * Y + Coef(30) *  Z +
+  //! Coef(27) * Y * Z + Coef(28) * X + Coef(29) * Y + Coef(30) * Z +
   //! Coef(31) = 0.0
   //! Raised if the length of Coef is lower than 31.
   Standard_EXPORT void Coefficients(TColStd_Array1OfReal& Coef) const;
@@ -186,7 +186,7 @@ public:
   //! For a toroidal surface the UIso curve is a circle.
   //! The center of the Uiso circle is at the distance MajorRadius
   //! from the location point of the toroidal surface.
-  //! Warnings :
+  //! Warnings:
   //! The radius of the circle can be zero if for the surface
   //! MinorRadius = 0.0
   Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const Standard_OVERRIDE;
@@ -195,13 +195,13 @@ public:
   //!
   //! For a ToroidalSurface the VIso curve is a circle.
   //! The axis of the circle is the main axis (ZAxis) of the
-  //! toroidal  surface.
-  //! Warnings :
+  //! toroidal surface.
+  //! Warnings:
   //! The radius of the circle can be zero if for the surface
   //! MajorRadius = MinorRadius
   Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
 
-  //! Computes the  point P (U, V) on the surface.
+  //! Computes the point P (U, V) on the surface.
   //! P (U, V) = Loc + MinorRadius * Sin (V) * Zdir +
   //! (MajorRadius + MinorRadius * Cos(V)) *
   //! (cos (U) * XDir + sin (U) * YDir)

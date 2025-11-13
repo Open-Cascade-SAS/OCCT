@@ -27,8 +27,8 @@
 class MAT2d_Connexion;
 DEFINE_STANDARD_HANDLE(MAT2d_Connexion, Standard_Transient)
 
-//! A Connexion links two lines of items  in a set
-//! of  lines. It s contains two  points and their paramatric
+//! A Connexion links two lines of items in a set
+//! of lines. It contains two points and their paramatric
 //! definitions on the lines.
 //! The items can be points or curves.
 class MAT2d_Connexion : public Standard_Transient
@@ -93,7 +93,7 @@ public:
   Standard_EXPORT void Distance(const Standard_Real aDistance);
 
   //! Returns the reverse connexion of <me>.
-  //! the firstpoint  is the secondpoint.
+  //! the firstpoint is the secondpoint.
   //! the secondpoint is the firstpoint.
   Standard_EXPORT Handle(MAT2d_Connexion) Reverse() const;
 

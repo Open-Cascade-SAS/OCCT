@@ -33,7 +33,7 @@
 
 class TopoDS_Shape;
 
-//! Contains a Shape and all  its subshapes, locations
+//! Contains a Shape and all its subshapes, locations
 //! and geometries.
 //!
 //! The topology is inherited from TopTools.
@@ -152,7 +152,7 @@ public:
   Standard_EXPORT void DumpTriangulation(Standard_OStream& OS) const;
 
   //! Reads the polygons on triangulation of me
-  //! from the stream  <IS>.
+  //! from the stream <IS>.
   Standard_EXPORT void ReadPolygonOnTriangulation(
     Standard_IStream&            IS,
     const Message_ProgressRange& theProgress = Message_ProgressRange());

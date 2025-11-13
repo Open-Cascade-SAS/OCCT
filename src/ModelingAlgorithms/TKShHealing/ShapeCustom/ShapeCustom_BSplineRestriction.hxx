@@ -74,18 +74,18 @@ public:
     const Standard_Boolean                           Rational,
     const Handle(ShapeCustom_RestrictionParameters)& aModes);
 
-  //! Returns Standard_True if  the  face <F> has   been
-  //! modified.  In this  case, <S> is the new geometric
-  //! support of  the  face, <L> the new  location,<Tol>
-  //! the new   tolerance.<RevWires>  has to be   set to
-  //! Standard_True when  the modification reverses  the
-  //! normal of  the   surface.(the wires  have   to  be
-  //! reversed).  <RevFace>    has   to   be   set    to
-  //! Standard_True if  the  orientation of the modified
+  //! Returns Standard_True if the face <F> has been
+  //! modified. In this case, <S> is the new geometric
+  //! support of the face, <L> the new location,
+  //! <Tol> the new tolerance. <RevWires> has to be set to
+  //! Standard_True when the modification reverses the
+  //! normal of the surface. (the wires have to be
+  //! reversed). <RevFace> has to be set to
+  //! Standard_True if the orientation of the modified
   //! face changes in the shells which contain it.
   //!
-  //! Otherwise, returns Standard_False, and <S>,   <L>,
-  //! <Tol> , <RevWires> ,<RevFace> are not  significant.
+  //! Otherwise, returns Standard_False, and <S>, <L>,
+  //! <Tol>, <RevWires>, <RevFace> are not significant.
   Standard_EXPORT Standard_Boolean NewSurface(const TopoDS_Face&    F,
                                               Handle(Geom_Surface)& S,
                                               TopLoc_Location&      L,
@@ -93,30 +93,30 @@ public:
                                               Standard_Boolean&     RevWires,
                                               Standard_Boolean&     RevFace) Standard_OVERRIDE;
 
-  //! Returns Standard_True  if  curve from the edge <E> has  been
-  //! modified.  In this case,  <C> is the new geometric
-  //! support of the  edge, <L> the  new location, <Tol>
-  //! the         new    tolerance.
+  //! Returns Standard_True if curve from the edge <E> has been
+  //! modified. In this case, <C> is the new geometric
+  //! support of the edge, <L> the new location, <Tol>
+  //! the new tolerance.
   //! Otherwise, returns Standard_True if Surface is modified or
   //! one of pcurves of edge is modified. In this case C is copy of
   //! geometric support of the edge.
-  //! In other cases returns Standard_False, and  <C>,  <L>,  <Tol> are not
+  //! In other cases returns Standard_False, and <C>, <L>, <Tol> are not
   //! significant.
   Standard_EXPORT Standard_Boolean NewCurve(const TopoDS_Edge&  E,
                                             Handle(Geom_Curve)& C,
                                             TopLoc_Location&    L,
                                             Standard_Real&      Tol) Standard_OVERRIDE;
 
-  //! Returns Standard_True if  the edge  <E> has been modified.
+  //! Returns Standard_True if the edge <E> has been modified.
   //! In this case,if curve on the surface is modified, <C>
-  //! is the new geometric support of  the edge, <L> the
+  //! is the new geometric support of the edge, <L> the
   //! new location, <Tol> the new tolerance. If curve on the surface
   //! is not modified C is copy curve on surface from the edge <E>.
   //!
-  //! Otherwise, returns  Standard_False, and <C>,  <L>,
+  //! Otherwise, returns Standard_False, and <C>, <L>,
   //! <Tol> are not significant.
   //!
-  //! <NewE> is the new  edge created from  <E>.  <NewF>
+  //! <NewE> is the new edge created from <E>. <NewF>
   //! is the new face created from <F>. They may be useful.
   Standard_EXPORT Standard_Boolean NewCurve2d(const TopoDS_Edge&    E,
                                               const TopoDS_Face&    F,
@@ -125,7 +125,7 @@ public:
                                               Handle(Geom2d_Curve)& C,
                                               Standard_Real&        Tol) Standard_OVERRIDE;
 
-  //! Returns Standard_True if  the surface has been modified.
+  //! Returns Standard_True if the surface has been modified.
   //! if flag IsOf equals Standard_True Offset surfaces are approximated to Offset
   //! if Standard_False to BSpline
   Standard_EXPORT Standard_Boolean ConvertSurface(const Handle(Geom_Surface)& aSurface,
@@ -136,7 +136,7 @@ public:
                                                   const Standard_Real         VL,
                                                   const Standard_Boolean      IsOf = Standard_True);
 
-  //! Returns Standard_True if  the curve has been modified.
+  //! Returns Standard_True if the curve has been modified.
   //! if flag IsOf equals Standard_True Offset curves are approximated to Offset
   //! if Standard_False to BSpline
   Standard_EXPORT Standard_Boolean ConvertCurve(const Handle(Geom_Curve)& aCurve,
@@ -187,7 +187,7 @@ public:
   //! Sets max number of segments for approximation.
   void SetMaxNbSegments(const Standard_Integer MaxNbSegments);
 
-  //! Sets priority  for approximation curves and surface.
+  //! Sets priority for approximation curves and surface.
   //! If Degree is True approximation is made with degree less
   //! then specified MaxDegree at the expense of number of spanes.
   //! If Degree is False approximation is made with number of

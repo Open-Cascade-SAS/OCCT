@@ -47,7 +47,7 @@ DEFINE_STANDARD_HANDLE(BRepAdaptor_CompCurve, Adaptor3d_Curve)
 
 //! The Curve from BRepAdaptor allows to use a Wire
 //! of the BRep topology like a 3D curve.
-//! Warning: With this  class of curve,  C0 and C1 continuities
+//! Warning: With this class of curve, C0 and C1 continuities
 //! are not assumed. So be careful with some algorithm!
 //! Please note that BRepAdaptor_CompCurve cannot be
 //! periodic curve at all (even if it contains single
@@ -76,7 +76,7 @@ public:
   //! Shallow copy of adaptor.
   Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
 
-  //! Sets the  wire <W>.
+  //! Sets the wire <W>.
   Standard_EXPORT void Initialize(const TopoDS_Wire&     W,
                                   const Standard_Boolean KnotByCurvilinearAbcissa);
 

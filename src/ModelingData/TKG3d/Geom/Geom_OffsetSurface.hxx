@@ -123,20 +123,20 @@ public:
   //! are not changed but the given parametric direction is reversed.
   Standard_EXPORT void UReverse() Standard_OVERRIDE;
 
-  //! Computes the u  parameter on the modified
+  //! Computes the u parameter on the modified
   //! surface, produced by reversing the u
   //! parametric direction of this offset surface, for any
-  //! point of u parameter U  on this offset surface.
+  //! point of u parameter U on this offset surface.
   Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Changes the orientation of this offset surface in the v parametric direction. The bounds of
   //! the surface are not changed but the given parametric direction is reversed.
   Standard_EXPORT void VReverse() Standard_OVERRIDE;
 
-  //! Computes the  v parameter on the modified
+  //! Computes the v parameter on the modified
   //! surface, produced by reversing the or v
   //! parametric direction of this offset surface, for any
-  //! point of  v parameter V on this offset surface.
+  //! point of v parameter V on this offset surface.
   Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of
@@ -186,7 +186,7 @@ public:
   //! the parametric bounds in the u parametric direction,
   //! the distance between the points P(uFirst,v)
   //! and P(uLast,v) is less than or equal to
-  //! gp::Resolution() for each value of the   parameter v.
+  //! gp::Resolution() for each value of the parameter v.
   Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
 
   //! Checks whether this offset surface is closed in the u
@@ -369,7 +369,7 @@ public:
 
   //! if Standard_True, L is the local osculating surface
   //! along V at the point U,V.
-  //! It means that  DL/DV is collinear to DS/DV.
+  //! It means that DL/DV is collinear to DS/DV.
   //! If IsOpposite == Standard_True
   //! these vectors have opposite direction.
   Standard_EXPORT Standard_Boolean
