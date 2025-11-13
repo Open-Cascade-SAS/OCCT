@@ -18,9 +18,8 @@
 
 #include <Standard_Type.hxx>
 
-IGESBasic_HArray1OfHArray1OfInteger::IGESBasic_HArray1OfHArray1OfInteger(
-  const Standard_Integer low,
-  const Standard_Integer up)
+IGESBasic_HArray1OfHArray1OfInteger::IGESBasic_HArray1OfHArray1OfInteger(const Standard_Integer low,
+                                                                         const Standard_Integer up)
     : thelist(low, up)
 {
   Handle(Standard_Transient) nulo;
@@ -42,14 +41,14 @@ Standard_Integer IGESBasic_HArray1OfHArray1OfInteger::Length() const
   return thelist.Length();
 }
 
-void IGESBasic_HArray1OfHArray1OfInteger::SetValue(const Standard_Integer                 num,
-                                                    const Handle(TColStd_HArray1OfInteger)& val)
+void IGESBasic_HArray1OfHArray1OfInteger::SetValue(const Standard_Integer                  num,
+                                                   const Handle(TColStd_HArray1OfInteger)& val)
 {
   thelist.SetValue(num, val);
 }
 
-Handle(TColStd_HArray1OfInteger)
-  IGESBasic_HArray1OfHArray1OfInteger::Value(const Standard_Integer num) const
+Handle(TColStd_HArray1OfInteger) IGESBasic_HArray1OfHArray1OfInteger::Value(
+  const Standard_Integer num) const
 {
   return Handle(TColStd_HArray1OfInteger)::DownCast(thelist.Value(num));
 }

@@ -27,7 +27,7 @@
 IGESData_GlobalNodeOfSpecificLib::IGESData_GlobalNodeOfSpecificLib() {}
 
 void IGESData_GlobalNodeOfSpecificLib::Add(const Handle(IGESData_SpecificModule)& amodule,
-                                            const Handle(IGESData_Protocol)&       aprotocol)
+                                           const Handle(IGESData_Protocol)&       aprotocol)
 {
   if (themod == amodule)
     return;

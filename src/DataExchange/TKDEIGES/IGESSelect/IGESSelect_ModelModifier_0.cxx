@@ -38,7 +38,7 @@ void IGESSelect_ModelModifier::Perform(IFSelect_ContextModif&                  c
 {
   ctx.TraceModifier(this);
   Handle(IGESData_IGESModel) targ = Handle(IGESData_IGESModel)::DownCast(target);
-  Handle(IGESData_Protocol) prot = Handle(IGESData_Protocol)::DownCast(protocol);
+  Handle(IGESData_Protocol)  prot = Handle(IGESData_Protocol)::DownCast(protocol);
   if (targ.IsNull())
   {
     ctx.CCheck()->AddFail("Model to Modify : unproper type");
@@ -47,10 +47,10 @@ void IGESSelect_ModelModifier::Perform(IFSelect_ContextModif&                  c
   PerformProtocol(ctx, targ, prot, TC);
 }
 
-void IGESSelect_ModelModifier::PerformProtocol(IFSelect_ContextModif&             ctx,
-                                               const Handle(IGESData_IGESModel)&  target,
-                                               const Handle(IGESData_Protocol)&   protocol,
-                                               Interface_CopyTool&                TC) const
+void IGESSelect_ModelModifier::PerformProtocol(IFSelect_ContextModif&            ctx,
+                                               const Handle(IGESData_IGESModel)& target,
+                                               const Handle(IGESData_Protocol)&  protocol,
+                                               Interface_CopyTool&               TC) const
 {
   ctx.SetProtocol(protocol);
   Performing(ctx, target, TC);

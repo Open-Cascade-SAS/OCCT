@@ -27,7 +27,7 @@
 StepData_GlobalNodeOfWriterLib::StepData_GlobalNodeOfWriterLib() {}
 
 void StepData_GlobalNodeOfWriterLib::Add(const Handle(StepData_ReadWriteModule)& amodule,
-                                          const Handle(StepData_Protocol)&        aprotocol)
+                                         const Handle(StepData_Protocol)&        aprotocol)
 {
   if (themod == amodule)
     return;

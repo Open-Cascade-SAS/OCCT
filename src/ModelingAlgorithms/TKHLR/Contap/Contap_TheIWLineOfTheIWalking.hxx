@@ -179,7 +179,7 @@ inline void Contap_TheIWLineOfTheIWalking::AddPoint(const IntSurf_PntOn2S& P)
 }
 
 inline void Contap_TheIWLineOfTheIWalking::AddStatusFirst(const Standard_Boolean Closed,
-                                                           const Standard_Boolean HasFirst)
+                                                          const Standard_Boolean HasFirst)
 {
   closed   = Closed;
   hasFirst = HasFirst;
@@ -191,9 +191,9 @@ inline void Contap_TheIWLineOfTheIWalking::AddStatusLast(const Standard_Boolean 
 }
 
 inline void Contap_TheIWLineOfTheIWalking::AddStatusFirst(const Standard_Boolean   Closed,
-                                                           const Standard_Boolean   HasFirst,
-                                                           const Standard_Integer   Index,
-                                                           const IntSurf_PathPoint& P)
+                                                          const Standard_Boolean   HasFirst,
+                                                          const Standard_Integer   Index,
+                                                          const IntSurf_PathPoint& P)
 {
   closed        = Closed;
   hasFirst      = HasFirst;
@@ -202,8 +202,8 @@ inline void Contap_TheIWLineOfTheIWalking::AddStatusFirst(const Standard_Boolean
 }
 
 inline void Contap_TheIWLineOfTheIWalking::AddStatusLast(const Standard_Boolean   HasLast,
-                                                          const Standard_Integer   Index,
-                                                          const IntSurf_PathPoint& P)
+                                                         const Standard_Integer   Index,
+                                                         const IntSurf_PathPoint& P)
 {
   hasLast      = HasLast;
   lastIndex    = Index;
@@ -211,8 +211,8 @@ inline void Contap_TheIWLineOfTheIWalking::AddStatusLast(const Standard_Boolean 
 }
 
 inline void Contap_TheIWLineOfTheIWalking::AddStatusFirstLast(const Standard_Boolean Closed,
-                                                               const Standard_Boolean HasFirst,
-                                                               const Standard_Boolean HasLast)
+                                                              const Standard_Boolean HasFirst,
+                                                              const Standard_Boolean HasLast)
 {
   closed   = Closed;
   hasFirst = HasFirst;
@@ -229,7 +229,8 @@ inline Standard_Integer Contap_TheIWLineOfTheIWalking::NbPoints() const
   return line->NbPoints();
 }
 
-inline const IntSurf_PntOn2S& Contap_TheIWLineOfTheIWalking::Value(const Standard_Integer Index) const
+inline const IntSurf_PntOn2S& Contap_TheIWLineOfTheIWalking::Value(
+  const Standard_Integer Index) const
 {
   return line->Value(Index);
 }
@@ -288,15 +289,15 @@ inline Standard_Integer Contap_TheIWLineOfTheIWalking::NbPassingPoint() const
 }
 
 inline void Contap_TheIWLineOfTheIWalking::PassingPoint(const Standard_Integer Index,
-                                                         Standard_Integer&      IndexLine,
-                                                         Standard_Integer&      IndexPnts) const
+                                                        Standard_Integer&      IndexLine,
+                                                        Standard_Integer&      IndexPnts) const
 {
   IndexLine = couple(Index).First();
   IndexPnts = couple(Index).Second();
 }
 
 inline void Contap_TheIWLineOfTheIWalking::SetTangentVector(const gp_Vec&          V,
-                                                             const Standard_Integer Index)
+                                                            const Standard_Integer Index)
 {
   indextg = Index;
   vcttg   = V;

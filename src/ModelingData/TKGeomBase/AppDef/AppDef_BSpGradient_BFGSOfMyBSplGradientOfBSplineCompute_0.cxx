@@ -24,13 +24,12 @@
 #include <math_MultipleVarFunctionWithGradient.hxx>
 
 AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute::
-  AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute(
-    math_MultipleVarFunctionWithGradient& F,
-    const math_Vector&                    StartingPoint,
-    const Standard_Real                   Tolerance3d,
-    const Standard_Real                   Tolerance2d,
-    const Standard_Real                   Eps,
-    const Standard_Integer                NbIterations)
+  AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute(math_MultipleVarFunctionWithGradient& F,
+                                                          const math_Vector&     StartingPoint,
+                                                          const Standard_Real    Tolerance3d,
+                                                          const Standard_Real    Tolerance2d,
+                                                          const Standard_Real    Eps,
+                                                          const Standard_Integer NbIterations)
     : math_BFGS(F.NbVariables(), Eps, NbIterations, Eps),
       myTol3d(Tolerance3d),
       myTol2d(Tolerance2d)
@@ -41,7 +40,7 @@ AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute::
 Standard_Boolean AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute::IsSolutionReached(
   math_MultipleVarFunctionWithGradient& F) const
 {
-  Standard_Boolean                                      Result, Result2;
+  Standard_Boolean                                       Result, Result2;
   AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute* F1 =
     (AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute*)&F;
 

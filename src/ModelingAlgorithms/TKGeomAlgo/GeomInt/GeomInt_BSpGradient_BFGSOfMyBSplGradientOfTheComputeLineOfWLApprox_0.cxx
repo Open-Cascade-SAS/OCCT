@@ -38,11 +38,10 @@ GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox::
   Perform(F, StartingPoint);
 }
 
-Standard_Boolean
-  GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox::IsSolutionReached(
-    math_MultipleVarFunctionWithGradient& F) const
+Standard_Boolean GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox::
+  IsSolutionReached(math_MultipleVarFunctionWithGradient& F) const
 {
-  Standard_Boolean                                               Result, Result2;
+  Standard_Boolean                                                  Result, Result2;
   GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox* F1 =
     (GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox*)&F;
 

@@ -66,7 +66,8 @@ inline MAT_TListNodeOfListOfBisector::MAT_TListNodeOfListOfBisector() {}
 
 //=================================================================================================
 
-inline MAT_TListNodeOfListOfBisector::MAT_TListNodeOfListOfBisector(const Handle(MAT_Bisector)& anitem)
+inline MAT_TListNodeOfListOfBisector::MAT_TListNodeOfListOfBisector(
+  const Handle(MAT_Bisector)& anitem)
 {
   theitem = anitem;
 }
@@ -101,14 +102,16 @@ inline void MAT_TListNodeOfListOfBisector::SetItem(const Handle(MAT_Bisector)& a
 
 //=================================================================================================
 
-inline void MAT_TListNodeOfListOfBisector::Next(const Handle(MAT_TListNodeOfListOfBisector)& atlistnode)
+inline void MAT_TListNodeOfListOfBisector::Next(
+  const Handle(MAT_TListNodeOfListOfBisector)& atlistnode)
 {
   thenext = atlistnode;
 }
 
 //=================================================================================================
 
-inline void MAT_TListNodeOfListOfBisector::Previous(const Handle(MAT_TListNodeOfListOfBisector)& atlistnode)
+inline void MAT_TListNodeOfListOfBisector::Previous(
+  const Handle(MAT_TListNodeOfListOfBisector)& atlistnode)
 {
   theprevious = atlistnode;
 }

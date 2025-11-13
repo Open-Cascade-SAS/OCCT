@@ -28,8 +28,9 @@ HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::
 {
 }
 
-Standard_Boolean HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Value(const Standard_Real Param,
-                                                                            Standard_Real&      F)
+Standard_Boolean HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Value(
+  const Standard_Real Param,
+  Standard_Real&      F)
 {
   F = myQuadric.Distance(HLRBRep_LineTool::Value(myCurve, Param));
   return (Standard_True);

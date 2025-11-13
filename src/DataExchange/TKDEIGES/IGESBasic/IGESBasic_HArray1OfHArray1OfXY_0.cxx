@@ -41,8 +41,8 @@ Standard_Integer IGESBasic_HArray1OfHArray1OfXY::Length() const
   return thelist.Length();
 }
 
-void IGESBasic_HArray1OfHArray1OfXY::SetValue(const Standard_Integer           num,
-                                               const Handle(TColgp_HArray1OfXY)& val)
+void IGESBasic_HArray1OfHArray1OfXY::SetValue(const Standard_Integer            num,
+                                              const Handle(TColgp_HArray1OfXY)& val)
 {
   thelist.SetValue(num, val);
 }

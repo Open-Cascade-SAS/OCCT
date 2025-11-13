@@ -23,15 +23,14 @@
 
 #include <iostream>
 
-void IntCurveSurface_ThePolygonToolOfHInter::Dump(
-  const IntCurveSurface_ThePolygonOfHInter& L)
+void IntCurveSurface_ThePolygonToolOfHInter::Dump(const IntCurveSurface_ThePolygonOfHInter& L)
 {
   static Standard_Integer num = 0;
   num++;
   Standard_Integer nbs = IntCurveSurface_ThePolygonToolOfHInter::NbSegments(L);
   std::cout << "\npol2d " << num << " " << nbs << std::endl;
-  std::cout << "Deflection "
-            << IntCurveSurface_ThePolygonToolOfHInter::DeflectionOverEstimation(L) << std::endl;
+  std::cout << "Deflection " << IntCurveSurface_ThePolygonToolOfHInter::DeflectionOverEstimation(L)
+            << std::endl;
 
   for (Standard_Integer i = 1; i <= nbs; i++)
   {

@@ -25,13 +25,12 @@
 #include <math_MultipleVarFunctionWithGradient.hxx>
 
 AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute::
-  AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute(
-    math_MultipleVarFunctionWithGradient& F,
-    const math_Vector&                    StartingPoint,
-    const Standard_Real                   Tolerance3d,
-    const Standard_Real                   Tolerance2d,
-    const Standard_Real                   Eps,
-    const Standard_Integer                NbIterations)
+  AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute(math_MultipleVarFunctionWithGradient& F,
+                                                      const math_Vector&     StartingPoint,
+                                                      const Standard_Real    Tolerance3d,
+                                                      const Standard_Real    Tolerance2d,
+                                                      const Standard_Real    Eps,
+                                                      const Standard_Integer NbIterations)
     : math_BFGS(F.NbVariables(), Eps, NbIterations, Eps),
       myTol3d(Tolerance3d),
       myTol2d(Tolerance2d)

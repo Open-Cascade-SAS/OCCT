@@ -23,7 +23,7 @@
 
 HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::
   HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter(const IntCurve_IConicTool& ITool,
-                                                                  const Standard_Address&    PC)
+                                                                 const Standard_Address&    PC)
     : TheImpTool(ITool)
 {
   TheParCurve = (Standard_Address)(&PC);
@@ -44,8 +44,8 @@ Standard_Boolean HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter:
 {
   gp_Pnt2d Pt;
   gp_Vec2d TanParCurve;
-  gp_Vec2d Grad = TheImpTool.GradDistance(
-    HLRBRep_CurveTool::Value((*((Standard_Address*)(TheParCurve))), Param));
+  gp_Vec2d Grad =
+    TheImpTool.GradDistance(HLRBRep_CurveTool::Value((*((Standard_Address*)(TheParCurve))), Param));
   HLRBRep_CurveTool::D1((*((Standard_Address*)(TheParCurve))), Param, Pt, TanParCurve);
   D_ApproxDistance_DV = Grad.Dot(TanParCurve);
   return (Standard_True);

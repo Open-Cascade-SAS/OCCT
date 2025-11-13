@@ -49,8 +49,8 @@ void IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::SetValue(
   thelist.SetValue(num, val);
 }
 
-Handle(IGESGraph_HArray1OfTextDisplayTemplate)
-  IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Value(const Standard_Integer num) const
+Handle(IGESGraph_HArray1OfTextDisplayTemplate) IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::
+  Value(const Standard_Integer num) const
 {
   return Handle(IGESGraph_HArray1OfTextDisplayTemplate)::DownCast(thelist.Value(num));
 }

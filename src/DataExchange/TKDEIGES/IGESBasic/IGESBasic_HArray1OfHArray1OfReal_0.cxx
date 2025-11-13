@@ -41,14 +41,14 @@ Standard_Integer IGESBasic_HArray1OfHArray1OfReal::Length() const
   return thelist.Length();
 }
 
-void IGESBasic_HArray1OfHArray1OfReal::SetValue(const Standard_Integer              num,
-                                                 const Handle(TColStd_HArray1OfReal)& val)
+void IGESBasic_HArray1OfHArray1OfReal::SetValue(const Standard_Integer               num,
+                                                const Handle(TColStd_HArray1OfReal)& val)
 {
   thelist.SetValue(num, val);
 }
 
-Handle(TColStd_HArray1OfReal)
-  IGESBasic_HArray1OfHArray1OfReal::Value(const Standard_Integer num) const
+Handle(TColStd_HArray1OfReal) IGESBasic_HArray1OfHArray1OfReal::Value(
+  const Standard_Integer num) const
 {
   return Handle(TColStd_HArray1OfReal)::DownCast(thelist.Value(num));
 }

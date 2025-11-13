@@ -28,7 +28,7 @@ Contap_TheSegmentOfTheSearch::Contap_TheSegmentOfTheSearch()
 }
 
 void Contap_TheSegmentOfTheSearch::SetLimitPoint(const Contap_ThePathPointOfTheSearch& V,
-                                                  const Standard_Boolean                First)
+                                                 const Standard_Boolean                First)
 {
   if (First)
   {

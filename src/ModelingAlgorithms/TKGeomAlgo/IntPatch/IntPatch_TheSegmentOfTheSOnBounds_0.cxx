@@ -27,9 +27,8 @@ IntPatch_TheSegmentOfTheSOnBounds::IntPatch_TheSegmentOfTheSOnBounds()
 {
 }
 
-void IntPatch_TheSegmentOfTheSOnBounds::SetLimitPoint(
-  const IntPatch_ThePathPointOfTheSOnBounds& V,
-  const Standard_Boolean                     First)
+void IntPatch_TheSegmentOfTheSOnBounds::SetLimitPoint(const IntPatch_ThePathPointOfTheSOnBounds& V,
+                                                      const Standard_Boolean First)
 {
   if (First)
   {

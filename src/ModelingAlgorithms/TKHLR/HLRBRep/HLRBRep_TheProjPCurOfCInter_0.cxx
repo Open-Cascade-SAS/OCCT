@@ -24,17 +24,22 @@
 #include <Extrema_POnCurv2d.hxx>
 
 Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address& C,
-                                                          const gp_Pnt2d&         P,
-                                                          const Standard_Real     LowParameter,
-                                                          const Standard_Real     HighParameter,
-                                                          const Standard_Real)
+                                                         const gp_Pnt2d&         P,
+                                                         const Standard_Real     LowParameter,
+                                                         const Standard_Real     HighParameter,
+                                                         const Standard_Real)
 {
   Standard_Real     theparam, defaultparam;
   Standard_Integer  NbPts   = HLRBRep_CurveTool::NbSamples(C);
   Standard_Real     theEpsX = HLRBRep_CurveTool::EpsX(C);
   Extrema_POnCurv2d POnC;
 
-  HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter::Locate(P, C, NbPts, LowParameter, HighParameter, POnC);
+  HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter::Locate(P,
+                                                       C,
+                                                       NbPts,
+                                                       LowParameter,
+                                                       HighParameter,
+                                                       POnC);
   defaultparam = POnC.Parameter();
   HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter Loc(P, C, defaultparam, theEpsX);
 
@@ -59,12 +64,15 @@ Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address&
 }
 
 Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address& C,
-                                                          const gp_Pnt2d&         P,
-                                                          const Standard_Real     Tol)
+                                                         const gp_Pnt2d&         P,
+                                                         const Standard_Real     Tol)
 {
 
   Standard_Real theParam;
-  theParam = FindParameter(
-    C, P, HLRBRep_CurveTool::FirstParameter(C), HLRBRep_CurveTool::LastParameter(C), Tol);
+  theParam = FindParameter(C,
+                           P,
+                           HLRBRep_CurveTool::FirstParameter(C),
+                           HLRBRep_CurveTool::LastParameter(C),
+                           Tol);
   return theParam;
 }

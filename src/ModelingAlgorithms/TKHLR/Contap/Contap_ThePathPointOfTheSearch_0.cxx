@@ -28,12 +28,11 @@ Contap_ThePathPointOfTheSearch::Contap_ThePathPointOfTheSearch()
 {
 }
 
-Contap_ThePathPointOfTheSearch::Contap_ThePathPointOfTheSearch(
-  const gp_Pnt&                    P,
-  const Standard_Real              Tol,
-  const Handle(Adaptor3d_HVertex)& V,
-  const Handle(Adaptor2d_Curve2d)& A,
-  const Standard_Real              Parameter)
+Contap_ThePathPointOfTheSearch::Contap_ThePathPointOfTheSearch(const gp_Pnt&                    P,
+                                                               const Standard_Real              Tol,
+                                                               const Handle(Adaptor3d_HVertex)& V,
+                                                               const Handle(Adaptor2d_Curve2d)& A,
+                                                               const Standard_Real Parameter)
     : point(P),
       tol(Tol),
       isnew(Standard_False),
@@ -43,11 +42,10 @@ Contap_ThePathPointOfTheSearch::Contap_ThePathPointOfTheSearch(
 {
 }
 
-Contap_ThePathPointOfTheSearch::Contap_ThePathPointOfTheSearch(
-  const gp_Pnt&                    P,
-  const Standard_Real              Tol,
-  const Handle(Adaptor2d_Curve2d)& A,
-  const Standard_Real              Parameter)
+Contap_ThePathPointOfTheSearch::Contap_ThePathPointOfTheSearch(const gp_Pnt&                    P,
+                                                               const Standard_Real              Tol,
+                                                               const Handle(Adaptor2d_Curve2d)& A,
+                                                               const Standard_Real Parameter)
     : point(P),
       tol(Tol),
       isnew(Standard_True),

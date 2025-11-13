@@ -38,11 +38,10 @@ BRepApprox_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfApprox::
   Perform(F, StartingPoint);
 }
 
-Standard_Boolean
-  BRepApprox_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfApprox::IsSolutionReached(
-    math_MultipleVarFunctionWithGradient& F) const
+Standard_Boolean BRepApprox_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfApprox::
+  IsSolutionReached(math_MultipleVarFunctionWithGradient& F) const
 {
-  Standard_Boolean                                               Result, Result2;
+  Standard_Boolean                                                   Result, Result2;
   BRepApprox_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfApprox* F1 =
     (BRepApprox_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfApprox*)&F;
 

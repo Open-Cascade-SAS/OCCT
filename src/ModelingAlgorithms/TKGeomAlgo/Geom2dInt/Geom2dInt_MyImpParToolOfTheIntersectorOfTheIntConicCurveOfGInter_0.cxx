@@ -23,9 +23,8 @@
 #include <gp_Vec2d.hxx>
 
 Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::
-  Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter(
-    const IntCurve_IConicTool& ITool,
-    const Adaptor2d_Curve2d&   PC)
+  Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter(const IntCurve_IConicTool& ITool,
+                                                                   const Adaptor2d_Curve2d&   PC)
     : TheImpTool(ITool)
 {
   TheParCurve = (Standard_Address)(&PC);

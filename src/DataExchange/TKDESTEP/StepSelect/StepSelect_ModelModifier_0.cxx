@@ -38,7 +38,7 @@ void StepSelect_ModelModifier::Perform(IFSelect_ContextModif&                  c
 {
   ctx.TraceModifier(this);
   Handle(StepData_StepModel) targ = Handle(StepData_StepModel)::DownCast(target);
-  Handle(StepData_Protocol) prot = Handle(StepData_Protocol)::DownCast(protocol);
+  Handle(StepData_Protocol)  prot = Handle(StepData_Protocol)::DownCast(protocol);
   if (targ.IsNull())
   {
     ctx.CCheck()->AddFail("Model to Modify : unproper type");
@@ -47,10 +47,10 @@ void StepSelect_ModelModifier::Perform(IFSelect_ContextModif&                  c
   PerformProtocol(ctx, targ, prot, TC);
 }
 
-void StepSelect_ModelModifier::PerformProtocol(IFSelect_ContextModif&             ctx,
-                                               const Handle(StepData_StepModel)&  target,
-                                               const Handle(StepData_Protocol)&   protocol,
-                                               Interface_CopyTool&                TC) const
+void StepSelect_ModelModifier::PerformProtocol(IFSelect_ContextModif&            ctx,
+                                               const Handle(StepData_StepModel)& target,
+                                               const Handle(StepData_Protocol)&  protocol,
+                                               Interface_CopyTool&               TC) const
 {
   ctx.SetProtocol(protocol);
   Performing(ctx, target, TC);

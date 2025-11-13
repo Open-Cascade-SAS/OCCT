@@ -27,7 +27,7 @@
 Interface_GlobalNodeOfReaderLib::Interface_GlobalNodeOfReaderLib() {}
 
 void Interface_GlobalNodeOfReaderLib::Add(const Handle(Interface_ReaderModule)& amodule,
-                                           const Handle(Interface_Protocol)&     aprotocol)
+                                          const Handle(Interface_Protocol)&     aprotocol)
 {
   if (themod == amodule)
     return;

@@ -31,7 +31,7 @@ IntCurve_MyImpParToolOfIntImpConicParConic::IntCurve_MyImpParToolOfIntImpConicPa
 }
 
 Standard_Boolean IntCurve_MyImpParToolOfIntImpConicParConic::Value(const Standard_Real Param,
-                                                                    Standard_Real&      ApproxDistance)
+                                                                   Standard_Real& ApproxDistance)
 {
   ApproxDistance =
     TheImpTool.Distance(IntCurve_PConicTool::Value((*((IntCurve_PConic*)(TheParCurve))), Param));
@@ -52,8 +52,8 @@ Standard_Boolean IntCurve_MyImpParToolOfIntImpConicParConic::Derivative(
 }
 
 Standard_Boolean IntCurve_MyImpParToolOfIntImpConicParConic::Values(const Standard_Real Param,
-                                                                     Standard_Real&      ApproxDistance,
-                                                                     Standard_Real&      Deriv)
+                                                                    Standard_Real& ApproxDistance,
+                                                                    Standard_Real& Deriv)
 {
   this->Value(Param, ApproxDistance);
   this->Derivative(Param, Deriv);

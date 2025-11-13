@@ -49,8 +49,8 @@ void IGESBasic_HArray1OfHArray1OfIGESEntity::SetValue(
   thelist.SetValue(num, val);
 }
 
-Handle(IGESData_HArray1OfIGESEntity)
-  IGESBasic_HArray1OfHArray1OfIGESEntity::Value(const Standard_Integer num) const
+Handle(IGESData_HArray1OfIGESEntity) IGESBasic_HArray1OfHArray1OfIGESEntity::Value(
+  const Standard_Integer num) const
 {
   return Handle(IGESData_HArray1OfIGESEntity)::DownCast(thelist.Value(num));
 }

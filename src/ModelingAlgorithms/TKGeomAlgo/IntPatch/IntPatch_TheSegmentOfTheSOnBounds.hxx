@@ -91,7 +91,8 @@ inline Standard_Boolean IntPatch_TheSegmentOfTheSOnBounds::HasFirstPoint() const
   return hasfp;
 }
 
-inline const IntPatch_ThePathPointOfTheSOnBounds& IntPatch_TheSegmentOfTheSOnBounds::FirstPoint() const
+inline const IntPatch_ThePathPointOfTheSOnBounds& IntPatch_TheSegmentOfTheSOnBounds::FirstPoint()
+  const
 {
   if (!hasfp)
   {
@@ -105,7 +106,8 @@ inline Standard_Boolean IntPatch_TheSegmentOfTheSOnBounds::HasLastPoint() const
   return haslp;
 }
 
-inline const IntPatch_ThePathPointOfTheSOnBounds& IntPatch_TheSegmentOfTheSOnBounds::LastPoint() const
+inline const IntPatch_ThePathPointOfTheSOnBounds& IntPatch_TheSegmentOfTheSOnBounds::LastPoint()
+  const
 {
   if (!haslp)
   {

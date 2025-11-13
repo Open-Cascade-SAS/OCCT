@@ -39,8 +39,8 @@ GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox::
   Perform(F, StartingPoint);
 }
 
-Standard_Boolean GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox::IsSolutionReached(
-  math_MultipleVarFunctionWithGradient& F) const
+Standard_Boolean GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox::
+  IsSolutionReached(math_MultipleVarFunctionWithGradient& F) const
 {
   GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox* F1 =
     (GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox*)&F;

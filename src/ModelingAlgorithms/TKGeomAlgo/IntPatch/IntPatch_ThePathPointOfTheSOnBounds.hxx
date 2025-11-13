@@ -80,10 +80,10 @@ private:
 //=================================================================================================
 
 inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&                    P,
-                                                           const Standard_Real              Tol,
-                                                           const Handle(Adaptor3d_HVertex)& V,
-                                                           const Handle(Adaptor2d_Curve2d)& A,
-                                                           const Standard_Real              Parameter)
+                                                          const Standard_Real              Tol,
+                                                          const Handle(Adaptor3d_HVertex)& V,
+                                                          const Handle(Adaptor2d_Curve2d)& A,
+                                                          const Standard_Real Parameter)
 {
   isnew = Standard_False;
   point = P;
@@ -94,9 +94,9 @@ inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&         
 }
 
 inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&                    P,
-                                                           const Standard_Real              Tol,
-                                                           const Handle(Adaptor2d_Curve2d)& A,
-                                                           const Standard_Real              Parameter)
+                                                          const Standard_Real              Tol,
+                                                          const Handle(Adaptor2d_Curve2d)& A,
+                                                          const Standard_Real Parameter)
 {
   isnew = Standard_True;
   point = P;

@@ -27,7 +27,7 @@
 IGESData_GlobalNodeOfWriterLib::IGESData_GlobalNodeOfWriterLib() {}
 
 void IGESData_GlobalNodeOfWriterLib::Add(const Handle(IGESData_ReadWriteModule)& amodule,
-                                          const Handle(IGESData_Protocol)&        aprotocol)
+                                         const Handle(IGESData_Protocol)&        aprotocol)
 {
   if (themod == amodule)
     return;

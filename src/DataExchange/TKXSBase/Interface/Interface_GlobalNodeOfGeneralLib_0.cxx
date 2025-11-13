@@ -27,7 +27,7 @@
 Interface_GlobalNodeOfGeneralLib::Interface_GlobalNodeOfGeneralLib() {}
 
 void Interface_GlobalNodeOfGeneralLib::Add(const Handle(Interface_GeneralModule)& amodule,
-                                            const Handle(Interface_Protocol)&      aprotocol)
+                                           const Handle(Interface_Protocol)&      aprotocol)
 {
   if (themod == amodule)
     return;

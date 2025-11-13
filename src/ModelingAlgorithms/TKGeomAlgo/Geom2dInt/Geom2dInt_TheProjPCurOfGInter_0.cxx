@@ -25,17 +25,22 @@
 #include <Extrema_POnCurv2d.hxx>
 
 Standard_Real Geom2dInt_TheProjPCurOfGInter::FindParameter(const Adaptor2d_Curve2d& C,
-                                                            const gp_Pnt2d&          P,
-                                                            const Standard_Real      LowParameter,
-                                                            const Standard_Real      HighParameter,
-                                                            const Standard_Real)
+                                                           const gp_Pnt2d&          P,
+                                                           const Standard_Real      LowParameter,
+                                                           const Standard_Real      HighParameter,
+                                                           const Standard_Real)
 {
   Standard_Real     theparam, defaultparam;
   Standard_Integer  NbPts   = Geom2dInt_Geom2dCurveTool::NbSamples(C);
   Standard_Real     theEpsX = Geom2dInt_Geom2dCurveTool::EpsX(C);
   Extrema_POnCurv2d POnC;
 
-  Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter::Locate(P, C, NbPts, LowParameter, HighParameter, POnC);
+  Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter::Locate(P,
+                                                         C,
+                                                         NbPts,
+                                                         LowParameter,
+                                                         HighParameter,
+                                                         POnC);
   defaultparam = POnC.Parameter();
   Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter Loc(P, C, defaultparam, theEpsX);
 
@@ -60,15 +65,15 @@ Standard_Real Geom2dInt_TheProjPCurOfGInter::FindParameter(const Adaptor2d_Curve
 }
 
 Standard_Real Geom2dInt_TheProjPCurOfGInter::FindParameter(const Adaptor2d_Curve2d& C,
-                                                            const gp_Pnt2d&          P,
-                                                            const Standard_Real      Tol)
+                                                           const gp_Pnt2d&          P,
+                                                           const Standard_Real      Tol)
 {
 
   Standard_Real theParam;
   theParam = FindParameter(C,
-                            P,
-                            Geom2dInt_Geom2dCurveTool::FirstParameter(C),
-                            Geom2dInt_Geom2dCurveTool::LastParameter(C),
-                            Tol);
+                           P,
+                           Geom2dInt_Geom2dCurveTool::FirstParameter(C),
+                           Geom2dInt_Geom2dCurveTool::LastParameter(C),
+                           Tol);
   return theParam;
 }
