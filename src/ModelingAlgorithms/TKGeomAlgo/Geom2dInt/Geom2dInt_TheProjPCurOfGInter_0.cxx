@@ -22,21 +22,53 @@
 #include <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #include <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Extrema_POnCurv2d.hxx>
 
-#define TheCurve Adaptor2d_Curve2d
-#define TheCurve_hxx <Adaptor2d_Curve2d.hxx>
-#define TheCurveTool Geom2dInt_Geom2dCurveTool
-#define TheCurveTool_hxx <Geom2dInt_Geom2dCurveTool.hxx>
-#define IntCurve_TheCurveLocator Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter
-#define IntCurve_TheCurveLocator_hxx <Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter.hxx>
-#define IntCurve_TheLocateExtPC Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter
-#define IntCurve_TheLocateExtPC_hxx <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
-#define IntCurve_PCLocFOfTheLocateExtPC Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
-#define IntCurve_PCLocFOfTheLocateExtPC_hxx                                                        \
-  <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
-#define IntCurve_PCLocFOfTheLocateExtPC Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
-#define IntCurve_PCLocFOfTheLocateExtPC_hxx                                                        \
-  <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
-#define IntCurve_ProjPCurGen Geom2dInt_TheProjPCurOfGInter
-#define IntCurve_ProjPCurGen_hxx <Geom2dInt_TheProjPCurOfGInter.hxx>
-#include <IntCurve_ProjPCurGen.gxx>
+Standard_Real Geom2dInt_TheProjPCurOfGInter::FindParameter(const Adaptor2d_Curve2d& C,
+                                                            const gp_Pnt2d&          P,
+                                                            const Standard_Real      LowParameter,
+                                                            const Standard_Real      HighParameter,
+                                                            const Standard_Real)
+{
+  Standard_Real     theparam, defaultparam;
+  Standard_Integer  NbPts   = Geom2dInt_Geom2dCurveTool::NbSamples(C);
+  Standard_Real     theEpsX = Geom2dInt_Geom2dCurveTool::EpsX(C);
+  Extrema_POnCurv2d POnC;
+
+  Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter::Locate(P, C, NbPts, LowParameter, HighParameter, POnC);
+  defaultparam = POnC.Parameter();
+  Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter Loc(P, C, defaultparam, theEpsX);
+
+  if (Loc.IsDone() == Standard_False)
+  {
+    //-- cout<<"\n Erreur dans LocateExtPC "<<endl;
+    theparam = defaultparam;
+  }
+  else
+  {
+    if (Loc.IsMin() == Standard_False)
+    {
+      //-- cout<<"\n Erreur dans LocateExtPC (Maximum trouve) "<<endl;
+      theparam = defaultparam;
+    }
+    else
+    {
+      theparam = Loc.Point().Parameter();
+    }
+  }
+  return theparam;
+}
+
+Standard_Real Geom2dInt_TheProjPCurOfGInter::FindParameter(const Adaptor2d_Curve2d& C,
+                                                            const gp_Pnt2d&          P,
+                                                            const Standard_Real      Tol)
+{
+
+  Standard_Real theParam;
+  theParam = FindParameter(C,
+                            P,
+                            Geom2dInt_Geom2dCurveTool::FirstParameter(C),
+                            Geom2dInt_Geom2dCurveTool::LastParameter(C),
+                            Tol);
+  return theParam;
+}
