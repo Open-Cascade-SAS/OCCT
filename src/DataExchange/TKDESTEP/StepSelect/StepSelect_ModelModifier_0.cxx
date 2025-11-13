@@ -24,14 +24,34 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>
 #include <Interface_CopyTool.hxx>
+#include <Interface_Check.hxx>
 
-#define Handle_Model Handle(StepData_StepModel)
-#define Model StepData_StepModel
-#define Model_hxx <StepData_StepModel.hxx>
-#define Handle_Proto Handle(StepData_Protocol)
-#define Proto StepData_Protocol
-#define Proto_hxx <StepData_Protocol.hxx>
-#define IFSelect_ModelModifier StepSelect_ModelModifier
-#define IFSelect_ModelModifier_hxx <StepSelect_ModelModifier.hxx>
-#define Handle_IFSelect_ModelModifier Handle(StepSelect_ModelModifier)
-#include <IFSelect_ModelModifier.gxx>
+StepSelect_ModelModifier::StepSelect_ModelModifier(const Standard_Boolean grf)
+    : IFSelect_Modifier(grf)
+{
+}
+
+void StepSelect_ModelModifier::Perform(IFSelect_ContextModif&                  ctx,
+                                       const Handle(Interface_InterfaceModel)& target,
+                                       const Handle(Interface_Protocol)&       protocol,
+                                       Interface_CopyTool&                     TC) const
+{
+  ctx.TraceModifier(this);
+  Handle(StepData_StepModel) targ = Handle(StepData_StepModel)::DownCast(target);
+  Handle(StepData_Protocol) prot = Handle(StepData_Protocol)::DownCast(protocol);
+  if (targ.IsNull())
+  {
+    ctx.CCheck()->AddFail("Model to Modify : unproper type");
+    return;
+  }
+  PerformProtocol(ctx, targ, prot, TC);
+}
+
+void StepSelect_ModelModifier::PerformProtocol(IFSelect_ContextModif&             ctx,
+                                               const Handle(StepData_StepModel)&  target,
+                                               const Handle(StepData_Protocol)&   protocol,
+                                               Interface_CopyTool&                TC) const
+{
+  ctx.SetProtocol(protocol);
+  Performing(ctx, target, TC);
+}

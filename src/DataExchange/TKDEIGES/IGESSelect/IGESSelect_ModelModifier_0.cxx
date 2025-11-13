@@ -24,14 +24,34 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>
 #include <Interface_CopyTool.hxx>
+#include <Interface_Check.hxx>
 
-#define Handle_Model Handle(IGESData_IGESModel)
-#define Model IGESData_IGESModel
-#define Model_hxx <IGESData_IGESModel.hxx>
-#define Handle_Proto Handle(IGESData_Protocol)
-#define Proto IGESData_Protocol
-#define Proto_hxx <IGESData_Protocol.hxx>
-#define IFSelect_ModelModifier IGESSelect_ModelModifier
-#define IFSelect_ModelModifier_hxx <IGESSelect_ModelModifier.hxx>
-#define Handle_IFSelect_ModelModifier Handle(IGESSelect_ModelModifier)
-#include <IFSelect_ModelModifier.gxx>
+IGESSelect_ModelModifier::IGESSelect_ModelModifier(const Standard_Boolean grf)
+    : IFSelect_Modifier(grf)
+{
+}
+
+void IGESSelect_ModelModifier::Perform(IFSelect_ContextModif&                  ctx,
+                                       const Handle(Interface_InterfaceModel)& target,
+                                       const Handle(Interface_Protocol)&       protocol,
+                                       Interface_CopyTool&                     TC) const
+{
+  ctx.TraceModifier(this);
+  Handle(IGESData_IGESModel) targ = Handle(IGESData_IGESModel)::DownCast(target);
+  Handle(IGESData_Protocol) prot = Handle(IGESData_Protocol)::DownCast(protocol);
+  if (targ.IsNull())
+  {
+    ctx.CCheck()->AddFail("Model to Modify : unproper type");
+    return;
+  }
+  PerformProtocol(ctx, targ, prot, TC);
+}
+
+void IGESSelect_ModelModifier::PerformProtocol(IFSelect_ContextModif&             ctx,
+                                               const Handle(IGESData_IGESModel)&  target,
+                                               const Handle(IGESData_Protocol)&   protocol,
+                                               Interface_CopyTool&                TC) const
+{
+  ctx.SetProtocol(protocol);
+  Performing(ctx, target, TC);
+}
