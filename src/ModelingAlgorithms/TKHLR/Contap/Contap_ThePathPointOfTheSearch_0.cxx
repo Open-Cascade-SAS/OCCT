@@ -21,10 +21,37 @@
 #include <Standard_DomainError.hxx>
 #include <gp_Pnt.hxx>
 
-#define TheVertex Handle(Adaptor3d_HVertex)
-#define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_Curve2d)
-#define TheArc_hxx <Adaptor2d_Curve2d.hxx>
-#define IntStart_PathPoint Contap_ThePathPointOfTheSearch
-#define IntStart_PathPoint_hxx <Contap_ThePathPointOfTheSearch.hxx>
-#include <IntStart_PathPoint.gxx>
+Contap_ThePathPointOfTheSearch::Contap_ThePathPointOfTheSearch()
+    : tol(0.0),
+      isnew(Standard_True),
+      param(0.0)
+{
+}
+
+Contap_ThePathPointOfTheSearch::Contap_ThePathPointOfTheSearch(
+  const gp_Pnt&                    P,
+  const Standard_Real              Tol,
+  const Handle(Adaptor3d_HVertex)& V,
+  const Handle(Adaptor2d_Curve2d)& A,
+  const Standard_Real              Parameter)
+    : point(P),
+      tol(Tol),
+      isnew(Standard_False),
+      vtx(V),
+      arc(A),
+      param(Parameter)
+{
+}
+
+Contap_ThePathPointOfTheSearch::Contap_ThePathPointOfTheSearch(
+  const gp_Pnt&                    P,
+  const Standard_Real              Tol,
+  const Handle(Adaptor2d_Curve2d)& A,
+  const Standard_Real              Parameter)
+    : point(P),
+      tol(Tol),
+      isnew(Standard_True),
+      arc(A),
+      param(Parameter)
+{
+}

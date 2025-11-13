@@ -75,20 +75,68 @@ private:
   Standard_Real             param;
 };
 
-#define TheVertex Handle(Adaptor3d_HVertex)
-#define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_Curve2d)
-#define TheArc_hxx <Adaptor2d_Curve2d.hxx>
-#define IntStart_PathPoint Contap_ThePathPointOfTheSearch
-#define IntStart_PathPoint_hxx <Contap_ThePathPointOfTheSearch.hxx>
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <IntStart_PathPoint.lxx>
+inline void Contap_ThePathPointOfTheSearch::SetValue(const gp_Pnt&                    P,
+                                                      const Standard_Real              Tol,
+                                                      const Handle(Adaptor3d_HVertex)& V,
+                                                      const Handle(Adaptor2d_Curve2d)& A,
+                                                      const Standard_Real              Parameter)
+{
+  isnew = Standard_False;
+  point = P;
+  tol   = Tol;
+  vtx   = V;
+  arc   = A;
+  param = Parameter;
+}
 
-#undef TheVertex
-#undef TheVertex_hxx
-#undef TheArc
-#undef TheArc_hxx
-#undef IntStart_PathPoint
-#undef IntStart_PathPoint_hxx
+inline void Contap_ThePathPointOfTheSearch::SetValue(const gp_Pnt&                    P,
+                                                      const Standard_Real              Tol,
+                                                      const Handle(Adaptor2d_Curve2d)& A,
+                                                      const Standard_Real              Parameter)
+{
+  isnew = Standard_True;
+  point = P;
+  tol   = Tol;
+  arc   = A;
+  param = Parameter;
+}
+
+inline const gp_Pnt& Contap_ThePathPointOfTheSearch::Value() const
+{
+  return point;
+}
+
+inline Standard_Real Contap_ThePathPointOfTheSearch::Tolerance() const
+{
+  return tol;
+}
+
+inline Standard_Boolean Contap_ThePathPointOfTheSearch::IsNew() const
+{
+  return isnew;
+}
+
+inline const Handle(Adaptor3d_HVertex)& Contap_ThePathPointOfTheSearch::Vertex() const
+{
+  if (isnew)
+  {
+    throw Standard_DomainError();
+  }
+  return vtx;
+}
+
+inline const Handle(Adaptor2d_Curve2d)& Contap_ThePathPointOfTheSearch::Arc() const
+{
+  return arc;
+}
+
+inline Standard_Real Contap_ThePathPointOfTheSearch::Parameter() const
+{
+  return param;
+}
 
 #endif // _Contap_ThePathPointOfTheSearch_HeaderFile
