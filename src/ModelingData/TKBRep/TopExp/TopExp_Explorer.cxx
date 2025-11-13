@@ -29,10 +29,12 @@
 #define AVOID(x, y) (((x) == TopAbs_SHAPE) ? Standard_False : (x) == (y))
 #define LESSCOMPLEX(x, y) ((x) > (y))
 
+static const Standard_Integer theStackBlockSize = 20;
+
 //=================================================================================================
 
 TopExp_Explorer::TopExp_Explorer()
-    : myStack(),
+    : myStack(theStackBlockSize),
       myTop(-1),
       toFind(TopAbs_SHAPE),
       toAvoid(TopAbs_SHAPE),
@@ -45,7 +47,7 @@ TopExp_Explorer::TopExp_Explorer()
 TopExp_Explorer::TopExp_Explorer(const TopoDS_Shape&    theS,
                                  const TopAbs_ShapeEnum theToFind,
                                  const TopAbs_ShapeEnum theToAvoid)
-    : myStack(),
+    : myStack(theStackBlockSize),
       myTop(-1),
       toFind(theToFind),
       toAvoid(theToAvoid),
