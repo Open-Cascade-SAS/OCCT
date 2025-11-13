@@ -533,7 +533,7 @@ The principle of allocation can be seen in the example below.
 ...
 {
   Handle(TColStd_HSequenceOfInteger) H1 = new TColStd_HSequenceOfInteger();
-  // H1 has one reference and corresponds to 48 bytes of  memory
+  // H1 has one reference and corresponds to 48 bytes of memory
   {
     Handle(TColStd_HSequenceOfInteger) H2;
     H2 = H1; // H1 has two references

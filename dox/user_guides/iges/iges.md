@@ -15,23 +15,23 @@ Other kinds of data such as colors and names can be read or written with the hel
   * an IGES entity is an entity in the IGES normal sense.
   * a root entity is the highest level entity of any given type, e.g. type 144 for surfaces and type 186 for solids. Roots are not referenced by other entities.
 
-This manual mainly explains how  to convert an IGES file to an Open CASCADE Technology (**OCCT**) shape and  vice versa. It provides basic documentation on conversion.
+This manual mainly explains how to convert an IGES file to an Open CASCADE Technology (**OCCT**) shape and vice versa. It provides basic documentation on conversion.
 
-IGES files produced in accordance with IGES standard versions up to and including version 5.3 can be read. IGES files that are produced by this  interface conform to IGES version 5.3 (Initial Graphics Exchange Specification,  IGES 5.3. ANS US PRO/IPO-100-1996). 
+IGES files produced in accordance with IGES standard versions up to and including version 5.3 can be read. IGES files that are produced by this interface conform to IGES version 5.3 (Initial Graphics Exchange Specification, IGES 5.3. ANS US PRO/IPO-100-1996). 
 
-This manual principally  deals with two OCCT classes: 
-  * The Reader class, which loads  IGES files and translates their contents to OCCT shapes,
-  * The Writer class, which  translates OCCT shapes to IGES entities and then writes these entities to IGES  files.
-  
-File translation is  performed in the programming mode, via C++ calls, and the resulting OCCT  objects are shapes. 
+This manual principally deals with two OCCT classes: 
+  * The Reader class, which loads IGES files and translates their contents to OCCT shapes,
+  * The Writer class, which translates OCCT shapes to IGES entities and then writes these entities to IGES files.
 
-All definitions in IGES  version 5.3 are recognized but only 3D geometric entities are translated. When  the processor encounters data, which is not translated, it ignores it and  writes a message identifying the types of data, which was not handled. This  message can be written either to a log file or to screen output. 
+File translation is performed in the programming mode, via C++ calls, and the resulting OCCT objects are shapes. 
+
+All definitions in IGES version 5.3 are recognized but only 3D geometric entities are translated. When the processor encounters data, which is not translated, it ignores it and writes a message identifying the types of data, which was not handled. This message can be written either to a log file or to screen output. 
 
 @ref occt_user_guides__shape_healing "Shape Healing" toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to IGES translator using the same API, only the names of API packages change.
 
 @section occt_iges_2 Reading IGES
 @subsection occt_iges_2_1 Procedure
-You can translate an  IGES file to an OCCT shape by following the steps below: 
+You can translate an IGES file to an OCCT shape by following the steps below: 
   -# Load the file,
   -# Check file consistency,
   -# Set the translation parameters,
@@ -39,49 +39,49 @@ You can translate an  IGES file to an OCCT shape by following the steps below:
   -# Fetch the results.
 @subsection occt_iges_2_2 Domain covered
 @subsubsection occt_iges_2_2_1 Translatable entities
-The types of IGES  entities, which can be translated, are: 
+The types of IGES entities, which can be translated, are: 
   * Points
   * Lines
   * Curves
   * Surfaces
   * B-Rep entities
-  * Structure entities (groups).  Each entity in the group outputs a shape. There can be a group of groups.
-  * Subfigures. Each entity  defined in a sub-figure outputs a shape
+  * Structure entities (groups). Each entity in the group outputs a shape. There can be a group of groups.
+  * Subfigures. Each entity defined in a sub-figure outputs a shape
   * Transformation Matrix.
   
-**Note** that all non-millimeter  length unit values in the IGES file are converted to millimeters.
+**Note** that all non-millimeter length unit values in the IGES file are converted to millimeters.
  
 @subsubsection occt_iges_2_2_2 Attributes
-Entity attributes in the Directory Entry Section of the  IGES file (such as layers, colors and thickness) are translated to Open CASCADE  Technology using XDE. 
+Entity attributes in the Directory Entry Section of the IGES file (such as layers, colors and thickness) are translated to Open CASCADE Technology using XDE. 
 @subsubsection occt_iges_2_2_3 Administrative data
-Administrative data, in the Global Section of the IGES  file (such as the file name, the name of the author, the date and time a model  was created or last modified) is not translated to Open CASCADE Technology.  Administrative data can, however, be consulted in the IGES file. 
+Administrative data, in the Global Section of the IGES file (such as the file name, the name of the author, the date and time a model was created or last modified) is not translated to Open CASCADE Technology. Administrative data can, however, be consulted in the IGES file. 
 
 
 @subsection occt_iges_2_3 Description of the process
 @subsubsection occt_iges_2_3_1 Loading the IGES file
-Before performing any  other operation, you have to load the file using the syntax below. 
+Before performing any other operation, you have to load the file using the syntax below. 
 ~~~~{.cpp}
 IGESControl_Reader reader; 
-IFSelect_ReturnStatus stat  = reader.ReadFile(“filename.igs”); 
+IFSelect_ReturnStatus stat = reader.ReadFile(“filename.igs”); 
 ~~~~
-The loading operation  only loads the IGES file into computer memory; it does not translate it. 
+The loading operation only loads the IGES file into computer memory; it does not translate it. 
 
 @subsubsection occt_iges_2_3_2 Checking the IGES file
 This step is not obligatory.  Check the loaded file with:  
 ~~~~{.cpp}
-Standard_Boolean ok =  reader.Check(Standard_True); 
+Standard_Boolean ok = reader.Check(Standard_True); 
 ~~~~
-The variable “ok is  True” is returned if no fail message was found; “ok is False” is returned if  there was at least one fail message.  
+The variable “ok is True” is returned if no fail message was found; “ok is False” is returned if there was at least one fail message.  
 ~~~~{.cpp}
-reader.PrintCheckLoad  (failsonly, mode); 
+reader.PrintCheckLoad (failsonly, mode); 
 ~~~~
-Error messages are  displayed if there are invalid or incomplete IGES entities, giving you  information on the cause of the error.  
+Error messages are displayed if there are invalid or incomplete IGES entities, giving you information on the cause of the error.  
 ~~~~{.cpp}
-Standard_Boolean failsonly  = Standard_True or Standard_False; 
+Standard_Boolean failsonly = Standard_True or Standard_False; 
 ~~~~
-If you give True, you  will see fail messages only. If you give False, you will see both fail and  warning messages.  
+If you give True, you will see fail messages only. If you give False, you will see both fail and warning messages.  
 
-Your analysis of the  file can be either message-oriented or entity-oriented. Choose your preference  with *IFSelect_PrintCount mode =  IFSelect_xxx*, where *xxx* can be any of  the following: 
+Your analysis of the file can be either message-oriented or entity-oriented. Choose your preference with *IFSelect_PrintCount mode = IFSelect_xxx*, where *xxx* can be any of the following: 
 * *ItemsByEntity*     gives a  sequential list of all messages per IGES entity.  
 * *CountByItem*       gives the  number of IGES entities with their types per message.  
 * *ShortByItem*       gives the number of IGES entities with their  types per message and displays rank numbers of the first five IGES entities per  message.  
@@ -89,163 +89,163 @@ Your analysis of the  file can be either message-oriented or entity-oriented. Ch
 * *EntitiesByItem*    gives the number of IGES entities with their  types, rank numbers and Directory Entry numbers per message. 
 
 @subsubsection occt_iges_2_3_3  Setting translation parameters
-The following parameters can be used to translate an IGES  file to an OCCT shape. If you give a value that is not within the range of  possible values, it will be ignored. 
+The following parameters can be used to translate an IGES file to an OCCT shape. If you give a value that is not within the range of possible values, it will be ignored. 
 
 <h4>read.iges.bspline.continuity</h4>
-manages the continuity of BSpline curves (IGES entities  106, 112 and 126) after translation to Open CASCADE Technology (Open CASCADE  Technology requires that the curves in a model be at least C1 continuous; no  such requirement is made by IGES).  
-* 0:    no change; the curves are taken as they are  in the IGES file. C0 entities of Open CASCADE Technology may be produced.  
-* 1:    if an IGES BSpline, Spline or CopiousData  curve is C0 continuous, it is broken down into pieces of C1 continuous *Geom_BSplineCurve*.  
-* 2:    This option concerns IGES Spline curves only.  IGES Spline curves are broken down into pieces of C2 continuity. If C2 cannot  be ensured, the Spline curves will be broken down into pieces of C1 continuity.   
+Manages the continuity of BSpline curves (IGES entities 106, 112 and 126) after translation to Open CASCADE Technology (Open CASCADE Technology requires that the curves in a model be at least C1 continuous; no such requirement is made by IGES).  
+* 0:    no change; the curves are taken as they are in the IGES file. C0 entities of Open CASCADE Technology may be produced.
+* 1:    if an IGES BSpline, Spline or CopiousData curve is C0 continuous, it is broken down into pieces of C1 continuous *Geom_BSplineCurve*.
+* 2:    This option concerns IGES Spline curves only. IGES Spline curves are broken down into pieces of C2 continuity. If C2 cannot be ensured, the Spline curves will be broken down into pieces of C1 continuity.  
 
-Read this parameter  with:  
+Read this parameter with:  
 ~~~~{.cpp}
-Standard_Integer ic =  Interface_Static::IVal("read.iges.bspline.continuity"); 
+Standard_Integer ic = Interface_Static::IVal("read.iges.bspline.continuity"); 
 ~~~~
 Modify this value with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetIVal ("read.iges.bspline.continuity",2))  
+if (!Interface_Static::SetIVal ("read.iges.bspline.continuity",2))
 .. error ..; 
 ~~~~
 Default value is 1. 
 
-This parameter does not change the continuity of curves  that are used in the construction of IGES BRep entities. In this case, the  parameter does not influence the continuity of the resulting OCCT curves (it is  ignored). 
+This parameter does not change the continuity of curves that are used in the construction of IGES BRep entities. In this case, the parameter does not influence the continuity of the resulting OCCT curves (it is ignored). 
 
 
 <h4>read.precision.mode</h4>
-reads the precision  value.  
-* File  (0)       the precision value is read in the IGES file header (default).  
-* User  (1)     the precision value is that of the read.precision.val parameter.  
+reads the precision value.  
+* File  (0)     the precision value is read in the IGES file header (default).
+* User  (1)     the precision value is that of the read.precision.val parameter.
 
-Read this parameter  with:  
+Read this parameter with:  
 ~~~~{.cpp}
-Standard_Integer ic =  Interface_Static::IVal("read.precision.mode"); 
+Standard_Integer ic = Interface_Static::IVal("read.precision.mode"); 
 ~~~~
 Modify this value with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetIVal ("read.precision.mode",1))  
+if (!Interface_Static::SetIVal ("read.precision.mode",1))
 .. error ..; 
 ~~~~
-Default value is  *File* (0).  
+Default value is *File* (0).  
 
 <h4>read.precision.val</h4>
 User defined precision value. This parameter gives the precision for shape construction when the read.precision.mode parameter value is 1. By default it is 0.0001, but can be any real positive (non null) value.
 
-This value is in the  measurement unit defined in the IGES file header.  
+This value is in the measurement unit defined in the IGES file header.  
 
-Read this parameter  with:  
+Read this parameter with:  
 ~~~~{.cpp}
-Standard_Real rp =  Interface_Static::RVal("read.precision.val"); 
-~~~~
-Modify this parameter  with:  
-~~~~{.cpp}
-if  (!Interface_Static::SetRVal ("read.precision.val",0.001))  
-.. error ..; 
-~~~~
-Default value is 0.0001.   
-
-The value given to  this parameter is a target value that is applied to *TopoDS_Vertex, TopoDS_Edge*  and *TopoDS_Face* entities. The processor does its best to reach it. Under  certain circumstances, the value you give may not be attached to all of the  entities concerned at the end of processing. IGES-to-OCCT translation does not  improve the quality of the geometry in the original IGES file. This means that  the value you enter may be impossible to attain the given quality of geometry  in the IGES file.
-
-Value of tolerance used for computation is calculated by  multiplying the value of *read.precision.val* and the value of coefficient of  transfer from the file units to millimeters. 
-
-<h4>read.maxprecision.mode</h4>
-defines the mode of  applying the maximum allowed tolerance. Its possible values are:  
-
-* *Preferred(0)*           maximum  tolerance is used as a limit but sometimes it can be exceeded (currently, only  for deviation of a 3D curve of an edge from its pcurves and from vertices of  such edge) to ensure shape validity; 
-* *Forced(1)*              maximum  tolerance is used as a rigid limit, i.e. it can not be exceeded and, if this  happens, tolerance is trimmed to suit the maximum-allowable value.  
-
-Read this parameter  with:  
-~~~~{.cpp}
-Standard_Integer mv =  Interface_Static::IVal("read.maxprecision.mode"); 
-~~~~
-Modify this parameter  with:  
-~~~~{.cpp}
-if  (!Interface_Static::SetIVal ("read.maxprecision.mode",1))  
-.. error ..; 
-~~~~
-Default value is  *Preferred (0)*.  
-
-<h4>read.maxprecision.val</h4>
-defines the maximum  allowable tolerance (in internal units, which are specified in xstep.cascade.unit) of the shape.
-It should be not less than the basis  value of tolerance set in processor (either Resolution from the file or  *read.precision.val*).
-Actually, the maximum between *read.maxprecision.val* and  basis tolerance is used to define maximum allowed tolerance.  
-Read this parameter  with:  
-~~~~{.cpp}
-Standard_Real rp =  Interface_Static::RVal("read.maxprecision.val"); 
+Standard_Real rp = Interface_Static::RVal("read.precision.val"); 
 ~~~~
 Modify this parameter with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetRVal ("read.maxprecision.val",0.1))  
+if (!Interface_Static::SetRVal ("read.precision.val",0.001))
+.. error ..; 
+~~~~
+Default value is 0.0001.  
+
+The value given to this parameter is a target value that is applied to *TopoDS_Vertex, TopoDS_Edge* and *TopoDS_Face* entities. The processor does its best to reach it. Under certain circumstances, the value you give may not be attached to all of the entities concerned at the end of processing. IGES-to-OCCT translation does not improve the quality of the geometry in the original IGES file. This means that the value you enter may be impossible to attain the given quality of geometry in the IGES file.
+
+Value of tolerance used for computation is calculated by multiplying the value of *read.precision.val* and the value of coefficient of transfer from the file units to millimeters. 
+
+<h4>read.maxprecision.mode</h4>
+Defines the mode of applying the maximum allowed tolerance. Its possible values are:  
+
+* *Preferred(0)*           maximum tolerance is used as a limit but sometimes it can be exceeded (currently, only for deviation of a 3D curve of an edge from its pcurves and from vertices of such edge) to ensure shape validity;  
+* *Forced(1)*              maximum tolerance is used as a rigid limit, i.e. it can not be exceeded and, if this happens, tolerance is trimmed to suit the maximum-allowable value.  
+
+Read this parameter with:  
+~~~~{.cpp}
+Standard_Integer mv = Interface_Static::IVal("read.maxprecision.mode"); 
+~~~~
+Modify this parameter with:  
+~~~~{.cpp}
+if (!Interface_Static::SetIVal ("read.maxprecision.mode",1))
+.. error ..; 
+~~~~
+Default value is *Preferred (0)*.  
+
+<h4>read.maxprecision.val</h4>
+defines the maximum allowable tolerance (in internal units, which are specified in xstep.cascade.unit) of the shape.
+It should be not less than the basis value of tolerance set in processor (either Resolution from the file or *read.precision.val*).
+Actually, the maximum between *read.maxprecision.val* and basis tolerance is used to define maximum allowed tolerance.  
+Read this parameter with:  
+~~~~{.cpp}
+Standard_Real rp = Interface_Static::RVal("read.maxprecision.val"); 
+~~~~
+Modify this parameter with:  
+~~~~{.cpp}
+if (!Interface_Static::SetRVal ("read.maxprecision.val",0.1))
 .. error ..; 
 ~~~~
 Default value is 1.  
 
 <h4>read.stdsameparameter.mode</h4>
-defines the using of  *BRepLib\::SameParameter*. Its possible values are:  
-* 0 (Off) -- *BRepLib\::SameParameter* is not called,  
+Defines the using of *BRepLib\::SameParameter*. Its possible values are:  
+* 0 (Off) -- *BRepLib\::SameParameter* is not called
 * 1 (On) -- *BRepLib\::SameParameter* is called.  
-*BRepLib\::SameParameter* is used through  *ShapeFix_Edge\::SameParameter*. It ensures that the resulting edge will have the  lowest tolerance taking pcurves either unmodified from the IGES file or  modified by *BRepLib\::SameParameter*.  
-Read this parameter  with:  
+*BRepLib\::SameParameter* is used through  *ShapeFix_Edge\::SameParameter*. It ensures that the resulting edge will have the lowest tolerance taking pcurves either unmodified from the IGES file or modified by *BRepLib\::SameParameter*.  
+Read this parameter with:  
 ~~~~{.cpp}
-Standard_Integer mv =  Interface_Static::IVal("read.stdsameparameter.mode"); 
+Standard_Integer mv = Interface_Static::IVal("read.stdsameparameter.mode"); 
 ~~~~
-Modify this parameter  with:  
+Modify this parameter with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetIVal ("read.stdsameparameter.mode",1))  
+if (!Interface_Static::SetIVal ("read.stdsameparameter.mode",1))
 .. error ..; 
 ~~~~
 Default value is 0 (Off).  
 
 <h4>read.surfacecurve.mode</h4>
-preference for the  computation of curves in case of 2D/3D inconsistency in an entity which has  both 2D and 3D representations.  
+preference for the computation of curves in case of 2D/3D inconsistency in an entity which has both 2D and 3D representations.  
 
-Here we are talking  about entity types 141 (Boundary), 142 (CurveOnSurface) and 508 (Loop). These  are entities representing a contour lying on a surface, which is translated to  a *TopoDS_Wire*, formed by *TopoDS_Edges*. Each *TopoDS_Edge* must have a 3D curve  and a 2D curve that reference the surface.  
+Here we are talking about entity types 141 (Boundary), 142 (CurveOnSurface) and 508 (Loop). These are entities representing a contour lying on a surface, which is translated to a *TopoDS_Wire*, formed by *TopoDS_Edges*. Each *TopoDS_Edge* must have a 3D curve and a 2D curve that reference the surface.  
 
-The processor also  decides to re-compute either the 3D or the 2D curve even if both curves are  translated successfully and seem to be correct, in case there is inconsistency  between them. The processor considers that there is inconsistency if any of the  following conditions is satisfied:  
-  * the number of sub-curves in  the 2D curve is different from the number of sub-curves in the 3D curve. This  can be either due to different numbers of sub-curves given in the IGES file or  because of splitting of curves during translation. 
-  * 3D or 2D curve is a Circular  Arc (entity type 100) starting and ending in the same point (note that this  case is incorrect according to the IGES standard).
-  
-The parameter  *read.surfacecurve.mode* defines which curve (3D or 2D) is used for re-computing  the other one:
-* *Default(0)* use  the preference flag value in the entity's Parameter Data section. The flag  values are:  
+The processor also decides to re-compute either the 3D or the 2D curve even if both curves are translated successfully and seem to be correct, in case there is inconsistency between them. The processor considers that there is inconsistency if any of the following conditions is satisfied:  
+  * the number of sub-curves in the 2D curve is different from the number of sub-curves in the 3D curve. This can be either due to different numbers of sub-curves given in the IGES file or because of splitting of curves during translation. 
+  * 3D or 2D curve is a Circular Arc (entity type 100) starting and ending in the same point (note that this case is incorrect according to the IGES standard).
+
+The parameter *read.surfacecurve.mode* defines which curve (3D or 2D) is used for re-computing the other one:
+* *Default(0)* use the preference flag value in the entity's Parameter Data section. The flag values are:  
   * 0: no preference given, 
-  * 1: use 2D for 142 entities  and 3D for 141 entities, 
-  * 2: use 3D for 142 entities  and 2D for 141 entities, 
-  * 3: both representations are  equally preferred. 
-* *2DUse_Preferred (2)* : the 2D is used to rebuild the 3D in case of their inconsistency,  
-* *2DUse_Forced (-2)*: the 2D is always used to rebuild the 3D (even if 3D is present in the  file),  
-* *3DUse_Preferred (3)*: the 3D is used to rebuild the 2D in case of their inconsistency,  
+  * 1: use 2D for 142 entities and 3D for 141 entities, 
+  * 2: use 3D for 142 entities and 2D for 141 entities, 
+  * 3: both representations are equally preferred. 
+* *2DUse_Preferred (2)*: the 2D is used to rebuild the 3D in case of their inconsistency,
+* *2DUse_Forced (-2)*: the 2D is always used to rebuild the 3D (even if 3D is present in the  file),
+* *3DUse_Preferred (3)*: the 3D is used to rebuild the 2D in case of their inconsistency,
 * *3DUse_Forced  (-3)*: the 3D is always used to rebuild the 2D (even if 2D is present in the  file),  
 
-If no preference is  defined (if the value of *read.surfacecurve.mode* is *Default* and the  value of the preference flag in the entity's Parameter Data section is 0 or 3),  an additional analysis is performed. 
+If no preference is defined (if the value of *read.surfacecurve.mode* is *Default* and the value of the preference flag in the entity's Parameter Data section is 0 or 3), an additional analysis is performed. 
  
-The 3D representation is  preferred to the 2D in two cases:  
-  * if 3D and 2D contours in the  file have a different number of curves, 
-  * if the 2D curve is a Circular  Arc (entity type 100) starting and ending in the same point and the 3D one is  not. 
+The 3D representation is preferred to the 2D in two cases:  
+  * if 3D and 2D contours in the file have a different number of curves, 
+  * if the 2D curve is a Circular Arc (entity type 100) starting and ending in the same point and the 3D one is not. 
 
-In any other case, the  2D representation is preferred to the 3D.  
+In any other case, the 2D representation is preferred to the 3D.  
 
-If either a 3D or a 2D  contour is absent in the file or cannot be translated, then it is re-computed  from another contour. If the translation of both 2D and 3D contours fails, the  whole curve (type 141 or 142) is not translated. If this curve is used for  trimming a face, the face will be translated without this trimming and will  have natural restrictions.  
+If either a 3D or a 2D contour is absent in the file or cannot be translated, then it is re-computed from another contour. If the translation of both 2D and 3D contours fails, the whole curve (type 141 or 142) is not translated. If this curve is used for trimming a face, the face will be translated without this trimming and will have natural restrictions.  
 
-Read this parameter  with:  
+Read this parameter with:  
 ~~~~{.cpp}
-Standard_Integer ic =  Interface_Static::IVal("read.surfacecurve.mode"); 
+Standard_Integer ic = Interface_Static::IVal("read.surfacecurve.mode"); 
 ~~~~
 Modify this value with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetIVal ("read.surfacecurve.mode",3))  
+if (!Interface_Static::SetIVal ("read.surfacecurve.mode",3))
 .. error ..; 
 ~~~~
-Default value is  Default (0). 
+Default value is Default (0). 
 
 <h4>read.encoderegularity.angle</h4>
-This parameter is used within the *BRepLib::EncodeRegularity()*  function which is called for a shape read from an IGES or a STEP file at the  end of translation process. This function sets the regularity flag of an edge  in a shell when this edge is shared by two faces. This flag shows the  continuity, which these two faces are connected with at that edge.  
+This parameter is used within the *BRepLib::EncodeRegularity()* function which is called for a shape read from an IGES or a STEP file at the end of translation process. This function sets the regularity flag of an edge in a shell when this edge is shared by two faces. This flag shows the continuity, which these two faces are connected with at that edge.  
 
-Read this parameter  with:  
+Read this parameter with:  
 ~~~~{.cpp}
-Standard_Real era =   Interface_Static::RVal("read.encoderegularity.angle"); 
+Standard_Real era = Interface_Static::RVal("read.encoderegularity.angle"); 
 ~~~~
 Modify this parameter with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetRVal ("read.encoderegularity.angle",0.1))   
+if (!Interface_Static::SetRVal ("read.encoderegularity.angle",0.1))
 .. error ..; 
 ~~~~
 Default value is 0.01.  
@@ -618,10 +618,10 @@ Standard_Integer nIgesFaces,nTransFaces;
 myIgesReader.ReadFile (“MyFile.igs”); 
 //loads file MyFile.igs 
 
-Handle(TColStd_HSequenceOfTransient) myList =  myIgesReader.GiveList(“iges-faces”); 
-//selects all IGES faces in the file and puts them into a list  called //MyList, 
+Handle(TColStd_HSequenceOfTransient) myList = myIgesReader.GiveList(“iges-faces”); 
+//selects all IGES faces in the file and puts them into a list called //MyList, 
 
-nIgesFaces = myList-Length();  
+nIgesFaces = myList-Length();
 nTransFaces = myIgesReader.TransferList(myList); 
 //translates MyList, 
 
@@ -634,16 +634,16 @@ TopoDS_Shape sh = myIgesReader.OneShape();
 @section occt_iges_3 Writing IGES
 @subsection occt_iges_3_1 Procedure
 
-You can translate OCCT shapes to IGES entities in the  following steps: 
-1. Initialize  the process. 
-2. Set  the translation parameters, 
-3. Perform  the model translation, 
-4. Write  the output IGES file. 
+You can translate OCCT shapes to IGES entities in the following steps: 
+1. Initialize the process. 
+2. Set the translation parameters, 
+3. Perform the model translation, 
+4. Write the output IGES file. 
 
-You can translate several shapes before writing a file. Each  shape will be a root entity in the IGES model. 
+You can translate several shapes before writing a file. Each shape will be a root entity in the IGES model. 
 
 @subsection occt_iges_3_2 Domain covered
-There are two families of OCCT objects that can be  translated: 
+There are two families of OCCT objects that can be translated: 
   * geometrical,
   * topological.
   
