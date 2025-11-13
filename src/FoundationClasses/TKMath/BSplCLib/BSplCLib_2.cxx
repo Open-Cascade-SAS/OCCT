@@ -31,25 +31,10 @@
 
 #include <math_Matrix.hxx>
 
-//=======================================================================
-// struct : BSplCLib_DataContainer
-// purpose: Auxiliary structure providing buffers for poles and knots used in
-//         evaluation of bspline (allocated in the stack)
-//=======================================================================
+#include "BSplCLib_CurveComputation.pxx"
 
-struct BSplCLib_DataContainer
-{
-  BSplCLib_DataContainer(Standard_Integer Degree)
-  {
-    (void)Degree; // avoid compiler warning
-    Standard_OutOfRange_Raise_if(Degree > BSplCLib::MaxDegree(),
-                                 "BSplCLib: bspline degree is greater than maximum supported");
-  }
-
-  Standard_Real poles[2 * (25 + 1)]{};
-  Standard_Real knots[2 * 25]{};
-  Standard_Real ders[4]{};
-};
+// Use 1D specialization of the template data container
+using BSplCLib_DataContainer = BSplCLib_DataContainer_T<1>;
 
 // methods for 1 dimensional BSplines
 
