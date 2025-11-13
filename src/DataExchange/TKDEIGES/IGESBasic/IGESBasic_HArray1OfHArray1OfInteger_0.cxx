@@ -18,10 +18,38 @@
 
 #include <Standard_Type.hxx>
 
-#define Handle_TheKey Handle(TColStd_HArray1OfInteger)
-#define TheKey TColStd_HArray1OfInteger
-#define TheKey_hxx <TColStd_HArray1OfInteger.hxx>
-#define Interface_JaggedArray IGESBasic_HArray1OfHArray1OfInteger
-#define Interface_JaggedArray_hxx <IGESBasic_HArray1OfHArray1OfInteger.hxx>
-#define Handle_Interface_JaggedArray Handle(IGESBasic_HArray1OfHArray1OfInteger)
-#include <Interface_JaggedArray.gxx>
+IGESBasic_HArray1OfHArray1OfInteger::IGESBasic_HArray1OfHArray1OfInteger(
+  const Standard_Integer low,
+  const Standard_Integer up)
+    : thelist(low, up)
+{
+  Handle(Standard_Transient) nulo;
+  thelist.Init(nulo);
+}
+
+Standard_Integer IGESBasic_HArray1OfHArray1OfInteger::Lower() const
+{
+  return thelist.Lower();
+}
+
+Standard_Integer IGESBasic_HArray1OfHArray1OfInteger::Upper() const
+{
+  return thelist.Upper();
+}
+
+Standard_Integer IGESBasic_HArray1OfHArray1OfInteger::Length() const
+{
+  return thelist.Length();
+}
+
+void IGESBasic_HArray1OfHArray1OfInteger::SetValue(const Standard_Integer                 num,
+                                                    const Handle(TColStd_HArray1OfInteger)& val)
+{
+  thelist.SetValue(num, val);
+}
+
+Handle(TColStd_HArray1OfInteger)
+  IGESBasic_HArray1OfHArray1OfInteger::Value(const Standard_Integer num) const
+{
+  return Handle(TColStd_HArray1OfInteger)::DownCast(thelist.Value(num));
+}

@@ -18,10 +18,36 @@
 
 #include <Standard_Type.hxx>
 
-#define Handle_TheKey Handle(TColgp_HArray1OfXYZ)
-#define TheKey TColgp_HArray1OfXYZ
-#define TheKey_hxx <TColgp_HArray1OfXYZ.hxx>
-#define Interface_JaggedArray IGESBasic_HArray1OfHArray1OfXYZ
-#define Interface_JaggedArray_hxx <IGESBasic_HArray1OfHArray1OfXYZ.hxx>
-#define Handle_Interface_JaggedArray Handle(IGESBasic_HArray1OfHArray1OfXYZ)
-#include <Interface_JaggedArray.gxx>
+IGESBasic_HArray1OfHArray1OfXYZ::IGESBasic_HArray1OfHArray1OfXYZ(const Standard_Integer low,
+                                                                 const Standard_Integer up)
+    : thelist(low, up)
+{
+  Handle(Standard_Transient) nulo;
+  thelist.Init(nulo);
+}
+
+Standard_Integer IGESBasic_HArray1OfHArray1OfXYZ::Lower() const
+{
+  return thelist.Lower();
+}
+
+Standard_Integer IGESBasic_HArray1OfHArray1OfXYZ::Upper() const
+{
+  return thelist.Upper();
+}
+
+Standard_Integer IGESBasic_HArray1OfHArray1OfXYZ::Length() const
+{
+  return thelist.Length();
+}
+
+void IGESBasic_HArray1OfHArray1OfXYZ::SetValue(const Standard_Integer            num,
+                                                const Handle(TColgp_HArray1OfXYZ)& val)
+{
+  thelist.SetValue(num, val);
+}
+
+Handle(TColgp_HArray1OfXYZ) IGESBasic_HArray1OfHArray1OfXYZ::Value(const Standard_Integer num) const
+{
+  return Handle(TColgp_HArray1OfXYZ)::DownCast(thelist.Value(num));
+}
