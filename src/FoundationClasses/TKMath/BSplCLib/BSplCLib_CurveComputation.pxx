@@ -61,18 +61,18 @@ struct BSplCLib_CurveTraits
     }
   }
 
-  static void CoordsToPoint(Point& pnt, const Standard_Real* carr, Standard_Real op)
+  static void CoordsToPointMultiplied(Point& pnt, const Standard_Real* carr, Standard_Real factor)
   {
     if constexpr (Dimension == 2)
     {
-      pnt.SetX(carr[0] + op);
-      pnt.SetY(carr[1] + op);
+      pnt.SetX(carr[0] * factor);
+      pnt.SetY(carr[1] * factor);
     }
     else if constexpr (Dimension == 3)
     {
-      pnt.SetX(carr[0] + op);
-      pnt.SetY(carr[1] + op);
-      pnt.SetZ(carr[2] + op);
+      pnt.SetX(carr[0] * factor);
+      pnt.SetY(carr[1] * factor);
+      pnt.SetZ(carr[2] * factor);
     }
   }
 
@@ -1379,7 +1379,7 @@ void BSplCLib_BuildCache(const Standard_Real         U,
 
     for (ii = 1; ii <= Degree + 1; ii++)
     {
-      Traits::CoordsToPoint(CachePoles(ii), dc.poles + LocalIndex, LocalValue);
+      Traits::CoordsToPointMultiplied(CachePoles(ii), dc.poles + LocalIndex, LocalValue);
       LocalIndex += Dimension + 1;
       LocalValue *= SpanDomain / (Standard_Real)ii;
     }
@@ -1398,7 +1398,7 @@ void BSplCLib_BuildCache(const Standard_Real         U,
 
     for (ii = 1; ii <= Degree + 1; ii++)
     {
-      Traits::CoordsToPoint(CachePoles(ii), dc.poles + LocalIndex, LocalValue);
+      Traits::CoordsToPointMultiplied(CachePoles(ii), dc.poles + LocalIndex, LocalValue);
       LocalIndex += Dimension;
       LocalValue *= SpanDomain / (Standard_Real)ii;
     }
