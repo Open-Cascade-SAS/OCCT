@@ -18,7 +18,9 @@
 #define _TopExp_Explorer_HeaderFile
 
 #include <NCollection_Vector.hxx>
+#include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <TopAbs.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -85,7 +87,14 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an empty explorer, becomes useful after Init.
-  Standard_EXPORT TopExp_Explorer();
+  TopExp_Explorer()
+      : myStack(20),
+        myTop(-1),
+        toFind(TopAbs_SHAPE),
+        toAvoid(TopAbs_SHAPE),
+        hasMore(Standard_False)
+  {
+  }
 
   //! Creates an Explorer on the Shape <S>.
   //!
@@ -96,9 +105,17 @@ public:
   //! exploration. If <ToAvoid> is equal or less
   //! complex than <ToFind> or if <ToAVoid> is SHAPE it
   //! has no effect on the exploration.
-  Standard_EXPORT TopExp_Explorer(const TopoDS_Shape&    S,
-                                  const TopAbs_ShapeEnum ToFind,
-                                  const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
+  TopExp_Explorer(const TopoDS_Shape&    S,
+                  const TopAbs_ShapeEnum ToFind,
+                  const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE)
+      : myStack(20),
+        myTop(-1),
+        toFind(ToFind),
+        toAvoid(ToAvoid),
+        hasMore(Standard_False)
+  {
+    Init(S, ToFind, ToAvoid);
+  }
 
   //! Resets this explorer on the shape S. It is initialized to
   //! search the shape S, for shapes of type ToFind, that
@@ -106,9 +123,46 @@ public:
   //! If the shape ToAvoid is equal to TopAbs_SHAPE, or
   //! if it is the same as, or less complex than, the shape
   //! ToFind it has no effect on the search.
-  Standard_EXPORT void Init(const TopoDS_Shape&    S,
-                            const TopAbs_ShapeEnum ToFind,
-                            const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
+  void Init(const TopoDS_Shape&    S,
+            const TopAbs_ShapeEnum ToFind,
+            const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE)
+  {
+    Clear();
+
+    myShape = S;
+    toFind  = ToFind;
+    toAvoid = ToAvoid;
+
+    if (S.IsNull())
+    {
+      hasMore = Standard_False;
+      return;
+    }
+
+    if (toFind == TopAbs_SHAPE)
+      hasMore = Standard_False;
+    else
+    {
+      TopAbs_ShapeEnum ty = S.ShapeType();
+
+      if (ty > toFind) // LESSCOMPLEX(ty, toFind)
+      {
+        // the first Shape is less complex, nothing to find
+        hasMore = Standard_False;
+      }
+      else if (ty != toFind) // !SAMETYPE(ty, toFind)
+      {
+        // type is more complex search inside
+        hasMore = Standard_True;
+        Next();
+      }
+      else
+      {
+        // type is found
+        hasMore = Standard_True;
+      }
+    }
+  }
 
   //! Returns True if there are more shapes in the exploration.
   Standard_Boolean More() const { return hasMore; }
@@ -116,7 +170,71 @@ public:
   //! Moves to the next Shape in the exploration.
   //! Exceptions
   //! Standard_NoMoreObject if there are no more shapes to explore.
-  Standard_EXPORT void Next();
+  void Next()
+  {
+    Standard_NoMoreObject_Raise_if(!hasMore, "TopExp_Explorer::Next");
+
+    if (myTop < 0)
+    {
+      // empty stack. Entering the initial shape.
+      TopAbs_ShapeEnum ty = myShape.ShapeType();
+
+      if (toFind == ty) // SAMETYPE(toFind, ty)
+      {
+        // already visited once
+        hasMore = Standard_False;
+        return;
+      }
+      else if (toAvoid != TopAbs_SHAPE && toAvoid == ty) // AVOID(toAvoid, ty)
+      {
+        // avoid the top-level
+        hasMore = Standard_False;
+        return;
+      }
+      else
+      {
+        // push and try to find
+        myStack.Append(TopoDS_Iterator(myShape));
+        myTop = myStack.Length() - 1;
+      }
+    }
+    else
+      myStack[myTop].Next();
+
+    for (;;)
+    {
+      if (myStack[myTop].More())
+      {
+        TopoDS_Shape     ShapTop = myStack[myTop].Value();
+        TopAbs_ShapeEnum ty      = ShapTop.ShapeType();
+
+        if (toFind == ty) // SAMETYPE(toFind, ty)
+        {
+          hasMore = Standard_True;
+          return;
+        }
+        else if (toFind > ty && !(toAvoid != TopAbs_SHAPE && toAvoid == ty)) // LESSCOMPLEX(toFind, ty) && !AVOID(toAvoid, ty)
+        {
+          myStack.Append(TopoDS_Iterator(ShapTop));
+          myTop = myStack.Length() - 1;
+        }
+        else
+        {
+          myStack[myTop].Next();
+        }
+      }
+      else
+      {
+        // Pop: remove the exhausted iterator from the vector
+        myStack.EraseLast();
+        myTop--;
+        if (myTop < 0)
+          break;
+        myStack[myTop].Next();
+      }
+    }
+    hasMore = Standard_False;
+  }
 
   //! Returns the current shape in the exploration.
   //! Exceptions
@@ -133,7 +251,7 @@ public:
   }
 
   //! Reinitialize the exploration with the original arguments.
-  Standard_EXPORT void ReInit();
+  void ReInit() { Init(myShape, toFind, toAvoid); }
 
   //! Return explored shape.
   const TopoDS_Shape& ExploredShape() const { return myShape; }
@@ -144,10 +262,15 @@ public:
 
   //! Clears the content of the explorer. It will return
   //! False on More().
-  Standard_EXPORT void Clear();
+  void Clear()
+  {
+    hasMore = Standard_False;
+    myStack.Clear();
+    myTop = -1;
+  }
 
   //! Destructor.
-  Standard_EXPORT ~TopExp_Explorer();
+  ~TopExp_Explorer() { Clear(); }
 
 private:
   NCollection_Vector<TopoDS_Iterator> myStack;
