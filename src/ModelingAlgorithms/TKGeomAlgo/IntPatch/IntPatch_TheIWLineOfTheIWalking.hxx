@@ -26,7 +26,7 @@
 #include <gp_Vec.hxx>
 #include <Standard_Transient.hxx>
 #include <IntSurf_Allocator.hxx>
-class IntSurf_LineOn2S;
+#include <IntSurf_LineOn2S.hxx>
 class Standard_OutOfRange;
 class Standard_DomainError;
 class IntSurf_PathPoint;
