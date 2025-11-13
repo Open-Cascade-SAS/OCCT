@@ -80,8 +80,23 @@ struct BSplCLib_CacheParams
   {
     Standard_Real aNewParam = PeriodicNormalization(theParameter);
     Standard_Real aDelta    = aNewParam - SpanStart;
-    return ((aDelta >= 0.0 || SpanIndex == SpanIndexMin)
-            && (aDelta < SpanLength || SpanIndex == SpanIndexMax));
+    if (!((aDelta >= 0.0 || SpanIndex == SpanIndexMin)
+          && (aDelta < SpanLength || SpanIndex == SpanIndexMax)))
+    {
+      return false;
+    }
+
+    if (SpanIndex == SpanIndexMax)
+      return true;
+
+    // from BSplCLib::LocateParameter() check hitting of the next knot
+    // within double floating point precision
+    const double anEps        = Epsilon(Min(Abs(LastParameter), Abs(aNewParam)));
+    const double aDeltaToNext = Abs(aDelta - SpanLength);
+    if (aDeltaToNext <= anEps)
+      return false; // next knot should be used instead
+
+    return true;
   }
 
   //! Computes span for the specified parameter
