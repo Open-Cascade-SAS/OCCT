@@ -77,7 +77,7 @@ public:
   //! Returns Standard_True if the face <F> has been
   //! modified. In this case, <S> is the new geometric
   //! support of the face, <L> the new location,
-  //! <Tol>the new tolerance. <RevWires> has to be set to
+  //! <Tol> the new tolerance. <RevWires> has to be set to
   //! Standard_True when the modification reverses the
   //! normal of the surface. (the wires have to be
   //! reversed). <RevFace> has to be set to
