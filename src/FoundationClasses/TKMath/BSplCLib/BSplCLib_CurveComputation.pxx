@@ -225,8 +225,6 @@ struct BSplCLib_DataContainer_T
 template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_Reverse(Array1OfPoints& Poles, const Standard_Integer L)
 {
-  using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
-
   Standard_Integer i, l = L;
   l = Poles.Lower() + (l - Poles.Lower()) % (Poles.Upper() - Poles.Lower() + 1);
 
