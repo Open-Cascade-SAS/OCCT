@@ -145,20 +145,17 @@ public:
     {
       TopAbs_ShapeEnum ty = S.ShapeType();
 
-      if (ty > toFind) // LESSCOMPLEX(ty, toFind)
+      if (isMoreComplex(ty))
       {
-        // the first Shape is less complex, nothing to find
         hasMore = Standard_False;
       }
-      else if (ty != toFind) // !SAMETYPE(ty, toFind)
+      else if (!isSameType(ty))
       {
-        // type is more complex search inside
         hasMore = Standard_True;
         Next();
       }
       else
       {
-        // type is found
         hasMore = Standard_True;
       }
     }
@@ -176,24 +173,20 @@ public:
 
     if (myTop < 0)
     {
-      // empty stack. Entering the initial shape.
       TopAbs_ShapeEnum ty = myShape.ShapeType();
 
-      if (toFind == ty) // SAMETYPE(toFind, ty)
+      if (isSameType(ty))
       {
-        // already visited once
         hasMore = Standard_False;
         return;
       }
-      else if (toAvoid != TopAbs_SHAPE && toAvoid == ty) // AVOID(toAvoid, ty)
+      else if (shouldAvoid(ty))
       {
-        // avoid the top-level
         hasMore = Standard_False;
         return;
       }
       else
       {
-        // push and try to find
         myStack.Append(TopoDS_Iterator(myShape));
         myTop = myStack.Length() - 1;
       }
@@ -208,12 +201,12 @@ public:
         TopoDS_Shape     ShapTop = myStack[myTop].Value();
         TopAbs_ShapeEnum ty      = ShapTop.ShapeType();
 
-        if (toFind == ty) // SAMETYPE(toFind, ty)
+        if (isSameType(ty))
         {
           hasMore = Standard_True;
           return;
         }
-        else if (toFind > ty && !(toAvoid != TopAbs_SHAPE && toAvoid == ty)) // LESSCOMPLEX(toFind, ty) && !AVOID(toAvoid, ty)
+        else if (isMoreComplex(ty) && !shouldAvoid(ty))
         {
           myStack.Append(TopoDS_Iterator(ShapTop));
           myTop = myStack.Length() - 1;
@@ -225,7 +218,6 @@ public:
       }
       else
       {
-        // Pop: remove the exhausted iterator from the vector
         myStack.EraseLast();
         myTop--;
         if (myTop < 0)
@@ -271,6 +263,25 @@ public:
 
   //! Destructor.
   ~TopExp_Explorer() { Clear(); }
+
+protected:
+  //! Returns true if the given type matches the type to find.
+  Standard_Boolean isSameType(const TopAbs_ShapeEnum theType) const
+  {
+    return toFind == theType;
+  }
+
+  //! Returns true if the given type should be avoided.
+  Standard_Boolean shouldAvoid(const TopAbs_ShapeEnum theType) const
+  {
+    return toAvoid != TopAbs_SHAPE && toAvoid == theType;
+  }
+
+  //! Returns true if the given type is more complex than the type to find.
+  Standard_Boolean isMoreComplex(const TopAbs_ShapeEnum theType) const
+  {
+    return toFind > theType;
+  }
 
 private:
   NCollection_Vector<TopoDS_Iterator> myStack;
