@@ -165,6 +165,8 @@ void TopExp_Explorer::Next()
     }
     else
     {
+      // Pop: remove the exhausted iterator from the vector
+      myStack.EraseLast();
       myTop--;
       if (myTop < 0)
         break;
