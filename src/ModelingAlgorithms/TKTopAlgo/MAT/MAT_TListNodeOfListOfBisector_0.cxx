@@ -21,12 +21,6 @@
 #include <MAT_Bisector.hxx>
 #include <MAT_ListOfBisector.hxx>
 
-#define Item Handle(MAT_Bisector)
-#define Item_hxx <MAT_Bisector.hxx>
-#define MAT_TListNode MAT_TListNodeOfListOfBisector
-#define MAT_TListNode_hxx <MAT_TListNodeOfListOfBisector.hxx>
-#define Handle_MAT_TListNode Handle(MAT_TListNodeOfListOfBisector)
-#define MAT_TList MAT_ListOfBisector
-#define MAT_TList_hxx <MAT_ListOfBisector.hxx>
-#define Handle_MAT_TList Handle(MAT_ListOfBisector)
-#include <MAT_TListNode.gxx>
+//=================================================================================================
+
+void MAT_TListNodeOfListOfBisector::Dummy() const {}
