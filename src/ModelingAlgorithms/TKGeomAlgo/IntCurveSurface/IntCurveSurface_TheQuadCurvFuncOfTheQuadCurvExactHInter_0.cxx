@@ -19,14 +19,44 @@
 #include <Adaptor3d_Curve.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <IntCurveSurface_TheHCurveTool.hxx>
+#include <gp_Vec.hxx>
 
-#define TheQuadric IntSurf_Quadric
-#define TheQuadric_hxx <IntSurf_Quadric.hxx>
-#define TheCurve Handle(Adaptor3d_Curve)
-#define TheCurve_hxx <Adaptor3d_Curve.hxx>
-#define TheCurveTool IntCurveSurface_TheHCurveTool
-#define TheCurveTool_hxx <IntCurveSurface_TheHCurveTool.hxx>
-#define IntCurveSurface_QuadricCurveFunc IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter
-#define IntCurveSurface_QuadricCurveFunc_hxx                                                       \
-  <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
-#include <IntCurveSurface_QuadricCurveFunc.gxx>
+IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::
+  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter(const IntSurf_Quadric&         Q,
+                                                          const Handle(Adaptor3d_Curve)& C)
+    : myQuadric(Q),
+      myCurve(C)
+{
+}
+
+Standard_Boolean IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Value(
+  const Standard_Real Param,
+  Standard_Real&      F)
+{
+  F = myQuadric.Distance(IntCurveSurface_TheHCurveTool::Value(myCurve, Param));
+  return (Standard_True);
+}
+
+Standard_Boolean IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Derivative(
+  const Standard_Real Param,
+  Standard_Real&      D)
+{
+  gp_Pnt P;
+  gp_Vec T;
+  IntCurveSurface_TheHCurveTool::D1(myCurve, Param, P, T);
+  D = T.Dot(myQuadric.Gradient(P));
+  return (Standard_True);
+}
+
+Standard_Boolean IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Values(
+  const Standard_Real Param,
+  Standard_Real&      F,
+  Standard_Real&      D)
+{
+  gp_Pnt P;
+  gp_Vec T, Grad;
+  IntCurveSurface_TheHCurveTool::D1(myCurve, Param, P, T);
+  myQuadric.ValAndGrad(P, F, Grad);
+  D = T.Dot(Grad);
+  return (Standard_True);
+}
