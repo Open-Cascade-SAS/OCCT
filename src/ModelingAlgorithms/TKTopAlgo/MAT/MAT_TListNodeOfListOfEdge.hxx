@@ -58,24 +58,59 @@ private:
   Handle(MAT_Edge)                  theitem;
 };
 
-#define Item Handle(MAT_Edge)
-#define Item_hxx <MAT_Edge.hxx>
-#define MAT_TListNode MAT_TListNodeOfListOfEdge
-#define MAT_TListNode_hxx <MAT_TListNodeOfListOfEdge.hxx>
-#define Handle_MAT_TListNode Handle(MAT_TListNodeOfListOfEdge)
-#define MAT_TList MAT_ListOfEdge
-#define MAT_TList_hxx <MAT_ListOfEdge.hxx>
-#define Handle_MAT_TList Handle(MAT_ListOfEdge)
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <MAT_TListNode.lxx>
+inline MAT_TListNodeOfListOfEdge::MAT_TListNodeOfListOfEdge() {}
 
-#undef Item
-#undef Item_hxx
-#undef MAT_TListNode
-#undef MAT_TListNode_hxx
-#undef Handle_MAT_TListNode
-#undef MAT_TList
-#undef MAT_TList_hxx
-#undef Handle_MAT_TList
+//=================================================================================================
+
+inline MAT_TListNodeOfListOfEdge::MAT_TListNodeOfListOfEdge(const Handle(MAT_Edge)& anitem)
+{
+  theitem = anitem;
+}
+
+//=================================================================================================
+
+inline Handle(MAT_Edge) MAT_TListNodeOfListOfEdge::GetItem() const
+{
+  return theitem;
+}
+
+//=================================================================================================
+
+inline Handle(MAT_TListNodeOfListOfEdge) MAT_TListNodeOfListOfEdge::Next() const
+{
+  return thenext;
+}
+
+//=================================================================================================
+
+inline Handle(MAT_TListNodeOfListOfEdge) MAT_TListNodeOfListOfEdge::Previous() const
+{
+  return theprevious;
+}
+
+//=================================================================================================
+
+inline void MAT_TListNodeOfListOfEdge::SetItem(const Handle(MAT_Edge)& anitem)
+{
+  theitem = anitem;
+}
+
+//=================================================================================================
+
+inline void MAT_TListNodeOfListOfEdge::Next(const Handle(MAT_TListNodeOfListOfEdge)& atlistnode)
+{
+  thenext = atlistnode;
+}
+
+//=================================================================================================
+
+inline void MAT_TListNodeOfListOfEdge::Previous(const Handle(MAT_TListNodeOfListOfEdge)& atlistnode)
+{
+  theprevious = atlistnode;
+}
 
 #endif // _MAT_TListNodeOfListOfEdge_HeaderFile

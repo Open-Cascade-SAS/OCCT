@@ -19,13 +19,44 @@
 #include <IntCurve_IConicTool.hxx>
 #include <HLRBRep_CurveTool.hxx>
 
-#define ImpTool IntCurve_IConicTool
-#define ImpTool_hxx <IntCurve_IConicTool.hxx>
-#define ParCurve Standard_Address
-#define ParCurve_hxx <Standard_Address.hxx>
-#define ParTool HLRBRep_CurveTool
-#define ParTool_hxx <HLRBRep_CurveTool.hxx>
-#define IntImpParGen_ImpParTool HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter
-#define IntImpParGen_ImpParTool_hxx                                                                \
-  <HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx>
-#include <IntImpParGen_ImpParTool.gxx>
+#include <gp_Vec2d.hxx>
+
+HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::
+  HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter(const IntCurve_IConicTool& ITool,
+                                                                 const Standard_Address&    PC)
+    : TheImpTool(ITool)
+{
+  TheParCurve = (Standard_Address)(&PC);
+}
+
+Standard_Boolean HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Value(
+  const Standard_Real Param,
+  Standard_Real&      ApproxDistance)
+{
+  ApproxDistance =
+    TheImpTool.Distance(HLRBRep_CurveTool::Value((*((Standard_Address*)(TheParCurve))), Param));
+  return (Standard_True);
+}
+
+Standard_Boolean HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Derivative(
+  const Standard_Real Param,
+  Standard_Real&      D_ApproxDistance_DV)
+{
+  gp_Pnt2d Pt;
+  gp_Vec2d TanParCurve;
+  gp_Vec2d Grad =
+    TheImpTool.GradDistance(HLRBRep_CurveTool::Value((*((Standard_Address*)(TheParCurve))), Param));
+  HLRBRep_CurveTool::D1((*((Standard_Address*)(TheParCurve))), Param, Pt, TanParCurve);
+  D_ApproxDistance_DV = Grad.Dot(TanParCurve);
+  return (Standard_True);
+}
+
+Standard_Boolean HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Values(
+  const Standard_Real Param,
+  Standard_Real&      ApproxDistance,
+  Standard_Real&      Deriv)
+{
+  this->Value(Param, ApproxDistance);
+  this->Derivative(Param, Deriv);
+  return (Standard_True);
+}

@@ -19,14 +19,43 @@
 #include <IntSurf_Quadric.hxx>
 #include <gp_Lin.hxx>
 #include <HLRBRep_LineTool.hxx>
+#include <gp_Vec.hxx>
 
-#define TheQuadric IntSurf_Quadric
-#define TheQuadric_hxx <IntSurf_Quadric.hxx>
-#define TheCurve gp_Lin
-#define TheCurve_hxx <gp_Lin.hxx>
-#define TheCurveTool HLRBRep_LineTool
-#define TheCurveTool_hxx <HLRBRep_LineTool.hxx>
-#define IntCurveSurface_QuadricCurveFunc HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf
-#define IntCurveSurface_QuadricCurveFunc_hxx                                                       \
-  <HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx>
-#include <IntCurveSurface_QuadricCurveFunc.gxx>
+HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::
+  HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf(const IntSurf_Quadric& Q, const gp_Lin& C)
+    : myQuadric(Q),
+      myCurve(C)
+{
+}
+
+Standard_Boolean HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Value(
+  const Standard_Real Param,
+  Standard_Real&      F)
+{
+  F = myQuadric.Distance(HLRBRep_LineTool::Value(myCurve, Param));
+  return (Standard_True);
+}
+
+Standard_Boolean HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Derivative(
+  const Standard_Real Param,
+  Standard_Real&      D)
+{
+  gp_Pnt P;
+  gp_Vec T;
+  HLRBRep_LineTool::D1(myCurve, Param, P, T);
+  D = T.Dot(myQuadric.Gradient(P));
+  return (Standard_True);
+}
+
+Standard_Boolean HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Values(
+  const Standard_Real Param,
+  Standard_Real&      F,
+  Standard_Real&      D)
+{
+  gp_Pnt P;
+  gp_Vec T, Grad;
+  HLRBRep_LineTool::D1(myCurve, Param, P, T);
+  myQuadric.ValAndGrad(P, F, Grad);
+  D = T.Dot(Grad);
+  return (Standard_True);
+}

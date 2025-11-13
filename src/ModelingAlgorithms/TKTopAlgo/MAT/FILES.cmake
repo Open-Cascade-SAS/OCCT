@@ -31,8 +31,6 @@ set(OCCT_MAT_FILES
   MAT_Side.hxx
   MAT_TList.gxx
   MAT_TList.lxx
-  MAT_TListNode.gxx
-  MAT_TListNode.lxx
   MAT_TListNodeOfListOfBisector.hxx
   MAT_TListNodeOfListOfBisector_0.cxx
   MAT_TListNodeOfListOfEdge.hxx

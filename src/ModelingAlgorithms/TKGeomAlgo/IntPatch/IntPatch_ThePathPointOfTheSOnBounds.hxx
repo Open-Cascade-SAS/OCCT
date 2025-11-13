@@ -75,20 +75,68 @@ private:
   Standard_Real             param;
 };
 
-#define TheVertex Handle(Adaptor3d_HVertex)
-#define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_Curve2d)
-#define TheArc_hxx <Adaptor2d_Curve2d.hxx>
-#define IntStart_PathPoint IntPatch_ThePathPointOfTheSOnBounds
-#define IntStart_PathPoint_hxx <IntPatch_ThePathPointOfTheSOnBounds.hxx>
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <IntStart_PathPoint.lxx>
+inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&                    P,
+                                                          const Standard_Real              Tol,
+                                                          const Handle(Adaptor3d_HVertex)& V,
+                                                          const Handle(Adaptor2d_Curve2d)& A,
+                                                          const Standard_Real Parameter)
+{
+  isnew = Standard_False;
+  point = P;
+  tol   = Tol;
+  vtx   = V;
+  arc   = A;
+  param = Parameter;
+}
 
-#undef TheVertex
-#undef TheVertex_hxx
-#undef TheArc
-#undef TheArc_hxx
-#undef IntStart_PathPoint
-#undef IntStart_PathPoint_hxx
+inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&                    P,
+                                                          const Standard_Real              Tol,
+                                                          const Handle(Adaptor2d_Curve2d)& A,
+                                                          const Standard_Real Parameter)
+{
+  isnew = Standard_True;
+  point = P;
+  tol   = Tol;
+  arc   = A;
+  param = Parameter;
+}
+
+inline const gp_Pnt& IntPatch_ThePathPointOfTheSOnBounds::Value() const
+{
+  return point;
+}
+
+inline Standard_Real IntPatch_ThePathPointOfTheSOnBounds::Tolerance() const
+{
+  return tol;
+}
+
+inline Standard_Boolean IntPatch_ThePathPointOfTheSOnBounds::IsNew() const
+{
+  return isnew;
+}
+
+inline const Handle(Adaptor3d_HVertex)& IntPatch_ThePathPointOfTheSOnBounds::Vertex() const
+{
+  if (isnew)
+  {
+    throw Standard_DomainError();
+  }
+  return vtx;
+}
+
+inline const Handle(Adaptor2d_Curve2d)& IntPatch_ThePathPointOfTheSOnBounds::Arc() const
+{
+  return arc;
+}
+
+inline Standard_Real IntPatch_ThePathPointOfTheSOnBounds::Parameter() const
+{
+  return param;
+}
 
 #endif // _IntPatch_ThePathPointOfTheSOnBounds_HeaderFile

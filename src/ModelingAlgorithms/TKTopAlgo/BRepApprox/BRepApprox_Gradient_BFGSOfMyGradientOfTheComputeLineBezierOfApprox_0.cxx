@@ -24,25 +24,33 @@
 #include <BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
 
-#define MultiLine BRepApprox_TheMultiLineOfApprox
-#define MultiLine_hxx <BRepApprox_TheMultiLineOfApprox.hxx>
-#define ToolLine BRepApprox_TheMultiLineToolOfApprox
-#define ToolLine_hxx <BRepApprox_TheMultiLineToolOfApprox.hxx>
-#define AppParCurves_ParLeastSquare                                                                \
-  BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox
-#define AppParCurves_ParLeastSquare_hxx                                                            \
-  <BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define AppParCurves_ResConstraint                                                                 \
-  BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox
-#define AppParCurves_ResConstraint_hxx                                                             \
-  <BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define AppParCurves_ParFunction BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox
-#define AppParCurves_ParFunction_hxx                                                               \
-  <BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define AppParCurves_Gradient_BFGS                                                                 \
-  BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox
-#define AppParCurves_Gradient_BFGS_hxx                                                             \
-  <BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define AppParCurves_Gradient BRepApprox_MyGradientOfTheComputeLineBezierOfApprox
-#define AppParCurves_Gradient_hxx <BRepApprox_MyGradientOfTheComputeLineBezierOfApprox.hxx>
-#include <AppParCurves_Gradient_BFGS.gxx>
+BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox::
+  BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox(
+    math_MultipleVarFunctionWithGradient& F,
+    const math_Vector&                    StartingPoint,
+    const Standard_Real                   Tolerance3d,
+    const Standard_Real                   Tolerance2d,
+    const Standard_Real                   Eps,
+    const Standard_Integer                NbIterations)
+    : math_BFGS(F.NbVariables(), Eps, NbIterations, Eps),
+      myTol3d(Tolerance3d),
+      myTol2d(Tolerance2d)
+{
+  Perform(F, StartingPoint);
+}
+
+Standard_Boolean BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox::
+  IsSolutionReached(math_MultipleVarFunctionWithGradient& F) const
+{
+  BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox* F1 =
+    (BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox*)&F;
+  Standard_Boolean Result, Result2;
+
+  Result               = (2.0 * fabs(TheMinimum - PreviousMinimum)
+            <= 1.e-10 * (fabs(TheMinimum) + fabs(PreviousMinimum)) + 1.e-12);
+  Standard_Real MErr3d = F1->MaxError3d();
+  Standard_Real MErr2d = F1->MaxError2d();
+
+  Result2 = ((MErr3d <= myTol3d) && (MErr2d <= myTol2d));
+  return (Result || Result2);
+}

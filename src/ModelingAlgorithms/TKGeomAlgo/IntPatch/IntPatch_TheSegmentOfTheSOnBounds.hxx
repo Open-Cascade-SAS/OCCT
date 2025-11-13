@@ -70,24 +70,50 @@ private:
   IntPatch_ThePathPointOfTheSOnBounds thelp;
 };
 
-#define TheVertex Handle(Adaptor3d_HVertex)
-#define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_Curve2d)
-#define TheArc_hxx <Adaptor2d_Curve2d.hxx>
-#define ThePathPoint IntPatch_ThePathPointOfTheSOnBounds
-#define ThePathPoint_hxx <IntPatch_ThePathPointOfTheSOnBounds.hxx>
-#define IntStart_Segment IntPatch_TheSegmentOfTheSOnBounds
-#define IntStart_Segment_hxx <IntPatch_TheSegmentOfTheSOnBounds.hxx>
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <IntStart_Segment.lxx>
+inline void IntPatch_TheSegmentOfTheSOnBounds::SetValue(const Handle(Adaptor2d_Curve2d)& A)
+{
+  hasfp = Standard_False;
+  haslp = Standard_False;
+  arc   = A;
+}
 
-#undef TheVertex
-#undef TheVertex_hxx
-#undef TheArc
-#undef TheArc_hxx
-#undef ThePathPoint
-#undef ThePathPoint_hxx
-#undef IntStart_Segment
-#undef IntStart_Segment_hxx
+inline const Handle(Adaptor2d_Curve2d)& IntPatch_TheSegmentOfTheSOnBounds::Curve() const
+{
+  return arc;
+}
+
+inline Standard_Boolean IntPatch_TheSegmentOfTheSOnBounds::HasFirstPoint() const
+{
+  return hasfp;
+}
+
+inline const IntPatch_ThePathPointOfTheSOnBounds& IntPatch_TheSegmentOfTheSOnBounds::FirstPoint()
+  const
+{
+  if (!hasfp)
+  {
+    throw Standard_DomainError();
+  }
+  return thefp;
+}
+
+inline Standard_Boolean IntPatch_TheSegmentOfTheSOnBounds::HasLastPoint() const
+{
+  return haslp;
+}
+
+inline const IntPatch_ThePathPointOfTheSOnBounds& IntPatch_TheSegmentOfTheSOnBounds::LastPoint()
+  const
+{
+  if (!haslp)
+  {
+    throw Standard_DomainError();
+  }
+  return thelp;
+}
 
 #endif // _IntPatch_TheSegmentOfTheSOnBounds_HeaderFile

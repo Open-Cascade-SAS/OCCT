@@ -70,20 +70,90 @@ private:
   TopAbs_Orientation myBTransition;
 };
 
-#define TheSubShape Standard_Real
-#define TheSubShape_hxx <Standard_Real.hxx>
-#define TheShape Standard_Integer
-#define TheShape_hxx <Standard_Integer.hxx>
-#define TopBas_Interference TopBas_TestInterference
-#define TopBas_Interference_hxx <TopBas_TestInterference.hxx>
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <TopBas_Interference.lxx>
+inline void TopBas_TestInterference::Intersection(const Standard_Real& I)
+{
+  myIntersection = I;
+}
 
-#undef TheSubShape
-#undef TheSubShape_hxx
-#undef TheShape
-#undef TheShape_hxx
-#undef TopBas_Interference
-#undef TopBas_Interference_hxx
+//=================================================================================================
+
+inline void TopBas_TestInterference::Boundary(const Standard_Integer& B)
+{
+  myBoundary = B;
+}
+
+//=================================================================================================
+
+inline void TopBas_TestInterference::Orientation(const TopAbs_Orientation Or)
+{
+  myOrientation = Or;
+}
+
+//=================================================================================================
+
+inline void TopBas_TestInterference::Transition(const TopAbs_Orientation Or)
+{
+  myTransition = Or;
+}
+
+//=================================================================================================
+
+inline void TopBas_TestInterference::BoundaryTransition(const TopAbs_Orientation Or)
+{
+  myBTransition = Or;
+}
+
+//=================================================================================================
+
+inline const Standard_Real& TopBas_TestInterference::Intersection() const
+{
+  return myIntersection;
+}
+
+//=================================================================================================
+
+inline Standard_Real& TopBas_TestInterference::ChangeIntersection()
+{
+  return myIntersection;
+}
+
+//=================================================================================================
+
+inline const Standard_Integer& TopBas_TestInterference::Boundary() const
+{
+  return myBoundary;
+}
+
+//=================================================================================================
+
+inline Standard_Integer& TopBas_TestInterference::ChangeBoundary()
+{
+  return myBoundary;
+}
+
+//=================================================================================================
+
+inline TopAbs_Orientation TopBas_TestInterference::Orientation() const
+{
+  return myOrientation;
+}
+
+//=================================================================================================
+
+inline TopAbs_Orientation TopBas_TestInterference::Transition() const
+{
+  return myTransition;
+}
+
+//=================================================================================================
+
+inline TopAbs_Orientation TopBas_TestInterference::BoundaryTransition() const
+{
+  return myBTransition;
+}
 
 #endif // _TopBas_TestInterference_HeaderFile
