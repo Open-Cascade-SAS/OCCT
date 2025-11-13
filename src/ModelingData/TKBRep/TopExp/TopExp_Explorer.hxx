@@ -145,7 +145,7 @@ public:
     {
       TopAbs_ShapeEnum ty = S.ShapeType();
 
-      if (isMoreComplex(ty))
+      if (ty > toFind)
       {
         hasMore = Standard_False;
       }
@@ -250,7 +250,7 @@ public:
 
   //! Returns the current depth of the exploration. 0 is
   //! the shape to explore itself.
-  Standard_Integer Depth() const { return myTop; }
+  Standard_Integer Depth() const { return myTop + 1; }
 
   //! Clears the content of the explorer. It will return
   //! False on More().
