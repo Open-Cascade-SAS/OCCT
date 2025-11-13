@@ -27,7 +27,7 @@
 #include <math_Matrix.hxx>
 
 // Template traits for 2D/3D point and vector operations
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 struct BSplCLib_CurveTraits
 {
   // Coordinate operations
@@ -203,8 +203,9 @@ struct BSplCLib_CurveTraits
   }
 };
 
-// Auxiliary structure providing buffers for poles and knots used in evaluation of bspline (allocated in the stack)
-template<Standard_Integer Dimension>
+// Auxiliary structure providing buffers for poles and knots used in evaluation of bspline
+// (allocated in the stack)
+template <Standard_Integer Dimension>
 struct BSplCLib_DataContainer_T
 {
   BSplCLib_DataContainer_T(Standard_Integer Degree)
@@ -222,7 +223,7 @@ struct BSplCLib_DataContainer_T
 // Reverses the order of poles in the array
 // @param[in,out] Poles - array of poles to be reversed
 // @param[in] L - length parameter for reversal
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_Reverse(Array1OfPoints& Poles, const Standard_Integer L)
 {
   Standard_Integer i, l = L;
@@ -255,7 +256,7 @@ void BSplCLib_Reverse(Array1OfPoints& Poles, const Standard_Integer L)
 // @param[out] NewMults - resulting multiplicities
 // @param[in] Tolerance - tolerance for knot removal
 // @returns true if knot removal was successful
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 Standard_Boolean BSplCLib_RemoveKnot(const Standard_Integer         Index,
                                      const Standard_Integer         Mult,
                                      const Standard_Integer         Degree,
@@ -285,17 +286,17 @@ Standard_Boolean BSplCLib_RemoveKnot(const Standard_Integer         Index,
     PLib::SetPoles(Poles, poles);
 
   if (!BSplCLib::RemoveKnot(Index,
-                  Mult,
-                  Degree,
-                  Periodic,
-                  dim,
-                  poles,
-                  Knots,
-                  Mults,
-                  newpoles,
-                  NewKnots,
-                  NewMults,
-                  Tolerance))
+                            Mult,
+                            Degree,
+                            Periodic,
+                            dim,
+                            poles,
+                            Knots,
+                            Mults,
+                            newpoles,
+                            NewKnots,
+                            NewMults,
+                            Tolerance))
     return Standard_False;
 
   if (rational)
@@ -320,7 +321,7 @@ Standard_Boolean BSplCLib_RemoveKnot(const Standard_Integer         Index,
 // @param[out] NewMults - resulting multiplicities
 // @param[in] Epsilon - tolerance for knot comparison
 // @param[in] Add - whether to add or replace knots
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_InsertKnots(const Standard_Integer         Degree,
                           const Standard_Boolean         Periodic,
                           const Array1OfPoints&          Poles,
@@ -351,18 +352,18 @@ void BSplCLib_InsertKnots(const Standard_Integer         Degree,
     PLib::SetPoles(Poles, poles);
 
   BSplCLib::InsertKnots(Degree,
-              Periodic,
-              dim,
-              poles,
-              Knots,
-              Mults,
-              AddKnots,
-              AddMults,
-              newpoles,
-              NewKnots,
-              NewMults,
-              Epsilon,
-              Add);
+                        Periodic,
+                        dim,
+                        poles,
+                        Knots,
+                        Mults,
+                        AddKnots,
+                        AddMults,
+                        newpoles,
+                        NewKnots,
+                        NewMults,
+                        Epsilon,
+                        Add);
 
   if (rational)
     PLib::GetPoles(newpoles, NewPoles, *NewWeights);
@@ -381,7 +382,7 @@ void BSplCLib_InsertKnots(const Standard_Integer         Degree,
 // @param[in] Mults - original multiplicities
 // @param[out] NewPoles - resulting poles
 // @param[out] NewWeights - resulting weights
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_InsertKnot(const Standard_Integer,
                          const Standard_Real            U,
                          const Standard_Integer         UMult,
@@ -400,21 +401,20 @@ void BSplCLib_InsertKnot(const Standard_Integer,
   m(1) = UMult;
   TColStd_Array1OfReal    nk(1, Knots.Length() + 1);
   TColStd_Array1OfInteger nm(1, Knots.Length() + 1);
-  BSplCLib_InsertKnots<Point, Vector, Array1OfPoints, Dimension>(
-              Degree,
-              Periodic,
-              Poles,
-              Weights,
-              Knots,
-              Mults,
-              k,
-              &m,
-              NewPoles,
-              NewWeights,
-              nk,
-              nm,
-              Epsilon(U),
-              Standard_True);
+  BSplCLib_InsertKnots<Point, Vector, Array1OfPoints, Dimension>(Degree,
+                                                                 Periodic,
+                                                                 Poles,
+                                                                 Weights,
+                                                                 Knots,
+                                                                 Mults,
+                                                                 k,
+                                                                 &m,
+                                                                 NewPoles,
+                                                                 NewWeights,
+                                                                 nk,
+                                                                 nm,
+                                                                 Epsilon(U),
+                                                                 Standard_True);
 }
 
 // Raises the multiplicity of a knot in the B-spline curve
@@ -428,7 +428,7 @@ void BSplCLib_InsertKnot(const Standard_Integer,
 // @param[in] Mults - original multiplicities
 // @param[out] NewPoles - resulting poles
 // @param[out] NewWeights - resulting weights
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_RaiseMultiplicity(const Standard_Integer         KnotIndex,
                                 const Standard_Integer         Mult,
                                 const Standard_Integer         Degree,
@@ -446,21 +446,20 @@ void BSplCLib_RaiseMultiplicity(const Standard_Integer         KnotIndex,
   m(1) = Mult - Mults(KnotIndex);
   TColStd_Array1OfReal    nk(1, Knots.Length());
   TColStd_Array1OfInteger nm(1, Knots.Length());
-  BSplCLib_InsertKnots<Point, Vector, Array1OfPoints, Dimension>(
-              Degree,
-              Periodic,
-              Poles,
-              Weights,
-              Knots,
-              Mults,
-              k,
-              &m,
-              NewPoles,
-              NewWeights,
-              nk,
-              nm,
-              Epsilon(k(1)),
-              Standard_True);
+  BSplCLib_InsertKnots<Point, Vector, Array1OfPoints, Dimension>(Degree,
+                                                                 Periodic,
+                                                                 Poles,
+                                                                 Weights,
+                                                                 Knots,
+                                                                 Mults,
+                                                                 k,
+                                                                 &m,
+                                                                 NewPoles,
+                                                                 NewWeights,
+                                                                 nk,
+                                                                 nm,
+                                                                 Epsilon(k(1)),
+                                                                 Standard_True);
 }
 
 // Increases the degree of the B-spline curve
@@ -475,7 +474,7 @@ void BSplCLib_RaiseMultiplicity(const Standard_Integer         KnotIndex,
 // @param[out] NewWeights - resulting weights
 // @param[out] NewKnots - resulting knot sequence
 // @param[out] NewMults - resulting multiplicities
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_IncreaseDegree(const Standard_Integer         Degree,
                              const Standard_Integer         NewDegree,
                              const Standard_Boolean         Periodic,
@@ -503,15 +502,15 @@ void BSplCLib_IncreaseDegree(const Standard_Integer         Degree,
     PLib::SetPoles(Poles, poles);
 
   BSplCLib::IncreaseDegree(Degree,
-                 NewDegree,
-                 Periodic,
-                 dim,
-                 poles,
-                 Knots,
-                 Mults,
-                 newpoles,
-                 NewKnots,
-                 NewMults);
+                           NewDegree,
+                           Periodic,
+                           dim,
+                           poles,
+                           Knots,
+                           Mults,
+                           newpoles,
+                           NewKnots,
+                           NewMults);
 
   if (rational)
     PLib::GetPoles(newpoles, NewPoles, *NewWeights);
@@ -529,7 +528,7 @@ void BSplCLib_IncreaseDegree(const Standard_Integer         Degree,
 // @param[out] NewKnots - resulting knot sequence
 // @param[out] NewPoles - resulting poles
 // @param[out] NewWeights - resulting weights
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_Unperiodize(const Standard_Integer         Degree,
                           const TColStd_Array1OfInteger& Mults,
                           const TColStd_Array1OfReal&    Knots,
@@ -575,7 +574,7 @@ void BSplCLib_Unperiodize(const Standard_Integer         Degree,
 // @param[out] NewMults - resulting multiplicities
 // @param[out] NewPoles - resulting poles
 // @param[out] NewWeights - resulting weights
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_Trimming(const Standard_Integer         Degree,
                        const Standard_Boolean         Periodic,
                        const TColStd_Array1OfReal&    Knots,
@@ -603,7 +602,17 @@ void BSplCLib_Trimming(const Standard_Integer         Degree,
   else
     PLib::SetPoles(Poles, poles);
 
-  BSplCLib::Trimming(Degree, Periodic, dim, Knots, Mults, poles, U1, U2, NewKnots, NewMults, newpoles);
+  BSplCLib::Trimming(Degree,
+                     Periodic,
+                     dim,
+                     Knots,
+                     Mults,
+                     poles,
+                     U1,
+                     U2,
+                     NewKnots,
+                     NewMults,
+                     newpoles);
 
   if (rational)
     PLib::GetPoles(newpoles, NewPoles, *NewWeights);
@@ -617,7 +626,7 @@ void BSplCLib_Trimming(const Standard_Integer         Degree,
 // @param[in] Poles - poles array
 // @param[in] Weights - optional weights for rational curves
 // @param[out] LP - local poles array for evaluation
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_BuildEval(const Standard_Integer      Degree,
                         const Standard_Integer      Index,
                         const Array1OfPoints&       Poles,
@@ -650,7 +659,7 @@ void BSplCLib_BuildEval(const Standard_Integer      Degree,
       ip++;
       if (ip > PUpper)
         ip = PLower;
-      const Point& P      = Poles(ip);
+      const Point& P  = Poles(ip);
       pole[Dimension] = w = (*Weights)(ip);
       Traits::PointToCoordsScaled(pole, P, w);
       pole += Dimension + 1;
@@ -670,18 +679,18 @@ void BSplCLib_BuildEval(const Standard_Integer      Degree,
 // @param[in] Knots - knot sequence
 // @param[in] Mults - multiplicities
 // @param[out] dc - data container for evaluation
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
-static void PrepareEval_T(Standard_Real&                 u,
-                          Standard_Integer&              index,
-                          Standard_Integer&              dim,
-                          Standard_Boolean&              rational,
-                          const Standard_Integer         Degree,
-                          const Standard_Boolean         Periodic,
-                          const Array1OfPoints&          Poles,
-                          const TColStd_Array1OfReal*    Weights,
-                          const TColStd_Array1OfReal&    Knots,
-                          const TColStd_Array1OfInteger* Mults,
-                          BSplCLib_DataContainer_T<Dimension>&  dc)
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+static void PrepareEval_T(Standard_Real&                       u,
+                          Standard_Integer&                    index,
+                          Standard_Integer&                    dim,
+                          Standard_Boolean&                    rational,
+                          const Standard_Integer               Degree,
+                          const Standard_Boolean               Periodic,
+                          const Array1OfPoints&                Poles,
+                          const TColStd_Array1OfReal*          Weights,
+                          const TColStd_Array1OfReal&          Knots,
+                          const TColStd_Array1OfInteger*       Mults,
+                          BSplCLib_DataContainer_T<Dimension>& dc)
 {
   // Set the Index
   BSplCLib::LocateParameter(Degree, Knots, Mults, u, Periodic, index, u);
@@ -705,12 +714,20 @@ static void PrepareEval_T(Standard_Real&                 u,
   if (rational)
   {
     dim = Dimension + 1;
-    BSplCLib_BuildEval<Point, Vector, Array1OfPoints, Dimension>(Degree, index, Poles, Weights, *dc.poles);
+    BSplCLib_BuildEval<Point, Vector, Array1OfPoints, Dimension>(Degree,
+                                                                 index,
+                                                                 Poles,
+                                                                 Weights,
+                                                                 *dc.poles);
   }
   else
   {
     dim = Dimension;
-    BSplCLib_BuildEval<Point, Vector, Array1OfPoints, Dimension>(Degree, index, Poles, BSplCLib::NoWeights(), *dc.poles);
+    BSplCLib_BuildEval<Point, Vector, Array1OfPoints, Dimension>(Degree,
+                                                                 index,
+                                                                 Poles,
+                                                                 BSplCLib::NoWeights(),
+                                                                 *dc.poles);
   }
 }
 
@@ -724,7 +741,7 @@ static void PrepareEval_T(Standard_Real&                 u,
 // @param[in] Knots - knot sequence
 // @param[in] Mults - multiplicities
 // @param[out] P - resulting point
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_D0(const Standard_Real            U,
                  const Standard_Integer         Index,
                  const Standard_Integer         Degree,
@@ -737,11 +754,21 @@ void BSplCLib_D0(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
+  Standard_Integer                    dim, index = Index;
+  Standard_Real                       u = U;
+  Standard_Boolean                    rational;
   BSplCLib_DataContainer_T<Dimension> dc(Degree);
-  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
+  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
+                                                          index,
+                                                          dim,
+                                                          rational,
+                                                          Degree,
+                                                          Periodic,
+                                                          Poles,
+                                                          Weights,
+                                                          Knots,
+                                                          Mults,
+                                                          dc);
   BSplCLib::Eval(u, Degree, *dc.knots, dim, *dc.poles);
 
   if (rational)
@@ -764,7 +791,7 @@ void BSplCLib_D0(const Standard_Real            U,
 // @param[in] Mults - multiplicities
 // @param[out] P - resulting point
 // @param[out] V - first derivative vector
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_D1(const Standard_Real            U,
                  const Standard_Integer         Index,
                  const Standard_Integer         Degree,
@@ -778,11 +805,21 @@ void BSplCLib_D1(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
+  Standard_Integer                    dim, index = Index;
+  Standard_Real                       u = U;
+  Standard_Boolean                    rational;
   BSplCLib_DataContainer_T<Dimension> dc(Degree);
-  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
+  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
+                                                          index,
+                                                          dim,
+                                                          rational,
+                                                          Degree,
+                                                          Periodic,
+                                                          Poles,
+                                                          Weights,
+                                                          Knots,
+                                                          Mults,
+                                                          dc);
   BSplCLib::Bohm(u, Degree, 1, *dc.knots, dim, *dc.poles);
   Standard_Real* result = dc.poles;
   if (rational)
@@ -807,7 +844,7 @@ void BSplCLib_D1(const Standard_Real            U,
 // @param[out] P - resulting point
 // @param[out] V1 - first derivative vector
 // @param[out] V2 - second derivative vector
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_D2(const Standard_Real            U,
                  const Standard_Integer         Index,
                  const Standard_Integer         Degree,
@@ -822,11 +859,21 @@ void BSplCLib_D2(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
+  Standard_Integer                    dim, index = Index;
+  Standard_Real                       u = U;
+  Standard_Boolean                    rational;
   BSplCLib_DataContainer_T<Dimension> dc(Degree);
-  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
+  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
+                                                          index,
+                                                          dim,
+                                                          rational,
+                                                          Degree,
+                                                          Periodic,
+                                                          Poles,
+                                                          Weights,
+                                                          Knots,
+                                                          Mults,
+                                                          dc);
   BSplCLib::Bohm(u, Degree, 2, *dc.knots, dim, *dc.poles);
   Standard_Real* result = dc.poles;
   if (rational)
@@ -856,7 +903,7 @@ void BSplCLib_D2(const Standard_Real            U,
 // @param[out] V1 - first derivative vector
 // @param[out] V2 - second derivative vector
 // @param[out] V3 - third derivative vector
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_D3(const Standard_Real            U,
                  const Standard_Integer         Index,
                  const Standard_Integer         Degree,
@@ -872,11 +919,21 @@ void BSplCLib_D3(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
+  Standard_Integer                    dim, index = Index;
+  Standard_Real                       u = U;
+  Standard_Boolean                    rational;
   BSplCLib_DataContainer_T<Dimension> dc(Degree);
-  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
+  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
+                                                          index,
+                                                          dim,
+                                                          rational,
+                                                          Degree,
+                                                          Periodic,
+                                                          Poles,
+                                                          Weights,
+                                                          Knots,
+                                                          Mults,
+                                                          dc);
   BSplCLib::Bohm(u, Degree, 3, *dc.knots, dim, *dc.poles);
   Standard_Real* result = dc.poles;
   if (rational)
@@ -908,7 +965,7 @@ void BSplCLib_D3(const Standard_Real            U,
 // @param[in] Knots - knot sequence
 // @param[in] Mults - multiplicities
 // @param[out] VN - Nth derivative vector
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_DN(const Standard_Real            U,
                  const Standard_Integer         N,
                  const Standard_Integer         Index,
@@ -922,11 +979,21 @@ void BSplCLib_DN(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
+  Standard_Integer                    dim, index = Index;
+  Standard_Real                       u = U;
+  Standard_Boolean                    rational;
   BSplCLib_DataContainer_T<Dimension> dc(Degree);
-  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
+  PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
+                                                          index,
+                                                          dim,
+                                                          rational,
+                                                          Degree,
+                                                          Periodic,
+                                                          Poles,
+                                                          Weights,
+                                                          Knots,
+                                                          Mults,
+                                                          dc);
   BSplCLib::Bohm(u, Degree, N, *dc.knots, dim, *dc.poles);
 
   if (rational)
@@ -953,7 +1020,7 @@ void BSplCLib_DN(const Standard_Real            U,
 // @param[in] LowerBandWidth - lower bandwidth of the matrix
 // @param[in,out] PolesArray - poles array containing right-hand side and receiving solution
 // @returns error status
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 Standard_Integer BSplCLib_SolveBandedSystem(const math_Matrix&     Matrix,
                                             const Standard_Integer UpperBandWidth,
                                             const Standard_Integer LowerBandWidth,
@@ -962,11 +1029,7 @@ Standard_Integer BSplCLib_SolveBandedSystem(const math_Matrix&     Matrix,
   Standard_Real* PArray;
   PArray = (Standard_Real*)&PolesArray(PolesArray.Lower());
 
-  return BSplCLib::SolveBandedSystem(Matrix,
-                                     UpperBandWidth,
-                                     LowerBandWidth,
-                                     Dimension,
-                                     PArray[0]);
+  return BSplCLib::SolveBandedSystem(Matrix, UpperBandWidth, LowerBandWidth, Dimension, PArray[0]);
 }
 
 // Solves a banded system of equations for rational B-spline poles with weights
@@ -977,7 +1040,7 @@ Standard_Integer BSplCLib_SolveBandedSystem(const math_Matrix&     Matrix,
 // @param[in,out] PolesArray - poles array containing right-hand side and receiving solution
 // @param[in,out] WeightsArray - weights array
 // @returns error status
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 Standard_Integer BSplCLib_SolveBandedSystem(const math_Matrix&     Matrix,
                                             const Standard_Integer UpperBandWidth,
                                             const Standard_Integer LowerBandWidth,
@@ -1008,7 +1071,7 @@ Standard_Integer BSplCLib_SolveBandedSystem(const math_Matrix&     Matrix,
 // @param[in] WeightsArray - weights array
 // @param[out] aPoint - resulting point
 // @param[out] aWeight - resulting weight
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_Eval(const Standard_Real         Parameter,
                    const Standard_Boolean      PeriodicFlag,
                    const Standard_Boolean      HomogeneousFlag,
@@ -1078,7 +1141,7 @@ void BSplCLib_Eval(const Standard_Real         Parameter,
 // @param[in] PolesArray - cached poles array
 // @param[in] WeightsArray - optional cached weights
 // @param[out] aPoint - resulting point
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_CacheD0(const Standard_Real         Parameter,
                       const Standard_Integer      Degree,
                       const Standard_Real         CacheParameter,
@@ -1119,7 +1182,7 @@ void BSplCLib_CacheD0(const Standard_Real         Parameter,
 // @param[in] WeightsArray - optional cached weights
 // @param[out] aPoint - resulting point
 // @param[out] aVector - first derivative vector
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_CacheD1(const Standard_Real         Parameter,
                       const Standard_Integer      Degree,
                       const Standard_Real         CacheParameter,
@@ -1171,7 +1234,7 @@ void BSplCLib_CacheD1(const Standard_Real         Parameter,
 // @param[out] aPoint - resulting point
 // @param[out] aVector1 - first derivative vector
 // @param[out] aVector2 - second derivative vector
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_CacheD2(const Standard_Real         Parameter,
                       const Standard_Integer      Degree,
                       const Standard_Real         CacheParameter,
@@ -1186,12 +1249,12 @@ void BSplCLib_CacheD2(const Standard_Real         Parameter,
 
   Standard_Integer ii, Index, EndIndex;
   Standard_Real    LocalPDerivatives[(Dimension << 1) + Dimension];
-  Standard_Real  LocalWDerivatives[3], NewParameter, Factor;
-  Standard_Real* PArray    = (Standard_Real*)&(PolesArray(PolesArray.Lower()));
-  Standard_Real* myPoint   = (Standard_Real*)&aPoint;
-  Standard_Real* myVector1 = (Standard_Real*)&aVector1;
-  Standard_Real* myVector2 = (Standard_Real*)&aVector2;
-  NewParameter             = (Parameter - CacheParameter) / SpanLenght;
+  Standard_Real    LocalWDerivatives[3], NewParameter, Factor;
+  Standard_Real*   PArray    = (Standard_Real*)&(PolesArray(PolesArray.Lower()));
+  Standard_Real*   myPoint   = (Standard_Real*)&aPoint;
+  Standard_Real*   myVector1 = (Standard_Real*)&aVector1;
+  Standard_Real*   myVector2 = (Standard_Real*)&aVector2;
+  NewParameter               = (Parameter - CacheParameter) / SpanLenght;
   PLib::EvalPolynomial(NewParameter, 2, Degree, Dimension, PArray[0], LocalPDerivatives[0]);
 
   Factor   = 1.0e0 / SpanLenght;
@@ -1254,7 +1317,7 @@ void BSplCLib_CacheD2(const Standard_Real         Parameter,
 // @param[out] aVector1 - first derivative vector
 // @param[out] aVector2 - second derivative vector
 // @param[out] aVector3 - third derivative vector
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_CacheD3(const Standard_Real         Parameter,
                       const Standard_Integer      Degree,
                       const Standard_Real         CacheParameter,
@@ -1270,13 +1333,13 @@ void BSplCLib_CacheD3(const Standard_Real         Parameter,
 
   Standard_Integer ii, Index, EndIndex;
   Standard_Real    LocalPDerivatives[Dimension << 2];
-  Standard_Real  LocalWDerivatives[4], Factor, NewParameter;
-  Standard_Real* PArray    = (Standard_Real*)&(PolesArray(PolesArray.Lower()));
-  Standard_Real* myPoint   = (Standard_Real*)&aPoint;
-  Standard_Real* myVector1 = (Standard_Real*)&aVector1;
-  Standard_Real* myVector2 = (Standard_Real*)&aVector2;
-  Standard_Real* myVector3 = (Standard_Real*)&aVector3;
-  NewParameter             = (Parameter - CacheParameter) / SpanLenght;
+  Standard_Real    LocalWDerivatives[4], Factor, NewParameter;
+  Standard_Real*   PArray    = (Standard_Real*)&(PolesArray(PolesArray.Lower()));
+  Standard_Real*   myPoint   = (Standard_Real*)&aPoint;
+  Standard_Real*   myVector1 = (Standard_Real*)&aVector1;
+  Standard_Real*   myVector2 = (Standard_Real*)&aVector2;
+  Standard_Real*   myVector3 = (Standard_Real*)&aVector3;
+  NewParameter               = (Parameter - CacheParameter) / SpanLenght;
   PLib::EvalPolynomial(NewParameter, 3, Degree, Dimension, PArray[0], LocalPDerivatives[0]);
 
   Index = (Degree + 1) * Dimension;
@@ -1339,7 +1402,7 @@ void BSplCLib_CacheD3(const Standard_Real         Parameter,
 // @param[in] Weights - optional weights for rational curves
 // @param[out] CachePoles - cached poles array
 // @param[out] CacheWeights - cached weights array
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_BuildCache(const Standard_Real         U,
                          const Standard_Real         SpanDomain,
                          const Standard_Boolean      Periodic,
@@ -1358,16 +1421,16 @@ void BSplCLib_BuildCache(const Standard_Real         U,
 
   BSplCLib_DataContainer_T<Dimension> dc(Degree);
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
-              index,
-              LocalDimension,
-              rational,
-              Degree,
-              Periodic,
-              Poles,
-              Weights,
-              FlatKnots,
-              (BSplCLib::NoMults()),
-              dc);
+                                                          index,
+                                                          LocalDimension,
+                                                          rational,
+                                                          Degree,
+                                                          Periodic,
+                                                          Poles,
+                                                          Weights,
+                                                          FlatKnots,
+                                                          (BSplCLib::NoMults()),
+                                                          dc);
 
   BSplCLib::Bohm(u, Degree, Degree, *dc.knots, LocalDimension, *dc.poles);
 
@@ -1422,7 +1485,7 @@ void BSplCLib_BuildCache(const Standard_Real         U,
 // @param[in] thePoles - poles array
 // @param[in] theWeights - optional weights for rational curves
 // @param[out] theCacheArray - 2D cache array
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_BuildCache(const Standard_Real         theParameter,
                          const Standard_Real         theSpanDomain,
                          const Standard_Boolean      thePeriodicFlag,
@@ -1440,19 +1503,18 @@ void BSplCLib_BuildCache(const Standard_Real         theParameter,
 
   BSplCLib_DataContainer_T<Dimension> dc(theDegree);
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(aParam,
-              anIndex,
-              aDimension,
-              isRational,
-              theDegree,
-              thePeriodicFlag,
-              thePoles,
-              theWeights,
-              theFlatKnots,
-              (BSplCLib::NoMults()),
-              dc);
+                                                          anIndex,
+                                                          aDimension,
+                                                          isRational,
+                                                          theDegree,
+                                                          thePeriodicFlag,
+                                                          thePoles,
+                                                          theWeights,
+                                                          theFlatKnots,
+                                                          (BSplCLib::NoMults()),
+                                                          dc);
 
-  Standard_Integer aCacheShift =
-    (theWeights != NULL && !isRational) ? aDimension + 1 : aDimension;
+  Standard_Integer aCacheShift = (theWeights != NULL && !isRational) ? aDimension + 1 : aDimension;
 
   BSplCLib::Bohm(aParam, theDegree, theDegree, *dc.knots, aDimension, *dc.poles);
 
@@ -1488,7 +1550,7 @@ void BSplCLib_BuildCache(const Standard_Real         theParameter,
 // @param[in] ContactOrderArray - contact order at each point
 // @param[in,out] Poles - poles array to be computed
 // @param[out] InversionProblem - status of matrix inversion
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_Interpolate(const Standard_Integer         Degree,
                           const TColStd_Array1OfReal&    FlatKnots,
                           const TColStd_Array1OfReal&    Parameters,
@@ -1518,7 +1580,7 @@ void BSplCLib_Interpolate(const Standard_Integer         Degree,
 // @param[in,out] Poles - poles array to be computed
 // @param[in,out] Weights - weights array
 // @param[out] InversionProblem - status of matrix inversion
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_Interpolate(const Standard_Integer         Degree,
                           const TColStd_Array1OfReal&    FlatKnots,
                           const TColStd_Array1OfReal&    Parameters,
@@ -1552,7 +1614,7 @@ void BSplCLib_Interpolate(const Standard_Integer         Degree,
 // @param[out] FirstIndex - first modified pole index
 // @param[out] LastIndex - last modified pole index
 // @param[out] NewPoles - resulting poles
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_MovePoint(const Standard_Real         U,
                         const Vector&               Displ,
                         const Standard_Integer      Index1,
@@ -1698,7 +1760,7 @@ void BSplCLib_MovePoint(const Standard_Real         U,
 // @param[in] FlatKnots - flat knot sequence
 // @param[out] NewPoles - resulting poles
 // @param[out] ErrorStatus - error status of the operation
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_MovePointAndTangent(const Standard_Real         U,
                                   const Vector&               Delta,
                                   const Vector&               DeltaDerivatives,
@@ -1727,18 +1789,18 @@ void BSplCLib_MovePointAndTangent(const Standard_Real         U,
 
   new_poles_array = (Standard_Real*)&NewPoles(NewPoles.Lower());
   BSplCLib::MovePointAndTangent(U,
-                      Dimension,
-                      delta_array[0],
-                      delta_derivative_array[0],
-                      Tolerance,
-                      Degree,
-                      StartingCondition,
-                      EndingCondition,
-                      poles_array[0],
-                      Weights,
-                      FlatKnots,
-                      new_poles_array[0],
-                      ErrorStatus);
+                                Dimension,
+                                delta_array[0],
+                                delta_derivative_array[0],
+                                Tolerance,
+                                Degree,
+                                StartingCondition,
+                                EndingCondition,
+                                poles_array[0],
+                                Weights,
+                                FlatKnots,
+                                new_poles_array[0],
+                                ErrorStatus);
 }
 
 // Computes the parametric tolerance corresponding to a 3D tolerance
@@ -1749,7 +1811,7 @@ void BSplCLib_MovePointAndTangent(const Standard_Real         U,
 // @param[in] Degree - degree of the B-spline
 // @param[in] Tolerance3D - 3D tolerance
 // @param[out] UTolerance - computed parametric tolerance
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_Resolution(const Array1OfPoints&       Poles,
                          const TColStd_Array1OfReal* Weights,
                          const Standard_Integer      NumPoles,
@@ -1779,7 +1841,7 @@ void BSplCLib_Resolution(const Array1OfPoints&       Poles,
 // @param[in] NewDegree - degree of result
 // @param[out] NewPoles - resulting poles
 // @param[out] theStatus - status of the operation
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
                                const Standard_Integer            BSplineDegree,
                                const TColStd_Array1OfReal&       BSplineFlatKnots,
@@ -1818,7 +1880,7 @@ void BSplCLib_FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
 // @param[in] NewDegree - degree of result
 // @param[out] NewPoles - resulting poles
 // @param[out] theStatus - status of the operation
-template<typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 void BSplCLib_FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionPtr,
                                      const Standard_Integer            BSplineDegree,
                                      const TColStd_Array1OfReal&       BSplineFlatKnots,

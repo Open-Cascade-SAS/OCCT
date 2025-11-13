@@ -54,9 +54,19 @@ Standard_Boolean BSplCLib::RemoveKnot(const Standard_Integer         Index,
                                       TColStd_Array1OfInteger&       NewMults,
                                       const Standard_Real            Tolerance)
 {
-  return BSplCLib_RemoveKnot<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Index, Mult, Degree, Periodic, Poles, Weights, Knots, Mults,
-    NewPoles, NewWeights, NewKnots, NewMults, Tolerance);
+  return BSplCLib_RemoveKnot<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Index,
+                                                                    Mult,
+                                                                    Degree,
+                                                                    Periodic,
+                                                                    Poles,
+                                                                    Weights,
+                                                                    Knots,
+                                                                    Mults,
+                                                                    NewPoles,
+                                                                    NewWeights,
+                                                                    NewKnots,
+                                                                    NewMults,
+                                                                    Tolerance);
 }
 
 //==================================================================================================
@@ -76,9 +86,20 @@ void BSplCLib::InsertKnots(const Standard_Integer         Degree,
                            const Standard_Real            Epsilon,
                            const Standard_Boolean         Add)
 {
-  BSplCLib_InsertKnots<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Degree, Periodic, Poles, Weights, Knots, Mults, AddKnots, AddMults,
-    NewPoles, NewWeights, NewKnots, NewMults, Epsilon, Add);
+  BSplCLib_InsertKnots<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Degree,
+                                                              Periodic,
+                                                              Poles,
+                                                              Weights,
+                                                              Knots,
+                                                              Mults,
+                                                              AddKnots,
+                                                              AddMults,
+                                                              NewPoles,
+                                                              NewWeights,
+                                                              NewKnots,
+                                                              NewMults,
+                                                              Epsilon,
+                                                              Add);
 }
 
 //==================================================================================================
@@ -95,9 +116,17 @@ void BSplCLib::InsertKnot(const Standard_Integer,
                           TColgp_Array1OfPnt&            NewPoles,
                           TColStd_Array1OfReal*          NewWeights)
 {
-  BSplCLib_InsertKnot<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    0, U, UMult, Degree, Periodic, Poles, Weights, Knots, Mults,
-    NewPoles, NewWeights);
+  BSplCLib_InsertKnot<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(0,
+                                                             U,
+                                                             UMult,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             NewPoles,
+                                                             NewWeights);
 }
 
 //==================================================================================================
@@ -113,9 +142,16 @@ void BSplCLib::RaiseMultiplicity(const Standard_Integer         KnotIndex,
                                  TColgp_Array1OfPnt&            NewPoles,
                                  TColStd_Array1OfReal*          NewWeights)
 {
-  BSplCLib_RaiseMultiplicity<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    KnotIndex, Mult, Degree, Periodic, Poles, Weights, Knots, Mults,
-    NewPoles, NewWeights);
+  BSplCLib_RaiseMultiplicity<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(KnotIndex,
+                                                                    Mult,
+                                                                    Degree,
+                                                                    Periodic,
+                                                                    Poles,
+                                                                    Weights,
+                                                                    Knots,
+                                                                    Mults,
+                                                                    NewPoles,
+                                                                    NewWeights);
 }
 
 //==================================================================================================
@@ -132,9 +168,17 @@ void BSplCLib::IncreaseDegree(const Standard_Integer         Degree,
                               TColStd_Array1OfReal&          NewKnots,
                               TColStd_Array1OfInteger&       NewMults)
 {
-  BSplCLib_IncreaseDegree<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Degree, NewDegree, Periodic, Poles, Weights, Knots, Mults,
-    NewPoles, NewWeights, NewKnots, NewMults);
+  BSplCLib_IncreaseDegree<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Degree,
+                                                                 NewDegree,
+                                                                 Periodic,
+                                                                 Poles,
+                                                                 Weights,
+                                                                 Knots,
+                                                                 Mults,
+                                                                 NewPoles,
+                                                                 NewWeights,
+                                                                 NewKnots,
+                                                                 NewMults);
 }
 
 //==================================================================================================
@@ -149,8 +193,15 @@ void BSplCLib::Unperiodize(const Standard_Integer         Degree,
                            TColgp_Array1OfPnt&            NewPoles,
                            TColStd_Array1OfReal*          NewWeights)
 {
-  BSplCLib_Unperiodize<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Degree, Mults, Knots, Poles, Weights, NewMults, NewKnots, NewPoles, NewWeights);
+  BSplCLib_Unperiodize<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Degree,
+                                                              Mults,
+                                                              Knots,
+                                                              Poles,
+                                                              Weights,
+                                                              NewMults,
+                                                              NewKnots,
+                                                              NewPoles,
+                                                              NewWeights);
 }
 
 //==================================================================================================
@@ -168,9 +219,18 @@ void BSplCLib::Trimming(const Standard_Integer         Degree,
                         TColgp_Array1OfPnt&            NewPoles,
                         TColStd_Array1OfReal*          NewWeights)
 {
-  BSplCLib_Trimming<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Degree, Periodic, Knots, Mults, Poles, Weights, U1, U2,
-    NewKnots, NewMults, NewPoles, NewWeights);
+  BSplCLib_Trimming<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Degree,
+                                                           Periodic,
+                                                           Knots,
+                                                           Mults,
+                                                           Poles,
+                                                           Weights,
+                                                           U1,
+                                                           U2,
+                                                           NewKnots,
+                                                           NewMults,
+                                                           NewPoles,
+                                                           NewWeights);
 }
 
 //==================================================================================================
@@ -181,8 +241,7 @@ void BSplCLib::BuildEval(const Standard_Integer      Degree,
                          const TColStd_Array1OfReal* Weights,
                          Standard_Real&              LP)
 {
-  BSplCLib_BuildEval<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Degree, Index, Poles, Weights, LP);
+  BSplCLib_BuildEval<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Degree, Index, Poles, Weights, LP);
 }
 
 //==================================================================================================
@@ -197,8 +256,15 @@ void BSplCLib::D0(const Standard_Real            U,
                   const TColStd_Array1OfInteger* Mults,
                   gp_Pnt&                        P)
 {
-  BSplCLib_D0<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P);
+  BSplCLib_D0<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(U,
+                                                     Index,
+                                                     Degree,
+                                                     Periodic,
+                                                     Poles,
+                                                     Weights,
+                                                     Knots,
+                                                     Mults,
+                                                     P);
 }
 
 //==================================================================================================
@@ -214,8 +280,16 @@ void BSplCLib::D1(const Standard_Real            U,
                   gp_Pnt&                        P,
                   gp_Vec&                        V)
 {
-  BSplCLib_D1<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P, V);
+  BSplCLib_D1<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(U,
+                                                     Index,
+                                                     Degree,
+                                                     Periodic,
+                                                     Poles,
+                                                     Weights,
+                                                     Knots,
+                                                     Mults,
+                                                     P,
+                                                     V);
 }
 
 //==================================================================================================
@@ -232,8 +306,17 @@ void BSplCLib::D2(const Standard_Real            U,
                   gp_Vec&                        V1,
                   gp_Vec&                        V2)
 {
-  BSplCLib_D2<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P, V1, V2);
+  BSplCLib_D2<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(U,
+                                                     Index,
+                                                     Degree,
+                                                     Periodic,
+                                                     Poles,
+                                                     Weights,
+                                                     Knots,
+                                                     Mults,
+                                                     P,
+                                                     V1,
+                                                     V2);
 }
 
 //==================================================================================================
@@ -251,8 +334,18 @@ void BSplCLib::D3(const Standard_Real            U,
                   gp_Vec&                        V2,
                   gp_Vec&                        V3)
 {
-  BSplCLib_D3<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    U, Index, Degree, Periodic, Poles, Weights, Knots, Mults, P, V1, V2, V3);
+  BSplCLib_D3<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(U,
+                                                     Index,
+                                                     Degree,
+                                                     Periodic,
+                                                     Poles,
+                                                     Weights,
+                                                     Knots,
+                                                     Mults,
+                                                     P,
+                                                     V1,
+                                                     V2,
+                                                     V3);
 }
 
 //==================================================================================================
@@ -268,8 +361,16 @@ void BSplCLib::DN(const Standard_Real            U,
                   const TColStd_Array1OfInteger* Mults,
                   gp_Vec&                        VN)
 {
-  BSplCLib_DN<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    U, N, Index, Degree, Periodic, Poles, Weights, Knots, Mults, VN);
+  BSplCLib_DN<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(U,
+                                                     N,
+                                                     Index,
+                                                     Degree,
+                                                     Periodic,
+                                                     Poles,
+                                                     Weights,
+                                                     Knots,
+                                                     Mults,
+                                                     VN);
 }
 
 //==================================================================================================
@@ -279,8 +380,10 @@ Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
                                              const Standard_Integer LowerBandWidth,
                                              TColgp_Array1OfPnt&    PolesArray)
 {
-  return BSplCLib_SolveBandedSystem<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Matrix, UpperBandWidth, LowerBandWidth, PolesArray);
+  return BSplCLib_SolveBandedSystem<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Matrix,
+                                                                           UpperBandWidth,
+                                                                           LowerBandWidth,
+                                                                           PolesArray);
 }
 
 //==================================================================================================
@@ -292,8 +395,12 @@ Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
                                              TColgp_Array1OfPnt&    PolesArray,
                                              TColStd_Array1OfReal&  WeightsArray)
 {
-  return BSplCLib_SolveBandedSystem<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Matrix, UpperBandWidth, LowerBandWidth, HomogeneousFlag, PolesArray, WeightsArray);
+  return BSplCLib_SolveBandedSystem<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Matrix,
+                                                                           UpperBandWidth,
+                                                                           LowerBandWidth,
+                                                                           HomogeneousFlag,
+                                                                           PolesArray,
+                                                                           WeightsArray);
 }
 
 //==================================================================================================
@@ -309,9 +416,16 @@ void BSplCLib::Eval(const Standard_Real         Parameter,
                     gp_Pnt&                     aPoint,
                     Standard_Real&              aWeight)
 {
-  BSplCLib_Eval<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Parameter, PeriodicFlag, HomogeneousFlag, ExtrapMode, Degree,
-    FlatKnots, PolesArray, WeightsArray, aPoint, aWeight);
+  BSplCLib_Eval<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Parameter,
+                                                       PeriodicFlag,
+                                                       HomogeneousFlag,
+                                                       ExtrapMode,
+                                                       Degree,
+                                                       FlatKnots,
+                                                       PolesArray,
+                                                       WeightsArray,
+                                                       aPoint,
+                                                       aWeight);
 }
 
 //==================================================================================================
@@ -324,8 +438,13 @@ void BSplCLib::CacheD0(const Standard_Real         Parameter,
                        const TColStd_Array1OfReal* WeightsArray,
                        gp_Pnt&                     aPoint)
 {
-  BSplCLib_CacheD0<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Parameter, Degree, CacheParameter, SpanLenght, PolesArray, WeightsArray, aPoint);
+  BSplCLib_CacheD0<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Parameter,
+                                                          Degree,
+                                                          CacheParameter,
+                                                          SpanLenght,
+                                                          PolesArray,
+                                                          WeightsArray,
+                                                          aPoint);
 }
 
 //==================================================================================================
@@ -339,8 +458,14 @@ void BSplCLib::CacheD1(const Standard_Real         Parameter,
                        gp_Pnt&                     aPoint,
                        gp_Vec&                     aVector)
 {
-  BSplCLib_CacheD1<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Parameter, Degree, CacheParameter, SpanLenght, PolesArray, WeightsArray, aPoint, aVector);
+  BSplCLib_CacheD1<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Parameter,
+                                                          Degree,
+                                                          CacheParameter,
+                                                          SpanLenght,
+                                                          PolesArray,
+                                                          WeightsArray,
+                                                          aPoint,
+                                                          aVector);
 }
 
 //==================================================================================================
@@ -355,9 +480,15 @@ void BSplCLib::CacheD2(const Standard_Real         Parameter,
                        gp_Vec&                     aVector1,
                        gp_Vec&                     aVector2)
 {
-  BSplCLib_CacheD2<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Parameter, Degree, CacheParameter, SpanLenght, PolesArray, WeightsArray,
-    aPoint, aVector1, aVector2);
+  BSplCLib_CacheD2<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Parameter,
+                                                          Degree,
+                                                          CacheParameter,
+                                                          SpanLenght,
+                                                          PolesArray,
+                                                          WeightsArray,
+                                                          aPoint,
+                                                          aVector1,
+                                                          aVector2);
 }
 
 //==================================================================================================
@@ -373,9 +504,16 @@ void BSplCLib::CacheD3(const Standard_Real         Parameter,
                        gp_Vec&                     aVector2,
                        gp_Vec&                     aVector3)
 {
-  BSplCLib_CacheD3<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Parameter, Degree, CacheParameter, SpanLenght, PolesArray, WeightsArray,
-    aPoint, aVector1, aVector2, aVector3);
+  BSplCLib_CacheD3<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Parameter,
+                                                          Degree,
+                                                          CacheParameter,
+                                                          SpanLenght,
+                                                          PolesArray,
+                                                          WeightsArray,
+                                                          aPoint,
+                                                          aVector1,
+                                                          aVector2,
+                                                          aVector3);
 }
 
 //==================================================================================================
@@ -390,9 +528,15 @@ void BSplCLib::BuildCache(const Standard_Real         U,
                           TColgp_Array1OfPnt&         CachePoles,
                           TColStd_Array1OfReal*       CacheWeights)
 {
-  BSplCLib_BuildCache<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    U, SpanDomain, Periodic, Degree, FlatKnots, Poles, Weights,
-    CachePoles, CacheWeights);
+  BSplCLib_BuildCache<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(U,
+                                                             SpanDomain,
+                                                             Periodic,
+                                                             Degree,
+                                                             FlatKnots,
+                                                             Poles,
+                                                             Weights,
+                                                             CachePoles,
+                                                             CacheWeights);
 }
 
 //==================================================================================================
@@ -407,9 +551,15 @@ void BSplCLib::BuildCache(const Standard_Real         theParameter,
                           const TColStd_Array1OfReal* theWeights,
                           TColStd_Array2OfReal&       theCacheArray)
 {
-  BSplCLib_BuildCache<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    theParameter, theSpanDomain, thePeriodicFlag, theDegree, theSpanIndex,
-    theFlatKnots, thePoles, theWeights, theCacheArray);
+  BSplCLib_BuildCache<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(theParameter,
+                                                             theSpanDomain,
+                                                             thePeriodicFlag,
+                                                             theDegree,
+                                                             theSpanIndex,
+                                                             theFlatKnots,
+                                                             thePoles,
+                                                             theWeights,
+                                                             theCacheArray);
 }
 
 //==================================================================================================
@@ -421,8 +571,12 @@ void BSplCLib::Interpolate(const Standard_Integer         Degree,
                            TColgp_Array1OfPnt&            Poles,
                            Standard_Integer&              InversionProblem)
 {
-  BSplCLib_Interpolate<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Degree, FlatKnots, Parameters, ContactOrderArray, Poles, InversionProblem);
+  BSplCLib_Interpolate<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Degree,
+                                                              FlatKnots,
+                                                              Parameters,
+                                                              ContactOrderArray,
+                                                              Poles,
+                                                              InversionProblem);
 }
 
 //==================================================================================================
@@ -435,8 +589,13 @@ void BSplCLib::Interpolate(const Standard_Integer         Degree,
                            TColStd_Array1OfReal&          Weights,
                            Standard_Integer&              InversionProblem)
 {
-  BSplCLib_Interpolate<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Degree, FlatKnots, Parameters, ContactOrderArray, Poles, Weights, InversionProblem);
+  BSplCLib_Interpolate<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Degree,
+                                                              FlatKnots,
+                                                              Parameters,
+                                                              ContactOrderArray,
+                                                              Poles,
+                                                              Weights,
+                                                              InversionProblem);
 }
 
 //==================================================================================================
@@ -453,9 +612,17 @@ void BSplCLib::MovePoint(const Standard_Real         U,
                          Standard_Integer&           LastIndex,
                          TColgp_Array1OfPnt&         NewPoles)
 {
-  BSplCLib_MovePoint<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    U, Displ, Index1, Index2, Degree, Poles, Weights, FlatKnots,
-    FirstIndex, LastIndex, NewPoles);
+  BSplCLib_MovePoint<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(U,
+                                                            Displ,
+                                                            Index1,
+                                                            Index2,
+                                                            Degree,
+                                                            Poles,
+                                                            Weights,
+                                                            FlatKnots,
+                                                            FirstIndex,
+                                                            LastIndex,
+                                                            NewPoles);
 }
 
 //==================================================================================================
@@ -473,9 +640,18 @@ void BSplCLib::MovePointAndTangent(const Standard_Real         U,
                                    TColgp_Array1OfPnt&         NewPoles,
                                    Standard_Integer&           ErrorStatus)
 {
-  BSplCLib_MovePointAndTangent<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    U, Delta, DeltaDerivatives, Tolerance, Degree, StartingCondition, EndingCondition,
-    Poles, Weights, FlatKnots, NewPoles, ErrorStatus);
+  BSplCLib_MovePointAndTangent<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(U,
+                                                                      Delta,
+                                                                      DeltaDerivatives,
+                                                                      Tolerance,
+                                                                      Degree,
+                                                                      StartingCondition,
+                                                                      EndingCondition,
+                                                                      Poles,
+                                                                      Weights,
+                                                                      FlatKnots,
+                                                                      NewPoles,
+                                                                      ErrorStatus);
 }
 
 //==================================================================================================
@@ -488,8 +664,13 @@ void BSplCLib::Resolution(const TColgp_Array1OfPnt&   Poles,
                           const Standard_Real         Tolerance3D,
                           Standard_Real&              UTolerance)
 {
-  BSplCLib_Resolution<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    Poles, Weights, NumPoles, FlatKnots, Degree, Tolerance3D, UTolerance);
+  BSplCLib_Resolution<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Poles,
+                                                             Weights,
+                                                             NumPoles,
+                                                             FlatKnots,
+                                                             Degree,
+                                                             Tolerance3D,
+                                                             UTolerance);
 }
 
 //==================================================================================================
@@ -503,9 +684,14 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
                                 TColgp_Array1OfPnt&               NewPoles,
                                 Standard_Integer&                 theStatus)
 {
-  BSplCLib_FunctionMultiply<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    FunctionPtr, BSplineDegree, BSplineFlatKnots, Poles, FlatKnots,
-    NewDegree, NewPoles, theStatus);
+  BSplCLib_FunctionMultiply<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(FunctionPtr,
+                                                                   BSplineDegree,
+                                                                   BSplineFlatKnots,
+                                                                   Poles,
+                                                                   FlatKnots,
+                                                                   NewDegree,
+                                                                   NewPoles,
+                                                                   theStatus);
 }
 
 //==================================================================================================
@@ -519,7 +705,12 @@ void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function
                                       TColgp_Array1OfPnt&               NewPoles,
                                       Standard_Integer&                 theStatus)
 {
-  BSplCLib_FunctionReparameterise<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(
-    FunctionPtr, BSplineDegree, BSplineFlatKnots, Poles, FlatKnots,
-    NewDegree, NewPoles, theStatus);
+  BSplCLib_FunctionReparameterise<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(FunctionPtr,
+                                                                         BSplineDegree,
+                                                                         BSplineFlatKnots,
+                                                                         Poles,
+                                                                         FlatKnots,
+                                                                         NewDegree,
+                                                                         NewPoles,
+                                                                         theStatus);
 }
