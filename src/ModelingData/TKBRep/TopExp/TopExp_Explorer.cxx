@@ -1,0 +1,143 @@
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <TopExp_Explorer.hxx>
+
+#include <Standard_NoMoreObject.hxx>
+
+namespace
+{
+//! Returns true if the given type matches the type to find.
+Standard_Boolean isSameType(const TopAbs_ShapeEnum theType, const TopAbs_ShapeEnum toFind) noexcept
+{
+  return toFind == theType;
+}
+
+//! Returns true if the given type should be avoided.
+Standard_Boolean shouldAvoid(const TopAbs_ShapeEnum theType,
+                             const TopAbs_ShapeEnum toAvoid) noexcept
+{
+  return toAvoid != TopAbs_SHAPE && toAvoid == theType;
+}
+
+//! Returns true if the given type is more complex than the type to find.
+Standard_Boolean isMoreComplex(const TopAbs_ShapeEnum theType,
+                               const TopAbs_ShapeEnum toFind) noexcept
+{
+  return toFind > theType;
+}
+} // namespace
+
+//=================================================================================================
+
+void TopExp_Explorer::Init(const TopoDS_Shape&    S,
+                           const TopAbs_ShapeEnum ToFind,
+                           const TopAbs_ShapeEnum ToAvoid)
+{
+  Clear();
+
+  myShape = S;
+  toFind  = ToFind;
+  toAvoid = ToAvoid;
+
+  if (S.IsNull())
+  {
+    hasMore = Standard_False;
+    return;
+  }
+
+  if (toFind == TopAbs_SHAPE)
+    hasMore = Standard_False;
+  else
+  {
+    TopAbs_ShapeEnum ty = S.ShapeType();
+
+    if (ty > toFind)
+    {
+      hasMore = Standard_False;
+    }
+    else if (!isSameType(ty, toFind))
+    {
+      hasMore = Standard_True;
+      Next();
+    }
+    else
+    {
+      hasMore = Standard_True;
+    }
+  }
+}
+
+//=================================================================================================
+
+void TopExp_Explorer::Next()
+{
+  Standard_NoMoreObject_Raise_if(!hasMore, "TopExp_Explorer::Next");
+
+  if (myTop < 0)
+  {
+    TopAbs_ShapeEnum ty = myShape.ShapeType();
+
+    if (isSameType(ty, toFind))
+    {
+      hasMore = Standard_False;
+      return;
+    }
+    else if (shouldAvoid(ty, toAvoid))
+    {
+      hasMore = Standard_False;
+      return;
+    }
+    else
+    {
+      myStack.Append(TopoDS_Iterator(myShape));
+      myTop = myStack.Length() - 1;
+    }
+  }
+  else
+    myStack[myTop].Next();
+
+  for (;;)
+  {
+    if (myStack[myTop].More())
+    {
+      TopoDS_Shape     ShapTop = myStack[myTop].Value();
+      TopAbs_ShapeEnum ty      = ShapTop.ShapeType();
+
+      if (isSameType(ty, toFind))
+      {
+        hasMore = Standard_True;
+        return;
+      }
+      else if (isMoreComplex(ty, toFind) && !shouldAvoid(ty, toAvoid))
+      {
+        myStack.Append(TopoDS_Iterator(ShapTop));
+        myTop = myStack.Length() - 1;
+      }
+      else
+      {
+        myStack[myTop].Next();
+      }
+    }
+    else
+    {
+      myStack.EraseLast();
+      myTop--;
+      if (myTop < 0)
+        break;
+      myStack[myTop].Next();
+    }
+  }
+  hasMore = Standard_False;
+}
