@@ -49,14 +49,14 @@ static Standard_Real zEpsilon()
 // relative z-range tolerance compatible with for floating point.
 static Standard_Real zEpsilon(const Standard_Real theValue)
 {
-  Standard_Real anAbsValue = Abs(theValue);
+  Standard_Real anAbsValue = std::abs(theValue);
   if (anAbsValue <= (double)FLT_MIN)
   {
     return FLT_MIN;
   }
-  Standard_Real aLogRadix = Log10(anAbsValue) / Log10(FLT_RADIX);
-  Standard_Real aExp      = Floor(aLogRadix);
-  return FLT_EPSILON * Pow(FLT_RADIX, aExp);
+  Standard_Real aLogRadix = std::log10(anAbsValue) / std::log10(FLT_RADIX);
+  Standard_Real aExp      = std::floor(aLogRadix);
+  return FLT_EPSILON * std::pow(FLT_RADIX, aExp);
 }
 
 //! Convert camera definition to Ax3
@@ -82,7 +82,7 @@ Graphic3d_Camera::Graphic3d_Camera()
       myFOVy(45.0),
       myFOVx(45.0),
       myFOV2d(180.0),
-      myFOVyTan(Tan(DTR_HALF * 45.0)),
+      myFOVyTan(std::tan(DTR_HALF * 45.0)),
       myZNear(DEFAULT_ZNEAR),
       myZFar(DEFAULT_ZFAR),
       myAspect(1.0),
@@ -111,7 +111,7 @@ Graphic3d_Camera::Graphic3d_Camera(const Handle(Graphic3d_Camera)& theOther)
       myFOVy(45.0),
       myFOVx(45.0),
       myFOV2d(180.0),
-      myFOVyTan(Tan(DTR_HALF * 45.0)),
+      myFOVyTan(std::tan(DTR_HALF * 45.0)),
       myZNear(DEFAULT_ZNEAR),
       myZFar(DEFAULT_ZFAR),
       myAspect(1.0),
@@ -421,7 +421,7 @@ void Graphic3d_Camera::SetFOVy(const Standard_Real theFOVy)
 
   myFOVy    = theFOVy;
   myFOVx    = theFOVy * myAspect;
-  myFOVyTan = Tan(DTR_HALF * myFOVy);
+  myFOVyTan = std::tan(DTR_HALF * myFOVy);
 
   InvalidateProjection();
 }
@@ -561,11 +561,11 @@ static Graphic3d_Vec4d safePointCast(const gp_Pnt& thePnt)
   // have to deal with values greater then max float
   gp_Pnt              aSafePoint = thePnt;
   const Standard_Real aBigFloat  = aLim * 0.1f;
-  if (Abs(aSafePoint.X()) > aLim)
+  if (std::abs(aSafePoint.X()) > aLim)
     aSafePoint.SetX(aSafePoint.X() >= 0 ? aBigFloat : -aBigFloat);
-  if (Abs(aSafePoint.Y()) > aLim)
+  if (std::abs(aSafePoint.Y()) > aLim)
     aSafePoint.SetY(aSafePoint.Y() >= 0 ? aBigFloat : -aBigFloat);
-  if (Abs(aSafePoint.Z()) > aLim)
+  if (std::abs(aSafePoint.Z()) > aLim)
     aSafePoint.SetZ(aSafePoint.Z() >= 0 ? aBigFloat : -aBigFloat);
 
   // convert point
@@ -762,7 +762,7 @@ void Graphic3d_Camera::Frustum(gp_Pln& theLeft,
   gp_Vec aDirTop    = -anUp;
   if (!IsOrthographic())
   {
-    Standard_Real aHFOVHor = ATan(Tan(DTR_HALF * FOVy()) * Aspect());
+    Standard_Real aHFOVHor = std::atan(std::tan(DTR_HALF * FOVy()) * Aspect());
     Standard_Real aHFOVVer = DTR_HALF * FOVy();
     aDirLeft.Rotate(gp_Ax1(gp::Origin(), anUp), aHFOVHor);
     aDirRight.Rotate(gp_Ax1(gp::Origin(), anUp), -aHFOVHor);
@@ -1345,10 +1345,10 @@ bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
   // 4) Determine new zooming in view space.
 
   // 1. Determine normalized projection asymmetry (if any).
-  Standard_Real anAssymX = Tan((aCamSide).Angle(aFrustumPlane[1].Axis().Direction()))
-                           - Tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction()));
-  Standard_Real anAssymY = Tan((aCamUp).Angle(aFrustumPlane[3].Axis().Direction()))
-                           - Tan((-aCamUp).Angle(aFrustumPlane[4].Axis().Direction()));
+  Standard_Real anAssymX = std::tan((aCamSide).Angle(aFrustumPlane[1].Axis().Direction()))
+                           - std::tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction()));
+  Standard_Real anAssymY = std::tan((aCamUp).Angle(aFrustumPlane[3].Axis().Direction()))
+                           - std::tan((-aCamUp).Angle(aFrustumPlane[4].Axis().Direction()));
 
   // 2. Determine how far should be the frustum planes placed from center
   //    of bounding box, in order to match the bounding box closely.
@@ -1363,7 +1363,7 @@ bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
     Standard_Real& aFitDist = aFitDistance[anI];
     for (Standard_Integer aJ = aBndCorner.Lower(); aJ <= aBndCorner.Upper(); ++aJ)
     {
-      aFitDist = Max(aFitDist, gp_Vec(aBndCenter, aBndCorner[aJ]).Dot(aPlaneN));
+      aFitDist = std::max(aFitDist, gp_Vec(aBndCenter, aBndCorner[aJ]).Dot(aPlaneN));
     }
   }
   // The center of camera is placed on the same line with center of bounding box.
@@ -1382,13 +1382,18 @@ bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
   //                            \//
   //                            //
   //                      (frustum plane)
-  aFitDistance[1] *= Sqrt(1 + Pow(Tan(aCamSide.Angle(aFrustumPlane[1].Axis().Direction())), 2.0));
+  aFitDistance[1] *=
+    std::sqrt(1 + std::pow(std::tan(aCamSide.Angle(aFrustumPlane[1].Axis().Direction())), 2.0));
   aFitDistance[2] *=
-    Sqrt(1 + Pow(Tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction())), 2.0));
-  aFitDistance[3] *= Sqrt(1 + Pow(Tan(aCamUp.Angle(aFrustumPlane[3].Axis().Direction())), 2.0));
-  aFitDistance[4] *= Sqrt(1 + Pow(Tan((-aCamUp).Angle(aFrustumPlane[4].Axis().Direction())), 2.0));
-  aFitDistance[5] *= Sqrt(1 + Pow(Tan(aCamDir.Angle(aFrustumPlane[5].Axis().Direction())), 2.0));
-  aFitDistance[6] *= Sqrt(1 + Pow(Tan((-aCamDir).Angle(aFrustumPlane[6].Axis().Direction())), 2.0));
+    std::sqrt(1 + std::pow(std::tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction())), 2.0));
+  aFitDistance[3] *=
+    std::sqrt(1 + std::pow(std::tan(aCamUp.Angle(aFrustumPlane[3].Axis().Direction())), 2.0));
+  aFitDistance[4] *=
+    std::sqrt(1 + std::pow(std::tan((-aCamUp).Angle(aFrustumPlane[4].Axis().Direction())), 2.0));
+  aFitDistance[5] *=
+    std::sqrt(1 + std::pow(std::tan(aCamDir.Angle(aFrustumPlane[5].Axis().Direction())), 2.0));
+  aFitDistance[6] *=
+    std::sqrt(1 + std::pow(std::tan((-aCamDir).Angle(aFrustumPlane[6].Axis().Direction())), 2.0));
 
   Standard_Real aViewSizeXv = aFitDistance[1] + aFitDistance[2];
   Standard_Real aViewSizeYv = aFitDistance[3] + aFitDistance[4];
@@ -1426,11 +1431,11 @@ bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
   const Standard_Real anAspect = Aspect();
   if (anAspect > 1.0)
   {
-    SetScale(Max(aViewSizeXv / anAspect, aViewSizeYv));
+    SetScale(std::max(aViewSizeXv / anAspect, aViewSizeYv));
   }
   else
   {
-    SetScale(Max(aViewSizeXv, aViewSizeYv * anAspect));
+    SetScale(std::max(aViewSizeXv, aViewSizeYv * anAspect));
   }
   return true;
 }
@@ -1526,8 +1531,8 @@ bool Graphic3d_Camera::ZFitAll(const Standard_Real theScaleFactor,
     // be absent).
     Standard_Real& aChangeMinDist = aCounter >= 8 ? aModelMinDist : aGraphMinDist;
     Standard_Real& aChangeMaxDist = aCounter >= 8 ? aModelMaxDist : aGraphMaxDist;
-    aChangeMinDist                = Min(aDistance, aChangeMinDist);
-    aChangeMaxDist                = Max(aDistance, aChangeMaxDist);
+    aChangeMinDist                = std::min(aDistance, aChangeMinDist);
+    aChangeMaxDist                = std::max(aDistance, aChangeMaxDist);
     aCounter++;
   }
 
@@ -1644,7 +1649,7 @@ void Graphic3d_Camera::Interpolate(const Handle(Graphic3d_Camera)& theStart,
                                    const double                    theT,
                                    Handle(Graphic3d_Camera)&       theCamera)
 {
-  if (Abs(theT - 1.0) < Precision::Confusion())
+  if (std::abs(theT - 1.0) < Precision::Confusion())
   {
     // just copy end-point transformation
     theCamera->Copy(theEnd);
@@ -1652,7 +1657,7 @@ void Graphic3d_Camera::Interpolate(const Handle(Graphic3d_Camera)& theStart,
   }
 
   theCamera->Copy(theStart);
-  if (Abs(theT - 0.0) < Precision::Confusion())
+  if (std::abs(theT - 0.0) < Precision::Confusion())
   {
     return;
   }
@@ -1713,7 +1718,7 @@ void Graphic3d_Camera::Interpolate(const Handle(Graphic3d_Camera)& theStart,
   }
 
   // apply scaling
-  if (Abs(theStart->Scale() - theEnd->Scale()) > Precision::Confusion()
+  if (std::abs(theStart->Scale() - theEnd->Scale()) > Precision::Confusion()
       && theStart->IsOrthographic())
   {
     const Standard_Real aScale =

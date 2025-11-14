@@ -99,7 +99,9 @@ Standard_ShortReal OpenGl_TriangleSet::Center(const Standard_Integer theIndex,
   const Standard_ShortReal aVertex2 =
     BVH::VecComp<Standard_ShortReal, 3>::Get(Vertices[aTriangle.z()], theAxis);
 
-  return (Min(Min(aVertex0, aVertex1), aVertex2) + Max(Max(aVertex0, aVertex1), aVertex2)) * 0.5f;
+  return (std::min(std::min(aVertex0, aVertex1), aVertex2)
+          + std::max(std::max(aVertex0, aVertex1), aVertex2))
+         * 0.5f;
 }
 
 // =======================================================================
@@ -233,7 +235,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
       }
     }
 
-    myBotLevelTreeDepth = Max(myBotLevelTreeDepth, aTriangleSet->QuadBVH()->Depth());
+    myBotLevelTreeDepth = std::max(myBotLevelTreeDepth, aTriangleSet->QuadBVH()->Depth());
   }
 
 #ifdef RAY_TRACE_PRINT_INFO

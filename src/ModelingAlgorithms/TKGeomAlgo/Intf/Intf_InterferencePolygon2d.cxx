@@ -298,7 +298,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
 {
   if (SelfIntf)
   {
-    if (Abs(iObje1 - iObje2) <= 1)
+    if (std::abs(iObje1 - iObje2) <= 1)
       return; //-- Ajout du 15 jan 98
   }
 
@@ -310,10 +310,10 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
   gp_XY                  segO = EndO.XY() - BegO.XY();
 
   // If the length of segment is zero, nothing is done
-  Standard_Real lgT = Sqrt(segT * segT);
+  Standard_Real lgT = std::sqrt(segT * segT);
   if (lgT <= 0.)
     return;
-  Standard_Real lgO = Sqrt(segO * segO);
+  Standard_Real lgO = std::sqrt(segO * segO);
   if (lgO <= 0.)
     return;
 
@@ -333,7 +333,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
   Standard_Real dbOT  = ((BegO.XY() - BegT.XY()) ^ segT) / lgT;
   Standard_Real dbObT = BegO.Distance(BegT);
   Standard_Real dbOeT = BegO.Distance(EndT);
-  if (Abs(dbOT) <= Tolerance)
+  if (std::abs(dbOT) <= Tolerance)
   {
     if (dbObT <= Tolerance)
     {
@@ -365,7 +365,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
   Standard_Real deOT  = ((EndO.XY() - BegT.XY()) ^ segT) / lgT;
   Standard_Real deObT = EndO.Distance(BegT);
   Standard_Real deOeT = EndO.Distance(EndT);
-  if (Abs(deOT) <= Tolerance)
+  if (std::abs(deOT) <= Tolerance)
   {
     if (deObT <= Tolerance)
     {
@@ -401,7 +401,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
 
   // Interference <begT> <segO>
   Standard_Real dbTO = ((BegT.XY() - BegO.XY()) ^ segO) / lgO;
-  if (Abs(dbTO) <= Tolerance)
+  if (std::abs(dbTO) <= Tolerance)
   {
     if (dbObT > Tolerance && deObT > Tolerance && dbObT + deObT <= (lgO + Tolerance))
     {
@@ -415,7 +415,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
 
   // Interference <endT> <segO>
   Standard_Real deTO = ((EndT.XY() - BegO.XY()) ^ segO) / lgO;
-  if (Abs(deTO) <= Tolerance)
+  if (std::abs(deTO) <= Tolerance)
   {
     if (dbOeT > Tolerance && deOeT > Tolerance && dbOeT + deOeT <= (lgO + Tolerance))
     {
@@ -436,7 +436,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
   Standard_Boolean edgeSP = Standard_False;
   Standard_Real    parOSP = 0, parTSP = 0;
 
-  if (Abs(dbOT - deOT) > floatgap && Abs(dbTO - deTO) > floatgap)
+  if (std::abs(dbOT - deOT) > floatgap && std::abs(dbTO - deTO) > floatgap)
   {
     parOSP = dbOT / (dbOT - deOT);
     parTSP = dbTO / (dbTO - deTO);
@@ -541,10 +541,10 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
           Standard_Real parTmax = parT[1];
           for (Standard_Integer i = 2; i <= nbpi; i++)
           {
-            parOmin = Min(parOmin, parO[i]);
-            parOmax = Max(parOmax, parO[i]);
-            parTmin = Min(parTmin, parT[i]);
-            parTmax = Max(parTmax, parT[i]);
+            parOmin = std::min(parOmin, parO[i]);
+            parOmax = std::max(parOmax, parO[i]);
+            parTmin = std::min(parTmin, parT[i]);
+            parTmax = std::max(parTmax, parT[i]);
           }
 
           Standard_Real delta;
@@ -596,8 +596,8 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
               || (sigPS < 0. && parTdeb > parTmax && parTmax < 1.))
           {
             nbpi++;
-            parO[nbpi] = Max(0., Min(1., parOdeb));
-            parT[nbpi] = Max(0., Min(1., parTdeb));
+            parO[nbpi] = std::max(0., std::min(1., parOdeb));
+            parT[nbpi] = std::max(0., std::min(1., parTdeb));
             x          = BegO.X() + (segO.X() * parO[nbpi]);
             y          = BegO.Y() + (segO.Y() * parO[nbpi]);
             thePi.Append(Intf_SectionPoint(gp_Pnt2d(x, y),
@@ -615,8 +615,8 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
               || (sigPS > 0. && parTfin > parTmax && parTmax < 1.))
           {
             nbpi++;
-            parO[nbpi] = Min(1., Max(0., parOfin));
-            parT[nbpi] = Min(1., Max(0., parTfin));
+            parO[nbpi] = std::min(1., std::max(0., parOfin));
+            parT[nbpi] = std::min(1., std::max(0., parTfin));
             x          = BegO.X() + (segO.X() * parO[nbpi]);
             y          = BegO.Y() + (segO.Y() * parO[nbpi]);
             thePi.Append(Intf_SectionPoint(gp_Pnt2d(x, y),

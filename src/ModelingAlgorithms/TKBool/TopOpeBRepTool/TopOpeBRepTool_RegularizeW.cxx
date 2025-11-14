@@ -246,14 +246,14 @@ Standard_Boolean TopOpeBRepTool::Regularize(const TopoDS_Face&                  
       //  diff = Vmin<ii> - Vmin<jj> : k = 3
       Standard_Real diff = UV(ii,k) - UV(jj,k);
       smaller = chklarge ? (smaller && (diff > -tol)) : (smaller && (diff > 0.));
-      same = same && (Abs(diff) <= tol);
+      same = same && (std::abs(diff) <= tol);
     }
     for (k = 2; k <= 4; k +=2){
       //  diff = Umax<ii> - Umax<jj> : k = 2
       //  diff = Vmax<ii> - Vmax<jj> : k = 4
       Standard_Real diff = UV(ii,k) - UV(jj,k);
       smaller = chklarge ? (smaller && (diff < tol)) : (smaller && (diff < 0.));
-      same = same && (Abs(diff) <= tol);
+      same = same && (std::abs(diff) <= tol);
     }
 
     if (same) return TopAbs_ON;

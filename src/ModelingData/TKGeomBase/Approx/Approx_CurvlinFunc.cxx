@@ -112,7 +112,7 @@ static void findfourpoints(const Standard_Real,
   k = mod2/(mod1*mod1*mod1);
   tau = D1.Dot(D2.Crossed(D3));
   tau /= mod2*mod2;
-  OMEGA = Sqrt(k*k + tau*tau);
+  OMEGA = std::sqrt(k*k + tau*tau);
 
   return OMEGA;
 }

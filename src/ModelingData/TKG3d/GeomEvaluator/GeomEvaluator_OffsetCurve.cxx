@@ -220,7 +220,7 @@ void GeomEvaluator_OffsetCurve::CalculateD1(gp_Pnt&       theValue,
   gp_XYZ        Ndir  = (theD1.XYZ()).Crossed(myOffsetDir.XYZ());
   gp_XYZ        DNdir = (theD2.XYZ()).Crossed(myOffsetDir.XYZ());
   Standard_Real R2    = Ndir.SquareModulus();
-  Standard_Real R     = Sqrt(R2);
+  Standard_Real R     = std::sqrt(R2);
   Standard_Real R3    = R * R2;
   Standard_Real Dr    = Ndir.Dot(DNdir);
   if (R3 <= gp::Resolution())
@@ -264,7 +264,7 @@ void GeomEvaluator_OffsetCurve::CalculateD2(gp_Pnt&                theValue,
   gp_XYZ        DNdir  = (theD2.XYZ()).Crossed(myOffsetDir.XYZ());
   gp_XYZ        D2Ndir = (theD3.XYZ()).Crossed(myOffsetDir.XYZ());
   Standard_Real R2     = Ndir.SquareModulus();
-  Standard_Real R      = Sqrt(R2);
+  Standard_Real R      = std::sqrt(R2);
   Standard_Real R3     = R2 * R;
   Standard_Real R4     = R2 * R2;
   Standard_Real R5     = R3 * R2;
@@ -337,7 +337,7 @@ void GeomEvaluator_OffsetCurve::CalculateD3(gp_Pnt&                theValue,
   gp_XYZ        D2Ndir = (theD3.XYZ()).Crossed(myOffsetDir.XYZ());
   gp_XYZ        D3Ndir = (theD4.XYZ()).Crossed(myOffsetDir.XYZ());
   Standard_Real R2     = Ndir.SquareModulus();
-  Standard_Real R      = Sqrt(R2);
+  Standard_Real R      = std::sqrt(R2);
   Standard_Real R3     = R2 * R;
   Standard_Real R4     = R2 * R2;
   Standard_Real R5     = R3 * R2;
@@ -431,7 +431,7 @@ Standard_Boolean GeomEvaluator_OffsetCurve::AdjustDerivative(
   else
     du = anUsupremum - anUinfium;
 
-  const Standard_Real aDelta = Max(du * DivisionFactor, aMinStep);
+  const Standard_Real aDelta = std::max(du * DivisionFactor, aMinStep);
 
   // Derivative is approximated by Taylor-series
   Standard_Integer anIndex = 1; // Derivative order
@@ -450,8 +450,8 @@ Standard_Boolean GeomEvaluator_OffsetCurve::AdjustDerivative(
     u = theU - aDelta;
 
   gp_Pnt P1, P2;
-  BaseD0(Min(theU, u), P1);
-  BaseD0(Max(theU, u), P2);
+  BaseD0(std::min(theU, u), P1);
+  BaseD0(std::max(theU, u), P2);
 
   gp_Vec V1(P1, P2);
   isDirectionChange   = V.Dot(V1) < 0.0;

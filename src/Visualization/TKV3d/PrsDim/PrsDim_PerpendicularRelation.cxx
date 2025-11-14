@@ -253,8 +253,8 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
       curpar = ElCLib::Parameter(geom_lin1->Lin(), pint3d);
       par1   = ElCLib::Parameter(geom_lin1->Lin(), ptat11);
       par2   = ElCLib::Parameter(geom_lin1->Lin(), ptat12);
-      pmin   = Min(par1, par2);
-      pmax   = Max(par1, par2);
+      pmin   = std::min(par1, par2);
+      pmax   = std::max(par1, par2);
 
       if (myPosition.SquareDistance(ptat11) > myPosition.SquareDistance(ptat12))
         p1 = ptat11;
@@ -265,7 +265,7 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
         interOut1 = Standard_True;
       }
       if (!isInfinite2)
-        length = 2. * Min(ptat11.Distance(ptat12), ptat21.Distance(ptat22)) / 5.;
+        length = 2. * std::min(ptat11.Distance(ptat12), ptat21.Distance(ptat22)) / 5.;
       else
         length = 2. * ptat11.Distance(ptat12) / 5.;
       lengthComputed = Standard_True;
@@ -279,8 +279,8 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
       curpar = ElCLib::Parameter(geom_lin2->Lin(), pint3d);
       par1   = ElCLib::Parameter(geom_lin2->Lin(), ptat21);
       par2   = ElCLib::Parameter(geom_lin2->Lin(), ptat22);
-      pmin   = Min(par1, par2);
-      pmax   = Max(par1, par2);
+      pmin   = std::min(par1, par2);
+      pmax   = std::max(par1, par2);
 
       if (myPosition.SquareDistance(ptat21) > myPosition.SquareDistance(ptat22))
         p2 = ptat21;
@@ -294,7 +294,7 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
       if (!lengthComputed)
       {
         if (!isInfinite1)
-          length = 2. * Min(ptat11.Distance(ptat12), ptat21.Distance(ptat22)) / 5.;
+          length = 2. * std::min(ptat11.Distance(ptat12), ptat21.Distance(ptat22)) / 5.;
         else
           length = 2. * ptat21.Distance(ptat22) / 5.;
       }

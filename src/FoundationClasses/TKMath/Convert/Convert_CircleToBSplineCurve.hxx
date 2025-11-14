@@ -27,7 +27,7 @@ class gp_Circ2d;
 
 //! This algorithm converts a circle into a rational B-spline curve.
 //! The circle is a Circ2d from package gp and its parametrization is :
-//! P (U) = Loc + R * (Cos(U) * Xdir + Sin(U) * YDir) where Loc is the
+//! P (U) = Loc + R * (std::cos(U) * Xdir + std::sin(U) * YDir) where Loc is the
 //! center of the circle Xdir and Ydir are the normalized directions
 //! of the local cartesian coordinate system of the circle.
 //! The parametrization range for the circle is U [0, 2Pi].

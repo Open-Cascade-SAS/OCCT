@@ -51,7 +51,7 @@ DEFINE_STANDARD_HANDLE(Geom_Circle, Geom_Conic)
 //! the trigonometric sense), determining the direction in
 //! which the parameter increases along the circle.
 //! The Geom_Circle circle is parameterized by an angle:
-//! P(U) = O + R*Cos(U)*XDir + R*Sin(U)*YDir, where:
+//! P(U) = O + R*std::cos(U)*XDir + R*Sin(U)*YDir, where:
 //! - P is the point of parameter U,
 //! - O, XDir and YDir are respectively the origin, "X
 //! Direction" and "Y Direction" of its local coordinate system,

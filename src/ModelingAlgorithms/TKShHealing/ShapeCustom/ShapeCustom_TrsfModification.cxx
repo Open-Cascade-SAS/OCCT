@@ -47,7 +47,7 @@ Standard_Boolean ShapeCustom_TrsfModification::NewSurface(const TopoDS_Face&    
                                                           Standard_Boolean&     RevFace)
 {
   Standard_Boolean result = BRepTools_TrsfModification::NewSurface(F, S, L, Tol, RevWires, RevFace);
-  Tol = (*((Handle(BRep_TFace)*)&F.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
+  Tol = (*((Handle(BRep_TFace)*)&F.TShape()))->Tolerance() * std::abs(Trsf().ScaleFactor());
   return result;
 }
 
@@ -59,7 +59,7 @@ Standard_Boolean ShapeCustom_TrsfModification::NewCurve(const TopoDS_Edge&  E,
                                                         Standard_Real&      Tol)
 {
   Standard_Boolean result = BRepTools_TrsfModification::NewCurve(E, C, L, Tol);
-  Tol = (*((Handle(BRep_TEdge)*)&E.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
+  Tol = (*((Handle(BRep_TEdge)*)&E.TShape()))->Tolerance() * std::abs(Trsf().ScaleFactor());
   return result;
 }
 
@@ -70,7 +70,7 @@ Standard_Boolean ShapeCustom_TrsfModification::NewPoint(const TopoDS_Vertex& V,
                                                         Standard_Real&       Tol)
 {
   Standard_Boolean result = BRepTools_TrsfModification::NewPoint(V, P, Tol);
-  Tol = (*((Handle(BRep_TVertex)*)&V.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
+  Tol = (*((Handle(BRep_TVertex)*)&V.TShape()))->Tolerance() * std::abs(Trsf().ScaleFactor());
   return result;
 }
 
@@ -84,7 +84,7 @@ Standard_Boolean ShapeCustom_TrsfModification::NewCurve2d(const TopoDS_Edge&    
                                                           Standard_Real&        Tol)
 {
   Standard_Boolean result = BRepTools_TrsfModification::NewCurve2d(E, F, NewE, NewF, C, Tol);
-  Tol = (*((Handle(BRep_TEdge)*)&E.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
+  Tol = (*((Handle(BRep_TEdge)*)&E.TShape()))->Tolerance() * std::abs(Trsf().ScaleFactor());
   return result;
 }
 
@@ -96,6 +96,6 @@ Standard_Boolean ShapeCustom_TrsfModification::NewParameter(const TopoDS_Vertex&
                                                             Standard_Real&       Tol)
 {
   Standard_Boolean result = BRepTools_TrsfModification::NewParameter(V, E, P, Tol);
-  Tol = (*((Handle(BRep_TVertex)*)&V.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
+  Tol = (*((Handle(BRep_TVertex)*)&V.TShape()))->Tolerance() * std::abs(Trsf().ScaleFactor());
   return result;
 }

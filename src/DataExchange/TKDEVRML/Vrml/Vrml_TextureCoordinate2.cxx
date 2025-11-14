@@ -42,8 +42,8 @@ Standard_OStream& Vrml_TextureCoordinate2::Print(Standard_OStream& anOStream) co
   Standard_Integer i;
   anOStream << "TextureCoordinate2 {\n";
 
-  if (myPoint->Length() != 1 || Abs(myPoint->Value(myPoint->Lower()).X() - 0) > 0.0001
-      || Abs(myPoint->Value(myPoint->Lower()).Y() - 0) > 0.0001)
+  if (myPoint->Length() != 1 || std::abs(myPoint->Value(myPoint->Lower()).X() - 0) > 0.0001
+      || std::abs(myPoint->Value(myPoint->Lower()).Y() - 0) > 0.0001)
   {
     anOStream << "    point [\n\t";
     for (i = myPoint->Lower(); i <= myPoint->Upper(); i++)

@@ -145,7 +145,7 @@ static void PrepareConvert(const Standard_Integer         NumCurves,
   Standard_Real    diff, moy, facteur1, facteur2, normal1, normal2, eps;
   Standard_Real *  Res1, *Res2, *Val1, *Val2;
   Standard_Real *  Coef1, *Coef2;
-  Standard_Integer RealDegree = Max(MaxDegree + 1, 2 * ContinuityOrder + 2);
+  Standard_Integer RealDegree = std::max(MaxDegree + 1, 2 * ContinuityOrder + 2);
 
   gp_Vec   V1, V2;
   gp_Vec2d v1, v2;
@@ -198,24 +198,24 @@ static void PrepareConvert(const Standard_Integer         NumCurves,
       Standard_Real f2_divizor = TrueIntervals(icurve + 2) - TrueIntervals(icurve + 1);
       Standard_Real fract1, fract2;
 
-      if (Abs(f1_divizor) < Toler) // this is to avoid divizion by zero
+      if (std::abs(f1_divizor) < Toler) // this is to avoid divizion by zero
         // in this case fract1 =  5.14755758946803e-85
         facteur1 = 0.0;
       else
       {
         fract1   = f1_dividend / f1_divizor;
-        facteur1 = Pow(fract1, iordre);
+        facteur1 = std::pow(fract1, iordre);
       }
-      if (Abs(f2_divizor) < Toler)
+      if (std::abs(f2_divizor) < Toler)
         // in this case fract2 =  6.77193633669143e-313
         facteur2 = 0.0;
       else
       {
         fract2   = f2_dividend / f2_divizor;
-        facteur2 = Pow(fract2, iordre);
+        facteur2 = std::pow(fract2, iordre);
       }
-      normal1 = Pow(f1_divizor, iordre);
-      normal2 = Pow(f2_divizor, iordre);
+      normal1 = std::pow(f1_divizor, iordre);
+      normal2 = std::pow(f2_divizor, iordre);
 
       idim = 1;
       Val1 = Res1 + iordre * Dimension - 1;
@@ -224,8 +224,8 @@ static void PrepareConvert(const Standard_Integer         NumCurves,
       for (ii = 1; ii <= Num1DSS && isCi; ii++, idim++)
       {
         eps  = LocalTolerance(idim) * 0.01;
-        diff = Abs(Val1[ii] * facteur1 - Val2[ii] * facteur2);
-        moy  = Abs(Val1[ii] * facteur1 + Val2[ii] * facteur2);
+        diff = std::abs(Val1[ii] * facteur1 - Val2[ii] * facteur2);
+        moy  = std::abs(Val1[ii] * facteur1 + Val2[ii] * facteur2);
         // Un premier controle sur la valeur relative
         if (diff > moy * 1.e-9)
         {
@@ -251,8 +251,8 @@ static void PrepareConvert(const Standard_Integer         NumCurves,
         v2.SetCoord(Val2[1], Val2[2]);
         v1 *= facteur1;
         v2 *= facteur2;
-        diff = Abs(v1.X() - v2.X()) + Abs(v1.Y() - v2.Y());
-        moy  = Abs(v1.X() + v2.X()) + Abs(v1.Y() + v2.Y());
+        diff = std::abs(v1.X() - v2.X()) + std::abs(v1.Y() - v2.Y());
+        moy  = std::abs(v1.X() + v2.X()) + std::abs(v1.Y() + v2.Y());
         if (diff > moy * 1.e-9)
         {
           Prec(idim)    = diff * normal1;
@@ -274,8 +274,8 @@ static void PrepareConvert(const Standard_Integer         NumCurves,
         V2.SetCoord(Val2[1], Val2[2], Val2[3]);
         V1 *= facteur1;
         V2 *= facteur2;
-        diff = Abs(V1.X() - V2.X()) + Abs(V1.Y() - V2.Y()) + Abs(V1.Z() - V2.Z());
-        moy  = Abs(V1.X() + V2.X()) + Abs(V1.Y() + V2.Y()) + Abs(V1.Z() + V2.Z());
+        diff = std::abs(V1.X() - V2.X()) + std::abs(V1.Y() - V2.Y()) + std::abs(V1.Z() - V2.Z());
+        moy  = std::abs(V1.X() + V2.X()) + std::abs(V1.Y() + V2.Y()) + std::abs(V1.Z() + V2.Z());
         if (diff > moy * 1.e-9)
         {
           Prec(idim)    = diff * normal1;
@@ -446,7 +446,7 @@ void AdvApprox_ApproxAFunction::Approximation(
 
   //-------------------------- Verification des entrees ------------------
 
-  if ((MaxSegments < 1) || (Abs(Last - First) < 1.e-9))
+  if ((MaxSegments < 1) || (std::abs(Last - First) < 1.e-9))
   {
     ErrorCode = 1;
     return;
@@ -735,7 +735,7 @@ void AdvApprox_ApproxAFunction::Perform(const Standard_Integer   Num1DSS,
       throw Standard_ConstructionError();
   }
   Standard_Real    ApproxStartEnd[2];
-  Standard_Integer NumMaxCoeffs = Max(myMaxDegree + 1, 2 * ContinuityOrder + 2);
+  Standard_Integer NumMaxCoeffs = std::max(myMaxDegree + 1, 2 * ContinuityOrder + 2);
   myMaxDegree                   = NumMaxCoeffs - 1;
   Standard_Integer code_precis  = 1;
   //
@@ -815,7 +815,7 @@ void AdvApprox_ApproxAFunction::Perform(const Standard_Integer   Num1DSS,
     for (ii = PolynomialIntervalsPtr.LowerRow(); ii <= PolynomialIntervalsPtr.UpperRow(); ii++)
     {
       // On force un degre 1 minimum (PRO5474)
-      NumCoeffPerCurvePtr->ChangeValue(ii) = Max(2, NumCoeffPerCurvePtr->Value(ii));
+      NumCoeffPerCurvePtr->ChangeValue(ii) = std::max(2, NumCoeffPerCurvePtr->Value(ii));
       PolynomialIntervalsPtr.SetValue(ii, 1, ApproxStartEnd[0]);
       PolynomialIntervalsPtr.SetValue(ii, 2, ApproxStartEnd[1]);
     }
@@ -870,7 +870,7 @@ void AdvApprox_ApproxAFunction::Perform(const Standard_Integer   Num1DSS,
           for (ii = 1; ii <= NumCurves; ii++)
           {
             local_index = (ii - 1) * TotalNumSS;
-            error_value = Max(ErrorMax(local_index + jj), error_value);
+            error_value = std::max(ErrorMax(local_index + jj), error_value);
           }
           my1DMaxError->SetValue(jj, error_value);
         }
@@ -915,7 +915,7 @@ void AdvApprox_ApproxAFunction::Perform(const Standard_Integer   Num1DSS,
           for (ii = 1; ii <= NumCurves; ii++)
           {
             local_index = (ii - 1) * TotalNumSS + index;
-            error_value = Max(ErrorMax(local_index + jj), error_value);
+            error_value = std::max(ErrorMax(local_index + jj), error_value);
           }
           my2DMaxError->SetValue(jj, error_value);
         }
@@ -960,7 +960,7 @@ void AdvApprox_ApproxAFunction::Perform(const Standard_Integer   Num1DSS,
           for (ii = 1; ii <= NumCurves; ii++)
           {
             local_index = (ii - 1) * TotalNumSS + index;
-            error_value = Max(ErrorMax(local_index + jj), error_value);
+            error_value = std::max(ErrorMax(local_index + jj), error_value);
           }
           my3DMaxError->SetValue(jj, error_value);
         }

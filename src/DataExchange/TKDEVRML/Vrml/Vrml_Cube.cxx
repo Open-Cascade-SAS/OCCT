@@ -56,19 +56,19 @@ Standard_OStream& Vrml_Cube::Print(Standard_OStream& anOStream) const
 {
   anOStream << "Cube {\n";
 
-  if (Abs(myWidth - 2) > 0.0001)
+  if (std::abs(myWidth - 2) > 0.0001)
   {
     anOStream << "    width\t";
     anOStream << myWidth << "\n";
   }
 
-  if (Abs(myHeight - 2) > 0.0001)
+  if (std::abs(myHeight - 2) > 0.0001)
   {
     anOStream << "    height\t";
     anOStream << myHeight << "\n";
   }
 
-  if (Abs(myDepth - 2) > 0.0001)
+  if (std::abs(myDepth - 2) > 0.0001)
   {
     anOStream << "    depth\t";
     anOStream << myDepth << "\n";

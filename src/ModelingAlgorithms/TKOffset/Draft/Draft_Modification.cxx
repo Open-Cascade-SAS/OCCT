@@ -273,7 +273,7 @@ Standard_Boolean Draft_Modification::NewCurve(const TopoDS_Edge&  E,
     return Standard_False;
 
   Tol = Einf.Tolerance();
-  Tol = Max(Tol, BRep_Tool::Tolerance(E));
+  Tol = std::max(Tol, BRep_Tool::Tolerance(E));
   L.Identity();
   C = myEMap.FindFromKey(E).Geometry();
 
@@ -460,7 +460,7 @@ Standard_Boolean Draft_Modification::NewParameter(const TopoDS_Vertex& V,
     // Patch
     Standard_Real           FirstPar = GC->FirstParameter(), LastPar = GC->LastParameter();
     constexpr Standard_Real pconf = Precision::PConfusion();
-    if (Abs(paramf - LastPar) <= pconf)
+    if (std::abs(paramf - LastPar) <= pconf)
     {
       paramf = FirstPar;
       FV.Orientation(E.Orientation());
@@ -482,7 +482,7 @@ Standard_Boolean Draft_Modification::NewParameter(const TopoDS_Vertex& V,
     }
   }
 
-  Tol = Max(BRep_Tool::Tolerance(V), BRep_Tool::Tolerance(E));
+  Tol = std::max(BRep_Tool::Tolerance(V), BRep_Tool::Tolerance(E));
   return Standard_True;
 }
 

@@ -353,7 +353,7 @@ bool OpenGl_Texture::Init(const Handle(OpenGl_Context)& theCtx,
   if (aDataPtr != NULL)
   {
     // clang-format off
-    const GLint anAligment = Min ((GLint )theImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+    const GLint anAligment = std::min((GLint )theImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
     // clang-format on
     theCtx->core11fwd->glPixelStorei(GL_UNPACK_ALIGNMENT, anAligment);
     const GLint anExtraBytes = GLint(theImage->RowExtraBytes());
@@ -671,7 +671,7 @@ bool OpenGl_Texture::GenerateMipmaps(const Handle(OpenGl_Context)& theCtx)
   Bind(theCtx);
   if (theCtx->HasTextureBaseLevel() && !mySampler->isValidSampler())
   {
-    const Standard_Integer aMaxLevel = Min(myMaxMipLevel, mySampler->Parameters()->MaxLevel());
+    const Standard_Integer aMaxLevel = std::min(myMaxMipLevel, mySampler->Parameters()->MaxLevel());
     mySampler->SetParameter(theCtx, myTarget, GL_TEXTURE_MAX_LEVEL, aMaxLevel);
   }
   theCtx->arbFBO->glGenerateMipmap(myTarget);
@@ -847,7 +847,7 @@ bool OpenGl_Texture::InitCompressed(const Handle(OpenGl_Context)& theCtx,
   mySizedFormat = aFormat.Internal();
   myIsTopDown   = theImage.IsTopDown();
   mySize.SetValues(theImage.SizeX(), theImage.SizeY(), 1);
-  myMaxMipLevel = Max(theImage.MipMaps().Size() - 1, 0);
+  myMaxMipLevel = std::max(theImage.MipMaps().Size() - 1, 0);
   if (myMaxMipLevel > 0 && !theImage.IsCompleteMipMapSet())
   {
     const Graphic3d_Vec2i aMipSize = computeSmallestMipMapSize(mySize.xy(), myMaxMipLevel);
@@ -1026,8 +1026,8 @@ bool OpenGl_Texture::InitRectangle(const Handle(OpenGl_Context)& theCtx,
   myNbSamples   = 1;
   myMaxMipLevel = 0;
 
-  const GLsizei aSizeX = Min(theCtx->MaxTextureSize(), theSizeX);
-  const GLsizei aSizeY = Min(theCtx->MaxTextureSize(), theSizeY);
+  const GLsizei aSizeX = std::min(theCtx->MaxTextureSize(), theSizeX);
+  const GLsizei aSizeY = std::min(theCtx->MaxTextureSize(), theSizeY);
 
   Bind(theCtx);
   applyDefaultSamplerParams(theCtx);
@@ -1237,7 +1237,7 @@ bool OpenGl_Texture::InitCubeMap(const Handle(OpenGl_Context)&    theCtx,
         theToGenMipmap = false;
         theSize        = aCompImage->SizeX();
         theFormat      = aCompImage->BaseFormat();
-        myMaxMipLevel  = Max(aCompImage->MipMaps().Size() - 1, 0);
+        myMaxMipLevel  = std::max(aCompImage->MipMaps().Size() - 1, 0);
         if (myMaxMipLevel > 0 && !aCompImage->IsCompleteMipMapSet())
         {
           const Graphic3d_Vec2i aMipSize =
@@ -1413,7 +1413,7 @@ bool OpenGl_Texture::InitCubeMap(const Handle(OpenGl_Context)&    theCtx,
       if (!anImage.IsNull())
       {
         // clang-format off
-        const GLint anAligment = Min ((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+        const GLint anAligment = std::min((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
         // clang-format on
         const GLint anExtraBytes = GLint(anImage->RowExtraBytes());
         const GLint aPixelsWidth = GLint(anImage->SizeRowBytes() / anImage->SizePixelBytes());
@@ -1435,7 +1435,7 @@ bool OpenGl_Texture::InitCubeMap(const Handle(OpenGl_Context)&    theCtx,
           }
           anImage = aCopyImage;
           // clang-format off
-          const GLint anAligment2 = Min((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+          const GLint anAligment2 = std::min((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
           // clang-format on
           theCtx->core11fwd->glPixelStorei(GL_UNPACK_ALIGNMENT, anAligment2);
         }
@@ -1654,7 +1654,7 @@ bool OpenGl_Texture::ImageDump(Image_PixMap&                 theImage,
   }
 
   // clang-format off
-  const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+  const GLint anAligment = std::min(GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
   // clang-format on
   theCtx->core11fwd->glPixelStorei(GL_PACK_ALIGNMENT, anAligment);
   if (theCtx->hasPackRowLength)

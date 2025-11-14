@@ -36,10 +36,10 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d
 
     : Convert_ConicToBSplineCurve(MaxNbPoles, MaxNbKnots, TheDegree)
 {
-  Standard_DomainError_Raise_if(Abs(U2 - U1) < Epsilon(0.), "Convert_ParabolaToBSplineCurve");
+  Standard_DomainError_Raise_if(std::abs(U2 - U1) < Epsilon(0.), "Convert_ParabolaToBSplineCurve");
 
-  Standard_Real UF = Min(U1, U2);
-  Standard_Real UL = Max(U1, U2);
+  Standard_Real UF = std::min(U1, U2);
+  Standard_Real UL = std::max(U1, U2);
 
   nbPoles                  = 3;
   nbKnots                  = 2;
@@ -60,18 +60,18 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d
   // poles expressed in the reference mark
   // the 2nd pole is at the intersection of 2 tangents to the curve
   // at points P(UF), P(UL)
-  // the weight of this pole is equal to : Cosh((UL-UF)/2)
+  // the weight of this pole is equal to : std::cosh((UL-UF)/2)
 
   weights->ChangeArray1()(1) = 1.;
-  weights->ChangeArray1()(2) = Cosh((UL - UF) / 2);
+  weights->ChangeArray1()(2) = std::cosh((UL - UF) / 2);
   weights->ChangeArray1()(3) = 1.;
 
-  Standard_Real delta      = Sinh(UL - UF);
-  Standard_Real x          = R * (Sinh(UL) - Sinh(UF)) / delta;
-  Standard_Real y          = S * r * (Cosh(UL) - Cosh(UF)) / delta;
-  poles->ChangeArray1()(1) = gp_Pnt2d(R * Cosh(UF), S * r * Sinh(UF));
+  Standard_Real delta      = std::sinh(UL - UF);
+  Standard_Real x          = R * (std::sinh(UL) - std::sinh(UF)) / delta;
+  Standard_Real y          = S * r * (std::cosh(UL) - std::cosh(UF)) / delta;
+  poles->ChangeArray1()(1) = gp_Pnt2d(R * std::cosh(UF), S * r * std::sinh(UF));
   poles->ChangeArray1()(2) = gp_Pnt2d(x, y);
-  poles->ChangeArray1()(3) = gp_Pnt2d(R * Cosh(UL), S * r * Sinh(UL));
+  poles->ChangeArray1()(3) = gp_Pnt2d(R * std::cosh(UL), S * r * std::sinh(UL));
 
   // replace the bspline in the mark of the hyperbola
   gp_Trsf2d Trsf;

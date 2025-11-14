@@ -143,7 +143,7 @@ void AIS_Animation::UpdateTotalDuration()
        anIter.Next())
   {
     myChildrenDuration =
-      Max(myChildrenDuration, anIter.Value()->StartPts() + anIter.Value()->Duration());
+      std::max(myChildrenDuration, anIter.Value()->StartPts() + anIter.Value()->Duration());
   }
 }
 
@@ -233,7 +233,7 @@ void AIS_Animation::Stop()
   {
     const Standard_Real anElapsedTime = ElapsedTime();
     myTimer->Stop();
-    myTimer->Seek(Min(Duration(), anElapsedTime));
+    myTimer->Seek(std::min(Duration(), anElapsedTime));
   }
 
   for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
@@ -251,8 +251,8 @@ Standard_Boolean AIS_Animation::Update(const Standard_Real thePts)
   aPosition.Pts             = thePts;
   aPosition.LocalPts        = thePts - myPtsStart;
   aPosition.LocalNormalized = HasOwnDuration() ? (aPosition.LocalPts / myOwnDuration) : 0.0;
-  aPosition.LocalNormalized = Max(0.0, aPosition.LocalNormalized);
-  aPosition.LocalNormalized = Min(1.0, aPosition.LocalNormalized);
+  aPosition.LocalNormalized = std::max(0.0, aPosition.LocalNormalized);
+  aPosition.LocalNormalized = std::min(1.0, aPosition.LocalNormalized);
   updateWithChildren(aPosition);
   return thePts < myPtsStart + Duration();
 }
@@ -274,8 +274,8 @@ void AIS_Animation::updateWithChildren(const AIS_AnimationProgress& thePosition)
     aPosition.LocalPts                     = aPosition.LocalPts - anAnim->StartPts();
     aPosition.LocalNormalized =
       anAnim->HasOwnDuration() ? (aPosition.LocalPts / anAnim->OwnDuration()) : 0.0;
-    aPosition.LocalNormalized = Max(0.0, aPosition.LocalNormalized);
-    aPosition.LocalNormalized = Min(1.0, aPosition.LocalNormalized);
+    aPosition.LocalNormalized = std::max(0.0, aPosition.LocalNormalized);
+    aPosition.LocalNormalized = std::min(1.0, aPosition.LocalNormalized);
     anAnim->updateWithChildren(aPosition);
   }
 

@@ -48,8 +48,9 @@ Standard_OStream& Vrml_Normal::Print(Standard_OStream& anOStream) const
 
   anOStream << "Normal {\n";
   i = myVector->Lower();
-  if (myVector->Length() == 1 && Abs(myVector->Value(i).X() - 0) < 0.0001
-      && Abs(myVector->Value(i).Y() - 0) < 0.0001 && Abs(myVector->Value(i).Z() - 1) < 0.0001)
+  if (myVector->Length() == 1 && std::abs(myVector->Value(i).X() - 0) < 0.0001
+      && std::abs(myVector->Value(i).Y() - 0) < 0.0001
+      && std::abs(myVector->Value(i).Z() - 1) < 0.0001)
   {
     anOStream << "}\n";
     return anOStream;

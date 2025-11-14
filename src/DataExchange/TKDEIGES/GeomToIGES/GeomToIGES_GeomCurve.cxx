@@ -170,7 +170,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
 static gp_XYZ GetAnyNormal(gp_XYZ orig)
 {
   gp_XYZ Norm;
-  if (Abs(orig.Z()) < Precision::Confusion())
+  if (std::abs(orig.Z()) < Precision::Confusion())
     Norm.SetCoord(0, 0, 1);
   else
   {
@@ -213,7 +213,7 @@ static Standard_Boolean ArePolesPlanar(const TColgp_Array1OfPnt& Poles, gp_XYZ& 
 
   Standard_Real scl = Poles(1).XYZ() * Normal;
   for (i = 2; i <= Poles.Length(); i++)
-    if (Abs(Poles(i).XYZ() * Normal - scl) > tol)
+    if (std::abs(Poles(i).XYZ() * Normal - scl) > tol)
       return Standard_False;
   return Standard_True;
 }
@@ -323,7 +323,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
       Handle(Geom_BSplineCurve) bspl = Handle(Geom_BSplineCurve)::DownCast(mycurve->Copy());
       if (!bspl.IsNull())
       {
-        if (Abs(Umax - Umin) > Precision::PConfusion())
+        if (std::abs(Umax - Umin) > Precision::PConfusion())
           bspl->Segment(Umin, Umax);
         mycurve = bspl;
       }
@@ -529,7 +529,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 
   Standard_Real U1 = Udeb;
   Standard_Real U2 = Ufin;
-  if (Abs(Udeb) <= gp::Resolution())
+  if (std::abs(Udeb) <= gp::Resolution())
     U1 = 0.0;
 
   // creation du "CircularArc" (#100)
@@ -549,7 +549,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
   // gka BUG 6542 1.09.04 BSpline curve was written in the IGES instead circle.
   gp_Pnt pfirst, plast;
   start->D0(U1, pfirst);
-  if (Abs(Ufin - Udeb - 2 * M_PI) <= Precision::PConfusion())
+  if (std::abs(Ufin - Udeb - 2 * M_PI) <= Precision::PConfusion())
     plast = pfirst;
   else
     start->D0(U2, plast);
@@ -595,7 +595,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 
   // #35 rln 22.10.98 BUC60391 face 9
   // Closed Conic Arc is incorrectly oriented when reading back to CAS.CADE
-  if (Abs(Ufin - Udeb - 2 * M_PI) <= Precision::PConfusion())
+  if (std::abs(Ufin - Udeb - 2 * M_PI) <= Precision::PConfusion())
   {
     // #53 rln 24.12.98 CCI60005
     // Trimmed ellipse. To avoid huge weights in B-Spline first rotate it and then convert
@@ -621,7 +621,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
   IGESConvGeom_GeomBuilder  Build;
   Standard_Real             U1 = Udeb;
   Standard_Real             U2 = Ufin;
-  if (Abs(Udeb) <= gp::Resolution())
+  if (std::abs(Udeb) <= gp::Resolution())
     U1 = 0.0;
 
   // creation du "ConicArc" (#104)

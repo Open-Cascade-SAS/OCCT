@@ -165,7 +165,7 @@ void BRepMAT2d_LinkTopoBilo::LinkToWire(const TopoDS_Wire&              W,
     BE   = BiLo.Graph()->BasicElt(Ite.Key());
     Type = BiLo.GeomElt(BE)->DynamicType();
     KC   = Ite.Value();
-    S    = TopoSeq.Value(Abs(KC));
+    S    = TopoSeq.Value(std::abs(KC));
 
     if (Type == STANDARD_TYPE(Geom2d_CartesianPoint))
     {

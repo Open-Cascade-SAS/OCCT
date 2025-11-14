@@ -298,7 +298,7 @@ Standard_Boolean ShapeAnalysis_Edge::GetEndTangent2d(
   {
     gp_Pnt2d      ptmp;
     Standard_Real par1, par2, delta = (cl - cf) * dpnew;
-    if (Abs(delta) < Precision::PConfusion())
+    if (std::abs(delta) < Precision::PConfusion())
     {
       dpnew = 0.0;
     }
@@ -592,8 +592,8 @@ static Standard_Integer CheckVertexTolerance(const TopoDS_Edge&     edge,
       gp_Pnt2d p2 = pcurve->Value(b);
       gp_Pnt   P1 = S->Value(p1.X(), p1.Y()).Transformed(L.Transformation());
       gp_Pnt   P2 = S->Value(p2.X(), p2.Y()).Transformed(L.Transformation());
-      toler1      = Max(toler1, pnt1.SquareDistance(P1));
-      toler2      = Max(toler2, pnt2.SquareDistance(P2));
+      toler1      = std::max(toler1, pnt1.SquareDistance(P1));
+      toler2      = std::max(toler2, pnt2.SquareDistance(P2));
     }
   }
   //: abv 10.06.02: porting C40 -> dev (CC670-12608.stp)
@@ -609,8 +609,8 @@ static Standard_Integer CheckVertexTolerance(const TopoDS_Edge&     edge,
       gp_Pnt2d p2 = pcurve->Value(b);
       gp_Pnt   P1 = S->Value(p1.X(), p1.Y()).Transformed(L.Transformation());
       gp_Pnt   P2 = S->Value(p2.X(), p2.Y()).Transformed(L.Transformation());
-      toler1      = Max(toler1, pnt1.SquareDistance(P1));
-      toler2      = Max(toler2, pnt2.SquareDistance(P2));
+      toler1      = std::max(toler1, pnt1.SquareDistance(P1));
+      toler2      = std::max(toler2, pnt2.SquareDistance(P2));
     }
     else
       Status |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL3);
@@ -619,8 +619,8 @@ static Standard_Integer CheckVertexTolerance(const TopoDS_Edge&     edge,
   //: o8 abv 19 Feb 99: CTS18541.stp #18559: coeff 1.0001 added
   // szv 18 Aug 99: edge tolerance is taken in consideration
   Standard_Real tole = BRep_Tool::Tolerance(edge);
-  toler1             = Max(1.0000001 * Sqrt(toler1), tole);
-  toler2             = Max(1.0000001 * Sqrt(toler2), tole);
+  toler1             = std::max(1.0000001 * std::sqrt(toler1), tole);
+  toler2             = std::max(1.0000001 * std::sqrt(toler2), tole);
   if (toler1 > old1)
     Status |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   if (toler2 > old2)
@@ -849,12 +849,16 @@ Standard_Boolean ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge&  theEdg
   Standard_Real     aLength2   = GCPnts_AbscissaPoint::Length(aAdCurve2);
   TopoDS_Edge       aFirstEdge = (aLength1 >= aLength2 ? theEdge2 : theEdge1);
   TopoDS_Edge       aSecEdge   = (aLength1 >= aLength2 ? theEdge1 : theEdge2);
-  Standard_Real     aLength    = Min(aLength1, aLength2);
+  Standard_Real     aLength    = std::min(aLength1, aLength2);
 
   // check overalpping between edges on whole edges
-  Standard_Real aStep = Min(aLength1, aLength2) / 2;
-  isOverlap =
-    IsOverlapPartEdges(aFirstEdge, aSecEdge, theTolOverlap, aStep, 0., Min(aLength1, aLength2));
+  Standard_Real aStep = std::min(aLength1, aLength2) / 2;
+  isOverlap           = IsOverlapPartEdges(aFirstEdge,
+                                 aSecEdge,
+                                 theTolOverlap,
+                                 aStep,
+                                 0.,
+                                 std::min(aLength1, aLength2));
 
   if (isOverlap)
   {
@@ -867,7 +871,7 @@ Standard_Boolean ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge&  theEdg
   // check overalpping between edges on segment with length less than theDomainDist
 
   Standard_Real aDomainTol =
-    (theDomainDist > Min(aLength1, aLength2) ? Min(aLength1, aLength2) : theDomainDist);
+    (theDomainDist > std::min(aLength1, aLength2) ? std::min(aLength1, aLength2) : theDomainDist);
   BRepExtrema_DistShapeShape aMinDist(aFirstEdge, aSecEdge, theTolOverlap);
   Standard_Real              aresTol = theTolOverlap;
   if (aMinDist.IsDone())

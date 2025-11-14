@@ -118,7 +118,7 @@ Standard_Integer Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
                                   Nb,
                                   Index2,
                                   newLast);
-        if (Abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
+        if (std::abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
           Index1++;
         if (newLast - TK(Index2) > Precision::PConfusion())
           Index2++;
@@ -198,7 +198,7 @@ void Law_BSpFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) cons
                                   Nb,
                                   Index2,
                                   newLast);
-        if (Abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
+        if (std::abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
           Index1++;
         if (newLast - TK(Index2) > Precision::PConfusion())
           Index2++;

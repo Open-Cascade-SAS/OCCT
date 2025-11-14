@@ -353,7 +353,7 @@ Standard_Boolean IGESControl_IGESBoundary::Transfer(
             BRep_Tool::Range(edge3d, first, last);
             // pdn 08.04.99 S4135 optimizing in computation of SPTol
             // choosing tolerance according to Approx_SameParameter: 50 * 22
-            Standard_Real SPTol = Min(precision, Abs(last - first) / 1000);
+            Standard_Real SPTol = std::min(precision, std::abs(last - first) / 1000);
             BRep_Builder  B;
             B.SameParameter(edge3d, Standard_False);
             sfe->FixSameParameter(edge3d, SPTol);

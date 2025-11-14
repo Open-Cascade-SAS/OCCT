@@ -130,7 +130,7 @@ void BRepFilletAPI_MakeFillet::SetRadius(const Standard_Real    R1,
 {
   Standard_Real r1, r2;
 
-  if (Abs(R1 - R2) < Precision::Confusion())
+  if (std::abs(R1 - R2) < Precision::Confusion())
     r1 = r2 = (R1 + R2) * 0.5;
   else
   {

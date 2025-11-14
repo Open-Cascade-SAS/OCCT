@@ -95,5 +95,5 @@ inline void IntWalk_PWalking::AddAPoint(const IntSurf_PntOn2S& POn2S)
   }
 #endif
   line->Add(POn2S);
-  myTangentIdx = Max(myTangentIdx, 1);
+  myTangentIdx = std::max(myTangentIdx, 1);
 }

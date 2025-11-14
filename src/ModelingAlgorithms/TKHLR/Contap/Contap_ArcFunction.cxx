@@ -194,9 +194,9 @@ Standard_Integer Contap_ArcFunction::GetStateNumber()
 
 Standard_Integer Contap_ArcFunction::NbSamples() const
 {
-  return Max(
-    Max(Contap_HContTool::NbSamplesU(mySurf, 0., 0.), Contap_HContTool::NbSamplesV(mySurf, 0., 0.)),
-    Contap_HContTool::NbSamplesOnArc(myArc));
+  return std::max(std::max(Contap_HContTool::NbSamplesU(mySurf, 0., 0.),
+                           Contap_HContTool::NbSamplesV(mySurf, 0., 0.)),
+                  Contap_HContTool::NbSamplesOnArc(myArc));
 }
 
 // modified by NIZNHY-PKV Thu Mar 29 16:53:07 2001f

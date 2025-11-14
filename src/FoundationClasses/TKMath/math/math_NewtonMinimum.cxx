@@ -124,10 +124,10 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     if (MinEigenValue < CTol)
     {
       Convex = Standard_False;
-      if (NoConvexTreatement &&      // Treatment is allowed.
-          Abs(MinEigenValue) > CTol) // Treatment will have effect.
+      if (NoConvexTreatement &&           // Treatment is allowed.
+          std::abs(MinEigenValue) > CTol) // Treatment will have effect.
       {
-        Standard_Real Delta = CTol + 0.1 * Abs(MinEigenValue) - MinEigenValue;
+        Standard_Real Delta = CTol + 0.1 * std::abs(MinEigenValue) - MinEigenValue;
         for (ii = 1; ii <= TheGradient.Length(); ii++)
           TheHessian(ii, ii) += Delta;
       }
@@ -158,20 +158,20 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
       Standard_Real aMult = RealLast();
       for (Standard_Integer anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
       {
-        const Standard_Real anAbsStep = Abs(TheStep(anIdx));
+        const Standard_Real anAbsStep = std::abs(TheStep(anIdx));
         if (anAbsStep < gp::Resolution())
           continue;
 
         if (suivant->Value(anIdx) < myLeft(anIdx))
         {
-          Standard_Real aValue = Abs(precedent->Value(anIdx) - myLeft(anIdx)) / anAbsStep;
-          aMult                = Min(aValue, aMult);
+          Standard_Real aValue = std::abs(precedent->Value(anIdx) - myLeft(anIdx)) / anAbsStep;
+          aMult                = std::min(aValue, aMult);
         }
 
         if (suivant->Value(anIdx) > myRight(anIdx))
         {
-          Standard_Real aValue = Abs(precedent->Value(anIdx) - myRight(anIdx)) / anAbsStep;
-          aMult                = Min(aValue, aMult);
+          Standard_Real aValue = std::abs(precedent->Value(anIdx) - myRight(anIdx)) / anAbsStep;
+          aMult                = std::min(aValue, aMult);
         }
       }
 
@@ -188,9 +188,9 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
           // Nullify corresponding TheStep indexes.
           for (Standard_Integer anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
           {
-            if ((Abs(precedent->Value(anIdx) - myRight(anIdx)) < Precision::PConfusion()
+            if ((std::abs(precedent->Value(anIdx) - myRight(anIdx)) < Precision::PConfusion()
                  && TheStep(anIdx) < 0.0)
-                || (Abs(precedent->Value(anIdx) - myLeft(anIdx)) < Precision::PConfusion()
+                || (std::abs(precedent->Value(anIdx) - myLeft(anIdx)) < Precision::PConfusion()
                     && TheStep(anIdx) > 0.0))
             {
               TheStep(anIdx) = 0.0;

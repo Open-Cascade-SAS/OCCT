@@ -223,7 +223,7 @@ Standard_Boolean GeomFill_EvolvedSection::IsUPeriodic() const
 //=======================================================
 Standard_Boolean GeomFill_EvolvedSection::IsVPeriodic() const
 {
-  return (Abs(myLaw->Value(First) - myLaw->Value(Last)) < Precision::Confusion());
+  return (std::abs(myLaw->Value(First) - myLaw->Value(Last)) < Precision::Confusion());
 }
 
 //=======================================================

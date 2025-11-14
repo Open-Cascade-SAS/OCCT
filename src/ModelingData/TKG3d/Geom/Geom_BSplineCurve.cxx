@@ -68,7 +68,7 @@ static void CheckCurveData(const TColgp_Array1OfPnt&      CPoles,
 
   for (Standard_Integer I = CKnots.Lower(); I < CKnots.Upper(); I++)
   {
-    if (CKnots(I + 1) - CKnots(I) <= Epsilon(Abs(CKnots(I))))
+    if (CKnots(I + 1) - CKnots(I) <= Epsilon(std::abs(CKnots(I))))
     {
       throw Standard_ConstructionError("BSpline curve: Knots interval values too close");
     }
@@ -83,7 +83,7 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& theWeights)
 {
   for (Standard_Integer i = theWeights.Lower(); i < theWeights.Upper(); i++)
   {
-    if (Abs(theWeights[i] - theWeights[i + 1]) > gp::Resolution())
+    if (std::abs(theWeights[i] - theWeights[i + 1]) > gp::Resolution())
     {
       return Standard_True;
     }
@@ -536,17 +536,17 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
   Standard_Real aNu2 = NewU2;
   //-- DBB
 
-  Knots(1) = Min(NewU1, NewU2);
-  Knots(2) = Max(NewU1, NewU2);
+  Knots(1) = std::min(NewU1, NewU2);
+  Knots(2) = std::max(NewU1, NewU2);
   Mults(1) = Mults(2) = deg;
 
-  Standard_Real AbsUMax = Max(Abs(NewU1), Abs(NewU2));
+  Standard_Real AbsUMax = std::max(std::abs(NewU1), std::abs(NewU2));
 
   //  Modified by Sergey KHROMOV - Fri Apr 11 12:15:40 2003 Begin
-  AbsUMax = Max(AbsUMax, Max(Abs(FirstParameter()), Abs(LastParameter())));
+  AbsUMax = std::max(AbsUMax, std::max(std::abs(FirstParameter()), std::abs(LastParameter())));
   //  Modified by Sergey KHROMOV - Fri Apr 11 12:15:40 2003 End
 
-  Standard_Real Eps = Max(Epsilon(AbsUMax), theTolerance);
+  Standard_Real Eps = std::max(Epsilon(AbsUMax), theTolerance);
 
   InsertKnots(Knots, Mults, Eps);
 
@@ -563,7 +563,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
                               index,
                               U);
     // Test si l'insertion est Ok et decalage sinon.
-    if (Abs(knots->Value(index + 1) - U) <= Eps) // <= pour etre homogene a InsertKnots
+    if (std::abs(knots->Value(index + 1) - U) <= Eps) // <= pour etre homogene a InsertKnots
       index++;
     SetOrigin(index);
     SetNotPeriodic();
@@ -583,7 +583,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
                             ToU2,
                             index1,
                             U);
-  if (Abs(knots->Value(index1 + 1) - U) <= Eps)
+  if (std::abs(knots->Value(index1 + 1) - U) <= Eps)
     index1++;
 
   BSplCLib::LocateParameter(deg,
@@ -595,7 +595,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
                             ToU2,
                             index2,
                             U);
-  if (Abs(knots->Value(index2 + 1) - U) <= Eps || index2 == index1)
+  if (std::abs(knots->Value(index2 + 1) - U) <= Eps || index2 == index1)
     index2++;
 
   Standard_Integer nbknots = index2 - index1 + 1;
@@ -622,7 +622,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
   Standard_Integer pindex2 = BSplCLib::PoleIndex(deg, index2, periodic, mults->Array1());
 
   pindex1++;
-  pindex2 = Min(pindex2 + 1, poles->Length());
+  pindex2 = std::min(pindex2 + 1, poles->Length());
 
   Standard_Integer nbpoles = pindex2 - pindex1 + 1;
 
@@ -676,7 +676,7 @@ void Geom_BSplineCurve::SetKnot(const Standard_Integer Index, const Standard_Rea
 {
   if (Index < 1 || Index > knots->Length())
     throw Standard_OutOfRange("BSpline curve: SetKnot: Index and #knots mismatch");
-  Standard_Real DK = Abs(Epsilon(K));
+  Standard_Real DK = std::abs(Epsilon(K));
   if (Index == 1)
   {
     if (K >= knots->Value(2) - DK)
@@ -738,7 +738,7 @@ void Geom_BSplineCurve::SetPeriodic()
 
   Handle(TColStd_HArray1OfInteger) tm = mults;
   TColStd_Array1OfInteger          cmults((mults->Array1())(first), first, last);
-  cmults(first) = cmults(last) = Min(deg, Max(cmults(first), cmults(last)));
+  cmults(first) = cmults(last) = std::min(deg, std::max(cmults(first), cmults(last)));
   mults                        = new TColStd_HArray1OfInteger(1, cmults.Length());
   mults->ChangeArray1()        = cmults;
 
@@ -868,7 +868,7 @@ void Geom_BSplineCurve::SetOrigin(const Standard_Real U, const Standard_Real Tol
   while (Tol > (ul - u))
     u -= period;
 
-  if (Abs(U - u) > Tol)
+  if (std::abs(U - u) > Tol)
   { // On reparametre la courbe
     Standard_Real delta = U - u;
     uf += delta;
@@ -881,7 +881,7 @@ void Geom_BSplineCurve::SetOrigin(const Standard_Real U, const Standard_Real Tol
     }
     UpdateKnots();
   }
-  if (Abs(U - uf) < Tol)
+  if (std::abs(U - uf) < Tol)
     return;
 
   TColStd_Array1OfReal& kn = knots->ChangeArray1();
@@ -890,13 +890,13 @@ void Geom_BSplineCurve::SetOrigin(const Standard_Real U, const Standard_Real Tol
   for (Standard_Integer i = fk; i <= lk; i++)
   {
     Standard_Real dki = kn.Value(i) - U;
-    if (Abs(dki) < Abs(delta))
+    if (std::abs(dki) < std::abs(delta))
     {
       ik    = i;
       delta = dki;
     }
   }
-  if (Abs(delta) > Tol)
+  if (std::abs(delta) > Tol)
   {
     InsertKnot(U);
     if (delta < 0.)
@@ -976,7 +976,7 @@ void Geom_BSplineCurve::SetWeight(const Standard_Integer Index, const Standard_R
   if (W <= gp::Resolution())
     throw Standard_ConstructionError("BSpline curve: SetWeight: Weight too small");
 
-  Standard_Boolean rat = IsRational() || (Abs(W - 1.) > gp::Resolution());
+  Standard_Boolean rat = IsRational() || (std::abs(W - 1.) > gp::Resolution());
 
   if (rat)
   {

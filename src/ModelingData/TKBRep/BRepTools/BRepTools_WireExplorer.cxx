@@ -142,13 +142,13 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire&  W,
     for (; anExp.More(); anExp.Next())
     {
       const TopoDS_Vertex& aV = TopoDS::Vertex(anExp.Current());
-      dfVertToler             = Max(BRep_Tool::Tolerance(aV), dfVertToler);
+      dfVertToler             = std::max(BRep_Tool::Tolerance(aV), dfVertToler);
     }
     if (dfVertToler < Precision::Confusion())
     {
       // Use tolerance of edges
       for (TopoDS_Iterator it(W); it.More(); it.Next())
-        dfVertToler = Max(BRep_Tool::Tolerance(TopoDS::Edge(it.Value())), dfVertToler);
+        dfVertToler = std::max(BRep_Tool::Tolerance(TopoDS::Edge(it.Value())), dfVertToler);
 
       if (dfVertToler < Precision::Confusion())
         // empty wire
@@ -169,25 +169,25 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire&  W,
       if (a <= Precision::Confusion())
         tol1 = maxtol;
       else
-        tol1 = Min(maxtol, dfVertToler / a);
+        tol1 = std::min(maxtol, dfVertToler / a);
 
       aGAS.D1(UMin, VMax, aP, aD1U, aD1V);
       a = aD1U.Magnitude();
       if (a <= Precision::Confusion())
         tol2 = maxtol;
       else
-        tol2 = Min(maxtol, dfVertToler / a);
+        tol2 = std::min(maxtol, dfVertToler / a);
 
-      myTolU = 2. * Max(tol1, tol2);
+      myTolU = 2. * std::max(tol1, tol2);
     }
 
     if (aGAS.GetType() == GeomAbs_BSplineSurface || aGAS.GetType() == GeomAbs_BezierSurface)
     {
-      Standard_Real maxTol = Max(myTolU, myTolV);
+      Standard_Real maxTol = std::max(myTolU, myTolV);
       gp_Pnt        aP;
       gp_Vec        aDU, aDV;
       aGAS.D1((UMax - UMin) / 2., (VMax - VMin) / 2., aP, aDU, aDV);
-      Standard_Real mod = Sqrt(aDU * aDU + aDV * aDV);
+      Standard_Real mod = std::sqrt(aDU * aDU + aDV * aDV);
       if (mod > gp::Resolution())
       {
         if (mod * maxTol / dfVertToler < 1.5)
@@ -572,7 +572,7 @@ void BRepTools_WireExplorer::Next()
             else
               aPCurve->D0(dfFPar, aPEb);
 
-            if (Abs(dfLPar - dfFPar) > Precision::PConfusion())
+            if (std::abs(dfLPar - dfFPar) > Precision::PConfusion())
             {
               isrevese = (E.Orientation() == TopAbs_REVERSED);
               isrevese = !isrevese;
@@ -598,7 +598,7 @@ void BRepTools_WireExplorer::Next()
                 }
               }
               gp_Vec2d anEDir(aPEb, aPEe);
-              dfCurAngle = Abs(anEDir.Angle(anERefDir));
+              dfCurAngle = std::abs(anEDir.Angle(anERefDir));
             }
 
             if (dfCurAngle <= dfMinAngle)
@@ -606,7 +606,7 @@ void BRepTools_WireExplorer::Next()
               Standard_Real d = PRef.SquareDistance(aPEb);
               if (d <= Precision::PConfusion())
                 d = 0.;
-              if (Abs(aPEb.X() - PRef.X()) < myTolU && Abs(aPEb.Y() - PRef.Y()) < myTolV)
+              if (std::abs(aPEb.X() - PRef.X()) < myTolU && std::abs(aPEb.Y() - PRef.Y()) < myTolV)
               {
                 if (d <= dmin)
                 {
@@ -752,7 +752,7 @@ Standard_Real GetNextParamOnPC(const Handle(Geom2d_Curve)& aPC,
                                const Standard_Boolean&     reverse)
 {
   Standard_Real result = (reverse) ? fP : lP;
-  Standard_Real dP     = Abs(lP - fP) / 1000.; // was / 16.;
+  Standard_Real dP     = std::abs(lP - fP) / 1000.; // was / 16.;
   if (reverse)
   {
     Standard_Real    startPar      = fP;
@@ -762,7 +762,7 @@ Standard_Real GetNextParamOnPC(const Handle(Geom2d_Curve)& aPC,
       gp_Pnt2d pnt;
       startPar += dP;
       aPC->D0(startPar, pnt);
-      if (Abs(aPRef.X() - pnt.X()) < tolU && Abs(aPRef.Y() - pnt.Y()) < tolV)
+      if (std::abs(aPRef.X() - pnt.X()) < tolU && std::abs(aPRef.Y() - pnt.Y()) < tolV)
         continue;
       else
       {
@@ -787,7 +787,7 @@ Standard_Real GetNextParamOnPC(const Handle(Geom2d_Curve)& aPC,
       gp_Pnt2d pnt;
       startPar -= dP;
       aPC->D0(startPar, pnt);
-      if (Abs(aPRef.X() - pnt.X()) < tolU && Abs(aPRef.Y() - pnt.Y()) < tolV)
+      if (std::abs(aPRef.X() - pnt.X()) < tolU && std::abs(aPRef.Y() - pnt.Y()) < tolV)
         continue;
       else
       {

@@ -705,7 +705,7 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
     return Standard_False;
   }
 
-  if (Abs(theScaleFactor) <= gp::Resolution())
+  if (std::abs(theScaleFactor) <= gp::Resolution())
   {
     Message::SendFail("Scale factor is too small.");
     return Standard_False;

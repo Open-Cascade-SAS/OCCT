@@ -197,8 +197,8 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
                   Standard_Integer ec;
                   for (ec = 1; ec <= aNe; ++ec)
                   {
-                    //		    dist = Min(dist, anExt.Value(ec));
-                    dist = Min(dist, anExt.SquareDistance(ec));
+                    //		    dist = std::min(dist, anExt.Value(ec));
+                    dist = std::min(dist, anExt.SquareDistance(ec));
                   }
 
                   //		  if(dist <= 1.e-7) {

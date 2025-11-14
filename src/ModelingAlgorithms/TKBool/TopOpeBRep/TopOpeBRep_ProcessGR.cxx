@@ -226,10 +226,10 @@ void TopOpeBRep_FacesFiller::Lminmax(const TopOpeBRep_LineInter& L,
   {
     const TopOpeBRep_VPointInter& VP = VPI.CurrentVP();
     Standard_Real                 p  = VP.ParameterOnLine();
-    pmin                             = Min(pmin, p);
-    pmax                             = Max(pmax, p);
+    pmin                             = std::min(pmin, p);
+    pmax                             = std::max(pmax, p);
   }
-  Standard_Real    d     = Abs(pmin - pmax);
+  Standard_Real    d     = std::abs(pmin - pmax);
   Standard_Boolean id    = (d <= Precision::PConfusion());
   Standard_Boolean isper = L.IsPeriodic();
   Standard_Integer n     = L.NbVPoint();
@@ -264,7 +264,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::LSameDomainERL(const TopOpeBRep_LineInt
 
   Standard_Real f, l;
   TopOpeBRep_FacesFiller::Lminmax(L, f, l);
-  Standard_Real d = Abs(f - l);
+  Standard_Real d = std::abs(f - l);
 
   {
     Standard_Boolean idINL = (L.INL() && (d == 0)); // null length line, made of VPoints only
@@ -288,7 +288,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::LSameDomainERL(const TopOpeBRep_LineInt
   {
     const TopoDS_Edge& E      = TopoDS::Edge(it.Value());
     Standard_Real      tolE   = BRep_Tool::Tolerance(E);
-    Standard_Real      maxtol = Max(tolE, GLOBAL_tolFF);
+    Standard_Real      maxtol = std::max(tolE, GLOBAL_tolFF);
     BRepAdaptor_Curve  BAC(E);
     f                     = BAC.FirstParameter();
     l                     = BAC.LastParameter();

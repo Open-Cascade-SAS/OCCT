@@ -40,33 +40,33 @@ static void ComputePoles(const Standard_Real R,
   Standard_Integer i;
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  Standard_Integer nbUSpans = (Standard_Integer)IntegerPart(1.2 * deltaU / M_PI) + 1;
+  Standard_Integer nbUSpans = (Standard_Integer)std::trunc(1.2 * deltaU / M_PI) + 1;
   Standard_Real    AlfaU    = deltaU / (nbUSpans * 2);
 
   Standard_Real x[TheNbVPoles];
   Standard_Real z[TheNbVPoles];
 
-  x[0] = R + V1 * Sin(A);
-  z[0] = V1 * Cos(A);
-  x[1] = R + V2 * Sin(A);
-  z[1] = V2 * Cos(A);
+  x[0] = R + V1 * std::sin(A);
+  z[0] = V1 * std::cos(A);
+  x[1] = R + V2 * std::sin(A);
+  z[1] = V2 * std::cos(A);
 
   Standard_Real UStart = U1;
-  Poles(1, 1)          = gp_Pnt(x[0] * Cos(UStart), x[0] * Sin(UStart), z[0]);
-  Poles(1, 2)          = gp_Pnt(x[1] * Cos(UStart), x[1] * Sin(UStart), z[1]);
+  Poles(1, 1)          = gp_Pnt(x[0] * std::cos(UStart), x[0] * std::sin(UStart), z[0]);
+  Poles(1, 2)          = gp_Pnt(x[1] * std::cos(UStart), x[1] * std::sin(UStart), z[1]);
 
   for (i = 1; i <= nbUSpans; i++)
   {
-    Poles(2 * i, 1) = gp_Pnt(x[0] * Cos(UStart + AlfaU) / Cos(AlfaU),
-                             x[0] * Sin(UStart + AlfaU) / Cos(AlfaU),
+    Poles(2 * i, 1) = gp_Pnt(x[0] * std::cos(UStart + AlfaU) / std::cos(AlfaU),
+                             x[0] * std::sin(UStart + AlfaU) / std::cos(AlfaU),
                              z[0]);
-    Poles(2 * i, 2) = gp_Pnt(x[1] * Cos(UStart + AlfaU) / Cos(AlfaU),
-                             x[1] * Sin(UStart + AlfaU) / Cos(AlfaU),
+    Poles(2 * i, 2) = gp_Pnt(x[1] * std::cos(UStart + AlfaU) / std::cos(AlfaU),
+                             x[1] * std::sin(UStart + AlfaU) / std::cos(AlfaU),
                              z[1]);
     Poles(2 * i + 1, 1) =
-      gp_Pnt(x[0] * Cos(UStart + 2 * AlfaU), x[0] * Sin(UStart + 2 * AlfaU), z[0]);
+      gp_Pnt(x[0] * std::cos(UStart + 2 * AlfaU), x[0] * std::sin(UStart + 2 * AlfaU), z[0]);
     Poles(2 * i + 1, 2) =
-      gp_Pnt(x[1] * Cos(UStart + 2 * AlfaU), x[1] * Sin(UStart + 2 * AlfaU), z[1]);
+      gp_Pnt(x[1] * std::cos(UStart + 2 * AlfaU), x[1] * std::sin(UStart + 2 * AlfaU), z[1]);
     UStart += 2 * AlfaU;
   }
 }
@@ -86,7 +86,7 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C
                                                 TheVDegree)
 {
   Standard_Real deltaU = U2 - U1;
-  Standard_DomainError_Raise_if((Abs(V2 - V1) <= Abs(Epsilon(V1))) || (deltaU > 2 * M_PI)
+  Standard_DomainError_Raise_if((std::abs(V2 - V1) <= std::abs(Epsilon(V1))) || (deltaU > 2 * M_PI)
                                   || (deltaU < 0.),
                                 "Convert_ConeToBSplineSurface");
 
@@ -97,7 +97,7 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C
   // construction of cone in the reference mark xOy.
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  Standard_Integer nbUSpans = (Standard_Integer)IntegerPart(1.2 * deltaU / M_PI) + 1;
+  Standard_Integer nbUSpans = (Standard_Integer)std::trunc(1.2 * deltaU / M_PI) + 1;
   Standard_Real    AlfaU    = deltaU / (nbUSpans * 2);
 
   nbUPoles = 2 * nbUSpans + 1;
@@ -132,7 +132,7 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C
   for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
-      W1 = Cos(AlfaU);
+      W1 = std::cos(AlfaU);
     else
       W1 = 1.;
 
@@ -156,7 +156,8 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C
                                                 TheUDegree,
                                                 TheVDegree)
 {
-  Standard_DomainError_Raise_if(Abs(V2 - V1) <= Abs(Epsilon(V1)), "Convert_ConeToBSplineSurface");
+  Standard_DomainError_Raise_if(std::abs(V2 - V1) <= std::abs(Epsilon(V1)),
+                                "Convert_ConeToBSplineSurface");
 
   Standard_Integer i, j;
 
@@ -194,7 +195,7 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C
   for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
-      W = 0.5; // = Cos(pi /3)
+      W = 0.5; // = std::cos(pi /3)
     else
       W = 1.;
 

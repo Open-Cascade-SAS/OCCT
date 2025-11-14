@@ -206,14 +206,14 @@ TopoDS_Edge HLRBRep::MakeEdge3d(const HLRBRep_Curve& ec,
   TopExp::Vertices(anEdge, V1, V2);
 
   constexpr Standard_Real Tol = Precision::PConfusion();
-  if (Abs(fpar - U1) <= Tol)
+  if (std::abs(fpar - U1) <= Tol)
     V1new = V1;
   else
   {
     gp_Pnt aPnt = BAcurve.Value(U1);
     V1new       = BRepLib_MakeVertex(aPnt);
   }
-  if (Abs(lpar - U2) <= Tol)
+  if (std::abs(lpar - U2) <= Tol)
     V2new = V2;
   else
   {

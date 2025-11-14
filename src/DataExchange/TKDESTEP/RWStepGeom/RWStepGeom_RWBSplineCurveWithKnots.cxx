@@ -280,7 +280,7 @@ void RWStepGeom_RWBSplineCurveWithKnots::Check(const Handle(StepGeom_BSplineCurv
   for (i = 2; i <= nbKno; i++)
   {
     Standard_Real distKn = ent->KnotsValue(i - 1) - ent->KnotsValue(i);
-    if (Abs(distKn) <= RealEpsilon())
+    if (std::abs(distKn) <= RealEpsilon())
       ach->AddWarning("WARNING: Curve contains identical KnotsValues");
     else if (distKn > RealEpsilon())
       ach->AddFail("ERROR: Curve contains descending KnotsValues");

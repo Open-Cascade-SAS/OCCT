@@ -188,11 +188,11 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
             for (i = 0; i <= 7; i++)
             {
               aParOnLin = ElCLib::Parameter(aLin, aLimPntArray[i]);
-              tmin      = Min(aParOnLin, tmin);
-              tmax      = Max(aParOnLin, tmax);
+              tmin      = std::min(aParOnLin, tmin);
+              tmax      = std::max(aParOnLin, tmax);
             }
-            cfirst = Max(cfirst, tmin);
-            clast  = Min(clast, tmax);
+            cfirst = std::max(cfirst, tmin);
+            clast  = std::min(clast, tmax);
           }
 
           if (myS->IsUPeriodic())
@@ -370,7 +370,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
           {
             Standard_Real aDiff = aDist[0] - aDist[1];
             // Both computed -> take only minimal
-            if (Abs(aDiff) < Precision::Confusion())
+            if (std::abs(aDiff) < Precision::Confusion())
               // Add both
               bAdd[0] = bAdd[1] = Standard_True;
             else if (aDiff < 0)
@@ -403,8 +403,8 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
   Ext.Initialize(*myS, NbU, NbV, mytolS);
   if (myCtype == GeomAbs_Hyperbola)
   {
-    Standard_Real tmin = Max(-20., C.FirstParameter());
-    Standard_Real tmax = Min(20., C.LastParameter());
+    Standard_Real tmin = std::max(-20., C.FirstParameter());
+    Standard_Real tmax = std::min(20., C.LastParameter());
     Ext.Perform(C, NbT, tmin, tmax, mytolC); // to avoid overflow
   }
   else
@@ -583,7 +583,7 @@ Standard_Boolean Extrema_ExtCS::AddSolution(const Adaptor3d_Curve& theCurve,
       Standard_Real Tj = aPC.Parameter();
       Standard_Real Uj, Vj;
       aPS.Parameter(Uj, Vj);
-      if (Abs(T - Tj) <= mytolC && Abs(U - Uj) <= mytolS && Abs(V - Vj) <= mytolS)
+      if (std::abs(T - Tj) <= mytolC && std::abs(U - Uj) <= mytolS && std::abs(V - Vj) <= mytolS)
       {
         IsNewSolution = Standard_False;
         break;

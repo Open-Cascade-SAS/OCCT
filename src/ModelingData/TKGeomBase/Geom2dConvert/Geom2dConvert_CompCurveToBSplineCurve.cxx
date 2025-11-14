@@ -138,7 +138,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(Handle(Geom2d_BSplineCurve)& Fir
                                                 const Standard_Boolean       After)
 {
   // Harmonisation des degres.
-  Standard_Integer Deg = Max(FirstCurve->Degree(), SecondCurve->Degree());
+  Standard_Integer Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
   if (FirstCurve->Degree() < Deg)
   {
     FirstCurve->IncreaseDegree(Deg);

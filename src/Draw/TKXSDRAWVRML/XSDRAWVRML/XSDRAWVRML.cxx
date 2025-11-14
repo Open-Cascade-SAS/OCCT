@@ -382,10 +382,10 @@ static Standard_Integer writevrml(Draw_Interpretor& di, Standard_Integer argc, c
   }
 
   // Bound parameters
-  aVersion = Max(1, aVersion);
-  aVersion = Min(2, aVersion);
-  aType    = Max(0, aType);
-  aType    = Min(2, aType);
+  aVersion = std::max(1, aVersion);
+  aVersion = std::min(2, aVersion);
+  aType    = std::max(0, aType);
+  aType    = std::min(2, aType);
 
   VrmlAPI_Writer writer;
 

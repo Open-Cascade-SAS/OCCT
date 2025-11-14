@@ -117,7 +117,7 @@ void Approx_SweepApproximation::Perform(const Standard_Real    First,
       Tol = ThreeDTol->Value(ii) / 2; // To take account of the error on the final result.
       OneDTol->SetValue(ii, Tol * Wmin(ii) / Size);
       Tol *= Wmin(ii); // Factor of projection
-      ThreeDTol->SetValue(ii, Max(Tol, 1.e-20));
+      ThreeDTol->SetValue(ii, std::max(Tol, 1.e-20));
     }
   }
   else
@@ -151,7 +151,7 @@ void Approx_SweepApproximation::Perform(const Standard_Real    First,
         res = tolu;
         AAffin->ChangeValue(ii).SetValue(2, 2, tolu / tolv);
       }
-      TwoDTol->SetValue(ii, Min(Tol2d, res));
+      TwoDTol->SetValue(ii, std::min(Tol2d, res));
     }
   }
 

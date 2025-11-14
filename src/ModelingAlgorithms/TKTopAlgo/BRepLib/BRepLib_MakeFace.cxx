@@ -201,7 +201,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Wire& W, const Standard_Boolean 
   BRep_Builder B;
   myError = BRepLib_FaceDone;
 
-  Standard_Real tol = Max(1.2 * FS.ToleranceReached(), FS.Tolerance());
+  Standard_Real tol = std::max(1.2 * FS.ToleranceReached(), FS.Tolerance());
 
   B.MakeFace(TopoDS::Face(myShape), FS.Surface(), FS.Location(), tol);
 
@@ -399,7 +399,7 @@ Standard_Boolean BRepLib_MakeFace::IsDegenerated(const Handle(Geom_Curve)& theCu
     gp_Circ Circ = AC.Circle();
     if (Circ.Radius() > theMaxTol)
       return Standard_False;
-    theActTol = Max(Circ.Radius(), aConfusion);
+    theActTol = std::max(Circ.Radius(), aConfusion);
     return Standard_True;
   }
   else if (Type == GeomAbs_BSplineCurve)
@@ -418,7 +418,7 @@ Standard_Boolean BRepLib_MakeFace::IsDegenerated(const Handle(Geom_Curve)& theCu
       if (aPoleDist2 > aMaxPoleDist2)
         aMaxPoleDist2 = aPoleDist2;
     }
-    theActTol = Max(1.000001 * Sqrt(aMaxPoleDist2), aConfusion);
+    theActTol = std::max(1.000001 * std::sqrt(aMaxPoleDist2), aConfusion);
     return Standard_True;
   }
   else if (Type == GeomAbs_BezierCurve)
@@ -437,7 +437,7 @@ Standard_Boolean BRepLib_MakeFace::IsDegenerated(const Handle(Geom_Curve)& theCu
       if (aPoleDist2 > aMaxPoleDist2)
         aMaxPoleDist2 = aPoleDist2;
     }
-    theActTol = Max(1.000001 * Sqrt(aMaxPoleDist2), aConfusion);
+    theActTol = std::max(1.000001 * std::sqrt(aMaxPoleDist2), aConfusion);
     return Standard_True;
   }
 
@@ -534,10 +534,10 @@ void BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
 
   // closed flag
   Standard_Boolean uclosed =
-    S->IsUClosed() && Abs(UMin - umin) < epsilon && Abs(UMax - umax) < epsilon;
+    S->IsUClosed() && std::abs(UMin - umin) < epsilon && std::abs(UMax - umax) < epsilon;
 
   Standard_Boolean vclosed =
-    S->IsVClosed() && Abs(VMin - vmin) < epsilon && Abs(VMax - vmax) < epsilon;
+    S->IsVClosed() && std::abs(VMin - vmin) < epsilon && std::abs(VMax - vmax) < epsilon;
 
   // compute 3d curves and degenerate flag
   Standard_Real      maxTol = TolDegen;
@@ -576,16 +576,16 @@ void BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
   if (!umininf)
   {
     if (!vmininf)
-      B.MakeVertex(V00, S->Value(UMin, VMin), Max(uminTol, vminTol));
+      B.MakeVertex(V00, S->Value(UMin, VMin), std::max(uminTol, vminTol));
     if (!vmaxinf)
-      B.MakeVertex(V01, S->Value(UMin, VMax), Max(uminTol, vmaxTol));
+      B.MakeVertex(V01, S->Value(UMin, VMax), std::max(uminTol, vmaxTol));
   }
   if (!umaxinf)
   {
     if (!vmininf)
-      B.MakeVertex(V10, S->Value(UMax, VMin), Max(umaxTol, vminTol));
+      B.MakeVertex(V10, S->Value(UMax, VMin), std::max(umaxTol, vminTol));
     if (!vmaxinf)
-      B.MakeVertex(V11, S->Value(UMax, VMax), Max(umaxTol, vmaxTol));
+      B.MakeVertex(V11, S->Value(UMax, VMax), std::max(umaxTol, vmaxTol));
   }
 
   if (uclosed)
@@ -634,7 +634,7 @@ void BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
     else
       B.MakeEdge(eumin);
     if (uclosed)
-      B.UpdateEdge(eumin, Lumax, Lumin, F, Max(uminTol, umaxTol));
+      B.UpdateEdge(eumin, Lumax, Lumin, F, std::max(uminTol, umaxTol));
     else
       B.UpdateEdge(eumin, Lumin, F, uminTol);
     B.Degenerated(eumin, Dumin);
@@ -684,7 +684,7 @@ void BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
     else
       B.MakeEdge(evmin);
     if (vclosed)
-      B.UpdateEdge(evmin, Lvmin, Lvmax, F, Max(vminTol, vmaxTol));
+      B.UpdateEdge(evmin, Lvmin, Lvmax, F, std::max(vminTol, vmaxTol));
     else
       B.UpdateEdge(evmin, Lvmin, F, vminTol);
     B.Degenerated(evmin, Dvmin);

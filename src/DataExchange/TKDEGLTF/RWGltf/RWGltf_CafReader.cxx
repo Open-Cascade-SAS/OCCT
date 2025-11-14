@@ -44,7 +44,7 @@ public:
                                    const Message_ProgressRange&     theProgress,
                                    const OSD_ThreadPool::Launcher&  theThreadPool)
       : myFaceList(&theFaceList),
-        myProgress(theProgress, "Loading glTF triangulation", Max(1, theFaceList.Size())),
+        myProgress(theProgress, "Loading glTF triangulation", std::max(1, theFaceList.Size())),
         myThreadPool(theThreadPool)
   {
     //
@@ -380,7 +380,7 @@ Standard_Boolean RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>&
     // loaded later.
     const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
     const int                     aNbThreads =
-      myToParallel ? Min(theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
+      myToParallel ? std::min(theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
     OSD_ThreadPool::Launcher               aLauncher(*aThreadPool, aNbThreads);
     CafReader_GltfStreamDataLoadingFunctor aFunctor(theFaces, theProgress, aLauncher);
     aLauncher.Perform(theFaces.Lower(), theFaces.Upper() + 1, aFunctor);
@@ -392,7 +392,7 @@ Standard_Boolean RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>&
 
   const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
   const int                     aNbThreads =
-    myToParallel ? Min(theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
+    myToParallel ? std::min(theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
   OSD_ThreadPool::Launcher aLauncher(*aThreadPool, aNbThreads);
 
   CafReader_GltfFullDataLoadingFunctor aFunctor(this, theFaces, theProgress, aLauncher);

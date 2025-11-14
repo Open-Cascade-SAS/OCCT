@@ -41,8 +41,8 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& Line,
                                    const Standard_Real              aPdeb,
                                    const Standard_Real              aPfin,
                                    const Bnd_Box2d&                 BoxOtherPolygon)
-    : brise(1, Max(1, NbSample)),
-      param(1, Max(1, NbSample)),
+    : brise(1, std::max(1, NbSample)),
+      param(1, std::max(1, NbSample)),
       offsetx(0.0),
       offsety(0.0)
 {
@@ -113,7 +113,7 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& Line,
       // MSV: (see cda 002 H2) if segment is too large (>>r) we have
       //      a risk to jump through BoxOtherPolygon, therefore we should
       //      check this condition if the first one is failure.
-      Standard_Boolean isMidPtInBox = (Abs(bx0 - XXs) + Abs(by0 - YYs)) < r;
+      Standard_Boolean isMidPtInBox = (std::abs(bx0 - XXs) + std::abs(by0 - YYs)) < r;
       Standard_Boolean isSegOut     = Standard_True;
       if (!isMidPtInBox)
       {
@@ -133,17 +133,17 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& Line,
         // if(IndexInf>i) IndexInf=i-1;
         // if(IndexSup<i) IndexSup=i;
         if (IndexInf > i)
-          IndexInf = Max(i - 2, 1);
+          IndexInf = std::max(i - 2, 1);
         if (IndexSup < i)
-          IndexSup = Min(i + 1, NbSample);
+          IndexSup = std::min(i + 1, NbSample);
       }
 
       myBox.Add(brise(i));
       Line->D0(param(i) - Pas * 0.5, p2d);
       Xm      = p2d.X() - XXs;
       Ym      = p2d.Y() - YYs;
-      Xm      = Sqrt(Xm * Xm + Ym * Ym);
-      myError = Max(myError, Xm);
+      Xm      = std::sqrt(Xm * Xm + Ym * Ym);
+      myError = std::max(myError, Xm);
       Xs      = X;
       Ys      = Y;
     }

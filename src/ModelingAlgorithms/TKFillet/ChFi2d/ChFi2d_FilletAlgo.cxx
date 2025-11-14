@@ -279,7 +279,7 @@ void ChFi2d_FilletAlgo::FillPoint(FilletPoint* thePoint, const Standard_Real the
     const Standard_Real d = aProj.Distance(a);
     thePoint->appendValue(d * d - myRadius * myRadius,
                           (aParamProj >= myStart2 && aParamProj <= myEnd2 && aValid2));
-    if (Abs(d - myRadius) < Precision::Confusion())
+    if (std::abs(d - myRadius) < Precision::Confusion())
       thePoint->setParam2(aParamProj);
   }
 }
@@ -339,7 +339,7 @@ Standard_Boolean ChFi2d_FilletAlgo::Perform(const Standard_Real theRadius)
     FilletPoint *aLeft = NULL, *aRight;
 
     for (aParam = myStart1 + aStep;
-         aParam < myEnd1 || Abs(myEnd1 - aParam) < Precision::Confusion();
+         aParam < myEnd1 || std::abs(myEnd1 - aParam) < Precision::Confusion();
          aParam += aStep)
     {
       if (!aLeft)
@@ -452,10 +452,10 @@ void ChFi2d_FilletAlgo::PerformNewton(FilletPoint* theLeft, FilletPoint* theRigh
                        + aA * theLeft->getParam() * theLeft->getParam() / 2.0;
     Standard_Real aDet = aB * aB - 2.0 * aA * aC;
 
-    if (Abs(aA) < Precision::Confusion())
+    if (std::abs(aA) < Precision::Confusion())
     { // linear case
       // std::cout<<"###"<<std::endl;
-      if (Abs(aB) > 10e-20)
+      if (std::abs(aB) > 10e-20)
       {
         Standard_Real aX0 = -aC / aB; // use extremum
         if (aX0 > theLeft->getParam() && aX0 < theRight->getParam())
@@ -470,7 +470,7 @@ void ChFi2d_FilletAlgo::PerformNewton(FilletPoint* theLeft, FilletPoint* theRigh
     }
     else
     {
-      if (Abs(aB) > Abs(aDet * 1000000.))
+      if (std::abs(aB) > std::abs(aDet * 1000000.))
       { // possible floating point operations accuracy errors
         // std::cout<<"*";
         ProcessPoint(theLeft,
@@ -561,7 +561,7 @@ TopoDS_Edge ChFi2d_FilletAlgo::Result(const gp_Pnt& thePoint,
     aP = DBL_MAX;
     if (iSolution == -1)
     {
-      aP = Abs(aPoint->getCenter().Distance(aTargetPoint2d) - myRadius);
+      aP = std::abs(aPoint->getCenter().Distance(aTargetPoint2d) - myRadius);
     }
     else if (iSolution == iSol)
     {
@@ -718,12 +718,12 @@ Standard_Boolean FilletPoint::calculateDiff(FilletPoint* thePoint)
   {
     for (b = 1; b <= thePoint->myV.Length(); b++)
     {
-      if (b == 1 || Abs(thePoint->myV.Value(b) - myV.Value(a)) < Abs(aDY))
+      if (b == 1 || std::abs(thePoint->myV.Value(b) - myV.Value(a)) < std::abs(aDY))
         aDY = thePoint->myV.Value(b) - myV.Value(a);
     }
     if (aDiffsSet)
     {
-      if (Abs(aDY / aDX) < Abs(myD.Value(a)))
+      if (std::abs(aDY / aDX) < std::abs(myD.Value(a)))
         myD.SetValue(a, aDY / aDX);
     }
     else
@@ -750,7 +750,7 @@ void FilletPoint::FilterPoints(FilletPoint* thePoint)
     {
       // calculate hypothesis value of the Y2 with the constant first and second derivative
       aY2 = aY + aDX * (thePoint->myD.Value(b) - myD.Value(a)) / 2.0;
-      if (aNear == 0 || Abs(aY2 - thePoint->myV.Value(b)) < Abs(aDiff))
+      if (aNear == 0 || std::abs(aY2 - thePoint->myV.Value(b)) < std::abs(aDiff))
       {
         aNear = b;
         aDiff = aY2 - thePoint->myV.Value(b);
@@ -763,14 +763,14 @@ void FilletPoint::FilterPoints(FilletPoint* thePoint)
       { // the same sign at the same sides of the interval
         if (myV.Value(a) * myD.Value(a) > 0)
         {
-          if (Abs(myD.Value(a)) > Precision::Confusion())
+          if (std::abs(myD.Value(a)) > Precision::Confusion())
             aNear = 0;
         }
         else
         {
-          if (Abs(myV.Value(a)) > Abs(thePoint->myV.Value(aNear)))
+          if (std::abs(myV.Value(a)) > std::abs(thePoint->myV.Value(aNear)))
             if (thePoint->myV.Value(aNear) * thePoint->myD.Value(aNear) < 0
-                && Abs(thePoint->myD.Value(aNear)) > Precision::Confusion())
+                && std::abs(thePoint->myD.Value(aNear)) > Precision::Confusion())
             {
               aNear = 0;
             }
@@ -794,7 +794,7 @@ void FilletPoint::FilterPoints(FilletPoint* thePoint)
 
     if (aNear)
     {
-      if (Abs(aDiff / aDX) > 1.e+7)
+      if (std::abs(aDiff / aDX) > 1.e+7)
       {
         aNear = 0;
       }
@@ -814,7 +814,7 @@ void FilletPoint::FilterPoints(FilletPoint* thePoint)
       {
         if (myNear.Value(b) == aNear)
         {
-          if (Abs(aDiffs.Value(b)) < Abs(aDiff))
+          if (std::abs(aDiffs.Value(b)) < std::abs(aDiff))
           { // return this 'near'
             aFound = Standard_True;
             myV.Remove(a);
@@ -862,7 +862,7 @@ int FilletPoint::hasSolution(const Standard_Real theRadius)
   Standard_Integer a;
   for (a = 1; a <= myV.Length(); a++)
   {
-    if (Abs(sqrt(Abs(Abs(myV.Value(a)) + theRadius * theRadius)) - theRadius)
+    if (std::abs(sqrt(std::abs(std::abs(myV.Value(a)) + theRadius * theRadius)) - theRadius)
         < Precision::Confusion())
       return a;
   }

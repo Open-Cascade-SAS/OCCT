@@ -39,8 +39,8 @@ Standard_Boolean Message_AttributeMeter::HasMetric(const Message_MetricType& the
 
 Standard_Boolean Message_AttributeMeter::IsMetricValid(const Message_MetricType& theMetric) const
 {
-  return Abs(StartValue(theMetric) - UndefinedMetricValue()) > Precision::Confusion()
-         && Abs(StopValue(theMetric) - UndefinedMetricValue()) > Precision::Confusion();
+  return std::abs(StartValue(theMetric) - UndefinedMetricValue()) > Precision::Confusion()
+         && std::abs(StopValue(theMetric) - UndefinedMetricValue()) > Precision::Confusion();
 }
 
 //=================================================================================================

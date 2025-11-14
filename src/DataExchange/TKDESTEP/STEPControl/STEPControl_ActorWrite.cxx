@@ -1787,7 +1787,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferSubShape(
   STEPConstruct_Assembly mkitem;
 
   // make location for assembly placement
-  if (Abs(aLoc.ScaleFactor() - 1.0) > Precision::Confusion())
+  if (std::abs(aLoc.ScaleFactor() - 1.0) > Precision::Confusion())
   {
     if (aStepModel->InternalParameters.WriteScalingTrsf)
       FP->AddWarning(
@@ -1796,7 +1796,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferSubShape(
     else
       FP->AddWarning(start, "The shape has a scaling factor, skipped");
   }
-  if (Abs(aLoc.ScaleFactor() - 1.0) < Precision::Confusion()
+  if (std::abs(aLoc.ScaleFactor() - 1.0) < Precision::Confusion()
       || !aStepModel->InternalParameters.WriteScalingTrsf)
   {
     // create a new axis2placement3d

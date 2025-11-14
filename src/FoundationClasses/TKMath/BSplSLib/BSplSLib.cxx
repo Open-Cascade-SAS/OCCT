@@ -1419,7 +1419,7 @@ void BSplSLib::DN(const Standard_Real            U,
 
   BSplCLib::Bohm(u1, d1, n1, *dc.knots1, dim * (d2 + 1), *dc.poles);
 
-  for (k = 0; k <= Min(n1, d1); k++)
+  for (k = 0; k <= std::min(n1, d1); k++)
     BSplCLib::Bohm(u2, d2, n2, *dc.knots2, dim, *(dc.poles + k * dim * (d2 + 1)));
 
   Standard_Real* result;
@@ -1725,7 +1725,8 @@ Standard_Boolean BSplSLib::IsRational(const TColStd_Array2OfReal& Weights,
 
     for (j = J1 - fj; j < J2 - fj; j++)
     {
-      if (Abs(Weights(fi + i % li, fj + j % lj) - Weights(fi + (i + 1) % li, fj + j % lj)) > eps)
+      if (std::abs(Weights(fi + i % li, fj + j % lj) - Weights(fi + (i + 1) % li, fj + j % lj))
+          > eps)
         return Standard_True;
     }
   }
@@ -3093,7 +3094,7 @@ void BSplSLib::MovePoint(const Standard_Real         U,
   i    = ukk1 - UFirstNonZeroBsplineIndex + 2;
   if ((ukk1 + 1) <= ULastIndex)
   {
-    if (Abs(UBSplineBasis(1, ukk1 - UFirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
+    if (std::abs(UBSplineBasis(1, ukk1 - UFirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
     {
       ukk2 = ukk1 + 1;
     }
@@ -3127,7 +3128,7 @@ void BSplSLib::MovePoint(const Standard_Real         U,
   j    = vkk1 - VFirstNonZeroBsplineIndex + 2;
   if ((vkk1 + 1) <= VLastIndex)
   {
-    if (Abs(VBSplineBasis(1, vkk1 - VFirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
+    if (std::abs(VBSplineBasis(1, vkk1 - VFirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
     {
       vkk2 = vkk1 + 1;
     }

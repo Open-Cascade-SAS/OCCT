@@ -43,7 +43,7 @@ Standard_Boolean Geom2dLProp_FuncCurExt::Value(const Standard_Real X, Standard_R
   Standard_Real CPV1V3 = V1.Crossed(V3);
   Standard_Real V1V2   = V1.Dot(V2);
   Standard_Real V1V1   = V1.SquareMagnitude();
-  Standard_Real NV1    = Sqrt(V1V1);
+  Standard_Real NV1    = std::sqrt(V1V1);
   Standard_Real V13    = V1V1 * NV1;
   Standard_Real V15    = V13 * V1V1;
 
@@ -100,7 +100,7 @@ Standard_Boolean Geom2dLProp_FuncCurExt::IsMinKC(const Standard_Real X) const
   Geom2dLProp_Curve2dTool::D3(theCurve, X, P1, V1, V2, V3);
   Standard_Real CPV1V2 = V1.Crossed(V2);
   Standard_Real V1V1   = V1.SquareMagnitude();
-  Standard_Real NV1    = Sqrt(V1V1);
+  Standard_Real NV1    = std::sqrt(V1V1);
   Standard_Real V13    = V1V1 * NV1;
 
   if (V13 < gp::Resolution())
@@ -118,7 +118,7 @@ Standard_Boolean Geom2dLProp_FuncCurExt::IsMinKC(const Standard_Real X) const
   Geom2dLProp_Curve2dTool::D3(theCurve, X + Dx, P1, V1, V2, V3);
   CPV1V2 = V1.Crossed(V2);
   V1V1   = V1.SquareMagnitude();
-  NV1    = Sqrt(V1V1);
+  NV1    = std::sqrt(V1V1);
   V13    = V1V1 * NV1;
 
   if (V13 < gp::Resolution())
@@ -127,7 +127,7 @@ Standard_Boolean Geom2dLProp_FuncCurExt::IsMinKC(const Standard_Real X) const
   }
   KP = CPV1V2 / V13;
 
-  if (Abs(KC) > Abs(KP))
+  if (std::abs(KC) > std::abs(KP))
   {
     return Standard_True;
   }

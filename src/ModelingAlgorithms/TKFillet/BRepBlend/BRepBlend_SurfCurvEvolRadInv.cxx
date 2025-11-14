@@ -280,7 +280,7 @@ void BRepBlend_SurfCurvEvolRadInv::GetTolerance(math_Vector&        Tolerance,
   Standard_Real ru, rv;
   ru           = surf->UResolution(Tol);
   rv           = surf->VResolution(Tol);
-  Tolerance(3) = rst->Resolution(Min(ru, rv));
+  Tolerance(3) = rst->Resolution(std::min(ru, rv));
 }
 
 //=================================================================================================
@@ -302,7 +302,8 @@ Standard_Boolean BRepBlend_SurfCurvEvolRadInv::IsSolution(const math_Vector&  So
 {
   math_Vector valsol(1, 3);
   Value(Sol, valsol);
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol && Abs(valsol(3)) <= 2 * Tol * Abs(ray))
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol
+      && std::abs(valsol(3)) <= 2 * Tol * std::abs(ray))
   {
     return Standard_True;
   }

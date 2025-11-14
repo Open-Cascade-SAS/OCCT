@@ -115,7 +115,7 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
       if (myShadowCamera->FitMinMax(aMinMaxBox, 10.0 * Precision::Confusion(), false))
       {
         // clang-format off
-        myShadowCamera->SetScale (Max (myShadowCamera->ViewDimensions().X() * 1.1, myShadowCamera->ViewDimensions().Y() * 1.1)); // add margin
+        myShadowCamera->SetScale (std::max (myShadowCamera->ViewDimensions().X() * 1.1, myShadowCamera->ViewDimensions().Y() * 1.1)); // add margin
         // clang-format on
       }
       myShadowCamera->ZFitAll(1.0, aMinMaxBox, aGraphicBox);

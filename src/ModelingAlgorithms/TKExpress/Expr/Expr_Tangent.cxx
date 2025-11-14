@@ -38,7 +38,7 @@ Handle(Expr_GeneralExpression) Expr_Tangent::ShallowSimplified() const
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
-    return new Expr_NumericValue(Tan(myNVexp->GetValue()));
+    return new Expr_NumericValue(std::tan(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_ArcTangent)))
   {
@@ -85,7 +85,7 @@ Handle(Expr_GeneralExpression) Expr_Tangent::Derivative(const Handle(Expr_NamedU
 Standard_Real Expr_Tangent::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                      const TColStd_Array1OfReal&      vals) const
 {
-  return ::Tan(Operand()->Evaluate(vars, vals));
+  return std::tan(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_Tangent::String() const

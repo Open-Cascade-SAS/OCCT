@@ -67,30 +67,31 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
   WellDone = Standard_False;
   NbrSol   = 0;
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol    = Abs(Tolerance);
+  Standard_Real Tol    = std::abs(Tolerance);
   Standard_Real dist   = Point1.Distance(Point2);
   Standard_Real dp1cen = Point1.Distance(OnCirc.Location());
   Standard_Real dp2cen = Point2.Distance(OnCirc.Location());
   Standard_Real R      = OnCirc.Radius();
   gp_Circ2d     C1     = OnCirc;
-  if (dist < Tol || Abs(dp1cen + 2 * R - dp2cen) < Tol || Abs(dp2cen + 2 * R - dp1cen) < Tol)
+  if (dist < Tol || std::abs(dp1cen + 2 * R - dp2cen) < Tol
+      || std::abs(dp2cen + 2 * R - dp1cen) < Tol)
   {
     WellDone = Standard_True;
     return;
   }
   gp_Lin2d L1(gp_Pnt2d((Point1.XY() + Point2.XY()) / 2.0),
               gp_Dir2d(Point1.Y() - Point2.Y(), Point2.X() - Point1.X()));
-  if (Abs(dp1cen + 2 * R - dp2cen) < Tol || Abs(dp2cen + 2 * R - dp1cen) < Tol)
+  if (std::abs(dp1cen + 2 * R - dp2cen) < Tol || std::abs(dp2cen + 2 * R - dp1cen) < Tol)
   {
-    if (Abs(dp1cen + 2 * R - dp2cen) < Tol)
+    if (std::abs(dp1cen + 2 * R - dp2cen) < Tol)
     {
       C1 = gp_Circ2d(gp_Ax2d(OnCirc.Location(), dirx),
-                     OnCirc.Radius() + Abs(dp2cen - dp1cen - 2.0 * R));
+                     OnCirc.Radius() + std::abs(dp2cen - dp1cen - 2.0 * R));
     }
-    else if (Abs(dp1cen + 2 * R - dp2cen) < Tol)
+    else if (std::abs(dp1cen + 2 * R - dp2cen) < Tol)
     {
       C1 = gp_Circ2d(gp_Ax2d(OnCirc.Location(), dirx),
-                     OnCirc.Radius() + Abs(dp2cen - dp1cen - 2.0 * R));
+                     OnCirc.Radius() + std::abs(dp2cen - dp1cen - 2.0 * R));
     }
   }
   IntAna2d_AnaIntersection Intp(L1, C1);

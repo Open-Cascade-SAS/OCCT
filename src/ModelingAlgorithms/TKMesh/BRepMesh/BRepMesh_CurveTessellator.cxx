@@ -77,22 +77,22 @@ void BRepMesh_CurveTessellator::init()
     aPreciseLinDef *= 0.5;
   }
 
-  aPreciseLinDef = Max(aPreciseLinDef, Precision::Confusion());
-  aPreciseAngDef = Max(aPreciseAngDef, Precision::Angular());
+  aPreciseLinDef = std::max(aPreciseLinDef, Precision::Confusion());
+  aPreciseAngDef = std::max(aPreciseAngDef, Precision::Angular());
 
   Standard_Real aMinSize = myParameters.MinSize;
   if (myParameters.AdjustMinSize)
   {
-    aMinSize = Min(aMinSize,
-                   myParameters.RelMinSize()
-                     * GCPnts_AbscissaPoint::Length(myCurve,
-                                                    myCurve.FirstParameter(),
-                                                    myCurve.LastParameter(),
-                                                    aPreciseLinDef));
+    aMinSize = std::min(aMinSize,
+                        myParameters.RelMinSize()
+                          * GCPnts_AbscissaPoint::Length(myCurve,
+                                                         myCurve.FirstParameter(),
+                                                         myCurve.LastParameter(),
+                                                         aPreciseLinDef));
   }
 
   mySquareEdgeDef = aPreciseLinDef * aPreciseLinDef;
-  mySquareMinSize = Max(mySquareEdgeDef, aMinSize * aMinSize);
+  mySquareMinSize = std::max(mySquareEdgeDef, aMinSize * aMinSize);
 
   myEdgeSqTol = BRep_Tool::Tolerance(myEdge);
   myEdgeSqTol *= myEdgeSqTol;
@@ -111,7 +111,7 @@ void BRepMesh_CurveTessellator::init()
       break;
   }
 
-  const Standard_Integer aMinPntNb = Max(myMinPointsNb, aMinPntThreshold); // OCC287
+  const Standard_Integer aMinPntNb = std::max(myMinPointsNb, aMinPntThreshold); // OCC287
   myDiscretTool.Initialize(myCurve,
                            myCurve.FirstParameter(),
                            myCurve.LastParameter(),
@@ -286,7 +286,7 @@ void BRepMesh_CurveTessellator::splitSegment(const Handle(Geom_Surface)& theSurf
   gp_Pnt        P3dF, P3dL, midP3d, midP3dFromSurf;
   Standard_Real midpar;
 
-  if (Abs(theLast - theFirst) < 2 * Precision::PConfusion())
+  if (std::abs(theLast - theFirst) < 2 * Precision::PConfusion())
   {
     return;
   }

@@ -87,8 +87,8 @@ Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
     : myDone(Standard_False)
 {
   Standard_Integer ii;
-  Standard_Integer RealUDegree = Max(MaxUDegree, 2 * UContinuity + 1);
-  Standard_Integer RealVDegree = Max(MaxVDegree, 2 * VContinuity + 1);
+  Standard_Integer RealUDegree = std::max(MaxUDegree, 2 * UContinuity + 1);
+  Standard_Integer RealVDegree = std::max(MaxVDegree, 2 * VContinuity + 1);
   myUDegree                    = 0;
   myVDegree                    = 0;
 

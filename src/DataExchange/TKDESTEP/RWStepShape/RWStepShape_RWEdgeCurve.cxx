@@ -99,12 +99,12 @@ Standard_Boolean AreEndsMatch(const Handle(StepShape_EdgeCurve)& theEdgeCurve)
   }
 
   const Standard_Real aDistance =
-    Sqrt((aStartPoint->CoordinatesValue(1) - anEndPoint->CoordinatesValue(1))
-           * (aStartPoint->CoordinatesValue(1) - anEndPoint->CoordinatesValue(1))
-         + (aStartPoint->CoordinatesValue(2) - anEndPoint->CoordinatesValue(2))
-             * (aStartPoint->CoordinatesValue(2) - anEndPoint->CoordinatesValue(2))
-         + (aStartPoint->CoordinatesValue(3) - anEndPoint->CoordinatesValue(3))
-             * (aStartPoint->CoordinatesValue(3) - anEndPoint->CoordinatesValue(3)));
+    std::sqrt((aStartPoint->CoordinatesValue(1) - anEndPoint->CoordinatesValue(1))
+                * (aStartPoint->CoordinatesValue(1) - anEndPoint->CoordinatesValue(1))
+              + (aStartPoint->CoordinatesValue(2) - anEndPoint->CoordinatesValue(2))
+                  * (aStartPoint->CoordinatesValue(2) - anEndPoint->CoordinatesValue(2))
+              + (aStartPoint->CoordinatesValue(3) - anEndPoint->CoordinatesValue(3))
+                  * (aStartPoint->CoordinatesValue(3) - anEndPoint->CoordinatesValue(3)));
   return aDistance < Precision::Confusion();
 }
 } // namespace

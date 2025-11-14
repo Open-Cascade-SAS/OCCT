@@ -922,7 +922,7 @@ void IGESData_GlobalSection::SetMaxCoord(const Standard_Real val)
 
 void IGESData_GlobalSection::MaxMaxCoord(const Standard_Real val)
 {
-  Standard_Real aval = Abs(val);
+  Standard_Real aval = std::abs(val);
   if (hasMaxCoord)
   {
     if (aval > theMaxCoord)

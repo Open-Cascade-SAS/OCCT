@@ -56,7 +56,7 @@ GeomFill_DraftTrihedron::GeomFill_DraftTrihedron(const gp_Vec& BiNormal, const S
 void GeomFill_DraftTrihedron::SetAngle(const Standard_Real Angle)
 {
   myAngle = M_PI / 2 + Angle;
-  myCos   = Cos(myAngle);
+  myCos   = std::cos(myAngle);
 }
 
 //=======================================================================
@@ -86,7 +86,7 @@ Standard_Boolean GeomFill_DraftTrihedron::D0(const Standard_Real Param,
   mu               = myCos;
 
   // La Normal est portee par la regle
-  Normal.SetLinearForm(Sqrt(1 - mu * mu), b, mu, v);
+  Normal.SetLinearForm(std::sqrt(1 - mu * mu), b, mu, v);
 
   // Le reste suit....
   // La tangente est perpendiculaire a la normale et a la direction de depouille
@@ -136,8 +136,8 @@ Standard_Boolean GeomFill_DraftTrihedron::D1(const Standard_Real Param,
 
   Standard_Real mu = myCos;
 
-  Normal.SetLinearForm(Sqrt(1 - mu * mu), b, mu, v);
-  DNormal.SetLinearForm(Sqrt(1 - mu * mu), db, mu, dv);
+  Normal.SetLinearForm(std::sqrt(1 - mu * mu), b, mu, v);
+  DNormal.SetLinearForm(std::sqrt(1 - mu * mu), db, mu, dv);
 
   Tangent = Normal.Crossed(B);
   normT   = Tangent.Magnitude();
@@ -201,7 +201,7 @@ Standard_Boolean GeomFill_DraftTrihedron::D2(const Standard_Real Param,
   gp_Vec d2v = d2b.Crossed(T) + 2 * db.Crossed(DT) + b.Crossed(D2T);
 
   Standard_Real mu = myCos, rac;
-  rac              = Sqrt(1 - mu * mu);
+  rac              = std::sqrt(1 - mu * mu);
 
   Normal.SetLinearForm(rac, b, mu, v);
   DNormal.SetLinearForm(rac, db, mu, dv);

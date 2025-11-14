@@ -38,7 +38,7 @@ Handle(Expr_GeneralExpression) Expr_SquareRoot::ShallowSimplified() const
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
-    return new Expr_NumericValue(Sqrt(myNVexp->GetValue()));
+    return new Expr_NumericValue(std::sqrt(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_Square)))
   {
@@ -84,7 +84,7 @@ Handle(Expr_GeneralExpression) Expr_SquareRoot::Derivative(const Handle(Expr_Nam
 Standard_Real Expr_SquareRoot::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                         const TColStd_Array1OfReal&      vals) const
 {
-  return ::Sqrt(Operand()->Evaluate(vars, vals));
+  return std::sqrt(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_SquareRoot::String() const

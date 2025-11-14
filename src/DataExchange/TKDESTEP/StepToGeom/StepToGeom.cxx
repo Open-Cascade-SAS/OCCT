@@ -756,7 +756,7 @@ Handle(TBSplineCurve) MakeBSplineCurveCommon(
   Standard_Real    lastKnot      = RealFirst();
   for (Standard_Integer i = 1; i <= NbKnots; ++i)
   {
-    if (aKnots->Value(i) - lastKnot > Epsilon(Abs(lastKnot)))
+    if (aKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
     {
       NbUniqueKnots++;
       lastKnot = aKnots->Value(i);
@@ -774,7 +774,7 @@ Handle(TBSplineCurve) MakeBSplineCurveCommon(
   Standard_Integer aKnotPosition = 1;
   for (Standard_Integer i = 2; i <= NbKnots; i++)
   {
-    if (aKnots->Value(i) - lastKnot > Epsilon(Abs(lastKnot)))
+    if (aKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
     {
       aKnotPosition++;
       aUniqueKnots.SetValue(aKnotPosition, aKnots->Value(i));
@@ -977,7 +977,7 @@ Handle(Geom_BSplineSurface) StepToGeom::MakeBSplineSurface(
   Standard_Integer NUKnotsUnique = 0;
   for (i = 1; i <= NUKnots; i++)
   {
-    if (aUKnots->Value(i) - lastKnot > Epsilon(Abs(lastKnot)))
+    if (aUKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
     {
       NUKnotsUnique++;
       lastKnot = aUKnots->Value(i);
@@ -993,7 +993,7 @@ Handle(Geom_BSplineSurface) StepToGeom::MakeBSplineSurface(
   UMult.SetValue(1, aUMultiplicities->Value(1));
   for (i = 2; i <= NUKnots; i++)
   {
-    if (aUKnots->Value(i) - lastKnot > Epsilon(Abs(lastKnot)))
+    if (aUKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
     {
       pos++;
       KUn.SetValue(pos, aUKnots->Value(i));
@@ -1016,7 +1016,7 @@ Handle(Geom_BSplineSurface) StepToGeom::MakeBSplineSurface(
   Standard_Integer NVKnotsUnique = 0;
   for (i = 1; i <= NVKnots; i++)
   {
-    if (aVKnots->Value(i) - lastKnot > Epsilon(Abs(lastKnot)))
+    if (aVKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
     {
       NVKnotsUnique++;
       lastKnot = aVKnots->Value(i);
@@ -1032,7 +1032,7 @@ Handle(Geom_BSplineSurface) StepToGeom::MakeBSplineSurface(
   VMult.SetValue(1, aVMultiplicities->Value(1));
   for (i = 2; i <= NVKnots; i++)
   {
-    if (aVKnots->Value(i) - lastKnot > Epsilon(Abs(lastKnot)))
+    if (aVKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
     {
       pos++;
       KVn.SetValue(pos, aVKnots->Value(i));
@@ -1274,7 +1274,7 @@ Handle(Geom_ConicalSurface) StepToGeom::MakeConicalSurface(
     const Standard_Real Ang = SS->SemiAngle() * theLocalFactors.PlaneAngleFactor();
     // #2(K3-3) rln 12/02/98 ProSTEP ct_turbine-A.stp entity #518, #3571 (gp::Resolution() is too
     // little)
-    return new Geom_ConicalSurface(A->Ax2(), Max(Ang, Precision::Angular()), R);
+    return new Geom_ConicalSurface(A->Ax2(), std::max(Ang, Precision::Angular()), R);
   }
   return 0;
 }
@@ -1810,7 +1810,7 @@ Handle(Geom_RectangularTrimmedSurface) StepToGeom::MakeRectangularTrimmedSurface
     {
       const Handle(Geom_ConicalSurface) conicS = Handle(Geom_ConicalSurface)::DownCast(theBasis);
       uFact                                    = AngleFact;
-      vFact                                    = LengthFact / Cos(conicS->SemiAngle());
+      vFact                                    = LengthFact / std::cos(conicS->SemiAngle());
     }
     else if (theBasis->IsKind(STANDARD_TYPE(Geom_Plane)))
     {
@@ -1892,7 +1892,7 @@ Handle(Geom_Surface) StepToGeom::MakeSurface(const Handle(StepGeom_Surface)& SS,
           if (aBFace.IsDone())
           {
             const TopoDS_Shape aResult =
-              ShapeAlgo::AlgoContainer()->C0ShapeToC1Shape(aBFace.Face(), Abs(anOffset));
+              ShapeAlgo::AlgoContainer()->C0ShapeToC1Shape(aBFace.Face(), std::abs(anOffset));
             if (aResult.ShapeType() == TopAbs_FACE)
             {
               aBasisSurface = BRep_Tool::Surface(TopoDS::Face(aResult));
@@ -2048,8 +2048,8 @@ Handle(Geom_ToroidalSurface) StepToGeom::MakeToroidalSurface(
   {
     const Standard_Real LF = theLocalFactors.LengthFactor();
     return new Geom_ToroidalSurface(A->Ax2(),
-                                    Abs(SS->MajorRadius() * LF),
-                                    Abs(SS->MinorRadius() * LF));
+                                    std::abs(SS->MajorRadius() * LF),
+                                    std::abs(SS->MinorRadius() * LF));
   }
   return 0;
 }
@@ -2367,7 +2367,7 @@ Handle(Geom_TrimmedCurve) StepToGeom::MakeTrimmedCurve(const Handle(StepGeom_Tri
       else if (trim2 > cl)
         trim2 = cl;
     }
-    if (Abs(trim1 - trim2) < Precision::PConfusion())
+    if (std::abs(trim1 - trim2) < Precision::PConfusion())
     {
       if (theCurve->IsPeriodic())
       {
@@ -2375,7 +2375,7 @@ Handle(Geom_TrimmedCurve) StepToGeom::MakeTrimmedCurve(const Handle(StepGeom_Tri
       }
       else if (theCurve->IsClosed())
       {
-        if (Abs(trim1 - cf) < Precision::PConfusion())
+        if (std::abs(trim1 - cf) < Precision::PConfusion())
         {
           trim2 += cl;
         }
@@ -2527,7 +2527,7 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
                        SR.RotationAboutDirection()->DirectionOfAxis()->DirectionRatiosValue(2),
                        SR.RotationAboutDirection()->DirectionOfAxis()->DirectionRatiosValue(3));
   Standard_Real anAngle = SR.RotationAboutDirection()->RotationAngle();
-  if (Abs(anAngle) < Precision::Angular())
+  if (std::abs(anAngle) < Precision::Angular())
   {
     // a zero rotation is converted trivially
     anYPRRotation = new TColStd_HArray1OfReal(1, 3);
@@ -2588,12 +2588,12 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
     (!aSiUnit->HasPrefix() ? 1. : STEPConstruct_UnitContext::ConvertSiPrefix(aSiUnit->Prefix()))
     * anAngle;
   Standard_Real anUcf = SR.RotationAboutDirection()->RotationAngle() / anAngle;
-  Standard_Real aSA   = Sin(anAngle);
-  Standard_Real aCA   = Cos(anAngle);
+  Standard_Real aSA   = std::sin(anAngle);
+  Standard_Real aCA   = std::cos(anAngle);
   Standard_Real aYaw = 0, aPitch = 0, aRoll = 0;
 
   // axis parallel either to x-axis or to z-axis?
-  if (Abs(dy) < Precision::Confusion() && Abs(dx * dz) < Precision::SquareConfusion())
+  if (std::abs(dy) < Precision::Confusion() && std::abs(dx * dz) < Precision::SquareConfusion())
   {
     while (anAngle <= -M_PI)
     {
@@ -2605,7 +2605,7 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
     }
 
     aYaw = anUcf * anAngle;
-    if (Abs(anAngle - M_PI) >= Precision::Angular())
+    if (std::abs(anAngle - M_PI) >= Precision::Angular())
     {
       aRoll = -aYaw;
     }
@@ -2617,7 +2617,7 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
     anYPRRotation->SetValue(1, 0.);
     anYPRRotation->SetValue(2, 0.);
     anYPRRotation->SetValue(3, 0.);
-    if (Abs(dx) >= Precision::Confusion())
+    if (std::abs(dx) >= Precision::Confusion())
     {
       if (dx > 0.)
         anYPRRotation->SetValue(3, aYaw);
@@ -2635,8 +2635,8 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
   }
 
   // axis parallel to y-axis - use y-axis as pitch axis
-  if (Abs(dy) >= Precision::Confusion() && Abs(dx) < Precision::Confusion()
-      && Abs(dz) < Precision::Confusion())
+  if (std::abs(dy) >= Precision::Confusion() && std::abs(dx) < Precision::Confusion()
+      && std::abs(dz) < Precision::Confusion())
   {
     if (aCA >= 0.)
     {
@@ -2648,7 +2648,7 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
       aYaw  = anUcf * M_PI;
       aRoll = aYaw;
     }
-    aPitch = anUcf * ATan2(aSA, Abs(aCA));
+    aPitch = anUcf * std::atan2(aSA, std::abs(aCA));
     if (dy < 0.)
     {
       aPitch = -aPitch;
@@ -2669,10 +2669,10 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
     {dx * dz * aCm1 - dy * aSA, dy * dz * aCm1 + dx * aSA, dz * dz * aCm1 + aCA}};
 
   // aRotMat[1][3] equals SIN(pitch_angle)
-  if (Abs(Abs(aRotMat[0][2] - 1.)) < Precision::Confusion())
+  if (std::abs(std::abs(aRotMat[0][2] - 1.)) < Precision::Confusion())
   {
     // |aPitch| = PI/2
-    if (Abs(aRotMat[0][2] - 1.) < Precision::Confusion())
+    if (std::abs(aRotMat[0][2] - 1.) < Precision::Confusion())
       aPitch = M_PI_2;
     else
       aPitch = -M_PI_2;
@@ -2681,7 +2681,7 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
     // According to IP `rectangular pitch angle' for ypr_rotation,
     // the roll angle is set to zero.
     aRoll = 0.;
-    aYaw  = ATan2(aRotMat[1][0], aRotMat[1][1]);
+    aYaw  = std::atan2(aRotMat[1][0], aRotMat[1][1]);
     // result of ATAN is in the range[-PI / 2, PI / 2].
     // Here all four quadrants are needed.
 
@@ -2696,34 +2696,35 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
   else
   {
     // COS (pitch_angle) not equal to zero
-    aYaw = ATan2(-aRotMat[0][1], aRotMat[0][0]);
+    aYaw = std::atan2(-aRotMat[0][1], aRotMat[0][0]);
 
     if (aRotMat[0][0] < 0.)
     {
-      if (aYaw < 0. || Abs(aYaw) < Precision::Angular())
+      if (aYaw < 0. || std::abs(aYaw) < Precision::Angular())
         aYaw = aYaw + M_PI;
       else
         aYaw = aYaw - M_PI;
     }
-    Standard_Real aSY = Sin(aYaw);
-    Standard_Real aCY = Cos(aYaw);
-    Standard_Real aSR = Sin(aRoll);
-    Standard_Real aCR = Cos(aRoll);
+    Standard_Real aSY = std::sin(aYaw);
+    Standard_Real aCY = std::cos(aYaw);
+    Standard_Real aSR = std::sin(aRoll);
+    Standard_Real aCR = std::cos(aRoll);
 
-    if (Abs(aSY) > Abs(aCY) && Abs(aSY) > Abs(aSR) && Abs(aSY) > Abs(aCR))
+    if (std::abs(aSY) > std::abs(aCY) && std::abs(aSY) > std::abs(aSR)
+        && std::abs(aSY) > std::abs(aCR))
     {
       aCm1 = -aRotMat[0][1] / aSY;
     }
     else
     {
-      if (Abs(aCY) > Abs(aSR) && Abs(aCY) > Abs(aCR))
+      if (std::abs(aCY) > std::abs(aSR) && std::abs(aCY) > std::abs(aCR))
         aCm1 = aRotMat[0][0] / aCY;
-      else if (Abs(aSR) > Abs(aCR))
+      else if (std::abs(aSR) > std::abs(aCR))
         aCm1 = -aRotMat[1][2] / aSR;
       else
         aCm1 = aRotMat[2][2] / aCR;
     }
-    aPitch = ATan2(aRotMat[0][2], aCm1);
+    aPitch = std::atan2(aRotMat[0][2], aCm1);
   }
   aYaw          = aYaw * anUcf;
   aPitch        = aPitch * anUcf;

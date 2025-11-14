@@ -59,12 +59,12 @@ void ChFiDS_FilSpine::Reset(const Standard_Boolean AllData)
 
     gp_XY FirstUandR = parandrad.First();
     gp_XY LastUandR  = parandrad.Last();
-    if (Abs(spinedeb - FirstUandR.X()) > gp::Resolution())
+    if (std::abs(spinedeb - FirstUandR.X()) > gp::Resolution())
     {
       FirstUandR.SetX(spinedeb);
       parandrad.Prepend(FirstUandR);
     }
-    if (Abs(spinefin - LastUandR.X()) > gp::Resolution())
+    if (std::abs(spinefin - LastUandR.X()) > gp::Resolution())
     {
       LastUandR.SetX(spinefin);
       parandrad.Append(LastUandR);
@@ -98,9 +98,9 @@ void ChFiDS_FilSpine::UnSetRadius(const TopoDS_Edge& E)
   Standard_Integer ifirst = 0, ilast = 0;
   for (Standard_Integer i = 1; i <= parandrad.Length(); i++)
   {
-    if (Abs(parandrad(i).X() - Uf) <= gp::Resolution())
+    if (std::abs(parandrad(i).X() - Uf) <= gp::Resolution())
       ifirst = i;
-    if (Abs(parandrad(i).X() - Ul) <= gp::Resolution())
+    if (std::abs(parandrad(i).X() - Ul) <= gp::Resolution())
       ilast = i;
   }
   if (ifirst != 0 && ilast != 0)
@@ -226,7 +226,7 @@ Standard_Boolean ChFiDS_FilSpine::IsConstant() const
   Standard_Boolean isconst = Standard_True;
   Standard_Real    Radius  = parandrad(1).Y();
   for (Standard_Integer i = 2; i <= parandrad.Length(); i++)
-    if (Abs(Radius - parandrad(i).Y()) > Precision::Confusion())
+    if (std::abs(Radius - parandrad(i).Y()) > Precision::Confusion())
     {
       isconst = Standard_False;
       break;
@@ -248,7 +248,7 @@ Standard_Boolean ChFiDS_FilSpine::IsConstant(const Standard_Integer IE) const
     par                   = parandrad(i).X();
     rad                   = parandrad(i).Y();
     Standard_Real nextpar = parandrad(i + 1).X();
-    if (Abs(Uf - par) <= gp::Resolution()
+    if (std::abs(Uf - par) <= gp::Resolution()
         || (par < Uf && Uf < nextpar && nextpar - Uf > gp::Resolution()))
     {
       StartRad = rad;
@@ -259,9 +259,9 @@ Standard_Boolean ChFiDS_FilSpine::IsConstant(const Standard_Integer IE) const
   {
     par = parandrad(i).X();
     rad = parandrad(i).Y();
-    if (Abs(rad - StartRad) > Precision::Confusion())
+    if (std::abs(rad - StartRad) > Precision::Confusion())
       return Standard_False;
-    if (Abs(Ul - par) <= gp::Resolution())
+    if (std::abs(Ul - par) <= gp::Resolution())
       return Standard_True;
     if (par > Ul)
       return Standard_True;
@@ -291,7 +291,7 @@ Standard_Real ChFiDS_FilSpine::Radius(const Standard_Integer IE) const
     par                   = parandrad(i).X();
     rad                   = parandrad(i).Y();
     Standard_Real nextpar = parandrad(i + 1).X();
-    if (Abs(Uf - par) <= gp::Resolution()
+    if (std::abs(Uf - par) <= gp::Resolution()
         || (par < Uf && Uf < nextpar && nextpar - Uf > gp::Resolution()))
     {
       StartRad = rad;
@@ -302,9 +302,9 @@ Standard_Real ChFiDS_FilSpine::Radius(const Standard_Integer IE) const
   {
     par = parandrad(i).X();
     rad = parandrad(i).Y();
-    if (Abs(rad - StartRad) > Precision::Confusion())
+    if (std::abs(rad - StartRad) > Precision::Confusion())
       throw Standard_DomainError("Edge is not constant");
-    if (Abs(Ul - par) <= gp::Resolution())
+    if (std::abs(Ul - par) <= gp::Resolution())
       return StartRad;
     if (par > Ul)
       return StartRad;
@@ -573,7 +573,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw(const Handle(ChFiDS_ElSpine)& 
       Rdeb                        = Radius(ind(1));
       curfin                      = LastParameter(ind(1));
       curfin                      = ElCLib::InPeriod(curfin, spinedeb + tol3d, spinefin + tol3d);
-      curfin                      = Min(fin, curfin);
+      curfin                      = std::min(fin, curfin);
       Handle(Law_Constant) curloi = new Law_Constant();
       curloi->Set(Rdeb, curdeb, curfin);
       list.Append(curloi);
@@ -617,7 +617,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw(const Handle(ChFiDS_ElSpine)& 
     if (IsConstant(ind(1)))
     {
       Rdeb                        = Radius(ind(1));
-      curfin                      = Min(fin, LastParameter(ind(1)));
+      curfin                      = std::min(fin, LastParameter(ind(1)));
       Handle(Law_Constant) curloi = new Law_Constant();
       curloi->Set(Rdeb, curdeb, curfin);
       list.Append(curloi);
@@ -692,10 +692,10 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw(const Handle(ChFiDS_ElSpine)& 
           if (biddeb >= curfin)
             curfin = fin;
           else
-            curfin = Min(fin, curfin);
+            curfin = std::min(fin, curfin);
         }
         else
-          curfin = Min(fin, curfin);
+          curfin = std::min(fin, curfin);
       }
       if ((curfin - curdeb) > tol3d)
       {
@@ -711,7 +711,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw(const Handle(ChFiDS_ElSpine)& 
       curfin = LastParameter(ind(icur));
       if (IsPeriodic())
         curfin = ElCLib::InPeriod(curfin, spinedeb + tol3d, spinefin + tol3d);
-      curfin     = Min(fin, curfin);
+      curfin     = std::min(fin, curfin);
       lawencours = Standard_True;
       if (ind(icur) == ind(nbed))
       {
@@ -726,7 +726,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw(const Handle(ChFiDS_ElSpine)& 
           if (biddeb >= curfin)
             curfin = fin;
           else
-            curfin = Min(fin, curfin);
+            curfin = std::min(fin, curfin);
         }
         // or if it is the end of spine with extension.
         else if (ind(icur) == len)

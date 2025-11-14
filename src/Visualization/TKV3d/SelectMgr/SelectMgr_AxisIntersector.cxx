@@ -201,7 +201,7 @@ bool SelectMgr_AxisIntersector::rayPlaneIntersection(const gp_Vec&            th
   Standard_Real aD  = thePlane.Dot(anU);
   Standard_Real aN  = -thePlane.Dot(aW);
 
-  if (Abs(aD) < Precision::Confusion())
+  if (std::abs(aD) < Precision::Confusion())
   {
     thePickResult.Invalidate();
     return false;
@@ -262,7 +262,7 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsBox(
   }
 
   Standard_Real aDepth = 0.0;
-  Bnd_Range     aRange(Max(aTimeEnter, 0.0), aTimeLeave);
+  Bnd_Range     aRange(std::max(aTimeEnter, 0.0), aTimeLeave);
   aRange.GetMin(aDepth);
 
   if (!theClipRange.GetNearestDepth(aRange, aDepth))
@@ -427,7 +427,7 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle(
 
     const gp_Pnt        aPnts[3] = {thePnt1, thePnt2, thePnt3};
     const Standard_Real anAlpha  = aTriangleNormal.XYZ().Dot(myAxis.Direction().XYZ());
-    if (Abs(anAlpha) < gp::Resolution())
+    if (std::abs(anAlpha) < gp::Resolution())
     {
       // handle the case when triangle normal and selecting frustum direction are orthogonal
       SelectBasics_PickResult aPickResult;
@@ -545,7 +545,7 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsSphere(
   }
 
   Standard_Real aDepth = 0.0;
-  Bnd_Range     aRange(Max(aTimeEnter, 0.0), aTimeLeave);
+  Bnd_Range     aRange(std::max(aTimeEnter, 0.0), aTimeLeave);
   aRange.GetMin(aDepth);
   if (!theClipRange.GetNearestDepth(aRange, aDepth))
   {
@@ -591,7 +591,7 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsCylinder(
   }
 
   Standard_Real aDepth = 0.0;
-  Bnd_Range     aRange(Max(aTimeEnter, 0.0), Max(aTimeEnter, aTimeLeave));
+  Bnd_Range     aRange(std::max(aTimeEnter, 0.0), std::max(aTimeEnter, aTimeLeave));
   aRange.GetMin(aDepth);
   if (!theClipRange.GetNearestDepth(aRange, aDepth))
   {
@@ -601,11 +601,11 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsCylinder(
   const gp_Pnt aPntOnCylinder = aLoc.XYZ() + aRayDir.XYZ() * aDepth;
   thePickResult.SetDepth(aDepth);
   thePickResult.SetPickedPoint(aPntOnCylinder.Transformed(theTrsf));
-  if (Abs(aPntOnCylinder.Z()) < Precision::Confusion())
+  if (std::abs(aPntOnCylinder.Z()) < Precision::Confusion())
   {
     thePickResult.SetSurfaceNormal(-gp::DZ().Transformed(theTrsf));
   }
-  else if (Abs(aPntOnCylinder.Z() - theHeight) < Precision::Confusion())
+  else if (std::abs(aPntOnCylinder.Z() - theHeight) < Precision::Confusion())
   {
     thePickResult.SetSurfaceNormal(gp::DZ().Transformed(theTrsf));
   }
@@ -672,7 +672,7 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsCircle(
     return false;
   }
 
-  Standard_Real aDepth = Max(aTime, 0.0);
+  Standard_Real aDepth = std::max(aTime, 0.0);
   if (theClipRange.IsClipped(aDepth))
   {
     return false;
@@ -681,7 +681,7 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsCircle(
   const gp_Pnt aPntOnCylinder = aLoc.XYZ() + aRayDir.XYZ() * aDepth;
   thePickResult.SetDepth(aDepth);
   thePickResult.SetPickedPoint(aPntOnCylinder.Transformed(theTrsf));
-  if (Abs(aPntOnCylinder.Z()) < Precision::Confusion())
+  if (std::abs(aPntOnCylinder.Z()) < Precision::Confusion())
   {
     thePickResult.SetSurfaceNormal(-gp::DZ().Transformed(theTrsf));
   }

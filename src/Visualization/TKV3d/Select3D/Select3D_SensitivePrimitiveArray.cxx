@@ -84,7 +84,7 @@ struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_InitFu
     Handle(Select3D_SensitivePrimitiveArray)& anEntity =
       myPrimArray.myGroups->ChangeValue(theIndex);
     const Standard_Integer aLower  = myPrimArray.myIndexLower + theIndex * myDivStep;
-    const Standard_Integer anUpper = Min(aLower + myDivStep - 1, myPrimArray.myIndexUpper);
+    const Standard_Integer anUpper = std::min(aLower + myDivStep - 1, myPrimArray.myIndexUpper);
     anEntity                       = new Select3D_SensitivePrimitiveArray(myPrimArray.myOwnerId);
     anEntity->SetPatchSizeMax(myPrimArray.myPatchSizeMax);
     anEntity->SetPatchDistance(myPrimArray.myPatchDistance);

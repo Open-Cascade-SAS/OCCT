@@ -57,10 +57,10 @@ void Extrema_GlobOptFuncConicS::value(Standard_Real su, Standard_Real sv, Standa
   if (ct >= myTf && ct <= myTl)
   {
     gp_Pnt aPC = myC->Value(ct);
-    F          = Min(F, aPS.SquareDistance(aPC));
+    F          = std::min(F, aPS.SquareDistance(aPC));
   }
-  F = Min(F, aPS.SquareDistance(myCPf));
-  F = Min(F, aPS.SquareDistance(myCPl));
+  F = std::min(F, aPS.SquareDistance(myCPf));
+  F = std::min(F, aPS.SquareDistance(myCPl));
 }
 
 //=================================================================================================
@@ -133,11 +133,11 @@ void Extrema_GlobOptFuncConicS::LoadConic(const Adaptor3d_Curve* C,
   if (myC->IsPeriodic())
   {
     constexpr Standard_Real aTMax = 2. * M_PI + Precision::PConfusion();
-    if (myTf > aTMax || myTf < -Precision::PConfusion() || Abs(myTl - myTf) > aTMax)
+    if (myTf > aTMax || myTf < -Precision::PConfusion() || std::abs(myTl - myTf) > aTMax)
     {
       ElCLib::AdjustPeriodic(0.,
                              2. * M_PI,
-                             Min(Abs(myTl - myTf) / 2, Precision::PConfusion()),
+                             std::min(std::abs(myTl - myTf) / 2, Precision::PConfusion()),
                              myTf,
                              myTl);
     }
@@ -229,7 +229,7 @@ Standard_Real Extrema_GlobOptFuncConicS::ConicParameter(const math_Vector& theUV
   if (ct >= myTf && ct <= myTl)
   {
     gp_Pnt aPC = myC->Value(ct);
-    F          = Min(F, aPS.SquareDistance(aPC));
+    F          = std::min(F, aPS.SquareDistance(aPC));
   }
   Standard_Real Fext = aPS.SquareDistance(myCPf);
   if (Fext < F)

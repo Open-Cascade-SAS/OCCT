@@ -103,7 +103,7 @@ void BRepExtrema_ProximityDistTool::goThroughtSet1(const BVH_Array3d&     theVer
                                                    const Standard_Boolean theIsAdditionalSet)
 {
   Standard_Integer aVtxSize = (Standard_Integer)theVertices1.size();
-  Standard_Integer aVtxStep = Max(myNbSamples1 <= 0 ? 1 : aVtxSize / myNbSamples1, 1);
+  Standard_Integer aVtxStep = std::max(myNbSamples1 <= 0 ? 1 : aVtxSize / myNbSamples1, 1);
   for (Standard_Integer aVtxIdx = 0; aVtxIdx < aVtxSize; aVtxIdx += aVtxStep)
   {
     myDistance    = std::numeric_limits<Standard_Real>::max();

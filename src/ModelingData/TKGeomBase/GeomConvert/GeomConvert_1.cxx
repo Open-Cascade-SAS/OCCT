@@ -129,10 +129,10 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface(
   Standard_Integer LastV  = S->LastVKnotIndex();
   if (FromUK1 == ToUK2 || FromVK1 == ToVK2)
     throw Standard_DomainError();
-  Standard_Integer FirstUK = Min(FromUK1, ToUK2);
-  Standard_Integer LastUK  = Max(FromUK1, ToUK2);
-  Standard_Integer FirstVK = Min(FromVK1, ToVK2);
-  Standard_Integer LastVK  = Max(FromVK1, ToVK2);
+  Standard_Integer FirstUK = std::min(FromUK1, ToUK2);
+  Standard_Integer LastUK  = std::max(FromUK1, ToUK2);
+  Standard_Integer FirstVK = std::min(FromVK1, ToVK2);
+  Standard_Integer LastVK  = std::max(FromVK1, ToVK2);
   if (FirstUK < FirstU || LastUK > LastU || FirstVK < FirstV || LastVK > LastV)
   {
     throw Standard_DomainError();
@@ -183,8 +183,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface(const Handle(Geom_B
 
     Standard_Integer FirstU  = S->FirstUKnotIndex();
     Standard_Integer LastU   = S->LastUKnotIndex();
-    Standard_Integer FirstUK = Min(FromK1, ToK2);
-    Standard_Integer LastUK  = Max(FromK1, ToK2);
+    Standard_Integer FirstUK = std::min(FromK1, ToK2);
+    Standard_Integer LastUK  = std::max(FromK1, ToK2);
     if (FirstUK < FirstU || LastUK > LastU)
       throw Standard_DomainError();
 
@@ -209,8 +209,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface(const Handle(Geom_B
 
     Standard_Integer FirstV  = S->FirstVKnotIndex();
     Standard_Integer LastV   = S->LastVKnotIndex();
-    Standard_Integer FirstVK = Min(FromK1, ToK2);
-    Standard_Integer LastVK  = Max(FromK1, ToK2);
+    Standard_Integer FirstVK = std::min(FromK1, ToK2);
+    Standard_Integer LastVK  = std::max(FromK1, ToK2);
     if (FirstVK < FirstV || LastVK > LastV)
       throw Standard_DomainError();
 
@@ -246,10 +246,10 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface(
   const Standard_Boolean SameUOrientation,
   const Standard_Boolean SameVOrientation)
 {
-  Standard_Real FirstU = Min(FromU1, ToU2);
-  Standard_Real LastU  = Max(FromU1, ToU2);
-  Standard_Real FirstV = Min(FromV1, ToV2);
-  Standard_Real LastV  = Max(FromV1, ToV2);
+  Standard_Real FirstU = std::min(FromU1, ToU2);
+  Standard_Real LastU  = std::max(FromU1, ToU2);
+  Standard_Real FirstV = std::min(FromV1, ToV2);
+  Standard_Real LastV  = std::max(FromV1, ToV2);
 
   Handle(Geom_BSplineSurface) NewSurface = Handle(Geom_BSplineSurface)::DownCast(S->Copy());
 
@@ -288,7 +288,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface(
   const Standard_Real                ParametricTolerance,
   const Standard_Boolean             SameOrientation)
 {
-  if (Abs(FromParam1 - ToParam2) <= Abs(ParametricTolerance))
+  if (std::abs(FromParam1 - ToParam2) <= std::abs(ParametricTolerance))
   {
     throw Standard_DomainError();
   }
@@ -296,8 +296,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface(
 
   if (USplit)
   {
-    Standard_Real FirstU = Min(FromParam1, ToParam2);
-    Standard_Real LastU  = Max(FromParam1, ToParam2);
+    Standard_Real FirstU = std::min(FromParam1, ToParam2);
+    Standard_Real LastU  = std::max(FromParam1, ToParam2);
     Standard_Real FirstV = S->VKnot(S->FirstVKnotIndex());
     Standard_Real LastV  = S->VKnot(S->LastVKnotIndex());
 
@@ -318,8 +318,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface(
   {
     Standard_Real FirstU = S->UKnot(S->FirstUKnotIndex());
     Standard_Real LastU  = S->UKnot(S->LastUKnotIndex());
-    Standard_Real FirstV = Min(FromParam1, ToParam2);
-    Standard_Real LastV  = Max(FromParam1, ToParam2);
+    Standard_Real FirstV = std::min(FromParam1, ToParam2);
+    Standard_Real LastV  = std::max(FromParam1, ToParam2);
 
     NewSurface->Segment(FirstU, LastU, FirstV, LastV);
 
@@ -344,10 +344,10 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
 
   Standard_Real U1, U2, V1, V2;
   Sr->Bounds(U1, U2, V1, V2);
-  Standard_Real UFirst = Min(U1, U2);
-  Standard_Real ULast  = Max(U1, U2);
-  Standard_Real VFirst = Min(V1, V2);
-  Standard_Real VLast  = Max(V1, V2);
+  Standard_Real UFirst = std::min(U1, U2);
+  Standard_Real ULast  = std::max(U1, U2);
+  Standard_Real VFirst = std::min(V1, V2);
+  Standard_Real VLast  = std::max(V1, V2);
 
   // If the surface Sr is infinite stop the computation
   if (Precision::IsNegativeInfinite(UFirst) || Precision::IsPositiveInfinite(ULast)
@@ -401,8 +401,9 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
     }
     //
     // For cylinders, cones, spheres, toruses
-    const Standard_Boolean isUClosed = Abs((ULast - UFirst) - 2. * M_PI) <= Precision::PConfusion();
-    const Standard_Real    eps       = 100. * Epsilon(2. * M_PI);
+    const Standard_Boolean isUClosed =
+      std::abs((ULast - UFirst) - 2. * M_PI) <= Precision::PConfusion();
+    const Standard_Real eps = 100. * Epsilon(2. * M_PI);
     //
     if (Surf->IsKind(STANDARD_TYPE(Geom_Plane)))
     {
@@ -437,7 +438,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
         Convert_CylinderToBSplineSurface Convert(Cyl, VFirst, VLast);
         TheSurface            = BSplineSurfaceBuilder(Convert);
         Standard_Integer aNbK = TheSurface->NbUKnots();
-        if (Abs(TheSurface->UKnot(1) - UFirst) > eps || Abs(TheSurface->UKnot(aNbK) - ULast) > eps)
+        if (std::abs(TheSurface->UKnot(1) - UFirst) > eps
+            || std::abs(TheSurface->UKnot(aNbK) - ULast) > eps)
         {
           TheSurface->CheckAndSegment(UFirst, ULast, VFirst, VLast);
         }
@@ -458,7 +460,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
         Convert_ConeToBSplineSurface Convert(Co, VFirst, VLast);
         TheSurface            = BSplineSurfaceBuilder(Convert);
         Standard_Integer aNbK = TheSurface->NbUKnots();
-        if (Abs(TheSurface->UKnot(1) - UFirst) > eps || Abs(TheSurface->UKnot(aNbK) - ULast) > eps)
+        if (std::abs(TheSurface->UKnot(1) - UFirst) > eps
+            || std::abs(TheSurface->UKnot(aNbK) - ULast) > eps)
         {
           TheSurface->CheckAndSegment(UFirst, ULast, VFirst, VLast);
         }
@@ -482,7 +485,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
         Convert_SphereToBSplineSurface Convert(Sph, VFirst, VLast, Standard_False);
         TheSurface            = BSplineSurfaceBuilder(Convert);
         Standard_Integer aNbK = TheSurface->NbUKnots();
-        if (Abs(TheSurface->UKnot(1) - UFirst) > eps || Abs(TheSurface->UKnot(aNbK) - ULast) > eps)
+        if (std::abs(TheSurface->UKnot(1) - UFirst) > eps
+            || std::abs(TheSurface->UKnot(aNbK) - ULast) > eps)
         {
           TheSurface->CheckAndSegment(UFirst, ULast, VFirst, VLast);
         }
@@ -510,7 +514,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
         Convert_TorusToBSplineSurface Convert(Tr, VFirst, VLast, Standard_False);
         TheSurface            = BSplineSurfaceBuilder(Convert);
         Standard_Integer aNbK = TheSurface->NbUKnots();
-        if (Abs(TheSurface->UKnot(1) - UFirst) > eps || Abs(TheSurface->UKnot(aNbK) - ULast) > eps)
+        if (std::abs(TheSurface->UKnot(1) - UFirst) > eps
+            || std::abs(TheSurface->UKnot(aNbK) - ULast) > eps)
         {
           TheSurface->CheckAndSegment(UFirst, ULast, VFirst, VLast);
         }
@@ -520,7 +525,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
         Convert_TorusToBSplineSurface Convert(Tr, UFirst, ULast);
         TheSurface            = BSplineSurfaceBuilder(Convert);
         Standard_Integer aNbK = TheSurface->NbVKnots();
-        if (Abs(TheSurface->VKnot(1) - VFirst) > eps || Abs(TheSurface->VKnot(aNbK) - VLast) > eps)
+        if (std::abs(TheSurface->VKnot(1) - VFirst) > eps
+            || std::abs(TheSurface->VKnot(aNbK) - VLast) > eps)
         {
           TheSurface->CheckAndSegment(UFirst, ULast, VFirst, VLast);
         }
@@ -573,7 +579,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
       else
       {
         // Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
-        nbUSpans = (Standard_Integer)IntegerPart(1.2 * (ULast - UFirst) / M_PI) + 1;
+        nbUSpans = (Standard_Integer)std::trunc(1.2 * (ULast - UFirst) / M_PI) + 1;
         AlfaU    = (ULast - UFirst) / (nbUSpans * 2);
         NbUPoles = 2 * nbUSpans + 1;
         NbUKnots = nbUSpans + 1;
@@ -613,7 +619,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
         }
       }
       gp_GTrsf Aff;
-      Aff.SetAffinity(Revol->Axis(), 1 / Cos(AlfaU));
+      Aff.SetAffinity(Revol->Axis(), 1 / std::cos(AlfaU));
       gp_XYZ coord;
       for (j = 1; j <= NbVPoles; j++)
       {
@@ -627,7 +633,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
         for (j = 1; j <= NbVPoles; j++)
         {
           NewPoles(i, j)   = Poles(j).Transformed(Trsf);
-          NewWeights(i, j) = Weights(j) * Cos(AlfaU);
+          NewWeights(i, j) = Weights(j) * std::cos(AlfaU);
         }
       }
 
@@ -850,7 +856,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
         }
       }
       gp_GTrsf Aff;
-      Aff.SetAffinity(Revol->Axis(), 1 / Cos(AlfaU));
+      Aff.SetAffinity(Revol->Axis(), 1 / std::cos(AlfaU));
       gp_XYZ coord;
       for (j = 1; j <= NbVPoles; j++)
       {
@@ -864,7 +870,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
         for (j = 1; j <= NbVPoles; j++)
         {
           NewPoles(i, j)   = Poles(j).Transformed(Trsf);
-          NewWeights(i, j) = Weights(j) * Cos(AlfaU);
+          NewWeights(i, j) = Weights(j) * std::cos(AlfaU);
         }
       }
 

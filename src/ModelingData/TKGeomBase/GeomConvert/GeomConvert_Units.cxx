@@ -72,7 +72,7 @@ Handle(Geom2d_Curve) GeomConvert_Units::RadianToDegree(const Handle(Geom2d_Curve
     Handle(Geom_ConicalSurface) conicS = Handle(Geom_ConicalSurface)::DownCast(theSurf);
     Standard_Real               semAng = conicS->SemiAngle();
     uFact                              = AngleFact;
-    vFact                              = LengthFact * Cos(semAng);
+    vFact                              = LengthFact * std::cos(semAng);
   }
   else if (theSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
   {
@@ -205,7 +205,7 @@ Handle(Geom2d_Curve) GeomConvert_Units::DegreeToRadian(const Handle(Geom2d_Curve
     Handle(Geom_ConicalSurface) conicS = Handle(Geom_ConicalSurface)::DownCast(theSurface);
     Standard_Real               semAng = conicS->SemiAngle();
     uFact                              = AngleFact;
-    vFact                              = LengthFact / Cos(semAng);
+    vFact                              = LengthFact / std::cos(semAng);
   }
   else if (theSurface->IsKind(STANDARD_TYPE(Geom_Plane)))
   {

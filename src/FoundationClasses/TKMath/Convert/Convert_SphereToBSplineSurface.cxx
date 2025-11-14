@@ -40,8 +40,8 @@ static void ComputePoles(const Standard_Real R,
   Standard_Integer i, j;
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  Standard_Integer nbUSpans = (Standard_Integer)IntegerPart(1.2 * deltaU / M_PI) + 1;
-  Standard_Integer nbVSpans = (Standard_Integer)IntegerPart(1.2 * deltaV / M_PI) + 1;
+  Standard_Integer nbUSpans = (Standard_Integer)std::trunc(1.2 * deltaU / M_PI) + 1;
+  Standard_Integer nbVSpans = (Standard_Integer)std::trunc(1.2 * deltaV / M_PI) + 1;
   Standard_Real    AlfaU    = deltaU / (nbUSpans * 2);
   Standard_Real    AlfaV    = deltaV / (nbVSpans * 2);
 
@@ -50,34 +50,34 @@ static void ComputePoles(const Standard_Real R,
   Standard_Real x[MaxNbVPoles];
   Standard_Real z[MaxNbVPoles];
 
-  x[0] = R * Cos(V1);
-  z[0] = R * Sin(V1);
+  x[0] = R * std::cos(V1);
+  z[0] = R * std::sin(V1);
 
   Standard_Real VStart = V1;
   for (i = 1; i <= nbVSpans; i++)
   {
-    x[2 * i - 1] = R * Cos(VStart + AlfaV) / Cos(AlfaV);
-    z[2 * i - 1] = R * Sin(VStart + AlfaV) / Cos(AlfaV);
-    x[2 * i]     = R * Cos(VStart + 2 * AlfaV);
-    z[2 * i]     = R * Sin(VStart + 2 * AlfaV);
+    x[2 * i - 1] = R * std::cos(VStart + AlfaV) / std::cos(AlfaV);
+    z[2 * i - 1] = R * std::sin(VStart + AlfaV) / std::cos(AlfaV);
+    x[2 * i]     = R * std::cos(VStart + 2 * AlfaV);
+    z[2 * i]     = R * std::sin(VStart + 2 * AlfaV);
     VStart += 2 * AlfaV;
   }
 
   Standard_Real UStart = U1;
   for (j = 0; j <= nbVP - 1; j++)
   {
-    Poles(1, j + 1) = gp_Pnt(x[j] * Cos(UStart), x[j] * Sin(UStart), z[j]);
+    Poles(1, j + 1) = gp_Pnt(x[j] * std::cos(UStart), x[j] * std::sin(UStart), z[j]);
   }
 
   for (i = 1; i <= nbUSpans; i++)
   {
     for (j = 0; j <= nbVP - 1; j++)
     {
-      Poles(2 * i, j + 1) = gp_Pnt(x[j] * Cos(UStart + AlfaU) / Cos(AlfaU),
-                                   x[j] * Sin(UStart + AlfaU) / Cos(AlfaU),
+      Poles(2 * i, j + 1) = gp_Pnt(x[j] * std::cos(UStart + AlfaU) / std::cos(AlfaU),
+                                   x[j] * std::sin(UStart + AlfaU) / std::cos(AlfaU),
                                    z[j]);
       Poles(2 * i + 1, j + 1) =
-        gp_Pnt(x[j] * Cos(UStart + 2 * AlfaU), x[j] * Sin(UStart + 2 * AlfaU), z[j]);
+        gp_Pnt(x[j] * std::cos(UStart + 2 * AlfaU), x[j] * std::sin(UStart + 2 * AlfaU), z[j]);
     }
     UStart += 2 * AlfaU;
   }
@@ -110,8 +110,8 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
   // construction of the sphere in the reference mark xOy.
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  Standard_Integer nbUSpans = (Standard_Integer)IntegerPart(1.2 * deltaU / M_PI) + 1;
-  Standard_Integer nbVSpans = (Standard_Integer)IntegerPart(1.2 * deltaV / M_PI) + 1;
+  Standard_Integer nbUSpans = (Standard_Integer)std::trunc(1.2 * deltaU / M_PI) + 1;
+  Standard_Integer nbVSpans = (Standard_Integer)std::trunc(1.2 * deltaV / M_PI) + 1;
   Standard_Real    AlfaU    = deltaU / (nbUSpans * 2);
   Standard_Real    AlfaV    = deltaV / (nbVSpans * 2);
 
@@ -148,14 +148,14 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
   for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
-      W1 = Cos(AlfaU);
+      W1 = std::cos(AlfaU);
     else
       W1 = 1.;
 
     for (j = 1; j <= nbVPoles; j++)
     {
       if (j % 2 == 0)
-        W2 = Cos(AlfaV);
+        W2 = std::cos(AlfaV);
       else
         W2 = 1.;
 
@@ -202,7 +202,7 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
     nbUKnots = 4;
 
     deltaV                    = Param2 - Param1;
-    Standard_Integer nbVSpans = (Standard_Integer)IntegerPart(1.2 * deltaV / M_PI) + 1;
+    Standard_Integer nbVSpans = (Standard_Integer)std::trunc(1.2 * deltaV / M_PI) + 1;
     Standard_Real    AlfaV    = deltaV / (nbVSpans * 2);
     nbVPoles                  = 2 * nbVSpans + 1;
     nbVKnots                  = nbVSpans + 1;
@@ -220,8 +220,8 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
     vmults(1)++;
     vmults(nbVKnots)++;
 
-    CosU = 0.5; // = Cos(pi /3)
-    CosV = Cos(AlfaV);
+    CosU = 0.5; // = std::cos(pi /3)
+    CosV = std::cos(AlfaV);
   }
   else
   {
@@ -231,7 +231,7 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
     nbVKnots = 3;
 
     deltaU                    = Param2 - Param1;
-    Standard_Integer nbUSpans = (Standard_Integer)IntegerPart(1.2 * deltaU / M_PI) + 1;
+    Standard_Integer nbUSpans = (Standard_Integer)std::trunc(1.2 * deltaU / M_PI) + 1;
     Standard_Real    AlfaU    = deltaU / (nbUSpans * 2);
     nbUPoles                  = 2 * nbUSpans + 1;
     nbUKnots                  = nbUSpans + 1;
@@ -250,8 +250,8 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
     umults(1)++;
     umults(nbUKnots)++;
 
-    CosV = 0.5; // = Cos(pi /3)
-    CosU = Cos(AlfaU);
+    CosV = 0.5; // = std::cos(pi /3)
+    CosU = std::cos(AlfaU);
   }
 
   // Replace the bspline in the mark of the sphere.
@@ -335,7 +335,7 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
     for (j = 1; j <= nbVPoles; j++)
     {
       if (j % 2 == 0)
-        W2 = Sqrt(2.) / 2.;
+        W2 = std::sqrt(2.) / 2.;
       else
         W2 = 1.;
 

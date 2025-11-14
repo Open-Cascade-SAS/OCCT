@@ -214,7 +214,7 @@ void TopOpeBRepTool_ShapeTool::AdjustOnPeriodic(const TopoDS_Shape& F,
     //    Standard_Real ubid = UFfirst;
 
     //    ElCLib::AdjustPeriodic(UFfirst,UFfirst + Uperiod,tol,ubid,u);
-    if (Abs(u - UFfirst - Uperiod) > tol)
+    if (std::abs(u - UFfirst - Uperiod) > tol)
       u = ElCLib::InPeriod(u, UFfirst, UFfirst + Uperiod);
   }
   if (isVperio)
@@ -224,7 +224,7 @@ void TopOpeBRepTool_ShapeTool::AdjustOnPeriodic(const TopoDS_Shape& F,
     //    Standard_Real vbid = VFfirst;
 
     //    ElCLib::AdjustPeriodic(VFfirst,VFfirst + Vperiod,tol,vbid,v);
-    if (Abs(v - VFfirst - Vperiod) > tol)
+    if (std::abs(v - VFfirst - Vperiod) > tol)
       v = ElCLib::InPeriod(v, VFfirst, VFfirst + Vperiod);
   }
 }
@@ -594,9 +594,9 @@ Standard_Real TopOpeBRepTool_ShapeTool::EdgeData(const BRepAdaptor_Curve& BAC,
   // xpu150399 cto900R4
   const Standard_Real     tol1 = Epsilon(0.);
   constexpr Standard_Real tol2 = RealLast();
-  Standard_Real           tolm = Max(tol, Max(tol1, tol2));
+  Standard_Real           tolm = std::max(tol, std::max(tol1, tol2));
 
-  if (Abs(C) > tolm)
+  if (std::abs(C) > tolm)
     BL.Normal(N);
   return tol;
 }
@@ -645,7 +645,7 @@ Standard_Real TopOpeBRepTool_ShapeTool::Resolution3d(const Handle(Geom_Surface)&
 {
   Standard_Real ru = Resolution3dU(SU, Tol2d);
   Standard_Real rv = Resolution3dV(SU, Tol2d);
-  Standard_Real r  = Max(ru, rv);
+  Standard_Real r  = std::max(ru, rv);
   return r;
 }
 

@@ -148,7 +148,7 @@ void StdStorage_TypeData::AddType(const TCollection_AsciiString& aTypeName,
                                   const Standard_Integer         aTypeNum)
 {
   myPt.Add(aTypeName, aTypeNum);
-  myTypeId = Max(aTypeNum, myTypeId);
+  myTypeId = std::max(aTypeNum, myTypeId);
 }
 
 Standard_Integer StdStorage_TypeData::AddType(const Handle(StdObjMgt_Persistent)& aPObj)

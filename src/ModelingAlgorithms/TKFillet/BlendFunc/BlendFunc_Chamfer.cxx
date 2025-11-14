@@ -69,7 +69,7 @@ Standard_Boolean BlendFunc_Chamfer::IsSolution(const math_Vector& Sol, const Sta
   issol                  = issol && corde2.IsSolution(Sol2, Tol);
   tol                    = Tol;
   if (issol)
-    distmin = Min(distmin, corde1.PointOnS().Distance(corde2.PointOnS()));
+    distmin = std::min(distmin, corde1.PointOnS().Distance(corde2.PointOnS()));
 
   return issol;
 }

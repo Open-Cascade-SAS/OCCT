@@ -83,9 +83,9 @@ static gp_Pnt2d EvalPnt2d(const gp_Pnt& P, const gp_Cylinder& Cy)
   Standard_Real Z = OP.Dot(gp_Vec(Cy.Position().Direction()));
   Standard_Real U;
 
-  if (Abs(X) > Precision::PConfusion() || Abs(Y) > Precision::PConfusion())
+  if (std::abs(X) > Precision::PConfusion() || std::abs(Y) > Precision::PConfusion())
   {
-    U = ATan2(Y, X);
+    U = std::atan2(Y, X);
   }
   else
   {

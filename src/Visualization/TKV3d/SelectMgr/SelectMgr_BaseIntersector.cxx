@@ -122,9 +122,9 @@ Standard_Boolean SelectMgr_BaseIntersector::RaySphereIntersection(const gp_Pnt& 
     return Standard_False;
   }
 
-  const Standard_Real aTime1 = (-aK - Sqrt(aDiscr)) / anA;
-  const Standard_Real aTime2 = (-aK + Sqrt(aDiscr)) / anA;
-  if (Abs(aTime1) < Abs(aTime2))
+  const Standard_Real aTime1 = (-aK - std::sqrt(aDiscr)) / anA;
+  const Standard_Real aTime2 = (-aK + std::sqrt(aDiscr)) / anA;
+  if (std::abs(aTime1) < std::abs(aTime2))
   {
     theTimeEnter = aTime1;
     theTimeLeave = aTime2;
@@ -174,8 +174,8 @@ Standard_Boolean SelectMgr_BaseIntersector::RayCylinderIntersection(
   // ray intersection with cone / truncated cone
   if (theTopRadius != theBottomRadius)
   {
-    const Standard_Real aTriangleHeight =
-      Min(theBottomRadius, theTopRadius) * theHeight / (Abs(theBottomRadius - theTopRadius));
+    const Standard_Real aTriangleHeight = std::min(theBottomRadius, theTopRadius) * theHeight
+                                          / (std::abs(theBottomRadius - theTopRadius));
     gp_Ax3 aSystem;
     if (theBottomRadius > theTopRadius)
     {
@@ -191,7 +191,7 @@ Standard_Boolean SelectMgr_BaseIntersector::RayCylinderIntersection(
     aTrsfCone.SetTransformation(gp_Ax3(), aSystem);
     const gp_Pnt        aPnt(theLoc.Transformed(aTrsfCone));
     const gp_Dir        aDir(theRayDir.Transformed(aTrsfCone));
-    const Standard_Real aMaxRad     = Max(theBottomRadius, theTopRadius);
+    const Standard_Real aMaxRad     = std::max(theBottomRadius, theTopRadius);
     const Standard_Real aConeHeight = theHeight + aTriangleHeight;
 
     // solving quadratic equation anA * T^2 + 2 * aK * T + aC = 0
@@ -207,8 +207,8 @@ Standard_Boolean SelectMgr_BaseIntersector::RayCylinderIntersection(
     Standard_Real aDiscr = aK * aK - anA * aC;
     if (aDiscr > 0)
     {
-      const Standard_Real aTimeEnterCone = (-aK - Sqrt(aDiscr)) / anA;
-      const Standard_Real aTimeLeaveCone = (-aK + Sqrt(aDiscr)) / anA;
+      const Standard_Real aTimeEnterCone = (-aK - std::sqrt(aDiscr)) / anA;
+      const Standard_Real aTimeLeaveCone = (-aK + std::sqrt(aDiscr)) / anA;
       const Standard_Real aZFromRoot1    = aPnt.Z() + aTimeEnterCone * aDir.Z();
       const Standard_Real aZFromRoot2    = aPnt.Z() + aTimeLeaveCone * aDir.Z();
 
@@ -234,8 +234,8 @@ Standard_Boolean SelectMgr_BaseIntersector::RayCylinderIntersection(
     const Standard_Real aDiscr = aK * aK - anA * aC;
     if (aDiscr > 0)
     {
-      const Standard_Real aRoot1      = (-aK + Sqrt(aDiscr)) / anA;
-      const Standard_Real aRoot2      = (-aK - Sqrt(aDiscr)) / anA;
+      const Standard_Real aRoot1      = (-aK + std::sqrt(aDiscr)) / anA;
+      const Standard_Real aRoot2      = (-aK - std::sqrt(aDiscr)) / anA;
       const Standard_Real aZFromRoot1 = theLoc.Z() + aRoot1 * theRayDir.Z();
       const Standard_Real aZFromRoot2 = theLoc.Z() + aRoot2 * theRayDir.Z();
       if (aZFromRoot1 > 0 && aZFromRoot1 < theHeight)
@@ -279,7 +279,7 @@ Standard_Boolean SelectMgr_BaseIntersector::RayCircleIntersection(
 
     const Standard_Real aK = aX1 * aX1 + anY1 * anY1;
     if ((theIsFilled && aK <= theRadius * theRadius)
-        || (!theIsFilled && Abs(sqrt(aK) - theRadius) <= Precision::Confusion()))
+        || (!theIsFilled && std::abs(sqrt(aK) - theRadius) <= Precision::Confusion()))
     {
       theTime = aTime;
       return true;

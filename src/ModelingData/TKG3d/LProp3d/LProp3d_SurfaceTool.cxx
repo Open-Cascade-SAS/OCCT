@@ -70,7 +70,7 @@ gp_Vec LProp3d_SurfaceTool::DN(const Handle(Adaptor3d_Surface)& S,
 
 Standard_Integer LProp3d_SurfaceTool::Continuity(const Handle(Adaptor3d_Surface)& S)
 {
-  GeomAbs_Shape s = (GeomAbs_Shape)Min(S->UContinuity(), S->VContinuity());
+  GeomAbs_Shape s = (GeomAbs_Shape)std::min(S->UContinuity(), S->VContinuity());
   switch (s)
   {
     case GeomAbs_C0:

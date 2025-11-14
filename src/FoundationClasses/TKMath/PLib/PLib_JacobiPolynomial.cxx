@@ -214,7 +214,7 @@ Standard_Real PLib_JacobiPolynomial::MaxError(const Standard_Integer theDimensio
   MaxValue(aTabMax);
 
   const Standard_Integer aBegIdx = 2 * (myNivConstr + 1);
-  const Standard_Integer aCutIdx = Max(aBegIdx, theNewDegree + 1);
+  const Standard_Integer aCutIdx = std::max(aBegIdx, theNewDegree + 1);
 
   math_Vector    aMaxErrDim(1, theDimension, 0.);
   Standard_Real* aJacArray = &theJacCoeff;
@@ -225,7 +225,7 @@ Standard_Real PLib_JacobiPolynomial::MaxError(const Standard_Integer theDimensio
     {
       const Standard_Real aCoeffValue = aJacArray[aCoeffIdx * theDimension + aDimIdx - 1];
       const Standard_Real aBasisMax   = aTabMax(aCoeffIdx - aBegIdx);
-      aMaxErrDim(aDimIdx) += Abs(aCoeffValue) * aBasisMax;
+      aMaxErrDim(aDimIdx) += std::abs(aCoeffValue) * aBasisMax;
     }
   }
 
@@ -259,7 +259,7 @@ void PLib_JacobiPolynomial::ReduceDegree(const Standard_Integer theDimension,
     const Standard_Integer iOffset = i * theDimension;
     for (Standard_Integer idim = 1; idim <= theDimension; idim++)
     {
-      aMaxErrDim(idim) += Abs(aJacArray[iOffset + idim - 1]) * aTabMax(i - aCutIdx);
+      aMaxErrDim(idim) += std::abs(aJacArray[iOffset + idim - 1]) * aTabMax(i - aCutIdx);
     }
 
     const Standard_Real anError = aMaxErrDim.Norm();
@@ -283,7 +283,7 @@ void PLib_JacobiPolynomial::ReduceDegree(const Standard_Integer theDimension,
       const Standard_Integer iOffset = i * theDimension;
       for (Standard_Integer idim = 1; idim <= theDimension; idim++)
       {
-        aBid += Abs(aJacArray[iOffset + idim - 1]);
+        aBid += std::abs(aJacArray[iOffset + idim - 1]);
       }
       if (aBid > anEps)
       {
@@ -300,7 +300,7 @@ Standard_Real PLib_JacobiPolynomial::AverageError(const Standard_Integer theDime
                                                   Standard_Real&         theJacCoeff,
                                                   const Standard_Integer theNewDegree) const
 {
-  const Standard_Integer aCutIdx      = Max(2 * (myNivConstr + 1) + 1, theNewDegree + 1);
+  const Standard_Integer aCutIdx      = std::max(2 * (myNivConstr + 1) + 1, theNewDegree + 1);
   Standard_Real* const   aJacArray    = &theJacCoeff;
   Standard_Real          anAverageErr = 0.;
 

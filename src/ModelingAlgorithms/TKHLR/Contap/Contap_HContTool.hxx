@@ -79,7 +79,7 @@ public:
 
   //! Returns the parametric tolerance used to consider
   //! that the vertex and another point meet, i-e
-  //! if Abs(parameter(Vertex) - parameter(OtherPnt))<=
+  //! if std::abs(parameter(Vertex) - parameter(OtherPnt))<=
   //! Tolerance, the points are "merged".
   Standard_EXPORT static Standard_Real Tolerance(const Handle(Adaptor3d_HVertex)& V,
                                                  const Handle(Adaptor2d_Curve2d)& C);

@@ -350,7 +350,7 @@ static void PerformApprox(const Handle(Adaptor3d_Curve)& C,
   for (i = 1; i <= NbCurves; i++)
   {
     Standard_Integer Deg = Fit.Value(i).Degree();
-    MaxDeg               = Max(MaxDeg, Deg);
+    MaxDeg               = std::max(MaxDeg, Deg);
   }
   NbPoles = MaxDeg * NbCurves + 1; // Poles sur la BSpline
 
@@ -366,7 +366,7 @@ static void PerformApprox(const Handle(Adaptor3d_Curve)& C,
   {
     Fit.Parameters(i, Knots(i), Knots(i + 1));
     Fit.Error(i, anErr3d, anErr2d);
-    anErrMax                   = Max(anErrMax, anErr3d);
+    anErrMax                   = std::max(anErrMax, anErr3d);
     AppParCurves_MultiCurve MC = Fit.Value(i);              // Charge la Ieme Curve
     TColgp_Array1OfPnt      LocalPoles(1, MC.Degree() + 1); // Recupere les poles
     MC.Curve(1, LocalPoles);
@@ -461,7 +461,7 @@ ProjLib_ProjectOnPlane::ProjLib_ProjectOnPlane(const gp_Ax3& Pl, const gp_Dir& D
       myType(GeomAbs_OtherCurve),
       myIsApprox(Standard_False)
 {
-  //  if ( Abs(D * Pl.Direction()) < Precision::Confusion()) {
+  //  if ( std::abs(D * Pl.Direction()) < Precision::Confusion()) {
   //    throw Standard_ConstructionError
   //      ("ProjLib_ProjectOnPlane:  The Direction and the Plane are parallel");
   //  }
@@ -589,7 +589,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_Curve)& C,
         myResult = new GeomAdaptor_Curve(aGACurve);
         //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:30 2002 End
       }
-      else if (Abs(Xc.Magnitude() - 1.) < Precision::Confusion())
+      else if (std::abs(Xc.Magnitude() - 1.) < Precision::Confusion())
       {
         myType      = GeomAbs_Line;
         gp_Pnt P    = ProjectPnt(myPlane, myDirection, L.Location());
@@ -658,9 +658,9 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_Curve)& C,
     case GeomAbs_Circle: {
       // Pour le cercle et l ellipse on a les relations suivantes:
       // ( Rem : pour le cercle R1 = R2 = R)
-      //     P(u) = O + R1 * Cos(u) * Xc + R2 * Sin(u) * Yc
+      //     P(u) = O + R1 * std::cos(u) * Xc + R2 * std::sin(u) * Yc
       // ==> Q(u) = f(P(u))
-      //          = f(O) + R1 * Cos(u) * f(Xc) + R2 * Sin(u) * f(Yc)
+      //          = f(O) + R1 * std::cos(u) * f(Xc) + R2 * std::sin(u) * f(Yc)
 
       gp_Circ Circ = myCurve->Circle();
       Axis         = Circ.Position();
@@ -735,8 +735,8 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_Curve)& C,
           if (anEigenCalc.IsDone())
           {
             // radii of the projected ellipse
-            Minor = 1.0 / Sqrt(anEigenCalc.Value(1));
-            Major = 1.0 / Sqrt(anEigenCalc.Value(2));
+            Minor = 1.0 / std::sqrt(anEigenCalc.Value(1));
+            Major = 1.0 / std::sqrt(anEigenCalc.Value(2));
 
             // calculate the rotation angle for the plane axes to meet the correct axes of the
             // projected ellipse (swap eigenvectors in respect to major and minor axes)
@@ -764,7 +764,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_Curve)& C,
         {
           gp_Ax2 Axe(P, Dx ^ Dy, Dx);
 
-          if (Abs(Major - Minor) < Precision::Confusion())
+          if (std::abs(Major - Minor) < Precision::Confusion())
           {
             myType = GeomAbs_Circle;
             gp_Circ Circ(Axe, Major);
@@ -832,7 +832,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_Curve)& C,
 
       myIsApprox = Standard_False;
 
-      if ((Abs(Yc.Magnitude() - 1.) < Precision::Confusion())
+      if ((std::abs(Yc.Magnitude() - 1.) < Precision::Confusion())
           && (Xc.Magnitude() < Precision::Confusion()))
       {
         myType      = GeomAbs_Line;
@@ -871,9 +871,9 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_Curve)& C,
     }
     break;
     case GeomAbs_Hyperbola: {
-      //     P(u) = O + R1 * Cosh(u) * Xc + R2 * Sinh(u) * Yc
+      //     P(u) = O + R1 * std::cosh(u) * Xc + R2 * std::sinh(u) * Yc
       // ==> Q(u) = f(P(u))
-      //          = f(O) + R1 * Cosh(u) * f(Xc) + R2 * Sinh(u) * f(Yc)
+      //          = f(O) + R1 * std::cosh(u) * f(Xc) + R2 * std::sinh(u) * f(Yc)
 
       gp_Hypr       Hypr   = myCurve->Hyperbola();
       gp_Ax2        AxeRef = Hypr.Position();
@@ -1501,7 +1501,7 @@ Standard_Boolean ProjLib_ProjectOnPlane::BuildHyperbolaByApex(
       gp_Vec        aV(P, aP1);
       Standard_Real anX     = aV * anXDir;
       Standard_Real anY     = aV * anYDir;
-      Standard_Real aMinRad = anY / Sqrt(anX * anX / aMajRad / aMajRad - 1.);
+      Standard_Real aMinRad = anY / std::sqrt(anX * anX / aMajRad / aMajRad - 1.);
       gp_Ax2        anA2(P, Z, anXDir);
       gp_Hypr       anHypr(anA2, aMajRad, aMinRad);
       theGeomHyperbolaPtr = new Geom_Hyperbola(anHypr);
@@ -1525,8 +1525,8 @@ void ProjLib_ProjectOnPlane::BuildByApprox(const Standard_Real theLimitParameter
       || Precision::IsInfinite(myCurve->LastParameter()))
   {
     // To avoid exception in approximation
-    Standard_Real           f          = Max(-theLimitParameter, myCurve->FirstParameter());
-    Standard_Real           l          = Min(theLimitParameter, myCurve->LastParameter());
+    Standard_Real           f          = std::max(-theLimitParameter, myCurve->FirstParameter());
+    Standard_Real           l          = std::min(theLimitParameter, myCurve->LastParameter());
     Handle(Adaptor3d_Curve) aTrimCurve = myCurve->Trim(f, l, Precision::Confusion());
     PerformApprox(aTrimCurve, myPlane, myDirection, anApproxCurve);
   }

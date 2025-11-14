@@ -317,7 +317,8 @@ protected:
   //! @param theTrsf transformation to validate
   void validateTransformation(const gp_Trsf& theTrsf) const
   {
-    if (Abs(Abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec() || theTrsf.IsNegative())
+    if (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec()
+        || theTrsf.IsNegative())
     {
       // Exception
       throw Standard_DomainError("Transformation with scaling transformation is forbidden");

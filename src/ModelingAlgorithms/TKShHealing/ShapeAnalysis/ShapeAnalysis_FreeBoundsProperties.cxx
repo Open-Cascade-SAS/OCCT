@@ -294,7 +294,7 @@ Standard_Boolean ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_W
                                                                   Standard_Real&         distMax,
                                                                   const Standard_Real /*prec*/)
 {
-  Standard_Real                tol = Max(myTolerance, Precision::Confusion());
+  Standard_Real                tol = std::max(myTolerance, Precision::Confusion());
   Handle(ShapeExtend_WireData) wdt = new ShapeExtend_WireData(wire);
   BRep_Builder                 B;
   B.MakeWire(notch);
@@ -336,7 +336,7 @@ Standard_Boolean ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_W
   if (E2.Orientation() == TopAbs_REVERSED)
     vec2.Reverse();
 
-  Standard_Real angl = Abs(vec1.Angle(vec2));
+  Standard_Real angl = std::abs(vec1.Angle(vec2));
   if (angl > 0.95 * M_PI)
   {
     distMax = .0;

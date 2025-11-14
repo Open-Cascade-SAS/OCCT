@@ -211,10 +211,10 @@ static Standard_Boolean IsClosedByIsos(const Handle(Geom_Surface)& thesurf,
 {
   Standard_Boolean isClosed = Standard_False;
 
-  gp_Pnt2d psurf1 =
-    (acrv2d->IsPeriodic() ? acrv2d->Value(f2d) : acrv2d->Value(Max(f2d, acrv2d->FirstParameter())));
-  gp_Pnt2d psurf2 =
-    (acrv2d->IsPeriodic() ? acrv2d->Value(l2d) : acrv2d->Value(Min(l2d, acrv2d->LastParameter())));
+  gp_Pnt2d           psurf1 = (acrv2d->IsPeriodic() ? acrv2d->Value(f2d)
+                                                    : acrv2d->Value(std::max(f2d, acrv2d->FirstParameter())));
+  gp_Pnt2d           psurf2 = (acrv2d->IsPeriodic() ? acrv2d->Value(l2d)
+                                                    : acrv2d->Value(std::min(l2d, acrv2d->LastParameter())));
   Handle(Geom_Curve) aCrv1;
   Handle(Geom_Curve) aCrv2;
   if (isUIsos)
@@ -491,7 +491,7 @@ static Standard_Boolean findNMVertices(const TopoDS_Edge&        theEdge,
     locProj.Perform(pt);
     if (locProj.IsDone() && locProj.NbExt() > 0)
     {
-      Standard_Real    dist2Min = Min(distF2, distL2);
+      Standard_Real    dist2Min = std::min(distF2, distL2);
       Standard_Integer ind, indMin = 0;
       for (ind = 1; ind <= locProj.NbExt(); ind++)
       {
@@ -906,11 +906,10 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge&         
           {
             Standard_Real pf = c2d1->FirstParameter();
             //	    Standard_Real pl = c2d1->LastParameter();
-            gp_Pnt2d p1n = c2d1->Value(Max(first, pf));
-            //	    gp_Pnt2d p2n = c2d1->Value(Min(pl,last));
-            gp_Pnt2d      p21n  = c2d2->Value(Max(first, c2d2->FirstParameter()));
-            gp_Pnt2d      p22n  = c2d2->Value(Min(last, c2d2->LastParameter()));
-            Standard_Real aDist = Min(p1n.Distance(p21n), p1n.Distance(p22n));
+            gp_Pnt2d      p1n   = c2d1->Value(std::max(first, pf));
+            gp_Pnt2d      p21n  = c2d2->Value(std::max(first, c2d2->FirstParameter()));
+            gp_Pnt2d      p22n  = c2d2->Value(std::min(last, c2d2->LastParameter()));
+            Standard_Real aDist = std::min(p1n.Distance(p21n), p1n.Distance(p22n));
             Standard_Real U1, U2, V1, V2;
             surf2->Bounds(U1, U2, V1, V2);
             isSeam = ((uclosed && aDist > 0.75 * (fabs(U2 - U1)))
@@ -1035,7 +1034,7 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge&         
             if (dist > dist2)
               dist2 = dist;
           }
-          maxTol = Max(sqrt(dist2) * (1. + 1e-7), Precision::Confusion());
+          maxTol = std::max(sqrt(dist2) * (1. + 1e-7), Precision::Confusion());
         }
       }
       if (maxTol >= 0. && maxTol < tolReached)
@@ -1393,7 +1392,7 @@ Standard_Boolean BRepBuilderAPI_Sewing::IsMergedClosed(const TopoDS_Edge& Edge1,
   gp_Pnt2d p22d = C2d1->Value(0.5*(first2d2 + last2d2));
   Standard_Real dist2d = p12d.Distance(p22d);
   GeomAdaptor_Surface Ads(BRep_Tool::Surface(face));
-  Standard_Real distSurf = Max(Ads.UResolution(dist), Ads.VResolution(dist));
+  Standard_Real distSurf = std::max(Ads.UResolution(dist), Ads.VResolution(dist));
   return (dist2d*0.2 >= distSurf);
   */
   Standard_Integer isULongC1, isULongC2, isVLongC1, isVLongC2;
@@ -1421,11 +1420,11 @@ Standard_Boolean BRepBuilderAPI_Sewing::IsMergedClosed(const TopoDS_Edge& Edge1,
   if (isUClosed && isVLongC1 && isVLongC2)
   {
     // Do not merge if not overlapped by V
-    Standard_Real dist = Max((C2Vmin - C1Vmax), (C1Vmin - C2Vmax));
+    Standard_Real dist = std::max((C2Vmin - C1Vmax), (C1Vmin - C2Vmax));
     if (dist < 0.0)
     {
-      Standard_Real distInner = Max((C2Umin - C1Umax), (C1Umin - C2Umax));
-      Standard_Real distOuter = (SUmax - SUmin) - Max((C2Umax - C1Umin), (C1Umax - C2Umin));
+      Standard_Real distInner = std::max((C2Umin - C1Umax), (C1Umin - C2Umax));
+      Standard_Real distOuter = (SUmax - SUmin) - std::max((C2Umax - C1Umin), (C1Umax - C2Umin));
       if (distOuter <= distInner)
         return Standard_True;
     }
@@ -1433,11 +1432,11 @@ Standard_Boolean BRepBuilderAPI_Sewing::IsMergedClosed(const TopoDS_Edge& Edge1,
   if (isVClosed && isULongC1 && isULongC2)
   {
     // Do not merge if not overlapped by U
-    Standard_Real dist = Max((C2Umin - C1Umax), (C1Umin - C2Umax));
+    Standard_Real dist = std::max((C2Umin - C1Umax), (C1Umin - C2Umax));
     if (dist < 0.0)
     {
-      Standard_Real distInner = Max((C2Vmin - C1Vmax), (C1Vmin - C2Vmax));
-      Standard_Real distOuter = (SVmax - SVmin) - Max((C2Vmax - C1Vmin), (C1Vmax - C2Vmin));
+      Standard_Real distInner = std::max((C2Vmin - C1Vmax), (C1Vmin - C2Vmax));
+      Standard_Real distOuter = (SVmax - SVmin) - std::max((C2Vmax - C1Vmin), (C1Vmax - C2Vmin));
       if (distOuter <= distInner)
         return Standard_True;
     }
@@ -1728,7 +1727,7 @@ Standard_Boolean BRepBuilderAPI_Sewing::FindCandidates(TopTools_SequenceOfShape&
     TColStd_SequenceOfInteger seqEqDistantIndex; seqEqDistantIndex.Append(1);
     for (i = 2; i <= nbCandidates; i++) {
     Standard_Integer index = seqCandidateIndex(i);
-    if (Abs(minDistance - arrDistance(index)) <= Precision::Confusion())
+    if (std::abs(minDistance - arrDistance(index)) <= Precision::Confusion())
     seqEqDistantIndex.Append(index);
     }
 
@@ -1892,7 +1891,7 @@ void BRepBuilderAPI_Sewing::Init(const Standard_Real    tolerance,
                                  const Standard_Boolean optionNonmanifold)
 {
   // Set tolerance and Perform options
-  myTolerance   = Max(tolerance, Precision::Confusion());
+  myTolerance   = std::max(tolerance, Precision::Confusion());
   mySewing      = optionSewing;
   myAnalysis    = optionAnalysis;
   myCutting     = optionCutting;
@@ -3745,7 +3744,7 @@ void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */,
       {
         const TopoDS_Edge& edge =
           TopoDS::Edge(MergedWithSections.FindFromKey(MapSplitEdges.FindKey(ii)));
-        MinSplitTol = Min(MinSplitTol, BRep_Tool::Tolerance(edge));
+        MinSplitTol = std::min(MinSplitTol, BRep_Tool::Tolerance(edge));
       }
       // Calculate bound merging tolerance
       const TopoDS_Edge& BoundEdge    = TopoDS::Edge(MergedWithBound.FindFromKey(bound));
@@ -4215,7 +4214,7 @@ static Standard_Boolean IsDegeneratedWire(const TopoDS_Shape& wire)
   // Get maximal vertices tolerance
   TopoDS_Vertex V1, V2;
   // TopExp::Vertices(TopoDS::Wire(wire),V1,V2);
-  // Standard_Real tol = Max(BRep_Tool::Tolerance(V1),BRep_Tool::Tolerance(V2));
+  // Standard_Real tol = std::max(BRep_Tool::Tolerance(V1),BRep_Tool::Tolerance(V2));
   Standard_Real    wireLength = 0.0;
   TopLoc_Location  loc;
   Standard_Real    first, last;
@@ -4313,8 +4312,8 @@ static TopoDS_Edge DegeneratedSection(const TopoDS_Shape& section, const TopoDS_
   // Test if the new edge is degenerated
   TopoDS_Vertex v1, v2;
   TopExp::Vertices(TopoDS::Edge(section), v1, v2);
-  // Standard_Real tol = Max(BRep_Tool::Tolerance(v1),BRep_Tool::Tolerance(v2));
-  // tol = Max(tolerance,tol);
+  // Standard_Real tol = std::max(BRep_Tool::Tolerance(v1),BRep_Tool::Tolerance(v2));
+  // tol = std::max(tolerance,tol);
 
   gp_Pnt p1, p2, p3;
   p1 = BRep_Tool::Pnt(v1);
@@ -4352,7 +4351,7 @@ static TopoDS_Edge DegeneratedSection(const TopoDS_Shape& section, const TopoDS_
     {
       Standard_Real d1           = BRep_Tool::Tolerance(v1) + p2.Distance(p1);
       Standard_Real d2           = BRep_Tool::Tolerance(v2) + p2.Distance(p3);
-      Standard_Real newTolerance = Max(d1, d2);
+      Standard_Real newTolerance = std::max(d1, d2);
       aBuilder.MakeVertex(newVertex, p2, newTolerance);
     }
     TopoDS_Shape anEdge = edge.Oriented(TopAbs_FORWARD);
@@ -4812,7 +4811,7 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
       if (locProj.IsDone() && locProj.NbExt() > 0)
       {
         Standard_Real dist2Min =
-          (isConsiderEnds || i1 == find || i1 == lind ? Min(distF2, distL2)
+          (isConsiderEnds || i1 == find || i1 == lind ? std::min(distF2, distL2)
                                                       : Precision::Infinite());
         Standard_Integer ind, indMin = 0;
         for (ind = 1; ind <= locProj.NbExt(); ind++)
@@ -4833,7 +4832,7 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
           Standard_Real   distProj2 = ptProj.SquareDistance(pt);
           if (!locProj.IsMin(indMin))
           {
-            if (Min(distF2, distL2) < dist2Min)
+            if (std::min(distF2, distL2) < dist2Min)
             {
               if (distF2 < distL2)
               {
@@ -4870,7 +4869,7 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
     }
     if (!isProjected && isConsiderEnds)
     {
-      if (Min(distF2, distL2) < worktol * worktol)
+      if (std::min(distF2, distL2) < worktol * worktol)
       {
         if (distF2 < distL2)
         {
@@ -4986,7 +4985,7 @@ void BRepBuilderAPI_Sewing::CreateCuttingNodes(const TopTools_IndexedMapOfShape&
     }
 
     // Check if current point is close to one of the existent
-    if (distMin <= Max(disProj * 0.1, MinTolerance()))
+    if (distMin <= std::max(disProj * 0.1, MinTolerance()))
     {
       // Check distance if close
       Standard_Real jdist = seqDist.Value(indexMin);
@@ -5233,12 +5232,12 @@ void BRepBuilderAPI_Sewing::CreateSections(const TopoDS_Shape&             secti
       // try {
       c2dNew = Handle(Geom2d_Curve)::DownCast(c2d->Copy());
       // c2dNew = Handle(Geom2d_Curve)::DownCast(c2dBSP->Copy());
-      // Handle(Geom2d_BSplineCurve)::DownCast(c2dNew)->Segment(Max(first2d,par1),Min(par2,last2d));
+      // Handle(Geom2d_BSplineCurve)::DownCast(c2dNew)->Segment(std::max(first2d,par1),Min(par2,last2d));
       if (!c2d1.IsNull())
       { // if(!c2dBSP1.IsNull()) {
         c2d1New = Handle(Geom2d_Curve)::DownCast(c2d1->Copy());
         // c2d1New = Handle(Geom2d_Curve)::DownCast(c2dBSP1->Copy());
-        // Handle(Geom2d_BSplineCurve)::DownCast(c2d1New)->Segment(Max(first2d1,par1),Min(par2,last2d1));
+        // Handle(Geom2d_BSplineCurve)::DownCast(c2d1New)->Segment(std::max(first2d1,par1),Min(par2,last2d1));
       }
       //}
       /*catch (Standard_Failure) {

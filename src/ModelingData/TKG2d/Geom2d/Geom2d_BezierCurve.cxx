@@ -53,7 +53,7 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& W)
   Standard_Boolean rat = Standard_False;
   for (i = 1; i < n; i++)
   {
-    rat = Abs(W(i) - W(i + 1)) > gp::Resolution();
+    rat = std::abs(W(i) - W(i + 1)) > gp::Resolution();
     if (rat)
       break;
   }
@@ -228,7 +228,7 @@ void Geom2d_BezierCurve::InsertPoleAfter(const Standard_Integer Index,
 
   // Insert the weight
   Handle(TColStd_HArray1OfReal) nweights;
-  Standard_Boolean              rat = IsRational() || Abs(Weight - 1.) > gp::Resolution();
+  Standard_Boolean              rat = IsRational() || std::abs(Weight - 1.) > gp::Resolution();
 
   if (rat)
   {
@@ -346,7 +346,7 @@ Standard_Real Geom2d_BezierCurve::ReversedParameter(const Standard_Real U) const
 
 void Geom2d_BezierCurve::Segment(const Standard_Real U1, const Standard_Real U2)
 {
-  closed = (Abs(Value(U1).Distance(Value(U2))) <= gp::Resolution());
+  closed = (std::abs(Value(U1).Distance(Value(U2))) <= gp::Resolution());
   //
   //   WARNING: when calling trimming be careful that the cache
   //   is computed regarding 0.0e0 and not 1.0e0
@@ -423,7 +423,7 @@ void Geom2d_BezierCurve::SetWeight(const Standard_Integer Index, const Standard_
   if (!wasrat)
   {
     // a weight of 1. does not turn to rational
-    if (Abs(Weight - 1.) <= gp::Resolution())
+    if (std::abs(Weight - 1.) <= gp::Resolution())
       return;
 
     // set weights of 1.

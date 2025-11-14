@@ -208,7 +208,7 @@ static void ComputeCurve3d(const TopoDS_Edge&          Edge,
         if (STy == GeomAbs_Sphere)
         {
           gp_Pnt2d P = C.Line().Location();
-          if (Abs(Abs(P.Y()) - M_PI / 2.) < Precision::PConfusion())
+          if (std::abs(std::abs(P.Y()) - M_PI / 2.) < Precision::PConfusion())
           {
             TheBuilder.Degenerated(Edge, Standard_True);
           }
@@ -534,7 +534,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
       Handle(Geom2d_Curve) aCurve     = BRep_Tool::CurveOnSurface(theDegEdge, Face, fpar, lpar);
       gp_Pnt2d             fp2d       = aCurve->Value(fpar);
       gp_Pnt2d             lp2d       = aCurve->Value(lpar);
-      if (Abs(fp2d.X() - lp2d.X()) <= Precision::PConfusion())
+      if (std::abs(fp2d.X() - lp2d.X()) <= Precision::PConfusion())
         UisoDegen = Standard_True;
 
       if (DegEdges.Length() == 2)
@@ -554,14 +554,14 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
       {
         if (UisoDegen)
         {
-          if (Abs(fp2d.X() - uf1) <= Precision::Confusion())
+          if (std::abs(fp2d.X() - uf1) <= Precision::Confusion())
             UminDegen = Standard_True;
           else
             UmaxDegen = Standard_True;
         }
         else
         {
-          if (Abs(fp2d.Y() - vf1) <= Precision::Confusion())
+          if (std::abs(fp2d.Y() - vf1) <= Precision::Confusion())
             VminDegen = Standard_True;
           else
             VmaxDegen = Standard_True;
@@ -849,7 +849,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
         P2d2                     = C2d->Value(BRep_Tool::Parameter(V2, Eforward, CurFace));
         if (VonDegen.Contains(V1))
         {
-          if (Abs(P2d1.Y() - vf1) <= Precision::Confusion())
+          if (std::abs(P2d1.Y() - vf1) <= Precision::Confusion())
           {
             P1     = MinApex;
             vstart = v1;
@@ -869,7 +869,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
         }
         if (VonDegen.Contains(V2))
         {
-          if (Abs(P2d2.Y() - vf1) <= Precision::Confusion())
+          if (std::abs(P2d2.Y() - vf1) <= Precision::Confusion())
           {
             P2   = MinApex;
             vend = v1;
@@ -1101,7 +1101,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
   }
 
   // Calcul du tuyau
-  GeomFill_Pipe Pipe(HCP, HEdge1, HEdge2, Abs(Offset));
+  GeomFill_Pipe Pipe(HCP, HEdge1, HEdge2, std::abs(Offset));
   Pipe.Perform(Tol, Polynomial, Conti);
   if (!Pipe.IsDone())
     throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
@@ -1149,7 +1149,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
     myBuilder.Degenerated(Edge1, Standard_True);
   }
 
-  TheTol = Max(PathTol, BRep_Tool::Tolerance(Edge1) + ErrorPipe);
+  TheTol = std::max(PathTol, BRep_Tool::Tolerance(Edge1) + ErrorPipe);
   UpdateEdge(Edge1, PC, myFace, TheTol);
 
   // mise a same range de la nouvelle pcurve.
@@ -1164,7 +1164,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
   // mise a sameparameter pour les KPart
   if (ErrorPipe == 0)
   {
-    TheTol = Max(TheTol, Tol);
+    TheTol = std::max(TheTol, Tol);
     myBuilder.SameParameter(Edge1, Standard_False);
     BRepLib::SameParameter(Edge1, TheTol);
   }
@@ -1195,7 +1195,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
     myBuilder.Degenerated(Edge2, Standard_True);
   }
 
-  TheTol = Max(PathTol, BRep_Tool::Tolerance(Edge2) + ErrorPipe);
+  TheTol = std::max(PathTol, BRep_Tool::Tolerance(Edge2) + ErrorPipe);
   UpdateEdge(Edge2, PC, myFace, TheTol);
 
   // mise a same range de la nouvelle pcurve.
@@ -1208,7 +1208,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
   // mise a sameparameter pour les KPart
   if (ErrorPipe == 0)
   {
-    TheTol = Max(TheTol, Tol);
+    TheTol = std::max(TheTol, Tol);
     myBuilder.SameParameter(Edge2, Standard_False);
     BRepLib::SameParameter(Edge2, TheTol);
   }
@@ -1492,7 +1492,7 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&        Vertex,
 
   gp_Ax3 Axis(Origin, Vdir, Xdir);
 
-  Handle(Geom_Surface) S = new Geom_SphericalSurface(Axis, Abs(Offset));
+  Handle(Geom_Surface) S = new Geom_SphericalSurface(Axis, std::abs(Offset));
 
   Standard_Real f, l, Tol = BRep_Tool::Tolerance(Vertex);
 
@@ -1599,7 +1599,7 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&        Vertex,
 void BRepOffset_Offset::Init(const TopoDS_Edge& Edge, const Standard_Real Offset)
 {
   myShape                = Edge;
-  Standard_Real myOffset = Abs(Offset);
+  Standard_Real myOffset = std::abs(Offset);
 
   Standard_Real   f, l;
   TopLoc_Location Loc;

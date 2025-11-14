@@ -87,7 +87,7 @@ Standard_Failure::Standard_Failure()
   const Standard_Integer aStackLength = Standard_Failure_DefaultStackTraceLength;
   if (aStackLength > 0)
   {
-    int   aStackBufLen = Max(aStackLength * 200, 2048);
+    int   aStackBufLen = std::max(aStackLength * 200, 2048);
     char* aStackBuffer = (char*)alloca(aStackBufLen);
     if (aStackBuffer != NULL)
     {
@@ -110,7 +110,7 @@ Standard_Failure::Standard_Failure(const Standard_CString theDesc)
   const Standard_Integer aStackLength = Standard_Failure_DefaultStackTraceLength;
   if (aStackLength > 0)
   {
-    int   aStackBufLen = Max(aStackLength * 200, 2048);
+    int   aStackBufLen = std::max(aStackLength * 200, 2048);
     char* aStackBuffer = (char*)alloca(aStackBufLen);
     if (aStackBuffer != NULL)
     {

@@ -232,7 +232,7 @@ Standard_Boolean BOPDS_PaveBlock::ContainsParameter(const Standard_Real theT,
   for (; aIt.More(); aIt.Next())
   {
     const BOPDS_Pave& aPave = aIt.Value();
-    bRet                    = (Abs(aPave.Parameter() - theT) < theTol);
+    bRet                    = (std::abs(aPave.Parameter() - theT) < theTol);
     if (bRet)
     {
       theInd = aPave.Index();

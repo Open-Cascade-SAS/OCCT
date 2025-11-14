@@ -147,7 +147,7 @@ Standard_Boolean BlendFunc_EvolRadInv::IsSolution(const math_Vector& Sol, const 
 {
   math_Vector valsol(1, 4);
   Value(Sol, valsol);
-  if (Abs(valsol(1)) <= Tol
+  if (std::abs(valsol(1)) <= Tol
       && (valsol(2) * valsol(2) + valsol(3) * valsol(3) + valsol(4) * valsol(4)) <= Tol * Tol)
     return Standard_True;
 

@@ -488,7 +488,7 @@ Standard_Boolean IntPolyh_Intersection::IsAdvRequired(IntPolyh_PMaillageAffinage
   IntPolyh_ListIteratorOfListOfCouples aIt(Couples);
   for (; aIt.More(); aIt.Next())
   {
-    if (Abs(aIt.Value().Angle()) > anEps)
+    if (std::abs(aIt.Value().Angle()) > anEps)
     {
       // The angle between interfering triangles is small -> perform advanced
       // intersection to make intersection more precise
@@ -544,7 +544,7 @@ Standard_Boolean IntPolyh_Intersection::AnalyzeIntersection(IntPolyh_PMaillageAf
     IntPolyh_ListIteratorOfListOfCouples aIt(Couples);
     for (; aIt.More(); aIt.Next())
     {
-      Standard_Real cosa = Abs(aIt.Value().Angle());
+      Standard_Real cosa = std::abs(aIt.Value().Angle());
       if (cosa > eps)
         ++npara;
     }

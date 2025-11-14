@@ -19,7 +19,7 @@
 inline Standard_Boolean math_NewtonMinimum::IsConverged() const
 {
   return ((TheStep.Norm() <= XTol)
-          || (Abs(TheMinimum - PreviousMinimum) <= XTol * Abs(PreviousMinimum)));
+          || (std::abs(TheMinimum - PreviousMinimum) <= XTol * std::abs(PreviousMinimum)));
 }
 
 inline Standard_Boolean math_NewtonMinimum::IsDone() const

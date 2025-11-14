@@ -71,9 +71,9 @@ static void SetSameWeights(TColStd_Array1OfReal& W1,
     W4(i) *= Gamma;
   }
 
-  if (Abs(A - B) > Eps)
+  if (std::abs(A - B) > Eps)
   {
-    Standard_Real w = Pow(W1(1) / W4(1), 1. / (Standard_Real)(NV - 1));
+    Standard_Real w = std::pow(W1(1) / W4(1), 1. / (Standard_Real)(NV - 1));
     Standard_Real x = w;
     for (i = NV - 1; i >= 1; i--)
     {
@@ -208,13 +208,13 @@ void GeomFill_BezierCurves::Init(const Handle(Geom_BezierCurve)& C1,
   Standard_ConstructionError_Raise_if(!IsOK, " GeomFill_BezierCurves: Courbes non jointives");
 
   // Mise en conformite des degres
-  Standard_Integer DegU = Max(CC1->Degree(), CC3->Degree());
-  Standard_Integer DegV = Max(CC2->Degree(), CC4->Degree());
+  Standard_Integer DegU = std::max(CC1->Degree(), CC3->Degree());
+  Standard_Integer DegV = std::max(CC2->Degree(), CC4->Degree());
 
   if (Type == GeomFill_CoonsStyle)
   {
-    DegU = Max(DegU, 3);
-    DegV = Max(DegV, 3);
+    DegU = std::max(DegU, 3);
+    DegV = std::max(DegV, 3);
   }
 
   if (CC1->Degree() < DegU)
@@ -364,7 +364,7 @@ void GeomFill_BezierCurves::Init(const Handle(Geom_BezierCurve)& C1,
 
   if (Type != GeomFill_CurvedStyle)
   {
-    Standard_Integer DegU = Max(Deg1, Deg2);
+    Standard_Integer DegU = std::max(Deg1, Deg2);
 
     if (CC1->Degree() < DegU)
       CC1->Increase(DegU);

@@ -107,8 +107,9 @@ void BRepSweep_Trsf::SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumSha
       TopExp::Vertices(E, d, f);
       if (d.IsSame(f))
       {
-        //	tol3d = Max(tl,BRep_Tool::Tolerance(d));
-        const Standard_Real tol3d = Max(tl, 2. * BRep_Tool::Tolerance(d)); // IFV 24.05.00 buc60684
+        //	tol3d = std::max(tl,BRep_Tool::Tolerance(d));
+        const Standard_Real tol3d =
+          std::max(tl, 2. * BRep_Tool::Tolerance(d)); // IFV 24.05.00 buc60684
         e.Initialize(E);
         ud   = BRep_Tool::Parameter(d, TopoDS::Edge(aGenS));
         uf   = BRep_Tool::Parameter(f, TopoDS::Edge(aGenS));
@@ -169,9 +170,9 @@ void BRepSweep_Trsf::SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumSha
           {
             u1 = BRep_Tool::Parameter(V, E1);
             u2 = BRep_Tool::Parameter(V, E2);
-            //	    tol3d = Max(tl,BRep_Tool::Tolerance(V));
+            //	    tol3d = std::max(tl,BRep_Tool::Tolerance(V));
             const Standard_Real tol3d =
-              Max(tl, 2. * BRep_Tool::Tolerance(V)); // IFV 24.05.00 buc60684
+              std::max(tl, 2. * BRep_Tool::Tolerance(V)); // IFV 24.05.00 buc60684
             e1.Initialize(E1);
             e2.Initialize(E2);
             cont = BRepLProp::Continuity(e1, e2, u1, u2, tol3d, ta);

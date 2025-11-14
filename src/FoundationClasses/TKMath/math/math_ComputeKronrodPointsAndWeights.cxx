@@ -39,7 +39,7 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
     // Initialize symmetric tridiagonal matrix.
     Standard_Integer n         = Number;
     Standard_Integer aKronrodN = 2 * Number + 1;
-    Standard_Integer a3KN2p1   = Min(3 * (Number + 1) / 2 + 1, aKronrodN);
+    Standard_Integer a3KN2p1   = std::min(3 * (Number + 1) / 2 + 1, aKronrodN);
     for (i = 1; i <= a3KN2p1; i++)
     {
       aDiag(i) = 0.;
@@ -157,7 +157,7 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
     delete[] bb;
 
     for (i = 1; i <= a2NP1; i++)
-      aSubDiag(i) = Sqrt(aSubDiag(i));
+      aSubDiag(i) = std::sqrt(aSubDiag(i));
 
     // Compute eigen values.
     math_EigenValuesSearcher EVsearch(aDiag, aSubDiag);

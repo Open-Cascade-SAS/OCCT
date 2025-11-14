@@ -256,13 +256,13 @@ Aspect_TypeOfResize Xw_Window::DoResize()
   Standard_Integer    aMask = 0;
   Aspect_TypeOfResize aMode = Aspect_TOR_UNKNOWN;
 
-  if (Abs(aWinAttr.x - myXLeft) > 2)
+  if (std::abs(aWinAttr.x - myXLeft) > 2)
     aMask |= 1;
-  if (Abs((aWinAttr.x + aWinAttr.width) - myXRight) > 2)
+  if (std::abs((aWinAttr.x + aWinAttr.width) - myXRight) > 2)
     aMask |= 2;
-  if (Abs(aWinAttr.y - myYTop) > 2)
+  if (std::abs(aWinAttr.y - myYTop) > 2)
     aMask |= 4;
-  if (Abs((aWinAttr.y + aWinAttr.height) - myYBottom) > 2)
+  if (std::abs((aWinAttr.y + aWinAttr.height) - myYBottom) > 2)
     aMask |= 8;
   switch (aMask)
   {

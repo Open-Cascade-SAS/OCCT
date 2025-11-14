@@ -49,7 +49,7 @@ Standard_Integer BRepGProp_Face::UIntegrationOrder() const
 
     case GeomAbs_BezierSurface: {
       Nu = (*((Handle(Geom_BezierSurface)*)&((mySurface.Surface()).Surface())))->UDegree() + 1;
-      Nu = Max(4, Nu);
+      Nu = std::max(4, Nu);
     }
     break;
     case GeomAbs_BSplineSurface: {
@@ -57,7 +57,7 @@ Standard_Integer BRepGProp_Face::UIntegrationOrder() const
         (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->UDegree() + 1;
       Standard_Integer b =
         (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->NbUKnots() - 1;
-      Nu = Max(4, a * b);
+      Nu = std::max(4, a * b);
     }
     break;
 
@@ -65,7 +65,7 @@ Standard_Integer BRepGProp_Face::UIntegrationOrder() const
       Nu = 9;
       break;
   }
-  return Max(8, 2 * Nu);
+  return std::max(8, 2 * Nu);
 }
 
 //=================================================================================================
@@ -82,7 +82,7 @@ Standard_Integer BRepGProp_Face::VIntegrationOrder() const
 
     case GeomAbs_BezierSurface: {
       Nv = (*((Handle(Geom_BezierSurface)*)&((mySurface.Surface()).Surface())))->VDegree() + 1;
-      Nv = Max(4, Nv);
+      Nv = std::max(4, Nv);
     }
     break;
 
@@ -91,7 +91,7 @@ Standard_Integer BRepGProp_Face::VIntegrationOrder() const
         (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->VDegree() + 1;
       Standard_Integer b =
         (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->NbVKnots() - 1;
-      Nv = Max(4, a * b);
+      Nv = std::max(4, a * b);
     }
     break;
 
@@ -99,7 +99,7 @@ Standard_Integer BRepGProp_Face::VIntegrationOrder() const
       Nv = 9;
       break;
   }
-  return Max(8, 2 * Nv);
+  return std::max(8, 2 * Nv);
 }
 
 //=================================================================================================
@@ -142,7 +142,7 @@ Standard_Integer BRepGProp_Face::IntegrationOrder() const
       break;
   }
 
-  return Max(4, 2 * N);
+  return std::max(4, 2 * N);
 }
 
 //=================================================================================================
@@ -210,12 +210,12 @@ static Standard_Real AS = -0.15, AL = -0.50, B = 1.0, C = 0.75, D = 0.25;
 
 static inline Standard_Real SCoeff(const Standard_Real Eps)
 {
-  return Eps < 0.1 ? AS * (B + Log10(Eps)) + C : C;
+  return Eps < 0.1 ? AS * (B + std::log10(Eps)) + C : C;
 }
 
 static inline Standard_Real LCoeff(const Standard_Real Eps)
 {
-  return Eps < 0.1 ? AL * (B + Log10(Eps)) + D : D;
+  return Eps < 0.1 ? AL * (B + std::log10(Eps)) + D : D;
 }
 
 //=================================================================================================
@@ -258,7 +258,8 @@ Standard_Integer BRepGProp_Face::SIntOrder(const Standard_Real Eps) const
       Nv = 2;
       break;
   }
-  return Min(RealToInt(Ceiling(SCoeff(Eps) * Max((Nu + 1), (Nv + 1)))), math::GaussPointsMax());
+  return std::min(RealToInt(std::ceil(SCoeff(Eps) * std::max((Nu + 1), (Nv + 1)))),
+                  math::GaussPointsMax());
 }
 
 //=================================================================================================
@@ -406,14 +407,13 @@ Standard_Integer BRepGProp_Face::LIntOrder(const Standard_Real Eps) const
   Standard_Real aVmax = mySurface.LastVParameter();
 
   Standard_Real dv  = (aVmax - aVmin);
-  Standard_Real anR = (dv > Epsilon1 ? Min((aYmax - aYmin) / dv, 1.) : 1.);
+  Standard_Real anR = (dv > Epsilon1 ? std::min((aYmax - aYmin) / dv, 1.) : 1.);
 
-  //  Standard_Integer anRInt = Max(RealToInt(Ceiling(SVIntSubs()*anR)), 2);
-  Standard_Integer anRInt = RealToInt(Ceiling(SVIntSubs() * anR));
+  Standard_Integer anRInt = RealToInt(std::ceil(SVIntSubs() * anR));
   Standard_Integer aLSubs = LIntSubs();
 
-  //  Standard_Real NL, NS = Max(SIntOrder(1.0)*anRInt/LIntSubs(), 1);
-  Standard_Real NL, NS = Max(SIntOrder(1.) * anRInt / aLSubs, 1);
+  //  Standard_Real NL, NS = std::max(SIntOrder(1.0)*anRInt/LIntSubs(), 1);
+  Standard_Real NL, NS = std::max(SIntOrder(1.) * anRInt / aLSubs, 1);
   switch (myCurve.GetType())
   {
     case GeomAbs_Line:
@@ -442,12 +442,11 @@ Standard_Integer BRepGProp_Face::LIntOrder(const Standard_Real Eps) const
       break;
   }
 
-  NL = Max(NL, NS);
+  NL = std::max(NL, NS);
 
-  Standard_Integer nn = RealToInt(aLSubs <= 4 ? Ceiling(LCoeff(Eps) * (NL + 1)) : NL + 1);
+  Standard_Integer nn = RealToInt(aLSubs <= 4 ? std::ceil(LCoeff(Eps) * (NL + 1)) : NL + 1);
 
-  // return Min(RealToInt(Ceiling(LCoeff(Eps)*(NL+1)*NS)), math::GaussPointsMax());
-  return Min(nn, math::GaussPointsMax());
+  return std::min(nn, math::GaussPointsMax());
 }
 
 //=================================================================================================
@@ -590,7 +589,7 @@ static void GetRealKnots(const Standard_Real                  theMin,
   if (aStartI == 0)
     aStartI = iU;
 
-  Standard_Integer aNbNode = Max(0, aEndI - aStartI + 1) + 2;
+  Standard_Integer aNbNode = std::max(0, aEndI - aStartI + 1) + 2;
   Standard_Integer j;
 
   theRealKnots = new TColStd_HArray1OfReal(1, aNbNode);

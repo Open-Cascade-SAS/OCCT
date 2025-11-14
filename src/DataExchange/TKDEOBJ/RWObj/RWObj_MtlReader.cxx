@@ -206,7 +206,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
       aPos             = aNext;
       if (aSpecular >= 0.0)
       {
-        aMat.Shininess = (float)Min(aSpecular / 1000.0, 1.0);
+        aMat.Shininess = (float)std::min(aSpecular / 1000.0, 1.0);
         hasAspect      = true;
       }
     }

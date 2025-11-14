@@ -291,8 +291,8 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray(
       for (Standard_Integer anIt = 1; anIt < aSubdiv + 2; ++anIt)
       {
         anEllipVerts[anIt] =
-          OpenGl_Vec2(float(Cos(aParam) * M_SQRT2 * myViewWidth / 2.0 + myViewWidth / 2.0f),
-                      float(Sin(aParam) * M_SQRT2 * myViewHeight / 2.0 + myViewHeight / 2.0f));
+          OpenGl_Vec2(float(std::cos(aParam) * M_SQRT2 * myViewWidth / 2.0 + myViewWidth / 2.0f),
+                      float(std::sin(aParam) * M_SQRT2 * myViewHeight / 2.0 + myViewHeight / 2.0f));
 
         aParam += aTetta;
       }

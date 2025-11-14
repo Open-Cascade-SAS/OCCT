@@ -68,7 +68,7 @@ public:
   //! theNbPnts should be odd and greater then or equal to 3.
   //! Note that theTolerance is relative, i.e. the criterion of
   //! solution reaching is:
-  //! Abs(Kronrod - Gauss)/Abs(Kronrod) < theTolerance.
+  //! std::abs(Kronrod - Gauss)/std::abs(Kronrod) < theTolerance.
   //! theTolerance should be positive.
   Standard_EXPORT void Perform(math_Function&         theFunction,
                                const Standard_Real    theLower,

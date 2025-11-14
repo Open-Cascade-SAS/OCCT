@@ -572,11 +572,11 @@ static Standard_Integer nbPoints(const Handle(Adaptor2d_Curve2d)& theCurve)
 
   if (theCurve->GetType() == GeomAbs_BezierCurve)
   {
-    nbs = Max(nbs, 3 + theCurve->NbPoles());
+    nbs = std::max(nbs, 3 + theCurve->NbPoles());
   }
   else if (theCurve->GetType() == GeomAbs_BSplineCurve)
   {
-    nbs = Max(nbs, theCurve->NbKnots() * theCurve->Degree());
+    nbs = std::max(nbs, theCurve->NbKnots() * theCurve->Degree());
   }
 
   if (nbs > 300)

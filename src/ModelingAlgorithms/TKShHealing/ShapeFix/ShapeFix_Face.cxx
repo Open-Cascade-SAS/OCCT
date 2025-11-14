@@ -292,9 +292,9 @@ static Standard_Boolean SplitWire(const TopoDS_Face&        face,
         curve1->D0(a1, v0);
         curve2->D0(b2, v1);
         GeomAdaptor_Surface anAdaptor(BRep_Tool::Surface(face));
-        Standard_Real       tol = Max(BRep_Tool::Tolerance(V0), BRep_Tool::Tolerance(V1));
+        Standard_Real       tol = std::max(BRep_Tool::Tolerance(V0), BRep_Tool::Tolerance(V1));
         Standard_Real       maxResolution =
-          2 * Max(anAdaptor.UResolution(tol), anAdaptor.VResolution(tol));
+          2 * std::max(anAdaptor.UResolution(tol), anAdaptor.VResolution(tol));
         if (v0.SquareDistance(v1) < maxResolution)
         {
           // new wire is closed, put it into sequence
@@ -358,7 +358,7 @@ Standard_Boolean ShapeFix_Face::Perform()
     if (myAutoCorrectPrecisionMode)
     {
       Standard_Real size     = ShapeFix::LeastEdgeSize(S);
-      Standard_Real newpreci = Min(aSavPreci, size / 2.);
+      Standard_Real newpreci = std::min(aSavPreci, size / 2.);
       newpreci               = newpreci * 1.00001;
       if (aSavPreci > newpreci && newpreci > Precision::Confusion())
       {
@@ -1505,8 +1505,8 @@ static Standard_Boolean CheckWire(const TopoDS_Wire&  wire,
     vec += c2d->Value(l).XY() - c2d->Value(f).XY();
   }
 
-  Standard_Real aDelta = Abs(vec.X()) - dU;
-  if (Abs(aDelta) < 0.1 * dU)
+  Standard_Real aDelta = std::abs(vec.X()) - dU;
+  if (std::abs(aDelta) < 0.1 * dU)
   {
     if (vec.X() > 0.0)
     {
@@ -1522,8 +1522,8 @@ static Standard_Boolean CheckWire(const TopoDS_Wire&  wire,
     isuopen = 0;
   }
 
-  aDelta = Abs(vec.Y()) - dV;
-  if (Abs(aDelta) < 0.1 * dV)
+  aDelta = std::abs(vec.Y()) - dV;
+  if (std::abs(aDelta) < 0.1 * dV)
   {
     if (vec.Y() > 0.0)
     {
@@ -1583,7 +1583,7 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
       SUF = fU1;
     if (::Precision::IsInfinite(SUL))
       SUL = fU2;
-    if (Abs(SUL - SUF) < ::Precision::PConfusion())
+    if (std::abs(SUL - SUF) < ::Precision::PConfusion())
     {
       if (::Precision::IsInfinite(SUF))
         SUF -= 1000.;
@@ -1597,7 +1597,7 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
       SVF = fV1;
     if (::Precision::IsInfinite(SVL))
       SVL = fV2;
-    if (Abs(SVL - SVF) < ::Precision::PConfusion())
+    if (std::abs(SVL - SVF) < ::Precision::PConfusion())
     {
       if (::Precision::IsInfinite(SVF))
         SVF -= 1000.;
@@ -1606,8 +1606,8 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
     }
   }
 
-  URange = Min(Abs(SUL - SUF), Precision::Infinite());
-  VRange = Min(Abs(SVL - SVF), Precision::Infinite());
+  URange = std::min(std::abs(SUL - SUF), Precision::Infinite());
+  VRange = std::min(std::abs(SVL - SVF), Precision::Infinite());
   //  Standard_Real UTol = 0.2 * URange, VTol = 0.2 * VRange;
   Standard_Integer ismodeu = 0, ismodev = 0; // szv#4:S4163:12Mar99 was Boolean
   Standard_Integer isdeg1 = 0, isdeg2 = 0;
@@ -1710,7 +1710,7 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
     {
       Standard_Real aRa  = aTorSurf->MajorRadius();
       Standard_Real aRi  = aTorSurf->MinorRadius();
-      Standard_Real aPhi = ACos(-aRa / aRi);
+      Standard_Real aPhi = std::acos(-aRa / aRi);
       p.SetCoord(0.0, (ismodeu > 0 ? M_PI + aPhi : aPhi));
 
       Standard_Real aXCoord = -ismodeu;
@@ -1855,8 +1855,8 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
       0.5 * (m2[coord][0] + m2[coord][1]),
       0.5 * (m1[coord][0] + m1[coord][1] + isneg * (period + ::Precision::PConfusion())),
       period);
-    m1[coord][0] = Min(m1[coord][0], m2[coord][0] + shiftw2);
-    m1[coord][1] = Max(m1[coord][1], m2[coord][1] + shiftw2);
+    m1[coord][0] = std::min(m1[coord][0], m2[coord][0] + shiftw2);
+    m1[coord][1] = std::max(m1[coord][1], m2[coord][1] + shiftw2);
     for (TopoDS_Iterator it(tmpF, Standard_False); it.More(); it.Next())
     {
       if (it.Value().ShapeType() != TopAbs_WIRE)
@@ -1924,9 +1924,9 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
     if (uclosed && ismodeu)
     {
       pos1.SetX(pos1.X() + ShapeAnalysis::AdjustByPeriod(pos1.X(), SUF, URange));
-      if (foundU == 2 && Abs(pos1.X()) > Abs(uf))
+      if (foundU == 2 && std::abs(pos1.X()) > std::abs(uf))
         skipU = Standard_True;
-      else if (!foundU || (foundU == 1 && Abs(pos1.X()) < Abs(uf)))
+      else if (!foundU || (foundU == 1 && std::abs(pos1.X()) < std::abs(uf)))
       {
         foundU = 1;
         uf     = pos1.X();
@@ -1936,9 +1936,9 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
     if (vclosed && !ismodeu)
     {
       pos1.SetY(pos1.Y() + ShapeAnalysis::AdjustByPeriod(pos1.Y(), SVF, VRange));
-      if (foundV == 2 && Abs(pos1.Y()) > Abs(vf))
+      if (foundV == 2 && std::abs(pos1.Y()) > std::abs(vf))
         skipV = Standard_True;
-      else if (!foundV || (foundV == 1 && Abs(pos1.Y()) < Abs(vf)))
+      else if (!foundV || (foundV == 1 && std::abs(pos1.Y()) < std::abs(vf)))
       {
         foundV = 1;
         vf     = pos1.Y();
@@ -1961,8 +1961,8 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
       if (uclosed && ismodeu)
       {
         pos2.SetX(pos2.X() + ShapeAnalysis::AdjustByPeriod(pos2.X(), pos1.X(), URange));
-        if (Abs(pos2.X() - pos1.X()) < ::Precision::PConfusion()
-            && (foundU != 2 || Abs(pos1.X()) < Abs(uf)))
+        if (std::abs(pos2.X() - pos1.X()) < ::Precision::PConfusion()
+            && (foundU != 2 || std::abs(pos1.X()) < std::abs(uf)))
         {
           foundU = 2;
           uf     = pos1.X();
@@ -1971,8 +1971,8 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
       if (vclosed && !ismodeu)
       {
         pos2.SetY(pos2.Y() + ShapeAnalysis::AdjustByPeriod(pos2.Y(), pos1.Y(), VRange));
-        if (Abs(pos2.Y() - pos1.Y()) < ::Precision::PConfusion()
-            && (foundV != 2 || Abs(pos1.Y()) < Abs(vf)))
+        if (std::abs(pos2.Y() - pos1.Y()) < ::Precision::PConfusion()
+            && (foundV != 2 || std::abs(pos1.Y()) < std::abs(vf)))
         {
           foundV = 2;
           vf     = pos1.Y();
@@ -2723,8 +2723,8 @@ static Standard_Boolean IsPeriodicConicalLoop(const Handle(Geom_ConicalSurface)&
     Standard_Real aUFirst = aUVFirst.X(), aULast = aUVLast.X();
     Standard_Real aVFirst = aUVFirst.Y(), aVLast = aUVLast.Y();
 
-    Standard_Real aCurMaxU = Max(aUFirst, aULast), aCurMinU = Min(aUFirst, aULast);
-    Standard_Real aCurMaxV = Max(aVFirst, aVLast), aCurMinV = Min(aVFirst, aVLast);
+    Standard_Real aCurMaxU = std::max(aUFirst, aULast), aCurMinU = std::min(aUFirst, aULast);
+    Standard_Real aCurMaxV = std::max(aVFirst, aVLast), aCurMinV = std::min(aVFirst, aVLast);
 
     if (aCurMinU < aMinU)
       aMinU = aCurMinU;
@@ -2738,7 +2738,7 @@ static Standard_Boolean IsPeriodicConicalLoop(const Handle(Geom_ConicalSurface)&
     Standard_Real aDeltaU = aULast - aUFirst;
 
     aCumulDeltaU += aDeltaU;
-    aCumulDeltaUAbs += Abs(aDeltaU);
+    aCumulDeltaUAbs += std::abs(aDeltaU);
   }
 
   theMinU     = aMinU;
@@ -2747,8 +2747,8 @@ static Standard_Boolean IsPeriodicConicalLoop(const Handle(Geom_ConicalSurface)&
   theMaxV     = aMaxV;
   isUDecrease = (aCumulDeltaU < 0 ? Standard_True : Standard_False);
 
-  Standard_Boolean is2PIDelta   = Abs(aCumulDeltaUAbs - 2 * M_PI) <= theTolerance;
-  Standard_Boolean isAroundApex = Abs(theMaxU - theMinU) > 2 * M_PI - theTolerance;
+  Standard_Boolean is2PIDelta   = std::abs(aCumulDeltaUAbs - 2 * M_PI) <= theTolerance;
+  Standard_Boolean isAroundApex = std::abs(theMaxU - theMinU) > 2 * M_PI - theTolerance;
 
   return is2PIDelta && isAroundApex;
 }
@@ -2828,7 +2828,7 @@ Standard_Boolean ShapeFix_Face::FixPeriodicDegenerated()
     return Standard_False; // Bad surface
 
   // Find the V parameter of the apex
-  Standard_Real aConeBaseH = aConeBaseR / Sin(aSemiAngle);
+  Standard_Real aConeBaseH = aConeBaseR / std::sin(aSemiAngle);
   Standard_Real anApexV    = -aConeBaseH;
 
   // Get apex vertex

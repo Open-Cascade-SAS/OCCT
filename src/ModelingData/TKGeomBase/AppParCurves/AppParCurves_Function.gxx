@@ -276,14 +276,14 @@ Standard_Boolean AppParCurves_Function::Value(const math_Vector& X, Standard_Rea
           FZ = CC - PTLZ(i, Ci);
           MyF(i, Ci) += FZ * FZ;
           Fi = MyF(i, Ci);
-          if (Sqrt(Fi) > ERR3d)
-            ERR3d = Sqrt(Fi);
+          if (std::sqrt(Fi) > ERR3d)
+            ERR3d = std::sqrt(Fi);
         }
         else
         {
           Fi = MyF(i, Ci);
-          if (Sqrt(Fi) > ERR2d)
-            ERR2d = Sqrt(Fi);
+          if (std::sqrt(Fi) > ERR2d)
+            ERR2d = std::sqrt(Fi);
         }
         FVal += Fi;
       }
@@ -455,14 +455,14 @@ void AppParCurves_Function::Perform(const math_Vector& X)
           MyF(i, Ci) += FZ * FZ;
           Grad_F(i, Ci) += 2.0 * DCC * FZ;
           Fi = MyF(i, Ci);
-          if (Sqrt(Fi) > ERR3d)
-            ERR3d = Sqrt(Fi);
+          if (std::sqrt(Fi) > ERR3d)
+            ERR3d = std::sqrt(Fi);
         }
         else
         {
           Fi = MyF(i, Ci);
-          if (Sqrt(Fi) > ERR2d)
-            ERR2d = Sqrt(Fi);
+          if (std::sqrt(Fi) > ERR2d)
+            ERR2d = std::sqrt(Fi);
         }
         FVal += Fi;
         ValGrad_F(i) += Grad_F(i, Ci);
@@ -680,7 +680,7 @@ const AppParCurves_MultiCurve& AppParCurves_Function::CurveValue()
 Standard_Real AppParCurves_Function::Error(const Standard_Integer IPoint,
                                            const Standard_Integer CurveIndex) const
 {
-  return Sqrt(MyF(IPoint, CurveIndex));
+  return std::sqrt(MyF(IPoint, CurveIndex));
 }
 
 Standard_Real AppParCurves_Function::MaxError3d() const

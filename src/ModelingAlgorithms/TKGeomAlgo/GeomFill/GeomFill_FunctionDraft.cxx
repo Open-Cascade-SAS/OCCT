@@ -139,9 +139,9 @@ Standard_Boolean GeomFill_FunctionDraft::DerivT(const Handle(Adaptor3d_Curve)& C
 
   C->D1(Param, P, DP); // derivee de la section
 
-  F(1) = DP.Coord(1) + W * dN.Coord(1) * Sin(teta);
-  F(2) = DP.Coord(2) + W * dN.Coord(2) * Sin(teta);
-  F(3) = DP.Coord(3) + W * dN.Coord(3) * Sin(teta);
+  F(1) = DP.Coord(1) + W * dN.Coord(1) * std::sin(teta);
+  F(2) = DP.Coord(2) + W * dN.Coord(2) * std::sin(teta);
+  F(3) = DP.Coord(3) + W * dN.Coord(3) * std::sin(teta);
 
   return Standard_True;
 }
@@ -162,9 +162,9 @@ Standard_Boolean GeomFill_FunctionDraft::Deriv2T(const Handle(Adaptor3d_Curve)& 
 
   C->D2(Param, P, DP, D2P); // derivee de la section
 
-  F(1) = D2P.Coord(1) + W * d2N.Coord(1) * Sin(teta);
-  F(2) = D2P.Coord(2) + W * d2N.Coord(2) * Sin(teta);
-  F(3) = D2P.Coord(3) + W * d2N.Coord(3) * Sin(teta);
+  F(1) = D2P.Coord(1) + W * d2N.Coord(1) * std::sin(teta);
+  F(2) = D2P.Coord(2) + W * d2N.Coord(2) * std::sin(teta);
+  F(3) = D2P.Coord(3) + W * d2N.Coord(3) * std::sin(teta);
 
   return Standard_True;
 }
@@ -183,9 +183,9 @@ Standard_Boolean GeomFill_FunctionDraft::DerivTX(const gp_Vec&       dN,
   Standard_Integer i;
   for (i = 1; i <= 3; i++)
   {
-    D(i, 1) = dN.Coord(i) * Sin(teta); // derivee / W
-    D(i, 2) = 0.;                      // derivee / U
-    D(i, 3) = 0.;                      // derivee / V
+    D(i, 1) = dN.Coord(i) * std::sin(teta); // derivee / W
+    D(i, 2) = 0.;                           // derivee / U
+    D(i, 3) = 0.;                           // derivee / V
   }
 
   return Standard_True;

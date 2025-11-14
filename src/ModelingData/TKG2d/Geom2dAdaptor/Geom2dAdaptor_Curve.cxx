@@ -116,12 +116,12 @@ GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const Standard_Real U1,
                             Nb,
                             Index2,
                             newLast);
-  if (Abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
+  if (std::abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
   {
     if (Index1 < Nb)
       Index1++;
   }
-  if (Abs(newLast - TK(Index2)) < Precision::PConfusion())
+  if (std::abs(newLast - TK(Index2)) < Precision::PConfusion())
     Index2--;
   Standard_Integer MultMax;
   // attention aux courbes peridiques.
@@ -350,7 +350,7 @@ Standard_Integer Geom2dAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
         throw Standard_DomainError("Geom2dAdaptor_Curve::NbIntervals()");
     }
 
-    Standard_Real anEps = Min(Resolution(Precision::Confusion()), Precision::PConfusion());
+    Standard_Real anEps = std::min(Resolution(Precision::Confusion()), Precision::PConfusion());
 
     return BSplCLib::Intervals(myBSplineCurve->Knots(),
                                myBSplineCurve->Multiplicities(),
@@ -432,7 +432,7 @@ void Geom2dAdaptor_Curve::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape
         throw Standard_DomainError("Geom2dAdaptor_Curve::Intervals()");
     }
 
-    Standard_Real anEps = Min(Resolution(Precision::Confusion()), Precision::PConfusion());
+    Standard_Real anEps = std::min(Resolution(Precision::Confusion()), Precision::PConfusion());
 
     BSplCLib::Intervals(myBSplineCurve->Knots(),
                         myBSplineCurve->Multiplicities(),
@@ -766,7 +766,7 @@ Standard_Real Geom2dAdaptor_Curve::Resolution(const Standard_Real Ruv) const
     case GeomAbs_Circle: {
       Standard_Real R = Handle(Geom2d_Circle)::DownCast(myCurve)->Circ2d().Radius();
       if (R > Ruv / 2.)
-        return 2 * ASin(Ruv / (2 * R));
+        return 2 * std::asin(Ruv / (2 * R));
       else
         return 2 * M_PI;
     }
@@ -921,13 +921,13 @@ static Standard_Integer nbPoints(const Handle(Geom2d_Curve)& theCurve)
   else if (theCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
   {
     Handle(Geom2d_Curve) aCurve = Handle(Geom2d_OffsetCurve)::DownCast(theCurve)->BasisCurve();
-    return Max(nbs, nbPoints(aCurve));
+    return std::max(nbs, nbPoints(aCurve));
   }
 
   else if (theCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
     Handle(Geom2d_Curve) aCurve = Handle(Geom2d_TrimmedCurve)::DownCast(theCurve)->BasisCurve();
-    return Max(nbs, nbPoints(aCurve));
+    return std::max(nbs, nbPoints(aCurve));
   }
   if (nbs > 300)
     nbs = 300;

@@ -571,7 +571,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
       myStatusError = BRepFeat_NoIntersectF;
       return;
     }
-    if (tran > 0 && (Abs(ParU) < Abs(ParF)))
+    if (tran > 0 && (std::abs(ParU) < std::abs(ParF)))
     {
       TopAbs_Orientation Or;
       Or  = OrU;

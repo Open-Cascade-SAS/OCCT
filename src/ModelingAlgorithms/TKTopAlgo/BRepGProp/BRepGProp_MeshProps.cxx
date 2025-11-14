@@ -182,7 +182,7 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
     const gp_Trsf& aTr = theLoc.Transformation();
     //
     Standard_Boolean isToCopy = aTr.ScaleFactor() * aTr.HVectorialPart().Determinant() < 0.
-                                || Abs(Abs(aTr.ScaleFactor()) - 1.) > gp::Resolution();
+                                || std::abs(std::abs(aTr.ScaleFactor()) - 1.) > gp::Resolution();
     if (isToCopy)
     {
       Handle(Poly_Triangulation) aCopy =
@@ -284,7 +284,7 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
   }
 
   dim = aGProps[0];
-  if (Abs(dim) >= 1.e-20) // To be consistent with GProp_GProps
+  if (std::abs(dim) >= 1.e-20) // To be consistent with GProp_GProps
   {
     g.SetX(aGProps[1] / dim);
     g.SetY(aGProps[2] / dim);

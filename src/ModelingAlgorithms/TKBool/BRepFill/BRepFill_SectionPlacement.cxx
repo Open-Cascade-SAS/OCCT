@@ -140,12 +140,12 @@ void BRepFill_SectionPlacement::Perform(const Standard_Boolean WithContact,
         TopoDS_Vertex aLastVertex;
         TopExp::Vertices(anEdge, aFirstVertex, aLastVertex);
         const Standard_Real aVertexTolerance =
-          Max(BRep_Tool::Tolerance(aFirstVertex), BRep_Tool::Tolerance(aLastVertex));
+          std::max(BRep_Tool::Tolerance(aFirstVertex), BRep_Tool::Tolerance(aLastVertex));
 
         aTrimmedCurve = new Geom_TrimmedCurve(aCurve, anEdgeStartParam, anEdgeEndParam);
-        if (!aBSplineConverter.Add(aTrimmedCurve, Min(aPrecisionTolerance, aVertexTolerance)))
+        if (!aBSplineConverter.Add(aTrimmedCurve, std::min(aPrecisionTolerance, aVertexTolerance)))
         {
-          aBSplineConverter.Add(aTrimmedCurve, Max(aPrecisionTolerance, aVertexTolerance));
+          aBSplineConverter.Add(aTrimmedCurve, std::max(aPrecisionTolerance, aVertexTolerance));
         }
       }
       aCurve = aBSplineConverter.BSplineCurve();
@@ -183,11 +183,11 @@ void BRepFill_SectionPlacement::Perform(const Standard_Boolean WithContact,
     }
 
     aLawIndex1 = aLawIndex;
-    if ((Abs(aSectionParam - aCurrKnotParam) < aParamConfusion) && (aLawIndex > 1))
+    if ((std::abs(aSectionParam - aCurrKnotParam) < aParamConfusion) && (aLawIndex > 1))
     {
       aLawIndex2 = aLawIndex - 1;
     }
-    else if ((Abs(aSectionParam - aNextKnotParam) < aParamConfusion)
+    else if ((std::abs(aSectionParam - aNextKnotParam) < aParamConfusion)
              && (aLawIndex < myLaw->NbLaw()))
     {
       aLawIndex2 = aLawIndex + 1;

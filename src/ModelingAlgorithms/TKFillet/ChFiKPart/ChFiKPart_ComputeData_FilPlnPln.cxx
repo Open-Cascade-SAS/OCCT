@@ -81,7 +81,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   gp_Vec        V            = gp_Vec(D1) + gp_Vec(D2);
   gp_Dir        S(V);
   gp_Pnt        C;
-  Standard_Real Fac = Radius / Cos(Ang / 2.);
+  Standard_Real Fac = Radius / std::cos(Ang / 2.);
   C.SetCoord(Pv.X() + Fac * S.X(), Pv.Y() + Fac * S.Y(), Pv.Z() + Fac * S.Z());
   gp_Dir xdir = D1.Reversed();
   gp_Ax3 CylAx3(C, AxisCylinder, xdir);

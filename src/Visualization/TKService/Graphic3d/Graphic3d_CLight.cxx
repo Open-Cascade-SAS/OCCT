@@ -173,9 +173,10 @@ void Graphic3d_CLight::SetDirection(const gp_Dir& theDir)
                                    && myType != Graphic3d_TypeOfLightSource_Directional,
                                  "Graphic3d_CLight::SetDirection(), incorrect light type");
   updateRevisionIf(
-    Abs(myDirection.x() - static_cast<Standard_ShortReal>(theDir.X())) > ShortRealEpsilon()
-    || Abs(myDirection.y() - static_cast<Standard_ShortReal>(theDir.Y())) > ShortRealEpsilon()
-    || Abs(myDirection.z() - static_cast<Standard_ShortReal>(theDir.Z())) > ShortRealEpsilon());
+    std::abs(myDirection.x() - static_cast<Standard_ShortReal>(theDir.X())) > ShortRealEpsilon()
+    || std::abs(myDirection.y() - static_cast<Standard_ShortReal>(theDir.Y())) > ShortRealEpsilon()
+    || std::abs(myDirection.z() - static_cast<Standard_ShortReal>(theDir.Z()))
+         > ShortRealEpsilon());
 
   myDirection.x() = static_cast<Standard_ShortReal>(theDir.X());
   myDirection.y() = static_cast<Standard_ShortReal>(theDir.Y());
@@ -209,7 +210,7 @@ void Graphic3d_CLight::SetIntensity(Standard_ShortReal theValue)
 {
   Standard_OutOfRange_Raise_if(theValue <= 0.0f,
                                "Graphic3d_CLight::SetIntensity(), Negative value for intensity");
-  updateRevisionIf(Abs(myIntensity - theValue) > ShortRealEpsilon());
+  updateRevisionIf(std::abs(myIntensity - theValue) > ShortRealEpsilon());
   myIntensity = theValue;
 }
 
@@ -221,7 +222,7 @@ void Graphic3d_CLight::SetAngle(Standard_ShortReal theAngle)
                                  "Graphic3d_CLight::SetAngle(), incorrect light type");
   Standard_OutOfRange_Raise_if(theAngle <= 0.0 || theAngle >= M_PI,
                                "Graphic3d_CLight::SetAngle(), bad angle");
-  updateRevisionIf(Abs(changeAngle() - theAngle) > ShortRealEpsilon());
+  updateRevisionIf(std::abs(changeAngle() - theAngle) > ShortRealEpsilon());
   changeAngle() = theAngle;
 }
 
@@ -236,8 +237,9 @@ void Graphic3d_CLight::SetAttenuation(Standard_ShortReal theConstAttenuation,
   Standard_OutOfRange_Raise_if(theConstAttenuation < 0.0f || theLinearAttenuation < 0.0f
                                  || theConstAttenuation + theLinearAttenuation == 0.0f,
                                "Graphic3d_CLight::SetAttenuation(), bad coefficient");
-  updateRevisionIf(Abs(changeConstAttenuation() - theConstAttenuation) > ShortRealEpsilon()
-                   || Abs(changeLinearAttenuation() - theLinearAttenuation) > ShortRealEpsilon());
+  updateRevisionIf(std::abs(changeConstAttenuation() - theConstAttenuation) > ShortRealEpsilon()
+                   || std::abs(changeLinearAttenuation() - theLinearAttenuation)
+                        > ShortRealEpsilon());
   changeConstAttenuation()  = theConstAttenuation;
   changeLinearAttenuation() = theLinearAttenuation;
 }
@@ -250,7 +252,7 @@ void Graphic3d_CLight::SetConcentration(Standard_ShortReal theConcentration)
                                  "Graphic3d_CLight::SetConcentration(), incorrect light type");
   Standard_OutOfRange_Raise_if(theConcentration < 0.0f || theConcentration > 1.0f,
                                "Graphic3d_CLight::SetConcentration(), bad coefficient");
-  updateRevisionIf(Abs(changeConcentration() - theConcentration) > ShortRealEpsilon());
+  updateRevisionIf(std::abs(changeConcentration() - theConcentration) > ShortRealEpsilon());
   changeConcentration() = theConcentration;
 }
 
@@ -264,7 +266,7 @@ void Graphic3d_CLight::SetSmoothRadius(Standard_ShortReal theValue)
   Standard_OutOfRange_Raise_if(
     theValue < 0.0f,
     "Graphic3d_CLight::SetSmoothRadius(), Bad value for smoothing radius");
-  updateRevisionIf(Abs(mySmoothness - theValue) > ShortRealEpsilon());
+  updateRevisionIf(std::abs(mySmoothness - theValue) > ShortRealEpsilon());
   mySmoothness = theValue;
 }
 
@@ -276,7 +278,7 @@ void Graphic3d_CLight::SetSmoothAngle(Standard_ShortReal theValue)
                                  "Graphic3d_CLight::SetSmoothAngle(), incorrect light type");
   Standard_OutOfRange_Raise_if(theValue < 0.0f || theValue > Standard_ShortReal(M_PI / 2.0),
                                "Graphic3d_CLight::SetSmoothAngle(), Bad value for smoothing angle");
-  updateRevisionIf(Abs(mySmoothness - theValue) > ShortRealEpsilon());
+  updateRevisionIf(std::abs(mySmoothness - theValue) > ShortRealEpsilon());
   mySmoothness = theValue;
 }
 
@@ -289,7 +291,7 @@ void Graphic3d_CLight::SetRange(Standard_ShortReal theValue)
                                  "Graphic3d_CLight::SetRange(), incorrect light type");
   Standard_OutOfRange_Raise_if(theValue < 0.0,
                                "Graphic3d_CLight::SetRange(), Bad value for falloff range");
-  updateRevisionIf(Abs(Range() - theValue) > ShortRealEpsilon());
+  updateRevisionIf(std::abs(Range() - theValue) > ShortRealEpsilon());
   myDirection.w() = theValue;
 };
 

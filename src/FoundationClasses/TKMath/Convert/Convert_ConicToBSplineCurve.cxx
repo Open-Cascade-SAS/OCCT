@@ -280,7 +280,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   switch (Parameterisation)
   {
     case Convert_TgtThetaOver2:
-      num_spans = (Standard_Integer)IntegerPart(1.2 * delta / M_PI) + 1;
+      num_spans = (Standard_Integer)std::trunc(1.2 * delta / M_PI) + 1;
 
       tgt_theta_flag = 1;
       break;
@@ -348,20 +348,20 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   {
 
     param = UFirst;
-    CosNumeratorPtr->SetValue(1, Cos(UFirst));
-    SinNumeratorPtr->SetValue(1, Sin(UFirst));
+    CosNumeratorPtr->SetValue(1, std::cos(UFirst));
+    SinNumeratorPtr->SetValue(1, std::sin(UFirst));
     DenominatorPtr->SetValue(1, 1.0e0);
     KnotsPtr->SetValue(1, param);
     MultsPtr->SetValue(1, Degree + 1);
-    direct  = Cos(alpha);
+    direct  = std::cos(alpha);
     inverse = 1.0e0 / direct;
     for (ii = 1; ii <= num_spans; ii++)
     {
-      CosNumeratorPtr->SetValue(2 * ii, inverse * Cos(param + alpha));
-      SinNumeratorPtr->SetValue(2 * ii, inverse * Sin(param + alpha));
+      CosNumeratorPtr->SetValue(2 * ii, inverse * std::cos(param + alpha));
+      SinNumeratorPtr->SetValue(2 * ii, inverse * std::sin(param + alpha));
       DenominatorPtr->SetValue(2 * ii, direct);
-      CosNumeratorPtr->SetValue(2 * ii + 1, Cos(param + 2 * alpha));
-      SinNumeratorPtr->SetValue(2 * ii + 1, Sin(param + 2 * alpha));
+      CosNumeratorPtr->SetValue(2 * ii + 1, std::cos(param + 2 * alpha));
+      SinNumeratorPtr->SetValue(2 * ii + 1, std::sin(param + 2 * alpha));
       DenominatorPtr->SetValue(2 * ii + 1, 1.0e0);
       KnotsPtr->SetValue(ii + 1, param + 2 * alpha);
       MultsPtr->SetValue(ii + 1, 2);
@@ -375,8 +375,8 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
     alpha *= 0.5e0;
     beta = ULast + UFirst;
     beta *= 0.5e0;
-    cos_beta       = Cos(beta);
-    sin_beta       = Sin(beta);
+    cos_beta       = std::cos(beta);
+    sin_beta       = std::sin(beta);
     num_flat_knots = num_poles + order;
 
     num_temp_poles = 4;
@@ -436,7 +436,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
           }
           else
           {
-            tan_alpha_2 = Tan(alpha_2);
+            tan_alpha_2 = std::tan(alpha_2);
             value1      = 3.0e0 * (tan_alpha_2 - alpha_2);
             value1      = alpha_2 / value1;
             p_param += value1;
@@ -466,7 +466,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
         temp_degree = 2;
         alpha_2     = alpha * 0.5e0;
         alpha_4     = alpha * 0.25e0;
-        tan_alpha_2 = Tan(alpha_2);
+        tan_alpha_2 = std::tan(alpha_2);
         jj          = 1;
         for (ii = 1; ii <= 2; ii++)
         {

@@ -66,7 +66,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
 {
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
@@ -200,7 +200,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               {
                 if (dist1 - R1 < Tolerance)
                 {
-                  Radius(1) = Abs(R1 - dist1);
+                  Radius(1) = std::abs(R1 - dist1);
                   nbsol1    = 1;
                   ok        = Standard_True;
                 }
@@ -209,7 +209,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               {
                 if (R1 - dist1 < Tolerance)
                 {
-                  Radius(1) = Abs(R1 - dist1);
+                  Radius(1) = std::abs(R1 - dist1);
                   nbsol1    = 1;
                   ok        = Standard_True;
                 }
@@ -224,7 +224,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               {
                 ok        = Standard_True;
                 nbsol1    = 2;
-                Radius(1) = Abs(R1 - dist1);
+                Radius(1) = std::abs(R1 - dist1);
                 Radius(2) = R1 + dist1;
               }
               if (Qualified2.IsEnclosed() && ok)
@@ -233,9 +233,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                 {
                   for (Standard_Integer ii = 1; ii <= nbsol1; ii++)
                   {
-                    if (Abs(Radius(ii) - Abs(R2 - dist2)) < Tol)
+                    if (std::abs(Radius(ii) - std::abs(R2 - dist2)) < Tol)
                     {
-                      Radius(1) = Abs(R2 - dist2);
+                      Radius(1) = std::abs(R2 - dist2);
                       ok        = Standard_True;
                       nbsol2    = 1;
                     }
@@ -248,9 +248,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                 {
                   for (Standard_Integer ii = 1; ii <= nbsol1; ii++)
                   {
-                    if (Abs(Radius(ii) - Abs(R2 - dist2)) < Tol)
+                    if (std::abs(Radius(ii) - std::abs(R2 - dist2)) < Tol)
                     {
-                      Radius(1) = Abs(R2 - dist2);
+                      Radius(1) = std::abs(R2 - dist2);
                       ok        = Standard_True;
                       nbsol2    = 1;
                     }
@@ -261,7 +261,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               {
                 for (Standard_Integer ii = 1; ii <= nbsol1; ii++)
                 {
-                  if (Abs(Radius(ii) - R2 - dist2) < Tol)
+                  if (std::abs(Radius(ii) - R2 - dist2) < Tol)
                   {
                     Radius(1) = R2 + dist2;
                     ok        = Standard_True;
@@ -273,13 +273,13 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               {
                 for (Standard_Integer ii = 1; ii <= nbsol1; ii++)
                 {
-                  if (Abs(Radius(ii) - Abs(R2 - dist2)) < Tol)
+                  if (std::abs(Radius(ii) - std::abs(R2 - dist2)) < Tol)
                   {
-                    Rradius = Abs(R2 - dist2);
+                    Rradius = std::abs(R2 - dist2);
                     ok      = Standard_True;
                     nbsol2++;
                   }
-                  else if (Abs(Radius(ii) - R2 - dist2) < Tol)
+                  else if (std::abs(Radius(ii) - R2 - dist2) < Tol)
                   {
                     Rradius = R2 + dist2;
                     ok      = Standard_True;
@@ -292,13 +292,13 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                 }
                 else if (nbsol2 == 2)
                 {
-                  Radius(1) = Abs(R2 - dist2);
+                  Radius(1) = std::abs(R2 - dist2);
                   Radius(2) = R2 + dist2;
                 }
               }
               for (Standard_Integer ii = 1; ii <= nbsol2; ii++)
               {
-                if (Abs(dist3 - Radius(ii)) <= Tol)
+                if (std::abs(dist3 - Radius(ii)) <= Tol)
                 {
                   nbsol3++;
                   ok = Standard_True;
@@ -316,11 +316,11 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                   {
                     qualifier1(NbrSol) = Qualified1.Qualifier();
                   }
-                  else if (Abs(distcc1 + Radius(k1) - R1) < Tol)
+                  else if (std::abs(distcc1 + Radius(k1) - R1) < Tol)
                   {
                     qualifier1(NbrSol) = GccEnt_enclosed;
                   }
-                  else if (Abs(distcc1 - R1 - Radius(k1)) < Tol)
+                  else if (std::abs(distcc1 - R1 - Radius(k1)) < Tol)
                   {
                     qualifier1(NbrSol) = GccEnt_outside;
                   }
@@ -335,11 +335,11 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                   {
                     qualifier2(NbrSol) = Qualified2.Qualifier();
                   }
-                  else if (Abs(distcc2 + Radius(k1) - R2) < Tol)
+                  else if (std::abs(distcc2 + Radius(k1) - R2) < Tol)
                   {
                     qualifier2(NbrSol) = GccEnt_enclosed;
                   }
-                  else if (Abs(distcc2 - R2 - Radius(k1)) < Tol)
+                  else if (std::abs(distcc2 - R2 - Radius(k1)) < Tol)
                   {
                     qualifier2(NbrSol) = GccEnt_outside;
                   }
@@ -348,7 +348,8 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                     qualifier2(NbrSol) = GccEnt_enclosing;
                   }
                   qualifier3(NbrSol) = GccEnt_noqualifier;
-                  if (Center.Distance(center1) <= Tolerance && Abs(Radius(k1) - R1) <= Tolerance)
+                  if (Center.Distance(center1) <= Tolerance
+                      && std::abs(Radius(k1) - R1) <= Tolerance)
                   {
                     TheSame1(NbrSol) = 1;
                   }
@@ -364,7 +365,8 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                     par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
                     pararg1(NbrSol)   = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
                   }
-                  if (Center.Distance(center2) <= Tolerance && Abs(Radius(k1) - R2) <= Tolerance)
+                  if (Center.Distance(center2) <= Tolerance
+                      && std::abs(Radius(k1) - R2) <= Tolerance)
                   {
                     TheSame2(NbrSol) = 1;
                   }
@@ -411,7 +413,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   {
     gp_Circ2d     CC = cirsol(kk);
     Standard_Real NR = CC.Location().Distance(Point3);
-    if (Abs(NR - CC.Radius()) > Tol)
+    if (std::abs(NR - CC.Radius()) > Tol)
     {
       cirsol(kk).SetRadius(NR);
     }

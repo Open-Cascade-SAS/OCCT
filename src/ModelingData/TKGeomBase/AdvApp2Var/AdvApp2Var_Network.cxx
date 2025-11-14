@@ -152,8 +152,8 @@ void AdvApp2Var_Network::SameDegree(const Standard_Integer iu,
   for (AdvApp2Var_SequenceOfPatch::Iterator aPatIter(myNet); aPatIter.More(); aPatIter.Next())
   {
     const Handle(AdvApp2Var_Patch)& aPat = aPatIter.Value();
-    ncfu                                 = Max(ncfu, aPat->NbCoeffInU());
-    ncfv                                 = Max(ncfv, aPat->NbCoeffInV());
+    ncfu                                 = std::max(ncfu, aPat->NbCoeffInU());
+    ncfv                                 = std::max(ncfv, aPat->NbCoeffInV());
   }
 
   //  augmentation des nombres de coeff.

@@ -75,7 +75,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   gp_Dir2d      dirx(gp_Dir2d::D::X);
   gp_Lin2d      L1 = Qualified1.Qualified();
   gp_Pnt2d      originL1(L1.Location());
@@ -102,7 +102,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     pinterm = gp_Pnt2d(Point2.XY() - dp2l * gp_XY(-donline.Y(), donline.X()));
   }
   Standard_Real dist = L1.Distance(pinterm);
-  if (Abs(dist - dp2l) <= Tol)
+  if (std::abs(dist - dp2l) <= Tol)
   {
     gp_Dir2d dirbid(originL1.XY() - pinterm.XY());
     if (Qualified1.IsEnclosed() && dirbid.Dot(normal) < 0.)

@@ -205,13 +205,13 @@ void AdvApp2Var_ApproxAFunc2Var::Init()
     default:
       throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : VContinuity Error");
   }
-  ndu = Max(myMaxDegInU + 1, 2 * iu + 2);
-  ndv = Max(myMaxDegInV + 1, 2 * iv + 2);
+  ndu = std::max(myMaxDegInU + 1, 2 * iu + 2);
+  ndv = std::max(myMaxDegInV + 1, 2 * iv + 2);
   if (ndu < 2 * iu + 2)
     throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : UMaxDegree Error");
   if (ndv < 2 * iv + 2)
     throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : VMaxDegree Error");
-  myPrecisionCode = Max(0, Min(myPrecisionCode, 3));
+  myPrecisionCode = std::max(0, std::min(myPrecisionCode, 3));
   AdvApp2Var_Context Conditions(ifav,
                                 iu,
                                 iv,
@@ -825,16 +825,16 @@ void AdvApp2Var_ApproxAFunc2Var::Compute3DErrors()
       F4Tol     = my3DTolOnFront->Value(iesp, 4);
       for (ipat = 1; ipat <= myResult.NbPatch(); ipat++)
       {
-        error_max = Max((myResult(ipat).MaxErrors())->Value(iesp), error_max);
-        error_U0  = Max((myResult(ipat).IsoErrors())->Value(iesp, 3), error_U0);
-        error_U1  = Max((myResult(ipat).IsoErrors())->Value(iesp, 4), error_U1);
-        error_V0  = Max((myResult(ipat).IsoErrors())->Value(iesp, 1), error_V0);
-        error_V1  = Max((myResult(ipat).IsoErrors())->Value(iesp, 2), error_V1);
+        error_max = std::max((myResult(ipat).MaxErrors())->Value(iesp), error_max);
+        error_U0  = std::max((myResult(ipat).IsoErrors())->Value(iesp, 3), error_U0);
+        error_U1  = std::max((myResult(ipat).IsoErrors())->Value(iesp, 4), error_U1);
+        error_V0  = std::max((myResult(ipat).IsoErrors())->Value(iesp, 1), error_V0);
+        error_V1  = std::max((myResult(ipat).IsoErrors())->Value(iesp, 2), error_V1);
         error_moy += (myResult(ipat).AverageErrors())->Value(iesp);
       }
       my3DMaxError->SetValue(iesp, error_max);
-      my3DUFrontError->SetValue(iesp, Max(error_U0, error_U1));
-      my3DVFrontError->SetValue(iesp, Max(error_V0, error_V1));
+      my3DUFrontError->SetValue(iesp, std::max(error_U0, error_U1));
+      my3DVFrontError->SetValue(iesp, std::max(error_V0, error_V1));
       error_moy /= (Standard_Real)myResult.NbPatch();
       my3DAverageError->SetValue(iesp, error_moy);
       if (error_max > Tol || error_U0 > F3Tol || error_U1 > F4Tol || error_V0 > F1Tol
@@ -863,7 +863,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeCritError()
       crit_max = 0.;
       for (ipat = 1; ipat <= myResult.NbPatch(); ipat++)
       {
-        crit_max = Max((myResult(ipat).CritValue()), crit_max);
+        crit_max = std::max((myResult(ipat).CritValue()), crit_max);
       }
       myCriterionError = crit_max;
     }

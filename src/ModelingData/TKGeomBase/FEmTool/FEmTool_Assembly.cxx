@@ -44,7 +44,7 @@ static Standard_Integer MinIndex(const Handle(FEmTool_HAssemblyTable)& Table)
       nvaru = T->Upper();
       for (nvar = nvarl; nvar <= nvaru; nvar++)
       {
-        Imin = Min(Imin, T->Value(nvar));
+        Imin = std::min(Imin, T->Value(nvar));
       }
     }
   return Imin;
@@ -72,7 +72,7 @@ static Standard_Integer MaxIndex(const Handle(FEmTool_HAssemblyTable)& Table)
       nvaru = T->Upper();
       for (nvar = nvarl; nvar <= nvaru; nvar++)
       {
-        Imax = Max(Imax, T->Value(nvar));
+        Imax = std::max(Imax, T->Value(nvar));
       }
     }
   return Imax;
@@ -109,12 +109,12 @@ FEmTool_Assembly::FEmTool_Assembly(const TColStd_Array2OfInteger&        Depende
       Imin  = T->Value(nvarl) + I0;
 
       for (nvar = nvarl; nvar <= nvaru; nvar++)
-        Imin = Min(Imin, T->Value(nvar) + I0);
+        Imin = std::min(Imin, T->Value(nvar) + I0);
 
       for (nvar = nvarl; nvar <= nvaru; nvar++)
       {
         i               = T->Value(nvar) + I0;
-        FirstIndexes(i) = Min(FirstIndexes(i), Imin);
+        FirstIndexes(i) = std::min(FirstIndexes(i), Imin);
       }
     }
 
@@ -144,7 +144,7 @@ void FEmTool_Assembly::AddMatrix(const Standard_Integer Element,
   const TColStd_Array1OfInteger& T1 = myRefTable->Value(Dimension1, Element)->Array1();
   const TColStd_Array1OfInteger& T2 = myRefTable->Value(Dimension2, Element)->Array1();
 
-  Standard_Integer nvarl = T1.Lower(), nvaru = Min(T1.Upper(), nvarl + Mat.RowNumber() - 1);
+  Standard_Integer nvarl = T1.Lower(), nvaru = std::min(T1.Upper(), nvarl + Mat.RowNumber() - 1);
 
   Standard_Integer I, J, I0 = 1 - B.Lower(), i, ii, j,
 
@@ -178,7 +178,7 @@ void FEmTool_Assembly::AddVector(const Standard_Integer Element,
                                  const math_Vector&     Vec)
 {
   const TColStd_Array1OfInteger& T = myRefTable->Value(Dimension, Element)->Array1();
-  Standard_Integer nvarl = T.Lower(), nvaru = Min(T.Upper(), nvarl + Vec.Length() - 1),
+  Standard_Integer nvarl = T.Lower(), nvaru = std::min(T.Upper(), nvarl + Vec.Length() - 1),
                    i0 = Vec.Lower() - nvarl;
 
   //  Standard_Integer I, i;
@@ -484,8 +484,8 @@ void FEmTool_Assembly::AddConstraint(const Standard_Integer IndexofConstraint,
 
   for (i = Indexes->Lower(); i <= Indexes->Upper(); i++)
   {
-    Imin = Min(Imin, Indexes->Value(i));
-    Imax = Max(Imax, Indexes->Value(i));
+    Imin = std::min(Imin, Indexes->Value(i));
+    Imax = std::max(Imax, Indexes->Value(i));
   }
 
   Handle(TColStd_HArray1OfReal) Coeff;

@@ -39,7 +39,7 @@ Handle(Expr_GeneralExpression) Expr_Cosine::ShallowSimplified() const
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
-    return new Expr_NumericValue(Cos(myNVexp->GetValue()));
+    return new Expr_NumericValue(std::cos(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_ArcCosine)))
   {
@@ -86,7 +86,7 @@ Handle(Expr_GeneralExpression) Expr_Cosine::Derivative(const Handle(Expr_NamedUn
 Standard_Real Expr_Cosine::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                     const TColStd_Array1OfReal&      vals) const
 {
-  return ::Cos(Operand()->Evaluate(vars, vals));
+  return std::cos(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_Cosine::String() const

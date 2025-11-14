@@ -259,10 +259,10 @@ void CSLib::Normal(const Standard_Integer    MaxOrder,
 
         // Creation of the domain of definition depending on the position
         // of a single point (medium, border, corner).
-        FU = (Abs(U - Umin) < Precision::PConfusion());
-        LU = (Abs(U - Umax) < Precision::PConfusion());
-        FV = (Abs(V - Vmin) < Precision::PConfusion());
-        LV = (Abs(V - Vmax) < Precision::PConfusion());
+        FU = (std::abs(U - Umin) < Precision::PConfusion());
+        LU = (std::abs(U - Umax) < Precision::PConfusion());
+        FV = (std::abs(V - Vmin) < Precision::PConfusion());
+        LV = (std::abs(V - Vmax) < Precision::PConfusion());
         if (LU)
         {
           inf = M_PI / 2;
@@ -334,7 +334,7 @@ void CSLib::Normal(const Standard_Integer    MaxOrder,
           Standard_Integer ifirst = 0;
           for (i = 0; i <= FindRoots.NbSolutions(); i++)
           {
-            if (Abs(Sol0(i + 1) - Sol0(i)) > Precision::PConfusion())
+            if (std::abs(Sol0(i + 1) - Sol0(i)) > Precision::PConfusion())
             {
               Poly.Value((Sol0(i) + Sol0(i + 1)) / 2.0, Vsuiv);
               if (ifirst == 0)

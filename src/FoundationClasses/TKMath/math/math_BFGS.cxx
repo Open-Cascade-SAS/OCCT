@@ -118,12 +118,12 @@ static Standard_Boolean ComputeInitScale(const Standard_Real theF0,
                                          Standard_Real&      theScale)
 {
   const Standard_Real dy1 = theGr * theDir;
-  if (Abs(dy1) < RealSmall())
+  if (std::abs(dy1) < RealSmall())
     return Standard_False;
 
   const Standard_Real aHnr1 = theDir.Norm2();
   const Standard_Real alfa  = 0.7 * (-theF0) / dy1;
-  theScale                  = 0.015 / Sqrt(aHnr1);
+  theScale                  = 0.015 / std::sqrt(aHnr1);
   if (theScale > alfa)
     theScale = alfa;
 
@@ -148,29 +148,29 @@ static Standard_Boolean ComputeMinMaxScale(const math_Vector& thePoint,
   {
     const Standard_Real aLeft  = theLeft(anIdx) - thePoint(anIdx);
     const Standard_Real aRight = theRight(anIdx) - thePoint(anIdx);
-    if (Abs(theDir(anIdx)) > RealSmall())
+    if (std::abs(theDir(anIdx)) > RealSmall())
     {
       // Use PConfusion to get off a little from the bounds to prevent
       // possible refuse in Value function.
       const Standard_Real aLScale = (aLeft + Precision::PConfusion()) / theDir(anIdx);
       const Standard_Real aRScale = (aRight - Precision::PConfusion()) / theDir(anIdx);
-      if (Abs(aLeft) < Precision::PConfusion())
+      if (std::abs(aLeft) < Precision::PConfusion())
       {
         // Point is on the left border.
-        theMaxScale = Min(theMaxScale, Max(0., aRScale));
-        theMinScale = Max(theMinScale, Min(0., aRScale));
+        theMaxScale = std::min(theMaxScale, std::max(0., aRScale));
+        theMinScale = std::max(theMinScale, std::min(0., aRScale));
       }
-      else if (Abs(aRight) < Precision::PConfusion())
+      else if (std::abs(aRight) < Precision::PConfusion())
       {
         // Point is on the right border.
-        theMaxScale = Min(theMaxScale, Max(0., aLScale));
-        theMinScale = Max(theMinScale, Min(0., aLScale));
+        theMaxScale = std::min(theMaxScale, std::max(0., aLScale));
+        theMinScale = std::max(theMinScale, std::min(0., aLScale));
       }
       else if (aLeft * aRight < 0)
       {
         // Point is inside allowed range.
-        theMaxScale = Min(theMaxScale, Max(aLScale, aRScale));
-        theMinScale = Max(theMinScale, Min(aLScale, aRScale));
+        theMaxScale = std::min(theMaxScale, std::max(aLScale, aRScale));
+        theMinScale = std::max(theMinScale, std::min(aLScale, aRScale));
       }
       else
         // point is out of bounds
@@ -223,8 +223,8 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
       // Make direction to go along the border
       for (Standard_Integer anIdx = 1; anIdx <= theLeft.Upper(); anIdx++)
       {
-        if ((Abs(P(anIdx) - theRight(anIdx)) < Precision::PConfusion() && Dir(anIdx) > 0.0)
-            || (Abs(P(anIdx) - theLeft(anIdx)) < Precision::PConfusion() && Dir(anIdx) < 0.0))
+        if ((std::abs(P(anIdx) - theRight(anIdx)) < Precision::PConfusion() && Dir(anIdx) > 0.0)
+            || (std::abs(P(anIdx) - theLeft(anIdx)) < Precision::PConfusion() && Dir(anIdx) < 0.0))
         {
           Dir(anIdx) = 0.0;
         }
@@ -236,8 +236,8 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
       if (!ComputeMinMaxScale(P, Dir, theLeft, theRight, aMinLambda, aMaxLambda))
         return Standard_False;
     }
-    lambda = Min(lambda, aMaxLambda);
-    lambda = Max(lambda, aMinLambda);
+    lambda = std::min(lambda, aMaxLambda);
+    lambda = std::max(lambda, aMinLambda);
   }
 
   F.Initialize(P, Dir);

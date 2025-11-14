@@ -101,7 +101,7 @@ static void TrimTolerances(const TopoDS_Shape& theShape, const Standard_Real the
     ShapeFix_ShapeTolerance SFST;
     SFST.LimitTolerance(theShape,
                         0,
-                        Max(theTolerance, Interface_Static::RVal("read.maxprecision.val")));
+                        std::max(theTolerance, Interface_Static::RVal("read.maxprecision.val")));
   }
 }
 } // namespace

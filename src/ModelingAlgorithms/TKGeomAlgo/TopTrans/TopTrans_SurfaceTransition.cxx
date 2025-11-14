@@ -68,10 +68,10 @@ static void FUN_getSTA(const Standard_Real Ang,
                        Standard_Integer&   i,
                        Standard_Integer&   j)
 {
-  Standard_Real    cos     = Cos(Ang);
-  Standard_Real    sin     = Sin(Ang);
-  Standard_Boolean nullcos = Abs(cos) < tola;
-  Standard_Boolean nullsin = Abs(sin) < tola;
+  Standard_Real    cos     = std::cos(Ang);
+  Standard_Real    sin     = std::sin(Ang);
+  Standard_Boolean nullcos = std::abs(cos) < tola;
+  Standard_Boolean nullsin = std::abs(sin) < tola;
   if (nullcos)
     i = 0;
   else
@@ -95,7 +95,7 @@ static void FUN_getSTA(const Standard_Real Ang,
   FUN_getSTA(Ang,tola,i,j);
   if (j == 0) {
       Standard_Real diff = Curv - CurvRef;
-      if (Abs(diff) < tola) {STATIC_DEFINED = Standard_False; return;} // nyi FUN_Raise
+      if (std::abs(diff) < tola) {STATIC_DEFINED = Standard_False; return;} // nyi FUN_Raise
       j = (diff < 0.) ? 1 : 2;
   }
 }*/
@@ -118,9 +118,9 @@ static Standard_Integer FUN_refnearest(const Standard_Real      Angref,
   if (undef)
     return M_updateREF;
 
-  Standard_Real cosref = Cos(Angref), cos = Cos(Ang);
-  Standard_Real dcos = Abs(cosref) - Abs(cos);
-  if (Abs(dcos) < tola)
+  Standard_Real cosref = std::cos(Angref), cos = std::cos(Ang);
+  Standard_Real dcos = std::abs(cosref) - std::abs(cos);
+  if (std::abs(dcos) < tola)
   {
     // Analysis for tangent cases : if two boundary faces are same sided
     // and have tangent normals, if they have opposite orientations
@@ -150,8 +150,8 @@ static Standard_Integer FUN_refnearest(const Standard_Integer   i,
                                        Standard_Boolean&        TouchFlag) // eap Mar 25 2002
 {
   Standard_Boolean iisj      = (i == j);
-  Standard_Real    abscos    = Abs(Cos(Ang));
-  Standard_Boolean i0        = (Abs(1. - abscos) < tola);
+  Standard_Real    abscos    = std::abs(std::cos(Ang));
+  Standard_Boolean i0        = (std::abs(1. - abscos) < tola);
   Standard_Boolean j0        = (abscos < tola);
   Standard_Boolean nullcurv  = (Curv == 0.);
   Standard_Boolean curvpos   = (Curv > tola);
@@ -183,15 +183,15 @@ static Standard_Integer FUN_refnearest(const Standard_Integer   i,
     return M_updateREF;
   } // undef
 
-  Standard_Real    cosref = Cos(Angref), cos = Cos(Ang);
-  Standard_Real    dcos    = Abs(cosref) - Abs(cos);
-  Standard_Boolean samecos = Abs(dcos) < tola;
+  Standard_Real    cosref = std::cos(Angref), cos = std::cos(Ang);
+  Standard_Real    dcos    = std::abs(cosref) - std::abs(cos);
+  Standard_Boolean samecos = std::abs(dcos) < tola;
   if (samecos)
   {
     // Analysis for tangent cases : if two boundary faces are same sided
     // and have sma dironF.
 
-    if (Abs(Curvref - Curv) < 1.e-4)
+    if (std::abs(Curvref - Curv) < 1.e-4)
     {
       if (TopAbs::Complement(Ori) == Oriref)
         return M_Ointernal;
@@ -212,9 +212,9 @@ static Standard_Integer FUN_refnearest(const Standard_Integer   i,
     {
       // check for (j==1) the face is ABOVE Sref
       // check for (j==2) the face is BELOW Sref
-      if ((j == 2) && (Abs(Curv) < CurvSref))
+      if ((j == 2) && (std::abs(Curv) < CurvSref))
         updateref = M_noupdate;
-      if ((j == 1) && (Abs(Curv) > CurvSref))
+      if ((j == 1) && (std::abs(Curv) > CurvSref))
         updateref = M_noupdate;
     }
     return updateref;
@@ -251,10 +251,10 @@ void TopTrans_SurfaceTransition::Reset(const gp_Dir&       Tgt,
   STATIC_DEFINED = Standard_True;
 
   constexpr Standard_Real tola     = Precision::Angular();
-  Standard_Boolean        curismax = (Abs(MaxD.Dot(myTgt)) < tola);
-  Standard_Boolean        curismin = (Abs(MinD.Dot(myTgt)) < tola);
+  Standard_Boolean        curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
+  Standard_Boolean        curismin = (std::abs(MinD.Dot(myTgt)) < tola);
 
-  if ((Abs(MaxCurv) < tola) && (Abs(MinCurv) < tola))
+  if ((std::abs(MaxCurv) < tola) && (std::abs(MinCurv) < tola))
   {
     Reset(Tgt, Norm);
     return;
@@ -272,9 +272,9 @@ void TopTrans_SurfaceTransition::Reset(const gp_Dir&       Tgt,
   }
 
   if (curismax)
-    myCurvRef = Abs(MaxCurv);
+    myCurvRef = std::abs(MaxCurv);
   if (curismin)
-    myCurvRef = Abs(MinCurv);
+    myCurvRef = std::abs(MinCurv);
   if (myCurvRef < tola)
     myCurvRef = 0.;
 
@@ -329,8 +329,8 @@ void TopTrans_SurfaceTransition::Compare
   Standard_Real Curv = 0.;
   // ------
   constexpr Standard_Real tola     = Precision::Angular();
-  Standard_Boolean        curismax = (Abs(MaxD.Dot(myTgt)) < tola);
-  Standard_Boolean        curismin = (Abs(MinD.Dot(myTgt)) < tola);
+  Standard_Boolean        curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
+  Standard_Boolean        curismin = (std::abs(MinD.Dot(myTgt)) < tola);
   if (!curismax && !curismin)
   {
     // In the plane normal to <myTgt>, we see the boundary face as
@@ -342,9 +342,9 @@ void TopTrans_SurfaceTransition::Compare
     return;
   }
   if (curismax)
-    Curv = Abs(MaxCurv);
+    Curv = std::abs(MaxCurv);
   if (curismin)
-    Curv = Abs(MinCurv);
+    Curv = std::abs(MinCurv);
   if (myCurvRef < tola)
     Curv = 0.;
   gp_Dir        dironF = FUN_nCinsideS(myTgt, Norm);

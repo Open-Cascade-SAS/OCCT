@@ -102,7 +102,7 @@ Standard_Boolean BOPAlgo_Options::GetParallelMode()
 
 void BOPAlgo_Options::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  myFuzzyValue = Max(theFuzz, Precision::Confusion());
+  myFuzzyValue = std::max(theFuzz, Precision::Confusion());
 }
 
 Standard_Boolean BOPAlgo_Options::UserBreak(const Message_ProgressScope& thePS)

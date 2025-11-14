@@ -57,7 +57,7 @@ void RWStepGeom_RWCartesianPoint::ReadStep(const Handle(StepData_StepReaderData)
     {
       ach->AddWarning("More than 3 coordinates, ignored");
     }
-    nbcoord = Min(nb2, 3);
+    nbcoord = std::min(nb2, 3);
     for (Standard_Integer i2 = 0; i2 < nbcoord; i2++)
     {
       if (data->ReadReal(nsub2, i2 + 1, "coordinates", ach, aCoordinatesItem))

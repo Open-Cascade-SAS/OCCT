@@ -262,7 +262,7 @@ Standard_Boolean Contap_SurfFunction::IsTangent()
       derived = Standard_True;
     }
     tangent         = Standard_False;
-    Standard_Real D = Sqrt(Fpu * Fpu + Fpv * Fpv);
+    Standard_Real D = std::sqrt(Fpu * Fpu + Fpv * Fpv);
 
     if (D <= gp::Resolution())
     {

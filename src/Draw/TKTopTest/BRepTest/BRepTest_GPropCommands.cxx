@@ -87,7 +87,7 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
   if (witheps)
   {
-    if (Abs(eps) < Precision::Angular())
+    if (std::abs(eps) < Precision::Angular())
       return 2;
     if (*a[0] == 'l')
       BRepGProp::LinearProperties(S, G, SkipShared);

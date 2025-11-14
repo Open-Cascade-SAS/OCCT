@@ -376,7 +376,7 @@ void PrsDim_AngleDimension::DrawArc(const Handle(Prs3d_Presentation)& thePresent
   if (myType == PrsDim_TypeOfAngle_Exterior)
     anAngle = 2.0 * M_PI - anAngle;
   // it sets 50 points on PI, and a part of points if angle is less
-  const Standard_Integer aNbPoints = Max(4, Standard_Integer(50.0 * anAngle / M_PI));
+  const Standard_Integer aNbPoints = std::max(4, Standard_Integer(50.0 * anAngle / M_PI));
 
   GCPnts_UniformAbscissa aMakePnts(anArcAdaptor, aNbPoints);
   if (!aMakePnts.IsDone())
@@ -701,7 +701,7 @@ void PrsDim_AngleDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
                   ? aSecondAttach
                   : aSecondArrowEnd,
                 myCenterPoint,
-                Abs(GetFlyout()),
+                std::abs(GetFlyout()),
                 theMode);
       }
     }
@@ -750,7 +750,7 @@ void PrsDim_AngleDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
               ? aSecondAttach
               : aSecondArrowEnd,
             myCenterPoint,
-            Abs(GetFlyout()),
+            std::abs(GetFlyout()),
             theMode);
   }
 
@@ -905,12 +905,12 @@ Standard_Boolean PrsDim_AngleDimension::InitTwoEdgesAngle(gp_Pln& theComputedPla
     const Standard_Real aParam21 = ElCLib::Parameter(aFirstLin, aFirstPoint2);
     const Standard_Real aParam22 = ElCLib::Parameter(aFirstLin, aLastPoint2);
     myCenterPoint =
-      ElCLib::Value((Min(aParam11, aParam12) + Max(aParam21, aParam22)) * 0.5, aFirstLin);
-    myFirstPoint  = myCenterPoint.Translated(gp_Vec(aFirstLin.Direction()) * Abs(GetFlyout()));
+      ElCLib::Value((std::min(aParam11, aParam12) + std::max(aParam21, aParam22)) * 0.5, aFirstLin);
+    myFirstPoint  = myCenterPoint.Translated(gp_Vec(aFirstLin.Direction()) * std::abs(GetFlyout()));
     mySecondPoint = myCenterPoint.XYZ()
                     + (aFirstLin.Direction().IsEqual(aSecondLin.Direction(), Precision::Angular())
-                         ? aFirstLin.Direction().Reversed().XYZ() * Abs(GetFlyout())
-                         : aSecondLin.Direction().XYZ() * Abs(GetFlyout()));
+                         ? aFirstLin.Direction().Reversed().XYZ() * std::abs(GetFlyout())
+                         : aSecondLin.Direction().XYZ() * std::abs(GetFlyout()));
   }
   else
   {
@@ -930,8 +930,10 @@ Standard_Boolean PrsDim_AngleDimension::InitTwoEdgesAngle(gp_Pln& theComputedPla
 
     if (isInfinite1 || isInfinite2)
     {
-      myFirstPoint  = myCenterPoint.Translated(gp_Vec(aFirstLin.Direction()) * Abs(GetFlyout()));
-      mySecondPoint = myCenterPoint.Translated(gp_Vec(aSecondLin.Direction()) * Abs(GetFlyout()));
+      myFirstPoint =
+        myCenterPoint.Translated(gp_Vec(aFirstLin.Direction()) * std::abs(GetFlyout()));
+      mySecondPoint =
+        myCenterPoint.Translated(gp_Vec(aSecondLin.Direction()) * std::abs(GetFlyout()));
 
       return IsValidPoints(myFirstPoint, myCenterPoint, mySecondPoint);
     }

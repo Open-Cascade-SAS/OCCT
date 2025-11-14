@@ -268,7 +268,7 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::UTrim(const Standard_
   (void)First;
   (void)Last;
   (void)Tol;
-  Standard_OutOfRange_Raise_if(Abs(First) > Eps || Abs(Last - 2. * M_PI) > Eps,
+  Standard_OutOfRange_Raise_if(std::abs(First) > Eps || std::abs(Last - 2. * M_PI) > Eps,
                                "GeomAdaptor_SurfaceOfRevolution : UTrim : Parameters out of range");
 
   Handle(GeomAdaptor_SurfaceOfRevolution) HR =
@@ -381,7 +381,7 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
           // on calcule la distance projetee sur l axe.
           gp_Vec        vlin(pf, pl);
           gp_Vec        vaxe(myAxis.Direction());
-          Standard_Real projlen = Abs(vaxe.Dot(vlin));
+          Standard_Real projlen = std::abs(vaxe.Dot(vlin));
           if ((len - projlen) <= TolConf)
           {
             gp_Pnt        P = Value(0., 0.);
@@ -397,8 +397,8 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
         gp_Vec        V(myAxis.Location(), myBasisCurve->Line().Location());
         gp_Vec        W(Axe.Direction());
         gp_Vec        AxisDir(myAxis.Direction());
-        Standard_Real proj = Abs(W.Dot(AxisDir));
-        if (Abs(V.DotCross(AxisDir, W)) <= TolConf
+        Standard_Real proj = std::abs(W.Dot(AxisDir));
+        if (std::abs(V.DotCross(AxisDir, W)) <= TolConf
             && (proj >= TolConeSemiAng && proj <= 1. - TolConeSemiAng))
         {
           return GeomAbs_Cone;

@@ -307,7 +307,7 @@ static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const c
   S3d.Clear();
   Henri.Disc2dContour(4, S2d);
   Henri.Disc3dContour(4, 0, S3d);
-  seuil = Max(0.0001, 10 * Henri.G0Error());
+  seuil = std::max(0.0001, 10 * Henri.G0Error());
   GeomPlate_PlateG0Criterion critere(S2d, S3d, seuil);
   GeomPlate_MakeApprox       Mapp(gpPlate, critere, 0.0001, nbcarreau, degmax);
   Handle(Geom_Surface)       Surf(Mapp.Surface());
@@ -401,7 +401,7 @@ static Standard_Integer approxplate(Draw_Interpretor& di, Standard_Integer n, co
     {
       Henri.Disc2dContour(4, S2d);
       Henri.Disc3dContour(4, 0, S3d);
-      seuil = Max(Tol3d, dmax * 10);
+      seuil = std::max(Tol3d, dmax * 10);
       GeomPlate_PlateG0Criterion Crit0(S2d, S3d, seuil);
       GeomPlate_MakeApprox       MApp(surf, Crit0, Tol3d, Nbmax, degmax);
       support = MApp.Surface();
@@ -410,7 +410,7 @@ static Standard_Integer approxplate(Draw_Interpretor& di, Standard_Integer n, co
     {
       Henri.Disc2dContour(4, S2d);
       Henri.Disc3dContour(4, 1, S3d);
-      seuil = Max(Tol3d, anmax * 10);
+      seuil = std::max(Tol3d, anmax * 10);
       GeomPlate_PlateG1Criterion Crit1(S2d, S3d, seuil);
       GeomPlate_MakeApprox       MApp(surf, Crit1, Tol3d, Nbmax, degmax);
       support = MApp.Surface();

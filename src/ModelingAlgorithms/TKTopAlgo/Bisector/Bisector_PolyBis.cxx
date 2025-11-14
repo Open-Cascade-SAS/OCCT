@@ -88,7 +88,7 @@ Standard_Integer Bisector_PolyBis::Interval(const Standard_Real U) const
   if (dU <= gp::Resolution())
     return 1;
 
-  Standard_Integer IntU = Standard_Integer(Abs(U - First().ParamOnBis()) / dU);
+  Standard_Integer IntU = Standard_Integer(std::abs(U - First().ParamOnBis()) / dU);
   IntU++;
 
   if (thePoints[IntU].ParamOnBis() >= U)

@@ -132,7 +132,7 @@ static Standard_Boolean SingularProcessing(const gp_Vec&          theDU,
         // Use sign "+" if theTg3D and theDV are codirectional
         // and sign "-" if opposite
         const Standard_Real aDP = theTg3D.Dot(theDV);
-        theTg2D.SetCoord(0.0, Sign(sqrt(aSQTan / aSqMagnDV), aDP));
+        theTg2D.SetCoord(0.0, std::copysign(sqrt(aSQTan / aSqMagnDV), aDP));
       }
       else
       {
@@ -174,7 +174,7 @@ static Standard_Boolean SingularProcessing(const gp_Vec&          theDU,
         // Use sign "+" if theTg3D and theDU are codirectional
         // and sign "-" if opposite
         const Standard_Real aDP = theTg3D.Dot(theDU);
-        theTg2D.SetCoord(Sign(sqrt(aSQTan / aSqMagnDU), aDP), 0.0);
+        theTg2D.SetCoord(std::copysign(sqrt(aSQTan / aSqMagnDU), aDP), 0.0);
       }
       else
       {
@@ -215,7 +215,7 @@ static Standard_Boolean SingularProcessing(const gp_Vec&          theDU,
         // theTg3D is parallel to theDU
 
         const Standard_Real aDP    = theTg3D.Dot(theDU);
-        const Standard_Real aLenTg = Sign(sqrt(aSQTan), aDP);
+        const Standard_Real aLenTg = std::copysign(sqrt(aSQTan), aDP);
         theTg2D.SetCoord(aLenTg / aLenSum, aLenTg / aLenSum);
       }
       else
@@ -251,7 +251,7 @@ static Standard_Boolean SingularProcessing(const gp_Vec&          theDU,
         // theTg3D is parallel to theDU
 
         const Standard_Real aDP    = theTg3D.Dot(theDU);
-        const Standard_Real aLenTg = Sign(sqrt(aSQTan), aDP);
+        const Standard_Real aLenTg = std::copysign(sqrt(aSQTan), aDP);
         theTg2D.SetCoord(aLenTg / aLenSum, -aLenTg / aLenSum);
       }
       else
@@ -315,7 +315,8 @@ static Standard_Boolean NonSingularProcessing(const gp_Vec&       theDU,
   const Standard_Real aDeltaU = aTgV.SquareMagnitude() / aSQMagn;
   const Standard_Real aDeltaV = aTgU.SquareMagnitude() / aSQMagn;
 
-  theTg2D.SetCoord(Sign(sqrt(aDeltaU), aTgV.Dot(aNormal)), -Sign(sqrt(aDeltaV), aTgU.Dot(aNormal)));
+  theTg2D.SetCoord(std::copysign(sqrt(aDeltaU), aTgV.Dot(aNormal)),
+                   -std::copysign(sqrt(aDeltaV), aTgU.Dot(aNormal)));
 
   return Standard_True;
 }
@@ -559,8 +560,8 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute(Standard_Real& u1,
   {
     MyHasBeenComputed = Standard_True;
 
-    Standard_Real DistAvantApresU = Abs(PourTesterU - X(1));
-    Standard_Real DistAvantApresV = Abs(PourTesterV - X(2));
+    Standard_Real DistAvantApresU = std::abs(PourTesterU - X(1));
+    Standard_Real DistAvantApresV = std::abs(PourTesterV - X(2));
 
     MyPnt = P = ThePSurfaceTool::Value(aPSurf, X(1), X(2));
 
@@ -833,7 +834,7 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::SeekPoint(const Standard_Real u1,
       if (aQSurf.TypeQuadric() != GeomAbs_Plane)
       {
         Standard_Real sign = (NewU1 > u1) ? -1 : 1;
-        while (Abs(u1 - NewU1) > M_PI)
+        while (std::abs(u1 - NewU1) > M_PI)
           NewU1 += sign * (M_PI + M_PI);
       }
     }
@@ -847,7 +848,7 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::SeekPoint(const Standard_Real u1,
       if (aQSurf.TypeQuadric() != GeomAbs_Plane)
       {
         Standard_Real sign = (NewU2 > u2) ? -1 : 1;
-        while (Abs(u2 - NewU2) > M_PI)
+        while (std::abs(u2 - NewU2) > M_PI)
           NewU2 += sign * (M_PI + M_PI);
       }
     }
@@ -1002,10 +1003,10 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(
   // finding "outboundaried" solution (Rsnld -> NotDone).
   if (GetUseSolver())
   {
-    Standard_Real du =
-      Max(Precision::Confusion(), ThePSurfaceTool::UResolution(aPSurf, Precision::Confusion()));
-    Standard_Real dv =
-      Max(Precision::Confusion(), ThePSurfaceTool::VResolution(aPSurf, Precision::Confusion()));
+    Standard_Real du = std::max(Precision::Confusion(),
+                                ThePSurfaceTool::UResolution(aPSurf, Precision::Confusion()));
+    Standard_Real dv = std::max(Precision::Confusion(),
+                                ThePSurfaceTool::VResolution(aPSurf, Precision::Confusion()));
     if (X(1) - 0.0000000001 <= binfu)
       X(1) = X(1) + du;
     if (X(1) + 0.0000000001 >= bsupu)

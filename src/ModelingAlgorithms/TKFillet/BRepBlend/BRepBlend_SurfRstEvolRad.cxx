@@ -71,7 +71,7 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
   {
     v1 = I1(ind1);
     v2 = I2(ind2);
-    if (Abs(v1 - v2) <= Epspar)
+    if (std::abs(v1 - v2) <= Epspar)
     {
       // Here the elements of I1 and I2 fit.
       Seq.Append((v1 + v2) / 2);
@@ -387,7 +387,8 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::IsSolution(const math_Vector&  Sol,
   Standard_Real Cosa, Sina, Angle;
 
   Values(Sol, valsol, gradsol);
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol && Abs(valsol(3)) <= 2 * Tol * Abs(ray))
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol
+      && std::abs(valsol(3)) <= 2 * Tol * std::abs(ray))
   {
 
     // Calculation of tangents
@@ -470,7 +471,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::IsSolution(const math_Vector&  Sol,
       Sina = -Sina; // nplan is changed into -nplan
     }
 
-    Angle = ACos(Cosa);
+    Angle = std::acos(Cosa);
     if (Sina < 0.)
     {
       Angle = 2. * M_PI - Angle;
@@ -484,7 +485,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::IsSolution(const math_Vector&  Sol,
     {
       minang = Angle;
     }
-    distmin = Min(distmin, pts.Distance(ptrst));
+    distmin = std::min(distmin, pts.Distance(ptrst));
 
     return Standard_True;
   }
@@ -629,7 +630,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::Decroch(const math_Vector& Sol,
 
   Standard_Real dot, NT = NRstInPlane.Magnitude();
   NT *= TgRst.Magnitude();
-  if (Abs(NT) < 1.e-7)
+  if (std::abs(NT) < 1.e-7)
   {
     return Standard_False; // Singularity or Incoherence.
   }
@@ -694,7 +695,7 @@ void BRepBlend_SurfRstEvolRad::Section(const Standard_Real Param,
   norm = nplan.Crossed(ns).Magnitude();
   ns.SetLinearForm(nplan.Dot(ns) / norm, nplan, -1. / norm, ns);
   Center.SetXYZ(pts.XYZ() + ray * ns.XYZ());
-  C.SetRadius(Abs(ray));
+  C.SetRadius(std::abs(ray));
 
   if (ray > 0)
   {
@@ -731,7 +732,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::IsRational() const
 
 Standard_Real BRepBlend_SurfRstEvolRad::GetSectionSize() const
 {
-  return maxang * Abs(ray);
+  return maxang * std::abs(ray);
 }
 
 //=================================================================================================
@@ -814,11 +815,11 @@ void BRepBlend_SurfRstEvolRad::GetTolerance(const Standard_Real BoundTol,
 {
   Standard_Integer low = Tol3d.Lower(), up = Tol3d.Upper();
   Standard_Real    Tol;
-  Tol = GeomFill::GetTolerance(myTConv, minang, Abs(ray), AngleTol, SurfTol);
+  Tol = GeomFill::GetTolerance(myTConv, minang, std::abs(ray), AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
-  Tol3d(low + 1) = Tol3d(up - 1) = Min(Tol, SurfTol);
-  Tol3d(low) = Tol3d(up) = Min(Tol, BoundTol);
+  Tol3d(low + 1) = Tol3d(up - 1) = std::min(Tol, SurfTol);
+  Tol3d(low) = Tol3d(up) = std::min(Tol, BoundTol);
 }
 
 //=================================================================================================
@@ -1032,7 +1033,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
   if (!istgt)
   {
     if (ray < 0.)
-    { // to avoid Abs(dray) some lines below
+    { // to avoid std::abs(dray) some lines below
       rayprim = -aDray;
     }
     else
@@ -1049,7 +1050,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
                                ptrst,
                                tgs,
                                tgrst,
-                               Abs(ray),
+                               std::abs(ray),
                                rayprim,
                                Center,
                                tgct,
@@ -1060,7 +1061,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
   }
   else
   {
-    GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptrst, Abs(ray), Center, Poles, Weigths);
+    GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptrst, std::abs(ray), Center, Poles, Weigths);
     return Standard_False;
   }
 }
@@ -1110,7 +1111,7 @@ void BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
   surf->D1(u1, v1, pts, d1u1, d1v1);
   ptrst = cons.Value(w);
 
-  distmin = Min(distmin, pts.Distance(ptrst));
+  distmin = std::min(distmin, pts.Distance(ptrst));
 
   Poles2d(Poles2d.Lower()).SetCoord(u1, v1);
   Poles2d(Poles2d.Upper()).SetCoord(pt2d.X(), pt2d.Y());
@@ -1140,7 +1141,7 @@ void BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
     nplan.Reverse();
   }
 
-  GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptrst, Abs(ray), Center, Poles, Weigths);
+  GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptrst, std::abs(ray), Center, Poles, Weigths);
 }
 
 void BRepBlend_SurfRstEvolRad::Resolution(const Standard_Integer IC2d,

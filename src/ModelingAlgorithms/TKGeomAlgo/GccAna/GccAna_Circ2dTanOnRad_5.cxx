@@ -50,7 +50,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
 {
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol     = Abs(Tolerance);
+  Standard_Real Tol     = std::abs(Tolerance);
   WellDone              = Standard_False;
   NbrSol                = 0;
   Standard_Real Roncirc = OnCirc.Radius();
@@ -68,11 +68,11 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
   else
   {
     Standard_Integer signe = 0;
-    if (Abs(dist1 - Radius) < Tol)
+    if (std::abs(dist1 - Radius) < Tol)
     {
       signe = 1;
     }
-    else if (Abs(dist2 - Radius) < Tol)
+    else if (std::abs(dist2 - Radius) < Tol)
     {
       signe = -1;
     }

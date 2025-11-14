@@ -250,9 +250,9 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   }
   else
   {
-    if (Abs(Umin - U0) < Precision::PConfusion())
+    if (std::abs(Umin - U0) < Precision::PConfusion())
       Umin = U0;
-    if (Abs(Umax - U1) < Precision::PConfusion())
+    if (std::abs(Umax - U1) < Precision::PConfusion())
       Umax = U1;
     uShift = ShapeAnalysis::AdjustToPeriod(Umin, U0, U1);
     Umin += uShift;
@@ -269,9 +269,9 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   }
   else
   {
-    if (Abs(Vmin - V0) < Precision::PConfusion())
+    if (std::abs(Vmin - V0) < Precision::PConfusion())
       Vmin = V0;
-    if (Abs(Vmax - V1) < Precision::PConfusion())
+    if (std::abs(Vmax - V1) < Precision::PConfusion())
       Vmax = V1;
     vShift = ShapeAnalysis::AdjustToPeriod(Vmin, V0, V1);
     Vmin += vShift;
@@ -288,7 +288,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
     {
       Standard_Real uMaxShift = 0;
       uMaxShift               = ShapeAnalysis::AdjustToPeriod(Ufin, U0, U1);
-      if (Abs(uShift - uMaxShift) > Precision::PConfusion())
+      if (std::abs(uShift - uMaxShift) > Precision::PConfusion())
       {
         Handle(Geom_BSplineSurface) aBspl =
           Handle(Geom_BSplineSurface)::DownCast(mysurface->Copy());
@@ -308,7 +308,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
     {
       Standard_Real vMaxShift = 0;
       vMaxShift               = ShapeAnalysis::AdjustToPeriod(Vfin, V0, V1);
-      if (Abs(vShift - vMaxShift) > Precision::PConfusion())
+      if (std::abs(vShift - vMaxShift) > Precision::PConfusion())
       {
         Handle(Geom_BSplineSurface) aBspl =
           Handle(Geom_BSplineSurface)::DownCast(mysurface->Copy());
@@ -763,8 +763,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   Handle(IGESData_IGESEntity) Generatrix = GC.TransferCurve(Ligne, V1, V2);
   gp_Pnt                      gen1       = Ligne->Value(V1);
   gp_Pnt                      gen2       = Ligne->Value(V2);
-  //  TheLength = gen1.Distance(gen2)*Cos(start->Cone().SemiAngle());
-  TheLength = gen1.Distance(gen2);
+  TheLength                              = gen1.Distance(gen2);
 
   // creation of the axis : Axis .
   Handle(IGESGeom_Line) Axis = new IGESGeom_Line;
@@ -1023,7 +1022,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(
   GeomToIGES_GeomCurve GC(*this);
   // commented by skl 18.07.2005 for OCC9490
   Handle(Geom_Curve) CopyCurve;
-  if (Abs(V1) > Precision::Confusion())
+  if (std::abs(V1) > Precision::Confusion())
   {
     CopyCurve = Handle(Geom_Curve)::DownCast(
       TheCurve->Translated(start->Value(U1, 0.), start->Value(U1, V1)));

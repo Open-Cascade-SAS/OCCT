@@ -343,7 +343,7 @@ Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve
   aFunc.ValueAndDerives(aU0, aSqDefl, aD1, aD2);
   for (Standard_Integer anItr = 1; anItr <= theNbIters; anItr++)
   {
-    if (Abs(aD2) < Precision::PConfusion())
+    if (std::abs(aD2) < Precision::PConfusion())
     {
       break;
     }
@@ -358,16 +358,17 @@ Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve
     aFunc.ValueAndDerives(aU1, aSqD, aD1, aD2);
     if (aSqD > aSqDefl)
     {
-      aUmax                   = aU1;
-      const Standard_Real aDD = aSqDefl > 0.0 ? Abs(Sqrt(aSqD) - Sqrt(aSqDefl)) : Sqrt(aSqD);
-      aSqDefl                 = aSqD;
+      aUmax = aU1;
+      const Standard_Real aDD =
+        aSqDefl > 0.0 ? std::abs(std::sqrt(aSqD) - std::sqrt(aSqDefl)) : std::sqrt(aSqD);
+      aSqDefl = aSqD;
       if (aDD < aTolDefl)
       {
         break;
       }
     }
 
-    if (Abs(aU0 - aU1) < Precision::PConfusion())
+    if (std::abs(aU0 - aU1) < Precision::PConfusion())
     {
       break;
     }
@@ -395,7 +396,7 @@ Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve
       theVecCurvLine->SetXY(aFunc.VecCurveLine().XY());
     }
   }
-  return Sqrt(aSqDefl);
+  return std::sqrt(aSqDefl);
 }
 
 //=======================================================================
@@ -439,5 +440,5 @@ Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve
   {
     *thePrmOnCurve = anOutputPnt(1);
   }
-  return Sqrt(Abs(aSqDefl));
+  return std::sqrt(std::abs(aSqDefl));
 }

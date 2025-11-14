@@ -132,7 +132,7 @@ static Standard_Boolean CoincideOnArc(const gp_Pnt&                      Ptsomme
                                       Handle(Adaptor3d_HVertex)&         Vtx)
 {
   Standard_Real distmin = RealLast();
-  Standard_Real tolarc  = Max(Toler, Tol3d(A, Domain));
+  Standard_Real tolarc  = std::max(Toler, Tol3d(A, Domain));
 
   Domain->Initialize(A);
   Domain->InitVertexIterator();
@@ -143,7 +143,7 @@ static Standard_Boolean CoincideOnArc(const gp_Pnt&                      Ptsomme
     gp_Pnt2d                  p2d   = A->Value(prm);
     gp_Pnt                    point = Surf->Value(p2d.X(), p2d.Y());
     const Standard_Real       dist  = point.Distance(Ptsommet);
-    Standard_Real             tol   = Max(tolarc, Tol3d(vtx1, Domain));
+    Standard_Real             tol   = std::max(tolarc, Tol3d(vtx1, Domain));
 
     if (dist <= tol && dist <= distmin)
     { // the best coincidence
@@ -161,7 +161,7 @@ static void VerifyTgline(const Handle(IntPatch_WLine)& wlin,
                          gp_Vec&                       Tgl)
 {
 
-  if (Abs(Tgl.X()) < Tol && Abs(Tgl.Y()) < Tol && Abs(Tgl.Z()) < Tol)
+  if (std::abs(Tgl.X()) < Tol && std::abs(Tgl.Y()) < Tol && std::abs(Tgl.Z()) < Tol)
   {
     //-- On construit une tangente plus grande
     //-- (Eviter des points tres proches ds Walking)
@@ -174,7 +174,7 @@ static void VerifyTgline(const Handle(IntPatch_WLine)& wlin,
         for (i = param + 1; i <= nbpt; i++)
         {
           gp_Vec T(wlin->Point(param).Value(), wlin->Point(i).Value());
-          if (Abs(T.X()) >= Tol || Abs(T.Y()) >= Tol || Abs(T.Z()) >= Tol)
+          if (std::abs(T.X()) >= Tol || std::abs(T.Y()) >= Tol || std::abs(T.Z()) >= Tol)
           {
             Tgl = T;
             return;
@@ -186,7 +186,7 @@ static void VerifyTgline(const Handle(IntPatch_WLine)& wlin,
         for (i = param - 1; i >= 1; i--)
         {
           gp_Vec T(wlin->Point(i).Value(), wlin->Point(param).Value());
-          if (Abs(T.X()) >= Tol || Abs(T.Y()) >= Tol || Abs(T.Z()) >= Tol)
+          if (std::abs(T.X()) >= Tol || std::abs(T.Y()) >= Tol || std::abs(T.Z()) >= Tol)
           {
             Tgl = T;
             return;
@@ -208,7 +208,7 @@ static void GetLinePoint2d(const Handle(IntPatch_Line)& L,
   IntPatch_IType         typL    = L->ArcType();
   Standard_Integer       Nbptlin = (typL == IntPatch_Walking ? wlin->NbPnts() : rlin->NbPnts());
 
-  Standard_Real    par   = IntegerPart(param);
+  Standard_Real    par   = std::trunc(param);
   Standard_Integer Irang = Standard_Integer(par);
   if (Irang == Nbptlin)
   {
@@ -216,7 +216,7 @@ static void GetLinePoint2d(const Handle(IntPatch_Line)& L,
     par = 1.0;
   }
   else
-    par = Abs(param - par);
+    par = std::abs(param - par);
 
   Standard_Real us1, vs1, us2, vs2;
   if (typL == IntPatch_Walking)
@@ -367,7 +367,7 @@ static Standard_Boolean FindParameter(const Handle(IntPatch_Line)&     L,
         norm2 = v2.SquareMagnitude();
         if (v1.Dot(v2) < 0.)
         {
-          Param = (Standard_Real)(i - 1) + 1. / (1. + Sqrt(norm2 / norm1));
+          Param = (Standard_Real)(i - 1) + 1. / (1. + std::sqrt(norm2 / norm1));
           Tgl   = gp_Vec(p1, p2);
           found = Standard_True;
         }
@@ -401,7 +401,7 @@ inline Standard_Boolean ArePnt2dEqual(const gp_Pnt2d&     p1,
                                       const Standard_Real tolU,
                                       const Standard_Real tolV)
 {
-  return Abs(p1.X() - p2.X()) < tolU && Abs(p1.Y() - p2.Y()) < tolV;
+  return std::abs(p1.X() - p2.X()) < tolU && std::abs(p1.Y() - p2.Y()) < tolV;
 }
 
 //=================================================================================================
@@ -433,8 +433,8 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
   Handle(IntPatch_WLine) wlin(Handle(IntPatch_WLine)::DownCast(L)); //-- faite au cast.
   Standard_Integer       Nbvtx   = 0;
   Standard_Real          tolPLin = Surf->UResolution(Precision::Confusion());
-  tolPLin                        = Max(tolPLin, Surf->VResolution(Precision::Confusion()));
-  tolPLin                        = Min(tolPLin, Precision::Confusion());
+  tolPLin                        = std::max(tolPLin, Surf->VResolution(Precision::Confusion()));
+  tolPLin                        = std::min(tolPLin, Precision::Confusion());
   IntPatch_PolyLine PLin(tolPLin);
 
   Standard_Real    PFirst, PLast;
@@ -538,11 +538,11 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
     {
       Handle(Adaptor3d_HVertex) vtx = Domain->Vertex();
       Standard_Real             prm = IntPatch_HInterTool::Parameter(vtx, arc);
-      if (Abs(prm - PFirst) < Precision::PConfusion())
+      if (std::abs(prm - PFirst) < Precision::PConfusion())
       {
         arc->D0(PFirst, p2dFirst);
       }
-      else if (Abs(prm - PLast) < Precision::PConfusion())
+      else if (std::abs(prm - PLast) < Precision::PConfusion())
       {
         arc->D0(PLast, p2dLast);
       }
@@ -564,7 +564,7 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
         const gp_Dir2d& aDir = aLin.Direction();
 
         // Here, we consider rectangular axis-aligned domain only.
-        const Standard_Boolean isAlongU = (Abs(aDir.X()) > Abs(aDir.Y()));
+        const Standard_Boolean isAlongU = (std::abs(aDir.X()) > std::abs(aDir.Y()));
 
         if (SurfaceIsPeriodic && !isAlongU)
         {
@@ -671,7 +671,7 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
           Standard_Integer nbTreated = 0;
           GetLinePoint2d(L, aW1 + 1, !OnFirst, U, V);
 
-          Standard_Real    par   = IntegerPart(aW2);
+          Standard_Real    par   = std::trunc(aW2);
           Standard_Integer Irang = Standard_Integer(par) + 1;
           if (Irang == Brise.NbPoints())
           {
@@ -680,7 +680,7 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
           }
           else
           {
-            par = Abs(aW2 - par);
+            par = std::abs(aW2 - par);
           }
 
           W = (1. - par) * Brise.Parameter(Irang) + par * Brise.Parameter(Irang + 1);
@@ -704,7 +704,7 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
             OtherSurf->D0(U, V, anOldPnt);
             OtherSurf->D0(U2, V2, aNewPnt);
             // if (anOldPnt.SquareDistance(aNewPnt) < Precision::SquareConfusion())
-            Standard_Real aTolConf = Max(Precision::Confusion(), edgeTol);
+            Standard_Real aTolConf = std::max(Precision::Confusion(), edgeTol);
 
             if (anOldPnt.SquareDistance(aNewPnt) < aTolConf * aTolConf)
             {
@@ -725,8 +725,8 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
                 if (possiblyClosed)
                 {
                   locpt2(j).Coord(U, V);
-                  if ((OSurfaceIsUClosed && Abs(U - U2) > tolOUClosed)
-                      || (OSurfaceIsVClosed && Abs(V - V2) > tolOVClosed))
+                  if ((OSurfaceIsUClosed && std::abs(U - U2) > tolOUClosed)
+                      || (OSurfaceIsVClosed && std::abs(V - V2) > tolOVClosed))
                     continue;
                 }
                 duplicate = Standard_True;
@@ -767,15 +767,15 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
                 if (SurfaceIsUClosed || SurfaceIsVClosed)
                 {
                   GetLinePoint2d(L, paramline, OnFirst, U, V);
-                  if ((SurfaceIsUClosed && Abs(U - U1) > tolUClosed)
-                      || (SurfaceIsVClosed && Abs(V - V1) > tolVClosed))
+                  if ((SurfaceIsUClosed && std::abs(U - U1) > tolUClosed)
+                      || (SurfaceIsVClosed && std::abs(V - V1) > tolVClosed))
                     found = Standard_False;
                 }
                 if (found && (OSurfaceIsUClosed || OSurfaceIsVClosed))
                 {
                   GetLinePoint2d(L, paramline, !OnFirst, U, V);
-                  if ((OSurfaceIsUClosed && Abs(U - U2) > tolOUClosed)
-                      || (OSurfaceIsVClosed && Abs(V - V2) > tolOVClosed))
+                  if ((OSurfaceIsUClosed && std::abs(U - U2) > tolOUClosed)
+                      || (OSurfaceIsVClosed && std::abs(V - V2) > tolOVClosed))
                     found = Standard_False;
                 }
               }
@@ -818,8 +818,8 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
                         Rptline.ParametersOnS1(U, V);
                       else
                         Rptline.ParametersOnS2(U, V);
-                      if ((SurfaceIsUClosed && Abs(U - U1) > tolUClosed)
-                          || (SurfaceIsVClosed && Abs(V - V1) > tolVClosed))
+                      if ((SurfaceIsUClosed && std::abs(U - U1) > tolUClosed)
+                          || (SurfaceIsVClosed && std::abs(V - V1) > tolVClosed))
                         continue;
                     }
                     if (OSurfaceIsUClosed || OSurfaceIsVClosed)
@@ -828,13 +828,13 @@ void IntPatch_RstInt::PutVertexOnLine(const Handle(IntPatch_Line)&       L,
                         Rptline.ParametersOnS2(U, V);
                       else
                         Rptline.ParametersOnS1(U, V);
-                      if ((OSurfaceIsUClosed && Abs(U - U2) > tolOUClosed)
-                          || (OSurfaceIsVClosed && Abs(V - V2) > tolOVClosed))
+                      if ((OSurfaceIsUClosed && std::abs(U - U2) > tolOUClosed)
+                          || (OSurfaceIsVClosed && std::abs(V - V2) > tolOVClosed))
                         continue;
                     }
                   }
                   Standard_Real dist = ptsommet.Distance(Rptline.Value());
-                  Standard_Real dt   = Max(vtxTol, Rptline.Tolerance());
+                  Standard_Real dt   = std::max(vtxTol, Rptline.Tolerance());
                   if (dist < dmin)
                   {
                     if (dist <= dt)

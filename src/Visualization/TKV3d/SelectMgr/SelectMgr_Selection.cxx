@@ -77,7 +77,7 @@ void SelectMgr_Selection::Add(const Handle(Select3D_SensitiveEntity)& theSensiti
   }
   else
   {
-    mySensFactor = Max(mySensFactor, anEntity->BaseSensitive()->SensitivityFactor());
+    mySensFactor = std::max(mySensFactor, anEntity->BaseSensitive()->SensitivityFactor());
   }
 }
 

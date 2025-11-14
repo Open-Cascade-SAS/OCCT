@@ -302,9 +302,9 @@ Handle(Geom_Curve) Geom_Plane::VIso(const Standard_Real V) const
 void Geom_Plane::TransformParameters(Standard_Real& U, Standard_Real& V, const gp_Trsf& T) const
 {
   if (!Precision::IsInfinite(U))
-    U *= Abs(T.ScaleFactor());
+    U *= std::abs(T.ScaleFactor());
   if (!Precision::IsInfinite(V))
-    V *= Abs(T.ScaleFactor());
+    V *= std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
@@ -312,7 +312,7 @@ void Geom_Plane::TransformParameters(Standard_Real& U, Standard_Real& V, const g
 gp_GTrsf2d Geom_Plane::ParametricTransformation(const gp_Trsf& T) const
 {
   gp_Trsf2d T2;
-  T2.SetScale(gp::Origin2d(), Abs(T.ScaleFactor()));
+  T2.SetScale(gp::Origin2d(), std::abs(T.ScaleFactor()));
   return gp_GTrsf2d(T2);
 }
 

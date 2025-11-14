@@ -49,8 +49,8 @@ Standard_Boolean SelectMgr_Frustum<N>::isSeparated(const SelectMgr_Vec3& theBoxM
   {
     const Standard_Real aProj = myVertices[aVertIdx].XYZ().Dot(theDirect);
 
-    aMinF = Min(aMinF, aProj);
-    aMaxF = Max(aMaxF, aProj);
+    aMinF = std::min(aMinF, aProj);
+    aMaxF = std::max(aMaxF, aProj);
 
     if (aMinF <= aMaxB && aMaxF >= aMinB)
     {
@@ -95,23 +95,23 @@ Standard_Boolean SelectMgr_Frustum<N>::isSeparated(const gp_Pnt& thePnt1,
   Standard_Real aTriangleProj;
 
   aTriangleProj = theAxis.Dot(thePnt1.XYZ());
-  aMinTr        = Min(aMinTr, aTriangleProj);
-  aMaxTr        = Max(aMaxTr, aTriangleProj);
+  aMinTr        = std::min(aMinTr, aTriangleProj);
+  aMaxTr        = std::max(aMaxTr, aTriangleProj);
 
   aTriangleProj = theAxis.Dot(thePnt2.XYZ());
-  aMinTr        = Min(aMinTr, aTriangleProj);
-  aMaxTr        = Max(aMaxTr, aTriangleProj);
+  aMinTr        = std::min(aMinTr, aTriangleProj);
+  aMaxTr        = std::max(aMaxTr, aTriangleProj);
 
   aTriangleProj = theAxis.Dot(thePnt3.XYZ());
-  aMinTr        = Min(aMinTr, aTriangleProj);
-  aMaxTr        = Max(aMaxTr, aTriangleProj);
+  aMinTr        = std::min(aMinTr, aTriangleProj);
+  aMaxTr        = std::max(aMaxTr, aTriangleProj);
 
   for (Standard_Integer aVertIter = 0; aVertIter < N * 2; ++aVertIter)
   {
     const Standard_Real aProj = myVertices[aVertIter].XYZ().Dot(theAxis);
 
-    aMinF = Min(aMinF, aProj);
-    aMaxF = Max(aMaxF, aProj);
+    aMinF = std::min(aMinF, aProj);
+    aMaxF = std::max(aMaxF, aProj);
 
     if (aMinF <= aMaxTr && aMaxF >= aMinTr)
     {
@@ -243,8 +243,8 @@ Standard_Boolean SelectMgr_Frustum<N>::hasSegmentOverlap(const gp_Pnt& theStartP
 
     Standard_Real aProj1 = myPlanes[aPlaneIdx].XYZ().Dot(theStartPnt.XYZ());
     Standard_Real aProj2 = myPlanes[aPlaneIdx].XYZ().Dot(theEndPnt.XYZ());
-    aMinSegm             = Min(aProj1, aProj2);
-    aMaxSegm             = Max(aProj1, aProj2);
+    aMinSegm             = std::min(aProj1, aProj2);
+    aMaxSegm             = std::max(aProj1, aProj2);
 
     aMaxF = myMaxVertsProjections[aPlaneIdx];
     aMinF = myMinVertsProjections[aPlaneIdx];
@@ -260,13 +260,13 @@ Standard_Boolean SelectMgr_Frustum<N>::hasSegmentOverlap(const gp_Pnt& theStartP
   for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
   {
     Standard_Real aProjection = aDir.Dot(myVertices[aVertIdx].XYZ());
-    aMax2                     = Max(aMax2, aProjection);
-    aMin2                     = Min(aMin2, aProjection);
+    aMax2                     = std::max(aMax2, aProjection);
+    aMin2                     = std::min(aMin2, aProjection);
   }
   Standard_Real aProj1 = aDir.Dot(theStartPnt.XYZ());
   Standard_Real aProj2 = aDir.Dot(theEndPnt.XYZ());
-  aMin1                = Min(aProj1, aProj2);
-  aMax1                = Max(aProj1, aProj2);
+  aMin1                = std::min(aProj1, aProj2);
+  aMax1                = std::max(aProj1, aProj2);
   if (aMin1 > aMax2 || aMax1 < aMin2)
   {
     return Standard_False;
@@ -282,14 +282,14 @@ Standard_Boolean SelectMgr_Frustum<N>::hasSegmentOverlap(const gp_Pnt& theStartP
 
     Standard_Real Proj1 = aTestDir.Dot(theStartPnt.XYZ());
     Standard_Real Proj2 = aTestDir.Dot(theEndPnt.XYZ());
-    aMinSegm            = Min(Proj1, Proj2);
-    aMaxSegm            = Max(Proj1, Proj2);
+    aMinSegm            = std::min(Proj1, Proj2);
+    aMaxSegm            = std::max(Proj1, Proj2);
 
     for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
     {
       Standard_Real aProjection = aTestDir.Dot(myVertices[aVertIdx].XYZ());
-      aMaxF                     = Max(aMaxF, aProjection);
-      aMinF                     = Min(aMinF, aProjection);
+      aMaxF                     = std::max(aMaxF, aProjection);
+      aMinF                     = std::min(aMinF, aProjection);
     }
 
     if (aMinSegm > aMaxF || aMaxSegm < aMinF)
@@ -327,8 +327,8 @@ Standard_Boolean SelectMgr_Frustum<N>::hasPolygonOverlap(const TColgp_Array1OfPn
   for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
   {
     Standard_Real aProjection = aNormal.Dot(myVertices[aVertIdx].XYZ());
-    aMax                      = Max(aMax, aProjection);
-    aMin                      = Min(aMin, aProjection);
+    aMax                      = std::max(aMax, aProjection);
+    aMin                      = std::min(aMin, aProjection);
   }
   if (aPolygProjection > aMax || aPolygProjection < aMin)
   {
@@ -346,8 +346,8 @@ Standard_Boolean SelectMgr_Frustum<N>::hasPolygonOverlap(const TColgp_Array1OfPn
     for (Standard_Integer aPntIter = aStartIdx; aPntIter <= anEndIdx; ++aPntIter)
     {
       Standard_Real aProjection = aPlane.Dot(theArrayOfPnts.Value(aPntIter).XYZ());
-      aMaxPolyg                 = Max(aMaxPolyg, aProjection);
-      aMinPolyg                 = Min(aMinPolyg, aProjection);
+      aMaxPolyg                 = std::max(aMaxPolyg, aProjection);
+      aMinPolyg                 = std::min(aMinPolyg, aProjection);
     }
     aMaxF = myMaxVertsProjections[aPlaneIdx];
     aMinF = myMinVertsProjections[aPlaneIdx];
@@ -377,15 +377,15 @@ Standard_Boolean SelectMgr_Frustum<N>::hasPolygonOverlap(const TColgp_Array1OfPn
       for (Standard_Integer aPntIter = aStartIdx; aPntIter <= anEndIdx; ++aPntIter)
       {
         Standard_Real aProjection = aTestDir.Dot(theArrayOfPnts.Value(aPntIter).XYZ());
-        aMaxPolyg                 = Max(aMaxPolyg, aProjection);
-        aMinPolyg                 = Min(aMinPolyg, aProjection);
+        aMaxPolyg                 = std::max(aMaxPolyg, aProjection);
+        aMinPolyg                 = std::min(aMinPolyg, aProjection);
       }
 
       for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
       {
         Standard_Real aProjection = aTestDir.Dot(myVertices[aVertIdx].XYZ());
-        aMaxF                     = Max(aMaxF, aProjection);
-        aMinF                     = Min(aMinF, aProjection);
+        aMaxF                     = std::max(aMaxF, aProjection);
+        aMinF                     = std::min(aMinF, aProjection);
       }
 
       if (aMinPolyg > aMaxF || aMaxPolyg < aMinF)
@@ -423,12 +423,12 @@ Standard_Boolean SelectMgr_Frustum<N>::hasTriangleOverlap(const gp_Pnt& thePnt1,
     Standard_Real aTriangleProjMax = aTriangleProj;
 
     aTriangleProj    = aPlane.Dot(thePnt2.XYZ());
-    aTriangleProjMin = Min(aTriangleProjMin, aTriangleProj);
-    aTriangleProjMax = Max(aTriangleProjMax, aTriangleProj);
+    aTriangleProjMin = std::min(aTriangleProjMin, aTriangleProj);
+    aTriangleProjMax = std::max(aTriangleProjMax, aTriangleProj);
 
     aTriangleProj    = aPlane.Dot(thePnt3.XYZ());
-    aTriangleProjMin = Min(aTriangleProjMin, aTriangleProj);
-    aTriangleProjMax = Max(aTriangleProjMax, aTriangleProj);
+    aTriangleProjMin = std::min(aTriangleProjMin, aTriangleProj);
+    aTriangleProjMax = std::max(aTriangleProjMax, aTriangleProj);
 
     Standard_Real aFrustumProjMax = myMaxVertsProjections[aPlaneIdx];
     Standard_Real aFrustumProjMin = myMinVertsProjections[aPlaneIdx];
@@ -472,7 +472,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasSphereOverlap(const gp_Pnt&       theP
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N; aPlaneIdx += anIncFactor)
   {
     const gp_XYZ&       aPlane      = myPlanes[aPlaneIdx].XYZ();
-    const Standard_Real aNormVecLen = Sqrt(aPlane.Dot(aPlane));
+    const Standard_Real aNormVecLen = std::sqrt(aPlane.Dot(aPlane));
     const Standard_Real aCenterProj = aPlane.Dot(thePnt.XYZ()) / aNormVecLen;
     const Standard_Real aMaxDist    = myMaxVertsProjections[aPlaneIdx] / aNormVecLen;
     const Standard_Real aMinDist    = myMinVertsProjections[aPlaneIdx] / aNormVecLen;
@@ -526,7 +526,7 @@ Standard_Boolean SelectMgr_Frustum<N>::isDotInside(const gp_Pnt&             the
     const gp_Vec aVec2(thePnt, aVert2);
     anAngle += aVec1.Angle(aVec2);
   }
-  if (Abs(anAngle - 2.0 * M_PI) < Precision::Angular())
+  if (std::abs(anAngle - 2.0 * M_PI) < Precision::Angular())
   {
     return true;
   }
@@ -550,7 +550,7 @@ Standard_Boolean SelectMgr_Frustum<N>::isSegmentsIntersect(const gp_Pnt& thePnt1
                        thePnt2Seg2.X() - thePnt1Seg1.X(),
                        thePnt2Seg2.Y() - thePnt1Seg1.Y(),
                        thePnt2Seg2.Z() - thePnt1Seg1.Z());
-  if (Abs(aMatPln.Determinant()) > Precision::Confusion())
+  if (std::abs(aMatPln.Determinant()) > Precision::Confusion())
   {
     return false;
   }
@@ -633,8 +633,8 @@ Standard_Boolean SelectMgr_Frustum<N>::isIntersectCircle(
     const Standard_Real aDiscr = aK * aK - anA * aC;
     if (aDiscr >= 0.0)
     {
-      const Standard_Real aT1 = (-aK + Sqrt(aDiscr)) / anA;
-      const Standard_Real aT2 = (-aK - Sqrt(aDiscr)) / anA;
+      const Standard_Real aT1 = (-aK + std::sqrt(aDiscr)) / anA;
+      const Standard_Real aT2 = (-aK - std::sqrt(aDiscr)) / anA;
       if ((aT1 >= 0 && aT1 <= 1) || (aT2 >= 0 && aT2 <= 1))
       {
         return true;
@@ -754,10 +754,11 @@ Standard_Boolean SelectMgr_Frustum<N>::hasCylinderOverlap(const Standard_Real   
 
   const Standard_Real anAngle = aCylNorm.Angle(aViewRayDir);
   aPoints[0] =
-    aBottomCenterProject.XYZ() - aCylNormProject.XYZ() * theBottomRad * Abs(Cos(anAngle));
+    aBottomCenterProject.XYZ() - aCylNormProject.XYZ() * theBottomRad * std::abs(std::cos(anAngle));
   aPoints[1] = aBottomCenterProject.XYZ() + aDirEndFaces.XYZ() * theBottomRad;
   aPoints[2] = aTopCenterProject.XYZ() + aDirEndFaces.XYZ() * theTopRad;
-  aPoints[3] = aTopCenterProject.XYZ() + aCylNormProject.XYZ() * theTopRad * Abs(Cos(anAngle));
+  aPoints[3] =
+    aTopCenterProject.XYZ() + aCylNormProject.XYZ() * theTopRad * std::abs(std::cos(anAngle));
   aPoints[4] = aTopCenterProject.XYZ() - aDirEndFaces.XYZ() * theTopRad;
   aPoints[5] = aBottomCenterProject.XYZ() - aDirEndFaces.XYZ() * theBottomRad;
   const TColgp_Array1OfPnt aPointsArr(aPoints[0], 0, 5);
@@ -765,7 +766,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasCylinderOverlap(const Standard_Real   
   for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
   {
     if ((aCylNormProject.Dot(aCylNormProject) == 0.0
-         && aVertices.Value(anIdx).Distance(aPoints[0]) <= Max(theTopRad, theBottomRad))
+         && aVertices.Value(anIdx).Distance(aPoints[0]) <= std::max(theTopRad, theBottomRad))
         || isDotInside(aVertices.Value(anIdx), aPointsArr))
     {
       if (theInside != NULL)

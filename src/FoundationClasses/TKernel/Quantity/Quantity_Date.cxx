@@ -273,7 +273,7 @@ Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
   }
   else if (i1 < 0 && i2 >= 0)
   {
-    i1 = Abs(i1);
+    i1 = std::abs(i1);
     if (i2 > 0)
     {
       i1--;
@@ -282,8 +282,8 @@ Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
   }
   else if (i1 < 0 && i2 < 0)
   {
-    i1 = Abs(i1);
-    i2 = Abs(i2);
+    i1 = std::abs(i1);
+    i2 = std::abs(i2);
   }
 
   Quantity_Period result(i1, i2);

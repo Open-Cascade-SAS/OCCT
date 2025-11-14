@@ -95,10 +95,10 @@ void Aspect_RectangularGrid::Compute(const Standard_Real X,
 {
   Standard_Real    D1      = b1 * X - a1 * Y - c1;
   Standard_Real    D2      = b2 * X - a2 * Y - c2;
-  Standard_Integer n1      = Standard_Integer(Abs(D1) / myXStep + 0.5);
-  Standard_Integer n2      = Standard_Integer(Abs(D2) / myYStep + 0.5);
-  Standard_Real    offset1 = c1 + Standard_Real(n1) * Sign(myXStep, D1);
-  Standard_Real    offset2 = c2 + Standard_Real(n2) * Sign(myYStep, D2);
+  Standard_Integer n1      = Standard_Integer(std::abs(D1) / myXStep + 0.5);
+  Standard_Integer n2      = Standard_Integer(std::abs(D2) / myYStep + 0.5);
+  Standard_Real    offset1 = c1 + Standard_Real(n1) * std::copysign(myXStep, D1);
+  Standard_Real    offset2 = c2 + Standard_Real(n2) * std::copysign(myYStep, D2);
   Standard_Real    Delta   = a1 * b2 - b1 * a2;
   gridX                    = (offset2 * a1 - offset1 * a2) / Delta;
   gridY                    = (offset2 * b1 - offset1 * b2) / Delta;
@@ -140,8 +140,8 @@ void Aspect_RectangularGrid::Init()
   Standard_Real angle2 = mySecondAngle + RotationAngle();
   if (angle1 != 0.)
   {
-    a1 = -Sin(angle1);
-    b1 = Cos(angle1);
+    a1 = -std::sin(angle1);
+    b1 = std::cos(angle1);
     c1 = XOrigin() * b1 - YOrigin() * a1;
   }
   else
@@ -154,8 +154,8 @@ void Aspect_RectangularGrid::Init()
   if (angle2 != 0.)
   {
     angle2 += M_PI / 2.;
-    a2 = -Sin(angle2);
-    b2 = Cos(angle2);
+    a2 = -std::sin(angle2);
+    b2 = std::cos(angle2);
     c2 = XOrigin() * b2 - YOrigin() * a2;
   }
   else
@@ -170,7 +170,9 @@ void Aspect_RectangularGrid::Init()
 Standard_Boolean Aspect_RectangularGrid::CheckAngle(const Standard_Real alpha,
                                                     const Standard_Real beta) const
 {
-  return (Abs(Sin(alpha) * Cos(beta + M_PI / 2.) - Cos(alpha) * Sin(beta + M_PI / 2.)) != 0);
+  return (std::abs(std::sin(alpha) * std::cos(beta + M_PI / 2.)
+                   - std::cos(alpha) * std::sin(beta + M_PI / 2.))
+          != 0);
 }
 
 //=================================================================================================

@@ -121,7 +121,7 @@ public:
   Standard_EXPORT void SetGap(const Standard_Real Tol);
 
   //! Enlarges the box with a tolerance value.
-  //! (minvalues-Abs(<tol>) and maxvalues+Abs(<tol>))
+  //! (minvalues-std::abs(<tol>) and maxvalues+std::abs(<tol>))
   //! This means that the minimum values of its X, Y and Z
   //! intervals of definition, when they are finite, are reduced by
   //! the absolute value of Tol, while the maximum values are

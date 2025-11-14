@@ -73,9 +73,9 @@ static Standard_Real Penalite(const Standard_Real angle, const Standard_Real dis
   Standard_Real penal;
 
   if (dist < 1)
-    penal = Sqrt(dist);
+    penal = std::sqrt(dist);
   else if (dist < 2)
-    penal = Pow(dist, 2);
+    penal = std::pow(dist, 2);
   else
     penal = dist + 2;
 
@@ -185,7 +185,7 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
   Standard_Real DX = aXmax - aXmin;
   Standard_Real DY = aYmax - aYmin;
   Standard_Real DZ = aZmax - aZmin;
-  Gabarit          = Sqrt(DX * DX + DY * DY + DZ * DZ) / 2.;
+  Gabarit          = std::sqrt(DX * DX + DY * DY + DZ * DZ) / 2.;
 
   Gabarit += Precision::Confusion(); // Cas des toute petite
 
@@ -252,11 +252,11 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
           aCurve = (Handle(Geom_TrimmedCurve)::DownCast(aCurve))->BasisCurve();
         Standard_Real Ufirst  = aCurve->FirstParameter();
         Standard_Real aPeriod = aCurve->Period();
-        Standard_Real U1      = Ufirst + Floor((first - Ufirst) / aPeriod) * aPeriod;
+        Standard_Real U1      = Ufirst + std::floor((first - Ufirst) / aPeriod) * aPeriod;
         Standard_Real U2      = U1 + aPeriod;
-        if (Abs(first - U1) <= Precision::PConfusion())
+        if (std::abs(first - U1) <= Precision::PConfusion())
           first = U1;
-        if (Abs(last - U2) <= Precision::PConfusion())
+        if (std::abs(last - U2) <= Precision::PConfusion())
           last = U2;
       }
       Standard_Real t, delta;
@@ -411,13 +411,13 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
       // (1.1) Distances Point-Plan
       Standard_Real DistPlan;
       gp_Vec        V1(PonPath, TheAxe.Location());
-      DistPlan = Abs(V1.Dot(VRef));
+      DistPlan = std::abs(V1.Dot(VRef));
       if (DistPlan <= IntTol)
         DistCenter = V1.Magnitude();
 
       gp_Pnt Plast = Path->Value(Path->LastParameter());
       V1.SetXYZ(TheAxe.Location().XYZ() - Plast.XYZ());
-      DistPlan = Abs(V1.Dot(VRef));
+      DistPlan = std::abs(V1.Dot(VRef));
       if (DistPlan <= IntTol)
       {
         Standard_Real aDist = V1.Magnitude();
@@ -462,8 +462,8 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
         Standard_Real firstDistance = plane.SquareDistance(firstPoint);
         Standard_Real lastDistance  = plane.SquareDistance(lastPoint);
 
-        if (((Abs(firstDistance) < Precision::SquareConfusion())
-             && Abs(lastDistance) < Precision::SquareConfusion())
+        if (((std::abs(firstDistance) < Precision::SquareConfusion())
+             && std::abs(lastDistance) < Precision::SquareConfusion())
             || firstDistance < lastDistance)
         {
           PathParam = Path->FirstParameter();
@@ -492,13 +492,13 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
          // (1.1) Distances Point-Plan
          Standard_Real DistPlan;
          gp_Vec V1 (PonPath, TheAxe.Location());
-         DistPlan = Abs(V1.Dot(VRef));
+         DistPlan = std::abs(V1.Dot(VRef));
 
          // On examine l'autre extremite
          gp_Pnt P;
          Tangente(Path->Curve(), Path->LastParameter(), P, dp1);
          V1.SetXYZ(TheAxe.Location().XYZ()-P.XYZ());
-         if  (Abs(V1.Dot(VRef)) <= DistPlan ) { // On prend l'autre extremite
+         if  (std::abs(V1.Dot(VRef)) <= DistPlan ) { // On prend l'autre extremite
          alpha =  M_PI/2 - EvalAngle(VRef, dp1);
          distaux =  PonPath.Distance(PonSec);
          if (distaux > Tol) {
@@ -921,7 +921,7 @@ Standard_Boolean GeomFill_SectionPlacement::Choix(const Standard_Real dist,
     return Standard_True;
 
   //  (2) si l'ecart en distance est de l'ordre du gabarit
-  if (Abs(evoldist) < Gabarit)
+  if (std::abs(evoldist) < Gabarit)
   {
     //  (2.1) si le gain en angle est important on garde
     if (evolangle > 0.5)

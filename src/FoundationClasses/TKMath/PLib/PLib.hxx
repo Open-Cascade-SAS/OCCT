@@ -86,7 +86,7 @@ public:
   //! <N> in dimension <Dimension>.
   //!
   //! <Ders> is an array containing the values of the
-  //! input derivatives from 0 to Min(<N>,<Degree>).
+  //! input derivatives from 0 to std::min(<N>,<Degree>).
   //! For orders higher than <Degree> the inputcd /s2d1/BMDL/
   //! derivatives are assumed to be 0.
   //!

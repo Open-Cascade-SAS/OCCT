@@ -67,16 +67,16 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
 
   Standard_Real Dis1 = theDis1, Dis2 = theDis2;
   Standard_Real Alpha        = M_PI / 2 - angcon;
-  Standard_Real CosHalfAlpha = Cos(Alpha / 2);
+  Standard_Real CosHalfAlpha = std::cos(Alpha / 2);
   if (theMode == ChFiDS_ConstThroatChamfer)
     Dis1 = Dis2 = theDis1 / CosHalfAlpha;
   else if (theMode == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
-    Standard_Real aDis1    = Min(theDis1, theDis2);
-    Standard_Real aDis2    = Max(theDis1, theDis2);
+    Standard_Real aDis1    = std::min(theDis1, theDis2);
+    Standard_Real aDis2    = std::max(theDis1, theDis2);
     Standard_Real dis1dis1 = aDis1 * aDis1, dis2dis2 = aDis2 * aDis2;
-    Standard_Real SinAlpha   = Sin(Alpha);
-    Standard_Real CosAlpha   = Cos(Alpha);
+    Standard_Real SinAlpha   = std::sin(Alpha);
+    Standard_Real CosAlpha   = std::cos(Alpha);
     Standard_Real CotanAlpha = CosAlpha / SinAlpha;
     Dis1                     = sqrt(dis2dis2 - dis1dis1) - aDis1 * CotanAlpha;
     Standard_Real CosBeta    = sqrt(1 - dis1dis1 / dis2dis2) * CosAlpha + aDis1 / aDis2 * SinAlpha;
@@ -84,7 +84,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
     Dis2                     = FullDist1 - aDis1 / SinAlpha;
   }
 
-  Standard_Real    sincon = Abs(Sin(angcon));
+  Standard_Real    sincon = std::abs(std::sin(angcon));
   Standard_Real    angle;
   Standard_Boolean IsResol;
 
@@ -121,10 +121,10 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
 
   if (!ouvert)
   {
-    if (Abs(Dis1 - Dis2 * sincon) > Precision::Confusion())
+    if (std::abs(Dis1 - Dis2 * sincon) > Precision::Confusion())
     {
-      Standard_Real abscos = Abs(Dis2 - Dis1 * sincon);
-      angle                = ATan((Dis1 * Cos(angcon)) / abscos);
+      Standard_Real abscos = std::abs(Dis2 - Dis1 * sincon);
+      angle                = std::atan((Dis1 * std::cos(angcon)) / abscos);
     }
     else
     {
@@ -133,7 +133,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   }
   else
   {
-    angle = ATan((Dis1 * Cos(angcon)) / (Dis2 + Dis1 * sincon));
+    angle = std::atan((Dis1 * std::cos(angcon)) / (Dis2 + Dis1 * sincon));
   }
 
   Standard_Boolean DisOnP = Standard_False;
@@ -191,7 +191,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
 
     // variables used to compute the semiangle of the chamfer
   Standard_Real angle = Con.SemiAngle();
-  Standard_Real move = Dis2 * Cos(angle);
+  Standard_Real move = Dis2 * std::cos(angle);
   Or.SetCoord( Or.X()+ move*Dpl.X(),
            Or.Y()+ move*Dpl.Y(),
            Or.Z()+ move*Dpl.Z());
@@ -199,9 +199,9 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   gp_Dir Vec1(Or.X()-PtPl.X(), Or.Y()-PtPl.Y(), Or.Z()-PtPl.Z());
   Standard_Real Dis;
   if (ouvert)
-    Dis = Dis1 + Dis2*Abs(Sin(angle));
+    Dis = Dis1 + Dis2*std::abs(std::sin(angle));
   else
-    Dis = Dis1 - Dis2*Abs(Sin(angle));
+    Dis = Dis1 - Dis2*std::abs(std::sin(angle));
 
   gp_Pnt Pt(Or.X()+Dis*PosPl.XDirection().X(),
         Or.Y()+Dis*PosPl.XDirection().Y(),
@@ -214,7 +214,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
 
   if (dedans) {
     ChamfRad = Spine.Radius() - Dis1;
-    if ( Abs(ChamfRad)<=Precision::Confusion() ) pointu = Standard_True;
+    if ( std::abs(ChamfRad)<=Precision::Confusion() ) pointu = Standard_True;
     if( ChamfRad < 0 ) {
 #ifdef OCCT_DEBUG
       std::cout<<"le chanfrein ne passe pas"<<std::endl;

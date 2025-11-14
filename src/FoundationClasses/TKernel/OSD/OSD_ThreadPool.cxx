@@ -109,7 +109,7 @@ bool OSD_ThreadPool::IsInUse()
 void OSD_ThreadPool::Init(int theNbThreads)
 {
   const int aNbThreads =
-    Max(0, (theNbThreads > 0 ? theNbThreads : OSD_Parallel::NbLogicalProcessors()) - 1);
+    std::max(0, (theNbThreads > 0 ? theNbThreads : OSD_Parallel::NbLogicalProcessors()) - 1);
   if (myThreads.Size() == aNbThreads)
   {
     return;
@@ -320,9 +320,9 @@ OSD_ThreadPool::Launcher::Launcher(OSD_ThreadPool& thePool, Standard_Integer the
     : mySelfThread(true),
       myNbThreads(0)
 {
-  const int aNbThreads = theMaxThreads > 0
-                           ? Min(theMaxThreads, thePool.NbThreads())
-                           : (theMaxThreads < 0 ? Max(thePool.NbDefaultThreadsToLaunch(), 1) : 1);
+  const int aNbThreads =
+    theMaxThreads > 0 ? std::min(theMaxThreads, thePool.NbThreads())
+                      : (theMaxThreads < 0 ? std::max(thePool.NbDefaultThreadsToLaunch(), 1) : 1);
   myThreads.Resize(0, aNbThreads - 1, false);
   myThreads.Init(NULL);
   if (aNbThreads > 1)

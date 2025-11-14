@@ -85,13 +85,13 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveTriangle::GetConnected()
 Select3D_BndBox3d Select3D_SensitiveTriangle::BoundingBox()
 {
   const SelectMgr_Vec3 aMinPnt =
-    SelectMgr_Vec3(Min(myPoints[0].X(), Min(myPoints[1].X(), myPoints[2].X())),
-                   Min(myPoints[0].Y(), Min(myPoints[1].Y(), myPoints[2].Y())),
-                   Min(myPoints[0].Z(), Min(myPoints[1].Z(), myPoints[2].Z())));
+    SelectMgr_Vec3(std::min(myPoints[0].X(), std::min(myPoints[1].X(), myPoints[2].X())),
+                   std::min(myPoints[0].Y(), std::min(myPoints[1].Y(), myPoints[2].Y())),
+                   std::min(myPoints[0].Z(), std::min(myPoints[1].Z(), myPoints[2].Z())));
   const SelectMgr_Vec3 aMaxPnt =
-    SelectMgr_Vec3(Max(myPoints[0].X(), Max(myPoints[1].X(), myPoints[2].X())),
-                   Max(myPoints[0].Y(), Max(myPoints[1].Y(), myPoints[2].Y())),
-                   Max(myPoints[0].Z(), Max(myPoints[1].Z(), myPoints[2].Z())));
+    SelectMgr_Vec3(std::max(myPoints[0].X(), std::max(myPoints[1].X(), myPoints[2].X())),
+                   std::max(myPoints[0].Y(), std::max(myPoints[1].Y(), myPoints[2].Y())),
+                   std::max(myPoints[0].Z(), std::max(myPoints[1].Z(), myPoints[2].Z())));
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }
 

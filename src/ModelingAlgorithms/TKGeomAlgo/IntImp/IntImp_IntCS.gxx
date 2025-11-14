@@ -134,7 +134,7 @@ void IntImp_IntCS::Perform(const Standard_Real   U,
     Rsnld.Perform(myFunction, UVap, BornInf, BornSup);
     if (Rsnld.IsDone())
     {
-      Standard_Real AbsmyFunctionRoot = Abs(myFunction.Root());
+      Standard_Real AbsmyFunctionRoot = std::abs(myFunction.Root());
       if (AbsmyFunctionRoot <= tol)
       {
         Rsnld.Root(UVap);

@@ -51,14 +51,14 @@ static Standard_Real GetDeflection(const Adaptor3d_Curve&      aCurve,
     Total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
     Standard_Real m = RealLast();
     if (!(Total.IsOpenXmin() || Total.IsOpenXmax()))
-      m = Abs(aXmax - aXmin);
+      m = std::abs(aXmax - aXmin);
     if (!(Total.IsOpenYmin() || Total.IsOpenYmax()))
-      m = Max(m, Abs(aYmax - aYmin));
+      m = std::max(m, std::abs(aYmax - aYmin));
     if (!(Total.IsOpenZmin() || Total.IsOpenZmax()))
-      m = Max(m, Abs(aZmax - aZmin));
+      m = std::max(m, std::abs(aZmax - aZmin));
 
-    m = Min(m, aDrawer->MaximalParameterValue());
-    m = Max(m, Precision::Confusion());
+    m = std::min(m, aDrawer->MaximalParameterValue());
+    m = std::max(m, Precision::Confusion());
 
     TheDeflection = m * aDrawer->DeviationCoefficient();
   }
@@ -167,8 +167,8 @@ static void drawCurve(Adaptor3d_Curve&               aCurve,
         theU2 = T(j + 1);
         if (theU2 > U1 && theU1 < U2)
         {
-          theU1 = Max(theU1, U1);
-          theU2 = Min(theU2, U2);
+          theU1 = std::max(theU1, U1);
+          theU2 = std::min(theU2, U2);
 
           GCPnts_TangentialDeflection Algo(aCurve, theU1, theU2, anAngle, TheDeflection);
           NumberOfPoints = Algo.NbPoints();
@@ -219,10 +219,10 @@ static Standard_Boolean MatchCurve(const Standard_Real    X,
   {
     case GeomAbs_Line: {
       gp_Pnt p1 = aCurve.Value(U1);
-      if (Abs(X - p1.X()) + Abs(Y - p1.Y()) + Abs(Z - p1.Z()) <= aDistance)
+      if (std::abs(X - p1.X()) + std::abs(Y - p1.Y()) + std::abs(Z - p1.Z()) <= aDistance)
         return Standard_True;
       gp_Pnt p2 = aCurve.Value(U2);
-      if (Abs(X - p2.X()) + Abs(Y - p2.Y()) + Abs(Z - p2.Z()) <= aDistance)
+      if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
         return Standard_True;
       return Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist);
     }
@@ -230,16 +230,16 @@ static Standard_Boolean MatchCurve(const Standard_Real    X,
       const Standard_Real Radius = aCurve.Circle().Radius();
       if (!Precision::IsInfinite(Radius))
       {
-        const Standard_Real    DU = Sqrt(8.0 * TheDeflection / Radius);
-        const Standard_Real    Er = Abs(U2 - U1) / DU;
-        const Standard_Integer N  = Max(2, (Standard_Integer)IntegerPart(Er));
+        const Standard_Real    DU = std::sqrt(8.0 * TheDeflection / Radius);
+        const Standard_Real    Er = std::abs(U2 - U1) / DU;
+        const Standard_Integer N  = std::max(2, (Standard_Integer)std::trunc(Er));
         if (N > 0)
         {
           gp_Pnt p1, p2;
           for (Standard_Integer Index = 1; Index <= N + 1; Index++)
           {
             p2 = aCurve.Value(U1 + (Index - 1) * DU);
-            if (Abs(X - p2.X()) + Abs(Y - p2.Y()) + Abs(Z - p2.Z()) <= aDistance)
+            if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
               return Standard_True;
 
             if (Index > 1)
@@ -262,7 +262,7 @@ static Standard_Boolean MatchCurve(const Standard_Real    X,
         for (Standard_Integer i = 1; i <= NumberOfPoints; i++)
         {
           p2 = Algo.Value(i);
-          if (Abs(X - p2.X()) + Abs(Y - p2.Y()) + Abs(Z - p2.Z()) <= aDistance)
+          if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
             return Standard_True;
           if (i > 1)
           {

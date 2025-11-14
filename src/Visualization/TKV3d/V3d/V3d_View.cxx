@@ -511,9 +511,9 @@ void V3d_View::SetBackgroundColor(const Quantity_TypeOfColor theType,
                                   const Standard_Real        theV2,
                                   const Standard_Real        theV3)
 {
-  Standard_Real aV1 = Max(Min(theV1, 1.0), 0.0);
-  Standard_Real aV2 = Max(Min(theV2, 1.0), 0.0);
-  Standard_Real aV3 = Max(Min(theV3, 1.0), 0.0);
+  Standard_Real aV1 = std::max(std::min(theV1, 1.0), 0.0);
+  Standard_Real aV2 = std::max(std::min(theV2, 1.0), 0.0);
+  Standard_Real aV3 = std::max(std::min(theV3, 1.0), 0.0);
 
   SetBackgroundColor(Quantity_Color(aV1, aV2, aV3, theType));
 }
@@ -1155,7 +1155,7 @@ void V3d_View::SetDepth(const Standard_Real Depth)
     // Move the view ref point instead of the eye.
     gp_Vec aDir(aCamera->Direction());
     gp_Pnt aCameraEye    = aCamera->Eye();
-    gp_Pnt aCameraCenter = aCameraEye.Translated(aDir.Multiplied(Abs(Depth)));
+    gp_Pnt aCameraCenter = aCameraEye.Translated(aDir.Multiplied(std::abs(Depth)));
 
     aCamera->SetCenter(aCameraCenter);
   }
@@ -1167,7 +1167,7 @@ void V3d_View::SetDepth(const Standard_Real Depth)
 
 void V3d_View::SetProj(const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz)
 {
-  V3d_BadValue_Raise_if(Sqrt(Vx * Vx + Vy * Vy + Vz * Vz) <= 0.,
+  V3d_BadValue_Raise_if(std::sqrt(Vx * Vx + Vy * Vy + Vz * Vz) <= 0.,
                         "V3d_View::SetProj, null projection vector");
 
   Standard_Real aTwistBefore = Twist();
@@ -1371,12 +1371,12 @@ void V3d_View::SetZSize(const Standard_Real theSize)
   // ShortReal precision factor used to add meaningful tolerance to
   // ZNear, ZFar values in order to avoid equality after type conversion
   // to ShortReal matrices type.
-  const Standard_Real aPrecision = 1.0 / Pow(10.0, ShortRealDigits() - 1);
+  const Standard_Real aPrecision = 1.0 / std::pow(10.0, ShortRealDigits() - 1);
 
   Standard_Real aZFar  = Zmax + aDistance * 2.0;
   Standard_Real aZNear = -Zmax + aDistance;
-  aZNear -= Abs(aZNear) * aPrecision;
-  aZFar += Abs(aZFar) * aPrecision;
+  aZNear -= std::abs(aZNear) * aPrecision;
+  aZFar += std::abs(aZFar) * aPrecision;
 
   if (!aCamera->IsOrthographic())
   {
@@ -1386,17 +1386,17 @@ void V3d_View::SetZSize(const Standard_Real theSize)
       aZNear = aPrecision;
       aZFar  = aPrecision * 2.0;
     }
-    else if (aZNear < Abs(aZFar) * aPrecision)
+    else if (aZNear < std::abs(aZFar) * aPrecision)
     {
       // Z is less than 0.0, try to fix it using any appropriate z-scale
-      aZNear = Abs(aZFar) * aPrecision;
+      aZNear = std::abs(aZFar) * aPrecision;
     }
   }
 
   // If range is too small
-  if (aZFar < (aZNear + Abs(aZFar) * aPrecision))
+  if (aZFar < (aZNear + std::abs(aZFar) * aPrecision))
   {
-    aZFar = aZNear + Abs(aZFar) * aPrecision;
+    aZFar = aZNear + std::abs(aZFar) * aPrecision;
   }
 
   aCamera->SetZRange(aZNear, aZFar);
@@ -1552,65 +1552,65 @@ void V3d_View::DepthFitAll(const Standard_Real Aspect, const Standard_Real Margi
   aBox.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
   Project(Xmin, Ymin, Zmin, U, V, W);
   Project(Xmax, Ymax, Zmax, U1, V1, W1);
-  Umin = Min(U, U1);
-  Umax = Max(U, U1);
-  Vmin = Min(V, V1);
-  Vmax = Max(V, V1);
-  Wmin = Min(W, W1);
-  Wmax = Max(W, W1);
+  Umin = std::min(U, U1);
+  Umax = std::max(U, U1);
+  Vmin = std::min(V, V1);
+  Vmax = std::max(V, V1);
+  Wmin = std::min(W, W1);
+  Wmax = std::max(W, W1);
   Project(Xmin, Ymin, Zmax, U, V, W);
-  Umin = Min(U, Umin);
-  Umax = Max(U, Umax);
-  Vmin = Min(V, Vmin);
-  Vmax = Max(V, Vmax);
-  Wmin = Min(W, Wmin);
-  Wmax = Max(W, Wmax);
+  Umin = std::min(U, Umin);
+  Umax = std::max(U, Umax);
+  Vmin = std::min(V, Vmin);
+  Vmax = std::max(V, Vmax);
+  Wmin = std::min(W, Wmin);
+  Wmax = std::max(W, Wmax);
   Project(Xmax, Ymin, Zmax, U, V, W);
-  Umin = Min(U, Umin);
-  Umax = Max(U, Umax);
-  Vmin = Min(V, Vmin);
-  Vmax = Max(V, Vmax);
-  Wmin = Min(W, Wmin);
-  Wmax = Max(W, Wmax);
+  Umin = std::min(U, Umin);
+  Umax = std::max(U, Umax);
+  Vmin = std::min(V, Vmin);
+  Vmax = std::max(V, Vmax);
+  Wmin = std::min(W, Wmin);
+  Wmax = std::max(W, Wmax);
   Project(Xmax, Ymin, Zmin, U, V, W);
-  Umin = Min(U, Umin);
-  Umax = Max(U, Umax);
-  Vmin = Min(V, Vmin);
-  Vmax = Max(V, Vmax);
-  Wmin = Min(W, Wmin);
-  Wmax = Max(W, Wmax);
+  Umin = std::min(U, Umin);
+  Umax = std::max(U, Umax);
+  Vmin = std::min(V, Vmin);
+  Vmax = std::max(V, Vmax);
+  Wmin = std::min(W, Wmin);
+  Wmax = std::max(W, Wmax);
   Project(Xmax, Ymax, Zmin, U, V, W);
-  Umin = Min(U, Umin);
-  Umax = Max(U, Umax);
-  Vmin = Min(V, Vmin);
-  Vmax = Max(V, Vmax);
-  Wmin = Min(W, Wmin);
-  Wmax = Max(W, Wmax);
+  Umin = std::min(U, Umin);
+  Umax = std::max(U, Umax);
+  Vmin = std::min(V, Vmin);
+  Vmax = std::max(V, Vmax);
+  Wmin = std::min(W, Wmin);
+  Wmax = std::max(W, Wmax);
   Project(Xmin, Ymax, Zmax, U, V, W);
-  Umin = Min(U, Umin);
-  Umax = Max(U, Umax);
-  Vmin = Min(V, Vmin);
-  Vmax = Max(V, Vmax);
-  Wmin = Min(W, Wmin);
-  Wmax = Max(W, Wmax);
+  Umin = std::min(U, Umin);
+  Umax = std::max(U, Umax);
+  Vmin = std::min(V, Vmin);
+  Vmax = std::max(V, Vmax);
+  Wmin = std::min(W, Wmin);
+  Wmax = std::max(W, Wmax);
   Project(Xmin, Ymax, Zmin, U, V, W);
-  Umin = Min(U, Umin);
-  Umax = Max(U, Umax);
-  Vmin = Min(V, Vmin);
-  Vmax = Max(V, Vmax);
-  Wmin = Min(W, Wmin);
-  Wmax = Max(W, Wmax);
+  Umin = std::min(U, Umin);
+  Umax = std::max(U, Umax);
+  Vmin = std::min(V, Vmin);
+  Vmax = std::max(V, Vmax);
+  Wmin = std::min(W, Wmin);
+  Wmax = std::max(W, Wmax);
 
   // Adjust Z size
-  Wmax = Max(Abs(Wmin), Abs(Wmax));
+  Wmax = std::max(std::abs(Wmin), std::abs(Wmax));
   Dz   = 2. * Wmax + Margin * Wmax;
 
   // Compute depth value
-  Dx = Abs(Umax - Umin);
-  Dy = Abs(Vmax - Vmin); // Dz = Abs(Wmax - Wmin);
+  Dx = std::abs(Umax - Umin);
+  Dy = std::abs(Vmax - Vmin); // Dz = std::abs(Wmax - Wmin);
   Dx += Margin * Dx;
   Dy += Margin * Dy;
-  Size = Sqrt(Dx * Dx + Dy * Dy + Dz * Dz);
+  Size = std::sqrt(Dx * Dx + Dy * Dy + Dz * Dz);
   if (Size > 0.)
   {
     SetZSize(Size);
@@ -1993,47 +1993,47 @@ Standard_Integer V3d_View::MinMax(Standard_Real& Umin,
     Project(Xmin, Ymin, Zmin, Umin, Vmin, Wmin);
     Project(Xmax, Ymax, Zmax, Umax, Vmax, Wmax);
     Project(Xmin, Ymin, Zmax, U, V, W);
-    Umin = Min(U, Umin);
-    Umax = Max(U, Umax);
-    Vmin = Min(V, Vmin);
-    Vmax = Max(V, Vmax);
-    Wmin = Min(W, Wmin);
-    Wmax = Max(W, Wmax);
+    Umin = std::min(U, Umin);
+    Umax = std::max(U, Umax);
+    Vmin = std::min(V, Vmin);
+    Vmax = std::max(V, Vmax);
+    Wmin = std::min(W, Wmin);
+    Wmax = std::max(W, Wmax);
     Project(Xmax, Ymin, Zmax, U, V, W);
-    Umin = Min(U, Umin);
-    Umax = Max(U, Umax);
-    Vmin = Min(V, Vmin);
-    Vmax = Max(V, Vmax);
-    Wmin = Min(W, Wmin);
-    Wmax = Max(W, Wmax);
+    Umin = std::min(U, Umin);
+    Umax = std::max(U, Umax);
+    Vmin = std::min(V, Vmin);
+    Vmax = std::max(V, Vmax);
+    Wmin = std::min(W, Wmin);
+    Wmax = std::max(W, Wmax);
     Project(Xmax, Ymin, Zmin, U, V, W);
-    Umin = Min(U, Umin);
-    Umax = Max(U, Umax);
-    Vmin = Min(V, Vmin);
-    Vmax = Max(V, Vmax);
-    Wmin = Min(W, Wmin);
-    Wmax = Max(W, Wmax);
+    Umin = std::min(U, Umin);
+    Umax = std::max(U, Umax);
+    Vmin = std::min(V, Vmin);
+    Vmax = std::max(V, Vmax);
+    Wmin = std::min(W, Wmin);
+    Wmax = std::max(W, Wmax);
     Project(Xmax, Ymax, Zmin, U, V, W);
-    Umin = Min(U, Umin);
-    Umax = Max(U, Umax);
-    Vmin = Min(V, Vmin);
-    Vmax = Max(V, Vmax);
-    Wmin = Min(W, Wmin);
-    Wmax = Max(W, Wmax);
+    Umin = std::min(U, Umin);
+    Umax = std::max(U, Umax);
+    Vmin = std::min(V, Vmin);
+    Vmax = std::max(V, Vmax);
+    Wmin = std::min(W, Wmin);
+    Wmax = std::max(W, Wmax);
     Project(Xmin, Ymax, Zmax, U, V, W);
-    Umin = Min(U, Umin);
-    Umax = Max(U, Umax);
-    Vmin = Min(V, Vmin);
-    Vmax = Max(V, Vmax);
-    Wmin = Min(W, Wmin);
-    Wmax = Max(W, Wmax);
+    Umin = std::min(U, Umin);
+    Umax = std::max(U, Umax);
+    Vmin = std::min(V, Vmin);
+    Vmax = std::max(V, Vmax);
+    Wmin = std::min(W, Wmin);
+    Wmax = std::max(W, Wmax);
     Project(Xmin, Ymax, Zmin, U, V, W);
-    Umin = Min(U, Umin);
-    Umax = Max(U, Umax);
-    Vmin = Min(V, Vmin);
-    Vmax = Max(V, Vmax);
-    Wmin = Min(W, Wmin);
-    Wmax = Max(W, Wmax);
+    Umin = std::min(U, Umin);
+    Umax = std::max(U, Umax);
+    Vmin = std::min(V, Vmin);
+    Vmax = std::max(V, Vmax);
+    Wmin = std::min(W, Wmin);
+    Wmax = std::max(W, Wmax);
   }
   return Nstruct;
 }
@@ -2122,7 +2122,7 @@ gp_Pnt V3d_View::GravityPoint() const
     {
       const gp_Pnt& aBndPnt    = aPnts[aPntIt];
       const gp_Pnt  aProjected = Camera()->Project(aBndPnt);
-      if (Abs(aProjected.X()) <= 1.0 && Abs(aProjected.Y()) <= 1.0)
+      if (std::abs(aProjected.X()) <= 1.0 && std::abs(aProjected.Y()) <= 1.0)
       {
         aResult += aBndPnt.XYZ();
         ++aNbPoints;
@@ -2255,7 +2255,7 @@ Standard_Real V3d_View::Twist() const
   const gp_XYZ aP        = Yaxis.XYZ().Crossed(aCameraUp.XYZ());
 
   // compute Angle
-  Standard_Real anAngle = ASin(Max(Min(aP.Modulus(), 1.0), -1.0));
+  Standard_Real anAngle = std::asin(std::max(std::min(aP.Modulus(), 1.0), -1.0));
   if (Yaxis.Dot(aCameraUp.XYZ()) < 0.0)
   {
     anAngle = M_PI - anAngle;
@@ -2317,7 +2317,7 @@ void V3d_View::SetFocale(const Standard_Real focale)
     return;
   }
 
-  Standard_Real aFOVyRad = ATan(focale / (aCamera->Distance() * 2.0));
+  Standard_Real aFOVyRad = std::atan(focale / (aCamera->Distance() * 2.0));
 
   aCamera->SetFOVy(aFOVyRad * (360 / M_PI));
 
@@ -2335,7 +2335,7 @@ Standard_Real V3d_View::Focale() const
     return 0.0;
   }
 
-  return aCamera->Distance() * 2.0 * Tan(aCamera->FOVy() * M_PI / 360.0);
+  return aCamera->Distance() * 2.0 * std::tan(aCamera->FOVy() * M_PI / 360.0);
 }
 
 //=================================================================================================
@@ -2446,7 +2446,7 @@ void V3d_View::Zoom(const Standard_Integer theXp1,
   Standard_Integer aDy = theYp2 - theYp1;
   if (aDx != 0 || aDy != 0)
   {
-    Standard_Real aCoeff = Sqrt((Standard_Real)(aDx * aDx + aDy * aDy)) / 100.0 + 1.0;
+    Standard_Real aCoeff = std::sqrt((Standard_Real)(aDx * aDx + aDy * aDy)) / 100.0 + 1.0;
     aCoeff               = (aDx > 0) ? aCoeff : 1.0 / aCoeff;
     SetZoom(aCoeff, Standard_True);
   }
@@ -2472,7 +2472,7 @@ void V3d_View::ZoomAtPoint(const Standard_Integer theMouseStartX,
   // zoom
   Standard_Real aDxy =
     Standard_Real((theMouseEndX + theMouseEndY) - (theMouseStartX + theMouseStartY));
-  Standard_Real aDZoom = Abs(aDxy) / 100.0 + 1.0;
+  Standard_Real aDZoom = std::abs(aDxy) / 100.0 + 1.0;
   aDZoom               = (aDxy > 0.0) ? aDZoom : 1.0 / aDZoom;
 
   V3d_BadValue_Raise_if(aDZoom <= 0.0, "V3d_View::ZoomAtPoint, bad coefficient");
@@ -2526,7 +2526,7 @@ void V3d_View::AxialScale(const Standard_Integer Dx,
   {
     Standard_Real Sx, Sy, Sz;
     AxialScale(Sx, Sy, Sz);
-    Standard_Real dscale = Sqrt(Dx * Dx + Dy * Dy) / 100. + 1;
+    Standard_Real dscale = std::sqrt(Dx * Dx + Dy * Dy) / 100. + 1;
     dscale               = (Dx > 0) ? dscale : 1. / dscale;
     if (Axis == V3d_X)
       Sx = dscale;
@@ -2548,8 +2548,8 @@ void V3d_View::FitAll(const Standard_Real theXmin,
   Handle(Graphic3d_Camera) aCamera  = Camera();
   Standard_Real            anAspect = aCamera->Aspect();
 
-  Standard_Real aFitSizeU  = Abs(theXmax - theXmin);
-  Standard_Real aFitSizeV  = Abs(theYmax - theYmin);
+  Standard_Real aFitSizeU  = std::abs(theXmax - theXmin);
+  Standard_Real aFitSizeV  = std::abs(theYmax - theYmin);
   Standard_Real aFitAspect = aFitSizeU / aFitSizeV;
   if (aFitAspect >= anAspect)
   {
@@ -2589,8 +2589,8 @@ void V3d_View::StartRotation(const Standard_Integer X,
   myZRotation = Standard_False;
   if (zRotationThreshold > 0.)
   {
-    Standard_Real dx = Abs(sx - rx / 2.);
-    Standard_Real dy = Abs(sy - ry / 2.);
+    Standard_Real dx = std::abs(sx - rx / 2.);
+    Standard_Real dy = std::abs(sy - ry / 2.);
     //  if( dx > rx/3. || dy > ry/3. ) myZRotation = Standard_True;
     Standard_Real dd = zRotationThreshold * (rx + ry) / 2.;
     if (dx > dd || dy > dd)
@@ -2745,8 +2745,8 @@ Standard_Boolean V3d_View::ToPixMap(Image_PixMap& theImage, const V3d_ImageDumpO
   {
     if (aFBOVPSize.x() > theParams.TileSize || aFBOVPSize.y() > theParams.TileSize)
     {
-      aFBOVPSize.x() = Min(aFBOVPSize.x(), theParams.TileSize);
-      aFBOVPSize.y() = Min(aFBOVPSize.y(), theParams.TileSize);
+      aFBOVPSize.x() = std::min(aFBOVPSize.x(), theParams.TileSize);
+      aFBOVPSize.y() = std::min(aFBOVPSize.y(), theParams.TileSize);
       isTiling       = true;
     }
   }
@@ -2791,8 +2791,8 @@ Standard_Boolean V3d_View::ToPixMap(Image_PixMap& theImage, const V3d_ImageDumpO
       Message::SendInfo(TCollection_AsciiString("Info, tiling image dump is used, image size (")
                         + aFBOVPSize.x() + "x" + aFBOVPSize.y() + ") exceeds hardware limits ("
                         + aMaxTexSizeX + "x" + aMaxTexSizeY + ")");
-      aFBOVPSize.x() = Min(aFBOVPSize.x(), aMaxTexSizeX);
-      aFBOVPSize.y() = Min(aFBOVPSize.y(), aMaxTexSizeY);
+      aFBOVPSize.x() = std::min(aFBOVPSize.x(), aMaxTexSizeX);
+      aFBOVPSize.y() = std::min(aFBOVPSize.y(), aMaxTexSizeY);
       isTiling       = true;
     }
 
@@ -3014,11 +3014,11 @@ void V3d_View::Scale(const Handle(Graphic3d_Camera)& theCamera,
   Standard_Real anAspect = theCamera->Aspect();
   if (anAspect > 1.0)
   {
-    theCamera->SetScale(Max(theSizeXv / anAspect, theSizeYv));
+    theCamera->SetScale(std::max(theSizeXv / anAspect, theSizeYv));
   }
   else
   {
-    theCamera->SetScale(Max(theSizeXv, theSizeYv * anAspect));
+    theCamera->SetScale(std::max(theSizeXv, theSizeYv * anAspect));
   }
   Invalidate();
 }
@@ -3397,8 +3397,8 @@ void V3d_View::SetGrid(const gp_Ax3& aPlane, const Handle(Aspect_Grid)& aGrid)
   aPlane.YDirection().Coord(ydx, ydy, ydz);
   aPlane.Direction().Coord(dx, dy, dz);
 
-  Standard_Real CosAlpha = Cos(MyGrid->RotationAngle());
-  Standard_Real SinAlpha = Sin(MyGrid->RotationAngle());
+  Standard_Real CosAlpha = std::cos(MyGrid->RotationAngle());
+  Standard_Real SinAlpha = std::sin(MyGrid->RotationAngle());
 
   TColStd_Array2OfReal Trsf1(1, 4, 1, 4);
   Trsf1(4, 4) = 1.0;
@@ -3455,8 +3455,8 @@ void toPolarCoords(const Standard_Real theX,
                    Standard_Real&      theR,
                    Standard_Real&      thePhi)
 {
-  theR   = Sqrt(theX * theX + theY * theY);
-  thePhi = ATan2(theY, theX);
+  theR   = std::sqrt(theX * theX + theY * theY);
+  thePhi = std::atan2(theY, theX);
 }
 
 //=================================================================================================
@@ -3466,8 +3466,8 @@ void toCartesianCoords(const Standard_Real theR,
                        Standard_Real&      theX,
                        Standard_Real&      theY)
 {
-  theX = theR * Cos(thePhi);
-  theY = theR * Sin(thePhi);
+  theX = theR * std::cos(thePhi);
+  theY = theR * std::sin(thePhi);
 }
 
 //=================================================================================================
@@ -3484,7 +3484,7 @@ Graphic3d_Vertex V3d_View::Compute(const Graphic3d_Vertex& theVertex) const
 // Casw when the plane of the grid and the plane of the view
 // are perpendicular to MYEPSILON2 close radians
 #define MYEPSILON2 M_PI / 180.0 // Delta between 2 angles
-  if (Abs(VPN.Angle(GPN) - M_PI / 2.) < MYEPSILON2)
+  if (std::abs(VPN.Angle(GPN) - M_PI / 2.) < MYEPSILON2)
   {
     return theVertex;
   }
@@ -3515,8 +3515,8 @@ Graphic3d_Vertex V3d_View::Compute(const Graphic3d_Vertex& theVertex) const
   {
     // project point on plane to grid local space
     const gp_Vec        aToPoint(aPnt0, aPointOnPlane);
-    const Standard_Real anXSteps = Round(aGridX.Dot(aToPoint) / aRectGrid->XStep());
-    const Standard_Real anYSteps = Round(aGridY.Dot(aToPoint) / aRectGrid->YStep());
+    const Standard_Real anXSteps = std::round(aGridX.Dot(aToPoint) / aRectGrid->XStep());
+    const Standard_Real anYSteps = std::round(aGridY.Dot(aToPoint) / aRectGrid->YStep());
 
     // clamp point to grid
     const gp_Vec aResult = aGridX * anXSteps * aRectGrid->XStep()
@@ -3535,8 +3535,8 @@ Graphic3d_Vertex V3d_View::Compute(const Graphic3d_Vertex& theVertex) const
     toPolarCoords(aLocalX, aLocalY, anR, aPhi);
 
     // clamp point to grid
-    const Standard_Real anRSteps  = Round(anR / aCircleGrid->RadiusStep());
-    const Standard_Real aPhiSteps = Round(aPhi / anAlpha);
+    const Standard_Real anRSteps  = std::round(anR / aCircleGrid->RadiusStep());
+    const Standard_Real aPhiSteps = std::round(aPhi / anAlpha);
     toCartesianCoords(anRSteps * aCircleGrid->RadiusStep(), aPhiSteps * anAlpha, aLocalX, aLocalY);
 
     const gp_Vec aResult = aGridX * aLocalX + aGridY * aLocalY + gp_Vec(aPnt0);

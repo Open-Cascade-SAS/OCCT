@@ -205,7 +205,8 @@ static void EvalParameters(const Geom2dAdaptor_Curve& Bis,
       Seg                 = Intersector.Segment(i);
       U1                  = Seg.FirstPoint().ParamOnSecond();
       Standard_Real Ulast = Seg.LastPoint().ParamOnSecond();
-      if (Abs(U1 - CBis.FirstParameter()) <= Tol && Abs(Ulast - CBis.LastParameter()) <= Tol)
+      if (std::abs(U1 - CBis.FirstParameter()) <= Tol
+          && std::abs(Ulast - CBis.LastParameter()) <= Tol)
       {
         P = gp_Pnt(U1, Seg.FirstPoint().ParamOnFirst(), 0.);
         Params.Append(P);
@@ -274,7 +275,8 @@ static void EvalParametersBis(const Geom2dAdaptor_Curve& Bis,
       Seg                 = Intersector.Segment(i);
       U1                  = Seg.FirstPoint().ParamOnSecond();
       Standard_Real Ulast = Seg.LastPoint().ParamOnSecond();
-      if (Abs(U1 - CBis.FirstParameter()) <= Tol && Abs(Ulast - CBis.LastParameter()) <= Tol)
+      if (std::abs(U1 - CBis.FirstParameter()) <= Tol
+          && std::abs(Ulast - CBis.LastParameter()) <= Tol)
       {
         P = gp_Pnt(U1, Seg.FirstPoint().ParamOnFirst(), 0.);
         Params.Append(P);
@@ -398,7 +400,7 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
       par = ElCLib::Parameter(anL, aP);
       if (par >= myBis.FirstParameter() && par <= myBis.LastParameter())
       {
-        d = Min(anL.SquareDistance(aP), d);
+        d = std::min(anL.SquareDistance(aP), d);
       }
       isFar1 = d > dmax;
       //
@@ -413,7 +415,7 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
       par = ElCLib::Parameter(anL, aP);
       if (par >= myBis.FirstParameter() && par <= myBis.LastParameter())
       {
-        d = Min(anL.SquareDistance(aP), d);
+        d = std::min(anL.SquareDistance(aP), d);
       }
       isFar2 = d > dmax;
       //
@@ -535,11 +537,11 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
   }
 
   i = 1;
-  while (i <= Min(Params.Length(), Points2.Length()))
+  while (i <= std::min(Params.Length(), Points2.Length()))
   {
     P1                   = Params(i);
     P2                   = Points2(i);
-    Standard_Real P1xP2x = Abs(P1.X() - P2.X());
+    Standard_Real P1xP2x = std::abs(P1.X() - P2.X());
 
     if (P1xP2x > Tol)
     {
@@ -778,14 +780,14 @@ Standard_Boolean BRepFill_TrimEdgeTool::IsInside(const gp_Pnt2d& P) const
     // should be performed in any case, despite of the results of projection.
     gp_Pnt2d      PF       = myC1->Value(myC1->FirstParameter());
     gp_Pnt2d      PL       = myC1->Value(myC1->LastParameter());
-    Standard_Real aDistMin = Min(P.Distance(PF), P.Distance(PL));
+    Standard_Real aDistMin = std::min(P.Distance(PF), P.Distance(PL));
 
     if (Dist > aDistMin)
       Dist = aDistMin;
     //  Modified by Sergey KHROMOV - Fri Sep 27 11:43:44 2002 End
   }
 
-  //  return (Dist < Abs(myOffset);
-  // return (Dist < Abs(myOffset) + Precision::Confusion());
-  return (Dist < Abs(myOffset) - Precision::Confusion());
+  //  return (Dist < std::abs(myOffset);
+  // return (Dist < std::abs(myOffset) + Precision::Confusion());
+  return (Dist < std::abs(myOffset) - Precision::Confusion());
 }

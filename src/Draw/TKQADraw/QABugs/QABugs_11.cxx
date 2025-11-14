@@ -4753,23 +4753,23 @@ Standard_Integer OCC22736(Draw_Interpretor& di, Standard_Integer argc, const cha
 
   // After applying two times the same mirror the point is located on the same location OK
   gp_Pnt2d p1MirrorM1 = p1.Transformed(M1);
-  if (Abs(p2.X() - p1MirrorM1.X()) > aTol)
+  if (std::abs(p2.X() - p1MirrorM1.X()) > aTol)
     aStatus = 2;
-  if (Abs(p2.Y() - p1MirrorM1.Y()) > aTol)
+  if (std::abs(p2.Y() - p1MirrorM1.Y()) > aTol)
     aStatus = 3;
 
   gp_Pnt2d p1MirrorM1M2 = p1MirrorM1.Transformed(M2);
-  if (Abs(p1.X() - p1MirrorM1M2.X()) > aTol)
+  if (std::abs(p1.X() - p1MirrorM1M2.X()) > aTol)
     aStatus = 4;
-  if (Abs(p1.Y() - p1MirrorM1M2.Y()) > aTol)
+  if (std::abs(p1.Y() - p1MirrorM1M2.Y()) > aTol)
     aStatus = 5;
 
   // If we apply the composed transformation of the same two mirrors to a point the result is //not
   // located on the initial position.-->>ERROR
   gp_Pnt2d p1MirrorComp = p1.Transformed(Tcomp);
-  if (Abs(p1.X() - p1MirrorComp.X()) > aTol)
+  if (std::abs(p1.X() - p1MirrorComp.X()) > aTol)
     aStatus = 6;
-  if (Abs(p1.Y() - p1MirrorComp.Y()) > aTol)
+  if (std::abs(p1.Y() - p1MirrorComp.Y()) > aTol)
     aStatus = 7;
 
   di << "Status = " << aStatus << "\n";

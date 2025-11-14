@@ -1023,22 +1023,22 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     gp_Pnt p2 = Adaptor3dSurface.Value(Ptg2.X(), Ptg2.Y());
     B.MakeVertex(Vertex1, p1, Tol);
     NewExtr1 = Vertex1;
-    if (Abs(U2 - ufirst1) <= Precision::PConfusion())
+    if (std::abs(U2 - ufirst1) <= Precision::PConfusion())
     {
       NewExtr1 = V1;
     }
-    if (Abs(U2 - ulast1) <= Precision::PConfusion())
+    if (std::abs(U2 - ulast1) <= Precision::PConfusion())
     {
       NewExtr1 = V2;
     }
 
     B.MakeVertex(Vertex2, p2, Tol);
     NewExtr2 = Vertex2;
-    if (Abs(Vv2 - ufirst2) <= Precision::PConfusion())
+    if (std::abs(Vv2 - ufirst2) <= Precision::PConfusion())
     {
       NewExtr2 = V3;
     }
-    if (Abs(Vv2 - ulast2) <= Precision::PConfusion())
+    if (std::abs(Vv2 - ulast2) <= Precision::PConfusion())
     {
       NewExtr2 = V4;
     }

@@ -111,8 +111,8 @@ void Font_TextFormatter::Append(const NCollection_String& theString, Font_FTFont
     return;
   }
 
-  myAscender    = Max(myAscender, theFont.Ascender());
-  myLineSpacing = Max(myLineSpacing, theFont.LineSpacing());
+  myAscender    = std::max(myAscender, theFont.Ascender());
+  myLineSpacing = std::max(myLineSpacing, theFont.LineSpacing());
   myString += theString;
 
   int aSymbolsCounter = 0; // special counter to process tabulation symbols
@@ -151,7 +151,7 @@ void Font_TextFormatter::Append(const NCollection_String& theString, Font_FTFont
     ++aSymbolsCounter;
     myCorners.Append(myPen);
     myPen.x() += anAdvanceX;
-    myMaxSymbolWidth = Max(myMaxSymbolWidth, anAdvanceX);
+    myMaxSymbolWidth = std::max(myMaxSymbolWidth, anAdvanceX);
   }
   myLastSymbolWidth = myPen.x() - myCorners.Last().x();
 }
@@ -222,7 +222,7 @@ void Font_TextFormatter::Format()
   if (HasWrapping())
   {
     // it is not possible to wrap less than symbol width
-    aMaxLineWidth = Max(aMaxLineWidth, MaximumSymbolWidth());
+    aMaxLineWidth = std::max(aMaxLineWidth, MaximumSymbolWidth());
   }
   else
   {
@@ -234,10 +234,10 @@ void Font_TextFormatter::Format()
     {
       for (int aLineIt = 0; aLineIt < myNewLines.Size(); aLineIt++)
       {
-        aMaxLineWidth = Max(aMaxLineWidth, LineWidth(aLineIt));
+        aMaxLineWidth = std::max(aMaxLineWidth, LineWidth(aLineIt));
       }
       // clang-format off
-      aMaxLineWidth = Max (aMaxLineWidth, LineWidth (myNewLines.Size())); // processing the last line also
+      aMaxLineWidth = std::max(aMaxLineWidth, LineWidth (myNewLines.Size())); // processing the last line also
       // clang-format on
     }
   }
@@ -336,7 +336,7 @@ Standard_Boolean Font_TextFormatter::GlyphBoundingBox(const Standard_Integer the
   }
 
   const NCollection_Vec2<Standard_ShortReal>& aNextLeftCorner = BottomLeft(theIndex + 1);
-  if (Abs(aLeftCorner.y() - aNextLeftCorner.y()) < Precision::Confusion()) // in the same row
+  if (std::abs(aLeftCorner.y() - aNextLeftCorner.y()) < Precision::Confusion()) // in the same row
   {
     theBndBox.Right = aNextLeftCorner.x();
   }
@@ -371,7 +371,7 @@ Standard_Boolean Font_TextFormatter::IsLFSymbol(const Standard_Integer theIndex)
     return Standard_False;
   }
 
-  return Abs(aBndBox.Right - aBndBox.Left) < Precision::Confusion();
+  return std::abs(aBndBox.Right - aBndBox.Left) < Precision::Confusion();
 }
 
 //=================================================================================================
@@ -417,7 +417,7 @@ Standard_Integer Font_TextFormatter::LineIndex(const Standard_Integer theIndex) 
     return 0;
   }
 
-  return (Standard_Integer)Abs((BottomLeft(theIndex).y() + myAscender) / myLineSpacing);
+  return (Standard_Integer)std::abs((BottomLeft(theIndex).y() + myAscender) / myLineSpacing);
 }
 
 //=================================================================================================

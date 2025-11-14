@@ -67,8 +67,8 @@ public:
     {
       cosOmega = 0.9999;
     }
-    myOmega                   = ACos(cosOmega);
-    Standard_Real invSinOmega = (1.0 / Sin(myOmega));
+    myOmega                   = std::acos(cosOmega);
+    Standard_Real invSinOmega = (1.0 / std::sin(myOmega));
     myQStart.Scale(invSinOmega);
     myQEnd.Scale(invSinOmega);
   }
@@ -76,7 +76,7 @@ public:
   //! Set interpolated quaternion for theT position (from 0.0 to 1.0)
   void Interpolate(Standard_Real theT, gp_Quaternion& theResultQ) const
   {
-    theResultQ = myQStart * Sin((1.0 - theT) * myOmega) + myQEnd * Sin(theT * myOmega);
+    theResultQ = myQStart * std::sin((1.0 - theT) * myOmega) + myQEnd * std::sin(theT * myOmega);
   }
 
 private:

@@ -137,13 +137,14 @@ public:
 protected:
   static Standard_Boolean compareDist(const RealType aHSize[3], const RealType aDist[3])
   {
-    return (Abs(aDist[0]) > aHSize[0] || Abs(aDist[1]) > aHSize[1] || Abs(aDist[2]) > aHSize[2]);
+    return (std::abs(aDist[0]) > aHSize[0] || std::abs(aDist[1]) > aHSize[1]
+            || std::abs(aDist[2]) > aHSize[2]);
   }
 
   static Standard_Boolean compareDistD(const gp_XYZ& aHSize, const gp_XYZ& aDist)
   {
-    return (Abs(aDist.X()) > aHSize.X() || Abs(aDist.Y()) > aHSize.Y()
-            || Abs(aDist.Z()) > aHSize.Z());
+    return (std::abs(aDist.X()) > aHSize.X() || std::abs(aDist.Y()) > aHSize.Y()
+            || std::abs(aDist.Z()) > aHSize.Z());
   }
 
   //! Constant representing a very large value for void box initialization
@@ -265,7 +266,7 @@ inline void Bnd_B3<RealType>::SetHSize(const gp_XYZ& theHSize)
 template <typename RealType>
 inline void Bnd_B3<RealType>::Enlarge(const Standard_Real aDiff)
 {
-  const Standard_Real aD = Abs(aDiff);
+  const Standard_Real aD = std::abs(aDiff);
   myHSize[0] += RealType(aD);
   myHSize[1] += RealType(aD);
   myHSize[2] += RealType(aD);
@@ -276,9 +277,9 @@ inline void Bnd_B3<RealType>::Enlarge(const Standard_Real aDiff)
 template <typename RealType>
 inline Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_XYZ& thePnt) const
 {
-  return (Abs(RealType(thePnt.X()) - myCenter[0]) > myHSize[0]
-          || Abs(RealType(thePnt.Y()) - myCenter[1]) > myHSize[1]
-          || Abs(RealType(thePnt.Z()) - myCenter[2]) > myHSize[2]);
+  return (std::abs(RealType(thePnt.X()) - myCenter[0]) > myHSize[0]
+          || std::abs(RealType(thePnt.Y()) - myCenter[1]) > myHSize[1]
+          || std::abs(RealType(thePnt.Z()) - myCenter[2]) > myHSize[2]);
 }
 
 //=================================================================================================
@@ -286,9 +287,9 @@ inline Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_XYZ& thePnt) const
 template <typename RealType>
 inline Standard_Boolean Bnd_B3<RealType>::IsOut(const Bnd_B3<RealType>& theBox) const
 {
-  return (Abs(theBox.myCenter[0] - myCenter[0]) > theBox.myHSize[0] + myHSize[0]
-          || Abs(theBox.myCenter[1] - myCenter[1]) > theBox.myHSize[1] + myHSize[1]
-          || Abs(theBox.myCenter[2] - myCenter[2]) > theBox.myHSize[2] + myHSize[2]);
+  return (std::abs(theBox.myCenter[0] - myCenter[0]) > theBox.myHSize[0] + myHSize[0]
+          || std::abs(theBox.myCenter[1] - myCenter[1]) > theBox.myHSize[1] + myHSize[1]
+          || std::abs(theBox.myCenter[2] - myCenter[2]) > theBox.myHSize[2] + myHSize[2]);
 }
 
 //=================================================================================================
@@ -296,9 +297,9 @@ inline Standard_Boolean Bnd_B3<RealType>::IsOut(const Bnd_B3<RealType>& theBox) 
 template <typename RealType>
 inline Standard_Boolean Bnd_B3<RealType>::IsIn(const Bnd_B3<RealType>& theBox) const
 {
-  return (Abs(theBox.myCenter[0] - myCenter[0]) < theBox.myHSize[0] - myHSize[0]
-          && Abs(theBox.myCenter[1] - myCenter[1]) < theBox.myHSize[1] - myHSize[1]
-          && Abs(theBox.myCenter[2] - myCenter[2]) < theBox.myHSize[2] - myHSize[2]);
+  return (std::abs(theBox.myCenter[0] - myCenter[0]) < theBox.myHSize[0] - myHSize[0]
+          && std::abs(theBox.myCenter[1] - myCenter[1]) < theBox.myHSize[1] - myHSize[1]
+          && std::abs(theBox.myCenter[2] - myCenter[2]) < theBox.myHSize[2] - myHSize[2]);
 }
 
 //=================================================================================================
@@ -426,7 +427,7 @@ Bnd_B3<RealType> Bnd_B3<RealType>::Transformed(const gp_Trsf& theTrsf) const
   Bnd_B3<RealType>    aResult;
   const gp_TrsfForm   aForm     = theTrsf.Form();
   const Standard_Real aScale    = theTrsf.ScaleFactor();
-  const Standard_Real aScaleAbs = Abs(aScale);
+  const Standard_Real aScaleAbs = std::abs(aScale);
   if (aForm == gp_Identity)
     aResult = *this;
   else if (aForm == gp_Translation || aForm == gp_PntMirror || aForm == gp_Scale)
@@ -449,15 +450,18 @@ Bnd_B3<RealType> Bnd_B3<RealType>::Transformed(const gp_Trsf& theTrsf) const
     aResult.myCenter[2] = (RealType)aCenter.Z();
 
     const Standard_Real* aMat = &theTrsf.HVectorialPart().Value(1, 1);
-    aResult.myHSize[0]        = (RealType)(aScaleAbs
-                                    * (Abs(aMat[0]) * myHSize[0] + Abs(aMat[1]) * myHSize[1]
-                                       + Abs(aMat[2]) * myHSize[2]));
-    aResult.myHSize[1]        = (RealType)(aScaleAbs
-                                    * (Abs(aMat[3]) * myHSize[0] + Abs(aMat[4]) * myHSize[1]
-                                       + Abs(aMat[5]) * myHSize[2]));
-    aResult.myHSize[2]        = (RealType)(aScaleAbs
-                                    * (Abs(aMat[6]) * myHSize[0] + Abs(aMat[7]) * myHSize[1]
-                                       + Abs(aMat[8]) * myHSize[2]));
+    aResult.myHSize[0] =
+      (RealType)(aScaleAbs
+                 * (std::abs(aMat[0]) * myHSize[0] + std::abs(aMat[1]) * myHSize[1]
+                    + std::abs(aMat[2]) * myHSize[2]));
+    aResult.myHSize[1] =
+      (RealType)(aScaleAbs
+                 * (std::abs(aMat[3]) * myHSize[0] + std::abs(aMat[4]) * myHSize[1]
+                    + std::abs(aMat[5]) * myHSize[2]));
+    aResult.myHSize[2] =
+      (RealType)(aScaleAbs
+                 * (std::abs(aMat[6]) * myHSize[0] + std::abs(aMat[7]) * myHSize[1]
+                    + std::abs(aMat[8]) * myHSize[2]));
   }
   return aResult;
 }
@@ -474,9 +478,9 @@ Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_XYZ&          theCenter,
   {
     // vector from the center of the sphere to the nearest box face
     const Standard_Real aDist[3] = {
-      Abs(theCenter.X() - Standard_Real(myCenter[0])) - Standard_Real(myHSize[0]),
-      Abs(theCenter.Y() - Standard_Real(myCenter[1])) - Standard_Real(myHSize[1]),
-      Abs(theCenter.Z() - Standard_Real(myCenter[2])) - Standard_Real(myHSize[2])};
+      std::abs(theCenter.X() - Standard_Real(myCenter[0])) - Standard_Real(myHSize[0]),
+      std::abs(theCenter.Y() - Standard_Real(myCenter[1])) - Standard_Real(myHSize[1]),
+      std::abs(theCenter.Z() - Standard_Real(myCenter[2])) - Standard_Real(myHSize[2])};
     Standard_Real aD(0.);
     if (aDist[0] > 0.)
       aD = aDist[0] * aDist[0];
@@ -488,9 +492,9 @@ Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_XYZ&          theCenter,
   }
   else
   {
-    const Standard_Real aDistC[3] = {Abs(theCenter.X() - Standard_Real(myCenter[0])),
-                                     Abs(theCenter.Y() - Standard_Real(myCenter[1])),
-                                     Abs(theCenter.Z() - Standard_Real(myCenter[2]))};
+    const Standard_Real aDistC[3] = {std::abs(theCenter.X() - Standard_Real(myCenter[0])),
+                                     std::abs(theCenter.Y() - Standard_Real(myCenter[1])),
+                                     std::abs(theCenter.Z() - Standard_Real(myCenter[2]))};
     // vector from the center of the sphere to the nearest box face
     Standard_Real aDist[3] = {aDistC[0] - Standard_Real(myHSize[0]),
                               aDistC[1] - Standard_Real(myHSize[1]),
@@ -525,15 +529,17 @@ Standard_Boolean Bnd_B3<RealType>::IsOut(const Bnd_B3<RealType>& theBox,
   Standard_Boolean    aResult(Standard_False);
   const gp_TrsfForm   aForm     = theTrsf.Form();
   const Standard_Real aScale    = theTrsf.ScaleFactor();
-  const Standard_Real aScaleAbs = Abs(aScale);
+  const Standard_Real aScaleAbs = std::abs(aScale);
   if (aForm == gp_Translation || aForm == gp_Identity || aForm == gp_PntMirror || aForm == gp_Scale)
   {
     aResult =
-      (Abs(RealType(theBox.myCenter[0] * aScale + theTrsf.TranslationPart().X()) - myCenter[0])
+      (std::abs(RealType(theBox.myCenter[0] * aScale + theTrsf.TranslationPart().X()) - myCenter[0])
          > RealType(theBox.myHSize[0] * aScaleAbs) + myHSize[0]
-       || Abs(RealType(theBox.myCenter[1] * aScale + theTrsf.TranslationPart().Y()) - myCenter[1])
+       || std::abs(RealType(theBox.myCenter[1] * aScale + theTrsf.TranslationPart().Y())
+                   - myCenter[1])
             > RealType(theBox.myHSize[1] * aScaleAbs) + myHSize[1]
-       || Abs(RealType(theBox.myCenter[2] * aScale + theTrsf.TranslationPart().Z()) - myCenter[2])
+       || std::abs(RealType(theBox.myCenter[2] * aScale + theTrsf.TranslationPart().Z())
+                   - myCenter[2])
             > RealType(theBox.myHSize[2] * aScaleAbs) + myHSize[2]);
   }
   else
@@ -549,40 +555,42 @@ Standard_Boolean Bnd_B3<RealType>::IsOut(const Bnd_B3<RealType>& theBox,
     const Standard_Real aDist[3]   = {aCenter.X() - (Standard_Real)myCenter[0],
                                       aCenter.Y() - (Standard_Real)myCenter[1],
                                       aCenter.Z() - (Standard_Real)myCenter[2]};
-    const Standard_Real aMatAbs[9] = {Abs(aMat[0]),
-                                      Abs(aMat[1]),
-                                      Abs(aMat[2]),
-                                      Abs(aMat[3]),
-                                      Abs(aMat[4]),
-                                      Abs(aMat[5]),
-                                      Abs(aMat[6]),
-                                      Abs(aMat[7]),
-                                      Abs(aMat[8])};
-    if (Abs(aDist[0]) > (aScaleAbs
-                           * (aMatAbs[0] * theBox.myHSize[0] + aMatAbs[1] * theBox.myHSize[1]
-                              + aMatAbs[2] * theBox.myHSize[2])
-                         + (Standard_Real)myHSize[0])
-        || Abs(aDist[1]) > (aScaleAbs
-                              * (aMatAbs[3] * theBox.myHSize[0] + aMatAbs[4] * theBox.myHSize[1]
-                                 + aMatAbs[5] * theBox.myHSize[2])
-                            + (Standard_Real)myHSize[1])
-        || Abs(aDist[2]) > (aScaleAbs
-                              * (aMatAbs[6] * theBox.myHSize[0] + aMatAbs[7] * theBox.myHSize[1]
-                                 + aMatAbs[8] * theBox.myHSize[2])
-                            + (Standard_Real)myHSize[2]))
+    const Standard_Real aMatAbs[9] = {std::abs(aMat[0]),
+                                      std::abs(aMat[1]),
+                                      std::abs(aMat[2]),
+                                      std::abs(aMat[3]),
+                                      std::abs(aMat[4]),
+                                      std::abs(aMat[5]),
+                                      std::abs(aMat[6]),
+                                      std::abs(aMat[7]),
+                                      std::abs(aMat[8])};
+    if (std::abs(aDist[0]) > (aScaleAbs
+                                * (aMatAbs[0] * theBox.myHSize[0] + aMatAbs[1] * theBox.myHSize[1]
+                                   + aMatAbs[2] * theBox.myHSize[2])
+                              + (Standard_Real)myHSize[0])
+        || std::abs(aDist[1])
+             > (aScaleAbs
+                  * (aMatAbs[3] * theBox.myHSize[0] + aMatAbs[4] * theBox.myHSize[1]
+                     + aMatAbs[5] * theBox.myHSize[2])
+                + (Standard_Real)myHSize[1])
+        || std::abs(aDist[2])
+             > (aScaleAbs
+                  * (aMatAbs[6] * theBox.myHSize[0] + aMatAbs[7] * theBox.myHSize[1]
+                     + aMatAbs[8] * theBox.myHSize[2])
+                + (Standard_Real)myHSize[2]))
       aResult = Standard_True;
 
     else
     {
       // theBox is rotated, scaled and translated. We apply the reverse
       // translation and scaling then check against the rotated box 'this'
-      if ((Abs(aMat[0] * aDist[0] + aMat[3] * aDist[1] + aMat[6] * aDist[2])
+      if ((std::abs(aMat[0] * aDist[0] + aMat[3] * aDist[1] + aMat[6] * aDist[2])
            > theBox.myHSize[0] * aScaleAbs
                + (aMatAbs[0] * myHSize[0] + aMatAbs[3] * myHSize[1] + aMatAbs[6] * myHSize[2]))
-          || (Abs(aMat[1] * aDist[0] + aMat[4] * aDist[1] + aMat[7] * aDist[2])
+          || (std::abs(aMat[1] * aDist[0] + aMat[4] * aDist[1] + aMat[7] * aDist[2])
               > theBox.myHSize[1] * aScaleAbs
                   + (aMatAbs[1] * myHSize[0] + aMatAbs[4] * myHSize[1] + aMatAbs[7] * myHSize[2]))
-          || (Abs(aMat[2] * aDist[0] + aMat[5] * aDist[1] + aMat[8] * aDist[2])
+          || (std::abs(aMat[2] * aDist[0] + aMat[5] * aDist[1] + aMat[8] * aDist[2])
               > theBox.myHSize[2] * aScaleAbs
                   + (aMatAbs[2] * myHSize[0] + aMatAbs[5] * myHSize[1] + aMatAbs[8] * myHSize[2])))
         aResult = Standard_True;
@@ -607,8 +615,8 @@ Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_Ax3& thePlane) const
   // Find the signed distances from two opposite corners of the box to the plane
   // If the distances are not the same sign, then the plane crosses the box
   const Standard_Real aDist1 = // proj of HSize on aDir
-    Standard_Real(myHSize[0]) * Abs(aDir.X()) + Standard_Real(myHSize[1]) * Abs(aDir.Y())
-    + Standard_Real(myHSize[2]) * Abs(aDir.Z());
+    Standard_Real(myHSize[0]) * std::abs(aDir.X()) + Standard_Real(myHSize[1]) * std::abs(aDir.Y())
+    + Standard_Real(myHSize[2]) * std::abs(aDir.Z());
   return ((aDist0 + aDist1) * (aDist0 - aDist1) > 0.);
 }
 
@@ -642,7 +650,7 @@ Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_Ax1&          theLine,
   }
   else
     // the line is orthogonal to OX axis. Test for inclusion in box limits
-    if (Abs(aDiff.X()) > aHSize)
+    if (std::abs(aDiff.X()) > aHSize)
       return Standard_True;
 
   // Find the parameter interval in Y dimension
@@ -659,7 +667,7 @@ Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_Ax1&          theLine,
   }
   else
     // the line is orthogonal to OY axis. Test for inclusion in box limits
-    if (Abs(aDiff.Y()) > aHSize)
+    if (std::abs(aDiff.Y()) > aHSize)
       return Standard_True;
 
   // Intersect Y-interval with X-interval
@@ -686,7 +694,7 @@ Standard_Boolean Bnd_B3<RealType>::IsOut(const gp_Ax1&          theLine,
   }
   else
     // the line is orthogonal to OZ axis. Test for inclusion in box limits
-    return (Abs(aDiff.Z()) > aHSize);
+    return (std::abs(aDiff.Z()) > aHSize);
   if (isRay && anInter1[1] < -aRes)
     return Standard_True;
 
@@ -702,15 +710,17 @@ Standard_Boolean Bnd_B3<RealType>::IsIn(const Bnd_B3<RealType>& theBox,
   Standard_Boolean    aResult(Standard_False);
   const gp_TrsfForm   aForm     = theTrsf.Form();
   const Standard_Real aScale    = theTrsf.ScaleFactor();
-  const Standard_Real aScaleAbs = Abs(aScale);
+  const Standard_Real aScaleAbs = std::abs(aScale);
   if (aForm == gp_Translation || aForm == gp_Identity || aForm == gp_PntMirror || aForm == gp_Scale)
   {
     aResult =
-      (Abs(RealType(theBox.myCenter[0] * aScale + theTrsf.TranslationPart().X()) - myCenter[0])
+      (std::abs(RealType(theBox.myCenter[0] * aScale + theTrsf.TranslationPart().X()) - myCenter[0])
          < RealType(theBox.myHSize[0] * aScaleAbs) - myHSize[0]
-       && Abs(RealType(theBox.myCenter[1] * aScale + theTrsf.TranslationPart().Y()) - myCenter[1])
+       && std::abs(RealType(theBox.myCenter[1] * aScale + theTrsf.TranslationPart().Y())
+                   - myCenter[1])
             < RealType(theBox.myHSize[1] * aScaleAbs) - myHSize[1]
-       && Abs(RealType(theBox.myCenter[2] * aScale + theTrsf.TranslationPart().Z()) - myCenter[2])
+       && std::abs(RealType(theBox.myCenter[2] * aScale + theTrsf.TranslationPart().Z())
+                   - myCenter[2])
             < RealType(theBox.myHSize[2] * aScaleAbs) - myHSize[2]);
   }
   else
@@ -725,17 +735,18 @@ Standard_Boolean Bnd_B3<RealType>::IsIn(const Bnd_B3<RealType>& theBox,
     const Standard_Real aDist[3] = {aCenter.X() - (Standard_Real)myCenter[0],
                                     aCenter.Y() - (Standard_Real)myCenter[1],
                                     aCenter.Z() - (Standard_Real)myCenter[2]};
-    if ((Abs(aMat[0] * aDist[0] + aMat[3] * aDist[1] + aMat[6] * aDist[2])
+    if ((std::abs(aMat[0] * aDist[0] + aMat[3] * aDist[1] + aMat[6] * aDist[2])
          < theBox.myHSize[0] * aScaleAbs
-             - (Abs(aMat[0]) * myHSize[0] + Abs(aMat[3]) * myHSize[1] + Abs(aMat[6]) * myHSize[2]))
-        && (Abs(aMat[1] * aDist[0] + aMat[4] * aDist[1] + aMat[7] * aDist[2])
+             - (std::abs(aMat[0]) * myHSize[0] + std::abs(aMat[3]) * myHSize[1]
+                + std::abs(aMat[6]) * myHSize[2]))
+        && (std::abs(aMat[1] * aDist[0] + aMat[4] * aDist[1] + aMat[7] * aDist[2])
             < theBox.myHSize[1] * aScaleAbs
-                - (Abs(aMat[1]) * myHSize[0] + Abs(aMat[4]) * myHSize[1]
-                   + Abs(aMat[7]) * myHSize[2]))
-        && (Abs(aMat[2] * aDist[0] + aMat[5] * aDist[1] + aMat[8] * aDist[2])
+                - (std::abs(aMat[1]) * myHSize[0] + std::abs(aMat[4]) * myHSize[1]
+                   + std::abs(aMat[7]) * myHSize[2]))
+        && (std::abs(aMat[2] * aDist[0] + aMat[5] * aDist[1] + aMat[8] * aDist[2])
             < theBox.myHSize[2] * aScaleAbs
-                - (Abs(aMat[2]) * myHSize[0] + Abs(aMat[5]) * myHSize[1]
-                   + Abs(aMat[8]) * myHSize[2])))
+                - (std::abs(aMat[2]) * myHSize[0] + std::abs(aMat[5]) * myHSize[1]
+                   + std::abs(aMat[8]) * myHSize[2])))
       aResult = Standard_True;
   }
   return aResult;

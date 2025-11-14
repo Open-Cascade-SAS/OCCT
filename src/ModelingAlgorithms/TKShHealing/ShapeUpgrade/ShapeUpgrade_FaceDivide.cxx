@@ -123,17 +123,17 @@ Standard_Boolean ShapeUpgrade_FaceDivide::SplitSurface(const Standard_Real theAr
   {
     Standard_Real dU = (Ul - Uf) * 0.01;
     if (Uf > aSUf)
-      Uf -= Min(dU, Uf - aSUf);
+      Uf -= std::min(dU, Uf - aSUf);
     if (Ul < aSUl)
-      Ul += Min(dU, aSUl - Ul);
+      Ul += std::min(dU, aSUl - Ul);
   }
   if (!surf->IsVPeriodic())
   {
     Standard_Real dV = (Vl - Vf) * 0.01;
     if (Vf > aSVf)
-      Vf -= Min(dV, Vf - aSVf);
+      Vf -= std::min(dV, Vf - aSVf);
     if (Vl < aSVl)
-      Vl += Min(dV, aSVl - Vl);
+      Vl += std::min(dV, aSVl - Vl);
   }
 
   SplitSurf->Init(surf, Uf, Ul, Vf, Vl, theArea);

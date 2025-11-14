@@ -484,7 +484,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
     constexpr Standard_Real confusion(Precision::Confusion());
     if (arrsize < confusion)
       arrsize = Val * 0.1;
-    if (Abs(Val) <= confusion)
+    if (std::abs(Val) <= confusion)
     {
       arrsize = 0.;
     }
@@ -595,7 +595,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
 
   if (arrsize < Precision::Confusion())
     arrsize = Val * 0.1;
-  if (Abs(Val) <= Precision::Confusion())
+  if (std::abs(Val) <= Precision::Confusion())
   {
     arrsize = 0.;
   }
@@ -770,7 +770,7 @@ void PrsDim_EqualDistanceRelation::ComputeOneEdgeOneVertexLength(
     gp_Dir DirAttach = l.Direction();
     // size
     Standard_Real arrsize = ArrowSize;
-    if (Abs(Val) <= Precision::Confusion())
+    if (std::abs(Val) <= Precision::Confusion())
     {
       arrsize = 0.;
     }

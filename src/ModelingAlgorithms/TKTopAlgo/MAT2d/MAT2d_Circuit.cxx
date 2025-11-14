@@ -273,7 +273,7 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
     gp_Pnt2d                P1    = C1->Value(MilC1);
     gp_Pnt2d                P2    = C2->Value(MilC2);
 
-    D = Min(P1.Distance(P), P2.Distance(P));
+    D = std::min(P1.Distance(P), P2.Distance(P));
     D /= 10;
 
     if (Direction < 0.)
@@ -318,7 +318,7 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
   } // end of if (myJoinType == GeomAbs_Arc)
   else if (myJoinType == GeomAbs_Intersection)
   {
-    if (Abs(ProVec) <= TolAng && DotProd < 0)
+    if (std::abs(ProVec) <= TolAng && DotProd < 0)
     {
       while (NbTest <= 10)
       {
@@ -494,7 +494,7 @@ void MAT2d_Circuit::InitOpen(TColGeom2d_SequenceOfGeometry& Line) const
 
   for (Standard_Integer i = 2; i <= Line.Length() - 2; i++)
   {
-    if (Abs(CrossProd(Line.Value(i), Line.Value(i + 1), DotProd)) > 1.E-8 || DotProd < 0.)
+    if (std::abs(CrossProd(Line.Value(i), Line.Value(i + 1), DotProd)) > 1.E-8 || DotProd < 0.)
     {
       Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(i));
       Line.InsertAfter(i, new Geom2d_CartesianPoint(Curve->EndPoint()));
@@ -908,8 +908,8 @@ void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer 
       {
         gpParabola         = Handle(Geom2d_Parabola)::DownCast(curve)->Parab2d();
         Focus              = gpParabola.Focal();
-        Standard_Real Val1 = Sqrt(Limit * Focus);
-        Standard_Real Val2 = Sqrt(Limit * Limit);
+        Standard_Real Val1 = std::sqrt(Limit * Focus);
+        Standard_Real Val2 = std::sqrt(Limit * Limit);
         delta              = (Val1 <= Val2 ? Val1 : Val2);
       }
       else if (type == STANDARD_TYPE(Geom2d_Hyperbola))
@@ -919,8 +919,8 @@ void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer 
         Standard_Real Minr  = gpHyperbola.MinorRadius();
         Standard_Real Valu1 = Limit / Majr;
         Standard_Real Valu2 = Limit / Minr;
-        Standard_Real Val1  = Log(Valu1 + Sqrt(Valu1 * Valu1 - 1));
-        Standard_Real Val2  = Log(Valu2 + Sqrt(Valu2 * Valu2 + 1));
+        Standard_Real Val1  = Log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
+        Standard_Real Val2  = Log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
         delta               = (Val1 <= Val2 ? Val1 : Val2);
       }
       CurveDraw =

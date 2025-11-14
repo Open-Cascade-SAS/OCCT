@@ -35,26 +35,26 @@ static void CorrectTol(const Standard_Real theU0, const Standard_Real theV0, mat
   const Standard_Real     tolog10  = 0.43429;
   if (epsu > anEpsRef)
   {
-    Standard_Integer n = RealToInt(tolog10 * Log(epsu / anEpsRef) + 1) + 1;
+    Standard_Integer n = RealToInt(tolog10 * std::log(epsu / anEpsRef) + 1) + 1;
     Standard_Integer i;
     Standard_Real    tol = aTolRef;
     for (i = 1; i <= n; ++i)
     {
       tol *= 10.;
     }
-    theTol(1) = Max(theTol(1), tol);
+    theTol(1) = std::max(theTol(1), tol);
   }
   Standard_Real epsv = Epsilon(theV0);
   if (epsv > anEpsRef)
   {
-    Standard_Integer n = RealToInt(tolog10 * Log(epsv / anEpsRef) + 1) + 1;
+    Standard_Integer n = RealToInt(tolog10 * std::log(epsv / anEpsRef) + 1) + 1;
     Standard_Integer i;
     Standard_Real    tol = aTolRef;
     for (i = 1; i <= n; ++i)
     {
       tol *= 10.;
     }
-    theTol(2) = Max(theTol(2), tol);
+    theTol(2) = std::max(theTol(2), tol);
   }
 }
 
@@ -66,9 +66,9 @@ Standard_Boolean Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt&            theP
                                                    const Standard_Real      theV0)
 {
   Standard_Real du =
-    Max(theS.UResolution(10. * Precision::Confusion()), 10. * Precision::PConfusion());
+    std::max(theS.UResolution(10. * Precision::Confusion()), 10. * Precision::PConfusion());
   Standard_Real dv =
-    Max(theS.VResolution(10. * Precision::Confusion()), 10. * Precision::PConfusion());
+    std::max(theS.VResolution(10. * Precision::Confusion()), 10. * Precision::PConfusion());
   Standard_Real    u, v;
   gp_Pnt           aP0 = theS.Value(theU0, theV0);
   Standard_Real    d0  = theP.SquareDistance(aP0);
@@ -78,8 +78,8 @@ Standard_Boolean Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt&            theP
     u = theU0 + iu * du;
     if (!theS.IsUPeriodic())
     {
-      u = Max(u, theS.FirstUParameter());
-      u = Min(u, theS.LastUParameter());
+      u = std::max(u, theS.FirstUParameter());
+      u = std::min(u, theS.LastUParameter());
     }
     for (iv = -1; iv <= 1; ++iv)
     {
@@ -89,8 +89,8 @@ Standard_Boolean Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt&            theP
       v = theV0 + iv * dv;
       if (!theS.IsVPeriodic())
       {
-        v = Max(v, theS.FirstVParameter());
-        v = Min(v, theS.LastVParameter());
+        v = std::max(v, theS.FirstVParameter());
+        v = std::min(v, theS.LastVParameter());
       }
       Standard_Real d = theP.SquareDistance(theS.Value(u, v));
       if (d < d0)
@@ -181,8 +181,8 @@ void Extrema_GenLocateExtPS::Perform(const gp_Pnt&          theP,
       CorrectTol(theU0, theV0, aTol);
     }
 
-    Standard_Boolean isCorrectTol = (Abs(aTol(1) - myTolU) > Precision::PConfusion()
-                                     || Abs(aTol(2) - myTolV) > Precision::PConfusion());
+    Standard_Boolean isCorrectTol = (std::abs(aTol(1) - myTolU) > Precision::PConfusion()
+                                     || std::abs(aTol(2) - myTolV) > Precision::PConfusion());
 
     math_FunctionSetRoot aSR(F, aTol);
     aSR.Perform(F, aStart, aBoundInf, aBoundSup);

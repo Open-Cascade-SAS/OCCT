@@ -115,7 +115,7 @@ static void BCSmoothing(Handle(Geom_BSplineCurve)& theC,
       Standard_Integer anInd = aKnotIndex(i);
 
       Standard_Real aK1 = 0.5 * (aKnots(anInd) + aKnots(anInd - 1));
-      if (Abs(aK1 - aLastKnot) > 1.e-3)
+      if (std::abs(aK1 - aLastKnot) > 1.e-3)
       {
         aKnotIns.Append(aK1);
         aLastKnot = aK1;
@@ -123,7 +123,7 @@ static void BCSmoothing(Handle(Geom_BSplineCurve)& theC,
 
       Standard_Real aK2 = 0.5 * (aKnots(anInd + 1) + aKnots(anInd));
 
-      if (Abs(aK2 - aLastKnot) > 1.e-3)
+      if (std::abs(aK2 - aLastKnot) > 1.e-3)
       {
         aKnotIns.Append(aK2);
         aLastKnot = aK2;
@@ -852,7 +852,7 @@ Standard_Boolean BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const Top
   {
     gp_Circ ci1 = Handle(Geom_Circle)::DownCast(C1)->Circ();
     gp_Circ ci2 = Handle(Geom_Circle)::DownCast(C2)->Circ();
-    if (Abs(ci1.Radius() - ci2.Radius()) <= tollin
+    if (std::abs(ci1.Radius() - ci2.Radius()) <= tollin
         && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin
         && ci1.Axis().IsParallel(ci2.Axis(), tolang))
     {
@@ -866,8 +866,8 @@ Standard_Boolean BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const Top
     gp_Elips ci1 = Handle(Geom_Ellipse)::DownCast(C1)->Elips();
     gp_Elips ci2 = Handle(Geom_Ellipse)::DownCast(C2)->Elips();
 
-    if (Abs(ci1.MajorRadius() - ci2.MajorRadius()) <= tollin
-        && Abs(ci1.MinorRadius() - ci2.MinorRadius()) <= tollin
+    if (std::abs(ci1.MajorRadius() - ci2.MajorRadius()) <= tollin
+        && std::abs(ci1.MinorRadius() - ci2.MinorRadius()) <= tollin
         && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin
         && ci1.Axis().IsParallel(ci2.Axis(), tolang))
     {
@@ -903,7 +903,7 @@ Standard_Boolean BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const Top
     // we must ensure that before fuse two bsplines, the end of one curve does not
     // corresponds to the beginning of the second.
     // we could add a special treatment for periodic bspline. This is not done for the moment.
-    if (Abs(f2 - l1) > tollin && Abs(f1 - l2) > tollin)
+    if (std::abs(f2 - l1) > tollin && std::abs(f1 - l2) > tollin)
     {
       return Standard_False;
     }
@@ -950,7 +950,7 @@ Standard_Boolean BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const Top
       {
         return Standard_False;
       }
-      if (Abs(M1(k) - M2(k)) > tollin)
+      if (std::abs(M1(k) - M2(k)) > tollin)
       {
         return Standard_False;
       }
@@ -979,7 +979,7 @@ Standard_Boolean BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const Top
 
       for (Standard_Integer w = 1; w <= nbpoles; w++)
       {
-        if (Abs(W1(w) - W2(w)) > tollin)
+        if (std::abs(W1(w) - W2(w)) > tollin)
         {
           return Standard_False;
         }
@@ -992,7 +992,7 @@ Standard_Boolean BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const Top
 
     // we must ensure that before fuse two bezier, the end of one curve does not
     // corresponds to the beginning of the second.
-    if (Abs(f2 - l1) > tollin && Abs(f1 - l2) > tollin)
+    if (std::abs(f2 - l1) > tollin && std::abs(f1 - l2) > tollin)
     {
       return Standard_False;
     }
@@ -1041,7 +1041,7 @@ Standard_Boolean BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const Top
 
       for (Standard_Integer w = 1; w <= nbpoles; w++)
       {
-        if (Abs(W1(w) - W2(w)) > tollin)
+        if (std::abs(W1(w) - W2(w)) > tollin)
         {
           return Standard_False;
         }
@@ -1154,7 +1154,8 @@ Standard_Boolean BRepLib_FuseEdges::UpdatePCurve(const TopoDS_Edge&          the
           // check that new curve 2d is same range
           Standard_Real first = Curv2d->FirstParameter();
           Standard_Real last  = Curv2d->LastParameter();
-          if (Abs(first - ef) > Precision::PConfusion() || Abs(last - el) > Precision::PConfusion())
+          if (std::abs(first - ef) > Precision::PConfusion()
+              || std::abs(last - el) > Precision::PConfusion())
           {
             Handle(Geom2d_BSplineCurve) bc = Handle(Geom2d_BSplineCurve)::DownCast(Curv2d);
             TColStd_Array1OfReal        Knots(1, bc->NbKnots());

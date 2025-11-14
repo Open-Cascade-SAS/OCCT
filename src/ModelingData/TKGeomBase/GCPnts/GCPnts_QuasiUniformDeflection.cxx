@@ -307,8 +307,8 @@ static Standard_Boolean PerformCircular(const TheCurve&         theC,
                                         const Standard_Real     theU1,
                                         const Standard_Real     theU2)
 {
-  Standard_Real anAngle      = Max(1.0 - (theDeflection / theC.Circle().Radius()), 0.0);
-  anAngle                    = 2.0 * ACos(anAngle);
+  Standard_Real anAngle      = std::max(1.0 - (theDeflection / theC.Circle().Radius()), 0.0);
+  anAngle                    = 2.0 * std::acos(anAngle);
   Standard_Integer aNbPoints = (Standard_Integer)((theU2 - theU1) / anAngle);
   aNbPoints += 2;
   anAngle         = (theU2 - theU1) / (Standard_Real)(aNbPoints - 1);
@@ -441,7 +441,7 @@ static Standard_Boolean PerformComposite(TColStd_SequenceOfReal& theParameters,
   Standard_Real aUa = theU1;
   for (Standard_Integer anIndex = aPIndex;;)
   {
-    Standard_Real aUb = anIndex + 1 <= aTI.Upper() ? Min(theU2, aTI(anIndex + 1)) : theU2;
+    Standard_Real aUb = anIndex + 1 <= aTI.Upper() ? std::min(theU2, aTI(anIndex + 1)) : theU2;
     if (!PerformCurve(theParameters,
                       thePoints,
                       theC,
@@ -593,15 +593,16 @@ void GCPnts_QuasiUniformDeflection::initialize(const TheCurve&     theC,
   myParams.Clear();
   myPoints.Clear();
 
-  const Standard_Real         anEPSILON = Min(theC.Resolution(Precision::Confusion()), 1.e50);
+  const Standard_Real         anEPSILON = std::min(theC.Resolution(Precision::Confusion()), 1.e50);
   const GCPnts_DeflectionType aType     = GetDefType(theC);
-  const Standard_Real         aU1       = Min(theU1, theU2);
-  const Standard_Real         aU2       = Max(theU1, theU2);
+  const Standard_Real         aU1       = std::min(theU1, theU2);
+  const Standard_Real         aU2       = std::max(theU1, theU2);
   if (aType == GCPnts_Curved || aType == GCPnts_DefComposite)
   {
     if (theC.GetType() == GeomAbs_BSplineCurve || theC.GetType() == GeomAbs_BezierCurve)
     {
-      const Standard_Real aMaxPar = Max(Abs(theC.FirstParameter()), Abs(theC.LastParameter()));
+      const Standard_Real aMaxPar =
+        std::max(std::abs(theC.FirstParameter()), std::abs(theC.LastParameter()));
       if (anEPSILON < Epsilon(aMaxPar))
       {
         return;

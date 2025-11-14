@@ -38,7 +38,7 @@ Handle(Expr_GeneralExpression) Expr_ArgCosh::ShallowSimplified() const
   if (op->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) valop = Handle(Expr_NumericValue)::DownCast(op);
-    return new Expr_NumericValue(ACosh(valop->GetValue()));
+    return new Expr_NumericValue(std::acosh(valop->GetValue()));
   }
   if (op->IsKind(STANDARD_TYPE(Expr_Cosh)))
   {
@@ -98,7 +98,7 @@ Standard_Real Expr_ArgCosh::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                      const TColStd_Array1OfReal&      vals) const
 {
   Standard_Real val = Operand()->Evaluate(vars, vals);
-  return ::Log(val + ::Sqrt(::Square(val) - 1.0));
+  return std::log(val + std::sqrt(::Square(val) - 1.0));
 }
 
 TCollection_AsciiString Expr_ArgCosh::String() const

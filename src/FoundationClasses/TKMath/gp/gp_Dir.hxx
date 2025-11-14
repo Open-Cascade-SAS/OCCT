@@ -77,11 +77,10 @@ public:
   gp_Dir(const gp_XYZ& theCoord);
 
   //! Creates a direction with its 3 cartesian coordinates. Raises ConstructionError if
-  //! Sqrt(theXv*theXv + theYv*theYv + theZv*theZv) <= Resolution Modification of the direction's
-  //! coordinates If Sqrt (theXv*theXv + theYv*theYv + theZv*theZv) <= Resolution from gp where
-  //! theXv, theYv ,theZv are the new coordinates it is not possible to
-  //! construct the direction and the method raises the
-  //! exception ConstructionError.
+  //! std::sqrt(theXv*theXv + theYv*theYv + theZv*theZv) <= Resolution Modification of the
+  //! direction's coordinates If std::sqrt (theXv*theXv + theYv*theYv + theZv*theZv) <= Resolution
+  //! from gp where theXv, theYv ,theZv are the new coordinates it is not possible to construct the
+  //! direction and the method raises the exception ConstructionError.
   gp_Dir(const Standard_Real theXv, const Standard_Real theYv, const Standard_Real theZv);
 
   //! For this unit vector, assigns the value Xi to:
@@ -96,7 +95,7 @@ public:
   //! Standard_OutOfRange if theIndex is not 1, 2, or 3.
   //! Standard_ConstructionError if either of the following
   //! is less than or equal to gp::Resolution():
-  //! -   Sqrt(Xv*Xv + Yv*Yv + Zv*Zv), or
+  //! -   std::sqrt(Xv*Xv + Yv*Yv + Zv*Zv), or
   //! -   the modulus of the number triple formed by the new
   //! value theXi and the two other coordinates of this vector
   //! that were not directly modified.

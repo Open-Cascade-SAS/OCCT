@@ -264,7 +264,7 @@ static Standard_Boolean KPartCircle(const TopoDS_Face&                          
         anOffset *= -1;
       }
       gp_Circ2d theCirc = AHC->Circle();
-      if (anOffset > 0. || Abs(anOffset) < theCirc.Radius())
+      if (anOffset > 0. || std::abs(anOffset) < theCirc.Radius())
         OC = new Geom2d_Circle(theCirc.Position(), theCirc.Radius() + anOffset);
       else
       {
@@ -475,7 +475,7 @@ void BRepFill_OffsetWire::Perform(const Standard_Real Offset, const Standard_Rea
       BRepTools_Substitution             aSubst;
       TopTools_ListIteratorOfListOfShape it(BadEdges);
       TopTools_ListOfShape               aL;
-      Standard_Real                      aDefl = .01 * Abs(Offset);
+      Standard_Real                      aDefl = .01 * std::abs(Offset);
       TColStd_SequenceOfReal             Parameters;
       TColgp_SequenceOfPnt               Points;
 
@@ -690,7 +690,7 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
   }
   myMap.Clear();
 
-  if (Abs(myOffset) < Precision::Confusion())
+  if (std::abs(myOffset) < Precision::Confusion())
   {
     Compute(mySpine, myShape, myMap, Alt);
     myIsDone = Standard_True;
@@ -1683,7 +1683,7 @@ void BRepFill_OffsetWire::FixHoles()
           BB.Add(Base, anEdge);
       }
       theVertex = (IsFirstF) ? V1 : V2;
-      CommonTol = Max(BRep_Tool::Tolerance(Vf), BRep_Tool::Tolerance(theVertex));
+      CommonTol = std::max(BRep_Tool::Tolerance(Vf), BRep_Tool::Tolerance(theVertex));
       if (DistF <= CommonTol)
       {
         theEdge.Free(Standard_True);
@@ -1724,7 +1724,7 @@ void BRepFill_OffsetWire::FixHoles()
           BB.Add(Base, anEdge);
       }
       theVertex = (IsFirstL) ? V1 : V2;
-      CommonTol = Max(BRep_Tool::Tolerance(Vl), BRep_Tool::Tolerance(theVertex));
+      CommonTol = std::max(BRep_Tool::Tolerance(Vl), BRep_Tool::Tolerance(theVertex));
       if (DistL <= CommonTol)
       {
         theEdge.Free(Standard_True);
@@ -1750,7 +1750,7 @@ void BRepFill_OffsetWire::FixHoles()
     if (TryToClose)
     {
       TopExp::Vertices(Base, Vf, Vl);
-      CommonTol = Max(BRep_Tool::Tolerance(Vf), BRep_Tool::Tolerance(Vl));
+      CommonTol = std::max(BRep_Tool::Tolerance(Vf), BRep_Tool::Tolerance(Vl));
       TopTools_IndexedDataMapOfShapeListOfShape VEmap;
       TopExp::MapShapesAndAncestors(Base, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
       TopoDS_Edge Efirst, Elast;
@@ -1853,7 +1853,7 @@ Standard_Integer CutEdge(const TopoDS_Edge&    E,
   CT2d = new Geom2d_TrimmedCurve(C2d, f, l);
   // if (E.Orientation() == TopAbs_REVERSED) CT2d->Reverse();
 
-  if (CT2d->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Circle)) && (Abs(f - l) >= M_PI))
+  if (CT2d->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Circle)) && (std::abs(f - l) >= M_PI))
   {
     return 0;
   }
@@ -2038,7 +2038,7 @@ void MakeCircle(const TopoDS_Edge&                                 E,
     GC->D1(f, P, DX);
 
   gp_Ax2d               Axis(P, gp_Dir2d(DX));
-  Handle(Geom2d_Circle) Circ = new Geom2d_Circle(Axis, Abs(Offset), Offset < 0.);
+  Handle(Geom2d_Circle) Circ = new Geom2d_Circle(Axis, std::abs(Offset), Offset < 0.);
 
   // Bind the edges in my Map.
   TopoDS_Edge          OE = BRepLib_MakeEdge(Circ, RefPlane);
@@ -2203,7 +2203,7 @@ Standard_Boolean VertexFromNode(const Handle(MAT_Node)&      aNode,
   constexpr Standard_Real Tol = Precision::Confusion();
   BRep_Builder            B;
 
-  if (!aNode->Infinite() && Abs(aNode->Distance() - Offset) < Tol)
+  if (!aNode->Infinite() && std::abs(aNode->Distance() - Offset) < Tol)
   {
     //------------------------------------------------
     // the Node gives a vertex on the offset
@@ -2309,7 +2309,7 @@ void TrimEdge(const TopoDS_Edge&                   E,
     for (Standard_Integer k = 1; k < TheVer.Length(); k++)
     {
       if (TheVer.Value(k).IsSame(TheVer.Value(k + 1))
-          || Abs(ThePar.Value(k) - ThePar.Value(k + 1)) <= aParTol)
+          || std::abs(ThePar.Value(k) - ThePar.Value(k + 1)) <= aParTol)
       {
 
         if (k + 1 == TheVer.Length())
@@ -2675,8 +2675,8 @@ static Standard_Boolean PerformCurve(TColStd_SequenceOfReal& Parameters,
                                      const Standard_Real    EPSILON,
                                      const Standard_Integer Nbmin)
 {
-  Standard_Real UU1 = Min(U1, U2);
-  Standard_Real UU2 = Max(U1, U2);
+  Standard_Real UU1 = std::min(U1, U2);
+  Standard_Real UU2 = std::max(U1, U2);
 
   gp_Pnt Pdeb, Pfin;
   gp_Vec Ddeb, Dfin;
@@ -2818,7 +2818,7 @@ Standard_Boolean CheckSmallParamOnEdge(const TopoDS_Edge& anEdge)
       ((Handle(BRep_TEdge)::DownCast(anEdge.TShape()))->Curves()).First();
     Standard_Real f = (Handle(BRep_GCurve)::DownCast(CRep))->First();
     Standard_Real l = (Handle(BRep_GCurve)::DownCast(CRep))->Last();
-    if (Abs(l - f) < Precision::PConfusion())
+    if (std::abs(l - f) < Precision::PConfusion())
       return Standard_False;
   }
   return Standard_True;

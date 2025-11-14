@@ -375,7 +375,7 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
     for (i = 1; i <= aSqDists1.Length(); ++i)
     {
       Standard_Real aDist = aSqDists1(i);
-      if (Abs(aDist - aMinDist) <= aTol)
+      if (std::abs(aDist - aMinDist) <= aTol)
       {
         aSqDists.Append(aDist);
         aPntsOnCrv.Append(aPntsOnCrv1(i));
@@ -413,7 +413,8 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
 
   Standard_Real aMinResolution =
     aScaleFactor
-    * Min(aResolutionCU, Min(aStepSU / myS->UResolution(1.0), aStepSV / myS->VResolution(1.0)));
+    * std::min(aResolutionCU,
+               std::min(aStepSU / myS->UResolution(1.0), aStepSV / myS->VResolution(1.0)));
 
   if (aMinResolution > Epsilon(1.0))
   {
@@ -421,7 +422,7 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
     {
       const Standard_Integer aMaxNbNodes = 50;
 
-      aNewCsample = Min(aMaxNbNodes, RealToInt(mytsample * aResolutionCU / aMinResolution));
+      aNewCsample = std::min(aMaxNbNodes, RealToInt(mytsample * aResolutionCU / aMinResolution));
 
       aStepCU = (aMaxTUV(1) - aMinTUV(1)) / aNewCsample;
     }
@@ -505,7 +506,7 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
   aMaxUV = anUVsup - (anUVsup - anUVinf) / aBorderDivisor;
 
   // Increase numbers of UV samples to improve searching global minimum
-  Standard_Integer anAddsample = Max(mytsample / 2, 3);
+  Standard_Integer anAddsample = std::max(mytsample / 2, 3);
   Standard_Integer anUsample   = myusample + anAddsample;
   Standard_Integer aVsample    = myvsample + anAddsample;
   //
@@ -599,13 +600,13 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
     for (iu = -1; iu <= 1; ++iu)
     {
       Standard_Real u = anUV(1) + iu * aStepSU;
-      u               = Max(anUVinf(1), u);
-      u               = Min(anUVsup(1), u);
+      u               = std::max(anUVinf(1), u);
+      u               = std::min(anUVsup(1), u);
       for (iv = -1; iv <= 1; ++iv)
       {
         Standard_Real v = anUV(2) + iv * aStepSV;
-        v               = Max(anUVinf(2), v);
-        v               = Min(anUVsup(2), v);
+        v               = std::max(anUVinf(2), v);
+        v               = std::min(anUVsup(2), v);
         myS->D1(u, v, aPOnS, aDU, aDV);
         if (aPOnC.SquareDistance(aPOnS) < Precision::SquareConfusion())
         {
@@ -690,9 +691,9 @@ void Extrema_GenExtCS::GlobMinCQuadric(const Adaptor3d_Curve& theC,
   // because dimension of optimisation task is reduced
   const Standard_Integer aMaxNbNodes = 50;
   Standard_Integer       aNewCsample = mytsample;
-  Standard_Integer       anAddsample = Max(myusample / 2, 3);
+  Standard_Integer       anAddsample = std::max(myusample / 2, 3);
   aNewCsample += anAddsample;
-  aNewCsample = Min(aNewCsample, aMaxNbNodes);
+  aNewCsample = std::min(aNewCsample, aMaxNbNodes);
   //
   // Correct number of curve samples in case of low resolution
   Standard_Real aStepCT       = (aMaxT(1) - aMinT(1)) / aNewCsample;
@@ -703,14 +704,15 @@ void Extrema_GenExtCS::GlobMinCQuadric(const Adaptor3d_Curve& theC,
 
   Standard_Real aMinResolution =
     aScaleFactor
-    * Min(aResolutionCU, Min(aStepSU / myS->UResolution(1.0), aStepSV / myS->VResolution(1.0)));
+    * std::min(aResolutionCU,
+               std::min(aStepSU / myS->UResolution(1.0), aStepSV / myS->VResolution(1.0)));
 
   if (aMinResolution > Epsilon(1.0))
   {
     if (aResolutionCU > aMinResolution)
     {
 
-      aNewCsample = Min(aMaxNbNodes, RealToInt(aNewCsample * aResolutionCU / aMinResolution));
+      aNewCsample = std::min(aMaxNbNodes, RealToInt(aNewCsample * aResolutionCU / aMinResolution));
 
       aStepCT = (aMaxT(1) - aMinT(1)) / aNewCsample;
     }

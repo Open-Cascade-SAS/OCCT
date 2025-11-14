@@ -270,7 +270,7 @@ static Standard_Boolean CheckSameParameter(const Handle(Adaptor3d_Curve)&   C3d,
     gp_Pnt        pS = S->Value(u, v);
     gp_Pnt        pC = C3d->Value(t);
     Standard_Real d2 = pS.SquareDistance(pC);
-    tolreached       = Max(tolreached, d2);
+    tolreached       = std::max(tolreached, d2);
   }
   tolreached = sqrt(tolreached);
   if (tolreached > tol3d)
@@ -279,7 +279,7 @@ static Standard_Boolean CheckSameParameter(const Handle(Adaptor3d_Curve)&   C3d,
     return Standard_False;
   }
   tolreached *= 2.;
-  tolreached = Max(tolreached, Precision::Confusion());
+  tolreached = std::max(tolreached, Precision::Confusion());
   return Standard_True;
 }
 
@@ -306,7 +306,7 @@ static Standard_Boolean CheckSameParameterExact(
   }
   else
   {
-    tolreached = Max(tolreached, Precision::Confusion());
+    tolreached = std::max(tolreached, Precision::Confusion());
     tolreached *= 1.05;
   }
   return Standard_True;
@@ -458,13 +458,13 @@ static void Oriente(const Handle(Geom_Surface)& S, TopoDS_Edge& E)
 
   if (isuiso)
   {
-    isfirst    = (Abs(P.X() - UFirst) < Precision::Confusion());
+    isfirst    = (std::abs(P.X() - UFirst) < Precision::Confusion());
     isopposite = D.IsOpposite(VRef, 0.1);
     E.Orientation(TopAbs_REVERSED);
   }
   else
   {
-    isfirst    = (Abs(P.Y() - VFirst) < Precision::Confusion());
+    isfirst    = (std::abs(P.Y() - VFirst) < Precision::Confusion());
     isopposite = D.IsOpposite(URef, 0.1);
     E.Orientation(TopAbs_FORWARD);
   }
@@ -485,7 +485,7 @@ static void UpdateEdgeOnPlane(const TopoDS_Face& F, const TopoDS_Edge& E, const 
   Standard_Real        Tol = BRep_Tool::Tolerance(E);
   BB.UpdateEdge(E, C2d, S, Loc, Tol);
   BRepCheck_Edge Check(E);
-  Tol = Max(Tol, Check.Tolerance());
+  Tol = std::max(Tol, Check.Tolerance());
   BB.UpdateEdge(E, Tol);
   TopoDS_Vertex V;
   Tol *= 1.01;
@@ -531,10 +531,10 @@ static void BuildFace(const Handle(Geom_Surface)&   S,
   Tol2 = BRep_Tool::Tolerance(E2);
   Tol3 = BRep_Tool::Tolerance(E3);
   Tol4 = BRep_Tool::Tolerance(E4);
-  //  Tol = Min( BT.Tolerance(E1), BT.Tolerance(E2));
-  Tol = Min(Tol1, Tol2);
-  //  Tol = Min(Tol, Min(BT.Tolerance(E3),BT.Tolerance(E4)));
-  Tol                       = Min(Tol, Min(Tol3, Tol4));
+  //  Tol = std::min( BT.Tolerance(E1), BT.Tolerance(E2));
+  Tol = std::min(Tol1, Tol2);
+  //  Tol = std::min(Tol, std::min(BT.Tolerance(E3),BT.Tolerance(E4)));
+  Tol                       = std::min(Tol, std::min(Tol3, Tol4));
   Standard_Boolean   IsPlan = Standard_False;
   Handle(Geom_Plane) thePlane;
 
@@ -753,7 +753,7 @@ static TopoDS_Edge BuildEdge(Handle(Geom_Curve)&   C3d,
   const gp_Pnt P2 = BRep_Tool::Pnt(VL);
   //  Tol2 = BT.Tolerance(VF);
   Tol2 = BRep_Tool::Tolerance(VL);
-  Tol  = Max(Tol1, Tol2);
+  Tol  = std::max(Tol1, Tol2);
 
   if (VF.IsSame(VL) || (P1.Distance(P2) < Tol))
   {
@@ -1977,8 +1977,8 @@ void BRepFill_Sweep::SetTolerance(const Standard_Real Tol3d,
 
 void BRepFill_Sweep::SetAngularControl(const Standard_Real MinAngle, const Standard_Real MaxAngle)
 {
-  myAngMin = Max(MinAngle, Precision::Angular());
-  myAngMax = Min(MaxAngle, 6.28);
+  myAngMin = std::max(MinAngle, Precision::Angular());
+  myAngMax = std::min(MaxAngle, 6.28);
 }
 
 //=======================================================================
@@ -2693,7 +2693,8 @@ Standard_Boolean BRepFill_Sweep::BuildShell(const BRepFill_TransitionStyle /*Tra
 
       if (singu || singv)
       {
-        Degenerated(isec, ipath) = IsDegen(TabS(isec, ipath), Max(myTol3d, TabErr(isec, ipath)));
+        Degenerated(isec, ipath) =
+          IsDegen(TabS(isec, ipath), std::max(myTol3d, TabErr(isec, ipath)));
       }
       if (Degenerated(isec, ipath))
       {
@@ -3742,14 +3743,15 @@ Standard_Real BRepFill_Sweep::EvalExtrapol(const Standard_Integer         Index,
     Box(Sec, U, box);
     box.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
 
-    R = Max(Max(Abs(Xmin), Abs(Xmax)), Max(Abs(Ymin), Abs(Ymax)));
+    R =
+      std::max(std::max(std::abs(Xmin), std::abs(Xmax)), std::max(std::abs(Ymin), std::abs(Ymax)));
     // R *= 1.1;
     //  modified by NIZHNY-MKK  Fri Oct 31 18:57:51 2003
     //      Standard_Real coef = 1.2;
     Standard_Real coef = 2.;
     R *= coef;
-    Extrap = Max(Abs(Zmin), Abs(Zmax)) + 100 * myTol3d;
-    Extrap += R * Tan(alpha / 2);
+    Extrap = std::max(std::abs(Zmin), std::abs(Zmax)) + 100 * myTol3d;
+    Extrap += R * std::tan(alpha / 2);
   }
   return Extrap;
 }
@@ -3765,8 +3767,8 @@ Standard_Boolean BRepFill_Sweep::MergeVertex(const TopoDS_Shape& V1, TopoDS_Shap
   const TopoDS_Vertex& v1 = TopoDS::Vertex(V1);
   const TopoDS_Vertex& v2 = TopoDS::Vertex(V2);
   Standard_Real        tol;
-  //  tol = Max(BT.Tolerance(v1), BT.Tolerance(v2));
-  tol = Max(BRep_Tool::Tolerance(v1), BRep_Tool::Tolerance(v2));
+  //  tol = std::max(BT.Tolerance(v1), BT.Tolerance(v2));
+  tol = std::max(BRep_Tool::Tolerance(v1), BRep_Tool::Tolerance(v2));
   if (tol < myTol3d)
     tol = myTol3d;
   //  if (BT.Pnt(v1).Distance(BT.Pnt(v2)) <= tol ){

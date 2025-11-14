@@ -20,7 +20,7 @@
 #include <math_FunctionWithDerivative.hxx>
 
 //! This is function, which corresponds trigonometric equation
-//! a*Cos(x)*Cos(x) + 2*b*Cos(x)*Sin(x) + c*Cos(x) + d*Sin(x) + e = 0
+//! a*std::cos(x)*std::cos(x) + 2*b*std::cos(x)*Sin(x) + c*std::cos(x) + d*Sin(x) + e = 0
 //! See class math_TrigonometricFunctionRoots
 class math_TrigonometricEquationFunction : public math_FunctionWithDerivative
 {
@@ -54,7 +54,7 @@ public:
 
   Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D)
   {
-    Standard_Real CN = Cos(X), SN = Sin(X);
+    Standard_Real CN = std::cos(X), SN = std::sin(X);
     //-- D = -2*AA*CN*SN+2*BB*(CN*CN-SN*SN)-CC*SN+DD*CN;
     D = -myAA * CN * SN + myBB * (CN * CN - SN * SN);
     D += D;
@@ -64,7 +64,7 @@ public:
 
   Standard_Boolean Values(const Standard_Real X, Standard_Real& F, Standard_Real& D)
   {
-    Standard_Real CN = Cos(X), SN = Sin(X);
+    Standard_Real CN = std::cos(X), SN = std::sin(X);
     //-- F= AA*CN*CN+2*BB*CN*SN+CC*CN+DD*SN+EE;
     //-- D = -2*AA*CN*SN+2*BB*(CN*CN-SN*SN)-CC*SN+DD*CN;
     Standard_Real AACN = myAA * CN;

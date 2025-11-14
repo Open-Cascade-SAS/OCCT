@@ -733,9 +733,9 @@ void Extrema_ExtElCS::Perform(const gp_Hypr& C, const gp_Pln& S)
     Standard_Real A = C.MinorRadius() * (NPln.Dot(YDir));
     Standard_Real B = C.MajorRadius() * (NPln.Dot(XDir));
 
-    if (Abs(B) > Abs(A))
+    if (std::abs(B) > std::abs(A))
     {
-      Standard_Real   T  = -0.5 * Log((A + B) / (B - A));
+      Standard_Real   T  = -0.5 * std::log((A + B) / (B - A));
       gp_Pnt          Ph = ElCLib::HyperbolaValue(T, Pos, C.MajorRadius(), C.MinorRadius());
       Extrema_POnCurv PC(T, Ph);
       myPoint1 = new Extrema_HArray1OfPOnCurv(1, 1);

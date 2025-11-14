@@ -231,7 +231,7 @@ Vec2d Geom2d_Parabola::DN(const Standard_Real U, const Standard_Integer N) const
 
 void Geom2d_Parabola::Transform(const Trsf2d& T)
 {
-  focalLength *= Abs(T.ScaleFactor());
+  focalLength *= std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 
@@ -241,14 +241,14 @@ Standard_Real Geom2d_Parabola::TransformedParameter(const Standard_Real U, const
 {
   if (Precision::IsInfinite(U))
     return U;
-  return U * Abs(T.ScaleFactor());
+  return U * std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
 
 Standard_Real Geom2d_Parabola::ParametricTransformation(const gp_Trsf2d& T) const
 {
-  return Abs(T.ScaleFactor());
+  return std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================

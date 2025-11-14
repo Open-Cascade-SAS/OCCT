@@ -59,7 +59,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
   parcen3  = 0.;
 
   WellDone          = Standard_False;
-  Standard_Real Tol = Abs(Tolang);
+  Standard_Real Tol = std::abs(Tolang);
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified())
@@ -95,7 +95,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
   gp_Pnt2d point2 = Geom2dGcc_CurveTool::Value(Cu2, Param2);
   gp_Pnt2d point3 = ElCLib::Value(Param3, OnLine);
   Ufirst(4)       = (point3.Distance(point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(L1, Cu2, OnLine, Max(Ufirst(4), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(L1, Cu2, OnLine, std::max(Ufirst(4), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -110,7 +110,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
     gp_Pnt2d      point3new(OnLine.Location().XY() + Ufirst(3) * Tan3.XY());
     Standard_Real dist1 = point3new.Distance(point1);
     Standard_Real dist2 = point3new.Distance(point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3new, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan2 = Tan2.Magnitude();
@@ -177,7 +177,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
@@ -196,15 +196,15 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
   Ufirst(1)       = Param1;
   Ufirst(2)       = Param2;
   Ufirst(3)       = Param3;
-  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolerance));
-  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
+  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolerance));
+  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
   tol(3)          = 1.e-15;
   tol(4)          = Tol / 10.;
   gp_Pnt2d point1 = Geom2dGcc_CurveTool::Value(Cu1, Param1);
   gp_Pnt2d point2 = Geom2dGcc_CurveTool::Value(Cu2, Param2);
   gp_Pnt2d point3 = ElCLib::Value(Param3, OnLine);
   Ufirst(4)       = (point3.Distance(point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Cu2, OnLine, Max(Ufirst(4), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Cu2, OnLine, std::max(Ufirst(4), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -222,7 +222,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     {
       return;
     }
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3new, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan1 = Tan1.Magnitude();
@@ -295,7 +295,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   math_Vector         Umin(1, 3);
@@ -310,13 +310,13 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
   Umax(3)         = RealLast();
   Ufirst(1)       = Param1;
   Ufirst(2)       = Param2;
-  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolerance));
+  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolerance));
   tol(2)          = 1.e-15;
   tol(3)          = Tol / 10.;
   gp_Pnt2d point1 = Geom2dGcc_CurveTool::Value(Cu1, Param1);
   gp_Pnt2d point3 = ElCLib::Value(Param2, OnLine);
   Ufirst(3)       = (point3.Distance(Point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Point2, OnLine, Max(Ufirst(3), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Point2, OnLine, std::max(Ufirst(3), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -329,7 +329,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     ElCLib::D1(Ufirst(2), OnLine, point3new, Tan3);
     Standard_Real dist1 = point3new.Distance(point1new);
     Standard_Real dist2 = point3new.Distance(Point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3new, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan1 = Tan1.Magnitude();
@@ -390,7 +390,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Dir2d            dirx(gp_Dir2d::D::X);
   gp_Circ2d           C1  = Qualified1.Qualified();
   Standard_Real       R1  = C1.Radius();
@@ -411,14 +411,14 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
   Ufirst(2)       = Param2;
   Ufirst(3)       = Param3;
   tol(1)          = 2.e-15 * M_PI;
-  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
+  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
   tol(3)          = 1.e-15;
   tol(4)          = Tol / 10.;
   gp_Pnt2d point1 = ElCLib::Value(Param1, C1);
   gp_Pnt2d point2 = Geom2dGcc_CurveTool::Value(Cu2, Param2);
   gp_Pnt2d point3 = ElCLib::Value(Param3, OnLine);
   Ufirst(4)       = (point3.Distance(point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(C1, Cu2, OnLine, Max(Ufirst(4), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(C1, Cu2, OnLine, std::max(Ufirst(4), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -437,7 +437,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
     point3              = ElCLib::Value(Ufirst(1), OnLine);
     Standard_Real dist1 = point3.Distance(point1);
     Standard_Real dist2 = point3.Distance(point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan2 = Tan2.Magnitude();
@@ -506,7 +506,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Dir2d            dirx(gp_Dir2d::D::X);
   gp_Circ2d           C1  = Qualified1.Qualified();
   Standard_Real       R1  = C1.Radius();
@@ -527,14 +527,14 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
   Ufirst(2)       = Param2;
   Ufirst(3)       = Param3;
   tol(1)          = 2.e-15 * M_PI;
-  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
+  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
   tol(3)          = 2.e-15 * M_PI;
   tol(4)          = Tol / 10.;
   gp_Pnt2d point1 = ElCLib::Value(Param1, C1);
   gp_Pnt2d point2 = Geom2dGcc_CurveTool::Value(Cu2, Param2);
   gp_Pnt2d point3 = ElCLib::Value(Param3, OnCirc);
   Ufirst(4)       = (point3.Distance(point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(C1, Cu2, OnCirc, Max(Ufirst(4), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(C1, Cu2, OnCirc, std::max(Ufirst(4), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -546,12 +546,12 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
     ElCLib::D1(Ufirst(1), C1, point1, Tan1);
     Geom2dGcc_CurveTool::D1(Cu2, Ufirst(2), point2, Tan2);
 #ifdef OCCT_DEBUG
-    gp_Vec2d Tan3(-Sin(Ufirst(3)), Cos(Ufirst(3)));
+    gp_Vec2d Tan3(-std::sin(Ufirst(3)), std::cos(Ufirst(3)));
 #endif
     point3              = ElCLib::Value(Ufirst(3), OnCirc);
     Standard_Real dist1 = point3.Distance(point1);
     Standard_Real dist2 = point3.Distance(point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan2 = Tan2.Magnitude();
@@ -619,7 +619,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Dir2d            dirx(gp_Dir2d::D::X);
   gp_Lin2d            L1  = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
@@ -639,14 +639,14 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
   Ufirst(2)       = Param2;
   Ufirst(3)       = Param3;
   tol(1)          = 1.e-15;
-  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
+  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
   tol(3)          = 2.e-15 * M_PI;
   tol(4)          = Tol / 10.;
   gp_Pnt2d point1 = ElCLib::Value(Param1, L1);
   gp_Pnt2d point2 = Geom2dGcc_CurveTool::Value(Cu2, Param2);
   gp_Pnt2d point3 = ElCLib::Value(Param3, OnCirc);
   Ufirst(4)       = (point3.Distance(point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(L1, Cu2, OnCirc, Max(Ufirst(4), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(L1, Cu2, OnCirc, std::max(Ufirst(4), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -658,12 +658,12 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
     ElCLib::D1(Ufirst(1), L1, point1new, Tan1);
     Geom2dGcc_CurveTool::D1(Cu2, Ufirst(2), point2new, Tan2);
 #ifdef OCCT_DEBUG
-    gp_Vec2d Tan3(-Sin(Ufirst(3)), Cos(Ufirst(3)));
+    gp_Vec2d Tan3(-std::sin(Ufirst(3)), std::cos(Ufirst(3)));
 #endif
     point3              = ElCLib::Value(Ufirst(3), OnCirc);
     Standard_Real dist1 = point3.Distance(point1new);
     Standard_Real dist2 = point3.Distance(point2new);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan2 = Tan2.Magnitude();
@@ -730,7 +730,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
@@ -749,16 +749,16 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
   Ufirst(1)            = Param1;
   Ufirst(2)            = Param2;
   Ufirst(3)            = Param3;
-  tol(1)               = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolerance));
-  tol(2)               = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
+  tol(1)               = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolerance));
+  tol(2)               = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
   tol(3)               = 2.e-15 * M_PI;
   tol(4)               = Tol / 10.;
   gp_Pnt2d      point1 = Geom2dGcc_CurveTool::Value(Cu1, Param1);
   gp_Pnt2d      point2 = Geom2dGcc_CurveTool::Value(Cu2, Param2);
   Standard_Real R1     = OnCirc.Radius();
-  gp_Pnt2d      point3(OnCirc.Location().XY() + R1 * gp_XY(Cos(Param3), Sin(Param3)));
+  gp_Pnt2d      point3(OnCirc.Location().XY() + R1 * gp_XY(std::cos(Param3), std::sin(Param3)));
   Ufirst(4) = (point3.Distance(point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Cu2, OnCirc, Max(Ufirst(4), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Cu2, OnCirc, std::max(Ufirst(4), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -770,12 +770,13 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     Geom2dGcc_CurveTool::D1(Cu1, Ufirst(1), point1, Tan1);
     Geom2dGcc_CurveTool::D1(Cu2, Ufirst(2), point2, Tan2);
 #ifdef OCCT_DEBUG
-    gp_Vec2d Tan3(-Sin(Ufirst(3)), Cos(Ufirst(3)));
+    gp_Vec2d Tan3(-std::sin(Ufirst(3)), std::cos(Ufirst(3)));
 #endif
-    point3 = gp_Pnt2d(OnCirc.Location().XY() + R1 * gp_XY(Cos(Ufirst(3)), Sin(Ufirst(3))));
+    point3 =
+      gp_Pnt2d(OnCirc.Location().XY() + R1 * gp_XY(std::cos(Ufirst(3)), std::sin(Ufirst(3))));
     Standard_Real dist1 = point3.Distance(point1);
     Standard_Real dist2 = point3.Distance(point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan1 = Tan1.Magnitude();
@@ -848,7 +849,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   math_Vector         Umin(1, 3);
@@ -863,13 +864,13 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
   Umax(3)         = RealLast();
   Ufirst(1)       = Param1;
   Ufirst(2)       = Param2;
-  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolerance));
+  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolerance));
   tol(2)          = 2.e-15 * M_PI;
   tol(3)          = Tol / 10.;
   gp_Pnt2d point1 = Geom2dGcc_CurveTool::Value(Cu1, Param1);
   gp_Pnt2d point3 = ElCLib::Value(Param2, OnCirc);
   Ufirst(3)       = (point3.Distance(Point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Point2, OnCirc, Max(Ufirst(3), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Point2, OnCirc, std::max(Ufirst(3), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -882,7 +883,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Q
     ElCLib::D1(Ufirst(2), OnCirc, point3new, Tan3);
     Standard_Real dist1 = point3new.Distance(point1new);
     Standard_Real dist2 = point3new.Distance(Point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3new, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan1 = Tan1.Magnitude();
@@ -933,7 +934,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&  
   parcen3  = 0.;
 
   WellDone          = Standard_False;
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
@@ -962,15 +963,15 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&  
   Ufirst(1)       = Param1;
   Ufirst(2)       = Param2;
   Ufirst(3)       = Param3;
-  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolerance));
-  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
-  tol(3)          = Geom2dGcc_CurveTool::EpsX(OnCurv, Abs(Tolerance));
+  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolerance));
+  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
+  tol(3)          = Geom2dGcc_CurveTool::EpsX(OnCurv, std::abs(Tolerance));
   tol(4)          = Tol / 10.;
   gp_Pnt2d point1 = Geom2dGcc_CurveTool::Value(Cu1, Param1);
   gp_Pnt2d point2 = Geom2dGcc_CurveTool::Value(Cu2, Param2);
   gp_Pnt2d point3 = Geom2dGcc_CurveTool::Value(OnCurv, Param3);
   Ufirst(4)       = (point3.Distance(point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Cu2, OnCurv, Max(Ufirst(4), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Cu2, OnCurv, std::max(Ufirst(4), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -983,7 +984,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&  
     Geom2dGcc_CurveTool::D1(OnCurv, Ufirst(3), point3, Tan3);
     Standard_Real dist1 = point3.Distance(point1);
     Standard_Real dist2 = point3.Distance(point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan1 = Tan1.Magnitude();
@@ -1060,7 +1061,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Circ2d           C1  = Qualified1.Qualified();
   Standard_Real       R1  = C1.Radius();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
@@ -1080,14 +1081,14 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
   Ufirst(2)       = Param2;
   Ufirst(3)       = ParamOn;
   tol(1)          = 2.e-15 * M_PI;
-  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
-  tol(3)          = Geom2dGcc_CurveTool::EpsX(OnCurv, Abs(Tolerance));
+  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
+  tol(3)          = Geom2dGcc_CurveTool::EpsX(OnCurv, std::abs(Tolerance));
   tol(4)          = Tol / 10.;
   gp_Pnt2d point1 = ElCLib::Value(Param1, C1);
   gp_Pnt2d point2 = Geom2dGcc_CurveTool::Value(Cu2, Param2);
   gp_Pnt2d point3 = Geom2dGcc_CurveTool::Value(OnCurv, ParamOn);
   Ufirst(4)       = (point3.Distance(point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(C1, Cu2, OnCurv, Max(Ufirst(4), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(C1, Cu2, OnCurv, std::max(Ufirst(4), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -1100,7 +1101,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCir
     ElCLib::D1(Ufirst(1), C1, point1, Tan1);
     Standard_Real dist1 = point3.Distance(point1);
     Standard_Real dist2 = point3.Distance(point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       gp_Dir2d dirx(gp_Dir2d::D::X);
       cirsol                  = gp_Circ2d(gp_Ax2d(point3, dirx), (dist1 + dist2) / 2.);
@@ -1169,7 +1170,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Dir2d            dirx(gp_Dir2d::D::X);
   gp_Lin2d            L1  = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
@@ -1189,14 +1190,14 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
   Ufirst(2)       = Param2;
   Ufirst(3)       = ParamOn;
   tol(1)          = 1.e-15;
-  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
-  tol(3)          = Geom2dGcc_CurveTool::EpsX(OnCurv, Abs(Tolerance));
+  tol(2)          = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
+  tol(3)          = Geom2dGcc_CurveTool::EpsX(OnCurv, std::abs(Tolerance));
   tol(4)          = Tol / 10.;
   gp_Pnt2d point1 = ElCLib::Value(Param1, L1);
   gp_Pnt2d point2 = Geom2dGcc_CurveTool::Value(Cu2, Param2);
   gp_Pnt2d point3 = Geom2dGcc_CurveTool::Value(OnCurv, ParamOn);
   Ufirst(4)       = (point3.Distance(point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(L1, Cu2, OnCurv, Max(Ufirst(4), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(L1, Cu2, OnCurv, std::max(Ufirst(4), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -1209,7 +1210,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin
     Geom2dGcc_CurveTool::D1(OnCurv, Ufirst(3), point3, Tan3);
     Standard_Real dist1 = point3.Distance(point1);
     Standard_Real dist2 = point3.Distance(point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan2 = Tan2.Magnitude();
@@ -1273,7 +1274,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&  
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real       Tol = Abs(Tolerance);
+  Standard_Real       Tol = std::abs(Tolerance);
   gp_Dir2d            dirx(gp_Dir2d::D::X);
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   math_Vector         Umin(1, 3);
@@ -1288,13 +1289,13 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&  
   Umax(3)         = Geom2dGcc_CurveTool::LastParameter(OnCurv);
   Ufirst(1)       = Param1;
   Ufirst(2)       = ParamOn;
-  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolerance));
-  tol(2)          = Geom2dGcc_CurveTool::EpsX(OnCurv, Abs(Tolerance));
+  tol(1)          = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolerance));
+  tol(2)          = Geom2dGcc_CurveTool::EpsX(OnCurv, std::abs(Tolerance));
   tol(3)          = Tol / 10.;
   gp_Pnt2d point1 = Geom2dGcc_CurveTool::Value(Cu1, Param1);
   gp_Pnt2d point3 = Geom2dGcc_CurveTool::Value(OnCurv, ParamOn);
   Ufirst(3)       = (point3.Distance(Point2) + point3.Distance(point1)) / 2.;
-  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Point2, OnCurv, Max(Ufirst(3), Tol));
+  Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1, Point2, OnCurv, std::max(Ufirst(3), Tol));
   math_FunctionSetRoot          Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst, Umin);
@@ -1307,7 +1308,7 @@ Geom2dGcc_Circ2d2TanOnIter::Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&  
     Geom2dGcc_CurveTool::D1(OnCurv, Ufirst(3), point3, Tan3);
     Standard_Real dist1 = point3.Distance(point1);
     Standard_Real dist2 = point3.Distance(Point2);
-    if (Abs(dist1 - dist2) / 2. <= Tol)
+    if (std::abs(dist1 - dist2) / 2. <= Tol)
     {
       cirsol                  = gp_Circ2d(gp_Ax2d(point3, dirx), (dist1 + dist2) / 2.);
       Standard_Real normetan1 = Tan1.Magnitude();

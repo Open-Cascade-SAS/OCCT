@@ -609,9 +609,9 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real    Radius,
       {
         Baryc(its.Value(), Barycentre);
         parbar = ElCLib::LineParameter(myAxis, Barycentre);
-        if (Abs(First - parbar) < dmin)
+        if (std::abs(First - parbar) < dmin)
         {
-          dmin   = Abs(First - parbar);
+          dmin   = std::abs(First - parbar);
           tokeep = its.Value();
         }
       }
@@ -744,8 +744,8 @@ void BoxParameters(const TopoDS_Shape& S,
       {
         P.SetZ(c[k]);
         param  = ElCLib::LineParameter(Axis, P);
-        parmin = Min(param, parmin);
-        parmax = Max(param, parmax);
+        parmin = std::min(param, parmin);
+        parmax = std::max(param, parmax);
       }
     }
   }
@@ -770,9 +770,9 @@ Standard_Boolean GetOffset(const LocOpe_PntFace& PntInfo,
   if (stat != CSLib_Defined)
     return Standard_False;
   Standard_Real angle = Axis.Direction().Angle(NormF);
-  if (Abs(M_PI / 2. - angle) < Precision::Angular())
+  if (std::abs(M_PI / 2. - angle) < Precision::Angular())
     return Standard_False;
-  outOff = Radius * Abs(tan(angle));
+  outOff = Radius * std::abs(tan(angle));
   return Standard_True;
 }
 

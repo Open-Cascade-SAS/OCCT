@@ -74,7 +74,7 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
   {
     v1 = I1(ind1);
     v2 = I2(ind2);
-    if (Abs(v1 - v2) <= Epspar)
+    if (std::abs(v1 - v2) <= Epspar)
     {
       // elements of I1 and I2 fit here
       Seq.Append((v1 + v2) / 2);
@@ -271,7 +271,7 @@ Standard_Boolean BRepBlend_RstRstEvolRad::IsSolution(const math_Vector&  Sol,
 
   Values(Sol, valsol, gradsol);
 
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol)
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol)
   {
 
     // Calculation of tangents
@@ -348,7 +348,7 @@ Standard_Boolean BRepBlend_RstRstEvolRad::IsSolution(const math_Vector&  Sol,
       Sina = -Sina; // nplan is changed into -nplan
     }
 
-    Angle = ACos(Cosa);
+    Angle = std::acos(Cosa);
     if (Sina < 0.)
     {
       Angle = 2. * M_PI - Angle;
@@ -362,7 +362,7 @@ Standard_Boolean BRepBlend_RstRstEvolRad::IsSolution(const math_Vector&  Sol,
     {
       minang = Angle;
     }
-    distmin = Min(distmin, ptrst1.Distance(ptrst2));
+    distmin = std::min(distmin, ptrst1.Distance(ptrst2));
 
     return Standard_True;
   }
@@ -625,7 +625,7 @@ void BRepBlend_RstRstEvolRad::Section(const Standard_Real Param,
 
   CenterCircleRst1Rst2(ptrst1, ptrst2, np, Center, NotUsed);
 
-  C.SetRadius(Abs(ray));
+  C.SetRadius(std::abs(ray));
   ns = gp_Vec(Center, ptrst1).Normalized();
 
   if (choix % 2 != 0)
@@ -659,7 +659,7 @@ Standard_Boolean BRepBlend_RstRstEvolRad::IsRational() const
 
 Standard_Real BRepBlend_RstRstEvolRad::GetSectionSize() const
 {
-  return maxang * Abs(ray);
+  return maxang * std::abs(ray);
 }
 
 //=================================================================================================
@@ -745,11 +745,11 @@ void BRepBlend_RstRstEvolRad::GetTolerance(const Standard_Real BoundTol,
 {
   Standard_Integer low = Tol3d.Lower(), up = Tol3d.Upper();
   Standard_Real    Tol;
-  Tol = GeomFill::GetTolerance(myTConv, minang, Abs(ray), AngleTol, SurfTol);
+  Tol = GeomFill::GetTolerance(myTConv, minang, std::abs(ray), AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
-  Tol3d(low + 1) = Tol3d(up - 1) = Min(Tol, SurfTol);
-  Tol3d(low) = Tol3d(up) = Min(Tol, BoundTol);
+  Tol3d(low + 1) = Tol3d(up - 1) = std::min(Tol, SurfTol);
+  Tol3d(low) = Tol3d(up) = std::min(Tol, BoundTol);
 }
 
 //=================================================================================================
@@ -793,7 +793,7 @@ void BRepBlend_RstRstEvolRad::Section(const Blend_Point&    P,
 
   ptrst1  = cons1.Value(u);
   ptrst2  = cons2.Value(v);
-  distmin = Min(distmin, ptrst1.Distance(ptrst2));
+  distmin = std::min(distmin, ptrst1.Distance(ptrst2));
 
   Poles2d(Poles2d.Lower()).SetCoord(pt2d1.X(), pt2d1.Y());
   Poles2d(Poles2d.Upper()).SetCoord(pt2d2.X(), pt2d2.Y());
@@ -820,7 +820,16 @@ void BRepBlend_RstRstEvolRad::Section(const Blend_Point&    P,
     nplan.Reverse();
   }
 
-  GeomFill::GetCircle(myTConv, n1, n2, nplan, ptrst1, ptrst2, Abs(ray), Center, Poles, Weights);
+  GeomFill::GetCircle(myTConv,
+                      n1,
+                      n2,
+                      nplan,
+                      ptrst1,
+                      ptrst2,
+                      std::abs(ray),
+                      Center,
+                      Poles,
+                      Weights);
 }
 
 //=================================================================================================
@@ -1018,7 +1027,7 @@ Standard_Boolean BRepBlend_RstRstEvolRad::Section(const Blend_Point&    P,
                                ptrst2,
                                tgrst1,
                                tgrst2,
-                               Abs(ray),
+                               std::abs(ray),
                                dray,
                                Center,
                                tgct,
@@ -1029,7 +1038,16 @@ Standard_Boolean BRepBlend_RstRstEvolRad::Section(const Blend_Point&    P,
   }
   else
   {
-    GeomFill::GetCircle(myTConv, n1, n2, nplan, ptrst1, ptrst2, Abs(ray), Center, Poles, Weights);
+    GeomFill::GetCircle(myTConv,
+                        n1,
+                        n2,
+                        nplan,
+                        ptrst1,
+                        ptrst2,
+                        std::abs(ray),
+                        Center,
+                        Poles,
+                        Weights);
     return Standard_False;
   }
 }

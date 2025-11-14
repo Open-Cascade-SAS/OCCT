@@ -54,11 +54,12 @@ Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments(const gp_Pnt&       
 
   // construction of i,j mark for the circle
   gp_Dir aN;
-  if (Abs(theDir.X()) <= Abs(theDir.Y()) && Abs(theDir.X()) <= Abs(theDir.Z()))
+  if (std::abs(theDir.X()) <= std::abs(theDir.Y()) && std::abs(theDir.X()) <= std::abs(theDir.Z()))
   {
     aN = gp::DX();
   }
-  else if (Abs(theDir.Y()) <= Abs(theDir.Z()) && Abs(theDir.Y()) <= Abs(theDir.X()))
+  else if (std::abs(theDir.Y()) <= std::abs(theDir.Z())
+           && std::abs(theDir.Y()) <= std::abs(theDir.X()))
   {
     aN = gp::DY();
   }
@@ -71,11 +72,11 @@ Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments(const gp_Pnt&       
   const gp_XYZ anXYZj = theDir.XYZ().Crossed(anXYZi.XYZ());
   aSegments->AddVertex(theLocation);
 
-  const Standard_Real Tg = Tan(theAngle);
+  const Standard_Real Tg = std::tan(theAngle);
   for (Standard_Integer aVertIter = 1; aVertIter <= theNbSegments; ++aVertIter)
   {
-    const Standard_Real aCos = Cos(2.0 * M_PI / theNbSegments * (aVertIter - 1));
-    const Standard_Real aSin = Sin(2.0 * M_PI / theNbSegments * (aVertIter - 1));
+    const Standard_Real aCos = std::cos(2.0 * M_PI / theNbSegments * (aVertIter - 1));
+    const Standard_Real aSin = std::sin(2.0 * M_PI / theNbSegments * (aVertIter - 1));
 
     const gp_Pnt pp(aC.X() + (aCos * anXYZi.X() + aSin * anXYZj.X()) * theLength * Tg,
                     aC.Y() + (aCos * anXYZi.Y() + aSin * anXYZj.Y()) * theLength * Tg,
@@ -111,7 +112,7 @@ Handle(Graphic3d_ArrayOfTriangles) Prs3d_Arrow::DrawShaded(const gp_Ax1&        
                                                            const Standard_Real    theConeLength,
                                                            const Standard_Integer theNbFacettes)
 {
-  const Standard_Real    aTubeLength = Max(0.0, theAxisLength - theConeLength);
+  const Standard_Real    aTubeLength = std::max(0.0, theAxisLength - theConeLength);
   const Standard_Integer aNbTrisTube = (theTubeRadius > 0.0 && aTubeLength > 0.0)
                                          ? Prs3d_ToolCylinder::TrianglesNb(theNbFacettes, 1)
                                          : 0;

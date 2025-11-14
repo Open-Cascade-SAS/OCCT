@@ -230,12 +230,12 @@ Standard_Boolean GeomConvert_CurveToAnaCurve::GetCircle(gp_Circ&      crc,
                                                         const gp_Pnt& P2)
 {
   //  Control if points are not aligned (should be done by MakeCirc
-  Standard_Real aMaxCoord = Sqrt(Precision::Infinite());
-  if (Abs(P0.X()) > aMaxCoord || Abs(P0.Y()) > aMaxCoord || Abs(P0.Z()) > aMaxCoord)
+  Standard_Real aMaxCoord = std::sqrt(Precision::Infinite());
+  if (std::abs(P0.X()) > aMaxCoord || std::abs(P0.Y()) > aMaxCoord || std::abs(P0.Z()) > aMaxCoord)
     return Standard_False;
-  if (Abs(P1.X()) > aMaxCoord || Abs(P1.Y()) > aMaxCoord || Abs(P1.Z()) > aMaxCoord)
+  if (std::abs(P1.X()) > aMaxCoord || std::abs(P1.Y()) > aMaxCoord || std::abs(P1.Z()) > aMaxCoord)
     return Standard_False;
-  if (Abs(P2.X()) > aMaxCoord || Abs(P2.Y()) > aMaxCoord || Abs(P2.Z()) > aMaxCoord)
+  if (std::abs(P2.X()) > aMaxCoord || std::abs(P2.Y()) > aMaxCoord || std::abs(P2.Z()) > aMaxCoord)
     return Standard_False;
 
   //  Building the circle
@@ -309,7 +309,7 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeCircle(const Handle(Geom_
 
   // first parameter should be closed to zero
 
-  if (Abs(cf) < Precision::PConfusion() || Abs(PI2 - cf) < Precision::PConfusion())
+  if (std::abs(cf) < Precision::PConfusion() || std::abs(PI2 - cf) < Precision::PConfusion())
     cf = 0.;
 
   Standard_Real cm = ElCLib::Parameter(crc, c3d->Value((c1 + c2) / 2.));
@@ -424,14 +424,14 @@ static Standard_Boolean ConicDefinition(const Standard_Real    a,
     Standard_Real cos2t;
     Standard_Real auxil;
 
-    if (Abs(term2) <= eps && Abs(term1) <= eps)
+    if (std::abs(term2) <= eps && std::abs(term1) <= eps)
     {
       cos2t = 1.;
       auxil = 0.;
     }
     else
     {
-      if (Abs(term1) < eps)
+      if (std::abs(term1) < eps)
       {
         return Standard_False;
       }
@@ -446,7 +446,7 @@ static Standard_Boolean ConicDefinition(const Standard_Real    a,
     Standard_Real aprim = (a + c + auxil) / 2.;
     Standard_Real cprim = (a + c - auxil) / 2.;
 
-    if (Abs(aprim) < gp::Resolution() || Abs(cprim) < gp::Resolution())
+    if (std::abs(aprim) < gp::Resolution() || std::abs(cprim) < gp::Resolution())
       return Standard_False;
 
     term1 = -gdet / (aprim * pdet);
@@ -548,8 +548,8 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeEllipse(const Handle(Geom
   if (!IsArrayPntPlanar(AP, ndir, prec))
     return res;
 
-  if (Abs(ndir.X()) < gp::Resolution() && Abs(ndir.Y()) < gp::Resolution()
-      && Abs(ndir.Z()) < gp::Resolution())
+  if (std::abs(ndir.X()) < gp::Resolution() && std::abs(ndir.Y()) < gp::Resolution()
+      && std::abs(ndir.Z()) < gp::Resolution())
     return res;
 
   gp_Ax3  AX(gp_Pnt(0, 0, 0), ndir);
@@ -644,7 +644,7 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeEllipse(const Handle(Geom
 
       // first parameter should be closed to zero
 
-      if (Abs(cf) < Precision::PConfusion() || Abs(PI2 - cf) < Precision::PConfusion())
+      if (std::abs(cf) < Precision::PConfusion() || std::abs(PI2 - cf) < Precision::PConfusion())
         cf = 0.;
 
       Standard_Real cm = ElCLib::Parameter(anEllipse, c3d->Value((c1 + c2) / 2.));
@@ -772,12 +772,12 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeCurve(const Handle(Geom_C
   {
     d[0]              = RealLast();
     newc3d[0]         = ComputeLine(c3d, tolerance, c1, c2, fp[0], lp[0], d[0]);
-    Standard_Real tol = Min(tolerance, d[0]);
+    Standard_Real tol = std::min(tolerance, d[0]);
     if (!Precision::IsInfinite(c1) && !Precision::IsInfinite(c2))
     {
       d[1]      = RealLast();
       newc3d[1] = ComputeCircle(c3d, tol, c1, c2, fp[1], lp[1], d[1]);
-      tol       = Min(tol, d[1]);
+      tol       = std::min(tol, d[1]);
       d[2]      = RealLast();
       newc3d[2] = ComputeEllipse(c3d, tol, c1, c2, fp[2], lp[2], d[2]);
     }

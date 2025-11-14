@@ -372,14 +372,14 @@ static Standard_Boolean ExactBound(gp_Pnt&                          Sol,
   Standard_Real RU1, RU2, RV1, RV2;
   d1(Sol.X(), U0, V0, D2d, Curve, Surface);
   // Here we assume that D2d != (0, 0)
-  if (Abs(D2d.X()) < gp::Resolution())
+  if (std::abs(D2d.X()) < gp::Resolution())
   {
     RU1 = Precision::Infinite();
     RU2 = Precision::Infinite();
     RV1 = V0 - FirstV;
     RV2 = LastV - V0;
   }
-  else if (Abs(D2d.Y()) < gp::Resolution())
+  else if (std::abs(D2d.Y()) < gp::Resolution())
   {
     RU1 = U0 - FirstU;
     RU2 = LastU - U0;
@@ -414,8 +414,8 @@ static Standard_Boolean ExactBound(gp_Pnt&                          Sol,
   }
 
   t  = Sol.X();
-  t1 = Min(Sol.X(), NotSol);
-  t2 = Max(Sol.X(), NotSol);
+  t1 = std::min(Sol.X(), NotSol);
+  t2 = std::max(Sol.X(), NotSol);
 
   Standard_Boolean isDone = Standard_False;
   while (!Seq.IsEmpty())
@@ -655,8 +655,8 @@ ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve(const Standard_Real      
       myProj3d(Standard_False),
       myMaxDist(theMaxDist)
 {
-  myTolU = Max(Precision::PConfusion(), mySurface->UResolution(theTol3d));
-  myTolV = Max(Precision::PConfusion(), mySurface->VResolution(theTol3d));
+  myTolU = std::max(Precision::PConfusion(), mySurface->UResolution(theTol3d));
+  myTolV = std::max(Precision::PConfusion(), mySurface->VResolution(theTol3d));
 
   Init();
 }
@@ -753,7 +753,7 @@ void ProjLib_CompProjectedCurve::Init()
     // Search for the beginning of a new continuous part
     // to avoid infinite computation in some difficult cases.
     new_part = Standard_False;
-    if (t > FirstU && Abs(t - prevDeb) <= Precision::PConfusion())
+    if (t > FirstU && std::abs(t - prevDeb) <= Precision::PConfusion())
       SameDeb = Standard_True;
     while (t <= LastU && !new_part && !FromLastU && !SameDeb)
     {
@@ -778,7 +778,8 @@ void ProjLib_CompProjectedCurve::Init()
 
           aPrjPS.Perform(ParT, ParU, ParV, aTol, aLowBorder, aUppBorder, FuncTol, Standard_True);
 
-          if (aPrjPS.IsDone() && P1.Parameter() > Max(FirstU, t - Step + Precision::PConfusion())
+          if (aPrjPS.IsDone()
+              && P1.Parameter() > std::max(FirstU, t - Step + Precision::PConfusion())
               && P1.Parameter() <= t)
           {
             t         = ParT;
@@ -810,20 +811,20 @@ void ProjLib_CompProjectedCurve::Init()
         gp_Vec2d D;
 
         if ((mySurface->IsUPeriodic()
-             && Abs(aUppBorder.X() - aLowBorder.X() - mySurface->UPeriod())
+             && std::abs(aUppBorder.X() - aLowBorder.X() - mySurface->UPeriod())
                   < Precision::Confusion())
             || (mySurface->IsVPeriodic()
-                && Abs(aUppBorder.Y() - aLowBorder.Y() - mySurface->VPeriod())
+                && std::abs(aUppBorder.Y() - aLowBorder.Y() - mySurface->VPeriod())
                      < Precision::Confusion()))
         {
-          if ((Abs(U - aLowBorder.X()) < mySurface->UResolution(Precision::PConfusion()))
+          if ((std::abs(U - aLowBorder.X()) < mySurface->UResolution(Precision::PConfusion()))
               && mySurface->IsUPeriodic())
           {
             d1(t, U, V, D, myCurve, mySurface);
             if (D.X() < 0)
               U = aUppBorder.X();
           }
-          else if ((Abs(U - aUppBorder.X()) < mySurface->UResolution(Precision::PConfusion()))
+          else if ((std::abs(U - aUppBorder.X()) < mySurface->UResolution(Precision::PConfusion()))
                    && mySurface->IsUPeriodic())
           {
             d1(t, U, V, D, myCurve, mySurface);
@@ -831,14 +832,14 @@ void ProjLib_CompProjectedCurve::Init()
               U = aLowBorder.X();
           }
 
-          if ((Abs(V - aLowBorder.Y()) < mySurface->VResolution(Precision::PConfusion()))
+          if ((std::abs(V - aLowBorder.Y()) < mySurface->VResolution(Precision::PConfusion()))
               && mySurface->IsVPeriodic())
           {
             d1(t, U, V, D, myCurve, mySurface);
             if (D.Y() < 0)
               V = aUppBorder.Y();
           }
-          else if ((Abs(V - aUppBorder.Y()) <= mySurface->VResolution(Precision::PConfusion()))
+          else if ((std::abs(V - aUppBorder.Y()) <= mySurface->VResolution(Precision::PConfusion()))
                    && mySurface->IsVPeriodic())
           {
             d1(t, U, V, D, myCurve, mySurface);
@@ -866,10 +867,10 @@ void ProjLib_CompProjectedCurve::Init()
         if (t != FirstU)
         {
           // Search for exact boundary point
-          Tol = Min(myTolU, myTolV);
+          Tol = std::min(myTolU, myTolV);
           gp_Vec2d aD;
           d1(Triple.X(), Triple.Y(), Triple.Z(), aD, myCurve, mySurface);
-          Tol /= Max(Abs(aD.X()), Abs(aD.Y()));
+          Tol /= std::max(std::abs(aD.X()), std::abs(aD.Y()));
 
           if (!ExactBound(Triple, t - Step, Tol, myTolU, myTolV, myCurve, mySurface))
           {
@@ -915,7 +916,7 @@ void ProjLib_CompProjectedCurve::Init()
     if (MagnD2 < Precision::Confusion())
       WalkStep = MaxStep;
     else
-      WalkStep = Min(MaxStep, Max(MinStep, 0.1 * MagnD1 / MagnD2));
+      WalkStep = std::min(MaxStep, std::max(MinStep, 0.1 * MagnD1 / MagnD2));
 
     Step = WalkStep;
 
@@ -932,9 +933,9 @@ void ProjLib_CompProjectedCurve::Init()
       U0 = Triple.Y() + (Step / prevStep) * (Triple.Y() - prevTriple.Y());
       V0 = Triple.Z() + (Step / prevStep) * (Triple.Z() - prevTriple.Z());
       // adjust U0 to be in [mySurface->FirstUParameter(),mySurface->LastUParameter()]
-      U0 = Min(Max(U0, aLowBorder.X()), aUppBorder.X());
+      U0 = std::min(std::max(U0, aLowBorder.X()), aUppBorder.X());
       // adjust V0 to be in [mySurface->FirstVParameter(),mySurface->LastVParameter()]
-      V0 = Min(Max(V0, aLowBorder.Y()), aUppBorder.Y());
+      V0 = std::min(std::max(V0, aLowBorder.Y()), aUppBorder.Y());
 
       aPrjPS.Perform(t, U0, V0, aTol, aLowBorder, aUppBorder, FuncTol, Standard_True);
       if (!aPrjPS.IsDone())
@@ -942,10 +943,10 @@ void ProjLib_CompProjectedCurve::Init()
         if (Step <= GlobalMinStep)
         {
           // Search for exact boundary point
-          Tol = Min(myTolU, myTolV);
+          Tol = std::min(myTolU, myTolV);
           gp_Vec2d D;
           d1(Triple.X(), Triple.Y(), Triple.Z(), D, myCurve, mySurface);
-          Tol /= Max(Abs(D.X()), Abs(D.Y()));
+          Tol /= std::max(std::abs(D.X()), std::abs(D.Y()));
 
           if (!ExactBound(Triple, t, Tol, myTolU, myTolV, myCurve, mySurface))
           {
@@ -983,7 +984,7 @@ void ProjLib_CompProjectedCurve::Init()
           if (t > (LastU - MinStep / 4))
           {
             Step = Step + LastU - t;
-            if (Abs(Step - SaveStep) <= Precision::PConfusion())
+            if (std::abs(Step - SaveStep) <= Precision::PConfusion())
               Step = GlobalMinStep; // to avoid looping
             t = LastU;
           }
@@ -1004,16 +1005,16 @@ void ProjLib_CompProjectedCurve::Init()
         {
           Standard_Boolean isUPossible = Standard_False;
           if (mySurface->IsUPeriodic()
-              && (Abs(Triple.Y() - mySurface->FirstUParameter()) > Precision::PConfusion()
-                  && Abs(Triple.Y() - mySurface->LastUParameter()) > Precision::PConfusion()))
+              && (std::abs(Triple.Y() - mySurface->FirstUParameter()) > Precision::PConfusion()
+                  && std::abs(Triple.Y() - mySurface->LastUParameter()) > Precision::PConfusion()))
           {
             isUPossible = Standard_True;
           }
 
           Standard_Boolean isVPossible = Standard_False;
           if (mySurface->IsVPeriodic()
-              && (Abs(Triple.Z() - mySurface->FirstVParameter()) > Precision::PConfusion()
-                  && Abs(Triple.Z() - mySurface->LastVParameter()) > Precision::PConfusion()))
+              && (std::abs(Triple.Z() - mySurface->FirstVParameter()) > Precision::PConfusion()
+                  && std::abs(Triple.Z() - mySurface->LastVParameter()) > Precision::PConfusion()))
           {
             isVPossible = Standard_True;
           }
@@ -1042,7 +1043,7 @@ void ProjLib_CompProjectedCurve::Init()
         if (MagnD2 < Precision::Confusion())
           WalkStep = MaxStep;
         else
-          WalkStep = Min(MaxStep, Max(MinStep, 0.1 * MagnD1 / MagnD2));
+          WalkStep = std::min(MaxStep, std::max(MinStep, 0.1 * MagnD1 / MagnD2));
 
         Step = WalkStep;
         t += Step;
@@ -1057,7 +1058,7 @@ void ProjLib_CompProjectedCurve::Init()
         for (Standard_Integer anIdx = aSplitIdx; anIdx < aSize; ++anIdx)
         {
           const Standard_Real aParam = aSplits(anIdx);
-          if (Abs(aParam - Triple.X()) < Precision::PConfusion())
+          if (std::abs(aParam - Triple.X()) < Precision::PConfusion())
           {
             // The current point is equal to a split point.
             new_part = Standard_False;
@@ -1195,7 +1196,7 @@ void ProjLib_CompProjectedCurve::Init()
       // is i-part U-isoparametric ?
       for (j = 1; j <= mySequence->Value(i)->Length(); j++)
       {
-        if (Abs(mySequence->Value(i)->Value(j).Y() - AveU) > myTolU)
+        if (std::abs(mySequence->Value(i)->Value(j).Y() - AveU) > myTolU)
         {
           myUIso->SetValue(i, Standard_False);
           break;
@@ -1205,7 +1206,7 @@ void ProjLib_CompProjectedCurve::Init()
       // is i-part V-isoparametric ?
       for (j = 1; j <= mySequence->Value(i)->Length(); j++)
       {
-        if (Abs(mySequence->Value(i)->Value(j).Z() - AveV) > myTolV)
+        if (std::abs(mySequence->Value(i)->Value(j).Z() - AveV) > myTolV)
         {
           myVIso->SetValue(i, Standard_False);
           break;
@@ -1570,12 +1571,12 @@ void ProjLib_CompProjectedCurve::D0(const Standard_Real U, gp_Pnt2d& P) const
 
   //  Cubic Interpolation
   if (mySequence->Value(i)->Length() < 4
-      || (Abs(U - mySequence->Value(i)->Value(j).X()) <= Precision::PConfusion()))
+      || (std::abs(U - mySequence->Value(i)->Value(j).X()) <= Precision::PConfusion()))
   {
     U0 = mySequence->Value(i)->Value(j).Y();
     V0 = mySequence->Value(i)->Value(j).Z();
   }
-  else if (Abs(U - mySequence->Value(i)->Value(j + 1).X()) <= Precision::PConfusion())
+  else if (std::abs(U - mySequence->Value(i)->Value(j + 1).X()) <= Precision::PConfusion())
   {
     U0 = mySequence->Value(i)->Value(j + 1).Y();
     V0 = mySequence->Value(i)->Value(j + 1).Z();
@@ -1843,9 +1844,9 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
         Ul = mySequence->Value(i)->Value(j).Y();
         Ur = mySequence->Value(i)->Value(j + 1).Y();
 
-        if (Abs(Ul - CutPntsU(k)) <= myTolU)
+        if (std::abs(Ul - CutPntsU(k)) <= myTolU)
           TUdisc.Append(mySequence->Value(i)->Value(j).X());
-        else if (Abs(Ur - CutPntsU(k)) <= myTolU)
+        else if (std::abs(Ur - CutPntsU(k)) <= myTolU)
           TUdisc.Append(mySequence->Value(i)->Value(j + 1).X());
         else if ((Ul < CutPntsU(k) && CutPntsU(k) < Ur) || (Ur < CutPntsU(k) && CutPntsU(k) < Ul))
         {
@@ -1857,10 +1858,10 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
           gp_Pnt   Triple;
           Triple = mySequence->Value(i)->Value(j);
           d1(Triple.X(), Triple.Y(), Triple.Z(), D, myCurve, mySurface);
-          if (Abs(D.X()) < Precision::Confusion())
+          if (std::abs(D.X()) < Precision::Confusion())
             Tol = myTolU;
           else
-            Tol = Min(myTolU, myTolU / Abs(D.X()));
+            Tol = std::min(myTolU, myTolU / std::abs(D.X()));
 
           Tl = mySequence->Value(i)->Value(j).X();
           Tr = mySequence->Value(i)->Value(j + 1).X();
@@ -1911,9 +1912,9 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
         Vl = mySequence->Value(i)->Value(j).Z();
         Vr = mySequence->Value(i)->Value(j + 1).Z();
 
-        if (Abs(Vl - CutPntsV(k)) <= myTolV)
+        if (std::abs(Vl - CutPntsV(k)) <= myTolV)
           TVdisc.Append(mySequence->Value(i)->Value(j).X());
-        else if (Abs(Vr - CutPntsV(k)) <= myTolV)
+        else if (std::abs(Vr - CutPntsV(k)) <= myTolV)
           TVdisc.Append(mySequence->Value(i)->Value(j + 1).X());
         else if ((Vl < CutPntsV(k) && CutPntsV(k) < Vr) || (Vr < CutPntsV(k) && CutPntsV(k) < Vl))
         {
@@ -1925,10 +1926,10 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
           gp_Pnt   Triple;
           Triple = mySequence->Value(i)->Value(j);
           d1(Triple.X(), Triple.Y(), Triple.Z(), D, myCurve, mySurface);
-          if (Abs(D.Y()) < Precision::Confusion())
+          if (std::abs(D.Y()) < Precision::Confusion())
             Tol = myTolV;
           else
-            Tol = Min(myTolV, myTolV / Abs(D.Y()));
+            Tol = std::min(myTolV, myTolV / std::abs(D.Y()));
 
           Tl = mySequence->Value(i)->Value(j).X();
           Tr = mySequence->Value(i)->Value(j + 1).X();
@@ -2112,10 +2113,10 @@ void ProjLib_CompProjectedCurve::UpdateTripleByTrapCriteria(gp_Pnt& thePoint) co
   {
     // Compute maximal deviation from 3D and choose the biggest one.
     Standard_Real aVRes   = mySurface->VResolution(Precision::Confusion());
-    Standard_Real aMaxTol = Max(Precision::PConfusion(), aVRes);
+    Standard_Real aMaxTol = std::max(Precision::PConfusion(), aVRes);
 
-    if (Abs(thePoint.Z() - mySurface->FirstVParameter()) < aMaxTol
-        || Abs(thePoint.Z() - mySurface->LastVParameter()) < aMaxTol)
+    if (std::abs(thePoint.Z() - mySurface->FirstVParameter()) < aMaxTol
+        || std::abs(thePoint.Z() - mySurface->LastVParameter()) < aMaxTol)
     {
       isProblemsPossible = Standard_True;
     }
@@ -2123,10 +2124,10 @@ void ProjLib_CompProjectedCurve::UpdateTripleByTrapCriteria(gp_Pnt& thePoint) co
 
   // 27135 bug. Trap on degenerated edge.
   if (mySurface->GetType() == GeomAbs_Sphere
-      && (Abs(thePoint.Z() - mySurface->FirstVParameter()) < Precision::PConfusion()
-          || Abs(thePoint.Z() - mySurface->LastVParameter()) < Precision::PConfusion()
-          || Abs(thePoint.Y() - mySurface->FirstUParameter()) < Precision::PConfusion()
-          || Abs(thePoint.Y() - mySurface->LastUParameter()) < Precision::PConfusion()))
+      && (std::abs(thePoint.Z() - mySurface->FirstVParameter()) < Precision::PConfusion()
+          || std::abs(thePoint.Z() - mySurface->LastVParameter()) < Precision::PConfusion()
+          || std::abs(thePoint.Y() - mySurface->FirstUParameter()) < Precision::PConfusion()
+          || std::abs(thePoint.Y() - mySurface->LastUParameter()) < Precision::PConfusion()))
   {
     isProblemsPossible = Standard_True;
   }
@@ -2150,12 +2151,12 @@ void ProjLib_CompProjectedCurve::UpdateTripleByTrapCriteria(gp_Pnt& thePoint) co
 
   // Restore original position in case of period jump.
   if (mySurface->IsUPeriodic()
-      && Abs(Abs(U - thePoint.Y()) - mySurface->UPeriod()) < Precision::PConfusion())
+      && std::abs(std::abs(U - thePoint.Y()) - mySurface->UPeriod()) < Precision::PConfusion())
   {
     U = thePoint.Y();
   }
   if (mySurface->IsVPeriodic()
-      && Abs(Abs(V - thePoint.Z()) - mySurface->VPeriod()) < Precision::PConfusion())
+      && std::abs(std::abs(V - thePoint.Z()) - mySurface->VPeriod()) < Precision::PConfusion())
   {
     V = thePoint.Z();
   }
@@ -2287,8 +2288,8 @@ void FindSplitPoint(SplitDS&            theSplitDS,
       aPOnS.Parameter(U, V);
       aProjParam = theSplitDS.myPeriodicDir ? V : U;
 
-      if (Abs(aProjParam - theSplitDS.myPerMinParam) < Precision::PConfusion()
-          || Abs(aProjParam - theSplitDS.myPerMaxParam) < Precision::PConfusion())
+      if (std::abs(aProjParam - theSplitDS.myPerMinParam) < Precision::PConfusion()
+          || std::abs(aProjParam - theSplitDS.myPerMaxParam) < Precision::PConfusion())
       {
         const Standard_Real aParam   = aPOnC2.Parameter();
         const Standard_Real aCFParam = theSplitDS.myCurve->FirstParameter();

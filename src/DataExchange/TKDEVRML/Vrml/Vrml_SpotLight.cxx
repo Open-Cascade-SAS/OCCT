@@ -130,14 +130,14 @@ Standard_OStream& Vrml_SpotLight::Print(Standard_OStream& anOStream) const
     //    anOStream << myOnOff << "\n";
   }
 
-  if (Abs(myIntensity - 1) > 0.0001)
+  if (std::abs(myIntensity - 1) > 0.0001)
   {
     anOStream << "    intensity\t";
     anOStream << myIntensity << "\n";
   }
 
-  if (Abs(myColor.Red() - 1) > 0.0001 || Abs(myColor.Green() - 1) > 0.0001
-      || Abs(myColor.Blue() - 1) > 0.0001)
+  if (std::abs(myColor.Red() - 1) > 0.0001 || std::abs(myColor.Green() - 1) > 0.0001
+      || std::abs(myColor.Blue() - 1) > 0.0001)
   {
     NCollection_Vec3<Standard_Real> aColor_sRGB;
     myColor.Values(aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
@@ -145,27 +145,27 @@ Standard_OStream& Vrml_SpotLight::Print(Standard_OStream& anOStream) const
     anOStream << aColor_sRGB.r() << " " << aColor_sRGB.g() << " " << aColor_sRGB.b() << "\n";
   }
 
-  if (Abs(myLocation.X() - 0) > 0.0001 || Abs(myLocation.Y() - 0) > 0.0001
-      || Abs(myLocation.Z() - 1) > 0.0001)
+  if (std::abs(myLocation.X() - 0) > 0.0001 || std::abs(myLocation.Y() - 0) > 0.0001
+      || std::abs(myLocation.Z() - 1) > 0.0001)
   {
     anOStream << "    location\t";
     anOStream << myLocation.X() << " " << myLocation.Y() << " " << myLocation.Z() << "\n";
   }
 
-  if (Abs(myDirection.X() - 0) > 0.0001 || Abs(myDirection.Y() - 0) > 0.0001
-      || Abs(myDirection.Z() + 1) > 0.0001)
+  if (std::abs(myDirection.X() - 0) > 0.0001 || std::abs(myDirection.Y() - 0) > 0.0001
+      || std::abs(myDirection.Z() + 1) > 0.0001)
   {
     anOStream << "    direction\t";
     anOStream << myDirection.X() << " " << myDirection.Y() << " " << myDirection.Z() << "\n";
   }
 
-  if (Abs(myDropOffRate - 0) > 0.0001)
+  if (std::abs(myDropOffRate - 0) > 0.0001)
   {
     anOStream << "    dropOffRate\t";
     anOStream << myDropOffRate << "\n";
   }
 
-  if (Abs(myCutOffAngle - 0.785398) > 0.0000001)
+  if (std::abs(myCutOffAngle - 0.785398) > 0.0000001)
   {
     anOStream << "    cutOffAngle\t";
     anOStream << myCutOffAngle << "\n";

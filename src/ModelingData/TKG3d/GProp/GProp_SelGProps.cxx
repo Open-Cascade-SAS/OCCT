@@ -43,10 +43,10 @@ void GProp_SelGProps::Perform(const gp_Cylinder&  S,
   S.Position().YDirection().Coord(Xa2, Ya2, Za2);
   S.Position().Direction().Coord(Xa3, Ya3, Za3);
   dim               = R * (Z2 - Z1) * (Alpha2 - Alpha1);
-  Standard_Real SA2 = Sin(Alpha2);
-  Standard_Real SA1 = Sin(Alpha1);
-  Standard_Real CA2 = Cos(Alpha2);
-  Standard_Real CA1 = Cos(Alpha1);
+  Standard_Real SA2 = std::sin(Alpha2);
+  Standard_Real SA1 = std::sin(Alpha1);
+  Standard_Real CA2 = std::cos(Alpha2);
+  Standard_Real CA1 = std::cos(Alpha1);
   Standard_Real Ix  = R * (SA2 - SA1) / (Alpha2 - Alpha1);
   Standard_Real Iy  = R * (CA1 - CA2) / (Alpha2 - Alpha1);
   g.SetCoord(X0 + Ix * Xa1 + Iy * Xa2 + Xa3 * (Z2 + Z1) / 2.,
@@ -112,13 +112,13 @@ void GProp_SelGProps::Perform(const gp_Cone&      S,
   S.Position().YDirection().Coord(Xa2, Ya2, Za2);
   S.Position().Direction().Coord(Xa3, Ya3, Za3);
   Standard_Real t   = S.SemiAngle();
-  Standard_Real Cnt = Cos(t);
-  Standard_Real Snt = Sin(t);
+  Standard_Real Cnt = std::cos(t);
+  Standard_Real Snt = std::sin(t);
   Standard_Real R   = S.RefRadius();
-  Standard_Real Sn2 = Sin(Alpha2);
-  Standard_Real Sn1 = Sin(Alpha1);
-  Standard_Real Cn2 = Cos(Alpha2);
-  Standard_Real Cn1 = Cos(Alpha1);
+  Standard_Real Sn2 = std::sin(Alpha2);
+  Standard_Real Sn1 = std::sin(Alpha1);
+  Standard_Real Cn2 = std::cos(Alpha2);
+  Standard_Real Cn1 = std::cos(Alpha1);
 
   Standard_Real Auxi1 = R + (Z2 + Z1) * Snt / 2.;
   Standard_Real Auxi2 = (Z2 * Z2 + Z1 * Z2 + Z1 * Z1) / 3.;
@@ -196,14 +196,14 @@ void GProp_SelGProps::Perform(const gp_Sphere&    S,
   S.Position().YDirection().Coord(Xa2, Ya2, Za2);
   S.Position().Direction().Coord(Xa3, Ya3, Za3);
   Standard_Real R    = S.Radius();
-  Standard_Real Cnt1 = Cos(Teta1);
-  Standard_Real Snt1 = Sin(Teta1);
-  Standard_Real Cnt2 = Cos(Teta2);
-  Standard_Real Snt2 = Sin(Teta2);
-  Standard_Real Cnf1 = Cos(Alpha1);
-  Standard_Real Snf1 = Sin(Alpha1);
-  Standard_Real Cnf2 = Cos(Alpha2);
-  Standard_Real Snf2 = Sin(Alpha2);
+  Standard_Real Cnt1 = std::cos(Teta1);
+  Standard_Real Snt1 = std::sin(Teta1);
+  Standard_Real Cnt2 = std::cos(Teta2);
+  Standard_Real Snt2 = std::sin(Teta2);
+  Standard_Real Cnf1 = std::cos(Alpha1);
+  Standard_Real Snf1 = std::sin(Alpha1);
+  Standard_Real Cnf2 = std::cos(Alpha2);
+  Standard_Real Snf2 = std::sin(Alpha2);
   dim                = R * R * (Teta2 - Teta1) * (Snf2 - Snf1);
   Standard_Real Ix   = R * (Snt2 - Snt1) / (Teta2 - Teta1)
                      * (Alpha2 - Alpha1 + Snf2 * Cnf2 - Snf1 * Cnf1) / (Snf2 - Snf1) / 2.;
@@ -275,14 +275,14 @@ void GProp_SelGProps::Perform(const gp_Torus&     S,
   S.Axis().Direction().Coord(Xa3, Ya3, Za3);
   Standard_Real RMax = S.MajorRadius();
   Standard_Real Rmin = S.MinorRadius();
-  Standard_Real Cnt1 = Cos(Teta1);
-  Standard_Real Snt1 = Sin(Teta1);
-  Standard_Real Cnt2 = Cos(Teta2);
-  Standard_Real Snt2 = Sin(Teta2);
-  Standard_Real Cnf1 = Cos(Alpha1);
-  Standard_Real Snf1 = Sin(Alpha1);
-  Standard_Real Cnf2 = Cos(Alpha2);
-  Standard_Real Snf2 = Sin(Alpha2);
+  Standard_Real Cnt1 = std::cos(Teta1);
+  Standard_Real Snt1 = std::sin(Teta1);
+  Standard_Real Cnt2 = std::cos(Teta2);
+  Standard_Real Snt2 = std::sin(Teta2);
+  Standard_Real Cnf1 = std::cos(Alpha1);
+  Standard_Real Snf1 = std::sin(Alpha1);
+  Standard_Real Cnf2 = std::cos(Alpha2);
+  Standard_Real Snf2 = std::sin(Alpha2);
 
   dim = RMax * Rmin * (Teta2 - Teta1) * (Alpha2 - Alpha1);
   Standard_Real Ix =

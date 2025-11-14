@@ -42,9 +42,9 @@ static void ComputeTrsf3d(const Handle(TheWLine)& theline,
   for (Standard_Integer i = 1; i <= aNbPnts; i++)
   {
     const gp_Pnt P = theline->Point(i).Value();
-    aXmin          = Min(P.X(), aXmin);
-    aYmin          = Min(P.Y(), aYmin);
-    aZmin          = Min(P.Z(), aZmin);
+    aXmin          = std::min(P.X(), aXmin);
+    aYmin          = std::min(P.Y(), aYmin);
+    aZmin          = std::min(P.Z(), aZmin);
   }
 
   theXo = -aXmin;
@@ -75,8 +75,8 @@ static void ComputeTrsf2d(const Handle(TheWLine)& theline,
     const IntSurf_PntOn2S POn2S = theline->Point(i);
     Standard_Real         U, V;
     (POn2S.*pfunc)(U, V);
-    aUmin = Min(U, aUmin);
-    aVmin = Min(V, aVmin);
+    aUmin = std::min(U, aUmin);
+    aVmin = std::min(V, aVmin);
   }
 
   theUo = -aUmin;
@@ -139,14 +139,14 @@ void ApproxInt_Approx::Parameters(const ApproxInt_TheMultiLine&    Line,
         dist += aP22d.SquareDistance(aP12d);
       }
 
-      dist = Sqrt(dist);
+      dist = std::sqrt(dist);
       if (Par == Approx_ChordLength)
       {
         TheParameters(i) = TheParameters(i - 1) + dist;
       }
       else
       { // Par == Approx_Centripetal
-        TheParameters(i) = TheParameters(i - 1) + Sqrt(dist);
+        TheParameters(i) = TheParameters(i - 1) + std::sqrt(dist);
       }
     }
     for (i = firstP; i <= lastP; i++)
@@ -446,8 +446,8 @@ void ApproxInt_Approx::UpdateTolReached()
     {
       Standard_Real Tol3D, Tol2D;
       myComputeLineBezier.Error(ICur, Tol3D, Tol2D);
-      myTolReached3d = Max(myTolReached3d, Tol3D);
-      myTolReached2d = Max(myTolReached2d, Tol2D);
+      myTolReached3d = std::max(myTolReached3d, Tol3D);
+      myTolReached2d = std::max(myTolReached2d, Tol2D);
     }
   }
   else
@@ -567,8 +567,8 @@ void ApproxInt_Approx::buildKnots(const Handle(TheWLine)& theline,
                                          myData.indicemax);
 
   const Standard_Integer nbp3d = aTestLine.NbP3d(), nbp2d = aTestLine.NbP2d();
-  TColgp_Array1OfPnt     aTabPnt3d(1, Max(1, nbp3d));
-  TColgp_Array1OfPnt2d   aTabPnt2d(1, Max(1, nbp2d));
+  TColgp_Array1OfPnt     aTabPnt3d(1, std::max(1, nbp3d));
+  TColgp_Array1OfPnt2d   aTabPnt2d(1, std::max(1, nbp2d));
   TColgp_Array1OfPnt     aPntXYZ(myData.indicemin, myData.indicemax);
   TColgp_Array1OfPnt2d   aPntU1V1(myData.indicemin, myData.indicemax);
   TColgp_Array1OfPnt2d   aPntU2V2(myData.indicemin, myData.indicemax);

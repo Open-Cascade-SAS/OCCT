@@ -100,25 +100,25 @@ Handle(Geom_Surface) GeomFill::Surface(const Handle(Geom_Curve)& Curve1,
 
       if (D1.IsEqual(D2, Precision::Angular()))
       {
-        if (Abs(a1 - proj - a2) <= Precision::Confusion()
-            && Abs(b1 - proj - b2) <= Precision::Confusion())
+        if (std::abs(a1 - proj - a2) <= Precision::Confusion()
+            && std::abs(b1 - proj - b2) <= Precision::Confusion())
         {
           gp_Ax3             Ax(L1.Location(), gp_Dir(D1.Crossed(P1P2)), D1);
           Handle(Geom_Plane) P = new Geom_Plane(Ax);
           Standard_Real      V = P1P2.Dot(Ax.YDirection());
-          Surf   = new Geom_RectangularTrimmedSurface(P, a1, b1, Min(0., V), Max(0., V));
+          Surf   = new Geom_RectangularTrimmedSurface(P, a1, b1, std::min(0., V), std::max(0., V));
           IsDone = Standard_True;
         }
       }
       if (D1.IsOpposite(D2, Precision::Angular()))
       {
-        if (Abs(a1 - proj + b2) <= Precision::Confusion()
-            && Abs(b1 - proj + a2) <= Precision::Confusion())
+        if (std::abs(a1 - proj + b2) <= Precision::Confusion()
+            && std::abs(b1 - proj + a2) <= Precision::Confusion())
         {
           gp_Ax3             Ax(L1.Location(), gp_Dir(D1.Crossed(P1P2)), D1);
           Handle(Geom_Plane) P = new Geom_Plane(Ax);
           Standard_Real      V = P1P2.Dot(Ax.YDirection());
-          Surf   = new Geom_RectangularTrimmedSurface(P, a1, b1, Min(0., V), Max(0., V));
+          Surf   = new Geom_RectangularTrimmedSurface(P, a1, b1, std::min(0., V), std::max(0., V));
           IsDone = Standard_True;
         }
       }
@@ -142,15 +142,16 @@ Handle(Geom_Surface) GeomFill::Surface(const Handle(Geom_Curve)& Curve1,
       Standard_Real V = gp_Vec(A1.Location(), A2.Location()).Dot(gp_Vec(A1.Direction()));
       if (!Trim1 && !Trim2)
       {
-        if (Abs(C1.Radius() - C2.Radius()) < Precision::Confusion())
+        if (std::abs(C1.Radius() - C2.Radius()) < Precision::Confusion())
         {
           Handle(Geom_CylindricalSurface) C = new Geom_CylindricalSurface(A1, C1.Radius());
-          Surf = new Geom_RectangularTrimmedSurface(C, Min(0., V), Max(0., V), Standard_False);
+          Surf =
+            new Geom_RectangularTrimmedSurface(C, std::min(0., V), std::max(0., V), Standard_False);
         }
         else
         {
           Standard_Real Rad = C2.Radius() - C1.Radius();
-          Standard_Real Ang = ATan(Rad / V);
+          Standard_Real Ang = std::atan(Rad / V);
           if (Ang < 0.)
           {
             A1.ZReverse();
@@ -158,8 +159,9 @@ Handle(Geom_Surface) GeomFill::Surface(const Handle(Geom_Curve)& Curve1,
             Ang = -Ang;
           }
           Handle(Geom_ConicalSurface) C = new Geom_ConicalSurface(A1, Ang, C1.Radius());
-          V /= Cos(Ang);
-          Surf = new Geom_RectangularTrimmedSurface(C, Min(0., V), Max(0., V), Standard_False);
+          V /= std::cos(Ang);
+          Surf =
+            new Geom_RectangularTrimmedSurface(C, std::min(0., V), std::max(0., V), Standard_False);
         }
         IsDone = Standard_True;
       }
@@ -204,7 +206,7 @@ void GeomFill::GetShape(const Standard_Real           MaxAng,
     }
     break;
     default: {
-      Standard_Integer NbSpan = (Standard_Integer)(Ceiling(3. * Abs(MaxAng) / 2. / M_PI));
+      Standard_Integer NbSpan = (Standard_Integer)(std::ceil(3. * std::abs(MaxAng) / 2. / M_PI));
       NbPoles                 = 2 * NbSpan + 1;
       NbKnots                 = NbSpan + 1;
       Degree                  = 2;
@@ -247,7 +249,7 @@ void GeomFill::GetMinimalWeights(const Convert_ParameterisationType TConv,
     CtoBspl->Weights(Weights);
 
     TColStd_Array1OfReal poids(Weights.Lower(), Weights.Upper());
-    Standard_Real        angle_min = Max(Precision::PConfusion(), MinAng);
+    Standard_Real        angle_min = std::max(Precision::PConfusion(), MinAng);
 
     Handle(Geom_TrimmedCurve) Sect2 = new Geom_TrimmedCurve(new Geom_Circle(C), 0., angle_min);
     CtoBspl                         = GeomConvert::CurveToBSplineCurve(Sect2, TConv);
@@ -329,7 +331,7 @@ Standard_Real GeomFill::GetTolerance(const Convert_ParameterisationType TConv,
   gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   gp_Circ                   C(popAx2, Radius);
   Handle(Geom_Circle)       popCircle = new Geom_Circle(C);
-  Handle(Geom_TrimmedCurve) Sect      = new Geom_TrimmedCurve(popCircle, 0., Max(AngleMin, 0.02));
+  Handle(Geom_TrimmedCurve) Sect = new Geom_TrimmedCurve(popCircle, 0., std::max(AngleMin, 0.02));
   // 0.02 est proche d'1 degree, en desous on ne se preocupe pas de la tngence
   // afin d'eviter des tolerances d'approximation tendant vers 0 !
   Handle(Geom_BSplineCurve) CtoBspl = GeomConvert::CurveToBSplineCurve(Sect, TConv);
@@ -378,7 +380,7 @@ void GeomFill::GetCircle(const Convert_ParameterisationType TConv,
     Cosa = 1;
     Sina = 0;
   }
-  Angle = ACos(Cosa);
+  Angle = std::acos(Cosa);
   // Recadrage sur ]-pi/2, 3pi/2]
   if (Sina < 0.)
   {
@@ -416,13 +418,13 @@ void GeomFill::GetCircle(const Convert_ParameterisationType TConv,
       np2 = nplan.Crossed(ns1);
 
       Alpha  = Angle / ((Standard_Real)(NbSpan));
-      Cosas2 = Cos(Alpha / 2);
+      Cosas2 = std::cos(Alpha / 2);
 
       for (i = 1, jj = low + 2; i <= NbSpan - 1; i++, jj += 2)
       {
         lambda = ((Standard_Real)(i)) * Alpha;
-        Cosa   = Cos(lambda);
-        Sina   = Sin(lambda);
+        Cosa   = std::cos(lambda);
+        Sina   = std::sin(lambda);
         temp.SetLinearForm(Cosa - 1, ns1, Sina, np2);
         Poles(jj).SetXYZ(pts1.XYZ() + Rayon * temp.XYZ());
         Weights(jj) = 1;
@@ -479,7 +481,7 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType TConv,
     Cosa = 1;
     Sina = 0;
   }
-  Angle = ACos(Cosa);
+  Angle = std::acos(Cosa);
   // Recadrage sur ]-pi/2, 3pi/2]
   if (Sina < 0.)
   {
@@ -489,7 +491,7 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType TConv,
       Angle = 2. * M_PI - Angle;
   }
 
-  if (Abs(Sina) > Abs(Cosa))
+  if (std::abs(Sina) > std::abs(Cosa))
   {
     DAngle = -(dn1w.Dot(ns2) + ns1.Dot(dn2w)) / Sina;
   }
@@ -545,14 +547,14 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType TConv,
         dnp2 = dnplan.Crossed(ns1).Added(nplan.Crossed(dn1w));
 
         Alpha  = Angle / ((Standard_Real)(NbSpan));
-        Cosas2 = Cos(Alpha / 2);
-        Sinas2 = Sin(Alpha / 2);
+        Cosas2 = std::cos(Alpha / 2);
+        Sinas2 = std::sin(Alpha / 2);
 
         for (i = 1, jj = low + 2; i <= NbSpan - 1; i++, jj += 2)
         {
           lambda = ((Standard_Real)(i)) * Alpha;
-          Cosa   = Cos(lambda);
-          Sina   = Sin(lambda);
+          Cosa   = std::cos(lambda);
+          Sina   = std::sin(lambda);
           temp.SetLinearForm(Cosa - 1, ns1, Sina, np2);
           Poles(jj).SetXYZ(pts1.XYZ() + Rayon * temp.XYZ());
 
@@ -644,7 +646,7 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType TConv,
     Cosa = 1;
     Sina = 0;
   }
-  Angle = ACos(Cosa);
+  Angle = std::acos(Cosa);
   // Recadrage sur ]-pi/2, 3pi/2]
   if (Sina < 0.)
   {
@@ -654,7 +656,7 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType TConv,
       Angle = 2. * M_PI - Angle;
   }
 
-  if (Abs(Sina) > Abs(Cosa))
+  if (std::abs(Sina) > std::abs(Cosa))
   {
     aux    = dn1w.Dot(ns2) + ns1.Dot(dn2w);
     DAngle = -aux / Sina;
@@ -746,14 +748,14 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType TConv,
       d2np2 += 2 * dnplan.Crossed(dn1w);
 
       Alpha  = Angle / ((Standard_Real)(NbSpan));
-      Cosas2 = Cos(Alpha / 2);
-      Sinas2 = Sin(Alpha / 2);
+      Cosas2 = std::cos(Alpha / 2);
+      Sinas2 = std::sin(Alpha / 2);
 
       for (i = 1, jj = low + 2; i <= NbSpan - 1; i++, jj += 2)
       {
         lambda = ((Standard_Real)(i)) * Alpha;
-        Cosa   = Cos(lambda);
-        Sina   = Sin(lambda);
+        Cosa   = std::cos(lambda);
+        Sina   = std::sin(lambda);
         temp.SetLinearForm(Cosa - 1, ns1, Sina, np2);
         Poles(jj).SetXYZ(pts1.XYZ() + Rayon * temp.XYZ());
 
@@ -797,7 +799,7 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType TConv,
 
       // Les poids
       Dlambda  = -Sinas2 * DAngle / (2 * NbSpan);
-      D2lambda = -Sinas2 * D2Angle / (2 * NbSpan) - Cosas2 * Pow(DAngle / (2 * NbSpan), 2);
+      D2lambda = -Sinas2 * D2Angle / (2 * NbSpan) - Cosas2 * std::pow(DAngle / (2 * NbSpan), 2);
 
       for (i = low; i < upp; i += 2)
       {

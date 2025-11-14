@@ -224,7 +224,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
       if (C2D.IsNull())
         throw Standard_ProgramError("GFillCurveTopologyWES");
 #ifdef OCCT_DEBUG
-//      Standard_Real tol = Max(tolE,tolpc);
+//      Standard_Real tol = std::max(tolE,tolpc);
 #endif
 
       myBuildTool.PCurve(WESF, E, C2D);

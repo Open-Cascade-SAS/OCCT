@@ -377,7 +377,7 @@ void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
         {
           // Additional checking solution: FSR sometimes is wrong
           // when starting point is far from solution.
-          Standard_Real          dist = Sqrt(myF.SquareDistance(k));
+          Standard_Real          dist = std::sqrt(myF.SquareDistance(k));
           math_Vector            Vals(1, 2);
           const Extrema_POnSurf& PonS = myF.Point(k);
           Standard_Real          u, v;
@@ -389,8 +389,8 @@ void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
           myS->D1(u, v, Pe, du, dv);
           Standard_Real mdu = du.Magnitude();
           Standard_Real mdv = dv.Magnitude();
-          u                 = Abs(Vals(1));
-          v                 = Abs(Vals(2));
+          u                 = std::abs(Vals(1));
+          v                 = std::abs(Vals(2));
           if (mdu > Precision::PConfusion())
           {
             if (u / dist / mdu > Precision::PConfusion())
@@ -565,7 +565,7 @@ static Standard_Boolean IsCaseAnalyticallyComputable(const GeomAbs_CurveType& th
       return Standard_False;
   }
   // check if it is a plane
-  if (Abs(theCurvePos.Direction() * theSurfaceDirection) <= gp::Resolution())
+  if (std::abs(theCurvePos.Direction() * theSurfaceDirection) <= gp::Resolution())
     return Standard_False;
   else
     return Standard_True;

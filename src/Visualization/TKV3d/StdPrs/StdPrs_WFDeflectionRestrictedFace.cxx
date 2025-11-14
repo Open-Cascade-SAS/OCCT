@@ -44,8 +44,8 @@ static void FindLimits(const Adaptor3d_Curve& aCurve,
                        Standard_Real&         First,
                        Standard_Real&         Last)
 {
-  First                     = Max(aCurve.FirstParameter(), First);
-  Last                      = Min(aCurve.LastParameter(), Last);
+  First                     = std::max(aCurve.FirstParameter(), First);
+  Last                      = std::min(aCurve.LastParameter(), Last);
   Standard_Boolean firstInf = Precision::IsNegativeInfinite(First);
   Standard_Boolean lastInf  = Precision::IsPositiveInfinite(Last);
 
@@ -113,16 +113,16 @@ void StdPrs_WFDeflectionRestrictedFace::Add(const Handle(Prs3d_Presentation)&  a
   const Standard_Real aLimit = aDrawer->MaximalParameterValue();
 
   // compute bounds of the restriction
-  Standard_Real UMin = Max(UF, -aLimit);
-  Standard_Real UMax = Min(UL, aLimit);
-  Standard_Real VMin = Max(VF, -aLimit);
-  Standard_Real VMax = Min(VL, aLimit);
+  Standard_Real UMin = std::max(UF, -aLimit);
+  Standard_Real UMax = std::min(UL, aLimit);
+  Standard_Real VMin = std::max(VF, -aLimit);
+  Standard_Real VMax = std::min(VL, aLimit);
 
   // update min max for the hatcher.
-  gp_Pnt2d               P1, P2;
-  Standard_Real          U1, U2;
-  gp_Pnt                 dummypnt;
-  Standard_Real          ddefle = Max(UMax - UMin, VMax - VMin) * aDrawer->DeviationCoefficient();
+  gp_Pnt2d      P1, P2;
+  Standard_Real U1, U2;
+  gp_Pnt        dummypnt;
+  Standard_Real ddefle = std::max(UMax - UMin, VMax - VMin) * aDrawer->DeviationCoefficient();
   TColgp_SequenceOfPnt2d tabP;
   Standard_Real          aHatchingTol = 1.e100;
 
@@ -143,20 +143,20 @@ void StdPrs_WFDeflectionRestrictedFace::Add(const Handle(Prs3d_Presentation)&  a
         {
           dummypnt = UDP.Value(1);
           P2.SetCoord(dummypnt.X(), dummypnt.Y());
-          UMin = Min(P2.X(), UMin);
-          UMax = Max(P2.X(), UMax);
-          VMin = Min(P2.Y(), VMin);
-          VMax = Max(P2.Y(), VMax);
+          UMin = std::min(P2.X(), UMin);
+          UMax = std::max(P2.X(), UMax);
+          VMin = std::min(P2.Y(), VMin);
+          VMax = std::max(P2.Y(), VMax);
           for (Standard_Integer i = 2; i <= aNumberOfPoints; i++)
           {
             P1       = P2;
             dummypnt = UDP.Value(i);
             P2.SetCoord(dummypnt.X(), dummypnt.Y());
-            UMin         = Min(P2.X(), UMin);
-            UMax         = Max(P2.X(), UMax);
-            VMin         = Min(P2.Y(), VMin);
-            VMax         = Max(P2.Y(), VMax);
-            aHatchingTol = Min(P1.SquareDistance(P2), aHatchingTol);
+            UMin         = std::min(P2.X(), UMin);
+            UMax         = std::max(P2.X(), UMax);
+            VMin         = std::min(P2.Y(), VMin);
+            VMax         = std::max(P2.Y(), VMax);
+            aHatchingTol = std::min(P1.SquareDistance(P2), aHatchingTol);
 
             if (anOrient == TopAbs_FORWARD)
             {
@@ -203,19 +203,19 @@ void StdPrs_WFDeflectionRestrictedFace::Add(const Handle(Prs3d_Presentation)&  a
           aOrigin = (U1 + U2) * 0.5;
         }
       }
-      U1           = Max(aOrigin - aLimit, U1);
-      U2           = Min(aOrigin + aLimit, U2);
+      U1           = std::max(aOrigin - aLimit, U1);
+      U2           = std::min(aOrigin + aLimit, U2);
       P1           = TheRCurve->Value(U1);
       P2           = TheRCurve->Value(U2);
-      UMin         = Min(P1.X(), UMin);
-      UMax         = Max(P1.X(), UMax);
-      VMin         = Min(P1.Y(), VMin);
-      VMax         = Max(P1.Y(), VMax);
-      UMin         = Min(P2.X(), UMin);
-      UMax         = Max(P2.X(), UMax);
-      VMin         = Min(P2.Y(), VMin);
-      VMax         = Max(P2.Y(), VMax);
-      aHatchingTol = Min(P1.SquareDistance(P2), aHatchingTol);
+      UMin         = std::min(P1.X(), UMin);
+      UMax         = std::max(P1.X(), UMax);
+      VMin         = std::min(P1.Y(), VMin);
+      VMax         = std::max(P1.Y(), VMax);
+      UMin         = std::min(P2.X(), UMin);
+      UMax         = std::max(P2.X(), UMax);
+      VMin         = std::min(P2.Y(), VMin);
+      VMax         = std::max(P2.Y(), VMax);
+      aHatchingTol = std::min(P1.SquareDistance(P2), aHatchingTol);
 
       if (anOrient == TopAbs_FORWARD)
       {
@@ -239,8 +239,8 @@ void StdPrs_WFDeflectionRestrictedFace::Add(const Handle(Prs3d_Presentation)&  a
 
   // Compute the hatching tolerance.
   aHatchingTol *= 0.1;
-  aHatchingTol = Max(Precision::Confusion(), aHatchingTol);
-  aHatchingTol = Min(1.e-5, aHatchingTol);
+  aHatchingTol = std::max(Precision::Confusion(), aHatchingTol);
+  aHatchingTol = std::min(1.e-5, aHatchingTol);
 
   // load the isos
   Hatch_Hatcher    isobuild(aHatchingTol, ToolRst.IsOriented());

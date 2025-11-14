@@ -56,7 +56,7 @@
 // OFV:
 static inline Standard_Boolean IsEqual(Standard_Real Check, Standard_Real With, Standard_Real Toler)
 {
-  return ((Abs(Check - With) < Toler) ? Standard_True : Standard_False);
+  return ((std::abs(Check - With) < Toler) ? Standard_True : Standard_False);
 }
 
 //=================================================================================================
@@ -120,7 +120,7 @@ static gp_Pnt2d Function_Value(const Standard_Real              U,
   {
     if (SType == GeomAbs_Sphere)
     {
-      if (Abs(S - U1) > M_PI)
+      if (std::abs(S - U1) > M_PI)
       {
         T = M_PI - T;
         S = M_PI + S;
@@ -200,13 +200,13 @@ static Standard_Real Function_ComputeStep(const Handle(Adaptor3d_Curve)& myCurve
   W2                   = myCurve->LastParameter();
   Standard_Real    L   = GCPnts_AbscissaPoint::Length(*myCurve);
   Standard_Integer nbp = RealToInt(L / (R * M_PI_4)) + 1;
-  nbp                  = Max(nbp, 3);
+  nbp                  = std::max(nbp, 3);
   Standard_Real Step   = (W2 - W1) / (nbp - 1);
   if (Step > Step0)
   {
     Step = Step0;
     nbp  = RealToInt((W2 - W1) / Step) + 1;
-    nbp  = Max(nbp, 3);
+    nbp  = std::max(nbp, 3);
     Step = (W2 - W1) / (nbp - 1);
   }
 
@@ -273,8 +273,8 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           ElSLib::Parameters(Cone, P1, U1, V1);
           ElSLib::Parameters(Cone, P2, U2, V2);
           ElSLib::Parameters(Cone, P, U, V);
-          myU1 = Min(U1, U2);
-          myU2 = Max(U1, U2);
+          myU1 = std::min(U1, U2);
+          myU2 = std::max(U1, U2);
           if ((U1 < U && U < U2) && !myCurve->IsClosed())
           {
             UCouture = Standard_False;
@@ -355,7 +355,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
               U += Delta;
               d = U - U1;
             }
-            dmax = Max(dmax, Abs(d));
+            dmax = std::max(dmax, std::abs(d));
             if (U < myU1)
             {
               myU1 = U;
@@ -370,11 +370,11 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
             isFirst = Standard_False;
           } // for(Standard_Real par = W1 + Step; par <= W2; par += Step)
 
-          if (!(Abs(pmin - W1) <= Precision::PConfusion()
-                || Abs(pmin - W2) <= Precision::PConfusion()))
+          if (!(std::abs(pmin - W1) <= Precision::PConfusion()
+                || std::abs(pmin - W2) <= Precision::PConfusion()))
             myU1 -= dmax * .5;
-          if (!(Abs(pmax - W1) <= Precision::PConfusion()
-                || Abs(pmax - W2) <= Precision::PConfusion()))
+          if (!(std::abs(pmax - W1) <= Precision::PConfusion()
+                || std::abs(pmax - W2) <= Precision::PConfusion()))
             myU2 += dmax * .5;
 
           if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
@@ -403,8 +403,8 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         ElSLib::Parameters(Cylinder, P1, U1, V1);
         ElSLib::Parameters(Cylinder, P2, U2, V2);
         ElSLib::Parameters(Cylinder, P, U, V);
-        myU1 = Min(U1, U2);
-        myU2 = Max(U1, U2);
+        myU1 = std::min(U1, U2);
+        myU2 = std::max(U1, U2);
 
         if (!myCurve->IsClosed())
         {
@@ -482,7 +482,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
             U += Delta;
             d = U - U1;
           }
-          dmax = Max(dmax, Abs(d));
+          dmax = std::max(dmax, std::abs(d));
           if (U < myU1)
           {
             myU1 = U;
@@ -496,11 +496,11 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           U1 = U;
         }
 
-        if (!(Abs(pmin - W1) <= Precision::PConfusion()
-              || Abs(pmin - W2) <= Precision::PConfusion()))
+        if (!(std::abs(pmin - W1) <= Precision::PConfusion()
+              || std::abs(pmin - W2) <= Precision::PConfusion()))
           myU1 -= dmax * .5;
-        if (!(Abs(pmax - W1) <= Precision::PConfusion()
-              || Abs(pmax - W2) <= Precision::PConfusion()))
+        if (!(std::abs(pmax - W1) <= Precision::PConfusion()
+              || std::abs(pmax - W2) <= Precision::PConfusion()))
           myU2 += dmax * .5;
 
         if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
@@ -552,15 +552,15 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         gp_Pln Plane(gp_Ax3(Circle.Position()));
         Plane.Coefficients(A, B, C, D);
         //
-        if (Abs(C) < Tol)
+        if (std::abs(C) < Tol)
         {
-          if (Abs(A) > Tol)
+          if (std::abs(A) > Tol)
           {
             if ((D / A) < 0.)
             {
-              if ((R - Abs(D / A)) > Tol)
+              if ((R - std::abs(D / A)) > Tol)
                 NbSolutions = 2;
-              else if (Abs(R - Abs(D / A)) < Tol)
+              else if (std::abs(R - std::abs(D / A)) < Tol)
                 NbSolutions = 1;
               else
                 NbSolutions = 0;
@@ -571,7 +571,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         {
           Standard_Real delta = R * R * (A * A + C * C) - D * D;
           delta *= C * C;
-          if (Abs(delta) < Tol * Tol)
+          if (std::abs(delta) < Tol * Tol)
           {
             if (A * D > 0.)
               NbSolutions = 1;
@@ -579,7 +579,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           else if (delta > 0)
           {
             Standard_Real xx;
-            delta = Sqrt(delta);
+            delta = std::sqrt(delta);
             xx    = -A * D + delta;
             //
             if (xx > Tol)
@@ -596,67 +596,61 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         Standard_Real UU = 0.;
         ElSLib::Parameters(SP, P1, U1, V1);
         Standard_Real eps = 10. * Epsilon(1.);
-        Standard_Real dt  = Max(Precision::PConfusion(), 0.01 * (W2 - W1));
-        if (Abs(U1) < eps)
+        Standard_Real dt  = std::max(Precision::PConfusion(), 0.01 * (W2 - W1));
+        if (std::abs(U1) < eps)
         {
           // May be U1 must be equal 2*PI?
           gp_Pnt        Pd = myCurve->Value(W1 + dt);
           Standard_Real ud, vd;
           ElSLib::Parameters(SP, Pd, ud, vd);
-          if (Abs(U1 - ud) > M_PI)
+          if (std::abs(U1 - ud) > M_PI)
           {
             U1 = 2. * M_PI;
           }
         }
-        else if (Abs(2. * M_PI - U1) < eps)
+        else if (std::abs(2. * M_PI - U1) < eps)
         {
           // maybe U1 = 0.?
           gp_Pnt        Pd = myCurve->Value(W1 + dt);
           Standard_Real ud, vd;
           ElSLib::Parameters(SP, Pd, ud, vd);
-          if (Abs(U1 - ud) > M_PI)
+          if (std::abs(U1 - ud) > M_PI)
           {
             U1 = 0.;
           }
         }
         //
         ElSLib::Parameters(SP, P2, U2, V1);
-        if (Abs(U2) < eps)
+        if (std::abs(U2) < eps)
         {
           // May be U2 must be equal 2*PI?
           gp_Pnt        Pd = myCurve->Value(W2 - dt);
           Standard_Real ud, vd;
           ElSLib::Parameters(SP, Pd, ud, vd);
-          if (Abs(U2 - ud) > M_PI)
+          if (std::abs(U2 - ud) > M_PI)
           {
             U2 = 2. * M_PI;
           }
         }
-        else if (Abs(2. * M_PI - U2) < eps)
+        else if (std::abs(2. * M_PI - U2) < eps)
         {
           // maybe U2 = 0.?
           gp_Pnt        Pd = myCurve->Value(W2 - dt);
           Standard_Real ud, vd;
           ElSLib::Parameters(SP, Pd, ud, vd);
-          if (Abs(U2 - ud) > M_PI)
+          if (std::abs(U2 - ud) > M_PI)
           {
             U2 = 0.;
           }
         }
         //
         ElSLib::Parameters(SP, P, UU, V1);
-        //+This fragment was the reason of bug # 26008.
-        //+It has been deleted on April, 03 2015.
-        // Standard_Real UUmi = Min(Min(U1,UU),Min(UU,U2));
-        // Standard_Real UUma = Max(Max(U1,UU),Max(UU,U2));
-        // Standard_Boolean reCalc = ((UUmi >= 0. && UUmi <= M_PI) && (UUma >= 0. && UUma <= M_PI));
-        // box+sphere <<
         P2 = myCurve->Value(W1 + M_PI / 8);
         ElSLib::Parameters(SP, P2, U2, V2);
         //
         if (NbSolutions == 1)
         {
-          if (Abs(U1 - U2) > M_PI)
+          if (std::abs(U1 - U2) > M_PI)
           { // on traverse la couture
             if (U1 > M_PI)
             {
@@ -693,7 +687,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         }
         //
         // eval the VCouture.
-        if ((C == 0) || Abs(Abs(D / C) - R) > 1.e-10)
+        if ((C == 0) || std::abs(std::abs(D / C) - R) > 1.e-10)
         {
           VCouture = Standard_False;
         }
@@ -716,7 +710,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           // si P1.Z() vaut +/- R on est sur le sommet : pas significatif.
           gp_Pnt pp = P1.Transformed(Trsf);
 
-          if (Abs(pp.X() * pp.X() + pp.Y() * pp.Y() + pp.Z() * pp.Z() - R * R) < Tol)
+          if (std::abs(pp.X() * pp.X() + pp.Y() * pp.Y() + pp.Z() * pp.Z() - R * R) < Tol)
           {
             gp_Pnt        Center = Circle.Location();
             Standard_Real U, V;
@@ -730,18 +724,6 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         // box+sphere >>
         myV1 = -1.e+100;
         myV2 = 1.e+100;
-
-        //+This fragment was the reason of bug # 26008.
-        //+It has been deleted on April, 03 2015.
-        // Standard_Real UU1 = myU1, UU2 = myU2;
-        // if((Abs(UU1) <= (2.*M_PI) && Abs(UU2) <= (2.*M_PI)) && NbSolutions == 1 && reCalc) {
-        //  gp_Pnt Center = Circle.Location();
-        //  Standard_Real U,V;
-        //  ElSLib::SphereParameters(gp_Ax3(gp::XOY()),1,Center, U, V);
-        //  myU1 = U-M_PI;
-        //  myU1 = Min(UU1,myU1);
-        //  myU2 = myU1 + 2.*M_PI;
-        //}
         // box+sphere <<
 
       } // if ( myCurve->GetType() == GeomAbs_Circle)
@@ -777,7 +759,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
             U += Delta;
             d = U - U1;
           }
-          dmax = Max(dmax, Abs(d));
+          dmax = std::max(dmax, std::abs(d));
           if (U < myU1)
           {
             myU1 = U;
@@ -791,11 +773,11 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           U1 = U;
         }
 
-        if (!(Abs(pmin - W1) <= Precision::PConfusion()
-              || Abs(pmin - W2) <= Precision::PConfusion()))
+        if (!(std::abs(pmin - W1) <= Precision::PConfusion()
+              || std::abs(pmin - W2) <= Precision::PConfusion()))
           myU1 -= dmax * .5;
-        if (!(Abs(pmax - W1) <= Precision::PConfusion()
-              || Abs(pmax - W2) <= Precision::PConfusion()))
+        if (!(std::abs(pmax - W1) <= Precision::PConfusion()
+              || std::abs(pmax - W2) <= Precision::PConfusion()))
           myU2 += dmax * .5;
 
         if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
@@ -866,8 +848,8 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           V += DeltaV;
           dV = V - V1;
         }
-        dmaxU = Max(dmaxU, Abs(dU));
-        dmaxV = Max(dmaxV, Abs(dV));
+        dmaxU = std::max(dmaxU, std::abs(dU));
+        dmaxV = std::max(dmaxV, std::abs(dV));
         if (U < myU1)
         {
           myU1  = U;
@@ -892,17 +874,17 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         V1 = V;
       }
 
-      if (!(Abs(pminU - W1) <= Precision::PConfusion()
-            || Abs(pminU - W2) <= Precision::PConfusion()))
+      if (!(std::abs(pminU - W1) <= Precision::PConfusion()
+            || std::abs(pminU - W2) <= Precision::PConfusion()))
         myU1 -= dmaxU * .5;
-      if (!(Abs(pmaxU - W1) <= Precision::PConfusion()
-            || Abs(pmaxU - W2) <= Precision::PConfusion()))
+      if (!(std::abs(pmaxU - W1) <= Precision::PConfusion()
+            || std::abs(pmaxU - W2) <= Precision::PConfusion()))
         myU2 += dmaxU * .5;
-      if (!(Abs(pminV - W1) <= Precision::PConfusion()
-            || Abs(pminV - W2) <= Precision::PConfusion()))
+      if (!(std::abs(pminV - W1) <= Precision::PConfusion()
+            || std::abs(pminV - W2) <= Precision::PConfusion()))
         myV1 -= dmaxV * .5;
-      if (!(Abs(pmaxV - W1) <= Precision::PConfusion()
-            || Abs(pmaxV - W2) <= Precision::PConfusion()))
+      if (!(std::abs(pmaxV - W1) <= Precision::PConfusion()
+            || std::abs(pmaxV - W2) <= Precision::PConfusion()))
         myV2 += dmaxV * .5;
 
       if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
@@ -1039,7 +1021,7 @@ static Standard_Real ComputeTolU(const Handle(Adaptor3d_Surface)& theSurf,
   Standard_Real aTolU = theSurf->UResolution(theTolerance);
   if (theSurf->IsUPeriodic())
   {
-    aTolU = Min(aTolU, 0.01 * theSurf->UPeriod());
+    aTolU = std::min(aTolU, 0.01 * theSurf->UPeriod());
   }
 
   return aTolU;
@@ -1053,7 +1035,7 @@ static Standard_Real ComputeTolV(const Handle(Adaptor3d_Surface)& theSurf,
   Standard_Real aTolV = theSurf->VResolution(theTolerance);
   if (theSurf->IsVPeriodic())
   {
-    aTolV = Min(aTolV, 0.01 * theSurf->VPeriod());
+    aTolV = std::min(aTolV, 0.01 * theSurf->VPeriod());
   }
 
   return aTolV;
@@ -1075,7 +1057,7 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox()
 ProjLib_ComputeApprox::ProjLib_ComputeApprox(const Handle(Adaptor3d_Curve)&   C,
                                              const Handle(Adaptor3d_Surface)& S,
                                              const Standard_Real              Tol)
-    : myTolerance(Max(Tol, Precision::PApproximation())),
+    : myTolerance(std::max(Tol, Precision::PApproximation())),
       myDegMin(-1),
       myDegMax(-1),
       myMaxSegments(-1),
@@ -1245,9 +1227,10 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
     }
 
     //-------------
-    const Standard_Real aTolU  = ComputeTolU(S, myTolerance);
-    const Standard_Real aTolV  = ComputeTolV(S, myTolerance);
-    const Standard_Real aTol2d = Max(Sqrt(aTolU * aTolU + aTolV * aTolV), Precision::PConfusion());
+    const Standard_Real aTolU = ComputeTolU(S, myTolerance);
+    const Standard_Real aTolV = ComputeTolV(S, myTolerance);
+    const Standard_Real aTol2d =
+      std::max(std::sqrt(aTolU * aTolU + aTolV * aTolV), Precision::PConfusion());
 
     Approx_FitAndDivide2d Fit(Deg1, Deg2, myTolerance, aTol2d, Standard_True, aFistC, aLastC);
     Fit.SetMaxSegments(aMaxSegments);
@@ -1270,7 +1253,7 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
       for (i = 1; i <= NbCurves; i++)
       {
         Fit.Error(i, Tol3d, Tol2d);
-        aNewTol2d                  = Max(aNewTol2d, Tol2d);
+        aNewTol2d                  = std::max(aNewTol2d, Tol2d);
         AppParCurves_MultiCurve MC = Fit.Value(i);           // Charge la Ieme Curve
         TColgp_Array1OfPnt2d    Poles2d(1, MC.Degree() + 1); // Recupere les poles
         MC.Curve(1, Poles2d);
@@ -1312,7 +1295,7 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
         // try to smoother the Curve GeomAbs_C1.
         Standard_Integer aDeg       = myBSpline->Degree();
         Standard_Boolean OK         = Standard_True;
-        Standard_Real    aSmoothTol = Max(Precision::Confusion(), aNewTol2d);
+        Standard_Real    aSmoothTol = std::max(Precision::Confusion(), aNewTol2d);
         for (Standard_Integer ij = 2; ij < NbKnots; ij++)
         {
           OK = OK && myBSpline->RemoveKnot(ij, aDeg - 1, aSmoothTol);
@@ -1380,14 +1363,14 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
     Standard_Integer number;
     if (F.VCouture)
     {
-      if (SType == GeomAbs_Sphere && Abs(u - F.myU1) > M_PI)
+      if (SType == GeomAbs_Sphere && std::abs(u - F.myU1) > M_PI)
       {
         ToMirror = Standard_True;
         dv       = -M_PI;
         v        = M_PI - v;
       }
       Standard_Real newV = ElCLib::InPeriod(v, F.myV1, F.myV2);
-      number             = (Standard_Integer)(Floor((newV - v) / (F.myV2 - F.myV1)));
+      number             = (Standard_Integer)(std::floor((newV - v) / (F.myV2 - F.myV1)));
       dv -= number * (F.myV2 - F.myV1);
     }
     if (F.UCouture || (F.VCouture && SType == GeomAbs_Sphere))

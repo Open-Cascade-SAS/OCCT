@@ -39,7 +39,7 @@ Handle(Expr_GeneralExpression) Expr_ArgSinh::ShallowSimplified() const
   if (op->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) valop = Handle(Expr_NumericValue)::DownCast(op);
-    return new Expr_NumericValue(ASinh(valop->GetValue()));
+    return new Expr_NumericValue(std::asinh(valop->GetValue()));
   }
   if (op->IsKind(STANDARD_TYPE(Expr_Sinh)))
   {
@@ -99,7 +99,7 @@ Standard_Real Expr_ArgSinh::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                      const TColStd_Array1OfReal&      vals) const
 {
   Standard_Real val = Operand()->Evaluate(vars, vals);
-  return ::Log(val + ::Sqrt(::Square(val) + 1.0));
+  return std::log(val + std::sqrt(::Square(val) + 1.0));
 }
 
 TCollection_AsciiString Expr_ArgSinh::String() const

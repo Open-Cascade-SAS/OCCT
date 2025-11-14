@@ -493,8 +493,8 @@ void ChFi3d_FilBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
     case GeomAbs_Cylinder: {
       u1                       = p1f.X();
       u2                       = p2f.X();
-      v1                       = Max(p1f.Y(), p2f.Y());
-      v2                       = Min(p1l.Y(), p2l.Y());
+      v1                       = std::max(p1f.Y(), p2f.Y());
+      v2                       = std::min(p1l.Y(), p2l.Y());
       sec                      = new ChFiDS_SecHArray1(1, 2);
       gp_Cylinder         Cy   = AS.Cylinder();
       ChFiDS_CircSection& sec1 = sec->ChangeValue(1);
@@ -506,8 +506,8 @@ void ChFi3d_FilBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
     case GeomAbs_Torus: {
       v1                    = p1f.Y();
       v2                    = p2f.Y();
-      u1                    = Max(p1f.X(), p2f.X());
-      u2                    = Min(p1l.X(), p2l.X());
+      u1                    = std::max(p1f.X(), p2f.X());
+      u2                    = std::min(p1l.X(), p2l.X());
       Standard_Real    ang  = (u2 - u1);
       gp_Torus         To   = AS.Torus();
       Standard_Real    majr = To.MajorRadius(), minr = To.MinorRadius();
@@ -526,8 +526,8 @@ void ChFi3d_FilBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
     case GeomAbs_Sphere: {
       v1                   = p1f.Y();
       v2                   = p2f.Y();
-      u1                   = Max(p1f.X(), p2f.X());
-      u2                   = Min(p1l.X(), p2l.X());
+      u1                   = std::max(p1f.X(), p2f.X());
+      u2                   = std::min(p1l.X(), p2l.X());
       Standard_Real    ang = (u2 - u1);
       gp_Sphere        Sp  = AS.Sphere();
       Standard_Real    rad = Sp.Radius();
@@ -2175,8 +2175,10 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
   Standard_Real          a, b, c;
 
   // (1) Finds vi so that iso v=vi is punctual
-  VFirst = Min(ref->InterferenceOnS1().FirstParameter(), ref->InterferenceOnS2().FirstParameter());
-  VLast  = Max(ref->InterferenceOnS1().LastParameter(), ref->InterferenceOnS2().LastParameter());
+  VFirst =
+    std::min(ref->InterferenceOnS1().FirstParameter(), ref->InterferenceOnS2().FirstParameter());
+  VLast =
+    std::max(ref->InterferenceOnS1().LastParameter(), ref->InterferenceOnS2().LastParameter());
 
   // (1.1) Finds the first point inside
   for (ii = 1; ii <= Nbpnt && Line->Point(ii).Parameter() < VFirst; ii++)
@@ -2285,7 +2287,7 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
       Courbe2->D0(T, P2);
       P3d.SetXYZ((P1.XYZ() + P2.XYZ()) / 2);
       VertexTol = P1.Distance(P2);
-      VertexTol += Max(C1.Tolerance(), C2.Tolerance());
+      VertexTol += std::max(C1.Tolerance(), C2.Tolerance());
 
       SD->ChangeVertexLastOnS1().SetPoint(P3d);
       SD->ChangeVertexLastOnS2().SetPoint(P3d);

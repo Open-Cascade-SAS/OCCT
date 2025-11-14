@@ -180,7 +180,7 @@ void BRepPrim_OneAxis::VMax(const Standard_Real V)
 
 Standard_Boolean BRepPrim_OneAxis::MeridianOnAxis(const Standard_Real V) const
 {
-  return Abs(MeridianValue(V).X()) < Precision::Confusion();
+  return std::abs(MeridianValue(V).X()) < Precision::Confusion();
 }
 
 //=================================================================================================
@@ -381,7 +381,7 @@ const TopoDS_Face& BRepPrim_OneAxis::TopFace()
                           gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::X)));
       myBuilder.SetPCurve(myEdges[ETOPEND],
                           myFaces[FTOP],
-                          gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(Cos(myAngle), Sin(myAngle))));
+                          gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(std::cos(myAngle), std::sin(myAngle))));
     }
 
     myBuilder.CompleteFace(myFaces[FTOP]);
@@ -422,7 +422,7 @@ const TopoDS_Face& BRepPrim_OneAxis::BottomFace()
                           gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::X)));
       myBuilder.SetPCurve(myEdges[EBOTEND],
                           myFaces[FBOTTOM],
-                          gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(Cos(myAngle), Sin(myAngle))));
+                          gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(std::cos(myAngle), std::sin(myAngle))));
     }
 
     myBuilder.CompleteFace(myFaces[FBOTTOM]);

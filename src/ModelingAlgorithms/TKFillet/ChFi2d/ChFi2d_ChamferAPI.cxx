@@ -123,9 +123,9 @@ TopoDS_Edge ChFi2d_ChamferAPI::Result(TopoDS_Edge&        theEdge1,
                                       const Standard_Real theLength2)
 {
   TopoDS_Edge aResult;
-  if (Abs(myEnd1 - myStart1) < theLength1)
+  if (std::abs(myEnd1 - myStart1) < theLength1)
     return aResult;
-  if (Abs(myEnd2 - myStart2) < theLength2)
+  if (std::abs(myEnd2 - myStart2) < theLength2)
     return aResult;
 
   Standard_Real aCommon1 = (myCommonStart1 ? myStart1 : myEnd1)

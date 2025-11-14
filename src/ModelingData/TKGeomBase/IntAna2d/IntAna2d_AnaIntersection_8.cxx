@@ -118,7 +118,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
 
         nb_sol_valides++;
         Coord_Ancien_Repere(tx, ty, Axe_rep);
-        S = Log(S);
+        S = std::log(S);
         if (!HIsDirect)
           S = -S;
         lpnt[nb_sol_valides - 1].SetValue(tx, ty, S);

@@ -477,8 +477,8 @@ Standard_Boolean Geom_OsculatingSurface::BuildOsculatingSurface(
   }
   else
   {
-    MinDegree = (Standard_Integer)Min(udeg, vdeg);
-    MaxDegree = (Standard_Integer)Max(udeg, vdeg);
+    MinDegree = (Standard_Integer)std::min(udeg, vdeg);
+    MaxDegree = (Standard_Integer)std::max(udeg, vdeg);
 
     TColgp_Array2OfPnt cachepoles(1, MaxDegree + 1, 1, MinDegree + 1);
     // end for cache
@@ -710,7 +710,7 @@ Standard_Boolean Geom_OsculatingSurface::IsQPunctual(const Handle(Geom_Surface)&
     for (T = U1; T <= U2; T = T + Step)
     {
       S->D1(T, Param, P, D1U, D1V);
-      D1NormMax = Max(D1NormMax, D1U.Magnitude());
+      D1NormMax = std::max(D1NormMax, D1U.Magnitude());
     }
 
 #ifdef OCCT_DEBUG
@@ -726,7 +726,7 @@ Standard_Boolean Geom_OsculatingSurface::IsQPunctual(const Handle(Geom_Surface)&
     for (T = V1; T <= V2; T = T + Step)
     {
       S->D1(Param, T, P, D1U, D1V);
-      D1NormMax = Max(D1NormMax, D1V.Magnitude());
+      D1NormMax = std::max(D1NormMax, D1V.Magnitude());
     }
 #ifdef OCCT_DEBUG
     std::cout << " D1NormMax = " << D1NormMax << std::endl;

@@ -110,7 +110,7 @@ void PrsDim_ConcentricRelation::ComputeEdgeVertexConcentric(
 
   Handle(Geom_Circle) CIRCLE(Handle(Geom_Circle)::DownCast(C));
   myCenter = CIRCLE->Location();
-  myRad    = Min(CIRCLE->Radius() / 5., 15.);
+  myRad    = std::min(CIRCLE->Radius() / 5., 15.);
   gp_Dir vec(p1.XYZ() - myCenter.XYZ());
   gp_Vec vectrans(vec);
   myPnt = myCenter.Translated(vectrans.Multiplied(myRad));

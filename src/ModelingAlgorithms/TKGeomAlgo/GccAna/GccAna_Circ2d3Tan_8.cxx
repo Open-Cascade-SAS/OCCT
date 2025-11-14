@@ -57,7 +57,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
 {
 
   WellDone          = Standard_False;
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   gp_Dir2d      dirx(gp_Dir2d::D::X);
   NbrSol = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))
@@ -121,7 +121,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
           }
           if (ok)
           {
-            if (Abs(dist2 - Radius) <= Tol)
+            if (std::abs(dist2 - Radius) <= Tol)
             {
               nbsol3 = 1;
             }

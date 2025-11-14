@@ -35,10 +35,10 @@ Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d&
                                                                const Standard_Real U2)
     : Convert_ConicToBSplineCurve(MaxNbPoles, MaxNbKnots, TheDegree)
 {
-  Standard_DomainError_Raise_if(Abs(U2 - U1) < Epsilon(0.), "Convert_ParabolaToBSplineCurve");
+  Standard_DomainError_Raise_if(std::abs(U2 - U1) < Epsilon(0.), "Convert_ParabolaToBSplineCurve");
 
-  Standard_Real UF = Min(U1, U2);
-  Standard_Real UL = Max(U1, U2);
+  Standard_Real UF = std::min(U1, U2);
+  Standard_Real UL = std::max(U1, U2);
 
   Standard_Real p = Prb.Parameter();
 

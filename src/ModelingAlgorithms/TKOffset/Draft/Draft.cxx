@@ -63,13 +63,13 @@ Standard_Real Draft::Angle(const TopoDS_Face& F, const gp_Dir& D)
     {
       normale.Reverse();
     }
-    Angle = ASin(normale.Dot(D));
+    Angle = std::asin(normale.Dot(D));
   }
   else if (TypeS == STANDARD_TYPE(Geom_CylindricalSurface))
   {
     gp_Cylinder   Cy(Handle(Geom_CylindricalSurface)::DownCast(S)->Cylinder());
     Standard_Real testdir = D.Dot(Cy.Axis().Direction());
-    if (Abs(testdir) <= 1. - Precision::Angular())
+    if (std::abs(testdir) <= 1. - Precision::Angular())
     {
       throw Standard_DomainError();
     }
@@ -79,7 +79,7 @@ Standard_Real Draft::Angle(const TopoDS_Face& F, const gp_Dir& D)
   { // STANDARD_TYPE(Geom_ConicalSurface)
     gp_Cone       Co(Handle(Geom_ConicalSurface)::DownCast(S)->Cone());
     Standard_Real testdir = D.Dot(Co.Axis().Direction());
-    if (Abs(testdir) <= 1. - Precision::Angular())
+    if (std::abs(testdir) <= 1. - Precision::Angular())
     {
       throw Standard_DomainError();
     }
@@ -94,7 +94,7 @@ Standard_Real Draft::Angle(const TopoDS_Face& F, const gp_Dir& D)
     {
       d1u.Reverse();
     }
-    Angle = ASin(d1u.Dot(D));
+    Angle = std::asin(d1u.Dot(D));
   }
   return Angle;
 }

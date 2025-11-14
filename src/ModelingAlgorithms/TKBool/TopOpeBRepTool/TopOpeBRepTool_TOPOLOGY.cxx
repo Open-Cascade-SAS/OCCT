@@ -195,14 +195,14 @@ Standard_EXPORT Standard_Boolean FUN_tool_isobounds(const TopoDS_Shape& Sh,
     {
       gp_Pnt2d p2df = PC->Value(f);
       gp_Pnt2d p2dl = PC->Value(l);
-      u1            = Min(p2df.X(), u1);
-      u2            = Max(p2df.X(), u2);
-      v1            = Min(p2df.Y(), v1);
-      v2            = Max(p2df.Y(), v2);
-      u1            = Min(p2dl.X(), u1);
-      u2            = Max(p2dl.X(), u2);
-      v1            = Min(p2dl.Y(), v1);
-      v2            = Max(p2dl.Y(), v2);
+      u1            = std::min(p2df.X(), u1);
+      u2            = std::max(p2df.X(), u2);
+      v1            = std::min(p2df.Y(), v1);
+      v2            = std::max(p2df.Y(), v2);
+      u1            = std::min(p2dl.X(), u1);
+      u2            = std::max(p2dl.X(), u2);
+      v1            = std::min(p2dl.Y(), v1);
+      v2            = std::max(p2dl.Y(), v2);
     }
     if (!isouv)
       return Standard_False;
@@ -521,7 +521,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_EtgF(const Standard_Real& paronE,
 
   gp_Vec           ngF  = FUN_tool_nggeomF(p2d, F);
   Standard_Real    prod = tgE.Dot(ngF);
-  Standard_Boolean tgt  = Abs(prod) < tola;
+  Standard_Boolean tgt  = std::abs(prod) < tola;
   return tgt;
 }
 
@@ -541,7 +541,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_EtgOOE(const Standard_Real& paronE,
   if (!ok)
     return Standard_False; // NYIRAISE
   Standard_Real    prod = tgOOE.Dot(tgE);
-  Standard_Boolean tg   = (Abs(1 - Abs(prod)) < tola);
+  Standard_Boolean tg   = (std::abs(1 - std::abs(prod)) < tola);
   return tg;
 }
 
@@ -558,9 +558,9 @@ Standard_EXPORT Standard_Boolean FUN_nearestISO(const TopoDS_Face&     F,
   //                   smaller xsup :        xpar <=xsup
   Standard_Real    tol2d = 1.e-6;
   Standard_Real    df    = xpar - xinf;
-  Standard_Boolean onf   = (Abs(df) < tol2d);
+  Standard_Boolean onf   = (std::abs(df) < tol2d);
   Standard_Real    dl    = xpar - xsup;
-  Standard_Boolean onl   = (Abs(dl) < tol2d);
+  Standard_Boolean onl   = (std::abs(dl) < tol2d);
   if (onf || onl)
     return Standard_True;
 
@@ -605,7 +605,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_EitangenttoFe(const gp_Dir&       ngFe
 
   Standard_Real    prod    = ngFe.Dot(tgEi);
   Standard_Real    tol     = Precision::Parametric(Precision::Confusion());
-  Standard_Boolean tangent = (Abs(prod) <= tol);
+  Standard_Boolean tangent = (std::abs(prod) <= tol);
   return tangent;
 }
 
@@ -707,7 +707,7 @@ Standard_EXPORT void FUN_tool_mkBnd2d(const TopoDS_Shape& W, const TopoDS_Shape&
     {
       Standard_Real tolE   = BRep_Tool::Tolerance(E);
       pc                   = FC2D_CurveOnSurface(E, F, f, l, tolpc);
-      Standard_Real newtol = Max(tolE, tolpc);
+      Standard_Real newtol = std::max(tolE, tolpc);
       BRep_Builder  BB;
       BB.UpdateEdge(E, pc, F, newtol);
     }
@@ -1148,7 +1148,7 @@ Standard_EXPORT Standard_Integer FUN_tool_comparebndkole(const TopoDS_Shape& sh1
   for (i = 1; i <= 3; i++)
   {
     Standard_Real    d  = xyz2(i) - xyz1(i);
-    Standard_Boolean eq = (Abs(d) < tol);
+    Standard_Boolean eq = (std::abs(d) < tol);
     if (eq)
     {
       neq++;
@@ -1160,7 +1160,7 @@ Standard_EXPORT Standard_Integer FUN_tool_comparebndkole(const TopoDS_Shape& sh1
   for (i = 4; i <= 6; i++)
   {
     Standard_Real    d  = xyz2(i) - xyz1(i);
-    Standard_Boolean eq = (Abs(d) < tol);
+    Standard_Boolean eq = (std::abs(d) < tol);
     if (eq)
     {
       neq++;
@@ -1202,7 +1202,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_SameOri(const TopoDS_Edge& E1, const T
   ok                 = FUN_tool_projPonE(Pmid, E1, pE1, dist);
   Standard_Real tol1 = BRep_Tool::Tolerance(E1);
   Standard_Real tol2 = BRep_Tool::Tolerance(E2);
-  Standard_Real tol  = Max(tol1, tol2) * 10.;
+  Standard_Real tol  = std::max(tol1, tol2) * 10.;
   if (dist > tol)
     return Standard_False;
   if (!ok)

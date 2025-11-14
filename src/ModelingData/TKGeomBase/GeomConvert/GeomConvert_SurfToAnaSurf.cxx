@@ -191,14 +191,15 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::TryCylinerCone(const Handle(Geom
       P3 = lastiso->Value((lastiso->LastParameter() - lastiso->FirstParameter()) / 2);
     }
     // cylinder
-    if (((Abs(R2 - R1)) < theToler) && ((Abs(R3 - R1)) < theToler) && ((Abs(R3 - R2)) < theToler))
+    if (((std::abs(R2 - R1)) < theToler) && ((std::abs(R3 - R1)) < theToler)
+        && ((std::abs(R3 - R2)) < theToler))
     {
       gp_Ax3 Axes(P1, gp_Dir(gp_Vec(P1, P3)));
       aNewSurf = new Geom_CylindricalSurface(Axes, R1);
     }
     // cone
-    else if ((((Abs(R1)) > (Abs(R2))) && ((Abs(R2)) > (Abs(R3))))
-             || (((Abs(R3)) > (Abs(R2))) && ((Abs(R2)) > (Abs(R1)))))
+    else if ((((std::abs(R1)) > (std::abs(R2))) && ((std::abs(R2)) > (std::abs(R3))))
+             || (((std::abs(R3)) > (std::abs(R2))) && ((std::abs(R2)) > (std::abs(R1)))))
     {
       Standard_Real radius;
       gp_Ax3        Axes;
@@ -239,7 +240,7 @@ static void GetLSGap(const Handle(TColgp_HArray1OfXYZ)& thePoints,
   {
     gp_Vec aD(thePoints->Value(i) - aLoc);
     aD.Cross(aDir);
-    theGap = Max(theGap, Abs((aD.Magnitude() - theR)));
+    theGap = std::max(theGap, std::abs((aD.Magnitude() - theR)));
   }
 }
 
@@ -404,16 +405,16 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
       ++n;
       Standard_Real aMinCurv   = aProps.MinCurvature();
       Standard_Real aMaxCurv   = aProps.MaxCurvature();
-      Standard_Real aGaussCurv = Abs(aProps.GaussianCurvature());
-      Standard_Real aK1        = Sqrt(aGaussCurv);
+      Standard_Real aGaussCurv = std::abs(aProps.GaussianCurvature());
+      Standard_Real aK1        = std::sqrt(aGaussCurv);
       if (aK1 > theToler)
       {
         return aNewSurf;
       }
       gp_XYZ aD;
       aProps.CurvatureDirections(aMaxD, aMinD);
-      aMinCurv = Abs(aMinCurv);
-      aMaxCurv = Abs(aMaxCurv);
+      aMinCurv = std::abs(aMinCurv);
+      aMaxCurv = std::abs(aMaxCurv);
       if (aMinCurv > aMaxCurv)
       {
         // aMinCurv < 0;
@@ -429,11 +430,11 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
       //
       if (n > 1)
       {
-        if (Abs(aMaxCurv - anAvMaxCurv / (n - 1)) > aTol / anR2)
+        if (std::abs(aMaxCurv - anAvMaxCurv / (n - 1)) > aTol / anR2)
         {
           return aNewSurf;
         }
-        if (Abs(aMinCurv - anAvMinCurv / (n - 1)) > aTol)
+        if (std::abs(aMinCurv - anAvMinCurv / (n - 1)) > aTol)
         {
           return aNewSurf;
         }
@@ -454,7 +455,7 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
   anAvR /= n;
   anAvDir /= n;
   //
-  if (Abs(anAvMinCurv) > theToler)
+  if (std::abs(anAvMinCurv) > theToler)
   {
     return aNewSurf;
   }
@@ -464,8 +465,8 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
     Standard_Real d = (anRs(i) - anAvR);
     aSigmaR += d * d;
   }
-  aSigmaR = Sqrt(aSigmaR / n);
-  aSigmaR = 3. * aSigmaR / Sqrt(n);
+  aSigmaR = std::sqrt(aSigmaR / n);
+  aSigmaR = 3. * aSigmaR / std::sqrt(n);
   if (aSigmaR > aTol)
   {
     return aNewSurf;
@@ -569,7 +570,7 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::TryTorusSphere(
   Standard_Real       R2       = aCircle2->Circ().Radius();
 
   // check radiuses
-  if ((Abs(R - R1) > toler) || (Abs(R - R2) > toler))
+  if ((std::abs(R - R1) > toler) || (std::abs(R - R2) > toler))
     return newSurface;
 
   // get centers of the major radius

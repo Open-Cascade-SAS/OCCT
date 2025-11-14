@@ -36,7 +36,7 @@ static Standard_Integer GetCircleNbPoints(const gp_Circ&         theCircle,
   if (theCircle.Radius() > Precision::Confusion())
   {
     const Standard_Boolean isSector =
-      theIsFilled && Abs(Abs(theU2 - theU1) - 2.0 * M_PI) > gp::Resolution();
+      theIsFilled && std::abs(std::abs(theU2 - theU1) - 2.0 * M_PI) > gp::Resolution();
     return 2 * theNbPnts + 1 + (isSector ? 2 : 0);
   }
 
@@ -59,7 +59,7 @@ static void initCircle(Select3D_PointData&    thePolygon,
   gp_Pnt              aP1;
   gp_Vec              aV1;
 
-  const Standard_Boolean isSector = Abs(theU2 - theU1 - 2.0 * M_PI) > gp::Resolution();
+  const Standard_Boolean isSector = std::abs(theU2 - theU1 - 2.0 * M_PI) > gp::Resolution();
 
   if (isSector && theIsFilled)
   {
@@ -72,7 +72,7 @@ static void initCircle(Select3D_PointData&    thePolygon,
     thePolygon.SetPnt(aPntIdx++, aP1);
 
     aV1.Normalize();
-    const gp_Pnt aP2 = aP1.XYZ() + aV1.XYZ() * Tan(aStep * 0.5) * aRadius;
+    const gp_Pnt aP2 = aP1.XYZ() + aV1.XYZ() * std::tan(aStep * 0.5) * aRadius;
     thePolygon.SetPnt(aPntIdx++, aP2);
   }
   aP1 = ElCLib::CircleValue(theU2, theCircle.Position(), theCircle.Radius());
@@ -202,7 +202,12 @@ Select3D_SensitivePoly::Select3D_SensitivePoly(const Handle(SelectMgr_EntityOwne
 
   if (myPolyg.Size() != 1)
   {
-    initCircle(myPolyg, theCircle, Min(theU1, theU2), Max(theU1, theU2), theIsFilled, theNbPnts);
+    initCircle(myPolyg,
+               theCircle,
+               std::min(theU1, theU2),
+               std::max(theU1, theU2),
+               theIsFilled,
+               theNbPnts);
   }
   else
   {
@@ -308,12 +313,12 @@ Select3D_BndBox3d Select3D_SensitivePoly::Box(const Standard_Integer theIdx) con
   gp_Pnt                 aPnt1       = myPolyg.Pnt3d(aSegmentIdx);
   gp_Pnt                 aPnt2       = myPolyg.Pnt3d(aSegmentIdx + 1);
 
-  const SelectMgr_Vec3 aMinPnt(Min(aPnt1.X(), aPnt2.X()),
-                               Min(aPnt1.Y(), aPnt2.Y()),
-                               Min(aPnt1.Z(), aPnt2.Z()));
-  const SelectMgr_Vec3 aMaxPnt(Max(aPnt1.X(), aPnt2.X()),
-                               Max(aPnt1.Y(), aPnt2.Y()),
-                               Max(aPnt1.Z(), aPnt2.Z()));
+  const SelectMgr_Vec3 aMinPnt(std::min(aPnt1.X(), aPnt2.X()),
+                               std::min(aPnt1.Y(), aPnt2.Y()),
+                               std::min(aPnt1.Z(), aPnt2.Z()));
+  const SelectMgr_Vec3 aMaxPnt(std::max(aPnt1.X(), aPnt2.X()),
+                               std::max(aPnt1.Y(), aPnt2.Y()),
+                               std::max(aPnt1.Z(), aPnt2.Z()));
 
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }

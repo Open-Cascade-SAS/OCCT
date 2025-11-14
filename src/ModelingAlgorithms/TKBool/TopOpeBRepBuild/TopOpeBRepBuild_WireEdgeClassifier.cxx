@@ -185,7 +185,7 @@ TopoDS_Shape TopOpeBRepBuild_WireEdgeClassifier::LoopToShape(const Handle(TopOpe
       C2D = FC2D_CurveOnSurface(E, F, f, l, tolpc);
       if (!C2D.IsNull())
       {
-        Standard_Real tol = Max(tolpc, tolE);
+        Standard_Real tol = std::max(tolpc, tolE);
         BB.UpdateEdge(E, C2D, F, tol);
       }
     }
@@ -272,7 +272,7 @@ TopAbs_State TopOpeBRepBuild_WireEdgeClassifier::CompareShapes(const TopoDS_Shap
         gp_Vec           tg        = FUN_tgINE(vshared, vl, E);
         Standard_Real    dot       = tg1.Dot(tg);
         Standard_Real    tol       = Precision::Angular() * 1.e4; // nyixpu
-        Standard_Boolean undecided = (Abs(1 + dot) < tol);
+        Standard_Boolean undecided = (std::abs(1 + dot) < tol);
         if (undecided)
         {
           indy = Standard_True;
@@ -411,7 +411,7 @@ void TopOpeBRepBuild_WireEdgeClassifier::ResetElement(const TopoDS_Shape& EE)
     Standard_Boolean trim3d = Standard_True; C2D = FC2D_CurveOnSurface(E,F,f2,l2,tolpc,trim3d); //jyl980406+
     // clang-format on
     Standard_Real tolE = BRep_Tool::Tolerance(E); // jyl980406+
-    Standard_Real tol  = Max(tolE, tolpc);        // jyl980406+
+    Standard_Real tol  = std::max(tolE, tolpc);   // jyl980406+
     BRep_Builder  BB;
     BB.UpdateEdge(E, C2D, F, tol); // jyl980406+
   } // jyl980406+
@@ -453,7 +453,7 @@ Standard_Boolean TopOpeBRepBuild_WireEdgeClassifier::CompareElement(const TopoDS
     // C2D = FC2D_CurveOnSurface(E,F,f2,l2,tolpc,trim3d); //jyl980406-
     // clang-format on
     Standard_Real tolE = BRep_Tool::Tolerance(E); // jyl980402+
-    Standard_Real tol  = Max(tolE, tolpc);        // jyl980402+
+    Standard_Real tol  = std::max(tolE, tolpc);   // jyl980402+
     BRep_Builder  BB;
     BB.UpdateEdge(E, C2D, F, tol); // jyl980402+
   } // jyl980402+

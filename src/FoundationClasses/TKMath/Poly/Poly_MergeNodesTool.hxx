@@ -229,7 +229,7 @@ private:
     void SetMergeAngle(double theAngleRad)
     {
       myAngle    = (float)theAngleRad;
-      myAngleCos = (float)Cos(theAngleRad);
+      myAngleCos = (float)std::cos(theAngleRad);
     }
 
     //! Return TRUE if merge angle is non-zero.

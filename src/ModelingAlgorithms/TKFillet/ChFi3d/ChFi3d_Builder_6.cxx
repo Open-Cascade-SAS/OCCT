@@ -295,11 +295,11 @@ static void CompParam(const Geom2dAdaptor_Curve& Carc,
           int2d = Intersection.Point(i);
           p1    = int2d.ParamOnFirst();
           p2    = int2d.ParamOnSecond();
-          if (Abs(prefarc - p2) < dist)
+          if (std::abs(prefarc - p2) < dist)
           {
             ptg   = p1;
             parc  = p2;
-            dist  = Abs(prefarc - p2);
+            dist  = std::abs(prefarc - p2);
             found = 1;
           }
         }
@@ -703,7 +703,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)&         Data
 
   Handle(Geom_BoundedSurface) aBndSurf = Surf;
   Standard_Boolean            ext1 = Standard_False, ext2 = Standard_False;
-  Standard_Real               eps = Max(tolget3d, 2. * Precision::Confusion());
+  Standard_Real               eps = std::max(tolget3d, 2. * Precision::Confusion());
   if (length1 > eps)
   {
     gp_Pnt P11, P21;
@@ -957,7 +957,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)&         Data
     {
       aDenom++;
 
-      if (Abs(aDeltav) <= tolget2d)
+      if (std::abs(aDeltav) <= tolget2d)
         return Standard_False;
 
       continue;
@@ -1762,7 +1762,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData(Handle(ChFiDS_SurfData)&           
   }
   else
   {
-    Target = SpLast + Abs(SpLast);
+    Target = SpLast + std::abs(SpLast);
     if (!intl)
       Target = Last;
   }
@@ -1846,9 +1846,10 @@ Standard_Boolean ChFi3d_Builder::ComputeData(Handle(ChFiDS_SurfData)&           
   TopoDS_Face      bif;
   // Max step is relevant, but too great, the vector is required to detect
   // the twists.
-  if ((Abs(Last - First) <= MS * 5.) && (Abs(Last - First) >= 0.01 * Abs(NewFirst - Target)))
+  if ((std::abs(Last - First) <= MS * 5.)
+      && (std::abs(Last - First) >= 0.01 * std::abs(NewFirst - Target)))
   {
-    MS = Abs(Last - First) * 0.2;
+    MS = std::abs(Last - First) * 0.2;
   }
 
   while (again < 3)
@@ -1966,7 +1967,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData(Handle(ChFiDS_SurfData)&           
       }
       else if (again == 1)
       {
-        if (Abs(fpointpar - u1sov) >= TolGuide || Abs(lpointpar - u2sov) >= TolGuide)
+        if (std::abs(fpointpar - u1sov) >= TolGuide || std::abs(lpointpar - u2sov) >= TolGuide)
         {
 #ifdef OCCT_DEBUG
           std::cout << "Number of points is still too small, the step is reduced" << std::endl;
@@ -2351,9 +2352,9 @@ Standard_Boolean ChFi3d_Builder::ComputeData(Handle(ChFiDS_SurfData)&           
     }
     if (Gd1 && Gd2)
     {
-      Target = Min((Lin->Point(1).Parameter() - Rab), First);
-      Target = Max(Target, SpFirst);
-      Data->FirstExtensionValue(Abs(Lin->Point(1).Parameter() - Target));
+      Target = std::min((Lin->Point(1).Parameter() - Rab), First);
+      Target = std::max(Target, SpFirst);
+      Data->FirstExtensionValue(std::abs(Lin->Point(1).Parameter() - Target));
     }
     if (intf && !unseulsuffitdeb)
       intf = (Gd1 && Gd2)            //;
@@ -2420,9 +2421,9 @@ Standard_Boolean ChFi3d_Builder::ComputeData(Handle(ChFiDS_SurfData)&           
     }
     if (Gf1 && Gf2)
     {
-      Target = Max((Lin->Point(Nbpnt).Parameter() + Rab), Last);
-      Target = Min(Target, SpLast);
-      Data->LastExtensionValue(Abs(Target - Lin->Point(Nbpnt).Parameter()));
+      Target = std::max((Lin->Point(Nbpnt).Parameter() + Rab), Last);
+      Target = std::min(Target, SpLast);
+      Data->LastExtensionValue(std::abs(Target - Lin->Point(Nbpnt).Parameter()));
     }
 
     if (intl && !unseulsuffitfin)
@@ -2596,7 +2597,7 @@ Standard_Boolean ChFi3d_Builder::SimulData(Handle(ChFiDS_SurfData)& /*Data*/,
     {
       Standard_Real u1 = Lin->Point(1).Parameter();
       Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
-      if (Abs(u1 - u1sov) >= TolGuide || Abs(u2 - u2sov) >= TolGuide)
+      if (std::abs(u1 - u1sov) >= TolGuide || std::abs(u2 - u2sov) >= TolGuide)
       {
         again++;
 #ifdef OCCT_DEBUG

@@ -860,8 +860,8 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated(const Standard_Integer num
   Standard_Boolean lack = Standard_False;
   Standard_Boolean dgnr = Standard_False;
   // pdn 12.03.99 minimal value processing first
-  Standard_Real precFirst = Min(myPrecision, BRep_Tool::Tolerance(V1));
-  Standard_Real precFin   = Max(myPrecision, BRep_Tool::Tolerance(V1));
+  Standard_Real precFirst = std::min(myPrecision, BRep_Tool::Tolerance(V1));
+  Standard_Real precFin   = std::max(myPrecision, BRep_Tool::Tolerance(V1));
   Standard_Real precVtx   = (myPrecision < BRep_Tool::Tolerance(V1) ? 2 * precFin : precFin);
   //  forward : si Edge <num> FWD/REV. Si LACK, toujours True
   Standard_Boolean forward = (E2.Orientation() == TopAbs_FORWARD);
@@ -980,7 +980,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated(const Standard_Integer num
   // the situation when degenerated edge already exists but flag is not set
   //(i.e. the parametric space is closed)
   GeomAdaptor_Surface& Ads = *mySurf->Adaptor3d();
-  Standard_Real        max = Max(Ads.UResolution(myPrecision), Ads.VResolution(myPrecision));
+  Standard_Real        max = std::max(Ads.UResolution(myPrecision), Ads.VResolution(myPrecision));
   if (p2d1.Distance(p2d2) /*Abs (par1 - par2)*/ <= max + gp::Resolution())
     return Standard_False;
 
@@ -1054,8 +1054,8 @@ Standard_Boolean ShapeAnalysis_Wire::CheckGap2d(const Standard_Integer num)
   gp_Pnt2d p2 = C2->Value(uf2);
   myMin2d = myMax2d       = p1.Distance(p2);
   GeomAdaptor_Surface& SA = *mySurf->Adaptor3d();
-  if (myMin2d
-      > (Max(SA.UResolution(myPrecision), SA.VResolution(myPrecision)) + Precision::PConfusion()))
+  if (myMin2d > (std::max(SA.UResolution(myPrecision), SA.VResolution(myPrecision))
+                 + Precision::PConfusion()))
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   return LastCheckStatus(ShapeExtend_DONE);
 }
@@ -1097,7 +1097,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckCurveGap(const Standard_Integer num)
     if (maxdist < dist)
       maxdist = dist;
   }
-  myMin3d = myMax3d = Sqrt(maxdist);
+  myMin3d = myMax3d = std::sqrt(maxdist);
   if (myMin3d > myPrecision)
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   return LastCheckStatus(ShapeExtend_DONE);
@@ -1148,7 +1148,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckSelfIntersectingEdge(
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
     return Standard_False;
   }
-  if (Abs(a - b) <= ::Precision::PConfusion())
+  if (std::abs(a - b) <= ::Precision::PConfusion())
     return Standard_False;
 
   Standard_Real tolint = 1.0e-10;
@@ -1258,15 +1258,15 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges(
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL3);
     return Standard_False;
   }
-  if (Abs(a1 - b1) <= ::Precision::PConfusion() ||
+  if (std::abs(a1 - b1) <= ::Precision::PConfusion() ||
       // clang-format off
-       Abs ( a2 - b2 ) <= ::Precision::PConfusion() ) return Standard_False; //:f7 abv 6 May 98: BUC50070 on #42276
+       std::abs( a2 - b2 ) <= ::Precision::PConfusion() ) return Standard_False; //:f7 abv 6 May 98: BUC50070 on #42276
   // clang-format on
 
   Standard_Boolean isForward1 = (edge1.Orientation() == TopAbs_FORWARD);
   Standard_Boolean isForward2 = (edge2.Orientation() == TopAbs_FORWARD);
 
-  Standard_Real tol0 = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+  Standard_Real tol0 = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
   Standard_Real tol  = tol0;
 
   gp_Pnt pnt = BRep_Tool::Pnt(V1);
@@ -1297,9 +1297,10 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges(
   //: 86 abv 22 Jan 98: fix self-intersection even if tolerance of vertex is enough
   // to annihilate it. This is done to prevent wrong effects if vertex tolerance
   // will be decreased (e.g., in FixLacking)
-  Standard_Real tole = Max((BRep_Tool::SameParameter(edge1) ? BRep_Tool::Tolerance(edge1) : tol0),
-                           (BRep_Tool::SameParameter(edge2) ? BRep_Tool::Tolerance(edge2) : tol0));
-  Standard_Real tolt = Min(tol, Max(tole, myPrecision));
+  Standard_Real tole =
+    std::max((BRep_Tool::SameParameter(edge1) ? BRep_Tool::Tolerance(edge1) : tol0),
+             (BRep_Tool::SameParameter(edge2) ? BRep_Tool::Tolerance(edge2) : tol0));
+  Standard_Real tolt = std::min(tol, std::max(tole, myPrecision));
   // Standard_Real prevRange1 = RealLast(), prevRange2 = RealLast(); //SK
   Standard_Integer isLacking = -1; //: l0 abv: CATIA01 #1727: protect against adding lacking
   // #83 rln 19.03.99 sim2.igs, entity 4292
@@ -1344,7 +1345,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges(
     gp_Pnt        pint  = 0.5 * (pi1.XYZ() + pi2.XYZ());
     Standard_Real di1   = pi1.SquareDistance(pnt);
     Standard_Real di2   = pi2.SquareDistance(pnt);
-    Standard_Real dist2 = Max(di1, di2);
+    Standard_Real dist2 = std::max(di1, di2);
 
     // rln 03/02/98: CSR#BUC50004 entity 56 (to avoid later inserting lacking edge)
     if (isLacking < 0)
@@ -1354,7 +1355,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges(
       //: l0      Standard_Real distab2 = mySurf->Value ( end1 ).SquareDistance ( mySurf->Value (
       //: end2 ) ); l0: test like in BRepCheck
       GeomAdaptor_Surface& Ads   = *mySurf->Adaptor3d();
-      Standard_Real        tol2d = 2 * Max(Ads.UResolution(tol), Ads.VResolution(tol));
+      Standard_Real        tol2d = 2 * std::max(Ads.UResolution(tol), Ads.VResolution(tol));
       isLacking                  = (end1.SquareDistance(end2) >= tol2d * tol2d);
     }
 
@@ -1420,7 +1421,8 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges(
     return Standard_False;
   }
 
-  if (Abs(a1 - b1) <= ::Precision::PConfusion() || Abs(a2 - b2) <= ::Precision::PConfusion())
+  if (std::abs(a1 - b1) <= ::Precision::PConfusion()
+      || std::abs(a2 - b2) <= ::Precision::PConfusion())
     return Standard_False;
 
   points2d.Clear();
@@ -1579,21 +1581,21 @@ Standard_Boolean ShapeAnalysis_Wire::CheckLacking(const Standard_Integer num,
   myMax2d = v12.SquareMagnitude();
 
   // test like in BRepCheck
-  Standard_Real tol          = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+  Standard_Real tol          = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
   tol                        = (Tolerance > gp::Resolution() && Tolerance < tol ? Tolerance : tol);
   GeomAdaptor_Surface& Ads   = *mySurf->Adaptor3d();
-  Standard_Real        tol2d = 2 * Max(Ads.UResolution(tol), Ads.VResolution(tol));
+  Standard_Real        tol2d = 2 * std::max(Ads.UResolution(tol), Ads.VResolution(tol));
   if ( // tol2d < gp::Resolution() || //#2 smh 26.03.99 S4163 Zero divide
     myMax2d < tol2d * tol2d)
     return Standard_False;
 
-  myMax2d = Sqrt(myMax2d);
-  myMax3d = tol * myMax2d / Max(tol2d, gp::Resolution());
+  myMax2d = std::sqrt(myMax2d);
+  myMax3d = tol * myMax2d / std::max(tol2d, gp::Resolution());
   myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
 
   if (myMax2d < Precision::PConfusion() || //: abv 03.06.02 CTS21866.stp
-      (v1.SquareMagnitude() > gp::Resolution() && Abs(v12.Angle(v1)) > 0.9 * M_PI)
-      || (v2.SquareMagnitude() > gp::Resolution() && Abs(v12.Angle(v2)) > 0.9 * M_PI))
+      (v1.SquareMagnitude() > gp::Resolution() && std::abs(v12.Angle(v1)) > 0.9 * M_PI)
+      || (v2.SquareMagnitude() > gp::Resolution() && std::abs(v12.Angle(v2)) > 0.9 * M_PI))
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
   return Standard_True;
 }
@@ -1726,7 +1728,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckNotchedEdges(const Standard_Integer nu
   if (v2.Magnitude() < gp::Resolution() || v1.Magnitude() < gp::Resolution())
     return Standard_False;
 
-  if (Abs(v2.Angle(v1)) > 0.1 || p2d1.Distance(p2d2) > Tolerance)
+  if (std::abs(v2.Angle(v1)) > 0.1 || p2d1.Distance(p2d2) > Tolerance)
     return Standard_False;
 
   Handle(Geom2dAdaptor_Curve) AC2d1 = new Geom2dAdaptor_Curve(c2d1, a1, b1);
@@ -1873,7 +1875,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckSmallArea(const TopoDS_Wire& theWire)
     BRepGProp::LinearProperties(aFace, aLProps);
 
     Standard_Real aNewTolerance = aLProps.Mass() * myPrecision;
-    if (Abs(aProps.Mass()) < 0.5 * aNewTolerance)
+    if (std::abs(aProps.Mass()) < 0.5 * aNewTolerance)
     {
       myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
       return Standard_True;
@@ -1949,8 +1951,8 @@ Standard_Boolean ShapeAnalysis_Wire::CheckShapeConnect(Standard_Real&      tailh
     dm2  = headhead;
   }
   Standard_Integer result = res1;
-  myMin3d                 = Min(dm1, dm2);
-  myMax3d                 = Max(dm1, dm2);
+  myMin3d                 = std::min(dm1, dm2);
+  myMax3d                 = std::max(dm1, dm2);
   if (dm1 > dm2)
   {
     dm1    = dm2;
@@ -1973,7 +1975,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckShapeConnect(Standard_Real&      tailh
   if (!res2)
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE6);
 
-  if (myMin3d > Max(myPrecision, prec))
+  if (myMin3d > std::max(myPrecision, prec))
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
   return LastCheckStatus(ShapeExtend_DONE);
 }
@@ -2292,12 +2294,12 @@ Standard_Boolean ShapeAnalysis_Wire::CheckTail(const TopoDS_Edge&  theEdge1,
   Standard_Integer aResults[]   = {1, 1};
   for (Standard_Integer aEI = 0; aEI < 2; ++aEI)
   {
-    if (Abs(aParams[aEI] - aLs[aEI][1 - aVIs[aEI]]) <= Precision::PConfusion())
+    if (std::abs(aParams[aEI] - aLs[aEI][1 - aVIs[aEI]]) <= Precision::PConfusion())
     {
       aResults[aEI]    = 2;
       *aEParts[aEI][0] = aEs[aEI];
     }
-    else if (Abs(aParams[aEI] - aLs[aEI][aVIs[aEI]]) <= Precision::PConfusion())
+    else if (std::abs(aParams[aEI] - aLs[aEI][aVIs[aEI]]) <= Precision::PConfusion())
     {
       aResults[aEI] = 0;
     }

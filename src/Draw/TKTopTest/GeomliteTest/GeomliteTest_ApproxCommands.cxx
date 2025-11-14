@@ -367,7 +367,7 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
   if (n == 3)
   {
     Tolerance = Draw::Atof(a[2]);
-    if (Abs(Tolerance) < Precision::Confusion() * 1.e-7)
+    if (std::abs(Tolerance) < Precision::Confusion() * 1.e-7)
     {
       Constraint = AppParCurves_PassPoint;
     }
@@ -382,7 +382,7 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
   {
     Standard_Integer ific = 3;
     Tolerance             = Draw::Atof(a[2]);
-    if (Abs(Tolerance) < Precision::Confusion() * 1.e-7)
+    if (std::abs(Tolerance) < Precision::Confusion() * 1.e-7)
     {
       Constraint = AppParCurves_PassPoint;
     }
@@ -447,7 +447,7 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
         Variation.SetContinuity(GeomAbs_C1);
       Variation.SetMaxDegree(DegMax);
     }
-    Variation.SetTolerance(Abs(Tolerance));
+    Variation.SetTolerance(std::abs(Tolerance));
     if (Tolerance > 0)
     {
       Variation.SetWithMinMax(Standard_True);
@@ -497,7 +497,7 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
         Variation.SetContinuity(GeomAbs_C1);
       Variation.SetMaxDegree(DegMax);
     }
-    Variation.SetTolerance(Abs(Tolerance));
+    Variation.SetTolerance(std::abs(Tolerance));
     if (Tolerance > 0)
     {
       Variation.SetWithMinMax(Standard_True);
@@ -577,7 +577,7 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
       methode = 3;
     }
 
-    if (Abs(Tolerance) < Precision::Confusion() * 1.e-7)
+    if (std::abs(Tolerance) < Precision::Confusion() * 1.e-7)
     {
       Constraint = AppParCurves_PassPoint;
     }
@@ -638,15 +638,15 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
       Standard_Integer NbIteration = 5;
 
       if (Degree < 4)
-        degmin = Max(1, Degree - 1);
-      degmin =
-        Max(degmin,
-            NbConstraint(TABofCC->Value(1).Constraint(), TABofCC->Value(NbPoints).Constraint()));
+        degmin = std::max(1, Degree - 1);
+      degmin = std::max(
+        degmin,
+        NbConstraint(TABofCC->Value(1).Constraint(), TABofCC->Value(NbPoints).Constraint()));
 
       AppDef_Compute Appr(degmin,
                           Degree,
-                          Abs(Tolerance),
-                          Abs(Tolerance),
+                          std::abs(Tolerance),
+                          std::abs(Tolerance),
                           NbIteration,
                           Standard_False,
                           Approx_ChordLength,
@@ -670,7 +670,7 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
     else
     {
       AppDef_Variational Varia(AML, 1, NbPoints, TABofCC, Degree, 1);
-      Varia.SetTolerance(Abs(Tolerance));
+      Varia.SetTolerance(std::abs(Tolerance));
       Varia.Approximate();
 
       if (!Varia.IsDone())
@@ -720,15 +720,15 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
       Standard_Integer degmin      = 4;
       Standard_Integer NbIteration = 5;
       if (Degree < 4)
-        degmin = Max(1, Degree - 1);
-      degmin =
-        Max(degmin,
-            NbConstraint(TABofCC->Value(1).Constraint(), TABofCC->Value(NbPoints).Constraint()));
+        degmin = std::max(1, Degree - 1);
+      degmin = std::max(
+        degmin,
+        NbConstraint(TABofCC->Value(1).Constraint(), TABofCC->Value(NbPoints).Constraint()));
 
       AppDef_Compute Appr(degmin,
                           Degree,
-                          Abs(Tolerance),
-                          Abs(Tolerance),
+                          std::abs(Tolerance),
+                          std::abs(Tolerance),
                           NbIteration,
                           Standard_False,
                           Approx_ChordLength,
@@ -753,7 +753,7 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
     {
       AppDef_Variational Varia(AML, 1, NbPoints, TABofCC, Degree, 1);
 
-      Varia.SetTolerance(Abs(Tolerance));
+      Varia.SetTolerance(std::abs(Tolerance));
       Varia.Approximate();
       if (!Varia.IsDone())
       {

@@ -122,13 +122,13 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
     }
   }
 
-  if ((Abs(A) <= Eps) && (Abs(B) <= Eps))
+  if ((std::abs(A) <= Eps) && (std::abs(B) <= Eps))
   {
-    if (Abs(C) <= Eps)
+    if (std::abs(C) <= Eps)
     {
-      if (Abs(D) <= Eps)
+      if (std::abs(D) <= Eps)
       {
-        if (Abs(E) <= Eps)
+        if (std::abs(E) <= Eps)
         {
           InfiniteStatus = Standard_True; // infinite de solutions.
           return;
@@ -145,23 +145,23 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
         // =================================
         NbSol = 0;
         AA    = -E / D;
-        if (Abs(AA) > 1.)
+        if (std::abs(AA) > 1.)
         {
           return;
         }
 
-        Zer(1) = ASin(AA);
+        Zer(1) = std::asin(AA);
         Zer(2) = M_PI - Zer(1);
         NZer   = 2;
         for (i = 1; i <= NZer; i++)
         {
           if (Zer(i) <= -Eps)
           {
-            Zer(i) = Depi - Abs(Zer(i));
+            Zer(i) = Depi - std::abs(Zer(i));
           }
           // On rend les solutions entre InfBound et SupBound:
           // =================================================
-          Zer(i) += IntegerPart(Mod) * Depi;
+          Zer(i) += std::trunc(Mod) * Depi;
           X = Zer(i) - MyBorneInf;
           if ((X > (-Epsilon(Delta))) && (X < Delta + Epsilon(Delta)))
           {
@@ -172,18 +172,18 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
       }
       return;
     }
-    else if (Abs(D) <= Eps)
+    else if (std::abs(D) <= Eps)
     {
 
       // Equation du premier degre de la forme c*cos(x) + e = 0
       // ======================================================
       NbSol = 0;
       AA    = -E / C;
-      if (Abs(AA) > 1.)
+      if (std::abs(AA) > 1.)
       {
         return;
       }
-      Zer(1) = ACos(AA);
+      Zer(1) = std::acos(AA);
       Zer(2) = -Zer(1);
       NZer   = 2;
 
@@ -191,11 +191,11 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
       {
         if (Zer(i) <= -Eps)
         {
-          Zer(i) = Depi - Abs(Zer(i));
+          Zer(i) = Depi - std::abs(Zer(i));
         }
         // On rend les solutions entre InfBound et SupBound:
         // =================================================
-        Zer(i) += IntegerPart(Mod) * 2. * M_PI;
+        Zer(i) += std::trunc(Mod) * 2. * M_PI;
         X = Zer(i) - MyBorneInf;
         if ((X >= (-Epsilon(Delta))) && (X <= Delta + Epsilon(Delta)))
         {
@@ -238,9 +238,9 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
   else
   {
     // Two additional analytical cases.
-    if ((Abs(A) <= Eps) && (Abs(E) <= Eps))
+    if ((std::abs(A) <= Eps) && (std::abs(E) <= Eps))
     {
-      if (Abs(C) <= Eps)
+      if (std::abs(C) <= Eps)
       {
         // 2 * B * sin * cos + D * sin = 0
         NZer   = 2;
@@ -248,7 +248,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
         Zer(2) = M_PI;
 
         AA = -D / (B * 2);
-        if (Abs(AA) <= 1.0 + Precision::PConfusion())
+        if (std::abs(AA) <= 1.0 + Precision::PConfusion())
         {
           NZer = 4;
           if (AA >= 1.0)
@@ -263,7 +263,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
           }
           else
           {
-            Zer(3) = ACos(AA);
+            Zer(3) = std::acos(AA);
             Zer(4) = Depi - Zer(3);
           }
         }
@@ -277,7 +277,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
           }
           // On rend les solutions entre InfBound et SupBound:
           // =================================================
-          Zer(i) += IntegerPart(Mod) * 2. * M_PI;
+          Zer(i) += std::trunc(Mod) * 2. * M_PI;
           X = Zer(i) - MyBorneInf;
           if ((X >= (-Precision::PConfusion())) && (X <= Delta + Precision::PConfusion()))
           {
@@ -291,7 +291,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
         }
         return;
       }
-      if (Abs(D) <= Eps)
+      if (std::abs(D) <= Eps)
       {
         // 2 * B * sin * cos + C * cos = 0
         NZer   = 2;
@@ -299,7 +299,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
         Zer(2) = M_PI * 3.0 / 2.0;
 
         AA = -C / (B * 2);
-        if (Abs(AA) <= 1.0 + Precision::PConfusion())
+        if (std::abs(AA) <= 1.0 + Precision::PConfusion())
         {
           NZer = 4;
           if (AA >= 1.0)
@@ -315,7 +315,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
           }
           else
           {
-            Zer(3) = ASin(AA);
+            Zer(3) = std::asin(AA);
             Zer(4) = M_PI - Zer(3);
           }
         }
@@ -329,7 +329,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
           }
           // On rend les solutions entre InfBound et SupBound:
           // =================================================
-          Zer(i) += IntegerPart(Mod) * 2. * M_PI;
+          Zer(i) += std::trunc(Mod) * 2. * M_PI;
           X = Zer(i) - MyBorneInf;
           if ((X >= (-Precision::PConfusion())) && (X <= Delta + Precision::PConfusion()))
           {
@@ -393,13 +393,13 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
 
       for (i = 1; i < NZer; i++)
       {
-        if (Abs(Zer(i + 1) - Zer(i)) < Eps)
+        if (std::abs(Zer(i + 1) - Zer(i)) < Eps)
         {
           //-- est ce une racine double ou une erreur numerique ?
           Standard_Real qw = Zer(i + 1);
           Standard_Real va = ko(4) + qw * (2.0 * ko(3) + qw * (3.0 * ko(2) + qw * (4.0 * ko(1))));
           //-- std::cout<<"   Val Double ("<<qw<<")=("<<va<<")"<<std::endl;
-          if (Abs(va) > Eps)
+          if (std::abs(va) > Eps)
           {
             bko = Standard_True;
 #ifdef OCCT_DEBUG
@@ -436,9 +436,9 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
     Teta += Teta;
     if (Zer(i) <= (-Eps))
     {
-      Teta = Depi - Abs(Teta);
+      Teta = Depi - std::abs(Teta);
     }
-    Teta += IntegerPart(Mod) * Depi;
+    Teta += std::trunc(Mod) * Depi;
     if (Teta - MyBorneInf < 0)
       Teta += Depi;
 
@@ -498,11 +498,11 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
     Standard_Integer startIndex = NbSol + 1;
     for (Standard_Integer solIt = startIndex; solIt <= 4; solIt++)
     {
-      Teta = M_PI + IntegerPart(Mod) * 2.0 * M_PI;
+      Teta = M_PI + std::trunc(Mod) * 2.0 * M_PI;
       X    = Teta - MyBorneInf;
       if ((X >= (-Epsilon(Delta))) && (X <= Delta + Epsilon(Delta)))
       {
-        if (Abs(A - C + E) <= Eps)
+        if (std::abs(A - C + E) <= Eps)
         {
           Flag4 = Standard_False;
           for (k = 1; k <= NbSol; k++)
@@ -513,7 +513,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
               Flag4 = Standard_True;
               break;
             }
-            if ((solIt == startIndex) && (Abs(Teta - Sol(k)) <= Eps))
+            if ((solIt == startIndex) && (std::abs(Teta - Sol(k)) <= Eps))
             {
               return;
             }

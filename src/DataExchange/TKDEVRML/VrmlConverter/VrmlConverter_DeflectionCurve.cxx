@@ -156,8 +156,8 @@ static void DrawCurve(Adaptor3d_Curve&                    aCurve,
       Standard_Real Radius = aCurve.Circle().Radius();
       if (!Precision::IsInfinite(Radius))
       {
-        Standard_Real    DU = Sqrt(8.0 * TheDeflection / Radius);
-        Standard_Integer N  = Standard_Integer(Abs(U2 - U1) / DU);
+        Standard_Real    DU = std::sqrt(8.0 * TheDeflection / Radius);
+        Standard_Integer N  = Standard_Integer(std::abs(U2 - U1) / DU);
 
         if (N > 0)
         {
@@ -263,9 +263,9 @@ static Standard_Real GetDeflection(const Adaptor3d_Curve&              aCurve,
     if (!(box.IsOpenXmin() || box.IsOpenXmax() || box.IsOpenYmin() || box.IsOpenYmax()
           || box.IsOpenZmin() || box.IsOpenZmax()))
     {
-      diagonal               = Sqrt((Xmax - Xmin) * (Xmax - Xmin) + (Ymax - Ymin) * (Ymax - Ymin)
-                      + (Zmax - Zmin) * (Zmax - Zmin));
-      diagonal               = Max(diagonal, Precision::Confusion());
+      diagonal = std::sqrt((Xmax - Xmin) * (Xmax - Xmin) + (Ymax - Ymin) * (Ymax - Ymin)
+                           + (Zmax - Zmin) * (Zmax - Zmin));
+      diagonal = std::max(diagonal, Precision::Confusion());
       theRequestedDeflection = aDrawer->DeviationCoefficient() * diagonal;
     }
     else

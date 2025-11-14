@@ -68,7 +68,7 @@ public:
   //! deflection
   //! when the curve is singular at the point P(u),the algorithm
   //! computes the next point as
-  //! P(u + Max(CurrentStep,Abs(LastParameter-FirstParameter)))
+  //! P(u + std::max(CurrentStep,std::abs(LastParameter-FirstParameter)))
   //! if the singularity is at the first point ,the next point
   //! calculated is the P(LastParameter)
   Standard_EXPORT CPnts_UniformDeflection(const Adaptor3d_Curve& C,

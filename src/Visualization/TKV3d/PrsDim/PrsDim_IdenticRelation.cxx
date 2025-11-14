@@ -64,10 +64,10 @@ static Standard_Boolean IsEqual2PI(const Standard_Real angle1,
                                    const Standard_Real angle2,
                                    const Standard_Real precision)
 {
-  Standard_Real diff = Abs(angle1 - angle2);
+  Standard_Real diff = std::abs(angle1 - angle2);
   if (diff < precision)
     return Standard_True;
-  else if (Abs(diff - 2 * M_PI) < precision)
+  else if (std::abs(diff - 2 * M_PI) < precision)
     return Standard_True;
   return Standard_False;
 }
@@ -849,7 +849,7 @@ void PrsDim_IdenticRelation::ComputeTwoCirclesPresentation(const Handle(Prs3d_Pr
         att    = pf1;
         curpos = firstp1;
       }
-      Standard_Real maxrad = Min(Modulo2PI(pl1 - pf1), Modulo2PI(pl2 - pf2)) * 3 / 4;
+      Standard_Real maxrad = std::min(Modulo2PI(pl1 - pf1), Modulo2PI(pl2 - pf2)) * 3 / 4;
       if (rad > maxrad)
         rad = maxrad;
       Standard_Real pFAttach = Modulo2PI(att - rad);
@@ -1209,7 +1209,7 @@ void PrsDim_IdenticRelation::ComputeTwoEllipsesPresentation(const Handle(Prs3d_P
         att    = pf1;
         curpos = firstp1;
       }
-      Standard_Real maxrad = Min(Modulo2PI(pl1 - pf1), Modulo2PI(pl2 - pf2)) * 3 / 4;
+      Standard_Real maxrad = std::min(Modulo2PI(pl1 - pf1), Modulo2PI(pl2 - pf2)) * 3 / 4;
       if (rad > maxrad)
         rad = maxrad;
       Standard_Real pFAttach = Modulo2PI(att - rad);

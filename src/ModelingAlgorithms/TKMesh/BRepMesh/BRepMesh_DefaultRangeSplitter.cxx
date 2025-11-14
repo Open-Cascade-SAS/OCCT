@@ -34,10 +34,10 @@ void BRepMesh_DefaultRangeSplitter::Reset(const IMeshData::IFaceHandle& theDFace
 
 void BRepMesh_DefaultRangeSplitter::AddPoint(const gp_Pnt2d& thePoint)
 {
-  myRangeU.first  = Min(thePoint.X(), myRangeU.first);
-  myRangeU.second = Max(thePoint.X(), myRangeU.second);
-  myRangeV.first  = Min(thePoint.Y(), myRangeV.first);
-  myRangeV.second = Max(thePoint.Y(), myRangeV.second);
+  myRangeU.first  = std::min(thePoint.X(), myRangeU.first);
+  myRangeU.second = std::max(thePoint.X(), myRangeU.second);
+  myRangeV.first  = std::min(thePoint.Y(), myRangeV.first);
+  myRangeV.second = std::max(thePoint.Y(), myRangeV.second);
 }
 
 //=================================================================================================
@@ -122,8 +122,8 @@ void BRepMesh_DefaultRangeSplitter::computeTolerance(const Standard_Real /*theLe
   const Standard_Real      aResV      = aSurface.VResolution(aTolerance) * 1.1;
 
   const Standard_Real aDeflectionUV = 1.e-05;
-  myTolerance.first                 = Max(Min(aDeflectionUV, aResU), 1e-7 * aDiffU);
-  myTolerance.second                = Max(Min(aDeflectionUV, aResV), 1e-7 * aDiffV);
+  myTolerance.first                 = std::max(std::min(aDeflectionUV, aResU), 1e-7 * aDiffU);
+  myTolerance.second                = std::max(std::min(aDeflectionUV, aResV), 1e-7 * aDiffV);
 }
 
 //=================================================================================================

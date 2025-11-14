@@ -249,7 +249,7 @@ Standard_EXPORT void FUN_tool_draw(const TCollection_AsciiString aa,
 {
   Standard_Real        tol = 1.e-7;
   Handle(Geom2d_Curve) cc2d;
-  if (Abs(f) <= tol && Abs(l) <= tol)
+  if (std::abs(f) <= tol && std::abs(l) <= tol)
     cc2d = c2d;
   else
     cc2d = new Geom2d_TrimmedCurve(c2d, f, l);
@@ -269,7 +269,7 @@ Standard_EXPORT void FUN_tool_draw(const TCollection_AsciiString aa,
 {
   Standard_Real      tol = 1.e-7;
   Handle(Geom_Curve) cc;
-  if (Abs(f) <= tol && Abs(l) <= tol)
+  if (std::abs(f) <= tol && std::abs(l) <= tol)
     cc = c;
   else
     cc = new Geom_TrimmedCurve(c, f, l);

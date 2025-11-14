@@ -118,10 +118,10 @@ void Graphic3d_FrameStatsData::Reset()
 
 void Graphic3d_FrameStatsData::FillMax(const Graphic3d_FrameStatsData& theOther)
 {
-  myFps             = Max(myFps, theOther.myFps);
-  myFpsCpu          = Max(myFpsCpu, theOther.myFpsCpu);
-  myFpsImmediate    = Max(myFpsImmediate, theOther.myFpsImmediate);
-  myFpsCpuImmediate = Max(myFpsCpuImmediate, theOther.myFpsCpuImmediate);
+  myFps             = std::max(myFps, theOther.myFps);
+  myFpsCpu          = std::max(myFpsCpu, theOther.myFpsCpu);
+  myFpsImmediate    = std::max(myFpsImmediate, theOther.myFpsImmediate);
+  myFpsCpuImmediate = std::max(myFpsCpuImmediate, theOther.myFpsCpuImmediate);
   for (size_t aCounterIter = 0; aCounterIter < myCounters.size(); ++aCounterIter)
   {
     myCounters[aCounterIter] = myCounters[aCounterIter] > theOther.myCounters[aCounterIter]
@@ -130,8 +130,8 @@ void Graphic3d_FrameStatsData::FillMax(const Graphic3d_FrameStatsData& theOther)
   }
   for (size_t aTimerIter = 0; aTimerIter < myTimers.size(); ++aTimerIter)
   {
-    myTimersMax[aTimerIter] = Max(myTimersMax[aTimerIter], theOther.myTimersMax[aTimerIter]);
-    myTimersMin[aTimerIter] = Min(myTimersMin[aTimerIter], theOther.myTimersMin[aTimerIter]);
+    myTimersMax[aTimerIter] = std::max(myTimersMax[aTimerIter], theOther.myTimersMax[aTimerIter]);
+    myTimersMin[aTimerIter] = std::min(myTimersMin[aTimerIter], theOther.myTimersMin[aTimerIter]);
     myTimers[aTimerIter]    = myTimersMax[aTimerIter];
   }
 }
@@ -151,8 +151,8 @@ void Graphic3d_FrameStatsDataTmp::FlushTimers(Standard_Size theNbFrames, bool th
   for (size_t aTimerIter = 0; aTimerIter < myTimers.size(); ++aTimerIter)
   {
     const Standard_Real aFrameTime = myTimers[aTimerIter] - myTimersPrev[aTimerIter];
-    myTimersMax[aTimerIter]        = Max(myTimersMax[aTimerIter], aFrameTime);
-    myTimersMin[aTimerIter]        = Min(myTimersMin[aTimerIter], aFrameTime);
+    myTimersMax[aTimerIter]        = std::max(myTimersMax[aTimerIter], aFrameTime);
+    myTimersMin[aTimerIter]        = std::min(myTimersMin[aTimerIter], aFrameTime);
     myTimersPrev[aTimerIter]       = myTimers[aTimerIter];
   }
 

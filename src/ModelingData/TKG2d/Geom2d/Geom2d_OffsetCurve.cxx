@@ -313,7 +313,7 @@ Standard_Real Geom2d_OffsetCurve::Period() const
 void Geom2d_OffsetCurve::Transform(const gp_Trsf2d& T)
 {
   basisCurve->Transform(T);
-  offsetValue *= Abs(T.ScaleFactor());
+  offsetValue *= std::abs(T.ScaleFactor());
 
   myEvaluator->SetOffsetValue(offsetValue);
 }

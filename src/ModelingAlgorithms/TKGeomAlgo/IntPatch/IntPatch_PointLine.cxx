@@ -140,8 +140,8 @@ Standard_Real IntPatch_PointLine::CurvatureRadiusOfIntersLine(
     Standard_Real aDeltaU = aTgV.SquareMagnitude() / aSqNMagn;
     Standard_Real aDeltaV = aTgU.SquareMagnitude() / aSqNMagn;
 
-    aDuS1 = Sign(sqrt(aDeltaU), aTgV.Dot(aN1));
-    aDvS1 = -Sign(sqrt(aDeltaV), aTgU.Dot(aN1));
+    aDuS1 = std::copysign(sqrt(aDeltaU), aTgV.Dot(aN1));
+    aDvS1 = -std::copysign(sqrt(aDeltaV), aTgU.Dot(aN1));
 
     aSqNMagn = aN2.SquareMagnitude();
     aTgU.SetXYZ(aCTan.Crossed(aDU2).XYZ());
@@ -149,8 +149,8 @@ Standard_Real IntPatch_PointLine::CurvatureRadiusOfIntersLine(
     aDeltaU = aTgV.SquareMagnitude() / aSqNMagn;
     aDeltaV = aTgU.SquareMagnitude() / aSqNMagn;
 
-    aDuS2 = Sign(sqrt(aDeltaU), aTgV.Dot(aN2));
-    aDvS2 = -Sign(sqrt(aDeltaV), aTgU.Dot(aN2));
+    aDuS2 = std::copysign(sqrt(aDeltaU), aTgV.Dot(aN2));
+    aDvS2 = -std::copysign(sqrt(aDeltaV), aTgU.Dot(aN2));
   }
 
   // According to "Marching along surface/surface intersection curves
@@ -167,7 +167,7 @@ Standard_Real IntPatch_PointLine::CurvatureRadiusOfIntersLine(
   const Standard_Real aA = aN1.Dot(aN1), aB = aN1.Dot(aN2), aC = aN2.Dot(aN2);
   const Standard_Real aDetSyst = aB * aB - aA * aC;
 
-  if (Abs(aDetSyst) < aSmallValue)
+  if (std::abs(aDetSyst) < aSmallValue)
   {
     // Undetermined system solution
     return -1.0;
@@ -194,7 +194,7 @@ Standard_Real IntPatch_PointLine::CurvatureRadiusOfIntersLine(
 #if 0
   if(aTestID)
   {
-    if(Abs(aFactSqRad - anExpectedSqRad) < Precision::Confusion())
+    if(std::abs(aFactSqRad - anExpectedSqRad) < Precision::Confusion())
     {
       printf("OK: Curvature radius is equal to expected (%5.10g)", anExpectedSqRad);
     }

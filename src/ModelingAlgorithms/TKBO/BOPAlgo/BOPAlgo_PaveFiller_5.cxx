@@ -481,7 +481,7 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
                 Standard_Real        aMaxDist = 1.e4 * aTol;
                 if (aTol < .01)
                 {
-                  aMaxDist = Min(aMaxDist, 0.1);
+                  aMaxDist = std::min(aMaxDist, 0.1);
                 }
                 if (aDistPP < aMaxDist)
                 {
@@ -499,14 +499,14 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
           }
           //
           Standard_Real aTolVnew = BRep_Tool::Tolerance(aVnew);
-          aTolVnew               = Max(aTolVnew, Max(aTolE, aTolF));
+          aTolVnew               = std::max(aTolVnew, std::max(aTolE, aTolF));
           BRep_Builder().UpdateVertex(aVnew, aTolVnew);
           if (bLinePlane)
           {
             // increase tolerance for Line/Plane intersection, but do not update
             // the vertex till its intersection with some other shape
             IntTools_Range aCR = aCPart.Range1();
-            aTolVnew           = Max(aTolVnew, (aCR.Last() - aCR.First()) / 2.);
+            aTolVnew           = std::max(aTolVnew, (aCR.Last() - aCR.First()) / 2.);
           }
           //
           const gp_Pnt& aPnew = BRep_Tool::Pnt(aVnew);
@@ -984,7 +984,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
       // no need to use the extended tolerance.
       Standard_Real aTolCheck =
         (bSICheckMode ? myFuzzyValue
-                      : 2 * Max(BRep_Tool::Tolerance(aV1), BRep_Tool::Tolerance(aV2)));
+                      : 2 * std::max(BRep_Tool::Tolerance(aV1), BRep_Tool::Tolerance(aV2)));
 
       if (aProjPS.LowerDistance() > aTolCheck + myFuzzyValue)
         continue;
@@ -1003,7 +1003,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
           // Angle between vectors should be close to 90 degrees.
           // We allow deviation of 25 degrees.
           Standard_Real aCos = aVFNorm.Normalized().Dot(aVETgt.Normalized());
-          if (Abs(aCos) > 0.4226)
+          if (std::abs(aCos) > 0.4226)
             bUseAddTol = Standard_False;
         }
       }

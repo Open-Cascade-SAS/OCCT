@@ -63,7 +63,7 @@ static void Rational(const TColStd_Array2OfReal& Weights,
     I = Weights.LowerRow();
     while (!Vrational && I <= Weights.UpperRow() - 1)
     {
-      Vrational = (Abs(Weights(I, J) - Weights(I + 1, J)) > Epsilon(Abs(Weights(I, J))));
+      Vrational = (std::abs(Weights(I, J) - Weights(I + 1, J)) > Epsilon(std::abs(Weights(I, J))));
       I++;
     }
     J++;
@@ -76,7 +76,7 @@ static void Rational(const TColStd_Array2OfReal& Weights,
     J = Weights.LowerCol();
     while (!Urational && J <= Weights.UpperCol() - 1)
     {
-      Urational = (Abs(Weights(I, J) - Weights(I, J + 1)) > Epsilon(Abs(Weights(I, J))));
+      Urational = (std::abs(Weights(I, J) - Weights(I, J + 1)) > Epsilon(std::abs(Weights(I, J))));
       J++;
     }
     I++;
@@ -447,8 +447,8 @@ Geom_BezierSurface::Geom_BezierSurface(const TColgp_Array2OfPnt&   SurfacePoles,
     I = PoleWeights.LowerRow();
     while (!vrational && I <= PoleWeights.UpperRow() - 1)
     {
-      vrational =
-        (Abs(PoleWeights(I, J) - PoleWeights(I + 1, J)) > Epsilon(Abs(PoleWeights(I, J))));
+      vrational = (std::abs(PoleWeights(I, J) - PoleWeights(I + 1, J))
+                   > Epsilon(std::abs(PoleWeights(I, J))));
       I++;
     }
     J++;
@@ -459,8 +459,8 @@ Geom_BezierSurface::Geom_BezierSurface(const TColgp_Array2OfPnt&   SurfacePoles,
     J = PoleWeights.LowerCol();
     while (!urational && J <= PoleWeights.UpperCol() - 1)
     {
-      urational =
-        (Abs(PoleWeights(I, J) - PoleWeights(I, J + 1)) > Epsilon(Abs(PoleWeights(I, J))));
+      urational = (std::abs(PoleWeights(I, J) - PoleWeights(I, J + 1))
+                   > Epsilon(std::abs(PoleWeights(I, J))));
       J++;
     }
     I++;
@@ -1170,7 +1170,7 @@ void Geom_BezierSurface::SetWeight(const Standard_Integer UIndex,
   if (!wasrat)
   {
     // a weight of 1. does not turn to rational
-    if (Abs(Weight - 1.) <= gp::Resolution())
+    if (std::abs(Weight - 1.) <= gp::Resolution())
       return;
 
     // set weights of 1.
@@ -1184,7 +1184,7 @@ void Geom_BezierSurface::SetWeight(const Standard_Integer UIndex,
   if (UIndex < 1 || UIndex > Weights.ColLength() || VIndex < 1 || VIndex > Weights.RowLength())
     throw Standard_OutOfRange();
 
-  if (Abs(Weight - Weights(UIndex, VIndex)) > gp::Resolution())
+  if (std::abs(Weight - Weights(UIndex, VIndex)) > gp::Resolution())
   {
     Weights(UIndex, VIndex) = Weight;
     Rational(Weights, urational, vrational);
@@ -1290,7 +1290,7 @@ void Geom_BezierSurface::UReverse()
     Standard_Real         W;
     for (Col = 1; Col <= Poles.RowLength(); Col++)
     {
-      for (Row = 1; Row <= IntegerPart(Poles.ColLength() / 2); Row++)
+      for (Row = 1; Row <= std::trunc(Poles.ColLength() / 2); Row++)
       {
         W                                         = Weights(Row, Col);
         Weights(Row, Col)                         = Weights(Poles.ColLength() - Row + 1, Col);
@@ -1305,7 +1305,7 @@ void Geom_BezierSurface::UReverse()
   {
     for (Col = 1; Col <= Poles.RowLength(); Col++)
     {
-      for (Row = 1; Row <= IntegerPart(Poles.ColLength() / 2); Row++)
+      for (Row = 1; Row <= std::trunc(Poles.ColLength() / 2); Row++)
       {
         Pol                                     = Poles(Row, Col);
         Poles(Row, Col)                         = Poles(Poles.ColLength() - Row + 1, Col);
@@ -1335,7 +1335,7 @@ void Geom_BezierSurface::VReverse()
     Standard_Real         W;
     for (Row = 1; Row <= Poles.ColLength(); Row++)
     {
-      for (Col = 1; Col <= IntegerPart(Poles.RowLength() / 2); Col++)
+      for (Col = 1; Col <= std::trunc(Poles.RowLength() / 2); Col++)
       {
         W                                         = Weights(Row, Col);
         Weights(Row, Col)                         = Weights(Row, Poles.RowLength() - Col + 1);
@@ -1350,7 +1350,7 @@ void Geom_BezierSurface::VReverse()
   {
     for (Row = 1; Row <= Poles.ColLength(); Row++)
     {
-      for (Col = 1; Col <= IntegerPart(Poles.RowLength() / 2); Col++)
+      for (Col = 1; Col <= std::trunc(Poles.RowLength() / 2); Col++)
       {
         Pol                                     = Poles(Row, Col);
         Poles(Row, Col)                         = Poles(Row, Poles.RowLength() - Col + 1);

@@ -70,7 +70,7 @@ static void GeomFillFusInt(const TColStd_Array1OfReal& I1,
   {
     v1 = I1(ind1);
     v2 = I2(ind2);
-    if (Abs(v1 - v2) <= Epspar)
+    if (std::abs(v1 - v2) <= Epspar)
     {
       // Ici les elements de I1 et I2 conviennent .
       Seq.Append((v1 + v2) / 2);
@@ -205,12 +205,12 @@ void GeomFill_CircularBlendFunc::Discret()
       {
         Cosa = 1.;
       }
-      Angle = Abs(ACos(Cosa));
+      Angle = std::abs(std::acos(Cosa));
       if (Angle > maxang)
         maxang = Angle;
       if (Angle < minang)
         minang = Angle;
-      distmin = Min(distmin, P1.Distance(P2));
+      distmin = std::min(distmin, P1.Distance(P2));
       myBary.ChangeCoord() += (P1.XYZ() + P2.XYZ());
     }
   }
@@ -231,13 +231,13 @@ void GeomFill_CircularBlendFunc::Discret()
       Cosa = ns1.Dot(ns2);
       if (Cosa > 1.)
         Cosa = 1.;
-      Angle = Abs(ACos(Cosa));
+      Angle = std::abs(std::acos(Cosa));
 
       if (Angle > maxang)
         maxang = Angle;
       if (Angle < minang)
         minang = Angle;
-      distmin = Min(distmin, P1.Distance(P2));
+      distmin = std::min(distmin, P1.Distance(P2));
       myBary.ChangeCoord() += (P1.XYZ() + P2.XYZ());
     }
   }
@@ -641,8 +641,8 @@ void GeomFill_CircularBlendFunc::GetTolerance(const Standard_Real   BoundTol,
 
   Tol = GeomFill::GetTolerance(myTConv, minang, myRadius, AngleTol, SurfTol);
   Tol3d.Init(SurfTol);
-  Tol3d(low + 1) = Tol3d(up - 1) = Min(Tol, SurfTol);
-  Tol3d(low) = Tol3d(up) = Min(Tol, BoundTol);
+  Tol3d(low + 1) = Tol3d(up - 1) = std::min(Tol, SurfTol);
+  Tol3d(low) = Tol3d(up) = std::min(Tol, BoundTol);
 }
 
 void GeomFill_CircularBlendFunc::SetTolerance(const Standard_Real, const Standard_Real)

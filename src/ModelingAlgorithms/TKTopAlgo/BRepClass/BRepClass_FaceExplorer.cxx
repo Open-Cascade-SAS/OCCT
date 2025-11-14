@@ -87,7 +87,7 @@ Standard_Boolean BRepClass_FaceExplorer::CheckPoint(gp_Pnt2d& thePoint)
   else
   {
     Standard_Real anEpsilon = Epsilon(aDistance);
-    if (anEpsilon > Max(myUMax - myUMin, myVMax - myVMin))
+    if (anEpsilon > std::max(myUMax - myUMin, myVMax - myVMin))
     {
       gp_Vec2d aLinVec(aCenterPnt, thePoint);
       gp_Dir2d aLinDir(aLinVec);
@@ -179,11 +179,11 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
             Standard_Real aTanMod = aTanVec.SquareMagnitude();
             if (aTanMod < aTolParConf2)
               continue;
-            aTanVec /= Sqrt(aTanMod);
+            aTanVec /= std::sqrt(aTanMod);
             Standard_Real       aSinA        = aTanVec.Crossed(aLinDir.XY());
             const Standard_Real SmallAngle   = 0.001;
             Standard_Boolean    isSmallAngle = Standard_False;
-            if (Abs(aSinA) < SmallAngle)
+            if (std::abs(aSinA) < SmallAngle)
             {
               isSmallAngle = Standard_True;
               // The line from the input point P to the current point on edge
@@ -252,7 +252,7 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
                   myCurEdgePar = Probing_Start;
                 }
 
-                Par = Sqrt(Par);
+                Par = std::sqrt(Par);
                 return Standard_True;
               }
             }

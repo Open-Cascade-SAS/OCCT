@@ -61,7 +61,7 @@ static void InGoodPeriod(const Standard_Real Prec,
                          Standard_Real&      Current)
 {
   Standard_Real    Diff = Current - Prec;
-  Standard_Integer nb   = (Standard_Integer)IntegerPart(Diff / Period);
+  Standard_Integer nb   = (Standard_Integer)std::trunc(Diff / Period);
   Current -= nb * Period;
   Diff = Current - Prec;
   if (Diff > Period / 2)
@@ -170,7 +170,7 @@ void GeomFill_GuideTrihedronPlan::Init()
     if (ii > 1)
     {
       Standard_Real Diff = w - Pole->Value(1, ii - 1).Y();
-      if (Abs(Diff) > DeltaG)
+      if (std::abs(Diff) > DeltaG)
       {
         if (myGuide->IsPeriodic())
         {
@@ -181,7 +181,7 @@ void GeomFill_GuideTrihedronPlan::Init()
       }
 
 #ifdef OCCT_DEBUG
-      if (Abs(Diff) > DeltaG)
+      if (std::abs(Diff) > DeltaG)
       {
         std::cout << "Trihedron Plan Diff on Guide : " << Diff << std::endl;
       }
@@ -325,7 +325,7 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D1(const Standard_Real Param,
     /*      Standard_Real h=1.e-7, e, etg, etc;
           E.Value(Res, e);
           E.Value(Res+h, etg);
-          if ( Abs( (etg-e)/h - dedx) > 1.e-4) {
+          if ( std::abs( (etg-e)/h - dedx) > 1.e-4) {
         std::cout << "err :" <<  (etg-e)/h - dedx << std::endl;
           }
           gp_Pnt pdbg;
@@ -335,7 +335,7 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D1(const Standard_Real Param,
 
           GeomFill_PlanFunc Edeb(pdbg, td, myGuide);
           Edeb.Value(Res, etc);
-          if ( Abs( (etc-e)/h - dedt) > 1.e-4) {
+          if ( std::abs( (etc-e)/h - dedt) > 1.e-4) {
         std::cout << "err :" <<  (etc-e)/h - dedt << std::endl;
           } */
 
@@ -394,73 +394,6 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D2(const Standard_Real Param,
              DBiNormal,
              D2BiNormal);
 
-  /*
-    // plan ortho a Tangent pour trouver la pt Pprime sur le guide
-    Handle(Geom_Plane) Plan = new (Geom_Plane)(P, Tangent);
-    Handle(GeomAdaptor_Surface) Pl= new(GeomAdaptor_Surface)(Plan);
-
-
-    Standard_Integer Iter = 50;
-    // fonction dont il faut trouver la racine : G(W) - Pl(U,V)=0
-    GeomFill_FunctionPipe E(Pl , myGuide);
-    InitX(Param);
-
-    // resolution
-    math_FunctionSetRoot Result(E, X, XTol,
-                      Inf, Sup, Iter);
-    if (Result.IsDone())
-      {
-        math_Vector R(1,3);
-        R = Result.Root();    // solution
-        myTrimG->D2(R(1), PG, TG, DTG);
-
-        gp_Vec n (P, PG); // vecteur definissant la normale du triedre
-        Standard_Real Norm = n.Magnitude();
-        n /= Norm;
-        Normal = n.Normalized();
-        BiNormal = Tangent.Crossed(Normal);
-
-
-
-     // derivee premiere du triedre
-        Standard_Real dtp_dt;
-        dtp_dt = (To*Tangent - Norm*(n*DTangent))/(Tangent*TG);
-        gp_Vec dn, d2n;
-        dn.SetLinearForm(dtp_dt, TG, -1,  To);
-
-        DNormal.SetLinearForm(-(n*dn), n, dn);
-        DNormal /= Norm;
-        DBiNormal = Tangent.Crossed(DNormal) + DTangent.Crossed(Normal);
-
-      // derivee seconde du triedre
-        Standard_Real d2tp_dt2;
-        d2tp_dt2 = (DTo*Tangent+To*DTangent - dn*DTangent-Norm*n*D2Tangent)/(TG*Tangent)
-      - (To*Tangent-Norm*n*DTangent) * (DTG*dtp_dt*Tangent+TG*DTangent)
-        / ((TG*Tangent)*(TG*Tangent));
-
-
-        d2n.SetLinearForm(dtp_dt*dtp_dt, DTG, d2tp_dt2, TG, -DTo);
-        dn/=Norm;
-        d2n/=Norm;
-
-        D2Normal.SetLinearForm(3*Pow(n*dn,2)- (dn.SquareMagnitude() + n*d2n), n,
-                   -2*(n*dn), dn,
-                   d2n);
-
-        D2BiNormal.SetLinearForm(1, D2Tangent.Crossed(Normal),
-                     2, DTangent.Crossed(DNormal),
-                     Tangent.Crossed(D2Normal));
-      }
-    else {// Erreur...
-  #ifdef OCCT_DEBUG
-      std::cout << "D2 :";
-      TracePlan(Plan);
-  #endif
-      myStatus = GeomFill_PlaneNotIntersectGuide;
-      return Standard_False;
-     }
-  */
-  //  return Standard_True;
   return Standard_False;
 }
 

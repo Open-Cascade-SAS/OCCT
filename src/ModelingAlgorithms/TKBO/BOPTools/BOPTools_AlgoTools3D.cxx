@@ -120,12 +120,14 @@ Standard_Boolean BOPTools_AlgoTools3D::DoSplitSEAMOnFace(const TopoDS_Edge& aSpl
         Standard_Real    aGlobalUmin, aGlobalUmax, aGlobalVmin, aGlobalVmax;
         aSB->Bounds(aGlobalUmin, aGlobalUmax, aGlobalVmin, aGlobalVmax);
 
-        if (bIsUClosed && Abs(aUmin - aGlobalUmin) < aTol && Abs(aUmax - aGlobalUmax) < aTol)
+        if (bIsUClosed && std::abs(aUmin - aGlobalUmin) < aTol
+            && std::abs(aUmax - aGlobalUmax) < aTol)
         {
           bIsUPeriodic = Standard_True;
           anUPeriod    = aUmax - aUmin;
         }
-        if (bIsVClosed && Abs(aVmin - aGlobalVmin) < aTol && Abs(aVmax - aGlobalVmax) < aTol)
+        if (bIsVClosed && std::abs(aVmin - aGlobalVmin) < aTol
+            && std::abs(aVmax - aGlobalVmax) < aTol)
         {
           bIsVPeriodic = Standard_True;
           anVPeriod    = aVmax - aVmin;

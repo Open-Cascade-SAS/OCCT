@@ -305,12 +305,12 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   Standard_Real acote = 1e-7;
   ElCLib::D1(First, Spine, PtSp, DSp);
   ElSLib::Parameters(Cyl, PtSp, u, v);
-  if ((Abs(u) < acote) || (Abs(u - (2 * M_PI)) < acote))
+  if ((std::abs(u) < acote) || (std::abs(u - (2 * M_PI)) < acote))
   {
     ElCLib::D1(First + 0.2, Spine, PtSp2, DSp2);
     Standard_Real u2, v2;
     ElSLib::Parameters(Cyl, PtSp2, u2, v2);
-    if (Abs(u2 - u) > M_PI)
+    if (std::abs(u2 - u) > M_PI)
     {
       u    = (2 * M_PI) - u;
       PtSp = ElSLib::Value(u, v, Cyl);
@@ -341,7 +341,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
       Dz.Reverse();
     }
     Rad = cylrad - Radius;
-    if (Abs(Rad) <= Precision::Confusion())
+    if (std::abs(Rad) <= Precision::Confusion())
     {
       c1sphere = Standard_True;
     }
@@ -513,7 +513,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   ElSLib::Parameters(Cyl, P, u, v);
   Standard_Real    tol           = Precision::PConfusion();
   Standard_Boolean careaboutsens = 0;
-  if (Abs(lu - fu - 2 * M_PI) < tol)
+  if (std::abs(lu - fu - 2 * M_PI) < tol)
     careaboutsens = 1;
   if (u >= fu - tol && u < fu)
     u = fu;
@@ -527,10 +527,10 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   if (deru.Dot(Dy) < 0.)
   {
     d2dCyl.Reverse();
-    if (careaboutsens && Abs(fu - u) < tol)
+    if (careaboutsens && std::abs(fu - u) < tol)
       u = lu;
   }
-  else if (careaboutsens && Abs(lu - u) < tol)
+  else if (careaboutsens && std::abs(lu - u) < tol)
     u = fu;
   gp_Pnt2d            p2dCyl(u, v);
   gp_Lin2d            lin2dCyl(p2dCyl, d2dCyl);

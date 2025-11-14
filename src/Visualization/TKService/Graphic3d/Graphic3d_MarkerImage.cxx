@@ -102,15 +102,15 @@ static Handle(Image_PixMap) mergeImages(const Handle(Image_PixMap)& theImage1,
     aHeight2 = (Standard_Integer)theImage2->Height();
   }
 
-  const Standard_Integer aMaxWidth  = Max(aWidth1, aWidth2);
-  const Standard_Integer aMaxHeight = Max(aHeight1, aHeight2);
-  const Standard_Integer aSize      = Max(aMaxWidth, aMaxHeight);
+  const Standard_Integer aMaxWidth  = std::max(aWidth1, aWidth2);
+  const Standard_Integer aMaxHeight = std::max(aHeight1, aHeight2);
+  const Standard_Integer aSize      = std::max(aMaxWidth, aMaxHeight);
   aResultImage->InitZero(Image_Format_Alpha, aSize, aSize);
 
   if (!theImage1.IsNull())
   {
-    const Standard_Integer aXOffset1  = Abs(aWidth1 - aMaxWidth) / 2;
-    const Standard_Integer anYOffset1 = Abs(aHeight1 - aMaxHeight) / 2;
+    const Standard_Integer aXOffset1  = std::abs(aWidth1 - aMaxWidth) / 2;
+    const Standard_Integer anYOffset1 = std::abs(aHeight1 - aMaxHeight) / 2;
     for (Standard_Integer anY = 0; anY < aHeight1; anY++)
     {
       Standard_Byte* anImageLine      = theImage1->ChangeRow(anY);
@@ -124,8 +124,8 @@ static Handle(Image_PixMap) mergeImages(const Handle(Image_PixMap)& theImage1,
 
   if (!theImage2.IsNull())
   {
-    const Standard_Integer aXOffset2  = Abs(aWidth2 - aMaxWidth) / 2;
-    const Standard_Integer anYOffset2 = Abs(aHeight2 - aMaxHeight) / 2;
+    const Standard_Integer aXOffset2  = std::abs(aWidth2 - aMaxWidth) / 2;
+    const Standard_Integer anYOffset2 = std::abs(aHeight2 - aMaxHeight) / 2;
     for (Standard_Integer anY = 0; anY < aHeight2; anY++)
     {
       Standard_Byte* anImageLine      = theImage2->ChangeRow(anY);
@@ -310,7 +310,7 @@ const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImage()
   // to store bitmap in a square image, so the image will not be stretched
   // when rendering with point sprites.
   const Standard_Integer aNumOfBytesInRow = myWidth / 8 + (myWidth % 8 ? 1 : 0);
-  const Standard_Integer aSize            = Max(myWidth, myHeight);
+  const Standard_Integer aSize            = std::max(myWidth, myHeight);
   const Standard_Integer aRowOffset       = (aSize - myHeight) / 2 + myMargin;
   const Standard_Integer aColumnOffset    = (aSize - myWidth) / 2 + myMargin;
   const Standard_Integer aLowerIndex      = myBitMap->Lower();
@@ -483,7 +483,7 @@ Handle(Graphic3d_MarkerImage) Graphic3d_MarkerImage::StandardMarker(
 
       NCollection_Vec4<Standard_Real> aColor(theColor);
 
-      const Standard_Integer aSize    = Max(aWidth + 2, aHeight + 2); // includes extra margin
+      const Standard_Integer aSize    = std::max(aWidth + 2, aHeight + 2); // includes extra margin
       Handle(Image_PixMap)   anImage  = new Image_PixMap();
       Handle(Image_PixMap)   anImageA = new Image_PixMap();
       anImage->InitZero(Image_Format_RGBA, aSize, aSize);

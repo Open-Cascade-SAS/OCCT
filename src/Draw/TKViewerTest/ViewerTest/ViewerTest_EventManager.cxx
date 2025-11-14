@@ -603,7 +603,7 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
                                                                : myWalkSpeedRelative * 2.0f;
       if (aNewSpeed >= 0.00001f && aNewSpeed <= 10.0f)
       {
-        if (Abs(aNewSpeed - 0.1f) < 0.001f)
+        if (std::abs(aNewSpeed - 0.1f) < 0.001f)
         {
           aNewSpeed = 0.1f;
         }

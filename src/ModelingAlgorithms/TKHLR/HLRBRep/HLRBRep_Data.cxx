@@ -736,19 +736,19 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
       EC.D1(EC.Parameter3d(EC.LastParameter()), Pt, Tg2);
       Tg1.Transform(T);
       Tg2.Transform(T);
-      if (Abs(Tg1.X()) + Abs(Tg1.Y()) < myToler * 10)
+      if (std::abs(Tg1.X()) + std::abs(Tg1.Y()) < myToler * 10)
         ver1 = Standard_True;
       else
       {
         gp_Dir Dir1(Tg1);
-        ver1 = Abs(Dir1.X()) + Abs(Dir1.Y()) < myToler * 10;
+        ver1 = std::abs(Dir1.X()) + std::abs(Dir1.Y()) < myToler * 10;
       }
-      if (Abs(Tg2.X()) + Abs(Tg2.Y()) < myToler * 10)
+      if (std::abs(Tg2.X()) + std::abs(Tg2.Y()) < myToler * 10)
         ver2 = Standard_True;
       else
       {
         gp_Dir Dir2(Tg2);
-        ver2 = Abs(Dir2.X()) + Abs(Dir2.Y()) < myToler * 10;
+        ver2 = std::abs(Dir2.X()) + std::abs(Dir2.Y()) < myToler * 10;
       }
     }
     ed.VerAtSta(ed.Vertical() || ver1);
@@ -855,7 +855,7 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
               }
               else
                 r = Nm.Z();
-              if (Abs(r) > myToler * 10)
+              if (std::abs(r) > myToler * 10)
               {
                 fd.Back(r < 0);
                 found = Standard_True;
@@ -1603,7 +1603,7 @@ Standard_Integer HLRBRep_Data::HidingStartLevel(const Standard_Integer          
       Loop = Standard_False;
     else
     {
-      if (Abs(param - sta) > Abs(param - end))
+      if (std::abs(param - sta) > std::abs(param - end))
         end = param;
       else
         sta = param;

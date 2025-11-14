@@ -423,7 +423,7 @@ Handle(VrmlData_Geometry) VrmlData_ShapeConvert::triToIndexedFaceSet(
       gp_XYZ* arrVec = static_cast<gp_XYZ*>(anAlloc->Allocate(nNodes * sizeof(gp_XYZ)));
 
       // Compute the normal vectors
-      Standard_Real Tol = Sqrt(aConf2);
+      Standard_Real Tol = std::sqrt(aConf2);
       for (i = 0; i < nNodes; i++)
       {
         const gp_Pnt2d aUV = theTri->UVNode(i + 1);

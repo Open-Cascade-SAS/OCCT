@@ -33,7 +33,7 @@ ProjLib_PrjFunc::ProjLib_PrjFunc(const Adaptor3d_Curve*   C,
       myV(0),
       myFix(Fix)
 {
-  myNorm = Min(1., Min(mySurface->UResolution(1.), mySurface->VResolution(1.)));
+  myNorm = std::min(1., std::min(mySurface->UResolution(1.), mySurface->VResolution(1.)));
   // myNorm=1.;
   switch (myFix)
   {

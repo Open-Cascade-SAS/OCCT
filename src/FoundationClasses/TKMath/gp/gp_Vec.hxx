@@ -489,7 +489,7 @@ inline gp_Vec::gp_Vec(const gp_Pnt& theP1, const gp_Pnt& theP2)
 inline Standard_Boolean gp_Vec::IsNormal(const gp_Vec&       theOther,
                                          const Standard_Real theAngularTolerance) const
 {
-  const Standard_Real anAng = Abs(M_PI_2 - Angle(theOther));
+  const Standard_Real anAng = std::abs(M_PI_2 - Angle(theOther));
   return anAng <= theAngularTolerance;
 }
 

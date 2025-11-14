@@ -254,7 +254,7 @@ Handle(Geom2d_TrimmedCurve) Geom2dConvert_ApproxArcsSegments::makeLine(
     // if the derivatives in the end points differ from the derivative line
     // more than value of the specified continuity tolerance
     // then a biarc should be built instead of a line.
-    const Standard_Real aContTolerance = ::Max(myAngleTolerance, 0.01);
+    const Standard_Real aContTolerance = std::max(myAngleTolerance, 0.01);
     if (absAngle[0] > aContTolerance || absAngle[1] > aContTolerance)
     {
       // std::cout << "makeLine(): Line not built" << std::endl;
@@ -905,6 +905,6 @@ Standard_Boolean isInflectionPoint(const Standard_Real         theParam,
   const Standard_Real aSqMod     = aD1.XY().SquareModulus();
   const Standard_Real aCurvature = fabs(aD1.XY() ^ aD2.XY()) / (aSqMod * sqrt(aSqMod));
   Standard_Real       aContAngle = fabs(gp_Vec2d(aP1.XY() - theFirstInfl.Point()).Angle(aD1));
-  aContAngle                     = ::Min(aContAngle, fabs(M_PI - aContAngle));
+  aContAngle                     = std::min(aContAngle, fabs(M_PI - aContAngle));
   return (aCurvature < MyCurvatureTolerance && aContAngle < theAngleTol);
 }

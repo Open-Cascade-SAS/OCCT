@@ -451,7 +451,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
             const IntPatch_Point& VTXj = svtx.Value(j);
             if ((!VTXj.IsOnDomS1()) && (!VTXj.IsOnDomS2()))
             {
-              if (Abs(VTXi.ParameterOnLine() - VTXj.ParameterOnLine()) <= PrecisionPConfusion)
+              if (std::abs(VTXi.ParameterOnLine() - VTXj.ParameterOnLine()) <= PrecisionPConfusion)
               {
                 svtx.Remove(j);
                 nbvtx--;
@@ -489,7 +489,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
             const IntPatch_Point& VTXj = svtx.Value(j);
             if (VTXj.IsOnDomS1() && (!VTXj.IsOnDomS2()))
             {
-              if (Abs(VTXi.ParameterOnArc1() - VTXj.ParameterOnArc1()) <= PrecisionPConfusion)
+              if (std::abs(VTXi.ParameterOnArc1() - VTXj.ParameterOnArc1()) <= PrecisionPConfusion)
               {
                 if (VTXi.ArcOnS1() == VTXj.ArcOnS1())
                 {
@@ -548,7 +548,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
             const IntPatch_Point& VTXj = svtx.Value(j);
             if (VTXj.IsOnDomS2() && (!VTXj.IsOnDomS1()))
             {
-              if (Abs(VTXi.ParameterOnArc2() - VTXj.ParameterOnArc2()) <= PrecisionPConfusion)
+              if (std::abs(VTXi.ParameterOnArc2() - VTXj.ParameterOnArc2()) <= PrecisionPConfusion)
               {
                 if (VTXi.ArcOnS2() == VTXj.ArcOnS2())
                 {
@@ -650,7 +650,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
           IntPatch_Point&  VTXM1  = svtx.ChangeValue(j);
           Standard_Boolean kill   = Standard_False;
           Standard_Boolean killm1 = Standard_False;
-          if (Abs(VTXM1.ParameterOnLine() - VTX.ParameterOnLine()) < PrecisionPConfusion)
+          if (std::abs(VTXM1.ParameterOnLine() - VTX.ParameterOnLine()) < PrecisionPConfusion)
           {
             if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1()) //-- OnS1    OnS1
             {
@@ -814,7 +814,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
               // eap, =>>
               Standard_Real       newParam = ponline;
               const Standard_Real PiPi     = M_PI + M_PI;
-              Standard_Boolean    is2PI    = (Abs(ponline - PiPi) <= PrecisionPConfusion);
+              Standard_Boolean    is2PI    = (std::abs(ponline - PiPi) <= PrecisionPConfusion);
 
               if (nbvtx > 2 && // do this check if seam edge only gives vertices
                   !is2PI)      // but always change 2PI -> 0
@@ -822,13 +822,13 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
 
               if (is2PI)
                 newParam = 0;
-              else if (Abs(ponline) <= PrecisionPConfusion)
+              else if (std::abs(ponline) <= PrecisionPConfusion)
                 newParam = PiPi;
               else
                 newParam -= PiPi;
 
-              // 	      if(  (Abs(ponline)<=PrecisionPConfusion)
-              // 		   ||(Abs(ponline-M_PI-M_PI) <=PrecisionPConfusion))
+              // 	      if(  (std::abs(ponline)<=PrecisionPConfusion)
+              // 		   ||(std::abs(ponline-M_PI-M_PI) <=PrecisionPConfusion))
               // eap, <<=
 
               Standard_Real u1a, v1a, u2a, v2a, u1b, v1b, u2b, v2b;
@@ -836,15 +836,15 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
               VTX.Parameters(u1b, v1b, u2b, v2b);
               Standard_Integer flag = 0;
 
-              if ((Abs(u1a - u1b) <= PrecisionPConfusion))
+              if ((std::abs(u1a - u1b) <= PrecisionPConfusion))
                 flag |= 1;
 
-              if ((Abs(v1a - v1b) <= PrecisionPConfusion))
+              if ((std::abs(v1a - v1b) <= PrecisionPConfusion))
                 flag |= 2;
-              if ((Abs(u2a - u2b) <= PrecisionPConfusion))
+              if ((std::abs(u2a - u2b) <= PrecisionPConfusion))
                 flag |= 4;
 
-              if ((Abs(v2a - v2b) <= PrecisionPConfusion))
+              if ((std::abs(v2a - v2b) <= PrecisionPConfusion))
                 flag |= 8;
 
               Standard_Boolean TestOn1 = Standard_False;
@@ -889,14 +889,14 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                 }
                 else
                 {
-                  if (Abs(U1A - u1min) > PrecisionPConfusion)
+                  if (std::abs(U1A - u1min) > PrecisionPConfusion)
                     ToBreak = Standard_True;
-                  if (Abs(U1B - u1max) > PrecisionPConfusion)
+                  if (std::abs(U1B - u1max) > PrecisionPConfusion)
                     ToBreak = Standard_True;
                 }
                 ///////////////////////////////////////////////
                 // eap, =>>
-                // 		      if (Abs(ponline) <= PrecisionPConfusion) {
+                // 		      if (std::abs(ponline) <= PrecisionPConfusion) {
                 // 		      const Standard_Real PiPi = M_PI+M_PI;
                 if (newParam >= ParamMinOnLine && newParam <= ParamMaxOnLine
                     /*PiPi >= ParamMinOnLine && PiPi<=ParamMaxOnLine*/)
@@ -950,15 +950,15 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                 }
                 else
                 {
-                  if (Abs(U2A - u2min) > PrecisionPConfusion)
+                  if (std::abs(U2A - u2min) > PrecisionPConfusion)
                     ToBreak = Standard_True;
 
-                  if (Abs(U2B - u2max) > PrecisionPConfusion)
+                  if (std::abs(U2B - u2max) > PrecisionPConfusion)
                     ToBreak = Standard_True;
                 }
                 ///////////////////////////////////////////////
                 // eap, =>>
-                // 		    if (Abs(ponline) <= PrecisionPConfusion) {
+                // 		    if (std::abs(ponline) <= PrecisionPConfusion) {
                 // 		      const Standard_Real PiPi = M_PI+M_PI;
                 if (newParam >= ParamMinOnLine && newParam <= ParamMaxOnLine
                     /*PiPi >= ParamMinOnLine && PiPi<=ParamMaxOnLine*/)

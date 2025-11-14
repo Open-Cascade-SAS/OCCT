@@ -62,7 +62,7 @@ void BRepClass3d_SolidPassiveClassifier::Compare(const TopoDS_Face& Face, const 
       {
         myParam = myIntersector.WParameter();
         myFace  = myIntersector.Face();
-        if (Abs(myParam) <= myTolerance)
+        if (std::abs(myParam) <= myTolerance)
         {
           //-- #########################################
 #ifdef OCCT_DEBUG

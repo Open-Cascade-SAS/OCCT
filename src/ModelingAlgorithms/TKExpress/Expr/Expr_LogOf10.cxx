@@ -37,7 +37,7 @@ Handle(Expr_GeneralExpression) Expr_LogOf10::ShallowSimplified() const
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
-    return new Expr_NumericValue(Log10(myNVexp->GetValue()));
+    return new Expr_NumericValue(std::log10(myNVexp->GetValue()));
   }
   Handle(Expr_LogOf10) me = this;
   return me;
@@ -71,7 +71,7 @@ Handle(Expr_GeneralExpression) Expr_LogOf10::Derivative(const Handle(Expr_NamedU
   }
   Handle(Expr_GeneralExpression) myexp   = Operand();
   Handle(Expr_GeneralExpression) myder   = myexp->Derivative(X);
-  Standard_Real                  vlog    = Log(10.0);
+  Standard_Real                  vlog    = std::log(10.0);
   Handle(Expr_NumericValue)      vallog  = new Expr_NumericValue(vlog);
   Handle(Expr_Product)           theprod = Expr::CopyShare(myexp) * vallog;
   Handle(Expr_Division)          thediv  = myder / theprod->ShallowSimplified();
@@ -81,7 +81,7 @@ Handle(Expr_GeneralExpression) Expr_LogOf10::Derivative(const Handle(Expr_NamedU
 Standard_Real Expr_LogOf10::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                      const TColStd_Array1OfReal&      vals) const
 {
-  return ::Log10(Operand()->Evaluate(vars, vals));
+  return std::log10(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_LogOf10::String() const

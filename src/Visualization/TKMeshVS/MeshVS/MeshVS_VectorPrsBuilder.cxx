@@ -240,7 +240,7 @@ void MeshVS_VectorPrsBuilder::Build(const Handle(Prs3d_Presentation)& Prs,
     {
       aValue = aVec.Magnitude();
 
-      if (Abs(aValue) < Precision::Confusion())
+      if (std::abs(aValue) < Precision::Confusion())
         continue;
 
       if (aSource->GetGeom(aKey, IsElement, aCoords, NbNodes, aType))
@@ -276,7 +276,7 @@ void MeshVS_VectorPrsBuilder::Build(const Handle(Prs3d_Presentation)& Prs,
                               gp_Ax3(gp_Pnt(X, Y, Z), aVec));
 
         DrawVector(aTrsf,
-                   Max(k * fabs(aValue) + b, aMinLength),
+                   std::max(k * fabs(aValue) + b, aMinLength),
                    aMaxLen,
                    anArrowPnt,
                    aLineArray,

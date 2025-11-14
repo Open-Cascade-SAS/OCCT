@@ -108,8 +108,8 @@ Handle(Geom_BSplineCurve) GeomConvert::SplitBSplineCurve(const Handle(Geom_BSpli
   Standard_Integer TheLast  = C->LastUKnotIndex();
   if (FromK1 == ToK2)
     throw Standard_DomainError();
-  Standard_Integer FirstK = Min(FromK1, ToK2);
-  Standard_Integer LastK  = Max(FromK1, ToK2);
+  Standard_Integer FirstK = std::min(FromK1, ToK2);
+  Standard_Integer LastK  = std::max(FromK1, ToK2);
   if (FirstK < TheFirst || LastK > TheLast)
     throw Standard_DomainError();
 
@@ -139,8 +139,8 @@ Handle(Geom_BSplineCurve) GeomConvert::SplitBSplineCurve(
   const Standard_Real, // ParametricTolerance,
   const Standard_Boolean SameOrientation)
 {
-  Standard_Real FirstU = Min(FromU1, ToU2);
-  Standard_Real LastU  = Max(FromU1, ToU2);
+  Standard_Real FirstU = std::min(FromU1, ToU2);
+  Standard_Real LastU  = std::max(FromU1, ToU2);
 
   Handle(Geom_BSplineCurve) C1 = Handle(Geom_BSplineCurve)::DownCast(C->Copy());
 
@@ -330,7 +330,8 @@ Handle(Geom_BSplineCurve) GeomConvert::CurveToBSplineCurve(
         Standard_Real Uf = TheCurve->FirstParameter();
         Standard_Real Ul = TheCurve->LastParameter();
         ElCLib::AdjustPeriodic(Uf, Ul, Precision::Confusion(), U1, U2);
-        if (Abs(U1 - Uf) <= Precision::Confusion() && Abs(U2 - Ul) <= Precision::Confusion())
+        if (std::abs(U1 - Uf) <= Precision::Confusion()
+            && std::abs(U2 - Ul) <= Precision::Confusion())
           TheCurve->SetNotPeriodic();
       }
       ///////////////////////////////////////////////
@@ -889,9 +890,8 @@ void GeomConvert::ConcatG1(TColGeom_Array1OfBSplineCurve&          ArrayOfCurves
         KnotC1(1) = 0.0;
         for (ii = 2; ii <= KnotC1.Length(); ii++)
         {
-          //	 KnotC1(ii)=(-b+Abs(a)/a*Sqrt(b*b-4*a*(c-KnotC1(ii))))/(2*a);
           KnotC1(ii) =
-            (-b + Sqrt(b * b - 4 * a * (c - KnotC1(ii)))) / (2 * a); // ifv 17.05.00 buc60667
+            (-b + std::sqrt(b * b - 4 * a * (c - KnotC1(ii)))) / (2 * a); // ifv 17.05.00 buc60667
         }
         TColgp_Array1OfPnt Curve1Poles(1, Curve1->NbPoles());
         Curve1->Poles(Curve1Poles);
@@ -1139,9 +1139,8 @@ void GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&          ArrayOfCurves
           KnotC1(1) = 0.0;
           for (ii = 2; ii <= KnotC1.Length(); ii++)
           {
-            //	   KnotC1(ii)=(-b+Abs(a)/a*Sqrt(b*b-4*a*(c-KnotC1(ii))))/(2*a);
             KnotC1(ii) =
-              (-b + Sqrt(b * b - 4 * a * (c - KnotC1(ii)))) / (2 * a); // ifv 17.05.00 buc60667
+              (-b + std::sqrt(b * b - 4 * a * (c - KnotC1(ii)))) / (2 * a); // ifv 17.05.00 buc60667
           }
           TColgp_Array1OfPnt Curve1Poles(1, Curve1->NbPoles());
           Curve1->Poles(Curve1Poles);

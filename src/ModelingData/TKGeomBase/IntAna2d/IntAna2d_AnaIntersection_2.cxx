@@ -27,7 +27,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
   Standard_Real R1  = C1.Radius();
   Standard_Real R2  = C2.Radius();
   Standard_Real sum = R1 + R2;
-  Standard_Real dif = Abs(R1 - R2);
+  Standard_Real dif = std::abs(R1 - R2);
 
   if (d <= RealEpsilon())
   { // Cercle concentriques
@@ -52,7 +52,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     iden = Standard_False;
     nbp  = 0;
   }
-  else if (Abs(d - sum) <= Epsilon(sum))
+  else if (std::abs(d - sum) <= Epsilon(sum))
   { // Cercles exterieurs et tangents
     empt = Standard_False;
     para = Standard_False;
@@ -89,7 +89,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     {
       l1 = (l1 > 0 ? R1 : -R1);
     }
-    Standard_Real h = Sqrt(R1 * R1 - l1 * l1);
+    Standard_Real h = std::sqrt(R1 * R1 - l1 * l1);
 
     Standard_Real XS1 = C1.Location().X() + l1 * ax.X() / d - h * ax.Y() / d;
     Standard_Real YS1 = C1.Location().Y() + l1 * ax.Y() / d + h * ax.X() / d;
@@ -109,25 +109,25 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     // si l'axe de reference est l'axe des centres C1C2
     // On prend l'arccos entre pi/2 et 3pi/2, l'arcsin sinon.
 
-    if (Abs(cost1) <= 0.707)
+    if (std::abs(cost1) <= 0.707)
     {
-      ang1 = ACos(cost1);
+      ang1 = std::acos(cost1);
     }
     else
     {
-      ang1 = ASin(sint1);
+      ang1 = std::asin(sint1);
       if (cost1 < 0.0)
       {
         ang1 = M_PI - ang1;
       }
     }
-    if (Abs(cost2) <= 0.707)
+    if (std::abs(cost2) <= 0.707)
     {
-      ang2 = ACos(cost2);
+      ang2 = std::acos(cost2);
     }
     else
     {
-      ang2 = ASin(sint2);
+      ang2 = std::asin(sint2);
       if (cost2 < 0.0)
       {
         ang2 = M_PI - ang2;
@@ -172,7 +172,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     lpnt[0].SetValue(XS1, YS1, ang11, ang21);
     lpnt[1].SetValue(XS2, YS2, ang12, ang22);
   }
-  else if (Abs(d - dif) <= Epsilon(sum))
+  else if (std::abs(d - dif) <= Epsilon(sum))
   { // Cercles tangents interieurs
     empt = Standard_False;
     para = Standard_False;

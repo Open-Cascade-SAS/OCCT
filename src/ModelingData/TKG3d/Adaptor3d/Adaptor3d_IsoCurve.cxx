@@ -148,13 +148,13 @@ void Adaptor3d_IsoCurve::Load(const GeomAbs_IsoType Iso,
 
   if (myIso == GeomAbs_IsoU)
   {
-    myFirst = Max(myFirst, mySurface->FirstVParameter());
-    myLast  = Min(myLast, mySurface->LastVParameter());
+    myFirst = std::max(myFirst, mySurface->FirstVParameter());
+    myLast  = std::min(myLast, mySurface->LastVParameter());
   }
   else
   {
-    myFirst = Max(myFirst, mySurface->FirstUParameter());
-    myLast  = Min(myLast, mySurface->LastUParameter());
+    myFirst = std::max(myFirst, mySurface->FirstUParameter());
+    myLast  = std::min(myLast, mySurface->LastUParameter());
   }
 
   // Adjust the parameters on periodic surfaces

@@ -143,7 +143,7 @@ Message_Msg& Message_Msg::Arg(const Standard_CString theString)
     return *this;
 
   // print string according to format
-  char* sStringBuffer = new char[Max((Standard_Integer)strlen(theString) + 1, 1024)];
+  char* sStringBuffer = new char[std::max(static_cast<int>(strlen(theString) + 1), 1024)];
   Sprintf(sStringBuffer, aFormat.ToCString(), theString);
   TCollection_ExtendedString aStr(sStringBuffer, Standard_True);
   delete[] sStringBuffer;

@@ -128,7 +128,7 @@ void BRepBlend_AppSurface::TolReached(Standard_Real& Tol3d, Standard_Real& Tol2d
   Tol2d = 0;
   for (Standard_Integer ii = 1; ii <= approx.NbCurves2d(); ii++)
   {
-    Tol2d = Max(Tol2d, approx.Max2dError(ii));
+    Tol2d = std::max(Tol2d, approx.Max2dError(ii));
   }
 }
 

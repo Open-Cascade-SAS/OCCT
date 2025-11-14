@@ -177,7 +177,7 @@ static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
     BSplCLib::Reparametrize(K21, K22, K1);
     C1->SetKnots(K1);
   }
-  else if (Abs(K12 - K11) > Precision::PConfusion())
+  else if (std::abs(K12 - K11) > Precision::PConfusion())
   {
     BSplCLib::Reparametrize(K11, K12, K2);
     C2->SetKnots(K2);
@@ -310,8 +310,8 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
   Standard_Integer Deg2 = CC2->Degree();
   Standard_Integer Deg3 = CC3->Degree();
   Standard_Integer Deg4 = CC4->Degree();
-  Standard_Integer DegU = Max(Deg1, Deg3);
-  Standard_Integer DegV = Max(Deg2, Deg4);
+  Standard_Integer DegU = std::max(Deg1, Deg3);
+  Standard_Integer DegV = std::max(Deg2, Deg4);
   if (Deg1 < DegU)
     CC1->IncreaseDegree(DegU);
   if (Deg2 < DegV)
@@ -491,7 +491,7 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
 
   if (Type != GeomFill_CurvedStyle)
   {
-    Standard_Integer DegU = Max(Deg1, Deg2);
+    Standard_Integer DegU = std::max(Deg1, Deg2);
 
     if (CC1->Degree() < DegU)
       CC1->IncreaseDegree(DegU);

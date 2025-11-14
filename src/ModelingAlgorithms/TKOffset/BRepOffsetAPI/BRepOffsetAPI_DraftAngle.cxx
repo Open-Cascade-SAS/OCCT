@@ -97,7 +97,7 @@ void BRepOffsetAPI_DraftAngle::Add(const TopoDS_Face&     F,
                                    const Standard_Boolean Flag)
 {
   // POP-DPF : protection
-  if (Abs(Angle) <= 1.e-04)
+  if (std::abs(Angle) <= 1.e-04)
     return;
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),
                                "BRepOffsetAPI_DraftAngle::Add() - initial shape is not set");
@@ -394,7 +394,7 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
           Standard_Real aTolE = BRep_Tool::Tolerance(anEdge);
           // Tolerance to compare the intersection points is the maximal
           // tolerance of intersecting edges
-          Standard_Real aTolCmp = Max(aTolCurE, aTolE);
+          Standard_Real aTolCmp = std::max(aTolCurE, aTolE);
           //
           Standard_Integer aNbIntPnt = aGInter.NbPoints();
           for (k = 1; k <= aNbIntPnt; ++k)
@@ -512,7 +512,7 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
     TopoDS_Face          theFace = TopoDS::Face(Fseq(j));
     TopLoc_Location      L;
     Handle(Geom_Surface) theSurf = BRep_Tool::Surface(theFace, L);
-    if (Abs(par - FirstPar) <= Precision::Confusion())
+    if (std::abs(par - FirstPar) <= Precision::Confusion())
     {
       BB.UpdateVertex(Vfirst, ParsSeam(i)(1), SeamEdge, BRep_Tool::Tolerance(Vfirst));
       EPmap(SeamEdge).Append(ParsSeam(i)(1));
@@ -531,7 +531,7 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
       par = ParsNonSeam(i)(j);
       BB.Range(NewE, prevpar, par);
       SeamEdge = TopoDS::Edge(Seam(i)(j));
-      if (j == ParsNonSeam(i).Length() && Abs(par - LastPar) <= Precision::Confusion())
+      if (j == ParsNonSeam(i).Length() && std::abs(par - LastPar) <= Precision::Confusion())
       {
         NewV = Vlast;
         if (firstind == 2 && j == 2)
@@ -568,7 +568,7 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
     NewE                     = TopoDS::Edge(aLocalShape);
     // NewE = TopoDS::Edge( anEdge.EmptyCopied() );
     par = LastPar;
-    if (Abs(prevpar - par) > Precision::Confusion())
+    if (std::abs(prevpar - par) > Precision::Confusion())
     {
       BB.Range(NewE, prevpar, par);
       NewE.Orientation(TopAbs_FORWARD);
@@ -629,7 +629,7 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
       remove = Standard_False;
       for (i = 1; i < Seq.Length(); i++)
       {
-        if (Abs(Seq(i) - Seq(i + 1)) <= Precision::Confusion())
+        if (std::abs(Seq(i) - Seq(i + 1)) <= Precision::Confusion())
         {
           Seq.Remove(i + 1);
           SeqShape.Remove(i + 1);
@@ -667,7 +667,7 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
     lpar = Seq(1);
     TopoDS_Edge      NewE;
     Standard_Integer firstind = 1;
-    if (Abs(fpar - lpar) <= Precision::Confusion())
+    if (std::abs(fpar - lpar) <= Precision::Confusion())
     {
       firstind = 2;
       fpar     = Seq(1);
@@ -723,7 +723,7 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
         // Find vertices
         for (j = 1; j <= Seq2.Length(); j++)
         {
-          if (Abs(fpar - Seq2(j)) <= Precision::Confusion())
+          if (std::abs(fpar - Seq2(j)) <= Precision::Confusion())
           {
             break;
           }
@@ -742,7 +742,7 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
     i    = Seq.Length();
     fpar = Seq(i);
     lpar = LastPar;
-    if (Abs(fpar - lpar) <= Precision::Confusion())
+    if (std::abs(fpar - lpar) <= Precision::Confusion())
       continue;
     TopoDS_Shape aLocalShape = anEdge.EmptyCopied();
     NewE                     = TopoDS::Edge(aLocalShape);

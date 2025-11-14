@@ -129,7 +129,7 @@ Standard_Boolean BRepBlend_CurvPointRadInv::IsSolution(const math_Vector&  Sol,
 {
   math_Vector valsol(1, 2);
   Value(Sol, valsol);
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol)
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol)
   {
     return Standard_True;
   }

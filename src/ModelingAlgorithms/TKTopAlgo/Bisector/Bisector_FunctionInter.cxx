@@ -87,7 +87,7 @@ Standard_Boolean Bisector_FunctionInter::Values(const Standard_Real X,
   F1 = PC.Distance(PB1);
   F2 = PC.Distance(PB2);
   F  = F1 - F2;
-  if (Abs(F1) < gp::Resolution())
+  if (std::abs(F1) < gp::Resolution())
   {
     DF1 = Precision::Infinite();
   }
@@ -95,7 +95,7 @@ Standard_Boolean Bisector_FunctionInter::Values(const Standard_Real X,
   {
     DF1 = ((PC.X() - PB1.X()) * (TC.X() - TB1.X()) + (PC.Y() - PB1.Y()) * (TC.Y() - TB1.Y())) / F1;
   }
-  if (Abs(F2) < gp::Resolution())
+  if (std::abs(F2) < gp::Resolution())
   {
     DF2 = Precision::Infinite();
   }

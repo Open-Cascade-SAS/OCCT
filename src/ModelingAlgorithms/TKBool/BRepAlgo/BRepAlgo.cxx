@@ -286,7 +286,7 @@ TopoDS_Wire BRepAlgo::ConcatenateWire(const TopoDS_Wire&  W,
           tab(index)->Reverse();
         tolleft                 = BRep_Tool::Tolerance(TopExp::LastVertex(edge));
         tolright                = BRep_Tool::Tolerance(TopExp::FirstVertex(edge));
-        tabtolvertex(index - 1) = Max(tolleft, tolright);
+        tabtolvertex(index - 1) = std::max(tolleft, tolright);
       }
 
       if (index == 0)
@@ -478,7 +478,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
             gp_Circ PrevCircle = GAprevcurve.Circle();
 
             if (aCircle.Location().Distance(PrevCircle.Location()) <= LinTol
-                && Abs(aCircle.Radius() - PrevCircle.Radius()) <= LinTol
+                && std::abs(aCircle.Radius() - PrevCircle.Radius()) <= LinTol
                 && aCircle.Axis().IsParallel(PrevCircle.Axis(), AngTol))
             {
               gp_Pnt P1 = ElCLib::Value(fpar, aCircle);
@@ -496,8 +496,8 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
             if (anEllipse.Focus1().Distance(PrevEllipse.Focus1()) <= LinTol
                 && anEllipse.Focus2().Distance(PrevEllipse.Focus2()) <= LinTol
-                && Abs(anEllipse.MajorRadius() - PrevEllipse.MajorRadius()) <= LinTol
-                && Abs(anEllipse.MinorRadius() - PrevEllipse.MinorRadius()) <= LinTol
+                && std::abs(anEllipse.MajorRadius() - PrevEllipse.MajorRadius()) <= LinTol
+                && std::abs(anEllipse.MinorRadius() - PrevEllipse.MinorRadius()) <= LinTol
                 && anEllipse.Axis().IsParallel(PrevEllipse.Axis(), AngTol))
             {
               gp_Pnt P1 = ElCLib::Value(fpar, anEllipse);
@@ -515,8 +515,8 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
             if (aHypr.Focus1().Distance(PrevHypr.Focus1()) <= LinTol
                 && aHypr.Focus2().Distance(PrevHypr.Focus2()) <= LinTol
-                && Abs(aHypr.MajorRadius() - PrevHypr.MajorRadius()) <= LinTol
-                && Abs(aHypr.MinorRadius() - PrevHypr.MinorRadius()) <= LinTol
+                && std::abs(aHypr.MajorRadius() - PrevHypr.MajorRadius()) <= LinTol
+                && std::abs(aHypr.MinorRadius() - PrevHypr.MinorRadius()) <= LinTol
                 && aHypr.Axis().IsParallel(PrevHypr.Axis(), AngTol))
             {
               gp_Pnt P1 = ElCLib::Value(fpar, aHypr);
@@ -534,7 +534,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
             if (aParab.Location().Distance(PrevParab.Location()) <= LinTol
                 && aParab.Focus().Distance(PrevParab.Focus()) <= LinTol
-                && Abs(aParab.Focal() - PrevParab.Focal()) <= LinTol
+                && std::abs(aParab.Focal() - PrevParab.Focal()) <= LinTol
                 && aParab.Axis().IsParallel(PrevParab.Axis(), AngTol))
             {
               gp_Pnt P1 = ElCLib::Value(fpar, aParab);

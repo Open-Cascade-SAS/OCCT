@@ -103,11 +103,11 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
   Standard_Real TolU = 0.;
   if (myHangChecking)
   {
-    TolU = Max((ULast - UFirst) * 1.e-03, Precision::Confusion());
+    TolU = std::max((ULast - UFirst) * 1.e-03, Precision::Confusion());
   }
   else
   {
-    TolU = Max((ULast - UFirst) * 1.e-05, Precision::PApproximation());
+    TolU = std::max((ULast - UFirst) * 1.e-05, Precision::PApproximation());
   }
   Standard_Real    myfirstU      = UFirst;
   Standard_Real    mylastU       = ULast;
@@ -148,7 +148,7 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
           mylastU  = ULast;
           aNbCut   = 0;
           aNbImp   = 0;
-          if (Abs(ULast - myfirstU) <= RealEpsilon() || aMaxSegments >= myMaxSegments)
+          if (std::abs(ULast - myfirstU) <= RealEpsilon() || aMaxSegments >= myMaxSegments)
           {
             Finish  = Standard_True;
             alldone = Standard_True;
@@ -197,7 +197,9 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
         aNbImp = 0;
       }
       // is new decision better?
-      if (!Ok && (Abs(myfirstU - mylastU) <= TolU || aMaxSegments >= aMaxSegments1 || aStopCutting))
+      if (!Ok
+          && (std::abs(myfirstU - mylastU) <= TolU || aMaxSegments >= aMaxSegments1
+              || aStopCutting))
       {
         Ok = Standard_True; // stop interval cutting, approx the rest part
 
@@ -282,7 +284,7 @@ Standard_Boolean Approx_ComputeCLine::Compute(const MultiLine&    Line,
   {
     for (deg = mydegremax; deg >= mydegremin; deg--)
     {
-      NbPoints = Min(2 * deg + 1, NbPointsMax);
+      NbPoints = std::min(2 * deg + 1, NbPointsMax);
       AppCont_LeastSquare LSquare(Line, Ufirst, Ulast, myfirstC, mylastC, deg, NbPoints);
       mydone = LSquare.IsDone();
       if (mydone)
@@ -350,7 +352,7 @@ Standard_Boolean Approx_ComputeCLine::Compute(const MultiLine&    Line,
   {
     for (deg = mydegremin; deg <= mydegremax; deg++)
     {
-      NbPoints = Min(2 * deg + 1, NbPointsMax);
+      NbPoints = std::min(2 * deg + 1, NbPointsMax);
       AppCont_LeastSquare LSquare(Line, Ufirst, Ulast, myfirstC, mylastC, deg, NbPoints);
       mydone = LSquare.IsDone();
       if (mydone)

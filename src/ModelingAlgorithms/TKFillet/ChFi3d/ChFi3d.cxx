@@ -149,7 +149,7 @@ Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
   if (theOrder == GeomAbs_G1 && BRep_Tool::Continuity(theEdge, theFace1, theFace2) != GeomAbs_C0)
     return Standard_True;
 
-  Standard_Real TolC0 = Max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
+  Standard_Real TolC0 = std::max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
 
   Standard_Real aFirst;
   Standard_Real aLast;
@@ -212,7 +212,7 @@ Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
   Handle(BRepTopAdaptor_TopolTool) aTool2      = new BRepTopAdaptor_TopolTool(aBAHS2);
   Standard_Integer                 aNbSamples1 = aTool1->NbSamples();
   Standard_Integer                 aNbSamples2 = aTool2->NbSamples();
-  Standard_Integer                 aNbSamples  = Max(aNbSamples1, aNbSamples2);
+  Standard_Integer                 aNbSamples  = std::max(aNbSamples1, aNbSamples2);
 
   // Computation of the continuity.
   Standard_Real    aPar;
@@ -520,7 +520,7 @@ Standard_Integer ChFi3d::NextSide(TopAbs_Orientation&      Or1,
     else
       ChoixConge = 5;
   }
-  if (Abs(ChoixSave) % 2 == 0)
+  if (std::abs(ChoixSave) % 2 == 0)
     ChoixConge++;
   return ChoixConge;
 }
@@ -590,24 +590,24 @@ void Correct2dPoint(const TopoDS_Face& theF, gp_Pnt2d& theP2d)
   v2 = aBAS.LastVParameter();
   if (!(Precision::IsInfinite(u1) || Precision::IsInfinite(u2)))
   {
-    eps = Max(coeff * (u2 - u1), Precision::PConfusion());
-    if (Abs(theP2d.X() - u1) < eps)
+    eps = std::max(coeff * (u2 - u1), Precision::PConfusion());
+    if (std::abs(theP2d.X() - u1) < eps)
     {
       theP2d.SetX(u1 + eps);
     }
-    if (Abs(theP2d.X() - u2) < eps)
+    if (std::abs(theP2d.X() - u2) < eps)
     {
       theP2d.SetX(u2 - eps);
     }
   }
   if (!(Precision::IsInfinite(v1) || Precision::IsInfinite(v2)))
   {
-    eps = Max(coeff * (v2 - v1), Precision::PConfusion());
-    if (Abs(theP2d.Y() - v1) < eps)
+    eps = std::max(coeff * (v2 - v1), Precision::PConfusion());
+    if (std::abs(theP2d.Y() - v1) < eps)
     {
       theP2d.SetY(v1 + eps);
     }
-    if (Abs(theP2d.Y() - v2) < eps)
+    if (std::abs(theP2d.Y() - v2) < eps)
     {
       theP2d.SetY(v2 - eps);
     }

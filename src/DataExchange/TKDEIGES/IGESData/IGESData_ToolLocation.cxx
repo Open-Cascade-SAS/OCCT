@@ -253,16 +253,17 @@ Standard_Boolean IGESData_ToolLocation::ConvertLocation(const Standard_Real prec
   if (m1 < prec || m2 < prec || m3 < prec)
     return Standard_False;
   Standard_Real mm = (m1 + m2 + m3) / 3.; // here is the average Norm, see Scale
-  if (Abs(m1 - mm) > prec * mm || Abs(m2 - mm) > prec * mm || Abs(m3 - mm) > prec * mm)
+  if (std::abs(m1 - mm) > prec * mm || std::abs(m2 - mm) > prec * mm
+      || std::abs(m3 - mm) > prec * mm)
     return Standard_False;
   v1.Divide(m1);
   v2.Divide(m2);
   v3.Divide(m3);
-  if (Abs(v1.Dot(v2)) > prec || Abs(v2.Dot(v3)) > prec || Abs(v3.Dot(v1)) > prec)
+  if (std::abs(v1.Dot(v2)) > prec || std::abs(v2.Dot(v3)) > prec || std::abs(v3.Dot(v1)) > prec)
     return Standard_False;
   // Here, Orthogonal and same norms. Plus we normalized it
   // Remain the other characteristics :
-  if (Abs(mm - 1.) > prec)
+  if (std::abs(mm - 1.) > prec)
     result.SetScale(gp_Pnt(0, 0, 0), mm);
   gp_XYZ tp = loc.TranslationPart();
   if (unit != 1.)

@@ -27,11 +27,11 @@ std::pair<Standard_Real, Standard_Real> BRepMesh_ConeRangeSplitter::GetSplitStep
   const std::pair<Standard_Real, Standard_Real>& aRangeU = GetRangeU();
   const std::pair<Standard_Real, Standard_Real>& aRangeV = GetRangeV();
 
-  gp_Cone       aCone = GetDFace()->GetSurface()->Cone();
-  Standard_Real aRefR = aCone.RefRadius();
-  Standard_Real aSAng = aCone.SemiAngle();
-  Standard_Real aRadius =
-    Max(Abs(aRefR + aRangeV.first * Sin(aSAng)), Abs(aRefR + aRangeV.second * Sin(aSAng)));
+  gp_Cone       aCone   = GetDFace()->GetSurface()->Cone();
+  Standard_Real aRefR   = aCone.RefRadius();
+  Standard_Real aSAng   = aCone.SemiAngle();
+  Standard_Real aRadius = std::max(std::abs(aRefR + aRangeV.first * std::sin(aSAng)),
+                                   std::abs(aRefR + aRangeV.second * std::sin(aSAng)));
 
   Standard_Real Dv, Du = GCPnts_TangentialDeflection::ArcAngularStep(aRadius,
                                                                      GetDFace()->GetDeflection(),
@@ -41,7 +41,7 @@ std::pair<Standard_Real, Standard_Real> BRepMesh_ConeRangeSplitter::GetSplitStep
   const Standard_Real    aDiffU = aRangeU.second - aRangeU.first;
   const Standard_Real    aDiffV = aRangeV.second - aRangeV.first;
   const Standard_Real    aScale = (Du * aRadius);
-  const Standard_Real    aRatio = Max(1., Log(aDiffV / aScale));
+  const Standard_Real    aRatio = std::max(1., std::log(aDiffV / aScale));
   const Standard_Integer nbU    = (Standard_Integer)(aDiffU / Du);
   const Standard_Integer nbV    = (Standard_Integer)(aDiffV / aScale / aRatio);
 

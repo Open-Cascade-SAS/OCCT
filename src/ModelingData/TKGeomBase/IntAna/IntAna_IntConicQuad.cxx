@@ -386,7 +386,7 @@ PERFORM(const gp_Hypr& H, const IntAna_Quadric& Quad)
         Standard_Real t = HyperQuadPol.Value(i);
         if (t >= RealEpsilon())
         {
-          Standard_Real Lnt         = Log(t);
+          Standard_Real Lnt         = std::log(t);
           paramonc[bonnessolutions] = Lnt;
           pnts[bonnessolutions]     = ElCLib::HyperbolaValue(Lnt, H.Position(), R, r);
           bonnessolutions++;
@@ -447,7 +447,7 @@ void IntAna_IntConicQuad::Perform(const gp_Lin&       L,
 
   // Tolang represente la tolerance angulaire a partir de laquelle on considere
   // que l angle entre 2 vecteurs est nul. On raisonnera sur le cosinus de cet
-  // angle, (on a Cos(t) equivalent a t au voisinage de Pi/2).
+  // angle, (on a std::cos(t) equivalent a t au voisinage de Pi/2).
 
   done = Standard_False;
 
@@ -463,7 +463,7 @@ void IntAna_IntConicQuad::Perform(const gp_Lin&       L,
   Dis   = A * Orig.X() + B * Orig.Y() + C * Orig.Z() + D;
   //
   parallel = Standard_False;
-  if (Abs(Direc) < Tolang)
+  if (std::abs(Direc) < Tolang)
   {
     parallel = Standard_True;
     if (Len != 0 && Direc != 0)
@@ -481,7 +481,7 @@ void IntAna_IntConicQuad::Perform(const gp_Lin&       L,
   }
   if (parallel)
   {
-    if (Abs(Dis) < Tolang)
+    if (std::abs(Dis) < Tolang)
     {
       inquadric = Standard_True;
     }

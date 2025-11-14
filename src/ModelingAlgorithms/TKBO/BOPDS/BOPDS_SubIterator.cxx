@@ -140,7 +140,7 @@ void BOPDS_SubIterator::Intersect()
     if (aPair.ID1 == aPair.ID2)
       continue;
 
-    BOPDS_Pair aDSPair(Min(aPair.ID1, aPair.ID2), Max(aPair.ID1, aPair.ID2));
+    BOPDS_Pair aDSPair(std::min(aPair.ID1, aPair.ID2), std::max(aPair.ID1, aPair.ID2));
     if (!aMPKFence.Add(aDSPair))
       continue;
 

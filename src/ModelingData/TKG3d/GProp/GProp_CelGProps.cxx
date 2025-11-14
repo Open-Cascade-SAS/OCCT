@@ -39,17 +39,17 @@ void GProp_CelGProps::Perform(const gp_Circ& C, const Standard_Real U1, const St
   C.Axis().Direction().Coord(Xa3, Ya3, Za3);
   Standard_Real Ray = C.Radius();
 
-  dim                = Ray * Abs(U2 - U1);
-  Standard_Real xloc = Ray * (Sin(U2) - Sin(U1)) / (U2 - U1);
-  Standard_Real yloc = Ray * (Cos(U1) - Cos(U2)) / (U2 - U1);
+  dim                = Ray * std::abs(U2 - U1);
+  Standard_Real xloc = Ray * (std::sin(U2) - std::sin(U1)) / (U2 - U1);
+  Standard_Real yloc = Ray * (std::cos(U1) - std::cos(U2)) / (U2 - U1);
 
   g.SetCoord(xloc * Xa1 + yloc * Xa2 + X0, xloc * Ya1 + yloc * Ya2 + Y0, Z0);
 
   math_Matrix Dm(1, 3, 1, 3);
-  Dm(1, 1) = Ray * Ray * Ray * (U2 / 2 - U1 / 2 - Sin(2 * U2) / 4 + Sin(2 * U1) / 4);
-  Dm(2, 2) = Ray * Ray * Ray * (U2 / 2 - U1 / 2 + Sin(2 * U2) / 4 - Sin(2 * U1) / 4);
+  Dm(1, 1) = Ray * Ray * Ray * (U2 / 2 - U1 / 2 - std::sin(2 * U2) / 4 + std::sin(2 * U1) / 4);
+  Dm(2, 2) = Ray * Ray * Ray * (U2 / 2 - U1 / 2 + std::sin(2 * U2) / 4 - std::sin(2 * U1) / 4);
   Dm(3, 3) = Ray * Ray * dim;
-  Dm(2, 1) = Dm(1, 2) = -Ray * Ray * Ray * (Cos(2 * U1) / 4 - Cos(2 * U2) / 4);
+  Dm(2, 1) = Dm(1, 2) = -Ray * Ray * Ray * (std::cos(2 * U1) / 4 - std::cos(2 * U2) / 4);
   Dm(3, 1) = Dm(1, 3) = 0.;
   Dm(3, 2) = Dm(2, 3) = 0.;
   math_Matrix Passage(1, 3, 1, 3);
@@ -87,7 +87,7 @@ void GProp_CelGProps::Perform(const gp_Lin& C, const Standard_Real U1, const Sta
 {
   gp_Ax1 Pos = C.Position();
   gp_Pnt P1  = ElCLib::LineValue(U1, Pos);
-  dim        = Abs(U2 - U1);
+  dim        = std::abs(U2 - U1);
   gp_Pnt P2  = ElCLib::LineValue(U2, Pos);
   g.SetCoord((P1.X() + P2.X()) / 2., (P1.Y() + P2.Y()) / 2., (P1.Z() + P2.Z()) / 2.);
   Standard_Real Vx, Vy, Vz, X0, Y0, Z0;

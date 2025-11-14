@@ -149,7 +149,7 @@ void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_C
   {
     myCourbC1 = Curv1.Curvature();
     myCourbC2 = Curv2.Curvature();
-    if ((Abs(myCourbC1) > epscrb) && (Abs(myCourbC2) > epscrb))
+    if ((std::abs(myCourbC1) > epscrb) && (std::abs(myCourbC2) > epscrb))
     {
       V1 = Curv1.D1();
       V2 = Curv2.D1();
@@ -162,7 +162,7 @@ void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_C
         myContG2 = ang;
       myCourbC1     = Curv1.Curvature();
       myCourbC2     = Curv2.Curvature();
-      myG2Variation = Abs(myCourbC1 - myCourbC2) / sqrt(myCourbC1 * myCourbC2);
+      myG2Variation = std::abs(myCourbC1 - myCourbC2) / sqrt(myCourbC1 * myCourbC2);
     }
     else
     {
@@ -282,7 +282,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsC1() const
   {
     throw StdFail_NotDone();
   }
-  if (IsC0() && ((myContC1 <= myepsC1) || (Abs(myContC1 - M_PI) <= myepsC1)))
+  if (IsC0() && ((myContC1 <= myepsC1) || (std::abs(myContC1 - M_PI) <= myepsC1)))
     return Standard_True;
   else
     return Standard_False;
@@ -300,11 +300,11 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsC2() const
   }
   if (IsC1())
   {
-    if ((myContC2 <= myepsC2) || (Abs(myContC2 - M_PI) <= myepsC2))
+    if ((myContC2 <= myepsC2) || (std::abs(myContC2 - M_PI) <= myepsC2))
     {
       epsil1 = 0.5 * myepsC1 * myepsC1 * myLambda1;
       epsil2 = 0.5 * myepsC2 * myepsC2 * myLambda2;
-      if ((Abs(myLambda1 * myLambda1 - myLambda2)) <= (epsil1 * epsil1 + epsil2))
+      if ((std::abs(myLambda1 * myLambda1 - myLambda2)) <= (epsil1 * epsil1 + epsil2))
         return Standard_True;
     }
     else
@@ -321,7 +321,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsG1() const
   {
     throw StdFail_NotDone();
   }
-  if (IsC0() && ((myContG1 <= myepsG1 || (Abs(myContG1 - M_PI) <= myepsG1))))
+  if (IsC0() && ((myContG1 <= myepsG1 || (std::abs(myContG1 - M_PI) <= myepsG1))))
     return Standard_True;
   else
     return Standard_False;
@@ -363,7 +363,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsG2() const
       if (IETA1 == 1)
       {
         Standard_Real eps = RealPart((myContG2 + myepsG2) / M_PI) * M_PI;
-        if (Abs(eps - myepsG2) < myepsG2)
+        if (std::abs(eps - myepsG2) < myepsG2)
         {
           if (myG2Variation < myperce)
             return Standard_True;

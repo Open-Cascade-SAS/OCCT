@@ -76,7 +76,7 @@ static Standard_Boolean FUN_nullprodv(const Standard_Real prodv)
 {
   //  Standard_Real tola = Precision::Angular()*1.e+1; // NYI
   Standard_Real tola = 1.e-6; // NYI NYI NYI : for case cto 012 I2
-  return (Abs(prodv) < tola);
+  return (std::abs(prodv) < tola);
 }
 
 // modified by NIZNHY-PKV Fri Aug  4 11:22:57 2000 from
@@ -339,8 +339,8 @@ Standard_Integer TopOpeBRepTool_TOOL::OnBoundary(const Standard_Real par, const 
   Standard_Real     tole   = bc.Tolerance();
   Standard_Real     tolp   = bc.Resolution(tole);
 
-  Standard_Boolean onf  = Abs(par - first) < tolp;
-  Standard_Boolean onl  = Abs(par - last) < tolp;
+  Standard_Boolean onf  = std::abs(par - first) < tolp;
+  Standard_Boolean onl  = std::abs(par - last) < tolp;
   Standard_Boolean onfl = (onf || onl);
   if (onfl && closed)
     return CLOSING;
@@ -505,12 +505,12 @@ Standard_Boolean TopOpeBRepTool_TOOL::ParE2d(const gp_Pnt2d&    p2d,
     if (isoU)
     {
       par  = p2d.Y() - Loc.Y();
-      dist = Abs(p2d.X() - Loc.X());
+      dist = std::abs(p2d.X() - Loc.X());
     }
     if (isoV)
     {
       par  = p2d.X() - Loc.X();
-      dist = Abs(p2d.Y() - Loc.Y());
+      dist = std::abs(p2d.Y() - Loc.Y());
     }
     if (isoU || isoV)
       return Standard_True;
@@ -572,8 +572,8 @@ Standard_Boolean TopOpeBRepTool_TOOL::TggeomE(const Standard_Real      par,
   Standard_Real tolE = BC.Tolerance();
   Standard_Real tolp = BC.Resolution(tolE);
 
-  Standard_Boolean onf      = Abs(f - par) < tolp;
-  Standard_Boolean onl      = Abs(l - par) < tolp;
+  Standard_Boolean onf      = std::abs(f - par) < tolp;
+  Standard_Boolean onl      = std::abs(l - par) < tolp;
   Standard_Boolean inbounds = (f < par) && (par < l);
 
   if ((!inbounds) && (!onf) && (!onl))
@@ -845,7 +845,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge&  E,
   {
     gp_Dir        dir = BAC.Line().Direction();
     Standard_Real dot = dir.Dot(tg0);
-    if (Abs(1 - dot) < tola)
+    if (std::abs(1 - dot) < tola)
       return Standard_False;
     return Standard_True;
   }
@@ -854,7 +854,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge&  E,
   Standard_Boolean  tgdef = clprops.IsTangentDefined();
   if (!tgdef)
     return Standard_False;
-  curv = Abs(clprops.Curvature());
+  curv = std::abs(clprops.Curvature());
 
   Standard_Real    tol      = Precision::Confusion() * 1.e+2; // NYITOLXPU
   Standard_Boolean nullcurv = (curv < tol);
@@ -869,9 +869,9 @@ Standard_Boolean TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge&  E,
   gp_Dir T;
   clprops.Tangent(T);
   gp_Dir        axis       = N ^ T;
-  Standard_Real dot        = Abs(axis.Dot(tg0));
+  Standard_Real dot        = std::abs(axis.Dot(tg0));
   nullcurv                 = dot < tola;
-  Standard_Boolean maxcurv = Abs(1 - dot) < tola;
+  Standard_Boolean maxcurv = std::abs(1 - dot) < tola;
   if (nullcurv)
   {
     curv = 0.;
@@ -955,12 +955,12 @@ static Standard_Boolean FUN_analyticcS(const gp_Pnt2d&             uv0,
       direct               = toto.Direct();
     }
     Standard_Real    prod       = axis.Dot(tg0);
-    Standard_Boolean isMaxAcurv = FUN_nullprodv(1 - Abs(prod));
+    Standard_Boolean isMaxAcurv = FUN_nullprodv(1 - std::abs(prod));
     Standard_Boolean nullcurv   = FUN_nullprodv(prod);
 
     Standard_Real prod2 = ngS.Dot(tg0);
     if (cyl || cone)
-      nullcurv = nullcurv || FUN_nullprodv(1 - Abs(prod2));
+      nullcurv = nullcurv || FUN_nullprodv(1 - std::abs(prod2));
 
     if (nullcurv)
     {
@@ -973,8 +973,8 @@ static Standard_Boolean FUN_analyticcS(const gp_Pnt2d&             uv0,
       Standard_Boolean  curdef = slprops.IsCurvatureDefined();
       if (curdef)
       {
-        Standard_Real    minAcurv = Abs(slprops.MinCurvature());
-        Standard_Real    maxAcurv = Abs(slprops.MaxCurvature());
+        Standard_Real    minAcurv = std::abs(slprops.MinCurvature());
+        Standard_Real    maxAcurv = std::abs(slprops.MaxCurvature());
         Standard_Boolean isAmax   = (maxAcurv > minAcurv);
         curv                      = isAmax ? maxAcurv : minAcurv;
       }
@@ -1027,18 +1027,18 @@ Standard_Boolean TopOpeBRepTool_TOOL::CurvF(const TopoDS_Face& F,
 
     gp_Vec           Dmax = ngS ^ MaxD, Dmin = ngS ^ MinD; // xpu180898 : cto015G2
     Standard_Real    dotmax   = Dmax.Dot(npl);             // MaxD.Dot(npl); -xpu180898
-    Standard_Boolean iscurmax = Abs(1 - dotmax) < tola;
+    Standard_Boolean iscurmax = std::abs(1 - dotmax) < tola;
     if (iscurmax)
     {
       direct = (maxcurv < 0.);
-      curv   = Abs(maxcurv);
+      curv   = std::abs(maxcurv);
     }
     Standard_Real    dotmin   = Dmin.Dot(npl); // MinD.Dot(npl); -xpu180898
-    Standard_Boolean iscurmin = Abs(1 - dotmin) < tola;
+    Standard_Boolean iscurmin = std::abs(1 - dotmin) < tola;
     if (iscurmin)
     {
       direct = (mincurv < 0.);
-      curv   = Abs(mincurv);
+      curv   = std::abs(mincurv);
     }
     curdef = iscurmax || iscurmin;
     // -------------
@@ -1067,8 +1067,8 @@ Standard_Boolean TopOpeBRepTool_TOOL::UVISO(const Handle(Geom2d_Curve)& PC,
 
   Handle(Geom2d_Line) L  = Handle(Geom2d_Line)::DownCast(LLL);
   d2d                    = L->Direction();
-  isoU                   = (Abs(d2d.X()) < Precision::Parametric(Precision::Confusion()));
-  isoV                   = (Abs(d2d.Y()) < Precision::Parametric(Precision::Confusion()));
+  isoU                   = (std::abs(d2d.X()) < Precision::Parametric(Precision::Confusion()));
+  isoV                   = (std::abs(d2d.Y()) < Precision::Parametric(Precision::Confusion()));
   Standard_Boolean isoUV = isoU || isoV;
   if (!isoUV)
     return Standard_False;
@@ -1131,12 +1131,12 @@ Standard_Boolean TopOpeBRepTool_TOOL::IsonCLO(const Handle(Geom2d_Curve)& PC,
     return Standard_False;
   Standard_Real dxx = 0;
   if (onU)
-    dxx = Abs(o2d.X() - xfirst);
+    dxx = std::abs(o2d.X() - xfirst);
   else
-    dxx = Abs(o2d.Y() - xfirst);
+    dxx = std::abs(o2d.Y() - xfirst);
 
   Standard_Boolean onclo = (dxx < xtol);
-  onclo                  = onclo || (Abs(xperiod - dxx) < xtol);
+  onclo                  = onclo || (std::abs(xperiod - dxx) < xtol);
   return onclo;
 }
 
@@ -1250,7 +1250,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::Matter(const gp_Dir&       xx1,
   // => zi = xxi^nti gives the opposite sense for the compute of the matter angle
   z1.Reverse();
   ang = xx1.AngleWithRef(xx2, z1);
-  if (Abs(ang) < tola)
+  if (std::abs(ang) < tola)
   {
     ang = 0.;
     return Standard_True;
@@ -1291,7 +1291,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::Getduv(const TopoDS_Face&  f,
 
   gp_Vec2d             DUV(uv, uvtr);
   Handle(Geom_Surface) S = TopOpeBRepTool_ShapeTool::BASISSURFACE(f);
-  if ((S->IsUPeriodic()) && (Abs(DUV.X()) > S->UPeriod() / 2.))
+  if ((S->IsUPeriodic()) && (std::abs(DUV.X()) > S->UPeriod() / 2.))
   {
     Standard_Real U1 = uv.X(), U2 = uvtr.X(), period = S->UPeriod();
     ElCLib::AdjustPeriodic(0., period, Precision::PConfusion(), U1, U2);
@@ -1300,7 +1300,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::Getduv(const TopoDS_Face&  f,
       dx -= period;
     DUV.SetX(dx);
   }
-  if ((S->IsVPeriodic()) && (Abs(DUV.Y()) > S->VPeriod() / 2.))
+  if ((S->IsVPeriodic()) && (std::abs(DUV.Y()) > S->VPeriod() / 2.))
   {
     Standard_Real V1 = uv.Y(), V2 = uvtr.Y(), period = S->VPeriod();
     ElCLib::AdjustPeriodic(0., period, Precision::PConfusion(), V1, V2);
@@ -1402,8 +1402,8 @@ static Standard_Boolean FUN_ngF(const gp_Pnt2d& uv, const TopoDS_Face& F, gp_Vec
     GeomAbs_SurfaceType ST = bs.GetType();
     if (ST == GeomAbs_Cone)
     {
-      Standard_Boolean nullx = (Abs(uv.X()) < tolu);
-      Standard_Boolean apex  = nullx && (Abs(uv.Y()) < tolv);
+      Standard_Boolean nullx = (std::abs(uv.X()) < tolu);
+      Standard_Boolean apex  = nullx && (std::abs(uv.Y()) < tolv);
       if (apex)
       {
         const gp_Dir axis = bs.Cone().Axis().Direction();
@@ -1419,7 +1419,7 @@ static Standard_Boolean FUN_ngF(const gp_Pnt2d& uv, const TopoDS_Face& F, gp_Vec
         Standard_Real y  = uv.Y();
         Standard_Real vf = bs.FirstVParameter();
 
-        if (Abs(vf - y) < tolu)
+        if (std::abs(vf - y) < tolu)
           vf += delta;
         else
           vf -= delta;
@@ -1437,8 +1437,8 @@ static Standard_Boolean FUN_ngF(const gp_Pnt2d& uv, const TopoDS_Face& F, gp_Vec
     {
       Standard_Real    pisur2 = M_PI * .5;
       Standard_Real    u = uv.X(), v = uv.Y();
-      Standard_Boolean vpisur2      = (Abs(v - pisur2) < tolv);
-      Standard_Boolean vmoinspisur2 = (Abs(v + pisur2) < tolv);
+      Standard_Boolean vpisur2      = (std::abs(v - pisur2) < tolv);
+      Standard_Boolean vmoinspisur2 = (std::abs(v + pisur2) < tolv);
       Standard_Boolean apex         = vpisur2 || vmoinspisur2;
       if (apex)
       {
@@ -1557,8 +1557,8 @@ Standard_Boolean TopOpeBRepTool_TOOL::MatterKPtg(const TopoDS_Face& f1,
   //  gp_Dir xx2; ok2 = TopOpeBRepTool_TOOL::XX(uv2,f2,pare,e,xx2);
   //  if (!ok2) return Standard_False;
   //  Standard_Real angapp; Standard_Boolean ok = TopOpeBRepTool_TOOL::Matter(xx1,nt1,
-  //  xx2,nt2,tola,angapp); if (!ok) return Standard_False; Standard_Boolean is0 = (Abs(angapp) <
-  //  Abs(2.*M_PI-angapp)); ang = is0 ? 0. : 2.*M_PI;
+  //  xx2,nt2,tola,angapp); if (!ok) return Standard_False; Standard_Boolean is0 = (std::abs(angapp)
+  //  < std::abs(2.*M_PI-angapp)); ang = is0 ? 0. : 2.*M_PI;
   return Standard_True;
 }
 
@@ -1660,8 +1660,8 @@ void TopOpeBRepTool_TOOL::stuvF(const gp_Pnt2d&    uv,
   Standard_Real u = uv.X(), v = uv.Y();
   Standard_Real uf = bs.FirstUParameter(), ul = bs.LastUParameter(), vf = bs.FirstVParameter(),
                 vl      = bs.LastVParameter();
-  Standard_Boolean onuf = (Abs(uf - u) < tolu), onul = (Abs(ul - u) < tolu);
-  Standard_Boolean onvf = (Abs(vf - v) < tolv), onvl = (Abs(vl - v) < tolv);
+  Standard_Boolean onuf = (std::abs(uf - u) < tolu), onul = (std::abs(ul - u) < tolu);
+  Standard_Boolean onvf = (std::abs(vf - v) < tolv), onvl = (std::abs(vl - v) < tolv);
   if (onuf)
     onU = ONFIRST;
   if (onul)
@@ -1696,7 +1696,7 @@ Standard_Real TopOpeBRepTool_TOOL::TolUV(const TopoDS_Face& F, const Standard_Re
 {
   BRepAdaptor_Surface bs(F);
   Standard_Real       tol2d = bs.UResolution(tol3d);
-  tol2d                     = Max(tol2d, bs.VResolution(tol3d));
+  tol2d                     = std::max(tol2d, bs.VResolution(tol3d));
   return tol2d;
 }
 
@@ -1762,7 +1762,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::EdgeONFace(const Standard_Real par,
     return Standard_False;
   gp_Vec           ngf      = FUN_tool_nggeomF(uv, fa);
   Standard_Real    aProdDot = tge.Dot(ngf);
-  Standard_Boolean etgf     = Abs(aProdDot) < tola;
+  Standard_Boolean etgf     = std::abs(aProdDot) < tola;
   if (!etgf)
     return Standard_True;
 
@@ -1779,7 +1779,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::EdgeONFace(const Standard_Real par,
   Standard_Real tole   = bc.Tolerance();
   Standard_Real tol1de = bc.Resolution(tole);
   Standard_Real tolf   = bs.Tolerance();
-  Standard_Real tol3d  = Max(tole, tolf) * 1.e2; // NYITOLXPU
+  Standard_Real tol3d  = std::max(tole, tolf) * 1.e2; // NYITOLXPU
 
   // NYIxpu100299 : for other analytic geometries
   if (plane && line)
@@ -1804,7 +1804,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::EdgeONFace(const Standard_Real par,
     if (det)
     {
       Standard_Real prod = ne.Dot(ngf);
-      isonfa             = (Abs(1 - Abs(prod)) < tola);
+      isonfa             = (std::abs(1 - std::abs(prod)) < tola);
       return Standard_True;
     }
   } // plane
@@ -1823,12 +1823,12 @@ Standard_Boolean TopOpeBRepTool_TOOL::EdgeONFace(const Standard_Real par,
     if (det)
     {
       Standard_Real prod = ne.Dot(axicy);
-      isonfa             = (Abs(1 - Abs(prod)) < tola);
+      isonfa             = (std::abs(1 - std::abs(prod)) < tola);
       if (isonfa && circle)
       {
         Standard_Real radci = bc.Circle().Radius();
         Standard_Real radcy = bs.Cylinder().Radius();
-        isonfa              = (Abs(radci - radcy) < tol3d);
+        isonfa              = (std::abs(radci - radcy) < tol3d);
       }
       return Standard_True;
     }
@@ -1839,7 +1839,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::EdgeONFace(const Standard_Real par,
   Standard_Real x = 0.12345;
   Standard_Real f, l;
   FUN_tool_bounds(ed, f, l);
-  Standard_Boolean onf  = (Abs(par - f) < tol1de);
+  Standard_Boolean onf  = (std::abs(par - f) < tol1de);
   Standard_Real    opar = onf ? ((1 - x) * f + x * l) : ((1 - x) * f + x * par);
   gp_Pnt           opc  = bc.Value(opar);
 

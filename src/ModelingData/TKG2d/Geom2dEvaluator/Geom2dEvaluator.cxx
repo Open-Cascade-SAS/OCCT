@@ -47,7 +47,7 @@ void Geom2dEvaluator::CalculateD1(gp_Pnt2d&           theValue,
   gp_XY         Ndir(theD1.Y(), -theD1.X());
   gp_XY         DNdir(theD2.Y(), -theD2.X());
   Standard_Real R2 = Ndir.SquareModulus();
-  Standard_Real R  = Sqrt(R2);
+  Standard_Real R  = std::sqrt(R2);
   Standard_Real R3 = R * R2;
   Standard_Real Dr = Ndir.Dot(DNdir);
   if (R3 <= gp::Resolution())
@@ -94,7 +94,7 @@ void Geom2dEvaluator::CalculateD2(gp_Pnt2d&              theValue,
   gp_XY         DNdir(theD2.Y(), -theD2.X());
   gp_XY         D2Ndir(theD3.Y(), -theD3.X());
   Standard_Real R2  = Ndir.SquareModulus();
-  Standard_Real R   = Sqrt(R2);
+  Standard_Real R   = std::sqrt(R2);
   Standard_Real R3  = R2 * R;
   Standard_Real R4  = R2 * R2;
   Standard_Real R5  = R3 * R2;
@@ -167,7 +167,7 @@ void Geom2dEvaluator::CalculateD3(gp_Pnt2d&              theValue,
   gp_XY         D2Ndir(theD3.Y(), -theD3.X());
   gp_XY         D3Ndir(theD4.Y(), -theD4.X());
   Standard_Real R2  = Ndir.SquareModulus();
-  Standard_Real R   = Sqrt(R2);
+  Standard_Real R   = std::sqrt(R2);
   Standard_Real R3  = R2 * R;
   Standard_Real R4  = R2 * R2;
   Standard_Real R5  = R3 * R2;

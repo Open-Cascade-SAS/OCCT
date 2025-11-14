@@ -600,7 +600,7 @@ void OBBTool::ProcessTriangle(const Standard_Integer theIdx1,
   if (aSqMod < Precision::SquareConfusion())
     return;
 
-  aZAxis /= Sqrt(aSqMod);
+  aZAxis /= std::sqrt(aSqMod);
 
   gp_XYZ aXAxis[aNbAxes];
   for (Standard_Integer i = 0; i < aNbAxes; i++)
@@ -734,12 +734,12 @@ void OBBTool::BuildBox(Bnd_OBB& theBox)
     else
     {
       const Standard_Real aTol = myListOfTolers->Value(i);
-      aParams[0]               = Min(aParams[0], aDx - aTol);
-      aParams[1]               = Max(aParams[1], aDx + aTol);
-      aParams[2]               = Min(aParams[2], aDy - aTol);
-      aParams[3]               = Max(aParams[3], aDy + aTol);
-      aParams[4]               = Min(aParams[4], aDz - aTol);
-      aParams[5]               = Max(aParams[5], aDz + aTol);
+      aParams[0]               = std::min(aParams[0], aDx - aTol);
+      aParams[1]               = std::max(aParams[1], aDx + aTol);
+      aParams[2]               = std::min(aParams[2], aDy - aTol);
+      aParams[3]               = std::max(aParams[3], aDy + aTol);
+      aParams[4]               = std::min(aParams[4], aDz - aTol);
+      aParams[5]               = std::max(aParams[5], aDz + aTol);
     }
   }
 
@@ -784,7 +784,7 @@ void Bnd_OBB::ReBuild(const TColgp_Array1OfPnt&   theListOfPoints,
       const gp_XYZ        aDP  = aP2 - aP1;
       const Standard_Real aDPm = aDP.Modulus();
       myIsAABox                = Standard_False;
-      myHDims[1] = myHDims[2] = Max(aTol1, aTol2);
+      myHDims[1] = myHDims[2] = std::max(aTol1, aTol2);
 
       if (aDPm < Precision::Confusion())
       {
@@ -795,7 +795,7 @@ void Bnd_OBB::ReBuild(const TColgp_Array1OfPnt&   theListOfPoints,
 
       myHDims[0] = 0.5 * (aDPm + aTol1 + aTol2);
       myAxes[0]  = aDP / aDPm;
-      if (Abs(myAxes[0].X()) > Abs(myAxes[0].Y()))
+      if (std::abs(myAxes[0].X()) > std::abs(myAxes[0].Y()))
       {
         // Z-coord. is maximal or X-coord. is maximal
         myAxes[1].SetCoord(-myAxes[0].Z(), 0.0, myAxes[0].X());
@@ -828,9 +828,9 @@ Standard_Boolean Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
 
   if (myIsAABox && theOther.myIsAABox)
   {
-    return ((Abs(theOther.myCenter.X() - myCenter.X()) > theOther.myHDims[0] + myHDims[0])
-            || (Abs(theOther.myCenter.Y() - myCenter.Y()) > theOther.myHDims[1] + myHDims[1])
-            || (Abs(theOther.myCenter.Z() - myCenter.Z()) > theOther.myHDims[2] + myHDims[2]));
+    return ((std::abs(theOther.myCenter.X() - myCenter.X()) > theOther.myHDims[0] + myHDims[0])
+            || (std::abs(theOther.myCenter.Y() - myCenter.Y()) > theOther.myHDims[1] + myHDims[1])
+            || (std::abs(theOther.myCenter.Z() - myCenter.Z()) > theOther.myHDims[2] + myHDims[2]));
   }
 
   // According to the Separating Axis Theorem for Oriented Bounding Boxes
@@ -841,7 +841,7 @@ Standard_Boolean Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
 
   // The algorithm is following:
   // 1. Compute the "length" for j-th BndBox (j=1...2) according to the formula:
-  //    L(j)=Sum(myHDims[i]*Abs(myAxes[i].Dot(Ls)))
+  //    L(j)=Sum(myHDims[i]*std::abs(myAxes[i].Dot(Ls)))
   // 2. If (theCenter2 - theCenter1).Dot(Ls) > (L(1) + L(2))
   //    then the considered OBBs are not interfered in terms of the axis Ls.
   //
@@ -860,10 +860,10 @@ Standard_Boolean Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
     // Length of the second segment
     Standard_Real aLSegm2 = 0;
     for (Standard_Integer j = 0; j < 3; ++j)
-      aLSegm2 += theOther.myHDims[j] * Abs(theOther.myAxes[j].Dot(myAxes[i]));
+      aLSegm2 += theOther.myHDims[j] * std::abs(theOther.myAxes[j].Dot(myAxes[i]));
 
     // Distance between projected centers
-    Standard_Real aDistCC = Abs(D.Dot(myAxes[i]));
+    Standard_Real aDistCC = std::abs(D.Dot(myAxes[i]));
 
     if (aDistCC > myHDims[i] + aLSegm2)
       return Standard_True;
@@ -876,10 +876,10 @@ Standard_Boolean Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
     // Length of the first segment
     Standard_Real aLSegm1 = 0.;
     for (Standard_Integer j = 0; j < 3; ++j)
-      aLSegm1 += myHDims[j] * Abs(myAxes[j].Dot(theOther.myAxes[i]));
+      aLSegm1 += myHDims[j] * std::abs(myAxes[j].Dot(theOther.myAxes[i]));
 
     // Distance between projected centers
-    Standard_Real aDistCC = Abs(D.Dot(theOther.myAxes[i]));
+    Standard_Real aDistCC = std::abs(D.Dot(theOther.myAxes[i]));
 
     if (aDistCC > aLSegm1 + theOther.myHDims[i])
       return Standard_True;
@@ -904,15 +904,15 @@ Standard_Boolean Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
       // Length of the first segment
       Standard_Real aLSegm1 = 0.;
       for (Standard_Integer k = 0; k < 3; ++k)
-        aLSegm1 += myHDims[k] * Abs(myAxes[k].Dot(aLAxe));
+        aLSegm1 += myHDims[k] * std::abs(myAxes[k].Dot(aLAxe));
 
       // Length of the second segment
       Standard_Real aLSegm2 = 0.;
       for (Standard_Integer k = 0; k < 3; ++k)
-        aLSegm2 += theOther.myHDims[k] * Abs(theOther.myAxes[k].Dot(aLAxe));
+        aLSegm2 += theOther.myHDims[k] * std::abs(theOther.myAxes[k].Dot(aLAxe));
 
       // Distance between projected centers
-      Standard_Real aDistCC = Abs(D.Dot(aLAxe));
+      Standard_Real aDistCC = std::abs(D.Dot(aLAxe));
 
       if (aDistCC > aLSegm1 + aLSegm2)
         return Standard_True;
@@ -933,8 +933,8 @@ Standard_Boolean Bnd_OBB::IsOut(const gp_Pnt& theP) const
 
   const gp_XYZ aRV = theP.XYZ() - myCenter;
 
-  return ((Abs(myAxes[0].Dot(aRV)) > myHDims[0]) || (Abs(myAxes[1].Dot(aRV)) > myHDims[1])
-          || (Abs(myAxes[2].Dot(aRV)) > myHDims[2]));
+  return ((std::abs(myAxes[0].Dot(aRV)) > myHDims[0]) || (std::abs(myAxes[1].Dot(aRV)) > myHDims[1])
+          || (std::abs(myAxes[2].Dot(aRV)) > myHDims[2]));
 }
 
 // =======================================================================

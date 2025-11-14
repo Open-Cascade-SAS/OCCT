@@ -171,7 +171,7 @@ Quantity_Period Quantity_Period::Subtract(const Quantity_Period& OtherPeriod) co
   }
   else if (result.mySec < 0 && result.myUSec >= 0)
   {
-    result.mySec = Abs(result.mySec);
+    result.mySec = std::abs(result.mySec);
     if (result.myUSec > 0)
     {
       result.mySec--;
@@ -180,8 +180,8 @@ Quantity_Period Quantity_Period::Subtract(const Quantity_Period& OtherPeriod) co
   }
   else if (result.mySec < 0 && result.myUSec < 0)
   {
-    result.mySec  = Abs(result.mySec);
-    result.myUSec = Abs(result.myUSec);
+    result.mySec  = std::abs(result.mySec);
+    result.myUSec = std::abs(result.myUSec);
   }
   return (result);
 }

@@ -144,9 +144,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
   anOStream << "Material {\n";
 
   if (myAmbientColor->Length() != 1
-      || Abs(myAmbientColor->Value(myAmbientColor->Lower()).Red() - 0.2) > 0.0001
-      || Abs(myAmbientColor->Value(myAmbientColor->Lower()).Green() - 0.2) > 0.0001
-      || Abs(myAmbientColor->Value(myAmbientColor->Lower()).Blue() - 0.2) > 0.0001)
+      || std::abs(myAmbientColor->Value(myAmbientColor->Lower()).Red() - 0.2) > 0.0001
+      || std::abs(myAmbientColor->Value(myAmbientColor->Lower()).Green() - 0.2) > 0.0001
+      || std::abs(myAmbientColor->Value(myAmbientColor->Lower()).Blue() - 0.2) > 0.0001)
   {
     anOStream << "    ambientColor [\n\t";
     for (i = myAmbientColor->Lower(); i <= myAmbientColor->Upper(); i++)
@@ -163,9 +163,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
   }
 
   if (myDiffuseColor->Length() != 1
-      || Abs(myDiffuseColor->Value(myDiffuseColor->Lower()).Red() - 0.8) > 0.0001
-      || Abs(myDiffuseColor->Value(myDiffuseColor->Lower()).Green() - 0.8) > 0.0001
-      || Abs(myDiffuseColor->Value(myDiffuseColor->Lower()).Blue() - 0.8) > 0.0001)
+      || std::abs(myDiffuseColor->Value(myDiffuseColor->Lower()).Red() - 0.8) > 0.0001
+      || std::abs(myDiffuseColor->Value(myDiffuseColor->Lower()).Green() - 0.8) > 0.0001
+      || std::abs(myDiffuseColor->Value(myDiffuseColor->Lower()).Blue() - 0.8) > 0.0001)
   {
     anOStream << "    diffuseColor [\n\t";
     for (i = myDiffuseColor->Lower(); i <= myDiffuseColor->Upper(); i++)
@@ -182,9 +182,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
   }
 
   if (mySpecularColor->Length() != 1
-      || Abs(mySpecularColor->Value(mySpecularColor->Lower()).Red() - 0) > 0.0001
-      || Abs(mySpecularColor->Value(mySpecularColor->Lower()).Green() - 0) > 0.0001
-      || Abs(mySpecularColor->Value(mySpecularColor->Lower()).Blue() - 0) > 0.0001)
+      || std::abs(mySpecularColor->Value(mySpecularColor->Lower()).Red() - 0) > 0.0001
+      || std::abs(mySpecularColor->Value(mySpecularColor->Lower()).Green() - 0) > 0.0001
+      || std::abs(mySpecularColor->Value(mySpecularColor->Lower()).Blue() - 0) > 0.0001)
   {
     anOStream << "    specularColor [\n\t";
     for (i = mySpecularColor->Lower(); i <= mySpecularColor->Upper(); i++)
@@ -201,9 +201,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
   }
 
   if (myEmissiveColor->Length() != 1
-      || Abs(myEmissiveColor->Value(myEmissiveColor->Lower()).Red() - 0) > 0.0001
-      || Abs(myEmissiveColor->Value(myEmissiveColor->Lower()).Green() - 0) > 0.0001
-      || Abs(myEmissiveColor->Value(myEmissiveColor->Lower()).Blue() - 0) > 0.0001)
+      || std::abs(myEmissiveColor->Value(myEmissiveColor->Lower()).Red() - 0) > 0.0001
+      || std::abs(myEmissiveColor->Value(myEmissiveColor->Lower()).Green() - 0) > 0.0001
+      || std::abs(myEmissiveColor->Value(myEmissiveColor->Lower()).Blue() - 0) > 0.0001)
   {
     anOStream << "    emissiveColor [\n\t";
     for (i = myEmissiveColor->Lower(); i <= myEmissiveColor->Upper(); i++)
@@ -219,7 +219,8 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
     anOStream << " ]\n";
   }
 
-  if (myShininess->Length() != 1 || Abs(myShininess->Value(myShininess->Lower()) - 0.2) > 0.0001)
+  if (myShininess->Length() != 1
+      || std::abs(myShininess->Value(myShininess->Lower()) - 0.2) > 0.0001)
   {
     anOStream << "    shininess\t\t[ ";
     for (i = myShininess->Lower(); i <= myShininess->Upper(); i++)
@@ -232,7 +233,7 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
   }
 
   if (myTransparency->Length() != 1
-      || Abs(myTransparency->Value(myTransparency->Lower()) - 0) > 0.0001)
+      || std::abs(myTransparency->Value(myTransparency->Lower()) - 0) > 0.0001)
   {
     anOStream << "    transparency\t[ ";
     for (i = myTransparency->Lower(); i <= myTransparency->Upper(); i++)

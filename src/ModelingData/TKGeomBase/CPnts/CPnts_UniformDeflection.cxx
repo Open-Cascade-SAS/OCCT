@@ -114,7 +114,7 @@ void CPnts_UniformDeflection::Perform()
     if (NormD1 < myTolCur || V2.Magnitude() < myTolCur)
     {
       // singularity on the tangent or null curvature
-      myDu = Min(myDwmax, 1.5 * myDu);
+      myDu = std::min(myDwmax, 1.5 * myDu);
     }
     else
     {
@@ -122,19 +122,19 @@ void CPnts_UniformDeflection::Perform()
       if (NormD2 / NormD1 < myDeflection)
       {
         // collinearity of derivatives
-        myDu = Min(myDwmax, 1.5 * myDu);
+        myDu = std::min(myDwmax, 1.5 * myDu);
       }
       else
       {
-        myDu = Sqrt(8. * myDeflection * NormD1 / NormD2);
-        myDu = Min(Max(myDu, myTolCur), myDwmax);
+        myDu = std::sqrt(8. * myDeflection * NormD1 / NormD2);
+        myDu = std::min(std::max(myDu, myTolCur), myDwmax);
       }
     }
 
     // check if the arrow is observed if WithControl
     if (myControl)
     {
-      myDu = Min(myDu, myLastParam - myFirstParam);
+      myDu = std::min(myDu, myLastParam - myFirstParam);
       if (my3d)
       {
         D03d(myCurve, myFirstParam + myDu, P);
@@ -157,14 +157,14 @@ void CPnts_UniformDeflection::Perform()
         // from the others) this test does not work on the points of inflexion
         if (NormD2 > myDeflection / 5.0)
         {
-          NormD2 = Max(NormD2, 1.1 * myDeflection);
-          myDu   = myDu * Sqrt(myDeflection / NormD2);
-          myDu   = Min(Max(myDu, myTolCur), myDwmax);
+          NormD2 = std::max(NormD2, 1.1 * myDeflection);
+          myDu   = myDu * std::sqrt(myDeflection / NormD2);
+          myDu   = std::min(std::max(myDu, myTolCur), myDwmax);
         }
       }
     }
     myFirstParam += myDu;
-    myFinish = myLastParam - myFirstParam < myTolCur || Abs(myDu) < myTolCur ||
+    myFinish = myLastParam - myFirstParam < myTolCur || std::abs(myDu) < myTolCur ||
                // to avoid less than double precision endless increment
                myDu < anEspilon;
   }

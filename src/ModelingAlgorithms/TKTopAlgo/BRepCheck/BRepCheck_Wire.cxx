@@ -451,8 +451,8 @@ static Standard_Boolean IsDistanceIn2DTolerance(
 {
   Standard_Real dumax = 0.01 * (aFaceSurface.LastUParameter() - aFaceSurface.FirstUParameter());
   Standard_Real dvmax = 0.01 * (aFaceSurface.LastVParameter() - aFaceSurface.FirstVParameter());
-  Standard_Real dumin = Abs(thePnt.X() - thePntRef.X());
-  Standard_Real dvmin = Abs(thePnt.Y() - thePntRef.Y());
+  Standard_Real dumin = std::abs(thePnt.X() - thePntRef.X());
+  Standard_Real dvmin = std::abs(thePnt.Y() - thePntRef.Y());
 
   if ((dumin < dumax) && (dvmin < dvmax))
     return Standard_True;
@@ -485,12 +485,12 @@ static Standard_Boolean IsDistanceIn2DTolerance(
   Standard_Real aMDU = aDU.Magnitude();
   if (aMDU > Precision::Confusion())
   {
-    dumax = Max((aTol3d / aMDU), dumax);
+    dumax = std::max((aTol3d / aMDU), dumax);
   }
   Standard_Real aMDV = aDV.Magnitude();
   if (aMDV > Precision::Confusion())
   {
-    dvmax = Max((aTol3d / aMDV), dvmax);
+    dvmax = std::max((aTol3d / aMDV), dvmax);
   }
 
 #ifdef OCCT_DEBUG
@@ -502,7 +502,7 @@ static Standard_Boolean IsDistanceIn2DTolerance(
   }
 #endif
 
-  Standard_Real aTol2d = 2 * Max(dumax, dvmax);
+  Standard_Real aTol2d = 2 * std::max(dumax, dvmax);
 
 #ifdef OCCT_DEBUG
   if ((aTol2d <= 0.0) && (PrintWarnings))
@@ -513,7 +513,7 @@ static Standard_Boolean IsDistanceIn2DTolerance(
   }
 #endif
 
-  Standard_Real Dist = Max(dumin, dvmin);
+  Standard_Real Dist = std::max(dumin, dvmin);
 
   if (Dist < aTol2d)
     return Standard_True;
@@ -689,13 +689,13 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace, const Stan
   //  Modified by Sergey KHROMOV - Thu Jun 20 10:58:05 2002 End
 
   // check distance
-  //   Standard_Real dfUDist=Abs(p.X()-p1.X());
-  //   Standard_Real dfVDist=Abs(p.Y()-p1.Y());
+  //   Standard_Real dfUDist=std::abs(p.X()-p1.X());
+  //   Standard_Real dfVDist=std::abs(p.Y()-p1.Y());
   //   if (dfUDist > aUResol || dfVDist > aVResol)
   //   {
 
   Standard_Real aTol3d =
-    Max(BRep_Tool::Tolerance(aFirstVertex), BRep_Tool::Tolerance(aWireExp.CurrentVertex()));
+    std::max(BRep_Tool::Tolerance(aFirstVertex), BRep_Tool::Tolerance(aWireExp.CurrentVertex()));
 
   gp_Pnt aPntRef = BRep_Tool::Pnt(aFirstVertex);
   gp_Pnt aPnt    = BRep_Tool::Pnt(aWireExp.CurrentVertex());
@@ -1424,9 +1424,10 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face&     F,
                 {
                   Standard_Real newVParaOnEdge1 = BRep_Tool::Parameter(vtt, E1);
                   Standard_Real newVParaOnEdge2 = BRep_Tool::Parameter(vtt, E2);
-                  if (Abs(IP_ParamOnFirst - VParaOnEdge1) + Abs(IP_ParamOnSecond - VParaOnEdge2)
-                      > Abs(IP_ParamOnFirst - newVParaOnEdge1)
-                          + Abs(IP_ParamOnSecond - newVParaOnEdge2))
+                  if (std::abs(IP_ParamOnFirst - VParaOnEdge1)
+                        + std::abs(IP_ParamOnSecond - VParaOnEdge2)
+                      > std::abs(IP_ParamOnFirst - newVParaOnEdge1)
+                          + std::abs(IP_ParamOnSecond - newVParaOnEdge2))
                   {
                     VertexLePlusProche = p3dvtt;
                     VParaOnEdge1       = newVParaOnEdge1;
@@ -2064,7 +2065,7 @@ static Standard_Boolean IsClosed2dForPeriodicFace(const TopoDS_Face&   theFace,
   Standard_Real       aTol      = BRep_Tool::Tolerance(theVertex);
   Standard_Real       aUResol   = aFaceSurface.UResolution(aTol);
   Standard_Real       aVResol   = aFaceSurface.VResolution(aTol);
-  Standard_Real       aVicinity = Sqrt(aUResol * aUResol + aVResol * aVResol);
+  Standard_Real       aVicinity = std::sqrt(aUResol * aUResol + aVResol * aVResol);
   Standard_Real       aDistP1P2 = theP1.Distance(theP2);
 
   TopTools_ListIteratorOfListOfShape anIter(aSeamEdges);
@@ -2095,7 +2096,7 @@ static Standard_Boolean IsClosed2dForPeriodicFace(const TopoDS_Face&   theFace,
           continue;
 
         a2dTol = aPnt1.Distance(aPnt2) * 1.e-2;
-        a2dTol = Max(a2dTol, aVicinity);
+        a2dTol = std::max(a2dTol, aVicinity);
 
         if (aDistP1P2 > a2dTol)
           return Standard_False;

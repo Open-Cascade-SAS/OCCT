@@ -100,7 +100,7 @@ Methode:
     uu               = PP.Parameter();
     if (myF.Value(uu, ff))
     {
-      if (Abs(ff) >= 1.e-07)
+      if (std::abs(ff) >= 1.e-07)
         myDone = Standard_False;
     }
     else

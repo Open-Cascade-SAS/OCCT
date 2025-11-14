@@ -32,9 +32,10 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
   Standard_Real al1, be1, ga1;
   Standard_Real al2, be2, ga2;
 
-  Standard_Real Det = Max(Abs(A1), Max(Abs(A2), Max(Abs(B1), Abs(B2))));
+  Standard_Real Det =
+    std::max(std::abs(A1), std::max(std::abs(A2), std::max(std::abs(B1), std::abs(B2))));
 
-  if (Abs(A1) == Det)
+  if (std::abs(A1) == Det)
   {
     al1 = A1;
     be1 = B1;
@@ -43,7 +44,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
     be2 = B2;
     ga2 = C2;
   }
-  else if (Abs(B1) == Det)
+  else if (std::abs(B1) == Det)
   {
     al1 = B1;
     be1 = A1;
@@ -52,7 +53,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
     be2 = A2;
     ga2 = C2;
   }
-  else if (Abs(A2) == Det)
+  else if (std::abs(A2) == Det)
   {
     al1 = A2;
     be1 = B2;
@@ -74,11 +75,11 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
   Standard_Real rap   = al2 / al1;
   Standard_Real denom = be2 - rap * be1;
 
-  if (Abs(denom) <= RealEpsilon())
+  if (std::abs(denom) <= RealEpsilon())
   { // Directions confondues
     para = Standard_True;
     nbp  = 0;
-    if (Abs(ga2 - rap * ga1) <= RealEpsilon())
+    if (std::abs(ga2 - rap * ga1) <= RealEpsilon())
     { // Droites confondues
       iden = Standard_True;
       empt = Standard_False;
@@ -98,8 +99,8 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
     Standard_Real XS = (be1 * ga2 / al1 - be2 * ga1 / al1) / denom;
     Standard_Real YS = (rap * ga1 - ga2) / denom;
 
-    if (((Abs(A1) != Det) && (Abs(B1) == Det))
-        || ((Abs(A1) != Det) && (Abs(B1) != Det) && (Abs(A2) != Det)))
+    if (((std::abs(A1) != Det) && (std::abs(B1) == Det))
+        || ((std::abs(A1) != Det) && (std::abs(B1) != Det) && (std::abs(A2) != Det)))
     {
       Standard_Real temp = XS;
       XS                 = YS;
@@ -107,7 +108,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
     }
 
     Standard_Real La, Mu;
-    if (Abs(A1) >= Abs(B1))
+    if (std::abs(A1) >= std::abs(B1))
     {
       La = (YS - L1.Location().Y()) / A1;
     }
@@ -115,7 +116,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
     {
       La = (L1.Location().X() - XS) / B1;
     }
-    if (Abs(A2) >= Abs(B2))
+    if (std::abs(A2) >= std::abs(B2))
     {
       Mu = (YS - L2.Location().Y()) / A2;
     }

@@ -174,7 +174,7 @@ Standard_Real TopOpeBRepBuild_PaveClassifier::AdjustCase(const Standard_Real    
                                                          Standard_Integer&        cas)
 {
   Standard_Real p2;
-  if (Abs(p1 - first) < tol)
+  if (std::abs(p1 - first) < tol)
   { // p1 is first
     if (o == TopAbs_REVERSED)
     {
@@ -190,7 +190,7 @@ Standard_Real TopOpeBRepBuild_PaveClassifier::AdjustCase(const Standard_Real    
   else
   { // p1 is not on first
     Standard_Real last = first + period;
-    if (Abs(p1 - last) < tol)
+    if (std::abs(p1 - last) < tol)
     { // p1 is on last
       p2  = p1;
       cas = 3;

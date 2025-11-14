@@ -246,8 +246,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
 //===============================================================
 static void FUN_GetMinMaxXYZPnt(const Handle(Adaptor3d_Surface)& S, gp_Pnt& pMin, gp_Pnt& pMax)
 {
-  const Standard_Real DU      = 0.25 * Abs(S->LastUParameter() - S->FirstUParameter());
-  const Standard_Real DV      = 0.25 * Abs(S->LastVParameter() - S->FirstVParameter());
+  const Standard_Real DU      = 0.25 * std::abs(S->LastUParameter() - S->FirstUParameter());
+  const Standard_Real DV      = 0.25 * std::abs(S->LastVParameter() - S->FirstVParameter());
   Standard_Real       tMinXYZ = RealLast();
   Standard_Real       tMaxXYZ = -tMinXYZ;
   gp_Pnt              PUV, ptMax, ptMin;
@@ -320,7 +320,8 @@ static void FUN_TrimInfSurf(const gp_Pnt&                    Pmin,
           Vmin = cV;
       }
     }
-    TP = Max(Abs(Umin), Max(Abs(Umax), Max(Abs(Vmin), Abs(Vmax))));
+    TP =
+      std::max(std::abs(Umin), std::max(std::abs(Umax), std::max(std::abs(Vmin), std::abs(Vmax))));
   }
   if (TP == 0.)
   {
@@ -405,7 +406,7 @@ static void FUN_GetUiso(const Handle(Geom_Surface)& GS,
     GeomAdaptor_Curve                gac(gcbs);
     const GeomAbs_CurveType          GACT = gac.GetType();
     if (IsVP || IsVC || GACT == GeomAbs_BSplineCurve || GACT == GeomAbs_BezierCurve
-        || Abs(LastV - FirstV) < 1.e+5)
+        || std::abs(LastV - FirstV) < 1.e+5)
     {
       Handle(Geom_Curve) gc = gos->UIso(U);
       if (IsVP && (FirstV == 0.0 && LastV == (2 * M_PI)))
@@ -500,7 +501,7 @@ static void FUN_GetViso(const Handle(Geom_Surface)& GS,
     GeomAdaptor_Curve                gac(gcbs);
     const GeomAbs_CurveType          GACT = gac.GetType();
     if (IsUP || IsUC || GACT == GeomAbs_BSplineCurve || GACT == GeomAbs_BezierCurve
-        || Abs(LastU - FirstU) < 1.e+5)
+        || std::abs(LastU - FirstU) < 1.e+5)
     {
       Handle(Geom_Curve) gc = gos->VIso(V);
       if (IsUP && (FirstU == 0.0 && LastU == (2 * M_PI)))
@@ -790,7 +791,7 @@ static void FUN_NewFirstLast(const GeomAbs_CurveType& ga_ct,
   {
     case GeomAbs_Line:
     case GeomAbs_Parabola: {
-      if (Abs(Lst - Fst) > TrVal)
+      if (std::abs(Lst - Fst) > TrVal)
       {
         if (Fst >= 0. && Lst >= 0.)
         {
@@ -812,7 +813,7 @@ static void FUN_NewFirstLast(const GeomAbs_CurveType& ga_ct,
       break;
     }
     case GeomAbs_Hyperbola: {
-      if (Abs(Lst - Fst) > 10.)
+      if (std::abs(Lst - Fst) > 10.)
       {
         if (Fst >= 0. && Lst >= 0.)
         {
@@ -986,13 +987,13 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
     if (typs1 == GeomAbs_Cone || typs2 == GeomAbs_Cone)
     {
       const gp_Cone aCon1 = (aCTType == GeomAbs_Cone) ? aCTSurf->Cone() : aGeomSurf->Cone();
-      Standard_Real a1    = Abs(aCon1.SemiAngle());
+      Standard_Real a1    = std::abs(aCon1.SemiAngle());
       bToCheck            = (a1 < 0.02) || (a1 > 1.55);
       //
       if (typs1 == typs2)
       {
         const gp_Cone aCon2 = aGeomSurf->Cone();
-        Standard_Real a2    = Abs(aCon2.SemiAngle());
+        Standard_Real a2    = std::abs(aCon2.SemiAngle());
         bToCheck            = bToCheck || (a2 < 0.02) || (a2 > 1.55);
         //
         if (a1 > 1.55 && a2 > 1.55)
@@ -1044,9 +1045,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
           if (aCTType == GeomAbs_Cone)
           {
             bGeomGeom = 1;
-            if (Abs(aCTSurf->Cone().SemiAngle()) < 0.02)
+            if (std::abs(aCTSurf->Cone().SemiAngle()) < 0.02)
             {
-              Standard_Real ps = Abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
+              Standard_Real ps = std::abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
               if (ps < 0.015)
               {
                 bGeomGeom = 0;
@@ -1279,13 +1280,13 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
     if (typs1 == GeomAbs_Cone || typs2 == GeomAbs_Cone)
     {
       const gp_Cone aCon1 = (aCTType == GeomAbs_Cone) ? aCTSurf->Cone() : aGeomSurf->Cone();
-      Standard_Real a1    = Abs(aCon1.SemiAngle());
+      Standard_Real a1    = std::abs(aCon1.SemiAngle());
       bToCheck            = (a1 < 0.02) || (a1 > 1.55);
       //
       if (typs1 == typs2)
       {
         const gp_Cone aCon2 = aGeomSurf->Cone();
-        Standard_Real a2    = Abs(aCon2.SemiAngle());
+        Standard_Real a2    = std::abs(aCon2.SemiAngle());
         bToCheck            = bToCheck || (a2 < 0.02) || (a2 > 1.55);
         //
         if (a1 > 1.55 && a2 > 1.55)
@@ -1318,8 +1319,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
       {
         const gp_Torus aTor2 = aGeomSurf->Torus();
         bToCheck             = (bToCheck && (aTor2.MajorRadius() > aTor2.MinorRadius()))
-                   || (Abs(aTor1.MajorRadius() - aTor2.MajorRadius()) < TolTang
-                       && Abs(aTor1.MinorRadius() - aTor2.MinorRadius()) < TolTang);
+                   || (std::abs(aTor1.MajorRadius() - aTor2.MajorRadius()) < TolTang
+                       && std::abs(aTor1.MinorRadius() - aTor2.MinorRadius()) < TolTang);
       }
       //
       if (aCTType == GeomAbs_Torus)
@@ -1339,9 +1340,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
           if (aCTType == GeomAbs_Cone)
           {
             bGeomGeom = 1;
-            if (Abs(aCTSurf->Cone().SemiAngle()) < 0.02)
+            if (std::abs(aCTSurf->Cone().SemiAngle()) < 0.02)
             {
-              Standard_Real ps = Abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
+              Standard_Real ps = std::abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
               if (ps < 0.015)
               {
                 bGeomGeom = 0;
@@ -1529,9 +1530,11 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_Surface)&   
     if (theD1->DomainIsInfinite())
     {
       FUN_GetMinMaxXYZPnt(theS2, pMinXYZ, pMaxXYZ);
-      const Standard_Real MU = Max(Abs(theS2->FirstUParameter()), Abs(theS2->LastUParameter()));
-      const Standard_Real MV = Max(Abs(theS2->FirstVParameter()), Abs(theS2->LastVParameter()));
-      const Standard_Real AP = Max(MU, MV);
+      const Standard_Real MU =
+        std::max(std::abs(theS2->FirstUParameter()), std::abs(theS2->LastUParameter()));
+      const Standard_Real MV =
+        std::max(std::abs(theS2->FirstVParameter()), std::abs(theS2->LastVParameter()));
+      const Standard_Real       AP = std::max(MU, MV);
       Handle(Adaptor3d_Surface) SS;
       FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, theS1, AP, SS);
       interpp.Perform(SS, theD1, theS2, theD2, TolTang, TolArc, myFleche, myUVMaxStep);
@@ -1539,9 +1542,11 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_Surface)&   
     else
     {
       FUN_GetMinMaxXYZPnt(theS1, pMinXYZ, pMaxXYZ);
-      const Standard_Real MU = Max(Abs(theS1->FirstUParameter()), Abs(theS1->LastUParameter()));
-      const Standard_Real MV = Max(Abs(theS1->FirstVParameter()), Abs(theS1->LastVParameter()));
-      const Standard_Real AP = Max(MU, MV);
+      const Standard_Real MU =
+        std::max(std::abs(theS1->FirstUParameter()), std::abs(theS1->LastUParameter()));
+      const Standard_Real MV =
+        std::max(std::abs(theS1->FirstVParameter()), std::abs(theS1->LastVParameter()));
+      const Standard_Real       AP = std::max(MU, MV);
       Handle(Adaptor3d_Surface) SS;
       FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, theS2, AP, SS);
       interpp.Perform(theS1, theD1, SS, theD2, TolTang, TolArc, myFleche, myUVMaxStep);
@@ -2122,7 +2127,7 @@ Standard_Boolean IntPatch_Intersection::CheckSingularPoints(
     gp_Pnt2d      aP1;
     gp_Vec2d      aDir;
     aBnd->D1((pinf + psup) / 2., aP1, aDir);
-    if (Abs(aDir.X()) > Abs(aDir.Y()))
+    if (std::abs(aDir.X()) > std::abs(aDir.Y()))
       isU = Standard_True;
     else
       isU = Standard_False;
@@ -2136,9 +2141,9 @@ Standard_Boolean IntPatch_Intersection::CheckSingularPoints(
       aP1 = aBnd->Value(t);
       theS1->D1(aP1.X(), aP1.Y(), aPP1, aDU, aDV);
       if (isU)
-        aD1NormMax = Max(aD1NormMax, aDU.Magnitude());
+        aD1NormMax = std::max(aD1NormMax, aDU.Magnitude());
       else
-        aD1NormMax = Max(aD1NormMax, aDV.Magnitude());
+        aD1NormMax = std::max(aD1NormMax, aDV.Magnitude());
 
       aPmid += aPP1.XYZ();
       aNb++;
@@ -2160,14 +2165,14 @@ Standard_Boolean IntPatch_Intersection::CheckSingularPoints(
         Standard_Integer aNbExt = aProj.NbExt();
         for (i = 1; i <= aNbExt; ++i)
         {
-          theDist = Min(theDist, aProj.SquareDistance(i));
+          theDist = std::min(theDist, aProj.SquareDistance(i));
         }
       }
     }
   }
   if (!Precision::IsInfinite(theDist))
   {
-    theDist    = Sqrt(theDist);
+    theDist    = std::sqrt(theDist);
     isSingular = Standard_True;
   }
 
@@ -2265,7 +2270,7 @@ void IntPatch_Intersection::PrepareSurfaces(
   NCollection_Vector<Handle(Adaptor3d_Surface)>& theVecHS2)
 {
   if ((theS1->GetType() == GeomAbs_Cone)
-      && (Abs(M_PI / 2. - Abs(theS1->Cone().SemiAngle())) < theTol))
+      && (std::abs(M_PI / 2. - std::abs(theS1->Cone().SemiAngle())) < theTol))
   {
     splitCone(theS1, theD1, theTol, theVecHS1);
   }
@@ -2275,7 +2280,7 @@ void IntPatch_Intersection::PrepareSurfaces(
   }
 
   if ((theS2->GetType() == GeomAbs_Cone)
-      && (Abs(M_PI / 2. - Abs(theS2->Cone().SemiAngle())) < theTol))
+      && (std::abs(M_PI / 2. - std::abs(theS2->Cone().SemiAngle())) < theTol))
   {
     splitCone(theS2, theD2, theTol, theVecHS2);
   }

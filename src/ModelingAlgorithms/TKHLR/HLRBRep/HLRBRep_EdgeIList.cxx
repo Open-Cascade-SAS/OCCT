@@ -63,7 +63,7 @@ static Standard_Boolean SimilarInterference(const HLRAlgo_Interference& I1,
   // l2 = I2.Intersection().Level();
   or2 = I2.Transition();
 
-  Standard_Boolean IsSimilar = Abs(p1 - p2) <= eps && or1 == or2;
+  Standard_Boolean IsSimilar = std::abs(p1 - p2) <= eps && or1 == or2;
   return IsSimilar;
 }
 #endif

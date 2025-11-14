@@ -305,7 +305,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
         aSelectorLine.GetVertParam(i, V, LP);
 
         LVInts.Add(V);
-        if (Abs(LP) < Abs(NearFaultPar))
+        if (std::abs(LP) < std::abs(NearFaultPar))
           NearFaultPar = LP;
       }
 
@@ -330,12 +330,12 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
 
         IntCurveSurface_TransitionOnCurve tran = IntCurveSurface_Tangent;
         Standard_Integer                  Tst  = GetTransi(f1, f2, EE, param, L, tran);
-        if (Tst == 1 && Abs(Lpar) < Abs(parmin))
+        if (Tst == 1 && std::abs(Lpar) < std::abs(parmin))
         {
           parmin = Lpar;
           Trans(parmin, tran, myState);
         }
-        else if (Abs(Lpar) < Abs(NearFaultPar))
+        else if (std::abs(Lpar) < std::abs(NearFaultPar))
           NearFaultPar = Lpar;
       }
     }
@@ -357,7 +357,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
             // Prolong segment, since there are cases when
             // the intersector does not find intersection points with the original
             // segment due to rough triangulation of a parameterized surface.
-            Standard_Real addW = Max(10 * Tol, 0.01 * Par);
+            Standard_Real addW = std::max(10 * Tol, 0.01 * Par);
             Standard_Real AddW = addW;
 
             Bnd_Box aBoxF = Intersector3d.Bounding();
@@ -369,11 +369,11 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
               aBoxF.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
               Standard_Real boxaddW = GetAddToParam(L, Par, aBoxF);
-              addW                  = Max(addW, boxaddW);
+              addW                  = std::max(addW, boxaddW);
             }
 
             Standard_Real minW = -AddW;
-            Standard_Real maxW = Min(Par * 10, Par + addW);
+            Standard_Real maxW = std::min(Par * 10, Par + addW);
             Intersector3d.Perform(L, minW, maxW);
             if (Intersector3d.IsDone())
             {
@@ -419,11 +419,12 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
               }
               for (Standard_Integer i = 1; i <= Intersector3d.NbPnt(); i++)
               {
-                if (Abs(Intersector3d.WParameter(i)) < Abs(parmin) - Precision::PConfusion())
+                if (std::abs(Intersector3d.WParameter(i))
+                    < std::abs(parmin) - Precision::PConfusion())
                 {
                   parmin              = Intersector3d.WParameter(i);
                   TopAbs_State aState = Intersector3d.State(i);
-                  if (Abs(parmin) <= Tol)
+                  if (std::abs(parmin) <= Tol)
                   {
                     myState = 2;
                     myFace  = f;
@@ -479,7 +480,8 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
         myState = 1;
     } //-- Exploration of the shells
 
-    if (NearFaultPar != RealLast() && Abs(parmin) >= Abs(NearFaultPar) - Precision::PConfusion())
+    if (NearFaultPar != RealLast()
+        && std::abs(parmin) >= std::abs(NearFaultPar) - Precision::PConfusion())
     {
       isFaultyLine = Standard_True;
     }
@@ -629,7 +631,8 @@ static Standard_Integer GetTransi(const TopoDS_Face&                 f1,
 
   const gp_Dir& LDir = L.Direction();
 
-  if (Abs(LDir.Dot(nf1)) < Precision::Angular() || Abs(LDir.Dot(nf2)) < Precision::Angular())
+  if (std::abs(LDir.Dot(nf1)) < Precision::Angular()
+      || std::abs(LDir.Dot(nf2)) < Precision::Angular())
   {
     // line is orthogonal to normal(s)
     // trans = IntCurveSurface_Tangent;
@@ -639,7 +642,7 @@ static Standard_Integer GetTransi(const TopoDS_Face&                 f1,
   if (nf1.IsParallel(nf2, Precision::Angular()))
   {
     Standard_Real angD = nf1.Dot(LDir);
-    if (Abs(angD) < Precision::Angular())
+    if (std::abs(angD) < Precision::Angular())
       return -1;
     else if (angD > 0)
       trans = IntCurveSurface_Out;

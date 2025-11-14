@@ -54,7 +54,7 @@ GccAna_Circ2dBisec::GccAna_Circ2dBisec(const gp_Circ2d& Circ1, const gp_Circ2d& 
 
   Standard_Real R1 = Circ1.Radius();
   Standard_Real R2 = Circ2.Radius();
-  if (Abs(R1 - R2) <= Tol)
+  if (std::abs(R1 - R2) <= Tol)
   {
     sameradius = Standard_True;
   }
@@ -81,7 +81,7 @@ GccAna_Circ2dBisec::GccAna_Circ2dBisec(const gp_Circ2d& Circ1, const gp_Circ2d& 
     NbrSol       = 2;
     WellDone     = Standard_True;
   }
-  else if (Abs(R1 - dist - R2) <= Tol)
+  else if (std::abs(R1 - dist - R2) <= Tol)
   {
     intersection = 1;
     if (sameradius)
@@ -109,7 +109,7 @@ GccAna_Circ2dBisec::GccAna_Circ2dBisec(const gp_Circ2d& Circ1, const gp_Circ2d& 
       WellDone = Standard_True;
     }
   }
-  else if (Abs(R1 - dist + R2) <= Tol)
+  else if (std::abs(R1 - dist + R2) <= Tol)
   {
     intersection = 3;
     if (sameradius)
@@ -199,7 +199,7 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
       {
         gp_Elips2d E(acencen,
                      (R1 + R2) / 2.0,
-                     Sqrt((R1 * R1 + R2 * R2 - dist * dist) / 4. + R1 * R2 / 2.));
+                     std::sqrt((R1 * R1 + R2 * R2 - dist * dist) / 4. + R1 * R2 / 2.));
         bissol = new GccInt_BElips(E);
         //       =============================
       }
@@ -214,7 +214,7 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
     {
       if (Index == 1)
       {
-        if (Abs(xcencir2 - xcencir1) < Tol && Abs(ycencir2 - ycencir1) < Tol)
+        if (std::abs(xcencir2 - xcencir1) < Tol && std::abs(ycencir2 - ycencir1) < Tol)
         {
           gp_Circ2d C(acenx, (R1 + R2) / 2.0);
           bissol = new GccInt_BCirc(C);
@@ -224,14 +224,14 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
         {
           gp_Elips2d E(acencen,
                        (R1 + R2) / 2.0,
-                       Sqrt((R1 * R1 + R2 * R2 - dist * dist) / 4. + R1 * R2 / 2.));
+                       std::sqrt((R1 * R1 + R2 * R2 - dist * dist) / 4. + R1 * R2 / 2.));
           bissol = new GccInt_BElips(E);
           //         ==============================
         }
       }
       else if (Index == 2)
       {
-        if (Abs(xcencir2 - xcencir1) < Tol && Abs(ycencir2 - ycencir1) < Tol)
+        if (std::abs(xcencir2 - xcencir1) < Tol && std::abs(ycencir2 - ycencir1) < Tol)
         {
           gp_Circ2d C(acencen, (R1 - R2) / 2.);
           bissol = new GccInt_BCirc(C);
@@ -241,7 +241,7 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
         {
           gp_Elips2d E(acencen,
                        (R1 - R2) / 2.0,
-                       Sqrt((R1 * R1 + R2 * R2 - dist * dist) / 4. - R1 * R2 / 2.));
+                       std::sqrt((R1 * R1 + R2 * R2 - dist * dist) / 4. - R1 * R2 / 2.));
           bissol = new GccInt_BElips(E);
           //         ==============================
         }
@@ -259,7 +259,7 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
         }
         else if (Index == 2)
         {
-          gp_Elips2d E(acencen, R1, Sqrt(R1 * R1 - dist * dist / 4.0));
+          gp_Elips2d E(acencen, R1, std::sqrt(R1 * R1 - dist * dist / 4.0));
           bissol = new GccInt_BElips(E);
           //         ==============================
         }
@@ -269,13 +269,17 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
         if (Index == 1)
         {
           gp_Hypr2d H1;
-          H1 = gp_Hypr2d(acencen, (R1 - R2) / 2.0, Sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
+          H1     = gp_Hypr2d(acencen,
+                         (R1 - R2) / 2.0,
+                         std::sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
           bissol = new GccInt_BHyper(H1);
           //         ===============================
         }
         else if (Index == 2)
         {
-          gp_Hypr2d H1(acencen, (R1 - R2) / 2.0, Sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
+          gp_Hypr2d H1(acencen,
+                       (R1 - R2) / 2.0,
+                       std::sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
           bissol = new GccInt_BHyper(H1.OtherBranch());
           //         ===============================
         }
@@ -283,7 +287,7 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
         {
           gp_Elips2d E(acencen,
                        (R1 + R2) / 2.0,
-                       Sqrt((R1 * R1 + R2 * R2 - dist * dist) / 4. + R1 * R2 / 2.));
+                       std::sqrt((R1 * R1 + R2 * R2 - dist * dist) / 4. + R1 * R2 / 2.));
           bissol = new GccInt_BElips(E);
           //         ==============================
         }
@@ -316,13 +320,17 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
         }
         else if (Index == 2)
         {
-          gp_Hypr2d H1(acencen, (R1 - R2) / 2.0, Sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
+          gp_Hypr2d H1(acencen,
+                       (R1 - R2) / 2.0,
+                       std::sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
           bissol = new GccInt_BHyper(H1);
           //         ===============================
         }
         else if (Index == 3)
         {
-          gp_Hypr2d H1(acencen, (R1 - R2) / 2.0, Sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
+          gp_Hypr2d H1(acencen,
+                       (R1 - R2) / 2.0,
+                       std::sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
           bissol = new GccInt_BHyper(H1.OtherBranch());
           //         ===============================
         }
@@ -340,13 +348,13 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
         }
         else if (Index == 2)
         {
-          gp_Hypr2d H1(acencen, R1, Sqrt(dist * dist - 4 * R1 * R1) / 2.0);
+          gp_Hypr2d H1(acencen, R1, std::sqrt(dist * dist - 4 * R1 * R1) / 2.0);
           bissol = new GccInt_BHyper(H1);
           //         ===============================
         }
         else if (Index == 3)
         {
-          gp_Hypr2d H1(acencen, R1, Sqrt(dist * dist - 4 * R1 * R1) / 2.0);
+          gp_Hypr2d H1(acencen, R1, std::sqrt(dist * dist - 4 * R1 * R1) / 2.0);
           bissol = new GccInt_BHyper(H1.OtherBranch());
           //         ===============================
         }
@@ -355,25 +363,33 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::ThisSolution(const Standard_Integer Ind
       {
         if (Index == 1)
         {
-          gp_Hypr2d H1(acencen, (R1 - R2) / 2.0, Sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
+          gp_Hypr2d H1(acencen,
+                       (R1 - R2) / 2.0,
+                       std::sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
           bissol = new GccInt_BHyper(H1);
           //         ===============================
         }
         else if (Index == 2)
         {
-          gp_Hypr2d H1(acencen, (R1 - R2) / 2.0, Sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
+          gp_Hypr2d H1(acencen,
+                       (R1 - R2) / 2.0,
+                       std::sqrt(dist * dist - (R1 - R2) * (R1 - R2)) / 2.0);
           bissol = new GccInt_BHyper(H1.OtherBranch());
           //         ===============================
         }
         else if (Index == 3)
         {
-          gp_Hypr2d H1(acencen, (R1 + R2) / 2.0, Sqrt(dist * dist - (R1 + R2) * (R1 + R2)) / 2.0);
+          gp_Hypr2d H1(acencen,
+                       (R1 + R2) / 2.0,
+                       std::sqrt(dist * dist - (R1 + R2) * (R1 + R2)) / 2.0);
           bissol = new GccInt_BHyper(H1);
           //         ===============================
         }
         else if (Index == 4)
         {
-          gp_Hypr2d H1(acencen, (R1 + R2) / 2.0, Sqrt(dist * dist - (R1 + R2) * (R1 + R2)) / 2.0);
+          gp_Hypr2d H1(acencen,
+                       (R1 + R2) / 2.0,
+                       std::sqrt(dist * dist - (R1 + R2) * (R1 + R2)) / 2.0);
           bissol = new GccInt_BHyper(H1.OtherBranch());
           //         ===============================
         }

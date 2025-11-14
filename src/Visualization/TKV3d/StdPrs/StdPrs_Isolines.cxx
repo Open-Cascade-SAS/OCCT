@@ -68,7 +68,8 @@ static void sortSegments(const SeqOfVecOfSegments&   theSegments,
     Standard_Real aLast = 0.0;
     for (VecOfSegments::Iterator aSegIter(*anIsoSegs); aSegIter.More(); aSegIter.Next())
     {
-      if (!aPolyline->IsEmpty() && Abs(aSegIter.Value()[0].Param - aLast) > Precision::PConfusion())
+      if (!aPolyline->IsEmpty()
+          && std::abs(aSegIter.Value()[0].Param - aLast) > Precision::PConfusion())
       {
         aPolyline = new TColgp_HSequenceOfPnt();
         thePolylines.Append(aPolyline);
@@ -91,8 +92,8 @@ static void findLimits(const Adaptor3d_Curve& theCurve,
                        Standard_Real&         theFirst,
                        Standard_Real&         theLast)
 {
-  theFirst = Max(theCurve.FirstParameter(), theFirst);
-  theLast  = Min(theCurve.LastParameter(), theLast);
+  theFirst = std::max(theCurve.FirstParameter(), theFirst);
+  theLast  = std::min(theCurve.LastParameter(), theLast);
 
   Standard_Boolean isFirstInf = Precision::IsNegativeInfinite(theFirst);
   Standard_Boolean isLastInf  = Precision::IsPositiveInfinite(theLast);
@@ -214,10 +215,10 @@ void StdPrs_Isolines::AddOnTriangulation(const TopoDS_Face&          theFace,
     if (Precision::IsInfinite(u1) || Precision::IsInfinite(u2) || Precision::IsInfinite(v1)
         || Precision::IsInfinite(v2))
     {
-      u1       = Max(aUmin, u1);
-      u2       = Min(aUmax, u2);
-      v1       = Max(aVmin, v1);
-      v2       = Min(aVmax, v2);
+      u1       = std::max(aUmin, u1);
+      u2       = std::min(aUmax, u2);
+      v1       = std::max(aVmin, v1);
+      v2       = std::min(aVmax, v2);
       aSurface = new Geom_RectangularTrimmedSurface(aSurface, u1, u2, v1, v2);
     }
   }
@@ -414,12 +415,12 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
 {
   // Choose a deflection for sampling edge uv curves.
   Standard_Real aUVLimit = theDrawer->MaximalParameterValue();
-  Standard_Real aUmin    = Max(theSurface->FirstUParameter(), -aUVLimit);
-  Standard_Real aUmax    = Min(theSurface->LastUParameter(), aUVLimit);
-  Standard_Real aVmin    = Max(theSurface->FirstVParameter(), -aUVLimit);
-  Standard_Real aVmax    = Min(theSurface->LastVParameter(), aUVLimit);
+  Standard_Real aUmin    = std::max(theSurface->FirstUParameter(), -aUVLimit);
+  Standard_Real aUmax    = std::min(theSurface->LastUParameter(), aUVLimit);
+  Standard_Real aVmin    = std::max(theSurface->FirstVParameter(), -aUVLimit);
+  Standard_Real aVmax    = std::min(theSurface->LastVParameter(), aUVLimit);
   Standard_Real aSamplerDeflection =
-    Max(aUmax - aUmin, aVmax - aVmin) * theDrawer->DeviationCoefficient();
+    std::max(aUmax - aUmin, aVmax - aVmin) * theDrawer->DeviationCoefficient();
   Standard_Real aHatchingTolerance = RealLast();
 
   try
@@ -454,7 +455,7 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
           gp_Pnt2d aP1(aSampler.Value(anI).X(), aSampler.Value(anI).Y());
           gp_Pnt2d aP2(aSampler.Value(anI + 1).X(), aSampler.Value(anI + 1).Y());
 
-          aHatchingTolerance = Min(aP1.SquareDistance(aP2), aHatchingTolerance);
+          aHatchingTolerance = std::min(aP1.SquareDistance(aP2), aHatchingTolerance);
 
           aTrimPoints.Append(anOrientation == TopAbs_FORWARD ? aP1 : aP2);
           aTrimPoints.Append(anOrientation == TopAbs_FORWARD ? aP2 : aP1);
@@ -487,13 +488,13 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
           }
         }
 
-        aU1 = Max(anOrigin - aUVLimit, aU1);
-        aU2 = Min(anOrigin + aUVLimit, aU2);
+        aU1 = std::max(anOrigin - aUVLimit, aU1);
+        aU2 = std::min(anOrigin + aUVLimit, aU2);
 
         gp_Pnt2d aP1 = anEdgeCurve->Value(aU1);
         gp_Pnt2d aP2 = anEdgeCurve->Value(aU2);
 
-        aHatchingTolerance = Min(aP1.SquareDistance(aP2), aHatchingTolerance);
+        aHatchingTolerance = std::min(aP1.SquareDistance(aP2), aHatchingTolerance);
 
         aTrimPoints.Append(anOrientation == TopAbs_FORWARD ? aP1 : aP2);
         aTrimPoints.Append(anOrientation == TopAbs_FORWARD ? aP2 : aP1);
@@ -520,8 +521,8 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
 
     // Compute a hatching tolerance.
     aHatchingTolerance *= 0.1;
-    aHatchingTolerance = Max(Precision::Confusion(), aHatchingTolerance);
-    aHatchingTolerance = Min(1.0E-5, aHatchingTolerance);
+    aHatchingTolerance = std::max(Precision::Confusion(), aHatchingTolerance);
+    aHatchingTolerance = std::min(1.0E-5, aHatchingTolerance);
 
     // Load isolines into hatcher.
     Hatch_Hatcher aHatcher(aHatchingTolerance, anEdgeTool.IsOriented());
@@ -741,7 +742,7 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_S
       isLeftUV2 ? theIsoline.Distance(aNodeUV2) : -theIsoline.Distance(aNodeUV2);
 
     // Isoline crosses first point of an edge.
-    if (Abs(aDistanceUV1) < Precision::PConfusion())
+    if (std::abs(aDistanceUV1) < Precision::PConfusion())
     {
       theSegment[aNPoints].Param = theIsU ? aNodeUV1.Y() : aNodeUV1.X();
       theSegment[aNPoints].Pnt   = aNode1;
@@ -750,7 +751,7 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_S
     }
 
     // Isoline crosses second point of an edge.
-    if (Abs(aDistanceUV2) < Precision::PConfusion())
+    if (std::abs(aDistanceUV2) < Precision::PConfusion())
     {
       theSegment[aNPoints].Param = theIsU ? aNodeUV2.Y() : aNodeUV2.X();
       theSegment[aNPoints].Pnt   = aNode2;
@@ -779,7 +780,8 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_S
     // Derive cross-point from parametric coordinates
     // ...
 
-    Standard_Real anAlpha = Abs(aDistanceUV1) / (Abs(aDistanceUV1) + Abs(aDistanceUV2));
+    Standard_Real anAlpha =
+      std::abs(aDistanceUV1) / (std::abs(aDistanceUV1) + std::abs(aDistanceUV2));
 
     gp_Pnt        aCross(0.0, 0.0, 0.0);
     Standard_Real aCrossU     = aNodeUV1.X() + anAlpha * (aNodeUV2.X() - aNodeUV1.X());
@@ -824,7 +826,8 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_S
         GCPnts_AbscissaPoint::Length(aCurveAdaptor1, aPntOnNode1Iso, aPntOnNode3Iso, 1e-2);
       Standard_Real aLength2 =
         GCPnts_AbscissaPoint::Length(aCurveAdaptor2, aPntOnNode2Iso, aPntOnNode3Iso, 1e-2);
-      if (Abs(aLength1) < Precision::Confusion() || Abs(aLength2) < Precision::Confusion())
+      if (std::abs(aLength1) < Precision::Confusion()
+          || std::abs(aLength2) < Precision::Confusion())
       {
         theSegment[aNPoints].Param = aCrossParam;
         theSegment[aNPoints].Pnt   = (aNode2.XYZ() - aNode1.XYZ()) * anAlpha + aNode1.XYZ();
@@ -840,7 +843,8 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_S
     ++aNPoints;
   }
 
-  if (aNPoints != 2 || Abs(theSegment[1].Param - theSegment[0].Param) <= Precision::PConfusion())
+  if (aNPoints != 2
+      || std::abs(theSegment[1].Param - theSegment[0].Param) <= Precision::PConfusion())
   {
     return false;
   }

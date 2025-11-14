@@ -112,12 +112,12 @@ void Intf_Tool::Lin2dBox(const gp_Lin2d& L2d, const Bnd_Box2d& domain, Bnd_Box2d
       parcur = -Precision::Infinite();
     else
       parcur = (ymin - L2d.Location().XY().Y()) / L2d.Direction().XY().Y();
-    parmin = Max(parmin, parcur);
+    parmin = std::max(parmin, parcur);
     if (domain.IsOpenYmax())
       parcur = Precision::Infinite();
     else
       parcur = (ymax - L2d.Location().XY().Y()) / L2d.Direction().XY().Y();
-    parmax = Min(parmax, parcur);
+    parmax = std::min(parmax, parcur);
     yToSet = Standard_True;
   }
   else if (L2d.Direction().XY().Y() < 0.)
@@ -126,12 +126,12 @@ void Intf_Tool::Lin2dBox(const gp_Lin2d& L2d, const Bnd_Box2d& domain, Bnd_Box2d
       parcur = -Precision::Infinite();
     else
       parcur = (ymax - L2d.Location().XY().Y()) / L2d.Direction().XY().Y();
-    parmin = Max(parmin, parcur);
+    parmin = std::max(parmin, parcur);
     if (domain.IsOpenYmin())
       parcur = Precision::Infinite();
     else
       parcur = (ymin - L2d.Location().XY().Y()) / L2d.Direction().XY().Y();
-    parmax = Min(parmax, parcur);
+    parmax = std::min(parmax, parcur);
     yToSet = Standard_True;
   }
   else
@@ -151,16 +151,16 @@ void Intf_Tool::Lin2dBox(const gp_Lin2d& L2d, const Bnd_Box2d& domain, Bnd_Box2d
   {
     par1 = L2d.Location().XY().X() + parmin * L2d.Direction().XY().X();
     par2 = L2d.Location().XY().X() + parmax * L2d.Direction().XY().X();
-    Xmin = Min(par1, par2);
-    Xmax = Max(par1, par2);
+    Xmin = std::min(par1, par2);
+    Xmax = std::max(par1, par2);
   }
 
   if (yToSet)
   {
     par1 = L2d.Location().XY().Y() + parmin * L2d.Direction().XY().Y();
     par2 = L2d.Location().XY().Y() + parmax * L2d.Direction().XY().Y();
-    Ymin = Min(par1, par2);
-    Ymax = Max(par1, par2);
+    Ymin = std::min(par1, par2);
+    Ymax = std::max(par1, par2);
   }
 
   boxLin.Update(Xmin, Ymin, Xmax, Ymax);
@@ -194,10 +194,10 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
     Standard_Integer npi;
     for (npi = 0; npi < nbPi; npi++)
     {
-      Xmin = Min(Xmin, xint[npi]);
-      Xmax = Max(Xmax, xint[npi]);
-      Ymin = Min(Ymin, yint[npi]);
-      Ymax = Max(Ymax, yint[npi]);
+      Xmin = std::min(Xmin, xint[npi]);
+      Xmax = std::max(Xmax, xint[npi]);
+      Ymin = std::min(Ymin, yint[npi]);
+      Ymax = std::max(Ymax, yint[npi]);
     }
     boxHypr2d.Update(Xmin, Ymin, Xmax, Ymax);
 
@@ -243,7 +243,7 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
           sinan = gp_XY(0., 1.) ^ Tan.XY();
           break;
       }
-      if (Abs(sinan) > Precision::Angular())
+      if (std::abs(sinan) > Precision::Angular())
       {
         if (sinan > 0.)
         {
@@ -283,7 +283,7 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
           for (ip = ipmin; ip <= ipmax; ip += pas)
           {
             boxHypr2d.Add(ElCLib::Value(Standard_Real(ip) / 10., theHypr2d));
-            if (Abs(ip) <= 10)
+            if (std::abs(ip) <= 10)
               pas = 1;
             else
               pas = 10;
@@ -435,10 +435,10 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
     Standard_Integer npi;
     for (npi = 0; npi < nbPi; npi++)
     {
-      Xmin = Min(Xmin, xint[npi]);
-      Xmax = Max(Xmax, xint[npi]);
-      Ymin = Min(Ymin, yint[npi]);
-      Ymax = Max(Ymax, yint[npi]);
+      Xmin = std::min(Xmin, xint[npi]);
+      Xmax = std::max(Xmax, xint[npi]);
+      Ymin = std::min(Ymin, yint[npi]);
+      Ymax = std::max(Ymax, yint[npi]);
     }
     boxParab2d.Update(Xmin, Ymin, Xmax, Ymax);
 
@@ -484,7 +484,7 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
           sinan = gp_XY(0., 1.) ^ Tan.XY();
           break;
       }
-      if (Abs(sinan) > Precision::Angular())
+      if (std::abs(sinan) > Precision::Angular())
       {
         if (sinan > 0.)
         {
@@ -524,7 +524,7 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
           for (ip = ipmin; ip <= ipmax; ip += pas)
           {
             boxParab2d.Add(ElCLib::Value(Standard_Real(ip) / 10., theParab2d));
-            if (Abs(ip) <= 10)
+            if (std::abs(ip) <= 10)
               pas = 1;
             else
               pas = 10;
@@ -712,12 +712,12 @@ void Intf_Tool::LinBox(const gp_Lin& L, const Bnd_Box& domain, Bnd_Box& boxLin)
       parcur = -Precision::Infinite();
     else
       parcur = (ymin - L.Location().XYZ().Y()) / L.Direction().XYZ().Y();
-    parmin = Max(parmin, parcur);
+    parmin = std::max(parmin, parcur);
     if (domain.IsOpenYmax())
       parcur = Precision::Infinite();
     else
       parcur = (ymax - L.Location().XYZ().Y()) / L.Direction().XYZ().Y();
-    parmax = Min(parmax, parcur);
+    parmax = std::min(parmax, parcur);
     yToSet = Standard_True;
   }
   else if (L.Direction().XYZ().Y() < 0.)
@@ -726,12 +726,12 @@ void Intf_Tool::LinBox(const gp_Lin& L, const Bnd_Box& domain, Bnd_Box& boxLin)
       parcur = -Precision::Infinite();
     else
       parcur = (ymax - L.Location().XYZ().Y()) / L.Direction().XYZ().Y();
-    parmin = Max(parmin, parcur);
+    parmin = std::max(parmin, parcur);
     if (domain.IsOpenYmin())
       parcur = Precision::Infinite();
     else
       parcur = (ymin - L.Location().XYZ().Y()) / L.Direction().XYZ().Y();
-    parmax = Min(parmax, parcur);
+    parmax = std::min(parmax, parcur);
     yToSet = Standard_True;
   }
   else
@@ -749,12 +749,12 @@ void Intf_Tool::LinBox(const gp_Lin& L, const Bnd_Box& domain, Bnd_Box& boxLin)
       parcur = -Precision::Infinite();
     else
       parcur = (zmin - L.Location().XYZ().Z()) / L.Direction().XYZ().Z();
-    parmin = Max(parmin, parcur);
+    parmin = std::max(parmin, parcur);
     if (domain.IsOpenZmax())
       parcur = Precision::Infinite();
     else
       parcur = (zmax - L.Location().XYZ().Z()) / L.Direction().XYZ().Z();
-    parmax = Min(parmax, parcur);
+    parmax = std::min(parmax, parcur);
     zToSet = Standard_True;
   }
   else if (L.Direction().XYZ().Z() < 0.)
@@ -763,12 +763,12 @@ void Intf_Tool::LinBox(const gp_Lin& L, const Bnd_Box& domain, Bnd_Box& boxLin)
       parcur = -Precision::Infinite();
     else
       parcur = (zmax - L.Location().XYZ().Z()) / L.Direction().XYZ().Z();
-    parmin = Max(parmin, parcur);
+    parmin = std::max(parmin, parcur);
     if (domain.IsOpenZmin())
       parcur = Precision::Infinite();
     else
       parcur = (zmin - L.Location().XYZ().Z()) / L.Direction().XYZ().Z();
-    parmax = Min(parmax, parcur);
+    parmax = std::min(parmax, parcur);
     zToSet = Standard_True;
   }
   else
@@ -788,24 +788,24 @@ void Intf_Tool::LinBox(const gp_Lin& L, const Bnd_Box& domain, Bnd_Box& boxLin)
   {
     par1 = L.Location().XYZ().X() + parmin * L.Direction().XYZ().X();
     par2 = L.Location().XYZ().X() + parmax * L.Direction().XYZ().X();
-    Xmin = Min(par1, par2);
-    Xmax = Max(par1, par2);
+    Xmin = std::min(par1, par2);
+    Xmax = std::max(par1, par2);
   }
 
   if (yToSet)
   {
     par1 = L.Location().XYZ().Y() + parmin * L.Direction().XYZ().Y();
     par2 = L.Location().XYZ().Y() + parmax * L.Direction().XYZ().Y();
-    Ymin = Min(par1, par2);
-    Ymax = Max(par1, par2);
+    Ymin = std::min(par1, par2);
+    Ymax = std::max(par1, par2);
   }
 
   if (zToSet)
   {
     par1 = L.Location().XYZ().Z() + parmin * L.Direction().XYZ().Z();
     par2 = L.Location().XYZ().Z() + parmax * L.Direction().XYZ().Z();
-    Zmin = Min(par1, par2);
-    Zmax = Max(par1, par2);
+    Zmin = std::min(par1, par2);
+    Zmax = std::max(par1, par2);
   }
 
   boxLin.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
@@ -845,12 +845,12 @@ void Intf_Tool::HyprBox(const gp_Hypr& theHypr, const Bnd_Box& domain, Bnd_Box& 
     //
     for (npi = 0; npi < nbPi; npi++)
     {
-      Xmin = Min(Xmin, xint[npi]);
-      Xmax = Max(Xmax, xint[npi]);
-      Ymin = Min(Ymin, yint[npi]);
-      Ymax = Max(Ymax, yint[npi]);
-      Zmin = Min(Zmin, zint[npi]);
-      Zmax = Max(Zmax, yint[npi]);
+      Xmin = std::min(Xmin, xint[npi]);
+      Xmax = std::max(Xmax, xint[npi]);
+      Ymin = std::min(Ymin, yint[npi]);
+      Ymax = std::max(Ymax, yint[npi]);
+      Zmin = std::min(Zmin, zint[npi]);
+      Zmax = std::max(Zmax, yint[npi]);
     }
     boxHypr.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     //
@@ -883,7 +883,7 @@ void Intf_Tool::HyprBox(const gp_Hypr& theHypr, const Bnd_Box& domain, Bnd_Box& 
           sinan = gp_XYZ(0., 0., -1.) * Tan.XYZ();
           break;
       }
-      if (Abs(sinan) > Precision::Angular())
+      if (std::abs(sinan) > Precision::Angular())
       {
         if (sinan > 0.)
         {
@@ -943,7 +943,7 @@ void Intf_Tool::HyprBox(const gp_Hypr& theHypr, const Bnd_Box& domain, Bnd_Box& 
           for (ip=ipmin; ip<=ipmax; ip+=pas) {
             boxHypr.Add(ElCLib::Value(Standard_Real(ip)/10., theHypr));
 
-            if (Abs(ip)<=10) {
+            if (std::abs(ip)<=10) {
               pas=1;
             }
             else {
@@ -1361,12 +1361,12 @@ void Intf_Tool::ParabBox(const gp_Parab& theParab, const Bnd_Box& domain, Bnd_Bo
 
     for (npi = 0; npi < nbPi; npi++)
     {
-      Xmin = Min(Xmin, xint[npi]);
-      Xmax = Max(Xmax, xint[npi]);
-      Ymin = Min(Ymin, yint[npi]);
-      Ymax = Max(Ymax, yint[npi]);
-      Zmin = Min(Zmin, zint[npi]);
-      Zmax = Max(Zmax, yint[npi]);
+      Xmin = std::min(Xmin, xint[npi]);
+      Xmax = std::max(Xmax, xint[npi]);
+      Ymin = std::min(Ymin, yint[npi]);
+      Ymax = std::max(Ymax, yint[npi]);
+      Zmin = std::min(Zmin, zint[npi]);
+      Zmax = std::max(Zmax, yint[npi]);
     }
 
     boxParab.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
@@ -1400,7 +1400,7 @@ void Intf_Tool::ParabBox(const gp_Parab& theParab, const Bnd_Box& domain, Bnd_Bo
           sinan = gp_XYZ(0., 0., -1.) * Tan.XYZ();
           break;
       }
-      if (Abs(sinan) > Precision::Angular())
+      if (std::abs(sinan) > Precision::Angular())
       {
         if (sinan > 0.)
         {
@@ -1436,7 +1436,7 @@ void Intf_Tool::ParabBox(const gp_Parab& theParab, const Bnd_Box& domain, Bnd_Bo
           for (ip = ipmin; ip <= ipmax; ip += pas)
           {
             boxParab.Add(ElCLib::Value(Standard_Real(ip) / 10., theParab));
-            if (Abs(ip) <= 10)
+            if (std::abs(ip) <= 10)
               pas = 1;
             else
               pas = 10;

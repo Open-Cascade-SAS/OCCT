@@ -679,7 +679,7 @@ void BRepFill_Filling::Build()
     TColgp_SequenceOfXYZ S3d;
     myBuilder->Disc2dContour(4, S2d);
     myBuilder->Disc3dContour(4, 0, S3d);
-    seuil = Max(myTol3d, 10 * myBuilder->G0Error()); //????????
+    seuil = std::max(myTol3d, 10 * myBuilder->G0Error()); //????????
     GeomPlate_PlateG0Criterion Criterion(S2d, S3d, seuil);
     GeomPlate_MakeApprox       Approx(GPlate, Criterion, myTol3d, myMaxSegments, myMaxDeg);
     Surface = Approx.Surface();

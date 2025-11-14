@@ -420,7 +420,7 @@ void PrsDim_MidPointRelation::ComputePointsOnLine(const gp_Pnt&          pnt1,
   gp_Pnt        aProjPnt = ElCLib::Value(ppar, aLin);
   Standard_Real dist     = myMidPoint.Distance(aProjPnt);
   Standard_Real ll       = pnt1.Distance(pnt2);
-  Standard_Real segm     = Min(dist, ll) * 0.75;
+  Standard_Real segm     = std::min(dist, ll) * 0.75;
   if (dist < Precision::Confusion())
     segm = ll * 0.75;
 
@@ -446,12 +446,12 @@ void PrsDim_MidPointRelation::ComputePointsOnLine(const gp_Pnt&          pnt1,
     Standard_Real dp1 = aProjPnt.Distance(pnt1);
     Standard_Real dp2 = aProjPnt.Distance(pnt2);
 
-    segm   = Min(dist, dp1) * 0.75;
+    segm   = std::min(dist, dp1) * 0.75;
     aVecTr = gp_Vec(aProjPnt, pnt1);
     aVecTr.Normalize();
     aPnt1 = aProjPnt.Translated(aVecTr * segm);
 
-    segm   = Min(dist, dp2) * 0.75;
+    segm   = std::min(dist, dp2) * 0.75;
     aVecTr = gp_Vec(aProjPnt, pnt2);
     aVecTr.Normalize();
     aPnt2 = aProjPnt.Translated(aVecTr * segm);
@@ -527,7 +527,7 @@ void PrsDim_MidPointRelation::ComputePointsOnCirc(const gp_Circ&         aCirc,
       pcurpos1 = pcurpos1 + 2 * M_PI - pFAttach;
       if (pcurpos1 > pSAttachM) // out
       {
-        segm = Min(rad, deltap * 0.75);
+        segm = std::min(rad, deltap * 0.75);
         if (pcurpos1 > pmiddleout)
         {
           pcurpos = pFAttach;
@@ -546,17 +546,17 @@ void PrsDim_MidPointRelation::ComputePointsOnCirc(const gp_Circ&         aCirc,
         Standard_Real dp1 = pcurpos1 - pFAttach;
         Standard_Real dp2 = pSAttachM - pcurpos1;
 
-        segm  = Min(rad, dp1 * 0.75);
+        segm  = std::min(rad, dp1 * 0.75);
         pFPnt = pcurpos - segm;
 
-        segm  = Min(rad, dp2 * 0.75);
+        segm  = std::min(rad, dp2 * 0.75);
         pSPnt = pcurpos + segm;
       }
     }
     else if (pcurpos1 > (pFAttach + deltap)) // out
     {
       pcurpos1 -= pFAttach;
-      segm = Min(rad, deltap * 0.75);
+      segm = std::min(rad, deltap * 0.75);
       if (pcurpos1 > pmiddleout)
       {
         pcurpos = pFAttach;
@@ -575,10 +575,10 @@ void PrsDim_MidPointRelation::ComputePointsOnCirc(const gp_Circ&         aCirc,
       Standard_Real dp1 = pcurpos1 - pFAttach;
       Standard_Real dp2 = pSAttach - pcurpos1;
 
-      segm  = Min(rad, dp1 * 0.75);
+      segm  = std::min(rad, dp1 * 0.75);
       pFPnt = pcurpos - segm;
 
-      segm  = Min(rad, dp2 * 0.75);
+      segm  = std::min(rad, dp2 * 0.75);
       pSPnt = pcurpos + segm;
     }
   }
@@ -653,7 +653,7 @@ void PrsDim_MidPointRelation::ComputePointsOnElips(const gp_Elips&        anEll,
       pcurpos1 = pcurpos1 + 2 * M_PI - pFAttach;
       if (pcurpos1 > pSAttachM) // out
       {
-        segm = Min(rad, deltap * 0.75);
+        segm = std::min(rad, deltap * 0.75);
         if (pcurpos1 > pmiddleout)
         {
           pcurpos = pFAttach;
@@ -672,17 +672,17 @@ void PrsDim_MidPointRelation::ComputePointsOnElips(const gp_Elips&        anEll,
         Standard_Real dp1 = pcurpos1 - pFAttach;
         Standard_Real dp2 = pSAttachM - pcurpos1;
 
-        segm  = Min(rad, dp1 * 0.75);
+        segm  = std::min(rad, dp1 * 0.75);
         pFPnt = pcurpos - segm;
 
-        segm  = Min(rad, dp2 * 0.75);
+        segm  = std::min(rad, dp2 * 0.75);
         pSPnt = pcurpos + segm;
       }
     }
     else if (pcurpos1 > (pFAttach + deltap)) // out
     {
       pcurpos1 -= pFAttach;
-      segm = Min(rad, deltap * 0.75);
+      segm = std::min(rad, deltap * 0.75);
       if (pcurpos1 > pmiddleout)
       {
         pcurpos = pFAttach;
@@ -701,10 +701,10 @@ void PrsDim_MidPointRelation::ComputePointsOnElips(const gp_Elips&        anEll,
       Standard_Real dp1 = pcurpos1 - pFAttach;
       Standard_Real dp2 = pSAttach - pcurpos1;
 
-      segm  = Min(rad, dp1 * 0.75);
+      segm  = std::min(rad, dp1 * 0.75);
       pFPnt = pcurpos - segm;
 
-      segm  = Min(rad, dp2 * 0.75);
+      segm  = std::min(rad, dp2 * 0.75);
       pSPnt = pcurpos + segm;
     }
   }

@@ -159,8 +159,8 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
   Standard_Integer NbCur     = theMultiCurve.NbCurves();
   Standard_Boolean LoopFound = Standard_False;
 
-  Standard_Integer aNbP3d = Max(nbp3d, 1);
-  Standard_Integer aNbP2d = Max(nbp2d, 1);
+  Standard_Integer aNbP3d = std::max(nbp3d, 1);
+  Standard_Integer aNbP2d = std::max(nbp2d, 1);
 
   TColgp_Array1OfPnt   tabP(1, aNbP3d);
   TColgp_Array1OfPnt2d tabP2d(1, aNbP2d);
@@ -320,7 +320,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
       return Standard_False;
     }
 
-    FirstVec /= Sqrt(aSqNormToler);
+    FirstVec /= std::sqrt(aSqNormToler);
     gp_Pnt2d MidPnt = aPoles2d(2);
     for (Standard_Integer k = 3; k <= aPoles2d.Upper(); k++)
     {
@@ -332,7 +332,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
         return Standard_False;
       }
 
-      SecondVec /= Sqrt(aVecSqNorm);
+      SecondVec /= std::sqrt(aVecSqNorm);
       Standard_Real ScalProd = FirstVec * SecondVec;
       if (ScalProd < MinScalProd)
       {
@@ -1304,14 +1304,14 @@ void Approx_ComputeLine::Parameters(const MultiLine&       Line,
         dist += aP22d.SquareDistance(aP12d);
       }
 
-      dist = Sqrt(dist);
+      dist = std::sqrt(dist);
       if (Par == Approx_ChordLength)
       {
         TheParameters(i) = TheParameters(i - 1) + dist;
       }
       else
       { // Par == Approx_Centripetal
-        TheParameters(i) = TheParameters(i - 1) + Sqrt(dist);
+        TheParameters(i) = TheParameters(i - 1) + std::sqrt(dist);
       }
     }
     for (i = firstP; i <= lastP; i++)
@@ -1357,7 +1357,7 @@ Standard_Boolean Approx_ComputeLine::Compute(const MultiLine&       Line,
   }
 
   currenttol3d = currenttol2d = RealLast();
-  for (deg = Min(nbp - 1, mydegremin); deg <= Mdegmax; deg++)
+  for (deg = std::min(nbp - 1, mydegremin); deg <= Mdegmax; deg++)
   {
     AppParCurves_MultiCurve mySCU(deg + 1);
     if (mysquares)

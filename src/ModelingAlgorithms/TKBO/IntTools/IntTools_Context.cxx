@@ -530,7 +530,7 @@ Standard_Integer IntTools_Context::ComputeVE(const TopoDS_Vertex& theV,
   //
   aTolV   = BRep_Tool::Tolerance(theV);
   aTolE   = BRep_Tool::Tolerance(theE);
-  aTolSum = aTolV + aTolE + Max(theFuzz, Precision::Confusion());
+  aTolSum = aTolV + aTolE + std::max(theFuzz, Precision::Confusion());
   //
   theTol = aDist + aTolE;
   theT   = aProjector.LowerDistanceParameter();
@@ -571,7 +571,7 @@ Standard_Integer IntTools_Context::ComputeVF(const TopoDS_Vertex& theVertex,
   aTolV = BRep_Tool::Tolerance(theVertex);
   aTolF = BRep_Tool::Tolerance(theFace);
   //
-  aTolSum = aTolV + aTolF + Max(theFuzz, Precision::Confusion());
+  aTolSum = aTolV + aTolF + std::max(theFuzz, Precision::Confusion());
   theTol  = aDist + aTolF;
   aProjector.LowerDistanceParameters(theU, theV);
   //

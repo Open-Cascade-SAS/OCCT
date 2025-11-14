@@ -55,8 +55,8 @@ DrawTrSurf_Surface::DrawTrSurf_Surface(const Handle(Geom_Surface)& S,
   surf       = S;
   boundsLook = BoundsColor;
   isosLook   = IsosColor;
-  nbUIsos    = Abs(Nu);
-  nbVIsos    = Abs(Nv);
+  nbUIsos    = std::abs(Nu);
+  nbVIsos    = std::abs(Nv);
 }
 
 //=================================================================================================
