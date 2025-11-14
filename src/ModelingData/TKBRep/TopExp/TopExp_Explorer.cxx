@@ -19,21 +19,22 @@
 namespace
 {
 //! Returns true if the given type matches the type to find.
-Standard_Boolean isSameType(const TopAbs_ShapeEnum theType, const TopAbs_ShapeEnum toFind) noexcept
+inline Standard_Boolean isSameType(const TopAbs_ShapeEnum theType,
+                                   const TopAbs_ShapeEnum toFind) noexcept
 {
   return toFind == theType;
 }
 
 //! Returns true if the given type should be avoided.
-Standard_Boolean shouldAvoid(const TopAbs_ShapeEnum theType,
-                             const TopAbs_ShapeEnum toAvoid) noexcept
+inline Standard_Boolean shouldAvoid(const TopAbs_ShapeEnum theType,
+                                    const TopAbs_ShapeEnum toAvoid) noexcept
 {
   return toAvoid != TopAbs_SHAPE && toAvoid == theType;
 }
 
 //! Returns true if the given type is more complex than the type to find.
-Standard_Boolean isMoreComplex(const TopAbs_ShapeEnum theType,
-                               const TopAbs_ShapeEnum toFind) noexcept
+inline Standard_Boolean isMoreComplex(const TopAbs_ShapeEnum theType,
+                                      const TopAbs_ShapeEnum toFind) noexcept
 {
   return toFind > theType;
 }
@@ -85,7 +86,7 @@ void TopExp_Explorer::Next()
 {
   Standard_NoMoreObject_Raise_if(!hasMore, "TopExp_Explorer::Next");
 
-  if (myTop < 0)
+  if (myStack.IsEmpty())
   {
     TopAbs_ShapeEnum ty = myShape.ShapeType();
 
@@ -102,18 +103,19 @@ void TopExp_Explorer::Next()
     else
     {
       myStack.Append(TopoDS_Iterator(myShape));
-      myTop = myStack.Length() - 1;
     }
   }
   else
-    myStack[myTop].Next();
+    myStack.ChangeLast().Next();
 
   for (;;)
   {
-    if (myStack[myTop].More())
+    TopoDS_Iterator& aTopIter = myStack.ChangeLast();
+
+    if (aTopIter.More())
     {
-      TopoDS_Shape     ShapTop = myStack[myTop].Value();
-      TopAbs_ShapeEnum ty      = ShapTop.ShapeType();
+      const TopoDS_Shape&    aShapTop = aTopIter.Value();
+      const TopAbs_ShapeEnum ty       = aShapTop.ShapeType();
 
       if (isSameType(ty, toFind))
       {
@@ -122,21 +124,20 @@ void TopExp_Explorer::Next()
       }
       else if (isMoreComplex(ty, toFind) && !shouldAvoid(ty, toAvoid))
       {
-        myStack.Append(TopoDS_Iterator(ShapTop));
-        myTop = myStack.Length() - 1;
+        myStack.Append(TopoDS_Iterator(aShapTop));
+        // aTopIter reference is now invalid after Append
       }
       else
       {
-        myStack[myTop].Next();
+        aTopIter.Next();
       }
     }
     else
     {
       myStack.EraseLast();
-      myTop--;
-      if (myTop < 0)
+      if (myStack.IsEmpty())
         break;
-      myStack[myTop].Next();
+      myStack.ChangeLast().Next();
     }
   }
   hasMore = Standard_False;

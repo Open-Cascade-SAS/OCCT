@@ -88,7 +88,6 @@ public:
   //! Creates an empty explorer, becomes useful after Init.
   TopExp_Explorer() noexcept
       : myStack(20),
-        myTop(-1),
         toFind(TopAbs_SHAPE),
         toAvoid(TopAbs_SHAPE),
         hasMore(Standard_False)
@@ -108,7 +107,6 @@ public:
                   const TopAbs_ShapeEnum ToFind,
                   const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE)
       : myStack(20),
-        myTop(-1),
         toFind(ToFind),
         toAvoid(ToAvoid),
         hasMore(Standard_False)
@@ -145,7 +143,7 @@ public:
   const TopoDS_Shape& Current() const
   {
     Standard_NoSuchObject_Raise_if(!hasMore, "TopExp_Explorer::Current");
-    return (myTop >= 0) ? myStack[myTop].Value() : myShape;
+    return myStack.IsEmpty() ? myShape : myStack.Last().Value();
   }
 
   //! Reinitialize the exploration with the original arguments.
@@ -156,7 +154,7 @@ public:
 
   //! Returns the current depth of the exploration. 0 is
   //! the shape to explore itself.
-  Standard_Integer Depth() const noexcept { return myTop; }
+  Standard_Integer Depth() const noexcept { return myStack.Length(); }
 
   //! Clears the content of the explorer. It will return
   //! False on More().
@@ -164,7 +162,6 @@ public:
   {
     hasMore = Standard_False;
     myStack.Clear();
-    myTop = -1;
   }
 
   //! Destructor.
@@ -173,7 +170,6 @@ public:
 private:
   NCollection_Vector<TopoDS_Iterator> myStack;
   TopoDS_Shape                        myShape;
-  Standard_Integer                    myTop;
   TopAbs_ShapeEnum                    toFind;
   TopAbs_ShapeEnum                    toAvoid;
   Standard_Boolean                    hasMore;
