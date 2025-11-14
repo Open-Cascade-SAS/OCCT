@@ -179,7 +179,7 @@ void Extrema_ExtCC::Perform()
 {
   Standard_NullObject_Raise_if(!myC[0] || !myC[1], "Extrema_ExtCC::Perform()")
     myECC.SetParams(*myC[0], *myC[1], myInf[0], mySup[0], myInf[1], mySup[1]);
-  myECC.SetTolerance(Min(myTol[0], myTol[1]));
+  myECC.SetTolerance(std::min(myTol[0], myTol[1]));
   myECC.SetSingleSolutionFlag(GetSingleSolutionFlag());
   myDone = Standard_False;
   mypoints.Clear();
@@ -188,7 +188,7 @@ void Extrema_ExtCC::Perform()
 
   GeomAbs_CurveType type1 = myC[0]->GetType();
   GeomAbs_CurveType type2 = myC[1]->GetType();
-  Standard_Real     U11, U12, U21, U22, Tol = Min(myTol[0], myTol[1]);
+  Standard_Real     U11, U12, U21, U22, Tol = std::min(myTol[0], myTol[1]);
 
   U11 = myInf[0];
   U12 = mySup[0];
@@ -575,7 +575,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
 
     // Precision of the calculation depends on circles radii
     const Standard_Real aPrecision =
-      Max(Epsilon(myC[0]->Circle().Radius()), Epsilon(myC[1]->Circle().Radius()));
+      std::max(Epsilon(myC[0]->Circle().Radius()), Epsilon(myC[1]->Circle().Radius()));
 
     // Project arc of the 1st circle between points theUt11 and theUt12 to the
     // 2nd circle. It is necessary to chose correct arc from two possible ones.
@@ -653,7 +653,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
         Standard_Real aMinSqD = ExtPCir.SquareDistance(1);
         for (Standard_Integer anExtID = 2; anExtID <= ExtPCir.NbExt(); anExtID++)
         {
-          aMinSqD = Min(aMinSqD, ExtPCir.SquareDistance(anExtID));
+          aMinSqD = std::min(aMinSqD, ExtPCir.SquareDistance(anExtID));
         }
 
         if (aMinSqD <= aMinSquareDist + (1. + aMinSqD) * aPrecision)
@@ -663,7 +663,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
           myIsParallel = Standard_True;
 
           const Standard_Real aDeltaSqDist = aMinSqD - theSqDist;
-          const Standard_Real aSqD         = Max(aMinSqD, theSqDist);
+          const Standard_Real aSqD         = std::max(aMinSqD, theSqDist);
 
           //  0 <= Dist1-Dist2 <= Eps
           //  0 <= Dist1^2 - Dist2^2 < Eps*(Dist1+Dist2)
@@ -731,7 +731,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
             mypoints.Append(ExtPCir.Point(anExtID));
             mypoints.Append(aP2);
             mySqDist.Append(ExtPCir.SquareDistance(anExtID));
-            aMinSquareDist = Min(aMinSquareDist, ExtPCir.SquareDistance(anExtID));
+            aMinSquareDist = std::min(aMinSquareDist, ExtPCir.SquareDistance(anExtID));
           }
         }
       }
@@ -784,7 +784,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
           mypoints.Append(aP1);
           mypoints.Append(aP2);
           mySqDist.Append(aDmin);
-          aMinSquareDist = Min(aMinSquareDist, aDmin);
+          aMinSquareDist = std::min(aMinSquareDist, aDmin);
         }
       }
       aProjRng1.Shift(M_PI);

@@ -117,7 +117,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
       {
         gp_Circ cif = Handle(Geom_Circle)::DownCast(Cf)->Circ();
         gp_Circ cit = Handle(Geom_Circle)::DownCast(Ct)->Circ();
-        if (Abs(cif.Radius() - cit.Radius()) <= Tol
+        if (std::abs(cif.Radius() - cit.Radius()) <= Tol
             && cif.Location().SquareDistance(cit.Location()) <= Tol * Tol)
         {
           // Point debut, calage dans periode, et detection meme sens
@@ -129,7 +129,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
 
           Standard_Real prm1  = ElCLib::Parameter(cit, p1);
           Standard_Real Tol2d = Precision::PConfusion();
-          if (Abs(prm1 - ft) <= Tol2d)
+          if (std::abs(prm1 - ft) <= Tol2d)
             prm1 = ft;
           prm1 = ElCLib::InPeriod(prm1, ft, ft + 2. * M_PI);
           ElCLib::D1(prm1, cit, p1, tgt);
@@ -144,7 +144,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
           }
           else
           {
-            if (Abs(prm1 - ft) <= Precision::Angular())
+            if (std::abs(prm1 - ft) <= Precision::Angular())
             {
               prm1 += 2. * M_PI;
             }
@@ -178,8 +178,8 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
         gp_Elips cif = Handle(Geom_Ellipse)::DownCast(Cf)->Elips();
         gp_Elips cit = Handle(Geom_Ellipse)::DownCast(Ct)->Elips();
 
-        if (Abs(cif.MajorRadius() - cit.MajorRadius()) <= Tol
-            && Abs(cif.MinorRadius() - cit.MinorRadius()) <= Tol
+        if (std::abs(cif.MajorRadius() - cit.MajorRadius()) <= Tol
+            && std::abs(cif.MinorRadius() - cit.MinorRadius()) <= Tol
             && cif.Location().SquareDistance(cit.Location()) <= Tol * Tol)
         {
           // Point debut, calage dans periode, et detection meme sens
@@ -203,7 +203,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
           }
           else
           {
-            if (Abs(prm1 - ft) <= Precision::Angular())
+            if (std::abs(prm1 - ft) <= Precision::Angular())
             {
               prm1 += 2. * M_PI;
             }
@@ -284,7 +284,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
                   IsSame = Standard_False;
                   break;
                 }
-                if (Abs(Mf(k) - Mt(k)) > Tol)
+                if (std::abs(Mf(k) - Mt(k)) > Tol)
                 {
                   IsSame = Standard_False;
                   break;
@@ -314,7 +314,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
 
                 for (Standard_Integer w = 1; w <= nbpoles; w++)
                 {
-                  if (Abs(Wf(w) - Wt(w)) > Tol)
+                  if (std::abs(Wf(w) - Wt(w)) > Tol)
                   {
                     IsSame = Standard_False;
                     break;
@@ -388,7 +388,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
 
               for (Standard_Integer w = 1; w <= nbpoles; w++)
               {
-                if (Abs(Wf(w) - Wt(w)) > Tol)
+                if (std::abs(Wf(w) - Wt(w)) > Tol)
                 {
                   IsSame = Standard_False;
                   break;

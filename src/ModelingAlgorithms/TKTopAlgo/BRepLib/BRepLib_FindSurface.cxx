@@ -58,7 +58,7 @@ static Standard_Real Controle(const TColgp_SequenceOfPnt& thePoints,
   for (ii = 1; ii <= thePoints.Length(); ii++)
   {
     const gp_XYZ& xyz = thePoints(ii).XYZ();
-    dist              = Abs(a * xyz.X() + b * xyz.Y() + c * xyz.Z() + d);
+    dist              = std::abs(a * xyz.X() + b * xyz.Y() + c * xyz.Z() + d);
     if (dist > dfMaxDist)
       dfMaxDist = dist;
   }
@@ -182,7 +182,7 @@ static void fillParams(const TColStd_Array1OfReal&        theKnots,
   Standard_Real aPrevPar = theParMin;
   theParams.Append(aPrevPar);
 
-  Standard_Integer aNbP = Max(theDegree, 1);
+  Standard_Integer aNbP = std::max(theDegree, 1);
 
   for (Standard_Integer i = 1;
        (i < theKnots.Length()) && (theKnots(i) < (theParMax - Precision::PConfusion()));
@@ -459,7 +459,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
     Standard_Real anEMax = -anEMin;
     for (i = 1; i <= 3; ++i)
     {
-      Standard_Real anE = Abs(anEVals(i));
+      Standard_Real anE = std::abs(anEVals(i));
       if (anEMin > anE)
       {
         anEMin = anE;
@@ -523,11 +523,11 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   if (!isSolved)
     return;
   // Removing very small values
-  Standard_Real aMaxV = Max(Abs(aVec(1)), Max(Abs(aVec(2)), Abs(aVec(3))));
+  Standard_Real aMaxV = std::max(std::abs(aVec(1)), std::max(std::abs(aVec(2)), std::abs(aVec(3))));
   Standard_Real eps   = Epsilon(aMaxV);
   for (i = 1; i <= 3; ++i)
   {
-    if (Abs(aVec(i)) <= eps)
+    if (std::abs(aVec(i)) <= eps)
       aVec(i) = 0.;
   }
   gp_Vec             aN(aVec(1), aVec(2), aVec(3));

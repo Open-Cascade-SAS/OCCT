@@ -202,7 +202,7 @@ void IntCurveSurface_Polyhedron::Init(const ThePSurface&  Surface,
   if (aDeflection > TheBorderDeflection)
     TheBorderDeflection = aDeflection;
 
-  //  Modified by Sergey KHROMOV - Fri Dec  7 11:23:34 2001 End
+    //  Modified by Sergey KHROMOV - Fri Dec  7 11:23:34 2001 End
 
 #ifdef OCCT_DEBUG_DUMP
   Dump();
@@ -296,7 +296,7 @@ void IntCurveSurface_Polyhedron::Init(const ThePSurface&          Surface,
   if (aDeflection > TheBorderDeflection)
     TheBorderDeflection = aDeflection;
 
-  //  Modified by Sergey KHROMOV - Fri Dec  7 11:23:34 2001 End
+    //  Modified by Sergey KHROMOV - Fri Dec  7 11:23:34 2001 End
 
 #ifdef OCCT_DEBUG_DUMP
   Dump();
@@ -339,7 +339,7 @@ Standard_Real IntCurveSurface_Polyhedron::DeflectionOnTriangle(const ThePSurface
   Standard_Real v = (v1 + v2 + v3) / 3.0;
   gp_Pnt        P = ThePSurfaceTool::Value(Surface, u, v);
   gp_Vec        P1P(P1, P);
-  return (Abs(P1P.Dot(NormalVector)));
+  return (std::abs(P1P.Dot(NormalVector)));
 }
 
 //=================================================================================================
@@ -875,7 +875,7 @@ Standard_Boolean IntCurveSurface_Polyhedron::IsOnBound(const Standard_Integer In
   }
 #endif
   Standard_Boolean* CMyIsOnBounds = (Standard_Boolean*)C_MyIsOnBounds;
-  Standard_Integer  aDiff         = Abs(Index1 - Index2);
+  Standard_Integer  aDiff         = std::abs(Index1 - Index2);
   Standard_Integer  i;
 
   // Check if points are neighbour ones.

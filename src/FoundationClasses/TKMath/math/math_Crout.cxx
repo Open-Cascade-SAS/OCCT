@@ -60,7 +60,7 @@ math_Crout::math_Crout(const math_Matrix& A, const Standard_Real MinPivot)
     }
     Diag(i) = A(i + lowr - 1, i + lowc - 1) - scale;
     Det *= Diag(i);
-    if (Abs(Diag(i)) <= MinPivot)
+    if (std::abs(Diag(i)) <= MinPivot)
     {
       Done = Standard_False;
       return;

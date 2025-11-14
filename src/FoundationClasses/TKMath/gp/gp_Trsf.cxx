@@ -362,9 +362,9 @@ void gp_Trsf::SetValues(const Standard_Real a11,
   Standard_ConstructionError_Raise_if(As < gp::Resolution(),
                                       "gp_Trsf::SetValues, null determinant");
   if (s > 0)
-    s = Pow(s, 1. / 3.);
+    s = std::pow(s, 1. / 3.);
   else
-    s = -Pow(-s, 1. / 3.);
+    s = -std::pow(-s, 1. / 3.);
   M.Divide(s);
 
   scale = s;
@@ -413,14 +413,14 @@ void gp_Trsf::Invert()
     loc.Reverse();
   else if (shape == gp_Scale)
   {
-    Standard_ConstructionError_Raise_if(Abs(scale) <= gp::Resolution(),
+    Standard_ConstructionError_Raise_if(std::abs(scale) <= gp::Resolution(),
                                         "gp_Trsf::Invert() - transformation has zero scale");
     scale = 1.0 / scale;
     loc.Multiply(-scale);
   }
   else
   {
-    Standard_ConstructionError_Raise_if(Abs(scale) <= gp::Resolution(),
+    Standard_ConstructionError_Raise_if(std::abs(scale) <= gp::Resolution(),
                                         "gp_Trsf::Invert() - transformation has zero scale");
     scale = 1.0 / scale;
     matrix.Transpose();

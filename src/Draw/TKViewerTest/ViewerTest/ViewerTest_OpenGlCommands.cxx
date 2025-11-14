@@ -893,8 +893,8 @@ static Standard_Integer VListColors(Draw_Interpretor& theDI,
        aColIter.Next())
   {
     aMaxNameLen =
-      Max(aMaxNameLen,
-          TCollection_AsciiString(Quantity_Color::StringName(aColIter.Value())).Length());
+      std::max(aMaxNameLen,
+               TCollection_AsciiString(Quantity_Color::StringName(aColIter.Value())).Length());
   }
 
   V3d_ImageDumpOptions anImgParams;

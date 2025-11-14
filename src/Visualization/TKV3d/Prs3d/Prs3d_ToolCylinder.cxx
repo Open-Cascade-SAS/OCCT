@@ -41,7 +41,7 @@ gp_Pnt Prs3d_ToolCylinder::Vertex(const Standard_Real theU, const Standard_Real 
 {
   const Standard_Real aU      = theU * M_PI * 2.0;
   const Standard_Real aRadius = myBottomRadius + (myTopRadius - myBottomRadius) * theV;
-  return gp_Pnt(Cos(aU) * aRadius, Sin(aU) * aRadius, theV * myHeight);
+  return gp_Pnt(std::cos(aU) * aRadius, std::sin(aU) * aRadius, theV * myHeight);
 }
 
 //=================================================================================================
@@ -49,7 +49,7 @@ gp_Pnt Prs3d_ToolCylinder::Vertex(const Standard_Real theU, const Standard_Real 
 gp_Dir Prs3d_ToolCylinder::Normal(const Standard_Real theU, const Standard_Real) const
 {
   const Standard_Real aU = theU * M_PI * 2.0;
-  return gp_Dir(Cos(aU) * myHeight, Sin(aU) * myHeight, myBottomRadius - myTopRadius);
+  return gp_Dir(std::cos(aU) * myHeight, std::sin(aU) * myHeight, myBottomRadius - myTopRadius);
 }
 
 //=================================================================================================

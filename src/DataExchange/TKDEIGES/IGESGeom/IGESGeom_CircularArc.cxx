@@ -99,7 +99,7 @@ Standard_Real IGESGeom_CircularArc::Radius() const
   x2 = theCenter.X();
   y2 = theCenter.Y();
 
-  Standard_Real radius = Sqrt(Square(x2 - x1) + Square(y2 - y1));
+  Standard_Real radius = std::sqrt(Square(x2 - x1) + Square(y2 - y1));
   return radius;
 }
 
@@ -139,6 +139,6 @@ gp_Dir IGESGeom_CircularArc::TransformedAxis() const
 
 Standard_Boolean IGESGeom_CircularArc::IsClosed() const
 {
-  return (Abs(theStart.X() - theEnd.X()) < Precision::PConfusion()
-          && Abs(theStart.Y() - theEnd.Y()) < Precision::PConfusion());
+  return (std::abs(theStart.X() - theEnd.X()) < Precision::PConfusion()
+          && std::abs(theStart.Y() - theEnd.Y()) < Precision::PConfusion());
 }

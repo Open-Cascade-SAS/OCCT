@@ -58,7 +58,7 @@ static Standard_Integer OCC895(Draw_Interpretor& di, Standard_Integer argc, cons
   gp_Pnt center1(0, 10, 0);
   gp_Ax2 axis1 =
     reverse ? gp_Ax2(center1, gp::DY(), gp::DZ()) : gp_Ax2(center1, -gp::DY(), gp::DX());
-  if (Abs(angle) > gp::Resolution())
+  if (std::abs(angle) > gp::Resolution())
     axis1.Rotate(gp_Ax1(center1, gp::DZ()), angle * M_PI / 180.0);
 
   gce_MakeCirc makeCirc1(axis1, rad);

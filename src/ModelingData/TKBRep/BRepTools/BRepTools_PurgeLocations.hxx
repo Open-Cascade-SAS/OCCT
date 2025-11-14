@@ -20,8 +20,8 @@
 #include <TopTools_LocationSet.hxx>
 
 //! Removes location datums, which satisfy conditions:
-//! aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec())
-//! from all locations of shape and its subshapes
+//! aTrsf.IsNegative() || (std::abs(std::abs(aTrsf.ScaleFactor()) - 1.) >
+//! TopLoc_Location::ScalePrec()) from all locations of shape and its subshapes
 class BRepTools_PurgeLocations
 {
 

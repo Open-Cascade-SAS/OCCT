@@ -833,13 +833,13 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     if (!ok)
       return;
     // ngFS, ngFOR, xxFOR :
-    Standard_Real tolON = Max(tolFS, tolEG);
+    Standard_Real tolON = std::max(tolFS, tolEG);
     tolON *= 1.e2; //*****CAREFUL***** : xpu040998, cto 904 A3
     gp_Vec ngFS;
     ok = FUN_tool_nggeomF(parEG, EG, FS, ngFS, tolON);
     if (!ok)
       return;
-    tolON = Max(tolFOR, tolEG);
+    tolON = std::max(tolFOR, tolEG);
     tolON *= 1.e2; //*****CAREFUL***** : xpu040998, cto 904 A3
     gp_Vec ngFOR;
     ok = FUN_tool_nggeomF(parEG, EG, FOR, ngFOR, tolON);
@@ -862,7 +862,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     Standard_Boolean Kpart = (OTFE == TopAbs_EXTERNAL) || (OTFE == TopAbs_INTERNAL);
     if (Kpart)
     {
-      Standard_Boolean Ktg = (Abs(1 - Abs(ntdot)) < tola * 1.e2);
+      Standard_Boolean Ktg = (std::abs(1 - std::abs(ntdot)) < tola * 1.e2);
       Kpart                = Ktg;
     }
     if (Kpart)
@@ -873,7 +873,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
         return;
       gp_Pnt Pfor, Pfs;
       FUN_tool_value(UVfor, FOR, Pfor);
-      tolON = Max(Max(tolFOR, tolFS), tolEG) * 10.;
+      tolON = std::max(std::max(tolFOR, tolFS), tolEG) * 10.;
       Standard_Real d;
 
       BRepAdaptor_Surface BSfor(FOR);
@@ -900,14 +900,14 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
         if (ntdot < 0.)
           crvFS = -crvFS;
         Standard_Real eps       = Precision::Confusion();
-        Standard_Real absCrvFOR = Abs(crvFOR), absCrvFS = Abs(crvFS);
+        Standard_Real absCrvFOR = std::abs(crvFOR), absCrvFS = std::abs(crvFS);
         if (absCrvFOR <= eps && absCrvFS <= eps)
           return;
         if (absCrvFOR > eps && absCrvFS > eps)
         {
           Standard_Real tolR    = tolON;
           Standard_Real rcrvFOR = 1. / crvFOR, rcrvFS = 1. / crvFS;
-          if (Abs(rcrvFOR - rcrvFS) <= tolR)
+          if (std::abs(rcrvFOR - rcrvFS) <= tolR)
             return;
         }
         // if we are here the curvatures are different
@@ -1304,7 +1304,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
         ntFOR.Reverse();
 
       Standard_Real    dot     = ntFOR.Dot(ntFS);
-      Standard_Boolean nulldot = (Abs(dot) < tola);
+      Standard_Boolean nulldot = (std::abs(dot) < tola);
       if (nulldot)
       {
         // xxFS :
@@ -1464,10 +1464,10 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     gp_Pnt2d      uvFOR;
     ok = FUN_tool_projPonboundedF(ptON, FOR, uvFOR, d);
     if (!ok)
-      return;                                 // nyiRAISE
-    Standard_Real tolON = Max(tolEG, tolFOR); // xpu291098 cto900L7(f7,e7on)
-                                              // xpu051198 PRO12953(f6,e4on)
-    tolON *= 1.e2;                            //*****CAREFUL***** : xpu040998, cto 904 A3
+      return;                                      // nyiRAISE
+    Standard_Real tolON = std::max(tolEG, tolFOR); // xpu291098 cto900L7(f7,e7on)
+                                                   // xpu051198 PRO12953(f6,e4on)
+    tolON *= 1.e2;                                 //*****CAREFUL***** : xpu040998, cto 904 A3
     Standard_Boolean eONFOR = (d < tolON);
     if (!eONFOR)
       return;
@@ -1908,7 +1908,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 
       Standard_Real dot = xxFS.Dot(ntFOR);
       // xpu040698 :  FS tg to FCX at EG - CTS20578 (FOR=F8,EG=E6,FS=F4) -
-      Standard_Boolean nulldot = (Abs(dot) < tola);
+      Standard_Boolean nulldot = (std::abs(dot) < tola);
       if (nulldot)
       { // approximate xxFS :
         gp_Pnt2d newuvFS;
@@ -2168,7 +2168,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
             return;
 
           Standard_Real    sum      = matfs + matfor;
-          Standard_Boolean sumisPI  = (Abs(sum - M_PI) < tola1);
+          Standard_Boolean sumisPI  = (std::abs(sum - M_PI) < tola1);
           Standard_Boolean fsinfPI  = (matfs < M_PI);
           Standard_Boolean forinfPI = (matfor < M_PI);
           if (sumisPI)
@@ -2181,7 +2181,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
               b = Standard_False;
             else
             { // (!fsinfPI) || (!forinfPI)
-              Standard_Boolean sammat = (Abs(matfs - matfor) < tola1);
+              Standard_Boolean sammat = (std::abs(matfs - matfor) < tola1);
               if (sammat)
                 b = Standard_False;
               else
@@ -2204,7 +2204,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
           if (M_REVERSED(oFS)) ntFS.Reverse();
 
           Standard_Real dot = ntFS.Dot(xxFCX);
-          if (Abs(dot) < tola) b = Standard_False; // xpu231198nyi tangent config
+          if (std::abs(dot) < tola) b = Standard_False; // xpu231198nyi tangent config
           else                 {b = (dot <0.); if (b) forcekeep=Standard_True;}
         }//!shareG*/
       }
@@ -2269,7 +2269,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
             gp_Vec ntOOFOR = FUN_tool_nggeomF(uv, OOFOR);
             if (OOFOR.Orientation() == TopAbs_REVERSED)
               ntOOFOR.Reverse();
-            // xxFCX :
+              // xxFCX :
 #ifdef OCCT_DEBUG
 //	    Standard_Real t1 =factor*BRep_Tool::Tolerance(Esd);
 #endif
@@ -2283,7 +2283,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
               return;
             // dot :
             Standard_Real dot = ntOOFOR.Dot(xxFCX);
-            if (Abs(dot) < tola)
+            if (std::abs(dot) < tola)
               binou = Standard_True; // nyixpu181198
             else if (dot < 0.)
               binou = Standard_False;

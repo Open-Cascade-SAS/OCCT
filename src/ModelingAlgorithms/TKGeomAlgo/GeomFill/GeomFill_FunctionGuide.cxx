@@ -235,8 +235,8 @@ void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
   // C origine sur l'axe de revolution
   // Vdir vecteur unitaire definissant la direction de l'axe de revolution
   // Q(v) point de parametre V sur la courbe de revolution
-  // OM (u,v) = OC + CQ * Cos(U) + (CQ.Vdir)(1-Cos(U)) * Vdir +
-  //            (Vdir^CQ)* Sin(U)
+  // OM (u,v) = OC + CQ * std::cos(U) + (CQ.Vdir)(1-std::cos(U)) * Vdir +
+  //            (Vdir^CQ)* std::sin(U)
 
   gp_Pnt Pc;
   TheCurve->D0(V, Pc); // Q(v)
@@ -254,12 +254,15 @@ void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
   gp_XYZ DVcrossCQ;
   DVcrossCQ.SetLinearForm(DDir.Crossed(Q),
                           Dir.Crossed(DQ)); // Vdir^CQ
-  DVcrossCQ.Multiply(Sin(U));               //(Vdir^CQ)*Sin(U)
+  DVcrossCQ.Multiply(std::sin(U));          //(Vdir^CQ)*Sin(U)
 
-  Standard_Real CosU = Cos(U);
+  Standard_Real CosU = std::cos(U);
   gp_XYZ        DVdotCQ;
-  DVdotCQ.SetLinearForm(DDir.Dot(Q) + Dir.Dot(DQ), Dir, Dir.Dot(Q), DDir); //(CQ.Vdir)(1-Cos(U))Vdir
-  DVdotCQ.Add(DVcrossCQ); // addition des composantes
+  DVdotCQ.SetLinearForm(DDir.Dot(Q) + Dir.Dot(DQ),
+                        Dir,
+                        Dir.Dot(Q),
+                        DDir); //(CQ.Vdir)(1-std::cos(U))Vdir
+  DVdotCQ.Add(DVcrossCQ);      // addition des composantes
 
   DQ.Multiply(CosU);
   DQ.Add(DVdotCQ);

@@ -16,7 +16,7 @@
 
 inline Standard_Boolean math_BissecNewton::IsSolutionReached(math_FunctionWithDerivative&)
 {
-  return Abs(dx) <= XTol;
+  return std::abs(dx) <= XTol;
 }
 
 inline Standard_OStream& operator<<(Standard_OStream& o, const math_BissecNewton& Bi)

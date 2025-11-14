@@ -107,11 +107,11 @@ static Standard_Boolean ToricRotule(const BRepAdaptor_Surface&   fac,
   gp_Dir df  = fac.Plane().Position().Direction();
   gp_Dir ds1 = s1.Plane().Position().Direction();
   gp_Dir ds2 = s2.Plane().Position().Direction();
-  if (Abs(df.Dot(ds1)) >= tolesp || Abs(df.Dot(ds2)) >= tolesp)
+  if (std::abs(df.Dot(ds1)) >= tolesp || std::abs(df.Dot(ds2)) >= tolesp)
     return Standard_False;
   Standard_Real r1 = sp1->Radius();
   Standard_Real r2 = sp2->Radius();
-  if (Abs(r1 - r2) >= tolesp)
+  if (std::abs(r1 - r2) >= tolesp)
     return Standard_False;
   return Standard_True;
 }
@@ -207,7 +207,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
   if (Sens2 == -1)
     dir2.Reverse();
   Standard_Real ang1;
-  ang1 = Abs(dir1.Angle(dir2));
+  ang1 = std::abs(dir1.Angle(dir2));
   if (ang1 < M_PI / 180.)
   {
     PerformMoreThreeCorner(Index, 2);
@@ -569,7 +569,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
         else
         {
           Handle(Adaptor3d_Curve) HPivTrim =
-            Hpivot->Trim(Min(parCP1, parCP2), Max(parCP1, parCP2), tolesp);
+            Hpivot->Trim(std::min(parCP1, parCP2), std::max(parCP1, parCP2), tolesp);
           Bpiv = new GeomFill_SimpleBound(HPivTrim, tolapp3d, 2.e-4);
           fil.Init(Bfac, B2, Bpiv, B1, 1);
           BRepAdaptor_Curve2d pcpivot;
@@ -606,16 +606,17 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
           }
           if (pcpivot.GetType() != GeomAbs_BSplineCurve)
           {
-            Handle(Geom2d_TrimmedCurve) trc =
-              new Geom2d_TrimmedCurve(pcpivot.Curve(), Min(parCP1, parCP2), Max(parCP1, parCP2));
-            PCurveOnPiv = Geom2dConvert::CurveToBSplineCurve(trc);
+            Handle(Geom2d_TrimmedCurve) trc = new Geom2d_TrimmedCurve(pcpivot.Curve(),
+                                                                      std::min(parCP1, parCP2),
+                                                                      std::max(parCP1, parCP2));
+            PCurveOnPiv                     = Geom2dConvert::CurveToBSplineCurve(trc);
           }
           else
           {
             PCurveOnPiv = Geom2dConvert::SplitBSplineCurve(
               Handle(Geom2d_BSplineCurve)::DownCast(pcpivot.Curve()),
-              Min(parCP1, parCP2),
-              Max(parCP1, parCP2),
+              std::min(parCP1, parCP2),
+              std::max(parCP1, parCP2),
               tol2d);
           }
           TColStd_Array1OfReal kk(1, PCurveOnPiv->NbKnots());
@@ -721,7 +722,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
                             P2deb,
                             tolapp3d,
                             tolr1);
-        tolreached = Max(tolreached, tolr1);
+        tolreached = std::max(tolreached, tolr1);
         TopOpeBRepDS_Curve Tcurv1(C3d, tolreached);
         Icf = DStr.AddCurve(Tcurv1);
         regdeb.SetCurve(Icf);
@@ -763,7 +764,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
                             P2deb,
                             tolapp3d,
                             tolr2);
-        tolreached = Max(tolreached, tolr2);
+        tolreached = std::max(tolreached, tolr2);
         TopOpeBRepDS_Curve Tcurv2(C3d, tolreached);
         Icl = DStr.AddCurve(Tcurv2);
         regfin.SetCurve(Icl);
@@ -912,7 +913,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
       if (SurFopsam.IsUClosed())
       {
         Standard_Real Uperiod = SurFopsam.LastUParameter() - SurFopsam.FirstUParameter();
-        if (Abs(ppfacsam.X() - ppfacdif.X()) > Uperiod / 2)
+        if (std::abs(ppfacsam.X() - ppfacdif.X()) > Uperiod / 2)
         {
           if (ppfacdif.X() < ppfacsam.X())
             ppfacdif.SetX(ppfacdif.X() + Uperiod);
@@ -1004,7 +1005,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
       Standard_Real             tolr1;
       Handle(GeomAdaptor_Curve) HC3d = new GeomAdaptor_Curve(C3d);
       ChFi3d_SameParameter(HC3d, pcFopsam, HBRFopsam, tolapp3d, tolr1);
-      tolreached = Max(tolreached, tolr1);
+      tolreached = std::max(tolreached, tolr1);
       TopOpeBRepDS_Curve Tcurv1(C3d, tolreached);
       Icf = DStr.AddCurve(Tcurv1);
       // place the pcurve on face in the DS
@@ -1045,7 +1046,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
       Standard_Real tolr2;
       HC3d->Load(C3d);
       ChFi3d_SameParameter(HC3d, pcsurfdif, Hsurfdif, tolapp3d, tolr2);
-      tolreached = Max(tolreached, tolr2);
+      tolreached = std::max(tolreached, tolr2);
       TopOpeBRepDS_Curve Tcurv2(C3d, tolreached);
       Icl = DStr.AddCurve(Tcurv2);
       regfin.SetCurve(Icl);

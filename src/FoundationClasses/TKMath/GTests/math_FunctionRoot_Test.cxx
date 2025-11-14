@@ -295,7 +295,7 @@ TEST(MathFunctionRootTest, OutOfBoundsGuess)
     // If the algorithm reports Done but the function value is not near zero,
     // it might have stopped due to bounds rather than finding a true root
     Standard_Real aFunctionValue = aRootFinder.Value();
-    if (Abs(aFunctionValue) > 1.0e-3)
+    if (std::abs(aFunctionValue) > 1.0e-3)
     {
       // This is acceptable - the algorithm stopped due to bounds, not convergence to root
       EXPECT_GE(aRoot, aLowerBound) << "Should still respect bounds";
@@ -351,7 +351,8 @@ TEST(MathFunctionRootTest, ConstrainedConvergenceState)
     {
       // If it succeeds, verify the results are reasonable
       EXPECT_GT(aRootFinder.NbIterations(), 0) << "Should have done at least one iteration";
-      EXPECT_TRUE(Abs(aRootFinder.Root() - 2.0) < 0.5 || Abs(aRootFinder.Root() - (-2.0)) < 0.5)
+      EXPECT_TRUE(std::abs(aRootFinder.Root() - 2.0) < 0.5
+                  || std::abs(aRootFinder.Root() - (-2.0)) < 0.5)
         << "Root should be reasonably close to one of the expected roots";
     }
   }) << "Function root finding should not throw exceptions";

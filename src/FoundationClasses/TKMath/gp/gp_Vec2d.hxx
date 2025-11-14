@@ -101,24 +101,24 @@ public:
                                            const Standard_Real theLinearTolerance,
                                            const Standard_Real theAngularTolerance) const;
 
-  //! Returns True if abs(Abs(<me>.Angle(theOther)) - PI/2.)
+  //! Returns True if abs(std::abs(<me>.Angle(theOther)) - PI/2.)
   //! <= theAngularTolerance
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
   //! theOther.Magnitude() <= Resolution from gp.
   Standard_Boolean IsNormal(const gp_Vec2d& theOther, const Standard_Real theAngularTolerance) const
   {
-    const Standard_Real anAng = Abs(M_PI_2 - Abs(Angle(theOther)));
+    const Standard_Real anAng = std::abs(M_PI_2 - std::abs(Angle(theOther)));
     return !(anAng > theAngularTolerance);
   }
 
-  //! Returns True if PI - Abs(<me>.Angle(theOther)) <= theAngularTolerance
+  //! Returns True if PI - std::abs(<me>.Angle(theOther)) <= theAngularTolerance
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
   //! theOther.Magnitude() <= Resolution from gp.
   Standard_Boolean IsOpposite(const gp_Vec2d&     theOther,
                               const Standard_Real theAngularTolerance) const;
 
-  //! Returns true if Abs(Angle(<me>, theOther)) <= theAngularTolerance or
-  //! PI - Abs(Angle(<me>, theOther)) <= theAngularTolerance
+  //! Returns true if std::abs(Angle(<me>, theOther)) <= theAngularTolerance or
+  //! PI - std::abs(Angle(<me>, theOther)) <= theAngularTolerance
   //! Two vectors with opposite directions are considered as parallel.
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
   //! theOther.Magnitude() <= Resolution from gp
@@ -376,7 +376,7 @@ inline gp_Vec2d::gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
 inline Standard_Boolean gp_Vec2d::IsOpposite(const gp_Vec2d&     theOther,
                                              const Standard_Real theAngularTolerance) const
 {
-  const Standard_Real anAng = Abs(Angle(theOther));
+  const Standard_Real anAng = std::abs(Angle(theOther));
   return M_PI - anAng <= theAngularTolerance;
 }
 
@@ -385,7 +385,7 @@ inline Standard_Boolean gp_Vec2d::IsOpposite(const gp_Vec2d&     theOther,
 inline Standard_Boolean gp_Vec2d::IsParallel(const gp_Vec2d&     theOther,
                                              const Standard_Real theAngularTolerance) const
 {
-  const Standard_Real anAng = Abs(Angle(theOther));
+  const Standard_Real anAng = std::abs(Angle(theOther));
   return anAng <= theAngularTolerance || M_PI - anAng <= theAngularTolerance;
 }
 

@@ -69,7 +69,7 @@ Standard_Boolean verifyEigenPair(const math_Matrix&  theMatrix,
   for (Standard_Integer i = 1; i <= aN; i++)
   {
     const Standard_Real aExpected = theEigenValue * theEigenVector(i);
-    if (Abs(aResult(i) - aExpected) > theTolerance)
+    if (std::abs(aResult(i) - aExpected) > theTolerance)
       return Standard_False;
   }
 
@@ -85,7 +85,7 @@ Standard_Boolean areOrthogonal(const math_Vector&  theVec1,
   for (Standard_Integer i = 1; i <= theVec1.Length(); i++)
     aDotProduct += theVec1(i) * theVec2(i);
 
-  return Abs(aDotProduct) < theTolerance;
+  return std::abs(aDotProduct) < theTolerance;
 }
 
 // Helper function to compute vector norm
@@ -94,7 +94,7 @@ Standard_Real vectorNorm(const math_Vector& theVector)
   Standard_Real aNorm = 0.0;
   for (Standard_Integer i = 1; i <= theVector.Length(); i++)
     aNorm += theVector(i) * theVector(i);
-  return Sqrt(aNorm);
+  return std::sqrt(aNorm);
 }
 } // namespace
 
@@ -159,8 +159,8 @@ TEST(math_EigenValuesSearcherTest, TwoByTwoMatrix)
   std::vector<Standard_Real> eigenvals = {searcher.EigenValue(1), searcher.EigenValue(2)};
   std::sort(eigenvals.begin(), eigenvals.end());
 
-  const Standard_Real lambda1 = 2.5 - 0.5 * Sqrt(5.0); // ~= 0.382
-  const Standard_Real lambda2 = 2.5 + 0.5 * Sqrt(5.0); // ~= 4.618
+  const Standard_Real lambda1 = 2.5 - 0.5 * std::sqrt(5.0); // ~= 0.382
+  const Standard_Real lambda2 = 2.5 + 0.5 * std::sqrt(5.0); // ~= 4.618
 
   EXPECT_NEAR(eigenvals[0], lambda1, 1e-10);
   EXPECT_NEAR(eigenvals[1], lambda2, 1e-10);
@@ -431,9 +431,9 @@ TEST(math_EigenValuesSearcherTest, ZeroDiagonalElements)
 
   std::sort(eigenvals.begin(), eigenvals.end());
 
-  EXPECT_NEAR(eigenvals[0], -Sqrt(2.0), 1e-10);
+  EXPECT_NEAR(eigenvals[0], -std::sqrt(2.0), 1e-10);
   EXPECT_NEAR(eigenvals[1], 0.0, 1e-10);
-  EXPECT_NEAR(eigenvals[2], Sqrt(2.0), 1e-10);
+  EXPECT_NEAR(eigenvals[2], std::sqrt(2.0), 1e-10);
 }
 
 // Test with large diagonal elements (numerical stability)
@@ -616,7 +616,7 @@ TEST(math_EigenValuesSearcherTest, WilkinsonMatrix)
   const Standard_Integer m = (n - 1) / 2;
   for (Standard_Integer i = 1; i <= n; i++)
   {
-    aDiagonal.SetValue(i, static_cast<Standard_Real>(Abs(i - 1 - m)));
+    aDiagonal.SetValue(i, static_cast<Standard_Real>(std::abs(i - 1 - m)));
   }
 
   aSubdiagonal.SetValue(1, 0.0);
@@ -700,7 +700,7 @@ TEST(math_EigenValuesSearcherTest, LargerMatrix)
   for (Standard_Integer i = 2; i <= n; i++)
   {
     Standard_Real val = static_cast<Standard_Real>(i % 3 == 0 ? -1.0 : 1.0);
-    aSubdiagonal.SetValue(i, val * Sqrt(static_cast<Standard_Real>(i)));
+    aSubdiagonal.SetValue(i, val * std::sqrt(static_cast<Standard_Real>(i)));
   }
 
   math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
@@ -1117,7 +1117,7 @@ TEST(math_EigenValuesSearcherTest, DeflationConditionSemantics)
   aSubdiagonal.SetValue(3, machEpsilonLevel * 0.5); // Even smaller, should definitely deflate
 
   // Verify the mathematical behavior that the deflation condition tests
-  const Standard_Real diagSum       = Abs(largeDiag1) + Abs(largeDiag2);
+  const Standard_Real diagSum       = std::abs(largeDiag1) + std::abs(largeDiag2);
   const Standard_Real testCondition = machEpsilonLevel + diagSum;
 
   // This should be true in floating-point arithmetic due to precision limits
@@ -1158,15 +1158,15 @@ TEST(math_EigenValuesSearcherTest, DeflationBoundaryCondition)
   const Standard_Real eps = std::numeric_limits<Standard_Real>::epsilon();
 
   // For first pair: should deflate
-  const Standard_Real sum1 = Abs(aDiagonal(1)) + Abs(aDiagonal(2));
+  const Standard_Real sum1 = std::abs(aDiagonal(1)) + std::abs(aDiagonal(2));
   aSubdiagonal.SetValue(2, sum1 * eps * 0.1); // Below machine epsilon relative to sum
 
   // For second pair: should deflate
-  const Standard_Real sum2 = Abs(aDiagonal(2)) + Abs(aDiagonal(3));
+  const Standard_Real sum2 = std::abs(aDiagonal(2)) + std::abs(aDiagonal(3));
   aSubdiagonal.SetValue(3, sum2 * eps * 0.1);
 
   // For third pair: should deflate
-  const Standard_Real sum3 = Abs(aDiagonal(3)) + Abs(aDiagonal(4));
+  const Standard_Real sum3 = std::abs(aDiagonal(3)) + std::abs(aDiagonal(4));
   aSubdiagonal.SetValue(4, sum3 * eps * 0.1);
 
   math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);

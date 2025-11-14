@@ -1068,7 +1068,8 @@ void BOPAlgo_PaveFiller::ForceInterfEE(const Message_ProgressRange& theRange)
     // intersections only, so use only the real tolerance of edges,
     // no need to use the extended tolerance.
     Standard_Real aTolAdd =
-      (bSICheckMode ? myFuzzyValue : 2 * Max(BRep_Tool::Tolerance(aV1), BRep_Tool::Tolerance(aV2)));
+      (bSICheckMode ? myFuzzyValue
+                    : 2 * std::max(BRep_Tool::Tolerance(aV1), BRep_Tool::Tolerance(aV2)));
 
     // All possible pairs combined from the list <aLPB> should be checked
     BOPDS_ListIteratorOfListOfPaveBlock aItLPB1(aLPB);
@@ -1140,7 +1141,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE(const Message_ProgressRange& theRange)
 
             // The angle should be close to zero
             Standard_Real aCos = aVTgt1.Dot(aVTgt2.Normalized());
-            if (Abs(aCos) < 0.9063)
+            if (std::abs(aCos) < 0.9063)
               bUseAddTol = Standard_False;
           }
         }

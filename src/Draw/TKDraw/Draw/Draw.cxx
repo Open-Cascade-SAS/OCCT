@@ -384,9 +384,9 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     ::SetErrorMode(0);
 #endif
 
-  // *****************************************************************
-  // init X window and create display
-  // *****************************************************************
+    // *****************************************************************
+    // init X window and create display
+    // *****************************************************************
 #ifdef _WIN32
   HWND hWnd = NULL;
 #endif
@@ -935,8 +935,9 @@ Standard_Integer Draw::parseColor(const Standard_Integer   theArgNb,
   }
   if (theArgNb >= 3)
   {
-    const Standard_Integer aNumberOfColorComponentsToParse = Min(theArgNb, theToParseAlpha ? 4 : 3);
-    Standard_Integer       aNumberOfColorComponentsParsed  = aNumberOfColorComponentsToParse;
+    const Standard_Integer aNumberOfColorComponentsToParse =
+      std::min(theArgNb, theToParseAlpha ? 4 : 3);
+    Standard_Integer aNumberOfColorComponentsParsed = aNumberOfColorComponentsToParse;
     if (parseIntegerColor(aNumberOfColorComponentsParsed, theArgVec, theColor))
     {
       return aNumberOfColorComponentsParsed;

@@ -169,8 +169,8 @@ Standard_Boolean BRepLib::CheckSameRange(const TopoDS_Edge& AnEdge, const Standa
       }
       else
       {
-        IsSameRange =
-          (Abs(current_first - first) <= Tolerance) && (Abs(current_last - last) <= Tolerance);
+        IsSameRange = (std::abs(current_first - first) <= Tolerance)
+                      && (std::abs(current_last - last) <= Tolerance);
       }
     }
     an_Iterator.Next();
@@ -225,8 +225,8 @@ void BRepLib::SameRange(const TopoDS_Edge& AnEdge, const Standard_Real Tolerance
           first_time_in = Standard_False;
         }
 
-        if (Abs(first - current_first) > Precision::Confusion()
-            || Abs(last - current_last) > Precision::Confusion())
+        if (std::abs(first - current_first) > Precision::Confusion()
+            || std::abs(last - current_last) > Precision::Confusion())
         {
           if (has_curve)
           {
@@ -280,13 +280,13 @@ static Standard_Integer evaluateMaxSegment(const Standard_Integer          aMaxS
   if (aSurf->GetType() == GeomAbs_BSplineSurface)
   {
     Handle(Geom_BSplineSurface) aBSpline = aSurf->BSpline();
-    aNbSKnots                            = Max(aBSpline->NbUKnots(), aBSpline->NbVKnots());
+    aNbSKnots                            = std::max(aBSpline->NbUKnots(), aBSpline->NbVKnots());
   }
   if (aCurv2d->GetType() == GeomAbs_BSplineCurve)
   {
     aNbC2dKnots = aCurv2d->NbKnots();
   }
-  Standard_Integer aReturn = (Standard_Integer)(30 + Max(aNbSKnots, aNbC2dKnots));
+  Standard_Integer aReturn = (Standard_Integer)(30 + std::max(aNbSKnots, aNbC2dKnots));
   return aReturn;
 }
 
@@ -419,8 +419,8 @@ Standard_Boolean BRepLib::BuildCurve3d(const TopoDS_Edge&     AnEdge,
       BRep_Builder B;
       tolerance = BRep_Tool::Tolerance(AnEdge);
       // Patch
-      // max_deviation = Max(tolerance, max_deviation) ;
-      max_deviation = Max(tolerance, Tolerance);
+      // max_deviation = std::max(tolerance, max_deviation) ;
+      max_deviation = std::max(tolerance, Tolerance);
       if (NewCurvePtr.IsNull())
         return Standard_False;
       B.UpdateEdge(TopoDS::Edge(AnEdge), NewCurvePtr, L[0], max_deviation);
@@ -655,7 +655,7 @@ Standard_Boolean BRepLib::UpdateEdgeTol(const TopoDS_Edge&  AnEdge,
                                                  max_distance);
         }
         max_distance *= safe_factor;
-        edge_tolerance = Max(max_distance, edge_tolerance);
+        edge_tolerance = std::max(max_distance, edge_tolerance);
       }
     }
     curve_index += 1;
@@ -752,7 +752,7 @@ static void GetEdgeTol(const TopoDS_Edge& theEdge,
     gp_Pnt        Pc3d  = HC->Value(u);
     gp_Pnt2d      p2d   = pc->Value(u);
     gp_Pnt        Pcons = ElSLib::Value(p2d.X(), p2d.Y(), pln);
-    Standard_Real eps   = Max(Pc3d.XYZ().SquareModulus(), Pcons.XYZ().SquareModulus());
+    Standard_Real eps   = std::max(Pc3d.XYZ().SquareModulus(), Pcons.XYZ().SquareModulus());
     eps                 = Epsilon(eps);
     Standard_Real temp  = Pc3d.SquareDistance(Pcons);
     if (temp <= eps)
@@ -789,7 +789,7 @@ static void UpdTolMap(const TopoDS_Shape&          theSh,
     if (!anOldtol)
       theShToTol.Bind(theSh, theNewTol);
     else
-      theShToTol(theSh) = Max(*anOldtol, theNewTol);
+      theShToTol(theSh) = std::max(*anOldtol, theNewTol);
   }
 }
 
@@ -1033,12 +1033,12 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_Curve)&   c3d,
     {
       if (Puv.X() < uf - du)
       {
-        dapp = Max(dapp, DSdu * (uf - Puv.X()));
+        dapp = std::max(dapp, DSdu * (uf - Puv.X()));
         continue;
       }
       else if (Puv.X() > ul + du)
       {
-        dapp = Max(dapp, DSdu * (Puv.X() - ul));
+        dapp = std::max(dapp, DSdu * (Puv.X() - ul));
         continue;
       }
     }
@@ -1046,12 +1046,12 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_Curve)&   c3d,
     {
       if (Puv.Y() < vf - dv)
       {
-        dapp = Max(dapp, DSdv * (vf - Puv.Y()));
+        dapp = std::max(dapp, DSdv * (vf - Puv.Y()));
         continue;
       }
       else if (Puv.Y() > vl + dv)
       {
-        dapp = Max(dapp, DSdv * (Puv.Y() - vl));
+        dapp = std::max(dapp, DSdv * (Puv.Y() - vl));
         continue;
       }
     }
@@ -1066,7 +1066,7 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_Curve)&   c3d,
 
     dist(i + 1) = temp;
 
-    d2 = Max(d2, temp);
+    d2 = std::max(d2, temp);
   }
 
   if (Precision::IsInfinite(d2))
@@ -1074,7 +1074,7 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_Curve)&   c3d,
     return d2;
   }
 
-  d2 = Sqrt(d2);
+  d2 = std::sqrt(d2);
   if (dapp > d2)
   {
     return dapp;
@@ -1112,14 +1112,14 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_Curve)&   c3d,
     {
       if (dist(i) > 0 && dist(i) < 1.0)
       {
-        D2 = Max(D2, dist(i));
+        D2 = std::max(D2, dist(i));
       }
     }
   }
 
   // d2 = 1.5*sqrt(d2);
   d2 = (!ana) ? 1.5 * d2 : 1.5 * sqrt(D2);
-  d2 = Max(d2, 1.e-7);
+  d2 = std::max(d2, 1.e-7);
   return d2;
 }
 
@@ -1297,7 +1297,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
       }
 
       // Eval tol2d to compute SameRange
-      Standard_Real TolSameRange = Max(GAC.Resolution(theTolerance), Precision::PConfusion());
+      Standard_Real TolSameRange = std::max(GAC.Resolution(theTolerance), Precision::PConfusion());
       for (Standard_Integer i = 0; i < 2; i++)
       {
         Handle(Geom2d_Curve) curPC    = PC[i];
@@ -1325,8 +1325,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
         {
           Standard_Real UResol                = GAS.UResolution(theTolerance);
           Standard_Real VResol                = GAS.VResolution(theTolerance);
-          Standard_Real TolConf2d             = Min(UResol, VResol);
-          TolConf2d                           = Max(TolConf2d, Precision::PConfusion());
+          Standard_Real TolConf2d             = std::min(UResol, VResol);
+          TolConf2d                           = std::max(TolConf2d, Precision::PConfusion());
           Handle(Geom2d_BSplineCurve) bs2d    = GAC2d.BSpline();
           Handle(Geom2d_BSplineCurve) bs2dsov = bs2d;
           Standard_Real               fC0 = bs2d->FirstParameter(), lC0 = bs2d->LastParameter();
@@ -1340,8 +1340,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
           { // -------- IFV, Jan 2000
             gp_Pnt2d NewOriginPoint;
             bs2d->D0(bs2d->FirstParameter(), NewOriginPoint);
-            if (Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion()
-                || Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
+            if (std::abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion()
+                || std::abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
             {
 
               TColStd_Array1OfReal Knotbs2d(1, bs2d->NbKnots());
@@ -1350,8 +1350,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
               for (Standard_Integer Index = 1; Index <= bs2d->NbKnots(); Index++)
               {
                 bs2d->D0(Knotbs2d(Index), NewOriginPoint);
-                if (Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion()
-                    || Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
+                if (std::abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion()
+                    || std::abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
                   continue;
 
                 bs2d->SetOrigin(Index);
@@ -1368,7 +1368,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
               bs2d                    = bs2dsov;
               Standard_Real UResbail  = GAS.UResolution(tolbail);
               Standard_Real VResbail  = GAS.VResolution(tolbail);
-              Standard_Real Tol2dbail = Min(UResbail, VResbail);
+              Standard_Real Tol2dbail = std::min(UResbail, VResbail);
               bs2d->D0(bs2d->FirstParameter(), OriginPoint);
 
               Standard_Integer     nbp = bs2d->NbPoles();
@@ -1379,12 +1379,12 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
               for (Standard_Integer ip = 2; ip <= nbp; ip++)
               {
                 p1 = poles(ip);
-                d  = Min(d, p.SquareDistance(p1));
+                d  = std::min(d, p.SquareDistance(p1));
                 p  = p1;
               }
               d = sqrt(d) * .1;
 
-              Tol2dbail = Max(Min(Tol2dbail, d), TolConf2d);
+              Tol2dbail = std::max(std::min(Tol2dbail, d), TolConf2d);
 
               Geom2dConvert::C0BSplineToC1BSplineCurve(bs2d, Tol2dbail);
 
@@ -1392,8 +1392,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
               { // -------- IFV, Jan 2000
                 gp_Pnt2d NewOriginPoint;
                 bs2d->D0(bs2d->FirstParameter(), NewOriginPoint);
-                if (Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion()
-                    || Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
+                if (std::abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion()
+                    || std::abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
                 {
 
                   TColStd_Array1OfReal Knotbs2d(1, bs2d->NbKnots());
@@ -1402,8 +1402,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
                   for (Standard_Integer Index = 1; Index <= bs2d->NbKnots(); Index++)
                   {
                     bs2d->D0(Knotbs2d(Index), NewOriginPoint);
-                    if (Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion()
-                        || Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
+                    if (std::abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion()
+                        || std::abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
                       continue;
 
                     bs2d->SetOrigin(Index);
@@ -1457,7 +1457,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
             GeomAbs_Shape    cont  = bs2d->Continuity();
             Standard_Boolean IsBad = Standard_False;
 
-            if (cont > GeomAbs_C0 && error > Max(1.e-3, theTolerance))
+            if (cont > GeomAbs_C0 && error > std::max(1.e-3, theTolerance))
             {
               Standard_Integer     NbKnots = bs2d->NbKnots();
               TColStd_Array1OfReal Knots(1, NbKnots);
@@ -1469,7 +1469,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
               for (Standard_Integer j = 2; j < NbKnots; j++)
               {
                 dtcur = Knots(j + 1) - Knots(j);
-                dtmin = Min(dtmin, dtcur);
+                dtmin = std::min(dtmin, dtcur);
 
                 if (IsBad)
                   continue;
@@ -1487,7 +1487,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
               if (IsBad)
               {
                 // To avoid failures in Approx_CurvilinearParameter
-                bs2d->Resolution(Max(1.e-3, theTolerance), dtcur);
+                bs2d->Resolution(std::max(1.e-3, theTolerance), dtcur);
                 if (dtmin < dtcur)
                   IsBad = Standard_False;
               }
@@ -1505,7 +1505,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
                 maxdeg = 14;
               Approx_CurvilinearParameter AppCurPar(HC2d,
                                                     HS,
-                                                    Max(1.e-3, theTolerance),
+                                                    std::max(1.e-3, theTolerance),
                                                     cont,
                                                     maxdeg,
                                                     10);
@@ -1515,8 +1515,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
                 GAC2d.Load(bs2d, f3d, l3d);
                 curPC = bs2d;
 
-                if (Abs(bs2d->FirstParameter() - fC0) > TolSameRange
-                    || Abs(bs2d->LastParameter() - lC0) > TolSameRange)
+                if (std::abs(bs2d->FirstParameter() - fC0) > TolSameRange
+                    || std::abs(bs2d->LastParameter() - lC0) > TolSameRange)
                 {
                   Standard_Integer     NbKnots = bs2d->NbKnots();
                   TColStd_Array1OfReal Knots(1, NbKnots);
@@ -1542,7 +1542,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
 
           if (SameP.IsSameParameter())
           {
-            maxdist = Max(maxdist, SameP.TolReached());
+            maxdist = std::max(maxdist, SameP.TolReached());
             if (updatepc)
             {
               if (i == 0)
@@ -1558,11 +1558,11 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
             {
               curPC    = SameP.Curve2d();
               updatepc = Standard_True;
-              maxdist  = Max(maxdist, tolreached);
+              maxdist  = std::max(maxdist, tolreached);
             }
             else
             {
-              maxdist = Max(maxdist, error);
+              maxdist = std::max(maxdist, error);
             }
             if (updatepc)
             {
@@ -1600,10 +1600,10 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
         if (!IsSameP)
         {
           Standard_Real Prec_Surf = BRepCheck::PrecSurface(HS);
-          Standard_Real CurTol    = anEdgeTol + Max(Prec_C3d, Prec_Surf);
+          Standard_Real CurTol    = anEdgeTol + std::max(Prec_C3d, Prec_Surf);
           if (CurTol >= error)
           {
-            maxdist = Max(maxdist, anEdgeTol);
+            maxdist = std::max(maxdist, anEdgeTol);
             IsSameP = Standard_True;
           }
         }
@@ -1624,7 +1624,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge&  theEdge,
     if (YaPCu)
     {
       // Avoid setting too small tolerances.
-      maxdist   = Max(maxdist, Precision::Confusion());
+      maxdist   = std::max(maxdist, Precision::Confusion());
       theNewTol = maxdist;
       aNTE->Modified(Standard_True);
       aNTE->Tolerance(maxdist);
@@ -1723,7 +1723,7 @@ static void InternalUpdateTolerances(const TopoDS_Shape&    theOldShape,
         Ftol = aShToTol(FF);
       else
         Ftol = BRep_Tool::Tolerance(FF); // tolerance have not been updated
-      tol = Max(tol, Ftol);
+      tol = std::max(tol, Ftol);
     }
     // Update can only increase tolerance, so if the edge has a greater
     //  tolerance than its faces it is not concerned
@@ -1750,7 +1750,7 @@ static void InternalUpdateTolerances(const TopoDS_Shape&    theOldShape,
     {
       const TopoDS_Edge&   E     = TopoDS::Edge(lConx.Value());
       const Standard_Real* aNtol = aShToTol.Seek(E);
-      tol                        = Max(tol, aNtol ? *aNtol : BRep_Tool::Tolerance(E));
+      tol                        = std::max(tol, aNtol ? *aNtol : BRep_Tool::Tolerance(E));
       if (tol > BigTol)
         continue;
       if (!BRep_Tool::SameRange(E))
@@ -1805,7 +1805,7 @@ static void InternalUpdateTolerances(const TopoDS_Shape&    theOldShape,
         itcr.Next();
       }
     }
-    tol = Max(tol, sqrt(aMaxDist));
+    tol = std::max(tol, sqrt(aMaxDist));
     tol += 2. * Epsilon(tol);
     //
     Standard_Real               aVTol    = BRep_Tool::Tolerance(V);
@@ -1928,14 +1928,14 @@ void BRepLib::UpdateInnerTolerances(const TopoDS_Shape& aShape)
       gp_Pnt        End1  = anHCurve->Value(fpar);
       Standard_Real dist1 = Pnt1.Distance(End1);
       dist1 += 2. * Epsilon(dist1);
-      BB.UpdateVertex(V1, Max(dist1, TolEdge));
+      BB.UpdateVertex(V1, std::max(dist1, TolEdge));
     }
     if (!V2.IsNull())
     {
       gp_Pnt        End2  = anHCurve->Value(lpar);
       Standard_Real dist2 = Pnt2.Distance(End2);
       dist2 += 2. * Epsilon(dist2);
-      BB.UpdateVertex(V2, Max(dist2, TolEdge));
+      BB.UpdateVertex(V2, std::max(dist2, TolEdge));
     }
   }
 }
@@ -2195,7 +2195,7 @@ GeomAbs_Shape BRepLib::ContinuityOfFaces(const TopoDS_Edge&  theEdge,
     if (isSmoothSuspect)
     {
       aCurCont = GeomAbs_G1;
-      if (Abs(Sqrt(aSqLen1) - Sqrt(aSqLen2)) < Precision::Confusion()
+      if (std::abs(std::sqrt(aSqLen1) - std::sqrt(aSqLen2)) < Precision::Confusion()
           && aDer1.Dot(aDer2) > Precision::SquareConfusion()) // <= check vectors are codirectional
         aCurCont = GeomAbs_C1;
     }
@@ -2216,10 +2216,10 @@ GeomAbs_Shape BRepLib::ContinuityOfFaces(const TopoDS_Edge&  theEdge,
     {
       if (aCrvDir1[0].XYZ().CrossSquareMagnitude(aCrvDir2[aStep].XYZ())
             <= Precision::SquareConfusion()
-          && Abs(aCrvLen1[0] - aCrvLen2[aStep]) < Precision::Confusion()
+          && std::abs(aCrvLen1[0] - aCrvLen2[aStep]) < Precision::Confusion()
           && aCrvDir1[1].XYZ().CrossSquareMagnitude(aCrvDir2[1 - aStep].XYZ())
                <= Precision::SquareConfusion()
-          && Abs(aCrvLen1[1] - aCrvLen2[1 - aStep]) < Precision::Confusion())
+          && std::abs(aCrvLen1[1] - aCrvLen2[1 - aStep]) < Precision::Confusion())
       {
         if (aCurCont == GeomAbs_C1 && aCrvDir1[0].Dot(aCrvDir2[aStep]) > Precision::Confusion()
             && aCrvDir1[1].Dot(aCrvDir2[1 - aStep]) > Precision::Confusion())
@@ -2661,7 +2661,7 @@ void BRepLib::UpdateDeflection(const TopoDS_Shape& theShape)
       const gp_Pnt   aMid3d_t = (aP3d[0].XYZ() + aP3d[1].XYZ() + aP3d[2].XYZ()) / 3.;
       const gp_Pnt2d aMid2d_t = (aP2d[0].XY() + aP2d[1].XY() + aP2d[2].XY()) / 3.;
 
-      aSqDeflection = Max(aSqDeflection, aTool.Eval(aMid2d_t, aMid3d_t));
+      aSqDeflection = std::max(aSqDeflection, aTool.Eval(aMid2d_t, aMid3d_t));
 
       for (Standard_Integer i = 0; i < 3; ++i)
       {
@@ -2679,12 +2679,12 @@ void BRepLib::UpdateDeflection(const TopoDS_Shape& theShape)
           const gp_Pnt   aMid3d_l = (aP3d1.XYZ() + aP3d2.XYZ()) / 2.;
           const gp_Pnt2d aMid2d_l = (aP2d1.XY() + aP2d2.XY()) / 2.;
 
-          aSqDeflection = Max(aSqDeflection, aTool.Eval(aMid2d_l, aMid3d_l));
+          aSqDeflection = std::max(aSqDeflection, aTool.Eval(aMid2d_l, aMid3d_l));
         }
       }
     }
 
-    aPT->Deflection(Sqrt(aSqDeflection));
+    aPT->Deflection(std::sqrt(aSqDeflection));
   }
 }
 
@@ -2955,7 +2955,7 @@ void BRepLib::ExtendFace(const TopoDS_Face&     theF,
     {
       // Adjust face bounds to first period
       Standard_Real aDelta = aFUMax - aFUMin;
-      aFUMin = Max(aSUMin, aFUMin + anUPeriod * Ceiling((aSUMin - aFUMin) / anUPeriod));
+      aFUMin = std::max(aSUMin, aFUMin + anUPeriod * std::ceil((aSUMin - aFUMin) / anUPeriod));
       aFUMax = aFUMin + aDelta;
     }
 
@@ -2965,8 +2965,8 @@ void BRepLib::ExtendFace(const TopoDS_Face&     theF,
     {
       // Adjust face bounds to first period
       Standard_Real aDelta = aFVMax - aFVMin;
-      aFVMin               = Max(aSVMin, aFVMin + aVPeriod * Ceiling((aSVMin - aFVMin) / aVPeriod));
-      aFVMax               = aFVMin + aDelta;
+      aFVMin = std::max(aSVMin, aFVMin + aVPeriod * std::ceil((aSVMin - aFVMin) / aVPeriod));
+      aFVMax = aFVMin + aDelta;
     }
 
     // Enlarge the face
@@ -2977,23 +2977,23 @@ void BRepLib::ExtendFace(const TopoDS_Face&     theF,
       aVRes = aBAS.VResolution(theExtVal);
 
     if (theExtUMin)
-      aFUMin = Max(aSUMin, aFUMin - anURes);
+      aFUMin = std::max(aSUMin, aFUMin - anURes);
     if (theExtUMax)
-      aFUMax = Min(isUPeriodic ? aFUMin + anUPeriod : aSUMax, aFUMax + anURes);
+      aFUMax = std::min(isUPeriodic ? aFUMin + anUPeriod : aSUMax, aFUMax + anURes);
     if (theExtVMin)
-      aFVMin = Max(aSVMin, aFVMin - aVRes);
+      aFVMin = std::max(aSVMin, aFVMin - aVRes);
     if (theExtVMax)
-      aFVMax = Min(isVPeriodic ? aFVMin + aVPeriod : aSVMax, aFVMax + aVRes);
+      aFVMax = std::min(isVPeriodic ? aFVMin + aVPeriod : aSVMax, aFVMax + aVRes);
 
     // Check if the periodic surface should become closed.
     // In this case, use the basis surface with basis bounds.
     constexpr Standard_Real anEps = Precision::PConfusion();
-    if (isUPeriodic && Abs(aFUMax - aFUMin - anUPeriod) < anEps)
+    if (isUPeriodic && std::abs(aFUMax - aFUMin - anUPeriod) < anEps)
     {
       aFUMin = aSUMin;
       aFUMax = aSUMax;
     }
-    if (isVPeriodic && Abs(aFVMax - aFVMin - aVPeriod) < anEps)
+    if (isVPeriodic && std::abs(aFVMax - aFVMin - aVPeriod) < anEps)
     {
       aFVMin = aSVMin;
       aFVMax = aSVMax;

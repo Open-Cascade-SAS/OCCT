@@ -38,7 +38,7 @@ Handle(Expr_GeneralExpression) Expr_Absolute::ShallowSimplified() const
   if (op->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) valop = Handle(Expr_NumericValue)::DownCast(op);
-    return new Expr_NumericValue(Abs(valop->GetValue()));
+    return new Expr_NumericValue(std::abs(valop->GetValue()));
   }
   if (op->IsKind(STANDARD_TYPE(Expr_UnaryMinus)))
   {
@@ -80,7 +80,7 @@ Handle(Expr_GeneralExpression) Expr_Absolute::Derivative(const Handle(Expr_Named
 Standard_Real Expr_Absolute::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                       const TColStd_Array1OfReal&      vals) const
 {
-  return ::Abs(Operand()->Evaluate(vars, vals));
+  return std::abs(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_Absolute::String() const

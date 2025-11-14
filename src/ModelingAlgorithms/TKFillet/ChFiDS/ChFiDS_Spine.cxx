@@ -410,9 +410,9 @@ Standard_Integer ChFiDS_Spine::Index(const Standard_Real W, const Standard_Boole
 {
   Standard_Integer ind, len = abscissa->Length();
   Standard_Real    par = W, last = abscissa->Value(abscissa->Upper());
-  Standard_Real    f = 0., l = 0., t = Max(tolesp, Precision::Confusion());
+  Standard_Real    f = 0., l = 0., t = std::max(tolesp, Precision::Confusion());
 
-  if (IsPeriodic() && Abs(par) >= t && Abs(par - last) >= t)
+  if (IsPeriodic() && std::abs(par) >= t && std::abs(par - last) >= t)
     par = ElCLib::InPeriod(par, 0., last);
 
   for (ind = 1; ind <= len; ind++)
@@ -422,13 +422,13 @@ Standard_Integer ChFiDS_Spine::Index(const Standard_Real W, const Standard_Boole
     if (par < l || ind == len)
       break;
   }
-  if (Forward && ind < len && Abs(par - l) < t)
+  if (Forward && ind < len && std::abs(par - l) < t)
     ind++;
-  else if (!Forward && ind > 1 && Abs(par - f) < t)
+  else if (!Forward && ind > 1 && std::abs(par - f) < t)
     ind--;
-  else if (Forward && IsPeriodic() && ind == len && Abs(par - l) < t)
+  else if (Forward && IsPeriodic() && ind == len && std::abs(par - l) < t)
     ind = 1;
-  else if (!Forward && IsPeriodic() && ind == 1 && Abs(par - f) < t)
+  else if (!Forward && IsPeriodic() && ind == 1 && std::abs(par - f) < t)
     ind = len;
   return ind;
 }
@@ -575,15 +575,15 @@ void ChFiDS_Spine::Parameter(const Standard_Integer Index,
 
 void ChFiDS_Spine::Prepare(Standard_Real& L, Standard_Integer& Ind) const
 {
-  Standard_Real    tol  = Max(tolesp, Precision::Confusion());
+  Standard_Real    tol  = std::max(tolesp, Precision::Confusion());
   Standard_Real    last = abscissa->Value(abscissa->Upper());
   Standard_Integer len  = abscissa->Length();
-  if (IsPeriodic() && Abs(L) >= tol && Abs(L - last) >= tol)
+  if (IsPeriodic() && std::abs(L) >= tol && std::abs(L - last) >= tol)
     L = ElCLib::InPeriod(L, 0., last);
 
   if (hasfirsttgt && (L <= firsttgtpar))
   {
-    if (hasref && valref >= L && Abs(L - firsttgtpar) <= tol)
+    if (hasref && valref >= L && std::abs(L - firsttgtpar) <= tol)
     {
       Ind = Index(L);
     }
@@ -599,7 +599,7 @@ void ChFiDS_Spine::Prepare(Standard_Real& L, Standard_Integer& Ind) const
   }
   else if (haslasttgt && (L >= lasttgtpar))
   {
-    if (hasref && valref <= L && Abs(L - lasttgtpar) <= tol)
+    if (hasref && valref <= L && std::abs(L - lasttgtpar) <= tol)
     {
       Ind = Index(L);
     }
@@ -624,12 +624,12 @@ void ChFiDS_Spine::Prepare(Standard_Real& L, Standard_Integer& Ind) const
     {
       if (L >= valref && Ind != 1)
       {
-        if (Abs(L - abscissa->Value(Ind - 1)) <= Precision::Confusion())
+        if (std::abs(L - abscissa->Value(Ind - 1)) <= Precision::Confusion())
           Ind--;
       }
       else if (L <= valref && Ind != len)
       {
-        if (Abs(L - abscissa->Value(Ind)) <= Precision::Confusion())
+        if (std::abs(L - abscissa->Value(Ind)) <= Precision::Confusion())
           Ind++;
       }
     }
@@ -785,7 +785,7 @@ void ChFiDS_Spine::D2(const Standard_Real AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V
     Standard_Real N1 = V1.SquareMagnitude();
     Standard_Real D2 = -(V1.Dot(V2)) * (1. / N1) * (1. / N1);
     V2.Multiply(1. / N1);
-    N1        = Sqrt(N1);
+    N1        = std::sqrt(N1);
     gp_Vec Va = V1.Multiplied(D2);
     V2.Add(Va);
     Standard_Real D1 = 1. / N1;

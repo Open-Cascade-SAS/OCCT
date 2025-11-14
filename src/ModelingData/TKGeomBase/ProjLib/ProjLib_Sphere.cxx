@@ -69,7 +69,7 @@ void ProjLib_Sphere::Init(const gp_Sphere& Sp)
 //           by Radius)
 //                / X = cosV cosU        U = Atan(Y/X)
 //            P = | Y = cosV sinU   ==>
-//                \ Z = sinV             V = ASin( Z)
+//                \ Z = sinV             V = std::asin( Z)
 //=======================================================================
 
 static gp_Pnt2d EvalPnt2d(const gp_Vec& P, const gp_Sphere& Sp)
@@ -79,9 +79,9 @@ static gp_Pnt2d EvalPnt2d(const gp_Vec& P, const gp_Sphere& Sp)
   Standard_Real Z = P.Dot(gp_Vec(Sp.Position().Direction()));
   Standard_Real U, V;
 
-  if (Abs(X) > Precision::PConfusion() || Abs(Y) > Precision::PConfusion())
+  if (std::abs(X) > Precision::PConfusion() || std::abs(Y) > Precision::PConfusion())
   {
-    Standard_Real UU = ATan2(Y, X);
+    Standard_Real UU = std::atan2(Y, X);
     U                = ElCLib::InPeriod(UU, 0., 2 * M_PI);
   }
   else
@@ -93,7 +93,7 @@ static gp_Pnt2d EvalPnt2d(const gp_Vec& P, const gp_Sphere& Sp)
     Z = 1.;
   else if (Z < -1.)
     Z = -1.;
-  V = ASin(Z);
+  V = std::asin(Z);
 
   return gp_Pnt2d(U, V);
 }
@@ -135,14 +135,14 @@ void ProjLib_Sphere::Project(const gp_Circ& C)
     P2d2 = EvalPnt2d(gp_Vec(Yc), mySphere);
 
     if (isIsoU
-        && (Abs(P2d1.Y() - M_PI / 2.) < Precision::PConfusion()
-            || Abs(P2d1.Y() + M_PI / 2.) < Precision::PConfusion()))
+        && (std::abs(P2d1.Y() - M_PI / 2.) < Precision::PConfusion()
+            || std::abs(P2d1.Y() + M_PI / 2.) < Precision::PConfusion()))
     {
       // then P1 is on the apex of the sphere and U is undefined
       // The value of U is given by P2d2.Y() .
       P2d1.SetX(P2d2.X());
     }
-    else if (Abs(Abs(P2d1.X() - P2d2.X()) - M_PI) < Precision::PConfusion())
+    else if (std::abs(std::abs(P2d1.X() - P2d2.X()) - M_PI) < Precision::PConfusion())
     {
       // then we have U2 = U1 + PI; V2;
       // we have to assume that U1 = U2
@@ -170,7 +170,7 @@ void ProjLib_Sphere::Project(const gp_Circ& C)
     if (U < 0)
       U += 2 * M_PI;
     Standard_Real Z = gp_Vec(O, C.Location()).Dot(Zs);
-    Standard_Real V = ASin(Z / mySphere.Radius());
+    Standard_Real V = std::asin(Z / mySphere.Radius());
     P2d1            = gp_Pnt2d(U, V);
     D2d             = gp_Dir2d((Xc ^ Yc).Dot(Xs ^ Ys), 0.);
     isDone          = Standard_True;
@@ -219,7 +219,7 @@ void ProjLib_Sphere::SetInBounds(const Standard_Real U)
   //   if ((P.Y() > M_PI/2) ||
   if ((P.Y() - M_PI / 2 > Tol) ||
       //  Modified by skv - Tue Aug  1 16:29:59 2006 OCC13116 End
-      (Abs(P.Y() - M_PI / 2) < Tol && D2d.IsEqual(gp::DY2d(), Tol)))
+      (std::abs(P.Y() - M_PI / 2) < Tol && D2d.IsEqual(gp::DY2d(), Tol)))
   {
     Axis = gp_Ax2d(gp_Pnt2d(0., M_PI / 2.), gp::DX2d());
   }
@@ -227,7 +227,7 @@ void ProjLib_Sphere::SetInBounds(const Standard_Real U)
   //   else if ((P.Y() < -M_PI/2) ||
   else if ((P.Y() + M_PI / 2 < -Tol) ||
            //  Modified by skv - Tue Aug  1 16:29:59 2006 OCC13116 End
-           (Abs(P.Y() + M_PI / 2) < Tol && D2d.IsOpposite(gp::DY2d(), Tol)))
+           (std::abs(P.Y() + M_PI / 2) < Tol && D2d.IsOpposite(gp::DY2d(), Tol)))
   {
     Axis = gp_Ax2d(gp_Pnt2d(0., -M_PI / 2.), gp::DX2d());
   }

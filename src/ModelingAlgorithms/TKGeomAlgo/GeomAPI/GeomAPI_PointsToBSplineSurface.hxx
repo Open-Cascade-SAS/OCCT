@@ -56,7 +56,7 @@ class Geom_BSplineSurface;
 //! type of parametrization, which can be Approx_ChordLength, Approx_Centripetal
 //! or Approx_IsoParametric. Default value is Approx_ChordLength.
 //! For ChordLength parametrisation U(i) = U(i-1) + P(i).Distance(P(i-1)),
-//! For Centripetal type U(i) = U(i-1) + Sqrt(P(i).Distance(P(i-1))).
+//! For Centripetal type U(i) = U(i-1) + std::sqrt(P(i).Distance(P(i-1))).
 //! Centripetal type can get better result for irregular distances between points.
 //!
 //! Approximation and interpolation algorithms can build periodical surface along U

@@ -869,7 +869,7 @@ void Aspect_OpenVRSession::updateProjectionFrustums()
     NCollection_Vec4<float>(-aFrustL.Left, aFrustL.Right, -aFrustR.Left, aFrustR.Right).maxComp(),
     NCollection_Vec4<float>(-aFrustL.Top, aFrustL.Bottom, -aFrustR.Top, aFrustR.Bottom).maxComp());
   myAspect      = aTanHalfFov.x() / aTanHalfFov.y();
-  myFieldOfView = 2.0 * ATan(aTanHalfFov.y()) * 180.0 / M_PI;
+  myFieldOfView = 2.0 * std::atan(aTanHalfFov.y()) * 180.0 / M_PI;
 
   // Intra-ocular Distance can be changed in runtime
   // const vr::HmdMatrix34_t aLeftToHead  = myContext->System->GetEyeToHeadTransform (vr::Eye_Left);

@@ -70,14 +70,14 @@ static void EnlargeZone(const Handle(Adaptor3d_Surface)& theSurf,
   // Enlarge U
   if (isToEnlargeU)
   {
-    Standard_Real delta_u = 0.01 * Abs(u1 - u0);
+    Standard_Real delta_u = 0.01 * std::abs(u1 - u0);
     u0 -= delta_u;
     u1 += delta_u;
   }
 
   if (isToEnlargeV)
   {
-    Standard_Real delta_v = 0.01 * Abs(v1 - v0);
+    Standard_Real delta_v = 0.01 * std::abs(v1 - v0);
     v0 -= delta_v;
     v1 += delta_v;
   }

@@ -159,7 +159,7 @@ static Standard_Real EvalPhase(const TopoDS_Edge&         Edge,
     if (!TopoDS::Edge(Exp.Current()).IsSame(Edge))
     {
       BRep_Tool::UVPoints(TopoDS::Edge(Exp.Current()), Face, PF1, PF2);
-      V = (Abs(PF1.Y() - VDeg) > Abs(PF2.Y() - VDeg)) ? PF1.Y() : PF2.Y();
+      V = (std::abs(PF1.Y() - VDeg) > std::abs(PF2.Y() - VDeg)) ? PF1.Y() : PF2.Y();
       break;
     }
   }
@@ -323,8 +323,8 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
     // Infinite * Infinite => Exception: DefaultNumericError
     // Case encounered: UBis < Precision::Infinite()
     // but PBis.X() > Precision::Infinite()
-    if (Precision::IsPositiveInfinite(Abs(PBis.X())) || Precision::IsPositiveInfinite(Abs(PBis.Y()))
-        || PBis.Distance(P2d) > Tol)
+    if (Precision::IsPositiveInfinite(std::abs(PBis.X()))
+        || Precision::IsPositiveInfinite(std::abs(PBis.Y())) || PBis.Distance(P2d) > Tol)
     {
       //  modified by NIZHNY-EAP Wed Jan 12 11:41:40 2000 ___END___
       UBis = Bis->LastParameter();

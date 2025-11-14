@@ -163,7 +163,11 @@ static void CheckPCurves(TopoDS_Wire&           aWire,
     {
       Standard_Real u1, u2, v1, v2;
       mySurf->Bounds(u1, u2, v1, v2);
-      ElCLib::AdjustPeriodic(u1, u2, Min(Abs(w2 - w1) / 2, Precision::PConfusion()), w1, w2);
+      ElCLib::AdjustPeriodic(u1,
+                             u2,
+                             std::min(std::abs(w2 - w1) / 2, Precision::PConfusion()),
+                             w1,
+                             w2);
       B.Range(myEdge, aFace, w1, w2);
     }
 
@@ -773,7 +777,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       myEdgePro->Compute(preci);
       if (myEdgePro->IsFirstDone() && myEdgePro->IsLastDone())
       {
-        if (Abs(myEdgePro->FirstParam() - myEdgePro->LastParam()) < Precision::PConfusion())
+        if (std::abs(myEdgePro->FirstParam() - myEdgePro->LastParam()) < Precision::PConfusion())
           continue;
         B.Range(edge, Face, myEdgePro->FirstParam(), myEdgePro->LastParam());
       }

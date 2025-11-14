@@ -131,7 +131,7 @@ static Standard_Real recadre(const Standard_Real    p,
     pp -= (last - first);
   else
     pp += (last - first);
-  if (Abs(pp - ref) < Abs(p - ref))
+  if (std::abs(pp - ref) < std::abs(p - ref))
     return pp;
   return p;
 }
@@ -215,10 +215,10 @@ static Standard_Boolean Update(const Handle(Adaptor3d_Surface)& fb,
       w = Intersection.Point(i).W();
       if (isperiodic)
         w = recadre(w, wop, isfirst, uf, ul);
-      if (uf <= w && ul >= w && Abs(w - wop) < dist)
+      if (uf <= w && ul >= w && std::abs(w - wop) < dist)
       {
         isol = i;
-        dist = Abs(w - wop);
+        dist = std::abs(w - wop);
       }
     }
     if (isperiodic)
@@ -226,12 +226,12 @@ static Standard_Boolean Update(const Handle(Adaptor3d_Surface)& fb,
       for (i = 1; i <= nbp; i++)
       {
         w = Intersection.Point(i).W();
-        if (uf <= w && ul >= w && Abs(w - wop) < distbis
-            && (Abs(w - ul) <= 0.01 || Abs(w - uf) <= 0.01))
+        if (uf <= w && ul >= w && std::abs(w - wop) < distbis
+            && (std::abs(w - ul) <= 0.01 || std::abs(w - uf) <= 0.01))
         {
           isolbis    = i;
           wbis       = recadre(w, wop, isfirst, uf, ul);
-          distbis    = Abs(wbis - wop);
+          distbis    = std::abs(wbis - wop);
           recadrebis = Standard_True;
         }
       }
@@ -347,8 +347,8 @@ static Standard_Boolean Update(const Handle(Adaptor3d_Surface)& face,
   Standard_Real            f      = fi.FirstParameter();
   Standard_Real            l      = fi.LastParameter();
   Standard_Real            delta  = 0.1 * (l - f);
-  f                               = Max(f - delta, pc->FirstParameter());
-  l                               = Min(l + delta, pc->LastParameter());
+  f                               = std::max(f - delta, pc->FirstParameter());
+  l                               = std::min(l + delta, pc->LastParameter());
   Handle(Geom2dAdaptor_Curve) hpc = new Geom2dAdaptor_Curve(pc, f, l);
   Adaptor3d_CurveOnSurface    c2(hpc, surf);
 
@@ -951,7 +951,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
           par1              = ponc1.Parameter();
           par2              = ponc2.Parameter();
           Standard_Real Tol = 1.e-4;
-          if (Abs(par2 - Udeb) > Tol && Abs(Ufin - par2) > Tol)
+          if (std::abs(par2 - Udeb) > Tol && std::abs(Ufin - par2) > Tol)
           {
             gp_Pnt             P1 = ponc1.Value();
             TopOpeBRepDS_Point tpoint(P1, Tol);
@@ -1245,7 +1245,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     Standard_Real pard, parf;
     pard = BRep_Tool::Parameter(Vdeb, edgecouture);
     parf = BRep_Tool::Parameter(Vfin, edgecouture);
-    if (Abs(par1 - pard) < Abs(parf - par1))
+    if (std::abs(par1 - pard) < std::abs(parf - par1))
       ori = TopAbs_FORWARD;
     else
       ori = TopAbs_REVERSED;
@@ -1418,7 +1418,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
       Standard_Real pard, parf;
       pard = BRep_Tool::Parameter(Vdeb, edgecouture);
       parf = BRep_Tool::Parameter(Vfin, edgecouture);
-      if (Abs(par1 - pard) < Abs(parf - par1))
+      if (std::abs(par1 - pard) < std::abs(parf - par1))
         ori = TopAbs_REVERSED;
       else
         ori = TopAbs_FORWARD;
@@ -1656,7 +1656,8 @@ static Standard_Boolean IsShrink(const Geom2dAdaptor_Curve& PC,
     case GeomAbs_Line: {
       gp_Pnt2d P1 = PC.Value(Pf);
       gp_Pnt2d P2 = PC.Value(Pl);
-      if (Abs(P1.Coord(isU ? 1 : 2) - Param) <= tol && Abs(P2.Coord(isU ? 1 : 2) - Param) <= tol)
+      if (std::abs(P1.Coord(isU ? 1 : 2) - Param) <= tol
+          && std::abs(P2.Coord(isU ? 1 : 2) - Param) <= tol)
         return Standard_True;
       else
         return Standard_False;
@@ -1668,7 +1669,7 @@ static Standard_Boolean IsShrink(const Geom2dAdaptor_Curve& PC,
       for (i = 1; i <= aSample.NbPoints(); i++)
       {
         gp_Pnt2d P = PC.Value(aSample.GetParameter(i));
-        if (Abs(P.Coord(isU ? 1 : 2) - Param) > tol)
+        if (std::abs(P.Coord(isU ? 1 : 2) - Param) > tol)
           return Standard_False;
       }
       return Standard_True;
@@ -1939,12 +1940,12 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 
   if (checkShrink)
   {
-    if (Abs(P2d2.Y() - P2d4.Y()) <= Precision::PConfusion())
+    if (std::abs(P2d2.Y() - P2d4.Y()) <= Precision::PConfusion())
     {
       isUShrink     = Standard_False;
       checkShrParam = P2d2.Y();
     }
-    else if (Abs(P2d2.X() - P2d4.X()) <= Precision::PConfusion())
+    else if (std::abs(P2d2.X() - P2d4.X()) <= Precision::PConfusion())
     {
       isUShrink     = Standard_True;
       checkShrParam = P2d2.X();
@@ -2259,7 +2260,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
         ChFi3d_cherche_vertex(Edge[0], Edge[1], Vcom, trouve);
         if (Vcom.IsSame(Vtx))
           ang1 = ChFi3d_AngleEdge(Vtx, Edge[0], Edge[1]);
-        if (Abs(ang1 - M_PI) < 0.01)
+        if (std::abs(ang1 - M_PI) < 0.01)
         {
           oneintersection1 = Standard_True;
           facesau          = Face[0];
@@ -2275,7 +2276,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
           ChFi3d_cherche_vertex(Edge[1], Edge[2], Vcom, trouve);
           if (Vcom.IsSame(Vtx))
             ang1 = ChFi3d_AngleEdge(Vtx, Edge[1], Edge[2]);
-          if (Abs(ang1 - M_PI) < 0.01)
+          if (std::abs(ang1 - M_PI) < 0.01)
           {
             oneintersection2 = Standard_True;
             facesau          = Face[1];
@@ -2514,7 +2515,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
           Handle(Geom_BoundedSurface)::DownCast(DStr.Surface(Fd->Surf()).Surface());
         if (!S1.IsNull())
         {
-          Standard_Real length = 0.5 * Max(Fi1Length, Fi2Length);
+          Standard_Real length = 0.5 * std::max(Fi1Length, Fi2Length);
           GeomLib::ExtendSurfByLength(S1, length, 1, Standard_False, !isfirst);
           prolface[nn] = 1;
           if (!stripe->IsInDS(!isfirst))
@@ -2754,9 +2755,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     //       deb=pfildeb.X();
     //       xx1=pfil1.X();
     //       xx2=pfil2.X();
-    //       moins2pi=Abs(deb)< Abs(Abs(deb)-2*M_PI);
-    //       moins2pi1=Abs(xx1)< Abs(Abs(xx1)-2*M_PI);
-    //       moins2pi2=Abs(xx2)< Abs(Abs(xx2)-2*M_PI);
+    //       moins2pi=std::abs(deb)< std::abs(std::abs(deb)-2*M_PI);
+    //       moins2pi1=std::abs(xx1)< std::abs(std::abs(xx1)-2*M_PI);
+    //       moins2pi2=std::abs(xx2)< std::abs(std::abs(xx2)-2*M_PI);
     //       if (moins2pi1!=moins2pi2) {
     //         if  (moins2pi) {
     //           if (!moins2pi1) xx1=xx1-2*M_PI;
@@ -2777,9 +2778,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     //       deb=ufmin;
     //       xx1=pfac1.X();
     //       xx2=pfac2.X();
-    //       moins2pi=Abs(deb)< Abs(Abs(deb)-2*M_PI);
-    //       moins2pi1=Abs(xx1)< Abs(Abs(xx1)-2*M_PI);
-    //       moins2pi2=Abs(xx2)< Abs(Abs(xx2)-2*M_PI);
+    //       moins2pi=std::abs(deb)< std::abs(std::abs(deb)-2*M_PI);
+    //       moins2pi1=std::abs(xx1)< std::abs(std::abs(xx1)-2*M_PI);
+    //       moins2pi2=std::abs(xx2)< std::abs(std::abs(xx2)-2*M_PI);
     //       if (moins2pi1!=moins2pi2) {
     //         if  (moins2pi) {
     //           if (!moins2pi1) xx1=xx1-2*M_PI;
@@ -2846,8 +2847,8 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     Ps->D0(p2, p2d2);
     HGs->D0(p2d1.X(), p2d1.Y(), P5);
     HGs->D0(p2d2.X(), p2d2.Y(), P6);
-    to1 = Max(P1.Distance(P5) + P3.Distance(P7), tolreached);
-    to2 = Max(P2.Distance(P6) + P4.Distance(P8), tolreached);
+    to1 = std::max(P1.Distance(P5) + P3.Distance(P7), tolreached);
+    to2 = std::max(P2.Distance(P6) + P4.Distance(P8), tolreached);
 
     //////////////////////////////////////////////////////////////////////
     // storage in the DS of the intersection curve
@@ -2863,7 +2864,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       if (!CV1.IsVertex())
       {
         TopOpeBRepDS_Point& tpt = DStr.ChangePoint(indpoint1);
-        tpt.Tolerance(Max(tpt.Tolerance(), to1));
+        tpt.Tolerance(std::max(tpt.Tolerance(), to1));
       }
       else
         Isvtx1 = 1;
@@ -2874,7 +2875,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       if (!CV2.IsVertex())
       {
         TopOpeBRepDS_Point& tpt = DStr.ChangePoint(indpoint2);
-        tpt.Tolerance(Max(tpt.Tolerance(), to2));
+        tpt.Tolerance(std::max(tpt.Tolerance(), to2));
       }
       else
         Isvtx2 = 1;
@@ -2889,7 +2890,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     if (nb != 1)
     {
       TopOpeBRepDS_Point& tpt = DStr.ChangePoint(indpoint1);
-      tpt.Tolerance(Max(tpt.Tolerance(), to1));
+      tpt.Tolerance(std::max(tpt.Tolerance(), to1));
     }
     TopOpeBRepDS_Curve tcurv3d(Cc, tolreached);
     indcurve[nb - 1] = DStr.AddCurve(tcurv3d);
@@ -3102,7 +3103,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
           Geom2dAPI_ProjectPointOnCurve Projector(P2d, C2dint1);
           par                 = Projector.LowerDistanceParameter();
           Standard_Real shift = par - ParVtx;
-          if (Abs(shift) > Precision::Confusion())
+          if (std::abs(shift) > Precision::Confusion())
           {
             par1 += shift;
             par2 += shift;
@@ -3118,11 +3119,11 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
           Handle(GeomAdaptor_Surface) H1, H2;
           H1 = new GeomAdaptor_Surface(Sfacemoins1);
           if (Sface.IsNull())
-            tolex = Max(tolex, ChFi3d_EvalTolReached(H1, C2dint1, H1, C2dint1, Ct));
+            tolex = std::max(tolex, ChFi3d_EvalTolReached(H1, C2dint1, H1, C2dint1, Ct));
           else
           {
             H2    = new GeomAdaptor_Surface(Sface);
-            tolex = Max(tolex, ChFi3d_EvalTolReached(H1, C2dint1, H2, C2dint2, Ct));
+            tolex = std::max(tolex, ChFi3d_EvalTolReached(H1, C2dint1, H2, C2dint2, Ct));
           }
         }
         TopOpeBRepDS_Curve tcurv(Ct, tolex);
@@ -3194,7 +3195,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
                           tolapp3d,
                           aTolreached);
       TopOpeBRepDS_Curve& TCurv = DStr.ChangeCurve(indcurve[nb - 1]);
-      TCurv.Tolerance(Max(TCurv.Tolerance(), aTolreached));
+      TCurv.Tolerance(std::max(TCurv.Tolerance(), aTolreached));
 
       InterfPS[nb - 1] = ChFi3d_FilCurveInDS(indcurve[nb - 1], IsurfPrev, Ps, orcourbe);
       DStr.ChangeSurfaceInterferences(IsurfPrev).Append(InterfPS[nb - 1]);
@@ -3303,7 +3304,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 
     ChFi3d_ComputePCurv(C3d, UV1, UV2, Pc, aSurf, p1, p2, tolapp3d, aTolreached);
 
-    Crv.Tolerance(Max(Crv.Tolerance(), aTolreached));
+    Crv.Tolerance(std::max(Crv.Tolerance(), aTolreached));
     Interfc = ChFi3d_FilCurveInDS(Icurv, IsurfPrev, Pc, TopAbs::Reverse(orcourbe));
     DStr.ChangeSurfaceInterferences(IsurfPrev).Append(Interfc);
 
@@ -3349,9 +3350,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     {
       const IntRes2d_IntersectionPoint& ip   = Intersector.Point(nb);
       gp_Pnt                            Pint = C3d->Value(ip.ParamOnFirst());
-      tol                                    = Max(tol, Pvert.Distance(Pint));
+      tol                                    = std::max(tol, Pvert.Distance(Pint));
       Pint                                   = Cend->Value(ip.ParamOnSecond());
-      tol                                    = Max(tol, Pvert.Distance(Pint));
+      tol                                    = std::max(tol, Pvert.Distance(Pint));
     }
     for (nb = 1; nb <= Intersector.NbSegments(); nb++)
     {
@@ -3360,17 +3361,17 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       {
         const IntRes2d_IntersectionPoint& ip   = is.FirstPoint();
         gp_Pnt                            Pint = C3d->Value(ip.ParamOnFirst());
-        tol                                    = Max(tol, Pvert.Distance(Pint));
+        tol                                    = std::max(tol, Pvert.Distance(Pint));
         Pint                                   = Cend->Value(ip.ParamOnSecond());
-        tol                                    = Max(tol, Pvert.Distance(Pint));
+        tol                                    = std::max(tol, Pvert.Distance(Pint));
       }
       if (is.HasLastPoint())
       {
         const IntRes2d_IntersectionPoint& ip   = is.LastPoint();
         gp_Pnt                            Pint = C3d->Value(ip.ParamOnFirst());
-        tol                                    = Max(tol, Pvert.Distance(Pint));
+        tol                                    = std::max(tol, Pvert.Distance(Pint));
         Pint                                   = Cend->Value(ip.ParamOnSecond());
-        tol                                    = Max(tol, Pvert.Distance(Pint));
+        tol                                    = std::max(tol, Pvert.Distance(Pint));
       }
     }
     Pds.Tolerance(tol);
@@ -4595,7 +4596,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
           par1              = ponc1.Parameter();
           par2              = ponc2.Parameter();
           Standard_Real Tol = 1.e-4;
-          if (Abs(par2 - Udeb) > Tol && Abs(Ufin - par2) > Tol)
+          if (std::abs(par2 - Udeb) > Tol && std::abs(Ufin - par2) > Tol)
           {
             gp_Pnt             P1 = ponc1.Value();
             TopOpeBRepDS_Point tpoint(P1, Tol);
@@ -4703,7 +4704,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     Standard_Real pard, parf;
     pard = BRep_Tool::Parameter(Vdeb, edgecouture);
     parf = BRep_Tool::Parameter(Vfin, edgecouture);
-    if (Abs(par1 - pard) < Abs(parf - par1))
+    if (std::abs(par1 - pard) < std::abs(parf - par1))
       ori = TopAbs_FORWARD;
     else
       ori = TopAbs_REVERSED;

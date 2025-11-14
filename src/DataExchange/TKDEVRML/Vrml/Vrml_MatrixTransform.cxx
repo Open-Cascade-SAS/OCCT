@@ -50,12 +50,18 @@ Standard_OStream& Vrml_MatrixTransform::Print(Standard_OStream& anOStream) const
   Standard_Integer i, j;
   anOStream << "MatrixTransform {\n";
 
-  if (Abs(myMatrix.Value(1, 1) - 1) > 0.0000001 || Abs(myMatrix.Value(2, 1) - 0) > 0.0000001
-      || Abs(myMatrix.Value(3, 1) - 0) > 0.0000001 || Abs(myMatrix.Value(1, 2) - 0) > 0.0000001
-      || Abs(myMatrix.Value(2, 2) - 1) > 0.0000001 || Abs(myMatrix.Value(3, 2) - 0) > 0.0000001
-      || Abs(myMatrix.Value(1, 3) - 0) > 0.0000001 || Abs(myMatrix.Value(2, 3) - 0) > 0.0000001
-      || Abs(myMatrix.Value(3, 3) - 1) > 0.0000001 || Abs(myMatrix.Value(1, 4) - 0) > 0.0000001
-      || Abs(myMatrix.Value(2, 4) - 0) > 0.0000001 || Abs(myMatrix.Value(3, 4) - 0) > 0.0000001)
+  if (std::abs(myMatrix.Value(1, 1) - 1) > 0.0000001
+      || std::abs(myMatrix.Value(2, 1) - 0) > 0.0000001
+      || std::abs(myMatrix.Value(3, 1) - 0) > 0.0000001
+      || std::abs(myMatrix.Value(1, 2) - 0) > 0.0000001
+      || std::abs(myMatrix.Value(2, 2) - 1) > 0.0000001
+      || std::abs(myMatrix.Value(3, 2) - 0) > 0.0000001
+      || std::abs(myMatrix.Value(1, 3) - 0) > 0.0000001
+      || std::abs(myMatrix.Value(2, 3) - 0) > 0.0000001
+      || std::abs(myMatrix.Value(3, 3) - 1) > 0.0000001
+      || std::abs(myMatrix.Value(1, 4) - 0) > 0.0000001
+      || std::abs(myMatrix.Value(2, 4) - 0) > 0.0000001
+      || std::abs(myMatrix.Value(3, 4) - 0) > 0.0000001)
   {
     anOStream << "    matrix\t";
 

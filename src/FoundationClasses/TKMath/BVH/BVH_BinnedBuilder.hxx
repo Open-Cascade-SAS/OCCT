@@ -242,7 +242,7 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::b
 
   // Find best split
   for (Standard_Integer anAxis = myUseMainAxis ? aMainAxis : 0;
-       anAxis <= (myUseMainAxis ? aMainAxis : Min(N - 1, 2));
+       anAxis <= (myUseMainAxis ? aMainAxis : std::min(N - 1, 2));
        ++anAxis)
   {
     if (BVH::VecComp<T, N>::Get(aSize, anAxis) <= BVH::THE_NODE_MIN_SIZE)

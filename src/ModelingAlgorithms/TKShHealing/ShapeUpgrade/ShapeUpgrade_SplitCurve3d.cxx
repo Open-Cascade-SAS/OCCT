@@ -62,9 +62,9 @@ void ShapeUpgrade_SplitCurve3d::Init(const Handle(Geom_Curve)& C,
   {
     Standard_Real fP = aCurve->FirstParameter();
     Standard_Real lP = aCurve->LastParameter();
-    if (Abs(firstPar - fP) < precision)
+    if (std::abs(firstPar - fP) < precision)
       firstPar = fP;
-    if (Abs(lastPar - lP) < precision)
+    if (std::abs(lastPar - lP) < precision)
       lastPar = lP;
     if (firstPar < fP)
     {
@@ -153,9 +153,9 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
     constexpr Standard_Real precision = Precision::PConfusion();
     Standard_Real           firstPar  = myCurve->FirstParameter();
     Standard_Real           lastPar   = myCurve->LastParameter();
-    if (Abs(First - firstPar) < precision)
+    if (std::abs(First - firstPar) < precision)
       First = firstPar;
-    if (Abs(Last - lastPar) < precision)
+    if (std::abs(Last - lastPar) < precision)
       Last = lastPar;
     if (First < firstPar)
     {
@@ -180,8 +180,8 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
   if (myNbCurves == 1)
   {
     Standard_Boolean filled = Standard_True;
-    if (Abs(myCurve->FirstParameter() - First) < Precision::PConfusion()
-        && Abs(myCurve->LastParameter() - Last) < Precision::PConfusion())
+    if (std::abs(myCurve->FirstParameter() - First) < Precision::PConfusion()
+        && std::abs(myCurve->LastParameter() - Last) < Precision::PConfusion())
       myResultingCurves->SetValue(1, myCurve);
 
     else if (!Segment

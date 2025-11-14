@@ -69,7 +69,8 @@ void Determine_Position(IntRes2d_Position&     Pos1,
     {
       if (Pos1 == IntRes2d_Head)
       {
-        if (Abs(Param1 - TheDomain.LastParameter()) < Abs(Param1 - TheDomain.FirstParameter()))
+        if (std::abs(Param1 - TheDomain.LastParameter())
+            < std::abs(Param1 - TheDomain.FirstParameter()))
           Pos1 = IntRes2d_End;
       }
       else
@@ -126,7 +127,7 @@ void Determine_Transition(const IntRes2d_Position Pos1,
     Standard_Real sgn  = Tan1.Crossed(Tan2);
     Standard_Real norm = Tan1.Magnitude() * Tan2.Magnitude();
 
-    if (Abs(sgn) <= TOLERANCE_ANGULAIRE * norm)
+    if (std::abs(sgn) <= TOLERANCE_ANGULAIRE * norm)
     { // Transition TOUCH #########
       Standard_Boolean opos = (Tan1.Dot(Tan2)) < 0;
       if (!(courbure1 || courbure2))
@@ -156,7 +157,7 @@ void Determine_Transition(const IntRes2d_Position Pos1,
           Val2 = Norm.Dot(Norm2);
         }
 
-        if (Abs(Val1 - Val2) <= gp::Resolution())
+        if (std::abs(Val1 - Val2) <= gp::Resolution())
         {
           T1.SetValue(Standard_True, Pos1, IntRes2d_Unknown, opos);
           T2.SetValue(Standard_True, Pos2, IntRes2d_Unknown, opos);

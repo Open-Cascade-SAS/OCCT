@@ -35,7 +35,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
   L.Coefficients(A, B, C0);
   d = A * C.Location().X() + B * C.Location().Y() + C0;
 
-  if (Abs(d) - C.Radius() > Epsilon(C.Radius()))
+  if (std::abs(d) - C.Radius() > Epsilon(C.Radius()))
   {
     empt = Standard_True;
     nbp  = 0;
@@ -49,7 +49,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
     // ang = C.XAxis().Direction().Angle(L.Direction());
     // ang = ang + M_PI / 2.0;
     // modified by NIZNHY-PKV Fri Jun 15 09:55:29 2007t
-    if (Abs(Abs(d) - C.Radius()) <= Epsilon(C.Radius()))
+    if (std::abs(std::abs(d) - C.Radius()) <= Epsilon(C.Radius()))
     { // Cas de tangence
 
       Standard_Real u, XS, YS, ang;
@@ -82,7 +82,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
       Standard_Real h, XS1,YS1, XS2,YS2, ang1,ang2, u1,u2;//,cost,sint angt;
       // clang-format on
       nbp = 2;
-      h   = Sqrt(C.Radius() * C.Radius() - d * d);
+      h   = std::sqrt(C.Radius() * C.Radius() - d * d);
       // modified by NIZNHY-PKV Fri Jun 15 09:55:47 2007f
       // cost=d/C.Radius();
       // sint=h/C.Radius();
@@ -99,36 +99,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
       u2   = ElCLib::Parameter(L, aP2D2);
       ang1 = ElCLib::Parameter(C, aP2D1);
       ang2 = ElCLib::Parameter(C, aP2D2);
-      //
-      /*
-      if (Abs(cost)<=0.707) {
-    angt=ACos(cost);
-      }
-      else {
-    angt=ASin(sint);
-    if (cost<0) {angt=M_PI-angt;}
-      }
 
-      ang1=ang-angt;
-      ang2=ang+angt;
-      if (ang1<0.0) {
-    ang1=ang1+2.0*M_PI;
-      }
-      else if (ang1>=2.0*M_PI) {
-    ang1=ang1-2.0*M_PI;
-      }
-      if (ang2<0.0) {
-    ang2=ang2+2.0*M_PI;
-      }
-      else if (ang2>=2.0*M_PI) {
-    ang2=ang2-2.0*M_PI;
-      }
-
-      u1=B*(L.Location().X()-C.Location().X()) -
-          A*(L.Location().Y()-C.Location().Y()) +h;
-      u2=u1-2.0*h;
-      */
-      // modified by NIZNHY-PKV Fri Jun 15 09:56:19 2007t
       lpnt[0].SetValue(XS1, YS1, u1, ang1);
       lpnt[1].SetValue(XS2, YS2, u2, ang2);
     }

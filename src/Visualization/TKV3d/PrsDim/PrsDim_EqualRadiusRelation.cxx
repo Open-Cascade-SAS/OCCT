@@ -109,11 +109,11 @@ void PrsDim_EqualRadiusRelation::Compute(const Handle(PrsMgr_PresentationManager
   else
   {
     Standard_Real aPar = ElCLib::Parameter(FirstCirc, myFirstPoint);
-    if (IntegerPart(0.5 * LastPar1 / M_PI) != 0 && aPar < FirstPar1)
-      aPar += 2 * M_PI * IntegerPart(0.5 * LastPar1 / M_PI);
+    if (std::trunc(0.5 * LastPar1 / M_PI) != 0 && aPar < FirstPar1)
+      aPar += 2 * M_PI * std::trunc(0.5 * LastPar1 / M_PI);
     Standard_Real aRadius = FirstCirc.Radius();
 
-    if (Abs(myFirstPoint.Distance(myFirstCenter) - aRadius) >= Precision::Confusion())
+    if (std::abs(myFirstPoint.Distance(myFirstCenter) - aRadius) >= Precision::Confusion())
       myFirstPoint = ElCLib::Value(aPar, FirstCirc);
     if (FirstPoint1.Distance(LastPoint1) > Precision::Confusion())
     {
@@ -129,11 +129,11 @@ void PrsDim_EqualRadiusRelation::Compute(const Handle(PrsMgr_PresentationManager
     }
 
     aPar = ElCLib::Parameter(SecondCirc, mySecondPoint);
-    if (IntegerPart(0.5 * LastPar2 / M_PI) != 0 && aPar < FirstPar2)
-      aPar += 2 * M_PI * IntegerPart(0.5 * LastPar2 / M_PI);
+    if (std::trunc(0.5 * LastPar2 / M_PI) != 0 && aPar < FirstPar2)
+      aPar += 2 * M_PI * std::trunc(0.5 * LastPar2 / M_PI);
 
     aRadius = SecondCirc.Radius();
-    if (Abs(mySecondPoint.Distance(mySecondCenter) - aRadius) >= Precision::Confusion())
+    if (std::abs(mySecondPoint.Distance(mySecondCenter) - aRadius) >= Precision::Confusion())
       mySecondPoint = ElCLib::Value(aPar, SecondCirc);
     if (FirstPoint2.Distance(LastPoint2) > Precision::Confusion())
     {
@@ -148,7 +148,8 @@ void PrsDim_EqualRadiusRelation::Compute(const Handle(PrsMgr_PresentationManager
   }
   if (!myArrowSizeIsDefined)
     myArrowSize =
-      (Min(myFirstCenter.Distance(myFirstPoint), mySecondCenter.Distance(mySecondPoint))) * 0.05;
+      (std::min(myFirstCenter.Distance(myFirstPoint), mySecondCenter.Distance(mySecondPoint)))
+      * 0.05;
 
   Handle(Prs3d_DimensionAspect) la  = myDrawer->DimensionAspect();
   Handle(Prs3d_ArrowAspect)     arr = la->ArrowAspect();

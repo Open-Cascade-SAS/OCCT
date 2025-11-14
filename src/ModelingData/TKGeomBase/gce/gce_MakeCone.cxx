@@ -72,7 +72,7 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3,
 
   Standard_Real Dist13 = PP3.Distance(P1);
   Standard_Real Dist14 = PP4.Distance(P1);
-  if (Abs(Dist13 - Dist14) < RealEpsilon())
+  if (std::abs(Dist13 - Dist14) < RealEpsilon())
   {
     TheError = gce_NullAngle;
     return;
@@ -81,8 +81,8 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3,
   Standard_Real Dist3  = L1.Distance(P3);
   Standard_Real Dist4  = L1.Distance(P4);
   Standard_Real DifRad = Dist3 - Dist4;
-  Standard_Real angle  = Abs(ATan(DifRad / (Dist13 - Dist14)));
-  if (Abs(M_PI / 2. - angle) < RealEpsilon() || Abs(angle) < RealEpsilon())
+  Standard_Real angle  = std::abs(std::atan(DifRad / (Dist13 - Dist14)));
+  if (std::abs(M_PI / 2. - angle) < RealEpsilon() || std::abs(angle) < RealEpsilon())
   {
     TheError = gce_NullRadius;
     return;
@@ -99,15 +99,15 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3,
   Standard_Real x = DD1.X();
   Standard_Real y = DD1.Y();
   Standard_Real z = DD1.Z();
-  if (Abs(x) > gp::Resolution())
+  if (std::abs(x) > gp::Resolution())
   {
     D2 = gp_Dir(-y, x, 0.0);
   }
-  else if (Abs(y) > gp::Resolution())
+  else if (std::abs(y) > gp::Resolution())
   {
     D2 = gp_Dir(-y, x, 0.0);
   }
-  else if (Abs(z) > gp::Resolution())
+  else if (std::abs(z) > gp::Resolution())
   {
     D2 = gp_Dir(0.0, -z, y);
   }
@@ -212,8 +212,8 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt&       P1,
     }
     else
     {
-      Standard_Real Angle = Abs(atan((R1 - R2) / dist));
-      if (Abs(M_PI / 2. - Angle) < RealEpsilon() || Abs(Angle) < RealEpsilon())
+      Standard_Real Angle = std::abs(atan((R1 - R2) / dist));
+      if (std::abs(M_PI / 2. - Angle) < RealEpsilon() || std::abs(Angle) < RealEpsilon())
       {
         TheError = gce_NullAngle;
       }
@@ -224,15 +224,15 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt&       P1,
         Standard_Real x = D1.X();
         Standard_Real y = D1.Y();
         Standard_Real z = D1.Z();
-        if (Abs(x) > gp::Resolution())
+        if (std::abs(x) > gp::Resolution())
         {
           D2 = gp_Dir(-y, x, 0.0);
         }
-        else if (Abs(y) > gp::Resolution())
+        else if (std::abs(y) > gp::Resolution())
         {
           D2 = gp_Dir(-y, x, 0.0);
         }
-        else if (Abs(z) > gp::Resolution())
+        else if (std::abs(z) > gp::Resolution())
         {
           D2 = gp_Dir(0.0, -z, y);
         }

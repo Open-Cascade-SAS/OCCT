@@ -96,7 +96,7 @@ TopoDS_Shape BRepSweep_Revol::LastShape(const TopoDS_Shape& aGenS)
 Sweep_NumShape BRepSweep_Revol::NumShape(const Standard_Real D) const
 {
   Sweep_NumShape N;
-  if (Abs(Angle(D) - 2 * M_PI) <= Precision::Angular())
+  if (std::abs(Angle(D) - 2 * M_PI) <= Precision::Angular())
   {
     N.Init(2, TopAbs_EDGE, Standard_True, Standard_False, Standard_False);
   }
@@ -131,7 +131,7 @@ gp_Ax1 BRepSweep_Revol::Axe(const gp_Ax1& Ax, const Standard_Real D) const
 
 Standard_Real BRepSweep_Revol::Angle(const Standard_Real D) const
 {
-  Standard_Real d = Abs(D);
+  Standard_Real d = std::abs(D);
   while (d > (2 * M_PI + Precision::Angular()))
   {
     d = d - 2 * M_PI;

@@ -70,10 +70,10 @@ Standard_Real BRepMesh_ShapeTool::MaxFaceTolerance(const TopoDS_Face& theFace)
 {
   Standard_Real aMaxTolerance = BRep_Tool::Tolerance(theFace);
 
-  Standard_Real aTolerance = Max(MaxTolerance<TopAbs_EDGE, EdgeTolerance>(theFace),
-                                 MaxTolerance<TopAbs_VERTEX, VertexTolerance>(theFace));
+  Standard_Real aTolerance = std::max(MaxTolerance<TopAbs_EDGE, EdgeTolerance>(theFace),
+                                      MaxTolerance<TopAbs_VERTEX, VertexTolerance>(theFace));
 
-  return Max(aMaxTolerance, aTolerance);
+  return std::max(aMaxTolerance, aTolerance);
 }
 
 //=================================================================================================
@@ -86,7 +86,7 @@ void BRepMesh_ShapeTool::BoxMaxDimension(const Bnd_Box& theBox, Standard_Real& t
   Standard_Real aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
   theBox.Get(aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ);
 
-  theMaxDimension = Max(aMaxX - aMinX, Max(aMaxY - aMinY, aMaxZ - aMinZ));
+  theMaxDimension = std::max(aMaxX - aMinX, std::max(aMaxY - aMinY, aMaxZ - aMinZ));
 }
 
 //=================================================================================================
@@ -119,8 +119,8 @@ void BRepMesh_ShapeTool::CheckAndUpdateFlags(const IMeshData::IEdgeHandle&   the
     {
       const Standard_Real aDiffFirst = aCurveOnSurf.FirstParameter() - aFirstParam;
       const Standard_Real aDiffLast  = aCurveOnSurf.LastParameter() - aLastParam;
-      theEdge->SetSameRange(Abs(aDiffFirst) < Precision::PConfusion()
-                            && Abs(aDiffLast) < Precision::PConfusion());
+      theEdge->SetSameRange(std::abs(aDiffFirst) < Precision::PConfusion()
+                            && std::abs(aDiffLast) < Precision::PConfusion());
 
       if (!theEdge->GetSameRange())
       {

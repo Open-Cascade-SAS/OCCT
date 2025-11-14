@@ -574,7 +574,7 @@ Standard_Boolean IntTools_Tools::CheckCurve(const IntTools_Curve& theCurve, Bnd_
   //
   // Build bounding box for the curve
   BndLib_Add3dCurve::Add(GeomAdaptor_Curve(aC3D),
-                         Max(theCurve.Tolerance(), theCurve.TangentialTolerance()),
+                         std::max(theCurve.Tolerance(), theCurve.TangentialTolerance()),
                          theBox);
   //
   // Estimate the bounding box of the curve comparing it with the
@@ -599,8 +599,8 @@ Standard_Boolean IntTools_Tools::IsOnPave(const Standard_Real   aT1,
 {
   Standard_Boolean firstisonpave1, firstisonpave2, bIsOnPave;
   //
-  firstisonpave1 = (Abs(aRange.First() - aT1) < aTolerance);
-  firstisonpave2 = (Abs(aRange.Last() - aT1) < aTolerance);
+  firstisonpave1 = (std::abs(aRange.First() - aT1) < aTolerance);
+  firstisonpave2 = (std::abs(aRange.Last() - aT1) < aTolerance);
   bIsOnPave      = (firstisonpave1 || firstisonpave2);
   return bIsOnPave;
 }
@@ -658,8 +658,8 @@ Standard_Boolean IntTools_Tools::IsOnPave1(const Standard_Real   aTR,
     return bIsOnPave;
   }
   //
-  dT1       = Abs(aTR - aT1);
-  dT2       = Abs(aTR - aT2);
+  dT1       = std::abs(aTR - aT1);
+  dT2       = std::abs(aTR - aT2);
   bIsOnPave = (dT1 <= aTolerance || dT2 <= aTolerance);
   return bIsOnPave;
 }
@@ -805,7 +805,7 @@ Standard_Real IntTools_Tools::ComputeIntRange(const Standard_Real theTol1,
 {
   Standard_Real aDt;
   //
-  if (Abs(M_PI_2 - theAngle) < Precision::Angular())
+  if (std::abs(M_PI_2 - theAngle) < Precision::Angular())
   {
     aDt = theTol2;
   }

@@ -201,7 +201,7 @@ Vec2d Geom2d_Circle::DN(const Standard_Real U, const Standard_Integer N) const
 
 void Geom2d_Circle::Transform(const Trsf2d& T)
 {
-  radius = radius * Abs(T.ScaleFactor());
+  radius = radius * std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 

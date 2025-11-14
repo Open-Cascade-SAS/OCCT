@@ -191,13 +191,13 @@ Standard_Boolean XCAFDoc_DimTolTool::FindDimTol(
     { // dimension
       for (Standard_Integer i = 1; i <= aVal->Length(); i++)
       {
-        if (Abs(aVal->Value(i) - aVal1->Value(i)) > Precision::Confusion())
+        if (std::abs(aVal->Value(i) - aVal1->Value(i)) > Precision::Confusion())
           IsEqual = Standard_False;
       }
     }
     else if (kind < 50)
     { // tolerance
-      if (Abs(aVal->Value(1) - aVal1->Value(1)) > Precision::Confusion())
+      if (std::abs(aVal->Value(1) - aVal1->Value(1)) > Precision::Confusion())
         IsEqual = Standard_False;
     }
     if (IsEqual)

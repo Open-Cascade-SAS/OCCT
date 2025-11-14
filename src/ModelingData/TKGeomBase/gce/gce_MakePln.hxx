@@ -65,7 +65,7 @@ public:
   //! Creates a plane from its cartesian equation :
   //! A * X + B * Y + C * Z + D = 0.0
   //!
-  //! the status is "BadEquation" if Sqrt (A*A + B*B + C*C) <=
+  //! the status is "BadEquation" if std::sqrt(A*A + B*B + C*C) <=
   //! Resolution from gp.
   Standard_EXPORT gce_MakePln(const Standard_Real A,
                               const Standard_Real B,
@@ -99,8 +99,8 @@ public:
   //! normal to the Direction of <Axis>.
   //! Warning - If an error occurs (that is, when IsDone returns
   //! false), the Status function returns:
-  //! -   gce_BadEquation if Sqrt(A*A + B*B +
-  //! C*C) is less than or equal to gp::Resolution(),
+  //! -   gce_BadEquation if std::sqrt(A*A + B*B + C*C)
+  //!     is less than or equal to gp::Resolution(),
   //! -   gce_ConfusedPoints if P1 and P2 are coincident, or
   //! -   gce_ColinearPoints if P1, P2 and P3 are collinear.
   Standard_EXPORT gce_MakePln(const gp_Ax1& Axis);

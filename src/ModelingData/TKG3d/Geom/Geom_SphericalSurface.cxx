@@ -308,7 +308,7 @@ Standard_Real Geom_SphericalSurface::Volume() const
 void Geom_SphericalSurface::Transform(const Trsf& T)
 {
 
-  radius = radius * Abs(T.ScaleFactor());
+  radius = radius * std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 

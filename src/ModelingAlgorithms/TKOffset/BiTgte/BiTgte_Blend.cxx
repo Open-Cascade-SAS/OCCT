@@ -239,7 +239,7 @@ static void KPartCurve3d(const TopoDS_Edge&   Edge,
         if (STy == GeomAbs_Sphere)
         {
           gp_Pnt2d P = C.Line().Location();
-          if (Abs(Abs(P.Y()) - M_PI / 2.) < Precision::PConfusion())
+          if (std::abs(std::abs(P.Y()) - M_PI / 2.) < Precision::PConfusion())
           {
             TheBuilder.Degenerated(Edge, Standard_True);
           }
@@ -633,7 +633,7 @@ static TopoDS_Edge FindCreatedEdge(const TopoDS_Vertex&                   V1,
       Handle(Geom_Circle) Circ = Handle(Geom_Circle)::DownCast(CET);
       if (Circ.IsNull())
         continue;
-      if (Abs(Circ->Radius() - Abs(Radius)) > Tol)
+      if (std::abs(Circ->Radius() - std::abs(Radius)) > Tol)
         continue;
 
       TopoDS_Vertex U1, U2;
@@ -1394,7 +1394,7 @@ void BiTgte_Blend::ComputeCenters()
   // ------------
   // Preanalyze.
   // ------------
-  Standard_Real TolAngle = 2 * ASin(myTol / Abs(myRadius * 0.5));
+  Standard_Real TolAngle = 2 * std::asin(myTol / std::abs(myRadius * 0.5));
   myAnalyse.Perform(myShape, TolAngle);
 
   // ------------------------------------------
@@ -1851,7 +1851,7 @@ void BiTgte_Blend::ComputeSurfaces()
   Handle(Geom_Surface) GS1, GS2;
   Handle(Geom_Curve)   GC1, GC2;
 
-  Standard_Real      TolAngle = 2 * ASin(myTol / Abs(myRadius * 0.5));
+  Standard_Real      TolAngle = 2 * std::asin(myTol / std::abs(myRadius * 0.5));
   BRepOffset_Analyse CenterAnalyse(myResult, TolAngle);
 
   // -----------------------------------------------------

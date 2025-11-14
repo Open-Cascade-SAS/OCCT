@@ -316,19 +316,19 @@ Aspect_TypeOfResize WNT_Window::DoResize()
   }
 
   int aMask = 0;
-  if (Abs((int)aPlace.rcNormalPosition.left - myXLeft) > 2)
+  if (std::abs((int)aPlace.rcNormalPosition.left - myXLeft) > 2)
   {
     aMask |= 1;
   }
-  if (Abs((int)aPlace.rcNormalPosition.right - myXRight) > 2)
+  if (std::abs((int)aPlace.rcNormalPosition.right - myXRight) > 2)
   {
     aMask |= 2;
   }
-  if (Abs((int)aPlace.rcNormalPosition.top - myYTop) > 2)
+  if (std::abs((int)aPlace.rcNormalPosition.top - myYTop) > 2)
   {
     aMask |= 4;
   }
-  if (Abs((int)aPlace.rcNormalPosition.bottom - myYBottom) > 2)
+  if (std::abs((int)aPlace.rcNormalPosition.bottom - myYBottom) > 2)
   {
     aMask |= 8;
   }

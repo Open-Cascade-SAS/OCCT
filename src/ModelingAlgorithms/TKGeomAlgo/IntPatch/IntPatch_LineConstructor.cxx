@@ -469,7 +469,7 @@ static Standard_Integer AppendSameVertexG(Handle(IntPatch_GLine)&       glig,
       {
         p1 = Vtxindex.ParameterOnLine();
         p2 = Vtxi.ParameterOnLine();
-        if (Abs(p1 - p2) < Precision::PConfusion())
+        if (std::abs(p1 - p2) < Precision::PConfusion())
         {
           aajouter = Standard_True;
         }
@@ -860,7 +860,7 @@ static Standard_Boolean IsSegmentSmall(const Handle(IntPatch_WLine)& WLine,
 
   Standard_Real tolF = GetVertexTolerance(vtxF);
   Standard_Real tolL = GetVertexTolerance(vtxL);
-  Standard_Real tol  = Max(tolF, tolL);
+  Standard_Real tol  = std::max(tolF, tolL);
 
   Standard_Real len = 0.;
   gp_Pnt        p1  = WLine->Point(ipF).Value();
@@ -984,7 +984,7 @@ static Standard_Boolean TestIfWLineIsRestriction(const IntPatch_SequenceOfLine& 
     std::cout << " IntPatch_LineConstructor.gxx :  CC**ONS" << (allon1 == NbPnts ? 1 : 2)
               << "** Traitement WLIne + ARC CLASS " << std::endl;
 #endif
-    Standard_Real tol2d = Max(tol2d1, tol2d2);
+    Standard_Real tol2d = std::max(tol2d1, tol2d2);
     return TestWLineIsARLine(slinref, wlin, tol2d);
   }
   return Standard_False;
@@ -1443,7 +1443,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine&     slinre
         //            In this case we try to classify the "virtual" WLine point:
         //            the geometrical point between two vertices. This emulates
         //            situation when (lastp-firstp) != 1.
-        if (Abs(int_lastp - int_firstp) == 1)
+        if (std::abs(int_lastp - int_firstp) == 1)
         {
           Standard_Real          vFu1, vFv1, vFu2, vFv2, vLu1, vLv1, vLu2, vLv2;
           const IntSurf_PntOn2S& vF = WLineVertex_i.PntOn2S();
@@ -1496,7 +1496,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine&     slinre
             aTolerance = ComputeParametricTolerance(TolArc, ad1u, ad1v);
             in2        = myDom2->Classify(gp_Pnt2d(du, dv), aTolerance, Standard_False);
           }
-        } // end of if(Abs(int_lastp-int_firstp) == 1)
+        } // end of if(std::abs(int_lastp-int_firstp) == 1)
 
         if (in1 != TopAbs_OUT && in2 != TopAbs_OUT)
         {
@@ -1511,12 +1511,12 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine&     slinre
           Pmid2.Parameters(u1b, v1b, u2b, v2b);
           Recadre(mySurf1, mySurf2, u1b, v1b, u2b, v2b);
 
-          Standard_Real dd12_u = Abs(u1a - u1b);
-          Standard_Real dd12_v = Abs(v1a - v1b);
+          Standard_Real dd12_u = std::abs(u1a - u1b);
+          Standard_Real dd12_v = std::abs(v1a - v1b);
           if (dd12_u + dd12_v < 1e-12)
           {
-            dd12_u = Abs(u1 - u1b);
-            dd12_v = Abs(v1 - v1b);
+            dd12_u = std::abs(u1 - u1b);
+            dd12_v = std::abs(v1 - v1b);
             if (dd12_u + dd12_v < 1e-12)
             {
               LignetropPetite = Standard_True;
@@ -1576,7 +1576,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine&     slinre
     {
       firstp = GLine->Vertex(i).ParameterOnLine();
       lastp  = GLine->Vertex(i + 1).ParameterOnLine();
-      if (Abs(firstp - lastp) > Precision::PConfusion())
+      if (std::abs(firstp - lastp) > Precision::PConfusion())
       {
         intrvtested        = Standard_True;
         Standard_Real pmid = (firstp + lastp) * 0.5;
@@ -1659,7 +1659,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine&     slinre
       }
       if (acadr >= cadrinf && acadr <= cadrsup)
       {
-        if (Abs(firstp - lastp) > Precision::PConfusion())
+        if (std::abs(firstp - lastp) > Precision::PConfusion())
         {
           intrvtested        = Standard_True;
           Standard_Real pmid = (firstp + lastp) * 0.5;
@@ -1755,7 +1755,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine&     slinre
       { //-- On na classifie pas sur 1
         Standard_Real u0 = Vtx1.ParameterOnLine();
         Standard_Real u1 = Vtx2.ParameterOnLine();
-        if (Abs(u1 - u0) > Precision::PConfusion())
+        if (std::abs(u1 - u0) > Precision::PConfusion())
         {
           Standard_Real u = (999.0 * u0 + u1) * 0.001;
 
@@ -1845,7 +1845,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine&     slinre
       {
         Standard_Real u0 = Vtx1.ParameterOnLine();
         Standard_Real u1 = Vtx2.ParameterOnLine();
-        if (Abs(u1 - u0) > Precision::PConfusion())
+        if (std::abs(u1 - u0) > Precision::PConfusion())
         {
           Standard_Real u = (999.0 * u0 + u1) * 0.001;
 

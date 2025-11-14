@@ -119,7 +119,7 @@ void PrsDim_ParallelRelation::ComputeSelection(const Handle(SelectMgr_Selection)
   else
   {
     L3 = gce_MakeLin(Proj1, myDirAttach);
-    Standard_Real                 size(Min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+    Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
     Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
                                                                   myPosition.X(),
                                                                   myPosition.Y(),
@@ -134,12 +134,12 @@ void PrsDim_ParallelRelation::ComputeSelection(const Handle(SelectMgr_Selection)
   parmax = parmin;
 
   parcur = ElCLib::Parameter(L3, Proj2);
-  parmin = Min(parmin, parcur);
-  parmax = Max(parmax, parcur);
+  parmin = std::min(parmin, parcur);
+  parmax = std::max(parmax, parcur);
 
   parcur = ElCLib::Parameter(L3, myPosition);
-  parmin = Min(parmin, parcur);
-  parmax = Max(parmax, parcur);
+  parmin = std::min(parmin, parcur);
+  parmax = std::max(parmax, parcur);
 
   gp_Pnt PointMin = ElCLib::Value(parmin, L3);
   gp_Pnt PointMax = ElCLib::Value(parmax, L3);
@@ -257,8 +257,8 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
       arrSize1 = ptat11.Distance(ptat12) / 50.;
     if (!isInfinite2)
       arrSize2 = ptat21.Distance(ptat22) / 50.;
-    myArrowSize = Max(myArrowSize, Max(arrSize1, arrSize2));
-    //  myArrowSize = Min(myArrowSize,Min(arrSize1,arrSize2));
+    myArrowSize = std::max(myArrowSize, std::max(arrSize1, arrSize2));
+    //  myArrowSize = std::min(myArrowSize,Min(arrSize1,arrSize2));
   }
 
   if (myAutomaticPosition)

@@ -286,8 +286,8 @@ static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
   Standard_Real ParTol = 1.e-5;
   Standard_Real FirstDiff = aBAcurve.FirstParameter() - Params[0];
   Standard_Real LastDiff  = aBAcurve.LastParameter()  - Params[1];
-  if (Abs(FirstDiff) > ParTol ||
-      Abs(LastDiff)  > ParTol)
+  if (std::abs(FirstDiff) > ParTol ||
+      std::abs(LastDiff)  > ParTol)
   {
     Handle(Geom_BSplineCurve) BsplCurve = Handle(Geom_BSplineCurve)::DownCast(IntCurve);
     TColStd_Array1OfReal aKnots(1, BsplCurve->NbKnots());

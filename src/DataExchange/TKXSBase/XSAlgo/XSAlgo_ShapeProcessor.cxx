@@ -363,8 +363,8 @@ Standard_Boolean XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge&     theEd
   const gp_Pnt2d aCurve2DPoint1 = aCurve2D->Value(aCurve2DParam1);
   const gp_Pnt2d aCurve2DPoint2 = aCurve2D->Value(aCurve2DParam2);
   // Multi-periodic? Better to discard (beware of infinite values)
-  const Standard_Real anEdgeSpanX = Abs(aCurve2DPoint1.X() - aCurve2DPoint2.X());
-  const Standard_Real anEdgeSpanY = Abs(aCurve2DPoint1.Y() - aCurve2DPoint2.Y());
+  const Standard_Real anEdgeSpanX = std::abs(aCurve2DPoint1.X() - aCurve2DPoint2.X());
+  const Standard_Real anEdgeSpanY = std::abs(aCurve2DPoint1.Y() - aCurve2DPoint2.Y());
   // So if span of pcurve along U or V is longer than 6/8 of the surface span, discard it.
   // Why exactly 6/8? No idea, but it's the same as in the original code.
   if (anEdgeSpanX / 8. > (aFaceSurfaceU2 / 6. - aFaceSurfaceU1 / 6.)
@@ -449,7 +449,7 @@ Standard_Boolean XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge&     theEd
   Standard_Boolean aSameParameterFlag = BRep_Tool::SameParameter(aTmpEdge);
 
   // if result is not nice, try to call projection and take the best
-  if (aTolerance > Min(1., 2. * thePrecision) || !aSameRangeFlag)
+  if (aTolerance > std::min(1., 2. * thePrecision) || !aSameRangeFlag)
   {
     // pdn trying to recompute pcurve
     TopoDS_Edge anEdgePr = MakeEdgeOnCurve(theEdge);

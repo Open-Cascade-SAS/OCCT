@@ -33,17 +33,17 @@ static Standard_Real Locate(const Standard_Real         Angfin,
   Standard_Real umax = Umax;
   Standard_Real Ptol = Precision::Angular();
   Standard_Real Utol = Precision::PConfusion();
-  while (Abs(umax - umin) >= Utol)
+  while (std::abs(umax - umin) >= Utol)
   {
     Standard_Real ptest = (umax + umin) / 2.;
     gp_Pnt2d      valP;
     BSplCLib::D0(ptest, TPoles, BSplCLib::NoWeights(), valP);
-    Standard_Real theta = ATan2(valP.Y(), valP.X());
+    Standard_Real theta = std::atan2(valP.Y(), valP.X());
     if (theta < 0.)
     {
       theta += 2. * M_PI;
     }
-    if (Abs(theta - Angfin) < Ptol)
+    if (std::abs(theta - Angfin) < Ptol)
     {
       return ptest;
     }
@@ -117,10 +117,10 @@ void BuildPolynomialCosAndSin(const Standard_Real            UFirst,
 
   t_min = 1.0e0 - (Delta * 1.3e0 / M_PI);
   t_min *= 0.5e0;
-  t_min = Max(t_min, 0.0e0);
+  t_min = std::max(t_min, 0.0e0);
   t_max = 1.0e0 + (Delta * 1.3e0 / M_PI);
   t_max *= 0.5e0;
-  t_max    = Min(t_max, 1.0e0);
+  t_max    = std::min(t_max, 1.0e0);
   trim_max = Locate(Delta, TPoles, t_min, t_max);
   //
   // as Bezier is symmetric correspondingly to the bissector
@@ -152,7 +152,7 @@ void BuildPolynomialCosAndSin(const Standard_Real            UFirst,
                      BSplCLib::NoWeights());
 
   // readjustment is obviously redundant
-  Standard_Real SinD = Sin(Delta), CosD = Cos(Delta);
+  Standard_Real SinD = std::sin(Delta), CosD = std::cos(Delta);
   gp_Pnt2d      Pdeb(1., 0.);
   gp_Pnt2d      Pfin(CosD, SinD);
 
@@ -200,10 +200,10 @@ void BuildHermitePolynomialCosAndSin
   Standard_Integer ii;
   Standard_Integer ordre_deriv = num_poles/2;
   Standard_Real ang = ULast - UFirst;
-  Standard_Real Cd = Cos(UFirst);
-  Standard_Real Sd = Sin(UFirst);
-  Standard_Real Cf = Cos(ULast);
-  Standard_Real Sf = Sin(ULast);
+  Standard_Real Cd = std::cos(UFirst);
+  Standard_Real Sd = std::sin(UFirst);
+  Standard_Real Cf = std::cos(ULast);
+  Standard_Real Sf = std::sin(ULast);
 
   Standard_Integer Degree = num_poles-1;
   TColStd_Array1OfReal FlatKnots(1,2*num_poles);

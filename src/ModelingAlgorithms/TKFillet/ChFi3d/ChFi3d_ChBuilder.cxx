@@ -130,13 +130,13 @@ void ExtentSpineOnCommonFace(Handle(ChFiDS_Spine)&  Spine1,
   // a1+a2 = alpha
   Standard_Real temp;
   temp = cosalpha + dis2 / dis1;
-  if (Abs(temp) > tolesp)
+  if (std::abs(temp) > tolesp)
   {
     tga1   = sinalpha / temp;
     d1plus = dis1 / tga1;
   }
   temp = cosalpha + dis1 / dis2;
-  if (Abs(temp) > tolesp)
+  if (std::abs(temp) > tolesp)
   {
     tga2   = sinalpha / temp;
     d2plus = dis2 / tga2;
@@ -334,7 +334,7 @@ void ChFi3d_ChBuilder::Add(const Standard_Real Dis1,
     Standard_Real Offset = -1;
     if (myMode == ChFiDS_ConstThroatWithPenetrationChamfer)
     {
-      Offset = Min(Dis1, Dis2);
+      Offset = std::min(Dis1, Dis2);
     }
 
     Spine->SetEdges(E_wnt);
@@ -663,8 +663,8 @@ void ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
     case GeomAbs_Plane: {
       v1                       = p1f.Y();
       v2                       = p2f.Y();
-      u1                       = Max(p1f.X(), p2f.X());
-      u2                       = Min(p1l.X(), p2l.X());
+      u1                       = std::max(p1f.X(), p2f.X());
+      u2                       = std::min(p1l.X(), p2l.X());
       sec                      = new ChFiDS_SecHArray1(1, 2);
       gp_Pln              Pl   = AS.Plane();
       ChFiDS_CircSection& sec1 = sec->ChangeValue(1);
@@ -676,8 +676,8 @@ void ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
     case GeomAbs_Cone: {
       v1                   = p1f.Y();
       v2                   = p2f.Y();
-      u1                   = Max(p1f.X(), p2f.X());
-      u2                   = Min(p1l.X(), p2l.X());
+      u1                   = std::max(p1f.X(), p2f.X());
+      u2                   = std::min(p1l.X(), p2l.X());
       Standard_Real    ang = (u2 - u1);
       gp_Cone          Co  = AS.Cone();
       Standard_Real    rad = Co.RefRadius(), sang = Co.SemiAngle();
@@ -762,7 +762,7 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
   {
     Standard_Real dis;
     chsp->GetDist(dis);
-    radius    = Max(dis, radiusspine);
+    radius    = std::max(dis, radiusspine);
     locfleche = radius * 1.e-2; // graphic criterion
 
     std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
@@ -901,8 +901,8 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
   {
     Standard_Real dis1, dis2;
     chsp->Dists(dis1, dis2);
-    radius    = Max(dis1, dis2);
-    radius    = Max(radius, radiusspine);
+    radius    = std::max(dis1, dis2);
+    radius    = std::max(radius, radiusspine);
     locfleche = radius * 1.e-2; // graphic criterion
 
     std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
@@ -933,7 +933,7 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1, S2, OffsetHGuide));
       pFInv.reset(new BRepBlend_ConstThroatWithPenetrationInv(S1, S2, OffsetHGuide));
-      Standard_Real Throat = Max(dis1, dis2);
+      Standard_Real Throat = std::max(dis1, dis2);
       pFunc->Set(Throat, Throat, Choix);
       pFInv->Set(Throat, Throat, Choix);
     }
@@ -1059,8 +1059,8 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
   { // distance and angle
     Standard_Real dis, angle;
     chsp->GetDistAngle(dis, angle);
-    radius    = Max(dis, dis * tan(angle));
-    radius    = Max(radius, radiusspine);
+    radius    = std::max(dis, dis * tan(angle));
+    radius    = std::max(radius, radiusspine);
     locfleche = radius * 1.e-2; // graphic criterion
 
     Standard_Integer Ch = Choix;
@@ -1408,7 +1408,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
         // exception
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1, S2, OffsetHGuide));
-      Standard_Real Throat = Max(dis1, dis2);
+      Standard_Real Throat = std::max(dis1, dis2);
       pFunc->Set(Throat, Throat, Choix); // dis2?
     }
     BRepBlend_Walking TheWalk(S1, S2, I1, I2, HGuide);
@@ -1449,9 +1449,9 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     {
       /*
       Standard_Real Alpha = TgF.Angle(TgL);
-      Standard_Real SinAlpha = Sin(Alpha);
-      Standard_Real CosAlpha = Cos(Alpha);
-      Standard_Real TanAlpha = Tan(Alpha);
+      Standard_Real SinAlpha = std::sin(Alpha);
+      Standard_Real CosAlpha = std::cos(Alpha);
+      Standard_Real TanAlpha = std::tan(Alpha);
       Standard_Real dis1dis1 = dis1*dis1, dis2dis2 = dis2*dis2;
       aDist2 = sqrt(dis1dis1 - dis2dis2) - dis2/TanAlpha;
       Standard_Real CosBeta = sqrt(1-dis2dis2/dis1dis1)*CosAlpha + dis2/dis1*SinAlpha;
@@ -1685,7 +1685,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&       
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1, S2, OffsetHGuide));
       pFInv.reset(new BRepBlend_ConstThroatWithPenetrationInv(S1, S2, OffsetHGuide));
-      Standard_Real Throat = Max(d1, d2);
+      Standard_Real Throat = std::max(d1, d2);
       pFunc->Set(Throat, Throat, Choix);
       pFInv->Set(Throat, Throat, Choix);
     }
@@ -1893,94 +1893,6 @@ void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex& V, const Handle(ChFi
     Spine->SetLastParameter(dU * (1. + Coeff));
     Spine->SetLastTgt(dU);
   }
-  /*
-    Standard_Integer Sens;
-    Standard_Boolean isfirst;
-    Standard_Integer Iedge = 1;
-    Standard_Real d1, d2;
-
-    Handle(ChFiDS_Spine) Spine = S->Spine();
-    Handle(ChFiDS_ChamfSpine)
-        chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Spine);
-    chsp->Dists(d1,d2);
-    Standard_Integer IE = ChFi3d_IndexOfSurfData(V,S,Sens);
-    isfirst = (Sens == 1);
-    if (!isfirst)
-      Iedge = Spine->NbEdges();
-
-    TopTools_ListIteratorOfListOfShape It, Jt;
-    TopoDS_Edge E1, E2, Ec;
-    TopoDS_Face F1, F2, Fc;
-    TopoDS_Edge EdgeSp = Spine->Edges(Iedge);
-
-    ConexFaces(Spine,Iedge,F1,F2);
-
-    for (Jt.Initialize(myVEMap(V));Jt.More();Jt.Next()) {
-      Ec = TopoDS::Edge(Jt.Value());
-      if (!Ec.IsSame(EdgeSp)){
-        for (It.Initialize(myEFMap(Ec));It.More();It.Next()) {
-      Fc = TopoDS::Face(It.Value());
-      if (Fc.IsSame(F1))
-        E1 = Ec;
-      else if (Fc.IsSame(F2))
-        E2 = Ec;
-        }
-      }
-    }
-
-    gp_Vec tg1, tg2, tgsp;
-    gp_Pnt tmp, ptgui;
-    Spine->D1(Spine->Absc(V),ptgui,tgsp);
-    if (isfirst)
-      tgsp.Reverse();
-
-    // tg1
-    BRepAdaptor_Curve curv;
-    curv.Initialize(E1);
-    curv.D1(curv.FirstParameter(),tmp,tg1); //pour eviter les projections
-    tg1.Reverse();
-      // pbm d'erreurs d'approx : baisser la tolerance
-    if( !tmp.IsEqual(ptgui,tolesp*1.e2) )
-      curv.D1(curv.LastParameter(),tmp,tg1);
-
-    // tg2
-    curv.Initialize(E2);
-    curv.D1(curv.FirstParameter(),tmp,tg2);
-    tg2.Reverse();
-    if( !tmp.IsEqual(ptgui,tolesp*1.e2) )
-      curv.D1(curv.LastParameter(),tmp,tg2);
-
-    // calcul de dspine
-    Standard_Real dspine;
-    Standard_Real d1plus = 0.;
-    Standard_Real d2plus = 0.;
-
-    Standard_Real sinalpha = tg1.Dot(tgsp);
-    if (sinalpha < 0.){
-      Standard_Real cosalpha = Sqrt(1 - sinalpha*sinalpha);
-      d1plus = -d1*sinalpha/cosalpha;
-    }
-    sinalpha = tg2.Dot(tgsp);
-    if (sinalpha < 0.){
-      Standard_Real cosalpha = Sqrt(1 - sinalpha*sinalpha);
-      d2plus = -d2*sinalpha/cosalpha;
-    }
-    dspine = d1plus;
-    if (d2plus > d1plus)
-      dspine = d2plus;
-
-    dspine *=1.5;
-
-    // ExtentOneCorner
-    if (isfirst) {
-      Spine->SetFirstParameter(-dspine);
-      Spine->SetFirstTgt(0.);
-    }
-    else{
-      Standard_Real param = Spine->LastParameter(Spine->NbEdges());
-      Spine->SetLastParameter(param+dspine);
-      Spine->SetLastTgt(param);
-    } */
 }
 
 //=======================================================================

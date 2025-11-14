@@ -1307,7 +1307,7 @@ static Standard_Integer normals(Draw_Interpretor& theDI,
     if (anArgIter == 2 && aParam.IsRealValue())
     {
       aLength = aParam.RealValue();
-      if (Abs(aLength) <= gp::Resolution())
+      if (std::abs(aLength) <= gp::Resolution())
       {
         std::cout << "Syntax error: length should not be zero\n";
         return 1;
@@ -1321,7 +1321,7 @@ static Standard_Integer normals(Draw_Interpretor& theDI,
     {
       ++anArgIter;
       aLength = anArgIter < theArgNum ? Draw::Atof(theArgs[anArgIter]) : 0.0;
-      if (Abs(aLength) <= gp::Resolution())
+      if (std::abs(aLength) <= gp::Resolution())
       {
         std::cout << "Syntax error: length should not be zero\n";
         return 1;

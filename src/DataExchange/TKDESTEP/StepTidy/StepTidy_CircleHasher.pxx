@@ -89,7 +89,7 @@ struct StepTidy_CircleHasher
 
     // Compare radius.
     constexpr Standard_Real aTolerance = 1e-12;
-    if (Abs(theCircle1->Radius() - theCircle2->Radius()) > aTolerance)
+    if (std::abs(theCircle1->Radius() - theCircle2->Radius()) > aTolerance)
     {
       return false;
     }

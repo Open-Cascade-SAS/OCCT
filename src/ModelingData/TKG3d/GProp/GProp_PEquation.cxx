@@ -66,17 +66,17 @@ GProp_PEquation::GProp_PEquation(const TColgp_Array1OfPnt& Pnts, const Standard_
   }
   Standard_Integer dimension = 3;
   Standard_Integer It        = 0;
-  if (Abs(Dmx1 - Dmn1) <= Tol)
+  if (std::abs(Dmx1 - Dmn1) <= Tol)
   {
     dimension = dimension - 1;
     It        = 1;
   }
-  if (Abs(Dmx2 - Dmn2) <= Tol)
+  if (std::abs(Dmx2 - Dmn2) <= Tol)
   {
     dimension = dimension - 1;
     It        = 2 * (It + 1);
   }
-  if (Abs(Dmx3 - Dmn3) <= Tol)
+  if (std::abs(Dmx3 - Dmn3) <= Tol)
   {
     dimension = dimension - 1;
     It        = 3 * (It + 1);

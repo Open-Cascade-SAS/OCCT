@@ -125,8 +125,8 @@ protected:
   //! Returns number of pixels in the given tile.
   int tileArea(int theX, int theY) const
   {
-    const int aSizeX = Min(myTileSize, myViewSize.x() - theX * myTileSize);
-    const int aSizeY = Min(myTileSize, myViewSize.y() - theY * myTileSize);
+    const int aSizeX = std::min(myTileSize, myViewSize.x() - theX * myTileSize);
+    const int aSizeY = std::min(myTileSize, myViewSize.y() - theY * myTileSize);
     return aSizeX * aSizeY;
   }
 

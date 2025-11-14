@@ -115,8 +115,8 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
 
   if ((plandab && DisOnP) || (!plandab && !DisOnP))
   {
-    Standard_Real tgang = Tan(Angle), Dis11;
-    Standard_Real tgCon = Abs(Tan(angCon));
+    Standard_Real tgang = std::tan(Angle), Dis11;
+    Standard_Real tgCon = std::abs(std::tan(angCon));
     if (ouvert)
     {
       move  = Dis * tgang / (1. - tgCon * tgang);
@@ -134,7 +134,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
     if (dedans)
     {
       ChamfRad = Spine.Radius() - Dis;
-      if (Abs(ChamfRad) < Precision::Confusion())
+      if (std::abs(ChamfRad) < Precision::Confusion())
         pointu = Standard_True;
       if (ChamfRad < 0)
       {
@@ -153,7 +153,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
 
     if (ouvert)
     {
-      if (Abs(angCon) - Abs(SemiAngl) > -Precision::Confusion())
+      if (std::abs(angCon) - std::abs(SemiAngl) > -Precision::Confusion())
       {
 #ifdef OCCT_DEBUG
         std::cout << "wrong choice of angle for the chamfer" << std::endl;
@@ -165,10 +165,10 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   else
   {
     Standard_Real Dis1;
-    move = Dis * Cos(angCon);
+    move = Dis * std::cos(angCon);
     if (ouvert)
     {
-      SemiAngl = Abs(angCon) + Angle;
+      SemiAngl = std::abs(angCon) + Angle;
 
       if ((M_PI / 2. - SemiAngl) < Precision::Confusion())
       {
@@ -177,23 +177,23 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
 #endif
         return Standard_False;
       }
-      Dis1 = move * Tan(SemiAngl) - Dis * Abs(Sin(angCon));
+      Dis1 = move * std::tan(SemiAngl) - Dis * std::abs(std::sin(angCon));
 
       if (!dedans)
         SemiAngl = -SemiAngl;
     }
     else
     {
-      SemiAngl = Abs(angCon) - Angle;
+      SemiAngl = std::abs(angCon) - Angle;
 
-      if (Abs(SemiAngl) < Precision::Confusion())
+      if (std::abs(SemiAngl) < Precision::Confusion())
       {
         iscylinder = Standard_True;
-        Dis1       = Dis * Abs(Sin(angCon));
+        Dis1       = Dis * std::abs(std::sin(angCon));
       }
       else
       {
-        Dis1 = Dis * Abs(Sin(angCon)) - move * Tan(SemiAngl);
+        Dis1 = Dis * std::abs(std::sin(angCon)) - move * std::tan(SemiAngl);
       }
 
       if (SemiAngl > Precision::Confusion())
@@ -208,7 +208,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
     {
       ChamfRad = Spine.Radius() - Dis1;
 
-      if (Abs(ChamfRad) < Precision::Confusion())
+      if (std::abs(ChamfRad) < Precision::Confusion())
         pointu = Standard_True;
       if (ChamfRad < 0)
       {
@@ -225,9 +225,9 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
     }
 
     if (ouvert)
-      dis = Dis1 + Dis * Abs(Sin(angCon));
+      dis = Dis1 + Dis * std::abs(std::sin(angCon));
     else
-      dis = Dis1 - Dis * Abs(Sin(angCon));
+      dis = Dis1 - Dis * std::abs(std::sin(angCon));
   }
 
   Or.SetCoord(Or.X() + move * Dpl.X(), Or.Y() + move * Dpl.Y(), Or.Z() + move * Dpl.Z());

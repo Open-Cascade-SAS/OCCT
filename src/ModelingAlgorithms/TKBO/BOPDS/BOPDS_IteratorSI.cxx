@@ -119,6 +119,6 @@ void BOPDS_IteratorSI::Intersect(const Handle(IntTools_Context)& theCtx,
     }
 
     Standard_Integer iX = BOPDS_Tools::TypeToInteger(aType1, aType2);
-    myLists(iX).Append(BOPDS_Pair(Min(aPair.ID1, aPair.ID2), Max(aPair.ID1, aPair.ID2)));
+    myLists(iX).Append(BOPDS_Pair(std::min(aPair.ID1, aPair.ID2), std::max(aPair.ID1, aPair.ID2)));
   }
 }

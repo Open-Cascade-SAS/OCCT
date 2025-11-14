@@ -62,7 +62,7 @@ void RWStepVisual_RWCoordinatesList::ReadStep(const Handle(StepData_StepReaderDa
         {
           ach->AddWarning("More than 3 coordinates, ignored");
         }
-        Standard_Integer nbcoord = Min(nb3, 3);
+        Standard_Integer nbcoord = std::min(nb3, 3);
         for (Standard_Integer j = 1; j <= nbcoord; j++)
         {
           Standard_Real aVal = 0.;

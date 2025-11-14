@@ -15,6 +15,7 @@
 #ifndef _Standard_Real_HeaderFile
 #define _Standard_Real_HeaderFile
 
+#include <algorithm>
 #include <cmath>
 #include <climits>
 #include <float.h>
@@ -28,335 +29,390 @@
 
 #include <Standard_TypeDef.hxx>
 
-// ===============================================
-// Methods from Standard_Entity class which are redefined:
-//    - Hascode
-//    - IsEqual
-// ===============================================
+//! Returns the value of the arc cosine of a @p theValue.
+Standard_DEPRECATED("This function duplicates std::acos and will be removed in future releases. "
+                    "Use std::acos instead.")
 
-// ==================================
-// Methods implemented in Standard_Real.cxx
-// ==================================
+[[nodiscard]] inline double ACos(const double theValue)
+{
+  return std::acos(theValue);
+}
 
-Standard_EXPORT Standard_Real ACos(const Standard_Real);
-Standard_EXPORT Standard_Real ACosApprox(const Standard_Real);
-Standard_EXPORT Standard_Real ASin(const Standard_Real);
-Standard_EXPORT Standard_Real ATan2(const Standard_Real, const Standard_Real);
-Standard_EXPORT Standard_Real NextAfter(const Standard_Real, const Standard_Real);
+//! Returns the approximate value of the arc cosine @p theValue.
+//! The max error is about 1 degree near Value=0.
+//! NOTE: Avoid using this function in new code, it presumably slower then std::acos.
+Standard_DEPRECATED("Deprecated, use std::acos instead")
+Standard_EXPORT [[nodiscard]] double ACosApprox(const double theValue);
 
-//! Returns |a| if b >= 0; -|a| if b < 0.
-Standard_EXPORT Standard_Real Sign(const Standard_Real a, const Standard_Real b);
+//! Returns the value of the arc sine of a @p theValue.
+Standard_DEPRECATED("This function duplicates std::asin and will be removed in future releases. "
+                    "Use std::asin instead.")
 
-Standard_EXPORT Standard_Real ATanh(const Standard_Real);
-Standard_EXPORT Standard_Real ACosh(const Standard_Real);
-Standard_EXPORT Standard_Real Sinh(const Standard_Real);
-Standard_EXPORT Standard_Real Cosh(const Standard_Real);
-Standard_EXPORT Standard_Real Log(const Standard_Real);
-Standard_EXPORT Standard_Real Sqrt(const Standard_Real);
+[[nodiscard]] inline double ASin(const double theValue)
+{
+  return std::asin(theValue);
+}
 
-//-------------------------------------------------------------------
-// RealSmall : Returns the smallest positive real
-//-------------------------------------------------------------------
-constexpr Standard_Real RealSmall()
+//! Computes the arc tangent of @p theX divided by @p theY using the signs of both
+//! arguments to determine the quadrant of the return value.
+Standard_DEPRECATED("This function duplicates std::atan2 and will be removed in future releases. "
+                    "Use std::atan2 instead.")
+
+[[nodiscard]] inline double ATan2(const double theX, const double theY)
+{
+  return std::atan2(theX, theY);
+}
+
+//! Returns the value of the hyperbolic arc tangent of @p theValue.
+Standard_DEPRECATED("This function duplicates std::atanh and will be removed in future releases. "
+                    "Use std::atanh instead.")
+
+[[nodiscard]] inline double ATanh(const double theValue)
+{
+  return std::atanh(theValue);
+}
+
+//! Returns the value of the hyperbolic arc cosine of @p theValue.
+Standard_DEPRECATED("This function duplicates std::acosh and will be removed in future releases. "
+                    "Use std::acosh instead.")
+
+[[nodiscard]] inline double ACosh(const double theValue)
+{
+  return std::acosh(theValue);
+}
+
+//! Returns the hyperbolic cosine of a double @p theValue.
+Standard_DEPRECATED("This function duplicates std::cosh and will be removed in future releases. "
+                    "Use std::cosh instead.")
+
+[[nodiscard]] inline double Cosh(const double theValue)
+{
+  return std::cosh(theValue);
+}
+
+//! Returns the hyperbolic sine of a double @p theValue.
+Standard_DEPRECATED("This function duplicates std::sinh and will be removed in future releases. "
+                    "Use std::sinh instead.")
+
+[[nodiscard]] inline double Sinh(const double theValue)
+{
+  return std::sinh(theValue);
+}
+
+//! Computes the natural (base-e) logarithm of number @p theValue.
+Standard_DEPRECATED("This function duplicates std::log and will be removed in future releases. "
+                    "Use std::log instead.")
+
+[[nodiscard]] inline double Log(const double theValue)
+{
+  return std::log(theValue);
+}
+
+//! Returns the square root of a double @p theValue.
+Standard_DEPRECATED("This function duplicates std::sqrt and will be removed in future releases. "
+                    "Use std::sqrt instead.")
+
+[[nodiscard]] inline double Sqrt(const double theValue)
+{
+  return std::sqrt(theValue);
+}
+
+//! Returns the next representable value of a double @p theValue
+//! in the direction of @p theDirection. Equivalent to std::nextafter.
+Standard_DEPRECATED(
+  "This function duplicates std::nextafter and will be removed in future releases. "
+  "Use std::nextafter instead.")
+
+[[nodiscard]] inline double NextAfter(const double theValue, const double theDirection)
+{
+  return std::nextafter(theValue, theDirection);
+}
+
+//! Composes a floating point value with the magnitude of @p theMagnitude
+//! and the sign of @p theSign. Equivalent to std::copysign.
+Standard_DEPRECATED(
+  "This function duplicates std::copysign and will be removed in future releases. "
+  "Use std::copysign instead.")
+
+[[nodiscard]] inline double Sign(const double theMagnitude, const double theSign)
+{
+  return std::copysign(theMagnitude, theSign);
+}
+
+//! Returns the minimum positive double value greater than zero.
+[[nodiscard]] constexpr double RealSmall()
 {
   return DBL_MIN;
 }
 
-//-------------------------------------------------------------------
-// Abs : Returns the absolute value of a real
-//-------------------------------------------------------------------
-inline Standard_Real Abs(const Standard_Real Value)
+//! Returns the absolute value of a double @p Value.
+//! Equivalent to std::abs.
+Standard_DEPRECATED("This function duplicates std::abs and will be removed in future releases. "
+                    "Use std::abs instead.")
+
+[[nodiscard]] inline double Abs(const double theValue)
 {
-  return fabs(Value);
+  return std::abs(theValue);
 }
 
-//-------------------------------------------------------------------
-// IsEqual : Returns Standard_True if two reals are equal
-//-------------------------------------------------------------------
-inline Standard_Boolean IsEqual(const Standard_Real Value1, const Standard_Real Value2)
+//! Returns Standard_True if two doubles are equal within the precision
+//! defined by RealSmall().
+[[nodiscard]] inline Standard_Boolean IsEqual(const double theValue1, const double theValue2)
 {
-  return Abs((Value1 - Value2)) < RealSmall();
+  return std::abs(theValue1 - theValue2) < RealSmall();
 }
 
-//  *********************************** //
-//       Class methods                  //
-//                                      //
-//  Machine-dependent values            //
-//  Should be taken from include file   //
-//  *********************************** //
-
-//-------------------------------------------------------------------
-// RealDigit : Returns the number of digits of precision in a real
-//-------------------------------------------------------------------
-constexpr Standard_Integer RealDigits()
+//! Returns the number of digits of precision in a double.
+[[nodiscard]] constexpr int RealDigits()
 {
   return DBL_DIG;
 }
 
-//-------------------------------------------------------------------
-// RealEpsilon : Returns the minimum positive real such that
-//               1.0 + x is not equal to 1.0
-//-------------------------------------------------------------------
-constexpr Standard_Real RealEpsilon()
+//! Returns the minimum positive double such that
+//! 1.0 + RealEpsilon() != 1.0.
+[[nodiscard]] constexpr double RealEpsilon()
 {
   return DBL_EPSILON;
 }
 
-//-------------------------------------------------------------------
-// RealFirst : Returns the minimum negative value of a real
-//-------------------------------------------------------------------
-constexpr Standard_Real RealFirst()
+//! Returns the minimum value of a double.
+[[nodiscard]] constexpr double RealFirst()
 {
   return -DBL_MAX;
 }
 
-//-------------------------------------------------------------------
-// RealFirst10Exp : Returns the minimum value of exponent(base 10) of
-//                  a real.
-//-------------------------------------------------------------------
-constexpr Standard_Integer RealFirst10Exp()
+//! Returns the minimum value of exponent(base 10) of a double.
+[[nodiscard]] constexpr int RealFirst10Exp()
 {
   return DBL_MIN_10_EXP;
 }
 
-//-------------------------------------------------------------------
-// RealLast : Returns the maximum value of a real
-//-------------------------------------------------------------------
-constexpr Standard_Real RealLast()
+//! Returns the maximum value of a double.
+[[nodiscard]] constexpr double RealLast()
 {
   return DBL_MAX;
 }
 
-//-------------------------------------------------------------------
-// RealLast10Exp : Returns the maximum value of exponent(base 10) of
-//                 a real.
-//-------------------------------------------------------------------
-constexpr Standard_Integer RealLast10Exp()
+//! Returns the maximum value of exponent(base 10) of a double.
+[[nodiscard]] constexpr int RealLast10Exp()
 {
   return DBL_MAX_10_EXP;
 }
 
-//-------------------------------------------------------------------
-// RealMantissa : Returns the size in bits of the matissa part of a
-//                real.
-//-------------------------------------------------------------------
-constexpr Standard_Integer RealMantissa()
+//! Returns the size in bits of the mantissa part of a double.
+[[nodiscard]] constexpr int RealMantissa()
 {
   return DBL_MANT_DIG;
 }
 
-//-------------------------------------------------------------------
-// RealRadix : Returns the radix of exponent representation
-//-------------------------------------------------------------------
-constexpr Standard_Integer RealRadix()
+//! Returns the radix of a double.
+[[nodiscard]] constexpr int RealRadix()
 {
   return FLT_RADIX;
 }
 
-//-------------------------------------------------------------------
-// RealSize : Returns the size in bits of an integer
-//-------------------------------------------------------------------
-constexpr Standard_Integer RealSize()
+//! Returns the size in bits of a double.
+[[nodiscard]] constexpr int RealSize()
 {
-  return CHAR_BIT * sizeof(Standard_Real);
+  return CHAR_BIT * sizeof(double);
 }
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
-//   End of machine-dependent values   //
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
-
-//-------------------------------------------------------------------
-// IntToReal : Converts an integer in a real
-//-------------------------------------------------------------------
-inline Standard_Real IntToReal(const Standard_Integer Value)
+//! Converts a int @p theValue to a double.
+[[nodiscard]] constexpr double IntToReal(const int theValue)
 {
-  return Value;
+  return theValue;
 }
 
-//-------------------------------------------------------------------
-// ATan : Returns the value of the arc tangent of a real
-//-------------------------------------------------------------------
-inline Standard_Real ATan(const Standard_Real Value)
+//! Returns the value of the arc tangent of a double @p theValue.
+Standard_DEPRECATED("This function duplicates std::atan and will be removed in future releases. "
+                    "Use std::atan instead.")
+
+[[nodiscard]] inline double ATan(const double theValue)
 {
-  return atan(Value);
+  return std::atan(theValue);
 }
 
-//-------------------------------------------------------------------
-// Ceiling : Returns the smallest integer not less than a real
-//-------------------------------------------------------------------
-inline Standard_Real Ceiling(const Standard_Real Value)
+//! Returns the next integer greater than or equal to a double @p theValue.
+Standard_DEPRECATED("This function duplicates std::ceil and will be removed in future releases. "
+                    "Use std::ceil instead.")
+
+[[nodiscard]] inline double Ceiling(const double theValue)
 {
-  return ceil(Value);
+  return std::ceil(theValue);
 }
 
-//-------------------------------------------------------------------
-// Cos : Returns the cosine of a real
-//-------------------------------------------------------------------
-inline Standard_Real Cos(const Standard_Real Value)
+//! Returns the cosine of a double @p theValue.
+//! Equivalent to std::cos.
+Standard_DEPRECATED("This function duplicates std::cos and will be removed in future releases. "
+                    "Use std::cos instead.")
+
+[[nodiscard]] inline double Cos(const double theValue)
 {
-  return cos(Value);
+  return std::cos(theValue);
 }
 
-//-------------------------------------------------------------------
-// Epsilon : The function returns absolute value of difference
-//           between 'Value' and other nearest value of
-//           Standard_Real type.
-//           Nearest value is chosen in direction of infinity
-//           the same sign as 'Value'.
-//           If 'Value' is 0 then returns minimal positive value
-//           of Standard_Real type.
-//-------------------------------------------------------------------
-inline Standard_Real Epsilon(const Standard_Real Value)
+//! The function returns absolute value of difference between @p theValue and other nearest value of
+//! double type. Nearest value is chosen in direction of infinity the same sign as @p theValue.
+//! If @p theValue is 0 then returns minimal positive value of double type.
+[[nodiscard]] inline double Epsilon(const double theValue)
 {
-  return Value >= 0.0 ? (NextAfter(Value, RealLast()) - Value)
-                      : (Value - NextAfter(Value, RealFirst()));
+  return theValue >= 0.0 ? (std::nextafter(theValue, RealLast()) - theValue)
+                         : (theValue - std::nextafter(theValue, RealFirst()));
 }
 
-//-------------------------------------------------------------------
-// Exp : Returns the exponential function of a real
-//-------------------------------------------------------------------
-inline Standard_Real Exp(const Standard_Real Value)
+//! Returns the exponential of a double @p theValue.
+//! Equivalent to std::exp.
+Standard_DEPRECATED("This function duplicates std::exp and will be removed in future releases. "
+                    "Use std::exp instead.")
+
+[[nodiscard]] inline double Exp(const double theValue)
 {
-  return exp(Value);
+  return std::exp(theValue);
 }
 
-//-------------------------------------------------------------------
-// Floor : Return the largest integer not greater than a real
-//-------------------------------------------------------------------
-inline Standard_Real Floor(const Standard_Real Value)
+//! Returns the nearest integer less than or equal to a double @p theValue.
+//! Equivalent to std::floor.
+Standard_DEPRECATED("This function duplicates std::floor and will be removed in future releases. "
+                    "Use std::floor instead.")
+
+[[nodiscard]] inline double Floor(const double theValue)
 {
-  return floor(Value);
+  return std::floor(theValue);
 }
 
-//-------------------------------------------------------------------
-// IntegerPart : Returns the integer part of a real
-//-------------------------------------------------------------------
-inline Standard_Real IntegerPart(const Standard_Real Value)
+//! Returns the integer part of a double @p theValue.
+//! Equivalent to std::trunc.
+Standard_DEPRECATED("This function duplicates std::trunc and will be removed in future releases. "
+                    "Use std::trunc instead.")
+
+[[nodiscard]] inline double IntegerPart(const double theValue)
 {
-  return ((Value > 0) ? floor(Value) : ceil(Value));
+  return std::trunc(theValue);
 }
 
-//-------------------------------------------------------------------
-// Log10 : Returns the base-10 logarithm of a real
-//-------------------------------------------------------------------
-inline Standard_Real Log10(const Standard_Real Value)
+//! Returns the logarithm to base 10 of a double @p theValue.
+//! Equivalent to std::log10.
+Standard_DEPRECATED("This function duplicates std::log10 and will be removed in future releases. "
+                    "Use std::log10 instead.")
+
+[[nodiscard]] inline double Log10(const double theValue)
 {
-  return log10(Value);
+  return std::log10(theValue);
 }
 
-//-------------------------------------------------------------------
-// Max : Returns the maximum value of two reals
-//-------------------------------------------------------------------
-constexpr Standard_Real Max(const Standard_Real Val1, const Standard_Real Val2)
+//! Returns the maximum value of two reals.
+//! Equivalent to std::max.
+Standard_DEPRECATED("This function duplicates std::max and will be removed in future releases. "
+                    "Use std::max instead.")
+
+[[nodiscard]] constexpr double Max(const double theValue1, const double theValue2)
 {
-  return Val1 >= Val2 ? Val1 : Val2;
+  return std::max(theValue1, theValue2);
 }
 
-//-------------------------------------------------------------------
-// Min : Returns the minimum value of two reals
-//-------------------------------------------------------------------
-constexpr Standard_Real Min(const Standard_Real Val1, const Standard_Real Val2)
+//! Returns the minimum value of two reals.
+//! Equivalent to std::min.
+Standard_DEPRECATED("This function duplicates std::min and will be removed in future releases. "
+                    "Use std::min instead.")
+
+[[nodiscard]] constexpr double Min(const double theValue1, const double theValue2)
 {
-  return Val1 <= Val2 ? Val1 : Val2;
+  return std::min(theValue1, theValue2);
 }
 
-//-------------------------------------------------------------------
-// Pow : Returns a real to a given power
-//-------------------------------------------------------------------
-inline Standard_Real Pow(const Standard_Real Value, const Standard_Real P)
+//! Returns a double @p theValue raised to the power of @p thePower.
+Standard_DEPRECATED("This function duplicates std::pow and will be removed in future releases. "
+                    "Use std::pow instead.")
+
+[[nodiscard]] inline double Pow(const double theValue, const double thePower)
 {
-  return pow(Value, P);
+  return std::pow(theValue, thePower);
 }
 
-//-------------------------------------------------------------------
-// RealPart : Returns the fractional part of a real.
-//-------------------------------------------------------------------
-inline Standard_Real RealPart(const Standard_Real Value)
+//! Returns the fractional part of a double @p theValue.
+//! Always non-negative.
+[[nodiscard]] inline double RealPart(const double theValue)
 {
-  return fabs(IntegerPart(Value) - Value);
+  return std::abs(std::trunc(theValue) - theValue);
 }
 
-//-------------------------------------------------------------------
-// RealToInt : Returns the real converted to nearest valid integer.
-//             If input value is out of valid range for integers,
-//             minimal or maximal possible integer is returned.
-//-------------------------------------------------------------------
-constexpr Standard_Integer RealToInt(const Standard_Real theValue)
+//! Converts a double @p theValue to the nearest valid int.
+//! If input value is out of valid range for int, minimal or maximal possible int is returned.
+[[nodiscard]] constexpr int RealToInt(const double theValue)
 {
   // Note that on WNT under MS VC++ 8.0 conversion of double value less
   // than INT_MIN or greater than INT_MAX to integer will cause signal
   // "Floating point multiple trap" (OCC17861)
-  return theValue < static_cast<Standard_Real>(INT_MIN)
-           ? static_cast<Standard_Integer>(INT_MIN)
-           : (theValue > static_cast<Standard_Real>(INT_MAX)
-                ? static_cast<Standard_Integer>(INT_MAX)
-                : static_cast<Standard_Integer>(theValue));
+  return theValue < static_cast<double>(INT_MIN)
+           ? static_cast<int>(INT_MIN)
+           : (theValue > static_cast<double>(INT_MAX) ? static_cast<int>(INT_MAX)
+                                                      : static_cast<int>(theValue));
 }
 
-// =======================================================================
-// function : RealToShortReal
-// purpose  : Converts Standard_Real value to the nearest valid
-//            Standard_ShortReal. If input value is out of valid range
-//            for Standard_ShortReal, minimal or maximal
-//            Standard_ShortReal is returned.
-// =======================================================================
-constexpr Standard_ShortReal RealToShortReal(const Standard_Real theVal)
+//! Converts a double @p theValue to the nearest valid float.
+//! If input value is out of valid range for float, minimal or maximal
+//! possible float is returned.
+[[nodiscard]] constexpr float RealToShortReal(const double theValue)
 {
-  return theVal < -FLT_MAX ? -FLT_MAX : theVal > FLT_MAX ? FLT_MAX : (Standard_ShortReal)theVal;
+  return theValue < -FLT_MAX  ? -FLT_MAX
+         : theValue > FLT_MAX ? FLT_MAX
+                              : static_cast<float>(theValue);
 }
 
-//-------------------------------------------------------------------
-// Round : Returns the nearest integer of a real
-//-------------------------------------------------------------------
-inline Standard_Real Round(const Standard_Real Value)
+//! Returns the nearest integer of a double @p theValue.
+//! Equivalent to std::round.
+Standard_DEPRECATED("This function duplicates std::round and will be removed in future releases. "
+                    "Use std::round instead.")
+
+[[nodiscard]] inline double Round(const double theValue)
 {
-  return IntegerPart(Value + (Value > 0 ? 0.5 : -0.5));
+  return std::round(theValue);
 }
 
-//-------------------------------------------------------------------
-// Sin : Returns the sine of a real
-//-------------------------------------------------------------------
-inline Standard_Real Sin(const Standard_Real Value)
+//! Returns the sine of a double @p theValue.
+//! Equivalent to std::sin.
+Standard_DEPRECATED("This function duplicates std::sin and will be removed in future releases. "
+                    "Use std::sin instead.")
+
+[[nodiscard]] inline double Sin(const double theValue)
 {
-  return sin(Value);
+  return std::sin(theValue);
 }
 
-//-------------------------------------------------------------------
-// ASinh : Returns the hyperbolic arc sine of a real
-//-------------------------------------------------------------------
-inline Standard_Real ASinh(const Standard_Real Value)
-#if defined(__QNX__)
-{
-  return std::asinh(Value);
-}
-#else
-{
-  return asinh(Value);
-}
-#endif
+//! Returns the hyperbolic arc sine of a double @p theValue.
+//! Equivalent to std::asinh.
+Standard_DEPRECATED("This function duplicates std::asinh and will be removed in future releases. "
+                    "Use std::asinh instead.")
 
-//-------------------------------------------------------------------
-// Square : Returns a real to the power 2
-//-------------------------------------------------------------------
-constexpr Standard_Real Square(const Standard_Real Value)
+[[nodiscard]] inline double ASinh(const double theValue)
 {
-  return Value * Value;
+  return std::asinh(theValue);
 }
 
-//-------------------------------------------------------------------
-// Tan : Returns the tangent of a real
-//-------------------------------------------------------------------
-inline Standard_Real Tan(const Standard_Real Value)
+//! Returns the square of a double @p theValue.
+[[nodiscard]] constexpr double Square(const double theValue)
 {
-  return tan(Value);
+  return theValue * theValue;
 }
 
-//-------------------------------------------------------------------
-// Tanh : Returns the hyperbolic tangent of a real
-//-------------------------------------------------------------------
-inline Standard_Real Tanh(const Standard_Real Value)
+//! Returns the tangent of a double @p theValue.
+//! Equivalent to std::tan.
+Standard_DEPRECATED("This function duplicates std::tan and will be removed in future releases. "
+                    "Use std::tan instead.")
+
+[[nodiscard]] inline double Tan(const double theValue)
 {
-  return tanh(Value);
+  return std::tan(theValue);
 }
 
-#endif
+//! Returns the hyperbolic tangent of a double @p theValue.
+//! Equivalent to std::tanh.
+Standard_DEPRECATED("This function duplicates std::tanh and will be removed in future releases. "
+                    "Use std::tanh instead.")
+
+[[nodiscard]] inline double Tanh(const double theValue)
+{
+  return std::tanh(theValue);
+}
+
+#endif // _Standard_Real_HeaderFile

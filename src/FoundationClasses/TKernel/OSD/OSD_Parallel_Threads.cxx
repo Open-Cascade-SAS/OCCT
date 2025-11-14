@@ -142,7 +142,7 @@ void OSD_Parallel::forEachOcct(UniversalIterator&      theBegin,
 {
   const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
   const Standard_Integer        aNbThreads =
-    theNbItems != -1 ? Min(theNbItems, aThreadPool->NbDefaultThreadsToLaunch()) : -1;
+    theNbItems != -1 ? std::min(theNbItems, aThreadPool->NbDefaultThreadsToLaunch()) : -1;
   OSD_Parallel_Threads::UniversalLauncher aLauncher(*aThreadPool, aNbThreads);
   aLauncher.Perform(theBegin, theEnd, theFunctor);
 }

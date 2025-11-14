@@ -90,7 +90,7 @@ VrmlConverter_Projector::VrmlConverter_Projector(const TopTools_Array1OfShape&  
   gp_Dir Zpers(DX, DY, DZ);
   gp_Vec V(Zpers);
 
-  diagonal = Sqrt(xx * xx + yy * yy + zz * zz);
+  diagonal = std::sqrt(xx * xx + yy * yy + zz * zz);
 
   gp_Vec aVec = V.Multiplied(0.5 * diagonal + TolMin + Focus);
 
@@ -237,8 +237,8 @@ VrmlConverter_Projector::VrmlConverter_Projector(const TopTools_Array1OfShape&  
 
       //  std::cout << " Angle: " << V1.Angle(V2) << std::endl;
       //  std::cout << " ****************** " << std::endl;
-      if (Abs(V1.Angle(V2)) > Abs(MaxAngle))
-        MaxAngle = Abs(V1.Angle(V2));
+      if (std::abs(V1.Angle(V2)) > std::abs(MaxAngle))
+        MaxAngle = std::abs(V1.Angle(V2));
 
       V2.SetX(0);
       V2.SetY(P2.Y());
@@ -246,21 +246,21 @@ VrmlConverter_Projector::VrmlConverter_Projector(const TopTools_Array1OfShape&  
 
       //  std::cout << " Angle: " << V1.Angle(V2) << std::endl;
       //  std::cout << " ****************** " << std::endl;
-      if (Abs(V1.Angle(V2)) > Abs(MaxAngle))
-        MaxAngle = Abs(V1.Angle(V2));
+      if (std::abs(V1.Angle(V2)) > std::abs(MaxAngle))
+        MaxAngle = std::abs(V1.Angle(V2));
 
-      if (Abs(P2.Y()) > Abs(MaxHeight))
+      if (std::abs(P2.Y()) > std::abs(MaxHeight))
       {
         //  std::cout << " Height Y: " << P2.Y() << std::endl;
         //  std::cout << " ****************** " << std::endl;
-        MaxHeight = Abs(P2.Y());
+        MaxHeight = std::abs(P2.Y());
       }
 
-      if (Abs(P2.X()) > Abs(MaxHeight))
+      if (std::abs(P2.X()) > std::abs(MaxHeight))
       {
         //  std::cout << " Height X: " << P2.X() << std::endl;
         //  std::cout << " ****************** " << std::endl;
-        MaxHeight = Abs(P2.X());
+        MaxHeight = std::abs(P2.X());
       }
     }
     Height = MaxHeight;

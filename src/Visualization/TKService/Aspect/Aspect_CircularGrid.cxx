@@ -75,15 +75,15 @@ void Aspect_CircularGrid::Compute(const Standard_Real X,
 
   Standard_Real    xo      = XOrigin();
   Standard_Real    yo      = YOrigin();
-  Standard_Real    d       = Sqrt((xo - X) * (xo - X) + (yo - Y) * (yo - Y));
+  Standard_Real    d       = std::sqrt((xo - X) * (xo - X) + (yo - Y) * (yo - Y));
   Standard_Integer n       = (Standard_Integer)(d / myRadiusStep + 0.5);
   Standard_Real    radius  = Standard_Real(n) * myRadiusStep;
   Standard_Real    cosinus = (X - xo) / d;
-  Standard_Real    a       = ACos(cosinus);
+  Standard_Real    a       = std::acos(cosinus);
   Standard_Real    ra      = RotationAngle();
   if (Y < yo)
     a = 2 * M_PI - a;
-  n = (Standard_Integer)((a - ra) / myAlpha + Sign(0.5, a - ra));
+  n = (Standard_Integer)((a - ra) / myAlpha + std::copysign(0.5, a - ra));
 
   Standard_Real    cs = 0, sn = 0;
   Standard_Boolean done = Standard_False;
@@ -146,8 +146,8 @@ void Aspect_CircularGrid::Compute(const Standard_Real X,
   if (!done)
   {
     Standard_Real ang = ra + Standard_Real(n) * myAlpha;
-    cs                = Cos(ang);
-    sn                = Sin(ang);
+    cs                = std::cos(ang);
+    sn                = std::sin(ang);
   }
   gridX = xo + cs * radius;
   gridY = yo + sn * radius;
@@ -166,8 +166,8 @@ Standard_Integer Aspect_CircularGrid::DivisionNumber() const
 void Aspect_CircularGrid::Init()
 {
   myAlpha = M_PI / Standard_Real(myDivisionNumber);
-  myA1    = Cos(myAlpha);
-  myB1    = Sin(myAlpha);
+  myA1    = std::cos(myAlpha);
+  myB1    = std::sin(myAlpha);
 }
 
 //=================================================================================================

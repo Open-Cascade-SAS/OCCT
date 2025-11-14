@@ -85,7 +85,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
   Vmax = 0.;
 
   BRepTools::UVBounds(Spine, Umin, Umax, Vmin, Vmax);
-  Standard_Real Deltay = Max(Umax - Umin, Vmax - Vmin) + Abs(y);
+  Standard_Real Deltay = std::max(Umax - Umin, Vmax - Vmin) + std::abs(y);
   Deltay *= 2;
 
   TopoDS_Vertex Vert3 = BRepLib_MakeVertex(gp_Pnt(0, y + Deltay, z));
@@ -97,7 +97,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
   Vmax = 0.;
 
   BRepTools::UVBounds(Spine, Umin, Umax, Vmin, Vmax);
-  Standard_Real Deltay1 = Max(Umax - Umin, Vmax - Vmin) + Abs(y1);
+  Standard_Real Deltay1 = std::max(Umax - Umin, Vmax - Vmin) + std::abs(y1);
   Deltay1 *= 2;
 
   TopoDS_Vertex Vert4 = BRepLib_MakeVertex(gp_Pnt(0, y1 + Deltay1, z1));
@@ -368,7 +368,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
 
   Standard_Real Umin, Umax, Vmin, Vmax;
   BRepTools::UVBounds(Spine, Umin, Umax, Vmin, Vmax);
-  Standard_Real Deltay = Max(Umax - Umin, Vmax - Vmin) + Abs(y);
+  Standard_Real Deltay = std::max(Umax - Umin, Vmax - Vmin) + std::abs(y);
   Deltay *= 2;
 
   TopoDS_Vertex Vert3 = BRepLib_MakeVertex(gp_Pnt(0, y + Deltay, z));
@@ -648,8 +648,8 @@ void LocOpe_DPrism::Curves(TColGeom_SequenceOfCurve& Scurves) const
     {
       C                = BRep_Tool::Curve(edg, Loc, f, l);
       C                = Handle(Geom_Curve)::DownCast(C->Transformed(Loc.Transformation()));
-      Standard_Real u1 = -2 * Abs(myHeight);
-      Standard_Real u2 = 2 * Abs(myHeight);
+      Standard_Real u1 = -2 * std::abs(myHeight);
+      Standard_Real u2 = 2 * std::abs(myHeight);
 
       for (i = 0; i <= NECHANT; i++)
       {

@@ -54,7 +54,7 @@ public:
     Standard_Integer aPointsNb = aDEdge->GetCurve()->ParametersNb();
 
     aDEdge->Clear(Standard_True);
-    aDEdge->SetDeflection(Max(aDEdge->GetDeflection() / 3., Precision::Confusion()));
+    aDEdge->SetDeflection(std::max(aDEdge->GetDeflection() / 3., Precision::Confusion()));
 
     for (Standard_Integer aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
     {
@@ -419,11 +419,11 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
   const Standard_Real aTol2_1 = BRep_Tool::Tolerance(aVertex2_1);
   const Standard_Real aTol2_2 = BRep_Tool::Tolerance(aVertex2_2);
 
-  if (isInToleranceWithSomeOf(aPnt1_1, aPnt2_1, aPnt2_2, aTol1_1 + Max(aTol2_1, aTol2_2)))
+  if (isInToleranceWithSomeOf(aPnt1_1, aPnt2_1, aPnt2_2, aTol1_1 + std::max(aTol2_1, aTol2_2)))
   {
     return aVertex1_1;
   }
-  else if (isInToleranceWithSomeOf(aPnt1_2, aPnt2_1, aPnt2_2, aTol1_2 + Max(aTol2_1, aTol2_2)))
+  else if (isInToleranceWithSomeOf(aPnt1_2, aPnt2_1, aPnt2_2, aTol1_2 + std::max(aTol2_1, aTol2_2)))
   {
     return aVertex1_2;
   }

@@ -85,8 +85,8 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
     Dis1 = Dis2 = theDis1 * sqrt(2.);
   else if (theMode == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
-    Standard_Real aDis2 = Min(theDis1, theDis2);
-    Standard_Real aDis1 = Max(theDis1, theDis2);
+    Standard_Real aDis2 = std::min(theDis1, theDis2);
+    Standard_Real aDis1 = std::max(theDis1, theDis2);
     Dis2                = sqrt(aDis1 * aDis1 - aDis2 * aDis2);
     Dis1                = aDis1 * aDis1 / aDis2 - aDis2;
   }
@@ -138,7 +138,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   if (dedans)
   {
     Rad = Cyl.Radius() - Dis1;
-    if (Abs(Rad) <= Precision::Confusion())
+    if (std::abs(Rad) <= Precision::Confusion())
       pointu = Standard_True;
     if (Rad < 0)
     {
@@ -285,7 +285,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   ElSLib::Parameters(Cyl, Pt, u, v);
   Standard_Real    tol           = Precision::PConfusion();
   Standard_Boolean careaboutsens = 0;
-  if (Abs(lu - fu - 2 * M_PI) < tol)
+  if (std::abs(lu - fu - 2 * M_PI) < tol)
     careaboutsens = 1;
   if (u >= fu - tol && u < fu)
     u = fu;
@@ -300,10 +300,10 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   if (deru.Dot(Dy) < 0.)
   {
     d2dCyl.Reverse();
-    if (careaboutsens && Abs(fu - u) < tol)
+    if (careaboutsens && std::abs(fu - u) < tol)
       u = lu;
   }
-  else if (careaboutsens && Abs(lu - u) < tol)
+  else if (careaboutsens && std::abs(lu - u) < tol)
     u = fu;
   gp_Pnt2d            p2dCyl(u, v);
   gp_Lin2d            lin2dCyl(p2dCyl, d2dCyl);
@@ -408,7 +408,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   POnPln.SetXYZ((OrSpine.XYZ()).Added(VecTranslPln.XYZ()));
 
   // construction of POnCyl
-  Standard_Real alpha = (2 * ASin(dis2 * 0.5 / Cyl.Radius()));
+  Standard_Real alpha = (2 * std::asin(dis2 * 0.5 / Cyl.Radius()));
   //  gp_Vec VecTranslCyl;
   //  VecTranslCyl = gp_Vec(OrSpine,OrCyl);
 

@@ -508,7 +508,7 @@ void LocOpe_Gluer::AddEdges()
                 Standard_Real dist2min = ext.SquareDistance(1);
                 for (i = 2; i <= ext.NbExt(); i++)
                 {
-                  dist2min = Min(dist2min, ext.SquareDistance(i));
+                  dist2min = std::min(dist2min, ext.SquareDistance(i));
                 }
                 if (dist2min >= BRep_Tool::Tolerance(v) * BRep_Tool::Tolerance(v))
                 {

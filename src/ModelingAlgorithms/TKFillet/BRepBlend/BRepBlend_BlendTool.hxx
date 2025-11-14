@@ -54,7 +54,7 @@ public:
 
   //! Returns the parametric tolerance on the arc A
   //! used to consider that the vertex and another point meet,
-  //! i-e if Abs(Parameter(Vertex)-Parameter(OtherPnt))<=
+  //! i-e if std::abs(Parameter(Vertex)-Parameter(OtherPnt))<=
   //! Tolerance, the points are "merged".
   static Standard_Real Tolerance(const Handle(Adaptor3d_HVertex)& V,
                                  const Handle(Adaptor2d_Curve2d)& A);

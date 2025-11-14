@@ -77,7 +77,7 @@ Standard_Boolean BRepTools_TrsfModification::NewSurface(const TopoDS_Face&    F,
   }
 
   Tol = BRep_Tool::Tolerance(F);
-  Tol *= Abs(myTrsf.ScaleFactor());
+  Tol *= std::abs(myTrsf.ScaleFactor());
   RevWires = Standard_False;
   RevFace  = myTrsf.IsNegative();
 
@@ -118,7 +118,7 @@ Standard_Boolean BRepTools_TrsfModification::NewTriangulation(
 
   theTriangulation = theTriangulation->Copy();
   theTriangulation->SetCachedMinMax(Bnd_Box()); // clear bounding box
-  theTriangulation->Deflection(theTriangulation->Deflection() * Abs(myTrsf.ScaleFactor()));
+  theTriangulation->Deflection(theTriangulation->Deflection() * std::abs(myTrsf.ScaleFactor()));
   // apply transformation to 3D nodes
   for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
   {
@@ -189,7 +189,7 @@ Standard_Boolean BRepTools_TrsfModification::NewPolygon(const TopoDS_Edge&      
   }
 
   theP = theP->Copy();
-  theP->Deflection(theP->Deflection() * Abs(myTrsf.ScaleFactor()));
+  theP->Deflection(theP->Deflection() * std::abs(myTrsf.ScaleFactor()));
   TColgp_Array1OfPnt& aNodesArray = theP->ChangeNodes();
   for (Standard_Integer anId = aNodesArray.Lower(); anId <= aNodesArray.Upper(); ++anId)
   {
@@ -205,7 +205,7 @@ Standard_Boolean BRepTools_TrsfModification::NewPolygon(const TopoDS_Edge&      
     if (!aCurve.IsNull())
     {
       Standard_Real aReparametrization = aCurve->ParametricTransformation(aTrsf);
-      if (Abs(aReparametrization - 1.0) > Precision::PConfusion())
+      if (std::abs(aReparametrization - 1.0) > Precision::PConfusion())
       {
         TColStd_Array1OfReal& aParams = theP->ChangeParameters();
         for (Standard_Integer anInd = aParams.Lower(); anInd <= aParams.Upper(); ++anInd)
@@ -244,14 +244,14 @@ Standard_Boolean BRepTools_TrsfModification::NewPolygonOnTriangulation(
     return Standard_False;
   }
   theP = theP->Copy();
-  theP->Deflection(theP->Deflection() * Abs(myTrsf.ScaleFactor()));
+  theP->Deflection(theP->Deflection() * std::abs(myTrsf.ScaleFactor()));
 
   // transform the parametrization
   Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theF, aLoc);
   Standard_Real        aFirst, aLast;
   Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(theE, theF, aFirst, aLast);
   if (!aSurf.IsNull() && !aC2d.IsNull()
-      && Abs(Abs(myTrsf.ScaleFactor()) - 1.0) > TopLoc_Location::ScalePrec())
+      && std::abs(std::abs(myTrsf.ScaleFactor()) - 1.0) > TopLoc_Location::ScalePrec())
   {
     gp_GTrsf2d aGTrsf = aSurf->ParametricTransformation(myTrsf);
     if (aGTrsf.Form() != gp_Identity)
@@ -282,7 +282,7 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve(const TopoDS_Edge&  E,
   C = BRep_Tool::Curve(E, L, f, l);
 
   Tol = BRep_Tool::Tolerance(E);
-  Tol *= Abs(myTrsf.ScaleFactor());
+  Tol *= std::abs(myTrsf.ScaleFactor());
 
   gp_Trsf LT = L.Transformation();
   LT.Invert();
@@ -305,7 +305,7 @@ Standard_Boolean BRepTools_TrsfModification::NewPoint(const TopoDS_Vertex& V,
 {
   P   = BRep_Tool::Pnt(V);
   Tol = BRep_Tool::Tolerance(V);
-  Tol *= Abs(myTrsf.ScaleFactor());
+  Tol *= std::abs(myTrsf.ScaleFactor());
   P.Transform(myTrsf);
 
   return Standard_True;
@@ -323,7 +323,7 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve2d(const TopoDS_Edge& E,
   TopLoc_Location loc;
   Tol                 = BRep_Tool::Tolerance(E);
   Standard_Real scale = myTrsf.ScaleFactor();
-  Tol *= Abs(scale);
+  Tol *= std::abs(scale);
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(F, loc);
 
   if (S.IsNull())
@@ -358,9 +358,9 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve2d(const TopoDS_Edge& E,
       f = fc;
     if (l - lc > Precision::PConfusion())
       l = lc;
-    if (Abs(l - f) < Precision::PConfusion())
+    if (std::abs(l - f) < Precision::PConfusion())
     {
-      if (Abs(f - fc) < Precision::PConfusion() && !Precision::IsInfinite(lc))
+      if (std::abs(f - fc) < Precision::PConfusion() && !Precision::IsInfinite(lc))
       {
         l = lc;
       }
@@ -373,7 +373,7 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve2d(const TopoDS_Edge& E,
 
   newf = f;
   newl = l;
-  if (Abs(scale) != 1.)
+  if (std::abs(scale) != 1.)
   {
 
     NewC             = new Geom2d_TrimmedCurve(NewC, f, l);
@@ -415,7 +415,7 @@ Standard_Boolean BRepTools_TrsfModification::NewParameter(const TopoDS_Vertex& V
 
   TopLoc_Location loc;
   Tol = BRep_Tool::Tolerance(V);
-  Tol *= Abs(myTrsf.ScaleFactor());
+  Tol *= std::abs(myTrsf.ScaleFactor());
   P = BRep_Tool::Parameter(V, E);
 
   Standard_Real f, l;

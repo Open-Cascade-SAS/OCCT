@@ -631,7 +631,7 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const Standard_Real U,
   Standard_Real    VMax          = myPolygon.Value(IntervalIndex + 1).ParamOnC2();
   Standard_Real    Alpha, VInit;
 
-  if (Abs(UMax - UMin) < gp::Resolution())
+  if (std::abs(UMax - UMin) < gp::Resolution())
   {
     VInit = VMin;
   }
@@ -642,8 +642,8 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const Standard_Real U,
   }
 
   U1                     = LinkBisCurve(U);
-  Standard_Real VTemp    = Min(VMin, VMax);
-  VMax                   = Max(VMin, VMax);
+  Standard_Real VTemp    = std::min(VMin, VMax);
+  VMax                   = std::max(VMin, VMax);
   VMin                   = VTemp;
   Standard_Boolean Valid = Standard_True;
   //---------------------------------------------------------------
@@ -665,7 +665,7 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const Standard_Real U,
     Bisector_FunctionH H(curve2, P1, sign1 * sign2 * T1);
     Standard_Real      FInit;
     H.Value(VInit, FInit);
-    if (Abs(FInit) < EpsH)
+    if (std::abs(FInit) < EpsH)
     {
       U2 = VInit;
     }
@@ -845,13 +845,13 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const Standard_Real U,
     }
   }
 
-  if (Abs(ULastOnC2 - UFirstOnC2) < Precision::PConfusion() / 100.)
+  if (std::abs(ULastOnC2 - UFirstOnC2) < Precision::PConfusion() / 100.)
   {
     Dist = Precision::Infinite();
     return P1;
   }
 
-  DiscretPar(Abs(ULastOnC2 - UFirstOnC2), EpsH, EpsMax, 2, 20, EpsX, NbSamples);
+  DiscretPar(std::abs(ULastOnC2 - UFirstOnC2), EpsH, EpsMax, 2, 20, EpsX, NbSamples);
 
   Bisector_FunctionH H(curve2, P1, sign1 * sign2 * Tan1);
   math_FunctionRoots SolRoot(H, UFirstOnC2, ULastOnC2, NbSamples, EpsX, EpsH, EpsH);
@@ -1170,7 +1170,7 @@ void Bisector_BisecCC::Values(const Standard_Real    U,
     gp_Vec2d dFdu = Tu - (dAdu / B - dBdu * A / BB) * Nor - (A / B) * Nu;
     gp_Vec2d dFdv = (-dAdv / B + dBdv * A / BB) * Nor;
 
-    if (Abs(dHdv) > gp::Resolution())
+    if (std::abs(dHdv) > gp::Resolution())
     {
       V1 = dFdu + dFdv * (-dHdu / dHdv);
     }
@@ -1430,7 +1430,7 @@ static Standard_Boolean PointByInt(const Handle(Geom2d_Curve)& CA,
         Standard_Real K1 = Curvature(CA, UOnA, Precision::Confusion());
         if (K1 != 0.)
         {
-          if (Dist > Abs(1 / K1))
+          if (Dist > std::abs(1 / K1))
             YaSol = Standard_False;
         }
       }
@@ -1441,7 +1441,7 @@ static Standard_Boolean PointByInt(const Handle(Geom2d_Curve)& CA,
           Standard_Real K2 = Curvature(CB, UOnB, Precision::Confusion());
           if (K2 != 0.)
           {
-            if (Dist > Abs(1 / K2))
+            if (Dist > std::abs(1 / K2))
               YaSol = Standard_False;
           }
         }
@@ -1756,14 +1756,14 @@ static Standard_Boolean ProjOnCurve(const gp_Pnt2d&             P,
   gp_Vec2d PPF(PF.X() - P.X(), PF.Y() - P.Y());
   TF.Normalize();
 
-  if (Abs(PPF.Dot(TF)) < Precision::Confusion())
+  if (std::abs(PPF.Dot(TF)) < Precision::Confusion())
   {
     theParam = C->FirstParameter();
     return Standard_True;
   }
   gp_Vec2d PPL(PL.X() - P.X(), PL.Y() - P.Y());
   TL.Normalize();
-  if (Abs(PPL.Dot(TL)) < Precision::Confusion())
+  if (std::abs(PPL.Dot(TL)) < Precision::Confusion())
   {
     theParam = C->LastParameter();
     return Standard_True;
@@ -1866,7 +1866,7 @@ void Bisector_BisecCC::ComputePointEnd()
   TF.Normalize();
   if (KC != 0.)
   {
-    RC = Abs(1 / KC);
+    RC = std::abs(1 / KC);
   }
   else
   {
@@ -1892,7 +1892,7 @@ static Standard_Boolean DiscretPar(const Standard_Real    DU,
     return Standard_False;
   }
 
-  Eps = Min(EpsMax, DU / NbMax);
+  Eps = std::min(EpsMax, DU / NbMax);
 
   if (Eps < EpsMin)
   {

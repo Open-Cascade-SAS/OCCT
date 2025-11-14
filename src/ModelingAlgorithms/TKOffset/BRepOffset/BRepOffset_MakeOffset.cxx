@@ -886,8 +886,9 @@ void BRepOffset_MakeOffset::MakeOffsetShape(const Message_ProgressRange& theRang
   // ------------
   EvalMax(myShape, myTol);
   // There are possible second variant: analytical continuation of arcsin.
-  Standard_Real TolAngleCoeff = Min(myTol / (Abs(myOffset * 0.5) + Precision::Confusion()), 1.0);
-  Standard_Real TolAngle      = 4 * ASin(TolAngleCoeff);
+  Standard_Real TolAngleCoeff =
+    std::min(myTol / (std::abs(myOffset * 0.5) + Precision::Confusion()), 1.0);
+  Standard_Real TolAngle = 4 * std::asin(TolAngleCoeff);
   if ((myJoin == GeomAbs_Intersection) && myInter && myIsPlanar)
   {
     myAnalyse.SetOffsetValue(myOffset);
@@ -2517,14 +2518,14 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
       Standard_Real Uf, Vf, Ul, Vl;
       ElSLib::Parameters(theSphere, fPnt, Uf, Vf);
       ElSLib::Parameters(theSphere, lPnt, Ul, Vl);
-      if (Abs(Ul) <= Precision::Confusion())
+      if (std::abs(Ul) <= Precision::Confusion())
         Ul = 2. * M_PI;
       Handle(Geom_Curve) aCurv = aSphSurf->VIso(Vf);
       /*
         if (!isFirstFace)
         {
         gp_Circ aCircle = (Handle(Geom_Circle)::DownCast(aCurv))->Circ();
-        if (Abs(Uf - f) > Precision::Confusion())
+        if (std::abs(Uf - f) > Precision::Confusion())
         {
         aCircle.Rotate(aCircle.Axis(), f - Uf);
         aCurv = new Geom_Circle(aCircle);
@@ -2622,7 +2623,7 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
       Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(FirstEdge, aSphSurf, L, f, l);
       p2d1                      = aC2d->Value(f);
       p2d2                      = aC2d->Value(l);
-      if (Abs(p2d1.X() - Ufirst) <= Precision::Confusion())
+      if (std::abs(p2d1.X() - Ufirst) <= Precision::Confusion())
       {
         EdgesOfWire.Remove(itl);
         break;
@@ -3087,7 +3088,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
   TopTools_IndexedDataMapOfShapeListOfShape Contours; //Start vertex + list of connected edges (free boundary)
   // clang-format on
   TopTools_DataMapOfShapeShape MapEF; // Edges of contours: edge + face
-  Standard_Real                OffsetVal = Abs(myOffset);
+  Standard_Real                OffsetVal = std::abs(myOffset);
 
   FillContours(myFaceComp, myAnalyse, Contours, MapEF);
 
@@ -3145,7 +3146,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
         gp_Pnt             aP1 = anOEC->Value(aF);
         gp_Pnt             aP2 = anOEC->Value(aL);
         TopoDS_Vertex      anOEV1, anOEV2;
-        Standard_Real      aTol = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+        Standard_Real      aTol = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
         aBB.MakeVertex(anOEV1, aP1, aTol);
         anOEV1.Orientation(TopAbs_FORWARD);
         aBB.MakeVertex(anOEV2, aP2, aTol);
@@ -3176,10 +3177,11 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
           if (aPntOF.SquareDistance(aPntOL) > gp::Resolution())
           {
             // To avoid computation of complex analytical continuation of Sin / ArcSin.
-            Standard_Real aSinValue     = Min(2 * anEdgeTol / aPntOF.Distance(aPntOL), 1.0);
-            Standard_Real aMaxAngle     = Min(Abs(ASin(aSinValue)), M_PI_4); // Maximal angle.
+            Standard_Real aSinValue = std::min(2 * anEdgeTol / aPntOF.Distance(aPntOL), 1.0);
+            Standard_Real aMaxAngle =
+              std::min(std::abs(std::asin(aSinValue)), M_PI_4); // Maximal angle.
             Standard_Real aCurrentAngle = gp_Vec(aPntF, aPntL).Angle(gp_Vec(aPntOF, aPntOL));
-            if (aC->IsKind(STANDARD_TYPE(Geom_Line)) && Abs(aCurrentAngle) > aMaxAngle)
+            if (aC->IsKind(STANDARD_TYPE(Geom_Line)) && std::abs(aCurrentAngle) > aMaxAngle)
             {
               // anEdge not collinear to offset edge.
               isBuildFromScratch = Standard_True;
@@ -3269,7 +3271,8 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
         if (aCirc.Axis().IsParallel(aCircOE.Axis(), Precision::Confusion())
             && anAxisLine.Contains(aCircOE.Location(), Precision::Confusion()))
         { // cylinder, plane or cone
-          if (Abs(aCirc.Radius() - aCircOE.Radius()) <= Precision::Confusion()) // case of cylinder
+          if (std::abs(aCirc.Radius() - aCircOE.Radius())
+              <= Precision::Confusion()) // case of cylinder
             theSurf = GC_MakeCylindricalSurface(aCirc).Value();
           else if (aCirc.Location().Distance(aCircOE.Location()) <= Precision::Confusion())
           { // case of plane
@@ -3467,7 +3470,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
         Standard_Real   fparOE = BAcurveOE.FirstParameter();
         Standard_Real   lparOE = BAcurveOE.LastParameter();
         TopLoc_Location Loc;
-        if (Abs(fpar - fparOE) > Precision::Confusion())
+        if (std::abs(fpar - fparOE) > Precision::Confusion())
         {
           const TopoDS_Edge& anE4   = (ToReverse) ? E3 : E4;
           gp_Pnt2d           fp2d   = EdgeLine2d->Value(fpar);
@@ -3492,7 +3495,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
           BB.UpdateEdge(anE4, aLine2d2, theSurf, Loc, max_deviation);
           BB.Range(anE4, FirstPar, LastPar);
         }
-        if (Abs(lpar - lparOE) > Precision::Confusion())
+        if (std::abs(lpar - lparOE) > Precision::Confusion())
         {
           const TopoDS_Edge& anE3   = (ToReverse) ? E4 : E3;
           gp_Pnt2d           lp2d   = EdgeLine2d->Value(lpar);
@@ -4207,16 +4210,16 @@ void CorrectSolid(TopoDS_Solid& theSol, TopTools_ListOfShape& theSolList)
     const TopoDS_Shape& aSh = anIt.Value();
     GProp_GProps        aVProps;
     BRepGProp::VolumeProperties(aSh, aVProps, Standard_True);
-    if (Abs(aVProps.Mass()) > aVolMax)
+    if (std::abs(aVProps.Mass()) > aVolMax)
     {
       anOuterVol   = aVProps.Mass();
-      aVolMax      = Abs(anOuterVol);
+      aVolMax      = std::abs(anOuterVol);
       anOuterShell = aSh;
     }
     aVols.Append(aVProps.Mass());
   }
   //
-  if (Abs(anOuterVol) < Precision::Confusion())
+  if (std::abs(anOuterVol) < Precision::Confusion())
   {
     return;
   }
@@ -4282,13 +4285,13 @@ Standard_Boolean BRepOffset_MakeOffset::CheckInputData(const Message_ProgressRan
   myBadShape = aTmpShape;
   Message_ProgressScope aPS(theRange, NULL, 1);
   // Non-null offset.
-  if (Abs(myOffset) <= myTol)
+  if (std::abs(myOffset) <= myTol)
   {
     Standard_Boolean                             isFound = Standard_False;
     TopTools_DataMapIteratorOfDataMapOfShapeReal anIter(myFaceOffset);
     for (; anIter.More(); anIter.Next())
     {
-      if (Abs(anIter.Value()) > myTol)
+      if (std::abs(anIter.Value()) > myTol)
       {
         isFound = Standard_True;
         break;

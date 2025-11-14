@@ -61,7 +61,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
   Standard_Real dist = Point1.Distance(Point2);
-  if (dist < Abs(Tolerance))
+  if (dist < std::abs(Tolerance))
   {
     WellDone = Standard_True;
   }

@@ -106,14 +106,14 @@ Standard_Real MaxTol2DCurEdge(const TopoDS_Vertex& theV1,
   }
   Standard_Real aTol2D, anUr, aVr;
 
-  Standard_Real       aTolV3D = Max(aTolV3D1, aTolV3D2);
+  Standard_Real       aTolV3D = std::max(aTolV3D1, aTolV3D2);
   BRepAdaptor_Surface aS(theF, Standard_False);
 
   anUr   = aS.UResolution(aTolV3D);
   aVr    = aS.VResolution(aTolV3D);
-  aTol2D = Max(anUr, aVr);
+  aTol2D = std::max(anUr, aVr);
   //
-  aTol2D = Max(aTol2D, theTol);
+  aTol2D = std::max(aTol2D, theTol);
   return aTol2D;
 }
 
@@ -165,7 +165,7 @@ Standard_Boolean CheckOn(IntRes2d_IntersectionPoint& thePntInter,
 
   if (aMinInd != 0)
   {
-    aMinDist = Sqrt(aMinDist);
+    aMinDist = std::sqrt(aMinDist);
   }
   if (aMinDist <= theTolZ)
   {
@@ -178,11 +178,11 @@ Standard_Boolean CheckOn(IntRes2d_IntersectionPoint& thePntInter,
     {
       IntRes2d_Transition aTrOnLin(IntRes2d_Head);
       IntRes2d_Position   aPosOnCurve = IntRes2d_Middle;
-      if ((Abs(aPar - theDeb) <= Precision::Confusion()) || (aPar < theDeb))
+      if ((std::abs(aPar - theDeb) <= Precision::Confusion()) || (aPar < theDeb))
       {
         aPosOnCurve = IntRes2d_Head;
       }
-      else if ((Abs(aPar - theFin) <= Precision::Confusion()) || (aPar > theFin))
+      else if ((std::abs(aPar - theFin) <= Precision::Confusion()) || (aPar > theFin))
       {
         aPosOnCurve = IntRes2d_End;
       }

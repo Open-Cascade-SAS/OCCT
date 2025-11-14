@@ -648,7 +648,7 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnFace(const TopoDS_Edge& aEdgeToUpdate,
     // so we take as it was on old face and after (in CorrectFace2D)
     //  we will adjust this PCurve
     C2D = FC2D_CurveOnSurface(aEdgeToUpdate, fromFace, f2, l2, tolpc, Standard_True);
-    Standard_Real               tol    = Max(tolE, tolpc);
+    Standard_Real               tol    = std::max(tolE, tolpc);
     Handle(Geom2d_Curve)        C2Dn   = Handle(Geom2d_Curve)::DownCast(C2D->Copy());
     Handle(Geom2d_TrimmedCurve) newC2D = new Geom2d_TrimmedCurve(C2Dn, f2, l2);
     BB.UpdateEdge(aEdgeToUpdate, newC2D, toFace, tol);
@@ -663,7 +663,7 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnFace(const TopoDS_Edge& aEdgeToUpdate,
     else
     {
       C2D               = FC2D_CurveOnSurface(aEdgeToUpdate, toFace, f2, l2, tolpc, Standard_True);
-      Standard_Real tol = Max(tolE, tolpc);
+      Standard_Real tol = std::max(tolE, tolpc);
       BB.UpdateEdge(aEdgeToUpdate, C2D, toFace, tol);
     }
   }
@@ -708,7 +708,7 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnPeriodicalFace(const TopoDS_Edge& aEdgeT
   // first  PCurve
   Handle(Geom2d_Curve) C2D = FC2D_CurveOnSurface(newE, tFace, f2, l2, tolpc, Standard_True);
 
-  tol = Max(tolpc, tolE);
+  tol = std::max(tolpc, tolE);
 
   BRepAdaptor_Surface aBAS(fFace);
   gp_Vec2d            aTrV;

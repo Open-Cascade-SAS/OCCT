@@ -436,7 +436,7 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
       Standard_Integer     Intrv, nbIntv;
       Standard_Integer     nbUIntv = S.NbUIntervals(GeomAbs_CN);
       Standard_Integer     nbVIntv = S.NbVIntervals(GeomAbs_CN);
-      TColStd_Array1OfReal TI(1, Max(nbUIntv, nbVIntv) + 1);
+      TColStd_Array1OfReal TI(1, std::max(nbUIntv, nbVIntv) + 1);
 
       for (i = 1; i <= N; i++)
       {
@@ -445,8 +445,8 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
         if (T == GeomAbs_IsoU)
         {
           S.VIntervals(TI, GeomAbs_CN);
-          V1     = Max(T1, TI(1));
-          V2     = Min(T2, TI(2));
+          V1     = std::max(T1, TI(1));
+          V2     = std::min(T2, TI(2));
           U1     = Par;
           U2     = Par;
           stepU  = 0;
@@ -455,8 +455,8 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
         else
         {
           S.UIntervals(TI, GeomAbs_CN);
-          U1     = Max(T1, TI(1));
-          U2     = Min(T2, TI(2));
+          U1     = std::max(T1, TI(1));
+          U2     = std::min(T2, TI(2));
           V1     = Par;
           V2     = Par;
           stepV  = 0;
@@ -475,14 +475,14 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
             continue;
           if (T == GeomAbs_IsoU)
           {
-            V1    = Max(T1, TI(Intrv));
-            V2    = Min(T2, TI(Intrv + 1));
+            V1    = std::max(T1, TI(Intrv));
+            V2    = std::min(T2, TI(Intrv + 1));
             stepV = (V2 - V1) / myDiscret;
           }
           else
           {
-            U1    = Max(T1, TI(Intrv));
-            U2    = Min(T2, TI(Intrv + 1));
+            U1    = std::max(T1, TI(Intrv));
+            U2    = std::min(T2, TI(Intrv + 1));
             stepU = (U2 - U1) / myDiscret;
           }
 
@@ -1143,7 +1143,7 @@ void DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
   }
 
   // allocate the arrays
-  TColStd_Array1OfInteger                                Free(1, Max(1, 2 * nFree));
+  TColStd_Array1OfInteger                                Free(1, std::max(1, 2 * nFree));
   NCollection_Vector<NCollection_Vec2<Standard_Integer>> anInternal;
 
   Standard_Integer fr = 1;

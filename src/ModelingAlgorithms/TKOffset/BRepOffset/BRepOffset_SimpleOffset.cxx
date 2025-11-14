@@ -284,10 +284,10 @@ void BRepOffset_SimpleOffset::FillEdgeData(
     if (aValidateEdge.IsDone())
     {
       Standard_Real aMaxTol1 = aValidateEdge.GetMaxDistance();
-      anEdgeTol              = Max(anEdgeTol, aMaxTol1);
+      anEdgeTol              = std::max(anEdgeTol, aMaxTol1);
     }
   }
-  aNED.myTol = Max(BRep_Tool::Tolerance(aNewEdge), anEdgeTol);
+  aNED.myTol = std::max(BRep_Tool::Tolerance(aNewEdge), anEdgeTol);
 
   // Save computed 3d curve in map.
   myEdgeInfo.Bind(theEdge, aNED);
@@ -364,7 +364,7 @@ void BRepOffset_SimpleOffset::FillVertexData(
       anOffsetPointVec.Append(anOffsetPointLast);
     }
 
-    aMaxEdgeTol = Max(aMaxEdgeTol, aNED.myTol);
+    aMaxEdgeTol = std::max(aMaxEdgeTol, aNED.myTol);
   }
 
   // NCollection_Vector starts from 0 by default.
@@ -385,7 +385,7 @@ void BRepOffset_SimpleOffset::FillVertexData(
       aSqMaxDist = aSqDist;
   }
 
-  const Standard_Real aResTol = Max(aMaxEdgeTol, Sqrt(aSqMaxDist));
+  const Standard_Real aResTol = std::max(aMaxEdgeTol, std::sqrt(aSqMaxDist));
 
   const Standard_Real aMultCoeff = 1.001; // Avoid tolernace problems.
   NewVertexData       aNVD;

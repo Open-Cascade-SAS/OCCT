@@ -105,9 +105,9 @@ public:
     EdgeNormals[1] = BVH_Vec3d::Cross(Edges[1], Normal);
     EdgeNormals[2] = BVH_Vec3d::Cross(Edges[2], Normal);
 
-    EdgeNormals[0] *= 1.0 / Max(EdgeNormals[0].Modulus(), Precision::Confusion());
-    EdgeNormals[1] *= 1.0 / Max(EdgeNormals[1].Modulus(), Precision::Confusion());
-    EdgeNormals[2] *= 1.0 / Max(EdgeNormals[2].Modulus(), Precision::Confusion());
+    EdgeNormals[0] *= 1.0 / std::max(EdgeNormals[0].Modulus(), Precision::Confusion());
+    EdgeNormals[1] *= 1.0 / std::max(EdgeNormals[1].Modulus(), Precision::Confusion());
+    EdgeNormals[2] *= 1.0 / std::max(EdgeNormals[2].Modulus(), Precision::Confusion());
 
     const BVH_Vec3d aDirect01 = EdgeNormals[0] - EdgeNormals[1];
     const BVH_Vec3d aDirect02 = EdgeNormals[0] + EdgeNormals[2];
@@ -121,7 +121,7 @@ public:
       theVertex2 + aDirect12 * (theDeflect / aDirect12.Dot(EdgeNormals[2]));
 
     const BVH_Vec3d aNormOffset =
-      Normal * (theDeflect / Max(Normal.Modulus(), Precision::Confusion()));
+      Normal * (theDeflect / std::max(Normal.Modulus(), Precision::Confusion()));
 
     for (Standard_Integer aVertIdx = 0; aVertIdx < 3; ++aVertIdx)
     {
@@ -146,13 +146,13 @@ public:
     {
       const Standard_Real aProj1 = Vertices[aVertIdx].Dot(theAxis);
 
-      aMin1 = Min(aMin1, aProj1);
-      aMax1 = Max(aMax1, aProj1);
+      aMin1 = std::min(aMin1, aProj1);
+      aMax1 = std::max(aMax1, aProj1);
 
       const Standard_Real aProj2 = thePrism.Vertices[aVertIdx].Dot(theAxis);
 
-      aMin2 = Min(aMin2, aProj2);
-      aMax2 = Max(aMax2, aProj2);
+      aMin2 = std::min(aMin2, aProj2);
+      aMax2 = std::max(aMax2, aProj2);
 
       if (aMin1 <= aMax2 && aMax1 >= aMin2)
       {
@@ -214,12 +214,12 @@ Standard_Boolean segmentsIntersected(const BVH_Vec2d& theOriginSeg0,
     const Standard_Real aEdge0Time1 = aEdge0Time0 + theDirectSeg0.Dot(aDirect);
     const Standard_Real aEdge1Time1 = aEdge1Time0 + theDirectSeg1.Dot(aDirect);
 
-    const Standard_Real aEdge0Min = Min(aEdge0Time0, aEdge0Time1);
-    const Standard_Real aEdge1Min = Min(aEdge1Time0, aEdge1Time1);
-    const Standard_Real aEdge0Max = Max(aEdge0Time0, aEdge0Time1);
-    const Standard_Real aEdge1Max = Max(aEdge1Time0, aEdge1Time1);
+    const Standard_Real aEdge0Min = std::min(aEdge0Time0, aEdge0Time1);
+    const Standard_Real aEdge1Min = std::min(aEdge1Time0, aEdge1Time1);
+    const Standard_Real aEdge0Max = std::max(aEdge0Time0, aEdge0Time1);
+    const Standard_Real aEdge1Max = std::max(aEdge1Time0, aEdge1Time1);
 
-    if (Max(aEdge0Min, aEdge1Min) > Min(aEdge0Max, aEdge1Max))
+    if (std::max(aEdge0Min, aEdge1Min) > std::min(aEdge0Max, aEdge1Max))
     {
       return Standard_False;
     }
@@ -312,8 +312,8 @@ Standard_Boolean trianglesIntersected(const BVH_Vec3d& theTrng0Vert0,
                                  + (aProjTrng0Vert1 - aProjTrng0Vert2) * aDistTrng0Vert2
                                      / (aDistTrng0Vert2 - aDistTrng0Vert1);
 
-    const Standard_Real aTimeMin1 = Min(aTime1, aTime2);
-    const Standard_Real aTimeMax1 = Max(aTime1, aTime2);
+    const Standard_Real aTimeMin1 = std::min(aTime1, aTime2);
+    const Standard_Real aTimeMax1 = std::max(aTime1, aTime2);
 
     Standard_Real aProjTrng1Vert0 = theTrng1Vert0.Dot(aCrossLine);
     Standard_Real aProjTrng1Vert1 = theTrng1Vert1.Dot(aCrossLine);
@@ -341,11 +341,11 @@ Standard_Boolean trianglesIntersected(const BVH_Vec3d& theTrng0Vert0,
                    + (aProjTrng1Vert1 - aProjTrng1Vert2) * aDistTrng1Vert2
                        / (aDistTrng1Vert2 - aDistTrng1Vert1);
 
-    const Standard_Real aTimeMin2 = Min(aTime1, aTime2);
-    const Standard_Real aTimeMax2 = Max(aTime1, aTime2);
+    const Standard_Real aTimeMin2 = std::min(aTime1, aTime2);
+    const Standard_Real aTimeMax2 = std::max(aTime1, aTime2);
 
-    aTime1 = Max(aTimeMin1, aTimeMin2);
-    aTime2 = Min(aTimeMax1, aTimeMax2);
+    aTime1 = std::max(aTimeMin1, aTimeMin2);
+    aTime2 = std::min(aTimeMax1, aTimeMax2);
 
     return aTime1 <= aTime2; // intervals intersected --> triangles overlapped
   }

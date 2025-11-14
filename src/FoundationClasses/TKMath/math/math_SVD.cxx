@@ -27,7 +27,7 @@
 #include <StdFail_NotDone.hxx>
 
 math_SVD::math_SVD(const math_Matrix& A)
-    : U(1, Max(A.RowNumber(), A.ColNumber()), 1, A.ColNumber()),
+    : U(1, std::max(A.RowNumber(), A.ColNumber()), 1, A.ColNumber()),
       V(1, A.ColNumber(), 1, A.ColNumber()),
       Diag(1, A.ColNumber())
 {

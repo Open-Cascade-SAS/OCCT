@@ -40,7 +40,7 @@ struct AIS_WalkPart
   Standard_Real Duration; //!< duration
 
   //! Return TRUE if delta is empty.
-  bool IsEmpty() const { return Abs(Value) <= RealSmall(); }
+  bool IsEmpty() const { return std::abs(Value) <= RealSmall(); }
 
   //! Empty constructor.
   AIS_WalkPart()

@@ -82,7 +82,7 @@ GeomToStep_MakeRectangularTrimmedSurface::GeomToStep_MakeRectangularTrimmedSurfa
     Handle(Geom_ConicalSurface) conicS = Handle(Geom_ConicalSurface)::DownCast(theSurf);
     Standard_Real               semAng = conicS->SemiAngle();
     uFact                              = AngleFact;
-    vFact                              = Cos(semAng) / LengthFact;
+    vFact                              = std::cos(semAng) / LengthFact;
   }
   else if (theSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
   {

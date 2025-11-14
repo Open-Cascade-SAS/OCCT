@@ -281,13 +281,13 @@ void BRepFill_TrimShellCorner::Perform()
   TopExp_Explorer anExp(myShape1, TopAbs_VERTEX);
   for (; anExp.More(); anExp.Next())
   {
-    aMaxTol = Max(aMaxTol, BRep_Tool::Tolerance(TopoDS::Vertex(anExp.Current())));
+    aMaxTol = std::max(aMaxTol, BRep_Tool::Tolerance(TopoDS::Vertex(anExp.Current())));
   }
 
   anExp.Init(myShape2, TopAbs_VERTEX);
   for (; anExp.More(); anExp.Next())
   {
-    aMaxTol = Max(aMaxTol, BRep_Tool::Tolerance(TopoDS::Vertex(anExp.Current())));
+    aMaxTol = std::max(aMaxTol, BRep_Tool::Tolerance(TopoDS::Vertex(anExp.Current())));
   }
 
   Standard_Real        aFuzzy = 4. * Precision::Confusion();
@@ -298,7 +298,7 @@ void BRepFill_TrimShellCorner::Perform()
   aPF.SetArguments(aLS);
   if (aMaxTol < 1.005 * Precision::Confusion())
   {
-    aFuzzy = Max(aPF.FuzzyValue(), aFuzzy);
+    aFuzzy = std::max(aPF.FuzzyValue(), aFuzzy);
     aPF.SetFuzzyValue(aFuzzy);
   }
   //

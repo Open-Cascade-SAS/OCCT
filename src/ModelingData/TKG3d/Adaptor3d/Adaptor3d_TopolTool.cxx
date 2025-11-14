@@ -74,7 +74,7 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
 
   if (!Vinfinfinite)
   {
-    deltap = Min(Usup - Uinf, 2. * myInfinite);
+    deltap = std::min(Usup - Uinf, 2. * myInfinite);
     if (Uinf >= -myInfinite)
     {
       pinf = Uinf;
@@ -100,7 +100,7 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
 
   if (!Usupinfinite)
   {
-    deltap = Min(Vsup - Vinf, 2. * myInfinite);
+    deltap = std::min(Vsup - Vinf, 2. * myInfinite);
     if (Vinf >= -myInfinite)
     {
       pinf = Vinf;
@@ -126,7 +126,7 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
 
   if (!Vsupinfinite)
   {
-    deltap = Min(Usup - Uinf, 2. * myInfinite);
+    deltap = std::min(Usup - Uinf, 2. * myInfinite);
     if (-Usup >= -myInfinite)
     {
       pinf = -Usup;
@@ -152,7 +152,7 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
 
   if (!Uinfinfinite)
   {
-    deltap = Min(Vsup - Vinf, 2. * myInfinite);
+    deltap = std::min(Vsup - Vinf, 2. * myInfinite);
     if (-Vsup >= -myInfinite)
     {
       pinf = -Vsup;
@@ -183,7 +183,7 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
     Standard_Real U = 0., V = 0.;
     GetConeApexParam(S->Cone(), U, V);
 
-    deltap = Min(Usup - Uinf, 2. * myInfinite);
+    deltap = std::min(Usup - Uinf, 2. * myInfinite);
     if (Uinf >= -myInfinite)
     {
       pinf = Uinf;
@@ -292,8 +292,8 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
     {
       return TopAbs_OUT;
     }
-    if ((Abs(U - Uinf) <= Tol) || (Abs(U - Usup) <= Tol) || (Abs(V - Vinf) <= Tol)
-        || (Abs(V - Vsup) <= Tol))
+    if ((std::abs(U - Uinf) <= Tol) || (std::abs(U - Usup) <= Tol) || (std::abs(V - Vinf) <= Tol)
+        || (std::abs(V - Vsup) <= Tol))
     {
       return TopAbs_ON;
     }
@@ -323,7 +323,7 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
       {
         dansu   = Standard_True;
         surumax = Standard_False;
-        if (Abs(U - Usup) <= Tol)
+        if (std::abs(U - Usup) <= Tol)
         {
           surumax = Standard_True;
         }
@@ -341,7 +341,7 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
       {
         dansu   = Standard_True;
         surumin = Standard_False;
-        if (Abs(U - Uinf) <= Tol)
+        if (std::abs(U - Uinf) <= Tol)
         {
           surumin = Standard_True;
         }
@@ -357,11 +357,11 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
       {
         dansu   = Standard_True;
         surumin = surumax = Standard_False;
-        if (Abs(U - Uinf) <= Tol)
+        if (std::abs(U - Uinf) <= Tol)
         {
           surumin = Standard_True;
         }
-        else if (Abs(U - Usup) <= Tol)
+        else if (std::abs(U - Usup) <= Tol)
         {
           surumax = Standard_True;
         }
@@ -385,7 +385,7 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
       {
         dansv   = Standard_True;
         survmax = Standard_False;
-        if (Abs(V - Vsup) <= Tol)
+        if (std::abs(V - Vsup) <= Tol)
         {
           survmax = Standard_True;
         }
@@ -403,7 +403,7 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
       {
         dansv   = Standard_True;
         survmin = Standard_False;
-        if (Abs(V - Vinf) <= Tol)
+        if (std::abs(V - Vinf) <= Tol)
         {
           survmin = Standard_True;
         }
@@ -419,11 +419,11 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
       {
         dansv   = Standard_True;
         survmin = survmax = Standard_False;
-        if (Abs(V - Vinf) <= Tol)
+        if (std::abs(V - Vinf) <= Tol)
         {
           survmin = Standard_True;
         }
-        else if (Abs(V - Vsup) <= Tol)
+        else if (std::abs(V - Vsup) <= Tol)
         {
           survmax = Standard_True;
         }
@@ -457,8 +457,8 @@ Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
     {
       return (Standard_False);
     }
-    if ((Abs(U - Uinf) <= Tol) || (Abs(U - Usup) <= Tol) || (Abs(V - Vinf) <= Tol)
-        || (Abs(V - Vsup) <= Tol))
+    if ((std::abs(U - Uinf) <= Tol) || (std::abs(U - Usup) <= Tol) || (std::abs(V - Vinf) <= Tol)
+        || (std::abs(V - Vsup) <= Tol))
     {
       return (Standard_True);
     }
@@ -488,7 +488,7 @@ Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
       {
         dansu   = Standard_True;
         surumax = Standard_False;
-        if (Abs(U - Usup) <= Tol)
+        if (std::abs(U - Usup) <= Tol)
         {
           surumax = Standard_True;
         }
@@ -506,7 +506,7 @@ Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
       {
         dansu   = Standard_True;
         surumin = Standard_False;
-        if (Abs(U - Uinf) <= Tol)
+        if (std::abs(U - Uinf) <= Tol)
         {
           surumin = Standard_True;
         }
@@ -522,11 +522,11 @@ Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
       {
         dansu   = Standard_True;
         surumin = surumax = Standard_False;
-        if (Abs(U - Uinf) <= Tol)
+        if (std::abs(U - Uinf) <= Tol)
         {
           surumin = Standard_True;
         }
-        else if (Abs(U - Usup) <= Tol)
+        else if (std::abs(U - Usup) <= Tol)
         {
           surumax = Standard_True;
         }
@@ -550,7 +550,7 @@ Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
       {
         dansv   = Standard_True;
         survmax = Standard_False;
-        if (Abs(V - Vsup) <= Tol)
+        if (std::abs(V - Vsup) <= Tol)
         {
           survmax = Standard_True;
         }
@@ -568,7 +568,7 @@ Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
       {
         dansv   = Standard_True;
         survmin = Standard_False;
-        if (Abs(V - Vinf) <= Tol)
+        if (std::abs(V - Vinf) <= Tol)
         {
           survmin = Standard_True;
         }
@@ -584,11 +584,11 @@ Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
       {
         dansv   = Standard_True;
         survmin = survmax = Standard_False;
-        if (Abs(V - Vinf) <= Tol)
+        if (std::abs(V - Vinf) <= Tol)
         {
           survmin = Standard_True;
         }
-        else if (Abs(V - Vsup) <= Tol)
+        else if (std::abs(V - Vsup) <= Tol)
         {
           survmax = Standard_True;
         }
@@ -868,12 +868,12 @@ void Adaptor3d_TopolTool::ComputeSamplePoints()
     if (aRatio >= 10.)
     {
       nbsu *= 2;
-      nbsu = Min(nbsu, aMaxNbSample);
+      nbsu = std::min(nbsu, aMaxNbSample);
     }
     else if (aRatio <= 0.1)
     {
       nbsv *= 2;
-      nbsv = Min(nbsv, aMaxNbSample);
+      nbsv = std::min(nbsv, aMaxNbSample);
     }
   }
   else if (typS == GeomAbs_BezierSurface)
@@ -1061,8 +1061,8 @@ void Adaptor3d_TopolTool::SamplePnts(const Standard_Real    theDefl,
   //   case GeomAbs_BezierSurface:  {
   //     nbsv=myS->NbVPoles();
   //     nbsu=myS->NbUPoles();
-  //     nbsu = Max(nbsu, theNUmin);
-  //     nbsv = Max(nbsv, theNVmin);
+  //     nbsu = std::max(nbsu, theNUmin);
+  //     nbsv = std::max(nbsv, theNVmin);
   //     if(nbsu>8 || nbsv>8) {
   //       const Handle(Geom_BezierSurface)& Bez = myS->Bezier();
   //       Standard_Integer nbup = Bez->NbUPoles();
@@ -1089,9 +1089,9 @@ void Adaptor3d_TopolTool::SamplePnts(const Standard_Real    theDefl,
   //   case GeomAbs_Sphere:
   //   case GeomAbs_Torus:
   //   case GeomAbs_SurfaceOfRevolution:
-  //   case GeomAbs_SurfaceOfExtrusion:    { nbsv = Max(15,theNVmin); nbsu=Max(15,theNUmin); }
-  //   break; default:                            { nbsu = Max(10,theNUmin); nbsv=Max(10,theNVmin);
-  //   } break;
+  //   case GeomAbs_SurfaceOfExtrusion:    { nbsv = std::max(15,theNVmin); nbsu=Max(15,theNUmin); }
+  //   break; default:                            { nbsu = std::max(10,theNUmin);
+  //   nbsv=Max(10,theNVmin); } break;
   //   }
 
   //   if(nbsu<6) nbsu=6;
@@ -1193,14 +1193,14 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
     if (nbsu < nbsv)
     {
       aNb       = (Standard_Integer)(nbsv * ((Standard_Real)theNUmin) / ((Standard_Real)nbsu));
-      aNb       = Min(aNb, 30);
+      aNb       = std::min(aNb, 30);
       bVuniform = (aNb > nbsv) ? Standard_True : bVuniform;
       nbsv      = bVuniform ? aNb : nbsv;
     }
     else
     {
       aNb       = (Standard_Integer)(nbsu * ((Standard_Real)theNVmin) / ((Standard_Real)nbsv));
-      aNb       = Min(aNb, 30);
+      aNb       = std::min(aNb, 30);
       bUuniform = (aNb > nbsu) ? Standard_True : bUuniform;
       nbsu      = bUuniform ? aNb : nbsu;
     }
@@ -1318,8 +1318,8 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
 
   // Analysis of deflection
 
-  Standard_Real    aDefl2 = Max(theDefl * theDefl, 1.e-9);
-  Standard_Real    tol    = Max(0.01 * aDefl2, 1.e-9);
+  Standard_Real    aDefl2 = std::max(theDefl * theDefl, 1.e-9);
+  Standard_Real    tol    = std::max(0.01 * aDefl2, 1.e-9);
   Standard_Integer l;
 
   anUFlg(1)    = Standard_True;
@@ -1413,9 +1413,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
       while (!anUFlg(i++))
         ;
       if (i < nbsu / 2)
-        j = Min(i + (nbsu - i) / 2, nbsu - 1);
+        j = std::min(i + (nbsu - i) / 2, nbsu - 1);
       else
-        j = Max(i / 2, 2);
+        j = std::max(i / 2, 2);
     }
     anUFlg(j)    = Standard_True;
     myNbSamplesU = myMinPnts;
@@ -1512,9 +1512,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
       while (!aVFlg(i++))
         ;
       if (i < nbsv / 2)
-        j = Min(i + (nbsv - i) / 2, nbsv - 1);
+        j = std::min(i + (nbsv - i) / 2, nbsv - 1);
       else
-        j = Max(i / 2, 2);
+        j = std::max(i / 2, 2);
     }
     myNbSamplesV = myMinPnts;
     aVFlg(j)     = Standard_True;
@@ -1629,7 +1629,7 @@ void Adaptor3d_TopolTool::GetConeApexParam(const gp_Cone& theC,
   {
     theU = 0.0;
   }
-  else if (-Radius > Ploc.Z() * Tan(SAngle))
+  else if (-Radius > Ploc.Z() * std::tan(SAngle))
   {
     // the point is at the `wrong` side of the apex
     theU = atan2(-Ploc.Y(), -Ploc.X());

@@ -201,7 +201,7 @@ struct VertexFunctor
 
             Solution.Dist[theIndex] = aDist;
           }
-          else if (Abs(aDist - Solution.Dist[theIndex]) < Eps)
+          else if (std::abs(aDist - Solution.Dist[theIndex]) < Eps)
           {
             const BRepExtrema_SolutionElem Sol1(aDist, aPoint1, BRepExtrema_IsVertex, aVertex1);
             const BRepExtrema_SolutionElem Sol2(aDist, aPoint2, BRepExtrema_IsVertex, aVertex2);
@@ -240,11 +240,11 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceVertVert(
   const Handle(OSD_ThreadPool)& aThreadPool  = OSD_ThreadPool::DefaultPool();
   const Standard_Integer        aNbThreads   = aThreadPool->NbThreads();
   Standard_Integer              aNbTasks     = aNbThreads;
-  Standard_Integer              aTaskSize = (Standard_Integer)Ceiling((double)aCount1 / aNbTasks);
+  Standard_Integer              aTaskSize = (Standard_Integer)std::ceil((double)aCount1 / aNbTasks);
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
-    aNbTasks  = (Standard_Integer)Ceiling((double)aCount1 / aTaskSize);
+    aNbTasks  = (Standard_Integer)std::ceil((double)aCount1 / aTaskSize);
   }
 
   Standard_Integer              aFirstIndex(1);
@@ -283,7 +283,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceVertVert(
       mySolutionsShape2.Append(aFunctor.Solution.Shape2[anI]);
       myDistRef = aDist;
     }
-    else if (Abs(aDist - myDistRef) < myEps)
+    else if (std::abs(aDist - myDistRef) < myEps)
     {
       mySolutionsShape1.Append(aFunctor.Solution.Shape1[anI]);
       mySolutionsShape2.Append(aFunctor.Solution.Shape2[anI]);
@@ -358,7 +358,7 @@ struct DistanceFunctor
 
           Solution.Dist[theIndex] = aDistTool.DistValue();
         }
-        else if (Abs(aDist - Solution.Dist[theIndex]) < Eps)
+        else if (std::abs(aDist - Solution.Dist[theIndex]) < Eps)
         {
           BRepExtrema_SeqOfSolution aSeq1 = aDistTool.Seq1Value();
           BRepExtrema_SeqOfSolution aSeq2 = aDistTool.Seq2Value();
@@ -483,11 +483,11 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap(
   const Standard_Integer        aNbThreads       = aThreadPool->NbThreads();
   const Standard_Integer        aMinPairTaskSize = aCount1 < 10 ? aCount1 : 10;
   Standard_Integer              aNbPairTasks     = aNbThreads;
-  Standard_Integer aPairTaskSize = (Standard_Integer)Ceiling((double)aCount1 / aNbPairTasks);
+  Standard_Integer aPairTaskSize = (Standard_Integer)std::ceil((double)aCount1 / aNbPairTasks);
   if (aPairTaskSize < aMinPairTaskSize)
   {
     aPairTaskSize = aMinPairTaskSize;
-    aNbPairTasks  = (Standard_Integer)Ceiling((double)aCount1 / aPairTaskSize);
+    aNbPairTasks  = (Standard_Integer)std::ceil((double)aCount1 / aPairTaskSize);
   }
 
   Standard_Integer              aFirstIndex(1);
@@ -535,7 +535,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap(
 
   const Standard_Integer aMapSize  = aPairList.Size();
   Standard_Integer       aNbTasks  = aMapSize < aNbThreads ? aMapSize : aNbThreads;
-  Standard_Integer       aTaskSize = (Standard_Integer)Ceiling((double)aMapSize / aNbTasks);
+  Standard_Integer       aTaskSize = (Standard_Integer)std::ceil((double)aMapSize / aNbTasks);
 
   NCollection_Array1<NCollection_Array1<BRepExtrema_CheckPair>> anArrayOfArray(0, aNbTasks - 1);
   // Since aPairList is sorted in ascending order of distances between Bnd_Boxes,
@@ -594,7 +594,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap(
       mySolutionsShape2.Append(aFunctor.Solution.Shape2[anI]);
       myDistRef = aDist;
     }
-    else if (Abs(aDist - myDistRef) < myEps)
+    else if (std::abs(aDist - myDistRef) < myEps)
     {
       mySolutionsShape1.Append(aFunctor.Solution.Shape1[anI]);
       mySolutionsShape2.Append(aFunctor.Solution.Shape2[anI]);
@@ -767,11 +767,11 @@ Standard_Boolean BRepExtrema_DistShapeShape::SolidTreatment(
   const Handle(OSD_ThreadPool)& aThreadPool  = OSD_ThreadPool::DefaultPool();
   const Standard_Integer        aNbThreads   = aThreadPool->NbThreads();
   Standard_Integer              aNbTasks     = aNbThreads * 10;
-  Standard_Integer              aTaskSize = (Standard_Integer)Ceiling((double)aMapSize / aNbTasks);
+  Standard_Integer aTaskSize = (Standard_Integer)std::ceil((double)aMapSize / aNbTasks);
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
-    aNbTasks  = (Standard_Integer)Ceiling((double)aMapSize / aTaskSize);
+    aNbTasks  = (Standard_Integer)std::ceil((double)aMapSize / aTaskSize);
   }
 
   NCollection_Array1<NCollection_Array1<TopoDS_Shape>> anArrayOfArray(0, aNbTasks - 1);
@@ -948,7 +948,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform(const Message_ProgressRange
       return Standard_False;
     }
 
-    if (Abs(myDistRef) > myEps)
+    if (std::abs(myDistRef) > myEps)
     {
       if (!DistanceMapMap(myMapF1, myMapF2, myBF1, myBF2, aRootScope.Next()))
       {

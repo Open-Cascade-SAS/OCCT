@@ -236,7 +236,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
         Standard_Real    aDist11      = aP11.Distance(aP12);
         Standard_Real    aDist1m      = aP11.Distance(aPm);
         Standard_Real    aDist2m      = aP12.Distance(aPm);
-        Standard_Real    aDistMax     = Max(Max(aDist1m, aDist2m), aDist11);
+        Standard_Real    aDistMax     = std::max(std::max(aDist1m, aDist2m), aDist11);
         Standard_Boolean isSmallCurve = (aDistMax <= aTolV1 || aDistMax <= aTolV2);
         if (BRepTools::Compare(Vfirst, Vlast) && isSmallCurve && dpar > Precision::PConfusion()
             && dpar <= 0.1 * C->Period())

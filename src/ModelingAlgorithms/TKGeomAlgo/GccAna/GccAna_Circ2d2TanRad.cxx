@@ -56,7 +56,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       pararg2(1, 8)
 {
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   gp_Dir2d      dirx(gp_Dir2d::D::X);
   WellDone = Standard_False;
   NbrSol   = 0;
@@ -99,24 +99,25 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
     if ((Qualified1.IsEnclosed()) && Qualified2.IsEnclosed())
     {
       //   =========================================================
-      if (Radius * 2.0 - Abs(R1 + R2 - dist) > Tol)
+      if (Radius * 2.0 - std::abs(R1 + R2 - dist) > Tol)
       {
         WellDone = Standard_True;
       }
       else
       {
-        if ((dist - R1 - R2 > Tol) || (Tol < Max(R1, R2) - dist - Min(R1, R2)))
+        if ((dist - R1 - R2 > Tol) || (Tol < std::max(R1, R2) - dist - std::min(R1, R2)))
         {
           WellDone = Standard_True;
         }
-        else if (Abs(dist - R1 - R2) <= Tol || Abs(Max(R1, R2) - dist - Min(R1, R2)) <= Tol)
+        else if (std::abs(dist - R1 - R2) <= Tol
+                 || std::abs(std::max(R1, R2) - dist - std::min(R1, R2)) <= Tol)
         {
-          if (Abs(dist - R1 - R2) <= Tol)
+          if (std::abs(dist - R1 - R2) <= Tol)
           {
             rbid  = R2 + (dist - R1 - R2) / 2.0;
             signe = -1;
           }
-          else if (Abs(Max(R1, R2) - dist - Min(R1, R2)) <= Tol)
+          else if (std::abs(std::max(R1, R2) - dist - std::min(R1, R2)) <= Tol)
           {
             if (R1 > R2)
             {
@@ -127,7 +128,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
               C2 = gp_Circ2d(C1);
               R3 = R1;
             }
-            rbid  = -R3 + (Min(R1, R2) + dist - Max(R1, R2)) / 2.;
+            rbid  = -R3 + (std::min(R1, R2) + dist - std::max(R1, R2)) / 2.;
             signe = 1;
           }
           gp_Ax2d axe(gp_Pnt2d(center2.XY() - rbid * dir1.XY()), dirx);
@@ -144,8 +145,8 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         }
         else
         {
-          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R1));
-          C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Abs(Radius - R2));
+          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R1));
+          C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), std::abs(Radius - R2));
           nbsol = 1;
         }
       }
@@ -174,9 +175,9 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       {
         WellDone = Standard_True;
       }
-      else if ((Abs(R2 - Radius) <= Tol) || (Abs(R1 - Radius) <= Tol))
+      else if ((std::abs(R2 - Radius) <= Tol) || (std::abs(R1 - Radius) <= Tol))
       {
-        if (Abs(R2 - Radius) <= Tol)
+        if (std::abs(R2 - Radius) <= Tol)
         {
           C(2)         = gp_Circ2d(C2);
           R3           = R2;
@@ -184,7 +185,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
           TheSame1(1)  = 0;
           pnttg1sol(1) = gp_Pnt2d(C(2).Location().XY() + R3 * dir1.XY());
         }
-        else if (Abs(Radius - R1) <= Tol)
+        else if (std::abs(Radius - R1) <= Tol)
         {
           C(2)         = gp_Circ2d(C1);
           R3           = R1;
@@ -202,13 +203,13 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       }
       else
       {
-        if ((Abs(R2 + dist - R1) <= Tol) || (Abs(Radius * 2.0 - R1 - dist - R2) < Tol))
+        if ((std::abs(R2 + dist - R1) <= Tol) || (std::abs(Radius * 2.0 - R1 - dist - R2) < Tol))
         {
-          if (Abs(R2 + dist - R1) <= Tol)
+          if (std::abs(R2 + dist - R1) <= Tol)
           {
             signe = 1;
           }
-          else if (Abs(Radius * 2.0 - R1 - dist - R2) < Tol)
+          else if (std::abs(Radius * 2.0 - R1 - dist - R2) < Tol)
           {
             signe = -1;
           }
@@ -226,8 +227,8 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         }
         else
         {
-          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R1));
-          C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Abs(Radius - R2));
+          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R1));
+          C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), std::abs(Radius - R2));
           nbsol = 1;
         }
       }
@@ -258,25 +259,26 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       }
       else
       {
-        if (((Radius - R1 > 0.0) && (Abs(dist - R1 - R2) <= Tol))
-            || (Abs(R1 - R2 + dist - Radius * 2.0) <= Tol)
-            || (Abs(R1 - R2 - dist - Radius * 2.0) <= Tol) || (Abs(dist - R1 - R2) <= Tol))
+        if (((Radius - R1 > 0.0) && (std::abs(dist - R1 - R2) <= Tol))
+            || (std::abs(R1 - R2 + dist - Radius * 2.0) <= Tol)
+            || (std::abs(R1 - R2 - dist - Radius * 2.0) <= Tol)
+            || (std::abs(dist - R1 - R2) <= Tol))
         {
-          if (Abs(R1 - R2 + dist - Radius * 2.0) <= Tol)
+          if (std::abs(R1 - R2 + dist - Radius * 2.0) <= Tol)
           {
             signe = -1;
           }
           else
           {
             signe = 1;
-            if ((Radius - R1 > 0.0) && (Abs(dist - R1 - R2) <= Tol))
+            if ((Radius - R1 > 0.0) && (std::abs(dist - R1 - R2) <= Tol))
             {
               R2 = R1;
             }
-            else if (Abs(dist - R1 - R2) <= Tol)
+            else if (std::abs(dist - R1 - R2) <= Tol)
             {
               R2 = R1;
-              if (Abs(R1 - Radius) <= Tol)
+              if (std::abs(R1 - Radius) <= Tol)
               {
                 TheSame1(1) = 1;
               }
@@ -296,7 +298,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         }
         else
         {
-          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R1));
+          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R1));
           C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Radius + R2);
           nbsol = 1;
         }
@@ -327,7 +329,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       }
       else
       {
-        if ((Abs(dist - R2 - R1) <= Tol) || (Abs(Radius - R1) <= Tol))
+        if ((std::abs(dist - R2 - R1) <= Tol) || (std::abs(Radius - R1) <= Tol))
         {
           WellDone = Standard_True;
           NbrSol   = 1;
@@ -338,7 +340,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
           qualifier2(1) = Qualified2.Qualifier();
           pnttg2sol(1)  = gp_Pnt2d(center1.XY() + (dist - R2) * dir1.XY());
           TheSame2(1)   = 0;
-          if (Abs(Radius - R1) > 0.0)
+          if (std::abs(Radius - R1) > 0.0)
           {
             TheSame1(1) = 1;
           }
@@ -350,10 +352,10 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         }
         else
         {
-          C(3)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R1));
+          C(3)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R1));
           C(4)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Radius + R2);
-          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R1));
-          C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Abs(Radius - R2));
+          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R1));
+          C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), std::abs(Radius - R2));
           nbsol = 2;
         }
       }
@@ -361,17 +363,17 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
     else if ((Qualified1.IsEnclosing()) && (Qualified2.IsEnclosing()))
     {
       //   ==================================================================
-      if ((Tol < Max(R1, R2) - Radius) || (Tol < Max(R1, R2) - dist - Min(R1, R2))
+      if ((Tol < std::max(R1, R2) - Radius) || (Tol < std::max(R1, R2) - dist - std::min(R1, R2))
           || (dist + R1 + R2 - Radius * 2.0 > Tol))
       {
         WellDone = Standard_True;
       }
       else
       {
-        if ((Abs(dist + Min(R1, R2) - Max(R1, R2)) <= Tol)
-            || (Abs(R1 + R2 + dist - 2.0 * Radius) <= Tol))
+        if ((std::abs(dist + std::min(R1, R2) - std::max(R1, R2)) <= Tol)
+            || (std::abs(R1 + R2 + dist - 2.0 * Radius) <= Tol))
         {
-          if (Abs(dist + Min(R1, R2) - Max(R1, R2)) <= Tol)
+          if (std::abs(dist + std::min(R1, R2) - std::max(R1, R2)) <= Tol)
           {
             signe = 1;
           }
@@ -391,7 +393,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
           TheSame1(1)   = 0;
           TheSame2(1)   = 0;
         }
-        else if (Abs(Radius - Max(R1, R2)) <= Tol)
+        else if (std::abs(Radius - std::max(R1, R2)) <= Tol)
         {
           WellDone = Standard_True;
           NbrSol   = 1;
@@ -419,8 +421,8 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         }
         else
         {
-          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R1));
-          C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Abs(Radius - R2));
+          C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R1));
+          C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), std::abs(Radius - R2));
           nbsol = 1;
         }
       }
@@ -448,12 +450,12 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       {
         WellDone = Standard_True;
       }
-      else if (((Abs(R1 - Radius) <= Tol) || (Abs(R1 + R2 - dist) <= Tol))
-               || (Abs(dist - R2 + R1 - Radius * 2.0) <= Tol))
+      else if (((std::abs(R1 - Radius) <= Tol) || (std::abs(R1 + R2 - dist) <= Tol))
+               || (std::abs(dist - R2 + R1 - Radius * 2.0) <= Tol))
       {
         WellDone = Standard_True;
         NbrSol   = 1;
-        if ((Abs(R1 - Radius) <= Tol) || (Abs(R1 + R2 - dist) <= Tol))
+        if ((std::abs(R1 - Radius) <= Tol) || (std::abs(R1 + R2 - dist) <= Tol))
         {
           TheSame1(1) = 1;
         }
@@ -472,7 +474,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       }
       else
       {
-        C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R1));
+        C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R1));
         C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Radius + R2);
         nbsol = 1;
       }
@@ -499,17 +501,17 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       {
         WellDone = Standard_True;
       }
-      else if ((Abs(R1 - Radius) <= Tol) || (Abs(R1 - dist - R2) > 0.0))
+      else if ((std::abs(R1 - Radius) <= Tol) || (std::abs(R1 - dist - R2) > 0.0))
       {
-        if (Abs(R1 - Radius) <= Tol)
+        if (std::abs(R1 - Radius) <= Tol)
         {
           TheSame1(1) = 1;
-          if ((Abs(Radius - R2) <= Tol) && (center1.Distance(center2) <= Tol))
+          if ((std::abs(Radius - R2) <= Tol) && (center1.Distance(center2) <= Tol))
           {
             TheSame2(1) = 1;
           }
         }
-        else if (Abs(R1 - dist - R2) > 0.0)
+        else if (std::abs(R1 - dist - R2) > 0.0)
         {
           TheSame1(1) = 0;
           TheSame2(1) = 0;
@@ -526,17 +528,17 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       }
       else
       {
-        C(3)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R1));
+        C(3)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R1));
         C(4)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Radius + R2);
-        C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R1));
-        C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Abs(Radius - R2));
+        C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R1));
+        C(2)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), std::abs(Radius - R2));
         nbsol = 2;
       }
     }
     else if ((Qualified1.IsOutside()) && (Qualified2.IsOutside()))
     {
       //   ==============================================================
-      if (Tol < Max(R1, R2) - dist - Min(R1, R2))
+      if (Tol < std::max(R1, R2) - dist - std::min(R1, R2))
       {
         WellDone = Standard_True;
       }
@@ -546,7 +548,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       }
       else
       {
-        if (Abs(dist + Min(R1, R2) - Max(R1, R2)) <= Tol)
+        if (std::abs(dist + std::min(R1, R2) - std::max(R1, R2)) <= Tol)
         {
           WellDone = Standard_True;
           NbrSol   = 1;
@@ -568,7 +570,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
           TheSame1(1)   = 0;
           TheSame2(1)   = 0;
         }
-        else if (Abs(dist - R1 - R2 - Radius * 2.0) <= Tol)
+        else if (std::abs(dist - R1 - R2 - Radius * 2.0) <= Tol)
         {
           WellDone = Standard_True;
           NbrSol   = 1;
@@ -623,9 +625,11 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       }
       else
       {
-        if ((Abs(R1 - R2 - dist) <= Tol)
-            || ((Abs(dist - R1 - R2) <= Tol) && (Abs(Radius * 2.0 - dist + R1 + R2) <= Tol))
-            || ((Abs(dist + R1 - R2) <= Tol) && (Abs(R2 + dist - R1 - Radius * 2.0) <= Tol)))
+        if ((std::abs(R1 - R2 - dist) <= Tol)
+            || ((std::abs(dist - R1 - R2) <= Tol)
+                && (std::abs(Radius * 2.0 - dist + R1 + R2) <= Tol))
+            || ((std::abs(dist + R1 - R2) <= Tol)
+                && (std::abs(R2 + dist - R1 - Radius * 2.0) <= Tol)))
         {
           WellDone = Standard_True;
           NbrSol   = 1;
@@ -644,7 +648,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
           C(3)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Radius + R1);
           C(4)  = gp_Circ2d(gp_Ax2d(C(2).Location(), dirx), Radius + R2);
           C(1)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Radius + R1);
-          C(2)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), Abs(Radius - R2));
+          C(2)  = gp_Circ2d(gp_Ax2d(C(1).Location(), dirx), std::abs(Radius - R2));
           nbsol = 2;
         }
       }
@@ -656,30 +660,30 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       {
         WellDone = Standard_True;
       }
-      else if ((Max(R1, R2) - dist - Min(R1, R2) > Tol)
-               && (((Max(R1, R2) - dist - Min(R1, R2)) - Radius * 2.0 > Tol)))
+      else if ((std::max(R1, R2) - dist - std::min(R1, R2) > Tol)
+               && (((std::max(R1, R2) - dist - std::min(R1, R2)) - Radius * 2.0 > Tol)))
       {
         WellDone = Standard_True;
       }
       else
       {
-        Standard_Real p3 = Max(R1, R2) - Min(R1, R2) - dist - Radius * 2.0;
+        Standard_Real p3 = std::max(R1, R2) - std::min(R1, R2) - dist - Radius * 2.0;
         Standard_Real p4 = dist - R1 - R2;
         Standard_Real p5 = Radius * 2.0 - dist + R1 + R2;
         if (p3 > 0.0)
         {
-          dist = Max(R1, R2) - Min(R1, R2) - Radius * 2.0;
+          dist = std::max(R1, R2) - std::min(R1, R2) - Radius * 2.0;
         }
         else if (p4 > 0.0 && p5 < 0.0)
         {
           R1 = dist - R2 - Radius * 2.0;
         }
-        C(1)  = gp_Circ2d(gp_Ax2d(center1, dirx), Abs(Radius - R1));
-        C(2)  = gp_Circ2d(gp_Ax2d(center2, dirx), Abs(Radius - R2));
-        C(3)  = gp_Circ2d(gp_Ax2d(center1, dirx), Abs(Radius - R1));
+        C(1)  = gp_Circ2d(gp_Ax2d(center1, dirx), std::abs(Radius - R1));
+        C(2)  = gp_Circ2d(gp_Ax2d(center2, dirx), std::abs(Radius - R2));
+        C(3)  = gp_Circ2d(gp_Ax2d(center1, dirx), std::abs(Radius - R1));
         C(4)  = gp_Circ2d(gp_Ax2d(center2, dirx), Radius + R2);
         C(5)  = gp_Circ2d(gp_Ax2d(center1, dirx), Radius + R1);
-        C(6)  = gp_Circ2d(gp_Ax2d(center2, dirx), Abs(Radius - R2));
+        C(6)  = gp_Circ2d(gp_Ax2d(center2, dirx), std::abs(Radius - R2));
         C(7)  = gp_Circ2d(gp_Ax2d(center1, dirx), Radius + R1);
         C(8)  = gp_Circ2d(gp_Ax2d(center2, dirx), Radius + R2);
         nbsol = 4;
@@ -708,11 +712,11 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
               {
                 qualifier1(NbrSol) = Qualified1.Qualifier();
               }
-              else if (Abs(distcc1 + Radius - R1) < Tol)
+              else if (std::abs(distcc1 + Radius - R1) < Tol)
               {
                 qualifier1(NbrSol) = GccEnt_enclosed;
               }
-              else if (Abs(distcc1 - R1 - Radius) < Tol)
+              else if (std::abs(distcc1 - R1 - Radius) < Tol)
               {
                 qualifier1(NbrSol) = GccEnt_outside;
               }
@@ -724,11 +728,11 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
               {
                 qualifier2(NbrSol) = Qualified2.Qualifier();
               }
-              else if (Abs(distcc2 + Radius - R2) < Tol)
+              else if (std::abs(distcc2 + Radius - R2) < Tol)
               {
                 qualifier2(NbrSol) = GccEnt_enclosed;
               }
-              else if (Abs(distcc2 - R2 - Radius) < Tol)
+              else if (std::abs(distcc2 - R2 - Radius) < Tol)
               {
                 qualifier2(NbrSol) = GccEnt_outside;
               }

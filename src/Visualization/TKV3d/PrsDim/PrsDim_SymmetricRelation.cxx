@@ -170,7 +170,7 @@ void PrsDim_SymmetricRelation::ComputeSelection(const Handle(SelectMgr_Selection
       else
       {
         L3 = gce_MakeLin(P1, myFDirAttach);
-        Standard_Real                 size(Min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+        Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
         Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
                                                                       myPosition.X(),
                                                                       myPosition.Y(),
@@ -185,12 +185,12 @@ void PrsDim_SymmetricRelation::ComputeSelection(const Handle(SelectMgr_Selection
       parmax = parmin;
 
       parcur = ElCLib::Parameter(L3, P2);
-      parmin = Min(parmin, parcur);
-      parmax = Max(parmax, parcur);
+      parmin = std::min(parmin, parcur);
+      parmax = std::max(parmax, parcur);
 
       parcur = ElCLib::Parameter(L3, myPosition);
-      parmin = Min(parmin, parcur);
-      parmax = Max(parmax, parcur);
+      parmin = std::min(parmin, parcur);
+      parmax = std::max(parmax, parcur);
 
       gp_Pnt PointMin = ElCLib::Value(parmin, L3);
       gp_Pnt PointMax = ElCLib::Value(parmax, L3);
@@ -237,7 +237,7 @@ void PrsDim_SymmetricRelation::ComputeSelection(const Handle(SelectMgr_Selection
         ProjOffsetPoint = ProjCenter1.Translated(Vout.Divided(Vout.Magnitude()).Multiplied(Dt));
         OffsetPnt       = ProjOffsetPoint;
       }
-      h         = Sqrt(R * R - Dt * Dt);
+      h         = std::sqrt(R * R - Dt * Dt);
       gp_Pnt P1 = ProjOffsetPoint.Translated(Vp.Added(Vp.Divided(Vp.Magnitude()).Multiplied(h)));
       gp_Vec v(P1, ProjOffsetPoint);
       gp_Pnt P2 = ProjOffsetPoint.Translated(v);
@@ -250,7 +250,7 @@ void PrsDim_SymmetricRelation::ComputeSelection(const Handle(SelectMgr_Selection
       else
       {
         L3 = gce_MakeLin(P1, laxis.Direction());
-        Standard_Real                 size(Min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+        Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
         Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
                                                                       myPosition.X(),
                                                                       myPosition.Y(),
@@ -265,12 +265,12 @@ void PrsDim_SymmetricRelation::ComputeSelection(const Handle(SelectMgr_Selection
       parmax = parmin;
 
       parcur = ElCLib::Parameter(L3, P2);
-      parmin = Min(parmin, parcur);
-      parmax = Max(parmax, parcur);
+      parmin = std::min(parmin, parcur);
+      parmax = std::max(parmax, parcur);
 
       parcur = ElCLib::Parameter(L3, myPosition);
-      parmin = Min(parmin, parcur);
-      parmax = Max(parmax, parcur);
+      parmin = std::min(parmin, parcur);
+      parmax = std::max(parmax, parcur);
 
       gp_Pnt PointMin = ElCLib::Value(parmin, L3);
       gp_Pnt PointMax = ElCLib::Value(parmax, L3);
@@ -306,7 +306,7 @@ void PrsDim_SymmetricRelation::ComputeSelection(const Handle(SelectMgr_Selection
       else
       {
         L3 = gce_MakeLin(P1, myFDirAttach);
-        Standard_Real                 size(Min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+        Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
         Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
                                                                       myPosition.X(),
                                                                       myPosition.Y(),
@@ -321,12 +321,12 @@ void PrsDim_SymmetricRelation::ComputeSelection(const Handle(SelectMgr_Selection
       parmax = parmin;
 
       parcur = ElCLib::Parameter(L3, P2);
-      parmin = Min(parmin, parcur);
-      parmax = Max(parmax, parcur);
+      parmin = std::min(parmin, parcur);
+      parmax = std::max(parmax, parcur);
 
       parcur = ElCLib::Parameter(L3, myPosition);
-      parmin = Min(parmin, parcur);
-      parmax = Max(parmax, parcur);
+      parmin = std::min(parmin, parcur);
+      parmax = std::max(parmax, parcur);
 
       gp_Pnt PointMin = ElCLib::Value(parmin, L3);
       gp_Pnt PointMax = ElCLib::Value(parmax, L3);

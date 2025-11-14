@@ -57,9 +57,9 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const gp_Pnt2d&     ThePoint,
   linsol(1) =
     gp_Lin2d(ThePoint,
              // ==============================
-             gp_Dir2d(Cosa * Cos(TheAngle) - Sina * Sin(TheAngle),
+             gp_Dir2d(Cosa * std::cos(TheAngle) - Sina * std::sin(TheAngle),
                       //                      ===============================================
-                      Sina * Cos(TheAngle) + Sin(TheAngle) * Cosa));
+                      Sina * std::cos(TheAngle) + std::sin(TheAngle) * Cosa));
   //                               =======================================
   qualifier1(1) = GccEnt_noqualifier;
   pnttg1sol(1)  = ThePoint;
@@ -131,8 +131,8 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
     if (Qualified1.IsEnclosing())
     {
       //   =============================
-      gp_XY xy(Cos(TheAngle) * Cosa - Sin(TheAngle) * Sina,
-               Cos(TheAngle) * Sina + Sin(TheAngle) * Cosa);
+      gp_XY xy(std::cos(TheAngle) * Cosa - std::sin(TheAngle) * Sina,
+               std::cos(TheAngle) * Sina + std::sin(TheAngle) * Cosa);
       pnttg1sol(1) = gp_Pnt2d(C1.Location().XY() + R1 * gp_XY(xy.Y(), -xy.X()));
       linsol(1)    = gp_Lin2d(pnttg1sol(1), gp_Dir2d(xy));
       //     ===============================================
@@ -154,8 +154,8 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
     else if (Qualified1.IsOutside())
     {
       //   ================================
-      gp_XY xy(Cos(TheAngle) * Cosa - Sin(TheAngle) * Sina,
-               Cos(TheAngle) * Sina + Sin(TheAngle) * Cosa);
+      gp_XY xy(std::cos(TheAngle) * Cosa - std::sin(TheAngle) * Sina,
+               std::cos(TheAngle) * Sina + std::sin(TheAngle) * Cosa);
       pnttg1sol(1) = gp_Pnt2d(C1.Location().XY() + R1 * gp_XY(-xy.Y(), xy.X()));
       linsol(1)    = gp_Lin2d(pnttg1sol(1), gp_Dir2d(xy));
       //     ===============================================
@@ -177,8 +177,8 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
     else if (Qualified1.IsUnqualified())
     {
       //   ====================================
-      gp_XY xy(Cos(TheAngle) * Cosa - Sin(TheAngle) * Sina,
-               Cos(TheAngle) * Sina + Sin(TheAngle) * Cosa);
+      gp_XY xy(std::cos(TheAngle) * Cosa - std::sin(TheAngle) * Sina,
+               std::cos(TheAngle) * Sina + std::sin(TheAngle) * Cosa);
       pnttg1sol(1) = gp_Pnt2d(C1.Location().XY() + R1 * gp_XY(xy.Y(), -xy.X()));
       linsol(1)    = gp_Lin2d(pnttg1sol(1), gp_Dir2d(xy));
       //     ===============================================

@@ -227,7 +227,7 @@ Handle(Image_CompressedPixMap) Image_DDSParser::parseHeader(const DDSFileHeader&
   aDef->SetBaseFormat(aBaseFormat);
   aDef->SetCompressedFormat(aFormat);
 
-  const Standard_Integer aNbMipMaps = Max((Standard_Integer)theHeader.MipMapCount, 1);
+  const Standard_Integer aNbMipMaps = std::max((Standard_Integer)theHeader.MipMapCount, 1);
   aDef->ChangeMipMaps().Resize(0, aNbMipMaps - 1, false);
   {
     Standard_Size                      aFaceSize = 0;

@@ -1179,7 +1179,7 @@ void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
       {
         Standard_Real param = theIntAna2d.Point(p).ParamOnFirst();
 
-        if (Abs(param) < LIMITE)
+        if (std::abs(param) < LIMITE)
         {
           gp_Vec2d V;
           gp_Pnt2d P;
@@ -1225,7 +1225,7 @@ void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
       {
         Standard_Real param = theIntAna2d.Point(p).ParamOnFirst();
 
-        if (Abs(param) < LIMITE)
+        if (std::abs(param) < LIMITE)
         {
           gp_Vec2d V;
           gp_Pnt2d P;

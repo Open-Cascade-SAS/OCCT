@@ -173,7 +173,7 @@
     }                                                                                              \
     else                                                                                           \
     {                                                                                              \
-      aCounter = Abs(anI - myICur);                                                                \
+      aCounter = std::abs(anI - myICur);                                                           \
       if (anI <= aCounter)                                                                         \
       {                                                                                            \
         aCurrent = myFirst;                                                                        \

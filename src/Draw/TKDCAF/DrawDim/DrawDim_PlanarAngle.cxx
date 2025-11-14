@@ -122,7 +122,7 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
   gp_Pnt2d pinter = inter.Point(1).Value();
   //
   Standard_Real angle;
-  angle = Abs(l1.Direction().Angle(l2.Direction()));
+  angle = std::abs(l1.Direction().Angle(l2.Direction()));
   gp_Circ2d c(gp_Ax2d(pinter, l1.Direction()), myPosition);
 
   // retour au plan
@@ -130,7 +130,7 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
   gp_Circ            circle = Handle(Geom_Circle)::DownCast(C)->Circ();
   //
   Standard_Real p1 = 0., p2 = 0.;
-  angle = Abs(angle);
+  angle = std::abs(angle);
   if (parallel && !clockwise)
   {
     p1 = 0.0;

@@ -78,24 +78,24 @@ static void AddSpecialPoints(const IntAna_Quadric& theQuad,
       continue;
     }
 
-    Standard_Real aDelta1 = Min(aU - theTheta1, 0.0), aDelta2 = Max(aU - theTheta2, 0.0);
+    Standard_Real aDelta1 = std::min(aU - theTheta1, 0.0), aDelta2 = std::max(aU - theTheta2, 0.0);
 
     if (aDelta1 < -M_PI)
     {
-      // Must be aDelta1 = Min(aU - theTheta1 + aPeriod, 0.0).
+      // Must be aDelta1 = std::min(aU - theTheta1 + aPeriod, 0.0).
       // But aU - theTheta1 + aPeriod >= 0 always.
       aDelta1 = 0.0;
     }
 
     if (aDelta2 > M_PI)
     {
-      // Must be aDelta2 = Max(aU - theTheta2 - aPeriod, 0.0).
+      // Must be aDelta2 = std::max(aU - theTheta2 - aPeriod, 0.0).
       // But aU - theTheta2 - aPeriod <= 0 always.
       aDelta2 = 0.0;
     }
 
-    const Standard_Real aDelta = Max(-aDelta1, aDelta2);
-    aMaxDelta                  = Max(aMaxDelta, aDelta);
+    const Standard_Real aDelta = std::max(-aDelta1, aDelta2);
+    aMaxDelta                  = std::max(aMaxDelta, aDelta);
   }
 
   if (aMaxDelta != 0.0)
@@ -143,11 +143,11 @@ public:
     //
     for (i = 0; i < NbRoots; ++i)
     {
-      if (Abs(u - Roots[i]) <= aEps)
+      if (std::abs(u - Roots[i]) <= aEps)
       {
         return Standard_True;
       }
-      if (Abs(u - Roots[i] - PIpPI) <= aEps)
+      if (std::abs(u - Roots[i] - PIpPI) <= aEps)
       {
         return Standard_True;
       }
@@ -240,7 +240,7 @@ TrigonometricRoots::TrigonometricRoots(const Standard_Real CC,
     Standard_Real co = cos(Roots[i]);
     Standard_Real si = sin(Roots[i]);
     y                = co * (CC * co + (SC + SC) * si + C) + S * si + Cte;
-    if (Abs(y) > 1e-8)
+    if (std::abs(y) > 1e-8)
     {
       done = Standard_False;
       return; //-- le 1er avril 98
@@ -266,9 +266,9 @@ TrigonometricRoots::TrigonometricRoots(const Standard_Real CC,
   //
   if (!NbRoots)
   { //--!!!!! Detection du cas Pol = Cte ( 1e-50 ) !!!!
-    if ((Abs(CC) + Abs(SC) + Abs(C) + Abs(S)) < 1e-10)
+    if ((std::abs(CC) + std::abs(SC) + std::abs(C) + std::abs(S)) < 1e-10)
     {
-      if (Abs(Cte) < 1e-10)
+      if (std::abs(Cte) < 1e-10)
       {
         infinite_roots = Standard_True;
       }
@@ -411,12 +411,12 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder&    Cyl,
 
   //----------------------------------------------------------------------
   //-- Parametrage du Cylindre Cyl :
-  //--     X = Rcyl * Cos(Theta)
-  //--     Y = Rcyl * Sin(Theta)
+  //--     X = Rcyl * std::cos(Theta)
+  //--     Y = Rcyl * std::sin(Theta)
   //--     Z = Z
   //----------------------------------------------------------------------
   //-- Donne une Equation de la forme :
-  //--   F(Sin(Theta),Cos(Theta),ZCyl) = 0
+  //--   F(std::sin(Theta),std::cos(Theta),ZCyl) = 0
   //--   (Equation du second degre en ZCyl)
   //--    ZCyl**2  CoeffZ2(Theta) + ZCyl CoeffZ1(Theta) + CoeffZ0(Theta)
   //----------------------------------------------------------------------
@@ -428,13 +428,13 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder&    Cyl,
   //-- !!!! Attention , si on norme sur Qzz pour detecter le cas 1er degre
   //----------------------------------------------------------------------
   //-- On Cherche Les Racines en Theta du discriminant de cette equation :
-  //-- DIS(Theta) = C_1 + C_SS Sin()**2 + C_CC Cos()**2 + 2 C_SC Sin() Cos()
-  //--                  + 2 C_S  Sin()    + 2 C_C Cos()
+  //-- DIS(Theta) = C_1 + C_SS std::sin()**2 + C_CC std::cos()**2 + 2 C_SC std::sin() std::cos()
+  //--                  + 2 C_S  std::sin()    + 2 C_C std::cos()
   //--
   //-- Si Qzz = 0   Alors  On Resout Z=Fct(Theta)  sur le domaine de Theta
   //----------------------------------------------------------------------
 
-  if (Abs(Qzz) < myEpsilonCoeffPolyNull)
+  if (std::abs(Qzz) < myEpsilonCoeffPolyNull)
   {
     done = Standard_False; //-- le 12 mars 98
     return;
@@ -664,7 +664,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder&    Cyl,
               //-- On detecte les racines doubles
               //-- Si il n y a que 2 racines alors on prend tout l interval
               //----------------------------------------------------------------
-              if (Abs(Theta2 - Theta1) <= aRealEpsilon)
+              if (std::abs(Theta2 - Theta1) <= aRealEpsilon)
               {
                 UnPtTg   = Standard_True;
                 autrepar = Theta1 - 0.1;
@@ -725,7 +725,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder&    Cyl,
             //-- On detecte les racines doubles
             //-- Si il n y a que 2 racines alors on prend tout l interval
             //----------------------------------------------------------------
-            if (Abs(Theta2 - Theta1) <= 1e-12)
+            if (std::abs(Theta2 - Theta1) <= 1e-12)
             {
               //-- std::cout<<"\n####### Un Point de Tangence en Theta = "<<Theta1<<std::endl;
               //-- i++;
@@ -868,7 +868,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
   tAx3.SetLocation(Cone.Apex());
   Quad.NewCoefficients(Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, Q1, tAx3);
   //
-  TgAngle = 1. / (Tan(Cone.SemiAngle()));
+  TgAngle = 1. / (std::tan(Cone.SemiAngle()));
   //
   // The parametrization of the Cone
   //
@@ -949,26 +949,10 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
                                       Z_POSITIF);
         NbCurves = 1;
       }
-      else
-      {
-        /*
-        Standard_Integer ii;
-        for(ii=1; ii<= nbsol1 ; ++ii) {
-          Standard_Real Theta=PolZ1.Value(ii);
-          if(Abs(MTFZ1.Value(Theta))<=myEpsilon) {
-            //-- Une droite Solution  Z=  -INF -> +INF  pour Theta
-            //-- std::cout<<"######## Droite Solution Pour Theta = "<<Theta<<std::endl;
-          }
-          else {
-            //-- std::cout<<"\n#### _+_+_+_+_+ CAS A(t) Z + B = 0   avec A et B ==0 "<<std::endl;
-          }
-        }
-        */
-      }
     }
     else
     {
-      if (Abs(Q1) <= myEpsilon)
+      if (std::abs(Q1) <= myEpsilon)
       {
         done = !done;
         return;
@@ -1091,7 +1075,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
       Theta2 = (i < nbsol) ? Pol.Value(i + 1) : (Pol.Value(1) + PIpPI);
     }
     //
-    if (Abs(Theta2 - Theta1) <= myEpsilon)
+    if (std::abs(Theta2 - Theta1) <= myEpsilon)
     {
       done = Standard_False;
       return; // !!! pkv
@@ -1452,7 +1436,7 @@ void IntAna_IntQuadQuad::InternalSetNextAndPrevious()
       {
         if (NotLastOpenC2)
         {
-          if (Abs(DInfC1 - DSupC2) <= aEps
+          if (std::abs(DInfC1 - DSupC2) <= aEps
               && (TheCurve[c1].Value(DInfC1).Distance(TheCurve[c2].Value(DSupC2))
                   < aEPSILON_DISTANCE))
           {
@@ -1462,7 +1446,7 @@ void IntAna_IntQuadQuad::InternalSetNextAndPrevious()
         }
         if (NotFirstOpenC2)
         {
-          if (Abs(DInfC1 - DInfC2) <= aEps
+          if (std::abs(DInfC1 - DInfC2) <= aEps
               && (TheCurve[c1].Value(DInfC1).Distance(TheCurve[c2].Value(DInfC2))
                   < aEPSILON_DISTANCE))
           {
@@ -1475,7 +1459,7 @@ void IntAna_IntQuadQuad::InternalSetNextAndPrevious()
       {
         if (NotLastOpenC2)
         {
-          if (Abs(DSupC1 - DSupC2) <= aEps
+          if (std::abs(DSupC1 - DSupC2) <= aEps
               && (TheCurve[c1].Value(DSupC1).Distance(TheCurve[c2].Value(DSupC2))
                   < aEPSILON_DISTANCE))
           {
@@ -1486,7 +1470,7 @@ void IntAna_IntQuadQuad::InternalSetNextAndPrevious()
         }
         if (NotFirstOpenC2)
         {
-          if (Abs(DSupC1 - DInfC2) <= aEps
+          if (std::abs(DSupC1 - DInfC2) <= aEps
               && (TheCurve[c1].Value(DSupC1).Distance(TheCurve[c2].Value(DInfC2))
                   < aEPSILON_DISTANCE))
           {
@@ -1577,7 +1561,7 @@ Standard_Integer IntAna_IntQuadQuad::NextCurve(const Standard_Integer I,
   if (HasNextCurve(I))
   {
     theOpposite = nextcurve[I - 1] < 0;
-    return Abs(nextcurve[I - 1]);
+    return std::abs(nextcurve[I - 1]);
   }
   else
   {
@@ -1683,9 +1667,9 @@ Out[17]= Q1 + r (2 d Qz + 2 Qx Cos[t] + 2 Qy Sin[t]) +
 //*** + Q1                                                           ***
 //**********************************************************************
 // FortranForm= ( DIS = QQ1 QQ1 - 4 QQ0 QQ2  ) / 4
-//   -  d**2*Qz**2 - d**2*Qzz*Q1 + (Qx**2 - Qxx*Q1)*Cos(t)**2 +
+//   -  d**2*Qz**2 - d**2*Qzz*Q1 + (Qx**2 - Qxx*Q1)*std::cos(t)**2 +
 //   -   (2*d*Qy*Qz - 2*d*Qyz*Q1)*Sin(t) + (Qy**2 - Qyy*Q1)*Sin(t)**2 +
-//   -   Cos(t)*(2*d*Qx*Qz - 2*d*Qxz*Q1 + (2*Qx*Qy - 2*Qxy*Q1)*Sin(t))
+//   -   std::cos(t)*(2*d*Qx*Qz - 2*d*Qxz*Q1 + (2*Qx*Qy - 2*Qxy*Q1)*Sin(t))
 //**********************************************************************
 // modified by NIZNHY-PKV Fri Dec  2 10:56:03 2005f
 /*

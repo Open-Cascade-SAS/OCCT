@@ -120,10 +120,10 @@ void BRepBlend_CSWalking::Perform(Blend_CSFunction& Func,
   line                   = new BRepBlend_Line();
   Standard_Integer Nbvar = Func.NbVariables();
   tolpoint3d             = Tol3d;
-  tolgui                 = Abs(TolGuide);
-  fleche                 = Abs(Fleche);
+  tolgui                 = std::abs(TolGuide);
+  fleche                 = std::abs(Fleche);
   rebrou                 = Standard_False;
-  pasmax                 = Abs(MaxStep);
+  pasmax                 = std::abs(MaxStep);
   math_Vector sol(1, Nbvar);
 
   firstsol = new TColStd_HArray1OfReal(1, Nbvar);
@@ -162,14 +162,14 @@ void BRepBlend_CSWalking::Perform(Blend_CSFunction& Func,
     rsnld.Root(sol);
 
     //    situ1 = Adaptor3d_TopolTool::Classify(surf1,gp_Pnt2d(sol(1),sol(2)),
-    //				   Max(tolerance(1),tolerance(2)));
+    //				   std::max(tolerance(1),tolerance(2)));
     //    situ2 = Adaptor3d_TopolTool::Classify(surf2,gp_Pnt2d(sol(3),sol(4)),
-    //				   Max(tolerance(3),tolerance(4)));
+    //				   std::max(tolerance(3),tolerance(4)));
     /*
 situ = domain->Classify(gp_Pnt2d(sol(1),sol(2)),
-     Min(tolerance(1),tolerance(2)));
+     std::min(tolerance(1),tolerance(2)));
 */
-    situ = domain->Classify(Func.Pnt2d(), Min(tolerance(1), tolerance(2)));
+    situ = domain->Classify(Func.Pnt2d(), std::min(tolerance(1), tolerance(2)));
 
     if (situ != TopAbs_IN)
     {
@@ -343,7 +343,7 @@ Blend_Status BRepBlend_CSWalking::TestArret(Blend_CSFunction&      Function,
       //      Function.Tangent(sol(1),sol(2),Tgp1,Nor1);
       Function.Tangent(pt2d.X(), pt2d.Y(), Tgp1, Nor1);
       Standard_Real testra = Tgp1.Dot(Nor1.Crossed(V1));
-      if (Abs(testra) > Precision::Confusion())
+      if (std::abs(testra) > Precision::Confusion())
       {
         if (testra < 0.)
         {
@@ -465,8 +465,8 @@ Blend_Status BRepBlend_CSWalking::CheckDeflectionOnSurf(const gp_Pnt&   Psurf,
   Du  = Ponsurf.X() - paramu;
   Dv  = Ponsurf.Y() - paramv;
   Duv = Du * Du + Dv * Dv;
-  if ((Abs(Du) < tolu && Abs(Dv) < tolv) || // JAG MODIF 25.04.94
-      (Abs(previousd2d.X()) < tolu && Abs(previousd2d.Y()) < tolv))
+  if ((std::abs(Du) < tolu && std::abs(Dv) < tolv) || // JAG MODIF 25.04.94
+      (std::abs(previousd2d.X()) < tolu && std::abs(previousd2d.Y()) < tolv))
   {
     // il faudra peut etre  forcer meme point   JAG MODIF 25.04.94
     return Blend_SamePoints; // point confondu 2d
@@ -493,19 +493,6 @@ Blend_Status BRepBlend_CSWalking::CheckDeflectionOnSurf(const gp_Pnt&   Psurf,
     return Blend_StepTooLarge;
   }
 
-  // Estimation de la fleche courante
-  /*
-Norme = Sqrt(Norme)/3.;
-Poles(1) = prevP;
-Poles(4) = Psurf;
-Poles(2) = Poles(1).XYZ() + sens*Norme* prevTg.Normalized().XYZ();
-Poles(3) = Poles(4).XYZ() - sens*Norme* Tgsurf.Normalized().XYZ();
-BzCLib::PntPole(0.5,Poles,POnCurv);
-Milieu = (Poles(1).XYZ() + Poles(4).XYZ())*0.5;
-FlecheCourante = Milieu.Distance(POnCurv);
-
-if (FlecheCourante <= 0.5*fleche) {
-*/
   FlecheCourante =
     (prevTg.Normalized().XYZ() - Tgsurf.Normalized().XYZ()).SquareModulus() * Norme / 64.;
 
@@ -569,7 +556,7 @@ Blend_Status BRepBlend_CSWalking::CheckDeflectionOnCurv(const gp_Pnt&       Pcur
 
   paramu = previousP.ParameterOnC();
   Du     = Param - paramu;
-  if (Abs(Du) < tolu)
+  if (std::abs(Du) < tolu)
   {
     // il faudra peut etre  forcer meme point   JAG MODIF 25.04.94
     return Blend_SamePoints; // point confondu 2d
@@ -591,18 +578,6 @@ Blend_Status BRepBlend_CSWalking::CheckDeflectionOnCurv(const gp_Pnt&       Pcur
 
   if (prevNorme > toler3d * toler3d)
   {
-    // Estimation de la fleche courante
-    /*
-Norme = Sqrt(Norme)/3.;
-Poles(1) = prevP;
-Poles(4) = Pcurv;
-Poles(2) = Poles(1).XYZ() + sens*Norme* prevTg.Normalized().XYZ();
-Poles(3) = Poles(4).XYZ() - sens*Norme* Tgcurv.Normalized().XYZ();
-BzCLib::PntPole(0.5,Poles,POnCurv);
-Milieu = (Poles(1).XYZ() + Poles(4).XYZ())*0.5;
-FlecheCourante = Milieu.Distance(POnCurv);
-if (FlecheCourante <= 0.5*fleche) {
-*/
     FlecheCourante =
       (prevTg.Normalized().XYZ() - Tgcurv.Normalized().XYZ()).SquareModulus() * Norme / 64.;
 
@@ -725,22 +700,22 @@ Standard_Boolean BRepBlend_CSWalking::Recadre(Blend_FuncInv& FuncInv,
 
 //    if (OnFirst) {
 //      situ = Adaptor3d_TopolTool::Classify(surf2,gp_Pnt2d(solrst(3),solrst(4)),
-//				    Max(toler(3),toler(4)));
+//				    std::max(toler(3),toler(4)));
 //
 //    }
 //    else {
 //      situ = Adaptor3d_TopolTool::Classify(surf1,gp_Pnt2d(solrst(3),solrst(4)),
-//				    Max(toler(3),toler(4)));
+//				    std::max(toler(3),toler(4)));
 //    }
 
     if (OnFirst) {
       situ = domain2->Classify(gp_Pnt2d(solrst(3),solrst(4)),
-                   Min(toler(3),toler(4)));
+                   std::min(toler(3),toler(4)));
 
     }
     else {
       situ = domain1->Classify(gp_Pnt2d(solrst(3),solrst(4)),
-                   Min(toler(3),toler(4)));
+                   std::min(toler(3),toler(4)));
     }
 
 
@@ -753,7 +728,7 @@ Standard_Boolean BRepBlend_CSWalking::Recadre(Blend_FuncInv& FuncInv,
     IsVtx = !Iter->MoreVertex();
     while (!IsVtx) {
       Vtx = Iter->Vertex();
-      if (Abs(BRepBlend_BlendTool::Parameter(Vtx,thearc)-solrst(1)) <=
+      if (std::abs(BRepBlend_BlendTool::Parameter(Vtx,thearc)-solrst(1)) <=
       BRepBlend_BlendTool::Tolerance(Vtx,thearc)) {
     IsVtx = Standard_True;
       }
@@ -910,14 +885,14 @@ void BRepBlend_CSWalking::InternalPerform(Blend_CSFunction& Func,
       rsnld.Root(sol);
 
       //      situ1 = Adaptor3d_TopolTool::Classify(surf1,gp_Pnt2d(sol(1),sol(2)),
-      //				     Max(tolerance(1),tolerance(2)));
+      //				     std::max(tolerance(1),tolerance(2)));
       //      situ2 = Adaptor3d_TopolTool::Classify(surf2,gp_Pnt2d(sol(3),sol(4)),
-      //				     Max(tolerance(3),tolerance(4)));
+      //				     std::max(tolerance(3),tolerance(4)));
       /*
         situ = domain->Classify(gp_Pnt2d(sol(1),sol(2)),
-              Min(tolerance(1),tolerance(2)));
+              std::min(tolerance(1),tolerance(2)));
   */
-      situ = domain->Classify(Func.Pnt2d(), Min(tolerance(1), tolerance(2)));
+      situ = domain->Classify(Func.Pnt2d(), std::min(tolerance(1), tolerance(2)));
 
       w          = Bound;
       recad      = Standard_False;
@@ -1020,7 +995,7 @@ void BRepBlend_CSWalking::InternalPerform(Blend_CSFunction& Func,
 
       case Blend_StepTooLarge: {
         stepw = stepw / 2.;
-        if (Abs(stepw) < tolgui)
+        if (std::abs(stepw) < tolgui)
         {
           /*
       Exts.SetValue(previousP.PointOnS(),sol(1),sol(2),tolesp);
@@ -1067,7 +1042,7 @@ void BRepBlend_CSWalking::InternalPerform(Blend_CSFunction& Func,
         parinit = sol;
         parprec = param;
 
-        stepw = Min(1.5 * stepw, pasmax);
+        stepw = std::min(1.5 * stepw, pasmax);
         if (param == Bound)
         {
           Arrive = Standard_True;

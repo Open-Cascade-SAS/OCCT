@@ -40,7 +40,7 @@ gp_Pnt Prs3d_ToolDisk::Vertex(const Standard_Real theU, const Standard_Real theV
 {
   const Standard_Real aU      = myStartAngle + theU * (myEndAngle - myStartAngle);
   const Standard_Real aRadius = myInnerRadius + (myOuterRadius - myInnerRadius) * theV;
-  return gp_Pnt(Cos(aU) * aRadius, Sin(aU) * aRadius, 0.0);
+  return gp_Pnt(std::cos(aU) * aRadius, std::sin(aU) * aRadius, 0.0);
 }
 
 //=================================================================================================

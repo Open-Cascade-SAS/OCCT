@@ -863,7 +863,7 @@ void PrsDim::InitFaceLength(const TopoDS_Face&    theFace,
                             Standard_Real&        theOffset)
 {
   if (PrsDim::GetPlaneFromFace(theFace, thePlane, theSurface, theSurfaceType, theOffset)
-      && Abs(theOffset) > Precision::Confusion())
+      && std::abs(theOffset) > Precision::Confusion())
   {
     theSurface = new Geom_OffsetSurface(theSurface, theOffset);
     theOffset  = 0.0e0;
@@ -1212,7 +1212,7 @@ gp_Pnt PrsDim::TranslatePointToBound(const gp_Pnt&  aPoint,
     Standard_Boolean IsFound = Standard_False;
     for (Standard_Integer i = 1; i <= 3; i++)
     {
-      if (Abs(Dir(i)) <= gp::Resolution())
+      if (std::abs(Dir(i)) <= gp::Resolution())
         continue;
       for (Standard_Integer j = 1; j <= 2; j++)
       {
@@ -1336,9 +1336,9 @@ gp_Pnt PrsDim::NearestApex(const gp_Elips&     elips,
     {
       IsInDomain = Standard_False;
       Standard_Real posd =
-        Min(DistanceFromApex(elips, pApex, fpara), DistanceFromApex(elips, pApex, lpara));
+        std::min(DistanceFromApex(elips, pApex, fpara), DistanceFromApex(elips, pApex, lpara));
       Standard_Real negd =
-        Min(DistanceFromApex(elips, nApex, fpara), DistanceFromApex(elips, nApex, lpara));
+        std::min(DistanceFromApex(elips, nApex, fpara), DistanceFromApex(elips, nApex, lpara));
       if (posd < negd)
         EndOfArrow = pApex;
       else

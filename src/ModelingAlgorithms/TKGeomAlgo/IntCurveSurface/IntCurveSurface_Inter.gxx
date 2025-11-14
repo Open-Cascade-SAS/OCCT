@@ -189,7 +189,7 @@ void IntCurveSurface_Inter::DoSurface(const TheSurface&   surface,
   }
   Standard_Real Ures = TheSurfaceTool::UResolution(surface, dU);
   Standard_Real Vres = TheSurfaceTool::VResolution(surface, dV);
-  gap                = Max(Ures, Vres);
+  gap                = std::max(Ures, Vres);
 }
 
 //=================================================================================================
@@ -645,7 +645,7 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&                     
       for (i = 1, im1 = 0; i < NbStartPoints; im1++, i++)
       {
         // modified by NIZHNY-MKK  Mon Oct  3 17:38:49 2005
-        // 	if(Abs(TabW[i]-TabW[im1])<ptol) {
+        // 	if(std::abs(TabW[i]-TabW[im1])<ptol) {
         if ((TabW[i] - TabW[im1]) < ptol)
         {
           TabW[i] = TabW[im1];
@@ -671,7 +671,7 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&                     
       for (i = 1, im1 = 0; i < NbStartPoints; im1++, i++)
       {
         // modified by NIZHNY-MKK  Mon Oct  3 17:38:52 2005
-        // 	if((Abs(TabW[i]-TabW[im1])<ptol) && (Abs(TabU[i]-TabU[im1])<ptol)) {
+        // 	if((std::abs(TabW[i]-TabW[im1])<ptol) && (std::abs(TabU[i]-TabU[im1])<ptol)) {
         if (((TabW[i] - TabW[im1]) < ptol) && ((TabU[i] - TabU[im1]) < ptol))
         {
           TabU[i] = TabU[im1];
@@ -695,7 +695,7 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&                     
       {
         su = u - 1;
       }
-      if (Abs(u - su) > ptol || Abs(v - sv) > ptol || Abs(w - sw) > ptol)
+      if (std::abs(u - su) > ptol || std::abs(v - sv) > ptol || std::abs(w - sw) > ptol)
       {
         intersectionExacte.Perform(u, v, w, rsnld, u0, u1, v0, v1, winf, wsup);
         if (intersectionExacte.IsDone())
@@ -820,7 +820,7 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&                     
       for (i = 1, im1 = 0; i < NbStartPoints; im1++, i++)
       {
         // modified by NIZHNY-MKK  Mon Oct  3 17:38:56 2005
-        // 	if(Abs(TabW[i]-TabW[im1])<ptol) {
+        // 	if(std::abs(TabW[i]-TabW[im1])<ptol) {
         if ((TabW[i] - TabW[im1]) < ptol)
         {
           TabW[i] = TabW[im1];
@@ -846,7 +846,7 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&                     
       for (i = 1, im1 = 0; i < NbStartPoints; im1++, i++)
       {
         // modified by NIZHNY-MKK  Mon Oct  3 17:38:58 2005
-        // 	if((Abs(TabW[i]-TabW[im1])<ptol) && (Abs(TabU[i]-TabU[im1])<ptol)) {
+        // 	if((std::abs(TabW[i]-TabW[im1])<ptol) && (std::abs(TabU[i]-TabU[im1])<ptol)) {
         if (((TabW[i] - TabW[im1]) < ptol) && ((TabU[i] - TabU[im1]) < ptol))
         {
           TabU[i] = TabU[im1];
@@ -870,7 +870,7 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&                     
       {
         su = u - 1;
       }
-      if (Abs(u - su) > ptol || Abs(v - sv) > ptol || Abs(w - sw) > ptol)
+      if (std::abs(u - su) > ptol || std::abs(v - sv) > ptol || std::abs(w - sw) > ptol)
       {
         intersectionExacte.Perform(u, v, w, rsnld, u0, u1, v0, v1, winf, wsup);
         if (intersectionExacte.IsDone())
@@ -1028,7 +1028,7 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&       Line,
     case GeomAbs_Cone: {
       constexpr Standard_Real correction = 1.E+5 * Precision::Angular();
       gp_Cone                 cn         = TheSurfaceTool::Cone(surface);
-      if (Abs(cn.SemiAngle()) < M_PI / 2.0 - correction)
+      if (std::abs(cn.SemiAngle()) < M_PI / 2.0 - correction)
       {
         IntAna_IntConicQuad LinCone(Line, cn);
         AppendIntAna(curve, surface, LinCone);
@@ -1676,24 +1676,24 @@ void EstLimForInfExtr(const gp_Lin&          Line,
 
       aExtr.Points(1, aP1, aP2);
       v    = aP1.Parameter();
-      vmin = Min(vmin, v);
-      vmax = Max(vmax, v);
+      vmin = std::min(vmin, v);
+      vmax = std::max(vmax, v);
 
       u += step;
     }
 
-    vmin = vmin - Abs(vmin) - 10.;
-    vmax = vmax + Abs(vmax) + 10.;
+    vmin = vmin - std::abs(vmin) - 10.;
+    vmax = vmax + std::abs(vmax) + 10.;
 
-    V1new = Max(V1new, vmin);
-    V2new = Min(V2new, vmax);
+    V1new = std::max(V1new, vmin);
+    V2new = std::min(V2new, vmax);
   }
   else if (U1inf || U2inf)
   {
 
     Standard_Real umin = RealLast(), umax = -umin;
-    Standard_Real u0 = Min(Max(0., U1new), U2new);
-    Standard_Real v0 = Min(Max(0., V1new), V2new);
+    Standard_Real u0 = std::min(std::max(0., U1new), U2new);
+    Standard_Real v0 = std::min(std::max(0., V1new), V2new);
     gp_Pnt        aP;
     TheSurfaceTool::D0(surface, u0, v0, aP);
     gp_Pln aRefPln(aP, aDirOfExt);
@@ -1781,8 +1781,8 @@ void EstLimForInfExtr(const gp_Lin&          Line,
 
         const IntAna2d_IntPoint& anIntPnt = anInter.Point(i);
 
-        umin = Min(anIntPnt.ParamOnFirst(), umin);
-        umax = Max(anIntPnt.ParamOnFirst(), umax);
+        umin = std::min(anIntPnt.ParamOnFirst(), umin);
+        umax = std::max(anIntPnt.ParamOnFirst(), umax);
       }
     }
     else
@@ -1790,11 +1790,11 @@ void EstLimForInfExtr(const gp_Lin&          Line,
       return;
     }
 
-    umin = umin - Abs(umin) - 10;
-    umax = umax + Abs(umax) + 10;
+    umin = umin - std::abs(umin) - 10;
+    umax = umax + std::abs(umax) + 10;
 
-    U1new = Max(U1new, umin);
-    U2new = Min(U2new, umax);
+    U1new = std::max(U1new, umin);
+    U2new = std::min(U2new, umax);
 
     if (V1inf || V2inf)
     {
@@ -1877,7 +1877,7 @@ void ProjectIntersectAndEstLim(const gp_Lin&        theLine,
   // retrieve params of intersections
   Standard_Integer aNbIntPnt    = anIntersect.IsDone() ? anIntersect.NbPoints() : 0;
   Standard_Integer aNbIntPntSym = anIntersectSym.IsDone() ? anIntersectSym.NbPoints() : 0;
-  Standard_Integer iPnt, aNbPnt = Max(aNbIntPnt, aNbIntPntSym);
+  Standard_Integer iPnt, aNbPnt = std::max(aNbIntPnt, aNbIntPntSym);
 
   if (aNbPnt == 0)
   {
@@ -1891,15 +1891,15 @@ void ProjectIntersectAndEstLim(const gp_Lin&        theLine,
     {
       const IntAna2d_IntPoint& aIntPnt = anIntersect.Point(iPnt);
       aParam                           = aIntPnt.ParamOnFirst();
-      theVmin                          = Min(theVmin, aParam);
-      theVmax                          = Max(theVmax, aParam);
+      theVmin                          = std::min(theVmin, aParam);
+      theVmax                          = std::max(theVmax, aParam);
     }
     if (iPnt <= aNbIntPntSym)
     {
       const IntAna2d_IntPoint& aIntPnt = anIntersectSym.Point(iPnt);
       aParam                           = aIntPnt.ParamOnFirst();
-      theVmin                          = Min(theVmin, aParam);
-      theVmax                          = Max(theVmax, aParam);
+      theVmin                          = std::min(theVmin, aParam);
+      theVmax                          = std::max(theVmax, aParam);
     }
   }
 
@@ -1931,9 +1931,9 @@ void EstLimForInfRevl(const gp_Lin&          Line,
   if (U1inf || U2inf)
   {
     if (U1inf)
-      U1new = Max(0., U1new);
+      U1new = std::max(0., U1new);
     else
-      U2new = Min(2 * M_PI, U2new);
+      U2new = std::min(2 * M_PI, U2new);
     if (!V1inf && !V2inf)
       return;
   }
@@ -2014,8 +2014,8 @@ void EstLimForInfRevl(const gp_Lin&          Line,
     return;
   }
 
-  aVmin = aVmin - Abs(aVmin) - 10;
-  aVmax = aVmax + Abs(aVmax) + 10;
+  aVmin = aVmin - std::abs(aVmin) - 10;
+  aVmax = aVmax + std::abs(aVmax) + 10;
 
   if (V1inf)
     V1new = aVmin;
@@ -2072,10 +2072,10 @@ void EstLimForInfOffs(const gp_Lin&          Line,
 
     Standard_Real u, v;
     ElSLib::Parameters(aPln, LinPlane.Point(1), u, v);
-    U1new = Max(U1new, u - 10.);
-    U2new = Min(U2new, u + 10.);
-    V1new = Max(V1new, v - 10.);
-    V2new = Min(V2new, v + 10.);
+    U1new = std::max(U1new, u - 10.);
+    U2new = std::min(U2new, u + 10.);
+    V1new = std::max(V1new, v - 10.);
+    V2new = std::min(V2new, v + 10.);
   }
   else if (aTypeOfBasSurf == GeomAbs_Cylinder)
   {
@@ -2099,7 +2099,7 @@ void EstLimForInfOffs(const gp_Lin&          Line,
       anA.Rotate(gp_Ax1(anA.Location(), anA.Direction()), M_PI);
       aCyl.SetPosition(anA);
       // modified by NIZHNY-MKK  Mon Oct  3 17:37:54 2005
-      //       aCyl.SetRadius(Abs(aR));
+      //       aCyl.SetRadius(std::abs(aR));
       aCyl.SetRadius(-aR);
     }
     else
@@ -2128,25 +2128,25 @@ void EstLimForInfOffs(const gp_Lin&          Line,
     {
 
       ElSLib::Parameters(aCyl, LinCylinder.Point(i), u, v);
-      vmin = Min(vmin, v);
-      vmax = Max(vmax, v);
+      vmin = std::min(vmin, v);
+      vmax = std::max(vmax, v);
     }
 
-    V1new = Max(V1new, vmin - Abs(vmin) - 10.);
-    V2new = Min(V2new, vmax + Abs(vmax) + 10.);
+    V1new = std::max(V1new, vmin - std::abs(vmin) - 10.);
+    V2new = std::min(V2new, vmax + std::abs(vmax) + 10.);
   }
   else if (aTypeOfBasSurf == GeomAbs_Cone)
   {
 
     gp_Cone       aCon  = aBasSurf->Cone();
     Standard_Real anAng = aCon.SemiAngle();
-    Standard_Real aR    = aCon.RefRadius() + anOffVal * Cos(anAng);
+    Standard_Real aR    = aCon.RefRadius() + anOffVal * std::cos(anAng);
     gp_Ax3        anA   = aCon.Position();
     if (aR >= 0.)
     {
 
       gp_Vec aZ(anA.Direction());
-      aZ *= -anOffVal * Sin(anAng);
+      aZ *= -anOffVal * std::sin(anAng);
       anA.Translate(aZ);
       aCon.SetPosition(anA);
       aCon.SetRadius(aR);
@@ -2177,12 +2177,12 @@ void EstLimForInfOffs(const gp_Lin&          Line,
     {
 
       ElSLib::Parameters(aCon, LinCone.Point(i), u, v);
-      vmin = Min(vmin, v);
-      vmax = Max(vmax, v);
+      vmin = std::min(vmin, v);
+      vmax = std::max(vmax, v);
     }
 
-    V1new = Max(V1new, vmin - Abs(vmin) - 10.);
-    V2new = Min(V2new, vmax + Abs(vmax) + 10.);
+    V1new = std::max(V1new, vmin - std::abs(vmin) - 10.);
+    V2new = std::min(V2new, vmax + std::abs(vmax) + 10.);
   }
   else if (aTypeOfBasSurf == GeomAbs_SurfaceOfExtrusion)
   {
@@ -2212,26 +2212,26 @@ void EstLimForInfOffs(const gp_Lin&          Line,
       GeomAbs_CurveType aBasCurvType = aBasSurf->BasisCurve()->GetType();
       if (aBasCurvType == GeomAbs_Line)
       {
-        U1new = Max(anU1, -1.e10);
-        U2new = Min(anU2, 1.e10);
+        U1new = std::max(anU1, -1.e10);
+        U2new = std::min(anU2, 1.e10);
       }
       else if (aBasCurvType == GeomAbs_Parabola)
       {
         gp_Parab      aPrb = aBasSurf->BasisCurve()->Parabola();
         Standard_Real aF   = aPrb.Focal();
-        Standard_Real dU   = 2.e5 * Sqrt(aF);
-        U1new              = Max(anU1, -dU);
-        U2new              = Min(anU2, dU);
+        Standard_Real dU   = 2.e5 * std::sqrt(aF);
+        U1new              = std::max(anU1, -dU);
+        U2new              = std::min(anU2, dU);
       }
       else if (aBasCurvType == GeomAbs_Hyperbola)
       {
-        U1new = Max(anU1, -30.);
-        U2new = Min(anU2, 30.);
+        U1new = std::max(anU1, -30.);
+        U2new = std::min(anU2, 30.);
       }
       else
       {
-        U1new = Max(anU1, -1.e10);
-        U2new = Min(anU2, 1.e10);
+        U1new = std::max(anU1, -1.e10);
+        U2new = std::min(anU2, 1.e10);
       }
     }
   }
@@ -2241,33 +2241,33 @@ void EstLimForInfOffs(const gp_Lin&          Line,
     GeomAbs_CurveType aBasCurvType = aBasSurf->BasisCurve()->GetType();
     if (aBasCurvType == GeomAbs_Line)
     {
-      V1new = Max(V1new, -1.e10);
-      V2new = Min(V2new, 1.e10);
+      V1new = std::max(V1new, -1.e10);
+      V2new = std::min(V2new, 1.e10);
     }
     else if (aBasCurvType == GeomAbs_Parabola)
     {
       gp_Parab      aPrb = aBasSurf->BasisCurve()->Parabola();
       Standard_Real aF   = aPrb.Focal();
-      Standard_Real dV   = 2.e5 * Sqrt(aF);
-      V1new              = Max(V1new, -dV);
-      V2new              = Min(V2new, dV);
+      Standard_Real dV   = 2.e5 * std::sqrt(aF);
+      V1new              = std::max(V1new, -dV);
+      V2new              = std::min(V2new, dV);
     }
     else if (aBasCurvType == GeomAbs_Hyperbola)
     {
-      V1new = Max(V1new, -30.);
-      V2new = Min(V2new, 30.);
+      V1new = std::max(V1new, -30.);
+      V2new = std::min(V2new, 30.);
     }
     else
     {
-      V1new = Max(V1new, -1.e10);
-      V2new = Min(V2new, 1.e10);
+      V1new = std::max(V1new, -1.e10);
+      V2new = std::min(V2new, 1.e10);
     }
   }
   else
   {
 
-    V1new = Max(V1new, -1.e10);
-    V2new = Min(V2new, 1.e10);
+    V1new = std::max(V1new, -1.e10);
+    V2new = std::min(V2new, 1.e10);
   }
 }
 
@@ -2278,8 +2278,8 @@ void EstLimForInfSurf(Standard_Real& U1new,
                       Standard_Real& V1new,
                       Standard_Real& V2new)
 {
-  U1new = Max(U1new, -1.e10);
-  U2new = Min(U2new, 1.e10);
-  V1new = Max(V1new, -1.e10);
-  V2new = Min(V2new, 1.e10);
+  U1new = std::max(U1new, -1.e10);
+  U2new = std::min(U2new, 1.e10);
+  V1new = std::max(V1new, -1.e10);
+  V2new = std::min(V2new, 1.e10);
 }

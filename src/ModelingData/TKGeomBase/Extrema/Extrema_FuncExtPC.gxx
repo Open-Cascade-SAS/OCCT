@@ -64,7 +64,7 @@ Standard_Real Extrema_FuncExtPC::SearchOfTolerance()
       aMax = vm;
   } while (++aNum < NPoint + 1);
 
-  return Max(aMax * TolFactor, MinTol);
+  return std::max(aMax * TolFactor, MinTol);
 }
 
 //=============================================================================
@@ -181,7 +181,7 @@ Standard_Boolean Extrema_FuncExtPC::Value(const Standard_Real U, Standard_Real& 
       else
         du = myUsupremum - myUinfium;
 
-      const Standard_Real aDelta = Max(du * DivisionFactor, MinStep);
+      const Standard_Real aDelta = std::max(du * DivisionFactor, MinStep);
       // Derivative is approximated by Taylor-series
 
       Standard_Integer n = 1; // Derivative order
@@ -205,8 +205,8 @@ Standard_Boolean Extrema_FuncExtPC::Value(const Standard_Real U, Standard_Real& 
           u = myU - aDelta;
 
         Pnt P1, P2;
-        Tool::D0(*((Curve*)myC), Min(myU, u), P1);
-        Tool::D0(*((Curve*)myC), Max(myU, u), P2);
+        Tool::D0(*((Curve*)myC), std::min(myU, u), P1);
+        Tool::D0(*((Curve*)myC), std::max(myU, u), P2);
 
         Vec           V1(P1, P2);
         Standard_Real aDirFactor = V.Dot(V1);
@@ -312,7 +312,7 @@ Standard_Boolean Extrema_FuncExtPC::Values(const Standard_Real U,
     else
       du = myUsupremum - myUinfium;
 
-    const Standard_Real aDelta = Max(du * DivisionFactor, MinStep);
+    const Standard_Real aDelta = std::max(du * DivisionFactor, MinStep);
 
     Standard_Real F1, F2, F3;
 

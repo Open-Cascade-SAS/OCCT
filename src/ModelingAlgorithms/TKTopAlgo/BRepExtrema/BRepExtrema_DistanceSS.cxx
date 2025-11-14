@@ -556,7 +556,7 @@ static Standard_Boolean isOnBoundary(const TopoDS_Edge&  theEdge,
   {
     const TopoDS_Vertex& aV      = TopoDS::Vertex(it.Value());
     Standard_Real        aVParam = BRep_Tool::Parameter(aV, theEdge);
-    if (Abs(aVParam - theParam) < thePTol
+    if (std::abs(aVParam - theParam) < thePTol
         && BRep_Tool::Pnt(aV).Distance(theSol) < BRep_Tool::Tolerance(aV))
     {
       return Standard_True;

@@ -561,7 +561,7 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
       iterPerry = Standard_True;
       nbCreatedEdges++;
     }
-    else if (Abs(delta1 * ratio - delta2) <= epsilon)
+    else if (std::abs(delta1 * ratio - delta2) <= epsilon)
     {
       BRepBuilderAPI_MakeEdge makeEdge1(crv1, first1, last1);
       BRepBuilderAPI_MakeEdge makeEdge2(crv2, first2, last2);

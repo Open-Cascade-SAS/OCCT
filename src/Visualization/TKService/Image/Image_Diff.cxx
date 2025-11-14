@@ -161,7 +161,7 @@ Standard_Integer Image_Diff::Compare()
           const Standard_Integer aDiff =
             Standard_Integer(myImageNew->Value<unsigned char>(aRow, aCol))
             - Standard_Integer(myImageRef->Value<unsigned char>(aRow, aCol));
-          if (Abs(aDiff) > aDiffThreshold)
+          if (std::abs(aDiff) > aDiffThreshold)
           {
             myDiffPixels.Append(PackXY((uint16_t)aCol, (uint16_t)aRow));
             ++aNbDiffColors;
@@ -411,8 +411,8 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
     for (Standard_Integer aPixelId2 = aPixelId1 + 1; aPixelId2 < myDiffPixels.Length(); ++aPixelId2)
     {
       Standard_Integer aValue2 = myDiffPixels.Value(aPixelId2);
-      if (Abs(Standard_Integer(UnpackX(aValue1)) - Standard_Integer(UnpackX(aValue2))) <= 1
-          && Abs(Standard_Integer(UnpackY(aValue1)) - Standard_Integer(UnpackY(aValue2))) <= 1)
+      if (std::abs(Standard_Integer(UnpackX(aValue1)) - Standard_Integer(UnpackX(aValue2))) <= 1
+          && std::abs(Standard_Integer(UnpackY(aValue1)) - Standard_Integer(UnpackY(aValue2))) <= 1)
       {
         // A neighbour is found. Create a new group and add both pixels.
         if (myGroupsOfDiffPixels.IsEmpty())

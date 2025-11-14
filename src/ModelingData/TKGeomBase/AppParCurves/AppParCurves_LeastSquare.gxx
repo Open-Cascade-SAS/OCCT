@@ -151,7 +151,7 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
       A(FirstPoint, LastPoint, 1, NbPol),
       DA(FirstPoint, LastPoint, 1, NbPol),
       B2(TheFirstPoint(FirstCons, FirstPoint),
-         Max(TheFirstPoint(FirstCons, FirstPoint), TheLastPoint(LastCons, LastPoint)),
+         std::max(TheFirstPoint(FirstCons, FirstPoint), TheLastPoint(LastCons, LastPoint)),
          1,
          NbBColumns(SSP)),
       mypoints(FirstPoint, LastPoint, 1, NbBColumns(SSP)),
@@ -181,7 +181,7 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
       A(FirstPoint, LastPoint, 1, NbPol),
       DA(FirstPoint, LastPoint, 1, NbPol),
       B2(TheFirstPoint(FirstCons, FirstPoint),
-         Max(TheFirstPoint(FirstCons, FirstPoint), TheLastPoint(LastCons, LastPoint)),
+         std::max(TheFirstPoint(FirstCons, FirstPoint), TheLastPoint(LastCons, LastPoint)),
          1,
          NbBColumns(SSP)),
       mypoints(FirstPoint, LastPoint, 1, NbBColumns(SSP)),
@@ -213,7 +213,7 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
       A(FirstPoint, LastPoint, 1, NbPol),
       DA(FirstPoint, LastPoint, 1, NbPol),
       B2(TheFirstPoint(FirstCons, FirstPoint),
-         Max(TheFirstPoint(FirstCons, FirstPoint), TheLastPoint(LastCons, LastPoint)),
+         std::max(TheFirstPoint(FirstCons, FirstPoint), TheLastPoint(LastCons, LastPoint)),
          1,
          NbBColumns(SSP)),
       mypoints(FirstPoint, LastPoint, 1, NbBColumns(SSP)),
@@ -251,7 +251,7 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
       A(FirstPoint, LastPoint, 1, NbPol),
       DA(FirstPoint, LastPoint, 1, NbPol),
       B2(TheFirstPoint(FirstCons, FirstPoint),
-         Max(TheFirstPoint(FirstCons, FirstPoint), TheLastPoint(LastCons, LastPoint)),
+         std::max(TheFirstPoint(FirstCons, FirstPoint), TheLastPoint(LastCons, LastPoint)),
          1,
          NbBColumns(SSP)),
       mypoints(FirstPoint, LastPoint, 1, NbBColumns(SSP)),
@@ -1281,8 +1281,8 @@ void AppParCurves_LeastSquare::Error(Standard_Real& F, Standard_Real& MaxE3d, St
     else
       i2 += 2;
   }
-  MaxE3d = Sqrt(MaxE3d);
-  MaxE2d = Sqrt(MaxE2d);
+  MaxE3d = std::sqrt(MaxE3d);
+  MaxE2d = std::sqrt(MaxE2d);
 }
 
 void AppParCurves_LeastSquare::ErrorGradient(math_Vector&   Grad,
@@ -1370,8 +1370,8 @@ void AppParCurves_LeastSquare::ErrorGradient(math_Vector&   Grad,
     else
       i2 += 2;
   }
-  MaxE3d = Sqrt(MaxE3d);
-  MaxE2d = Sqrt(MaxE2d);
+  MaxE3d = std::sqrt(MaxE3d);
+  MaxE2d = std::sqrt(MaxE2d);
 }
 
 const math_Matrix& AppParCurves_LeastSquare::Distance()
@@ -1382,7 +1382,7 @@ const math_Matrix& AppParCurves_LeastSquare::Distance()
     {
       for (Standard_Integer j = 1; j <= nbP + nbP2d; j++)
       {
-        theError(i, j) = Sqrt(theError(i, j));
+        theError(i, j) = std::sqrt(theError(i, j));
       }
     }
     iscalculated = Standard_True;
@@ -1612,8 +1612,8 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& TheA, math_Vector& myTAB)
   {
     indexdeb = myindex(k) + 1;
     indexfin = indexdeb + deg;
-    jinit    = Max(resinit, indexdeb);
-    jfin     = Min(resfin, indexfin);
+    jinit    = std::max(resinit, indexdeb);
+    jfin     = std::min(resfin, indexfin);
     k1       = k + myfirst - FirstP;
     for (i = 0; i <= NA1; i++)
     {
@@ -1721,8 +1721,8 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA, math_Matrix& myTAB)
   {
     indexdeb = myindex(k) + 1;
     indexfin = indexdeb + deg;
-    jinit    = Max(resinit, indexdeb);
-    jfin     = Min(resfin, indexfin);
+    jinit    = std::max(resinit, indexdeb);
+    jfin     = std::min(resfin, indexfin);
     for (i = jinit; i <= jfin; i++)
     {
       Akj = A(k, i);
@@ -1745,7 +1745,7 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA, math_Matrix& myTAB)
   Standard_Integer d, i2 = 1;
   iinit = resinit;
   jinit = resinit;
-  ifin  = Min(resfin, deg + 1);
+  ifin  = std::min(resfin, deg + 1);
   for (k = 2; k <= len; k++)
   {
     for (i = iinit; i <= ifin; i++)
@@ -1760,8 +1760,8 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA, math_Matrix& myTAB)
     {
       iinit = ifin + 1;
       d     = ifin + mymults->Value(k);
-      ifin  = Min(d, resfin);
-      jinit = Max(resinit, d - deg);
+      ifin  = std::min(d, resfin);
+      jinit = std::max(resinit, d - deg);
     }
   }
 }
@@ -1778,8 +1778,8 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA)
   {
     indexdeb = myindex(k) + 1;
     indexfin = indexdeb + deg;
-    jinit    = Max(resinit, indexdeb);
-    jfin     = Min(resfin, indexfin);
+    jinit    = std::max(resinit, indexdeb);
+    jfin     = std::min(resfin, indexfin);
     for (i = jinit; i <= jfin; i++)
     {
       Akj = A(k, i);
@@ -1793,7 +1793,7 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA)
   Standard_Integer i2 = 1;
   iinit               = resinit;
   jinit               = resinit;
-  ifin                = Min(resfin, deg + 1);
+  ifin                = std::min(resfin, deg + 1);
   Standard_Integer len, d;
   if (!myknots.IsNull())
     len = myknots->Length();
@@ -1813,8 +1813,8 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA)
     {
       iinit = ifin + 1;
       d     = ifin + mymults->Value(k);
-      ifin  = Min(d, resfin);
-      jinit = Max(resinit, d - deg);
+      ifin  = std::min(d, resfin);
+      jinit = std::max(resinit, d - deg);
     }
   }
 }
@@ -1843,7 +1843,7 @@ void AppParCurves_LeastSquare::SearchIndex(math_IntegerVector& Index)
   {
     iinit = resinit;
     jinit = resinit;
-    ifin  = Min(resfin, deg + 1);
+    ifin  = std::min(resfin, deg + 1);
     len   = myknots->Length();
 
     for (k = 2; k <= len; k++)
@@ -1859,8 +1859,8 @@ void AppParCurves_LeastSquare::SearchIndex(math_IntegerVector& Index)
       }
       iinit = ifin + 1;
       d     = ifin + mymults->Value(k);
-      ifin  = Min(d, resfin);
-      jinit = Max(resinit, d - deg);
+      ifin  = std::min(d, resfin);
+      jinit = std::max(resinit, d - deg);
     }
   }
 }

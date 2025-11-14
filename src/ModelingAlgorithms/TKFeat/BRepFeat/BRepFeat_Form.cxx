@@ -824,17 +824,17 @@ void BRepFeat_Form::GlobalPerform()
           }
           else
           {
-            prmin = Min(prmin1, prmin2);
+            prmin = std::min(prmin1, prmin2);
           }
           pbmax = prbmax2;
           pbmin = ElCLib::InPeriod(prbmin1, pbmax - period, pbmax);
         }
         else
         {
-          prmin = Min(prmin1, prmin2);
-          prmax = Max(prmax1, prmax2);
-          pbmin = Min(prbmin1, prbmin2);
-          pbmax = Max(prbmax1, prbmax2);
+          prmin = std::min(prmin1, prmin2);
+          prmax = std::max(prmax1, prmax2);
+          pbmin = std::min(prbmin1, prbmin2);
+          pbmax = std::max(prbmax1, prbmax2);
         }
       }
       else if (myPerfSelection == BRepFeat_SelectionShU)

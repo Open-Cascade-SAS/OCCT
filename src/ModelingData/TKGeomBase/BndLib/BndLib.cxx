@@ -66,7 +66,7 @@ void Compute(const Standard_Real theP1,
     aTeta2 = theP2;
   }
 
-  Standard_Real aDelta = Abs(aTeta2 - aTeta1);
+  Standard_Real aDelta = std::abs(aTeta2 - aTeta1);
   if (aDelta > 2. * M_PI)
   {
     aTeta1 = 0.;
@@ -93,10 +93,10 @@ void Compute(const Standard_Real theP1,
 
   // One places already both ends
   Standard_Real aCn1, aSn1, aCn2, aSn2;
-  aCn1 = Cos(aTeta1);
-  aSn1 = Sin(aTeta1);
-  aCn2 = Cos(aTeta2);
-  aSn2 = Sin(aTeta2);
+  aCn1 = std::cos(aTeta1);
+  aSn1 = std::sin(aTeta1);
+  aCn2 = std::cos(aTeta2);
+  aSn2 = std::sin(aTeta2);
   theB.Add(PointType(theO.Coord() + theRa * aCn1 * theXd.Coord() + theRb * aSn1 * theYd.Coord()));
   theB.Add(PointType(theO.Coord() + theRa * aCn2 * theXd.Coord() + theRb * aSn2 * theYd.Coord()));
 
@@ -511,9 +511,9 @@ void BndLib::Add(const gp_Circ&      C,
   //
   Standard_Real tt;
   Standard_Real xmin, xmax, txmin, txmax;
-  if (Abs(Xd.X()) > gp::Resolution())
+  if (std::abs(Xd.X()) > gp::Resolution())
   {
-    txmin = ATan(Yd.X() / Xd.X());
+    txmin = std::atan(Yd.X() / Xd.X());
     txmin = ElCLib::InPeriod(txmin, 0., 2. * M_PI);
   }
   else
@@ -521,8 +521,8 @@ void BndLib::Add(const gp_Circ&      C,
     txmin = M_PI / 2.;
   }
   txmax = txmin <= M_PI ? txmin + M_PI : txmin - M_PI;
-  xmin  = R * Cos(txmin) * Xd.X() + R * Sin(txmin) * Yd.X() + O.X();
-  xmax  = R * Cos(txmax) * Xd.X() + R * Sin(txmax) * Yd.X() + O.X();
+  xmin  = R * std::cos(txmin) * Xd.X() + R * std::sin(txmin) * Yd.X() + O.X();
+  xmax  = R * std::cos(txmax) * Xd.X() + R * std::sin(txmax) * Yd.X() + O.X();
   if (xmin > xmax)
   {
     tt    = xmin;
@@ -534,9 +534,9 @@ void BndLib::Add(const gp_Circ&      C,
   }
   //
   Standard_Real ymin, ymax, tymin, tymax;
-  if (Abs(Xd.Y()) > gp::Resolution())
+  if (std::abs(Xd.Y()) > gp::Resolution())
   {
-    tymin = ATan(Yd.Y() / Xd.Y());
+    tymin = std::atan(Yd.Y() / Xd.Y());
     tymin = ElCLib::InPeriod(tymin, 0., 2. * M_PI);
   }
   else
@@ -544,8 +544,8 @@ void BndLib::Add(const gp_Circ&      C,
     tymin = M_PI / 2.;
   }
   tymax = tymin <= M_PI ? tymin + M_PI : tymin - M_PI;
-  ymin  = R * Cos(tymin) * Xd.Y() + R * Sin(tymin) * Yd.Y() + O.Y();
-  ymax  = R * Cos(tymax) * Xd.Y() + R * Sin(tymax) * Yd.Y() + O.Y();
+  ymin  = R * std::cos(tymin) * Xd.Y() + R * std::sin(tymin) * Yd.Y() + O.Y();
+  ymax  = R * std::cos(tymax) * Xd.Y() + R * std::sin(tymax) * Yd.Y() + O.Y();
   if (ymin > ymax)
   {
     tt    = ymin;
@@ -557,9 +557,9 @@ void BndLib::Add(const gp_Circ&      C,
   }
   //
   Standard_Real zmin, zmax, tzmin, tzmax;
-  if (Abs(Xd.Z()) > gp::Resolution())
+  if (std::abs(Xd.Z()) > gp::Resolution())
   {
-    tzmin = ATan(Yd.Z() / Xd.Z());
+    tzmin = std::atan(Yd.Z() / Xd.Z());
     tzmin = ElCLib::InPeriod(tzmin, 0., 2. * M_PI);
   }
   else
@@ -567,8 +567,8 @@ void BndLib::Add(const gp_Circ&      C,
     tzmin = M_PI / 2.;
   }
   tzmax = tzmin <= M_PI ? tzmin + M_PI : tzmin - M_PI;
-  zmin  = R * Cos(tzmin) * Xd.Z() + R * Sin(tzmin) * Yd.Z() + O.Z();
-  zmax  = R * Cos(tzmax) * Xd.Z() + R * Sin(tzmax) * Yd.Z() + O.Z();
+  zmin  = R * std::cos(tzmin) * Xd.Z() + R * std::sin(tzmin) * Yd.Z() + O.Z();
+  zmax  = R * std::cos(tzmax) * Xd.Z() + R * std::sin(tzmax) * Yd.Z() + O.Z();
   if (zmin > zmax)
   {
     tt    = zmin;
@@ -602,34 +602,34 @@ void BndLib::Add(const gp_Circ&      C,
     txmin = ElCLib::InPeriod(txmin, utrim1, utrim1 + 2. * M_PI);
     if (txmin >= utrim1 && txmin <= utrim2)
     {
-      Xmin = Min(xmin, Xmin);
+      Xmin = std::min(xmin, Xmin);
     }
     txmax = ElCLib::InPeriod(txmax, utrim1, utrim1 + 2. * M_PI);
     if (txmax >= utrim1 && txmax <= utrim2)
     {
-      Xmax = Max(xmax, Xmax);
+      Xmax = std::max(xmax, Xmax);
     }
     //
     tymin = ElCLib::InPeriod(tymin, utrim1, utrim1 + 2. * M_PI);
     if (tymin >= utrim1 && tymin <= utrim2)
     {
-      Ymin = Min(ymin, Ymin);
+      Ymin = std::min(ymin, Ymin);
     }
     tymax = ElCLib::InPeriod(tymax, utrim1, utrim1 + 2. * M_PI);
     if (tymax >= utrim1 && tymax <= utrim2)
     {
-      Ymax = Max(ymax, Ymax);
+      Ymax = std::max(ymax, Ymax);
     }
     //
     tzmin = ElCLib::InPeriod(tzmin, utrim1, utrim1 + 2. * M_PI);
     if (tzmin >= utrim1 && tzmin <= utrim2)
     {
-      Zmin = Min(zmin, Zmin);
+      Zmin = std::min(zmin, Zmin);
     }
     tzmax = ElCLib::InPeriod(tzmax, utrim1, utrim1 + 2. * M_PI);
     if (tzmax >= utrim1 && tzmax <= utrim2)
     {
-      Zmax = Max(zmax, Zmax);
+      Zmax = std::max(zmax, Zmax);
     }
     //
     B.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
@@ -704,9 +704,9 @@ void BndLib::Add(const gp_Elips&     C,
   //
   Standard_Real tt;
   Standard_Real xmin, xmax, txmin, txmax;
-  if (Abs(Xd.X()) > gp::Resolution())
+  if (std::abs(Xd.X()) > gp::Resolution())
   {
-    txmin = ATan((MinR * Yd.X()) / (MajR * Xd.X()));
+    txmin = std::atan((MinR * Yd.X()) / (MajR * Xd.X()));
     txmin = ElCLib::InPeriod(txmin, 0., 2. * M_PI);
   }
   else
@@ -714,8 +714,8 @@ void BndLib::Add(const gp_Elips&     C,
     txmin = M_PI / 2.;
   }
   txmax = txmin <= M_PI ? txmin + M_PI : txmin - M_PI;
-  xmin  = MajR * Cos(txmin) * Xd.X() + MinR * Sin(txmin) * Yd.X() + O.X();
-  xmax  = MajR * Cos(txmax) * Xd.X() + MinR * Sin(txmax) * Yd.X() + O.X();
+  xmin  = MajR * std::cos(txmin) * Xd.X() + MinR * std::sin(txmin) * Yd.X() + O.X();
+  xmax  = MajR * std::cos(txmax) * Xd.X() + MinR * std::sin(txmax) * Yd.X() + O.X();
   if (xmin > xmax)
   {
     tt    = xmin;
@@ -727,9 +727,9 @@ void BndLib::Add(const gp_Elips&     C,
   }
   //
   Standard_Real ymin, ymax, tymin, tymax;
-  if (Abs(Xd.Y()) > gp::Resolution())
+  if (std::abs(Xd.Y()) > gp::Resolution())
   {
-    tymin = ATan((MinR * Yd.Y()) / (MajR * Xd.Y()));
+    tymin = std::atan((MinR * Yd.Y()) / (MajR * Xd.Y()));
     tymin = ElCLib::InPeriod(tymin, 0., 2. * M_PI);
   }
   else
@@ -737,8 +737,8 @@ void BndLib::Add(const gp_Elips&     C,
     tymin = M_PI / 2.;
   }
   tymax = tymin <= M_PI ? tymin + M_PI : tymin - M_PI;
-  ymin  = MajR * Cos(tymin) * Xd.Y() + MinR * Sin(tymin) * Yd.Y() + O.Y();
-  ymax  = MajR * Cos(tymax) * Xd.Y() + MinR * Sin(tymax) * Yd.Y() + O.Y();
+  ymin  = MajR * std::cos(tymin) * Xd.Y() + MinR * std::sin(tymin) * Yd.Y() + O.Y();
+  ymax  = MajR * std::cos(tymax) * Xd.Y() + MinR * std::sin(tymax) * Yd.Y() + O.Y();
   if (ymin > ymax)
   {
     tt    = ymin;
@@ -750,9 +750,9 @@ void BndLib::Add(const gp_Elips&     C,
   }
   //
   Standard_Real zmin, zmax, tzmin, tzmax;
-  if (Abs(Xd.Z()) > gp::Resolution())
+  if (std::abs(Xd.Z()) > gp::Resolution())
   {
-    tzmin = ATan((MinR * Yd.Z()) / (MajR * Xd.Z()));
+    tzmin = std::atan((MinR * Yd.Z()) / (MajR * Xd.Z()));
     tzmin = ElCLib::InPeriod(tzmin, 0., 2. * M_PI);
   }
   else
@@ -760,8 +760,8 @@ void BndLib::Add(const gp_Elips&     C,
     tzmin = M_PI / 2.;
   }
   tzmax = tzmin <= M_PI ? tzmin + M_PI : tzmin - M_PI;
-  zmin  = MajR * Cos(tzmin) * Xd.Z() + MinR * Sin(tzmin) * Yd.Z() + O.Z();
-  zmax  = MajR * Cos(tzmax) * Xd.Z() + MinR * Sin(tzmax) * Yd.Z() + O.Z();
+  zmin  = MajR * std::cos(tzmin) * Xd.Z() + MinR * std::sin(tzmin) * Yd.Z() + O.Z();
+  zmax  = MajR * std::cos(tzmax) * Xd.Z() + MinR * std::sin(tzmax) * Yd.Z() + O.Z();
   if (zmin > zmax)
   {
     tt    = zmin;
@@ -795,34 +795,34 @@ void BndLib::Add(const gp_Elips&     C,
     txmin = ElCLib::InPeriod(txmin, utrim1, utrim1 + 2. * M_PI);
     if (txmin >= utrim1 && txmin <= utrim2)
     {
-      Xmin = Min(xmin, Xmin);
+      Xmin = std::min(xmin, Xmin);
     }
     txmax = ElCLib::InPeriod(txmax, utrim1, utrim1 + 2. * M_PI);
     if (txmax >= utrim1 && txmax <= utrim2)
     {
-      Xmax = Max(xmax, Xmax);
+      Xmax = std::max(xmax, Xmax);
     }
     //
     tymin = ElCLib::InPeriod(tymin, utrim1, utrim1 + 2. * M_PI);
     if (tymin >= utrim1 && tymin <= utrim2)
     {
-      Ymin = Min(ymin, Ymin);
+      Ymin = std::min(ymin, Ymin);
     }
     tymax = ElCLib::InPeriod(tymax, utrim1, utrim1 + 2. * M_PI);
     if (tymax >= utrim1 && tymax <= utrim2)
     {
-      Ymax = Max(ymax, Ymax);
+      Ymax = std::max(ymax, Ymax);
     }
     //
     tzmin = ElCLib::InPeriod(tzmin, utrim1, utrim1 + 2. * M_PI);
     if (tzmin >= utrim1 && tzmin <= utrim2)
     {
-      Zmin = Min(zmin, Zmin);
+      Zmin = std::min(zmin, Zmin);
     }
     tzmax = ElCLib::InPeriod(tzmax, utrim1, utrim1 + 2. * M_PI);
     if (tzmax >= utrim1 && tzmax <= utrim2)
     {
-      Zmax = Max(zmax, Zmax);
+      Zmax = std::max(zmax, Zmax);
     }
     //
     B.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
@@ -1274,13 +1274,13 @@ void BndLib::Add(const gp_Cone&      S,
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
-      gp_Dir D(Cos(A) * S.Axis().Direction());
+      gp_Dir D(std::cos(A) * S.Axis().Direction());
       OpenMinMax(D, B);
     }
     else
     {
       ComputeCone(S, UMin, UMax, 0., VMax, B);
-      gp_Dir D(Cos(A) * S.Axis().Direction());
+      gp_Dir D(std::cos(A) * S.Axis().Direction());
       OpenMin(D, B);
     }
   }
@@ -1288,7 +1288,7 @@ void BndLib::Add(const gp_Cone&      S,
   {
     if (Precision::IsNegativeInfinite(VMax))
     {
-      gp_Dir D(Cos(A) * S.Axis().Direction());
+      gp_Dir D(std::cos(A) * S.Axis().Direction());
       OpenMinMax(D, B);
     }
     else if (Precision::IsPositiveInfinite(VMax))
@@ -1298,7 +1298,7 @@ void BndLib::Add(const gp_Cone&      S,
     else
     {
       ComputeCone(S, UMin, UMax, 0., VMax, B);
-      gp_Dir D(Cos(A) * S.Axis().Direction());
+      gp_Dir D(std::cos(A) * S.Axis().Direction());
       OpenMax(D, B);
     }
   }
@@ -1307,13 +1307,13 @@ void BndLib::Add(const gp_Cone&      S,
     if (Precision::IsNegativeInfinite(VMax))
     {
       ComputeCone(S, UMin, UMax, VMin, 0., B);
-      gp_Dir D(Cos(A) * S.Axis().Direction());
+      gp_Dir D(std::cos(A) * S.Axis().Direction());
       OpenMin(D, B);
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
       ComputeCone(S, UMin, UMax, VMin, 0., B);
-      gp_Dir D(Cos(A) * S.Axis().Direction());
+      gp_Dir D(std::cos(A) * S.Axis().Direction());
       OpenMax(D, B);
     }
     else
@@ -1452,7 +1452,7 @@ static void computeDegeneratedTorus(const gp_Torus&     theTorus,
   aZmin  = aP.Z() - aRi;
   aZmax  = aP.Z() + aRi;
 
-  Standard_Real aPhi = ACos(-aRa / aRi);
+  Standard_Real aPhi = std::acos(-aRa / aRi);
 
   constexpr Standard_Real anUper = 2. * M_PI - Precision::PConfusion();
   Standard_Real           aVper  = 2. * aPhi - Precision::PConfusion();

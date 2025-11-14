@@ -170,8 +170,8 @@ Standard_Boolean FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, 
 
       // (3) Evaluation du Hessien de la tension locale ----------------------
 
-      Standard_Real FacteurX  = (1 - Pow(XPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
-      Standard_Real FacteurY  = (1 - Pow(YPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
+      Standard_Real FacteurX  = (1 - std::pow(XPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
+      Standard_Real FacteurY  = (1 - std::pow(YPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
       Standard_Real FacteurXY = -(XPrim * InvNormeCPrim) * (YPrim * InvNormeCPrim) * InvNormeCPrim;
       Standard_Real FacteurW  = WVal * InvNormeCPrim;
 

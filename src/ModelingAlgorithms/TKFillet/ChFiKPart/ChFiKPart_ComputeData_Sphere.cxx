@@ -82,11 +82,11 @@ Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&      DStr,
   Standard_Real delta = sqrt(Rad * Rad - rr * rr);
   gp_Pnt        cen(pp.X() + delta * di.X(), pp.Y() + delta * di.Y(), pp.Z() + delta * di.Z());
   gp_Dir        dz(gp_Vec(p1, cen));
-  if (Abs(ds1.Dot(dz) - 1.) > ptol)
+  if (std::abs(ds1.Dot(dz) - 1.) > ptol)
   {
     cen.SetCoord(pp.X() - delta * di.X(), pp.Y() - delta * di.Y(), pp.Z() - delta * di.Z());
     dz = gp_Dir(gp_Vec(p1, cen));
-    if (Abs(ds1.Dot(dz) - 1.) > ptol)
+    if (std::abs(ds1.Dot(dz) - 1.) > ptol)
     {
 #ifdef OCCT_DEBUG
       std::cout << "center of the spherical corner not found" << std::endl;
@@ -165,7 +165,7 @@ Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&      DStr,
   }
   gp_Vec2d v2d(P1S2, P2S2);
   gp_Dir2d d2d(v2d);
-  if (Abs(v2d.Magnitude() - ang) <= ptol)
+  if (std::abs(v2d.Magnitude() - ang) <= ptol)
   {
     gp_Lin2d l2d(P1S2, d2d);
     C2d = new Geom2d_Line(l2d);

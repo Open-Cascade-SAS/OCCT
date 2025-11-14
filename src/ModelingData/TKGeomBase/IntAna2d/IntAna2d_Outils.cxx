@@ -30,13 +30,12 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
   //  Modified by Sergey KHROMOV - Thu Oct 24 13:10:14 2002 Begin
   Standard_Real anAA[5];
 
-  anAA[0] = Abs(A0);
-  anAA[1] = Abs(A1);
-  anAA[2] = Abs(A2);
-  anAA[3] = Abs(A3);
-  anAA[4] = Abs(A4);
+  anAA[0] = std::abs(A0);
+  anAA[1] = std::abs(A1);
+  anAA[2] = std::abs(A2);
+  anAA[3] = std::abs(A3);
+  anAA[4] = std::abs(A4);
 
-  //   if((Abs(A4)+Abs(A3)+Abs(A2)+Abs(A1)+Abs(A0))<Epsilon(10000.0))  {
   if ((anAA[0] + anAA[1] + anAA[2] + anAA[3] + anAA[4]) < Epsilon(10000.0))
   {
     //  Modified by Sergey KHROMOV - Thu Oct 24 13:10:15 2002 End
@@ -87,11 +86,11 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
 
     for (i = 0; i < 5; i++)
     {
-      anAMin = Min(anAMin, Max(anAA[i], anEps));
-      anAMax = Max(anAMax, Max(anAA[i], anEps));
+      anAMin = std::min(anAMin, std::max(anAA[i], anEps));
+      anAMax = std::max(anAMax, std::max(anAA[i], anEps));
     }
 
-    anEps = Min(1.e-4, Epsilon(1000. * anAMax / anAMin));
+    anEps = std::min(1.e-4, Epsilon(1000. * anAMax / anAMin));
     //  Modified by Sergey KHROMOV - Thu Oct 24 15:46:24 2002 End
     math_DirectPolynomialRoots MATH_A4321(A4, A3, A2, A1);
     if (MATH_A4321.IsDone())
@@ -105,11 +104,8 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
         for (j = 0; j < nbsol; j++)
         {
           Standard_Real t = sol[j] - x;
-          //  Modified by Sergey KHROMOV - Thu Oct 24 12:04:26 2002 Begin
-          // 	  if(Abs(t)<tol) {
-          if (Abs(t) < anEps)
+          if (std::abs(t) < anEps)
           {
-            //  Modified by Sergey KHROMOV - Thu Oct 24 12:04:47 2002 End
             Add = Standard_False;
           }
         }
@@ -133,11 +129,8 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
         for (j = 0; j < nbsol; j++)
         {
           Standard_Real t = sol[j] - x;
-          //  Modified by Sergey KHROMOV - Thu Oct 24 12:06:01 2002 Begin
-          // 	  if(Abs(t)<tol) {
-          if (Abs(t) < anEps)
+          if (std::abs(t) < anEps)
           {
-            //  Modified by Sergey KHROMOV - Thu Oct 24 12:06:04 2002 End
             Add = Standard_False;
           }
         }
@@ -161,11 +154,8 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
         for (j = 0; j < nbsol; j++)
         {
           Standard_Real t = sol[j] - x;
-          //  Modified by Sergey KHROMOV - Thu Oct 24 12:07:04 2002 Begin
-          // 	  if(Abs(t)<tol) {
-          if (Abs(t) < anEps)
+          if (std::abs(t) < anEps)
           {
-            //  Modified by Sergey KHROMOV - Thu Oct 24 12:07:06 2002 End
             Add = Standard_False;
           }
         }
@@ -188,7 +178,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
       TriOK = Standard_True;
       for (i = 1; i < nbsol; i++)
       {
-        if (Abs(val[i]) < Abs(val[i - 1]))
+        if (std::abs(val[i]) < std::abs(val[i - 1]))
         {
           Standard_Real t;
           t          = val[i];
@@ -205,7 +195,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
     //-- On garde les premieres valeurs
     //-- Au moins autant que le polynome Complet
     //--
-    for (nbsol = 0; nbsol < NbsolPolyComplet || Abs(val[nbsol]) < Epsilon(10000.0); nbsol++)
+    for (nbsol = 0; nbsol < NbsolPolyComplet || std::abs(val[nbsol]) < Epsilon(10000.0); nbsol++)
       ;
     //-- std::cout<<" IntAna2d : nbsol:"<<nbsol<<std::endl;
   }
@@ -231,7 +221,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A2,
     sol[anIdx] = RealLast();
   }
   nbsol = 0;
-  if ((Abs(A2) + Abs(A1) + Abs(A0)) < Epsilon(10000.0))
+  if ((std::abs(A2) + std::abs(A1) + std::abs(A0)) < Epsilon(10000.0))
   {
     same = Standard_True;
     return;
@@ -260,9 +250,9 @@ Standard_Boolean Points_Confondus(const Standard_Real x1,
                                   const Standard_Real x2,
                                   const Standard_Real y2)
 {
-  if (Abs(x1 - x2) < Epsilon(x1))
+  if (std::abs(x1 - x2) < Epsilon(x1))
   {
-    if (Abs(y1 - y2) < Epsilon(y1))
+    if (std::abs(y1 - y2) < Epsilon(y1))
     {
       return (Standard_True);
     }

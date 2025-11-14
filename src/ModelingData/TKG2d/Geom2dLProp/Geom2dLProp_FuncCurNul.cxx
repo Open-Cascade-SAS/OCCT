@@ -66,7 +66,7 @@ Standard_Boolean Geom2dLProp_FuncCurNul::Values(const Standard_Real X,
   D = 0.;
 
   /*
-    if (Abs(CP1) < 1.e-4) {
+    if (std::abs(CP1) < 1.e-4) {
       return Standard_True;
     } else */
 

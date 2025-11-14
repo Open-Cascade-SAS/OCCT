@@ -111,7 +111,8 @@ Standard_Boolean Prs3d::MatchSegment(const Standard_Real X,
   Standard_Real Lambda = ((X - X1) * DX + (Y - Y1) * DY + (Z - Z1) * DZ) / Dist;
   if (Lambda < 0. || Lambda > 1.)
     return Standard_False;
-  dist = Abs(X - X1 - Lambda * DX) + Abs(Y - Y1 - Lambda * DY) + Abs(Z - Z1 - Lambda * DZ);
+  dist = std::abs(X - X1 - Lambda * DX) + std::abs(Y - Y1 - Lambda * DY)
+         + std::abs(Z - Z1 - Lambda * DZ);
   return (dist < aDistance);
 }
 

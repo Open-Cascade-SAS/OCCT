@@ -109,8 +109,8 @@ static void SeveralWlinesProcessing(const Handle(Adaptor3d_Surface)& theSurf1,
         Standard_Real vRs1      = theSurf1->VResolution(tDistance);
         Standard_Real uRs2      = theSurf2->UResolution(tDistance);
         Standard_Real vRs2      = theSurf2->VResolution(tDistance);
-        Standard_Real RmaxS1    = Max(uRs1, vRs1);
-        Standard_Real RmaxS2    = Max(uRs2, vRs2);
+        Standard_Real RmaxS1    = std::max(uRs1, vRs1);
+        Standard_Real RmaxS2    = std::max(uRs2, vRs2);
 
         if (RmaxS1 < theMaxStepS1 && RmaxS2 < theMaxStepS2)
         {
@@ -157,7 +157,7 @@ static void SeveralWlinesProcessing(const Handle(Adaptor3d_Surface)& theSurf1,
       Standard_Boolean removePrev = Standard_False;
       if (ciV == 1)
       {
-        Standard_Integer dPar = Abs(VPold.Value(ciV) - VPold.Value(ciV + 1));
+        Standard_Integer dPar = std::abs(VPold.Value(ciV) - VPold.Value(ciV + 1));
         if (dPar > 10)
         {
           removeNext = Standard_True;
@@ -167,7 +167,7 @@ static void SeveralWlinesProcessing(const Handle(Adaptor3d_Surface)& theSurf1,
       }
       else if (ciV == cnbV)
       {
-        Standard_Integer dPar = Abs(VPold.Value(ciV) - VPold.Value(ciV - 1));
+        Standard_Integer dPar = std::abs(VPold.Value(ciV) - VPold.Value(ciV - 1));
         if (dPar > 10)
         {
           removePrev = Standard_True;
@@ -176,8 +176,8 @@ static void SeveralWlinesProcessing(const Handle(Adaptor3d_Surface)& theSurf1,
       }
       else
       {
-        Standard_Integer dParMi = Abs(VPold.Value(ciV) - VPold.Value(ciV - 1));
-        Standard_Integer dParMa = Abs(VPold.Value(ciV) - VPold.Value(ciV + 1));
+        Standard_Integer dParMi = std::abs(VPold.Value(ciV) - VPold.Value(ciV - 1));
+        Standard_Integer dParMa = std::abs(VPold.Value(ciV) - VPold.Value(ciV + 1));
         if (dParMi > 10)
         {
           removePrev = Standard_True;
@@ -921,7 +921,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
           for (nsp1 = nbp / 2; nsp1 >= 1; nsp1--)
           {
             SectionPointToParameters(LineSec.GetPoint(nsp1), Poly1, Poly1, U1, V1, U2, V2);
-            Standard_Real CurrentIncidence = Abs(U1 - U2) + Abs(V1 - V2);
+            Standard_Real CurrentIncidence = std::abs(U1 - U2) + std::abs(V1 - V2);
             if (CurrentIncidence > incidence)
             {
               nbps2     = nsp1;
@@ -931,7 +931,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
           for (nsp1 = nbp / 2; nsp1 <= nbp; nsp1++)
           {
             SectionPointToParameters(LineSec.GetPoint(nsp1), Poly1, Poly1, U1, V1, U2, V2);
-            Standard_Real CurrentIncidence = Abs(U1 - U2) + Abs(V1 - V2);
+            Standard_Real CurrentIncidence = std::abs(U1 - U2) + std::abs(V1 - V2);
             if (CurrentIncidence > incidence)
             {
               nbps2     = nsp1;
@@ -977,7 +977,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
         if (HasStartPoint)
         {
           StartPOn2S.Parameters(pu1, pv1, pu2, pv2);
-          if (Abs(pu1 - pu2) > 1e-7 || Abs(pv1 - pv2) > 1e-7)
+          if (std::abs(pu1 - pu2) > 1e-7 || std::abs(pv1 - pv2) > 1e-7)
           {
             NbLigCalculee = SLin.Length();
             Standard_Integer l;
@@ -1088,7 +1088,8 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
                       imin                      = i;
                       const IntSurf_PntOn2S& Pi = PW.Line()->Value(i);
                       Pi.Parameters(u1, v1, u2, v2);
-                    } while ((i < nbpw) && (Abs(u1 - u2) <= 1e-6 && Abs(v1 - v2) <= 1e-6));
+                    } while ((i < nbpw)
+                             && (std::abs(u1 - u2) <= 1e-6 && std::abs(v1 - v2) <= 1e-6));
 
                     if (imin > 2)
                       imin--;
@@ -1100,7 +1101,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
                       imax                      = i;
                       const IntSurf_PntOn2S& Pi = PW.Line()->Value(i);
                       Pi.Parameters(u1, v1, u2, v2);
-                    } while ((i > 2) && (Abs(u1 - u2) <= 1e-6 && Abs(v1 - v2) <= 1e-6));
+                    } while ((i > 2) && (std::abs(u1 - u2) <= 1e-6 && std::abs(v1 - v2) <= 1e-6));
 
                     if (imax < nbpw)
                       imax++;
@@ -1184,7 +1185,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
       if (HasStartPoint)
       {
         StartPOn2S.Parameters(pu1, pv1, pu2, pv2);
-        if (Abs(pu1 - pu2) > 1e-7 || Abs(pv1 - pv2) > 1e-7)
+        if (std::abs(pu1 - pu2) > 1e-7 || std::abs(pv1 - pv2) > 1e-7)
         {
           NbLigCalculee   = SLin.Length();
           dminiPointLigne = SeuildPointLigne + SeuildPointLigne;
@@ -1295,7 +1296,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
                     imin                      = i;
                     const IntSurf_PntOn2S& Pi = PW.Line()->Value(i);
                     Pi.Parameters(u1, v1, u2, v2);
-                  } while ((i < nbp) && (Abs(u1 - u2) <= 1e-6 && Abs(v1 - v2) <= 1e-6));
+                  } while ((i < nbp) && (std::abs(u1 - u2) <= 1e-6 && std::abs(v1 - v2) <= 1e-6));
 
                   if (imin > 2)
                     imin--;
@@ -1307,7 +1308,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
                     imax                      = i;
                     const IntSurf_PntOn2S& Pi = PW.Line()->Value(i);
                     Pi.Parameters(u1, v1, u2, v2);
-                  } while ((i > 2) && (Abs(u1 - u2) <= 1e-6 && Abs(v1 - v2) <= 1e-6));
+                  } while ((i > 2) && (std::abs(u1 - u2) <= 1e-6 && std::abs(v1 - v2) <= 1e-6));
 
                   if (imax < nbp)
                     imax++;
@@ -1431,7 +1432,7 @@ Handle(IntPatch_Line) IntPatch_PrmPrmIntersection::NewLine(
     Standard_Real du1 = u1 - U1(i - 1);
     Standard_Real dv1 = v1 - V1(i - 1);
 
-    AC(i) = AC(i - 1) + Sqrt((du1 * du1) + (dv1 * dv1));
+    AC(i) = AC(i - 1) + std::sqrt((du1 * du1) + (dv1 * dv1));
   }
 
   Handle(IntSurf_LineOn2S) ResultPntOn2SLine = new IntSurf_LineOn2S();
@@ -1761,13 +1762,13 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
       IntSurf_PntOn2S NewPnt;
       if (Surf1->IsUClosed())
       {
-        if (Abs(U1 - Surf1->FirstUParameter()) <= TolPar)
+        if (std::abs(U1 - Surf1->FirstUParameter()) <= TolPar)
         {
           NewU1 = Surf1->LastUParameter();
           NewPnt.SetValue(NewU1, V1, U2, V2);
           AdditionalPnts.Append(NewPnt);
         }
-        else if (Abs(U1 - Surf1->LastUParameter()) <= TolPar)
+        else if (std::abs(U1 - Surf1->LastUParameter()) <= TolPar)
         {
           NewU1 = Surf1->FirstUParameter();
           NewPnt.SetValue(NewU1, V1, U2, V2);
@@ -1776,13 +1777,13 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
       }
       if (Surf1->IsVClosed())
       {
-        if (Abs(V1 - Surf1->FirstVParameter()) <= TolPar)
+        if (std::abs(V1 - Surf1->FirstVParameter()) <= TolPar)
         {
           NewV1 = Surf1->LastVParameter();
           NewPnt.SetValue(U1, NewV1, U2, V2);
           AdditionalPnts.Append(NewPnt);
         }
-        else if (Abs(V1 - Surf1->LastVParameter()) <= TolPar)
+        else if (std::abs(V1 - Surf1->LastVParameter()) <= TolPar)
         {
           NewV1 = Surf1->FirstVParameter();
           NewPnt.SetValue(U1, NewV1, U2, V2);
@@ -1791,13 +1792,13 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
       }
       if (Surf2->IsUClosed())
       {
-        if (Abs(U2 - Surf2->FirstUParameter()) <= TolPar)
+        if (std::abs(U2 - Surf2->FirstUParameter()) <= TolPar)
         {
           NewU2 = Surf2->LastUParameter();
           NewPnt.SetValue(U1, V1, NewU2, V2);
           AdditionalPnts.Append(NewPnt);
         }
-        else if (Abs(U2 - Surf2->LastUParameter()) <= TolPar)
+        else if (std::abs(U2 - Surf2->LastUParameter()) <= TolPar)
         {
           NewU2 = Surf2->FirstUParameter();
           NewPnt.SetValue(U1, V1, NewU2, V2);
@@ -1806,13 +1807,13 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
       }
       if (Surf2->IsVClosed())
       {
-        if (Abs(V2 - Surf2->FirstVParameter()) <= TolPar)
+        if (std::abs(V2 - Surf2->FirstVParameter()) <= TolPar)
         {
           NewV2 = Surf2->LastVParameter();
           NewPnt.SetValue(U1, V1, U2, NewV2);
           AdditionalPnts.Append(NewPnt);
         }
-        else if (Abs(V2 - Surf2->LastVParameter()) <= TolPar)
+        else if (std::abs(V2 - Surf2->LastVParameter()) <= TolPar)
         {
           NewV2 = Surf2->FirstVParameter();
           NewPnt.SetValue(U1, V1, U2, NewV2);
@@ -1830,8 +1831,8 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
       {
         IntSurf_PntOn2S aNewPnt = iter2.Value();
         aNewPnt.Parameters(NewU1, NewV1, NewU2, NewV2);
-        if (Abs(U1 - NewU1) <= TolPar && Abs(V1 - NewV1) <= TolPar && Abs(U2 - NewU2) <= TolPar
-            && Abs(V2 - NewV2) <= TolPar)
+        if (std::abs(U1 - NewU1) <= TolPar && std::abs(V1 - NewV1) <= TolPar
+            && std::abs(U2 - NewU2) <= TolPar && std::abs(V2 - NewV2) <= TolPar)
           AdditionalPnts.Remove(iter2);
         else
           iter2.Next();
@@ -2016,8 +2017,8 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
                                       trans1,
                                       trans2,
                                       TolTang,
-                                      Max(PW.MaxStep(0), PW.MaxStep(1)),
-                                      Max(PW.MaxStep(2), PW.MaxStep(3)),
+                                      std::max(PW.MaxStep(0), PW.MaxStep(1)),
+                                      std::max(PW.MaxStep(2), PW.MaxStep(3)),
                                       wline);
 
               AddWLine(SLin, wline, Deflection);
@@ -2323,7 +2324,7 @@ IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
   {
     if (Periods[i] != 0.)
     {
-      if (Abs(NewParams[i] - OldParams[i]) >= 0.5 * Periods[i])
+      if (std::abs(NewParams[i] - OldParams[i]) >= 0.5 * Periods[i])
       {
         if (NewParams[i] < OldParams[i])
           NewParams[i] += Periods[i];
@@ -2761,8 +2762,8 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
                                               trans1,
                                               trans2,
                                               TolTang,
-                                              Max(PW.MaxStep(0), PW.MaxStep(1)),
-                                              Max(PW.MaxStep(2), PW.MaxStep(3)),
+                                              std::max(PW.MaxStep(0), PW.MaxStep(1)),
+                                              std::max(PW.MaxStep(2), PW.MaxStep(3)),
                                               wline);
 
                       AddWLine(SLin, wline, Deflection);
@@ -3377,7 +3378,7 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)&        L
         aIPD.xP1(i, j).Coord(x0, y0, z0);
         aIPD.xP1(i - 1, j - 1).Coord(x1, y1, z1);
         //
-        d = Abs(x1 - x0) + Abs(y1 - y0) + Abs(z1 - z0);
+        d = std::abs(x1 - x0) + std::abs(y1 - y0) + std::abs(z1 - z0);
         if (d > dmaxOn1)
         {
           dmaxOn1 = d;
@@ -3404,7 +3405,7 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)&        L
       {
         aIPD.xP2(i, j).Coord(x0, y0, z0);
         aIPD.xP2(i - 1, j - 1).Coord(x1, y1, z1);
-        d = Abs(x1 - x0) + Abs(y1 - y0) + Abs(z1 - z0);
+        d = std::abs(x1 - x0) + std::abs(y1 - y0) + std::abs(z1 - z0);
         if (d > dmaxOn2)
         {
           dmaxOn2 = d;

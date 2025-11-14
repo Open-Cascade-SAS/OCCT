@@ -138,8 +138,8 @@ void BRepOffset_Inter3d::CompletInt(const TopTools_ListOfShape&  SetOfFaces,
     }
     const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
 
-    const TopoDS_Face& aF1 = TopoDS::Face(aMFaces.FindKey(Min(aPair.ID1, aPair.ID2)));
-    const TopoDS_Face& aF2 = TopoDS::Face(aMFaces.FindKey(Max(aPair.ID1, aPair.ID2)));
+    const TopoDS_Face& aF1 = TopoDS::Face(aMFaces.FindKey(std::min(aPair.ID1, aPair.ID2)));
+    const TopoDS_Face& aF2 = TopoDS::Face(aMFaces.FindKey(std::max(aPair.ID1, aPair.ID2)));
 
     // intersect faces
     FaceInter(aF1, aF2, InitOffsetFace);

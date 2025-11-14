@@ -87,7 +87,7 @@ void FEmTool_Curve::SetElement(const Standard_Integer      IndexOfElement,
   {
     i1 += myDimension;
     i2 += myDimension;
-    mfact = Pow(stenor, i);
+    mfact = std::pow(stenor, i);
     for (j = 1; j <= myDimension; j++)
     {
       myCoeff(i1 + j) *= mfact;
@@ -126,7 +126,7 @@ void FEmTool_Curve::GetElement(const Standard_Integer IndexOfElement, TColStd_Ar
 
   for (i = 1; i <= myBase.NivConstr(); i++)
   {
-    mfact = Pow(stenor, i);
+    mfact = std::pow(stenor, i);
     for (j = j1 + 1; j <= myDimension; j++)
     {
       Coeffs(i2 + i, j) *= mfact;
@@ -441,7 +441,7 @@ void FEmTool_Curve::ReduceDegree(const Standard_Integer IndexOfElement,
 
   myBase.ReduceDegree(myDimension, deg, Tol, myCoeff.ChangeValue(Ptr), NewDegree, MaxError);
 
-  NewDegree = Max(NewDegree, 2 * myBase.NivConstr() + 1);
+  NewDegree = std::max(NewDegree, 2 * myBase.NivConstr() + 1);
 
   if (NewDegree < deg)
   {

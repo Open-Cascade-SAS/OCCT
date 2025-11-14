@@ -273,7 +273,7 @@ Standard_Boolean MeshVS_Tool::GetNormal(const TColStd_Array1OfReal& Nodes, gp_Ve
     if (fabs(cur_vec[0]) > conf || fabs(cur_vec[1]) > conf || fabs(cur_vec[2]) > conf)
     {
       Standard_Real cur =
-        Sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
+        std::sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
       for (Standard_Integer k = 0; k < 3; k++)
         cur_vec[k] /= cur;
     }
@@ -342,7 +342,7 @@ Standard_Boolean MeshVS_Tool::GetAverageNormal(const TColStd_Array1OfReal& Nodes
     if (fabs(cur_vec[0]) > conf || fabs(cur_vec[1]) > conf || fabs(cur_vec[2]) > conf)
     {
       Standard_Real cur =
-        Sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
+        std::sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
       for (Standard_Integer k = 0; k < 3; k++)
         cur_vec[k] /= cur;
     }

@@ -215,8 +215,8 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape&       S,
   {
     if (!theOri)
     {
-      prmin = Min(ASI.Point(1, 1).Parameter(), ASI.Point(1, ASI.NbPoints(1)).Parameter());
-      prmax = Max(ASI.Point(1, 1).Parameter(), ASI.Point(1, ASI.NbPoints(1)).Parameter());
+      prmin = std::min(ASI.Point(1, 1).Parameter(), ASI.Point(1, ASI.NbPoints(1)).Parameter());
+      prmax = std::max(ASI.Point(1, 1).Parameter(), ASI.Point(1, ASI.NbPoints(1)).Parameter());
     }
     else
     {
@@ -368,10 +368,10 @@ static void PutInBoundsU(Standard_Real         umin,
   gp_Pnt2d      Pf   = C2d->Value(f);
   gp_Pnt2d      Pl   = C2d->Value(l);
   gp_Pnt2d      Pm   = C2d->Value(0.34 * f + 0.66 * l);
-  Standard_Real minC = Min(Pf.X(), Pl.X());
-  minC               = Min(minC, Pm.X());
-  Standard_Real maxC = Max(Pf.X(), Pl.X());
-  maxC               = Max(maxC, Pm.X());
+  Standard_Real minC = std::min(Pf.X(), Pl.X());
+  minC               = std::min(minC, Pm.X());
+  Standard_Real maxC = std::max(Pf.X(), Pl.X());
+  maxC               = std::max(maxC, Pm.X());
   Standard_Real du   = 0.;
   if (minC < umin - eps)
   {
@@ -422,10 +422,10 @@ static void PutInBoundsV(Standard_Real         vmin,
   gp_Pnt2d      Pf   = C2d->Value(f);
   gp_Pnt2d      Pl   = C2d->Value(l);
   gp_Pnt2d      Pm   = C2d->Value(0.34 * f + 0.66 * l);
-  Standard_Real minC = Min(Pf.Y(), Pl.Y());
-  minC               = Min(minC, Pm.Y());
-  Standard_Real maxC = Max(Pf.Y(), Pl.Y());
-  maxC               = Max(maxC, Pm.Y());
+  Standard_Real minC = std::min(Pf.Y(), Pl.Y());
+  minC               = std::min(minC, Pm.Y());
+  Standard_Real maxC = std::max(Pf.Y(), Pl.Y());
+  maxC               = std::max(maxC, Pm.Y());
   Standard_Real dv   = 0.;
   if (minC < vmin - eps)
   {
@@ -518,7 +518,7 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
   BRepBndLib::Add(Sbase, B);
   Standard_Real x[2], y[2], z[2];
   B.Get(x[0], y[0], z[0], x[1], y[1], z[1]);
-  Standard_Real diam = 10. * Sqrt(B.SquareExtent());
+  Standard_Real diam = 10. * std::sqrt(B.SquareExtent());
 
   Handle(Geom_Surface)  s    = BRep_Tool::Surface(FUntil);
   Handle(Standard_Type) styp = s->DynamicType();

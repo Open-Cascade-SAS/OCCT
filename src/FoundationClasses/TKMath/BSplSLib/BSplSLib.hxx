@@ -106,8 +106,8 @@ public:
   //! <N,M>, x(u,v) is a vector in dimension <3>.
   //!
   //! <Ders> is an array containing the values of the
-  //! input derivatives from 0 to Min(<N>,<UDeg>), 0 to
-  //! Min(<M>,<VDeg>). For orders higher than
+  //! input derivatives from 0 to std::min(<N>,<UDeg>), 0 to
+  //! std::min(<M>,<VDeg>). For orders higher than
   //! <UDeg,VDeg> the input derivatives are assumed to
   //! be 0.
   //!
@@ -152,7 +152,7 @@ public:
   //!
   //! If <All> is true multiples derivatives are
   //! computed. All the derivatives (i,j) with 0 <= i+j
-  //! <= Max(N,M) are computed. <RDers> is an array of
+  //! <= std::max(N,M) are computed. <RDers> is an array of
   //! length 3 * (<N>+1) * (<M>+1) which will contains:
   //!
   //! x(1)/w , x(2)/w ,  ...

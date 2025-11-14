@@ -313,7 +313,7 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
   Standard_Real    TN2       = myTgt * N2;
   Standard_Boolean OneBefore = Standard_False;
 
-  if (Abs(TN1) <= Tole || Abs(TN2) <= Tole)
+  if (std::abs(TN1) <= Tole || std::abs(TN2) <= Tole)
   {
     // Tangent : The first is the interference which have the nearest curvature
     //           from the reference.

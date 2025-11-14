@@ -620,7 +620,7 @@ static Standard_Boolean FUN_brep_ONfirstP(const TopOpeBRep_VPointInter& vpf,
   Standard_Real    parcur   = VP.ParameterOnLine();
   Standard_Real    d        = parcur - parfirst;
   Standard_Real    tol      = Precision::Confusion(); // nyixpu051098 : see lbr...
-  Standard_Boolean ONfirstP = (Abs(d) < tol);
+  Standard_Boolean ONfirstP = (std::abs(d) < tol);
   return ONfirstP;
 }
 
@@ -1232,7 +1232,7 @@ void TopOpeBRep_FacesFiller::AddShapesLine()
   Standard_Real pmin, pmax;
   myHDS->MinMaxOnParameter(myDSCIL, pmin, pmax);
 
-  Standard_Real    d     = Abs(pmin - pmax);
+  Standard_Real    d     = std::abs(pmin - pmax);
   Standard_Boolean id    = (d <= Precision::PConfusion());
   Standard_Boolean isper = myLine->IsPeriodic();
   id                     = (id && !isper);
@@ -1273,7 +1273,7 @@ void TopOpeBRep_FacesFiller::AddShapesLine()
       toll             = BRep_Tool::Tolerance(vl);
     }
 
-    tol                      = Max(tolf, toll);
+    tol                      = std::max(tolf, toll);
     Standard_Boolean onsampt = Standard_True;
     for (Standard_Integer ii = 1; ii <= myLine->NbWPoint(); ii++)
     {
@@ -1305,8 +1305,8 @@ void TopOpeBRep_FacesFiller::AddShapesLine()
   BndLib_Add3dCurve::Add(theCurve, 0., theBox);
   Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax, MaxSide;
   theBox.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-  MaxSide              = Max(Max(Xmax - Xmin, Ymax - Ymin), Zmax - Zmin);
-  Standard_Real MinTol = Min(BRep_Tool::Tolerance(myF1), BRep_Tool::Tolerance(myF2));
+  MaxSide              = std::max(std::max(Xmax - Xmin, Ymax - Ymin), Zmax - Zmin);
+  Standard_Real MinTol = std::min(BRep_Tool::Tolerance(myF1), BRep_Tool::Tolerance(myF2));
   if (MaxSide < MinTol)
   {
     DSC.ChangeKeep(Standard_False);

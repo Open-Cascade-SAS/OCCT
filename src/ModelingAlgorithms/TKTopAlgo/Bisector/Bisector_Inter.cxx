@@ -134,8 +134,8 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
     UMax = Bis1->IntervalLast(IB1);
     if (UMax > MinDomain && UMin < MaxDomain)
     {
-      UMin = Max(UMin, MinDomain);
-      UMax = Min(UMax, MaxDomain);
+      UMin = std::max(UMin, MinDomain);
+      UMax = std::min(UMax, MaxDomain);
       PMin = Bis1->Value(UMin);
       PMax = Bis1->Value(UMax);
       SD1[IB1].SetValues(PMin, UMin, D1.FirstTolerance(), PMax, UMax, D1.LastTolerance());
@@ -189,8 +189,8 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
     UMax = Bis2->IntervalLast(IB2);
     if (UMax > MinDomain && UMin < MaxDomain)
     {
-      UMin = Max(UMin, MinDomain);
-      UMax = Min(UMax, MaxDomain);
+      UMin = std::max(UMin, MinDomain);
+      UMax = std::min(UMax, MaxDomain);
       PMin = Bis2->Value(UMin);
       PMax = Bis2->Value(UMax);
       SD2[IB2].SetValues(PMin, UMin, D2.FirstTolerance(), PMax, UMax, D2.LastTolerance());
@@ -384,8 +384,8 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)& Bis1,
   (void)P2E;
 
   // Calculate the domain of intersection on the guideline.
-  UMin = Max(D1.FirstParameter(), UMin);
-  UMax = Min(D1.LastParameter(), UMax);
+  UMin = std::max(D1.FirstParameter(), UMin);
+  UMax = std::min(D1.LastParameter(), UMax);
 
   done = Standard_True;
 
@@ -430,7 +430,7 @@ void Bisector_Inter::TestBound(const Handle(Geom2d_Line)&  Bis1,
   gp_Pnt2d PF = Bis2->Value(D2.FirstParameter());
   gp_Pnt2d PL = Bis2->Value(D2.LastParameter());
   //  Modified by skv - Mon May  5 14:43:28 2003 OCC616 Begin
-  //   Standard_Real Tol = Min(TolConf,Precision::Confusion());
+  //   Standard_Real Tol = std::min(TolConf,Precision::Confusion());
   //   Tol = 10*Tol;
   Standard_Real Tol = TolConf;
   //  Modified by skv - Mon May  5 14:43:30 2003 OCC616 End

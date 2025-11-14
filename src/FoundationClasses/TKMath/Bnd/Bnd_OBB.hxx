@@ -191,7 +191,7 @@ public:
   //! Enlarges the box with the given value
   void Enlarge(const Standard_Real theGapAdd)
   {
-    const Standard_Real aGap = Abs(theGapAdd);
+    const Standard_Real aGap = std::abs(theGapAdd);
     myHDims[0] += aGap;
     myHDims[1] += aGap;
     myHDims[2] += aGap;

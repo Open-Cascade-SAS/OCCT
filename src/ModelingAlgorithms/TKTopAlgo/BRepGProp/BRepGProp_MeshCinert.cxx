@@ -123,7 +123,7 @@ void BRepGProp_MeshCinert::Perform(const TColgp_Array1OfPnt& theNodes)
 
   inertia = gp_Mat(gp_XYZ(Ixx, -Ixy, -Ixz), gp_XYZ(-Ixy, Iyy, -Iyz), gp_XYZ(-Ixz, -Iyz, Izz));
 
-  if (Abs(dim) < gp::Resolution())
+  if (std::abs(dim) < gp::Resolution())
     g = P;
   else
     g.SetCoord(Ix / dim, Iy / dim, Iz / dim);

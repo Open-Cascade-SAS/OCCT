@@ -171,7 +171,7 @@ AppParCurves_Gradient::AppParCurves_Gradient(
     if (DFU >= RealEpsilon())
     {
       DU = FU / DFU;
-      DU = Sign(Min(5.e-02, Abs(DU)), DU);
+      DU = std::copysign(std::min(5.e-02, std::abs(DU)), DU);
       UF += DU;
       Parameters(j) = UF;
     }
@@ -207,7 +207,7 @@ AppParCurves_Gradient::AppParCurves_Gradient(
     // Recherche des erreurs maxi et moyenne a un index donne:
     for (k = 1; k <= nbP; k++)
     {
-      ParError(j) = Max(ParError(j), MyF.Error(j, k));
+      ParError(j) = std::max(ParError(j), MyF.Error(j, k));
     }
     AvError += ParError(j);
   }

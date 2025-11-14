@@ -227,7 +227,7 @@ inline math_Matrix math_Matrix::TMultiplied(const Standard_Real Right) const noe
 
 inline void math_Matrix::Divide(const Standard_Real Right)
 {
-  Standard_DivideByZero_Raise_if(Abs(Right) <= RealEpsilon(),
+  Standard_DivideByZero_Raise_if(std::abs(Right) <= RealEpsilon(),
                                  "math_Matrix::Divide() - zero divisor");
 
   const Standard_Integer aLowerRow  = Array.LowerRow();
@@ -248,7 +248,7 @@ inline void math_Matrix::Divide(const Standard_Real Right)
 
 inline math_Matrix math_Matrix::Divided(const Standard_Real Right) const
 {
-  Standard_DivideByZero_Raise_if(Abs(Right) <= RealEpsilon(),
+  Standard_DivideByZero_Raise_if(std::abs(Right) <= RealEpsilon(),
                                  "math_Matrix::Divided() - zero divisor");
   math_Matrix temp = Multiplied(1. / Right);
   return temp;

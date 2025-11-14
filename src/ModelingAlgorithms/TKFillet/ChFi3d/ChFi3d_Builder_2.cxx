@@ -129,7 +129,7 @@ static void ChFi3d_CoupeParPlan(const ChFiDS_CommonPoint&    compoint1,
     gp_Dir             nor  = tgt1.Crossed(d12);
     Handle(Geom_Plane) Plan = new Geom_Plane(P1, nor);
     Standard_Real      scal;
-    scal = Abs(nor.Dot(tgt2));
+    scal = std::abs(nor.Dot(tgt2));
     if (scal < 0.01)
     {
       Handle(GeomAdaptor_Surface) HPlan = new GeomAdaptor_Surface(Plan);
@@ -943,16 +943,16 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
       AS.Initialize(f1);
       ResU = AS.UResolution(TolE);
       ResV = AS.VResolution(TolE);
-      derive *= 2 * (Abs(derive.X()) * ResU + Abs(derive.Y()) * ResV);
+      derive *= 2 * (std::abs(derive.X()) * ResU + std::abs(derive.Y()) * ResV);
       P2d = P1.Translated(derive);
-      if (I1->Classify(P2d, Min(ResU, ResV), 0) == TopAbs_IN)
+      if (I1->Classify(P2d, std::min(ResU, ResV), 0) == TopAbs_IN)
       {
         P1 = P2d;
       }
       else
       {
         P2d = P1.Translated(-derive);
-        if (I1->Classify(P2d, Min(ResU, ResV), 0) == TopAbs_IN)
+        if (I1->Classify(P2d, std::min(ResU, ResV), 0) == TopAbs_IN)
         {
           P1 = P2d;
         }
@@ -1767,7 +1767,7 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
         tol3d,
         tolreached);
       Standard_Real oldtol = DStr.ChangeCurve(ICurv).Tolerance();
-      DStr.ChangeCurve(ICurv).Tolerance(Max(oldtol, tolreached));
+      DStr.ChangeCurve(ICurv).Tolerance(std::max(oldtol, tolreached));
       if (CV1.IsOnArc())
       {
         ChFi3d_EnlargeBox(CV1.Arc(), EFMap(CV1.Arc()), CV1.ParameterOnArc(), b1);
@@ -2293,8 +2293,8 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const Handle(ChFiDS_ElSpine)&    
   Standard_Real bidf = wf, bidl = wl;
   if (!Spine->IsPeriodic())
   {
-    bidf = Max(0., wf);
-    bidl = Min(wl, Spine->LastParameter(Spine->NbEdges()));
+    bidf = std::max(0., wf);
+    bidl = std::min(wl, Spine->LastParameter(Spine->NbEdges()));
     // PMN 20/07/98 : Attention in case if there is only extension
     if ((bidl - bidf) < 0.01 * Spine->LastParameter(Spine->NbEdges()))
     {
@@ -2985,7 +2985,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe, const Stan
           {
             // start section -> first KPart
             // update of extension.
-            Spine->SetFirstTgt(Min(0., WFirst));
+            Spine->SetFirstTgt(std::min(0., WFirst));
             CurrentHE->LastParameter(WFirst);
             CurrentHE->SetLastPointAndTgt(PFirst, TFirst);
             Spine->AppendElSpine(CurrentHE);
@@ -3061,7 +3061,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe, const Stan
     else
     {
       Spine->D1(Spine->LastParameter(), PLast, TLast);
-      Spine->SetLastTgt(Max(Spine->LastParameter(Spine->NbEdges()), WLast));
+      Spine->SetLastTgt(std::max(Spine->LastParameter(Spine->NbEdges()), WLast));
       if (Spine->LastParameter() - WLast > tolesp)
       {
         CurrentHE->LastParameter(Spine->LastParameter());
@@ -3431,10 +3431,10 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe, const Stand
         curs2 = cursd->IndexOfC2();
       else
         curs2 = cursd->IndexOfS2();
-      Standard_Real       tol1   = Max(curp1.Tolerance(), nextp1.Tolerance());
+      Standard_Real       tol1   = std::max(curp1.Tolerance(), nextp1.Tolerance());
       ChFiDS_CommonPoint& curp2  = cursd->ChangeVertexLastOnS2();
       ChFiDS_CommonPoint& nextp2 = nextsd->ChangeVertexFirstOnS2();
-      Standard_Real       tol2   = Max(curp2.Tolerance(), nextp2.Tolerance());
+      Standard_Real       tol2   = std::max(curp2.Tolerance(), nextp2.Tolerance());
       if (nextsd->IsOnCurve1())
         nexts1 = nextsd->IndexOfC1();
       else

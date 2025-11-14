@@ -49,7 +49,7 @@ Handle(TColStd_HArray1OfReal) Extrema_Curve2dTool::DeflCurvIntervals(const Adapt
     return Intervals;
   }
   //
-  Standard_Real aDefl = Max(0.01 * L / (2. * M_PI), mindefl);
+  Standard_Real aDefl = std::max(0.01 * L / (2. * M_PI), mindefl);
   if (aDefl > maxdefl)
   {
     nbpnts    = 2;
@@ -58,8 +58,8 @@ Handle(TColStd_HArray1OfReal) Extrema_Curve2dTool::DeflCurvIntervals(const Adapt
     Intervals->SetValue(nbpnts, tl);
     return Intervals;
   }
-  Standard_Real               aMinLen = Max(.00001 * L, Precision::Confusion());
-  Standard_Real               aTol    = Max(0.00001 * (tl - tf), Precision::PConfusion());
+  Standard_Real               aMinLen = std::max(.00001 * L, Precision::Confusion());
+  Standard_Real               aTol    = std::max(0.00001 * (tl - tf), Precision::PConfusion());
   GCPnts_TangentialDeflection aPntGen(C, M_PI / 6, aDefl, 2, aTol, aMinLen);
   nbpnts    = aPntGen.NbPoints();
   Intervals = new TColStd_HArray1OfReal(1, nbpnts);

@@ -178,7 +178,7 @@ void ShapeAnalysis_FreeBounds::ConnectWiresToWires(Handle(TopTools_HSequenceOfSh
   for (i = 1; i <= arrwires->Length(); i++)
     arrwires->SetValue(i, iwires->Value(i));
   owires                  = new TopTools_HSequenceOfShape;
-  Standard_Real tolerance = Max(toler, Precision::Confusion());
+  Standard_Real tolerance = std::max(toler, Precision::Confusion());
 
   Handle(ShapeExtend_WireData) sewd = new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(1)));
 
@@ -388,7 +388,7 @@ static void SplitWire(const TopoDS_Wire&                 wire,
 {
   closed                  = new TopTools_HSequenceOfShape;
   open                    = new TopTools_HSequenceOfShape;
-  Standard_Real tolerance = Max(toler, Precision::Confusion());
+  Standard_Real tolerance = std::max(toler, Precision::Confusion());
 
   BRep_Builder       B;
   ShapeAnalysis_Edge sae;

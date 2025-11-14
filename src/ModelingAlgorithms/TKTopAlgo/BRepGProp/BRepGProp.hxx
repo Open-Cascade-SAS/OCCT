@@ -140,7 +140,7 @@ public:
   //! The surface properties of all the faces in <S> are computed.
   //! Adaptive 2D Gauss integration is used.
   //! Parameter Eps sets maximal relative error of computed mass (area) for each face.
-  //! Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! Method returns estimation of relative error reached for whole shape.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
@@ -207,7 +207,7 @@ public:
   //! If OnlyClosed is True then computed faces must belong to closed Shells.
   //! Adaptive 2D Gauss integration is used.
   //! Parameter Eps sets maximal relative error of computed mass (volume) for each face.
-  //! Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! Method returns estimation of relative error reached for whole shape.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.

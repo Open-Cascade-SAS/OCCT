@@ -92,7 +92,7 @@ Standard_Boolean HLRBRep_Surface::SideRowsOfPoles(const Standard_Real    tol,
     for (iv = 2; iv <= nbvPoles && result; iv++)
     {
       Pnt(iu, iv).Coord(x, y, z);
-      result = Abs(x - x0) < tole && Abs(y - y0) < tole;
+      result = std::abs(x - x0) < tole && std::abs(y - y0) < tole;
     }
   }
   if (result)
@@ -106,7 +106,7 @@ Standard_Boolean HLRBRep_Surface::SideRowsOfPoles(const Standard_Real    tol,
     for (iu = 2; iu <= nbuPoles && result; iu++)
     {
       Pnt(iu, iv).Coord(x, y, z);
-      result = Abs(x - x0) < tole && Abs(y - y0) < tole;
+      result = std::abs(x - x0) < tole && std::abs(y - y0) < tole;
     }
   }
   if (result)
@@ -128,7 +128,7 @@ Standard_Boolean HLRBRep_Surface::SideRowsOfPoles(const Standard_Real    tol,
 
   GProp_PEquation Pl(p, (Standard_Real)tol);
   if (Pl.IsPlanar())
-    result = Abs(Pl.Plane().Axis().Direction().Z()) < 0.0001;
+    result = std::abs(Pl.Plane().Axis().Direction().Z()) < 0.0001;
 
   return result;
 }
@@ -155,7 +155,7 @@ Standard_Boolean HLRBRep_Surface::IsSide(const Standard_Real tolF, const Standar
     }
     else
       r = D.Z();
-    return Abs(r) < toler;
+    return std::abs(r) < toler;
   }
   else if (myType == GeomAbs_Cylinder)
   {
@@ -165,7 +165,7 @@ Standard_Boolean HLRBRep_Surface::IsSide(const Standard_Real tolF, const Standar
     gp_Ax1      A   = Cyl.Axis();
     D               = A.Direction();
     D.Transform(myProj->Transformation());
-    r = Sqrt(D.X() * D.X() + D.Y() * D.Y());
+    r = std::sqrt(D.X() * D.X() + D.Y() * D.Y());
     return r < toler;
   }
   else if (myType == GeomAbs_Cone)

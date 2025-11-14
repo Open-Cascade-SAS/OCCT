@@ -43,7 +43,7 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
 
   Nbp = S.NbPoints();
   F.Value(S.GetParameter(1), val);
-  PNul = Abs(val) <= EpsNul;
+  PNul = std::abs(val) <= EpsNul;
   if (!PNul)
   {
     valsav = val;
@@ -59,7 +59,7 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
   {
 
     F.Value(S.GetParameter(i), val);
-    Nul = Abs(val) <= EpsNul;
+    Nul = std::abs(val) <= EpsNul;
     if (!Nul)
     {
       valsav = val;
@@ -183,10 +183,11 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     { // Recherche des solutions entre S.GetParameter(1)
       // et le debut du 1er intervalle nul
 
-      Nbrpt = (Standard_Integer)IntegerPart(
-        Abs((pdeb.Value(1) - S.GetParameter(1)) / (S.GetParameter(Nbp) - S.GetParameter(1))) * Nbp);
+      Nbrpt = (Standard_Integer)std::trunc(
+        std::abs((pdeb.Value(1) - S.GetParameter(1)) / (S.GetParameter(Nbp) - S.GetParameter(1)))
+        * Nbp);
       math_FunctionRoots
-        Res(F, S.GetParameter(1), pdeb.Value(1), Max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
+        Res(F, S.GetParameter(1), pdeb.Value(1), std::max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
       Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
 
       for (Standard_Integer j = 1; j <= Res.NbSolutions(); j++)
@@ -197,10 +198,11 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     }
     for (Standard_Integer k = 2; k <= pdeb.Length(); k++)
     {
-      Nbrpt = (Standard_Integer)IntegerPart(
-        Abs((pdeb.Value(k) - pfin.Value(k - 1)) / (S.GetParameter(Nbp) - S.GetParameter(1))) * Nbp);
+      Nbrpt = (Standard_Integer)std::trunc(
+        std::abs((pdeb.Value(k) - pfin.Value(k - 1)) / (S.GetParameter(Nbp) - S.GetParameter(1)))
+        * Nbp);
       math_FunctionRoots
-        Res(F, pfin.Value(k - 1), pdeb.Value(k), Max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
+        Res(F, pfin.Value(k - 1), pdeb.Value(k), std::max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
       Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
 
       for (Standard_Integer j = 1; j <= Res.NbSolutions(); j++)
@@ -213,11 +215,17 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     { // Recherche des solutions entre la fin du
       // dernier intervalle nul et Value(Nbp).
 
-      Nbrpt = (Standard_Integer)IntegerPart(Abs((S.GetParameter(Nbp) - pfin.Value(pdeb.Length()))
-                                                / (S.GetParameter(Nbp) - S.GetParameter(1)))
-                                            * Nbp);
-      math_FunctionRoots
-        Res(F, pfin.Value(pdeb.Length()), S.GetParameter(Nbp), Max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
+      Nbrpt =
+        (Standard_Integer)std::trunc(std::abs((S.GetParameter(Nbp) - pfin.Value(pdeb.Length()))
+                                              / (S.GetParameter(Nbp) - S.GetParameter(1)))
+                                     * Nbp);
+      math_FunctionRoots Res(F,
+                             pfin.Value(pdeb.Length()),
+                             S.GetParameter(Nbp),
+                             std::max(Nbrpt, NbpMin),
+                             EpsX,
+                             EpsF,
+                             0.0);
       Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
 
       for (Standard_Integer j = 1; j <= Res.NbSolutions(); j++)

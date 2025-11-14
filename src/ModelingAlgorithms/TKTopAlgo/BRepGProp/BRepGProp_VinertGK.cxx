@@ -391,8 +391,8 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurfa
     GProp_ValueType               aValueType;
 
     // Empirical criterion.
-    aNbPnts = Min(15, theSurface.IntegrationOrder() / aNbTIntervals + 1);
-    aNbPnts = Max(5, aNbPnts);
+    aNbPnts = std::min(15, theSurface.IntegrationOrder() / aNbTIntervals + 1);
+    aNbPnts = std::max(5, aNbPnts);
     //     aNbPnts = theSurface.IntegrationOrder();
 
     aLocalValue.Init(0.);
@@ -496,7 +496,7 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurfa
   dim                    = aValue(1);
   myErrorReached         = aTolReached(1);
   myAbsolutError         = myErrorReached;
-  Standard_Real anAbsDim = Abs(dim);
+  Standard_Real anAbsDim = std::abs(dim);
   Standard_Real aVolTol  = Epsilon(myAbsolutError);
   if (anAbsDim >= aVolTol)
     myErrorReached /= anAbsDim;

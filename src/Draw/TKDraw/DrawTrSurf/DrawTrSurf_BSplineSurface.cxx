@@ -94,8 +94,8 @@ DrawTrSurf_BSplineSurface::DrawTrSurf_BSplineSurface(const Handle(Geom_BSplineSu
                                                      const Standard_Real                Deflection,
                                                      const Standard_Integer             DrawMode)
     : DrawTrSurf_Surface(S,
-                         Abs(NbUIsos),
-                         Abs(NbVIsos),
+                         std::abs(NbUIsos),
+                         std::abs(NbVIsos),
                          BoundsColor,
                          IsosColor,
                          Discret,
@@ -221,8 +221,8 @@ void DrawTrSurf_BSplineSurface::ClearIsos()
 void DrawTrSurf_BSplineSurface::ShowIsos(const Standard_Integer Nu, const Standard_Integer Nv)
 {
   knotsIsos = Standard_False;
-  nbUIsos   = Abs(Nu);
-  nbVIsos   = Abs(Nv);
+  nbUIsos   = std::abs(Nu);
+  nbVIsos   = std::abs(Nv);
 }
 
 void DrawTrSurf_BSplineSurface::FindPole(const Standard_Real X,

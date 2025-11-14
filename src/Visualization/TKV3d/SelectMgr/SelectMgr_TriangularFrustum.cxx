@@ -67,8 +67,8 @@ void SelectMgr_TriangularFrustum::cacheVertexProjections(
     for (Standard_Integer aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
     {
       Standard_Real aProjection = aPlane.Dot(theFrustum->myVertices[aVertIdx].XYZ());
-      aMax                      = Max(aMax, aProjection);
-      aMin                      = Min(aMin, aProjection);
+      aMax                      = std::max(aMax, aProjection);
+      aMin                      = std::min(aMin, aProjection);
     }
     theFrustum->myMaxVertsProjections[aPlaneIdx] = aMax;
     theFrustum->myMinVertsProjections[aPlaneIdx] = aMin;
@@ -81,8 +81,8 @@ void SelectMgr_TriangularFrustum::cacheVertexProjections(
     for (Standard_Integer aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
     {
       Standard_Real aProjection = theFrustum->myVertices[aVertIdx].XYZ().GetData()[aDim];
-      aMax                      = Max(aMax, aProjection);
-      aMin                      = Min(aMin, aProjection);
+      aMax                      = std::max(aMax, aProjection);
+      aMin                      = std::min(aMin, aProjection);
     }
     theFrustum->myMaxOrthoVertsProjections[aDim] = aMax;
     theFrustum->myMinOrthoVertsProjections[aDim] = aMin;

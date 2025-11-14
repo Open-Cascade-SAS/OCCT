@@ -355,7 +355,7 @@ Standard_Integer AppDef_LinearCriteria::QualityValues(const Standard_Real J1min,
         ICDANA = 1;
       if (ValCri[i] < 0.1 * myEstimation[i])
         ICDANA = 2;
-      myEstimation[i] = Max(1.05 * ValCri[i], JEsMin[i]);
+      myEstimation[i] = std::max(1.05 * ValCri[i], JEsMin[i]);
     }
   }
 
@@ -439,8 +439,8 @@ void AppDef_LinearCriteria::ErrorValues(Standard_Real& MaxError,
   if (NbDim != (2 * myNbP2d + 3 * myNbP3d))
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
-  TColgp_Array1OfPnt   TabP3d(1, Max(1, myNbP3d));
-  TColgp_Array1OfPnt2d TabP2d(1, Max(1, myNbP2d));
+  TColgp_Array1OfPnt   TabP3d(1, std::max(1, myNbP3d));
+  TColgp_Array1OfPnt2d TabP2d(1, std::max(1, myNbP2d));
   TColStd_Array1OfReal BasePoint(1, NbDim);
   gp_Pnt2d             P2d;
   gp_Pnt               P3d;
@@ -461,8 +461,8 @@ void AppDef_LinearCriteria::ErrorValues(Standard_Real& MaxError,
     {
       P3d.SetCoord(BasePoint(c0 + 1), BasePoint(c0 + 2), BasePoint(c0 + 3));
       SqrDist  = P3d.SquareDistance(TabP3d(ipnt));
-      Dist     = Sqrt(SqrDist);
-      MaxError = Max(MaxError, Dist);
+      Dist     = std::sqrt(SqrDist);
+      MaxError = std::max(MaxError, Dist);
       QuadraticError += SqrDist;
       AverageError += Dist;
       c0 += 3;
@@ -476,8 +476,8 @@ void AppDef_LinearCriteria::ErrorValues(Standard_Real& MaxError,
     {
       P2d.SetCoord(BasePoint(c0 + 1), BasePoint(c0 + 2));
       SqrDist  = P2d.SquareDistance(TabP2d(ipnt));
-      Dist     = Sqrt(SqrDist);
-      MaxError = Max(MaxError, Dist);
+      Dist     = std::sqrt(SqrDist);
+      MaxError = std::max(MaxError, Dist);
       QuadraticError += SqrDist;
       AverageError += Dist;
       c0 += 2;
@@ -548,13 +548,13 @@ void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
     for (i = 0; i <= degH; i++)
     {
       k1       = (i <= Order) ? i : i - Order - 1;
-      curcoeff = Pow(coeff, k1) * poid * BV[i];
+      curcoeff = std::pow(coeff, k1) * poid * BV[i];
 
       // Hermite*Hermite part of matrix
       for (j = i; j <= degH; j++)
       {
         k2 = (j <= Order) ? j : j - Order - 1;
-        AuxH(i, j) += curcoeff * Pow(coeff, k2) * BV[j];
+        AuxH(i, j) += curcoeff * std::pow(coeff, k2) * BV[j];
       }
       // Hermite*Jacobi part of matrix
       for (j = degH + 1; j <= MxDeg; j++)
@@ -603,8 +603,8 @@ void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
   if (Dimension > (2 * myNbP2d + 3 * myNbP3d))
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
-  TColgp_Array1OfPnt   TabP3d(1, Max(1, myNbP3d));
-  TColgp_Array1OfPnt2d TabP2d(1, Max(1, myNbP2d));
+  TColgp_Array1OfPnt   TabP3d(1, std::max(1, myNbP3d));
+  TColgp_Array1OfPnt2d TabP2d(1, std::max(1, myNbP2d));
 
   Standard_Boolean In3d;
   Standard_Integer IndPnt, IndCrd;
@@ -680,7 +680,7 @@ void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
   for (i = 0; i <= degH; i++)
   {
     k        = (i <= Order) ? i : i - Order - 1;
-    curcoeff = Pow(coeff, k);
+    curcoeff = std::pow(coeff, k);
     G(i0 + i) *= curcoeff;
   }
 }

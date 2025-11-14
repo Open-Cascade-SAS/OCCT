@@ -91,43 +91,43 @@ UnitsMethods_LengthUnit UnitsMethods::GetLengthUnitByFactorValue(
   const Standard_Real aPreci = 1.e-6;
   const Standard_Real aValue =
     theFactorValue * GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Millimeter);
-  if (Abs(1. - aValue) < aPreci)
+  if (std::abs(1. - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Millimeter;
   }
-  else if (Abs(25.4 - aValue) < aPreci)
+  else if (std::abs(25.4 - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Inch;
   }
-  else if (Abs(304.8 - aValue) < aPreci)
+  else if (std::abs(304.8 - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Foot;
   }
-  else if (Abs(1609344. - aValue) < aPreci)
+  else if (std::abs(1609344. - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Mile;
   }
-  else if (Abs(1000. - aValue) < aPreci)
+  else if (std::abs(1000. - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Meter;
   }
-  else if (Abs(1000000. - aValue) < aPreci)
+  else if (std::abs(1000000. - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Kilometer;
   }
-  else if (Abs(0.0254 - aValue) < aPreci)
+  else if (std::abs(0.0254 - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Mil;
   }
-  else if (Abs(0.001 - aValue) < aPreci)
+  else if (std::abs(0.001 - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Micron;
   }
-  else if (Abs(10. - aValue) < aPreci)
+  else if (std::abs(10. - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Centimeter;
   }
-  else if (Abs(0.0000254 - aValue) < aPreci)
+  else if (std::abs(0.0000254 - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Microinch;
   }

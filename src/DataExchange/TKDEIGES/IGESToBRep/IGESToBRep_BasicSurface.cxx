@@ -667,7 +667,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     Standard_Real UKnot1 = start->KnotU(i);
     Standard_Real UKnot2 = start->KnotU(i - 1);
 
-    if (Abs(UKnot1 - UKnot2) <= Epsilon(UKnot2))
+    if (std::abs(UKnot1 - UKnot2) <= Epsilon(UKnot2))
       TempUMult.SetValue(UIndex, TempUMult.Value(UIndex) + 1);
     else
       TempUKnot.SetValue(++UIndex, UKnot1);
@@ -739,7 +739,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     Standard_Real VKnot1 = start->KnotV(i);
     Standard_Real VKnot2 = start->KnotV(i - 1);
 
-    if (Abs(VKnot1 - VKnot2) <= Epsilon(VKnot2))
+    if (std::abs(VKnot1 - VKnot2) <= Epsilon(VKnot2))
       TempVMult.SetValue(VIndex, TempVMult.Value(VIndex) + 1);
     else
       TempVKnot.SetValue(++VIndex, VKnot1);
@@ -895,8 +895,8 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     {
       for (j = 0; j <= start->UpperIndexV(); j++)
       {
-        polynomial =
-          (Abs(start->Weight(i, j) - WeightReference) <= Epsilon(WeightReference)) && polynomial;
+        polynomial = (std::abs(start->Weight(i, j) - WeightReference) <= Epsilon(WeightReference))
+                     && polynomial;
         //: 39 by abv 15.12.97
         Standard_Real weight = start->Weight(i, j);
         if (weight < Precision::PConfusion())

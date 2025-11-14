@@ -29,7 +29,7 @@ class gp_Elips2d;
 //! The ellipse is represented an Elips2d from package gp with
 //! the parametrization :
 //! P (U) =
-//! Loc + (MajorRadius * Cos(U) * Xdir + MinorRadius * Sin(U) * Ydir)
+//! Loc + (MajorRadius * std::cos(U) * Xdir + MinorRadius * std::sin(U) * Ydir)
 //! where Loc is the center of the ellipse, Xdir and Ydir are the
 //! normalized directions of the local cartesian coordinate system of
 //! the ellipse. The parametrization range is U [0, 2PI].

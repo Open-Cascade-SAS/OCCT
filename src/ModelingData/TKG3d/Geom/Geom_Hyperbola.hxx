@@ -57,7 +57,7 @@ DEFINE_STANDARD_HANDLE(Geom_Hyperbola, Geom_Conic)
 //! determining the direction in which the parameter
 //! increases along the hyperbola.
 //! The Geom_Hyperbola hyperbola is parameterized as follows:
-//! P(U) = O + MajRad*Cosh(U)*XDir + MinRad*Sinh(U)*YDir, where:
+//! P(U) = O + MajRad*std::cosh(U)*XDir + MinRad*std::sinh(U)*YDir, where:
 //! - P is the point of parameter U,
 //! - O, XDir and YDir are respectively the origin, "X
 //! Direction" and "Y Direction" of its local coordinate system,
@@ -226,8 +226,8 @@ public:
   Standard_EXPORT Standard_Real Parameter() const;
 
   //! Returns in P the point of parameter U.
-  //! P = C + MajorRadius * Cosh (U) * XDir +
-  //! MinorRadius * Sinh (U) * YDir
+  //! P = C + MajorRadius * std::cosh(U) * XDir +
+  //! MinorRadius * std::sinh(U) * YDir
   //! where C is the center of the hyperbola , XDir the XDirection and
   //! YDir the YDirection of the hyperbola's local coordinate system.
   Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;

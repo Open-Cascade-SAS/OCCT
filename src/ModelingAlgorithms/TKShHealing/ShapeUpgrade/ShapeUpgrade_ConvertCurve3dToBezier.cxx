@@ -146,9 +146,9 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
 
     Standard_Real bf = aBSpline->FirstParameter();
     Standard_Real bl = aBSpline->LastParameter();
-    if (Abs(First - bf) < precision)
+    if (std::abs(First - bf) < precision)
       First = bf;
-    if (Abs(Last - bl) < precision)
+    if (std::abs(Last - bl) < precision)
       Last = bl;
     if (First < bf)
     {

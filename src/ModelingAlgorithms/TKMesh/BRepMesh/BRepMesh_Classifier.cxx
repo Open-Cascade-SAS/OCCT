@@ -99,7 +99,7 @@ void BRepMesh_Classifier::RegisterWire(const NCollection_Sequence<const gp_Pnt2d
     if (A.SquareMagnitude() > aSqConfusion && B.SquareMagnitude() > aSqConfusion)
     {
       const Standard_Real aCurAngle    = A.Angle(B);
-      const Standard_Real aCurAngleAbs = Abs(aCurAngle);
+      const Standard_Real aCurAngleAbs = std::abs(aCurAngle);
       // Check if vectors are opposite
       if (aCurAngleAbs > aAngTol && (M_PI - aCurAngleAbs) > aAngTol)
       {
@@ -110,7 +110,7 @@ void BRepMesh_Classifier::RegisterWire(const NCollection_Sequence<const gp_Pnt2d
     p2 = p3;
   }
   // Check for zero angle - treat self intersecting wire as outer
-  if (Abs(anAngle) < aAngTol)
+  if (std::abs(anAngle) < aAngTol)
     anAngle = 0.0;
 
   myTabClass.Append(new CSLib_Class2d(aPClass,

@@ -64,7 +64,7 @@ void BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(const TopoDS_Edge&          
 
   aTolEdge = BRep_Tool::Tolerance(aE);
 
-  aTolFact = Max(aTolEdge, aTolPC);
+  aTolFact = std::max(aTolEdge, aTolPC);
 
   aBB.UpdateEdge(aE, aC2D, aF, aTolFact);
   return;
@@ -553,7 +553,7 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace(const TopoDS_Face&              aF,
     Standard_Boolean        isExtendSurf = Standard_False;
     if ((TolReached2d >= 10. * aTR) && (TolReached2d <= aMaxTol || isAnaSurf))
     {
-      aTR          = Min(aMaxTol, 0.1 * TolReached2d);
+      aTR          = std::min(aMaxTol, 0.1 * TolReached2d);
       aMaxSegments = 100;
       aMaxDist     = 1.e3 * TolReached2d;
       if (!isAnaSurf || TolReached2d > 1.)
@@ -564,7 +564,7 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace(const TopoDS_Face&              aF,
     }
     else if (TolReached2d > aMaxTol)
     {
-      aTR          = Min(TolReached2d, 1.e3 * aMaxTol);
+      aTR          = std::min(TolReached2d, 1.e3 * aMaxTol);
       aMaxDist     = 1.e2 * aTR;
       aMaxSegments = 100;
       isExtendSurf = Standard_True;
@@ -573,13 +573,13 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace(const TopoDS_Face&              aF,
     {
       Handle(Adaptor3d_Surface) anA3dSurf;
       Standard_Real             dt = (aBAHS->LastUParameter() - aBAHS->FirstUParameter());
-      if (!aBAHS->IsUPeriodic() || Abs(dt - aBAHS->UPeriod()) > 0.01 * dt)
+      if (!aBAHS->IsUPeriodic() || std::abs(dt - aBAHS->UPeriod()) > 0.01 * dt)
       {
         dt *= 0.01;
         anA3dSurf = aBAHS->UTrim(aBAHS->FirstUParameter() - dt, aBAHS->LastUParameter() + dt, 0.);
       }
       dt = (aBAHS->LastVParameter() - aBAHS->FirstVParameter());
-      if (!aBAHS->IsVPeriodic() || Abs(dt - aBAHS->VPeriod()) > 0.01 * dt)
+      if (!aBAHS->IsVPeriodic() || std::abs(dt - aBAHS->VPeriod()) > 0.01 * dt)
       {
         dt *= 0.01;
         anA3dSurf = aBAHS->VTrim(aBAHS->FirstVParameter() - dt, aBAHS->LastVParameter() + dt, 0.);
@@ -601,7 +601,7 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace(const TopoDS_Face&              aF,
   //
   if (aC2D.IsNull() && (aTR < aMaxTol || aTR < TolReached2d))
   {
-    aTR = Max(TolReached2d, aMaxTol);
+    aTR = std::max(TolReached2d, aMaxTol);
     ProjLib_ProjectedCurve aProjCurvAgain(aBAHS, aBAHC, aTR); // 2
     ProjLib::MakePCurveOfType(aProjCurvAgain, aC2D);
     aTolR = aProjCurvAgain.GetTolerance();

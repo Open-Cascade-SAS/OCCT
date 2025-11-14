@@ -36,7 +36,7 @@ class Geom2d_Direction : public Geom2d_Vector
 public:
   //! Creates a unit vector with it 2 cartesian coordinates.
   //!
-  //! Raised if Sqrt( X*X + Y*Y) <= Resolution from gp.
+  //! Raised if std::sqrt( X*X + Y*Y) <= Resolution from gp.
   Standard_EXPORT Geom2d_Direction(const Standard_Real X, const Standard_Real Y);
 
   //! Creates a persistent copy of <me>.
@@ -45,8 +45,7 @@ public:
   //! Assigns the coordinates X and Y to this unit vector,
   //! then normalizes it.
   //! Exceptions
-  //! Standard_ConstructionError if Sqrt(X*X +
-  //! Y*Y) is less than or equal to gp::Resolution().
+  //! Standard_ConstructionError if std::sqrt(X*X + Y*Y) is less than or equal to gp::Resolution().
   Standard_EXPORT void SetCoord(const Standard_Real X, const Standard_Real Y);
 
   //! Converts the gp_Dir2d unit vector V into this unit vector.

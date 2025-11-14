@@ -28,7 +28,7 @@ class gp_Cone;
 //! B-spline surface.
 //! The cone a Cone from package gp. Its parametrization is:
 //! P (U, V) = Loc + V * Zdir +
-//! (R + V*Tan(Ang)) * (Cos(U)*Xdir + Sin(U)*Ydir)
+//! (R + V*Tan(Ang)) * (std::cos(U)*Xdir + std::sin(U)*Ydir)
 //! where Loc is the location point of the cone, Xdir, Ydir and Zdir
 //! are the normalized directions of the local cartesian coordinate
 //! system of the cone (Zdir is the direction of the Cone's axis),

@@ -46,13 +46,13 @@ Standard_Boolean AdvApprox_PrefAndRec::Value(const Standard_Real a,
   cut = mil;
 
   // Recheche d'une decoupe preferentiel
-  dist = Abs((a * myWeight + b) / (1 + myWeight) - mil);
+  dist = std::abs((a * myWeight + b) / (1 + myWeight) - mil);
   for (i = 1; i <= myPrefCutting.Length(); i++)
   {
-    if (dist > Abs(mil - myPrefCutting.Value(i)))
+    if (dist > std::abs(mil - myPrefCutting.Value(i)))
     {
       cut     = myPrefCutting.Value(i);
-      dist    = Abs(mil - cut);
+      dist    = std::abs(mil - cut);
       isfound = Standard_True;
     }
   }
@@ -60,18 +60,18 @@ Standard_Boolean AdvApprox_PrefAndRec::Value(const Standard_Real a,
   // Recheche d'une decoupe recommende
   if (!isfound)
   {
-    dist = Abs((a - b) / 2);
+    dist = std::abs((a - b) / 2);
     for (i = 1; i <= myRecCutting.Length(); i++)
     {
-      if ((dist - lgmin) > Abs(mil - myRecCutting.Value(i)))
+      if ((dist - lgmin) > std::abs(mil - myRecCutting.Value(i)))
       {
         cut  = myRecCutting.Value(i);
-        dist = Abs(mil - cut);
+        dist = std::abs(mil - cut);
       }
     }
   }
 
   // Resultat
   cuttingvalue = cut;
-  return (Abs(cut - a) >= lgmin && Abs(b - cut) >= lgmin);
+  return (std::abs(cut - a) >= lgmin && std::abs(b - cut) >= lgmin);
 }

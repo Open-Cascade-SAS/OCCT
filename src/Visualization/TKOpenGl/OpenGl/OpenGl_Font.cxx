@@ -115,7 +115,7 @@ bool OpenGl_Font::createTexture(const Handle(OpenGl_Context)& theCtx)
 
   myTileSizeY = myFont->GlyphMaxSizeY(true);
   const Standard_Integer aGlyphsNb =
-    Min(THE_MAX_GLYPHS_PER_TEXTURE, myFont->GlyphsNumber(true) - myLastTileId + 1);
+    std::min(THE_MAX_GLYPHS_PER_TEXTURE, myFont->GlyphsNumber(true) - myLastTileId + 1);
   const Standard_Integer aMaxTileSizeX = myFont->GlyphMaxSizeX(true);
   const Standard_Integer aMaxSize      = theCtx->MaxTextureSize();
   const Standard_Integer aTextureSizeX =

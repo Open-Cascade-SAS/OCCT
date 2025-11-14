@@ -332,8 +332,8 @@ void IGESToBRep_IGESBoundary::ReverseCurves3d(const Handle(ShapeExtend_WireData)
         newedge,
         curve->Reversed(),
         L,
-        Max(curve->ReversedParameter(curve->LastParameter()), curve->ReversedParameter(p2)),
-        Min(curve->ReversedParameter(curve->FirstParameter()), curve->ReversedParameter(p1)));
+        std::max(curve->ReversedParameter(curve->LastParameter()), curve->ReversedParameter(p2)),
+        std::min(curve->ReversedParameter(curve->FirstParameter()), curve->ReversedParameter(p1)));
     newedge.Orientation(TopAbs::Reverse(oldedge.Orientation()));
     // sewd->Set (newedge, i);
     B.Add(W, newedge);
@@ -373,8 +373,9 @@ void IGESToBRep_IGESBoundary::ReverseCurves2d(const Handle(ShapeExtend_WireData)
         newedge,
         curve->Reversed(),
         face,
-        Max(curve->FirstParameter(), curve->ReversedParameter(p2)), // BUC50001 entity 936 2DForced
-        Min(curve->LastParameter(), curve->ReversedParameter(p1)));
+        std::max(curve->FirstParameter(),
+                 curve->ReversedParameter(p2)), // BUC50001 entity 936 2DForced
+        std::min(curve->LastParameter(), curve->ReversedParameter(p1)));
     newedge.Orientation(oldedge.Orientation());
     sewd->Set(newedge, i);
   }

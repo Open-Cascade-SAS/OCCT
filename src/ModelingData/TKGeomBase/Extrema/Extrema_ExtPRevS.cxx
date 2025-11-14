@@ -158,7 +158,7 @@ static Standard_Boolean IsCaseAnalyticallyComputable(const GeomAbs_CurveType& th
     return Standard_True;
   return Standard_False;
   //   gp_Vec V (AxeOfRevolution.Location(),theCurvePos.Location());
-  //   if (Abs( V * theCurvePos.Direction()) <= gp::Resolution())
+  //   if (std::abs( V * theCurvePos.Direction()) <= gp::Resolution())
   //     return Standard_True;
   //   else
   //     return Standard_False;
@@ -324,7 +324,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
   Standard_Real U, V;
   gp_Pnt        P1, Ppp;
   Standard_Real OPpz = gp_Vec(O, Pp).Dot(Z);
-  if (Abs(OPpz) <= gp::Resolution())
+  if (std::abs(OPpz) <= gp::Resolution())
   {
     Ppp = Pp;
     U   = 0;
@@ -343,7 +343,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
   gp_Vec OPpp(O, Ppp), OPq(O, myS->Value(M_PI / 2, 0));
   if (U != M_PI / 2)
   {
-    if (Abs(OPq.Magnitude()) <= gp::Resolution())
+    if (std::abs(OPq.Magnitude()) <= gp::Resolution())
       OPq = gp_Vec(O, myS->Value(M_PI / 2, anACurve->LastParameter() / 10));
     if (OPpp.AngleWithRef(OPq, Dir) < 0)
       U += M_PI;

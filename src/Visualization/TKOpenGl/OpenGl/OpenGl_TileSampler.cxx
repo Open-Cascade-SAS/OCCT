@@ -158,11 +158,11 @@ void OpenGl_TileSampler::SetSize(const Graphic3d_RenderingParams& theParams,
 
   myViewSize = theSize;
 
-  const int aTileSize = Max(theParams.RayTracingTileSize, 1);
+  const int aTileSize = std::max(theParams.RayTracingTileSize, 1);
   const int aNbTilesX =
-    Max(1, static_cast<int>(ceilf(static_cast<float>(theSize.x()) / aTileSize)));
+    std::max(1, static_cast<int>(ceilf(static_cast<float>(theSize.x()) / aTileSize)));
   const int aNbTilesY =
-    Max(1, static_cast<int>(ceilf(static_cast<float>(theSize.y()) / aTileSize)));
+    std::max(1, static_cast<int>(ceilf(static_cast<float>(theSize.y()) / aTileSize)));
   if (myTileSize != aTileSize || (int)myTiles.SizeX != aNbTilesX || (int)myTiles.SizeY != aNbTilesY)
   {
     myTileSize    = aTileSize;

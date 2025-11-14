@@ -522,7 +522,7 @@ inline constexpr gp_Dir::D gp_Ax2::crossStandardDir(const gp_Dir::D theA,
 inline void gp_Ax2::SetAxis(const gp_Ax1& theA1)
 {
   Standard_Real a = theA1.Direction() * vxdir;
-  if (Abs(Abs(a) - 1.) <= Precision::Angular())
+  if (std::abs(std::abs(a) - 1.) <= Precision::Angular())
   {
     if (a > 0.)
     {
@@ -549,7 +549,7 @@ inline void gp_Ax2::SetAxis(const gp_Ax1& theA1)
 inline void gp_Ax2::SetDirection(const gp_Dir& theV)
 {
   Standard_Real a = theV * vxdir;
-  if (Abs(Abs(a) - 1.) <= Precision::Angular())
+  if (std::abs(std::abs(a) - 1.) <= Precision::Angular())
   {
     if (a > 0.)
     {

@@ -97,7 +97,7 @@ static Standard_Integer NbUSamples(const Adaptor3d_Surface& S)
     default:
       N = 33;
   }
-  return Min(50, N);
+  return std::min(50, N);
 }
 
 //=================================================================================================
@@ -120,7 +120,7 @@ static Standard_Integer NbVSamples(const Adaptor3d_Surface& S)
     default:
       N = 33;
   }
-  return Min(50, N);
+  return std::min(50, N);
 }
 
 //  Modified by skv - Fri Aug 27 12:29:04 2004 OCC6503 Begin
@@ -225,19 +225,19 @@ void ComputePolesIndexes(const TColStd_Array1OfReal&    theKnots,
                          Standard_Integer&              theOutMaxIdx)
 {
   BSplCLib::Hunt(theKnots, theMin, theOutMinIdx);
-  theOutMinIdx = Max(theOutMinIdx, theKnots.Lower());
+  theOutMinIdx = std::max(theOutMinIdx, theKnots.Lower());
 
   BSplCLib::Hunt(theKnots, theMax, theOutMaxIdx);
   theOutMaxIdx++;
-  theOutMaxIdx          = Min(theOutMaxIdx, theKnots.Upper());
+  theOutMaxIdx          = std::min(theOutMaxIdx, theKnots.Upper());
   Standard_Integer mult = theMults(theOutMaxIdx);
 
   theOutMinIdx = BSplCLib::PoleIndex(theDegree, theOutMinIdx, theIsPeriodic, theMults) + 1;
-  theOutMinIdx = Max(theOutMinIdx, 1);
+  theOutMinIdx = std::max(theOutMinIdx, 1);
   theOutMaxIdx = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
   theOutMaxIdx += theDegree - mult;
   if (!theIsPeriodic)
-    theOutMaxIdx = Min(theOutMaxIdx, theMaxPoleIdx);
+    theOutMaxIdx = std::min(theOutMaxIdx, theMaxPoleIdx);
 }
 
 //  Modified by skv - Fri Aug 27 12:29:04 2004 OCC6503 End
@@ -300,9 +300,9 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
       break;
     }
     case GeomAbs_Sphere: {
-      if (Abs(UMin) < Precision::Angular() && Abs(UMax - 2. * M_PI) < Precision::Angular()
-          && Abs(VMin + M_PI / 2.) < Precision::Angular()
-          && Abs(VMax - M_PI / 2.) < Precision::Angular()) // a whole sphere
+      if (std::abs(UMin) < Precision::Angular() && std::abs(UMax - 2. * M_PI) < Precision::Angular()
+          && std::abs(VMin + M_PI / 2.) < Precision::Angular()
+          && std::abs(VMax - M_PI / 2.) < Precision::Angular()) // a whole sphere
         BndLib::Add(S.Sphere(), Tol, B);
       else
         BndLib::Add(S.Sphere(), UMin, UMax, VMin, VMax, Tol, B);
@@ -329,8 +329,10 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
         // All of poles used for any parameter,
         // that's why in case of trimmed parameters handled by grid algorithm.
 
-        if (Abs(UMin - S.FirstUParameter()) > PTol || Abs(VMin - S.FirstVParameter()) > PTol
-            || Abs(UMax - S.LastUParameter()) > PTol || Abs(VMax - S.LastVParameter()) > PTol)
+        if (std::abs(UMin - S.FirstUParameter()) > PTol
+            || std::abs(VMin - S.FirstVParameter()) > PTol
+            || std::abs(UMax - S.LastUParameter()) > PTol
+            || std::abs(VMax - S.LastVParameter()) > PTol)
         {
           // Borders not equal to topology borders.
           isUseConvexHullAlgorithm = Standard_False;
@@ -590,7 +592,7 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
           {
             CoordMax[k] = P.Coord(k + 1);
           }
-          Standard_Real d = Abs(aD.Coord(k + 1));
+          Standard_Real d = std::abs(aD.Coord(k + 1));
           if (DeflMax[k] < d)
           {
             DeflMax[k] = d;
@@ -612,7 +614,7 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
           {
             CoordMax[k] = P.Coord(k + 1);
           }
-          Standard_Real d = Abs(aD.Coord(k + 1));
+          Standard_Real d = std::abs(aD.Coord(k + 1));
           if (DeflMax[k] < d)
           {
             DeflMax[k] = d;
@@ -623,7 +625,7 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
   }
   //
   // Adjusting minmax
-  Standard_Real eps = Max(Tol, Precision::Confusion());
+  Standard_Real eps = std::max(Tol, Precision::Confusion());
   for (k = 0; k < 3; ++k)
   {
     Standard_Real d = DeflMax[k];
@@ -641,10 +643,10 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
         if (aPnts(i, j).Coord(k + 1) - CMin < d)
         {
           Standard_Real umin, umax, vmin, vmax;
-          umin = UMin + Max(0, i - 2) * du;
-          umax = UMin + Min(Nu - 1, i) * du;
-          vmin = VMin + Max(0, j - 2) * dv;
-          vmax = VMin + Min(Nv - 1, j) * dv;
+          umin = UMin + std::max(0, i - 2) * du;
+          umax = UMin + std::min(Nu - 1, i) * du;
+          vmin = VMin + std::max(0, j - 2) * dv;
+          vmax = VMin + std::min(Nv - 1, j) * dv;
           Standard_Real cmin =
             AdjustExtr(S, umin, umax, vmin, vmax, CMin, k + 1, eps, Standard_True);
           if (cmin < CMin)
@@ -655,10 +657,10 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
         else if (CMax - aPnts(i, j).Coord(k + 1) < d)
         {
           Standard_Real umin, umax, vmin, vmax;
-          umin = UMin + Max(0, i - 2) * du;
-          umax = UMin + Min(Nu - 1, i) * du;
-          vmin = VMin + Max(0, j - 2) * dv;
-          vmax = VMin + Min(Nv - 1, j) * dv;
+          umin = UMin + std::max(0, i - 2) * du;
+          umax = UMin + std::min(Nu - 1, i) * du;
+          vmin = VMin + std::max(0, j - 2) * dv;
+          vmax = VMin + std::min(Nv - 1, j) * dv;
           Standard_Real cmax =
             AdjustExtr(S, umin, umax, vmin, vmax, CMax, k + 1, eps, Standard_False);
           if (cmax > CMax)
@@ -706,15 +708,15 @@ public:
     Value(X, F1);
     X(1) = UMax;
     Value(X, F2);
-    Standard_Real DU = Abs((F2 - F1) / (UMax - UMin));
+    Standard_Real DU = std::abs((F2 - F1) / (UMax - UMin));
     X(1)             = (UMin + UMax) / 2.;
     X(2)             = VMin;
     Value(X, F1);
     X(2) = VMax;
     Value(X, F2);
-    Standard_Real DV = Abs((F2 - F1) / (VMax - VMin));
-    myPenalty        = 10. * Max(DU, DV);
-    myPenalty        = Max(myPenalty, 1.);
+    Standard_Real DV = std::abs((F2 - F1) / (VMax - VMin));
+    myPenalty        = 10. * std::max(DU, DV);
+    myPenalty        = std::max(myPenalty, 1.);
   }
 
   Standard_Boolean Value(const math_Vector& X, Standard_Real& F)
@@ -802,9 +804,9 @@ Standard_Real AdjustExtr(const Adaptor3d_Surface& S,
   Standard_Real aSign  = IsMin ? 1. : -1.;
   Standard_Real extr   = aSign * Extr0;
   Standard_Real relTol = 2. * Tol;
-  if (Abs(extr) > Tol)
+  if (std::abs(extr) > Tol)
   {
-    relTol /= Abs(extr);
+    relTol /= std::abs(extr);
   }
   Standard_Real Du = (S.LastUParameter() - S.FirstUParameter());
   Standard_Real Dv = (S.LastVParameter() - S.FirstVParameter());
@@ -818,13 +820,13 @@ Standard_Real AdjustExtr(const Adaptor3d_Surface& S,
   aLowBorder(2) = VMin;
   aUppBorder(2) = VMax;
 
-  Standard_Integer aNbU         = Max(8, RealToInt(32 * (UMax - UMin) / Du));
-  Standard_Integer aNbV         = Max(8, RealToInt(32 * (VMax - VMin) / Dv));
+  Standard_Integer aNbU         = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
+  Standard_Integer aNbV         = std::max(8, RealToInt(32 * (VMax - VMin) / Dv));
   Standard_Integer aNbParticles = aNbU * aNbV;
   Standard_Real    aMaxUStep    = (UMax - UMin) / (aNbU + 1);
-  aSteps(1)                     = Min(0.1 * Du, aMaxUStep);
+  aSteps(1)                     = std::min(0.1 * Du, aMaxUStep);
   Standard_Real aMaxVStep       = (VMax - VMin) / (aNbV + 1);
-  aSteps(2)                     = Min(0.1 * Dv, aMaxVStep);
+  aSteps(2)                     = std::min(0.1 * Dv, aMaxVStep);
 
   SurfMaxMinCoord aFunc(S, UMin, UMax, VMin, VMax, CoordIndx, aSign);
   math_PSO        aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
@@ -867,7 +869,7 @@ Standard_Integer NbUSamples(const Adaptor3d_Surface& S,
       if (du < .9)
       {
         N = RealToInt(du * N) + 1;
-        N = Max(N, 5);
+        N = std::max(N, 5);
       }
       break;
     }
@@ -880,14 +882,14 @@ Standard_Integer NbUSamples(const Adaptor3d_Surface& S,
       if (du < .9)
       {
         N = RealToInt(du * N) + 1;
-        N = Max(N, 5);
+        N = std::max(N, 5);
       }
       break;
     }
     default:
       N = 33;
   }
-  return Min(50, N);
+  return std::min(50, N);
 }
 
 //=================================================================================================
@@ -907,7 +909,7 @@ Standard_Integer NbVSamples(const Adaptor3d_Surface& S,
       if (dv < .9)
       {
         N = RealToInt(dv * N) + 1;
-        N = Max(N, 5);
+        N = std::max(N, 5);
       }
       break;
     }
@@ -920,12 +922,12 @@ Standard_Integer NbVSamples(const Adaptor3d_Surface& S,
       if (dv < .9)
       {
         N = RealToInt(dv * N) + 1;
-        N = Max(N, 5);
+        N = std::max(N, 5);
       }
       break;
     }
     default:
       N = 33;
   }
-  return Min(50, N);
+  return std::min(50, N);
 }

@@ -449,7 +449,7 @@ Standard_Boolean RWStl_Reader::ReadBinary(Standard_IStream&            theStream
     // read more data
     if (aNbFacesInBuffer <= 0)
     {
-      aNbFacesInBuffer                  = Min(THE_CHUNK_NBFACETS, aNbFacets - aNbFacetRead);
+      aNbFacesInBuffer                  = std::min(THE_CHUNK_NBFACETS, aNbFacets - aNbFacetRead);
       const std::streamsize aDataToRead = aNbFacesInBuffer * aFaceDataLen;
       if (theStream.read(aBuffer, aDataToRead).gcount() != aDataToRead)
       {

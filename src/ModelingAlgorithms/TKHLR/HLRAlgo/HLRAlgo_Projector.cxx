@@ -116,35 +116,37 @@ void HLRAlgo_Projector::Set(const gp_Trsf&         T,
 static Standard_Integer TrsfType(const gp_Trsf& Trsf)
 {
   const gp_Mat& Mat = Trsf.VectorialPart();
-  if ((Abs(Mat.Value(1, 1) - 1.0) < 1e-15) && (Abs(Mat.Value(2, 2) - 1.0) < 1e-15)
-      && (Abs(Mat.Value(3, 3) - 1.0) < 1e-15))
+  if ((std::abs(Mat.Value(1, 1) - 1.0) < 1e-15) && (std::abs(Mat.Value(2, 2) - 1.0) < 1e-15)
+      && (std::abs(Mat.Value(3, 3) - 1.0) < 1e-15))
   {
     return (1); //-- top
   }
-  else if ((Abs(Mat.Value(1, 1) - 0.7071067811865476) < 1e-15)
-           && (Abs(Mat.Value(1, 2) + 0.5) < 1e-15) && (Abs(Mat.Value(1, 3) - 0.5) < 1e-15)
+  else if ((std::abs(Mat.Value(1, 1) - 0.7071067811865476) < 1e-15)
+           && (std::abs(Mat.Value(1, 2) + 0.5) < 1e-15) && (std::abs(Mat.Value(1, 3) - 0.5) < 1e-15)
 
-           && (Abs(Mat.Value(2, 1) - 0.7071067811865476) < 1e-15)
-           && (Abs(Mat.Value(2, 2) - 0.5) < 1e-15) && (Abs(Mat.Value(2, 3) + 0.5) < 1e-15)
+           && (std::abs(Mat.Value(2, 1) - 0.7071067811865476) < 1e-15)
+           && (std::abs(Mat.Value(2, 2) - 0.5) < 1e-15) && (std::abs(Mat.Value(2, 3) + 0.5) < 1e-15)
 
-           && (Abs(Mat.Value(3, 1)) < 1e-15) && (Abs(Mat.Value(3, 2) - 0.7071067811865476) < 1e-15)
-           && (Abs(Mat.Value(3, 3) - 0.7071067811865476) < 1e-15))
+           && (std::abs(Mat.Value(3, 1)) < 1e-15)
+           && (std::abs(Mat.Value(3, 2) - 0.7071067811865476) < 1e-15)
+           && (std::abs(Mat.Value(3, 3) - 0.7071067811865476) < 1e-15))
   {
     return (0); //--
   }
-  else if ((Abs(Mat.Value(1, 1) - 1.0) < 1e-15) && (Abs(Mat.Value(2, 3) - 1.0) < 1e-15)
-           && (Abs(Mat.Value(3, 2) + 1.0) < 1e-15))
+  else if ((std::abs(Mat.Value(1, 1) - 1.0) < 1e-15) && (std::abs(Mat.Value(2, 3) - 1.0) < 1e-15)
+           && (std::abs(Mat.Value(3, 2) + 1.0) < 1e-15))
   {
     return (2); //-- front
   }
-  else if ((Abs(Mat.Value(1, 1) - 0.7071067811865476) < 1e-15)
-           && (Abs(Mat.Value(1, 2) - 0.7071067811865476) < 1e-15) && (Abs(Mat.Value(1, 3)) < 1e-15)
+  else if ((std::abs(Mat.Value(1, 1) - 0.7071067811865476) < 1e-15)
+           && (std::abs(Mat.Value(1, 2) - 0.7071067811865476) < 1e-15)
+           && (std::abs(Mat.Value(1, 3)) < 1e-15)
 
-           && (Abs(Mat.Value(2, 1) + 0.5) < 1e-15) && (Abs(Mat.Value(2, 2) - 0.5) < 1e-15)
-           && (Abs(Mat.Value(2, 3) - 0.7071067811865476) < 1e-15)
+           && (std::abs(Mat.Value(2, 1) + 0.5) < 1e-15) && (std::abs(Mat.Value(2, 2) - 0.5) < 1e-15)
+           && (std::abs(Mat.Value(2, 3) - 0.7071067811865476) < 1e-15)
 
-           && (Abs(Mat.Value(3, 1) - 0.5) < 1e-15) && (Abs(Mat.Value(3, 2) + 0.5) < 1e-15)
-           && (Abs(Mat.Value(3, 3) - 0.7071067811865476) < 1e-15))
+           && (std::abs(Mat.Value(3, 1) - 0.5) < 1e-15) && (std::abs(Mat.Value(3, 2) + 0.5) < 1e-15)
+           && (std::abs(Mat.Value(3, 3) - 0.7071067811865476) < 1e-15))
   {
     return (3); //-- axo
   }
@@ -365,19 +367,19 @@ void HLRAlgo_Projector::SetDirection()
 {
   gp_Vec V1(1, 0, 0);
   V1.Transform(myTrsf);
-  if ((Abs(V1.X()) + Abs(V1.Y())) < Precision::Angular())
+  if ((std::abs(V1.X()) + std::abs(V1.Y())) < Precision::Angular())
     V1.SetCoord(1, 1, 0);
   gp_Vec2d D1(V1.X(), V1.Y());
   myD1.SetCoord(-D1.Y(), D1.X());
   gp_Vec V2(0, 1, 0);
   V2.Transform(myTrsf);
-  if ((Abs(V2.X()) + Abs(V2.Y())) < Precision::Angular())
+  if ((std::abs(V2.X()) + std::abs(V2.Y())) < Precision::Angular())
     V2.SetCoord(1, 1, 0);
   gp_Vec2d D2(V2.X(), V2.Y());
   myD2.SetCoord(-D2.Y(), D2.X());
   gp_Vec V3(0, 0, 1);
   V3.Transform(myTrsf);
-  if ((Abs(V3.X()) + Abs(V3.Y())) < Precision::Angular())
+  if ((std::abs(V3.X()) + std::abs(V3.Y())) < Precision::Angular())
     V3.SetCoord(1, 1, 0);
   gp_Vec2d D3(V3.X(), V3.Y());
   myD3.SetCoord(-D3.Y(), D3.X());

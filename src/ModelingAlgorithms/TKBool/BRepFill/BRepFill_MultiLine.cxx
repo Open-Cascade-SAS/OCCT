@@ -69,7 +69,7 @@ static Standard_Boolean isIsoU(const TopoDS_Face& Face, const TopoDS_Edge& Edge)
 
   gp_Dir2d D = C->DN(f, 1);
 
-  if (Abs(D.Dot(gp::DX2d())) < Abs(D.Dot(gp::DY2d())))
+  if (std::abs(D.Dot(gp::DX2d())) < std::abs(D.Dot(gp::DY2d())))
     return Standard_True;
   else
     return Standard_False;
@@ -128,23 +128,23 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&          Face1,
     if (First)
     {
       First = Standard_False;
-      Umin  = Min(P1.X(), P2.X());
-      Umax  = Max(P1.X(), P2.X());
+      Umin  = std::min(P1.X(), P2.X());
+      Umax  = std::max(P1.X(), P2.X());
 
-      Vmin = Min(P1.Y(), P2.Y());
-      Vmax = Max(P1.Y(), P2.Y());
+      Vmin = std::min(P1.Y(), P2.Y());
+      Vmax = std::max(P1.Y(), P2.Y());
     }
     else
     {
-      U    = Min(P1.X(), P2.X());
-      Umin = Min(Umin, U);
-      U    = Max(P1.X(), P2.X());
-      Umax = Max(Umax, U);
+      U    = std::min(P1.X(), P2.X());
+      Umin = std::min(Umin, U);
+      U    = std::max(P1.X(), P2.X());
+      Umax = std::max(Umax, U);
 
-      V    = Min(P1.Y(), P2.Y());
-      Vmin = Min(Vmin, V);
-      V    = Max(P1.Y(), P2.Y());
-      Vmax = Max(Vmax, V);
+      V    = std::min(P1.Y(), P2.Y());
+      Vmin = std::min(Vmin, V);
+      V    = std::max(P1.Y(), P2.Y());
+      Vmax = std::max(Vmax, V);
     }
   }
 
@@ -246,23 +246,23 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&          Face1,
     if (First)
     {
       First = Standard_False;
-      Umin  = Min(P1.X(), P2.X());
-      Umax  = Max(P1.X(), P2.X());
+      Umin  = std::min(P1.X(), P2.X());
+      Umax  = std::max(P1.X(), P2.X());
 
-      Vmin = Min(P1.Y(), P2.Y());
-      Vmax = Max(P1.Y(), P2.Y());
+      Vmin = std::min(P1.Y(), P2.Y());
+      Vmax = std::max(P1.Y(), P2.Y());
     }
     else
     {
-      U    = Min(P1.X(), P2.X());
-      Umin = Min(Umin, U);
-      U    = Max(P1.X(), P2.X());
-      Umax = Max(Umax, U);
+      U    = std::min(P1.X(), P2.X());
+      Umin = std::min(Umin, U);
+      U    = std::max(P1.X(), P2.X());
+      Umax = std::max(Umax, U);
 
-      V    = Min(P1.Y(), P2.Y());
-      Vmin = Min(Vmin, V);
-      V    = Max(P1.Y(), P2.Y());
-      Vmax = Max(Vmax, V);
+      V    = std::min(P1.Y(), P2.Y());
+      Vmin = std::min(Vmin, V);
+      V    = std::max(P1.Y(), P2.Y());
+      Vmax = std::max(Vmax, V);
     }
   }
 
@@ -370,12 +370,12 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&          Face1,
     gp_Pnt2d      aPnt2  = ValueOnF1(myBis.FirstParameter() + 0.9 * DeltaU);
     if (myIsoU1)
     {
-      if (Abs(aPnt1.Y() - aPnt2.Y()) < eps)
+      if (std::abs(aPnt1.Y() - aPnt2.Y()) < eps)
         myKPart = 1;
     }
     else
     {
-      if (Abs(aPnt1.X() - aPnt2.X()) < eps)
+      if (std::abs(aPnt1.X() - aPnt2.X()) < eps)
         myKPart = 1;
     }
 
@@ -594,9 +594,9 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
   D1 = P.Distance(TheU.Value(TheU.FirstParameter()));
   D2 = P.Distance(TheU.Value(TheU.LastParameter()));
 
-  if (D1 < Dist || D2 < Dist || Abs(D1 - Dist) < eps || Abs(D2 - Dist) < eps)
+  if (D1 < Dist || D2 < Dist || std::abs(D1 - Dist) < eps || std::abs(D2 - Dist) < eps)
   {
-    if (Abs(D1 - D2) < eps)
+    if (std::abs(D1 - D2) < eps)
     {
       if (TheU.GetType() == GeomAbs_Circle)
       {
@@ -635,18 +635,18 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
   gp_Pnt2d PF = TheV.Value(TheV.FirstParameter());
   gp_Pnt2d PL = TheV.Value(TheV.LastParameter());
 
-  if (Abs(Dist - Abs(PF.Y())) < Tol)
+  if (std::abs(Dist - std::abs(PF.Y())) < Tol)
   {
     VV = TheV.FirstParameter();
   }
-  else if (Abs(Dist - Abs(PL.Y())) < Tol)
+  else if (std::abs(Dist - std::abs(PL.Y())) < Tol)
   {
     VV = TheV.LastParameter();
   }
   else
   {
     // test if the curve is at the side `negative Y`.
-    if (Min(PF.Y(), PL.Y()) < -Tol)
+    if (std::min(PF.Y(), PL.Y()) < -Tol)
       Dist = -Dist;
 
     Handle(Geom2d_Line) Line = new Geom2d_Line(gp_Pnt2d(0., Dist), gp::DX2d());
@@ -698,7 +698,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
         std::cout << "Intersector done, but no points found" << std::endl;
         std::cout << "  ---> ValueonFace failed at parameter U = " << U << std::endl;
 #endif
-        if (Abs(Dist - PL.Y()) < Abs(Dist - PF.Y()))
+        if (std::abs(Dist - PL.Y()) < std::abs(Dist - PF.Y()))
           VV = TheV.LastParameter();
         else
           VV = TheV.FirstParameter();

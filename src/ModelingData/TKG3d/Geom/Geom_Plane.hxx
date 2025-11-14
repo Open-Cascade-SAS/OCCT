@@ -83,7 +83,7 @@ public:
   //! @code
   //!   Ax + By + Cz + D = 0.0
   //! @endcode
-  //! Raised if Sqrt (A*A + B*B + C*C) <= Resolution from gp
+  //! Raised if std::sqrt(A*A + B*B + C*C) <= Resolution from gp
   Standard_EXPORT Geom_Plane(const Standard_Real A,
                              const Standard_Real B,
                              const Standard_Real C,

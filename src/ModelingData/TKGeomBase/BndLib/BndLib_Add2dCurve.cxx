@@ -530,7 +530,7 @@ Standard_Integer BndLib_Box2dCurve::NbSamples()
       if (du < .9)
       {
         N = RealToInt(du * N) + 1;
-        N = Max(N, 5);
+        N = std::max(N, 5);
       }
       break;
     }
@@ -542,14 +542,14 @@ Standard_Integer BndLib_Box2dCurve::NbSamples()
       if (du < .9)
       {
         N = RealToInt(du * N) + 1;
-        N = Max(N, 5);
+        N = std::max(N, 5);
       }
       break;
     }
     default:
       N = 17;
   }
-  return Min(23, N);
+  return std::min(23, N);
 }
 
 //=================================================================================================
@@ -567,8 +567,8 @@ Standard_Real BndLib_Box2dCurve::AdjustExtr(const Standard_Real    UMin,
   Standard_Real Du = (myCurve->LastParameter() - myCurve->FirstParameter());
   //
   Geom2dAdaptor_Curve aGAC(myCurve);
-  Standard_Real       UTol   = Max(aGAC.Resolution(Tol), Precision::PConfusion());
-  Standard_Real       reltol = UTol / Max(Abs(UMin), Abs(UMax));
+  Standard_Real       UTol   = std::max(aGAC.Resolution(Tol), Precision::PConfusion());
+  Standard_Real       reltol = UTol / std::max(std::abs(UMin), std::abs(UMax));
   if (UMax - UMin < 0.01 * Du)
   {
     // It is suggested that function has one extremum on small interval
@@ -582,7 +582,7 @@ Standard_Real BndLib_Box2dCurve::AdjustExtr(const Standard_Real    UMin,
     }
   }
   //
-  Standard_Integer aNbParticles = Max(8, RealToInt(32 * (UMax - UMin) / Du));
+  Standard_Integer aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
   Standard_Real    maxstep      = (UMax - UMin) / (aNbParticles + 1);
   math_Vector      aT(1, 1);
   math_Vector      aLowBorder(1, 1);
@@ -590,7 +590,7 @@ Standard_Real BndLib_Box2dCurve::AdjustExtr(const Standard_Real    UMin,
   math_Vector      aSteps(1, 1);
   aLowBorder(1) = UMin;
   aUppBorder(1) = UMax;
-  aSteps(1)     = Min(0.1 * Du, maxstep);
+  aSteps(1)     = std::min(0.1 * Du, maxstep);
 
   Curv2dMaxMinCoordMVar aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
   math_PSO              aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
@@ -598,7 +598,10 @@ Standard_Real BndLib_Box2dCurve::AdjustExtr(const Standard_Real    UMin,
   //
   math_BrentMinimum anOptLoc(reltol, 100, UTol);
   Curv2dMaxMinCoord aFunc1(myCurve, UMin, UMax, CoordIndx, aSign);
-  anOptLoc.Perform(aFunc1, Max(aT(1) - aSteps(1), UMin), aT(1), Min(aT(1) + aSteps(1), UMax));
+  anOptLoc.Perform(aFunc1,
+                   std::max(aT(1) - aSteps(1), UMin),
+                   aT(1),
+                   std::min(aT(1) + aSteps(1), UMax));
 
   if (anOptLoc.IsDone())
   {
@@ -657,7 +660,7 @@ void BndLib_Box2dCurve::PerformGenCurv(const Standard_Real Tol)
         {
           CoordMax[k] = P.Coord(k + 1);
         }
-        Standard_Real d = Abs(aD.Coord(k + 1));
+        Standard_Real d = std::abs(aD.Coord(k + 1));
         if (DeflMax[k] < d)
         {
           DeflMax[k] = d;
@@ -681,8 +684,8 @@ void BndLib_Box2dCurve::PerformGenCurv(const Standard_Real Tol)
       if (aPnts(i).Coord(k + 1) - CMin < d)
       {
         Standard_Real tmin, tmax;
-        tmin               = myT1 + Max(0, i - 2) * du;
-        tmax               = myT1 + Min(Nu - 1, i) * du;
+        tmin               = myT1 + std::max(0, i - 2) * du;
+        tmax               = myT1 + std::min(Nu - 1, i) * du;
         Standard_Real cmin = AdjustExtr(tmin, tmax, CMin, k + 1, Tol, Standard_True);
         if (cmin < CMin)
         {
@@ -692,8 +695,8 @@ void BndLib_Box2dCurve::PerformGenCurv(const Standard_Real Tol)
       else if (CMax - aPnts(i).Coord(k + 1) < d)
       {
         Standard_Real tmin, tmax;
-        tmin               = myT1 + Max(0, i - 2) * du;
-        tmax               = myT1 + Min(Nu - 1, i) * du;
+        tmin               = myT1 + std::max(0, i - 2) * du;
+        tmax               = myT1 + std::min(Nu - 1, i) * du;
         Standard_Real cmax = AdjustExtr(tmin, tmax, CMax, k + 1, Tol, Standard_False);
         if (cmax > CMax)
         {

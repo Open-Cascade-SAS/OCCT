@@ -1527,7 +1527,7 @@ static Standard_Boolean AreFacesCoincideInArea(const TopoDS_Shape&         theBa
   BRepClass_Intersector anInter;
   BRepClass_Edge        aBCE;
   aBCE.Face()           = aBaseFace;
-  Standard_Real maxDist = Max(BRep_Tool::Tolerance(aBaseFace), BRep_Tool::Tolerance(aFace));
+  Standard_Real maxDist = std::max(BRep_Tool::Tolerance(aBaseFace), BRep_Tool::Tolerance(aFace));
 
   Standard_Boolean                   isError = Standard_False;
   TopTools_ListIteratorOfListOfShape it(allEdges);
@@ -1622,7 +1622,7 @@ static Standard_Boolean AreFacesCoincideInArea(const TopoDS_Shape&         theBa
   // check normales
   Standard_Real       dot    = aNormBase * aNorm;
   const Standard_Real minDot = 0.9999;
-  if (Abs(dot) < minDot)
+  if (std::abs(dot) < minDot)
     return Standard_False;
   isSameOri = (dot > 0.);
 

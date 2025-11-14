@@ -84,7 +84,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   //=========================================================================
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol      = Abs(Tolerance);
+  Standard_Real Tol      = std::abs(Tolerance);
   Standard_Real thefirst = -100000.;
   Standard_Real thelast  = 100000.;
   Standard_Real firstparam;
@@ -133,8 +133,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
       Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
       // Adaptor2d_OffsetCurve C2(HCu1,Coef(jcote1));
       Adaptor2d_OffsetCurve C2(HCu1, -Coef(jcote1));
-      firstparam = Max(C2.FirstParameter(), thefirst);
-      lastparam  = Min(C2.LastParameter(), thelast);
+      firstparam = std::max(C2.FirstParameter(), thefirst);
+      lastparam  = std::min(C2.LastParameter(), thelast);
       IntRes2d_Domain D2(C2.Value(firstparam),
                          firstparam,
                          Tol,
@@ -213,7 +213,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   Standard_Real    thelast  = 100000.;
   Standard_Real    firstparam;
   Standard_Real    lastparam;
-  Standard_Real    Tol      = Abs(Tolerance);
+  Standard_Real    Tol      = std::abs(Tolerance);
   Standard_Integer nbrcote1 = 0;
   WellDone                  = Standard_False;
   NbrSol                    = 0;
@@ -264,8 +264,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
       Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
       // Adaptor2d_OffsetCurve C2(HCu1,cote1(jcote1));
       Adaptor2d_OffsetCurve C2(HCu1, -cote1(jcote1));
-      firstparam = Max(C2.FirstParameter(), thefirst);
-      lastparam  = Min(C2.LastParameter(), thelast);
+      firstparam = std::max(C2.FirstParameter(), thefirst);
+      lastparam  = std::min(C2.LastParameter(), thelast);
       IntRes2d_Domain D2(C2.Value(firstparam),
                          firstparam,
                          Tol,
@@ -344,7 +344,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
   Standard_Real    thelast  = 100000.;
   Standard_Real    firstparam;
   Standard_Real    lastparam;
-  Standard_Real    Tol      = Abs(Tolerance);
+  Standard_Real    Tol      = std::abs(Tolerance);
   Standard_Integer nbrcote1 = 0;
   WellDone                  = Standard_False;
   NbrSol                    = 0;
@@ -395,8 +395,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
                          2. * M_PI,
                          Tol);
       D1.SetEquivalentParameters(0., 2. * M_PI);
-      firstparam = Max(Geom2dGcc_CurveTool::FirstParameter(OnCurv), thefirst);
-      lastparam  = Min(Geom2dGcc_CurveTool::LastParameter(OnCurv), thelast);
+      firstparam = std::max(Geom2dGcc_CurveTool::FirstParameter(OnCurv), thefirst);
+      lastparam  = std::min(Geom2dGcc_CurveTool::LastParameter(OnCurv), thelast);
       IntRes2d_Domain D2(Geom2dGcc_CurveTool::Value(OnCurv, firstparam),
                          firstparam,
                          Tol,
@@ -419,11 +419,11 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
             {
               qualifier1(NbrSol) = Qualified1.Qualifier();
             }
-            else if (Abs(distcc1 + Radius - R1) < Tol)
+            else if (std::abs(distcc1 + Radius - R1) < Tol)
             {
               qualifier1(NbrSol) = GccEnt_enclosed;
             }
-            else if (Abs(distcc1 - R1 - Radius) < Tol)
+            else if (std::abs(distcc1 - R1 - Radius) < Tol)
             {
               qualifier1(NbrSol) = GccEnt_outside;
             }
@@ -491,7 +491,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
   Standard_Real thelast  = 100000.;
   Standard_Real firstparam;
   Standard_Real lastparam;
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))
@@ -537,8 +537,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
       gp_Pnt2d        Point(dir1.XY() + cote1(jcote1) * norm1.XY());
       gp_Lin2d        Line(Point, dir1); // ligne avec deport.
       IntRes2d_Domain D1;
-      firstparam = Max(Geom2dGcc_CurveTool::FirstParameter(OnCurv), thefirst);
-      lastparam  = Min(Geom2dGcc_CurveTool::LastParameter(OnCurv), thelast);
+      firstparam = std::max(Geom2dGcc_CurveTool::FirstParameter(OnCurv), thefirst);
+      lastparam  = std::min(Geom2dGcc_CurveTool::LastParameter(OnCurv), thelast);
       IntRes2d_Domain D2(Geom2dGcc_CurveTool::Value(OnCurv, firstparam),
                          firstparam,
                          Tol,
@@ -629,7 +629,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   Standard_Real    thelast  = 100000.;
   Standard_Real    firstparam;
   Standard_Real    lastparam;
-  Standard_Real    Tol      = Abs(Tolerance);
+  Standard_Real    Tol      = std::abs(Tolerance);
   Standard_Integer nbrcote1 = 0;
   WellDone                  = Standard_False;
   NbrSol                    = 0;
@@ -673,8 +673,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
       Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
       // Adaptor2d_OffsetCurve C1(HCu1,cote1(jcote1));
       Adaptor2d_OffsetCurve C1(HCu1, -cote1(jcote1));
-      firstparam = Max(C1.FirstParameter(), thefirst);
-      lastparam  = Min(C1.LastParameter(), thelast);
+      firstparam = std::max(C1.FirstParameter(), thefirst);
+      lastparam  = std::min(C1.LastParameter(), thelast);
       IntRes2d_Domain             D1(C1.Value(firstparam),
                          firstparam,
                          Tol,
@@ -683,8 +683,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
                          Tol);
       Handle(Geom2dAdaptor_Curve) HOnCurv = new Geom2dAdaptor_Curve(OnCurv);
       Adaptor2d_OffsetCurve       C2(HOnCurv);
-      firstparam = Max(C2.FirstParameter(), thefirst);
-      lastparam  = Min(C2.LastParameter(), thelast);
+      firstparam = std::max(C2.FirstParameter(), thefirst);
+      lastparam  = std::min(C2.LastParameter(), thelast);
       IntRes2d_Domain D2(C2.Value(firstparam),
                          firstparam,
                          Tol,
@@ -763,7 +763,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&        
   Standard_Real thelast  = 100000.;
   Standard_Real firstparam;
   Standard_Real lastparam;
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;
 
@@ -782,8 +782,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&        
                        2 * M_PI,
                        Tol);
     D1.SetEquivalentParameters(0., 2. * M_PI);
-    firstparam = Max(Geom2dGcc_CurveTool::FirstParameter(OnCurv), thefirst);
-    lastparam  = Min(Geom2dGcc_CurveTool::LastParameter(OnCurv), thelast);
+    firstparam = std::max(Geom2dGcc_CurveTool::FirstParameter(OnCurv), thefirst);
+    lastparam  = std::min(Geom2dGcc_CurveTool::LastParameter(OnCurv), thelast);
     IntRes2d_Domain                    D2(Geom2dGcc_CurveTool::Value(OnCurv, firstparam),
                        firstparam,
                        Tol,

@@ -636,8 +636,8 @@ static Standard_Integer tanginterpol(Draw_Interpretor& di, Standard_Integer n, c
   Handle(TColgp_HArray1OfPnt) PointsArrayPtr = new TColgp_HArray1OfPnt(1, num_parameters);
 
   num_tangents = ((n - num_read) / 3) - num_parameters;
-  num_tangents = Max(0, num_tangents);
-  num_tangents = Min(num_parameters, num_tangents);
+  num_tangents = std::max(0, num_tangents);
+  num_tangents = std::min(num_parameters, num_tangents);
   ii           = 1;
   num_start    = num_read;
   num_read += 1;

@@ -479,7 +479,7 @@ Standard_Real Poly::PointOnTriangle(const gp_XY& theP1,
   Standard_Real aDet = aDU ^ aDV;
 
   // case of non-degenerated triangle
-  if (Abs(aDet) > gp::Resolution())
+  if (std::abs(aDet) > gp::Resolution())
   {
     Standard_Real aU = (aDP ^ aDV) / aDet;
     Standard_Real aV = -(aDP ^ aDU) / aDet;
@@ -497,11 +497,11 @@ Standard_Real Poly::PointOnTriangle(const gp_XY& theP1,
 
     // project on side U=0
     aU               = 0.;
-    aV               = Min(1., Max(0., (aDP * aDV) / aDV.SquareModulus()));
+    aV               = std::min(1., std::max(0., (aDP * aDV) / aDV.SquareModulus()));
     Standard_Real aD = (aV * aDV - aDP).SquareModulus();
 
     // project on side V=0
-    Standard_Real u = Min(1., Max(0., (aDP * aDU) / aDU.SquareModulus()));
+    Standard_Real u = std::min(1., std::max(0., (aDP * aDU) / aDU.SquareModulus()));
     Standard_Real d = (u * aDU - aDP).SquareModulus();
     if (d < aD)
     {
@@ -512,7 +512,7 @@ Standard_Real Poly::PointOnTriangle(const gp_XY& theP1,
 
     // project on side U+V=1
     gp_XY         aDUV = aDV - aDU;
-    Standard_Real v    = Min(1., Max(0., ((aDP - aDU) * aDUV) / aDUV.SquareModulus()));
+    Standard_Real v    = std::min(1., std::max(0., ((aDP - aDU) * aDUV) / aDUV.SquareModulus()));
     d                  = (theP2 + v * aDUV - theP).SquareModulus();
     if (d < aD)
     {
@@ -549,8 +549,8 @@ Standard_Real Poly::PointOnTriangle(const gp_XY& theP1,
   else // sides 1-2 and 1-3 are collinear
   {
     // select parameter on one of sides so as to have points closer to picked
-    Standard_Real aU  = Min(1., Max(0., (aDP * aDU) / aL2U));
-    Standard_Real aV  = Min(1., Max(0., (aDP * aDV) / aL2V));
+    Standard_Real aU  = std::min(1., std::max(0., (aDP * aDU) / aL2U));
+    Standard_Real aV  = std::min(1., std::max(0., (aDP * aDV) / aL2V));
     Standard_Real aD1 = (aDP - aU * aDU).SquareModulus();
     Standard_Real aD2 = (aDP - aV * aDV).SquareModulus();
     if (aD1 < aD2)

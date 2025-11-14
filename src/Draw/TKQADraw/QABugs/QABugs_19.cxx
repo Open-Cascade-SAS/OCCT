@@ -1382,7 +1382,7 @@ static Standard_Integer OCC25004(Draw_Interpretor& theDI,
           aCurrPnt1.Add(-aCurrPnt2);
           Standard_Real dist = aCurrPnt1.Norm();
 
-          Standard_Real C = Abs(aFuncValues(idx1) - aFuncValues(idx2)) / dist;
+          Standard_Real C = std::abs(aFuncValues(idx1) - aFuncValues(idx2)) / dist;
           if (C > aLipConst)
             aLipConst = C;
         }
@@ -1757,7 +1757,7 @@ public:
                           NCollection_Array1<Standard_Real>&       theY,
                           Standard_Real                            theScalar)
       : ParallelTest_Saxpy(theX, theY, theScalar),
-        myNbBatches((int)Ceiling((double)theX.Size() / THE_BATCH_SIZE))
+        myNbBatches((int)std::ceil((double)theX.Size() / THE_BATCH_SIZE))
   {
   }
 
@@ -1768,7 +1768,7 @@ public:
   void operator()(int theBatchIndex) const
   {
     const int aLower  = theBatchIndex * THE_BATCH_SIZE;
-    const int anUpper = Min(aLower + THE_BATCH_SIZE - 1, myX.Upper());
+    const int anUpper = std::min(aLower + THE_BATCH_SIZE - 1, myX.Upper());
     for (int i = aLower; i <= anUpper; ++i)
     {
       myY(i) = myScalar * myX(i) + myY(i);
@@ -2721,7 +2721,8 @@ static Standard_Integer OCC25574(Draw_Interpretor& theDI,
     aQuat.SetEulerAngles(pairs[i][0], alpha, beta, gamma);
     aQuat.GetEulerAngles(pairs[i][1], gamma2, beta2, alpha2);
 
-    if (Abs(alpha - alpha2) > 1e-5 || Abs(beta - beta2) > 1e-5 || Abs(gamma - gamma2) > 1e-5)
+    if (std::abs(alpha - alpha2) > 1e-5 || std::abs(beta - beta2) > 1e-5
+        || std::abs(gamma - gamma2) > 1e-5)
     {
       theDI << "Error: intrinsic and extrinsic conversion incorrect for sequence " << names[i]
             << "\n";
@@ -2767,7 +2768,7 @@ static Standard_Integer OCC25574(Draw_Interpretor& theDI,
       {
         // avoid reporting small coordinates
         for (int k = 1; k <= 3; k++)
-          if (Abs(v2.Coord(k)) < Precision::Confusion())
+          if (std::abs(v2.Coord(k)) < Precision::Confusion())
             v2.SetCoord(k, 0.);
 
         isTestOk = Standard_False;
@@ -2869,8 +2870,8 @@ static Standard_Integer OCC25574(Draw_Interpretor& theDI,
                                                 computedGamma);
 
     // We expect now to get the same angles as we have used for our rotations
-    if (Abs(alpha - computedAlpha) > 1e-5 || Abs(beta - computedBeta) > 1e-5
-        || Abs(gamma - computedGamma) > 1e-5)
+    if (std::abs(alpha - computedAlpha) > 1e-5 || std::abs(beta - computedBeta) > 1e-5
+        || std::abs(gamma - computedGamma) > 1e-5)
     {
       theDI << "Error: unexpected values of Euler angles for YawPitchRoll sequence:\n";
       theDI << "alpha: " << alpha / M_PI * 180.0
@@ -2893,7 +2894,8 @@ static Standard_Integer OCC25574(Draw_Interpretor& theDI,
 
     // gp_Intrinsic_ZYX and gp_Extrinsic_XYZ should produce the same values of angles but in
     // opposite order
-    if (Abs(alpha - gamma2) > 1e-5 || Abs(beta - beta2) > 1e-5 || Abs(gamma - alpha2) > 1e-5)
+    if (std::abs(alpha - gamma2) > 1e-5 || std::abs(beta - beta2) > 1e-5
+        || std::abs(gamma - alpha2) > 1e-5)
     {
       theDI
         << "Error: Euler angles computed for gp_Intrinsic_ZYX and gp_Extrinsic_XYZ do not match:\n";
@@ -3758,7 +3760,7 @@ static Standard_Integer OCC26396(Draw_Interpretor& theDI,
       break;
     }
     for (size_t j = 0; j < coords.size(); j++)
-      if (Abs(ref_coords[j] - coords[j]) > RealEpsilon())
+      if (std::abs(ref_coords[j] - coords[j]) > RealEpsilon())
       {
         Stat = Standard_False;
         break;
@@ -3892,7 +3894,7 @@ static Standard_Integer OCC26746(Draw_Interpretor& theDI,
       aDelta += anArrCoeffs(i++) * aZ1;              // 34
       aDelta += anArrCoeffs(i++);                    // 35
 
-      if (Abs(aDelta) > aToler)
+      if (std::abs(aDelta) > aToler)
       {
         theDI << "(" << aUpar << ", " << aVpar
               << "): Error in torus coefficients computation (Delta = " << aDelta << ").\n";

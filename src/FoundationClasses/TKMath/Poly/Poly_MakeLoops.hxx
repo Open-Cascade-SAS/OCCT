@@ -232,7 +232,7 @@ protected:
 
   Link getLink(const Standard_Integer theSegIndex) const
   {
-    Link aLink = myMapLink(Abs(theSegIndex));
+    Link aLink = myMapLink(std::abs(theSegIndex));
     if (theSegIndex < 0)
       aLink.Reverse();
     return aLink;

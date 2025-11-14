@@ -529,7 +529,8 @@ Standard_Boolean PrsDim_LengthDimension::InitEdgeFaceLength(const TopoDS_Edge& t
 
   // reverse direction if parameter is close to the end of the curve,
   // to reduce chances to have overlapping between dimension line and edge
-  if (Abs(aParam - aCurveAdaptor.FirstParameter()) < Abs(aParam - aCurveAdaptor.LastParameter()))
+  if (std::abs(aParam - aCurveAdaptor.FirstParameter())
+      < std::abs(aParam - aCurveAdaptor.LastParameter()))
   {
     theEdgeDir.Reverse();
   }

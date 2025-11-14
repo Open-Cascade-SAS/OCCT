@@ -548,8 +548,8 @@ public:
   //! equation of the curve is given by the following:
   //! -   for the line L: P(U) = Po + U*Vo
   //! where Po is the origin and Vo the unit vector of its positioning axis.
-  //! -   for the circle C: X(U) = Radius*Cos(U), Y(U) = Radius*Sin(U)
-  //! -   for the ellipse E: X(U) = MajorRadius*Cos(U). Y(U) = MinorRadius*Sin(U)
+  //! -   for the circle C: X(U) = Radius*std::cos(U), Y(U) = Radius*Sin(U)
+  //! -   for the ellipse E: X(U) = MajorRadius*std::cos(U). Y(U) = MinorRadius*Sin(U)
   //! -   for the hyperbola H: X(U) = MajorRadius*Ch(U), Y(U) = MinorRadius*Sh(U)
   //! -   for the parabola Prb:
   //! X(U) = U**2 / (2*p)

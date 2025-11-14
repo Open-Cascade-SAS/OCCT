@@ -26,7 +26,7 @@
 
 #define NullAngle 1.e-6
 
-// QuasiAngular is rational definition of Cos(theta(t) and sin(theta)
+// QuasiAngular is rational definition of std::cos(theta(t) and sin(theta)
 // on [-alpha, +alpha] with
 //                     2      2
 //                    U   -  V
@@ -98,9 +98,9 @@ void GeomFill_QuasiAngularConvertor::Init()
     for (ii = 1; ii <= Ordre; ii++)
     {
       terme = Poles1d->Value(ii, jj);
-      if (Abs(terme - 1) < 1.e-9)
+      if (std::abs(terme - 1) < 1.e-9)
         terme = 1; // petite retouche
-      if (Abs(terme + 1) < 1.e-9)
+      if (std::abs(terme + 1) < 1.e-9)
         terme = -1;
       B(ii, jj) = terme;
     }
@@ -148,7 +148,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
 
   if ((M_PI / 2 - beta) > NullAngle)
   {
-    if (Abs(beta) < NullAngle)
+    if (std::abs(beta) < NullAngle)
     {
       Standard_Real cf = 2.0 / (3 * 5 * 7);
       b                = -(0.2 + cf * beta2) / (1 + 0.2 * beta2);
@@ -156,7 +156,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
     }
     else
     {
-      tan_b = Tan(beta);
+      tan_b = std::tan(beta);
       b     = -1.0e0 / beta2;
       b += beta / (3 * (tan_b - beta));
     }
@@ -232,8 +232,8 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   // La derive s'ecrit donc :
   // AngPrim * (sin(Ang)*D*D + cos(Ang)*D)
   // + sin(Ang)*DPrim  + (1. - cos(Ang)) *(DPrim*D + D*DPrim)
-  Sina = Sin(Angle / 2);
-  Cosa = Cos(Angle / 2);
+  Sina = std::sin(Angle / 2);
+  Cosa = std::cos(Angle / 2);
   D.SetCross(Dir.XYZ());
   DPrim.SetCross(DDir.XYZ());
 
@@ -263,7 +263,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   beta5    = beta3 * beta2;
   beta6    = beta3 * beta3;
 
-  if (Abs(beta) < NullAngle)
+  if (std::abs(beta) < NullAngle)
   {
     // On calcul b par D.L
     Standard_Real cf = 2.0 / (3 * 5 * 7);
@@ -279,7 +279,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
     bpr = (2 * betaprim) / beta3;
     if ((M_PI / 2 - beta) > NullAngle)
     {
-      tan_b  = Tan(beta);
+      tan_b  = std::tan(beta);
       dtan_b = betaprim * (1 + tan_b * tan_b);
       b2     = tan_b - beta;
       b += beta / (3 * b2);
@@ -388,8 +388,8 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   // La derive s'ecrit donc :
   // AngPrim * (sin(Ang)*D*D + cos(Ang)*D)
   // + sin(Ang)*DPrim  + (1. - cos(Ang)) *(DPrim*D + D*DPrim)
-  Sina = Sin(Angle / 2);
-  Cosa = Cos(Angle / 2);
+  Sina = std::sin(Angle / 2);
+  Cosa = std::cos(Angle / 2);
   D.SetCross(Dir.XYZ());
   DPrim.SetCross(DDir.XYZ());
   DSecn.SetCross(D2Dir.XYZ());
@@ -453,7 +453,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   beta6     = beta3 * beta3;
   betaprim2 = betaprim * betaprim;
 
-  if (Abs(beta) < NullAngle)
+  if (std::abs(beta) < NullAngle)
   {
     // On calcul b par D.L
     Standard_Real cf = -2.0 / 21;
@@ -472,7 +472,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
     bsc = (2 * betasecn - 6 * betaprim * (betaprim / beta)) / beta3;
     if ((M_PI / 2 - beta) > NullAngle)
     {
-      tan_b   = Tan(beta);
+      tan_b   = std::tan(beta);
       dtan_b  = betaprim * (1 + tan_b * tan_b);
       d2tan_b = betasecn * (1 + tan_b * tan_b) + 2 * betaprim * tan_b * dtan_b;
       b2      = tan_b - beta;
@@ -558,7 +558,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
 
     D2P.SetCoord(D2Px(ii) / wi, D2Py(ii) / wi, 0);
     D2P -= 2 * (dwi / wi) * DP;
-    D2P += (2 * Pow(dwi / wi, 2) - D2W(ii) / wi) * P;
+    D2P += (2 * std::pow(dwi / wi, 2) - D2W(ii) / wi) * P;
     DP -= (DW(ii) / wi) * P;
 
     Poles(ii).ChangeCoord() = M * P + Center.XYZ();

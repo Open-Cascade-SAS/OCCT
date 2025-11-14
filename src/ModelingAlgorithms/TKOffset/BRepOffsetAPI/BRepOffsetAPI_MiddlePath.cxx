@@ -894,7 +894,7 @@ void BRepOffsetAPI_MiddlePath::Build(const Message_ProgressRange& /*theRange*/)
         Standard_Real anAngle = Vec1.AngleWithRef(Vec2, theAxis.Direction());
         if (anAngle < 0.)
           anAngle += 2. * M_PI;
-        if (Abs(anAngle - theAngle) > AngTol)
+        if (std::abs(anAngle - theAngle) > AngTol)
           theAxis.Reverse();
         gp_Ax2              theAx2(theCenterOfCirc, theAxis.Direction(), Vec1);
         Handle(Geom_Circle) theCircle = GC_MakeCircle(theAx2, Vec1.Magnitude());

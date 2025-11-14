@@ -504,7 +504,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSphere(
         gp_Vec aVecAngle2(aCenterProj, aPntProj2);
         anAngleSum += aVecAngle1.Angle(aVecAngle2);
       }
-      Standard_Boolean isCenterInside   = Abs(anAngleSum - 2 * M_PI) < Precision::Confusion();
+      Standard_Boolean isCenterInside   = std::abs(anAngleSum - 2 * M_PI) < Precision::Confusion();
       Standard_Boolean isBoundaryInside = Standard_False;
       Standard_Boolean isIntersectSphereBoundaries =
         IsBoundaryIntersectSphere(aCenterProj, theRadius, aNorm, aBoundaries, isBoundaryInside);
@@ -592,7 +592,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
 
   const gp_Dir        aDirNorm(aVecPlane1.Crossed(aVecPlane2));
   const Standard_Real anAngle   = aCylNorm.Angle(aDirNorm);
-  const Standard_Real aCosAngle = Cos(anAngle);
+  const Standard_Real aCosAngle = std::cos(anAngle);
   const gp_Pln        aPln(myFrustums.First()->myVertices[0], aDirNorm);
   Standard_Real       aCoefA, aCoefB, aCoefC, aCoefD;
   aPln.Coefficients(aCoefA, aCoefB, aCoefC, aCoefD);
@@ -618,8 +618,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
   }
 
   gp_Pnt aPoints[6];
-  aPoints[0] = aBottomCenterProject.XYZ() - aCylNormProject * theBottomRad * Abs(aCosAngle);
-  aPoints[1] = aTopCenterProject.XYZ() + aCylNormProject * theTopRad * Abs(aCosAngle);
+  aPoints[0] = aBottomCenterProject.XYZ() - aCylNormProject * theBottomRad * std::abs(aCosAngle);
+  aPoints[1] = aTopCenterProject.XYZ() + aCylNormProject * theTopRad * std::abs(aCosAngle);
   const gp_Dir aDirEndFaces = (aCylNorm.IsParallel(aDirNorm, Precision::Angular()))
                                 ? gp::DY().Transformed(theTrsf)
                                 : aCylNorm.Crossed(aDirNorm);
@@ -827,8 +827,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::segmentSegmentIntersection(
   gp_XYZ aVec2  = theEndPnt2.XYZ() - theStartPnt2.XYZ();
   gp_XYZ aVec21 = theStartPnt2.XYZ() - theStartPnt1.XYZ();
   gp_XYZ aVec12 = theStartPnt1.XYZ() - theStartPnt2.XYZ();
-  if (Abs(aVec21.DotCross(aVec1, aVec2)) > Precision::Confusion()
-      || Abs(aVec12.DotCross(aVec2, aVec1)) > Precision::Confusion())
+  if (std::abs(aVec21.DotCross(aVec1, aVec2)) > Precision::Confusion()
+      || std::abs(aVec12.DotCross(aVec2, aVec1)) > Precision::Confusion())
   {
     // lines are not coplanar
     return false;
@@ -892,7 +892,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(
     gp_Pnt aCrossPoint =
       aCircCenter.Translated(aNormalLine.Direction().Reversed().XYZ() * aDistance);
 
-    Standard_Real anOffset = Sqrt(theRadius * theRadius - aDistance * aDistance);
+    Standard_Real anOffset = std::sqrt(theRadius * theRadius - aDistance * aDistance);
     // Line-circle intersection points
     gp_Pnt aP1 = aCrossPoint.Translated(aLine.Direction().XYZ() * anOffset);
     gp_Pnt aP2 = aCrossPoint.Translated(aLine.Direction().Reversed().XYZ() * anOffset);

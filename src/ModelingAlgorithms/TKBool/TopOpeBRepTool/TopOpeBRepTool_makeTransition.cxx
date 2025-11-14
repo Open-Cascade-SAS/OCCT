@@ -160,7 +160,7 @@ static Standard_Integer FUN_mkT2dquad(const Standard_Real curvC1, const Standard
   if (nullc1)
     return isINifh2; // is IN if (dot=tg2(pt after).xx2 < 0)
 
-  Standard_Boolean samec = (Abs(curvC2 - curvC1) < 1.e-2); // NYITOLXPU kpartkoletge
+  Standard_Boolean samec = (std::abs(curvC2 - curvC1) < 1.e-2); // NYITOLXPU kpartkoletge
   if (samec)
     return isON2ifss; // is ON if curves are on same side/tg line
   if (curvC1 > curvC2)
@@ -181,8 +181,8 @@ static Standard_Boolean FUN_getnearpar(const TopoDS_Edge&     e,
   // hyp : f < par < l
   BRepAdaptor_Curve bc(e);
   Standard_Real     tol1d = bc.Resolution(bc.Tolerance());
-  Standard_Boolean  onf   = (Abs(par - f) < tol1d);
-  Standard_Boolean  onl   = (Abs(par - l) < tol1d);
+  Standard_Boolean  onf   = (std::abs(par - f) < tol1d);
+  Standard_Boolean  onl   = (std::abs(par - l) < tol1d);
   if (onf && (sta == BEFORE))
     return Standard_False;
   if (onl && (sta == AFTER))
@@ -358,7 +358,7 @@ Standard_Boolean TopOpeBRepTool_makeTransition::MkT2donE(TopAbs_State& Stb, TopA
   Standard_Real dot  = tgE.Dot(xxES);
 
   // E and ES are not tangent at interference point :
-  Standard_Boolean tgts = (Abs(dot) < tola);
+  Standard_Boolean tgts = (std::abs(dot) < tola);
   if (!tgts)
   {
     Standard_Boolean dotpos = (dot > 0.);
@@ -555,7 +555,7 @@ static TopAbs_State FUN_stawithES(const gp_Dir& tgE, const gp_Dir& xxES, const S
   TopAbs_State  sta;
   Standard_Real prod = tgE.Dot(xxES);
   Standard_Real tola = FUN_tolang();
-  if (Abs(prod) < tola)
+  if (std::abs(prod) < tola)
     return TopAbs_UNKNOWN;
   Standard_Boolean positive = (prod > 0.);
   if (positive)
@@ -655,7 +655,7 @@ Standard_Boolean TopOpeBRepTool_makeTransition::MkT3onE(TopAbs_State& Stb, TopAb
   Standard_Real tola = FUN_tolang();
   Standard_Real dot  = tgE.Dot(ntFS);
 
-  if (Abs(dot) > tola)
+  if (std::abs(dot) > tola)
   {
     Stb = (dot > 0) ? TopAbs_IN : TopAbs_OUT;
     Sta = (dot > 0) ? TopAbs_OUT : TopAbs_IN;

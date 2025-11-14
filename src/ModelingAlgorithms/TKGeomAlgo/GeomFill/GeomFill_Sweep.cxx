@@ -587,7 +587,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
   gp_Mat               M;
   Standard_Real        levier, error = 0;
   Standard_Real        UFirst = 0, VFirst = First, ULast = 0, VLast = Last;
-  Standard_Real        Tol = Min(Tol3d, BoundTol);
+  Standard_Real        Tol = std::min(Tol3d, BoundTol);
 
   // (1) Trajectoire Rectilignes -------------------------
   if (myLoc->IsTranslation(error))
@@ -647,8 +647,8 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
         L.Transform(Tf2);
         DS.SetXYZ(L.Position().Direction().XYZ());
         DS.Normalize();
-        levier = Abs(DS.Dot(DP));
-        SError = error + levier * Abs(Last - First);
+        levier = std::abs(DS.Dot(DP));
+        SError = error + levier * std::abs(Last - First);
         if (SError <= Tol)
         {
           Ok = Standard_True;
@@ -669,8 +669,8 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
 
         DS.SetXYZ(C.Position().Direction().XYZ());
         DS.Normalize();
-        levier = Abs(DS.CrossMagnitude(DP)) * C.Radius();
-        SError = levier * Abs(Last - First);
+        levier = std::abs(DS.CrossMagnitude(DP)) * C.Radius();
+        SError = levier * std::abs(Last - First);
         if (SError <= TolProd)
         {
           Ok = Standard_True;
@@ -760,8 +760,8 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
         gp_Ax3 Axis(Centre0, Dir, N);
         S = new (Geom_ConicalSurface)(Axis, Angle, C.Radius());
         // Calcul du glissement parametrique
-        VFirst = First / Cos(Angle);
-        VLast  = Last / Cos(Angle);
+        VFirst = First / std::cos(Angle);
+        VLast  = Last / std::cos(Angle);
 
         // Bornes en U
         UFirst = AC.FirstParameter();
@@ -794,7 +794,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
     {
       // La trajectoire
       gp_Pnt Centre;
-      isVPeriodic = (Abs(Last - First - 2 * M_PI) < 1.e-15);
+      isVPeriodic = (std::abs(Last - First - 2 * M_PI) < 1.e-15);
       Standard_Real RotRadius;
       gp_Vec        DP, DS, DN;
       myLoc->D0(0.1, M, DS);
@@ -866,10 +866,10 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
         gp_Vec NC;
         NC.SetXYZ(C.Position().Direction().XYZ());
         NC.Normalize();
-        error = Abs(NC.Dot(DN));
+        error = std::abs(NC.Dot(DN));
         // Puis on evalue l'erreur commise sur la section,
         // en pivotant son plan ( pour contenir l'axe de rotation)
-        error += Abs(NC.Dot(DS));
+        error += std::abs(NC.Dot(DS));
         error *= C.Radius();
         if (error <= Tol)
         {
@@ -910,7 +910,8 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
               isUReversed = Standard_True;
             }
 
-            if (Abs(l - f) <= Precision::PConfusion() || Abs(UlastOnSec - UfirstOnSec) > M_PI_2)
+            if (std::abs(l - f) <= Precision::PConfusion()
+                || std::abs(UlastOnSec - UfirstOnSec) > M_PI_2)
             {
               // l == f - "degenerated" surface
               // UlastOnSec - UfirstOnSec > M_PI_2 - "twisted" surface,
@@ -964,7 +965,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
             myExchUV = Standard_True;
             // Attention l'arete de couture dans le cas periodique
             // n'est peut etre pas a la bonne place...
-            if (isUPeriodic && Abs(UFirst) > Precision::PConfusion())
+            if (isUPeriodic && std::abs(UFirst) > Precision::PConfusion())
               isUPeriodic = Standard_False; // Pour trimmer la surface...
             Ok = Standard_True;
           }
@@ -981,9 +982,9 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
         L.Transform(Tf2);
         gp_Vec DL;
         DL.SetXYZ(L.Direction().XYZ());
-        levier = Max(Abs(AC.FirstParameter()), AC.LastParameter());
+        levier = std::max(std::abs(AC.FirstParameter()), AC.LastParameter());
         // si la line est ortogonale au cercle de rotation
-        SError = error + levier * Abs(DL.Dot(DP));
+        SError = error + levier * std::abs(DL.Dot(DP));
         if (SError <= Tol)
         {
           Standard_Boolean reverse;
@@ -1020,7 +1021,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
           else
           {
             // On evalue l'angle du cone
-            Standard_Real Angle = Abs(Dir.Angle(L));
+            Standard_Real Angle = std::abs(Dir.Angle(L));
             if (Angle > M_PI / 2)
               Angle = M_PI - Angle;
             if (reverse)
@@ -1030,7 +1031,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
             {
               Angle = -Angle;
             }
-            if (Abs(Abs(Angle) - M_PI / 2) > 0.01)
+            if (std::abs(std::abs(Angle) - M_PI / 2) > 0.01)
             {
               // (2.2.b) Cone
               // si les 2 droites ne sont pas orthogonales

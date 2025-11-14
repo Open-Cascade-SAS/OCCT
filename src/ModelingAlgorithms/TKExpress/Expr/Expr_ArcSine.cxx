@@ -38,7 +38,7 @@ Handle(Expr_GeneralExpression) Expr_ArcSine::ShallowSimplified() const
   if (op->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) valop = Handle(Expr_NumericValue)::DownCast(op);
-    return new Expr_NumericValue(ASin(valop->GetValue()));
+    return new Expr_NumericValue(std::asin(valop->GetValue()));
   }
   if (op->IsKind(STANDARD_TYPE(Expr_Sine)))
   {
@@ -97,7 +97,7 @@ Handle(Expr_GeneralExpression) Expr_ArcSine::Derivative(const Handle(Expr_NamedU
 Standard_Real Expr_ArcSine::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                      const TColStd_Array1OfReal&      vals) const
 {
-  return ::ASin(Operand()->Evaluate(vars, vals));
+  return std::asin(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_ArcSine::String() const

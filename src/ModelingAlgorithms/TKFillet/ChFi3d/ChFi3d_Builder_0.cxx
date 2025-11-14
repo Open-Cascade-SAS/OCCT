@@ -117,10 +117,10 @@ void ChFi3d_Boite(const gp_Pnt2d& p1,
                   Standard_Real&  mv,
                   Standard_Real&  Mv)
 {
-  mu = Min(p1.X(), p2.X());
-  Mu = Max(p1.X(), p2.X());
-  mv = Min(p1.Y(), p2.Y());
-  Mv = Max(p1.Y(), p2.Y());
+  mu = std::min(p1.X(), p2.X());
+  Mu = std::max(p1.X(), p2.X());
+  mv = std::min(p1.Y(), p2.Y());
+  Mv = std::max(p1.Y(), p2.Y());
 }
 
 //=======================================================================
@@ -139,18 +139,18 @@ void ChFi3d_Boite(const gp_Pnt2d& p1,
                   Standard_Real&  Mv)
 {
   Standard_Real a, b;
-  a  = Min(p1.X(), p2.X());
-  b  = Min(p3.X(), p4.X());
-  mu = Min(a, b);
-  a  = Max(p1.X(), p2.X());
-  b  = Max(p3.X(), p4.X());
-  Mu = Max(a, b);
-  a  = Min(p1.Y(), p2.Y());
-  b  = Min(p3.Y(), p4.Y());
-  mv = Min(a, b);
-  a  = Max(p1.Y(), p2.Y());
-  b  = Max(p3.Y(), p4.Y());
-  Mv = Max(a, b);
+  a  = std::min(p1.X(), p2.X());
+  b  = std::min(p3.X(), p4.X());
+  mu = std::min(a, b);
+  a  = std::max(p1.X(), p2.X());
+  b  = std::max(p3.X(), p4.X());
+  Mu = std::max(a, b);
+  a  = std::min(p1.Y(), p2.Y());
+  b  = std::min(p3.Y(), p4.Y());
+  mv = std::min(a, b);
+  a  = std::max(p1.Y(), p2.Y());
+  b  = std::max(p3.Y(), p4.Y());
+  Mv = std::max(a, b);
   Du = Mu - mu;
   Dv = Mv - mv;
 }
@@ -604,13 +604,13 @@ void ChFi3d_BoundSrf(GeomAdaptor_Surface&   S,
   {
     if (!S.IsUPeriodic())
     {
-      uu1 = Max(uu1, u1);
-      uu2 = Min(uu2, u2);
+      uu1 = std::max(uu1, u1);
+      uu2 = std::min(uu2, u2);
     }
     if (!S.IsVPeriodic())
     {
-      vv1 = Max(vv1, v1);
-      vv2 = Min(vv2, v2);
+      vv1 = std::max(vv1, v1);
+      vv2 = std::min(vv2, v2);
     }
   }
   S.Load(surface, uu1, uu2, vv1, vv2);
@@ -1094,7 +1094,7 @@ static Standard_Real recadre(const Standard_Real    p,
                              const Standard_Real    last)
 {
   const Standard_Real pp = p + (sens > 0 ? (first - last) : (last - first));
-  return ((Abs(pp - ref) < Abs(p - ref)) ? pp : p);
+  return ((std::abs(pp - ref) < std::abs(p - ref)) ? pp : p);
 }
 
 //=================================================================================================
@@ -1125,7 +1125,7 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
   if ((last - first) < Precision::PConfusion())
     return Standard_False;
   if (enlarge)
-    delta = Min(0.1, 0.05 * (last - first));
+    delta = std::min(0.1, 0.05 * (last - first));
   Handle(Geom2d_Curve) pcf1 = fd1->Interference(jf1).PCurveOnFace();
   if (pcf1.IsNull())
     return Standard_False;
@@ -1146,7 +1146,7 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
   if ((last - first) < Precision::PConfusion())
     return Standard_False;
   if (enlarge)
-    delta = Min(0.1, 0.05 * (last - first));
+    delta = std::min(0.1, 0.05 * (last - first));
   Handle(Geom2d_Curve) pcf2 = fd2->Interference(jf2).PCurveOnFace();
   if (pcf2.IsNull())
     return Standard_False;
@@ -1206,7 +1206,7 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
           {
             Standard_Real pp1 = int2d.ParamOnFirst();
             pp1               = recadre(pp1, pref1, sens1, first1, last1);
-            if ((Abs(pp1 - pref1) < Abs(p1 - pref1)))
+            if ((std::abs(pp1 - pref1) < std::abs(p1 - pref1)))
             {
               p1  = pp1;
               p2  = int2d.ParamOnSecond();
@@ -1230,7 +1230,7 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
           {
             Standard_Real pp2 = int2d.ParamOnSecond();
             pp2               = recadre(pp2, pref2, sens2, first2, last2);
-            if ((Abs(pp2 - pref2) < Abs(p2 - pref2)))
+            if ((std::abs(pp2 - pref2) < std::abs(p2 - pref2)))
             {
               p2  = pp2;
               p1  = int2d.ParamOnFirst();
@@ -1257,8 +1257,8 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
             p2  = int2d.ParamOnSecond();
             p2d = int2d.Value();
           }
-          else if ((Abs(int2d.ParamOnFirst() - pref1) < Abs(p1 - pref1))
-                   && (Abs(int2d.ParamOnSecond() - pref2) < Abs(p2 - pref2)))
+          else if ((std::abs(int2d.ParamOnFirst() - pref1) < std::abs(p1 - pref1))
+                   && (std::abs(int2d.ParamOnSecond() - pref2) < std::abs(p2 - pref2)))
           {
             p1  = int2d.ParamOnFirst();
             p2  = int2d.ParamOnSecond();
@@ -1324,13 +1324,13 @@ void ChFi3d_ReparamPcurv(const Standard_Real   Uf,
   Handle(Geom2d_BSplineCurve) pc = Handle(Geom2d_BSplineCurve)::DownCast(basis);
   if (pc.IsNull())
     return;
-  if (Abs(upcf - pc->FirstParameter()) > Precision::PConfusion()
-      || Abs(upcl - pc->LastParameter()) > Precision::PConfusion())
+  if (std::abs(upcf - pc->FirstParameter()) > Precision::PConfusion()
+      || std::abs(upcl - pc->LastParameter()) > Precision::PConfusion())
   {
     pc->Segment(upcf, upcl);
   }
-  if (Abs(Uf - pc->FirstParameter()) > Precision::PConfusion()
-      || Abs(Ul - pc->LastParameter()) > Precision::PConfusion())
+  if (std::abs(Uf - pc->FirstParameter()) > Precision::PConfusion()
+      || std::abs(Ul - pc->LastParameter()) > Precision::PConfusion())
   {
     TColgp_Array1OfPnt2d pol(1, pc->NbPoles());
     pc->Poles(pol);
@@ -1421,7 +1421,7 @@ Standard_Boolean ChFi3d_CheckSameParameter(const Handle(Adaptor3d_Curve)&   C3d,
     gp_Pnt        pS = S->Value(u, v);
     gp_Pnt        pC = C3d->Value(t);
     Standard_Real d2 = pS.SquareDistance(pC);
-    tolreached       = Max(tolreached, d2);
+    tolreached       = std::max(tolreached, d2);
   }
   tolreached = sqrt(tolreached);
   if (tolreached > tol3d)
@@ -1430,7 +1430,7 @@ Standard_Boolean ChFi3d_CheckSameParameter(const Handle(Adaptor3d_Curve)&   C3d,
     return Standard_False;
   }
   tolreached *= 2.;
-  tolreached = Max(tolreached, Precision::Confusion());
+  tolreached = std::max(tolreached, Precision::Confusion());
   return Standard_True;
 }
 
@@ -1542,22 +1542,25 @@ void ChFi3d_ComputePCurv(const gp_Pnt2d&        UV1,
     p2 = UV1;
   }
 
-  if (Abs(p1.X() - p2.X()) <= tol && Abs((p2.Y() - p1.Y()) - (Parfin - Pardeb)) <= tol)
+  if (std::abs(p1.X() - p2.X()) <= tol && std::abs((p2.Y() - p1.Y()) - (Parfin - Pardeb)) <= tol)
   {
     gp_Pnt2d ppp(p1.X(), p1.Y() - Pardeb);
     Pcurv = new Geom2d_Line(ppp, gp::DY2d());
   }
-  else if (Abs(p1.X() - p2.X()) <= tol && Abs((p1.Y() - p2.Y()) - (Parfin - Pardeb)) <= tol)
+  else if (std::abs(p1.X() - p2.X()) <= tol
+           && std::abs((p1.Y() - p2.Y()) - (Parfin - Pardeb)) <= tol)
   {
     gp_Pnt2d ppp(p1.X(), p1.Y() + Pardeb);
     Pcurv = new Geom2d_Line(ppp, gp::DY2d().Reversed());
   }
-  else if (Abs(p1.Y() - p2.Y()) <= tol && Abs((p2.X() - p1.X()) - (Parfin - Pardeb)) <= tol)
+  else if (std::abs(p1.Y() - p2.Y()) <= tol
+           && std::abs((p2.X() - p1.X()) - (Parfin - Pardeb)) <= tol)
   {
     gp_Pnt2d ppp(p1.X() - Pardeb, p1.Y());
     Pcurv = new Geom2d_Line(ppp, gp::DX2d());
   }
-  else if (Abs(p1.Y() - p2.Y()) <= tol && Abs((p1.X() - p2.X()) - (Parfin - Pardeb)) <= tol)
+  else if (std::abs(p1.Y() - p2.Y()) <= tol
+           && std::abs((p1.X() - p2.X()) - (Parfin - Pardeb)) <= tol)
   {
     gp_Pnt2d ppp(p1.X() + Pardeb, p1.Y());
     Pcurv = new Geom2d_Line(ppp, gp::DX2d().Reversed());
@@ -1707,11 +1710,11 @@ Handle(Geom2d_Curve) ChFi3d_BuildPCurve(const gp_Pnt2d&        p1,
   TColgp_Array1OfPnt2d pol(1, 4);
   pol(1)                = p1;
   pol(4)                = p2;
-  Standard_Real Lambda1 = Max(Abs(d2.Dot(d1)), Abs(dref.Dot(d1)));
-  Lambda1               = Max(0.5 * mref * Lambda1, 1.e-5);
+  Standard_Real Lambda1 = std::max(std::abs(d2.Dot(d1)), std::abs(dref.Dot(d1)));
+  Lambda1               = std::max(0.5 * mref * Lambda1, 1.e-5);
   pol(2)                = gp_Pnt2d(p1.XY() + Lambda1 * d1.XY());
-  Standard_Real Lambda2 = Max(Abs(d1.Dot(d2)), Abs(dref.Dot(d2)));
-  Lambda2               = Max(0.5 * mref * Lambda2, 1.e-5);
+  Standard_Real Lambda2 = std::max(std::abs(d1.Dot(d2)), std::abs(dref.Dot(d2)));
+  Lambda2               = std::max(0.5 * mref * Lambda2, 1.e-5);
   pol(3)                = gp_Pnt2d(p2.XY() + Lambda2 * d2.XY());
   return new Geom2d_BezierCurve(pol);
 }
@@ -1818,7 +1821,7 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
 
   tolreached = tol3d;
 
-  if (Abs(UV1.X() - UV2.X()) <= tol2d)
+  if (std::abs(UV1.X() - UV2.X()) <= tol2d)
   {
     if (IFlag == 0)
     {
@@ -1866,7 +1869,7 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
       Pcurv = new Geom2d_Line(UV1, gp_Vec2d(UV1, UV2));
     }
   }
-  else if (Abs(UV1.Y() - UV2.Y()) <= tol2d)
+  else if (std::abs(UV1.Y() - UV2.Y()) <= tol2d)
   {
     // iso v
     if (IFlag == 0)
@@ -2030,7 +2033,7 @@ Standard_EXPORT void ChFi3d_FilCommonPoint(const BRepBlend_Extremity& SP,
                                            const Standard_Real        Tol)
 {
   //  BRep_Tool Outil;
-  Standard_Real Dist, maxtol = Max(Tol, CP.Tolerance());
+  Standard_Real Dist, maxtol = std::max(Tol, CP.Tolerance());
 
   CP.SetPoint(SP.Value()); // One starts with the point and the vector
   if (SP.HasTangent())
@@ -2056,7 +2059,7 @@ Standard_EXPORT void ChFi3d_FilCommonPoint(const BRepBlend_Extremity& SP,
     Dist = (SP.Value()).Distance(BRep_Tool::Pnt(V));
     //// modified by jgv, 18.09.02 for OCC571 ////
     // maxtol += Dist;
-    maxtol = Max(Dist, maxtol);
+    maxtol = std::max(Dist, maxtol);
     //////////////////////////////////////////////
     CP.SetPoint(BRep_Tool::Pnt(V));
 
@@ -2097,17 +2100,17 @@ Standard_EXPORT void ChFi3d_FilCommonPoint(const BRepBlend_Extremity& SP,
         // a preexisting vertex has been met
         CP.SetVertex(V[Index_min]); // the old vertex is loaded
         CP.SetPoint(BRep_Tool::Pnt(V[Index_min]));
-        maxtol = Max(BRep_Tool::Tolerance(V[Index_min]), maxtol);
+        maxtol = std::max(BRep_Tool::Tolerance(V[Index_min]), maxtol);
         //// modified by jgv, 18.09.02 for OCC571 ////
         // maxtol += Dist;
-        maxtol = Max(Dist, maxtol);
+        maxtol = std::max(Dist, maxtol);
         //////////////////////////////////////////////
         LeParamAmoi = BRep_Tool::Parameter(V[Index_min], E);
       }
       else
       { // Creation of an arc only
-        maxtol      = Max(BRep_Tool::Tolerance(E), maxtol);
-        maxtol      = Max(SP.Tolerance(), maxtol);
+        maxtol      = std::max(BRep_Tool::Tolerance(E), maxtol);
+        maxtol      = std::max(SP.Tolerance(), maxtol);
         LeParamAmoi = PR.ParameterOnArc();
       }
 
@@ -2292,7 +2295,8 @@ static void QueryAddVertexInEdge(TopOpeBRepDS_ListOfInterference& LI,
       TopOpeBRepDS_Kind  kv     = cpi->GeometryType();
       TopAbs_Orientation newOr  = cpi->Transition().Orientation(TopAbs_IN);
       Standard_Real      newpar = cpi->Parameter();
-      if (IV == newIV && kv == TopOpeBRepDS_VERTEX && Or == newOr && Abs(par - newpar) < 1.e-10)
+      if (IV == newIV && kv == TopOpeBRepDS_VERTEX && Or == newOr
+          && std::abs(par - newpar) < 1.e-10)
       {
         return;
       }
@@ -2433,7 +2437,7 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
         IcFil1                            = Fi.LineIndex();
         if (!IcFil1)
           continue;
-        Standard_Real FiLen = Abs(Fi.FirstParameter() - Fi.LastParameter());
+        Standard_Real FiLen = std::abs(Fi.FirstParameter() - Fi.LastParameter());
         if (FiLen > Precision::PConfusion())
           continue;
         TopOpeBRepDS_Curve& cc = DStr.ChangeCurve(IcFil1);
@@ -2748,7 +2752,7 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
                               Parfin,
                               tol3d,
                               tolreached);
-          TCurv.Tolerance(Max(TCurv.Tolerance(), tolreached));
+          TCurv.Tolerance(std::max(TCurv.Tolerance(), tolreached));
           Interfc1 = ChFi3d_FilCurveInDS(Icurv, Isurf, PCurv, ET1);
           DStr.ChangeSurfaceInterferences(Isurf).Append(Interfc1);
         }
@@ -3297,7 +3301,7 @@ Standard_Real ChFi3d_ConvTol2dToTol3d(const Handle(Adaptor3d_Surface)& S, const 
   Standard_Real vres     = S->VResolution(1.e-7);
   Standard_Real uresto3d = 1.e-7 * tol2d / ures;
   Standard_Real vresto3d = 1.e-7 * tol2d / vres;
-  return Max(uresto3d, vresto3d);
+  return std::max(uresto3d, vresto3d);
 }
 
 //=======================================================================
@@ -3339,7 +3343,7 @@ Standard_Real ChFi3d_EvalTolReached(const Handle(Adaptor3d_Surface)& S1,
       distmax = d;
   }
   distmax = 1.5 * sqrt(distmax);
-  distmax = Max(distmax, Precision::Confusion());
+  distmax = std::max(distmax, Precision::Confusion());
   return distmax;
 }
 
@@ -3565,7 +3569,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
         Pc1->Value(Udeb).Coord(x, y);
         x = Pardeb(1) - x;
         y = Pardeb(2) - y;
-        if (Abs(x) >= tol2d || Abs(y) >= tol2d)
+        if (std::abs(x) >= tol2d || std::abs(y) >= tol2d)
           Pc1->Translate(gp_Vec2d(x, y));
       }
       ChFi3d_ProjectPCurv(HC, S2, Pc2, tol3d, tolr2);
@@ -3575,12 +3579,12 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
         Pc2->Value(Udeb).Coord(x, y);
         x = Pardeb(3) - x;
         y = Pardeb(4) - y;
-        if (Abs(x) >= tol2d || Abs(y) >= tol2d)
+        if (std::abs(x) >= tol2d || std::abs(y) >= tol2d)
           Pc2->Translate(gp_Vec2d(x, y));
       }
       C3d        = new Geom_TrimmedCurve(C3d, Udeb, Ufin);
-      tolreached = 1.5 * Max(tolr1, tolr2);
-      tolreached = Min(tolreached, ChFi3d_EvalTolReached(S1, Pc1, S2, Pc2, C3d));
+      tolreached = 1.5 * std::max(tolr1, tolr2);
+      tolreached = std::min(tolreached, ChFi3d_EvalTolReached(S1, Pc1, S2, Pc2, C3d));
       return Standard_True;
     }
   }
@@ -3694,7 +3698,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
                 // select right end parameter
                 Standard_Real Uok = failedF ? Ul : Uf;
                 Standard_Real U1 = C3d->FirstParameter(), U2 = C3d->LastParameter();
-                Uok = Abs(Uok - U1) > Abs(Uok - U2) ? U1 : U2;
+                Uok = std::abs(Uok - U1) > std::abs(Uok - U2) ? U1 : U2;
                 if (failedF)
                   Uf = Uok;
                 else
@@ -3702,7 +3706,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
               }
               else
               { // both projected, but where?
-                if (Abs(Uf - Ul) < Precision::PConfusion())
+                if (std::abs(Uf - Ul) < Precision::PConfusion())
                   continue;
               }
               ptestdeb = C3d->Value(Uf);
@@ -3754,12 +3758,12 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
               Pc1->Value(Uf).Coord(x, y);
               x = Pardeb(1) - x;
               y = Pardeb(2) - y;
-              if (Abs(x) > tol2d || Abs(y) > tol2d)
+              if (std::abs(x) > tol2d || std::abs(y) > tol2d)
                 Pc1->Translate(gp_Vec2d(x, y));
               Pc2->Value(Uf).Coord(x, y);
               x = Pardeb(3) - x;
               y = Pardeb(4) - y;
-              if (Abs(x) > tol2d || Abs(y) > tol2d)
+              if (std::abs(x) > tol2d || std::abs(y) > tol2d)
                 Pc2->Translate(gp_Vec2d(x, y));
               tolreached = ChFi3d_EvalTolReached(S1, Pc1, S2, Pc2, C3d);
               return Standard_True;
@@ -3825,13 +3829,13 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
 
       gp_Pnt           codeb1 = S1->Value(Pardeb(1), Pardeb(2));
       gp_Pnt           codeb2 = S2->Value(Pardeb(3), Pardeb(4));
-      Standard_Real    tol1   = Max(codeb1.Distance(codeb2), tol3d);
+      Standard_Real    tol1   = std::max(codeb1.Distance(codeb2), tol3d);
       Standard_Boolean bondeb = (tol1 == tol3d);
       gp_Pnt           pntd(0.5 * (codeb1.Coord() + codeb2.Coord()));
 
       gp_Pnt           cofin1 = S1->Value(Parfin(1), Parfin(2));
       gp_Pnt           cofin2 = S2->Value(Parfin(3), Parfin(4));
-      Standard_Real    tol2   = Max(cofin1.Distance(cofin2), tol3d);
+      Standard_Real    tol2   = std::max(cofin1.Distance(cofin2), tol3d);
       Standard_Boolean bonfin = (tol2 == tol3d);
       gp_Pnt           pntf(0.5 * (cofin1.Coord() + cofin2.Coord()));
 
@@ -3948,8 +3952,8 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
         return Standard_False;
       //      tolreached = approx.TolReached3d();
       //      Standard_Real tolr2d = approx.TolReached2d();
-      //      tolreached = Max(tolreached,ChFi3d_ConvTol2dToTol3d(S1,tolr2d));
-      //      tolreached = Max(tolreached,ChFi3d_ConvTol2dToTol3d(S2,tolr2d));
+      //      tolreached = std::max(tolreached,ChFi3d_ConvTol2dToTol3d(S1,tolr2d));
+      //      tolreached = std::max(tolreached,ChFi3d_ConvTol2dToTol3d(S2,tolr2d));
       const AppParCurves_MultiBSpCurve& mbs   = approx.Value(1);
       Standard_Integer                  nbpol = mbs.NbPoles();
       TColgp_Array1OfPnt                pol3d(1, nbpol);
@@ -3964,7 +3968,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
         pol3d(1) = pntd;
         pol2d1(1).SetCoord(Pardeb(1), Pardeb(2));
         pol2d2(1).SetCoord(Pardeb(3), Pardeb(4));
-        //	tolreached = Max(tolreached,ddeb);
+        //	tolreached = std::max(tolreached,ddeb);
       }
 
       if (dfin >= tol2)
@@ -3972,7 +3976,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
         pol3d(nbpol) = pntf;
         pol2d1(nbpol).SetCoord(Parfin(1), Parfin(2));
         pol2d2(nbpol).SetCoord(Parfin(3), Parfin(4));
-        //	tolreached = Max(tolreached,dfin);
+        //	tolreached = std::max(tolreached,dfin);
       }
       const TColStd_Array1OfReal&    knots = mbs.Knots();
       const TColStd_Array1OfInteger& mults = mbs.Multiplicities();
@@ -3981,8 +3985,8 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
       Pc1                                  = new Geom2d_BSplineCurve(pol2d1, knots, mults, deg);
       Pc2                                  = new Geom2d_BSplineCurve(pol2d2, knots, mults, deg);
       tolreached                           = ChFi3d_EvalTolReached(S1, Pc1, S2, Pc2, C3d);
-      tolreached                           = Max(tolreached, ddeb);
-      tolreached                           = Max(tolreached, dfin);
+      tolreached                           = std::max(tolreached, ddeb);
+      tolreached                           = std::max(tolreached, dfin);
       return Standard_True;
     }
   }
@@ -4037,9 +4041,9 @@ Standard_Boolean ChFi3d_IntCS(const Handle(Adaptor3d_Surface)& S,
           temp = pint.W();
           isol = i;
         }
-        else if (Abs(pint.W() - wc) < dist)
+        else if (std::abs(pint.W() - wc) < dist)
         {
-          dist = Abs(pint.W() - wc);
+          dist = std::abs(pint.W() - wc);
           isol = i;
         }
       }
@@ -4100,11 +4104,11 @@ void ChFi3d_ComputesIntPC(const ChFiDS_FaceInterference&     Fi1,
   distref2    = p3d1.SquareDistance(p3d2);
   P.SetXYZ(0.5 * (p3d1.XYZ() + p3d2.XYZ()));
   // recalculation of the extremums
-  Standard_Real               delt1 = Min(0.1, 0.05 * (Fi1.LastParameter() - Fi1.FirstParameter()));
+  Standard_Real delt1 = std::min(0.1, 0.05 * (Fi1.LastParameter() - Fi1.FirstParameter()));
   Handle(Geom2dAdaptor_Curve) hc2d1 =
     new Geom2dAdaptor_Curve(Fi1.PCurveOnSurf(), UInt1 - delt1, UInt1 + delt1);
-  Adaptor3d_CurveOnSurface    cons1(hc2d1, HS1);
-  Standard_Real               delt2 = Min(0.1, 0.05 * (Fi2.LastParameter() - Fi2.FirstParameter()));
+  Adaptor3d_CurveOnSurface cons1(hc2d1, HS1);
+  Standard_Real delt2 = std::min(0.1, 0.05 * (Fi2.LastParameter() - Fi2.FirstParameter()));
   Handle(Geom2dAdaptor_Curve) hc2d2 =
     new Geom2dAdaptor_Curve(Fi2.PCurveOnSurf(), UInt2 - delt2, UInt2 + delt2);
   Adaptor3d_CurveOnSurface cons2(hc2d2, HS2);
@@ -4162,7 +4166,7 @@ Handle(GeomAdaptor_Surface) ChFi3d_BoundSurf(TopOpeBRepDS_DataStructure&    DStr
   GeomAbs_SurfaceType styp = S1.GetType();
   if (styp == GeomAbs_Cylinder)
   {
-    Dv = Max(0.5 * Dv, 4. * S1.Cylinder().Radius());
+    Dv = std::max(0.5 * Dv, 4. * S1.Cylinder().Radius());
     Du = 0.;
     S1.Load(DStr.Surface(Fd1->Surf()).Surface(), mu, Mu, mv - Dv, Mv + Dv);
   }
@@ -4170,13 +4174,13 @@ Handle(GeomAdaptor_Surface) ChFi3d_BoundSurf(TopOpeBRepDS_DataStructure&    DStr
   // period more than 2PI.
   else if (styp == GeomAbs_Torus || styp == GeomAbs_Cone)
   {
-    Du = Min(M_PI - 0.5 * Du, 0.1 * Du);
+    Du = std::min(M_PI - 0.5 * Du, 0.1 * Du);
     Dv = 0.;
     S1.Load(DStr.Surface(Fd1->Surf()).Surface(), mu - Du, Mu + Du, mv, Mv);
   }
   else if (styp == GeomAbs_Plane)
   {
-    Du = Max(0.5 * Du, 4. * Dv);
+    Du = std::max(0.5 * Du, 4. * Dv);
     Dv = 0.;
     S1.Load(DStr.Surface(Fd1->Surf()).Surface(), mu - Du, Mu + Du, mv, Mv);
   }
@@ -4505,8 +4509,8 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   {
     IF      = Spine->Index(WF, 1);
     IL      = Spine->Index(WL, 0);
-    Wrefdeb = Max(Spine->FirstParameter(IF), WF);
-    Wreffin = Min(Spine->LastParameter(IL), WL);
+    Wrefdeb = std::max(Spine->FirstParameter(IF), WF);
+    Wreffin = std::min(Spine->LastParameter(IL), WL);
   }
   //
   Spine->D1(WF, PDeb, VrefDeb);
@@ -4609,7 +4613,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     }
   } // else {//#1
   //
-  if (Abs(Last - First) < tolpared)
+  if (std::abs(Last - First) < tolpared)
   {
     cepadur = 1;
   }
@@ -4644,7 +4648,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   //
   TC = new (Geom_TrimmedCurve)(Cv, First, Last);
   BS = GeomConvert::CurveToBSplineCurve(TC);
-  CurveCleaner(BS, Abs(WL - WF) * 1.e-4, 0);
+  CurveCleaner(BS, std::abs(WL - WF) * 1.e-4, 0);
   //
   // Smoothing of the curve
   iToApproxByC2 = 0;
@@ -4731,7 +4735,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     //
     TC = new (Geom_TrimmedCurve)(Cv, First, Last);
     BS = GeomConvert::CurveToBSplineCurve(TC);
-    CurveCleaner(BS, Abs(WL - WF) * 1.e-4, 0);
+    CurveCleaner(BS, std::abs(WL - WF) * 1.e-4, 0);
     //
     // Smoothing of the curve
     aContinuity = TC->Continuity();
@@ -4743,7 +4747,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
       TC = BS;
     }
     //
-    tolrac = Min(tol, epsV);
+    tolrac = std::min(tol, epsV);
     Bof    = Concat.Add(TC, 2. * tolrac, Standard_True);
     // si l'ajout ne s'est pas bien passe on essai d'augmenter la tolerance
     if (!Bof)
@@ -4847,11 +4851,11 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   }
   //
   // Reparametrisation et segmentation sur le domaine de la Spine.
-  if (Abs(BSpline->FirstParameter() - WF) < tol)
+  if (std::abs(BSpline->FirstParameter() - WF) < tol)
   {
     WF = BSpline->FirstParameter();
   }
-  if (Abs(BSpline->LastParameter() - WL) < tol)
+  if (std::abs(BSpline->LastParameter() - WL) < tol)
   {
     WL = BSpline->LastParameter();
   }
@@ -4919,19 +4923,19 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     MultMax = BSpline->Degree() - 2;
   }
   // correction C2 or C3 (if possible)
-  CurveCleaner(BSpline, Abs(WL - WF) * 1.e-4, 1);
-  CurveCleaner(BSpline, Abs(WL - WF) * 1.e-2, MultMax);
-  Standard_Integer MultMin = Max(BSpline->Degree() - 4, 1);
+  CurveCleaner(BSpline, std::abs(WL - WF) * 1.e-4, 1);
+  CurveCleaner(BSpline, std::abs(WL - WF) * 1.e-2, MultMax);
+  Standard_Integer MultMin = std::max(BSpline->Degree() - 4, 1);
   for (ii = fk; ii <= lk; ii++)
   {
     if (BSpline->Multiplicity(ii) > MultMax)
     {
-      Bof = BSpline->RemoveKnot(ii, MultMax, Abs(WL - WF) / 10);
+      Bof = BSpline->RemoveKnot(ii, MultMax, std::abs(WL - WF) / 10);
     }
     // See C4
     if (BSpline->Multiplicity(ii) > MultMin)
     {
-      Bof = BSpline->RemoveKnot(ii, MultMin, Abs(WL - WF) * 1.e-4);
+      Bof = BSpline->RemoveKnot(ii, MultMin, std::abs(WL - WF) * 1.e-4);
     }
   }
   // elspine periodic => BSpline Periodic
@@ -4943,9 +4947,9 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
       // modified by NIZNHY-PKV Fri Dec 10 12:20:22 2010ft
       if (iToApproxByC2)
       {
-        Bof = BSpline->RemoveKnot(1, MultMax, Abs(WL - WF) / 10);
+        Bof = BSpline->RemoveKnot(1, MultMax, std::abs(WL - WF) / 10);
       }
-      // Bof = BSpline->RemoveKnot(1, MultMax, Abs(WL-WF)/10);
+      // Bof = BSpline->RemoveKnot(1, MultMax, std::abs(WL-WF)/10);
       // modified by NIZNHY-PKV Mon Dec 13 14:12:54 2010t
     }
   }
@@ -4961,7 +4965,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     ES.FirstPointAndTgt(PDeb, VrefDeb);
     Standard_Real scaldeb = VrefDeb.Dot(V1);
     Standard_Real disdeb  = PDeb.Distance(P1);
-    if ((Abs(WF - LocalWF) < 1.e-12) && ((scaldeb <= 0.9999999) || disdeb >= tol))
+    if ((std::abs(WF - LocalWF) < 1.e-12) && ((scaldeb <= 0.9999999) || disdeb >= tol))
     {
       // Yes if there was no extension and the tangent is not the good one.
       adjust = Standard_True;
@@ -4971,7 +4975,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     ES.LastPointAndTgt(PFin, VrefFin);
     Standard_Real scalfin = VrefFin.Dot(V2);
     Standard_Real disfin  = PFin.Distance(P2);
-    if ((Abs(WL - LocalWL) < 1.e-12) && ((scalfin <= 0.9999999) || disfin >= tol))
+    if ((std::abs(WL - LocalWL) < 1.e-12) && ((scalfin <= 0.9999999) || disfin >= tol))
     {
       // the same at the end
       adjust = Standard_True;
@@ -5197,7 +5201,7 @@ Standard_Real ChFi3d_AngleEdge(const TopoDS_Vertex& Vtx,
     dir1.Reverse();
   if (!Vtx.IsSame(TopExp::FirstVertex(E2)))
     dir2.Reverse();
-  angle = Abs(dir1.Angle(dir2));
+  angle = std::abs(dir1.Angle(dir2));
   return angle;
 }
 
@@ -5510,7 +5514,7 @@ Standard_Boolean ChFi3d_IsSmooth(const Handle(Geom_Curve)& C)
       LProp.SetParameter(t);
       if (!LProp.IsTangentDefined())
         return Standard_False;
-      Curvature = Abs(LProp.Curvature());
+      Curvature = std::abs(LProp.Curvature());
       if (Curvature > Resolution)
       {
         C->D0(t, P1);
@@ -5541,7 +5545,7 @@ Standard_Boolean ChFi3d_IsSmooth(const Handle(Geom_Curve)& C)
       LProp.SetParameter(t);
       if (!LProp.IsTangentDefined())
         return Standard_False;
-      Curvature = Abs(LProp.Curvature());
+      Curvature = std::abs(LProp.Curvature());
       if (Curvature > Resolution)
       {
         C->D0(t, P1);

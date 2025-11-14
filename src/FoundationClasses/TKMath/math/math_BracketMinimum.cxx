@@ -39,7 +39,7 @@ Standard_Boolean math_BracketMinimum::LimitAndMayBeSwap(math_Function&      F,
                                                         Standard_Real&      theFC) const
 {
   theC = Limited(theC);
-  if (Abs(theB - theC) < Precision::PConfusion())
+  if (std::abs(theB - theC) < Precision::PConfusion())
     return Standard_False;
   Standard_Boolean OK = F.Value(theC, theFC);
   if (!OK)

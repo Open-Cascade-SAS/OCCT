@@ -161,14 +161,14 @@ Standard_Boolean StepToTopoDS_GeometricTool::IsLikeSeam(
         // Same Origin in X OR Y && Same Vector ??
         // WITHIN A given tolerance !!!
         Standard_Real DeltaX =
-          Abs(line1->Pnt()->CoordinatesValue(1) - line2->Pnt()->CoordinatesValue(1));
+          std::abs(line1->Pnt()->CoordinatesValue(1) - line2->Pnt()->CoordinatesValue(1));
         Standard_Real DeltaY =
-          Abs(line1->Pnt()->CoordinatesValue(2) - line2->Pnt()->CoordinatesValue(2));
+          std::abs(line1->Pnt()->CoordinatesValue(2) - line2->Pnt()->CoordinatesValue(2));
 
-        Standard_Real DeltaDirX = Abs(line1->Dir()->Orientation()->DirectionRatiosValue(1)
-                                      - line2->Dir()->Orientation()->DirectionRatiosValue(1));
-        Standard_Real DeltaDirY = Abs(line1->Dir()->Orientation()->DirectionRatiosValue(2)
-                                      - line2->Dir()->Orientation()->DirectionRatiosValue(2));
+        Standard_Real DeltaDirX = std::abs(line1->Dir()->Orientation()->DirectionRatiosValue(1)
+                                           - line2->Dir()->Orientation()->DirectionRatiosValue(1));
+        Standard_Real DeltaDirY = std::abs(line1->Dir()->Orientation()->DirectionRatiosValue(2)
+                                           - line2->Dir()->Orientation()->DirectionRatiosValue(2));
 
         // clang-format off
         Standard_Real preci2d = Precision::PConfusion(); //:S4136: Parametric(BRepAPI::Precision(),10);
@@ -265,12 +265,12 @@ Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Cur
     // DANGER precision 3d applique a une espace 1d
 
     // w2 = cf au lieu de w2 = cl
-    if (Abs(w2 - cf) < Precision::PConfusion() /*preci*/)
+    if (std::abs(w2 - cf) < Precision::PConfusion() /*preci*/)
     {
       w2 = cl;
     }
     // w1 = cl au lieu de w1 = cf
-    else if (Abs(w1 - cl) < Precision::PConfusion() /*preci*/)
+    else if (std::abs(w1 - cl) < Precision::PConfusion() /*preci*/)
     {
       w1 = cf;
     }
@@ -317,12 +317,12 @@ Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Cur
       // DANGER precision 3d applique a une espace 1d
 
       // w2 = cf au lieu de w2 = cl
-      if (Abs(w2 - cf) < Precision::PConfusion())
+      if (std::abs(w2 - cf) < Precision::PConfusion())
       {
         w2 = cl;
       }
       // w1 = cl au lieu de w1 = cf
-      else if (Abs(w1 - cl) < Precision::PConfusion())
+      else if (std::abs(w1 - cl) < Precision::PConfusion())
       {
         w1 = cf;
       }

@@ -175,7 +175,7 @@ void TPrsStd_ConstraintTools::ComputeTextAndValue(const Handle(TDataXtd_Constrai
   val                              = VAL->Get();
   if (anIsAngle)
   {
-    outvalue = UnitsAPI::CurrentFromLS(Abs(val), "PLANE ANGLE");
+    outvalue = UnitsAPI::CurrentFromLS(std::abs(val), "PLANE ANGLE");
   }
   else
   {
@@ -1729,7 +1729,8 @@ void TPrsStd_ConstraintTools::ComputeEqualRadius(const Handle(TDataXtd_Constrain
     const gp_Dir& aDir1 = anAx31.Direction();
     const gp_Dir& aDir2 = anAx32.Direction();
 
-    if (Abs(D1 - D2) < Precision::Confusion() && aDir1.IsParallel(aDir2, Precision::Confusion()))
+    if (std::abs(D1 - D2) < Precision::Confusion()
+        && aDir1.IsParallel(aDir2, Precision::Confusion()))
       aplane = aPlane2;
     else
     {

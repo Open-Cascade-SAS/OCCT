@@ -50,14 +50,14 @@ static Standard_Boolean IsTangentExtCheck(TheIWFunction&      theFunc,
 {
   const Standard_Real    aTol            = theFunc.Tolerance();
   const Standard_Integer aNbItems        = 4;
-  const Standard_Real    aParU[aNbItems] = {Min(theU + theStepU, theUsup),
-                                            Max(theU - theStepU, theUinf),
+  const Standard_Real    aParU[aNbItems] = {std::min(theU + theStepU, theUsup),
+                                            std::max(theU - theStepU, theUinf),
                                             theU,
                                             theU};
   const Standard_Real    aParV[aNbItems] = {theV,
                                             theV,
-                                            Min(theV + theStepV, theVsup),
-                                            Max(theV - theStepV, theVinf)};
+                                            std::min(theV + theStepV, theVsup),
+                                            std::max(theV - theStepV, theVinf)};
 
   math_Vector aX(1, 2), aVal(1, 1);
 
@@ -69,7 +69,7 @@ static Standard_Boolean IsTangentExtCheck(TheIWFunction&      theFunc,
     if (!theFunc.Value(aX, aVal))
       continue;
 
-    if (Abs(theFunc.Root()) > aTol)
+    if (std::abs(theFunc.Root()) > aTol)
       return Standard_False;
   }
 
@@ -235,7 +235,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator&  Pnts1,
 
   Func.Set(Caro);
 
-  if (mySRangeU.Delta() > Max(tolerance(1), Precision::PConfusion()))
+  if (mySRangeU.Delta() > std::max(tolerance(1), Precision::PConfusion()))
   {
     mySRangeU.Enlarge(mySRangeU.Delta());
     mySRangeU.Common(Bnd_Range(Um, UM));
@@ -245,7 +245,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator&  Pnts1,
     mySRangeU = Bnd_Range(Um, UM);
   }
 
-  if (mySRangeV.Delta() > Max(tolerance(2), Precision::PConfusion()))
+  if (mySRangeV.Delta() > std::max(tolerance(2), Precision::PConfusion()))
   {
     mySRangeV.Enlarge(mySRangeV.Delta());
     mySRangeV.Common(Bnd_Range(Vm, VM));
@@ -388,9 +388,9 @@ void IntWalk_IWalking::Perform(const ThePOPIterator&  Pnts1,
 
 static void CutVectorByTolerances(gp_Vec2d& theVector, const math_Vector& theTolerance)
 {
-  if (Abs(theVector.X()) < theTolerance(1))
+  if (std::abs(theVector.X()) < theTolerance(1))
     theVector.SetX(0.);
-  if (Abs(theVector.Y()) < theTolerance(2))
+  if (std::abs(theVector.Y()) < theTolerance(2))
     theVector.SetY(0.);
 }
 
@@ -450,7 +450,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
     { // jag 940616
       if (Duvx)
       {
-        theStepU = Abs((BornInf(1) - UVap(1)) / Duvx); // iso U =BornInf(1)
+        theStepU = std::abs((BornInf(1) - UVap(1)) / Duvx); // iso U =BornInf(1)
       }
       else
       {
@@ -461,7 +461,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
     {
       if (Duvx)
       {
-        theStepU = Abs((BornSup(1) - UVap(1)) / Duvx); // iso U =BornSup(1)
+        theStepU = std::abs((BornSup(1) - UVap(1)) / Duvx); // iso U =BornSup(1)
       }
       else
       {
@@ -472,7 +472,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
     { // jag 940616
       if (Duvy)
       {
-        theStepV = Abs((BornInf(2) - UVap(2)) / Duvy); // iso V =BornInf(2)
+        theStepV = std::abs((BornInf(2) - UVap(2)) / Duvy); // iso V =BornInf(2)
       }
       else
       {
@@ -483,7 +483,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
     {
       if (Duvy)
       {
-        theStepV = Abs((BornSup(2) - UVap(2)) / Duvy); // iso V =BornSup(2)
+        theStepV = std::abs((BornSup(2) - UVap(2)) / Duvy); // iso V =BornSup(2)
       }
       else
       {
@@ -528,7 +528,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
   { // jag 940616
     if (Duvx)
     {
-      Standard_Real aStep = Abs((BornInf(1) - UVap(1)) / Duvx); // iso U =BornInf(1)
+      Standard_Real aStep = std::abs((BornInf(1) - UVap(1)) / Duvx); // iso U =BornInf(1)
       if (aStep < Step)
         Step = aStep;
     }
@@ -541,7 +541,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
   { // jag 940616
     if (Duvx)
     {
-      Standard_Real aStep = Abs((BornSup(1) - UVap(1)) / Duvx); // iso U =BornSup(1)
+      Standard_Real aStep = std::abs((BornSup(1) - UVap(1)) / Duvx); // iso U =BornSup(1)
       if (aStep < Step)
         Step = aStep;
     }
@@ -554,7 +554,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
   { // jag 940616
     if (Duvy)
     {
-      Standard_Real aStep = Abs((BornInf(2) - UVap(2)) / Duvy); // iso V =BornInf(2)
+      Standard_Real aStep = std::abs((BornInf(2) - UVap(2)) / Duvy); // iso V =BornInf(2)
       if (aStep < Step)
         Step = aStep;
     }
@@ -567,7 +567,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
   { // jag 940616
     if (Duvy)
     {
-      Standard_Real aStep = Abs((BornSup(2) - UVap(2)) / Duvy); // iso V =BornSup(2)
+      Standard_Real aStep = std::abs((BornSup(2) - UVap(2)) / Duvy); // iso V =BornSup(2)
       if (aStep < Step)
         Step = aStep;
     }
@@ -638,7 +638,8 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage(const TColStd_SequenceOfReal
 
       // IFV for OCC20285
 
-      if ((Abs(Du) < tolu2 && Abs(Dv) < tolv2) || (Abs(Dup) < tolu2 && Abs(Dvp) < tolv2))
+      if ((std::abs(Du) < tolu2 && std::abs(Dv) < tolv2)
+          || (std::abs(Dup) < tolu2 && std::abs(Dvp) < tolv2))
       {
         wd2[i].etat = -wd2[i].etat;
       }
@@ -698,12 +699,12 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage(const TColStd_SequenceOfReal
         Vtest = wd1[i].vstart;
         Dup   = Up - Utest;
         Dvp   = Vp - Vtest;
-        if (Abs(Dup) >= tolu || Abs(Dvp) >= tolv)
+        if (std::abs(Dup) >= tolu || std::abs(Dvp) >= tolv)
         {
           Standard_Real UV1mUtest = UV(1) - Utest;
           Standard_Real UV2mVtest = UV(2) - Vtest;
           if (((Dup * UV1mUtest + Dvp * UV2mVtest) < 0)
-              || (Abs(UV1mUtest) < tolu && Abs(UV2mVtest) < tolv))
+              || (std::abs(UV1mUtest) < tolu && std::abs(UV2mVtest) < tolv))
           {
             i_candidates.Append((Standard_Integer)i);
             SqDist_candidates.Append(Dup * Dup + Dvp * Dvp);
@@ -724,7 +725,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage(const TColStd_SequenceOfReal
             for (j = N + 1; j <= N + nbMultiplicities[i]; j++)
             {
               if (((Up - Umult(j)) * (UV(1) - Umult(j)) + (Vp - Vmult(j)) * (UV(2) - Vmult(j)) < 0)
-                  || (Abs(UV(1) - Umult(j)) < tolu && Abs(UV(2) - Vmult(j)) < tolv))
+                  || (std::abs(UV(1) - Umult(j)) < tolu && std::abs(UV(2) - Vmult(j)) < tolv))
               {
                 Irang  = (Standard_Integer)i;
                 Arrive = Standard_True;
@@ -805,13 +806,15 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage(const TColStd_SequenceOfReal
   // This is no good for computation. Therefore, it is limited.
   // Do not limit this factor in case of highly anisotropic parametrization
   //(parametric space is considerably larger in one direction than another).
-  const Standard_Boolean isHighlyAnisotropic = Max(tolu, tolv) > 1000. * Min(tolu, tolv);
+  const Standard_Boolean isHighlyAnisotropic = std::max(tolu, tolv) > 1000. * std::min(tolu, tolv);
   const Standard_Real    deltau =
-    mySRangeU.IsVoid() ? UM - Um
-                          : (isHighlyAnisotropic ? mySRangeU.Delta() : Max(mySRangeU.Delta(), 1.0));
+    mySRangeU.IsVoid()
+         ? UM - Um
+         : (isHighlyAnisotropic ? mySRangeU.Delta() : std::max(mySRangeU.Delta(), 1.0));
   const Standard_Real deltav =
-    mySRangeV.IsVoid() ? VM - Vm
-                       : (isHighlyAnisotropic ? mySRangeV.Delta() : Max(mySRangeV.Delta(), 1.0));
+    mySRangeV.IsVoid()
+      ? VM - Vm
+      : (isHighlyAnisotropic ? mySRangeV.Delta() : std::max(mySRangeV.Delta(), 1.0));
 
   Up /= deltau;
   UV1 /= deltau;
@@ -858,7 +861,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage(const TColStd_SequenceOfReal
         Standard_Real dCurrentStart  = UV1mUtest * UV1mUtest + UV2mVtest * UV2mVtest;
 
         Scal = (UpmUtest) * (UV1mUtest) + (VpmVtest) * (UV2mVtest);
-        if ((Abs(UpmUtest) < tolu && Abs(VpmVtest) < tolv))
+        if ((std::abs(UpmUtest) < tolu && std::abs(VpmVtest) < tolv))
         {
           if (Index != k)
           {
@@ -924,7 +927,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage(const TColStd_SequenceOfReal
       Vtest /= deltav;
 
       if (((Up - Utest) * (UV1 - Utest) + (Vp - Vtest) * (UV2 - Vtest) < 0)
-          || (Abs(UV1 - Utest) < tolu && Abs(UV2 - Vtest) < tolv))
+          || (std::abs(UV1 - Utest) < tolu && std::abs(UV2 - Vtest) < tolv))
         Irang = i;
       else if (nbMultiplicities[i] > 0)
       {
@@ -936,7 +939,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage(const TColStd_SequenceOfReal
           Standard_Real Umultj = Umult(j) / deltau;
           Standard_Real Vmultj = Vmult(j) / deltav;
           if (((Up - Umultj) * (UV1 - Umultj) + (Vp - Vmultj) * (UV2 - Vmultj) < 0)
-              || (Abs(UV1 - Umultj) < tolu && Abs(UV2 - Vmultj) < tolv))
+              || (std::abs(UV1 - Umultj) < tolu && std::abs(UV2 - Vmultj) < tolv))
           {
             Irang = i;
             break;
@@ -978,14 +981,14 @@ Standard_Boolean IntWalk_IWalking::TestArretAjout(TheIWFunction&    sp,
   {
     Irang = seqAjout.Value(i);
 
-    // add test Abs(Irang) <= lines.Length() for the case when
+    // add test std::abs(Irang) <= lines.Length() for the case when
     // a closed line is opened by adding a  1 point on this same
     // line. Anyway there is a huge problem as 2 points will be
     // added on this line...
 
-    if (Abs(Irang) <= lines.Length())
+    if (std::abs(Irang) <= lines.Length())
     {
-      const Handle(IntWalk_TheIWLine)& Line = lines.Value(Abs(Irang));
+      const Handle(IntWalk_TheIWLine)& Line = lines.Value(std::abs(Irang));
       if (Irang > 0)
         Psol = Line->Value(Line->NbPoints());
       else
@@ -999,9 +1002,9 @@ Standard_Boolean IntWalk_IWalking::TestArretAjout(TheIWFunction&    sp,
         Psol.ParametersOnS1(U1, V1);
       }
       if (((Up - U1) * (UV(1) - U1) + (Vp - V1) * (UV(2) - V1)) < 0
-          || (Abs(UV(1) - U1) < tolerance(1) && Abs(UV(2) - V1) < tolerance(2)))
+          || (std::abs(UV(1) - U1) < tolerance(1) && std::abs(UV(2) - V1) < tolerance(2)))
       {
-        // jag 940615	Irang= -Abs(Irang);
+        // jag 940615	Irang= -std::abs(Irang);
         Arrive = Standard_True;
         UV(1)  = U1;
         UV(2)  = V1;
@@ -1036,7 +1039,7 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
       continue;
     Standard_Boolean                 ToRemove = Standard_False;
     IntSurf_PntOn2S                  PointAlone1, PointAlone2;
-    const Handle(IntWalk_TheIWLine)& Line1 = lines.Value(Abs(Irang1));
+    const Handle(IntWalk_TheIWLine)& Line1 = lines.Value(std::abs(Irang1));
     if (Irang1 > 0)
       PointAlone1 = Line1->Value(Line1->NbPoints());
     else
@@ -1049,7 +1052,7 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
       Standard_Integer Irang2 = CopySeqAlone(j);
       if (Irang2 == 0 || BadSolutions.Contains(Irang2))
         continue;
-      const Handle(IntWalk_TheIWLine)& Line2 = lines.Value(Abs(Irang2));
+      const Handle(IntWalk_TheIWLine)& Line2 = lines.Value(std::abs(Irang2));
       if (Irang2 > 0)
         PointAlone2 = Line2->Value(Line2->NbPoints());
       else
@@ -1071,7 +1074,7 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
       continue;
     }
     // Ends of same line
-    if (Abs(Irang1) == Abs(MinRang) && lines.Value(Abs(Irang1))->NbPoints() == 2)
+    if (std::abs(Irang1) == std::abs(MinRang) && lines.Value(std::abs(Irang1))->NbPoints() == 2)
     {
       SeqToRemove.Append(Irang1);
       SeqToRemove.Append(MinRang);
@@ -1081,7 +1084,7 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
       continue;
     }
     ///////////////////
-    const Handle(IntWalk_TheIWLine)& Line2 = lines.Value(Abs(MinRang));
+    const Handle(IntWalk_TheIWLine)& Line2 = lines.Value(std::abs(MinRang));
     if (MinRang > 0)
       PointAlone2 = Line2->Value(Line2->NbPoints());
     else
@@ -1091,8 +1094,8 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
     P2d2                      = PointAlone2.ValueOnSurface(reversed);
     Standard_Real MinSqDist3d = Pnt1.SquareDistance(Pnt2);
     if (MinSqDist3d <= epsilon
-        || (Abs(P2d1.X() - P2d2.X()) <= tolerance(1)
-            && Abs(P2d1.Y() - P2d2.Y()) <= tolerance(2))) // close points
+        || (std::abs(P2d1.X() - P2d2.X()) <= tolerance(1)
+            && std::abs(P2d1.Y() - P2d2.Y()) <= tolerance(2))) // close points
       ToRemove = Standard_True;
     else // real curve
     {
@@ -1101,7 +1104,7 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
       UVap(2) = (P2d1.Y() + P2d2.Y()) / 2;
       math_FunctionSetRoot Rsnld(sp, tolerance);
       Rsnld.Perform(sp, UVap, BornInf, BornSup);
-      if (Rsnld.IsDone() && Abs(sp.Root()) <= sp.Tolerance() && !sp.IsTangent())
+      if (Rsnld.IsDone() && std::abs(sp.Root()) <= sp.Tolerance() && !sp.IsTangent())
       {
         Rsnld.Root(UV);
         gp_Pnt2d         Pmid(UV(1), UV(2));
@@ -1177,7 +1180,7 @@ void IntWalk_IWalking::TestArretCadre(const TColStd_SequenceOfReal&    Umult,
 // tried all tests of stop and arrived.
 // test of stop on all given departure points already marked and on the entire current line.
 // This line can be shortened if the stop point is found.
-// Abs(Irang) = index in the iterator of departure points or 0
+// std::abs(Irang) = index in the iterator of departure points or 0
 //  if Irang <0 , it is necessary to add this point on the line (no Line->Cut)
 // UV = parameter of the departure point
 {
@@ -1233,7 +1236,8 @@ void IntWalk_IWalking::TestArretCadre(const TColStd_SequenceOfReal&    Umult,
           UV(2) = wd1[Irang].vstart;
           Found = Standard_True;
         }
-        else if (Abs(Uc - wd1[i].ustart) < tolerance(1) && Abs(Vc - wd1[i].vstart) < tolerance(2))
+        else if (std::abs(Uc - wd1[i].ustart) < tolerance(1)
+                 && std::abs(Vc - wd1[i].vstart) < tolerance(2))
         {
           Line->Cut(j);
           nbp   = Line->NbPoints();
@@ -1263,7 +1267,8 @@ void IntWalk_IWalking::TestArretCadre(const TColStd_SequenceOfReal&    Umult,
               Found = Standard_True;
               break;
             }
-            else if (Abs(Uc - Umult(k)) < tolerance(1) && Abs(Vc - Vmult(k)) < tolerance(2))
+            else if (std::abs(Uc - Umult(k)) < tolerance(1)
+                     && std::abs(Vc - Vmult(k)) < tolerance(2))
             {
               Line->Cut(j);
               nbp   = Line->NbPoints();
@@ -1329,8 +1334,8 @@ void IntWalk_IWalking::TestArretCadre(const TColStd_SequenceOfReal&    Umult,
         UV(2) = wd1[Irang].vstart;
         Found = Standard_True;
       }
-      else if (Abs(UV(1) - wd1[i].ustart) < tolerance(1)
-               && Abs(UV(2) - wd1[i].vstart) < tolerance(2))
+      else if (std::abs(UV(1) - wd1[i].ustart) < tolerance(1)
+               && std::abs(UV(2) - wd1[i].vstart) < tolerance(2))
       {
         Irang = i;
         UV(1) = wd1[Irang].ustart;
@@ -1356,7 +1361,8 @@ void IntWalk_IWalking::TestArretCadre(const TColStd_SequenceOfReal&    Umult,
             Found = Standard_True;
             break;
           }
-          else if (Abs(UV(1) - Umult(j)) < tolerance(1) && Abs(UV(2) - Vmult(j)) < tolerance(2))
+          else if (std::abs(UV(1) - Umult(j)) < tolerance(1)
+                   && std::abs(UV(2) - Vmult(j)) < tolerance(2))
           {
             Irang = i;
             UV(1) = wd1[Irang].ustart;
@@ -1482,7 +1488,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 
       if (IsPointOnLine(previousPoint, BornInf, BornSup, Rsnld, aFuncForDuplicate))
       {
-        wd1[I].etat = -Abs(wd1[I].etat); // mark point as processed
+        wd1[I].etat = -std::abs(wd1[I].etat); // mark point as processed
         continue;
       }
 
@@ -1524,12 +1530,12 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
       // modified by NIZHNY-MKK  Fri Oct 27 12:34:37 2000.END
 
       //  Modified by Sergey KHROMOV - Tue Nov 20 10:41:45 2001 Begin
-      wd1[I].etat              = -Abs(wd1[I].etat);
+      wd1[I].etat              = -std::abs(wd1[I].etat);
       movementdirectioninfo[I] = (movementdirectioninfo[I] == 0) ? StepSign : 0;
       //  Modified by Sergey KHROMOV - Tue Nov 20 10:41:56 2001 End
       // first step of advancement
-      Standard_Real d2dx = Abs(previousd2d.X());
-      Standard_Real d2dy = Abs(previousd2d.Y());
+      Standard_Real d2dx = std::abs(previousd2d.X());
+      Standard_Real d2dy = std::abs(previousd2d.Y());
       if (d2dx < tolerance(1))
       {
         PasC = pas * (VM - Vm) / d2dy;
@@ -1540,7 +1546,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
       }
       else
       {
-        PasC = pas * Min((UM - Um) / d2dx, (VM - Vm) / d2dy);
+        PasC = pas * std::min((UM - Um) / d2dx, (VM - Vm) / d2dy);
       }
 
       Arrive          = Standard_False;
@@ -1574,11 +1580,11 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
         }
         if (Rsnld.IsDone())
         {
-          if (Abs(Func.Root()) > Func.Tolerance())
+          if (std::abs(Func.Root()) > Func.Tolerance())
           {
             PasC  = PasC / 2.0;
-            PasCu = Abs(PasC * previousd2d.X());
-            PasCv = Abs(PasC * previousd2d.Y());
+            PasCu = std::abs(PasC * previousd2d.X());
+            PasCv = std::abs(PasC * previousd2d.Y());
             if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
             {
               if (CurrentLine->NbPoints() == 1)
@@ -1725,7 +1731,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
               Standard_Integer etat1N = wd1[N].etat;
               // modified by NIZHNY-MKK  Thu Nov  2 15:09:51 2000.BEGIN
               // 	      if (etat1N < 11) { // passing point that is a stop
-              if (Abs(etat1N) < 11)
+              if (std::abs(etat1N) < 11)
               { // passing point that is a stop
                 // modified by NIZHNY-MKK  Thu Nov  2 15:12:11 2000.END
                 if (aStatus == IntWalk_ArretSurPoint)
@@ -1752,7 +1758,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
               {
                 // modified by NIZHNY-MKK  Fri Oct 27 12:43:05 2000.BEGIN
                 // 		wd1[N].etat= - wd1[N].etat;
-                wd1[N].etat              = -Abs(etat1N);
+                wd1[N].etat              = -std::abs(etat1N);
                 movementdirectioninfo[N] = (movementdirectioninfo[N] == 0) ? StepSign : 0;
                 if (Arrive && movementdirectioninfo[N] != 0)
                 {
@@ -1794,8 +1800,8 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
         else
         { // no numerical solution
           PasC  = PasC / 2.;
-          PasCu = Abs(PasC * previousd2d.X());
-          PasCv = Abs(PasC * previousd2d.Y());
+          PasCu = std::abs(PasC * previousd2d.X());
+          PasCv = std::abs(PasC * previousd2d.Y());
           if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
           {
             if (CurrentLine->NbPoints() == 1)
@@ -1849,7 +1855,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
             Vav -= Vavp;
             Uav *= 0.001;
             Vav *= 0.001;
-            if (Abs(Uav) < tolerance(1) && Abs(Vav) < tolerance(2))
+            if (std::abs(Uav) < tolerance(1) && std::abs(Vav) < tolerance(2))
             {
               // modified by NIZHNY-MKK  Fri Oct 27 13:01:38 2000.BEGIN
               // 	      wd1[av].etat=-wd1[av].etat;
@@ -1882,7 +1888,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
             Vav -= Vavp;
             Uav *= 0.001;
             Vav *= 0.001;
-            if (Abs(Uav) < tolerance(1) && Abs(Vav) < tolerance(2))
+            if (std::abs(Uav) < tolerance(1) && std::abs(Vav) < tolerance(2))
             {
               // modified by NIZHNY-MKK  Fri Oct 27 13:02:49 2000.BEGIN
               // 	      wd1[av].etat=-wd1[av].etat;
@@ -1934,12 +1940,12 @@ static Standard_Boolean TestPassedSolutionWithNegativeState(
       Vtest = wd[i].vstart;
       Dup   = prevUp - Utest;
       Dvp   = prevVp - Vtest;
-      if (Abs(Dup) >= tolu || Abs(Dvp) >= tolv)
+      if (std::abs(Dup) >= tolu || std::abs(Dvp) >= tolv)
       {
         Standard_Real UV1mUtest = UV(1) - Utest;
         Standard_Real UV2mVtest = UV(2) - Vtest;
         if (((Dup * UV1mUtest + Dvp * UV2mVtest) < 0)
-            || (Abs(UV1mUtest) < tolu && Abs(UV2mVtest) < tolv))
+            || (std::abs(UV1mUtest) < tolu && std::abs(UV2mVtest) < tolv))
         {
           Irang  = i;
           Arrive = Standard_True;
@@ -1957,7 +1963,7 @@ static Standard_Boolean TestPassedSolutionWithNegativeState(
           {
             if (((prevUp - Umult(j)) * (UV(1) - Umult(j)) + (prevVp - Vmult(j)) * (UV(2) - Vmult(j))
                  < 0)
-                || (Abs(UV(1) - Umult(j)) < tolu && Abs(UV(2) - Vmult(j)) < tolv))
+                || (std::abs(UV(1) - Umult(j)) < tolu && std::abs(UV(2) - Vmult(j)) < tolv))
             {
               Irang  = i;
               Arrive = Standard_True;
@@ -2065,7 +2071,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
       Standard_Real aParam = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
       UV(aChangeIdx)       = aParam;
       Func.Derivatives(UV, D);
-      if (Abs(D(1, aChangeIdx)) > Precision::Confusion())
+      if (std::abs(D(1, aChangeIdx)) > Precision::Confusion())
       {
         isLeftDegeneratedBorder[aBorderIdx - 1] = Standard_False;
         break;
@@ -2079,7 +2085,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
       Standard_Real aParam = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
       UV(aChangeIdx)       = aParam;
       Func.Derivatives(UV, D);
-      if (Abs(D(1, aChangeIdx)) > Precision::Confusion())
+      if (std::abs(D(1, aChangeIdx)) > Precision::Confusion())
       {
         isRightDegeneratedBorder[aBorderIdx - 1] = Standard_False;
         break;
@@ -2120,8 +2126,8 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 
       // first step of advancement
 
-      Standard_Real d2dx = Abs(previousd2d.X());
-      Standard_Real d2dy = Abs(previousd2d.Y());
+      Standard_Real d2dx = std::abs(previousd2d.X());
+      Standard_Real d2dy = std::abs(previousd2d.Y());
       if (d2dx < tolerance(1))
       {
         PasC = pas * (VM - Vm) / d2dy;
@@ -2132,7 +2138,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
       }
       else
       {
-        PasC = pas * Min((UM - Um) / d2dx, (VM - Vm) / d2dy);
+        PasC = pas * std::min((UM - Um) / d2dx, (VM - Vm) / d2dy);
       }
 
       PasSav = PasC;
@@ -2165,11 +2171,11 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
         }
         if (Rsnld.IsDone())
         {
-          if (Abs(Func.Root()) > Func.Tolerance())
+          if (std::abs(Func.Root()) > Func.Tolerance())
           { // no solution for the tolerance
             PasC  = PasC / 2.;
-            PasCu = Abs(PasC * previousd2d.X());
-            PasCv = Abs(PasC * previousd2d.Y());
+            PasCu = std::abs(PasC * previousd2d.X());
+            PasCv = std::abs(PasC * previousd2d.Y());
 
             if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
             {
@@ -2222,9 +2228,10 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
               {
                 // Check degenerated cases and fix if possible.
                 if ((isLeftDegeneratedBorder[aCoordIdx - 1]
-                     && Abs(Uvap(aCoordIdx) - BornInf(aCoordIdx)) < Precision::PConfusion())
+                     && std::abs(Uvap(aCoordIdx) - BornInf(aCoordIdx)) < Precision::PConfusion())
                     || (isRightDegeneratedBorder[aCoordIdx - 1]
-                        && Abs(Uvap(aCoordIdx) - BornSup(aCoordIdx)) < Precision::PConfusion()))
+                        && std::abs(Uvap(aCoordIdx) - BornSup(aCoordIdx))
+                             < Precision::PConfusion()))
                 {
                   Standard_Real uvprev[2], uv[2];
                   if (!reversed)
@@ -2246,9 +2253,9 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                   if (aStatus != IntWalk_PasTropGrand)
                   {
                     // Make linear extrapolation.
-                    if (Abs(uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]) > gp::Resolution())
-                      aScaleCoeff = Abs((Uvap(aCoordIdx) - uv[aCoordIdx - 1])
-                                        / (uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]));
+                    if (std::abs(uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]) > gp::Resolution())
+                      aScaleCoeff = std::abs((Uvap(aCoordIdx) - uv[aCoordIdx - 1])
+                                             / (uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]));
                     Standard_Integer aFixIdx = aCoordIdx == 1 ? 2 : 1; // Fixing index;
                     Uvap(aFixIdx) =
                       uv[aFixIdx - 1] + (uv[aFixIdx - 1] - uvprev[aFixIdx - 1]) * aScaleCoeff;
@@ -2536,8 +2543,8 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
         else
         { // no numerical solution NotDone
           PasC  = PasC / 2.;
-          PasCu = Abs(PasC * previousd2d.X());
-          PasCv = Abs(PasC * previousd2d.Y());
+          PasCu = std::abs(PasC * previousd2d.X());
+          PasCv = std::abs(PasC * previousd2d.Y());
 
           if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
           {
@@ -2687,7 +2694,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     if (Cosi2 < CosRef3D)
     { // angle 3d too great
       Step                = Step / 2.0;
-      Standard_Real StepU = Abs(Step * previousd2d.X()), StepV = Abs(Step * previousd2d.Y());
+      Standard_Real StepU = std::abs(Step * previousd2d.X()),
+                    StepV = std::abs(Step * previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
         aStatus = IntWalk_ArretSurPointPrecedent;
       else
@@ -2696,16 +2704,16 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     }
   }
 
-  const Standard_Real aMinTolU = 0.1 * Abs(Step * previousd2d.X()),
-                      aMinTolV = 0.1 * Abs(Step * previousd2d.Y());
-  const Standard_Real aTolU    = (aMinTolU > 0.0) ? Min(tolerance(1), aMinTolU) : tolerance(1),
-                      aTolV    = (aMinTolV > 0.0) ? Min(tolerance(2), aMinTolV) : tolerance(2);
+  const Standard_Real aMinTolU = 0.1 * std::abs(Step * previousd2d.X()),
+                      aMinTolV = 0.1 * std::abs(Step * previousd2d.Y());
+  const Standard_Real aTolU    = (aMinTolU > 0.0) ? std::min(tolerance(1), aMinTolU) : tolerance(1),
+                      aTolV    = (aMinTolV > 0.0) ? std::min(tolerance(2), aMinTolV) : tolerance(2);
 
-  // If aMinTolU==0.0 then (Abs(Du) < aMinTolU) is equivalent of (Abs(Du) < 0.0).
+  // If aMinTolU==0.0 then (std::abs(Du) < aMinTolU) is equivalent of (std::abs(Du) < 0.0).
   // It is impossible. Therefore, this case should be processed separately.
   // Analogically for aMinTolV.
 
-  if ((Abs(Du) < aTolU) && (Abs(Dv) < aTolV))
+  if ((std::abs(Du) < aTolU) && (std::abs(Dv) < aTolV))
   {
     // Thin shapes (for which Ulast-Ufirst or/and Vlast-Vfirst is quite small)
     // exists (see bug #25820). In this case, step is quite small too.
@@ -2734,7 +2742,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     if (Cosi2 < CosRef2D || Cosi < 0)
     {
       Step                = Step / 2.0;
-      Standard_Real StepU = Abs(Step * previousd2d.X()), StepV = Abs(Step * previousd2d.Y());
+      Standard_Real StepU = std::abs(Step * previousd2d.X()),
+                    StepV = std::abs(Step * previousd2d.Y());
 
       if (StepU < tolerance(1) && StepV < tolerance(2))
         aStatus = IntWalk_ArretSurPointPrecedent;
@@ -2749,7 +2758,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     if (Cosi2 < CosRef3D)
     { // angle 3d too great
       Step                = Step / 2.;
-      Standard_Real StepU = Abs(Step * previousd2d.X()), StepV = Abs(Step * previousd2d.Y());
+      Standard_Real StepU = std::abs(Step * previousd2d.X()),
+                    StepV = std::abs(Step * previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
         aStatus = IntWalk_ArretSurPoint;
       else
@@ -2762,7 +2772,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     {
       // angle 2d too great or change the side
       Step                = Step / 2.;
-      Standard_Real StepU = Abs(Step * previousd2d.X()), StepV = Abs(Step * previousd2d.Y());
+      Standard_Real StepU = std::abs(Step * previousd2d.X()),
+                    StepV = std::abs(Step * previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
         aStatus = IntWalk_ArretSurPointPrecedent;
       else
@@ -2775,11 +2786,11 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
   {
     if (aStatus == IntWalk_PointConfondu)
     {
-      Standard_Real StepU = Min(Abs(1.5 * Du), pas * (UM - Um)),
-                    StepV = Min(Abs(1.5 * Dv), pas * (VM - Vm));
+      Standard_Real StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
+                    StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
 
-      Standard_Real d2dx = Abs(previousd2d.X());
-      Standard_Real d2dy = Abs(previousd2d.Y());
+      Standard_Real d2dx = std::abs(previousd2d.X());
+      Standard_Real d2dy = std::abs(previousd2d.Y());
 
       if (d2dx < tolerance(1))
       {
@@ -2791,7 +2802,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
       }
       else
       {
-        Step = Min(StepU / d2dx, StepV / d2dy);
+        Step = std::min(StepU / d2dx, StepV / d2dy);
       }
     }
     else
@@ -2801,22 +2812,6 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
       //   is observed.
       //   otherwise adjust the step depending on the previous step
 
-      /*
-        Standard_Real Dist = Sqrt(Norme)/3.;
-        TColgp_Array1OfPnt Poles(1,4);
-        gp_Pnt POnCurv,Milieu;
-        Poles(1) = previousPoint.Value();
-        Poles(4) = sp.Point();
-        Poles(2) = Poles(1).XYZ() +
-      StepSign * Dist* previousd3d.Normalized().XYZ();
-        Poles(3) = Poles(4).XYZ() -
-      StepSign * Dist*sp.Direction3d().Normalized().XYZ();
-        BzCLib::PntPole(0.5,Poles,POnCurv);
-        Milieu = (Poles(1).XYZ() + Poles(4).XYZ())*0.5;
-      //      FlecheCourante = Milieu.Distance(POnCurv);
-        Standard_Real FlecheCourante = Milieu.SquareDistance(POnCurv);
-      */
-
       // Direct calculation :
       // POnCurv=(((p1+p2)/2.+(p2+p3)/2.)/2. + ((p2+p3)/2.+(p3+P4)/2.)/2.)/2.
       // either POnCurv = p1/8. + 3.p2/8. + 3.p3/8. + p4/8.
@@ -2825,7 +2820,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
       // Calculate the deviation with (p1+p4)/2. . So it is just necessary to calculate
       // the norm (square) of 3.*lambda (d1 - d4)/8.
       // either the norm of :
-      //    3.*(Sqrt(Norme)/3.)*StepSign*(d1-d4)/8.
+      //    3.*(std::sqrt(Norme)/3.)*StepSign*(d1-d4)/8.
       // which produces, taking the square :
       //         Norme * (d1-d4).SquareMagnitude()/64.
 
@@ -2836,11 +2831,11 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
       //      if (FlecheCourante <= 0.5*fleche) {
       if (FlecheCourante <= 0.25 * fleche * fleche)
       {
-        Standard_Real d2dx = Abs(sp.Direction2d().X());
-        Standard_Real d2dy = Abs(sp.Direction2d().Y());
+        Standard_Real d2dx = std::abs(sp.Direction2d().X());
+        Standard_Real d2dy = std::abs(sp.Direction2d().Y());
 
-        Standard_Real StepU = Min(Abs(1.5 * Du), pas * (UM - Um)),
-                      StepV = Min(Abs(1.5 * Dv), pas * (VM - Vm));
+        Standard_Real StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
+                      StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
 
         if (d2dx < tolerance(1))
         {
@@ -2852,7 +2847,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
         }
         else
         {
-          Step = Min(StepU / d2dx, StepV / d2dy);
+          Step = std::min(StepU / d2dx, StepV / d2dy);
         }
       }
       else
@@ -2861,7 +2856,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
         if (FlecheCourante > fleche * fleche)
         { // step too great
           Step                = Step / 2.;
-          Standard_Real StepU = Abs(Step * previousd2d.X()), StepV = Abs(Step * previousd2d.Y());
+          Standard_Real StepU = std::abs(Step * previousd2d.X()),
+                        StepV = std::abs(Step * previousd2d.Y());
 
           if (StepU < tolerance(1) && StepV < tolerance(2))
             aStatus = IntWalk_ArretSurPointPrecedent;
@@ -2870,23 +2866,23 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
         }
         else
         {
-          Standard_Real d2dx = Abs(sp.Direction2d().X());
-          Standard_Real d2dy = Abs(sp.Direction2d().Y());
+          Standard_Real d2dx = std::abs(sp.Direction2d().X());
+          Standard_Real d2dy = std::abs(sp.Direction2d().Y());
 
-          Standard_Real StepU = Min(Abs(1.5 * Du), pas * (UM - Um)),
-                        StepV = Min(Abs(1.5 * Dv), pas * (VM - Vm));
+          Standard_Real StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
+                        StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
 
           if (d2dx < tolerance(1))
           {
-            Step = Min(Step, StepV / d2dy);
+            Step = std::min(Step, StepV / d2dy);
           }
           else if (d2dy < tolerance(2))
           {
-            Step = Min(Step, StepU / d2dx);
+            Step = std::min(Step, StepU / d2dx);
           }
           else
           {
-            Step = Min(Step, Min(StepU / d2dx, StepV / d2dy));
+            Step = std::min(Step, std::min(StepU / d2dx, StepV / d2dy));
           }
         }
       }
@@ -3026,11 +3022,12 @@ void IntWalk_IWalking::RemoveTwoEndPoints(const Standard_Integer IndOfPoint)
 Standard_Boolean IntWalk_IWalking::IsPointOnLine(const gp_Pnt2d&        theP2d,
                                                  const Standard_Integer Irang)
 {
-  const Handle(IntWalk_TheIWLine)& aLine = lines.Value(Abs(Irang));
+  const Handle(IntWalk_TheIWLine)& aLine = lines.Value(std::abs(Irang));
   for (Standard_Integer i = 1; i <= aLine->NbPoints(); i++)
   {
     gp_Pnt2d P2d1 = aLine->Value(i).ValueOnSurface(reversed);
-    if (Abs(P2d1.X() - theP2d.X()) <= tolerance(1) && Abs(P2d1.Y() - theP2d.Y()) <= tolerance(2))
+    if (std::abs(P2d1.X() - theP2d.X()) <= tolerance(1)
+        && std::abs(P2d1.Y() - theP2d.Y()) <= tolerance(2))
       return Standard_True;
     if (i < aLine->NbPoints())
     {

@@ -666,7 +666,7 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
     if (!HeadOnPar)
     {
       if (TheImpCurveDomain.FirstPoint().Distance(TheParCurveDomain.FirstPoint())
-          <= Max(TheImpCurveDomain.FirstTolerance(), TheParCurveDomain.FirstTolerance()))
+          <= std::max(TheImpCurveDomain.FirstTolerance(), TheParCurveDomain.FirstTolerance()))
       {
         param1 = TheImpCurveDomain.FirstParameter();
         param2 = TheParCurveDomain.FirstParameter();
@@ -693,7 +693,7 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
     if (!EndOnPar)
     {
       if (TheImpCurveDomain.FirstPoint().Distance(TheParCurveDomain.LastPoint())
-          <= Max(TheImpCurveDomain.FirstTolerance(), TheParCurveDomain.LastTolerance()))
+          <= std::max(TheImpCurveDomain.FirstTolerance(), TheParCurveDomain.LastTolerance()))
       {
         param1 = TheImpCurveDomain.FirstParameter();
         param2 = TheParCurveDomain.LastParameter();
@@ -724,7 +724,7 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
     if (!HeadOnPar)
     {
       if (TheImpCurveDomain.LastPoint().Distance(TheParCurveDomain.FirstPoint())
-          <= Max(TheImpCurveDomain.LastTolerance(), TheParCurveDomain.FirstTolerance()))
+          <= std::max(TheImpCurveDomain.LastTolerance(), TheParCurveDomain.FirstTolerance()))
       {
         param1 = TheImpCurveDomain.LastParameter();
         param2 = TheParCurveDomain.FirstParameter();
@@ -751,7 +751,7 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
     if (!EndOnPar)
     {
       if (TheImpCurveDomain.LastPoint().Distance(TheParCurveDomain.LastPoint())
-          <= Max(TheImpCurveDomain.LastTolerance(), TheParCurveDomain.LastTolerance()))
+          <= std::max(TheImpCurveDomain.LastTolerance(), TheParCurveDomain.LastTolerance()))
       {
         param1 = TheImpCurveDomain.LastParameter();
         param2 = TheParCurveDomain.LastParameter();

@@ -234,7 +234,7 @@ static void ComputeLambda(const math_Matrix&  Constraint,
       {
         pol4(pp) += 2 * GW * pol2(ii) * pol2(jj);
       }
-      pol4(2 * ii - 1) += GW * Pow(pol2(ii), 2);
+      pol4(2 * ii - 1) += GW * std::pow(pol2(ii), 2);
     }
   }
 
@@ -278,7 +278,7 @@ void GeomLib::RemovePointsFromArray(const Standard_Integer         NumPoints,
   Standard_Integer ii, jj, add_one_point, loc_num_points, num_points, index;
   Standard_Real    delta, current_parameter;
 
-  loc_num_points = Max(0, NumPoints - 2);
+  loc_num_points = std::max(0, NumPoints - 2);
   delta          = InParameters(InParameters.Upper()) - InParameters(InParameters.Lower());
   delta /= (Standard_Real)(loc_num_points + 1);
   num_points        = 1;
@@ -423,7 +423,7 @@ void GeomLib::FuseIntervals(const TColStd_Array1OfReal& I1,
   {
     v1 = I1(ind1);
     v2 = I2(ind2);
-    if (Abs(v1 - v2) <= Epspar)
+    if (std::abs(v1 - v2) <= Epspar)
     {
       // Ici les elements de I1 et I2 conviennent .
       if (IsAdjustToFirstInterval)
@@ -494,7 +494,7 @@ void GeomLib::EvalMaxParametricDistance(const Adaptor3d_Curve& ACurve,
     ACurve.D0(Parameters(ii), Point1);
     AReferenceCurve.D0(Parameters(ii), Point2);
     local_distance_squared = Point1.SquareDistance(Point2);
-    max_squared            = Max(max_squared, local_distance_squared);
+    max_squared            = std::max(max_squared, local_distance_squared);
   }
   if (max_squared > 0.0e0)
   {
@@ -551,7 +551,7 @@ void GeomLib::EvalMaxDistanceAlongParameter(const Adaptor3d_Curve&      ACurve,
       other_parameter = Parameters(ii);
     }
 
-    max_squared = Max(max_squared, local_distance_squared);
+    max_squared = std::max(max_squared, local_distance_squared);
   }
   if (max_squared > tolerance_squared)
   {
@@ -870,15 +870,15 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
 {
   if (CurvePtr.IsNull())
     throw Standard_Failure();
-  if (Abs(LastOnCurve - RequestedLast) <= Tolerance
-      && Abs(FirstOnCurve - RequestedFirst) <= Tolerance)
+  if (std::abs(LastOnCurve - RequestedLast) <= Tolerance
+      && std::abs(FirstOnCurve - RequestedFirst) <= Tolerance)
   {
     NewCurvePtr = CurvePtr;
     return;
   }
 
   // the parametrisation length  must at least be the same.
-  if (Abs(LastOnCurve - FirstOnCurve - RequestedLast + RequestedFirst) <= Tolerance)
+  if (std::abs(LastOnCurve - FirstOnCurve - RequestedLast + RequestedFirst) <= Tolerance)
   {
     if (CurvePtr->IsKind(STANDARD_TYPE(Geom2d_Line)))
     {
@@ -924,8 +924,8 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
     //  RequestedFirst et RequestedLast on aura un probleme
     //
     //
-    else if (Abs(LastOnCurve - FirstOnCurve) > Precision::PConfusion()
-             || Abs(RequestedLast + RequestedFirst) > Precision::PConfusion())
+    else if (std::abs(LastOnCurve - FirstOnCurve) > Precision::PConfusion()
+             || std::abs(RequestedLast + RequestedFirst) > Precision::PConfusion())
     {
 
       Handle(Geom2d_TrimmedCurve) TC = new Geom2d_TrimmedCurve(CurvePtr, FirstOnCurve, LastOnCurve);
@@ -952,7 +952,7 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
 
     if (aCCheck->IsPeriodic())
     {
-      if (Abs(LastOnCurve - FirstOnCurve) > Precision::PConfusion())
+      if (std::abs(LastOnCurve - FirstOnCurve) > Precision::PConfusion())
       {
         TC = new Geom2d_TrimmedCurve(CurvePtr, FirstOnCurve, LastOnCurve);
       }
@@ -964,9 +964,9 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
     }
     else
     {
-      const Standard_Real Udeb = Max(CurvePtr->FirstParameter(), FirstOnCurve);
-      const Standard_Real Ufin = Min(CurvePtr->LastParameter(), LastOnCurve);
-      if (Abs(Ufin - Udeb) > Precision::PConfusion())
+      const Standard_Real Udeb = std::max(CurvePtr->FirstParameter(), FirstOnCurve);
+      const Standard_Real Ufin = std::min(CurvePtr->LastParameter(), LastOnCurve);
+      if (std::abs(Ufin - Udeb) > Precision::PConfusion())
       {
         TC = new Geom2d_TrimmedCurve(CurvePtr, Udeb, Ufin);
       }
@@ -1337,11 +1337,11 @@ void GeomLib::ExtendCurveToPoint(Handle(Geom_BoundedCurve)& Curve,
     dt = d1.Magnitude() / norm;
     if ((dt < 1.5) && (dt > 0.75))
     { // Le bord est dans la moyenne on le garde
-      Lambda = ((Standard_Real)1) / Max(d1.Magnitude() / L1, Tol);
+      Lambda = ((Standard_Real)1) / std::max(d1.Magnitude() / L1, Tol);
     }
     else
     {
-      Lambda = ((Standard_Real)1) / Max(norm / L1, Tol);
+      Lambda = ((Standard_Real)1) / std::max(norm / L1, Tol);
     }
   }
   else
@@ -1378,9 +1378,9 @@ void GeomLib::ExtendCurveToPoint(Handle(Geom_BoundedCurve)& Curve,
   Cont(1) = p0.XYZ();
   Cont(2) = d1.XYZ() * Lambda;
   if (Continuity >= 2)
-    Cont(3) = d2.XYZ() * Pow(Lambda, 2);
+    Cont(3) = d2.XYZ() * std::pow(Lambda, 2);
   if (Continuity >= 3)
-    Cont(4) = d3.XYZ() * Pow(Lambda, 3);
+    Cont(4) = d3.XYZ() * std::pow(Lambda, 3);
   Cont(size) = Point.XYZ();
 
   TColgp_Array1OfPnt ExtrapPoles(1, size);
@@ -1618,7 +1618,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
     lambda = new (TColStd_HArray1OfReal)(1, Cdim);
 
     Standard_Boolean periodic_flag = Standard_False;
-    Standard_Integer extrap_mode[2], derivative_request = Max(Continuity, 1);
+    Standard_Integer extrap_mode[2], derivative_request = std::max(Continuity, 1);
     extrap_mode[0] = extrap_mode[1] = Cdeg;
     TColStd_Array1OfReal Result(1, Cdim * (derivative_request + 1));
 
@@ -1672,7 +1672,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
 
           lamb(ii - 1) = lamb(ii - 2) = lamb(ii - 3) = val;
           lamb(ii)                                   = 0.;
-          lambmin                                    = Min(lambmin, val);
+          lambmin                                    = std::min(lambmin, val);
         }
         else
         {
@@ -1700,7 +1700,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
             Ok = Standard_False;
           }
           lamb(ii) = lamb(ii - 1) = lamb(ii - 2) = val;
-          lambmin                                = Min(lambmin, val);
+          lambmin                                = std::min(lambmin, val);
         }
         else
         {
@@ -1819,7 +1819,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
           if (rational)
           {
             ww = PRes(indice + 3);
-            if (Abs(ww - 1.0) < EpsW)
+            if (std::abs(ww - 1.0) < EpsW)
               ww = 1.0;
             if (ww < EpsW)
             {
@@ -1847,7 +1847,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
           if (rational)
           {
             ww = PRes(indice + 3);
-            if (Abs(ww - 1.0) < EpsW)
+            if (std::abs(ww - 1.0) < EpsW)
               ww = 1.0;
             if (ww < EpsW)
             {
@@ -1980,12 +1980,12 @@ void GeomLib::Inertia(const TColgp_Array1OfPnt& Points,
   n2 = J.Value(2);
   n3 = J.Value(3);
 
-  Standard_Real    r1 = Min(Min(n1, n2), n3), r2;
+  Standard_Real    r1 = std::min(std::min(n1, n2), n3), r2;
   Standard_Integer m1, m2, m3;
   if (r1 == n1)
   {
     m1 = 1;
-    r2 = Min(n2, n3);
+    r2 = std::min(n2, n3);
     if (r2 == n2)
     {
       m2 = 2;
@@ -2002,7 +2002,7 @@ void GeomLib::Inertia(const TColgp_Array1OfPnt& Points,
     if (r1 == n2)
     {
       m1 = 2;
-      r2 = Min(n1, n3);
+      r2 = std::min(n1, n3);
       if (r2 == n1)
       {
         m2 = 1;
@@ -2017,7 +2017,7 @@ void GeomLib::Inertia(const TColgp_Array1OfPnt& Points,
     else
     {
       m1 = 3;
-      r2 = Min(n1, n2);
+      r2 = std::min(n1, n2);
       if (r2 == n1)
       {
         m2 = 1;
@@ -2039,9 +2039,9 @@ void GeomLib::Inertia(const TColgp_Array1OfPnt& Points,
   XDir.SetCoord(V3(1), V3(2), V3(3));
   YDir.SetCoord(V2(1), V2(2), V2(3));
 
-  Zgap = sqrt(Abs(J.Value(m1)));
-  Ygap = sqrt(Abs(J.Value(m2)));
-  Xgap = sqrt(Abs(J.Value(m3)));
+  Zgap = sqrt(std::abs(J.Value(m1)));
+  Ygap = sqrt(std::abs(J.Value(m2)));
+  Xgap = sqrt(std::abs(J.Value(m3)));
 }
 
 //=================================================================================================
@@ -2749,31 +2749,31 @@ void GeomLib::IsClosed(const Handle(Geom_Surface)& S,
       Standard_Integer nbp = 23;
       if (Precision::IsInfinite(v1))
       {
-        v1 = Sign(1., v1);
+        v1 = std::copysign(1., v1);
       }
       if (Precision::IsInfinite(v2))
       {
-        v2 = Sign(1., v2);
+        v2 = std::copysign(1., v2);
       }
       //
       if (aSType == GeomAbs_OffsetSurface || aSType == GeomAbs_OtherSurface)
       {
         if (Precision::IsInfinite(u1))
         {
-          u1 = Sign(1., u1);
+          u1 = std::copysign(1., u1);
         }
         if (Precision::IsInfinite(u2))
         {
-          u2 = Sign(1., u2);
+          u2 = std::copysign(1., u2);
         }
       }
       isUClosed         = Standard_True;
       Standard_Real dt  = (v2 - v1) / (nbp - 1);
-      Standard_Real res = Max(aGAS.UResolution(Tol), Precision::PConfusion());
+      Standard_Real res = std::max(aGAS.UResolution(Tol), Precision::PConfusion());
       if (dt <= res)
       {
         nbp = RealToInt((v2 - v1) / (2. * res)) + 1;
-        nbp = Max(nbp, 2);
+        nbp = std::max(nbp, 2);
         dt  = (v2 - v1) / (nbp - 1);
       }
       Standard_Real    t;
@@ -2793,11 +2793,11 @@ void GeomLib::IsClosed(const Handle(Geom_Surface)& S,
       nbp       = 23;
       isVClosed = Standard_True;
       dt        = (u2 - u1) / (nbp - 1);
-      res       = Max(aGAS.VResolution(Tol), Precision::PConfusion());
+      res       = std::max(aGAS.VResolution(Tol), Precision::PConfusion());
       if (dt <= res)
       {
         nbp = RealToInt((u2 - u1) / (2. * res)) + 1;
-        nbp = Max(nbp, 2);
+        nbp = std::max(nbp, 2);
         dt  = (u2 - u1) / (nbp - 1);
       }
       for (i = 0; i < nbp; ++i)
@@ -3044,15 +3044,15 @@ Handle(Geom_Curve) GeomLib::buildC3dOnIsoLine(const Handle(Adaptor2d_Curve2d)& t
 
   if (theIsU)
   {
-    Standard_Real aV1Param = Min(aF2d.Y(), aL2d.Y());
-    Standard_Real aV2Param = Max(aF2d.Y(), aL2d.Y());
+    Standard_Real aV1Param = std::min(aF2d.Y(), aL2d.Y());
+    Standard_Real aV2Param = std::max(aF2d.Y(), aL2d.Y());
     if (aV2Param < V1 - theTolerance || aV1Param > V2 + theTolerance)
     {
       return Handle(Geom_Curve)();
     }
     else if (Precision::IsInfinite(V1) || Precision::IsInfinite(V2))
     {
-      if (Abs(aV2Param - aV1Param) < Precision::PConfusion())
+      if (std::abs(aV2Param - aV1Param) < Precision::PConfusion())
       {
         return Handle(Geom_Curve)();
       }
@@ -3061,9 +3061,9 @@ Handle(Geom_Curve) GeomLib::buildC3dOnIsoLine(const Handle(Adaptor2d_Curve2d)& t
     }
     else
     {
-      aV1Param = Max(aV1Param, V1);
-      aV2Param = Min(aV2Param, V2);
-      if (Abs(aV2Param - aV1Param) < Precision::PConfusion())
+      aV1Param = std::max(aV1Param, V1);
+      aV2Param = std::min(aV2Param, V2);
+      if (std::abs(aV2Param - aV1Param) < Precision::PConfusion())
       {
         return Handle(Geom_Curve)();
       }
@@ -3074,15 +3074,15 @@ Handle(Geom_Curve) GeomLib::buildC3dOnIsoLine(const Handle(Adaptor2d_Curve2d)& t
   }
   else
   {
-    Standard_Real aU1Param = Min(aF2d.X(), aL2d.X());
-    Standard_Real aU2Param = Max(aF2d.X(), aL2d.X());
+    Standard_Real aU1Param = std::min(aF2d.X(), aL2d.X());
+    Standard_Real aU2Param = std::max(aF2d.X(), aL2d.X());
     if (aU2Param < U1 - theTolerance || aU1Param > U2 + theTolerance)
     {
       return Handle(Geom_Curve)();
     }
     else if (Precision::IsInfinite(U1) || Precision::IsInfinite(U2))
     {
-      if (Abs(aU2Param - aU1Param) < Precision::PConfusion())
+      if (std::abs(aU2Param - aU1Param) < Precision::PConfusion())
       {
         return Handle(Geom_Curve)();
       }
@@ -3091,9 +3091,9 @@ Handle(Geom_Curve) GeomLib::buildC3dOnIsoLine(const Handle(Adaptor2d_Curve2d)& t
     }
     else
     {
-      aU1Param = Max(aU1Param, U1);
-      aU2Param = Min(aU2Param, U2);
-      if (Abs(aU2Param - aU1Param) < Precision::PConfusion())
+      aU1Param = std::max(aU1Param, U1);
+      aU2Param = std::min(aU2Param, U2);
+      if (std::abs(aU2Param - aU1Param) < Precision::PConfusion())
       {
         return Handle(Geom_Curve)();
       }
@@ -3130,10 +3130,10 @@ Handle(Geom_Curve) GeomLib::buildC3dOnIsoLine(const Handle(Adaptor2d_Curve2d)& t
     const gp_Pnt aPntC2D = theSurf->Value(aPnt2d.X(), aPnt2d.Y());
 
     const Standard_Real aSqDeviation = aPntC3D.SquareDistance(aPntC2D);
-    anError3d                        = Max(aSqDeviation, anError3d);
+    anError3d                        = std::max(aSqDeviation, anError3d);
   }
 
-  anError3d = Sqrt(anError3d);
+  anError3d = std::sqrt(anError3d);
 
   // Target tolerance is not obtained. This situation happens for isolines on the sphere.
   // OCCT is unable to convert it keeping original parameterization, while the geometric

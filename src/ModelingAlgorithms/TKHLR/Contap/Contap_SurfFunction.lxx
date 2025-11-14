@@ -35,7 +35,7 @@ inline void Contap_SurfFunction::Set(const gp_Dir& Direction, const Standard_Rea
   myType   = Contap_DraftStd; // Contour vu
   myDir    = Direction;
   myAng    = Angle;
-  myCosAng = Cos(M_PI / 2. + Angle);
+  myCosAng = std::cos(M_PI / 2. + Angle);
 }
 
 inline void Contap_SurfFunction::Set(const gp_Pnt& Eye, const Standard_Real Angle)
@@ -43,12 +43,12 @@ inline void Contap_SurfFunction::Set(const gp_Pnt& Eye, const Standard_Real Angl
   myType   = Contap_DraftPrs; // Contour vu "conique"...
   myEye    = Eye;
   myAng    = Angle;
-  myCosAng = Cos(M_PI / 2. + Angle);
+  myCosAng = std::cos(M_PI / 2. + Angle);
 }
 
 inline void Contap_SurfFunction::Set(const Standard_Real Tolerance)
 {
-  tol = Max(Tolerance, 1.e-12);
+  tol = std::max(Tolerance, 1.e-12);
 }
 
 inline const gp_Pnt& Contap_SurfFunction::Point() const

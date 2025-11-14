@@ -728,10 +728,10 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           return; // voir ce qu`on peut faire de mieux
         }
         Standard_Integer imin  = 1;
-        Standard_Real    delta = Abs(knownp - intcs.Point(1).W());
+        Standard_Real    delta = std::abs(knownp - intcs.Point(1).W());
         for (Standard_Integer i = 2; i <= intcs.NbPoints(); i++)
         {
-          Standard_Real newdelta = Abs(knownp - intcs.Point(i).W());
+          Standard_Real newdelta = std::abs(knownp - intcs.Point(i).W());
           if (newdelta < delta)
           {
             imin  = i;
@@ -750,7 +750,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           p2 = intcs.Point(imin).W();
         }
       }
-      if (Abs(p1 - p2) > Precision::PConfusion())
+      if (std::abs(p1 - p2) > Precision::PConfusion())
       {
         TopoDS_Edge NewEdge;
         B.MakeEdge(NewEdge, Newc, Precision::Confusion());
@@ -1035,7 +1035,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
       Standard_Real      prmd = (fd + ld) / 2.;
       gp_Pnt             pg   = Cg->Value(prmg);
       gp_Pnt             pd   = Cd->Value(prmd);
-      Standard_Real      Tol  = Max(BRep_Tool::Tolerance(NewEdgg), BRep_Tool::Tolerance(NewEdgg));
+      Standard_Real Tol = std::max(BRep_Tool::Tolerance(NewEdgg), BRep_Tool::Tolerance(NewEdgg));
       if (pg.SquareDistance(pd) <= Tol * Tol)
       {
         isedg = Standard_True;
@@ -1047,7 +1047,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           Cd   = BRep_Tool::Curve(edg, fd, ld);
           prmd = (fd + ld) / 2.;
           pd   = Cd->Value(prmd);
-          Tol  = Max(BRep_Tool::Tolerance(NewEdgg), BRep_Tool::Tolerance(edg));
+          Tol  = std::max(BRep_Tool::Tolerance(NewEdgg), BRep_Tool::Tolerance(edg));
           if (pg.SquareDistance(pd) <= Tol * Tol)
           {
             modified = Standard_False;
@@ -1493,7 +1493,7 @@ static Standard_Boolean NewPlane(const TopoDS_Face&     F,
     NormalF          = Plorig.Axis();
     gp_Dir        ny = NormalF.Direction().Crossed(nx);
     Standard_Real a  = Extr.Dot(nx);
-    if (Abs(a) <= 1 - Precision::Angular())
+    if (std::abs(a) <= 1 - Precision::Angular())
     {
       Standard_Real      b = Extr.Dot(ny);
       Standard_Real      c = Extr.Dot(NormalF.Direction());
@@ -1505,14 +1505,14 @@ static Standard_Boolean NewPlane(const TopoDS_Face&     F,
         c = -c;
         NormalF.Reverse();
       }
-      Standard_Real denom = Sqrt(1 - a * a);
-      Standard_Real Sina  = Sin(Ang);
-      if (denom > Abs(Sina))
+      Standard_Real denom = std::sqrt(1 - a * a);
+      Standard_Real Sina  = std::sin(Ang);
+      if (denom > std::abs(Sina))
       {
-        Standard_Real phi    = ATan2(b / denom, c / denom);
-        Standard_Real theta0 = ACos(Sina / denom);
+        Standard_Real phi    = std::atan2(b / denom, c / denom);
+        Standard_Real theta0 = std::acos(Sina / denom);
         Theta                = theta0 - phi;
-        if (Cos(Theta) < 0.)
+        if (std::cos(Theta) < 0.)
         {
           Theta = -theta0 - phi;
         }
@@ -1826,8 +1826,8 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
       Standard_Real f, l;
       BRep_Tool::Range(edg, f, l);
       Standard_Real delt  = l - f;
-      Standard_Real delt1 = Abs(prml - prmf);
-      Standard_Real delt2 = Abs(period - delt1);
+      Standard_Real delt1 = std::abs(prml - prmf);
+      Standard_Real delt2 = std::abs(period - delt1);
 
       if (delt1 == 0 || delt2 == 0)
       {
@@ -1838,7 +1838,7 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
       }
       else
       {
-        if (Abs(delt1 - delt) > Abs(delt2 - delt))
+        if (std::abs(delt1 - delt) > std::abs(delt2 - delt))
         {
           // le bon ecart est delt2...
           if (prml > prmf)
@@ -1864,7 +1864,7 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
             }
           }
         }
-        else if (Abs(delt1 - delt) < Abs(delt2 - delt))
+        else if (std::abs(delt1 - delt) < std::abs(delt2 - delt))
         {
           if (prmf >= iml && prml >= iml)
           {
@@ -1917,7 +1917,7 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
       Standard_Real Ul   = pl.X();
       Standard_Real ptra = 0.0;
 
-      Standard_Real Ustart = Min(Uf, Ul);
+      Standard_Real Ustart = std::min(Uf, Ul);
       while (Ustart < -Precision::PConfusion())
       {
         Ustart += speriod;

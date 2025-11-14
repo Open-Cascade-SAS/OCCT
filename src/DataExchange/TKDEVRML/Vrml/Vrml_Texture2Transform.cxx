@@ -80,25 +80,25 @@ Standard_OStream& Vrml_Texture2Transform::Print(Standard_OStream& anOStream) con
 {
   anOStream << "Texture2Transform {\n";
 
-  if (Abs(myTranslation.X() - 0) > 0.0001 || Abs(myTranslation.Y() - 0) > 0.0001)
+  if (std::abs(myTranslation.X() - 0) > 0.0001 || std::abs(myTranslation.Y() - 0) > 0.0001)
   {
     anOStream << "    translation\t";
     anOStream << myTranslation.X() << " " << myTranslation.Y() << "\n";
   }
 
-  if (Abs(myRotation - 0) > 0.0001)
+  if (std::abs(myRotation - 0) > 0.0001)
   {
     anOStream << "    rotation\t";
     anOStream << myRotation << "\n";
   }
 
-  if (Abs(myScaleFactor.X() - 0) > 0.0001 || Abs(myScaleFactor.Y() - 0) > 0.0001)
+  if (std::abs(myScaleFactor.X() - 0) > 0.0001 || std::abs(myScaleFactor.Y() - 0) > 0.0001)
   {
     anOStream << "    scaleFactor\t";
     anOStream << myScaleFactor.X() << " " << myScaleFactor.Y() << "\n";
   }
 
-  if (Abs(myCenter.X() - 0) > 0.0001 || Abs(myCenter.Y() - 0) > 0.0001)
+  if (std::abs(myCenter.X() - 0) > 0.0001 || std::abs(myCenter.Y() - 0) > 0.0001)
   {
     anOStream << "    center\t";
     anOStream << myCenter.X() << " " << myCenter.Y() << "\n";

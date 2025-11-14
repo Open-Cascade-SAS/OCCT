@@ -779,7 +779,7 @@ Standard_Real Angle2D(const TopoDS_Vertex&            aV,
   GeomAbs_CurveType   aType;
   Geom2dAdaptor_Curve aGAC2D(aC2D);
   //
-  dt = Max(aGAC2D.Resolution(tol2d), Precision::PConfusion());
+  dt = std::max(aGAC2D.Resolution(tol2d), Precision::PConfusion());
   //
   aType = aGAC2D.GetType();
   if (aType != GeomAbs_Line)
@@ -792,7 +792,7 @@ Standard_Real Angle2D(const TopoDS_Vertex&            aV,
       {
         R                    = 1. / R;
         Standard_Real cosphi = R / (R + tol2d);
-        dt                   = Max(dt, ACos(cosphi)); // to avoid small dt for big R.
+        dt                   = std::max(dt, std::acos(cosphi)); // to avoid small dt for big R.
       }
     }
   }
@@ -800,7 +800,7 @@ Standard_Real Angle2D(const TopoDS_Vertex&            aV,
   aTX = 0.05 * (aLast - aFirst); // aTX=0.25*(aLast - aFirst);
   if (aTX < 5.e-5)
   {
-    aTX = Min(5.e-5, (aLast - aFirst) / 2.);
+    aTX = std::min(5.e-5, (aLast - aFirst) / 2.);
   }
   if (dt > aTX)
   {
@@ -1081,7 +1081,7 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex&            aV,
       aT1j                                   = aIPj.ParamOnFirst();
       aT2j                                   = aIPj.ParamOnSecond();
       //
-      if (aT2j > aT2max && Abs(aT1j - aTV) < MaxDT)
+      if (aT2j > aT2max && std::abs(aT1j - aTV) < MaxDT)
       {
         aT2max = aT2j;
         aT1max = aT1j;
@@ -1091,7 +1091,7 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex&            aV,
     if (aT2max > 0)
     {
       dT = aTOp - aT1max;
-      if (Abs(dT) < aTolInt)
+      if (std::abs(dT) < aTolInt)
       {
         continue;
       }

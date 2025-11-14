@@ -133,7 +133,7 @@ static Standard_Real AdjustOnPeriodic3d(const Handle(Geom_Curve)& c,
   if (ShapeAnalysis_Curve::IsPeriodic(c))
   {
     Standard_Real T     = c->Period();
-    Standard_Real shift = -IntegerPart(first / T) * T;
+    Standard_Real shift = -std::trunc(first / T) * T;
     if (first < 0.)
       shift += T;
     Standard_Real sfirst = first + shift, slast = last + shift;
@@ -350,8 +350,8 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
           // 15.11.2002 PTV OCC966
           if (!ShapeAnalysis_Curve::IsPeriodic(c))
             tc = new Geom_TrimmedCurve(c,
-                                       Max(first, c->FirstParameter()),
-                                       Min(last, c->LastParameter()));
+                                       std::max(first, c->FirstParameter()),
+                                       std::min(last, c->LastParameter()));
           else
             tc = new Geom_TrimmedCurve(c, first, last);
           bsp = GeomConvert::CurveToBSplineCurve(tc);
@@ -422,7 +422,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
     {
       if (c1->IsKind(STANDARD_TYPE(Geom_Circle)) || c1->IsKind(STANDARD_TYPE(Geom_Ellipse)))
       {
-        Standard_Real diff = M_PI - Abs(clast1 - cfirst2) * 0.5;
+        Standard_Real diff = M_PI - std::abs(clast1 - cfirst2) * 0.5;
         first1 -= diff;
         last1 += diff;
         done1 = Standard_True;
@@ -517,8 +517,8 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       u2 = AdjustOnPeriodic3d(c2, !reversed2, first2, last2, u2);
       // Check points to satisfy distance criterium
       gp_Pnt p1 = c1->Value(u1), p2 = c2->Value(u2);
-      if (p1.Distance(p2) <= gap && Abs(cfirst1 - u1) > ::Precision::PConfusion()
-          && Abs(clast2 - u2) > ::Precision::PConfusion()
+      if (p1.Distance(p2) <= gap && std::abs(cfirst1 - u1) > ::Precision::PConfusion()
+          && std::abs(clast2 - u2) > ::Precision::PConfusion()
           && (((u1 > first1) && (u1 < last1)) || ((u2 > first2) && (u2 < last2))
               || (cpnt1.Distance(p1) <= gap) || (cpnt2.Distance(p2) <= gap)))
       {
@@ -574,13 +574,13 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
               if (pp1.Distance(pp2) < ::Precision::Confusion())
               {
                 // assume intersection
-                pardist = Abs(cfirst1 - uu1);
+                pardist = std::abs(cfirst1 - uu1);
                 if (pardist1 > pardist || pardist1 < 0.)
                 {
                   index1   = i;
                   pardist1 = pardist;
                 }
-                pardist = Abs(clast2 - uu2);
+                pardist = std::abs(clast2 - uu2);
                 if (pardist2 > pardist || pardist2 < 0.)
                 {
                   index2   = i;
@@ -609,8 +609,8 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
             uu2 = AdjustOnPeriodic3d(c2, !reversed2, first2, last2, uu2);
             // Check points to satisfy distance criterium
             pp1 = c1->Value(uu1), pp2 = c2->Value(uu2);
-            if (pp1.Distance(pp2) <= gap && Abs(cfirst1 - uu1) > ::Precision::PConfusion()
-                && Abs(clast2 - uu2) > ::Precision::PConfusion()
+            if (pp1.Distance(pp2) <= gap && std::abs(cfirst1 - uu1) > ::Precision::PConfusion()
+                && std::abs(clast2 - uu2) > ::Precision::PConfusion()
                 && (((uu1 > first1) && (uu1 < last1)) || ((uu2 > first2) && (uu2 < last2))
                     || (cpnt1.Distance(pp1) <= gap) || (cpnt2.Distance(pp2) <= gap)))
             {
@@ -792,7 +792,7 @@ static Standard_Real AdjustOnPeriodic2d(const Handle(Geom2d_Curve)& pc,
   if (ShapeAnalysis_Curve::IsPeriodic(pc))
   {
     Standard_Real T     = pc->Period();
-    Standard_Real shift = -IntegerPart(first / T) * T;
+    Standard_Real shift = -std::trunc(first / T) * T;
     if (first < 0.)
       shift += T;
     Standard_Real sfirst = first + shift, slast = last + shift;
@@ -820,7 +820,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
   constexpr Standard_Real preci = ::Precision::PConfusion();
   // Standard_Real preci = Precision();
   // GeomAdaptor_Surface& SA = Analyzer().Surface()->Adaptor()->ChangeSurface();
-  // preci = Max(SA.UResolution(preci), SA.VResolution(preci));
+  // preci = std::max(SA.UResolution(preci), SA.VResolution(preci));
 
   Handle(ShapeExtend_WireData) sbwd = WireData();
   Standard_Integer             n2   = (num > 0 ? num : sbwd->NbEdges());
@@ -1001,8 +1001,8 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
           // 15.11.2002 PTV OCC966
           if (!ShapeAnalysis_Curve::IsPeriodic(pc))
             c = new Geom2d_TrimmedCurve(pc,
-                                        Max(first, pc->FirstParameter()),
-                                        Min(last, pc->LastParameter()));
+                                        std::max(first, pc->FirstParameter()),
+                                        std::min(last, pc->LastParameter()));
           else
             c = new Geom2d_TrimmedCurve(pc, first, last);
           bsp = Geom2dConvert::CurveToBSplineCurve(c);
@@ -1074,7 +1074,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
     {
       if (pc1->IsKind(STANDARD_TYPE(Geom2d_Circle)) || pc1->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
       {
-        Standard_Real diff = M_PI - Abs(clast1 - cfirst2) * 0.5;
+        Standard_Real diff = M_PI - std::abs(clast1 - cfirst2) * 0.5;
         first1 -= diff;
         last1 += diff;
         done1 = Standard_True;
@@ -1167,13 +1167,13 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
             Standard_Real u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
             Standard_Real u2 =
               AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
-            pardist = Abs(cfirst1 - u1);
+            pardist = std::abs(cfirst1 - u1);
             if (pardist1 > pardist || pardist1 < 0.)
             {
               index1   = i;
               pardist1 = pardist;
             }
-            pardist = Abs(clast2 - u2);
+            pardist = std::abs(clast2 - u2);
             if (pardist2 > pardist || pardist2 < 0.)
             {
               index2   = i;
@@ -1199,14 +1199,14 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                   AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
                 Standard_Real u2 =
                   AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
-                pardist = Abs(cfirst1 - u1);
+                pardist = std::abs(cfirst1 - u1);
                 if (pardist1 > pardist || pardist1 < 0.)
                 {
                   flag1    = j;
                   index1   = i;
                   pardist1 = pardist;
                 }
-                pardist = Abs(clast2 - u2);
+                pardist = std::abs(clast2 - u2);
                 if (pardist2 > pardist || pardist2 < 0.)
                 {
                   flag2    = j;
@@ -1262,8 +1262,8 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
           Standard_Real u2 = AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
           // Check points to satisfy distance criterium
           gp_Pnt2d p1 = pc1->Value(u1), p2 = pc2->Value(u2);
-          if (p1.Distance(p2) <= gap && Abs(cfirst1 - u1) > ::Precision::PConfusion()
-              && Abs(clast2 - u2) > ::Precision::PConfusion()
+          if (p1.Distance(p2) <= gap && std::abs(cfirst1 - u1) > ::Precision::PConfusion()
+              && std::abs(clast2 - u2) > ::Precision::PConfusion()
               && (((u1 > first1) && (u1 < last1)) || ((u2 > first2) && (u2 < last2))
                   || (cpnt1.Distance(p1) <= gap) || (cpnt2.Distance(p2) <= gap)))
           {
@@ -1287,8 +1287,8 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
           u2 = AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, u2);
           // Check points to satisfy distance criterium
           gp_Pnt2d p1 = pc1->Value(u1), p2 = pc2->Value(u2);
-          if (p1.Distance(p2) <= gap && Abs(cfirst1 - u1) > ::Precision::PConfusion()
-              && Abs(clast2 - u2) > ::Precision::PConfusion()
+          if (p1.Distance(p2) <= gap && std::abs(cfirst1 - u1) > ::Precision::PConfusion()
+              && std::abs(clast2 - u2) > ::Precision::PConfusion()
               && (((u1 > first1) && (u1 < last1)) || ((u2 > first2) && (u2 < last2))
                   || (cpnt1.Distance(p1) <= gap) || (cpnt2.Distance(p2) <= gap)))
           {
@@ -1400,8 +1400,8 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         u2 = AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, u2);
         // Check points to satisfy distance criterium
         gp_Pnt2d p1 = pc1->Value(u1), p2 = pc2->Value(u2);
-        if (p1.Distance(p2) <= gap && Abs(cfirst1 - u1) > ::Precision::PConfusion()
-            && Abs(clast2 - u2) > ::Precision::PConfusion()
+        if (p1.Distance(p2) <= gap && std::abs(cfirst1 - u1) > ::Precision::PConfusion()
+            && std::abs(clast2 - u2) > ::Precision::PConfusion()
             && (((u1 > first1) && (u1 < last1)) || ((u2 > first2) && (u2 < last2))
                 || (cpnt1.Distance(p1) <= gap) || (cpnt2.Distance(p2) <= gap)))
         {
@@ -1547,7 +1547,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                                               fpar,
                                               lpar,
                                               Inter.Point(i).ParamOnSecond());
-                      dist = Abs((j == 1 ? cfirst1 : clast2) - uu);
+                      dist = std::abs((j == 1 ? cfirst1 : clast2) - uu);
                       if (mindist > dist || mindist < 0.)
                       {
                         index   = i;
@@ -1575,7 +1575,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                                                   fpar,
                                                   lpar,
                                                   IP.ParamOnSecond());
-                          dist = Abs((jj == 1 ? cfirst1 : clast2) - uu);
+                          dist = std::abs((jj == 1 ? cfirst1 : clast2) - uu);
                           if (mindist > dist || mindist < 0.)
                           {
                             flag    = jj;
@@ -1601,12 +1601,12 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                                             fpar,
                                             lpar,
                                             IP.ParamOnSecond());
-                    if (j == 1 && Abs(cfirst1 - uu) > ::Precision::PConfusion())
+                    if (j == 1 && std::abs(cfirst1 - uu) > ::Precision::PConfusion())
                     {
                       ipar1 = uu;
                       ipnt  = IP.Value();
                     }
-                    if (j == 2 && Abs(clast2 - uu) > ::Precision::PConfusion())
+                    if (j == 2 && std::abs(clast2 - uu) > ::Precision::PConfusion())
                     {
                       ipar2 = uu;
                       ipnt  = IP.Value();

@@ -45,7 +45,7 @@ DEFINE_STANDARD_HANDLE(Geom2d_Circle, Geom2d_Conic)
 //! circle, determining the direction in which the
 //! parameter increases along the circle.
 //! The Geom2d_Circle circle is parameterized by an angle:
-//! P(U) = O + R*Cos(U)*XDir + R*Sin(U)*YDir
+//! P(U) = O + R*std::cos(U)*XDir + R*Sin(U)*YDir
 //! where:
 //! - P is the point of parameter U,
 //! - O, XDir and YDir are respectively the origin, "X

@@ -104,7 +104,7 @@ void PrsDim_MaxRadiusDimension::ComputeEllipse(const Handle(Prs3d_Presentation)&
   // size
   if (!myArrowSizeIsDefined)
   {
-    myArrowSize = Min(myArrowSize, myVal / 5.);
+    myArrowSize = std::min(myArrowSize, myVal / 5.);
   }
   arr->SetLength(myArrowSize);
 
@@ -157,7 +157,7 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(const Handle(Prs3d_Presentat
   // size
   if (!myArrowSizeIsDefined)
   {
-    myArrowSize = Min(myArrowSize, myVal / 5.);
+    myArrowSize = std::min(myArrowSize, myVal / 5.);
   }
   arr->SetLength(myArrowSize);
 
@@ -252,7 +252,7 @@ void PrsDim_MaxRadiusDimension::ComputeSelection(const Handle(SelectMgr_Selectio
   aSelection->Add(seg);
 
   // Text
-  Standard_Real                 size(Min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+  Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
   Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
                                                                 AttachmentPoint.X(),
                                                                 AttachmentPoint.Y(),

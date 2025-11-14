@@ -342,8 +342,8 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
           gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
           ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
           Pp = ElCLib::Value(ul, Lin);
-          dU = Abs(Pp.X() - SeqPnt2d(ii - 1).X());
-          dV = Abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+          dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
+          dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
           if (dU > FlecheU)
           {
             FlecheU = dU;
@@ -432,9 +432,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
         Standard_Real aPer = 0.;
         Poly::PolygonProperties(SeqPnt2d, aS, aPer);
 
-        Standard_Real    anExpThick = Max(2. * Abs(aS) / aPer, 1e-7);
-        Standard_Real    aDefl      = Max(FlecheU, FlecheV);
-        Standard_Real    aDiscrDefl = Min(aDefl * 0.1, anExpThick * 10.);
+        Standard_Real    anExpThick = std::max(2. * std::abs(aS) / aPer, 1e-7);
+        Standard_Real    aDefl      = std::max(FlecheU, FlecheV);
+        Standard_Real    aDiscrDefl = std::min(aDefl * 0.1, anExpThick * 10.);
         Standard_Boolean isChanged  = Standard_False;
         while (aDefl > anExpThick && aDiscrDefl > 1e-7)
         {
@@ -453,7 +453,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
             if (Or == TopAbs_FORWARD || Or == TopAbs_REVERSED)
             {
               BRep_Tool::Range(edge, Face, pfbid, plbid);
-              if (Abs(plbid - pfbid) < 1.e-9)
+              if (std::abs(plbid - pfbid) < 1.e-9)
                 continue;
               BRepAdaptor_Curve2d           C(edge, Face);
               GCPnts_QuasiUniformDeflection aDiscr(C, aDiscrDefl);
@@ -480,8 +480,8 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
                 gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
                 Standard_Real ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
                 gp_Pnt2d      Pp = ElCLib::Value(ul, Lin);
-                Standard_Real dU = Abs(Pp.X() - SeqPnt2d(ii - 1).X());
-                Standard_Real dV = Abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+                Standard_Real dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
+                Standard_Real dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
                 if (dU > FlecheU)
                   FlecheU = dU;
                 if (dV > FlecheV)
@@ -490,9 +490,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
               firstpoint = 2;
             }
           }
-          anExpThick = Max(2. * Abs(aS) / aPer, 1e-7);
-          aDefl      = Max(FlecheU, FlecheV);
-          aDiscrDefl = Min(aDiscrDefl * 0.1, anExpThick * 10.);
+          anExpThick = std::max(2. * std::abs(aS) / aPer, 1e-7);
+          aDefl      = std::max(FlecheU, FlecheV);
+          aDiscrDefl = std::min(aDiscrDefl * 0.1, anExpThick * 10.);
         }
 
         if (isChanged)
@@ -509,7 +509,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
         TabClass.Append(
           (void*)new CSLib_Class2d(SeqPnt2d, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
         //
-        if (Abs(aS) < Precision::SquareConfusion())
+        if (std::abs(aS) < Precision::SquareConfusion())
         {
           BadWire = 1;
           TabOrien.Append(-1);
@@ -699,7 +699,7 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
       //
       if (bUIn == bVIn)
       {
-        aFCTol = Min(aURes, aVRes);
+        aFCTol = std::min(aURes, aVRes);
       }
       else
       {

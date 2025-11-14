@@ -74,11 +74,11 @@ public:
     PIpPI = M_PI + M_PI;
     for (Standard_Integer i = 0; i < NbRoots; i++)
     {
-      if (Abs(u - Roots[i]) <= aEps)
+      if (std::abs(u - Roots[i]) <= aEps)
       {
         return Standard_True;
       }
-      if (Abs(u - Roots[i] - PIpPI) <= aEps)
+      if (std::abs(u - Roots[i] - PIpPI) <= aEps)
       {
         return Standard_True;
       }
@@ -173,11 +173,11 @@ ExtremaExtElC_TrigonometricRoots::ExtremaExtElC_TrigonometricRoots(const Standar
         }
         //
         //-- La recherche directe donne n importe quoi.
-        aMaxCoef   = Max(CC, SC);
-        aMaxCoef   = Max(aMaxCoef, C);
-        aMaxCoef   = Max(aMaxCoef, S);
-        aMaxCoef   = Max(aMaxCoef, Cte);
-        aPrecision = Max(1.e-8, 1.e-12 * aMaxCoef);
+        aMaxCoef   = std::max(CC, SC);
+        aMaxCoef   = std::max(aMaxCoef, C);
+        aMaxCoef   = std::max(aMaxCoef, S);
+        aMaxCoef   = std::max(aMaxCoef, Cte);
+        aPrecision = std::max(1.e-8, 1.e-12 * aMaxCoef);
 
         SvNbRoots = NbRoots;
         for (i = 0; i < SvNbRoots; ++i)
@@ -187,7 +187,7 @@ ExtremaExtElC_TrigonometricRoots::ExtremaExtElC_TrigonometricRoots(const Standar
           Standard_Real si = sin(Roots[i]);
           y                = co * (CC * co + (SC + SC) * si + C) + S * si + Cte;
           // modified by OCC  Tue Oct  3 18:43:00 2006
-          if (Abs(y) > aPrecision)
+          if (std::abs(y) > aPrecision)
           {
             NbRoots--;
             Roots[i] = 1000.0;
@@ -214,9 +214,9 @@ ExtremaExtElC_TrigonometricRoots::ExtremaExtElC_TrigonometricRoots(const Standar
         infinite_roots = Standard_False;
         if (NbRoots == 0)
         { //--!!!!! Detect case Pol = Cte ( 1e-50 ) !!!!
-          if ((Abs(CC) + Abs(SC) + Abs(C) + Abs(S)) < 1e-10)
+          if ((std::abs(CC) + std::abs(SC) + std::abs(C) + std::abs(S)) < 1e-10)
           {
-            if (Abs(Cte) < 1e-10)
+            if (std::abs(Cte) < 1e-10)
             {
               infinite_roots = Standard_True;
             }
@@ -227,23 +227,23 @@ ExtremaExtElC_TrigonometricRoots::ExtremaExtElC_TrigonometricRoots(const Standar
     else
     {
       // try to set very small coefficients to ZERO
-      if (Abs(CC) < 1e-10)
+      if (std::abs(CC) < 1e-10)
       {
         cc = 0.0;
       }
-      if (Abs(SC) < 1e-10)
+      if (std::abs(SC) < 1e-10)
       {
         sc = 0.0;
       }
-      if (Abs(C) < 1e-10)
+      if (std::abs(C) < 1e-10)
       {
         c = 0.0;
       }
-      if (Abs(S) < 1e-10)
+      if (std::abs(S) < 1e-10)
       {
         s = 0.0;
       }
-      if (Abs(Cte) < 1e-10)
+      if (std::abs(Cte) < 1e-10)
       {
         cte = 0.0;
       }
@@ -364,7 +364,7 @@ Standard_Boolean Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin&  theLin,
 {
   const gp_Dir &aDirC = theCirc.Axis().Direction(), &aDirL = theLin.Direction();
 
-  if (Abs(aDirC.Dot(aDirL)) > Precision::Angular())
+  if (std::abs(aDirC.Dot(aDirL)) > Precision::Angular())
     return Standard_False;
 
   // The line is in the circle-plane completely
@@ -455,7 +455,7 @@ Standard_Boolean Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin&  theLin,
 //	     <=> (((P2O2+O2O1).D)D+O1O2).T = 0.
 //	     <=> ((P2O2.D)(D.T)+((O2O1.D)D-O2O1).T = 0.
 //  We are in the reference of the circle; let:
-//         Cos = Cos(u2) and Sin = Sin(u2),
+//         Cos = std::cos(u2) and Sin = std::sin(u2),
 //         P2 (R*Cos,R*Sin,0.),
 //         T (-R*Sin,R*Cos,0.),
 //	 D (Dx,Dy,Dz),
@@ -644,7 +644,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Elips& C2)
            <=> (((P2O2+O2O1).D)D+O1O2).T = 0.
            <=> ((P2O2.D)(D.T)+((O2O1.D)D-O2O1).T = 0.
     We are in the reference of the ellipse; let:
-           Cos = Cos(u2) and Sin = Sin(u2),
+           Cos = std::cos(u2) and Sin = std::sin(u2),
            P2 (MajR*Cos,MinR*Sin,0.),
            T (-MajR*Sin,MinR*Cos,0.),
        D (Dx,Dy,Dz),
@@ -835,7 +835,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Hypr& C2)
     v = Sol.Value(NoSol);
     if (v > 0.0)
     {
-      U2                  = Log(v);
+      U2                  = std::log(v);
       P2                  = ElCLib::Value(U2, C2);
       U1                  = (gp_Vec(O1, P2)).Dot(D1);
       P1                  = ElCLib::Value(U1, C1);
@@ -1073,9 +1073,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2)
     { // see pkv/900/L4 for details
       aVal = -aVal;
     }
-    aBeta = Sqrt(aVal);
-    // aBeta=Sqrt(aR1*aR1-aAlpha*aAlpha);
-    //--
+    aBeta = std::sqrt(aVal);
     aPt.SetXYZ(aPc1.XYZ() + aAlpha * aDir12.XYZ());
     //
     aDLt = aDc1 ^ aDir12;

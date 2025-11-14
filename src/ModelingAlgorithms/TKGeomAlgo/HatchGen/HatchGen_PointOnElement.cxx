@@ -179,7 +179,7 @@ HatchGen_PointOnElement::HatchGen_PointOnElement(const IntRes2d_IntersectionPoin
 Standard_Boolean HatchGen_PointOnElement::IsIdentical(const HatchGen_PointOnElement& Point,
                                                       const Standard_Real Confusion) const
 {
-  Standard_Real Delta = Abs(myParam - Point.myParam);
+  Standard_Real Delta = std::abs(myParam - Point.myParam);
   return ((Delta <= Confusion) && (myIndex == Point.myIndex) && (myPosit == Point.myPosit)
           && (myType == Point.myType) && (myBefore == Point.myBefore) && (myAfter == Point.myAfter)
           && (mySegBeg == Point.mySegBeg) && (mySegEnd == Point.mySegEnd));
@@ -193,7 +193,7 @@ Standard_Boolean HatchGen_PointOnElement::IsIdentical(const HatchGen_PointOnElem
 Standard_Boolean HatchGen_PointOnElement::IsDifferent(const HatchGen_PointOnElement& Point,
                                                       const Standard_Real Confusion) const
 {
-  Standard_Real Delta = Abs(myParam - Point.myParam);
+  Standard_Real Delta = std::abs(myParam - Point.myParam);
   return ((Delta > Confusion) || (myIndex != Point.myIndex) || (myPosit != Point.myPosit)
           || (myType != Point.myType) || (myBefore != Point.myBefore) || (myAfter != Point.myAfter)
           || (mySegBeg != Point.mySegBeg) || (mySegEnd != Point.mySegEnd));

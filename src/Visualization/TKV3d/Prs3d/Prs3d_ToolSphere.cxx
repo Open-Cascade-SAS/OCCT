@@ -36,7 +36,9 @@ gp_Pnt Prs3d_ToolSphere::Vertex(const Standard_Real theU, const Standard_Real th
 {
   const Standard_Real aU = theU * M_PI * 2.0;
   const Standard_Real aV = theV * M_PI;
-  return gp_Pnt(myRadius * Cos(aU) * Sin(aV), -myRadius * Sin(aU) * Sin(aV), myRadius * Cos(aV));
+  return gp_Pnt(myRadius * std::cos(aU) * std::sin(aV),
+                -myRadius * std::sin(aU) * std::sin(aV),
+                myRadius * std::cos(aV));
 }
 
 //=================================================================================================
@@ -45,7 +47,7 @@ gp_Dir Prs3d_ToolSphere::Normal(const Standard_Real theU, const Standard_Real th
 {
   const Standard_Real aU = theU * M_PI * 2.0;
   const Standard_Real aV = theV * M_PI;
-  return gp_Dir(Cos(aU) * Sin(aV), -Sin(aU) * Sin(aV), Cos(aV));
+  return gp_Dir(std::cos(aU) * std::sin(aV), -std::sin(aU) * std::sin(aV), std::cos(aV));
 }
 
 //=================================================================================================

@@ -81,8 +81,9 @@ void DsgPrs_RadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
     }
     else
     {
-      const Standard_Real ecartpar = Min(Abs(fpara - parat), Abs(lpara - parat));
-      const Standard_Real ecartoth = Min(Abs(fpara - otherpar), Abs(lpara - otherpar));
+      const Standard_Real ecartpar = std::min(std::abs(fpara - parat), std::abs(lpara - parat));
+      const Standard_Real ecartoth =
+        std::min(std::abs(fpara - otherpar), std::abs(lpara - otherpar));
       if (ecartpar <= ecartoth)
       {
         parat = (parat < fpara) ? fpara : lpara;
@@ -106,7 +107,7 @@ void DsgPrs_RadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
   {
     const Standard_Real uatt = ElCLib::Parameter(L, attpoint);
     const Standard_Real uptc = ElCLib::Parameter(L, ptoncirc);
-    if (Abs(uatt) > Abs(uptc))
+    if (std::abs(uatt) > std::abs(uptc))
       drawtopoint = aCircle.Location();
     else
       firstpoint = aCircle.Location();

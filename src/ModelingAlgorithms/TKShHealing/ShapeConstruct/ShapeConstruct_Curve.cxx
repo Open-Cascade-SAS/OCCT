@@ -91,8 +91,8 @@ Standard_Boolean ShapeConstruct_Curve::AdjustCurveSegment(const Handle(Geom_Curv
     //    Propager sur le reste, c est pas mal non plus
     if (U1 >= U2)
       return Standard_False;
-    Standard_Real UU1 = Max(U1, BSPL->FirstParameter());
-    Standard_Real UU2 = Min(U2, BSPL->LastParameter());
+    Standard_Real UU1 = std::max(U1, BSPL->FirstParameter());
+    Standard_Real UU2 = std::min(U2, BSPL->LastParameter());
     BSPL->Segment(UU1, UU2);
     BSPL->SetPole(1, P1);
     BSPL->SetPole(BSPL->NbPoles(), P2);

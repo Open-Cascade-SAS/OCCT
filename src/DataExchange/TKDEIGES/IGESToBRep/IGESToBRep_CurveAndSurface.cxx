@@ -134,7 +134,7 @@ void IGESToBRep_CurveAndSurface::UpdateMinMaxTol()
 {
   // #74 rln 11.03.99 S4135: Setting maximum tolerances according to
   // static parameter
-  myMaxTol = Max(Interface_Static::RVal("read.maxprecision.val"), myEpsGeom * myUnitFactor);
+  myMaxTol = std::max(Interface_Static::RVal("read.maxprecision.val"), myEpsGeom * myUnitFactor);
   myMinTol = Precision::Confusion();
 }
 
@@ -653,7 +653,7 @@ Standard_Real IGESToBRep_CurveAndSurface::GetUVResolution()
   {
     myIsResolCom = Standard_True;
     GeomAdaptor_Surface aGAS(mySurface);
-    myUVResolution = Min(aGAS.UResolution(1.), aGAS.VResolution(1.));
+    myUVResolution = std::min(aGAS.UResolution(1.), aGAS.VResolution(1.));
   }
   return myUVResolution;
 }

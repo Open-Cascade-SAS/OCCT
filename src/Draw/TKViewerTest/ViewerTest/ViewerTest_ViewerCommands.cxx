@@ -2507,8 +2507,10 @@ static int VFitArea(Draw_Interpretor& theDI, Standard_Integer theArgNb, const ch
   gp_Pnt                   aViewPnt2 = aCamera->ConvertWorld2View(aWorldPnt2);
 
   // Determine fit area
-  gp_Pnt2d aMinCorner(Min(aViewPnt1.X(), aViewPnt2.X()), Min(aViewPnt1.Y(), aViewPnt2.Y()));
-  gp_Pnt2d aMaxCorner(Max(aViewPnt1.X(), aViewPnt2.X()), Max(aViewPnt1.Y(), aViewPnt2.Y()));
+  gp_Pnt2d aMinCorner(std::min(aViewPnt1.X(), aViewPnt2.X()),
+                      std::min(aViewPnt1.Y(), aViewPnt2.Y()));
+  gp_Pnt2d aMaxCorner(std::max(aViewPnt1.X(), aViewPnt2.X()),
+                      std::max(aViewPnt1.Y(), aViewPnt2.Y()));
 
   Standard_Real aDiagonal = aMinCorner.Distance(aMaxCorner);
 
@@ -7771,7 +7773,7 @@ static Standard_Integer VAnimation(Draw_Interpretor& theDI,
   int64_t               aNbFrames = 0;
   Message_ProgressScope aPS(Message_ProgressIndicator::Start(aProgress),
                             "Video recording, sec",
-                            Max(1, Standard_Integer(aPlayDuration / aPlaySpeed)));
+                            std::max(1, Standard_Integer(aPlayDuration / aPlaySpeed)));
   Standard_Integer      aSecondsProgress = 0;
   for (; aPts <= anUpperPts && aPS.More();)
   {
@@ -9977,11 +9979,11 @@ static int VLight(Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
       {
         aSmoothness = Standard_ShortReal(aSmoothness * M_PI / 180.0);
       }
-      if (Abs(aSmoothness) <= ShortRealEpsilon())
+      if (std::abs(aSmoothness) <= ShortRealEpsilon())
       {
         aLightNew->SetIntensity(1.f);
       }
-      else if (Abs(aLightNew->Smoothness()) <= ShortRealEpsilon())
+      else if (std::abs(aLightNew->Smoothness()) <= ShortRealEpsilon())
       {
         aLightNew->SetIntensity((aSmoothness * aSmoothness) / 3.f);
       }
@@ -11204,7 +11206,7 @@ static Standard_Integer VRenderParams(Draw_Interpretor& theDI,
       aParams.IsGlobalIlluminationEnabled = toEnable;
       if (!toEnable)
       {
-        aParams.RaytracingDepth = Min(aParams.RaytracingDepth, 10);
+        aParams.RaytracingDepth = std::min(aParams.RaytracingDepth, 10);
       }
     }
     else if (aFlag == "-blockedrng" || aFlag == "-brng")
@@ -13526,7 +13528,7 @@ static int VSelBvhBuild(Draw_Interpretor& /*theDI*/,
       aThreadsNb = Draw::Atoi(theArgVec[++anArgIter]);
       if (aThreadsNb < 1)
       {
-        aThreadsNb = Max(1, OSD_Parallel::NbLogicalProcessors() - 1);
+        aThreadsNb = std::max(1, OSD_Parallel::NbLogicalProcessors() - 1);
       }
     }
     else if (anArg == "-wait")

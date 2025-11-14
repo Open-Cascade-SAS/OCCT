@@ -45,7 +45,7 @@ void RWMesh_CoordinateSystemConverter::Init(const gp_Ax3& theInputSystem,
   if (theInputLengthUnit > 0.0 && theOutputLengthUnit > 0.0)
   {
     myUnitFactor = theInputLengthUnit / theOutputLengthUnit;
-    myHasScale   = Abs(myUnitFactor - 1.0) > gp::Resolution();
+    myHasScale   = std::abs(myUnitFactor - 1.0) > gp::Resolution();
   }
   else
   {

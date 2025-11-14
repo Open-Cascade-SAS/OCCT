@@ -460,7 +460,7 @@ public: //! @name Conversion of the integer to ID of periodic direction
   //! Converts the integer to ID of periodic direction
   static Standard_Integer ToDirectionID(const Standard_Integer theDirectionID)
   {
-    return Abs(theDirectionID % 3);
+    return std::abs(theDirectionID % 3);
   }
 
 protected: //! @name Protected methods performing the operation

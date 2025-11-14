@@ -45,7 +45,7 @@ static Standard_Integer nbDirectionComponents(const gp_Dir& theDir)
   Standard_Integer aNbComps = 0;
   for (Standard_Integer aCompIter = 1; aCompIter <= 3; ++aCompIter)
   {
-    if (Abs(theDir.Coord(aCompIter)) > gp::Resolution())
+    if (std::abs(theDir.Coord(aCompIter)) > gp::Resolution())
     {
       ++aNbComps;
     }
@@ -289,7 +289,7 @@ void AIS_ViewCube::ResetStyles()
 
 void AIS_ViewCube::SetSize(Standard_Real theValue, Standard_Boolean theToAdaptAnother)
 {
-  const bool isNewSize = Abs(mySize - theValue) > Precision::Confusion();
+  const bool isNewSize = std::abs(mySize - theValue) > Precision::Confusion();
   mySize               = theValue;
   if (theToAdaptAnother)
   {
@@ -315,7 +315,7 @@ void AIS_ViewCube::SetRoundRadius(const Standard_Real theValue)
 {
   Standard_OutOfRange_Raise_if(theValue < 0.0 || theValue > 0.5,
                                "AIS_ViewCube::SetRoundRadius(): theValue should be in [0; 0.5]");
-  if (Abs(myRoundRadius - theValue) > Precision::Confusion())
+  if (std::abs(myRoundRadius - theValue) > Precision::Confusion())
   {
     myRoundRadius = theValue;
     SetToUpdate();
@@ -331,7 +331,7 @@ void AIS_ViewCube::createRoundRectangleTriangles(const Handle(Graphic3d_ArrayOfT
                                                  Standard_Real     theRadius,
                                                  const gp_Trsf&    theTrsf)
 {
-  const Standard_Real    aRadius = Min(theRadius, Min(theSize.X(), theSize.Y()) * 0.5);
+  const Standard_Real    aRadius = std::min(theRadius, std::min(theSize.X(), theSize.Y()) * 0.5);
   const gp_XY            aHSize(theSize.X() * 0.5 - aRadius, theSize.Y() * 0.5 - aRadius);
   const gp_Dir           aNorm      = gp::DZ().Transformed(theTrsf);
   const Standard_Integer aVertFirst = !theTris.IsNull() ? theTris->VertexNumber() : 0;
@@ -352,9 +352,10 @@ void AIS_ViewCube::createRoundRectangleTriangles(const Handle(Graphic3d_ArrayOfT
         M_PI * 0.5,
         0.0,
         Standard_Real(aNodeIter) / Standard_Real(THE_NB_ROUND_SPLITS));
-      theTris->AddVertex(
-        gp_Pnt(aHSize.X() + aRadius * Cos(anAngle), aHSize.Y() + aRadius * Sin(anAngle), 0.0)
-          .Transformed(theTrsf));
+      theTris->AddVertex(gp_Pnt(aHSize.X() + aRadius * std::cos(anAngle),
+                                aHSize.Y() + aRadius * std::sin(anAngle),
+                                0.0)
+                           .Transformed(theTrsf));
     }
     for (Standard_Integer aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
@@ -362,9 +363,10 @@ void AIS_ViewCube::createRoundRectangleTriangles(const Handle(Graphic3d_ArrayOfT
         0.0,
         -M_PI * 0.5,
         Standard_Real(aNodeIter) / Standard_Real(THE_NB_ROUND_SPLITS));
-      theTris->AddVertex(
-        gp_Pnt(aHSize.X() + aRadius * Cos(anAngle), -aHSize.Y() + aRadius * Sin(anAngle), 0.0)
-          .Transformed(theTrsf));
+      theTris->AddVertex(gp_Pnt(aHSize.X() + aRadius * std::cos(anAngle),
+                                -aHSize.Y() + aRadius * std::sin(anAngle),
+                                0.0)
+                           .Transformed(theTrsf));
     }
     for (Standard_Integer aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
@@ -372,9 +374,10 @@ void AIS_ViewCube::createRoundRectangleTriangles(const Handle(Graphic3d_ArrayOfT
         -M_PI * 0.5,
         -M_PI,
         Standard_Real(aNodeIter) / Standard_Real(THE_NB_ROUND_SPLITS));
-      theTris->AddVertex(
-        gp_Pnt(-aHSize.X() + aRadius * Cos(anAngle), -aHSize.Y() + aRadius * Sin(anAngle), 0.0)
-          .Transformed(theTrsf));
+      theTris->AddVertex(gp_Pnt(-aHSize.X() + aRadius * std::cos(anAngle),
+                                -aHSize.Y() + aRadius * std::sin(anAngle),
+                                0.0)
+                           .Transformed(theTrsf));
     }
     for (Standard_Integer aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
@@ -382,9 +385,10 @@ void AIS_ViewCube::createRoundRectangleTriangles(const Handle(Graphic3d_ArrayOfT
         -M_PI,
         -M_PI * 1.5,
         Standard_Real(aNodeIter) / Standard_Real(THE_NB_ROUND_SPLITS));
-      theTris->AddVertex(
-        gp_Pnt(-aHSize.X() + aRadius * Cos(anAngle), aHSize.Y() + aRadius * Sin(anAngle), 0.0)
-          .Transformed(theTrsf));
+      theTris->AddVertex(gp_Pnt(-aHSize.X() + aRadius * std::cos(anAngle),
+                                aHSize.Y() + aRadius * std::sin(anAngle),
+                                0.0)
+                           .Transformed(theTrsf));
     }
 
     // split triangle fan
@@ -465,11 +469,12 @@ void AIS_ViewCube::createBoxEdgeTriangles(const Handle(Graphic3d_ArrayOfTriangle
                                           V3d_TypeOfOrientation theDirection) const
 {
   const Standard_Real aThickness =
-    Max(myBoxFacetExtension * gp_XY(1.0, 1.0).Modulus() - myBoxEdgeGap, myBoxEdgeMinSize);
+    std::max(myBoxFacetExtension * gp_XY(1.0, 1.0).Modulus() - myBoxEdgeGap, myBoxEdgeMinSize);
 
   const gp_Dir aDir = V3d::GetProjAxis(theDirection);
   const gp_Pnt aPos =
-    aDir.XYZ() * (mySize * 0.5 * gp_XY(1.0, 1.0).Modulus() + myBoxFacetExtension * Cos(M_PI_4));
+    aDir.XYZ()
+    * (mySize * 0.5 * gp_XY(1.0, 1.0).Modulus() + myBoxFacetExtension * std::cos(M_PI_4));
   const gp_Ax2 aPosition(aPos, aDir.Reversed());
 
   gp_Ax3  aSystem(aPosition);
@@ -505,13 +510,14 @@ void AIS_ViewCube::createBoxCornerTriangles(const Handle(Graphic3d_ArrayOfTriang
     }
 
     const Standard_Real anEdgeHWidth = myBoxFacetExtension * gp_XY(1.0, 1.0).Modulus() * 0.5;
-    const Standard_Real aHeight      = anEdgeHWidth * Sqrt(2.0 / 3.0); // tetrahedron height
+    const Standard_Real aHeight      = anEdgeHWidth * std::sqrt(2.0 / 3.0); // tetrahedron height
     const gp_Pnt        aPos = aDir.XYZ() * (aHSize * gp_Vec(1.0, 1.0, 1.0).Magnitude() + aHeight);
     const gp_Ax2        aPosition(aPos, aDir.Reversed());
     gp_Ax3              aSystem(aPosition);
     gp_Trsf             aTrsf;
     aTrsf.SetTransformation(aSystem, gp_Ax3());
-    const Standard_Real aRadius = Max(myBoxFacetExtension * 0.5 / Cos(M_PI_4), myCornerMinSize);
+    const Standard_Real aRadius =
+      std::max(myBoxFacetExtension * 0.5 / std::cos(M_PI_4), myCornerMinSize);
 
     theTris->AddVertex(gp_Pnt(0.0, 0.0, 0.0).Transformed(aTrsf));
     for (Standard_Integer aNodeIter = 0; aNodeIter < THE_NB_DISK_SLICES; ++aNodeIter)
@@ -521,7 +527,7 @@ void AIS_ViewCube::createBoxCornerTriangles(const Handle(Graphic3d_ArrayOfTriang
         0.0,
         Standard_Real(aNodeIter) / Standard_Real(THE_NB_DISK_SLICES));
       theTris->AddVertex(
-        gp_Pnt(aRadius * Cos(anAngle), aRadius * Sin(anAngle), 0.0).Transformed(aTrsf));
+        gp_Pnt(aRadius * std::cos(anAngle), aRadius * std::sin(anAngle), 0.0).Transformed(aTrsf));
     }
     theTris->AddTriangleFanEdges(aVertFirst + 1, theTris->VertexNumber(), true);
   }

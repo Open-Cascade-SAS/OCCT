@@ -131,7 +131,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(Handle(Geom_BSplineCurve)& FirstCu
                                               const Standard_Integer     MinM)
 {
   // Harmonisation des degres.
-  Standard_Integer Deg = Max(FirstCurve->Degree(), SecondCurve->Degree());
+  Standard_Integer Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
   if (FirstCurve->Degree() < Deg)
   {
     FirstCurve->IncreaseDegree(Deg);
@@ -192,7 +192,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(Handle(Geom_BSplineCurve)& FirstCu
     Noeuds(ii) = Ratio1 * FirstCurve->Knot(ii) - Delta1;
     if (ii > 1)
     {
-      eps = Epsilon(Abs(Noeuds(ii - 1)));
+      eps = Epsilon(std::abs(Noeuds(ii - 1)));
       if (eps < 5.e-10)
         eps = 5.e-10;
       if (Noeuds(ii) - Noeuds(ii - 1) <= eps)
@@ -206,7 +206,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(Handle(Geom_BSplineCurve)& FirstCu
   for (ii = 2, jj = NbK1 + 1; ii <= NbK2; ii++, jj++)
   {
     Noeuds(jj) = Ratio2 * SecondCurve->Knot(ii) - Delta2;
-    eps        = Epsilon(Abs(Noeuds(jj - 1)));
+    eps        = Epsilon(std::abs(Noeuds(jj - 1)));
     if (eps < 5.e-10)
       eps = 5.e-10;
     if (Noeuds(jj) - Noeuds(jj - 1) <= eps)

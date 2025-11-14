@@ -114,7 +114,7 @@ std::streamsize LDOM_SBuffer::xsputn(const char* aStr, std::streamsize n)
   }
   else if (freeLen <= 0)
   {
-    LDOM_StringElem* aNextElem = new (myAlloc) LDOM_StringElem(Max(aLen, myMaxBuf), myAlloc);
+    LDOM_StringElem* aNextElem = new (myAlloc) LDOM_StringElem(std::max(aLen, myMaxBuf), myAlloc);
     myCurString->next          = aNextElem;
     myCurString                = aNextElem;
     strncpy(myCurString->buf + myCurString->len, aStr, aLen);
@@ -126,7 +126,7 @@ std::streamsize LDOM_SBuffer::xsputn(const char* aStr, std::streamsize n)
     myCurString->len += freeLen;
     *(myCurString->buf + myCurString->len) = '\0';
     aLen -= freeLen;
-    LDOM_StringElem* aNextElem = new (myAlloc) LDOM_StringElem(Max(aLen, myMaxBuf), myAlloc);
+    LDOM_StringElem* aNextElem = new (myAlloc) LDOM_StringElem(std::max(aLen, myMaxBuf), myAlloc);
     myCurString->next          = aNextElem;
     myCurString                = aNextElem;
     strncpy(myCurString->buf + myCurString->len, aStr + freeLen, aLen);

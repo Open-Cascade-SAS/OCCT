@@ -131,8 +131,8 @@ void Extrema_GLocateExtPC::Perform(const ThePoint& P, const Standard_Real U0)
         // l intervalle total de recherche de l'extremum (hla : au cas ou
         // myintuinf > myintusup, c est que les 2 intervalles ne s intersectent
         // pas, mais il n'y avait aucune raison de sortir en "return")
-        myintuinf = Max(theInter(inter), myumin);
-        myintusup = Min(theInter(inter + 1), myusup);
+        myintuinf = std::max(theInter(inter), myumin);
+        myintusup = std::min(theInter(inter + 1), myusup);
         if ((local_u0 >= myintuinf) && (local_u0 < myintusup))
           found = Standard_True;
         inter++;
@@ -171,8 +171,8 @@ void Extrema_GLocateExtPC::Perform(const ThePoint& P, const Standard_Real U0)
           i2 = inter - k;
           if (i1 <= n)
           {
-            myintuinf = Max(theInter(i1), myumin);
-            myintusup = Min(theInter(i1 + 1), myusup);
+            myintuinf = std::max(theInter(i1), myumin);
+            myintusup = std::min(theInter(i1 + 1), myusup);
             if (myintuinf < myintusup)
             {
               TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
@@ -208,8 +208,8 @@ void Extrema_GLocateExtPC::Perform(const ThePoint& P, const Standard_Real U0)
 
           if (i2 > 0)
           {
-            myintuinf = Max(theInter(i2), myumin);
-            myintusup = Min(theInter(i2 + 1), myusup);
+            myintuinf = std::max(theInter(i2), myumin);
+            myintusup = std::min(theInter(i2 + 1), myusup);
             if (myintuinf < myintusup)
             {
               TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
@@ -265,7 +265,7 @@ void Extrema_GLocateExtPC::Perform(const ThePoint& P, const Standard_Real U0)
         for (i = 1; i <= myExtremPC.NbExt(); i++)
         {
           Par  = myExtremPC.Point(i).Parameter();
-          valU = Abs(Par - U0);
+          valU = std::abs(Par - U0);
           if (valU <= valU2)
           {
             valU2     = valU;

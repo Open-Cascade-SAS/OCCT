@@ -164,7 +164,7 @@ public: //! @name public API
   //! @param[out] theOutGravityCenter - garvity center of region;
   //! @param[out] theOutInertia - matrix of inertia;
   //! @return value of error which is calculated as
-  //! Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   Standard_EXPORT Standard_Real Compute(BRepGProp_Face&        theSurface,
                                         BRepGProp_Domain&      theDomain,
@@ -186,7 +186,7 @@ public: //! @name public API
   //! @param[out] theOutGravityCenter - garvity center of region;
   //! @param[out] theOutInertia - matrix of inertia;
   //! @return value of error which is calculated as
-  //! Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   Standard_EXPORT Standard_Real Compute(BRepGProp_Face&     theSurface,
                                         BRepGProp_Domain&   theDomain,

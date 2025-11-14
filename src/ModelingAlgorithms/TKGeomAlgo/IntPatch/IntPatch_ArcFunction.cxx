@@ -66,7 +66,7 @@ Standard_Integer IntPatch_ArcFunction::GetStateNumber()
 
 Standard_Integer IntPatch_ArcFunction::NbSamples() const
 {
-  return Max(Max(IntPatch_HInterTool::NbSamplesU(mySurf, 0., 0.),
-                 IntPatch_HInterTool::NbSamplesV(mySurf, 0., 0.)),
-             IntPatch_HInterTool::NbSamplesOnArc(myArc));
+  return std::max(std::max(IntPatch_HInterTool::NbSamplesU(mySurf, 0., 0.),
+                           IntPatch_HInterTool::NbSamplesV(mySurf, 0., 0.)),
+                  IntPatch_HInterTool::NbSamplesOnArc(myArc));
 }

@@ -124,7 +124,7 @@ static void ProjectPointOnCurve(const Standard_Real    InitValue,
     vector = gp_Vec(a_point, APoint);
 
     func = vector.Dot(d1);
-    if (Abs(func) < Tolerance * d1.Magnitude())
+    if (std::abs(func) < Tolerance * d1.Magnitude())
     {
       not_done = 0;
       Status   = Standard_True;
@@ -135,11 +135,11 @@ static void ProjectPointOnCurve(const Standard_Real    InitValue,
 
       // Avoid division by zero.
       const Standard_Real Toler = 1.0e-12;
-      if (Abs(func_derivative) > Toler)
+      if (std::abs(func_derivative) > Toler)
         param -= func / func_derivative;
 
-      param = Max(param, Curve.FirstParameter());
-      param = Min(param, Curve.LastParameter());
+      param = std::max(param, Curve.FirstParameter());
+      param = std::min(param, Curve.LastParameter());
     }
   } while (not_done && num_iter <= NumIteration);
 
@@ -176,12 +176,12 @@ static Standard_Real ComputeTolReached(const Handle(Adaptor3d_Curve)&  c3d,
       d2 = Precision::Infinite();
       break;
     }
-    d2 = Max(d2, Pc3d.SquareDistance(Pcons));
+    d2 = std::max(d2, Pc3d.SquareDistance(Pcons));
   }
 
   const Standard_Real aMult      = 1. + 0.05; //
   Standard_Real       aDeviation = aMult * sqrt(d2);
-  aDeviation = Max(aDeviation, Precision::Confusion()); // Tolerance in modeling space.
+  aDeviation = std::max(aDeviation, Precision::Confusion()); // Tolerance in modeling space.
   return aDeviation;
 }
 
@@ -664,7 +664,7 @@ Standard_Boolean Approx_SameParameter::CheckSameParameter(Approx_SameParameter_D
   theData.myCOnS.D0(theData.myC2dPL, Pcons);
   myC3d->D0(theData.myC3dPL, Pc3d);
   dist2 = Pcons.SquareDistance(Pc3d);
-  dmax2 = Max(dmax2, dist2);
+  dmax2 = std::max(dmax2, dist2);
 
   Extrema_LocateExtPC Projector;
   Projector.Initialize(*myC3d, theData.myC3dPF, theData.myC3dPL, theData.myTol);

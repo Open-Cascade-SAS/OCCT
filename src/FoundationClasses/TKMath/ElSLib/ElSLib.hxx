@@ -529,13 +529,13 @@ public:
 
   //! parametrization
   //! P (U, V) = Location + V * ZDirection +
-  //! Radius * (Cos(U) * XDirection + Sin (U) * YDirection)
+  //! Radius * (std::cos(U) * XDirection + Sin (U) * YDirection)
   static void Parameters(const gp_Cylinder& C, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
 
   //! parametrization
   //! P (U, V) = Location + V * ZDirection +
   //! (Radius + V * Tan (SemiAngle)) *
-  //! (Cos(U) * XDirection + Sin(U) * YDirection)
+  //! (std::cos(U) * XDirection + std::sin(U) * YDirection)
   static void Parameters(const gp_Cone& C, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
 
   //! parametrization
@@ -546,9 +546,9 @@ public:
 
   //! parametrization
   //! P (U, V) = Location +
-  //! (MajorRadius + MinorRadius * Cos(U)) *
-  //! (Cos(V) * XDirection - Sin(V) * YDirection) +
-  //! MinorRadius * Sin(U) * ZDirection
+  //! (MajorRadius + MinorRadius * std::cos(U)) *
+  //! (std::cos(V) * XDirection - std::sin(V) * YDirection) +
+  //! MinorRadius * std::sin(U) * ZDirection
   static void Parameters(const gp_Torus& T, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
 
   //! parametrization
@@ -561,7 +561,7 @@ public:
 
   //! parametrization
   //! P (U, V) = Location + V * ZDirection +
-  //! Radius * (Cos(U) * XDirection + Sin (U) * YDirection)
+  //! Radius * (std::cos(U) * XDirection + Sin (U) * YDirection)
   Standard_EXPORT static void CylinderParameters(const gp_Ax3&       Pos,
                                                  const Standard_Real Radius,
                                                  const gp_Pnt&       P,
@@ -571,7 +571,7 @@ public:
   //! parametrization
   //! P (U, V) = Location + V * ZDirection +
   //! (Radius + V * Tan (SemiAngle)) *
-  //! (Cos(U) * XDirection + Sin(U) * YDirection)
+  //! (std::cos(U) * XDirection + std::sin(U) * YDirection)
   Standard_EXPORT static void ConeParameters(const gp_Ax3&       Pos,
                                              const Standard_Real Radius,
                                              const Standard_Real SAngle,
@@ -591,9 +591,9 @@ public:
 
   //! parametrization
   //! P (U, V) = Location +
-  //! (MajorRadius + MinorRadius * Cos(U)) *
-  //! (Cos(V) * XDirection - Sin(V) * YDirection) +
-  //! MinorRadius * Sin(U) * ZDirection
+  //! (MajorRadius + MinorRadius * std::cos(U)) *
+  //! (std::cos(V) * XDirection - std::sin(V) * YDirection) +
+  //! MinorRadius * std::sin(U) * ZDirection
   Standard_EXPORT static void TorusParameters(const gp_Ax3&       Pos,
                                               const Standard_Real MajorRadius,
                                               const Standard_Real MinorRadius,

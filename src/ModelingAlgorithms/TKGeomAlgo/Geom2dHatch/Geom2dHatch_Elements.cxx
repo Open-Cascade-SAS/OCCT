@@ -148,9 +148,9 @@ Standard_Boolean Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P,
           if (aTanMod < Precision::SquarePConfusion())
             continue;
 
-          aTanVec /= Sqrt(aTanMod);
+          aTanVec /= std::sqrt(aTanMod);
           Standard_Real aSinA = aTanVec.Crossed(aLinDir);
-          if (Abs(aSinA) < 0.001)
+          if (std::abs(aSinA) < 0.001)
           {
             // too small angle - line and edge may be considered
             // as tangent which is bad for classifier
@@ -172,7 +172,7 @@ Standard_Boolean Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P,
                 myCurEdge++;
                 myCurEdgePar = Probing_Start;
               }
-              Par = Sqrt(Par);
+              Par = std::sqrt(Par);
               return Standard_True;
             }
           }

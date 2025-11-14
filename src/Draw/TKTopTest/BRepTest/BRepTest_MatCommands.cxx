@@ -234,8 +234,8 @@ void DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer Indice
       {
         gpParabola         = Handle(Geom2d_Parabola)::DownCast(curve)->Parab2d();
         Focus              = gpParabola.Focal();
-        Standard_Real Val1 = Sqrt(Limit * Focus);
-        Standard_Real Val2 = Sqrt(Limit * Limit);
+        Standard_Real Val1 = std::sqrt(Limit * Focus);
+        Standard_Real Val2 = std::sqrt(Limit * Limit);
         delta              = (Val1 <= Val2 ? Val1 : Val2);
       }
       else if (type == STANDARD_TYPE(Geom2d_Hyperbola))
@@ -245,8 +245,8 @@ void DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer Indice
         Standard_Real Minr  = gpHyperbola.MinorRadius();
         Standard_Real Valu1 = Limit / Majr;
         Standard_Real Valu2 = Limit / Minr;
-        Standard_Real Val1  = Log(Valu1 + Sqrt(Valu1 * Valu1 - 1));
-        Standard_Real Val2  = Log(Valu2 + Sqrt(Valu2 * Valu2 + 1));
+        Standard_Real Val1  = std::log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
+        Standard_Real Val2  = std::log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
         delta               = (Val1 <= Val2 ? Val1 : Val2);
       }
       if (aCurve->FirstParameter() == -Precision::Infinite())

@@ -209,7 +209,7 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
 
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const Standard_Real Dist1)
 {
-  TheCirc2d = gp_Circ2d(Circ.Axis(), Abs(Circ.Radius() + Dist1));
+  TheCirc2d = gp_Circ2d(Circ.Axis(), std::abs(Circ.Radius() + Dist1));
   TheError  = gce_Done;
 }
 

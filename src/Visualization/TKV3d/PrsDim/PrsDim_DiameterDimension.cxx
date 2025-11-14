@@ -304,7 +304,7 @@ Standard_Boolean PrsDim_DiameterDimension::IsValidAnchor(const gp_Circ& theCircl
   Standard_Real anAnchorDist = theAnchor.Distance(theCircle.Location());
   Standard_Real aRadius      = myCircle.Radius();
 
-  return Abs(anAnchorDist - aRadius) > Precision::Confusion()
+  return std::abs(anAnchorDist - aRadius) > Precision::Confusion()
          && aCirclePlane.Contains(theAnchor, Precision::Confusion());
 }
 

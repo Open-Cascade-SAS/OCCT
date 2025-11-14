@@ -98,7 +98,7 @@ static void DrawCurve(const Adaptor3d_Curve&         aCurve,
   if (aCurve.GetType() == GeomAbs_BSplineCurve)
   {
     nbintervals = aCurve.NbKnots() - 1;
-    nbintervals = Max(1, nbintervals / 3);
+    nbintervals = std::max(1, nbintervals / 3);
   }
 
   switch (aCurve.GetType())
@@ -118,7 +118,7 @@ static void DrawCurve(const Adaptor3d_Curve&         aCurve,
     }
     break;
     default: {
-      const Standard_Integer N  = Max(2, NbP * nbintervals);
+      const Standard_Integer N  = std::max(2, NbP * nbintervals);
       const Standard_Real    DU = (U2 - U1) / (N - 1);
       gp_Pnt                 p;
 
@@ -156,25 +156,25 @@ static Standard_Boolean MatchCurve(const Standard_Real    X,
   {
     case GeomAbs_Line: {
       gp_Pnt p1 = aCurve.Value(U1);
-      if (Abs(X - p1.X()) + Abs(Y - p1.Y()) + Abs(Z - p1.Z()) <= aDistance)
+      if (std::abs(X - p1.X()) + std::abs(Y - p1.Y()) + std::abs(Z - p1.Z()) <= aDistance)
         return Standard_True;
       gp_Pnt p2 = aCurve.Value(U2);
-      if (Abs(X - p2.X()) + Abs(Y - p2.Y()) + Abs(Z - p2.Z()) <= aDistance)
+      if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
         return Standard_True;
       return Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist);
     }
     case GeomAbs_Circle: {
       const Standard_Real    Radius = aCurve.Circle().Radius();
-      const Standard_Real    DU     = Sqrt(8.0 * TheDeflection / Radius);
-      const Standard_Real    Er     = Abs(U2 - U1) / DU;
-      const Standard_Integer N      = Max(2, (Standard_Integer)IntegerPart(Er));
+      const Standard_Real    DU     = std::sqrt(8.0 * TheDeflection / Radius);
+      const Standard_Real    Er     = std::abs(U2 - U1) / DU;
+      const Standard_Integer N      = std::max(2, (Standard_Integer)std::trunc(Er));
       if (N > 0)
       {
         gp_Pnt p1, p2;
         for (Standard_Integer Index = 1; Index <= N + 1; Index++)
         {
           p2 = aCurve.Value(U1 + (Index - 1) * DU);
-          if (Abs(X - p2.X()) + Abs(Y - p2.Y()) + Abs(Z - p2.Z()) <= aDistance)
+          if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
             return Standard_True;
 
           if (Index > 1)
@@ -193,7 +193,7 @@ static Standard_Boolean MatchCurve(const Standard_Real    X,
       for (Standard_Integer i = 1; i <= NbP; i++)
       {
         p2 = aCurve.Value(U1 + (i - 1) * DU);
-        if (Abs(X - p2.X()) + Abs(Y - p2.Y()) + Abs(Z - p2.Z()) <= aDistance)
+        if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
           return Standard_True;
         if (i > 1)
         {

@@ -90,9 +90,10 @@ private:
 
     if (myParameters.MinSize < Precision::Confusion())
     {
-      myParameters.MinSize = Max(IMeshTools_Parameters::RelMinSize()
-                                   * Min(myParameters.Deflection, myParameters.DeflectionInterior),
-                                 Precision::Confusion());
+      myParameters.MinSize =
+        std::max(IMeshTools_Parameters::RelMinSize()
+                   * std::min(myParameters.Deflection, myParameters.DeflectionInterior),
+                 Precision::Confusion());
     }
 
     if (myParameters.Angle < Precision::Angular())

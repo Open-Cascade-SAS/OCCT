@@ -61,5 +61,5 @@ Standard_Integer Expr::NbOfFreeVariables(const Handle(Expr_GeneralExpression)& e
 
 Standard_Real Expr::Sign(const Standard_Real val)
 {
-  return ::Sign(1.0, val);
+  return std::copysign(1.0, val);
 }

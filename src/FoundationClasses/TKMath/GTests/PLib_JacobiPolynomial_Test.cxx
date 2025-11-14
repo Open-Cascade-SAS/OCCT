@@ -259,7 +259,7 @@ TEST_F(PLibJacobiPolynomialTest, CoefficientConversion)
   TColStd_Array1OfReal aJacCoeff(0, aJacSize - 1);
   for (Standard_Integer i = aJacCoeff.Lower(); i <= aJacCoeff.Upper(); i++)
   {
-    aJacCoeff(i) = Sin(i * 0.1); // Some test values
+    aJacCoeff(i) = std::sin(i * 0.1); // Some test values
   }
 
   TColStd_Array1OfReal aCoefficients(0, aCoeffSize - 1);

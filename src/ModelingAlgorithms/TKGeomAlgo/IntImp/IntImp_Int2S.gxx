@@ -96,7 +96,7 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const TColStd_Array1OfReal&     
   BestChoix = ChoixIso;
   if (Rsnld.IsDone())
   {
-    if (Abs(myZerParFunc.Root()) <= tol)
+    if (std::abs(myZerParFunc.Root()) <= tol)
     { // distance des 2 points
       // dans la tolerance
       Rsnld.Root(UVap);

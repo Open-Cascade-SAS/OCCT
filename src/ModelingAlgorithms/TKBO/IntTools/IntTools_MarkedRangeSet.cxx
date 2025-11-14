@@ -141,7 +141,7 @@ Standard_Boolean IntTools_MarkedRangeSet::InsertRange(const Standard_Real    the
 
   if ((theFirstBoundary < myRangeSetStorer(theIndex))
       || (theLastBoundary > myRangeSetStorer(theIndex + 1))
-      || (Abs(theFirstBoundary - theLastBoundary) < aTolerance))
+      || (std::abs(theFirstBoundary - theLastBoundary) < aTolerance))
   {
     return InsertRange(theFirstBoundary, theLastBoundary, theFlag);
   }
@@ -149,8 +149,8 @@ Standard_Boolean IntTools_MarkedRangeSet::InsertRange(const Standard_Real    the
   {
     Standard_Integer aPrevFlag = myFlags(anIndex);
 
-    if ((Abs(theFirstBoundary - myRangeSetStorer(anIndex)) > aTolerance)
-        && (Abs(theFirstBoundary - myRangeSetStorer(anIndex + 1)) > aTolerance))
+    if ((std::abs(theFirstBoundary - myRangeSetStorer(anIndex)) > aTolerance)
+        && (std::abs(theFirstBoundary - myRangeSetStorer(anIndex + 1)) > aTolerance))
     {
       myRangeSetStorer.InsertAfter(anIndex, theFirstBoundary);
       myFlags.InsertAfter(anIndex, theFlag);
@@ -162,8 +162,8 @@ Standard_Boolean IntTools_MarkedRangeSet::InsertRange(const Standard_Real    the
       myFlags.SetValue(anIndex, theFlag);
     }
 
-    if ((Abs(theLastBoundary - myRangeSetStorer(anIndex)) > aTolerance)
-        && (Abs(theLastBoundary - myRangeSetStorer(anIndex + 1)) > aTolerance))
+    if ((std::abs(theLastBoundary - myRangeSetStorer(anIndex)) > aTolerance)
+        && (std::abs(theLastBoundary - myRangeSetStorer(anIndex + 1)) > aTolerance))
     {
       myRangeSetStorer.InsertAfter(anIndex, theLastBoundary);
       myRangeNumber = myRangeSetStorer.Length() - 1;

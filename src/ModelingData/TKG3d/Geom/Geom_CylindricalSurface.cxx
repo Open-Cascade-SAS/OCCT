@@ -300,7 +300,7 @@ Handle(Geom_Curve) Geom_CylindricalSurface::VIso(const Standard_Real V) const
 void Geom_CylindricalSurface::Transform(const Trsf& T)
 {
 
-  radius = radius * Abs(T.ScaleFactor());
+  radius = radius * std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 
@@ -311,7 +311,7 @@ void Geom_CylindricalSurface::TransformParameters(Standard_Real&,
                                                   const gp_Trsf& T) const
 {
   if (!Precision::IsInfinite(V))
-    V *= Abs(T.ScaleFactor());
+    V *= std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
@@ -320,7 +320,7 @@ gp_GTrsf2d Geom_CylindricalSurface::ParametricTransformation(const gp_Trsf& T) c
 {
   gp_GTrsf2d T2;
   gp_Ax2d    Axis(gp::Origin2d(), gp::DX2d());
-  T2.SetAffinity(Axis, Abs(T.ScaleFactor()));
+  T2.SetAffinity(Axis, std::abs(T.ScaleFactor()));
   return T2;
 }
 

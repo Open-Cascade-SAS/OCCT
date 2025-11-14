@@ -80,7 +80,7 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance(
   {
     aTn = aTd;
   }
-  aTc = (Abs(aTd) < gp::Resolution() ? 0.0 : aTn / aTd);
+  aTc = (std::abs(aTd) < gp::Resolution() ? 0.0 : aTn / aTd);
 
   const gp_Pnt aClosestPnt = myNearPickedPnt.XYZ() + aV * aTc;
   thePickResult.SetDepth(myNearPickedPnt.Distance(aClosestPnt) * myScale);
@@ -95,8 +95,9 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance(
     return;
   }
 
-  const Standard_Real aCosOfAngle  = aFigureVec.Dot(aPickedVec) / (aPickedVecMod * aFigureVecMod);
-  const Standard_Real aSegPntShift = Min(aFigureVecMod, Max(0.0, aCosOfAngle * aPickedVecMod));
+  const Standard_Real aCosOfAngle = aFigureVec.Dot(aPickedVec) / (aPickedVecMod * aFigureVecMod);
+  const Standard_Real aSegPntShift =
+    std::min(aFigureVecMod, std::max(0.0, aCosOfAngle * aPickedVecMod));
   thePickResult.SetPickedPoint(theSegPnt1.XYZ()
                                + aFigureVec.XYZ() * (aSegPntShift / aFigureVecMod));
 }
@@ -115,9 +116,9 @@ bool SelectMgr_RectangularFrustum::segmentPlaneIntersection(
   Standard_Real aD = thePlane.Dot(anU);
   Standard_Real aN = -thePlane.Dot(aW);
 
-  if (Abs(aD) < Precision::Confusion())
+  if (std::abs(aD) < Precision::Confusion())
   {
-    if (Abs(aN) < Precision::Angular())
+    if (std::abs(aN) < Precision::Angular())
     {
       thePickResult.Invalidate();
       return false;
@@ -233,8 +234,8 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections(
         theFrustum->myVertices[aVertIdxs[aPlaneIdx]].XYZ());
       Standard_Real aProj2 = theFrustum->myPlanes[aPlaneIdx].XYZ().Dot(
         theFrustum->myVertices[aVertIdxs[aPlaneIdx + 1]].XYZ());
-      theFrustum->myMinVertsProjections[aPlaneIdx] = Min(aProj1, aProj2);
-      theFrustum->myMaxVertsProjections[aPlaneIdx] = Max(aProj1, aProj2);
+      theFrustum->myMinVertsProjections[aPlaneIdx] = std::min(aProj1, aProj2);
+      theFrustum->myMaxVertsProjections[aPlaneIdx] = std::max(aProj1, aProj2);
     }
   }
   else
@@ -248,8 +249,8 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections(
       for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
       {
         Standard_Real aProjection = aPlane.Dot(theFrustum->myVertices[aVertIdx].XYZ());
-        aMin                      = Min(aMin, aProjection);
-        aMax                      = Max(aMax, aProjection);
+        aMin                      = std::min(aMin, aProjection);
+        aMax                      = std::max(aMax, aProjection);
       }
       theFrustum->myMinVertsProjections[aPlaneIdx] = aMin;
       theFrustum->myMaxVertsProjections[aPlaneIdx] = aMax;
@@ -264,8 +265,8 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections(
     for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
     {
       const gp_XYZ& aVert = theFrustum->myVertices[aVertIdx].XYZ();
-      aMax                = Max(aVert.GetData()[aDim], aMax);
-      aMin                = Min(aVert.GetData()[aDim], aMin);
+      aMax                = std::max(aVert.GetData()[aDim], aMax);
+      aMin                = std::min(aVert.GetData()[aDim], aMin);
     }
     theFrustum->myMaxOrthoVertsProjections[aDim] = aMax;
     theFrustum->myMinOrthoVertsProjections[aDim] = aMin;
@@ -426,7 +427,8 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_RectangularFrustum::ScaleAndTransfor
     aRes->myEdgeDirs[5] = aRes->myVertices[4].XYZ() - aRes->myVertices[5].XYZ();
 
     // Compute scale to transform depth from local coordinate system to world coordinate system
-    aRes->myScale = Sqrt(aRefScale / aRes->myFarPickedPnt.SquareDistance(aRes->myNearPickedPnt));
+    aRes->myScale =
+      std::sqrt(aRefScale / aRes->myFarPickedPnt.SquareDistance(aRes->myNearPickedPnt));
   }
 
   aRes->SetBuilder(theBuilder);
@@ -523,16 +525,16 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsBox(
                                                        aTimeLeave))
   {
     gp_Pnt aNearestPnt(RealLast(), RealLast(), RealLast());
-    aNearestPnt.SetX(Max(Min(myNearPickedPnt.X(), theBoxMax.x()), theBoxMin.x()));
-    aNearestPnt.SetY(Max(Min(myNearPickedPnt.Y(), theBoxMax.y()), theBoxMin.y()));
-    aNearestPnt.SetZ(Max(Min(myNearPickedPnt.Z(), theBoxMax.z()), theBoxMin.z()));
+    aNearestPnt.SetX(std::max(std::min(myNearPickedPnt.X(), theBoxMax.x()), theBoxMin.x()));
+    aNearestPnt.SetY(std::max(std::min(myNearPickedPnt.Y(), theBoxMax.y()), theBoxMin.y()));
+    aNearestPnt.SetZ(std::max(std::min(myNearPickedPnt.Z(), theBoxMax.z()), theBoxMin.z()));
 
     aDepth = aNearestPnt.Distance(myNearPickedPnt);
     thePickResult.SetDepth(aDepth);
     return !theClipRange.IsClipped(thePickResult.Depth());
   }
 
-  Bnd_Range aRange(Max(aTimeEnter, 0.0), aTimeLeave);
+  Bnd_Range aRange(std::max(aTimeEnter, 0.0), aTimeLeave);
   aRange.GetMin(aDepth);
 
   if (!theClipRange.GetNearestDepth(aRange, aDepth))
@@ -565,7 +567,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsPoint(
   gp_XYZ              aV     = thePnt.XYZ() - myNearPickedPnt.XYZ();
   const Standard_Real aDepth = aV.Dot(myViewRayDir.XYZ());
 
-  thePickResult.SetDepth(Abs(aDepth) * myScale);
+  thePickResult.SetDepth(std::abs(aDepth) * myScale);
   thePickResult.SetPickedPoint(thePnt);
 
   return !theClipRange.IsClipped(thePickResult.Depth());
@@ -719,7 +721,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsTriangle(
 
     const gp_Pnt        aPnts[3] = {thePnt1, thePnt2, thePnt3};
     const Standard_Real anAlpha  = aTriangleNormal.XYZ().Dot(myViewRayDir.XYZ());
-    if (Abs(anAlpha) < gp::Resolution())
+    if (std::abs(anAlpha) < gp::Resolution())
     {
       // handle the case when triangle normal and selecting frustum direction are orthogonal
       SelectBasics_PickResult aPickResult;
@@ -823,11 +825,11 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCylinder(
   }
 
   const gp_Pnt aPntOnCylinder = aLoc.XYZ() + aRayDir.XYZ() * aTimes[aResTime];
-  if (Abs(aPntOnCylinder.Z()) < Precision::Confusion())
+  if (std::abs(aPntOnCylinder.Z()) < Precision::Confusion())
   {
     thePickResult.SetSurfaceNormal(-gp::DZ().Transformed(theTrsf));
   }
-  else if (Abs(aPntOnCylinder.Z() - theHeight) < Precision::Confusion())
+  else if (std::abs(aPntOnCylinder.Z() - theHeight) < Precision::Confusion())
   {
     thePickResult.SetSurfaceNormal(gp::DZ().Transformed(theTrsf));
   }
@@ -880,7 +882,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCircle(
   }
 
   const gp_Pnt aPntOnCircle = aLoc.XYZ() + aRayDir.XYZ() * aTime;
-  if (Abs(aPntOnCircle.Z()) < Precision::Confusion())
+  if (std::abs(aPntOnCircle.Z()) < Precision::Confusion())
   {
     thePickResult.SetSurfaceNormal(-gp::DZ().Transformed(theTrsf));
   }
@@ -932,8 +934,8 @@ Standard_Boolean SelectMgr_RectangularFrustum::isIntersectCircle(
     const Standard_Real aDiscr = aK * aK - anA * aC;
     if (aDiscr >= 0.0)
     {
-      const Standard_Real aT1 = (-aK + Sqrt(aDiscr)) / anA;
-      const Standard_Real aT2 = (-aK - Sqrt(aDiscr)) / anA;
+      const Standard_Real aT1 = (-aK + std::sqrt(aDiscr)) / anA;
+      const Standard_Real aT2 = (-aK - std::sqrt(aDiscr)) / anA;
       if ((aT1 >= 0 && aT1 <= 1) || (aT2 >= 0 && aT2 <= 1))
       {
         return true;
@@ -959,7 +961,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::isSegmentsIntersect(const gp_Pnt&
                        thePnt2Seg2.X() - thePnt1Seg1.X(),
                        thePnt2Seg2.Y() - thePnt1Seg1.Y(),
                        thePnt2Seg2.Z() - thePnt1Seg1.Z());
-  if (Abs(aMatPln.Determinant()) > Precision::Confusion())
+  if (std::abs(aMatPln.Determinant()) > Precision::Confusion())
   {
     return false;
   }

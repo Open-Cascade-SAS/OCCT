@@ -173,20 +173,22 @@ Standard_Boolean FairCurve_Batten::Compute(FairCurve_AnalysisCode& ACode,
     Ratio   = 1;
     if (NewConstraintOrder1 > 0)
     {
-      Fraction = Abs(DAngle1) / (AngleMax * Exp(-Abs(OldAngle1) / AngleMax) + AngleMin);
+      Fraction =
+        std::abs(DAngle1) / (AngleMax * std::exp(-std::abs(OldAngle1) / AngleMax) + AngleMin);
       if (Fraction > 1)
         Ratio = 1 / Fraction;
     }
     if (NewConstraintOrder2 > 0)
     {
-      Fraction = Abs(DAngle2) / (AngleMax * Exp(-Abs(OldAngle2) / AngleMax) + AngleMin);
+      Fraction =
+        std::abs(DAngle2) / (AngleMax * std::exp(-std::abs(OldAngle2) / AngleMax) + AngleMin);
       if (Fraction > 1)
         Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
     }
 
     OldDist  = OldP1.Distance(OldP2);
     NewDist  = NewP1.Distance(NewP2);
-    Fraction = Abs(OldDist - NewDist) / (OldDist / 3);
+    Fraction = std::abs(OldDist - NewDist) / (OldDist / 3);
     if (Fraction > 1)
       Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
 
@@ -438,9 +440,10 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
     ACode = FairCurve_InfiniteSliding;
 
   // Eventual insertion of Nodes
-  Standard_Boolean NewKnots  = Standard_False;
-  Standard_Integer NbKnots   = Knots->Length();
-  Standard_Real    ValAngles = (Abs(OldAngle1) + Abs(OldAngle2) + 2 * Abs(OldAngle2 - OldAngle1));
+  Standard_Boolean NewKnots = Standard_False;
+  Standard_Integer NbKnots  = Knots->Length();
+  Standard_Real    ValAngles =
+    (std::abs(OldAngle1) + std::abs(OldAngle2) + 2 * std::abs(OldAngle2 - OldAngle1));
   while (ValAngles > (2 * (NbKnots - 2) + 1) * (1 + 2 * NbKnots))
   {
     NewKnots = Standard_True;
@@ -501,14 +504,14 @@ Standard_Real FairCurve_Batten::SlidingOfReference(const Standard_Real Dist,
     return Dist;
 
   if (NewConstraintOrder1 == 0)
-    a1 = Abs(Abs(NewAngle2) < M_PI ? Angle2 / 2 : M_PI / 2);
+    a1 = std::abs(std::abs(NewAngle2) < M_PI ? Angle2 / 2 : M_PI / 2);
   else
-    a1 = Abs(Angle1);
+    a1 = std::abs(Angle1);
 
   if (NewConstraintOrder2 == 0)
-    a2 = Abs(Abs(NewAngle1) < M_PI ? Angle1 / 2 : M_PI / 2);
+    a2 = std::abs(std::abs(NewAngle1) < M_PI ? Angle1 / 2 : M_PI / 2);
   else
-    a2 = Abs(Angle2);
+    a2 = std::abs(Angle2);
 
   // case of angle of the same sign
   if (Angle1 * Angle2 >= 0)
@@ -559,7 +562,7 @@ Standard_Real FairCurve_Batten::Compute(const Standard_Real Dist, const Standard
   } // length of circle P1P2 respecting ANGLE
   if (Angle > M_PI)
   {
-    return Sqrt(Angle * M_PI) * Dist;
+    return std::sqrt(Angle * M_PI) * Dist;
   }
   else
   {

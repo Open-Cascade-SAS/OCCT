@@ -784,8 +784,8 @@ static Standard_Integer movelaw(Draw_Interpretor& di, Standard_Integer n, const 
     tx = Draw::Atof(a[4]);
     if (n == 6)
     {
-      condition = Max(Draw::Atoi(a[5]), -1);
-      condition = Min(condition, G2->Degree() - 1);
+      condition = std::max(Draw::Atoi(a[5]), -1);
+      condition = std::min(condition, G2->Degree() - 1);
     }
     TColgp_Array1OfPnt2d    curve_poles(1, G2->NbPoles());
     TColStd_Array1OfReal    law_poles(1, G2->NbPoles());
@@ -889,22 +889,22 @@ Standard_Real CompLocalDev(const Adaptor3d_Curve& theCurve,
   Standard_Real d = 0.;
 
   Standard_Real    d1, d2;
-  Standard_Real    x1 = Max(u1, aT(1) - aSteps(1));
+  Standard_Real    x1 = std::max(u1, aT(1) - aSteps(1));
   Standard_Boolean Ok = aFunc1.Value(x1, d1);
   if (!Ok)
   {
-    return Sqrt(-aValue);
+    return std::sqrt(-aValue);
   }
-  Standard_Real x2 = Min(u2, aT(1) + aSteps(1));
+  Standard_Real x2 = std::min(u2, aT(1) + aSteps(1));
   Ok               = aFunc1.Value(x2, d2);
   if (!Ok)
   {
-    return Sqrt(-aValue);
+    return std::sqrt(-aValue);
   }
   if (!(d1 > aValue && d2 > aValue))
   {
-    Standard_Real dmin = Min(d1, Min(aValue, d2));
-    return Sqrt(-dmin);
+    Standard_Real dmin = std::min(d1, std::min(aValue, d2));
+    return std::sqrt(-dmin);
   }
 
   math_BrentMinimum anOptLoc(Precision::PConfusion());
@@ -918,7 +918,7 @@ Standard_Real CompLocalDev(const Adaptor3d_Curve& theCurve,
   {
     d = -aValue;
   }
-  return Sqrt(d);
+  return std::sqrt(d);
 }
 
 //=================================================================================================

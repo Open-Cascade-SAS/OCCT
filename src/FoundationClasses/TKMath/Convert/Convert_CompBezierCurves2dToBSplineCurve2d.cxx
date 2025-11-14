@@ -123,7 +123,7 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::Perform()
   myDegree = 0;
   for (i = 1; i <= mySequence.Length(); i++)
   {
-    myDegree = Max(myDegree, (mySequence(i))->Length() - 1);
+    myDegree = std::max(myDegree, (mySequence(i))->Length() - 1);
   }
 
   Standard_Real        Det = 0;
@@ -176,7 +176,7 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::Perform()
       if (MaxDegree > 1 && // rln 20.06.99 work-around
           D1 > gp::Resolution() && D2 > gp::Resolution() && V1.IsParallel(V2, myAngular))
       {
-        Standard_Real Lambda = Sqrt(D2 / D1);
+        Standard_Real Lambda = std::sqrt(D2 / D1);
         KnotsMultiplicities.Append(MaxDegree - 1);
         CurveKnVals(i) = CurveKnVals(i - 1) * Lambda;
       }

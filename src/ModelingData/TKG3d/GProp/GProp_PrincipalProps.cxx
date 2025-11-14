@@ -53,37 +53,32 @@ GProp_PrincipalProps::GProp_PrincipalProps(const Standard_Real Ixx,
 
 Standard_Boolean GProp_PrincipalProps::HasSymmetryAxis() const
 {
-
-  //     Standard_Real Eps1 = Abs(Epsilon (i1));
-  //     Standard_Real Eps2 = Abs(Epsilon (i2));
   const Standard_Real aRelTol = 1.e-10;
-  Standard_Real       Eps1    = Abs(i1) * aRelTol;
-  Standard_Real       Eps2    = Abs(i2) * aRelTol;
-  return (Abs(i1 - i2) <= Eps1 || Abs(i1 - i3) <= Eps1 || Abs(i2 - i3) <= Eps2);
+  Standard_Real       Eps1    = std::abs(i1) * aRelTol;
+  Standard_Real       Eps2    = std::abs(i2) * aRelTol;
+  return (std::abs(i1 - i2) <= Eps1 || std::abs(i1 - i3) <= Eps1 || std::abs(i2 - i3) <= Eps2);
 }
 
 Standard_Boolean GProp_PrincipalProps::HasSymmetryAxis(const Standard_Real aTol) const
 {
 
-  Standard_Real Eps1 = Abs(i1 * aTol) + Abs(Epsilon(i1));
-  Standard_Real Eps2 = Abs(i2 * aTol) + Abs(Epsilon(i2));
-  return (Abs(i1 - i2) <= Eps1 || Abs(i1 - i3) <= Eps1 || Abs(i2 - i3) <= Eps2);
+  Standard_Real Eps1 = std::abs(i1 * aTol) + std::abs(Epsilon(i1));
+  Standard_Real Eps2 = std::abs(i2 * aTol) + std::abs(Epsilon(i2));
+  return (std::abs(i1 - i2) <= Eps1 || std::abs(i1 - i3) <= Eps1 || std::abs(i2 - i3) <= Eps2);
 }
 
 Standard_Boolean GProp_PrincipalProps::HasSymmetryPoint() const
 {
-
-  //     Standard_Real Eps1 = Abs(Epsilon (i1));
   const Standard_Real aRelTol = 1.e-10;
-  Standard_Real       Eps1    = Abs(i1) * aRelTol;
-  return (Abs(i1 - i2) <= Eps1 && Abs(i1 - i3) <= Eps1);
+  Standard_Real       Eps1    = std::abs(i1) * aRelTol;
+  return (std::abs(i1 - i2) <= Eps1 && std::abs(i1 - i3) <= Eps1);
 }
 
 Standard_Boolean GProp_PrincipalProps::HasSymmetryPoint(const Standard_Real aTol) const
 {
 
-  Standard_Real Eps1 = Abs(i1 * aTol) + Abs(Epsilon(i1));
-  return (Abs(i1 - i2) <= Eps1 && Abs(i1 - i3) <= Eps1);
+  Standard_Real Eps1 = std::abs(i1 * aTol) + std::abs(Epsilon(i1));
+  return (std::abs(i1 - i2) <= Eps1 && std::abs(i1 - i3) <= Eps1);
 }
 
 void GProp_PrincipalProps::Moments(Standard_Real& Ixx, Standard_Real& Iyy, Standard_Real& Izz) const

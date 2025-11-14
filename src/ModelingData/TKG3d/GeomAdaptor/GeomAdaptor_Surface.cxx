@@ -81,9 +81,9 @@ GeomAbs_Shape LocalContinuity(Standard_Integer         Degree,
   BSplCLib::LocateParameter(Degree, TK, TM, PFirst, IsPeriodic, 1, Nb, Index1, newFirst);
   BSplCLib::LocateParameter(Degree, TK, TM, PLast, IsPeriodic, 1, Nb, Index2, newLast);
   constexpr Standard_Real EpsKnot = Precision::PConfusion();
-  if (Abs(newFirst - TK(Index1 + 1)) < EpsKnot)
+  if (std::abs(newFirst - TK(Index1 + 1)) < EpsKnot)
     Index1++;
-  if (Abs(newLast - TK(Index2)) < EpsKnot)
+  if (std::abs(newLast - TK(Index2)) < EpsKnot)
     Index2--;
   // attention aux courbes peridiques.
   if ((IsPeriodic) && (Index1 == Nb))
@@ -626,10 +626,10 @@ Standard_Boolean GeomAdaptor_Surface::IsUClosed() const
   Standard_Real U1, U2, V1, V2;
   mySurface->Bounds(U1, U2, V1, V2);
   if (mySurface->IsUPeriodic())
-    return (Abs(Abs(U1 - U2) - Abs(myUFirst - myULast)) < Precision::PConfusion());
+    return (std::abs(std::abs(U1 - U2) - std::abs(myUFirst - myULast)) < Precision::PConfusion());
 
-  return (Abs(U1 - myUFirst) < Precision::PConfusion()
-          && Abs(U2 - myULast) < Precision::PConfusion());
+  return (std::abs(U1 - myUFirst) < Precision::PConfusion()
+          && std::abs(U2 - myULast) < Precision::PConfusion());
 }
 
 //=================================================================================================
@@ -642,10 +642,10 @@ Standard_Boolean GeomAdaptor_Surface::IsVClosed() const
   Standard_Real U1, U2, V1, V2;
   mySurface->Bounds(U1, U2, V1, V2);
   if (mySurface->IsVPeriodic())
-    return (Abs(Abs(V1 - V2) - Abs(myVFirst - myVLast)) < Precision::PConfusion());
+    return (std::abs(std::abs(V1 - V2) - std::abs(myVFirst - myVLast)) < Precision::PConfusion());
 
-  return (Abs(V1 - myVFirst) < Precision::PConfusion()
-          && Abs(V2 - myVLast) < Precision::PConfusion());
+  return (std::abs(V1 - myVFirst) < Precision::PConfusion()
+          && std::abs(V2 - myVLast) < Precision::PConfusion());
 }
 
 //=================================================================================================
@@ -766,22 +766,22 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
 {
   Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   Standard_Real    u = U, v = V;
-  if (Abs(U - myUFirst) <= myTolU)
+  if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
     u     = myUFirst;
   }
-  else if (Abs(U - myULast) <= myTolU)
+  else if (std::abs(U - myULast) <= myTolU)
   {
     USide = -1;
     u     = myULast;
   }
-  if (Abs(V - myVFirst) <= myTolV)
+  if (std::abs(V - myVFirst) <= myTolV)
   {
     VSide = 1;
     v     = myVFirst;
   }
-  else if (Abs(V - myVLast) <= myTolV)
+  else if (std::abs(V - myVLast) <= myTolV)
   {
     VSide = -1;
     v     = myVLast;
@@ -829,22 +829,22 @@ void GeomAdaptor_Surface::D2(const Standard_Real U,
 {
   Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   Standard_Real    u = U, v = V;
-  if (Abs(U - myUFirst) <= myTolU)
+  if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
     u     = myUFirst;
   }
-  else if (Abs(U - myULast) <= myTolU)
+  else if (std::abs(U - myULast) <= myTolU)
   {
     USide = -1;
     u     = myULast;
   }
-  if (Abs(V - myVFirst) <= myTolV)
+  if (std::abs(V - myVFirst) <= myTolV)
   {
     VSide = 1;
     v     = myVFirst;
   }
-  else if (Abs(V - myVLast) <= myTolV)
+  else if (std::abs(V - myVLast) <= myTolV)
   {
     VSide = -1;
     v     = myVLast;
@@ -898,22 +898,22 @@ void GeomAdaptor_Surface::D3(const Standard_Real U,
 {
   Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   Standard_Real    u = U, v = V;
-  if (Abs(U - myUFirst) <= myTolU)
+  if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
     u     = myUFirst;
   }
-  else if (Abs(U - myULast) <= myTolU)
+  else if (std::abs(U - myULast) <= myTolU)
   {
     USide = -1;
     u     = myULast;
   }
-  if (Abs(V - myVFirst) <= myTolV)
+  if (std::abs(V - myVFirst) <= myTolV)
   {
     VSide = 1;
     v     = myVFirst;
   }
-  else if (Abs(V - myVLast) <= myTolV)
+  else if (std::abs(V - myVLast) <= myTolV)
   {
     VSide = -1;
     v     = myVLast;
@@ -973,22 +973,22 @@ gp_Vec GeomAdaptor_Surface::DN(const Standard_Real    U,
 {
   Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   Standard_Real    u = U, v = V;
-  if (Abs(U - myUFirst) <= myTolU)
+  if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
     u     = myUFirst;
   }
-  else if (Abs(U - myULast) <= myTolU)
+  else if (std::abs(U - myULast) <= myTolU)
   {
     USide = -1;
     u     = myULast;
   }
-  if (Abs(V - myVFirst) <= myTolV)
+  if (std::abs(V - myVFirst) <= myTolV)
   {
     VSide = 1;
     v     = myVFirst;
   }
-  else if (Abs(V - myVLast) <= myTolV)
+  else if (std::abs(V - myVLast) <= myTolV)
   {
     VSide = -1;
     v     = myVLast;
@@ -1102,7 +1102,7 @@ Standard_Real GeomAdaptor_Surface::UResolution(const Standard_Real R3d) const
   }
 
   if (Res <= 1.)
-    return 2. * ASin(Res);
+    return 2. * std::asin(Res);
 
   return 2. * M_PI;
 }
@@ -1162,7 +1162,7 @@ Standard_Real GeomAdaptor_Surface::VResolution(const Standard_Real R3d) const
   }
 
   if (Res <= 1.)
-    return 2. * ASin(Res);
+    return 2. * std::asin(Res);
 
   return 2. * M_PI;
 }

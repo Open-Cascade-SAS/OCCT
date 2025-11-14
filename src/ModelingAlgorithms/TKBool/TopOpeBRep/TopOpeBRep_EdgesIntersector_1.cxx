@@ -373,7 +373,7 @@ Standard_Boolean TopOpeBRep_EdgesIntersector::IsVertex1(const Standard_Integer I
       if (V.Orientation() == TopAbs_INTERNAL)
       {
         Standard_Real parV = BRep_Tool::Parameter(V, E, myFace1);
-        if (Abs(par - parV) <= Precision::PConfusion())
+        if (std::abs(par - parV) <= Precision::PConfusion())
         {
           myIsVertexValue  = Standard_True;
           myIsVertexVertex = V;

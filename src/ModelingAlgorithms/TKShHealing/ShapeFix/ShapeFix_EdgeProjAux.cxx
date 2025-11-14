@@ -278,16 +278,16 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
       {
         if (SA.BasisCurve()->GetType() == GeomAbs_Hyperbola)
         {
-          uf = Max(uf, -23.);
-          ul = Min(ul, 23.);
+          uf = std::max(uf, -23.);
+          ul = std::min(ul, 23.);
         }
       }
       if (SA.GetType() == GeomAbs_SurfaceOfRevolution)
       {
         if (SA.BasisCurve()->GetType() == GeomAbs_Hyperbola)
         {
-          vf = Max(vf, -23.);
-          vl = Min(vl, 23.);
+          vf = std::max(vf, -23.);
+          vl = std::min(vl, 23.);
         }
       }
       if (!Precision::IsInfinite(uf) && !Precision::IsInfinite(ul) && !Precision::IsInfinite(vf)
@@ -318,13 +318,13 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
           yli = (vl - pnt.Y()) / dir.Y();
           if (dir.X() * dir.Y() > 0)
           {
-            cfi = (Abs(xli - xfi) < Abs(xli - yfi) ? xfi : yfi);
-            cli = (Abs(xfi - xli) < Abs(xfi - yli) ? xli : yli);
+            cfi = (std::abs(xli - xfi) < std::abs(xli - yfi) ? xfi : yfi);
+            cli = (std::abs(xfi - xli) < std::abs(xfi - yli) ? xli : yli);
           }
           else
           {
-            cfi = (Abs(xli - xfi) < Abs(xli - yli) ? xfi : yli);
-            cli = (Abs(yli - xli) < Abs(yli - yfi) ? xli : yfi);
+            cfi = (std::abs(xli - xfi) < std::abs(xli - yli) ? xfi : yli);
+            cli = (std::abs(yli - xli) < std::abs(yli - yfi) ? xli : yfi);
           }
         }
         if (cfi < cli)
@@ -451,12 +451,12 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
   if (COnS.Value(Uinf).Distance(COnS.Value(Usup)) < Precision::Confusion())
   {
     // 18.11.2002 SKL OCC630 compare values with tolerance Precision::PConfusion() instead of "=="
-    if (Abs(myFirstParam - Uinf) < ::Precision::PConfusion()
-        && Abs(myLastParam - Uinf) < ::Precision::PConfusion())
+    if (std::abs(myFirstParam - Uinf) < ::Precision::PConfusion()
+        && std::abs(myLastParam - Uinf) < ::Precision::PConfusion())
       myLastParam = w2 = Usup;
     // 18.11.2002 SKL OCC630 compare values with tolerance Precision::PConfusion() instead of "=="
-    else if (Abs(myFirstParam - Usup) < ::Precision::PConfusion()
-             && Abs(myLastParam - Usup) < ::Precision::PConfusion())
+    else if (std::abs(myFirstParam - Usup) < ::Precision::PConfusion()
+             && std::abs(myLastParam - Usup) < ::Precision::PConfusion())
       myFirstParam = w1 = Uinf;
   }
 
@@ -612,9 +612,9 @@ void ShapeFix_EdgeProjAux::UpdateParam2d(const Handle(Geom2d_Curve)& theCurve2d)
   else if (theCurve2d->IsClosed())
   {
     // szv#4:S4163:12Mar99 optimized
-    if (Abs(myFirstParam - cl) <= preci2d)
+    if (std::abs(myFirstParam - cl) <= preci2d)
       myFirstParam = cf;
-    else if (Abs(myLastParam - cf) <= preci2d)
+    else if (std::abs(myLastParam - cf) <= preci2d)
       myLastParam = cl;
     else
     {
@@ -632,9 +632,9 @@ void ShapeFix_EdgeProjAux::UpdateParam2d(const Handle(Geom2d_Curve)& theCurve2d)
     Handle(Geom2d_BSplineCurve) aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(theCurve2d);
     if (aBSpline2d->StartPoint().Distance(aBSpline2d->EndPoint()) <= preci2d)
     {
-      if (Abs(myFirstParam - cl) <= preci2d)
+      if (std::abs(myFirstParam - cl) <= preci2d)
         myFirstParam = cf;
-      else if (Abs(myLastParam - cf) <= preci2d)
+      else if (std::abs(myLastParam - cf) <= preci2d)
         myLastParam = cl;
     }
   }

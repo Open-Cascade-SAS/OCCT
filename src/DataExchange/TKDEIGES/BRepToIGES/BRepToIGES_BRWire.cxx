@@ -398,15 +398,15 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferEdge(
       Standard_Real               uShift = 0., vShift = 0.;
       Standard_Real               U0, U1, V0, V1;
       Surf->Bounds(U0, U1, V0, V1);
-      if (aBSpline->IsUPeriodic() && Abs(Ufirst - U0) > Precision::PConfusion())
+      if (aBSpline->IsUPeriodic() && std::abs(Ufirst - U0) > Precision::PConfusion())
       {
         uShift = ShapeAnalysis::AdjustToPeriod(Ufirst, U0, U1);
       }
-      if (aBSpline->IsVPeriodic() && Abs(Vfirst - V0) > Precision::PConfusion())
+      if (aBSpline->IsVPeriodic() && std::abs(Vfirst - V0) > Precision::PConfusion())
       {
         vShift = ShapeAnalysis::AdjustToPeriod(Vfirst, V0, V1);
       }
-      if (Abs(uShift) > Precision::PConfusion() || Abs(vShift) > Precision::PConfusion())
+      if (std::abs(uShift) > Precision::PConfusion() || std::abs(vShift) > Precision::PConfusion())
       {
         gp_Trsf2d TR;
         TR.SetTranslation(gp_Pnt2d(0., 0.), gp_Pnt2d(uShift, vShift));
@@ -454,7 +454,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferEdge(
       Handle(Geom_ConicalSurface) con = Handle(Geom_ConicalSurface)::DownCast(Surf);
       if (con->SemiAngle() < 0)
       {
-        Standard_Real vApex = 2 * con->RefRadius() / Sin(con->SemiAngle());
+        Standard_Real vApex = 2 * con->RefRadius() / std::sin(con->SemiAngle());
         Curve2d->Translate(gp_Vec2d(0, vApex));
       }
     }

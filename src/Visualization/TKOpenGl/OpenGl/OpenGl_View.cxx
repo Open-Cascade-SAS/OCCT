@@ -841,7 +841,7 @@ Standard_Integer OpenGl_View::ZLayerMax() const
        aLayerIter.More();
        aLayerIter.Next())
   {
-    aLayerMax = Max(aLayerMax, aLayerIter.Value()->LayerId());
+    aLayerMax = std::max(aLayerMax, aLayerIter.Value()->LayerId());
   }
   return aLayerMax;
 }
@@ -1192,7 +1192,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
   // determine multisampling parameters
   Standard_Integer aNbSamples =
     !myToDisableMSAA && aSizeX == aRendSize.x()
-      ? Max(Min(myRenderParams.NbMsaaSamples, aCtx->MaxMsaaSamples()), 0)
+      ? std::max(std::min(myRenderParams.NbMsaaSamples, aCtx->MaxMsaaSamples()), 0)
       : 0;
   if (aNbSamples != 0)
   {

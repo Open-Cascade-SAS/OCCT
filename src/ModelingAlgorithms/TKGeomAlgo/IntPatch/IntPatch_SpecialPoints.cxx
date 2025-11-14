@@ -140,7 +140,7 @@ static inline void GetTangent(const Standard_Real theConeSemiAngle,
   const Standard_Real aCosUn = (1.0 - aW2) / (1.0 + aW2);
   const Standard_Real aSinUn = 2.0 * theParameter / (1.0 + aW2);
 
-  const Standard_Real aTanA = Tan(theConeSemiAngle);
+  const Standard_Real aTanA = std::tan(theConeSemiAngle);
   theResult.SetCoord(aTanA * aCosUn, aTanA * aSinUn, 1.0);
 }
 
@@ -434,8 +434,8 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& th
   // Ask to pay attention to the fact that this vector is always normalized.
   gp_Vec2d aV1;
 
-  if ((Abs(theDUofPSurf.Z()) < Precision::PConfusion())
-      && (Abs(theDVofPSurf.Z()) < Precision::PConfusion()))
+  if ((std::abs(theDUofPSurf.Z()) < Precision::PConfusion())
+      && (std::abs(theDVofPSurf.Z()) < Precision::PConfusion()))
   {
     // Example of this case is an intersection of a plane with a sphere
     // when the plane tangents the sphere in some pole (i.e. only one
@@ -465,7 +465,7 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& th
   }
   else
   {
-    if (Abs(theDUofPSurf.Z()) > Abs(theDVofPSurf.Z()))
+    if (std::abs(theDUofPSurf.Z()) > std::abs(theDVofPSurf.Z()))
     {
       const Standard_Real aDusDvs = theDVofPSurf.Z() / theDUofPSurf.Z();
       aV1.SetCoord(theDUofPSurf.X() * aDusDvs - theDVofPSurf.X(),
@@ -480,10 +480,10 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& th
 
     aV1.Normalize();
 
-    if (Abs(aV1.X()) > Abs(aV1.Y()))
-      theUquad = Sign(asin(aV1.Y()), theVquad);
+    if (std::abs(aV1.X()) > std::abs(aV1.Y()))
+      theUquad = std::copysign(asin(aV1.Y()), theVquad);
     else
-      theUquad = Sign(acos(aV1.X()), theVquad);
+      theUquad = std::copysign(acos(aV1.X()), theVquad);
   }
 
   return Standard_True;
@@ -586,9 +586,10 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& theP
 
   gp_XYZ                 aTgILine[2];
   const Standard_Integer aNbTangent =
-    !theIsIsoChoosen
-      ? GetTangentToIntLineForCone(theCone.SemiAngle(), aTgPlaneZ.Divided(Sqrt(aSqModTg)), aTgILine)
-      : 0;
+    !theIsIsoChoosen ? GetTangentToIntLineForCone(theCone.SemiAngle(),
+                                                  aTgPlaneZ.Divided(std::sqrt(aSqModTg)),
+                                                  aTgILine)
+                     : 0;
 
   if (aNbTangent == 0)
   {
@@ -623,11 +624,12 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& theP
       }
 
       // Normalize
-      aVecCS.Divide(Sqrt(aSqMod));
+      aVecCS.Divide(std::sqrt(aSqMod));
 
       // Angle in range [0, PI/2]
-      Standard_Real anUq =
-        (Abs(aVecCS.X()) < Abs(aVecCS.Y())) ? ACos(Abs(aVecCS.X())) : ASin(Abs(aVecCS.Y()));
+      Standard_Real anUq = (std::abs(aVecCS.X()) < std::abs(aVecCS.Y()))
+                             ? std::acos(std::abs(aVecCS.X()))
+                             : std::asin(std::abs(aVecCS.Y()));
 
       // Convert angles to the range [0, 2*PI]
       if (aVecCS.Y() < 0.0)
@@ -648,7 +650,7 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& theP
 
       // Select the parameter the nearest to aUIso
       anUq                 = ElCLib::InPeriod(anUq, 0.0, aPeriod);
-      Standard_Real aDelta = Abs(anUq - aUIso);
+      Standard_Real aDelta = std::abs(anUq - aUIso);
       if (aDelta > M_PI)
         aDelta = aPeriod - aDelta;
 
@@ -720,14 +722,14 @@ Standard_Integer IntPatch_SpecialPoints::GetTangentToIntLineForCone(
   gp_XYZ              theResult[2])
 {
   const Standard_Real aNullTol = Epsilon(1.0);
-  const Standard_Real aTanA    = Tan(theConeSemiAngle);
+  const Standard_Real aTanA    = std::tan(theConeSemiAngle);
   const Standard_Real aA       = thePlnNormal.Z() / aTanA - thePlnNormal.X();
   const Standard_Real aB       = thePlnNormal.Y();
   const Standard_Real aC       = thePlnNormal.Z() / aTanA + thePlnNormal.X();
 
-  if (Abs(aA) < aNullTol)
+  if (std::abs(aA) < aNullTol)
   {
-    if (Abs(aB) > aNullTol)
+    if (std::abs(aB) > aNullTol)
     {
       // The plane goes along the cone generatrix.
       GetTangent(theConeSemiAngle, -aC / (aB + aB), theResult[0]);
@@ -740,14 +742,14 @@ Standard_Integer IntPatch_SpecialPoints::GetTangentToIntLineForCone(
   }
 
   // Discriminant of this equation is equal to
-  Standard_Real aDiscr = thePlnNormal.Z() / Sin(theConeSemiAngle);
+  Standard_Real aDiscr = thePlnNormal.Z() / std::sin(theConeSemiAngle);
   aDiscr               = 1.0 - aDiscr * aDiscr;
 
-  if (Abs(aDiscr) < aNullTol)
+  if (std::abs(aDiscr) < aNullTol)
   {
     // The plane goes along the cone generatrix.
     //  Attention! Mathematically, this cond. is equivalent to
-    //  above processed one (Abs(aA) < aNullTol && (Abs(aB) > aNullTol)).
+    //  above processed one (std::abs(aA) < aNullTol && (std::abs(aB) > aNullTol)).
     //  However, we separate this branch in order to eliminate numerical
     //  instability.
 
@@ -756,7 +758,7 @@ Standard_Integer IntPatch_SpecialPoints::GetTangentToIntLineForCone(
   }
   else if (aDiscr > 0.0)
   {
-    const Standard_Real aRD = Sqrt(aDiscr);
+    const Standard_Real aRD = std::sqrt(aDiscr);
     GetTangent(theConeSemiAngle, (-aB + aRD) / aA, theResult[0]);
     GetTangent(theConeSemiAngle, (-aB - aRD) / aA, theResult[1]);
     return 2;
@@ -794,7 +796,7 @@ Standard_Boolean IntPatch_SpecialPoints::AddSingularPole(const Handle(Adaptor3d_
 
   if (theQSurf->GetType() == GeomAbs_Sphere)
   {
-    aVquad = Sign(M_PI_2, aVquad);
+    aVquad = std::copysign(M_PI_2, aVquad);
   }
   else if (theQSurf->GetType() == GeomAbs_Cone)
   {
@@ -1059,7 +1061,7 @@ void IntPatch_SpecialPoints::AdjustPointAndVertex(const IntSurf_PntOn2S& theRefP
 
     {
       Standard_Real       aDeltaPar = aRefPar[aRefInd] - aPar[i];
-      const Standard_Real anIncr    = Sign(aPeriod, aDeltaPar);
+      const Standard_Real anIncr    = std::copysign(aPeriod, aDeltaPar);
       while ((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
       {
         aPar[i] += anIncr;

@@ -92,7 +92,7 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
   parmin             = ElCLib::Parameter(L3, P1);
   parmax             = parmin;
   parcur             = ElCLib::Parameter(L3, P2);
-  Standard_Real dist = Abs(parmin - parcur);
+  Standard_Real dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
   if (parcur > parmax)
@@ -177,7 +177,7 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
     parmin = ElCLib::Parameter(L3, P1);
     parmax = parmin;
     parcur = ElCLib::Parameter(L3, P2);
-    dist   = Abs(parmin - parcur);
+    dist   = std::abs(parmin - parcur);
     if (parcur < parmin)
       parmin = parcur;
     if (parcur > parmax)
@@ -261,7 +261,7 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
     parmin = ElCLib::Parameter(L3, P1);
     parmax = parmin;
     parcur = ElCLib::Parameter(L3, P2);
-    dist   = Abs(parmin - parcur);
+    dist   = std::abs(parmin - parcur);
     if (parcur < parmin)
       parmin = parcur;
     if (parcur > parmax)
@@ -484,7 +484,7 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
     ProjOffsetPoint = ProjCenter1.Translated(Vout.Divided(Vout.Magnitude()).Multiplied(Dt));
     OffsetPnt       = ProjOffsetPoint;
   }
-  h         = Sqrt(R * R - Dt * Dt);
+  h         = std::sqrt(R * R - Dt * Dt);
   gp_Pnt P1 = ProjOffsetPoint.Translated(Vp.Added(Vp.Divided(Vp.Magnitude()).Multiplied(h)));
   gp_Vec v(P1, ProjOffsetPoint);
   gp_Pnt P2 = ProjOffsetPoint.Translated(v);
@@ -494,7 +494,7 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
   parmin             = ElCLib::Parameter(L3, P1);
   parmax             = parmin;
   parcur             = ElCLib::Parameter(L3, P2);
-  Standard_Real dist = Abs(parmin - parcur);
+  Standard_Real dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
   if (parcur > parmax)
@@ -533,12 +533,12 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
     if (alpha > M_PI)
     {
       alpha  = (2. * M_PI) - alpha;
-      nbp    = (Standard_Integer)IntegerPart(alpha / (alpha * .02));
+      nbp    = (Standard_Integer)std::trunc(alpha / (alpha * .02));
       Dalpha = alpha / (nbp - 1);
     }
     else
     {
-      nbp    = (Standard_Integer)IntegerPart(alpha / (alpha * .02));
+      nbp    = (Standard_Integer)std::trunc(alpha / (alpha * .02));
       Dalpha = -alpha / (nbp - 1);
     }
   }
@@ -547,12 +547,12 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
     if (alpha > M_PI)
     {
       alpha  = (2. * M_PI) - alpha;
-      nbp    = (Standard_Integer)IntegerPart(alpha / (alpha * .02));
+      nbp    = (Standard_Integer)std::trunc(alpha / (alpha * .02));
       Dalpha = -alpha / (nbp - 1);
     }
     else
     {
-      nbp    = (Standard_Integer)IntegerPart(alpha / (alpha * .02));
+      nbp    = (Standard_Integer)std::trunc(alpha / (alpha * .02));
       Dalpha = alpha / (nbp - 1);
     }
   }
@@ -581,12 +581,12 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
     if (alpha > M_PI)
     {
       alpha  = (2 * M_PI) - alpha;
-      nbp    = (Standard_Integer)IntegerPart(alpha / (alpha * .02));
+      nbp    = (Standard_Integer)std::trunc(alpha / (alpha * .02));
       Dalpha = alpha / (nbp - 1);
     }
     else
     {
-      nbp    = (Standard_Integer)IntegerPart(alpha / (alpha * .02));
+      nbp    = (Standard_Integer)std::trunc(alpha / (alpha * .02));
       Dalpha = -alpha / (nbp - 1);
     }
   }
@@ -595,12 +595,12 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
     if (alpha > M_PI)
     {
       alpha  = (2 * M_PI) - alpha;
-      nbp    = (Standard_Integer)IntegerPart(alpha / (alpha * .02));
+      nbp    = (Standard_Integer)std::trunc(alpha / (alpha * .02));
       Dalpha = -alpha / (nbp - 1);
     }
     else
     {
-      nbp    = (Standard_Integer)IntegerPart(alpha / (alpha * .02));
+      nbp    = (Standard_Integer)std::trunc(alpha / (alpha * .02));
       Dalpha = alpha / (nbp - 1);
     }
   }
@@ -806,7 +806,7 @@ void DsgPrs_SymmetricPresentation::Add(const Handle(Prs3d_Presentation)& aPresen
     parmin             = ElCLib::Parameter(L3, P1);
     parmax             = parmin;
     parcur             = ElCLib::Parameter(L3, P2);
-    Standard_Real dist = Abs(parmin - parcur);
+    Standard_Real dist = std::abs(parmin - parcur);
     if (parcur < parmin)
       parmin = parcur;
     if (parcur > parmax)

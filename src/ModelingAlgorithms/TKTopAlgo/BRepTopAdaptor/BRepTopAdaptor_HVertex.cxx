@@ -65,7 +65,7 @@ Standard_Real BRepTopAdaptor_HVertex::Resolution(const Handle(Adaptor2d_Curve2d)
   Standard_Real VRes   = S.VResolution(tv);
   Standard_Real tURes  = C->Resolution(URes);
   Standard_Real tVRes  = C->Resolution(VRes);
-  Standard_Real ResUV1 = Max(tURes, tVRes);
+  Standard_Real ResUV1 = std::max(tURes, tVRes);
 
   if (mag < 1e-12)
   {
@@ -116,7 +116,7 @@ Standard_Real BRepTopAdaptor_HVertex::Resolution(const Handle(Adaptor2d_Curve2d)
     S.D1(p2d.X(), p2d.Y(), P1, DU, DV);
     DC.SetLinearForm(v2d.X(), DU, v2d.Y(), DV);
     Dist1 = P.Distance(P1);
-    if (Abs(Dist1 - tv) < Abs(Dist - tv))
+    if (std::abs(Dist1 - tv) < std::abs(Dist - tv))
     {
       // Take the result of interpolation
       ResUV = tv / Dist;
@@ -139,7 +139,7 @@ Standard_Real BRepTopAdaptor_HVertex::Resolution(const Handle(Adaptor2d_Curve2d)
     C->D0(pp, p2d);
     S.D0(p2d.X(), p2d.Y(), P1);
     Dist1 = P.Distance(P1);
-    if (Abs(Dist1 - tv) < Abs(Dist - tv))
+    if (std::abs(Dist1 - tv) < std::abs(Dist - tv))
     {
       // Take the new estimation
       ResUV = tv / mag;
@@ -147,7 +147,7 @@ Standard_Real BRepTopAdaptor_HVertex::Resolution(const Handle(Adaptor2d_Curve2d)
     }
   }
 
-  return Min(ResUV, ResUV1);
+  return std::min(ResUV, ResUV1);
 }
 
 TopAbs_Orientation BRepTopAdaptor_HVertex::Orientation()

@@ -448,7 +448,7 @@ void OpenGl_Structure::Render(const Handle(OpenGl_Workspace)& theWorkspace) cons
   if (aCtx->core11ffp != NULL && !myTrsf.IsNull())
   {
     const Standard_Real aScale = myTrsf->Trsf().ScaleFactor();
-    if (Abs(aScale - 1.0) > Precision::Confusion())
+    if (std::abs(aScale - 1.0) > Precision::Confusion())
     {
       aCtx->SetGlNormalizeEnabled(Standard_True);
     }
@@ -702,7 +702,7 @@ void OpenGl_Structure::applyPersistence(const Handle(OpenGl_Context)&          t
   if (!theCtx->IsGlNormalizeEnabled() && theCtx->core11ffp != NULL)
   {
     const Standard_Real aScale = Graphic3d_TransformUtils::ScaleFactor(aWorldView);
-    if (Abs(aScale - 1.0) > Precision::Confusion())
+    if (std::abs(aScale - 1.0) > Precision::Confusion())
     {
       theCtx->SetGlNormalizeEnabled(true);
     }

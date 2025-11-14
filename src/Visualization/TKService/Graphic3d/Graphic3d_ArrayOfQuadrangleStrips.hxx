@@ -45,7 +45,7 @@ public:
   //!   ....
   //!   myArray->AddVertex (x8, y8, z8);
   //! @endcode
-  //! The number of quadrangle really drawn is: VertexNumber()/2 - Min(1, BoundNumber()).
+  //! The number of quadrangle really drawn is: VertexNumber()/2 - std::min(1, BoundNumber()).
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxStrips  defines the maximum allowed strip  number in the array
   //! @param theArrayFlags array flags

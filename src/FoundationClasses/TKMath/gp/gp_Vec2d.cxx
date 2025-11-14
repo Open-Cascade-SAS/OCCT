@@ -31,13 +31,13 @@ Standard_Boolean gp_Vec2d::IsEqual(const gp_Vec2d&     theOther,
 {
   const Standard_Real aNorm       = Magnitude();
   const Standard_Real anOtherNorm = theOther.Magnitude();
-  const Standard_Real aVal        = Abs(aNorm - anOtherNorm);
+  const Standard_Real aVal        = std::abs(aNorm - anOtherNorm);
   // Check for equal lengths
   const Standard_Boolean isEqualLength = (aVal <= theLinearTolerance);
   // Check for small vectors
   if (aNorm > theLinearTolerance && anOtherNorm > theLinearTolerance)
   {
-    const Standard_Real anAng = Abs(Angle(theOther));
+    const Standard_Real anAng = std::abs(Angle(theOther));
     // Check for zero angle
     return isEqualLength && (anAng <= theAngularTolerance);
   }

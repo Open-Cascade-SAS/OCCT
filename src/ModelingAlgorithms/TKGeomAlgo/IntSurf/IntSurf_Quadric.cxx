@@ -81,7 +81,7 @@ IntSurf_Quadric::IntSurf_Quadric(const gp_Cone& C)
   lin.SetPosition(ax3.Axis());
   prm1 = C.RefRadius();
   prm2 = C.SemiAngle();
-  prm3 = Cos(prm2);
+  prm3 = std::cos(prm2);
   prm4 = 0.0;
 }
 
@@ -140,7 +140,7 @@ void IntSurf_Quadric::SetValue(const gp_Cone& C)
   lin.SetPosition(ax3.Axis());
   prm1 = C.RefRadius();
   prm2 = C.SemiAngle();
-  prm3 = Cos(prm2);
+  prm3 = std::cos(prm2);
   prm4 = 0.0;
 }
 

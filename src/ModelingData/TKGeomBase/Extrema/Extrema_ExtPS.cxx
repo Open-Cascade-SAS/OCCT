@@ -58,7 +58,7 @@ static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
       for (T = U1; T <= U2; T = T + Step)
       {
         S.D1(T, Param, P, D1U, D1V);
-        D1NormMax = Max(D1NormMax, D1U.Magnitude());
+        D1NormMax = std::max(D1NormMax, D1U.Magnitude());
       }
 
       if (D1NormMax > TolMax || D1NormMax < TolMin)
@@ -78,7 +78,7 @@ static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
       for (T = V1; T <= V2; T = T + Step)
       {
         S.D1(Param, T, P, D1U, D1V);
-        D1NormMax = Max(D1NormMax, D1V.Magnitude());
+        D1NormMax = std::max(D1NormMax, D1V.Magnitude());
       }
 
       if (D1NormMax > TolMax || D1NormMax < TolMin)

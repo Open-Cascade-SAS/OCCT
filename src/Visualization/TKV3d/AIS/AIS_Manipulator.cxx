@@ -372,7 +372,7 @@ void AIS_Manipulator::adjustSize(const Bnd_Box& theBox)
   Standard_Real aYSize = aYmax - aYmin;
   Standard_Real aZSize = aZmax - aZmin;
 
-  SetSize((Standard_ShortReal)(Max(aXSize, Max(aYSize, aZSize)) * 0.5));
+  SetSize((Standard_ShortReal)(std::max(aXSize, std::max(aYSize, aZSize)) * 0.5));
 }
 
 //=================================================================================================
@@ -615,7 +615,7 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation(const Standard_Integer  t
       gp_Dir        aCurrentAxis = gce_MakeDir(aPosLoc, aNewPosition);
       Standard_Real anAngle      = aStartAxis.AngleWithRef(aCurrentAxis, aCurrAxis.Direction());
 
-      if (Abs(anAngle) < Precision::Confusion())
+      if (std::abs(anAngle) < Precision::Confusion())
       {
         return Standard_False;
       }
@@ -643,7 +643,7 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation(const Standard_Integer  t
         anAspect->SetTransparency(0.5);
         anAspect->SetColor(myAxes[myCurrentIndex].Color());
 
-        mySector.Init(0.0f, myAxes[myCurrentIndex].InnerRadius(), anAxis, Abs(anAngle));
+        mySector.Init(0.0f, myAxes[myCurrentIndex].InnerRadius(), anAxis, std::abs(anAngle));
         mySectorGroup->Clear();
         mySectorGroup->SetPrimitivesAspect(anAspect->Aspect());
         mySectorGroup->AddPrimitiveArray(mySector.Array());
@@ -651,7 +651,7 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation(const Standard_Integer  t
       }
 
       // Change value of an angle if it should have different sign.
-      if (anAngle * myPrevState < 0 && Abs(anAngle) < M_PI_2)
+      if (anAngle * myPrevState < 0 && std::abs(anAngle) < M_PI_2)
       {
         Standard_Real aSign = myPrevState > 0 ? -1.0 : 1.0;
         anAngle             = aSign * (M_PI * 2 - anAngle);
@@ -835,9 +835,10 @@ void AIS_Manipulator::RecomputeTransformation(const Handle(Graphic3d_Camera)& th
       anAxisDir = myPosition.XDirection().Crossed(myPosition.YDirection());
     }
 
-    const gp_Dir aCameraProj = Abs(Abs(anAxisDir.Dot(aCameraDir)) - 1.0) <= gp::Resolution()
-                                 ? aCameraDir
-                                 : anAxisDir.Crossed(aCameraDir).Crossed(anAxisDir);
+    const gp_Dir aCameraProj =
+      std::abs(std::abs(anAxisDir.Dot(aCameraDir)) - 1.0) <= gp::Resolution()
+        ? aCameraDir
+        : anAxisDir.Crossed(aCameraDir).Crossed(anAxisDir);
     const Standard_Boolean isReversed = anAxisDir.Dot(aCameraDir) > 0;
     Standard_Real          anAngle    = aNormal.AngleWithRef(aCameraProj, anAxisDir);
     if (aRefAxis.Direction().X() > 0)
@@ -919,16 +920,16 @@ void AIS_Manipulator::RecomputeTransformation(const Handle(Graphic3d_Camera)& th
     const gp_Dir aZDir  = gp::DZ();
 
     const gp_Dir aCameraProjection =
-      Abs(aXDir.Dot(aCameraDir)) <= gp::Resolution()
-          || Abs(anYDir.Dot(aCameraDir)) <= gp::Resolution()
+      std::abs(aXDir.Dot(aCameraDir)) <= gp::Resolution()
+          || std::abs(anYDir.Dot(aCameraDir)) <= gp::Resolution()
         ? aCameraDir
         : aXDir.XYZ() * (aXDir.Dot(aCameraDir)) + anYDir.XYZ() * (anYDir.Dot(aCameraDir));
     const Standard_Boolean isReversed = aZDir.Dot(aCameraDir) > 0;
 
-    const Standard_Real anAngle  = M_PI_2 - aCameraDir.Angle(aCameraProjection);
-    gp_Dir              aRotAxis = Abs(Abs(aCameraProjection.Dot(aZDir)) - 1.0) <= gp::Resolution()
-                                     ? aZDir
-                                     : aCameraProjection.Crossed(aZDir);
+    const Standard_Real anAngle = M_PI_2 - aCameraDir.Angle(aCameraProjection);
+    gp_Dir aRotAxis = std::abs(std::abs(aCameraProjection.Dot(aZDir)) - 1.0) <= gp::Resolution()
+                        ? aZDir
+                        : aCameraProjection.Crossed(aZDir);
     if (isReversed)
     {
       aRotAxis.Reverse();

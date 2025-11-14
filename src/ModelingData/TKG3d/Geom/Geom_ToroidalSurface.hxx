@@ -203,7 +203,7 @@ public:
 
   //! Computes the point P (U, V) on the surface.
   //! P (U, V) = Loc + MinorRadius * Sin (V) * Zdir +
-  //! (MajorRadius + MinorRadius * Cos(V)) *
+  //! (MajorRadius + MinorRadius * std::cos(V)) *
   //! (cos (U) * XDir + sin (U) * YDir)
   //! where Loc is the origin of the placement plane (XAxis, YAxis)
   //! XDir is the direction of the XAxis and YDir the direction of

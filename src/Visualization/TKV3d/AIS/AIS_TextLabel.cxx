@@ -373,8 +373,8 @@ Standard_Boolean AIS_TextLabel::calculateLabelParams(const gp_Pnt&  thePosition,
   const NCollection_String aText(myText.ToExtString());
   Font_Rect                aBndBox =
     aFont->BoundingBox(aText, anAsp->HorizontalJustification(), anAsp->VerticalJustification());
-  theWidth  = Abs(aBndBox.Width());
-  theHeight = Abs(aBndBox.Height());
+  theWidth  = std::abs(aBndBox.Width());
+  theHeight = std::abs(aBndBox.Height());
 
   theCenterOfLabel = thePosition;
   if (anAsp->VerticalJustification() == Graphic3d_VTA_BOTTOM)

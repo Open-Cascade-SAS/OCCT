@@ -69,7 +69,8 @@ Geom_ConicalSurface::Geom_ConicalSurface(const Ax3&          A3,
       semiAngle(Ang)
 {
 
-  if (R < 0.0 || Abs(Ang) <= gp::Resolution() || Abs(Ang) >= M_PI / 2.0 - gp::Resolution())
+  if (R < 0.0 || std::abs(Ang) <= gp::Resolution()
+      || std::abs(Ang) >= M_PI / 2.0 - gp::Resolution())
     throw Standard_ConstructionError();
 
   pos = A3;
@@ -181,7 +182,7 @@ void Geom_ConicalSurface::SetRadius(const Standard_Real R)
 void Geom_ConicalSurface::SetSemiAngle(const Standard_Real Ang)
 {
 
-  if (Abs(Ang) <= gp::Resolution() || Abs(Ang) >= M_PI / 2.0 - gp::Resolution())
+  if (std::abs(Ang) <= gp::Resolution() || std::abs(Ang) >= M_PI / 2.0 - gp::Resolution())
   {
     throw Standard_ConstructionError();
   }
@@ -194,7 +195,7 @@ Pnt Geom_ConicalSurface::Apex() const
 {
 
   XYZ Coord = Position().Direction().XYZ();
-  Coord.Multiply(-radius / Tan(semiAngle));
+  Coord.Multiply(-radius / std::tan(semiAngle));
   Coord.Add(Position().Location().XYZ());
   return Pnt(Coord);
 }
@@ -227,11 +228,11 @@ void Geom_ConicalSurface::Coefficients(Standard_Real& A1,
                                        Standard_Real& D) const
 {
   // Dans le repere du cone :
-  // X**2 + Y**2 - (Myradius - Z * Tan(semiAngle))**2 = 0.0
+  // X**2 + Y**2 - (Myradius - Z * std::tan(semiAngle))**2 = 0.0
 
   Trsf T;
   T.SetTransformation(pos);
-  Standard_Real KAng = Tan(semiAngle);
+  Standard_Real KAng = std::tan(semiAngle);
   Standard_Real T11  = T.Value(1, 1);
   Standard_Real T12  = T.Value(1, 2);
   Standard_Real T13  = T.Value(1, 3);
@@ -345,7 +346,7 @@ Handle(Geom_Curve) Geom_ConicalSurface::VIso(const Standard_Real V) const
 
 void Geom_ConicalSurface::Transform(const Trsf& T)
 {
-  radius = radius * Abs(T.ScaleFactor());
+  radius = radius * std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 
@@ -356,7 +357,7 @@ void Geom_ConicalSurface::TransformParameters(Standard_Real&,
                                               const gp_Trsf& T) const
 {
   if (!Precision::IsInfinite(V))
-    V *= Abs(T.ScaleFactor());
+    V *= std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
@@ -365,7 +366,7 @@ gp_GTrsf2d Geom_ConicalSurface::ParametricTransformation(const gp_Trsf& T) const
 {
   gp_GTrsf2d T2;
   gp_Ax2d    Axis(gp::Origin2d(), gp::DX2d());
-  T2.SetAffinity(Axis, Abs(T.ScaleFactor()));
+  T2.SetAffinity(Axis, std::abs(T.ScaleFactor()));
   return T2;
 }
 

@@ -250,7 +250,7 @@ Standard_Boolean BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
   Standard_Real    aLen            = GCPnts_AbscissaPoint::Length(aBAC);
   Standard_Integer aNbSamplePoints = (Standard_Integer)(aLen / theStep) + 1;
 
-  GCPnts_QuasiUniformAbscissa aGCPnts(aBAC, Max(3, aNbSamplePoints));
+  GCPnts_QuasiUniformAbscissa aGCPnts(aBAC, std::max(3, aNbSamplePoints));
 
   if (!aGCPnts.IsDone())
     return Standard_False;
@@ -352,8 +352,8 @@ static Standard_Real getModelRange(const TopLoc_Location&            theLocation
   Standard_Real aXm = 0.0, aYm = 0.0, aZm = 0.0, aXM = 0.0, aYM = 0.0, aZM = 0.0;
   aBox.Get(aXm, aYm, aZm, aXM, aYM, aZM);
   Standard_Real aRange = aXM - aXm;
-  aRange               = Max(aRange, aYM - aYm);
-  aRange               = Max(aRange, aZM - aZm);
+  aRange               = std::max(aRange, aYM - aYm);
+  aRange               = std::max(aRange, aZM - aZm);
 
   return aRange;
 }
@@ -423,7 +423,7 @@ Standard_Boolean BRepExtrema_ProximityValueTool::getFaceAdditionalVertices(
     return Standard_False;
   }
 
-  myCells.Reset(Max(aTol, getModelRange(aLocation, aTr) / IntegerLast()));
+  myCells.Reset(std::max(aTol, getModelRange(aLocation, aTr) / IntegerLast()));
 
   for (Standard_Integer aTriIdx = 1; aTriIdx <= aTr->NbTriangles(); ++aTriIdx)
   {

@@ -78,7 +78,7 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
   }
 #endif
 
-  Tolerance = Max(Precision::PConfusion(), Tolerance);
+  Tolerance = std::max(Precision::PConfusion(), Tolerance);
 
   GeomAdaptor_Curve   AC(C, First, Last);
   GeomAdaptor_Surface AS(S, UDeb, UFin, VDeb, VFin);
@@ -138,8 +138,8 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
     Standard_Real             U2    = CTrim->LastParameter();
     if (!G2dC->IsPeriodic())
     {
-      U1 = Max(U1, G2dC->FirstParameter());
-      U2 = Min(U2, G2dC->LastParameter());
+      U1 = std::max(U1, G2dC->FirstParameter());
+      U2 = std::min(U2, G2dC->LastParameter());
     }
     G2dC = new Geom2d_TrimmedCurve(G2dC, U1, U2);
   }
@@ -290,8 +290,8 @@ Handle(Geom_Curve) GeomProjLib::Project(const Handle(Geom_Curve)& C, const Handl
     //    Standard_Real TolU = Precision::PApproximation();
     //    Standard_Real TolV = Precision::PApproximation();
     Standard_Real              Tol  = 0.0001;
-    Standard_Real              TolU = Pow(Tol, 2. / 3);
-    Standard_Real              TolV = Pow(Tol, 2. / 3);
+    Standard_Real              TolU = std::pow(Tol, 2. / 3);
+    Standard_Real              TolV = std::pow(Tol, 2. / 3);
     ProjLib_CompProjectedCurve Proj(HS, HC, TolU, TolV, -1.);
 
     Standard_Real f, l;

@@ -209,9 +209,9 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const Stand
     Standard_Real A    = Norm.X();
     Standard_Real B    = Norm.Y();
     Standard_Real C    = Norm.Z();
-    Standard_Real Aabs = Abs(A);
-    Standard_Real Babs = Abs(B);
-    Standard_Real Cabs = Abs(C);
+    Standard_Real Aabs = std::abs(A);
+    Standard_Real Babs = std::abs(B);
+    Standard_Real Cabs = std::abs(C);
     gp_Ax2        Pos;
 
     //=========================================================================
@@ -281,9 +281,9 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const Sta
       Standard_Real A    = Ptaxis.X() - Center.X();
       Standard_Real B    = Ptaxis.Y() - Center.Y();
       Standard_Real C    = Ptaxis.Z() - Center.Z();
-      Standard_Real Aabs = Abs(A);
-      Standard_Real Babs = Abs(B);
-      Standard_Real Cabs = Abs(C);
+      Standard_Real Aabs = std::abs(A);
+      Standard_Real Babs = std::abs(B);
+      Standard_Real Cabs = std::abs(C);
       gp_Ax2        Pos;
 
       //=========================================================================
@@ -350,9 +350,9 @@ gce_MakeCirc::gce_MakeCirc(const gp_Ax1& Axis, const Standard_Real Radius)
     Standard_Real A    = Norm.X();
     Standard_Real B    = Norm.Y();
     Standard_Real C    = Norm.Z();
-    Standard_Real Aabs = Abs(A);
-    Standard_Real Babs = Abs(B);
-    Standard_Real Cabs = Abs(C);
+    Standard_Real Aabs = std::abs(A);
+    Standard_Real Babs = std::abs(B);
+    Standard_Real Cabs = std::abs(C);
     gp_Ax2        Pos;
 
     //=========================================================================

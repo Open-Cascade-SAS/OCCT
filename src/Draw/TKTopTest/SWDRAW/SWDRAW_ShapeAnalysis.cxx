@@ -230,8 +230,8 @@ static Standard_Integer projface(Draw_Interpretor& di, Standard_Integer argc, co
       vf = -1000;
     if (Precision::IsInfinite(vl))
       vl = 1000;
-    Standard_Real du = Abs(ul - uf) / 10;
-    Standard_Real dv = Abs(vl - vf) / 10;
+    Standard_Real du = std::abs(ul - uf) / 10;
+    Standard_Real dv = std::abs(vl - vf) / 10;
 
     GeomAPI_ProjectPointOnSurf proj(P3D, thesurf, uf - du, ul + du, vf - dv, vl + dv);
     Standard_Integer           sol, nPSurf = proj.NbPoints();
@@ -527,19 +527,19 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
         surface->D0(fuv.X(), fuv.Y(), fxyz);
         surface->D0(luv.X(), luv.Y(), lxyz);
         df3d   = fp.Distance(fxyz);
-        maxp3d = Max(maxp3d, df3d);
+        maxp3d = std::max(maxp3d, df3d);
         dl3d   = lp.Distance(lxyz);
-        maxp3d = Max(maxp3d, dl3d);
+        maxp3d = std::max(maxp3d, dl3d);
         if (nbe > 1)
         {
           duv   = finuv.Distance(fuv);
-          maxuv = Max(maxuv, duv);
+          maxuv = std::max(maxuv, duv);
         }
         // et les min-max
-        u1 = Min(fuv.X(), luv.X());
-        u2 = Max(fuv.X(), luv.X());
-        v1 = Min(fuv.Y(), luv.Y());
-        v2 = Max(fuv.Y(), luv.Y());
+        u1 = std::min(fuv.X(), luv.X());
+        u2 = std::max(fuv.X(), luv.X());
+        v1 = std::min(fuv.Y(), luv.Y());
+        v2 = std::max(fuv.Y(), luv.Y());
         if (nbe == 1)
         {
           umin = u1;
@@ -549,10 +549,10 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
         }
         else
         {
-          umin = Min(umin, u1);
-          umax = Max(umax, u2);
-          vmin = Min(vmin, v1);
-          vmax = Max(vmax, v2);
+          umin = std::min(umin, u1);
+          umax = std::max(umax, u2);
+          vmin = std::min(vmin, v1);
+          vmax = std::max(vmax, v2);
         }
         // et la classification directe
         if (nbe == 1)
@@ -577,9 +577,9 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
       else
       {
         duv    = finuv.Distance(fuv);
-        maxuv  = Max(maxuv, duv);
+        maxuv  = std::max(maxuv, duv);
         dvtx   = fin.Distance(fxyz);
-        maxvtx = Max(maxvtx, dvtx);
+        maxvtx = std::max(maxvtx, dvtx);
         di << "   Fin(" << nbe - 1 << ")-Debut(" << nbe << "): DISTANCE=" << dvtx;
         if (ia2d)
           di << " DeltaUV=" << duv;
@@ -596,11 +596,11 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
          << "\n         UV=" << luv.X() << " , " << luv.Y() << "  -- D.UV/3D=" << dl3d << "\n";
     }
     dvtx   = fin.Distance(debut);
-    maxvtx = Max(maxvtx, dvtx);
+    maxvtx = std::max(maxvtx, dvtx);
     if (iaw2d)
     {
       duv   = finuv.Distance(debuv);
-      maxuv = Max(maxuv, duv);
+      maxuv = std::max(maxuv, duv);
     }
     di << "   Fin(" << nbe << ")-Debut(1): DISTANCE=" << dvtx;
     if (iaw2d)

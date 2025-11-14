@@ -497,7 +497,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
       aFaceFace.SetFaces(aFShifted1, aFShifted2);
       aFaceFace.SetBoxes(myDS->ShapeInfo(nF1).Box(), myDS->ShapeInfo(nF2).Box());
       // Note: in case of faces with closed edges it should not be less than value of the shift
-      Standard_Real aTolFF = Max(aShiftValue, ToleranceFF(aBAS1, aBAS2));
+      Standard_Real aTolFF = std::max(aShiftValue, ToleranceFF(aBAS1, aBAS2));
       aFaceFace.SetTolFF(aTolFF);
       //
       IntSurf_ListOfPntOn2S aListOfPnts;
@@ -587,8 +587,9 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
     {
       // Modify geometric expanding coefficient by topology value,
       // since this bounding box used in sharing (vertex or edge).
-      Standard_Real aMaxVertexTol = Max(BRep_Tool::MaxTolerance(aFaceFace.Face1(), TopAbs_VERTEX),
-                                        BRep_Tool::MaxTolerance(aFaceFace.Face2(), TopAbs_VERTEX));
+      Standard_Real aMaxVertexTol =
+        std::max(BRep_Tool::MaxTolerance(aFaceFace.Face1(), TopAbs_VERTEX),
+                 BRep_Tool::MaxTolerance(aFaceFace.Face2(), TopAbs_VERTEX));
       aBoxExpandValue += aMaxVertexTol;
     }
     //
@@ -609,7 +610,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
         // make sure that the bounding box has the maximal gap
         aBox.Enlarge(aBoxExpandValue);
         aNC.SetBox(aBox);
-        aNC.SetTolerance(Max(aIC.Tolerance(), aTolFF));
+        aNC.SetTolerance(std::max(aIC.Tolerance(), aTolFF));
       }
     }
     //
@@ -727,7 +728,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     const TopoDS_Face& aF1 = (*(TopoDS_Face*)(&myDS->Shape(nF1)));
     const TopoDS_Face& aF2 = (*(TopoDS_Face*)(&myDS->Shape(nF2)));
     //
-    Standard_Real aTolFF = Max(BRep_Tool::Tolerance(aF1), BRep_Tool::Tolerance(aF2));
+    Standard_Real aTolFF = std::max(BRep_Tool::Tolerance(aF1), BRep_Tool::Tolerance(aF2));
     //
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
@@ -854,7 +855,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     {
       BOPDS_Curve&          aNC     = aVC.ChangeValue(j);
       const IntTools_Curve& aIC     = aNC.Curve();
-      Standard_Real         aTolR3D = Max(aNC.Tolerance(), aNC.TangentialTolerance());
+      Standard_Real         aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
       //
       BOPDS_ListOfPaveBlock&   aLPBC = aNC.ChangePaveBlocks();
       Handle(BOPDS_PaveBlock)& aPB1  = aNC.ChangePaveBlock1();
@@ -909,10 +910,10 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
                                      aTolR3D,
                                      aT1,
                                      BRep_Tool::Pnt(aV1),
-                                     Max(aTolR3D, BRep_Tool::Tolerance(aV1)),
+                                     std::max(aTolR3D, BRep_Tool::Tolerance(aV1)),
                                      aT2,
                                      BRep_Tool::Pnt(aV2),
-                                     Max(aTolR3D, BRep_Tool::Tolerance(aV2)),
+                                     std::max(aTolR3D, BRep_Tool::Tolerance(aV2)),
                                      aFirst,
                                      aLast))
         {
@@ -1926,7 +1927,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock(const Handle(BOPDS_Pave
                       &aV2   = TopoDS::Vertex(myDS->Shape(nV2));
   const Standard_Real aTolV1 = BRep_Tool::Tolerance(aV1), aTolV2 = BRep_Tool::Tolerance(aV2);
 
-  aTol = Max(aTolV1, aTolV2);
+  aTol = std::max(aTolV1, aTolV2);
 
   aTm = IntTools_Tools::IntermediatePoint(aT1, aT2);
   theNC.Curve().D0(aTm, aPm);
@@ -1945,7 +1946,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock(const Handle(BOPDS_Pave
     {
       const TopoDS_Edge& aE = (*(TopoDS_Edge*)(&aSIE.Shape()));
       aTolE                 = BRep_Tool::Tolerance(aE);
-      aTolCheck             = Max(aTolE, aTol) + myFuzzyValue;
+      aTolCheck             = std::max(aTolE, aTol) + myFuzzyValue;
       iFlag                 = myContext->ComputePE(aPm, aTolCheck, aE, aTx, aDist);
       if (!iFlag)
       {
@@ -2013,7 +2014,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock(
   const Standard_Real aTolV12 = BRep_Tool::Tolerance(TopoDS::Vertex(myDS->Shape(nV12)));
   aBoxP2.Enlarge(aTolV12);
 
-  const Standard_Real aTolV1 = Max(aTolV11, aTolV12) + myFuzzyValue;
+  const Standard_Real aTolV1 = std::max(aTolV11, aTolV12) + myFuzzyValue;
 
   Standard_Real aTolCheck = theTolR3D + myFuzzyValue;
 
@@ -2021,7 +2022,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock(
   // edge has no common block with any face
   Standard_Real       aMaxTolAdd   = 0.001; // Maximal tolerance of edge allowed
   const Standard_Real aCoeffTolAdd = 10.;   // Coeff to define max. tolerance with help of aTolCheck
-  aMaxTolAdd                       = Min(aMaxTolAdd, aCoeffTolAdd * aTolCheck);
+  aMaxTolAdd                       = std::min(aMaxTolAdd, aCoeffTolAdd * aTolCheck);
 
   // Look for the existing pave block closest to the section curve
   Standard_Boolean bFound = Standard_False;
@@ -2036,7 +2037,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock(
 
     const Standard_Real aTolV21 = BRep_Tool::Tolerance(TopoDS::Vertex(myDS->Shape(nV21)));
     const Standard_Real aTolV22 = BRep_Tool::Tolerance(TopoDS::Vertex(myDS->Shape(nV22)));
-    const Standard_Real aTolV2  = Max(aTolV21, aTolV22) + myFuzzyValue;
+    const Standard_Real aTolV2  = std::max(aTolV21, aTolV22) + myFuzzyValue;
 
     const BOPDS_ShapeInfo& aSISp  = myDS->ChangeShapeInfo(aPB->Edge());
     const TopoDS_Edge&     aSp    = (*(TopoDS_Edge*)(&aSISp.Shape()));
@@ -2056,7 +2057,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock(
     Standard_Real aRealTol = aTolCheck;
     if (myDS->IsCommonBlock(aPB))
     {
-      aRealTol = Max(aRealTol, Max(aTolV1, aTolV2));
+      aRealTol = std::max(aRealTol, std::max(aTolV1, aTolV2));
       if (theMPBCommon.Contains(aPB))
         // for an edge, which is a common block with a face,
         // increase the chance to coincide with section curve
@@ -2080,8 +2081,9 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock(
           if (aIC.Type() != GeomAbs_Line || aBAC2.GetType() != GeomAbs_Line)
           {
             Standard_Real aTldp;
-            Standard_Real aTolAdd = 2. * Min(aMaxTolAdd, Max(aRealTol, Max(aTolV1, aTolV2)));
-            aPEStatus             = myContext->ComputePE(aPm, aTolAdd, aSp, aTldp, aDistm1m2);
+            Standard_Real aTolAdd =
+              2. * std::min(aMaxTolAdd, std::max(aRealTol, std::max(aTolV1, aTolV2)));
+            aPEStatus = myContext->ComputePE(aPm, aTolAdd, aSp, aTldp, aDistm1m2);
 
             if (aPEStatus == 0)
             {
@@ -2092,7 +2094,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock(
               {
                 // The angle should be close to zero
                 Standard_Real aCos = aVTgt1.Dot(aVTgt2.Normalized());
-                if (Abs(aCos) >= 0.9063)
+                if (std::abs(aCos) >= 0.9063)
                 {
                   aRealTol = aTolAdd;
                   aCoeff   = 2.;
@@ -2190,7 +2192,7 @@ static void getBoundPaves(const BOPDS_DS*    theDS,
   Standard_Real         aT[2];
   gp_Pnt                aP[2];
   aIC.Bounds(aT[0], aT[1], aP[0], aP[1]);
-  Standard_Real aTol = Max(theNC.Tolerance(), theNC.TangentialTolerance());
+  Standard_Real aTol = std::max(theNC.Tolerance(), theNC.TangentialTolerance());
   aTol += Precision::Confusion();
   for (Standard_Integer j = 0; j < 2; ++j)
   {
@@ -2213,7 +2215,7 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&     aF1,
   Standard_Real         aT[2];
   gp_Pnt                aP[2];
   aIC.Bounds(aT[0], aT[1], aP[0], aP[1]);
-  Standard_Real            aTolR3D = Max(aNC.Tolerance(), aNC.TangentialTolerance());
+  Standard_Real            aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
   Handle(BOPDS_PaveBlock)& aPB     = aNC.ChangePaveBlock1();
   // Get numbers of vertices assigned to the ends of the curve
   Standard_Integer aBndNV[2];
@@ -2278,7 +2280,7 @@ void BOPAlgo_PaveFiller::PutPavesOnCurve(const TColStd_MapOfInteger&            
   TColStd_MapIteratorOfMapOfInteger aIt;
   //
   const Bnd_Box&      aBoxC   = theNC.Box();
-  const Standard_Real aTolR3D = Max(theNC.Tolerance(), theNC.TangentialTolerance());
+  const Standard_Real aTolR3D = std::max(theNC.Tolerance(), theNC.TangentialTolerance());
   //
   // Put EF vertices first
   aIt.Initialize(theMVEF);
@@ -2343,7 +2345,7 @@ void BOPAlgo_PaveFiller::FilterPavesOnCurves(const BOPDS_VectorOfCurve&    theVN
   {
     const BOPDS_Curve&             aNC     = theVNC(i);
     const IntTools_Curve&          aIC     = aNC.Curve();
-    const Standard_Real            aTolR3D = Max(aNC.Tolerance(), aNC.TangentialTolerance());
+    const Standard_Real            aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
     GeomAdaptor_Curve              aGAC(aIC.Curve());
     const Handle(BOPDS_PaveBlock)& aPB    = aNC.PaveBlocks().First();
     const BOPDS_ListOfPave&        aPaves = aPB->ExtPaves();
@@ -2405,7 +2407,7 @@ void BOPAlgo_PaveFiller::FilterPavesOnCurves(const BOPDS_VectorOfCurve&    theVN
     for (itL.Init(aList); itL.More(); itL.Next())
     {
       const PaveBlockDist& aPBD       = itL.Value();
-      Standard_Real        aCheckDist = 100. * Max(aPBD.Tolerance * aPBD.Tolerance, aMinDist);
+      Standard_Real        aCheckDist = 100. * std::max(aPBD.Tolerance * aPBD.Tolerance, aMinDist);
       if (aPBD.SquareDist > aCheckDist && aPBD.SinAngle < aSinAngleMin)
       {
         aPBD.PB->RemoveExtPave(nV);
@@ -2420,8 +2422,8 @@ void BOPAlgo_PaveFiller::FilterPavesOnCurves(const BOPDS_VectorOfCurve&    theVN
       const Standard_Real* pTol = theMVTol.Seek(nV);
       if (pTol)
       {
-        const TopoDS_Vertex& aV       = *(TopoDS_Vertex*)&myDS->Shape(nV);
-        const Standard_Real  aRealTol = Max(*pTol, sqrt(aMaxDistKept) + Precision::Confusion());
+        const TopoDS_Vertex& aV      = *(TopoDS_Vertex*)&myDS->Shape(nV);
+        const Standard_Real aRealTol = std::max(*pTol, sqrt(aMaxDistKept) + Precision::Confusion());
         (*(Handle(BRep_TVertex)*)&aV.TShape())->Tolerance(aRealTol);
       }
     }
@@ -2887,7 +2889,7 @@ void BOPAlgo_PaveFiller::PutPaveOnCurve(const Standard_Integer                 n
     aDTol = BOPTools_AlgoTools::DTolerance();
     //
     GeomAdaptor_Curve aGAC(aIC.Curve());
-    aPTol = aGAC.Resolution(Max(aTolR3D, aTolV));
+    aPTol = aGAC.Resolution(std::max(aTolR3D, aTolV));
     //
     bExist = aPB->ContainsParameter(aT, aPTol, nVUsed);
     if (bExist)
@@ -3402,7 +3404,7 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
     Standard_Real aTC = aPave.Parameter();
     for (Standard_Integer j = 0; j < 2; ++j)
     {
-      if (Abs(aTC - aT[j]) < Precision::PConfusion())
+      if (std::abs(aTC - aT[j]) < Precision::PConfusion())
       {
         nV   = aPave.Index();
         aTOp = (!j) ? aT[1] : aT[0];
@@ -3422,7 +3424,7 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
   Standard_Real        aTolV = BRep_Tool::Tolerance(aV);
   gp_Pnt               aPV   = BRep_Tool::Pnt(aV);
   // Tolerance for the point on the curve
-  Standard_Real aTolP = Max(aNC.Tolerance(), aNC.TangentialTolerance());
+  Standard_Real aTolP = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
   aTolP += Precision::Confusion();
 
   const Standard_Real aDistVP = aPV.Distance(aPOp);
@@ -3434,7 +3436,7 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
 
   // Check if there will be valid range on the curve
   Standard_Real aFirst, aLast;
-  Standard_Real aNewTolV = Max(aTolV, aDistVP + BOPTools_AlgoTools::DTolerance());
+  Standard_Real aNewTolV = std::max(aTolV, aDistVP + BOPTools_AlgoTools::DTolerance());
   if (!BRepLib::FindValidRange(GeomAdaptor_Curve(aIC.Curve()),
                                aIC.Tolerance(),
                                aT[0],
@@ -3758,7 +3760,7 @@ Standard_Real ToleranceFF(const BRepAdaptor_Surface& aBAS1, const BRepAdaptor_Su
 {
   Standard_Real aTol1  = aBAS1.Tolerance();
   Standard_Real aTol2  = aBAS2.Tolerance();
-  Standard_Real aTolFF = Max(aTol1, aTol2);
+  Standard_Real aTolFF = std::max(aTol1, aTol2);
   //
   Standard_Boolean isAna1, isAna2;
   isAna1 = (aBAS1.GetType() == GeomAbs_Plane || aBAS1.GetType() == GeomAbs_Cylinder
@@ -3771,7 +3773,7 @@ Standard_Real ToleranceFF(const BRepAdaptor_Surface& aBAS1, const BRepAdaptor_Su
   //
   if (!isAna1 || !isAna2)
   {
-    aTolFF = Max(aTolFF, 5.e-6);
+    aTolFF = std::max(aTolFF, 5.e-6);
   }
   return aTolFF;
 }
@@ -3855,7 +3857,7 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
     for (j = 0; j < aNbC; ++j)
     {
       BOPDS_Curve&  aNC     = aVC.ChangeValue(j);
-      Standard_Real aTolR3D = Max(aNC.Tolerance(), aNC.TangentialTolerance());
+      Standard_Real aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
       //
       aItMI.Initialize(aMI);
       for (; aItMI.More(); aItMI.Next())

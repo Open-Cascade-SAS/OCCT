@@ -117,7 +117,7 @@ struct hash<BRepMesh_Vertex>
   size_t operator()(const BRepMesh_Vertex& theVertex) const noexcept
   {
     return std::hash<double>{}(
-      (Floor(1e5 * theVertex.Coord().X()) * Floor(1e5 * theVertex.Coord().Y())));
+      (std::floor(1e5 * theVertex.Coord().X()) * std::floor(1e5 * theVertex.Coord().Y())));
   }
 };
 } // namespace std

@@ -438,7 +438,8 @@ void StepToTopoDS_TranslateEdge::MakeFromCurve3D(const Handle(StepGeom_Curve)&  
     // #25415: handling of special case found on some STEP files produced by FPX Expert 2013 (PCB
     // design system): edge curve is line displaced from its true position but with correct
     // direction; we can shift the line in this case so that it passes through vertices correctly
-    if (Abs(temp1 - temp2) < preci && Abs(U2 - U1 - pnt1.Distance(pnt2)) < Precision::Confusion()
+    if (std::abs(temp1 - temp2) < preci
+        && std::abs(U2 - U1 - pnt1.Distance(pnt2)) < Precision::Confusion()
         && C1->IsKind(STANDARD_TYPE(Geom_Line)))
     {
       Handle(Geom_Line) aLine    = Handle(Geom_Line)::DownCast(C1);

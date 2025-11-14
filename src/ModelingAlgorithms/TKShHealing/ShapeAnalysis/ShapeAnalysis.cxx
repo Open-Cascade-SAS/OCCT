@@ -50,8 +50,8 @@ Standard_Real ShapeAnalysis::AdjustByPeriod(const Standard_Real Val,
                                             const Standard_Real Period)
 {
   Standard_Real diff = Val - ToVal;
-  Standard_Real D    = Abs(diff);
-  Standard_Real P    = Abs(Period);
+  Standard_Real D    = std::abs(diff);
+  Standard_Real P    = std::abs(Period);
   if (D <= 0.5 * P)
     return 0.;
   if (P < 1e-100)
@@ -214,7 +214,7 @@ Standard_Boolean ShapeAnalysis::IsOuterBound(const TopoDS_Face& face)
   {
     BRepAdaptor_Surface     Ads(F, Standard_False);
     Standard_Real           tol   = BRep_Tool::Tolerance(F);
-    Standard_Real           toluv = Min(Ads.UResolution(tol), Ads.VResolution(tol));
+    Standard_Real           toluv = std::min(Ads.UResolution(tol), Ads.VResolution(tol));
     BRepTopAdaptor_FClass2d fcl(F, toluv);
     Standard_Boolean        rescl = (fcl.PerformInfinitePoint() == TopAbs_OUT);
     return rescl;

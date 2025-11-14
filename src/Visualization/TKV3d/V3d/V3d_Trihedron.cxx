@@ -184,7 +184,7 @@ void V3d_Trihedron::SetArrowsColor(const Quantity_Color& theXColor,
 
 void V3d_Trihedron::SetScale(const Standard_Real theScale)
 {
-  if (Abs(myScale - theScale) > Precision::Confusion())
+  if (std::abs(myScale - theScale) > Precision::Confusion())
   {
     invalidate();
   }
@@ -195,7 +195,7 @@ void V3d_Trihedron::SetScale(const Standard_Real theScale)
 
 void V3d_Trihedron::SetSizeRatio(const Standard_Real theRatio)
 {
-  if (Abs(myRatio - theRatio) > Precision::Confusion())
+  if (std::abs(myRatio - theRatio) > Precision::Confusion())
   {
     invalidate();
   }
@@ -206,7 +206,7 @@ void V3d_Trihedron::SetSizeRatio(const Standard_Real theRatio)
 
 void V3d_Trihedron::SetArrowDiameter(const Standard_Real theDiam)
 {
-  if (Abs(myDiameter - theDiam) > Precision::Confusion())
+  if (std::abs(myDiameter - theDiam) > Precision::Confusion())
   {
     invalidate();
   }
@@ -217,7 +217,7 @@ void V3d_Trihedron::SetArrowDiameter(const Standard_Real theDiam)
 
 void V3d_Trihedron::SetNbFacets(const Standard_Integer theNbFacets)
 {
-  if (Abs(myNbFacettes - theNbFacets) > 0)
+  if (std::abs(myNbFacettes - theNbFacets) > 0)
   {
     invalidate();
   }
@@ -304,12 +304,12 @@ void V3d_Trihedron::compute()
         new Graphic3d_ArrayOfPolylines(THE_CIRCLE_SERMENTS_NB + 2);
       for (Standard_Integer anIt = THE_CIRCLE_SERMENTS_NB; anIt >= 0; --anIt)
       {
-        anCircleArray->AddVertex(aRayon * Sin(anIt * THE_CIRCLE_SEGMENT_ANGLE),
-                                 aRayon * Cos(anIt * THE_CIRCLE_SEGMENT_ANGLE),
+        anCircleArray->AddVertex(aRayon * std::sin(anIt * THE_CIRCLE_SEGMENT_ANGLE),
+                                 aRayon * std::cos(anIt * THE_CIRCLE_SEGMENT_ANGLE),
                                  0.0);
       }
-      anCircleArray->AddVertex(aRayon * Sin(THE_CIRCLE_SERMENTS_NB * THE_CIRCLE_SEGMENT_ANGLE),
-                               aRayon * Cos(THE_CIRCLE_SERMENTS_NB * THE_CIRCLE_SEGMENT_ANGLE),
+      anCircleArray->AddVertex(aRayon * std::sin(THE_CIRCLE_SERMENTS_NB * THE_CIRCLE_SEGMENT_ANGLE),
+                               aRayon * std::cos(THE_CIRCLE_SERMENTS_NB * THE_CIRCLE_SEGMENT_ANGLE),
                                0.0);
 
       aSphereGroup->SetGroupPrimitivesAspect(mySphereShadingAspect->Aspect());

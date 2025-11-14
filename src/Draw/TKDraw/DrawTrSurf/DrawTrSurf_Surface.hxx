@@ -75,8 +75,8 @@ public:
   //! change the number of isoparametric curves to be drawn.
   virtual void ShowIsos(const Standard_Integer theNu, const Standard_Integer theNv)
   {
-    nbUIsos = Abs(theNu);
-    nbVIsos = Abs(theNv);
+    nbUIsos = std::abs(theNu);
+    nbVIsos = std::abs(theNv);
   }
 
   //! For variable copy.

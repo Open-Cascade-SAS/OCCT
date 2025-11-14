@@ -204,10 +204,14 @@ void LocalAnalysis_SurfaceContinuity::SurfG2(GeomLProp_SLProps& Surf1, GeomLProp
     Surf2.CurvatureDirections(DMIN2, DMAX2);
     DMIN1.Coord(x1, y1, z1);
     DMAX1.Coord(x2, y2, z2);
-    gp_Dir MCD1((Abs(x1) + Abs(x2)) / 2, (Abs(y1) + Abs(y2)) / 2, (Abs(z1) + Abs(z2)) / 2);
+    gp_Dir MCD1((std::abs(x1) + std::abs(x2)) / 2,
+                (std::abs(y1) + std::abs(y2)) / 2,
+                (std::abs(z1) + std::abs(z2)) / 2);
     DMIN2.Coord(x1, y1, z1);
     DMAX2.Coord(x2, y2, z2);
-    gp_Dir MCD2((Abs(x1) + Abs(x2)) / 2, (Abs(y1) + Abs(y2)) / 2, (Abs(z1) + Abs(z2)) / 2);
+    gp_Dir MCD2((std::abs(x1) + std::abs(x2)) / 2,
+                (std::abs(y1) + std::abs(y2)) / 2,
+                (std::abs(z1) + std::abs(z2)) / 2);
 
     myAlpha = MCD1.Angle(MCD2);
     RMIN1   = Surf1.MinCurvature();
@@ -223,9 +227,9 @@ void LocalAnalysis_SurfaceContinuity::SurfG2(GeomLProp_SLProps& Surf1, GeomLProp
     Standard_Real DETA, DZETA;
     DETA  = (myETA1 - myETA2) / 2;
     DZETA = (myZETA1 - myZETA2) / 2;
-    myGap = Abs(DETA)
-            + sqrt(DZETA * DZETA * Cos(myAlpha) * Cos(myAlpha)
-                   + myZETA * myZETA * Sin(myAlpha) * Sin(myAlpha));
+    myGap = std::abs(DETA)
+            + sqrt(DZETA * DZETA * std::cos(myAlpha) * std::cos(myAlpha)
+                   + myZETA * myZETA * std::sin(myAlpha) * std::sin(myAlpha));
   }
   else
   {
@@ -545,8 +549,8 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC2() const
     eps2v = 0.5 * myepsC2 * myepsC2 * myLambda2V;
     if ((myContC2U < myepsC2) && (myContC2V < myepsC2))
     {
-      if (Abs(myLambda1U * myLambda1U - myLambda2U) <= (eps1u * eps1u + eps2u))
-        if (Abs(myLambda1V * myLambda1V - myLambda2V) <= (eps1v * eps1v + eps2v))
+      if (std::abs(myLambda1U * myLambda1U - myLambda2U) <= (eps1u * eps1u + eps2u))
+        if (std::abs(myLambda1V * myLambda1V - myLambda2V) <= (eps1v * eps1v + eps2v))
           return Standard_True;
         else
           return Standard_False;
@@ -589,13 +593,13 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsG2() const
   EPSNL = 8 * myepsC0 / (mymaxlen * mymaxlen);
   if (IsG1())
   {
-    if ((Abs(myETA) < EPSNL) && (Abs(myZETA) < EPSNL))
+    if ((std::abs(myETA) < EPSNL) && (std::abs(myZETA) < EPSNL))
       return Standard_True;
-    if ((Abs(myZETA1) < EPSNL) && (Abs(myZETA2) < EPSNL))
+    if ((std::abs(myZETA1) < EPSNL) && (std::abs(myZETA2) < EPSNL))
       itype = 1;
-    else if ((Abs(myETA1) < EPSNL) && (Abs(myETA2) < EPSNL))
+    else if ((std::abs(myETA1) < EPSNL) && (std::abs(myETA2) < EPSNL))
       itype = 1;
-    else if ((Abs(Abs(myZETA) - Abs(myETA))) < EPSNL)
+    else if ((std::abs(std::abs(myZETA) - std::abs(myETA))) < EPSNL)
       itype = 1;
     else if ((myETA1 < myZETA1) && (myETA2 < myZETA2))
       itype = 1;

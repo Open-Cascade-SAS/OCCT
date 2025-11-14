@@ -178,7 +178,7 @@ void PrsDim_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)&
     }
 
     // Text
-    Standard_Real                 size(Min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+    Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
     Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
                                                                   Tcurpos.X(),
                                                                   Tcurpos.Y(),
@@ -194,12 +194,12 @@ void PrsDim_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)&
   parmax = parmin;
 
   parcur = ElCLib::Parameter(L3, Proj2);
-  parmin = Min(parmin, parcur);
-  parmax = Max(parmax, parcur);
+  parmin = std::min(parmin, parcur);
+  parmax = std::max(parmax, parcur);
 
   parcur = ElCLib::Parameter(L3, Tcurpos);
-  parmin = Min(parmin, parcur);
-  parmax = Max(parmax, parcur);
+  parmin = std::min(parmin, parcur);
+  parmax = std::max(parmax, parcur);
 
   gp_Pnt PointMin = ElCLib::Value(parmin, L3);
   gp_Pnt PointMax = ElCLib::Value(parmax, L3);

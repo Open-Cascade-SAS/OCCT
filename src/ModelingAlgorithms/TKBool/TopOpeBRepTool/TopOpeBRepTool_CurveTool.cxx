@@ -175,8 +175,8 @@ static Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, const TopoD
   Standard_Real          umin, umax, vmin, vmax;
 
   BRepTools::UVBounds(aFace, umin, umax, vmin, vmax);
-  Standard_Real tolU = Max((umax - umin) * 0.01, Precision::Confusion());
-  Standard_Real tolV = Max((vmax - vmin) * 0.01, Precision::Confusion());
+  Standard_Real tolU = std::max((umax - umin) * 0.01, Precision::Confusion());
+  Standard_Real tolV = std::max((vmax - vmin) * 0.01, Precision::Confusion());
   Standard_Real fp   = aPC->FirstParameter();
   Standard_Real lp   = aPC->LastParameter();
   Standard_Real step = (lp - fp) / (NPoints + 1);
@@ -355,7 +355,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
     TColgp_Array1OfPnt2d    PolPC2(1, nbpol);
     TColStd_Array1OfBoolean IsValid(1, nbpol);
     IsValid.Init(Standard_True);
-    Standard_Real tol   = Max(1.e-10, 100. * tol3d * tol3d); // tol *= tol; - square distance
+    Standard_Real tol   = std::max(1.e-10, 100. * tol3d * tol3d); // tol *= tol; - square distance
     Standard_Real tl2d  = tol * (tol2d * tol2d) / (tol3d * tol3d);
     Standard_Real def   = tol;
     Standard_Real def2d = tol2d;
@@ -620,7 +620,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
       d2x           = d2t * (dx1 - dx);
       d2y           = d2t * (dy1 - dy);
       d2z           = d2t * (dz1 - dz);
-      Curvature(ip) = Sqrt(d2x * d2x + d2y * d2y + d2z * d2z);
+      Curvature(ip) = std::sqrt(d2x * d2x + d2y * d2y + d2z * d2z);
       dx            = dx1;
       dy            = dy1;
       dz            = dz1;
@@ -634,7 +634,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
     {
       dt  = par(ip + 1) - par(ip);
       kc  = (Curvature(ip + 1) - Curvature(ip)) / dt;
-      ksi = ksi + Abs(kc - kcprev);
+      ksi = ksi + std::abs(kc - kcprev);
       if (ksi > crit)
       {
         IsBad = Standard_True;
@@ -648,7 +648,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
 
   if (IsBad)
   {
-    Standard_Real tt = Min(10. * tol3d, Precision::Approximation());
+    Standard_Real tt = std::min(10. * tol3d, Precision::Approximation());
     tol2d            = tt * tol2d / tol3d;
     tol3d            = tt;
     NbPntMax         = 40;
