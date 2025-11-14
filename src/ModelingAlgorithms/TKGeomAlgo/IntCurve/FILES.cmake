@@ -30,6 +30,5 @@ set(OCCT_IntCurve_FILES
   IntCurve_Polygon2dGen.lxx
   IntCurve_ProjectOnPConicTool.cxx
   IntCurve_ProjectOnPConicTool.hxx
-  IntCurve_ProjPCurGen.gxx
   IntCurve_UserIntConicCurveGen.gxx
 )

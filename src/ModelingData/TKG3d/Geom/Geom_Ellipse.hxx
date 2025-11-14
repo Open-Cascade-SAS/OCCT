@@ -131,7 +131,7 @@ public:
   //! circle).
   Standard_EXPORT gp_Ax1 Directrix2() const;
 
-  //! Returns the eccentricity of the ellipse  between 0.0 and 1.0
+  //! Returns the eccentricity of the ellipse between 0.0 and 1.0
   //! If f is the distance between the center of the ellipse and
   //! the Focus1 then the eccentricity e = f / MajorRadius.
   //! Returns 0 if MajorRadius = 0
@@ -149,7 +149,7 @@ public:
   //! the negative side of the "XAxis" of the ellipse.
   Standard_EXPORT gp_Pnt Focus2() const;
 
-  //! Returns the major  radius of this ellipse.
+  //! Returns the major radius of this ellipse.
   Standard_EXPORT Standard_Real MajorRadius() const;
 
   //! Returns the minor radius of this ellipse.
@@ -166,7 +166,7 @@ public:
   //! The start point and end point of an ellipse are coincident.
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
-  //! Returns the value of the  last parameter of this
+  //! Returns the value of the last parameter of this
   //! ellipse. This is respectively:
   //! - 2.*Pi, which gives the end point of this ellipse.
   //! The start point and end point of an ellipse are coincident.

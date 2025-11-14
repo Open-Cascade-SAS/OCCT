@@ -146,13 +146,13 @@ public:
 
   //! Reads a file with the WorkLibrary (sets Model and LoadedFile)
   //! Returns a integer status which can be :
-  //! RetDone if OK,  RetVoid if no Protocol not defined,
+  //! RetDone if OK, RetVoid if no Protocol not defined,
   //! RetError for file not found, RetFail if fail during read
   Standard_EXPORT IFSelect_ReturnStatus ReadFile(const Standard_CString filename);
 
   //! Reads a file from stream with the WorkLibrary (sets Model and LoadedFile)
   //! Returns a integer status which can be :
-  //! RetDone if OK,  RetVoid if no Protocol not defined,
+  //! RetDone if OK, RetVoid if no Protocol not defined,
   //! RetError for file not found, RetFail if fail during read
   Standard_EXPORT IFSelect_ReturnStatus ReadStream(const Standard_CString theName,
                                                    std::istream&          theIStream);
@@ -160,7 +160,7 @@ public:
   //! Returns the count of Entities stored in the Model, or 0
   Standard_EXPORT Standard_Integer NbStartingEntities() const;
 
-  //! Returns an  Entity stored in the Model of the WorkSession
+  //! Returns an Entity stored in the Model of the WorkSession
   //! (Null Handle is no Model or num out of range)
   Standard_EXPORT Handle(Standard_Transient) StartingEntity(const Standard_Integer num) const;
 
@@ -505,7 +505,7 @@ public:
   //! if <item> is a Dispatch : as Final Selection
   //! if <item> is a GeneralModifier (i.e. any kind of Modifier) :
   //! as Selection used to filter entities to modify
-  //! <sel>  Null  causes this Selection to be nullified
+  //! <sel> Null causes this Selection to be nullified
   //! Returns False if <item> is not of a suitable type, or
   //! <item> or <sel> is not in the WorkSession
   Standard_EXPORT Standard_Boolean SetItemSelection(const Handle(Standard_Transient)& item,
@@ -692,7 +692,7 @@ public:
 
   //! Defines a new content from the former one
   //! If <keep> is True, it is given by entities selected by
-  //! Selection <sel>  (and all shared entities)
+  //! Selection <sel> (and all shared entities)
   //! Else, it is given by all the former content but entities
   //! selected by the Selection <sel> (and properly shared ones)
   //! Returns True if done. Returns False if the selected list
@@ -787,7 +787,7 @@ public:
 
   //! Returns an Evaluation of the whole ShareOut definition : i.e.
   //! how the entities of the starting model are forecast to be sent
-  //! to various files :  list of packets according the dispatches,
+  //! to various files : list of packets according the dispatches,
   //! effective lists of roots for each packet (which determine the
   //! content of the corresponding file); plus evaluation of which
   //! entities are : forgotten (sent into no file), duplicated (sent
@@ -851,7 +851,7 @@ public:
   //!
   //! The Model and File Modifiers recorded to be applied on sending
   //! files are.
-  //! Returns a status : Done if OK,  Fail if error during send,
+  //! Returns a status : Done if OK, Fail if error during send,
   //! Error : WorkLibrary not defined, Void : selection list empty
   //! Fills LastRunCheckList
   Standard_EXPORT IFSelect_ReturnStatus
@@ -862,7 +862,7 @@ public:
   //! Writes the current Interface Model globally to a File, and
   //! returns a write status which can be :
   //! Done OK, Fail file could not be written, Error no norm is selected
-  //! Remark  : It is a simple, one-file writing, other operations are
+  //! Remark : It is a simple, one-file writing, other operations are
   //! available (such as splitting ...) which calls SendAll
   Standard_EXPORT IFSelect_ReturnStatus WriteFile(const Standard_CString filename);
 
@@ -870,7 +870,7 @@ public:
   //! as defined by a Selection <sel>, recomputes the Graph, and
   //! returns a write status which can be :
   //! Done OK, Fail file could not be written, Error no norm is selected
-  //! Remark  : It is a simple, one-file writing, other operations are
+  //! Remark : It is a simple, one-file writing, other operations are
   //! available (such as splitting ...) which calls SendSelected
   Standard_EXPORT IFSelect_ReturnStatus WriteFile(const Standard_CString            filename,
                                                   const Handle(IFSelect_Selection)& sel);
@@ -936,7 +936,7 @@ public:
     const Standard_CString                      name);
 
   //! Changes the content of a Selection of type SelectPointed
-  //! According <mode> : 0  set <list> as new content (clear former)
+  //! According <mode> : 0 set <list> as new content (clear former)
   //! 1  : adds <list> to actual content
   //! -1  : removes <list> from actual content
   //! Returns True if done, False if <sel> is not a SelectPointed
@@ -1027,7 +1027,7 @@ public:
   //! surnumeral parameters are for general use
   //!
   //! EditForms are created to handle these parameters (list, edit)
-  //! on the basis of a ParamEditor  xst-params-edit
+  //! on the basis of a ParamEditor xst-params-edit
   //!
   //! A use number dispatches the parameter to a given EditForm
   //! EditForms are defined as follows
@@ -1071,7 +1071,7 @@ public:
 
   //! Lists the content of the Input Model (if there is one)
   //! According level : 0 -> gives only count of Entities and Roots
-  //! 1 -> Lists also Roots;  2 -> Lists all Entities (by TraceType)
+  //! 1 -> Lists also Roots; 2 -> Lists all Entities (by TraceType)
   //! 3 -> Performs a call to CheckList (Fails) and lists the result
   //! 4 -> as 3 but all CheckList (Fails + Warnings)
   //! 5,6,7  : as 3 but resp. Count,List,Labels by Fail

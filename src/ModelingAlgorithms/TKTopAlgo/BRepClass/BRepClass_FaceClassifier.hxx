@@ -36,13 +36,13 @@ public:
   //! Empty constructor, undefined algorithm.
   Standard_EXPORT BRepClass_FaceClassifier();
 
-  //! Creates an algorithm to classify the Point  P with
+  //! Creates an algorithm to classify the Point P with
   //! Tolerance <T> on the face described by <F>.
   Standard_EXPORT BRepClass_FaceClassifier(BRepClass_FaceExplorer& F,
                                            const gp_Pnt2d&         P,
                                            const Standard_Real     Tol);
 
-  //! Creates an algorithm to classify the Point  P with
+  //! Creates an algorithm to classify the Point P with
   //! Tolerance <T> on the face <F>.
   //! Recommended to use Bnd_Box if the number of edges > 10
   //! and the geometry is mostly spline
@@ -52,7 +52,7 @@ public:
                                            const Standard_Boolean theUseBndBox   = Standard_False,
                                            const Standard_Real    theGapCheckTol = 0.1);
 
-  //! Classify  the Point  P  with  Tolerance <T> on the
+  //! Classify the Point P with Tolerance <T> on the
   //! face described by <F>.
   //! Recommended to use Bnd_Box if the number of edges > 10
   //! and the geometry is mostly spline
@@ -62,7 +62,7 @@ public:
                                const Standard_Boolean theUseBndBox   = Standard_False,
                                const Standard_Real    theGapCheckTol = 0.1);
 
-  //! Creates an algorithm to classify the Point  P with
+  //! Creates an algorithm to classify the Point P with
   //! Tolerance <T> on the face <F>.
   //! Recommended to use Bnd_Box if the number of edges > 10
   //! and the geometry is mostly spline
@@ -72,7 +72,7 @@ public:
                                            const Standard_Boolean theUseBndBox   = Standard_False,
                                            const Standard_Real    theGapCheckTol = 0.1);
 
-  //! Classify  the Point  P  with  Tolerance <T> on the
+  //! Classify the Point P with Tolerance <T> on the
   //! face described by <F>.
   //! Recommended to use Bnd_Box if the number of edges > 10
   //! and the geometry is mostly spline

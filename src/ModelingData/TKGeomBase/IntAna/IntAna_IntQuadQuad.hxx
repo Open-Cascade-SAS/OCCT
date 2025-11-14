@@ -86,8 +86,8 @@ public:
   Standard_EXPORT const gp_Pnt& Point(const Standard_Integer N) const;
 
   //! Returns the parameters on the "explicit quadric"
-  //! (i.e  the cylinder or the  cone, the first argument given to the constructor) of the point of
-  //! range N.
+  //! (i.e. the cylinder or the cone, the first argument given to the constructor)
+  //! of the point of range N.
   Standard_EXPORT void Parameters(const Standard_Integer N,
                                   Standard_Real&         U1,
                                   Standard_Real&         U2) const;

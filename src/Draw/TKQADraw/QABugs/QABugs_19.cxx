@@ -85,6 +85,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <cmath>
 #include <iostream>
 #include <random>
+#include <vector>
 
 #define QCOMPARE(val1, val2)                                                                       \
   di << "Checking " #val1 " == " #val2 << ((val1) == (val2) ? ": OK\n" : ": Error\n")
@@ -131,40 +132,6 @@ static Standard_Integer OCC230(Draw_Interpretor& di, Standard_Integer argc, cons
   GCE2d_MakeSegment                  MakeSegment(P1, P2);
   const Handle(Geom2d_TrimmedCurve)& TrimmedCurve = MakeSegment.Value();
   DrawTrSurf::Set(argv[1], TrimmedCurve);
-  return 0;
-}
-
-static Standard_Integer OCC23595(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
-  Handle(TDocStd_Document)    aDoc;
-  anApp->NewDocument("XmlXCAF", aDoc);
-  QCOMPARE(!aDoc.IsNull(), Standard_True);
-
-  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
-
-  // check default value
-  Standard_Boolean aValue = XCAFDoc_ShapeTool::AutoNaming();
-  QCOMPARE(aValue, Standard_True);
-
-  // true
-  XCAFDoc_ShapeTool::SetAutoNaming(Standard_True);
-  TopoDS_Shape          aShape = BRepPrimAPI_MakeBox(100., 200., 300.).Shape();
-  TDF_Label             aLabel = aShTool->AddShape(aShape);
-  Handle(TDataStd_Name) anAttr;
-  QCOMPARE(aLabel.FindAttribute(TDataStd_Name::GetID(), anAttr), Standard_True);
-
-  // false
-  XCAFDoc_ShapeTool::SetAutoNaming(Standard_False);
-  aShape = BRepPrimAPI_MakeBox(300., 200., 100.).Shape();
-  aLabel = aShTool->AddShape(aShape);
-  QCOMPARE(!aLabel.FindAttribute(TDataStd_Name::GetID(), anAttr), Standard_True);
-
-  // restore
-  XCAFDoc_ShapeTool::SetAutoNaming(aValue);
-
   return 0;
 }
 
@@ -1199,42 +1166,6 @@ static Standard_Integer OCC24931(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-#include <TDF_AttributeIterator.hxx>
-
-//=================================================================================================
-
-static Standard_Integer OCC24755(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if (n != 1)
-  {
-    std::cout << "Usage : " << a[0] << "\n";
-    return 1;
-  }
-
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
-  Handle(TDocStd_Document)    aDoc;
-  anApp->NewDocument("BinOcaf", aDoc);
-  TDF_Label aLab = aDoc->Main();
-  // Prepend an int value.
-  TDataStd_Integer::Set(aLab, 0);
-  // Prepend a name.
-  TDataStd_Name::Set(aLab, "test");
-  // Append a double value.
-  aLab.AddAttribute(new TDataStd_Real(), true /*append*/);
-
-  TDF_AttributeIterator i(aLab);
-  Handle(TDF_Attribute) anAttr = i.Value();
-  QCOMPARE(anAttr->IsKind(STANDARD_TYPE(TDataStd_Integer)), Standard_True);
-  i.Next();
-  anAttr = i.Value();
-  QCOMPARE(anAttr->IsKind(STANDARD_TYPE(TDataStd_Name)), Standard_True);
-  i.Next();
-  anAttr = i.Value();
-  QCOMPARE(anAttr->IsKind(STANDARD_TYPE(TDataStd_Real)), Standard_True);
-
-  return 0;
-}
-
 struct MyStubObject
 {
   MyStubObject()
@@ -1311,50 +1242,6 @@ static Standard_Integer OCC24834(Draw_Interpretor& di, Standard_Integer n, const
   {
     Standard::Free(it.Value().ptr);
   }
-  return 0;
-}
-
-#include <Geom2dAPI_InterCurveCurve.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-
-//=================================================================================================
-
-static Standard_Integer OCC24889(Draw_Interpretor& theDI,
-                                 Standard_Integer /*theNArg*/,
-                                 const char** /*theArgs*/)
-{
-  // Curves
-  Handle(Geom2d_Circle) aCircle1 =
-    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(25, -25), gp_Dir2d(gp_Dir2d::D::X), gp_Dir2d(-0, 1)), 155);
-
-  Handle(Geom2d_Circle) aCircle2 =
-    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(25, 25), gp_Dir2d(gp_Dir2d::D::X), gp_Dir2d(-0, 1)), 155);
-
-  Handle(Geom2d_TrimmedCurve) aTrim[2] = {
-    new Geom2d_TrimmedCurve(aCircle1, 1.57079632679490, 2.97959469729228),
-    new Geom2d_TrimmedCurve(aCircle2, 3.30359060633978, 4.71238898038469)};
-
-  DrawTrSurf::Set("c_1", aTrim[0]);
-  DrawTrSurf::Set("c_2", aTrim[1]);
-
-  // Intersection
-  constexpr Standard_Real   aTol = Precision::Confusion();
-  Geom2dAPI_InterCurveCurve aIntTool(aTrim[0], aTrim[1], aTol);
-
-  const IntRes2d_IntersectionPoint& aIntPnt = aIntTool.Intersector().Point(1);
-
-  gp_Pnt2d      aIntRes = aIntTool.Point(1);
-  Standard_Real aPar[2] = {aIntPnt.ParamOnFirst(), aIntPnt.ParamOnSecond()};
-
-  // theDI.precision( 5 );
-  theDI << "Int point: X = " << aIntRes.X() << "; Y = " << aIntRes.Y() << "\n";
-  for (int i = 0; i < 2; ++i)
-  {
-    theDI << "Curve " << i << ": FirstParam = " << aTrim[i]->FirstParameter()
-          << "; LastParam = " << aTrim[i]->LastParameter() << "; IntParameter = " << aPar[i]
-          << "\n";
-  }
-
   return 0;
 }
 
@@ -2187,25 +2074,6 @@ static Standard_Integer OCC25100(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-//=================================================================================================
-
-static Standard_Integer OCC25348(Draw_Interpretor& theDI,
-                                 Standard_Integer /*theArgNb*/,
-                                 const char** /*theArgVec*/)
-{
-  Handle(NCollection_IncAllocator) anAlloc1;
-  NCollection_List<int>            aList1(anAlloc1);
-  for (int i = 0; i < 10; i++)
-  {
-    Handle(NCollection_IncAllocator) anAlloc2;
-    NCollection_List<int>            aList2(anAlloc2);
-    aList2.Append(i);
-    aList1.Assign(aList2);
-  }
-  theDI << "Test complete\n";
-  return 0;
-}
-
 #include <IntCurvesFace_ShapeIntersector.hxx>
 #include <BRepBndLib.hxx>
 
@@ -2368,149 +2236,6 @@ static Standard_Integer OCC25446(Draw_Interpretor& theDI, Standard_Integer argc,
     }
   }
   //
-  theDI << "Test complete\n";
-  return 0;
-}
-
-//====================================================
-// Auxiliary functor class for the command OCC25545;
-// it gets access to a vertex with the given index and
-// checks that X coordinate of the point is equal to index;
-// if it is not so then a data race is reported.
-//====================================================
-struct OCC25545_Functor
-{
-  OCC25545_Functor(const std::vector<TopoDS_Shape>& theShapeVec)
-      : myShapeVec(&theShapeVec),
-        myIsRaceDetected(0)
-  {
-  }
-
-  void operator()(size_t i) const
-  {
-    if (!myIsRaceDetected)
-    {
-      const TopoDS_Vertex& aV = TopoDS::Vertex(myShapeVec->at(i));
-      gp_Pnt               aP = BRep_Tool::Pnt(aV);
-      if (aP.X() != static_cast<double>(i))
-      {
-        ++myIsRaceDetected;
-      }
-    }
-  }
-
-  const std::vector<TopoDS_Shape>* myShapeVec;
-  mutable std::atomic<int>         myIsRaceDetected;
-};
-
-//=======================================================================
-// function : OCC25545
-// purpose  : Tests data race when concurrently accessing TopLoc_Location::Transformation()
-//=======================================================================
-
-static Standard_Integer OCC25545(Draw_Interpretor& /*di*/, Standard_Integer, const char**)
-{
-  // Place vertices in a vector, giving the i-th vertex the
-  // transformation that translates it on the vector (i,0,0) from the origin.
-  Standard_Integer             n = 1000;
-  std::vector<TopoDS_Shape>    aShapeVec(n);
-  std::vector<TopLoc_Location> aLocVec(n);
-  TopoDS_Shape                 aShape = BRepBuilderAPI_MakeVertex(gp::Origin());
-  aShapeVec[0]                        = aShape;
-  for (Standard_Integer i = 1; i < n; ++i)
-  {
-    gp_Trsf aT;
-    aT.SetTranslation(gp_Vec(1, 0, 0));
-    aLocVec[i]   = aLocVec[i - 1] * aT;
-    aShapeVec[i] = aShape.Moved(aLocVec[i]);
-  }
-
-  // Evaluator function will access vertices geometry
-  // concurrently
-  OCC25545_Functor aFunc(aShapeVec);
-
-  // concurrently process
-  OSD_Parallel::For(0, n, aFunc);
-
-  QVERIFY(!aFunc.myIsRaceDetected);
-  return 0;
-}
-
-//=================================================================================================
-
-#include <BRepMesh_GeomTool.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepAdaptor_Surface.hxx>
-
-static Standard_Integer OCC25547(Draw_Interpretor& theDI,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  // The general aim of this test is to prevent linkage errors due to missed
-  // Standard_EXPORT attribute for static methods.
-
-  // However, start checking the main functionality at first.
-  const Standard_Real       aFirstP = 0., aLastP = M_PI;
-  Handle(Geom_Circle)       aCircle = new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), 10);
-  Handle(Geom_TrimmedCurve) aHalf   = new Geom_TrimmedCurve(aCircle, aFirstP, aLastP);
-  TopoDS_Edge               aEdge   = BRepBuilderAPI_MakeEdge(aHalf);
-  BRepAdaptor_Curve         aAdaptor(aEdge);
-  BRepMesh_GeomTool         aGeomTool(aAdaptor, aFirstP, aLastP, 0.1, 0.5);
-
-  if (aGeomTool.NbPoints() == 0)
-  {
-    theDI << "Error. BRepMesh_GeomTool failed to discretize an arc.\n";
-    return 1;
-  }
-
-  // Test static methods.
-  TopoDS_Face                 aFace = BRepBuilderAPI_MakeFace(gp_Pln(gp::Origin(), gp::DZ()));
-  BRepAdaptor_Surface         aSurf(aFace);
-  Handle(BRepAdaptor_Surface) aHSurf = new BRepAdaptor_Surface(aSurf);
-
-  gp_Pnt aPnt;
-  gp_Dir aNormal;
-  if (!BRepMesh_GeomTool::Normal(aHSurf, 10., 10., aPnt, aNormal))
-  {
-    theDI << "Error. BRepMesh_GeomTool failed to take a normal of surface.\n";
-    return 1;
-  }
-
-  gp_XY aRefPnts[4] = {gp_XY(-10., -10.), gp_XY(10., 10.), gp_XY(-10., 10.), gp_XY(10., -10.)};
-
-  gp_Pnt2d                   aIntPnt;
-  Standard_Real              aParams[2];
-  BRepMesh_GeomTool::IntFlag aIntFlag = BRepMesh_GeomTool::IntLinLin(aRefPnts[0],
-                                                                     aRefPnts[1],
-                                                                     aRefPnts[2],
-                                                                     aRefPnts[3],
-                                                                     aIntPnt.ChangeCoord(),
-                                                                     aParams);
-
-  Standard_Real aDiff = aIntPnt.Distance(gp::Origin2d());
-  if (aIntFlag != BRepMesh_GeomTool::Cross || aDiff > Precision::PConfusion())
-  {
-    theDI << "Error. BRepMesh_GeomTool failed to intersect two lines.\n";
-    return 1;
-  }
-
-  aIntFlag = BRepMesh_GeomTool::IntSegSeg(aRefPnts[0],
-                                          aRefPnts[1],
-                                          aRefPnts[2],
-                                          aRefPnts[3],
-                                          Standard_False,
-                                          Standard_False,
-                                          aIntPnt);
-
-  aDiff = aIntPnt.Distance(gp::Origin2d());
-  if (aIntFlag != BRepMesh_GeomTool::Cross || aDiff > Precision::PConfusion())
-  {
-    theDI << "Error. BRepMesh_GeomTool failed to intersect two segments.\n";
-    return 1;
-  }
-
   theDI << "Test complete\n";
   return 0;
 }
@@ -3233,24 +2958,9 @@ Standard_Integer OCC26446(Draw_Interpretor& di, Standard_Integer n, const char**
   return 0;
 }
 
-static Standard_Integer OCC26448(Draw_Interpretor& theDI, Standard_Integer, const char**)
-{
-  TColStd_SequenceOfReal aSeq1, aSeq2;
-  aSeq1.Append(11.);
-  aSeq1.Prepend(aSeq2);
-  theDI << "TCollection: 11 -> " << aSeq1.First() << "\n";
-
-  NCollection_Sequence<Standard_Real> nSeq1, nSeq2;
-  nSeq1.Append(11.);
-  nSeq1.Prepend(nSeq2);
-  theDI << "NCollection: 11 -> " << nSeq1.First() << "\n";
-
-  theDI << "OK";
-  return 0;
-}
-
 //=================================================================================================
 
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -3970,7 +3680,6 @@ static Standard_Integer OCC24537(Draw_Interpretor& theDI, Standard_Integer argc,
 }
 
 #include <BRepOffsetAPI_DraftAngle.hxx>
-#include <vector>
 
 static TopoDS_Shape taper(const TopoDS_Shape& shape,
                           const TopoDS_Face&  face_a,
@@ -4581,75 +4290,6 @@ static Standard_Integer OCC29412(Draw_Interpretor& /*theDI*/,
   return 0;
 }
 
-#include <math_FRPR.hxx>
-#include <math_BFGS.hxx>
-
-//=======================================================================
-// function : OCC30492
-// purpose  : BFGS and FRPR fail if starting point is exactly the minimum.
-//=======================================================================
-// Function is:
-// f(x) = x^2
-class SquareFunction : public math_MultipleVarFunctionWithGradient
-{
-public:
-  SquareFunction() {}
-
-  virtual Standard_Integer NbVariables() const { return 1; }
-
-  virtual Standard_Boolean Value(const math_Vector& X, Standard_Real& F)
-  {
-    const Standard_Real x = X(1);
-    F                     = x * x;
-
-    return Standard_True;
-  }
-
-  virtual Standard_Boolean Gradient(const math_Vector& X, math_Vector& G)
-  {
-    const Standard_Real x = X(1);
-    G(1)                  = 2 * x;
-
-    return Standard_True;
-  }
-
-  virtual Standard_Boolean Values(const math_Vector& X, Standard_Real& F, math_Vector& G)
-  {
-    Value(X, F);
-    Gradient(X, G);
-
-    return Standard_True;
-  }
-
-private:
-};
-
-static Standard_Integer OCC30492(Draw_Interpretor& /*theDI*/,
-                                 Standard_Integer /*theNArg*/,
-                                 const char** /*theArgs*/)
-{
-  SquareFunction aFunc;
-  math_Vector    aStartPnt(1, 1);
-  aStartPnt(1) = 0.0;
-
-  // BFGS and FRPR fail when if starting point is exactly the minimum.
-  math_FRPR aFRPR(aFunc, Precision::Confusion());
-  aFRPR.Perform(aFunc, aStartPnt);
-  if (!aFRPR.IsDone())
-    std::cout << "OCC30492: Error: FRPR optimization is not done." << std::endl;
-  else
-    std::cout << "OCC30492: OK: FRPR optimization is done." << std::endl;
-
-  math_BFGS aBFGS(1, Precision::Confusion());
-  aBFGS.Perform(aFunc, aStartPnt);
-  if (!aBFGS.IsDone())
-    std::cout << "OCC30492: Error: BFGS optimization is not done." << std::endl;
-  else
-    std::cout << "OCC30492: OK: BFGS optimization is done." << std::endl;
-
-  return 0;
-}
-
 //=================================================================================================
 
 void QABugs::Commands_19(Draw_Interpretor& theCommands)
@@ -4672,7 +4312,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   group);
 
   theCommands.Add("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
-  theCommands.Add("OCC23595", "OCC23595", __FILE__, OCC23595, group);
   theCommands.Add("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
   theCommands.Add("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
   theCommands.Add("OCC23683", "OCC23683 shape", __FILE__, OCC23683, group);
@@ -4700,9 +4339,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC24667,
                   group);
-  theCommands.Add("OCC24755", "OCC24755", __FILE__, OCC24755, group);
   theCommands.Add("OCC24834", "OCC24834", __FILE__, OCC24834, group);
-  theCommands.Add("OCC24889", "OCC24889", __FILE__, OCC24889, group);
   theCommands.Add("OCC23951", "OCC23951 path to saved step file", __FILE__, OCC23951, group);
   theCommands.Add("OCC24931", "OCC24931 path to saved xml file", __FILE__, OCC24931, group);
   theCommands.Add("OCC23950", "OCC23950 step_file", __FILE__, OCC23950, group);
@@ -4739,16 +4376,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC7570", "OCC7570 shape", __FILE__, OCC7570, group);
   theCommands.Add("OCC25100", "OCC25100 shape", __FILE__, OCC25100, group);
   theCommands.Add("OCC25340", "OCC25340", __FILE__, OCC25340, group);
-  theCommands.Add("OCC25348", "OCC25348", __FILE__, OCC25348, group);
   theCommands.Add("OCC25413", "OCC25413 shape", __FILE__, OCC25413, group);
   theCommands.Add("OCC25446", "OCC25446 res b1 b2 op", __FILE__, OCC25446, group);
-  theCommands.Add("OCC25545",
-                  "no args; tests data race when concurrently accessing \n"
-                  "\t\tTopLoc_Location::Transformation()",
-                  __FILE__,
-                  OCC25545,
-                  group);
-  theCommands.Add("OCC25547", "OCC25547", __FILE__, OCC25547, group);
   theCommands.Add("OCC24881", "OCC24881 shape", __FILE__, OCC24881, group);
   theCommands.Add("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
   theCommands.Add("OCC24923", "OCC24923", __FILE__, OCC24923, group);
@@ -4759,11 +4388,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   group);
   theCommands.Add("OCC26284", "OCC26284", __FILE__, OCC26284, group);
   theCommands.Add("OCC26446", "OCC26446 r c1 c2", __FILE__, OCC26446, group);
-  theCommands.Add("OCC26448",
-                  "OCC26448: check method Prepend() of sequence",
-                  __FILE__,
-                  OCC26448,
-                  group);
   theCommands.Add("OCC26407", "OCC26407 result_name", __FILE__, OCC26407, group);
   theCommands.Add("OCC26485", "OCC26485 shape", __FILE__, OCC26485, group);
   theCommands.Add("OCC26553", "OCC26553 file_path", __FILE__, OCC26553, group);
@@ -4842,11 +4466,5 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC29412,
                   group);
-  theCommands.Add(
-    "OCC30492",
-    "OCC30492: Checks whether BFGS and FRPR fail when starting point is exact minimum.",
-    __FILE__,
-    OCC30492,
-    group);
   return;
 }

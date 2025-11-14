@@ -65,7 +65,7 @@ public:
                                         const Standard_Real Eps);
 
   //! If previously used method contained Eps parameter
-  //! get actual relative error of the computation, else return  1.0.
+  //! get actual relative error of the computation, else return 1.0.
   Standard_EXPORT Standard_Real GetEpsilon();
 
 protected:

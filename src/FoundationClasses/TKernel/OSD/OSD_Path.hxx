@@ -211,7 +211,7 @@ public:
 
 public:
   //! Returns the relative file path between the absolute directory
-  //! path <DirPath>  and the absolute file path <AbsFilePath>.
+  //! path <DirPath> and the absolute file path <AbsFilePath>.
   //! If <DirPath> starts with "/", paths are handled as
   //! on Unix, if it starts with a letter followed by ":", as on
   //! WNT. In particular on WNT directory names are not key sensitive.

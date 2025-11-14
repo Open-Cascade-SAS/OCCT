@@ -47,7 +47,7 @@ public:
   //! <WI>.
   Standard_EXPORT void SetWire(const Standard_Integer WI, const Standard_Integer NE);
 
-  //! Set the edge number <EWI> of the  wire <WI>.
+  //! Set the edge number <EWI> of the wire <WI>.
   Standard_EXPORT void SetWEdge(const Standard_Integer   WI,
                                 const Standard_Integer   EWI,
                                 const Standard_Integer   EI,

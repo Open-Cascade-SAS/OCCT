@@ -24,30 +24,30 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
 
-//! This algorithm  is used to  compute the transition
+//! This algorithm is used to compute the transition
 //! of a Curve intersecting a curvilinear boundary.
 //!
-//! The geometric  elements  are described locally  at
-//! the   intersection   point  by    a   second order
+//! The geometric elements are described locally at
+//! the intersection point by a second order
 //! development.
 //!
-//! The curve is described  by the intersection point,
+//! The curve is described by the intersection point,
 //! the tangent vector and the curvature.
 //!
-//! The  boundary  is described  by   a set  of  curve
+//! The boundary is described by a set of curve
 //! elements, a curve element is either :
 //!
 //! - A curve.
 //!
-//! - A curve and an orientation  called a half-curve,
-//! the boundary  of the curve is  before or after the
+//! - A curve and an orientation called a half-curve,
+//! the boundary of the curve is before or after the
 //! intersection point depending on the orientation.
 class TopTrans_CurveTransition
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Create an empty  Curve Transition.
+  //! Create an empty Curve Transition.
   Standard_EXPORT TopTrans_CurveTransition();
 
   //! Initialize a Transition with the local description
@@ -57,10 +57,10 @@ public:
   //! Initialize a Transition with the local description of a straight line.
   Standard_EXPORT void Reset(const gp_Dir& Tgt);
 
-  //! Add  a curve element to the  boundary.    If Or is
-  //! REVERSED  the curve  is   before the intersection,
-  //! else if  Or  is FORWARD  the   curv  is after  the
-  //! intersection   and    if   Or  is   INTERNAL   the
+  //! Add a curve element to the boundary. If Or is
+  //! REVERSED the curve is before the intersection,
+  //! else if Or is FORWARD the curv is after the
+  //! intersection and if Or is INTERNAL the
   //! intersection is in the middle of the curv.
   Standard_EXPORT void Compare(const Standard_Real      Tole,
                                const gp_Dir&            Tang,
@@ -69,13 +69,13 @@ public:
                                const TopAbs_Orientation S,
                                const TopAbs_Orientation Or);
 
-  //! returns   the  state   of  the   curve  before the
+  //! returns the state of the curve before the
   //! intersection, this is the position relative to the
   //! boundary of a point very close to the intersection
   //! on the negative side of the tangent.
   Standard_EXPORT TopAbs_State StateBefore() const;
 
-  //! returns  the    state of  the  curve   after   the
+  //! returns the state of the curve after the
   //! intersection, this is the position relative to the
   //! boundary of a point very close to the intersection
   //! on the positive side of the tangent.
@@ -83,7 +83,7 @@ public:
 
 protected:
 private:
-  //! Compare two curvature and return true  if N1,C1 is
+  //! Compare two curvature and return true if N1,C1 is
   //! before N2,C2 in the edge orientation
   Standard_EXPORT Standard_Boolean IsBefore(const Standard_Real Tole,
                                             const Standard_Real Angl,

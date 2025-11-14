@@ -45,7 +45,7 @@ class Geom2d_Curve;
 class Geom_Surface;
 class OSD_FileSystem;
 
-//! The BRepTools package provides  utilities for BRep
+//! The BRepTools package provides utilities for BRep
 //! data structures.
 //!
 //! * WireExplorer: Tool to explore the topology of

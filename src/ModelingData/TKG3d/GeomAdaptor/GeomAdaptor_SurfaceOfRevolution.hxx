@@ -36,7 +36,7 @@ DEFINE_STANDARD_HANDLE(GeomAdaptor_SurfaceOfRevolution, GeomAdaptor_Surface)
 //! possible to be in the previous case after a cylindrical projection
 //! of the curve in a referenced plane.
 //! For a complete surface of revolution the parametric range is
-//! 0 <= U <= 2*PI.       --
+//! 0 <= U <= 2*PI
 //! The parametric range for V is defined with the revolved curve.
 //! The origin of the U parametrization is given by the position
 //! of the revolved curve (reference). The direction of the revolution

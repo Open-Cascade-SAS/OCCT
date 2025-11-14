@@ -19,10 +19,21 @@
 #include <HLRAlgo_Intersection.hxx>
 #include <HLRAlgo_Coincidence.hxx>
 
-#define TheSubShape HLRAlgo_Intersection
-#define TheSubShape_hxx <HLRAlgo_Intersection.hxx>
-#define TheShape HLRAlgo_Coincidence
-#define TheShape_hxx <HLRAlgo_Coincidence.hxx>
-#define TopBas_Interference HLRAlgo_Interference
-#define TopBas_Interference_hxx <HLRAlgo_Interference.hxx>
-#include <TopBas_Interference.gxx>
+//=================================================================================================
+
+HLRAlgo_Interference::HLRAlgo_Interference() {}
+
+//=================================================================================================
+
+HLRAlgo_Interference::HLRAlgo_Interference(const HLRAlgo_Intersection& Inters,
+                                           const HLRAlgo_Coincidence&  Bound,
+                                           const TopAbs_Orientation    Orient,
+                                           const TopAbs_Orientation    Trans,
+                                           const TopAbs_Orientation    BTrans)
+    : myIntersection(Inters),
+      myBoundary(Bound),
+      myOrientation(Orient),
+      myTransition(Trans),
+      myBTransition(BTrans)
+{
+}

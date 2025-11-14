@@ -24,8 +24,8 @@
 #include <Intrv_SequenceOfInterval.hxx>
 class Intrv_Interval;
 
-//! The class  Intervals is a  sorted  sequence of non
-//! overlapping  Real Intervals.
+//! The class Intervals is a sorted sequence of non
+//! overlapping Real Intervals.
 class Intrv_Intervals
 {
 public:
@@ -41,7 +41,7 @@ public:
   Standard_EXPORT void Intersect(const Intrv_Interval& Tool);
 
   //! Intersects the intervals with the intervals in the
-  //! sequence  <Tool>.
+  //! sequence <Tool>.
   Standard_EXPORT void Intersect(const Intrv_Intervals& Tool);
 
   Standard_EXPORT void Subtract(const Intrv_Interval& Tool);

@@ -24,20 +24,37 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_ReaderLib.hxx>
 
-#define TheObject Handle(Standard_Transient)
-#define TheObject_hxx <Standard_Transient.hxx>
-#define Handle_TheModule Handle(Interface_ReaderModule)
-#define TheModule Interface_ReaderModule
-#define TheModule_hxx <Interface_ReaderModule.hxx>
-#define Handle_TheProtocol Handle(Interface_Protocol)
-#define TheProtocol Interface_Protocol
-#define TheProtocol_hxx <Interface_Protocol.hxx>
-#define LibCtl_GlobalNode Interface_GlobalNodeOfReaderLib
-#define LibCtl_GlobalNode_hxx <Interface_GlobalNodeOfReaderLib.hxx>
-#define LibCtl_Node Interface_NodeOfReaderLib
-#define LibCtl_Node_hxx <Interface_NodeOfReaderLib.hxx>
-#define Handle_LibCtl_GlobalNode Handle(Interface_GlobalNodeOfReaderLib)
-#define Handle_LibCtl_Node Handle(Interface_NodeOfReaderLib)
-#define LibCtl_Library Interface_ReaderLib
-#define LibCtl_Library_hxx <Interface_ReaderLib.hxx>
-#include <LibCtl_Node.gxx>
+Interface_NodeOfReaderLib::Interface_NodeOfReaderLib() {}
+
+void Interface_NodeOfReaderLib::AddNode(const Handle(Interface_GlobalNodeOfReaderLib)& anode)
+{
+  if (thenode == anode)
+    return;
+  if (thenext.IsNull())
+  {
+    if (thenode.IsNull())
+      thenode = anode;
+    else
+    {
+      thenext = new Interface_NodeOfReaderLib;
+      thenext->AddNode(anode);
+    }
+  }
+  else
+    thenext->AddNode(anode);
+}
+
+const Handle(Interface_ReaderModule)& Interface_NodeOfReaderLib::Module() const
+{
+  return thenode->Module();
+}
+
+const Handle(Interface_Protocol)& Interface_NodeOfReaderLib::Protocol() const
+{
+  return thenode->Protocol();
+}
+
+const Handle(Interface_NodeOfReaderLib)& Interface_NodeOfReaderLib::Next() const
+{
+  return thenext;
+}

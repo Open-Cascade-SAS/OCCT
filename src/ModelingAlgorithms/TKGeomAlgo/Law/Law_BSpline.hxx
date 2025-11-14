@@ -165,11 +165,11 @@ public:
   //!
   //! For each U = Knots(i), M = Mults(i)
   //!
-  //! If <U> is an existing knot the  multiplicity is
+  //! If <U> is an existing knot the multiplicity is
   //! increased by <M> if <Add> is True, increased to
   //! <M> if <Add> is False.
   //!
-  //! If U  is not on the parameter range nothing is
+  //! If U is not on the parameter range nothing is
   //! done.
   //!
   //! If the multiplicity is negative or null nothing is
@@ -215,7 +215,7 @@ public:
   //! of the reversed curve.
   Standard_EXPORT void Reverse();
 
-  //! Returns the  parameter on the  reversed  curve for
+  //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
   //!
   //! returns UFirst + ULast - U
@@ -243,7 +243,7 @@ public:
   //!
   //! Raised if there is an index such that K (Index+1) <= K (Index).
   //!
-  //! Raised if  K.Lower() < 1 or K.Upper() > NbKnots
+  //! Raised if K.Lower() < 1 or K.Upper() > NbKnots
   Standard_EXPORT void SetKnots(const TColStd_Array1OfReal& K);
 
   //! Changes the knot of range Index with its multiplicity.
@@ -474,12 +474,12 @@ public:
   //! Locates the parametric value U in the sequence of knots.
   //! If "WithKnotRepetition" is True we consider the knot's
   //! representation with repetition of multiple knot value,
-  //! otherwise  we consider the knot's representation with
+  //! otherwise we consider the knot's representation with
   //! no repetition of multiple knot values.
   //! Knots (I1) <= U <= Knots (I2)
-  //! . if I1 = I2  U is a knot value (the tolerance criterion
+  //! . if I1 = I2 U is a knot value (the tolerance criterion
   //! ParametricTolerance is used).
-  //! . if I1 < 1  => U < Knots (1) - Abs(ParametricTolerance)
+  //! . if I1 < 1 => U < Knots (1) - Abs(ParametricTolerance)
   //! . if I2 > NbKnots => U > Knots (NbKnots) + Abs(ParametricTolerance)
   Standard_EXPORT void LocateU(const Standard_Real    U,
                                const Standard_Real    ParametricTolerance,

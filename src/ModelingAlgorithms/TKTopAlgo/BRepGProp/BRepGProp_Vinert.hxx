@@ -50,7 +50,7 @@ public:
   //! The method is quick and its precision is enough for many cases of analytical
   //! surfaces.
   //! Non-adaptive 2D Gauss integration with predefined numbers of Gauss points
-  //! is used. Numbers of points depend on types of surfaces and  curves.
+  //! is used. Numbers of points depend on types of surfaces and curves.
   //! Error of the computation is not calculated.
   Standard_EXPORT BRepGProp_Vinert(const BRepGProp_Face& S, const gp_Pnt& VLocation);
 
@@ -69,7 +69,7 @@ public:
   //! The method is quick and its precision is enough for many cases of analytical
   //! surfaces.
   //! Non-adaptive 2D Gauss integration with predefined numbers of Gauss points
-  //! is used. Numbers of points depend on types of surfaces and  curves.
+  //! is used. Numbers of points depend on types of surfaces and curves.
   //! Error of the computation is not calculated.
   Standard_EXPORT BRepGProp_Vinert(const BRepGProp_Face& S,
                                    const gp_Pnt&         O,
@@ -92,7 +92,7 @@ public:
   //! The method is quick and its precision is enough for many cases of analytical
   //! surfaces.
   //! Non-adaptive 2D Gauss integration with predefined numbers of Gauss points
-  //! is used. Numbers of points depend on types of surfaces and  curves.
+  //! is used. Numbers of points depend on types of surfaces and curves.
   //! Error of the computation is not calculated.
   Standard_EXPORT BRepGProp_Vinert(const BRepGProp_Face& S,
                                    const gp_Pln&         Pl,
@@ -115,7 +115,7 @@ public:
   //! The method is quick and its precision is enough for many cases of analytical
   //! surfaces.
   //! Non-adaptive 2D Gauss integration with predefined numbers of Gauss points
-  //! is used. Numbers of points depend on types of surfaces and  curves.
+  //! is used. Numbers of points depend on types of surfaces and curves.
   //! Error of the computation is not calculated.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& VLocation);
 
@@ -135,7 +135,7 @@ public:
   //! The method is quick and its precision is enough for many cases of analytical
   //! surfaces.
   //! Non-adaptive 2D Gauss integration with predefined numbers of Gauss points
-  //! is used. Numbers of points depend on types of surfaces and  curves.
+  //! is used. Numbers of points depend on types of surfaces and curves.
   //! Error of the computation is not calculated.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&   S,
                                    BRepGProp_Domain& D,
@@ -160,7 +160,7 @@ public:
   //! The method is quick and its precision is enough for many cases of analytical
   //! surfaces.
   //! Non-adaptive 2D Gauss integration with predefined numbers of Gauss points
-  //! is used. Numbers of points depend on types of surfaces and  curves.
+  //! is used. Numbers of points depend on types of surfaces and curves.
   //! Error of the computation is not calculated.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&   S,
                                    BRepGProp_Domain& D,
@@ -218,8 +218,8 @@ public:
                                         const gp_Pln&       Pl,
                                         const Standard_Real Eps);
 
-  //! If previously used methods containe Eps parameter
-  //! gets actual relative error of the computation, else returns  1.0.
+  //! If previously used methods contain Eps parameter
+  //! gets actual relative error of the computation, else returns 1.0.
   Standard_EXPORT Standard_Real GetEpsilon();
 
 protected:

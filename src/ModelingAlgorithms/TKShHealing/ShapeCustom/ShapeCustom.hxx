@@ -40,12 +40,12 @@ class ShapeCustom_RestrictionParameters;
 //! modifications are the following:
 //! conversion of BSpline and Bezier surfaces to analytical form,
 //! conversion of indirect elementary surfaces (with left-handed
-//! coordinate systems) into  direct ones,
+//! coordinate systems) into direct ones,
 //! conversion of elementary surfaces to surfaces of revolution,
 //! conversion of surface of linear extrusion, revolution, offset
 //! surface to bspline,
 //! modification of parameterization, degree, number of segments of bspline
-//! surfaces,  scale the shape.
+//! surfaces, scale the shape.
 class ShapeCustom
 {
 public:

@@ -20,7 +20,7 @@
 //! Indicates the outcome of the
 //! construction of an edge, i.e. whether it has been successful or
 //! not, as explained below:
-//! -      BRepBuilderAPI_EdgeDone No    error occurred; The edge is
+//! -      BRepBuilderAPI_EdgeDone No error occurred; The edge is
 //! correctly built.
 //! -      BRepBuilderAPI_PointProjectionFailed No parameters were given but
 //! the projection of the 3D points on the curve failed. This
@@ -34,13 +34,13 @@
 //! curve but have different locations.
 //! -      BRepBuilderAPI_PointWithInfiniteParameter
 //! A finite coordinate point was associated with an infinite
-//! parameter (see the Precision package for a definition of    infinite values).
+//! parameter (see the Precision package for a definition of infinite values).
 //! -      BRepBuilderAPI_DifferentsPointAndParameter
 //! The distance between the 3D point and the point evaluated
 //! on the curve with the parameter is greater than the precision.
 //! -      BRepBuilderAPI_LineThroughIdenticPoints
 //! Two identical points were given to define a line (construction
-//! of an edge without curve); gp::Resolution is used for the    confusion test.
+//! of an edge without curve); gp::Resolution is used for the confusion test.
 enum BRepBuilderAPI_EdgeError
 {
   BRepBuilderAPI_EdgeDone,

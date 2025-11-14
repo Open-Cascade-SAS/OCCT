@@ -38,14 +38,14 @@ class gp_Pnt;
 //!
 //! Axes: an Axis2 (coordinate system)
 //!
-//! YMin, YMax the  coordinates of the ymin and ymax
+//! YMin, YMax the coordinates of the ymin and ymax
 //! rectangular faces parallel to the ZX plane (of the
 //! coordinate systems)
 //!
-//! ZMin,ZMax,XMin,XMax the rectangular
+//! ZMin, ZMax, XMin, XMax the rectangular
 //! left (YMin) face parallel to the Z and X axes.
 //!
-//! Z2Min,Z2Max,X2Min,X2Max the rectangular
+//! Z2Min, Z2Max, X2Min, X2Max the rectangular
 //! right (YMax) face parallel to the Z and X axes.
 //!
 //! For a box Z2Min = ZMin, Z2Max = ZMax,

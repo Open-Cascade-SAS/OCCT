@@ -53,7 +53,7 @@ class ShapeUpgrade_FaceDivide : public ShapeUpgrade_Tool
 {
 
 public:
-  //! Creates empty  constructor.
+  //! Creates empty constructor.
   Standard_EXPORT ShapeUpgrade_FaceDivide();
 
   //! Initialize by a Face.

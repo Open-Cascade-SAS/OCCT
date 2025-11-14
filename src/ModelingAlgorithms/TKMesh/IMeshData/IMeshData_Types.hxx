@@ -32,7 +32,7 @@
 #include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <BRepMesh_Vertex.hxx>
-#include <Bnd_B2d.hxx>
+#include <Bnd_B2.hxx>
 #include <BRepMesh_Circle.hxx>
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_PairOfIndex.hxx>

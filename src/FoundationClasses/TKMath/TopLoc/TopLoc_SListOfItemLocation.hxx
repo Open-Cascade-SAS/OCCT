@@ -58,7 +58,7 @@ public:
   {
   }
 
-  //! Sets a list from an other one. The  lists are
+  //! Sets a list from an other one. The lists are
   //! shared. The list itself is returned.
   Standard_EXPORT TopLoc_SListOfItemLocation& Assign(const TopLoc_SListOfItemLocation& Other);
 
@@ -113,7 +113,7 @@ public:
   Standard_Boolean More() const { return !IsEmpty(); }
 
   //! Moves the iterator to the next object in the list.
-  //! If the iterator is empty it will  stay empty. This is ToTail()
+  //! If the iterator is empty it will stay empty. This is ToTail()
   void Next() { ToTail(); }
 
 private:

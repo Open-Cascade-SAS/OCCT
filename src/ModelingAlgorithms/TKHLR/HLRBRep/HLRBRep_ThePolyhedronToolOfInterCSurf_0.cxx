@@ -21,8 +21,7 @@
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
 
-#define ThePolyhedron HLRBRep_ThePolyhedronOfInterCSurf
-#define ThePolyhedron_hxx <HLRBRep_ThePolyhedronOfInterCSurf.hxx>
-#define IntCurveSurface_PolyhedronTool HLRBRep_ThePolyhedronToolOfInterCSurf
-#define IntCurveSurface_PolyhedronTool_hxx <HLRBRep_ThePolyhedronToolOfInterCSurf.hxx>
-#include <IntCurveSurface_PolyhedronTool.gxx>
+void HLRBRep_ThePolyhedronToolOfInterCSurf::Dump(const HLRBRep_ThePolyhedronOfInterCSurf& polyh)
+{
+  polyh.Dump();
+}

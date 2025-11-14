@@ -44,17 +44,17 @@ public:
   Standard_EXPORT virtual void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
-  //! Sets the level of checking shape on self-interference.<br>
-  //! It defines which interferences will be checked:<br>
-  //! 0 - only V/V;<br>
-  //! 1 - V/V and V/E;<br>
-  //! 2 - V/V, V/E and E/E;<br>
-  //! 3 - V/V, V/E, E/E and V/F;<br>
-  //! 4 - V/V, V/E, E/E, V/F and E/F;<br>
-  //! 5 - V/V, V/E, E/E, V/F, E/F and F/F;<br>
-  //! 6 - V/V, V/E, E/E, V/F, E/F, F/F and V/S;<br>
-  //! 7 - V/V, V/E, E/E, V/F, E/F, F/F, V/S and E/S;<br>
-  //! 8 - V/V, V/E, E/E, V/F, E/F, F/F, V/S, E/S and F/S;<br>
+  //! Sets the level of checking shape on self-interference.
+  //! It defines which interferences will be checked:
+  //! 0 - only V/V;
+  //! 1 - V/V and V/E;
+  //! 2 - V/V, V/E and E/E;
+  //! 3 - V/V, V/E, E/E and V/F;
+  //! 4 - V/V, V/E, E/E, V/F and E/F;
+  //! 5 - V/V, V/E, E/E, V/F, E/F and F/F;
+  //! 6 - V/V, V/E, E/E, V/F, E/F, F/F and V/S;
+  //! 7 - V/V, V/E, E/E, V/F, E/F, F/F, V/S and E/S;
+  //! 8 - V/V, V/E, E/E, V/F, E/F, F/F, V/S, E/S and F/S;
   //! 9 - V/V, V/E, E/E, V/F, E/F, F/F, V/S, E/S, F/S and S/S - all interferences (Default value)
   Standard_EXPORT void SetLevelOfCheck(const Standard_Integer theLevel);
 

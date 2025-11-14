@@ -73,7 +73,7 @@ public:
                                                    const TopLoc_Location&      location);
 
   //! Removes 3d curve of the edge if it does not match the vertices
-  //! Returns: True,  if does not match, removed (status DONE)
+  //! Returns: True, if does not match, removed (status DONE)
   //! False, (status OK) if matches or (status FAIL) if no 3d curve,
   //! nothing done
   Standard_EXPORT Standard_Boolean FixRemoveCurve3d(const TopoDS_Edge& edge);
@@ -142,7 +142,7 @@ public:
   //! Status:
   //! OK   : the original tolerances have not been changed
   //! DONE1: the tolerance of first vertex has been increased
-  //! DONE2: the tolerance of last  vertex has been increased
+  //! DONE2: the tolerance of last vertex has been increased
   Standard_EXPORT Standard_Boolean FixVertexTolerance(const TopoDS_Edge& edge);
 
   Standard_EXPORT Standard_Boolean FixReversed2d(const TopoDS_Edge& edge, const TopoDS_Face& face);

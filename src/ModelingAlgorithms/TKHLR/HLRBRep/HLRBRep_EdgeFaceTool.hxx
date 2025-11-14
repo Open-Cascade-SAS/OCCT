@@ -22,9 +22,9 @@
 
 class gp_Dir;
 
-//! The EdgeFaceTool computes the  UV coordinates at a
-//! given parameter on a Curve and a Surface.  It also
-//! compute the signed  curvature value in a direction
+//! The EdgeFaceTool computes the UV coordinates at a
+//! given parameter on a Curve and a Surface. It also
+//! compute the signed curvature value in a direction
 //! at a given u,v point on a surface.
 class HLRBRep_EdgeFaceTool
 {

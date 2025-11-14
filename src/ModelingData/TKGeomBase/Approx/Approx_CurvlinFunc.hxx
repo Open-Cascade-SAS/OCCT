@@ -50,14 +50,14 @@ public:
 
   Standard_EXPORT Standard_Real LastParameter() const;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
 
@@ -76,7 +76,7 @@ public:
 
   Standard_EXPORT Standard_Real GetLength() const;
 
-  //! returns  original parameter corresponding S.  if
+  //! returns original parameter corresponding S. if
   //! Case == 1 computation is performed on myC2D1 and mySurf1,
   //! otherwise it is done on myC2D2 and mySurf2.
   Standard_EXPORT Standard_Real GetUParameter(Adaptor3d_Curve&       C,

@@ -25,8 +25,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
-//! This class  is used to send  the  description of an
-//! Edge to the classifier. It  contains  an Edge and a
+//! This class is used to send the description of an
+//! Edge to the classifier. It contains an Edge and a
 //! Face. So the PCurve of the Edge can be found.
 class BRepClass_Edge
 {

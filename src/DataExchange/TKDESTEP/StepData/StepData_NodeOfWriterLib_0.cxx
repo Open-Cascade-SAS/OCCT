@@ -24,20 +24,37 @@
 #include <StepData_Protocol.hxx>
 #include <StepData_WriterLib.hxx>
 
-#define TheObject Handle(Standard_Transient)
-#define TheObject_hxx <Standard_Transient.hxx>
-#define Handle_TheModule Handle(StepData_ReadWriteModule)
-#define TheModule StepData_ReadWriteModule
-#define TheModule_hxx <StepData_ReadWriteModule.hxx>
-#define Handle_TheProtocol Handle(StepData_Protocol)
-#define TheProtocol StepData_Protocol
-#define TheProtocol_hxx <StepData_Protocol.hxx>
-#define LibCtl_GlobalNode StepData_GlobalNodeOfWriterLib
-#define LibCtl_GlobalNode_hxx <StepData_GlobalNodeOfWriterLib.hxx>
-#define LibCtl_Node StepData_NodeOfWriterLib
-#define LibCtl_Node_hxx <StepData_NodeOfWriterLib.hxx>
-#define Handle_LibCtl_GlobalNode Handle(StepData_GlobalNodeOfWriterLib)
-#define Handle_LibCtl_Node Handle(StepData_NodeOfWriterLib)
-#define LibCtl_Library StepData_WriterLib
-#define LibCtl_Library_hxx <StepData_WriterLib.hxx>
-#include <LibCtl_Node.gxx>
+StepData_NodeOfWriterLib::StepData_NodeOfWriterLib() {}
+
+void StepData_NodeOfWriterLib::AddNode(const Handle(StepData_GlobalNodeOfWriterLib)& anode)
+{
+  if (thenode == anode)
+    return;
+  if (thenext.IsNull())
+  {
+    if (thenode.IsNull())
+      thenode = anode;
+    else
+    {
+      thenext = new StepData_NodeOfWriterLib;
+      thenext->AddNode(anode);
+    }
+  }
+  else
+    thenext->AddNode(anode);
+}
+
+const Handle(StepData_ReadWriteModule)& StepData_NodeOfWriterLib::Module() const
+{
+  return thenode->Module();
+}
+
+const Handle(StepData_Protocol)& StepData_NodeOfWriterLib::Protocol() const
+{
+  return thenode->Protocol();
+}
+
+const Handle(StepData_NodeOfWriterLib)& StepData_NodeOfWriterLib::Next() const
+{
+  return thenext;
+}

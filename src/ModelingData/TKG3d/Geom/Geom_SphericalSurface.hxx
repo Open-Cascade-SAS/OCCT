@@ -107,7 +107,7 @@ public:
   Standard_EXPORT gp_Sphere Sphere() const;
 
   //! Computes the u parameter on the modified
-  //! surface, when reversing its u  parametric
+  //! surface, when reversing its u parametric
   //! direction, for any point of u parameter U on this sphere.
   //! In the case of a sphere, these functions returns 2.PI - U.
   Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
@@ -115,7 +115,7 @@ public:
   //! Computes the v parameter on the modified
   //! surface, when reversing its v parametric
   //! direction, for any point of v parameter V on this sphere.
-  //! In the case of a sphere, these functions returns   -U.
+  //! In the case of a sphere, these functions returns -U.
   Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
 
   //! Computes the area of the spherical surface.
@@ -177,18 +177,18 @@ public:
   Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Computes the V isoparametric curve.
-  //! The V isoparametric curves of the surface  are defined by
+  //! The V isoparametric curves of the surface are defined by
   //! the section of the spherical surface with plane parallel to the
   //! plane (Location, XAxis, YAxis). This plane defines the origin of
   //! parametrization V.
-  //! Be careful if  V is close to PI/2 or 3*PI/2 the radius of the
+  //! Be careful if V is close to PI/2 or 3*PI/2 the radius of the
   //! circle becomes tiny. It is not forbidden in this toolkit to
   //! create circle with radius = 0.0
   //! For a SphericalSurface the VIso curve is a Circle.
   //! Warnings : The radius of this circle can be zero.
   Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
 
-  //! Computes the  point P (U, V) on the surface.
+  //! Computes the point P (U, V) on the surface.
   //! P (U, V) = Loc + Radius * Sin (V) * Zdir +
   //! Radius * Cos (V) * (cos (U) * XDir + sin (U) * YDir)
   //! where Loc is the origin of the placement plane (XAxis, YAxis)

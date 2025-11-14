@@ -58,7 +58,7 @@ public:
   Standard_EXPORT void Load(const Handle(HLRTopoBRep_OutLiner)& S,
                             const Standard_Integer              nbIso = 0);
 
-  //! return the index of the Shape <S> and  return 0 if
+  //! return the index of the Shape <S> and return 0 if
   //! the Shape <S> is not found.
   Standard_EXPORT Standard_Integer Index(const Handle(HLRTopoBRep_OutLiner)& S) const;
 
@@ -81,7 +81,7 @@ public:
   //! select all the DataStructure.
   Standard_EXPORT void Select();
 
-  //! select  only   the Shape of index <I>.
+  //! select only the Shape of index <I>.
   Standard_EXPORT void Select(const Standard_Integer I);
 
   //! select only the edges of the Shape <S>.
@@ -99,10 +99,10 @@ public:
   //! set to hide all the edges.
   Standard_EXPORT void HideAll();
 
-  //! set to  hide all the  edges of the  Shape <S>.
+  //! set to hide all the edges of the Shape <S>.
   Standard_EXPORT void HideAll(const Standard_Integer I);
 
-  //! own hiding  of all the shapes of the DataStructure
+  //! own hiding of all the shapes of the DataStructure
   //! without hiding by each other.
   Standard_EXPORT void PartialHide();
 
@@ -125,8 +125,8 @@ public:
 
 protected:
 private:
-  //! first if <SideFace> own hiding  of the side faces.
-  //! After hiding  of    the  selected  parts  of   the
+  //! first if <SideFace> own hiding of the side faces.
+  //! After hiding of the selected parts of the
   //! DataStructure.
   Standard_EXPORT void HideSelected(const Standard_Integer I, const Standard_Boolean SideFace);
 

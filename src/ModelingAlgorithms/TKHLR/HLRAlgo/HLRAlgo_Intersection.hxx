@@ -25,8 +25,8 @@
 #include <Standard_ShortReal.hxx>
 #include <TopAbs_State.hxx>
 
-//! Describes  an intersection  on   an edge to  hide.
-//! Contains a parameter and   a state (ON =   on  the
+//! Describes an intersection on an edge to hide.
+//! Contains a parameter and a state (ON = on the
 //! face, OUT = above the face, IN = under the Face)
 class HLRAlgo_Intersection
 {

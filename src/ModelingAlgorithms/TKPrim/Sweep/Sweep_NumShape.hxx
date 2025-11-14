@@ -25,7 +25,7 @@
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 
-//! Gives    a  simple  indexed   representation  of a
+//! Gives a simple indexed representation of a
 //! Directing Edge topology.
 class Sweep_NumShape
 {
@@ -37,14 +37,14 @@ public:
 
   //! Creates a new simple indexed edge.
   //!
-  //! For an Edge : Index is the  number of vertices (0,
-  //! 1 or 2),Type is TopAbs_EDGE, Closed  is true if it
-  //! is a  closed edge, BegInf is true  if  the Edge is
-  //! infinite at the  begenning, EndInf is true  if the
+  //! For an Edge : Index is the number of vertices (0,
+  //! 1 or 2),Type is TopAbs_EDGE, Closed is true if it
+  //! is a closed edge, BegInf is true if the Edge is
+  //! infinite at the beginning, EndInf is true if the
   //! edge is infinite at the end.
   //!
   //! For a Vertex : Index is the index of the vertex in
-  //! the edge (1 or 2),  Type  is TopAbsVERTEX, all the
+  //! the edge (1 or 2), Type is TopAbsVERTEX, all the
   //! other fields have no meanning.
   Standard_EXPORT Sweep_NumShape(const Standard_Integer Index,
                                  const TopAbs_ShapeEnum Type,
@@ -54,10 +54,10 @@ public:
 
   //! Reinitialize a simple indexed edge.
   //!
-  //! For an Edge : Index is the  number of vertices (0,
-  //! 1 or 2),Type is TopAbs_EDGE, Closed  is true if it
-  //! is a  closed edge, BegInf is true  if  the Edge is
-  //! infinite at the  begenning, EndInf is true  if the
+  //! For an Edge : Index is the number of vertices (0,
+  //! 1 or 2),Type is TopAbs_EDGE, Closed is true if it
+  //! is a closed edge, BegInf is true if the Edge is
+  //! infinite at the beginning, EndInf is true if the
   //! edge is infinite at the end.
   //!
   //! For a Vertex : Index is the index of the vertex in

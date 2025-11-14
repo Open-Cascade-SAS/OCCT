@@ -51,16 +51,18 @@ private:
   gp_Pnt        myP;
 };
 
-#define Pnt gp_Pnt
-#define Pnt_hxx <gp_Pnt.hxx>
-#define Extrema_Point Extrema_POnCurv
-#define Extrema_Point_hxx <Extrema_POnCurv.hxx>
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <Extrema_Point.lxx>
+inline Standard_Real Extrema_POnCurv::Parameter() const
+{
+  return myU;
+}
 
-#undef Pnt
-#undef Pnt_hxx
-#undef Extrema_Point
-#undef Extrema_Point_hxx
+inline const gp_Pnt& Extrema_POnCurv::Value() const
+{
+  return myP;
+}
 
 #endif // _Extrema_POnCurv_HeaderFile

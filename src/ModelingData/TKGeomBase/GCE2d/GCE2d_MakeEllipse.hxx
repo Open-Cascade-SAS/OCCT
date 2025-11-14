@@ -31,7 +31,7 @@ class gp_Pnt2d;
 
 //! This class implements the following algorithms used to
 //! create Ellipse from Geom2d.
-//! * Create an Ellipse from two apex  and the center.
+//! * Create an Ellipse from two apex and the center.
 //! Defines an ellipse in 2D space.
 //! The parametrization range is [0,2*PI].
 //! The ellipse is a closed and periodic curve.
@@ -49,7 +49,7 @@ public:
   Standard_EXPORT GCE2d_MakeEllipse(const gp_Elips2d& E);
 
   //! MajorAxis is the local coordinate system of the ellipse.
-  //! It is the "XAxis". The minor axis  is the YAxis of the
+  //! It is the "XAxis". The minor axis is the YAxis of the
   //! ellipse.
   //! Sense give the sense of parametrization of the Ellipse.
   //! It is not forbidden to create an ellipse with MajorRadius =

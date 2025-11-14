@@ -45,7 +45,7 @@ DEFINE_STANDARD_HANDLE(Adaptor3d_Surface, Standard_Transient)
 //! The Surface class describes the standard behaviour
 //! of a surface for generic algorithms.
 //!
-//! The Surface can  be decomposed in intervals of any
+//! The Surface can be decomposed in intervals of any
 //! continuity in U and V using the method NbIntervals.
 //! A current interval can be set.
 //! Most of the methods apply to the current interval.
@@ -168,7 +168,7 @@ public:
 
   //! Computes the derivative of order Nu in the direction U and Nv
   //! in the direction V at the point P(U, V).
-  //! Raised if the current U  interval is not not CNu
+  //! Raised if the current U interval is not not CNu
   //! and the current V interval is not CNv.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
   Standard_EXPORT virtual gp_Vec DN(const Standard_Real    U,

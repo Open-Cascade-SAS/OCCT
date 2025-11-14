@@ -29,8 +29,8 @@ class Law_BSpline;
 //! For a B-spline curve the discontinuities are localised at the
 //! knot values and between two knots values the B-spline is
 //! infinitely continuously differentiable.
-//! At a knot of range index the continuity is equal to :
-//! Degree - Mult (Index)   where  Degree is the degree of the
+//! At a knot of range index the continuity is equal to:
+//! Degree - Mult (Index) where Degree is the degree of the
 //! basis B-spline functions and Mult the multiplicity of the knot
 //! of range Index.
 //! If for your computation you need to have B-spline curves with a

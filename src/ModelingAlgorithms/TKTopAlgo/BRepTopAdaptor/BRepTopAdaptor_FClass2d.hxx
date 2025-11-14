@@ -51,7 +51,7 @@ public:
 
   //! Test a point with +- an offset (Tol) and returns
   //! On if some points are OUT an some are IN
-  //! (Caution: Internal use . see the code for more details)
+  //! (Caution: Internal use. see the code for more details)
   Standard_EXPORT TopAbs_State
     TestOnRestriction(const gp_Pnt2d&        Puv,
                       const Standard_Real    Tol,

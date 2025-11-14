@@ -263,7 +263,7 @@ public:
                                               Standard_Boolean theModeBoth       = Standard_False);
 
   //! Checks connected edges (num-th and preceding).
-  //! Tests with starting preci from <SBWD> or  with <prec> if
+  //! Tests with starting preci from <SBWD> or with <prec> if
   //! it is greater.
   //! Considers Vertices.
   //! Returns: False if edges are connected by the common vertex, else True
@@ -416,7 +416,7 @@ public:
                            TColStd_SequenceOfReal&               errors);
 
   //! Checks i-th and j-th edges for intersecting.
-  //! Remark : Calls  previous method.
+  //! Remark : Calls previous method.
   //! Status : See the function above for details
   Standard_EXPORT Standard_Boolean CheckIntersectingEdges(const Standard_Integer num1,
                                                           const Standard_Integer num2);

@@ -167,7 +167,7 @@ public:
   //! 1 <= UMults(i) <= UDegree
   //! On a non uperiodic surface the first and last
   //! umultiplicities may be UDegree+1 (this is even
-  //! recommended if you want the curve  to start and finish on
+  //! recommended if you want the curve to start and finish on
   //! the first and last pole).
   //! On a uperiodic surface the first and the last
   //! umultiplicities must be the same.
@@ -187,7 +187,7 @@ public:
                                       const Standard_Boolean         UPeriodic = Standard_False,
                                       const Standard_Boolean         VPeriodic = Standard_False);
 
-  //! Creates  a non-rational b-spline surface (weights
+  //! Creates a non-rational b-spline surface (weights
   //! default value is 1.).
   //!
   //! The following conditions must be verified.
@@ -200,7 +200,7 @@ public:
   //!
   //! On a non uperiodic surface the first and last
   //! umultiplicities may be UDegree+1 (this is even recommended
-  //! if you want the curve  to start and finish on the first
+  //! if you want the curve to start and finish on the first
   //! and last pole).
   //!
   //! On a uperiodic surface the first and the last
@@ -249,7 +249,7 @@ public:
   //! surface must be closed in that parametric direction,
   //! and the knot sequence relative to that direction must be periodic.
   //! To generate this periodic sequence of knots, the
-  //! functions FirstUKnotIndex and LastUKnotIndex  are used to
+  //! functions FirstUKnotIndex and LastUKnotIndex are used to
   //! compute I1 and I2. These are the indexes, in the
   //! knot array associated with the given parametric
   //! direction, of the knots that correspond to the first and
@@ -341,7 +341,7 @@ public:
 
   //! Computes the u parameter on the modified
   //! surface, produced by reversing its U parametric
-  //! direction, for the point of u parameter U,  on this BSpline surface.
+  //! direction, for the point of u parameter U, on this BSpline surface.
   //! For a BSpline surface, these functions return respectively:
   //! - UFirst + ULast - U,
   //! where UFirst, ULast are
@@ -493,7 +493,7 @@ public:
                                              const Standard_Integer M);
 
   //! Increments the multiplicity of the consecutives uknots FromI1..ToI2
-  //! by step.   The multiplicity of each knot FromI1,.....,ToI2 must be
+  //! by step. The multiplicity of each knot FromI1,.....,ToI2 must be
   //! lower or equal to the UDegree of the B_spline.
   //!
   //! Raised if FromI1 or ToI2 is not in the range
@@ -531,7 +531,7 @@ public:
                                              const Standard_Integer M);
 
   //! Increments the multiplicity of the consecutives vknots FromI1..ToI2
-  //! by step.  The multiplicity of each knot FromI1,.....,ToI2 must be
+  //! by step. The multiplicity of each knot FromI1,.....,ToI2 must be
   //! lower or equal to the VDegree of the B_spline.
   //!
   //! Raised if FromI1 or ToI2 is not in the range
@@ -634,7 +634,7 @@ public:
   //!
   //! Raised if there is an index such that UK (Index+1) <= UK (Index).
   //!
-  //! Raised if  UK.Lower() < 1 or UK.Upper() > NbUKnots
+  //! Raised if UK.Lower() < 1 or UK.Upper() > NbUKnots
   Standard_EXPORT void SetUKnots(const TColStd_Array1OfReal& UK);
 
   //! Changes the value of the UKnots of range UIndex and
@@ -662,7 +662,7 @@ public:
   //!
   //! Raised if there is an index such that VK (Index+1) <= VK (Index).
   //!
-  //! Raised if  VK.Lower() < 1 or VK.Upper() > NbVKnots
+  //! Raised if VK.Lower() < 1 or VK.Upper() > NbVKnots
   Standard_EXPORT void SetVKnots(const TColStd_Array1OfReal& VK);
 
   //! Changes the value of the VKnots of range VIndex and increases
@@ -681,12 +681,12 @@ public:
   //! Locates the parametric value U in the sequence of UKnots.
   //! If "WithKnotRepetition" is True we consider the knot's
   //! representation with repetition of multiple knot value,
-  //! otherwise  we consider the knot's representation with
+  //! otherwise we consider the knot's representation with
   //! no repetition of multiple knot values.
   //! UKnots (I1) <= U <= UKnots (I2)
-  //! . if I1 = I2  U is a knot value (the tolerance criterion
+  //! . if I1 = I2 U is a knot value (the tolerance criterion
   //! ParametricTolerance is used).
-  //! . if I1 < 1  => U < UKnots(1) - Abs(ParametricTolerance)
+  //! . if I1 < 1 => U < UKnots(1) - Abs(ParametricTolerance)
   //! . if I2 > NbUKnots => U > UKnots(NbUKnots)+Abs(ParametricTolerance)
   Standard_EXPORT void LocateU(const Standard_Real    U,
                                const Standard_Real    ParametricTolerance,
@@ -697,12 +697,12 @@ public:
   //! Locates the parametric value V in the sequence of knots.
   //! If "WithKnotRepetition" is True we consider the knot's
   //! representation with repetition of multiple knot value,
-  //! otherwise  we consider the knot's representation with
+  //! otherwise we consider the knot's representation with
   //! no repetition of multiple knot values.
   //! VKnots (I1) <= V <= VKnots (I2)
-  //! . if I1 = I2  V is a knot value (the tolerance criterion
+  //! . if I1 = I2 V is a knot value (the tolerance criterion
   //! ParametricTolerance is used).
-  //! . if I1 < 1  => V < VKnots(1) - Abs(ParametricTolerance)
+  //! . if I1 < 1 => V < VKnots(1) - Abs(ParametricTolerance)
   //! . if I2 > NbVKnots => V > VKnots(NbVKnots)+Abs(ParametricTolerance)
   //! poles insertion and removing
   //! The following methods are available only if the surface
@@ -807,13 +807,13 @@ public:
   //!
   //! Raised if CPoleWeights.Lower() < 1 or
   //! CPoleWeights.Upper() > NbVPoles.
-  //! Raised  if a weight value is lower or equal to Resolution
+  //! Raised if a weight value is lower or equal to Resolution
   //! from package gp.
   Standard_EXPORT void SetWeightRow(const Standard_Integer      UIndex,
                                     const TColStd_Array1OfReal& CPoleWeights);
 
   //! Move a point with parameter U and V to P.
-  //! given u,v  as parameters)  to  reach a  new position
+  //! given u,v as parameters) to reach a new position
   //! UIndex1, UIndex2, VIndex1, VIndex2:
   //! indicates the poles which can be moved
   //! if Problem in BSplineBasis calculation, no change
@@ -850,12 +850,12 @@ public:
   Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
 
   //! Returns True if the order of continuity of the surface in the
-  //! U direction  is N.
+  //! U direction is N.
   //! Raised if N < 0.
   Standard_EXPORT Standard_Boolean IsCNu(const Standard_Integer N) const Standard_OVERRIDE;
 
   //! Returns True if the order of continuity of the surface
-  //! in the V direction  is N.
+  //! in the V direction is N.
   //! Raised if N < 0.
   Standard_EXPORT Standard_Boolean IsCNv(const Standard_Integer N) const Standard_OVERRIDE;
 
@@ -974,7 +974,7 @@ public:
   Standard_EXPORT Standard_Real UKnot(const Standard_Integer UIndex) const;
 
   //! Returns NonUniform or Uniform or QuasiUniform or
-  //! PiecewiseBezier.  If all the knots differ by a
+  //! PiecewiseBezier. If all the knots differ by a
   //! positive constant from the preceding knot in the U
   //! direction the B-spline surface can be :
   //! - Uniform if all the knots are of multiplicity 1,
@@ -1044,7 +1044,7 @@ public:
   //! except for the first and last knot which are of
   //! multiplicity Degree + 1,
   //! - PiecewiseBezier if the first and last knots have
-  //! multiplicity  Degree + 1 and if interior knots have
+  //! multiplicity Degree + 1 and if interior knots have
   //! multiplicity Degree
   //! otherwise the surface is non uniform in the V direction.
   //! The tolerance criterion is Resolution from package gp.
@@ -1153,7 +1153,7 @@ public:
   //! parametric values (U, V) and the derivatives at
   //! this point on the B-spline surface patch delimited
   //! with the knots FromUK1, FromVK1 and the knots ToUK2,
-  //! ToVK2.  (U, V) can be out of these parametric bounds
+  //! ToVK2. (U, V) can be out of these parametric bounds
   //! but for the computation we only use the definition
   //! of the surface between these knots. This method is
   //! useful to compute local derivative, if the order of
@@ -1241,7 +1241,7 @@ public:
   //! Computes the point of parameter U, V on the BSpline surface patch
   //! defines between the knots UK1 UK2, VK1, VK2. U can be out of the
   //! bounds [Knot UK1, Knot UK2] and V can be outof the bounds
-  //! [Knot VK1, Knot VK2]  but for the computation we only use the
+  //! [Knot VK1, Knot VK2] but for the computation we only use the
   //! definition of the surface between these knot values.
   //! Raises if FromUK1 = ToUK2 or FromVK1 = ToVK2.
   Standard_EXPORT gp_Pnt LocalValue(const Standard_Real    U,
@@ -1319,11 +1319,11 @@ protected:
                const Standard_Boolean SegmentInV);
 
 private:
-  //! Recompute  the  flatknots,  the knotsdistribution, the
+  //! Recompute the flatknots, the knotsdistribution, the
   //! continuity for U.
   Standard_EXPORT void UpdateUKnots();
 
-  //! Recompute  the  flatknots,  the knotsdistribution, the
+  //! Recompute the flatknots, the knotsdistribution, the
   //! continuity for V.
   Standard_EXPORT void UpdateVKnots();
 

@@ -69,7 +69,7 @@ struct IMeshTools_Parameters
   //! Switches on/off multi-thread computation
   Standard_Boolean InParallel;
 
-  //! Switches on/off relative computation of edge tolerance<br>
+  //! Switches on/off relative computation of edge tolerance
   //! If true, deflection used for the polygonalisation of each edge will be
   //! <defle> * Size of Edge. The deflection used for the faces will be the
   //! maximum deflection of their edges.

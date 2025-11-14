@@ -34,7 +34,7 @@ DEFINE_STANDARD_HANDLE(IGESGeom_Plane, IGESData_IGESEntity)
 //! as well as bounded portion of a plane. In either of the
 //! above cases the plane is defined within definition space
 //! by means of coefficients A, B, C, D where at least one of
-//! A, B, C is non-zero and  A * XT + B * YT + C * ZT = D
+//! A, B, C is non-zero and A * XT + B * YT + C * ZT = D
 class IGESGeom_Plane : public IGESData_IGESEntity
 {
 

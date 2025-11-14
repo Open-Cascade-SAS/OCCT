@@ -21,12 +21,24 @@
 #include <IntCurveSurface_ThePolygonOfHInter.hxx>
 #include <Bnd_Box.hxx>
 
-#define ThePoint gp_Pnt
-#define ThePoint_hxx <gp_Pnt.hxx>
-#define ThePolygon IntCurveSurface_ThePolygonOfHInter
-#define ThePolygon_hxx <IntCurveSurface_ThePolygonOfHInter.hxx>
-#define TheBoundingBox Bnd_Box
-#define TheBoundingBox_hxx <Bnd_Box.hxx>
-#define IntCurveSurface_PolygonTool IntCurveSurface_ThePolygonToolOfHInter
-#define IntCurveSurface_PolygonTool_hxx <IntCurveSurface_ThePolygonToolOfHInter.hxx>
-#include <IntCurveSurface_PolygonTool.gxx>
+#include <iostream>
+
+void IntCurveSurface_ThePolygonToolOfHInter::Dump(const IntCurveSurface_ThePolygonOfHInter& L)
+{
+  static Standard_Integer num = 0;
+  num++;
+  Standard_Integer nbs = IntCurveSurface_ThePolygonToolOfHInter::NbSegments(L);
+  std::cout << "\npol2d " << num << " " << nbs << std::endl;
+  std::cout << "Deflection " << IntCurveSurface_ThePolygonToolOfHInter::DeflectionOverEstimation(L)
+            << std::endl;
+
+  for (Standard_Integer i = 1; i <= nbs; i++)
+  {
+    gp_Pnt P(IntCurveSurface_ThePolygonToolOfHInter::BeginOfSeg(L, i));
+    std::cout << "pnt " << num << " " << i << " " << P.X() << " " << P.Y() << " " << P.Z()
+              << std::endl;
+  }
+  gp_Pnt PF(IntCurveSurface_ThePolygonToolOfHInter::EndOfSeg(L, nbs));
+  std::cout << "pnt " << num << " " << nbs << " " << PF.X() << " " << PF.Y() << " " << PF.Z()
+            << std::endl;
+}

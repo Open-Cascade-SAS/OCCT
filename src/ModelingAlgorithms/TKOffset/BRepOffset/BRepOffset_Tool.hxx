@@ -50,7 +50,7 @@ public:
                                            TopoDS_Vertex&     V1,
                                            TopoDS_Vertex&     V2);
 
-  //! <E> is a section  between <F1> and <F2>.  Computes
+  //! <E> is a section between <F1> and <F2>. Computes
   //! <O1> the orientation of <E> in <F1> influenced by <F2>.
   //! idem for <O2>.
   Standard_EXPORT static void OrientSection(const TopoDS_Edge&  E,
@@ -59,25 +59,25 @@ public:
                                             TopAbs_Orientation& O1,
                                             TopAbs_Orientation& O2);
 
-  //! Looks for the common Vertices and Edges between faces <theF1> and <theF2>.<br>
-  //! Returns TRUE if common shapes have been found.<br>
-  //! <theLE> will contain the found common edges;<br>
+  //! Looks for the common Vertices and Edges between faces <theF1> and <theF2>.
+  //! Returns TRUE if common shapes have been found.
+  //! <theLE> will contain the found common edges;
   //! <theLV> will contain the found common vertices.
   Standard_EXPORT static Standard_Boolean FindCommonShapes(const TopoDS_Face&    theF1,
                                                            const TopoDS_Face&    theF2,
                                                            TopTools_ListOfShape& theLE,
                                                            TopTools_ListOfShape& theLV);
 
-  //! Looks for the common shapes of type <theType> between shapes <theS1> and <theS2>.<br>
-  //! Returns TRUE if common shapes have been found.<br>
+  //! Looks for the common shapes of type <theType> between shapes <theS1> and <theS2>.
+  //! Returns TRUE if common shapes have been found.
   //! <theLSC> will contain the found common shapes.
   Standard_EXPORT static Standard_Boolean FindCommonShapes(const TopoDS_Shape&    theS1,
                                                            const TopoDS_Shape&    theS2,
                                                            const TopAbs_ShapeEnum theType,
                                                            TopTools_ListOfShape&  theLSC);
 
-  //! Computes the   Section between  <F1> and  <F2> the
-  //! edges solution   are  stored in <LInt1>  with  the
+  //! Computes the Section between <F1> and <F2> the
+  //! edges solution are stored in <LInt1> with the
   //! orientation on <F1>, the sames edges are stored in
   //! <Lint2> with the orientation on <F2>.
   Standard_EXPORT static void Inter3D(const TopoDS_Face&    F1,
@@ -125,11 +125,11 @@ public:
                                           Standard_Boolean&         enlargeVfirst,
                                           Standard_Boolean&         enlargeVlast);
 
-  //! Returns  True if The Surface of  <NF> has changed.
-  //! if <ChangeGeom> is TRUE  ,   the surface  can  be
+  //! Returns True if The Surface of <NF> has changed.
+  //! if <ChangeGeom> is TRUE the surface can be
   //! changed .
-  //! if <UpdatePCurve>  is  TRUE, update the  pcurves of the
-  //! edges of <F> on   the new surface if the surface has  been changed.
+  //! if <UpdatePCurve> is TRUE, update the pcurves of the
+  //! edges of <F> on the new surface if the surface has been changed.
   //! <enlargeU>, <enlargeVfirst>, <enlargeVlast> allow or forbid
   //! enlargement in U and V directions correspondingly.
   //! <theExtensionMode> is a mode of extension of the surface of the face:
@@ -172,16 +172,16 @@ public:
                                              TopTools_DataMapOfShapeShape& NOnV1,
                                              TopTools_DataMapOfShapeShape& NOnV2);
 
-  //! Store in MVE for a vertex <V>  in <S> the incident
+  //! Store in MVE for a vertex <V> in <S> the incident
   //! edges <E> in <S>.
   //! An Edge is Store only one Time for a vertex.
   Standard_EXPORT static void MapVertexEdges(const TopoDS_Shape&                 S,
                                              TopTools_DataMapOfShapeListOfShape& MVE);
 
-  //! Remove the non valid   part of an offsetshape
-  //! 1 - Remove all the free boundary  and the faces
+  //! Remove the non valid part of an offsetshape
+  //! 1 - Remove all the free boundary and the faces
   //! connex to such edges.
-  //! 2 - Remove all the shapes not  valid in the result
+  //! 2 - Remove all the shapes not valid in the result
   //! (according to the side of offsetting)
   //! in this version only the first point is implemented.
   Standard_EXPORT static TopoDS_Shape Deboucle3D(const TopoDS_Shape&        S,
@@ -196,7 +196,7 @@ public:
   Standard_EXPORT static Standard_Real Gabarit(const Handle(Geom_Curve)& aCurve);
 
   //! Compares the normal directions of the planar faces and returns
-  //! TRUE if the directions are the same with the given precision.<br>
+  //! TRUE if the directions are the same with the given precision.
   Standard_EXPORT static Standard_Boolean CheckPlanesNormals(const TopoDS_Face&  theFace1,
                                                              const TopoDS_Face&  theFace2,
                                                              const Standard_Real theTolAng = 1.e-8);

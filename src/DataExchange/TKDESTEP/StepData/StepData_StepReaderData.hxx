@@ -391,12 +391,12 @@ public:
 
   //! Resolves a parameter which can be enclosed in a type def., as
   //! TYPE(val). The parameter must then be read normally according
-  //! its type.  Parameter to be resolved is <nump> of record <num>
-  //! <mustbetyped> True  demands a typed parameter
+  //! its type. Parameter to be resolved is <nump> of record <num>
+  //! <mustbetyped> True demands a typed parameter
   //! <mustbetyped> False accepts a non-typed parameter as option
   //! mess and ach as usual
   //! <numr>,<numrp> are the resolved record and parameter numbers
-  //! = num,nump if no type,  else numrp=1
+  //! = num,nump if no type, else numrp=1
   //! <typ> returns the recorded type, or empty string
   //! Remark : a non-typed list is considered as "non-typed"
   Standard_EXPORT Standard_Boolean ReadTypedParam(const Standard_Integer   num,

@@ -24,18 +24,31 @@
 #include <AppDef_ParFunctionOfTheGradient.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
 
-#define MultiLine AppDef_MultiLine
-#define MultiLine_hxx <AppDef_MultiLine.hxx>
-#define ToolLine AppDef_MyLineTool
-#define ToolLine_hxx <AppDef_MyLineTool.hxx>
-#define AppParCurves_ParLeastSquare AppDef_ParLeastSquareOfTheGradient
-#define AppParCurves_ParLeastSquare_hxx <AppDef_ParLeastSquareOfTheGradient.hxx>
-#define AppParCurves_ResConstraint AppDef_ResConstraintOfTheGradient
-#define AppParCurves_ResConstraint_hxx <AppDef_ResConstraintOfTheGradient.hxx>
-#define AppParCurves_ParFunction AppDef_ParFunctionOfTheGradient
-#define AppParCurves_ParFunction_hxx <AppDef_ParFunctionOfTheGradient.hxx>
-#define AppParCurves_Gradient_BFGS AppDef_Gradient_BFGSOfTheGradient
-#define AppParCurves_Gradient_BFGS_hxx <AppDef_Gradient_BFGSOfTheGradient.hxx>
-#define AppParCurves_Gradient AppDef_TheGradient
-#define AppParCurves_Gradient_hxx <AppDef_TheGradient.hxx>
-#include <AppParCurves_Gradient_BFGS.gxx>
+AppDef_Gradient_BFGSOfTheGradient::AppDef_Gradient_BFGSOfTheGradient(
+  math_MultipleVarFunctionWithGradient& F,
+  const math_Vector&                    StartingPoint,
+  const Standard_Real                   Tolerance3d,
+  const Standard_Real                   Tolerance2d,
+  const Standard_Real                   Eps,
+  const Standard_Integer                NbIterations)
+    : math_BFGS(F.NbVariables(), Eps, NbIterations, Eps),
+      myTol3d(Tolerance3d),
+      myTol2d(Tolerance2d)
+{
+  Perform(F, StartingPoint);
+}
+
+Standard_Boolean AppDef_Gradient_BFGSOfTheGradient::IsSolutionReached(
+  math_MultipleVarFunctionWithGradient& F) const
+{
+  AppDef_ParFunctionOfTheGradient* F1 = (AppDef_ParFunctionOfTheGradient*)&F;
+  Standard_Boolean                 Result, Result2;
+
+  Result               = (2.0 * fabs(TheMinimum - PreviousMinimum)
+            <= 1.e-10 * (fabs(TheMinimum) + fabs(PreviousMinimum)) + 1.e-12);
+  Standard_Real MErr3d = F1->MaxError3d();
+  Standard_Real MErr2d = F1->MaxError2d();
+
+  Result2 = ((MErr3d <= myTol3d) && (MErr2d <= myTol2d));
+  return (Result || Result2);
+}

@@ -35,7 +35,7 @@ enum ChFi2d_ConstructionError
   ChFi2d_LastEdgeDegenerated,  //!< the last edge is degenerated
   ChFi2d_BothEdgesDegenerated, //!< the two edges are degenerated
   ChFi2d_NotAuthorized //!< One or the two edges connected to the vertex is a fillet or a chamfer;
-                       //!  One or the two edges connected to the vertex is not a line or a circle
+                       //!< One or the two edges connected to the vertex is not a line or a circle
 };
 
 #endif // _ChFi2d_ConstructionError_HeaderFile

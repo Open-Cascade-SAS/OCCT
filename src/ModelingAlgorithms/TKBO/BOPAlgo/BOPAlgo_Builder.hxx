@@ -42,16 +42,16 @@ class TopoDS_Shape;
 //! The class is a General Fuse algorithm - base algorithm for the
 //! algorithms in the Boolean Component. Its main purpose is to build
 //! the split parts of the argument shapes from which the result of
-//! the operations is combined.<br>
+//! the operations is combined.
 //! The result of the General Fuse algorithm itself is a compound
-//! containing all split parts of the arguments. <br>
+//! containing all split parts of the arguments.
 //!
 //! Additionally to the options of the base classes, the algorithm has
-//! the following options:<br>
+//! the following options:
 //! - *Safe processing mode* - allows to avoid modification of the input
-//!                            shapes during the operation (by default it is off);<br>
+//!                            shapes during the operation (by default it is off);
 //! - *Gluing options* - allows to speed up the calculation of the intersections
-//!                      on the special cases, in which some sub-shapes are coinciding.<br>
+//!                      on the special cases, in which some sub-shapes are coinciding.
 //! - *Disabling the check for inverted solids* - Disables/Enables the check of the input solids
 //!                          for inverted status (holes in the space). The default value is TRUE,
 //!                          i.e. the check is performed. Setting this flag to FALSE for inverted

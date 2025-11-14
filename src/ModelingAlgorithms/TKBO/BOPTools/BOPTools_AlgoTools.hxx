@@ -273,7 +273,7 @@ public: //! @name Face classification relatively solid
     const Handle(IntTools_Context)&            theContext);
 
 public: //! @name PCurve construction
-  //! Makes 2d curve of the edge <theE> on the faces <theF1> and <theF2>.<br>
+  //! Makes 2d curve of the edge <theE> on the faces <theF1> and <theF2>.
   //! <theContext> - storage for caching the geometrical tools
   Standard_EXPORT static void MakePCurve(
     const TopoDS_Edge&              theE,

@@ -18,10 +18,39 @@
 
 #include <Standard_Type.hxx>
 
-#define Handle_TheKey Handle(IGESGraph_HArray1OfTextDisplayTemplate)
-#define TheKey IGESGraph_HArray1OfTextDisplayTemplate
-#define TheKey_hxx <IGESGraph_HArray1OfTextDisplayTemplate.hxx>
-#define Interface_JaggedArray IGESDefs_HArray1OfHArray1OfTextDisplayTemplate
-#define Interface_JaggedArray_hxx <IGESDefs_HArray1OfHArray1OfTextDisplayTemplate.hxx>
-#define Handle_Interface_JaggedArray Handle(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate)
-#include <Interface_JaggedArray.gxx>
+IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(
+  const Standard_Integer low,
+  const Standard_Integer up)
+    : thelist(low, up)
+{
+  Handle(Standard_Transient) nulo;
+  thelist.Init(nulo);
+}
+
+Standard_Integer IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Lower() const
+{
+  return thelist.Lower();
+}
+
+Standard_Integer IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Upper() const
+{
+  return thelist.Upper();
+}
+
+Standard_Integer IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Length() const
+{
+  return thelist.Length();
+}
+
+void IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::SetValue(
+  const Standard_Integer                                num,
+  const Handle(IGESGraph_HArray1OfTextDisplayTemplate)& val)
+{
+  thelist.SetValue(num, val);
+}
+
+Handle(IGESGraph_HArray1OfTextDisplayTemplate) IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::
+  Value(const Standard_Integer num) const
+{
+  return Handle(IGESGraph_HArray1OfTextDisplayTemplate)::DownCast(thelist.Value(num));
+}

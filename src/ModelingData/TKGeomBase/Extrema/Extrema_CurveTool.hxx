@@ -50,14 +50,14 @@ public:
 
   static GeomAbs_Shape Continuity(const Adaptor3d_Curve& C);
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   static Standard_Integer NbIntervals(Adaptor3d_Curve& C, const GeomAbs_Shape S);
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   static void Intervals(Adaptor3d_Curve& C, TColStd_Array1OfReal& T, const GeomAbs_Shape S);
 

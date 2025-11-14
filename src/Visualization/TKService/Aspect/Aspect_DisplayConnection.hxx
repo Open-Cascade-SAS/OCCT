@@ -41,9 +41,12 @@ public:
 
   //! Constructor. Creates connection with display specified in theDisplayName.
   //! Display name should be in format "hostname:number" or "hostname:number.screen_number", where:
-  //! hostname      - Specifies the name of the host machine on which the display is physically
-  //! attached. number        - Specifies the number of the display server on that host machine.
-  //! screen_number - Specifies the screen to be used on that server. Optional variable.
+  //! hostname
+  //!   - Specifies the name of the host machine on which the display is physically attached.
+  //! number
+  //!   - Specifies the number of the display server on that host machine.
+  //! screen_number
+  //!   - Specifies the screen to be used on that server. Optional variable.
   Standard_EXPORT Aspect_DisplayConnection(const TCollection_AsciiString& theDisplayName);
 
   //! Constructor wrapping existing Display instance.

@@ -25,7 +25,7 @@
 #include <Standard_Integer.hxx>
 class gp_Pnt2d;
 
-//! Describes an intersection  point between  polygons  and
+//! Describes an intersection point between polygons and
 //! polyedra.
 class Intf_SectionPoint
 {
@@ -35,7 +35,7 @@ public:
   //! Returns the location of the SectionPoint.
   Standard_EXPORT const gp_Pnt& Pnt() const;
 
-  //! Returns the cumulated  Parameter of the SectionPoint on the
+  //! Returns the cumulated Parameter of the SectionPoint on the
   //! first element.
   Standard_Real ParamOnFirst() const;
 
@@ -46,7 +46,7 @@ public:
   //! Returns the type of the section point on the first element.
   Intf_PIType TypeOnFirst() const;
 
-  //! Returns  the  type  of the  section  point  on  the  second
+  //! Returns the type of the section point on the second
   //! element.
   Intf_PIType TypeOnSecond() const;
 
@@ -70,25 +70,25 @@ public:
                                   Standard_Integer& Addr,
                                   Standard_Real&    Param) const;
 
-  //! Gives the incidence at  this  section point. The  incidence
-  //! between the two triangles is given by the cosine.  The best
-  //! incidence is 0. (PI/2).  The worst is 1. (null angle).
+  //! Gives the incidence at this section point. The incidence
+  //! between the two triangles is given by the cosine. The best
+  //! incidence is 0. (PI/2). The worst is 1. (null angle).
   Standard_EXPORT Standard_Real Incidence() const;
 
-  //! Returns True if the two SectionPoint have the  same logical
+  //! Returns True if the two SectionPoint have the same logical
   //! information.
   Standard_Boolean IsEqual(const Intf_SectionPoint& Other) const;
 
   Standard_Boolean operator==(const Intf_SectionPoint& Other) const { return IsEqual(Other); }
 
-  //! Returns True if the two SectionPoints are  on the  same edge
+  //! Returns True if the two SectionPoints are on the same edge
   //! of the first or the second element.
   Standard_EXPORT Standard_Boolean IsOnSameEdge(const Intf_SectionPoint& Other) const;
 
   Standard_EXPORT Intf_SectionPoint();
 
-  //! Builds  a  SectionPoint    with the  respective  dimensions
-  //! (vertex edge or face)  of the concerned arguments and their
+  //! Builds a SectionPoint with the respective dimensions
+  //! (vertex edge or face) of the concerned arguments and their
   //! addresses in the Topological structure.
   Standard_EXPORT Intf_SectionPoint(const gp_Pnt&          Where,
                                     const Intf_PIType      DimeO,
@@ -101,8 +101,8 @@ public:
                                     const Standard_Real    ParamT,
                                     const Standard_Real    Incid);
 
-  //! Builds  a  SectionPoint 2d   with the respective dimensions
-  //! (vertex or  edge)  of  the concerned arguments   and  their
+  //! Builds a SectionPoint 2d with the respective dimensions
+  //! (vertex or edge) of the concerned arguments and their
   //! addresses in the Topological structure.
   Standard_EXPORT Intf_SectionPoint(const gp_Pnt2d&        Where,
                                     const Intf_PIType      DimeO,

@@ -718,7 +718,7 @@ public: //! @name Selection management
   //! transformation being applied:
   //! @code
   //!   const Handle(StdSelect_BRepOwner) aBRepOwner = Handle(StdSelect_BRepOwner)::DownCast
-  //!   (SelectedOwner()); TopoDS_Shape aSelShape     = aBRepOwner->Shape(); TopoDS_Shape
+  //!   (SelectedOwner()); TopoDS_Shape aSelShape    = aBRepOwner->Shape(); TopoDS_Shape
   //!   aLocatedShape = aSelShape.Located (aBRepOwner->Location() * aSelShape.Location());
   //! @endcode
   //! @sa SelectedOwner(), HasSelectedShape().

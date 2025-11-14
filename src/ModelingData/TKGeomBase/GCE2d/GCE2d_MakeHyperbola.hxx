@@ -31,7 +31,7 @@ class gp_Pnt2d;
 
 //! This class implements the following algorithms used to
 //! create Hyperbola from Geom2d.
-//! * Create an Hyperbola from two apex  and the center.
+//! * Create an Hyperbola from two apex and the center.
 //! Defines the main branch of an hyperbola.
 //! The parameterization range is ]-infinite,+infinite[
 //! It is possible to get the other branch and the two conjugate
@@ -60,7 +60,7 @@ class GCE2d_MakeHyperbola : public GCE2d_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates  an Hyperbola from a non persistent one from package gp
+  //! Creates an Hyperbola from a non persistent one from package gp
   Standard_EXPORT GCE2d_MakeHyperbola(const gp_Hypr2d& H);
 
   //! MajorAxis is the "XAxis" of the hyperbola.

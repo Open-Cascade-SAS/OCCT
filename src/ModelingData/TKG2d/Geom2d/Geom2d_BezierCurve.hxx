@@ -101,7 +101,7 @@ public:
   //! CurvePoles and the set of weights PoleWeights.
   //! If all the weights are identical the curve is considered
   //! as non rational. Raises ConstructionError if the number
-  //! of poles is greater than  MaxDegree + 1 or lower than 2
+  //! of poles is greater than MaxDegree + 1 or lower than 2
   //! or CurvePoles and CurveWeights have not the same length
   //! or one weight value is lower or equal to Resolution from
   //! package gp.

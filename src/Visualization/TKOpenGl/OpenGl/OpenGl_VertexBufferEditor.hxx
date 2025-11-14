@@ -23,7 +23,7 @@
 //! Auxiliary class to iteratively modify data of existing VBO.
 //! It provides iteration interface with delayed CPU->GPU memory transfer to avoid slow per-element
 //! data transfer. User should explicitly call Flush() method to ensure that all data is transferred
-//! to VBO. Temporary buffer on CPU side can be initialized with lesser capacity than  VBO to allow
+//! to VBO. Temporary buffer on CPU side can be initialized with lesser capacity than VBO to allow
 //! re-usage of shared buffer with fixed size between VBOs.
 //!
 //! You should use NCollection_Vec2/NCollection_Vec3/NCollection_Vec4 with appropriate length

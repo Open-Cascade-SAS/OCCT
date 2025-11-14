@@ -56,15 +56,15 @@ public:
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&   Curve,
                                const Handle(Adaptor3d_Surface)& Surface);
 
-  //! Compute the Intersection  between the curve  and
-  //! the surface. The   Curve is already  sampled and
+  //! Compute the Intersection between the curve and
+  //! the surface. The Curve is already sampled and
   //! its polygon : <Polygon> is given.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&            Curve,
                                const IntCurveSurface_ThePolygonOfHInter& Polygon,
                                const Handle(Adaptor3d_Surface)&          Surface);
 
-  //! Compute the Intersection  between the curve  and
-  //! the surface. The   Curve is already  sampled and
+  //! Compute the Intersection between the curve and
+  //! the surface. The Curve is already sampled and
   //! its polygon : <Polygon> is given. The Surface is
   //! also sampled and <Polyhedron> is given.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&               Curve,
@@ -72,8 +72,8 @@ public:
                                const Handle(Adaptor3d_Surface)&             Surface,
                                const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron);
 
-  //! Compute the Intersection  between the curve  and
-  //! the surface. The   Curve is already  sampled and
+  //! Compute the Intersection between the curve and
+  //! the surface. The Curve is already sampled and
   //! its polygon : <Polygon> is given. The Surface is
   //! also sampled and <Polyhedron> is given.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&               Curve,
@@ -82,8 +82,8 @@ public:
                                const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron,
                                Bnd_BoundSortBox&                            BndBSB);
 
-  //! Compute the Intersection  between the curve  and
-  //! the surface. The Surface is already  sampled and
+  //! Compute the Intersection between the curve and
+  //! the surface. The Surface is already sampled and
   //! its polyhedron : <Polyhedron> is given.
   Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&               Curve,
                                const Handle(Adaptor3d_Surface)&             Surface,

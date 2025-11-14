@@ -196,7 +196,7 @@ public:
   //! Returns true if this bounding box is open in the Zmin direction.
   Standard_Boolean IsOpenZmin() const { return (Flags & ZminMask) != 0; }
 
-  //! Returns true if this bounding box is open in the Zmax  direction.
+  //! Returns true if this bounding box is open in the Zmax direction.
   Standard_Boolean IsOpenZmax() const { return (Flags & ZmaxMask) != 0; }
 
   //! Returns true if this bounding box is infinite in all 6 directions (WholeSpace flag).

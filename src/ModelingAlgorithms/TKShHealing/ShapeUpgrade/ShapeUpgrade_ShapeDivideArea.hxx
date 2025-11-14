@@ -24,7 +24,7 @@
 class TopoDS_Shape;
 class ShapeUpgrade_FaceDivide;
 
-//! Divides faces from sprcified shape  by max area criterium.
+//! Divides faces from specified shape by max area criterium.
 class ShapeUpgrade_ShapeDivideArea : public ShapeUpgrade_ShapeDivide
 {
 public:

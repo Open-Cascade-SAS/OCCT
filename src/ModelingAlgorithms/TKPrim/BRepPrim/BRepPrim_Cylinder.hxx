@@ -53,9 +53,9 @@ public:
   //! infinite Cylinder at Axes on Z negative
   Standard_EXPORT BRepPrim_Cylinder(const gp_Ax2& Axes, const Standard_Real Radius);
 
-  //! create a Cylinder  at origin on Z  axis, of
+  //! create a Cylinder at origin on Z axis, of
   //! height H and radius R
-  //! Error  : Radius  < Resolution
+  //! Error : Radius < Resolution
   //! H < Resolution
   //! H negative
   Standard_EXPORT BRepPrim_Cylinder(const Standard_Real R, const Standard_Real H);
@@ -65,7 +65,7 @@ public:
                                     const Standard_Real R,
                                     const Standard_Real H);
 
-  //! The surface normal should be directed  towards the
+  //! The surface normal should be directed towards the
   //! outside.
   Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const Standard_OVERRIDE;
 

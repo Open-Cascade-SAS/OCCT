@@ -125,7 +125,7 @@ public:
   //! second and the third axis of symmetry are undefined.
   Standard_EXPORT const gp_Vec& ThirdAxisOfInertia() const;
 
-  //! Returns the principal radii of gyration  Rxx, Ryy
+  //! Returns the principal radii of gyration Rxx, Ryy
   //! and Rzz are the radii of gyration of the current
   //! system about its three principal axes of inertia.
   //! Note that:

@@ -29,7 +29,7 @@
 class Law_Composite;
 DEFINE_STANDARD_HANDLE(Law_Composite, Law_Function)
 
-//! Loi  composite constituee  d une liste  de lois de
+//! Loi composite constituee d une liste de lois de
 //! ranges consecutifs.
 //! Cette implementation un peu lourde permet de reunir
 //! en une seule loi des portions de loi construites de
@@ -52,11 +52,11 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals of continuity <S>.
+  //! Stores in <T> the parameters bounding the intervals of continuity <S>.
   //! The array must provide enough room to accommodate for the parameters,
   //! i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
@@ -77,8 +77,8 @@ public:
                           Standard_Real&      D,
                           Standard_Real&      D2) Standard_OVERRIDE;
 
-  //! Returns a  law equivalent of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a law equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! It is usfule to determines the derivatives
   //! in these values <First> and <Last> if
@@ -90,7 +90,7 @@ public:
   //! Returns the parametric bounds of the function.
   Standard_EXPORT void Bounds(Standard_Real& PFirst, Standard_Real& PLast) Standard_OVERRIDE;
 
-  //! Returns the elementary  function of the composite used
+  //! Returns the elementary function of the composite used
   //! to compute at parameter W.
   Standard_EXPORT Handle(Law_Function)& ChangeElementaryLaw(const Standard_Real W);
 

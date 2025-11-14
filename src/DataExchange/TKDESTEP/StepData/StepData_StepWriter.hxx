@@ -135,7 +135,7 @@ public:
   //! sets a begin of Scope (ends this line)
   Standard_EXPORT void SendScope();
 
-  //! sets an end of Scope  (on a separate line)
+  //! sets an end of Scope (on a separate line)
   Standard_EXPORT void SendEndscope();
 
   //! sets a comment mark : if mode is True, begins Comment zone,

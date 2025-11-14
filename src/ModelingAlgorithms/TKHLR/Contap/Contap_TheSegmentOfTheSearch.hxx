@@ -67,24 +67,48 @@ private:
   Contap_ThePathPointOfTheSearch thelp;
 };
 
-#define TheVertex Handle(Adaptor3d_HVertex)
-#define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_Curve2d)
-#define TheArc_hxx <Adaptor2d_Curve2d.hxx>
-#define ThePathPoint Contap_ThePathPointOfTheSearch
-#define ThePathPoint_hxx <Contap_ThePathPointOfTheSearch.hxx>
-#define IntStart_Segment Contap_TheSegmentOfTheSearch
-#define IntStart_Segment_hxx <Contap_TheSegmentOfTheSearch.hxx>
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <IntStart_Segment.lxx>
+inline void Contap_TheSegmentOfTheSearch::SetValue(const Handle(Adaptor2d_Curve2d)& A)
+{
+  hasfp = Standard_False;
+  haslp = Standard_False;
+  arc   = A;
+}
 
-#undef TheVertex
-#undef TheVertex_hxx
-#undef TheArc
-#undef TheArc_hxx
-#undef ThePathPoint
-#undef ThePathPoint_hxx
-#undef IntStart_Segment
-#undef IntStart_Segment_hxx
+inline const Handle(Adaptor2d_Curve2d)& Contap_TheSegmentOfTheSearch::Curve() const
+{
+  return arc;
+}
+
+inline Standard_Boolean Contap_TheSegmentOfTheSearch::HasFirstPoint() const
+{
+  return hasfp;
+}
+
+inline const Contap_ThePathPointOfTheSearch& Contap_TheSegmentOfTheSearch::FirstPoint() const
+{
+  if (!hasfp)
+  {
+    throw Standard_DomainError();
+  }
+  return thefp;
+}
+
+inline Standard_Boolean Contap_TheSegmentOfTheSearch::HasLastPoint() const
+{
+  return haslp;
+}
+
+inline const Contap_ThePathPointOfTheSearch& Contap_TheSegmentOfTheSearch::LastPoint() const
+{
+  if (!haslp)
+  {
+    throw Standard_DomainError();
+  }
+  return thelp;
+}
 
 #endif // _Contap_TheSegmentOfTheSearch_HeaderFile

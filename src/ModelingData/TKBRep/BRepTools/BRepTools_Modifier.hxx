@@ -49,7 +49,7 @@ public:
   //! Creates a modifier on the shape <S>.
   Standard_EXPORT BRepTools_Modifier(const TopoDS_Shape& S);
 
-  //! Creates a modifier on  the shape <S>, and performs
+  //! Creates a modifier on the shape <S>, and performs
   //! the modifications described by <M>.
   Standard_EXPORT BRepTools_Modifier(const TopoDS_Shape&                   S,
                                      const Handle(BRepTools_Modification)& M);

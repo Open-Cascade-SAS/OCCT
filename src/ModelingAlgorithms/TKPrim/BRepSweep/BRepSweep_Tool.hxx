@@ -26,15 +26,15 @@
 #include <TopAbs_Orientation.hxx>
 class TopoDS_Shape;
 
-//! Provides  the  indexation and type  analysis  services
+//! Provides the indexation and type analysis services
 //! required by the TopoDS generating Shape of BRepSweep.
 class BRepSweep_Tool
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Initialize the tool  with <aShape>.  The IndexTool
-  //! must prepare an indexation for  all  the subshapes
+  //! Initialize the tool with <aShape>. The IndexTool
+  //! must prepare an indexation for all the subshapes
   //! of this shape.
   Standard_EXPORT BRepSweep_Tool(const TopoDS_Shape& aShape);
 

@@ -25,8 +25,8 @@
 #include <TopAbs_Orientation.hxx>
 class gp_Dir;
 
-//! TheEdgeFaceTransition is an algorithm to   compute
-//! the  cumulated  transition for interferences on an
+//! TheEdgeFaceTransition is an algorithm to compute
+//! the cumulated transition for interferences on an
 //! edge.
 class TopCnx_EdgeFaceTransition
 {
@@ -36,17 +36,17 @@ public:
   //! Creates an empty algorithm.
   Standard_EXPORT TopCnx_EdgeFaceTransition();
 
-  //! Initialize  the     algorithm    with the    local
+  //! Initialize the algorithm with the local
   //! description of the edge.
   Standard_EXPORT void Reset(const gp_Dir& Tgt, const gp_Dir& Norm, const Standard_Real Curv);
 
   //! Initialize the algorithm with a linear Edge.
   Standard_EXPORT void Reset(const gp_Dir& Tgt);
 
-  //! Add a curve  element to the  boundary.  Or  is the
-  //! orientation of   the interference on  the boundary
-  //! curve. Tr is  the transition  of the interference.
-  //! BTr     is   the    boundary  transition    of the
+  //! Add a curve element to the boundary. Or is the
+  //! orientation of the interference on the boundary
+  //! curve. Tr is the transition of the interference.
+  //! BTr is the boundary transition of the
   //! interference.
   Standard_EXPORT void AddInterference(const Standard_Real      Tole,
                                        const gp_Dir&            Tang,

@@ -84,13 +84,13 @@ public:
   Standard_EXPORT Standard_Boolean IsExtendAtEnd() const Standard_OVERRIDE;
 
   //! Changes the direction of parametrization of <me>.
-  //! The orientation  of the curve is modified. If the curve
+  //! The orientation of the curve is modified. If the curve
   //! is bounded the StartPoint of the initial curve becomes the
-  //! EndPoint of the reversed curve  and the EndPoint of the initial
+  //! EndPoint of the reversed curve and the EndPoint of the initial
   //! curve becomes the StartPoint of the reversed curve.
   Standard_EXPORT void Reverse() Standard_OVERRIDE;
 
-  //! Returns the  parameter on the  reversed  curve for
+  //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
   Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
@@ -114,16 +114,16 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! If necessary,  breaks the  curve in  intervals  of
-  //! continuity  <C1>.    And  returns   the number   of
+  //! If necessary, breaks the curve in intervals of
+  //! continuity <C1>. And returns the number of
   //! intervals.
   Standard_EXPORT Standard_Integer NbIntervals() const Standard_OVERRIDE;
 
-  //! Returns  the  first  parameter    of  the  current
+  //! Returns the first parameter of the current
   //! interval.
   Standard_EXPORT Standard_Real IntervalFirst(const Standard_Integer Index) const Standard_OVERRIDE;
 
-  //! Returns  the  last  parameter    of  the  current
+  //! Returns the last parameter of the current
   //! interval.
   Standard_EXPORT Standard_Real IntervalLast(const Standard_Integer Index) const Standard_OVERRIDE;
 
@@ -133,7 +133,7 @@ public:
 
   Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
 
-  //! Returns   the   distance   between  the  point  of
+  //! Returns the distance between the point of
   //! parameter U on <me> and my point or my curve.
   Standard_EXPORT Standard_Real Distance(const Standard_Real U) const;
 

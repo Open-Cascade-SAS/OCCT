@@ -101,14 +101,14 @@ public:
   //! Define the approximation algorithm
   Standard_EXPORT void SetSmoothing(const Standard_Boolean UseSmoothing);
 
-  //! Define the type of parametrization   used in the approximation
+  //! Define the type of parametrization used in the approximation
   Standard_EXPORT void SetParType(const Approx_ParametrizationType ParType);
 
   //! Define the Continuity used in the approximation
   Standard_EXPORT void SetContinuity(const GeomAbs_Shape C);
 
-  //! define the Weights  associed to the criterium used in
-  //! the  optimization.
+  //! define the Weights associed to the criterium used in
+  //! the optimization.
   //!
   //! if Wi <= 0
   Standard_EXPORT void SetCriteriumWeight(const Standard_Real W1,
@@ -130,8 +130,8 @@ public:
   //! Define the approximation algorithm
   Standard_EXPORT Standard_Boolean UseSmoothing() const;
 
-  //! returns the Weights associed  to the criterium used in
-  //! the  optimization.
+  //! returns the Weights associed to the criterium used in
+  //! the optimization.
   Standard_EXPORT void CriteriumWeight(Standard_Real& W1,
                                        Standard_Real& W2,
                                        Standard_Real& W3) const;

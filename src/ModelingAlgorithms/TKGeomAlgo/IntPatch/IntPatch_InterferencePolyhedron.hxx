@@ -26,9 +26,9 @@
 class IntPatch_Polyhedron;
 class Intf_TangentZone;
 
-//! Computes the  interference between two polyhedra or the
+//! Computes the interference between two polyhedra or the
 //! self interference of a polyhedron. Points of intersection,
-//! polylines  of intersection and zones of tangence.
+//! polylines of intersection and zones of tangence.
 class IntPatch_InterferencePolyhedron : public Intf_Interference
 {
 public:
@@ -37,12 +37,12 @@ public:
   //! Constructs an empty interference of Polyhedron.
   Standard_EXPORT IntPatch_InterferencePolyhedron();
 
-  //! Constructs  and computes  an  interference between  the two
+  //! Constructs and computes an interference between the two
   //! Polyhedra.
   Standard_EXPORT IntPatch_InterferencePolyhedron(const IntPatch_Polyhedron& Obje1,
                                                   const IntPatch_Polyhedron& Obje2);
 
-  //! Constructs  and  computes   the self   interference  of   a
+  //! Constructs and computes the self interference of a
   //! Polyhedron.
   Standard_EXPORT IntPatch_InterferencePolyhedron(const IntPatch_Polyhedron& Obje);
 
@@ -62,14 +62,14 @@ private:
   Standard_EXPORT void Interference(const IntPatch_Polyhedron& Obje1,
                                     const IntPatch_Polyhedron& Obje2);
 
-  //! Computes  the intersection between    the  facet <Tri1>  of
+  //! Computes the intersection between the facet <Tri1> of
   //! <FirstPol> and the facet <Tri2> of <SecondPol>.
   Standard_EXPORT void Intersect(const Standard_Integer     TriF,
                                  const IntPatch_Polyhedron& Obje1,
                                  const Standard_Integer     TriS,
                                  const IntPatch_Polyhedron& Obje2);
 
-  //! Computes the  zone of tangence between the  facet <Tri1> of
+  //! Computes the zone of tangence between the facet <Tri1> of
   //! <FirstPol> and the facet <Tri2> of <SecondPol>.
   Standard_EXPORT Standard_Boolean TangentZoneValue(Intf_TangentZone&          TheTZ,
                                                     const IntPatch_Polyhedron& Obje1,

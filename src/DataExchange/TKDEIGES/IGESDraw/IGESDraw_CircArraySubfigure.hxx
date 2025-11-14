@@ -88,8 +88,8 @@ public:
   //! returns True if (ListCount = 0) all elements are to be displayed
   Standard_EXPORT Standard_Boolean DisplayFlag() const;
 
-  //! returns 0 if half or fewer of the elements of  the array are defined
-  //! 1 if half or more of the elements are defined
+  //! returns 0 if half or fewer of the elements of the array are defined
+  //! returns 1 if half or more of the elements are defined
   Standard_EXPORT Standard_Boolean DoDontFlag() const;
 
   //! returns whether Index is to be processed (DO)

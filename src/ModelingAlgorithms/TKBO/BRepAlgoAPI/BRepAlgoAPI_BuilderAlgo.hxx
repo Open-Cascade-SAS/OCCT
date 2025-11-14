@@ -28,10 +28,10 @@
 #include <Standard_Real.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-//! The class contains API level of the General Fuse algorithm.<br>
+//! The class contains API level of the General Fuse algorithm.
 //!
 //! Additionally to the options defined in the base class, the algorithm has
-//! the following options:<br>
+//! the following options:
 //! - *Safe processing mode* - allows to avoid modification of the input
 //!                            shapes during the operation (by default it is off);
 //! - *Gluing options* - allows to speed up the calculation of the intersections
@@ -43,12 +43,12 @@
 //! - *Disabling history collection* - allows disabling the collection of the history
 //!                                    of shapes modifications during the operation.
 //!
-//! It returns the following Error statuses:<br>
-//! - 0 - in case of success;<br>
+//! It returns the following Error statuses:
+//! - 0 - in case of success;
 //! - *BOPAlgo_AlertTooFewArguments* - in case there are no enough arguments to perform the
-//! operation;<br>
-//! - *BOPAlgo_AlertIntersectionFailed* - in case the intersection of the arguments has failed;<br>
-//! - *BOPAlgo_AlertBuilderFailed* - in case building of the result shape has failed.<br>
+//! operation;
+//! - *BOPAlgo_AlertIntersectionFailed* - in case the intersection of the arguments has failed;
+//! - *BOPAlgo_AlertBuilderFailed* - in case building of the result shape has failed.
 //!
 //! Warnings statuses from underlying DS Filler and Builder algorithms
 //! are collected in the report.

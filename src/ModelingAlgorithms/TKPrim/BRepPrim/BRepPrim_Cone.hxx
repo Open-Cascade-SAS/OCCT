@@ -57,12 +57,12 @@ public:
   //! infinite cone with Axes
   Standard_EXPORT BRepPrim_Cone(const Standard_Real Angle, const gp_Ax2& Axes);
 
-  //! create a  Cone at origin  on Z axis, of height  H,
-  //! radius R1 at Z = 0, R2 at  Z = H, X is  the origin
-  //! of angles.  If R1 or  R2 is 0   there is  an apex.
+  //! create a Cone at origin on Z axis, of height H,
+  //! radius R1 at Z = 0, R2 at Z = H, X is the origin
+  //! of angles. If R1 or R2 is 0 there is an apex.
   //! Otherwise, it is a truncated cone.
   //!
-  //! Error  : R1 and R2  < Resolution
+  //! Error  : R1 and R2 < Resolution
   //! R1 or R2 negative
   //! Abs(R1-R2) < Resolution
   //! H < Resolution
@@ -83,7 +83,7 @@ public:
                                 const Standard_Real R2,
                                 const Standard_Real H);
 
-  //! The surface normal should be directed  towards the
+  //! The surface normal should be directed towards the
   //! outside.
   Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const Standard_OVERRIDE;
 

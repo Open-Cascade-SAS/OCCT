@@ -31,7 +31,7 @@
 class FEmTool_ProfileMatrix;
 DEFINE_STANDARD_HANDLE(FEmTool_ProfileMatrix, FEmTool_SparseMatrix)
 
-//! Symmetric Sparse ProfileMatrix useful  for 1D Finite
+//! Symmetric Sparse ProfileMatrix useful for 1D Finite
 //! Element methods
 class FEmTool_ProfileMatrix : public FEmTool_SparseMatrix
 {
@@ -53,7 +53,7 @@ public:
   //! Make Preparation to iterative solve
   Standard_EXPORT Standard_Boolean Prepare() Standard_OVERRIDE;
 
-  //! Iterative solve  of AX = B
+  //! Iterative solve of AX = B
   Standard_EXPORT void Solve(const math_Vector&     B,
                              const math_Vector&     Init,
                              math_Vector&           X,

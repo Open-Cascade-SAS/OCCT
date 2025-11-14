@@ -72,20 +72,90 @@ private:
   TopAbs_Orientation   myBTransition;
 };
 
-#define TheSubShape HLRAlgo_Intersection
-#define TheSubShape_hxx <HLRAlgo_Intersection.hxx>
-#define TheShape HLRAlgo_Coincidence
-#define TheShape_hxx <HLRAlgo_Coincidence.hxx>
-#define TopBas_Interference HLRAlgo_Interference
-#define TopBas_Interference_hxx <HLRAlgo_Interference.hxx>
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <TopBas_Interference.lxx>
+inline void HLRAlgo_Interference::Intersection(const HLRAlgo_Intersection& I)
+{
+  myIntersection = I;
+}
 
-#undef TheSubShape
-#undef TheSubShape_hxx
-#undef TheShape
-#undef TheShape_hxx
-#undef TopBas_Interference
-#undef TopBas_Interference_hxx
+//=================================================================================================
+
+inline void HLRAlgo_Interference::Boundary(const HLRAlgo_Coincidence& B)
+{
+  myBoundary = B;
+}
+
+//=================================================================================================
+
+inline void HLRAlgo_Interference::Orientation(const TopAbs_Orientation Or)
+{
+  myOrientation = Or;
+}
+
+//=================================================================================================
+
+inline void HLRAlgo_Interference::Transition(const TopAbs_Orientation Or)
+{
+  myTransition = Or;
+}
+
+//=================================================================================================
+
+inline void HLRAlgo_Interference::BoundaryTransition(const TopAbs_Orientation Or)
+{
+  myBTransition = Or;
+}
+
+//=================================================================================================
+
+inline const HLRAlgo_Intersection& HLRAlgo_Interference::Intersection() const
+{
+  return myIntersection;
+}
+
+//=================================================================================================
+
+inline HLRAlgo_Intersection& HLRAlgo_Interference::ChangeIntersection()
+{
+  return myIntersection;
+}
+
+//=================================================================================================
+
+inline const HLRAlgo_Coincidence& HLRAlgo_Interference::Boundary() const
+{
+  return myBoundary;
+}
+
+//=================================================================================================
+
+inline HLRAlgo_Coincidence& HLRAlgo_Interference::ChangeBoundary()
+{
+  return myBoundary;
+}
+
+//=================================================================================================
+
+inline TopAbs_Orientation HLRAlgo_Interference::Orientation() const
+{
+  return myOrientation;
+}
+
+//=================================================================================================
+
+inline TopAbs_Orientation HLRAlgo_Interference::Transition() const
+{
+  return myTransition;
+}
+
+//=================================================================================================
+
+inline TopAbs_Orientation HLRAlgo_Interference::BoundaryTransition() const
+{
+  return myBTransition;
+}
 
 #endif // _HLRAlgo_Interference_HeaderFile

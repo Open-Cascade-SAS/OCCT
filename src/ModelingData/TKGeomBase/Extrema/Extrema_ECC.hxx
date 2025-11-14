@@ -37,7 +37,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Calculates all the distances as above
-  //! between Uinf and Usup for C1 and  between Vinf and Vsup
+  //! between Uinf and Usup for C1 and between Vinf and Vsup
   //! for C2.
   Standard_EXPORT Extrema_ECC();
 
@@ -48,7 +48,7 @@ public:
   Standard_EXPORT Extrema_ECC(const Adaptor3d_Curve& C1, const Adaptor3d_Curve& C2);
 
   //! Calculates all the distances as above
-  //! between Uinf and Usup for C1 and  between Vinf and Vsup
+  //! between Uinf and Usup for C1 and between Vinf and Vsup
   //! for C2.
   Standard_EXPORT Extrema_ECC(const Adaptor3d_Curve& C1,
                               const Adaptor3d_Curve& C2,

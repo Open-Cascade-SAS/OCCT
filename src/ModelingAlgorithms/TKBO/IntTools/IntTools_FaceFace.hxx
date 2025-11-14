@@ -95,7 +95,7 @@ protected:
                                  const Standard_Real                theToler);
 
   //! Computes the valid tolerance for the intersection curves
-  //! as a maximal deviation between 3D curve and 2D curves on faces.<br>
+  //! as a maximal deviation between 3D curve and 2D curves on faces.
   //! If there are no 2D curves the maximal deviation between 3D curves
   //! and surfaces is computed.
   Standard_EXPORT void ComputeTolReached3d(const Standard_Boolean theToRunParallel);

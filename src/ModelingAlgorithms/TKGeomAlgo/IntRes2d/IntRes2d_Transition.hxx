@@ -26,13 +26,13 @@
 #include <IntRes2d_TypeTrans.hxx>
 #include <IntRes2d_Situation.hxx>
 
-//! Definition of    the  type  of   transition    near an
-//! intersection point between  two curves. The transition
+//! Definition of the type of transition near an
+//! intersection point between two curves. The transition
 //! is either a "true transition", which means that one of
-//! the curves goes inside or outside  the area defined by
-//! the other curve  near  the intersection, or  a  "touch
-//! transition" which means that the  first curve does not
-//! cross  the  other one,  or an  "undecided" transition,
+//! the curves goes inside or outside the area defined by
+//! the other curve near the intersection, or a "touch
+//! transition" which means that the first curve does not
+//! cross the other one, or an "undecided" transition,
 //! which means that the curves are superposed.
 class IntRes2d_Transition
 {
@@ -73,8 +73,8 @@ public:
   //! Sets the value of the position.
   void SetPosition(const IntRes2d_Position Pos);
 
-  //! Indicates if the  intersection is at the beginning
-  //! (IntRes2d_Head),  at the end (IntRes2d_End), or in
+  //! Indicates if the intersection is at the beginning
+  //! (IntRes2d_Head), at the end (IntRes2d_End), or in
   //! the middle (IntRes2d_Middle) of the curve.
   IntRes2d_Position PositionOnCurve() const;
 
@@ -100,11 +100,11 @@ public:
   //! exception DomainError is raised.
   IntRes2d_Situation Situation() const;
 
-  //! returns a  significant value   if   TransitionType
-  //! returns TOUCH. In this  case, the function returns
-  //! true   when  the  2   curves   locally define  two
-  //! different  parts of the  space.  If TransitionType
-  //! returns  IN or   OUT or UNDECIDED,  the  exception
+  //! returns a significant value if TransitionType
+  //! returns TOUCH. In this case, the function returns
+  //! true when the 2 curves locally define two
+  //! different parts of the space. If TransitionType
+  //! returns IN or OUT or UNDECIDED, the exception
   //! DomainError is raised.
   Standard_Boolean IsOpposite() const;
 

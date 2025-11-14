@@ -22,7 +22,7 @@
 
 #include <Precision.hxx>
 #include <Bnd_Box2d.hxx>
-#include <Bnd_B2d.hxx>
+#include <Bnd_B2.hxx>
 
 #include <BRepMesh_SelectorOfDataStructureOfDelaun.hxx>
 

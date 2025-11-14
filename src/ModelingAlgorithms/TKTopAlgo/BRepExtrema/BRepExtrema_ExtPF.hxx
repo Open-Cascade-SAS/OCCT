@@ -31,7 +31,7 @@ public:
 
   BRepExtrema_ExtPF() {}
 
-  //! It calculates all the distances. <br>
+  //! It calculates all the distances.
   Standard_EXPORT BRepExtrema_ExtPF(const TopoDS_Vertex&  TheVertex,
                                     const TopoDS_Face&    TheFace,
                                     const Extrema_ExtFlag TheFlag = Extrema_ExtFlag_MINMAX,
@@ -41,26 +41,26 @@ public:
                                   const Extrema_ExtFlag TheFlag = Extrema_ExtFlag_MINMAX,
                                   const Extrema_ExtAlgo TheAlgo = Extrema_ExtAlgo_Grad);
 
-  //! An exception is raised if the fields have not been initialized. <br>
-  //! Be careful: this method uses the Face only for classify not for the fields. <br>
+  //! An exception is raised if the fields have not been initialized.
+  //! Be careful: this method uses the Face only for classify not for the fields.
   Standard_EXPORT void Perform(const TopoDS_Vertex& TheVertex, const TopoDS_Face& TheFace);
 
-  //! True if the distances are found. <br>
+  //! True if the distances are found.
   Standard_Boolean IsDone() const { return myExtPS.IsDone(); }
 
-  //! Returns the number of extremum distances. <br>
+  //! Returns the number of extremum distances.
   Standard_Integer NbExt() const { return myPoints.Length(); }
 
-  //! Returns the value of the <N>th extremum square distance. <br>
+  //! Returns the value of the <N>th extremum square distance.
   Standard_Real SquareDistance(const Standard_Integer N) const { return mySqDist.Value(N); }
 
-  //! Returns the parameters on the Face of the <N>th extremum distance. <br>
+  //! Returns the parameters on the Face of the <N>th extremum distance.
   void Parameter(const Standard_Integer N, Standard_Real& U, Standard_Real& V) const
   {
     myPoints.Value(N).Parameter(U, V);
   }
 
-  //! Returns the Point of the <N>th extremum distance. <br>
+  //! Returns the Point of the <N>th extremum distance.
   gp_Pnt Point(const Standard_Integer N) const { return myPoints.Value(N).Value(); }
 
   void SetFlag(const Extrema_ExtFlag F) { myExtPS.SetFlag(F); }

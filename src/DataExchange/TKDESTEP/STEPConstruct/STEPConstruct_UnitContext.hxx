@@ -55,8 +55,8 @@ public:
   Standard_EXPORT Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) Value()
     const;
 
-  //! Computes the length, plane angle and solid angle conversion
-  //! factor.  Returns a status, 0 if OK
+  //! Computes the length, plane angle and solid angle conversion factor.
+  //! Returns a status, 0 if OK
   Standard_EXPORT Standard_Integer
     ComputeFactors(const Handle(StepRepr_GlobalUnitAssignedContext)& aContext,
                    const StepData_Factors& theLocalFactors = StepData_Factors());

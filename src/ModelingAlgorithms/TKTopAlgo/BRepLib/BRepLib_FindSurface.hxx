@@ -25,25 +25,25 @@
 class Geom_Surface;
 class TopoDS_Shape;
 
-//! Provides an  algorithm to find  a Surface  through a
+//! Provides an algorithm to find a Surface through a
 //! set of edges.
 //!
-//! The edges  of  the  shape  given  as  argument are
-//! explored if they are not coplanar at  the required
-//! tolerance  the method Found returns false.
+//! The edges of the shape given as argument are
+//! explored if they are not coplanar at the required
+//! tolerance the method Found returns false.
 //!
-//! If a null tolerance is given the max of the  edges
+//! If a null tolerance is given the max of the edges
 //! tolerances is used.
 //!
-//! The method Tolerance returns the true distance  of
+//! The method Tolerance returns the true distance of
 //! the edges to the Surface.
 //!
 //! The method Surface returns the Surface if found.
 //!
-//! The method Existed  returns returns  True  if  the
+//! The method Existed returns True if the
 //! Surface was already attached to some of the edges.
 //!
-//! When Existed  returns True  the  Surface  may have a
+//! When Existed returns True the Surface may have a
 //! location given by the Location method.
 class BRepLib_FindSurface
 {
@@ -52,26 +52,26 @@ public:
 
   Standard_EXPORT BRepLib_FindSurface();
 
-  //! Computes the Surface from the edges of  <S> with the
+  //! Computes the Surface from the edges of <S> with the
   //! given tolerance.
   //! if <OnlyPlane> is true, the computed surface will be
   //! a plane. If it is not possible to find a plane, the
   //! flag NotDone will be set.
-  //! If <OnlyClosed> is true,  then  S  should be a wire
-  //! and the existing surface,  on  which wire S is not
+  //! If <OnlyClosed> is true, then S should be a wire
+  //! and the existing surface, on which wire S is not
   //! closed in 2D, will be ignored.
   Standard_EXPORT BRepLib_FindSurface(const TopoDS_Shape&    S,
                                       const Standard_Real    Tol        = -1,
                                       const Standard_Boolean OnlyPlane  = Standard_False,
                                       const Standard_Boolean OnlyClosed = Standard_False);
 
-  //! Computes the Surface from the edges of  <S> with the
+  //! Computes the Surface from the edges of <S> with the
   //! given tolerance.
   //! if <OnlyPlane> is true, the computed surface will be
   //! a plane. If it is not possible to find a plane, the
   //! flag NotDone will be set.
-  //! If <OnlyClosed> is true,  then  S  should be a wire
-  //! and the existing surface,  on  which wire S is not
+  //! If <OnlyClosed> is true, then S should be a wire
+  //! and the existing surface, on which wire S is not
   //! closed in 2D, will be ignored.
   Standard_EXPORT void Init(const TopoDS_Shape&    S,
                             const Standard_Real    Tol        = -1,

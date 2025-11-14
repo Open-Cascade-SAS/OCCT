@@ -25,7 +25,7 @@
 #include <Standard_Boolean.hxx>
 class Intf_SectionPoint;
 
-//! Describes   a  zone  of  tangence  between  polygons  or
+//! Describes a zone of tangence between polygons or
 //! polyhedra as a sequence of points of intersection.
 class Intf_TangentZone
 {
@@ -35,7 +35,7 @@ public:
   //! Returns number of SectionPoint in this TangentZone.
   Standard_Integer NumberOfPoints() const;
 
-  //! Gives   the   SectionPoint   of  address  <Index>  in  the
+  //! Gives the SectionPoint of address <Index> in the
   //! TangentZone.
   Standard_EXPORT const Intf_SectionPoint& GetPoint(const Standard_Integer Index) const;
 
@@ -47,33 +47,33 @@ public:
   //! Checks if <ThePI> is in TangentZone.
   Standard_EXPORT Standard_Boolean Contains(const Intf_SectionPoint& ThePI) const;
 
-  //! Gives  the parameter range of the  TangentZone on the first
+  //! Gives the parameter range of the TangentZone on the first
   //! argument of the Interference. (Usable only for polygon)
   void ParamOnFirst(Standard_Real& paraMin, Standard_Real& paraMax) const;
 
-  //! Gives the parameter range of the  TangentZone on the second
+  //! Gives the parameter range of the TangentZone on the second
   //! argument of the Interference. (Usable only for polygon)
   void ParamOnSecond(Standard_Real& paraMin, Standard_Real& paraMax) const;
 
-  //! Gives  information  about  the    first argument   of   the
+  //! Gives information about the first argument of the
   //! Interference. (Usable only for polygon)
   Standard_EXPORT void InfoFirst(Standard_Integer& segMin,
                                  Standard_Real&    paraMin,
                                  Standard_Integer& segMax,
                                  Standard_Real&    paraMax) const;
 
-  //! Gives   information   about  the  second   argument of  the
+  //! Gives information about the second argument of the
   //! Interference. (Usable only for polygon)
   Standard_EXPORT void InfoSecond(Standard_Integer& segMin,
                                   Standard_Real&    paraMin,
                                   Standard_Integer& segMax,
                                   Standard_Real&    paraMax) const;
 
-  //! Returns True if  <ThePI>  is in the parameter  range of the
+  //! Returns True if <ThePI> is in the parameter range of the
   //! TangentZone.
   Standard_EXPORT Standard_Boolean RangeContains(const Intf_SectionPoint& ThePI) const;
 
-  //! Returns True if the TangentZone  <Other> has  a common part
+  //! Returns True if the TangentZone <Other> has a common part
   //! with <me>.
   Standard_EXPORT Standard_Boolean HasCommonRange(const Intf_TangentZone& Other) const;
 

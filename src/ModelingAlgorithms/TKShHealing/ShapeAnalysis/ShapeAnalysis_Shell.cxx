@@ -145,7 +145,7 @@ Standard_Boolean ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape&   
   if (!alsofree)
     return res;
 
-  //  Free Edges . Ce sont les edges d une map pas dans l autre
+  //  Free Edges. Ce sont les edges d une map pas dans l autre
   //  et lycee de Versailles  (les maps dirs et revs)
   Standard_Integer nb = dirs.Extent();
   Standard_Integer i; // svv Jan11 2000 : porting on DEC

@@ -36,9 +36,9 @@ DEFINE_STANDARD_HANDLE(IGESSelect_SignStatus, IFSelect_Signature)
 //! l for Hierarchy
 //!
 //! For matching, allowed shortcuts
-//! B(Blanked) or V(Visible) are allowed instead of  i
+//! B(Blanked) or V(Visible) are allowed instead of i
 //! I(Independant=0), P(Physically Dep.=1), L(Logically Dep.=2) or
-//! D(Dependant=3) are allowed instead of  j
+//! D(Dependant=3) are allowed instead of j
 //! These letters must be given in their good position
 //! For non-exact matching :
 //! a letter (see above), no comma : only this status is checked

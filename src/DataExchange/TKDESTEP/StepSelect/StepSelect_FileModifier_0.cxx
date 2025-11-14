@@ -21,9 +21,7 @@
 #include <StepData_StepWriter.hxx>
 #include <IFSelect_ContextWrite.hxx>
 
-#define Writer StepData_StepWriter
-#define Writer_hxx <StepData_StepWriter.hxx>
-#define IFSelect_FileModifier StepSelect_FileModifier
-#define IFSelect_FileModifier_hxx <StepSelect_FileModifier.hxx>
-#define Handle_IFSelect_FileModifier Handle(StepSelect_FileModifier)
-#include <IFSelect_FileModifier.gxx>
+StepSelect_FileModifier::StepSelect_FileModifier()
+    : IFSelect_GeneralModifier(Standard_False)
+{
+}

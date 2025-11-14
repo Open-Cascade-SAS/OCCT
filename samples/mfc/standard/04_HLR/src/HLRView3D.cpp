@@ -23,7 +23,7 @@ static char THIS_FILE[] = __FILE__;
 // the key for shortcut ( use to activate dynamic rotation, panning )
 #define CASCADESHORTCUTKEY MK_CONTROL
 
-// define in witch case you want to display the popup
+// define in which case you want to display the popup
 #define POPUPONBUTTONDOWN
 
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ void CHLRView3D::OnInitialUpdate()
 	    // TODO: Add your specialized code here and/or call the base class
     myView = GetDocument()->GetViewer()->CreateView();
 
-    // store for restore state after rotation (witch is in Degenerated mode)
+    // store for restore state after rotation (which is in Degenerated mode)
     myDegenerateModeIsOn = myView->DegenerateModeIsOn();
 
 	Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 

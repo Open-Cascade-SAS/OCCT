@@ -47,10 +47,10 @@ public:
   //! To know if two dimension are independent.
   Standard_EXPORT virtual Handle(TColStd_HArray2OfInteger) DependenceTable() const = 0;
 
-  //! To Compute J(E) where E  is the current Element
+  //! To Compute J(E) where E is the current Element
   Standard_EXPORT virtual Standard_Real Value() = 0;
 
-  //! To Compute J(E)  the coefficients of Hessian matrix of
+  //! To Compute J(E) the coefficients of Hessian matrix of
   //! J(E) which are crossed derivatives in dimensions <Dim1>
   //! and <Dim2>.
   //! If DependenceTable(Dimension1,Dimension2) is False

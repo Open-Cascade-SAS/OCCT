@@ -99,10 +99,10 @@ public:
   //! For a line, the returned value is -U.
   Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
-  //! Returns RealFirst  from  Standard.
+  //! Returns RealFirst from Standard.
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
-  //! Returns RealLast  from Standard
+  //! Returns RealLast from Standard
   Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! Returns False

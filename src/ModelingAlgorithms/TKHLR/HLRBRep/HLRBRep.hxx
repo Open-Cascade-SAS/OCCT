@@ -28,7 +28,7 @@ class HLRBRep_Curve;
 //! Hidden Lines Removal
 //! algorithms on the BRep DataStructure.
 //!
-//! The class PolyAlgo  is used to remove Hidden lines
+//! The class PolyAlgo is used to remove Hidden lines
 //! on Shapes with Triangulations.
 class HLRBRep
 {

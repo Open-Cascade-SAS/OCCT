@@ -95,7 +95,7 @@ public:
   //! surface (uses GeomProjLib_ProjectedCurve)
   //! If the projection needs an approximation,
   //! Precision::PApproximation() is used.
-  //! WARNING: if the  projection has failed, this
+  //! WARNING: if the projection has failed, this
   //! method returns a null Handle.
   //! can expand a little the bounds of surface
   Standard_EXPORT static Handle(Geom2d_Curve) Curve2d(const Handle(Geom_Curve)&   C,
@@ -121,7 +121,7 @@ public:
                                                       Standard_Real&              Tolerance);
 
   //! Constructs the 3d-curve from the normal
-  //! projection  of the Curve <C> on the surface <S>.
+  //! projection of the Curve <C> on the surface <S>.
   //! WARNING: if the projection has failed, returns a
   //! null Handle.
   Standard_EXPORT static Handle(Geom_Curve) Project(const Handle(Geom_Curve)&   C,
@@ -131,7 +131,7 @@ public:
   //! of the curve <Curve> on the plane <Plane> along
   //! the direction <Dir>.
   //! If <KeepParametrization> is true, the parametrization
-  //! of the Projected Curve <PC> will be  the same as  the
+  //! of the Projected Curve <PC> will be the same as the
   //! parametrization of the initial curve <C>.
   //! It means: proj(C(u)) = PC(u) for each u.
   //! Otherwise, the parametrization may change.

@@ -46,8 +46,8 @@ class TopoDS_Shape;
 //! - For Boolean operation *SECTION* the arguments can be of any type.
 //!
 //! Additionally to the errors of the base class the algorithm returns
-//! the following Errors:<br>
-//! - *BOPAlgo_AlertBOPNotSet* - in case the type of Boolean Operation is not set.<br>
+//! the following Errors:
+//! - *BOPAlgo_AlertBOPNotSet* - in case the type of Boolean Operation is not set.
 class BRepAlgoAPI_BooleanOperation : public BRepAlgoAPI_BuilderAlgo
 {
 public:

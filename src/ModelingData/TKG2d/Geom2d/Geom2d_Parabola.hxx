@@ -112,7 +112,7 @@ public:
   //! Returns RealFirst from Standard.
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
-  //! Returns  RealLast from Standard.
+  //! Returns RealLast from Standard.
   Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! Returns False
@@ -147,7 +147,7 @@ public:
   //! Returns in P the point of parameter U.
   //! If U = 0 the returned point is the origin of the XAxis and
   //! the YAxis of the parabola and it is the vertex of the parabola.
-  //! P = S + F * (U * U * XDir +  * U * YDir)
+  //! P = S + F * (U * U * XDir + * U * YDir)
   //! where S is the vertex of the parabola, XDir the XDirection and
   //! YDir the YDirection of the parabola's local coordinate system.
   Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;

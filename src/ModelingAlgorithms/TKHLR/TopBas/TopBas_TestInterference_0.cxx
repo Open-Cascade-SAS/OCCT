@@ -16,10 +16,21 @@
 
 #include <TopBas_TestInterference.hxx>
 
-#define TheSubShape Standard_Real
-#define TheSubShape_hxx <Standard_Real.hxx>
-#define TheShape Standard_Integer
-#define TheShape_hxx <Standard_Integer.hxx>
-#define TopBas_Interference TopBas_TestInterference
-#define TopBas_Interference_hxx <TopBas_TestInterference.hxx>
-#include <TopBas_Interference.gxx>
+//=================================================================================================
+
+TopBas_TestInterference::TopBas_TestInterference() {}
+
+//=================================================================================================
+
+TopBas_TestInterference::TopBas_TestInterference(const Standard_Real&     Inters,
+                                                 const Standard_Integer&  Bound,
+                                                 const TopAbs_Orientation Orient,
+                                                 const TopAbs_Orientation Trans,
+                                                 const TopAbs_Orientation BTrans)
+    : myIntersection(Inters),
+      myBoundary(Bound),
+      myOrientation(Orient),
+      myTransition(Trans),
+      myBTransition(BTrans)
+{
+}

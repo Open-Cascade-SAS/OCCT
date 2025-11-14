@@ -77,7 +77,7 @@ public: //! @name Results
                              const ChFiDS_TypeOfConcavity theType,
                              TopTools_ListOfShape&        theL) const;
 
-  //! set in <Edges> all  the Edges of <Shape> which are
+  //! set in <Edges> all the Edges of <Shape> which are
   //! tangent to <Edge> at the vertex <Vertex>.
   Standard_EXPORT void TangentEdges(const TopoDS_Edge&    theEdge,
                                     const TopoDS_Vertex&  theVertex,

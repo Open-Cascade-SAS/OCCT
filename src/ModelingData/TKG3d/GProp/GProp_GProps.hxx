@@ -39,7 +39,7 @@ class GProp_PrincipalProps;
 //! the properties of your system using the method Add.
 //!
 //! To compute the global properties of the geometric components of
-//! the system you should  use the services of the following classes :
+//! the system you should use the services of the following classes :
 //! - class PGProps for a set of points,
 //! - class CGProps for a curve,
 //! - class SGProps for a surface,
@@ -54,7 +54,7 @@ class GProp_PrincipalProps;
 //! - the moments of inertia (static moments and quadratic moments),
 //! - the moment about an axis,
 //! - the radius of gyration about an axis,
-//! - the principal properties of inertia  :
+//! - the principal properties of inertia :
 //! (sea also class PrincipalProps)
 //! . the principal moments,
 //! . the principal axis of inertia,
@@ -88,7 +88,7 @@ class GProp_PrincipalProps;
 //! gp_Pnt G = System.CentreOfMass ();
 //!
 //! //computes the principales inertia of the system
-//! GProp_PrincipalProps Pp  = System.PrincipalProperties();
+//! GProp_PrincipalProps Pp = System.PrincipalProperties();
 //!
 //! //returns the principal moments and radius of gyration
 //! Real Ixx, Iyy, Izz, Rxx, Ryy, Rzz;

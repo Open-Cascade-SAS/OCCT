@@ -91,7 +91,7 @@ public:
 
   //! Returns the continuity of theNewEdge between theNewFace1 and theNewFace2.
   //!
-  //! theNewEdge is the new edge created from theEdge.  theNewFace1
+  //! theNewEdge is the new edge created from theEdge. theNewFace1
   //! (resp. theNewFace2) is the new face created from theFace1 (resp. theFace2).
   Standard_EXPORT GeomAbs_Shape Continuity(const TopoDS_Edge& theEdge,
                                            const TopoDS_Face& theFace1,

@@ -26,7 +26,7 @@
 #include <Standard_HashUtils.hxx>
 
 //! The class represents the couple of indices with additional
-//! characteristics such as analyzed flag and an angle.<br>
+//! characteristics such as analyzed flag and an angle.
 //! In IntPolyh_MaillageAffinage algorithm the class is used as a
 //! couple of interfering triangles with the intersection angle.
 class IntPolyh_Couple

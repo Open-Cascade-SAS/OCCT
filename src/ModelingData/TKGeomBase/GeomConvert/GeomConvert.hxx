@@ -52,7 +52,7 @@ class Geom_Surface;
 //! References :
 //! . Generating the Bezier Points of B-spline curves and surfaces
 //! (Wolfgang Bohm) CAGD volume 13 number 6 november 1981
-//! . On NURBS: A Survey  (Leslie Piegl) IEEE Computer Graphics and
+//! . On NURBS: A Survey (Leslie Piegl) IEEE Computer Graphics and
 //! Application January 1991
 //! . Curve and surface construction using rational B-splines
 //! (Leslie Piegl and Wayne Tiller) CAD Volume 19 number 9 november
@@ -67,12 +67,12 @@ public:
   //! Convert a curve from Geom by an approximation method
   //!
   //! This method computes the arc of B-spline curve between the two
-  //! knots FromK1 and ToK2.  If C is periodic the arc has the same
+  //! knots FromK1 and ToK2. If C is periodic the arc has the same
   //! orientation as C if SameOrientation = Standard_True.
-  //! If C is not periodic  SameOrientation is not used for the
+  //! If C is not periodic SameOrientation is not used for the
   //! computation and C is oriented from the knot fromK1 to the knot toK2.
   //! We just keep the local definition of C between the knots
-  //! FromK1 and ToK2.  The returned B-spline curve has its first
+  //! FromK1 and ToK2. The returned B-spline curve has its first
   //! and last knots with a multiplicity equal to degree + 1, where
   //! degree is the polynomial degree of C.
   //! The indexes of the knots FromK1 and ToK2 doesn't include the
@@ -94,7 +94,7 @@ public:
   //! computation and C is oriented fromU1 toU2.
   //! If U1 and U2 and two parametric values we consider that
   //! U1 = U2 if Abs (U1 - U2) <= ParametricTolerance and
-  //! ParametricTolerance must  be greater or equal to Resolution
+  //! ParametricTolerance must be greater or equal to Resolution
   //! from package gp.
   //!
   //! Raised if FromU1 or ToU2 are out of the parametric bounds of the
@@ -204,19 +204,19 @@ public:
     const Standard_Boolean             SameOrientation = Standard_True);
 
   //! This function converts a non infinite curve from
-  //! Geom into a  B-spline curve.  C must be   an ellipse or  a
-  //! circle  or a trimmed conic  or a trimmed  line or a Bezier
-  //! curve or a trimmed  Bezier curve or a  BSpline curve or  a
-  //! trimmed  BSpline curve or  an  OffsetCurve.  The returned  B-spline is
-  //! not periodic except  if C is a Circle  or an  Ellipse.  If
-  //! the  Parameterisation is  QuasiAngular than  the returned
-  //! curve is NOT periodic  in case a  periodic Geom_Circle or
-  //! Geom_Ellipse.  For TgtThetaOver2_1 and TgtThetaOver2_2 the
-  //! method   raises  an exception  in    case  of a  periodic
+  //! Geom into a B-spline curve. C must be an ellipse or a
+  //! circle or a trimmed conic or a trimmed line or a Bezier
+  //! curve or a trimmed Bezier curve or a BSpline curve or a
+  //! trimmed BSpline curve or an OffsetCurve. The returned B-spline is
+  //! not periodic except if C is a Circle or an Ellipse. If
+  //! the Parameterisation is QuasiAngular than the returned
+  //! curve is NOT periodic in case a periodic Geom_Circle or
+  //! Geom_Ellipse. For TgtThetaOver2_1 and TgtThetaOver2_2 the
+  //! method raises an exception in case of a periodic
   //! Geom_Circle or a Geom_Ellipse ParameterisationType applies
-  //! only    if  the curve  is   a  Circle  or  an   ellipse :
-  //! TgtThetaOver2,  -- TgtThetaOver2_1, -- TgtThetaOver2_2, --
-  //! TgtThetaOver2_3, -- TgtThetaOver2_4,
+  //! only if the curve is a Circle or an ellipse:
+  //! TgtThetaOver2, TgtThetaOver2_1, TgtThetaOver2_2,
+  //! TgtThetaOver2_3, TgtThetaOver2_4,
   //!
   //! Purpose: this is the classical rational parameterisation
   //! 2
@@ -232,9 +232,9 @@ public:
   //!
   //! t = tan (theta/2)
   //!
-  //! with TgtThetaOver2  the routine will compute the number of spans
+  //! with TgtThetaOver2 the routine will compute the number of spans
   //! using the rule num_spans = [ (ULast - UFirst) / 1.2 ] + 1
-  //! with TgtThetaOver2_N, N  spans will be forced: an error will
+  //! with TgtThetaOver2_N, N spans will be forced: an error will
   //! be raized if (ULast - UFirst) >= PI and N = 1,
   //! ULast - UFirst >= 2 PI and N = 2
   //!
@@ -289,7 +289,7 @@ public:
   //! ArrayOfToler contains the biggest tolerance of the two
   //! points shared by two consecutives curves.
   //! Its dimension: [0..N-2]
-  //! ClosedFlag     indicates if the ArrayOfCurves is closed.
+  //! ClosedFlag indicates if the ArrayOfCurves is closed.
   //! In this case ClosedTolerance contains the biggest tolerance
   //! of the two points which are at the closure.
   //! Otherwise its value is 0.0
@@ -304,10 +304,10 @@ public:
   //! This Method concatenates C1 the ArrayOfCurves as far
   //! as it is possible.
   //! ArrayOfCurves[0..N-1]
-  //! ArrayOfToler contains the  biggest tolerance of the two
+  //! ArrayOfToler contains the biggest tolerance of the two
   //! points shared by two consecutives curves.
   //! Its dimension: [0..N-2]
-  //! ClosedFlag     indicates if the ArrayOfCurves is closed.
+  //! ClosedFlag indicates if the ArrayOfCurves is closed.
   //! In this case ClosedTolerance contains the biggest tolerance
   //! of the two points which are at the closure.
   //! Otherwise its value is 0.0
@@ -323,10 +323,10 @@ public:
   //! This Method concatenates C1 the ArrayOfCurves as far
   //! as it is possible.
   //! ArrayOfCurves[0..N-1]
-  //! ArrayOfToler contains the  biggest tolerance of the two
+  //! ArrayOfToler contains the biggest tolerance of the two
   //! points shared by two consecutives curves.
   //! Its dimension: [0..N-2]
-  //! ClosedFlag     indicates if the ArrayOfCurves is closed.
+  //! ClosedFlag indicates if the ArrayOfCurves is closed.
   //! In this case ClosedTolerance contains the biggest tolerance
   //! of the two points which are at the closure.
   //! Otherwise its value is 0.0

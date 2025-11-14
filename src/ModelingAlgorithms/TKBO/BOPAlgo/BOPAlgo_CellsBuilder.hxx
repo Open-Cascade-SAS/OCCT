@@ -178,33 +178,33 @@ public:
   //! Redefined method Clear - clears the contents.
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
-  //! Adding the parts to result.<br>
-  //! The parts are defined by two lists of shapes:<br>
-  //! <theLSToTake> defines the arguments which parts should be taken into result;<br>
-  //! <theLSToAvoid> defines the arguments which parts should not be taken into result;<br>
+  //! Adding the parts to result.
+  //! The parts are defined by two lists of shapes:
+  //! <theLSToTake> defines the arguments which parts should be taken into result;
+  //! <theLSToAvoid> defines the arguments which parts should not be taken into result;
   //! To be taken into result the part must be IN for all shapes from the list
-  //! <theLSToTake> and must be OUT of all shapes from the list <theLSToAvoid>.<br>
+  //! <theLSToTake> and must be OUT of all shapes from the list <theLSToAvoid>.
   //!
   //! To remove internal boundaries between any cells in the result
   //! <theMaterial> variable should be used. The boundaries between
-  //! cells with the same material will be removed. Default value is 0.<br>
-  //! Thus, to remove any boundary the value of this variable should not be equal to 0.<br>
+  //! cells with the same material will be removed. Default value is 0.
+  //! Thus, to remove any boundary the value of this variable should not be equal to 0.
   //! <theUpdate> parameter defines whether to remove boundaries now or not.
   Standard_EXPORT void AddToResult(const TopTools_ListOfShape& theLSToTake,
                                    const TopTools_ListOfShape& theLSToAvoid,
                                    const Standard_Integer      theMaterial = 0,
                                    const Standard_Boolean      theUpdate   = Standard_False);
 
-  //! Add all split parts to result.<br>
-  //! <theMaterial> defines the removal of internal boundaries;<br>
+  //! Add all split parts to result.
+  //! <theMaterial> defines the removal of internal boundaries;
   //! <theUpdate> parameter defines whether to remove boundaries now or not.
   Standard_EXPORT void AddAllToResult(const Standard_Integer theMaterial = 0,
                                       const Standard_Boolean theUpdate   = Standard_False);
 
-  //! Removing the parts from result.<br>
-  //! The parts are defined by two lists of shapes:<br>
-  //! <theLSToTake> defines the arguments which parts should be removed from result;<br>
-  //! <theLSToAvoid> defines the arguments which parts should not be removed from result.<br>
+  //! Removing the parts from result.
+  //! The parts are defined by two lists of shapes:
+  //! <theLSToTake> defines the arguments which parts should be removed from result;
+  //! <theLSToAvoid> defines the arguments which parts should not be removed from result.
   //! To be removed from the result the part must be IN for all shapes from the list
   //! <theLSToTake> and must be OUT of all shapes from the list <theLSToAvoid>.
   Standard_EXPORT void RemoveFromResult(const TopTools_ListOfShape& theLSToTake,
@@ -213,9 +213,9 @@ public:
   //! Remove all parts from result.
   Standard_EXPORT void RemoveAllFromResult();
 
-  //! Removes internal boundaries between cells with the same material.<br>
+  //! Removes internal boundaries between cells with the same material.
   //! If the result contains the cells with same material but of different dimension
-  //! the removal of internal boundaries between these cells will not be performed.<br>
+  //! the removal of internal boundaries between these cells will not be performed.
   //! In case of some errors during the removal the method will set the appropriate warning
   //! status - use GetReport() to access them.
   Standard_EXPORT void RemoveInternalBoundaries();
@@ -246,7 +246,7 @@ protected:
                                  const TopTools_ListOfShape& theLSToAvoid,
                                  TopTools_ListOfShape&       theParts);
 
-  //! Removes internal boundaries between cells with the same material.<br>
+  //! Removes internal boundaries between cells with the same material.
   //! Returns TRUE if any internal boundaries have been removed.
   Standard_EXPORT Standard_Boolean
     RemoveInternals(const TopTools_ListOfShape& theLS,

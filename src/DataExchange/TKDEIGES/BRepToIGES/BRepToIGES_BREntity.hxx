@@ -60,7 +60,7 @@ public:
   Standard_EXPORT Handle(Transfer_FinderProcess) GetTransferProcess() const;
 
   //! Returns the result of the transfert of any Shape
-  //! If  the transfer has failed, this member return a NullEntity.
+  //! If the transfer has failed, this member return a NullEntity.
   Standard_EXPORT virtual Handle(IGESData_IGESEntity) TransferShape(
     const TopoDS_Shape&          start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());

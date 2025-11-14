@@ -80,7 +80,7 @@ public:
   //! which become useless once the transfer has been done,
   //! by calling Strip on its ResultFromTransient
   //!
-  //! mode = 0 : minimum, clears data remaining from TransferProcess
+  //! mode = 0  : minimum, clears data remaining from TransferProcess
   //! mode = 10 : just keeps file name, label, check status ...,
   //! and MainResult but only the result (Binder)
   //! mode = 11 : also clears MainResult (status and names remain)
@@ -125,11 +125,11 @@ public:
 
   //! Returns the list of starting entities to which a check status
   //! is attached.
-  //! <check> = -2 , all entities whatever the check (see result)
-  //! <check> = -1 , entities with no fail (warning allowed)
-  //! <check> =  0 , entities with no check at all
-  //! <check> =  1 , entities with warning but no fail
-  //! <check> =  2 , entities with fail
+  //! <check> = -2  all entities whatever the check (see result)
+  //! <check> = -1  entities with no fail (warning allowed)
+  //! <check> =  0  entities with no check at all
+  //! <check> =  1  entities with warning but no fail
+  //! <check> =  2  entities with fail
   //! <result> : if True, only entities with an attached result
   //! Remark : result True and check=0 will give an empty list
   Standard_EXPORT Handle(TColStd_HSequenceOfTransient) CheckedList(

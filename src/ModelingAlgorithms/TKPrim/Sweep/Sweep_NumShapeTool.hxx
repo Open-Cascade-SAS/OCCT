@@ -25,16 +25,16 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
 
-//! This class provides  the indexation and  type analysis
-//! services required by  the NumShape Directing Shapes of
+//! This class provides the indexation and type analysis
+//! services required by the NumShape Directing Shapes of
 //! Swept Primitives.
 class Sweep_NumShapeTool
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Create a new NumShapeTool with <aShape>.  The Tool
-  //! must prepare an indexation  for  all the subshapes
+  //! Create a new NumShapeTool with <aShape>. The Tool
+  //! must prepare an indexation for all the subshapes
   //! of this shape.
   Standard_EXPORT Sweep_NumShapeTool(const Sweep_NumShape& aShape);
 

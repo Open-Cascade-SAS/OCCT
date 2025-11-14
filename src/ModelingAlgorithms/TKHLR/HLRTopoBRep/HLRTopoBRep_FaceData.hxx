@@ -23,8 +23,8 @@
 
 #include <TopTools_ListOfShape.hxx>
 
-//! Contains the  3 ListOfShape of  a Face  ( Internal
-//! OutLines, OutLines on restriction and IsoLines ).
+//! Contains the 3 ListOfShape of a Face
+//! (Internal OutLines, OutLines on restriction and IsoLines).
 class HLRTopoBRep_FaceData
 {
 public:

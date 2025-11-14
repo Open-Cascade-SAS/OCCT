@@ -38,7 +38,7 @@
 //! list of edges
 //! - class MsgRegistrator for attaching messages to the objects
 //! - tools for exploring the shapes
-//! -       tools for creating       new shapes.
+//! - tools for creating new shapes
 class ShapeExtend
 {
 public:

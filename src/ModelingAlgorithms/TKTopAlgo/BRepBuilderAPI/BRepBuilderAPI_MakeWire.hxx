@@ -136,13 +136,13 @@ public:
   //! Add the edges of <W> to the current wire.
   Standard_EXPORT void Add(const TopoDS_Wire& W);
 
-  //! Adds  the edges of <L>   to the current  wire.  The
-  //! edges are not to be consecutive.   But they are to
-  //! be  all  connected geometrically or topologically.
-  //! If some of them are  not connected the Status give
+  //! Adds the edges of <L> to the current wire. The
+  //! edges are not to be consecutive. But they are to
+  //! be all connected geometrically or topologically.
+  //! If some of them are not connected the Status give
   //! DisconnectedWire but the "Maker" is Done() and you
-  //! can get the  partial result. (ie connected to  the
-  //! first edgeof the list <L>)
+  //! can get the partial result.
+  //! (i.e. connected to the first edgeof the list <L>)
   Standard_EXPORT void Add(const TopTools_ListOfShape& L);
 
   //! Returns true if this algorithm contains a valid wire.

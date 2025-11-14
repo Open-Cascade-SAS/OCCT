@@ -49,7 +49,7 @@ public:
   //! Status:  BRepCheck_BadOrientationOfSubshape
   //!
   //! 3.  For closed, non-internal shells:
-  //! 3.1 Shells containing entities  of the solid that
+  //! 3.1 Shells containing entities of the solid that
   //! are outside towards the shells
   //! Status:  BRepCheck_SubshapeNotInShape
   //!

@@ -34,7 +34,7 @@ DEFINE_STANDARD_HANDLE(Geom_AxisPlacement, Geom_Geometry)
 //! The Geom package provides two implementations of
 //! 3D positioning systems:
 //! - the axis (Geom_Axis1Placement class), which is defined by:
-//! - its origin, also termed the "Location point" of the  axis,
+//! - its origin, also termed the "Location point" of the axis,
 //! - its unit vector, termed the "Direction" or "main
 //! Direction" of the axis;
 //! - the right-handed coordinate system
@@ -79,7 +79,7 @@ public:
   //! to calculate the new "XDirection" and the new "YDirection".
   Standard_EXPORT virtual void SetDirection(const gp_Dir& V) = 0;
 
-  //! Assigns the point P as the origin of this positioning  system.
+  //! Assigns the point P as the origin of this positioning system.
   Standard_EXPORT void SetLocation(const gp_Pnt& P);
 
   //! Computes the angular value, in radians, between the

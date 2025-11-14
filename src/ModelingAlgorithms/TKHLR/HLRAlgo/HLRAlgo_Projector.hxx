@@ -29,7 +29,7 @@ class gp_Pnt;
 class gp_Pnt2d;
 class gp_Lin;
 
-//! Implements a  projector object.
+//! Implements a projector object.
 //! To transform and project Points and Planes.
 //! This object is designed to be used in the
 //! removal of hidden lines and is returned by the
@@ -48,11 +48,11 @@ public:
 
   Standard_EXPORT HLRAlgo_Projector();
 
-  //! Creates   an axonometric  projector.   <CS> is the
+  //! Creates an axonometric projector. <CS> is the
   //! viewing coordinate system.
   Standard_EXPORT HLRAlgo_Projector(const gp_Ax2& CS);
 
-  //! Creates  a  perspective  projector.   <CS>  is the
+  //! Creates a perspective projector. <CS> is the
   //! viewing coordinate system.
   Standard_EXPORT HLRAlgo_Projector(const gp_Ax2& CS, const Standard_Real Focus);
 

@@ -413,7 +413,7 @@ public:
   //! Clears information about PaveBlocks for the untouched edges
   Standard_EXPORT void ReleasePaveBlocks();
 
-  //! Checks if the existing shrunk data of the pave block is still valid.<br>
+  //! Checks if the existing shrunk data of the pave block is still valid.
   //! The shrunk data may become invalid if e.g. the vertices of the pave block
   //! have been replaced with the new one with bigger tolerances, or the tolerances
   //! of the existing vertices have been increased.

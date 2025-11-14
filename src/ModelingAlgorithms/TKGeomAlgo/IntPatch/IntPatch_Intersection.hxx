@@ -52,18 +52,18 @@ public:
   //! --- Parametric - Parametric
   //! --- Implicit   - Implicit
   //!
-  //! TolArc   is  used  to   compute  the intersections
-  //! between the restrictions   of  a  surface   and  a
+  //! TolArc is used to compute the intersections
+  //! between the restrictions of a surface and a
   //! walking line.
   //!
   //! TolTang is used to compute the points on a walking
   //! line, and in geometric algorithms.
   //!
-  //! Fleche  is  a  parameter   used in    the  walking
+  //! Fleche is a parameter used in the walking
   //! algorithms to provide small curvatures on a line.
   //!
-  //! UVMaxStep is  a  parameter   used in  the  walking
-  //! algorithms  to    compute the  distance between to
+  //! UVMaxStep is a parameter used in the walking
+  //! algorithms to compute the distance between to
   //! points in their respective parametric spaces.
   Standard_EXPORT void SetTolerances(const Standard_Real TolArc,
                                      const Standard_Real TolTang,

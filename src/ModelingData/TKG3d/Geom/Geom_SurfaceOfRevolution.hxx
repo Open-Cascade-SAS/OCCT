@@ -77,7 +77,7 @@ class Geom_SurfaceOfRevolution : public Geom_SweptSurface
 {
 
 public:
-  //! C : is the meridian  or the referenced curve.
+  //! C : is the meridian or the referenced curve.
   //! A1 is the axis of revolution.
   //! The form of a SurfaceOfRevolution can be :
   //! . a general revolution surface (RevolutionForm),
@@ -143,7 +143,7 @@ public:
   Standard_EXPORT gp_Ax2 ReferencePlane() const;
 
   //! Changes the orientation of this surface of revolution
-  //! in the u  parametric direction. The bounds of the
+  //! in the u parametric direction. The bounds of the
   //! surface are not changed but the given parametric
   //! direction is reversed. Hence the orientation of the
   //! surface is reversed.
@@ -152,8 +152,8 @@ public:
   //! revolution of this surface,
   Standard_EXPORT void UReverse() Standard_OVERRIDE;
 
-  //! Computes the u  parameter on the modified
-  //! surface, when reversing its u  parametric
+  //! Computes the u parameter on the modified
+  //! surface, when reversing its u parametric
   //! direction, for any point of u parameter U on this surface of revolution.
   //! In the case of a revolved surface:
   //! - UReversedParameter returns 2.*Pi - U
@@ -168,8 +168,8 @@ public:
   //! - VReverse reverses the meridian of this surface of revolution.
   Standard_EXPORT void VReverse() Standard_OVERRIDE;
 
-  //! Computes the  v parameter on the modified
-  //! surface, when reversing its  v parametric
+  //! Computes the v parameter on the modified
+  //! surface, when reversing its v parametric
   //! direction, for any point of v parameter V on this surface of revolution.
   //! In the case of a revolved surface:
   //! - VReversedParameter returns the reversed
@@ -306,11 +306,11 @@ public:
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
   //! The following functions evaluates the local derivatives
   //! on surface. Useful to manage discontinuities on the surface.
-  //! if    Side  =  1  ->  P  =  S( U+,V )
-  //! if    Side  = -1  ->  P  =  S( U-,V )
-  //! else  P  is betveen discontinuities
+  //! if   Side =  1 ->  P = S( U+,V )
+  //! if   Side = -1 ->  P = S( U-,V )
+  //! else P is between discontinuities
   //! can be evaluated using methods of
-  //! global evaluations    P  =  S( U ,V )
+  //! global evaluations P = S( U ,V )
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Real    V,
                             const Standard_Integer Nu,

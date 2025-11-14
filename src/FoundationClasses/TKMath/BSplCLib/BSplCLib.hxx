@@ -58,7 +58,7 @@ class math_Matrix;
 //! poles are described by a pointer on a local array of
 //! Reals and a Dimension. The local array is modified.
 //!
-//! *  2D and 3D spline curves methods.
+//! * 2D and 3D spline curves methods.
 //!
 //! Methods for 2d and 3d BSplines curves rational or not
 //! rational.
@@ -227,7 +227,7 @@ public:
   //! * Greater than Degree, or Degree+1 at the first and
   //! last knot of a non periodic curve.
   //!
-  //! *  The last periodicity on a periodic curve is not
+  //! * The last periodicity on a periodic curve is not
   //! equal to the first.
   Standard_EXPORT static Standard_Integer NbPoles(const Standard_Integer         Degree,
                                                   const Standard_Boolean         Periodic,
@@ -366,7 +366,7 @@ public:
                                    Standard_Real&         Poles);
 
   //! Performs the Boor Algorithm at parameter <U> with
-  //! the given <Degree> and the  array of <Knots> on the
+  //! the given <Degree> and the array of <Knots> on the
   //! poles <Poles> of dimension <Dimension>. The schema
   //! is computed until level <Depth> on a basis of
   //! <Length+1> poles.
@@ -379,7 +379,7 @@ public:
   //!
   //! (2 * <Length> + 1) * <Dimension>
   //!
-  //! The poles values  must be  set  in the array at the
+  //! The poles values must be set in the array at the
   //! positions.
   //!
   //! 0..Dimension,
@@ -387,8 +387,8 @@ public:
   //! 2 * Dimension ..
   //! 3 * Dimension
   //!
-  //! 4  * Dimension ..
-  //! 5  * Dimension
+  //! 4 * Dimension ..
+  //! 5 * Dimension
   //!
   //! ...
   //!
@@ -600,12 +600,12 @@ public:
   //! No multiplicity will becomes higher than the degree.
   //!
   //! The new Knots and Multiplicities are copied in <NewKnots>
-  //! and  <NewMults>.
+  //! and <NewMults>.
   //!
   //! All the New arrays should be correctly dimensioned.
   //!
   //! When all the new knots are existing knots, i.e. only the
-  //! multiplicities  will change it is safe to use the same
+  //! multiplicities will change it is safe to use the same
   //! arrays as input and output.
   Standard_EXPORT static void InsertKnots(const Standard_Integer         Degree,
                                           const Standard_Boolean         Periodic,
@@ -812,10 +812,10 @@ public:
   //!
   //! The new knots are usually the same knots with the
   //! exception of a non-periodic curve with the first
-  //! and last multiplicity not  equal to Degree+1 where
+  //! and last multiplicity not equal to Degree+1 where
   //! knots are removed form the start and the bottom
   //! until the sum of the multiplicities is equal to
-  //! NewDegree+1  at the knots corresponding to the
+  //! NewDegree+1 at the knots corresponding to the
   //! first and last parameters of the curve.
   //!
   //! Example: Suppose a curve of degree 3 starting
@@ -834,7 +834,7 @@ public:
   //! Let raise this curve to degree 4.
   //! The multiplicities are increased by 2.
   //!
-  //! They  become 2 3 2.
+  //! They become 2 3 2.
   //! But we need a sum of multiplicities of 5 at knot 2.
   //! So the first knot is removed and the new knots are:
   //! @code
@@ -1243,7 +1243,7 @@ public:
                                                          Standard_Integer& UpperBandWidth,
                                                          Standard_Integer& LowerBandWidth);
 
-  //! this  factors  the Banded Matrix in
+  //! this factors the Banded Matrix in
   //! the LU form with a Banded storage of
   //! components of the L matrix
   //! WARNING : do not use if the Matrix is
@@ -1387,11 +1387,11 @@ public:
   //! 2. a(t) defines a differentiable
   //! isomorphism between the range of FlatKnots to the range
   //! of BSplineFlatKnots which is the
-  //! same as the  range of F(t)
+  //! same as the range of F(t)
   //!
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are satisfied: no check whatsoever
+  //! 1. and 2. above are satisfied: no check whatsoever
   //! is made in this method
   //!
   //! theStatus will return 0 if OK else it will return the pivot index
@@ -1422,11 +1422,11 @@ public:
   //! 2. a(t) defines a differentiable
   //! isomorphism between the range of FlatKnots to the range
   //! of BSplineFlatKnots which is the
-  //! same as the  range of F(t)
+  //! same as the range of F(t)
   //!
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are satisfied: no check whatsoever
+  //! 1. and 2. above are satisfied: no check whatsoever
   //! is made in this method
   //!
   //! theStatus will return 0 if OK else it will return the pivot index
@@ -1485,7 +1485,7 @@ public:
   //! same as the range of F(t)
   //! Warning: it is
   //! the caller's responsibility to insure that conditions
-  //! 1. and  2. above are satisfied: no check whatsoever
+  //! 1. and 2. above are satisfied: no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
@@ -1629,7 +1629,7 @@ public:
                                    Standard_Real&              Poles,
                                    Standard_Real&              Result);
 
-  //! Perform the  De Boor algorithm  to evaluate a point at
+  //! Perform the De Boor algorithm to evaluate a point at
   //! parameter <U>, with <Degree> and <Dimension>.
   //! Evaluates by multiplying the Poles by the Weights and
   //! gives the homogeneous result in PolesResult that is
@@ -1685,7 +1685,7 @@ public:
   //! <Continuity> must be equal to 1, 2 or 3.
   //! <Degree> must be greater or equal than <Continuity> + 1.
   //!
-  //! Warning:   <KnotsResult> and <PolesResult>  must be   dimensioned
+  //! Warning: <KnotsResult> and <PolesResult> must be dimensioned
   //! properly.
   Standard_EXPORT static void TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
                                                      const Standard_Real         C1Coefficient,
@@ -1740,7 +1740,7 @@ public:
                                       const TColStd_Array1OfReal* Weights,
                                       gp_Pnt2d&                   Point);
 
-  //! Calls CacheD0 for Bezier  Curves Arrays computed with
+  //! Calls CacheD0 for Bezier Curves Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for Beziercurves ONLY!!!
   static void CoefsD0(const Standard_Real         U,
@@ -1748,7 +1748,7 @@ public:
                       const TColStd_Array1OfReal* Weights,
                       gp_Pnt&                     Point);
 
-  //! Calls CacheD0 for Bezier  Curves Arrays computed with
+  //! Calls CacheD0 for Bezier Curves Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for Beziercurves ONLY!!!
   static void CoefsD0(const Standard_Real         U,

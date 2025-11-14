@@ -25,10 +25,10 @@ class gp_Circ;
 class gp_Pnt;
 class gp_Lin;
 
-//! Computes the  global properties of bounded curves
+//! Computes the global properties of bounded curves
 //! in 3D space.
 //! It can be an elementary curve from package gp such as
-//! Lin, Circ, Elips, Parab .
+//! Lin, Circ, Elips, Parab
 class GProp_CelGProps : public GProp_GProps
 {
 public:

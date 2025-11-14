@@ -61,27 +61,27 @@ class TopoDS_Face;
 
 //!
 //! The class represents the Intersection phase of the
-//! Boolean Operations algorithm.<br>
+//! Boolean Operations algorithm.
 //! It performs the pairwise intersection of the sub-shapes of
-//! the arguments in the following order:<br>
-//! 1. Vertex/Vertex;<br>
-//! 2. Vertex/Edge;<br>
-//! 3. Edge/Edge;<br>
-//! 4. Vertex/Face;<br>
-//! 5. Edge/Face;<br>
-//! 6. Face/Face.<br>
+//! the arguments in the following order:
+//! 1. Vertex/Vertex;
+//! 2. Vertex/Edge;
+//! 3. Edge/Edge;
+//! 4. Vertex/Face;
+//! 5. Edge/Face;
+//! 6. Face/Face.
 //!
 //! The results of intersection are stored into the Data Structure
-//! of the algorithm.<br>
+//! of the algorithm.
 //!
 //! Additionally to the options provided by the parent class,
-//! the algorithm has the following options:<br>
+//! the algorithm has the following options:
 //! - *Section attributes* - allows to customize the intersection of the faces
-//!                          (avoid approximation or building 2d curves);<br>
+//!                          (avoid approximation or building 2d curves);
 //! - *Safe processing mode* - allows to avoid modification of the input
-//!                            shapes during the operation (by default it is off);<br>
+//!                            shapes during the operation (by default it is off);
 //! - *Gluing options* - allows to speed up the calculation on the special
-//!                      cases, in which some sub-shapes are coincide.<br>
+//!                      cases, in which some sub-shapes are coincide.
 //!
 //! The algorithm returns the following Warning statuses:
 //! - *BOPAlgo_AlertSelfInterferingShape* - in case some of the argument shapes are self-interfering
@@ -101,9 +101,9 @@ class TopoDS_Face;
 //!
 //! The algorithm returns the following Error alerts:
 //! - *BOPAlgo_AlertTooFewArguments* - in case there are no enough arguments to
-//!                      perform the operation;<br>
-//! - *BOPAlgo_AlertIntersectionFailed* - in case some unexpected error occurred;<br>
-//! - *BOPAlgo_AlertNullInputShapes* - in case some of the arguments are null shapes.<br>
+//!                      perform the operation;
+//! - *BOPAlgo_AlertIntersectionFailed* - in case some unexpected error occurred;
+//! - *BOPAlgo_AlertNullInputShapes* - in case some of the arguments are null shapes.
 //!
 class BOPAlgo_PaveFiller : public BOPAlgo_Algo
 {
@@ -194,12 +194,12 @@ protected:
                                    const Message_ProgressRange&                        theRange,
                                    const Standard_Boolean bAddInterfs = Standard_True);
 
-  //! Splits the Pave Blocks of the given edges with the extra paves.<br>
+  //! Splits the Pave Blocks of the given edges with the extra paves.
   //! The method also builds the shrunk data for the new pave blocks and
   //! in case there is no valid range on the pave block, the vertices of
-  //! this pave block will be united making SD vertex.<br>
+  //! this pave block will be united making SD vertex.
   //! Parameter <theAddInterfs> defines whether this interference will be added
-  //! into common table of interferences or not.<br>
+  //! into common table of interferences or not.
   //! If some of the Pave Blocks are forming the Common Blocks, the splits
   //! of the Pave Blocks will also form a Common Block.
   Standard_EXPORT void SplitPaveBlocks(const TColStd_MapOfInteger& theMEdges,
@@ -539,12 +539,12 @@ protected:
   Standard_EXPORT void PutSEInOtherFaces(const Message_ProgressRange& theRange);
 
   //! Analyzes the results of interferences of sub-shapes of the shapes
-  //! looking for self-interfering entities by the following rules:<br>
-  //! 1. The Faces of the same shape considered interfering in case they:<br>
-  //!    - Interfere with the other shapes in the same place (in the same vertex) or;<br>
+  //! looking for self-interfering entities by the following rules:
+  //! 1. The Faces of the same shape considered interfering in case they:
+  //!    - Interfere with the other shapes in the same place (in the same vertex) or;
   //!    - Included in the same common block.
   //! 2. The Faces of the same shape considered interfering in case they
-  //!    share the IN or SECTION edges.<br>
+  //!    share the IN or SECTION edges.
   //! In case self-interference is found the warning is added.
   Standard_EXPORT void CheckSelfInterference();
 

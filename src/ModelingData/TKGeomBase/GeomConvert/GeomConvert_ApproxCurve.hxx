@@ -62,21 +62,21 @@ public:
   //! Returns the BSpline curve resulting from the approximation algorithm.
   Standard_EXPORT Handle(Geom_BSplineCurve) Curve() const;
 
-  //! returns  Standard_True  if  the  approximation  has
-  //! been  done  within  required tolerance
+  //! returns Standard_True if the approximation has
+  //! been done within required tolerance
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-  //! Returns  Standard_True if the approximation did come out
-  //! with a result that  is not NECESSARELY within the required tolerance
+  //! Returns Standard_True if the approximation did come out
+  //! with a result that is not NECESSARELY within the required tolerance
   Standard_EXPORT Standard_Boolean HasResult() const;
 
   //! Returns the greatest distance between a point on the
   //! source conic and the BSpline curve resulting from the
   //! approximation. (>0 when an approximation
-  //! has  been  done, 0  if  no  approximation)
+  //! has been done, 0 if no approximation)
   Standard_EXPORT Standard_Real MaxError() const;
 
-  //! Print on the stream  o  information about the object
+  //! Print on the stream o information about the object
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:

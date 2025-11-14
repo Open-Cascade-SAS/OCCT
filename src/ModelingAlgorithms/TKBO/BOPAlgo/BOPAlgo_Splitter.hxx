@@ -22,27 +22,27 @@
 #include <BOPAlgo_ToolsProvider.hxx>
 
 //! The **Splitter algorithm** is the algorithm for splitting a group of
-//! arbitrary shapes by the other group of arbitrary shapes.<br>
-//! The arguments of the operation are divided on two groups:<br>
-//! *Objects* - shapes that will be split;<br>
-//! *Tools*   - shapes by which the *Objects* will be split.<br>
+//! arbitrary shapes by the other group of arbitrary shapes.
+//! The arguments of the operation are divided on two groups:
+//! *Objects* - shapes that will be split;
+//! *Tools*   - shapes by which the *Objects* will be split.
 //! The result of the operation contains only the split parts
-//! of the shapes from the group of *Objects*.<br>
+//! of the shapes from the group of *Objects*.
 //! The split parts of the shapes from the group of *Tools* are excluded
-//! from the result.<br>
+//! from the result.
 //! The shapes can be split by the other shapes from the same group
 //! (in case these shapes are interfering).
 //!
 //! The class is a General Fuse based algorithm. Thus, all options
 //! of the General Fuse algorithm such as Fuzzy mode, safe processing mode,
 //! parallel processing mode, gluing mode and history support are also
-//! available in this algorithm.<br>
+//! available in this algorithm.
 //! There is no requirement on the existence of the *Tools* shapes.
 //! And if there are no *Tools* shapes, the result of the splitting
 //! operation will be equivalent to the General Fuse result.
 //!
 //! The implementation of the algorithm is minimal - only the methods
-//! CheckData() and Perform() have been overridden.<br>
+//! CheckData() and Perform() have been overridden.
 //! The method BOPAlgo_Builder::BuildResult(), which adds the split parts of the arguments
 //! into result, does not have to be overridden, because its native implementation
 //! performs the necessary actions for the Splitter algorithm - it adds

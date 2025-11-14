@@ -34,7 +34,7 @@ class ShapeUpgrade_ClosedFaceDivide : public ShapeUpgrade_FaceDivide
 {
 
 public:
-  //! Creates empty  constructor.
+  //! Creates empty constructor.
   Standard_EXPORT ShapeUpgrade_ClosedFaceDivide();
 
   //! Initialize by a Face.

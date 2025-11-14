@@ -55,7 +55,7 @@ DEFINE_STANDARD_HANDLE(ShapeFix_ComposeShell, ShapeFix_Root)
 //!
 //! It splits (if necessary) original face to several ones by
 //! splitting lines which are joint lines on a supplied grid of
-//! surfaces (U- and V- isolines of the  composite surface).
+//! surfaces (U- and V- isolines of the composite surface).
 //! There are two modes of work, which differ in the way of
 //! handling faces on periodic surfaces:
 //!

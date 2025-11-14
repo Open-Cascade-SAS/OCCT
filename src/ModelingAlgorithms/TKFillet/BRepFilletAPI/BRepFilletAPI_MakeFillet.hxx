@@ -72,7 +72,7 @@ public:
   //! InternalContinuity to produce fillet'surfaces with
   //! an continuity Ci (i=0,1 or 2).
   //! By defaultInternalContinuity = GeomAbs_C1.
-  //! AngularTolerance  is the G1 tolerance between fillet
+  //! AngularTolerance is the G1 tolerance between fillet
   //! and support'faces.
   Standard_EXPORT void SetContinuity(const GeomAbs_Shape InternalContinuity,
                                      const Standard_Real AngularTolerance);
@@ -142,7 +142,7 @@ public:
   //! in the array UandR as follows:
   //! -   the X coordinate of a point in UandR defines a
   //! relative parameter on the contour (i.e. a parameter between 0 and 1),
-  //! -          the Y coordinate of a point in UandR gives the
+  //! -   the Y coordinate of a point in UandR gives the
   //! corresponding value of the radius, and the radius evolves
   //! between the first and last vertices of the contour of index IC.
   Standard_EXPORT void SetRadius(const TColgp_Array1OfPnt2d& UandR,

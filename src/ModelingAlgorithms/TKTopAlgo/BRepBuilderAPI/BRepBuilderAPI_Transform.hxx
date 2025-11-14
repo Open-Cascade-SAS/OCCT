@@ -49,10 +49,10 @@ public:
 
   //! Creates a transformation from the gp_Trsf <theTrsf>, and
   //! applies it to the shape <theShape>. If the transformation
-  //! is  direct   and isometric (determinant  =  1) and
-  //! <theCopyGeom> =  Standard_False,  the resulting shape  is
-  //! <theShape> on   which  a  new  location has    been  set.
-  //! Otherwise,  the   transformation is applied   on a
+  //! is direct and isometric (determinant = 1) and
+  //! <theCopyGeom> = Standard_False, the resulting shape is
+  //! <theShape> on which a new location has been set.
+  //! Otherwise, the transformation is applied on a
   //! duplication of <theShape>.
   //! If <theCopyMesh> is true, the triangulation will be copied,
   //! and the copy will be assigned to the result shape.
@@ -82,7 +82,7 @@ public:
   //! Returns the modified shape corresponding to <S>.
   Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const Standard_OVERRIDE;
 
-  //! Returns the list  of shapes modified from the shape
+  //! Returns the list of shapes modified from the shape
   //! <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
     Standard_OVERRIDE;

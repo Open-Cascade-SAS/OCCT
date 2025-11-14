@@ -45,8 +45,8 @@ public:
                                   const Standard_Boolean Canonize = Standard_True);
 
   //! Builds a semi-infinite or an infinite prism of base S.
-  //! If Copy is true S is copied.  If Inf is true the prism
-  //! is infinite, if Inf is false the  prism is infinite in
+  //! If Copy is true S is copied. If Inf is true the prism
+  //! is infinite, if Inf is false the prism is infinite in
   //! the direction D. If Canonize is true then generated surfaces
   //! are attempted to be canonized in simple types
   Standard_EXPORT BRepSweep_Prism(const TopoDS_Shape&    S,
@@ -58,27 +58,27 @@ public:
   //! Returns the TopoDS Shape attached to the prism.
   Standard_EXPORT TopoDS_Shape Shape();
 
-  //! Returns    the  TopoDS  Shape   generated  with  aGenS
-  //! (subShape  of the generating shape).
+  //! Returns the TopoDS Shape generated with aGenS
+  //! (subShape of the generating shape).
   Standard_EXPORT TopoDS_Shape Shape(const TopoDS_Shape& aGenS);
 
-  //! Returns the  TopoDS  Shape of the bottom of the prism.
+  //! Returns the TopoDS Shape of the bottom of the prism.
   Standard_EXPORT TopoDS_Shape FirstShape();
 
-  //! Returns the TopoDS Shape of the bottom  of the  prism.
-  //! generated  with  aGenS  (subShape  of  the  generating
+  //! Returns the TopoDS Shape of the bottom of the prism.
+  //! generated with aGenS (subShape of the generating
   //! shape).
   Standard_EXPORT TopoDS_Shape FirstShape(const TopoDS_Shape& aGenS);
 
   //! Returns the TopoDS Shape of the top of the prism.
   Standard_EXPORT TopoDS_Shape LastShape();
 
-  //! Returns the  TopoDS  Shape of the top  of  the  prism.
-  //! generated  with  aGenS  (subShape  of  the  generating
+  //! Returns the TopoDS Shape of the top of the prism.
+  //! generated with aGenS (subShape of the generating
   //! shape).
   Standard_EXPORT TopoDS_Shape LastShape(const TopoDS_Shape& aGenS);
 
-  //! Returns the Vector of the Prism,  if it is an infinite
+  //! Returns the Vector of the Prism, if it is an infinite
   //! prism the Vec is unitar.
   Standard_EXPORT gp_Vec Vec() const;
 

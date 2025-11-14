@@ -26,7 +26,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
-//! This class  provides tools to compute minimum distance
+//! This class provides tools to compute minimum distance
 //! between two Shapes (Compound,CompSolid, Solid, Shell, Face, Wire, Edge, Vertex).
 class BRepExtrema_DistShapeShape
 {
@@ -37,8 +37,8 @@ public:
   Standard_EXPORT BRepExtrema_DistShapeShape();
 
   //! create tool and computation of the minimum distance (value and pair of points)
-  //! using default deflection in single thread mode. <br>
-  //! Default deflection value is Precision::Confusion(). <br>
+  //! using default deflection in single thread mode.
+  //! Default deflection value is Precision::Confusion().
   //! @param Shape1 - the first shape for distance computation
   //! @param Shape2 - the second shape for distance computation
   //! @param F and @param A are not used in computation and are obsolete.
@@ -50,8 +50,8 @@ public:
     const Extrema_ExtAlgo        A        = Extrema_ExtAlgo_Grad,
     const Message_ProgressRange& theRange = Message_ProgressRange());
   //! create tool and computation of the minimum distance
-  //! (value and pair of points) in single thread mode. <br>
-  //! Default deflection value is Precision::Confusion(). <br>
+  //! (value and pair of points) in single thread mode.
+  //! Default deflection value is Precision::Confusion().
   //! @param Shape1 - the first shape for distance computation
   //! @param Shape2 - the second shape for distance computation
   //! @param theDeflection - the presition of distance computation
@@ -65,98 +65,98 @@ public:
     const Extrema_ExtAlgo        A        = Extrema_ExtAlgo_Grad,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
-  //! Sets deflection to computation of the minimum distance <br>
+  //! Sets deflection to computation of the minimum distance
   void SetDeflection(const Standard_Real theDeflection) { myEps = theDeflection; }
 
-  //! load first shape into extrema <br>
+  //! load first shape into extrema
   Standard_EXPORT void LoadS1(const TopoDS_Shape& Shape1);
 
-  //! load second shape into extrema <br>
+  //! load second shape into extrema
   Standard_EXPORT void LoadS2(const TopoDS_Shape& Shape1);
 
-  //! computation of  the minimum  distance  (value  and <br>
-  //!          couple  of points). Parameter theDeflection is used <br>
-  //!          to specify a maximum deviation of extreme distances <br>
-  //!          from the minimum one. <br>
-  //!          Returns IsDone status. <br>
+  //! computation of the minimum distance (value and
+  //!          couple of points). Parameter theDeflection is used
+  //!          to specify a maximum deviation of extreme distances
+  //!          from the minimum one.
+  //!          Returns IsDone status.
   //! theRange - the progress indicator of algorithm
   Standard_EXPORT Standard_Boolean
     Perform(const Message_ProgressRange& theRange = Message_ProgressRange());
 
-  //! True if the minimum distance is found. <br>
+  //! True if the minimum distance is found.
   Standard_Boolean IsDone() const { return myIsDone; }
 
-  //! Returns the number of solutions satisfying the minimum distance. <br>
+  //! Returns the number of solutions satisfying the minimum distance.
   Standard_Integer NbSolution() const { return mySolutionsShape1.Length(); }
 
-  //! Returns the value of the minimum distance. <br>
+  //! Returns the value of the minimum distance.
   Standard_EXPORT Standard_Real Value() const;
 
-  //! True if one of the shapes is a solid and the other shape <br>
-  //! is completely or partially inside the solid. <br>
+  //! True if one of the shapes is a solid and the other shape
+  //! is completely or partially inside the solid.
   Standard_Boolean InnerSolution() const { return myInnerSol; }
 
-  //! Returns the Point corresponding to the <N>th solution on the first Shape <br>
+  //! Returns the Point corresponding to the <N>th solution on the first Shape
   const gp_Pnt& PointOnShape1(const Standard_Integer N) const
   {
     return mySolutionsShape1.Value(N).Point();
   }
 
-  //! Returns the Point corresponding to the <N>th solution on the second Shape <br>
+  //! Returns the Point corresponding to the <N>th solution on the second Shape
   const gp_Pnt& PointOnShape2(const Standard_Integer N) const
   {
     return mySolutionsShape2.Value(N).Point();
   }
 
-  //! gives the type of the support where the Nth solution on the first shape is situated: <br>
-  //!   IsVertex => the Nth solution on the first shape is a Vertex <br>
-  //!   IsOnEdge => the Nth soluion on the first shape is on a Edge <br>
-  //!   IsInFace => the Nth solution on the first shape is inside a face <br>
-  //! the corresponding support is obtained by the method SupportOnShape1 <br>
+  //! gives the type of the support where the Nth solution on the first shape is situated:
+  //!   IsVertex => the Nth solution on the first shape is a Vertex
+  //!   IsOnEdge => the Nth soluion on the first shape is on a Edge
+  //!   IsInFace => the Nth solution on the first shape is inside a face
+  //! the corresponding support is obtained by the method SupportOnShape1
   BRepExtrema_SupportType SupportTypeShape1(const Standard_Integer N) const
   {
     return mySolutionsShape1.Value(N).SupportKind();
   }
 
-  //! gives the type of the support where the Nth solution on the second shape is situated: <br>
-  //!   IsVertex => the Nth solution on the second shape is a Vertex <br>
-  //!   IsOnEdge => the Nth soluion on the secondt shape is on a Edge <br>
-  //!   IsInFace => the Nth solution on the second shape is inside a face <br>
-  //! the corresponding support is obtained by the method SupportOnShape2 <br>
+  //! gives the type of the support where the Nth solution on the second shape is situated:
+  //!   IsVertex => the Nth solution on the second shape is a Vertex
+  //!   IsOnEdge => the Nth soluion on the secondt shape is on a Edge
+  //!   IsInFace => the Nth solution on the second shape is inside a face
+  //! the corresponding support is obtained by the method SupportOnShape2
   BRepExtrema_SupportType SupportTypeShape2(const Standard_Integer N) const
   {
     return mySolutionsShape2.Value(N).SupportKind();
   }
 
-  //! gives the support where the Nth solution on the first shape is situated. <br>
-  //! This support can be a Vertex, an Edge or a Face. <br>
+  //! gives the support where the Nth solution on the first shape is situated.
+  //! This support can be a Vertex, an Edge or a Face.
   Standard_EXPORT TopoDS_Shape SupportOnShape1(const Standard_Integer N) const;
 
-  //! gives the support where the Nth solution on the second shape is situated. <br>
-  //! This support can be a Vertex, an Edge or a Face. <br>
+  //! gives the support where the Nth solution on the second shape is situated.
+  //! This support can be a Vertex, an Edge or a Face.
   Standard_EXPORT TopoDS_Shape SupportOnShape2(const Standard_Integer N) const;
 
-  //! gives the corresponding parameter t if the Nth solution <br>
-  //! is situated on an Edge of the first shape <br>
+  //! gives the corresponding parameter t if the Nth solution
+  //! is situated on an Edge of the first shape
   Standard_EXPORT void ParOnEdgeS1(const Standard_Integer N, Standard_Real& t) const;
 
-  //! gives the corresponding parameter t if the Nth solution <br>
-  //! is situated on an Edge of the first shape <br>
+  //! gives the corresponding parameter t if the Nth solution
+  //! is situated on an Edge of the first shape
   Standard_EXPORT void ParOnEdgeS2(const Standard_Integer N, Standard_Real& t) const;
 
-  //! gives the corresponding parameters (U,V) if the Nth solution <br>
-  //! is situated on an face of the first shape <br>
+  //! gives the corresponding parameters (U,V) if the Nth solution
+  //! is situated on an face of the first shape
   Standard_EXPORT void ParOnFaceS1(const Standard_Integer N,
                                    Standard_Real&         u,
                                    Standard_Real&         v) const;
 
-  //! gives the corresponding parameters (U,V) if the Nth solution <br>
-  //! is situated on an Face of the second shape <br>
+  //! gives the corresponding parameters (U,V) if the Nth solution
+  //! is situated on an Face of the second shape
   Standard_EXPORT void ParOnFaceS2(const Standard_Integer N,
                                    Standard_Real&         u,
                                    Standard_Real&         v) const;
 
-  //! Prints on the stream o information on the current state of the object. <br>
+  //! Prints on the stream o information on the current state of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
   //! Sets unused parameter
@@ -175,14 +175,14 @@ public:
   Standard_Boolean IsMultiThread() const { return myIsMultiThread; }
 
 private:
-  //! computes the minimum distance between two maps of shapes (Face,Edge,Vertex) <br>
+  //! computes the minimum distance between two maps of shapes (Face,Edge,Vertex)
   Standard_Boolean DistanceMapMap(const TopTools_IndexedMapOfShape& Map1,
                                   const TopTools_IndexedMapOfShape& Map2,
                                   const Bnd_Array1OfBox&            LBox1,
                                   const Bnd_Array1OfBox&            LBox2,
                                   const Message_ProgressRange&      theRange);
 
-  //! computes the minimum distance between two maps of vertices <br>
+  //! computes the minimum distance between two maps of vertices
   Standard_Boolean DistanceVertVert(const TopTools_IndexedMapOfShape& theMap1,
                                     const TopTools_IndexedMapOfShape& theMap2,
                                     const Message_ProgressRange&      theRange);

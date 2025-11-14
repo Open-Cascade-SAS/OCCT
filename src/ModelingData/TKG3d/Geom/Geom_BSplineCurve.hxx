@@ -277,7 +277,7 @@ public:
   //! knots table.
   //! pole insertion and pole removing
   //! this operation is limited to the Uniform or QuasiUniform
-  //! BSplineCurve. The knot values are modified . If the BSpline is
+  //! BSplineCurve. The knot values are modified. If the BSpline is
   //! NonUniform or Piecewise Bezier an exception Construction error
   //! is raised.
   Standard_EXPORT Standard_Boolean RemoveKnot(const Standard_Integer Index,
@@ -384,7 +384,7 @@ public:
   Standard_EXPORT void SetOrigin(const Standard_Integer Index);
 
   //! Set the origin of a periodic curve at Knot U. If U
-  //! is  not a  knot  of  the  BSpline  a  new knot  is
+  //! is not a knot of the BSpline a new knot is
   //! inserted. KnotVector and poles are modified.
   //! Raised if the curve is not periodic
   Standard_EXPORT void SetOrigin(const Standard_Real U, const Standard_Real Tol);
@@ -551,7 +551,7 @@ public:
   //! The following functions compute the point of parameter U
   //! and the derivatives at this point on the B-spline curve
   //! arc defined between the knot FromK1 and the knot ToK2.
-  //! U can be out of bounds [Knot (FromK1),  Knot (ToK2)] but
+  //! U can be out of bounds [Knot (FromK1), Knot (ToK2)] but
   //! for the computation we only use the definition of the curve
   //! between these two knots. This method is useful to compute
   //! local derivative, if the order of continuity of the whole
@@ -746,12 +746,12 @@ public:
   //! Locates the parametric value U in the sequence of knots.
   //! If "WithKnotRepetition" is True we consider the knot's
   //! representation with repetition of multiple knot value,
-  //! otherwise  we consider the knot's representation with
+  //! otherwise we consider the knot's representation with
   //! no repetition of multiple knot values.
   //! Knots (I1) <= U <= Knots (I2)
-  //! . if I1 = I2  U is a knot value (the tolerance criterion
+  //! . if I1 = I2 U is a knot value (the tolerance criterion
   //! ParametricTolerance is used).
-  //! . if I1 < 1  => U < Knots (1) - Abs(ParametricTolerance)
+  //! . if I1 < 1 => U < Knots (1) - Abs(ParametricTolerance)
   //! . if I2 > NbKnots => U > Knots (NbKnots) + Abs(ParametricTolerance)
   Standard_EXPORT void LocateU(const Standard_Real    U,
                                const Standard_Real    ParametricTolerance,
@@ -838,7 +838,7 @@ public:
 
 protected:
 private:
-  //! Recompute  the  flatknots,  the knotsdistribution, the continuity.
+  //! Recompute the flatknots, the knotsdistribution, the continuity.
   Standard_EXPORT void UpdateKnots();
 
   Standard_Boolean                 rational;

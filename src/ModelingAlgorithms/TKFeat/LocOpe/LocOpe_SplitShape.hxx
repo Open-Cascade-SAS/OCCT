@@ -42,7 +42,7 @@ public:
   //! Empty constructor.
   LocOpe_SplitShape();
 
-  //! Creates the process  with the shape <S>.
+  //! Creates the process with the shape <S>.
   LocOpe_SplitShape(const TopoDS_Shape& S);
 
   //! Initializes the process on the shape <S>.

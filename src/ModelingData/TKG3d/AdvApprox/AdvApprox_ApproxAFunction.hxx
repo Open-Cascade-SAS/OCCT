@@ -58,7 +58,7 @@ public:
   //! the order in which each Subspace appears should be consistent
   //! with the tolerances given in the create function and the
   //! results will be given in that order as well that is :
-  //! Curve2d(n)  will correspond to the nth entry
+  //! Curve2d(n) will correspond to the nth entry
   //! described by Num2DSS, Curve(n) will correspond to
   //! the nth entry described by Num3DSS
   //! The same type of schema applies to the Poles1d, Poles2d and

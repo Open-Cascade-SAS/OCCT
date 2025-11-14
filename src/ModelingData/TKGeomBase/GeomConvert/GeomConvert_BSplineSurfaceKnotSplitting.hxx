@@ -33,9 +33,9 @@ class Geom_BSplineSurface;
 //! SplitBSplineSurface.
 //! For a B-spline surface the discontinuities are localised at
 //! the knot values. Between two knots values the B-spline is
-//! infinitely continuously differentiable.  For each parametric
+//! infinitely continuously differentiable. For each parametric
 //! direction at a knot of range index the continuity in this
-//! direction is equal to :  Degree - Mult (Index)   where  Degree
+//! direction is equal to: Degree - Mult (Index) where Degree
 //! is the degree of the basis B-spline functions and Mult the
 //! multiplicity of the knot of range Index in the given direction.
 //! If for your computation you need to have B-spline surface with a
@@ -125,7 +125,7 @@ public:
                                  TColStd_Array1OfInteger& VSplit) const;
 
   //! Returns the split knot of index UIndex
-  //! to the split knots table for the u  parametric direction
+  //! to the split knots table for the u parametric direction
   //! computed in this framework. The returned value is
   //! an index in the knots table relative to the u
   //! parametric direction of the BSpline surface analysed by this algorithm.
@@ -134,12 +134,12 @@ public:
   //! this framework, the corresponding knot gives the
   //! parameter of one of the bounding curves of the surface.
   //! Exceptions
-  //! Standard_RangeError if UIndex  is less than 1 or greater than the number
+  //! Standard_RangeError if UIndex is less than 1 or greater than the number
   //! of split knots for the u parametric direction computed in this framework.
   Standard_EXPORT Standard_Integer USplitValue(const Standard_Integer UIndex) const;
 
   //! Returns the split knot of index VIndex
-  //! to the split knots table for the v  parametric direction
+  //! to the split knots table for the v parametric direction
   //! computed in this framework. The returned value is
   //! an index in the knots table relative to the v
   //! parametric direction of the BSpline surface analysed by this algorithm.
@@ -148,7 +148,7 @@ public:
   //! this framework, the corresponding knot gives the
   //! parameter of one of the bounding curves of the surface.
   //! Exceptions
-  //! Standard_RangeError if VIndex  is less than 1 or greater than the number
+  //! Standard_RangeError if VIndex is less than 1 or greater than the number
   //! of split knots for the v parametric direction computed in this framework.
   Standard_EXPORT Standard_Integer VSplitValue(const Standard_Integer VIndex) const;
 

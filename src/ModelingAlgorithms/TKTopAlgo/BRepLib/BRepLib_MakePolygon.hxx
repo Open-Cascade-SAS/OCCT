@@ -38,8 +38,8 @@ class TopoDS_Wire;
 //!
 //! - any number of vertices.
 //!
-//! When a point or vertex is added to the  polygon if
-//! it is identic  to the previous  point no  edge  is
+//! When a point or vertex is added to the polygon if
+//! it is identic to the previous point no edge is
 //! built. The method added can be used to test it.
 class BRepLib_MakePolygon : public BRepLib_MakeShape
 {
@@ -79,7 +79,7 @@ public:
 
   Standard_EXPORT void Add(const TopoDS_Vertex& V);
 
-  //! Returns  True if  the last   vertex  or point  was
+  //! Returns True if the last vertex or point was
   //! successfully added.
   Standard_EXPORT Standard_Boolean Added() const;
 

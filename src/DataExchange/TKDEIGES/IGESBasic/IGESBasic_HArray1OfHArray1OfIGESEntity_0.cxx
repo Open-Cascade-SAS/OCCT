@@ -18,10 +18,39 @@
 
 #include <Standard_Type.hxx>
 
-#define Handle_TheKey Handle(IGESData_HArray1OfIGESEntity)
-#define TheKey IGESData_HArray1OfIGESEntity
-#define TheKey_hxx <IGESData_HArray1OfIGESEntity.hxx>
-#define Interface_JaggedArray IGESBasic_HArray1OfHArray1OfIGESEntity
-#define Interface_JaggedArray_hxx <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
-#define Handle_Interface_JaggedArray Handle(IGESBasic_HArray1OfHArray1OfIGESEntity)
-#include <Interface_JaggedArray.gxx>
+IGESBasic_HArray1OfHArray1OfIGESEntity::IGESBasic_HArray1OfHArray1OfIGESEntity(
+  const Standard_Integer low,
+  const Standard_Integer up)
+    : thelist(low, up)
+{
+  Handle(Standard_Transient) nulo;
+  thelist.Init(nulo);
+}
+
+Standard_Integer IGESBasic_HArray1OfHArray1OfIGESEntity::Lower() const
+{
+  return thelist.Lower();
+}
+
+Standard_Integer IGESBasic_HArray1OfHArray1OfIGESEntity::Upper() const
+{
+  return thelist.Upper();
+}
+
+Standard_Integer IGESBasic_HArray1OfHArray1OfIGESEntity::Length() const
+{
+  return thelist.Length();
+}
+
+void IGESBasic_HArray1OfHArray1OfIGESEntity::SetValue(
+  const Standard_Integer                      num,
+  const Handle(IGESData_HArray1OfIGESEntity)& val)
+{
+  thelist.SetValue(num, val);
+}
+
+Handle(IGESData_HArray1OfIGESEntity) IGESBasic_HArray1OfHArray1OfIGESEntity::Value(
+  const Standard_Integer num) const
+{
+  return Handle(IGESData_HArray1OfIGESEntity)::DownCast(thelist.Value(num));
+}

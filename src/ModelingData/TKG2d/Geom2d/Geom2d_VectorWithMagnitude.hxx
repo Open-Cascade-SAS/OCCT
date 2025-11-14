@@ -77,7 +77,7 @@ public:
     return Added(Other);
   }
 
-  //! Computes the cross product  between <me> and Other
+  //! Computes the cross product between <me> and Other
   //! <me> ^ Other. A new vector is returned.
   Standard_EXPORT Standard_Real Crossed(const Handle(Geom2d_Vector)& Other) const Standard_OVERRIDE;
 

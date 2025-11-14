@@ -46,7 +46,7 @@ class Bisector_BisecAna : public Bisector_Curve
 public:
   Standard_EXPORT Bisector_BisecAna();
 
-  //! Performs  the bisecting line  between the  curves
+  //! Performs the bisecting line between the curves
   //! <Cu1> and <Cu2>.
   //! <oncurve> is True if the point <P> is common to <Cu1>
   //! and <Cu2>.
@@ -60,7 +60,7 @@ public:
                                const Standard_Real         Tolerance,
                                const Standard_Boolean      oncurve = Standard_True);
 
-  //! Performs  the bisecting line  between the  curve
+  //! Performs the bisecting line between the curve
   //! <Cu1> and the point <Pnt>.
   //! <oncurve> is True if the point <P> is the point <Pnt>.
   Standard_EXPORT void Perform(const Handle(Geom2d_Curve)& Cu,
@@ -72,7 +72,7 @@ public:
                                const Standard_Real         Tolerance,
                                const Standard_Boolean      oncurve = Standard_True);
 
-  //! Performs  the bisecting line  between the  curve
+  //! Performs the bisecting line between the curve
   //! <Cu> and the point <Pnt>.
   //! <oncurve> is True if the point <P> is the point <Pnt>.
   Standard_EXPORT void Perform(const Handle(Geom2d_Point)& Pnt,
@@ -84,8 +84,8 @@ public:
                                const Standard_Real         Tolerance,
                                const Standard_Boolean      oncurve = Standard_True);
 
-  //! Performs  the bisecting line  between the two points
-  //! <Pnt1>  and <Pnt2>.
+  //! Performs the bisecting line between the two points
+  //! <Pnt1> and <Pnt2>.
   Standard_EXPORT void Perform(const Handle(Geom2d_Point)& Pnt1,
                                const Handle(Geom2d_Point)& Pnt2,
                                const gp_Pnt2d&             P,
@@ -106,7 +106,7 @@ public:
   //! nearest from <Cu> than the extremitis of <Cu>.
   Standard_EXPORT void SetTrim(const Handle(Geom2d_Curve)& Cu);
 
-  //! Trim <me> by a domain defined by uf  and  ul
+  //! Trim <me> by a domain defined by uf and ul
   Standard_EXPORT void SetTrim(const Standard_Real uf, const Standard_Real ul);
 
   Standard_EXPORT void Reverse() Standard_OVERRIDE;
@@ -157,16 +157,16 @@ public:
 
   Standard_EXPORT Standard_Real ParameterOfEndPoint() const;
 
-  //! If necessary,  breaks the  curve in  intervals  of
-  //! continuity  <C1>.    And  returns   the number   of
+  //! If necessary, breaks the curve in intervals of
+  //! continuity <C1>. And returns the number of
   //! intervals.
   Standard_EXPORT Standard_Integer NbIntervals() const Standard_OVERRIDE;
 
-  //! Returns  the  first  parameter    of  the  current
+  //! Returns the first parameter of the current
   //! interval.
   Standard_EXPORT Standard_Real IntervalFirst(const Standard_Integer Index) const Standard_OVERRIDE;
 
-  //! Returns  the  last  parameter    of  the  current
+  //! Returns the last parameter of the current
   //! interval.
   Standard_EXPORT Standard_Real IntervalLast(const Standard_Integer Index) const Standard_OVERRIDE;
 

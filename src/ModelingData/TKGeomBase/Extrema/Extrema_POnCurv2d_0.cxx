@@ -18,8 +18,19 @@
 
 #include <gp_Pnt2d.hxx>
 
-#define Pnt gp_Pnt2d
-#define Pnt_hxx <gp_Pnt2d.hxx>
-#define Extrema_Point Extrema_POnCurv2d
-#define Extrema_Point_hxx <Extrema_POnCurv2d.hxx>
-#include <Extrema_Point.gxx>
+Extrema_POnCurv2d::Extrema_POnCurv2d()
+    : myU(0.0)
+{
+}
+
+Extrema_POnCurv2d::Extrema_POnCurv2d(const Standard_Real U, const gp_Pnt2d& P)
+{
+  myU = U;
+  myP = P;
+}
+
+void Extrema_POnCurv2d::SetValues(const Standard_Real U, const gp_Pnt2d& P)
+{
+  myU = U;
+  myP = P;
+}

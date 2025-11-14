@@ -65,7 +65,7 @@ public:
   Standard_EXPORT void Read(Standard_IStream&            IS,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  //! Dumps the surface on the stream,  if compact is True
+  //! Dumps the surface on the stream, if compact is True
   //! use the compact format that can be read back.
   Standard_EXPORT static void PrintSurface(const Handle(Geom_Surface)& S,
                                            Standard_OStream&           OS,

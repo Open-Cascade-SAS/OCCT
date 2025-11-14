@@ -50,7 +50,7 @@ public:
   //! is always 2
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
 
-  //! returns the function description code . Default = 0
+  //! returns the function description code. Default = 0
   Standard_EXPORT Standard_Integer FuncDescriptionCode() const;
 
   //! returns the function description

@@ -21,12 +21,24 @@
 #include <HLRBRep_ThePolygonOfInterCSurf.hxx>
 #include <Bnd_Box.hxx>
 
-#define ThePoint gp_Pnt
-#define ThePoint_hxx <gp_Pnt.hxx>
-#define ThePolygon HLRBRep_ThePolygonOfInterCSurf
-#define ThePolygon_hxx <HLRBRep_ThePolygonOfInterCSurf.hxx>
-#define TheBoundingBox Bnd_Box
-#define TheBoundingBox_hxx <Bnd_Box.hxx>
-#define IntCurveSurface_PolygonTool HLRBRep_ThePolygonToolOfInterCSurf
-#define IntCurveSurface_PolygonTool_hxx <HLRBRep_ThePolygonToolOfInterCSurf.hxx>
-#include <IntCurveSurface_PolygonTool.gxx>
+#include <iostream>
+
+void HLRBRep_ThePolygonToolOfInterCSurf::Dump(const HLRBRep_ThePolygonOfInterCSurf& L)
+{
+  static Standard_Integer num = 0;
+  num++;
+  Standard_Integer nbs = HLRBRep_ThePolygonToolOfInterCSurf::NbSegments(L);
+  std::cout << "\npol2d " << num << " " << nbs << std::endl;
+  std::cout << "Deflection " << HLRBRep_ThePolygonToolOfInterCSurf::DeflectionOverEstimation(L)
+            << std::endl;
+
+  for (Standard_Integer i = 1; i <= nbs; i++)
+  {
+    gp_Pnt P(HLRBRep_ThePolygonToolOfInterCSurf::BeginOfSeg(L, i));
+    std::cout << "pnt " << num << " " << i << " " << P.X() << " " << P.Y() << " " << P.Z()
+              << std::endl;
+  }
+  gp_Pnt PF(HLRBRep_ThePolygonToolOfInterCSurf::EndOfSeg(L, nbs));
+  std::cout << "pnt " << num << " " << nbs << " " << PF.X() << " " << PF.Y() << " " << PF.Z()
+            << std::endl;
+}

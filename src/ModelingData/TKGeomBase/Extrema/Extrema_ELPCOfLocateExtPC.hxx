@@ -52,7 +52,7 @@ public:
   //! when g(u)=dF/du=0. The algorithm searches all the
   //! zeros inside the definition range of the curve.
   //! Zeros are searched between uinf and usup.
-  //! Tol  is used to decide to stop the
+  //! Tol is used to decide to stop the
   //! iterations according to the following condition:
   //! if n is the number of iterations,
   //! the algorithm stops when abs(F(Un)-F(Un-1)) < Tol.

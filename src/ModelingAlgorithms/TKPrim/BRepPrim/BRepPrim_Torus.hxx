@@ -50,7 +50,7 @@ public:
                                  const Standard_Real Major,
                                  const Standard_Real Minor);
 
-  //! The surface normal should be directed  towards the
+  //! The surface normal should be directed towards the
   //! outside.
   Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const Standard_OVERRIDE;
 

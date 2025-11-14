@@ -70,7 +70,7 @@ public:
   //! Standard_NoSuchObject if this location is empty.
   Standard_Integer FirstPower() const;
 
-  //! Returns a Location representing  <me> without the
+  //! Returns a Location representing <me> without the
   //! first datum. We have the relation:
   //!
   //! <me> = NextLocation() * FirstDatum() ^ FirstPower()

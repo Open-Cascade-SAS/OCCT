@@ -26,7 +26,6 @@
 #include <BRepMesh_GeomTool.hxx>
 #include <Message_ProgressRange.hxx>
 
-class Bnd_B2d;
 class Bnd_Box2d;
 class BRepMesh_Vertex;
 

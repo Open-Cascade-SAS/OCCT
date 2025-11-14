@@ -119,9 +119,9 @@ public:
   //! Returns zero if the distance between vertex
   //! and edge is less than sum of tolerances and the fuzzy value,
   //! otherwise and for following conditions returns
-  //! negative value: <br>
-  //! 1. the edge is degenerated (-1) <br>
-  //! 2. the edge does not contain 3d curve and pcurves (-2) <br>
+  //! negative value:
+  //! 1. the edge is degenerated (-1)
+  //! 2. the edge does not contain 3d curve and pcurves (-2)
   //! 3. projection algorithm failed (-3)
   Standard_EXPORT Standard_Integer ComputeVE(const TopoDS_Vertex& theV,
                                              const TopoDS_Edge&   theE,
@@ -134,9 +134,9 @@ public:
   //! Returns zero if the distance between vertex and face is
   //! less than or equal the sum of tolerances and the fuzzy value
   //! and the projection point lays inside boundaries of the face.
-  //! For following conditions returns negative value <br>
-  //! 1. projection algorithm failed (-1) <br>
-  //! 2. distance is more than sum of tolerances (-2) <br>
+  //! For following conditions returns negative value
+  //! 1. projection algorithm failed (-1)
+  //! 2. distance is more than sum of tolerances (-2)
   //! 3. projection point out or on the boundaries of face (-3)
   Standard_EXPORT Standard_Integer ComputeVF(const TopoDS_Vertex& theVertex,
                                              const TopoDS_Face&   theFace,

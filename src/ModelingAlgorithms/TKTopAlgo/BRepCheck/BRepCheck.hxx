@@ -27,7 +27,7 @@ class TopoDS_Face;
 class TopoDS_Edge;
 class Adaptor3d_Curve;
 
-//! This package  provides tools to check the validity
+//! This package provides tools to check the validity
 //! of the BRep.
 class BRepCheck
 {

@@ -86,7 +86,7 @@ public:
   //! then "XDirection" is computed as follow :
   //! XDirection = Direction ^ ( Vx ^ Direction).
   //! The main direction is not modified.
-  //! Raised if Vx and "Direction"  are parallel.
+  //! Raised if Vx and "Direction" are parallel.
   Standard_EXPORT void SetXDirection(const gp_Dir& Vx);
 
   //! Changes the "YDirection" of the axis placement, Vy is the
@@ -109,7 +109,7 @@ public:
 
   //! Transforms an axis placement with a Trsf.
   //! The "Location" point, the "XDirection" and the
-  //! "YDirection" are transformed with T.  The resulting
+  //! "YDirection" are transformed with T. The resulting
   //! main "Direction" of <me> is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
   Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;

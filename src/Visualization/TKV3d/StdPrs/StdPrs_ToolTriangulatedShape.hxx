@@ -27,8 +27,8 @@ public:
   //! @return true if all faces within shape are triangulated.
   Standard_EXPORT static Standard_Boolean IsTriangulated(const TopoDS_Shape& theShape);
 
-  //! Checks back faces visibility for specified shape (to activate back-face culling). <br>
-  //! @return true if shape is closed manifold Solid or compound of such Solids. <br>
+  //! Checks back faces visibility for specified shape (to activate back-face culling).
+  //! @return true if shape is closed manifold Solid or compound of such Solids.
   Standard_EXPORT static Standard_Boolean IsClosed(const TopoDS_Shape& theShape);
 
   //! Computes the absolute deflection value depending on the type of deflection in theDrawer:

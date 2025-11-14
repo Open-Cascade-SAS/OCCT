@@ -25,7 +25,7 @@
 #include <BRepPrimAPI_MakeOneAxis.hxx>
 class gp_Ax2;
 
-//! Describes functions to build cylinders or portions of  cylinders.
+//! Describes functions to build cylinders or portions of cylinders.
 //! A MakeCylinder object provides a framework for:
 //! -   defining the construction of a cylinder,
 //! -   implementing the construction algorithm, and
@@ -56,8 +56,8 @@ public:
                                            const Standard_Real R,
                                            const Standard_Real H);
 
-  //! Make a cylinder   of  radius R  and  length H with
-  //! angle  H.
+  //! Make a cylinder of radius R and length H with
+  //! angle H.
   //! Constructs
   //! -   a cylinder of radius R and height H, or
   //! -   a portion of cylinder of radius R and height H, and of

@@ -98,7 +98,7 @@ public:
   //! Writes the geometry calling WriteGeometry.
   //!
   //! Dumps the shapes from last to first.
-  //! For each shape  :
+  //! For each shape:
   //! Write the type.
   //! calls WriteGeometry(S).
   //! Write the flags, the subshapes.

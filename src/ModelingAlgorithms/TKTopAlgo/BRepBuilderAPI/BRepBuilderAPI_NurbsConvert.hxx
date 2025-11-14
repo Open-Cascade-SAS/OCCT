@@ -64,7 +64,7 @@ public:
   //! shapes: you specify them by calling the function Perform again.
   Standard_EXPORT void Perform(const TopoDS_Shape& S, const Standard_Boolean Copy = Standard_False);
 
-  //! Returns the list  of shapes modified from the shape
+  //! Returns the list of shapes modified from the shape
   //! <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S);
 

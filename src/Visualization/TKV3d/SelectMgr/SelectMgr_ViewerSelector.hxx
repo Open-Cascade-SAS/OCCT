@@ -58,7 +58,7 @@ typedef NCollection_DataMap<Standard_Integer, SelectMgr_SelectingVolumeManager>
 //! as priority of the primitive or its depth in the view
 //! relative to that of other primitives.
 //! Note that in 3D, the inheriting framework
-//! StdSelect_ViewerSelector3d   is only to be used
+//! StdSelect_ViewerSelector3d is only to be used
 //! if you do not want to use the services provided by
 //! AIS.
 //! Two tools are available to find and select objects
@@ -114,7 +114,7 @@ public:
 
   //! Return the flag determining precedence of picked depth (distance from eye to entity) over
   //! entity priority in sorted results; TRUE by default. When flag is TRUE, priority will be
-  //! considered only if entities have the same depth  within the tolerance. When flag is FALSE,
+  //! considered only if entities have the same depth within the tolerance. When flag is FALSE,
   //! entities with higher priority will be in front regardless of their depth (like x-ray).
   bool ToPickClosest() const { return myToPreferClosest; }
 

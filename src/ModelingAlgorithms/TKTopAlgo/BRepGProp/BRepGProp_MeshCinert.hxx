@@ -22,8 +22,8 @@
 class gp_Pnt;
 class TopoDS_Edge;
 
-//! Computes the  global properties of
-//! of polylines  represented by set of points.
+//! Computes the global properties of
+//! of polylines represented by set of points.
 //! This class is used for computation of global
 //! properties of edge, which has no exact geometry
 //! (3d or 2d curve), but has any of allowed
@@ -38,8 +38,8 @@ public:
 
   Standard_EXPORT void SetLocation(const gp_Pnt& CLocation);
 
-  //! Computes the  global properties of
-  //! of polylines  represented by set of points.
+  //! Computes the global properties of
+  //! of polylines represented by set of points.
   Standard_EXPORT void Perform(const TColgp_Array1OfPnt& theNodes);
 
   //! Prepare set of 3d points on base of any available edge polygons:

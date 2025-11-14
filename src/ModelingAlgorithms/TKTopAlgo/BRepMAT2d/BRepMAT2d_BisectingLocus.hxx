@@ -41,8 +41,8 @@ class MAT_Arc;
 //!
 //! If the set of lines contains closed lines:
 //! ------------------------------------------
-//! These lines cut the plane  in areas.
-//! One map can  be  computed for each area.
+//! These lines cut the plane in areas.
+//! One map can be computed for each area.
 //!
 //! Bisecting locus computes a map in an area.
 //! The area is defined by a side (MAT_Left,MAT_Right)
@@ -52,7 +52,7 @@ class MAT_Arc;
 //! --------------------------------------------
 //! the map recovers all the plane.
 //!
-//! Warning: Assume the orientation of the   closed  lines  are
+//! Warning: Assume the orientation of the closed lines are
 //! compatible.
 //!
 //! Assume the explo contains only lines located in the
@@ -61,12 +61,12 @@ class MAT_Arc;
 //! Assume a line don't cross itself or an other line.
 //!
 //! Remark:
-//! the  curves  coming   from   the  explorer can   be
-//! decomposed in different parts. It  the  case for the
+//! the curves coming from the explorer can be
+//! decomposed in different parts. It the case for the
 //! curves other than circles or lines.
 //!
-//! The map of bisecting  locus is described by a graph.
-//! - The  BasicsElements  correspond  to elements on
+//! The map of bisecting locus is described by a graph.
+//! - The BasicsElements correspond to elements on
 //! the figure described by the Explorer from BRepMAT2d.
 //! - The Arcs correspond to the bisectors.
 //! - The Nodes are the extremities of the arcs.
@@ -115,12 +115,12 @@ public:
   //! Returns the geometry linked to the <BasicElt>.
   Standard_EXPORT Handle(Geom2d_Geometry) GeomElt(const Handle(MAT_BasicElt)& aBasicElt) const;
 
-  //! Returns the geometry of  type <gp> linked to
+  //! Returns the geometry of type <gp> linked to
   //! the <Node>.
   Standard_EXPORT gp_Pnt2d GeomElt(const Handle(MAT_Node)& aNode) const;
 
-  //! Returns the  geometry of type <Bissec>
-  //! linked   to the arc <ARC>.
+  //! Returns the geometry of type <Bissec>
+  //! linked to the arc <ARC>.
   //! <Reverse> is False when the FirstNode of <anArc>
   //! correspond to the first point of geometry.
   Standard_EXPORT Bisector_Bisec GeomBis(const Handle(MAT_Arc)& anArc,

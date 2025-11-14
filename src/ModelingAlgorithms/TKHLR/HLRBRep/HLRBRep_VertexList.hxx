@@ -50,19 +50,19 @@ public:
   //! Returns True if the current vertex is on the boundary of the edge.
   Standard_EXPORT Standard_Boolean IsBoundary() const;
 
-  //! Returns  True   if   the current    vertex  is  an
+  //! Returns True if the current vertex is an
   //! interference.
   Standard_EXPORT Standard_Boolean IsInterference() const;
 
-  //! Returns the  orientation of the  current vertex if
+  //! Returns the orientation of the current vertex if
   //! it is on the boundary of the edge.
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
-  //! Returns  the transition  of the  current vertex if
+  //! Returns the transition of the current vertex if
   //! it is an interference.
   Standard_EXPORT TopAbs_Orientation Transition() const;
 
-  //! Returns  the  transition  of  the  current  vertex
+  //! Returns the transition of the current vertex
   //! relative to the boundary if it is an interference.
   Standard_EXPORT TopAbs_Orientation BoundaryTransition() const;
 

@@ -29,8 +29,8 @@ class gp_Torus;
 //! B-spline surface. The torus is a Torus from package gp.
 //! The parametrization of the torus is :
 //! P (U, V) =
-//! Loc  +  MinorRadius * Sin(V) * Zdir +
-//! (MajorRadius+MinorRadius*Cos(V)) *  (Cos(U)*Xdir + Sin(U)*Ydir)
+//! Loc + MinorRadius * Sin(V) * Zdir +
+//! (MajorRadius+MinorRadius*Cos(V)) * (Cos(U)*Xdir + Sin(U)*Ydir)
 //! where Loc is the center of the torus, Xdir, Ydir and Zdir are the
 //! normalized directions of the local cartesian coordinate system of
 //! the Torus. The parametrization range is U [0, 2PI], V [0, 2PI].

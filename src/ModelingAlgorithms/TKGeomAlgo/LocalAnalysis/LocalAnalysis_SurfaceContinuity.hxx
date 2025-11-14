@@ -28,48 +28,48 @@ class Geom2d_Curve;
 class GeomLProp_SLProps;
 
 //! This class gives tools to check local continuity C0
-//! C1 C2 G1 G2 between  two points situated on two surfaces
+//! C1 C2 G1 G2 between two points situated on two surfaces
 class LocalAnalysis_SurfaceContinuity
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! -u1,v1 are  the parameters of the point on Surf1
-  //! -u2,v2  are  the  parameters of the point on Surf2
-  //! -Order  is the required continuity:
-  //! GeomAbs_C0    GeomAbs_C1  GeomAbs_C2
+  //! -u1,v1 are the parameters of the point on Surf1
+  //! -u2,v2 are the parameters of the point on Surf2
+  //! -Order is the required continuity:
+  //! GeomAbs_C0 GeomAbs_C1 GeomAbs_C2
   //! GeomAbs_G1 GeomAbs_G2
   //!
-  //! -EpsNul  is  used to  detect a  a vector with nul
+  //! -EpsNul is used to detect a a vector with nul
   //! magnitude
   //!
-  //! -EpsC0 is used for C0  continuity to confuse two
+  //! -EpsC0 is used for C0 continuity to confuse two
   //! points (in mm)
   //!
-  //! -EpsC1 is  an angular  tolerance in radians  used
-  //! for C1 continuity  to compare the angle between
+  //! -EpsC1 is an angular tolerance in radians used
+  //! for C1 continuity to compare the angle between
   //! the first derivatives
   //!
-  //! -EpsC2 is an   angular tolerance in radians  used
-  //! for C2  continuity to  compare the angle  between
+  //! -EpsC2 is an angular tolerance in radians used
+  //! for C2 continuity to compare the angle between
   //! the second derivatives
   //!
-  //! -EpsG1 is an  angular  tolerance in radians  used
-  //! for G1  continuity to compare  the angle  between
-  //! the  normals
+  //! -EpsG1 is an angular tolerance in radians used
+  //! for G1 continuity to compare the angle between
+  //! the normals
   //!
-  //! -Percent  : percentage of  curvature variation (unitless)
+  //! -Percent: percentage of curvature variation (unitless)
   //! used for G2 continuity
   //!
-  //! - Maxlen is the maximum length of Surf1 or Surf2  in
+  //! - Maxlen is the maximum length of Surf1 or Surf2 in
   //! meters used to detect null curvature (in mm)
   //!
-  //! the constructor computes the quantities  which are
+  //! the constructor computes the quantities which are
   //! necessary to check the continuity in the following cases:
   //!
-  //! case  C0
+  //! case C0
   //! --------
-  //! - the distance between P1 and P2  with P1=Surf (u1,v1)  and
+  //! - the distance between P1 and P2 with P1=Surf (u1,v1) and
   //! P2=Surfv2(u2,v2)
   //!
   //! case C1
@@ -89,33 +89,33 @@ public:
   //! --------         and         ---------
   //! dv                           dv
   //!
-  //! - the ratio between  the magnitudes of  the first derivatives  in  u
-  //! - the  ratio  between  the magnitudes of the first derivatives in v
+  //! - the ratio between the magnitudes of the first derivatives in u
+  //! - the ratio between the magnitudes of the first derivatives in v
   //!
-  //! the angle value is between  0 and pi/2
+  //! the angle value is between 0 and pi/2
   //!
-  //! case  C2
+  //! case C2
   //! -------
-  //! - the  angle  between the second derivatives in u
+  //! - the angle between the second derivatives in u
   //! 2                  2
   //! d Surf1(u1,v1)    d  Surf2(u2,v2)
   //! ----------        ----------
   //! 2                  2
   //! d u               d  u
   //!
-  //! - the ratio between the  magnitudes of the second derivatives in  u
-  //! - the  ratio between the  magnitudes of the  second derivatives in v
+  //! - the ratio between the magnitudes of the second derivatives in u
+  //! - the ratio between the magnitudes of the second derivatives in v
   //!
   //! the angle value is between 0 and PI/2
   //!
   //! case G1
   //! -------
-  //! -the angle between  the normals  at each point
+  //! -the angle between the normals at each point
   //! the angle value is between 0 and PI/2
   //!
-  //! case  G2
+  //! case G2
   //! -------
-  //! - the maximum  normal curvature gap between the two
+  //! - the maximum normal curvature gap between the two
   //! points
   Standard_EXPORT LocalAnalysis_SurfaceContinuity(const Handle(Geom_Surface)& Surf1,
                                                   const Standard_Real         u1,
@@ -146,8 +146,8 @@ public:
                                                   const Standard_Real         Percent = 0.01,
                                                   const Standard_Real         Maxlen  = 10000);
 
-  //! This  constructor  is  used  when  we  want  to compute  many  analysis.
-  //! After  we  use  the  method  ComputeAnalysis
+  //! This constructor is used when we want to compute many analysis.
+  //! After we use the method ComputeAnalysis
   Standard_EXPORT LocalAnalysis_SurfaceContinuity(const Standard_Real EpsNul  = 0.001,
                                                   const Standard_Real EpsC0   = 0.001,
                                                   const Standard_Real EpsC1   = 0.001,

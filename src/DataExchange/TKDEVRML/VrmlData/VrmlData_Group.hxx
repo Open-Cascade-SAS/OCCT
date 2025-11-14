@@ -18,7 +18,7 @@
 
 #include <VrmlData_ListOfNode.hxx>
 #include <VrmlData_DataMapOfShapeAppearance.hxx>
-#include <Bnd_B3f.hxx>
+#include <Bnd_B3.hxx>
 #include <gp_Trsf.hxx>
 
 class TopoDS_Shape;

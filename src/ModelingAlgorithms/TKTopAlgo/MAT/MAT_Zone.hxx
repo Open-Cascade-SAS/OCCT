@@ -50,8 +50,8 @@ public:
   //! Return the number Of Arcs On the frontier of <me>.
   Standard_EXPORT Standard_Integer NumberOfArcs() const;
 
-  //! Return the  Arc number <Index>  on the frontier.
-  //! of  <me>.
+  //! Return the Arc number <Index> on the frontier.
+  //! of <me>.
   Standard_EXPORT Handle(MAT_Arc) ArcOnFrontier(const Standard_Integer Index) const;
 
   //! Return TRUE if <me> is not empty .

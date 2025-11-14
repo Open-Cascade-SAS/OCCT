@@ -165,7 +165,7 @@ public:
   //! reversed. Hence the orientation of the surface is reversed.
   Standard_EXPORT void UReverse() Standard_OVERRIDE;
 
-  //! Computes the u  parameter on the modified
+  //! Computes the u parameter on the modified
   //! surface, produced by when reversing its u
   //! parametric direction, for any point of u parameter U on this patch.
   Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
@@ -176,7 +176,7 @@ public:
   //! reversed. Hence the orientation of the surface is reversed.
   Standard_EXPORT void VReverse() Standard_OVERRIDE;
 
-  //! Computes the v  parameter on the modified
+  //! Computes the v parameter on the modified
   //! surface, produced by when reversing its v
   //! parametric direction, for any point of v parameter V on this patch.
   Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
@@ -187,7 +187,7 @@ public:
                               Standard_Real& V1,
                               Standard_Real& V2) const Standard_OVERRIDE;
 
-  //! Returns  the continuity of the surface :
+  //! Returns the continuity of the surface :
   //! C0 : only geometric continuity,
   //! C1 : continuity of the first derivative all along the Surface,
   //! C2 : continuity of the second derivative all along the Surface,
@@ -244,7 +244,7 @@ public:
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
   //! has not the same parametric orientation.
-  //! Warning!  UndefinedDerivative  raised if the continuity of the surface is not C1.
+  //! Warning! UndefinedDerivative raised if the continuity of the surface is not C1.
   Standard_EXPORT void D1(const Standard_Real U,
                           const Standard_Real V,
                           gp_Pnt&             P,
@@ -284,7 +284,7 @@ public:
   //! The returned derivative has the same orientation as the
   //! derivative of the basis surface even if the trimmed surface
   //! has not the same parametric orientation.
-  //! Warning!  UndefinedDerivative raised if the continuity of the surface is not CNu in the U
+  //! Warning! UndefinedDerivative raised if the continuity of the surface is not CNu in the U
   //! parametric direction and CNv in the V parametric direction.
   //! RangeError Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
@@ -298,7 +298,7 @@ public:
   //! data structure of this patch is also modified.
   Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
-  //! Computes the  parameters on the  transformed  surface for
+  //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -316,7 +316,7 @@ public:
                                                    Standard_Real& V,
                                                    const gp_Trsf& T) const Standard_OVERRIDE;
 
-  //! Returns a 2d transformation  used to find the  new
+  //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
   //! @code
   //!   me->Transformed(T)->Value(U',V')
@@ -325,7 +325,7 @@ public:
   //! @code
   //!   me->Value(U,V).Transformed(T)
   //! @endcode
-  //! Where U',V' are  obtained by transforming U,V with
+  //! Where U',V' are obtained by transforming U,V with
   //! the 2d transformation returned by
   //! @code
   //!   me->ParametricTransformation(T)

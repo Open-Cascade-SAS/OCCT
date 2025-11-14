@@ -31,8 +31,8 @@ class gp_Pnt2d;
 
 //! This class implements the following algorithms used to
 //! create Parabola from Geom2d.
-//! * Create an Parabola from two apex  and the center.
-//! Defines the parabola in the parameterization range  :
+//! * Create an Parabola from two apex and the center.
+//! Defines the parabola in the parameterization range:
 //! ]-infinite,+infinite[
 //! The vertex of the parabola is the "Location" point of the
 //! local coordinate system "XAxis" of the parabola.

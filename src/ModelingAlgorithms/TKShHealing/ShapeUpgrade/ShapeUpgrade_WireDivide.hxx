@@ -125,7 +125,7 @@ public:
   //! Sets mode for splitting 3d curves from edges.
   //! 0 - only curve 3d from free edges.
   //! 1 - only curve 3d from shared edges.
-  //! 2 -  all curve 3d.
+  //! 2 - all curve 3d.
   Standard_EXPORT void SetEdgeMode(const Standard_Integer EdgeMode);
 
   //! Sets tool for fixing small curves with specified min tolerance;

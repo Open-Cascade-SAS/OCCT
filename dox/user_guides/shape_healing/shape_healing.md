@@ -2101,9 +2101,9 @@ It can be called with the parameter *Real : Tolerance3d*, which sets the dimensi
 This operator may be added for fixing invalid shapes.
 It performs various checks and fixes, according to the modes listed hereafter.
 Management of a set of fixes can be performed by flags as follows:
-* if the flag for a fixing tool is set to 0 , it is not performed;
-* if set to 1 , it is performed in any case;
-* if not set, or set to -1 , for each shape to be applied on, a check is done to evaluate whether a fix is needed. The fix is performed if the check is positive.
+* if the flag for a fixing tool is set to 0 it is not performed;
+* if set to 1 it is performed in any case;
+* if not set, or set to -1 for each shape to be applied on, a check is done to evaluate whether a fix is needed. The fix is performed if the check is positive.
 
 By default, the flags are not set, the checks are carried out each individual shape.
 

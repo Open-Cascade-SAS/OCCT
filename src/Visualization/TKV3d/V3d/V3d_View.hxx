@@ -564,9 +564,9 @@ public:
   //! Updates the view.
   Standard_EXPORT void SetScale(const Standard_Real Coef);
 
-  //! Sets  anisotropic (axial)  scale  factors  <Sx>, <Sy>, <Sz>  for  view <me>.
-  //! Anisotropic  scaling  operation  is  performed  through  multiplying
-  //! the current view  orientation  matrix  by  a  scaling  matrix:
+  //! Sets anisotropic (axial) scale factors <Sx>, <Sy>, <Sz> for view <me>.
+  //! Anisotropic scaling operation is performed through multiplying
+  //! the current view orientation matrix by a scaling matrix:
   //! || Sx  0   0   0 ||
   //! || 0   Sy  0   0 ||
   //! || 0   0   Sz  0 ||
@@ -882,10 +882,10 @@ public:
                                    const Standard_Integer theMouseEndX,
                                    const Standard_Integer theMouseEndY);
 
-  //! Performs  anisotropic scaling  of  <me>  view  along  the  given  <Axis>.
-  //! The  scale  factor  is  calculated on a basis of
+  //! Performs anisotropic scaling of <me> view along the given <Axis>.
+  //! The scale factor is calculated on a basis of
   //! the mouse pointer displacement <Dx,Dy>.
-  //! The  calculated  scale  factor  is  then  passed  to  SetAxialScale(Sx,  Sy,  Sz)  method.
+  //! The calculated scale factor is then passed to SetAxialScale(Sx, Sy, Sz) method.
   Standard_EXPORT void AxialScale(const Standard_Integer Dx,
                                   const Standard_Integer Dy,
                                   const V3d_TypeOfAxe    Axis);

@@ -35,7 +35,7 @@ class AdvApprox_Cutting;
 class AdvApp2Var_Criterion;
 class Geom_BSplineSurface;
 
-//! Perform   the  approximation of  <Func>     F(U,V)
+//! Perform the approximation of <Func> F(U,V)
 //! Arguments are :
 //! Num1DSS, Num2DSS, Num3DSS :The numbers of 1,2,3 dimensional subspaces
 //! OneDTol, TwoDTol, ThreeDTol: The tolerance of approximation in each
@@ -55,9 +55,9 @@ class Geom_BSplineSurface;
 //! MaxDegInV : Maximum u-degree waiting in V
 //! Warning:
 //! MaxDegInU (resp. MaxDegInV) must be >= 2*iu (resp. iv) + 1,
-//! where iu (resp. iv) = 0 if ContInU (resp. ContInV)  = GeomAbs_C0,
-//! = 1 if                          = GeomAbs_C1,
-//! = 2 if                          = GeomAbs_C2.
+//! where iu (resp. iv) = 0 if ContInU (resp. ContInV) = GeomAbs_C0,
+//! = 1 if = GeomAbs_C1,
+//! = 2 if = GeomAbs_C2.
 //! MaxPatch  : Maximum number of Patch waiting
 //! number of Patch is number of u span * number of v span
 //! Func      : The external method to evaluate F(U,V)

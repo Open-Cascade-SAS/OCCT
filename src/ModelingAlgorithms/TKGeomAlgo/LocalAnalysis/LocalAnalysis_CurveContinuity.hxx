@@ -27,70 +27,70 @@ class Geom_Curve;
 class GeomLProp_CLProps;
 
 //! This class gives tools to check local continuity C0
-//! C1 C2 G1 G2 between  two points situated on two curves
+//! C1 C2 G1 G2 between two points situated on two curves
 class LocalAnalysis_CurveContinuity
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! -u1 is the parameter of the point on Curv1
-  //! -u2 is the  parameter of the point on  Curv2
+  //! -u2 is the parameter of the point on Curv2
   //! -Order is the required continuity:
-  //! GeomAbs_C0    GeomAbs_C1  GeomAbs_C2
+  //! GeomAbs_C0 GeomAbs_C1 GeomAbs_C2
   //! GeomAbs_G1 GeomAbs_G2
   //!
-  //! -EpsNul  is  used to  detect a  a vector with nul
+  //! -EpsNul is used to detect a vector with null
   //! magnitude (in mm)
   //!
-  //! -EpsC0 is used for C0  continuity to confuse two
+  //! -EpsC0 is used for C0 continuity to confuse two
   //! points (in mm)
   //!
-  //! -EpsC1 is  an angular  tolerance in radians  used
-  //! for C1 continuity  to compare the angle between
+  //! -EpsC1 is an angular tolerance in radians used
+  //! for C1 continuity to compare the angle between
   //! the first derivatives
   //!
-  //! -EpsC2 is an   angular tolerance in radians  used
-  //! for C2  continuity to  compare the angle  between
+  //! -EpsC2 is an angular tolerance in radians used
+  //! for C2 continuity to compare the angle between
   //! the second derivatives
   //!
-  //! -EpsG1 is an  angular  tolerance in radians  used
-  //! for G1  continuity to compare  the angle  between
+  //! -EpsG1 is an angular tolerance in radians used
+  //! for G1 continuity to compare the angle between
   //! the tangents
   //!
-  //! -EpsG2 is  an angular  tolerance in radians  used
-  //! for  G2 continuity to  compare  the angle between
+  //! -EpsG2 is an angular tolerance in radians used
+  //! for G2 continuity to compare the angle between
   //! the normals
   //!
-  //! - percent  : percentage of  curvature variation (unitless)
+  //! - percent: percentage of curvature variation (unitless)
   //! used for G2 continuity
   //!
   //! - Maxlen is the maximum length of Curv1 or Curv2 in
   //! meters used to detect nul curvature (in mm)
   //!
-  //! the constructor computes the quantities  which are
+  //! the constructor computes the quantities which are
   //! necessary to check the continuity in the following cases:
   //!
-  //! case  C0
-  //! --------
-  //! - the distance between P1 and P2  with P1=Curv1 (u1)  and
+  //! case C0
+  //! -------
+  //! - the distance between P1 and P2 with P1=Curv1 (u1) and
   //! P2=Curv2(u2)
   //!
   //! case C1
   //! -------
   //!
-  //! - the angle  between  the first derivatives
+  //! - the angle between the first derivatives
   //! dCurv1(u1)           dCurv2(u2)
   //! --------     and     ---------
   //! du                   du
   //!
-  //! - the ratio   between  the magnitudes  of the first
+  //! - the ratio between the magnitudes of the first
   //! derivatives
   //!
   //! the angle value is between 0 and PI/2
   //!
-  //! case  C2
+  //! case C2
   //! -------
-  //! - the angle  between the second derivatives
+  //! - the angle between the second derivatives
   //! 2                   2
   //! d  Curv1(u1)       d Curv2(u2)
   //! ----------        ----------
@@ -99,12 +99,12 @@ public:
   //!
   //! the angle value is between 0 and PI/2
   //!
-  //! - the ratio between the magnitudes of  the second
+  //! - the ratio between the magnitudes of the second
   //! derivatives
   //!
   //! case G1
   //! -------
-  //! the angle between  the tangents at each point
+  //! the angle between the tangents at each point
   //!
   //! the angle value is between 0 and PI/2
   //!

@@ -38,14 +38,14 @@ public:
   //! Creates an undefined classifier.
   Standard_EXPORT BRepClass3d_SolidPassiveClassifier();
 
-  //! Starts  a  classification process.   The  point to
-  //! classify is the origin of  the  line <L>.  <P>  is
-  //! the original length of the segment on <L>  used to
-  //! compute  intersections.   <Tol> is the   tolerance
+  //! Starts a classification process. The point to
+  //! classify is the origin of the line <L>. <P> is
+  //! the original length of the segment on <L> used to
+  //! compute intersections. <Tol> is the tolerance
   //! attached to the intersections.
   Standard_EXPORT void Reset(const gp_Lin& L, const Standard_Real P, const Standard_Real Tol);
 
-  //! Updates  the classification process with  the face
+  //! Updates the classification process with the face
   //! <F> from the boundary.
   Standard_EXPORT void Compare(const TopoDS_Face& F, const TopAbs_Orientation Or);
 

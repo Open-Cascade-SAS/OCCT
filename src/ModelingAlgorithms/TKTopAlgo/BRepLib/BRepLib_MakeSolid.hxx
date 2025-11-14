@@ -27,7 +27,7 @@ class TopoDS_Shell;
 class TopoDS_Solid;
 class TopoDS_Face;
 
-//! Makes a solid from compsolid  or  shells.
+//! Makes a solid from compsolid or shells.
 class BRepLib_MakeSolid : public BRepLib_MakeShape
 {
 public:

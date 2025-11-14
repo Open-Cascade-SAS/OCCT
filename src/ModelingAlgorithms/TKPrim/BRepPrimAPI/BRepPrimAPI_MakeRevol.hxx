@@ -34,10 +34,10 @@ class gp_Ax1;
 //!
 //! * A basis topology which is swept.
 //!
-//! The   basis topology  must   not  contain solids
+//! The basis topology must not contain solids
 //! (neither composite solids.).
 //!
-//! The basis topology  may be copied  or  shared in
+//! The basis topology may be copied or shared in
 //! the result.
 //!
 //! * A rotation axis and angle :
@@ -56,22 +56,22 @@ class gp_Ax1;
 //! - Face   -> Solid.
 //! - Shell  -> CompSolid.
 //!
-//! Sweeping a Compound sweeps  the elements  of the
-//! compound  and creates    a  compound with    the
+//! Sweeping a Compound sweeps the elements of the
+//! compound and creates a compound with the
 //! results.
 class BRepPrimAPI_MakeRevol : public BRepPrimAPI_MakeSweep
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Builds the Revol of base S, axis  A and angle  D. If C
+  //! Builds the Revol of base S, axis A and angle D. If C
   //! is true, S is copied.
   Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape&    S,
                                         const gp_Ax1&          A,
                                         const Standard_Real    D,
                                         const Standard_Boolean Copy = Standard_False);
 
-  //! Builds the Revol of base S, axis  A and angle 2*Pi. If
+  //! Builds the Revol of base S, axis A and angle 2*Pi. If
   //! C is true, S is copied.
   Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape&    S,
                                         const gp_Ax1&          A,
@@ -84,7 +84,7 @@ public:
   Standard_EXPORT virtual void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
-  //! Returns the first shape of the revol  (coinciding with
+  //! Returns the first shape of the revol (coinciding with
   //! the generating shape).
   Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
 
@@ -101,11 +101,11 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
 
   //! Returns the TopoDS Shape of the beginning of the revolution,
-  //! generated with theShape  (subShape of the generating shape).
+  //! generated with theShape (subShape of the generating shape).
   Standard_EXPORT TopoDS_Shape FirstShape(const TopoDS_Shape& theShape);
 
   //! Returns the TopoDS Shape of the end of the revolution,
-  //! generated with  theShape (subShape of the  generating shape).
+  //! generated with theShape (subShape of the generating shape).
   Standard_EXPORT TopoDS_Shape LastShape(const TopoDS_Shape& theShape);
 
   //! Check if there are degenerated edges in the result.

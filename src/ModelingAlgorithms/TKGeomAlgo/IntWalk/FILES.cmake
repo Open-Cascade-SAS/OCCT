@@ -4,8 +4,6 @@ set(OCCT_IntWalk_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IntWalk_FILES
   IntWalk_IWalking.gxx
   IntWalk_IWalking.lxx
-  IntWalk_IWLine.gxx
-  IntWalk_IWLine.lxx
   IntWalk_PWalking.cxx
   IntWalk_PWalking.hxx
   IntWalk_PWalking.lxx

@@ -91,8 +91,8 @@ public:
   //! In this package the entities are not shared. The OffsetCurve is
   //! built with a copy of the curve C. So when C is modified the
   //! OffsetCurve is not modified
-  //! Warning!  if isNotCheckC0 = false,
-  //! ConstructionError  raised if the basis curve C is not at least C1.
+  //! Warning! if isNotCheckC0 = false,
+  //! ConstructionError raised if the basis curve C is not at least C1.
   //! No check is done to know if ||V^Z|| != 0.0 at any point.
   Standard_EXPORT Geom2d_OffsetCurve(const Handle(Geom2d_Curve)& C,
                                      const Standard_Real         Offset,
@@ -151,7 +151,7 @@ public:
   //! direction.
   //! If T is the first derivative with not null length and
   //! Z the direction normal to the plane of the curve, the
-  //! relation ||T(U) ^ Z|| != 0  must be satisfied to evaluate
+  //! relation ||T(U) ^ Z|| != 0 must be satisfied to evaluate
   //! the offset curve.
   //! No check is done at the creation time and we suppose
   //! in this package that the offset curve is well defined.
@@ -164,13 +164,13 @@ public:
 
   //! Warning! this should not be called
   //! if the continuity of the basis curve is not C2.
-  //! Nevertheless, it's OK to use it  on portion
+  //! Nevertheless, it's OK to use it on portion
   //! where the curve is C2
   Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
 
-  //! Warning!  This  should  not  be called
+  //! Warning! This should not be called
   //! if the continuity of the basis curve is not C3.
-  //! Nevertheless, it's OK to use it  on portion
+  //! Nevertheless, it's OK to use it on portion
   //! where the curve is C3
   Standard_EXPORT void D2(const Standard_Real U,
                           gp_Pnt2d&           P,
@@ -179,7 +179,7 @@ public:
 
   //! Warning! This should not be called
   //! if the continuity of the basis curve is not C4.
-  //! Nevertheless, it's OK to use it  on portion
+  //! Nevertheless, it's OK to use it on portion
   //! where the curve is C4
   Standard_EXPORT void D3(const Standard_Real U,
                           gp_Pnt2d&           P,
@@ -190,11 +190,11 @@ public:
   //! The returned vector gives the value of the derivative
   //! for the order of derivation N.
   //! Warning! this should not be called
-  //! raises  UndefunedDerivative   if the continuity of the basis curve is not CN+1.
-  //! Nevertheless, it's OK to use it  on portion
+  //! raises UndefunedDerivative if the continuity of the basis curve is not CN+1.
+  //! Nevertheless, it's OK to use it on portion
   //! where the curve is CN+1
-  //! raises  RangeError if N < 1.
-  //! raises  NotImplemented if N > 3.
+  //! raises RangeError if N < 1.
+  //! raises NotImplemented if N > 3.
   //! The following functions compute the value and derivatives
   //! on the offset curve and returns the derivatives on the
   //! basis curve too.
@@ -231,7 +231,7 @@ public:
   //! Is the order of continuity of the curve N ?
   //! Warnings :
   //! This method answer True if the continuity of the basis curve
-  //! is N + 1.  We suppose in this class that a normal direction
+  //! is N + 1. We suppose in this class that a normal direction
   //! to the basis curve (used to compute the offset curve) is
   //! defined at any point on the basis curve.
   //! Raised if N < 0.
@@ -253,7 +253,7 @@ public:
   //! Note: the basis curve is also modified.
   Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
 
-  //! Returns the  parameter on the  transformed  curve for
+  //! Returns the parameter on the transformed curve for
   //! the transform of the point of parameter U on <me>.
   //!
   //! me->Transformed(T)->Value(me->TransformedParameter(U,T))
@@ -267,8 +267,8 @@ public:
                                                              const gp_Trsf2d&    T) const
     Standard_OVERRIDE;
 
-  //! Returns a  coefficient to compute the parameter on
-  //! the transformed  curve  for  the transform  of the
+  //! Returns a coefficient to compute the parameter on
+  //! the transformed curve for the transform of the
   //! point on <me>.
   //!
   //! Transformed(T)->Value(U * ParametricTransformation(T))

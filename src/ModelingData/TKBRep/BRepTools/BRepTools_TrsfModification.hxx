@@ -133,11 +133,11 @@ public:
                                                 Standard_Real&       P,
                                                 Standard_Real&       Tol) Standard_OVERRIDE;
 
-  //! Returns the  continuity of  <NewE> between <NewF1>
+  //! Returns the continuity of <NewE> between <NewF1>
   //! and <NewF2>.
   //!
-  //! <NewE> is the new  edge created from <E>.  <NewF1>
-  //! (resp. <NewF2>) is the new  face created from <F1>
+  //! <NewE> is the new edge created from <E>. <NewF1>
+  //! (resp. <NewF2>) is the new face created from <F1>
   //! (resp. <F2>).
   Standard_EXPORT GeomAbs_Shape Continuity(const TopoDS_Edge& E,
                                            const TopoDS_Face& F1,

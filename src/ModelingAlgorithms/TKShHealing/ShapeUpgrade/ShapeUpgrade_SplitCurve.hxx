@@ -33,7 +33,7 @@
 class ShapeUpgrade_SplitCurve;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitCurve, Standard_Transient)
 
-//! Splits a  curve with a  criterion.
+//! Splits a curve with a criterion.
 class ShapeUpgrade_SplitCurve : public Standard_Transient
 {
 
@@ -48,7 +48,7 @@ public:
   Standard_EXPORT void SetSplitValues(const Handle(TColStd_HSequenceOfReal)& SplitValues);
 
   //! If Segment is True, the result is composed with
-  //! segments of the curve bounded by the SplitValues.  If
+  //! segments of the curve bounded by the SplitValues. If
   //! Segment is False, the result is composed with trimmed
   //! Curves all based on the same complete curve.
   Standard_EXPORT virtual void Build(const Standard_Boolean Segment);

@@ -41,10 +41,10 @@ class Bisector_BisecCC : public Bisector_Curve
 public:
   Standard_EXPORT Bisector_BisecCC();
 
-  //! Constructs  the bisector  between the  curves <Cu1>
+  //! Constructs the bisector between the curves <Cu1>
   //! and <Cu2>.
   //!
-  //! <Side1>  (resp <Side2>) = 1   if the
+  //! <Side1> (resp <Side2>) = 1 if the
   //! bisector curve is on the left of <Cu1> (resp <Cu2>)
   //! else <Side1> (resp <Side2>) = -1.
   //!
@@ -59,10 +59,10 @@ public:
                                    const gp_Pnt2d&             Origin,
                                    const Standard_Real         DistMax = 500);
 
-  //! Computes the bisector  between the  curves <Cu1>
+  //! Computes the bisector between the curves <Cu1>
   //! and <Cu2>.
   //!
-  //! <Side1>  (resp <Side2>) = 1   if the
+  //! <Side1> (resp <Side2>) = 1 if the
   //! bisector curve is on the left of <Cu1> (resp <Cu2>)
   //! else <Side1> (resp <Side2>) = -1.
   //!
@@ -90,7 +90,7 @@ public:
   //! Raised if N < 0.
   Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const Standard_OVERRIDE;
 
-  //! The parameter  on <me> is linked to  the parameter
+  //! The parameter on <me> is linked to the parameter
   //! on the first curve. This method creates the same bisector
   //! where the curves are inversed.
   Standard_EXPORT Handle(Bisector_BisecCC) ChangeGuide() const;
@@ -109,16 +109,16 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! If necessary,  breaks the  curve in  intervals  of
-  //! continuity  <C1>.    And  returns   the number   of
+  //! If necessary, breaks the curve in intervals of
+  //! continuity <C1>. And returns the number of
   //! intervals.
   Standard_EXPORT Standard_Integer NbIntervals() const Standard_OVERRIDE;
 
-  //! Returns  the  first  parameter    of  the  current
+  //! Returns the first parameter of the current
   //! interval.
   Standard_EXPORT Standard_Real IntervalFirst(const Standard_Integer Index) const Standard_OVERRIDE;
 
-  //! Returns  the  last  parameter    of  the  current
+  //! Returns the last parameter of the current
   //! interval.
   Standard_EXPORT Standard_Real IntervalLast(const Standard_Integer Index) const Standard_OVERRIDE;
 

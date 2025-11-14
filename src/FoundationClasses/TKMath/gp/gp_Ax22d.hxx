@@ -192,7 +192,7 @@ public:
   void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng);
 
   //! Rotates an axis placement. <theA1> is the axis of the
-  //! rotation . theAng is the angular value of the rotation
+  //! rotation. theAng is the angular value of the rotation
   //! in radians.
   Standard_NODISCARD gp_Ax22d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
   {
@@ -205,8 +205,8 @@ public:
 
   //! Applies a scaling transformation on the axis placement.
   //! The "Location" point of the axisplacement is modified.
-  //! Warnings :
-  //! If the scale <theS> is negative :
+  //! Warnings:
+  //! If the scale <theS> is negative:
   //! . the main direction of the axis placement is not changed.
   //! . The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.

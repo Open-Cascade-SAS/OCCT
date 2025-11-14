@@ -75,7 +75,7 @@ public:
   //! Use the available interrogation functions to ascertain
   //! the number of computed Bezier patches, and then to
   //! construct each individual Bezier surface (or all Bezier surfaces).
-  //! Note: ParametricTolerance is not used.  Raises DomainError
+  //! Note: ParametricTolerance is not used. Raises DomainError
   //! if U1 or U2 or V1 or V2 are out of the parametric bounds
   //! of the basis surface [FirstUKnotIndex, LastUKnotIndex] ,
   //! [FirstVKnotIndex, LastVKnotIndex] The tolerance criterion is
@@ -143,14 +143,14 @@ public:
 
   //! This methode returns the bspline's u-knots associated to
   //! the converted Patches
-  //! Raised  if the length  of Curves is not equal to
-  //! NbUPatches +  1.
+  //! Raised if the length of Curves is not equal to
+  //! NbUPatches + 1
   Standard_EXPORT void UKnots(TColStd_Array1OfReal& TKnots) const;
 
   //! This methode returns the bspline's v-knots associated to
   //! the converted Patches
-  //! Raised  if the length  of Curves is not equal to
-  //! NbVPatches +  1.
+  //! Raised if the length of Curves is not equal to
+  //! NbVPatches + 1
   Standard_EXPORT void VKnots(TColStd_Array1OfReal& TKnots) const;
 
   //! Returns the number of Bezier surfaces in the U direction.

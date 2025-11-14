@@ -70,7 +70,7 @@ public:
   //! Returns the coordinates X, Y and Z of this vector.
   Standard_EXPORT void Coord(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
 
-  //! Returns the  Magnitude of <me>.
+  //! Returns the Magnitude of <me>.
   Standard_EXPORT virtual Standard_Real Magnitude() const = 0;
 
   //! Returns the square magnitude of <me>.
@@ -100,10 +100,10 @@ public:
   //! "Direction" with null length.
   Standard_EXPORT virtual Handle(Geom_Vector) Crossed(const Handle(Geom_Vector)& Other) const = 0;
 
-  //! Computes the triple vector product  <me> ^(V1 ^ V2).
+  //! Computes the triple vector product <me> ^(V1 ^ V2).
   //!
   //! Raised if <me> is a "Direction" and if V1 and V2 are parallel
-  //! or <me> and (V1 ^ V2) are  parallel
+  //! or <me> and (V1 ^ V2) are parallel
   Standard_EXPORT virtual void CrossCross(const Handle(Geom_Vector)& V1,
                                           const Handle(Geom_Vector)& V2) = 0;
 

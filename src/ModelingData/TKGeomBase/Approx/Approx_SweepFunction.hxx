@@ -48,7 +48,7 @@ public:
                                               TColgp_Array1OfPnt2d& Poles2d,
                                               TColStd_Array1OfReal& Weigths) = 0;
 
-  //! compute the first derivative in v direction  of the
+  //! compute the first derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real   Param,
@@ -112,7 +112,7 @@ public:
   //! function is not Cn.
   Standard_EXPORT virtual void SetInterval(const Standard_Real First, const Standard_Real Last) = 0;
 
-  //! Returns the resolutions in the  sub-space 2d <Index>
+  //! Returns the resolutions in the sub-space 2d <Index>
   //! This information is useful to find a good tolerance in
   //! 2d approximation.
   Standard_EXPORT virtual void Resolution(const Standard_Integer Index,
@@ -141,11 +141,11 @@ public:
   Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const;
 
   //! Returns the length of the greater section.
-  //!  Thisinformation is useful to G1's control.
+  //! This information is useful to G1's control.
   //! Warning: With an little value, approximation can be slower.
   Standard_EXPORT virtual Standard_Real MaximalSection() const;
 
-  //! Compute the minimal value of weight for each poles in all  sections.
+  //! Compute the minimal value of weight for each poles in all sections.
   //! This information is useful to control error in rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual void GetMinimalWeight(TColStd_Array1OfReal& Weigths) const;

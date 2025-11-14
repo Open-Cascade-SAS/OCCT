@@ -5176,8 +5176,8 @@ void ChFi3d_edge_common_faces(const TopTools_ListOfShape& mapEF, TopoDS_Face& F1
 }
 
 /***********************************************************/
-// gives the angle between edges E1 and E2 . Vtx is the
-// vertex common to the edges
+// gives the angle between edges E1 and E2.
+// Vtx is the vertex common to the edges
 /************************************************************/
 Standard_Real ChFi3d_AngleEdge(const TopoDS_Vertex& Vtx,
                                const TopoDS_Edge&   E1,
@@ -5204,7 +5204,7 @@ Standard_Real ChFi3d_AngleEdge(const TopoDS_Vertex& Vtx,
 //==================================================================
 // ChercheBordsLibres
 // determines if vertex V1 has edges on free borders
-// edgelibre1 and edgelibre2 .
+// edgelibre1 and edgelibre2.
 // It is supposed that a top can have only 2 edges on free borders
 //===================================================================
 void ChFi3d_ChercheBordsLibres(const ChFiDS_Map&    myVEMap,

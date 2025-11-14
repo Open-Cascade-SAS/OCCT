@@ -22,21 +22,21 @@
 
 DEFINE_STANDARD_HANDLE(PrsDim_MaxRadiusDimension, PrsDim_EllipseRadiusDimension)
 
-//! Ellipse  Max  radius  dimension  of  a  Shape  which  can  be  Edge
-//! or  Face  (planar  or  cylindrical(surface  of  extrusion  or
-//! surface  of  offset))
+//! Ellipse Max radius dimension of a Shape which can be Edge
+//! or Face (planar or cylindrical(surface of extrusion or
+//! surface of offset))
 class PrsDim_MaxRadiusDimension : public PrsDim_EllipseRadiusDimension
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_MaxRadiusDimension, PrsDim_EllipseRadiusDimension)
 public:
-  //! Max  Ellipse  radius dimension
-  //! Shape  can  be  edge  ,  planar  face  or  cylindrical  face
+  //! Max Ellipse radius dimension
+  //! Shape can be edge, planar face or cylindrical face
   Standard_EXPORT PrsDim_MaxRadiusDimension(const TopoDS_Shape&               aShape,
                                             const Standard_Real               aVal,
                                             const TCollection_ExtendedString& aText);
 
-  //! Max  Ellipse  radius dimension with  position
-  //! Shape  can  be  edge  ,  planar  face  or  cylindrical  face
+  //! Max Ellipse radius dimension with position
+  //! Shape can be edge, planar face or cylindrical face
   Standard_EXPORT PrsDim_MaxRadiusDimension(const TopoDS_Shape&               aShape,
                                             const Standard_Real               aVal,
                                             const TCollection_ExtendedString& aText,

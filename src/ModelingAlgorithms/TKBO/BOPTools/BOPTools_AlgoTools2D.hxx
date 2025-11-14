@@ -79,7 +79,7 @@ public:
 
   //! Get P-Curve <aC> for the edge <aE> on surface <aF>.
   //! If the P-Curve does not exist, build it using Make2D().
-  //! [aFirst, aLast] - range of the P-Curve<br>
+  //! [aFirst, aLast] - range of the P-Curve
   //! [aToler] - reached tolerance
   //! Raises exception Standard_ConstructionError if algorithm Make2D() fails.
   //! <theContext> - storage for caching the geometrical tools
@@ -131,7 +131,7 @@ public:
     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
   //! Adjust P-Curve <aC2D> (3D-curve <C3D>) on surface <aF>.
-  //! [aT1,  aT2] - range to adjust
+  //! [aT1, aT2] - range to adjust
   Standard_EXPORT static void AdjustPCurveOnSurf(const BRepAdaptor_Surface&  aF,
                                                  const Standard_Real         aT1,
                                                  const Standard_Real         aT2,

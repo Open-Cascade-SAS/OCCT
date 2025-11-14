@@ -29,15 +29,15 @@ class HLRTopoBRep_OutLiner;
 class HLRAlgo_Projector;
 class TopoDS_Face;
 
-//! compute  the   OutLinedShape  of  a Shape with  an
-//! OutLiner,    a  Projector  and   create  the  Data
+//! compute the OutLinedShape of a Shape with an
+//! OutLiner, a Projector and create the Data
 //! Structure of a Shape.
 class HLRBRep_ShapeToHLR
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates  a DataStructure   containing the OutLiner
+  //! Creates a DataStructure containing the OutLiner
   //! <S> depending on the projector <P> and nbIso.
   Standard_EXPORT static Handle(HLRBRep_Data) Load(const Handle(HLRTopoBRep_OutLiner)& S,
                                                    const HLRAlgo_Projector&            P,

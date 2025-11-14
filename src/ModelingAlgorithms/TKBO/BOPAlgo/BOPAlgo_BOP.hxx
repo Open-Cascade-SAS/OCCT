@@ -28,25 +28,25 @@ class BOPAlgo_PaveFiller;
 
 //!
 //! The class represents the Building part of the Boolean Operations
-//! algorithm.<br>
+//! algorithm.
 //! The arguments of the algorithms are divided in two groups - *Objects*
-//! and *Tools*.<br>
+//! and *Tools*.
 //! The algorithm builds the splits of the given arguments using the intersection
-//! results and combines the result of Boolean Operation of given type:<br>
-//! - *FUSE* - union of two groups of objects;<br>
-//! - *COMMON* - intersection of two groups of objects;<br>
-//! - *CUT* - subtraction of one group from the other.<br>
+//! results and combines the result of Boolean Operation of given type:
+//! - *FUSE* - union of two groups of objects;
+//! - *COMMON* - intersection of two groups of objects;
+//! - *CUT* - subtraction of one group from the other.
 //!
-//! The rules for the arguments and type of the operation are the following:<br>
-//! - For Boolean operation *FUSE* all arguments should have equal dimensions;<br>
+//! The rules for the arguments and type of the operation are the following:
+//! - For Boolean operation *FUSE* all arguments should have equal dimensions;
 //! - For Boolean operation *CUT* the minimal dimension of *Tools* should not be
-//!   less than the maximal dimension of *Objects*;<br>
-//! - For Boolean operation *COMMON* the arguments can have any dimension.<br>
+//!   less than the maximal dimension of *Objects*;
+//! - For Boolean operation *COMMON* the arguments can have any dimension.
 //!
 //! The class is a General Fuse based algorithm. Thus, all options
 //! of the General Fuse algorithm such as Fuzzy mode, safe processing mode,
 //! parallel processing mode, gluing mode and history support are also
-//! available in this algorithm.<br>
+//! available in this algorithm.
 //!
 //! Additionally to the Warnings of the parent class the algorithm returns
 //! the following warnings:
@@ -98,7 +98,7 @@ protected:
 
   Standard_EXPORT void BuildSolid(const Message_ProgressRange& theRange);
 
-  //! Treatment of the cases with empty shapes.<br>
+  //! Treatment of the cases with empty shapes.
   //! It returns TRUE if there is nothing to do, i.e.
   //! all shapes in one of the groups are empty shapes.
   Standard_EXPORT Standard_Boolean TreatEmptyShape();

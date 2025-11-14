@@ -136,7 +136,7 @@ public:
   //! Returns the coefficients of the global matrix of transformation.
   //! It is a 2 rows X 3 columns matrix.
   //!
-  //! Raised if  Row < 1 or Row > 2  or  Col < 1 or Col > 2
+  //! Raised if Row < 1 or Row > 2 or Col < 1 or Col > 2
   //!
   //! Computes the reverse transformation.
   Standard_EXPORT Standard_Real Value(const Standard_Integer Row, const Standard_Integer Col) const;
@@ -184,7 +184,7 @@ public:
   Standard_EXPORT Handle(Geom2d_Transformation) Powered(const Standard_Integer N) const;
 
   //! Computes the matrix of the transformation composed with
-  //! <me> and Other.     <me> = Other * <me>
+  //! <me> and Other. <me> = Other * <me>
   Standard_EXPORT void PreMultiply(const Handle(Geom2d_Transformation)& Other);
 
   //! Applies the transformation <me> to the triplet {X, Y}.

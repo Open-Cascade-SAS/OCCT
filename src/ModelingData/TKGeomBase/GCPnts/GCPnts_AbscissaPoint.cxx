@@ -21,7 +21,7 @@
 #include <Standard_ConstructionError.hxx>
 
 //! Dimension independent used to implement GCPnts_AbscissaPoint
-//! compute the type  and the length ratio if GCPnts_LengthParametrized.
+//! compute the type and the length ratio if GCPnts_LengthParametrized.
 template <class TheCurve>
 static GCPnts_AbscissaType computeType(const TheCurve& theC, Standard_Real& theRatio)
 {

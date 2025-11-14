@@ -33,7 +33,7 @@ class math_Matrix;
 class AppDef_SmoothCriterion;
 DEFINE_STANDARD_HANDLE(AppDef_SmoothCriterion, Standard_Transient)
 
-//! defined criterion to smooth  points in  curve
+//! defined criterion to smooth points in curve
 class AppDef_SmoothCriterion : public Standard_Transient
 {
 

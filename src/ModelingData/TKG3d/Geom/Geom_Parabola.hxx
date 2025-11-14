@@ -158,7 +158,7 @@ public:
   //! Returns in P the point of parameter U.
   //! If U = 0 the returned point is the origin of the XAxis and
   //! the YAxis of the parabola and it is the vertex of the parabola.
-  //! P = S + F * (U * U * XDir +  * U * YDir)
+  //! P = S + F * (U * U * XDir + * U * YDir)
   //! where S is the vertex of the parabola, XDir the XDirection and
   //! YDir the YDirection of the parabola's local coordinate system.
   Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
@@ -190,7 +190,7 @@ public:
   //! Applies the transformation T to this parabola.
   Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
-  //! Returns the  parameter on the  transformed  curve for
+  //! Returns the parameter on the transformed curve for
   //! the transform of the point of parameter U on <me>.
   //!
   //! me->Transformed(T)->Value(me->TransformedParameter(U,T))
@@ -203,8 +203,8 @@ public:
   Standard_EXPORT Standard_Real TransformedParameter(const Standard_Real U,
                                                      const gp_Trsf&      T) const Standard_OVERRIDE;
 
-  //! Returns a  coefficient to compute the parameter on
-  //! the transformed  curve  for  the transform  of the
+  //! Returns a coefficient to compute the parameter on
+  //! the transformed curve for the transform of the
   //! point on <me>.
   //!
   //! Transformed(T)->Value(U * ParametricTransformation(T))

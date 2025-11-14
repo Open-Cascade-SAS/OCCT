@@ -23,15 +23,14 @@
 
 #include <Intrv_Intervals.hxx>
 
-//! This class describes the Hidden  Line status of an
-//! Edge. It contains :
+//! This class describes the Hidden Line status of an
+//! Edge. It contains:
 //!
 //! The Bounds of the Edge and their tolerances
 //!
 //! Two flags indicating if the edge is full visible
-//! or full hidden.
-//!
-//! The Sequence  of visible Intervals  on the Edge.
+//! or full hidden
+//! TheSequenceof visible Intervals on the Edge.
 class HLRAlgo_EdgeStatus
 {
 public:
@@ -39,16 +38,16 @@ public:
 
   Standard_EXPORT HLRAlgo_EdgeStatus();
 
-  //! Creates a  new  EdgeStatus.  Default visible.  The
-  //! Edge is   bounded by the  interval  <Start>, <End>
+  //! Creates a new EdgeStatus. Default visible. The
+  //! Edge is bounded by the interval <Start>, <End>
   //! with the tolerances <TolStart>, <TolEnd>.
   Standard_EXPORT HLRAlgo_EdgeStatus(const Standard_Real      Start,
                                      const Standard_ShortReal TolStart,
                                      const Standard_Real      End,
                                      const Standard_ShortReal TolEnd);
 
-  //! Initialize  an  EdgeStatus.  Default visible.  The
-  //! Edge is   bounded by the  interval  <Start>, <End>
+  //! Initialize an EdgeStatus. Default visible. The
+  //! Edge is bounded by the interval <Start>, <End>
   //! with the tolerances <TolStart>, <TolEnd>.
   Standard_EXPORT void Initialize(const Standard_Real      Start,
                                   const Standard_ShortReal TolStart,
@@ -74,13 +73,13 @@ public:
                                    Standard_Real&         End,
                                    Standard_ShortReal&    TolEnd) const;
 
-  //! Hides  the  interval  <Start>,    <End>   with the
-  //! tolerances <TolStart>,  <TolEnd>. This interval is
-  //! subtracted from the visible  parts.  If the hidden
-  //! part is on ( or under ) the face the flag <OnFace>
-  //! is True ( or False ).  If the hidden  part is on (
-  //! or  inside  ) the boundary  of  the  face the flag
-  //! <OnBoundary> is True ( or False ).
+  //! Hides the interval <Start>, <End> with the
+  //! tolerances <TolStart>, <TolEnd>. This interval is
+  //! subtracted from the visible parts. If the hidden
+  //! part is on (or under) the face the flag <OnFace>
+  //! is True (or False). If the hidden part is on
+  //! (or inside) the boundary of the face the flag
+  //! <OnBoundary> is True (or False).
   Standard_EXPORT void Hide(const Standard_Real      Start,
                             const Standard_ShortReal TolStart,
                             const Standard_Real      End,

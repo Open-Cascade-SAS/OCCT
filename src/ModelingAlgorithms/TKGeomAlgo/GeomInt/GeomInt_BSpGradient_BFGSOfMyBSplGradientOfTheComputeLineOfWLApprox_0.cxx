@@ -23,21 +23,33 @@
 #include <GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
 
-#define MultiLine GeomInt_TheMultiLineOfWLApprox
-#define MultiLine_hxx <GeomInt_TheMultiLineOfWLApprox.hxx>
-#define ToolLine GeomInt_TheMultiLineToolOfWLApprox
-#define ToolLine_hxx <GeomInt_TheMultiLineToolOfWLApprox.hxx>
-#define AppParCurves_BSpParLeastSquare                                                             \
-  GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox
-#define AppParCurves_BSpParLeastSquare_hxx                                                         \
-  <GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#define AppParCurves_BSpParFunction GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox
-#define AppParCurves_BSpParFunction_hxx                                                            \
-  <GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#define AppParCurves_BSpGradient_BFGS                                                              \
-  GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox
-#define AppParCurves_BSpGradient_BFGS_hxx                                                          \
-  <GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#define AppParCurves_BSpGradient GeomInt_MyBSplGradientOfTheComputeLineOfWLApprox
-#define AppParCurves_BSpGradient_hxx <GeomInt_MyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#include <AppParCurves_BSpGradient_BFGS.gxx>
+GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox::
+  GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox(
+    math_MultipleVarFunctionWithGradient& F,
+    const math_Vector&                    StartingPoint,
+    const Standard_Real                   Tolerance3d,
+    const Standard_Real                   Tolerance2d,
+    const Standard_Real                   Eps,
+    const Standard_Integer                NbIterations)
+    : math_BFGS(F.NbVariables(), Eps, NbIterations, Eps),
+      myTol3d(Tolerance3d),
+      myTol2d(Tolerance2d)
+{
+  Perform(F, StartingPoint);
+}
+
+Standard_Boolean GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox::
+  IsSolutionReached(math_MultipleVarFunctionWithGradient& F) const
+{
+  Standard_Boolean                                                  Result, Result2;
+  GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox* F1 =
+    (GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox*)&F;
+
+  Result               = (2.0 * fabs(TheMinimum - PreviousMinimum)
+            <= 1.e-10 * (fabs(TheMinimum) + fabs(PreviousMinimum)) + 1.e-12);
+  Standard_Real MErr3d = F1->MaxError3d();
+  Standard_Real MErr2d = F1->MaxError2d();
+  Result2              = ((MErr3d <= myTol3d) && (MErr2d <= myTol2d));
+
+  return (Result || Result2);
+}

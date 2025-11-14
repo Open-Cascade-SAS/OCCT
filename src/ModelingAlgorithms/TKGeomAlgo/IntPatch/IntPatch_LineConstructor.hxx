@@ -22,8 +22,8 @@
 
 class Adaptor3d_TopolTool;
 
-//! The intersections  algorithms compute the intersection
-//! on two surfaces and  return the intersections lines as
+//! The intersections algorithms compute the intersection
+//! on two surfaces and return the intersections lines as
 //! IntPatch_Line.
 class IntPatch_LineConstructor
 {

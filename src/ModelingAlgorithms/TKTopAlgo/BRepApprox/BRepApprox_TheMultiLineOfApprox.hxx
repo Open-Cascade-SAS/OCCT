@@ -41,9 +41,9 @@ public:
 
   //! The class SvSurfaces is used when the approximation algorithm
   //! needs some extra points on the line <line>.
-  //! A New line  is then created which shares the same surfaces and functions.
+  //! A New line is then created which shares the same surfaces and functions.
   //! SvSurfaces is a deferred class which allows several implementations of
-  //! this  algorithm with different surfaces (bi-parametric ones, or
+  //! this algorithm with different surfaces (bi-parametric ones, or
   //! implicit and biparametric ones)
   Standard_EXPORT BRepApprox_TheMultiLineOfApprox(const Handle(BRepApprox_ApproxLine)& line,
                                                   const Standard_Address PtrSvSurfaces,

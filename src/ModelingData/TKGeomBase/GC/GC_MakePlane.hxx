@@ -79,7 +79,7 @@ public:
   //! It returns false if <P1> <P2> <P3> are confused.
   Standard_EXPORT GC_MakePlane(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
 
-  //! Make a Plane  passing through the location of <Axis>and
+  //! Make a Plane passing through the location of <Axis>and
   //! normal to the Direction of <Axis>.
   Standard_EXPORT GC_MakePlane(const gp_Ax1& Axis);
 

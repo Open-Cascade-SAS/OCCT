@@ -26,7 +26,7 @@
 #include <Standard_Integer.hxx>
 class HLRTopoBRep_OutLiner;
 
-//! Contains  a Shape and the  bounds of its vertices,
+//! Contains a Shape and the bounds of its vertices,
 //! edges and faces in the DataStructure.
 class HLRBRep_ShapeBounds
 {

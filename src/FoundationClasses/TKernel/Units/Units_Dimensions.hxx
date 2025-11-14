@@ -93,12 +93,12 @@ public:
   Standard_EXPORT Handle(Units_Dimensions) Multiply(
     const Handle(Units_Dimensions)& adimensions) const;
 
-  //! Creates and returns a new Dimensions object which  is
+  //! Creates and returns a new Dimensions object which is
   //! the result of the division of <me> by <adimensions>.
   Standard_EXPORT Handle(Units_Dimensions) Divide(
     const Handle(Units_Dimensions)& adimensions) const;
 
-  //! Creates  and returns a new Dimensions object which is
+  //! Creates and returns a new Dimensions object which is
   //! the result of the power of <me> and <anexponent>.
   Standard_EXPORT Handle(Units_Dimensions) Power(const Standard_Real anexponent) const;
 

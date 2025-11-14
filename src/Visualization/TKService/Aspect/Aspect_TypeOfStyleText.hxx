@@ -18,10 +18,12 @@
 
 //! Define the style of the text.
 //!
-//! TOST_NORMAL         Default text. The text is displayed like any other graphic object.
+//! TOST_NORMAL
+//! Default text. The text is displayed like any other graphic object.
 //! This text can be hidden by another object that is nearest from the
 //! point of view.
-//! TOST_ANNOTATION     The text is always visible. The texte is displayed
+//! TOST_ANNOTATION
+//! The text is always visible. The text is displayed
 //! over the other object according to the priority.
 enum Aspect_TypeOfStyleText
 {

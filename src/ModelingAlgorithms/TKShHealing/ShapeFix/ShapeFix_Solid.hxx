@@ -95,7 +95,7 @@ public:
   //! Returns (modifiable) the mode for creation of solids.
   //! If mode myCreateOpenSolidMode is equal to true
   //! solids are created from open shells
-  //! else solids are created  from closed shells only.
+  //! else solids are created from closed shells only.
   //! ShapeFix_Shell, by default False.
   Standard_Boolean& CreateOpenSolidMode() { return myCreateOpenSolidMode; }
 

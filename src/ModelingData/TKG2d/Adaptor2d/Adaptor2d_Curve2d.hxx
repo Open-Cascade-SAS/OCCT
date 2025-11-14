@@ -65,10 +65,10 @@ public:
   //! intervals.
   Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const;
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accommodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
 
@@ -124,7 +124,7 @@ public:
   //! Raised if N < 1.
   Standard_EXPORT virtual gp_Vec2d DN(const Standard_Real U, const Standard_Integer N) const;
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT virtual Standard_Real Resolution(const Standard_Real R3d) const;
 

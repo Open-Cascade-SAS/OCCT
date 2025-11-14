@@ -30,42 +30,42 @@ public:
 
   BRepExtrema_ExtFF() {}
 
-  //! It calculates all the distances. <br>
+  //! It calculates all the distances.
   Standard_EXPORT BRepExtrema_ExtFF(const TopoDS_Face& F1, const TopoDS_Face& F2);
 
   Standard_EXPORT void Initialize(const TopoDS_Face& F2);
-  //! An exception is raised if the fields have not been initialized. <br>
-  //! Be careful: this method uses the Face F2 only for classify, not for the fields. <br>
+  //! An exception is raised if the fields have not been initialized.
+  //! Be careful: this method uses the Face F2 only for classify, not for the fields.
   Standard_EXPORT void Perform(const TopoDS_Face& F1, const TopoDS_Face& F2);
 
-  //! True if the distances are found. <br>
+  //! True if the distances are found.
   Standard_Boolean IsDone() const { return myExtSS.IsDone(); }
 
-  //! Returns True if the surfaces are parallel. <br>
+  //! Returns True if the surfaces are parallel.
   Standard_Boolean IsParallel() const { return myExtSS.IsParallel(); }
 
-  //! Returns the number of extremum distances. <br>
+  //! Returns the number of extremum distances.
   Standard_Integer NbExt() const { return mySqDist.Length(); }
 
-  //! Returns the value of the <N>th extremum square distance. <br>
+  //! Returns the value of the <N>th extremum square distance.
   Standard_Real SquareDistance(const Standard_Integer N) const { return mySqDist.Value(N); }
 
-  //! Returns the parameters on the Face F1 of the <N>th extremum distance. <br>
+  //! Returns the parameters on the Face F1 of the <N>th extremum distance.
   void ParameterOnFace1(const Standard_Integer N, Standard_Real& U, Standard_Real& V) const
   {
     myPointsOnS1.Value(N).Parameter(U, V);
   }
 
-  //! Returns the parameters on the Face F2 of the <N>th extremum distance. <br>
+  //! Returns the parameters on the Face F2 of the <N>th extremum distance.
   void ParameterOnFace2(const Standard_Integer N, Standard_Real& U, Standard_Real& V) const
   {
     myPointsOnS2.Value(N).Parameter(U, V);
   }
 
-  //! Returns the Point of the <N>th extremum distance. <br>
+  //! Returns the Point of the <N>th extremum distance.
   gp_Pnt PointOnFace1(const Standard_Integer N) const { return myPointsOnS1.Value(N).Value(); }
 
-  //! Returns the Point of the <N>th extremum distance. <br>
+  //! Returns the Point of the <N>th extremum distance.
   gp_Pnt PointOnFace2(const Standard_Integer N) const { return myPointsOnS2.Value(N).Value(); }
 
 private:

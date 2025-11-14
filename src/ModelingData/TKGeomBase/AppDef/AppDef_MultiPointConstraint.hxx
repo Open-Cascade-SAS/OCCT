@@ -145,7 +145,7 @@ public:
   Standard_EXPORT void SetTang2d(const Standard_Integer Index, const gp_Vec2d& Tang2d);
 
   //! returns the tangency value of the point of range Index.
-  //! An exception is raised if Index < number  of 3d points or
+  //! An exception is raised if Index < number of 3d points or
   //! if Index > total number of points.
   Standard_EXPORT gp_Vec2d Tang2d(const Standard_Integer Index) const;
 

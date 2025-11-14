@@ -43,7 +43,7 @@ public:
 
   //! Creates an ellipse with the major axis, the major and the
   //! minor radius. The location of the MajorAxis is the center
-  //! of the  ellipse.
+  //! of the ellipse.
   //! The sense of parametrization is given by Sense.
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
   //! the status is "InvertRadius" if MajorRadius < MinorRadius or
@@ -57,7 +57,7 @@ public:
   //! the origin and the sense of parametrization.
   //! Creates an ellipse with the AxisPlacement the major and the
   //! minor radius. The location of Axis is the center
-  //! of the  ellipse.
+  //! of the ellipse.
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
   //! the status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.0
@@ -68,7 +68,7 @@ public:
   //! Makes an Elips2d with its center and two points.
   //! The sense of parametrization is given by S1, S2,
   //! and Center.
-  //! Depending on the constructor, the  implicit orientation of the ellipse is:
+  //! Depending on the constructor, the implicit orientation of the ellipse is:
   //! -   the sense defined by A,
   //! -   the sense defined by points Center, S1 and S2,
   //! -   the trigonometric sense if Sense is not given or is true, or
