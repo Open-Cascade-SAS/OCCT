@@ -384,9 +384,9 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     ::SetErrorMode(0);
 #endif
 
-    // *****************************************************************
-    // init X window and create display
-    // *****************************************************************
+  // *****************************************************************
+  // init X window and create display
+  // *****************************************************************
 #ifdef _WIN32
   HWND hWnd = NULL;
 #endif

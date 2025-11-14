@@ -387,7 +387,7 @@ Standard_Boolean GeomFill_NSections::D1(const Standard_Real   V,
   if (NullWeight)
     return Standard_False;
 
-    // verif par diff finies sous debug sauf pour les surfaces periodiques
+  // verif par diff finies sous debug sauf pour les surfaces periodiques
 #ifdef OCCT_DEBUG
   if (!mySurface->IsVPeriodic())
   {
@@ -497,7 +497,7 @@ Standard_Boolean GeomFill_NSections::D2(const Standard_Real   V,
   if (NullWeight)
     return Standard_False;
 
-    // verif par diff finies sous debug sauf pour les surfaces periodiques
+  // verif par diff finies sous debug sauf pour les surfaces periodiques
 #ifdef OCCT_DEBUG
   if (!mySurface->IsVPeriodic())
   {

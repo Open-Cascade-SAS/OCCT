@@ -851,7 +851,6 @@ public: //! @name methods to alter or retrieve current state
 
   //! Bind specified texture set to current context taking into account active GLSL program.
   Standard_DEPRECATED("BindTextures() with explicit GLSL program should be used instead")
-
   Handle(OpenGl_TextureSet) BindTextures(const Handle(OpenGl_TextureSet)& theTextures)
   {
     return BindTextures(theTextures, myActiveProgram);
