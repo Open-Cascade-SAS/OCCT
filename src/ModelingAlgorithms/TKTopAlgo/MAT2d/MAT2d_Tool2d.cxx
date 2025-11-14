@@ -1503,8 +1503,8 @@ void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer 
   else
     dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 500);
 
-      // dout << dr;
-      // dout.Flush();
+    // dout << dr;
+    // dout.Flush();
   #endif
 }
 

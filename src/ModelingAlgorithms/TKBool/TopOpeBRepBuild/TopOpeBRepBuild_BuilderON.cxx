@@ -2269,7 +2269,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
             gp_Vec ntOOFOR = FUN_tool_nggeomF(uv, OOFOR);
             if (OOFOR.Orientation() == TopAbs_REVERSED)
               ntOOFOR.Reverse();
-              // xxFCX :
+            // xxFCX :
 #ifdef OCCT_DEBUG
 //	    Standard_Real t1 =factor*BRep_Tool::Tolerance(Esd);
 #endif
