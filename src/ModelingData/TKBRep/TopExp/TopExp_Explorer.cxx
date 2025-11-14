@@ -171,13 +171,6 @@ void TopExp_Explorer::Next()
 
 //=================================================================================================
 
-Standard_Boolean TopExp_Explorer::More() const noexcept
-{
-  return hasMore;
-}
-
-//=================================================================================================
-
 const TopoDS_Shape& TopExp_Explorer::Current() const noexcept
 {
   return myStack.IsEmpty() ? myShape : myStack.Last().Value();

@@ -111,7 +111,7 @@ public:
                             const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
 
   //! Returns True if there are more shapes in the exploration.
-  Standard_EXPORT Standard_Boolean More() const noexcept;
+  Standard_Boolean More() const noexcept { return hasMore; }
 
   //! Moves to the next Shape in the exploration.
   Standard_EXPORT void Next();
