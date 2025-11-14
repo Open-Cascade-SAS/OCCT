@@ -17,7 +17,8 @@
 #ifndef _TopExp_Explorer_HeaderFile
 #define _TopExp_Explorer_HeaderFile
 
-#include <TopExp_Stack.hxx>
+#include <NCollection_Vector.hxx>
+#include <TopAbs.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -84,7 +85,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an empty explorer, becomes useful after Init.
-  Standard_EXPORT TopExp_Explorer();
+  Standard_EXPORT TopExp_Explorer() noexcept;
 
   //! Creates an Explorer on the Shape <S>.
   //!
@@ -110,48 +111,39 @@ public:
                             const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
 
   //! Returns True if there are more shapes in the exploration.
-  Standard_Boolean More() const { return hasMore; }
+  Standard_Boolean More() const noexcept { return hasMore; }
 
   //! Moves to the next Shape in the exploration.
-  //! Exceptions
-  //! Standard_NoMoreObject if there are no more shapes to explore.
   Standard_EXPORT void Next();
 
   //! Returns the current shape in the exploration.
-  //! Exceptions
-  //! Standard_NoSuchObject if this explorer has no more shapes to explore.
-  const TopoDS_Shape& Value() const { return Current(); }
+  const TopoDS_Shape& Value() const noexcept { return Current(); }
 
   //! Returns the current shape in the exploration.
-  //! Exceptions
-  //! Standard_NoSuchObject if this explorer has no more shapes to explore.
-  Standard_EXPORT const TopoDS_Shape& Current() const;
+  Standard_EXPORT const TopoDS_Shape& Current() const noexcept;
 
   //! Reinitialize the exploration with the original arguments.
-  Standard_EXPORT void ReInit();
+  void ReInit() { Init(myShape, toFind, toAvoid); }
 
   //! Return explored shape.
-  const TopoDS_Shape& ExploredShape() const { return myShape; }
+  const TopoDS_Shape& ExploredShape() const noexcept { return myShape; }
 
   //! Returns the current depth of the exploration. 0 is
   //! the shape to explore itself.
-  Standard_Integer Depth() const { return myTop; }
+  Standard_EXPORT Standard_Integer Depth() const noexcept;
 
-  //! Clears the content of the explorer. It will return
-  //! False on More().
+  //! Clears the content of the explorer.
   Standard_EXPORT void Clear();
 
   //! Destructor.
   Standard_EXPORT ~TopExp_Explorer();
 
 private:
-  TopExp_Stack     myStack;
-  TopoDS_Shape     myShape;
-  Standard_Integer myTop;
-  Standard_Integer mySizeOfStack;
-  TopAbs_ShapeEnum toFind;
-  TopAbs_ShapeEnum toAvoid;
-  Standard_Boolean hasMore;
+  NCollection_Vector<TopoDS_Iterator> myStack;
+  TopoDS_Shape                        myShape;
+  TopAbs_ShapeEnum                    toFind;
+  TopAbs_ShapeEnum                    toAvoid;
+  Standard_Boolean                    hasMore;
 };
 
 #endif // _TopExp_Explorer_HeaderFile
