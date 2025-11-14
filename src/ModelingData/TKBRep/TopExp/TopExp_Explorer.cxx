@@ -14,8 +14,6 @@
 
 #include <TopExp_Explorer.hxx>
 
-#include <Standard_NoMoreObject.hxx>
-
 namespace
 {
 //! Returns true if the given type matches the type to find.
@@ -84,8 +82,6 @@ void TopExp_Explorer::Init(const TopoDS_Shape&    S,
 
 void TopExp_Explorer::Next()
 {
-  Standard_NoMoreObject_Raise_if(!hasMore, "TopExp_Explorer::Next");
-
   if (myStack.IsEmpty())
   {
     TopAbs_ShapeEnum ty = myShape.ShapeType();

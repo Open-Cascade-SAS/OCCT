@@ -18,7 +18,6 @@
 #define _TopExp_Explorer_HeaderFile
 
 #include <NCollection_Vector.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
@@ -142,7 +141,6 @@ public:
   //! Standard_NoSuchObject if this explorer has no more shapes to explore.
   const TopoDS_Shape& Current() const
   {
-    Standard_NoSuchObject_Raise_if(!hasMore, "TopExp_Explorer::Current");
     return myStack.IsEmpty() ? myShape : myStack.Last().Value();
   }
 
