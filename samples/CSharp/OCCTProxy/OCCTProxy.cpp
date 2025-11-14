@@ -1,3 +1,8 @@
+// Prevent Windows from defining min/max macros
+#ifndef NOMINMAX
+  #define NOMINMAX
+#endif
+
 // include required OCCT headers
 #include <Standard_Version.hxx>
 #include <Message_ProgressIndicator.hxx>
