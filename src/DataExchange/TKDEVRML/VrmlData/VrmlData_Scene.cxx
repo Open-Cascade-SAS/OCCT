@@ -1009,7 +1009,8 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteLine(const char*            theLin0,
       (*myOutput) << "\n";
     else
     {
-      const Standard_Integer nSpaces = Min(aCurrentIndent, sizeof(spaces) - 1);
+      const Standard_Integer nSpaces =
+        std::min(aCurrentIndent, static_cast<int>(sizeof(spaces) - 1));
       (*myOutput) << &spaces[sizeof(spaces) - 1 - nSpaces];
       if (theLin0)
       {

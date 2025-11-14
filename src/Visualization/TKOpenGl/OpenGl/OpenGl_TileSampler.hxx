@@ -87,7 +87,7 @@ public:
     {
       for (Standard_Size aColIter = 0; aColIter < myTiles.SizeX; ++aColIter)
       {
-        aNbSamples = Max(aNbSamples, myTiles.Value(aRowIter, aColIter));
+        aNbSamples = std::max(aNbSamples, static_cast<int>(myTiles.Value(aRowIter, aColIter)));
       }
     }
     return aNbSamples;

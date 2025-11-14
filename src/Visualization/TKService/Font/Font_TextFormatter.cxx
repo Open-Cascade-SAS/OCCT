@@ -237,7 +237,7 @@ void Font_TextFormatter::Format()
         aMaxLineWidth = std::max(aMaxLineWidth, LineWidth(aLineIt));
       }
       // clang-format off
-      aMaxLineWidth = Max (aMaxLineWidth, LineWidth (myNewLines.Size())); // processing the last line also
+      aMaxLineWidth = std::max(aMaxLineWidth, LineWidth (myNewLines.Size())); // processing the last line also
       // clang-format on
     }
   }

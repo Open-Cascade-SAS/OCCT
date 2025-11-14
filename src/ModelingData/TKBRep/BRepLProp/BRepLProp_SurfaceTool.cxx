@@ -71,7 +71,7 @@ gp_Vec BRepLProp_SurfaceTool::DN(const BRepAdaptor_Surface& S,
 
 Standard_Integer BRepLProp_SurfaceTool::Continuity(const BRepAdaptor_Surface& S)
 {
-  GeomAbs_Shape s = (GeomAbs_Shape)Min(S.UContinuity(), S.VContinuity());
+  GeomAbs_Shape s = std::min(S.UContinuity(), S.VContinuity());
   switch (s)
   {
     case GeomAbs_C0:
