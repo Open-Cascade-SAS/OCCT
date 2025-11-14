@@ -40,6 +40,36 @@ inline Standard_Boolean isMoreComplex(const TopAbs_ShapeEnum theType,
 
 //=================================================================================================
 
+TopExp_Explorer::TopExp_Explorer() noexcept
+    : myStack(20),
+      toFind(TopAbs_SHAPE),
+      toAvoid(TopAbs_SHAPE),
+      hasMore(Standard_False)
+{
+}
+
+//=================================================================================================
+
+TopExp_Explorer::TopExp_Explorer(const TopoDS_Shape&    S,
+                                 const TopAbs_ShapeEnum ToFind,
+                                 const TopAbs_ShapeEnum ToAvoid)
+    : myStack(20),
+      toFind(ToFind),
+      toAvoid(ToAvoid),
+      hasMore(Standard_False)
+{
+  Init(S, ToFind, ToAvoid);
+}
+
+//=================================================================================================
+
+TopExp_Explorer::~TopExp_Explorer()
+{
+  Clear();
+}
+
+//=================================================================================================
+
 void TopExp_Explorer::Init(const TopoDS_Shape&    S,
                            const TopAbs_ShapeEnum ToFind,
                            const TopAbs_ShapeEnum ToAvoid)
@@ -137,4 +167,33 @@ void TopExp_Explorer::Next()
     }
   }
   hasMore = Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean TopExp_Explorer::More() const noexcept
+{
+  return hasMore;
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& TopExp_Explorer::Current() const noexcept
+{
+  return myStack.IsEmpty() ? myShape : myStack.Last().Value();
+}
+
+//=================================================================================================
+
+Standard_Integer TopExp_Explorer::Depth() const noexcept
+{
+  return myStack.Length();
+}
+
+//=================================================================================================
+
+void TopExp_Explorer::Clear()
+{
+  hasMore = Standard_False;
+  myStack.Clear();
 }

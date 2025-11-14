@@ -85,13 +85,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an empty explorer, becomes useful after Init.
-  TopExp_Explorer() noexcept
-      : myStack(20),
-        toFind(TopAbs_SHAPE),
-        toAvoid(TopAbs_SHAPE),
-        hasMore(Standard_False)
-  {
-  }
+  Standard_EXPORT TopExp_Explorer() noexcept;
 
   //! Creates an Explorer on the Shape <S>.
   //!
@@ -102,16 +96,9 @@ public:
   //! exploration. If <ToAvoid> is equal or less
   //! complex than <ToFind> or if <ToAVoid> is SHAPE it
   //! has no effect on the exploration.
-  TopExp_Explorer(const TopoDS_Shape&    S,
-                  const TopAbs_ShapeEnum ToFind,
-                  const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE)
-      : myStack(20),
-        toFind(ToFind),
-        toAvoid(ToAvoid),
-        hasMore(Standard_False)
-  {
-    Init(S, ToFind, ToAvoid);
-  }
+  Standard_EXPORT TopExp_Explorer(const TopoDS_Shape&    S,
+                                  const TopAbs_ShapeEnum ToFind,
+                                  const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
 
   //! Resets this explorer on the shape S. It is initialized to
   //! search the shape S, for shapes of type ToFind, that
@@ -124,25 +111,16 @@ public:
                             const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
 
   //! Returns True if there are more shapes in the exploration.
-  Standard_Boolean More() const noexcept { return hasMore; }
+  Standard_EXPORT Standard_Boolean More() const noexcept;
 
   //! Moves to the next Shape in the exploration.
-  //! Exceptions
-  //! Standard_NoMoreObject if there are no more shapes to explore.
   Standard_EXPORT void Next();
 
   //! Returns the current shape in the exploration.
-  //! Exceptions
-  //! Standard_NoSuchObject if this explorer has no more shapes to explore.
-  const TopoDS_Shape& Value() const { return Current(); }
+  const TopoDS_Shape& Value() const noexcept { return Current(); }
 
   //! Returns the current shape in the exploration.
-  //! Exceptions
-  //! Standard_NoSuchObject if this explorer has no more shapes to explore.
-  const TopoDS_Shape& Current() const
-  {
-    return myStack.IsEmpty() ? myShape : myStack.Last().Value();
-  }
+  Standard_EXPORT const TopoDS_Shape& Current() const noexcept;
 
   //! Reinitialize the exploration with the original arguments.
   void ReInit() { Init(myShape, toFind, toAvoid); }
@@ -152,18 +130,13 @@ public:
 
   //! Returns the current depth of the exploration. 0 is
   //! the shape to explore itself.
-  Standard_Integer Depth() const noexcept { return myStack.Length(); }
+  Standard_EXPORT Standard_Integer Depth() const noexcept;
 
-  //! Clears the content of the explorer. It will return
-  //! False on More().
-  void Clear()
-  {
-    hasMore = Standard_False;
-    myStack.Clear();
-  }
+  //! Clears the content of the explorer.
+  Standard_EXPORT void Clear();
 
   //! Destructor.
-  ~TopExp_Explorer() { Clear(); }
+  Standard_EXPORT ~TopExp_Explorer();
 
 private:
   NCollection_Vector<TopoDS_Iterator> myStack;
