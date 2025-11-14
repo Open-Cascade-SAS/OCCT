@@ -1670,7 +1670,7 @@ void BSplCLib_MovePoint(const Standard_Real         U,
   i   = kk1 - FirstNonZeroBsplineIndex + 2;
   if ((kk1 + 1) <= LastIndex)
   {
-    if (Abs(BSplineBasis(1, kk1 - FirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
+    if (std::abs(BSplineBasis(1, kk1 - FirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
     {
       kk2 = kk1 + 1;
     }
