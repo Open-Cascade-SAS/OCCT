@@ -153,11 +153,11 @@ void StdPrs_WFDeflectionSurface::Add(const Handle(Prs3d_Presentation)& aPresenta
     Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
     Total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
     if (!(Total.IsOpenXmin() || Total.IsOpenXmax()))
-      m = Min(m, Abs(aXmax - aXmin));
+      m = std::min(m, std::abs(aXmax - aXmin));
     if (!(Total.IsOpenYmin() || Total.IsOpenYmax()))
-      m = Min(m, Abs(aYmax - aYmin));
+      m = std::min(m, std::abs(aYmax - aYmin));
     if (!(Total.IsOpenZmin() || Total.IsOpenZmax()))
-      m = Min(m, Abs(aZmax - aZmin));
+      m = std::min(m, std::abs(aZmax - aZmin));
 
     TheDeflection = m * aDrawer->DeviationCoefficient();
   }

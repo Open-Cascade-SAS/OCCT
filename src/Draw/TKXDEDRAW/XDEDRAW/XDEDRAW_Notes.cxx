@@ -1246,7 +1246,7 @@ static Standard_Integer noteDump(Draw_Interpretor& di, Standard_Integer argc, co
     if (!aData.IsNull())
     {
       di << "Data      : ";
-      Standard_Integer aLen = Min(aData->Length(), theMaxLen);
+      Standard_Integer aLen = std::min(aData->Length(), theMaxLen);
       for (Standard_Integer i = 1; i <= aLen; ++i)
       {
         Standard_SStream ss;

@@ -431,7 +431,7 @@ void PrsDim_FixRelation::ComputeCirclePosition(const gp_Circ& gcirc,
   // readjust parametres on the circle
   if (plast > 2 * M_PI)
   {
-    Standard_Real nbtours = Floor(plast / (2 * M_PI));
+    Standard_Real nbtours = std::floor(plast / (2 * M_PI));
     plast -= nbtours * 2 * M_PI;
     pfirst -= nbtours * 2 * M_PI;
   }

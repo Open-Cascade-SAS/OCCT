@@ -560,13 +560,13 @@ static Standard_Integer isoedge(Draw_Interpretor&, Standard_Integer n, const cha
   BRepTools::UVBounds(TopoDS::Face(Sh), UMin, UMax, VMin, VMax);
   if (uiso)
   {
-    VMin = Min(VMin, Min(p1, p2));
-    VMax = Max(VMax, Max(p1, p2));
+    VMin = std::min(VMin, std::min(p1, p2));
+    VMax = std::max(VMax, std::max(p1, p2));
   }
   else
   {
-    UMin = Min(UMin, Min(p1, p2));
-    UMax = Max(VMax, Max(p1, p2));
+    UMin = std::min(UMin, std::min(p1, p2));
+    UMax = std::max(VMax, std::max(p1, p2));
   }
 
   Handle(Geom_RectangularTrimmedSurface) TS =
@@ -843,7 +843,7 @@ static Standard_Integer profile(Draw_Interpretor& di, Standard_Integer n, const 
             vx -= x;
             vy -= y;
           }
-          length = Sqrt(vx * vx + vy * vy);
+          length = std::sqrt(vx * vx + vy * vy);
           if (length > Precision::Confusion())
           {
             move = line;
@@ -861,13 +861,13 @@ static Standard_Integer profile(Draw_Interpretor& di, Standard_Integer n, const 
         angle = Draw::Atof(a[i]) * (M_PI / 180.0);
         if ((a[i - 1][1] == 'R') || (a[i - 1][1] == 'r'))
         {
-          dx = Cos(angle);
-          dy = Sin(angle);
+          dx = std::cos(angle);
+          dy = std::sin(angle);
         }
         else
         {
-          Standard_Real c = Cos(angle);
-          Standard_Real s = Sin(angle);
+          Standard_Real c = std::cos(angle);
+          Standard_Real s = std::sin(angle);
           Standard_Real t = c * dx - s * dy;
           dy              = s * dx + c * dy;
           dx              = t;
@@ -882,7 +882,7 @@ static Standard_Integer profile(Draw_Interpretor& di, Standard_Integer n, const 
         {
           Standard_Real vx = Draw::Atof(a[i - 1]);
           Standard_Real vy = Draw::Atof(a[i]);
-          length           = Sqrt(vx * vx + vy * vy);
+          length           = std::sqrt(vx * vx + vy * vy);
           if (length > Precision::Confusion())
           {
             // move = line; DUB
@@ -898,7 +898,7 @@ static Standard_Integer profile(Draw_Interpretor& di, Standard_Integer n, const 
         if (i >= n)
           goto badargs;
         radius = Draw::Atof(a[i - 1]);
-        if (Abs(radius) > Precision::Confusion())
+        if (std::abs(radius) > Precision::Confusion())
         {
           angle = Draw::Atof(a[i]) * (M_PI / 180.0);
           move  = circle;
@@ -913,7 +913,7 @@ static Standard_Integer profile(Draw_Interpretor& di, Standard_Integer n, const 
         length = Draw::Atof(a[i]);
         if ((a[i - 1][1] == 'X') || (a[i - 1][1] == 'x'))
         {
-          if (Abs(dx) < Precision::Confusion())
+          if (std::abs(dx) < Precision::Confusion())
           {
             di << "Profile : cannot intersect, arg " << i - 1;
             return 1;
@@ -923,7 +923,7 @@ static Standard_Integer profile(Draw_Interpretor& di, Standard_Integer n, const 
         }
         else if ((a[i - 1][1] == 'Y') || (a[i - 1][1] == 'y'))
         {
-          if (Abs(dy) < Precision::Confusion())
+          if (std::abs(dy) < Precision::Confusion())
           {
             di << "Profile : cannot intersect, arg " << i - 1;
             return 1;
@@ -1016,7 +1016,7 @@ static Standard_Integer profile(Draw_Interpretor& di, Standard_Integer n, const 
       // the closing segment
       dx     = x0 - x;
       dy     = y0 - y;
-      length = Sqrt(dx * dx + dy * dy);
+      length = std::sqrt(dx * dx + dy * dy);
       if (length > Precision::Confusion())
       {
         move = line;
@@ -1463,7 +1463,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di, Standard_Integer n, cons
             vx -= x;
             vy -= y;
           }
-          length = Sqrt(vx * vx + vy * vy);
+          length = std::sqrt(vx * vx + vy * vy);
           if (length > Precision::Confusion())
           {
             move = line;
@@ -1481,13 +1481,13 @@ static Standard_Integer profile2d(Draw_Interpretor& di, Standard_Integer n, cons
         angle = Draw::Atof(a[i]) * (M_PI / 180.0);
         if ((a[i - 1][1] == 'R') || (a[i - 1][1] == 'r'))
         {
-          dx = Cos(angle);
-          dy = Sin(angle);
+          dx = std::cos(angle);
+          dy = std::sin(angle);
         }
         else
         {
-          Standard_Real c = Cos(angle);
-          Standard_Real s = Sin(angle);
+          Standard_Real c = std::cos(angle);
+          Standard_Real s = std::sin(angle);
           Standard_Real t = c * dx - s * dy;
           dy              = s * dx + c * dy;
           dx              = t;
@@ -1502,7 +1502,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di, Standard_Integer n, cons
         {
           Standard_Real vx = Draw::Atof(a[i - 1]);
           Standard_Real vy = Draw::Atof(a[i]);
-          length           = Sqrt(vx * vx + vy * vy);
+          length           = std::sqrt(vx * vx + vy * vy);
           if (length > Precision::Confusion())
           {
             // move = line; DUB
@@ -1518,7 +1518,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di, Standard_Integer n, cons
         if (i >= n)
           goto badargs;
         radius = Draw::Atof(a[i - 1]);
-        if (Abs(radius) > Precision::Confusion())
+        if (std::abs(radius) > Precision::Confusion())
         {
           angle = Draw::Atof(a[i]) * (M_PI / 180.0);
           move  = circle;
@@ -1533,7 +1533,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di, Standard_Integer n, cons
         length = Draw::Atof(a[i]);
         if ((a[i - 1][1] == 'X') || (a[i - 1][1] == 'x'))
         {
-          if (Abs(dx) < Precision::Confusion())
+          if (std::abs(dx) < Precision::Confusion())
           {
             di << "Profile : cannot intersect, arg " << i - 1;
             return 1;
@@ -1543,7 +1543,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di, Standard_Integer n, cons
         }
         else if ((a[i - 1][1] == 'Y') || (a[i - 1][1] == 'y'))
         {
-          if (Abs(dy) < Precision::Confusion())
+          if (std::abs(dy) < Precision::Confusion())
           {
             di << "Profile : cannot intersect, arg " << i - 1;
             return 1;
@@ -1634,7 +1634,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di, Standard_Integer n, cons
       // the closing segment
       dx     = x0 - x;
       dy     = y0 - y;
-      length = Sqrt(dx * dx + dy * dy);
+      length = std::sqrt(dx * dx + dy * dy);
       if (length > Precision::Confusion())
       {
         move = line;

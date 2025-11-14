@@ -29,8 +29,8 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSp
       myDone(Standard_False),
       myFixFirstTangent(Standard_False),
       myFixLastTangent(Standard_False),
-      myAngularTolerance(Abs(AngularTolerance)),
-      myTolerance(Abs(Tolerance)),
+      myAngularTolerance(std::abs(AngularTolerance)),
+      myTolerance(std::abs(Tolerance)),
       myIndSecondPole(-1),
       myIndPrelastPole(-1)
 {
@@ -61,7 +61,7 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSp
         avector_normalized = a_vector / vector_magnitude;
 
         Standard_Real CrossProd = tangent_normalized ^ avector_normalized;
-        if (Abs(CrossProd) > CrossProdTol)
+        if (std::abs(CrossProd) > CrossProdTol)
           break;
 
         value = tangent.Dot(a_vector);
@@ -90,7 +90,7 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSp
         avector_normalized = a_vector / vector_magnitude;
 
         Standard_Real CrossProd = tangent_normalized ^ avector_normalized;
-        if (Abs(CrossProd) > CrossProdTol)
+        if (std::abs(CrossProd) > CrossProdTol)
           break;
 
         value = tangent.Dot(a_vector);

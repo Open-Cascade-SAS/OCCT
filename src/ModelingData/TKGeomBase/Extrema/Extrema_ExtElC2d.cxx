@@ -134,12 +134,12 @@ Method:
   gp_Pnt2d      O1 = C1.Location();
   gp_Pnt2d      P1, P2;
 
-  if (Abs(Dy) <= RealEpsilon())
+  if (std::abs(Dy) <= RealEpsilon())
   {
     teta[0] = M_PI / 2.0;
   }
   else
-    teta[0] = ATan(-Dx / Dy);
+    teta[0] = std::atan(-Dx / Dy);
   teta[1] = teta[0] + M_PI;
   if (teta[0] < 0.0)
     teta[0] = teta[0] + 2.0 * M_PI;
@@ -185,12 +185,12 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Elips2d& C2)
   Standard_Real U1, teta[2], r1 = C2.MajorRadius(), r2 = C2.MinorRadius();
   gp_Pnt2d      O1 = C1.Location(), P1, P2;
 
-  if (Abs(Dy) <= RealEpsilon())
+  if (std::abs(Dy) <= RealEpsilon())
   {
     teta[0] = M_PI / 2.0;
   }
   else
-    teta[0] = ATan(-Dx * r2 / (Dy * r1));
+    teta[0] = std::atan(-Dx * r2 / (Dy * r1));
 
   teta[1] = teta[0] + M_PI;
   if (teta[0] < 0.0)
@@ -235,16 +235,16 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Hypr2d& C2)
 
   Standard_Real U1, v2, U2 = 0, R = C2.MajorRadius(), r = C2.MinorRadius();
   gp_Pnt2d      P1, P2;
-  if (Abs(Dy) < RealEpsilon())
+  if (std::abs(Dy) < RealEpsilon())
   {
     return;
   }
-  if (Abs(R - r * Dx / Dy) < RealEpsilon())
+  if (std::abs(R - r * Dx / Dy) < RealEpsilon())
     return;
 
   v2 = (R + r * Dx / Dy) / (R - r * Dx / Dy);
   if (v2 > 0.0)
-    U2 = Log(Sqrt(v2));
+    U2 = std::log(std::sqrt(v2));
   P2 = ElCLib::Value(U2, C2);
 
   U1                  = (gp_Vec2d(C1.Location(), P2)).Dot(D);
@@ -278,7 +278,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Parab2d& C2)
 
   Standard_Real U1, U2, P = C2.Parameter();
   gp_Pnt2d      P1, P2;
-  if (Abs(Dy) < RealEpsilon())
+  if (std::abs(Dy) < RealEpsilon())
   {
     return;
   }
@@ -327,7 +327,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Circ2d& C1, const gp_Circ2d& C2)
   Standard_Real    r1 = C1.Radius(), r2 = C2.Radius();
   Standard_Real    Usol2[2], Usol1[2];
   gp_Pnt2d         P1[2], P2[2];
-  gp_Vec2d         O1O2(DO1O2 / Sqrt(aSqDCenters));
+  gp_Vec2d         O1O2(DO1O2 / std::sqrt(aSqDCenters));
 
   P1[0]    = O1.Translated(r1 * O1O2);
   Usol1[0] = ElCLib::Parameter(C1, P1[0]);

@@ -131,7 +131,7 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
       else
       { // Ts == STANDARD_TYPE(Geom_CylindricalSurface)
         if (cy.Axis().IsParallel(li.Position(), TolAng)
-            && Abs(li.Distance(cy.Location()) - cy.Radius()) < Tol)
+            && std::abs(li.Distance(cy.Location()) - cy.Radius()) < Tol)
         {
           ToAdd = Standard_True;
         }
@@ -149,7 +149,8 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
       }
       else
       {
-        if (Abs(cy.Radius() - ci.Radius()) < Tol && cy.Axis().IsCoaxial(ci.Axis(), TolAng, Tol))
+        if (std::abs(cy.Radius() - ci.Radius()) < Tol
+            && cy.Axis().IsCoaxial(ci.Axis(), TolAng, Tol))
         {
           ToAdd = Standard_True;
         }

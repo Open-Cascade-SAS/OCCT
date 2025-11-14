@@ -47,7 +47,7 @@ math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const Stand
       {
         Standard_Integer sqrIm1 = (i - 1) * (i - 1);
         aSubDiag(i)             = sqrIm1 / (4. * sqrIm1 - 1);
-        aSubDiag(i)             = Sqrt(aSubDiag(i));
+        aSubDiag(i)             = std::sqrt(aSubDiag(i));
       }
     }
 

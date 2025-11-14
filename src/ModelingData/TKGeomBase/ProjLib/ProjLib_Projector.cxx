@@ -181,7 +181,7 @@ void ProjLib_Projector::UFrame(const Standard_Real CFirst,
     gp_Pnt2d PFirst;
     PFirst = ElCLib::Value(CFirst, myLin);
     // PLast  = ElCLib::Value(CLast ,myLin);
-    // Standard_Real U = Min( PFirst.X(), PLast.X());
+    // Standard_Real U = std::min( PFirst.X(), PLast.X());
     Standard_Real U    = PFirst.X();
     Standard_Real NewU = ElCLib::InPeriod(U, UFirst, UFirst + Period);
     myLin.Translate(gp_Vec2d(NewU - U, 0.));
@@ -205,7 +205,7 @@ void ProjLib_Projector::VFrame(const Standard_Real CFirst,
     gp_Pnt2d PFirst;
     PFirst = ElCLib::Value(CFirst, myLin);
     // PLast  = ElCLib::Value(CLast ,myLin);
-    // Standard_Real V = Min( PFirst.Y(), PLast.Y());
+    // Standard_Real V = std::min( PFirst.Y(), PLast.Y());
     Standard_Real V    = PFirst.Y();
     Standard_Real NewV = ElCLib::InPeriod(V, VFirst, VFirst + Period);
     myLin.Translate(gp_Vec2d(0., NewV - V));

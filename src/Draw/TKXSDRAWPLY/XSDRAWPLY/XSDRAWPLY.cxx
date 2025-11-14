@@ -100,7 +100,7 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
         theDI << "Syntax error: -distance value should be >= 0.0";
         return 1;
       }
-      aDist = Max(aDist, Precision::Confusion());
+      aDist = std::max(aDist, Precision::Confusion());
     }
     else if ((anArg == "-dens" || anArg == "-density") && anArgIter + 1 < theNbArgs
              && Draw::ParseReal(theArgVec[anArgIter + 1], aDens))

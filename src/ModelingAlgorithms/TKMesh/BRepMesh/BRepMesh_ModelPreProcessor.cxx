@@ -136,7 +136,7 @@ public:
       {
         if (aDEdge->GetCurve()->ParametersNb() == 2)
         {
-          if (splitEdge(aDEdge, aDFace, Abs(getConeStep(aDFace))))
+          if (splitEdge(aDEdge, aDFace, std::abs(getConeStep(aDFace))))
           {
             TopLoc_Location                   aLoc;
             const Handle(Poly_Triangulation)& aTriangulation =
@@ -198,14 +198,14 @@ private:
     // Calculate the step by parameter of the curve.
     const gp_Pnt2d&     aFPntOfIPC1 = aIPC1->GetPoint(0);
     const gp_Pnt2d&     aLPntOfIPC1 = aIPC1->GetPoint(aIPC1->ParametersNb() - 1);
-    const Standard_Real aMod        = Abs(aFPntOfIPC1.Y() - aLPntOfIPC1.Y());
+    const Standard_Real aMod        = std::abs(aFPntOfIPC1.Y() - aLPntOfIPC1.Y());
 
     if (aMod < gp::Resolution())
     {
       return Standard_False;
     }
 
-    const Standard_Real aDT = Abs(aLParam - aFParam) / aMod * theDU;
+    const Standard_Real aDT = std::abs(aLParam - aFParam) / aMod * theDU;
 
     if (!splitCurve<gp_Pnt>(aHC, theDEdge->GetCurve(), aDT))
     {
@@ -230,7 +230,7 @@ private:
     // Select the correct pcurve of the seam-edge.
     const gp_Pnt2d& aFPntOfPC1 = aPC1->Value(aPC1->FirstParameter());
 
-    if (Abs(aLPntOfIPC1.X() - aFPntOfPC1.X()) > Precision::Confusion())
+    if (std::abs(aLPntOfIPC1.X() - aFPntOfPC1.X()) > Precision::Confusion())
     {
       std::swap(aPC1, aPC2);
     }

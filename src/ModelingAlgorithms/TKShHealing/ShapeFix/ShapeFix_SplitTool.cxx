@@ -56,7 +56,7 @@ Standard_Boolean ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&   edge,
   ShapeAnalysis_Edge   sae;
   Handle(Geom2d_Curve) c2d;
   sae.PCurve(edge, face, c2d, a, b, Standard_True);
-  if (Abs(a - param) < tol2d || Abs(b - param) < tol2d)
+  if (std::abs(a - param) < tol2d || std::abs(b - param) < tol2d)
     return Standard_False;
   // check distance between edge and new vertex
   gp_Pnt          P1;
@@ -201,9 +201,9 @@ Standard_Boolean ShapeFix_SplitTool::CutEdge(const TopoDS_Edge&  edge,
                                              const TopoDS_Face&  face,
                                              Standard_Boolean&   iscutline) const
 {
-  if (Abs(cut - pend) < 10. * Precision::PConfusion())
+  if (std::abs(cut - pend) < 10. * Precision::PConfusion())
     return Standard_False;
-  Standard_Real aRange = Abs(cut - pend);
+  Standard_Real aRange = std::abs(cut - pend);
   Standard_Real a, b;
   BRep_Tool::Range(edge, a, b);
   iscutline = Standard_False;
@@ -224,8 +224,8 @@ Standard_Boolean ShapeFix_SplitTool::CutEdge(const TopoDS_Edge&  edge,
         if (tc->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Line)))
         {
           BRep_Builder B;
-          B.Range(edge, Min(pend, cut), Max(pend, cut));
-          if (Abs(pend - lp) < Precision::PConfusion())
+          B.Range(edge, std::min(pend, cut), std::max(pend, cut));
+          if (std::abs(pend - lp) < Precision::PConfusion())
           { // cut from the beginning
             Standard_Real cut3d = (cut - fp) * (b - a) / (lp - fp);
             if (cut3d <= Precision::PConfusion())
@@ -233,7 +233,7 @@ Standard_Boolean ShapeFix_SplitTool::CutEdge(const TopoDS_Edge&  edge,
             B.Range(edge, a + cut3d, b, Standard_True);
             iscutline = Standard_True;
           }
-          else if (Abs(pend - fp) < Precision::PConfusion())
+          else if (std::abs(pend - fp) < Precision::PConfusion())
           { // cut from the end
             Standard_Real cut3d = (lp - cut) * (b - a) / (lp - fp);
             if (cut3d <= Precision::PConfusion())
@@ -248,15 +248,15 @@ Standard_Boolean ShapeFix_SplitTool::CutEdge(const TopoDS_Edge&  edge,
   }
 
   // det-study on 03/12/01 checking the old and new ranges
-  if (Abs(Abs(a - b) - aRange) < Precision::PConfusion())
+  if (std::abs(std::abs(a - b) - aRange) < Precision::PConfusion())
     return Standard_False;
   if (aRange < 10. * Precision::PConfusion())
     return Standard_False;
 
   Handle(Geom_Curve)  c = BRep_Tool::Curve(edge, a, b);
   ShapeAnalysis_Curve sac;
-  a                = Min(pend, cut);
-  b                = Max(pend, cut);
+  a                = std::min(pend, cut);
+  b                = std::max(pend, cut);
   Standard_Real na = a, nb = b;
 
   BRep_Builder B;

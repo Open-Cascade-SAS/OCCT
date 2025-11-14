@@ -77,33 +77,35 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACo
 
     if (NewConstraintOrder1 > 0)
     {
-      Fraction = Abs(DAngle1) / (AngleMax * Exp(-Abs(OldAngle1) / AngleMax) + AngleMin);
+      Fraction =
+        std::abs(DAngle1) / (AngleMax * std::exp(-std::abs(OldAngle1) / AngleMax) + AngleMin);
       if (Fraction > 1)
         Ratio = 1 / Fraction;
     }
     if (NewConstraintOrder2 > 0)
     {
-      Fraction = Abs(DAngle2) / (AngleMax * Exp(-Abs(OldAngle2) / AngleMax) + AngleMin);
+      Fraction =
+        std::abs(DAngle2) / (AngleMax * std::exp(-std::abs(OldAngle2) / AngleMax) + AngleMin);
       if (Fraction > 1)
         Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
     }
 
     OldDist  = OldP1.Distance(OldP2);
     NewDist  = NewP1.Distance(NewP2);
-    Fraction = Abs(OldDist - NewDist) / (OldDist / 3);
+    Fraction = std::abs(OldDist - NewDist) / (OldDist / 3);
     if (Fraction > 1)
       Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
 
     if (NewConstraintOrder1 > 1)
     {
-      Fraction = Abs(DRho1) * OldDist / (2 + Abs(OldAngle1) + Abs(OldAngle2));
+      Fraction = std::abs(DRho1) * OldDist / (2 + std::abs(OldAngle1) + std::abs(OldAngle2));
       if (Fraction > 1)
         Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
     }
 
     if (NewConstraintOrder2 > 1)
     {
-      Fraction = Abs(DRho2) * OldDist / (2 + Abs(OldAngle1) + Abs(OldAngle2));
+      Fraction = std::abs(DRho2) * OldDist / (2 + std::abs(OldAngle1) + std::abs(OldAngle2));
       if (Fraction > 1)
         Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
     }
@@ -437,9 +439,10 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
     ACode = FairCurve_InfiniteSliding;
 
   // Eventual insertion of Nodes
-  Standard_Boolean NewKnots  = Standard_False;
-  Standard_Integer NbKnots   = Knots->Length();
-  Standard_Real    ValAngles = (Abs(OldAngle1) + Abs(OldAngle2) + 2 * Abs(OldAngle2 - OldAngle1));
+  Standard_Boolean NewKnots = Standard_False;
+  Standard_Integer NbKnots  = Knots->Length();
+  Standard_Real    ValAngles =
+    (std::abs(OldAngle1) + std::abs(OldAngle2) + 2 * std::abs(OldAngle2 - OldAngle1));
   while (ValAngles > (2 * (NbKnots - 2) + 1) * (1 + 2 * NbKnots))
   {
     NewKnots = Standard_True;

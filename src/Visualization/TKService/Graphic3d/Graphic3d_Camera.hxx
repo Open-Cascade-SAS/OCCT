@@ -788,7 +788,7 @@ private:
   Standard_Real    myFOVy;             //!< Field Of View in y axis.
   Standard_Real    myFOVx;             //!< Field Of View in x axis.
   Standard_Real    myFOV2d;            //!< Field Of View limit for 2d on-screen elements
-  Standard_Real    myFOVyTan;          //!< Field Of View as Tan(DTR_HALF * myFOVy)
+  Standard_Real    myFOVyTan;          //!< Field Of View as std::tan(DTR_HALF * myFOVy)
   Standard_Real    myZNear;            //!< Distance to near clipping plane.
   Standard_Real    myZFar;             //!< Distance to far clipping plane.
   Standard_Real    myAspect;           //!< Width to height display ratio.

@@ -48,7 +48,8 @@ Standard_Boolean BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
 
     const gp_Trsf&   aTrsf = aLoc.Transformation();
     Standard_Boolean isBadTrsf =
-      aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
+      aTrsf.IsNegative()
+      || (std::abs(std::abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
     if (isBadTrsf)
     {
       aBadTrsfInds.Append(ind);
@@ -129,7 +130,8 @@ Standard_Boolean BRepTools_PurgeLocations::PurgeLocation(const TopoDS_Shape& the
     gp_Trsf                       aTrsf = aFD->Trsf();
     Standard_Integer              aFP   = aRefLoc.FirstPower();
     Standard_Boolean              isBad =
-      aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
+      aTrsf.IsNegative()
+      || (std::abs(std::abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
     TopLoc_Location aLoc(aFD);
     aLoc  = aLoc.Powered(aFP);
     aTrsf = aLoc.Transformation();

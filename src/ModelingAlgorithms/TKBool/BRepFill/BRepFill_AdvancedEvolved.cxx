@@ -213,8 +213,8 @@ void BRepFill_AdvancedEvolved::GetSpineAndProfile(const TopoDS_Wire& theSpine,
         anAC1.D1(aPar2, aP, aT2);
 
         // Find minimal sine
-        const Standard_Real aSqT1 = Max(aT1.SquareMagnitude(), 1.0 / Precision::Infinite());
-        const Standard_Real aSqT2 = Max(aT2.SquareMagnitude(), 1.0 / Precision::Infinite());
+        const Standard_Real aSqT1 = std::max(aT1.SquareMagnitude(), 1.0 / Precision::Infinite());
+        const Standard_Real aSqT2 = std::max(aT2.SquareMagnitude(), 1.0 / Precision::Infinite());
 
         const Standard_Real aSqSin1 = aT1.CrossSquareMagnitude(aN2) / aSqT1;
         const Standard_Real aSqSin2 = aT2.CrossSquareMagnitude(aN2) / aSqT2;
@@ -512,7 +512,7 @@ void BRepFill_AdvancedEvolved::GetLids()
     return;
   }
 
-  Standard_Real aTol = Max(aFS.Tolerance(), aFS.ToleranceReached());
+  Standard_Real aTol = std::max(aFS.Tolerance(), aFS.ToleranceReached());
   aTol += myFuzzyValue;
   Bnd_Box aProfBox;
   BRepBndLib::Add(myProfile, aProfBox);
@@ -558,8 +558,8 @@ void BRepFill_AdvancedEvolved::GetLids()
       continue;
 
     const Standard_Real aDP = aTan.XYZ().Dot(aNormal.XYZ());
-    if (Abs(aDP) > aDPMax)
-      aDPMax = Abs(aDP);
+    if (std::abs(aDP) > aDPMax)
+      aDPMax = std::abs(aDP);
     if (aDP * aDP > aSqModulus * aSqAnguarTol)
     {
       // Only planar edges are considered
@@ -590,7 +590,7 @@ void BRepFill_AdvancedEvolved::GetLids()
   aBB.MakeCompound(aCompW);
   aBB.MakeCompound(aCompF);
   aBB.MakeCompound(myTopBottom);
-  Standard_Real anAngTol = Sqrt(aSqAnguarTol);
+  Standard_Real anAngTol = std::sqrt(aSqAnguarTol);
   BOPAlgo_Tools::EdgesToWires(aFreeEdges, aCompW, Standard_True, anAngTol);
   BOPAlgo_Tools::WiresToFaces(aCompW, aCompF, anAngTol);
 
@@ -1274,7 +1274,7 @@ static Standard_Boolean MakeEdgeDegenerated(const TopoDS_Vertex&  theV,
   const Standard_Real aTol  = 2.0 * BRep_Tool::Tolerance(theV);
   const Standard_Real aTolU = anAS.UResolution(aTol), aTolV = anAS.VResolution(aTol);
 
-  if ((Abs(thePf.X() - thePl.X()) < aTolU) && (Abs(thePf.Y() - thePl.Y()) < aTolV))
+  if ((std::abs(thePf.X() - thePl.X()) < aTolU) && (std::abs(thePf.Y() - thePl.Y()) < aTolV))
     return Standard_False;
 
   const TopoDS_Vertex aVf = TopoDS::Vertex(theV.Oriented(TopAbs_FORWARD)),

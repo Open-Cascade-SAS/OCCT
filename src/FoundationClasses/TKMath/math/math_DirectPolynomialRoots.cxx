@@ -72,16 +72,16 @@ static Standard_Real Improve(const Standard_Integer N,
   for (Index = 1; Index < 10; Index++)
   {
     Values(N, Poly, Sol, Val, Der);
-    if (Abs(Der) <= ZERO)
+    if (std::abs(Der) <= ZERO)
       break;
     Delta = -Val / Der;
-    if (Abs(Delta) <= EPSILON * Abs(Sol))
+    if (std::abs(Delta) <= EPSILON * std::abs(Sol))
       break;
     Sol = Sol + Delta;
     //        std::cout << " Iter = " << Index << " Delta = " << Delta
     //             << " Val  = " << Val   << " Der   = " << Der << "\n";
   }
-  if (Abs(Val) <= Abs(IniVal))
+  if (std::abs(Val) <= std::abs(IniVal))
   {
     return Sol;
   }
@@ -196,7 +196,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real a,
                                        const Standard_Real d,
                                        const Standard_Real e)
 {
-  if (Abs(a) <= ZERO)
+  if (std::abs(a) <= ZERO)
   {
     Solve(b, c, d, e);
     return;
@@ -204,7 +204,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real a,
 
   //// modified by jgv, 22.01.09 ////
   Standard_Real aZero = ZERO;
-  Standard_Real Abs_b = Abs(b), Abs_c = Abs(c), Abs_d = Abs(d), Abs_e = Abs(e);
+  Standard_Real Abs_b = std::abs(b), Abs_c = std::abs(c), Abs_d = std::abs(d), Abs_e = std::abs(e);
 
   if (Abs_b > aZero)
     aZero = Abs_b;
@@ -217,7 +217,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real a,
   if (aZero > ZERO)
     aZero = Epsilon(100. * aZero);
 
-  if (Abs(a) <= aZero)
+  if (std::abs(a) <= aZero)
   {
     Standard_Real    aZero1000 = 1000. * aZero;
     Standard_Boolean with_a    = Standard_False;
@@ -309,14 +309,14 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real a,
   //
   Standard_Real anEps = 100 * EPSILON;
 
-  if (Abs(P) <= anEps)
+  if (std::abs(P) <= anEps)
     P = 0.;
-  if (Abs(P1) <= anEps)
+  if (std::abs(P1) <= anEps)
     P1 = 0.;
 
-  if (Abs(Q) <= anEps)
+  if (std::abs(Q) <= anEps)
     Q = 0.;
-  if (Abs(Q1) <= anEps)
+  if (std::abs(Q1) <= anEps)
     Q1 = 0.;
   //
   Ademi = 1.0;
@@ -360,7 +360,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
                                        const Standard_Real D)
 {
 
-  if (Abs(A) <= ZERO)
+  if (std::abs(A) <= ZERO)
   {
     Solve(B, C, D);
     return;
@@ -389,15 +389,15 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   P1 = Gamma;
   P2 = -(Beta * Beta) / 3.0;
   P  = P1 + P2;
-  Ep = 5.0 * EPSILON * (Abs(P1) + Abs(P2));
-  if (Abs(P) <= Ep)
+  Ep = 5.0 * EPSILON * (std::abs(P1) + std::abs(P2));
+  if (std::abs(P) <= Ep)
     P = 0.0;
   Q1 = Del;
   Q2 = -Beta * Gamma / 3.0;
   Q3 = 2.0 * (Beta * Beta * Beta) / 27.0;
   Q  = Q1 + Q2 + Q3;
-  Eq = 10.0 * EPSILON * (Abs(Q1) + Abs(Q2) + Abs(Q3));
-  if (Abs(Q) <= Eq)
+  Eq = 10.0 * EPSILON * (std::abs(Q1) + std::abs(Q2) + std::abs(Q3));
+  if (std::abs(Q) <= Eq)
     Q = 0.0;
   //-- ############################################################
   Standard_Real AbsP = P;
@@ -426,8 +426,8 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
     }
     D2    = Psi / D1;
     Discr = 0.0;
-    if (Abs(Del - D1) >= 18.0 * EPSILON * (Abs(Del) + Abs(D1))
-        && Abs(Del - D2) >= 24.0 * EPSILON * (Abs(Del) + Abs(D2)))
+    if (std::abs(Del - D1) >= 18.0 * EPSILON * (std::abs(Del) + std::abs(D1))
+        && std::abs(Del - D2) >= 24.0 * EPSILON * (std::abs(Del) + std::abs(D2)))
     {
       Discr = (Del - D1) * (Del - D2) / 4.0;
     }
@@ -480,14 +480,14 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   else if (Discr > 0.0)
   {
     NbSol = 1;
-    U     = sqrt(Discr) + Abs(Q / 2.0);
+    U     = sqrt(Discr) + std::abs(Q / 2.0);
     if (U >= 0.0)
     {
       U = pow(U, 1.0 / 3.0);
     }
     else
     {
-      U = -pow(Abs(U), 1.0 / 3.0);
+      U = -pow(std::abs(U), 1.0 / 3.0);
     }
     if (P >= 0.0)
     {
@@ -495,11 +495,11 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
     }
     else
     {
-      H = U * Abs(Q) / (U * U - P / 3.0);
+      H = U * std::abs(Q) / (U * U - P / 3.0);
     }
     if (Beta * Q >= 0.0)
     {
-      if (Abs(H) <= RealSmall() && Abs(Q) <= RealSmall())
+      if (std::abs(H) <= RealSmall() && std::abs(Q) <= RealSmall())
       {
         TheRoots[0] = -Beta / 3.0 - U + P / (3.0 * U);
       }
@@ -557,16 +557,16 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
                                        const Standard_Real C)
 {
 
-  if (Abs(A) <= ZERO)
+  if (std::abs(A) <= ZERO)
   {
     Solve(B, C);
     return;
   }
 
-  Standard_Real EpsD    = 3.0 * EPSILON * (B * B + Abs(4.0 * A * C));
+  Standard_Real EpsD    = 3.0 * EPSILON * (B * B + std::abs(4.0 * A * C));
   Standard_Real Discrim = B * B - 4.0 * A * C;
 
-  if (Abs(Discrim) <= EpsD)
+  if (std::abs(Discrim) <= EpsD)
     Discrim = 0.0;
   if (Discrim < 0.0)
   {
@@ -599,9 +599,9 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
 void math_DirectPolynomialRoots::Solve(const Standard_Real A, const Standard_Real B)
 {
 
-  if (Abs(A) <= ZERO)
+  if (std::abs(A) <= ZERO)
   {
-    if (Abs(B) <= ZERO)
+    if (std::abs(B) <= ZERO)
     {
       InfiniteStatus = Standard_True;
       return;

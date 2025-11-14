@@ -163,7 +163,7 @@ Standard_Boolean BlendFunc_Corde::IsSolution(const math_Vector& Sol, const Stand
 
   Value(Sol, valsol);
   Derivatives(Sol, gradsol);
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol * Tol)
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol * Tol)
   {
 
     surf->D1(Sol(1), Sol(2), pts, d1u, d1v);

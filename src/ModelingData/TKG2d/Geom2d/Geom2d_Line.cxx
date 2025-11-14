@@ -234,14 +234,14 @@ Standard_Real Geom2d_Line::TransformedParameter(const Standard_Real U, const gp_
 {
   if (Precision::IsInfinite(U))
     return U;
-  return U * Abs(T.ScaleFactor());
+  return U * std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
 
 Standard_Real Geom2d_Line::ParametricTransformation(const gp_Trsf2d& T) const
 {
-  return Abs(T.ScaleFactor());
+  return std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================

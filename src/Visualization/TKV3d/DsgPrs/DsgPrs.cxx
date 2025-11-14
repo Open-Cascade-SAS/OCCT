@@ -245,16 +245,16 @@ void DsgPrs::ComputeCurvilinearFacesLengthPresentation(const Standard_Real First
     deltaU = LastU - FirstU;
     deltaV = LastV - FirstV;
 
-    if (VCurve->IsPeriodic() && Abs(deltaU) > VCurve->Period() / 2)
+    if (VCurve->IsPeriodic() && std::abs(deltaU) > VCurve->Period() / 2)
     {
       Standard_Real Sign = (deltaU > 0.0) ? -1.0 : 1.0;
-      deltaU             = VCurve->Period() - Abs(deltaU);
+      deltaU             = VCurve->Period() - std::abs(deltaU);
       deltaU *= Sign;
     }
-    if (UCurve->IsPeriodic() && Abs(deltaV) > UCurve->Period() / 2)
+    if (UCurve->IsPeriodic() && std::abs(deltaV) > UCurve->Period() / 2)
     {
       Standard_Real Sign = (deltaV > 0.0) ? -1.0 : 1.0;
-      deltaV             = UCurve->Period() - Abs(deltaV);
+      deltaV             = UCurve->Period() - std::abs(deltaV);
       deltaV *= Sign;
     }
   }
@@ -285,7 +285,7 @@ void DsgPrs::ComputeFacesAnglePresentation(const Standard_Real    ArrowLength,
                                            Standard_Real&         FirstParAttachCirc,
                                            Standard_Real&         LastParAttachCirc)
 {
-  if (Value > Precision::Angular() && Abs(M_PI - Value) > Precision::Angular())
+  if (Value > Precision::Angular() && std::abs(M_PI - Value) > Precision::Angular())
   {
     // Computing presentation of angle's arc
     gp_Ax2 ax(CenterPoint, axisdir, dir1);

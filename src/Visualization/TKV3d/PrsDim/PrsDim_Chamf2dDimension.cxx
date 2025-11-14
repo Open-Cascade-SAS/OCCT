@@ -198,7 +198,7 @@ void PrsDim_Chamf2dDimension::ComputeSelection(const Handle(SelectMgr_Selection)
   aSelection->Add(seg);
 
   // Text
-  Standard_Real                 size(Min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+  Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
   Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
                                                                 myPosition.X(),
                                                                 myPosition.Y(),

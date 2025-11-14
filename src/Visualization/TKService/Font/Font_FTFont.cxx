@@ -174,12 +174,12 @@ bool Font_FTFont::Init(const Handle(NCollection_Buffer)& theData,
     const double THE_SHEAR_ANGLE = 10.0 * M_PI / 180.0;
 
     FT_Matrix aMat;
-    aMat.xx = FT_Fixed(Cos(-THE_SHEAR_ANGLE) * (1 << 16));
+    aMat.xx = FT_Fixed(std::cos(-THE_SHEAR_ANGLE) * (1 << 16));
     aMat.xy = 0;
     aMat.yx = 0;
     aMat.yy = aMat.xx;
 
-    FT_Fixed aFactor = FT_Fixed(Tan(THE_SHEAR_ANGLE) * (1 << 16));
+    FT_Fixed aFactor = FT_Fixed(std::tan(THE_SHEAR_ANGLE) * (1 << 16));
     aMat.xy += FT_MulFix(aFactor, aMat.xx);
 
     FT_Set_Transform(myFTFace, &aMat, 0);
@@ -408,7 +408,7 @@ bool Font_FTFont::RenderGlyph(const Standard_Utf32Char theUChar)
                                 aBitmap.buffer,
                                 aBitmap.width,
                                 aBitmap.rows,
-                                Abs(aBitmap.pitch)))
+                                std::abs(aBitmap.pitch)))
     {
       return false;
     }

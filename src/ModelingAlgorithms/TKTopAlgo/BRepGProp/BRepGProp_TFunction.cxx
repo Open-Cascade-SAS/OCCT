@@ -104,7 +104,7 @@ Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X, Standard_Real
   else
     return Standard_False;
 
-  Standard_Real aAbsCoeff = Abs(aCoeff);
+  Standard_Real aAbsCoeff = std::abs(aCoeff);
 
   if (aAbsCoeff <= Precision::Angular())
   {
@@ -127,8 +127,8 @@ Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X, Standard_Real
   F = 0.;
 
   // Epmirical criterion
-  aNbPntsStart = Min(15, mySurface.UIntegrationOrder() / (anUKnots->Length() - 1) + 1);
-  aNbPntsStart = Max(5, aNbPntsStart);
+  aNbPntsStart = std::min(15, mySurface.UIntegrationOrder() / (anUKnots->Length() - 1) + 1);
+  aNbPntsStart = std::max(5, aNbPntsStart);
 
   while (i < iU)
   {
@@ -151,14 +151,14 @@ Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X, Standard_Real
 
   F *= aCoeff;
   aLocalErr *= aAbsCoeff;
-  myAbsError = Max(myAbsError, aLocalErr);
+  myAbsError = std::max(myAbsError, aLocalErr);
 
   myTolReached += aLocalErr;
 
-  if (Abs(F) > Epsilon(1.))
-    aLocalErr /= Abs(F);
+  if (std::abs(F) > Epsilon(1.))
+    aLocalErr /= std::abs(F);
 
-  myErrReached = Max(myErrReached, aLocalErr);
+  myErrReached = std::max(myErrReached, aLocalErr);
 
   return Standard_True;
 }

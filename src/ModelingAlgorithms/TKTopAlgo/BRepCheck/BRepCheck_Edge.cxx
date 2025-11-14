@@ -346,7 +346,7 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
             }
             // gka OCC
             //  Modified by skv - Tue Apr 27 11:50:35 2004 Begin
-            if (Abs(ff - First) > eps || Abs(ll - Last) > eps)
+            if (std::abs(ff - First) > eps || std::abs(ll - Last) > eps)
             {
               BRepCheck::Add(lst, BRepCheck_InvalidSameRangeFlag);
               BRepCheck::Add(lst, BRepCheck_InvalidSameParameterFlag);

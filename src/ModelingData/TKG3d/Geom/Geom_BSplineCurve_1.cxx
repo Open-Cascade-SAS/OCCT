@@ -99,7 +99,7 @@ Standard_Boolean Geom_BSplineCurve::IsG1(const Standard_Real theTf,
       return Standard_False;
     }
 
-    if (Abs(aV1.Angle(aV2)) > theAngTol)
+    if (std::abs(aV1.Angle(aV2)) > theAngTol)
       return Standard_False;
   }
 
@@ -129,7 +129,7 @@ Standard_Boolean Geom_BSplineCurve::IsG1(const Standard_Real theTf,
     return Standard_False;
   }
 
-  if (Abs(aV1.Angle(aV2)) > theAngTol)
+  if (std::abs(aV1.Angle(aV2)) > theAngTol)
     return Standard_False;
 
   return Standard_True;
@@ -660,12 +660,12 @@ void Geom_BSplineCurve::LocateU(const Standard_Real    U,
 
   Standard_Real UFirst               = CKnots(1);
   Standard_Real ULast                = CKnots(CKnots.Length());
-  Standard_Real PParametricTolerance = Abs(ParametricTolerance);
-  if (Abs(NewU - UFirst) <= PParametricTolerance)
+  Standard_Real PParametricTolerance = std::abs(ParametricTolerance);
+  if (std::abs(NewU - UFirst) <= PParametricTolerance)
   {
     I1 = I2 = 1;
   }
-  else if (Abs(NewU - ULast) <= PParametricTolerance)
+  else if (std::abs(NewU - ULast) <= PParametricTolerance)
   {
     I1 = I2 = CKnots.Length();
   }
@@ -683,12 +683,12 @@ void Geom_BSplineCurve::LocateU(const Standard_Real    U,
   {
     I1 = 1;
     BSplCLib::Hunt(CKnots, NewU, I1);
-    I1 = Max(Min(I1, CKnots.Upper()), CKnots.Lower());
-    while (I1 + 1 <= CKnots.Upper() && Abs(CKnots(I1 + 1) - NewU) <= PParametricTolerance)
+    I1 = std::max(std::min(I1, CKnots.Upper()), CKnots.Lower());
+    while (I1 + 1 <= CKnots.Upper() && std::abs(CKnots(I1 + 1) - NewU) <= PParametricTolerance)
     {
       I1++;
     }
-    if (Abs(CKnots(I1) - NewU) <= PParametricTolerance)
+    if (std::abs(CKnots(I1) - NewU) <= PParametricTolerance)
     {
       I2 = I1;
     }

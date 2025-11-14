@@ -362,7 +362,7 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
         TopTools_IndexedMapOfShape anEM;
         TopExp::MapShapes(theShape, TopAbs_EDGE, anEM);
         const Standard_Integer               aNbEdge = anEM.Extent();
-        NCollection_Array1<Standard_Integer> aFlagArray(1, Max(aNbEdge, 1));
+        NCollection_Array1<Standard_Integer> aFlagArray(1, std::max(aNbEdge, 1));
         aFlagArray.Init(0);
         for (anEdgeExp.Init(theShape, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
         {
@@ -1662,7 +1662,7 @@ void HLRBRep_PolyAlgo::Interpolation(HLRAlgo_ListOfBPoint&                   the
                         mP4P1,
                         flag);
     }
-    else if (Abs(coef4 - coef3) < myTolSta) // p1 i1p3-i2p4 p2
+    else if (std::abs(coef4 - coef3) < myTolSta) // p1 i1p3-i2p4 p2
     {
       MoveOrInsertPoint(theList,
                         theX1,

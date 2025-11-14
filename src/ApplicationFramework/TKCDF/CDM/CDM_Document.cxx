@@ -733,7 +733,7 @@ void CDM_Document::CreateReference(const Handle(CDM_MetaData)&    aMetaData,
                                    const Standard_Integer         aToDocumentVersion,
                                    const Standard_Boolean         UseStorageConfiguration)
 {
-  myActualReferenceIdentifier = Max(myActualReferenceIdentifier, aReferenceIdentifier);
+  myActualReferenceIdentifier = std::max(myActualReferenceIdentifier, aReferenceIdentifier);
 
   if (aMetaData->IsRetrieved())
   {

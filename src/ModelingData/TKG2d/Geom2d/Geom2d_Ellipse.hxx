@@ -46,7 +46,7 @@ DEFINE_STANDARD_HANDLE(Geom2d_Ellipse, Geom2d_Conic)
 //! ellipse, determining the direction in which the
 //! parameter increases along the ellipse.
 //! The Geom2d_Ellipse ellipse is parameterized by an angle:
-//! P(U) = O + MajorRad*Cos(U)*XDir + MinorRad*Sin(U)*YDir
+//! P(U) = O + MajorRad*std::cos(U)*XDir + MinorRad*Sin(U)*YDir
 //! where:
 //! - P is the point of parameter U,
 //! - O, XDir and YDir are respectively the origin, "X

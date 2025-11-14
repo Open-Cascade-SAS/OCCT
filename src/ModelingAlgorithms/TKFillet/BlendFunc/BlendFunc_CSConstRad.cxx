@@ -69,7 +69,7 @@ Standard_Integer BlendFunc_CSConstRad::NbEquations() const
 void BlendFunc_CSConstRad::Set(const Standard_Real Radius, const Standard_Integer Choix)
 {
   choix = Choix;
-  ray   = -Abs(Radius);
+  ray   = -std::abs(Radius);
 }
 
 //=================================================================================================
@@ -142,7 +142,7 @@ Standard_Boolean BlendFunc_CSConstRad::IsSolution(const math_Vector& Sol, const 
   Standard_Real Cosa, Sina, Angle;
 
   Values(Sol, valsol, gradsol);
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol && Abs(valsol(3)) <= Tol * Tol)
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol * Tol)
   {
 
     // Calcul des tangentes
@@ -202,7 +202,7 @@ Standard_Boolean BlendFunc_CSConstRad::IsSolution(const math_Vector& Sol, const 
       Sina = -Sina; // nplan est change en -nplan
     }
 
-    Angle = ACos(Cosa);
+    Angle = std::acos(Cosa);
     if (Sina < 0.)
     {
       Angle = 2. * M_PI - Angle;
@@ -484,7 +484,7 @@ void BlendFunc_CSConstRad::Section(const Standard_Real Param,
   norm = nplan.Crossed(ns).Magnitude();
   ns.SetLinearForm(nplan.Dot(ns) / norm, nplan, -1. / norm, ns);
   Center.SetXYZ(pts.XYZ() + ray * ns.XYZ());
-  C.SetRadius(Abs(ray));
+  C.SetRadius(std::abs(ray));
 
   if (choix % 2 == 0)
   {
@@ -634,7 +634,7 @@ Standard_Boolean BlendFunc_CSConstRad::GetSection(const Standard_Real Param,
 
       Cosa  = ns.Dot(ns2);
       Sina  = nplan.Dot(ns.Crossed(ns2));
-      Angle = ACos(Cosa);
+      Angle = std::acos(Cosa);
       if (Sina < 0.)
       {
         Angle = 2. * M_PI - Angle;
@@ -647,14 +647,15 @@ Standard_Boolean BlendFunc_CSConstRad::GetSection(const Standard_Real Param,
     for (i = 2; i <= NbPoint - 1; i++)
     {
       lambda = (Standard_Real)(i - 1) / (Standard_Real)(NbPoint - 1);
-      Cosa   = Cos(lambda * Angle);
-      Sina   = Sin(lambda * Angle);
-      tabP(lowp + i - 1).SetXYZ(pts.XYZ() + Abs(ray) * ((Cosa - 1) * ns.XYZ() + Sina * ncrn.XYZ()));
+      Cosa   = std::cos(lambda * Angle);
+      Sina   = std::sin(lambda * Angle);
+      tabP(lowp + i - 1)
+        .SetXYZ(pts.XYZ() + std::abs(ray) * ((Cosa - 1) * ns.XYZ() + Sina * ncrn.XYZ()));
 
       temp.SetLinearForm(-Sina, ns, Cosa, ncrn);
       temp.Multiply(lambda * Dangle);
       temp.Add(((Cosa - 1) * dnw).Added(Sina * dncrn));
-      temp.Multiply(Abs(ray));
+      temp.Multiply(std::abs(ray));
       temp.Add(tgs);
       tabV(lowv + i - 1) = temp;
     }
@@ -674,7 +675,7 @@ Standard_Boolean BlendFunc_CSConstRad::IsRational() const
 
 Standard_Real BlendFunc_CSConstRad::GetSectionSize() const
 {
-  return maxang * Abs(ray);
+  return maxang * std::abs(ray);
 }
 
 //=================================================================================================
@@ -722,11 +723,12 @@ void BlendFunc_CSConstRad::GetTolerance(const Standard_Real BoundTol,
 {
   const Standard_Integer low = Tol3d.Lower();
   const Standard_Integer up  = Tol3d.Upper();
-  const Standard_Real    Tol = GeomFill::GetTolerance(myTConv, minang, Abs(ray), AngleTol, SurfTol);
+  const Standard_Real    Tol =
+    GeomFill::GetTolerance(myTConv, minang, std::abs(ray), AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
-  Tol3d(low + 1) = Tol3d(up - 1) = Min(Tol, SurfTol);
-  Tol3d(low) = Tol3d(up) = Min(Tol, BoundTol);
+  Tol3d(low + 1) = Tol3d(up - 1) = std::min(Tol, SurfTol);
+  Tol3d(low) = Tol3d(up) = std::min(Tol, BoundTol);
 }
 
 //=================================================================================================
@@ -795,7 +797,7 @@ void BlendFunc_CSConstRad::Section(const Blend_Point&    P,
     nplan.Reverse();
   }
 
-  GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptc, Abs(ray), Center, Poles, Weights);
+  GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptc, std::abs(ray), Center, Poles, Weights);
 }
 
 //=================================================================================================
@@ -962,7 +964,7 @@ Standard_Boolean BlendFunc_CSConstRad::Section(const Blend_Point&    P,
                                ptc,
                                tgs,
                                tgc,
-                               Abs(ray),
+                               std::abs(ray),
                                0,
                                Center,
                                tgct,
@@ -973,7 +975,7 @@ Standard_Boolean BlendFunc_CSConstRad::Section(const Blend_Point&    P,
   }
   else
   {
-    GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptc, Abs(ray), Center, Poles, Weights);
+    GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptc, std::abs(ray), Center, Poles, Weights);
     return Standard_False;
   }
 }

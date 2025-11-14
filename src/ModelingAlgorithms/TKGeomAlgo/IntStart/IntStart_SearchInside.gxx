@@ -129,10 +129,10 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
       UVap(2) = s2d.Y();
 
       Standard_Real u1, v1, u2, v2;
-      u1 = Binf(1) = Max(umin, UVap(1) - du);
-      v1 = Binf(2) = Max(vmin, UVap(2) - dv);
-      u2 = Bsup(1) = Min(umax, UVap(1) + du);
-      v2 = Bsup(2) = Min(vmax, UVap(2) + dv);
+      u1 = Binf(1) = std::max(umin, UVap(1) - du);
+      v1 = Binf(2) = std::max(vmin, UVap(2) - dv);
+      u2 = Bsup(1) = std::min(umax, UVap(1) + du);
+      v2 = Bsup(2) = std::min(vmax, UVap(2) + dv);
 
       //-- gp_Pnt Pmilieu = ThePSurfaceTool::Value(PS,0.5*(u1+u2),0.5*(v1+v2));
       gp_Pnt        Pextrm1 = ThePSurfaceTool::Value(PS, u1, v1);
@@ -203,10 +203,10 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
       UVap(1) = s2d.X();
       UVap(2) = s2d.Y();
 
-      Binf(1) = Max(umin, UVap(1) - du);
-      Binf(2) = Max(vmin, UVap(2) - dv);
-      Bsup(1) = Min(umax, UVap(1) + du);
-      Bsup(2) = Min(vmax, UVap(2) + dv);
+      Binf(1) = std::max(umin, UVap(1) - du);
+      Binf(2) = std::max(vmin, UVap(2) - dv);
+      Bsup(1) = std::min(umax, UVap(1) + du);
+      Bsup(2) = std::min(vmax, UVap(2) + dv);
     }
 
     if (nepastester == Standard_False)
@@ -214,7 +214,7 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
       Rsnld.Perform(Func, UVap, Binf, Bsup);
       if (Rsnld.IsDone())
       {
-        if (Abs(Func.Root()) <= Tol)
+        if (std::abs(Func.Root()) <= Tol)
         {
           if (!Func.IsTangent())
           {
@@ -229,10 +229,11 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
             {
               const IntSurf_InteriorPoint& IPj = list(j);
               const gp_Pnt&                Pj  = IPj.Value();
-              if ((Abs(Pj.X() - psol.X()) <= Epsilon) && (Abs(Pj.Y() - psol.Y()) <= Epsilon)
-                  && (Abs(Pj.Z() - psol.Z()) <= Epsilon)
-                  && (Abs(UVap(1) - IPj.UParameter()) <= toler1)
-                  && (Abs(UVap(2) - IPj.VParameter()) <= toler2))
+              if ((std::abs(Pj.X() - psol.X()) <= Epsilon)
+                  && (std::abs(Pj.Y() - psol.Y()) <= Epsilon)
+                  && (std::abs(Pj.Z() - psol.Z()) <= Epsilon)
+                  && (std::abs(UVap(1) - IPj.UParameter()) <= toler1)
+                  && (std::abs(UVap(2) - IPj.VParameter()) <= toler2))
               {
                 testpnt = Standard_False;
               }
@@ -305,7 +306,7 @@ void IntStart_SearchInside::Perform(TheFunction&        Func,
     {
       Standard_Real tol  = Func.Tolerance();
       Standard_Real valf = Func.Root();
-      if (Abs(valf) <= tol && !Func.IsTangent())
+      if (std::abs(valf) <= tol && !Func.IsTangent())
       {
         const gp_Pnt& psol = Func.Point();
         Rsnld.Root(UVap);

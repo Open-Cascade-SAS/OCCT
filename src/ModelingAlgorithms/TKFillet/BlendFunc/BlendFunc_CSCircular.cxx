@@ -81,10 +81,10 @@ void BlendFunc_CSCircular::Set(const Standard_Real Radius, const Standard_Intege
   {
     case 3:
     case 4:
-      ray = Abs(Radius);
+      ray = std::abs(Radius);
       break;
     default:
-      ray = -Abs(Radius);
+      ray = -std::abs(Radius);
       break;
   }
 }
@@ -159,7 +159,7 @@ Standard_Boolean BlendFunc_CSCircular::IsSolution(const math_Vector& Sol, const 
 
   Values(Sol, valsol, gradsol);
 
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol * Tol)
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol * Tol)
   {
 
     // Calcul des tangentes
@@ -225,7 +225,7 @@ Standard_Boolean BlendFunc_CSCircular::IsSolution(const math_Vector& Sol, const 
       Sina = -Sina; // nplan est change en -nplan
     }
 
-    Angle = ACos(Cosa);
+    Angle = std::acos(Cosa);
     if (Sina < 0.)
     {
       Angle = 2. * M_PI - Angle;
@@ -503,7 +503,7 @@ void BlendFunc_CSCircular::Section(const Standard_Real Param,
   ns.SetLinearForm(nplan.Dot(ns) / norm, nplan, -1. / norm, ns);
 
   Center.SetXYZ(pts.XYZ() + ray * ns.XYZ());
-  C.SetRadius(Abs(ray));
+  C.SetRadius(std::abs(ray));
 
   if (ray > 0.)
     ns.Reverse();
@@ -666,7 +666,7 @@ Standard_Boolean BlendFunc_CSCircular::GetSection(const Standard_Real Param,
 
       Cosa  = ns.Dot(ns2);
       Sina  = nplan.Dot(ns.Crossed(ns2));
-      Angle = ACos(Cosa);
+      Angle = std::acos(Cosa);
       if (Sina < 0.)
       {
         Angle = 2. * M_PI - Angle;
@@ -679,14 +679,15 @@ Standard_Boolean BlendFunc_CSCircular::GetSection(const Standard_Real Param,
     for (i = 2; i <= NbPoint - 1; i++)
     {
       lambda = (Standard_Real)(i - 1) / (Standard_Real)(NbPoint - 1);
-      Cosa   = Cos(lambda * Angle);
-      Sina   = Sin(lambda * Angle);
-      tabP(lowp + i - 1).SetXYZ(pts.XYZ() + Abs(ray) * ((Cosa - 1) * ns.XYZ() + Sina * ncrn.XYZ()));
+      Cosa   = std::cos(lambda * Angle);
+      Sina   = std::sin(lambda * Angle);
+      tabP(lowp + i - 1)
+        .SetXYZ(pts.XYZ() + std::abs(ray) * ((Cosa - 1) * ns.XYZ() + Sina * ncrn.XYZ()));
 
       temp.SetLinearForm(-Sina, ns, Cosa, ncrn);
       temp.Multiply(lambda * Dangle);
       temp.Add(((Cosa - 1) * dnw).Added(Sina * dncrn));
-      temp.Multiply(Abs(ray));
+      temp.Multiply(std::abs(ray));
       temp.Add(tgs);
       tabV(lowv + i - 1) = temp;
     }
@@ -706,7 +707,7 @@ Standard_Boolean BlendFunc_CSCircular::IsRational() const
 
 Standard_Real BlendFunc_CSCircular::GetSectionSize() const
 {
-  return maxang * Abs(ray);
+  return maxang * std::abs(ray);
 }
 
 //=================================================================================================
@@ -757,8 +758,8 @@ void BlendFunc_CSCircular::GetTolerance(const Standard_Real BoundTol,
   const Standard_Real    Tol = GeomFill::GetTolerance(myTConv, minang, ray, AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
-  Tol3d(low + 1) = Tol3d(up - 1) = Min(Tol, SurfTol);
-  Tol3d(low) = Tol3d(up) = Min(Tol, BoundTol);
+  Tol3d(low + 1) = Tol3d(up - 1) = std::min(Tol, SurfTol);
+  Tol3d(low) = Tol3d(up) = std::min(Tol, BoundTol);
 }
 
 //=================================================================================================
@@ -826,7 +827,7 @@ void BlendFunc_CSCircular::Section(const Blend_Point&    P,
     nplan.Reverse();
   }
 
-  GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptc, Abs(ray), Center, Poles, Weights);
+  GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptc, std::abs(ray), Center, Poles, Weights);
 }
 
 //=================================================================================================
@@ -995,7 +996,7 @@ Standard_Boolean BlendFunc_CSCircular::Section(const Blend_Point&    P,
                                ptc,
                                tgs,
                                tgc,
-                               Abs(ray),
+                               std::abs(ray),
                                0,
                                Center,
                                tgct,
@@ -1006,7 +1007,7 @@ Standard_Boolean BlendFunc_CSCircular::Section(const Blend_Point&    P,
   }
   else
   {
-    GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptc, Abs(ray), Center, Poles, Weights);
+    GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptc, std::abs(ray), Center, Poles, Weights);
     return Standard_False;
   }
 }

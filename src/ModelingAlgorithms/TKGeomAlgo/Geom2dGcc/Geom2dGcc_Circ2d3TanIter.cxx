@@ -60,7 +60,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Quali
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -92,9 +92,9 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Quali
   Ufirst(1) = Param1;
   Ufirst(2) = Param2;
   Ufirst(3) = Param3;
-  tol(1)    = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolerance));
-  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, Abs(Tolerance));
+  tol(1)    = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolerance));
+  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -203,7 +203,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -236,8 +236,8 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
   Ufirst(2) = Param2;
   Ufirst(3) = Param3;
   tol(1)    = 2.e-15 * M_PI;
-  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, Abs(Tolerance));
+  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -246,8 +246,8 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
     Func.Value(Ufirst, Umin);
     gp_Pnt2d      centre1(C1.Location());
     Standard_Real R1 = C1.Radius();
-    gp_Pnt2d      point1(centre1.XY() + R1 * gp_XY(Cos(Ufirst(1)), Sin(Ufirst(1))));
-    gp_Vec2d      Tan1(gp_XY(-Sin(Ufirst(1)), Cos(Ufirst(1))));
+    gp_Pnt2d      point1(centre1.XY() + R1 * gp_XY(std::cos(Ufirst(1)), std::sin(Ufirst(1))));
+    gp_Vec2d      Tan1(gp_XY(-std::sin(Ufirst(1)), std::cos(Ufirst(1))));
     gp_Pnt2d      point2, point3;
     //     gp_Vec2d Tan2,Tan3,Nor2,Nor3;
     gp_Vec2d Tan2, Tan3;
@@ -351,7 +351,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -385,7 +385,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
   Ufirst(3) = Param3;
   tol(1)    = 2.e-15 * M_PI;
   tol(2)    = 2.e-15 * M_PI;
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, Abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -394,12 +394,12 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
     Func.Value(Ufirst, Umin);
     gp_Pnt2d      centre1(C1.Location());
     Standard_Real R1 = C1.Radius();
-    gp_Pnt2d      point1(centre1.XY() + R1 * gp_XY(Cos(Ufirst(1)), Sin(Ufirst(1))));
-    gp_Vec2d      Tan1(gp_XY(-Sin(Ufirst(1)), Cos(Ufirst(1))));
+    gp_Pnt2d      point1(centre1.XY() + R1 * gp_XY(std::cos(Ufirst(1)), std::sin(Ufirst(1))));
+    gp_Vec2d      Tan1(gp_XY(-std::sin(Ufirst(1)), std::cos(Ufirst(1))));
     gp_Pnt2d      centre2(C2.Location());
     Standard_Real R2 = C2.Radius();
-    gp_Pnt2d      point2(centre2.XY() + R2 * gp_XY(Cos(Ufirst(2)), Sin(Ufirst(2))));
-    gp_Vec2d      Tan2(gp_XY(-Sin(Ufirst(2)), Cos(Ufirst(2))));
+    gp_Pnt2d      point2(centre2.XY() + R2 * gp_XY(std::cos(Ufirst(2)), std::sin(Ufirst(2))));
+    gp_Vec2d      Tan2(gp_XY(-std::sin(Ufirst(2)), std::cos(Ufirst(2))));
     gp_Pnt2d      point3;
     gp_Vec2d      Tan3;
     Geom2dGcc_CurveTool::D1(Cu3, Ufirst(3), point3, Tan3);
@@ -502,7 +502,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qu
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -534,8 +534,8 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qu
   Ufirst(2) = Param2;
   Ufirst(3) = Param3;
   tol(1)    = 1.e-15;
-  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, Abs(Tolerance));
+  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -652,7 +652,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qu
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -684,7 +684,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qu
   Ufirst(3) = Param3;
   tol(1)    = 1.e-15;
   tol(2)    = 1.e-15;
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, Abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -793,7 +793,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Quali
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -824,8 +824,8 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Quali
   Ufirst(2) = Param1;
   Ufirst(3) = Param2;
   tol(1)    = 2.e-15 * M_PI;
-  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolerance));
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
+  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -842,7 +842,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Quali
     {
       cirsol = circ.ThisSolution(1);
       gp_Pnt2d      centre(cirsol.Location());
-      gp_Vec2d      Tan3(-Sin(Ufirst(1)), Cos(Ufirst(1)));
+      gp_Vec2d      Tan3(-std::sin(Ufirst(1)), std::cos(Ufirst(1)));
       Standard_Real normetan1 = Tan1.Magnitude();
       Standard_Real normetan2 = Tan2.Magnitude();
       Standard_Real normetan3 = Tan3.Magnitude();
@@ -926,7 +926,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Quali
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -956,7 +956,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Quali
   Ufirst(3) = Param1;
   tol(1)    = 2.e-15 * M_PI;
   tol(2)    = 2.e-15 * M_PI;
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -972,8 +972,8 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Quali
     {
       cirsol = circ.ThisSolution(1);
       gp_Pnt2d      centre(cirsol.Location());
-      gp_Vec2d      Tan2(-Sin(Ufirst(2)), Cos(Ufirst(2)));
-      gp_Vec2d      Tan1(-Sin(Ufirst(1)), Cos(Ufirst(1)));
+      gp_Vec2d      Tan2(-std::sin(Ufirst(2)), std::cos(Ufirst(2)));
+      gp_Vec2d      Tan1(-std::sin(Ufirst(1)), std::cos(Ufirst(1)));
       Standard_Real normetan1 = Tan1.Magnitude();
       Standard_Real normetan2 = Tan2.Magnitude();
       Standard_Real normetan3 = Tan3.Magnitude();
@@ -1052,7 +1052,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qu
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -1083,7 +1083,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qu
   Ufirst(1) = M_PI;
   tol(1)    = 2.e-15;
   tol(2)    = 1.e-15;
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -1102,7 +1102,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qu
       gp_Pnt2d      centre(cirsol.Location());
       Standard_Real pscal = centre.XY().Dot(gp_XY(-L1.Direction().Y(), L1.Direction().X()));
       gp_Vec2d      Tan1(L1.Direction().XY());
-      gp_Vec2d      Tan3(-Sin(Ufirst(1)), Cos(Ufirst(1)));
+      gp_Vec2d      Tan3(-std::sin(Ufirst(1)), std::cos(Ufirst(1)));
       Standard_Real normetan1 = Tan1.Magnitude();
       Standard_Real normetan2 = Tan2.Magnitude();
       Standard_Real normetan3 = Tan3.Magnitude();
@@ -1187,7 +1187,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -1220,7 +1220,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
   Ufirst(3) = Param3;
   tol(1)    = 2.e-15 * M_PI;
   tol(2)    = 1.e-15;
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, Abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu3, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -1229,7 +1229,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
     Root.Root(Ufirst);
     gp_Pnt2d      centre1(C1.Location());
     Standard_Real R1 = C1.Radius();
-    gp_Pnt2d      point1(centre1.XY() + R1 * gp_XY(Cos(Ufirst(1)), Sin(Ufirst(1))));
+    gp_Pnt2d      point1(centre1.XY() + R1 * gp_XY(std::cos(Ufirst(1)), std::sin(Ufirst(1))));
     gp_Pnt2d      centre2(L2.Location());
     gp_Pnt2d      point2(centre2.XY() + Ufirst(2) * L2.Direction().XY());
     gp_Pnt2d      point3;
@@ -1240,7 +1240,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
     {
       cirsol = circ.ThisSolution(1);
       gp_Pnt2d      centre(cirsol.Location());
-      gp_Vec2d      Tan1(-Sin(Ufirst(1)), Cos(Ufirst(1)));
+      gp_Vec2d      Tan1(-std::sin(Ufirst(1)), std::cos(Ufirst(1)));
       gp_Vec2d      Tan2(L2.Direction().XY());
       Standard_Real normetan1 = Tan1.Magnitude();
       Standard_Real normetan2 = Tan2.Magnitude();
@@ -1333,7 +1333,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
   pararg2  = 0.;
   pararg3  = 0.;
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   qualifier1        = GccEnt_noqualifier;
   qualifier2        = GccEnt_noqualifier;
@@ -1365,7 +1365,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
   Ufirst(3) = Param2;
   tol(1)    = 2.e-15 * M_PI;
   tol(2)    = 2.e-15 * M_PI;
-  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolerance));
+  tol(3)    = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolerance));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -1374,7 +1374,7 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
     Func.Value(Ufirst, Umin);
     gp_Pnt2d      centre1(C1.Location());
     Standard_Real R1 = C1.Radius();
-    gp_Pnt2d      point1(centre1.XY() + R1 * gp_XY(Cos(Ufirst(1)), Sin(Ufirst(1))));
+    gp_Pnt2d      point1(centre1.XY() + R1 * gp_XY(std::cos(Ufirst(1)), std::sin(Ufirst(1))));
     gp_Pnt2d      point2;
     //     gp_Vec2d Tan2,Nor2;
     gp_Vec2d Tan2;
@@ -1384,8 +1384,8 @@ Geom2dGcc_Circ2d3TanIter::Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Q
     {
       cirsol = circ.ThisSolution(1);
       gp_Pnt2d      centre(cirsol.Location());
-      gp_Vec2d      Tan1(-Sin(Ufirst(1)), Cos(Ufirst(1)));
-      gp_Vec2d      Tan3(-Sin(Ufirst(3)), Cos(Ufirst(3)));
+      gp_Vec2d      Tan1(-std::sin(Ufirst(1)), std::cos(Ufirst(1)));
+      gp_Vec2d      Tan3(-std::sin(Ufirst(3)), std::cos(Ufirst(3)));
       Standard_Real normetan2 = Tan2.Magnitude();
       gp_Vec2d      Vec1(point1, centre);
       gp_Vec2d      Vec2(point2, centre);

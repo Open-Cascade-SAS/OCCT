@@ -404,7 +404,7 @@ static void FC2D_translate(Handle(Geom2d_Curve) C2D,
     Standard_Real    pEF    = isuiso ? p1.X() : p1.Y();
     Standard_Real    pC2D   = isuiso ? O2d.X() : O2d.Y();
     Standard_Real    factor = pEF - pC2D;
-    Standard_Boolean b      = (Abs(factor) > 1.e-6);
+    Standard_Boolean b      = (std::abs(factor) > 1.e-6);
     if (b)
     {
       gp_Vec2d transl(1., 0.);

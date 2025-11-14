@@ -185,7 +185,7 @@ void GeomFill_Profiler::Perform(const Standard_Real PTol)
     }
 
     // evaluate the max degree
-    myDegree = Max(myDegree, C->Degree());
+    myDegree = std::max(myDegree, C->Degree());
 
     // Calcul de Max ( Ufin - Udeb) sur l ensemble des courbes.
     if ((U2 - U1) > EcartMax)

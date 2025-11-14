@@ -139,7 +139,7 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   //-------------------------- Compute angle ------------------------
   if (txt.Length() == 0)
   {
-    Standard_Real angle = UnitsAPI::CurrentFromLS(Abs(OppParam), "PLANE ANGLE");
+    Standard_Real angle = UnitsAPI::CurrentFromLS(std::abs(OppParam), "PLANE ANGLE");
     char          res[80];
     Sprintf(res, "%g", angle);
     txt = TCollection_ExtendedString(res);
@@ -269,7 +269,7 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
 
   if (uco > ufin)
   {
-    if (Abs(theval) < M_PI)
+    if (std::abs(theval) < M_PI)
     {
       // test if uco is in the opposite sector
       if (uco > udeb + M_PI && uco < ufin + M_PI)
@@ -294,8 +294,8 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
     }
   }
 
-  const Standard_Real    alpha = Abs(ufin - udeb);
-  const Standard_Integer nbp   = Max(4, Standard_Integer(50. * alpha / M_PI));
+  const Standard_Real    alpha = std::abs(ufin - udeb);
+  const Standard_Integer nbp   = std::max(4, Standard_Integer(50. * alpha / M_PI));
   const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
@@ -399,10 +399,10 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
 
   // Creating the angle's arc or line if null angle
   Handle(Graphic3d_ArrayOfPrimitives) aPrims;
-  if (theval > Precision::Angular() && Abs(M_PI - theval) > Precision::Angular())
+  if (theval > Precision::Angular() && std::abs(M_PI - theval) > Precision::Angular())
   {
-    const Standard_Real    Alpha      = Abs(LastParAngleCirc - FirstParAngleCirc);
-    const Standard_Integer NodeNumber = Max(4, Standard_Integer(50. * Alpha / M_PI));
+    const Standard_Real    Alpha      = std::abs(LastParAngleCirc - FirstParAngleCirc);
+    const Standard_Integer NodeNumber = std::max(4, Standard_Integer(50. * Alpha / M_PI));
     const Standard_Real    delta      = Alpha / (Standard_Real)(NodeNumber - 1);
 
     aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber + 4, 3);
@@ -454,8 +454,8 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
     else
     {
       // Creating the arc from AttachmentPoint2 to its projection
-      const Standard_Real    Alpha      = Abs(LastParAttachCirc - FirstParAttachCirc);
-      const Standard_Integer NodeNumber = Max(4, Standard_Integer(50. * Alpha / M_PI));
+      const Standard_Real    Alpha      = std::abs(LastParAttachCirc - FirstParAttachCirc);
+      const Standard_Integer NodeNumber = std::max(4, Standard_Integer(50. * Alpha / M_PI));
       const Standard_Real    delta      = Alpha / (Standard_Real)(NodeNumber - 1);
 
       aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
@@ -496,7 +496,7 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
     Norm         = dir1.Crossed(dir2B);
   }
 
-  if (Abs(theval) > M_PI)
+  if (std::abs(theval) > M_PI)
     Norm.Reverse();
 
   gp_Ax2  ax(CenterPoint, Norm, dir1);
@@ -516,7 +516,7 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
 
   if (uco > ufin)
   {
-    if (Abs(theval) < M_PI)
+    if (std::abs(theval) < M_PI)
     {
       // test if uco is in the opposite sector
       if (uco > udeb + M_PI && uco < ufin + M_PI)
@@ -541,8 +541,8 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
     }
   }
 
-  const Standard_Real    alpha = Abs(ufin - udeb);
-  const Standard_Integer nbp   = Max(4, Standard_Integer(50. * alpha / M_PI));
+  const Standard_Real    alpha = std::abs(ufin - udeb);
+  const Standard_Integer nbp   = std::max(4, Standard_Integer(50. * alpha / M_PI));
   const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
@@ -622,7 +622,7 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Dir Norm = dir1.Crossed(dir2);
-  if (Abs(theval) > M_PI)
+  if (std::abs(theval) > M_PI)
     Norm.Reverse();
 
   gp_Ax2  ax(CenterPoint, Norm, dir1);
@@ -642,7 +642,7 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
 
   if (uco > ufin)
   {
-    if (Abs(theval) < M_PI)
+    if (std::abs(theval) < M_PI)
     {
       // test if uco is in the opposite sector
       if (uco > udeb + M_PI && uco < ufin + M_PI)
@@ -667,8 +667,8 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
     }
   }
 
-  const Standard_Real    alpha = Abs(ufin - udeb);
-  const Standard_Integer nbp   = Max(4, Standard_Integer(50. * alpha / M_PI));
+  const Standard_Real    alpha = std::abs(ufin - udeb);
+  const Standard_Integer nbp   = std::max(4, Standard_Integer(50. * alpha / M_PI));
   const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
@@ -741,7 +741,7 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Dir Norm = dir1.Crossed(dir2);
-  if (Abs(theval) > M_PI)
+  if (std::abs(theval) > M_PI)
     Norm.Reverse();
 
   gp_Ax2  ax(CenterPoint, Norm, dir1);
@@ -761,7 +761,7 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
 
   if (uco > ufin)
   {
-    if (Abs(theval) < M_PI)
+    if (std::abs(theval) < M_PI)
     {
       // test if uco is in the opposite sector
       if (uco > udeb + M_PI && uco < ufin + M_PI)
@@ -786,8 +786,8 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
     }
   }
 
-  const Standard_Real    alpha = Abs(ufin - udeb);
-  const Standard_Integer nbp   = Max(4, Standard_Integer(50. * alpha / M_PI));
+  const Standard_Real    alpha = std::abs(ufin - udeb);
+  const Standard_Integer nbp   = std::max(4, Standard_Integer(50. * alpha / M_PI));
   const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
@@ -859,7 +859,7 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   gp_Ax2  ax(CenterPoint, theAxe.Direction(), dir1);
   gp_Circ cer(ax, CenterPoint.Distance(AttachmentPoint1));
 
-  const Standard_Integer nbp   = Max(4, Standard_Integer(50. * theval / M_PI));
+  const Standard_Integer nbp   = std::max(4, Standard_Integer(50. * theval / M_PI));
   const Standard_Real    dteta = theval / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(nbp);

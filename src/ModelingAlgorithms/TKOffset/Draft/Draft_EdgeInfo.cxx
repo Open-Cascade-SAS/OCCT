@@ -51,7 +51,7 @@ void Draft_EdgeInfo::Add(const TopoDS_Face& F)
   {
     mySeconF = F;
   }
-  myTol = Max(myTol, BRep_Tool::Tolerance(F));
+  myTol = std::max(myTol, BRep_Tool::Tolerance(F));
 }
 
 //=================================================================================================

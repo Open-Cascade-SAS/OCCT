@@ -48,10 +48,10 @@ FairCurve_Energy::FairCurve_Energy(const Handle(TColgp_HArray1OfPnt2d)& Poles,
       MyHessian(0, MyNbValues + MyNbValues * (MyNbValues + 1) / 2)
 {
   // chesk angles in reference (Ox,Oy)
-  gp_XY L0(Cos(Angle1), Sin(Angle1)), L1(-Cos(Angle2), Sin(Angle2));
+  gp_XY L0(std::cos(Angle1), std::sin(Angle1)), L1(-std::cos(Angle2), std::sin(Angle2));
   MyLinearForm.SetValue(0, L0);
   MyLinearForm.SetValue(1, L1);
-  gp_XY Q0(-Sin(Angle1), Cos(Angle1)), Q1(Sin(Angle2), Cos(Angle2));
+  gp_XY Q0(-std::sin(Angle1), std::cos(Angle1)), Q1(std::sin(Angle2), std::cos(Angle2));
   MyQuadForm.SetValue(0, ((double)Degree) / (Degree - 1) * Curvature1 * Q0);
   MyQuadForm.SetValue(1, ((double)Degree) / (Degree - 1) * Curvature2 * Q1);
 }
@@ -218,7 +218,7 @@ void FairCurve_Energy::Hessian1(const math_Vector& Vect, math_Matrix& H)
              + (Laux.X() * (MyLinearForm(0).X() * Vect(kk) + MyLinearForm(0).Y() * Vect(kk + 1))
                 + Laux.Y() * (MyLinearForm(0).X() * Vect(ii) + MyLinearForm(0).Y() * Vect(ii + 1)))
              + Laux.X() * Laux.Y() * Vect(ii + 2))
-        + (Pow(Laux.X(), 2) * Vect(kk + 2) + Pow(Laux.Y(), 2) * Vect(ii + 3));
+        + (std::pow(Laux.X(), 2) * Vect(kk + 2) + std::pow(Laux.Y(), 2) * Vect(ii + 3));
 
       H(2, 1) = (Cos0 * Vect(kk) + CosSin0 * (Vect(ii) + Vect(kk + 1)) / 2 + Sin0 * Vect(ii + 1))
                 + Laux * MyLinearForm(0).Multiplied(Aux)
@@ -321,7 +321,7 @@ void FairCurve_Energy::Hessian1(const math_Vector& Vect, math_Matrix& H)
                 + Laux.Y()
                     * (MyLinearForm(1).X() * Vect(kk + 1) + MyLinearForm(1).Y() * Vect(ii + 1)))
              + Laux.X() * Laux.Y() * Vect(ll + jj))
-        + (Pow(Laux.X(), 2) * Vect(ll) + Pow(Laux.Y(), 2) * Vect(ll + jj + 1));
+        + (std::pow(Laux.X(), 2) * Vect(ll) + std::pow(Laux.Y(), 2) * Vect(ll + jj + 1));
 
       H(FinH + 2, FinH + 1) =
         Cos1 * Vect(kk) + CosSin1 * (Vect(ii) + Vect(kk + 1)) / 2 + Sin1 * Vect(ii + 1);

@@ -153,7 +153,7 @@ public:
       const Standard_Real aAngle = gp_Vec2d(mySegment->Point1->XY(), mySegment->Point2->XY())
                                      .Angle(gp_Vec2d(aSegment.Point1->XY(), aSegment.Point2->XY()));
 
-      if (Abs(aAngle) < MaxTangentAngle)
+      if (std::abs(aAngle) < MaxTangentAngle)
       {
         return Standard_False;
       }
@@ -177,7 +177,7 @@ public:
           aPrevVec = aCurVec;
         }
 
-        if (Abs(aSumS / 2.) < myMaxLoopSize)
+        if (std::abs(aSumS / 2.) < myMaxLoopSize)
         {
           return Standard_False;
         }

@@ -110,7 +110,7 @@ public:
 
   //! Returns True if the point of parameter <V> on the
   //! meridian is on the Axis. Default implementation is
-  //! Abs(MeridianValue(V).X()) < Precision::Confusion()
+  //! std::abs(MeridianValue(V).X()) < Precision::Confusion()
   Standard_EXPORT virtual Standard_Boolean MeridianOnAxis(const Standard_Real V) const;
 
   //! Returns True if the meridian is closed.

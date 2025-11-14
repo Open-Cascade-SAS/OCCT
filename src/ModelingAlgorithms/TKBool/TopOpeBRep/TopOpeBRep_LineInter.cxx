@@ -297,7 +297,7 @@ void TopOpeBRep_LineInter::SetIsVClosed()
 
     const Standard_Real tol1 = P1.Tolerance();
     const Standard_Real tol2 = P2.Tolerance();
-    const Standard_Real tol  = Max(tol1, tol2);
+    const Standard_Real tol  = std::max(tol1, tol2);
 
     myIsVClosed = pp1.IsEqual(pp2, tol);
   }

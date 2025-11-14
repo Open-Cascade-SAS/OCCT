@@ -98,7 +98,7 @@ Standard_OStream& Vrml_AsciiText::Print(Standard_OStream& anOStream) const
     anOStream << " ]\n";
   }
 
-  if (Abs(mySpacing - 1) > 0.0001)
+  if (std::abs(mySpacing - 1) > 0.0001)
   {
     anOStream << "    spacing\t\t";
     anOStream << mySpacing << "\n";
@@ -116,7 +116,7 @@ Standard_OStream& Vrml_AsciiText::Print(Standard_OStream& anOStream) const
       break;
   }
 
-  if (Abs(myWidth - 0) > 0.0001)
+  if (std::abs(myWidth - 0) > 0.0001)
   {
     anOStream << "    width\t\t";
     anOStream << myWidth << "\n";

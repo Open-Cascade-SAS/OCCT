@@ -464,7 +464,7 @@ void CheckEdge(const TopoDS_Edge& Ed, const Standard_Real aMaxTol)
     Standard_Real Tol, aD2, aNewTolerance, dd;
 
     Tol = BRep_Tool::Tolerance(aVertex);
-    Tol = Max(Tol, BRep_Tool::Tolerance(E));
+    Tol = std::max(Tol, BRep_Tool::Tolerance(E));
     dd  = 0.1 * Tol;
     Tol *= Tol;
 

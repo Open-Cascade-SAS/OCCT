@@ -200,7 +200,7 @@ public:
     Standard_Real    aValue;
     for (a = myV.Length(); a > 0; a--)
     {
-      if (aResultIndex == 0 || Abs(aValue) > Abs(myV.Value(a)))
+      if (aResultIndex == 0 || std::abs(aValue) > std::abs(myV.Value(a)))
       {
         aResultIndex = a;
         aValue       = myV.Value(a);

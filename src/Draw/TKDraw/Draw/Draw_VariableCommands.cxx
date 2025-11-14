@@ -863,19 +863,19 @@ static Standard_Integer trigo(Draw_Interpretor& di, Standard_Integer, const char
   Standard_Real x = Draw::Atof(a[1]);
 
   if (!strcasecmp(a[0], "cos"))
-    di << Cos(x);
+    di << std::cos(x);
   else if (!strcasecmp(a[0], "sin"))
-    di << Sin(x);
+    di << std::sin(x);
   else if (!strcasecmp(a[0], "tan"))
-    di << Tan(x);
+    di << std::tan(x);
   else if (!strcasecmp(a[0], "sqrt"))
-    di << Sqrt(x);
+    di << std::sqrt(x);
   else if (!strcasecmp(a[0], "acos"))
-    di << ACos(x);
+    di << std::acos(x);
   else if (!strcasecmp(a[0], "asin"))
-    di << ASin(x);
+    di << std::asin(x);
   else if (!strcasecmp(a[0], "atan2"))
-    di << ATan2(x, Draw::Atof(a[2]));
+    di << std::atan2(x, Draw::Atof(a[2]));
 
   return 0;
 }

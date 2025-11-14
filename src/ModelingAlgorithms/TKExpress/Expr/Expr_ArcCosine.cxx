@@ -40,7 +40,7 @@ Handle(Expr_GeneralExpression) Expr_ArcCosine::ShallowSimplified() const
   if (op->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) valop = Handle(Expr_NumericValue)::DownCast(op);
-    return new Expr_NumericValue(ACos(valop->GetValue()));
+    return new Expr_NumericValue(std::acos(valop->GetValue()));
   }
   if (op->IsKind(STANDARD_TYPE(Expr_Cosine)))
   {
@@ -101,12 +101,12 @@ Handle(Expr_GeneralExpression) Expr_ArcCosine::Derivative(const Handle(Expr_Name
 Standard_Real Expr_ArcCosine::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                        const TColStd_Array1OfReal&      vals) const
 {
-  return ::ACos(Operand()->Evaluate(vars, vals));
+  return std::acos(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_ArcCosine::String() const
 {
-  TCollection_AsciiString str("ACos(");
+  TCollection_AsciiString str("Astd::cos(");
   str += Operand()->String();
   str += ")";
   return str;

@@ -192,12 +192,12 @@ TEST(Graphic3d_BndBox3dTest, TransformationRotation)
 
   Standard_Real aPrecision = Precision::Confusion();
 
-  EXPECT_TRUE(Abs(aCornerMin.x() - -1) < aPrecision) << "Xmin should be rotated";
-  EXPECT_TRUE(Abs(aCornerMin.y() - 1) < aPrecision) << "Ymin should be rotated";
-  EXPECT_TRUE(Abs(aCornerMin.z() - 0) < aPrecision) << "Zmin should remain unchanged";
-  EXPECT_TRUE(Abs(aCornerMax.x() - 0) < aPrecision) << "Xmax should be rotated";
-  EXPECT_TRUE(Abs(aCornerMax.y() - 2) < aPrecision) << "Ymax should be rotated";
-  EXPECT_TRUE(Abs(aCornerMax.z() - 1) < aPrecision) << "Zmax should remain unchanged";
+  EXPECT_TRUE(std::abs(aCornerMin.x() - -1) < aPrecision) << "Xmin should be rotated";
+  EXPECT_TRUE(std::abs(aCornerMin.y() - 1) < aPrecision) << "Ymin should be rotated";
+  EXPECT_TRUE(std::abs(aCornerMin.z() - 0) < aPrecision) << "Zmin should remain unchanged";
+  EXPECT_TRUE(std::abs(aCornerMax.x() - 0) < aPrecision) << "Xmax should be rotated";
+  EXPECT_TRUE(std::abs(aCornerMax.y() - 2) < aPrecision) << "Ymax should be rotated";
+  EXPECT_TRUE(std::abs(aCornerMax.z() - 1) < aPrecision) << "Zmax should remain unchanged";
 }
 
 TEST(Graphic3d_BndBox3dTest, TransformationComposed)
@@ -226,17 +226,17 @@ TEST(Graphic3d_BndBox3dTest, TransformationComposed)
     Graphic3d_Vec3d(-45.09248805040103, 87.9443412035472, -20.487612688573407);
 
   Standard_Real aPrecision = 0.00001; // Acceptable error for this test case
-  EXPECT_TRUE(Abs(aResultCornerMin.x() - anExpectedCornerMin.x()) < aPrecision)
+  EXPECT_TRUE(std::abs(aResultCornerMin.x() - anExpectedCornerMin.x()) < aPrecision)
     << "Xmin should match expected after composed transformation";
-  EXPECT_TRUE(Abs(aResultCornerMin.y() - anExpectedCornerMin.y()) < aPrecision)
+  EXPECT_TRUE(std::abs(aResultCornerMin.y() - anExpectedCornerMin.y()) < aPrecision)
     << "Ymin should match expected after composed transformation";
-  EXPECT_TRUE(Abs(aResultCornerMin.z() - anExpectedCornerMin.z()) < aPrecision)
+  EXPECT_TRUE(std::abs(aResultCornerMin.z() - anExpectedCornerMin.z()) < aPrecision)
     << "Zmin should match expected after composed transformation";
-  EXPECT_TRUE(Abs(aResultCornerMax.x() - anExpectedCornerMax.x()) < aPrecision)
+  EXPECT_TRUE(std::abs(aResultCornerMax.x() - anExpectedCornerMax.x()) < aPrecision)
     << "Xmax should match expected after composed transformation";
-  EXPECT_TRUE(Abs(aResultCornerMax.y() - anExpectedCornerMax.y()) < aPrecision)
+  EXPECT_TRUE(std::abs(aResultCornerMax.y() - anExpectedCornerMax.y()) < aPrecision)
     << "Ymax should match expected after composed transformation";
-  EXPECT_TRUE(Abs(aResultCornerMax.z() - anExpectedCornerMax.z()) < aPrecision)
+  EXPECT_TRUE(std::abs(aResultCornerMax.z() - anExpectedCornerMax.z()) < aPrecision)
     << "Zmax should match expected after composed transformation";
 }
 

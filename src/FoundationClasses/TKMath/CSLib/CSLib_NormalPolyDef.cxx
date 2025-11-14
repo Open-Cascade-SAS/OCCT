@@ -36,7 +36,7 @@ Standard_Boolean CSLib_NormalPolyDef::Value(const Standard_Real X, Standard_Real
   co = cos(X);
   si = sin(X);
 
-  if (Abs(co) <= RealSmall() || Abs(si) <= RealSmall())
+  if (std::abs(co) <= RealSmall() || std::abs(si) <= RealSmall())
   {
     F = 0.;
     return Standard_True;
@@ -56,7 +56,7 @@ Standard_Boolean CSLib_NormalPolyDef::Derivative(const Standard_Real X, Standard
   Standard_Real co, si;
   co = cos(X);
   si = sin(X);
-  if (Abs(co) <= RealSmall() || Abs(si) <= RealSmall())
+  if (std::abs(co) <= RealSmall() || std::abs(si) <= RealSmall())
   {
     D = 0.;
     return Standard_True;
@@ -79,7 +79,7 @@ Standard_Boolean CSLib_NormalPolyDef::Values(const Standard_Real X,
   Standard_Real co, si;
   co = cos(X);
   si = sin(X);
-  if (Abs(co) <= RealSmall() || Abs(si) <= RealSmall())
+  if (std::abs(co) <= RealSmall() || std::abs(si) <= RealSmall())
   {
     F = 0.;
     D = 0.;

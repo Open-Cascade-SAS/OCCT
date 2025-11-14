@@ -323,7 +323,7 @@ void GCPnts_TangentialDeflection::EvaluateDu(const TheCurve&     theC,
     Standard_Real Ln = Lc / Lt;
     if (Ln > LTol)
     {
-      theDu      = sqrt(8.0 * Max(myCurvatureDeflection, myMinLen) / Ln);
+      theDu      = sqrt(8.0 * std::max(myCurvatureDeflection, myMinLen) / Ln);
       theNotDone = Standard_False;
     }
   }
@@ -369,8 +369,8 @@ void GCPnts_TangentialDeflection::PerformCircular(const TheCurve& theC)
 
   const Standard_Real aDiff = myLastU - myFirstu;
   // Round up number of points to satisfy curvatureDeflection more precisely
-  Standard_Integer NbPoints = (Standard_Integer)Min(Ceiling(aDiff / Du), 1.0e+6);
-  NbPoints                  = Max(NbPoints, myMinNbPnts - 1);
+  Standard_Integer NbPoints = (Standard_Integer)std::min(std::ceil(aDiff / Du), 1.0e+6);
+  NbPoints                  = std::max(NbPoints, myMinNbPnts - 1);
   Du                        = aDiff / NbPoints;
 
   gp_Pnt        P;
@@ -417,8 +417,8 @@ void GCPnts_TangentialDeflection::initialize(const TheCurve&        theC,
   myUTol                = theUTol;
   myAngularDeflection   = theAngularDeflection;
   myCurvatureDeflection = theCurvatureDeflection;
-  myMinNbPnts           = Max(theMinimumOfPoints, 2);
-  myMinLen              = Max(theMinLen, Precision::Confusion());
+  myMinNbPnts           = std::max(theMinimumOfPoints, 2);
+  myMinLen              = std::max(theMinLen, Precision::Confusion());
 
   switch (theC.GetType())
   {
@@ -504,14 +504,14 @@ Standard_Real GCPnts_TangentialDeflection::ArcAngularStep(const Standard_Real th
   Standard_Real Du = 0.0, aMinSizeAng = 0.0;
   if (theRadius > aPrecision)
   {
-    Du = Max(1.0 - (theLinearDeflection / theRadius), 0.0);
+    Du = std::max(1.0 - (theLinearDeflection / theRadius), 0.0);
 
     // It is not suitable to consider min size greater than 1/4 arc len.
     if (theMinLength > aPrecision)
-      aMinSizeAng = Min(theMinLength / theRadius, M_PI_2);
+      aMinSizeAng = std::min(theMinLength / theRadius, M_PI_2);
   }
-  Du = 2.0 * ACos(Du);
-  Du = Max(Min(Du, theAngularDeflection), aMinSizeAng);
+  Du = 2.0 * std::acos(Du);
+  Du = std::max(std::min(Du, theAngularDeflection), aMinSizeAng);
   return Du;
 }
 
@@ -567,12 +567,12 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
       {
         case GeomAbs_BSplineCurve: {
           Handle(typename GCPnts_TCurveTypes<TheCurve>::BSplineCurve) BS = theC.BSpline();
-          NbPoints = Max(BS->Degree() + 1, NbPoints);
+          NbPoints = std::max(BS->Degree() + 1, NbPoints);
           break;
         }
         case GeomAbs_BezierCurve: {
           Handle(typename GCPnts_TCurveTypes<TheCurve>::BezierCurve) BZ = theC.Bezier();
-          NbPoints = Max(BZ->Degree() + 1, NbPoints);
+          NbPoints = std::max(BZ->Degree() + 1, NbPoints);
           break;
         }
         default: {
@@ -738,7 +738,7 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
       }
 
       // On retient le plus penalisant
-      Coef = Max(ACoef, FCoef);
+      Coef = std::max(ACoef, FCoef);
 
       if (isNeedToCheck && Coef < 0.55)
       {
@@ -755,7 +755,7 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
 
       if (Coef <= 1.0)
       {
-        if (Abs(myLastU - U2) < myUTol)
+        if (std::abs(myLastU - U2) < myUTol)
         {
           myParameters.Append(myLastU);
           myPoints.Append(LastPoint);
@@ -781,7 +781,7 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
           {
             TooSmall = Standard_True;
             // Standard_Real UUU2 = U2;
-            Du += Min((U2 - U1) * (1. - Coef), Du * Us3);
+            Du += std::min((U2 - U1) * (1. - Coef), Du * Us3);
 
             U2 = U1 + Du;
             if (U2 > myLastU)
@@ -866,7 +866,7 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
   // Recalage avant dernier point :
   i = myPoints.Length() - 1;
   //  Real d = myPoints (i).Distance (myPoints (i+1));
-  // if (Abs(myParameters (i) - myParameters (i+1))<= 0.000001 || d < Precision::Confusion()) {
+  // if (std::abs(myParameters (i) - myParameters (i+1))<= 0.000001 || d < Precision::Confusion()) {
   //    cout<<"deux points confondus"<<endl;
   //    myParameters.Remove (i+1);
   //    myPoints.Remove (i+1);
@@ -956,20 +956,20 @@ void GCPnts_TangentialDeflection::EstimDefl(const TheCurve&     theC,
   typename GCPnts_TCurveTypes<TheCurve>::DistFunction aFunc(theC, theU1, theU2);
   //
   const Standard_Integer aNbIter = 100;
-  const Standard_Real    aRelTol = Max(1.e-3, 2. * myUTol / (Abs(theU1) + Abs(theU2)));
+  const Standard_Real aRelTol = std::max(1.e-3, 2. * myUTol / (std::abs(theU1) + std::abs(theU2)));
   //
   math_BrentMinimum anOptLoc(aRelTol, aNbIter, myUTol);
   anOptLoc.Perform(aFunc, theU1, (theU1 + theU2) / 2., theU2);
   if (anOptLoc.IsDone())
   {
-    theMaxDefl = Sqrt(-anOptLoc.Minimum());
+    theMaxDefl = std::sqrt(-anOptLoc.Minimum());
     theUMax    = anOptLoc.Location();
     return;
   }
   //
   math_Vector aLowBorder(1, 1), aUppBorder(1, 1), aSteps(1, 1);
-  aSteps(1)                           = Max(0.1 * Du, 100. * myUTol);
-  const Standard_Integer aNbParticles = Max(8, RealToInt(32 * (theU2 - theU1) / Du));
+  aSteps(1)                           = std::max(0.1 * Du, 100. * myUTol);
+  const Standard_Integer aNbParticles = std::max(8, RealToInt(32 * (theU2 - theU1) / Du));
   aLowBorder(1)                       = theU1;
   aUppBorder(1)                       = theU2;
   //
@@ -981,14 +981,17 @@ void GCPnts_TangentialDeflection::EstimDefl(const TheCurve&     theC,
   math_PSO aFinder(&aFuncMV, aLowBorder, aUppBorder, aSteps, aNbParticles);
   aFinder.Perform(aSteps, aValue, aT);
   //
-  anOptLoc.Perform(aFunc, Max(aT(1) - aSteps(1), theU1), aT(1), Min(aT(1) + aSteps(1), theU2));
+  anOptLoc.Perform(aFunc,
+                   std::max(aT(1) - aSteps(1), theU1),
+                   aT(1),
+                   std::min(aT(1) + aSteps(1), theU2));
   if (anOptLoc.IsDone())
   {
-    theMaxDefl = Sqrt(-anOptLoc.Minimum());
+    theMaxDefl = std::sqrt(-anOptLoc.Minimum());
     theUMax    = anOptLoc.Location();
     return;
   }
 
-  theMaxDefl = Sqrt(-aValue);
+  theMaxDefl = std::sqrt(-aValue);
   theUMax    = aT(1);
 }

@@ -98,7 +98,7 @@ Standard_OStream& Vrml_ShapeHints::Print(Standard_OStream& anOStream) const
       break; // anOStream  << "    faceType\t\tCONVEX";
   }
 
-  if (Abs(myAngle - 0.5) > 0.0001)
+  if (std::abs(myAngle - 0.5) > 0.0001)
   {
     anOStream << "    creaseAngle\t\t" << myAngle << "\n";
   }

@@ -60,8 +60,8 @@ void StdPrs_Plane::Add(const Handle(Prs3d_Presentation)& aPresentation,
   {
     TheGroup->SetPrimitivesAspect(theaspect->IsoAspect()->Aspect());
     const Standard_Real               dist   = theaspect->IsoDistance();
-    const Standard_Integer            nbx    = Standard_Integer(Abs(2. * Xmax) / dist) - 1;
-    const Standard_Integer            nby    = Standard_Integer(Abs(2. * Ymax) / dist) - 1;
+    const Standard_Integer            nbx    = Standard_Integer(std::abs(2. * Xmax) / dist) - 1;
+    const Standard_Integer            nby    = Standard_Integer(std::abs(2. * Ymax) / dist) - 1;
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2 * (nbx + nby));
     Standard_Integer                  i;
     Standard_Real                     cur = -Xmax + dist;
@@ -142,7 +142,7 @@ Standard_Boolean StdPrs_Plane::Match(const Standard_Real      X,
     gp_Pln theplane = aPlane.Plane();
     gp_Pnt thepoint(X, Y, Z);
 
-    return (Abs(theplane.Distance(thepoint)) <= aDistance);
+    return (std::abs(theplane.Distance(thepoint)) <= aDistance);
   }
   else
     return Standard_False;

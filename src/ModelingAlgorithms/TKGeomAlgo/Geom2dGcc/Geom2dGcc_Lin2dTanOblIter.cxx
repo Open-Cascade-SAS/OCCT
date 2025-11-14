@@ -60,24 +60,25 @@ Geom2dGcc_Lin2dTanOblIter::Geom2dGcc_Lin2dTanOblIter(const Geom2dGcc_QCurve& Qua
   Standard_Real       A = Dir.X();
   Standard_Real       B = Dir.Y();
   gp_Dir2d            TheDirection(Dir);
-  if (Abs(Angle) > Abs(TolAng))
+  if (std::abs(Angle) > std::abs(TolAng))
   {
-    if (Abs(Abs(Angle) - M_PI) <= Abs(TolAng))
+    if (std::abs(std::abs(Angle) - M_PI) <= std::abs(TolAng))
     {
       Paral2       = Standard_True;
       TheDirection = Dir.Reversed();
     }
-    else if (Abs(Angle - M_PI / 2) <= Abs(TolAng))
+    else if (std::abs(Angle - M_PI / 2) <= std::abs(TolAng))
     {
       TheDirection = gp_Dir2d(-B, A);
     }
-    else if (Abs(Angle + M_PI / 2) <= Abs(TolAng))
+    else if (std::abs(Angle + M_PI / 2) <= std::abs(TolAng))
     {
       TheDirection = gp_Dir2d(B, -A);
     }
     else
     {
-      TheDirection = gp_Dir2d(A * Cos(Angle) - B * Sin(Angle), A * Sin(Angle) + B * Cos(Angle));
+      TheDirection = gp_Dir2d(A * std::cos(Angle) - B * std::sin(Angle),
+                              A * std::sin(Angle) + B * std::cos(Angle));
     }
   }
   else
@@ -85,7 +86,12 @@ Geom2dGcc_Lin2dTanOblIter::Geom2dGcc_Lin2dTanOblIter(const Geom2dGcc_QCurve& Qua
     Paral2 = Standard_True;
   }
   Geom2dGcc_FunctionTanObl func(Cu1, TheDirection);
-  math_FunctionRoot sol(func, Param1, Geom2dGcc_CurveTool::EpsX(Cu1, Abs(TolAng)), U1, U2, 100);
+  math_FunctionRoot        sol(func,
+                        Param1,
+                        Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(TolAng)),
+                        U1,
+                        U2,
+                        100);
   if (sol.IsDone())
   {
     Standard_Real Usol = sol.Root();

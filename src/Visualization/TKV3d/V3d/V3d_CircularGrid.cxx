@@ -160,8 +160,8 @@ void V3d_CircularGrid::UpdateDisplay()
 
   if (MakeTransform)
   {
-    const Standard_Real CosAlpha = Cos(RotationAngle());
-    const Standard_Real SinAlpha = Sin(RotationAngle());
+    const Standard_Real CosAlpha = std::cos(RotationAngle());
+    const Standard_Real SinAlpha = std::sin(RotationAngle());
 
     gp_Trsf aTrsf;
     // Translation
@@ -241,7 +241,7 @@ void V3d_CircularGrid::DefineLines()
   for (Standard_Integer i = 1; i <= nbpnts; i++)
   {
     aPrims1->AddVertex(p0);
-    aPrims1->AddVertex(Cos(alpha * i) * myRadius, Sin(alpha * i) * myRadius, -myOffSet);
+    aPrims1->AddVertex(std::cos(alpha * i) * myRadius, std::sin(alpha * i) * myRadius, -myOffSet);
   }
   myGroup->AddPrimitiveArray(aPrims1, Standard_False);
 
@@ -255,7 +255,7 @@ void V3d_CircularGrid::DefineLines()
     const Standard_Boolean isTenth = (Modulus(nblines, 10) == 0);
     for (Standard_Integer i = 0; i < nbpnts; i++)
     {
-      const gp_Pnt pt(Cos(alpha * i) * r, Sin(alpha * i) * r, -myOffSet);
+      const gp_Pnt pt(std::cos(alpha * i) * r, std::sin(alpha * i) * r, -myOffSet);
       (isTenth ? aSeqTenth : aSeqLines).Append(pt);
     }
   }
@@ -332,7 +332,7 @@ void V3d_CircularGrid::DefinePoints()
   for (r = aStep; r <= myRadius; r += aStep)
   {
     for (Standard_Integer i = 0; i < nbpnts; i++)
-      aSeqPnts.Append(gp_Pnt(Cos(alpha * i) * r, Sin(alpha * i) * r, -myOffSet));
+      aSeqPnts.Append(gp_Pnt(std::cos(alpha * i) * r, std::sin(alpha * i) * r, -myOffSet));
   }
   myGroup->SetGroupPrimitivesAspect(MarkerAttrib);
   if (aSeqPnts.Length())

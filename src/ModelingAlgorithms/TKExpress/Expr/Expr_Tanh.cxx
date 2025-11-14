@@ -38,7 +38,7 @@ Handle(Expr_GeneralExpression) Expr_Tanh::ShallowSimplified() const
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
-    return new Expr_NumericValue(Tanh(myNVexp->GetValue()));
+    return new Expr_NumericValue(std::tanh(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_ArgTanh)))
   {
@@ -86,7 +86,7 @@ Standard_Real Expr_Tanh::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                   const TColStd_Array1OfReal&      vals) const
 {
   Standard_Real val = Operand()->Evaluate(vars, vals);
-  return (::Exp(val) - ::Exp(-val)) / (::Exp(val) + ::Exp(-val));
+  return (std::exp(val) - std::exp(-val)) / (std::exp(val) + std::exp(-val));
 }
 
 TCollection_AsciiString Expr_Tanh::String() const

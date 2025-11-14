@@ -197,8 +197,8 @@ void StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(
   const Standard_Real    anAnglePrev               = theDrawer->PreviousDeviationAngle();
   const Standard_Real    aCoeffNew                 = theDrawer->DeviationCoefficient();
   const Standard_Real    aCoeffPrev                = theDrawer->PreviousDeviationCoefficient();
-  if ((!isOwnDeviationAngle || Abs(anAngleNew - anAnglePrev) <= Precision::Angular())
-      && (!isOwnDeviationCoefficient || Abs(aCoeffNew - aCoeffPrev) <= Precision::Confusion()))
+  if ((!isOwnDeviationAngle || std::abs(anAngleNew - anAnglePrev) <= Precision::Angular())
+      && (!isOwnDeviationCoefficient || std::abs(aCoeffNew - aCoeffPrev) <= Precision::Confusion()))
   {
     return;
   }

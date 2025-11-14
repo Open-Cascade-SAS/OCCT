@@ -137,8 +137,8 @@ static Standard_Real AdjustByPeriod(const Standard_Real Val,
                                     const Standard_Real Period)
 {
   Standard_Real diff = Val - ToVal;
-  Standard_Real D    = Abs(diff);
-  Standard_Real P    = Abs(Period);
+  Standard_Real D    = std::abs(diff);
+  Standard_Real P    = std::abs(Period);
   if (D <= 0.5 * P)
     return 0.;
   if (P < 1e-100)
@@ -640,7 +640,7 @@ Standard_Boolean ShapeBuild_Edge::BuildCurve3d(const TopoDS_Edge& edge) const
     // C0 surface (but curve 3d is required as C1) and tolerance is 1e-07
     // lets use maximum of tolerance and default parameter 1.e-5
     // Another solutions: use quite big Tolerance or require C0 curve on C0 surface
-    if (BRepLib::BuildCurve3d(edge, Max(1.e-5, BRep_Tool::Tolerance(edge))))
+    if (BRepLib::BuildCurve3d(edge, std::max(1.e-5, BRep_Tool::Tolerance(edge))))
     {
       // #50 S4054 rln 14.12.98 write cylinder in BRep mode into IGES and read back
       // with 2DUse_Forced - pcurve and removed 3D curves have different ranges

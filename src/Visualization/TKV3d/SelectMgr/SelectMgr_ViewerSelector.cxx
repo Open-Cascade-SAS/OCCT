@@ -151,7 +151,7 @@ void SelectMgr_ViewerSelector::updatePoint3d(SelectMgr_SortCriterion&           
       else
       {
         const Standard_Real aDistFromEye =
-          Abs((theCriterion.Point.XYZ() - myCameraEye.XYZ()).Dot(myCameraDir.XYZ()));
+          std::abs((theCriterion.Point.XYZ() - myCameraEye.XYZ()).Dot(myCameraDir.XYZ()));
         theCriterion.Tolerance = aDistFromEye * myCameraScale * aSensFactor;
       }
       break;
@@ -668,7 +668,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives(const Standard_Integer theView
   Graphic3d_Vec2i aWinSize;
   mySelectingVolumeMgr.WindowSize(aWinSize.x(), aWinSize.y());
   const double aPixelSize =
-    aWinSize.x() > 0 && aWinSize.y() > 0 ? Max(1.0 / aWinSize.x(), 1.0 / aWinSize.y()) : 1.0;
+    aWinSize.x() > 0 && aWinSize.y() > 0 ? std::max(1.0 / aWinSize.x(), 1.0 / aWinSize.y()) : 1.0;
 
   const Handle(Graphic3d_Camera)& aCamera = mySelectingVolumeMgr.Camera();
   Graphic3d_Mat4d                 aProjectionMat, aWorldViewMat;
@@ -756,7 +756,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives(const Standard_Integer theView
     {
       myCameraScale = aMgr.Camera()->IsOrthographic()
                         ? aMgr.Camera()->Scale()
-                        : 2.0 * Tan(aMgr.Camera()->FOVy() * M_PI / 360.0);
+                        : 2.0 * std::tan(aMgr.Camera()->FOVy() * M_PI / 360.0);
       myCameraScale *= aPixelSize;
     }
 

@@ -424,17 +424,17 @@ void Approx_CurveOnSurface::Perform(const Standard_Integer theMaxSegments,
     if (mySurf->UContinuity() == GeomAbs_C0)
     {
       if (!Adaptor3d_HSurfaceTool::IsSurfG1(mySurf, Standard_True, Precision::Angular()))
-        TolU = Min(1.e-3, 1.e3 * TolU);
+        TolU = std::min(1.e-3, 1.e3 * TolU);
       if (!Adaptor3d_HSurfaceTool::IsSurfG1(mySurf, Standard_True, Precision::Confusion()))
-        TolU = Min(1.e-3, 1.e2 * TolU);
+        TolU = std::min(1.e-3, 1.e2 * TolU);
     }
 
     if (mySurf->VContinuity() == GeomAbs_C0)
     {
       if (!Adaptor3d_HSurfaceTool::IsSurfG1(mySurf, Standard_False, Precision::Angular()))
-        TolV = Min(1.e-3, 1.e3 * TolV);
+        TolV = std::min(1.e-3, 1.e3 * TolV);
       if (!Adaptor3d_HSurfaceTool::IsSurfG1(mySurf, Standard_False, Precision::Confusion()))
-        TolV = Min(1.e-3, 1.e2 * TolV);
+        TolV = std::min(1.e-3, 1.e2 * TolV);
     }
 
     OneDTol->SetValue(1, TolU);
@@ -670,15 +670,15 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
 
   if (theIsU)
   {
-    Standard_Real aV1Param = Min(aF2d.Y(), aL2d.Y());
-    Standard_Real aV2Param = Max(aF2d.Y(), aL2d.Y());
+    Standard_Real aV1Param = std::min(aF2d.Y(), aL2d.Y());
+    Standard_Real aV2Param = std::max(aF2d.Y(), aL2d.Y());
     if (aV2Param < V1 - myTol || aV1Param > V2 + myTol)
     {
       return Standard_False;
     }
     else if (Precision::IsInfinite(V1) || Precision::IsInfinite(V2))
     {
-      if (Abs(aV2Param - aV1Param) < Precision::PConfusion())
+      if (std::abs(aV2Param - aV1Param) < Precision::PConfusion())
       {
         return Standard_False;
       }
@@ -687,9 +687,9 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
     }
     else
     {
-      aV1Param = Max(aV1Param, V1);
-      aV2Param = Min(aV2Param, V2);
-      if (Abs(aV2Param - aV1Param) < Precision::PConfusion())
+      aV1Param = std::max(aV1Param, V1);
+      aV2Param = std::min(aV2Param, V2);
+      if (std::abs(aV2Param - aV1Param) < Precision::PConfusion())
       {
         return Standard_False;
       }
@@ -700,15 +700,15 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
   }
   else
   {
-    Standard_Real aU1Param = Min(aF2d.X(), aL2d.X());
-    Standard_Real aU2Param = Max(aF2d.X(), aL2d.X());
+    Standard_Real aU1Param = std::min(aF2d.X(), aL2d.X());
+    Standard_Real aU2Param = std::max(aF2d.X(), aL2d.X());
     if (aU2Param < U1 - myTol || aU1Param > U2 + myTol)
     {
       return Standard_False;
     }
     else if (Precision::IsInfinite(U1) || Precision::IsInfinite(U2))
     {
-      if (Abs(aU2Param - aU1Param) < Precision::PConfusion())
+      if (std::abs(aU2Param - aU1Param) < Precision::PConfusion())
       {
         return Standard_False;
       }
@@ -717,9 +717,9 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
     }
     else
     {
-      aU1Param = Max(aU1Param, U1);
-      aU2Param = Min(aU2Param, U2);
-      if (Abs(aU2Param - aU1Param) < Precision::PConfusion())
+      aU1Param = std::max(aU1Param, U1);
+      aU2Param = std::min(aU2Param, U2);
+      if (std::abs(aU2Param - aU1Param) < Precision::PConfusion())
       {
         return Standard_False;
       }
@@ -756,10 +756,10 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
     const gp_Pnt aPntC2D = mySurf->Value(aPnt2d.X(), aPnt2d.Y());
 
     const Standard_Real aSqDeviation = aPntC3D.SquareDistance(aPntC2D);
-    myError3d                        = Max(aSqDeviation, myError3d);
+    myError3d                        = std::max(aSqDeviation, myError3d);
   }
 
-  myError3d = Sqrt(myError3d);
+  myError3d = std::sqrt(myError3d);
 
   // Target tolerance is not obtained. This situation happens for isolines on the sphere.
   // OCCT is unable to convert it keeping original parameterization, while the geometric

@@ -171,7 +171,7 @@ Method:
   - F: Extrema_FuncExtPS created from P and S,
   - UV: math_Vector the components which of are parameters of the extremum on the
     grid,
-  - Tol: Min(TolU,TolV), (Prov.:math_FunctionSetRoot does not authorize a vector)
+  - Tol: std::min(TolU,TolV), (Prov.:math_FunctionSetRoot does not authorize a vector)
   - UVinf: math_Vector the components which of are lower limits of u and v,
   - UVsup: math_Vector the components which of are upper limits of u and v.
 
@@ -324,7 +324,7 @@ inline static void fillParams(const TColStd_Array1OfReal&    theKnots,
     if (theKnots(i + 1) < theParMin + Precision::PConfusion())
       continue;
 
-    Standard_Real    aStep = (theKnots(i + 1) - theKnots(i)) / Max(theDegree, 2);
+    Standard_Real    aStep = (theKnots(i + 1) - theKnots(i)) / std::max(theDegree, 2);
     Standard_Integer k     = 1;
     for (; k <= theDegree; k++)
     {
@@ -444,7 +444,8 @@ const Extrema_POnSurfParams& Extrema_GenExtPS::ComputeEdgeParameters(
   }
   else
   {
-    const Standard_Real aDiffDist = Abs(theParam0.GetSqrDistance() - theParam1.GetSqrDistance());
+    const Standard_Real aDiffDist =
+      std::abs(theParam0.GetSqrDistance() - theParam1.GetSqrDistance());
 
     if (aDiffDist >= aSqrDist01 - theDiffTol)
     {
@@ -637,7 +638,7 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
         const Extrema_POnSurfParams& aVE1 = myVEdgePntParams.Value(NoU + 1, NoV);
 
         aSqrDist01 = aUE0.Value().SquareDistance(aUE1.Value());
-        aDiffDist  = Abs(aUE0.GetSqrDistance() - aUE1.GetSqrDistance());
+        aDiffDist  = std::abs(aUE0.GetSqrDistance() - aUE1.GetSqrDistance());
         isOut      = Standard_False;
 
         if (aDiffDist >= aSqrDist01 - aDiffTol)
@@ -648,7 +649,7 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
         else
         {
           aSqrDist01 = aVE0.Value().SquareDistance(aVE1.Value());
-          aDiffDist  = Abs(aVE0.GetSqrDistance() - aVE1.GetSqrDistance());
+          aDiffDist  = std::abs(aVE0.GetSqrDistance() - aVE1.GetSqrDistance());
 
           if (aDiffDist >= aSqrDist01 - aDiffTol)
           {
@@ -758,31 +759,31 @@ static void CorrectNbSamples(const Adaptor3d_Surface& theS,
                              Standard_Integer&        theNbV)
 {
   Standard_Real    aMinLen = 1.e-3;
-  Standard_Integer nbp     = Min(23, theNbV);
+  Standard_Integer nbp     = std::min(23, theNbV);
   Standard_Real    aLenU1  = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, theU1);
   if (aLenU1 <= aMinLen)
   {
     Standard_Real aL = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, .7 * theU1 + 0.3 * theU2);
-    aLenU1           = Max(aL, aLenU1);
+    aLenU1           = std::max(aL, aLenU1);
   }
   Standard_Real aLenU2 = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, theU2);
   if (aLenU2 <= aMinLen)
   {
     Standard_Real aL = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, .3 * theU1 + 0.7 * theU2);
-    aLenU2           = Max(aL, aLenU2);
+    aLenU2           = std::max(aL, aLenU2);
   }
-  nbp                  = Min(23, theNbV);
+  nbp                  = std::min(23, theNbV);
   Standard_Real aLenV1 = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, theV1);
   if (aLenV1 <= aMinLen)
   {
     Standard_Real aL = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, .7 * theV1 + 0.3 * theV2);
-    aLenV1           = Max(aL, aLenV1);
+    aLenV1           = std::max(aL, aLenV1);
   }
   Standard_Real aLenV2 = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, theV2);
   if (aLenV2 <= aMinLen)
   {
     Standard_Real aL = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, .3 * theV1 + 0.7 * theV2);
-    aLenV2           = Max(aL, aLenV2);
+    aLenV2           = std::max(aL, aLenV2);
   }
   //
   Standard_Real aStepV1 = aLenU1 / theNbV;
@@ -790,19 +791,19 @@ static void CorrectNbSamples(const Adaptor3d_Surface& theS,
   Standard_Real aStepU1 = aLenV1 / theNbU;
   Standard_Real aStepU2 = aLenV2 / theNbU;
 
-  Standard_Real aMaxStepV = Max(aStepV1, aStepV2);
-  Standard_Real aMaxStepU = Max(aStepU1, aStepU2);
+  Standard_Real aMaxStepV = std::max(aStepV1, aStepV2);
+  Standard_Real aMaxStepU = std::max(aStepU1, aStepU2);
   //
   Standard_Real aRatio = aMaxStepV / aMaxStepU;
   if (aRatio > 10.)
   {
-    Standard_Integer aMult = RealToInt(Log(aRatio));
+    Standard_Integer aMult = RealToInt(std::log(aRatio));
     if (aMult > 1)
       theNbV *= aMult;
   }
   else if (aRatio < 0.1)
   {
-    Standard_Integer aMult = RealToInt(-Log(aRatio));
+    Standard_Integer aMult = RealToInt(-std::log(aRatio));
     if (aMult > 1)
       theNbV *= aMult;
   }
@@ -821,9 +822,9 @@ void Extrema_GenExtPS::BuildTree()
     Standard_Integer            aVValue = aBspl->VDegree() * aBspl->NbVKnots();
     // 300 is value, which is used for singular points (see Extrema_ExtPS.cxx::Initialize(...))
     if (aUValue > myusample)
-      myusample = Min(aUValue, 300);
+      myusample = std::min(aUValue, 300);
     if (aVValue > myvsample)
-      myvsample = Min(aVValue, 300);
+      myvsample = std::min(aVValue, 300);
   }
   //
   CorrectNbSamples(*myS, myumin, myusup, myusample, myvmin, myvsup, myvsample);

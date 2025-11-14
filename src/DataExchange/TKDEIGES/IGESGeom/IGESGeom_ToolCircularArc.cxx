@@ -122,12 +122,12 @@ void IGESGeom_ToolCircularArc::OwnCheck(const Handle(IGESGeom_CircularArc)& /*en
   /*
     //Standard_Real eps  = 1.E-04;    // Test tolerance ?? //szv#4:S4163:12Mar99 not needed
 
-    Standard_Real Rad1 = Sqrt(Square(ent->StartPoint().X() - ent->Center().X()) +
+    Standard_Real Rad1 = std::sqrt(Square(ent->StartPoint().X() - ent->Center().X()) +
                   Square(ent->StartPoint().Y() - ent->Center().Y()));
-    Standard_Real Rad2 = Sqrt(Square(ent->EndPoint().X()   - ent->Center().X()) +
+    Standard_Real Rad2 = std::sqrt(Square(ent->EndPoint().X()   - ent->Center().X()) +
                   Square(ent->EndPoint().Y()   - ent->Center().Y()));
 
-    Standard_Real ratio = Abs(Rad1 - Rad2) / (Rad1+Rad2);
+    Standard_Real ratio = std::abs(Rad1 - Rad2) / (Rad1+Rad2);
     if (ratio > eps) {
       char mess[80];
       Sprintf(mess,"Radius at Start & End Points, relative gap over %f",

@@ -174,8 +174,8 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
   }
   // Analysis of deflection
 
-  Standard_Real    aDefl2 = Max(Defl * Defl, 1.e-9);
-  Standard_Real    tol    = Max(0.01 * aDefl2, 1.e-9);
+  Standard_Real    aDefl2 = std::max(Defl * Defl, 1.e-9);
+  Standard_Real    tol    = std::max(0.01 * aDefl2, 1.e-9);
   Standard_Integer l;
 
   Standard_Integer NbSamples = 2;

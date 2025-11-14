@@ -673,7 +673,7 @@ Standard_Boolean MAT2d_Tool2d::Projection(const Standard_Integer IEdge,
           Distance = Extremas.SquareDistance(i);
         }
       }
-      Distance = Sqrt(Distance);
+      Distance = std::sqrt(Distance);
     }
     else
     {
@@ -710,7 +710,7 @@ Standard_Boolean MAT2d_Tool2d::IsSameDistance(const Handle(MAT_Bisector)& Bisect
     if (!isDone2)
     {
       Handle(Geom2d_Geometry) Elt = theCircuit->Value(IEdge2);
-      Standard_Real           Tol = Max(Precision::Confusion(), eps * Dist(1));
+      Standard_Real           Tol = std::max(Precision::Confusion(), eps * Dist(1));
       if (CheckEnds(Elt, PCom, Dist(1), Tol))
       {
         Dist(2) = Dist(1);
@@ -722,7 +722,7 @@ Standard_Boolean MAT2d_Tool2d::IsSameDistance(const Handle(MAT_Bisector)& Bisect
     if (isDone2)
     {
       Handle(Geom2d_Geometry) Elt = theCircuit->Value(IEdge1);
-      Standard_Real           Tol = Max(Precision::Confusion(), eps * Dist(2));
+      Standard_Real           Tol = std::max(Precision::Confusion(), eps * Dist(2));
       if (CheckEnds(Elt, PCom, Dist(2), Tol))
       {
         Dist(1) = Dist(2);
@@ -750,7 +750,7 @@ Standard_Boolean MAT2d_Tool2d::IsSameDistance(const Handle(MAT_Bisector)& Bisect
     if (!isDone4)
     {
       Handle(Geom2d_Geometry) Elt = theCircuit->Value(IEdge4);
-      Standard_Real           Tol = Max(Precision::Confusion(), eps * Dist(3));
+      Standard_Real           Tol = std::max(Precision::Confusion(), eps * Dist(3));
       if (CheckEnds(Elt, PCom, Dist(3), Tol))
       {
         Dist(4) = Dist(3);
@@ -762,7 +762,7 @@ Standard_Boolean MAT2d_Tool2d::IsSameDistance(const Handle(MAT_Bisector)& Bisect
     if (isDone4)
     {
       Handle(Geom2d_Geometry) Elt = theCircuit->Value(IEdge3);
-      Standard_Real           Tol = Max(Precision::Confusion(), eps * Dist(4));
+      Standard_Real           Tol = std::max(Precision::Confusion(), eps * Dist(4));
       if (CheckEnds(Elt, PCom, Dist(4), Tol))
       {
         Dist(3) = Dist(4);
@@ -793,7 +793,7 @@ Standard_Boolean MAT2d_Tool2d::IsSameDistance(const Handle(MAT_Bisector)& Bisect
   {
     if (theJoinType == GeomAbs_Intersection && Precision::IsInfinite(Dist(i)))
       continue;
-    if (Abs(Dist(i) - Distance) > EpsDist)
+    if (std::abs(Dist(i) - Distance) > EpsDist)
     {
       Distance = Precision::Infinite();
       return Standard_False;
@@ -1286,9 +1286,9 @@ Standard_Boolean AreNeighbours(const Standard_Integer IEdge1,
                                const Standard_Integer IEdge2,
                                const Standard_Integer NbEdge)
 {
-  if (Abs(IEdge1 - IEdge2) == 1)
+  if (std::abs(IEdge1 - IEdge2) == 1)
     return Standard_True;
-  else if (Abs(IEdge1 - IEdge2) == NbEdge - 1)
+  else if (std::abs(IEdge1 - IEdge2) == NbEdge - 1)
     return Standard_True;
   else
     return Standard_False;
@@ -1358,8 +1358,8 @@ IntRes2d_Domain Domain(const Handle(Geom2d_TrimmedCurve)& Bisector1, const Stand
     {
       gpParabola         = Handle(Geom2d_Parabola)::DownCast(BasisCurve)->Parab2d();
       Focus              = gpParabola.Focal();
-      Standard_Real Val1 = Sqrt(Limit * Focus);
-      Standard_Real Val2 = Sqrt(Limit * Limit);
+      Standard_Real Val1 = std::sqrt(Limit * Focus);
+      Standard_Real Val2 = std::sqrt(Limit * Limit);
       Param2             = (Val1 <= Val2 ? Val1 : Val2);
     }
     else if (Type1 == STANDARD_TYPE(Geom2d_Hyperbola))
@@ -1369,8 +1369,8 @@ IntRes2d_Domain Domain(const Handle(Geom2d_TrimmedCurve)& Bisector1, const Stand
       Standard_Real Minr  = gpHyperbola.MinorRadius();
       Standard_Real Valu1 = Limit / Majr;
       Standard_Real Valu2 = Limit / Minr;
-      Standard_Real Val1  = Log(Valu1 + Sqrt(Valu1 * Valu1 - 1));
-      Standard_Real Val2  = Log(Valu2 + Sqrt(Valu2 * Valu2 + 1));
+      Standard_Real Val1  = std::log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
+      Standard_Real Val2  = std::log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
       Param2              = (Val1 <= Val2 ? Val1 : Val2);
     }
   }
@@ -1410,9 +1410,9 @@ Standard_Boolean CheckEnds(const Handle(Geom2d_Geometry)& Elt,
     gp_Pnt2d      aPl = Curve->EndPoint();
     Standard_Real df  = PCom.Distance(aPf);
     Standard_Real dl  = PCom.Distance(aPl);
-    if (Abs(df - Distance) <= Tol)
+    if (std::abs(df - Distance) <= Tol)
       return Standard_True;
-    if (Abs(dl - Distance) <= Tol)
+    if (std::abs(dl - Distance) <= Tol)
       return Standard_True;
   }
   return Standard_False;
@@ -1456,8 +1456,8 @@ void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer 
       {
         gpParabola         = Handle(Geom2d_Parabola)::DownCast(curve)->Parab2d();
         Focus              = gpParabola.Focal();
-        Standard_Real Val1 = Sqrt(Limit * Focus);
-        Standard_Real Val2 = Sqrt(Limit * Limit);
+        Standard_Real Val1 = std::sqrt(Limit * Focus);
+        Standard_Real Val2 = std::sqrt(Limit * Limit);
         delta              = (Val1 <= Val2 ? Val1 : Val2);
       }
       else if (type == STANDARD_TYPE(Geom2d_Hyperbola))
@@ -1467,8 +1467,8 @@ void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer 
         Standard_Real Minr  = gpHyperbola.MinorRadius();
         Standard_Real Valu1 = Limit / Majr;
         Standard_Real Valu2 = Limit / Minr;
-        Standard_Real Val1  = Log(Valu1 + Sqrt(Valu1 * Valu1 - 1));
-        Standard_Real Val2  = Log(Valu2 + Sqrt(Valu2 * Valu2 + 1));
+        Standard_Real Val1  = Log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
+        Standard_Real Val2  = Log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
         delta               = (Val1 <= Val2 ? Val1 : Val2);
       }
       CurveDraw =
@@ -1503,8 +1503,8 @@ void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer 
   else
     dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 500);
 
-    // dout << dr;
-    // dout.Flush();
+      // dout << dr;
+      // dout.Flush();
   #endif
 }
 

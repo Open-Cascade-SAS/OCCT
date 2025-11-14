@@ -149,8 +149,9 @@ Standard_Boolean BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const Stan
 
   Values(Sol, valsol, gradsol);
 
-  if (Abs(valsol(1)) < Tol && Abs(valsol(2)) < Tol && Abs(valsol(3)) < 2. * dist1 * Tol
-      && Abs(valsol(4)) < Tol * (1. + tgang) * Abs(PScaInv) * temp)
+  if (std::abs(valsol(1)) < Tol && std::abs(valsol(2)) < Tol
+      && std::abs(valsol(3)) < 2. * dist1 * Tol
+      && std::abs(valsol(4)) < Tol * (1. + tgang) * std::abs(PScaInv) * temp)
   {
 
     secmember(1) = Normg - dnp.Dot(pguis1);
@@ -193,7 +194,7 @@ Standard_Boolean BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const Stan
       tg22d.SetCoord(secmember(3), secmember(4));
     }
 
-    distmin = Min(distmin, pt1.Distance(pt2));
+    distmin = std::min(distmin, pt1.Distance(pt2));
 
     return Standard_True;
   }
@@ -682,7 +683,7 @@ Standard_Boolean BlendFunc_ChAsym::Section(const Blend_Point&    P,
     tg22d.SetCoord(secmember(3), secmember(4));
   }
 
-  distmin = Min(distmin, pt1.Distance(pt2));
+  distmin = std::min(distmin, pt1.Distance(pt2));
 
   if (!istangent)
   {
@@ -739,8 +740,8 @@ void BlendFunc_ChAsym::Set(const Standard_Real    Dist1,
                            const Standard_Real    Angle,
                            const Standard_Integer Choix)
 {
-  dist1 = Abs(Dist1);
+  dist1 = std::abs(Dist1);
   angle = Angle;
-  tgang = Tan(Angle);
+  tgang = std::tan(Angle);
   choix = Choix;
 }

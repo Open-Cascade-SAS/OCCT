@@ -65,12 +65,12 @@ void Extrema_GlobOptFuncCQuadric::value(Standard_Real ct, Standard_Real& F)
   if (u >= myUf && u <= myUl && v >= myVf && v <= myVl)
   {
     gp_Pnt aPS = myS->Value(u, v);
-    F          = Min(F, aCP.SquareDistance(aPS));
+    F          = std::min(F, aCP.SquareDistance(aPS));
   }
   Standard_Integer i;
   for (i = 0; i < 4; ++i)
   {
-    F = Min(F, aCP.SquareDistance(myPTrim[i]));
+    F = std::min(F, aCP.SquareDistance(myPTrim[i]));
   }
 }
 
@@ -138,11 +138,11 @@ void Extrema_GlobOptFuncCQuadric::LoadQuad(const Adaptor3d_Surface* S,
   if (myS->IsUPeriodic())
   {
     constexpr Standard_Real aTMax = 2. * M_PI + Precision::PConfusion();
-    if (myUf > aTMax || myUf < -Precision::PConfusion() || Abs(myUl - myUf) > aTMax)
+    if (myUf > aTMax || myUf < -Precision::PConfusion() || std::abs(myUl - myUf) > aTMax)
     {
       ElCLib::AdjustPeriodic(0.,
                              2. * M_PI,
-                             Min(Abs(myUl - myUf) / 2, Precision::PConfusion()),
+                             std::min(std::abs(myUl - myUf) / 2, Precision::PConfusion()),
                              myUf,
                              myUl);
     }
@@ -150,11 +150,11 @@ void Extrema_GlobOptFuncCQuadric::LoadQuad(const Adaptor3d_Surface* S,
   if (myS->IsVPeriodic())
   {
     constexpr Standard_Real aTMax = 2. * M_PI + Precision::PConfusion();
-    if (myVf > aTMax || myVf < -Precision::PConfusion() || Abs(myVl - myVf) > aTMax)
+    if (myVf > aTMax || myVf < -Precision::PConfusion() || std::abs(myVl - myVf) > aTMax)
     {
       ElCLib::AdjustPeriodic(0.,
                              2. * M_PI,
-                             Min(Abs(myVl - myVf) / 2, Precision::PConfusion()),
+                             std::min(std::abs(myVl - myVf) / 2, Precision::PConfusion()),
                              myVf,
                              myVl);
     }

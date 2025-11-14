@@ -78,7 +78,7 @@ IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
   //---
   //  Modified by Sergey KHROMOV - Mon Mar 24 12:03:05 2003 Begin
   //   TheDeflection = 0.000000001;
-  TheDeflection = Min(0.000000001, Tol / 100.);
+  TheDeflection = std::min(0.000000001, Tol / 100.);
   //  Modified by Sergey KHROMOV - Mon Mar 24 12:03:05 2003 End
   i = 1;
   u = D.FirstParameter();

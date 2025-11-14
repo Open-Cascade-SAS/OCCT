@@ -102,7 +102,7 @@ Standard_Boolean ShapeUpgrade_FixSmallBezierCurves::Approx(Handle(Geom_Curve)&  
   TopLoc_Location      L;
   Handle(Geom_Surface) aSurf = BRep_Tool::Surface(myFace, L);
   GeomAdaptor_Surface  ads(aSurf); // = new GeomAdaptor_Surface(aSurf);
-  Standard_Real        prec = Max(ads.UResolution(Precision()), ads.VResolution(Precision()));
+  Standard_Real        prec = std::max(ads.UResolution(Precision()), ads.VResolution(Precision()));
   if (sae.PCurve(myEdge, myFace, c2d, f, l, Standard_False))
   {
     if (First < f)

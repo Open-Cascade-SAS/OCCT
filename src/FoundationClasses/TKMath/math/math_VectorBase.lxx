@@ -90,7 +90,7 @@ Standard_Real math_VectorBase<TheItemType>::Norm() const
   {
     Result = Result + Array(Index) * Array(Index);
   }
-  return Sqrt(Result);
+  return std::sqrt(Result);
 }
 
 template <typename TheItemType>
@@ -231,7 +231,7 @@ void math_VectorBase<TheItemType>::Multiply(const TheItemType theRight)
 template <typename TheItemType>
 void math_VectorBase<TheItemType>::Divide(const TheItemType theRight)
 {
-  Standard_DivideByZero_Raise_if(Abs(theRight) <= RealEpsilon(),
+  Standard_DivideByZero_Raise_if(std::abs(theRight) <= RealEpsilon(),
                                  "math_VectorBase::Divide() - devisor is zero");
 
   for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
@@ -243,7 +243,7 @@ void math_VectorBase<TheItemType>::Divide(const TheItemType theRight)
 template <typename TheItemType>
 math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Divided(const TheItemType theRight) const
 {
-  Standard_DivideByZero_Raise_if(Abs(theRight) <= RealEpsilon(),
+  Standard_DivideByZero_Raise_if(std::abs(theRight) <= RealEpsilon(),
                                  "math_VectorBase::Divided() - devisor is zero");
   math_VectorBase temp = Multiplied(1. / theRight);
   return temp;

@@ -313,7 +313,7 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
   VDBFN[0] = myV0;
   VDBFN[1] = myV1;
 
-  SIZE                                 = Max(NBPNTU, NBPNTV);
+  SIZE                                 = std::max(NBPNTU, NBPNTV);
   Handle(TColStd_HArray1OfReal) HTABLE = new TColStd_HArray1OfReal(1, SIZE);
   Standard_Real*                TAB    = (Standard_Real*)&HTABLE->ChangeArray1()(HTABLE->Lower());
 
@@ -548,7 +548,7 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   }
 
   //  tables required for FORTRAN
-  Standard_Integer              IORDMX = Max(IORDRU, IORDRV);
+  Standard_Integer              IORDMX = std::max(IORDRU, IORDRV);
   Handle(TColStd_HArray1OfReal) HEXTR  = new TColStd_HArray1OfReal(1, 2 * IORDMX + 2);
   Standard_Real*                EXTR   = (Standard_Real*)&HEXTR->ChangeArray1()(HEXTR->Lower());
   Handle(TColStd_HArray1OfReal) HFACT  = new TColStd_HArray1OfReal(1, IORDMX + 1);
@@ -651,17 +651,17 @@ void AdvApp2Var_Patch::AddErrors(const AdvApp2Var_Framework& Constraints)
     for (iv = 1; iv <= myOrdInV + 1; iv++)
     {
       error = ((Constraints.IsoV(myU0, myU1, myV0)).MaxErrors())->Value(iesp, iv);
-      errU  = Max(errU, error);
+      errU  = std::max(errU, error);
       error = ((Constraints.IsoV(myU0, myU1, myV1)).MaxErrors())->Value(iesp, iv);
-      errU  = Max(errU, error);
+      errU  = std::max(errU, error);
     }
     errV = 0.;
     for (iu = 1; iu <= myOrdInU + 1; iu++)
     {
       error = ((Constraints.IsoU(myU0, myV0, myV1)).MaxErrors())->Value(iesp, iu);
-      errV  = Max(errV, error);
+      errV  = std::max(errV, error);
       error = ((Constraints.IsoU(myU1, myV0, myV1)).MaxErrors())->Value(iesp, iu);
-      errV  = Max(errV, error);
+      errV  = std::max(errV, error);
     }
     myMaxErrors->ChangeValue(iesp) += errU * hmax[myOrdInV + 1] + errV * hmax[myOrdInU + 1];
 
@@ -670,23 +670,23 @@ void AdvApp2Var_Patch::AddErrors(const AdvApp2Var_Framework& Constraints)
     for (iv = 1; iv <= myOrdInV + 1; iv++)
     {
       error = ((Constraints.IsoV(myU0, myU1, myV0)).MoyErrors())->Value(iesp, iv);
-      errU  = Max(errU, error);
+      errU  = std::max(errU, error);
       error = ((Constraints.IsoV(myU0, myU1, myV1)).MoyErrors())->Value(iesp, iv);
-      errU  = Max(errU, error);
+      errU  = std::max(errU, error);
     }
     errV = 0.;
     for (iu = 1; iu <= myOrdInU + 1; iu++)
     {
       error = ((Constraints.IsoU(myU0, myV0, myV1)).MoyErrors())->Value(iesp, iu);
-      errV  = Max(errV, error);
+      errV  = std::max(errV, error);
       error = ((Constraints.IsoU(myU1, myV0, myV1)).MoyErrors())->Value(iesp, iu);
-      errV  = Max(errV, error);
+      errV  = std::max(errV, error);
     }
     error = myMoyErrors->Value(iesp);
     error *= error;
     error += errU * hmax[myOrdInV + 1] * errU * hmax[myOrdInV + 1]
              + errV * hmax[myOrdInU + 1] * errV * hmax[myOrdInU + 1];
-    myMoyErrors->SetValue(iesp, Sqrt(error));
+    myMoyErrors->SetValue(iesp, std::sqrt(error));
 
     // max errors at iso-borders
     Handle(TColStd_HArray2OfReal) HERISO = new TColStd_HArray2OfReal(1, NBSESP, 1, 4);
@@ -702,21 +702,21 @@ void AdvApp2Var_Patch::AddErrors(const AdvApp2Var_Framework& Constraints)
       for (iv = 0; iv <= myOrdInV; iv++)
       {
         error = (Constraints.Node(myU0, myV0))->Error(iu, iv);
-        emax1 = Max(emax1, error);
+        emax1 = std::max(emax1, error);
         error = (Constraints.Node(myU1, myV0))->Error(iu, iv);
-        emax2 = Max(emax2, error);
+        emax2 = std::max(emax2, error);
         error = (Constraints.Node(myU0, myV1))->Error(iu, iv);
-        emax3 = Max(emax3, error);
+        emax3 = std::max(emax3, error);
         error = (Constraints.Node(myU1, myV1))->Error(iu, iv);
-        emax4 = Max(emax4, error);
+        emax4 = std::max(emax4, error);
       }
     }
 
     // calculate max errors on borders
-    err1 = Max(emax1, emax2);
-    err2 = Max(emax3, emax4);
-    err3 = Max(emax1, emax3);
-    err4 = Max(emax2, emax4);
+    err1 = std::max(emax1, emax2);
+    err2 = std::max(emax3, emax4);
+    err3 = std::max(emax1, emax3);
+    err4 = std::max(emax2, emax4);
 
     //   calculate final errors on internal isos
     if ((Constraints.IsoV(myU0, myU1, myV0)).Position() == 0)
@@ -772,17 +772,17 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   Standard_Integer IORDRU = myOrdInU, IORDRV = myOrdInV, NDMINU = 1, NDMINV = 1, NCOEFU, NCOEFV;
   // NDMINU and NDMINV depend on the nb of coeff of neighboring isos
   // and of the required order of continuity
-  NDMINU = Max(1, 2 * IORDRU + 1);
+  NDMINU = std::max(1, 2 * IORDRU + 1);
   NCOEFU = (Constraints.IsoV(myU0, myU1, myV0)).NbCoeff() - 1;
-  NDMINU = Max(NDMINU, NCOEFU);
+  NDMINU = std::max(NDMINU, NCOEFU);
   NCOEFU = (Constraints.IsoV(myU0, myU1, myV1)).NbCoeff() - 1;
-  NDMINU = Max(NDMINU, NCOEFU);
+  NDMINU = std::max(NDMINU, NCOEFU);
 
-  NDMINV = Max(1, 2 * IORDRV + 1);
+  NDMINV = std::max(1, 2 * IORDRV + 1);
   NCOEFV = (Constraints.IsoU(myU0, myV0, myV1)).NbCoeff() - 1;
-  NDMINV = Max(NDMINV, NCOEFV);
+  NDMINV = std::max(NDMINV, NCOEFV);
   NCOEFV = (Constraints.IsoU(myU1, myV0, myV1)).NbCoeff() - 1;
-  NDMINV = Max(NDMINV, NCOEFV);
+  NDMINV = std::max(NDMINV, NCOEFV);
 
   // tables of approximations
   Handle(TColStd_HArray1OfReal) HEPSAPR = new TColStd_HArray1OfReal(1, NBSESP);

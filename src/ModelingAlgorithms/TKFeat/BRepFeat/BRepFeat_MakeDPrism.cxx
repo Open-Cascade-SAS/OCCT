@@ -1173,9 +1173,10 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,  // shape initial
   //  Standard_Real Height = abs(2.*(parmax - parmin));
   //  return(2.*Height);
   // #ifndef OCCT_DEBUG
-  Standard_Real par = Max(Max(fabs(c[1] - c[0]), fabs(c[3] - c[2])), fabs(c[5] - c[4]));
+  Standard_Real par = std::max(std::max(fabs(c[1] - c[0]), fabs(c[3] - c[2])), fabs(c[5] - c[4]));
   // #else
-  //   Standard_Real par = Max(  Max( abs(c[1] - c[0]), abs(c[3] - c[2]) ), abs(c[5] - c[4]) );
+  //   Standard_Real par = std::max(  std::max( abs(c[1] - c[0]), abs(c[3] - c[2]) ), abs(c[5] -
+  //   c[4]) );
   // #endif
 #ifdef OCCT_DEBUG
   std::cout << "Height = > " << par << std::endl;

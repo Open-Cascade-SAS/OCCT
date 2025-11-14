@@ -369,8 +369,8 @@ Standard_Boolean TopOpeBRepTool::PurgeClosingEdges(const TopoDS_Face&           
   Standard_Real period = 2*M_PI;
   Standard_Real piso = isuiso? O2d.X(): O2d.Y();
   Standard_Real tol2d = 1.e-6;
-  Standard_Boolean is0   = Abs(piso) < tol2d;
-  Standard_Boolean is2PI = Abs(period-piso) < tol2d;
+  Standard_Boolean is0   = std::abs(piso) < tol2d;
+  Standard_Boolean is2PI = std::abs(period-piso) < tol2d;
   // --------------------------------------------------
   //  prequesitory :  Closed Surfaces have period 2PI
   if (!is0 && !is2PI) return Standard_False;
@@ -466,11 +466,11 @@ FUN_correctDegeneratedE : no 2d curve e2");
 
   Standard_Real d1 = (c1 - cv1);
   Standard_Real d2 = (c2 - cv2);
-  Standard_Real adc = Abs(c1 - c2);
-  Standard_Real adcv = Abs(cv1 - cv2);
+  Standard_Real adc = std::abs(c1 - c2);
+  Standard_Real adcv = std::abs(cv1 - cv2);
 
   Standard_Real tol2d = 1.e-6;
-  Standard_Boolean mmd = (Abs(adc-adcv) < tol2d);
+  Standard_Boolean mmd = (std::abs(adc-adcv) < tol2d);
   if (mmd) { // correction de CTS20973
     gp_Vec2d transl(0.,1.); if (isviso) transl = gp_Vec2d(1.,0.);
     transl.Multiply(d1); // ou d2
@@ -579,8 +579,8 @@ FUN_correctDegeneratedE : no 2d curve e2");
   Standard_Real du = uvfe.X()-uvtt.X();
   Standard_Real dv = uvfe.Y()-uvtt.Y();
   Standard_Boolean tru=Standard_False, trv=Standard_False;
-  if (uclosed) tru = (Abs(Abs(du)-uperiod) < tolu);
-  if (vclosed) trv = (Abs(Abs(dv)-vperiod) < tolv);
+  if (uclosed) tru = (std::abs(std::abs(du)-uperiod) < tolu);
+  if (vclosed) trv = (std::abs(std::abs(dv)-vperiod) < tolv);
   if (!tru && !trv) return Standard_False;
 
   gp_Vec2d tt;
@@ -671,7 +671,7 @@ static Standard_Boolean FUN_connexX(const Standard_Boolean                  onU,
 
         // xxtrsl :
         Standard_Real    dxx   = onU ? uve.X() - uvff.X() : uve.Y() - uvff.Y();
-        Standard_Boolean isper = (Abs(xperiod - Abs(dxx)) < xtol);
+        Standard_Boolean isper = (std::abs(xperiod - std::abs(dxx)) < xtol);
         if (!isper)
           continue;
 

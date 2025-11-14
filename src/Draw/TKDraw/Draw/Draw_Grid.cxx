@@ -49,9 +49,9 @@ void Draw_Grid::Steps(const Standard_Real StepX,
                       const Standard_Real StepY,
                       const Standard_Real StepZ)
 {
-  myStepX    = Abs(StepX);
-  myStepY    = Abs(StepY);
-  myStepZ    = Abs(StepZ);
+  myStepX    = std::abs(StepX);
+  myStepY    = std::abs(StepY);
+  myStepZ    = std::abs(StepZ);
   myIsActive = myStepX > MinimumStep && myStepY > MinimumStep && myStepZ > MinimumStep;
 }
 
@@ -122,7 +122,7 @@ void Draw_Grid::DrawOn(Draw_Display& Out) const
     Ymin = ((Standard_Real)ymin) / zoom;
     Ymax = ((Standard_Real)ymax) / zoom;
 
-    Offset = Min(Xmax - Xmin, Ymax - Ymin) / Ratio;
+    Offset = std::min(Xmax - Xmin, Ymax - Ymin) / Ratio;
 
     MinIndexX = (Standard_Integer)(Xmin / StepX);
     MaxIndexX = (Standard_Integer)(Xmax / StepX);

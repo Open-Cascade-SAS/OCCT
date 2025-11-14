@@ -46,7 +46,7 @@ void BRepBuilderAPI_Transform::Perform(const TopoDS_Shape&    theShape,
                                        const Standard_Boolean theCopyMesh)
 {
   myUseModif = theCopyGeom || myTrsf.IsNegative()
-               || (Abs(Abs(myTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
+               || (std::abs(std::abs(myTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
   if (myUseModif)
   {
     Handle(BRepTools_TrsfModification) theModif =

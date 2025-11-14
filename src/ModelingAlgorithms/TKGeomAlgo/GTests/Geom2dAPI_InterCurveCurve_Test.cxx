@@ -35,7 +35,7 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
   Intersector.Init(Ge1, Ge2, 1.e-7);
   EXPECT_GT(Intersector.NbPoints(), 0) << "Error: intersector found no points";
 
-  // Setup trigonometric equation: A*Cos(x) + B*Sin(x) + C*Cos(2*x) + D*Sin(2*x) + E
+  // Setup trigonometric equation: A*std::cos(x) + B*Sin(x) + C*std::cos(2*x) + D*Sin(2*x) + E
   Standard_Real A, B, C, D, E;
   A = 1.875;
   B = -.75;
@@ -61,6 +61,6 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
     ASSERT_TRUE(Resol.IsDone()) << "Error: Newton is not done for " << Teta;
 
     Standard_Real TetaNewton = Resol.Root();
-    EXPECT_LE(Abs(Teta - TetaNewton), 1.e-7) << "Error: Newton root is wrong for " << Teta;
+    EXPECT_LE(std::abs(Teta - TetaNewton), 1.e-7) << "Error: Newton root is wrong for " << Teta;
   }
 }

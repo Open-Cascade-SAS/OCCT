@@ -308,7 +308,7 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
   if (myAmbientReflectance.second)
   {
     // Get the reflectance factor, clamped to valid range
-    const Standard_Real aAmbientFactor = Max(0.0, Min(1.0, myAmbientReflectance.first));
+    const Standard_Real aAmbientFactor = std::max(0.0, std::min(1.0, myAmbientReflectance.first));
 
     // Apply factor to surface color (RGB components individually)
     const Standard_Real aRed   = mySurfaceColor.Red() * aAmbientFactor;
@@ -328,7 +328,7 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
   else if (mySpecularReflectance.second)
   {
     // Apply specular reflectance factor to surface color
-    const Standard_Real aSpecularFactor = Max(0.0, Min(1.0, mySpecularReflectance.first));
+    const Standard_Real aSpecularFactor = std::max(0.0, std::min(1.0, mySpecularReflectance.first));
 
     const Standard_Real aRed   = mySurfaceColor.Red() * aSpecularFactor;
     const Standard_Real aGreen = mySurfaceColor.Green() * aSpecularFactor;
@@ -344,7 +344,7 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
     // Convert STEP specular exponent to XCAF shininess using fixed scale factor
     const Standard_Real kScaleFactor = 128.0;
     const Standard_Real aShininess   = mySpecularExponent.first / kScaleFactor;
-    aMaterial.Shininess              = (Standard_ShortReal)Min(1.0, aShininess);
+    aMaterial.Shininess              = (Standard_ShortReal)std::min(1.0, aShininess);
   }
 
   return aMaterial;
@@ -516,7 +516,7 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
   const Standard_Real aDiffBlue  = theMaterial.DiffuseColor.Blue();
 
   // Find maximum diffuse component to avoid division by zero for dark colors
-  const Standard_Real aDiffMax = Max(aDiffRed, Max(aDiffGreen, aDiffBlue));
+  const Standard_Real aDiffMax = std::max(aDiffRed, std::max(aDiffGreen, aDiffBlue));
 
   // Check if ambient color is non-default and diffuse color has non-zero components
   if (aDiffMax > Precision::Confusion())
@@ -533,8 +533,8 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
     const Standard_Real aBlue = (aDiffBlue > Precision::Confusion()) ? aAmbBlue / aDiffBlue : 0.0;
 
     // Calculate min and max of RGB ratios
-    const Standard_Real aMin = Min(aRed, Min(aGreen, aBlue));
-    const Standard_Real aMax = Max(aRed, Max(aGreen, aBlue));
+    const Standard_Real aMin = std::min(aRed, std::min(aGreen, aBlue));
+    const Standard_Real aMax = std::max(aRed, std::max(aGreen, aBlue));
 
     // If ratios are reasonably close, use average as ambient reflectance factor
     // otherwise the ambient color isn't a simple multiplier of diffuse
@@ -545,10 +545,10 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
       Standard_Real aAmbientFactor = (aRed + aGreen + aBlue) / 3.0;
 
       // Check if factor is significantly different from default (0.1)
-      if (Abs(aAmbientFactor - 0.1) > 0.01)
+      if (std::abs(aAmbientFactor - 0.1) > 0.01)
       {
         // Clamp to valid range
-        aAmbientFactor = Max(0.0, Min(1.0, aAmbientFactor));
+        aAmbientFactor = std::max(0.0, std::min(1.0, aAmbientFactor));
 
         myAmbientReflectance.first  = aAmbientFactor;
         myAmbientReflectance.second = Standard_True;
@@ -576,8 +576,8 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
     const Standard_Real aBlue = (aDiffBlue > Precision::Confusion()) ? aSpecBlue / aDiffBlue : 0.0;
 
     // Calculate min and max of RGB ratios
-    const Standard_Real aMin = Min(aRed, Min(aGreen, aBlue));
-    const Standard_Real aMax = Max(aRed, Max(aGreen, aBlue));
+    const Standard_Real aMin = std::min(aRed, std::min(aGreen, aBlue));
+    const Standard_Real aMax = std::max(aRed, std::max(aGreen, aBlue));
 
     // If ratios are reasonably close, use average as specular reflectance factor
     const Standard_Real kMaxRatioDeviation = 0.2; // Max allowed deviation between RGB ratios
@@ -587,10 +587,10 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
       Standard_Real aSpecularFactor = (aRed + aGreen + aBlue) / 3.0;
 
       // Check if factor is significantly different from default (0.2)
-      if (Abs(aSpecularFactor - 0.2) > 0.01)
+      if (std::abs(aSpecularFactor - 0.2) > 0.01)
       {
         // Clamp to valid range
-        aSpecularFactor = Max(0.0, Min(1.0, aSpecularFactor));
+        aSpecularFactor = std::max(0.0, std::min(1.0, aSpecularFactor));
 
         mySpecularReflectance.first  = aSpecularFactor;
         mySpecularReflectance.second = Standard_True;
@@ -611,7 +611,7 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
   }
 
   // Convert shininess to specular exponent using fixed scale factor
-  if (theMaterial.Shininess >= 0.0f && Abs(theMaterial.Shininess - 1.0f) > 0.01f)
+  if (theMaterial.Shininess >= 0.0f && std::abs(theMaterial.Shininess - 1.0f) > 0.01f)
   {
     const Standard_Real kScaleFactor = 128.0;
     mySpecularExponent.first         = theMaterial.Shininess * kScaleFactor;

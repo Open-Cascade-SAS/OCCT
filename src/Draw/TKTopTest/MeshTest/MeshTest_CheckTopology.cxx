@@ -43,7 +43,7 @@ static Standard_Real ComputeArea(const gp_XYZ& theP1, const gp_XYZ& theP2, const
 //=======================================================================
 static Standard_Real ComputeArea(const gp_XY& theP1, const gp_XY& theP2, const gp_XY& theP3)
 {
-  return 0.5 * Abs((theP3 - theP1).Crossed(theP2 - theP1));
+  return 0.5 * std::abs((theP3 - theP1).Crossed(theP2 - theP1));
 }
 
 //=================================================================================================
@@ -125,7 +125,7 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
           myErrors.Append(i1);
           myErrors.Append(iF2);
           myErrors.Append(i2);
-          myErrorsVal.Append(Sqrt(aSqDist));
+          myErrorsVal.Append(std::sqrt(aSqDist));
         }
       }
     }

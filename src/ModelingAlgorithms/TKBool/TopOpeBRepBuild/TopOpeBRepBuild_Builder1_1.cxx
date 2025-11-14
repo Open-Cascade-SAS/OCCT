@@ -870,9 +870,9 @@ void TopOpeBRepBuild_Builder1::SplitEdge(const TopoDS_Shape&               anEdg
 
     Standard_Real tolV1  = BRep_Tool::Tolerance(aV1);
     Standard_Real tolV2  = BRep_Tool::Tolerance(aV2);
-    Standard_Real tolMax = Max(tolEdge, Max(tolV1, tolV2));
+    Standard_Real tolMax = std::max(tolEdge, std::max(tolV1, tolV2));
     Standard_Real resol  = aCurveAdaptor.Resolution(tolMax);
-    Standard_Real delta  = Abs(aPar1 - aPar2);
+    Standard_Real delta  = std::abs(aPar1 - aPar2);
 
     if (delta < resol)
     {

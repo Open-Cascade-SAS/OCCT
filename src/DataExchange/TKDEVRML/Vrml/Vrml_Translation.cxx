@@ -38,8 +38,8 @@ Standard_OStream& Vrml_Translation::Print(Standard_OStream& anOStream) const
 {
   anOStream << "Translation {\n";
 
-  if (Abs(myTranslation.X() - 0) > 0.0001 || Abs(myTranslation.Y() - 0) > 0.0001
-      || Abs(myTranslation.Z() - 0) > 0.0001)
+  if (std::abs(myTranslation.X() - 0) > 0.0001 || std::abs(myTranslation.Y() - 0) > 0.0001
+      || std::abs(myTranslation.Z() - 0) > 0.0001)
   {
     anOStream << "    translation\t";
     anOStream << myTranslation.X() << " " << myTranslation.Y() << " " << myTranslation.Z() << "\n";

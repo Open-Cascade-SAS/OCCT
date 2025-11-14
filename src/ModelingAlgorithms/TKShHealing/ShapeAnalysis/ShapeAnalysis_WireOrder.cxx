@@ -170,7 +170,7 @@ Standard_Integer ShapeAnalysis_WireOrder::NbEdges() const
 
 static Standard_Real DISTABS(const gp_XYZ& v1, const gp_XYZ& v2)
 {
-  return Abs(v1.X() - v2.X()) + Abs(v1.Y() - v2.Y()) + Abs(v1.Z() - v2.Z());
+  return std::abs(v1.X() - v2.X()) + std::abs(v1.Y() - v2.Y()) + std::abs(v1.Z() - v2.Z());
 }
 
 //  La routine qui suit gere les boucles internes a un wire. Questce a dire ?
@@ -595,7 +595,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
               aJoinDist = aReverseDist;
             }
             // check if we found a better distance
-            if (aJoinDist < aMinDist3 && Abs(aMinDist3 - aJoinDist) > aTol2)
+            if (aJoinDist < aMinDist3 && std::abs(aMinDist3 - aJoinDist) > aTol2)
             {
               aMinDist3    = aJoinDist;
               aDirect3     = (aDirectDist <= aReverseDist);
@@ -603,7 +603,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
             }
           }
           // check if we found a better distance
-          if (aMinDist3 < aMinDist2 && Abs(aMinDist2 - aMinDist3) > aTol2)
+          if (aMinDist3 < aMinDist2 && std::abs(aMinDist2 - aMinDist3) > aTol2)
           {
             aMinDist2    = aMinDist3;
             aDirect2     = aDirect3;
@@ -612,7 +612,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
           }
         }
         // check if we found a better distance
-        if (aMinDist2 < aMinDist1 && Abs(aMinDist1 - aMinDist2) > aTol2)
+        if (aMinDist2 < aMinDist1 && std::abs(aMinDist1 - aMinDist2) > aTol2)
         {
           aMinDist1    = aMinDist2;
           aLoopNum1    = aLoopIt;

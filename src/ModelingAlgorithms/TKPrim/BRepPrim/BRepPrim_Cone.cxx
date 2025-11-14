@@ -44,7 +44,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle,
     throw Standard_DomainError("cone with angle > PI/2");
 
   // cut at top
-  VMax(Height / Cos(myHalfAngle));
+  VMax(Height / std::cos(myHalfAngle));
   VMin(0.);
   SetMeridian();
 }
@@ -141,7 +141,7 @@ void BRepPrim_Cone::SetMeridian()
   A.Translate(V);
   Handle(Geom_Line)   L = new Geom_Line(A);
   Handle(Geom2d_Line) L2d =
-    new Geom2d_Line(gp_Pnt2d(myRadius, 0), gp_Dir2d(Sin(myHalfAngle), Cos(myHalfAngle)));
+    new Geom2d_Line(gp_Pnt2d(myRadius, 0), gp_Dir2d(std::sin(myHalfAngle), std::cos(myHalfAngle)));
   Meridian(L, L2d);
 }
 
@@ -153,15 +153,15 @@ void BRepPrim_Cone::SetParameters(const Standard_Real R1,
 {
   if (((R1 != 0) && (R1 < Precision::Confusion())) || ((R2 != 0) && (R2 < Precision::Confusion())))
     throw Standard_DomainError("cone with negative or too small radius");
-  if (Abs(R1 - R2) < Precision::Confusion())
+  if (std::abs(R1 - R2) < Precision::Confusion())
     throw Standard_DomainError("cone with two identic radii");
   if (H < Precision::Confusion())
     throw Standard_DomainError("cone with negative or null height");
 
   myRadius    = R1;
-  myHalfAngle = ATan((R2 - R1) / H);
+  myHalfAngle = std::atan((R2 - R1) / H);
 
   // cut top and bottom
   VMin(0.);
-  VMax(Sqrt(H * H + (R2 - R1) * (R2 - R1)));
+  VMax(std::sqrt(H * H + (R2 - R1) * (R2 - R1)));
 }

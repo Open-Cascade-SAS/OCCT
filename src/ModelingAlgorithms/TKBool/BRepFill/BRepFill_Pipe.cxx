@@ -125,7 +125,7 @@ static void UpdateTolFromTopOrBottomPCurve(const TopoDS_Face& aFace, TopoDS_Edge
     if (sqdist > TolTol)
       TolTol = sqdist;
   }
-  Tol = 1.00005 * Sqrt(TolTol);
+  Tol = 1.00005 * std::sqrt(TolTol);
   if (Tol >= InitTol)
   {
     BRep_Builder BB;

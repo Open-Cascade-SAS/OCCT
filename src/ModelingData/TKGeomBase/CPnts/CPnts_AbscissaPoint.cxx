@@ -66,10 +66,10 @@ static Standard_Integer order(const Adaptor3d_Curve& C)
       return 5;
 
     case GeomAbs_BezierCurve:
-      return Min(24, 2 * C.Degree());
+      return std::min(24, 2 * C.Degree());
 
     case GeomAbs_BSplineCurve:
-      return Min(24, 2 * C.NbPoles() - 1);
+      return std::min(24, 2 * C.NbPoles() - 1);
 
     default:
       return 10;
@@ -88,10 +88,10 @@ static Standard_Integer order(const Adaptor2d_Curve2d& C)
       return 5;
 
     case GeomAbs_BezierCurve:
-      return Min(24, 2 * C.Bezier()->Degree());
+      return std::min(24, 2 * C.Bezier()->Degree());
 
     case GeomAbs_BSplineCurve:
-      return Min(24, 2 * C.BSpline()->NbPoles() - 1);
+      return std::min(24, 2 * C.BSpline()->NbPoles() - 1);
 
     default:
       return 10;
@@ -142,7 +142,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
   {
     throw Standard_ConstructionError();
   }
-  return Abs(TheLength.Value());
+  return std::abs(TheLength.Value());
 }
 
 //=================================================================================================
@@ -161,7 +161,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
   {
     throw Standard_ConstructionError();
   }
-  return Abs(TheLength.Value());
+  return std::abs(TheLength.Value());
 }
 
 //=======================================================================
@@ -184,7 +184,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
   {
     throw Standard_ConstructionError();
   }
-  return Abs(TheLength.Value());
+  return std::abs(TheLength.Value());
 }
 
 //=======================================================================
@@ -207,7 +207,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
   {
     throw Standard_ConstructionError();
   }
-  return Abs(TheLength.Value());
+  return std::abs(TheLength.Value());
 }
 
 //=================================================================================================
@@ -311,8 +311,8 @@ void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C,
   myF.Init(rf, (Standard_Address)&C, order(C));
   //  myF.Init(f3d,(Standard_Address)&C,order(C));
   myL              = CPnts_AbscissaPoint::Length(C, U1, U2);
-  myUMin           = Min(U1, U2);
-  myUMax           = Max(U1, U2);
+  myUMin           = std::min(U1, U2);
+  myUMax           = std::max(U1, U2);
   Standard_Real DU = myUMax - myUMin;
   myUMin           = myUMin - DU;
   myUMax           = myUMax + DU;
@@ -329,8 +329,8 @@ void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C,
   myF.Init(rf, (Standard_Address)&C, order(C));
   //  myF.Init(f2d,(Standard_Address)&C,order(C));
   myL              = CPnts_AbscissaPoint::Length(C, U1, U2);
-  myUMin           = Min(U1, U2);
-  myUMax           = Max(U1, U2);
+  myUMin           = std::min(U1, U2);
+  myUMax           = std::max(U1, U2);
   Standard_Real DU = myUMax - myUMin;
   myUMin           = myUMin - DU;
   myUMax           = myUMax + DU;
@@ -351,8 +351,8 @@ void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C,
   myF.Init(rf, (Standard_Address)&C, order(C));
   //  myF.Init(f3d,(Standard_Address)&C,order(C));
   myL              = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
-  myUMin           = Min(U1, U2);
-  myUMax           = Max(U1, U2);
+  myUMin           = std::min(U1, U2);
+  myUMax           = std::max(U1, U2);
   Standard_Real DU = myUMax - myUMin;
   myUMin           = myUMin - DU;
   myUMax           = myUMax + DU;
@@ -370,8 +370,8 @@ void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C,
   myF.Init(rf, (Standard_Address)&C, order(C));
   //  myF.Init(f2d,(Standard_Address)&C,order(C));
   myL              = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
-  myUMin           = Min(U1, U2);
-  myUMax           = Max(U1, U2);
+  myUMin           = std::min(U1, U2);
+  myUMax           = std::max(U1, U2);
   Standard_Real DU = myUMax - myUMin;
   myUMin           = myUMin - DU;
   myUMax           = myUMax + DU;
@@ -428,7 +428,7 @@ void CPnts_AbscissaPoint::Perform(const Standard_Real Abscissa,
     //    if (Solution.IsDone()) {
     //      Standard_Real D;
     //      myF.Derivative(Solution.Root(),D);
-    //      if (Abs(Solution.Value()) < Resolution * D) {
+    //      if (std::abs(Solution.Value()) < Resolution * D) {
     //	myDone = Standard_True;
     //	myParam = Solution.Root();
     //      }
@@ -470,7 +470,7 @@ void CPnts_AbscissaPoint::AdvPerform(const Standard_Real Abscissa,
     //    if (Solution.IsDone()) {
     //      Standard_Real D;
     //      myF.Derivative(Solution.Root(),D);
-    //      if (Abs(Solution.Value()) < Resolution * D) {
+    //      if (std::abs(Solution.Value()) < Resolution * D) {
     //	myDone = Standard_True;
     //	myParam = Solution.Root();
     //      }

@@ -149,8 +149,8 @@ void MoniTool_Timer::ComputeAmendments()
   MT0->Start();
   for (i = 1; i <= NBTESTS; i++)
   {
-    for (int k = 1; k <= 100; k++)
-      Sqrt(i + k);
+    for (int k = 1; k <= 100; k++) [[maybe_unused]]
+      const double aDummy = std::sqrt(i + k);
   }
   MT0->Stop();
 
@@ -160,8 +160,8 @@ void MoniTool_Timer::ComputeAmendments()
   for (i = 1; i <= NBTESTS; i++)
   {
     MT->Start();
-    for (int k = 1; k <= 100; k++)
-      Sqrt(i + k);
+    for (int k = 1; k <= 100; k++) [[maybe_unused]]
+      const double aDummy = std::sqrt(i + k);
     MT->Stop();
   }
   MT1->Stop();
@@ -172,7 +172,9 @@ void MoniTool_Timer::ComputeAmendments()
   {
     MoniTool_TimerSentry TS("_mt_amend_t2_");
     for (int k = 1; k <= 100; k++)
-      Sqrt(i + k);
+    {
+      [[maybe_unused]] double aVal = std::sqrt(i + k);
+    }
   }
   MT2->Stop();
 
@@ -182,7 +184,9 @@ void MoniTool_Timer::ComputeAmendments()
   {
     MoniTool_Timer::Start("_mt_amend_t3_");
     for (int k = 1; k <= 100; k++)
-      Sqrt(i + k);
+    {
+      [[maybe_unused]] double aVal = std::sqrt(i + k);
+    }
     MoniTool_Timer::Stop("_mt_amend_t3_");
   }
   MT3->Stop();
@@ -200,7 +204,7 @@ void MoniTool_Timer::ComputeAmendments()
   amExternal += (cpu1 - cpu0) / NBTESTS;
   amInternal += (cput1 - cpu0) / NBTESTS;
   amAccess += (0.5 * (cpu3 - cpu1)) / NBTESTS;
-  amError = Abs(cpu1 + cpu3 - 2 * cpu2) / NBTESTS;
+  amError = std::abs(cpu1 + cpu3 - 2 * cpu2) / NBTESTS;
 
   std::cout << "CPU 0: " << cpu0 << std::endl;
   std::cout << "CPU 1: " << cpu1 << " INTERNAL: " << cput1 << std::endl;

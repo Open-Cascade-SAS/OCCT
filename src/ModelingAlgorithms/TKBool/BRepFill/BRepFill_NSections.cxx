@@ -296,8 +296,8 @@ static Handle(Geom_BSplineSurface) totalsurf(const TopTools_Array2OfShape& shape
       for (i = 1; i <= weights.UpperRow() - 1; i++)
       {
         // Standard_Real signeddelta = weights(i,j) - weights(i+1,j);
-        Standard_Real delta = Abs(weights(i, j) - weights(i + 1, j));
-        //	  Standard_Real eps = Epsilon( Abs(weights(i,j)) );
+        Standard_Real delta = std::abs(weights(i, j) - weights(i + 1, j));
+        //	  Standard_Real eps = Epsilon( std::abs(weights(i,j)) );
         if (delta > TolEps /* || delta > 3.*eps*/)
         {
           Vrational = Standard_True;
@@ -309,8 +309,8 @@ static Handle(Geom_BSplineSurface) totalsurf(const TopTools_Array2OfShape& shape
       for (j = 1; j <= weights.UpperCol() - 1; j++)
       {
         // Standard_Real signeddelta = weights(i,j) - weights(i,j+1);
-        Standard_Real delta = Abs(weights(i, j) - weights(i, j + 1));
-        //	  Standard_Real eps = Epsilon( Abs(weights(i,j)) );
+        Standard_Real delta = std::abs(weights(i, j) - weights(i, j + 1));
+        //	  Standard_Real eps = Epsilon( std::abs(weights(i,j)) );
         if (delta > TolEps /* || delta > 3.*eps*/)
         {
           Urational = Standard_True;

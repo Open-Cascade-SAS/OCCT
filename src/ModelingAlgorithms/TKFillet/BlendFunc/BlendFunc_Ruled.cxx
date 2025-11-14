@@ -101,8 +101,8 @@ Standard_Boolean BlendFunc_Ruled::IsSolution(const math_Vector& Sol, const Stand
   Standard_Real norm, ndotns, grosterme;
 
   Values(Sol, valsol, gradsol);
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol && Abs(valsol(3)) <= Tol
-      && Abs(valsol(4)) <= Tol)
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol
+      && std::abs(valsol(4)) <= Tol)
   {
 
     // Calcul des tangentes

@@ -276,7 +276,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(Handle(Geom_Curve
     for (; anIdx <= bspl->NbKnots() && aFirstParam < Last; anIdx++)
     {
       // Fill current knot interval.
-      aLastParam                  = Min(Last, bspl->Knot(anIdx));
+      aLastParam                  = std::min(Last, bspl->Knot(anIdx));
       Standard_Integer aNbIntPnts = NCONTROL;
       // Number of inner points is adapted according to the length of the interval
       // to avoid a lot of calculations on small range of parameters.
@@ -308,10 +308,10 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(Handle(Geom_Curve
         aLength3d += aDist;
         p3d1 = p3d2;
 
-        aMinParSpeed = Min(aMinParSpeed, aDist / aStep);
+        aMinParSpeed = std::min(aMinParSpeed, aDist / aStep);
       }
       const Standard_Real aCoeff = aLength3d / (aLastParam - aFirstParam);
-      if (Abs(aCoeff) > gp::Resolution())
+      if (std::abs(aCoeff) > gp::Resolution())
         aKnotCoeffs.Append(aCoeff);
       aFirstParam = aLastParam;
     }
@@ -766,7 +766,7 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
   // Check that straight line in 2d with parameterisation as in 3d will fit
   // fit 3d curve at all points.
   Standard_Real dPar = theparams(nb) - theparams(1);
-  if (Abs(dPar) < Precision::PConfusion())
+  if (std::abs(dPar) < Precision::PConfusion())
     return 0;
   gp_Vec2d             aVec0(aP2d[0], aP2d[3]);
   gp_Vec2d             aVec          = aVec0 / dPar;
@@ -796,7 +796,7 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
   {
     Standard_Real aFirstPointDist =
       mySurf->Surface()->Value(aP2d[0].X(), aP2d[0].Y()).SquareDistance(thepoints(1));
-    aTol2 = Max(aTol2, aTol2 * 2 * aFirstPointDist);
+    aTol2 = std::max(aTol2, aTol2 * 2 * aFirstPointDist);
     for (i = 2; i < nb; i++)
     {
       gp_XY  aCurPoint = aP2d[0].XY() + aVec.XY() * (theparams(i) - theparams(1));
@@ -804,14 +804,14 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
       aSurf->D0(aCurPoint.X(), aCurPoint.Y(), aCurP);
       Standard_Real aDist1 = aCurP.SquareDistance(thepoints(i));
 
-      if (Abs(aFirstPointDist - aDist1) > aTol2)
+      if (std::abs(aFirstPointDist - aDist1) > aTol2)
         return 0;
     }
   }
 
   // check if pcurve can be represented by Geom2d_Line (parameterised by length)
   Standard_Real aLLength = aVec0.Magnitude();
-  if (Abs(aLLength - dPar) <= Precision::PConfusion())
+  if (std::abs(aLLength - dPar) <= Precision::PConfusion())
   {
     gp_XY    aDirL = aVec0.XY() / aLLength;
     gp_Pnt2d aPL(aP2d[0].XY() - theparams(1) * aDirL);
@@ -954,7 +954,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
       //  Chacun des par1 ou par2 est-il sur un bord. Attention first/last : recaler
       if (isoclosed && (isoPar1 == parf || isoPar1 == parl))
       {
-        if (Abs(tdeb - parf) < Abs(tdeb - parl))
+        if (std::abs(tdeb - parf) < std::abs(tdeb - parl))
           isoPar1 = parf;
         else
           isoPar1 = parl;
@@ -968,7 +968,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         // pdn S4030 optimizing and fix isopar case on PRO41323
         tfin = pout(nbrPnt - 1);
         // dist =  ShapeAnalysis_Curve().Project (cIso,points(nbrPnt-1),myPreci,pt,tfin,Cf,Cl);
-        if (Abs(tfin - parf) < Abs(tfin - parl))
+        if (std::abs(tfin - parf) < std::abs(tfin - parl))
           isoPar2 = parf;
         else
           isoPar2 = parl;
@@ -986,8 +986,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
       // skl change "if" for pout(nbrPnt-1) 19.11.2003
       if (!isoclosed)
       {
-        if ((Abs(tdeb - isoPar1) > Abs(tdeb - isoPar2))
-            && (Abs(pout(nbrPnt - 1) - isoPar2) > Abs(pout(nbrPnt - 1) - isoPar1)))
+        if ((std::abs(tdeb - isoPar1) > std::abs(tdeb - isoPar2))
+            && (std::abs(pout(nbrPnt - 1) - isoPar2) > std::abs(pout(nbrPnt - 1) - isoPar1)))
         {
           gp_Pnt2d valueTmp = valueP1;
           valueP1           = valueP2;
@@ -1289,7 +1289,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     {
       //      dist2d = pnt2d (aPntIter - 1).Distance(pnt2d (aPntIter));
       Standard_Real CurX = pnt2d(aPntIter).X();
-      dist2d             = Abs(CurX - prevX);
+      dist2d             = std::abs(CurX - prevX);
       if (dist2d > (Up / 2))
       {
         InsertAdditionalPointOrAdjust(ToAdjust,
@@ -1381,7 +1381,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     {
       //      dist2d = pnt2d (i-1).Distance(pnt2d (i));
       Standard_Real CurY = pnt2d(aPntIter).Y();
-      dist2d             = Abs(CurY - prevY);
+      dist2d             = std::abs(CurY - prevY);
       if (dist2d > (Vp / 2))
       {
         InsertAdditionalPointOrAdjust(ToAdjust,
@@ -1426,7 +1426,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     for (Standard_Integer aPntIter = 2; aPntIter <= pnt2d.Length(); ++aPntIter)
     {
       // #1 rln 11/02/98 ca_exhaust.stp entity #9869 dist2d = pnt2d (i-1).Distance(pnt2d (i));
-      dist2d = Abs(pnt2d(aPntIter).Y() - pnt2d(aPntIter - 1).Y());
+      dist2d = std::abs(pnt2d(aPntIter).Y() - pnt2d(aPntIter - 1).Y());
       if (dist2d > (Vp / 2))
       {
         // ATTENTION : il faut regarder ou le decalage se fait.
@@ -1443,10 +1443,10 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         Standard_Boolean currOnLast  = Standard_False;
 
         //  .X ?  plutot .Y ,  non ?
-        Standard_Real distPrevVF = Abs(pnt2d(aPntIter - 1).Y() - vf);
-        Standard_Real distPrevVL = Abs(pnt2d(aPntIter - 1).Y() - vl);
-        Standard_Real distCurrVF = Abs(pnt2d(aPntIter).Y() - vf);
-        Standard_Real distCurrVL = Abs(pnt2d(aPntIter).Y() - vl);
+        Standard_Real distPrevVF = std::abs(pnt2d(aPntIter - 1).Y() - vf);
+        Standard_Real distPrevVL = std::abs(pnt2d(aPntIter - 1).Y() - vl);
+        Standard_Real distCurrVF = std::abs(pnt2d(aPntIter).Y() - vf);
+        Standard_Real distCurrVL = std::abs(pnt2d(aPntIter).Y() - vl);
 
         Standard_Real theMin = distPrevVF;
         prevOnFirst          = Standard_True;
@@ -1542,8 +1542,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
           // abv 16 Mar 00: trj3_s1-ug.stp #697: ignore points in singularity
           if (mySurf->IsDegenerated(points(ind), Precision::Confusion()))
             continue;
-          OnBound = (Abs(Abs(CurX - 0.5 * (ul + uf)) - Up / 2) <= Precision::PConfusion());
-          if (!start && Abs(Abs(CurX - PrevX) - Up / 2) <= 0.01 * Up)
+          OnBound =
+            (std::abs(std::abs(CurX - 0.5 * (ul + uf)) - Up / 2) <= Precision::PConfusion());
+          if (!start && std::abs(std::abs(CurX - PrevX) - Up / 2) <= 0.01 * Up)
             break;
           start       = Standard_False;
           PrevX       = CurX;
@@ -1598,8 +1599,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
           // abv 16 Mar 00: trj3_s1-ug.stp #697: ignore points in singularity
           if (mySurf->IsDegenerated(points(ind), Precision::Confusion()))
             continue;
-          OnBound = (Abs(Abs(CurY - 0.5 * (vl + vf)) - Vp / 2) <= Precision::PConfusion());
-          if (!start && Abs(Abs(CurY - PrevY) - Vp / 2) <= 0.01 * Vp)
+          OnBound =
+            (std::abs(std::abs(CurY - 0.5 * (vl + vf)) - Vp / 2) <= Precision::PConfusion());
+          if (!start && std::abs(std::abs(CurY - PrevY) - Vp / 2) <= 0.01 * Vp)
             break;
           start       = Standard_False;
           PrevY       = CurY;
@@ -1669,7 +1671,7 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(
   Handle(TColStd_HArray1OfReal)& params,
   const Handle(Geom_Curve)& /*orig*/) const
 {
-  //  Standard_Real resol = Min(mySurf->Adaptor3d()->VResolution(myPreci),
+  //  Standard_Real resol = std::min(mySurf->Adaptor3d()->VResolution(myPreci),
   //  mySurf->Adaptor3d()->UResolution(myPreci));
   Standard_Real        theTolerance2d = myPreci; // (100*nbrPnt);//resol;
   Handle(Geom2d_Curve) C2d;
@@ -1874,9 +1876,9 @@ void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Cu
   // Check correctness of <EndPoint>
   {
     const Standard_Real aPrevDist =
-      Abs(SecondPointOfLine.Coord(IndCoord) - FirstPointOfLine.Coord(IndCoord));
+      std::abs(SecondPointOfLine.Coord(IndCoord) - FirstPointOfLine.Coord(IndCoord));
     const Standard_Real aCurDist =
-      Abs(EndPoint.Coord(IndCoord) - SecondPointOfLine.Coord(IndCoord));
+      std::abs(EndPoint.Coord(IndCoord) - SecondPointOfLine.Coord(IndCoord));
     if (aCurDist <= 2 * aPrevDist)
       return;
   }
@@ -1888,7 +1890,8 @@ void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Cu
 
   for (;;)
   {
-    if (Abs(SecondPointOfLine.Coord(3 - IndCoord) - FinishCoord) <= 2 * Precision::PConfusion())
+    if (std::abs(SecondPointOfLine.Coord(3 - IndCoord) - FinishCoord)
+        <= 2 * Precision::PConfusion())
       break;
 
     gp_Vec2d      aVec(FirstPointOfLine, SecondPointOfLine);
@@ -1912,7 +1915,7 @@ void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Cu
     FirstPointOfLine   = SecondPointOfLine;
     FirstParam         = SecondParam;
     SecondParam        = (FirstParam + FinishParam) / 2;
-    if (Abs(SecondParam - FirstParam) <= 2 * Precision::PConfusion())
+    if (std::abs(SecondParam - FirstParam) <= 2 * Precision::PConfusion())
       break;
     gp_Pnt aP3d;
     theC3d->D0(SecondParam, aP3d);
@@ -1925,9 +1928,9 @@ void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Cu
     // because when a projected point is too close to singularity,
     // the non-constant coordinate becomes random.
     const Standard_Real aPrevDist =
-      Abs(FirstPointOfLine.Coord(IndCoord) - PrevPoint.Coord(IndCoord));
+      std::abs(FirstPointOfLine.Coord(IndCoord) - PrevPoint.Coord(IndCoord));
     const Standard_Real aCurDist =
-      Abs(SecondPointOfLine.Coord(IndCoord) - FirstPointOfLine.Coord(IndCoord));
+      std::abs(SecondPointOfLine.Coord(IndCoord) - FirstPointOfLine.Coord(IndCoord));
     if (aCurDist > 2 * aPrevDist)
       break;
   }
@@ -1991,15 +1994,15 @@ void ShapeConstruct_ProjectCurveOnSurface::InsertAdditionalPointOrAdjust(
       Standard_Real    FirstT  = PrevPar; // params(i-1)
       Standard_Real    LastT   = CurPar;  // params(i)
       MidCoord                 = MidP2d.Coord(theIndCoord);
-      while (Abs(MidCoord - prevCoord) >= Period / 2 - TolOnPeriod
-             || Abs(CurCoord - MidCoord) >= Period / 2 - TolOnPeriod)
+      while (std::abs(MidCoord - prevCoord) >= Period / 2 - TolOnPeriod
+             || std::abs(CurCoord - MidCoord) >= Period / 2 - TolOnPeriod)
       {
         if (MidPar - FirstT <= Precision::PConfusion() || LastT - MidPar <= Precision::PConfusion())
         {
           Success = Standard_False;
           break; // wrong choice
         }
-        if (Abs(MidCoord - prevCoord) >= Period / 2 - TolOnPeriod)
+        if (std::abs(MidCoord - prevCoord) >= Period / 2 - TolOnPeriod)
           LastT = (FirstT + LastT) / 2;
         else
           FirstT = (FirstT + LastT) / 2;
@@ -2068,7 +2071,7 @@ void ShapeConstruct_ProjectCurveOnSurface::CheckPoints(Handle(TColgp_HArray1OfPn
   }
   if (DistMin2 < RealLast())
     // clang-format off
-    preci = 0.9 * Sqrt (DistMin2); // preci est la distance min entre les points on la reduit un peu
+    preci = 0.9 * std::sqrt(DistMin2); // preci est la distance min entre les points on la reduit un peu
   // clang-format on
   if (nbPntDropped == 0)
     return;
@@ -2145,7 +2148,7 @@ void ShapeConstruct_ProjectCurveOnSurface::CheckPoints2d(Handle(TColgp_HArray1Of
     }
   }
   if (DistMin2 < RealLast())
-    preci = 0.9 * Sqrt(DistMin2);
+    preci = 0.9 * std::sqrt(DistMin2);
   if (nbPntDropped == 0)
     return;
 
@@ -2372,7 +2375,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
 
       //: e7 abv 21 Apr 98: ProSTEP TR8, r0501_pe #56679:
       // avoid possible null-length curves
-      if (mp[0] > 0 && mp[1] > 0 && Abs(tp[0] - tp[1]) < Precision::PConfusion())
+      if (mp[0] > 0 && mp[1] > 0 && std::abs(tp[0] - tp[1]) < Precision::PConfusion())
         continue;
 
       if (mp[0] > 0 && (!p1OnIso || currd2[0] < mind2[0]))

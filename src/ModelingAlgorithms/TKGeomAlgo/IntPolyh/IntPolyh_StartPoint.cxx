@@ -268,18 +268,19 @@ Standard_Integer IntPolyh_StartPoint::CheckSameSP(const IntPolyh_StartPoint& SP)
     /// Les edges sont definis
 
     if (((lambda1 > -MyConfusionPrecision)
-         && (Abs(lambda1 - SP.lambda1)
+         && (std::abs(lambda1 - SP.lambda1)
              < MyConfusionPrecision)) // lambda1!=-1 && lambda1==SP.lambda2
         || ((lambda2 > -MyConfusionPrecision)
-            && (Abs(lambda2 - SP.lambda2) < MyConfusionPrecision)))
+            && (std::abs(lambda2 - SP.lambda2) < MyConfusionPrecision)))
       Test = 1;
-    // if( (Abs(u1-SP.u1)<MyConfusionPrecision)&&(Abs(v1-SP.v1)<MyConfusionPrecision) )
+    // if( (std::abs(u1-SP.u1)<MyConfusionPrecision)&&(std::abs(v1-SP.v1)<MyConfusionPrecision) )
     // Test=1;
   }
   if ((Test == 0) && ((e1 == -1) || (e2 == -1)))
   {
     /// monSP est un sommet
-    if ((Abs(SP.u1 - u1) < MyConfusionPrecision) && (Abs(SP.v1 - v1) < MyConfusionPrecision))
+    if ((std::abs(SP.u1 - u1) < MyConfusionPrecision)
+        && (std::abs(SP.v1 - v1) < MyConfusionPrecision))
       Test = 1;
   }
   else if ((e1 == -2) && (e2 == -2))
@@ -288,7 +289,7 @@ Standard_Integer IntPolyh_StartPoint::CheckSameSP(const IntPolyh_StartPoint& SP)
     SP.Dump(00201);
     printf("e1==-2 & e2==-2 Can't Check\n");
   }
-  /*  if( (Abs(u1-SP.u1)<MyConfusionPrecision)&&(Abs(v1-SP.v1)<MyConfusionPrecision) )
+  /*  if( (std::abs(u1-SP.u1)<MyConfusionPrecision)&&(std::abs(v1-SP.v1)<MyConfusionPrecision) )
       Test=1;*/
   return (Test);
 }

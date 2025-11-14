@@ -66,7 +66,7 @@ Geom2dGcc_FunctionTanCirCu::Geom2dGcc_FunctionTanCirCu(const gp_Circ2d&         
     aLoc += (Geom2dGcc_CurveTool::Value(Curve, anX)).XY();
     anX += aStep;
   }
-  myWeight = Max((aLoc - TheCirc.Location().XY()).SquareModulus(), TheCirc.Radius());
+  myWeight = std::max((aLoc - TheCirc.Location().XY()).SquareModulus(), TheCirc.Radius());
   //  Modified by Sergey KHROMOV - Thu Apr  5 09:51:25 2001 End
 }
 

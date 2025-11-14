@@ -224,7 +224,7 @@ Standard_EXPORT void FTOL_FaceTolerances3d(const TopoDS_Face& myFace1,
                       MaxUV);
   myTol1 = (myTol1 > 1.e-4) ? 1.e-4 : myTol1;
   myTol2 = (myTol2 > 1.e-4) ? 1.e-4 : myTol2;
-  Tol    = Max(myTol1, myTol2);
+  Tol    = std::max(myTol1, myTol2);
 }
 
 Standard_EXPORT void FTOL_FaceTolerances3d(const Bnd_Box&             B1,

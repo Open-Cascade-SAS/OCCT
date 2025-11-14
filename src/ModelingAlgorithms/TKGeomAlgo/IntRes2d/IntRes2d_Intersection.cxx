@@ -21,7 +21,7 @@
 #include <IntRes2d_SequenceOfIntersectionSegment.hxx>
 #include <StdFail_NotDone.hxx>
 
-#define PARAMEQUAL(a, b) (Abs((a) - (b)) < (1e-8))
+#define PARAMEQUAL(a, b) (std::abs((a) - (b)) < (1e-8))
 
 static void InternalVerifyPosition(IntRes2d_Transition& T1,
                                    IntRes2d_Transition& T2,

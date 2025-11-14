@@ -157,8 +157,8 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                 
 // parallel to one iso let us translate it parallely in the direction to another
 // iso (which is located farther from aC2d). Thus, the requirement for closeness
 // to the surface bounds may be avoided.
-// For example, instead of Abs(theLoc.X()-uf) <= Tol) ... elseif (...-ul..)...
-// the comparison if (Abs(theLoc.X()-uf) <= Abs(theLoc.X()-ul)) .... can be used.
+// For example, instead of std::abs(theLoc.X()-uf) <= Tol) ... elseif (...-ul..)...
+// the comparison if (std::abs(theLoc.X()-uf) <= std::abs(theLoc.X()-ul)) .... can be used.
 
 // The reason for fix #12 is that seam is not certain to lie on the bound :
 // if a surface is periodic the whole contour may be shifted (e.g. ProSTEP,
@@ -182,27 +182,27 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
     Handle(Geom2d_Line) theNewL2d = theL2d;
 
     // case UClosed
-    if (Abs(theDir.X()) <= aTol && Abs(theDir.Y()) >= aTol)
+    if (std::abs(theDir.X()) <= aTol && std::abs(theDir.Y()) >= aTol)
     {
-      if (Abs(theLoc.X() - uf) < Abs(theLoc.X() - ul))
+      if (std::abs(theLoc.X() - uf) < std::abs(theLoc.X() - ul))
         newLoc.SetCoord(theLoc.X() + (ul - uf), theLoc.Y());
       else
         newLoc.SetCoord(theLoc.X() - (ul - uf), theLoc.Y());
       theNewL2d = new Geom2d_Line(newLoc, theDir);
     }
     /*    // case UClosed and line in U = UFirst
-        if ((Abs(theLoc.X() - uf) <= aTol) &&
-        (Abs(theDir.X()) <= aTol)      &&
-        (Abs(theDir.Y()) >= aTol)) {
+        if ((std::abs(theLoc.X() - uf) <= aTol) &&
+        (std::abs(theDir.X()) <= aTol)      &&
+        (std::abs(theDir.Y()) >= aTol)) {
           // on translate en ul
           gp_Pnt2d newLoc(ul, theLoc.Y());
           Handle(Geom2d_Line) theNewL2d = new Geom2d_Line(newLoc, theDir);
           return theNewL2d;
         }
         // cas UClosed and line in U = ULast
-        if ((Abs(theLoc.X() - ul) <= aTol) &&
-        (Abs(theDir.X()) <= aTol)      &&
-        (Abs(theDir.Y()) >= aTol)) {
+        if ((std::abs(theLoc.X() - ul) <= aTol) &&
+        (std::abs(theDir.X()) <= aTol)      &&
+        (std::abs(theDir.Y()) >= aTol)) {
           // on translate en uf
           gp_Pnt2d newLoc(uf, theLoc.Y());
           Handle(Geom2d_Line) theNewL2d = new Geom2d_Line(newLoc, theDir);
@@ -210,27 +210,27 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
         }
     */
     // case VClosed
-    if (Abs(theDir.X()) >= aTol && Abs(theDir.Y()) <= aTol)
+    if (std::abs(theDir.X()) >= aTol && std::abs(theDir.Y()) <= aTol)
     {
-      if (Abs(theLoc.Y() - vf) < Abs(theLoc.Y() - vl))
+      if (std::abs(theLoc.Y() - vf) < std::abs(theLoc.Y() - vl))
         newLoc.SetCoord(theLoc.X(), theLoc.Y() + (vl - vf));
       else
         newLoc.SetCoord(theLoc.X(), theLoc.Y() - (vl - vf));
       theNewL2d = new Geom2d_Line(newLoc, theDir);
     }
     /*    // case VClosed and line in V = VFirst
-        if ((Abs(theLoc.Y() - vf) <= aTol) &&
-        (Abs(theDir.X()) >= aTol)      &&
-        (Abs(theDir.Y()) <= aTol)) {
+        if ((std::abs(theLoc.Y() - vf) <= aTol) &&
+        (std::abs(theDir.X()) >= aTol)      &&
+        (std::abs(theDir.Y()) <= aTol)) {
           // on translate en vl
           gp_Pnt2d newLoc(theLoc.X(), vl);
           Handle(Geom2d_Line) theNewL2d = new Geom2d_Line(newLoc, theDir);
           return theNewL2d;
         }
         // cas VClosed and line in V = VLast
-        if ((Abs(theLoc.Y() - vl) <= aTol) &&
-        (Abs(theDir.X()) >= aTol)      &&
-        (Abs(theDir.Y()) <= aTol)) {
+        if ((std::abs(theLoc.Y() - vl) <= aTol) &&
+        (std::abs(theDir.X()) >= aTol)      &&
+        (std::abs(theDir.Y()) <= aTol)) {
           // on translate en vf
           gp_Pnt2d newLoc(theLoc.X(), vf);
           Handle(Geom2d_Line) theNewL2d = new Geom2d_Line(newLoc, theDir);
@@ -265,7 +265,7 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
     gp_Trsf2d T;
     if (theVector.IsParallel(VectIsoUF, aTol))
     {
-      if (Abs(FirstPoint.X() - uf) < Abs(FirstPoint.X() - ul))
+      if (std::abs(FirstPoint.X() - uf) < std::abs(FirstPoint.X() - ul))
         T.SetTranslation(p00, p10);
       else
         T.SetTranslation(p10, p00);
@@ -273,14 +273,14 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
       return newC;
     }
     /*      // case UClosed and line in U = UFirst
-          if (Abs(FirstPoint.X() - uf) <= aTol) {
+          if (std::abs(FirstPoint.X() - uf) <= aTol) {
         gp_Trsf2d T;
         T.SetTranslation(p00, p10);
         newC->Transform(T);
         return newC;
           }
           // case UClosed and line in U = ULast
-          else if (Abs(FirstPoint.X() - ul) <= aTol) {
+          else if (std::abs(FirstPoint.X() - ul) <= aTol) {
         gp_Trsf2d T;
         T.SetTranslation(p10, p00);
         newC->Transform(T);
@@ -292,7 +292,7 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
     */
     else if (theVector.IsParallel(VectIsoVF, aTol))
     {
-      if (Abs(FirstPoint.Y() - vf) < Abs(FirstPoint.Y() - vl))
+      if (std::abs(FirstPoint.Y() - vf) < std::abs(FirstPoint.Y() - vl))
         T.SetTranslation(p00, p01);
       else
         T.SetTranslation(p01, p00);
@@ -357,9 +357,9 @@ static void TempSameRange(const TopoDS_Edge& AnEdge, const Standard_Real Toleran
           first_time_in = Standard_False;
         }
 
-        if (Abs(first - current_first) > Precision::PConfusion()
+        if (std::abs(first - current_first) > Precision::PConfusion()
             || //: b8 abv 20 Feb 98: Confusion -> PConfusion
-            Abs(last - current_last) > Precision::PConfusion())
+            std::abs(last - current_last) > Precision::PConfusion())
         {                                            //: b8
           Standard_Real oldFirst = 0., oldLast = 0.; // skl
           if (has_curve)
@@ -382,7 +382,7 @@ static void TempSameRange(const TopoDS_Edge& AnEdge, const Standard_Real Toleran
             {
 
               constexpr Standard_Real preci = Precision::PConfusion();
-              if (Abs(oldFirst) > preci || Abs(oldLast - 1) > preci)
+              if (std::abs(oldFirst) > preci || std::abs(oldLast - 1) > preci)
               {
                 Handle(Geom2d_BezierCurve) bezier =
                   Handle(Geom2d_BezierCurve)::DownCast(Curve2dPtr->Copy());
@@ -411,7 +411,7 @@ static void TempSameRange(const TopoDS_Edge& AnEdge, const Standard_Real Toleran
             {
 
               constexpr Standard_Real preci = Precision::PConfusion();
-              if (Abs(oldFirst) > preci || Abs(oldLast - 1) > preci)
+              if (std::abs(oldFirst) > preci || std::abs(oldLast - 1) > preci)
               {
                 Handle(Geom2d_BezierCurve) bezier =
                   Handle(Geom2d_BezierCurve)::DownCast(Curve2dPtr2->Copy());
@@ -836,9 +836,9 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
 
   // restore tolerances because they could be modified by BRepLib
   if (!V1.IsNull())
-    SFST.SetTolerance(V1, Max(maxdev, TolFV), TopAbs_VERTEX);
+    SFST.SetTolerance(V1, std::max(maxdev, TolFV), TopAbs_VERTEX);
   if (!V2.IsNull())
-    SFST.SetTolerance(V2, Max(maxdev, TolLV), TopAbs_VERTEX);
+    SFST.SetTolerance(V2, std::max(maxdev, TolLV), TopAbs_VERTEX);
 
   if (maxdev > tol)
   {

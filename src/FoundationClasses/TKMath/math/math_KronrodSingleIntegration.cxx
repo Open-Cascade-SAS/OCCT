@@ -128,7 +128,7 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
   if (!myIsDone)
     return;
 
-  // Standard_Real anAbsVal = Abs(myValue);
+  // Standard_Real anAbsVal = std::abs(myValue);
 
   myAbsolutError = myErrorReached;
 
@@ -186,7 +186,7 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
   if (!myIsDone)
     return;
 
-  Standard_Real anAbsVal = Abs(myValue);
+  Standard_Real anAbsVal = std::abs(myValue);
 
   myAbsolutError = myErrorReached;
   if (anAbsVal > aMinVol)
@@ -249,16 +249,16 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
 
     Standard_Real deltav = v1 + v2 - aValues(nint);
     myValue += deltav;
-    if (Abs(deltav) <= Epsilon(Abs(myValue)))
+    if (std::abs(deltav) <= Epsilon(std::abs(myValue)))
       ++count;
 
     Standard_Real deltae = e1 + e2 - anErrors(nint);
     myAbsolutError += deltae;
-    if (myAbsolutError <= Epsilon(Abs(myValue)))
+    if (myAbsolutError <= Epsilon(std::abs(myValue)))
       ++count;
 
-    if (Abs(myValue) > aMinVol)
-      myErrorReached = myAbsolutError / Abs(myValue);
+    if (std::abs(myValue) > aMinVol)
+      myErrorReached = myAbsolutError / std::abs(myValue);
     else
       myErrorReached = myAbsolutError;
 
@@ -356,10 +356,10 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(math_Function&      theFu
 
   Standard_Real mean = 0.5 * theValue;
 
-  Standard_Real asc = Abs(fc - mean) * theKronrodW.Value(aNPnt2);
+  Standard_Real asc = std::abs(fc - mean) * theKronrodW.Value(aNPnt2);
   for (i = 1; i < aNPnt2; ++i)
   {
-    asc += theKronrodW.Value(i) * (Abs(f1(i) - mean) + Abs(f2(i) - mean));
+    asc += theKronrodW.Value(i) * (std::abs(f1(i) - mean) + std::abs(f2(i) - mean));
   }
 
   asc *= aXr;
@@ -368,13 +368,13 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(math_Function&      theFu
 
   // Compute the error and the new number of Kronrod points.
 
-  theError = Abs(theValue - aGaussVal);
+  theError = std::abs(theValue - aGaussVal);
 
   Standard_Real scale = 1.;
   if (asc != 0. && theError != 0.)
-    scale = Pow((200. * theError / asc), 1.5);
+    scale = std::pow((200. * theError / asc), 1.5);
   if (scale < 1.)
-    theError = Min(theError, asc * scale);
+    theError = std::min(theError, asc * scale);
 
   // theFunction.GetStateNumber();
 

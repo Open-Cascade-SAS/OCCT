@@ -57,7 +57,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       pararg2(1, 8)
 {
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   gp_Dir2d      dirx(gp_Dir2d::D::X);
   NbrSol   = 0;
   WellDone = Standard_False;
@@ -127,7 +127,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         {
           if (((-ydir * (cxloc - lxloc) + xdir * (cyloc - lyloc) < 0.0)
                && (Radius * 2.0 > R1 - distance))
-              || (Abs(distance - R1) < Tol)
+              || (std::abs(distance - R1) < Tol)
               || ((-ydir * (cxloc - lxloc) + xdir * (cyloc - lyloc) > 0.0)
                   && (Radius * 2.0 > (R1 + distance + Tol))))
           {
@@ -164,10 +164,10 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         {
           if (((-ydir * (cxloc - lxloc) + xdir * (cyloc - lyloc) > 0.0)
                && (Radius * 2.0 > R1 - distance))
-              || (Abs(R1 - Radius) < Tol)
+              || (std::abs(R1 - Radius) < Tol)
               || ((-ydir * (cxloc - lxloc) + xdir * (cyloc - lyloc) < 0.0)
                   && (Radius * 2.0 > (R1 + distance)))
-              || (Abs(distance - R1) < Tol))
+              || (std::abs(distance - R1) < Tol))
           {
             cote  = -1.0;
             nbsol = 3;
@@ -416,7 +416,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         {
           ncote1   = 2;
           ncote2   = 1;
-          cote1(1) = Abs(Radius - R1);
+          cote1(1) = std::abs(Radius - R1);
           cote1(2) = Radius + R1;
           cote2(1) = 1.0;
           nbsol    = 1;
@@ -448,7 +448,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         {
           ncote1   = 2;
           ncote2   = 1;
-          cote1(1) = Abs(Radius - R1);
+          cote1(1) = std::abs(Radius - R1);
           cote1(2) = Radius + R1;
           cote2(1) = -1.0;
           nbsol    = 1;
@@ -478,7 +478,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       {
         ncote1   = 2;
         ncote2   = 2;
-        cote1(1) = Abs(Radius - R1);
+        cote1(1) = std::abs(Radius - R1);
         cote1(2) = Radius + R1;
         cote2(1) = 1.0;
         cote2(2) = -1.0;
@@ -518,11 +518,11 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
                 {
                   qualifier1(NbrSol) = Qualified1.Qualifier();
                 }
-                else if (Abs(distcc1 + Radius - R1) < Tol)
+                else if (std::abs(distcc1 + Radius - R1) < Tol)
                 {
                   qualifier1(NbrSol) = GccEnt_enclosed;
                 }
-                else if (Abs(distcc1 - R1 - Radius) < Tol)
+                else if (std::abs(distcc1 - R1 - Radius) < Tol)
                 {
                   qualifier1(NbrSol) = GccEnt_outside;
                 }
@@ -587,7 +587,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       qualifier1(1) = Qualified1.Qualifier();
       qualifier2(1) = Qualified2.Qualifier();
       pnttg2sol(1)  = gp_Pnt2d(Cen.XY() + cote * Radius * gp_XY(ydir, -xdir));
-      if (Abs(R1 - Radius) > 0.0)
+      if (std::abs(R1 - Radius) > 0.0)
       {
         pnttg1sol(1) = gp_Pnt2d(Cen.XY() + ccote * Radius * gp_XY(ydir, -xdir));
       }

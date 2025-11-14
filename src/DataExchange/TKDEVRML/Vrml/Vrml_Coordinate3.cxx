@@ -49,8 +49,9 @@ Standard_OStream& Vrml_Coordinate3::Print(Standard_OStream& anOStream) const
   anOStream << "Coordinate3 {\n";
 
   i = myPoint->Lower();
-  if (myPoint->Length() == 1 && Abs(myPoint->Value(i).X() - 0) < 0.0001
-      && Abs(myPoint->Value(i).Y() - 0) < 0.0001 && Abs(myPoint->Value(i).Z() - 0) < 0.0001)
+  if (myPoint->Length() == 1 && std::abs(myPoint->Value(i).X() - 0) < 0.0001
+      && std::abs(myPoint->Value(i).Y() - 0) < 0.0001
+      && std::abs(myPoint->Value(i).Z() - 0) < 0.0001)
   {
     anOStream << "}\n";
     return anOStream;

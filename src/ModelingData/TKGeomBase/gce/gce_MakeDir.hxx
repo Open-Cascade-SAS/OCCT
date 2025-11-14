@@ -49,7 +49,7 @@ public:
   Standard_EXPORT gce_MakeDir(const gp_XYZ& Coord);
 
   //! Creates a direction with its 3 cartesian coordinates.
-  //! Status is "NullVector" if Sqrt(Xv*Xv + Yv*Yv + Zv*Zv)
+  //! Status is "NullVector" if std::sqrt(Xv*Xv + Yv*Yv + Zv*Zv)
   //! <= Resolution
   Standard_EXPORT gce_MakeDir(const Standard_Real Xv,
                               const Standard_Real Yv,
@@ -66,7 +66,7 @@ public:
   //! than or equal to gp::Resolution():
   //! -   the magnitude of vector V,
   //! -   the modulus of Coord,
-  //! -   Sqrt(Xv*Xv + Yv*Yv + Zv*Zv).
+  //! -   std::sqrt(Xv*Xv + Yv*Yv + Zv*Zv).
   Standard_EXPORT gce_MakeDir(const gp_Pnt& P1, const gp_Pnt& P2);
 
   //! Returns the constructed unit vector.

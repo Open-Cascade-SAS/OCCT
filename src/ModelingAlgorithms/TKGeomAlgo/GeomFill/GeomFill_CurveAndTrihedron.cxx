@@ -78,7 +78,7 @@ void GeomFill_CurveAndTrihedron::SetTrsf(const gp_Mat& Transfo)
   WithTrans = Standard_False; // Au cas ou Trans = I
   for (Standard_Integer ii = 1; ii <= 3 && !WithTrans; ii++)
     for (Standard_Integer jj = 1; jj <= 3 && !WithTrans; jj++)
-      if (Abs(Aux.Value(ii, jj)) > 1.e-14)
+      if (std::abs(Aux.Value(ii, jj)) > 1.e-14)
         WithTrans = Standard_True;
 }
 

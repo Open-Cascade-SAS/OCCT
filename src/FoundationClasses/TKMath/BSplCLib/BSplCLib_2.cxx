@@ -379,7 +379,7 @@ Standard_Integer BSplCLib::FactorBandedMatrix(math_Matrix&           Matrix,
     {
       Index   = ii - LowerBandWidth + jj - 1;
       Inverse = Matrix(Index, LowerBandWidth + 1);
-      if (Abs(Inverse) > RealSmall())
+      if (std::abs(Inverse) > RealSmall())
       {
         Inverse = -1.0e0 / Inverse;
       }
@@ -486,7 +486,7 @@ Standard_Integer BSplCLib::EvalBsplineBasis(const Standard_Integer      Derivati
       // this should be always invertible if ii is correctly computed
       //
       const Standard_Real aScale = (FlatKnots(ii + pp) - FlatKnots(ii - qq + pp + 1));
-      if (Abs(aScale) < gp::Resolution())
+      if (std::abs(aScale) < gp::Resolution())
       {
         return 2;
       }
@@ -516,7 +516,7 @@ Standard_Integer BSplCLib::EvalBsplineBasis(const Standard_Integer      Derivati
     for (pp = 1; pp <= qq - 1; pp++)
     {
       const Standard_Real aScale = (FlatKnots(ii + pp) - FlatKnots(ii - qq + pp + 1));
-      if (Abs(aScale) < gp::Resolution())
+      if (std::abs(aScale) < gp::Resolution())
       {
         return 2;
       }
@@ -1138,7 +1138,7 @@ void BSplCLib::MergeBSplineKnots(const Standard_Real               Tolerance,
 
       while (jj <= knots2.Length() && knots2(jj) <= knots1(ii) + Tolerance)
       {
-        continuity                          = Min(Degree1 - Mults1(ii), Degree2 - Mults2(jj));
+        continuity                          = std::min(Degree1 - Mults1(ii), Degree2 - Mults2(jj));
         set_mults_flag                      = 1;
         NewMults->ChangeArray1()(num_knots) = degree - continuity;
         jj += 1;

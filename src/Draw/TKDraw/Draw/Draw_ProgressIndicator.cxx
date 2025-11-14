@@ -93,7 +93,7 @@ void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope,
   // the last update
   Standard_Real aPosition = GetPosition();
   if (!force && (1. - aPosition) > Precision::Confusion()
-      && Abs(aPosition - myLastPosition) < myUpdateThreshold)
+      && std::abs(aPosition - myLastPosition) < myUpdateThreshold)
     return; // return if update interval has not elapsed
 
   myLastPosition = aPosition;

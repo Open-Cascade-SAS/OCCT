@@ -90,7 +90,7 @@ static void DrawCurve(const Adaptor3d_Curve&              aCurve,
   {
     nbintervals = aCurve.NbKnots() - 1;
     //     std::cout << "NbKnots "<<aCurve.NbKnots() << std::endl;
-    nbintervals = Max(1, nbintervals / 3);
+    nbintervals = std::max(1, nbintervals / 3);
   }
 
   switch (aCurve.GetType())
@@ -121,7 +121,7 @@ static void DrawCurve(const Adaptor3d_Curve&              aCurve,
     default: {
 
       Standard_Real    U;
-      Standard_Integer N = Max(2, NbP * nbintervals);
+      Standard_Integer N = std::max(2, NbP * nbintervals);
 
       //     std::cout << "nbintervals " << nbintervals << std::endl;
       //     std::cout <<  "N " << N << std::endl;

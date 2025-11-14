@@ -61,7 +61,7 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const Standard_Boolean /*Segment*/)
   {
     if (!anIsFixedUVnbSplits) //(myUnbSplit <= 0 || myVnbSplit <= 0)
     {
-      Standard_Real aSquareSize = Sqrt(myArea / myNbParts);
+      Standard_Real aSquareSize = std::sqrt(myArea / myNbParts);
       myUnbSplit                = (Standard_Integer)(myUsize / aSquareSize);
       myVnbSplit                = (Standard_Integer)(myVsize / aSquareSize);
       if (myUnbSplit == 0)

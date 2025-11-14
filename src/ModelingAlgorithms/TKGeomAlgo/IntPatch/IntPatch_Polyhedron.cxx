@@ -222,7 +222,7 @@ Standard_Real IntPatch_Polyhedron::DeflectionOnTriangle(const Handle(Adaptor3d_S
   Standard_Real u = (u1 + u2 + u3) / 3.0;
   Standard_Real v = (v1 + v2 + v3) / 3.0;
   gp_Vec        P1P(P1, Surface->Value(u, v));
-  return (Abs(P1P.Dot(NormalVector)));
+  return (std::abs(P1P.Dot(NormalVector)));
 }
 
 //=================================================================================================

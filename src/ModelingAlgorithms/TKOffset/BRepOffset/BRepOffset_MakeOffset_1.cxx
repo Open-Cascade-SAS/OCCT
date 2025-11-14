@@ -2166,7 +2166,7 @@ void BRepOffset_BuildOffsetFaces::FindInvalidEdges(
           aVSum2.Normalize();
           //
           Standard_Real aCos = aVSum1.Dot(aVSum2);
-          if (Abs(aCos) < 0.9999)
+          if (std::abs(aCos) < 0.9999)
           {
             continue;
           }
@@ -3220,7 +3220,7 @@ Standard_Boolean BRepOffset_BuildOffsetFaces::CheckInverted(
   gp_Vec aVO(aPO1, aPO2);
   //
   Standard_Real    anAngle   = aVI.Angle(aVO);
-  Standard_Boolean bInverted = Abs(anAngle - M_PI) < 1.e-4;
+  Standard_Boolean bInverted = std::abs(anAngle - M_PI) < 1.e-4;
   if (bInverted)
   {
     TopTools_ListIteratorOfListOfShape aItLEIm(aLEImages);

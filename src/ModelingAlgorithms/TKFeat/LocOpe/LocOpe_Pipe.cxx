@@ -345,7 +345,7 @@ const TColGeom_SequenceOfCurve& LocOpe_Pipe::Curves(const TColgp_SequenceOfPnt& 
       {
         continue;
       }
-      MaxDeg = Max(MaxDeg, C->Degree());
+      MaxDeg = std::max(MaxDeg, C->Degree());
       P1     = C->Value(p2);
       if (p1 != C->FirstParameter() || p2 != C->LastParameter())
       {
@@ -474,7 +474,7 @@ Handle(Geom_Curve) LocOpe_Pipe::BarycCurve()
     {
       continue;
     }
-    MaxDeg = Max(MaxDeg, C->Degree());
+    MaxDeg = std::max(MaxDeg, C->Degree());
     P1     = C->Value(p2);
     if (p1 != C->FirstParameter() || p2 != C->LastParameter())
     {

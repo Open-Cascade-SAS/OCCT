@@ -55,11 +55,12 @@ bool OpenGl_FrameStats::IsFrameUpdated(Handle(OpenGl_FrameStats)& thePrev) const
   }
   // check just a couple of major counters
   else if (myLastFrameIndex == thePrev->myLastFrameIndex
-           && Abs(aFrame.FrameRate() - thePrev->myCountersTmp.FrameRate()) <= 0.001
-           && Abs(aFrame.FrameRateCpu() - thePrev->myCountersTmp.FrameRateCpu()) <= 0.001
-           && Abs(aFrame.ImmediateFrameRate() - thePrev->myCountersTmp.ImmediateFrameRate())
+           && std::abs(aFrame.FrameRate() - thePrev->myCountersTmp.FrameRate()) <= 0.001
+           && std::abs(aFrame.FrameRateCpu() - thePrev->myCountersTmp.FrameRateCpu()) <= 0.001
+           && std::abs(aFrame.ImmediateFrameRate() - thePrev->myCountersTmp.ImmediateFrameRate())
                 <= 0.001
-           && Abs(aFrame.ImmediateFrameRateCpu() - thePrev->myCountersTmp.ImmediateFrameRateCpu())
+           && std::abs(aFrame.ImmediateFrameRateCpu()
+                       - thePrev->myCountersTmp.ImmediateFrameRateCpu())
                 <= 0.001
            && aFrame[Graphic3d_FrameStatsCounter_NbLayers]
                 == thePrev->myCountersTmp[Graphic3d_FrameStatsCounter_NbLayers]

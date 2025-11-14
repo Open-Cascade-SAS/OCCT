@@ -937,8 +937,8 @@ void Geom_BSplineSurface::SetUPeriodic()
   Handle(TColStd_HArray1OfInteger) tm = umults;
   TColStd_Array1OfInteger          cmults((umults->Array1())(first), first, last);
   //  Modified by Sergey KHROMOV - Mon Feb 10 10:59:00 2003 Begin
-  //   cmults(first) = cmults(last) = Max( cmults(first), cmults(last));
-  cmults(first) = cmults(last) = Min(udeg, Max(cmults(first), cmults(last)));
+  //   cmults(first) = cmults(last) = std::max( cmults(first), cmults(last));
+  cmults(first) = cmults(last) = std::min(udeg, std::max(cmults(first), cmults(last)));
   //  Modified by Sergey KHROMOV - Mon Feb 10 10:59:00 2003 End
   umults                 = new TColStd_HArray1OfInteger(1, cmults.Length());
   umults->ChangeArray1() = cmults;
@@ -1004,8 +1004,8 @@ void Geom_BSplineSurface::SetVPeriodic()
   Handle(TColStd_HArray1OfInteger) tm = vmults;
   TColStd_Array1OfInteger          cmults((vmults->Array1())(first), first, last);
   //  Modified by Sergey KHROMOV - Mon Feb 10 11:00:33 2003 Begin
-  //   cmults(first) = cmults(last) = Max( cmults(first), cmults(last));
-  cmults(first) = cmults(last) = Min(vdeg, Max(cmults(first), cmults(last)));
+  //   cmults(first) = cmults(last) = std::max( cmults(first), cmults(last));
+  cmults(first) = cmults(last) = std::min(vdeg, std::max(cmults(first), cmults(last)));
   //  Modified by Sergey KHROMOV - Mon Feb 10 11:00:34 2003 End
   vmults                 = new TColStd_HArray1OfInteger(1, cmults.Length());
   vmults->ChangeArray1() = cmults;
@@ -1472,12 +1472,12 @@ void Geom_BSplineSurface::LocateU(const Standard_Real    U,
   const TColStd_Array1OfReal& Knots                = TheKnots->Array1();
   Standard_Real               UFirst               = Knots(1);
   Standard_Real               ULast                = Knots(Knots.Length());
-  Standard_Real               PParametricTolerance = Abs(ParametricTolerance);
-  if (Abs(NewU - UFirst) <= PParametricTolerance)
+  Standard_Real               PParametricTolerance = std::abs(ParametricTolerance);
+  if (std::abs(NewU - UFirst) <= PParametricTolerance)
   {
     I1 = I2 = 1;
   }
-  else if (Abs(NewU - ULast) <= PParametricTolerance)
+  else if (std::abs(NewU - ULast) <= PParametricTolerance)
   {
     I1 = I2 = Knots.Length();
   }
@@ -1495,12 +1495,12 @@ void Geom_BSplineSurface::LocateU(const Standard_Real    U,
   {
     I1 = 1;
     BSplCLib::Hunt(Knots, NewU, I1);
-    I1 = Max(Min(I1, Knots.Upper()), Knots.Lower());
-    while (I1 + 1 <= Knots.Upper() && Abs(Knots(I1 + 1) - NewU) <= PParametricTolerance)
+    I1 = std::max(std::min(I1, Knots.Upper()), Knots.Lower());
+    while (I1 + 1 <= Knots.Upper() && std::abs(Knots(I1 + 1) - NewU) <= PParametricTolerance)
     {
       I1++;
     }
-    if (Abs(Knots(I1) - NewU) <= PParametricTolerance)
+    if (std::abs(Knots(I1) - NewU) <= PParametricTolerance)
     {
       I2 = I1;
     }
@@ -1531,12 +1531,12 @@ void Geom_BSplineSurface::LocateV(const Standard_Real    V,
   const TColStd_Array1OfReal& Knots                = TheKnots->Array1();
   Standard_Real               VFirst               = Knots(1);
   Standard_Real               VLast                = Knots(Knots.Length());
-  Standard_Real               PParametricTolerance = Abs(ParametricTolerance);
-  if (Abs(NewV - VFirst) <= PParametricTolerance)
+  Standard_Real               PParametricTolerance = std::abs(ParametricTolerance);
+  if (std::abs(NewV - VFirst) <= PParametricTolerance)
   {
     I1 = I2 = 1;
   }
-  else if (Abs(NewV - VLast) <= PParametricTolerance)
+  else if (std::abs(NewV - VLast) <= PParametricTolerance)
   {
     I1 = I2 = Knots.Length();
   }
@@ -1554,12 +1554,12 @@ void Geom_BSplineSurface::LocateV(const Standard_Real    V,
   {
     I1 = 1;
     BSplCLib::Hunt(Knots, NewV, I1);
-    I1 = Max(Min(I1, Knots.Upper()), Knots.Lower());
-    while (I1 + 1 <= Knots.Upper() && Abs(Knots(I1 + 1) - NewV) <= PParametricTolerance)
+    I1 = std::max(std::min(I1, Knots.Upper()), Knots.Lower());
+    while (I1 + 1 <= Knots.Upper() && std::abs(Knots(I1 + 1) - NewV) <= PParametricTolerance)
     {
       I1++;
     }
-    if (Abs(Knots(I1) - NewV) <= PParametricTolerance)
+    if (std::abs(Knots(I1) - NewV) <= PParametricTolerance)
     {
       I2 = I1;
     }

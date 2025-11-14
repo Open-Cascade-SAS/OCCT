@@ -117,7 +117,7 @@ static Standard_Boolean FUN_keepEinterference
     Standard_Real par = aCPI->Parameter();
     Standard_Real f, l;
     BRep_Tool::Range(TopoDS::Edge(E), f, l);
-    if (Abs(par - f) < eps || Abs(par - l) < eps)
+    if (std::abs(par - f) < eps || std::abs(par - l) < eps)
       res = Standard_False;
   }
 

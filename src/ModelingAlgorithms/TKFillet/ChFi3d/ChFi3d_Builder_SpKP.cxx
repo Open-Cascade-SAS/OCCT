@@ -995,20 +995,20 @@ Standard_Boolean ChFi3d_Builder::SplitKPart(const Handle(ChFiDS_SurfData)&     D
         {
           ptg = CD1->InterferenceOnS1().FirstParameter();
           dsp = ComputeAbscissa(ed, ptg);
-          if (Abs(dsp) < dist)
+          if (std::abs(dsp) < dist)
           {
             ifirst = i1;
-            dist   = Abs(dsp);
+            dist   = std::abs(dsp);
           }
         }
         else if (CP2.IsOnArc() && !SearchFace(Spine, CP2, F2, FBID))
         {
           ptg = CD1->InterferenceOnS2().FirstParameter();
           dsp = ComputeAbscissa(ed, ptg);
-          if (Abs(dsp) < dist)
+          if (std::abs(dsp) < dist)
           {
             ifirst = i1;
-            dist   = Abs(dsp);
+            dist   = std::abs(dsp);
           }
         }
       }
@@ -1121,20 +1121,20 @@ Standard_Boolean ChFi3d_Builder::SplitKPart(const Handle(ChFiDS_SurfData)&     D
         {
           ptg = CD3->InterferenceOnS1().LastParameter();
           dsp = -ComputeAbscissa(ed, ptg) - f + l;
-          if (Abs(dsp) < dist)
+          if (std::abs(dsp) < dist)
           {
             ilast = i2;
-            dist  = Abs(dsp);
+            dist  = std::abs(dsp);
           }
         }
         else if (CP2.IsOnArc() && !SearchFace(Spine, CP2, F2, FBID))
         {
           ptg = CD3->InterferenceOnS2().LastParameter();
           dsp = -ComputeAbscissa(ed, ptg) - f + l;
-          if (Abs(dsp) < dist)
+          if (std::abs(dsp) < dist)
           {
             ilast = i2;
-            dist  = Abs(dsp);
+            dist  = std::abs(dsp);
           }
         }
       }

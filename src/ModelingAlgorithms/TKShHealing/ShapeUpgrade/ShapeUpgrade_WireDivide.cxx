@@ -162,7 +162,7 @@ static void CorrectSplitValues(const Handle(TColStd_HSequenceOfReal)& orig3d,
     Standard_Real    par   = new2d->Value(i);
     Standard_Integer index = 0;
     for (Standard_Integer j = 1; j <= len2d && !index; j++)
-      if (Abs(par - orig2d->Value(j)) < preci)
+      if (std::abs(par - orig2d->Value(j)) < preci)
         index = j;
     if (index && !fixNew3d(index))
     {
@@ -180,7 +180,7 @@ static void CorrectSplitValues(const Handle(TColStd_HSequenceOfReal)& orig3d,
     Standard_Real    par   = new3d->Value(i);
     Standard_Integer index = 0;
     for (Standard_Integer j = 1; j <= len3d && !index; j++)
-      if (Abs(par - orig3d->Value(j)) < preci)
+      if (std::abs(par - orig3d->Value(j)) < preci)
         index = j;
     if (index && !fixNew2d(index))
     {
@@ -485,7 +485,7 @@ void ShapeUpgrade_WireDivide::Perform()
             std::cout << "Error: Number of intervals are not equal for 2d 3d. Ignored."
                       << std::endl;
 #endif
-            nbc = Min(nbc, nbc2d);
+            nbc = std::min(nbc, nbc2d);
           }
         }
       }

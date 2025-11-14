@@ -200,9 +200,9 @@ void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
   Standard_Real    aDelta, aCurPar;
   if (aPar12 < aPar11)
     aPar12 += 2. * M_PI;
-  if (Abs(aPar12 - aPar11) > Precision::Confusion())
+  if (std::abs(aPar12 - aPar11) > Precision::Confusion())
   {
-    aNodeNb = Standard_Integer(Max(Abs(aPar12 - aPar11) * 50. / M_PI + 0.5, 4.));
+    aNodeNb = Standard_Integer(std::max(std::abs(aPar12 - aPar11) * 50. / M_PI + 0.5, 4.));
     aDelta  = (aPar12 - aPar11) / aNodeNb;
     aCurPar = aPar11;
 
@@ -214,9 +214,9 @@ void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
   }
   if (aPar22 < aPar21)
     aPar22 += 2. * M_PI;
-  if (Abs(aPar22 - aPar21) > Precision::Confusion())
+  if (std::abs(aPar22 - aPar21) > Precision::Confusion())
   {
-    aNodeNb = Standard_Integer(Max(Abs(aPar22 - aPar21) * 50. / M_PI + 0.5, 4.));
+    aNodeNb = Standard_Integer(std::max(std::abs(aPar22 - aPar21) * 50. / M_PI + 0.5, 4.));
     aDelta  = (aPar22 - aPar21) / aNodeNb;
     aCurPar = aPar21;
 

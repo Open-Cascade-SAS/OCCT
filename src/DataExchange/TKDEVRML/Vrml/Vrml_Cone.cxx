@@ -68,13 +68,13 @@ Standard_OStream& Vrml_Cone::Print(Standard_OStream& anOStream) const
       break;
   }
 
-  if (Abs(myBottomRadius - 1) > 0.0001)
+  if (std::abs(myBottomRadius - 1) > 0.0001)
   {
     anOStream << "    bottomRadius\t";
     anOStream << myBottomRadius << "\n";
   }
 
-  if (Abs(myHeight - 2) > 0.0001)
+  if (std::abs(myHeight - 2) > 0.0001)
   {
     anOStream << "    height\t\t";
     anOStream << myHeight << "\n";

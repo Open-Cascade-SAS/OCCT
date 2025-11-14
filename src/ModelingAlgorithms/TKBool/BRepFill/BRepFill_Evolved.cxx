@@ -237,7 +237,7 @@ static Standard_Boolean IsVertical(const TopoDS_Edge& E)
   gp_Pnt P1 = BRep_Tool::Pnt(V1);
   gp_Pnt P2 = BRep_Tool::Pnt(V2);
 
-  if (Abs(P1.Y() - P2.Y()) < BRepFill_Confusion())
+  if (std::abs(P1.Y() - P2.Y()) < BRepFill_Confusion())
   {
     // It is a Line ?
     TopLoc_Location    Loc;
@@ -258,7 +258,7 @@ static Standard_Boolean IsPlanar(const TopoDS_Edge& E)
   gp_Pnt P1 = BRep_Tool::Pnt(V1);
   gp_Pnt P2 = BRep_Tool::Pnt(V2);
 
-  if (Abs(P1.Z() - P2.Z()) < BRepFill_Confusion())
+  if (std::abs(P1.Z() - P2.Z()) < BRepFill_Confusion())
   {
     // It is a Line ?
     TopLoc_Location    Loc;
@@ -1470,7 +1470,7 @@ void BRepFill_Evolved::VerticalPerform(const TopoDS_Face&              Sp,
     if (First)
     {
       Standard_Real Offset = DistanceToOZ(V1);
-      if (Abs(Offset) < BRepFill_Confusion())
+      if (std::abs(Offset) < BRepFill_Confusion())
       {
         Offset = 0.;
       }
@@ -3034,9 +3034,9 @@ static TopAbs_Orientation Relative(const TopoDS_Wire&   W1,
 
 Standard_Integer PosOnFace(Standard_Real d1, Standard_Real d2, Standard_Real d3)
 {
-  if (Abs(d1 - d2) <= BRepFill_Confusion())
+  if (std::abs(d1 - d2) <= BRepFill_Confusion())
     return 1;
-  if (Abs(d1 - d3) <= BRepFill_Confusion())
+  if (std::abs(d1 - d3) <= BRepFill_Confusion())
     return 3;
 
   if (d2 < d3)
@@ -3092,7 +3092,7 @@ Standard_Boolean DoubleOrNotInFace(const TopTools_SequenceOfShape& EC, const Top
 Standard_Real DistanceToOZ(const TopoDS_Vertex& V)
 {
   gp_Pnt PV3d = BRep_Tool::Pnt(V);
-  return Abs(PV3d.Y());
+  return std::abs(PV3d.Y());
 }
 
 //=================================================================================================
@@ -3234,7 +3234,8 @@ void CutEdgeProf(const TopoDS_Edge&            E,
       Param = Seq.First();
       Seq.Remove(1);
       Empty = Seq.IsEmpty();
-      if (Abs(Param - CurParam) > BRepFill_Confusion() && Abs(Param - l) > BRepFill_Confusion())
+      if (std::abs(Param - CurParam) > BRepFill_Confusion()
+          && std::abs(Param - l) > BRepFill_Confusion())
       {
 
         VV = BRepLib_MakeVertex(C->Value(Param));

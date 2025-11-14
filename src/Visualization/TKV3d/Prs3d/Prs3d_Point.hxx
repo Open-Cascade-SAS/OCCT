@@ -54,7 +54,8 @@ public:
   {
     Standard_Real aX, aY, aZ;
     PointTool::Coord(thePoint, aX, aY, aZ);
-    return Sqrt((theX - aX) * (theX - aX) + (theY - aY) * (theY - aY) + (theZ - aZ) * (theZ - aZ))
+    return std::sqrt((theX - aX) * (theX - aX) + (theY - aY) * (theY - aY)
+                     + (theZ - aZ) * (theZ - aZ))
            <= theDistance;
   }
 };

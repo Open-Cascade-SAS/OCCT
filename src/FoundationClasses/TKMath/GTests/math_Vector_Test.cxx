@@ -136,7 +136,7 @@ TEST(MathVectorTest, VectorProperties)
   aVec(4) = -2.0;
 
   // Test Norm (should be sqrt(3^2 + 4^2 + 0^2 + (-2)^2) = sqrt(29))
-  Standard_Real anExpectedNorm = Sqrt(29.0);
+  Standard_Real anExpectedNorm = std::sqrt(29.0);
   EXPECT_NEAR(aVec.Norm(), anExpectedNorm, Precision::Confusion());
 
   // Test Norm2 (should be 29)

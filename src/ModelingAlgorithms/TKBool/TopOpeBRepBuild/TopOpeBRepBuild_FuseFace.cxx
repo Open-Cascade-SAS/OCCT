@@ -1223,7 +1223,7 @@ Standard_Boolean SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
     gp_Lin li1(Handle(Geom_Line)::DownCast(C1)->Lin());
     gp_Lin li2(Handle(Geom_Line)::DownCast(C2)->Lin());
 
-    if (Abs(li1.Angle(li2)) <= tolang
+    if (std::abs(li1.Angle(li2)) <= tolang
         && li1.Location().SquareDistance(li2.Location()) <= tollin * tollin)
     {
       return Standard_True;
@@ -1234,7 +1234,7 @@ Standard_Boolean SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
   {
     gp_Circ ci1 = Handle(Geom_Circle)::DownCast(C1)->Circ();
     gp_Circ ci2 = Handle(Geom_Circle)::DownCast(C2)->Circ();
-    if (Abs(ci1.Radius() - ci2.Radius()) <= tollin
+    if (std::abs(ci1.Radius() - ci2.Radius()) <= tollin
         && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin)
     {
       // Point debut, calage dans periode, et detection meme sens
@@ -1247,8 +1247,8 @@ Standard_Boolean SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
     gp_Elips ci1 = Handle(Geom_Ellipse)::DownCast(C1)->Elips();
     gp_Elips ci2 = Handle(Geom_Ellipse)::DownCast(C2)->Elips();
 
-    if (Abs(ci1.MajorRadius() - ci2.MajorRadius()) <= tollin
-        && Abs(ci1.MinorRadius() - ci2.MinorRadius()) <= tollin
+    if (std::abs(ci1.MajorRadius() - ci2.MajorRadius()) <= tollin
+        && std::abs(ci1.MinorRadius() - ci2.MinorRadius()) <= tollin
         && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin)
     {
       // Point debut, calage dans periode, et detection meme sens
@@ -1300,7 +1300,7 @@ Standard_Boolean SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
       {
         return Standard_False;
       }
-      if (Abs(M1(k) - M2(k)) > tollin)
+      if (std::abs(M1(k) - M2(k)) > tollin)
       {
         return Standard_False;
       }
@@ -1329,7 +1329,7 @@ Standard_Boolean SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 
       for (Standard_Integer w = 1; w <= nbpoles; w++)
       {
-        if (Abs(W1(w) - W2(w)) > tollin)
+        if (std::abs(W1(w) - W2(w)) > tollin)
         {
           return Standard_False;
         }
@@ -1383,7 +1383,7 @@ Standard_Boolean SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 
       for (Standard_Integer w = 1; w <= nbpoles; w++)
       {
-        if (Abs(W1(w) - W2(w)) > tollin)
+        if (std::abs(W1(w) - W2(w)) > tollin)
         {
           return Standard_False;
         }

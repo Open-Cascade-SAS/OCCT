@@ -35,10 +35,10 @@ void gp_Cone::Coefficients(Standard_Real& A1,
                            Standard_Real& D) const
 {
   // Dans le repere du cone :
-  // X**2 + Y**2 - (radius + Z * Tan(semiAngle))**2 = 0.0
+  // X**2 + Y**2 - (radius + Z * std::tan(semiAngle))**2 = 0.0
   gp_Trsf T;
   T.SetTransformation(pos);
-  Standard_Real KAng = Tan(semiAngle);
+  Standard_Real KAng = std::tan(semiAngle);
   Standard_Real T11  = T.Value(1, 1);
   Standard_Real T12  = T.Value(1, 2);
   Standard_Real T13  = T.Value(1, 3);

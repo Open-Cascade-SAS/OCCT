@@ -28,7 +28,7 @@ class gp_Hypr2d;
 //! The hyperbola is an Hypr2d from package gp with the
 //! parametrization :
 //! P (U) =
-//! Loc + (MajorRadius * Cosh(U) * Xdir + MinorRadius * Sinh(U) * Ydir)
+//! Loc + (MajorRadius * std::cosh(U) * Xdir + MinorRadius * std::sinh(U) * Ydir)
 //! where Loc is the location point of the hyperbola, Xdir and Ydir are
 //! the normalized directions of the local cartesian coordinate system
 //! of the hyperbola.

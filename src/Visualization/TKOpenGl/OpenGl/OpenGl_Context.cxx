@@ -1397,12 +1397,12 @@ void OpenGl_Context::init(const Standard_Boolean theIsCoreProfile)
 
   GLint aMaxVPortSize[2] = {0, 0};
   core11fwd->glGetIntegerv(GL_MAX_VIEWPORT_DIMS, aMaxVPortSize);
-  myMaxDumpSizeX = Min(aMaxVPortSize[0], myMaxTexDim);
-  myMaxDumpSizeY = Min(aMaxVPortSize[1], myMaxTexDim);
+  myMaxDumpSizeX = std::min(aMaxVPortSize[0], myMaxTexDim);
+  myMaxDumpSizeY = std::min(aMaxVPortSize[1], myMaxTexDim);
   if (myVendor == "intel")
   {
     // Intel drivers have known bug with empty dump for images with width>=5462
-    myMaxDumpSizeX = Min(myMaxDumpSizeX, 4096);
+    myMaxDumpSizeX = std::min(myMaxDumpSizeX, 4096);
   }
 
   if (extAnis)
@@ -1437,7 +1437,7 @@ void OpenGl_Context::init(const Standard_Boolean theIsCoreProfile)
       GLint aNbColorSamples = 0, aNbDepthSamples = 0;
       core11fwd->glGetIntegerv(GL_MAX_COLOR_TEXTURE_SAMPLES, &aNbColorSamples);
       core11fwd->glGetIntegerv(GL_MAX_DEPTH_TEXTURE_SAMPLES, &aNbDepthSamples);
-      myMaxMsaaSamples = Min(aNbColorSamples, aNbDepthSamples);
+      myMaxMsaaSamples = std::min(aNbColorSamples, aNbDepthSamples);
     }
   }
   if (myMaxMsaaSamples <= 1)

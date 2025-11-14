@@ -365,7 +365,7 @@ void IntTools_BeanFaceIntersector::Perform()
     if (iLastRange > 0)
     {
       IntTools_Range& aLastRange = myResults.ChangeValue(iLastRange);
-      if (Abs(aRange.First() - aLastRange.Last()) > Precision::PConfusion())
+      if (std::abs(aRange.First() - aLastRange.Last()) > Precision::PConfusion())
       {
         myResults.Append(aRange);
       }
@@ -764,7 +764,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
 
       hasIntersection = Standard_False;
 
-      Standard_Real aDist = Abs(aLin.Distance(aCylAxis.Location()) - aCylRadius);
+      Standard_Real aDist = std::abs(aLin.Distance(aCylAxis.Location()) - aCylRadius);
       isCoincide          = (aDist < myCriteria);
     }
 
@@ -777,12 +777,12 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
         return Standard_False;
 
       Standard_Real aDistLoc = gp_Lin(aCylAxis).Distance(aCircle.Location());
-      Standard_Real aDist    = aDistLoc + Abs(aCircle.Radius() - aCylRadius);
+      Standard_Real aDist    = aDistLoc + std::abs(aCircle.Radius() - aCylRadius);
       isCoincide             = (aDist < myCriteria);
 
       if (!isCoincide)
         hasIntersection = (aDistLoc - (aCircle.Radius() + aCylRadius)) < myCriteria
-                          && (Abs(aCircle.Radius() - aCylRadius) - aDistLoc) < myCriteria;
+                          && (std::abs(aCircle.Radius() - aCylRadius) - aDistLoc) < myCriteria;
     }
   }
 
@@ -830,10 +830,10 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
   Dis   = A * Orig.X() + B * Orig.Y() + C * Orig.Z() + D;
 
   Standard_Boolean parallel = Standard_False, inplane = Standard_False;
-  if (Abs(Direc) < Tolang)
+  if (std::abs(Direc) < Tolang)
   {
     parallel = Standard_True;
-    if (Abs(Dis) < myCriteria)
+    if (std::abs(Dis) < myCriteria)
     {
       inplane = Standard_True;
     }
@@ -891,12 +891,12 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
   //
   aDL     = L.Position().Direction();
   aDP     = P.Position().Direction();
-  anAngle = Abs(M_PI_2 - aDL.Angle(aDP));
+  anAngle = std::abs(M_PI_2 - aDL.Angle(aDP));
   //
   aDt = IntTools_Tools::ComputeIntRange(myBeanTolerance, myFaceTolerance, anAngle);
   //
-  Standard_Real  t1 = Max(myFirstParameter, t - aDt);
-  Standard_Real  t2 = Min(myLastParameter, t + aDt);
+  Standard_Real  t1 = std::max(myFirstParameter, t - aDt);
+  Standard_Real  t2 = std::min(myLastParameter, t + aDt);
   IntTools_Range aRange(t1, t2);
   myResults.Append(aRange);
 
@@ -961,7 +961,7 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
       if (anExtCS.IsParallel())
       {
         const Standard_Real aSqDist = anExtCS.SquareDistance(1);
-        myMinSqDistance             = Min(myMinSqDistance, aSqDist);
+        myMinSqDistance             = std::min(myMinSqDistance, aSqDist);
         if (aSqDist < myCriteria * myCriteria)
         {
           Standard_Real    U1, V1, U2, V2;
@@ -1063,7 +1063,7 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
             }
           }
 
-          myMinSqDistance = Min(myMinSqDistance, anExtCS.SquareDistance(j));
+          myMinSqDistance = std::min(myMinSqDistance, anExtCS.SquareDistance(j));
         }
 
         if (!solutionfound)
@@ -2422,32 +2422,32 @@ void ComputeGridPoints(const Handle(Geom_BSplineSurface)& theSurf,
     Standard_Integer anExtCount = 0;
     if (xmin1 < xmin)
     {
-      aDef = Max(xmin - xmin1, aDef);
+      aDef = std::max(xmin - xmin1, aDef);
       anExtCount++;
     }
     if (ymin1 < ymin)
     {
-      aDef = Max(ymin - ymin1, aDef);
+      aDef = std::max(ymin - ymin1, aDef);
       anExtCount++;
     }
     if (zmin1 < zmin)
     {
-      aDef = Max(zmin - zmin1, aDef);
+      aDef = std::max(zmin - zmin1, aDef);
       anExtCount++;
     }
     if (xmax1 > xmax)
     {
-      aDef = Max(xmax1 - xmax, aDef);
+      aDef = std::max(xmax1 - xmax, aDef);
       anExtCount++;
     }
     if (ymax1 > ymax)
     {
-      aDef = Max(ymax1 - ymax, aDef);
+      aDef = std::max(ymax1 - ymax, aDef);
       anExtCount++;
     }
     if (zmax1 > zmax)
     {
-      aDef = Max(zmax1 - zmax, aDef);
+      aDef = std::max(zmax1 - zmax, aDef);
       anExtCount++;
     }
     if (anExtCount < 3)

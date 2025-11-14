@@ -126,7 +126,8 @@ public:
   //! Returns the Z coordinate
   constexpr Standard_Real Z() const noexcept { return z; }
 
-  //! computes Sqrt (X*X + Y*Y + Z*Z) where X, Y and Z are the three coordinates of this XYZ object.
+  //! computes std::sqrt(X*X + Y*Y + Z*Z) where X, Y and Z are the three coordinates of this XYZ
+  //! object.
   Standard_Real Modulus() const { return sqrt(x * x + y * y + z * z); }
 
   //! Computes X*X + Y*Y + Z*Z where X, Y and Z are the three coordinates of this XYZ object.
@@ -138,8 +139,8 @@ public:
   Standard_Boolean IsEqual(const gp_XYZ& theOther, const Standard_Real theTolerance) const
 
   {
-    return (Abs(x - theOther.x) < theTolerance) && (Abs(y - theOther.y) < theTolerance)
-           && (Abs(z - theOther.z) < theTolerance);
+    return (std::abs(x - theOther.x) < theTolerance) && (std::abs(y - theOther.y) < theTolerance)
+           && (std::abs(z - theOther.z) < theTolerance);
   }
 
   //! @code

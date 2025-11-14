@@ -99,8 +99,8 @@ Standard_EXPORT Standard_Boolean FUN_mkTonF(const TopoDS_Face&       F,
     return Standard_False;
 
   gp_Dir           ngF = FUN_tool_nggeomF(uvF, F);
-  Standard_Real    xx  = Abs(ngF.Dot(tgE));
-  Standard_Boolean tgt = (Abs(1 - xx) < tola);
+  Standard_Real    xx  = std::abs(ngF.Dot(tgE));
+  Standard_Boolean tgt = (std::abs(1 - xx) < tola);
   if (tgt)
     return Standard_False;
 
@@ -110,7 +110,7 @@ Standard_EXPORT Standard_Boolean FUN_mkTonF(const TopoDS_Face&       F,
     return Standard_False;
   gp_Dir           beafter = ngF ^ tgE;
   Standard_Real    yy      = beafter.Dot(ntFS);
-  Standard_Boolean unk     = (Abs(yy) < tola);
+  Standard_Boolean unk     = (std::abs(yy) < tola);
   if (unk)
     return Standard_False;
 

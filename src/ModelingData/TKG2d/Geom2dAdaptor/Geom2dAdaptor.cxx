@@ -107,8 +107,8 @@ Handle(Geom2d_Curve) Geom2dAdaptor::MakeCurve(const Adaptor2d_Curve2d& HC)
     }
     else
     {
-      Standard_Real tf = Max(HC.FirstParameter(), C2D->FirstParameter());
-      Standard_Real tl = Min(HC.LastParameter(), C2D->LastParameter());
+      Standard_Real tf = std::max(HC.FirstParameter(), C2D->FirstParameter());
+      Standard_Real tl = std::min(HC.LastParameter(), C2D->LastParameter());
       C2D              = new Geom2d_TrimmedCurve(C2D, tf, tl);
     }
   }

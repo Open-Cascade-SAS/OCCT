@@ -53,7 +53,7 @@ DEFINE_STANDARD_HANDLE(Geom_Ellipse, Geom_Conic)
 //! the trigonometric sense), determining the direction in
 //! which the parameter increases along the ellipse.
 //! The Geom_Ellipse ellipse is parameterized by an angle:
-//! P(U) = O + MajorRad*Cos(U)*XDir + MinorRad*Sin(U)*YDir
+//! P(U) = O + MajorRad*std::cos(U)*XDir + MinorRad*Sin(U)*YDir
 //! where:
 //! - P is the point of parameter U,
 //! - O, XDir and YDir are respectively the origin, "X

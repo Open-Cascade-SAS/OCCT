@@ -123,7 +123,7 @@ public: //! @name Geometry management API
   //! Set new value of box facet extension.
   void SetBoxFacetExtension(Standard_Real theValue)
   {
-    if (Abs(myBoxFacetExtension - theValue) > Precision::Confusion())
+    if (std::abs(myBoxFacetExtension - theValue) > Precision::Confusion())
     {
       myBoxFacetExtension = theValue;
       SetToUpdate();
@@ -136,7 +136,7 @@ public: //! @name Geometry management API
   //! Set new value of padding between axes and 3D part (box).
   void SetAxesPadding(Standard_Real theValue)
   {
-    if (Abs(myAxesPadding - theValue) > Precision::Confusion())
+    if (std::abs(myAxesPadding - theValue) > Precision::Confusion())
     {
       myAxesPadding = theValue;
       SetToUpdate();
@@ -149,7 +149,7 @@ public: //! @name Geometry management API
   //! Set new value of box edges gap.
   void SetBoxEdgeGap(Standard_Real theValue)
   {
-    if (Abs(myBoxEdgeGap - theValue) > Precision::Confusion())
+    if (std::abs(myBoxEdgeGap - theValue) > Precision::Confusion())
     {
       myBoxEdgeGap = theValue;
       SetToUpdate();
@@ -162,7 +162,7 @@ public: //! @name Geometry management API
   //! Set new value of box edge minimal size.
   void SetBoxEdgeMinSize(Standard_Real theValue)
   {
-    if (Abs(myBoxEdgeMinSize - theValue) > Precision::Confusion())
+    if (std::abs(myBoxEdgeMinSize - theValue) > Precision::Confusion())
     {
       myBoxEdgeMinSize = theValue;
       SetToUpdate();
@@ -175,7 +175,7 @@ public: //! @name Geometry management API
   //! Set new value of box corner minimal size.
   void SetBoxCornerMinSize(Standard_Real theValue)
   {
-    if (Abs(myCornerMinSize - theValue) > Precision::Confusion())
+    if (std::abs(myCornerMinSize - theValue) > Precision::Confusion())
     {
       myCornerMinSize = theValue;
       SetToUpdate();
@@ -196,7 +196,7 @@ public: //! @name Geometry management API
   //! Sets radius of axes of the trihedron.
   void SetAxesRadius(const Standard_Real theRadius)
   {
-    if (Abs(myAxesRadius - theRadius) > Precision::Confusion())
+    if (std::abs(myAxesRadius - theRadius) > Precision::Confusion())
     {
       myAxesRadius = theRadius;
       SetToUpdate();
@@ -209,7 +209,7 @@ public: //! @name Geometry management API
   //! Sets radius of cone of axes of the trihedron.
   void SetAxesConeRadius(Standard_Real theRadius)
   {
-    if (Abs(myAxesConeRadius - theRadius) > Precision::Confusion())
+    if (std::abs(myAxesConeRadius - theRadius) > Precision::Confusion())
     {
       myAxesConeRadius = theRadius;
       SetToUpdate();
@@ -222,7 +222,7 @@ public: //! @name Geometry management API
   //! Sets radius of sphere (central point) of the trihedron.
   void SetAxesSphereRadius(Standard_Real theRadius)
   {
-    if (Abs(myAxesSphereRadius - theRadius) > Precision::Confusion())
+    if (std::abs(myAxesSphereRadius - theRadius) > Precision::Confusion())
     {
       myAxesSphereRadius = theRadius;
       SetToUpdate();
@@ -310,9 +310,9 @@ public: //! @name Style management API
   //! @param[in] theValue  input transparency value
   void SetBoxTransparency(Standard_Real theValue)
   {
-    if (Abs(myDrawer->ShadingAspect()->Transparency() - theValue) > Precision::Confusion()
-        || Abs(myBoxEdgeAspect->Transparency() - theValue) > Precision::Confusion()
-        || Abs(myBoxCornerAspect->Transparency() - theValue) > Precision::Confusion())
+    if (std::abs(myDrawer->ShadingAspect()->Transparency() - theValue) > Precision::Confusion()
+        || std::abs(myBoxEdgeAspect->Transparency() - theValue) > Precision::Confusion()
+        || std::abs(myBoxCornerAspect->Transparency() - theValue) > Precision::Confusion())
     {
       myDrawer->ShadingAspect()->SetTransparency(theValue);
       myBoxEdgeAspect->SetTransparency(theValue);
@@ -384,7 +384,7 @@ public: //! @name Style management API
   //! @code Attributes()->TextAspect()->SetHeight() @endcode
   void SetFontHeight(Standard_Real theValue)
   {
-    if (Abs(myDrawer->TextAspect()->Height() - theValue) > Precision::Confusion())
+    if (std::abs(myDrawer->TextAspect()->Height() - theValue) > Precision::Confusion())
     {
       myDrawer->TextAspect()->SetHeight(theValue);
       SetToUpdate();

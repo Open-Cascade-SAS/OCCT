@@ -33,7 +33,7 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const Standard_Real R)
 BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const Standard_Real R, const Standard_Real angle)
     : mySphere(gp_Ax2(gp::Origin(), (angle < 0. ? -1 : 1) * gp::DZ(), gp::DX()), R)
 {
-  mySphere.Angle(Abs(angle));
+  mySphere.Angle(std::abs(angle));
 }
 
 //=================================================================================================

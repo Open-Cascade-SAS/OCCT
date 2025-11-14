@@ -162,8 +162,8 @@ void V3d_RectangularGrid::UpdateDisplay()
 
   if (MakeTransform)
   {
-    const Standard_Real CosAlpha = Cos(RotationAngle());
-    const Standard_Real SinAlpha = Sin(RotationAngle());
+    const Standard_Real CosAlpha = std::cos(RotationAngle());
+    const Standard_Real SinAlpha = std::sin(RotationAngle());
 
     gp_Trsf aTrsf;
     // Translation

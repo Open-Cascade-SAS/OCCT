@@ -25,7 +25,7 @@ const Standard_Integer MAX_ITERATIONS = 30;
 // Computes sqrt(x*x + y*y) avoiding overflow and underflow
 Standard_Real computeHypotenuseLength(const Standard_Real theX, const Standard_Real theY)
 {
-  return Sqrt(theX * theX + theY * theY);
+  return std::sqrt(theX * theX + theY * theY);
 }
 
 // Shifts subdiagonal elements for QL algorithm initialization
@@ -47,7 +47,7 @@ Standard_Integer findSubmatrixEnd(const NCollection_Array1<Standard_Real>& theDi
   for (aSubmatrixEnd = theStart; aSubmatrixEnd <= theSize - 1; aSubmatrixEnd++)
   {
     const Standard_Real aDiagSum =
-      Abs(theDiagWork(aSubmatrixEnd)) + Abs(theDiagWork(aSubmatrixEnd + 1));
+      std::abs(theDiagWork(aSubmatrixEnd)) + std::abs(theDiagWork(aSubmatrixEnd + 1));
 
     // Deflation test: Check if subdiagonal element is negligible
     // The condition |e[i]| + (|d[i]| + |d[i+1]|) == |d[i]| + |d[i+1]|
@@ -56,7 +56,7 @@ Standard_Integer findSubmatrixEnd(const NCollection_Array1<Standard_Real>& theDi
     // checking e[i] == 0.0 because it accounts for finite precision arithmetic.
     // When this condition is true in floating-point arithmetic, the subdiagonal
     // element can be treated as zero for convergence purposes.
-    if (Abs(theSubdiagWork(aSubmatrixEnd)) + aDiagSum == aDiagSum)
+    if (std::abs(theSubdiagWork(aSubmatrixEnd)) + aDiagSum == aDiagSum)
       break;
   }
   return aSubmatrixEnd;

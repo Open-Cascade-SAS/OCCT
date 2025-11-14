@@ -26,7 +26,7 @@
 #include <Standard_OStream.hxx>
 
 //! This class implements the solutions of the equation
-//! a*Cos(x)*Cos(x) + 2*b*Cos(x)*Sin(x) + c*Cos(x) + d*Sin(x) + e
+//! a*std::cos(x)*std::cos(x) + 2*b*std::cos(x)*Sin(x) + c*std::cos(x) + d*Sin(x) + e
 //! The degree of this equation can be 4, 3 or 2.
 class math_TrigonometricFunctionRoots
 {
@@ -55,7 +55,7 @@ public:
                                                   const Standard_Real SupBound);
 
   //! Given the three coefficients c, d and e, it performs
-  //! the resolution of c*Cos(x) + d*sin(x) + e = 0.
+  //! the resolution of c*std::cos(x) + d*sin(x) + e = 0.
   //! The solutions must be contained in [InfBound, SupBound].
   //! InfBound and SupBound can be set by default to 0 and 2*PI.
   Standard_EXPORT math_TrigonometricFunctionRoots(const Standard_Real C,

@@ -131,17 +131,17 @@ static Standard_Boolean FUN_onboundsper(const gp_Pnt2d& uv, const TopoDS_Face& F
   Standard_Real toluv = 1.e-8 * 1.e-2; // nyinyitol
   if (uclo)
   {
-    Standard_Real    d1  = Abs(u1 - uv.X());
+    Standard_Real    d1  = std::abs(u1 - uv.X());
     Standard_Boolean on1 = (d1 < toluv);
-    Standard_Real    d2  = Abs(u2 - uv.X());
+    Standard_Real    d2  = std::abs(u2 - uv.X());
     Standard_Boolean on2 = (d2 < toluv);
     return (on1 || on2);
   }
   if (vclo)
   {
-    Standard_Real    d1  = Abs(v1 - uv.Y());
+    Standard_Real    d1  = std::abs(v1 - uv.Y());
     Standard_Boolean on1 = (d1 < toluv);
-    Standard_Real    d2  = Abs(v2 - uv.Y());
+    Standard_Real    d2  = std::abs(v2 - uv.Y());
     Standard_Boolean on2 = (d2 < toluv);
     return (on1 || on2);
   }
@@ -658,7 +658,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
         hasPC = (!PC.IsNull());
         if (!hasPC)
           throw Standard_ProgramError("TopOpeBRepBuild_Builder::SSE null PC on F");
-        Standard_Real tol = Max(tolE, tolpc);
+        Standard_Real tol = std::max(tolE, tolpc);
         BB.UpdateEdge(eon, PC, F, tol);
       }
     }

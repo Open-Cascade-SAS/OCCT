@@ -90,7 +90,7 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
   Standard_Real             f = C1->FirstParameter(), l = C1->LastParameter();
   Standard_Integer          iP, NP                      = 21;
   TColgp_Array1OfPnt        Tab(1, NP);
-  Standard_Real             u = f, h = Abs(f - l) / 20.;
+  Standard_Real             u = f, h = std::abs(f - l) / 20.;
   for (iP = 1; iP <= NP; iP++)
   {
     C1->D0(u, Tab(iP));
@@ -163,12 +163,12 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
 
     // meme sens ?
     Standard_Boolean ok      = Standard_True,
-                     pasnul1 = (Abs(alpha1) > Precision::Confusion())
-                               && (Abs(beta1) > Precision::Confusion()),
-                     pasnul2 = (Abs(alpha2) > Precision::Confusion())
-                               && (Abs(beta2) > Precision::Confusion()),
-                     pasnul3 = (Abs(alpha3) > Precision::Confusion())
-                               && (Abs(beta3) > Precision::Confusion());
+                     pasnul1 = (std::abs(alpha1) > Precision::Confusion())
+                               && (std::abs(beta1) > Precision::Confusion()),
+                     pasnul2 = (std::abs(alpha2) > Precision::Confusion())
+                               && (std::abs(beta2) > Precision::Confusion()),
+                     pasnul3 = (std::abs(alpha3) > Precision::Confusion())
+                               && (std::abs(beta3) > Precision::Confusion());
     if (pasnul1 && pasnul2 && pasnul3)
     {
       if (alpha1 * beta1 > 0.0)
@@ -681,7 +681,7 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path, const TColGeom_Sequence
     }
     for (i = 1; i < NSections.Length(); i++)
     {
-      if (Abs(SeqP.Value(i + 1) - SeqP.Value(i)) < Precision::PConfusion())
+      if (std::abs(SeqP.Value(i + 1) - SeqP.Value(i)) < Precision::PConfusion())
       {
         throw Standard_ConstructionError("GeomFill_Pipe::Init with NSections : invalid parameters");
       }
@@ -911,7 +911,7 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
     Standard_Real L0 = myAdpPath->LastParameter() - myAdpPath->FirstParameter();
     Standard_Real L1 = myAdpFirstSect->LastParameter() - myAdpFirstSect->FirstParameter();
     Standard_Real L2 = myAdpLastSect->LastParameter() - myAdpLastSect->FirstParameter();
-    if (Abs(L1 - L0) > Precision::Confusion() || Abs(L2 - L0) > Precision::Confusion())
+    if (std::abs(L1 - L0) > Precision::Confusion() || std::abs(L2 - L0) > Precision::Confusion())
     {
       return Ok;
     }
@@ -922,7 +922,8 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
     gp_Pnt P2 = myAdpLastSect->Value(myAdpLastSect->FirstParameter());
     gp_Dir V1(gp_Vec(P0, P1));
     gp_Dir V2(gp_Vec(P0, P2));
-    if (Abs(V1.Dot(D0)) > Precision::Confusion() || Abs(V2.Dot(D0)) > Precision::Confusion())
+    if (std::abs(V1.Dot(D0)) > Precision::Confusion()
+        || std::abs(V2.Dot(D0)) > Precision::Confusion())
       return Ok;
 
     // the result is a cylindrical surface.
@@ -956,7 +957,8 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
     Standard_Real Alp1 = myAdpFirstSect->FirstParameter() - myAdpFirstSect->LastParameter();
     Standard_Real Alp2 = myAdpLastSect->FirstParameter() - myAdpLastSect->LastParameter();
 
-    if (Abs(Alp0 - Alp1) > Precision::Angular() || Abs(Alp0 - Alp2) > Precision::Angular())
+    if (std::abs(Alp0 - Alp1) > Precision::Angular()
+        || std::abs(Alp0 - Alp2) > Precision::Angular())
       return Ok;
 
     gp_Ax2 A0 = myAdpPath->Circle().Position();
@@ -984,7 +986,8 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
     gp_Dir  V2(gp_Vec(P0, P2));
     gp_Circ Ci   = myAdpPath->Circle();
     gp_Vec  YRef = ElCLib::CircleDN(myAdpPath->FirstParameter(), A0, Ci.Radius(), 1);
-    if (Abs(V1.Dot(YRef)) > Precision::Confusion() || Abs(V2.Dot(YRef)) > Precision::Confusion())
+    if (std::abs(V1.Dot(YRef)) > Precision::Confusion()
+        || std::abs(V2.Dot(YRef)) > Precision::Confusion())
       return Ok;
 
     // OK it`s a Toroidal Surface !!  OUF !!

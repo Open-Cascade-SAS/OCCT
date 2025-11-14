@@ -164,9 +164,6 @@ Standard_Boolean MyDirFunction::Value(const math_Vector& Sol,
       if (aVal < 0.)
       {
         if (aVal <= -1.e+100) // Precision::HalfInfinite() later
-          //       if(Precision::IsInfinite(Abs(FF.Value(i)))) {
-          //	F2 = Precision::Infinite();
-          //	Gnr1 = Precision::Infinite();
           return Standard_False;
       }
       else if (aVal >= 1.e+100) // Precision::HalfInfinite() later
@@ -207,9 +204,9 @@ static Standard_Boolean MinimizeDirection(const math_Vector&  P0,
 
   for (Standard_Integer ii = 1; ii <= Tol.Length(); ii++)
   {
-    invnorme = Abs(Delta(ii));
+    invnorme = std::abs(Delta(ii));
     if (invnorme > Eps)
-      tol1d = Min(tol1d, Tol(ii) / invnorme);
+      tol1d = std::min(tol1d, Tol(ii) / invnorme);
   }
   if (tol1d > 1.9)
     return Standard_False; // Pas la peine de se fatiguer
@@ -274,9 +271,9 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
 
   for (Standard_Integer ii = 1; ii <= Tol.Length(); ii++)
   {
-    absdir = Abs(Dir(ii));
+    absdir = std::abs(Dir(ii));
     if (absdir > Eps)
-      tol1d = Min(tol1d, Tol(ii) / absdir);
+      tol1d = std::min(tol1d, Tol(ii) / absdir);
   }
   if (tol1d > 0.9)
     return Standard_False;
@@ -298,9 +295,9 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
     bx = df1;
     ax = PDirValue - (bx + cx);
 
-    if (Abs(ax) <= Eps)
+    if (std::abs(ax) <= Eps)
     { // cas lineaire
-      if ((Abs(bx) >= Eps))
+      if (std::abs(bx) >= Eps)
         tsol = -cx / bx;
       else
         tsol = 0;
@@ -311,10 +308,10 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
       if (Delta > 1.e-9)
       {
         // il y a des racines, on prend la plus proche de 0
-        Delta   = Sqrt(Delta);
+        Delta   = std::sqrt(Delta);
         tsol    = -(bx + Delta);
         tsolbis = (Delta - bx);
-        if (Abs(tsolbis) < Abs(tsol))
+        if (std::abs(tsolbis) < std::abs(tsol))
           tsol = tsolbis;
         tsol /= 2 * ax;
       }
@@ -326,7 +323,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
     }
   }
 
-  if (Abs(tsol) >= 1)
+  if (std::abs(tsol) >= 1)
     return Standard_False; // resultat sans interet
 
   F.Initialize(P, Dir);
@@ -465,11 +462,11 @@ static void SearchDirection(const math_Matrix& DF,
   // PMN 12/05/97 Traitement des singularite dans les conges
   // Sur des surfaces periodiques
 
-  Standard_Real    ratio = Abs(Direction(Direction.Lower()) * InvLengthMax(Direction.Lower()));
+  Standard_Real    ratio = std::abs(Direction(Direction.Lower()) * InvLengthMax(Direction.Lower()));
   Standard_Integer i;
   for (i = Direction.Lower() + 1; i <= Direction.Upper(); i++)
   {
-    ratio = Max(ratio, Abs(Direction(i) * InvLengthMax(i)));
+    ratio = std::max(ratio, std::abs(Direction(i) * InvLengthMax(i)));
   }
   if (ratio > 1)
   {
@@ -615,7 +612,7 @@ Standard_Boolean Bounds(const math_Vector&  InfBound,
       Out            = Standard_True;
       // Delta(i) is negative
       if (-Delta(i) > Tol(i)) // Afin d'eviter des ratio nulles pour rien
-        monratio = Min(monratio, (InfBound(i) - SolSave(i)) / Delta(i));
+        monratio = std::min(monratio, (InfBound(i) - SolSave(i)) / Delta(i));
     }
     else if (Sol(i) > SupBound(i))
     {
@@ -623,7 +620,7 @@ Standard_Boolean Bounds(const math_Vector&  InfBound,
       Out            = Standard_True;
       // Delta(i) is positive
       if (Delta(i) > Tol(i))
-        monratio = Min(monratio, (SupBound(i) - SolSave(i)) / Delta(i));
+        monratio = std::min(monratio, (SupBound(i) - SolSave(i)) / Delta(i));
     }
   }
 
@@ -770,9 +767,9 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   math_IntegerVector  aConstraints(1, Ninc); // Pour savoir sur quels bord on se trouve
   for (i = 1; i <= Ninc; i++)
   {
-    const Standard_Real aSupBound  = Min(theSupBound(i), Precision::Infinite());
-    const Standard_Real anInfBound = Max(theInfBound(i), -Precision::Infinite());
-    InvLengthMax(i)                = 1. / Max((aSupBound - anInfBound) / 4, 1.e-9);
+    const Standard_Real aSupBound  = std::min(theSupBound(i), Precision::Infinite());
+    const Standard_Real anInfBound = std::max(theInfBound(i), -Precision::Infinite());
+    InvLengthMax(i)                = 1. / std::max((aSupBound - anInfBound) / 4, 1.e-9);
   }
 
   MyDirFunction    F_Dir(Temp1, Temp2, Temp3, Temp4, F);
@@ -817,7 +814,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   // Le rang 0 de Save ne doit servir q'au test accelarteur en fin de boucle
   // s'il on est dejas sur la solution, il faut leurer ce test pour eviter
   // de faire une seconde iteration...
-  Save(0)                 = Max(F2, EpsSqrt);
+  Save(0)                 = std::max(F2, EpsSqrt);
   Standard_Real aTol_Func = Epsilon(F2);
   FSR_DEBUG("=== Mode Debug de Function Set Root" << std::endl);
   FSR_DEBUG("    F2 Initial = " << F2);
@@ -841,7 +838,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     SolSave          = Sol;
 
     SearchDirection(DF, GH, FF, ChangeDirection, InvLengthMax, DH, Dy);
-    if (Abs(Dy) <= Eps)
+    if (std::abs(Dy) <= Eps)
     {
       Done = Standard_False;
       if (!theStopOnDivergent || !myIsDivergent)
@@ -856,7 +853,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     }
     if (ChangeDirection)
     {
-      Ambda = Ambda2 / Sqrt(Abs(Dy));
+      Ambda = Ambda2 / std::sqrt(std::abs(Dy));
       if (Ambda > 1.0)
         Ambda = 1.0;
     }
@@ -1022,7 +1019,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
             }
           }
           Dy = GH * DH;
-          if (Abs(Dy) <= Eps)
+          if (std::abs(Dy) <= Eps)
           {
             if (F2 > OldF)
               Sol = SolSave;
@@ -1065,9 +1062,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           { // Pour eviter des calculs inutiles et des /0...
             if (ChangeDirection)
             {
-
-              // 	      Ambda = Ambda2 / Sqrt(Abs(Dy));
-              Ambda = Ambda2 / Sqrt(-Dy);
+              Ambda = Ambda2 / std::sqrt(-Dy);
               if (Ambda > 1.0)
                 Ambda = 1.0;
             }

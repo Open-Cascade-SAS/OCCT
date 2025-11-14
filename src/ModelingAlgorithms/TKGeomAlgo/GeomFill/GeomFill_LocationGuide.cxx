@@ -141,7 +141,7 @@ static void InGoodPeriod(const Standard_Real Prec,
                          Standard_Real&      Current)
 {
   Standard_Real    Diff = Current - Prec;
-  Standard_Integer nb   = (Standard_Integer)IntegerPart(Diff / Period);
+  Standard_Integer nb   = (Standard_Integer)std::trunc(Diff / Period);
   Current -= nb * Period;
   Diff = Current - Prec;
   if (Diff > Period / 2)
@@ -399,7 +399,7 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
           jref    = j;
         }
       }
-      MinDist = Sqrt(MinDist);
+      MinDist = std::sqrt(MinDist);
       DistMini.Points(jref, Pc, Ps);
 
       Ps.Parameter(theU, theV);
@@ -414,7 +414,7 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
     if (ii > 1)
     {
       Diff = w - myPoles2d->Value(1, ii - 1).Y();
-      if (Abs(Diff) > DeltaG)
+      if (std::abs(Diff) > DeltaG)
       {
         if (myGuide->IsPeriodic())
         {
@@ -424,7 +424,7 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
       }
 
 #ifdef OCCT_DEBUG
-      if (Abs(Diff) > DeltaG)
+      if (std::abs(Diff) > DeltaG)
       {
         std::cout << "Location :: Diff on Guide : " << Diff << std::endl;
       }
@@ -436,13 +436,13 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
     if (ii > 1)
     {
       Diff = Angle - OldAngle;
-      if (Abs(Diff) > M_PI)
+      if (std::abs(Diff) > M_PI)
       {
         InGoodPeriod(OldAngle, 2 * M_PI, Angle);
         Diff = Angle - OldAngle;
       }
 #ifdef OCCT_DEBUG
-      if (Abs(Diff) > M_PI / 4)
+      if (std::abs(Diff) > M_PI / 4)
       {
         std::cout << "Diff d'angle trop grand !!" << std::endl;
       }
@@ -460,7 +460,7 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
       }
       Diff = v - myPoles2d->Value(2, ii - 1).Y();
 #ifdef OCCT_DEBUG
-      if (Abs(Diff) > (Ul - Uf) / (2 + NbKnots))
+      if (std::abs(Diff) > (Ul - Uf) / (2 + NbKnots))
       {
         std::cout << "Diff sur section trop grand !!" << std::endl;
       }
@@ -573,7 +573,7 @@ void GeomFill_LocationGuide::SetTrsf(const gp_Mat& Transfo)
   WithTrans = Standard_False; // Au cas ou Trans = I
   for (Standard_Integer ii = 1; ii <= 3 && !WithTrans; ii++)
     for (Standard_Integer jj = 1; jj <= 3 && !WithTrans; jj++)
-      if (Abs(Aux.Value(ii, jj)) > 1.e-14)
+      if (std::abs(Aux.Value(ii, jj)) > 1.e-14)
         WithTrans = Standard_True;
 }
 
@@ -845,13 +845,13 @@ Standard_Boolean GeomFill_LocationGuide::D1(const Standard_Real Param,
          Standard_Real Aprim = DSDT(2);
 
    #ifdef OCCT_DEBUG
-         gp_Mat M2 (Cos(A), -Sin(A),0,  // rotation autour de T
-                Sin(A), Cos(A),0,
+         gp_Mat M2 (std::cos(A), -std::sin(A),0,  // rotation autour de T
+                std::sin(A), std::cos(A),0,
                 0,0,1);
    #endif
 
-         gp_Mat M2prim (-Sin(A), -Cos(A), 0, // derivee rotation autour de T
-                Cos(A), -Sin(A), 0,
+         gp_Mat M2prim (-std::sin(A), -std::cos(A), 0, // derivee rotation autour de T
+                std::cos(A), -std::sin(A), 0,
                 0, 0, 0);
          M2prim.Multiply(Aprim);
 
@@ -1065,16 +1065,16 @@ Standard_Boolean GeomFill_LocationGuide::D2(
           Standard_Real Aprim = DSDT(2);
           Standard_Real Asec = D2SDT2(2);
 
-          gp_Mat M2 (Cos(A),-Sin(A),0,   // rotation autour de T
-                 Sin(A), Cos(A),0,
+          gp_Mat M2 (std::cos(A),-std::sin(A),0,   // rotation autour de T
+                 std::sin(A), std::cos(A),0,
                  0, 0, 1);
 
-          gp_Mat M2prim (-Sin(A),-Cos(A),0,   // derivee 1ere rotation autour de T
-                 Cos(A), -Sin(A),0,
+          gp_Mat M2prim (-std::sin(A),-std::cos(A),0,   // derivee 1ere rotation autour de T
+                 std::cos(A), -std::sin(A),0,
                  0,0,0);
 
-          gp_Mat M2sec (-Cos(A), Sin(A), 0,   // derivee 2nde rotation autour de T
-                -Sin(A), -Cos(A), 0,
+          gp_Mat M2sec (-std::cos(A), std::sin(A), 0,   // derivee 2nde rotation autour de T
+                -std::sin(A), -std::cos(A), 0,
                 0,0,0);
           M2sec.Multiply(Aprim*Aprim);
           gp_Mat M2p = M2prim.Multiplied(Asec);

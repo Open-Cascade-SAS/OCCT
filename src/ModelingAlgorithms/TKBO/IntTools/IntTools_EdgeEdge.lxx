@@ -160,7 +160,7 @@ inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge&  theEdge,
 
 inline void IntTools_EdgeEdge::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  myFuzzyValue = Max(theFuzz, Precision::Confusion());
+  myFuzzyValue = std::max(theFuzz, Precision::Confusion());
 }
 
 //=================================================================================================

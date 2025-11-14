@@ -1763,7 +1763,7 @@ void AIS_InteractiveContext::ClearGlobal(const Handle(AIS_InteractiveObject)& th
       myDetectedSeq.Remove(aDetIter);
       if (myCurDetected == aDetIter)
       {
-        myCurDetected = Min(myDetectedSeq.Upper(), aDetIter);
+        myCurDetected = std::min(myDetectedSeq.Upper(), aDetIter);
       }
       if (myCurHighlighted == aDetIter)
       {
@@ -1984,7 +1984,7 @@ Standard_Boolean AIS_InteractiveContext::PlaneSize(Standard_Real& theX, Standard
 {
   theX = myDefaultDrawer->PlaneAspect()->PlaneXLength();
   theY = myDefaultDrawer->PlaneAspect()->PlaneYLength();
-  return (Abs(theX - theY) <= Precision::Confusion());
+  return (std::abs(theX - theY) <= Precision::Confusion());
 }
 
 //=================================================================================================

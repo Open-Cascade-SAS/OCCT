@@ -220,7 +220,7 @@ Standard_Boolean Draft_Modification::InternalAdd(const TopoDS_Face&     F,
         else
         {
           gp_Cone       Co    = Handle(Geom_ConicalSurface)::DownCast(NewS)->Cone();
-          Standard_Real Vapex = -Co.RefRadius() / Sin(Co.SemiAngle());
+          Standard_Real Vapex = -Co.RefRadius() / std::sin(Co.SemiAngle());
           if (vmin < Vapex)
           { // vmax should not exceed Vapex
             if (vmax + deltav > Vapex)
@@ -1148,16 +1148,16 @@ void Draft_Modification::Perform()
                   GeomAPI_ProjectPointOnSurf projector(Pnt, S1, Precision::Confusion());
                   Standard_Real              U, V;
                   projector.LowerDistanceParameters(U, V);
-                  if (Abs(U) <= Precision::Confusion()
-                      || Abs(U - 2. * M_PI) <= Precision::Confusion())
+                  if (std::abs(U) <= Precision::Confusion()
+                      || std::abs(U - 2. * M_PI) <= Precision::Confusion())
                     Candidates.Append(aCurve);
                   else
                   {
                     Pnt = aCurve->Value(aCurve->LastParameter());
                     projector.Init(Pnt, S1, Precision::Confusion());
                     projector.LowerDistanceParameters(U, V);
-                    if (Abs(U) <= Precision::Confusion()
-                        || Abs(U - 2. * M_PI) <= Precision::Confusion())
+                    if (std::abs(U) <= Precision::Confusion()
+                        || std::abs(U - 2. * M_PI) <= Precision::Confusion())
                     {
                       aCurve->Reverse();
                       Candidates.Append(aCurve);
@@ -1288,7 +1288,7 @@ void Draft_Modification::Perform()
               */
             } // else: i2s.NbLines() > 2 && S1 is Cylinder or Cone
 
-            Einf.Tolerance(Max(Einf.Tolerance(), i2s.TolReached3d()));
+            Einf.Tolerance(std::max(Einf.Tolerance(), i2s.TolReached3d()));
           } // End step KPart
         }
         else
@@ -1574,7 +1574,7 @@ void Draft_Modification::Perform()
         }
         else
         {
-          if (Abs(initpar - param) > Precision::PConfusion())
+          if (std::abs(initpar - param) > Precision::PConfusion())
           {
             Standard_Real             f, l;
             TopLoc_Location           Loc;
@@ -1646,7 +1646,7 @@ void Draft_Modification::Perform()
           aDirOL.Divide(sqrt(aSqMagn));
 
         const Standard_Real aCosF = aDirNF.Dot(aDirOF), aCosL = aDirNL.Dot(aDirOL);
-        const Standard_Real aCosMax = Abs(aCosF) > Abs(aCosL) ? aCosF : aCosL;
+        const Standard_Real aCosMax = std::abs(aCosF) > std::abs(aCosL) ? aCosF : aCosL;
 
         if (aCosMax < 0.0)
         {
@@ -1689,9 +1689,9 @@ void Draft_Modification::Perform()
         // pf >= pl
         Standard_Real FirstPar = theCurve->FirstParameter(), LastPar = theCurve->LastParameter();
         constexpr Standard_Real pconf = Precision::PConfusion();
-        if (Abs(pf - LastPar) <= pconf)
+        if (std::abs(pf - LastPar) <= pconf)
           pf = FirstPar;
-        else if (Abs(pl - FirstPar) <= pconf)
+        else if (std::abs(pl - FirstPar) <= pconf)
           pl = LastPar;
 
         if (pl <= pf)
@@ -1732,7 +1732,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface(const Handle(Geom_Surface)& 
     Standard_Real Theta;
     if (FindRotation(Pl, Oris, Direction, Angle, NeutralPlane, Axe, Theta))
     {
-      if (Abs(Theta) > Precision::Angular())
+      if (std::abs(Theta) > Precision::Angular())
       {
         NewS = Handle(Geom_Surface)::DownCast(S->Rotated(Axe, Theta));
       }
@@ -1745,7 +1745,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface(const Handle(Geom_Surface)& 
   else if (TypeS == STANDARD_TYPE(Geom_CylindricalSurface))
   {
     Standard_Real testdir = Direction.Dot(NeutralPlane.Axis().Direction());
-    if (Abs(testdir) <= 1. - Precision::Angular())
+    if (std::abs(testdir) <= 1. - Precision::Angular())
     {
 #ifdef OCCT_DEBUG
       std::cout << "NewSurfaceCyl:Draft_Direction_and_Neutral_Perpendicular" << std::endl;
@@ -1754,14 +1754,14 @@ Handle(Geom_Surface) Draft_Modification::NewSurface(const Handle(Geom_Surface)& 
     }
     gp_Cylinder Cy = Handle(Geom_CylindricalSurface)::DownCast(S)->Cylinder();
     testdir        = Direction.Dot(Cy.Axis().Direction());
-    if (Abs(testdir) <= 1. - Precision::Angular())
+    if (std::abs(testdir) <= 1. - Precision::Angular())
     {
 #ifdef OCCT_DEBUG
       std::cout << "NewSurfaceCyl:Draft_Direction_and_Cylinder_Perpendicular" << std::endl;
 #endif
       return NewS;
     }
-    if (Abs(Angle) > Precision::Angular())
+    if (std::abs(Angle) > Precision::Angular())
     {
       IntAna_QuadQuadGeo i2s;
       i2s.Perform(NeutralPlane, Cy, Precision::Angular(), Precision::Confusion());
@@ -1797,7 +1797,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface(const Handle(Geom_Surface)& 
         alpha = -alpha;
       }
       Standard_Real Z   = ElCLib::LineParameter(Cy.Axis(), Center);
-      Standard_Real Rad = Cy.Radius() + Z * Tan(alpha);
+      Standard_Real Rad = Cy.Radius() + Z * std::tan(alpha);
       if (Rad < 0.)
       {
         Rad = -Rad;
@@ -1818,7 +1818,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface(const Handle(Geom_Surface)& 
   {
 
     Standard_Real testdir = Direction.Dot(NeutralPlane.Axis().Direction());
-    if (Abs(testdir) <= 1. - Precision::Angular())
+    if (std::abs(testdir) <= 1. - Precision::Angular())
     {
 #ifdef OCCT_DEBUG
       std::cout << "NewSurfaceCone:Draft_Direction_and_Neutral_Perpendicular" << std::endl;
@@ -1829,7 +1829,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface(const Handle(Geom_Surface)& 
     gp_Cone Co1 = Handle(Geom_ConicalSurface)::DownCast(S)->Cone();
 
     testdir = Direction.Dot(Co1.Axis().Direction());
-    if (Abs(testdir) <= 1. - Precision::Angular())
+    if (std::abs(testdir) <= 1. - Precision::Angular())
     {
 #ifdef OCCT_DEBUG
       std::cout << "NewSurfaceCone:Draft_Direction_and_Cone_Perpendicular" << std::endl;
@@ -1856,14 +1856,14 @@ Handle(Geom_Surface) Draft_Modification::NewSurface(const Handle(Geom_Surface)& 
     }
 
     gp_Pnt Center = i2s.Circle(1).Location();
-    if (Abs(Angle) > Precision::Angular())
+    if (std::abs(Angle) > Precision::Angular())
     {
       if (testdir < 0.)
       {
         alpha = -alpha;
       }
       Standard_Real Z   = ElCLib::LineParameter(Co1.Axis(), Center);
-      Standard_Real Rad = i2s.Circle(1).Radius() + Z * Tan(alpha);
+      Standard_Real Rad = i2s.Circle(1).Radius() + Z * std::tan(alpha);
       if (Rad < 0.)
       {
         Rad = -Rad;
@@ -1872,7 +1872,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface(const Handle(Geom_Surface)& 
       {
         alpha = -alpha;
       }
-      if (Abs(alpha - Co1.SemiAngle()) < Precision::Angular())
+      if (std::abs(alpha - Co1.SemiAngle()) < Precision::Angular())
       {
         NewS = S;
       }
@@ -1918,7 +1918,7 @@ Handle(Geom_Curve) Draft_Modification::NewCurve(const Handle(Geom_Curve)&   C,
     Standard_Real Theta;
     if (FindRotation(Pl, Oris, Direction, Angle, NeutralPlane, Axe, Theta))
     {
-      if (Abs(Theta) > Precision::Angular())
+      if (std::abs(Theta) > Precision::Angular())
       {
         NewC = Handle(Geom_Curve)::DownCast(C->Rotated(Axe, Theta));
       }
@@ -1937,7 +1937,7 @@ Handle(Geom_Curve) Draft_Modification::NewCurve(const Handle(Geom_Curve)&   C,
 
   gp_Lin lin = Handle(Geom_Line)::DownCast(C)->Lin();
   //  Standard_Real testdir = Direction.Dot(lin.Direction());
-  //  if (Abs(testdir) <= 1.-Precision::Angular()) {
+  //  if (std::abs(testdir) <= 1.-Precision::Angular()) {
   //    return NewC;
   //  }
   gp_Dir Norm;
@@ -2128,7 +2128,7 @@ static Standard_Real Parameter(const Handle(Geom_Curve)& C, const gp_Pnt& P, Sta
   else if (ctyp == STANDARD_TYPE(Geom_Circle))
   {
     param = ElCLib::Parameter(Handle(Geom_Circle)::DownCast(cbase)->Circ(), P);
-    if (Abs(2. * M_PI - param) <= Epsilon(2. * M_PI))
+    if (std::abs(2. * M_PI - param) <= Epsilon(2. * M_PI))
     {
       param = 0.;
     }
@@ -2136,7 +2136,7 @@ static Standard_Real Parameter(const Handle(Geom_Curve)& C, const gp_Pnt& P, Sta
   else if (ctyp == STANDARD_TYPE(Geom_Ellipse))
   {
     param = ElCLib::Parameter(Handle(Geom_Ellipse)::DownCast(cbase)->Elips(), P);
-    if (Abs(2. * M_PI - param) <= Epsilon(2. * M_PI))
+    if (std::abs(2. * M_PI - param) <= Epsilon(2. * M_PI))
     {
       param = 0.;
     }
@@ -2193,7 +2193,7 @@ static Standard_Real Parameter(const Handle(Geom_Curve)& C, const gp_Pnt& P, Sta
     {
       Standard_Real Per  = cbase->Period();
       Standard_Real Tolp = Precision::Parametric(Precision::Confusion());
-      if (Abs(Per - param) <= Tolp)
+      if (std::abs(Per - param) <= Tolp)
       {
         param = 0.;
       }
@@ -2340,7 +2340,7 @@ static Standard_Boolean FindRotation(const gp_Pln&            Pl,
     gp_Dir        nx = li.Direction();
     gp_Dir        ny = Pl.Axis().Direction().Crossed(nx);
     Standard_Real a  = Direction.Dot(nx);
-    if (Abs(a) <= 1 - Precision::Angular())
+    if (std::abs(a) <= 1 - Precision::Angular())
     {
       Standard_Real    b = Direction.Dot(ny);
       Standard_Real    c = Direction.Dot(Pl.Axis().Direction());
@@ -2350,19 +2350,19 @@ static Standard_Boolean FindRotation(const gp_Pln&            Pl,
         b = -b;
         c = -c;
       }
-      Standard_Real denom = Sqrt(1 - a * a);
-      Standard_Real Sina  = Sin(Angle);
-      if (denom > Abs(Sina))
+      Standard_Real denom = std::sqrt(1 - a * a);
+      Standard_Real Sina  = std::sin(Angle);
+      if (denom > std::abs(Sina))
       {
-        Standard_Real phi    = ATan2(b / denom, c / denom);
-        Standard_Real theta0 = ACos(Sina / denom);
+        Standard_Real phi    = std::atan2(b / denom, c / denom);
+        Standard_Real theta0 = std::acos(Sina / denom);
         theta                = theta0 - phi;
-        if (Cos(theta) < 0.)
+        if (std::cos(theta) < 0.)
         {
           theta = -theta0 - phi;
         }
         //  modified by NIZHNY-EAP Tue Nov 16 15:51:38 1999 ___BEGIN___
-        while (Abs(theta) > M_PI)
+        while (std::abs(theta) > M_PI)
         {
           theta = theta + M_PI * (theta < 0 ? 1 : -1);
         }

@@ -107,7 +107,7 @@ Standard_Boolean IGESGeom_BSplineCurve::IsPolynomial(const Standard_Boolean flag
   Standard_Integer i, i1 = theWeights->Lower(), i2 = theWeights->Upper();
   Standard_Real    w0 = theWeights->Value(i1);
   for (i = i1 + 1; i <= i2; i++)
-    if (Abs(theWeights->Value(i) - w0) > 1.e-10)
+    if (std::abs(theWeights->Value(i) - w0) > 1.e-10)
       return Standard_False;
   return Standard_True;
 }

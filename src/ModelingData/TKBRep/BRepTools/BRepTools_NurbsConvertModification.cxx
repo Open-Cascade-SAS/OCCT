@@ -257,24 +257,24 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface(const TopoDS_Fac
   V2 = curvV2;
   S->Bounds(surfU1, surfU2, surfV1, surfV2);
 
-  if (Abs(U1 - surfU1) <= TolPar)
+  if (std::abs(U1 - surfU1) <= TolPar)
     U1 = surfU1;
-  if (Abs(U2 - surfU2) <= TolPar)
+  if (std::abs(U2 - surfU2) <= TolPar)
     U2 = surfU2;
-  if (Abs(V1 - surfV1) <= TolPar)
+  if (std::abs(V1 - surfV1) <= TolPar)
     V1 = surfV1;
-  if (Abs(V2 - surfV2) <= TolPar)
+  if (std::abs(V2 - surfV2) <= TolPar)
     V2 = surfV2;
 
   if (!IsUp)
   {
-    U1 = Max(surfU1, curvU1);
-    U2 = Min(surfU2, curvU2);
+    U1 = std::max(surfU1, curvU1);
+    U2 = std::min(surfU2, curvU2);
   }
   if (!IsVp)
   {
-    V1 = Max(surfV1, curvV1);
-    V2 = Min(surfV2, curvV2);
+    V1 = std::max(surfV1, curvV1);
+    V2 = std::min(surfV2, curvV2);
   }
   //<-OCC466(apo)
 
@@ -291,49 +291,8 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface(const TopoDS_Fac
       V2 = V1 + Vp;
   }
 
-  /*
-  if(IsUp && IsVp) {
-    Standard_Real dU = Abs(U2 - U1), dV = Abs(V2 - V1);
-    Standard_Real Up = S->UPeriod(), Vp = S->VPeriod();
-    if(Abs(dU - Up) <= TolPar && U2 <= Up) {
-      if(Abs(dV - Vp) <= TolPar && V2 <= Vp) { }
-      else {
-    SS = new Geom_RectangularTrimmedSurface(S, V1+1e-9, V2-1e-9, Standard_False);
-      }
-    }
-    else {
-      if(Abs(dV - Vp) <= TolPar && V2 <= Vp)
-    SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, Standard_True);
-      else
-    SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, V1+1e-9, V2-1e-9);
-    }
-  }
-
-  if(IsUp && !IsVp) {
-    Standard_Real dU = Abs(U2 - U1);
-    Standard_Real Up = S->UPeriod();
-    if(Abs(dU - Up) <= TolPar && U2 <= Up)
-      SS = new Geom_RectangularTrimmedSurface(S, V1+1e-9, V2-1e-9, Standard_False);
-    else
-      SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, V1+1e-9, V2-1e-9);
-  }
-
-  if(!IsUp && IsVp) {
-    Standard_Real dV = Abs(V2 - V1);
-    Standard_Real Vp = S->VPeriod();
-    if(Abs(dV - Vp) <= TolPar && V2 <= Vp)
-      SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, Standard_True);
-    else
-      SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, V1+1e-9, V2-1e-9);
-  }
-
-  if(!IsUp && !IsVp) {
-    SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, V1+1e-9, V2-1e-9);
-  }
-  */
-
-  if (Abs(surfU1 - U1) > Tol || Abs(surfU2 - U2) > Tol || Abs(surfV1 - V1) > Tol
-      || Abs(surfV2 - V2) > Tol)
+  if (std::abs(surfU1 - U1) > Tol || std::abs(surfU2 - U2) > Tol || std::abs(surfV1 - V1) > Tol
+      || std::abs(surfV2 - V2) > Tol)
     S = new Geom_RectangularTrimmedSurface(S, U1, U2, V1, V2);
   S->Bounds(surfU1, surfU2, surfV1, surfV2);
 
@@ -345,11 +304,11 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface(const TopoDS_Fac
   // on recadre les bornes de S  sinon les anciennes PCurves sont aux fraises
   //
 
-  if (Abs(curvU1 - surfU1) > UTol && !BS->IsUPeriodic())
+  if (std::abs(curvU1 - surfU1) > UTol && !BS->IsUPeriodic())
   {
     GeomLib_ChangeUBounds(BS, U1, U2);
   }
-  if (Abs(curvV1 - surfV1) > VTol && !BS->IsVPeriodic())
+  if (std::abs(curvV1 - surfV1) > VTol && !BS->IsVPeriodic())
   {
     GeomLib_ChangeVBounds(BS, V1, V2);
   }
@@ -457,8 +416,8 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve(const TopoDS_Edge&
   if (C->IsPeriodic())
   {
     Standard_Real p = C->Period();
-    Standard_Real d = Abs(l - f);
-    if (Abs(d - p) <= TolPar && l <= p)
+    Standard_Real d = std::abs(l - f);
+    if (std::abs(d - p) <= TolPar && l <= p)
     {
     }
     else
@@ -482,7 +441,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve(const TopoDS_Edge&
   if (!BC->IsPeriodic())
   {
     BC->Resolution(Tol, UTol);
-    if (Abs(f - fnew) > UTol || Abs(l - lnew) > UTol)
+    if (std::abs(f - fnew) > UTol || std::abs(l - lnew) > UTol)
     {
       TColStd_Array1OfReal knots(1, BC->NbKnots());
       BC->Knots(knots);
@@ -723,11 +682,11 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d(const TopoDS_Edg
         Standard_Real aMinDist = Precision::Infinite();
         if (S->IsUPeriodic())
         {
-          aMinDist = Min(0.5 * S->UPeriod(), aMinDist);
+          aMinDist = std::min(0.5 * S->UPeriod(), aMinDist);
         }
         if (S->IsVPeriodic())
         {
-          aMinDist = Min(0.5 * S->VPeriod(), aMinDist);
+          aMinDist = std::min(0.5 * S->VPeriod(), aMinDist);
         }
         aMinDist *= aMinDist;
         // Old domain
@@ -938,7 +897,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewPolygonOnTriangulation(
   // update parameters of 2D polygon
   if (thePoly->HasParameters())
   {
-    Standard_Real        aTol = Max(BRep_Tool::Tolerance(theEdge), thePoly->Deflection());
+    Standard_Real        aTol = std::max(BRep_Tool::Tolerance(theEdge), thePoly->Deflection());
     TopLoc_Location      aLoc;
     Handle(Geom_Surface) aSurf    = BRep_Tool::Surface(theFace, aLoc);
     Handle(Geom_Surface) aNewSurf = newSurface(myMap, theFace);
@@ -949,7 +908,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewPolygonOnTriangulation(
     {
       // compute 2D tolerance
       GeomAdaptor_Surface aSurfAdapt(aSurf);
-      Standard_Real       aTol2D = Max(aSurfAdapt.UResolution(aTol), aSurfAdapt.VResolution(aTol));
+      Standard_Real aTol2D = std::max(aSurfAdapt.UResolution(aTol), aSurfAdapt.VResolution(aTol));
 
       for (Standard_Integer anInd = 1; anInd <= thePoly->NbNodes(); ++anInd)
       {

@@ -1203,15 +1203,15 @@ static Standard_Integer vecdc(Draw_Interpretor& di, Standard_Integer, const char
   P2.SetCoord((Standard_Real)X / z, (Standard_Real)Y / z, 0.0);
   P2.Transform(T);
   Standard_Real xa, ya, za;
-  if (Abs(P1.X()) > Abs(P2.X()))
+  if (std::abs(P1.X()) > std::abs(P2.X()))
     xa = P1.X();
   else
     xa = P2.X();
-  if (Abs(P1.Y()) > Abs(P2.Y()))
+  if (std::abs(P1.Y()) > std::abs(P2.Y()))
     ya = P1.Y();
   else
     ya = P2.Y();
-  if (Abs(P1.Z()) > Abs(P2.Z()))
+  if (std::abs(P1.Z()) > std::abs(P2.Z()))
     za = P1.Z();
   else
     za = P2.Z();
@@ -1234,15 +1234,15 @@ static Standard_Integer vecdc(Draw_Interpretor& di, Standard_Integer, const char
   z = dout.Zoom(id);
   PP2.SetCoord((Standard_Real)X / z, (Standard_Real)Y / z, 0.0);
   PP2.Transform(T);
-  if (Abs(PP1.X()) > Abs(PP2.X()))
+  if (std::abs(PP1.X()) > std::abs(PP2.X()))
     xa = PP1.X();
   else
     xa = PP2.X();
-  if (Abs(PP1.Y()) > Abs(PP2.Y()))
+  if (std::abs(PP1.Y()) > std::abs(PP2.Y()))
     ya = PP1.Y();
   else
     ya = PP2.Y();
-  if (Abs(PP1.Z()) > Abs(PP2.Z()))
+  if (std::abs(PP1.Z()) > std::abs(PP2.Z()))
     za = PP1.Z();
   else
     za = PP2.Z();
@@ -1256,17 +1256,18 @@ static Standard_Integer vecdc(Draw_Interpretor& di, Standard_Integer, const char
 
   static Standard_Integer nboxvecdp = 0;
   // std::cout<<"\nbox  b"<<++nboxvecdp<<" "<<Min(P1.X(),PP1.X())<<" "<<Min(P1.Y(),PP1.Y())<<"
-  // "<<Min(PP1.Z(),P1.Z()); std::cout<<"  "<<Abs(PP1.X()-P1.X())<<" "<<Abs(PP1.Y()-P1.Y())<<"
-  // "<<Abs(PP1.Z()-P1.Z())<<std::endl;
+  // "<<Min(PP1.Z(),P1.Z()); std::cout<<"  "<<std::abs(PP1.X()-P1.X())<<"
+  // "<<std::abs(PP1.Y()-P1.Y())<<"
+  // "<<std::abs(PP1.Z()-P1.Z())<<std::endl;
 
   // std::cout<<"\nDistance :"<<sqrt( (PP1.X()-P1.X())*(PP1.X()-P1.X())
   //		     +(PP1.Y()-P1.Y())*(PP1.Y()-P1.Y())
   //		     +(PP1.Z()-P1.Z())*(PP1.Z()-P1.Z()))<<std::endl;
 
-  di << "\nbox  b" << ++nboxvecdp << " " << Min(P1.X(), PP1.X()) << " " << Min(P1.Y(), PP1.Y())
-     << " " << Min(PP1.Z(), P1.Z());
-  di << "  " << Abs(PP1.X() - P1.X()) << " " << Abs(PP1.Y() - P1.Y()) << " "
-     << Abs(PP1.Z() - P1.Z()) << "\n";
+  di << "\nbox  b" << ++nboxvecdp << " " << std::min(P1.X(), PP1.X()) << " "
+     << std::min(P1.Y(), PP1.Y()) << " " << std::min(PP1.Z(), P1.Z());
+  di << "  " << std::abs(PP1.X() - P1.X()) << " " << std::abs(PP1.Y() - P1.Y()) << " "
+     << std::abs(PP1.Z() - P1.Z()) << "\n";
 
   di << "\nDistance :"
      << sqrt((PP1.X() - P1.X()) * (PP1.X() - P1.X()) + (PP1.Y() - P1.Y()) * (PP1.Y() - P1.Y())
@@ -1326,7 +1327,7 @@ static Standard_Integer nproject(Draw_Interpretor& di, Standard_Integer n, const
     }
   if (n > arg)
   {
-    Tol = Max(Draw::Atof(a[arg++]), 1.e-10);
+    Tol = std::max(Draw::Atof(a[arg++]), 1.e-10);
   }
 
   if (n > arg)
@@ -1348,7 +1349,7 @@ static Standard_Integer nproject(Draw_Interpretor& di, Standard_Integer n, const
   if (n > arg)
     MaxSeg = Draw::Atoi(a[arg]);
 
-  Tol2d = Pow(Tol, 2. / 3);
+  Tol2d = std::pow(Tol, 2. / 3);
 
   OrtProj.SetParams(Tol, Tol2d, Continuity, MaxDeg, MaxSeg);
   OrtProj.Build();

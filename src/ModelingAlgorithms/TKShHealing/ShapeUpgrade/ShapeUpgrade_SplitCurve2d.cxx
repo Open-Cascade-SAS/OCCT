@@ -63,9 +63,9 @@ void ShapeUpgrade_SplitCurve2d::Init(const Handle(Geom2d_Curve)& C,
   {
     Standard_Real fP = aCurve->FirstParameter();
     Standard_Real lP = aCurve->LastParameter();
-    if (Abs(firstPar - fP) < precision)
+    if (std::abs(firstPar - fP) < precision)
       firstPar = fP;
-    if (Abs(lastPar - lP) < precision)
+    if (std::abs(lastPar - lP) < precision)
       lastPar = lP;
     if (firstPar < fP)
     {
@@ -151,8 +151,8 @@ void ShapeUpgrade_SplitCurve2d::Build(const Standard_Boolean Segment)
   if (myNbCurves == 1)
   {
     Standard_Boolean filled = Standard_True;
-    if (Abs(myCurve->FirstParameter() - First) < Precision::PConfusion()
-        && Abs(myCurve->LastParameter() - Last) < Precision::PConfusion())
+    if (std::abs(myCurve->FirstParameter() - First) < Precision::PConfusion()
+        && std::abs(myCurve->LastParameter() - Last) < Precision::PConfusion())
       myResultingCurves->SetValue(1, myCurve);
 
     else if (!Segment

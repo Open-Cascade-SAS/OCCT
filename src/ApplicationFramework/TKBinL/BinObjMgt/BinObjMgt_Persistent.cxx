@@ -104,7 +104,7 @@ Standard_OStream& BinObjMgt_Persistent::Write(Standard_OStream&      theOS,
 #endif
   for (Standard_Integer i = 1; theOS && nbWritten < mySize && i <= myData.Length(); i++)
   {
-    Standard_Integer nbToWrite = Min(mySize - nbWritten, BP_PIECESIZE);
+    Standard_Integer nbToWrite = std::min(mySize - nbWritten, BP_PIECESIZE);
     theOS.write((char*)myData(i), nbToWrite);
     nbWritten += nbToWrite;
   }
@@ -163,7 +163,7 @@ Standard_IStream& BinObjMgt_Persistent::Read(Standard_IStream& theIS)
           Standard_Address aPiece = Standard::Allocate(BP_PIECESIZE);
           myData.Append(aPiece);
         }
-        Standard_Integer nbToRead = Min(mySize - nbRead, BP_PIECESIZE);
+        Standard_Integer nbToRead = std::min(mySize - nbRead, BP_PIECESIZE);
         char*            ptr      = (char*)myData(i);
         if (i == 1)
         {
@@ -972,7 +972,7 @@ void BinObjMgt_Persistent::putArray(const Standard_Address theArray, const Stand
       myIndex++;
       myOffset = 0;
     }
-    Standard_Integer aLenInPiece = Min(aLen, BP_PIECESIZE - myOffset);
+    Standard_Integer aLenInPiece = std::min(aLen, BP_PIECESIZE - myOffset);
     char*            aData       = (char*)myData(myIndex) + myOffset;
     memcpy(aData, aPtr, aLenInPiece);
     aLen -= aLenInPiece;
@@ -999,7 +999,7 @@ void BinObjMgt_Persistent::getArray(const Standard_Address theArray,
       me->myIndex++;
       me->myOffset = 0;
     }
-    Standard_Integer aLenInPiece = Min(aLen, BP_PIECESIZE - myOffset);
+    Standard_Integer aLenInPiece = std::min(aLen, BP_PIECESIZE - myOffset);
     char*            aData       = (char*)myData(myIndex) + myOffset;
     memcpy(aPtr, aData, aLenInPiece);
     aLen -= aLenInPiece;
@@ -1022,7 +1022,7 @@ void BinObjMgt_Persistent::inverseExtCharData(const Standard_Integer theIndex,
   Standard_Integer aLen     = theSize;
   while (aLen > 0)
   {
-    Standard_Integer       aLenInPiece = Min(aLen, BP_PIECESIZE - anOffset);
+    Standard_Integer       aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
     Standard_ExtCharacter* aData = (Standard_ExtCharacter*)((char*)myData(anIndex) + anOffset);
     for (Standard_Integer i = 0; i < aLenInPiece / BP_EXTCHARSIZE; i++)
       aData[i] = FSD_BinaryFile::InverseExtChar(aData[i]);
@@ -1050,7 +1050,7 @@ void BinObjMgt_Persistent::inverseIntData(const Standard_Integer theIndex,
   Standard_Integer aLen     = theSize;
   while (aLen > 0)
   {
-    Standard_Integer  aLenInPiece = Min(aLen, BP_PIECESIZE - anOffset);
+    Standard_Integer  aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
     Standard_Integer* aData       = (Standard_Integer*)((char*)myData(anIndex) + anOffset);
     for (Standard_Integer i = 0; i < aLenInPiece / BP_INTSIZE; i++)
       aData[i] = FSD_BinaryFile::InverseInt(aData[i]);
@@ -1085,7 +1085,7 @@ void BinObjMgt_Persistent::inverseRealData(const Standard_Integer theIndex,
   void* aPrevPtr = 0;
   while (aLen > 0)
   {
-    Standard_Integer aLenInPiece = Min(aLen, BP_PIECESIZE - anOffset);
+    Standard_Integer aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
 
     aWrapUnion.aRealData = (Standard_Real*)((char*)myData(anIndex) + anOffset);
 
@@ -1126,7 +1126,7 @@ void BinObjMgt_Persistent::inverseShortRealData(const Standard_Integer theIndex,
   Standard_Integer aLen     = theSize;
   while (aLen > 0)
   {
-    Standard_Integer    aLenInPiece = Min(aLen, BP_PIECESIZE - anOffset);
+    Standard_Integer    aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
     Standard_ShortReal* aData       = (Standard_ShortReal*)((char*)myData(anIndex) + anOffset);
     for (Standard_Integer i = 0; i < aLenInPiece / BP_INTSIZE; i++)
       aData[i] = FSD_BinaryFile::InverseShortReal(aData[i]);

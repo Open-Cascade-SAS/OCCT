@@ -48,7 +48,7 @@ Standard_Real BRepMesh_Deflection::ComputeAbsoluteDeflection(
   Standard_Real aX1, aY1, aZ1, aX2, aY2, aZ2;
   aBox.Get(aX1, aY1, aZ1, aX2, aY2, aZ2);
   const Standard_Real aMaxShapeSize =
-    (theMaxShapeSize > 0.0) ? theMaxShapeSize : Max(aX2 - aX1, Max(aY2 - aY1, aZ2 - aZ1));
+    (theMaxShapeSize > 0.0) ? theMaxShapeSize : std::max(aX2 - aX1, std::max(aY2 - aY1, aZ2 - aZ1));
 
   Standard_Real anAdjustmentCoefficient = aMaxShapeSize / (2 * aShapeSize);
   if (anAdjustmentCoefficient < 0.5)
@@ -90,9 +90,9 @@ void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IEdgeHandle& theDEd
     const Standard_Real aDistL =
       aLastVertex.IsNull() ? -1.0 : BRep_Tool::Pnt(aLastVertex).Distance(aCurve->Value(aLastParam));
 
-    const Standard_Real aVertexAdjustDistance = Max(aDistF, aDistL);
+    const Standard_Real aVertexAdjustDistance = std::max(aDistF, aDistL);
 
-    aLinDeflection = Max(aVertexAdjustDistance, aLinDeflection);
+    aLinDeflection = std::max(aVertexAdjustDistance, aLinDeflection);
   }
 
   theDEdge->SetDeflection(aLinDeflection);
@@ -147,9 +147,9 @@ void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IFaceHandle& theDFa
     }
 
     aFaceDeflection =
-      Max(2. * BRepMesh_ShapeTool::MaxFaceTolerance(theDFace->GetFace()), aFaceDeflection);
+      std::max(2. * BRepMesh_ShapeTool::MaxFaceTolerance(theDFace->GetFace()), aFaceDeflection);
   }
-  aFaceDeflection = Max(aDeflection, aFaceDeflection);
+  aFaceDeflection = std::max(aDeflection, aFaceDeflection);
 
   theDFace->SetDeflection(aFaceDeflection);
 }

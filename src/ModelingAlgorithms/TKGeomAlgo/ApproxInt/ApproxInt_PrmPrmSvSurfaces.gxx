@@ -347,7 +347,7 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf2(const Standard_Real
   DeltaU = (TgTU - TgTV * TUTV ) / UmTUTV2 ; 
   DeltaV = (TgTV - TgTU * TUTV ) / UmTUTV2 ;
 
-  Delta = 1.0 / Sqrt(DeltaU * DeltaU + DeltaV * DeltaV);
+  Delta = 1.0 / std::sqrt(DeltaU * DeltaU + DeltaV * DeltaV);
   
   Tguv1.Multiplied(Delta);  MyTguv1 = Tguv1;
 
@@ -364,7 +364,7 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf2(const Standard_Real
   DeltaU = (TgTU - TgTV * TUTV ) / UmTUTV2 ; 
   DeltaV = (TgTV - TgTU * TUTV ) / UmTUTV2 ;
   
-  Delta = 1.0 / Sqrt(DeltaU * DeltaU + DeltaV * DeltaV);
+  Delta = 1.0 / std::sqrt(DeltaU * DeltaU + DeltaV * DeltaV);
   
   Tguv2.Multiplied(Delta);  MyTguv2 = Tguv2;
 

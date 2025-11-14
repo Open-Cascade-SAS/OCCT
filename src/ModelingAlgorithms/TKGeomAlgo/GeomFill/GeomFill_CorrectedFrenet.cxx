@@ -149,7 +149,7 @@ static void smoothlaw(Handle(Law_BSpline)&                 Law,
     tol = 0.;
     for (ii = 1; ii <= Param->Length() && Ok; ii++)
     {
-      d = Abs(BS->Value(Param->Value(ii)) - Points->Value(ii));
+      d = std::abs(BS->Value(Param->Value(ii)) - Points->Value(ii));
       if (d > tol)
         tol = d;
       Ok = (tol <= Tol);
@@ -186,7 +186,7 @@ static void smoothlaw(Handle(Law_BSpline)&                 Law,
     tol = 0.;
     for (ii = 1; ii <= Param->Length() && Ok; ii++)
     {
-      d = Abs(BS->Value(Param->Value(ii)) - Points->Value(ii));
+      d = std::abs(BS->Value(Param->Value(ii)) - Points->Value(ii));
       if (d > tol)
         tol = d;
       Ok = (tol <= Tol);
@@ -319,7 +319,7 @@ static Standard_Boolean FindPlane(const Handle(Adaptor3d_Curve)& theC, Handle(Ge
       {
         const gp_XYZ& xyz = TabP->Value(ii).XYZ();
         dist              = a * xyz.X() + b * xyz.Y() + c * xyz.Z() + d;
-        found             = (Abs(dist) <= Precision::Confusion());
+        found             = (std::abs(dist) <= Precision::Confusion());
       }
       return found;
     }
@@ -438,7 +438,7 @@ void GeomFill_CorrectedFrenet::Init()
   AvStep = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / NbStep;
   for (i = 1; i <= NbI; i++)
   {
-    NbStep = Max(Standard_Integer((T(i + 1) - T(i)) / AvStep), 3);
+    NbStep = std::max(Standard_Integer((T(i + 1) - T(i)) / AvStep), 3);
     Step   = (T(i + 1) - T(i)) / NbStep;
     if (!InitInterval(T(i),
                       T(i + 1),
@@ -541,7 +541,7 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
   {
     if (currParam > DLast)
     {
-      if (Abs(DLast - Param) < Precision::SquareConfusion())
+      if (std::abs(DLast - Param) < Precision::SquareConfusion())
       {
         Param = currParam;
       }
@@ -566,7 +566,7 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
       angleAT = CalcAngleAT(Tangent, Normal, prevTangent, prevNormal);
 
       if (isConst && i > 1)
-        if (Abs(angleAT) > Precision::PConfusion())
+        if (std::abs(angleAT) > Precision::PConfusion())
           isConst = Standard_False;
 
       angleAT += (i > 1) ? EvolAT(i - 1) : startAng;
@@ -574,19 +574,23 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
       prevNormal = Normal;
 
       if (isZero)
-        if (Abs(angleAT) > Precision::PConfusion())
+        if (std::abs(angleAT) > Precision::PConfusion())
           isZero = Standard_False;
 
       aT += Tangent;
       cross = Tangent.Crossed(Normal);
-      aN.SetLinearForm(Sin(angleAT), cross, 1 - Cos(angleAT), Tangent.Crossed(cross), Normal + aN);
+      aN.SetLinearForm(std::sin(angleAT),
+                       cross,
+                       1 - std::cos(angleAT),
+                       Tangent.Crossed(cross),
+                       Normal + aN);
       prevTangent = Tangent;
       Param       = currParam;
       i++;
 
       // Evaluate the Next step
       CS.D1(Param, PonC, D1);
-      Standard_Real L    = Max(PonC.XYZ().Modulus() / 2, LengthMin);
+      Standard_Real L    = std::max(PonC.XYZ().Modulus() / 2, LengthMin);
       Standard_Real norm = D1.Magnitude();
       if (norm < Precision::Confusion())
       {
@@ -655,7 +659,7 @@ Standard_Real GeomFill_CorrectedFrenet::CalcAngleAT(const gp_Vec& Tangent,
   Standard_Real angle;
   gp_Vec        Normal_rot, cross;
   angle = Tangent.Angle(prevTangent);
-  if (Abs(angle) > Precision::Angular() && Abs(angle) < M_PI - Precision::Angular())
+  if (std::abs(angle) > Precision::Angular() && std::abs(angle) < M_PI - Precision::Angular())
   {
     cross      = Tangent.Crossed(prevTangent).Normalized();
     Normal_rot = Normal + sin(angle) * cross.Crossed(Normal)
@@ -681,7 +685,7 @@ static Standard_Real corr2PI_PI(Standard_Real Ang)
 
 static Standard_Real diffAng(Standard_Real A, Standard_Real Ao)
 {
-  Standard_Real dA = (A - Ao) - Floor((A - Ao) / 2.0 / M_PI) * 2.0 * M_PI;
+  Standard_Real dA = (A - Ao) - std::floor((A - Ao) / 2.0 / M_PI) * 2.0 * M_PI;
   return dA        = dA >= 0 ? corr2PI_PI(dA) : -corr2PI_PI(-dA);
 }
 
@@ -718,7 +722,7 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
   Standard_Real DAng = CalcAngleAT(Tangent, Normal, HArrTangent->Value(iC), HArrNormal->Value(iC));
   Standard_Real DA   = diffAng(DAng, dAng);
   // The correction (there is core of OCC78 bug)
-  if (Abs(DA) > M_PI / 2.0)
+  if (std::abs(DA) > M_PI / 2.0)
   {
     AngP = AngPo + DAng;
   };
@@ -743,7 +747,11 @@ Standard_Boolean GeomFill_CorrectedFrenet::D0(const Standard_Real Param,
   // rotation around Tangent
   gp_Vec cross;
   cross = Tangent.Crossed(Normal);
-  Normal.SetLinearForm(Sin(angleAT), cross, (1 - Cos(angleAT)), Tangent.Crossed(cross), Normal);
+  Normal.SetLinearForm(std::sin(angleAT),
+                       cross,
+                       (1 - std::cos(angleAT)),
+                       Tangent.Crossed(cross),
+                       Normal);
   BiNormal = Tangent.Crossed(Normal);
 
   return Standard_True;
@@ -770,8 +778,8 @@ Standard_Boolean GeomFill_CorrectedFrenet::D1(const Standard_Real Param,
   angleAT = GetAngleAT(Param); // OCC78
 
   gp_Vec cross, dcross, tcross, dtcross, aux;
-  sina = Sin(angleAT);
-  cosa = Cos(angleAT);
+  sina = std::sin(angleAT);
+  cosa = std::cos(angleAT);
 
   cross = Tangent.Crossed(Normal);
   dcross.SetLinearForm(1, DTangent.Crossed(Normal), Tangent.Crossed(DNormal));
@@ -836,8 +844,8 @@ Standard_Boolean GeomFill_CorrectedFrenet::D2(const Standard_Real Param,
   angleAT = GetAngleAT(Param); // OCC78
 
   gp_Vec cross, dcross, d2cross, tcross, dtcross, d2tcross, aux;
-  sina  = Sin(angleAT);
-  cosa  = Cos(angleAT);
+  sina  = std::sin(angleAT);
+  cosa  = std::cos(angleAT);
   cross = Tangent.Crossed(Normal);
   dcross.SetLinearForm(1, DTangent.Crossed(Normal), Tangent.Crossed(DNormal));
   d2cross.SetLinearForm(1,
@@ -1008,7 +1016,7 @@ GeomFill_Trihedron GeomFill_CorrectedFrenet::EvaluateBestMode()
     tmin                  = Int(i);
     tmax                  = Int(i + 1);
     Standard_Real Torsion = ComputeTorsion(tmin, myTrimmed);
-    if (Abs(Torsion) > MaxTorsion)
+    if (std::abs(Torsion) > MaxTorsion)
       return GeomFill_IsDiscreteTrihedron; // DiscreteTrihedron
 
     Handle(Law_Function) trimmedlaw = EvolAroundT->Trim(tmin, tmax, Precision::PConfusion() / 2);
@@ -1024,7 +1032,7 @@ GeomFill_Trihedron GeomFill_CorrectedFrenet::EvaluateBestMode()
         if (k > 2)
         {
           Standard_Real theAngle = PrevVec.Angle(aVec);
-          if (Abs(theAngle) > MaxAngle)
+          if (std::abs(theAngle) > MaxAngle)
             return GeomFill_IsDiscreteTrihedron; // DiscreteTrihedron
         }
         PrevVec = aVec;

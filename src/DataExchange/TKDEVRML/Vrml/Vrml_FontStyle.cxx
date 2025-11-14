@@ -56,7 +56,7 @@ Standard_OStream& Vrml_FontStyle::Print(Standard_OStream& anOStream) const
 {
   anOStream << "FontStyle {\n";
 
-  if (Abs(mySize - 10) > 0.0001)
+  if (std::abs(mySize - 10) > 0.0001)
   {
     anOStream << "    size\t";
     anOStream << mySize << "\n";

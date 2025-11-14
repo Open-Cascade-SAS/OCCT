@@ -65,9 +65,9 @@ T DistanceToBox(const typename VectorType<T, N>::Type& thePnt,
 {
   Standard_STATIC_ASSERT(N == 3 || N == 4);
 
-  T aNearestX = Min(Max(thePnt.x(), theMin.x()), theMax.x());
-  T aNearestY = Min(Max(thePnt.y(), theMin.y()), theMax.y());
-  T aNearestZ = Min(Max(thePnt.z(), theMin.z()), theMax.z());
+  T aNearestX = std::min(std::max(thePnt.x(), theMin.x()), theMax.x());
+  T aNearestY = std::min(std::max(thePnt.y(), theMin.y()), theMax.y());
+  T aNearestZ = std::min(std::max(thePnt.z(), theMin.z()), theMax.z());
 
   if (aNearestX == thePnt.x() && aNearestY == thePnt.y() && aNearestZ == thePnt.z())
   {
@@ -423,15 +423,16 @@ Standard_Boolean BVH_DistanceField<T, N>::Build(BVH_Geometry<T, N>& theGeometry)
 
   const BVH_VecNt aGlobalBoxSize = theGeometry.Box().Size();
 
-  const T aMaxBoxSide = Max(Max(aGlobalBoxSize.x(), aGlobalBoxSize.y()), aGlobalBoxSize.z());
+  const T aMaxBoxSide =
+    std::max(std::max(aGlobalBoxSize.x(), aGlobalBoxSize.y()), aGlobalBoxSize.z());
 
   myDimensionX = static_cast<Standard_Integer>(myMaximumSize * aGlobalBoxSize.x() / aMaxBoxSide);
   myDimensionY = static_cast<Standard_Integer>(myMaximumSize * aGlobalBoxSize.y() / aMaxBoxSide);
   myDimensionZ = static_cast<Standard_Integer>(myMaximumSize * aGlobalBoxSize.z() / aMaxBoxSide);
 
-  myDimensionX = Min(myMaximumSize, Max(myDimensionX, 16));
-  myDimensionY = Min(myMaximumSize, Max(myDimensionY, 16));
-  myDimensionZ = Min(myMaximumSize, Max(myDimensionZ, 16));
+  myDimensionX = std::min(myMaximumSize, std::max(myDimensionX, 16));
+  myDimensionY = std::min(myMaximumSize, std::max(myDimensionY, 16));
+  myDimensionZ = std::min(myMaximumSize, std::max(myDimensionZ, 16));
 
   const BVH_VecNt aGlobalBoxMin = theGeometry.Box().CornerMin();
   const BVH_VecNt aGlobalBoxMax = theGeometry.Box().CornerMax();

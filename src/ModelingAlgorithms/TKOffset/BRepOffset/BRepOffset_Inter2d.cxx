@@ -118,7 +118,7 @@ static Standard_Integer DefineClosedness(const TopoDS_Face& theFace)
       gp_Vec2d             aTangent    = aPCurve->DN(fpar, 1);
       Standard_Real        aCrossProd1 = aTangent ^ gp::DX2d();
       Standard_Real        aCrossProd2 = aTangent ^ gp::DY2d();
-      if (Abs(aCrossProd2) < Abs(aCrossProd1)) // pcurve is parallel to OY
+      if (std::abs(aCrossProd2) < std::abs(aCrossProd1)) // pcurve is parallel to OY
         return 1;
       else
         return 2;
@@ -203,9 +203,9 @@ static void GetEdgesOrientedInFace(const TopoDS_Shape&           theShape,
         Standard_Real               aParam2 = BRep_Tool::Parameter(aVertex, anEdge2);
         BRepAdaptor_Curve2d         aBAcurve1(anEdge1, theFace);
         BRepAdaptor_Curve2d         aBAcurve2(anEdge2, theFace);
-        gp_Pnt2d                    aPnt1  = aBAcurve1.Value(aParam1);
-        gp_Pnt2d                    aPnt2  = aBAcurve2.Value(aParam2);
-        Standard_Real               aDelta = Abs(aPnt1.Coord(IndCoord) - aPnt2.Coord(IndCoord));
+        gp_Pnt2d                    aPnt1 = aBAcurve1.Value(aParam1);
+        gp_Pnt2d                    aPnt2 = aBAcurve2.Value(aParam2);
+        Standard_Real aDelta              = std::abs(aPnt1.Coord(IndCoord) - aPnt2.Coord(IndCoord));
         if (aDelta > aMaxDelta)
         {
           aMaxDelta    = aDelta;
@@ -442,7 +442,7 @@ static void EdgeInter(const TopoDS_Face&                         F,
     BRepLib::BuildCurve3d(E2);
 
     Standard_Real TolSum = BRep_Tool::Tolerance(E1) + BRep_Tool::Tolerance(E2);
-    TolSum               = Max(TolSum, 1.e-5);
+    TolSum               = std::max(TolSum, 1.e-5);
 
     TColgp_SequenceOfPnt   ResPoints;
     TColStd_SequenceOfReal ResParamsOnE1, ResParamsOnE2;
@@ -508,8 +508,8 @@ static void EdgeInter(const TopoDS_Face&                         F,
       dist1 = P1.Distance(P);
       dist2 = P2.Distance(P);
       dist3 = P1.Distance(P2);
-      dist1 = Max(dist1, dist2);
-      dist1 = Max(dist1, dist3);
+      dist1 = std::max(dist1, dist2);
+      dist1 = std::max(dist1, dist3);
       B.UpdateVertex(aNewVertex, dist1);
 
 #ifdef OCCT_DEBUG
@@ -553,7 +553,7 @@ static void EdgeInter(const TopoDS_Face&                         F,
           V2or.Reverse();
         Standard_Real CrossProd = V2or ^ V1;
 #ifdef OCCT_DEBUG
-        if (Abs(CrossProd) <= gp::Resolution())
+        if (std::abs(CrossProd) <= gp::Resolution())
           std::cout << std::endl << "CrossProd = " << CrossProd << std::endl;
 #endif
         if (CrossProd > 0.)
@@ -598,7 +598,7 @@ static void EdgeInter(const TopoDS_Face&                         F,
       Standard_Real Dist = P1.Distance(P2);
       if (Dist < TolConf)
       {
-        Standard_Real aTol = Max(BRep_Tool::Tolerance(V1[j]), BRep_Tool::Tolerance(V2[k]));
+        Standard_Real aTol = std::max(BRep_Tool::Tolerance(V1[j]), BRep_Tool::Tolerance(V2[k]));
         TopoDS_Vertex V    = BRepLib_MakeVertex(P1);
         U1                 = (j == 0) ? f[1] : l[1];
         U2                 = (k == 0) ? f[2] : l[2];
@@ -642,8 +642,8 @@ static void EdgeInter(const TopoDS_Face&                         F,
           //           if (P1.IsEqual(P2,10*Tol)) {
           Standard_Real aTol;
 
-          aTol = Max(BRep_Tool::Tolerance(TopoDS::Vertex(it1LV1.Value())),
-                     BRep_Tool::Tolerance(TopoDS::Vertex(it2LV1.Value())));
+          aTol = std::max(BRep_Tool::Tolerance(TopoDS::Vertex(it1LV1.Value())),
+                          BRep_Tool::Tolerance(TopoDS::Vertex(it2LV1.Value())));
           if (P1.IsEqual(P2, aTol))
           {
             //  Modified by skv - Thu Jan 22 18:19:05 2004 OCC4455 End
@@ -666,7 +666,7 @@ static void EdgeInter(const TopoDS_Face&                         F,
     // Vertex storage in DS.
     //---------------------------------
     Standard_Real TolStore = BRep_Tool::Tolerance(E1) + BRep_Tool::Tolerance(E2);
-    TolStore               = Max(TolStore, Tol);
+    TolStore               = std::max(TolStore, Tol);
     Store(E1, E2, LV1, LV2, TolStore, AsDes, aDMVV);
   }
 }
@@ -751,7 +751,7 @@ static void RefEdgeInter(const TopoDS_Face&                         F,
   if ((GAC1.GetType() == GeomAbs_Line) && (GAC2.GetType() == GeomAbs_Line))
   {
     // Just quickly check if lines coincide
-    Standard_Real anAngle = Abs(GAC1.Line().Direction().Angle(GAC2.Line().Direction()));
+    Standard_Real anAngle = std::abs(GAC1.Line().Direction().Angle(GAC2.Line().Direction()));
     if (anAngle <= 1.e-8 || M_PI - anAngle <= 1.e-8)
     {
       theCoincide = Standard_True;
@@ -762,7 +762,7 @@ static void RefEdgeInter(const TopoDS_Face&                         F,
       // Take into account the intersection range of line-line intersection
       // (the smaller angle between curves, the bigger range)
       TolLL = IntTools_Tools::ComputeIntRange(TolDub, TolDub, anAngle);
-      TolLL = Min(TolLL, 1.e-5);
+      TolLL = std::min(TolLL, 1.e-5);
     }
   }
 
@@ -813,8 +813,8 @@ static void RefEdgeInter(const TopoDS_Face&                         F,
     dist1 = P1.Distance(P);
     dist2 = P2.Distance(P);
     dist3 = P1.Distance(P2);
-    dist1 = Max(dist1, dist2);
-    dist1 = Max(dist1, dist3);
+    dist1 = std::max(dist1, dist2);
+    dist1 = std::max(dist1, dist3);
     B.UpdateVertex(aNewVertex, dist1);
 
 #ifdef OCCT_DEBUG
@@ -858,7 +858,7 @@ static void RefEdgeInter(const TopoDS_Face&                         F,
         V2or.Reverse();
       Standard_Real CrossProd = V2or ^ V1;
 #ifdef OCCT_DEBUG
-      if (Abs(CrossProd) <= gp::Resolution())
+      if (std::abs(CrossProd) <= gp::Resolution())
         std::cout << std::endl << "CrossProd = " << CrossProd << std::endl;
 #endif
       if (CrossProd > 0.)
@@ -1008,9 +1008,9 @@ static void RefEdgeInter(const TopoDS_Face&                         F,
 
     ////-----------------------------------------------------
     Standard_Real TolStore = BRep_Tool::Tolerance(E1) + BRep_Tool::Tolerance(E2);
-    TolStore               = Max(TolStore, Tol);
+    TolStore               = std::max(TolStore, Tol);
     // Compare to Line-Line tolerance
-    TolStore = Max(TolStore, TolLL);
+    TolStore = std::max(TolStore, TolLL);
     Store(E1, E2, LV1, LV2, TolStore, AsDes, aDMVV);
   }
 }
@@ -1030,13 +1030,13 @@ static Standard_Integer evaluateMaxSegment(const Adaptor3d_CurveOnSurface& aCurv
   if (aSurf->GetType() == GeomAbs_BSplineSurface)
   {
     Handle(Geom_BSplineSurface) aBSpline = aSurf->BSpline();
-    aNbSKnots                            = Max(aBSpline->NbUKnots(), aBSpline->NbVKnots());
+    aNbSKnots                            = std::max(aBSpline->NbUKnots(), aBSpline->NbVKnots());
   }
   if (aCurv2d->GetType() == GeomAbs_BSplineCurve)
   {
     aNbC2dKnots = aCurv2d->NbKnots();
   }
-  Standard_Integer aReturn = (Standard_Integer)(30 + Max(aNbSKnots, aNbC2dKnots));
+  Standard_Integer aReturn = (Standard_Integer)(30 + std::max(aNbSKnots, aNbC2dKnots));
   return aReturn;
 }
 
@@ -1098,7 +1098,7 @@ static Standard_Boolean ExtendPCurve(const Handle(Geom2d_Curve)& aPCurve,
   Handle(Geom2d_TrimmedCurve)           aSegment;
   Geom2dConvert_CompCurveToBSplineCurve aCompCurve(aTrCurve, Convert_RationalC1);
   constexpr Standard_Real               aTol   = Precision::Confusion();
-  Standard_Real                         aDelta = Max(a2Offset, 1.);
+  Standard_Real                         aDelta = std::max(a2Offset, 1.);
 
   if (FirstPar > anEf - a2Offset)
   {
@@ -1140,7 +1140,7 @@ Standard_Boolean BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge&  E,
   TopoDS_Shape     aLocalShape = E.EmptyCopied();
   Standard_Real    anEf;
   Standard_Real    anEl;
-  Standard_Real    a2Offset = 2. * Abs(theOffset);
+  Standard_Real    a2Offset = 2. * std::abs(theOffset);
   BRep_Builder     BB;
   Standard_Integer i, j;
 
@@ -1446,8 +1446,8 @@ Standard_Boolean BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge&  E,
               continue;
             FirstPar = (Handle(BRep_GCurve)::DownCast(CurveRep))->First();
             LastPar  = (Handle(BRep_GCurve)::DownCast(CurveRep))->Last();
-            if (Abs(FirstPar - FirstParOnPC) > Precision::PConfusion()
-                || Abs(LastPar - LastParOnPC) > Precision::PConfusion())
+            if (std::abs(FirstPar - FirstParOnPC) > Precision::PConfusion()
+                || std::abs(LastPar - LastParOnPC) > Precision::PConfusion())
             {
               theLoc = E.Location() * theLoc;
               theSurf =
@@ -1463,10 +1463,10 @@ Standard_Boolean BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge&  E,
                   Standard_Real U1, U2, V1, V2;
                   theSurf->Bounds(U1, U2, V1, V2);
                   gp_Pnt2d Origin = Handle(Geom2d_Line)::DownCast(theCurve)->Location();
-                  if (Abs(Origin.X() - U1) <= Precision::Confusion()
-                      || Abs(Origin.X() - U2) <= Precision::Confusion()
-                      || Abs(Origin.Y() - V1) <= Precision::Confusion()
-                      || Abs(Origin.Y() - V2) <= Precision::Confusion())
+                  if (std::abs(Origin.X() - U1) <= Precision::Confusion()
+                      || std::abs(Origin.X() - U2) <= Precision::Confusion()
+                      || std::abs(Origin.Y() - V1) <= Precision::Confusion()
+                      || std::abs(Origin.Y() - V2) <= Precision::Confusion())
                   {
                     BRepLib::SameParameter(NE, Precision::Confusion(), Standard_True);
                     break;
@@ -1518,7 +1518,7 @@ Standard_Boolean BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge&  E,
       Handle(Geom_TrimmedCurve)           aSegment;
       GeomConvert_CompCurveToBSplineCurve aCompCurve(aTrCurve, Convert_RationalC1);
       constexpr Standard_Real             aTol   = Precision::Confusion();
-      Standard_Real                       aDelta = Max(a2Offset, 1.);
+      Standard_Real                       aDelta = std::max(a2Offset, 1.);
 
       if (FirstPar > anEf - a2Offset)
       {

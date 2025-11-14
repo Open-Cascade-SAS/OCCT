@@ -200,13 +200,13 @@ Standard_Boolean GeomFill_DiscreteTrihedron::D0(const Standard_Real Param,
         break;
     }
     Index = I1;
-    if (Abs(Param - myKnots->Value(I2)) < TolPar)
+    if (std::abs(Param - myKnots->Value(I2)) < TolPar)
       Index = I2;
 
     Standard_Real PrevParam = myKnots->Value(Index);
     gp_Ax2        PrevAxis  = myTrihedrons->Value(Index);
     gp_Ax2        theAxis;
-    if (Abs(Param - PrevParam) < TolPar)
+    if (std::abs(Param - PrevParam) < TolPar)
       theAxis = PrevAxis;
     else //<Param> is between knots
     {

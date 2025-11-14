@@ -38,7 +38,7 @@ BRepMesh_CircleTool::BRepMesh_CircleTool(const Standard_Integer                 
     : myTolerance(Precision::PConfusion()),
       myAllocator(theAllocator),
       myCellFilter(10.0, theAllocator),
-      mySelector(myTolerance, Max(theReservedSize, 64), theAllocator)
+      mySelector(myTolerance, std::max(theReservedSize, 64), theAllocator)
 {
 }
 
@@ -51,10 +51,10 @@ void BRepMesh_CircleTool::bind(const Standard_Integer theIndex,
   BRepMesh_Circle aCirle(theLocation, theRadius);
 
   // compute coords
-  Standard_Real aMaxX = Min(theLocation.X() + theRadius, myFaceMax.X());
-  Standard_Real aMinX = Max(theLocation.X() - theRadius, myFaceMin.X());
-  Standard_Real aMaxY = Min(theLocation.Y() + theRadius, myFaceMax.Y());
-  Standard_Real aMinY = Max(theLocation.Y() - theRadius, myFaceMin.Y());
+  Standard_Real aMaxX = std::min(theLocation.X() + theRadius, myFaceMax.X());
+  Standard_Real aMinX = std::max(theLocation.X() - theRadius, myFaceMin.X());
+  Standard_Real aMaxY = std::min(theLocation.Y() + theRadius, myFaceMax.Y());
+  Standard_Real aMinY = std::max(theLocation.Y() - theRadius, myFaceMin.Y());
 
   gp_XY aMinPnt(aMinX, aMinY);
   gp_XY aMaxPnt(aMaxX, aMaxY);
@@ -106,7 +106,7 @@ Standard_Boolean BRepMesh_CircleTool::MakeCircle(const gp_XY&   thePoint1,
                               + const_cast<gp_XY&>(thePoint2).ChangeCoord(1) * aLink2.Y()
                               + const_cast<gp_XY&>(thePoint3).ChangeCoord(1) * aLink3.Y());
 
-  if (Abs(aD) < gp::Resolution())
+  if (std::abs(aD) < gp::Resolution())
     return Standard_False;
 
   const Standard_Real aInvD   = 1. / aD;
@@ -119,9 +119,9 @@ Standard_Boolean BRepMesh_CircleTool::MakeCircle(const gp_XY&   thePoint1,
   theLocation.ChangeCoord(2) =
     (aSqMod1 * aLink1.X() + aSqMod2 * aLink2.X() + aSqMod3 * aLink3.X()) * aInvD;
 
-  theRadius = Sqrt(Max(Max((thePoint1 - theLocation).SquareModulus(),
-                           (thePoint2 - theLocation).SquareModulus()),
-                       (thePoint3 - theLocation).SquareModulus()))
+  theRadius = std::sqrt(std::max(std::max((thePoint1 - theLocation).SquareModulus(),
+                                          (thePoint2 - theLocation).SquareModulus()),
+                                 (thePoint3 - theLocation).SquareModulus()))
               + 2 * RealEpsilon();
 
   return Standard_True;

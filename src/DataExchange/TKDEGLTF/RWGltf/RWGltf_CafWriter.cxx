@@ -176,7 +176,7 @@ public:
                        draco::Encoder&                                             theDracoEncoder,
                        const std::vector<std::shared_ptr<RWGltf_CafWriter::Mesh>>& theMeshes,
                        std::vector<std::shared_ptr<draco::EncoderBuffer>>& theEncoderBuffers)
-      : myProgress(theProgress, "Draco compression", Max(1, int(theMeshes.size()))),
+      : myProgress(theProgress, "Draco compression", std::max(1, int(theMeshes.size()))),
         myDracoEncoder(&theDracoEncoder),
         myRanges(0, int(theMeshes.size()) - 1),
         myMeshes(&theMeshes),
@@ -519,7 +519,7 @@ void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
   const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes;
   theGltfFace.NbIndexedNodes += theEdgeIter.NbNodes();
 
-  const Standard_Integer numSegments = Max(0, theEdgeIter.NbNodes() - 1);
+  const Standard_Integer numSegments = std::max(0, theEdgeIter.NbNodes() - 1);
   // each segment writes two indices
   theGltfFace.Indices.Count += numSegments * 2;
 
@@ -2329,12 +2329,12 @@ void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDoc
       {
         myCSTrsf.TransformTransformation(aTrsf);
         const gp_Quaternion aQuaternion = aTrsf.GetRotation();
-        const bool          hasRotation = Abs(aQuaternion.X()) > gp::Resolution()
-                                 || Abs(aQuaternion.Y()) > gp::Resolution()
-                                 || Abs(aQuaternion.Z()) > gp::Resolution()
-                                 || Abs(aQuaternion.W() - 1.0) > gp::Resolution();
+        const bool          hasRotation = std::abs(aQuaternion.X()) > gp::Resolution()
+                                 || std::abs(aQuaternion.Y()) > gp::Resolution()
+                                 || std::abs(aQuaternion.Z()) > gp::Resolution()
+                                 || std::abs(aQuaternion.W() - 1.0) > gp::Resolution();
         const Standard_Real aScaleFactor   = aTrsf.ScaleFactor();
-        const bool          hasScale       = Abs(aScaleFactor - 1.0) > Precision::Confusion();
+        const bool          hasScale       = std::abs(aScaleFactor - 1.0) > Precision::Confusion();
         const gp_XYZ&       aTranslPart    = aTrsf.TranslationPart();
         const bool          hasTranslation = aTranslPart.SquareModulus() > gp::Resolution();
 

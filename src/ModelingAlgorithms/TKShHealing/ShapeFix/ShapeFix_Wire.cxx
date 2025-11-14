@@ -155,7 +155,7 @@ void ShapeFix_Wire::SetPrecision(const Standard_Real prec)
 
 void ShapeFix_Wire::SetMaxTailAngle(const Standard_Real theMaxTailAngle)
 {
-  myMaxTailAngleSine = Sin(theMaxTailAngle);
+  myMaxTailAngleSine = std::sin(theMaxTailAngle);
   myMaxTailAngleSine = (myMaxTailAngleSine >= 0) ? myMaxTailAngleSine : 0;
 }
 
@@ -577,7 +577,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
             Standard_Boolean tmpUIsoDeg;
             S->Singularity(j, Preci, P3d, pd1, pd2, par1, par2, tmpUIsoDeg);
             if (SAC.Project(GAC, P3d, MinTolerance(), pr, split, Standard_True)
-                < Max(Preci, MinTolerance()))
+                < std::max(Preci, MinTolerance()))
             {
               if (split - a > ::Precision::PConfusion() && b - split > ::Precision::PConfusion())
               {
@@ -644,7 +644,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
                 Standard_Real aDist = BRep_Tool::Pnt(V1).Distance(BRep_Tool::Pnt(V));
                 if (aDist < BRep_Tool::Tolerance(V1) * 1.01)
                 {
-                  B.UpdateVertex(V1, Max(aDist, BRep_Tool::Tolerance(V1)));
+                  B.UpdateVertex(V1, std::max(aDist, BRep_Tool::Tolerance(V1)));
                   a  = split;
                   V1 = V;
                   continue;
@@ -654,7 +654,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
                   aDist = BRep_Tool::Pnt(V2).Distance(BRep_Tool::Pnt(V));
                   if (aDist < BRep_Tool::Tolerance(V2) * 1.01)
                   {
-                    B.UpdateVertex(V, Max(aDist, BRep_Tool::Tolerance(V2)));
+                    B.UpdateVertex(V, std::max(aDist, BRep_Tool::Tolerance(V2)));
                     b  = split;
                     V2 = V;
                     continue;
@@ -708,7 +708,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
       ShapeBuild_Edge sbe;
       Standard_Real   URange, SUF, SUL, SVF, SVL;
       myAnalyzer->Surface()->Bounds(SUF, SUL, SVF, SVL);
-      URange = (Abs(SUL - SUF));
+      URange = (std::abs(SUL - SUF));
       gp_XY              vec(0, 0);
       ShapeAnalysis_Edge sae;
       Standard_Integer   k;
@@ -720,7 +720,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
           break;
         vec += c2d->Value(cl).XY() - c2d->Value(cf).XY();
       }
-      if (k > nb && Abs(Abs(vec.X()) - URange) < 0.1 * URange)
+      if (k > nb && std::abs(std::abs(vec.X()) - URange) < 0.1 * URange)
       {
         sbe.RemovePCurve(sbwd->Edge(overdegen), face);
         myFixEdge->Projector()->AdjustOverDegenMode() = Standard_False;
@@ -764,7 +764,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
         TopLoc_Location      L;
         Standard_Real        first = 0., last = 0.;
         BRep_Tool::CurveOnSurface(sbwd->Edge(i), C, S, L, first, last);
-        if (C.IsNull() || Abs(last - first) < Precision::PConfusion())
+        if (C.IsNull() || std::abs(last - first) < Precision::PConfusion())
         {
           // clang-format off
           SendWarning ( sbwd->Edge ( i ), Message_Msg ( "FixWire.FixCurve3d.Removed" ) );// Incomplete edge (with no pcurves or 3d curve) removed
@@ -1459,13 +1459,13 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
   SUMid = 0.5 * (SUF + SUL);
   SVMid = 0.5 * (SVF + SVL);
   if (uclosed)
-    URange = Abs(SUL - SUF);
+    URange = std::abs(SUL - SUF);
   else
     URange = RealLast();
   if (!IsVCrvClosed)
   {
     if (vclosed)
-      VRange = Abs(SVL - SVF);
+      VRange = std::abs(SVL - SVF);
     else
       VRange = RealLast();
   }
@@ -1530,12 +1530,12 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
     gp_Pnt2d         degP1, degP2;
     Standard_Real    degT1, degT2;
     if (surf->DegeneratedValues(p,
-                                Max(Precision(), BRep_Tool::Tolerance(V)),
+                                std::max(Precision(), BRep_Tool::Tolerance(V)),
                                 degP1,
                                 degP2,
                                 degT1,
                                 degT2))
-      isDeg = (Abs(degP1.X() - degP2.X()) > Abs(degP1.Y() - degP2.Y()) ? 1 : 2);
+      isDeg = (std::abs(degP1.X() - degP2.X()) > std::abs(degP1.Y() - degP2.Y()) ? 1 : 2);
 
     // abv 23 Feb 00: UKI60107-6 210: additional check for near-degenerated case
     // smh#15 PRO19800. Check if the surface is surface of revolution.
@@ -1629,32 +1629,36 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
           Standard_Real scld = (pd2.XY() - pd1.XY()) * x.XY();
           Standard_Real scln = (pn2.XY() - pn1.XY()) * x.XY();
           if (rot1 * rot2 < -::Precision::PConfusion() && scld * scln < -::Precision::PConfusion()
-              && Abs(scln) > 0.1 * period && Abs(scld) > 0.1 * period
+              && std::abs(scln) > 0.1 * period && std::abs(scld) > 0.1 * period
               && rot1 * scld > ::Precision::PConfusion() && rot2 * scln > ::Precision::PConfusion())
           {
             // abv 02 Mar 00: trying more sophisticated analysis (ie_exhaust-A.stp #37520)
-            Standard_Real sign = (rot2 > 0 ? 1. : -1.);
-            Standard_Real deep1 =
-              Min(sign * (pn2.XY() * x.XY()),
-                  Min(sign * (pd1.XY() * x.XY()),
-                      Min(sign * (c2d2->Value(b2).XY() * x.XY()),
-                          Min(sign * (cx1->Value(ax1).XY() * x.XY()),
-                              Min(sign * (c2d2->Value(0.5 * (a2 + b2)).XY() * x.XY()),
-                                  sign * (cx1->Value(0.5 * (ax1 + bx1)).XY() * x.XY()))))));
-            Standard_Real deep2 =
-              Max(sign * (pn1.XY() * x.XY()),
-                  Max(sign * (pd2.XY() * x.XY()),
-                      Max(sign * (c2d1->Value(a1).XY() * x.XY()),
-                          Max(sign * (cx2->Value(bx2).XY() * x.XY()),
-                              Max(sign * (c2d1->Value(0.5 * (a1 + b1)).XY() * x.XY()),
-                                  sign * (cx2->Value(0.5 * (ax2 + bx2)).XY() * x.XY()))))));
+            Standard_Real sign  = (rot2 > 0 ? 1. : -1.);
+            Standard_Real deep1 = std::min(
+              sign * (pn2.XY() * x.XY()),
+              std::min(
+                sign * (pd1.XY() * x.XY()),
+                std::min(
+                  sign * (c2d2->Value(b2).XY() * x.XY()),
+                  std::min(sign * (cx1->Value(ax1).XY() * x.XY()),
+                           std::min(sign * (c2d2->Value(0.5 * (a2 + b2)).XY() * x.XY()),
+                                    sign * (cx1->Value(0.5 * (ax1 + bx1)).XY() * x.XY()))))));
+            Standard_Real deep2 = std::max(
+              sign * (pn1.XY() * x.XY()),
+              std::max(
+                sign * (pd2.XY() * x.XY()),
+                std::max(
+                  sign * (c2d1->Value(a1).XY() * x.XY()),
+                  std::max(sign * (cx2->Value(bx2).XY() * x.XY()),
+                           std::max(sign * (c2d1->Value(0.5 * (a1 + b1)).XY() * x.XY()),
+                                    sign * (cx2->Value(0.5 * (ax2 + bx2)).XY() * x.XY()))))));
             Standard_Real deep = deep2 - deep1; // estimated current size of wire by x
             // pdn 30 Oct 00: trying correct period [0,period] (trj5_k1-tc-203.stp #4698)
             Standard_Real dx = ShapeAnalysis::AdjustToPeriod(deep,
                                                              ::Precision::PConfusion(),
                                                              period + ::Precision::PConfusion());
             x *= (scld > 0 ? -dx : dx);
-            // x *= ( Abs(scld-scln) > 1.5 * period ? 2. : 1. ) *
+            // x *= ( std::abs(scld-scln) > 1.5 * period ? 2. : 1. ) *
             //      ( scld >0 ? -period : period );
             gp_Trsf2d Shift;
             Shift.SetTranslation(x);
@@ -1698,14 +1702,14 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
           Standard_Real du = 0.,dv = 0.;
           //#79 rln 15.03.99 S4135: bmarkmdl.igs entity 633 (incorrectly oriented contour) check for
          gap
-          if(uclosed&&(Abs(p2f.X()-p2l.X())<pres2)&&Abs(p2d1.X()-p2f.X())>GAS.UResolution(Precision()))
-         { if((Abs(p2f.X()-SUF)<pres2)&&(p2f.Y()<p2l.Y())) du = URange;
-            if((Abs(p2f.X()-SUL)<pres2)&&(p2f.Y()>p2l.Y()))
+          if(uclosed&&(std::abs(p2f.X()-p2l.X())<pres2)&&std::abs(p2d1.X()-p2f.X())>GAS.UResolution(Precision()))
+         { if((std::abs(p2f.X()-SUF)<pres2)&&(p2f.Y()<p2l.Y())) du = URange;
+            if((std::abs(p2f.X()-SUL)<pres2)&&(p2f.Y()>p2l.Y()))
               du = -URange;
           }
-          if(vclosed&&(Abs(p2f.Y()-p2l.Y())<pres2)&&Abs(p2d1.Y()-p2f.Y())>GAS.VResolution(Precision()))
-         { if((Abs(p2f.Y()-SVF)<pres2)&&(p2f.X()>p2l.X())) dv = VRange;
-            if((Abs(p2f.Y()-SVL)<pres2)&&(p2f.X()<p2l.X()))
+          if(vclosed&&(std::abs(p2f.Y()-p2l.Y())<pres2)&&std::abs(p2d1.Y()-p2f.Y())>GAS.VResolution(Precision()))
+         { if((std::abs(p2f.Y()-SVF)<pres2)&&(p2f.X()>p2l.X())) dv = VRange;
+            if((std::abs(p2f.Y()-SVL)<pres2)&&(p2f.X()<p2l.X()))
               dv = -VRange;
           }
           if ( du ==0. && dv == 0. ) continue;
@@ -1732,7 +1736,7 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
     Standard_Real du = 0., dv = 0.;
     if (uclosed && isDeg != 1)
     {
-      Standard_Real dx = Abs(p2d2.X() - p2d1.X());
+      Standard_Real dx = std::abs(p2d2.X() - p2d1.X());
       if (dx > URange - UTol)
         du = ShapeAnalysis::AdjustByPeriod(p2d2.X(), p2d1.X(), URange);
       else if (dx > UTol && stop == nb)
@@ -1740,7 +1744,7 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
     }
     if (vclosed && isDeg != 2)
     {
-      Standard_Real dy = Abs(p2d2.Y() - p2d1.Y());
+      Standard_Real dy = std::abs(p2d2.Y() - p2d1.Y());
       if (dy > VRange - VTol)
         dv = ShapeAnalysis::AdjustByPeriod(p2d2.Y(), p2d1.Y(), VRange);
       else if (dy > VTol && stop == nb)
@@ -1763,7 +1767,7 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
 
   Standard_Real umin, vmin, umax, vmax;
   box.Get(umin, vmin, umax, vmax);
-  if (Abs(umin + umax - SUF - SUL) < URange && Abs(vmin + vmax - SVF - SVL) < VRange
+  if (std::abs(umin + umax - SUF - SUL) < URange && std::abs(vmin + vmax - SVF - SVL) < VRange
       && !LastFixStatus(ShapeExtend_DONE))
     return Standard_False;
 
@@ -2078,16 +2082,16 @@ static Standard_Boolean RemoveLoop(TopoDS_Edge&                      E,
     std::cout << "Cut Loop: tol orig " << tol << ", prec " << prec << ", new tol " << newtol
               << std::endl;
 #endif
-    if (newtol > Max(prec, tol))
+    if (newtol > std::max(prec, tol))
       return Standard_False;
     //: s2  bs = BRep_Tool::CurveOnSurface ( edge, face, a, b );
-    if (Abs(a - f) > ::Precision::PConfusion() || // smth strange, cancel
-        Abs(b - l) > ::Precision::PConfusion())
+    if (std::abs(a - f) > ::Precision::PConfusion() || // smth strange, cancel
+        std::abs(b - l) > ::Precision::PConfusion())
       return Standard_False;
     // PTV OCC884
     if (!aPlaneSurf.IsNull())
     {
-      B.UpdateEdge(E, aNew3dCrv, Max(newtol, tol));
+      B.UpdateEdge(E, aNew3dCrv, std::max(newtol, tol));
       // OCC901
       if (!TryNewPCurve(E, face, bs, a, b, newtol))
         return Standard_False;
@@ -2122,7 +2126,7 @@ static Standard_Boolean RemoveLoop(TopoDS_Edge&                      E,
   Standard_Real dist2 = pcurPnt.Distance(crv->Value(Seq3d->Value(2)));
   Standard_Real dist3 = pcurPnt.Distance(crv->Value(Seq3d->Value(3)));
   Standard_Real ftrim, ltrim;
-  if (dist3 > Max(dist1, dist2))
+  if (dist3 > std::max(dist1, dist2))
   {
     loopRemoved3d = Standard_False;
   }
@@ -2261,7 +2265,7 @@ static Standard_Boolean RemoveLoop(TopoDS_Edge&                      E,
   Standard_Real dist2 = pcurPnt.Distance(crv->Value(Seq3d->Value(2)));
   Standard_Real dist3 = pcurPnt.Distance(crv->Value(Seq3d->Value(3)));
   Standard_Real ftrim, ltrim;
-  if (dist3 > Max(dist1, dist2))
+  if (dist3 > std::max(dist1, dist2))
   { // is loop in 3d
     ftrim = Seq3d->Value(1);
     ltrim = Seq3d->Value(2);
@@ -2396,7 +2400,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersectingEdge(const Standard_Integer n
         Standard_Real dist22 = pnt2.SquareDistance(pint);
         if (dist21 < tol1 * tol1 || dist22 < tol2 * tol2)
           continue;
-        newtol = 1.001 * Sqrt(Min(dist21, dist22)); //: f8
+        newtol = 1.001 * std::sqrt(std::min(dist21, dist22)); //: f8
 
         //: k3 abv 24 Dec 98: BUC50070 #26682 and #30087: try to remove loop
         if (myGeomMode)
@@ -2411,7 +2415,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersectingEdge(const Standard_Integer n
                          Face(),
                          points2d.Value(i),
                          tolfact,
-                         Min(MaxTolerance(), Max(newtol, Precision())),
+                         std::min(MaxTolerance(), std::max(newtol, Precision())),
                          myRemoveLoopMode == 0))
           {
             myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
@@ -2483,7 +2487,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersectingEdge(const Standard_Integer n
         if (!E1.IsNull())
         {
           TTSS->Append(E1);
-          newtol = Max(BRep_Tool::Tolerance(E1), BRep_Tool::Tolerance(E2));
+          newtol = std::max(BRep_Tool::Tolerance(E1), BRep_Tool::Tolerance(E2));
         }
         else
           newtol = BRep_Tool::Tolerance(E2);
@@ -2637,8 +2641,8 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges(const Standard_Integer num)
     Standard_Real                     param1 = (num == 1 ? IP.ParamOnSecond() : IP.ParamOnFirst());
     Standard_Real                     param2 = (num == 1 ? IP.ParamOnFirst() : IP.ParamOnSecond());
 
-    Standard_Real newRange1 = Abs((isForward1 ? a1 : b1) - param1);
-    Standard_Real newRange2 = Abs((isForward2 ? b2 : a2) - param2);
+    Standard_Real newRange1 = std::abs((isForward1 ? a1 : b1) - param1);
+    Standard_Real newRange2 = std::abs((isForward2 ? b2 : a2) - param2);
     if (newRange1 > prevRange1 && newRange2 > prevRange2)
       continue;
 
@@ -2658,7 +2662,7 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges(const Standard_Integer num)
         rad + ComputeLocalDeviation(E1, pint, pnt, param1, (isForward1 ? b1 : a1), Face());
       Standard_Real te2 =
         rad + ComputeLocalDeviation(E2, pint, pnt, (isForward2 ? a2 : b2), param2, Face());
-      Standard_Real maxte = Max(te1, te2);
+      Standard_Real maxte = std::max(te1, te2);
       if (maxte < MaxTolerance() && maxte < newtol)
       {
         if (BRep_Tool::Tolerance(E1) < te1 || BRep_Tool::Tolerance(E2) < te2)
@@ -2970,8 +2974,8 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges(const Standard_Integer num1
         continue;
       // if the vertexies are far than tolerances so
       // we do not need to increase edge tolerance
-      if (aNecessaryVtxTole > Max(aMaxEdgeTol1, tole1)
-          || aNecessaryVtxTole > Max(aMaxEdgeTol2, tole2))
+      if (aNecessaryVtxTole > std::max(aMaxEdgeTol1, tole1)
+          || aNecessaryVtxTole > std::max(aMaxEdgeTol2, tole2))
       {
         aMaxEdgeTol1 = 0.0;
         aMaxEdgeTol2 = 0.0;
@@ -2995,10 +2999,10 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges(const Standard_Integer num1
       myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
       if (newTolers(rank) < finTol)
       {
-        if (Max(aMaxEdgeTol1, aMaxEdgeTol2) < finTol && (aMaxEdgeTol1 > 0 || aMaxEdgeTol2 > 0))
+        if (std::max(aMaxEdgeTol1, aMaxEdgeTol2) < finTol && (aMaxEdgeTol1 > 0 || aMaxEdgeTol2 > 0))
         {
-          aNewTolEdge1 = Max(aNewTolEdge1, aMaxEdgeTol1);
-          aNewTolEdge2 = Max(aNewTolEdge2, aMaxEdgeTol2);
+          aNewTolEdge1 = std::max(aNewTolEdge1, aMaxEdgeTol1);
+          aNewTolEdge2 = std::max(aNewTolEdge2, aMaxEdgeTol2);
         }
         else
         {
@@ -3017,14 +3021,14 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges(const Standard_Integer num1
   if (aNewTolEdge1 > 0)
   {
     for (i = 1; i <= 2; i++)
-      if (aNewTolEdge1 > Max(vertexTolers(i), newTolers(i)))
+      if (aNewTolEdge1 > std::max(vertexTolers(i), newTolers(i)))
         newTolers(i) = aNewTolEdge1;
     B.UpdateEdge(edge1, aNewTolEdge1);
   }
   if (aNewTolEdge2 > 0)
   {
     for (i = 3; i <= 4; i++)
-      if (aNewTolEdge2 > Max(vertexTolers(i), newTolers(i)))
+      if (aNewTolEdge2 > std::max(vertexTolers(i), newTolers(i)))
         newTolers(i) = aNewTolEdge2;
     B.UpdateEdge(edge2, aNewTolEdge2);
   }
@@ -3180,7 +3184,7 @@ Standard_Boolean ShapeFix_Wire::FixLacking(const Standard_Integer num, const Sta
   ShapeAnalysis_Edge sae;
   TopoDS_Vertex      V1  = sae.LastVertex(E1);
   TopoDS_Vertex      V2  = sae.FirstVertex(E2);
-  Standard_Real      tol = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+  Standard_Real      tol = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
 
   Standard_Real Prec   = Precision();
   Standard_Real dist2d = myAnalyzer->MaxDistance2d();
@@ -3288,8 +3292,8 @@ Standard_Boolean ShapeFix_Wire::FixLacking(const Standard_Integer num, const Sta
       p3d2                    = c3d->Value(a);
       Standard_Real dist2d3d2 = p3d2.Distance(surf->Value(p2d2));
 
-      tol1 = Max(BRep_Tool::Tolerance(E1), dist2d3d1);
-      tol2 = Max(BRep_Tool::Tolerance(E2), dist2d3d2);
+      tol1 = std::max(BRep_Tool::Tolerance(E1), dist2d3d1);
+      tol2 = std::max(BRep_Tool::Tolerance(E2), dist2d3d2);
       //: c5  Standard_Real tol0 = Max ( tol1 + tol2, thepreci );
       Standard_Real tol0    = tol1 + tol2; //: c5 abv 26 Feb 98: CTS17806 #44418
       Standard_Real dist3d2 = p3d1.SquareDistance(p3d2);
@@ -3514,9 +3518,9 @@ Standard_Boolean ShapeFix_Wire::FixNotchedEdges()
       // check whether the whole edges should be removed - this is the case
       // when split point coincides with the end of the edge;
       // for closed edges split point may fall at the other end (see issue #0029780)
-      if (Abs(param - (isRemoveFirst ? b : a)) <= ::Precision::PConfusion()
+      if (std::abs(param - (isRemoveFirst ? b : a)) <= ::Precision::PConfusion()
           || (sae.IsClosed3d(splitE)
-              && Abs(param - (isRemoveFirst ? a : b)) <= ::Precision::PConfusion()))
+              && std::abs(param - (isRemoveFirst ? a : b)) <= ::Precision::PConfusion()))
       {
         FixDummySeam(n1);
         // The seam edge is removed from the list. So, need to step back to avoid missing of edge
@@ -3526,7 +3530,7 @@ Standard_Boolean ShapeFix_Wire::FixNotchedEdges()
       else // perform splitting of the edge and adding to wire
       {
         // pdn check if it is necessary
-        if (Abs((isRemoveFirst ? a : b) - param) < ::Precision::PConfusion())
+        if (std::abs((isRemoveFirst ? a : b) - param) < ::Precision::PConfusion())
         {
           continue;
         }

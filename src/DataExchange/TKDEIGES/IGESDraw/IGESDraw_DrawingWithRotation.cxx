@@ -109,8 +109,8 @@ gp_XY IGESDraw_DrawingWithRotation::ViewToDrawing(const Standard_Integer NumView
 
   Standard_Real theta = theOrientationAngles->Value(NumView);
 
-  Standard_Real XD = XOrigin + theScaleFactor * (XV * Cos(theta) - YV * Sin(theta));
-  Standard_Real YD = YOrigin + theScaleFactor * (XV * Sin(theta) + YV * Cos(theta));
+  Standard_Real XD = XOrigin + theScaleFactor * (XV * std::cos(theta) - YV * std::sin(theta));
+  Standard_Real YD = YOrigin + theScaleFactor * (XV * std::sin(theta) + YV * std::cos(theta));
 
   return (gp_XY(XD, YD));
 }

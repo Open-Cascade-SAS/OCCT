@@ -267,7 +267,8 @@ Standard_Boolean BRepBlend_SurfPointEvolRadInv::IsSolution(const math_Vector&  S
 {
   math_Vector valsol(1, 3);
   Value(Sol, valsol);
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol && Abs(valsol(3)) <= 2 * Tol * Abs(ray))
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol
+      && std::abs(valsol(3)) <= 2 * Tol * std::abs(ray))
   {
     return Standard_True;
   }

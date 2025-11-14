@@ -922,8 +922,8 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
                            iLin,
                            param,
                            Intf_EDGE,
-                           Min(pTri[sEdge], pTri[Pourcent3[sEdge + 1]]),
-                           Max(pTri[sEdge], pTri[Pourcent3[sEdge + 1]]),
+                           std::min(pTri[sEdge], pTri[Pourcent3[sEdge + 1]]),
+                           std::max(pTri[sEdge], pTri[Pourcent3[sEdge + 1]]),
                            0.,
                            1.);
       mySPoins.Append(SP);
@@ -986,7 +986,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
   //--
   //-- printf("\nIntf_InterferencePolygPolyh : dBegTri=%g dEndTri=%g
   // Tolerance=%g\n",dBegTri,dEndTri,Tolerance);
-  //  if(Abs(dBegTri) <= Tolerance || Abs(dEndTri) <= Tolerance)
+  //  if(std::abs(dBegTri) <= Tolerance || std::abs(dEndTri) <= Tolerance)
   {
     gp_Vec        VecPol(BegO, EndO);
     Standard_Real NVecPol = VecPol.Magnitude();
@@ -1233,8 +1233,8 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
                            iLin,
                            param,
                            Intf_EDGE,
-                           Min(pTri[sEdge], pTri[Pourcent3[sEdge + 1]]),
-                           Max(pTri[sEdge], pTri[Pourcent3[sEdge + 1]]),
+                           std::min(pTri[sEdge], pTri[Pourcent3[sEdge + 1]]),
+                           std::max(pTri[sEdge], pTri[Pourcent3[sEdge + 1]]),
                            0.,
                            1.);
       mySPoins.Append(SP);
@@ -1297,7 +1297,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
   //--
   //-- printf("\nIntf_InterferencePolygPolyh : dBegTri=%g dEndTri=%g
   // Tolerance=%g\n",dBegTri,dEndTri,Tolerance);
-  //  if (Abs(dBegTri) <= Tolerance || Abs(dEndTri) <= Tolerance)
+  //  if (std::abs(dBegTri) <= Tolerance || std::abs(dEndTri) <= Tolerance)
   {
     gp_Vec        VecPol(BegO, EndO);
     Standard_Real NVecPol = VecPol.Magnitude();

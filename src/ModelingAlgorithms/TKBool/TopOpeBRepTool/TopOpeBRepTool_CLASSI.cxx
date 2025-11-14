@@ -168,7 +168,7 @@ Standard_Integer TopOpeBRepTool_CLASSI::ClassiBnd2d(const TopoDS_Shape&    S1,
       //  diff = Vmin<ii> - Vmin<jj> : k = 3
       Standard_Real diff = UV(ii, k) - UV(jj, k);
       smaller            = chklarge ? (smaller && (diff > -tol)) : (smaller && (diff > 0.));
-      same               = same && (Abs(diff) <= tol);
+      same               = same && (std::abs(diff) <= tol);
     }
     for (k = 2; k <= 4; k += 2)
     {
@@ -176,7 +176,7 @@ Standard_Integer TopOpeBRepTool_CLASSI::ClassiBnd2d(const TopoDS_Shape&    S1,
       //  diff = Vmax<ii> - Vmax<jj> : k = 4
       Standard_Real diff = UV(ii, k) - UV(jj, k);
       smaller            = chklarge ? (smaller && (diff < tol)) : (smaller && (diff < 0.));
-      same               = same && (Abs(diff) <= tol);
+      same               = same && (std::abs(diff) <= tol);
     }
 
     if (same)

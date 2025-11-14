@@ -875,14 +875,14 @@ void Approx_BSplComputeLine::Parameters(const MultiLine&       Line,
         dist += aP22d.SquareDistance(aP12d);
       }
 
-      dist = Sqrt(dist);
+      dist = std::sqrt(dist);
       if (Par == Approx_ChordLength)
       {
         TheParameters(i) = TheParameters(i - 1) + dist;
       }
       else
       { // Par == Approx_Centripetal
-        TheParameters(i) = TheParameters(i - 1) + Sqrt(dist);
+        TheParameters(i) = TheParameters(i - 1) + std::sqrt(dist);
       }
     }
     for (i = firstP + 1; i <= lastP; i++)
@@ -929,7 +929,7 @@ Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine&            Lin
       if (mycont == -1)
         multinter = 1;
       else
-        multinter = Max(1, deg - mycont);
+        multinter = std::max(1, deg - mycont);
       for (i = Mults.Lower() + 1; i <= Mults.Upper() - 1; i++)
       {
         Mults(i) = multinter;
@@ -1220,8 +1220,8 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
   nbP3d                   = LineTool::NbP3d(Line);
   nbP2d                   = LineTool::NbP2d(Line);
   Standard_Boolean     Ok = Standard_False;
-  TColgp_Array1OfVec   TabV(1, Max(1, nbP3d));
-  TColgp_Array1OfVec2d TabV2d(1, Max(1, nbP2d));
+  TColgp_Array1OfVec   TabV(1, std::max(1, nbP3d));
+  TColgp_Array1OfVec2d TabV2d(1, std::max(1, nbP2d));
   Standard_Integer     Thefirstpt = LineTool::FirstPoint(Line);
   Standard_Integer     Thelastpt  = LineTool::LastPoint(Line);
 
@@ -1366,9 +1366,9 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
     }
     else
     {
-      Standard_Integer nnpol, nnp = Min(nbpoints, 9);
+      Standard_Integer nnpol, nnp = std::min(nbpoints, 9);
       nnpol                                          = nnp;
-      Standard_Integer                         lastp = Min(Thelastpt, Thefirstpt + nnp - 1);
+      Standard_Integer                         lastp = std::min(Thelastpt, Thefirstpt + nnp - 1);
       Standard_Real                            U;
       Approx_BSpParLeastSquareOfMyBSplGradient SQ1(Line, Thefirstpt, lastp, Cons, Cons, nnpol);
 
@@ -1380,7 +1380,7 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
       U                                 = 0.0;
       TangencyVector(Line, C1, U, V1);
 
-      Standard_Integer firstp = Max(Thefirstpt, Thelastpt - nnp + 1);
+      Standard_Integer firstp = std::max(Thefirstpt, Thelastpt - nnp + 1);
 
       if (firstp == Thefirstpt && lastp == Thelastpt)
       {

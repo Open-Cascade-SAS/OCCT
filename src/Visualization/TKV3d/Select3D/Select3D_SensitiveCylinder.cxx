@@ -86,7 +86,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveCylinder::GetConnected()
 
 Select3D_BndBox3d Select3D_SensitiveCylinder::BoundingBox()
 {
-  Standard_Real   aMaxRad = Max(myBottomRadius, myTopRadius);
+  Standard_Real   aMaxRad = std::max(myBottomRadius, myTopRadius);
   Graphic3d_Mat4d aTrsf;
   myTrsf.GetMat4(aTrsf);
 

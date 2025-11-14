@@ -1704,7 +1704,7 @@ Standard_Real BRep_Tool::MaxTolerance(const TopoDS_Shape&    theShape,
     for (; anExpSS.More(); anExpSS.Next())
     {
       const TopoDS_Shape& aCurrentSubShape = anExpSS.Current();
-      aTol                                 = Max(aTol, Tolerance(TopoDS::Face(aCurrentSubShape)));
+      aTol = std::max(aTol, Tolerance(TopoDS::Face(aCurrentSubShape)));
     }
   }
   else if (theSubShape == TopAbs_EDGE)
@@ -1712,7 +1712,7 @@ Standard_Real BRep_Tool::MaxTolerance(const TopoDS_Shape&    theShape,
     for (; anExpSS.More(); anExpSS.Next())
     {
       const TopoDS_Shape& aCurrentSubShape = anExpSS.Current();
-      aTol                                 = Max(aTol, Tolerance(TopoDS::Edge(aCurrentSubShape)));
+      aTol = std::max(aTol, Tolerance(TopoDS::Edge(aCurrentSubShape)));
     }
   }
   else if (theSubShape == TopAbs_VERTEX)
@@ -1720,7 +1720,7 @@ Standard_Real BRep_Tool::MaxTolerance(const TopoDS_Shape&    theShape,
     for (; anExpSS.More(); anExpSS.Next())
     {
       const TopoDS_Shape& aCurrentSubShape = anExpSS.Current();
-      aTol                                 = Max(aTol, Tolerance(TopoDS::Vertex(aCurrentSubShape)));
+      aTol = std::max(aTol, Tolerance(TopoDS::Vertex(aCurrentSubShape)));
     }
   }
 

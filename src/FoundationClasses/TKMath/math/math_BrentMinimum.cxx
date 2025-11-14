@@ -126,7 +126,7 @@ void math_BrentMinimum::Perform(math_Function&      F,
         d = p / q;
         u = x + d;
         if (u - a < tol2 || b - u < tol2)
-          d = Sign(tol1, xm - x);
+          d = std::copysign(tol1, xm - x);
       }
     }
     else
@@ -134,7 +134,7 @@ void math_BrentMinimum::Perform(math_Function&      F,
       e = (x >= xm ? a - x : b - x);
       d = CGOLD * e;
     }
-    u  = (fabs(d) >= tol1 ? x + d : x + Sign(tol1, d));
+    u  = (fabs(d) >= tol1 ? x + d : x + std::copysign(tol1, d));
     OK = F.Value(u, fu);
     if (!OK)
       return;

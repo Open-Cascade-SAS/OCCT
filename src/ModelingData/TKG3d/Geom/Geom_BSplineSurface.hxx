@@ -686,8 +686,8 @@ public:
   //! UKnots (I1) <= U <= UKnots (I2)
   //! . if I1 = I2 U is a knot value (the tolerance criterion
   //! ParametricTolerance is used).
-  //! . if I1 < 1 => U < UKnots(1) - Abs(ParametricTolerance)
-  //! . if I2 > NbUKnots => U > UKnots(NbUKnots)+Abs(ParametricTolerance)
+  //! . if I1 < 1 => U < UKnots(1) - std::abs(ParametricTolerance)
+  //! . if I2 > NbUKnots => U > UKnots(NbUKnots)+std::abs(ParametricTolerance)
   Standard_EXPORT void LocateU(const Standard_Real    U,
                                const Standard_Real    ParametricTolerance,
                                Standard_Integer&      I1,
@@ -702,8 +702,8 @@ public:
   //! VKnots (I1) <= V <= VKnots (I2)
   //! . if I1 = I2 V is a knot value (the tolerance criterion
   //! ParametricTolerance is used).
-  //! . if I1 < 1 => V < VKnots(1) - Abs(ParametricTolerance)
-  //! . if I2 > NbVKnots => V > VKnots(NbVKnots)+Abs(ParametricTolerance)
+  //! . if I1 < 1 => V < VKnots(1) - std::abs(ParametricTolerance)
+  //! . if I2 > NbVKnots => V > VKnots(NbVKnots)+std::abs(ParametricTolerance)
   //! poles insertion and removing
   //! The following methods are available only if the surface
   //! is Uniform or QuasiUniform in the considered direction

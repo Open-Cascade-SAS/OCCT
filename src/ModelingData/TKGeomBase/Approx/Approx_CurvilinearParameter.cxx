@@ -376,7 +376,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
     myCurve3d  = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
     myCurve2d1 = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
   }
-  myMaxError2d1 = Max(aApprox.MaxError(1, 1), aApprox.MaxError(1, 2));
+  myMaxError2d1 = std::max(aApprox.MaxError(1, 1), aApprox.MaxError(1, 2));
   myMaxError3d  = aApprox.MaxError(3, 1);
 
 #ifdef OCCT_DEBUG_CHRONO
@@ -562,8 +562,8 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
       Poles2d(i).SetY(Poles1d(i));
     myCurve2d2 = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
   }
-  myMaxError2d1 = Max(aApprox.MaxError(1, 1), aApprox.MaxError(1, 2));
-  myMaxError2d2 = Max(aApprox.MaxError(1, 3), aApprox.MaxError(1, 4));
+  myMaxError2d1 = std::max(aApprox.MaxError(1, 1), aApprox.MaxError(1, 2));
+  myMaxError2d2 = std::max(aApprox.MaxError(1, 3), aApprox.MaxError(1, 4));
   myMaxError3d  = aApprox.MaxError(3, 1);
 
 #ifdef OCCT_DEBUG_CHRONO
@@ -676,8 +676,8 @@ void Approx_CurvilinearParameter::ToleranceComputation(const Handle(Adaptor2d_Cu
   {
     pntVW = C2D->Value(FirstU + (i - 1) * (LastU - FirstU) / (MaxNumber - 1));
     S->D1(pntVW.X(), pntVW.Y(), P, dS_dv, dS_dw);
-    Max_dS_dv = Max(Max_dS_dv, dS_dv.Magnitude());
-    Max_dS_dw = Max(Max_dS_dw, dS_dw.Magnitude());
+    Max_dS_dv = std::max(Max_dS_dv, dS_dv.Magnitude());
+    Max_dS_dw = std::max(Max_dS_dw, dS_dw.Magnitude());
   }
   TolV = Tol / (4. * Max_dS_dv);
   TolW = Tol / (4. * Max_dS_dw);

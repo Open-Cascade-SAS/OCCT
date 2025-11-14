@@ -249,7 +249,7 @@ static Handle(IntPatch_WLine) DeleteOuterPoints(const Handle(IntPatch_WLine)&   
     {
       isAllDeleted = Standard_False;
 
-      aFirstGeomIdx = Max(i - 1, 1);
+      aFirstGeomIdx = std::max(i - 1, 1);
       if (aDelOuterPointsHash(i) == -1)
         aFirstGeomIdx = i; // Use data what lies in (i) point / vertex.
 
@@ -284,7 +284,7 @@ static Handle(IntPatch_WLine) DeleteOuterPoints(const Handle(IntPatch_WLine)&   
     }
     else
     {
-      aLastGeomIdx = Min(i + 1, theWLine->NbPnts());
+      aLastGeomIdx = std::min(i + 1, theWLine->NbPnts());
       if (aDelOuterPointsHash(i) == -1)
         aLastGeomIdx = i; // Use data what lies in (i) point / vertex.
 
@@ -437,9 +437,9 @@ static Handle(IntPatch_WLine) DeleteByTube(const Handle(IntPatch_WLine)&    theW
   // Choose base tolerance and scale it to pipe algorithm.
   constexpr Standard_Real aBaseTolerance = Precision::Approximation();
   Standard_Real           aResS1Tol =
-    Min(theS1->UResolution(aBaseTolerance), theS1->VResolution(aBaseTolerance));
+    std::min(theS1->UResolution(aBaseTolerance), theS1->VResolution(aBaseTolerance));
   Standard_Real aResS2Tol =
-    Min(theS2->UResolution(aBaseTolerance), theS2->VResolution(aBaseTolerance));
+    std::min(theS2->UResolution(aBaseTolerance), theS2->VResolution(aBaseTolerance));
   Standard_Real aTol1  = aResS1Tol * aResS1Tol;
   Standard_Real aTol2  = aResS2Tol * aResS2Tol;
   Standard_Real aTol3d = aBaseTolerance * aBaseTolerance;
@@ -478,7 +478,7 @@ static Handle(IntPatch_WLine) DeleteByTube(const Handle(IntPatch_WLine)&    theW
       // Check very rare case when wline fluctuates nearly one point and some of them may be equal.
       // Middle point will be deleted when such situation occurs.
       // bugs moddata_2 bug469.
-      if (Min(aStepOnS1, aStepOnS2) >= aLimitCoeff * Max(aStepOnS1, aStepOnS2))
+      if (std::min(aStepOnS1, aStepOnS2) >= aLimitCoeff * std::max(aStepOnS1, aStepOnS2))
       {
         // Set hash flag to "Delete" state.
         Standard_Real aCurrStep = aBase3dPnt.SquareDistance(aPnt3d);
@@ -628,7 +628,7 @@ static Standard_Boolean IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
       continue;
     }
 
-    const Standard_Real aDelta = Abs(aParL[i] - aParF[i]);
+    const Standard_Real aDelta = std::abs(aParL[i] - aParF[i]);
     if (2.0 * aDelta > theArrPeriods[i])
     {
       // Most likely, seam is intersected.
@@ -953,7 +953,7 @@ static IntPatchWT_WLsConnectionType CheckArgumentsToExtend(const Handle(Adaptor3
         // However, it is necessary to add check if we
         // intersect boundary.
         const Standard_Real aPar =
-          aParWL1[i] + theArrPeriods[i] * Ceiling((aNewPar[i] - aParWL1[i]) / theArrPeriods[i]);
+          aParWL1[i] + theArrPeriods[i] * std::ceil((aNewPar[i] - aParWL1[i]) / theArrPeriods[i]);
         aParWL1[i] = aParWL2[i];
         aParWL2[i] = aPar;
       }
@@ -971,7 +971,7 @@ static IntPatchWT_WLsConnectionType CheckArgumentsToExtend(const Handle(Adaptor3
         //  aParWL1[i]   aNewPar[i]    aParWL2[i]
 
         const Standard_Real aPar =
-          aParWL2[i] - theArrPeriods[i] * Ceiling((aParWL2[i] - aNewPar[i]) / theArrPeriods[i]);
+          aParWL2[i] - theArrPeriods[i] * std::ceil((aParWL2[i] - aNewPar[i]) / theArrPeriods[i]);
         aParWL2[i] = aParWL1[i];
         aParWL1[i] = aPar;
       }
@@ -1421,16 +1421,16 @@ Handle(IntPatch_WLine) IntPatch_WLineTool::ComputePurgedWLine(
         p1.Parameters(UV[0], UV[1], UV[2], UV[3]);
         p2.Parameters(UV[4], UV[5], UV[6], UV[7]);
 
-        Standard_Real aMax = Abs(UV[0]);
+        Standard_Real aMax = std::abs(UV[0]);
         for (Standard_Integer anIdx = 1; anIdx < 8; anIdx++)
         {
-          if (aMax < Abs(UV[anIdx]))
-            aMax = Abs(UV[anIdx]);
+          if (aMax < std::abs(UV[anIdx]))
+            aMax = std::abs(UV[anIdx]);
         }
 
         if (p1.Value().IsEqual(p2.Value(), gp::Resolution())
-            || Abs(UV[0] - UV[4]) + Abs(UV[1] - UV[5]) < 1.0e-16 * aMax
-            || Abs(UV[2] - UV[6]) + Abs(UV[3] - UV[7]) < 1.0e-16 * aMax)
+            || std::abs(UV[0] - UV[4]) + std::abs(UV[1] - UV[5]) < 1.0e-16 * aMax
+            || std::abs(UV[2] - UV[6]) + std::abs(UV[3] - UV[7]) < 1.0e-16 * aMax)
         {
           aTmpWLine   = aLocalWLine;
           aLocalWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
@@ -1501,7 +1501,7 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine&  theSlin,
 
   // For two cylindrical surfaces only
   const Standard_Real aMinRad =
-    1.0e-3 * Min(theS1->Cylinder().Radius(), theS2->Cylinder().Radius());
+    1.0e-3 * std::min(theS1->Cylinder().Radius(), theS2->Cylinder().Radius());
 
   const Standard_Real anArrPeriods[4] = {theS1->IsUPeriodic() ? theS1->UPeriod() : 0.0,
                                          theS1->IsVPeriodic() ? theS1->VPeriod() : 0.0,
@@ -1569,7 +1569,7 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine&  theSlin,
       Standard_Real aSqDistF = aPntFWL1.Value().SquareDistance(aPntFWL2.Value());
       Standard_Real aSqDistL = aPntFWL1.Value().SquareDistance(aPntLWL2.Value());
 
-      const Standard_Real aSqMinFDist = Min(aSqDistF, aSqDistL);
+      const Standard_Real aSqMinFDist = std::min(aSqDistF, aSqDistL);
       if (aSqMinFDist < Precision::SquareConfusion())
       {
         const Standard_Boolean isFM = (aSqDistF < aSqDistL);
@@ -1584,7 +1584,7 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine&  theSlin,
       aSqDistF = aPntLWL1.Value().SquareDistance(aPntFWL2.Value());
       aSqDistL = aPntLWL1.Value().SquareDistance(aPntLWL2.Value());
 
-      const Standard_Real aSqMinLDist = Min(aSqDistF, aSqDistL);
+      const Standard_Real aSqMinLDist = std::min(aSqDistF, aSqDistL);
       if (aSqMinLDist < Precision::SquareConfusion())
       {
         const Standard_Boolean isFM = (aSqDistF < aSqDistL);

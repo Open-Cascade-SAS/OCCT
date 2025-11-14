@@ -115,7 +115,7 @@ static Standard_Boolean FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
     }
   }
 
-  if (Abs(area) < gp::Resolution())
+  if (std::abs(area) < gp::Resolution())
   {
     pt2d.SetCoord(points(1).X(), points(1).Y());
     return Standard_False;

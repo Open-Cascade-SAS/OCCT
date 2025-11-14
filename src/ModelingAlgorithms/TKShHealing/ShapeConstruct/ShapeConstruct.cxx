@@ -72,7 +72,7 @@ Handle(Geom_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(Geo
   else
   {
     if (C3D->IsKind(STANDARD_TYPE(Geom_Conic)))
-      MaxDeg = Min(MaxDeg, 6);
+      MaxDeg = std::min(MaxDeg, 6);
 
     // clang-format off
     Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(C3D,First,Last); //protection against parabols ets
@@ -451,7 +451,8 @@ static inline void SegmentCurve(HCurve& curve, const Standard_Real first, const 
     if (curve->IsPeriodic())
       curve->Segment(first, last);
     else
-      curve->Segment(Max(curve->FirstParameter(), first), Min(curve->LastParameter(), last));
+      curve->Segment(std::max(curve->FirstParameter(), first),
+                     std::min(curve->LastParameter(), last));
   }
 }
 
@@ -472,8 +473,8 @@ static inline void GetReversedParameters(const HPoint&     p11,
 
   Standard_Real d12   = p11.Distance(p22);
   Standard_Real d22   = p22.Distance(p12);
-  Standard_Real Dmin1 = Min(d11, d21);
-  Standard_Real Dmin2 = Min(d12, d22);
+  Standard_Real Dmin1 = std::min(d11, d21);
+  Standard_Real Dmin2 = std::min(d12, d22);
   if (fabs(Dmin1 - Dmin2) <= Precision::Confusion() || Dmin2 > Dmin1)
   {
     isRev1 = (d11 < d21 ? Standard_True : Standard_False);

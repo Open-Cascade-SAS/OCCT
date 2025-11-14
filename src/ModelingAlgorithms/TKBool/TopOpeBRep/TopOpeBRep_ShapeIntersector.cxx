@@ -675,8 +675,8 @@ void TopOpeBRep_ShapeIntersector::FindFFIntersection()
       {
         Standard_Real tol1, tol2;
         myFFIntersector.GetTolerances(tol1, tol2);
-        myTol1 = Max(myTol1, tol1);
-        myTol2 = Max(myTol2, tol2);
+        myTol1 = std::max(myTol1, tol1);
+        myTol2 = std::max(myTol2, tol2);
       }
 
       if (myFFDone)
@@ -1103,11 +1103,11 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS
         Standard_Real    maxU = FSurf.LastUParameter();
         Standard_Real    minV = FSurf.FirstVParameter();
         Standard_Real    maxV = FSurf.LastVParameter();
-        Standard_Boolean yesU = (Abs(minU - 0.) < 1.e-9 && Abs(maxU - 2 * M_PI) < 1.e-9);
+        Standard_Boolean yesU = (std::abs(minU - 0.) < 1.e-9 && std::abs(maxU - 2 * M_PI) < 1.e-9);
         Standard_Boolean yesV =
           (FSurf.GetType() == GeomAbs_Sphere)
-            ? (Abs(minV - (-M_PI / 2.)) < 1.e-9 && Abs(maxV - M_PI / 2.) < 1.e-9)
-            : (Abs(minV - 0.) < 1.e-9 && Abs(maxV - 2 * M_PI) < 1.e-9);
+            ? (std::abs(minV - (-M_PI / 2.)) < 1.e-9 && std::abs(maxV - M_PI / 2.) < 1.e-9)
+            : (std::abs(minV - 0.) < 1.e-9 && std::abs(maxV - 2 * M_PI) < 1.e-9);
         SolidIsSphereOrTorus = (yesU && yesV);
       }
 
@@ -1116,11 +1116,11 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS
         Standard_Boolean areBothPeriodic = (FSurf.IsUPeriodic() && FSurf.IsVPeriodic());
         if (areBothPeriodic)
         {
-          Standard_Boolean yesU =
-            (Abs(FSurf.UPeriod() - M_PI) < 1.e-9 || Abs(FSurf.UPeriod() - 2 * M_PI) < 1.e-9);
-          Standard_Boolean yesV =
-            (Abs(FSurf.VPeriod() - M_PI) < 1.e-9 || Abs(FSurf.VPeriod() - 2 * M_PI) < 1.e-9);
-          SolidIsSphereOrTorus = (yesU && yesV);
+          Standard_Boolean yesU = (std::abs(FSurf.UPeriod() - M_PI) < 1.e-9
+                                   || std::abs(FSurf.UPeriod() - 2 * M_PI) < 1.e-9);
+          Standard_Boolean yesV = (std::abs(FSurf.VPeriod() - M_PI) < 1.e-9
+                                   || std::abs(FSurf.VPeriod() - 2 * M_PI) < 1.e-9);
+          SolidIsSphereOrTorus  = (yesU && yesV);
         }
       }
 
@@ -1224,10 +1224,10 @@ static TopoDS_Solid GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F)
   else
     Normal *= 1.e+10;
 
-  Standard_Real Pu1 = MinU + Abs((MaxU - MinU) / 4.);
-  Standard_Real Pu2 = MinU + Abs((MaxU - MinU) / 4. * 3.);
-  Standard_Real Pv1 = MinV + Abs((MaxV - MinV) / 4.);
-  Standard_Real Pv2 = MinV + Abs((MaxV - MinV) / 4. * 3.);
+  Standard_Real Pu1 = MinU + std::abs((MaxU - MinU) / 4.);
+  Standard_Real Pu2 = MinU + std::abs((MaxU - MinU) / 4. * 3.);
+  Standard_Real Pv1 = MinV + std::abs((MaxV - MinV) / 4.);
+  Standard_Real Pv2 = MinV + std::abs((MaxV - MinV) / 4. * 3.);
 
   gp_Pnt P1, P2, P3, P4;
   ASurf.D0(Pu1, Pv1, P1);

@@ -175,7 +175,7 @@ void Draw_Display::Draw(const gp_Circ&         C,
     angle = (A2 - A1) / 6;
     n     = 6;
   }
-  Standard_Real c = 2 * Cos(angle);
+  Standard_Real c = 2 * std::cos(angle);
 
   gp_Circ Cloc(C);
   if (!ModifyWithZoom)
@@ -228,7 +228,7 @@ void Draw_Display::Draw(const gp_Circ2d&       C,
     angle = (A2 - A1) / 6;
     n     = 6;
   }
-  Standard_Real c = 2 * Cos(angle);
+  Standard_Real c = 2 * std::cos(angle);
 
   gp_Circ2d Cloc(C);
   if (!ModifyWithZoom)

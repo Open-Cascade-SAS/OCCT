@@ -112,11 +112,11 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   if (DisOnP1)
   {
     dis1 = Dis;
-    dis2 = Dis / (cosP + sinP / Tan(Angle));
+    dis2 = Dis / (cosP + sinP / std::tan(Angle));
   }
   else
   {
-    dis1 = Dis / (cosP + sinP / Tan(Angle));
+    dis1 = Dis / (cosP + sinP / std::tan(Angle));
     dis2 = Dis;
   }
   // Compute a point on the plane Pl1 and on the chamfer

@@ -48,7 +48,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const gp_Pnt2d&     Point1,
 {
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   NbrSol            = 0;
   WellDone          = Standard_False;
   if (Radius < 0.0)

@@ -91,7 +91,7 @@ void ProjLib_Cone::Project(const gp_Lin& L)
     // L is parallel to U-isoline of the cone.
     myType = GeomAbs_Line;
 
-    const Standard_Real aSign = Sign(1.0, L.Direction().Dot(Dv));
+    const Standard_Real aSign = std::copysign(1.0, L.Direction().Dot(Dv));
     gp_Pnt2d            P2d(U, V - aDeltaV * aSign);
     gp_Dir2d            D2d(0., aSign);
 
@@ -130,18 +130,18 @@ void ProjLib_Cone::Project(const gp_Circ& C)
   {
     U = 0.;
   }
-  else if (-myCone.RefRadius() > z * Tan(myCone.SemiAngle()))
+  else if (-myCone.RefRadius() > z * std::tan(myCone.SemiAngle()))
   {
-    U = ATan2(-y, -x);
+    U = std::atan2(-y, -x);
   }
   else
   {
-    U = ATan2(y, x);
+    U = std::atan2(y, x);
   }
   if (U < 0.)
     U += 2 * M_PI;
 
-  V = z / Cos(myCone.SemiAngle());
+  V = z / std::cos(myCone.SemiAngle());
 
   gp_Pnt2d P2d1(U, V);
   gp_Dir2d D2d;

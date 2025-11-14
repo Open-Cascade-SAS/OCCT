@@ -714,7 +714,7 @@ Standard_Boolean BRepSweep_Rotation::GDDShapeIsToAdd(const TopoDS_Shape&   aNewS
       && aGenS.ShapeType() == TopAbs_FACE && aDirS.Type() == TopAbs_EDGE
       && aSubDirS.Type() == TopAbs_VERTEX)
   {
-    return (Abs(myAng - 2 * M_PI) > Precision::Angular());
+    return (std::abs(myAng - 2 * M_PI) > Precision::Angular());
   }
   else if (aNewShape.ShapeType() == TopAbs_FACE && aNewSubShape.ShapeType() == TopAbs_EDGE
            && aGenS.ShapeType() == TopAbs_EDGE && aDirS.Type() == TopAbs_EDGE
@@ -724,7 +724,7 @@ Standard_Boolean BRepSweep_Rotation::GDDShapeIsToAdd(const TopoDS_Shape&   aNewS
     GeomAdaptor_Surface AS(BRep_Tool::Surface(TopoDS::Face(aNewShape), Loc));
     if (AS.GetType() == GeomAbs_Plane)
     {
-      return (Abs(myAng - 2 * M_PI) > Precision::Angular());
+      return (std::abs(myAng - 2 * M_PI) > Precision::Angular());
     }
     else
     {
@@ -753,7 +753,7 @@ Standard_Boolean BRepSweep_Rotation::SeparatedWires(const TopoDS_Shape&   aNewSh
     GeomAdaptor_Surface AS(BRep_Tool::Surface(TopoDS::Face(aNewShape), Loc));
     if (AS.GetType() == GeomAbs_Plane)
     {
-      return (Abs(myAng - 2 * M_PI) <= Precision::Angular());
+      return (std::abs(myAng - 2 * M_PI) <= Precision::Angular());
     }
     else
     {
@@ -831,8 +831,8 @@ Standard_Boolean BRepSweep_Rotation::IsInvariant(const TopoDS_Shape& aGenS) cons
         if (aC.GetType() == GeomAbs_Line)
           return Standard_True;
 
-        Standard_Real             aTol = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
-        gp_Lin                    Lin(myAxe.Location(), myAxe.Direction());
+        Standard_Real aTol = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+        gp_Lin        Lin(myAxe.Location(), myAxe.Direction());
         const TColgp_Array1OfPnt& aPoles =
           (aC.GetType() == GeomAbs_BSplineCurve ? aC.BSpline()->Poles() : aC.Bezier()->Poles());
 

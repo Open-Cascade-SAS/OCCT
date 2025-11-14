@@ -100,7 +100,7 @@ static Standard_Integer surface_radius(Draw_Interpretor& di, Standard_Integer n,
       if (report_curvature)
         Draw::Set(a[4], radius);
 
-      if (Abs(radius) > tolerance)
+      if (std::abs(radius) > tolerance)
       {
         radius = 1.0e0 / radius;
         di << "Min Radius of Curvature : " << radius << "\n";
@@ -113,7 +113,7 @@ static Standard_Integer surface_radius(Draw_Interpretor& di, Standard_Integer n,
       radius = myProperties.MaxCurvature();
       if (report_curvature)
         Draw::Set(a[5], radius);
-      if (Abs(radius) > tolerance)
+      if (std::abs(radius) > tolerance)
       {
         radius = 1.0e0 / radius;
         di << "Max Radius of Curvature : " << radius << "\n";
@@ -893,7 +893,7 @@ static Standard_Integer approxsurf(Draw_Interpretor& di, Standard_Integer n, con
     return 1;
 
   if (n > 3)
-    Tol = Max(Draw::Atof(a[3]), 1.e-10);
+    Tol = std::max(Draw::Atof(a[3]), 1.e-10);
 
   if (n == 5)
     return 1;
@@ -1644,11 +1644,11 @@ static Standard_Integer compBsplSur(Draw_Interpretor&, Standard_Integer n, const
   Standard_Real aU21, aU22, aV21, aV22;
   GBs2->Bounds(aU21, aU22, aV21, aV22);
 
-  Standard_Real aUmin = Max(aU11, aU21);
-  Standard_Real aUmax = Min(aU12, aU22);
+  Standard_Real aUmin = std::max(aU11, aU21);
+  Standard_Real aUmax = std::min(aU12, aU22);
 
-  Standard_Real aVmin = Max(aV11, aV21);
-  Standard_Real aVmax = Min(aV12, aV22);
+  Standard_Real aVmin = std::max(aV11, aV21);
+  Standard_Real aVmax = std::min(aV12, aV22);
 
   Standard_Integer nbP    = 100;
   Standard_Real    aStepU = (aUmax - aUmin) / nbP;

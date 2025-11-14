@@ -380,7 +380,7 @@ Standard_Boolean AIS_Plane::Size(Standard_Real& X, Standard_Real& Y) const
 {
   X = myDrawer->PlaneAspect()->PlaneXLength();
   Y = myDrawer->PlaneAspect()->PlaneYLength();
-  return Abs(X - Y) <= Precision::Confusion();
+  return std::abs(X - Y) <= Precision::Confusion();
 }
 
 //=================================================================================================
@@ -395,7 +395,7 @@ void AIS_Plane::SetMinimumSize(const Standard_Real theValue)
   Standard_Real aX, anY;
   Size(aX, anY);
   SetTransformPersistence(
-    new Graphic3d_TransformPersScaledAbove(Min(aX, anY) / theValue, myCenter));
+    new Graphic3d_TransformPersScaledAbove(std::min(aX, anY) / theValue, myCenter));
 }
 
 //=================================================================================================
@@ -497,8 +497,8 @@ void AIS_Plane::ComputeFrame()
       Handle(Geom_Plane)::DownCast(pl->Translated(pl->Location(), myCenter)));
     ElSLib::Parameters(thegoodpl->Pln(), myPmin, U, V);
 
-    U = 2.4 * Abs(U);
-    V = 2.4 * Abs(V);
+    U = 2.4 * std::abs(U);
+    V = 2.4 * std::abs(V);
     if (U < 10 * Precision::Confusion())
       U = 0.1;
     if (V < 10 * Precision::Confusion())

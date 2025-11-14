@@ -162,7 +162,7 @@ void DrawTrSurf_Curve2d::DrawOn(Draw_Display& dis) const
         LProp.SetParameter(t);
         if (LProp.IsTangentDefined())
         {
-          Curvature = Abs(LProp.Curvature());
+          Curvature = std::abs(LProp.Curvature());
           if (Curvature > Resolution)
           {
             curv->D0(t, P1);

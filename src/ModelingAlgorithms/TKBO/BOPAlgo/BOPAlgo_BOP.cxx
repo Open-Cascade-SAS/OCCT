@@ -693,7 +693,7 @@ void BOPAlgo_BOP::BuildRC(const Message_ProgressRange& theRange)
   //
   Standard_Integer iDimMin, iDimMax;
   //
-  iDimMin = Min(myDims[0], myDims[1]);
+  iDimMin = std::min(myDims[0], myDims[1]);
   bCommon = (myOperation == BOPAlgo_COMMON);
   bCut21  = (myOperation == BOPAlgo_CUT21);
   //

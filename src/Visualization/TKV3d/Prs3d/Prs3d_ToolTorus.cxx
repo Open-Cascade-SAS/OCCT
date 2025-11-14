@@ -40,9 +40,9 @@ gp_Pnt Prs3d_ToolTorus::Vertex(const Standard_Real theU, const Standard_Real the
 {
   const Standard_Real aU = theU * myAngle;
   const Standard_Real aV = myVMin + theV * (myVMax - myVMin);
-  return gp_Pnt((myMajorRadius + myMinorRadius * Cos(aV)) * Cos(aU),
-                (myMajorRadius + myMinorRadius * Cos(aV)) * Sin(aU),
-                myMinorRadius * Sin(aV));
+  return gp_Pnt((myMajorRadius + myMinorRadius * std::cos(aV)) * std::cos(aU),
+                (myMajorRadius + myMinorRadius * std::cos(aV)) * std::sin(aU),
+                myMinorRadius * std::sin(aV));
 }
 
 //=================================================================================================
@@ -51,7 +51,7 @@ gp_Dir Prs3d_ToolTorus::Normal(const Standard_Real theU, const Standard_Real the
 {
   const Standard_Real aU = theU * myAngle;
   const Standard_Real aV = myVMin + theV * (myVMax - myVMin);
-  return gp_Dir(Cos(aU) * Cos(aV), Sin(aU) * Cos(aV), Sin(aV));
+  return gp_Dir(std::cos(aU) * std::cos(aV), std::sin(aU) * std::cos(aV), std::sin(aV));
 }
 
 //=================================================================================================

@@ -210,10 +210,10 @@ void BRepBlend_Walking::Perform(Blend_Function&        Func,
     doextremities = 0;
   }
   tolpoint3d = Tol3d;
-  tolgui     = Abs(TolGuide);
-  fleche     = Abs(Fleche);
+  tolgui     = std::abs(TolGuide);
+  fleche     = std::abs(Fleche);
   rebrou     = Standard_False;
-  pasmax     = Abs(MaxStep);
+  pasmax     = std::abs(MaxStep);
   if (Pmax - Pdep >= 0.)
   {
     sens = 1.;
@@ -245,11 +245,11 @@ void BRepBlend_Walking::Perform(Blend_Function&        Func,
     rsnld.Root(sol);
 
     if (clasonS1)
-      situ1 = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), Min(tolerance(1), tolerance(2)), 0);
+      situ1 = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), 0);
     else
       situ1 = TopAbs_IN;
     if (clasonS2)
-      situ2 = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), Min(tolerance(3), tolerance(4)), 0);
+      situ2 = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), 0);
     else
       situ2 = TopAbs_IN;
 
@@ -321,7 +321,7 @@ Standard_Boolean BRepBlend_Walking::PerformFirstSection(Blend_Function&     Func
   comptra    = Standard_False;
   line       = new BRepBlend_Line();
   tolpoint3d = Tol3d;
-  tolgui     = Abs(TolGuide);
+  tolgui     = std::abs(TolGuide);
 
   Pos1 = Pos2 = TopAbs_UNKNOWN;
 
@@ -341,8 +341,8 @@ Standard_Boolean BRepBlend_Walking::PerformFirstSection(Blend_Function&     Func
   }
   rsnld.Root(sol);
   ParDep = sol;
-  Pos1   = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), Min(tolerance(1), tolerance(2)), 0);
-  Pos2   = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), Min(tolerance(3), tolerance(4)), 0);
+  Pos1   = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), 0);
+  Pos2   = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), 0);
   if (Pos1 != TopAbs_IN || Pos2 != TopAbs_IN)
   {
     return Standard_False;
@@ -379,7 +379,7 @@ Standard_Boolean BRepBlend_Walking::PerformFirstSection(Blend_Function&        F
   Standard_Boolean recad1, recad2;
 
   tolpoint3d = Tol3d;
-  tolgui     = Abs(TolGuide);
+  tolgui     = std::abs(TolGuide);
   if (Pmax - Pdep >= 0.0)
   {
     sens = 1.;
@@ -388,7 +388,7 @@ Standard_Boolean BRepBlend_Walking::PerformFirstSection(Blend_Function&        F
   {
     sens = -1.;
   }
-  extrapol = Abs(Pmax - Pdep) / 50.0; // 2%
+  extrapol = std::abs(Pmax - Pdep) / 50.0; // 2%
 
   Blend_Status State;
 
@@ -439,7 +439,7 @@ Standard_Boolean BRepBlend_Walking::PerformFirstSection(Blend_Function&        F
 
   if (recad1 && recad2)
   {
-    if (Abs(w1 - w2) <= tolgui)
+    if (std::abs(w1 - w2) <= tolgui)
     {
       // sol sur 1 et 2 a la fois
       State     = Blend_OnRst12;
@@ -846,15 +846,15 @@ Blend_Status BRepBlend_Walking::TestArret(Blend_Function&        Function,
 
         curpoint.ParametersOnS1(curparamu, curparamv);
         previousP.ParametersOnS1(prevparamu, prevparamv);
-        if (Abs(curparamu - prevparamu) > sup(1))
+        if (std::abs(curparamu - prevparamu) > sup(1))
           State1 = Blend_StepTooLarge;
-        if (Abs(curparamv - prevparamv) > sup(2))
+        if (std::abs(curparamv - prevparamv) > sup(2))
           State1 = Blend_StepTooLarge;
         curpoint.ParametersOnS2(curparamu, curparamv);
         previousP.ParametersOnS2(prevparamu, prevparamv);
-        if (Abs(curparamu - prevparamu) > sup(3))
+        if (std::abs(curparamu - prevparamu) > sup(3))
           State2 = Blend_StepTooLarge;
-        if (Abs(curparamv - prevparamv) > sup(4))
+        if (std::abs(curparamv - prevparamv) > sup(4))
           State2 = Blend_StepTooLarge;
       }
     }
@@ -889,7 +889,7 @@ Blend_Status BRepBlend_Walking::TestArret(Blend_Function&        Function,
       Nor1.Normalize();
       Nor2.Normalize();
       Standard_Real testra = Tgp1.Dot(Nor1.Crossed(V1));
-      if (Abs(testra) > Precision::Confusion())
+      if (std::abs(testra) > Precision::Confusion())
       {
         tras1 = IntSurf_In;
         if ((testra > 0. && !loctwist1) || (testra < 0. && loctwist1))
@@ -898,7 +898,7 @@ Blend_Status BRepBlend_Walking::TestArret(Blend_Function&        Function,
         }
 
         testra = Tgp2.Dot(Nor2.Crossed(V2));
-        if (Abs(testra) > Precision::Confusion())
+        if (std::abs(testra) > Precision::Confusion())
         {
           tras2 = IntSurf_Out;
           if ((testra > 0. && !loctwist2) || (testra < 0. && loctwist2))
@@ -1068,15 +1068,14 @@ Blend_Status BRepBlend_Walking::CheckDeflection(const Standard_Boolean OnFirst,
     Du  = curparamu - prevparamu;
     Dv  = curparamv - prevparamv;
     Duv = Du * Du + Dv * Dv;
-    //    SqrtDuv = Sqrt(Duv);
-    if (Abs(Du) < tolu && Abs(Dv) < tolv)
+    if (std::abs(Du) < tolu && std::abs(Dv) < tolv)
     {
       // il faudra peut etre  forcer meme point
       return Blend_SamePoints; // point confondu 2d
     }
     if (!prevpointistangent)
     {
-      if (Abs(previousd2d.X()) < tolu && Abs(previousd2d.Y()) < tolv)
+      if (std::abs(previousd2d.X()) < tolu && std::abs(previousd2d.Y()) < tolv)
       {
         // il faudra peut etre  forcer meme point
         return Blend_SamePoints; // point confondu 2d
@@ -1254,11 +1253,11 @@ Standard_Boolean BRepBlend_Walking::Recadre(Blend_FuncInv&             FuncInv,
   Standard_Real ufirst, ulast;
   BRepBlend_BlendTool::Bounds(thecur, ufirst, ulast);
   // Pour aider a trouver les coins singuliers on recadre eventuelement le paramtere
-  if (Abs(pmin - ufirst) < Abs(ulast - ufirst) / 1000)
+  if (std::abs(pmin - ufirst) < std::abs(ulast - ufirst) / 1000)
   {
     pmin = ufirst;
   }
-  if (Abs(pmin - ulast) < Abs(ulast - ufirst) / 1000)
+  if (std::abs(pmin - ulast) < std::abs(ulast - ufirst) / 1000)
   {
     pmin = ulast;
   }
@@ -1444,7 +1443,7 @@ Standard_Boolean BRepBlend_Walking::Recadre(Blend_FuncInv&             FuncInv,
   // En cas d'echecs, on regarde si un autre arc
   // peut faire l'affaire (cas des sorties a proximite d'un vertex)
   dist = (ulast - ufirst) / 100;
-  if ((!recadre) && ((Abs(pmin - ulast) < dist) || (Abs(pmin - ufirst) < dist)))
+  if ((!recadre) && ((std::abs(pmin - ulast) < dist) || (std::abs(pmin - ufirst) < dist)))
   {
     Indexsol = ArcToRecadre(OnFirst, theSol, Indexsol, lastpt2d, pt2d, pmin);
     if (Indexsol == 0)
@@ -1512,10 +1511,10 @@ Standard_Boolean BRepBlend_Walking::Recadre(Blend_FuncInv&             FuncInv,
     while (!IsVtx)
     {
       Vtx  = Iter->Vertex();
-      vtol = 0.4 * Abs(ulast - ufirst); // Un majorant de la tolerance
-      if (vtol > Max(BRepBlend_BlendTool::Tolerance(Vtx, thearc), toler(1)))
-        vtol = Max(BRepBlend_BlendTool::Tolerance(Vtx, thearc), toler(1));
-      if (Abs(BRepBlend_BlendTool::Parameter(Vtx, thearc) - solrst(1)) <= vtol)
+      vtol = 0.4 * std::abs(ulast - ufirst); // Un majorant de la tolerance
+      if (vtol > std::max(BRepBlend_BlendTool::Tolerance(Vtx, thearc), toler(1)))
+        vtol = std::max(BRepBlend_BlendTool::Tolerance(Vtx, thearc), toler(1));
+      if (std::abs(BRepBlend_BlendTool::Parameter(Vtx, thearc) - solrst(1)) <= vtol)
       {
         IsVtx = Standard_True; // On est dans la boule du vertex ou
                                // le vertex est dans la "boule" du recadrage
@@ -1729,13 +1728,13 @@ static void RecadreIfPeriodic(Standard_Real&      NewU,
   if (UPeriod > 0.)
   {
     Standard_Real sign = (NewU < OldU) ? 1 : -1;
-    while (Abs(NewU - OldU) > UPeriod / 2)
+    while (std::abs(NewU - OldU) > UPeriod / 2)
       NewU += sign * UPeriod;
   }
   if (VPeriod > 0.)
   {
     Standard_Real sign = (NewV < OldV) ? 1 : -1;
-    while (Abs(NewV - OldV) > VPeriod / 2)
+    while (std::abs(NewV - OldV) > VPeriod / 2)
       NewV += sign * VPeriod;
   }
 }
@@ -1816,7 +1815,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
     {
       stepw = (line->Point(nbp).Parameter() - line->Point(nbp - 1).Parameter());
     }
-    stepw = Max(stepw, 100. * tolgui);
+    stepw = std::max(stepw, 100. * tolgui);
   }
   Standard_Real parprec = param;
   gp_Vec        TgOnGuide, PrevTgOnGuide;
@@ -1877,7 +1876,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
       State = Blend_StepTooLarge;
       stepw = stepw / 2.;
       param = parprec + sens * stepw; // on ne risque pas de depasser Bound.
-      if (Abs(stepw) < tolgui)
+      if (std::abs(stepw) < tolgui)
       {
         Ext1.SetValue(previousP.PointOnS1(), sol(1), sol(2), previousP.Parameter(), tolpoint3d);
         Ext2.SetValue(previousP.PointOnS2(), sol(3), sol(4), previousP.Parameter(), tolpoint3d);
@@ -1907,11 +1906,13 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
       rsnld.Root(sol);
 
       if (clasonS1)
-        situ1 = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), Min(tolerance(1), tolerance(2)), 0);
+        situ1 =
+          domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), 0);
       else
         situ1 = TopAbs_IN;
       if (clasonS2)
-        situ2 = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), Min(tolerance(3), tolerance(4)), 0);
+        situ2 =
+          domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), 0);
       else
         situ2 = TopAbs_IN;
     }
@@ -1992,7 +1993,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
       // Que faut il controler
       if (recad1 && recad2)
       {
-        if (Abs(w1 - w2) <= 10 * tolgui)
+        if (std::abs(w1 - w2) <= 10 * tolgui)
         {
           // pas besoin de controler les recadrage
           // Le control pouvant se planter (cf model blend10)
@@ -2018,8 +2019,8 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
         TopAbs_State situ;
         if (recad1 && clasonS2)
         {
-          situ =
-            recdomain2->Classify(gp_Pnt2d(solrst1(3), solrst1(4)), Min(tolerance(3), tolerance(4)));
+          situ = recdomain2->Classify(gp_Pnt2d(solrst1(3), solrst1(4)),
+                                      std::min(tolerance(3), tolerance(4)));
           if (situ == TopAbs_OUT)
           {
             recad1     = Standard_False;
@@ -2028,8 +2029,8 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
         }
         else if (recad2 && clasonS1)
         {
-          situ =
-            recdomain1->Classify(gp_Pnt2d(solrst2(3), solrst2(4)), Min(tolerance(1), tolerance(1)));
+          situ = recdomain1->Classify(gp_Pnt2d(solrst2(3), solrst2(4)),
+                                      std::min(tolerance(1), tolerance(1)));
           if (situ == TopAbs_OUT)
           {
             recad2     = Standard_False;
@@ -2096,8 +2097,9 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
           Standard_Real theParam = Precision::Infinite();
           // Choose the closest parameter
           if (SameDirs[0] && SameDirs[1])
-            theParam = (Abs(param - SavedParams[0]) < Abs(param - SavedParams[1])) ? SavedParams[0]
-                                                                                   : SavedParams[1];
+            theParam = (std::abs(param - SavedParams[0]) < std::abs(param - SavedParams[1]))
+                         ? SavedParams[0]
+                         : SavedParams[1];
           else if (SameDirs[0])
             theParam = SavedParams[0];
           else if (SameDirs[1])
@@ -2109,7 +2111,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
             CorrectExtremityOnOneRst(1, sol(3), sol(4), param, Pnt1, NewU, NewV, NewPnt, NewParam);
           if (Corrected)
           {
-            if (Abs(param - NewParam) < Abs(param - theParam))
+            if (std::abs(param - NewParam) < std::abs(param - theParam))
               theParam = NewParam;
           }
 
@@ -2204,7 +2206,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
           // Il vaut mieux un pas non orthodoxe que pas de recadrage!! PMN
           State = TestArret(Func,
                             State,
-                            (testdefl && (Abs(stepw) > 3 * tolgui)),
+                            (testdefl && (std::abs(stepw) > 3 * tolgui)),
                             Standard_False,
                             Standard_True);
         }
@@ -2288,7 +2290,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
 
       case Blend_StepTooLarge: {
         stepw = stepw / 2.;
-        if (Abs(stepw) < tolgui)
+        if (std::abs(stepw) < tolgui)
         {
           Ext1.SetValue(previousP.PointOnS1(), sol(1), sol(2), previousP.Parameter(), tolpoint3d);
           Ext2.SetValue(previousP.PointOnS2(), sol(3), sol(4), previousP.Parameter(), tolpoint3d);
@@ -2337,7 +2339,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
 
         parprec = param;
 
-        stepw = Min(1.5 * stepw, pasmax);
+        stepw = std::min(1.5 * stepw, pasmax);
         if (param == Bound)
         {
           Arrive = Standard_True;
@@ -2567,7 +2569,7 @@ Standard_Boolean BRepBlend_Walking::CorrectExtremityOnOneRst(const Standard_Inte
   {
     Standard_Real Period = hguide->Period();
     Standard_Real sign   = (NewParam < theParam) ? 1 : -1;
-    while (Abs(NewParam - theParam) > Period / 2)
+    while (std::abs(NewParam - theParam) > Period / 2)
       NewParam += sign * Period;
   }
 

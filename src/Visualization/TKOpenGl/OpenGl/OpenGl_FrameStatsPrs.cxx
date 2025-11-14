@@ -159,12 +159,13 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
          ++aFrameIter)
     {
       const Graphic3d_FrameStatsData& aFrame = aStats->DataFrames().Value(aFrameIter);
-      aMaxDuration = Max(aMaxDuration, aFrame.TimerValue(Graphic3d_FrameStatsTimer_ElapsedFrame));
+      aMaxDuration =
+        std::max(aMaxDuration, aFrame.TimerValue(Graphic3d_FrameStatsTimer_ElapsedFrame));
     }
-    aMaxDuration = Ceiling(aMaxDuration * 1000.0 * 0.1) * 0.001 * 10.0; // round number
-                                                                        // clang-format off
-    aMaxDuration = Max (Min (aMaxDuration, 0.1), 0.005); // limit by 100 ms (10 FPS) and 5 ms (200 FPS)
-                                                                        // clang-format on
+    aMaxDuration = std::ceil(aMaxDuration * 1000.0 * 0.1) * 0.001 * 10.0; // round number
+                                                                          // clang-format off
+    aMaxDuration = std::max (std::min (aMaxDuration, 0.1), 0.005); // limit by 100 ms (10 FPS) and 5 ms (200 FPS)
+                                                                          // clang-format on
   }
 
   const Standard_Integer          aNbTimers  = 4;
@@ -261,7 +262,7 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
 
       const Standard_Real aBinX1     = anOffset.x() + Standard_Real(aFrameIter) * aBinSize.x();
       const Standard_Real aBinX2     = aBinX1 + aBinSize.x();
-      const Standard_Real aCurrSizeY = Min(aTimeElapsed / aMaxDuration, 1.2) * aBinSize.y();
+      const Standard_Real aCurrSizeY = std::min(aTimeElapsed / aMaxDuration, 1.2) * aBinSize.y();
       const Standard_Real aBinY1 =
         isTopDown ? (anOffset.y() - aCurrY) : (anOffset.y() - aBinSize.y() + aCurrY);
       const Standard_Real aBinY2 =

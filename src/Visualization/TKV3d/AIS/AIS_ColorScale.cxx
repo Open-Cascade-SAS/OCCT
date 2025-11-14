@@ -93,17 +93,17 @@ static Standard_Integer colorDiscreteInterval(Standard_Real    theValue,
                                               Standard_Real    theMax,
                                               Standard_Integer theNbIntervals)
 {
-  if (Abs(theMax - theMin) <= Precision::Approximation())
+  if (std::abs(theMax - theMin) <= Precision::Approximation())
   {
     return 1;
   }
 
   Standard_Integer anInterval =
     1
-    + (Standard_Integer)Floor(Standard_Real(theNbIntervals) * (theValue - theMin)
-                              / (theMax - theMin));
+    + (Standard_Integer)std::floor(Standard_Real(theNbIntervals) * (theValue - theMin)
+                                   / (theMax - theMin));
   // map the very upper value (theValue==theMax) to the largest color interval
-  anInterval = Min(anInterval, theNbIntervals);
+  anInterval = std::min(anInterval, theNbIntervals);
   return anInterval;
 }
 } // namespace
@@ -205,8 +205,8 @@ void AIS_ColorScale::GetColors(Aspect_SequenceOfColor& theColors) const
 
 void AIS_ColorScale::SetRange(const Standard_Real theMin, const Standard_Real theMax)
 {
-  myMin = Min(theMin, theMax);
-  myMax = Max(theMin, theMax);
+  myMin = std::min(theMin, theMax);
+  myMax = std::max(theMin, theMax);
 }
 
 //=================================================================================================
@@ -282,7 +282,7 @@ Aspect_SequenceOfColor AIS_ColorScale::MakeUniformColors(Standard_Integer theNbC
   // adjust range to be within (0, 360], with sign according to theHueFrom and theHueTo
   Standard_Real           aHueRange = std::fmod(theHueTo - theHueFrom, 360.);
   constexpr Standard_Real aHueEps   = Precision::Angular() * 180. / M_PI;
-  if (Abs(aHueRange) <= aHueEps)
+  if (std::abs(aHueRange) <= aHueEps)
   {
     aHueRange = (aHueRange < 0 ? -360. : 360.);
   }
@@ -305,7 +305,7 @@ Aspect_SequenceOfColor AIS_ColorScale::MakeUniformColors(Standard_Integer theNbC
   }
 
   // discretize the range with 1 degree step
-  const int                          NBCOLORS = 2 + (int)Abs(aHueRange / 1.);
+  const int                          NBCOLORS = 2 + (int)std::abs(aHueRange / 1.);
   Standard_Real                      aHueStep = aHueRange / (NBCOLORS - 1);
   NCollection_Array1<Quantity_Color> aGrid(0, NBCOLORS - 1);
   for (Standard_Integer i = 0; i < NBCOLORS; i++)
@@ -375,7 +375,7 @@ void AIS_ColorScale::SizeHint(Standard_Integer& theWidth, Standard_Integer& theH
     for (Standard_Integer aLabIter = (myIsLabelAtBorder ? 0 : 1); aLabIter <= myNbIntervals;
          ++aLabIter)
     {
-      aTextWidth = Max(aTextWidth, TextWidth(GetLabel(aLabIter)));
+      aTextWidth = std::max(aTextWidth, TextWidth(GetLabel(aLabIter)));
     }
   }
 
@@ -391,7 +391,7 @@ void AIS_ColorScale::SizeHint(Standard_Integer& theWidth, Standard_Integer& theH
     aTitleWidth  = TextWidth(myTitle) + mySpacing * 2;
   }
 
-  theWidth  = Max(aTitleWidth, aScaleWidth);
+  theWidth  = std::max(aTitleWidth, aScaleWidth);
   theHeight = aScaleHeight + aTitleHeight;
 }
 
@@ -414,7 +414,7 @@ Standard_Real AIS_ColorScale::GetIntervalValue(const Standard_Integer theIndex) 
   Standard_Real aNum = 0;
   if (myNbIntervals > 0)
   {
-    aNum = GetMin() + theIndex * (Abs(GetMax() - GetMin()) / myNbIntervals);
+    aNum = GetMin() + theIndex * (std::abs(GetMax() - GetMin()) / myNbIntervals);
   }
   return aNum;
 }
@@ -489,7 +489,7 @@ Standard_Integer AIS_ColorScale::computeMaxLabelWidth(
   {
     if (!aLabIter.Value().IsEmpty())
     {
-      aWidthMax = Max(aWidthMax, TextWidth(aLabIter.Value()));
+      aWidthMax = std::max(aWidthMax, TextWidth(aLabIter.Value()));
     }
   }
   return aWidthMax;
@@ -559,7 +559,8 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager)&,
 
   const Standard_Integer aTextWidth =
     myLabelPos != Aspect_TOCSP_NONE ? computeMaxLabelWidth(aLabels) : 0;
-  Standard_Integer aColorBreadth = Max(5, Min(20, myBreadth - aTextWidth - 3 * mySpacing));
+  Standard_Integer aColorBreadth =
+    std::max(5, std::min(20, myBreadth - aTextWidth - 3 * mySpacing));
   if (myLabelPos == Aspect_TOCSP_CENTER || myLabelPos == Aspect_TOCSP_NONE)
   {
     aColorBreadth += aTextWidth;
@@ -750,7 +751,7 @@ void AIS_ColorScale::drawLabels(const Handle(Graphic3d_Group)&          theGroup
       !myTitle.IsEmpty() ? (myTextHeight + 2 * mySpacing) : mySpacing;
     const Standard_Integer aSpc =
       myHeight - aTitleHeight
-      - ((Min(aNbLabels, 2) + Abs(aNbLabels - aNbIntervals - 1)) * myTextHeight);
+      - ((std::min(aNbLabels, 2) + std::abs(aNbLabels - aNbIntervals - 1)) * myTextHeight);
     if (aSpc <= 0)
     {
       return;
@@ -819,8 +820,8 @@ void AIS_ColorScale::drawLabels(const Handle(Graphic3d_Group)&          theGroup
   Standard_Integer i0   = -1;
   while (aPos <= i2 && i0 == -1)
   {
-    if (aFilter && !(aPos % aFilter) && Abs(aPos - aLast1) >= aFilter
-        && Abs(aPos - aLast2) >= aFilter)
+    if (aFilter && !(aPos % aFilter) && std::abs(aPos - aLast1) >= aFilter
+        && std::abs(aPos - aLast2) >= aFilter)
     {
       i0 = aPos;
     }

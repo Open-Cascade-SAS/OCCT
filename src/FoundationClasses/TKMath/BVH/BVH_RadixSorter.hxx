@@ -211,7 +211,8 @@ void BVH_RadixSorter<T, N>::Perform(BVH_Set<T, N>*         theSet,
     {
       const Standard_Integer aVoxelI = BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, aCompIter));
 
-      unsigned int aVoxel = static_cast<unsigned int>(Max(0, Min(aVoxelI, aDimension - 1)));
+      unsigned int aVoxel =
+        static_cast<unsigned int>(std::max(0, std::min(aVoxelI, aDimension - 1)));
 
       aVoxel = (aVoxel | (aVoxel << 16)) & 0x030000FF;
       aVoxel = (aVoxel | (aVoxel << 8)) & 0x0300F00F;

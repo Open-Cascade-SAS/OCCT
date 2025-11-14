@@ -68,7 +68,7 @@ void DsgPrs_OffsetPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
   parmin             = ElCLib::Parameter(L3, Proj1);
   parmax             = parmin;
   parcur             = ElCLib::Parameter(L3, Proj2);
-  Standard_Real dist = Abs(parmin - parcur);
+  Standard_Real dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
   if (parcur > parmax)

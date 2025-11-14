@@ -77,10 +77,10 @@ void Extrema_CurveLocator::Locate(const Pnt&             P,
   Standard_Real Uinf  = Tool1::FirstParameter(C);
   Standard_Real Ulast = Tool1::LastParameter(C);
 
-  U1  = Min(Uinf, Ulast);
-  U2  = Max(Uinf, Ulast);
-  U11 = Min(Umin, Usup);
-  U12 = Max(Umin, Usup);
+  U1  = std::min(Uinf, Ulast);
+  U2  = std::max(Uinf, Ulast);
+  U11 = std::min(Umin, Usup);
+  U12 = std::max(Umin, Usup);
 
   if (U11 < U1 - RealEpsilon())
     U11 = U1;

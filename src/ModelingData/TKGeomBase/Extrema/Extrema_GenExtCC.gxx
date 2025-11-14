@@ -338,7 +338,7 @@ void Extrema_GenExtCC::Perform()
   Standard_Real       aLC      = 100.0; // Default value.
   const Standard_Real aMaxDer1 = 1.0 / C1.Resolution(1.0);
   const Standard_Real aMaxDer2 = 1.0 / C2.Resolution(1.0);
-  Standard_Real       aMaxDer  = Max(aMaxDer1, aMaxDer2) * M_SQRT2;
+  Standard_Real       aMaxDer  = std::max(aMaxDer1, aMaxDer2) * M_SQRT2;
   if (aLC > aMaxDer)
     aLC = aMaxDer;
 
@@ -393,13 +393,13 @@ void Extrema_GenExtCC::Perform()
         aT(2) = t2;
         aFunc.Values(aT, aF, aG);
         Standard_Real aMod = aG(1) * aG(1) + aG(2) * aG(2);
-        aMaxG              = Max(aMaxG, aMod);
+        aMaxG              = std::max(aMaxG, aMod);
       }
     }
-    aMaxG = Sqrt(aMaxG);
+    aMaxG = std::sqrt(aMaxG);
     if (aMaxG > aMaxDer)
     {
-      aLC               = Min(aMaxG, aMaxLC);
+      aLC               = std::min(aMaxG, aMaxLC);
       isConstLockedFlag = Standard_True;
     }
     if (aMaxG > 100. * aMaxLC)
@@ -422,10 +422,10 @@ void Extrema_GenExtCC::Perform()
   aFinder.SetFunctionalMinimalValue(0.0); // Best distance cannot be lower than 0.0.
 
   // Size computed to have cell index inside of int32 value.
-  const Standard_Real aCellSize = Max(
-    Max(anIntervals1->Last() - anIntervals1->First(), anIntervals2->Last() - anIntervals2->First())
-      * Precision::PConfusion() / (2.0 * M_SQRT2),
-    Precision::PConfusion());
+  const Standard_Real aCellSize = std::max(std::max(anIntervals1->Last() - anIntervals1->First(),
+                                                    anIntervals2->Last() - anIntervals2->First())
+                                             * Precision::PConfusion() / (2.0 * M_SQRT2),
+                                           Precision::PConfusion());
   Extrema_CCPointsInspector                         anInspector(aCellSize);
   NCollection_CellFilter<Extrema_CCPointsInspector> aFilter(aCellSize);
   NCollection_Vector<gp_XY>                         aPnts;
@@ -547,7 +547,7 @@ void Extrema_GenExtCC::Perform()
     aVec(2) = (aCurrent.Y() + aNext.Y()) * 0.5;
 
     aFunc.Value(aVec, aVal);
-    if (Abs(aVal - aF) < Precision::Confusion())
+    if (std::abs(aVal - aF) < Precision::Confusion())
     {
       // It seems the parallel segment is found.
       // Save only extreme solutions on that segment.
@@ -610,7 +610,7 @@ void Extrema_GenExtCC::Perform()
     {
       Standard_Real aDist1 = ProjPOnC(C1.Value(aT1[iT]), anExtPC2);
       Standard_Real aDist2 = ProjPOnC(C2.Value(aT2[iT]), anExtPC1);
-      isParallel           = (Abs(Min(aDist1, aDist2) - aF * aF) < Precision::Confusion());
+      isParallel = (std::abs(std::min(aDist1, aDist2) - aF * aF) < Precision::Confusion());
     }
   }
 

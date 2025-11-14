@@ -137,8 +137,8 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display&          dis,
                                      const Standard_Boolean ShowKnots) const
 {
   Handle(Geom_BSplineCurve) C    = Handle(Geom_BSplineCurve)::DownCast(curv);
-  Standard_Real             Eps1 = Abs(Epsilon(U1));
-  Standard_Real             Eps2 = Abs(Epsilon(U2));
+  Standard_Real             Eps1 = std::abs(Epsilon(U1));
+  Standard_Real             Eps2 = std::abs(Epsilon(U2));
   Standard_Integer          I1, J1, I2, J2;
   C->LocateU(U1, Eps1, I1, J1);
   C->LocateU(U2, Eps2, I2, J2);
@@ -200,8 +200,8 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display&          dis,
     else
     {
       U        = U1;
-      NbPoints = (Standard_Integer)Abs(Discret * (U1 - Ustart) / (Ustart - Uend));
-      NbPoints = Max(NbPoints, 30);
+      NbPoints = (Standard_Integer)std::abs(Discret * (U1 - Ustart) / (Ustart - Uend));
+      NbPoints = std::max(NbPoints, 30);
       Du       = (Ustart - U1) / NbPoints;
       dis.MoveTo(C->Value(U));
       for (Standard_Integer i = 1; i <= NbPoints - 2; i++)
@@ -222,8 +222,8 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display&          dis,
     {
       Uk2      = Uend;
       U        = Uend;
-      NbPoints = (Standard_Integer)Abs(Discret * (U2 - Uend) / (Ustart - Uend));
-      NbPoints = Max(NbPoints, 30);
+      NbPoints = (Standard_Integer)std::abs(Discret * (U2 - Uend) / (Ustart - Uend));
+      NbPoints = std::max(NbPoints, 30);
       Du       = (U2 - Uend) / NbPoints;
       dis.MoveTo(C->Value(U));
       for (Standard_Integer i = 1; i <= NbPoints - 2; i++)
@@ -252,8 +252,8 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display&          dis,
         Ub = C->Knot(k + 1);
       }
       U        = Ua;
-      NbPoints = (Standard_Integer)Abs(Discret * (Ua - Ub) / (Ustart - Uend));
-      NbPoints = Max(NbPoints, 30);
+      NbPoints = (Standard_Integer)std::abs(Discret * (Ua - Ub) / (Ustart - Uend));
+      NbPoints = std::max(NbPoints, 30);
       Du       = (Ub - Ua) / NbPoints;
       dis.MoveTo(C->Value(U));
       for (Standard_Integer i = 1; i <= NbPoints - 2; i++)

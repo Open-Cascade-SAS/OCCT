@@ -64,7 +64,7 @@ public:
   //!
   //! Error  : R1 and R2 < Resolution
   //! R1 or R2 negative
-  //! Abs(R1-R2) < Resolution
+  //! std::abs(R1-R2) < Resolution
   //! H < Resolution
   //! H negative
   Standard_EXPORT BRepPrim_Cone(const Standard_Real R1,

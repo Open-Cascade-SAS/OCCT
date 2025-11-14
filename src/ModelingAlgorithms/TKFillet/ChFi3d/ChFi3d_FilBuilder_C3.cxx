@@ -222,7 +222,7 @@ static Standard_Boolean ToricCorner(const TopoDS_Face&  F,
                                     const Standard_Real rf,
                                     const gp_Vec&       v)
 {
-  if (Abs(rd - rf) > Precision::Confusion())
+  if (std::abs(rd - rf) > Precision::Confusion())
   {
     return Standard_False;
   }
@@ -231,8 +231,8 @@ static Standard_Boolean ToricCorner(const TopoDS_Face&  F,
   {
     return Standard_False;
   }
-  Standard_Real scal1 = Abs(bs.Plane().Position().XDirection().Dot(v));
-  Standard_Real scal2 = Abs(bs.Plane().Position().YDirection().Dot(v));
+  Standard_Real scal1 = std::abs(bs.Plane().Position().XDirection().Dot(v));
+  Standard_Real scal2 = std::abs(bs.Plane().Position().YDirection().Dot(v));
   return (scal1 <= Precision::Confusion() && scal2 <= Precision::Confusion());
 }
 
@@ -382,8 +382,8 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       fin = (pivot + 2) % 3;
     }
     pivdif = Standard_False;
-    if (Abs(p[0][1] - p[0][2]) <= tol2d && Abs(p[1][0] - p[1][2]) <= tol2d
-        && Abs(p[2][0] - p[2][1]) <= tol2d)
+    if (std::abs(p[0][1] - p[0][2]) <= tol2d && std::abs(p[1][0] - p[1][2]) <= tol2d
+        && std::abs(p[2][0] - p[2][1]) <= tol2d)
     {
       c1pointu = Standard_True;
     }
@@ -440,7 +440,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       }
     }
     if (!c1toric)
-      c1spheric = (Abs(qr[0] - qr[1]) < tolapp3d && Abs(qr[0] - qr[2]) < tolapp3d);
+      c1spheric = (std::abs(qr[0] - qr[1]) < tolapp3d && std::abs(qr[0] - qr[2]) < tolapp3d);
   }
 
   //  Previously to avoid loops the points were always located
@@ -520,9 +520,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   if (!c1pointu)
   {
     if (!pivdif)
-      c1pointu =
-        (Abs(p[deb][pivot] - p[deb][fin]) <= tol2d && Abs(p[fin][pivot] - p[fin][deb]) <= tol2d);
-    if (Abs(p[pivot][deb] - p[pivot][fin]) <= tol2d)
+      c1pointu = (std::abs(p[deb][pivot] - p[deb][fin]) <= tol2d
+                  && std::abs(p[fin][pivot] - p[fin][deb]) <= tol2d);
+    if (std::abs(p[pivot][deb] - p[pivot][fin]) <= tol2d)
       c1toric = ToricCorner(face[pivot], Rdeb, Rfin, Vdp);
   }
   // there is a pivot, the start and the end CD (finally !?!) :
@@ -777,7 +777,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       Handle(BRepBlend_Line) lin;
       Standard_Real          ffi = WFirst, lla = WLast + pasmax;
 
-      if (Abs(Rdeb - Rfin) <= tolapp3d)
+      if (std::abs(Rdeb - Rfin) <= tolapp3d)
       {
 
         BRepBlend_ConstRad    func(Fac, Surf, cornerspine);
@@ -1130,7 +1130,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
                         tolapp3d,
                         tolrdeb,
                         rev);
-    tcdeb.Tolerance(Max(tolrdeb, tcdeb.Tolerance()));
+    tcdeb.Tolerance(std::max(tolrdeb, tcdeb.Tolerance()));
     if (rev)
       ChFi3d_EnlargeBox(DStr, CD[deb], fddeb, *pbf2, *pbf1, isfirst);
     else
@@ -1175,7 +1175,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
                         tolapp3d,
                         tolrfin,
                         rev);
-    tcfin.Tolerance(Max(tolrfin, tcfin.Tolerance()));
+    tcfin.Tolerance(std::max(tolrfin, tcfin.Tolerance()));
     if (rev)
       ChFi3d_EnlargeBox(DStr, CD[fin], fdfin, *pbl2, *pbl1, isfirst);
     else
@@ -1208,7 +1208,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
                          fi.LastParameter(),
                          tolapp3d,
                          tolr);
-    TCcoinpiv.Tolerance(Max(TCcoinpiv.Tolerance(), tolr));
+    TCcoinpiv.Tolerance(std::max(TCcoinpiv.Tolerance(), tolr));
     CD[pivot]->ChangePCurve(isfirst) = C2dOnPiv;
     CD[pivot]->SetIndexPoint(If2, isfirst, isurf1);
     CD[pivot]->SetIndexPoint(Il2, isfirst, isurf2);

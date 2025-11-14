@@ -349,7 +349,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     {
       firstp = GeomInt_LineTool::Vertex(L, i).ParameterOnLine();
       lastp  = GeomInt_LineTool::Vertex(L, i + 1).ParameterOnLine();
-      if (Abs(firstp - lastp) > Precision::PConfusion())
+      if (std::abs(firstp - lastp) > Precision::PConfusion())
       {
         intrvtested              = Standard_True;
         const Standard_Real pmid = (firstp + lastp) * 0.5;
@@ -452,7 +452,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     Standard_Boolean       inserted   = Standard_False;
     for (Standard_Integer j = 1; j <= nbinserted; j++)
     {
-      if (Abs(prm - seqpss(j).Parameter()) <= Tol)
+      if (std::abs(prm - seqpss(j).Parameter()) <= Tol)
       {
         // accumulate
         GeomInt_ParameterAndOrientation& valj = seqpss.ChangeValue(j);
@@ -602,8 +602,8 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       if (!dansS1 || !dansS2)
       {
         lastp                  = seqpss(i).Parameter();
-        Standard_Real stofirst = Max(firstp, thefirst);
-        Standard_Real stolast  = Min(lastp, thelast);
+        Standard_Real stofirst = std::max(firstp, thefirst);
+        Standard_Real stolast  = std::min(lastp, thelast);
 
         if (stolast > stofirst)
         {
@@ -657,7 +657,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
   if (dansS1 && dansS2)
   {
     lastp  = thelast;
-    firstp = Max(firstp, thefirst);
+    firstp = std::max(firstp, thefirst);
     if (lastp > firstp)
     {
       seqp.Append(firstp);

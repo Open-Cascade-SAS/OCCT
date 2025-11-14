@@ -69,7 +69,7 @@ static void CheckSurfaceData(const TColgp_Array2OfPnt&      SPoles,
   Standard_Integer i;
   for (i = SUKnots.Lower(); i < SUKnots.Upper(); i++)
   {
-    if (SUKnots(i + 1) - SUKnots(i) <= Epsilon(Abs(SUKnots(i))))
+    if (SUKnots(i + 1) - SUKnots(i) <= Epsilon(std::abs(SUKnots(i))))
     {
       throw Standard_ConstructionError("Geom_BSplineSurface: UKnots interval values too close");
     }
@@ -77,7 +77,7 @@ static void CheckSurfaceData(const TColgp_Array2OfPnt&      SPoles,
 
   for (i = SVKnots.Lower(); i < SVKnots.Upper(); i++)
   {
-    if (SVKnots(i + 1) - SVKnots(i) <= Epsilon(Abs(SVKnots(i))))
+    if (SVKnots(i + 1) - SVKnots(i) <= Epsilon(std::abs(SVKnots(i))))
     {
       throw Standard_ConstructionError("Geom_BSplineSurface: VKnots interval values too close");
     }
@@ -104,7 +104,7 @@ static void Rational(const TColStd_Array2OfReal& Weights,
     I = Weights.LowerRow();
     while (!Vrational && I <= Weights.UpperRow() - 1)
     {
-      Vrational = (Abs(Weights(I, J) - Weights(I + 1, J)) > Epsilon(Abs(Weights(I, J))));
+      Vrational = (std::abs(Weights(I, J) - Weights(I + 1, J)) > Epsilon(std::abs(Weights(I, J))));
       I++;
     }
     J++;
@@ -117,7 +117,7 @@ static void Rational(const TColStd_Array2OfReal& Weights,
     J = Weights.LowerCol();
     while (!Urational && J <= Weights.UpperCol() - 1)
     {
-      Urational = (Abs(Weights(I, J) - Weights(I, J + 1)) > Epsilon(Abs(Weights(I, J))));
+      Urational = (std::abs(Weights(I, J) - Weights(I, J + 1)) > Epsilon(std::abs(Weights(I, J))));
       J++;
     }
     I++;
@@ -604,8 +604,8 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
     // inserting the UKnots
     TColStd_Array1OfReal    UKnots(1, 2);
     TColStd_Array1OfInteger UMults(1, 2);
-    UKnots(1) = Min(NewU1, NewU2);
-    UKnots(2) = Max(NewU1, NewU2);
+    UKnots(1) = std::min(NewU1, NewU2);
+    UKnots(2) = std::max(NewU1, NewU2);
     UMults(1) = UMults(2) = udeg;
 
     InsertUKnots(UKnots, UMults, EpsU);
@@ -637,8 +637,8 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
     TColStd_Array1OfReal    VKnots(1, 2);
     TColStd_Array1OfInteger VMults(1, 2);
 
-    VKnots(1) = Min(NewV1, NewV2);
-    VKnots(2) = Max(NewV1, NewV2);
+    VKnots(1) = std::min(NewV1, NewV2);
+    VKnots(2) = std::max(NewV1, NewV2);
     VMults(1) = VMults(2) = vdeg;
     InsertVKnots(VKnots, VMults, EpsV);
   }
@@ -655,7 +655,7 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
                               uknots->Upper(),
                               index,
                               U);
-    if (Abs(uknots->Value(index + 1) - U) <= EpsU)
+    if (std::abs(uknots->Value(index + 1) - U) <= EpsU)
       index++;
     SetUOrigin(index);
     SetUNotPeriodic();
@@ -674,7 +674,7 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
                             ToU2,
                             index1U,
                             U);
-  if (Abs(uknots->Value(index1U + 1) - U) <= EpsU)
+  if (std::abs(uknots->Value(index1U + 1) - U) <= EpsU)
     index1U++;
   BSplCLib::LocateParameter(udeg,
                             uknots->Array1(),
@@ -685,7 +685,7 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
                             ToU2,
                             index2U,
                             U);
-  if (Abs(uknots->Value(index2U + 1) - U) <= EpsU || index2U == index1U)
+  if (std::abs(uknots->Value(index2U + 1) - U) <= EpsU || index2U == index1U)
     index2U++;
 
   Standard_Integer nbuknots = index2U - index1U + 1;
@@ -718,7 +718,7 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
                               vknots->Upper(),
                               index,
                               V);
-    if (Abs(vknots->Value(index + 1) - V) <= EpsV)
+    if (std::abs(vknots->Value(index + 1) - V) <= EpsV)
       index++;
     SetVOrigin(index);
     SetVNotPeriodic();
@@ -737,7 +737,7 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
                             ToV2,
                             index1V,
                             V);
-  if (Abs(vknots->Value(index1V + 1) - V) <= EpsV)
+  if (std::abs(vknots->Value(index1V + 1) - V) <= EpsV)
     index1V++;
   BSplCLib::LocateParameter(vdeg,
                             vknots->Array1(),
@@ -748,7 +748,7 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
                             ToV2,
                             index2V,
                             V);
-  if (Abs(vknots->Value(index2V + 1) - V) <= EpsV || index2V == index1V)
+  if (std::abs(vknots->Value(index2V + 1) - V) <= EpsV || index2V == index1V)
     index2V++;
 
   Standard_Integer nbvknots = index2V - index1V + 1;
@@ -774,7 +774,7 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
   Standard_Integer pindex2U = BSplCLib::PoleIndex(udeg, index2U, uperiodic, umults->Array1());
 
   pindex1U++;
-  pindex2U = Min(pindex2U + 1, poles->ColLength());
+  pindex2U = std::min(pindex2U + 1, poles->ColLength());
 
   Standard_Integer nbupoles = pindex2U - pindex1U + 1;
 
@@ -783,7 +783,7 @@ void Geom_BSplineSurface::segment(const Standard_Real    U1,
   Standard_Integer pindex2V = BSplCLib::PoleIndex(vdeg, index2V, vperiodic, vmults->Array1());
 
   pindex1V++;
-  pindex2V = Min(pindex2V + 1, poles->RowLength());
+  pindex2V = std::min(pindex2V + 1, poles->RowLength());
 
   Standard_Integer nbvpoles = pindex2V - pindex1V + 1;
 
@@ -848,11 +848,11 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
   if ((U2 < U1) || (V2 < V1))
     throw Standard_DomainError("Geom_BSplineSurface::Segment");
 
-  Standard_Real aMaxU = Max(Abs(U2), Abs(U1));
-  Standard_Real EpsU  = Max(Epsilon(aMaxU), theUTolerance);
+  Standard_Real aMaxU = std::max(std::abs(U2), std::abs(U1));
+  Standard_Real EpsU  = std::max(Epsilon(aMaxU), theUTolerance);
 
-  Standard_Real aMaxV = Max(Abs(V2), Abs(V1));
-  Standard_Real EpsV  = Max(Epsilon(aMaxV), theVTolerance);
+  Standard_Real aMaxV = std::max(std::abs(V2), std::abs(V1));
+  Standard_Real EpsV  = std::max(Epsilon(aMaxV), theVTolerance);
 
   segment(U1, U2, V1, V2, EpsU, EpsV, Standard_True, Standard_True);
 }
@@ -870,18 +870,18 @@ void Geom_BSplineSurface::CheckAndSegment(const Standard_Real U1,
   if ((U2 < U1) || (V2 < V1))
     throw Standard_DomainError("Geom_BSplineSurface::CheckAndSegment");
 
-  Standard_Real aMaxU = Max(Abs(U2), Abs(U1));
-  Standard_Real EpsU  = Max(Epsilon(aMaxU), theUTolerance);
+  Standard_Real aMaxU = std::max(std::abs(U2), std::abs(U1));
+  Standard_Real EpsU  = std::max(Epsilon(aMaxU), theUTolerance);
 
-  Standard_Real aMaxV = Max(Abs(V2), Abs(V1));
-  Standard_Real EpsV  = Max(Epsilon(aMaxV), theVTolerance);
+  Standard_Real aMaxV = std::max(std::abs(V2), std::abs(V1));
+  Standard_Real EpsV  = std::max(Epsilon(aMaxV), theVTolerance);
 
   Standard_Boolean segment_in_U = Standard_True;
   Standard_Boolean segment_in_V = Standard_True;
-  segment_in_U                  = (Abs(U1 - uknots->Value(uknots->Lower())) > EpsU)
-                 || (Abs(U2 - uknots->Value(uknots->Upper())) > EpsU);
-  segment_in_V = (Abs(V1 - vknots->Value(vknots->Lower())) > EpsV)
-                 || (Abs(V2 - vknots->Value(vknots->Upper())) > EpsV);
+  segment_in_U                  = (std::abs(U1 - uknots->Value(uknots->Lower())) > EpsU)
+                 || (std::abs(U2 - uknots->Value(uknots->Upper())) > EpsU);
+  segment_in_V = (std::abs(V1 - vknots->Value(vknots->Lower())) > EpsV)
+                 || (std::abs(V2 - vknots->Value(vknots->Upper())) > EpsV);
 
   segment(U1, U2, V1, V2, EpsU, EpsV, segment_in_U, segment_in_V);
 }
@@ -894,7 +894,7 @@ void Geom_BSplineSurface::SetUKnot(const Standard_Integer UIndex, const Standard
     throw Standard_OutOfRange("Geom_BSplineSurface::SetUKnot: Index and #knots mismatch");
 
   Standard_Integer NewIndex = UIndex;
-  Standard_Real    DU       = Abs(Epsilon(K));
+  Standard_Real    DU       = std::abs(Epsilon(K));
   if (UIndex == 1)
   {
     if (K >= uknots->Value(2) - DU)
@@ -936,14 +936,14 @@ void Geom_BSplineSurface::SetUKnots(const TColStd_Array1OfReal& UK)
   }
   if (Lower > 1)
   {
-    if (Abs(UK(Lower) - uknots->Value(Lower - 1)) <= gp::Resolution())
+    if (std::abs(UK(Lower) - uknots->Value(Lower - 1)) <= gp::Resolution())
     {
       throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnots: invalid knot value");
     }
   }
   if (Upper < uknots->Length())
   {
-    if (Abs(UK(Upper) - uknots->Value(Upper + 1)) <= gp::Resolution())
+    if (std::abs(UK(Upper) - uknots->Value(Upper + 1)) <= gp::Resolution())
     {
       throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnots: invalid knot value");
     }
@@ -954,7 +954,7 @@ void Geom_BSplineSurface::SetUKnots(const TColStd_Array1OfReal& UK)
     uknots->SetValue(i, UK(i));
     if (i != Lower)
     {
-      if (Abs(UK(i) - K1) <= gp::Resolution())
+      if (std::abs(UK(i) - K1) <= gp::Resolution())
       {
         throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnots: invalid knot value");
       }
@@ -983,7 +983,7 @@ void Geom_BSplineSurface::SetVKnot(const Standard_Integer VIndex, const Standard
   if (VIndex < 1 || VIndex > vknots->Length())
     throw Standard_OutOfRange("Geom_BSplineSurface::SetVKnot: Index and #knots mismatch");
   Standard_Integer NewIndex = VIndex + vknots->Lower() - 1;
-  Standard_Real    DV       = Abs(Epsilon(K));
+  Standard_Real    DV       = std::abs(Epsilon(K));
   if (VIndex == 1)
   {
     if (K >= vknots->Value(2) - DV)
@@ -1027,14 +1027,14 @@ void Geom_BSplineSurface::SetVKnots(const TColStd_Array1OfReal& VK)
   }
   if (Lower > 1)
   {
-    if (Abs(VK(Lower) - vknots->Value(Lower - 1)) <= gp::Resolution())
+    if (std::abs(VK(Lower) - vknots->Value(Lower - 1)) <= gp::Resolution())
     {
       throw Standard_ConstructionError("Geom_BSplineSurface::SetVKnots: invalid knot value");
     }
   }
   if (Upper < vknots->Length())
   {
-    if (Abs(VK(Upper) - vknots->Value(Upper + 1)) <= gp::Resolution())
+    if (std::abs(VK(Upper) - vknots->Value(Upper + 1)) <= gp::Resolution())
     {
       throw Standard_ConstructionError("Geom_BSplineSurface::SetVKnots: invalid knot value");
     }
@@ -1045,7 +1045,7 @@ void Geom_BSplineSurface::SetVKnots(const TColStd_Array1OfReal& VK)
     vknots->SetValue(i, VK(i));
     if (i != Lower)
     {
-      if (Abs(VK(i) - K1) <= gp::Resolution())
+      if (std::abs(VK(i) - K1) <= gp::Resolution())
       {
         throw Standard_ConstructionError("Geom_BSplineSurface::SetVKnots: invalid knot value");
       }
@@ -1244,7 +1244,7 @@ void Geom_BSplineSurface::PeriodicNormalization(Standard_Real& Uparameter,
   {
     aMaxVal           = ufknots->Value(ufknots->Upper() - udeg);
     aMinVal           = ufknots->Value(udeg + 1);
-    Standard_Real eps = Abs(Epsilon(Uparameter));
+    Standard_Real eps = std::abs(Epsilon(Uparameter));
     Period            = aMaxVal - aMinVal;
 
     if (Period <= eps)
@@ -1266,7 +1266,7 @@ void Geom_BSplineSurface::PeriodicNormalization(Standard_Real& Uparameter,
   {
     aMaxVal           = vfknots->Value(vfknots->Upper() - vdeg);
     aMinVal           = vfknots->Value(vdeg + 1);
-    Standard_Real eps = Abs(Epsilon(Vparameter));
+    Standard_Real eps = std::abs(Epsilon(Vparameter));
     Period            = aMaxVal - aMinVal;
 
     if (Period <= eps)

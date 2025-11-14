@@ -534,8 +534,9 @@ bool RWGltf_GltfJsonParser::parseTransformationComponents(
       aRotVec4[aCompIter] = aGenVal.GetDouble();
     }
     const gp_Quaternion aQuaternion(aRotVec4.x(), aRotVec4.y(), aRotVec4.z(), aRotVec4.w());
-    if (Abs(aQuaternion.X()) > gp::Resolution() || Abs(aQuaternion.Y()) > gp::Resolution()
-        || Abs(aQuaternion.Z()) > gp::Resolution() || Abs(aQuaternion.W() - 1.0) > gp::Resolution())
+    if (std::abs(aQuaternion.X()) > gp::Resolution() || std::abs(aQuaternion.Y()) > gp::Resolution()
+        || std::abs(aQuaternion.Z()) > gp::Resolution()
+        || std::abs(aQuaternion.W() - 1.0) > gp::Resolution())
     {
       aTrsf.SetRotation(aQuaternion);
     }
@@ -580,16 +581,16 @@ bool RWGltf_GltfJsonParser::parseTransformationComponents(
         return false;
       }
       aScaleVec[aCompIter] = aGenVal.GetDouble();
-      if (Abs(aScaleVec[aCompIter]) <= gp::Resolution())
+      if (std::abs(aScaleVec[aCompIter]) <= gp::Resolution())
       {
         reportGltfError("Scene node '" + theSceneNodeId + "' defines invalid scale.");
         return false;
       }
     }
 
-    if (Abs(aScaleVec.x() - aScaleVec.y()) > Precision::Confusion()
-        || Abs(aScaleVec.y() - aScaleVec.z()) > Precision::Confusion()
-        || Abs(aScaleVec.x() - aScaleVec.z()) > Precision::Confusion())
+    if (std::abs(aScaleVec.x() - aScaleVec.y()) > Precision::Confusion()
+        || std::abs(aScaleVec.y() - aScaleVec.z()) > Precision::Confusion()
+        || std::abs(aScaleVec.x() - aScaleVec.z()) > Precision::Confusion())
     {
       Graphic3d_Mat4d aMat4;
       aTrsf.GetMat4(aMat4);
@@ -628,7 +629,7 @@ bool RWGltf_GltfJsonParser::parseTransformationComponents(
 
       Message::SendWarning(aWarnMessage);
     }
-    else if (Abs(aScaleVec.x() - 1.0) > Precision::Confusion())
+    else if (std::abs(aScaleVec.x() - 1.0) > Precision::Confusion())
     {
       aTrsf.SetScaleFactor(aScaleVec.x());
     }
@@ -1010,7 +1011,7 @@ bool RWGltf_GltfJsonParser::gltfParseStdMaterial(Handle(RWGltf_MaterialCommon)& 
     const double aSpecular = aShinVal->GetDouble();
     if (aSpecular >= 0)
     {
-      theMat->Shininess = (float)Min(aSpecular / 1000.0, 1.0);
+      theMat->Shininess = (float)std::min(aSpecular / 1000.0, 1.0);
     }
   }
   return true;

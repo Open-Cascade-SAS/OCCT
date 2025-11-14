@@ -135,12 +135,12 @@ Standard_Real Bisector_BisecAna::Distance(const gp_Pnt2d&             apoint,
     // the status is determined only in case on curve ie:
     // tangent to the bissectrice is bisectrice of two vectors.
     Standard_Real SinPlat = 1.e-3;
-    if (Abs(afirstdir ^ aseconddir) < SinPlat)
+    if (std::abs(afirstdir ^ aseconddir) < SinPlat)
     { // flat
       if (afirstdir * aseconddir >= 0.0)
       { // tangent mixed
         // correct if the scalar product is close to 1.
-        if (Abs(tangdir * afirstdir) < 0.5)
+        if (std::abs(tangdir * afirstdir) < 0.5)
         {
           astatus = Standard_False;
         }
@@ -148,7 +148,7 @@ Standard_Real Bisector_BisecAna::Distance(const gp_Pnt2d&             apoint,
       else
       { // opposed tangents.
         // correct if the scalar product is close to 0.
-        if (Abs(tangdir * afirstdir) > 0.5)
+        if (std::abs(tangdir * afirstdir) > 0.5)
         {
           astatus = Standard_False;
         }
@@ -345,7 +345,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve,
       // Particular case when two circles are mixed.
       //-----------------------------------------------------
       if (circle1.Location().IsEqual(circle2.Location(), PreConf)
-          && (Abs(radius1 - radius2) <= PreConf))
+          && (std::abs(radius1 - radius2) <= PreConf))
       {
         gp_Pnt2d P1 = afirstcurve->Value(afirstcurve->LastParameter());
         gp_Pnt2d P2 = asecondcurve->Value(asecondcurve->FirstParameter());
@@ -427,8 +427,8 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve,
       Standard_Boolean CirclesTangent = Standard_False;
 
       //  Modified by Sergey KHROMOV - Thu Oct 31 12:42:21 2002 End
-      //     if ( oncurve && Abs(D1) <  PreConf) {
-      if (oncurve && Abs(D1) < PreConf && tan1.IsParallel(tan2, 1.e-8))
+      //     if ( oncurve && std::abs(D1) <  PreConf) {
+      if (oncurve && std::abs(D1) < PreConf && tan1.IsParallel(tan2, 1.e-8))
       {
         //  Modified by Sergey KHROMOV - Thu Oct 31 12:42:22 2002 Begin
         // C2 included in C1 and tangent.
@@ -440,8 +440,8 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve,
       {
         D1 = 0.5 * (radius1 - EntreAxe + radius2);
         //  Modified by Sergey KHROMOV - Thu Oct 31 12:44:24 2002 Begin
-        //       if (oncurve && Abs(D1) < PreConf) {
-        if (oncurve && Abs(D1) < PreConf && tan1.IsParallel(tan2, 1.e-8))
+        //       if (oncurve && std::abs(D1) < PreConf) {
+        if (oncurve && std::abs(D1) < PreConf && tan1.IsParallel(tan2, 1.e-8))
         {
           //  Modified by Sergey KHROMOV - Thu Oct 31 12:44:25 2002 End
           // C2 and C1 tangent and disconnected.
@@ -562,8 +562,8 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve,
                   // flat and not turn back.
                   Standard_Real Par1   = ElCLib::Parameter(gpline, circle1.Location());
                   Standard_Real Par2   = ElCLib::Parameter(gpline, circle2.Location());
-                  Standard_Real MinPar = Min(Par1, Par2);
-                  Standard_Real MaxPar = Max(Par1, Par2);
+                  Standard_Real MinPar = std::min(Par1, Par2);
+                  Standard_Real MaxPar = std::max(Par1, Par2);
 
                   if (!thesense)
                   {
@@ -640,8 +640,8 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve,
         Standard_Real radius1 = circle1.Radius();
         Standard_Real D1      = (line2.Distance(circle1.Location()) - radius1);
         //  Modified by Sergey KHROMOV - Wed Oct 30 14:48:43 2002 Begin
-        //       if (Abs(D1) < PreConf) {
-        if (Abs(D1) < PreConf && tan1.IsParallel(tan2, 1.e-8))
+        //       if (std::abs(D1) < PreConf) {
+        if (std::abs(D1) < PreConf && tan1.IsParallel(tan2, 1.e-8))
         {
           //  Modified by Sergey KHROMOV - Wed Oct 30 14:48:44 2002 End
           circle1.SetRadius(radius1 + D1);
@@ -1346,8 +1346,8 @@ void Bisector_BisecAna::SetTrim(const Handle(Geom2d_Curve)&)
       if (Type1 == STANDARD_TYPE(Geom2d_Parabola)) {
         gpParabola = Handle(Geom2d_Parabola)::DownCast(BasisCurve)->Parab2d();
         Focus = gpParabola.Focal();
-        Standard_Real Val1 = Sqrt(Limit*Focus);
-        Standard_Real Val2 = Sqrt(Limit*Limit);
+        Standard_Real Val1 = std::sqrt(Limit*Focus);
+        Standard_Real Val2 = std::sqrt(Limit*Limit);
         UB2 = (Val1 <= Val2 ? Val1:Val2);
       }
       else if (Type1 == STANDARD_TYPE(Geom2d_Hyperbola)) {
@@ -1356,8 +1356,8 @@ void Bisector_BisecAna::SetTrim(const Handle(Geom2d_Curve)&)
         Standard_Real Minr  = gpHyperbola.MinorRadius();
         Standard_Real Valu1 = Limit/Majr;
         Standard_Real Valu2 = Limit/Minr;
-        Standard_Real Val1  = Log(Valu1+Sqrt(Valu1*Valu1-1));
-        Standard_Real Val2  = Log(Valu2+Sqrt(Valu2*Valu2+1));
+        Standard_Real Val1  = Log(Valu1+std::sqrt(Valu1*Valu1-1));
+        Standard_Real Val2  = Log(Valu2+std::sqrt(Valu2*Valu2+1));
         UB2 = (Val1 <= Val2 ? Val1:Val2);
       }
     }

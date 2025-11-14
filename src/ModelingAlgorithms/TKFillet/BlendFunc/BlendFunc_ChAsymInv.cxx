@@ -44,9 +44,9 @@ void BlendFunc_ChAsymInv::Set(const Standard_Real    Dist1,
                               const Standard_Real    Angle,
                               const Standard_Integer Choix)
 {
-  dist1 = Abs(Dist1);
+  dist1 = std::abs(Dist1);
   angle = Angle;
-  tgang = Tan(Angle);
+  tgang = std::tan(Angle);
   choix = Choix;
 }
 
@@ -168,8 +168,9 @@ Standard_Boolean BlendFunc_ChAsymInv::IsSolution(const math_Vector& Sol, const S
 
   Value(Sol, valsol);
 
-  if (Abs(valsol(1)) < Tol && Abs(valsol(2)) < Tol && Abs(valsol(3)) < 2. * dist1 * Tol
-      && Abs(valsol(4)) < Tol * (1. + tgang) * Abs(PScaInv) * temp)
+  if (std::abs(valsol(1)) < Tol && std::abs(valsol(2)) < Tol
+      && std::abs(valsol(3)) < 2. * dist1 * Tol
+      && std::abs(valsol(4)) < Tol * (1. + tgang) * std::abs(PScaInv) * temp)
   {
 
     return Standard_True;

@@ -111,7 +111,7 @@ void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Con
       }
     }
   }
-  P.SetCritValue(Sqrt(dist));
+  P.SetCritValue(std::sqrt(dist));
 }
 
 //=================================================================================================

@@ -37,7 +37,7 @@ void Determine_Transition_LC(const IntRes2d_Position Pos1,
   Standard_Real sgn  = Tan1.Crossed(Tan2);
   Standard_Real norm = Tan1.Magnitude() * Tan2.Magnitude();
 
-  if (Abs(sgn) <= TOLERANCE_ANGULAIRE * norm)
+  if (std::abs(sgn) <= TOLERANCE_ANGULAIRE * norm)
   { // Transition TOUCH #########
     Standard_Boolean opos = (Tan1.Dot(Tan2)) < 0;
 
@@ -50,7 +50,7 @@ void Determine_Transition_LC(const IntRes2d_Position Pos1,
     Standard_Real Val1 = Norm.Dot(Norm1);
     Standard_Real Val2 = Norm.Dot(Norm2);
 
-    if (Abs(Val1 - Val2) <= gp::Resolution())
+    if (std::abs(Val1 - Val2) <= gp::Resolution())
     {
       T1.SetValue(Standard_True, Pos1, IntRes2d_Unknown, opos);
       T2.SetValue(Standard_True, Pos2, IntRes2d_Unknown, opos);
@@ -243,7 +243,7 @@ Interval::Interval(const Standard_Real    a,
 
 Standard_Real Interval::Length()
 {
-  return ((IsNull) ? -1.0 : Abs(Bsup - Binf));
+  return ((IsNull) ? -1.0 : std::abs(Bsup - Binf));
 }
 
 Interval Interval::IntersectionWithBounded(const Interval& Inter)

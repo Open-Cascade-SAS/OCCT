@@ -63,8 +63,8 @@ struct Graphic3d_BufferRange
       return;
     }
 
-    const Standard_Integer aStart = Min(Start, theRange.Start);
-    const Standard_Integer aLast  = Max(Upper(), theRange.Upper());
+    const Standard_Integer aStart = std::min(Start, theRange.Start);
+    const Standard_Integer aLast  = std::max(Upper(), theRange.Upper());
     Start                         = aStart;
     Length                        = aLast - aStart + 1;
   }

@@ -54,7 +54,7 @@ public:
 
   //! Creates a plane from its cartesian equation :
   //! Ax + By + Cz + D = 0.0
-  //! Status is "BadEquation" if Sqrt (A*A + B*B + C*C)
+  //! Status is "BadEquation" if std::sqrt(A*A + B*B + C*C)
   //! <= Resolution from gp
   Standard_EXPORT GC_MakePlane(const Standard_Real A,
                                const Standard_Real B,
@@ -87,7 +87,7 @@ public:
   //! Exceptions StdFail_NotDone if no plane is constructed.
   Standard_EXPORT const Handle(Geom_Plane)& Value() const;
 
-  operator const Handle(Geom_Plane)&() const { return Value(); }
+  operator const Handle(Geom_Plane) & () const { return Value(); }
 
 private:
   Handle(Geom_Plane) ThePlane;

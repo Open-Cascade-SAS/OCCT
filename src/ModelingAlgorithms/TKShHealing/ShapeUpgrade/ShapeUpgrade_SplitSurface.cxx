@@ -115,8 +115,8 @@ void ShapeUpgrade_SplitSurface::Init(const Handle(Geom_Surface)& S,
   }
   else
   {
-    UF = Max(U1, UFirst);
-    UL = Min(U2, ULast);
+    UF = std::max(U1, UFirst);
+    UL = std::min(U2, ULast);
   }
   if (VFirst > V2 - precision || VLast < V1 - precision)
   {
@@ -125,8 +125,8 @@ void ShapeUpgrade_SplitSurface::Init(const Handle(Geom_Surface)& S,
   }
   else
   {
-    VF = Max(V1, VFirst);
-    VL = Min(V2, VLast);
+    VF = std::max(V1, VFirst);
+    VL = std::min(V2, VLast);
   }
 
   if (myArea != 0.)
@@ -350,10 +350,10 @@ void ShapeUpgrade_SplitSurface::Build(const Standard_Boolean Segment)
         {
           Handle(Geom_RectangularTrimmedSurface) NewSurf =
             new Geom_RectangularTrimmedSurface(NewSurfaceEx,
-                                               Max(U1, UFirst),
-                                               Min(ULast, U2),
-                                               Max(VFirst, V1),
-                                               Min(VLast, V2));
+                                               std::max(U1, UFirst),
+                                               std::min(ULast, U2),
+                                               std::max(VFirst, V1),
+                                               std::min(VLast, V2));
           Surfaces->SetValue(nc1, 1, NewSurf);
         }
       }
@@ -434,8 +434,10 @@ void ShapeUpgrade_SplitSurface::Build(const Standard_Boolean Segment)
   {
     mySurface->Bounds(U1, U2, V1, V2);
     Standard_Boolean filled = Standard_True;
-    if (Abs(U1 - UFirst) < Precision::PConfusion() && Abs(U2 - ULast) < Precision::PConfusion()
-        && Abs(V1 - VFirst) < Precision::PConfusion() && Abs(V2 - VLast) < Precision::PConfusion())
+    if (std::abs(U1 - UFirst) < Precision::PConfusion()
+        && std::abs(U2 - ULast) < Precision::PConfusion()
+        && std::abs(V1 - VFirst) < Precision::PConfusion()
+        && std::abs(V2 - VLast) < Precision::PConfusion())
       Surfaces->SetValue(1, 1, mySurface);
     else if (!Segment || !mySurface->IsKind(STANDARD_TYPE(Geom_BSplineSurface))
              || !Status(ShapeExtend_DONE2))

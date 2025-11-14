@@ -111,8 +111,9 @@ void BRepLib_ValidateEdge::processApprox()
 
   Standard_Integer aControlPointsNumber = (myControlPointsNumber < 1) ? 1 : myControlPointsNumber;
   Standard_Boolean anIsProjection =
-    (!mySameParameter || Abs(anOtherFirstParam - aReferenceFirstParam) > Precision::PConfusion()
-     || Abs(anOtherLastParam - aReferenceLastParam) > Precision::PConfusion());
+    (!mySameParameter
+     || std::abs(anOtherFirstParam - aReferenceFirstParam) > Precision::PConfusion()
+     || std::abs(anOtherLastParam - aReferenceLastParam) > Precision::PConfusion());
 
   if (!anIsProjection)
   {
@@ -131,7 +132,7 @@ void BRepLib_ValidateEdge::processApprox()
       // Stop process for best performance
       if (myExitIfToleranceExceeded && aMaxSquareDistance > aSquareToleranceForChecking)
       {
-        myCalculatedDistance = Sqrt(aMaxSquareDistance);
+        myCalculatedDistance = std::sqrt(aMaxSquareDistance);
         return;
       }
     }
@@ -147,7 +148,7 @@ void BRepLib_ValidateEdge::processApprox()
     }
     if (myExitIfToleranceExceeded && aMaxSquareDistance > aSquareToleranceForChecking)
     {
-      myCalculatedDistance = Sqrt(aMaxSquareDistance);
+      myCalculatedDistance = std::sqrt(aMaxSquareDistance);
       return;
     }
 
@@ -160,7 +161,7 @@ void BRepLib_ValidateEdge::processApprox()
     }
     if (myExitIfToleranceExceeded && aMaxSquareDistance > aSquareToleranceForChecking)
     {
-      myCalculatedDistance = Sqrt(aMaxSquareDistance);
+      myCalculatedDistance = std::sqrt(aMaxSquareDistance);
       return;
     }
 
@@ -193,7 +194,7 @@ void BRepLib_ValidateEdge::processApprox()
         }
         if (myExitIfToleranceExceeded && aMaxSquareDistance > aSquareToleranceForChecking)
         {
-          myCalculatedDistance = Sqrt(aMaxSquareDistance);
+          myCalculatedDistance = std::sqrt(aMaxSquareDistance);
           return;
         }
       }
@@ -213,7 +214,7 @@ void BRepLib_ValidateEdge::processApprox()
         }
         if (myExitIfToleranceExceeded && aMaxSquareDistance > aSquareToleranceForChecking)
         {
-          myCalculatedDistance = Sqrt(aMaxSquareDistance);
+          myCalculatedDistance = std::sqrt(aMaxSquareDistance);
           return;
         }
       }
@@ -225,7 +226,7 @@ void BRepLib_ValidateEdge::processApprox()
       }
     }
   }
-  myCalculatedDistance = Sqrt(aMaxSquareDistance);
+  myCalculatedDistance = std::sqrt(aMaxSquareDistance);
 }
 
 //=================================================================================================

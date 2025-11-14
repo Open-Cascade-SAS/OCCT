@@ -368,7 +368,7 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentat
       Handle(Geom_Circle) circle2(Handle(Geom_Circle)::DownCast(copy2));
       Standard_Real       R1 = circle1->Radius();
       Standard_Real       R2 = circle2->Radius();
-      myLength               = Max(R1, R2) / 5.0;
+      myLength               = std::max(R1, R2) / 5.0;
       if (!found)
       {
         if ((circle1->Location()).IsEqual(circle2->Location(), Precision::Confusion()))
@@ -410,7 +410,7 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentat
       Handle(Geom_Ellipse) ellipse(Handle(Geom_Ellipse)::DownCast(copy2));
       Standard_Real        R1 = circle->Radius();
       Standard_Real        R2 = ellipse->MajorRadius();
-      myLength                = Max(R1, R2) / 5.0;
+      myLength                = std::max(R1, R2) / 5.0;
       if (!found)
       {
         if (R1 >= R2)
@@ -440,7 +440,7 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentat
       Handle(Geom_Circle)  circle(Handle(Geom_Circle)::DownCast(copy2));
       Standard_Real        R1 = ellipse->MajorRadius();
       Standard_Real        R2 = circle->Radius();
-      myLength                = Max(R1, R2) / 5.0;
+      myLength                = std::max(R1, R2) / 5.0;
       if (!found)
       {
         if (R1 >= R2)
@@ -470,7 +470,7 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentat
       Handle(Geom_Ellipse) ellipse2(Handle(Geom_Ellipse)::DownCast(copy2));
       Standard_Real        R1 = ellipse1->MajorRadius();
       Standard_Real        R2 = ellipse2->MajorRadius();
-      myLength                = Max(R1, R2) / 5.0;
+      myLength                = std::max(R1, R2) / 5.0;
       if (!found)
       {
         if (R1 > R2)
@@ -502,7 +502,7 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentat
   myAttach   = pint3d;
   myDir      = theDir;
   myPosition = pint3d;
-  myLength   = Min(myLength, myArrowSize);
+  myLength   = std::min(myLength, myArrowSize);
 
   DsgPrs_TangentPresentation::Add(aPresentation, myDrawer, myAttach, myDir, myLength);
   if ((myExtShape != 0) && !extCurv.IsNull())

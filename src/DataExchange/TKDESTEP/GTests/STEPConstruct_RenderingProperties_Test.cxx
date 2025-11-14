@@ -91,7 +91,7 @@ protected:
 
     // Set basic properties
     aMaterial.DiffuseColor = mySurfaceColor;
-    aMaterial.Transparency = myTransparency;
+    aMaterial.Transparency = static_cast<Standard_ShortReal>(myTransparency);
 
     // Calculate ambient color based on ambient factor
     aMaterial.AmbientColor = Quantity_Color(mySurfaceColor.Red() * myAmbientFactor,
@@ -114,9 +114,9 @@ protected:
                                   const Quantity_Color& theC2,
                                   const Standard_Real   theTol = 0.01)
   {
-    return (Abs(theC1.Red() - theC2.Red()) <= theTol)
-           && (Abs(theC1.Green() - theC2.Green()) <= theTol)
-           && (Abs(theC1.Blue() - theC2.Blue()) <= theTol);
+    return (std::abs(theC1.Red() - theC2.Red()) <= theTol)
+           && (std::abs(theC1.Green() - theC2.Green()) <= theTol)
+           && (std::abs(theC1.Blue() - theC2.Blue()) <= theTol);
   }
 
   // Test member variables
@@ -342,7 +342,7 @@ TEST_F(STEPConstruct_RenderingPropertiesTest, InitWithRGBAColor)
   STEPConstruct_RenderingProperties aProps;
 
   // Create an RGBA color with alpha = 0.6 (transparency = 0.4)
-  Quantity_ColorRGBA aRgba(Quantity_Color(0.3, 0.6, 0.9, Quantity_TOC_RGB), 0.6);
+  Quantity_ColorRGBA aRgba(Quantity_Color(0.3, 0.6, 0.9, Quantity_TOC_RGB), 0.6f);
 
   aProps.Init(aRgba);
 

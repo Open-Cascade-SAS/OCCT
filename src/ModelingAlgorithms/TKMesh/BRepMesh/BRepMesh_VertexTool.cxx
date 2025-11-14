@@ -31,7 +31,7 @@ NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(const Standard_I
 
   gp_XY            aVec = (myPoint - aVertex.Coord());
   Standard_Boolean inTol;
-  if (Abs(myTolerance[1]) < Precision::Confusion())
+  if (std::abs(myTolerance[1]) < Precision::Confusion())
   {
     inTol = aVec.SquareModulus() < myTolerance[0];
   }

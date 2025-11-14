@@ -37,8 +37,8 @@ void BRepExtrema_ExtCC::Initialize(const TopoDS_Edge& E2)
   Standard_Real     V1, V2;
   BRepAdaptor_Curve Curv(E2);
   myHC              = new BRepAdaptor_Curve(Curv);
-  Standard_Real Tol = Min(BRep_Tool::Tolerance(E2), Precision::Confusion());
-  Tol               = Max(Curv.Resolution(Tol), Precision::PConfusion());
+  Standard_Real Tol = std::min(BRep_Tool::Tolerance(E2), Precision::Confusion());
+  Tol               = std::max(Curv.Resolution(Tol), Precision::PConfusion());
   BRep_Tool::Range(E2, V1, V2);
   myExtCC.SetCurve(2, *myHC, V1, V2);
   myExtCC.SetTolerance(2, Tol);
@@ -53,8 +53,8 @@ void BRepExtrema_ExtCC::Perform(const TopoDS_Edge& E1)
   Standard_Real             U1, U2;
   BRepAdaptor_Curve         Curv(E1);
   Handle(BRepAdaptor_Curve) HC  = new BRepAdaptor_Curve(Curv);
-  Standard_Real             Tol = Min(BRep_Tool::Tolerance(E1), Precision::Confusion());
-  Tol                           = Max(Curv.Resolution(Tol), Precision::PConfusion());
+  Standard_Real             Tol = std::min(BRep_Tool::Tolerance(E1), Precision::Confusion());
+  Tol                           = std::max(Curv.Resolution(Tol), Precision::PConfusion());
   BRep_Tool::Range(E1, U1, U2);
   myExtCC.SetCurve(1, *HC, U1, U2);
   myExtCC.SetTolerance(1, Tol);

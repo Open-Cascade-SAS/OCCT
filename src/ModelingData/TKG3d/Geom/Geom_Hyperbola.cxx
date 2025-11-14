@@ -264,7 +264,7 @@ Standard_Real Geom_Hyperbola::Eccentricity() const
 {
 
   Standard_ConstructionError_Raise_if(majorRadius == 0.0, " ") return (
-    Sqrt(majorRadius * majorRadius + minorRadius * minorRadius))
+    std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius))
     / majorRadius;
 }
 
@@ -273,7 +273,7 @@ Standard_Real Geom_Hyperbola::Eccentricity() const
 Standard_Real Geom_Hyperbola::Focal() const
 {
 
-  return 2.0 * Sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  return 2.0 * std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
 }
 
 //=================================================================================================
@@ -281,7 +281,7 @@ Standard_Real Geom_Hyperbola::Focal() const
 Pnt Geom_Hyperbola::Focus1() const
 {
 
-  Standard_Real C = Sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  Standard_Real C = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
   Standard_Real Xp, Yp, Zp, Xd, Yd, Zd;
   pos.Location().Coord(Xp, Yp, Zp);
   pos.XDirection().Coord(Xd, Yd, Zd);
@@ -293,7 +293,7 @@ Pnt Geom_Hyperbola::Focus1() const
 Pnt Geom_Hyperbola::Focus2() const
 {
 
-  Standard_Real C = Sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  Standard_Real C = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
   Standard_Real Xp, Yp, Zp, Xd, Yd, Zd;
   pos.Location().Coord(Xp, Yp, Zp);
   pos.XDirection().Coord(Xd, Yd, Zd);
@@ -323,8 +323,8 @@ Standard_Real Geom_Hyperbola::Parameter() const
 void Geom_Hyperbola::Transform(const Trsf& T)
 {
 
-  majorRadius = majorRadius * Abs(T.ScaleFactor());
-  minorRadius = minorRadius * Abs(T.ScaleFactor());
+  majorRadius = majorRadius * std::abs(T.ScaleFactor());
+  minorRadius = minorRadius * std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 

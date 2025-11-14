@@ -567,8 +567,8 @@ void TopOpeBRepDS_HDataStructure::MinMaxOnParameter(const TopOpeBRepDS_ListOfInt
     for (; it.More(); it.Next())
     {
       parline = it.Parameter();
-      parmin  = Min(parmin, parline);
-      parmax  = Max(parmax, parline);
+      parmin  = std::min(parmin, parline);
+      parmax  = std::max(parmax, parline);
     }
   }
 }

@@ -89,7 +89,7 @@ static void EdgesFromVertex(const TopoDS_Wire&   W,
     }
   }
 
-  if (Abs(I2 - I1) == 1)
+  if (std::abs(I2 - I1) == 1)
   {
     // consecutive numbers
     if (I2 == I1 + 1)
@@ -238,10 +238,10 @@ static Standard_Boolean PlaneOfWire(const TopoDS_Wire& W, gp_Pln& P)
     gp_Vec               Vec;
     Standard_Real        R1, R2, R3, Tol = Precision::Confusion();
     Pp.RadiusOfGyration(R1, R2, R3);
-    Standard_Real RMax = Max(Max(R1, R2), R3);
-    if ((Abs(RMax - R1) < Tol && Abs(RMax - R2) < Tol)
-        || (Abs(RMax - R1) < Tol && Abs(RMax - R3) < Tol)
-        || (Abs(RMax - R2) < Tol && Abs(RMax - R3) < Tol))
+    Standard_Real RMax = std::max(std::max(R1, R2), R3);
+    if ((std::abs(RMax - R1) < Tol && std::abs(RMax - R2) < Tol)
+        || (std::abs(RMax - R1) < Tol && std::abs(RMax - R3) < Tol)
+        || (std::abs(RMax - R2) < Tol && std::abs(RMax - R3) < Tol))
       isplane = Standard_False;
     else
     {
@@ -367,7 +367,7 @@ static void TrimEdge(const TopoDS_Edge&            CurrentEdge,
     {
       // piece of edge
       m1 = (CutValues.Value(j) - t0) * (last - first) / (t1 - t0) + first;
-      if (Abs(m0 - m1) < Precision::Confusion())
+      if (std::abs(m0 - m1) < Precision::Confusion())
       {
         return;
       }
@@ -379,7 +379,7 @@ static void TrimEdge(const TopoDS_Edge&            CurrentEdge,
       if (j == ndec)
       {
         // last piece
-        if (Abs(m0 - last) < Precision::Confusion())
+        if (std::abs(m0 - last) < Precision::Confusion())
         {
           return;
         }
@@ -398,7 +398,7 @@ static void TrimEdge(const TopoDS_Edge&            CurrentEdge,
     {
       // piece of edge
       m0 = (CutValues.Value(j) - t0) * (last - first) / (t1 - t0) + first;
-      if (Abs(m0 - m1) < Precision::Confusion())
+      if (std::abs(m0 - m1) < Precision::Confusion())
       {
         return;
       }
@@ -410,7 +410,7 @@ static void TrimEdge(const TopoDS_Edge&            CurrentEdge,
       if (j == 1)
       {
         // last piece
-        if (Abs(first - m1) < Precision::Confusion())
+        if (std::abs(first - m1) < Precision::Confusion())
         {
           return;
         }
@@ -553,14 +553,14 @@ static Standard_Boolean EdgeIntersectOnWire(const gp_Pnt&                       
       Standard_Real tol = Precision::PConfusion();
       Standard_Real first, last, param;
       BRep_Tool::Range(E, first, last);
-      tol = Max(tol, percent * Abs(last - first));
+      tol = std::max(tol, percent * std::abs(last - first));
       DSS.ParOnEdgeS2(isol, param);
-      if (Abs(first - param) < tol)
+      if (std::abs(first - param) < tol)
       {
         NewVertex = Standard_False;
         Vsol      = TopExp::FirstVertex(E);
       }
-      else if (Abs(last - param) < tol)
+      else if (std::abs(last - param) < tol)
       {
         NewVertex = Standard_False;
         Vsol      = TopExp::LastVertex(E);
@@ -666,7 +666,7 @@ static void Transform(const Standard_Boolean WithRotation,
     Vsign.SetLinearForm(Vtrans.Dot(axe1), axe2, -Vtrans.Dot(axe2), axe1);
     alpha                   = Vsign.Dot(axe1);
     beta                    = Vsign.Dot(axe2);
-    Standard_Boolean pasnul = (Abs(alpha) > 1.e-4 && Abs(beta) > 1.e-4);
+    Standard_Boolean pasnul = (std::abs(alpha) > 1.e-4 && std::abs(beta) > 1.e-4);
     if (alpha * beta > 0.0 && pasnul)
       sign = -1;
     gp_Ax1        Norm(Pos2, norm2);
@@ -2116,7 +2116,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
             angmin   = angV;
             Vopti    = TopoDS::Vertex(SeqV.Value(ii));
           }
-          else if (Abs(angmin - angV) < eta)
+          else if (std::abs(angmin - angV) < eta)
           {
             if (dist < distmini)
             {
@@ -2205,7 +2205,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
           U2 = 0.25 * (3 * BRep_Tool::Parameter(V1, E2) + BRep_Tool::Parameter(V2, E2));
         }
 
-        if (Abs(Pbout.Distance(P1) - Pbout.Distance(P2)) < Precision::Confusion())
+        if (std::abs(Pbout.Distance(P1) - Pbout.Distance(P2)) < Precision::Confusion())
         {
           // cas limite ; on se decale un peu
           Pbout = PPn;
@@ -2402,14 +2402,14 @@ void BRepFill_CompatibleWires::SearchOrigin()
             ang = M_PI - ang;
           if (ang < -M_PI/2.0)
             ang = -M_PI - ang;
-          if (Abs(ang-M_PI/2.0)<Precision::Angular()) {
+          if (std::abs(ang-M_PI/2.0)<Precision::Angular()) {
             // cas d'ambiguite
             gp_Vec Vtrans(P0.Location(),P.Location()),Vsign;
             Standard_Real alpha,beta,sign=1;
             Vsign.SetLinearForm(Vtrans.Dot(vec1),vec2,-Vtrans.Dot(vec2),vec1);
             alpha = Vsign.Dot(vec1);
             beta = Vsign.Dot(vec2);
-            Standard_Boolean pasnul = (Abs(alpha)>1.e-4 && Abs(beta)>1.e-4);
+            Standard_Boolean pasnul = (std::abs(alpha)>1.e-4 && std::abs(beta)>1.e-4);
             if ( alpha*beta>0.0 && pasnul ) sign=-1;
             ang *= sign;
               }

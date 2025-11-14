@@ -1039,7 +1039,7 @@ void BRepAlgo_Loop::UpdateVEmap(TopTools_IndexedDataMapOfShapeListOfShape& theVE
     {
       const TopoDS_Vertex& aVertex = TopoDS::Vertex(itl.Value());
       Standard_Real        aTol    = BRep_Tool::Tolerance(aVertex);
-      aMaxTol                      = Max(aMaxTol, aTol);
+      aMaxTol                      = std::max(aMaxTol, aTol);
       gp_Pnt aPnt                  = BRep_Tool::Pnt(aVertex);
       Points(++jj)                 = aPnt;
     }
@@ -1052,10 +1052,10 @@ void BRepAlgo_Loop::UpdateVEmap(TopTools_IndexedDataMapOfShapeListOfShape& theVE
     for (jj = 1; jj <= Points.Upper(); jj++)
     {
       Standard_Real aSqDist = aCentre.SquareDistance(Points(jj));
-      aMaxDist              = Max(aMaxDist, aSqDist);
+      aMaxDist              = std::max(aMaxDist, aSqDist);
     }
-    aMaxDist = Sqrt(aMaxDist);
-    aMaxTol  = Max(aMaxTol, aMaxDist);
+    aMaxDist = std::sqrt(aMaxDist);
+    aMaxTol  = std::max(aMaxTol, aMaxDist);
 
     // Find constant vertex
     TopoDS_Vertex aConstVertex;

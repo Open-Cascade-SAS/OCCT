@@ -431,7 +431,7 @@ void CheckEdge(const TopoDS_Edge&                Ed,
     const gp_Pnt&         aPV = TV->Pnt();
     //
     Standard_Real aTol = BRep_Tool::Tolerance(aV);
-    aTol               = Max(aTol, aTolE);
+    aTol               = std::max(aTol, aTolE);
     Standard_Real dd   = 0.1 * aTol;
     aTol *= aTol;
     //
@@ -609,7 +609,7 @@ static Standard_Real IntersectCurves2d(
   Standard_Real       aLen1                      = MapEdgeLength(*theEData1.Edge, theMapEdgeLen);
   Standard_Real       aLen2                      = MapEdgeLength(*theEData1.Edge, theMapEdgeLen);
   const Standard_Real MaxEdgePartCoveredByVertex = 0.3;
-  Standard_Real       aMaxThresDist              = Min(aLen1, aLen2) * MaxEdgePartCoveredByVertex;
+  Standard_Real       aMaxThresDist = std::min(aLen1, aLen2) * MaxEdgePartCoveredByVertex;
   aMaxThresDist *= aMaxThresDist;
   aItLP.Initialize(aLP);
   for (; aItLP.More(); aItLP.Next())
@@ -625,8 +625,8 @@ static Standard_Real IntersectCurves2d(
       continue;
     }
     //
-    if ((!theEData1.IsClosed && Abs(aTint1 - aT1) > aHalfR1)
-        || (!theEData2.IsClosed && Abs(aTint2 - aT2) > aHalfR2))
+    if ((!theEData1.IsClosed && std::abs(aTint1 - aT1) > aHalfR1)
+        || (!theEData2.IsClosed && std::abs(aTint2 - aT2) > aHalfR2))
     {
       // intersection is on the other end of the edge
       continue;

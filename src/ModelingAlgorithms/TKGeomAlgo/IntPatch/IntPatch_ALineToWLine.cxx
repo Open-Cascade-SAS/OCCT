@@ -285,7 +285,7 @@ void IntPatch_ALineToWLine::CorrectEndPoint(Handle(IntSurf_LineOn2S)& theLine,
     {
       Standard_Real aU, aV;
       aPntOn2S.ParametersOnSurface(anIsOnFirst, aU, aV);
-      if (Abs(aV - M_PI / 2) > aTol && Abs(aV + M_PI / 2) > aTol)
+      if (std::abs(aV - M_PI / 2) > aTol && std::abs(aV + M_PI / 2) > aTol)
         continue;
     }
     else
@@ -298,7 +298,7 @@ void IntPatch_ALineToWLine::CorrectEndPoint(Handle(IntSurf_LineOn2S)& theLine,
     Standard_Real aXend, aYend;
     aPntOn2S.ParametersOnSurface(anIsOnFirst, aXend, aYend);
 
-    if (Abs(aDir.Y()) < gp::Resolution())
+    if (std::abs(aDir.Y()) < gp::Resolution())
       continue;
 
     Standard_Real aNewXend = aDir.X() / aDir.Y() * (aYend - aY0) + aX0;
@@ -321,7 +321,7 @@ Standard_Real IntPatch_ALineToWLine::GetSectionRadius(const gp_Pnt& thePnt3d) co
       const gp_XYZ  aRVec = thePnt3d.XYZ() - aCone.Apex().XYZ();
       const gp_XYZ& aDir  = aCone.Axis().Direction().XYZ();
 
-      aRetVal = Min(aRetVal, Abs(aRVec.Dot(aDir) * Tan(aCone.SemiAngle())));
+      aRetVal = std::min(aRetVal, std::abs(aRVec.Dot(aDir) * std::tan(aCone.SemiAngle())));
     }
     else if (aQuad.TypeQuadric() == GeomAbs_Sphere)
     {
@@ -338,7 +338,7 @@ Standard_Real IntPatch_ALineToWLine::GetSectionRadius(const gp_Pnt& thePnt3d) co
       }
       else
       {
-        aRetVal = Min(aRetVal, Sqrt(aDelta));
+        aRetVal = std::min(aRetVal, std::sqrt(aDelta));
       }
     }
   }
@@ -450,7 +450,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
   }
 
   const Standard_Real aTol    = 2.0 * myTol3D + Precision::Confusion();
-  const Standard_Real aPrmTol = Max(1.0e-4 * (theLPar - theFPar), Precision::PConfusion());
+  const Standard_Real aPrmTol = std::max(1.0e-4 * (theLPar - theFPar), Precision::PConfusion());
 
   IntPatch_SpecPntType aPrePointExist = IntPatch_SPntNone;
 
@@ -496,15 +496,15 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
         continue;
 
       aLPar = aVertexParams(i);
-      if (Abs(aLPar - aParameter) < aPrmTol)
+      if (std::abs(aLPar - aParameter) < aPrmTol)
         continue;
 
       break;
     }
 
-    if ((aStep - (aLPar - aParameter) > aPrmTol) && (Abs(aLPar - aParameter) > aPrmTol))
+    if ((aStep - (aLPar - aParameter) > aPrmTol) && (std::abs(aLPar - aParameter) > aPrmTol))
     {
-      aStep         = Max((aLPar - aParameter) / 5, 1.e-5);
+      aStep         = std::max((aLPar - aParameter) / 5, 1.e-5);
       isStepReduced = Standard_True;
     }
 
@@ -563,13 +563,16 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
       if (aPrePointExist != IntPatch_SPntNone)
       {
-        const Standard_Real aURes = Max(myS1->UResolution(myTol3D), myS2->UResolution(myTol3D)),
-                            aVRes = Max(myS1->VResolution(myTol3D), myS2->VResolution(myTol3D));
+        const Standard_Real aURes =
+                              std::max(myS1->UResolution(myTol3D), myS2->UResolution(myTol3D)),
+                            aVRes =
+                              std::max(myS1->VResolution(myTol3D), myS2->VResolution(myTol3D));
 
-        const Standard_Real aTol2d = (aPrePointExist == IntPatch_SPntPole)     ? -1.0
-                                     : (aPrePointExist == IntPatch_SPntSeamV)  ? aVRes
-                                     : (aPrePointExist == IntPatch_SPntSeamUV) ? Max(aURes, aVRes)
-                                                                               : aURes;
+        const Standard_Real aTol2d = (aPrePointExist == IntPatch_SPntPole)    ? -1.0
+                                     : (aPrePointExist == IntPatch_SPntSeamV) ? aVRes
+                                     : (aPrePointExist == IntPatch_SPntSeamUV)
+                                       ? std::max(aURes, aVRes)
+                                       : aURes;
 
         IntSurf_PntOn2S aRPT = aPOn2S;
 
@@ -604,7 +607,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
           myQuad2.Parameters(aPnt3d, u2, v2);
           aRPT.SetValue(aPnt3d, u1, v1, u2, v2);
 
-          if (aPOn2S.IsSame(aPrevLPoint, Max(Precision::Approximation(), aTol)))
+          if (aPOn2S.IsSame(aPrevLPoint, std::max(Precision::Approximation(), aTol)))
           {
             // Set V-parameter as precise value found on the previous step.
             if (aSingularSurfaceID == 1)
@@ -669,7 +672,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
         if (((aPrevParam < aParam) && (aParam <= aParameter))
             || ((aPrevParam == aParameter) && (aParam == aParameter))
             || (aPOn2S.IsSame(aVP.PntOn2S(), aVP.Tolerance())
-                && (Abs(aVP.ParameterOnLine() - aParameter) < aPrmTol)))
+                && (std::abs(aVP.ParameterOnLine() - aParameter) < aPrmTol)))
         {
           // We have either jumped over the vertex or "fell" on the vertex.
           // However, ALine can be self-interfered. Therefore, we need to check
@@ -824,8 +827,9 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
             aLVtx.SetValue(aVertP2S);
             aLVtx.SetTolerance(aVertToler);
             Standard_Real aParam = aLVtx.ParameterOnLine();
-            if (Abs(aParam - theLPar) <= Precision::PConfusion()) // in the case of closed curve,
-              aLVtx.SetParameter(-1); // we don't know yet the number of points in the curve
+            if (std::abs(aParam - theLPar)
+                <= Precision::PConfusion()) // in the case of closed curve,
+              aLVtx.SetParameter(-1);       // we don't know yet the number of points in the curve
             else
               aLVtx.SetParameter(aNewVertexParam);
             aSeqVertex(++aNewVertID) = aLVtx;
@@ -857,15 +861,15 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
             continue;
 
           aLPar = aVertexParams(i);
-          if (Abs(aLPar - aParameter) < aPrmTol)
+          if (std::abs(aLPar - aParameter) < aPrmTol)
             continue;
 
           break;
         }
 
-        if ((aStep - (aLPar - aParameter) > aPrmTol) && (Abs(aLPar - aParameter) > aPrmTol))
+        if ((aStep - (aLPar - aParameter) > aPrmTol) && (std::abs(aLPar - aParameter) > aPrmTol))
         {
-          aStep         = Max((aLPar - aParameter) / 5, 1.e-5);
+          aStep         = std::max((aLPar - aParameter) / 5, 1.e-5);
           isStepReduced = Standard_True;
         }
 
@@ -910,7 +914,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
     else
     {
       // Computation of transitions of the line on two surfaces    ---
-      const Standard_Integer indice1 = Max(aLinOn2S->NbPoints() / 3, 2);
+      const Standard_Integer indice1 = std::max(aLinOn2S->NbPoints() / 3, 2);
       const gp_Pnt &         aPP0    = aLinOn2S->Value(indice1 - 1).Value(),
                    &aPP1             = aLinOn2S->Value(indice1).Value();
       const gp_Vec tgvalid(aPP0, aPP1);
@@ -969,11 +973,11 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 Standard_Integer IntPatch_ALineToWLine::CheckDeflection(const gp_XYZ&       theMidPt,
                                                         const Standard_Real theMaxDeflection) const
 {
-  Standard_Real aDist = Abs(myQuad1.Distance(theMidPt));
+  Standard_Real aDist = std::abs(myQuad1.Distance(theMidPt));
   if (aDist > theMaxDeflection)
     return 1;
 
-  aDist = Max(Abs(myQuad2.Distance(theMidPt)), aDist);
+  aDist = std::max(std::abs(myQuad2.Distance(theMidPt)), aDist);
 
   if (aDist > theMaxDeflection)
     return 1;
@@ -1007,7 +1011,7 @@ Standard_Boolean IntPatch_ALineToWLine::StepComputing(const Handle(IntPatch_ALin
   const Standard_Integer aNbIterMax = 50;
 
   const Standard_Real aNotFilledRange = theLastParOfAline - theCurParam;
-  Standard_Real       aMinStep = theStepMin, aMaxStep = Min(theStepMax, aNotFilledRange);
+  Standard_Real       aMinStep = theStepMin, aMaxStep = std::min(theStepMax, aNotFilledRange);
 
   if (aMinStep > aMaxStep)
   {
@@ -1041,8 +1045,8 @@ Standard_Boolean IntPatch_ALineToWLine::StepComputing(const Handle(IntPatch_ALin
     // circle is no greater than anEps. theStep is the step in
     // parameter space of intersection curve (must be converted from 3D-step).
 
-    theStep = Min(sqrt(anEps * (2.0 * aR + anEps)) / theTgMagnitude, aMaxStep);
-    theStep = Max(theStep, aMinStep);
+    theStep = std::min(sqrt(anEps * (2.0 * aR + anEps)) / theTgMagnitude, aMaxStep);
+    theStep = std::max(theStep, aMinStep);
   }
 
   // The step value has been computed for osculating circle.

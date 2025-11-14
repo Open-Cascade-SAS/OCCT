@@ -47,13 +47,13 @@ static Standard_Real Norm(const gp_Mat& M)
   Standard_Real R, Norme;
   gp_XYZ        Coord;
   Coord = M.Row(1);
-  Norme = Abs(Coord.X()) + Abs(Coord.Y()) + Abs(Coord.Z());
+  Norme = std::abs(Coord.X()) + std::abs(Coord.Y()) + std::abs(Coord.Z());
   Coord = M.Row(2);
-  R     = Abs(Coord.X()) + Abs(Coord.Y()) + Abs(Coord.Z());
+  R     = std::abs(Coord.X()) + std::abs(Coord.Y()) + std::abs(Coord.Z());
   if (R > Norme)
     Norme = R;
   Coord = M.Row(3);
-  R     = Abs(Coord.X()) + Abs(Coord.Y()) + Abs(Coord.Z());
+  R     = std::abs(Coord.X()) + std::abs(Coord.Y()) + std::abs(Coord.Z());
   if (R > Norme)
     Norme = R;
 

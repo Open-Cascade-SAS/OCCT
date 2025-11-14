@@ -2193,19 +2193,19 @@ static void OCC26747_CheckParabola(Draw_Interpretor&      theDI,
   theDI << "A = " << aF[0] << ", B = " << aF[1] << ", C = " << aF[2] << ", D = " << aF[3]
         << ", E = " << aF[4] << ", F = " << aF[5] << "\n";
 
-  if (Abs(aPrb.Value()->Parab2d().Focal() - Parab2d_Bug26747::FocalLength) > aCompareTol)
+  if (std::abs(aPrb.Value()->Parab2d().Focal() - Parab2d_Bug26747::FocalLength) > aCompareTol)
     theDI << "Error in focal length computation!\n";
 
-  if ((Abs(aVert.X() - Parab2d_Bug26747::VertX) > aCompareTol)
-      || (Abs(aVert.Y() - Parab2d_Bug26747::VertY) > aCompareTol))
+  if ((std::abs(aVert.X() - Parab2d_Bug26747::VertX) > aCompareTol)
+      || (std::abs(aVert.Y() - Parab2d_Bug26747::VertY) > aCompareTol))
     theDI << "Error in vertex computation!\n";
 
-  if (Abs(aPrb.Value()->Parab2d().Parameter() - Parab2d_Bug26747::Parameter) > aCompareTol)
+  if (std::abs(aPrb.Value()->Parab2d().Parameter() - Parab2d_Bug26747::Parameter) > aCompareTol)
     theDI << "Error in parameter computation!\n";
 
   for (int i = 0; i < 6; i++)
   {
-    if (Abs(aF[i] - Parab2d_Bug26747::Coeffs[i]) > aCompareTol)
+    if (std::abs(aF[i] - Parab2d_Bug26747::Coeffs[i]) > aCompareTol)
     {
       theDI << "Error in " << i << "-th coefficient computation!\n";
     }
@@ -3574,7 +3574,7 @@ static Standard_Integer OCC30435(Draw_Interpretor& di, Standard_Integer, const c
   for (i = 1; i <= NbCurves; i++)
   {
     anAppro.Error(i, tol3d, tol2d);
-    tolreached                 = Max(tolreached, tol3d);
+    tolreached                 = std::max(tolreached, tol3d);
     AppParCurves_MultiCurve MC = anAppro.Value(i);
     TColgp_Array1OfPnt      Poles(1, MC.Degree() + 1);
     MC.Curve(1, Poles);
@@ -3735,7 +3735,8 @@ static Standard_Integer OCC30880(Draw_Interpretor& theDI,
 
   if (anExtCF.IsParallel())
   {
-    theDI << "Infinite number of solutions, distance - " << Sqrt(anExtCF.SquareDistance(1)) << "\n";
+    theDI << "Infinite number of solutions, distance - " << std::sqrt(anExtCF.SquareDistance(1))
+          << "\n";
     return 0;
   }
 
@@ -3758,7 +3759,7 @@ static Standard_Integer OCC30880(Draw_Interpretor& theDI,
     return 0;
   }
 
-  theDI << "Minimal distance - " << Sqrt(aDistMin) << "\n";
+  theDI << "Minimal distance - " << std::sqrt(aDistMin) << "\n";
   return 0;
 }
 

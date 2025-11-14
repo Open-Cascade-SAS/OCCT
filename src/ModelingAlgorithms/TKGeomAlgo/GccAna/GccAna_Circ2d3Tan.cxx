@@ -57,7 +57,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
 {
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
@@ -97,38 +97,40 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   gp_XY dir3 = center1.XY() - center3.XY();
 
   //////////
-  if ((Abs(R1 - R2) <= Tolerance && center1.IsEqual(center2, Tolerance))
-      || (Abs(R1 - R3) <= Tolerance && center1.IsEqual(center3, Tolerance))
-      || (Abs(R2 - R3) <= Tolerance && center2.IsEqual(center3, Tolerance)))
+  if ((std::abs(R1 - R2) <= Tolerance && center1.IsEqual(center2, Tolerance))
+      || (std::abs(R1 - R3) <= Tolerance && center1.IsEqual(center3, Tolerance))
+      || (std::abs(R2 - R3) <= Tolerance && center2.IsEqual(center3, Tolerance)))
     return;
   else
   {
-    if (Abs(dir2 ^ dir3) <= Tolerance)
+    if (std::abs(dir2 ^ dir3) <= Tolerance)
     {
       Standard_Real Dist1 = center1.Distance(center2);
       Standard_Real Dist2 = center1.Distance(center3);
       Standard_Real Dist3 = center2.Distance(center3);
-      if (Abs(Abs(R1 - R2) - Dist1) <= Tolerance)
+      if (std::abs(std::abs(R1 - R2) - Dist1) <= Tolerance)
       {
-        if (Abs(Abs(R1 - R3) - Dist2) <= Tolerance)
+        if (std::abs(std::abs(R1 - R3) - Dist2) <= Tolerance)
         {
-          if (Abs(Abs(R2 - R3) - Dist3) <= Tolerance)
+          if (std::abs(std::abs(R2 - R3) - Dist3) <= Tolerance)
             return;
         }
-        else if (Abs(R1 + R3 - Dist2) <= Tolerance)
+        else if (std::abs(R1 + R3 - Dist2) <= Tolerance)
         {
-          if (Abs(R2 + R3 - Dist3) <= Tolerance)
+          if (std::abs(R2 + R3 - Dist3) <= Tolerance)
             return;
         }
       }
-      else if (Abs(R1 + R2 - Dist1) <= Tolerance)
+      else if (std::abs(R1 + R2 - Dist1) <= Tolerance)
       {
-        if (Abs(Abs(R1 - R3) - Dist2) <= Tolerance && Abs(R2 + R3 - Dist3) <= Tolerance)
+        if (std::abs(std::abs(R1 - R3) - Dist2) <= Tolerance
+            && std::abs(R2 + R3 - Dist3) <= Tolerance)
         {
         }
         else
         {
-          if (Abs(Abs(R2 - R3) - Dist3) <= Tolerance && Abs(R1 + R3 - Dist2) <= Tolerance)
+          if (std::abs(std::abs(R2 - R3) - Dist3) <= Tolerance
+              && std::abs(R1 + R3 - Dist2) <= Tolerance)
             return;
         }
       }
@@ -198,12 +200,17 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   //   Verification do two circles touch each other or not
   //   if at least one circle touches other one IsTouch become Standard_Standard_True
 
-  if (Abs((X1 - X2) * (X1 - X2) + (Y1 - Y2) * (Y1 - Y2) - (R1 - R2) * (R1 - R2)) <= Tolerance
-      || Abs((X1 - X2) * (X1 - X2) + (Y1 - Y2) * (Y1 - Y2) - (R1 + R2) * (R1 + R2)) <= Tolerance
-      || Abs((X1 - X3) * (X1 - X3) + (Y1 - Y3) * (Y1 - Y3) - (R1 - R3) * (R1 - R3)) <= Tolerance
-      || Abs((X1 - X3) * (X1 - X3) + (Y1 - Y3) * (Y1 - Y3) - (R1 + R3) * (R1 + R3)) <= Tolerance
-      || Abs((X2 - X3) * (X2 - X3) + (Y2 - Y3) * (Y2 - Y3) - (R2 - R3) * (R2 - R3)) <= Tolerance
-      || Abs((X2 - X3) * (X2 - X3) + (Y2 - Y3) * (Y2 - Y3) - (R2 + R3) * (R2 + R3)) <= Tolerance)
+  if (std::abs((X1 - X2) * (X1 - X2) + (Y1 - Y2) * (Y1 - Y2) - (R1 - R2) * (R1 - R2)) <= Tolerance
+      || std::abs((X1 - X2) * (X1 - X2) + (Y1 - Y2) * (Y1 - Y2) - (R1 + R2) * (R1 + R2))
+           <= Tolerance
+      || std::abs((X1 - X3) * (X1 - X3) + (Y1 - Y3) * (Y1 - Y3) - (R1 - R3) * (R1 - R3))
+           <= Tolerance
+      || std::abs((X1 - X3) * (X1 - X3) + (Y1 - Y3) * (Y1 - Y3) - (R1 + R3) * (R1 + R3))
+           <= Tolerance
+      || std::abs((X2 - X3) * (X2 - X3) + (Y2 - Y3) * (Y2 - Y3) - (R2 - R3) * (R2 - R3))
+           <= Tolerance
+      || std::abs((X2 - X3) * (X2 - X3) + (Y2 - Y3) * (Y2 - Y3) - (R2 + R3) * (R2 + R3))
+           <= Tolerance)
     IsTouch = Standard_True;
   else
     IsTouch = Standard_False;
@@ -228,7 +235,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
 
     if (i == 1 || i == 4 || i == 5 || i == 8)
     {
-      if (Abs(R1 - R2) > Tolerance)
+      if (std::abs(R1 - R2) > Tolerance)
       {
         Beta2(i)  = (X1 - X2) / (R1 - R2);
         Gamma2(i) = (Y1 - Y2) / (R1 - R2);
@@ -242,7 +249,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       Gamma2(i) = (Y1 - Y2) / (R1 + R2);
       Delta2(i) = (X2 * X2 - X1 * X1 + Y2 * Y2 - Y1 * Y1 + (R1 + R2) * (R1 + R2)) / (2 * (R1 + R2));
     }
-    if ((i == 1 || i == 4 || i == 5 || i == 8) && (Abs(R1 - R2) <= Tolerance))
+    if ((i == 1 || i == 4 || i == 5 || i == 8) && (std::abs(R1 - R2) <= Tolerance))
     {
       //  If R1 = R2
       A2(i) = 0.;
@@ -269,7 +276,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
 
     if (i == 1 || i == 3 || i == 6 || i == 8)
     {
-      if (Abs(R1 - R3) > Tolerance)
+      if (std::abs(R1 - R3) > Tolerance)
       {
         Beta3(i)  = (X1 - X3) / (R1 - R3);
         Gamma3(i) = (Y1 - Y3) / (R1 - R3);
@@ -283,7 +290,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       Gamma3(i) = (Y1 - Y3) / (R1 + R3);
       Delta3(i) = (X3 * X3 - X1 * X1 + Y3 * Y3 - Y1 * Y1 + (R1 + R3) * (R1 + R3)) / (2 * (R1 + R3));
     }
-    if ((i == 1 || i == 3 || i == 6 || i == 8) && (Abs(R1 - R3) <= Tolerance))
+    if ((i == 1 || i == 3 || i == 6 || i == 8) && (std::abs(R1 - R3) <= Tolerance))
     {
       A3(i) = 0.;
       B3(i) = 0.;
@@ -346,8 +353,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
 
     // Check is Cir1 a solution of this system or not
     // In that case equations are equal to each other
-    if (Abs(a2 - a3) <= Tolerance && Abs(b2 - b3) <= Tolerance && Abs(c2 - c3) <= Tolerance
-        && Abs(d2 - d3) <= Tolerance && Abs(e2 - e3) <= Tolerance && Abs(f2 - f3) <= Tolerance)
+    if (std::abs(a2 - a3) <= Tolerance && std::abs(b2 - b3) <= Tolerance
+        && std::abs(c2 - c3) <= Tolerance && std::abs(d2 - d3) <= Tolerance
+        && std::abs(e2 - e3) <= Tolerance && std::abs(f2 - f3) <= Tolerance)
     {
       xSol(CurSol) = X1;
       ySol(CurSol) = Y1;
@@ -355,7 +363,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       continue;
     }
     // 1) a2 = 0
-    if (Abs(a2) <= Tolerance)
+    if (std::abs(a2) <= Tolerance)
     {
 
       // 1.1) b2y + d2 = 0
@@ -370,8 +378,8 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
           //   for each y solution:
           y = yRoots.Value(k);
           //   Searching for solution of the equation Ax2 + Bx + C = 0
-          if (!(k == 2 && Abs(y - yRoots.Value(1)) <= 10 * Tolerance)
-              && Abs(b2 * y + d2) <= b2 * Tolerance)
+          if (!(k == 2 && std::abs(y - yRoots.Value(1)) <= 10 * Tolerance)
+              && std::abs(b2 * y + d2) <= b2 * Tolerance)
           {
             A = a3;
             B = 2 * (b3 * y + d3);
@@ -381,7 +389,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               for (j = 1; j <= xRoots.NbSolutions(); j++)
               {
                 x = xRoots.Value(j);
-                if (!(j == 2 && Abs(x - xRoots.Value(1)) <= 10 * Tolerance))
+                if (!(j == 2 && std::abs(x - xRoots.Value(1)) <= 10 * Tolerance))
                 {
                   xSol(CurSol) = x;
                   ySol(CurSol) = y;
@@ -414,13 +422,16 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             // Check if this value is already caught
             IsSame = Standard_False;
             for (l = 1; l < k; l++)
-              if (Abs(y - yRoots1.Value(l)) <= 10 * Tolerance)
+              if (std::abs(y - yRoots1.Value(l)) <= 10 * Tolerance)
                 IsSame = Standard_True;
 
-            Epsilon = (Abs((Abs((Abs(4 * A * y) + Abs(3 * B)) * y) + Abs(2 * C)) * y) + Abs(D));
-            if (Abs((((A * y + B) * y + C) * y + D) * y + E) <= Epsilon * Tolerance)
+            Epsilon =
+              (std::abs((std::abs((std::abs(4 * A * y) + std::abs(3 * B)) * y) + std::abs(2 * C))
+                        * y)
+               + std::abs(D));
+            if (std::abs((((A * y + B) * y + C) * y + D) * y + E) <= Epsilon * Tolerance)
             {
-              if (!IsSame && Abs(b2 * y + d2) > b2 * Tolerance)
+              if (!IsSame && std::abs(b2 * y + d2) > b2 * Tolerance)
               {
                 x            = -(c2 * (y * y) + 2 * e2 * y + f2) / (2 * (b2 * y + d2));
                 xSol(CurSol) = x;
@@ -440,10 +451,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
           IsSame     = Standard_False;
           FirstIndex = (i == 1) ? 1 : FirstSol(i);
           for (l = FirstIndex; l < CurSol; l++)
-            if (Abs(y - ySol(l)) <= 10 * Tolerance)
+            if (std::abs(y - ySol(l)) <= 10 * Tolerance)
               IsSame = Standard_True;
 
-          if (!IsSame && Abs(b2 * y + d2) > b2 * Tolerance)
+          if (!IsSame && std::abs(b2 * y + d2) > b2 * Tolerance)
           {
             x            = -(c2 * (y * y) + 2 * e2 * y + f2) / (2 * (b2 * y + d2));
             xSol(CurSol) = x;
@@ -455,7 +466,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
     else
     {
       // 2) a2 != 0
-      // Coefficients of the equation     (sy + v)Sqrt(p2 - q) = (my2 + ny + t)
+      // Coefficients of the equation     (sy + v)std::sqrt(p2 - q) = (my2 + ny + t)
       m = 2 * a3 * b2 * b2 / (a2 * a2) - 2 * b2 * b3 / a2 - a3 * c2 / a2 + c3;
       n = 4 * a3 * b2 * d2 / (a2 * a2) - 2 * b3 * d2 / a2 - 2 * b2 * d3 / a2 - 2 * a3 * e2 / a2
           + 2 * e3;
@@ -465,7 +476,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
 
       //------------------------------------------
       // If s = v = 0
-      if (Abs(s) <= Tolerance && Abs(v) <= Tolerance)
+      if (std::abs(s) <= Tolerance && std::abs(v) <= Tolerance)
       {
         math_DirectPolynomialRoots yRoots(m, n, t);
         if (yRoots.IsDone() && !yRoots.InfiniteRoots())
@@ -474,11 +485,13 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             //   for each y solution:
             y = yRoots.Value(k);
 
-            p = -(b2 * y + d2) / a2;
-            q = (c2 * (y * y) + 2 * e2 * y + f2) / a2;
-            Epsilon =
-              2. * (Abs((b2 * b2 + Abs(a2 * c2)) * y) + Abs(b2 * d2) + Abs(a2 * e2)) / (a2 * a2);
-            if (!(k == 2 && Abs(y - yRoots.Value(1)) <= 10 * Tolerance)
+            p       = -(b2 * y + d2) / a2;
+            q       = (c2 * (y * y) + 2 * e2 * y + f2) / a2;
+            Epsilon = 2.
+                      * (std::abs((b2 * b2 + std::abs(a2 * c2)) * y) + std::abs(b2 * d2)
+                         + std::abs(a2 * e2))
+                      / (a2 * a2);
+            if (!(k == 2 && std::abs(y - yRoots.Value(1)) <= 10 * Tolerance)
                 && p * p - q >= -Epsilon * Tolerance)
             {
               A = a2;
@@ -491,7 +504,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                   //   for each x solution:
                   x = xRoots.Value(l);
 
-                  if (!(l == 2 && Abs(x - xRoots.Value(1)) <= 10 * Tolerance))
+                  if (!(l == 2 && std::abs(x - xRoots.Value(1)) <= 10 * Tolerance))
                   {
                     xSol(CurSol) = x;
                     ySol(CurSol) = y;
@@ -531,14 +544,19 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               IsSame     = Standard_False;
               FirstIndex = (i == 1) ? 1 : FirstSol(i);
               for (l = FirstIndex; l < CurSol; l++)
-                if (Abs(y - ySol(l)) <= 10 * Tolerance)
+                if (std::abs(y - ySol(l)) <= 10 * Tolerance)
                   IsSame = Standard_True;
 
-              Epsilon = (Abs((Abs((Abs(4 * A * y) + Abs(3 * B)) * y) + Abs(2 * C)) * y) + Abs(D));
-              if (Abs((((A * y + B) * y + C) * y + D) * y + E) <= Epsilon * Tolerance)
+              Epsilon =
+                (std::abs((std::abs((std::abs(4 * A * y) + std::abs(3 * B)) * y) + std::abs(2 * C))
+                          * y)
+                 + std::abs(D));
+              if (std::abs((((A * y + B) * y + C) * y + D) * y + E) <= Epsilon * Tolerance)
               {
 
-                Epsilon = 2. * (Abs((b2 * b2 + Abs(a2 * c2)) * y) + Abs(b2 * d2) + Abs(a2 * e2))
+                Epsilon = 2.
+                          * (std::abs((b2 * b2 + std::abs(a2 * c2)) * y) + std::abs(b2 * d2)
+                             + std::abs(a2 * e2))
                           / (a2 * a2);
                 if (!IsSame && p * p - q >= -Epsilon * Tolerance)
                 {
@@ -552,7 +570,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                       //   for each x solution:
                       x = xRoots.Value(l);
 
-                      if (!(l == 2 && Abs(x - xRoots.Value(1)) <= 10 * Tolerance))
+                      if (!(l == 2 && std::abs(x - xRoots.Value(1)) <= 10 * Tolerance))
                       {
                         xSol(CurSol) = x;
                         ySol(CurSol) = y;
@@ -577,11 +595,13 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             // Check if this value is already caught
             IsSame = Standard_False;
             for (l = 1; l < k; l++)
-              if (Abs(y - yRoots.Value(l)) <= 10 * Tolerance)
+              if (std::abs(y - yRoots.Value(l)) <= 10 * Tolerance)
                 IsSame = Standard_True;
 
-            Epsilon =
-              2. * (Abs((b2 * b2 + Abs(a2 * c2)) * y) + Abs(b2 * d2) + Abs(a2 * e2)) / (a2 * a2);
+            Epsilon = 2.
+                      * (std::abs((b2 * b2 + std::abs(a2 * c2)) * y) + std::abs(b2 * d2)
+                         + std::abs(a2 * e2))
+                      / (a2 * a2);
             if (!IsSame && p * p - q >= -Epsilon * Tolerance)
             {
               A = a2;
@@ -594,7 +614,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                   //   for each x solution:
                   x = xRoots.Value(l);
 
-                  if (!(l == 2 && Abs(x - xRoots.Value(1)) <= 10 * Tolerance))
+                  if (!(l == 2 && std::abs(x - xRoots.Value(1)) <= 10 * Tolerance))
                   {
                     xSol(CurSol) = x;
                     ySol(CurSol) = y;
@@ -619,13 +639,13 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       x = xSol(j);
       y = ySol(j);
       // in some cases when R1 = R2 :
-      if ((i == 1 || i == 4 || i == 5 || i == 8) && (Abs(R1 - R2) <= Tolerance))
+      if ((i == 1 || i == 4 || i == 5 || i == 8) && (std::abs(R1 - R2) <= Tolerance))
       {
         if (i == 1 || i == 4)
         {
-          r       = R1 + Sqrt((x - X1) * (x - X1) + (y - Y1) * (y - Y1));
-          Epsilon = 10 * (2 * Abs(r - R2) + Abs(x - X2) + Abs(y - Y2));
-          if (Abs((r - R2) * (r - R2) - (x - X2) * (x - X2) - (y - Y2) * (y - Y2))
+          r       = R1 + std::sqrt((x - X1) * (x - X1) + (y - Y1) * (y - Y1));
+          Epsilon = 10 * (2 * std::abs(r - R2) + std::abs(x - X2) + std::abs(y - Y2));
+          if (std::abs((r - R2) * (r - R2) - (x - X2) * (x - X2) - (y - Y2) * (y - Y2))
               <= Epsilon * Tolerance)
           {
             xSol1(CurSol) = x;
@@ -633,10 +653,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             rSol1(CurSol) = r;
             CurSol++;
           }
-          r       = R1 - Sqrt((x - X1) * (x - X1) + (y - Y1) * (y - Y1));
-          Epsilon = 10 * (2 * Abs(r - R2) + Abs(x - X2) + Abs(y - Y2));
+          r       = R1 - std::sqrt((x - X1) * (x - X1) + (y - Y1) * (y - Y1));
+          Epsilon = 10 * (2 * std::abs(r - R2) + std::abs(x - X2) + std::abs(y - Y2));
           if ((r > Tolerance)
-              && (Abs((r - R2) * (r - R2) - (x - X2) * (x - X2) - (y - Y2) * (y - Y2))
+              && (std::abs((r - R2) * (r - R2) - (x - X2) * (x - X2) - (y - Y2) * (y - Y2))
                   <= Epsilon * Tolerance))
           {
             xSol1(CurSol) = x;
@@ -648,7 +668,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         else
         {
           //	i == 5 || i == 8
-          r = -R1 + Sqrt((x - X1) * (x - X1) + (y - Y1) * (y - Y1));
+          r = -R1 + std::sqrt((x - X1) * (x - X1) + (y - Y1) * (y - Y1));
           if (r > Tolerance)
           {
             xSol1(CurSol) = x;
@@ -721,12 +741,12 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       y = ySol1(j);
       r = rSol1(j);
       // in some cases when R1 = R3 :
-      if ((i == 1 || i == 3 || i == 6 || i == 8) && Abs(R1 - R3) <= Tolerance)
+      if ((i == 1 || i == 3 || i == 6 || i == 8) && std::abs(R1 - R3) <= Tolerance)
       {
         if (i == 1 || i == 3)
         {
-          Epsilon = 10 * (2 * Abs(r - R3) + Abs(x - X3) + Abs(y - Y3));
-          if (Abs((r - R3) * (r - R3) - (x - X3) * (x - X3) - (y - Y3) * (y - Y3))
+          Epsilon = 10 * (2 * std::abs(r - R3) + std::abs(x - X3) + std::abs(y - Y3));
+          if (std::abs((r - R3) * (r - R3) - (x - X3) * (x - X3) - (y - Y3) * (y - Y3))
               <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
@@ -738,8 +758,8 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         else
         {
           //	i == 6 || i == 8
-          Epsilon = 10 * (2 * (r + R3) + Abs(x - X3) + Abs(y - Y3));
-          if (Abs((r + R3) * (r + R3) - (x - X3) * (x - X3) - (y - Y3) * (y - Y3))
+          Epsilon = 10 * (2 * (r + R3) + std::abs(x - X3) + std::abs(y - Y3));
+          if (std::abs((r + R3) * (r + R3) - (x - X3) * (x - X3) - (y - Y3) * (y - Y3))
               <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
@@ -752,9 +772,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       else
       {
         // Other cases
-        Epsilon = 10 * (Abs(Beta3(i)) + Abs(Gamma3(i)) + 1.);
+        Epsilon = 10 * (std::abs(Beta3(i)) + std::abs(Gamma3(i)) + 1.);
         if (i == 1 || i == 3)
-          if (Abs(R3 + Beta3(i) * x + Gamma3(i) * y + Delta3(i) - r) <= Epsilon * Tolerance)
+          if (std::abs(R3 + Beta3(i) * x + Gamma3(i) * y + Delta3(i) - r) <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
             ySol(CurSol) = y;
@@ -762,7 +782,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             CurSol++;
           }
         if (i == 6 || i == 8)
-          if (Abs(R3 + Beta3(i) * x + Gamma3(i) * y + Delta3(i) + r) <= Epsilon * Tolerance)
+          if (std::abs(R3 + Beta3(i) * x + Gamma3(i) * y + Delta3(i) + r) <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
             ySol(CurSol) = y;
@@ -770,7 +790,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             CurSol++;
           }
         if (i == 4 || i == 7)
-          if (Abs(Beta3(i) * x + Gamma3(i) * y + Delta3(i) - r - R3) <= Epsilon * Tolerance)
+          if (std::abs(Beta3(i) * x + Gamma3(i) * y + Delta3(i) - r - R3) <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
             ySol(CurSol) = y;
@@ -778,7 +798,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             CurSol++;
           }
         if (i == 2 || i == 5)
-          if (Abs(r - R3 + Beta3(i) * x + Gamma3(i) * y + Delta3(i)) <= Epsilon * Tolerance)
+          if (std::abs(r - R3 + Beta3(i) * x + Gamma3(i) * y + Delta3(i)) <= Epsilon * Tolerance)
           {
             xSol(CurSol) = x;
             ySol(CurSol) = y;
@@ -818,9 +838,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       Standard_Real distcc1 = Center.Distance(center1);
       if (!Qualified1.IsUnqualified())
         qualifier1(NbrSol) = Qualified1.Qualifier();
-      else if (Abs(distcc1 + rSol(j) - R1) <= Tol)
+      else if (std::abs(distcc1 + rSol(j) - R1) <= Tol)
         qualifier1(NbrSol) = GccEnt_enclosed;
-      else if (Abs(distcc1 - R1 - rSol(j)) <= Tol)
+      else if (std::abs(distcc1 - R1 - rSol(j)) <= Tol)
         qualifier1(NbrSol) = GccEnt_outside;
       else
         qualifier1(NbrSol) = GccEnt_enclosing;
@@ -828,9 +848,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       Standard_Real distcc2 = Center.Distance(center1);
       if (!Qualified2.IsUnqualified())
         qualifier2(NbrSol) = Qualified2.Qualifier();
-      else if (Abs(distcc2 + rSol(j) - R2) <= Tol)
+      else if (std::abs(distcc2 + rSol(j) - R2) <= Tol)
         qualifier2(NbrSol) = GccEnt_enclosed;
-      else if (Abs(distcc2 - R2 - rSol(j)) <= Tol)
+      else if (std::abs(distcc2 - R2 - rSol(j)) <= Tol)
         qualifier2(NbrSol) = GccEnt_outside;
       else
         qualifier2(NbrSol) = GccEnt_enclosing;
@@ -838,9 +858,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       Standard_Real distcc3 = Center.Distance(center1);
       if (!Qualified3.IsUnqualified())
         qualifier3(NbrSol) = Qualified3.Qualifier();
-      else if (Abs(distcc3 + rSol(j) - R3) <= Tol)
+      else if (std::abs(distcc3 + rSol(j) - R3) <= Tol)
         qualifier3(NbrSol) = GccEnt_enclosed;
-      else if (Abs(distcc3 - R3 - rSol(j)) <= Tol)
+      else if (std::abs(distcc3 - R3 - rSol(j)) <= Tol)
         qualifier3(NbrSol) = GccEnt_outside;
       else
         qualifier3(NbrSol) = GccEnt_enclosing;

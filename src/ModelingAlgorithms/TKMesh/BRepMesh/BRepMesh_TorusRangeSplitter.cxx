@@ -40,7 +40,7 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_TorusRangeSplitter::GenerateSurfaceNodes
   Standard_Real Dv = 0.9 * oldDv; // TWOTHIRD * oldDv;
   Dv               = oldDv;
 
-  const Standard_Integer nbV = Max((Standard_Integer)(aDiffV / Dv), 2);
+  const Standard_Integer nbV = std::max((Standard_Integer)(aDiffV / Dv), 2);
   Dv                         = aDiffV / (nbV + 1);
 
   Standard_Real       Du;
@@ -58,15 +58,15 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_TorusRangeSplitter::GenerateSurfaceNodes
       return Handle(IMeshData::ListOfPnt2d)();
     }
 
-    Du *= Min(oldDv, Du) / aa;
+    Du *= std::min(oldDv, Du) / aa;
   }
   else
   {
     Du = Dv;
   }
 
-  Standard_Integer nbU = Max((Standard_Integer)(aDiffU / Du), 2);
-  nbU                  = Max(nbU, (Standard_Integer)(nbV * aDiffU * R / (aDiffV * r) / 5.));
+  Standard_Integer nbU = std::max((Standard_Integer)(aDiffU / Du), 2);
+  nbU                  = std::max(nbU, (Standard_Integer)(nbV * aDiffU * R / (aDiffV * r) / 5.));
   Du                   = aDiffU / (nbU + 1);
 
   const Handle(NCollection_IncAllocator) aTmpAlloc =
@@ -147,9 +147,9 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_TorusRangeSplitter::fillParams(
   }
 
   // Calculate DU, leave array of parameters
-  const Standard_Real aDiff = Abs(theRange.second - theRange.first);
+  const Standard_Real aDiff = std::abs(theRange.second - theRange.first);
   Standard_Real       aStep = FUN_CalcAverageDUV(aParamArray, aLength);
-  aStep                     = Max(aStep, aDiff / (Standard_Real)theStepsNb / 2.);
+  aStep                     = std::max(aStep, aDiff / (Standard_Real)theStepsNb / 2.);
 
   Standard_Real aStdStep = aDiff / (Standard_Real)aLength;
   if (aStep > aStdStep)
@@ -167,7 +167,7 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_TorusRangeSplitter::fillParams(
     const Standard_Integer aParamsLength = aParams->Length();
     for (Standard_Integer i = 1; i <= aParamsLength && isToInsert; ++i)
     {
-      isToInsert = (Abs(aParams->Value(i) - pp) > aStdStep);
+      isToInsert = (std::abs(aParams->Value(i) - pp) > aStdStep);
     }
 
     if (isToInsert)
@@ -202,7 +202,7 @@ Standard_Real BRepMesh_TorusRangeSplitter::FUN_CalcAverageDUV(TColStd_Array1OfRe
     // Accumulate
     if (i != 1)
     {
-      p = Abs(P(i) - P(i - 1));
+      p = std::abs(P(i) - P(i - 1));
       if (p > 1.e-7)
       {
         result += p;

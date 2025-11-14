@@ -296,8 +296,8 @@ void BRepMesh_Delaun::initCirclesTool(const Bnd_Box2d&       theBox,
   }
 
   myCircles.SetMinMaxSize(gp_XY(aMinX, aMinY), gp_XY(aMaxX, aMaxY));
-  myCircles.SetCellSize(aDeltaX / Max(theCellsCountU, aScaler),
-                        aDeltaY / Max(theCellsCountV, aScaler));
+  myCircles.SetCellSize(aDeltaX / std::max(theCellsCountU, aScaler),
+                        aDeltaY / std::max(theCellsCountV, aScaler));
 
   myInitCircles = Standard_True;
 }
@@ -344,8 +344,8 @@ void BRepMesh_Delaun::superMesh(const Bnd_Box2d& theBox)
   Standard_Real aDeltaX = aMaxX - aMinX;
   Standard_Real aDeltaY = aMaxY - aMinY;
 
-  Standard_Real aDeltaMin = Min(aDeltaX, aDeltaY);
-  Standard_Real aDeltaMax = Max(aDeltaX, aDeltaY);
+  Standard_Real aDeltaMin = std::min(aDeltaX, aDeltaY);
+  Standard_Real aDeltaMax = std::max(aDeltaX, aDeltaY);
   Standard_Real aDelta    = aDeltaX + aDeltaY;
 
   mySupVert.Append(
@@ -366,7 +366,7 @@ void BRepMesh_Delaun::superMesh(const Bnd_Box2d& theBox)
     Standard_Integer aLinkIndex = myMeshData->AddLink(
       BRepMesh_Edge(mySupVert[aFirstNode], mySupVert[aLastNode], BRepMesh_Free));
 
-    e[aNodeId] = Abs(aLinkIndex);
+    e[aNodeId] = std::abs(aLinkIndex);
     o[aNodeId] = (aLinkIndex > 0);
   }
 
@@ -512,7 +512,7 @@ void BRepMesh_Delaun::createTriangles(const Standard_Integer          theVertexI
 
     Standard_Real aDist12 = aFirstLinkDir ^ anEdgeDir;
     Standard_Real aDist23 = anEdgeDir ^ aLastLinkDir;
-    if (Abs(aDist12) < Precision || Abs(aDist23) < Precision)
+    if (std::abs(aDist12) < Precision || std::abs(aDist23) < Precision)
     {
       continue;
     }
@@ -532,7 +532,7 @@ void BRepMesh_Delaun::createTriangles(const Standard_Integer          theVertexI
       for (Standard_Integer aTriLinkIt = 0; aTriLinkIt < 3; ++aTriLinkIt)
       {
         const Standard_Integer& anEdgeInfo = anEdgesInfo[aTriLinkIt];
-        anEdgeIds[aTriLinkIt]              = Abs(anEdgeInfo);
+        anEdgeIds[aTriLinkIt]              = std::abs(anEdgeInfo);
         anEdgesOri[aTriLinkIt]             = anEdgeInfo > 0;
       }
 
@@ -546,9 +546,9 @@ void BRepMesh_Delaun::createTriangles(const Standard_Integer          theVertexI
         aLoopEdges.Append(-anEdges.Key());
 
       if (aFirstLinkDir.SquareModulus() > aLastLinkDir.SquareModulus())
-        anExternalEdges.Append(Abs(anEdgesInfo[0]));
+        anExternalEdges.Append(std::abs(anEdgesInfo[0]));
       else
-        anExternalEdges.Append(Abs(anEdgesInfo[2]));
+        anExternalEdges.Append(std::abs(anEdgesInfo[2]));
     }
   }
 
@@ -556,7 +556,7 @@ void BRepMesh_Delaun::createTriangles(const Standard_Integer          theVertexI
   while (!anExternalEdges.IsEmpty())
   {
     const BRepMesh_PairOfIndex& aPair =
-      myMeshData->ElementsConnectedTo(Abs(anExternalEdges.First()));
+      myMeshData->ElementsConnectedTo(std::abs(anExternalEdges.First()));
 
     if (!aPair.IsEmpty())
       deleteTriangle(aPair.FirstIndex(), thePoly);
@@ -572,11 +572,11 @@ void BRepMesh_Delaun::createTriangles(const Standard_Integer          theVertexI
 
   while (!aLoopEdges.IsEmpty())
   {
-    const BRepMesh_Edge& anEdge = GetEdge(Abs(aLoopEdges.First()));
+    const BRepMesh_Edge& anEdge = GetEdge(std::abs(aLoopEdges.First()));
     if (anEdge.Movability() != BRepMesh_Deleted)
     {
       Standard_Integer anEdgeIdx = aLoopEdges.First();
-      meshLeftPolygonOf(Abs(anEdgeIdx), (anEdgeIdx > 0));
+      meshLeftPolygonOf(std::abs(anEdgeIdx), (anEdgeIdx > 0));
     }
 
     aLoopEdges.RemoveFirst();
@@ -1093,7 +1093,7 @@ Standard_Boolean BRepMesh_Delaun::meshLeftPolygonOf(const Standard_Integer      
         return Standard_False;
 
       // Return to the previous point
-      Standard_Integer aDeadLinkId = Abs(aPolygon.Last());
+      Standard_Integer aDeadLinkId = std::abs(aPolygon.Last());
       aDeadLinks.Add(aDeadLinkId);
 
       aLeprousLinks.Remove(aDeadLinkId);
@@ -1101,7 +1101,7 @@ Standard_Boolean BRepMesh_Delaun::meshLeftPolygonOf(const Standard_Integer      
       aBoxes.Remove(aBoxes.Length());
 
       Standard_Integer     aPrevLinkInfo = aPolygon.Last();
-      const BRepMesh_Edge& aPrevLink     = GetEdge(Abs(aPrevLinkInfo));
+      const BRepMesh_Edge& aPrevLink     = GetEdge(std::abs(aPrevLinkInfo));
 
       if (aPrevLinkInfo > 0)
       {
@@ -1162,7 +1162,7 @@ Standard_Integer BRepMesh_Delaun::findNextPolygonLink(
   for (; aLinkIt.More(); aLinkIt.Next())
   {
     const Standard_Integer& aNeighbourLinkInfo = aLinkIt.Value();
-    Standard_Integer        aNeighbourLinkId   = Abs(aNeighbourLinkInfo);
+    Standard_Integer        aNeighbourLinkId   = std::abs(aNeighbourLinkInfo);
 
     if (theDeadLinks.Contains(aNeighbourLinkId)
         || (!theSkipped.IsNull() && theSkipped->Contains(aNeighbourLinkId)))
@@ -1205,11 +1205,11 @@ Standard_Integer BRepMesh_Delaun::findNextPolygonLink(
     Standard_Boolean isCheckPointOnEdge = Standard_True;
     if (isFrontier)
     {
-      if (Abs(Abs(anAngle) - M_PI) < Precision::Angular())
+      if (std::abs(std::abs(anAngle) - M_PI) < Precision::Angular())
       {
         // Glued constrains - don't check intersection
         isCheckPointOnEdge = Standard_False;
-        anAngle            = Abs(anAngle);
+        anAngle            = std::abs(anAngle);
       }
     }
 
@@ -1273,7 +1273,7 @@ Standard_Boolean BRepMesh_Delaun::checkIntersection(const BRepMesh_Edge&        
     if (!theLinkBndBox.IsOut(thePolyBoxes.Value(aPolyIt)))
     {
       // intersection is possible...
-      Standard_Integer     aPolyLinkId = Abs(thePolygon(aPolyIt));
+      Standard_Integer     aPolyLinkId = std::abs(thePolygon(aPolyIt));
       const BRepMesh_Edge& aPolyLink   = GetEdge(aPolyLinkId);
 
       // skip intersections between frontier edges
@@ -1339,7 +1339,7 @@ void BRepMesh_Delaun::cleanupPolygon(const IMeshData::SequenceOfInteger& thePoly
   for (Standard_Integer aPolyIt = 1; aPolyIt <= aPolyLen; ++aPolyIt)
   {
     Standard_Integer aPolyEdgeInfo = thePolygon(aPolyIt);
-    Standard_Integer aPolyEdgeId   = Abs(aPolyEdgeInfo);
+    Standard_Integer aPolyEdgeId   = std::abs(aPolyEdgeInfo);
     anIgnoredEdges.Add(aPolyEdgeId);
 
     Standard_Boolean            isForward = (aPolyEdgeInfo > 0);
@@ -1550,7 +1550,7 @@ Standard_Boolean BRepMesh_Delaun::isVertexInsidePolygon(
     aPrevVertexDir = aCurVertexDir;
   }
 
-  if (Abs(Angle2PI - aTotalAng) > Precision::Angular())
+  if (std::abs(Angle2PI - aTotalAng) > Precision::Angular())
     return Standard_False;
 
   return Standard_True;
@@ -1728,12 +1728,12 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
 
   // Check and correct boundary edges
   Standard_Integer    aPolyLen       = thePolygon.Length();
-  const Standard_Real aPolyArea      = Abs(polyArea(thePolygon, 1, aPolyLen));
+  const Standard_Real aPolyArea      = std::abs(polyArea(thePolygon, 1, aPolyLen));
   const Standard_Real aSmallLoopArea = 0.001 * aPolyArea;
   for (Standard_Integer aPolyIt = 1; aPolyIt < aPolyLen; ++aPolyIt)
   {
     Standard_Integer     aCurEdgeInfo = thePolygon(aPolyIt);
-    Standard_Integer     aCurEdgeId   = Abs(aCurEdgeInfo);
+    Standard_Integer     aCurEdgeId   = std::abs(aCurEdgeInfo);
     const BRepMesh_Edge* aCurEdge     = &GetEdge(aCurEdgeId);
     if (aCurEdge->Movability() != BRepMesh_Frontier)
       continue;
@@ -1750,7 +1750,7 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
     for (; aNextPolyIt <= aPolyLen; ++aNextPolyIt)
     {
       Standard_Integer     aNextEdgeInfo = thePolygon(aNextPolyIt);
-      Standard_Integer     aNextEdgeId   = Abs(aNextEdgeInfo);
+      Standard_Integer     aNextEdgeId   = std::abs(aNextEdgeInfo);
       const BRepMesh_Edge* aNextEdge     = &GetEdge(aNextEdgeId);
       if (aNextEdge->Movability() != BRepMesh_Frontier)
         continue;
@@ -1777,17 +1777,17 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
         gp_Vec2d      aVec2(anIntPnt, aNextPnts[0]);
 
         aLoopArea += (aVec1 ^ aVec2) / 2.;
-        if (Abs(aLoopArea) > aSmallLoopArea)
+        if (std::abs(aLoopArea) > aSmallLoopArea)
         {
           aNextNodes[1] = aCurNodes[0];
           aNextPnts[1]  = aCurPnts[0];
 
-          aNextEdgeId = Abs(createAndReplacePolygonLink(aNextNodes,
-                                                        aNextPnts,
-                                                        aNextPolyIt,
-                                                        BRepMesh_Delaun::Replace,
-                                                        thePolygon,
-                                                        thePolyBoxes));
+          aNextEdgeId = std::abs(createAndReplacePolygonLink(aNextNodes,
+                                                             aNextPnts,
+                                                             aNextPolyIt,
+                                                             BRepMesh_Delaun::Replace,
+                                                             thePolygon,
+                                                             thePolyBoxes));
 
           processLoop(aPolyIt, aNextPolyIt, thePolygon, thePolyBoxes);
           return;
@@ -1813,7 +1813,7 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
         {
           Standard_Integer aSkippedLinkIt = aPolyIt;
           for (; aSkippedLinkIt <= aIndexToRemoveTo; ++aSkippedLinkIt)
-            theSkipped->Add(Abs(thePolygon(aSkippedLinkIt)));
+            theSkipped->Add(std::abs(thePolygon(aSkippedLinkIt)));
         }
       }
       else if (aIntFlag == BRepMesh_GeomTool::PointOnSegment)
@@ -1827,7 +1827,7 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
           // Check is second link touches the first one
           gp_Vec2d aVec1(aRefPoint, aNextPnts[0]);
           gp_Vec2d aVec2(aRefPoint, aNextPnts[1]);
-          if (Abs(aVec1 ^ aVec2) < Precision)
+          if (std::abs(aVec1 ^ aVec2) < Precision)
           {
             isFirstChopping = Standard_True;
             break;
@@ -1899,12 +1899,12 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
 
       if (isAddReplacingEdge)
       {
-        aCurEdgeId = Abs(createAndReplacePolygonLink(aCurNodes,
-                                                     aCurPnts,
-                                                     aPolyIt,
-                                                     BRepMesh_Delaun::Replace,
-                                                     thePolygon,
-                                                     thePolyBoxes));
+        aCurEdgeId = std::abs(createAndReplacePolygonLink(aCurNodes,
+                                                          aCurPnts,
+                                                          aPolyIt,
+                                                          BRepMesh_Delaun::Replace,
+                                                          thePolygon,
+                                                          thePolyBoxes));
 
         aCurEdge = &GetEdge(aCurEdgeId);
         aCurVec  = gp_Vec2d(aCurPnts[0], aCurPnts[1]);
@@ -1983,7 +1983,7 @@ Standard_Boolean BRepMesh_Delaun::meshElementaryPolygon(
   for (Standard_Integer anEdgeIt = 0; anEdgeIt < 3; ++anEdgeIt)
   {
     Standard_Integer anEdgeInfo = thePolygon(anEdgeIt + 1);
-    anEdges[anEdgeIt]           = Abs(anEdgeInfo);
+    anEdges[anEdgeIt]           = std::abs(anEdgeInfo);
     anEdgesOri[anEdgeIt]        = (anEdgeInfo > 0);
   }
 
@@ -2017,7 +2017,7 @@ void BRepMesh_Delaun::decomposeSimplePolygon(IMeshData::SequenceOfInteger& thePo
 
   // Polygon contains more than 3 links
   Standard_Integer     aFirstEdgeInfo = thePolygon(1);
-  const BRepMesh_Edge& aFirstEdge     = GetEdge(Abs(aFirstEdgeInfo));
+  const BRepMesh_Edge& aFirstEdge     = GetEdge(std::abs(aFirstEdgeInfo));
 
   Standard_Integer aNodes[3];
   getOrientedNodes(aFirstEdge, aFirstEdgeInfo > 0, aNodes);
@@ -2048,7 +2048,7 @@ void BRepMesh_Delaun::decomposeSimplePolygon(IMeshData::SequenceOfInteger& thePo
   for (Standard_Integer aLinkIt = 3; aLinkIt <= aPolyLen; ++aLinkIt)
   {
     Standard_Integer     aLinkInfo = thePolygon(aLinkIt);
-    const BRepMesh_Edge& aNextEdge = GetEdge(Abs(aLinkInfo));
+    const BRepMesh_Edge& aNextEdge = GetEdge(std::abs(aLinkInfo));
 
     aPivotNode = aLinkInfo > 0 ? aNextEdge.FirstNode() : aNextEdge.LastNode();
 
@@ -2060,8 +2060,8 @@ void BRepMesh_Delaun::decomposeSimplePolygon(IMeshData::SequenceOfInteger& thePo
     gp_Vec2d aDistanceDir(aRefVertices[1], aPivotVertex);
 
     Standard_Real aDist     = aRefEdgeDir ^ aDistanceDir;
-    Standard_Real aAngle    = Abs(aRefEdgeDir.Angle(aDistanceDir));
-    Standard_Real anAbsDist = Abs(aDist);
+    Standard_Real aAngle    = std::abs(aRefEdgeDir.Angle(aDistanceDir));
+    Standard_Real anAbsDist = std::abs(aDist);
     if (anAbsDist < Precision || aDist < 0.)
       continue;
 
@@ -2090,7 +2090,7 @@ void BRepMesh_Delaun::decomposeSimplePolygon(IMeshData::SequenceOfInteger& thePo
 
         if (!aBox.IsOut(thePolyBoxes.Value(aCheckLinkIt)))
         {
-          const BRepMesh_Edge& aPolyLink = GetEdge(Abs(thePolygon(aCheckLinkIt)));
+          const BRepMesh_Edge& aPolyLink = GetEdge(std::abs(thePolygon(aCheckLinkIt)));
 
           if (aCheckLink.IsEqual(aPolyLink))
             continue;
@@ -2141,7 +2141,7 @@ void BRepMesh_Delaun::decomposeSimplePolygon(IMeshData::SequenceOfInteger& thePo
   for (Standard_Integer aTriEdgeIt = 0; aTriEdgeIt < 3; ++aTriEdgeIt)
   {
     const Standard_Integer& anEdgeInfo = aNewEdgesInfo[aTriEdgeIt];
-    anEdges[aTriEdgeIt]                = Abs(anEdgeInfo);
+    anEdges[aTriEdgeIt]                = std::abs(anEdgeInfo);
     anEdgesOri[aTriEdgeIt]             = anEdgeInfo > 0;
   }
   addTriangle(anEdges, anEdgesOri, aNodes);
@@ -2533,7 +2533,7 @@ Standard_Real BRepMesh_Delaun::polyArea(const IMeshData::SequenceOfInteger& theP
     return aArea;
   }
   Standard_Integer     aCurEdgeInfo = thePolygon(theStartIndex);
-  Standard_Integer     aCurEdgeId   = Abs(aCurEdgeInfo);
+  Standard_Integer     aCurEdgeId   = std::abs(aCurEdgeInfo);
   const BRepMesh_Edge* aCurEdge     = &GetEdge(aCurEdgeId);
 
   Standard_Integer aNodes[2];
@@ -2544,7 +2544,7 @@ Standard_Real BRepMesh_Delaun::polyArea(const IMeshData::SequenceOfInteger& theP
   for (; aPolyIt <= theEndIndex; ++aPolyIt)
   {
     aCurEdgeInfo = thePolygon(aPolyIt);
-    aCurEdgeId   = Abs(aCurEdgeInfo);
+    aCurEdgeId   = std::abs(aCurEdgeInfo);
     aCurEdge     = &GetEdge(aCurEdgeId);
 
     getOrientedNodes(*aCurEdge, aCurEdgeInfo > 0, aNodes);
@@ -2594,7 +2594,7 @@ Standard_CString BRepMesh_DumpPoly(void*            thePolygon,
     IMeshData::SequenceOfInteger::Iterator aLinksIt(aPolygon);
     for (; aLinksIt.More(); aLinksIt.Next())
     {
-      const BRepMesh_Edge& aLink = aMeshData->GetLink(Abs(aLinksIt.Value()));
+      const BRepMesh_Edge& aLink = aMeshData->GetLink(std::abs(aLinksIt.Value()));
 
       gp_Pnt aPnt[2];
       for (Standard_Integer i = 0; i < 2; ++i)

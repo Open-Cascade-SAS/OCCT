@@ -242,7 +242,7 @@ static TopAbs_State SlowClassifyOnBoundary(const gp_Pnt&             thePointToC
 
     for (Standard_Integer i = 1; i <= aProjTool.NbPoints(); i++)
     {
-      Standard_Real curparamdiff = Abs(aProjTool.Parameter(i) - aParameterOnEdge);
+      Standard_Real curparamdiff = std::abs(aProjTool.Parameter(i) - aParameterOnEdge);
       if (curparamdiff < minparameterdiff)
       {
         minparameterdiff   = curparamdiff;

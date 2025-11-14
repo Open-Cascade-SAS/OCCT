@@ -83,7 +83,7 @@ void RWStepGeom_RWVector::Check(const Handle(StepGeom_Vector)& ent,
                                 const Interface_ShareTool&,
                                 Handle(Interface_Check)& ach) const
 {
-  if (Abs(ent->Magnitude()) < RealEpsilon())
+  if (std::abs(ent->Magnitude()) < RealEpsilon())
   {
     ach->AddFail("ERROR: Magnitude of Vector = 0.0");
   }

@@ -399,27 +399,27 @@ Standard_Real Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
   Standard_Real aLx_mean = 0.5 * (aL1 + aL2);
 
   // mean C
-  Standard_Real aC1          = Sqrt(aa1 * aa1 + ab1 * ab1);
-  Standard_Real aC2          = Sqrt(aa2 * aa2 + ab2 * ab2);
+  Standard_Real aC1          = std::sqrt(aa1 * aa1 + ab1 * ab1);
+  Standard_Real aC2          = std::sqrt(aa2 * aa2 + ab2 * ab2);
   Standard_Real aC_mean      = 0.5 * (aC1 + aC2);
-  Standard_Real aC_mean_pow7 = Pow(aC_mean, 7);
-  Standard_Real aG           = 0.5 * (1. - Sqrt(aC_mean_pow7 / (aC_mean_pow7 + POW_25_7)));
+  Standard_Real aC_mean_pow7 = std::pow(aC_mean, 7);
+  Standard_Real aG           = 0.5 * (1. - std::sqrt(aC_mean_pow7 / (aC_mean_pow7 + POW_25_7)));
   Standard_Real aa1x         = aa1 * (1. + aG);
   Standard_Real aa2x         = aa2 * (1. + aG);
-  Standard_Real aC1x         = Sqrt(aa1x * aa1x + ab1 * ab1);
-  Standard_Real aC2x         = Sqrt(aa2x * aa2x + ab2 * ab2);
+  Standard_Real aC1x         = std::sqrt(aa1x * aa1x + ab1 * ab1);
+  Standard_Real aC2x         = std::sqrt(aa2x * aa2x + ab2 * ab2);
   Standard_Real aCx_mean     = 0.5 * (aC1x + aC2x);
 
   // mean H
-  Standard_Real ah1x = (aC1x > Epsilon() ? ATan2(ab1, aa1x) * RAD_TO_DEG : 270.);
-  Standard_Real ah2x = (aC2x > Epsilon() ? ATan2(ab2, aa2x) * RAD_TO_DEG : 270.);
+  Standard_Real ah1x = (aC1x > Epsilon() ? std::atan2(ab1, aa1x) * RAD_TO_DEG : 270.);
+  Standard_Real ah2x = (aC2x > Epsilon() ? std::atan2(ab2, aa2x) * RAD_TO_DEG : 270.);
   if (ah1x < 0.)
     ah1x += 360.;
   if (ah2x < 0.)
     ah2x += 360.;
   Standard_Real aHx_mean = 0.5 * (ah1x + ah2x);
   Standard_Real aDeltahx = ah2x - ah1x;
-  if (Abs(aDeltahx) > 180.)
+  if (std::abs(aDeltahx) > 180.)
   {
     aHx_mean += (aHx_mean < 180. ? 180. : -180.);
     aDeltahx += (ah1x >= ah2x ? 360. : -360.);
@@ -428,29 +428,29 @@ Standard_Real Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
   // deltas
   Standard_Real aDeltaLx = aL2 - aL1;
   Standard_Real aDeltaCx = aC2x - aC1x;
-  Standard_Real aDeltaHx = 2. * Sqrt(aC1x * aC2x) * Sin(0.5 * aDeltahx * DEG_TO_RAD);
+  Standard_Real aDeltaHx = 2. * std::sqrt(aC1x * aC2x) * std::sin(0.5 * aDeltahx * DEG_TO_RAD);
 
   // factors
-  Standard_Real aT = 1. - 0.17 * Cos((aHx_mean - 30.) * DEG_TO_RAD)
-                     + 0.24 * Cos((2. * aHx_mean) * DEG_TO_RAD)
-                     + 0.32 * Cos((3. * aHx_mean + 6.) * DEG_TO_RAD)
-                     - 0.20 * Cos((4. * aHx_mean - 63.) * DEG_TO_RAD);
+  Standard_Real aT = 1. - 0.17 * std::cos((aHx_mean - 30.) * DEG_TO_RAD)
+                     + 0.24 * std::cos((2. * aHx_mean) * DEG_TO_RAD)
+                     + 0.32 * std::cos((3. * aHx_mean + 6.) * DEG_TO_RAD)
+                     - 0.20 * std::cos((4. * aHx_mean - 63.) * DEG_TO_RAD);
 
   Standard_Real aLx_mean50_2 = (aLx_mean - 50.) * (aLx_mean - 50.);
-  Standard_Real aS_L         = 1. + 0.015 * aLx_mean50_2 / Sqrt(20. + aLx_mean50_2);
+  Standard_Real aS_L         = 1. + 0.015 * aLx_mean50_2 / std::sqrt(20. + aLx_mean50_2);
   Standard_Real aS_C         = 1. + 0.045 * aCx_mean;
   Standard_Real aS_H         = 1. + 0.015 * aCx_mean * aT;
 
-  Standard_Real aDelta_theta  = 30. * Exp(-(aHx_mean - 275.) * (aHx_mean - 275.) / 625.);
-  Standard_Real aCx_mean_pow7 = Pow(aCx_mean, 7);
-  Standard_Real aR_C          = 2. * Sqrt(aCx_mean_pow7 / (aCx_mean_pow7 + POW_25_7));
-  Standard_Real aR_T          = -aR_C * Sin(2. * aDelta_theta * DEG_TO_RAD);
+  Standard_Real aDelta_theta  = 30. * std::exp(-(aHx_mean - 275.) * (aHx_mean - 275.) / 625.);
+  Standard_Real aCx_mean_pow7 = std::pow(aCx_mean, 7);
+  Standard_Real aR_C          = 2. * std::sqrt(aCx_mean_pow7 / (aCx_mean_pow7 + POW_25_7));
+  Standard_Real aR_T          = -aR_C * std::sin(2. * aDelta_theta * DEG_TO_RAD);
 
   // finally, the difference
   Standard_Real aDL         = aDeltaLx / aS_L;
   Standard_Real aDC         = aDeltaCx / aS_C;
   Standard_Real aDH         = aDeltaHx / aS_H;
-  Standard_Real aDeltaE2000 = Sqrt(aDL * aDL + aDC * aDC + aDH * aDH + aR_T * aDC * aDH);
+  Standard_Real aDeltaE2000 = std::sqrt(aDL * aDL + aDC * aDC + aDH * aDH + aR_T * aDC * aDH);
   return aDeltaE2000;
 }
 
@@ -628,7 +628,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(
 // =======================================================================
 static inline double CIELab_f(double theValue) noexcept
 {
-  return theValue > CIELAB_EPSILON ? Pow(theValue, 1. / 3.)
+  return theValue > CIELAB_EPSILON ? std::pow(theValue, 1. / 3.)
                                    : (CIELAB_KAPPA * theValue) + CIELAB_OFFSET;
 }
 
@@ -729,8 +729,8 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(
   double aa = theLab[1];
   double ab = theLab[2];
 
-  double aC = Sqrt(aa * aa + ab * ab);
-  double aH = (aC > Epsilon() ? ATan2(ab, aa) * RAD_TO_DEG : 0.);
+  double aC = std::sqrt(aa * aa + ab * ab);
+  double aH = (aC > Epsilon() ? std::atan2(ab, aa) * RAD_TO_DEG : 0.);
 
   if (aH < 0.)
     aH += 360.;
@@ -751,8 +751,8 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lch_To_Lab(
 
   aH *= DEG_TO_RAD;
 
-  double aa = aC * Cos(aH);
-  double ab = aC * Sin(aH);
+  double aa = aC * std::cos(aH);
+  double ab = aC * std::sin(aH);
 
   return NCollection_Vec3<float>(theLch[0], (float)aa, (float)ab);
 }

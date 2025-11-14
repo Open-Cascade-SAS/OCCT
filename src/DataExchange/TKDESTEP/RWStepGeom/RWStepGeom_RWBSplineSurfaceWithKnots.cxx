@@ -390,7 +390,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::Check(
   for (i = 2; i <= nbKnoU; i++)
   {
     Standard_Real distKn = ent->UKnotsValue(i - 1) - ent->UKnotsValue(i);
-    if (Abs(distKn) <= RealEpsilon())
+    if (std::abs(distKn) <= RealEpsilon())
       ach->AddWarning("WARNING: Surface contains identical KnotsValues in U");
     else if (distKn > RealEpsilon())
       ach->AddFail("ERROR: Surface contains descending KnotsValues in U");
@@ -420,7 +420,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::Check(
   for (i = 2; i <= nbKnoV; i++)
   {
     Standard_Real distKn = ent->VKnotsValue(i - 1) - ent->VKnotsValue(i);
-    if (Abs(distKn) <= RealEpsilon())
+    if (std::abs(distKn) <= RealEpsilon())
       ach->AddWarning("WARNING: Surface contains identical KnotsValues in V");
     else if (distKn > RealEpsilon())
       ach->AddFail("ERROR: Surface contains descending KnotsValues in V");

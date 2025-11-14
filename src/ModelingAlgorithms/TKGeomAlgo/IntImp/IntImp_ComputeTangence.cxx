@@ -115,8 +115,8 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
   Tgduv[3] = -DPuv[2].Dot(N1);
 
   Standard_Boolean tangent =
-    (Abs(Tgduv[0]) <= EpsUV[0] * NormDuv[1] && Abs(Tgduv[1]) <= EpsUV[1] * NormDuv[0]
-     && Abs(Tgduv[2]) <= EpsUV[2] * NormDuv[3] && Abs(Tgduv[3]) <= EpsUV[3] * NormDuv[2]);
+    (std::abs(Tgduv[0]) <= EpsUV[0] * NormDuv[1] && std::abs(Tgduv[1]) <= EpsUV[1] * NormDuv[0]
+     && std::abs(Tgduv[2]) <= EpsUV[2] * NormDuv[3] && std::abs(Tgduv[3]) <= EpsUV[3] * NormDuv[2]);
   if (!tangent)
   {
     Standard_Real t = N1.Dot(N2);
@@ -130,10 +130,10 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
 
   if (!tangent)
   {
-    NormDuv[0] = Abs(Tgduv[1]) / NormDuv[0]; // iso u sur caro1
-    NormDuv[1] = Abs(Tgduv[0]) / NormDuv[1]; // iso v sur caro1
-    NormDuv[2] = Abs(Tgduv[3]) / NormDuv[2]; // iso u sur caro2
-    NormDuv[3] = Abs(Tgduv[2]) / NormDuv[3]; // iso v sur caro2
+    NormDuv[0] = std::abs(Tgduv[1]) / NormDuv[0]; // iso u sur caro1
+    NormDuv[1] = std::abs(Tgduv[0]) / NormDuv[1]; // iso v sur caro1
+    NormDuv[2] = std::abs(Tgduv[3]) / NormDuv[2]; // iso u sur caro2
+    NormDuv[3] = std::abs(Tgduv[2]) / NormDuv[3]; // iso v sur caro2
 
     //-- Tri sur NormDuv  ( en para. avec ChoixRef )
     Standard_Boolean          triOk = Standard_False;

@@ -603,7 +603,7 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
     return anElemSurf;
   }
   gp_Ax3               aPos1;
-  TColStd_Array1OfReal aParams1(1, Max(1, GetNbPars(theTarget)));
+  TColStd_Array1OfReal aParams1(1, std::max(1, GetNbPars(theTarget)));
   const TopoDS_Shape&  aFace = anIter.Value();
 
   anElemSurf = GetSurface(TopoDS::Face(aFace), theTol, theType, theTarget, theGap, theStatus);
@@ -621,7 +621,7 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
     anIter.Next();
   }
   gp_Ax3               aPos;
-  TColStd_Array1OfReal aParams(1, Max(1, GetNbPars(theTarget)));
+  TColStd_Array1OfReal aParams(1, std::max(1, GetNbPars(theTarget)));
   Standard_Boolean     isOK;
   for (; anIter.More(); anIter.Next())
   {
@@ -692,7 +692,7 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
   }
 
   gp_Ax3               aPos;
-  Standard_Integer     aNbPars = Max(1, GetNbPars(theTarget));
+  Standard_Integer     aNbPars = std::max(1, GetNbPars(theTarget));
   TColStd_Array1OfReal aParams(1, aNbPars);
 
   Standard_Integer ifit    = -1, i;
@@ -754,7 +754,7 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
   const TopoDS_Edge&   anEdge1 = TopoDS::Edge(anIter.Value());
   gp_Ax3               aPos1   = thePos;
   Standard_Integer     aNbPars = GetNbPars(theTarget);
-  TColStd_Array1OfReal aParams1(1, Max(1, aNbPars));
+  TColStd_Array1OfReal aParams1(1, std::max(1, aNbPars));
   Standard_Real        aGap1;
   Standard_Integer     i;
   for (i = 1; i <= aNbPars; ++i)
@@ -772,7 +772,7 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
   {
     gp_Ax3 aPos = aPos1;
     aNbPars     = GetNbPars(theTarget);
-    TColStd_Array1OfReal aParams(1, Max(1, aNbPars));
+    TColStd_Array1OfReal aParams(1, std::max(1, aNbPars));
     for (i = 1; i <= aNbPars; ++i)
     {
       aParams(i) = aParams1(i);
@@ -1052,7 +1052,7 @@ Standard_Boolean CompareConicParams(const GeomAbs_CurveType     theTarget,
 
   for (i = 1; i <= aNbPars; ++i)
   {
-    if (Abs(theRefParams(i) - theParams(i)) > theTol)
+    if (std::abs(theRefParams(i) - theParams(i)) > theTol)
       return Standard_False;
   }
 
@@ -1132,7 +1132,7 @@ Standard_Boolean CompareSurfParams(const GeomAbs_SurfaceType   theTarget,
 {
   if (theTarget != GeomAbs_Plane)
   {
-    if (Abs(theRefParams(1) - theParams(1)) > theTol)
+    if (std::abs(theRefParams(1) - theParams(1)) > theTol)
     {
       return Standard_False;
     }
@@ -1190,7 +1190,7 @@ Standard_Real DeviationSurfParams(const GeomAbs_SurfaceType   theTarget,
   Standard_Real aDevPars = 0.;
   if (theTarget != GeomAbs_Plane)
   {
-    aDevPars = Abs(theRefParams(1) - theParams(1));
+    aDevPars = std::abs(theRefParams(1) - theParams(1));
   }
   //
   if (theTarget == GeomAbs_Sphere)
@@ -1202,7 +1202,7 @@ Standard_Real DeviationSurfParams(const GeomAbs_SurfaceType   theTarget,
   {
     const gp_Dir& aRefDir  = theRefPos.Direction();
     const gp_Dir& aDir     = thePos.Direction();
-    Standard_Real anAngDev = (1. - Abs(aRefDir * aDir));
+    Standard_Real anAngDev = (1. - std::abs(aRefDir * aDir));
     aDevPars += anAngDev;
   }
 
@@ -1219,7 +1219,7 @@ Standard_Boolean GetSamplePoints(const TopoDS_Wire&           theWire,
   NCollection_Vector<Standard_Real>     aLengths;
   NCollection_Vector<BRepAdaptor_Curve> aCurves;
   NCollection_Vector<gp_XYZ>            aPoints;
-  Standard_Real                         aTol         = Max(1.e-3, theTol / 10.);
+  Standard_Real                         aTol         = std::max(1.e-3, theTol / 10.);
   Standard_Real                         aTotalLength = 0.;
   TopoDS_Iterator                       anEIter(theWire);
   for (; anEIter.More(); anEIter.Next())
@@ -1243,7 +1243,7 @@ Standard_Boolean GetSamplePoints(const TopoDS_Wire&           theWire,
     const BRepAdaptor_Curve& aC        = aCurves(i);
     Standard_Real            aClength  = GCPnts_AbscissaPoint::Length(aC, aTol);
     Standard_Integer         aNbPoints = RealToInt(aClength / aTotalLength * theMaxNbInt + 1);
-    aNbPoints                          = Max(2, aNbPoints);
+    aNbPoints                          = std::max(2, aNbPoints);
     GCPnts_QuasiUniformAbscissa aPointGen(aC, aNbPoints);
     if (!aPointGen.IsDone())
       continue;
@@ -1288,7 +1288,7 @@ static Standard_Real GetLSGap(const Handle(TColgp_HArray1OfXYZ)& thePoints,
     for (i = thePoints->Lower(); i <= thePoints->Upper(); ++i)
     {
       gp_XYZ aD = thePoints->Value(i) - aLoc;
-      aGap      = Max(aGap, Abs((aD.Modulus() - anR)));
+      aGap      = std::max(aGap, std::abs((aD.Modulus() - anR)));
     }
   }
   else if (theTarget == GeomAbs_Cylinder)
@@ -1298,7 +1298,7 @@ static Standard_Real GetLSGap(const Handle(TColgp_HArray1OfXYZ)& thePoints,
     {
       gp_Vec aD(thePoints->Value(i) - aLoc);
       aD.Cross(aDir);
-      aGap = Max(aGap, Abs((aD.Magnitude() - anR)));
+      aGap = std::max(aGap, std::abs((aD.Magnitude() - anR)));
     }
   }
   else if (theTarget == GeomAbs_Cone)
@@ -1312,9 +1312,9 @@ static Standard_Real GetLSGap(const Handle(TColgp_HArray1OfXYZ)& thePoints,
       ElSLib::ConeParameters(thePos, anR, anAng, aPi, u, v);
       gp_Pnt aPp;
       ElSLib::ConeD0(u, v, thePos, anR, anAng, aPp);
-      aGap = Max(aGap, aPi.SquareDistance(aPp));
+      aGap = std::max(aGap, aPi.SquareDistance(aPp));
     }
-    aGap = Sqrt(aGap);
+    aGap = std::sqrt(aGap);
   }
 
   return aGap;
@@ -1360,7 +1360,7 @@ void FillSolverData(const GeomAbs_SurfaceType   theTarget,
       aDR = 0.1;
     }
     Standard_Real    aDXYZ = aDR;
-    Standard_Real    aDAng = theRelDev * Abs(theParams(1));
+    Standard_Real    aDAng = theRelDev * std::abs(theParams(1));
     Standard_Integer i;
     for (i = 1; i <= 3; ++i)
     {
@@ -1370,11 +1370,11 @@ void FillSolverData(const GeomAbs_SurfaceType   theTarget,
     if (theParams(1) >= 0.)
     {
       theFBnd(4) = theStartPoint(4) - aDAng;
-      theLBnd(4) = Min(M_PI_2, theStartPoint(4) + aDR);
+      theLBnd(4) = std::min(M_PI_2, theStartPoint(4) + aDR);
     }
     else
     {
-      theFBnd(4) = Max(-M_PI_2, theStartPoint(4) - aDAng);
+      theFBnd(4) = std::max(-M_PI_2, theStartPoint(4) - aDAng);
       theLBnd(4) = theStartPoint(4) + aDAng;
     }
     theFBnd(5) = theStartPoint(5) - aDR;

@@ -195,12 +195,12 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
           if (AdC.Circle().Axis().IsCoaxial(axe1, Precision::Angular(), Precision::Confusion()))
           {
             // same axis
-            if (Abs(AdC.Circle().Radius() - dist1) < Precision::Confusion())
+            if (std::abs(AdC.Circle().Radius() - dist1) < Precision::Confusion())
             {
               // possibility of cylinder or a piece of cylinder
-              Standard_Real    h1 = Abs(last1 - first1), h2 = Abs(last2 - first2);
+              Standard_Real    h1 = std::abs(last1 - first1), h2 = std::abs(last2 - first2);
               Standard_Boolean Same,
-                SameParametricLength = (Abs(h1 - h2) < Precision::PConfusion());
+                SameParametricLength = (std::abs(h1 - h2) < Precision::PConfusion());
               Standard_Real m1 = (first1 + last1) / 2., m2 = (first2 + last2) / 2.;
               gp_Pnt        P1, P2;
               gp_Vec        DU;
@@ -221,9 +221,9 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
             else
             {
               // possibility of cone truncation
-              Standard_Real    h1 = Abs(last1 - first1), h2 = Abs(last2 - first2);
+              Standard_Real    h1 = std::abs(last1 - first1), h2 = std::abs(last2 - first2);
               Standard_Boolean Same,
-                SameParametricLength = (Abs(h1 - h2) < Precision::PConfusion());
+                SameParametricLength = (std::abs(h1 - h2) < Precision::PConfusion());
               Standard_Real m1 = (first1 + last1) / 2., m2 = (first2 + last2) / 2.;
               gp_Pnt        P1, P2;
               gp_Vec        DU;
@@ -280,7 +280,7 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
           if (axe.IsParallel(axe1, Precision::Angular()))
           {
             // parallel straight line
-            if (Abs(dist - dist1) < Precision::Confusion())
+            if (std::abs(dist - dist1) < Precision::Confusion())
             {
               gp_Dir dir(gp_Vec(AdC1.Value(first1), AdC.Value(first2)));
               if (dir.IsNormal(gp_Dir(vec), Precision::Angular()))
@@ -469,7 +469,7 @@ Standard_Boolean CreateKPart(const TopoDS_Edge&     Edge1,
       V = -V;
     }
     Handle(Geom_CylindricalSurface) Cyl = new Geom_CylindricalSurface(Ac1, c1.Radius());
-    surface = new Geom_RectangularTrimmedSurface(Cyl, aa, bb, Min(0., V), Max(0., V));
+    surface = new Geom_RectangularTrimmedSurface(Cyl, aa, bb, std::min(0., V), std::max(0., V));
   }
   else if (IType == 2)
   {
@@ -493,10 +493,10 @@ Standard_Boolean CreateKPart(const TopoDS_Edge&     Edge1,
       Ak1.ZReverse();
       V = -V;
     }
-    Standard_Real               Ang  = ATan(Rad / V);
+    Standard_Real               Ang  = std::atan(Rad / V);
     Handle(Geom_ConicalSurface) Cone = new Geom_ConicalSurface(Ak1, Ang, k1.Radius());
-    V /= Cos(Ang);
-    surface = new Geom_RectangularTrimmedSurface(Cone, aa, bb, Min(0., V), Max(0., V));
+    V /= std::cos(Ang);
+    surface = new Geom_RectangularTrimmedSurface(Cone, aa, bb, std::min(0., V), std::max(0., V));
   }
   else if (IType == -2)
   {
@@ -511,10 +511,10 @@ Standard_Boolean CreateKPart(const TopoDS_Edge&     Edge1,
       Ak2.ZReverse();
       V = -V;
     }
-    Standard_Real               Ang  = ATan(Rad / V);
+    Standard_Real               Ang  = std::atan(Rad / V);
     Handle(Geom_ConicalSurface) Cone = new Geom_ConicalSurface(Ak2, Ang, 0.);
-    V /= Cos(Ang);
-    surface = new Geom_RectangularTrimmedSurface(Cone, aa, bb, Min(0., V), Max(0., V));
+    V /= std::cos(Ang);
+    surface = new Geom_RectangularTrimmedSurface(Cone, aa, bb, std::min(0., V), std::max(0., V));
   }
   else if (IType == 3)
   {
@@ -545,7 +545,7 @@ Standard_Boolean CreateKPart(const TopoDS_Edge&     Edge1,
     V                       = P1P2.Dot(Ax.YDirection());
     surface                 = Plan;
     // surface = new Geom_RectangularTrimmedSurface
-    //( Plan, aa, bb, Min(0.,V), Max(0.,V) );
+    //( Plan, aa, bb, std::min(0.,V), std::max(0.,V) );
   }
   else if (IType == 5)
   {
@@ -790,8 +790,8 @@ void BRepFill_Generator::Perform()
 
         // transform and trim the curves
 
-        if (Abs(f1 - C1->FirstParameter()) > Precision::PConfusion()
-            || Abs(l1 - C1->LastParameter()) > Precision::PConfusion())
+        if (std::abs(f1 - C1->FirstParameter()) > Precision::PConfusion()
+            || std::abs(l1 - C1->LastParameter()) > Precision::PConfusion())
         {
           C1 = new Geom_TrimmedCurve(C1, f1, l1);
         }
@@ -806,8 +806,8 @@ void BRepFill_Generator::Perform()
           C1->Reverse();
         }
 
-        if (Abs(f2 - C2->FirstParameter()) > Precision::PConfusion()
-            || Abs(l2 - C2->LastParameter()) > Precision::PConfusion())
+        if (std::abs(f2 - C2->FirstParameter()) > Precision::PConfusion()
+            || std::abs(l2 - C2->LastParameter()) > Precision::PConfusion())
         {
           C2 = new Geom_TrimmedCurve(C2, f2, l2);
         }

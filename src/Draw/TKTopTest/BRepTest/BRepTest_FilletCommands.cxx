@@ -92,7 +92,7 @@ static Standard_Integer contblend(Draw_Interpretor& di, Standard_Integer narg, c
       return 1;
     if (narg == 3)
     {
-      tapp_angle = Abs(Draw::Atof(a[2]));
+      tapp_angle = std::abs(Draw::Atof(a[2]));
     }
     char c = a[1][1];
     switch (c)

@@ -289,7 +289,7 @@ void Geom_SurfaceOfLinearExtrusion::TransformParameters(Standard_Real& U,
 {
   U = basisCurve->TransformedParameter(U, T);
   if (!Precision::IsInfinite(V))
-    V *= Abs(T.ScaleFactor());
+    V *= std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
@@ -299,7 +299,7 @@ gp_GTrsf2d Geom_SurfaceOfLinearExtrusion::ParametricTransformation(const gp_Trsf
   // transformation in the V Direction
   gp_GTrsf2d TV;
   gp_Ax2d    Axis(gp::Origin2d(), gp::DX2d());
-  TV.SetAffinity(Axis, Abs(T.ScaleFactor()));
+  TV.SetAffinity(Axis, std::abs(T.ScaleFactor()));
   // transformation in the U Direction
   gp_GTrsf2d TU;
   Axis = gp_Ax2d(gp::Origin2d(), gp::DY2d());

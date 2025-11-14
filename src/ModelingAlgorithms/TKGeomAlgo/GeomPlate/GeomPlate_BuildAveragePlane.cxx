@@ -381,12 +381,12 @@ void GeomPlate_BuildAveragePlane::BasePlan(const gp_Vec& OZ)
   n2 = J.Value(2);
   n3 = J.Value(3);
 
-  Standard_Real    r1 = Min(Min(n1, n2), n3), r2;
+  Standard_Real    r1 = std::min(std::min(n1, n2), n3), r2;
   Standard_Integer m1, m2, m3;
   if (r1 == n1)
   {
     m1 = 1;
-    r2 = Min(n2, n3);
+    r2 = std::min(n2, n3);
     if (r2 == n2)
     {
       m2 = 2;
@@ -403,7 +403,7 @@ void GeomPlate_BuildAveragePlane::BasePlan(const gp_Vec& OZ)
     if (r1 == n2)
     {
       m1 = 2;
-      r2 = Min(n1, n3);
+      r2 = std::min(n1, n3);
       if (r2 == n1)
       {
         m2 = 1;
@@ -418,7 +418,7 @@ void GeomPlate_BuildAveragePlane::BasePlan(const gp_Vec& OZ)
     else
     {
       m1 = 3;
-      r2 = Min(n1, n2);
+      r2 = std::min(n1, n2);
       if (r2 == n1)
       {
         m2 = 1;
@@ -435,8 +435,9 @@ void GeomPlate_BuildAveragePlane::BasePlan(const gp_Vec& OZ)
   J.Vector(m2, V2);
   J.Vector(m3, V3);
 
-  if (((Abs(n1) <= myTol) && (Abs(n2) <= myTol)) || ((Abs(n2) <= myTol) && (Abs(n3) <= myTol))
-      || ((Abs(n1) <= myTol) && (Abs(n3) <= myTol)))
+  if (((std::abs(n1) <= myTol) && (std::abs(n2) <= myTol))
+      || ((std::abs(n2) <= myTol) && (std::abs(n3) <= myTol))
+      || ((std::abs(n1) <= myTol) && (std::abs(n3) <= myTol)))
   {
     myOX.SetCoord(V3(1), V3(2), V3(3));
     myOY = OZ ^ myOX;

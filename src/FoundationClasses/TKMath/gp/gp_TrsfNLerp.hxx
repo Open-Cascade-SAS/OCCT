@@ -55,12 +55,12 @@ public:
   //! @param[out] theResult  interpolated value
   void Interpolate(double theT, gp_Trsf& theResult) const
   {
-    if (Abs(theT - 0.0) < Precision::Confusion())
+    if (std::abs(theT - 0.0) < Precision::Confusion())
     {
       theResult = myTrsfStart;
       return;
     }
-    else if (Abs(theT - 1.0) < Precision::Confusion())
+    else if (std::abs(theT - 1.0) < Precision::Confusion())
     {
       theResult = myTrsfEnd;
       return;

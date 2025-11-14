@@ -242,9 +242,9 @@ void Intf_TangentZone::InfoFirst(Standard_Integer& segMin,
                                  Standard_Real&    paraMax) const
 {
   ParamOnFirst(paraMin, paraMax);
-  segMin  = (Standard_Integer)(IntegerPart(paraMin));
+  segMin  = (Standard_Integer)(std::trunc(paraMin));
   paraMin = paraMin - (Standard_Real)segMin;
-  segMax  = (Standard_Integer)(IntegerPart(paraMax));
+  segMax  = (Standard_Integer)(std::trunc(paraMax));
   paraMax = paraMax - (Standard_Real)segMax;
 }
 
@@ -256,9 +256,9 @@ void Intf_TangentZone::InfoSecond(Standard_Integer& segMin,
                                   Standard_Real&    paraMax) const
 {
   ParamOnSecond(paraMin, paraMax);
-  segMin  = (Standard_Integer)(IntegerPart(paraMin));
+  segMin  = (Standard_Integer)(std::trunc(paraMin));
   paraMin = paraMin - (Standard_Real)segMin;
-  segMax  = (Standard_Integer)(IntegerPart(paraMax));
+  segMax  = (Standard_Integer)(std::trunc(paraMax));
   paraMax = paraMax - (Standard_Real)segMax;
 }
 

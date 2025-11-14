@@ -271,7 +271,7 @@ void Graphic3d_CView::SubviewResized(const Handle(Aspect_NeutralWindow)& theWind
   }
   else if ((mySubviewCorner & Aspect_TOTP_RIGHT) != 0)
   {
-    mySubviewTopLeft.x() = Max(aWinSize.x() - anOffset.x() - aViewSize.x(), 0);
+    mySubviewTopLeft.x() = std::max(aWinSize.x() - anOffset.x() - aViewSize.x(), 0);
   }
 
   if ((mySubviewCorner & Aspect_TOTP_TOP) != 0)
@@ -280,16 +280,16 @@ void Graphic3d_CView::SubviewResized(const Handle(Aspect_NeutralWindow)& theWind
   }
   else if ((mySubviewCorner & Aspect_TOTP_BOTTOM) != 0)
   {
-    mySubviewTopLeft.y() = Max(aWinSize.y() - anOffset.y() - aViewSize.y(), 0);
+    mySubviewTopLeft.y() = std::max(aWinSize.y() - anOffset.y() - aViewSize.y(), 0);
   }
 
   mySubviewTopLeft += mySubviewMargins;
   aViewSize -= mySubviewMargins * 2;
 
-  const int aRight = Min(mySubviewTopLeft.x() + aViewSize.x(), aWinSize.x());
+  const int aRight = std::min(mySubviewTopLeft.x() + aViewSize.x(), aWinSize.x());
   aViewSize.x()    = aRight - mySubviewTopLeft.x();
 
-  const int aBot = Min(mySubviewTopLeft.y() + aViewSize.y(), aWinSize.y());
+  const int aBot = std::min(mySubviewTopLeft.y() + aViewSize.y(), aWinSize.y());
   aViewSize.y()  = aBot - mySubviewTopLeft.y();
 
   theWindow->SetSize(aViewSize.x(), aViewSize.y());
@@ -577,11 +577,11 @@ Standard_Real Graphic3d_CView::ConsiderZoomPersistenceObjects()
        aLayerIter.Next())
   {
     const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
-    aMaxCoef                              = Max(aMaxCoef,
-                   aLayer->considerZoomPersistenceObjects(Identification(),
-                                                          aCamera,
-                                                          aWinSize.x(),
-                                                          aWinSize.y()));
+    aMaxCoef                              = std::max(aMaxCoef,
+                        aLayer->considerZoomPersistenceObjects(Identification(),
+                                                               aCamera,
+                                                               aWinSize.x(),
+                                                               aWinSize.y()));
   }
 
   return aMaxCoef;
@@ -641,11 +641,12 @@ Bnd_Box Graphic3d_CView::MinMaxValues(const Graphic3d_MapOfStructure& theSet,
     // To prevent float overflow at camera parameters calculation and further
     // rendering, bounding boxes with at least one vertex coordinate out of
     // float range are skipped by view fit algorithms
-    if (Abs(aBox.CornerMax().X()) >= ShortRealLast() || Abs(aBox.CornerMax().Y()) >= ShortRealLast()
-        || Abs(aBox.CornerMax().Z()) >= ShortRealLast()
-        || Abs(aBox.CornerMin().X()) >= ShortRealLast()
-        || Abs(aBox.CornerMin().Y()) >= ShortRealLast()
-        || Abs(aBox.CornerMin().Z()) >= ShortRealLast())
+    if (std::abs(aBox.CornerMax().X()) >= ShortRealLast()
+        || std::abs(aBox.CornerMax().Y()) >= ShortRealLast()
+        || std::abs(aBox.CornerMax().Z()) >= ShortRealLast()
+        || std::abs(aBox.CornerMin().X()) >= ShortRealLast()
+        || std::abs(aBox.CornerMin().Y()) >= ShortRealLast()
+        || std::abs(aBox.CornerMin().Z()) >= ShortRealLast())
     {
       continue;
     }
@@ -1441,8 +1442,9 @@ void Graphic3d_CView::DiagnosticInformation(TColStd_IndexedDataMapOfStringString
       myXRSession->GetString(Aspect_XRSession::InfoString_SerialNumber);
     TCollection_AsciiString aDisplay =
       TCollection_AsciiString() + myXRSession->RecommendedViewport().x() + "x"
-      + myXRSession->RecommendedViewport().y() + "@" + (int)Round(myXRSession->DisplayFrequency())
-      + " [FOVy: " + (int)Round(myXRSession->FieldOfView()) + "]";
+      + myXRSession->RecommendedViewport().y() + "@"
+      + (int)std::round(myXRSession->DisplayFrequency())
+      + " [FOVy: " + (int)std::round(myXRSession->FieldOfView()) + "]";
 
     theDict.ChangeFromIndex(theDict.Add("VRvendor", aVendor))   = aVendor;
     theDict.ChangeFromIndex(theDict.Add("VRdevice", aDevice))   = aDevice;

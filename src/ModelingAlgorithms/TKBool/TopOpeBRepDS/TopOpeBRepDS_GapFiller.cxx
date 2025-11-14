@@ -440,11 +440,11 @@ void TopOpeBRepDS_GapFiller::ReBuildGeom(const Handle(TopOpeBRepDS_Interference)
   for (it.Initialize(LI); it.More(); it.Next())
   {
     TopOpeBRepDS_Point PP = myHDS->Point(it.Value()->Geometry());
-    TolMax                = Max(TolMax, PP.Tolerance());
+    TolMax                = std::max(TolMax, PP.Tolerance());
     if (myGapTool->ParameterOnEdge(it.Value(), E, U))
     {
-      UMin = Min(UMin, U);
-      UMax = Max(UMax, U);
+      UMin = std::min(UMin, U);
+      UMax = std::max(UMax, U);
     }
     myGapTool->EdgeSupport(it.Value(), CE);
     if (!CE.IsSame(E))

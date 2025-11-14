@@ -133,9 +133,9 @@ void Hatch_Hatcher::Trim(const gp_Lin2d&        L,
 void Hatch_Hatcher::Trim(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const Standard_Integer Index)
 {
   gp_Vec2d V(P1, P2);
-  if (Abs(V.X()) > .9 * RealLast())
+  if (std::abs(V.X()) > .9 * RealLast())
     V.Multiply(1 / V.X());
-  else if (Abs(V.Y()) > .9 * RealLast())
+  else if (std::abs(V.Y()) > .9 * RealLast())
     V.Multiply(1 / V.Y());
   if (V.Magnitude() > myToler)
   {

@@ -156,7 +156,7 @@ void CircleCircleGeometricIntersection(const gp_Circ2d&    C1,
   Standard_Real dO1O2    = (C1.Location()).Distance(C2.Location());
   Standard_Real R1       = C1.Radius();
   Standard_Real R2       = C2.Radius();
-  Standard_Real AbsR1mR2 = Abs(R1 - R2);
+  Standard_Real AbsR1mR2 = std::abs(R1 - R2);
   //----------------------------------------------------------------
   if (dO1O2 > (R1 + R2 + Tol))
   {
@@ -198,8 +198,8 @@ void CircleCircleGeometricIntersection(const gp_Circ2d&    C1,
     {
       Standard_Real dx = (R1pTolR1pTol + dO1O2dO1O2 - R2R2) / (dO1O2 + dO1O2);
       Standard_Real dy = (R1pTolR1pTol - dx * dx);
-      dy               = (dy >= 0.0) ? Sqrt(dy) : 0.0;
-      dAlpha1          = ATan2(dy, dx);
+      dy               = (dy >= 0.0) ? std::sqrt(dy) : 0.0;
+      dAlpha1          = std::atan2(dy, dx);
 
       C1_binf1 = -dAlpha1;
       C1_bsup1 = dAlpha1;
@@ -207,24 +207,24 @@ void CircleCircleGeometricIntersection(const gp_Circ2d&    C1,
     }
     //--------------------------------------------------------------------
     //--           2 segments donnes par Inter C2 avec C1- C1 C1+
-    //-- Seul le signe de dx change si dO1O2 < Max(R1,R2)
+    //-- Seul le signe de dx change si dO1O2 < std::max(R1,R2)
     //--
     else if (dO1O2 > AbsR1mR2 - Tol)
     { // -- +
       //------------------- Intersection C2 C1+ --------------------------
       Standard_Real dx = (R1pTolR1pTol + dO1O2dO1O2 - R2R2) / (dO1O2 + dO1O2);
       Standard_Real dy = (R1pTolR1pTol - dx * dx);
-      dy               = (dy >= 0.0) ? Sqrt(dy) : 0.0;
+      dy               = (dy >= 0.0) ? std::sqrt(dy) : 0.0;
 
-      dAlpha1  = ATan2(dy, dx);
+      dAlpha1  = std::atan2(dy, dx);
       C1_binf1 = -dAlpha1;
       C1_bsup2 = dAlpha1; //--  |...?     ?...|   Sur C1
 
       //------------------ Intersection C2 C1- -------------------------
       dx      = (R1mTolR1mTol + dO1O2dO1O2 - R2R2) / (dO1O2 + dO1O2);
       dy      = (R1mTolR1mTol - dx * dx);
-      dy      = (dy >= 0.0) ? Sqrt(dy) : 0.0;
-      dAlpha1 = ATan2(dy, dx);
+      dy      = (dy >= 0.0) ? std::sqrt(dy) : 0.0;
+      dAlpha1 = std::atan2(dy, dx);
 
       C1_binf2 = dAlpha1;
       C1_bsup1 = -dAlpha1; //--  |...x     x...|   Sur C1
@@ -487,8 +487,8 @@ void LineCircleGeometricIntersection(const gp_Lin2d&     Line,
       // if(dO1O2 > RmTol) {
       Standard_Real dx = dO1O2;
       Standard_Real dy = 0.0; //(RpTol*RpTol-dx*dx); //Patch !!!
-      dy               = (dy >= 0.0) ? Sqrt(dy) : 0.0;
-      dAlpha1          = ATan2(dy, dx);
+      dy               = (dy >= 0.0) ? std::sqrt(dy) : 0.0;
+      dAlpha1          = std::atan2(dy, dx);
 
       binf1 = -dAlpha1;
       bsup1 = dAlpha1;
@@ -502,21 +502,21 @@ void LineCircleGeometricIntersection(const gp_Lin2d&     Line,
       //------------------- Intersection Line Circle+ --------------------------
       Standard_Real dx = dO1O2;
       Standard_Real dy = R * R - dx * dx; //(RpTol*RpTol-dx*dx); //Patch !!!
-      dy               = (dy >= 0.0) ? Sqrt(dy) : 0.0;
+      dy               = (dy >= 0.0) ? std::sqrt(dy) : 0.0;
 
-      dAlpha1 = ATan2(dy, dx);
+      dAlpha1 = std::atan2(dy, dx);
       binf1   = -dAlpha1;
       bsup2   = dAlpha1; //--  |...?     ?...|   Sur C1
 
       //------------------ Intersection Line Circle-  -------------------------
       dy      = R * R - dx * dx; //(RmTol*RmTol-dx*dx); //Patch !!!
-      dy      = (dy >= 0.0) ? Sqrt(dy) : 0.0;
-      dAlpha1 = ATan2(dy, dx);
+      dy      = (dy >= 0.0) ? std::sqrt(dy) : 0.0;
+      dAlpha1 = std::atan2(dy, dx);
 
       binf2 = dAlpha1;
       bsup1 = -dAlpha1; //--  |...x     x...|   Sur C1
 
-      if ((dAlpha1 * R) < (Max(Tol, TolTang)))
+      if ((dAlpha1 * R) < (std::max(Tol, TolTang)))
       {
         bsup1 = bsup2;
         nbsol = 1;
@@ -726,12 +726,12 @@ void LineLineGeometricIntersection(const gp_Lin2d&     L1,
   Standard_Real D = U1y * U2x - U1x * U2y;
 
   // modified by NIZHNY-MKK  Tue Feb 15 10:54:04 2000.BEGIN
-  //    if(Abs(D)<1e-15) { //-- Droites //
-  if (Abs(D) < TOLERANCE_ANGULAIRE)
+  //    if(std::abs(D)<1e-15) { //-- Droites //
+  if (std::abs(D) < TOLERANCE_ANGULAIRE)
   {
     // modified by NIZHNY-MKK  Tue Feb 15 10:54:11 2000.END
     D     = U1y * Uo21x - U1x * Uo21y;
-    nbsol = (Abs(D) <= Tol) ? 2 : 0;
+    nbsol = (std::abs(D) <= Tol) ? 2 : 0;
   }
   else
   {
@@ -744,7 +744,7 @@ void LineLineGeometricIntersection(const gp_Lin2d&     L1,
       D = -D;
     if (D > 1.0)
       D = 1.0; //-- Deja vu !
-    SinDemiAngle = Sin(0.5 * ASin(D));
+    SinDemiAngle = std::sin(0.5 * std::asin(D));
     nbsol        = 1;
   }
 }
@@ -826,7 +826,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
   if (deltat >= PIpPI)
   {
     // make deltat not including the upper limit
-    deltat = NextAfter(PIpPI, 0.);
+    deltat = std::nextafter(PIpPI, 0.);
   }
 
   while (C1Domain.Binf >= PIpPI)
@@ -840,7 +840,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
   deltat = C2Domain.Bsup - C2Domain.Binf;
   if (deltat >= PIpPI)
   {
-    deltat = NextAfter(PIpPI, 0.);
+    deltat = std::nextafter(PIpPI, 0.);
   }
 
   while (C2Domain.Binf >= PIpPI)
@@ -1172,7 +1172,7 @@ IntRes2d_Position FindPositionLL(Standard_Real& Param, const IntRes2d_Domain& Do
   Standard_Real     aResPar = Param;
   if (Domain.HasFirstPoint())
   {
-    aDPar = Abs(Param - Domain.FirstParameter());
+    aDPar = std::abs(Param - Domain.FirstParameter());
     if (aDPar <= Domain.FirstTolerance())
     {
       aResPar = Domain.FirstParameter();
@@ -1181,7 +1181,7 @@ IntRes2d_Position FindPositionLL(Standard_Real& Param, const IntRes2d_Domain& Do
   }
   if (Domain.HasLastPoint())
   {
-    Standard_Real aD2 = Abs(Param - Domain.LastParameter());
+    Standard_Real aD2 = std::abs(Param - Domain.LastParameter());
     if (aD2 <= Domain.LastTolerance() && (aPos == IntRes2d_Middle || aD2 < aDPar))
     {
       aResPar = Domain.LastParameter();
@@ -1575,7 +1575,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
 
           Standard_Boolean ResultIsAPoint = Standard_False;
 
-          if (((Res1sup - Res1inf) <= LongMiniSeg) || (Abs(Res2sup - Res2inf) <= LongMiniSeg))
+          if (((Res1sup - Res1inf) <= LongMiniSeg) || (std::abs(Res2sup - Res2inf) <= LongMiniSeg))
           {
             //-- On force la creation d un point
             ResultIsAPoint = Standard_True;
@@ -1736,7 +1736,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
 
               PtSeg2.SetValues(ElCLib::Value(U2, L2), U1, U2, T1b, T2b, Standard_False);
 
-              if ((Abs(Res1inf - U1) > LongMiniSeg) && (Abs(Res2inf - U2) > LongMiniSeg))
+              if ((std::abs(Res1inf - U1) > LongMiniSeg) && (std::abs(Res2inf - U2) > LongMiniSeg))
               {
                 IntRes2d_IntersectionSegment Segment(PtSeg1, PtSeg2, isOpposite, Standard_False);
                 Append(Segment);
@@ -1866,7 +1866,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
 
                 PtSeg2.SetValues(Ptfin, Res1sup, Res2sup, T1b, T2b, Standard_False);
 
-                if ((Abs(U1 - Res1sup) > LongMiniSeg) || (Abs(U2 - Res2sup) > LongMiniSeg))
+                if ((std::abs(U1 - Res1sup) > LongMiniSeg)
+                    || (std::abs(U2 - Res2sup) > LongMiniSeg))
                 {
                   //-- Modif du 1er Octobre 92 (Pour Composites)
 
@@ -2343,7 +2344,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        Line,
   if(NbSolTotal == 2) { 
     if(SolutionLine[0].Binf==SolutionLine[0].BSup) { 
       if(SolutionLine[1].Binf==SolutionLine[1].BSup) {
-	if(Abs(SolutionLine[0].Binf-SolutionLine[1].Binf)<TolConf) { 
+	if(std::abs(SolutionLine[0].Binf-SolutionLine[1].Binf)<TolConf) { 
 	  SolutionLine[0].Binf=0.5*(SolutionLine[0].BSup+SolutionLine[1].BSup);
 	  SolutionLine[0].BSup=SolutionLine[0].Binf;
 	  NbSolTotal = 1;
@@ -2513,7 +2514,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        Line,
 
         IntRes2d_IntersectionPoint NewPoint2(P1b, Lsup, Csup, T2b, T1b, ReversedParameters());
 
-        if (((Abs(Csup - Cinf) * R > MaxTol) && (Abs(Lsup - Linf) > MaxTol))
+        if (((std::abs(Csup - Cinf) * R > MaxTol) && (std::abs(Lsup - Linf) > MaxTol))
             || (T1a.TransitionType() != T2a.TransitionType()))
         {
           //-- Verifier egalement les transitions
@@ -2602,7 +2603,7 @@ void LineEllipseGeometricIntersection(const gp_Lin2d&   Line,
   gp_Elips2d       aTEllipse = Ellipse.Transformed(aTr);
   gp_Lin2d         aTLine    = Line.Transformed(aTr);
   Standard_Real    aDY       = aTLine.Position().Direction().Y();
-  Standard_Boolean IsVert    = Abs(aDY) > 1. - 2. * Epsilon(1.);
+  Standard_Boolean IsVert    = std::abs(aDY) > 1. - 2. * Epsilon(1.);
   //
   Standard_Real a  = aTEllipse.MajorRadius();
   Standard_Real b  = aTEllipse.MinorRadius();
@@ -2624,7 +2625,7 @@ void LineEllipseGeometricIntersection(const gp_Lin2d&   Line,
   }
   //
   Standard_Real x1 = 0., y1 = 0., x2 = 0., y2 = 0.;
-  if (Abs(aB) > eps0)
+  if (std::abs(aB) > eps0)
   {
     Standard_Real m  = -anA / aB;
     Standard_Real m2 = m * m;
@@ -2658,7 +2659,7 @@ void LineEllipseGeometricIntersection(const gp_Lin2d&   Line,
       }
       return;
     }
-    D               = Sqrt(D);
+    D               = std::sqrt(D);
     Standard_Real n = a2 * m2 + b2;
     Standard_Real k = a * b * D / n;
     Standard_Real l = -a2 * m * c / n;
@@ -2671,19 +2672,19 @@ void LineEllipseGeometricIntersection(const gp_Lin2d&   Line,
   else
   {
     x1 = -aC / anA;
-    if (Abs(x1) > a + TolTang)
+    if (std::abs(x1) > a + TolTang)
     {
       nbsol = 0;
       return;
     }
-    else if (Abs(x1) >= a - Epsilon(1. + a))
+    else if (std::abs(x1) >= a - Epsilon(1. + a))
     {
       nbsol = 1;
       y1    = 0.;
     }
     else
     {
-      y1    = b * Sqrt(1. - x1 * x1 / a2);
+      y1    = b * std::sqrt(1. - x1 * x1 / a2);
       x2    = x1;
       y2    = -y1;
       nbsol = 2;
@@ -3104,7 +3105,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
 
         IntRes2d_IntersectionPoint NewPoint2(P1b, Lsup, Esup, T2b, T1b, ReversedParameters());
 
-        if (((Abs(Esup - Einf) * R > MaxTol) && (Abs(Lsup - Linf) > MaxTol))
+        if (((std::abs(Esup - Einf) * R > MaxTol) && (std::abs(Lsup - Linf) > MaxTol))
             || (T1a.TransitionType() != T2a.TransitionType()))
         {
           IntRes2d_IntersectionSegment NewSeg(NewPoint1,

@@ -309,7 +309,7 @@ static Standard_Boolean CompareVerticesOnSurf(const IntPatch_Point&  vtx1,
   }
   tolU = Precision::PConfusion();
   tolV = Precision::PConfusion();
-  return (Abs(u1 - u2) <= tolU && Abs(v1 - v2) <= tolV);
+  return (std::abs(u1 - u2) <= tolU && std::abs(v1 - v2) <= tolV);
 }
 
 inline Standard_Boolean CompareVerticesOnS1(const IntPatch_Point& vtx1, const IntPatch_Point& vtx2)
@@ -380,14 +380,14 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
             Standard_Real d      = VTXi.Value().Distance(VTXj.Value());
             Standard_Real toli   = VTXi.Tolerance();
             Standard_Real tolj   = VTXj.Tolerance();
-            Standard_Real maxtol = Max(toli, tolj);
+            Standard_Real maxtol = std::max(toli, tolj);
             // MSV Oct 30, 2001: compare in 2D space also;
             //                   increase tolerances
             if (d < maxtol || CompareVerticesOnS1(VTXi, VTXj) || CompareVerticesOnS2(VTXi, VTXj))
             {
               //-- Creation Vtx (REF:S1(i)  S2(j))    (On Garde S1(i))
-              Standard_Real    newtoli = Max(toli, tolj + d * 1.01);
-              Standard_Real    newtolj = Max(tolj, toli + d * 1.01);
+              Standard_Real    newtoli = std::max(toli, tolj + d * 1.01);
+              Standard_Real    newtolj = std::max(tolj, toli + d * 1.01);
               Standard_Boolean acreer  = Standard_False;
               if (VTXi.IsOnDomS1())
               {

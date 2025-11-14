@@ -157,7 +157,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Cone& S, const Standard_
   gp_Vec        MP(M, P);
 
   Standard_Real L2 = MP.SquareMagnitude();
-  Standard_Real Vm = -(S.RefRadius() / Sin(A));
+  Standard_Real Vm = -(S.RefRadius() / std::sin(A));
 
   // Case when P is mixed with S ...
   if (L2 < Tol * Tol)
@@ -204,7 +204,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Cone& S, const Standard_
     U2 -= 2. * M_PI;
   }
   Standard_Real B = MP.Angle(DirZ);
-  A               = Abs(A);
+  A               = std::abs(A);
   Standard_Real L = sqrt(L2);
   if (!Same)
   {

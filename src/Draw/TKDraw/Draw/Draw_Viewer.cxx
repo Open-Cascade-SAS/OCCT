@@ -1697,16 +1697,16 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
         found = found || inside;
         if (found)
         {
-          if (Abs(x2 - x1) > Abs(y2 - y1))
+          if (std::abs(x2 - x1) > std::abs(y2 - y1))
           {
-            if (Abs(x2 - x1) < 1e-5)
+            if (std::abs(x2 - x1) < 1e-5)
               lastPickParam = 0;
             else
               lastPickParam = (Standard_Real)(xpick - x1) / (Standard_Real)(x2 - x1);
           }
           else
           {
-            if (Abs(y2 - y1) < 1e-5)
+            if (std::abs(y2 - y1) < 1e-5)
               lastPickParam = 0;
             else
               lastPickParam = (Standard_Real)(ypick - y1) / (Standard_Real)(y2 - y1);

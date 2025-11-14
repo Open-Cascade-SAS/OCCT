@@ -51,9 +51,9 @@ void VrmlConverter_HLRShape::Add(Standard_OStream&                      anOStrea
           || box.IsOpenZmin() || box.IsOpenZmax()))
     {
 
-      diagonal               = Sqrt((Xmax - Xmin) * (Xmax - Xmin) + (Ymax - Ymin) * (Ymax - Ymin)
-                      + (Zmax - Zmin) * (Zmax - Zmin));
-      diagonal               = Max(diagonal, Precision::Confusion());
+      diagonal = std::sqrt((Xmax - Xmin) * (Xmax - Xmin) + (Ymax - Ymin) * (Ymax - Ymin)
+                           + (Zmax - Zmin) * (Zmax - Zmin));
+      diagonal = std::max(diagonal, Precision::Confusion());
       theRequestedDeflection = aDrawer->DeviationCoefficient() * diagonal;
     }
     else

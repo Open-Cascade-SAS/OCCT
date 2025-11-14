@@ -129,7 +129,7 @@ Standard_Boolean ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face& 
   else if (ES->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
     Handle(Geom_ConicalSurface) CS = Handle(Geom_ConicalSurface)::DownCast(ES);
-    gp_Dir                      N  = dir.XYZ() + X.XYZ() * Tan(CS->SemiAngle());
+    gp_Dir                      N  = dir.XYZ() + X.XYZ() * std::tan(CS->SemiAngle());
     gp_Ax1                      Ax1(pos.XYZ() + X.XYZ() * CS->RefRadius(), N);
     BasisCurve = new Geom_Line(Ax1);
   }

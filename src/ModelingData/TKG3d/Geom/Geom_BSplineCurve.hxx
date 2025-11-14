@@ -751,8 +751,8 @@ public:
   //! Knots (I1) <= U <= Knots (I2)
   //! . if I1 = I2 U is a knot value (the tolerance criterion
   //! ParametricTolerance is used).
-  //! . if I1 < 1 => U < Knots (1) - Abs(ParametricTolerance)
-  //! . if I2 > NbKnots => U > Knots (NbKnots) + Abs(ParametricTolerance)
+  //! . if I1 < 1 => U < Knots (1) - std::abs(ParametricTolerance)
+  //! . if I2 > NbKnots => U > Knots (NbKnots) + std::abs(ParametricTolerance)
   Standard_EXPORT void LocateU(const Standard_Real    U,
                                const Standard_Real    ParametricTolerance,
                                Standard_Integer&      I1,

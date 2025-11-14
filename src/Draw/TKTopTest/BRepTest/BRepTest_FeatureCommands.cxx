@@ -2706,7 +2706,7 @@ static Standard_Integer ComputeSimpleOffset(Draw_Interpretor& theCommands,
     return 0;
   }
   const Standard_Real anOffsetValue = Draw::Atof(a[3]);
-  if (Abs(anOffsetValue) < gp::Resolution())
+  if (std::abs(anOffsetValue) < gp::Resolution())
   {
     theCommands << "Null offset value";
     return 0;

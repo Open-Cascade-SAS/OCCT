@@ -47,7 +47,7 @@ void Hatch_Line::AddIntersection(const Standard_Real    Par1,
   {
     Standard_Real dfIntPar1 = myInters(i).myPar1;
     // akm OCC109 vvv : Two intersections too close
-    if (Abs(Par1 - dfIntPar1) < theToler)
+    if (std::abs(Par1 - dfIntPar1) < theToler)
     {
       myInters.Remove(i);
       return;

@@ -386,10 +386,10 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Standard_Integer    Ipoin2;
     ChFiDS_CommonPoint& cpco1   = Fd1->ChangeVertex(isfirst1, IFaCo1);
     ChFiDS_CommonPoint& cpco2   = Fd2->ChangeVertex(isfirst2, IFaCo2);
-    Standard_Real       tolpco  = Max(cpco1.Tolerance(), cpco2.Tolerance());
+    Standard_Real       tolpco  = std::max(cpco1.Tolerance(), cpco2.Tolerance());
     ChFiDS_CommonPoint& cparc1  = Fd1->ChangeVertex(isfirst1, IFaArc1);
     ChFiDS_CommonPoint& cparc2  = Fd2->ChangeVertex(isfirst2, IFaArc2);
-    Standard_Real       tolparc = Max(cparc1.Tolerance(), cparc2.Tolerance());
+    Standard_Real       tolparc = std::max(cparc1.Tolerance(), cparc2.Tolerance());
     Standard_Integer    ICurv   = DStr.AddCurve(TopOpeBRepDS_Curve(Gc, tolreached));
     // Corner1
     Corner1->SetParameters(isfirst1, WFirst, WLast);
@@ -397,10 +397,10 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Corner1->ChangePCurve(isfirst1) = PGc1;
     cpco1.Reset();
     cpco1.SetPoint(PFaCo);
-    cpco1.SetTolerance(Max(tolreached, tolpco));
+    cpco1.SetTolerance(std::max(tolreached, tolpco));
     Fd1->ChangeInterference(IFaCo1).SetParameter(UIntPC1, isfirst1);
-    tolparc = Max(tolparc, tolreached);
-    cparc1.SetTolerance(Max(tolparc, tolreached));
+    tolparc = std::max(tolparc, tolreached);
+    cparc1.SetTolerance(std::max(tolparc, tolreached));
     Ipoin1 = ChFi3d_IndexPointInDS(Fd1->Vertex(isfirst1, 1), DStr);
     Corner1->SetIndexPoint(Ipoin1, isfirst1, 1);
     Ipoin2 = ChFi3d_IndexPointInDS(Fd1->Vertex(isfirst1, 2), DStr);
@@ -575,7 +575,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Standard_Integer    IpointCo, IpointMil, IpointArc;
     ChFiDS_CommonPoint& psmaco  = SmaFD->ChangeVertex(isfirstSma, IFaCoSma);
     ChFiDS_CommonPoint& pbigco  = BigFD->ChangeVertex(isfirstBig, IFaCoBig);
-    Standard_Real       tolpco  = Max(psmaco.Tolerance(), pbigco.Tolerance());
+    Standard_Real       tolpco  = std::max(psmaco.Tolerance(), pbigco.Tolerance());
     ChFiDS_CommonPoint& psmamil = SmaFD->ChangeVertex(isfirstSma, IFaArcSma);
     Standard_Real       tolpmil = psmamil.Tolerance();
     Standard_Integer    ICurv   = DStr.AddCurve(TopOpeBRepDS_Curve(Gc, tolreached));
@@ -585,11 +585,11 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     SmaCD->ChangePCurve(isfirstSma) = PGc1;
     psmaco.Reset();
     psmaco.SetPoint(PFaCo);
-    psmaco.SetTolerance(Max(tolpco, tolreached));
+    psmaco.SetTolerance(std::max(tolpco, tolreached));
     SmaFD->ChangeInterference(IFaCoSma).SetParameter(UIntPCSma, isfirstSma);
     psmamil.Reset();
     psmamil.SetPoint(PMil);
-    psmamil.SetTolerance(Max(tolpmil, tolreached));
+    psmamil.SetTolerance(std::max(tolpmil, tolreached));
     SmaFD->ChangeInterference(IFaArcSma).SetParameter(wi, isfirstSma);
     IpointCo = ChFi3d_IndexPointInDS(psmaco, DStr);
     SmaCD->SetIndexPoint(IpointCo, isfirstSma, IFaCoSma);
@@ -646,8 +646,8 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Standard_Real               lsma    = FiArcSma.LastParameter();
     Standard_Real               deltSma = 0.05 * (lsma - fsma);
     Handle(Geom2d_Curve)        pcpc    = SmaFD->Interference(IFaArcSma).PCurveOnFace();
-    fsma                                = Max(pcpc->FirstParameter(), wi - deltSma);
-    lsma                                = Min(pcpc->LastParameter(), wi + deltSma);
+    fsma                                = std::max(pcpc->FirstParameter(), wi - deltSma);
+    lsma                                = std::min(pcpc->LastParameter(), wi + deltSma);
     if (lsma < fsma)
     {
       done = Standard_False;
@@ -717,7 +717,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     WFirst = Gc->FirstParameter();
     WLast  = Gc->LastParameter();
     ICurv  = DStr.AddCurve(TopOpeBRepDS_Curve(Gc, tolreached));
-    cpend.SetTolerance(Max(cpend.Tolerance(), tolreached));
+    cpend.SetTolerance(std::max(cpend.Tolerance(), tolreached));
     IpointArc = ChFi3d_IndexPointInDS(cpend, DStr);
     BigCD->SetIndexPoint(IpointArc, isfirstBig, IFaArcBig);
 

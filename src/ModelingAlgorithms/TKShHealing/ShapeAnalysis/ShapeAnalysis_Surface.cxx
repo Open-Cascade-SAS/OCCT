@@ -195,7 +195,7 @@ void ShapeAnalysis_Surface::ComputeSingularities()
   if (mySurf->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
     Handle(Geom_ConicalSurface) conicS = Handle(Geom_ConicalSurface)::DownCast(mySurf);
-    Standard_Real               vApex  = -conicS->RefRadius() / Sin(conicS->SemiAngle());
+    Standard_Real               vApex  = -conicS->RefRadius() / std::sin(conicS->SemiAngle());
     myPreci[0]                         = 0;
     myP3d[0]                           = conicS->Apex();
     myFirstP2d[0].SetCoord(su1, vApex);
@@ -211,8 +211,8 @@ void ShapeAnalysis_Surface::ComputeSingularities()
     Standard_Real                minorR  = toroidS->MinorRadius();
     Standard_Real                majorR  = toroidS->MajorRadius();
     // szv#4:S4163:12Mar99 warning - possible div by zero
-    Standard_Real Ang = ACos(Min(1., majorR / minorR));
-    myPreci[0] = myPreci[1] = Max(0., majorR - minorR);
+    Standard_Real Ang = std::acos(std::min(1., majorR / minorR));
+    myPreci[0] = myPreci[1] = std::max(0., majorR - minorR);
     myP3d[0]                = mySurf->Value(0., M_PI - Ang);
     myFirstP2d[0].SetCoord(su1, M_PI - Ang);
     myLastP2d[0].SetCoord(su2, M_PI - Ang);
@@ -273,14 +273,14 @@ void ShapeAnalysis_Surface::ComputeSingularities()
     gp_Pnt Corner3 = myAdSur->Value(su2, sv1);
     gp_Pnt Corner4 = myAdSur->Value(su2, sv2);
 
-    myPreci[0] =
-      Max(Corner1.Distance(Corner2), Max(myP3d[0].Distance(Corner1), myP3d[0].Distance(Corner2)));
-    myPreci[1] =
-      Max(Corner3.Distance(Corner4), Max(myP3d[1].Distance(Corner3), myP3d[1].Distance(Corner4)));
-    myPreci[2] =
-      Max(Corner1.Distance(Corner3), Max(myP3d[2].Distance(Corner1), myP3d[2].Distance(Corner3)));
-    myPreci[3] =
-      Max(Corner2.Distance(Corner4), Max(myP3d[3].Distance(Corner2), myP3d[3].Distance(Corner4)));
+    myPreci[0] = std::max(Corner1.Distance(Corner2),
+                          std::max(myP3d[0].Distance(Corner1), myP3d[0].Distance(Corner2)));
+    myPreci[1] = std::max(Corner3.Distance(Corner4),
+                          std::max(myP3d[1].Distance(Corner3), myP3d[1].Distance(Corner4)));
+    myPreci[2] = std::max(Corner1.Distance(Corner3),
+                          std::max(myP3d[2].Distance(Corner1), myP3d[2].Distance(Corner3)));
+    myPreci[3] = std::max(Corner2.Distance(Corner4),
+                          std::max(myP3d[3].Distance(Corner2), myP3d[3].Distance(Corner4)));
 
     myNbDeg = 4;
   }
@@ -406,7 +406,7 @@ Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const gp_Pnt&       P
   {
     Standard_Real gap2 = myP3d[i].SquareDistance(P3d);
     if (gap2 > preci * preci)
-      gap2 = Min(gap2, myP3d[i].SquareDistance(Value(result)));
+      gap2 = std::min(gap2, myP3d[i].SquareDistance(Value(result)));
     // rln S4135
     if (gap2 <= preci * preci && gapMin > gap2)
     {
@@ -416,7 +416,7 @@ Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const gp_Pnt&       P
   }
   if (indMin < 0)
     return Standard_False;
-  myGap = Sqrt(gapMin);
+  myGap = std::sqrt(gapMin);
   if (!myUIsoDeg[indMin])
     result.SetX(neighbour.X());
   else
@@ -445,7 +445,7 @@ Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const Standard_Intege
   {
     Standard_Real gap2 = myP3d[i].SquareDistance(points(j));
     if (gap2 > prec2)
-      gap2 = Min(gap2, myP3d[i].SquareDistance(Value(pnt2d(j))));
+      gap2 = std::min(gap2, myP3d[i].SquareDistance(Value(pnt2d(j))));
     if (gap2 <= prec2 && gapMin > gap2)
     {
       gapMin = gap2;
@@ -455,7 +455,7 @@ Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const Standard_Intege
   if (indMin < 0)
     return Standard_False;
 
-  myGap = Sqrt(gapMin);
+  myGap = std::sqrt(gapMin);
   gp_Pnt2d pk;
 
   Standard_Integer k; // svv Jan11 2000 : porting on DEC
@@ -504,7 +504,7 @@ Standard_Boolean ShapeAnalysis_Surface::IsDegenerated(const gp_Pnt2d&     p2d1,
   gp_Pnt        p1    = Value(p2d1);
   gp_Pnt        p2    = Value(p2d2);
   gp_Pnt        pm    = Value(0.5 * (p2d1.XY() + p2d2.XY()));
-  Standard_Real max3d = Max(p1.Distance(p2), Max(pm.Distance(p1), pm.Distance(p2)));
+  Standard_Real max3d = std::max(p1.Distance(p2), std::max(pm.Distance(p1), pm.Distance(p2)));
   if (max3d > tol)
     return Standard_False;
 
@@ -514,8 +514,8 @@ Standard_Boolean ShapeAnalysis_Surface::IsDegenerated(const gp_Pnt2d&     p2d1,
 
   if (RU < Precision::PConfusion() || RV < Precision::PConfusion())
     return 0;
-  Standard_Real du = Abs(p2d1.X() - p2d2.X()) / RU;
-  Standard_Real dv = Abs(p2d1.Y() - p2d2.Y()) / RV;
+  Standard_Real du = std::abs(p2d1.X() - p2d2.X()) / RU;
+  Standard_Real dv = std::abs(p2d1.Y() - p2d2.Y()) / RV;
   max3d *= ratio;
   return du * du + dv * dv > max3d * max3d;
 }
@@ -600,7 +600,7 @@ Handle(Geom_Curve) ShapeAnalysis_Surface::VIso(const Standard_Real V)
 
 Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
 {
-  Standard_Real prec      = Max(preci, Precision::Confusion());
+  Standard_Real prec      = std::max(preci, Precision::Confusion());
   Standard_Real anUmidVal = -1.;
   if (myUCloseVal < 0)
   {
@@ -609,8 +609,8 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
     Bounds(uf, ul, vf, vl); // modified by rln on 12/11/97 mySurf-> is deleted
     // mySurf->Bounds (uf,ul,vf,vl);
     RestrictBounds(uf, ul, vf, vl);
-    myUDelt = Abs(ul - uf) / 20; // modified by rln 11/11/97 instead of 10
-                                 // because of the example when 10 was not enough
+    myUDelt = std::abs(ul - uf) / 20; // modified by rln 11/11/97 instead of 10
+                                      // because of the example when 10 was not enough
     if (mySurf->IsUClosed())
     {
       myUCloseVal = 0.;
@@ -697,11 +697,11 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
             }
             else
             {
-              distmin = Min(distmin, aDist);
+              distmin = std::min(distmin, aDist);
             }
           }
-          distmin = Sqrt(distmin);
-          myUDelt = Min(myUDelt, 0.5 * SurfAdapt.UResolution(distmin)); // #4 smh
+          distmin = std::sqrt(distmin);
+          myUDelt = std::min(myUDelt, 0.5 * SurfAdapt.UResolution(distmin)); // #4 smh
         }
         else
         {
@@ -719,11 +719,11 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
             }
             else
             {
-              distmin = Min(distmin, aDist);
+              distmin = std::min(distmin, aDist);
             }
           }
-          distmin = Sqrt(distmin);
-          myUDelt = Min(myUDelt, 0.5 * SurfAdapt.UResolution(distmin)); // #4 smh
+          distmin = std::sqrt(distmin);
+          myUDelt = std::min(myUDelt, 0.5 * SurfAdapt.UResolution(distmin)); // #4 smh
         }
         break;
       }
@@ -751,11 +751,11 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
             }
             else
             {
-              distmin = Min(distmin, aDist);
+              distmin = std::min(distmin, aDist);
             }
           }
-          distmin = Sqrt(distmin);
-          myUDelt = Min(myUDelt, 0.5 * SurfAdapt.UResolution(distmin)); // #4 smh
+          distmin = std::sqrt(distmin);
+          myUDelt = std::min(myUDelt, 0.5 * SurfAdapt.UResolution(distmin)); // #4 smh
         }
         break;
       }
@@ -782,11 +782,11 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
           }
           else
           {
-            distmin = Min(distmin, aDist);
+            distmin = std::min(distmin, aDist);
           }
         }
-        distmin = Sqrt(distmin);
-        myUDelt = Min(myUDelt, 0.5 * SurfAdapt.UResolution(distmin)); // #4 smh
+        distmin = std::sqrt(distmin);
+        myUDelt = std::min(myUDelt, 0.5 * SurfAdapt.UResolution(distmin)); // #4 smh
         break;
       }
     } // switch
@@ -807,7 +807,7 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
 
 Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
 {
-  Standard_Real prec     = Max(preci, Precision::Confusion());
+  Standard_Real prec     = std::max(preci, Precision::Confusion());
   Standard_Real aVmidVal = -1.;
   if (myVCloseVal < 0)
   {
@@ -816,8 +816,8 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
     Bounds(uf, ul, vf, vl); // modified by rln on 12/11/97 mySurf-> is deleted
                             //     mySurf->Bounds (uf,ul,vf,vl);
     RestrictBounds(uf, ul, vf, vl);
-    myVDelt = Abs(vl - vf) / 20; // 2; rln S4135
-                                 // because of the example when 10 was not enough
+    myVDelt = std::abs(vl - vf) / 20; // 2; rln S4135
+                                      // because of the example when 10 was not enough
     if (mySurf->IsVClosed())
     {
       myVCloseVal = 0.;
@@ -891,11 +891,11 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
             }
             else
             {
-              distmin = Min(distmin, aDist);
+              distmin = std::min(distmin, aDist);
             }
           }
-          distmin = Sqrt(distmin);
-          myVDelt = Min(myVDelt, 0.5 * SurfAdapt.VResolution(distmin)); // #4 smh
+          distmin = std::sqrt(distmin);
+          myVDelt = std::min(myVDelt, 0.5 * SurfAdapt.VResolution(distmin)); // #4 smh
         }
         else
         {
@@ -913,11 +913,11 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
             }
             else
             {
-              distmin = Min(distmin, aDist);
+              distmin = std::min(distmin, aDist);
             }
           }
-          distmin = Sqrt(distmin);
-          myVDelt = Min(myVDelt, 0.5 * SurfAdapt.VResolution(distmin)); // #4 smh
+          distmin = std::sqrt(distmin);
+          myVDelt = std::min(myVDelt, 0.5 * SurfAdapt.VResolution(distmin)); // #4 smh
         }
         break;
       }
@@ -945,11 +945,11 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
             }
             else
             {
-              distmin = Min(distmin, aDist);
+              distmin = std::min(distmin, aDist);
             }
           }
-          distmin = Sqrt(distmin);
-          myVDelt = Min(myVDelt, 0.5 * SurfAdapt.VResolution(distmin)); // #4 smh
+          distmin = std::sqrt(distmin);
+          myVDelt = std::min(myVDelt, 0.5 * SurfAdapt.VResolution(distmin)); // #4 smh
         }
         break;
       }
@@ -976,15 +976,15 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
           }
           else
           {
-            distmin = Min(distmin, aDist);
+            distmin = std::min(distmin, aDist);
           }
         }
-        distmin = Sqrt(distmin);
-        myVDelt = Min(myVDelt, 0.5 * SurfAdapt.VResolution(distmin)); // #4 smh
+        distmin = std::sqrt(distmin);
+        myVDelt = std::min(myVDelt, 0.5 * SurfAdapt.VResolution(distmin)); // #4 smh
         break;
       }
     } // switch
-    myGap       = Sqrt(myVCloseVal);
+    myGap       = std::sqrt(myVCloseVal);
     myVCloseVal = myGap;
   }
 
@@ -1056,7 +1056,7 @@ Standard_Integer ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d&     p2dPre
     //    rs2p = rs2;
 
     // test the step by uv and deviation from the solution
-    Standard_Real aResolution = Max(1e-12, (U + V) * 10e-16);
+    Standard_Real aResolution = std::max(1e-12, (U + V) * 10e-16);
     if (fabs(du) + fabs(dv) > aResolution)
       continue; // Precision::PConfusion()  continue;
 
@@ -1118,7 +1118,7 @@ gp_Pnt2d ShapeAnalysis_Surface::NextValueOfUV(const gp_Pnt2d&     p2dPrev,
           for (Standard_Integer anIdx = aMinIndex; anIdx <= aMaxIndex; ++anIdx)
           {
             Standard_Real aKnot = aBSpline->UKnot(anIdx);
-            if (Abs(aKnot - p2dPrev.X()) < Precision::Confusion())
+            if (std::abs(aKnot - p2dPrev.X()) < Precision::Confusion())
               return ValueOfUV(P3D, preci);
           }
         }
@@ -1131,7 +1131,7 @@ gp_Pnt2d ShapeAnalysis_Surface::NextValueOfUV(const gp_Pnt2d&     p2dPrev,
           for (Standard_Integer anIdx = aMinIndex; anIdx <= aMaxIndex; ++anIdx)
           {
             Standard_Real aKnot = aBSpline->VKnot(anIdx);
-            if (Abs(aKnot - p2dPrev.Y()) < Precision::Confusion())
+            if (std::abs(aKnot - p2dPrev.Y()) < Precision::Confusion())
               return ValueOfUV(P3D, preci);
           }
         }
@@ -1248,7 +1248,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real
           // code is taken from GeomAPI_ProjectPointOnSurf
           if (!myExtOK)
           {
-            //      Standard_Real du = Abs(ul-uf)/100;  Standard_Real dv = Abs(vl-vf)/100;
+            //      Standard_Real du = std::abs(ul-uf)/100;  Standard_Real dv = std::abs(vl-vf)/100;
             //      if (IsUClosed()) du = 0;  if (IsVClosed()) dv = 0;
             //  Forcer appel a IsU-VClosed
             if (myUCloseVal < 0)
@@ -1261,8 +1261,8 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real
             if (!mySurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
             {
               // modified by rln during fixing CSR # BUC60035 entity #D231
-              du = Min(myUDelt, SurfAdapt.UResolution(preci));
-              dv = Min(myVDelt, SurfAdapt.VResolution(preci));
+              du = std::min(myUDelt, SurfAdapt.UResolution(preci));
+              dv = std::min(myVDelt, SurfAdapt.VResolution(preci));
             }
             constexpr Standard_Real Tol = Precision::PConfusion();
             myExtPS.SetFlag(Extrema_ExtFlag_MIN);

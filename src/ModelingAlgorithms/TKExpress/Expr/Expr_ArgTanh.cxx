@@ -37,7 +37,7 @@ Handle(Expr_GeneralExpression) Expr_ArgTanh::ShallowSimplified() const
   if (op->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) valop = Handle(Expr_NumericValue)::DownCast(op);
-    return new Expr_NumericValue(ATanh(valop->GetValue()));
+    return new Expr_NumericValue(std::atanh(valop->GetValue()));
   }
   if (op->IsKind(STANDARD_TYPE(Expr_Tanh)))
   {
@@ -96,7 +96,7 @@ Standard_Real Expr_ArgTanh::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                      const TColStd_Array1OfReal&      vals) const
 {
   Standard_Real val = Operand()->Evaluate(vars, vals);
-  return ::Log((1.0 + val) / (1.0 - val)) / 2.0;
+  return std::log((1.0 + val) / (1.0 - val)) / 2.0;
 }
 
 TCollection_AsciiString Expr_ArgTanh::String() const

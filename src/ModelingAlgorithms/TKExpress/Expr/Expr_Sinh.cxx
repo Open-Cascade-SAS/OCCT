@@ -38,7 +38,7 @@ Handle(Expr_GeneralExpression) Expr_Sinh::ShallowSimplified() const
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
-    return new Expr_NumericValue(Sinh(myNVexp->GetValue()));
+    return new Expr_NumericValue(std::sinh(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_ArgSinh)))
   {
@@ -85,7 +85,7 @@ Standard_Real Expr_Sinh::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                   const TColStd_Array1OfReal&      vals) const
 {
   Standard_Real val = Operand()->Evaluate(vars, vals);
-  return (::Exp(val) - ::Exp(-val)) / 2.0;
+  return (std::exp(val) - std::exp(-val)) / 2.0;
 }
 
 TCollection_AsciiString Expr_Sinh::String() const

@@ -83,7 +83,7 @@ Standard_Integer BRepMesh_DataStructureOfDelaun::AddLink(const BRepMesh_Edge& th
   else
     aLinkIndex = myLinks.Add(theLink, aPair);
 
-  const Standard_Integer aLinkId = Abs(aLinkIndex);
+  const Standard_Integer aLinkId = std::abs(aLinkIndex);
   linksConnectedTo(theLink.FirstNode()).Append(aLinkId);
   linksConnectedTo(theLink.LastNode()).Append(aLinkId);
   myLinksOfDomain.Add(aLinkIndex);
@@ -111,7 +111,7 @@ Standard_Boolean BRepMesh_DataStructureOfDelaun::SubstituteLink(const Standard_I
   myLinks.Substitute(theIndex, aLink, aPair);
   cleanLink(theIndex, aLink);
 
-  const Standard_Integer aLinkId = Abs(theIndex);
+  const Standard_Integer aLinkId = std::abs(theIndex);
   linksConnectedTo(theNewLink.FirstNode()).Append(aLinkId);
   linksConnectedTo(theNewLink.LastNode()).Append(aLinkId);
   myLinks.Substitute(theIndex, theNewLink, aPair);

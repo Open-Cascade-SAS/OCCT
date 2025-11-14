@@ -107,8 +107,8 @@ Standard_Boolean BlendFunc_RuledInv::IsSolution(const math_Vector& Sol, const St
 {
   math_Vector valsol(1, 4);
   Value(Sol, valsol);
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol && Abs(valsol(3)) <= Tol
-      && Abs(valsol(4)) <= Tol)
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol
+      && std::abs(valsol(4)) <= Tol)
     return Standard_True;
 
   return Standard_False;

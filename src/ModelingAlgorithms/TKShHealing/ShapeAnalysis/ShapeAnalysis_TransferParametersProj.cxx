@@ -240,7 +240,7 @@ static Standard_Real CorrectParameter(const Handle(Geom2d_Curve)& crv, const Sta
     for (Standard_Integer j = bspline->FirstUKnotIndex(); j <= bspline->LastUKnotIndex(); j++)
     {
       Standard_Real valknot = bspline->Knot(j);
-      if (Abs(valknot - param) < Precision::PConfusion())
+      if (std::abs(valknot - param) < Precision::PConfusion())
         return valknot;
     }
   }
@@ -365,7 +365,7 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge&           
         Standard_Real    linLast  = first + beta * len;
         Standard_Real    dist1 = sac.NextProject(linFirst, GAC, ploc1, myPrecision, pproj, ppar1);
         Standard_Real    dist2 = sac.NextProject(linLast, GAC, ploc2, myPrecision, pproj, ppar2);
-        Standard_Boolean useLinear = Abs(ppar1 - ppar2) < preci;
+        Standard_Boolean useLinear = std::abs(ppar1 - ppar2) < preci;
 
         gp_Pnt        pos1 = C3d->Value(linFirst);
         gp_Pnt        pos2 = C3d->Value(linLast);
@@ -426,7 +426,7 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge&           
 
       Standard_Boolean isFirstOnEnd = (ppar1 - first) / len < Precision::PConfusion();
       Standard_Boolean isLastOnEnd  = (last - ppar2) / len < Precision::PConfusion();
-      Standard_Boolean useLinear    = Abs(ppar1 - ppar2) < Precision::PConfusion();
+      Standard_Boolean useLinear    = std::abs(ppar1 - ppar2) < Precision::PConfusion();
       if (isFirstOnEnd && !localLinearFirst)
         localLinearFirst = Standard_True;
       if (isLastOnEnd && !localLinearLast)

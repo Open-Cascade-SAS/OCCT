@@ -543,8 +543,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
         if (ConvertCurve(BasCurve,
                          ResCurve,
                          Standard_False,
-                         Max(VF, BasCurve->FirstParameter()),
-                         Min(VL, BasCurve->LastParameter()),
+                         std::max(VF, BasCurve->FirstParameter()),
+                         std::min(VL, BasCurve->LastParameter()),
                          TolS,
                          Standard_False))
         {
@@ -562,8 +562,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
       if (ConvertCurve(BasCurve,
                        ResCurve,
                        Standard_False,
-                       Max(VF, BasCurve->FirstParameter()),
-                       Min(VL, BasCurve->LastParameter()),
+                       std::max(VF, BasCurve->FirstParameter()),
+                       std::min(VL, BasCurve->LastParameter()),
                        TolS,
                        IsOf))
       {
@@ -591,8 +591,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
       ConvertCurve(BasCurve,
                    ResCurve,
                    Standard_True,
-                   Max(UF, BasCurve->FirstParameter()),
-                   Min(UL, BasCurve->LastParameter()),
+                   std::max(UF, BasCurve->FirstParameter()),
+                   std::min(UL, BasCurve->LastParameter()),
                    TolS,
                    IsOf);
       gp_Trsf shiftF, shiftL;
@@ -606,8 +606,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
       if (ConvertCurve(BasCurve,
                        ResCurve,
                        Standard_False,
-                       Max(UF, BasCurve->FirstParameter()),
-                       Min(UL, BasCurve->LastParameter()),
+                       std::max(UF, BasCurve->FirstParameter()),
+                       std::min(UL, BasCurve->LastParameter()),
                        TolS,
                        IsOf))
       {
@@ -731,8 +731,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
   Standard_Real    u1, u2, v1, v2;
   aSurf->Bounds(u1, u2, v1, v2);
   Standard_Real ShiftU = 0, ShiftV = 0;
-  if (Abs(u1 - UF) > Precision::PConfusion() || Abs(u2 - UL) > Precision::PConfusion()
-      || Abs(v1 - VF) > Precision::PConfusion() || Abs(v2 - VL) > Precision::PConfusion())
+  if (std::abs(u1 - UF) > Precision::PConfusion() || std::abs(u2 - UL) > Precision::PConfusion()
+      || std::abs(v1 - VF) > Precision::PConfusion() || std::abs(v2 - VL) > Precision::PConfusion())
   {
     /*if(aSurf->IsUPeriodic() ) {
     Standard_Real aDelta = (UL > UF ? UL - UF : UF - UL );
@@ -742,8 +742,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
     Standard_Boolean isTrim = Standard_False;
     if (!aSurf->IsUPeriodic())
     { // else {
-      u1     = Max(u1, UF);
-      u2     = Min(u2, UL);
+      u1     = std::max(u1, UF);
+      u2     = std::min(u2, UL);
       isTrim = Standard_True;
     }
     /*if(aSurf->IsVPeriodic()) {
@@ -754,8 +754,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
     }*/
     if (!aSurf->IsVPeriodic())
     { // else
-      v1     = Max(v1, VF);
-      v2     = Min(v2, VL);
+      v1     = std::max(v1, VF);
+      v2     = std::min(v2, VL);
       isTrim = Standard_True;
     }
 
@@ -770,8 +770,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
       aSurf  = trSurface;
     }
   }
-  Standard_Integer aCU = Min(ContToInteger(Cont), ContToInteger(aSurf->Continuity()));
-  Standard_Integer aCV = Min(ContToInteger(Cont), ContToInteger(aSurf->Continuity()));
+  Standard_Integer aCU = std::min(ContToInteger(Cont), ContToInteger(aSurf->Continuity()));
+  Standard_Integer aCV = std::min(ContToInteger(Cont), ContToInteger(aSurf->Continuity()));
   if (!aCU)
     aCU = ContToInteger(Cont);
   if (!aCV)
@@ -805,7 +805,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
               std::cout << " iteration = " << i << "\terror = " << anApprox.MaxError()
                         << "\tspans = " << nbOfSpan << std::endl;
               std::cout << " Surface is approximated with continuity "
-                        << IntegerToGeomAbsShape(Min(aCU, aCV)) << std::endl;
+                        << IntegerToGeomAbsShape(std::min(aCU, aCV)) << std::endl;
             }
 #endif
             S                               = anApprox.Surface();
@@ -820,8 +820,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
             // Standard_Integer nbUK = Bsc->NbUKnots(); // nbUK not used (skl)
             myConvert      = Standard_True;
             myNbOfSpan     = myNbOfSpan + nbOfSpan;
-            mySurfaceError = Max(mySurfaceError, anApprox.MaxError());
-            if (Abs(ShiftU) > Precision::PConfusion())
+            mySurfaceError = std::max(mySurfaceError, anApprox.MaxError());
+            if (std::abs(ShiftU) > Precision::PConfusion())
             {
               Standard_Integer     nb = Bsc->NbUKnots();
               TColStd_Array1OfReal uknots(1, nb);
@@ -830,7 +830,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(
                 uknots(j) += ShiftU;
               Bsc->SetUKnots(uknots);
             }
-            if (Abs(ShiftV) > Precision::PConfusion())
+            if (std::abs(ShiftV) > Precision::PConfusion())
             {
               Standard_Integer     nb = Bsc->NbVKnots();
               TColStd_Array1OfReal vknots(1, nb);
@@ -1005,7 +1005,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
     Handle(Geom_Curve) ResCurve;
     if (ConvertCurve(BasCurve, ResCurve, IsConvert, First, Last, TolCur, IsOf))
     {
-      //      Stanadrd_Real F = Max(pf,First), L = Min(pl,Last);
+      //      Stanadrd_Real F = std::max(pf,First), L = std::min(pl,Last);
       //      if(First != Last)
       //	C = new
       // Geom_TrimmedCurve(ResCurve,Max(First,ResCurve->FirstParameter()),Min(Last,ResCurve->LastParameter()));
@@ -1059,7 +1059,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
       aBSpline = GeomConvert::CurveToBSplineCurve(tcurve, Convert_QuasiAngular);
 
     Standard_Real Shift = First - aBSpline->FirstParameter();
-    if (Abs(Shift) > Precision::PConfusion())
+    if (std::abs(Shift) > Precision::PConfusion())
     {
       Standard_Integer     nbKnots = aBSpline->NbKnots();
       TColStd_Array1OfReal newKnots(1, nbKnots);
@@ -1182,7 +1182,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
       aCurve1 = new Geom_TrimmedCurve(aCurve, First, Last);
     else if (pf < (First - Precision::PConfusion()) || pl > (Last + Precision::PConfusion()))
     {
-      Standard_Real F = Max(First, pf), L = Min(Last, pl);
+      Standard_Real F = std::max(First, pf), L = std::min(Last, pl);
       if (F != L)
         aCurve1 = new Geom_TrimmedCurve(aCurve, F, L);
       else
@@ -1190,10 +1190,11 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
     }
     else
       aCurve1 = aCurve;
-    Standard_Integer aC = Min(ContToInteger(myContinuity3d), ContToInteger(aCurve->Continuity()));
+    Standard_Integer aC =
+      std::min(ContToInteger(myContinuity3d), ContToInteger(aCurve->Continuity()));
     if (!aC)
       aC = ContToInteger(myContinuity3d);
-    // aC = Min(aC,(Deg -1));
+    // aC = std::min(aC,(Deg -1));
     Standard_Integer MaxSeg = myNbMaxSeg;
     Standard_Integer MaxDeg = myMaxDegree;
     // GeomAbs_Shape aCont = IntegerToGeomAbsShape(aC);
@@ -1212,7 +1213,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
           C                            = anApprox.Curve();
           Standard_Integer Nbseg       = Handle(Geom_BSplineCurve)::DownCast(C)->NbKnots() - 1;
           Standard_Integer DegC        = Handle(Geom_BSplineCurve)::DownCast(C)->Degree();
-          if (myDeg && ((DegC > MaxDeg) || !Done || (anApprox.MaxError() >= Max(TolCur, myTol3d))))
+          if (myDeg
+              && ((DegC > MaxDeg) || !Done || (anApprox.MaxError() >= std::max(TolCur, myTol3d))))
           {
             if (MaxSeg < myParameters->GMaxSeg())
             {
@@ -1235,7 +1237,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
           }
           if (!myDeg
               && ((Nbseg > myParameters->GMaxSeg()) || !Done
-                  || (anApprox.MaxError() >= Max(TolCur, myTol3d))))
+                  || (anApprox.MaxError() >= std::max(TolCur, myTol3d))))
           {
             if (MaxDeg < myParameters->GMaxDegree())
             {
@@ -1258,7 +1260,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
           }
           myConvert      = Standard_True;
           TolCur         = anApprox.MaxError();
-          myCurve3dError = Max(myCurve3dError, anApprox.MaxError());
+          myCurve3dError = std::max(myCurve3dError, anApprox.MaxError());
           return Standard_True;
         }
       }
@@ -1304,7 +1306,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::NewCurve2d(const TopoDS_Edge& E
   Handle(Geom_Surface) aSurface = BRep_Tool::Surface(F, L);
   GeomAdaptor_Surface  AdS(aSurface);
   Standard_Real        TolCur =
-    Min(AdS.UResolution(BRep_Tool::Tolerance(E)), AdS.VResolution(BRep_Tool::Tolerance(E)));
+    std::min(AdS.UResolution(BRep_Tool::Tolerance(E)), AdS.VResolution(BRep_Tool::Tolerance(E)));
   Handle(Geom2d_Curve) aCurve = BRep_Tool::CurveOnSurface(E, F, First, Last);
   if (aCurve.IsNull())
     return Standard_False;
@@ -1381,8 +1383,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
     Handle(Geom2d_Curve) ResCurve;
     if (ConvertCurve2d(BasCurve, ResCurve, IsConvert, First, Last, TolCur, IsOf))
     {
-      //      Standard_Real F = Max(ResCurve->FirstParameter(),First), L =
-      //      Min(ResCurve->LastParameter(),Last); if(F != Last)
+      //      Standard_Real F = std::max(ResCurve->FirstParameter(),First), L =
+      //      std::min(ResCurve->LastParameter(),Last); if(F != Last)
       // C = new
       // Geom2d_TrimmedCurve(ResCurve,Max(First,ResCurve->FirstParameter()),Min(Last,ResCurve->LastParameter()));
       // else
@@ -1431,7 +1433,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
       aBSpline2d = Geom2dConvert::CurveToBSplineCurve(tcurve, Convert_QuasiAngular);
 
     Standard_Real Shift = First - aBSpline2d->FirstParameter();
-    if (Abs(Shift) > Precision::PConfusion())
+    if (std::abs(Shift) > Precision::PConfusion())
     {
       Standard_Integer     nbKnots = aBSpline2d->NbKnots();
       TColStd_Array1OfReal newKnots(1, nbKnots);
@@ -1558,7 +1560,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
     else if (aCurve->FirstParameter() < (First - Precision::PConfusion())
              || aCurve->LastParameter() > (Last + Precision::PConfusion()))
     {
-      Standard_Real F = Max(First, pf), L = Min(Last, pl);
+      Standard_Real F = std::max(First, pf), L = std::min(Last, pl);
       if (F != L)
         aCurve1 = new Geom2d_TrimmedCurve(aCurve, F, L);
       else
@@ -1566,10 +1568,11 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
     }
     else
       aCurve1 = aCurve;
-    Standard_Integer aC = Min(ContToInteger(myContinuity2d), ContToInteger(aCurve->Continuity()));
+    Standard_Integer aC =
+      std::min(ContToInteger(myContinuity2d), ContToInteger(aCurve->Continuity()));
     if (!aC)
       aC = ContToInteger(myContinuity2d);
-    // aC = Min(aC,(Deg -1));
+    // aC = std::min(aC,(Deg -1));
     Standard_Integer aC1 = aC;
     // GeomAbs_Shape aCont =IntegerToGeomAbsShape(aC);
     Standard_Integer MaxSeg = myNbMaxSeg;
@@ -1589,7 +1592,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
           Standard_Integer Nbseg         = Handle(Geom2d_BSplineCurve)::DownCast(C)->NbKnots() - 1;
           Standard_Integer DegC          = Handle(Geom2d_BSplineCurve)::DownCast(C)->Degree();
 
-          if (myDeg && ((DegC > MaxDeg) || !Done || (anApprox.MaxError() >= Max(myTol2d, TolCur))))
+          if (myDeg
+              && ((DegC > MaxDeg) || !Done || (anApprox.MaxError() >= std::max(myTol2d, TolCur))))
           {
             if (MaxSeg < myParameters->GMaxSeg())
             {
@@ -1612,7 +1616,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
           }
 
           if (!myDeg
-              && ((Nbseg >= MaxSeg) || !Done || (anApprox.MaxError() >= Max(myTol2d, TolCur))))
+              && ((Nbseg >= MaxSeg) || !Done || (anApprox.MaxError() >= std::max(myTol2d, TolCur))))
           {
             if (MaxDeg < myParameters->GMaxDegree())
             {
@@ -1635,7 +1639,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
           }
           myConvert      = Standard_True;
           TolCur         = anApprox.MaxError();
-          myCurve2dError = Max(myCurve2dError, anApprox.MaxError());
+          myCurve2dError = std::max(myCurve2dError, anApprox.MaxError());
           return Standard_True;
         }
       }

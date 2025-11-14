@@ -48,7 +48,7 @@ public:
   Standard_EXPORT gce_MakeDir2d(const gp_XY& Coord);
 
   //! Creates a direction with its 3 cartesian coordinates.
-  //! Status is "NullVector" if Sqrt(Xv*Xv + Yv*Yv )
+  //! Status is "NullVector" if std::sqrt(Xv*Xv + Yv*Yv )
   //! <= Resolution
   Standard_EXPORT gce_MakeDir2d(const Standard_Real Xv, const Standard_Real Yv);
 
@@ -63,7 +63,7 @@ public:
   //! than or equal to gp::Resolution():
   //! -   the magnitude of vector V,
   //! -   the modulus of Coord,
-  //! -   Sqrt(Xv*Xv + Yv*Yv).
+  //! -   std::sqrt(Xv*Xv + Yv*Yv).
   Standard_EXPORT gce_MakeDir2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 
   //! Returns the constructed unit vector.

@@ -156,7 +156,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
           }
 
           Standard_Boolean IsClosed = BRep_Tool::IsClosed(E);
-          if (IsClosed && Abs(C->FirstParameter() - First) > Precision::PConfusion())
+          if (IsClosed && std::abs(C->FirstParameter() - First) > Precision::PConfusion())
             IsClosed = Standard_False; // trimmed curve differs
 
           if ((ii > 1) || !IsClosed)

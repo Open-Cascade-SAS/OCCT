@@ -1278,25 +1278,25 @@ static Standard_Integer VPlaneBuilder(Draw_Interpretor& /*di*/,
         Handle(Geom_CartesianPoint)::DownCast(anAISPointC->Component());
 
       // Verification that the three points are different
-      if (Abs(aCartPointB->X() - aCartPointA->X()) <= Precision::Confusion()
-          && Abs(aCartPointB->Y() - aCartPointA->Y()) <= Precision::Confusion()
-          && Abs(aCartPointB->Z() - aCartPointA->Z()) <= Precision::Confusion())
+      if (std::abs(aCartPointB->X() - aCartPointA->X()) <= Precision::Confusion()
+          && std::abs(aCartPointB->Y() - aCartPointA->Y()) <= Precision::Confusion()
+          && std::abs(aCartPointB->Z() - aCartPointA->Z()) <= Precision::Confusion())
       {
         // B=A
         Message::SendFail("Error: same points");
         return 1;
       }
-      if (Abs(aCartPointC->X() - aCartPointA->X()) <= Precision::Confusion()
-          && Abs(aCartPointC->Y() - aCartPointA->Y()) <= Precision::Confusion()
-          && Abs(aCartPointC->Z() - aCartPointA->Z()) <= Precision::Confusion())
+      if (std::abs(aCartPointC->X() - aCartPointA->X()) <= Precision::Confusion()
+          && std::abs(aCartPointC->Y() - aCartPointA->Y()) <= Precision::Confusion()
+          && std::abs(aCartPointC->Z() - aCartPointA->Z()) <= Precision::Confusion())
       {
         // C=A
         Message::SendFail("Error: same points");
         return 1;
       }
-      if (Abs(aCartPointC->X() - aCartPointB->X()) <= Precision::Confusion()
-          && Abs(aCartPointC->Y() - aCartPointB->Y()) <= Precision::Confusion()
-          && Abs(aCartPointC->Z() - aCartPointB->Z()) <= Precision::Confusion())
+      if (std::abs(aCartPointC->X() - aCartPointB->X()) <= Precision::Confusion()
+          && std::abs(aCartPointC->Y() - aCartPointB->Y()) <= Precision::Confusion()
+          && std::abs(aCartPointC->Z() - aCartPointB->Z()) <= Precision::Confusion())
       {
         // C=B
         Message::SendFail("Error: same points");
@@ -2011,7 +2011,7 @@ TopoDS_Face FilledCircle::ComputeFace()
 
   // Create wire from anEdge
   BRepBuilderAPI_MakeWire aWireMaker;
-  if (Abs(Abs(myUEnd - myUStart) - 2.0 * M_PI) > gp::Resolution())
+  if (std::abs(std::abs(myUEnd - myUStart) - 2.0 * M_PI) > gp::Resolution())
   {
     TopoDS_Edge anEndCenterEdge =
       BRepBuilderAPI_MakeEdge(myCircle->Value(myUEnd), myCircle->Location()).Edge();
@@ -2054,7 +2054,7 @@ void FilledCircle::ComputeSelection(const Handle(SelectMgr_Selection)& theSelect
   Handle(SelectMgr_EntityOwner)    anEntityOwner = new SelectMgr_EntityOwner(this);
   Handle(Select3D_SensitiveEntity) aSensitiveCircle;
 
-  if (Abs(Abs(myUEnd - myUStart) - 2.0 * M_PI) > gp::Resolution())
+  if (std::abs(std::abs(myUEnd - myUStart) - 2.0 * M_PI) > gp::Resolution())
   {
     aSensitiveCircle =
       new Select3D_SensitivePoly(anEntityOwner, myCircle->Circ(), myUStart, myUEnd, myFilledStatus);
@@ -2164,25 +2164,25 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       Handle(Geom_CartesianPoint) aCartPointC =
         Handle(Geom_CartesianPoint)::DownCast(anAISPointC->Component());
       // Test A=B
-      if (Abs(aCartPointA->X() - aCartPointB->X()) <= Precision::Confusion()
-          && Abs(aCartPointA->Y() - aCartPointB->Y()) <= Precision::Confusion()
-          && Abs(aCartPointA->Z() - aCartPointB->Z()) <= Precision::Confusion())
+      if (std::abs(aCartPointA->X() - aCartPointB->X()) <= Precision::Confusion()
+          && std::abs(aCartPointA->Y() - aCartPointB->Y()) <= Precision::Confusion()
+          && std::abs(aCartPointA->Z() - aCartPointB->Z()) <= Precision::Confusion())
       {
         Message::SendFail("Error: Same points");
         return 1;
       }
       // Test A=C
-      if (Abs(aCartPointA->X() - aCartPointC->X()) <= Precision::Confusion()
-          && Abs(aCartPointA->Y() - aCartPointC->Y()) <= Precision::Confusion()
-          && Abs(aCartPointA->Z() - aCartPointC->Z()) <= Precision::Confusion())
+      if (std::abs(aCartPointA->X() - aCartPointC->X()) <= Precision::Confusion()
+          && std::abs(aCartPointA->Y() - aCartPointC->Y()) <= Precision::Confusion()
+          && std::abs(aCartPointA->Z() - aCartPointC->Z()) <= Precision::Confusion())
       {
         Message::SendFail("Error: Same points");
         return 1;
       }
       // Test B=C
-      if (Abs(aCartPointB->X() - aCartPointC->X()) <= Precision::Confusion()
-          && Abs(aCartPointB->Y() - aCartPointC->Y()) <= Precision::Confusion()
-          && Abs(aCartPointB->Z() - aCartPointC->Z()) <= Precision::Confusion())
+      if (std::abs(aCartPointB->X() - aCartPointC->X()) <= Precision::Confusion()
+          && std::abs(aCartPointB->Y() - aCartPointC->Y()) <= Precision::Confusion()
+          && std::abs(aCartPointB->Z() - aCartPointC->Z()) <= Precision::Confusion())
       {
         Message::SendFail("Error: Same points");
         return 1;
@@ -5149,8 +5149,8 @@ static Standard_Integer VTorus(Draw_Interpretor& /*di*/,
   aPipeAngle = aPipeAngle * (M_PI / 180.0);
 
   if (aMajorRad <= 0 || aMinorRad <= 0 || aNbSlices <= 0 || aNbStacks <= 0
-      || Abs(aSegAngle2 - aSegAngle1) <= Precision::Angular()
-      || Abs(aPipeAngle) <= Precision::Angular())
+      || std::abs(aSegAngle2 - aSegAngle1) <= Precision::Angular()
+      || std::abs(aPipeAngle) <= Precision::Angular())
   {
     Message::SendFail("Syntax error: wrong parameters");
     return 1;
@@ -5495,7 +5495,7 @@ void ViewerTest_MarkersArrayObject::Compute(const Handle(PrsMgr_PresentationMana
                                             const Standard_Integer)
 {
   Handle(Graphic3d_ArrayOfPrimitives) anArray =
-    new Graphic3d_ArrayOfPoints((Standard_Integer)Pow(myPointsOnSide, 3), myPointsOnSide != 1);
+    new Graphic3d_ArrayOfPoints((Standard_Integer)std::pow(myPointsOnSide, 3), myPointsOnSide != 1);
   if (myPointsOnSide == 1)
   {
     anArray->AddVertex(myStartPoint);
@@ -6298,7 +6298,7 @@ static Standard_Integer VPointCloud(Draw_Interpretor& theDI,
         theDI << "Syntax error: -distance value should be >= 0.0";
         return 1;
       }
-      aDist = Max(aDist, Precision::Confusion());
+      aDist = std::max(aDist, Precision::Confusion());
     }
     else if ((aFlag == "-dens" || aFlag == "-density") && anArgIter + 1 < theArgNum
              && Draw::ParseReal(theArgs[anArgIter + 1], aDensity))
@@ -6437,7 +6437,9 @@ static Standard_Integer VPointCloud(Draw_Interpretor& theDI,
       Standard_Real aBeta     = aBetaDistrib(aRandomGenerator);
       Standard_Real aDistance = isSurface ? aDistRadius : aRadiusDistrib(aRandomGenerator);
 
-      gp_Dir aDir(Cos(anAlpha) * Sin(aBeta), Sin(anAlpha), Cos(anAlpha) * Cos(aBeta));
+      gp_Dir aDir(std::cos(anAlpha) * std::sin(aBeta),
+                  std::sin(anAlpha),
+                  std::cos(anAlpha) * std::cos(aBeta));
       gp_Pnt aPoint = aDistCenter.Translated(aDir.XYZ() * aDistance);
 
       const Standard_Integer anIndexOfPoint = anArrayPoints->AddVertex(aPoint);
@@ -6681,7 +6683,7 @@ static int VNormals(Draw_Interpretor& theDI, Standard_Integer theArgNum, const c
     {
       ++anArgIter;
       aLength = anArgIter < theArgNum ? Draw::Atof(theArgs[anArgIter]) : 0.0;
-      if (Abs(aLength) <= gp::Resolution())
+      if (std::abs(aLength) <= gp::Resolution())
       {
         Message::SendFail("Syntax error: length should not be zero");
         return 1;

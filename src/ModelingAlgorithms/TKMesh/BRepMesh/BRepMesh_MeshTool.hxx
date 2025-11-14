@@ -52,7 +52,7 @@ public:
       if (aNodeVec.SquareMagnitude() > gp::Resolution())
       {
         const Standard_Real aCross = aNodeVec.Crossed(myConstraint.Direction());
-        if (Abs(aCross) > gp::Resolution())
+        if (std::abs(aCross) > gp::Resolution())
         {
           return mySign ? aCross < 0. : aCross > 0.;
         }
@@ -123,7 +123,7 @@ public:
     const Standard_Integer aLinkIt =
       myStructure->AddLink(BRepMesh_Edge(theFirstNode, theLastNode, BRepMesh_Free));
 
-    theLinkIndex = Abs(aLinkIt);
+    theLinkIndex = std::abs(aLinkIt);
     theLinkOri   = (aLinkIt > 0);
   }
 

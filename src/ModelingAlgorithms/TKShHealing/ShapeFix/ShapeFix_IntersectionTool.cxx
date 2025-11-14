@@ -100,7 +100,7 @@ Standard_Boolean ShapeFix_IntersectionTool::SplitEdge(const TopoDS_Edge&   edge,
 
   Handle(Geom2d_Curve) c2d;
   sae.PCurve(edge, face, c2d, a, b, Standard_True);
-  if (Abs(a - param) < 0.01 * preci || Abs(b - param) < 0.01 * preci)
+  if (std::abs(a - param) < 0.01 * preci || std::abs(b - param) < 0.01 * preci)
     return Standard_False;
   // check distance between edge and new vertex
   gp_Pnt          P1;
@@ -185,9 +185,9 @@ Standard_Boolean ShapeFix_IntersectionTool::CutEdge(const TopoDS_Edge&  edge,
                                                     const TopoDS_Face&  face,
                                                     Standard_Boolean&   iscutline) const
 {
-  if (Abs(cut - pend) < 10. * Precision::PConfusion())
+  if (std::abs(cut - pend) < 10. * Precision::PConfusion())
     return Standard_False;
-  Standard_Real aRange = Abs(cut - pend);
+  Standard_Real aRange = std::abs(cut - pend);
   Standard_Real a, b;
   BRep_Tool::Range(edge, a, b);
 
@@ -208,14 +208,14 @@ Standard_Boolean ShapeFix_IntersectionTool::CutEdge(const TopoDS_Edge&  edge,
         if (tc->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Line)))
         {
           BRep_Builder B;
-          B.Range(edge, Min(pend, cut), Max(pend, cut));
-          if (Abs(pend - lp) < Precision::PConfusion())
+          B.Range(edge, std::min(pend, cut), std::max(pend, cut));
+          if (std::abs(pend - lp) < Precision::PConfusion())
           { // cut from the beginning
             Standard_Real cut3d = (cut - fp) * (b - a) / (lp - fp);
             B.Range(edge, a + cut3d, b, Standard_True);
             iscutline = Standard_True;
           }
-          else if (Abs(pend - fp) < Precision::PConfusion())
+          else if (std::abs(pend - fp) < Precision::PConfusion())
           { // cut from the end
             Standard_Real cut3d = (lp - cut) * (b - a) / (lp - fp);
             B.Range(edge, a, b - cut3d, Standard_True);
@@ -230,13 +230,13 @@ Standard_Boolean ShapeFix_IntersectionTool::CutEdge(const TopoDS_Edge&  edge,
   }
 
   // det-study on 03/12/01 checking the old and new ranges
-  if (Abs(Abs(a - b) - aRange) < Precision::PConfusion())
+  if (std::abs(std::abs(a - b) - aRange) < Precision::PConfusion())
     return Standard_False;
   if (aRange < 10. * Precision::PConfusion())
     return Standard_False;
 
   BRep_Builder B;
-  B.Range(edge, Min(pend, cut), Max(pend, cut));
+  B.Range(edge, std::min(pend, cut), std::max(pend, cut));
 
   return Standard_True;
 }
@@ -475,7 +475,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
   Standard_Real      d22  = PV1L.Distance(PV2L);
   if (d11 < d12 && d11 < d21 && d11 < d22)
   {
-    Standard_Real tolv = Max(BRep_Tool::Tolerance(V1F), BRep_Tool::Tolerance(V2F));
+    Standard_Real tolv = std::max(BRep_Tool::Tolerance(V1F), BRep_Tool::Tolerance(V2F));
     if (!V2F.IsSame(V1F) && d11 < tolv)
     {
       // union vertexes V1F and V2F
@@ -548,7 +548,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
   }
   else if (d12 < d21 && d12 < d22)
   {
-    Standard_Real tolv = Max(BRep_Tool::Tolerance(V1F), BRep_Tool::Tolerance(V2L));
+    Standard_Real tolv = std::max(BRep_Tool::Tolerance(V1F), BRep_Tool::Tolerance(V2L));
     if (!V2L.IsSame(V1F) && d12 < tolv)
     {
       // union vertexes V1F and V2L
@@ -622,7 +622,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
   }
   else if (d21 < d22)
   {
-    Standard_Real tolv = Max(BRep_Tool::Tolerance(V1L), BRep_Tool::Tolerance(V2F));
+    Standard_Real tolv = std::max(BRep_Tool::Tolerance(V1L), BRep_Tool::Tolerance(V2F));
     if (!V2F.IsSame(V1L) && d21 < tolv)
     {
       // union vertexes V1L and V2F
@@ -695,7 +695,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
   }
   else
   {
-    Standard_Real tolv = Max(BRep_Tool::Tolerance(V1L), BRep_Tool::Tolerance(V2L));
+    Standard_Real tolv = std::max(BRep_Tool::Tolerance(V1L), BRep_Tool::Tolerance(V2L));
     if (!V2L.IsSame(V1L) && d22 < tolv)
     {
       // union vertexes V1L and V2L
@@ -878,7 +878,7 @@ Standard_Boolean ShapeFix_IntersectionTool::FindVertAndSplitEdge(
       NeedSplit = Standard_False;
     }
     V    = V1;
-    tolV = Max((pi1.Distance(PV1) / 2) * 1.00001, BRep_Tool::Tolerance(V1));
+    tolV = std::max((pi1.Distance(PV1) / 2) * 1.00001, BRep_Tool::Tolerance(V1));
   }
   else
   {
@@ -887,14 +887,14 @@ Standard_Boolean ShapeFix_IntersectionTool::FindVertAndSplitEdge(
       NeedSplit = Standard_False;
     }
     V    = V2;
-    tolV = Max((pi1.Distance(PV2) / 2) * 1.00001, BRep_Tool::Tolerance(V2));
+    tolV = std::max((pi1.Distance(PV2) / 2) * 1.00001, BRep_Tool::Tolerance(V2));
   }
   if (NeedSplit || aTmpKey)
   {
     if (SplitEdge1(sewd, face, num1, param1, V, tolV, boxes))
     {
       B.UpdateVertex(V, tolV);
-      MaxTolVert = Max(MaxTolVert, tolV);
+      MaxTolVert = std::max(MaxTolVert, tolV);
       //      NbSplit++;
       num1--;
       return Standard_True;
@@ -924,9 +924,9 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
   for (TopExp_Explorer exp(SF, TopAbs_VERTEX); exp.More(); exp.Next())
   {
     Standard_Real tolV = BRep_Tool::Tolerance(TopoDS::Vertex(exp.Current()));
-    MaxTolVert         = Max(MaxTolVert, tolV);
+    MaxTolVert         = std::max(MaxTolVert, tolV);
   }
-  MaxTolVert = Min(MaxTolVert, myMaxTol);
+  MaxTolVert = std::min(MaxTolVert, myMaxTol);
   ShapeAnalysis_Edge sae;
 
   // step 1 : intersection of adjacent edges
@@ -998,24 +998,24 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
             gp_Pnt           PVL1    = BRep_Tool::Pnt(VL1);
             Standard_Real    dist1   = pi1.Distance(PVF1);
             Standard_Real    dist2   = pi1.Distance(PVL1);
-            Standard_Real    distmin = Min(dist1, dist2);
+            Standard_Real    distmin = std::min(dist1, dist2);
             if (dist1 != dist2 && distmin < MaxTolVert)
             {
               if (dist1 < dist2)
               {
-                tolV = Max(dist1 * 1.00001, BRep_Tool::Tolerance(VF1));
+                tolV = std::max(dist1 * 1.00001, BRep_Tool::Tolerance(VF1));
                 B.UpdateVertex(VF1, tolV);
                 V = VF1;
               }
               else
               {
-                tolV = Max(dist2 * 1.00001, BRep_Tool::Tolerance(VL1));
+                tolV = std::max(dist2 * 1.00001, BRep_Tool::Tolerance(VL1));
                 B.UpdateVertex(VL1, tolV);
                 V = VL1;
               }
 
-              Standard_Real    dista = Abs(a1 - param1);
-              Standard_Real    distb = Abs(b1 - param1);
+              Standard_Real    dista = std::abs(a1 - param1);
+              Standard_Real    distb = std::abs(b1 - param1);
               Standard_Boolean IsCutLine;
               ModifE1 = CutEdge(edge1, ((dista > distb) ? a1 : b1), param1, face, IsCutLine);
               if (ModifE1)
@@ -1031,24 +1031,24 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
             gp_Pnt           PVL2    = BRep_Tool::Pnt(VL2);
             dist1                    = pi2.Distance(PVF2);
             dist2                    = pi2.Distance(PVL2);
-            distmin                  = Min(dist1, dist2);
+            distmin                  = std::min(dist1, dist2);
             if (dist1 != dist2 && distmin < MaxTolVert)
             {
               if (dist1 < dist2)
               {
-                tolV = Max(dist1 * 1.00001, BRep_Tool::Tolerance(VF2));
+                tolV = std::max(dist1 * 1.00001, BRep_Tool::Tolerance(VF2));
                 B.UpdateVertex(VF2, tolV);
                 V = VF2;
               }
               else
               {
-                tolV = Max(dist2 * 1.00001, BRep_Tool::Tolerance(VL2));
+                tolV = std::max(dist2 * 1.00001, BRep_Tool::Tolerance(VL2));
                 B.UpdateVertex(VL2, tolV);
                 V = VL2;
               }
 
-              Standard_Real    dista = Abs(a2 - param2);
-              Standard_Real    distb = Abs(b2 - param2);
+              Standard_Real    dista = std::abs(a2 - param2);
+              Standard_Real    distb = std::abs(b2 - param2);
               Standard_Boolean IsCutLine;
               ModifE2 = CutEdge(edge2, ((dista > distb) ? a2 : b2), param2, face, IsCutLine);
               if (ModifE2)
@@ -1077,9 +1077,9 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
             if (!ModifE1 && !ModifE2)
             {
               gp_Pnt P0((pi1.X() + pi2.X()) / 2, (pi1.Y() + pi2.Y()) / 2, (pi1.Z() + pi2.Z()) / 2);
-              tolV = Max((pi1.Distance(pi2) / 2) * 1.00001, Precision::Confusion());
+              tolV = std::max((pi1.Distance(pi2) / 2) * 1.00001, Precision::Confusion());
               B.MakeVertex(V, P0, tolV);
-              MaxTolVert                    = Max(MaxTolVert, tolV);
+              MaxTolVert                    = std::max(MaxTolVert, tolV);
               Standard_Boolean isEdgeSplit2 = SplitEdge1(sewd, face, num2, param2, V, tolV, boxes);
               if (isEdgeSplit2)
               {
@@ -1173,31 +1173,31 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
             gp_Pnt        PV2 = BRep_Tool::Pnt(V2);
             // Standard_Real tol1 = BRep_Tool::Tolerance(V1);
             // Standard_Real tol2 = BRep_Tool::Tolerance(V2);
-            // Standard_Real maxtol = Max(tol1,tol2);
+            // Standard_Real maxtol = std::max(tol1,tol2);
             Standard_Real dist1   = Pnt11.Distance(PV1);
             Standard_Real dist2   = Pnt12.Distance(PV1);
-            Standard_Real maxdist = Max(dist1, dist2);
+            Standard_Real maxdist = std::max(dist1, dist2);
             Standard_Real pdist;
             if (edge1.Orientation() == TopAbs_REVERSED)
-              pdist = Max(Abs(b1 - p11), Abs(b1 - p12));
+              pdist = std::max(std::abs(b1 - p11), std::abs(b1 - p12));
             else
-              pdist = Max(Abs(a1 - p11), Abs(a1 - p12));
-            if (maxdist < MaxTolVert || pdist < Abs(b1 - a1) * 0.01)
+              pdist = std::max(std::abs(a1 - p11), std::abs(a1 - p12));
+            if (maxdist < MaxTolVert || pdist < std::abs(b1 - a1) * 0.01)
             {
-              // if(maxdist<maxtol || pdist<Abs(b1-a1)*0.01) {
+              // if(maxdist<maxtol || pdist<std::abs(b1-a1)*0.01) {
               newtol      = maxdist;
               NewV        = V1;
               IsModified1 = Standard_True;
             }
             dist1   = Pnt11.Distance(PV2);
             dist2   = Pnt12.Distance(PV2);
-            maxdist = Max(dist1, dist2);
+            maxdist = std::max(dist1, dist2);
             if (edge1.Orientation() == TopAbs_REVERSED)
-              pdist = Max(Abs(a1 - p11), Abs(a1 - p12));
+              pdist = std::max(std::abs(a1 - p11), std::abs(a1 - p12));
             else
-              pdist = Max(Abs(b1 - p11), Abs(b1 - p12));
-            // if(maxdist<maxtol || pdist<Abs(b1-a1)*0.01) {
-            if (maxdist < MaxTolVert || pdist < Abs(b1 - a1) * 0.01)
+              pdist = std::max(std::abs(b1 - p11), std::abs(b1 - p12));
+            // if(maxdist<maxtol || pdist<std::abs(b1-a1)*0.01) {
+            if (maxdist < MaxTolVert || pdist < std::abs(b1 - a1) * 0.01)
             {
               if ((IsModified1 && maxdist < newtol) || !IsModified1)
               {
@@ -1209,14 +1209,14 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
             if (IsModified1)
             {
               // cut edge1 and update tolerance NewV
-              Standard_Real dista = Abs(a1 - p11) + Abs(a1 - p12);
-              Standard_Real distb = Abs(b1 - p11) + Abs(b1 - p12);
+              Standard_Real dista = std::abs(a1 - p11) + std::abs(a1 - p12);
+              Standard_Real distb = std::abs(b1 - p11) + std::abs(b1 - p12);
               Standard_Real pend, cut;
               if (dista > distb)
                 pend = a1;
               else
                 pend = b1;
-              if (Abs(pend - p11) > Abs(pend - p12))
+              if (std::abs(pend - p11) > std::abs(pend - p12))
                 cut = p12;
               else
                 cut = p11;
@@ -1237,16 +1237,16 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
             gp_Pnt        PV22 = BRep_Tool::Pnt(V22);
             // tol1 = BRep_Tool::Tolerance(V1);
             // tol2 = BRep_Tool::Tolerance(V2);
-            // maxtol = Max(tol1,tol2);
+            // maxtol = std::max(tol1,tol2);
             dist1   = Pnt21.Distance(PV12);
             dist2   = Pnt22.Distance(PV12);
-            maxdist = Max(dist1, dist2);
+            maxdist = std::max(dist1, dist2);
             if (edge2.Orientation() == TopAbs_REVERSED)
-              pdist = Max(Abs(b2 - p21), Abs(b2 - p22));
+              pdist = std::max(std::abs(b2 - p21), std::abs(b2 - p22));
             else
-              pdist = Max(Abs(a2 - p21), Abs(a2 - p22));
-            // if(maxdist<maxtol || pdist<Abs(b2-a2)*0.01) {
-            if (maxdist < MaxTolVert || pdist < Abs(b2 - a2) * 0.01)
+              pdist = std::max(std::abs(a2 - p21), std::abs(a2 - p22));
+            // if(maxdist<maxtol || pdist<std::abs(b2-a2)*0.01) {
+            if (maxdist < MaxTolVert || pdist < std::abs(b2 - a2) * 0.01)
             {
               newtol      = maxdist;
               NewV        = V12;
@@ -1254,13 +1254,13 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
             }
             dist1   = Pnt21.Distance(PV22);
             dist2   = Pnt22.Distance(PV22);
-            maxdist = Max(dist1, dist2);
+            maxdist = std::max(dist1, dist2);
             if (edge2.Orientation() == TopAbs_REVERSED)
-              pdist = Max(Abs(a2 - p21), Abs(a2 - p22));
+              pdist = std::max(std::abs(a2 - p21), std::abs(a2 - p22));
             else
-              pdist = Max(Abs(b2 - p21), Abs(b2 - p22));
-            // if(maxdist<maxtol || pdist<Abs(b2-a2)*0.01) {
-            if (maxdist < MaxTolVert || pdist < Abs(b2 - a2) * 0.01)
+              pdist = std::max(std::abs(b2 - p21), std::abs(b2 - p22));
+            // if(maxdist<maxtol || pdist<std::abs(b2-a2)*0.01) {
+            if (maxdist < MaxTolVert || pdist < std::abs(b2 - a2) * 0.01)
             {
               if ((IsModified2 && maxdist < newtol) || !IsModified2)
               {
@@ -1272,14 +1272,14 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
             if (IsModified2)
             {
               // cut edge1 and update tolerance NewV
-              Standard_Real dista = Abs(a2 - p21) + Abs(a2 - p22);
-              Standard_Real distb = Abs(b2 - p21) + Abs(b2 - p22);
+              Standard_Real dista = std::abs(a2 - p21) + std::abs(a2 - p22);
+              Standard_Real distb = std::abs(b2 - p21) + std::abs(b2 - p22);
               Standard_Real pend, cut;
               if (dista > distb)
                 pend = a2;
               else
                 pend = b2;
-              if (Abs(pend - p21) > Abs(pend - p22))
+              if (std::abs(pend - p21) > std::abs(pend - p22))
                 cut = p22;
               else
                 cut = p21;
@@ -1321,10 +1321,10 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
               gp_Pnt        P0((Pnt10.X() + Pnt20.X()) / 2,
                         (Pnt10.Y() + Pnt20.Y()) / 2,
                         (Pnt10.Z() + Pnt20.Z()) / 2);
-              dist1                       = Max(Pnt11.Distance(P0), Pnt12.Distance(P0));
-              dist2                       = Max(Pnt21.Distance(P0), Pnt22.Distance(P0));
-              Standard_Real tolV          = Max(dist1, dist2);
-              tolV                        = Max(tolV, Pnt10.Distance(Pnt20)) * 1.00001;
+              dist1                       = std::max(Pnt11.Distance(P0), Pnt12.Distance(P0));
+              dist2                       = std::max(Pnt21.Distance(P0), Pnt22.Distance(P0));
+              Standard_Real tolV          = std::max(dist1, dist2);
+              tolV                        = std::max(tolV, Pnt10.Distance(Pnt20)) * 1.00001;
               Standard_Boolean FixSegment = Standard_True;
               if (tolV < MaxTolVert)
               {
@@ -1344,7 +1344,8 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
               }
               else if (FixSegment)
               {
-                // if( Abs(p12-p11)>Abs(b1-a1)/2 || Abs(p22-p21)>Abs(b2-a2)/2 ) {
+                // if( std::abs(p12-p11)>std::abs(b1-a1)/2 || std::abs(p22-p21)>std::abs(b2-a2)/2 )
+                // {
                 //  segment is big and we have to split each intersecting edge
                 //  on 3 edges --> middle edge - edge based on segment
                 //  after we can remove edges made from segment
@@ -1354,10 +1355,10 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
                 gp_Pnt        P02((Pnt12.X() + Pnt22.X()) / 2,
                            (Pnt12.Y() + Pnt22.Y()) / 2,
                            (Pnt12.Z() + Pnt22.Z()) / 2);
-                Standard_Real tolV1 = Max(Pnt11.Distance(P01), Pnt21.Distance(P01));
-                tolV1               = Max(tolV1, Precision::Confusion()) * 1.00001;
-                Standard_Real tolV2 = Max(Pnt12.Distance(P02), Pnt22.Distance(P02));
-                tolV2               = Max(tolV2, Precision::Confusion()) * 1.00001;
+                Standard_Real tolV1 = std::max(Pnt11.Distance(P01), Pnt21.Distance(P01));
+                tolV1               = std::max(tolV1, Precision::Confusion()) * 1.00001;
+                Standard_Real tolV2 = std::max(Pnt12.Distance(P02), Pnt22.Distance(P02));
+                tolV2               = std::max(tolV2, Precision::Confusion()) * 1.00001;
                 if (tolV1 > MaxTolVert || tolV2 > MaxTolVert)
                   continue;
                 TopoDS_Vertex NewV1, NewV2;
@@ -1386,14 +1387,14 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
                 Standard_Integer akey1 = 0, akey2 = 0;
                 Standard_Real    newTolerance;
                 // analysis fo P01
-                newTolerance = Max(tolV1, BRep_Tool::Tolerance(V1));
+                newTolerance = std::max(tolV1, BRep_Tool::Tolerance(V1));
                 if (P01.Distance(PV1) < newTolerance)
                 {
                   B.MakeVertex(NewV1, BRep_Tool::Pnt(V1), newTolerance);
                   NewV1.Orientation(V1.Orientation());
                   akey1++;
                 }
-                newTolerance = Max(tolV1, BRep_Tool::Tolerance(V2));
+                newTolerance = std::max(tolV1, BRep_Tool::Tolerance(V2));
                 if (P01.Distance(PV2) < newTolerance)
                 {
                   B.MakeVertex(NewV1, BRep_Tool::Pnt(V2), newTolerance);
@@ -1401,14 +1402,14 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire(Handle(ShapeExt
                   akey1++;
                 }
                 // analysis fo P02
-                newTolerance = Max(tolV2, BRep_Tool::Tolerance(V1));
+                newTolerance = std::max(tolV2, BRep_Tool::Tolerance(V1));
                 if (P02.Distance(PV1) < newTolerance)
                 {
                   B.MakeVertex(NewV2, BRep_Tool::Pnt(V1), newTolerance);
                   NewV2.Orientation(V1.Orientation());
                   akey2++;
                 }
-                newTolerance = Max(tolV2, BRep_Tool::Tolerance(V2));
+                newTolerance = std::max(tolV2, BRep_Tool::Tolerance(V2));
                 if (P02.Distance(PV2) < newTolerance)
                 {
                   B.MakeVertex(NewV2, BRep_Tool::Pnt(V2), newTolerance);
@@ -1666,7 +1667,7 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
   for (TopExp_Explorer exp(SF, TopAbs_VERTEX); exp.More(); exp.Next())
   {
     Standard_Real tolV = BRep_Tool::Tolerance(TopoDS::Vertex(exp.Current()));
-    MaxTolVert         = Max(MaxTolVert, tolV);
+    MaxTolVert         = std::max(MaxTolVert, tolV);
   }
   Standard_Boolean              isDone = Standard_False; // gka 06.09.04
   ShapeAnalysis_Edge            sae;
@@ -1758,9 +1759,10 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                           (pi1.Z() + pi2.Z()) / 2);
                 BRep_Builder  B;
                 TopoDS_Vertex V;
-                Standard_Real tolV = Max((pi1.Distance(pi2) / 2) * 1.00001, Precision::Confusion());
+                Standard_Real tolV =
+                  std::max((pi1.Distance(pi2) / 2) * 1.00001, Precision::Confusion());
                 B.MakeVertex(V, P0, tolV);
-                MaxTolVert = Max(MaxTolVert, tolV);
+                MaxTolVert = std::max(MaxTolVert, tolV);
                 Standard_Boolean isSplitEdge2 =
                   SplitEdge1(sewd2, face, num2, param2, V, tolV, boxes2);
                 if (isSplitEdge2)
@@ -1855,13 +1857,13 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                 gp_Pnt        PV2     = BRep_Tool::Pnt(V2);
                 Standard_Real dist1   = Pnt11.Distance(PV1);
                 Standard_Real dist2   = Pnt12.Distance(PV1);
-                Standard_Real maxdist = Max(dist1, dist2);
+                Standard_Real maxdist = std::max(dist1, dist2);
                 Standard_Real pdist;
                 if (edge1.Orientation() == TopAbs_REVERSED)
-                  pdist = Max(Abs(b1 - p11), Abs(b1 - p12));
+                  pdist = std::max(std::abs(b1 - p11), std::abs(b1 - p12));
                 else
-                  pdist = Max(Abs(a1 - p11), Abs(a1 - p12));
-                if (maxdist < MaxTolVert || pdist < Abs(b1 - a1) * 0.01)
+                  pdist = std::max(std::abs(a1 - p11), std::abs(a1 - p12));
+                if (maxdist < MaxTolVert || pdist < std::abs(b1 - a1) * 0.01)
                 {
                   newtol      = maxdist;
                   NewV        = V1;
@@ -1869,12 +1871,12 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                 }
                 dist1   = Pnt11.Distance(PV2);
                 dist2   = Pnt12.Distance(PV2);
-                maxdist = Max(dist1, dist2);
+                maxdist = std::max(dist1, dist2);
                 if (edge1.Orientation() == TopAbs_REVERSED)
-                  pdist = Max(Abs(a1 - p11), Abs(a1 - p12));
+                  pdist = std::max(std::abs(a1 - p11), std::abs(a1 - p12));
                 else
-                  pdist = Max(Abs(b1 - p11), Abs(b1 - p12));
-                if (maxdist < MaxTolVert || pdist < Abs(b1 - a1) * 0.01)
+                  pdist = std::max(std::abs(b1 - p11), std::abs(b1 - p12));
+                if (maxdist < MaxTolVert || pdist < std::abs(b1 - a1) * 0.01)
                 {
                   if ((IsModified1 && maxdist < newtol) || !IsModified1)
                   {
@@ -1886,14 +1888,14 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                 if (IsModified1)
                 {
                   // cut edge1 and update tolerance NewV
-                  Standard_Real dista = Abs(a1 - p11) + Abs(a1 - p12);
-                  Standard_Real distb = Abs(b1 - p11) + Abs(b1 - p12);
+                  Standard_Real dista = std::abs(a1 - p11) + std::abs(a1 - p12);
+                  Standard_Real distb = std::abs(b1 - p11) + std::abs(b1 - p12);
                   Standard_Real pend, cut;
                   if (dista > distb)
                     pend = a1;
                   else
                     pend = b1;
-                  if (Abs(pend - p11) > Abs(pend - p12))
+                  if (std::abs(pend - p11) > std::abs(pend - p12))
                     cut = p12;
                   else
                     cut = p11;
@@ -1916,12 +1918,12 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                 gp_Pnt        PV22 = BRep_Tool::Pnt(V22);
                 dist1              = Pnt21.Distance(PV12);
                 dist2              = Pnt22.Distance(PV12);
-                maxdist            = Max(dist1, dist2);
+                maxdist            = std::max(dist1, dist2);
                 if (edge2.Orientation() == TopAbs_REVERSED)
-                  pdist = Max(Abs(b2 - p21), Abs(b2 - p22));
+                  pdist = std::max(std::abs(b2 - p21), std::abs(b2 - p22));
                 else
-                  pdist = Max(Abs(a2 - p21), Abs(a2 - p22));
-                if (maxdist < MaxTolVert || pdist < Abs(b2 - a2) * 0.01)
+                  pdist = std::max(std::abs(a2 - p21), std::abs(a2 - p22));
+                if (maxdist < MaxTolVert || pdist < std::abs(b2 - a2) * 0.01)
                 {
                   newtol      = maxdist;
                   NewV        = V12;
@@ -1929,12 +1931,12 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                 }
                 dist1   = Pnt21.Distance(PV22);
                 dist2   = Pnt22.Distance(PV22);
-                maxdist = Max(dist1, dist2);
+                maxdist = std::max(dist1, dist2);
                 if (edge2.Orientation() == TopAbs_REVERSED)
-                  pdist = Max(Abs(a2 - p21), Abs(a2 - p22));
+                  pdist = std::max(std::abs(a2 - p21), std::abs(a2 - p22));
                 else
-                  pdist = Max(Abs(b2 - p21), Abs(b2 - p22));
-                if (maxdist < MaxTolVert || pdist < Abs(b2 - a2) * 0.01)
+                  pdist = std::max(std::abs(b2 - p21), std::abs(b2 - p22));
+                if (maxdist < MaxTolVert || pdist < std::abs(b2 - a2) * 0.01)
                 {
                   if ((IsModified2 && maxdist < newtol) || !IsModified2)
                   {
@@ -1946,14 +1948,14 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                 if (IsModified2)
                 {
                   // cut edge1 and update tolerance NewV
-                  Standard_Real dista = Abs(a2 - p21) + Abs(a2 - p22);
-                  Standard_Real distb = Abs(b2 - p21) + Abs(b2 - p22);
+                  Standard_Real dista = std::abs(a2 - p21) + std::abs(a2 - p22);
+                  Standard_Real distb = std::abs(b2 - p21) + std::abs(b2 - p22);
                   Standard_Real pend, cut;
                   if (dista > distb)
                     pend = a2;
                   else
                     pend = b2;
-                  if (Abs(pend - p21) > Abs(pend - p22))
+                  if (std::abs(pend - p21) > std::abs(pend - p22))
                     cut = p22;
                   else
                     cut = p21;
@@ -1980,7 +1982,8 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                 else
                 {
                   // create new vertex and split edge1 and edge2 using it
-                  if (Abs(p12 - p11) > Abs(b1 - a1) / 2 || Abs(p22 - p21) > Abs(b2 - a2) / 2)
+                  if (std::abs(p12 - p11) > std::abs(b1 - a1) / 2
+                      || std::abs(p22 - p21) > std::abs(b2 - a2) / 2)
                   {
                     // segment is big and we have to split each intersecting edge
                     // on 3 edges --> middle edge - edge based on segment
@@ -1990,10 +1993,10 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                     gp_Pnt        P02((Pnt12.X() + Pnt22.X()) / 2,
                                (Pnt12.Y() + Pnt22.Y()) / 2,
                                (Pnt12.Z() + Pnt22.Z()) / 2);
-                    Standard_Real tolV1 = Max(Pnt11.Distance(P01), Pnt21.Distance(P01));
-                    tolV1               = Max(tolV1, Precision::Confusion()) * 1.00001;
-                    Standard_Real tolV2 = Max(Pnt12.Distance(P02), Pnt22.Distance(P02));
-                    tolV2               = Max(tolV2, Precision::Confusion()) * 1.00001;
+                    Standard_Real tolV1 = std::max(Pnt11.Distance(P01), Pnt21.Distance(P01));
+                    tolV1               = std::max(tolV1, Precision::Confusion()) * 1.00001;
+                    Standard_Real tolV2 = std::max(Pnt12.Distance(P02), Pnt22.Distance(P02));
+                    tolV2               = std::max(tolV2, Precision::Confusion()) * 1.00001;
                     if (tolV1 > MaxTolVert || tolV2 > MaxTolVert)
                       continue;
 
@@ -2003,14 +2006,14 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                     // split edge1
                     Standard_Integer akey1 = 0, akey2 = 0;
                     // analysis fo P01
-                    if (P01.Distance(PV1) < Max(tolV1, BRep_Tool::Tolerance(V1)))
+                    if (P01.Distance(PV1) < std::max(tolV1, BRep_Tool::Tolerance(V1)))
                     {
                       NewV1 = V1;
                       if (tolV1 > BRep_Tool::Tolerance(V1))
                         B.UpdateVertex(NewV1, tolV1);
                       akey1++;
                     }
-                    if (P01.Distance(PV2) < Max(tolV1, BRep_Tool::Tolerance(V2)))
+                    if (P01.Distance(PV2) < std::max(tolV1, BRep_Tool::Tolerance(V2)))
                     {
                       NewV1 = V2;
                       if (tolV1 > BRep_Tool::Tolerance(V2))
@@ -2018,14 +2021,14 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                       akey1++;
                     }
                     // analysis fo P02
-                    if (P02.Distance(PV1) < Max(tolV2, BRep_Tool::Tolerance(V1)))
+                    if (P02.Distance(PV1) < std::max(tolV2, BRep_Tool::Tolerance(V1)))
                     {
                       NewV2 = V1;
                       if (tolV2 > BRep_Tool::Tolerance(V1))
                         B.UpdateVertex(NewV2, tolV2);
                       akey2++;
                     }
-                    if (P02.Distance(PV2) < Max(tolV2, BRep_Tool::Tolerance(V2)))
+                    if (P02.Distance(PV2) < std::max(tolV2, BRep_Tool::Tolerance(V2)))
                     {
                       NewV2 = V2;
                       if (tolV2 > BRep_Tool::Tolerance(V2))
@@ -2192,12 +2195,12 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& fa
                     Standard_Real param2 = (p21 + p22) / 2;
                     gp_Pnt        Pnt10  = GetPointOnEdge(edge1, sas, C1, param1);
                     gp_Pnt        Pnt20  = GetPointOnEdge(edge2, sas, C2, param2);
-                    dist1                = Max(Pnt11.Distance(P0), Pnt12.Distance(Pnt10));
-                    dist2                = Max(Pnt21.Distance(P0), Pnt22.Distance(Pnt10));
-                    Standard_Real tolV   = Max(dist1, dist2);
-                    tolV                 = Max(tolV, Pnt10.Distance(Pnt20)) * 1.00001;
+                    dist1                = std::max(Pnt11.Distance(P0), Pnt12.Distance(Pnt10));
+                    dist2                = std::max(Pnt21.Distance(P0), Pnt22.Distance(Pnt10));
+                    Standard_Real tolV   = std::max(dist1, dist2);
+                    tolV                 = std::max(tolV, Pnt10.Distance(Pnt20)) * 1.00001;
                     B.MakeVertex(NewV, Pnt10, tolV);
-                    MaxTolVert   = Max(MaxTolVert, tolV);
+                    MaxTolVert   = std::max(MaxTolVert, tolV);
                     hasModifWire = Standard_True;
                     if (SplitEdge2(sewd2, face, num2, p21, p22, NewV, tolV, boxes2))
                     {

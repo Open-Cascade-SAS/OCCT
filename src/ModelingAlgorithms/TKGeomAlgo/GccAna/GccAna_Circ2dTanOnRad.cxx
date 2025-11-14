@@ -69,7 +69,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
 
   TheSame1.Init(0);
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
@@ -110,7 +110,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
       }
       else
       {
-        if (Abs(Radius - R1 + dist) < Tol)
+        if (std::abs(Radius - R1 + dist) < Tol)
         {
           WellDone = Standard_True;
           NbrSol   = 1;
@@ -170,7 +170,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
       }
       else
       {
-        if (Abs(dist - R1 - Radius) < Tol)
+        if (std::abs(dist - R1 - Radius) < Tol)
         {
           WellDone = Standard_True;
           NbrSol   = 1;
@@ -211,11 +211,11 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
       {
         qualifier1(1) = Qualified1.Qualifier();
       }
-      else if (Abs(distcc1 + Radius - R1) < Tol)
+      else if (std::abs(distcc1 + Radius - R1) < Tol)
       {
         qualifier1(1) = GccEnt_enclosed;
       }
-      else if (Abs(distcc1 - R1 - Radius) < Tol)
+      else if (std::abs(distcc1 - R1 - Radius) < Tol)
       {
         qualifier1(1) = GccEnt_outside;
       }
@@ -223,7 +223,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
       {
         qualifier1(1) = GccEnt_enclosing;
       }
-      if (Abs(Radius - R1) <= Tol)
+      if (std::abs(Radius - R1) <= Tol)
       {
         TheSame1(1) = 1;
       }
@@ -245,7 +245,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
         OnLine.Coefficients(A, B, C);
         Standard_Real D = A;
         Standard_Real x0, y0;
-        if (Abs(D) <= Tol)
+        if (std::abs(D) <= Tol)
         {
           A  = B;
           B  = D;
@@ -265,7 +265,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
           for (Standard_Integer i = 1; i <= Sol.NbSolutions(); i++)
           {
 
-            if (Abs(D) > Tol)
+            if (std::abs(D) > Tol)
             {
               yc = Sol.Value(i);
               xc = -(B / A) * yc - C / A;
@@ -286,11 +286,11 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
             {
               qualifier1(NbrSol) = Qualified1.Qualifier();
             }
-            else if (Abs(distcc1 + Radius - R1) < Tol)
+            else if (std::abs(distcc1 + Radius - R1) < Tol)
             {
               qualifier1(NbrSol) = GccEnt_enclosed;
             }
-            else if (Abs(distcc1 - R1 - Radius) < Tol)
+            else if (std::abs(distcc1 - R1 - Radius) < Tol)
             {
               qualifier1(NbrSol) = GccEnt_outside;
             }

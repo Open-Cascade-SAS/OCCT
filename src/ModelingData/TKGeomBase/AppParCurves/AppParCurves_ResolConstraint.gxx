@@ -171,16 +171,16 @@ AppParCurves_ResolConstraint::AppParCurves_ResolConstraint(
         ToolLine::Tangency(SSP, Npt, tabV);
         V = tabV(k);
         V.Coord(T1, T2, T3);
-        Tmax        = Abs(T1);
+        Tmax        = std::abs(T1);
         Ibont(k, i) = 1;
-        if (Abs(T2) > Tmax)
+        if (std::abs(T2) > Tmax)
         {
-          Tmax        = Abs(T2);
+          Tmax        = std::abs(T2);
           Ibont(k, i) = 2;
         }
-        if (Abs(T3) > Tmax)
+        if (std::abs(T3) > Tmax)
         {
-          Tmax        = Abs(T3);
+          Tmax        = std::abs(T3);
           Ibont(k, i) = 3;
         }
         if (Ibont(k, i) == 3)
@@ -250,11 +250,11 @@ AppParCurves_ResolConstraint::AppParCurves_ResolConstraint(
         V2d         = tabV2d(k - nb3d);
         T1          = V2d.X();
         T2          = V2d.Y();
-        Tmax        = Abs(T1);
+        Tmax        = std::abs(T1);
         Ibont(k, i) = 1;
-        if (Abs(T2) > Tmax)
+        if (std::abs(T2) > Tmax)
         {
-          Tmax        = Abs(T2);
+          Tmax        = std::abs(T2);
           Ibont(k, i) = 2;
         }
         for (j = 1; j <= Npol; j++)
@@ -640,16 +640,16 @@ const math_Matrix& AppParCurves_ResolConstraint::ConstraintDerivative(const Mult
         ToolLine::Tangency(SSP, Npt, tabV);
         V = tabV(k);
         V.Coord(T1, T2, T3);
-        Tmax        = Abs(T1);
+        Tmax        = std::abs(T1);
         Ibont(k, i) = 1;
-        if (Abs(T2) > Tmax)
+        if (std::abs(T2) > Tmax)
         {
-          Tmax        = Abs(T2);
+          Tmax        = std::abs(T2);
           Ibont(k, i) = 2;
         }
-        if (Abs(T3) > Tmax)
+        if (std::abs(T3) > Tmax)
         {
-          Tmax        = Abs(T3);
+          Tmax        = std::abs(T3);
           Ibont(k, i) = 3;
         }
         AppParCurves::SecondDerivativeBernstein(Parameters(Npt), DDA);
@@ -699,11 +699,11 @@ const math_Matrix& AppParCurves_ResolConstraint::ConstraintDerivative(const Mult
         ToolLine::Tangency(SSP, Npt, tabV2d);
         V2d = tabV2d(k);
         V2d.Coord(T1, T2);
-        Tmax        = Abs(T1);
+        Tmax        = std::abs(T1);
         Ibont(k, i) = 1;
-        if (Abs(T2) > Tmax)
+        if (std::abs(T2) > Tmax)
         {
-          Tmax        = Abs(T2);
+          Tmax        = std::abs(T2);
           Ibont(k, i) = 2;
         }
         for (j = 1; j <= Npol; j++)

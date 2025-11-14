@@ -54,7 +54,7 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& W)
   Standard_Boolean rat = Standard_False;
   for (i = 1; i < n; i++)
   {
-    rat = Abs(W(i) - W(i + 1)) > gp::Resolution();
+    rat = std::abs(W(i) - W(i + 1)) > gp::Resolution();
     if (rat)
       break;
   }
@@ -238,7 +238,7 @@ void Geom_BezierCurve::InsertPoleAfter(const Standard_Integer Index,
 
   // Insert the weight
   Handle(TColStd_HArray1OfReal) nweights;
-  Standard_Boolean              rat = IsRational() || Abs(Weight - 1.) > gp::Resolution();
+  Standard_Boolean              rat = IsRational() || std::abs(Weight - 1.) > gp::Resolution();
 
   if (rat)
   {
@@ -365,7 +365,7 @@ Standard_Real Geom_BezierCurve::ReversedParameter(const Standard_Real U) const
 
 void Geom_BezierCurve::Segment(const Standard_Real U1, const Standard_Real U2)
 {
-  closed = (Abs(Value(U1).Distance(Value(U2))) <= Precision::Confusion());
+  closed = (std::abs(Value(U1).Distance(Value(U2))) <= Precision::Confusion());
 
   TColStd_Array1OfReal bidflatknots(BSplCLib::FlatBezierKnots(Degree()), 1, 2 * (Degree() + 1));
   TColgp_HArray1OfPnt  coeffs(1, poles->Size());
@@ -442,7 +442,7 @@ void Geom_BezierCurve::SetWeight(const Standard_Integer Index, const Standard_Re
   if (!wasrat)
   {
     // a weight of 1. does not turn to rational
-    if (Abs(Weight - 1.) <= gp::Resolution())
+    if (std::abs(Weight - 1.) <= gp::Resolution())
       return;
 
     // set weights of 1.

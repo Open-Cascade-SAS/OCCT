@@ -190,8 +190,8 @@ static Standard_Boolean PerformCircular(const TheCurve&         theC,
                                         const Standard_Real     theU2)
 {
   gp_Pnt        aPoint;
-  Standard_Real anAngle      = Max(1.0 - (theDeflection / theC.Circle().Radius()), 0.0);
-  anAngle                    = 2.0e0 * ACos(anAngle);
+  Standard_Real anAngle      = std::max(1.0 - (theDeflection / theC.Circle().Radius()), 0.0);
+  anAngle                    = 2.0e0 * std::acos(anAngle);
   Standard_Integer aNbPoints = (Standard_Integer)((theU2 - theU1) / anAngle);
   aNbPoints += 2;
   anAngle          = (theU2 - theU1) / (Standard_Real)(aNbPoints - 1);
@@ -280,7 +280,7 @@ static Standard_Boolean PerformComposite(TColStd_SequenceOfReal& theParameters,
   Standard_Real aUa = theU1;
   for (Standard_Integer anIndex = aPIndex;;)
   {
-    Standard_Real aUb = anIndex + 1 <= aTI.Upper() ? Min(theU2, aTI(anIndex + 1)) : theU2;
+    Standard_Real aUb = anIndex + 1 <= aTI.Upper() ? std::min(theU2, aTI(anIndex + 1)) : theU2;
     if (!PerformCurve(theParameters,
                       thePoints,
                       theC,
@@ -321,8 +321,8 @@ void GCPnts_UniformDeflection::initialize(const TheCurve&        theC,
   myParams.Clear();
   myPoints.Clear();
 
-  const Standard_Real         aU1   = Min(theU1, theU2);
-  const Standard_Real         aU2   = Max(theU1, theU2);
+  const Standard_Real         aU1   = std::min(theU1, theU2);
+  const Standard_Real         aU2   = std::max(theU1, theU2);
   const GCPnts_DeflectionType aType = GetDefType(theC);
   switch (aType)
   {

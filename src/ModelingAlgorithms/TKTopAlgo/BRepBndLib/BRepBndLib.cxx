@@ -508,8 +508,8 @@ void FindExactUVBounds(const TopoDS_Face&  FF,
     vmax                         = aBAS.LastVParameter();
     Standard_Boolean isUperiodic = aBAS.IsUPeriodic(), isVperiodic = aBAS.IsVPeriodic();
     Standard_Real    aT1, aT2;
-    Standard_Real    TolU = Max(aBAS.UResolution(Tol), Precision::PConfusion());
-    Standard_Real    TolV = Max(aBAS.VResolution(Tol), Precision::PConfusion());
+    Standard_Real    TolU = std::max(aBAS.UResolution(Tol), Precision::PConfusion());
+    Standard_Real    TolV = std::max(aBAS.VResolution(Tol), Precision::PConfusion());
     Standard_Integer Nu = 0, Nv = 0, NbEdges = 0;
     gp_Vec2d         Du(1, 0), Dv(0, 1);
     gp_Pnt2d         aP;
@@ -536,7 +536,7 @@ void FindExactUVBounds(const TopoDS_Face&  FF,
       }
       else
       {
-        aV /= Sqrt(magn);
+        aV /= std::sqrt(magn);
       }
       Standard_Real u = aP.X(), v = aP.Y();
       if (isUperiodic)
@@ -548,10 +548,10 @@ void FindExactUVBounds(const TopoDS_Face&  FF,
         ElCLib::InPeriod(v, vmin, vmax);
       }
       //
-      if (Abs(u - umin) <= TolU || Abs(u - umax) <= TolU)
+      if (std::abs(u - umin) <= TolU || std::abs(u - umax) <= TolU)
       {
         Standard_Real d = Dv * aV;
-        if (1. - Abs(d) <= Precision::PConfusion())
+        if (1. - std::abs(d) <= Precision::PConfusion())
         {
           Nu++;
           if (Nu > 2)
@@ -564,10 +564,10 @@ void FindExactUVBounds(const TopoDS_Face&  FF,
           break;
         }
       }
-      else if (Abs(v - vmin) <= TolV || Abs(v - vmax) <= TolV)
+      else if (std::abs(v - vmin) <= TolV || std::abs(v - vmax) <= TolV)
       {
         Standard_Real d = Du * aV;
-        if (1. - Abs(d) <= Precision::PConfusion())
+        if (1. - std::abs(d) <= Precision::PConfusion())
         {
           Nv++;
           if (Nv > 2)
@@ -602,9 +602,9 @@ void FindExactUVBounds(const TopoDS_Face&  FF,
 
   // fill box for the given face
   Standard_Real aT1, aT2;
-  Standard_Real TolU  = Max(aBAS.UResolution(Tol), Precision::PConfusion());
-  Standard_Real TolV  = Max(aBAS.VResolution(Tol), Precision::PConfusion());
-  Standard_Real TolUV = Max(TolU, TolV);
+  Standard_Real TolU  = std::max(aBAS.UResolution(Tol), Precision::PConfusion());
+  Standard_Real TolV  = std::max(aBAS.VResolution(Tol), Precision::PConfusion());
+  Standard_Real TolUV = std::max(TolU, TolV);
   Bnd_Box2d     aBox;
   ex.Init(F, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
@@ -633,8 +633,8 @@ void FindExactUVBounds(const TopoDS_Face&  FF,
   aS->Bounds(aUmin, aUmax, aVmin, aVmax);
   if (!aS->IsUPeriodic())
   {
-    umin = Max(aUmin, umin);
-    umax = Min(aUmax, umax);
+    umin = std::max(aUmin, umin);
+    umax = std::min(aUmax, umax);
   }
   else
   {
@@ -648,8 +648,8 @@ void FindExactUVBounds(const TopoDS_Face&  FF,
   //
   if (!aS->IsVPeriodic())
   {
-    vmin = Max(aVmin, vmin);
-    vmax = Min(aVmax, vmax);
+    vmin = std::max(aVmin, vmin);
+    vmax = std::min(aVmax, vmax);
   }
   else
   {
@@ -765,9 +765,9 @@ void AdjustFaceBox(const BRepAdaptor_Surface& BS,
   FaceBox.Get(fxmin, fymin, fzmin, fxmax, fymax, fzmax);
   EdgeBox.Get(exmin, eymin, ezmin, exmax, eymax, ezmax);
   //
-  Standard_Real           TolU = Max(BS.UResolution(Tol), Precision::PConfusion());
-  Standard_Real           TolV = Max(BS.VResolution(Tol), Precision::PConfusion());
-  BRepTopAdaptor_FClass2d FClass(BS.Face(), Max(TolU, TolV));
+  Standard_Real           TolU = std::max(BS.UResolution(Tol), Precision::PConfusion());
+  Standard_Real           TolV = std::max(BS.VResolution(Tol), Precision::PConfusion());
+  BRepTopAdaptor_FClass2d FClass(BS.Face(), std::max(TolU, TolV));
   //
   Standard_Boolean isModified = Standard_False;
   if (exmin > fxmin)

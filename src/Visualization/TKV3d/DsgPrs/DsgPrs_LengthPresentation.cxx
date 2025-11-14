@@ -53,7 +53,7 @@ void DsgPrs_LengthPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
   parmin             = ElCLib::Parameter(L3, Proj1);
   parmax             = parmin;
   parcur             = ElCLib::Parameter(L3, Proj2);
-  Standard_Real dist = Abs(parmin - parcur);
+  Standard_Real dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
   if (parcur > parmax)
@@ -163,7 +163,7 @@ void DsgPrs_LengthPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
   if ((Par1 > 0.0 && Par2 > 0.0) || (Par1 < 0.0 && Par2 < 0.0))
   {
     FirstPoint = OffsetPoint;
-    LastPoint  = (Abs(Par1) > Abs(Par2)) ? EndOfArrow1 : EndOfArrow2;
+    LastPoint  = (std::abs(Par1) > std::abs(Par2)) ? EndOfArrow1 : EndOfArrow2;
   }
   else
   {
@@ -227,7 +227,7 @@ void DsgPrs_LengthPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
   parmin             = ElCLib::Parameter(L3, Proj1);
   parmax             = parmin;
   parcur             = ElCLib::Parameter(L3, Proj2);
-  Standard_Real dist = Abs(parmin - parcur);
+  Standard_Real dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
   if (parcur > parmax)
@@ -325,7 +325,7 @@ void DsgPrs_LengthPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
   if ((Par1 > 0.0 && Par2 > 0.0) || (Par1 < 0.0 && Par2 < 0.0))
   {
     FirstPoint = OffsetPoint;
-    LastPoint  = (Abs(Par1) > Abs(Par2)) ? AttachmentPoint1 : EndOfArrow2;
+    LastPoint  = (std::abs(Par1) > std::abs(Par2)) ? AttachmentPoint1 : EndOfArrow2;
   }
   else
   {
@@ -355,20 +355,20 @@ void DsgPrs_LengthPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
   Standard_Real    Alpha, delta;
   Standard_Integer NodeNumber;
 
-  Alpha = Abs(deltaU);
+  Alpha = std::abs(deltaU);
   if (Alpha > Precision::Angular() && Alpha < Precision::Infinite())
   {
-    NodeNumber = Max(4, Standard_Integer(50. * Alpha / M_PI));
+    NodeNumber = std::max(4, Standard_Integer(50. * Alpha / M_PI));
     delta      = deltaU / (Standard_Real)(NodeNumber - 1);
     aPrims     = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (Standard_Integer i = 1; i <= NodeNumber; i++, FirstU += delta)
       aPrims->AddVertex(VCurve->Value(FirstU));
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
-  Alpha = Abs(deltaV);
+  Alpha = std::abs(deltaV);
   if (Alpha > Precision::Angular() && Alpha < Precision::Infinite())
   {
-    NodeNumber = Max(4, Standard_Integer(50. * Alpha / M_PI));
+    NodeNumber = std::max(4, Standard_Integer(50. * Alpha / M_PI));
     delta      = deltaV / (Standard_Real)(NodeNumber - 1);
     aPrims     = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (Standard_Integer i = 1; i <= NodeNumber; i++, FirstV += delta)

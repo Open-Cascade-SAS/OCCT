@@ -20,7 +20,7 @@
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <StdFail_NotDone.hxx>
 
-#define PARAMEQUAL(a, b) (Abs((a) - (b)) < (1e-8))
+#define PARAMEQUAL(a, b) (std::abs((a) - (b)) < (1e-8))
 
 //================================================================================
 IntCurveSurface_Intersection::IntCurveSurface_Intersection()

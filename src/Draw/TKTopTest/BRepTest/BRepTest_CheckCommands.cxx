@@ -1166,10 +1166,10 @@ static Standard_Integer shapeG1continuity(Draw_Interpretor& di, Standard_Integer
   pard1                    = curv1->FirstParameter();
   parf1                    = curv1->LastParameter();
   Standard_Real MaxG0Value = 0, MaxG1Angle = 0;
-  U  = Min(pard1, parf1);
-  Uf = Max(pard1, parf1);
+  U  = std::min(pard1, parf1);
+  Uf = std::max(pard1, parf1);
 
-  deltaU = Abs(parf1 - pard1) / nbeval;
+  deltaU = std::abs(parf1 - pard1) / nbeval;
 
   do
   {
@@ -1362,10 +1362,10 @@ static Standard_Integer shapeG0continuity(Draw_Interpretor& di, Standard_Integer
   pard1                    = curv1->FirstParameter();
   parf1                    = curv1->LastParameter();
   Standard_Real MaxG0Value = 0;
-  U                        = Min(pard1, parf1);
-  Uf                       = Max(pard1, parf1);
+  U                        = std::min(pard1, parf1);
+  Uf                       = std::max(pard1, parf1);
 
-  deltaU = Abs(parf1 - pard1) / nbeval;
+  deltaU = std::abs(parf1 - pard1) / nbeval;
   ISG0   = Standard_True;
   do
   {
@@ -1560,10 +1560,10 @@ static Standard_Integer shapeG2continuity(Draw_Interpretor& di, Standard_Integer
   Standard_Boolean isdone  = Standard_True;
   pard1                    = curv1->FirstParameter();
   parf1                    = curv1->LastParameter();
-  U                        = Min(pard1, parf1);
-  Uf                       = Max(pard1, parf1);
+  U                        = std::min(pard1, parf1);
+  Uf                       = std::max(pard1, parf1);
 
-  deltaU = Abs(parf1 - pard1) / nbeval;
+  deltaU = std::abs(parf1 - pard1) / nbeval;
 
   do
   {

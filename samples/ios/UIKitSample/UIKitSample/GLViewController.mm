@@ -181,9 +181,9 @@
       double aPinchCenterXStart = ( myFirstTouch[0].x + myFirstTouch[1].x ) / 2.0;
       double aPinchCenterYStart = ( myFirstTouch[0].y + myFirstTouch[1].y ) / 2.0;
       
-      double aStartDist = Sqrt( ( myFirstTouch[0].x - myFirstTouch[1].x ) * ( myFirstTouch[0].x - myFirstTouch[1].x ) +
+      double aStartDist = std::sqrt( ( myFirstTouch[0].x - myFirstTouch[1].x ) * ( myFirstTouch[0].x - myFirstTouch[1].x ) +
                               ( myFirstTouch[0].y - myFirstTouch[1].y ) * ( myFirstTouch[0].y - myFirstTouch[1].y ) );
-      double anEndDist = Sqrt( ( aLastTouch[0].x - aLastTouch[1].x ) * ( aLastTouch[0].x - aLastTouch[1].x ) +
+      double anEndDist = std::sqrt( ( aLastTouch[0].x - aLastTouch[1].x ) * ( aLastTouch[0].x - aLastTouch[1].x ) +
                             ( aLastTouch[0].y - aLastTouch[1].y ) * ( aLastTouch[0].y - aLastTouch[1].y ) );
       
       double aDeltaDist = anEndDist - aStartDist;

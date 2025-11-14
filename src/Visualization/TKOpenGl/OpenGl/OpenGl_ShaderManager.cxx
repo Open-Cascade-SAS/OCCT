@@ -586,7 +586,7 @@ void OpenGl_ShaderManager::pushLightSourceState(
                             / (float)myLightSourceState.ShadowMaps()->First()->Texture()->SizeX(),
                           myLightSourceState.ShadowMaps()->First()->ShadowMapBias());
       const Standard_Integer aNbShadows =
-        Min(theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Size());
+        std::min(theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Size());
       for (Standard_Integer aShadowIter = 0; aShadowIter < aNbShadows; ++aShadowIter)
       {
         const Handle(OpenGl_ShadowMap)& aShadow =
@@ -835,7 +835,7 @@ void OpenGl_ShaderManager::pushClippingState(const Handle(OpenGl_ShaderProgram)&
 
   const Standard_Integer aNbClipPlanesMax = theProgram->NbClipPlanesMax();
   const Standard_Integer aNbPlanes =
-    Min(myContext->Clipping().NbClippingOrCappingOn(), aNbClipPlanesMax);
+    std::min(myContext->Clipping().NbClippingOrCappingOn(), aNbClipPlanesMax);
   if (aNbPlanes < 1)
   {
     theProgram->SetUniform(myContext, theProgram->GetStateLocation(OpenGl_OCC_CLIP_PLANE_COUNT), 0);
@@ -1143,7 +1143,7 @@ Standard_Boolean OpenGl_ShaderManager::BindFboBlitProgram(Standard_Integer theNb
 {
   NCollection_Array1<Handle(OpenGl_ShaderProgram)>& aList =
     myBlitPrograms[theIsFallback_sRGB ? 1 : 0];
-  Standard_Integer aNbSamples = Max(theNbSamples, 1);
+  Standard_Integer aNbSamples = std::max(theNbSamples, 1);
   if (aNbSamples > aList.Upper())
   {
     aList.Resize(1, aNbSamples, true);

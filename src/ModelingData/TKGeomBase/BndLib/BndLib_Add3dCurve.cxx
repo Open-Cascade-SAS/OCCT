@@ -115,7 +115,7 @@ static Standard_Real FillBox(Bnd_Box&               B,
   C.D0(first, P1);
   B.Add(P1);
   Standard_Real p = first, dp = last - first, tol = 0.;
-  if (Abs(dp) > Precision::PConfusion())
+  if (std::abs(dp) > Precision::PConfusion())
   {
     Standard_Integer i;
     dp /= 2 * N;
@@ -128,7 +128,7 @@ static Standard_Real FillBox(Bnd_Box&               B,
       C.D0(p, P3);
       B.Add(P3);
       gp_Pnt Pc((P1.XYZ() + P3.XYZ()) / 2.0);
-      tol = Max(tol, Pc.Distance(P2));
+      tol = std::max(tol, Pc.Distance(P2));
       P1  = P3;
     }
   }
@@ -190,8 +190,8 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
     }
     case GeomAbs_BSplineCurve: {
       Handle(Geom_BSplineCurve) Bs = C.BSpline();
-      if (Abs(Bs->FirstParameter() - U1) > Precision::Parametric(Tol)
-          || Abs(Bs->LastParameter() - U2) > Precision::Parametric(Tol))
+      if (std::abs(Bs->FirstParameter() - U1) > Precision::Parametric(Tol)
+          || std::abs(Bs->LastParameter() - U2) > Precision::Parametric(Tol))
       {
 
         Handle(Geom_Geometry)     G = Bs->Copy();
@@ -223,15 +223,15 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
           const Standard_Real aPeriod = Bsaux->LastParameter() - Bsaux->FirstParameter();
 
           // Check direct distance between parameters
-          const Standard_Real aDirectDiff = Abs(u2 - u1);
+          const Standard_Real aDirectDiff = std::abs(u2 - u1);
 
           // Check distances across period boundary (in both directions)
-          const Standard_Real aCrossPeriodDiff1 = Abs(u2 - aPeriod - u1);
-          const Standard_Real aCrossPeriodDiff2 = Abs(u1 - aPeriod - u2);
+          const Standard_Real aCrossPeriodDiff1 = std::abs(u2 - aPeriod - u1);
+          const Standard_Real aCrossPeriodDiff2 = std::abs(u1 - aPeriod - u2);
 
           // Find the minimum difference (closest approach)
           const Standard_Real aMinDiff =
-            Min(aDirectDiff, Min(aCrossPeriodDiff1, aCrossPeriodDiff2));
+            std::min(aDirectDiff, std::min(aCrossPeriodDiff1, aCrossPeriodDiff2));
 
           if (aMinDiff < aSegmentTol)
           {
@@ -239,9 +239,9 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
           }
         }
         // For non-periodic curves, just check direct parameter difference
-        else if (Abs(u2 - u1) < aSegmentTol)
+        else if (std::abs(u2 - u1) < aSegmentTol)
         {
-          aSegmentTol = Abs(u2 - u1) * 0.01;
+          aSegmentTol = std::abs(u2 - u1) * 0.01;
         }
         Bsaux->Segment(u1, u2, aSegmentTol);
         Bs = Bsaux;
@@ -257,7 +257,7 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
       for (k = k1 + 1; k <= k2; k++)
       {
         last  = Knots(k);
-        tol   = Max(FillBox(B1, GACurve, first, last, N), tol);
+        tol   = std::max(FillBox(B1, GACurve, first, last, N), tol);
         first = last;
       }
       if (!B1.IsVoid())
@@ -377,7 +377,7 @@ void BndLib_Add3dCurve::AddGenCurv(const Adaptor3d_Curve& C,
         {
           CoordMax[k] = P.Coord(k + 1);
         }
-        Standard_Real d = Abs(aD.Coord(k + 1));
+        Standard_Real d = std::abs(aD.Coord(k + 1));
         if (DeflMax[k] < d)
         {
           DeflMax[k] = d;
@@ -387,7 +387,7 @@ void BndLib_Add3dCurve::AddGenCurv(const Adaptor3d_Curve& C,
   }
   //
   // Adjusting minmax
-  Standard_Real eps = Max(Tol, Precision::Confusion());
+  Standard_Real eps = std::max(Tol, Precision::Confusion());
   for (k = 0; k < 3; ++k)
   {
     Standard_Real d = DeflMax[k];
@@ -402,8 +402,8 @@ void BndLib_Add3dCurve::AddGenCurv(const Adaptor3d_Curve& C,
       if (aPnts(i).Coord(k + 1) - CMin < d)
       {
         Standard_Real umin, umax;
-        umin               = UMin + Max(0, i - 2) * du;
-        umax               = UMin + Min(Nu - 1, i) * du;
+        umin               = UMin + std::max(0, i - 2) * du;
+        umax               = UMin + std::min(Nu - 1, i) * du;
         Standard_Real cmin = AdjustExtr(C, umin, umax, CMin, k + 1, eps, Standard_True);
         if (cmin < CMin)
         {
@@ -413,8 +413,8 @@ void BndLib_Add3dCurve::AddGenCurv(const Adaptor3d_Curve& C,
       else if (CMax - aPnts(i).Coord(k + 1) < d)
       {
         Standard_Real umin, umax;
-        umin               = UMin + Max(0, i - 2) * du;
-        umax               = UMin + Min(Nu - 1, i) * du;
+        umin               = UMin + std::max(0, i - 2) * du;
+        umax               = UMin + std::min(Nu - 1, i) * du;
         Standard_Real cmax = AdjustExtr(C, umin, umax, CMax, k + 1, eps, Standard_False);
         if (cmax > CMax)
         {
@@ -540,10 +540,10 @@ Standard_Real AdjustExtr(const Adaptor3d_Curve& C,
   Standard_Real aSign = IsMin ? 1. : -1.;
   Standard_Real extr  = aSign * Extr0;
   //
-  Standard_Real uTol = Max(C.Resolution(Tol), Precision::PConfusion());
+  Standard_Real uTol = std::max(C.Resolution(Tol), Precision::PConfusion());
   Standard_Real Du   = (C.LastParameter() - C.FirstParameter());
   //
-  Standard_Real reltol = uTol / Max(Abs(UMin), Abs(UMax));
+  Standard_Real reltol = uTol / std::max(std::abs(UMin), std::abs(UMax));
   if (UMax - UMin < 0.01 * Du)
   {
 
@@ -557,7 +557,7 @@ Standard_Real AdjustExtr(const Adaptor3d_Curve& C,
     }
   }
   //
-  Standard_Integer aNbParticles = Max(8, RealToInt(32 * (UMax - UMin) / Du));
+  Standard_Integer aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
   Standard_Real    maxstep      = (UMax - UMin) / (aNbParticles + 1);
   math_Vector      aT(1, 1);
   math_Vector      aLowBorder(1, 1);
@@ -565,7 +565,7 @@ Standard_Real AdjustExtr(const Adaptor3d_Curve& C,
   math_Vector      aSteps(1, 1);
   aLowBorder(1) = UMin;
   aUppBorder(1) = UMax;
-  aSteps(1)     = Min(0.1 * Du, maxstep);
+  aSteps(1)     = std::min(0.1 * Du, maxstep);
 
   CurvMaxMinCoordMVar aFunc(C, UMin, UMax, CoordIndx, aSign);
   math_PSO            aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
@@ -573,7 +573,10 @@ Standard_Real AdjustExtr(const Adaptor3d_Curve& C,
   //
   math_BrentMinimum anOptLoc(reltol, 100, uTol);
   CurvMaxMinCoord   aFunc1(C, UMin, UMax, CoordIndx, aSign);
-  anOptLoc.Perform(aFunc1, Max(aT(1) - aSteps(1), UMin), aT(1), Min(aT(1) + aSteps(1), UMax));
+  anOptLoc.Perform(aFunc1,
+                   std::max(aT(1) - aSteps(1), UMin),
+                   aT(1),
+                   std::min(aT(1) + aSteps(1), UMax));
 
   if (anOptLoc.IsDone())
   {
@@ -601,7 +604,7 @@ Standard_Integer NbSamples(const Adaptor3d_Curve& C,
       if (du < .9)
       {
         N = RealToInt(du * N) + 1;
-        N = Max(N, 5);
+        N = std::max(N, 5);
       }
       break;
     }
@@ -613,12 +616,12 @@ Standard_Integer NbSamples(const Adaptor3d_Curve& C,
       if (du < .9)
       {
         N = RealToInt(du * N) + 1;
-        N = Max(N, 5);
+        N = std::max(N, 5);
       }
       break;
     }
     default:
       N = 33;
   }
-  return Min(500, N);
+  return std::min(500, N);
 }

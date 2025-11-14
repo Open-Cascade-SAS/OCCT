@@ -215,7 +215,8 @@ Standard_Integer BRepGProp_Gauss::FillIntervalBounds(
   NCollection_Handle<math_Vector>& theError,
   NCollection_Handle<math_Vector>& theCommonError)
 {
-  const Standard_Integer aSize = Max(theKnots.Upper(), MaxSubs(theKnots.Upper() - 1, theNumSubs));
+  const Standard_Integer aSize =
+    std::max(theKnots.Upper(), MaxSubs(theKnots.Upper() - 1, theNumSubs));
 
   if (aSize - 1 > theParam1->Upper())
   {
@@ -427,7 +428,7 @@ void BRepGProp_Gauss::convert(const BRepGProp_Gauss::Inertia& theInertia,
                               gp_Mat&                         theOutMatrixOfInertia,
                               Standard_Real&                  theOutMass)
 {
-  if (Abs(theInertia.Mass) >= EPS_DIM)
+  if (std::abs(theInertia.Mass) >= EPS_DIM)
   {
     const Standard_Real anInvMass = 1.0 / theInertia.Mass;
     theOutGravityCenter.SetX(theInertia.Ix * anInvMass);
@@ -457,7 +458,7 @@ void BRepGProp_Gauss::convert(const BRepGProp_Gauss::Inertia& theInertia,
                               Standard_Real&                  theOutMass)
 {
   convert(theInertia, theOutGravityCenter, theOutMatrixOfInertia, theOutMass);
-  if (Abs(theInertia.Mass) >= EPS_DIM && theIsByPoint)
+  if (std::abs(theInertia.Mass) >= EPS_DIM && theIsByPoint)
   {
     const Standard_Real anInvMass = 1.0 / theInertia.Mass;
     if (theIsByPoint == Standard_True)
@@ -503,7 +504,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
   const Standard_Boolean isVerifyComputation =
     (0.0 < theEps && theEps < 0.001) ? Standard_True : Standard_False;
 
-  Standard_Real anEpsilon = Abs(theEps);
+  Standard_Real anEpsilon = std::abs(theEps);
 
   BRepGProp_Gauss::Inertia anInertia;
   InertiaArray             anInertiaL = new NCollection_Array1<Inertia>(1, SM);
@@ -515,7 +516,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
   NCollection_Handle<math_Vector> UGaussP[2];
   NCollection_Handle<math_Vector> UGaussW[2];
 
-  const Standard_Integer aNbGaussPoint = RealToInt(Ceiling(ERROR_ALGEBR_RATIO * GPM));
+  const Standard_Integer aNbGaussPoint = RealToInt(std::ceil(ERROR_ALGEBR_RATIO * GPM));
 
   LGaussP[0] = new math_Vector(1, GPM);
   LGaussP[1] = new math_Vector(1, aNbGaussPoint);
@@ -567,7 +568,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
   iGLEnd = isErrorCalculation ? 2 : 1;
 
   NbUGaussP[0] = theSurface.SIntOrder(anEpsilon);
-  NbUGaussP[1] = RealToInt(Ceiling(ERROR_ALGEBR_RATIO * NbUGaussP[0]));
+  NbUGaussP[1] = RealToInt(std::ceil(ERROR_ALGEBR_RATIO * NbUGaussP[0]));
 
   math::GaussPoints(NbUGaussP[0], *UGaussP[0]);
   math::GaussWeights(NbUGaussP[0], *UGaussW[0]);
@@ -582,7 +583,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
   {
     if (isNaturalRestriction)
     {
-      NbLGaussP[0] = Min(2 * NbUGaussP[0], math::GaussPointsMax());
+      NbLGaussP[0] = std::min(2 * NbUGaussP[0], math::GaussPointsMax());
     }
     else
     {
@@ -593,7 +594,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
       NbLGaussP[0] = theSurface.LIntOrder(anEpsilon);
     }
 
-    NbLGaussP[1] = RealToInt(Ceiling(ERROR_ALGEBR_RATIO * NbLGaussP[0]));
+    NbLGaussP[1] = RealToInt(std::ceil(ERROR_ALGEBR_RATIO * NbLGaussP[0]));
 
     math::GaussPoints(NbLGaussP[0], *LGaussP[0]);
     math::GaussWeights(NbLGaussP[0], *LGaussW[0]);
@@ -620,7 +621,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
     kLEnd  = 1;
     JL     = 0;
 
-    if (Abs(l2 - l1) > EPS_PARAM)
+    if (std::abs(l2 - l1) > EPS_PARAM)
     {
       iLSubEnd = FillIntervalBounds(l1, l2, LKnots, NumSubs, anInertiaL, L1, L2, ErrL, ErrUL);
       LMaxSubs = BRepGProp_Gauss::MaxSubs(iLSubEnd);
@@ -649,7 +650,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
           LRange[0] = IL = JL;
         }
 
-        if (JL == LMaxSubs || Abs(L2->Value(JL) - L1->Value(JL)) < EPS_PARAM)
+        if (JL == LMaxSubs || std::abs(L2->Value(JL) - L1->Value(JL)) < EPS_PARAM)
         {
           if (kLEnd == 1)
           {
@@ -692,7 +693,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
                   theSurface.D12d(l, Puv, Vuv);
                   Dul = Vuv.Y() * LGaussW[iGL]->Value(iL); // Dul = Du / Dl
 
-                  if (Abs(Dul) < EPS_PARAM)
+                  if (std::abs(Dul) < EPS_PARAM)
                     continue;
 
                   v  = Puv.Y();
@@ -714,7 +715,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
                 kUEnd             = 1;
                 JU                = 0;
 
-                if (Abs(u2 - u1) < EPS_PARAM)
+                if (std::abs(u2 - u1) < EPS_PARAM)
                   continue;
 
                 NCollection_Handle<math_Vector> aDummy;
@@ -743,7 +744,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
                   else
                     URange[0] = IU = JU;
 
-                  if (JU == UMaxSubs || Abs(U2->Value(JU) - U1->Value(JU)) < EPS_PARAM)
+                  if (JU == UMaxSubs || std::abs(U2->Value(JU) - U1->Value(JU)) < EPS_PARAM)
                     if (kUEnd == 1)
                     {
                       ErrU->Value(JU) = 0.0;
@@ -753,7 +754,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
                     {
                       --JU;
                       EpsU = ErrorU;
-                      Eps  = 10. * EpsU * Abs((u2 - u1) * Dul);
+                      Eps  = 10. * EpsU * std::abs((u2 - u1) * Dul);
                       EpsL = 0.9 * Eps;
                       break;
                     }
@@ -821,13 +822,13 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
                       if (iGL > 0)
                         continue;
 
-                      Standard_Real aDMass = Abs(aLocal[1].Mass - aLocal[0].Mass);
+                      Standard_Real aDMass = std::abs(aLocal[1].Mass - aLocal[0].Mass);
 
                       if (myType == Vinert)
                       {
-                        aLocal[1].Ixx = Abs(aLocal[1].Ixx - aLocal[0].Ixx);
-                        aLocal[1].Iyy = Abs(aLocal[1].Iyy - aLocal[0].Iyy);
-                        aLocal[1].Izz = Abs(aLocal[1].Izz - aLocal[0].Izz);
+                        aLocal[1].Ixx = std::abs(aLocal[1].Ixx - aLocal[0].Ixx);
+                        aLocal[1].Iyy = std::abs(aLocal[1].Iyy - aLocal[0].Iyy);
+                        aLocal[1].Izz = std::abs(aLocal[1].Izz - aLocal[0].Izz);
 
                         anUI.Ix = mult(aLocal[0].Ix, ur);
                         anUI.Iy = mult(aLocal[0].Iy, ur);
@@ -880,7 +881,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
                 if (iGL > 0)
                   continue;
 
-                ErrUL->Value(iLS) = ErrorU * Abs((u2 - u1) * Dul);
+                ErrUL->Value(iLS) = ErrorU * std::abs((u2 - u1) * Dul);
 
                 for (i = 1; i <= JU; ++i)
                 {
@@ -906,15 +907,15 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
 
             if (iGLEnd == 2)
             {
-              Standard_Real aSubDim = Abs(CDim[1] - CDim[0]);
+              Standard_Real aSubDim = std::abs(CDim[1] - CDim[0]);
 
               if (myType == Vinert)
               {
                 ErrorU = ErrUL->Value(iLS);
 
-                CIxx[1] = Abs(CIxx[1] - CIxx[0]);
-                CIyy[1] = Abs(CIyy[1] - CIyy[0]);
-                CIzz[1] = Abs(CIzz[1] - CIzz[0]);
+                CIxx[1] = std::abs(CIxx[1] - CIxx[0]);
+                CIyy[1] = std::abs(CIyy[1] - CIyy[0]);
+                CIzz[1] = std::abs(CIzz[1] - CIzz[0]);
 
 #ifndef IS_MIN_DIM
                 aSubDim = CIxx[1] + CIyy[1] + CIzz[1];
@@ -962,12 +963,12 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
                 DIzz += aLocalL.Izz;
               }
 
-              DDim = Abs(DIxx) + Abs(DIyy) + Abs(DIzz);
+              DDim = std::abs(DIxx) + std::abs(DIyy) + std::abs(DIzz);
             }
           }
 #endif
 
-          DDim = Abs(DDim * anEpsilon);
+          DDim = std::abs(DDim * anEpsilon);
 
           if (DDim > Eps)
           {
@@ -986,7 +987,7 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
         addAndRestoreInertia(anInertiaL->Value(i), anInertia);
       }
 
-      ErrorLMax = Max(ErrorLMax, ErrorL);
+      ErrorLMax = std::max(ErrorLMax, ErrorL);
     }
 
     if (isNaturalRestriction)
@@ -1004,12 +1005,13 @@ Standard_Real BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
   {
     if (theOutMass != 0.0)
     {
-      Eps = ErrorLMax / Abs(theOutMass);
+      Eps = ErrorLMax / std::abs(theOutMass);
 
 #ifndef IS_MIN_DIM
       {
         if (myType == Vinert)
-          Eps = ErrorLMax / (Abs(anInertia.Ixx) + Abs(anInertia.Iyy) + Abs(anInertia.Izz));
+          Eps = ErrorLMax
+                / (std::abs(anInertia.Ixx) + std::abs(anInertia.Iyy) + std::abs(anInertia.Izz));
       }
 #endif
     }
@@ -1065,12 +1067,12 @@ void BRepGProp_Gauss::Compute(BRepGProp_Face&   theSurface,
   checkBounds(u1, u2, v1, v2);
 
   const Standard_Integer NbUGaussgp_Pnts =
-    Min(theSurface.UIntegrationOrder(), math::GaussPointsMax());
+    std::min(theSurface.UIntegrationOrder(), math::GaussPointsMax());
 
   const Standard_Integer NbVGaussgp_Pnts =
-    Min(theSurface.VIntegrationOrder(), math::GaussPointsMax());
+    std::min(theSurface.VIntegrationOrder(), math::GaussPointsMax());
 
-  const Standard_Integer NbGaussgp_Pnts = Max(NbUGaussgp_Pnts, NbVGaussgp_Pnts);
+  const Standard_Integer NbGaussgp_Pnts = std::max(NbUGaussgp_Pnts, NbVGaussgp_Pnts);
 
   // Number of Gauss points for the integration on the face
   math_Vector GaussSPV(1, NbGaussgp_Pnts);
@@ -1086,9 +1088,10 @@ void BRepGProp_Gauss::Compute(BRepGProp_Face&   theSurface,
       return;
     }
 
-    Standard_Integer NbCGaussgp_Pnts = Min(theSurface.IntegrationOrder(), math::GaussPointsMax());
+    Standard_Integer NbCGaussgp_Pnts =
+      std::min(theSurface.IntegrationOrder(), math::GaussPointsMax());
 
-    NbCGaussgp_Pnts = Max(NbCGaussgp_Pnts, NbGaussgp_Pnts);
+    NbCGaussgp_Pnts = std::max(NbCGaussgp_Pnts, NbGaussgp_Pnts);
 
     math_Vector GaussCP(1, NbCGaussgp_Pnts);
     math_Vector GaussCW(1, NbCGaussgp_Pnts);
@@ -1170,7 +1173,7 @@ void BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
     const Standard_Integer aVNbCGaussgp_Pnts = theSurface.VIntegrationOrder();
 
     const Standard_Integer aNbGaussgp_Pnts =
-      Min(Max(theSurface.IntegrationOrder(), aVNbCGaussgp_Pnts), math::GaussPointsMax());
+      std::min(std::max(theSurface.IntegrationOrder(), aVNbCGaussgp_Pnts), math::GaussPointsMax());
 
     math_Vector GaussP(1, aNbGaussgp_Pnts);
     math_Vector GaussW(1, aNbGaussgp_Pnts);
@@ -1193,8 +1196,8 @@ void BRepGProp_Gauss::Compute(BRepGProp_Face&        theSurface,
       theSurface.D12d(l, Puv, Vuv);
 
       u2                    = Puv.X();
-      u2                    = Min(Max(u1, u2), _u2); // OCC104
-      const Standard_Real v = Min(Max(Puv.Y(), v1), v2);
+      u2                    = std::min(std::max(u1, u2), _u2); // OCC104
+      const Standard_Real v = std::min(std::max(Puv.Y(), v1), v2);
 
       const Standard_Real Dul = Vuv.Y() * GaussW(i);
       const Standard_Real um  = 0.5 * (u2 + u1);
@@ -1245,8 +1248,8 @@ void BRepGProp_Gauss::Compute(const BRepGProp_Face&  theSurface,
   theSurface.Bounds(LowerU, UpperU, LowerV, UpperV);
   checkBounds(LowerU, UpperU, LowerV, UpperV);
 
-  const Standard_Integer UOrder = Min(theSurface.UIntegrationOrder(), math::GaussPointsMax());
-  const Standard_Integer VOrder = Min(theSurface.VIntegrationOrder(), math::GaussPointsMax());
+  const Standard_Integer UOrder = std::min(theSurface.UIntegrationOrder(), math::GaussPointsMax());
+  const Standard_Integer VOrder = std::min(theSurface.VIntegrationOrder(), math::GaussPointsMax());
 
   // Gauss points and weights
   math_Vector GaussPU(1, UOrder);

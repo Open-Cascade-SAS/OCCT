@@ -1306,7 +1306,7 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/,
         return 1;
       }
 
-      Standard_Real              aDist = Round(sqrt(aDelta.SquareDistance(1)) * 10.0) / 10.0;
+      Standard_Real              aDist = std::round(sqrt(aDelta.SquareDistance(1)) * 10.0) / 10.0;
       TCollection_ExtendedString aMessage(TCollection_ExtendedString("offset=")
                                           + TCollection_ExtendedString(aDist));
       aRelation = new PrsDim_OffsetDimension(aFace1, aFace2, aDist, aMessage);

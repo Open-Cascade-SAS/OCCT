@@ -139,7 +139,7 @@ Standard_Boolean HatchGen_PointOnHatching::IsLower(const HatchGen_PointOnHatchin
 Standard_Boolean HatchGen_PointOnHatching::IsEqual(const HatchGen_PointOnHatching& Point,
                                                    const Standard_Real             Confusion) const
 {
-  return (Abs(Point.myParam - myParam) <= Confusion);
+  return (std::abs(Point.myParam - myParam) <= Confusion);
 }
 
 //=======================================================================

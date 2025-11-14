@@ -30,8 +30,8 @@ void Bnd_Range::Common(const Bnd_Range& theOther)
     return;
   }
 
-  myFirst = Max(myFirst, theOther.myFirst);
-  myLast  = Min(myLast, theOther.myLast);
+  myFirst = std::max(myFirst, theOther.myFirst);
+  myLast  = std::min(myLast, theOther.myLast);
 }
 
 //=================================================================================================
@@ -47,8 +47,8 @@ Standard_Boolean Bnd_Range::Union(const Bnd_Range& theOther)
   if (myFirst > theOther.myLast)
     return Standard_False;
 
-  myFirst = Min(myFirst, theOther.myFirst);
-  myLast  = Max(myLast, theOther.myLast);
+  myFirst = std::min(myFirst, theOther.myFirst);
+  myLast  = std::max(myLast, theOther.myLast);
 
   return Standard_True;
 }
@@ -61,7 +61,7 @@ Standard_Integer Bnd_Range::IsIntersected(const Standard_Real theVal,
   if (IsVoid())
     return Standard_False;
 
-  const Standard_Real aPeriod = Abs(thePeriod);
+  const Standard_Real aPeriod = std::abs(thePeriod);
   const Standard_Real aDF = myFirst - theVal, aDL = myLast - theVal;
 
   if (aPeriod <= RealSmall())
@@ -82,18 +82,18 @@ Standard_Integer Bnd_Range::IsIntersected(const Standard_Real theVal,
   //     ((myFirst-theVal)/aPeriod <= N <= (myLast-theVal)/aPeriod).
   // I.e. the interval [aDF/aPeriod, aDL/aPeriod] must contain at least one
   // integer number.
-  // In this case, Floor(aDF/aPeriod) and Floor(aDL/aPeriod)
+  // In this case, std::floor(aDF/aPeriod) and std::floor(aDL/aPeriod)
   // return different values or aDF/aPeriod (aDL/aPeriod)
   // is strictly integer number.
   // Examples:
   //   1. (aDF/aPeriod==2.8, aDL/aPeriod==3.5 =>
-  //         Floor(aDF/aPeriod) == 2, Floor(aDL/aPeriod) == 3.
+  //         std::floor(aDF/aPeriod) == 2, std::floor(aDL/aPeriod) == 3.
   //   2. aDF/aPeriod==2.0, aDL/aPeriod==2.6 =>
-  //         Floor(aDF/aPeriod) == Floor(aDL/aPeriod) == 2.
+  //         std::floor(aDF/aPeriod) == std::floor(aDL/aPeriod) == 2.
 
   const Standard_Real    aVal1 = aDF / aPeriod, aVal2 = aDL / aPeriod;
-  const Standard_Integer aPar1 = static_cast<Standard_Integer>(Floor(aVal1));
-  const Standard_Integer aPar2 = static_cast<Standard_Integer>(Floor(aVal2));
+  const Standard_Integer aPar1 = static_cast<Standard_Integer>(std::floor(aVal1));
+  const Standard_Integer aPar2 = static_cast<Standard_Integer>(std::floor(aVal2));
   if (aPar1 != aPar2)
   { // Interval (myFirst, myLast] intersects seam-edge
     if (IsEqual(aVal2, static_cast<Standard_Real>(aPar2)))
@@ -129,7 +129,7 @@ void Bnd_Range::Split(const Standard_Real          theVal,
                       NCollection_List<Bnd_Range>& theList,
                       const Standard_Real          thePeriod) const
 {
-  const Standard_Real aPeriod = Abs(thePeriod);
+  const Standard_Real aPeriod = std::abs(thePeriod);
   if (IsIntersected(theVal, aPeriod) != 1)
   {
     theList.Append(*this);
@@ -145,7 +145,7 @@ void Bnd_Range::Split(const Standard_Real          theVal,
     return;
   }
 
-  Standard_Real aValPrev = theVal + aPeriod * Ceiling((myFirst - theVal) / aPeriod);
+  Standard_Real aValPrev = theVal + aPeriod * std::ceil((myFirst - theVal) / aPeriod);
 
   // Now, (myFirst <= aValPrev < myFirst+aPeriod).
 

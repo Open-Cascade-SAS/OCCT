@@ -359,7 +359,7 @@ Standard_Integer TopOpeBRep_FaceEdgeIntersector::Index() const
 
 void TopOpeBRep_FaceEdgeIntersector::ShapeTolerances(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
-  myTol            = Max(ToleranceMax(S1, TopAbs_EDGE), ToleranceMax(S2, TopAbs_EDGE));
+  myTol            = std::max(ToleranceMax(S1, TopAbs_EDGE), ToleranceMax(S2, TopAbs_EDGE));
   myForceTolerance = Standard_False;
 
 #ifdef OCCT_DEBUG
@@ -386,7 +386,7 @@ Standard_Real TopOpeBRep_FaceEdgeIntersector::ToleranceMax(const TopoDS_Shape&  
   {
     Standard_Real tol = RealFirst();
     for (; e.More(); e.Next())
-      tol = Max(tol, TopOpeBRepTool_ShapeTool::Tolerance(e.Current()));
+      tol = std::max(tol, TopOpeBRepTool_ShapeTool::Tolerance(e.Current()));
     return tol;
   }
 }

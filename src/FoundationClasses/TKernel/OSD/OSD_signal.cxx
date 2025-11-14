@@ -266,7 +266,7 @@ static LONG CallHandler(DWORD theExceptionCode, EXCEPTION_POINTERS* theExcPtr)
   }
 
   const int aStackLength = OSD_SignalStackTraceLength;
-  const int aStackBufLen = Max(aStackLength * 200, 2048);
+  const int aStackBufLen = std::max(aStackLength * 200, 2048);
   char*     aStackBuffer = aStackLength != 0 ? (char*)alloca(aStackBufLen) : NULL;
   if (aStackBuffer != NULL)
   {
@@ -936,7 +936,7 @@ static void SegvHandler(const int              theSignal,
       Sprintf(aMsg, "SIGSEGV 'segmentation violation' detected. Address %lx.", (long)anAddress);
 
       const int aStackLength = OSD_SignalStackTraceLength;
-      const int aStackBufLen = Max(aStackLength * 200, 2048);
+      const int aStackBufLen = std::max(aStackLength * 200, 2048);
       char*     aStackBuffer = aStackLength != 0 ? (char*)alloca(aStackBufLen) : NULL;
       if (aStackBuffer != NULL)
       {

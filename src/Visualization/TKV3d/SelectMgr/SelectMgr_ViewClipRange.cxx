@@ -46,7 +46,7 @@ void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipP
       Standard_Real aDistToPln   = 0.0;
 
       // check whether the pick line is parallel to clip plane
-      if (Abs(aDotProduct) < Precision::Angular())
+      if (std::abs(aDotProduct) < Precision::Angular())
       {
         if (aDistance < 0.0)
         {

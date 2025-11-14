@@ -240,7 +240,7 @@ void Bnd_Box2d::Add(const Bnd_Box2d& Other)
       else if (Ymax < Other.Ymax)
         Ymax = Other.Ymax;
     }
-    Gap = Max(Gap, Other.Gap);
+    Gap = std::max(Gap, Other.Gap);
   }
 }
 
@@ -303,12 +303,12 @@ Standard_Boolean Bnd_Box2d::IsOut(const gp_Lin2d& theL) const
   Get(aXMin, aYMin, aXMax, aYMax);
 
   gp_XY aCenter((aXMin + aXMax) / 2, (aYMin + aYMax) / 2);
-  gp_XY aHeigh(Abs(aXMax - aCenter.X()), Abs(aYMax - aCenter.Y()));
+  gp_XY aHeigh(std::abs(aXMax - aCenter.X()), std::abs(aYMax - aCenter.Y()));
 
   const Standard_Real aProd[3] = {theL.Direction().XY() ^ (aCenter - theL.Location().XY()),
                                   theL.Direction().X() * aHeigh.Y(),
                                   theL.Direction().Y() * aHeigh.X()};
-  Standard_Boolean    aStatus  = (Abs(aProd[0]) > (Abs(aProd[1]) + Abs(aProd[2])));
+  Standard_Boolean    aStatus  = (std::abs(aProd[0]) > (std::abs(aProd[1]) + std::abs(aProd[2])));
   return aStatus;
 }
 
@@ -333,19 +333,19 @@ Standard_Boolean Bnd_Box2d::IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) 
   const gp_XY aSegDelta(theP1.XY() - theP0.XY());
 
   gp_XY aCenter((aLocXMin + aLocXMax) / 2, (aLocYMin + aLocYMax) / 2);
-  gp_XY aHeigh(Abs(aLocXMax - aCenter.X()), Abs(aLocYMax - aCenter.Y()));
+  gp_XY aHeigh(std::abs(aLocXMax - aCenter.X()), std::abs(aLocYMax - aCenter.Y()));
 
   const Standard_Real aProd[3] = {aSegDelta ^ (aCenter - theP0.XY()),
                                   aSegDelta.X() * aHeigh.Y(),
                                   aSegDelta.Y() * aHeigh.X()};
 
-  if ((Abs(aProd[0]) <= (Abs(aProd[1]) + Abs(aProd[2]))))
+  if ((std::abs(aProd[0]) <= (std::abs(aProd[1]) + std::abs(aProd[2]))))
   {
     // Intersection with line detected; check the segment as bounding box
     const gp_XY aHSeg(0.5 * aSegDelta.X(), 0.5 * aSegDelta.Y());
-    const gp_XY aHSegAbs(Abs(aHSeg.X()), Abs(aHSeg.Y()));
-    aStatus = ((Abs((theP0.XY() + aHSeg - aCenter).X()) > (aHeigh + aHSegAbs).X())
-               || (Abs((theP0.XY() + aHSeg - aCenter).Y()) > (aHeigh + aHSegAbs).Y()));
+    const gp_XY aHSegAbs(std::abs(aHSeg.X()), std::abs(aHSeg.Y()));
+    aStatus = ((std::abs((theP0.XY() + aHSeg - aCenter).X()) > (aHeigh + aHSegAbs).X())
+               || (std::abs((theP0.XY() + aHSeg - aCenter).Y()) > (aHeigh + aHSegAbs).Y()));
   }
   return aStatus;
 }

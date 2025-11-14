@@ -59,7 +59,7 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_CylinderRangeSplitter::GenerateSurfaceNo
     // of long cylinder with small radius.
     nbV = aDv > static_cast<Standard_Real> (IntegerLast()) ?
       0 : (Standard_Integer) (aDv);
-    nbV = Min(nbV, 100 * nbU);
+    nbV = std::min(nbV, 100 * nbU);
     */
   }
 
@@ -89,6 +89,6 @@ void BRepMesh_CylinderRangeSplitter::computeDelta(const Standard_Real /*theLengt
                                                   const Standard_Real theLengthV)
 {
   const std::pair<double, double>& aRangeV = GetRangeV();
-  myDelta.first                            = myDu / Max(theLengthV, aRangeV.second - aRangeV.first);
-  myDelta.second                           = 1.;
+  myDelta.first  = myDu / std::max(theLengthV, aRangeV.second - aRangeV.first);
+  myDelta.second = 1.;
 }

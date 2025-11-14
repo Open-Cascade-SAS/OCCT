@@ -187,7 +187,7 @@ Standard_Integer UpdateBounds(BVH_Set<T, N>*         theSet,
 
     theTree->MinPointBuffer()[theNode] = aLftMinPoint;
     theTree->MaxPointBuffer()[theNode] = aLftMaxPoint;
-    return Max(aLftDepth, aRghDepth) + 1;
+    return std::max(aLftDepth, aRghDepth) + 1;
   }
   else
   {
@@ -295,7 +295,7 @@ public:
       theData.myBVH->MinPointBuffer()[theData.myNode] = aLftMinPoint;
       theData.myBVH->MaxPointBuffer()[theData.myNode] = aLftMaxPoint;
 
-      *theData.myHeight = Max(aLftHeight, aRghHeight) + 1;
+      *theData.myHeight = std::max(aLftHeight, aRghHeight) + 1;
     }
   }
 

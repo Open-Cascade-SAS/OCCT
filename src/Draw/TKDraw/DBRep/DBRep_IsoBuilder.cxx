@@ -133,8 +133,8 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
     }
 
     //-- Test if a TrimmedCurve is necessary
-    if (Abs(PCurve->FirstParameter() - U1) <= Precision::PConfusion()
-        && Abs(PCurve->LastParameter() - U2) <= Precision::PConfusion())
+    if (std::abs(PCurve->FirstParameter() - U1) <= Precision::PConfusion()
+        && std::abs(PCurve->LastParameter() - U2) <= Precision::PConfusion())
     {
       anEdgePCurveMap.Add(TopologicalEdge, PCurve);
     }
@@ -196,7 +196,7 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
       }
 
       // if U1 and U2 coincide-->do nothing
-      if (Abs(U1 - U2) <= Precision::PConfusion())
+      if (std::abs(U1 - U2) <= Precision::PConfusion())
         continue;
       Handle(Geom2d_TrimmedCurve) TrimPCurve = new Geom2d_TrimmedCurve(PCurve, U1, U2);
       anEdgePCurveMap.Add(TopologicalEdge, TrimPCurve);
@@ -217,9 +217,9 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
   //-----------------------------------------------------------------------
 
   Standard_Integer IIso;
-  Standard_Real    DeltaU    = Abs(myUMax - myUMin);
-  Standard_Real    DeltaV    = Abs(myVMax - myVMin);
-  Standard_Real    confusion = Min(DeltaU, DeltaV) * HatcherConfusion3d;
+  Standard_Real    DeltaU    = std::abs(myUMax - myUMin);
+  Standard_Real    DeltaV    = std::abs(myVMax - myVMin);
+  Standard_Real    confusion = std::min(DeltaU, DeltaV) * HatcherConfusion3d;
   Confusion3d(confusion);
 
   Standard_Real StepU = DeltaU / (Standard_Real)NbIsos;
@@ -580,8 +580,8 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
               continue;
             }
 
-            Standard_Real aDelta1 = Abs(aTIntPrev - aTPrev);
-            Standard_Real aDelta2 = Abs(aTIntCurr - aTCurr);
+            Standard_Real aDelta1 = std::abs(aTIntPrev - aTPrev);
+            Standard_Real aDelta2 = std::abs(aTIntCurr - aTCurr);
             if (aDelta1 < aDeltaPrev || aDelta2 < aDeltaCurr)
             {
               aTPrevClosest = aTIntPrev;
@@ -613,8 +613,8 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
 
             // Trim PCurves only if the intersection belongs to current parameter
             Standard_Boolean bTrim = (aNbCV == 1
-                                      || (Abs(aTPrev - aTPrevClosest) < (lp - fp) / 2.
-                                          || Abs(aTCurr - aTCurrClosest) < (lc - fc) / 2.));
+                                      || (std::abs(aTPrev - aTPrevClosest) < (lp - fp) / 2.
+                                          || std::abs(aTCurr - aTCurrClosest) < (lc - fc) / 2.));
 
             if (bTrim)
             {
@@ -628,7 +628,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
                 // Trim the curves with found parameters
 
                 // Prepare trimming parameters for previous curve
-                if (Abs(fp - aTPrev) < Abs(lp - aTPrev))
+                if (std::abs(fp - aTPrev) < std::abs(lp - aTPrev))
                 {
                   f = aTPrevClosest;
                   l = lp;
@@ -644,7 +644,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
                   aPrevC2d = new Geom2d_TrimmedCurve(aPrevC2d, f, l);
 
                 // Prepare trimming parameters for current p-curve
-                if (Abs(fc - aTCurr) < Abs(lc - aTCurr))
+                if (std::abs(fc - aTCurr) < std::abs(lc - aTCurr))
                 {
                   f = aTCurrClosest;
                   l = lc;

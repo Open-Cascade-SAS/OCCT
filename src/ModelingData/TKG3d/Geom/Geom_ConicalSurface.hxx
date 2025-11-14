@@ -89,8 +89,8 @@ public:
   //! such that the normal Vector (N = D1U ^ D1V) is oriented towards
   //! the "outside region" of the surface.
   //!
-  //! Raised if Radius < 0.0 or Abs(Ang) < Resolution from gp or
-  //! Abs(Ang) >= PI/2 - Resolution
+  //! Raised if Radius < 0.0 or std::abs(Ang) < Resolution from gp or
+  //! std::abs(Ang) >= PI/2 - Resolution
   Standard_EXPORT Geom_ConicalSurface(const gp_Ax3&       A3,
                                       const Standard_Real Ang,
                                       const Standard_Real Radius);
@@ -108,9 +108,9 @@ public:
 
   //! Changes the semi angle of the conical surface.
   //! Semi-angle can be negative. Its absolute value
-  //! Abs(Ang) is in range ]0,PI/2[.
-  //! Raises ConstructionError if Abs(Ang) < Resolution from gp or
-  //! Abs(Ang) >= PI/2 - Resolution
+  //! std::abs(Ang) is in range ]0,PI/2[.
+  //! Raises ConstructionError if std::abs(Ang) < Resolution from gp or
+  //! std::abs(Ang) >= PI/2 - Resolution
   Standard_EXPORT void SetSemiAngle(const Standard_Real Ang);
 
   //! Returns a non transient cone with the same geometric properties as <me>.

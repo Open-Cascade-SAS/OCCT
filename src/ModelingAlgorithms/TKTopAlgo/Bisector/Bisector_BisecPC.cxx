@@ -394,7 +394,7 @@ void Bisector_BisecPC::Values(const Standard_Real    U,
   Standard_Real NorPPC    = Nor.Dot(aPPC);
   Standard_Real A1;
 
-  if (Abs(NorPPC) > gp::Resolution() && (NorPPC * sign) < 0.)
+  if (std::abs(NorPPC) > gp::Resolution() && (NorPPC * sign) < 0.)
   {
     A1 = 0.5 * SquarePPC / NorPPC;
     P.SetCoord(PC.X() - Nor.X() * A1, PC.Y() - Nor.Y() * A1);
@@ -499,7 +499,7 @@ Standard_Real Bisector_BisecPC::Distance(const Standard_Real U) const
     }
   }
 
-  if (Abs(Prosca) < Precision::Confusion() || (Prosca * sign) > 0.)
+  if (std::abs(Prosca) < Precision::Confusion() || (Prosca * sign) > 0.)
   {
     return Precision::Infinite();
   }

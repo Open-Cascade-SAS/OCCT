@@ -447,7 +447,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer             Index,
       {
         myLConstruct.Part(i, fprm, lprm);
         //
-        if (Abs(fprm) > aRealEpsilon || Abs(lprm - aPeriod) > aRealEpsilon)
+        if (std::abs(fprm) > aRealEpsilon || std::abs(lprm - aPeriod) > aRealEpsilon)
         {
           //==============================================
           Handle(Geom_TrimmedCurve) aTC3D = new Geom_TrimmedCurve(newc, fprm, lprm);
@@ -487,14 +487,14 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer             Index,
             slineS2.Append(H1);
           }
           //==============================================
-        } // if (Abs(fprm) > RealEpsilon() || Abs(lprm-2.*M_PI) > RealEpsilon())
+        } // if (std::abs(fprm) > RealEpsilon() || std::abs(lprm-2.*M_PI) > RealEpsilon())
         //
         else
         { //  on regarde si on garde
           //
           if (aNbParts == 1)
           {
-            if (Abs(fprm) < RealEpsilon() && Abs(lprm - 2. * M_PI) < RealEpsilon())
+            if (std::abs(fprm) < RealEpsilon() && std::abs(lprm - 2. * M_PI) < RealEpsilon())
             {
               Handle(Geom_TrimmedCurve) aTC3D = new Geom_TrimmedCurve(newc, fprm, lprm);
               //
@@ -919,9 +919,9 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer             Index,
                 Check.FixTangent(Standard_True, Standard_True);
                 //
                 // Check IsClosed()
-                Standard_Real aDist =
-                  Max(BS->StartPoint().XYZ().SquareModulus(), BS->EndPoint().XYZ().SquareModulus());
-                Standard_Real eps = Epsilon(aDist);
+                Standard_Real aDist = std::max(BS->StartPoint().XYZ().SquareModulus(),
+                                               BS->EndPoint().XYZ().SquareModulus());
+                Standard_Real eps   = Epsilon(aDist);
                 if (BS->StartPoint().SquareDistance(BS->EndPoint()) < 2. * eps)
                 {
                   // Avoid creating B-splines containing two coincident poles only
@@ -1084,8 +1084,8 @@ void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)&      theRL,
     anAHC2d = theRL->ArcOnS1();
     theRL->ParamOnS1(tf, tl);
     theC2d1 = Geom2dAdaptor::MakeCurve(*anAHC2d);
-    tf      = Max(tf, theC2d1->FirstParameter());
-    tl      = Min(tl, theC2d1->LastParameter());
+    tf      = std::max(tf, theC2d1->FirstParameter());
+    tl      = std::min(tl, theC2d1->LastParameter());
     theC2d1 = new Geom2d_TrimmedCurve(theC2d1, tf, tl);
   }
   else if (theRL->IsArcOnS2())
@@ -1094,8 +1094,8 @@ void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)&      theRL,
     anAHC2d = theRL->ArcOnS2();
     theRL->ParamOnS2(tf, tl);
     theC2d2 = Geom2dAdaptor::MakeCurve(*anAHC2d);
-    tf      = Max(tf, theC2d2->FirstParameter());
-    tl      = Min(tl, theC2d2->LastParameter());
+    tf      = std::max(tf, theC2d2->FirstParameter());
+    tl      = std::min(tl, theC2d2->LastParameter());
     theC2d2 = new Geom2d_TrimmedCurve(theC2d2, tf, tl);
   }
   else
@@ -1131,7 +1131,7 @@ void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)&      theRL,
     Handle(Geom_Surface) aS = GeomAdaptor::MakeSurface(*theHS1);
     BuildPCurves(tf, tl, aTol, aS, theC3d, theC2d1);
   }
-  theTolReached = Max(theTolReached, aTol);
+  theTolReached = std::max(theTolReached, aTol);
 }
 
 //=================================================================================================
@@ -1190,9 +1190,9 @@ void GeomInt_IntSS::BuildPCurves(const Standard_Real         theFirst,
   }
   else
   {
-    if ((theLast - theFirst) > Epsilon(Abs(theFirst)))
+    if ((theLast - theFirst) > Epsilon(std::abs(theFirst)))
     {
-      // The domain of C2d is [Epsilon(Abs(f)), 2.e-09]
+      // The domain of C2d is [Epsilon(std::abs(f)), 2.e-09]
       // On this small range C2d can be considered as segment
       // of line.
 
@@ -1241,7 +1241,7 @@ void GeomInt_IntSS::BuildPCurves(const Standard_Real         theFirst,
             const gp_Pnt2d      pmidcurve2d(0.5 * (aP2d1.XY() + aP2d2.XY()));
             const gp_Pnt        aPC(anAS.Value(pmidcurve2d.X(), pmidcurve2d.Y()));
             const Standard_Real aDist = PMid.Distance(aPC);
-            theTol                    = Max(aDist, theTol);
+            theTol                    = std::max(aDist, theTol);
             // Check same parameter in middle point .end
           }
         }
@@ -1317,7 +1317,7 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const Handle(Geom2d_Curve)& theC2d
   theBound2.Get(aU2f, aV2f, aU2l, aV2l);
 
   Standard_Real aDelta = aV1l - aV1f;
-  if (Abs(aDelta) > RealSmall())
+  if (std::abs(aDelta) > RealSmall())
   {
     if (!Precision::IsInfinite(aU1f))
     {
@@ -1336,7 +1336,7 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const Handle(Geom2d_Curve)& theC2d
   }
 
   aDelta = aU1l - aU1f;
-  if (Abs(aDelta) > RealSmall())
+  if (std::abs(aDelta) > RealSmall())
   {
     if (!Precision::IsInfinite(aV1f))
     {
@@ -1354,7 +1354,7 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const Handle(Geom2d_Curve)& theC2d
   }
 
   aDelta = aV2l - aV2f;
-  if (Abs(aDelta) > RealSmall())
+  if (std::abs(aDelta) > RealSmall())
   {
     if (!Precision::IsInfinite(aU2f))
     {
@@ -1372,7 +1372,7 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const Handle(Geom2d_Curve)& theC2d
   }
 
   aDelta = aU2l - aU2f;
-  if (Abs(aDelta) > RealSmall())
+  if (std::abs(aDelta) > RealSmall())
   {
     if (!Precision::IsInfinite(aV2f))
     {

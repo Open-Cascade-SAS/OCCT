@@ -106,12 +106,12 @@ static Handle(GeomAdaptor_Surface) BoundSurf(const Handle(Geom_Surface)& S,
   Standard_Real uuu1, uuu2, vvv1, vvv2;
   S->Bounds(uuu1, uuu2, vvv1, vvv2);
   ChFi3d_Boite(Pdeb, Pfin, uu1, uu2, vv1, vv2);
-  Standard_Real Step = Max((uu2 - uu1), (vv2 - vv1));
+  Standard_Real Step = std::max((uu2 - uu1), (vv2 - vv1));
   Step *= 0.2;
-  uuu1 = Max((uu1 - Step), uuu1);
-  uuu2 = Min((uu2 + Step), uuu2);
-  vvv1 = Max((vv1 - Step), vvv1);
-  vvv2 = Min((vv2 + Step), vvv2);
+  uuu1 = std::max((uu1 - Step), uuu1);
+  uuu2 = std::min((uu2 + Step), uuu2);
+  vvv1 = std::max((vv1 - Step), vvv1);
+  vvv2 = std::min((vv2 + Step), vvv2);
   GAS.Load(S, uuu1, uuu2, vvv1, vvv2);
   return HS;
 }
@@ -480,8 +480,8 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   // (resp. p2d[fin])
 
   //  if (CornerAllSame)
-  //    c1triangle = (Abs(p[deb][pivot]-p[deb][fin])<tolesp &&
-  //		  Abs(p[fin][pivot]-p[fin][deb])<tolesp);
+  //    c1triangle = (std::abs(p[deb][pivot]-p[deb][fin])<tolesp &&
+  //		  std::abs(p[fin][pivot]-p[fin][deb])<tolesp);
 
   gp_Vec2d Tg3, Tgpiv;
 

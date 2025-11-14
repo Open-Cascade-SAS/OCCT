@@ -270,7 +270,7 @@ void BOPAlgo_PaveFiller::FillPaves(const Standard_Integer         nVD,
   // VResolution from the tolerance of the vertex
   Standard_Real aVRes = aBAS.VResolution(aTolV);
   //
-  aTolInt = Max(aTolInt, Max(aURes, aVRes));
+  aTolInt = std::max(aTolInt, std::max(aURes, aVRes));
   //
   // Parametric tolerance to compare intersection point with boundaries
   // should be computed as a resolution from the tolerance of vertex
@@ -281,9 +281,9 @@ void BOPAlgo_PaveFiller::FillPaves(const Standard_Integer         nVD,
   Handle(Geom2d_Curve) aC2DDE = BRep_Tool::CurveOnSurface(aDE, aDF, aTD1, aTD2);
   // Get direction of the curve
   Standard_Boolean bUDir =
-    Abs(aC2DDE->Value(aTD1).Y() - aC2DDE->Value(aTD2).Y()) < Precision::PConfusion();
+    std::abs(aC2DDE->Value(aTD1).Y() - aC2DDE->Value(aTD2).Y()) < Precision::PConfusion();
   //
-  aTolCmp = Max(aTolCmp, (bUDir ? aURes : aVRes));
+  aTolCmp = std::max(aTolCmp, (bUDir ? aURes : aVRes));
   //
   // Prepare adaptor for the degenerated edge for intersection
   Geom2dAdaptor_Curve aGAC1;
