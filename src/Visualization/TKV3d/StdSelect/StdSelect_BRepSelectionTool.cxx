@@ -870,8 +870,8 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
               || BS.GetType() == GeomAbs_BSplineSurface) // beuurkk pour l'instant...
           {
             Standard_Real ff = wf, ll = wl;
-            Standard_Real dw =
-              (std::max(wf, wl) - std::min(wf, wl)) / (Standard_Real)Max(2, NbPOnEdge - 1);
+            Standard_Real dw = (std::max(wf, wl) - std::min(wf, wl))
+                               / static_cast<double>(std::max(2, NbPOnEdge - 1));
             if (aWireExplorer.Orientation() == TopAbs_FORWARD)
             {
               for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
@@ -905,7 +905,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
         {
           Standard_Real ff = wf, ll = wl;
           Standard_Real dw =
-            (std::max(wf, wl) - std::min(wf, wl)) / (Standard_Real)Max(2, NbPOnEdge - 1);
+            (std::max(wf, wl) - std::min(wf, wl)) / static_cast<double>(std::max(2, NbPOnEdge - 1));
           if (aWireExplorer.Orientation() == TopAbs_FORWARD)
           {
             for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
@@ -926,7 +926,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
       default: {
         Standard_Real ff = wf, ll = wl;
         Standard_Real dw =
-          (std::max(wf, wl) - std::min(wf, wl)) / (Standard_Real)Max(2, NbPOnEdge - 1);
+          (std::max(wf, wl) - std::min(wf, wl)) / static_cast<double>(std::max(2, NbPOnEdge - 1));
         if (aWireExplorer.Orientation() == TopAbs_FORWARD)
         {
           for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)

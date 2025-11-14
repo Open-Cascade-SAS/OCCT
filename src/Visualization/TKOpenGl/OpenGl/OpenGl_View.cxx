@@ -598,7 +598,7 @@ Standard_Boolean OpenGl_View::ShadowMapDump(Image_PixMap&                  theIm
         }
         // Setup alignment.
         // clang-format off
-        const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL.
+        const GLint anAligment = std::min(GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL.
         // clang-format on
         aGlCtx->core11fwd->glPixelStorei(GL_PACK_ALIGNMENT, anAligment);
         // Read data.

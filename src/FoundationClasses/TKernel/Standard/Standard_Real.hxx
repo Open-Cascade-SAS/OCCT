@@ -157,7 +157,7 @@ Standard_DEPRECATED("This function duplicates std::abs and will be removed in fu
 
 //! Returns Standard_True if two doubles are equal within the precision
 //! defined by RealSmall().
-[[nodiscard]] inline Standard_Boolean IsEqual(const double theValue1, const double theValue2)
+[[nodiscard]] inline bool IsEqual(const double theValue1, const double theValue2)
 {
   return std::abs(theValue1 - theValue2) < RealSmall();
 }
@@ -300,7 +300,7 @@ Standard_DEPRECATED("This function duplicates std::log10 and will be removed in 
   return std::log10(theValue);
 }
 
-//! Returns the maximum value of two reals.
+//! Returns the maximum value of two doubles.
 //! Equivalent to std::max.
 Standard_DEPRECATED("This function duplicates std::max and will be removed in future releases. "
                     "Use std::max instead.")
@@ -310,7 +310,7 @@ Standard_DEPRECATED("This function duplicates std::max and will be removed in fu
   return std::max(theValue1, theValue2);
 }
 
-//! Returns the minimum value of two reals.
+//! Returns the minimum value of two doubles.
 //! Equivalent to std::min.
 Standard_DEPRECATED("This function duplicates std::min and will be removed in future releases. "
                     "Use std::min instead.")

@@ -1219,7 +1219,7 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump(const Handle(OpenGl_Context)&   
 
   // setup alignment
   // clang-format off
-  const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+  const GLint anAligment = std::min(GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
   // clang-format on
   theGlCtx->core11fwd->glPixelStorei(GL_PACK_ALIGNMENT, anAligment);
   bool isBatchCopy = !theImage.IsTopDown();

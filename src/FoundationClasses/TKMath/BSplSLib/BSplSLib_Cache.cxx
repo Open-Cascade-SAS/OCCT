@@ -114,7 +114,7 @@ void BSplSLib_Cache::D0(const Standard_Real& theU,
 
   Standard_Integer aDimension       = myIsRational ? 4 : 3;
   Standard_Integer aCacheCols       = myPolesWeights->RowLength();
-  Standard_Integer aMinMaxDegree[2] = {Min(myParamsU.Degree, myParamsV.Degree),
+  Standard_Integer aMinMaxDegree[2] = {std::min(myParamsU.Degree, myParamsV.Degree),
                                        std::max(myParamsU.Degree, myParamsV.Degree)};
   Standard_Real    aParameters[2];
   if (myParamsU.Degree > myParamsV.Degree)
@@ -182,7 +182,7 @@ void BSplSLib_Cache::D1(const Standard_Real& theU,
 
   Standard_Integer aDimension       = myIsRational ? 4 : 3;
   Standard_Integer aCacheCols       = myPolesWeights->RowLength();
-  Standard_Integer aMinMaxDegree[2] = {Min(myParamsU.Degree, myParamsV.Degree),
+  Standard_Integer aMinMaxDegree[2] = {std::min(myParamsU.Degree, myParamsV.Degree),
                                        std::max(myParamsU.Degree, myParamsV.Degree)};
 
   Standard_Real aParameters[2];
@@ -284,7 +284,7 @@ void BSplSLib_Cache::D2(const Standard_Real& theU,
 
   Standard_Integer aDimension       = myIsRational ? 4 : 3;
   Standard_Integer aCacheCols       = myPolesWeights->RowLength();
-  Standard_Integer aMinMaxDegree[2] = {Min(myParamsU.Degree, myParamsV.Degree),
+  Standard_Integer aMinMaxDegree[2] = {std::min(myParamsU.Degree, myParamsV.Degree),
                                        std::max(myParamsU.Degree, myParamsV.Degree)};
 
   Standard_Real aParameters[2];
@@ -304,7 +304,7 @@ void BSplSLib_Cache::D2(const Standard_Real& theU,
   // Calculating derivative to be evaluate and
   // nulling transient coefficients when max or min derivative is less than 2
   // clang-format on
-  Standard_Integer aMinMaxDeriv[2] = {Min(2, aMinMaxDegree[0]), std::min(2, aMinMaxDegree[1])};
+  Standard_Integer aMinMaxDeriv[2] = {std::min(2, aMinMaxDegree[0]), std::min(2, aMinMaxDegree[1])};
   for (Standard_Integer i = aMinMaxDeriv[1] + 1; i < 3; i++)
   {
     Standard_Integer index = i * aCacheCols;

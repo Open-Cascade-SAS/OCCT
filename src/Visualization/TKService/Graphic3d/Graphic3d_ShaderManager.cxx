@@ -58,7 +58,7 @@ static Standard_Integer roundUpMaxLightSources(Standard_Integer theNbLights)
 //! Compute TexCoord value in Vertex Shader
 const char THE_VARY_TexCoord_Trsf[] =
   EOL "  float aRotSin = occTextureTrsf_RotationSin();" EOL
-      "  float aRotCos = occTextureTrsf_Rotationstd::cos();" EOL
+      "  float aRotCos = occTextureTrsf_RotationCos();" EOL
       "  vec2  aTex2   = vec2 (occTexCoord.x * aRotCos - occTexCoord.y * aRotSin," EOL
       "                        occTexCoord.x * aRotSin + occTexCoord.y * aRotCos);" EOL
       "  aTex2 = (aTex2 + occTextureTrsf_Translation()) * occTextureTrsf_Scale();" EOL

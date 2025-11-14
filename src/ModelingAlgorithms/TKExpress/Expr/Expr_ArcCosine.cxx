@@ -106,7 +106,7 @@ Standard_Real Expr_ArcCosine::Evaluate(const Expr_Array1OfNamedUnknown& vars,
 
 TCollection_AsciiString Expr_ArcCosine::String() const
 {
-  TCollection_AsciiString str("Astd::cos(");
+  TCollection_AsciiString str("ACos(");
   str += Operand()->String();
   str += ")";
   return str;
