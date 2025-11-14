@@ -1,3 +1,8 @@
+// Prevent Windows from defining min/max macros
+#ifndef NOMINMAX
+  #define NOMINMAX
+#endif
+
 #include <d3d9.h>
 #include <windows.h>
 
