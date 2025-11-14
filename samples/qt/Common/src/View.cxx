@@ -647,7 +647,7 @@ void View::mouseReleaseEvent(QMouseEvent* theEvent)
     setCurrentAction(CurAction3d_Nothing);
   }
   if (theEvent->button() == Qt::RightButton && (aFlags & Aspect_VKeyFlags_CTRL) == 0
-      && (myClickPos - aPnt).cwisestd::abs().maxComp() <= 4)
+      && (myClickPos - aPnt).cwiseAbs().maxComp() <= 4)
   {
     Popup(aPnt.x(), aPnt.y());
   }
