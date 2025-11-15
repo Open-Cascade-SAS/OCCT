@@ -21,6 +21,16 @@
 #include <Quantity_Period.hxx>
 #include <Quantity_PeriodDefinitionError.hxx>
 
+namespace
+{
+static constexpr int SECONDS_PER_MINUTE = 60;
+static constexpr int SECONDS_PER_HOUR   = 3600;   // 60 * 60
+static constexpr int HOURS_PER_DAY      = 24;
+static constexpr int SECONDS_PER_DAY    = 86400;  // 24 * 3600
+static constexpr int USECS_PER_MSEC     = 1000;   // microseconds per millisecond
+static constexpr int USECS_PER_SEC      = 1000000; // microseconds per second
+} // namespace
+
 // -----------------------------------------------------------
 // IsValid : Checks the validity of a date
 // With:
@@ -95,15 +105,15 @@ void Quantity_Period::Values(Standard_Integer& dd,
                              Standard_Integer& mics) const
 {
   Standard_Integer carry = mySec;
-  dd                     = carry / (24 * 3600);
-  carry -= dd * 24 * 3600;
-  hh = carry / 3600;
-  carry -= 3600 * hh;
-  mn = carry / 60;
-  carry -= mn * 60;
+  dd                     = carry / SECONDS_PER_DAY;
+  carry -= dd * SECONDS_PER_DAY;
+  hh = carry / SECONDS_PER_HOUR;
+  carry -= SECONDS_PER_HOUR * hh;
+  mn = carry / SECONDS_PER_MINUTE;
+  carry -= mn * SECONDS_PER_MINUTE;
   ss   = carry;
-  mis  = myUSec / 1000;
-  mics = myUSec - (mis * 1000);
+  mis  = myUSec / USECS_PER_MSEC;
+  mics = myUSec - (mis * USECS_PER_MSEC);
 }
 
 // -------------------------------------------------------------
@@ -128,7 +138,8 @@ void Quantity_Period::SetValues(const Standard_Integer dd,
                                 const Standard_Integer mils,
                                 const Standard_Integer mics)
 {
-  SetValues((dd * 24 * 3600) + (hh * 3600) + (60 * mn) + ss, mils * 1000 + mics);
+  SetValues((dd * SECONDS_PER_DAY) + (hh * SECONDS_PER_HOUR) + (SECONDS_PER_MINUTE * mn) + ss,
+            mils * USECS_PER_MSEC + mics);
 }
 
 // -------------------------------------------------------------
@@ -143,9 +154,9 @@ void Quantity_Period::SetValues(const Standard_Integer ss, const Standard_Intege
 
   mySec  = ss;
   myUSec = mics;
-  while (myUSec > 1000000)
+  while (myUSec > USECS_PER_SEC)
   {
-    myUSec -= 1000000;
+    myUSec -= USECS_PER_SEC;
     mySec++;
   }
 }
@@ -164,7 +175,7 @@ Quantity_Period Quantity_Period::Subtract(const Quantity_Period& OtherPeriod) co
   if (result.mySec >= 0 && result.myUSec < 0)
   {
     result.mySec--;
-    result.myUSec = 1000000 + result.myUSec;
+    result.myUSec = USECS_PER_SEC + result.myUSec;
   }
   else if (result.mySec < 0 && result.myUSec >= 0)
   {
@@ -172,7 +183,7 @@ Quantity_Period Quantity_Period::Subtract(const Quantity_Period& OtherPeriod) co
     if (result.myUSec > 0)
     {
       result.mySec--;
-      result.myUSec = 1000000 - result.myUSec;
+      result.myUSec = USECS_PER_SEC - result.myUSec;
     }
   }
   else if (result.mySec < 0 && result.myUSec < 0)
@@ -193,9 +204,9 @@ Quantity_Period Quantity_Period::Add(const Quantity_Period& OtherPeriod) const
   Quantity_Period result(mySec, myUSec);
   result.mySec += OtherPeriod.mySec;
   result.myUSec += OtherPeriod.myUSec;
-  if (result.myUSec > 1000000)
+  if (result.myUSec > USECS_PER_SEC)
   {
-    result.myUSec -= 1000000;
+    result.myUSec -= USECS_PER_SEC;
     result.mySec++;
   }
   return (result);

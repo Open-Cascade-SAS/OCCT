@@ -22,6 +22,15 @@
 #include <Quantity_Period.hxx>
 #include <Standard_OutOfRange.hxx>
 
+namespace
+{
+static constexpr int SECONDS_PER_MINUTE = 60;
+static constexpr int SECONDS_PER_HOUR   = 3600;   // 60 * 60
+static constexpr int HOURS_PER_DAY      = 24;
+static constexpr int SECONDS_PER_DAY    = 86400;  // 24 * 3600
+static constexpr int USECS_PER_MSEC     = 1000;   // microseconds per millisecond
+static constexpr int USECS_PER_SEC      = 1000000; // microseconds per second
+
 static constexpr int month_table[12] = {31,  // January
                                         28,  // February
                                         31,  // March
@@ -35,11 +44,9 @@ static constexpr int month_table[12] = {31,  // January
                                         30,  // November
                                         31}; // December
 
-static constexpr int SecondsByYear     = 365 * 24 * 3600; // Normal Year
-static constexpr int SecondsByLeapYear = 366 * 24 * 3600; // Leap Year
+static constexpr int SecondsByYear     = 365 * HOURS_PER_DAY * SECONDS_PER_HOUR; // Normal Year
+static constexpr int SecondsByLeapYear = 366 * HOURS_PER_DAY * SECONDS_PER_HOUR; // Leap Year
 
-namespace
-{
 // Returns the number of days in a month for a given year (handles leap years)
 constexpr Standard_Integer getDaysInMonth(const Standard_Integer theMonth,
                                           const Standard_Integer theYear) noexcept
@@ -156,18 +163,18 @@ void Quantity_Date::SetValues(const Standard_Integer mm,
 
   for (i = 1; i < mm; i++)
   {
-    mySec += getDaysInMonth(i, yy) * 3600 * 24;
+    mySec += getDaysInMonth(i, yy) * SECONDS_PER_DAY;
   }
 
-  mySec += 3600 * 24 * (dd - 1);
+  mySec += SECONDS_PER_DAY * (dd - 1);
 
-  mySec += 3600 * hh;
+  mySec += SECONDS_PER_HOUR * hh;
 
-  mySec += 60 * mn;
+  mySec += SECONDS_PER_MINUTE * mn;
 
   mySec += ss;
 
-  myUSec += mis * 1000;
+  myUSec += mis * USECS_PER_MSEC;
 
   myUSec += mics;
 }
@@ -209,14 +216,14 @@ void Quantity_Date::Values(Standard_Integer& mm,
 
   for (mm = 1;; mm++)
   {
-    i = getDaysInMonth(mm, yy) * 3600 * 24;
+    i = getDaysInMonth(mm, yy) * SECONDS_PER_DAY;
     if (carry >= i)
       carry -= i;
     else
       break;
   }
 
-  i = 3600 * 24;
+  i = SECONDS_PER_DAY;
   for (dd = 1;; dd++)
   {
     if (carry >= i)
@@ -227,24 +234,24 @@ void Quantity_Date::Values(Standard_Integer& mm,
 
   for (hh = 0;; hh++)
   {
-    if (carry >= 3600)
-      carry -= 3600;
+    if (carry >= SECONDS_PER_HOUR)
+      carry -= SECONDS_PER_HOUR;
     else
       break;
   }
 
   for (mn = 0;; mn++)
   {
-    if (carry >= 60)
-      carry -= 60;
+    if (carry >= SECONDS_PER_MINUTE)
+      carry -= SECONDS_PER_MINUTE;
     else
       break;
   }
 
   ss = carry;
 
-  mis  = myUSec / 1000;
-  mics = myUSec - (mis * 1000);
+  mis  = myUSec / USECS_PER_MSEC;
+  mics = myUSec - (mis * USECS_PER_MSEC);
 }
 
 // ---------------------------------------------------------------------
@@ -271,7 +278,7 @@ Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
   if (i1 >= 0 && i2 < 0)
   {
     i1--;
-    i2 = 1000000 + i2;
+    i2 = USECS_PER_SEC + i2;
   }
   else if (i1 < 0 && i2 >= 0)
   {
@@ -279,7 +286,7 @@ Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
     if (i2 > 0)
     {
       i1--;
-      i2 = 1000000 - i2;
+      i2 = USECS_PER_SEC - i2;
     }
   }
   else if (i1 < 0 && i2 < 0)
@@ -313,7 +320,7 @@ Quantity_Date Quantity_Date::Subtract(const Quantity_Period& During)
   if (result.mySec >= 0 && result.myUSec < 0)
   {
     result.mySec--;
-    result.myUSec = 1000000 + result.myUSec;
+    result.myUSec = USECS_PER_SEC + result.myUSec;
   }
 
   if (result.mySec < 0)
@@ -334,10 +341,10 @@ Quantity_Date Quantity_Date::Add(const Quantity_Period& During)
   During.Values(result.mySec, result.myUSec);
   result.mySec += mySec;
   result.myUSec += myUSec;
-  if (result.myUSec >= 1000000)
+  if (result.myUSec >= USECS_PER_SEC)
   {
     result.mySec++;
-    result.myUSec -= 1000000;
+    result.myUSec -= USECS_PER_SEC;
   }
   return (result);
 }
