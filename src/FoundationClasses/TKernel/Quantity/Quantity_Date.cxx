@@ -22,21 +22,41 @@
 #include <Quantity_Period.hxx>
 #include <Standard_OutOfRange.hxx>
 
-static int month_table[12] = {31,  // January
-                              28,  // February
-                              31,  // March
-                              30,  // April
-                              31,  // May
-                              30,  // June
-                              31,  // July
-                              31,  // August
-                              30,  // September
-                              31,  // October
-                              30,  // November
-                              31}; // December
+namespace
+{
+static constexpr int SECONDS_PER_MINUTE = 60;
+static constexpr int SECONDS_PER_HOUR   = 3600;   // 60 * 60
+static constexpr int SECONDS_PER_DAY    = 86400;  // 24 * 3600
+static constexpr int USECS_PER_MSEC     = 1000;   // microseconds per millisecond
+static constexpr int USECS_PER_SEC      = 1000000; // microseconds per second
 
-static int SecondsByYear     = 365 * 24 * 3600; // Normal Year
-static int SecondsByLeapYear = 366 * 24 * 3600; // Leap Year
+static constexpr int month_table[12] = {31,  // January
+                                        28,  // February
+                                        31,  // March
+                                        30,  // April
+                                        31,  // May
+                                        30,  // June
+                                        31,  // July
+                                        31,  // August
+                                        30,  // September
+                                        31,  // October
+                                        30,  // November
+                                        31}; // December
+
+static constexpr int SecondsByYear     = 365 * SECONDS_PER_DAY; // Normal Year
+static constexpr int SecondsByLeapYear = 366 * SECONDS_PER_DAY; // Leap Year
+
+// Returns the number of days in a month for a given year (handles leap years)
+constexpr Standard_Integer getDaysInMonth(const Standard_Integer theMonth,
+                                          const Standard_Integer theYear) noexcept
+{
+  if (theMonth == 2)
+  {
+    return Quantity_Date::IsLeap(theYear) ? 29 : 28;
+  }
+  return month_table[theMonth - 1];
+}
+} // anonymous namespace
 
 // -----------------------------------------
 // Initialize a date to January,1 1979 00:00
@@ -69,12 +89,7 @@ Standard_Boolean Quantity_Date::IsValid(const Standard_Integer mm,
   if (yy < 1979)
     return Standard_False;
 
-  if (Quantity_Date::IsLeap(yy))
-    month_table[1] = 29;
-  else
-    month_table[1] = 28;
-
-  if (dd < 1 || dd > month_table[mm - 1])
+  if (dd < 1 || dd > getDaysInMonth(mm, yy))
     return Standard_False;
 
   if (hh < 0 || hh > 23)
@@ -135,11 +150,6 @@ void Quantity_Date::SetValues(const Standard_Integer mm,
   if (!Quantity_Date::IsValid(mm, dd, yy, hh, mn, ss, mis, mics))
     throw Quantity_DateDefinitionError("Quantity_Date::Quantity_Date invalid parameters");
 
-  if (Quantity_Date::IsLeap(yy))
-    month_table[1] = 29;
-  else
-    month_table[1] = 28;
-
   mySec  = 0;
   myUSec = 0;
   for (i = 1979; i < yy; i++)
@@ -152,18 +162,18 @@ void Quantity_Date::SetValues(const Standard_Integer mm,
 
   for (i = 1; i < mm; i++)
   {
-    mySec += month_table[i - 1] * 3600 * 24;
+    mySec += getDaysInMonth(i, yy) * SECONDS_PER_DAY;
   }
 
-  mySec += 3600 * 24 * (dd - 1);
+  mySec += SECONDS_PER_DAY * (dd - 1);
 
-  mySec += 3600 * hh;
+  mySec += SECONDS_PER_HOUR * hh;
 
-  mySec += 60 * mn;
+  mySec += SECONDS_PER_MINUTE * mn;
 
   mySec += ss;
 
-  myUSec += mis * 1000;
+  myUSec += mis * USECS_PER_MSEC;
 
   myUSec += mics;
 }
@@ -189,7 +199,6 @@ void Quantity_Date::Values(Standard_Integer& mm,
   {
     if (!Quantity_Date::IsLeap(yy))
     {
-      month_table[1] = 28; // normal year
       if (carry >= SecondsByYear)
         carry -= SecondsByYear;
       else
@@ -197,7 +206,6 @@ void Quantity_Date::Values(Standard_Integer& mm,
     }
     else
     {
-      month_table[1] = 29; // Leap year
       if (carry >= SecondsByLeapYear)
         carry -= SecondsByLeapYear;
       else
@@ -207,42 +215,43 @@ void Quantity_Date::Values(Standard_Integer& mm,
 
   for (mm = 1;; mm++)
   {
-    i = month_table[mm - 1] * 3600 * 24;
+    i = getDaysInMonth(mm, yy) * SECONDS_PER_DAY;
     if (carry >= i)
       carry -= i;
     else
       break;
   }
 
-  i = 3600 * 24;
-  for (dd = 1;; dd++)
+  // Extract days (count from 0, then convert to 1-based day number)
+  for (dd = 0;; dd++)
   {
-    if (carry >= i)
-      carry -= i;
+    if (carry >= SECONDS_PER_DAY)
+      carry -= SECONDS_PER_DAY;
     else
       break;
   }
+  dd++; // Convert from 0-based count to 1-based day number
 
   for (hh = 0;; hh++)
   {
-    if (carry >= 3600)
-      carry -= 3600;
+    if (carry >= SECONDS_PER_HOUR)
+      carry -= SECONDS_PER_HOUR;
     else
       break;
   }
 
   for (mn = 0;; mn++)
   {
-    if (carry >= 60)
-      carry -= 60;
+    if (carry >= SECONDS_PER_MINUTE)
+      carry -= SECONDS_PER_MINUTE;
     else
       break;
   }
 
   ss = carry;
 
-  mis  = myUSec / 1000;
-  mics = myUSec - (mis * 1000);
+  mis  = myUSec / USECS_PER_MSEC;
+  mics = myUSec - (mis * USECS_PER_MSEC);
 }
 
 // ---------------------------------------------------------------------
@@ -269,7 +278,7 @@ Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
   if (i1 >= 0 && i2 < 0)
   {
     i1--;
-    i2 = 1000000 + i2;
+    i2 = USECS_PER_SEC + i2;
   }
   else if (i1 < 0 && i2 >= 0)
   {
@@ -277,7 +286,7 @@ Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
     if (i2 > 0)
     {
       i1--;
-      i2 = 1000000 - i2;
+      i2 = USECS_PER_SEC - i2;
     }
   }
   else if (i1 < 0 && i2 < 0)
@@ -311,7 +320,7 @@ Quantity_Date Quantity_Date::Subtract(const Quantity_Period& During)
   if (result.mySec >= 0 && result.myUSec < 0)
   {
     result.mySec--;
-    result.myUSec = 1000000 + result.myUSec;
+    result.myUSec = USECS_PER_SEC + result.myUSec;
   }
 
   if (result.mySec < 0)
@@ -332,10 +341,10 @@ Quantity_Date Quantity_Date::Add(const Quantity_Period& During)
   During.Values(result.mySec, result.myUSec);
   result.mySec += mySec;
   result.myUSec += myUSec;
-  if (result.myUSec >= 1000000)
+  if (result.myUSec >= USECS_PER_SEC)
   {
     result.mySec++;
-    result.myUSec -= 1000000;
+    result.myUSec -= USECS_PER_SEC;
   }
   return (result);
 }
@@ -432,44 +441,4 @@ Standard_Integer Quantity_Date::MicroSecond()
   Standard_Integer dummy, msec;
   Values(dummy, dummy, dummy, dummy, dummy, dummy, dummy, msec);
   return (msec);
-}
-
-// ----------------------------------------------------------------------
-// IsEarlier : Return true if the date is earlier than an other date
-// ~~~~~~~~~
-// ----------------------------------------------------------------------
-
-Standard_Boolean Quantity_Date::IsEarlier(const Quantity_Date& other) const
-{
-  if (mySec < other.mySec)
-    return Standard_True;
-  else if (mySec > other.mySec)
-    return Standard_False;
-  else
-    return ((myUSec < other.myUSec) ? Standard_True : Standard_False);
-}
-
-// ----------------------------------------------------------------------
-// IsLater : Return true if the date is later than an other date
-// ~~~~~~~
-// ----------------------------------------------------------------------
-
-Standard_Boolean Quantity_Date::IsLater(const Quantity_Date& other) const
-{
-  if (mySec > other.mySec)
-    return Standard_True;
-  else if (mySec < other.mySec)
-    return Standard_False;
-  else
-    return ((myUSec > other.myUSec) ? Standard_True : Standard_False);
-}
-
-// ----------------------------------------------------------------------
-// IsEqual : Return true if the date is the same than an other date
-// ~~~~~~~
-// ----------------------------------------------------------------------
-
-Standard_Boolean Quantity_Date::IsEqual(const Quantity_Date& other) const
-{
-  return ((myUSec == other.myUSec && mySec == other.mySec) ? Standard_True : Standard_False);
 }
