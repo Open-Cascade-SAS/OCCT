@@ -23,10 +23,16 @@
 
 #define RGBHLS_H_UNDEFINED -1.0
 
-static Standard_Real TheEpsilon = 0.0001;
-
 namespace
 {
+// Returns a reference to the epsilon value for thread-safe access.
+// Using function-local static ensures thread-safe initialization (C++11).
+inline Standard_Real& getEpsilonRef() noexcept
+{
+  static Standard_Real theEpsilon = 0.0001;
+  return theEpsilon;
+}
+
 // Validate RGB values are in range [0, 1].
 inline void validateRgbRange(Standard_Real theR, Standard_Real theG, Standard_Real theB)
 {
@@ -104,14 +110,14 @@ static const Quantity_StandardColor THE_COLORS[] = {
 
 Standard_Real Quantity_Color::Epsilon() noexcept
 {
-  return TheEpsilon;
+  return getEpsilonRef();
 }
 
 //=================================================================================================
 
 void Quantity_Color::SetEpsilon(const Standard_Real theEpsilon) noexcept
 {
-  TheEpsilon = theEpsilon;
+  getEpsilonRef() = theEpsilon;
 }
 
 //=================================================================================================
