@@ -95,7 +95,7 @@ TEST_F(Quantity_PeriodTest, Validation)
 // Test SetValues and Values round-trip (tests time constants)
 TEST_F(Quantity_PeriodTest, SetValuesRoundTrip)
 {
-  Quantity_Period aPeriod;
+  Quantity_Period aPeriod(0, 0);  // Initialize with zero period
   aPeriod.SetValues(2, 3, 4, 5, 6, 7);
 
   Standard_Integer dd, hh, mn, ss, mis, mics;
@@ -157,7 +157,7 @@ TEST_F(Quantity_PeriodTest, MillisecondConversion)
 TEST_F(Quantity_PeriodTest, MicrosecondOverflow)
 {
   // Create period with > 1,000,000 microseconds
-  Quantity_Period aPeriod;
+  Quantity_Period aPeriod(0, 0);  // Initialize with zero period
   aPeriod.SetValues(0, 1500000); // 1.5 seconds in microseconds
 
   Standard_Integer ss, mics;
