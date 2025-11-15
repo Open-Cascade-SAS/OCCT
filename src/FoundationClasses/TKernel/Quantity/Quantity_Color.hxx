@@ -65,16 +65,16 @@ public:
   Standard_EXPORT Quantity_NameOfColor Name() const;
 
   //! Updates the color from specified named color.
-  void SetValues(const Quantity_NameOfColor theName)
+  void SetValues(const Quantity_NameOfColor theName) noexcept
   {
     myRgb = valuesOf(theName, Quantity_TOC_RGB);
   }
 
   //! Return the color as vector of 3 float elements.
-  const NCollection_Vec3<float>& Rgb() const { return myRgb; }
+  const NCollection_Vec3<float>& Rgb() const noexcept { return myRgb; }
 
   //! Return the color as vector of 3 float elements.
-  operator const NCollection_Vec3<float>&() const { return myRgb; }
+  operator const NCollection_Vec3<float>&() const noexcept { return myRgb; }
 
   //! Returns in theC1, theC2 and theC3 the components of this color
   //! according to the color system definition theType.
@@ -91,21 +91,21 @@ public:
                                  const Quantity_TypeOfColor theType);
 
   //! Returns the Red component (quantity of red) of the color within range [0.0; 1.0].
-  Standard_Real Red() const { return myRgb.r(); }
+  Standard_Real Red() const noexcept { return myRgb.r(); }
 
   //! Returns the Green component (quantity of green) of the color within range [0.0; 1.0].
-  Standard_Real Green() const { return myRgb.g(); }
+  Standard_Real Green() const noexcept { return myRgb.g(); }
 
   //! Returns the Blue component (quantity of blue) of the color within range [0.0; 1.0].
-  Standard_Real Blue() const { return myRgb.b(); }
+  Standard_Real Blue() const noexcept { return myRgb.b(); }
 
   //! Returns the Hue component (hue angle) of the color
   //! in degrees within range [0.0; 360.0], 0.0 being Red.
   //! -1.0 is a special value reserved for grayscale color (S should be 0.0)
-  Standard_Real Hue() const { return Convert_LinearRGB_To_HLS(myRgb)[0]; }
+  Standard_Real Hue() const noexcept { return Convert_LinearRGB_To_HLS(myRgb)[0]; }
 
   //! Returns the Light component (value of the lightness) of the color within range [0.0; 1.0].
-  Standard_Real Light() const { return Convert_LinearRGB_To_HLS(myRgb)[1]; }
+  Standard_Real Light() const noexcept { return Convert_LinearRGB_To_HLS(myRgb)[1]; }
 
   //! Increases or decreases the intensity (variation of the lightness).
   //! The delta is a percentage. Any value greater than zero will increase the intensity.
@@ -114,7 +114,7 @@ public:
 
   //! Returns the Saturation component (value of the saturation) of the color within range
   //! [0.0; 1.0].
-  Standard_Real Saturation() const { return Convert_LinearRGB_To_HLS(myRgb)[2]; }
+  Standard_Real Saturation() const noexcept { return Convert_LinearRGB_To_HLS(myRgb)[2]; }
 
   //! Increases or decreases the contrast (variation of the saturation).
   //! The delta is a percentage. Any value greater than zero will increase the contrast.
@@ -122,29 +122,29 @@ public:
   Standard_EXPORT void ChangeContrast(const Standard_Real theDelta);
 
   //! Returns TRUE if the distance between two colors is greater than Epsilon().
-  Standard_Boolean IsDifferent(const Quantity_Color& theOther) const
+  Standard_Boolean IsDifferent(const Quantity_Color& theOther) const noexcept
   {
     return (SquareDistance(theOther) > Epsilon() * Epsilon());
   }
 
   //! Alias to IsDifferent().
-  Standard_Boolean operator!=(const Quantity_Color& theOther) const
+  Standard_Boolean operator!=(const Quantity_Color& theOther) const noexcept
   {
     return IsDifferent(theOther);
   }
 
   //! Returns TRUE if the distance between two colors is no greater than Epsilon().
-  Standard_Boolean IsEqual(const Quantity_Color& theOther) const
+  Standard_Boolean IsEqual(const Quantity_Color& theOther) const noexcept
   {
     return (SquareDistance(theOther) <= Epsilon() * Epsilon());
   }
 
   //! Alias to IsEqual().
-  Standard_Boolean operator==(const Quantity_Color& theOther) const { return IsEqual(theOther); }
+  Standard_Boolean operator==(const Quantity_Color& theOther) const noexcept { return IsEqual(theOther); }
 
   //! Returns the distance between two colors. It's a value between 0 and the square root of 3 (the
   //! black/white distance).
-  Standard_Real Distance(const Quantity_Color& theColor) const
+  Standard_Real Distance(const Quantity_Color& theColor) const noexcept
   {
     return (NCollection_Vec3<Standard_Real>(myRgb)
             - NCollection_Vec3<Standard_Real>(theColor.myRgb))
@@ -152,7 +152,7 @@ public:
   }
 
   //! Returns the square of distance between two colors.
-  Standard_Real SquareDistance(const Quantity_Color& theColor) const
+  Standard_Real SquareDistance(const Quantity_Color& theColor) const noexcept
   {
     return (NCollection_Vec3<Standard_Real>(myRgb)
             - NCollection_Vec3<Standard_Real>(theColor.myRgb))
@@ -186,20 +186,20 @@ public:
   }
 
   //! Returns the name of the color identified by the given Quantity_NameOfColor enumeration value.
-  Standard_EXPORT static Standard_CString StringName(const Quantity_NameOfColor theColor);
+  Standard_EXPORT static Standard_CString StringName(const Quantity_NameOfColor theColor) noexcept;
 
   //! Finds color from predefined names.
   //! For example, the name of the color which corresponds to "BLACK" is Quantity_NOC_BLACK.
   //! Returns FALSE if name is unknown.
   Standard_EXPORT static Standard_Boolean ColorFromName(const Standard_CString theName,
-                                                        Quantity_NameOfColor&  theColor);
+                                                        Quantity_NameOfColor&  theColor) noexcept;
 
   //! Finds color from predefined names.
   //! @param theColorNameString the color name
   //! @param theColor a found color
   //! @return false if the color name is unknown, or true if the search by color name was successful
   static Standard_Boolean ColorFromName(const Standard_CString theColorNameString,
-                                        Quantity_Color&        theColor)
+                                        Quantity_Color&        theColor) noexcept
   {
     Quantity_NameOfColor aColorName = Quantity_NOC_BLACK;
     if (!ColorFromName(theColorNameString, aColorName))
@@ -223,7 +223,7 @@ public:
 
   //! Returns hex sRGB string in format "#FFAAFF".
   static TCollection_AsciiString ColorToHex(const Quantity_Color& theColor,
-                                            const bool            theToPrefixHash = true)
+                                            const bool            theToPrefixHash = true) noexcept
   {
     NCollection_Vec3<Standard_ShortReal> anSRgb =
       Convert_LinearRGB_To_sRGB((NCollection_Vec3<Standard_ShortReal>)theColor);
@@ -247,13 +247,13 @@ public:
     const NCollection_Vec3<float>& theHls);
 
   //! Converts Linear RGB components into HLS ones.
-  static NCollection_Vec3<float> Convert_LinearRGB_To_HLS(const NCollection_Vec3<float>& theRgb)
+  static NCollection_Vec3<float> Convert_LinearRGB_To_HLS(const NCollection_Vec3<float>& theRgb) noexcept
   {
     return Convert_sRGB_To_HLS(Convert_LinearRGB_To_sRGB(theRgb));
   }
 
   //! Converts HLS components into linear RGB ones.
-  static NCollection_Vec3<float> Convert_HLS_To_LinearRGB(const NCollection_Vec3<float>& theHls)
+  static NCollection_Vec3<float> Convert_HLS_To_LinearRGB(const NCollection_Vec3<float>& theHls) noexcept
   {
     return Convert_sRGB_To_LinearRGB(Convert_HLS_To_sRGB(theHls));
   }
@@ -281,7 +281,7 @@ public:
   //! as would be usually expected for RGB color packed into 4 bytes.
   //! @param[in] theColor  color to convert
   //! @param[out] theARGB  result color encoded as integer
-  static void Color2argb(const Quantity_Color& theColor, Standard_Integer& theARGB)
+  static void Color2argb(const Quantity_Color& theColor, Standard_Integer& theARGB) noexcept
   {
     const NCollection_Vec3<Standard_Integer> aColor(
       static_cast<Standard_Integer>(255.0f * theColor.myRgb.r() + 0.5f),
@@ -293,7 +293,7 @@ public:
   //! Convert integer ARGB value to Color. Alpha bits are ignored.
   //! Note that this packing does NOT involve linear -> non-linear sRGB conversion,
   //! as would be usually expected to preserve higher (for human eye) color precision in 4 bytes.
-  static void Argb2color(const Standard_Integer theARGB, Quantity_Color& theColor)
+  static void Argb2color(const Standard_Integer theARGB, Quantity_Color& theColor) noexcept
   {
     const NCollection_Vec3<Standard_Real> aColor(
       static_cast<Standard_Real>((theARGB & 0xff0000) >> 16),
@@ -307,7 +307,7 @@ public:
 
   //! Convert linear RGB component into sRGB using OpenGL specs formula (double precision), also
   //! known as gamma correction.
-  static Standard_Real Convert_LinearRGB_To_sRGB(Standard_Real theLinearValue)
+  static Standard_Real Convert_LinearRGB_To_sRGB(Standard_Real theLinearValue) noexcept
   {
     return theLinearValue <= 0.0031308 ? theLinearValue * 12.92
                                        : Pow(theLinearValue, 1.0 / 2.4) * 1.055 - 0.055;
@@ -315,7 +315,7 @@ public:
 
   //! Convert linear RGB component into sRGB using OpenGL specs formula (single precision), also
   //! known as gamma correction.
-  static float Convert_LinearRGB_To_sRGB(float theLinearValue)
+  static float Convert_LinearRGB_To_sRGB(float theLinearValue) noexcept
   {
     return theLinearValue <= 0.0031308f ? theLinearValue * 12.92f
                                         : powf(theLinearValue, 1.0f / 2.4f) * 1.055f - 0.055f;
@@ -323,7 +323,7 @@ public:
 
   //! Convert sRGB component into linear RGB using OpenGL specs formula (double precision), also
   //! known as gamma correction.
-  static Standard_Real Convert_sRGB_To_LinearRGB(Standard_Real thesRGBValue)
+  static Standard_Real Convert_sRGB_To_LinearRGB(Standard_Real thesRGBValue) noexcept
   {
     return thesRGBValue <= 0.04045 ? thesRGBValue / 12.92
                                    : Pow((thesRGBValue + 0.055) / 1.055, 2.4);
@@ -331,7 +331,7 @@ public:
 
   //! Convert sRGB component into linear RGB using OpenGL specs formula (single precision), also
   //! known as gamma correction.
-  static float Convert_sRGB_To_LinearRGB(float thesRGBValue)
+  static float Convert_sRGB_To_LinearRGB(float thesRGBValue) noexcept
   {
     return thesRGBValue <= 0.04045f ? thesRGBValue / 12.92f
                                     : powf((thesRGBValue + 0.055f) / 1.055f, 2.4f);
@@ -339,7 +339,7 @@ public:
 
   //! Convert linear RGB components into sRGB using OpenGL specs formula.
   template <typename T>
-  static NCollection_Vec3<T> Convert_LinearRGB_To_sRGB(const NCollection_Vec3<T>& theRGB)
+  static NCollection_Vec3<T> Convert_LinearRGB_To_sRGB(const NCollection_Vec3<T>& theRGB) noexcept
   {
     return NCollection_Vec3<T>(Convert_LinearRGB_To_sRGB(theRGB.r()),
                                Convert_LinearRGB_To_sRGB(theRGB.g()),
@@ -348,7 +348,7 @@ public:
 
   //! Convert sRGB components into linear RGB using OpenGL specs formula.
   template <typename T>
-  static NCollection_Vec3<T> Convert_sRGB_To_LinearRGB(const NCollection_Vec3<T>& theRGB)
+  static NCollection_Vec3<T> Convert_sRGB_To_LinearRGB(const NCollection_Vec3<T>& theRGB) noexcept
   {
     return NCollection_Vec3<T>(Convert_sRGB_To_LinearRGB(theRGB.r()),
                                Convert_sRGB_To_LinearRGB(theRGB.g()),
@@ -356,20 +356,20 @@ public:
   }
 
   //! Convert linear RGB component into sRGB using approximated uniform gamma coefficient 2.2.
-  static float Convert_LinearRGB_To_sRGB_approx22(float theLinearValue)
+  static float Convert_LinearRGB_To_sRGB_approx22(float theLinearValue) noexcept
   {
     return powf(theLinearValue, 2.2f);
   }
 
   //! Convert sRGB component into linear RGB using approximated uniform gamma coefficient 2.2
-  static float Convert_sRGB_To_LinearRGB_approx22(float thesRGBValue)
+  static float Convert_sRGB_To_LinearRGB_approx22(float thesRGBValue) noexcept
   {
     return powf(thesRGBValue, 1.0f / 2.2f);
   }
 
   //! Convert linear RGB components into sRGB using approximated uniform gamma coefficient 2.2
   static NCollection_Vec3<float> Convert_LinearRGB_To_sRGB_approx22(
-    const NCollection_Vec3<float>& theRGB)
+    const NCollection_Vec3<float>& theRGB) noexcept
   {
     return NCollection_Vec3<float>(Convert_LinearRGB_To_sRGB_approx22(theRGB.r()),
                                    Convert_LinearRGB_To_sRGB_approx22(theRGB.g()),
@@ -378,7 +378,7 @@ public:
 
   //! Convert sRGB components into linear RGB using approximated uniform gamma coefficient 2.2
   static NCollection_Vec3<float> Convert_sRGB_To_LinearRGB_approx22(
-    const NCollection_Vec3<float>& theRGB)
+    const NCollection_Vec3<float>& theRGB) noexcept
   {
     return NCollection_Vec3<float>(Convert_sRGB_To_LinearRGB_approx22(theRGB.r()),
                                    Convert_sRGB_To_LinearRGB_approx22(theRGB.g()),
@@ -391,7 +391,7 @@ public:
                      const Standard_Real theS,
                      Standard_Real&      theR,
                      Standard_Real&      theG,
-                     Standard_Real&      theB)
+                     Standard_Real&      theB) noexcept
   {
     const NCollection_Vec3<float> anRgb =
       Convert_HLS_To_sRGB(NCollection_Vec3<float>((float)theH, (float)theL, (float)theS));
@@ -406,7 +406,7 @@ public:
                      const Standard_Real theB,
                      Standard_Real&      theH,
                      Standard_Real&      theL,
-                     Standard_Real&      theS)
+                     Standard_Real&      theS) noexcept
   {
     const NCollection_Vec3<float> aHls =
       Convert_sRGB_To_HLS(NCollection_Vec3<float>((float)theR, (float)theG, (float)theB));
@@ -417,10 +417,10 @@ public:
 
 public:
   //! Returns the value used to compare two colors for equality; 0.0001 by default.
-  Standard_EXPORT static Standard_Real Epsilon();
+  Standard_EXPORT static Standard_Real Epsilon() noexcept;
 
   //! Set the value used to compare two colors for equality.
-  Standard_EXPORT static void SetEpsilon(const Standard_Real theEpsilon);
+  Standard_EXPORT static void SetEpsilon(const Standard_Real theEpsilon) noexcept;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;

@@ -25,34 +25,45 @@
 
 static Standard_Real TheEpsilon = 0.0001;
 
-// Throw exception if RGB values are out of range.
-#define Quantity_ColorValidateRgbRange(theR, theG, theB)                                           \
-  if (theR < 0.0 || theR > 1.0 || theG < 0.0 || theG > 1.0 || theB < 0.0 || theB > 1.0)            \
-  {                                                                                                \
-    throw Standard_OutOfRange("Color out");                                                        \
+namespace
+{
+// Validate RGB values are in range [0, 1].
+inline void validateRgbRange(Standard_Real theR, Standard_Real theG, Standard_Real theB)
+{
+  if (theR < 0.0 || theR > 1.0 || theG < 0.0 || theG > 1.0 || theB < 0.0 || theB > 1.0)
+  {
+    throw Standard_OutOfRange("Color out");
   }
+}
 
-// Throw exception if HLS values are out of range.
-#define Quantity_ColorValidateHlsRange(theH, theL, theS)                                           \
-  if ((theH < 0.0 && theH != RGBHLS_H_UNDEFINED && theS != 0.0) || (theH > 360.0) || theL < 0.0    \
-      || theL > 1.0 || theS < 0.0 || theS > 1.0)                                                   \
-  {                                                                                                \
-    throw Standard_OutOfRange("Color out");                                                        \
+// Validate HLS values are in valid ranges.
+inline void validateHlsRange(Standard_Real theH, Standard_Real theL, Standard_Real theS)
+{
+  if ((theH < 0.0 && theH != RGBHLS_H_UNDEFINED && theS != 0.0) || (theH > 360.0) || theL < 0.0
+      || theL > 1.0 || theS < 0.0 || theS > 1.0)
+  {
+    throw Standard_OutOfRange("Color out");
   }
+}
 
-// Throw exception if CIELab color values are out of range.
-#define Quantity_ColorValidateLabRange(theL, thea, theb)                                           \
-  if (theL < 0. || theL > 100. || thea < -100. || thea > 100. || theb < -110. || theb > 100.)      \
-  {                                                                                                \
-    throw Standard_OutOfRange("Color out");                                                        \
+// Validate CIELab color values are in valid ranges.
+inline void validateLabRange(Standard_Real theL, Standard_Real thea, Standard_Real theb)
+{
+  if (theL < 0. || theL > 100. || thea < -100. || thea > 100. || theb < -110. || theb > 100.)
+  {
+    throw Standard_OutOfRange("Color out");
   }
+}
 
-// Throw exception if CIELch color values are out of range.
-#define Quantity_ColorValidateLchRange(theL, thec, theh)                                           \
-  if (theL < 0. || theL > 100. || thec < 0. || thec > 135. || theh < 0.0 || theh > 360.)           \
-  {                                                                                                \
-    throw Standard_OutOfRange("Color out");                                                        \
+// Validate CIELch color values are in valid ranges.
+inline void validateLchRange(Standard_Real theL, Standard_Real thec, Standard_Real theh)
+{
+  if (theL < 0. || theL > 100. || thec < 0. || thec > 135. || theh < 0.0 || theh > 360.)
+  {
+    throw Standard_OutOfRange("Color out");
   }
+}
+} // anonymous namespace
 
 namespace
 {
@@ -91,14 +102,14 @@ static const Quantity_StandardColor THE_COLORS[] = {
 
 //=================================================================================================
 
-Standard_Real Quantity_Color::Epsilon()
+Standard_Real Quantity_Color::Epsilon() noexcept
 {
   return TheEpsilon;
 }
 
 //=================================================================================================
 
-void Quantity_Color::SetEpsilon(const Standard_Real theEpsilon)
+void Quantity_Color::SetEpsilon(const Standard_Real theEpsilon) noexcept
 {
   TheEpsilon = theEpsilon;
 }
@@ -132,11 +143,11 @@ NCollection_Vec3<float> Quantity_Color::valuesOf(const Quantity_NameOfColor theN
 
 //=================================================================================================
 
-Standard_CString Quantity_Color::StringName(const Quantity_NameOfColor theName)
+Standard_CString Quantity_Color::StringName(const Quantity_NameOfColor theName) noexcept
 {
   if ((Standard_Integer)theName < 0 || (Standard_Integer)theName > Quantity_NOC_WHITE)
   {
-    throw Standard_OutOfRange("Bad name");
+    return "UNDEFINED";
   }
   return THE_COLORS[theName].StringName;
 }
@@ -144,7 +155,7 @@ Standard_CString Quantity_Color::StringName(const Quantity_NameOfColor theName)
 //=================================================================================================
 
 Standard_Boolean Quantity_Color::ColorFromName(const Standard_CString theName,
-                                               Quantity_NameOfColor&  theColor)
+                                               Quantity_NameOfColor&  theColor) noexcept
 {
   TCollection_AsciiString aName(theName);
   aName.UpperCase();
@@ -249,7 +260,7 @@ Quantity_Color::Quantity_Color(const Standard_Real        theC1,
 Quantity_Color::Quantity_Color(const NCollection_Vec3<float>& theRgb)
     : myRgb(theRgb)
 {
-  Quantity_ColorValidateRgbRange(theRgb.r(), theRgb.g(), theRgb.b());
+  validateRgbRange(theRgb.r(), theRgb.g(), theRgb.b());
 }
 
 //=================================================================================================
@@ -286,31 +297,31 @@ void Quantity_Color::SetValues(const Standard_Real        theC1,
   switch (theType)
   {
     case Quantity_TOC_RGB: {
-      Quantity_ColorValidateRgbRange(theC1, theC2, theC3);
+      validateRgbRange(theC1, theC2, theC3);
       myRgb.SetValues(float(theC1), float(theC2), float(theC3));
       break;
     }
     case Quantity_TOC_sRGB: {
-      Quantity_ColorValidateRgbRange(theC1, theC2, theC3);
+      validateRgbRange(theC1, theC2, theC3);
       myRgb.SetValues((float)Convert_sRGB_To_LinearRGB(theC1),
                       (float)Convert_sRGB_To_LinearRGB(theC2),
                       (float)Convert_sRGB_To_LinearRGB(theC3));
       break;
     }
     case Quantity_TOC_HLS: {
-      Quantity_ColorValidateHlsRange(theC1, theC2, theC3);
+      validateHlsRange(theC1, theC2, theC3);
       myRgb =
         Convert_HLS_To_LinearRGB(NCollection_Vec3<float>(float(theC1), float(theC2), float(theC3)));
       break;
     }
     case Quantity_TOC_CIELab: {
-      Quantity_ColorValidateLabRange(theC1, theC2, theC3);
+      validateLabRange(theC1, theC2, theC3);
       myRgb =
         Convert_Lab_To_LinearRGB(NCollection_Vec3<float>(float(theC1), float(theC2), float(theC3)));
       break;
     }
     case Quantity_TOC_CIELch: {
-      Quantity_ColorValidateLchRange(theC1, theC2, theC3);
+      validateLchRange(theC1, theC2, theC3);
       myRgb = Convert_Lab_To_LinearRGB(
         Convert_Lch_To_Lab(NCollection_Vec3<float>(float(theC1), float(theC2), float(theC3))));
       break;

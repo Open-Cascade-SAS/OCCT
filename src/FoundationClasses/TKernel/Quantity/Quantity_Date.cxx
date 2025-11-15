@@ -439,7 +439,7 @@ Standard_Integer Quantity_Date::MicroSecond()
 // ~~~~~~~~~
 // ----------------------------------------------------------------------
 
-Standard_Boolean Quantity_Date::IsEarlier(const Quantity_Date& other) const
+Standard_Boolean Quantity_Date::IsEarlier(const Quantity_Date& other) const noexcept
 {
   if (mySec < other.mySec)
     return Standard_True;
@@ -454,7 +454,7 @@ Standard_Boolean Quantity_Date::IsEarlier(const Quantity_Date& other) const
 // ~~~~~~~
 // ----------------------------------------------------------------------
 
-Standard_Boolean Quantity_Date::IsLater(const Quantity_Date& other) const
+Standard_Boolean Quantity_Date::IsLater(const Quantity_Date& other) const noexcept
 {
   if (mySec > other.mySec)
     return Standard_True;
@@ -469,7 +469,7 @@ Standard_Boolean Quantity_Date::IsLater(const Quantity_Date& other) const
 // ~~~~~~~
 // ----------------------------------------------------------------------
 
-Standard_Boolean Quantity_Date::IsEqual(const Quantity_Date& other) const
+Standard_Boolean Quantity_Date::IsEqual(const Quantity_Date& other) const noexcept
 {
   return ((myUSec == other.myUSec && mySec == other.mySec) ? Standard_True : Standard_False);
 }
