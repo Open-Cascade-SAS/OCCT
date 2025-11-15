@@ -41,7 +41,7 @@ TEST_F(Quantity_ColorTest, BasicConstruction)
   EXPECT_TRUE(IsNear(0.0, aColor1.Blue()));
 
   // RGB constructor
-  Quantity_Color aColor2(0.5, 0.6, 0.7);
+  Quantity_Color aColor2(0.5, 0.6, 0.7, Quantity_TOC_RGB);
   EXPECT_TRUE(IsNear(0.5, aColor2.Red()));
   EXPECT_TRUE(IsNear(0.6, aColor2.Green()));
   EXPECT_TRUE(IsNear(0.7, aColor2.Blue()));
@@ -56,7 +56,7 @@ TEST_F(Quantity_ColorTest, BasicConstruction)
 // Test constexpr getters (compile-time evaluation capability)
 TEST_F(Quantity_ColorTest, ConstexprGetters)
 {
-  const Quantity_Color aColor(0.3, 0.5, 0.7);
+  const Quantity_Color aColor(0.3, 0.5, 0.7, Quantity_TOC_RGB);
 
   // These should work at compile-time with constexpr
   Standard_Real aR = aColor.Red();
@@ -71,9 +71,9 @@ TEST_F(Quantity_ColorTest, ConstexprGetters)
 // Test equality comparison (noexcept guarantee)
 TEST_F(Quantity_ColorTest, EqualityComparison)
 {
-  Quantity_Color aColor1(0.5, 0.6, 0.7);
-  Quantity_Color aColor2(0.5, 0.6, 0.7);
-  Quantity_Color aColor3(0.5, 0.6, 0.8);
+  Quantity_Color aColor1(0.5, 0.6, 0.7, Quantity_TOC_RGB);
+  Quantity_Color aColor2(0.5, 0.6, 0.7, Quantity_TOC_RGB);
+  Quantity_Color aColor3(0.5, 0.6, 0.8, Quantity_TOC_RGB);
 
   EXPECT_TRUE(aColor1.IsEqual(aColor2));
   EXPECT_TRUE(aColor1 == aColor2);
@@ -89,8 +89,8 @@ TEST_F(Quantity_ColorTest, EqualityComparison)
 // Test distance calculation (noexcept guarantee)
 TEST_F(Quantity_ColorTest, DistanceCalculation)
 {
-  Quantity_Color aColor1(0.0, 0.0, 0.0);
-  Quantity_Color aColor2(0.3, 0.4, 0.0);
+  Quantity_Color aColor1(0.0, 0.0, 0.0, Quantity_TOC_RGB);
+  Quantity_Color aColor2(0.3, 0.4, 0.0, Quantity_TOC_RGB);
 
   // Distance should be sqrt(0.3^2 + 0.4^2) = sqrt(0.09 + 0.16) = sqrt(0.25) = 0.5
   Standard_Real aDist = aColor1.Distance(aColor2);
@@ -112,7 +112,7 @@ TEST_F(Quantity_ColorTest, RGB_to_HLS_Conversion)
   EXPECT_TRUE(IsNear(1.0, aHLS[2]));      // Saturation should be 1 (fully saturated)
 
   // Gray (no saturation)
-  Quantity_Color aGray(0.5, 0.5, 0.5);
+  Quantity_Color aGray(0.5, 0.5, 0.5, Quantity_TOC_RGB);
   NCollection_Vec3<float> aHLS_Gray = Quantity_Color::Convert_sRGB_To_HLS(aGray.Rgb());
 
   EXPECT_TRUE(IsNear(0.5, aHLS_Gray[1]));  // Lightness
@@ -168,7 +168,7 @@ TEST_F(Quantity_ColorTest, Lch_to_Lab_RoundTrip)
 // Test Lab to RGB conversion (round-trip validation)
 TEST_F(Quantity_ColorTest, Lab_to_RGB_RoundTrip)
 {
-  Quantity_Color aOriginal(0.5, 0.6, 0.7);
+  Quantity_Color aOriginal(0.5, 0.6, 0.7, Quantity_TOC_RGB);
   NCollection_Vec3<float> aLab = Quantity_Color::Convert_LinearRGB_To_Lab(aOriginal.Rgb());
   NCollection_Vec3<float> aRGB = Quantity_Color::Convert_Lab_To_LinearRGB(aLab);
 
@@ -181,14 +181,14 @@ TEST_F(Quantity_ColorTest, Lab_to_RGB_RoundTrip)
 TEST_F(Quantity_ColorTest, DeltaE2000_Calculation)
 {
   // Same color should have DeltaE = 0
-  Quantity_Color aColor1(0.5, 0.6, 0.7);
-  Quantity_Color aColor2(0.5, 0.6, 0.7);
+  Quantity_Color aColor1(0.5, 0.6, 0.7, Quantity_TOC_RGB);
+  Quantity_Color aColor2(0.5, 0.6, 0.7, Quantity_TOC_RGB);
 
   Standard_Real aDeltaE = aColor1.DeltaE2000(aColor2);
   EXPECT_TRUE(IsNear(0.0, aDeltaE, 0.01));
 
   // Different colors should have non-zero DeltaE
-  Quantity_Color aColor3(0.3, 0.4, 0.5);
+  Quantity_Color aColor3(0.3, 0.4, 0.5, Quantity_TOC_RGB);
   Standard_Real aDeltaE2 = aColor1.DeltaE2000(aColor3);
   EXPECT_GT(aDeltaE2, 0.0);
 }
@@ -284,7 +284,7 @@ TEST_F(Quantity_ColorTest, EdgeCases)
   EXPECT_TRUE(IsNear(1.0, aWhite.Blue()));
 
   // Test equality with epsilon tolerance
-  Quantity_Color aColor1(0.5, 0.5, 0.5);
-  Quantity_Color aColor2(0.50001, 0.50001, 0.50001);
+  Quantity_Color aColor1(0.5, 0.5, 0.5, Quantity_TOC_RGB);
+  Quantity_Color aColor2(0.50001, 0.50001, 0.50001, Quantity_TOC_RGB);
   EXPECT_TRUE(aColor1.IsEqual(aColor2)); // Should be equal within epsilon
 }

@@ -42,7 +42,7 @@ TEST_F(Quantity_ColorRGBATest, BasicConstruction)
   EXPECT_TRUE(IsNear(1.0f, aColor1.Alpha()));
 
   // Constructor with RGB + alpha
-  Quantity_ColorRGBA aColor2(Quantity_Color(0.5, 0.6, 0.7), 0.8f);
+  Quantity_ColorRGBA aColor2(Quantity_Color(0.5, 0.6, 0.7, Quantity_TOC_RGB), 0.8f);
   EXPECT_TRUE(IsNear(0.5f, aColor2.GetRGB().Red()));
   EXPECT_TRUE(IsNear(0.6f, aColor2.GetRGB().Green()));
   EXPECT_TRUE(IsNear(0.7f, aColor2.GetRGB().Blue()));
