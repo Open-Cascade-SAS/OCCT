@@ -36,9 +36,9 @@ TEST_F(Quantity_ColorTest, BasicConstruction)
 {
   // Default constructor
   Quantity_Color aColor1;
-  EXPECT_TRUE(IsNear(0.0, aColor1.Red()));
-  EXPECT_TRUE(IsNear(0.0, aColor1.Green()));
-  EXPECT_TRUE(IsNear(0.0, aColor1.Blue()));
+  EXPECT_TRUE(IsNear(1.0, aColor1.Red()));    // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(1.0, aColor1.Green()));  // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(0.0, aColor1.Blue()));   // YELLOW = RGB(1,1,0)
 
   // RGB constructor
   Quantity_Color aColor2(0.5, 0.6, 0.7, Quantity_TOC_RGB);

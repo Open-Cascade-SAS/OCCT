@@ -153,7 +153,7 @@ void Quantity_Period::SetValues(const Standard_Integer ss, const Standard_Intege
 
   mySec  = ss;
   myUSec = mics;
-  while (myUSec > USECS_PER_SEC)
+  while (myUSec >= USECS_PER_SEC)
   {
     myUSec -= USECS_PER_SEC;
     mySec++;
@@ -203,7 +203,7 @@ Quantity_Period Quantity_Period::Add(const Quantity_Period& OtherPeriod) const
   Quantity_Period result(mySec, myUSec);
   result.mySec += OtherPeriod.mySec;
   result.myUSec += OtherPeriod.myUSec;
-  if (result.myUSec > USECS_PER_SEC)
+  if (result.myUSec >= USECS_PER_SEC)
   {
     result.myUSec -= USECS_PER_SEC;
     result.mySec++;

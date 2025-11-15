@@ -36,9 +36,9 @@ TEST_F(Quantity_ColorRGBATest, BasicConstruction)
 {
   // Default constructor
   Quantity_ColorRGBA aColor1;
-  EXPECT_TRUE(IsNear(0.0f, aColor1.GetRGB().Red()));
-  EXPECT_TRUE(IsNear(0.0f, aColor1.GetRGB().Green()));
-  EXPECT_TRUE(IsNear(0.0f, aColor1.GetRGB().Blue()));
+  EXPECT_TRUE(IsNear(1.0f, aColor1.GetRGB().Red()));    // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(1.0f, aColor1.GetRGB().Green()));  // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(0.0f, aColor1.GetRGB().Blue()));   // YELLOW = RGB(1,1,0)
   EXPECT_TRUE(IsNear(1.0f, aColor1.Alpha()));
 
   // Constructor with RGB + alpha
@@ -179,7 +179,8 @@ TEST_F(Quantity_ColorRGBATest, HexColorParsing_MixedCase)
   bool aResult = Quantity_ColorRGBA::ColorFromHex("#FfAa00", aColor, true);
   EXPECT_TRUE(aResult);
   EXPECT_TRUE(IsNear(1.0f, aColor.GetRGB().Red(), 0.01f));
-  EXPECT_GT(aColor.GetRGB().Green(), 0.6f); // AA = 170/255 ~= 0.667
+  // AA = 170/255 = 0.667 sRGB, converts to ~0.402 linear RGB
+  EXPECT_TRUE(IsNear(0.402f, aColor.GetRGB().Green(), 0.01f));
   EXPECT_TRUE(IsNear(0.0f, aColor.GetRGB().Blue(), 0.01f));
 }
 
@@ -192,12 +193,13 @@ TEST_F(Quantity_ColorRGBATest, HexColorParsing_SpecificValues)
   bool aResult = Quantity_ColorRGBA::ColorFromHex("#102030", aColor, true);
   EXPECT_TRUE(aResult);
 
-  // 0x10 = 16 / 255 ~= 0.0627
-  // 0x20 = 32 / 255 ~= 0.1255
-  // 0x30 = 48 / 255 ~= 0.1882
-  EXPECT_TRUE(IsNear(0.0627f, aColor.GetRGB().Red(), 0.01f));
-  EXPECT_TRUE(IsNear(0.1255f, aColor.GetRGB().Green(), 0.01f));
-  EXPECT_TRUE(IsNear(0.1882f, aColor.GetRGB().Blue(), 0.01f));
+  // Hex values are sRGB that get converted to linear RGB
+  // 0x10 = 16/255 = 0.0627 sRGB -> ~0.00606 linear RGB
+  // 0x20 = 32/255 = 0.1255 sRGB -> ~0.01517 linear RGB
+  // 0x30 = 48/255 = 0.1882 sRGB -> ~0.03057 linear RGB
+  EXPECT_TRUE(IsNear(0.00606f, aColor.GetRGB().Red(), 0.001f));
+  EXPECT_TRUE(IsNear(0.01517f, aColor.GetRGB().Green(), 0.001f));
+  EXPECT_TRUE(IsNear(0.03057f, aColor.GetRGB().Blue(), 0.001f));
 }
 
 // Test equality comparison
@@ -266,11 +268,15 @@ TEST_F(Quantity_ColorRGBATest, ComponentOrder)
   EXPECT_TRUE(aResult);
 
   // Verify the order is correct: R=0x12, G=0x34, B=0x56
-  float aExpectedR = 0x12 / 255.0f; // ~= 0.0706
-  float aExpectedG = 0x34 / 255.0f; // ~= 0.2039
-  float aExpectedB = 0x56 / 255.0f; // ~= 0.3373
+  // Hex values are sRGB that get converted to linear RGB
+  // 0x12 = 18/255 = 0.0706 sRGB -> ~0.00707 linear RGB
+  // 0x34 = 52/255 = 0.2039 sRGB -> ~0.03310 linear RGB
+  // 0x56 = 86/255 = 0.3373 sRGB -> ~0.09144 linear RGB
+  float aExpectedR = 0.00707f;
+  float aExpectedG = 0.03310f;
+  float aExpectedB = 0.09144f;
 
-  EXPECT_TRUE(IsNear(aExpectedR, aColor.GetRGB().Red(), 0.01f));
-  EXPECT_TRUE(IsNear(aExpectedG, aColor.GetRGB().Green(), 0.01f));
-  EXPECT_TRUE(IsNear(aExpectedB, aColor.GetRGB().Blue(), 0.01f));
+  EXPECT_TRUE(IsNear(aExpectedR, aColor.GetRGB().Red(), 0.001f));
+  EXPECT_TRUE(IsNear(aExpectedG, aColor.GetRGB().Green(), 0.001f));
+  EXPECT_TRUE(IsNear(aExpectedB, aColor.GetRGB().Blue(), 0.001f));
 }
