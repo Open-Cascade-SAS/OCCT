@@ -123,7 +123,7 @@ TEST_F(Quantity_ColorTest, RGB_to_HLS_Conversion)
 TEST_F(Quantity_ColorTest, LinearRGB_to_Lab_Conversion)
 {
   // White should convert to L=100, a=0, b=0 in Lab
-  Quantity_Color aWhite(1.0, 1.0, 1.0);
+  Quantity_Color aWhite(1.0, 1.0, 1.0, Quantity_TOC_RGB);
   NCollection_Vec3<float> aLab = Quantity_Color::Convert_LinearRGB_To_Lab(aWhite.Rgb());
 
   EXPECT_TRUE(IsNear(100.0, aLab[0], 1.0)); // L should be near 100
@@ -131,7 +131,7 @@ TEST_F(Quantity_ColorTest, LinearRGB_to_Lab_Conversion)
   EXPECT_TRUE(IsNear(0.0, aLab[2], 5.0));   // b should be near 0
 
   // Black should convert to L=0
-  Quantity_Color aBlack(0.0, 0.0, 0.0);
+  Quantity_Color aBlack(0.0, 0.0, 0.0, Quantity_TOC_RGB);
   NCollection_Vec3<float> aLabBlack = Quantity_Color::Convert_LinearRGB_To_Lab(aBlack.Rgb());
 
   EXPECT_TRUE(IsNear(0.0, aLabBlack[0], 1.0)); // L should be 0
@@ -272,13 +272,13 @@ TEST_F(Quantity_ColorTest, ColorNameString)
 TEST_F(Quantity_ColorTest, EdgeCases)
 {
   // Test with zero values
-  Quantity_Color aBlack(0.0, 0.0, 0.0);
+  Quantity_Color aBlack(0.0, 0.0, 0.0, Quantity_TOC_RGB);
   EXPECT_TRUE(IsNear(0.0, aBlack.Red()));
   EXPECT_TRUE(IsNear(0.0, aBlack.Green()));
   EXPECT_TRUE(IsNear(0.0, aBlack.Blue()));
 
   // Test with max values
-  Quantity_Color aWhite(1.0, 1.0, 1.0);
+  Quantity_Color aWhite(1.0, 1.0, 1.0, Quantity_TOC_RGB);
   EXPECT_TRUE(IsNear(1.0, aWhite.Red()));
   EXPECT_TRUE(IsNear(1.0, aWhite.Green()));
   EXPECT_TRUE(IsNear(1.0, aWhite.Blue()));
