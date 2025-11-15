@@ -221,7 +221,7 @@ TEST_F(Quantity_ColorRGBATest, RGBAccess)
   EXPECT_TRUE(IsNear(0.4f, aRGB.Green()));
   EXPECT_TRUE(IsNear(0.6f, aRGB.Blue()));
 
-  aColor.ChangeRGB().SetValues(0.3f, 0.5f, 0.7f);
+  aColor.ChangeRGB().SetValues(0.3f, 0.5f, 0.7f, Quantity_TOC_RGB);
   EXPECT_TRUE(IsNear(0.3f, aColor.GetRGB().Red()));
   EXPECT_TRUE(IsNear(0.5f, aColor.GetRGB().Green()));
   EXPECT_TRUE(IsNear(0.7f, aColor.GetRGB().Blue()));

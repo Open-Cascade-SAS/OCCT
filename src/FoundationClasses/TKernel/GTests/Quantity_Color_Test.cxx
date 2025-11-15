@@ -218,7 +218,7 @@ TEST_F(Quantity_ColorTest, SetValues)
 {
   Quantity_Color aColor;
 
-  aColor.SetValues(0.2, 0.4, 0.6);
+  aColor.SetValues(0.2, 0.4, 0.6, Quantity_TOC_RGB);
   EXPECT_TRUE(IsNear(0.2, aColor.Red()));
   EXPECT_TRUE(IsNear(0.4, aColor.Green()));
   EXPECT_TRUE(IsNear(0.6, aColor.Blue()));
