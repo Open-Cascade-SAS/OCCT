@@ -30,10 +30,34 @@ static constexpr double POW_25_7           = 6103515625.0;        // 25^7 used i
 static constexpr double CIELAB_EPSILON     = 0.008856451679035631; // (6/29)^3
 static constexpr double CIELAB_KAPPA       = 7.787037037037037;    // (1/3) * (29/6)^2
 static constexpr double CIELAB_OFFSET      = 16.0 / 116.0;
+static constexpr double CIELAB_L_COEFF     = 116.0;
+static constexpr double CIELAB_A_COEFF     = 500.0;
+static constexpr double CIELAB_B_COEFF     = 200.0;
+static constexpr double CIELAB_L_OFFSET    = 16.0;
 // D65 / 2 deg (CIE 1931) standard illuminant reference white point
 static constexpr double D65_REF_X          = 95.047;
 static constexpr double D65_REF_Y          = 100.000;
 static constexpr double D65_REF_Z          = 108.883;
+// sRGB to XYZ conversion matrix (D65 illuminant, 2° observer)
+static constexpr double RGB_TO_XYZ_R_X     = 0.4124564;
+static constexpr double RGB_TO_XYZ_R_Y     = 0.2126729;
+static constexpr double RGB_TO_XYZ_R_Z     = 0.0193339;
+static constexpr double RGB_TO_XYZ_G_X     = 0.3575761;
+static constexpr double RGB_TO_XYZ_G_Y     = 0.7151522;
+static constexpr double RGB_TO_XYZ_G_Z     = 0.1191920;
+static constexpr double RGB_TO_XYZ_B_X     = 0.1804375;
+static constexpr double RGB_TO_XYZ_B_Y     = 0.0721750;
+static constexpr double RGB_TO_XYZ_B_Z     = 0.9503041;
+// XYZ to sRGB conversion matrix (D65 illuminant, 2° observer)
+static constexpr double XYZ_TO_RGB_X_R     = 3.2404542;
+static constexpr double XYZ_TO_RGB_X_G     = -0.9692660;
+static constexpr double XYZ_TO_RGB_X_B     = 0.0556434;
+static constexpr double XYZ_TO_RGB_Y_R     = -1.5371385;
+static constexpr double XYZ_TO_RGB_Y_G     = 1.8760108;
+static constexpr double XYZ_TO_RGB_Y_B     = -0.2040259;
+static constexpr double XYZ_TO_RGB_Z_R     = -0.4985314;
+static constexpr double XYZ_TO_RGB_Z_G     = 0.0415560;
+static constexpr double XYZ_TO_RGB_Z_B     = 1.0572252;
 } // namespace
 
 namespace
@@ -632,18 +656,18 @@ NCollection_Vec3<float> Quantity_Color::Convert_LinearRGB_To_Lab(
 
   // convert to XYZ normalized to D65 / 2 deg (CIE 1931) standard illuminant intensities
   // see http://www.brucelindbloom.com/index.html?Equations.html
-  double aX = (aR * 0.4124564 + aG * 0.3575761 + aB * 0.1804375) * 100. / D65_REF_X;
-  double aY = (aR * 0.2126729 + aG * 0.7151522 + aB * 0.0721750);
-  double aZ = (aR * 0.0193339 + aG * 0.1191920 + aB * 0.9503041) * 100. / D65_REF_Z;
+  double aX = (aR * RGB_TO_XYZ_R_X + aG * RGB_TO_XYZ_G_X + aB * RGB_TO_XYZ_B_X) * 100. / D65_REF_X;
+  double aY = (aR * RGB_TO_XYZ_R_Y + aG * RGB_TO_XYZ_G_Y + aB * RGB_TO_XYZ_B_Y);
+  double aZ = (aR * RGB_TO_XYZ_R_Z + aG * RGB_TO_XYZ_G_Z + aB * RGB_TO_XYZ_B_Z) * 100. / D65_REF_Z;
 
   // convert to Lab
   double afX = CIELab_f(aX);
   double afY = CIELab_f(aY);
   double afZ = CIELab_f(aZ);
 
-  double aL = 116. * afY - 16.;
-  double aa = 500. * (afX - afY);
-  double ab = 200. * (afY - afZ);
+  double aL = CIELAB_L_COEFF * afY - CIELAB_L_OFFSET;
+  double aa = CIELAB_A_COEFF * (afX - afY);
+  double ab = CIELAB_B_COEFF * (afY - afZ);
 
   return NCollection_Vec3<float>((float)aL, (float)aa, (float)ab);
 }
@@ -671,9 +695,9 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_LinearRGB(
     double aC = aRate / (double)NBSTEPS;
 
     // convert to XYZ for D65 / 2 deg (CIE 1931) standard illuminant
-    double afY = (aL + 16.) / 116.;
-    double afX = aC * aa / 500. + afY;
-    double afZ = afY - aC * ab / 200.;
+    double afY = (aL + CIELAB_L_OFFSET) / CIELAB_L_COEFF;
+    double afX = aC * aa / CIELAB_A_COEFF + afY;
+    double afZ = afY - aC * ab / CIELAB_B_COEFF;
 
     double aX = CIELab_invertf(afX) * D65_REF_X;
     double aY = CIELab_invertf(afY) * D65_REF_Y;
@@ -681,9 +705,9 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_LinearRGB(
 
     // convert to RGB
     // see http://www.brucelindbloom.com/index.html?Equations.html
-    double aR = (aX * 3.2404542 + aY * -1.5371385 + aZ * -0.4985314) / 100.;
-    double aG = (aX * -0.9692660 + aY * 1.8760108 + aZ * 0.0415560) / 100.;
-    double aB = (aX * 0.0556434 + aY * -0.2040259 + aZ * 1.0572252) / 100.;
+    double aR = (aX * XYZ_TO_RGB_X_R + aY * XYZ_TO_RGB_Y_R + aZ * XYZ_TO_RGB_Z_R) / 100.;
+    double aG = (aX * XYZ_TO_RGB_X_G + aY * XYZ_TO_RGB_Y_G + aZ * XYZ_TO_RGB_Z_G) / 100.;
+    double aB = (aX * XYZ_TO_RGB_X_B + aY * XYZ_TO_RGB_Y_B + aZ * XYZ_TO_RGB_Z_B) / 100.;
 
     // exit if we are in range or at zero C
     if (aRate == 0 || (aR >= 0. && aR <= 1. && aG >= 0. && aG <= 1. && aB >= 0. && aB <= 1.))
