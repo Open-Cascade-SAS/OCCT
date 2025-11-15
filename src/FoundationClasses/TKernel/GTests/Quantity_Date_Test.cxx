@@ -169,16 +169,22 @@ TEST_F(Quantity_DateTest, SetValuesRoundTrip)
 // Test individual component getters
 TEST_F(Quantity_DateTest, IndividualGetters)
 {
-  Quantity_Date aDate(7, 20, 2024, 15, 45, 30, 123, 456);
+  // Test with a simple date first: January 2, 1979
+  Quantity_Date aDate1(1, 2, 1979, 0, 0, 0, 0, 0);
+  EXPECT_EQ(1, aDate1.Month());
+  EXPECT_EQ(2, aDate1.Day());
+  EXPECT_EQ(1979, aDate1.Year());
 
-  EXPECT_EQ(7, aDate.Month());
-  EXPECT_EQ(20, aDate.Day());
-  EXPECT_EQ(2024, aDate.Year());
-  EXPECT_EQ(15, aDate.Hour());
-  EXPECT_EQ(45, aDate.Minute());
-  EXPECT_EQ(30, aDate.Second());
-  EXPECT_EQ(123, aDate.MilliSecond());
-  EXPECT_EQ(456, aDate.MicroSecond());
+  // Test with July 20, 2024
+  Quantity_Date aDate2(7, 20, 2024, 15, 45, 30, 123, 456);
+  EXPECT_EQ(7, aDate2.Month());
+  EXPECT_EQ(20, aDate2.Day());
+  EXPECT_EQ(2024, aDate2.Year());
+  EXPECT_EQ(15, aDate2.Hour());
+  EXPECT_EQ(45, aDate2.Minute());
+  EXPECT_EQ(30, aDate2.Second());
+  EXPECT_EQ(123, aDate2.MilliSecond());
+  EXPECT_EQ(456, aDate2.MicroSecond());
 }
 
 // Test date difference calculation (uses USECS_PER_SEC constant)
