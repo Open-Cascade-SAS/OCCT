@@ -21,7 +21,10 @@
 #include <Standard_Dump.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#define RGBHLS_H_UNDEFINED -1.0
+namespace
+{
+static constexpr float RGBHLS_H_UNDEFINED = -1.0f;
+} // namespace
 
 namespace
 {
@@ -80,10 +83,10 @@ struct Quantity_StandardColor
   NCollection_Vec3<float> RgbValues;
   Quantity_NameOfColor    EnumName;
 
-  Quantity_StandardColor(Quantity_NameOfColor           theName,
-                         const char*                    theStringName,
-                         const NCollection_Vec3<float>& thesRGB,
-                         const NCollection_Vec3<float>& theRGB)
+  constexpr Quantity_StandardColor(Quantity_NameOfColor           theName,
+                                   const char*                    theStringName,
+                                   const NCollection_Vec3<float>& thesRGB,
+                                   const NCollection_Vec3<float>& theRGB) noexcept
       : StringName(theStringName),
         sRgbValues(thesRGB),
         RgbValues(theRGB),
@@ -539,7 +542,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_HLS_To_sRGB(const NCollection_Ve
 // function : Convert_sRGB_To_HLS
 // purpose  : Reference: La synthese d'images, Collection Hermes
 // =======================================================================
-NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(const NCollection_Vec3<float>& theRgb)
+NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(const NCollection_Vec3<float>& theRgb) noexcept
 {
   float aPlus = 0.0f;
   float aDiff = theRgb.g() - theRgb.b();
@@ -589,7 +592,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(const NCollection_Ve
 // purpose  : non-linear function transforming XYZ coordinates to CIE Lab
 // see http://www.brucelindbloom.com/index.html?Equations.html
 // =======================================================================
-static inline double CIELab_f(double theValue)
+static inline double CIELab_f(double theValue) noexcept
 {
   return theValue > 0.008856451679035631 ? Pow(theValue, 1. / 3.)
                                          : (7.787037037037037 * theValue) + 16. / 116.;
@@ -600,7 +603,7 @@ static inline double CIELab_f(double theValue)
 // purpose  : inverse of non-linear function transforming XYZ coordinates to CIE Lab
 // see http://www.brucelindbloom.com/index.html?Equations.html
 // =======================================================================
-static inline double CIELab_invertf(double theValue)
+static inline double CIELab_invertf(double theValue) noexcept
 {
   double aV3 = theValue * theValue * theValue;
   return aV3 > 0.008856451679035631 ? aV3 : (theValue - 16. / 116.) / 7.787037037037037;
@@ -612,7 +615,7 @@ static inline double CIELab_invertf(double theValue)
 // see https://www.easyrgb.com/en/math.php
 // =======================================================================
 NCollection_Vec3<float> Quantity_Color::Convert_LinearRGB_To_Lab(
-  const NCollection_Vec3<float>& theRgb)
+  const NCollection_Vec3<float>& theRgb) noexcept
 {
   double aR = theRgb[0];
   double aG = theRgb[1];
@@ -642,7 +645,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_LinearRGB_To_Lab(
 // see https://www.easyrgb.com/en/math.php
 // =======================================================================
 NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_LinearRGB(
-  const NCollection_Vec3<float>& theLab)
+  const NCollection_Vec3<float>& theLab) noexcept
 {
   double aL = theLab[0];
   double aa = theLab[1];
@@ -686,7 +689,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_LinearRGB(
 // purpose  : convert CIE Lab color to CIE Lch color
 // see https://www.easyrgb.com/en/math.php
 // =======================================================================
-NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(const NCollection_Vec3<float>& theLab)
+NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(const NCollection_Vec3<float>& theLab) noexcept
 {
   double aa = theLab[1];
   double ab = theLab[2];
@@ -705,7 +708,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(const NCollection_Vec
 // purpose  : convert CIE Lch color to CIE Lab color
 // see https://www.easyrgb.com/en/math.php
 // =======================================================================
-NCollection_Vec3<float> Quantity_Color::Convert_Lch_To_Lab(const NCollection_Vec3<float>& theLch)
+NCollection_Vec3<float> Quantity_Color::Convert_Lch_To_Lab(const NCollection_Vec3<float>& theLch) noexcept
 {
   double aC = theLch[1];
   double aH = theLch[2];

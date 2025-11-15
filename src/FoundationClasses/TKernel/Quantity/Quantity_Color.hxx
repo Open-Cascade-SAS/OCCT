@@ -240,7 +240,7 @@ public:
 
   //! Converts sRGB components into HLS ones.
   Standard_EXPORT static NCollection_Vec3<float> Convert_sRGB_To_HLS(
-    const NCollection_Vec3<float>& theRgb);
+    const NCollection_Vec3<float>& theRgb) noexcept;
 
   //! Converts HLS components into RGB ones.
   Standard_EXPORT static NCollection_Vec3<float> Convert_HLS_To_sRGB(
@@ -260,20 +260,20 @@ public:
 
   //! Converts linear RGB components into CIE Lab ones.
   Standard_EXPORT static NCollection_Vec3<float> Convert_LinearRGB_To_Lab(
-    const NCollection_Vec3<float>& theRgb);
+    const NCollection_Vec3<float>& theRgb) noexcept;
 
   //! Converts CIE Lab components into CIE Lch ones.
   Standard_EXPORT static NCollection_Vec3<float> Convert_Lab_To_Lch(
-    const NCollection_Vec3<float>& theLab);
+    const NCollection_Vec3<float>& theLab) noexcept;
 
   //! Converts CIE Lab components into linear RGB ones.
   //! Note that the resulting values may be out of the valid range for RGB.
   Standard_EXPORT static NCollection_Vec3<float> Convert_Lab_To_LinearRGB(
-    const NCollection_Vec3<float>& theLab);
+    const NCollection_Vec3<float>& theLab) noexcept;
 
   //! Converts CIE Lch components into CIE Lab ones.
   Standard_EXPORT static NCollection_Vec3<float> Convert_Lch_To_Lab(
-    const NCollection_Vec3<float>& theLch);
+    const NCollection_Vec3<float>& theLch) noexcept;
 
   //! Convert the color value to ARGB integer value, with alpha equals to 0.
   //! So the output is formatted as 0x00RRGGBB.
