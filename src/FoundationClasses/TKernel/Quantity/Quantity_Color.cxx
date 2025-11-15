@@ -23,7 +23,17 @@
 
 namespace
 {
-static constexpr float RGBHLS_H_UNDEFINED = -1.0f;
+static constexpr float  RGBHLS_H_UNDEFINED = -1.0f;
+static constexpr double DEG_TO_RAD         = M_PI / 180.0;
+static constexpr double RAD_TO_DEG         = 180.0 / M_PI;
+static constexpr double POW_25_7           = 6103515625.0;        // 25^7 used in CIEDE2000
+static constexpr double CIELAB_EPSILON     = 0.008856451679035631; // (6/29)^3
+static constexpr double CIELAB_KAPPA       = 7.787037037037037;    // (1/3) * (29/6)^2
+static constexpr double CIELAB_OFFSET      = 16.0 / 116.0;
+// D65 / 2 deg (CIE 1931) standard illuminant reference white point
+static constexpr double D65_REF_X          = 95.047;
+static constexpr double D65_REF_Y          = 100.000;
+static constexpr double D65_REF_Z          = 108.883;
 } // namespace
 
 namespace
@@ -365,12 +375,11 @@ Standard_Real Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
   Standard_Real aLx_mean = 0.5 * (aL1 + aL2);
 
   // mean C
-  Standard_Real       aC1          = Sqrt(aa1 * aa1 + ab1 * ab1);
-  Standard_Real       aC2          = Sqrt(aa2 * aa2 + ab2 * ab2);
-  Standard_Real       aC_mean      = 0.5 * (aC1 + aC2);
-  Standard_Real       aC_mean_pow7 = Pow(aC_mean, 7);
-  static const double a25_pow7     = Pow(25., 7);
-  Standard_Real       aG           = 0.5 * (1. - Sqrt(aC_mean_pow7 / (aC_mean_pow7 + a25_pow7)));
+  Standard_Real aC1          = Sqrt(aa1 * aa1 + ab1 * ab1);
+  Standard_Real aC2          = Sqrt(aa2 * aa2 + ab2 * ab2);
+  Standard_Real aC_mean      = 0.5 * (aC1 + aC2);
+  Standard_Real aC_mean_pow7 = Pow(aC_mean, 7);
+  Standard_Real aG           = 0.5 * (1. - Sqrt(aC_mean_pow7 / (aC_mean_pow7 + POW_25_7)));
   Standard_Real       aa1x         = aa1 * (1. + aG);
   Standard_Real       aa2x         = aa2 * (1. + aG);
   Standard_Real       aC1x         = Sqrt(aa1x * aa1x + ab1 * ab1);
@@ -378,8 +387,8 @@ Standard_Real Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
   Standard_Real       aCx_mean     = 0.5 * (aC1x + aC2x);
 
   // mean H
-  Standard_Real ah1x = (aC1x > Epsilon() ? ATan2(ab1, aa1x) * 180. / M_PI : 270.);
-  Standard_Real ah2x = (aC2x > Epsilon() ? ATan2(ab2, aa2x) * 180. / M_PI : 270.);
+  Standard_Real ah1x = (aC1x > Epsilon() ? ATan2(ab1, aa1x) * RAD_TO_DEG : 270.);
+  Standard_Real ah2x = (aC2x > Epsilon() ? ATan2(ab2, aa2x) * RAD_TO_DEG : 270.);
   if (ah1x < 0.)
     ah1x += 360.;
   if (ah2x < 0.)
@@ -395,13 +404,13 @@ Standard_Real Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
   // deltas
   Standard_Real aDeltaLx = aL2 - aL1;
   Standard_Real aDeltaCx = aC2x - aC1x;
-  Standard_Real aDeltaHx = 2. * Sqrt(aC1x * aC2x) * Sin(0.5 * aDeltahx * M_PI / 180.);
+  Standard_Real aDeltaHx = 2. * Sqrt(aC1x * aC2x) * Sin(0.5 * aDeltahx * DEG_TO_RAD);
 
   // factors
-  Standard_Real aT = 1. - 0.17 * Cos((aHx_mean - 30.) * M_PI / 180.)
-                     + 0.24 * Cos((2. * aHx_mean) * M_PI / 180.)
-                     + 0.32 * Cos((3. * aHx_mean + 6.) * M_PI / 180.)
-                     - 0.20 * Cos((4. * aHx_mean - 63.) * M_PI / 180.);
+  Standard_Real aT = 1. - 0.17 * Cos((aHx_mean - 30.) * DEG_TO_RAD)
+                     + 0.24 * Cos((2. * aHx_mean) * DEG_TO_RAD)
+                     + 0.32 * Cos((3. * aHx_mean + 6.) * DEG_TO_RAD)
+                     - 0.20 * Cos((4. * aHx_mean - 63.) * DEG_TO_RAD);
 
   Standard_Real aLx_mean50_2 = (aLx_mean - 50.) * (aLx_mean - 50.);
   Standard_Real aS_L         = 1. + 0.015 * aLx_mean50_2 / Sqrt(20. + aLx_mean50_2);
@@ -410,8 +419,8 @@ Standard_Real Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
 
   Standard_Real aDelta_theta  = 30. * Exp(-(aHx_mean - 275.) * (aHx_mean - 275.) / 625.);
   Standard_Real aCx_mean_pow7 = Pow(aCx_mean, 7);
-  Standard_Real aR_C          = 2. * Sqrt(aCx_mean_pow7 / (aCx_mean_pow7 + a25_pow7));
-  Standard_Real aR_T          = -aR_C * Sin(2. * aDelta_theta * M_PI / 180.);
+  Standard_Real aR_C          = 2. * Sqrt(aCx_mean_pow7 / (aCx_mean_pow7 + POW_25_7));
+  Standard_Real aR_T          = -aR_C * Sin(2. * aDelta_theta * DEG_TO_RAD);
 
   // finally, the difference
   Standard_Real aDL         = aDeltaLx / aS_L;
@@ -594,8 +603,8 @@ NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(const NCollection_Ve
 // =======================================================================
 static inline double CIELab_f(double theValue) noexcept
 {
-  return theValue > 0.008856451679035631 ? Pow(theValue, 1. / 3.)
-                                         : (7.787037037037037 * theValue) + 16. / 116.;
+  return theValue > CIELAB_EPSILON ? Pow(theValue, 1. / 3.)
+                                   : (CIELAB_KAPPA * theValue) + CIELAB_OFFSET;
 }
 
 // =======================================================================
@@ -606,7 +615,7 @@ static inline double CIELab_f(double theValue) noexcept
 static inline double CIELab_invertf(double theValue) noexcept
 {
   double aV3 = theValue * theValue * theValue;
-  return aV3 > 0.008856451679035631 ? aV3 : (theValue - 16. / 116.) / 7.787037037037037;
+  return aV3 > CIELAB_EPSILON ? aV3 : (theValue - CIELAB_OFFSET) / CIELAB_KAPPA;
 }
 
 // =======================================================================
@@ -623,9 +632,9 @@ NCollection_Vec3<float> Quantity_Color::Convert_LinearRGB_To_Lab(
 
   // convert to XYZ normalized to D65 / 2 deg (CIE 1931) standard illuminant intensities
   // see http://www.brucelindbloom.com/index.html?Equations.html
-  double aX = (aR * 0.4124564 + aG * 0.3575761 + aB * 0.1804375) * 100. / 95.047;
-  double aY = (aR * 0.2126729 + aG * 0.7151522 + aB * 0.0721750) * 100. / 100.000;
-  double aZ = (aR * 0.0193339 + aG * 0.1191920 + aB * 0.9503041) * 100. / 108.883;
+  double aX = (aR * 0.4124564 + aG * 0.3575761 + aB * 0.1804375) * 100. / D65_REF_X;
+  double aY = (aR * 0.2126729 + aG * 0.7151522 + aB * 0.0721750);
+  double aZ = (aR * 0.0193339 + aG * 0.1191920 + aB * 0.9503041) * 100. / D65_REF_Z;
 
   // convert to Lab
   double afX = CIELab_f(aX);
@@ -666,9 +675,9 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_LinearRGB(
     double afX = aC * aa / 500. + afY;
     double afZ = afY - aC * ab / 200.;
 
-    double aX = CIELab_invertf(afX) * 95.047;
-    double aY = CIELab_invertf(afY) * 100.000;
-    double aZ = CIELab_invertf(afZ) * 108.883;
+    double aX = CIELab_invertf(afX) * D65_REF_X;
+    double aY = CIELab_invertf(afY) * D65_REF_Y;
+    double aZ = CIELab_invertf(afZ) * D65_REF_Z;
 
     // convert to RGB
     // see http://www.brucelindbloom.com/index.html?Equations.html
@@ -695,7 +704,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(const NCollection_Vec
   double ab = theLab[2];
 
   double aC = Sqrt(aa * aa + ab * ab);
-  double aH = (aC > Epsilon() ? ATan2(ab, aa) * 180. / M_PI : 0.);
+  double aH = (aC > Epsilon() ? ATan2(ab, aa) * RAD_TO_DEG : 0.);
 
   if (aH < 0.)
     aH += 360.;
@@ -713,7 +722,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lch_To_Lab(const NCollection_Vec
   double aC = theLch[1];
   double aH = theLch[2];
 
-  aH *= M_PI / 180.;
+  aH *= DEG_TO_RAD;
 
   double aa = aC * Cos(aH);
   double ab = aC * Sin(aH);
