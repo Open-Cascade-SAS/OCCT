@@ -25,8 +25,7 @@
 
 namespace
 {
-// Returns a reference to the epsilon value for thread-safe access.
-// Using function-local static ensures thread-safe initialization (C++11).
+// Returns a reference to the epsilon value.
 inline Standard_Real& getEpsilonRef() noexcept
 {
   static Standard_Real theEpsilon = 0.0001;
