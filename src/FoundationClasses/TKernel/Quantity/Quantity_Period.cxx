@@ -38,9 +38,7 @@ Standard_Boolean Quantity_Period::IsValid(const Standard_Integer dd,
                                           const Standard_Integer mis,
                                           const Standard_Integer mics)
 {
-
-  return ((dd < 0 || hh < 0 || mn < 0 || ss < 0 || mis < 0 || mics < 0) ? Standard_False
-                                                                        : Standard_True);
+  return (dd >= 0 && hh >= 0 && mn >= 0 && ss >= 0 && mis >= 0 && mics >= 0);
 }
 
 // -------------------------------------------------------------
@@ -51,8 +49,7 @@ Standard_Boolean Quantity_Period::IsValid(const Standard_Integer dd,
 // -------------------------------------------------------------
 Standard_Boolean Quantity_Period::IsValid(const Standard_Integer ss, const Standard_Integer mics)
 {
-
-  return ((ss < 0 || mics < 0) ? Standard_False : Standard_True);
+  return (ss >= 0 && mics >= 0);
 }
 
 // -------------------------------------------------------------

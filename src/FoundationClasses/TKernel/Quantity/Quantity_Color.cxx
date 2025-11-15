@@ -375,8 +375,8 @@ Standard_Real Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
   Standard_Real       aCx_mean     = 0.5 * (aC1x + aC2x);
 
   // mean H
-  Standard_Real ah1x = (aC1x > TheEpsilon ? ATan2(ab1, aa1x) * 180. / M_PI : 270.);
-  Standard_Real ah2x = (aC2x > TheEpsilon ? ATan2(ab2, aa2x) * 180. / M_PI : 270.);
+  Standard_Real ah1x = (aC1x > Epsilon() ? ATan2(ab1, aa1x) * 180. / M_PI : 270.);
+  Standard_Real ah2x = (aC2x > Epsilon() ? ATan2(ab2, aa2x) * 180. / M_PI : 270.);
   if (ah1x < 0.)
     ah1x += 360.;
   if (ah2x < 0.)
@@ -692,7 +692,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(const NCollection_Vec
   double ab = theLab[2];
 
   double aC = Sqrt(aa * aa + ab * ab);
-  double aH = (aC > TheEpsilon ? ATan2(ab, aa) * 180. / M_PI : 0.);
+  double aH = (aC > Epsilon() ? ATan2(ab, aa) * 180. / M_PI : 0.);
 
   if (aH < 0.)
     aH += 360.;

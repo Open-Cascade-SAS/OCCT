@@ -22,21 +22,35 @@
 #include <Quantity_Period.hxx>
 #include <Standard_OutOfRange.hxx>
 
-static int month_table[12] = {31,  // January
-                              28,  // February
-                              31,  // March
-                              30,  // April
-                              31,  // May
-                              30,  // June
-                              31,  // July
-                              31,  // August
-                              30,  // September
-                              31,  // October
-                              30,  // November
-                              31}; // December
+static constexpr int month_table[12] = {31,  // January
+                                        28,  // February
+                                        31,  // March
+                                        30,  // April
+                                        31,  // May
+                                        30,  // June
+                                        31,  // July
+                                        31,  // August
+                                        30,  // September
+                                        31,  // October
+                                        30,  // November
+                                        31}; // December
 
-static int SecondsByYear     = 365 * 24 * 3600; // Normal Year
-static int SecondsByLeapYear = 366 * 24 * 3600; // Leap Year
+static constexpr int SecondsByYear     = 365 * 24 * 3600; // Normal Year
+static constexpr int SecondsByLeapYear = 366 * 24 * 3600; // Leap Year
+
+namespace
+{
+// Returns the number of days in a month for a given year (handles leap years)
+constexpr Standard_Integer getDaysInMonth(const Standard_Integer theMonth,
+                                          const Standard_Integer theYear) noexcept
+{
+  if (theMonth == 2)
+  {
+    return Quantity_Date::IsLeap(theYear) ? 29 : 28;
+  }
+  return month_table[theMonth - 1];
+}
+} // anonymous namespace
 
 // -----------------------------------------
 // Initialize a date to January,1 1979 00:00
@@ -69,12 +83,7 @@ Standard_Boolean Quantity_Date::IsValid(const Standard_Integer mm,
   if (yy < 1979)
     return Standard_False;
 
-  if (Quantity_Date::IsLeap(yy))
-    month_table[1] = 29;
-  else
-    month_table[1] = 28;
-
-  if (dd < 1 || dd > month_table[mm - 1])
+  if (dd < 1 || dd > getDaysInMonth(mm, yy))
     return Standard_False;
 
   if (hh < 0 || hh > 23)
@@ -135,11 +144,6 @@ void Quantity_Date::SetValues(const Standard_Integer mm,
   if (!Quantity_Date::IsValid(mm, dd, yy, hh, mn, ss, mis, mics))
     throw Quantity_DateDefinitionError("Quantity_Date::Quantity_Date invalid parameters");
 
-  if (Quantity_Date::IsLeap(yy))
-    month_table[1] = 29;
-  else
-    month_table[1] = 28;
-
   mySec  = 0;
   myUSec = 0;
   for (i = 1979; i < yy; i++)
@@ -152,7 +156,7 @@ void Quantity_Date::SetValues(const Standard_Integer mm,
 
   for (i = 1; i < mm; i++)
   {
-    mySec += month_table[i - 1] * 3600 * 24;
+    mySec += getDaysInMonth(i, yy) * 3600 * 24;
   }
 
   mySec += 3600 * 24 * (dd - 1);
@@ -189,7 +193,6 @@ void Quantity_Date::Values(Standard_Integer& mm,
   {
     if (!Quantity_Date::IsLeap(yy))
     {
-      month_table[1] = 28; // normal year
       if (carry >= SecondsByYear)
         carry -= SecondsByYear;
       else
@@ -197,7 +200,6 @@ void Quantity_Date::Values(Standard_Integer& mm,
     }
     else
     {
-      month_table[1] = 29; // Leap year
       if (carry >= SecondsByLeapYear)
         carry -= SecondsByLeapYear;
       else
@@ -207,7 +209,7 @@ void Quantity_Date::Values(Standard_Integer& mm,
 
   for (mm = 1;; mm++)
   {
-    i = month_table[mm - 1] * 3600 * 24;
+    i = getDaysInMonth(mm, yy) * 3600 * 24;
     if (carry >= i)
       carry -= i;
     else
