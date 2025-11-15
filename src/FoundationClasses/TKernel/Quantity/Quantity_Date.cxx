@@ -222,14 +222,15 @@ void Quantity_Date::Values(Standard_Integer& mm,
       break;
   }
 
-  i = SECONDS_PER_DAY;
-  for (dd = 1;; dd++)
+  // Extract days (count from 0, then convert to 1-based day number)
+  for (dd = 0;; dd++)
   {
-    if (carry >= i)
-      carry -= i;
+    if (carry >= SECONDS_PER_DAY)
+      carry -= SECONDS_PER_DAY;
     else
       break;
   }
+  dd++; // Convert from 0-based count to 1-based day number
 
   for (hh = 0;; hh++)
   {
