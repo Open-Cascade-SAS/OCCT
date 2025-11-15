@@ -146,7 +146,7 @@ TEST_F(Quantity_ColorTest, Lab_to_Lch_Conversion)
 
   EXPECT_TRUE(IsNear(50.0, aLch[0]));  // L should be preserved
 
-  // C (chroma) should be sqrt(25^2 + 25^2) = sqrt(1250) ≈ 35.36
+  // C (chroma) should be sqrt(25^2 + 25^2) = sqrt(1250) ~= 35.36
   EXPECT_TRUE(IsNear(35.36, aLch[1], 0.1));
 
   // H (hue) should be atan2(25, 25) * 180/pi = 45 degrees

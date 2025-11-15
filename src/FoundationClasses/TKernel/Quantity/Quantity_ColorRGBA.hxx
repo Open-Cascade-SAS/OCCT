@@ -22,7 +22,7 @@ class Quantity_ColorRGBA
 {
 public:
   //! Creates a color with the default value.
-  constexpr Quantity_ColorRGBA()
+  Quantity_ColorRGBA()
       : myAlpha(1.0f)
   {
   }
@@ -42,14 +42,14 @@ public:
   }
 
   //! Creates the color from RGBA vector.
-  constexpr explicit Quantity_ColorRGBA(const NCollection_Vec4<float>& theRgba)
+  explicit Quantity_ColorRGBA(const NCollection_Vec4<float>& theRgba)
       : myRgb(theRgba.rgb()),
         myAlpha(theRgba.a())
   {
   }
 
   //! Creates the color from RGBA values.
-  constexpr Quantity_ColorRGBA(float theRed, float theGreen, float theBlue, float theAlpha)
+  Quantity_ColorRGBA(float theRed, float theGreen, float theBlue, float theAlpha)
       : myRgb(theRed, theGreen, theBlue, Quantity_TOC_RGB),
         myAlpha(theAlpha)
   {

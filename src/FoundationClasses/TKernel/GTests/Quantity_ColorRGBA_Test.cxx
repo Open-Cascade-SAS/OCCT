@@ -116,7 +116,7 @@ TEST_F(Quantity_ColorRGBATest, HexColorParsing_RGBA)
   EXPECT_TRUE(IsNear(1.0f, aColor.GetRGB().Red(), 0.01f));
   EXPECT_TRUE(IsNear(0.0f, aColor.GetRGB().Green(), 0.01f));
   EXPECT_TRUE(IsNear(0.0f, aColor.GetRGB().Blue(), 0.01f));
-  EXPECT_TRUE(IsNear(0.5f, aColor.Alpha(), 0.02f)); // 0x80 / 0xFF ≈ 0.5
+  EXPECT_TRUE(IsNear(0.5f, aColor.Alpha(), 0.02f)); // 0x80 / 0xFF ~= 0.5
 }
 
 // Test short hex format (tests HEX_BITS_PER_COMPONENT_SHORT constant)
@@ -150,7 +150,7 @@ TEST_F(Quantity_ColorRGBATest, HexColorParsing_ShortRGBA)
   EXPECT_TRUE(IsNear(1.0f, aColor.GetRGB().Red(), 0.1f));
   EXPECT_TRUE(IsNear(0.0f, aColor.GetRGB().Green(), 0.1f));
   EXPECT_TRUE(IsNear(0.0f, aColor.GetRGB().Blue(), 0.1f));
-  EXPECT_TRUE(IsNear(0.5f, aColor.Alpha(), 0.1f)); // 0x8 / 0xF ≈ 0.533
+  EXPECT_TRUE(IsNear(0.5f, aColor.Alpha(), 0.1f)); // 0x8 / 0xF ~= 0.533
 }
 
 // Test invalid hex formats
@@ -179,7 +179,7 @@ TEST_F(Quantity_ColorRGBATest, HexColorParsing_MixedCase)
   bool aResult = Quantity_ColorRGBA::ColorFromHex("#FfAa00", aColor, true);
   EXPECT_TRUE(aResult);
   EXPECT_TRUE(IsNear(1.0f, aColor.GetRGB().Red(), 0.01f));
-  EXPECT_GT(aColor.GetRGB().Green(), 0.6f); // AA = 170/255 ≈ 0.667
+  EXPECT_GT(aColor.GetRGB().Green(), 0.6f); // AA = 170/255 ~= 0.667
   EXPECT_TRUE(IsNear(0.0f, aColor.GetRGB().Blue(), 0.01f));
 }
 
@@ -192,9 +192,9 @@ TEST_F(Quantity_ColorRGBATest, HexColorParsing_SpecificValues)
   bool aResult = Quantity_ColorRGBA::ColorFromHex("#102030", aColor, true);
   EXPECT_TRUE(aResult);
 
-  // 0x10 = 16 / 255 ≈ 0.0627
-  // 0x20 = 32 / 255 ≈ 0.1255
-  // 0x30 = 48 / 255 ≈ 0.1882
+  // 0x10 = 16 / 255 ~= 0.0627
+  // 0x20 = 32 / 255 ~= 0.1255
+  // 0x30 = 48 / 255 ~= 0.1882
   EXPECT_TRUE(IsNear(0.0627f, aColor.GetRGB().Red(), 0.01f));
   EXPECT_TRUE(IsNear(0.1255f, aColor.GetRGB().Green(), 0.01f));
   EXPECT_TRUE(IsNear(0.1882f, aColor.GetRGB().Blue(), 0.01f));
@@ -266,9 +266,9 @@ TEST_F(Quantity_ColorRGBATest, ComponentOrder)
   EXPECT_TRUE(aResult);
 
   // Verify the order is correct: R=0x12, G=0x34, B=0x56
-  float aExpectedR = 0x12 / 255.0f; // ≈ 0.0706
-  float aExpectedG = 0x34 / 255.0f; // ≈ 0.2039
-  float aExpectedB = 0x56 / 255.0f; // ≈ 0.3373
+  float aExpectedR = 0x12 / 255.0f; // ~= 0.0706
+  float aExpectedG = 0x34 / 255.0f; // ~= 0.2039
+  float aExpectedB = 0x56 / 255.0f; // ~= 0.3373
 
   EXPECT_TRUE(IsNear(aExpectedR, aColor.GetRGB().Red(), 0.01f));
   EXPECT_TRUE(IsNear(aExpectedG, aColor.GetRGB().Green(), 0.01f));
