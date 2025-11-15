@@ -38,7 +38,7 @@ static constexpr double CIELAB_L_OFFSET    = 16.0;
 static constexpr double D65_REF_X          = 95.047;
 static constexpr double D65_REF_Y          = 100.000;
 static constexpr double D65_REF_Z          = 108.883;
-// sRGB to XYZ conversion matrix (D65 illuminant, 2° observer)
+// sRGB to XYZ conversion matrix (D65 illuminant, 2 deg observer)
 static constexpr double RGB_TO_XYZ_R_X     = 0.4124564;
 static constexpr double RGB_TO_XYZ_R_Y     = 0.2126729;
 static constexpr double RGB_TO_XYZ_R_Z     = 0.0193339;
@@ -48,7 +48,7 @@ static constexpr double RGB_TO_XYZ_G_Z     = 0.1191920;
 static constexpr double RGB_TO_XYZ_B_X     = 0.1804375;
 static constexpr double RGB_TO_XYZ_B_Y     = 0.0721750;
 static constexpr double RGB_TO_XYZ_B_Z     = 0.9503041;
-// XYZ to sRGB conversion matrix (D65 illuminant, 2° observer)
+// XYZ to sRGB conversion matrix (D65 illuminant, 2 deg observer)
 static constexpr double XYZ_TO_RGB_X_R     = 3.2404542;
 static constexpr double XYZ_TO_RGB_X_G     = -0.9692660;
 static constexpr double XYZ_TO_RGB_X_B     = 0.0556434;

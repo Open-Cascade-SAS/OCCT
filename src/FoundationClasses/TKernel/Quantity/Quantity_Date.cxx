@@ -26,7 +26,6 @@ namespace
 {
 static constexpr int SECONDS_PER_MINUTE = 60;
 static constexpr int SECONDS_PER_HOUR   = 3600;   // 60 * 60
-static constexpr int HOURS_PER_DAY      = 24;
 static constexpr int SECONDS_PER_DAY    = 86400;  // 24 * 3600
 static constexpr int USECS_PER_MSEC     = 1000;   // microseconds per millisecond
 static constexpr int USECS_PER_SEC      = 1000000; // microseconds per second
@@ -44,8 +43,8 @@ static constexpr int month_table[12] = {31,  // January
                                         30,  // November
                                         31}; // December
 
-static constexpr int SecondsByYear     = 365 * HOURS_PER_DAY * SECONDS_PER_HOUR; // Normal Year
-static constexpr int SecondsByLeapYear = 366 * HOURS_PER_DAY * SECONDS_PER_HOUR; // Leap Year
+static constexpr int SecondsByYear     = 365 * SECONDS_PER_DAY; // Normal Year
+static constexpr int SecondsByLeapYear = 366 * SECONDS_PER_DAY; // Leap Year
 
 // Returns the number of days in a month for a given year (handles leap years)
 constexpr Standard_Integer getDaysInMonth(const Standard_Integer theMonth,

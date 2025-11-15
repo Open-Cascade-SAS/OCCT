@@ -25,7 +25,6 @@ namespace
 {
 static constexpr int SECONDS_PER_MINUTE = 60;
 static constexpr int SECONDS_PER_HOUR   = 3600;   // 60 * 60
-static constexpr int HOURS_PER_DAY      = 24;
 static constexpr int SECONDS_PER_DAY    = 86400;  // 24 * 3600
 static constexpr int USECS_PER_MSEC     = 1000;   // microseconds per millisecond
 static constexpr int USECS_PER_SEC      = 1000000; // microseconds per second
