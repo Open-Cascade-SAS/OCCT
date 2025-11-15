@@ -434,42 +434,4 @@ Standard_Integer Quantity_Date::MicroSecond()
   return (msec);
 }
 
-// ----------------------------------------------------------------------
-// IsEarlier : Return true if the date is earlier than an other date
-// ~~~~~~~~~
-// ----------------------------------------------------------------------
-
-Standard_Boolean Quantity_Date::IsEarlier(const Quantity_Date& other) const noexcept
-{
-  if (mySec < other.mySec)
-    return Standard_True;
-  else if (mySec > other.mySec)
-    return Standard_False;
-  else
-    return ((myUSec < other.myUSec) ? Standard_True : Standard_False);
-}
-
-// ----------------------------------------------------------------------
-// IsLater : Return true if the date is later than an other date
-// ~~~~~~~
-// ----------------------------------------------------------------------
-
-Standard_Boolean Quantity_Date::IsLater(const Quantity_Date& other) const noexcept
-{
-  if (mySec > other.mySec)
-    return Standard_True;
-  else if (mySec < other.mySec)
-    return Standard_False;
-  else
-    return ((myUSec > other.myUSec) ? Standard_True : Standard_False);
-}
-
-// ----------------------------------------------------------------------
-// IsEqual : Return true if the date is the same than an other date
-// ~~~~~~~
-// ----------------------------------------------------------------------
-
-Standard_Boolean Quantity_Date::IsEqual(const Quantity_Date& other) const noexcept
-{
-  return ((myUSec == other.myUSec && mySec == other.mySec) ? Standard_True : Standard_False);
-}
+// IsEarlier, IsLater, and IsEqual are now inline constexpr in the header

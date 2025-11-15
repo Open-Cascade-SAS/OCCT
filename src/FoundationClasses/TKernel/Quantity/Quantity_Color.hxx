@@ -71,10 +71,10 @@ public:
   }
 
   //! Return the color as vector of 3 float elements.
-  const NCollection_Vec3<float>& Rgb() const noexcept { return myRgb; }
+  constexpr const NCollection_Vec3<float>& Rgb() const noexcept { return myRgb; }
 
   //! Return the color as vector of 3 float elements.
-  operator const NCollection_Vec3<float>&() const noexcept { return myRgb; }
+  constexpr operator const NCollection_Vec3<float>&() const noexcept { return myRgb; }
 
   //! Returns in theC1, theC2 and theC3 the components of this color
   //! according to the color system definition theType.
@@ -91,13 +91,13 @@ public:
                                  const Quantity_TypeOfColor theType);
 
   //! Returns the Red component (quantity of red) of the color within range [0.0; 1.0].
-  Standard_Real Red() const noexcept { return myRgb.r(); }
+  constexpr Standard_Real Red() const noexcept { return myRgb.r(); }
 
   //! Returns the Green component (quantity of green) of the color within range [0.0; 1.0].
-  Standard_Real Green() const noexcept { return myRgb.g(); }
+  constexpr Standard_Real Green() const noexcept { return myRgb.g(); }
 
   //! Returns the Blue component (quantity of blue) of the color within range [0.0; 1.0].
-  Standard_Real Blue() const noexcept { return myRgb.b(); }
+  constexpr Standard_Real Blue() const noexcept { return myRgb.b(); }
 
   //! Returns the Hue component (hue angle) of the color
   //! in degrees within range [0.0; 360.0], 0.0 being Red.
@@ -281,7 +281,7 @@ public:
   //! as would be usually expected for RGB color packed into 4 bytes.
   //! @param[in] theColor  color to convert
   //! @param[out] theARGB  result color encoded as integer
-  static void Color2argb(const Quantity_Color& theColor, Standard_Integer& theARGB) noexcept
+  static constexpr void Color2argb(const Quantity_Color& theColor, Standard_Integer& theARGB) noexcept
   {
     const NCollection_Vec3<Standard_Integer> aColor(
       static_cast<Standard_Integer>(255.0f * theColor.myRgb.r() + 0.5f),

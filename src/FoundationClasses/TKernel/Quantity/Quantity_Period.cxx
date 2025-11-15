@@ -204,43 +204,4 @@ Quantity_Period Quantity_Period::Add(const Quantity_Period& OtherPeriod) const
   return (result);
 }
 
-// -------------------------------------------------------------
-// IsEqual : returns true if two periods are equal
-// ~~~~~~~
-// -------------------------------------------------------------
-Standard_Boolean Quantity_Period::IsEqual(const Quantity_Period& OtherPeriod) const noexcept
-{
-
-  return ((mySec == OtherPeriod.mySec && myUSec == OtherPeriod.myUSec) ? Standard_True
-                                                                       : Standard_False);
-}
-
-// -------------------------------------------------------------
-// IsShorter : returns true if a date is shorter then an other
-// ~~~~~~~~~   date
-// -------------------------------------------------------------
-Standard_Boolean Quantity_Period::IsShorter(const Quantity_Period& OtherPeriod) const noexcept
-{
-
-  if (mySec < OtherPeriod.mySec)
-    return Standard_True;
-  else if (mySec > OtherPeriod.mySec)
-    return Standard_False;
-  else
-    return ((myUSec < OtherPeriod.myUSec) ? Standard_True : Standard_False);
-}
-
-// -------------------------------------------------------------
-// IsLonger : returns true if a date is longer then an other
-// ~~~~~~~~   date
-// -------------------------------------------------------------
-Standard_Boolean Quantity_Period::IsLonger(const Quantity_Period& OtherPeriod) const noexcept
-{
-
-  if (mySec > OtherPeriod.mySec)
-    return Standard_True;
-  else if (mySec < OtherPeriod.mySec)
-    return Standard_False;
-  else
-    return ((myUSec > OtherPeriod.myUSec) ? Standard_True : Standard_False);
-}
+// IsEqual, IsShorter, and IsLonger are now inline constexpr in the header

@@ -22,34 +22,34 @@ class Quantity_ColorRGBA
 {
 public:
   //! Creates a color with the default value.
-  Quantity_ColorRGBA()
+  constexpr Quantity_ColorRGBA()
       : myAlpha(1.0f)
   {
   }
 
   //! Creates the color with specified RGB value.
-  explicit Quantity_ColorRGBA(const Quantity_Color& theRgb)
+  constexpr explicit Quantity_ColorRGBA(const Quantity_Color& theRgb)
       : myRgb(theRgb),
         myAlpha(1.0f)
   {
   }
 
   //! Creates the color with specified RGBA values.
-  Quantity_ColorRGBA(const Quantity_Color& theRgb, float theAlpha)
+  constexpr Quantity_ColorRGBA(const Quantity_Color& theRgb, float theAlpha)
       : myRgb(theRgb),
         myAlpha(theAlpha)
   {
   }
 
   //! Creates the color from RGBA vector.
-  explicit Quantity_ColorRGBA(const NCollection_Vec4<float>& theRgba)
+  constexpr explicit Quantity_ColorRGBA(const NCollection_Vec4<float>& theRgba)
       : myRgb(theRgba.rgb()),
         myAlpha(theRgba.a())
   {
   }
 
   //! Creates the color from RGBA values.
-  Quantity_ColorRGBA(float theRed, float theGreen, float theBlue, float theAlpha)
+  constexpr Quantity_ColorRGBA(float theRed, float theGreen, float theBlue, float theAlpha)
       : myRgb(theRed, theGreen, theBlue, Quantity_TOC_RGB),
         myAlpha(theAlpha)
   {
@@ -63,22 +63,22 @@ public:
   }
 
   //! Return RGB color value.
-  const Quantity_Color& GetRGB() const noexcept { return myRgb; }
+  constexpr const Quantity_Color& GetRGB() const noexcept { return myRgb; }
 
   //! Modify RGB color components without affecting alpha value.
-  Quantity_Color& ChangeRGB() noexcept { return myRgb; }
+  constexpr Quantity_Color& ChangeRGB() noexcept { return myRgb; }
 
   //! Assign RGB color components without affecting alpha value.
-  void SetRGB(const Quantity_Color& theRgb) noexcept { myRgb = theRgb; }
+  constexpr void SetRGB(const Quantity_Color& theRgb) noexcept { myRgb = theRgb; }
 
   //! Return alpha value (1.0 means opaque, 0.0 means fully transparent).
-  Standard_ShortReal Alpha() const noexcept { return myAlpha; }
+  constexpr Standard_ShortReal Alpha() const noexcept { return myAlpha; }
 
   //! Assign the alpha value.
-  void SetAlpha(const Standard_ShortReal theAlpha) noexcept { myAlpha = theAlpha; }
+  constexpr void SetAlpha(const Standard_ShortReal theAlpha) noexcept { myAlpha = theAlpha; }
 
   //! Return the color as vector of 4 float elements.
-  operator const NCollection_Vec4<float>&() const noexcept { return *(const NCollection_Vec4<float>*)this; }
+  constexpr operator const NCollection_Vec4<float>&() const noexcept { return *(const NCollection_Vec4<float>*)this; }
 
   //! Returns true if the distance between colors is greater than Epsilon().
   bool IsDifferent(const Quantity_ColorRGBA& theOther) const noexcept
