@@ -121,12 +121,7 @@ public:
   //! Returns TRUE if <me> is shorter than <other>.
   constexpr Standard_Boolean IsShorter(const Quantity_Period& anOther) const noexcept
   {
-    if (mySec < anOther.mySec)
-      return Standard_True;
-    else if (mySec > anOther.mySec)
-      return Standard_False;
-    else
-      return ((myUSec < anOther.myUSec) ? Standard_True : Standard_False);
+    return (mySec < anOther.mySec) || (mySec == anOther.mySec && myUSec < anOther.myUSec);
   }
 
   constexpr Standard_Boolean operator<(const Quantity_Period& anOther) const noexcept { return IsShorter(anOther); }
@@ -134,12 +129,7 @@ public:
   //! Returns TRUE if <me> is longer then <other>.
   constexpr Standard_Boolean IsLonger(const Quantity_Period& anOther) const noexcept
   {
-    if (mySec > anOther.mySec)
-      return Standard_True;
-    else if (mySec < anOther.mySec)
-      return Standard_False;
-    else
-      return ((myUSec > anOther.myUSec) ? Standard_True : Standard_False);
+    return (mySec > anOther.mySec) || (mySec == anOther.mySec && myUSec > anOther.myUSec);
   }
 
   constexpr Standard_Boolean operator>(const Quantity_Period& anOther) const noexcept { return IsLonger(anOther); }

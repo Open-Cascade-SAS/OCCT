@@ -433,5 +433,3 @@ Standard_Integer Quantity_Date::MicroSecond()
   Values(dummy, dummy, dummy, dummy, dummy, dummy, dummy, msec);
   return (msec);
 }
-
-// IsEarlier, IsLater, and IsEqual are now inline constexpr in the header

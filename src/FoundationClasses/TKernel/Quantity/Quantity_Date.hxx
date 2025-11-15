@@ -156,12 +156,7 @@ public:
   //! Returns TRUE if <me> is earlier than <other>.
   constexpr Standard_Boolean IsEarlier(const Quantity_Date& anOther) const noexcept
   {
-    if (mySec < anOther.mySec)
-      return Standard_True;
-    else if (mySec > anOther.mySec)
-      return Standard_False;
-    else
-      return ((myUSec < anOther.myUSec) ? Standard_True : Standard_False);
+    return (mySec < anOther.mySec) || (mySec == anOther.mySec && myUSec < anOther.myUSec);
   }
 
   constexpr Standard_Boolean operator<(const Quantity_Date& anOther) const noexcept { return IsEarlier(anOther); }
@@ -169,12 +164,7 @@ public:
   //! Returns TRUE if <me> is later then <other>.
   constexpr Standard_Boolean IsLater(const Quantity_Date& anOther) const noexcept
   {
-    if (mySec > anOther.mySec)
-      return Standard_True;
-    else if (mySec < anOther.mySec)
-      return Standard_False;
-    else
-      return ((myUSec > anOther.myUSec) ? Standard_True : Standard_False);
+    return (mySec > anOther.mySec) || (mySec == anOther.mySec && myUSec > anOther.myUSec);
   }
 
   constexpr Standard_Boolean operator>(const Quantity_Date& anOther) const noexcept { return IsLater(anOther); }

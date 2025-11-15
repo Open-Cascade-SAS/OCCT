@@ -203,5 +203,3 @@ Quantity_Period Quantity_Period::Add(const Quantity_Period& OtherPeriod) const
   }
   return (result);
 }
-
-// IsEqual, IsShorter, and IsLonger are now inline constexpr in the header
