@@ -42,16 +42,21 @@ public:
   static constexpr int Length() noexcept { return 2; }
 
   //! Empty constructor. Construct the zero vector.
-  constexpr NCollection_Vec2() noexcept { v[0] = v[1] = Element_t(0); }
+  constexpr NCollection_Vec2() noexcept
+      : v{Element_t(0), Element_t(0)}
+  {
+  }
 
   //! Initialize ALL components of vector within specified value.
-  explicit constexpr NCollection_Vec2(const Element_t theXY) noexcept { v[0] = v[1] = theXY; }
+  explicit constexpr NCollection_Vec2(const Element_t theXY) noexcept
+      : v{theXY, theXY}
+  {
+  }
 
   //! Per-component constructor.
   explicit constexpr NCollection_Vec2(const Element_t theX, const Element_t theY) noexcept
+      : v{theX, theY}
   {
-    v[0] = theX;
-    v[1] = theY;
   }
 
   //! Conversion constructor (explicitly converts some 2-component vector with other element type
@@ -61,9 +66,8 @@ public:
   //! @param theOtherVec2 the 2-component vector that needs to be converted
   template <typename OtherElement_t>
   explicit constexpr NCollection_Vec2(const NCollection_Vec2<OtherElement_t>& theOtherVec2) noexcept
+      : v{static_cast<Element_t>(theOtherVec2[0]), static_cast<Element_t>(theOtherVec2[1])}
   {
-    v[0] = static_cast<Element_t>(theOtherVec2[0]);
-    v[1] = static_cast<Element_t>(theOtherVec2[1]);
   }
 
   //! Assign new values to the vector.
