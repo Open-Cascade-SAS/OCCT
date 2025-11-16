@@ -190,7 +190,7 @@ void Quantity_Date::Values(Standard_Integer& mm,
                            Standard_Integer& mics) const
 {
 
-  Standard_Integer i, carry;
+  Standard_Integer carry;
 
   for (yy = 1979, carry = mySec;; yy++)
   {
@@ -212,7 +212,7 @@ void Quantity_Date::Values(Standard_Integer& mm,
 
   for (mm = 1;; mm++)
   {
-    i = getDaysInMonth(mm, yy) * SECONDS_PER_DAY;
+    Standard_Integer i = getDaysInMonth(mm, yy) * SECONDS_PER_DAY;
     if (carry >= i)
       carry -= i;
     else
