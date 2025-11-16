@@ -66,8 +66,7 @@ public:
   //! @param theOtherVec2 the 2-component vector that needs to be converted
   template <typename OtherElement_t>
   explicit constexpr NCollection_Vec2(const NCollection_Vec2<OtherElement_t>& theOtherVec2) noexcept
-      : v{static_cast<Element_t>(theOtherVec2[0]),
-          static_cast<Element_t>(theOtherVec2[1])}
+      : v{static_cast<Element_t>(theOtherVec2[0]), static_cast<Element_t>(theOtherVec2[1])}
   {
   }
 
