@@ -227,7 +227,6 @@ void Quantity_Date::Values(Standard_Integer& mm,
     else
       break;
   }
-  dd--; // Adjust for off-by-one
 
   extractTimeComponents(carry, hh, mn, ss);
   extractMillisAndMicros(myUSec, mis, mics);
