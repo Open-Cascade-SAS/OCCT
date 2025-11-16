@@ -20,15 +20,7 @@
 
 #include <Quantity_Period.hxx>
 #include <Quantity_PeriodDefinitionError.hxx>
-
-namespace
-{
-static constexpr int SECONDS_PER_MINUTE = 60;
-static constexpr int SECONDS_PER_HOUR   = 3600;   // 60 * 60
-static constexpr int SECONDS_PER_DAY    = 86400;  // 24 * 3600
-static constexpr int USECS_PER_MSEC     = 1000;   // microseconds per millisecond
-static constexpr int USECS_PER_SEC      = 1000000; // microseconds per second
-} // namespace
+#include <Quantity_TimeConstants.hxx>
 
 // -----------------------------------------------------------
 // IsValid : Checks the validity of a date

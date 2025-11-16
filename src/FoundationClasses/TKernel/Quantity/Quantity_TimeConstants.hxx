@@ -1,0 +1,35 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Quantity_TimeConstants_HeaderFile
+#define _Quantity_TimeConstants_HeaderFile
+
+//! @file Quantity_TimeConstants.hxx
+//! Internal header providing shared time conversion constants
+//! for Quantity_Date and Quantity_Period classes.
+
+namespace
+{
+
+//! Time conversion constants
+static constexpr int SECONDS_PER_MINUTE = 60;
+static constexpr int SECONDS_PER_HOUR   = 3600;   // 60 * 60
+static constexpr int SECONDS_PER_DAY    = 86400;  // 24 * 3600
+
+//! Microsecond conversion constants
+static constexpr int USECS_PER_MSEC = 1000;    // microseconds per millisecond
+static constexpr int USECS_PER_SEC  = 1000000; // microseconds per second
+
+} // anonymous namespace
+
+#endif // _Quantity_TimeConstants_HeaderFile
