@@ -17,7 +17,7 @@
 #define _Aspect_TypeOfDeflection_HeaderFile
 
 //! Defines if the maximal chordial deflection used when
-//! drawing an object is absolute  or relative to the size
+//! drawing an object is absolute or relative to the size
 //! of the object.
 enum Aspect_TypeOfDeflection
 {

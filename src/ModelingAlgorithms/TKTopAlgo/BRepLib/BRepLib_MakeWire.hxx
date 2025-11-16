@@ -34,26 +34,26 @@ class TopoDS_Wire;
 
 //! Provides methods to build wires.
 //!
-//! A wire may be built :
+//! A wire may be built:
 //!
 //! * From a single edge.
 //!
 //! * From a wire and an edge.
 //!
-//! - A new wire  is created with the edges  of  the
+//! - A new wire is created with the edges of the
 //! wire + the edge.
 //!
-//! - If the edge is not connected  to the wire the
-//! flag NotDone   is set and  the  method Wire will
+//! - If the edge is not connected to the wire the
+//! flag NotDone is set and the method Wire will
 //! raise an error.
 //!
-//! - The connection may be :
+//! - The connection may be:
 //!
 //! . Through an existing vertex. The edge is shared.
 //!
 //! . Through a geometric coincidence of vertices.
-//! The edge is  copied  and the vertices from the
-//! edge are  replaced  by  the vertices from  the
+//! The edge is copied and the vertices from the
+//! edge are replaced by the vertices from the
 //! wire.
 //!
 //! . The new edge and the connection vertices are
@@ -61,7 +61,7 @@ class TopoDS_Wire;
 //!
 //! * From 2, 3, 4 edges.
 //!
-//! - A wire is  created from  the first edge, the
+//! - A wire is created from the first edge, the
 //! following edges are added.
 //!
 //! * From many edges.
@@ -113,7 +113,7 @@ public:
   Standard_EXPORT void Add(const TopoDS_Wire& W);
 
   //! Add the edges of <L> to the current wire.
-  //! The edges are not to be consecutive.  But they are
+  //! The edges are not to be consecutive. But they are
   //! to be all connected geometrically or topologically.
   Standard_EXPORT void Add(const TopTools_ListOfShape& L);
 

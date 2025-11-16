@@ -18,8 +18,19 @@
 
 #include <gp_Pnt.hxx>
 
-#define Pnt gp_Pnt
-#define Pnt_hxx <gp_Pnt.hxx>
-#define Extrema_Point Extrema_POnCurv
-#define Extrema_Point_hxx <Extrema_POnCurv.hxx>
-#include <Extrema_Point.gxx>
+Extrema_POnCurv::Extrema_POnCurv()
+    : myU(0.0)
+{
+}
+
+Extrema_POnCurv::Extrema_POnCurv(const Standard_Real U, const gp_Pnt& P)
+{
+  myU = U;
+  myP = P;
+}
+
+void Extrema_POnCurv::SetValues(const Standard_Real U, const gp_Pnt& P)
+{
+  myU = U;
+  myP = P;
+}

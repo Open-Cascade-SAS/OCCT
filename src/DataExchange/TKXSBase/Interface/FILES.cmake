@@ -66,7 +66,6 @@ set(OCCT_Interface_FILES
   Interface_IntList.hxx
   Interface_IntVal.cxx
   Interface_IntVal.hxx
-  Interface_JaggedArray.gxx
   Interface_LineBuffer.cxx
   Interface_LineBuffer.hxx
   Interface_Macros.hxx

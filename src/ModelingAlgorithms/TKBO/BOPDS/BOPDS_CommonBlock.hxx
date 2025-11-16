@@ -30,9 +30,9 @@ DEFINE_STANDARD_HANDLE(BOPDS_CommonBlock, Standard_Transient)
 
 //! The class BOPDS_CommonBlock is to store the information
 //! about pave blocks that have geometrical coincidence
-//! (in terms of a tolerance) with:<br>
-//! a) other pave block(s);<br>
-//! b) face(s).<br>
+//! (in terms of a tolerance) with:
+//! a) other pave block(s);
+//! b) face(s).
 //! First pave block in the common block (real pave block)
 //! is always a pave block with the minimal index of the original edge.
 class BOPDS_CommonBlock : public Standard_Transient

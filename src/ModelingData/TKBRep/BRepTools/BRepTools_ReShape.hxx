@@ -167,9 +167,9 @@ protected:
   //!
   //! If the first shape has the reversed orientation
   //! then the both shapes are reversed.
-  //! If the first shape has the internal or external orientation then: <br>
+  //! If the first shape has the internal or external orientation then:
   //! - the second shape is oriented forward (reversed) if it's orientation
-  //!   is equal (not equal) to the orientation of the first shape; <br>
+  //!   is equal (not equal) to the orientation of the first shape;
   //! - the first shape is oriented forward.
   Standard_EXPORT virtual void replace(const TopoDS_Shape&    shape,
                                        const TopoDS_Shape&    newshape,

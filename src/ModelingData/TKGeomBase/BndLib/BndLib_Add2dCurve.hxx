@@ -37,8 +37,8 @@ public:
   //! B is then enlarged by the tolerance value Tol.
   //! Note: depending on the type of curve, one of the following
   //! representations of the curve C is used to include it in the bounding box B:
-  //! -   an exact representation if C is built from a line, a circle   or a conic curve,
-  //! -   the poles of the curve if C is built from a Bezier curve or   a BSpline curve,
+  //! -   an exact representation if C is built from a line, a circle or a conic curve,
+  //! -   the poles of the curve if C is built from a Bezier curve or a BSpline curve,
   //! -   if not, the points of an approximation of the curve C.
   //! Warning
   //! C is an adapted curve, that is, an object which is an interface between:
@@ -69,8 +69,8 @@ public:
   //! B is then enlarged by the tolerance value Tol.
   //! Note: depending on the type of curve, one of the following
   //! representations of the curve C is used to include it in the bounding box B:
-  //! -   an exact representation if C is built from a line, a circle   or a conic curve,
-  //! -   the poles of the curve if C is built from a Bezier curve or   a BSpline curve,
+  //! -   an exact representation if C is built from a line, a circle or a conic curve,
+  //! -   the poles of the curve if C is built from a Bezier curve or a BSpline curve,
   //! -   if not, the points of an approximation of the curve C.
   //! Warning
   //! C is an adapted curve, that is, an object which is an interface between:
@@ -127,9 +127,9 @@ public:
   //! B is then enlarged by the tolerance value Tol.
   //! U1, U2 - the parametric range to compute the bounding box;
   //! Note: depending on the type of curve, one of the following
-  //! algorithms  is used to include it in the bounding box B:
+  //! algorithms is used to include it in the bounding box B:
   //! -   an exact analytical if C is built from a line, a circle or a conic curve,
-  //! -   numerical calculation of bounding box sizes, based on minimization algorithm,  for other
+  //! -   numerical calculation of bounding box sizes, based on minimization algorithm, for other
   //! types of curve If Tol = < Precision::PConfusion(), Precision::PConfusion is used as tolerance
   //! for calculation
   Standard_EXPORT static void AddOptimal(const Handle(Geom2d_Curve)& C,

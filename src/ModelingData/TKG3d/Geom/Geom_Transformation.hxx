@@ -81,7 +81,7 @@ public:
   void SetMirror(const gp_Ax1& theA1) { gpTrsf.SetMirror(theA1); }
 
   //! Makes the transformation into a symmetrical transformation
-  //! with respect to a plane.  The plane of the symmetry is
+  //! with respect to a plane. The plane of the symmetry is
   //! defined with the axis placement A2. It is the plane
   //! (Location, XDirection, YDirection).
   void SetMirror(const gp_Ax2& theA2) { gpTrsf.SetMirror(theA2); }
@@ -156,7 +156,7 @@ public:
   //! Returns the coefficients of the global matrix of transformation.
   //! It is a 3 rows X 4 columns matrix.
   //!
-  //! Raised if  Row < 1 or Row > 3  or  Col < 1 or Col > 4
+  //! Raised if Row < 1 or Row > 3 or Col < 1 or Col > 4
   Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const
   {
     return gpTrsf.Value(theRow, theCol);
@@ -194,7 +194,7 @@ public:
   Standard_EXPORT Handle(Geom_Transformation) Powered(const Standard_Integer N) const;
 
   //! Computes the matrix of the transformation composed with
-  //! <me> and Other.     <me> = Other * <me>
+  //! <me> and Other. <me> = Other * <me>
   Standard_EXPORT void PreMultiply(const Handle(Geom_Transformation)& Other);
 
   //! Applies the transformation <me> to the triplet {X, Y, Z}.

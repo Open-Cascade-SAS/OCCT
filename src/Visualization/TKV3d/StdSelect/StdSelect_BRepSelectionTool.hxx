@@ -34,7 +34,7 @@ class TopoDS_Face;
 
 //! Tool to create specific selections (sets of primitives)
 //! for Shapes from Topology.
-//! These Selections may be used  in dynamic selection
+//! These Selections may be used in dynamic selection
 //! Mechanism
 //! Given a Shape and a mode of selection
 //! (selection of vertices,
@@ -87,8 +87,8 @@ public:
                                    const Standard_Integer NbPOnEdge         = 9,
                                    const Standard_Real    MaximalParameter  = 500);
 
-  //! Same  functionalities  ; the  only
-  //! difference is that  the selectable object from which the
+  //! Same functionalities. The only
+  //! difference is that the selectable object from which the
   //! selection comes is stored in each Sensitive EntityOwner;
   //! decomposition of <aShape> into sensitive entities following
   //! a mode of decomposition <aType>. These entities are stored in <aSelection>

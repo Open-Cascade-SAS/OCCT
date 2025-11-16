@@ -78,7 +78,7 @@ public:
 
   //! returns the eccentricity value of the conic e.
   //! e = 0 for a circle
-  //! 0 < e < 1 for an ellipse  (e = 0 if MajorRadius = MinorRadius)
+  //! 0 < e < 1 for an ellipse (e = 0 if MajorRadius = MinorRadius)
   //! e > 1 for a hyperbola
   //! e = 1 for a parabola
   Standard_EXPORT virtual Standard_Real Eccentricity() const = 0;
@@ -95,7 +95,7 @@ public:
   //! The local coordinate system of the conic is modified.
   Standard_EXPORT void Reverse() Standard_OVERRIDE;
 
-  //! Returns the  parameter on the  reversed  curve for
+  //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
   Standard_EXPORT virtual Standard_Real ReversedParameter(const Standard_Real U) const
     Standard_OVERRIDE = 0;

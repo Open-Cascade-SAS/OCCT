@@ -125,7 +125,7 @@ public:
   //! VERTEX, EDGE, WIRE, FACE, ....
   Standard_EXPORT virtual TopAbs_ShapeEnum ShapeType() const = 0;
 
-  //! Returns a copy  of the  TShape  with no sub-shapes.
+  //! Returns a copy of the TShape with no sub-shapes.
   Standard_EXPORT virtual Handle(TopoDS_TShape) EmptyCopy() const = 0;
 
   //! Returns the number of direct sub-shapes (children).

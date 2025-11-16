@@ -55,7 +55,7 @@ public:
   //! normal of the surface. (the wires have to be
   //! reversed). <RevFace> has to be set to
   //! Standard_True if the orientation of the modified
-  //! face changes in the shells which contain it.  --
+  //! face changes in the shells which contain it.
   //! Here, <RevFace> will return Standard_True if the
   //! -- gp_Trsf is negative.
   Standard_EXPORT Standard_Boolean NewSurface(const TopoDS_Face&    F,

@@ -14,6 +14,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 
 #include <gtest/gtest.h>
 #include <algorithm>
@@ -439,4 +440,24 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Reverse)
   std::reverse(aStdList.begin(), aStdList.end());
 
   EXPECT_TRUE(std::equal(aSequence.begin(), aSequence.end(), aStdList.begin()));
+}
+
+TEST(NCollection_SequenceTest, OCC26448_PrependEmptySequence)
+{
+  // Bug OCC26448: Method Prepend() of sequence breaks it if argument is empty sequence
+  // This test verifies that prepending an empty sequence doesn't affect the target sequence
+
+  // Test with NCollection_Sequence
+  NCollection_Sequence<Standard_Real> aNSeq1, aNSeq2;
+  aNSeq1.Append(11.);
+  aNSeq1.Prepend(aNSeq2); // Prepend empty sequence
+  EXPECT_EQ(aNSeq1.Size(), 1);
+  EXPECT_DOUBLE_EQ(aNSeq1.First(), 11.0);
+
+  // Test with TColStd_SequenceOfReal
+  TColStd_SequenceOfReal aTSeq1, aTSeq2;
+  aTSeq1.Append(11.);
+  aTSeq1.Prepend(aTSeq2); // Prepend empty sequence
+  EXPECT_EQ(aTSeq1.Size(), 1);
+  EXPECT_DOUBLE_EQ(aTSeq1.First(), 11.0);
 }

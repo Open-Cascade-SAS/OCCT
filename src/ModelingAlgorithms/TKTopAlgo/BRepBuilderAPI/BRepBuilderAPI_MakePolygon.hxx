@@ -32,8 +32,8 @@ class TopoDS_Wire;
 //! polygonal wire can be built from any number of points
 //! or vertices, and consists of a sequence of connected
 //! rectilinear edges.
-//! When a point or vertex is added to the  polygon if
-//! it is identic  to the previous  point no  edge  is
+//! When a point or vertex is added to the polygon if
+//! it is identic to the previous point no edge is
 //! built. The method added can be used to test it.
 //! Construction of a Polygonal Wire
 //! You can construct:

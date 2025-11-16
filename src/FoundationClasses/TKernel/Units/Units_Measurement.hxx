@@ -23,7 +23,7 @@
 
 class Units_Token;
 
-//! This class  defines  a measurement which is the
+//! This class defines a measurement which is the
 //! association of a real value and a unit.
 class Units_Measurement
 {

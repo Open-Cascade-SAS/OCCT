@@ -500,7 +500,7 @@ void IntPolyh_MaillageAffinage::CommonBox()
 
 //=======================================================================
 // function : CommonBox
-// purpose  : Compute the common box  witch is the intersection
+// purpose  : Compute the common box  which is the intersection
 //           of the two bounding boxes,  and mark the points of
 //           the two surfaces that are inside.
 //           REJECTION BOUNDING BOXES

@@ -28,17 +28,17 @@
 class TopoDS_Face;
 class TopoDS_Edge;
 
-//! This    is  the  root     class for     all  shape
-//! constructions.  It stores the result.
+//! This is the root class for all shape
+//! constructions. It stores the result.
 //!
-//! It  provides deferred methods to trace the history
+//! It provides deferred methods to trace the history
 //! of sub-shapes.
 class BRepLib_MakeShape : public BRepLib_Command
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! This is  called by  Shape().  It does  nothing but
+  //! This is called by Shape(). It does nothing but
   //! may be redefined.
   Standard_EXPORT void Build();
 

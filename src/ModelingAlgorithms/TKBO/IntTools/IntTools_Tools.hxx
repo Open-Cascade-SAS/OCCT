@@ -136,7 +136,7 @@ public:
   Standard_EXPORT static Standard_Real CurveTolerance(const Handle(Geom_Curve)& aC,
                                                       const Standard_Real       aTolBase);
 
-  //! Checks if the curve is not covered by the default tolerance (confusion).<br>
+  //! Checks if the curve is not covered by the default tolerance (confusion).
   //! Builds bounding box for the curve and stores it into <theBox>.
   Standard_EXPORT static Standard_Boolean CheckCurve(const IntTools_Curve& theCurve,
                                                      Bnd_Box&              theBox);

@@ -133,7 +133,7 @@ public:
 
   //! Removes Z layer. All structures displayed at the moment in layer will be displayed in
   //! default layer (the bottom-level z layer). By default, there are always default
-  //! bottom-level layer that can't be removed.  The passed theLayerId should be not less than 0
+  //! bottom-level layer that can't be removed. The passed theLayerId should be not less than 0
   //! (reserved for default layers that can not be removed).
   Standard_EXPORT void RemoveZLayer(const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
 

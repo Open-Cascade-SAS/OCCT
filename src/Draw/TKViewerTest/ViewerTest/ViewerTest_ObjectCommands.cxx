@@ -743,7 +743,7 @@ static int VTrihedron(Draw_Interpretor&, Standard_Integer theArgsNb, const char*
 // function : VSize
 // author   : ege
 // purpose  : Change the size of a named or selected trihedron
-//           if no name : it affects the trihedrons witch are selected otherwise nothing is donne
+//           if no name : it affects the trihedrons which are selected otherwise nothing is donne
 //           if no value, the value is set at 100 by default
 // Draw arg : vsize [name] [size]
 //==============================================================================

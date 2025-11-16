@@ -49,7 +49,7 @@
 //! -----------------------
 //! 3    |    |    |    |      |
 //! -----------------------
-//! UIndex [1, NbUPatches]  Udirection
+//! UIndex [1, NbUPatches] Udirection
 //!
 //! Warning! Patches must have compatible parametrization
 class GeomConvert_CompBezierSurfacesToBSplineSurface
@@ -117,7 +117,7 @@ public:
   //! Build an Ci uniform (Rational) BSpline surface
   //! The highest Continuity Ci is imposed, like the
   //! maximal deformation is lower than <Tolerance>.
-  //! Warning:  The Continuity C0 is imposed without any check.
+  //! Warning: The Continuity C0 is imposed without any check.
   Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(
     const TColGeom_Array2OfBezierSurface& Beziers,
     const Standard_Real                   Tolerance,
@@ -241,7 +241,7 @@ public:
   //! direction of the BSpline surface whose data is computed in this framework.
   const Handle(TColStd_HArray1OfReal)& UKnots() const;
 
-  //! Returns the degree for the u  parametric
+  //! Returns the degree for the u parametric
   //! direction of the BSpline surface whose data is computed in this framework.
   Standard_Integer UDegree() const;
 
@@ -249,7 +249,7 @@ public:
   //! direction of the BSpline surface whose data is computed in this framework.
   const Handle(TColStd_HArray1OfReal)& VKnots() const;
 
-  //! Returns the degree for the v  parametric
+  //! Returns the degree for the v parametric
   //! direction of the BSpline surface whose data is computed in this framework.
   Standard_Integer VDegree() const;
 

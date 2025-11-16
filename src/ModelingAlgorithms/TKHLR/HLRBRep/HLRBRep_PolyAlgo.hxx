@@ -97,7 +97,7 @@ public:
   //! calculation of the visible and hidden lines of a shape in a projection.
   //! Use the functions:
   //! -   Projector to define the point of view
-  //! -   Load to select the shape or shapes to be  visualized
+  //! -   Load to select the shape or shapes to be visualized
   //! -   Update to compute the visible and hidden lines of the shape.
   //! Warning
   //! The shape or shapes to be visualized must have already been triangulated.
@@ -114,7 +114,7 @@ public:
   //! remove the Shape of Index <I>.
   Standard_EXPORT void Remove(const Standard_Integer I);
 
-  //! return the index of the Shape <S> and  return 0 if
+  //! return the index of the Shape <S> and return 0 if
   //! the Shape <S> is not found.
   Standard_EXPORT Standard_Integer Index(const TopoDS_Shape& S) const;
 
@@ -173,7 +173,7 @@ public:
                                                  Standard_Boolean& outl,
                                                  Standard_Boolean& intl);
 
-  //! Make a shape  with  the internal outlines in  each
+  //! Make a shape with the internal outlines in each
   //! face.
   Standard_EXPORT TopoDS_Shape OutLinedShape(const TopoDS_Shape& S) const;
 

@@ -55,7 +55,7 @@ public:
   //! by the Ax3 <Pl>.
   Standard_EXPORT ProjLib_ProjectOnPlane(const gp_Ax3& Pl);
 
-  //! The projection will be  along the direction <D> on
+  //! The projection will be along the direction <D> on
   //! the plane defined by the Ax3 <Pl>.
   //! raises if the direction <D> is parallel to the
   //! plane <Pl>.
@@ -89,11 +89,11 @@ public:
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
   //! If necessary, breaks the curve in intervals of
-  //! continuity <S>. And  returns the number of
+  //! continuity <S>. And returns the number of
   //! intervals.
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
-  //! Stores in <T> the  parameters bounding the intervals of continuity <S>.
+  //! Stores in <T> the parameters bounding the intervals of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
@@ -157,7 +157,7 @@ public:
   //! to the real space resolution <R3d>.
   Standard_EXPORT Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
 
-  //! Returns the type of the  curve in the current
+  //! Returns the type of the curve in the current
   //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   Standard_EXPORT GeomAbs_CurveType GetType() const Standard_OVERRIDE;

@@ -56,10 +56,10 @@ DEFINE_STANDARD_HANDLE(ShapeUpgrade_UnifySameDomain, Standard_Transient)
 //! The output result of the tool is the unified shape.
 //!
 //! All the modifications of initial shape are recorded during unifying.
-//! Methods History are intended to: <br>
+//! Methods History are intended to:
 //! - set a place holder for the history of modifications of sub-shapes of
-//!   the initial shape; <br>
-//! - get the collected history. <br>
+//!   the initial shape;
+//! - get the collected history.
 //! The algorithm provides a place holder for the history and collects the
 //! history by default.
 //! To avoid collecting of the history the place holder should be set to null handle.

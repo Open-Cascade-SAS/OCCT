@@ -128,7 +128,7 @@ public:
     const Handle(PrsMgr_PresentationManager)& theMgr);
 
   //! Method which hilight an owner belonging to
-  //! this selectable object  ( for fast presentation draw )
+  //! this selectable object (for fast presentation draw)
   Standard_EXPORT virtual void HilightOwnerWithColor(
     const Handle(PrsMgr_PresentationManager)& thePM,
     const Handle(Prs3d_Drawer)&               theStyle,

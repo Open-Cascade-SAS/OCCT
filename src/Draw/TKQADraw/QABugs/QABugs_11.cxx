@@ -1399,64 +1399,6 @@ static Standard_Integer OCC578(Draw_Interpretor& di, Standard_Integer argc, cons
 
 #include <Standard_GUID.hxx>
 
-//=================================================================================================
-
-static Standard_Integer OCC669(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " GUID\n";
-    return -1;
-  }
-  Standard_GUID guid(argv[1]);
-  // guid.ShallowDump(std::cout);
-  Standard_SStream aSStream;
-  guid.ShallowDump(aSStream);
-  di << aSStream;
-  di << "\n";
-  return 0;
-}
-
-#include <XCAFDoc.hxx>
-
-//=================================================================================================
-
-static Standard_Integer OCC738_ShapeRef(Draw_Interpretor& di,
-                                        Standard_Integer  argc,
-                                        const char**      argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return -1;
-  }
-  const Standard_GUID& guid = XCAFDoc::ShapeRefGUID();
-  // guid.ShallowDump(std::cout);
-  Standard_SStream aSStream;
-  guid.ShallowDump(aSStream);
-  di << aSStream;
-  return 0;
-}
-
-//=================================================================================================
-
-static Standard_Integer OCC738_Assembly(Draw_Interpretor& di,
-                                        Standard_Integer  argc,
-                                        const char**      argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return -1;
-  }
-  const Standard_GUID& guid = XCAFDoc::AssemblyGUID();
-  // guid.ShallowDump(std::cout);
-  Standard_SStream aSStream;
-  guid.ShallowDump(aSStream);
-  di << aSStream;
-  return 0;
-}
-
 #if defined(DDataStd_def01)
   #include <DDataStd_DrawPresentation.hxx>
 
@@ -1520,29 +1462,6 @@ static Standard_Integer OCC708(Draw_Interpretor& di, Standard_Integer argc, cons
 }
 
 //=================================================================================================
-
-#include <TColStd_Array2OfInteger.hxx>
-
-static Standard_Integer OCC670(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return -1;
-  }
-
-  // check that exception initialized without message string can be safely handled and printed
-  try
-  {
-    throw Standard_OutOfRange();
-  }
-  catch (Standard_Failure const& anException)
-  {
-    std::cout << "Caught successfully: ";
-    std::cout << anException << std::endl;
-  }
-  return 0;
-}
 
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 
@@ -1632,47 +1551,6 @@ static Standard_Integer OCC921(Draw_Interpretor& di, Standard_Integer argc, cons
 #include <Expr_GeneralExpression.hxx>
 
 //=================================================================================================
-
-static Standard_Integer OCC902(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " expression\n";
-    return 1;
-  }
-
-  TCollection_AsciiString anExpStr(argv[1]);
-  anExpStr.AssignCat("*x");
-  anExpStr.Prepend("Exp(");
-  anExpStr.AssignCat(")");
-
-  Handle(ExprIntrp_GenExp) exprIntrp = ExprIntrp_GenExp::Create();
-
-  //
-  // Create the expression
-  exprIntrp->Process(anExpStr);
-
-  if (!exprIntrp->IsDone())
-  {
-    di << "Interpretation of expression " << argv[1] << " failed\n";
-    return 1;
-  }
-
-  Handle(Expr_GeneralExpression) anExpr  = exprIntrp->Expression();
-  Handle(Expr_NamedUnknown)      aVar    = new Expr_NamedUnknown("x");
-  Handle(Expr_GeneralExpression) newExpr = anExpr->Derivative(aVar);
-
-  TCollection_AsciiString res        = newExpr->String();
-  Standard_CString        resStr     = res.ToCString();
-  TCollection_AsciiString res_old    = anExpr->String();
-  Standard_CString        res_oldStr = res_old.ToCString();
-
-  di << "X = " << argv[1] << "\n";
-  di << "Y = " << res_oldStr << "\n";
-  di << "Y' = " << resStr << "\n";
-
-  return 0;
-}
 
 #include <DDF.hxx>
 #include <TPrsStd_AISViewer.hxx>
@@ -4995,43 +4873,6 @@ Standard_Integer OCC28478(Draw_Interpretor& di, Standard_Integer argc, const cha
   return 0;
 }
 
-Standard_Integer OCC31189(Draw_Interpretor& theDI, Standard_Integer /*argc*/, const char** /*argv*/)
-{
-  // redirect output of default messenger to DRAW (temporarily)
-  const Handle(Message_Messenger)& aMsgMgr = Message::DefaultMessenger();
-  Message_SequenceOfPrinters       aPrinters;
-  aPrinters.Append(aMsgMgr->ChangePrinters());
-  aMsgMgr->AddPrinter(new Draw_Printer(theDI));
-
-  // scope block to test output of message on destruction of a stream buffer
-  {
-    Message_Messenger::StreamBuffer aSender = Message::SendInfo();
-
-    // check that messages output to sender and directly to messenger do not intermix
-    aSender << "Sender message 1: start ...";
-    aMsgMgr->Send("Direct message 1");
-    aSender << "... end" << std::endl; // endl should send the message
-
-    // check that empty stream buffer does not produce output on destruction
-    Message::SendInfo();
-
-    // additional message to check that they go in expected order
-    aMsgMgr->Send("Direct message 2");
-
-    // check that empty stream buffer does produce empty line if std::endl is passed
-    Message::SendInfo() << std::endl;
-
-    // last message should be sent on destruction of a sender
-    aSender << "Sender message 2";
-  }
-
-  // restore initial output queue
-  aMsgMgr->RemovePrinters(STANDARD_TYPE(Draw_Printer));
-  aMsgMgr->ChangePrinters().Append(aPrinters);
-
-  return 0;
-}
-
 namespace
 {
 struct Task
@@ -5183,19 +5024,14 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   group);
   // theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
-  theCommands.Add("OCC669", "OCC669 GUID", __FILE__, OCC669, group);
-  theCommands.Add("OCC738_ShapeRef", "OCC738_ShapeRef", __FILE__, OCC738_ShapeRef, group);
-  theCommands.Add("OCC738_Assembly", "OCC738_Assembly", __FILE__, OCC738_Assembly, group);
   theCommands.Add("OCC708",
                   "OCC708 shape ; Deactivate the current transformation",
                   __FILE__,
                   OCC708,
                   group);
-  theCommands.Add("OCC670", "OCC670", __FILE__, OCC670, group);
   theCommands.Add("OCC867", "OCC867 Point Surface Umin Usup Vmin Vsup", __FILE__, OCC867, group);
   theCommands.Add("OCC909", "OCC909 wire face", __FILE__, OCC909, group);
   theCommands.Add("OCC921", "OCC921 face", __FILE__, OCC921, group);
-  theCommands.Add("OCC902", "OCC902 expression", __FILE__, OCC902, group);
 
   theCommands.Add("OCC1029_AISTransparency",
                   "OCC1029_AISTransparency (DOC, entry, [real])",
@@ -5288,11 +5124,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
     __FILE__,
     OCC28478,
     group);
-  theCommands.Add("OCC31189",
-                  "OCC31189: check stream buffer interface of Message_Messenger",
-                  __FILE__,
-                  OCC31189,
-                  group);
   theCommands.Add("OCC25748",
                   "OCC25748 [-niter val] [-matsize val] [-progr] [-parallel]\n"
                   "\t\ttest progress indicator in parallel execution",

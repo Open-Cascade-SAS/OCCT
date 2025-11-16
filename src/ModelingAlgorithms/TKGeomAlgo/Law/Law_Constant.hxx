@@ -44,7 +44,7 @@ public:
   //! Returns GeomAbs_CN
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! Returns  1
+  //! Returns 1
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
   Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,

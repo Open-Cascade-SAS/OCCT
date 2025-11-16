@@ -58,24 +58,62 @@ private:
   Handle(MAT_Bisector)                  theitem;
 };
 
-#define Item Handle(MAT_Bisector)
-#define Item_hxx <MAT_Bisector.hxx>
-#define MAT_TListNode MAT_TListNodeOfListOfBisector
-#define MAT_TListNode_hxx <MAT_TListNodeOfListOfBisector.hxx>
-#define Handle_MAT_TListNode Handle(MAT_TListNodeOfListOfBisector)
-#define MAT_TList MAT_ListOfBisector
-#define MAT_TList_hxx <MAT_ListOfBisector.hxx>
-#define Handle_MAT_TList Handle(MAT_ListOfBisector)
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <MAT_TListNode.lxx>
+inline MAT_TListNodeOfListOfBisector::MAT_TListNodeOfListOfBisector() {}
 
-#undef Item
-#undef Item_hxx
-#undef MAT_TListNode
-#undef MAT_TListNode_hxx
-#undef Handle_MAT_TListNode
-#undef MAT_TList
-#undef MAT_TList_hxx
-#undef Handle_MAT_TList
+//=================================================================================================
+
+inline MAT_TListNodeOfListOfBisector::MAT_TListNodeOfListOfBisector(
+  const Handle(MAT_Bisector)& anitem)
+{
+  theitem = anitem;
+}
+
+//=================================================================================================
+
+inline Handle(MAT_Bisector) MAT_TListNodeOfListOfBisector::GetItem() const
+{
+  return theitem;
+}
+
+//=================================================================================================
+
+inline Handle(MAT_TListNodeOfListOfBisector) MAT_TListNodeOfListOfBisector::Next() const
+{
+  return thenext;
+}
+
+//=================================================================================================
+
+inline Handle(MAT_TListNodeOfListOfBisector) MAT_TListNodeOfListOfBisector::Previous() const
+{
+  return theprevious;
+}
+
+//=================================================================================================
+
+inline void MAT_TListNodeOfListOfBisector::SetItem(const Handle(MAT_Bisector)& anitem)
+{
+  theitem = anitem;
+}
+
+//=================================================================================================
+
+inline void MAT_TListNodeOfListOfBisector::Next(
+  const Handle(MAT_TListNodeOfListOfBisector)& atlistnode)
+{
+  thenext = atlistnode;
+}
+
+//=================================================================================================
+
+inline void MAT_TListNodeOfListOfBisector::Previous(
+  const Handle(MAT_TListNodeOfListOfBisector)& atlistnode)
+{
+  theprevious = atlistnode;
+}
 
 #endif // _MAT_TListNodeOfListOfBisector_HeaderFile

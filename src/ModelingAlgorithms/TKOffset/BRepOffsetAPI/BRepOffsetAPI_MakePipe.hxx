@@ -71,7 +71,7 @@ public:
   Standard_EXPORT virtual void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
-  //! Returns the  TopoDS  Shape of the bottom of the prism.
+  //! Returns the TopoDS Shape of the bottom of the prism.
   Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
 
   //! Returns the TopoDS Shape of the top of the prism.

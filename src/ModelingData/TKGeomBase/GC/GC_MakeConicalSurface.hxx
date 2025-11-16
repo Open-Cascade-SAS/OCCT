@@ -44,13 +44,13 @@ class gp_Pnt;
 //! it gives the direction of increasing parametric value V.
 //! The apex of the surface is on the negative side of this axis.
 //!
-//! The parametrization range is  :
-//! U [0, 2*PI],  V ]-infinite, + infinite[
+//! The parametrization range is:
+//! U [0, 2*PI], V ]-infinite, + infinite[
 //!
 //! The "XAxis" and the "YAxis" define the placement plane of the
-//! surface (Z = 0, and parametric value V = 0)  perpendicular to
+//! surface (Z = 0, and parametric value V = 0) perpendicular to
 //! the symmetry axis. The "XAxis" defines the origin of the
-//! parameter U = 0.  The trigonometric sense gives the positive
+//! parameter U = 0. The trigonometric sense gives the positive
 //! orientation for the parameter U.
 //!
 //! When you create a ConicalSurface the U and V directions of

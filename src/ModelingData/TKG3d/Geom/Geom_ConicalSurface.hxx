@@ -70,7 +70,7 @@ DEFINE_STANDARD_HANDLE(Geom_ConicalSurface, Geom_ElementarySurface)
 //! - O, XDir, YDir and ZDir are respectively
 //! the origin, the "X Direction", the "Y Direction" and
 //! the "Z Direction" of the cone's local coordinate system,
-//! - Ang is the half-angle at the apex of the cone,   and
+//! - Ang is the half-angle at the apex of the cone, and
 //! - R is the reference radius.
 class Geom_ConicalSurface : public Geom_ElementarySurface
 {

@@ -26,7 +26,7 @@ class Geom2d_Curve;
 class Bisector_Curve;
 
 //! 2                      2
-//! F(u) =  (PC(u) - PBis1(u))   + (PC(u) - PBis2(u))
+//! F(u) = (PC(u) - PBis1(u)) + (PC(u) - PBis2(u))
 class Bisector_FunctionInter : public math_FunctionWithDerivative
 {
 public:

@@ -39,7 +39,7 @@ class TopLoc_Location;
 class TopoDS_Edge;
 class TopoDS_Vertex;
 
-//! Provides class methods  to  access to the geometry
+//! Provides class methods to access to the geometry
 //! of BRep shapes.
 class BRep_Tool
 {
@@ -86,7 +86,7 @@ public:
   //! Returns the tolerance of the face.
   Standard_EXPORT static Standard_Real Tolerance(const TopoDS_Face& F);
 
-  //! Returns the  NaturalRestriction flag of the face.
+  //! Returns the NaturalRestriction flag of the face.
   Standard_EXPORT static Standard_Boolean NaturalRestriction(const TopoDS_Face& F);
 
   //! Returns True if <F> has a surface, false otherwise.
@@ -259,7 +259,7 @@ public:
   //! Returns the SameRange flag for the edge.
   Standard_EXPORT static Standard_Boolean SameRange(const TopoDS_Edge& E);
 
-  //! Returns True  if the edge is degenerated.
+  //! Returns True if the edge is degenerated.
   Standard_EXPORT static Standard_Boolean Degenerated(const TopoDS_Edge& E);
 
   //! Gets the range of the 3d curve.

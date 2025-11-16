@@ -73,7 +73,7 @@ public:
   Standard_EXPORT void ClearSelectionStructures(const Handle(SelectMgr_SelectableObject)& theObj,
                                                 const Standard_Integer theMode = -1);
 
-  //! Re-adds newly calculated sensitive  entities of recomputed selection
+  //! Re-adds newly calculated sensitive entities of recomputed selection
   //! defined by mode theMode to all viewer selectors contained that selection.
   Standard_EXPORT void RestoreSelectionStructures(const Handle(SelectMgr_SelectableObject)& theObj,
                                                   const Standard_Integer theMode = -1);

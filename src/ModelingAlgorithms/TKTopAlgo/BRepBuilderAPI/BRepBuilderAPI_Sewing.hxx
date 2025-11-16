@@ -145,7 +145,7 @@ public:
   Standard_EXPORT Standard_Boolean IsSectionBound(const TopoDS_Edge& section) const;
 
   //! Gives the original edge (free boundary) which becomes the
-  //! the section. Remember that sections constitute  common edges.
+  //! the section. Remember that sections constitute common edges.
   //! This information is important for control because with
   //! original edge we can find the surface to which the section
   //! is attached.

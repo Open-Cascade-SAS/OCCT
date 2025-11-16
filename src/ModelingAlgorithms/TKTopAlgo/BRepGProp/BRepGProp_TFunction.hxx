@@ -76,7 +76,7 @@ public:
   //! parameter is directly passed to the UFunction.
   void SetValueType(const GProp_ValueType aType);
 
-  //! Setting the tolerance  for  inner integration
+  //! Setting the tolerance for inner integration
   void SetTolerance(const Standard_Real aTol);
 
   //! Returns the relative reached error of all values computation since
@@ -93,7 +93,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X,
                                                  Standard_Real&      F) Standard_OVERRIDE;
 
-  //! Redefined  method. Remembers the error reached during
+  //! Redefined method. Remembers the error reached during
   //! computation of integral values since the object creation
   //! or the last call of GetStateNumber. It is invoked in each
   //! algorithm from the package math. Particularly in the

@@ -66,7 +66,7 @@ public:
                                   const gp_Dir&                     dir2,
                                   const gp_Pnt&                     OffsetPoint);
 
-  //! Same  as above, but <thevalstring> contains conversion
+  //! Same as above, but <thevalstring> contains conversion
   //! in Session units....
   Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
                                   const Handle(Prs3d_Drawer)&       aDrawer,
@@ -79,8 +79,8 @@ public:
                                   const gp_Dir&                     dir2,
                                   const gp_Pnt&                     OffsetPoint);
 
-  //! Same  as above, may add one  or
-  //! two Arrows  according to  <ArrowSide>  value
+  //! Same as above, may add one or
+  //! two Arrows according to <ArrowSide> value
   Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
                                   const Handle(Prs3d_Drawer)&       aDrawer,
                                   const Standard_Real               theval,
@@ -93,7 +93,7 @@ public:
                                   const gp_Pnt&                     OffsetPoint,
                                   const DsgPrs_ArrowSide            ArrowSide);
 
-  //! Same  as above, but axisdir contains the axis direction
+  //! Same as above, but axisdir contains the axis direction
   //! useful for Revol that can be opened with 180 degrees
   Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
                                   const Handle(Prs3d_Drawer)&       aDrawer,
@@ -107,8 +107,8 @@ public:
                                   const gp_Dir&                     axisdir,
                                   const gp_Pnt&                     OffsetPoint);
 
-  //! Same  as above,may add one  or
-  //! two Arrows  according to  <ArrowSide>  value
+  //! Same as above,may add one or
+  //! two Arrows according to <ArrowSide> value
   Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
                                   const Handle(Prs3d_Drawer)&       aDrawer,
                                   const Standard_Real               theval,
@@ -125,9 +125,9 @@ public:
                                   const DsgPrs_ArrowSide            ArrowSide);
 
   //! simple representation of a poor lonesome angle dimension
-  //! Draw a line from <theCenter>   to <AttachmentPoint1>, then operates
-  //! a rotation around the perpmay add one  or
-  //! two Arrows  according to  <ArrowSide>  value.  The
+  //! Draw a line from <theCenter> to <AttachmentPoint1>, then operates
+  //! a rotation around the perpmay add one or
+  //! two Arrows according to <ArrowSide> value. The
   //! attributes (color,arrowsize,...) are driven by the Drawer.
   Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
                                   const Handle(Prs3d_Drawer)&       aDrawer,

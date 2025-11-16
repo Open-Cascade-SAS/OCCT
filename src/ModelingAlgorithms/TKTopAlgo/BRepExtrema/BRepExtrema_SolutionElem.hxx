@@ -55,7 +55,7 @@ public:
   {
   }
 
-  //! This constructor is used when the  solution of distance is on an Edge.
+  //! This constructor is used when the solution of distance is on an Edge.
   //! The different initialized fields are:
   //! @param theDist    the distance
   //! @param thePoint   the solution point
@@ -76,7 +76,7 @@ public:
   {
   }
 
-  //! This constructor is used when the  solution of distance is in a Face.
+  //! This constructor is used when the solution of distance is in a Face.
   //! The different initialized fields are:
   //! @param theDist    the distance
   //! @param thePoint   the solution point

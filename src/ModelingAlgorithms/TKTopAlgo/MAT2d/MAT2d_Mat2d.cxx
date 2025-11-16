@@ -52,9 +52,9 @@ MAT2d_Mat2d::MAT2d_Mat2d(const Standard_Boolean IsOpenResult)
 //  -------------------------
 //  l arbre est construit des branches les plus basses vers les plus hautes.
 //
-//  0 . Calcul des bisectrices entre elements voisins du contour.
-//  1 . Elimination de certains element du contour => nouveau contour
-//  2 . Retour en 0.
+//  0. Calcul des bisectrices entre elements voisins du contour.
+//  1. Elimination de certains element du contour => nouveau contour
+//  2. Retour en 0.
 //
 //  Principales etapes de l algorithme.
 //  ===================================

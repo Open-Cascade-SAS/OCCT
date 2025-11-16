@@ -122,7 +122,7 @@ public:
   //! Raised if N < 1.
   Standard_EXPORT virtual gp_Vec DN(const Standard_Real U, const Standard_Integer N) const;
 
-  //! Returns the parametric  resolution corresponding
+  //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT virtual Standard_Real Resolution(const Standard_Real R3d) const;
 

@@ -63,9 +63,9 @@ class Geom2d_Curve : public Geom2d_Geometry
 public:
   //! Changes the direction of parametrization of <me>.
   //! The "FirstParameter" and the "LastParameter" are not changed
-  //! but the orientation  of the curve is modified. If the curve
+  //! but the orientation of the curve is modified. If the curve
   //! is bounded the StartPoint of the initial curve becomes the
-  //! EndPoint of the reversed curve  and the EndPoint of the initial
+  //! EndPoint of the reversed curve and the EndPoint of the initial
   //! curve becomes the StartPoint of the reversed curve.
   Standard_EXPORT virtual void Reverse() = 0;
 
@@ -138,10 +138,10 @@ public:
   //! . the curve is always periodic by definition (Circle)
   //! . the curve can be defined as periodic (BSpline). In this case
   //! a function SetPeriodic allows you to give the shape of the
-  //! curve.  The general rule for this case is : if a curve can be
+  //! curve. The general rule for this case is : if a curve can be
   //! periodic or not the default periodicity set is non periodic
   //! and you have to turn (explicitly) the curve into a periodic
-  //! curve  if you want the curve to be periodic.
+  //! curve if you want the curve to be periodic.
   Standard_EXPORT virtual Standard_Boolean IsPeriodic() const = 0;
 
   //! Returns the period of this curve.
@@ -163,8 +163,8 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsCN(const Standard_Integer N) const = 0;
 
   //! Returns in P the point of parameter U.
-  //! If the curve is periodic  then the returned point is P(U) with
-  //! U = Ustart + (U - Uend)  where Ustart and Uend are the
+  //! If the curve is periodic then the returned point is P(U) with
+  //! U = Ustart + (U - Uend) where Ustart and Uend are the
   //! parametric bounds of the curve.
   //!
   //! Raised only for the "OffsetCurve" if it is not possible to
@@ -206,8 +206,8 @@ public:
   Standard_EXPORT virtual gp_Vec2d DN(const Standard_Real U, const Standard_Integer N) const = 0;
 
   //! Computes the point of parameter U on <me>.
-  //! If the curve is periodic  then the returned point is P(U) with
-  //! U = Ustart + (U - Uend)  where Ustart and Uend are the
+  //! If the curve is periodic then the returned point is P(U) with
+  //! U = Ustart + (U - Uend) where Ustart and Uend are the
   //! parametric bounds of the curve.
   //!
   //! it is implemented with D0.

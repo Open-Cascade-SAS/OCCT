@@ -74,7 +74,7 @@ public:
   //! Changes the flag allowing the linearization
   Standard_EXPORT void AllowLinearization(const Standard_Boolean theIsAllowed);
 
-  //! Add Closing Faces,  <F>  has to be  in  the initial
+  //! Add Closing Faces, <F> has to be in the initial
   //! shape S.
   Standard_EXPORT void AddFace(const TopoDS_Face& F);
 
@@ -125,7 +125,7 @@ public:
   Standard_EXPORT const TopoDS_Shape& GetBadShape() const;
 
 public: //! @name History methods
-  //! Returns the  list of shapes generated from the shape <S>.
+  //! Returns the list of shapes generated from the shape <S>.
   Standard_EXPORT const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS);
 
   //! Returns the list of shapes modified from the shape <S>.

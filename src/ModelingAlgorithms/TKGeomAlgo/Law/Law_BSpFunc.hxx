@@ -29,9 +29,9 @@ class Law_BSpline;
 class Law_BSpFunc;
 DEFINE_STANDARD_HANDLE(Law_BSpFunc, Law_Function)
 
-//! Law Function based on a BSpline curve 1d.  Package
+//! Law Function based on a BSpline curve 1d. Package
 //! methods and classes are implemented in package Law
-//! to    construct  the  basis    curve with  several
+//! to construct the basis curve with several
 //! constraints.
 class Law_BSpFunc : public Law_Function
 {
@@ -45,7 +45,7 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
 
-  //! Returns  the number  of  intervals for  continuity
+  //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
 
@@ -66,8 +66,8 @@ public:
                           Standard_Real&      D,
                           Standard_Real&      D2) Standard_OVERRIDE;
 
-  //! Returns a  law equivalent of  <me>  between
-  //! parameters <First>  and <Last>. <Tol>  is used  to
+  //! Returns a law equivalent of <me> between
+  //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! It is usfule to determines the derivatives
   //! in these values <First> and <Last> if

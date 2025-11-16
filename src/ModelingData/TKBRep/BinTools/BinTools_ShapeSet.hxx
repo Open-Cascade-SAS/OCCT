@@ -139,7 +139,7 @@ public:
   Standard_EXPORT virtual void AddShapes(TopoDS_Shape& S1, const TopoDS_Shape& S2);
 
   //! Reads the 3d polygons of me
-  //! from the stream  <IS>.
+  //! from the stream <IS>.
   Standard_EXPORT void ReadPolygon3D(
     Standard_IStream&            IS,
     const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -152,7 +152,7 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
   //! Reads the triangulation of me
-  //! from the  stream <IS>.
+  //! from the stream <IS>.
   Standard_EXPORT void ReadTriangulation(
     Standard_IStream&            IS,
     const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -165,7 +165,7 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
   //! Reads the polygons on triangulation of me
-  //! from the  stream <IS>.
+  //! from the stream <IS>.
   Standard_EXPORT void ReadPolygonOnTriangulation(
     Standard_IStream&            IS,
     const Message_ProgressRange& theRange = Message_ProgressRange());

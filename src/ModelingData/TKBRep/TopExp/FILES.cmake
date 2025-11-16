@@ -6,5 +6,4 @@ set(OCCT_TopExp_FILES
   TopExp.hxx
   TopExp_Explorer.cxx
   TopExp_Explorer.hxx
-  TopExp_Stack.hxx
 )

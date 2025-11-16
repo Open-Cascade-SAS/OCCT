@@ -49,7 +49,7 @@ public:
                                     const Standard_Real         VMax,
                                     const Standard_Boolean      Segment = Standard_False);
 
-  //! Creates the shell from the surface  and the min-max
+  //! Creates the shell from the surface and the min-max
   //! values.
   Standard_EXPORT void Init(const Handle(Geom_Surface)& S,
                             const Standard_Real         UMin,

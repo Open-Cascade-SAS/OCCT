@@ -28,36 +28,36 @@ public:
 
   BRepExtrema_ExtPC() {}
 
-  //! It calculates all the distances. <br>
+  //! It calculates all the distances.
   Standard_EXPORT BRepExtrema_ExtPC(const TopoDS_Vertex& V, const TopoDS_Edge& E);
 
   Standard_EXPORT void Initialize(const TopoDS_Edge& E);
-  //! An exception is raised if the fields have not been initialized. <br>
+  //! An exception is raised if the fields have not been initialized.
   Standard_EXPORT void Perform(const TopoDS_Vertex& V);
 
-  //! True if the distances are found. <br>
+  //! True if the distances are found.
   Standard_Boolean IsDone() const { return myExtPC.IsDone(); }
 
-  //! Returns the number of extremum distances. <br>
+  //! Returns the number of extremum distances.
   Standard_Integer NbExt() const { return myExtPC.NbExt(); }
 
-  //! Returns True if the <N>th extremum distance is a minimum. <br>
+  //! Returns True if the <N>th extremum distance is a minimum.
   Standard_Boolean IsMin(const Standard_Integer N) const { return myExtPC.IsMin(N); }
 
-  //! Returns the value of the <N>th extremum square distance. <br>
+  //! Returns the value of the <N>th extremum square distance.
   Standard_Real SquareDistance(const Standard_Integer N) const { return myExtPC.SquareDistance(N); }
 
-  //! Returns the parameter on the edge of the <N>th extremum distance. <br>
+  //! Returns the parameter on the edge of the <N>th extremum distance.
   Standard_Real Parameter(const Standard_Integer N) const { return myExtPC.Point(N).Parameter(); }
 
-  //! Returns the Point of the <N>th extremum distance. <br>
+  //! Returns the Point of the <N>th extremum distance.
   gp_Pnt Point(const Standard_Integer N) const { return myExtPC.Point(N).Value(); }
 
-  //! if the curve is a trimmed curve, <br>
-  //! dist1 is a square distance between <P> and the point <br>
-  //! of parameter FirstParameter <pnt1> and <br>
-  //! dist2 is a square distance between <P> and the point <br>
-  //! of parameter LastParameter <pnt2>. <br>
+  //! if the curve is a trimmed curve,
+  //! dist1 is a square distance between <P> and the point
+  //! of parameter FirstParameter <pnt1> and
+  //! dist2 is a square distance between <P> and the point
+  //! of parameter LastParameter <pnt2>.
   void TrimmedSquareDistances(Standard_Real& dist1,
                               Standard_Real& dist2,
                               gp_Pnt&        pnt1,

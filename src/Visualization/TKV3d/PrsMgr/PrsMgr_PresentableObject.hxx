@@ -487,7 +487,7 @@ public: //! @name simplified presentation properties API
   }
 
   //! Removes color settings. Only the Interactive Object
-  //! knows which Drawer attribute is   affected by the color
+  //! knows which Drawer attribute is affected by the color
   //! setting. For a wire, for example, wire aspect is the
   //! attribute affected. For a vertex, however, only point
   //! aspect is affected by the color setting.

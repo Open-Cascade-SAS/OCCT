@@ -61,7 +61,7 @@ public:
   //! Sets the coordinates of the lin aComponent.
   Standard_EXPORT void SetComponent(const Handle(Geom_Line)& aComponent);
 
-  //! Returns the position of axis2 and   positions it by
+  //! Returns the position of axis2 and positions it by
   //! identifying it as the x, y, or z axis and giving its
   //! direction in 3D space. The coordinate system used is right-handed.
   const Handle(Geom_Axis2Placement)& Axis2Placement() const { return myAx2; }

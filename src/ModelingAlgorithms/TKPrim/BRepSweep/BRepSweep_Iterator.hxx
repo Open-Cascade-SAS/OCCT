@@ -28,7 +28,7 @@ class TopoDS_Shape;
 
 //! This class provides iteration services required by
 //! the Generating Line (TopoDS Shape) of a BRepSweep.
-//! This   tool is  used  to   iterate  on the  direct
+//! This tool is used to iterate on the direct
 //! sub-shapes of a Shape.
 class BRepSweep_Iterator
 {

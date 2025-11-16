@@ -52,7 +52,7 @@ class Geom_Curve;
 //! * From a surface and a wire.
 //!
 //! - A flag Inside is given, when this flag is True
-//! the  wire is  oriented to bound a finite area on
+//! the wire is oriented to bound a finite area on
 //! the surface.
 //!
 //! * From a face and a wire.
@@ -176,7 +176,7 @@ public:
   //! Load the face.
   Standard_EXPORT void Init(const TopoDS_Face& F);
 
-  //! Creates the face  from the  surface. If Bound is
+  //! Creates the face from the surface. If Bound is
   //! True a wire is made from the natural bounds.
   //! Accepts tolerance value (TolDegen) for resolution
   //! of degenerated edges.
@@ -214,7 +214,7 @@ public:
 
 protected:
 private:
-  //! Reorient the current face if  the boundary  is not
+  //! Reorient the current face if the boundary is not
   //! finite.
   Standard_EXPORT void CheckInside();
 

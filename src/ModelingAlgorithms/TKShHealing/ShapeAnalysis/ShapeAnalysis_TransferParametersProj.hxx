@@ -55,7 +55,7 @@ public:
     const Handle(TColStd_HSequenceOfReal)& Papams,
     const Standard_Boolean                 To2d) Standard_OVERRIDE;
 
-  //! Transfers parameter given by  Param from 3d curve
+  //! Transfers parameter given by Param from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
   Standard_EXPORT virtual Standard_Real Perform(const Standard_Real    Param,
                                                 const Standard_Boolean To2d) Standard_OVERRIDE;
@@ -77,14 +77,14 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsSameRange() const Standard_OVERRIDE;
 
   //! Make a copy of non-manifold vertex theVert
-  //! (i.e. create new  TVertex and replace PointRepresentations for this vertex
+  //! (i.e. create new TVertex and replace PointRepresentations for this vertex
   //! from fromedge to toedge. Other representations were copied)
   Standard_EXPORT static TopoDS_Vertex CopyNMVertex(const TopoDS_Vertex& theVert,
                                                     const TopoDS_Edge&   toedge,
                                                     const TopoDS_Edge&   fromedge);
 
   //! Make a copy of non-manifold vertex theVert
-  //! (i.e. create new  TVertex and replace PointRepresentations for this vertex
+  //! (i.e. create new TVertex and replace PointRepresentations for this vertex
   //! from fromFace to toFace. Other representations were copied)
   Standard_EXPORT static TopoDS_Vertex CopyNMVertex(const TopoDS_Vertex& theVert,
                                                     const TopoDS_Face&   toFace,

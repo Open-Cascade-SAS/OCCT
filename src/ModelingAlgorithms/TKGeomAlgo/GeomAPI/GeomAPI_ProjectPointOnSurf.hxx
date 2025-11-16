@@ -122,11 +122,11 @@ public:
                             const Standard_Real         Vsup,
                             const Extrema_ExtAlgo       Algo = Extrema_ExtAlgo_Grad);
 
-  //! Sets the Extrema search algorithm - Grad or Tree. <br>
+  //! Sets the Extrema search algorithm - Grad or Tree.
   //! By default the Extrema is initialized with Grad algorithm.
   void SetExtremaAlgo(const Extrema_ExtAlgo theAlgo) { myExtPS.SetAlgo(theAlgo); }
 
-  //! Sets the Extrema search flag - MIN or MAX or MINMAX.<br>
+  //! Sets the Extrema search flag - MIN or MAX or MINMAX.
   //! By default the Extrema is set to search the MinMax solutions.
   void SetExtremaFlag(const Extrema_ExtFlag theExtFlag) { myExtPS.SetFlag(theExtFlag); }
 

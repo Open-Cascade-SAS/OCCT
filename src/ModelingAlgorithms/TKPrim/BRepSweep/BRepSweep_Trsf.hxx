@@ -28,15 +28,15 @@ class TopoDS_Shape;
 class Sweep_NumShape;
 
 //! This class is inherited from NumLinearRegularSweep
-//! to  implement the  simple   swept primitives built
-//! moving a Shape with a Trsf.  It  often is possible
-//! to  build  the constructed subshapes  by  a simple
-//! move of the  generating subshapes (shared topology
-//! and geometry).   So two  ways of construction  are
-//! proposed :
+//! to implement the simple swept primitives built
+//! moving a Shape with a Trsf. It often is possible
+//! to build the constructed subshapes by a simple
+//! move of the generating subshapes (shared topology
+//! and geometry). So two ways of construction are
+//! proposed:
 //!
-//! - sharing  basis elements  (the generatrice can be
-//! modified , for  example  PCurves can be added  on
+//! - sharing basis elements (the generatrice can be
+//! modified, for example PCurves can be added on
 //! faces);
 //!
 //! - copying everything.
@@ -45,7 +45,7 @@ class BRepSweep_Trsf : public BRepSweep_NumLinearRegularSweep
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! ends  the  construction  of the   swept  primitive
+  //! ends the construction of the swept primitive
   //! calling the virtual geometric functions that can't
   //! be called in the initialize.
   Standard_EXPORT void Init();
@@ -69,17 +69,17 @@ public:
   Standard_EXPORT virtual TopoDS_Shape MakeEmptyGeneratingEdge(const TopoDS_Shape&   aGenE,
                                                                const Sweep_NumShape& aDirV) = 0;
 
-  //! Sets the  parameters of the new  vertex  on the new
-  //! face. The new face and  new vertex where generated
-  //! from aGenF, aGenV and aDirV .
+  //! Sets the parameters of the new vertex on the new
+  //! face. The new face and new vertex where generated
+  //! from aGenF, aGenV and aDirV.
   Standard_EXPORT virtual void SetParameters(const TopoDS_Shape&   aNewFace,
                                              TopoDS_Shape&         aNewVertex,
                                              const TopoDS_Shape&   aGenF,
                                              const TopoDS_Shape&   aGenV,
                                              const Sweep_NumShape& aDirV) = 0;
 
-  //! Sets the  parameter of the new  vertex  on the new
-  //! edge. The new edge and  new vertex where generated
+  //! Sets the parameter of the new vertex on the new
+  //! edge. The new edge and new vertex where generated
   //! from aGenV aDirE, and aDirV.
   Standard_EXPORT virtual void SetDirectingParameter(const TopoDS_Shape&   aNewEdge,
                                                      TopoDS_Shape&         aNewVertex,
@@ -87,25 +87,25 @@ public:
                                                      const Sweep_NumShape& aDirE,
                                                      const Sweep_NumShape& aDirV) = 0;
 
-  //! Sets the  parameter of the new  vertex  on the new
-  //! edge. The new edge and  new vertex where generated
-  //! from aGenE, aGenV and aDirV .
+  //! Sets the parameter of the new vertex on the new
+  //! edge. The new edge and new vertex where generated
+  //! from aGenE, aGenV and aDirV.
   Standard_EXPORT virtual void SetGeneratingParameter(const TopoDS_Shape&   aNewEdge,
                                                       TopoDS_Shape&         aNewVertex,
                                                       const TopoDS_Shape&   aGenE,
                                                       const TopoDS_Shape&   aGenV,
                                                       const Sweep_NumShape& aDirV) = 0;
 
-  //! Builds  the face addressed  by [aGenS,aDirS], with
+  //! Builds the face addressed by [aGenS,aDirS], with
   //! its geometric part, but without subcomponents. The
-  //! couple aGenS, aDirS can be  a "generating face and
-  //! a  directing vertex" or "a   generating edge and a
-  //! directing  edge".
+  //! couple aGenS, aDirS can be a "generating face and
+  //! a directing vertex" or "a generating edge and a
+  //! directing edge".
   Standard_EXPORT virtual TopoDS_Shape MakeEmptyFace(const TopoDS_Shape&   aGenS,
                                                      const Sweep_NumShape& aDirS) = 0;
 
   //! Sets the PCurve for a new edge on a new face. The
-  //! new edge and  the  new face were generated  using
+  //! new edge and the new face were generated using
   //! aGenF, aGenE and aDirV.
   Standard_EXPORT virtual void SetPCurve(const TopoDS_Shape&      aNewFace,
                                          TopoDS_Shape&            aNewEdge,
@@ -115,7 +115,7 @@ public:
                                          const TopAbs_Orientation orien) = 0;
 
   //! Sets the PCurve for a new edge on a new face. The
-  //! new edge and  the  new face were generated  using
+  //! new edge and the new face were generated using
   //! aGenE, aDirE and aDirV.
   Standard_EXPORT virtual void SetGeneratingPCurve(const TopoDS_Shape&      aNewFace,
                                                    TopoDS_Shape&            aNewEdge,
@@ -125,7 +125,7 @@ public:
                                                    const TopAbs_Orientation orien) = 0;
 
   //! Sets the PCurve for a new edge on a new face. The
-  //! new edge and  the  new face were generated  using
+  //! new edge and the new face were generated using
   //! aGenE, aDirE and aGenV.
   Standard_EXPORT virtual void SetDirectingPCurve(const TopoDS_Shape&      aNewFace,
                                                   TopoDS_Shape&            aNewEdge,
@@ -134,8 +134,8 @@ public:
                                                   const Sweep_NumShape&    aDirE,
                                                   const TopAbs_Orientation orien) = 0;
 
-  //! Returns   true   if  aNewSubShape    (addressed by
-  //! aSubGenS  and aDirS)  must  be added  in aNewShape
+  //! Returns true if aNewSubShape (addressed by
+  //! aSubGenS and aDirS) must be added in aNewShape
   //! (addressed by aGenS and aDirS).
   Standard_EXPORT virtual Standard_Boolean GGDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
                                                            const TopoDS_Shape&   aNewSubShape,
@@ -143,8 +143,8 @@ public:
                                                            const TopoDS_Shape&   aSubGenS,
                                                            const Sweep_NumShape& aDirS) const = 0;
 
-  //! Returns   true   if  aNewSubShape    (addressed by
-  //! aGenS  and aSubDirS)  must  be added  in aNewShape
+  //! Returns true if aNewSubShape (addressed by
+  //! aGenS and aSubDirS) must be added in aNewShape
   //! (addressed by aGenS and aDirS).
   Standard_EXPORT virtual Standard_Boolean GDDShapeIsToAdd(
     const TopoDS_Shape&   aNewShape,
@@ -153,9 +153,9 @@ public:
     const Sweep_NumShape& aDirS,
     const Sweep_NumShape& aSubDirS) const = 0;
 
-  //! In  some  particular  cases  the   topology  of  a
-  //! generated  face must be  composed  of  independent
-  //! closed wires,  in this case  this function returns
+  //! In some particular cases the topology of a
+  //! generated face must be composed of independent
+  //! closed wires, in this case this function returns
   //! true.
   Standard_EXPORT virtual Standard_Boolean SeparatedWires(const TopoDS_Shape&   aNewShape,
                                                           const TopoDS_Shape&   aNewSubShape,
@@ -163,25 +163,25 @@ public:
                                                           const TopoDS_Shape&   aSubGenS,
                                                           const Sweep_NumShape& aDirS) const = 0;
 
-  //! Returns true   if aDirS   and aGenS  addresses   a
-  //! resulting Shape. In some  specific cases the shape
-  //! can  be    geometrically   inexsistant,  then this
+  //! Returns true if aDirS and aGenS addresses a
+  //! resulting Shape. In some specific cases the shape
+  //! can be geometrically inexsistant, then this
   //! function returns false.
   Standard_EXPORT virtual Standard_Boolean HasShape(const TopoDS_Shape&   aGenS,
                                                     const Sweep_NumShape& aDirS) const = 0;
 
-  //! Returns  true if  the geometry   of  aGenS is  not
+  //! Returns true if the geometry of aGenS is not
   //! modified by the trsf of the BRepSweep Trsf.
   Standard_EXPORT virtual Standard_Boolean IsInvariant(const TopoDS_Shape& aGenS) const = 0;
 
-  //! Called to propagate the continuity of  every vertex
-  //! between two edges of the  generating wire  aGenS on
+  //! Called to propagate the continuity of every vertex
+  //! between two edges of the generating wire aGenS on
   //! the generated edge and faces.
   Standard_EXPORT void SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumShape& aDirS);
 
 protected:
-  //! Initialize  the Trsf BrepSweep, if  aCopy  is true
-  //! the  basis elements  are    shared  as   often  as
+  //! Initialize the Trsf BrepSweep, if aCopy is true
+  //! the basis elements are shared as often as
   //! possible, else everything is copied.
   Standard_EXPORT BRepSweep_Trsf(const BRep_Builder&    aBuilder,
                                  const TopoDS_Shape&    aGenShape,

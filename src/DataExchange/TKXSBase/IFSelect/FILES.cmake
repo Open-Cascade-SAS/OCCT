@@ -36,7 +36,6 @@ set(OCCT_IFSelect_FILES
   IFSelect_Editor.cxx
   IFSelect_Editor.hxx
   IFSelect_EditValue.hxx
-  IFSelect_FileModifier.gxx
   IFSelect_Functions.cxx
   IFSelect_Functions.hxx
   IFSelect_GeneralModifier.cxx
@@ -50,7 +49,6 @@ set(OCCT_IFSelect_FILES
   IFSelect_ListEditor.hxx
   IFSelect_ModelCopier.cxx
   IFSelect_ModelCopier.hxx
-  IFSelect_ModelModifier.gxx
   IFSelect_ModifEditForm.cxx
   IFSelect_ModifEditForm.hxx
   IFSelect_Modifier.cxx

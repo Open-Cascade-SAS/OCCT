@@ -28,7 +28,7 @@
 
 class BOPAlgo_PISteps;
 
-//! The class provides the root interface for the algorithms in Boolean Component.<br>
+//! The class provides the root interface for the algorithms in Boolean Component.
 class BOPAlgo_Algo : public BOPAlgo_Options
 {
 public:

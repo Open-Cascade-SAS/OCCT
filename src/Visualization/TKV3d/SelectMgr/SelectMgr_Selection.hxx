@@ -24,7 +24,7 @@
 
 class Select3D_SensitiveEntity;
 
-//!  Represents the state of a given selection mode for a
+//! Represents the state of a given selection mode for a
 //! Selectable Object. Contains all the sensitive entities available for this mode.
 //! An interactive object can have an indefinite number of
 //! modes of selection, each representing a
@@ -58,7 +58,7 @@ class Select3D_SensitiveEntity;
 //! -   mode 3 : selection of the wires
 //! -   mode 4 : selection of the faces
 //! -   mode 5 : selection of the shells
-//! -   mode 6 :   selection of the constituent solids.
+//! -   mode 6 : selection of the constituent solids.
 class SelectMgr_Selection : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(SelectMgr_Selection, Standard_Transient)

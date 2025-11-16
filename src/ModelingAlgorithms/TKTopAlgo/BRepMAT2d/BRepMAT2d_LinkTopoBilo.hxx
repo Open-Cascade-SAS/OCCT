@@ -57,7 +57,7 @@ public:
   //! raises if <S> is not an edge or a vertex.
   Standard_EXPORT void Init(const TopoDS_Shape& S);
 
-  //! Returns True if there  is a current  BasicElt.
+  //! Returns True if there is a current BasicElt.
   Standard_EXPORT Standard_Boolean More();
 
   //! Proceed to the next BasicElt.

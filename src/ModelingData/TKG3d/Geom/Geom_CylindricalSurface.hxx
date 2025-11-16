@@ -50,7 +50,7 @@ DEFINE_STANDARD_HANDLE(Geom_CylindricalSurface, Geom_ElementarySurface)
 //!
 //! The parametrization range is :
 //! @code
-//!   U [0, 2*PI],  V ]- infinite, + infinite[
+//!   U [0, 2*PI], V ]- infinite, + infinite[
 //! @endcode
 //!
 //! The "XAxis" and the "YAxis" define the placement plane of the
@@ -93,12 +93,12 @@ public:
   //! returns a non transient cylinder with the same geometric properties as <me>.
   Standard_EXPORT gp_Cylinder Cylinder() const;
 
-  //! Return the  parameter on the Ureversed surface for
+  //! Return the parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
   //! Return 2.PI - U.
   Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
-  //! Return the  parameter on the Vreversed surface for
+  //! Return the parameter on the Vreversed surface for
   //! the point of parameter V on <me>.
   //! Return -V
   Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
@@ -188,7 +188,7 @@ public:
   //! The center of the circle is on the symmetry axis.
   Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
 
-  //! Computes the  point P (U, V) on the surface.
+  //! Computes the point P (U, V) on the surface.
   //! P (U, V) = Loc + Radius * (cos (U) * XDir + sin (U) * YDir) +
   //! V * ZDir
   //! where Loc is the origin of the placement plane (XAxis, YAxis)

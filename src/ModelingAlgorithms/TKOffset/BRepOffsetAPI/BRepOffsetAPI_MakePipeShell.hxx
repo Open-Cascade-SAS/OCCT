@@ -172,7 +172,7 @@ public:
   //! shape, i.e. has a definition for the wire section Profile.
   Standard_EXPORT Standard_Boolean IsReady() const;
 
-  //! Get a status, when Simulate or Build failed.       It can be
+  //! Get a status, when Simulate or Build failed. It can be
   //! BRepBuilderAPI_PipeDone,
   //! BRepBuilderAPI_PipeNotDone,
   //! BRepBuilderAPI_PlaneNotIntersectGuide,
@@ -247,7 +247,7 @@ public:
   //! they are returned in the list Result.
   //! This gives a rapid preview of the resulting shape,
   //! which will be obtained using the settings you have provided.
-  //! Raises  NotDone if  <me> it is not Ready
+  //! Raises NotDone if <me> it is not Ready
   Standard_EXPORT void Simulate(const Standard_Integer NumberOfSection,
                                 TopTools_ListOfShape&  Result);
 
@@ -259,7 +259,7 @@ public:
   //! If a propfile is not closed returns False
   Standard_EXPORT Standard_Boolean MakeSolid();
 
-  //! Returns the  TopoDS  Shape of the bottom of the sweep.
+  //! Returns the TopoDS Shape of the bottom of the sweep.
   Standard_EXPORT virtual TopoDS_Shape FirstShape() Standard_OVERRIDE;
 
   //! Returns the TopoDS Shape of the top of the sweep.

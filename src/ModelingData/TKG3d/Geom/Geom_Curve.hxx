@@ -68,7 +68,7 @@ public:
   //! curve becomes the StartPoint of the reversed curve.
   Standard_EXPORT virtual void Reverse() = 0;
 
-  //! Returns the  parameter on the  reversed  curve for
+  //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
   //!
   //! me->Reversed()->Value(me->ReversedParameter(U))
@@ -144,10 +144,10 @@ public:
   //! . the curve is always periodic by definition (Circle)
   //! . the curve can be defined as periodic (BSpline). In this case
   //! a function SetPeriodic allows you to give the shape of the
-  //! curve.  The general rule for this case is : if a curve can be
+  //! curve. The general rule for this case is : if a curve can be
   //! periodic or not the default periodicity set is non periodic
   //! and you have to turn (explicitly) the curve into a periodic
-  //! curve  if you want the curve to be periodic.
+  //! curve if you want the curve to be periodic.
   Standard_EXPORT virtual Standard_Boolean IsPeriodic() const = 0;
 
   //! Returns the period of this curve.
@@ -165,7 +165,7 @@ public:
   Standard_EXPORT virtual GeomAbs_Shape Continuity() const = 0;
 
   //! Returns true if the degree of continuity of this curve is at least N.
-  //! Exceptions -  Standard_RangeError if N is less than 0.
+  //! Exceptions - Standard_RangeError if N is less than 0.
   Standard_EXPORT virtual Standard_Boolean IsCN(const Standard_Integer N) const = 0;
 
   //! Returns in P the point of parameter U.
@@ -210,8 +210,8 @@ public:
   Standard_EXPORT virtual gp_Vec DN(const Standard_Real U, const Standard_Integer N) const = 0;
 
   //! Computes the point of parameter U on <me>.
-  //! If the curve is periodic  then the returned point is P(U) with
-  //! U = Ustart + (U - Uend)  where Ustart and Uend are the
+  //! If the curve is periodic then the returned point is P(U) with
+  //! U = Ustart + (U - Uend) where Ustart and Uend are the
   //! parametric bounds of the curve.
   //! it is implemented with D0.
   //!

@@ -26,7 +26,7 @@
 #include <gp_Vec.hxx>
 #include <Standard_Transient.hxx>
 #include <IntSurf_Allocator.hxx>
-class IntSurf_LineOn2S;
+#include <IntSurf_LineOn2S.hxx>
 class Standard_OutOfRange;
 class Standard_DomainError;
 class IntSurf_PathPoint;
@@ -67,9 +67,8 @@ public:
   void AddStatusLast(const Standard_Boolean   HasLast,
                      const Standard_Integer   Index,
                      const IntSurf_PathPoint& P);
-
-  //! associer a l 'indice du point sur la ligne l'indice du point
-  //! passant dans l'iterateur de depart
+  //! associate the index of the point on the line with the index of the point
+  //! passing through the starting iterator
   void AddIndexPassing(const Standard_Integer Index);
 
   void SetTangentVector(const gp_Vec& V, const Standard_Integer Index);
@@ -93,15 +92,15 @@ public:
   Standard_Boolean IsClosed() const;
 
   //! Returns True if the first point of the line is a
-  //! marching point . when is HasFirstPoint==False ,the line
-  //! begins on the natural bound of the surface.the line can be
-  //! too long
+  //! marching point. when HasFirstPoint==False the line
+  //! begins on the natural bound of the surface. The line
+  //! can be too long
   Standard_Boolean HasFirstPoint() const;
 
   //! Returns True if the end point of the line is a
   //! marching point (Point from IntWS).
-  //! when is HasFirstPoint==False ,the line ends
-  //! on the natural bound of the surface.the line can be
+  //! when HasFirstPoint==False the line ends
+  //! on the natural bound of the surface. The line can be
   //! too long.
   Standard_Boolean HasLastPoint() const;
 
@@ -111,7 +110,7 @@ public:
   const IntSurf_PathPoint& FirstPoint() const;
 
   //! Returns the Index of first point of the line when it is a
-  //! marching point.This index is the index in the
+  //! marching point. This index is the index in the
   //! PointStartIterator.
   //! An exception is raised if HasFirstPoint returns False.
   Standard_Integer FirstPointIndex() const;
@@ -122,7 +121,7 @@ public:
   const IntSurf_PathPoint& LastPoint() const;
 
   //! Returns the index of last point of the line when it is a
-  //! marching point.This index is the index in the
+  //! marching point. This index is the index in the
   //! PointStartIterator.
   //! An exception is raised if HasLastPoint returns False.
   Standard_Integer LastPointIndex() const;
@@ -163,18 +162,169 @@ private:
   Standard_Boolean         istgtend;
 };
 
-#define TheStartPoint IntSurf_PathPoint
-#define TheStartPoint_hxx <IntSurf_PathPoint.hxx>
-#define IntWalk_IWLine IntPatch_TheIWLineOfTheIWalking
-#define IntWalk_IWLine_hxx <IntPatch_TheIWLineOfTheIWalking.hxx>
-#define Handle_IntWalk_IWLine Handle(IntPatch_TheIWLineOfTheIWalking)
+//=================================================================================================
+// Inline implementations
+//=================================================================================================
 
-#include <IntWalk_IWLine.lxx>
+inline void IntPatch_TheIWLineOfTheIWalking::Cut(const Standard_Integer Index)
+{
+  Handle(IntSurf_LineOn2S) lost = line->Split(Index);
+}
 
-#undef TheStartPoint
-#undef TheStartPoint_hxx
-#undef IntWalk_IWLine
-#undef IntWalk_IWLine_hxx
-#undef Handle_IntWalk_IWLine
+inline void IntPatch_TheIWLineOfTheIWalking::AddPoint(const IntSurf_PntOn2S& P)
+{
+  line->Add(P);
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::AddStatusFirst(const Standard_Boolean Closed,
+                                                            const Standard_Boolean HasFirst)
+{
+  closed   = Closed;
+  hasFirst = HasFirst;
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::AddStatusLast(const Standard_Boolean HasLast)
+{
+  hasLast = HasLast;
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::AddStatusFirst(const Standard_Boolean   Closed,
+                                                            const Standard_Boolean   HasFirst,
+                                                            const Standard_Integer   Index,
+                                                            const IntSurf_PathPoint& P)
+{
+  closed        = Closed;
+  hasFirst      = HasFirst;
+  firstIndex    = Index;
+  theFirstPoint = P;
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::AddStatusLast(const Standard_Boolean   HasLast,
+                                                           const Standard_Integer   Index,
+                                                           const IntSurf_PathPoint& P)
+{
+  hasLast      = HasLast;
+  lastIndex    = Index;
+  theLastPoint = P;
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::AddStatusFirstLast(const Standard_Boolean Closed,
+                                                                const Standard_Boolean HasFirst,
+                                                                const Standard_Boolean HasLast)
+{
+  closed   = Closed;
+  hasFirst = HasFirst;
+  hasLast  = HasLast;
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::AddIndexPassing(const Standard_Integer Index)
+{
+  couple.Append(IntSurf_Couple(line->NbPoints() + 1, Index));
+}
+
+inline Standard_Integer IntPatch_TheIWLineOfTheIWalking::NbPoints() const
+{
+  return line->NbPoints();
+}
+
+inline const IntSurf_PntOn2S& IntPatch_TheIWLineOfTheIWalking::Value(
+  const Standard_Integer Index) const
+{
+  return line->Value(Index);
+}
+
+inline const Handle(IntSurf_LineOn2S)& IntPatch_TheIWLineOfTheIWalking::Line() const
+{
+  return line;
+}
+
+inline Standard_Boolean IntPatch_TheIWLineOfTheIWalking::IsClosed() const
+{
+  return closed;
+}
+
+inline Standard_Boolean IntPatch_TheIWLineOfTheIWalking::HasFirstPoint() const
+{
+  return hasFirst;
+}
+
+inline Standard_Integer IntPatch_TheIWLineOfTheIWalking::FirstPointIndex() const
+{
+  if (!hasFirst)
+    throw Standard_DomainError();
+  return firstIndex;
+}
+
+inline const IntSurf_PathPoint& IntPatch_TheIWLineOfTheIWalking::FirstPoint() const
+{
+  if (!hasFirst)
+    throw Standard_DomainError();
+  return theFirstPoint;
+}
+
+inline Standard_Boolean IntPatch_TheIWLineOfTheIWalking::HasLastPoint() const
+{
+  return hasLast;
+}
+
+inline const IntSurf_PathPoint& IntPatch_TheIWLineOfTheIWalking::LastPoint() const
+{
+  if (!hasLast)
+    throw Standard_DomainError();
+  return theLastPoint;
+}
+
+inline Standard_Integer IntPatch_TheIWLineOfTheIWalking::LastPointIndex() const
+{
+  if (!hasLast)
+    throw Standard_DomainError();
+  return lastIndex;
+}
+
+inline Standard_Integer IntPatch_TheIWLineOfTheIWalking::NbPassingPoint() const
+{
+  return couple.Length();
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::PassingPoint(const Standard_Integer Index,
+                                                          Standard_Integer&      IndexLine,
+                                                          Standard_Integer&      IndexPnts) const
+{
+  IndexLine = couple(Index).First();
+  IndexPnts = couple(Index).Second();
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::SetTangentVector(const gp_Vec&          V,
+                                                              const Standard_Integer Index)
+{
+  indextg = Index;
+  vcttg   = V;
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::SetTangencyAtBegining(const Standard_Boolean IsTangent)
+{
+  istgtend = IsTangent;
+}
+
+inline void IntPatch_TheIWLineOfTheIWalking::SetTangencyAtEnd(const Standard_Boolean IsTangent)
+{
+  istgtend = IsTangent;
+}
+
+inline const gp_Vec& IntPatch_TheIWLineOfTheIWalking::TangentVector(Standard_Integer& Index) const
+{
+  Index = indextg;
+  return vcttg;
+}
+
+inline Standard_Boolean IntPatch_TheIWLineOfTheIWalking::IsTangentAtBegining() const
+{
+  return istgtbeg;
+}
+
+inline Standard_Boolean IntPatch_TheIWLineOfTheIWalking::IsTangentAtEnd() const
+{
+  return istgtend;
+}
 
 #endif // _IntPatch_TheIWLineOfTheIWalking_HeaderFile

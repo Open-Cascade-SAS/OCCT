@@ -89,16 +89,16 @@ class Geom_BezierCurve : public Geom_BoundedCurve
 
 public:
   //! Creates a non rational Bezier curve with a set of poles
-  //! CurvePoles.  The weights are defaulted to all being 1.
+  //! CurvePoles. The weights are defaulted to all being 1.
   //! Raises ConstructionError if the number of poles is greater than MaxDegree + 1
   //! or lower than 2.
   Standard_EXPORT Geom_BezierCurve(const TColgp_Array1OfPnt& CurvePoles);
 
   //! Creates a rational Bezier curve with the set of poles
-  //! CurvePoles and the set of weights  PoleWeights .
+  //! CurvePoles and the set of weights PoleWeights.
   //! If all the weights are identical the curve is considered
   //! as non rational. Raises ConstructionError if
-  //! the number of poles is greater than  MaxDegree + 1 or lower
+  //! the number of poles is greater than MaxDegree + 1 or lower
   //! than 2 or CurvePoles and CurveWeights have not the same length
   //! or one weight value is lower or equal to Resolution from package gp.
   Standard_EXPORT Geom_BezierCurve(const TColgp_Array1OfPnt&   CurvePoles,
@@ -164,10 +164,10 @@ public:
   Standard_EXPORT void RemovePole(const Standard_Integer Index);
 
   //! Reverses the direction of parametrization of <me>
-  //! Value (NewU) =  Value (1 - OldU)
+  //! Value (NewU) = Value (1 - OldU)
   Standard_EXPORT void Reverse() Standard_OVERRIDE;
 
-  //! Returns the  parameter on the  reversed  curve for
+  //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
   //!
   //! returns 1-U
@@ -273,12 +273,12 @@ public:
   //! Returns Value (U=1.), it is the last control point of the Bezier curve.
   Standard_EXPORT gp_Pnt EndPoint() const Standard_OVERRIDE;
 
-  //! Returns the value of the first  parameter of this
+  //! Returns the value of the first parameter of this
   //! Bezier curve. This is 0.0, which gives the start point of this Bezier curve
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
 
   //! Returns the value of the last parameter of this
-  //! Bezier curve. This is  1.0, which gives the end point of this Bezier curve.
+  //! Bezier curve. This is 1.0, which gives the end point of this Bezier curve.
   Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
 
   //! Returns the number of poles of this Bezier curve.

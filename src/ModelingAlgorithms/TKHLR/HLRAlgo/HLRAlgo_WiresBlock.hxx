@@ -32,9 +32,9 @@ DEFINE_STANDARD_HANDLE(HLRAlgo_WiresBlock, Standard_Transient)
 //! A WiresBlock is a set of Blocks. It is used by the
 //! DataStructure to structure the Edges.
 //!
-//! A WiresBlock contains :
+//! A WiresBlock contains:
 //!
-//! * An Array  of Blocks.
+//! * An Array of Blocks.
 class HLRAlgo_WiresBlock : public Standard_Transient
 {
 public:

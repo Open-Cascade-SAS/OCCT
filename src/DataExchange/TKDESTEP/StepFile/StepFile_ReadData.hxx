@@ -77,7 +77,7 @@
 //!     creates a new record with "$1" ident and "ADVANCED_FACE" type
 //!     old record is the next of the new record.
 //!     Now current record has ident, type, but args are empty.
-//! 13. Flex  rule detected "#124" call CreateNewText("#124",4) and send token "IDENT",
+//! 13. Flex rule detected "#124" call CreateNewText("#124",4) and send token "IDENT",
 //!     Now class contains "#124", as current text value.
 //! 14. Bison receive a token and call CreateNewArg (), it
 //!     creates a new argument with "#124" text value and 'Ident' type.
@@ -197,7 +197,7 @@ public:
 
   //! Initializes the print mode
   //! 0 - don't print descriptions
-  //! 1 - print only descriptions  of record
+  //! 1 - print only descriptions of record
   //! 2 - print descriptions of records and its arguments
   void SetModePrint(const Standard_Integer theMode);
 

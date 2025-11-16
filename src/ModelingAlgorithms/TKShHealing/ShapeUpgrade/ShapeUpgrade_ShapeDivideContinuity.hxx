@@ -47,24 +47,24 @@ public:
   //! Wires)
   //!
   //! The possible values are C0, G1, C1, G2, C2, C3, CN The
-  //! default is C1 to respect the Cas.Cade Shape Validity.  G1
-  //! and G2 are not authorized.
+  //! default is C1 to respect the Cas.Cade Shape Validity.
+  //! G1 and G2 are not authorized.
   Standard_EXPORT void SetBoundaryCriterion(const GeomAbs_Shape Criterion = GeomAbs_C1);
 
   //! Defines a criterion of continuity for the boundary (all the
   //! pcurves of Wires)
   //!
   //! The possible values are C0, G1, C1, G2, C2, C3, CN The
-  //! default is C1 to respect the Cas.Cade Shape Validity.  G1
-  //! and G2 are not authorized.
+  //! default is C1 to respect the Cas.Cade Shape Validity.
+  //! G1 and G2 are not authorized.
   Standard_EXPORT void SetPCurveCriterion(const GeomAbs_Shape Criterion = GeomAbs_C1);
 
   //! Defines a criterion of continuity for the boundary (all the
   //! Wires)
   //!
   //! The possible values are C0, G1, C1, G2, C2, C3, CN The
-  //! default is C1 to respect the Cas.Cade Shape Validity.  G1
-  //! and G2 are not authorized.
+  //! default is C1 to respect the Cas.Cade Shape Validity.
+  //! G1 and G2 are not authorized.
   Standard_EXPORT void SetSurfaceCriterion(const GeomAbs_Shape Criterion = GeomAbs_C1);
 
 protected:

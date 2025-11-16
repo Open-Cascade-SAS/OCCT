@@ -50,12 +50,12 @@ public:
 
   static GeomAbs_Shape Continuity(const Adaptor2d_Curve2d& C);
 
-  //! If necessary,   breaks the curve  in  intervals of
-  //! continuity <S>.     And   returns  the  number  of
+  //! If necessary, breaks the curve in intervals of
+  //! continuity <S>. And returns the number of
   //! intervals.
   static Standard_Integer NbIntervals(const Adaptor2d_Curve2d& C, const GeomAbs_Shape S);
 
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   static void Intervals(const Adaptor2d_Curve2d& C, TColStd_Array1OfReal& T, const GeomAbs_Shape S);
 

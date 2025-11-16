@@ -28,7 +28,7 @@
 
 //! Implements a function for the Newton algorithm to find the
 //! solution of Integral(F) = L
-//! (compute Length  and Derivative of the curve for Newton)
+//! (compute Length and Derivative of the curve for Newton)
 class CPnts_MyRootFunction : public math_FunctionWithDerivative
 {
 public:

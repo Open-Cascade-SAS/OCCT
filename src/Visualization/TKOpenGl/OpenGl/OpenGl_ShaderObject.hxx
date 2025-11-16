@@ -82,8 +82,8 @@ public:
   //! Update the shader object from external file in the following way:
   //! 1) If external file does not exist, then it will be created (current source code will be
   //! dumped, no recompilation) and FALSE will be returned. 2) If external file exists and it has
-  //! the same timestamp as   myDumpDate, nothing will be done      and FALSE will be returned. 3)
-  //! If external file exists and it has    newer timestamp than myDumpDate, shader  will be
+  //! the same timestamp as myDumpDate, nothing will be done and FALSE will be returned. 3)
+  //! If external file exists and it has newer timestamp than myDumpDate, shader will be
   //! recompiled and TRUE will be returned.
   //! @param theCtx OpenGL context bound to this working thread
   //! @param theId  GLSL program id to define file name

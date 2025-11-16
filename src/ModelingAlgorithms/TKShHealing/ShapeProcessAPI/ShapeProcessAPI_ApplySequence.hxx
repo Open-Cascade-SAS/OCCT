@@ -48,7 +48,7 @@ public:
   //! Performs sequence of operators stored in myRsc.
   //! If <fillmap> is True adds history "shape-shape" into myMap
   //! for shape and its subshapes until level <until> (included).
-  //! If <until> is TopAbs_SHAPE,  all the subshapes are considered.
+  //! If <until> is TopAbs_SHAPE, all the subshapes are considered.
   Standard_EXPORT TopoDS_Shape
     PrepareShape(const TopoDS_Shape&          shape,
                  const Standard_Boolean       fillmap     = Standard_False,

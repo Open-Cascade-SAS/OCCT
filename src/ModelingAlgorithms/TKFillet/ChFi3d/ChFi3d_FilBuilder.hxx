@@ -61,7 +61,7 @@ public:
   //! Attention, you need to start with SetRadius.
   Standard_EXPORT void Add(const TopoDS_Edge& E);
 
-  //! initialisation of the constant vector the corresponding  1st  edge.
+  //! initialisation of the constant vector the corresponding 1st edge.
   Standard_EXPORT void Add(const Standard_Real Radius, const TopoDS_Edge& E);
 
   //! Set the radius of the contour of index IC.

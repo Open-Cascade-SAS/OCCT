@@ -54,18 +54,18 @@ public:
   Standard_EXPORT GProp_PEquation(const TColgp_Array1OfPnt& Pnts, const Standard_Real Tol);
 
   //! Returns true if, according to the given
-  //! tolerance, the points analyzed by this framework are  coplanar.
-  //! Use the function  Plane  to access the computed result.
+  //! tolerance, the points analyzed by this framework are coplanar.
+  //! Use the function Plane to access the computed result.
   Standard_EXPORT Standard_Boolean IsPlanar() const;
 
   //! Returns true if, according to the given
-  //! tolerance, the points analyzed by this framework are  colinear.
-  //! Use the function  Line  to access the computed result.
+  //! tolerance, the points analyzed by this framework are colinear.
+  //! Use the function Line to access the computed result.
   Standard_EXPORT Standard_Boolean IsLinear() const;
 
   //! Returns true if, according to the given
-  //! tolerance, the points analyzed by this framework are  coincident.
-  //! Use the function  Point  to access the computed result.
+  //! tolerance, the points analyzed by this framework are coincident.
+  //! Use the function Point to access the computed result.
   Standard_EXPORT Standard_Boolean IsPoint() const;
 
   //! Returns true if, according to the given

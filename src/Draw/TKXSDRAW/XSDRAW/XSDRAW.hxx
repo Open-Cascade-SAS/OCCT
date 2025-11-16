@@ -154,8 +154,8 @@ public:
   //! Returns the FinderProcess, detained by the TransferWriter
   Standard_EXPORT static Handle(Transfer_FinderProcess) FinderProcess();
 
-  //! Initialises a TransferReader, according to mode :
-  //! 0 nullifies it,  1 clears it (not nullify)
+  //! Initialises a TransferReader, according to mode:
+  //! 0 nullifies it, 1 clears it (not nullify)
   //! 2 sets it with TransientProcess & Model
   //! 3 idem plus roots of TransientProcess
   //! Remark : called with 0 at least at each SetModel/NewModel

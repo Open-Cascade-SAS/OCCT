@@ -133,7 +133,7 @@ class Geom2d_BSplineCurve : public Geom2d_BoundedCurve
 {
 
 public:
-  //! Creates a  non-rational B_spline curve on the
+  //! Creates a non-rational B_spline curve on the
   //! basis <Knots, Multiplicities> of degree <Degree>.
   //! The following conditions must be verified.
   //! 0 < Degree <= MaxDegree.
@@ -164,7 +164,7 @@ public:
                                       const Standard_Integer         Degree,
                                       const Standard_Boolean         Periodic = Standard_False);
 
-  //! Creates  a rational B_spline  curve  on the basis
+  //! Creates a rational B_spline curve on the basis
   //! <Knots, Multiplicities> of degree <Degree>.
   //! The following conditions must be verified.
   //! 0 < Degree <= MaxDegree.
@@ -179,7 +179,7 @@ public:
   //! may be Degree+1 (this is even recommended if you want the
   //! curve to start and finish on the first and last pole).
   //!
-  //! On a periodic  curve the first  and  the last multicities
+  //! On a periodic curve the first and the last multicities
   //! must be the same.
   //!
   //! on non-periodic curves
@@ -633,16 +633,16 @@ public:
   //! one requested, this function impacts the part defined
   //! by the parameter with a value greater than U, i.e. the
   //! part of the curve to the "right" of the singularity.
-  //! Raises  UndefinedDerivative if the continuity of the curve is not CN.
+  //! Raises UndefinedDerivative if the continuity of the curve is not CN.
   //! RangeError if N < 1.
   //! The following functions computes the point of parameter U
   //! and the derivatives at this point on the B-spline curve
   //! arc defined between the knot FromK1 and the knot ToK2.
-  //! U can be out of bounds [Knot (FromK1),  Knot (ToK2)] but
+  //! U can be out of bounds [Knot (FromK1), Knot (ToK2)] but
   //! for the computation we only use the definition of the curve
   //! between these two knots. This method is useful to compute
   //! local derivative, if the order of continuity of the whole
-  //! curve is not greater enough.    Inside the parametric
+  //! curve is not greater enough. Inside the parametric
   //! domain Knot (FromK1), Knot (ToK2) the evaluations are
   //! the same as if we consider the whole definition of the
   //! curve. Of course the evaluations are different outside
@@ -780,7 +780,7 @@ public:
   //! Locates the parametric value U in the sequence of knots.
   //! If "WithKnotRepetition" is True we consider the knot's
   //! representation with repetition of multiple knot value,
-  //! otherwise  we consider the knot's representation with
+  //! otherwise we consider the knot's representation with
   //! no repetition of multiple knot values.
   //! Knots (I1) <= U <= Knots (I2)
   //! . if I1 = I2  U is a knot value (the tolerance criterion
@@ -869,7 +869,7 @@ public:
 
 protected:
 private:
-  //! Recompute  the  flatknots,  the knotsdistribution, the continuity.
+  //! Recompute the flatknots, the knotsdistribution, the continuity.
   Standard_EXPORT void UpdateKnots();
 
   Standard_Boolean                 rational;

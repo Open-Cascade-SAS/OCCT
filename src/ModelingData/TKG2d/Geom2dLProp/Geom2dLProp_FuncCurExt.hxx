@@ -44,7 +44,7 @@ public:
                                           Standard_Real&      F,
                                           Standard_Real&      D);
 
-  //! True  if  Param  corresponds  to  a minus
+  //! True if Param corresponds to a minus
   //! of the radius of curvature.
   Standard_EXPORT Standard_Boolean IsMinKC(const Standard_Real Param) const;
 
