@@ -138,7 +138,7 @@ struct Quantity_StandardColor
                          NCollection_Vec3<float>(theR##f, theG##f, theB##f))
 
 //! Name list of standard materials (defined within enumeration).
-static const Quantity_StandardColor THE_COLORS[] = {
+static constexpr Quantity_StandardColor THE_COLORS[] = {
 #include "Quantity_ColorTable.pxx"
 };
 
