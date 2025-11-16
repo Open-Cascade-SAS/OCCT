@@ -141,11 +141,7 @@ void Quantity_Period::SetValues(const Standard_Integer ss, const Standard_Intege
 
   mySec  = ss;
   myUSec = mics;
-  while (myUSec >= USECS_PER_SEC)
-  {
-    myUSec -= USECS_PER_SEC;
-    mySec++;
-  }
+  normalizeAdditionOverflow(mySec, myUSec);
 }
 
 // -------------------------------------------------------------

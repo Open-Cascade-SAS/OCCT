@@ -63,12 +63,13 @@ inline void extractTimeComponents(Standard_Integer& theCarry,
 
 //! Normalizes time values when microseconds overflow into seconds
 //! (handles addition overflow: myUSec >= 1000000)
+//! Handles multiple seconds overflow via loop
 //! @param theSec input/output: seconds, incremented if overflow occurs
 //! @param theUSec input/output: microseconds, normalized to 0..999999
 inline void normalizeAdditionOverflow(Standard_Integer& theSec,
                                        Standard_Integer& theUSec) noexcept
 {
-  if (theUSec >= USECS_PER_SEC)
+  while (theUSec >= USECS_PER_SEC)
   {
     theUSec -= USECS_PER_SEC;
     theSec++;
