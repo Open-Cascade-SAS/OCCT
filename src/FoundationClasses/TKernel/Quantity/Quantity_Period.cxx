@@ -159,12 +159,10 @@ Quantity_Period Quantity_Period::Subtract(const Quantity_Period& OtherPeriod) co
   result.mySec -= OtherPeriod.mySec;
   result.myUSec -= OtherPeriod.myUSec;
 
-  if (result.mySec >= 0 && result.myUSec < 0)
-  {
-    result.mySec--;
-    result.myUSec = USECS_PER_SEC + result.myUSec;
-  }
-  else if (result.mySec < 0 && result.myUSec >= 0)
+  normalizeSubtractionBorrow(result.mySec, result.myUSec);
+
+  // Handle negative result (convert to absolute value)
+  if (result.mySec < 0 && result.myUSec >= 0)
   {
     result.mySec = Abs(result.mySec);
     if (result.myUSec > 0)
@@ -191,10 +189,6 @@ Quantity_Period Quantity_Period::Add(const Quantity_Period& OtherPeriod) const
   Quantity_Period result(mySec, myUSec);
   result.mySec += OtherPeriod.mySec;
   result.myUSec += OtherPeriod.myUSec;
-  if (result.myUSec >= USECS_PER_SEC)
-  {
-    result.myUSec -= USECS_PER_SEC;
-    result.mySec++;
-  }
+  normalizeAdditionOverflow(result.mySec, result.myUSec);
   return (result);
 }

@@ -61,6 +61,34 @@ inline void extractTimeComponents(Standard_Integer& theCarry,
   theSS = theCarry;
 }
 
+//! Normalizes time values when microseconds overflow into seconds
+//! (handles addition overflow: myUSec >= 1000000)
+//! @param theSec input/output: seconds, incremented if overflow occurs
+//! @param theUSec input/output: microseconds, normalized to 0..999999
+inline void normalizeAdditionOverflow(Standard_Integer& theSec,
+                                       Standard_Integer& theUSec) noexcept
+{
+  if (theUSec >= USECS_PER_SEC)
+  {
+    theUSec -= USECS_PER_SEC;
+    theSec++;
+  }
+}
+
+//! Normalizes time values when microseconds require borrowing from seconds
+//! (handles subtraction borrow: mySec >= 0 but myUSec < 0)
+//! @param theSec input/output: seconds, decremented if borrow occurs
+//! @param theUSec input/output: microseconds, normalized to 0..999999
+inline void normalizeSubtractionBorrow(Standard_Integer& theSec,
+                                        Standard_Integer& theUSec) noexcept
+{
+  if (theSec >= 0 && theUSec < 0)
+  {
+    theSec--;
+    theUSec = USECS_PER_SEC + theUSec;
+  }
+}
+
 } // anonymous namespace
 
 #endif // _Quantity_TimeConstants_HeaderFile

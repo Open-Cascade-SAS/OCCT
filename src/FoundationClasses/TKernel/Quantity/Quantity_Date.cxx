@@ -291,11 +291,7 @@ Quantity_Date Quantity_Date::Subtract(const Quantity_Period& During)
   result.mySec -= ss;
   result.myUSec -= mics;
 
-  if (result.mySec >= 0 && result.myUSec < 0)
-  {
-    result.mySec--;
-    result.myUSec = USECS_PER_SEC + result.myUSec;
-  }
+  normalizeSubtractionBorrow(result.mySec, result.myUSec);
 
   if (result.mySec < 0)
     throw Quantity_DateDefinitionError(
@@ -315,11 +311,7 @@ Quantity_Date Quantity_Date::Add(const Quantity_Period& During)
   During.Values(result.mySec, result.myUSec);
   result.mySec += mySec;
   result.myUSec += myUSec;
-  if (result.myUSec >= USECS_PER_SEC)
-  {
-    result.mySec++;
-    result.myUSec -= USECS_PER_SEC;
-  }
+  normalizeAdditionOverflow(result.mySec, result.myUSec);
   return (result);
 }
 
