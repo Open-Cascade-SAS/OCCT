@@ -62,27 +62,23 @@ public:
 
   //! Initialize ALL components of vector within specified value.
   explicit constexpr NCollection_Vec3(Element_t theValue) noexcept
+      : v{theValue, theValue, theValue}
   {
-    v[0] = v[1] = v[2] = theValue;
   }
 
   //! Per-component constructor.
   explicit constexpr NCollection_Vec3(const Element_t theX,
                                       const Element_t theY,
                                       const Element_t theZ) noexcept
+      : v{theX, theY, theZ}
   {
-    v[0] = theX;
-    v[1] = theY;
-    v[2] = theZ;
   }
 
   //! Constructor from 2-components vector + optional 3rd value.
   explicit constexpr NCollection_Vec3(const NCollection_Vec2<Element_t>& theVec2,
                                       Element_t theZ = Element_t(0)) noexcept
+      : v{theVec2[0], theVec2[1], theZ}
   {
-    v[0] = theVec2[0];
-    v[1] = theVec2[1];
-    v[2] = theZ;
   }
 
   //! Conversion constructor (explicitly converts some 3-component vector with other element type
@@ -92,10 +88,10 @@ public:
   //! @param theOtherVec3 the 3-component vector that needs to be converted
   template <typename OtherElement_t>
   explicit constexpr NCollection_Vec3(const NCollection_Vec3<OtherElement_t>& theOtherVec3) noexcept
+      : v{static_cast<Element_t>(theOtherVec3[0]),
+          static_cast<Element_t>(theOtherVec3[1]),
+          static_cast<Element_t>(theOtherVec3[2])}
   {
-    v[0] = static_cast<Element_t>(theOtherVec3[0]);
-    v[1] = static_cast<Element_t>(theOtherVec3[1]);
-    v[2] = static_cast<Element_t>(theOtherVec3[2]);
   }
 
   //! Assign new values to the vector.
