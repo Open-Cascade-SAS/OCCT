@@ -31,7 +31,10 @@ public:
   static constexpr int Length() noexcept { return 4; }
 
   //! Empty constructor. Construct the zero vector.
-  NCollection_Vec4() { std::memset(this, 0, sizeof(NCollection_Vec4)); }
+  constexpr NCollection_Vec4() noexcept
+      : v{Element_t(0), Element_t(0), Element_t(0), Element_t(0)}
+  {
+  }
 
   //! Initialize ALL components of vector within specified value.
   explicit constexpr NCollection_Vec4(const Element_t theValue) noexcept
