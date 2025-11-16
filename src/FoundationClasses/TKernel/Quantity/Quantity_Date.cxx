@@ -235,9 +235,10 @@ void Quantity_Date::Values(Standard_Integer& mm,
 
 Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
 {
-
   Standard_Integer i1, i2;
 
+  // Special case: if this date is the epoch (Jan 1, 1979 00:00),
+  // return OtherDate as a period (time elapsed since epoch)
   if (mySec == 0 && myUSec == 0)
   {
     i1 = OtherDate.mySec;
@@ -249,28 +250,21 @@ Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
     i2 = myUSec - OtherDate.myUSec;
   }
 
-  if (i1 >= 0 && i2 < 0)
+  // Normalize: handle microsecond underflow
+  normalizeSubtractionBorrow(i1, i2);
+
+  // Period is always absolute value, convert negative result
+  if (i1 < 0)
   {
-    i1--;
-    i2 = USECS_PER_SEC + i2;
-  }
-  else if (i1 < 0 && i2 >= 0)
-  {
-    i1 = Abs(i1);
+    i1 = -i1;
     if (i2 > 0)
     {
       i1--;
       i2 = USECS_PER_SEC - i2;
     }
   }
-  else if (i1 < 0 && i2 < 0)
-  {
-    i1 = Abs(i1);
-    i2 = Abs(i2);
-  }
 
   Quantity_Period result(i1, i2);
-
   return (result);
 }
 

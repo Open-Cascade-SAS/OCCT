@@ -360,3 +360,49 @@ TEST_F(Quantity_DateTest, MultipleLeapYearChecks)
     }
   }
 }
+
+// Test date difference with epoch (Jan 1, 1979 00:00) - special case
+TEST_F(Quantity_DateTest, DifferenceFromEpoch)
+{
+  Quantity_Date aEpoch;  // Defaults to Jan 1, 1979 00:00
+  Quantity_Date aDate(1, 2, 1979, 0, 0, 0, 0, 0); // Jan 2, 1979
+
+  Quantity_Period aPeriod = aEpoch.Difference(aDate);
+
+  Standard_Integer ss, mics;
+  aPeriod.Values(ss, mics);
+
+  EXPECT_EQ(86400, ss);  // 1 day = 86400 seconds
+  EXPECT_EQ(0, mics);
+}
+
+// Test date difference with microsecond underflow
+TEST_F(Quantity_DateTest, DifferenceWithMicrosecondUnderflow)
+{
+  Quantity_Date aDate1(1, 1, 2020, 0, 0, 1, 200, 0);  // 1.2 seconds
+  Quantity_Date aDate2(1, 1, 2020, 0, 0, 0, 500, 0);  // 0.5 seconds
+
+  Quantity_Period aPeriod = aDate1.Difference(aDate2);
+
+  Standard_Integer ss, mics;
+  aPeriod.Values(ss, mics);
+
+  EXPECT_EQ(0, ss);
+  EXPECT_EQ(700000, mics);  // 1.2 - 0.5 = 0.7 seconds = 700000 microseconds
+}
+
+// Test date difference with reversed dates (absolute value)
+TEST_F(Quantity_DateTest, DifferenceReversed)
+{
+  Quantity_Date aDate1(1, 1, 2020, 1, 0, 0, 0, 0);  // 1 hour
+  Quantity_Date aDate2(1, 1, 2020, 3, 0, 0, 0, 0);  // 3 hours
+
+  // Difference should be absolute value
+  Quantity_Period aPeriod = aDate1.Difference(aDate2);
+
+  Standard_Integer ss, mics;
+  aPeriod.Values(ss, mics);
+
+  EXPECT_EQ(7200, ss);  // 2 hours = 7200 seconds
+  EXPECT_EQ(0, mics);
+}
