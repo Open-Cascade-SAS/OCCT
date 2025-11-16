@@ -24,13 +24,13 @@ namespace
 {
 
 //! Time conversion constants
-static constexpr int SECONDS_PER_MINUTE = 60;
-static constexpr int SECONDS_PER_HOUR   = 3600;   // 60 * 60
-static constexpr int SECONDS_PER_DAY    = 86400;  // 24 * 3600
+constexpr int SECONDS_PER_MINUTE = 60;
+constexpr int SECONDS_PER_HOUR   = 3600;   // 60 * 60
+constexpr int SECONDS_PER_DAY    = 86400;  // 24 * 3600
 
 //! Microsecond conversion constants
-static constexpr int USECS_PER_MSEC = 1000;    // microseconds per millisecond
-static constexpr int USECS_PER_SEC  = 1000000; // microseconds per second
+constexpr int USECS_PER_MSEC = 1000;    // microseconds per millisecond
+constexpr int USECS_PER_SEC  = 1000000; // microseconds per second
 
 //! Extracts milliseconds and remaining microseconds from total microseconds
 //! @param theUSec total microseconds
@@ -63,31 +63,33 @@ inline void extractTimeComponents(Standard_Integer& theCarry,
 
 //! Normalizes time values when microseconds overflow into seconds
 //! (handles addition overflow: myUSec >= 1000000)
-//! Handles multiple seconds overflow via loop
+//! Uses division for O(1) complexity
 //! @param theSec input/output: seconds, incremented if overflow occurs
 //! @param theUSec input/output: microseconds, normalized to 0..999999
 inline void normalizeAdditionOverflow(Standard_Integer& theSec,
                                        Standard_Integer& theUSec) noexcept
 {
-  while (theUSec >= USECS_PER_SEC)
+  if (theUSec >= USECS_PER_SEC)
   {
-    theUSec -= USECS_PER_SEC;
-    theSec++;
+    const Standard_Integer overflow = theUSec / USECS_PER_SEC;
+    theSec += overflow;
+    theUSec -= overflow * USECS_PER_SEC;
   }
 }
 
 //! Normalizes time values when microseconds require borrowing from seconds
 //! (handles subtraction borrow: myUSec < 0)
-//! Handles arbitrary underflow via loop to match normalizeAdditionOverflow behavior
+//! Uses ceiling division for O(1) complexity
 //! @param theSec input/output: seconds, decremented if borrow occurs
 //! @param theUSec input/output: microseconds, normalized to 0..999999
 inline void normalizeSubtractionBorrow(Standard_Integer& theSec,
                                         Standard_Integer& theUSec) noexcept
 {
-  while (theUSec < 0)
+  if (theUSec < 0)
   {
-    theSec--;
-    theUSec = USECS_PER_SEC + theUSec;
+    const Standard_Integer borrow = (-theUSec + USECS_PER_SEC - 1) / USECS_PER_SEC;
+    theSec -= borrow;
+    theUSec += borrow * USECS_PER_SEC;
   }
 }
 
