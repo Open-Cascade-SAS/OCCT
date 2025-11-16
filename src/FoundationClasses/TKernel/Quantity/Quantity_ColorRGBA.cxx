@@ -35,10 +35,10 @@ enum HexColorLength
   HexColorLength_RGBA      = 8  //!< RGBA hex color format
 };
 
-static constexpr ColorInteger HEX_BASE                      = 16;  // Hexadecimal number base
-static constexpr int          HEX_BITS_PER_COMPONENT        = 8;   // 8 bits per component (256 values)
-static constexpr int          HEX_BITS_PER_COMPONENT_SHORT  = 4;   // 4 bits per component (16 values)
-static constexpr int          RGB_COMPONENT_LAST_INDEX      = 2;   // Last RGB component index (B in RGB)
+static constexpr ColorInteger HEX_BASE                     = 16; // Hexadecimal number base
+static constexpr int          HEX_BITS_PER_COMPONENT       = 8; // 8 bits per component (256 values)
+static constexpr int          HEX_BITS_PER_COMPONENT_SHORT = 4; // 4 bits per component (16 values)
+static constexpr int          RGB_COMPONENT_LAST_INDEX = 2; // Last RGB component index (B in RGB)
 
 //! Takes next color component from the integer representing a color (it is a step in a process of a
 //! conversion implemented by the function ConvertIntegerToColorRGBA)

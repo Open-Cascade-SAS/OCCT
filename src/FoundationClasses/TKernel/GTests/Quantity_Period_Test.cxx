@@ -20,6 +20,7 @@ class Quantity_PeriodTest : public testing::Test
 {
 protected:
   void SetUp() override {}
+
   void TearDown() override {}
 };
 
@@ -45,7 +46,7 @@ TEST_F(Quantity_PeriodTest, BasicConstruction)
   Standard_Integer ss2, mics2;
   aPeriod2.Values(ss2, mics2);
 
-  EXPECT_EQ(3600, ss2);    // SECONDS_PER_HOUR
+  EXPECT_EQ(3600, ss2); // SECONDS_PER_HOUR
   EXPECT_EQ(500000, mics2);
 }
 
@@ -95,7 +96,7 @@ TEST_F(Quantity_PeriodTest, Validation)
 // Test SetValues and Values round-trip (tests time constants)
 TEST_F(Quantity_PeriodTest, SetValuesRoundTrip)
 {
-  Quantity_Period aPeriod(0, 0);  // Initialize with zero period
+  Quantity_Period aPeriod(0, 0); // Initialize with zero period
   aPeriod.SetValues(2, 3, 4, 5, 6, 7);
 
   Standard_Integer dd, hh, mn, ss, mis, mics;
@@ -157,13 +158,13 @@ TEST_F(Quantity_PeriodTest, MillisecondConversion)
 TEST_F(Quantity_PeriodTest, MicrosecondOverflow)
 {
   // Create period with > 1,000,000 microseconds
-  Quantity_Period aPeriod(0, 0);  // Initialize with zero period
+  Quantity_Period aPeriod(0, 0); // Initialize with zero period
   aPeriod.SetValues(0, 1500000); // 1.5 seconds in microseconds
 
   Standard_Integer ss, mics;
   aPeriod.Values(ss, mics);
 
-  EXPECT_EQ(1, ss);      // 1 second
+  EXPECT_EQ(1, ss);        // 1 second
   EXPECT_EQ(500000, mics); // 0.5 second = 500000 microseconds
 }
 
@@ -193,7 +194,7 @@ TEST_F(Quantity_PeriodTest, AddWithMicrosecondOverflow)
   Standard_Integer ss, mics;
   aResult.Values(ss, mics);
 
-  EXPECT_EQ(1, ss);      // Should overflow to 1 second
+  EXPECT_EQ(1, ss);        // Should overflow to 1 second
   EXPECT_EQ(200000, mics); // Remaining 0.2 seconds
 }
 
@@ -356,8 +357,8 @@ TEST_F(Quantity_PeriodTest, MillisecondToSecondConversion)
   Standard_Integer ss, mics;
   aPeriod.Values(ss, mics);
 
-  EXPECT_EQ(1, ss);     // Should overflow to 1 second
-  EXPECT_EQ(0, mics);   // No remaining microseconds
+  EXPECT_EQ(1, ss);   // Should overflow to 1 second
+  EXPECT_EQ(0, mics); // No remaining microseconds
 }
 
 // Test period subtraction with large microsecond underflow (verifies O(1) optimization)
@@ -371,15 +372,15 @@ TEST_F(Quantity_PeriodTest, SubtractLargeMicrosecondUnderflow)
   Standard_Integer ss, mics;
   aResult.Values(ss, mics);
 
-  EXPECT_EQ(7, ss);      // 10.2 - 2.7 = 7.5 seconds
+  EXPECT_EQ(7, ss); // 10.2 - 2.7 = 7.5 seconds
   EXPECT_EQ(500000, mics);
 }
 
 // Test period subtraction with negative seconds and positive microseconds
 TEST_F(Quantity_PeriodTest, SubtractNegativeWithMicroseconds)
 {
-  Quantity_Period aPeriod1(0, 0, 0, 5, 0, 300000);  // 5.3 seconds
-  Quantity_Period aPeriod2(0, 0, 0, 8, 0, 100000);  // 8.1 seconds
+  Quantity_Period aPeriod1(0, 0, 0, 5, 0, 300000); // 5.3 seconds
+  Quantity_Period aPeriod2(0, 0, 0, 8, 0, 100000); // 8.1 seconds
 
   Quantity_Period aResult = aPeriod1.Subtract(aPeriod2);
 

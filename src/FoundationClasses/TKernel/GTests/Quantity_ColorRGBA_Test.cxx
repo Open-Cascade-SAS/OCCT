@@ -22,10 +22,13 @@ class Quantity_ColorRGBATest : public testing::Test
 {
 protected:
   void SetUp() override {}
+
   void TearDown() override {}
 
   // Helper to compare floating point values
-  bool IsNear(Standard_ShortReal theValue1, Standard_ShortReal theValue2, Standard_ShortReal theTolerance = 0.001f) const
+  bool IsNear(Standard_ShortReal theValue1,
+              Standard_ShortReal theValue2,
+              Standard_ShortReal theTolerance = 0.001f) const
   {
     return std::abs(theValue1 - theValue2) < theTolerance;
   }
@@ -36,9 +39,9 @@ TEST_F(Quantity_ColorRGBATest, BasicConstruction)
 {
   // Default constructor
   Quantity_ColorRGBA aColor1;
-  EXPECT_TRUE(IsNear(1.0f, aColor1.GetRGB().Red()));    // YELLOW = RGB(1,1,0)
-  EXPECT_TRUE(IsNear(1.0f, aColor1.GetRGB().Green()));  // YELLOW = RGB(1,1,0)
-  EXPECT_TRUE(IsNear(0.0f, aColor1.GetRGB().Blue()));   // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(1.0f, aColor1.GetRGB().Red()));   // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(1.0f, aColor1.GetRGB().Green())); // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(0.0f, aColor1.GetRGB().Blue()));  // YELLOW = RGB(1,1,0)
   EXPECT_TRUE(IsNear(1.0f, aColor1.Alpha()));
 
   // Constructor with RGB + alpha

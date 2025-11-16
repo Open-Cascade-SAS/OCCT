@@ -22,10 +22,13 @@ class Quantity_ColorTest : public testing::Test
 {
 protected:
   void SetUp() override {}
+
   void TearDown() override {}
 
   // Helper to compare floating point values
-  bool IsNear(Standard_Real theValue1, Standard_Real theValue2, Standard_Real theTolerance = 0.001) const
+  bool IsNear(Standard_Real theValue1,
+              Standard_Real theValue2,
+              Standard_Real theTolerance = 0.001) const
   {
     return std::abs(theValue1 - theValue2) < theTolerance;
   }
@@ -36,9 +39,9 @@ TEST_F(Quantity_ColorTest, BasicConstruction)
 {
   // Default constructor
   Quantity_Color aColor1;
-  EXPECT_TRUE(IsNear(1.0, aColor1.Red()));    // YELLOW = RGB(1,1,0)
-  EXPECT_TRUE(IsNear(1.0, aColor1.Green()));  // YELLOW = RGB(1,1,0)
-  EXPECT_TRUE(IsNear(0.0, aColor1.Blue()));   // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(1.0, aColor1.Red()));   // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(1.0, aColor1.Green())); // YELLOW = RGB(1,1,0)
+  EXPECT_TRUE(IsNear(0.0, aColor1.Blue()));  // YELLOW = RGB(1,1,0)
 
   // RGB constructor
   Quantity_Color aColor2(0.5, 0.6, 0.7, Quantity_TOC_RGB);
@@ -104,7 +107,7 @@ TEST_F(Quantity_ColorTest, DistanceCalculation)
 TEST_F(Quantity_ColorTest, RGB_to_HLS_Conversion)
 {
   // Pure red in sRGB
-  Quantity_Color aRed(Quantity_NOC_RED);
+  Quantity_Color          aRed(Quantity_NOC_RED);
   NCollection_Vec3<float> aHLS = Quantity_Color::Convert_sRGB_To_HLS(aRed.Rgb());
 
   EXPECT_TRUE(IsNear(0.0, aHLS[0], 1.0)); // Hue for red should be ~0
@@ -112,18 +115,18 @@ TEST_F(Quantity_ColorTest, RGB_to_HLS_Conversion)
   EXPECT_TRUE(IsNear(1.0, aHLS[2]));      // Saturation should be 1 (fully saturated)
 
   // Gray (no saturation)
-  Quantity_Color aGray(0.5, 0.5, 0.5, Quantity_TOC_RGB);
+  Quantity_Color          aGray(0.5, 0.5, 0.5, Quantity_TOC_RGB);
   NCollection_Vec3<float> aHLS_Gray = Quantity_Color::Convert_sRGB_To_HLS(aGray.Rgb());
 
-  EXPECT_TRUE(IsNear(0.5, aHLS_Gray[1]));  // Lightness
-  EXPECT_TRUE(IsNear(0.0, aHLS_Gray[2]));  // Saturation should be 0 for gray
+  EXPECT_TRUE(IsNear(0.5, aHLS_Gray[1])); // Lightness
+  EXPECT_TRUE(IsNear(0.0, aHLS_Gray[2])); // Saturation should be 0 for gray
 }
 
 // Test Linear RGB to CIE Lab conversion (uses new constexpr constants)
 TEST_F(Quantity_ColorTest, LinearRGB_to_Lab_Conversion)
 {
   // White should convert to L=100, a=0, b=0 in Lab
-  Quantity_Color aWhite(1.0, 1.0, 1.0, Quantity_TOC_RGB);
+  Quantity_Color          aWhite(1.0, 1.0, 1.0, Quantity_TOC_RGB);
   NCollection_Vec3<float> aLab = Quantity_Color::Convert_LinearRGB_To_Lab(aWhite.Rgb());
 
   EXPECT_TRUE(IsNear(100.0, aLab[0], 1.0)); // L should be near 100
@@ -131,7 +134,7 @@ TEST_F(Quantity_ColorTest, LinearRGB_to_Lab_Conversion)
   EXPECT_TRUE(IsNear(0.0, aLab[2], 5.0));   // b should be near 0
 
   // Black should convert to L=0
-  Quantity_Color aBlack(0.0, 0.0, 0.0, Quantity_TOC_RGB);
+  Quantity_Color          aBlack(0.0, 0.0, 0.0, Quantity_TOC_RGB);
   NCollection_Vec3<float> aLabBlack = Quantity_Color::Convert_LinearRGB_To_Lab(aBlack.Rgb());
 
   EXPECT_TRUE(IsNear(0.0, aLabBlack[0], 1.0)); // L should be 0
@@ -144,7 +147,7 @@ TEST_F(Quantity_ColorTest, Lab_to_Lch_Conversion)
   NCollection_Vec3<float> aLab(50.0f, 25.0f, 25.0f);
   NCollection_Vec3<float> aLch = Quantity_Color::Convert_Lab_To_Lch(aLab);
 
-  EXPECT_TRUE(IsNear(50.0, aLch[0]));  // L should be preserved
+  EXPECT_TRUE(IsNear(50.0, aLch[0])); // L should be preserved
 
   // C (chroma) should be sqrt(25^2 + 25^2) = sqrt(1250) ~= 35.36
   EXPECT_TRUE(IsNear(35.36, aLch[1], 0.1));
@@ -157,7 +160,7 @@ TEST_F(Quantity_ColorTest, Lab_to_Lch_Conversion)
 TEST_F(Quantity_ColorTest, Lch_to_Lab_RoundTrip)
 {
   NCollection_Vec3<float> aLab1(50.0f, 25.0f, 25.0f);
-  NCollection_Vec3<float> aLch = Quantity_Color::Convert_Lab_To_Lch(aLab1);
+  NCollection_Vec3<float> aLch  = Quantity_Color::Convert_Lab_To_Lch(aLab1);
   NCollection_Vec3<float> aLab2 = Quantity_Color::Convert_Lch_To_Lab(aLch);
 
   EXPECT_TRUE(IsNear(aLab1[0], aLab2[0], 0.01));
@@ -168,7 +171,7 @@ TEST_F(Quantity_ColorTest, Lch_to_Lab_RoundTrip)
 // Test Lab to RGB conversion (round-trip validation)
 TEST_F(Quantity_ColorTest, Lab_to_RGB_RoundTrip)
 {
-  Quantity_Color aOriginal(0.5, 0.6, 0.7, Quantity_TOC_RGB);
+  Quantity_Color          aOriginal(0.5, 0.6, 0.7, Quantity_TOC_RGB);
   NCollection_Vec3<float> aLab = Quantity_Color::Convert_LinearRGB_To_Lab(aOriginal.Rgb());
   NCollection_Vec3<float> aRGB = Quantity_Color::Convert_Lab_To_LinearRGB(aLab);
 
@@ -189,7 +192,7 @@ TEST_F(Quantity_ColorTest, DeltaE2000_Calculation)
 
   // Different colors should have non-zero DeltaE
   Quantity_Color aColor3(0.3, 0.4, 0.5, Quantity_TOC_RGB);
-  Standard_Real aDeltaE2 = aColor1.DeltaE2000(aColor3);
+  Standard_Real  aDeltaE2 = aColor1.DeltaE2000(aColor3);
   EXPECT_GT(aDeltaE2, 0.0);
 }
 
@@ -235,9 +238,9 @@ TEST_F(Quantity_ColorTest, HLS_Extraction)
   Quantity_Color aRed(Quantity_NOC_RED);
 
   // For pure red, hue should be ~0, saturation should be 1, lightness should be 1
-  Standard_Real aHue = aRed.Hue();
+  Standard_Real aHue   = aRed.Hue();
   Standard_Real aLight = aRed.Light();
-  Standard_Real aSat = aRed.Saturation();
+  Standard_Real aSat   = aRed.Saturation();
 
   EXPECT_TRUE(IsNear(0.0, aHue, 5.0) || IsNear(360.0, aHue, 5.0)); // Hue wraps around
   EXPECT_TRUE(IsNear(1.0, aLight, 0.01));

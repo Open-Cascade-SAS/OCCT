@@ -21,6 +21,7 @@ class Quantity_DateTest : public testing::Test
 {
 protected:
   void SetUp() override {}
+
   void TearDown() override {}
 };
 
@@ -28,7 +29,7 @@ protected:
 TEST_F(Quantity_DateTest, BasicConstruction)
 {
   // Default constructor creates January 1, 1979, 00:00:00
-  Quantity_Date aDate1;
+  Quantity_Date    aDate1;
   Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
   aDate1.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
@@ -79,8 +80,8 @@ TEST_F(Quantity_DateTest, ConstexprComparisons)
 TEST_F(Quantity_DateTest, LeapYearDetection)
 {
   // Leap years
-  EXPECT_TRUE(Quantity_Date::IsLeap(2000));  // Divisible by 400
-  EXPECT_TRUE(Quantity_Date::IsLeap(2004));  // Divisible by 4, not by 100
+  EXPECT_TRUE(Quantity_Date::IsLeap(2000)); // Divisible by 400
+  EXPECT_TRUE(Quantity_Date::IsLeap(2004)); // Divisible by 4, not by 100
   EXPECT_TRUE(Quantity_Date::IsLeap(2020));
 
   // Non-leap years
@@ -204,14 +205,14 @@ TEST_F(Quantity_DateTest, DateDifference)
   Standard_Integer ss, mics;
   aPeriod.Values(ss, mics);
 
-  EXPECT_EQ(3600, ss);  // 1 hour = 3600 seconds (SECONDS_PER_HOUR)
+  EXPECT_EQ(3600, ss); // 1 hour = 3600 seconds (SECONDS_PER_HOUR)
   EXPECT_EQ(0, mics);
 }
 
 // Test adding period to date (uses USECS_PER_SEC constant)
 TEST_F(Quantity_DateTest, AddPeriod)
 {
-  Quantity_Date aDate(1, 1, 2020, 0, 0, 0, 0, 0);
+  Quantity_Date   aDate(1, 1, 2020, 0, 0, 0, 0, 0);
   Quantity_Period aPeriod(1, 0, 0, 0, 0, 0); // 1 day
 
   Quantity_Date aNewDate = aDate.Add(aPeriod);
@@ -220,15 +221,15 @@ TEST_F(Quantity_DateTest, AddPeriod)
   aNewDate.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);
-  EXPECT_EQ(2, dd);  // Next day
+  EXPECT_EQ(2, dd); // Next day
   EXPECT_EQ(2020, yy);
 }
 
 // Test subtracting period from date
 TEST_F(Quantity_DateTest, SubtractPeriod)
 {
-  Quantity_Date aDate(1, 2, 2020, 0, 0, 0, 0, 0); // January 2
-  Quantity_Period aPeriod(1, 0, 0, 0, 0, 0);      // 1 day
+  Quantity_Date   aDate(1, 2, 2020, 0, 0, 0, 0, 0); // January 2
+  Quantity_Period aPeriod(1, 0, 0, 0, 0, 0);        // 1 day
 
   Quantity_Date aNewDate = aDate.Subtract(aPeriod);
 
@@ -236,14 +237,14 @@ TEST_F(Quantity_DateTest, SubtractPeriod)
   aNewDate.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);
-  EXPECT_EQ(1, dd);  // Previous day
+  EXPECT_EQ(1, dd); // Previous day
   EXPECT_EQ(2020, yy);
 }
 
 // Test year boundary crossing
 TEST_F(Quantity_DateTest, YearBoundary)
 {
-  Quantity_Date aDate(12, 31, 2020, 23, 59, 59, 0, 0);
+  Quantity_Date   aDate(12, 31, 2020, 23, 59, 59, 0, 0);
   Quantity_Period aPeriod(0, 0, 0, 1, 0, 0); // 1 second
 
   Quantity_Date aNewDate = aDate.Add(aPeriod);
@@ -251,9 +252,9 @@ TEST_F(Quantity_DateTest, YearBoundary)
   Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
   aNewDate.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
-  EXPECT_EQ(1, mm);     // January
-  EXPECT_EQ(1, dd);     // 1st
-  EXPECT_EQ(2021, yy);  // Next year
+  EXPECT_EQ(1, mm);    // January
+  EXPECT_EQ(1, dd);    // 1st
+  EXPECT_EQ(2021, yy); // Next year
   EXPECT_EQ(0, hh);
   EXPECT_EQ(0, mn);
   EXPECT_EQ(0, ss);
@@ -263,33 +264,33 @@ TEST_F(Quantity_DateTest, YearBoundary)
 TEST_F(Quantity_DateTest, LeapYearBoundary)
 {
   // Leap year: Feb 28 + 1 day = Feb 29
-  Quantity_Date aDate1(2, 28, 2020, 0, 0, 0, 0, 0);
+  Quantity_Date   aDate1(2, 28, 2020, 0, 0, 0, 0, 0);
   Quantity_Period aPeriod1(1, 0, 0, 0, 0, 0);
-  Quantity_Date aNewDate1 = aDate1.Add(aPeriod1);
+  Quantity_Date   aNewDate1 = aDate1.Add(aPeriod1);
 
   Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
   aNewDate1.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(2, mm);
-  EXPECT_EQ(29, dd);  // Feb 29 exists in 2020
+  EXPECT_EQ(29, dd); // Feb 29 exists in 2020
   EXPECT_EQ(2020, yy);
 
   // Non-leap year: Feb 28 + 1 day = Mar 1
-  Quantity_Date aDate2(2, 28, 2021, 0, 0, 0, 0, 0);
+  Quantity_Date   aDate2(2, 28, 2021, 0, 0, 0, 0, 0);
   Quantity_Period aPeriod2(1, 0, 0, 0, 0, 0);
-  Quantity_Date aNewDate2 = aDate2.Add(aPeriod2);
+  Quantity_Date   aNewDate2 = aDate2.Add(aPeriod2);
 
   aNewDate2.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
-  EXPECT_EQ(3, mm);   // March
-  EXPECT_EQ(1, dd);   // 1st
+  EXPECT_EQ(3, mm); // March
+  EXPECT_EQ(1, dd); // 1st
   EXPECT_EQ(2021, yy);
 }
 
 // Test microsecond overflow (uses USECS_PER_SEC constant)
 TEST_F(Quantity_DateTest, MicrosecondOverflow)
 {
-  Quantity_Date aDate(1, 1, 2020, 0, 0, 0, 999, 999);
+  Quantity_Date   aDate(1, 1, 2020, 0, 0, 0, 999, 999);
   Quantity_Period aPeriod(0, 0, 0, 0, 0, 1); // 1 microsecond
 
   Quantity_Date aNewDate = aDate.Add(aPeriod);
@@ -302,7 +303,7 @@ TEST_F(Quantity_DateTest, MicrosecondOverflow)
   EXPECT_EQ(2020, yy);
   EXPECT_EQ(0, hh);
   EXPECT_EQ(0, mn);
-  EXPECT_EQ(1, ss);   // Should overflow to next second
+  EXPECT_EQ(1, ss); // Should overflow to next second
   EXPECT_EQ(0, mis);
   EXPECT_EQ(0, mics);
 }
@@ -311,7 +312,7 @@ TEST_F(Quantity_DateTest, MicrosecondOverflow)
 TEST_F(Quantity_DateTest, SpecificDateCalculations)
 {
   // Test that 24 hours = 1 day (SECONDS_PER_DAY = 86400)
-  Quantity_Date aDate1(1, 1, 2020, 0, 0, 0, 0, 0);
+  Quantity_Date   aDate1(1, 1, 2020, 0, 0, 0, 0, 0);
   Quantity_Period aPeriod24h(0, 24, 0, 0, 0, 0); // 24 hours
 
   Quantity_Date aDate2 = aDate1.Add(aPeriod24h);
@@ -320,7 +321,7 @@ TEST_F(Quantity_DateTest, SpecificDateCalculations)
   aDate2.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);
-  EXPECT_EQ(2, dd);  // Next day
+  EXPECT_EQ(2, dd); // Next day
   EXPECT_EQ(2020, yy);
   EXPECT_EQ(0, hh);
 }
@@ -364,7 +365,7 @@ TEST_F(Quantity_DateTest, MultipleLeapYearChecks)
 // Test date difference with epoch (Jan 1, 1979 00:00) - special case
 TEST_F(Quantity_DateTest, DifferenceFromEpoch)
 {
-  Quantity_Date aEpoch;  // Defaults to Jan 1, 1979 00:00
+  Quantity_Date aEpoch;                           // Defaults to Jan 1, 1979 00:00
   Quantity_Date aDate(1, 2, 1979, 0, 0, 0, 0, 0); // Jan 2, 1979
 
   Quantity_Period aPeriod = aEpoch.Difference(aDate);
@@ -372,15 +373,15 @@ TEST_F(Quantity_DateTest, DifferenceFromEpoch)
   Standard_Integer ss, mics;
   aPeriod.Values(ss, mics);
 
-  EXPECT_EQ(86400, ss);  // 1 day = 86400 seconds
+  EXPECT_EQ(86400, ss); // 1 day = 86400 seconds
   EXPECT_EQ(0, mics);
 }
 
 // Test date difference with microsecond underflow
 TEST_F(Quantity_DateTest, DifferenceWithMicrosecondUnderflow)
 {
-  Quantity_Date aDate1(1, 1, 2020, 0, 0, 1, 200, 0);  // 1.2 seconds
-  Quantity_Date aDate2(1, 1, 2020, 0, 0, 0, 500, 0);  // 0.5 seconds
+  Quantity_Date aDate1(1, 1, 2020, 0, 0, 1, 200, 0); // 1.2 seconds
+  Quantity_Date aDate2(1, 1, 2020, 0, 0, 0, 500, 0); // 0.5 seconds
 
   Quantity_Period aPeriod = aDate1.Difference(aDate2);
 
@@ -388,14 +389,14 @@ TEST_F(Quantity_DateTest, DifferenceWithMicrosecondUnderflow)
   aPeriod.Values(ss, mics);
 
   EXPECT_EQ(0, ss);
-  EXPECT_EQ(700000, mics);  // 1.2 - 0.5 = 0.7 seconds = 700000 microseconds
+  EXPECT_EQ(700000, mics); // 1.2 - 0.5 = 0.7 seconds = 700000 microseconds
 }
 
 // Test date difference with reversed dates (absolute value)
 TEST_F(Quantity_DateTest, DifferenceReversed)
 {
-  Quantity_Date aDate1(1, 1, 2020, 1, 0, 0, 0, 0);  // 1 hour
-  Quantity_Date aDate2(1, 1, 2020, 3, 0, 0, 0, 0);  // 3 hours
+  Quantity_Date aDate1(1, 1, 2020, 1, 0, 0, 0, 0); // 1 hour
+  Quantity_Date aDate2(1, 1, 2020, 3, 0, 0, 0, 0); // 3 hours
 
   // Difference should be absolute value
   Quantity_Period aPeriod = aDate1.Difference(aDate2);
@@ -403,6 +404,6 @@ TEST_F(Quantity_DateTest, DifferenceReversed)
   Standard_Integer ss, mics;
   aPeriod.Values(ss, mics);
 
-  EXPECT_EQ(7200, ss);  // 2 hours = 7200 seconds
+  EXPECT_EQ(7200, ss); // 2 hours = 7200 seconds
   EXPECT_EQ(0, mics);
 }

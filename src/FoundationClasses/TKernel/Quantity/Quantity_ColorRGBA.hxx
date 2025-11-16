@@ -78,7 +78,10 @@ public:
   constexpr void SetAlpha(const Standard_ShortReal theAlpha) noexcept { myAlpha = theAlpha; }
 
   //! Return the color as vector of 4 float elements.
-  constexpr operator const NCollection_Vec4<float>&() const noexcept { return *(const NCollection_Vec4<float>*)this; }
+  constexpr operator const NCollection_Vec4<float>&() const noexcept
+  {
+    return *(const NCollection_Vec4<float>*)this;
+  }
 
   //! Returns true if the distance between colors is greater than Epsilon().
   bool IsDifferent(const Quantity_ColorRGBA& theOther) const noexcept
@@ -88,7 +91,10 @@ public:
   }
 
   //! Returns true if the distance between colors is greater than Epsilon().
-  bool operator!=(const Quantity_ColorRGBA& theOther) const noexcept { return IsDifferent(theOther); }
+  bool operator!=(const Quantity_ColorRGBA& theOther) const noexcept
+  {
+    return IsDifferent(theOther);
+  }
 
   //! Two colors are considered to be equal if their distance is no greater than Epsilon().
   bool IsEqual(const Quantity_ColorRGBA& theOther) const noexcept
@@ -133,7 +139,7 @@ public:
 
   //! Returns hex sRGBA string in format "#RRGGBBAA".
   static TCollection_AsciiString ColorToHex(const Quantity_ColorRGBA& theColor,
-                                            const bool                theToPrefixHash = true) noexcept
+                                            const bool theToPrefixHash = true) noexcept
   {
     NCollection_Vec4<Standard_ShortReal> anSRgb =
       Convert_LinearRGB_To_sRGB((NCollection_Vec4<Standard_ShortReal>)theColor);
@@ -151,7 +157,8 @@ public:
 
 public:
   //! Convert linear RGB components into sRGB using OpenGL specs formula.
-  static NCollection_Vec4<float> Convert_LinearRGB_To_sRGB(const NCollection_Vec4<float>& theRGB) noexcept
+  static NCollection_Vec4<float> Convert_LinearRGB_To_sRGB(
+    const NCollection_Vec4<float>& theRGB) noexcept
   {
     return NCollection_Vec4<float>(Quantity_Color::Convert_LinearRGB_To_sRGB(theRGB.r()),
                                    Quantity_Color::Convert_LinearRGB_To_sRGB(theRGB.g()),
@@ -160,7 +167,8 @@ public:
   }
 
   //! Convert sRGB components into linear RGB using OpenGL specs formula.
-  static NCollection_Vec4<float> Convert_sRGB_To_LinearRGB(const NCollection_Vec4<float>& theRGB) noexcept
+  static NCollection_Vec4<float> Convert_sRGB_To_LinearRGB(
+    const NCollection_Vec4<float>& theRGB) noexcept
   {
     return NCollection_Vec4<float>(Quantity_Color::Convert_sRGB_To_LinearRGB(theRGB.r()),
                                    Quantity_Color::Convert_sRGB_To_LinearRGB(theRGB.g()),

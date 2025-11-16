@@ -97,7 +97,7 @@ void Quantity_Period::Values(Standard_Integer& dd,
                              Standard_Integer& mics) const
 {
   Standard_Integer carry = mySec;
-  dd = carry / SECONDS_PER_DAY;
+  dd                     = carry / SECONDS_PER_DAY;
   carry -= dd * SECONDS_PER_DAY;
   extractTimeComponents(carry, hh, mn, ss);
   extractMillisAndMicros(myUSec, mis, mics);

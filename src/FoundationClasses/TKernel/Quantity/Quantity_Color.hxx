@@ -140,7 +140,10 @@ public:
   }
 
   //! Alias to IsEqual().
-  Standard_Boolean operator==(const Quantity_Color& theOther) const noexcept { return IsEqual(theOther); }
+  Standard_Boolean operator==(const Quantity_Color& theOther) const noexcept
+  {
+    return IsEqual(theOther);
+  }
 
   //! Returns the distance between two colors. It's a value between 0 and the square root of 3 (the
   //! black/white distance).
@@ -247,13 +250,15 @@ public:
     const NCollection_Vec3<float>& theHls);
 
   //! Converts Linear RGB components into HLS ones.
-  static NCollection_Vec3<float> Convert_LinearRGB_To_HLS(const NCollection_Vec3<float>& theRgb) noexcept
+  static NCollection_Vec3<float> Convert_LinearRGB_To_HLS(
+    const NCollection_Vec3<float>& theRgb) noexcept
   {
     return Convert_sRGB_To_HLS(Convert_LinearRGB_To_sRGB(theRgb));
   }
 
   //! Converts HLS components into linear RGB ones.
-  static NCollection_Vec3<float> Convert_HLS_To_LinearRGB(const NCollection_Vec3<float>& theHls) noexcept
+  static NCollection_Vec3<float> Convert_HLS_To_LinearRGB(
+    const NCollection_Vec3<float>& theHls) noexcept
   {
     return Convert_sRGB_To_LinearRGB(Convert_HLS_To_sRGB(theHls));
   }
@@ -281,7 +286,8 @@ public:
   //! as would be usually expected for RGB color packed into 4 bytes.
   //! @param[in] theColor  color to convert
   //! @param[out] theARGB  result color encoded as integer
-  static constexpr void Color2argb(const Quantity_Color& theColor, Standard_Integer& theARGB) noexcept
+  static constexpr void Color2argb(const Quantity_Color& theColor,
+                                   Standard_Integer&     theARGB) noexcept
   {
     const NCollection_Vec3<Standard_Integer> aColor(
       static_cast<Standard_Integer>(255.0f * theColor.myRgb.r() + 0.5f),

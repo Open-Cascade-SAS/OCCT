@@ -151,7 +151,10 @@ public:
     return (myUSec == anOther.myUSec && mySec == anOther.mySec);
   }
 
-  constexpr Standard_Boolean operator==(const Quantity_Date& anOther) const noexcept { return IsEqual(anOther); }
+  constexpr Standard_Boolean operator==(const Quantity_Date& anOther) const noexcept
+  {
+    return IsEqual(anOther);
+  }
 
   //! Returns TRUE if <me> is earlier than <other>.
   constexpr Standard_Boolean IsEarlier(const Quantity_Date& anOther) const noexcept
@@ -159,7 +162,10 @@ public:
     return (mySec < anOther.mySec) || (mySec == anOther.mySec && myUSec < anOther.myUSec);
   }
 
-  constexpr Standard_Boolean operator<(const Quantity_Date& anOther) const noexcept { return IsEarlier(anOther); }
+  constexpr Standard_Boolean operator<(const Quantity_Date& anOther) const noexcept
+  {
+    return IsEarlier(anOther);
+  }
 
   //! Returns TRUE if <me> is later then <other>.
   constexpr Standard_Boolean IsLater(const Quantity_Date& anOther) const noexcept
@@ -167,7 +173,10 @@ public:
     return (mySec > anOther.mySec) || (mySec == anOther.mySec && myUSec > anOther.myUSec);
   }
 
-  constexpr Standard_Boolean operator>(const Quantity_Date& anOther) const noexcept { return IsLater(anOther); }
+  constexpr Standard_Boolean operator>(const Quantity_Date& anOther) const noexcept
+  {
+    return IsLater(anOther);
+  }
 
   //! Checks the validity of a date - returns true if a
   //! date defined from the year yyyy, the month mm,

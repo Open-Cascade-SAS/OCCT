@@ -116,7 +116,10 @@ public:
     return (mySec == anOther.mySec && myUSec == anOther.myUSec);
   }
 
-  constexpr Standard_Boolean operator==(const Quantity_Period& anOther) const noexcept { return IsEqual(anOther); }
+  constexpr Standard_Boolean operator==(const Quantity_Period& anOther) const noexcept
+  {
+    return IsEqual(anOther);
+  }
 
   //! Returns TRUE if <me> is shorter than <other>.
   constexpr Standard_Boolean IsShorter(const Quantity_Period& anOther) const noexcept
@@ -124,7 +127,10 @@ public:
     return (mySec < anOther.mySec) || (mySec == anOther.mySec && myUSec < anOther.myUSec);
   }
 
-  constexpr Standard_Boolean operator<(const Quantity_Period& anOther) const noexcept { return IsShorter(anOther); }
+  constexpr Standard_Boolean operator<(const Quantity_Period& anOther) const noexcept
+  {
+    return IsShorter(anOther);
+  }
 
   //! Returns TRUE if <me> is longer then <other>.
   constexpr Standard_Boolean IsLonger(const Quantity_Period& anOther) const noexcept
@@ -132,7 +138,10 @@ public:
     return (mySec > anOther.mySec) || (mySec == anOther.mySec && myUSec > anOther.myUSec);
   }
 
-  constexpr Standard_Boolean operator>(const Quantity_Period& anOther) const noexcept { return IsLonger(anOther); }
+  constexpr Standard_Boolean operator>(const Quantity_Period& anOther) const noexcept
+  {
+    return IsLonger(anOther);
+  }
 
   //! Checks the validity of a Period in form (dd,hh,mn,ss,mil,mic)
   //! With:      0 <= dd

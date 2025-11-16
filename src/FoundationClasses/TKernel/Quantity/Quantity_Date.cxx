@@ -221,8 +221,8 @@ void Quantity_Date::Values(Standard_Integer& mm,
 
   // Extract day within the month
   // carry holds seconds since the beginning of the current month
-  dd = carry / SECONDS_PER_DAY + 1;  // Convert 0-based to 1-based day
-  carry -= (dd - 1) * SECONDS_PER_DAY;  // Remove day component from carry
+  dd = carry / SECONDS_PER_DAY + 1;    // Convert 0-based to 1-based day
+  carry -= (dd - 1) * SECONDS_PER_DAY; // Remove day component from carry
 
   extractTimeComponents(carry, hh, mn, ss);
   extractMillisAndMicros(myUSec, mis, mics);

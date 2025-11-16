@@ -26,7 +26,7 @@ namespace
 static constexpr float  RGBHLS_H_UNDEFINED = -1.0f;
 static constexpr double DEG_TO_RAD         = M_PI / 180.0;
 static constexpr double RAD_TO_DEG         = 180.0 / M_PI;
-static constexpr double POW_25_7           = 6103515625.0;        // 25^7 used in CIEDE2000
+static constexpr double POW_25_7           = 6103515625.0;         // 25^7 used in CIEDE2000
 static constexpr double CIELAB_EPSILON     = 0.008856451679035631; // (6/29)^3
 static constexpr double CIELAB_KAPPA       = 7.787037037037037;    // (1/3) * (29/6)^2
 static constexpr double CIELAB_OFFSET      = 16.0 / 116.0;
@@ -35,29 +35,29 @@ static constexpr double CIELAB_A_COEFF     = 500.0;
 static constexpr double CIELAB_B_COEFF     = 200.0;
 static constexpr double CIELAB_L_OFFSET    = 16.0;
 // D65 / 2 deg (CIE 1931) standard illuminant reference white point
-static constexpr double D65_REF_X          = 95.047;
-static constexpr double D65_REF_Y          = 100.000;
-static constexpr double D65_REF_Z          = 108.883;
+static constexpr double D65_REF_X = 95.047;
+static constexpr double D65_REF_Y = 100.000;
+static constexpr double D65_REF_Z = 108.883;
 // sRGB to XYZ conversion matrix (D65 illuminant, 2 deg observer)
-static constexpr double RGB_TO_XYZ_R_X     = 0.4124564;
-static constexpr double RGB_TO_XYZ_R_Y     = 0.2126729;
-static constexpr double RGB_TO_XYZ_R_Z     = 0.0193339;
-static constexpr double RGB_TO_XYZ_G_X     = 0.3575761;
-static constexpr double RGB_TO_XYZ_G_Y     = 0.7151522;
-static constexpr double RGB_TO_XYZ_G_Z     = 0.1191920;
-static constexpr double RGB_TO_XYZ_B_X     = 0.1804375;
-static constexpr double RGB_TO_XYZ_B_Y     = 0.0721750;
-static constexpr double RGB_TO_XYZ_B_Z     = 0.9503041;
+static constexpr double RGB_TO_XYZ_R_X = 0.4124564;
+static constexpr double RGB_TO_XYZ_R_Y = 0.2126729;
+static constexpr double RGB_TO_XYZ_R_Z = 0.0193339;
+static constexpr double RGB_TO_XYZ_G_X = 0.3575761;
+static constexpr double RGB_TO_XYZ_G_Y = 0.7151522;
+static constexpr double RGB_TO_XYZ_G_Z = 0.1191920;
+static constexpr double RGB_TO_XYZ_B_X = 0.1804375;
+static constexpr double RGB_TO_XYZ_B_Y = 0.0721750;
+static constexpr double RGB_TO_XYZ_B_Z = 0.9503041;
 // XYZ to sRGB conversion matrix (D65 illuminant, 2 deg observer)
-static constexpr double XYZ_TO_RGB_X_R     = 3.2404542;
-static constexpr double XYZ_TO_RGB_X_G     = -0.9692660;
-static constexpr double XYZ_TO_RGB_X_B     = 0.0556434;
-static constexpr double XYZ_TO_RGB_Y_R     = -1.5371385;
-static constexpr double XYZ_TO_RGB_Y_G     = 1.8760108;
-static constexpr double XYZ_TO_RGB_Y_B     = -0.2040259;
-static constexpr double XYZ_TO_RGB_Z_R     = -0.4985314;
-static constexpr double XYZ_TO_RGB_Z_G     = 0.0415560;
-static constexpr double XYZ_TO_RGB_Z_B     = 1.0572252;
+static constexpr double XYZ_TO_RGB_X_R = 3.2404542;
+static constexpr double XYZ_TO_RGB_X_G = -0.9692660;
+static constexpr double XYZ_TO_RGB_X_B = 0.0556434;
+static constexpr double XYZ_TO_RGB_Y_R = -1.5371385;
+static constexpr double XYZ_TO_RGB_Y_G = 1.8760108;
+static constexpr double XYZ_TO_RGB_Y_B = -0.2040259;
+static constexpr double XYZ_TO_RGB_Z_R = -0.4985314;
+static constexpr double XYZ_TO_RGB_Z_G = 0.0415560;
+static constexpr double XYZ_TO_RGB_Z_B = 1.0572252;
 } // namespace
 
 namespace
@@ -404,11 +404,11 @@ Standard_Real Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
   Standard_Real aC_mean      = 0.5 * (aC1 + aC2);
   Standard_Real aC_mean_pow7 = Pow(aC_mean, 7);
   Standard_Real aG           = 0.5 * (1. - Sqrt(aC_mean_pow7 / (aC_mean_pow7 + POW_25_7)));
-  Standard_Real       aa1x         = aa1 * (1. + aG);
-  Standard_Real       aa2x         = aa2 * (1. + aG);
-  Standard_Real       aC1x         = Sqrt(aa1x * aa1x + ab1 * ab1);
-  Standard_Real       aC2x         = Sqrt(aa2x * aa2x + ab2 * ab2);
-  Standard_Real       aCx_mean     = 0.5 * (aC1x + aC2x);
+  Standard_Real aa1x         = aa1 * (1. + aG);
+  Standard_Real aa2x         = aa2 * (1. + aG);
+  Standard_Real aC1x         = Sqrt(aa1x * aa1x + ab1 * ab1);
+  Standard_Real aC2x         = Sqrt(aa2x * aa2x + ab2 * ab2);
+  Standard_Real aCx_mean     = 0.5 * (aC1x + aC2x);
 
   // mean H
   Standard_Real ah1x = (aC1x > Epsilon() ? ATan2(ab1, aa1x) * RAD_TO_DEG : 270.);
@@ -575,7 +575,8 @@ NCollection_Vec3<float> Quantity_Color::Convert_HLS_To_sRGB(const NCollection_Ve
 // function : Convert_sRGB_To_HLS
 // purpose  : Reference: La synthese d'images, Collection Hermes
 // =======================================================================
-NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(const NCollection_Vec3<float>& theRgb) noexcept
+NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(
+  const NCollection_Vec3<float>& theRgb) noexcept
 {
   float aPlus = 0.0f;
   float aDiff = theRgb.g() - theRgb.b();
@@ -722,7 +723,8 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_LinearRGB(
 // purpose  : convert CIE Lab color to CIE Lch color
 // see https://www.easyrgb.com/en/math.php
 // =======================================================================
-NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(const NCollection_Vec3<float>& theLab) noexcept
+NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(
+  const NCollection_Vec3<float>& theLab) noexcept
 {
   double aa = theLab[1];
   double ab = theLab[2];
@@ -741,7 +743,8 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(const NCollection_Vec
 // purpose  : convert CIE Lch color to CIE Lab color
 // see https://www.easyrgb.com/en/math.php
 // =======================================================================
-NCollection_Vec3<float> Quantity_Color::Convert_Lch_To_Lab(const NCollection_Vec3<float>& theLch) noexcept
+NCollection_Vec3<float> Quantity_Color::Convert_Lch_To_Lab(
+  const NCollection_Vec3<float>& theLch) noexcept
 {
   double aC = theLch[1];
   double aH = theLch[2];
