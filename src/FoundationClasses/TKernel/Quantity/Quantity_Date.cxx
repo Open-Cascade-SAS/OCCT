@@ -20,8 +20,9 @@
 #include <Quantity_Date.hxx>
 #include <Quantity_DateDefinitionError.hxx>
 #include <Quantity_Period.hxx>
-#include <Quantity_TimeConstants.hxx>
 #include <Standard_OutOfRange.hxx>
+
+#include "Quantity_TimeConstants.pxx"
 
 namespace
 {
@@ -228,26 +229,8 @@ void Quantity_Date::Values(Standard_Integer& mm,
   }
   dd--; // Adjust for off-by-one
 
-  for (hh = 0;; hh++)
-  {
-    if (carry >= SECONDS_PER_HOUR)
-      carry -= SECONDS_PER_HOUR;
-    else
-      break;
-  }
-
-  for (mn = 0;; mn++)
-  {
-    if (carry >= SECONDS_PER_MINUTE)
-      carry -= SECONDS_PER_MINUTE;
-    else
-      break;
-  }
-
-  ss = carry;
-
-  mis  = myUSec / USECS_PER_MSEC;
-  mics = myUSec - (mis * USECS_PER_MSEC);
+  extractTimeComponents(carry, hh, mn, ss);
+  extractMillisAndMicros(myUSec, mis, mics);
 }
 
 // ---------------------------------------------------------------------

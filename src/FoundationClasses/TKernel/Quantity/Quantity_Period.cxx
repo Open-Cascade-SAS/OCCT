@@ -20,7 +20,8 @@
 
 #include <Quantity_Period.hxx>
 #include <Quantity_PeriodDefinitionError.hxx>
-#include <Quantity_TimeConstants.hxx>
+
+#include "Quantity_TimeConstants.pxx"
 
 // -----------------------------------------------------------
 // IsValid : Checks the validity of a date
@@ -96,15 +97,10 @@ void Quantity_Period::Values(Standard_Integer& dd,
                              Standard_Integer& mics) const
 {
   Standard_Integer carry = mySec;
-  dd                     = carry / SECONDS_PER_DAY;
+  dd = carry / SECONDS_PER_DAY;
   carry -= dd * SECONDS_PER_DAY;
-  hh = carry / SECONDS_PER_HOUR;
-  carry -= SECONDS_PER_HOUR * hh;
-  mn = carry / SECONDS_PER_MINUTE;
-  carry -= mn * SECONDS_PER_MINUTE;
-  ss   = carry;
-  mis  = myUSec / USECS_PER_MSEC;
-  mics = myUSec - (mis * USECS_PER_MSEC);
+  extractTimeComponents(carry, hh, mn, ss);
+  extractMillisAndMicros(myUSec, mis, mics);
 }
 
 // -------------------------------------------------------------
