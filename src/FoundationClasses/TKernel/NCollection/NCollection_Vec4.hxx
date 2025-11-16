@@ -31,12 +31,15 @@ public:
   static constexpr int Length() noexcept { return 4; }
 
   //! Empty constructor. Construct the zero vector.
-  NCollection_Vec4() { std::memset(this, 0, sizeof(NCollection_Vec4)); }
+  constexpr NCollection_Vec4() noexcept
+      : v{Element_t(0), Element_t(0), Element_t(0), Element_t(0)}
+  {
+  }
 
   //! Initialize ALL components of vector within specified value.
   explicit constexpr NCollection_Vec4(const Element_t theValue) noexcept
+      : v{theValue, theValue, theValue, theValue}
   {
-    v[0] = v[1] = v[2] = v[3] = theValue;
   }
 
   //! Per-component constructor.
@@ -44,19 +47,14 @@ public:
                                       const Element_t theY,
                                       const Element_t theZ,
                                       const Element_t theW) noexcept
+      : v{theX, theY, theZ, theW}
   {
-    v[0] = theX;
-    v[1] = theY;
-    v[2] = theZ;
-    v[3] = theW;
   }
 
   //! Constructor from 2-components vector.
   explicit constexpr NCollection_Vec4(const NCollection_Vec2<Element_t>& theVec2) noexcept
+      : v{theVec2[0], theVec2[1], Element_t(0), Element_t(0)}
   {
-    v[0] = theVec2[0];
-    v[1] = theVec2[1];
-    v[2] = v[3] = Element_t(0);
   }
 
   //! Constructor from 3-components vector + optional 4th value.
@@ -74,11 +72,11 @@ public:
   //! @param theOtherVec4 the 4-component vector that needs to be converted
   template <typename OtherElement_t>
   explicit constexpr NCollection_Vec4(const NCollection_Vec4<OtherElement_t>& theOtherVec4) noexcept
+      : v{static_cast<Element_t>(theOtherVec4[0]),
+          static_cast<Element_t>(theOtherVec4[1]),
+          static_cast<Element_t>(theOtherVec4[2]),
+          static_cast<Element_t>(theOtherVec4[3])}
   {
-    v[0] = static_cast<Element_t>(theOtherVec4[0]);
-    v[1] = static_cast<Element_t>(theOtherVec4[1]);
-    v[2] = static_cast<Element_t>(theOtherVec4[2]);
-    v[3] = static_cast<Element_t>(theOtherVec4[3]);
   }
 
   //! Assign new values to the vector.
