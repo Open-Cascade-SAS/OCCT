@@ -15,6 +15,10 @@
 #define _BSplCLib_CacheParams_Headerfile
 
 #include <BSplCLib.hxx>
+#include <Standard_Real.hxx>
+
+#include <algorithm>
+#include <cmath>
 
 //! Simple structure containing parameters describing parameterization
 //! of a B-spline curve or a surface in one direction (U or V),
@@ -80,8 +84,23 @@ struct BSplCLib_CacheParams
   {
     Standard_Real aNewParam = PeriodicNormalization(theParameter);
     Standard_Real aDelta    = aNewParam - SpanStart;
-    return ((aDelta >= 0.0 || SpanIndex == SpanIndexMin)
-            && (aDelta < SpanLength || SpanIndex == SpanIndexMax));
+    if (!((aDelta >= 0.0 || SpanIndex == SpanIndexMin)
+          && (aDelta < SpanLength || SpanIndex == SpanIndexMax)))
+    {
+      return false;
+    }
+
+    if (SpanIndex == SpanIndexMax)
+      return true;
+
+    // from BSplCLib::LocateParameter() check hitting of the next knot
+    // within double floating point precision
+    const double anEps        = Epsilon((std::min)(std::fabs(LastParameter), std::fabs(aNewParam)));
+    const double aDeltaToNext = std::fabs(aDelta - SpanLength);
+    if (aDeltaToNext <= anEps)
+      return false; // next knot should be used instead
+
+    return true;
   }
 
   //! Computes span for the specified parameter
