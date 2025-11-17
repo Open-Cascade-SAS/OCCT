@@ -146,19 +146,37 @@ public:
 
   //! Returns TRUE if both <me> and <other> are equal.
   //! This method is an alias of operator ==.
-  Standard_EXPORT Standard_Boolean IsEqual(const Quantity_Date& anOther) const;
+  constexpr Standard_Boolean IsEqual(const Quantity_Date& anOther) const noexcept
+  {
+    return (myUSec == anOther.myUSec && mySec == anOther.mySec);
+  }
 
-  Standard_Boolean operator==(const Quantity_Date& anOther) const { return IsEqual(anOther); }
+  constexpr Standard_Boolean operator==(const Quantity_Date& anOther) const noexcept
+  {
+    return IsEqual(anOther);
+  }
 
   //! Returns TRUE if <me> is earlier than <other>.
-  Standard_EXPORT Standard_Boolean IsEarlier(const Quantity_Date& anOther) const;
+  constexpr Standard_Boolean IsEarlier(const Quantity_Date& anOther) const noexcept
+  {
+    return (mySec < anOther.mySec) || (mySec == anOther.mySec && myUSec < anOther.myUSec);
+  }
 
-  Standard_Boolean operator<(const Quantity_Date& anOther) const { return IsEarlier(anOther); }
+  constexpr Standard_Boolean operator<(const Quantity_Date& anOther) const noexcept
+  {
+    return IsEarlier(anOther);
+  }
 
   //! Returns TRUE if <me> is later then <other>.
-  Standard_EXPORT Standard_Boolean IsLater(const Quantity_Date& anOther) const;
+  constexpr Standard_Boolean IsLater(const Quantity_Date& anOther) const noexcept
+  {
+    return (mySec > anOther.mySec) || (mySec == anOther.mySec && myUSec > anOther.myUSec);
+  }
 
-  Standard_Boolean operator>(const Quantity_Date& anOther) const { return IsLater(anOther); }
+  constexpr Standard_Boolean operator>(const Quantity_Date& anOther) const noexcept
+  {
+    return IsLater(anOther);
+  }
 
   //! Checks the validity of a date - returns true if a
   //! date defined from the year yyyy, the month mm,
@@ -189,7 +207,7 @@ public:
   //! Returns true if a year is a leap year.
   //! The leap years are divisible by 4 and not by 100 except
   //! the years divisible by 400.
-  static Standard_Boolean IsLeap(const Standard_Integer yy)
+  static constexpr Standard_Boolean IsLeap(const Standard_Integer yy) noexcept
   {
     return ((yy % 4 == 0) && (yy % 100 != 0)) || (yy % 400) == 0;
   }

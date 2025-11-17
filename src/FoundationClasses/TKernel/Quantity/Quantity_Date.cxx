@@ -22,21 +22,38 @@
 #include <Quantity_Period.hxx>
 #include <Standard_OutOfRange.hxx>
 
-static int month_table[12] = {31,  // January
-                              28,  // February
-                              31,  // March
-                              30,  // April
-                              31,  // May
-                              30,  // June
-                              31,  // July
-                              31,  // August
-                              30,  // September
-                              31,  // October
-                              30,  // November
-                              31}; // December
+#include "Quantity_TimeConstants.pxx"
 
-static int SecondsByYear     = 365 * 24 * 3600; // Normal Year
-static int SecondsByLeapYear = 366 * 24 * 3600; // Leap Year
+namespace
+{
+
+static constexpr int month_table[12] = {31,  // January
+                                        28,  // February
+                                        31,  // March
+                                        30,  // April
+                                        31,  // May
+                                        30,  // June
+                                        31,  // July
+                                        31,  // August
+                                        30,  // September
+                                        31,  // October
+                                        30,  // November
+                                        31}; // December
+
+static constexpr int SecondsByYear     = 365 * SECONDS_PER_DAY; // Normal Year
+static constexpr int SecondsByLeapYear = 366 * SECONDS_PER_DAY; // Leap Year
+
+// Returns the number of days in a month for a given year (handles leap years)
+constexpr Standard_Integer getDaysInMonth(const Standard_Integer theMonth,
+                                          const Standard_Integer theYear) noexcept
+{
+  if (theMonth == 2)
+  {
+    return Quantity_Date::IsLeap(theYear) ? 29 : 28;
+  }
+  return month_table[theMonth - 1];
+}
+} // anonymous namespace
 
 // -----------------------------------------
 // Initialize a date to January,1 1979 00:00
@@ -69,12 +86,7 @@ Standard_Boolean Quantity_Date::IsValid(const Standard_Integer mm,
   if (yy < 1979)
     return Standard_False;
 
-  if (Quantity_Date::IsLeap(yy))
-    month_table[1] = 29;
-  else
-    month_table[1] = 28;
-
-  if (dd < 1 || dd > month_table[mm - 1])
+  if (dd < 1 || dd > getDaysInMonth(mm, yy))
     return Standard_False;
 
   if (hh < 0 || hh > 23)
@@ -135,11 +147,6 @@ void Quantity_Date::SetValues(const Standard_Integer mm,
   if (!Quantity_Date::IsValid(mm, dd, yy, hh, mn, ss, mis, mics))
     throw Quantity_DateDefinitionError("Quantity_Date::Quantity_Date invalid parameters");
 
-  if (Quantity_Date::IsLeap(yy))
-    month_table[1] = 29;
-  else
-    month_table[1] = 28;
-
   mySec  = 0;
   myUSec = 0;
   for (i = 1979; i < yy; i++)
@@ -152,18 +159,18 @@ void Quantity_Date::SetValues(const Standard_Integer mm,
 
   for (i = 1; i < mm; i++)
   {
-    mySec += month_table[i - 1] * 3600 * 24;
+    mySec += getDaysInMonth(i, yy) * SECONDS_PER_DAY;
   }
 
-  mySec += 3600 * 24 * (dd - 1);
+  mySec += SECONDS_PER_DAY * (dd - 1);
 
-  mySec += 3600 * hh;
+  mySec += SECONDS_PER_HOUR * hh;
 
-  mySec += 60 * mn;
+  mySec += SECONDS_PER_MINUTE * mn;
 
   mySec += ss;
 
-  myUSec += mis * 1000;
+  myUSec += mis * USECS_PER_MSEC;
 
   myUSec += mics;
 }
@@ -183,13 +190,12 @@ void Quantity_Date::Values(Standard_Integer& mm,
                            Standard_Integer& mics) const
 {
 
-  Standard_Integer i, carry;
+  Standard_Integer carry;
 
   for (yy = 1979, carry = mySec;; yy++)
   {
     if (!Quantity_Date::IsLeap(yy))
     {
-      month_table[1] = 28; // normal year
       if (carry >= SecondsByYear)
         carry -= SecondsByYear;
       else
@@ -197,7 +203,6 @@ void Quantity_Date::Values(Standard_Integer& mm,
     }
     else
     {
-      month_table[1] = 29; // Leap year
       if (carry >= SecondsByLeapYear)
         carry -= SecondsByLeapYear;
       else
@@ -207,42 +212,20 @@ void Quantity_Date::Values(Standard_Integer& mm,
 
   for (mm = 1;; mm++)
   {
-    i = month_table[mm - 1] * 3600 * 24;
+    Standard_Integer i = getDaysInMonth(mm, yy) * SECONDS_PER_DAY;
     if (carry >= i)
       carry -= i;
     else
       break;
   }
 
-  i = 3600 * 24;
-  for (dd = 1;; dd++)
-  {
-    if (carry >= i)
-      carry -= i;
-    else
-      break;
-  }
+  // Extract day within the month
+  // carry holds seconds since the beginning of the current month
+  dd = carry / SECONDS_PER_DAY + 1;    // Convert 0-based to 1-based day
+  carry -= (dd - 1) * SECONDS_PER_DAY; // Remove day component from carry
 
-  for (hh = 0;; hh++)
-  {
-    if (carry >= 3600)
-      carry -= 3600;
-    else
-      break;
-  }
-
-  for (mn = 0;; mn++)
-  {
-    if (carry >= 60)
-      carry -= 60;
-    else
-      break;
-  }
-
-  ss = carry;
-
-  mis  = myUSec / 1000;
-  mics = myUSec - (mis * 1000);
+  extractTimeComponents(carry, hh, mn, ss);
+  extractMillisAndMicros(myUSec, mis, mics);
 }
 
 // ---------------------------------------------------------------------
@@ -252,9 +235,10 @@ void Quantity_Date::Values(Standard_Integer& mm,
 
 Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
 {
-
   Standard_Integer i1, i2;
 
+  // Special case: if this date is the epoch (Jan 1, 1979 00:00),
+  // return OtherDate as a period (time elapsed since epoch)
   if (mySec == 0 && myUSec == 0)
   {
     i1 = OtherDate.mySec;
@@ -266,28 +250,21 @@ Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
     i2 = myUSec - OtherDate.myUSec;
   }
 
-  if (i1 >= 0 && i2 < 0)
+  // Normalize: handle microsecond underflow
+  normalizeSubtractionBorrow(i1, i2);
+
+  // Period is always absolute value, convert negative result
+  if (i1 < 0)
   {
-    i1--;
-    i2 = 1000000 + i2;
-  }
-  else if (i1 < 0 && i2 >= 0)
-  {
-    i1 = Abs(i1);
+    i1 = -i1;
     if (i2 > 0)
     {
       i1--;
-      i2 = 1000000 - i2;
+      i2 = USECS_PER_SEC - i2;
     }
-  }
-  else if (i1 < 0 && i2 < 0)
-  {
-    i1 = Abs(i1);
-    i2 = Abs(i2);
   }
 
   Quantity_Period result(i1, i2);
-
   return (result);
 }
 
@@ -308,11 +285,7 @@ Quantity_Date Quantity_Date::Subtract(const Quantity_Period& During)
   result.mySec -= ss;
   result.myUSec -= mics;
 
-  if (result.mySec >= 0 && result.myUSec < 0)
-  {
-    result.mySec--;
-    result.myUSec = 1000000 + result.myUSec;
-  }
+  normalizeSubtractionBorrow(result.mySec, result.myUSec);
 
   if (result.mySec < 0)
     throw Quantity_DateDefinitionError(
@@ -332,11 +305,7 @@ Quantity_Date Quantity_Date::Add(const Quantity_Period& During)
   During.Values(result.mySec, result.myUSec);
   result.mySec += mySec;
   result.myUSec += myUSec;
-  if (result.myUSec >= 1000000)
-  {
-    result.mySec++;
-    result.myUSec -= 1000000;
-  }
+  normalizeAdditionOverflow(result.mySec, result.myUSec);
   return (result);
 }
 
@@ -346,8 +315,8 @@ Quantity_Date Quantity_Date::Add(const Quantity_Period& During)
 // ----------------------------------------------------------------------
 Standard_Integer Quantity_Date::Year()
 {
-  Standard_Integer dummy, year;
-  Values(dummy, dummy, year, dummy, dummy, dummy, dummy, dummy);
+  Standard_Integer mm, dd, year, hh, mn, ss, mis, mics;
+  Values(mm, dd, year, hh, mn, ss, mis, mics);
   return (year);
 }
 
@@ -357,9 +326,9 @@ Standard_Integer Quantity_Date::Year()
 // ----------------------------------------------------------------------
 Standard_Integer Quantity_Date::Month()
 {
-  Standard_Integer dummy, month;
-  Values(month, dummy, dummy, dummy, dummy, dummy, dummy, dummy);
-  return (month);
+  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (mm);
 }
 
 // ----------------------------------------------------------------------
@@ -369,9 +338,9 @@ Standard_Integer Quantity_Date::Month()
 
 Standard_Integer Quantity_Date::Day()
 {
-  Standard_Integer dummy, day;
-  Values(dummy, day, dummy, dummy, dummy, dummy, dummy, dummy);
-  return (day);
+  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (dd);
 }
 
 // ----------------------------------------------------------------------
@@ -381,9 +350,9 @@ Standard_Integer Quantity_Date::Day()
 
 Standard_Integer Quantity_Date::Hour()
 {
-  Standard_Integer dummy, hour;
-  Values(dummy, dummy, dummy, hour, dummy, dummy, dummy, dummy);
-  return (hour);
+  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (hh);
 }
 
 // ----------------------------------------------------------------------
@@ -393,9 +362,9 @@ Standard_Integer Quantity_Date::Hour()
 
 Standard_Integer Quantity_Date::Minute()
 {
-  Standard_Integer dummy, min;
-  Values(dummy, dummy, dummy, dummy, min, dummy, dummy, dummy);
-  return (min);
+  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (mn);
 }
 
 // ----------------------------------------------------------------------
@@ -405,9 +374,9 @@ Standard_Integer Quantity_Date::Minute()
 
 Standard_Integer Quantity_Date::Second()
 {
-  Standard_Integer dummy, sec;
-  Values(dummy, dummy, dummy, dummy, dummy, sec, dummy, dummy);
-  return (sec);
+  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (ss);
 }
 
 // ----------------------------------------------------------------------
@@ -417,9 +386,9 @@ Standard_Integer Quantity_Date::Second()
 
 Standard_Integer Quantity_Date::MilliSecond()
 {
-  Standard_Integer dummy, msec;
-  Values(dummy, dummy, dummy, dummy, dummy, dummy, msec, dummy);
-  return (msec);
+  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (mis);
 }
 
 // ----------------------------------------------------------------------
@@ -429,47 +398,7 @@ Standard_Integer Quantity_Date::MilliSecond()
 
 Standard_Integer Quantity_Date::MicroSecond()
 {
-  Standard_Integer dummy, msec;
-  Values(dummy, dummy, dummy, dummy, dummy, dummy, dummy, msec);
-  return (msec);
-}
-
-// ----------------------------------------------------------------------
-// IsEarlier : Return true if the date is earlier than an other date
-// ~~~~~~~~~
-// ----------------------------------------------------------------------
-
-Standard_Boolean Quantity_Date::IsEarlier(const Quantity_Date& other) const
-{
-  if (mySec < other.mySec)
-    return Standard_True;
-  else if (mySec > other.mySec)
-    return Standard_False;
-  else
-    return ((myUSec < other.myUSec) ? Standard_True : Standard_False);
-}
-
-// ----------------------------------------------------------------------
-// IsLater : Return true if the date is later than an other date
-// ~~~~~~~
-// ----------------------------------------------------------------------
-
-Standard_Boolean Quantity_Date::IsLater(const Quantity_Date& other) const
-{
-  if (mySec > other.mySec)
-    return Standard_True;
-  else if (mySec < other.mySec)
-    return Standard_False;
-  else
-    return ((myUSec > other.myUSec) ? Standard_True : Standard_False);
-}
-
-// ----------------------------------------------------------------------
-// IsEqual : Return true if the date is the same than an other date
-// ~~~~~~~
-// ----------------------------------------------------------------------
-
-Standard_Boolean Quantity_Date::IsEqual(const Quantity_Date& other) const
-{
-  return ((myUSec == other.myUSec && mySec == other.mySec) ? Standard_True : Standard_False);
+  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (mics);
 }

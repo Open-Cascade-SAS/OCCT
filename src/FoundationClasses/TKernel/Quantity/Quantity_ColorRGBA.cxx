@@ -35,6 +35,11 @@ enum HexColorLength
   HexColorLength_RGBA      = 8  //!< RGBA hex color format
 };
 
+static constexpr ColorInteger HEX_BASE                     = 16; // Hexadecimal number base
+static constexpr int          HEX_BITS_PER_COMPONENT       = 8; // 8 bits per component (256 values)
+static constexpr int          HEX_BITS_PER_COMPONENT_SHORT = 4; // 4 bits per component (16 values)
+static constexpr int          RGB_COMPONENT_LAST_INDEX = 2; // Last RGB component index (B in RGB)
+
 //! Takes next color component from the integer representing a color (it is a step in a process of a
 //! conversion implemented by the function ConvertIntegerToColorRGBA)
 //! @param theColorInteger the integer representing a color
@@ -77,7 +82,8 @@ static bool convertIntegerToColorRGBA(ColorInteger        theColorInteger,
       takeColorComponentFromInteger(theColorInteger, theColorComponentBase);
     aColor.a() = anAlphaComponent;
   }
-  for (Standard_Integer aColorComponentIndex = 2; aColorComponentIndex >= 0; --aColorComponentIndex)
+  for (Standard_Integer aColorComponentIndex = RGB_COMPONENT_LAST_INDEX; aColorComponentIndex >= 0;
+       --aColorComponentIndex)
   {
     const Standard_ShortReal aColorComponent =
       takeColorComponentFromInteger(theColorInteger, theColorComponentBase);
@@ -164,7 +170,7 @@ bool Quantity_ColorRGBA::ColorFromHex(const char* const   theHexColorString,
   }
 
   ColorInteger aHexColorInteger;
-  if (!convertStringToInteger(aHexColorString, aHexColorInteger, 16u))
+  if (!convertStringToInteger(aHexColorString, aHexColorInteger, HEX_BASE))
   {
     return false;
   }
@@ -197,8 +203,8 @@ bool Quantity_ColorRGBA::ColorFromHex(const char* const   theHexColorString,
     return false;
   }
 
-  const ColorInteger THE_HEX_COLOR_COMPONENT_BASE       = 1 << 8;
-  const ColorInteger THE_HEX_COLOR_COMPONENT_SHORT_BASE = 1 << 4;
+  const ColorInteger THE_HEX_COLOR_COMPONENT_BASE       = 1 << HEX_BITS_PER_COMPONENT;
+  const ColorInteger THE_HEX_COLOR_COMPONENT_SHORT_BASE = 1 << HEX_BITS_PER_COMPONENT_SHORT;
   const ColorInteger aColorComponentBase =
     isShort ? THE_HEX_COLOR_COMPONENT_SHORT_BASE : THE_HEX_COLOR_COMPONENT_BASE;
   return convertIntegerToColorRGBA(aHexColorInteger,

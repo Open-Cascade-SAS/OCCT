@@ -112,19 +112,37 @@ public:
   Quantity_Period operator+(const Quantity_Period& anOther) const { return Add(anOther); }
 
   //! Returns TRUE if both <me> and <other> are equal.
-  Standard_EXPORT Standard_Boolean IsEqual(const Quantity_Period& anOther) const;
+  constexpr Standard_Boolean IsEqual(const Quantity_Period& anOther) const noexcept
+  {
+    return (mySec == anOther.mySec && myUSec == anOther.myUSec);
+  }
 
-  Standard_Boolean operator==(const Quantity_Period& anOther) const { return IsEqual(anOther); }
+  constexpr Standard_Boolean operator==(const Quantity_Period& anOther) const noexcept
+  {
+    return IsEqual(anOther);
+  }
 
   //! Returns TRUE if <me> is shorter than <other>.
-  Standard_EXPORT Standard_Boolean IsShorter(const Quantity_Period& anOther) const;
+  constexpr Standard_Boolean IsShorter(const Quantity_Period& anOther) const noexcept
+  {
+    return (mySec < anOther.mySec) || (mySec == anOther.mySec && myUSec < anOther.myUSec);
+  }
 
-  Standard_Boolean operator<(const Quantity_Period& anOther) const { return IsShorter(anOther); }
+  constexpr Standard_Boolean operator<(const Quantity_Period& anOther) const noexcept
+  {
+    return IsShorter(anOther);
+  }
 
   //! Returns TRUE if <me> is longer then <other>.
-  Standard_EXPORT Standard_Boolean IsLonger(const Quantity_Period& anOther) const;
+  constexpr Standard_Boolean IsLonger(const Quantity_Period& anOther) const noexcept
+  {
+    return (mySec > anOther.mySec) || (mySec == anOther.mySec && myUSec > anOther.myUSec);
+  }
 
-  Standard_Boolean operator>(const Quantity_Period& anOther) const { return IsLonger(anOther); }
+  constexpr Standard_Boolean operator>(const Quantity_Period& anOther) const noexcept
+  {
+    return IsLonger(anOther);
+  }
 
   //! Checks the validity of a Period in form (dd,hh,mn,ss,mil,mic)
   //! With:

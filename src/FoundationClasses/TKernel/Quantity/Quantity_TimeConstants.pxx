@@ -1,0 +1,96 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Quantity_TimeConstants_HeaderFile
+#define _Quantity_TimeConstants_HeaderFile
+
+//! @file Quantity_TimeConstants.pxx
+//! Internal header providing shared time conversion constants and helper functions
+//! for Quantity_Date and Quantity_Period classes.
+
+#include <Standard_Integer.hxx>
+
+namespace
+{
+
+//! Time conversion constants
+constexpr int SECONDS_PER_MINUTE = 60;
+constexpr int SECONDS_PER_HOUR   = 3600;  // 60 * 60
+constexpr int SECONDS_PER_DAY    = 86400; // 24 * 3600
+
+//! Microsecond conversion constants
+constexpr int USECS_PER_MSEC = 1000;    // microseconds per millisecond
+constexpr int USECS_PER_SEC  = 1000000; // microseconds per second
+
+//! Extracts milliseconds and remaining microseconds from total microseconds
+//! @param theUSec total microseconds
+//! @param theMis output: milliseconds part
+//! @param theMics output: remaining microseconds part
+inline void extractMillisAndMicros(const Standard_Integer theUSec,
+                                   Standard_Integer&      theMis,
+                                   Standard_Integer&      theMics) noexcept
+{
+  theMis  = theUSec / USECS_PER_MSEC;
+  theMics = theUSec - (theMis * USECS_PER_MSEC);
+}
+
+//! Extracts hours, minutes, and seconds from remaining seconds in a day
+//! @param theCarry input/output: seconds to extract from, updated with remainder
+//! @param theHH output: hours
+//! @param theMN output: minutes
+//! @param theSS output: seconds
+inline void extractTimeComponents(Standard_Integer& theCarry,
+                                  Standard_Integer& theHH,
+                                  Standard_Integer& theMN,
+                                  Standard_Integer& theSS) noexcept
+{
+  theHH = theCarry / SECONDS_PER_HOUR;
+  theCarry -= SECONDS_PER_HOUR * theHH;
+  theMN = theCarry / SECONDS_PER_MINUTE;
+  theCarry -= theMN * SECONDS_PER_MINUTE;
+  theSS = theCarry;
+}
+
+//! Normalizes time values when microseconds overflow into seconds
+//! (handles addition overflow: myUSec >= 1000000)
+//! Uses division for O(1) complexity
+//! @param theSec input/output: seconds, incremented if overflow occurs
+//! @param theUSec input/output: microseconds, normalized to 0..999999
+inline void normalizeAdditionOverflow(Standard_Integer& theSec, Standard_Integer& theUSec) noexcept
+{
+  if (theUSec >= USECS_PER_SEC)
+  {
+    const Standard_Integer overflow = theUSec / USECS_PER_SEC;
+    theSec += overflow;
+    theUSec -= overflow * USECS_PER_SEC;
+  }
+}
+
+//! Normalizes time values when microseconds require borrowing from seconds
+//! (handles subtraction borrow: myUSec < 0)
+//! Uses ceiling division for O(1) complexity
+//! @param theSec input/output: seconds, decremented if borrow occurs
+//! @param theUSec input/output: microseconds, normalized to 0..999999
+inline void normalizeSubtractionBorrow(Standard_Integer& theSec, Standard_Integer& theUSec) noexcept
+{
+  if (theUSec < 0)
+  {
+    const Standard_Integer borrow = (-theUSec + USECS_PER_SEC - 1) / USECS_PER_SEC;
+    theSec -= borrow;
+    theUSec += borrow * USECS_PER_SEC;
+  }
+}
+
+} // anonymous namespace
+
+#endif // _Quantity_TimeConstants_HeaderFile

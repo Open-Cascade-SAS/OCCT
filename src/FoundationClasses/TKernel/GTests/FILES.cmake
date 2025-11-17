@@ -22,6 +22,10 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_Vector_Test.cxx
   OSD_Path_Test.cxx
   OSD_PerfMeter_Test.cxx
+  Quantity_Color_Test.cxx
+  Quantity_ColorRGBA_Test.cxx
+  Quantity_Date_Test.cxx
+  Quantity_Period_Test.cxx
   Standard_ArrayStreamBuffer_Test.cxx
   Standard_Atomic_Test.cxx
   Standard_Character_Test.cxx
