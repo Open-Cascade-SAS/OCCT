@@ -426,7 +426,7 @@ public:
                            Standard_Byte(theB * 255.0),
                            255);
     }
-    myAttribs->NbElements = std::max(theIndex, myAttribs->NbElements);
+    myAttribs->NbElements = (std::max)(theIndex, myAttribs->NbElements);
   }
 
   //! Change the vertex color in the array.
@@ -442,7 +442,7 @@ public:
         myColData + myColStride * ((Standard_Size)theIndex - 1));
       (*aColorPtr) = theColor;
     }
-    myAttribs->NbElements = std::max(theIndex, myAttribs->NbElements);
+    myAttribs->NbElements = (std::max)(theIndex, myAttribs->NbElements);
   }
 
   //! Change the vertex color in the array.
@@ -490,7 +490,7 @@ public:
       aVec.y() = Standard_ShortReal(theNY);
       aVec.z() = Standard_ShortReal(theNZ);
     }
-    myAttribs->NbElements = std::max(theIndex, myAttribs->NbElements);
+    myAttribs->NbElements = (std::max)(theIndex, myAttribs->NbElements);
   }
 
   //! Change the vertex texel in the array.
@@ -518,7 +518,7 @@ public:
       aVec.x() = Standard_ShortReal(theTX);
       aVec.y() = Standard_ShortReal(theTY);
     }
-    myAttribs->NbElements = std::max(theIndex, myAttribs->NbElements);
+    myAttribs->NbElements = (std::max)(theIndex, myAttribs->NbElements);
   }
 
   //! Returns the vertice from the vertex table if defined.
@@ -926,7 +926,7 @@ public: //! @name optional array of Bounds/Subgroups within primitive array (e.g
     aVec.g()             = Standard_ShortReal(theG);
     aVec.b()             = Standard_ShortReal(theB);
     aVec.a()             = 1.0f;
-    myBounds->NbBounds   = std::max(theIndex, myBounds->NbBounds);
+    myBounds->NbBounds   = (std::max)(theIndex, myBounds->NbBounds);
   }
 
 protected: //! @name protected constructors

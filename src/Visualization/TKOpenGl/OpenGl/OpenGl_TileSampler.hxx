@@ -87,7 +87,7 @@ public:
     {
       for (Standard_Size aColIter = 0; aColIter < myTiles.SizeX; ++aColIter)
       {
-        aNbSamples = std::max(aNbSamples, static_cast<int>(myTiles.Value(aRowIter, aColIter)));
+        aNbSamples = (std::max)(aNbSamples, static_cast<int>(myTiles.Value(aRowIter, aColIter)));
       }
     }
     return aNbSamples;
@@ -125,8 +125,8 @@ protected:
   //! Returns number of pixels in the given tile.
   int tileArea(int theX, int theY) const
   {
-    const int aSizeX = std::min(myTileSize, myViewSize.x() - theX * myTileSize);
-    const int aSizeY = std::min(myTileSize, myViewSize.y() - theY * myTileSize);
+    const int aSizeX = (std::min)(myTileSize, myViewSize.x() - theX * myTileSize);
+    const int aSizeY = (std::min)(myTileSize, myViewSize.y() - theY * myTileSize);
     return aSizeX * aSizeY;
   }
 

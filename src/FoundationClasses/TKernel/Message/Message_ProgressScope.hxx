@@ -431,7 +431,7 @@ inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange&
       myName(NULL),
       myStart(theRange.myStart),
       myPortion(theRange.myDelta),
-      myMax(std::max(1.e-6, theMax)), // protection against zero range
+      myMax((std::max)(1.e-6, theMax)), // protection against zero range
       myValue(0.),
       myIsActive(myProgress != NULL && !theRange.myWasUsed),
       myIsOwnName(false),
@@ -455,7 +455,7 @@ Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange& theRan
       myName(theName),
       myStart(theRange.myStart),
       myPortion(theRange.myDelta),
-      myMax(std::max(1.e-6, theMax)), // protection against zero range
+      myMax((std::max)(1.e-6, theMax)), // protection against zero range
       myValue(0.),
       myIsActive(myProgress != NULL && !theRange.myWasUsed),
       myIsOwnName(false),
@@ -477,7 +477,7 @@ inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange&
       myName(NULL),
       myStart(theRange.myStart),
       myPortion(theRange.myDelta),
-      myMax(std::max(1.e-6, theMax)), // protection against zero range
+      myMax((std::max)(1.e-6, theMax)), // protection against zero range
       myValue(0.),
       myIsActive(myProgress != NULL && !theRange.myWasUsed),
       myIsOwnName(false),

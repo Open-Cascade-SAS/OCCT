@@ -95,7 +95,7 @@ public:
   void SetStartPts(const Standard_Real thePtsStart) { myPtsStart = thePtsStart; }
 
   //! @return duration of the animation in the timeline
-  Standard_Real Duration() const { return std::max(myOwnDuration, myChildrenDuration); }
+  Standard_Real Duration() const { return (std::max)(myOwnDuration, myChildrenDuration); }
 
   //! Update total duration considering all animations on timeline.
   Standard_EXPORT void UpdateTotalDuration();

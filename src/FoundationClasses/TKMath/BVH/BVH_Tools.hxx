@@ -335,12 +335,12 @@ public: //! @name Ray-Box Intersection
     BVH_VecNt aTimeMin, aTimeMax;
     for (int i = 0; i < N; ++i)
     {
-      aTimeMin[i] = std::min(aNodeMin[i], aNodeMax[i]);
-      aTimeMax[i] = std::max(aNodeMin[i], aNodeMax[i]);
+      aTimeMin[i] = (std::min)(aNodeMin[i], aNodeMax[i]);
+      aTimeMax[i] = (std::max)(aNodeMin[i], aNodeMax[i]);
     }
 
-    T aTimeEnter = std::max(aTimeMin[0], std::max(aTimeMin[1], aTimeMin[2]));
-    T aTimeLeave = std::min(aTimeMax[0], std::min(aTimeMax[1], aTimeMax[2]));
+    T aTimeEnter = (std::max)(aTimeMin[0], (std::max)(aTimeMin[1], aTimeMin[2]));
+    T aTimeLeave = (std::min)(aTimeMax[0], (std::min)(aTimeMax[1], aTimeMax[2]));
 
     Standard_Boolean hasIntersection = aTimeEnter <= aTimeLeave && aTimeLeave >= 0;
     if (hasIntersection)

@@ -99,7 +99,7 @@ Standard_DEPRECATED("This function duplicates std::max and will be removed in fu
 
 [[nodiscard]] constexpr float Max(const float theValue1, const float theValue2)
 {
-  return std::max(theValue1, theValue2);
+  return (std::max)(theValue1, theValue2);
 }
 
 //! Returns the minimum value of two floats.
@@ -109,7 +109,7 @@ Standard_DEPRECATED("This function duplicates std::min and will be removed in fu
 
 [[nodiscard]] constexpr float Min(const float theValue1, const float theValue2)
 {
-  return std::min(theValue1, theValue2);
+  return (std::min)(theValue1, theValue2);
 }
 
 #endif // _Standard_ShortReal_HeaderFile

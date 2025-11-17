@@ -273,7 +273,7 @@ BVH_Tree<T, N, BVH_QuadTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToQuadTree
                             aGrandChildNodes.Size() - 1,
                             std::get<1>(aNode) /* level */);
 
-      aQBVH->myDepth = std::max(aQBVH->myDepth, std::get<1>(aNode) + 1);
+      aQBVH->myDepth = (std::max)(aQBVH->myDepth, std::get<1>(aNode) + 1);
 
       aNbNodes += aGrandChildNodes.Size();
     }

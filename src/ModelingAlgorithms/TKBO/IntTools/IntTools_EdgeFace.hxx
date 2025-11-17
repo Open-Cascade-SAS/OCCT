@@ -83,7 +83,7 @@ public: //! @name Setters/Getters
   //! Sets the Fuzzy value
   void SetFuzzyValue(const Standard_Real theFuzz)
   {
-    myFuzzyValue = std::max(theFuzz, Precision::Confusion());
+    myFuzzyValue = (std::max)(theFuzz, Precision::Confusion());
   }
 
   //! Returns the Fuzzy value

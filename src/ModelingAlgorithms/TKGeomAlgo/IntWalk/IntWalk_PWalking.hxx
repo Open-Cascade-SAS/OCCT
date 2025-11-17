@@ -155,7 +155,7 @@ public:
   //! theIndex must be started with 1.
   void RemoveAPoint(const Standard_Integer theIndex)
   {
-    const Standard_Integer anIdx = std::min(theIndex, line->NbPoints());
+    const Standard_Integer anIdx = (std::min)(theIndex, line->NbPoints());
 
     if (anIdx < 1)
       return;

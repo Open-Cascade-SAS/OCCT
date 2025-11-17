@@ -156,7 +156,7 @@ private:
         // aPCurve->ParametersNb() == 0
 
         aEndIndex = aPCurve->ParametersNb() - 1;
-        aPointIt  = std::min(0, aEndIndex);
+        aPointIt  = (std::min)(0, aEndIndex);
         aInc      = 1;
       }
       else
@@ -165,7 +165,7 @@ private:
         // aPCurve->ParametersNb() == 0
 
         aPointIt  = aPCurve->ParametersNb() - 1;
-        aEndIndex = std::min(0, aPointIt);
+        aEndIndex = (std::min)(0, aPointIt);
         aInc      = -1;
       }
 

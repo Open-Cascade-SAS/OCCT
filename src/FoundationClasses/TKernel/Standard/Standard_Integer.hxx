@@ -48,7 +48,7 @@ Standard_DEPRECATED("This function duplicates std::max and will be removed in fu
 
 [[nodiscard]] constexpr int Max(const int theValue1, const int theValue2)
 {
-  return std::max(theValue1, theValue2);
+  return (std::max)(theValue1, theValue2);
 }
 
 //! Returns the minimum value of two integers.
@@ -58,7 +58,7 @@ Standard_DEPRECATED("This function duplicates std::min and will be removed in fu
 
 [[nodiscard]] constexpr int Min(const int theValue1, const int theValue2)
 {
-  return std::min(theValue1, theValue2);
+  return (std::min)(theValue1, theValue2);
 }
 
 //! Returns the modulus of @p theValue by @p theDivisor.

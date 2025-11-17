@@ -362,7 +362,7 @@ public:
     myLowerBound = theLower;
     if (theToCopyData)
     {
-      const size_t aMinSize = std::min<size_t>(aNewSize, mySize);
+      const size_t aMinSize = (std::min)(aNewSize, mySize);
       if (myIsOwner)
       {
         myPointer = myAllocator.reallocate(myPointer, aNewSize);

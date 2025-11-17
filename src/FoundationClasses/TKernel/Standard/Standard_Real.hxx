@@ -307,7 +307,7 @@ Standard_DEPRECATED("This function duplicates std::max and will be removed in fu
 
 [[nodiscard]] constexpr double Max(const double theValue1, const double theValue2)
 {
-  return std::max(theValue1, theValue2);
+  return (std::max)(theValue1, theValue2);
 }
 
 //! Returns the minimum value of two doubles.
@@ -317,7 +317,7 @@ Standard_DEPRECATED("This function duplicates std::min and will be removed in fu
 
 [[nodiscard]] constexpr double Min(const double theValue1, const double theValue2)
 {
-  return std::min(theValue1, theValue2);
+  return (std::min)(theValue1, theValue2);
 }
 
 //! Returns a double @p theValue raised to the power of @p thePower.

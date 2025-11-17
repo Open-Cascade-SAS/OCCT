@@ -851,6 +851,7 @@ public: //! @name methods to alter or retrieve current state
 
   //! Bind specified texture set to current context taking into account active GLSL program.
   Standard_DEPRECATED("BindTextures() with explicit GLSL program should be used instead")
+
   Handle(OpenGl_TextureSet) BindTextures(const Handle(OpenGl_TextureSet)& theTextures)
   {
     return BindTextures(theTextures, myActiveProgram);
@@ -983,7 +984,7 @@ public: //! @name methods to alter or retrieve current state
   void SetResolutionRatio(const Standard_ShortReal theRatio)
   {
     myResolutionRatio = theRatio;
-    myLineWidthScale  = std::max(1.0f, std::floor(theRatio + 0.5f));
+    myLineWidthScale  = (std::max)(1.0f, std::floor(theRatio + 0.5f));
   }
 
   //! Return line feater width in pixels.
