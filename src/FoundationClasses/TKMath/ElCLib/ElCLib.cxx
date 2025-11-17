@@ -200,10 +200,6 @@ gp_Pnt ElCLib::HyperbolaValue(const Standard_Real U,
   const gp_XYZ& XDir = Pos.XDirection().XYZ();
   const gp_XYZ& YDir = Pos.YDirection().XYZ();
   const gp_XYZ& PLoc = Pos.Location().XYZ();
-  if (std::abs(U) > 0.71047586007394394e+03)
-  {
-    throw Standard_NumericError("Result of Cosh exceeds the maximum value Standard_Real");
-  }
   const Standard_Real A1 = MajorRadius * std::cosh(U);
   const Standard_Real A2 = MinorRadius * std::sinh(U);
   return gp_Pnt(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),

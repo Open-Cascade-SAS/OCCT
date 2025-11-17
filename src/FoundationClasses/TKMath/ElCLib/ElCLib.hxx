@@ -677,7 +677,6 @@ public:
   //! "X Axis" and "Y Axis" of the 3D coordinate system, Pos.
   Standard_EXPORT static gp_Parab To3d(const gp_Ax2& Pos, const gp_Parab2d& Prb);
 
-protected:
 private:
 };
 
