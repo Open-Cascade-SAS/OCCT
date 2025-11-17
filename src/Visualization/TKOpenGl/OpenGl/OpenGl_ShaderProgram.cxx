@@ -668,7 +668,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize(const Handle(OpenGl_Context)& 
 
   const TCollection_AsciiString aSamplerNamePrefix("occSampler");
   const Standard_Integer        aNbUnitsMax =
-    Max(theCtx->MaxCombinedTextureUnits(), Graphic3d_TextureUnit_NB);
+    std::max(theCtx->MaxCombinedTextureUnits(), static_cast<int>(Graphic3d_TextureUnit_NB));
   for (GLint aUnitIter = 0; aUnitIter < aNbUnitsMax; ++aUnitIter)
   {
     const TCollection_AsciiString aName = aSamplerNamePrefix + aUnitIter;

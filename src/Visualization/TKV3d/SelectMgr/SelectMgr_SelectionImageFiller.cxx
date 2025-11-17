@@ -158,8 +158,8 @@ public:
 
     const SelectMgr_SortCriterion& aSortCriterion    = myMainSel->PickedData(thePicked);
     myUnnormImage.ChangeValue<float>(theRow, theCol) = float(aSortCriterion.Depth);
-    myDepthMin                                       = Min(myDepthMin, aSortCriterion.Depth);
-    myDepthMax                                       = Max(myDepthMax, aSortCriterion.Depth);
+    myDepthMin                                       = std::min(myDepthMin, aSortCriterion.Depth);
+    myDepthMax                                       = std::max(myDepthMax, aSortCriterion.Depth);
   }
 
   //! Normalize the depth values.

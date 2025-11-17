@@ -470,12 +470,12 @@ public:
         case ProfileCmd::C: // Arc
           if (op.params.size() >= 2)
           {
-            Standard_Real aRadius   = Abs(op.params[0]);
+            Standard_Real aRadius   = std::abs(op.params[0]);
             Standard_Real aAngleDeg = op.params[1];
             Standard_Real aAngleRad = aAngleDeg * M_PI / 180.0;
 
             // Handle full circle case (360 degrees)
-            if (Abs(aAngleDeg) >= 360.0)
+            if (std::abs(aAngleDeg) >= 360.0)
             {
               // Create a full circle centered at current point (0,0 if not set)
               gp_Pnt2d aCenter2D = aFirstSet ? aCurrentPt : gp_Pnt2d(0, 0);

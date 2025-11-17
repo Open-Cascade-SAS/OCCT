@@ -471,7 +471,7 @@ const TopoDS_Shape& BOPAlgo_MakePeriodic::RepeatShape(const Standard_Integer the
   }
 
   // Create translated copies of the shape
-  for (Standard_Integer i = 1; i <= Abs(theTimes); ++i)
+  for (Standard_Integer i = 1; i <= std::abs(theTimes); ++i)
   {
     gp_Trsf aTrsf;
     aTrsf.SetTranslationPart(iDir * i * aPeriod * MY_DIRECTIONS[id]);
@@ -515,7 +515,7 @@ const TopoDS_Shape& BOPAlgo_MakePeriodic::RepeatShape(const Standard_Integer the
   myRepeatedShape = aGluer.Shape();
 
   // Update repetition period for the next repetitions
-  myRepeatPeriod[id] += Abs(theTimes) * myRepeatPeriod[id];
+  myRepeatPeriod[id] += std::abs(theTimes) * myRepeatPeriod[id];
 
   // Update history with the Gluing history
   BRepTools_History aGluingHistory(aShapes, aGluer);

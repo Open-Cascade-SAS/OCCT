@@ -1416,7 +1416,7 @@ void PrsDim_Dimension::PointsForArrow(const gp_Pnt&       thePeakPnt,
   gp_Pnt anArrowEnd = ElCLib::Value(theArrowLength, anArrowLin);
   gp_Lin anEdgeLin(anArrowEnd, theDirection.Crossed(thePlane));
 
-  Standard_Real anEdgeLength = Tan(theArrowAngle) * theArrowLength;
+  Standard_Real anEdgeLength = std::tan(theArrowAngle) * theArrowLength;
 
   theSidePnt1 = ElCLib::Value(anEdgeLength, anEdgeLin);
   theSidePnt2 = ElCLib::Value(-anEdgeLength, anEdgeLin);

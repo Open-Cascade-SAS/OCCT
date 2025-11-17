@@ -31,8 +31,8 @@ struct Edge
 {
   //! Constructor. Sets edge nodes.
   Edge(const Standard_Integer TheIdx1, const Standard_Integer TheIdx2)
-      : Idx1(Min(TheIdx1, TheIdx2)),
-        Idx2(Max(TheIdx1, TheIdx2))
+      : Idx1(std::min(TheIdx1, TheIdx2)),
+        Idx2(std::max(TheIdx1, TheIdx2))
   {
   }
 

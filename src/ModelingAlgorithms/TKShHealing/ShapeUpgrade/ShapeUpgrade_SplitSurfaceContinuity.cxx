@@ -167,7 +167,11 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
     tmp->Bounds(U1, U2, V1, V2);
     Handle(Geom_Surface)                theSurf = tmp->BasisSurface();
     ShapeUpgrade_SplitSurfaceContinuity sps;
-    sps.Init(theSurf, Max(U1, UFirst), Min(U2, ULast), Max(V1, VFirst), Min(V2, VLast));
+    sps.Init(theSurf,
+             std::max(U1, UFirst),
+             std::min(U2, ULast),
+             std::max(V1, VFirst),
+             std::min(V2, VLast));
     sps.SetUSplitValues(myUSplitValues);
     sps.SetVSplitValues(myVSplitValues);
     sps.SetTolerance(myTolerance);

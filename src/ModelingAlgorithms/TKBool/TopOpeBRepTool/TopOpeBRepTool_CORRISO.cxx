@@ -313,7 +313,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
   Standard_Real tttol  = 1.e-8;
   Standard_Real tttolS = BRep_Tool::Tolerance(myFref);
   Standard_Real tolu = Tol(1, tttolS), tolv = Tol(2, tttolS);
-  Standard_Real tttuvF = Max(tolu, tolv);
+  Standard_Real tttuvF = std::max(tolu, tolv);
 
   TopTools_IndexedMapOfOrientedShape mapcl;
   TopTools_ListIteratorOfListOfShape itce(ClEds);
@@ -345,7 +345,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
       TopOpeBRepTool_TOOL::Vertices(cE, vcE);
       TopAbs_Orientation  ocE     = cE.Orientation();
       Standard_Real       tttolcE = BRep_Tool::Tolerance(cE);
-      Standard_Real       tttuvcE = Max(Tol(1, tttolcE), Tol(2, tttolcE));
+      Standard_Real       tttuvcE = std::max(Tol(1, tttolcE), Tol(2, tttolcE));
       TopOpeBRepTool_C2DF cE2d;
       Standard_Boolean    isb = UVRep(cE, cE2d);
       if (!isb)
@@ -360,7 +360,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
       TopTools_Array1OfShape vOcE(1, 2);
       TopOpeBRepTool_TOOL::Vertices(OcE, vOcE);
       Standard_Real       tttolOcE = BRep_Tool::Tolerance(OcE);
-      Standard_Real       tttuvOcE = Max(Tol(1, tttolOcE), Tol(2, tttolOcE));
+      Standard_Real       tttuvOcE = std::max(Tol(1, tttolOcE), Tol(2, tttolOcE));
       TopOpeBRepTool_C2DF OcE2d;
       Standard_Boolean    isOb = UVRep(OcE, OcE2d);
       if (!isOb)
@@ -371,7 +371,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
 
       Standard_Real parvOcE2 = TopOpeBRepTool_TOOL::ParE(2, OcE);
       gp_Pnt2d      UVvOcE2  = TopOpeBRepTool_TOOL::UVF(parvOcE2, OcE2d);
-      Standard_Real tol      = Max(tttuvcE, tttuvOcE);
+      Standard_Real tol      = std::max(tttuvcE, tttuvOcE);
       isoncE                 = (UVvce1.Distance(UVvOcE2) < tol);
       if (isoncE && (nfy != 1))
       { // cto009L2
@@ -433,12 +433,12 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
         if (isou && isoux)
         {
           Standard_Real du = o2d.X() - o2dx.X();
-          onsamline        = (Abs(du) < tolu);
+          onsamline        = (std::abs(du) < tolu);
         }
         if (isov && isovx)
         {
           Standard_Real dv = o2d.Y() - o2dx.Y();
-          onsamline        = (Abs(dv) < tolv);
+          onsamline        = (std::abs(dv) < tolv);
         }
         if (!onsamline)
           return Standard_False;
@@ -483,7 +483,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
     TopAbs_Orientation ocE = cE.Orientation();
 
     Standard_Real       tttolcE = BRep_Tool::Tolerance(cE);
-    Standard_Real       tttuvcE = Max(Tol(1, tttolcE), Tol(2, tttolcE));
+    Standard_Real       tttuvcE = std::max(Tol(1, tttolcE), Tol(2, tttolcE));
     TopOpeBRepTool_C2DF cE2d;
     Standard_Boolean    isb = UVRep(cE, cE2d);
     if (!isb)
@@ -508,7 +508,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
       if (!hasOcE)
         continue; // closing edge appears twice
       Standard_Real       tttolOcE = BRep_Tool::Tolerance(OcE);
-      Standard_Real       tttuvOcE = Max(Tol(1, tttolOcE), Tol(2, tttolOcE));
+      Standard_Real       tttuvOcE = std::max(Tol(1, tttolOcE), Tol(2, tttolOcE));
       TopOpeBRepTool_C2DF OcE2d;
       Standard_Boolean    isOb = UVRep(OcE, OcE2d);
       if (!isOb)
@@ -519,7 +519,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
 
       Standard_Real parvOcE2 = TopOpeBRepTool_TOOL::ParE(2, OcE);
       gp_Pnt2d      UVvOcE2  = TopOpeBRepTool_TOOL::UVF(parvOcE2, OcE2d);
-      Standard_Real tol      = Max(tttuvcE, tttuvOcE);
+      Standard_Real tol      = std::max(tttuvcE, tttuvOcE);
       isonOcE2d              = (UVvce1.Distance(UVvOcE2) < tol);
     }
     if (!isonOcE2d)
@@ -562,7 +562,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
   #endif
 #endif
       Standard_Real tttolvce = BRep_Tool::Tolerance(vce);
-      Standard_Real tttuvvce = Max(Tol(1, tttolvce), Tol(2, tttolvce));
+      Standard_Real tttuvvce = std::max(Tol(1, tttolvce), Tol(2, tttolvce));
 
       Standard_Boolean vceok = Standard_False;
       for (TopTools_ListIteratorOfListOfShape ite(loe); ite.More(); ite.Next())
@@ -587,7 +587,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
           return Standard_False; // NYIRAISE
 
         Standard_Real tttolE = BRep_Tool::Tolerance(E);
-        Standard_Real tttuvE = Max(Tol(1, tttolE), Tol(2, tttolE));
+        Standard_Real tttuvE = std::max(Tol(1, tttolE), Tol(2, tttolE));
 
         TopTools_Array1OfShape vE(1, 2);
         TopOpeBRepTool_TOOL::Vertices(E, vE);
@@ -610,25 +610,27 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
           if (ive == ivce)
             continue; // vertex FORWARD connexed to REVERSED one
           Standard_Real tttolve = BRep_Tool::Tolerance(ve);
-          Standard_Real tttuvve = Max(Tol(1, tttolve), Tol(2, tttolve));
+          Standard_Real tttuvve = std::max(Tol(1, tttolve), Tol(2, tttolve));
 
-          tttol = Max(tttol, Max(tttuvF, Max(tttuvE, Max(tttuvcE, Max(tttuvve, tttuvvce)))));
+          tttol = std::max(
+            tttol,
+            std::max(tttuvF, std::max(tttuvE, std::max(tttuvcE, std::max(tttuvve, tttuvvce)))));
           //	  Standard_Real dd = myUclosed ? (UVve.X()-UVvce.X()) : (UVve.Y()-UVvce.Y());
-          //	  Standard_Boolean xok = (Abs(dd)<tttol) || (Abs(Abs(dd)-xperiod)<tttol);
-          //	  if (xok) {
+          //	  Standard_Boolean xok = (std::abs(dd)<tttol) ||
+          //(std::abs(std::abs(dd)-xperiod)<tttol); 	  if (xok) {
           Standard_Real    dd     = UVve.Distance(UVvce);
           Standard_Boolean sameuv = (dd < tttol);
           if (myUclosed)
           {
             Standard_Real xperiod = myUper;
             dd                    = (UVve.X() - UVvce.X());
-            sameuv                = sameuv || (Abs(Abs(dd) - xperiod) < tttol);
+            sameuv                = sameuv || (std::abs(std::abs(dd) - xperiod) < tttol);
           }
           if (myVclosed)
           {
             Standard_Real xperiod = myVper;
             dd                    = (UVve.Y() - UVvce.Y());
-            sameuv                = sameuv || (Abs(Abs(dd) - xperiod) < tttol);
+            sameuv                = sameuv || (std::abs(std::abs(dd) - xperiod) < tttol);
           }
           if (sameuv)
           {
@@ -783,7 +785,7 @@ Standard_Integer TopOpeBRepTool_CORRISO::EdgeOUTofBoundsUV(const TopoDS_Edge&   
     Bnd_Box2d           Bn2d;
     Geom2dAdaptor_Curve GC2d(PC, f, l);
     Standard_Real       tolE   = BRep_Tool::Tolerance(E);
-    Standard_Real       toladd = Max(tolE, tol);
+    Standard_Real       toladd = std::max(tolE, tol);
     BndLib_Add2dCurve::Add(GC2d, toladd, Bn2d);
     Standard_Real umin, vmin, umax, vmax;
     Bn2d.Get(umin, vmin, umax, vmax);
@@ -842,9 +844,9 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E,
   Ivfaulty             = 0;
   Standard_Real tttol  = 1.e-8;
   Standard_Real tttolF = BRep_Tool::Tolerance(TopoDS::Face(myFref));
-  Standard_Real tttuvF = Max(Tol(1, tttolF), Tol(2, tttolF));
+  Standard_Real tttuvF = std::max(Tol(1, tttolF), Tol(2, tttolF));
   Standard_Real tttolE = BRep_Tool::Tolerance(E);
-  Standard_Real tttuvE = Max(Tol(1, tttolE), Tol(2, tttolE));
+  Standard_Real tttuvE = std::max(Tol(1, tttolE), Tol(2, tttolE));
 
   TopAbs_Orientation oE = E.Orientation();
   if (M_INTERNAL(oE) || M_EXTERNAL(oE))
@@ -895,7 +897,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E,
 #endif
 
     Standard_Real tttolvE = BRep_Tool::Tolerance(vE);
-    Standard_Real tttuvvE = Max(Tol(1, tttolvE), Tol(2, tttolvE));
+    Standard_Real tttuvvE = std::max(Tol(1, tttolvE), Tol(2, tttolvE));
 
     Standard_Boolean isbound = myVEds.IsBound(vE);
     if (!isbound)
@@ -956,9 +958,11 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E,
           continue;
 
         Standard_Real tttolve = BRep_Tool::Tolerance(ve);
-        Standard_Real tttuvve = Max(Tol(1, tttolve), Tol(2, tttolve));
+        Standard_Real tttuvve = std::max(Tol(1, tttolve), Tol(2, tttolve));
 
-        tttol = Max(tttol, Max(tttuvF, Max(tttuvE, Max(tttuvE, Max(tttuvve, tttuvvE)))));
+        tttol = std::max(
+          tttol,
+          std::max(tttuvF, std::max(tttuvE, std::max(tttuvE, std::max(tttuvve, tttuvvE)))));
         Standard_Boolean isequal = UVvE.IsEqual(UVve, tttol);
         if (isequal)
         {

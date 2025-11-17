@@ -420,7 +420,7 @@ Standard_Boolean Geom2dGcc_Lin2d2Tan::Add(const Standard_Integer         theInde
 
   for (i = 1; i < theIndex; i++)
   {
-    if (Abs(aPar1arg - pararg1(i)) <= theTol && Abs(aPar2arg - pararg2(i)) <= theTol)
+    if (std::abs(aPar1arg - pararg1(i)) <= theTol && std::abs(aPar2arg - pararg2(i)) <= theTol)
       return Standard_False;
   }
 
@@ -430,14 +430,14 @@ Standard_Boolean Geom2dGcc_Lin2d2Tan::Add(const Standard_Integer         theInde
 
   Geom2dGcc_CurveTool::D1(theC1, aPar1arg, aPoint, aVTan);
 
-  if (Abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
+  if (std::abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
     return Standard_False;
 
   if (!theC2.Curve().IsNull())
   {
     Geom2dGcc_CurveTool::D1(theC2, aPar2arg, aPoint, aVTan);
 
-    if (Abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
+    if (std::abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
       return Standard_False;
   }
 

@@ -87,7 +87,7 @@ public:
   bool IsDifferent(const Quantity_ColorRGBA& theOther) const noexcept
   {
     return myRgb.IsDifferent(theOther.GetRGB())
-           || Abs(myAlpha - theOther.myAlpha) > (float)Quantity_Color::Epsilon();
+           || std::abs(myAlpha - theOther.myAlpha) > (float)Quantity_Color::Epsilon();
   }
 
   //! Returns true if the distance between colors is greater than Epsilon().
@@ -100,7 +100,7 @@ public:
   bool IsEqual(const Quantity_ColorRGBA& theOther) const noexcept
   {
     return myRgb.IsEqual(theOther.GetRGB())
-           && Abs(myAlpha - theOther.myAlpha) <= (float)Quantity_Color::Epsilon();
+           && std::abs(myAlpha - theOther.myAlpha) <= (float)Quantity_Color::Epsilon();
   }
 
   //! Two colors are considered to be equal if their distance is no greater than Epsilon().

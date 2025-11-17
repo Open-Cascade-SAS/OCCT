@@ -53,7 +53,7 @@ inline Standard_Real ShapeFix_Root::MaxTolerance() const
 inline Standard_Real ShapeFix_Root::LimitTolerance(const Standard_Real toler) const
 {
   // only maximal restriction implemented.
-  return Min(myMaxTol, toler);
+  return std::min(myMaxTol, toler);
 }
 
 //=================================================================================================

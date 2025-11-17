@@ -96,7 +96,7 @@ void math_PSO::Perform(const math_Vector&     theSteps,
     }
 
     // Step.
-    aCurrPoint(1) += Max(mySteps(1), 1.0e-15); // Avoid too small step
+    aCurrPoint(1) += std::max(mySteps(1), 1.0e-15); // Avoid too small step
     for (Standard_Integer aDimIdx = 1; aDimIdx < myN; ++aDimIdx)
     {
       if (aCurrPoint(aDimIdx) > aMaxUV(aDimIdx))
@@ -186,11 +186,12 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
 
         aParticle->Position[aDimIdx] += aParticle->Velocity[aDimIdx];
         aParticle->Position[aDimIdx] =
-          Min(Max(aParticle->Position[aDimIdx], aMinUV(aDimIdx + 1)), aMaxUV(aDimIdx + 1));
+          std::min(std::max(aParticle->Position[aDimIdx], aMinUV(aDimIdx + 1)),
+                   aMaxUV(aDimIdx + 1));
         aCurrPoint(aDimIdx + 1) = aParticle->Position[aDimIdx];
 
         aMinimalVelocity(aDimIdx + 1) =
-          Min(Abs(aParticle->Velocity[aDimIdx]), aMinimalVelocity(aDimIdx + 1));
+          std::min(std::abs(aParticle->Velocity[aDimIdx]), aMinimalVelocity(aDimIdx + 1));
       }
 
       myFunc->Value(aCurrPoint, aParticle->Distance);

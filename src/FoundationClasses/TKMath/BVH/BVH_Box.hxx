@@ -104,8 +104,8 @@ public:
         Standard_Real anOffset1 = aMatValue * anOldMinPnt.GetData()[aCol];
         Standard_Real anOffset2 = aMatValue * anOldMaxPnt.GetData()[aCol];
 
-        aNewMinPnt.ChangeData()[aRow] += Min(anOffset1, anOffset2);
-        aNewMaxPnt.ChangeData()[aRow] += Max(anOffset1, anOffset2);
+        aNewMinPnt.ChangeData()[aRow] += (std::min)(anOffset1, anOffset2);
+        aNewMaxPnt.ChangeData()[aRow] += (std::max)(anOffset1, anOffset2);
       }
     }
 
@@ -203,7 +203,7 @@ public:
     (void)theDepth;
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsInited)
 
-    int n = Min(N, 3);
+    int n = (std::min)(N, 3);
     if (n == 1)
     {
       OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMinPoint[0])
@@ -242,7 +242,7 @@ public:
     OCCT_INIT_FIELD_VALUE_INTEGER(aStreamStr, aPos, anIsInited);
     myIsInited = anIsInited != 0;
 
-    int n = Min(N, 3);
+    int n = (std::min)(N, 3);
     if (n == 1)
     {
       Standard_Real aValue;
@@ -294,7 +294,7 @@ public:
     if (!IsValid())
       return Standard_True;
 
-    int n = Min(N, 3);
+    int n = (std::min)(N, 3);
     for (int i = 0; i < n; ++i)
     {
       if (myMinPoint[i] > theMaxPoint[i] || myMaxPoint[i] < theMinPoint[i])
@@ -324,7 +324,7 @@ public:
 
     Standard_Boolean isInside = Standard_True;
 
-    int n = Min(N, 3);
+    int n = (std::min)(N, 3);
     for (int i = 0; i < n; ++i)
     {
       hasOverlap = (myMinPoint[i] <= theMaxPoint[i] && myMaxPoint[i] >= theMinPoint[i]);
@@ -342,7 +342,7 @@ public:
     if (!IsValid())
       return Standard_True;
 
-    int n = Min(N, 3);
+    int n = (std::min)(N, 3);
     for (int i = 0; i < n; ++i)
     {
       if (thePoint[i] < myMinPoint[i] || thePoint[i] > myMaxPoint[i])
@@ -499,16 +499,16 @@ struct BoxMinMax
 
   static void CwiseMin(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    theVec1.x() = Min(theVec1.x(), theVec2.x());
-    theVec1.y() = Min(theVec1.y(), theVec2.y());
-    theVec1.z() = Min(theVec1.z(), theVec2.z());
+    theVec1.x() = (std::min)(theVec1.x(), theVec2.x());
+    theVec1.y() = (std::min)(theVec1.y(), theVec2.y());
+    theVec1.z() = (std::min)(theVec1.z(), theVec2.z());
   }
 
   static void CwiseMax(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    theVec1.x() = Max(theVec1.x(), theVec2.x());
-    theVec1.y() = Max(theVec1.y(), theVec2.y());
-    theVec1.z() = Max(theVec1.z(), theVec2.z());
+    theVec1.x() = (std::max)(theVec1.x(), theVec2.x());
+    theVec1.y() = (std::max)(theVec1.y(), theVec2.y());
+    theVec1.z() = (std::max)(theVec1.z(), theVec2.z());
   }
 };
 
@@ -519,14 +519,14 @@ struct BoxMinMax<T, 2>
 
   static void CwiseMin(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    theVec1.x() = Min(theVec1.x(), theVec2.x());
-    theVec1.y() = Min(theVec1.y(), theVec2.y());
+    theVec1.x() = (std::min)(theVec1.x(), theVec2.x());
+    theVec1.y() = (std::min)(theVec1.y(), theVec2.y());
   }
 
   static void CwiseMax(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    theVec1.x() = Max(theVec1.x(), theVec2.x());
-    theVec1.y() = Max(theVec1.y(), theVec2.y());
+    theVec1.x() = (std::max)(theVec1.x(), theVec2.x());
+    theVec1.y() = (std::max)(theVec1.y(), theVec2.y());
   }
 };
 } // namespace BVH

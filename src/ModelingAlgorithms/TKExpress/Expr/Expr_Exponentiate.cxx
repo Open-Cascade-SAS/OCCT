@@ -58,7 +58,7 @@ Handle(Expr_GeneralExpression) Expr_Exponentiate::ShallowSimplified() const
     if (myfirst->IsKind(STANDARD_TYPE(Expr_NumericValue)))
     {
       Handle(Expr_NumericValue) myNVf = Handle(Expr_NumericValue)::DownCast(myfirst);
-      return new Expr_NumericValue(Pow(myNVf->GetValue(), myvals));
+      return new Expr_NumericValue(std::pow(myNVf->GetValue(), myvals));
     }
   }
   if (myfirst->IsKind(STANDARD_TYPE(Expr_NumericValue)))
@@ -151,7 +151,7 @@ Standard_Real Expr_Exponentiate::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                           const TColStd_Array1OfReal&      vals) const
 {
   Standard_Real res = FirstOperand()->Evaluate(vars, vals);
-  return ::Pow(res, SecondOperand()->Evaluate(vars, vals));
+  return std::pow(res, SecondOperand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_Exponentiate::String() const

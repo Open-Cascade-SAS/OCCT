@@ -15,131 +15,101 @@
 #ifndef _Standard_ShortReal_HeaderFile
 #define _Standard_ShortReal_HeaderFile
 
+#include <algorithm>
 #include <cmath>
 #include <climits>
 #include <float.h>
 
 #include <Standard_TypeDef.hxx>
 
-//  *********************************** //
-//       Class methods                  //
-//                                      //
-//  Machine-dependent values            //
-//  Should be taken from include file   //
-//  *********************************** //
-
-//-------------------------------------------------------------------
-// ShortRealSmall : Returns the smallest positive ShortReal
-//-------------------------------------------------------------------
-constexpr Standard_ShortReal ShortRealSmall()
+//! Returns the minimum positive float value.
+[[nodiscard]] constexpr float ShortRealSmall()
 {
   return FLT_MIN;
 }
 
-//-------------------------------------------------------------------
-// Abs : Returns the absolute value of a ShortReal
-//-------------------------------------------------------------------
-inline Standard_ShortReal Abs(const Standard_ShortReal Value)
-#if defined(__alpha) || defined(DECOSF1)
-{
-  return fabsf(Value);
-}
-#else
-{
-  return float(fabs(Value));
-}
-#endif
+//! Returns the absolute value of a float @p Value.
+//! Equivalent to std::abs.
+Standard_DEPRECATED("This function duplicates std::abs and will be removed in future releases. "
+                    "Use std::abs instead.")
 
-//-------------------------------------------------------------------
-// ShortRealDigit : Returns the number of digits of precision in a ShortReal
-//-------------------------------------------------------------------
-constexpr Standard_Integer ShortRealDigits()
+[[nodiscard]] inline float Abs(const float theValue)
+{
+  return std::abs(theValue);
+}
+
+//! Returns the number of digits of precision in a float.
+[[nodiscard]] constexpr int ShortRealDigits()
 {
   return FLT_DIG;
 }
 
-//-------------------------------------------------------------------
-// ShortRealEpsilon : Returns the minimum positive ShortReal such that
-//               1.0 + x is not equal to 1.0
-//-------------------------------------------------------------------
-constexpr Standard_ShortReal ShortRealEpsilon()
+//! Returns the minimum positive float such that 1.0f + ShortRealEpsilon() != 1.0f.
+[[nodiscard]] constexpr float ShortRealEpsilon()
 {
   return FLT_EPSILON;
 }
 
-//-------------------------------------------------------------------
-// ShortRealFirst : Returns the minimum negative value of a ShortReal
-//-------------------------------------------------------------------
-constexpr Standard_ShortReal ShortRealFirst()
+//! Returns the minimum negative value of a float.
+[[nodiscard]] constexpr float ShortRealFirst()
 {
   return -FLT_MAX;
 }
 
-//-------------------------------------------------------------------
-// ShortRealFirst10Exp : Returns the minimum value of exponent(base 10) of
-//                  a ShortReal.
-//-------------------------------------------------------------------
-constexpr Standard_Integer ShortRealFirst10Exp()
+//! Returns the minimum value of exponent(base 10) of a float.
+[[nodiscard]] constexpr int ShortRealFirst10Exp()
 {
   return FLT_MIN_10_EXP;
 }
 
-//-------------------------------------------------------------------
-// ShortRealLast : Returns the maximum value of a ShortReal
-//-------------------------------------------------------------------
-constexpr Standard_ShortReal ShortRealLast()
+//! Returns the maximum value of a float.
+[[nodiscard]] constexpr float ShortRealLast()
 {
   return FLT_MAX;
 }
 
-//-------------------------------------------------------------------
-// ShortRealLast10Exp : Returns the maximum value of exponent(base 10) of
-//                 a ShortReal.
-//-------------------------------------------------------------------
-constexpr Standard_Integer ShortRealLast10Exp()
+//! Returns the maximum value of exponent(base 10) of a float.
+[[nodiscard]] constexpr int ShortRealLast10Exp()
 {
   return FLT_MAX_10_EXP;
 }
 
-//-------------------------------------------------------------------
-// ShortRealMantissa : Returns the size in bits of the matissa part of a
-//                ShortReal.
-//-------------------------------------------------------------------
-constexpr Standard_Integer ShortRealMantissa()
+//! Returns the mantissa (number of bits in the significand) of a float.
+[[nodiscard]] constexpr int ShortRealMantissa()
 {
   return FLT_MANT_DIG;
 }
 
-//-------------------------------------------------------------------
-// ShortRealRadix : Returns the radix of exponent representation
-//-------------------------------------------------------------------
-constexpr Standard_Integer ShortRealRadix()
+//! Returns the radix (base) of a float.
+[[nodiscard]] constexpr int ShortRealRadix()
 {
   return FLT_RADIX;
 }
 
-//-------------------------------------------------------------------
-// ShortRealSize : Returns the size in bits of an integer
-//-------------------------------------------------------------------
-constexpr Standard_Integer ShortRealSize()
+//! Returns the size in bits of a float.
+[[nodiscard]] constexpr int ShortRealSize()
 {
-  return CHAR_BIT * sizeof(Standard_ShortReal);
+  return CHAR_BIT * sizeof(float);
 }
 
-//-------------------------------------------------------------------
-// Max : Returns the maximum value of two ShortReals
-//-------------------------------------------------------------------
-constexpr Standard_ShortReal Max(const Standard_ShortReal Val1, const Standard_ShortReal Val2)
+//! Returns the maximum value of two floats.
+//! Equivalent to std::max.
+Standard_DEPRECATED("This function duplicates std::max and will be removed in future releases. "
+                    "Use std::max instead.")
+
+[[nodiscard]] constexpr float Max(const float theValue1, const float theValue2)
 {
-  return Val1 >= Val2 ? Val1 : Val2;
+  return (std::max)(theValue1, theValue2);
 }
 
-//-------------------------------------------------------------------
-// Min : Returns the minimum value of two ShortReals
-//-------------------------------------------------------------------
-constexpr Standard_ShortReal Min(const Standard_ShortReal Val1, const Standard_ShortReal Val2)
+//! Returns the minimum value of two floats.
+//! Equivalent to std::min.
+Standard_DEPRECATED("This function duplicates std::min and will be removed in future releases. "
+                    "Use std::min instead.")
+
+[[nodiscard]] constexpr float Min(const float theValue1, const float theValue2)
 {
-  return Val1 <= Val2 ? Val1 : Val2;
+  return (std::min)(theValue1, theValue2);
 }
 
-#endif
+#endif // _Standard_ShortReal_HeaderFile

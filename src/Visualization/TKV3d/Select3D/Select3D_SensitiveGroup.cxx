@@ -35,7 +35,7 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup(const Handle(SelectMgr_EntityOw
                                                  Select3D_EntitySequence&             theEntities,
                                                  const Standard_Boolean theIsMustMatchAll)
     : Select3D_SensitiveSet(theOwnerId),
-      myEntities(Max(1, theEntities.Size())),
+      myEntities(std::max(1, theEntities.Size())),
       myMustMatchAll(theIsMustMatchAll),
       myToCheckOverlapAll(Standard_False),
       myCenter(0.0, 0.0, 0.0)

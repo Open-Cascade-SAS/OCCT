@@ -29,8 +29,8 @@ GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const Handle(Geom_BSplineCu
       myDone(Standard_False),
       myFixFirstTangent(Standard_False),
       myFixLastTangent(Standard_False),
-      myAngularTolerance(Abs(AngularTolerance)),
-      myTolerance(Abs(Tolerance)),
+      myAngularTolerance(std::abs(AngularTolerance)),
+      myTolerance(std::abs(Tolerance)),
       myIndSecondPole(-1),
       myIndPrelastPole(-1)
 {

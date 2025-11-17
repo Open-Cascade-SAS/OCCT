@@ -227,7 +227,7 @@ Standard_Boolean Geom2dEvaluator_OffsetCurve::AdjustDerivative(
   else
     du = anUsupremum - anUinfium;
 
-  const Standard_Real aDelta = Max(du * DivisionFactor, aMinStep);
+  const Standard_Real aDelta = std::max(du * DivisionFactor, aMinStep);
 
   // Derivative is approximated by Taylor-series
   Standard_Integer anIndex = 1; // Derivative order
@@ -246,8 +246,8 @@ Standard_Boolean Geom2dEvaluator_OffsetCurve::AdjustDerivative(
     u = theU - aDelta;
 
   gp_Pnt2d P1, P2;
-  BaseD0(Min(theU, u), P1);
-  BaseD0(Max(theU, u), P2);
+  BaseD0(std::min(theU, u), P1);
+  BaseD0(std::max(theU, u), P2);
 
   gp_Vec2d V1(P1, P2);
   isDirectionChange   = V.Dot(V1) < 0.0;

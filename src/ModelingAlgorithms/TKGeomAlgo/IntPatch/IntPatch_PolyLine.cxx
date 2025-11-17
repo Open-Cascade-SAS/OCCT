@@ -120,8 +120,8 @@ void IntPatch_PolyLine::Prepare()
           Standard_Real xt2 = Ax * t2 * t2 + Bx * t2 + Cx;
           Standard_Real yt2 = Ay * t2 * t2 + By * t2 + Cy;
           // max deflection on segments P1-P2 and P2-P3
-          Standard_Real d1 = Abs(A1 * xt1 + B1 * yt1 + C1);
-          Standard_Real d2 = Abs(A2 * xt2 + B2 * yt2 + C2);
+          Standard_Real d1 = std::abs(A1 * xt1 + B1 * yt1 + C1);
+          Standard_Real d2 = std::abs(A2 * xt2 + B2 * yt2 + C2);
           if (d2 > d1)
             d1 = d2;
           // select min deflection from linear and parabolic ones
@@ -129,7 +129,7 @@ void IntPatch_PolyLine::Prepare()
             d_2 = d1 * d1;
         }
         if (d_2 > myError * myError)
-          myError = Sqrt(d_2);
+          myError = std::sqrt(d_2);
       }
       P1 = P2;
       P2 = P3;

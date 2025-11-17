@@ -69,8 +69,8 @@ ApproxInt_MultiLine::ApproxInt_MultiLine(const Handle_TheLine&  line,
                                          const Standard_Integer IndMax)
     : PtrOnmySvSurfaces(svsurf),
       myLine(line),
-      indicemin(Min(IndMin, IndMax)),
-      indicemax(Max(IndMin, IndMax)),
+      indicemin(std::min(IndMin, IndMax)),
+      indicemax(std::max(IndMin, IndMax)),
       nbp3d(NbP3d),
       nbp2d(NbP2d),
       myApproxU1V1(ApproxU1V1),
@@ -112,8 +112,8 @@ ApproxInt_MultiLine::ApproxInt_MultiLine(const Handle_TheLine&  line,
                                          const Standard_Integer IndMax)
     : PtrOnmySvSurfaces(0),
       myLine(line),
-      indicemin(Min(IndMin, IndMax)),
-      indicemax(Max(IndMin, IndMax)),
+      indicemin(std::min(IndMin, IndMax)),
+      indicemax(std::max(IndMin, IndMax)),
       nbp3d(NbP3d),
       nbp2d(NbP2d),
       myApproxU1V1(ApproxU1V1),
@@ -667,12 +667,12 @@ Standard_Boolean ApproxInt_MultiLine::MakeMLOneMorePoint(const Standard_Integer 
   vmid2 = (vprev2 + vcur2) / 2;
   IntSurf_PntOn2S  MidPoint;
   Standard_Boolean IsNewPointInvalid = Standard_False;
-  IsNewPointInvalid =
-    myApproxU1V1 && Abs(ucur1 - umid1) <= tolerance(1) && Abs(vcur1 - vmid1) <= tolerance(2);
+  IsNewPointInvalid                  = myApproxU1V1 && std::abs(ucur1 - umid1) <= tolerance(1)
+                      && std::abs(vcur1 - vmid1) <= tolerance(2);
   if (!IsNewPointInvalid)
   {
-    IsNewPointInvalid =
-      myApproxU2V2 && Abs(ucur2 - umid2) <= tolerance(1) && Abs(vcur2 - vmid2) <= tolerance(2);
+    IsNewPointInvalid = myApproxU2V2 && std::abs(ucur2 - umid2) <= tolerance(1)
+                        && std::abs(vcur2 - vmid2) <= tolerance(2);
     if (!IsNewPointInvalid
         && ((TheSvSurfaces*)PtrOnmySvSurfaces)->SeekPoint(umid1, vmid1, umid2, vmid2, MidPoint))
     {

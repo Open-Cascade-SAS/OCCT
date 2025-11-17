@@ -119,7 +119,7 @@ static void computePeriodicity(const Handle(Adaptor3d_Surface)& theSurf,
     aTrimF = theSurf->FirstUParameter();          // Trimmed first
     aTrimL = theSurf->LastUParameter();           // Trimmed last
     aS->Bounds(aBaseF, aBaseL, aDummyF, aDummyL); // Non-trimmed values.
-    if (Abs(aBaseF - aTrimF) + Abs(aBaseL - aTrimL) > Precision::PConfusion())
+    if (std::abs(aBaseF - aTrimF) + std::abs(aBaseL - aTrimL) > Precision::PConfusion())
     {
       // Param space reduced.
       theUPeriod = 0.0;
@@ -140,7 +140,7 @@ static void computePeriodicity(const Handle(Adaptor3d_Surface)& theSurf,
     aTrimF = theSurf->FirstVParameter();          // Trimmed first
     aTrimL = theSurf->LastVParameter();           // Trimmed last
     aS->Bounds(aDummyF, aDummyL, aBaseF, aBaseL); // Non-trimmed values.
-    if (Abs(aBaseF - aTrimF) + Abs(aBaseL - aTrimL) > Precision::PConfusion())
+    if (std::abs(aBaseF - aTrimF) + std::abs(aBaseL - aTrimL) > Precision::PConfusion())
     {
       // Param space reduced.
       theVPeriod = 0.0;
@@ -197,8 +197,8 @@ static gp_Pnt2d Function_Value(const Standard_Real theU, const aFuncStruct& theD
   Vsup = theData.mySurf->LastVParameter();
 
   // Check case when curve is close to co-parametrized isoline on surf.
-  if (Abs(p2d.X() - Uinf) < Precision::PConfusion()
-      || Abs(p2d.X() - Usup) < Precision::PConfusion())
+  if (std::abs(p2d.X() - Uinf) < Precision::PConfusion()
+      || std::abs(p2d.X() - Usup) < Precision::PConfusion())
   {
     // V isoline.
     gp_Pnt aPnt;
@@ -207,8 +207,8 @@ static gp_Pnt2d Function_Value(const Standard_Real theU, const aFuncStruct& theD
       p2d.SetY(theU);
   }
 
-  if (Abs(p2d.Y() - Vinf) < Precision::PConfusion()
-      || Abs(p2d.Y() - Vsup) < Precision::PConfusion())
+  if (std::abs(p2d.Y() - Vinf) < Precision::PConfusion()
+      || std::abs(p2d.Y() - Vsup) < Precision::PConfusion())
   {
     // U isoline.
     gp_Pnt aPnt;
@@ -261,7 +261,7 @@ static gp_Pnt2d Function_Value(const Standard_Real theU, const aFuncStruct& theD
         if (V0 > (Vsup + (Vsup - Vinf)))
           decalV = int((V0 - Vsup + (Vsup - Vinf)) / (2 * M_PI)) + 1;
         T += decalV * 2 * M_PI;
-        if (0.4 * M_PI < Abs(U0 - S) && Abs(U0 - S) < 1.6 * M_PI)
+        if (0.4 * M_PI < std::abs(U0 - S) && std::abs(U0 - S) < 1.6 * M_PI)
         {
           T = M_PI - T;
           if (U0 < S)
@@ -731,9 +731,8 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::Perform(
         InitialCurve2d->Intervals(Inter2d, GeomAbs_C1);
         j = 1;
         for (i = 1, j = 1; i <= nbInter; i++)
-          if (Abs(Inter.Value(i) - Inter2d.Value(j)) < ParamTol)
-          { // OCC217
-            // if(Abs(Inter.Value(i) - Inter2d.Value(j)) < myTolerance) {
+          if (std::abs(Inter.Value(i) - Inter2d.Value(j)) < ParamTol)
+          {
             if (j > nbInter2d)
               break;
             j++;
@@ -872,7 +871,7 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::Perform(
 
           (void)nbK2d; // unused but set for debug
           nbK2d += BSC2d->NbKnots() - 1;
-          deg = Max(deg, BSC2d->Degree());
+          deg = std::max(deg, BSC2d->Degree());
         }
         else
         {
@@ -896,13 +895,13 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::Perform(
         gp_Pnt2d      aC2Beg  = BS->Pole(1);                   // Beginning of C2.
         Standard_Real anUJump = 0.0, anVJump = 0.0;
 
-        if (anUPeriod > 0.0 && Abs(aC1End.X() - aC2Beg.X()) > (anUPeriod) / 2.01)
+        if (anUPeriod > 0.0 && std::abs(aC1End.X() - aC2Beg.X()) > (anUPeriod) / 2.01)
         {
           Standard_Real aMultCoeff = aC2Beg.X() < aC1End.X() ? 1.0 : -1.0;
           anUJump                  = (anUPeriod)*aMultCoeff;
         }
 
-        if (anVPeriod && Abs(aC1End.Y() - aC2Beg.Y()) > (anVPeriod) / 2.01)
+        if (anVPeriod && std::abs(aC1End.Y() - aC2Beg.Y()) > (anVPeriod) / 2.01)
         {
           Standard_Real aMultCoeff = aC2Beg.Y() < aC1End.Y() ? 1.0 : -1.0;
           anVJump                  = (anVPeriod)*aMultCoeff;
@@ -1002,7 +1001,7 @@ Handle(Adaptor2d_Curve2d) ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve
         {
           Sloc = S;
           ElSLib::Parameters(Cylinder, Pts(i), S, T);
-          if (Abs(Sloc - S) > M_PI)
+          if (std::abs(Sloc - S) > M_PI)
           {
             if (Sloc > S)
               usens++;
@@ -1025,7 +1024,7 @@ Handle(Adaptor2d_Curve2d) ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve
         {
           Sloc = S;
           ElSLib::Parameters(Cone, Pts(i), S, T);
-          if (Abs(Sloc - S) > M_PI)
+          if (std::abs(Sloc - S) > M_PI)
           {
             if (Sloc > S)
               usens++;
@@ -1049,21 +1048,21 @@ Handle(Adaptor2d_Curve2d) ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve
           Sloc = S;
           Tloc = T;
           ElSLib::Parameters(Sphere, Pts(i), S, T);
-          if (1.6 * M_PI < Abs(Sloc - S))
+          if (1.6 * M_PI < std::abs(Sloc - S))
           {
             if (Sloc > S)
               usens += 2;
             else
               usens -= 2;
           }
-          if (1.6 * M_PI > Abs(Sloc - S) && Abs(Sloc - S) > 0.4 * M_PI)
+          if (1.6 * M_PI > std::abs(Sloc - S) && std::abs(Sloc - S) > 0.4 * M_PI)
           {
             vparit = !vparit;
             if (Sloc > S)
               usens++;
             else
               usens--;
-            if (Abs(Tloc - Vsup) < (Vsup - Vinf) / 5)
+            if (std::abs(Tloc - Vsup) < (Vsup - Vinf) / 5)
               vsens++;
             else
               vsens--;
@@ -1091,14 +1090,14 @@ Handle(Adaptor2d_Curve2d) ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve
           Sloc = S;
           Tloc = T;
           ElSLib::Parameters(Torus, Pts(i), S, T);
-          if (Abs(Sloc - S) > M_PI)
+          if (std::abs(Sloc - S) > M_PI)
           {
             if (Sloc > S)
               usens++;
             else
               usens--;
           }
-          if (Abs(Tloc - T) > M_PI)
+          if (std::abs(Tloc - T) > M_PI)
           {
             if (Tloc > T)
               vsens++;
@@ -1138,8 +1137,8 @@ Handle(Adaptor2d_Curve2d) ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve
     }
     if (aMinSqDist > DistTol3d2) // try to project with less tolerance
     {
-      TolU = Min(TolU, Precision::PConfusion());
-      TolV = Min(TolV, Precision::PConfusion());
+      TolU = std::min(TolU, Precision::PConfusion());
+      TolV = std::min(TolV, Precision::PConfusion());
       aExtPS.Initialize(*Surf,
                         Surf->FirstUParameter(),
                         Surf->LastUParameter(),
@@ -1209,7 +1208,7 @@ Handle(Adaptor2d_Curve2d) ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve
                 Dist2Max = aDist2;
             }
           }
-          Standard_Real aMaxT2 = Max(TolU, TolV);
+          Standard_Real aMaxT2 = std::max(TolU, TolV);
           aMaxT2 *= aMaxT2;
           if (Dist2Max > aMaxT2)
           {
@@ -1381,14 +1380,14 @@ Handle(Adaptor2d_Curve2d) ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve
                   }
                   Standard_Real LocalU, LocalV;
                   aGlobalExtr.Point(imin).Parameter(LocalU, LocalV);
-                  if (uperiod > 0. && Abs(U0 - LocalU) >= uperiod / 2.)
+                  if (uperiod > 0. && std::abs(U0 - LocalU) >= uperiod / 2.)
                   {
                     if (LocalU > U0)
                       usens = -1;
                     else
                       usens = 1;
                   }
-                  if (vperiod > 0. && Abs(V0 - LocalV) >= vperiod / 2.)
+                  if (vperiod > 0. && std::abs(V0 - LocalV) >= vperiod / 2.)
                   {
                     if (LocalV > V0)
                       vsens = -1;
@@ -1632,7 +1631,7 @@ Handle(Adaptor2d_Curve2d) ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve
         TestV += sense * vperiod;
     }
     gp_Vec2d Offset(TestU - MidPoint.X(), TestV - MidPoint.Y());
-    if (Abs(Offset.X()) > gp::Resolution() || Abs(Offset.Y()) > gp::Resolution())
+    if (std::abs(Offset.X()) > gp::Resolution() || std::abs(Offset.Y()) > gp::Resolution())
       myBSpline->Translate(Offset);
     //////////////////////////////////////////
     Geom2dAdaptor_Curve       GAC(myBSpline);
@@ -1673,7 +1672,7 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::ProjectUsingIni
   }
   Standard_Real DistTol3d2 = DistTol3d * DistTol3d;
   Standard_Real TolU = Surf->UResolution(Tol3d), TolV = Surf->VResolution(Tol3d);
-  Standard_Real Tol2d = Max(Sqrt(TolU * TolU + TolV * TolV), Precision::PConfusion());
+  Standard_Real Tol2d = std::max(std::sqrt(TolU * TolU + TolV * TolV), Precision::PConfusion());
 
   Standard_Integer    i;
   GeomAbs_SurfaceType TheTypeS = Surf->GetType();
@@ -2069,12 +2068,12 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::ProjectUsingIni
     for (j = 1; j <= NbCurves; j++)
     {
       Standard_Integer Deg = Fit.Value(j).Degree();
-      MaxDeg               = Max(MaxDeg, Deg);
+      MaxDeg               = std::max(MaxDeg, Deg);
       Fit.Error(j, Tol3d, Tol2d);
-      aNewTol2d = Max(aNewTol2d, Tol2d);
+      aNewTol2d = std::max(aNewTol2d, Tol2d);
     }
     //
-    myTolReached = Max(myTolReached, myTolerance * (aNewTol2d / anOldTol2d));
+    myTolReached = std::max(myTolReached, myTolerance * (aNewTol2d / anOldTol2d));
     //
     NbPoles = MaxDeg * NbCurves + 1; // Tops on the BSpline
     TColgp_Array1OfPnt2d Poles(1, NbPoles);
@@ -2134,7 +2133,7 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::ProjectUsingIni
     // try to smoother the Curve GeomAbs_C1.
 
     Standard_Boolean OK         = Standard_True;
-    Standard_Real    aSmoothTol = Max(Precision::Confusion(), aNewTol2d);
+    Standard_Real    aSmoothTol = std::max(Precision::Confusion(), aNewTol2d);
     if (myBndPnt == AppParCurves_PassPoint)
     {
       aSmoothTol *= 10.;

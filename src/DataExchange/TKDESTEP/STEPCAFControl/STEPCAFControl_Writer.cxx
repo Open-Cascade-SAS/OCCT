@@ -3635,7 +3635,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(
     if (aDatumObj.IsNull())
       continue;
     aDatums.Append(aDatumObj);
-    aMaxDatumNum = Max(aMaxDatumNum, aDatumObj->GetPosition());
+    aMaxDatumNum = std::max(aMaxDatumNum, aDatumObj->GetPosition());
   }
   if (aMaxDatumNum == 0)
     return NULL;

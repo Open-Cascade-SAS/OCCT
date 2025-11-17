@@ -220,7 +220,7 @@ public:
       return;
     }
 
-    const size_t aLenCopy = size_t(Min(anOldLen, theLength)) * size_t(myStride);
+    const size_t aLenCopy = size_t((std::min)(anOldLen, theLength)) * size_t(myStride);
     memcpy(myData, anOldData, aLenCopy);
     if (myDeletable)
     {

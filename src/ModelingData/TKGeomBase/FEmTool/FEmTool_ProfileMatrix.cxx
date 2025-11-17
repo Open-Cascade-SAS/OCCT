@@ -117,7 +117,7 @@ Standard_Boolean FEmTool_ProfileMatrix::Decompose()
     {
       return Standard_False; // Matrix is not positive defined
     }
-    a             = Sqrt(a);
+    a             = std::sqrt(a);
     SMA[DiagAddr] = a;
 
     CurrAddr = DiagAddr;
@@ -128,7 +128,7 @@ Standard_Boolean FEmTool_ProfileMatrix::Decompose()
       // Computation of Sum of S  .S  for k = 1,..,j-1
       //                        ik  jk
       Sum  = 0;
-      Kmin = Max((i - profile(1, i)), Kj);
+      Kmin = std::max((i - profile(1, i)), Kj);
       ik   = profile(2, i) - i + Kmin;
       jk   = DiagAddr - j + Kmin;
       for (k = Kmin; k < j; k++, ik++, jk++)

@@ -163,14 +163,14 @@ static void Hunt(const TColStd_Array1OfReal& Arr, const Standard_Real Coord, Sta
   //        when coordinate component definitely equals a knot only.
   constexpr Standard_Real Tol = Precision::PConfusion() / 10;
   Standard_Integer        i   = 1;
-  while ((i <= Arr.Upper()) && (Abs(Coord - Arr(i)) > Tol))
+  while ((i <= Arr.Upper()) && (std::abs(Coord - Arr(i)) > Tol))
   {
     i++;
   }
 
-  if (Abs(Coord - Arr(i)) < Tol)
+  if (std::abs(Coord - Arr(i)) < Tol)
     Iloc = i;
-  else if (Abs(Coord - Arr(i)) > Tol)
+  else if (std::abs(Coord - Arr(i)) > Tol)
     throw Standard_NotImplemented("Adaptor3d_CurveOnSurface:Hunt");
 }
 
@@ -230,9 +230,9 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
 
   if (N == Bound1)
   {
-    if (Abs(Der) > Tol)
+    if (std::abs(Der) > Tol)
       DerNull = Standard_False;
-    if (Abs(Der) <= Tol)
+    if (std::abs(Der) <= Tol)
       DerNull = Standard_True;
     Bound1 = N;
     Bound2 = N + 1;
@@ -240,9 +240,9 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
   }
   if (N == Bound2)
   {
-    if (Abs(Der) > Tol)
+    if (std::abs(Der) > Tol)
       DerNull = Standard_False;
-    if (Abs(Der) <= Tol)
+    if (std::abs(Der) <= Tol)
       DerNull = Standard_True;
     Bound1 = N - 1;
     Bound2 = N;
@@ -250,7 +250,7 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
   }
   if ((N != Bound1) && (N != Bound2))
   {
-    if (Abs(Der) > Tol)
+    if (std::abs(Der) > Tol)
     {
       if (Der > 0)
       {
@@ -264,7 +264,7 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
       }
       DerNull = Standard_False;
     }
-    if (Abs(Der) <= Tol)
+    if (std::abs(Der) <= Tol)
     {
       DerNull = Standard_True;
       Bound1  = N - 1;
@@ -303,11 +303,11 @@ static void Locate1Coord(const Standard_Integer           Index,
   Standard_Integer Lo = BSplC->FirstUKnotIndex(), Up = BSplC->LastUKnotIndex();
 
   i = Lo;
-  while ((Abs(BSplC->Knot(i) - Comp1) > Tol) && (i != Up))
+  while ((std::abs(BSplC->Knot(i) - Comp1) > Tol) && (i != Up))
     i++;
   cur = BSplC->Knot(i);
 
-  if (Abs(Comp1 - cur) <= Tol)
+  if (std::abs(Comp1 - cur) <= Tol)
   {
 
     Bnd1 = Lo;
@@ -330,7 +330,7 @@ static void Locate1Coord(const Standard_Integer           Index,
     }
     else if (DIsNull == Standard_True)
     {
-      if (Abs(Comp1 - (f = BSplC->Knot(Lo))) <= Tol)
+      if (std::abs(Comp1 - (f = BSplC->Knot(Lo))) <= Tol)
       {
         if (Index == 1)
         {
@@ -343,7 +343,7 @@ static void Locate1Coord(const Standard_Integer           Index,
           RightTop.SetY(BSplC->Knot(Lo + 1));
         }
       }
-      else if (Abs(Comp1 - (l = BSplC->Knot(Up))) <= Tol)
+      else if (std::abs(Comp1 - (l = BSplC->Knot(Up))) <= Tol)
       {
         if (Index == 1)
         {
@@ -385,7 +385,7 @@ static void Locate1Coord(const Standard_Integer           Index,
 
     if (i != Up)
     {
-      if (Abs(DComp1) < Tol)
+      if (std::abs(DComp1) < Tol)
       {
         if (Index == 1)
         {
@@ -398,7 +398,7 @@ static void Locate1Coord(const Standard_Integer           Index,
           RightTop.SetY(l);
         }
       }
-      else if (Abs(DComp1) > Tol)
+      else if (std::abs(DComp1) > Tol)
       {
         if (Index == 1)
         {
@@ -474,7 +474,7 @@ static void Locate1Coord(const Standard_Integer             Index,
     Up     = Up1;
     Down   = Down1;
 
-    while ((Abs(BSplS->UKnot(i) - Comp1) > Tol) && (i != Up1))
+    while ((std::abs(BSplS->UKnot(i) - Comp1) > Tol) && (i != Up1))
     {
       i++;
     }
@@ -489,7 +489,7 @@ static void Locate1Coord(const Standard_Integer             Index,
     Up     = Up2;
     Down   = Down2;
 
-    while ((Abs(BSplS->VKnot(i) - Comp1) > Tol) && (i != Up2))
+    while ((std::abs(BSplS->VKnot(i) - Comp1) > Tol) && (i != Up2))
     {
       i++;
     }
@@ -497,7 +497,7 @@ static void Locate1Coord(const Standard_Integer             Index,
     cur = BSplS->VKnot(i);
   }
 
-  if (Abs(Comp1 - cur) <= Tol)
+  if (std::abs(Comp1 - cur) <= Tol)
   {
     Standard_Integer Bnd1 = Down, Bnd2 = Up;
     if (Index == 1)
@@ -594,7 +594,7 @@ static void Locate1Coord(const Standard_Integer             Index,
 
       if (i != Up)
       {
-        if (Abs(DComp1) > Tol)
+        if (std::abs(DComp1) > Tol)
         {
           if (Index == 1)
           {
@@ -625,7 +625,7 @@ static void Locate1Coord(const Standard_Integer             Index,
         }
         else
         {
-          if (Abs(DComp1) < Tol)
+          if (std::abs(DComp1) < Tol)
           {
             if (Index == 1)
             {
@@ -685,7 +685,7 @@ static void Locate2Coord(const Standard_Integer Index,
 
   if ((Comp1 != I1) && (Comp1 != I2))
   {
-    if (Abs(DComp1) > Tol)
+    if (std::abs(DComp1) > Tol)
     {
       if (DComp1 < 0)
       {
@@ -727,7 +727,7 @@ static void Locate2Coord(const Standard_Integer Index,
         }
       }
     }
-    else if (Abs(DComp1) <= Tol)
+    else if (std::abs(DComp1) <= Tol)
     {
       if (Index == 1)
       {
@@ -741,7 +741,7 @@ static void Locate2Coord(const Standard_Integer Index,
       }
     }
   }
-  else if (Abs(Comp1 - I1) < Tol)
+  else if (std::abs(Comp1 - I1) < Tol)
   {
     if (Index == 1)
     {
@@ -754,7 +754,7 @@ static void Locate2Coord(const Standard_Integer Index,
       RightTop.SetY(I2);
     }
   }
-  else if (Abs(Comp1 - I2) < Tol)
+  else if (std::abs(Comp1 - I2) < Tol)
   {
     if (Index == 1)
     {
@@ -797,7 +797,7 @@ static void Locate2Coord(const Standard_Integer             Index,
     NLo   = BSplS->FirstVKnotIndex();
   }
 
-  if ((DComp > 0) && (Abs(DComp) > Tol))
+  if ((DComp > 0) && (std::abs(DComp) > Tol))
   {
     Hunt(Arr, Comp, N);
     if (N >= NUp)
@@ -829,7 +829,7 @@ static void Locate2Coord(const Standard_Integer             Index,
       RightTop.SetY(Tmp2);
     }
   }
-  else if ((DComp < 0) && (Abs(DComp) > Tol))
+  else if ((DComp < 0) && (std::abs(DComp) > Tol))
   {
     Hunt(Arr, Comp, N);
     if (N <= NLo)
@@ -1196,13 +1196,13 @@ void Adaptor3d_CurveOnSurface::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) c
   Standard_Real LP = myCurve->LastParameter();
 
   constexpr Standard_Real Tol = Precision::PConfusion() / 10;
-  if ((Abs(U - FP) < Tol) && (!myFirstSurf.IsNull()))
+  if ((std::abs(U - FP) < Tol) && (!myFirstSurf.IsNull()))
   {
     myCurve->D1(U, Puv, Duv);
     myFirstSurf->D1(Puv.X(), Puv.Y(), P, D1U, D1V);
     V.SetLinearForm(Duv.X(), D1U, Duv.Y(), D1V);
   }
-  else if ((Abs(U - LP) < Tol) && (!myLastSurf.IsNull()))
+  else if ((std::abs(U - LP) < Tol) && (!myLastSurf.IsNull()))
   {
     myCurve->D1(U, Puv, Duv);
     myLastSurf->D1(Puv.X(), Puv.Y(), P, D1U, D1V);
@@ -1232,7 +1232,7 @@ void Adaptor3d_CurveOnSurface::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, 
   Standard_Real LP = myCurve->LastParameter();
 
   constexpr Standard_Real Tol = Precision::PConfusion() / 10;
-  if ((Abs(U - FP) < Tol) && (!myFirstSurf.IsNull()))
+  if ((std::abs(U - FP) < Tol) && (!myFirstSurf.IsNull()))
   {
     myCurve->D2(U, UV, DW, D2W);
     myFirstSurf->D2(UV.X(), UV.Y(), P, D1U, D1V, D2U, D2V, D2UV);
@@ -1241,7 +1241,7 @@ void Adaptor3d_CurveOnSurface::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, 
     V2.SetLinearForm(D2W.X(), D1U, D2W.Y(), D1V, 2. * DW.X() * DW.Y(), D2UV);
     V2.SetLinearForm(DW.X() * DW.X(), D2U, DW.Y() * DW.Y(), D2V, V2);
   }
-  else if ((Abs(U - LP) < Tol) && (!myLastSurf.IsNull()))
+  else if ((std::abs(U - LP) < Tol) && (!myLastSurf.IsNull()))
   {
     myCurve->D2(U, UV, DW, D2W);
     myLastSurf->D2(UV.X(), UV.Y(), P, D1U, D1V, D2U, D2V, D2UV);
@@ -1285,7 +1285,7 @@ void Adaptor3d_CurveOnSurface::D3(const Standard_Real U,
   Standard_Real FP = myCurve->FirstParameter();
   Standard_Real LP = myCurve->LastParameter();
 
-  if ((Abs(U - FP) < Tol) && (!myFirstSurf.IsNull()))
+  if ((std::abs(U - FP) < Tol) && (!myFirstSurf.IsNull()))
   {
     myCurve->D3(U, UV, DW, D2W, D3W);
     myFirstSurf->D3(UV.X(), UV.Y(), P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
@@ -1296,7 +1296,7 @@ void Adaptor3d_CurveOnSurface::D3(const Standard_Real U,
   }
   else
 
-    if ((Abs(U - LP) < Tol) && (!myLastSurf.IsNull()))
+    if ((std::abs(U - LP) < Tol) && (!myLastSurf.IsNull()))
   {
     myCurve->D3(U, UV, DW, D2W, D3W);
     myLastSurf->D3(UV.X(), UV.Y(), P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
@@ -1357,7 +1357,7 @@ Standard_Real Adaptor3d_CurveOnSurface::Resolution(const Standard_Real R3d) cons
   Standard_Real ru, rv;
   ru = mySurface->UResolution(R3d);
   rv = mySurface->VResolution(R3d);
-  return myCurve->Resolution(Min(ru, rv));
+  return myCurve->Resolution(std::min(ru, rv));
 }
 
 //=================================================================================================
@@ -1576,7 +1576,7 @@ void Adaptor3d_CurveOnSurface::EvalKPart()
         if (STy == GeomAbs_Sphere)
         {
           gp_Pnt2d P = myCurve->Line().Location();
-          if (Abs(Abs(P.Y()) - M_PI / 2.) >= Precision::PConfusion())
+          if (std::abs(std::abs(P.Y()) - M_PI / 2.) >= Precision::PConfusion())
           {
             myType         = GeomAbs_Circle;
             gp_Sphere Sph  = mySurface->Sphere();

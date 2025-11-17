@@ -394,8 +394,9 @@ public:
                                               const Standard_Boolean theForce = Standard_False);
 
   //! Check all locations of shape according criterium:
-  //! aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec())
-  //! All sub-shapes having such locations are put in list theProblemShapes
+  //! aTrsf.IsNegative() || (std::abs(std::abs(aTrsf.ScaleFactor()) - 1.) >
+  //! TopLoc_Location::ScalePrec()) All sub-shapes having such locations are put in list
+  //! theProblemShapes
   Standard_EXPORT static void CheckLocations(const TopoDS_Shape&   theS,
                                              TopTools_ListOfShape& theProblemShapes);
 };

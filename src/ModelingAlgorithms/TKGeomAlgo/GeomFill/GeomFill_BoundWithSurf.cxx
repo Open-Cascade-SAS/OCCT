@@ -117,7 +117,7 @@ void GeomFill_BoundWithSurf::D1Norm(const Standard_Real U, gp_Vec& N, gp_Vec& DN
   Standard_Real nsuu = N.Dot(Suu), nsuv = N.Dot(Suv), nsvv = N.Dot(Svv);
   Standard_Real susu = Su.Dot(Su), susv = Su.Dot(Sv), svsv = Sv.Dot(Sv);
   Standard_Real deno = (susu * svsv) - (susv * susv);
-  if (Abs(deno) < 1.e-16)
+  if (std::abs(deno) < 1.e-16)
   {
     // on embraye sur un calcul approche, c est mieux que rien!?!
     gp_Vec temp = Norm(U + 1.e-12);

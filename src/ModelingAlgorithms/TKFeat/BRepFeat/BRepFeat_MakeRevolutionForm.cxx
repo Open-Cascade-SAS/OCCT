@@ -168,14 +168,14 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&       Sbase,
     }
     Standard_Real par1 = proj1.Distance(1);
     Standard_Real par2 = proj2.Distance(1);
-    Standard_Real Par  = Min(par1, par2);
+    Standard_Real Par  = std::min(par1, par2);
     if (Par < L)
       L = Par;
     if (L < Rad && L > 0.)
       Rad = L;
   }
 
-  Standard_Real height = Min(H1, H2);
+  Standard_Real height = std::min(H1, H2);
 
   if (Rad <= height)
     Rad = height + 0.01 * height;

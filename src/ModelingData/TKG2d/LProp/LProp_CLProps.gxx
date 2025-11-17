@@ -189,7 +189,7 @@ void LProp_CLProps::Tangent(Dir& D)
     else
       du = anUsupremum - anUinfium;
 
-    const Standard_Real aDelta = Max(du * DivisionFactor, MinStep);
+    const Standard_Real aDelta = std::max(du * DivisionFactor, MinStep);
 
     Vec V = myDerivArr[mySignificantFirstDerivativeOrder - 1];
 
@@ -201,8 +201,8 @@ void LProp_CLProps::Tangent(Dir& D)
       u = myU - aDelta;
 
     Pnt P1, P2;
-    Tool::Value(myCurve, Min(myU, u), P1);
-    Tool::Value(myCurve, Max(myU, u), P2);
+    Tool::Value(myCurve, std::min(myU, u), P1);
+    Tool::Value(myCurve, std::max(myU, u), P2);
 
     Vec           V1(P1, P2);
     Standard_Real aDirFactor = V.Dot(V1);
@@ -256,7 +256,7 @@ Standard_Real LProp_CLProps::Curvature()
 void LProp_CLProps::Normal(Dir& D)
 {
   Standard_Real c = Curvature();
-  if (c == RealLast() || Abs(c) <= myLinTol)
+  if (c == RealLast() || std::abs(c) <= myLinTol)
   {
     throw LProp_NotDefined("LProp_CLProps::Normal(...):"
                            "Curvature is null or infinity");
@@ -273,7 +273,7 @@ void LProp_CLProps::Normal(Dir& D)
 
 void LProp_CLProps::CentreOfCurvature(Pnt& P)
 {
-  if (Abs(Curvature()) <= myLinTol)
+  if (std::abs(Curvature()) <= myLinTol)
   {
     throw LProp_NotDefined();
   }

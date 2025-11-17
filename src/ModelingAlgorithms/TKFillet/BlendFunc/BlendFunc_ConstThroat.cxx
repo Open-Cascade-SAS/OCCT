@@ -71,8 +71,8 @@ Standard_Boolean BlendFunc_ConstThroat::IsSolution(const math_Vector& Sol, const
 
   gp_Vec dnplan, temp1, temp2, tempmid;
 
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol && Abs(valsol(3)) <= Tol * Tol
-      && Abs(valsol(4)) <= Tol * Tol)
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol * Tol
+      && std::abs(valsol(4)) <= Tol * Tol)
   {
     dnplan.SetLinearForm(1. / normtg, d2gui, -1. / normtg * (nplan.Dot(d2gui)), nplan);
 
@@ -102,7 +102,7 @@ Standard_Boolean BlendFunc_ConstThroat::IsSolution(const math_Vector& Sol, const
       istangent = Standard_True;
     }
 
-    distmin = Min(distmin, pts1.Distance(pts2));
+    distmin = std::min(distmin, pts1.Distance(pts2));
 
     return Standard_True;
   }

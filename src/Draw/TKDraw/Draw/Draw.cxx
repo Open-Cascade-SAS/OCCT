@@ -935,8 +935,9 @@ Standard_Integer Draw::parseColor(const Standard_Integer   theArgNb,
   }
   if (theArgNb >= 3)
   {
-    const Standard_Integer aNumberOfColorComponentsToParse = Min(theArgNb, theToParseAlpha ? 4 : 3);
-    Standard_Integer       aNumberOfColorComponentsParsed  = aNumberOfColorComponentsToParse;
+    const Standard_Integer aNumberOfColorComponentsToParse =
+      std::min(theArgNb, theToParseAlpha ? 4 : 3);
+    Standard_Integer aNumberOfColorComponentsParsed = aNumberOfColorComponentsToParse;
     if (parseIntegerColor(aNumberOfColorComponentsParsed, theArgVec, theColor))
     {
       return aNumberOfColorComponentsParsed;

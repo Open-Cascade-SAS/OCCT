@@ -138,7 +138,7 @@ GeomAbs_Shape GeomLProp::Continuity(const Handle(Geom_Curve)& C1,
   {
     throw Standard_Failure("Courbes non jointives");
   }
-  Standard_Integer min = Min(n1, n2);
+  Standard_Integer min = std::min(n1, n2);
   if (min >= 1)
   {
     d1 = clp1.D1();

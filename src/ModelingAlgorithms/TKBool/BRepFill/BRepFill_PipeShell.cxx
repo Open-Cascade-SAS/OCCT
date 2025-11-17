@@ -510,7 +510,7 @@ void BRepFill_PipeShell::Add(const TopoDS_Shape&    Profile,
     myLaw = new Law_Interpol();
 
     Standard_Boolean IsPeriodic =
-      (Abs(ParAndRad->Value(1).Y() - ParAndRad->Value(NbParRad).Y()) < Precision::Confusion());
+      (std::abs(ParAndRad->Value(1).Y() - ParAndRad->Value(NbParRad).Y()) < Precision::Confusion());
 
     (Handle(Law_Interpol)::DownCast(myLaw))->Set(ParAndRad->Array1(), IsPeriodic);
   }
@@ -1054,8 +1054,8 @@ void BRepFill_PipeShell::Prepare()
         }
         // medium section between Wmin and Wmax
         TopoDS_Wire   Wres;
-        Standard_Real dmin = Abs(pmin - V1);
-        Standard_Real dmax = Abs(pmax - V2);
+        Standard_Real dmin = std::abs(pmin - V1);
+        Standard_Real dmax = std::abs(pmax - V2);
         if (ComputeSection(Wmin, Wmax, dmin, dmax, Wres))
         {
           // impose section Wres at the beginning and the end
@@ -1290,7 +1290,7 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
         SignOfANewEdge              = (aNewEdge.Orientation() == TopAbs_FORWARD) ? 1 : -1;
         Standard_Integer anIndE     = mySection->IndexOfEdge(aNewEdge);
         SignOfIndex                 = (anIndE > 0) ? 1 : -1;
-        anIndE                      = Abs(anIndE);
+        anIndE                      = std::abs(anIndE);
         // For an edge generated shape is a "tape" -
         // a shell usually containing this edge and
         // passing from beginning of path to its end
@@ -1305,8 +1305,8 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
       // for each vertex of edge
       Standard_Integer ToReverse = SignOfAnEdge * SignOfANewEdge * SignOfIndex;
       Standard_Integer UIndex[2];
-      UIndex[0] = Abs(mySection->IndexOfEdge(NewEdges.First()));
-      UIndex[1] = Abs(mySection->IndexOfEdge(NewEdges.Last())) + ToReverse;
+      UIndex[0] = std::abs(mySection->IndexOfEdge(NewEdges.First()));
+      UIndex[1] = std::abs(mySection->IndexOfEdge(NewEdges.Last())) + ToReverse;
       if (ToReverse == -1)
       {
         UIndex[0]++;

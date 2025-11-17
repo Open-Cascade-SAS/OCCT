@@ -528,7 +528,8 @@ static Handle(Geom_Surface) GetSegment(const Handle(Geom_Surface)& surf,
                 << std::endl;
 #endif
     }
-    if (Abs(U1 - Umin) < Precision::PConfusion() && Abs(U2 - Umax) < Precision::PConfusion())
+    if (std::abs(U1 - Umin) < Precision::PConfusion()
+        && std::abs(U2 - Umax) < Precision::PConfusion())
       return revol;
 
     Handle(Geom_RectangularTrimmedSurface) res =

@@ -148,7 +148,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aRadius > aDeflection)
       {
-        aMaxAngle = ACos(1. - aDeflection / aRadius) * 2.;
+        aMaxAngle = std::acos(1. - aDeflection / aRadius) * 2.;
       }
       if (aMaxAngle > Precision::Angular())
       {
@@ -184,7 +184,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aRadius > aDeflection)
       {
-        aMaxAngle = ACos(1. - aDeflection / aRadius) * 2.;
+        aMaxAngle = std::acos(1. - aDeflection / aRadius) * 2.;
       }
 
       if (aMaxAngle > Precision::Angular())
@@ -240,7 +240,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aRadius1 > aDeflection)
       {
-        aMaxAngle = ACos(1. - aDeflection / aRadius1) * 2.;
+        aMaxAngle = std::acos(1. - aDeflection / aRadius1) * 2.;
       }
 
       if (aMaxAngle > Precision::Angular())
@@ -251,7 +251,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aRadius2 > aDeflection)
       {
-        aMaxAngle = ACos(1. - aDeflection / aRadius2) * 2.;
+        aMaxAngle = std::acos(1. - aDeflection / aRadius2) * 2.;
       }
 
       if (aMaxAngle > Precision::Angular())
@@ -312,12 +312,12 @@ void IntTools_TopolTool::ComputeSamplePoints()
       if (aRatio >= 10.)
       {
         nbsu *= 2;
-        nbsu = Min(nbsu, aMaxNbSample);
+        nbsu = std::min(nbsu, aMaxNbSample);
       }
       else if (aRatio <= 0.1)
       {
         nbsv *= 2;
-        nbsv = Min(nbsv, aMaxNbSample);
+        nbsv = std::min(nbsv, aMaxNbSample);
       }
     }
     break;

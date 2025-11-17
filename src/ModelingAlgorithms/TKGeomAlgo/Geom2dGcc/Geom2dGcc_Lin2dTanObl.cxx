@@ -255,7 +255,7 @@ Standard_Boolean Geom2dGcc_Lin2dTanObl::Add(const Standard_Integer           the
 
   for (i = 1; i < theIndex; i++)
   {
-    if (Abs(aPar1arg - pararg1(i)) <= theTol && Abs(aPar2arg - pararg2(i)) <= theTol)
+    if (std::abs(aPar1arg - pararg1(i)) <= theTol && std::abs(aPar2arg - pararg2(i)) <= theTol)
       return Standard_False;
   }
 
@@ -265,7 +265,7 @@ Standard_Boolean Geom2dGcc_Lin2dTanObl::Add(const Standard_Integer           the
 
   Geom2dGcc_CurveTool::D1(theC1, aPar1arg, aPoint, aVTan);
 
-  if (Abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
+  if (std::abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
     return Standard_False;
 
   linsol(theIndex)     = aLin;

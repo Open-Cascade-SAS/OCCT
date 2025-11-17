@@ -239,7 +239,7 @@ Standard_Boolean OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode   
 
     const BVH_Vec3f aSize = myRaytraceGeometry.Box().Size();
 
-    myRaytraceSceneEpsilon = Max(1.0e-6f, 1.0e-4f * aSize.Modulus());
+    myRaytraceSceneEpsilon = std::max(1.0e-6f, 1.0e-4f * aSize.Modulus());
 
     return uploadRaytraceData(theGlContext);
   }
@@ -392,9 +392,10 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial(const OpenGl_Aspects*      
   {
     // interior color is always ignored for Specular
     aResMat.Specular.SetValues(aSrcSpe, aShine);
-    const Standard_ShortReal aMaxRefl = Max(
-      aResMat.Diffuse.x() + aResMat.Specular.x(),
-      Max(aResMat.Diffuse.y() + aResMat.Specular.y(), aResMat.Diffuse.z() + aResMat.Specular.z()));
+    const Standard_ShortReal aMaxRefl =
+      std::max(aResMat.Diffuse.x() + aResMat.Specular.x(),
+               std::max(aResMat.Diffuse.y() + aResMat.Specular.y(),
+                        aResMat.Diffuse.z() + aResMat.Specular.z()));
     const Standard_ShortReal aReflectionScale = 0.75f / aMaxRefl;
     aResMat.Reflection.SetValues(aSrcSpe * aReflectionScale, 0.0f);
   }
@@ -1409,7 +1410,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources(const Standard_Integer      
 
     if (myRaytraceParameters.StackSize < aRequiredStackSize)
     {
-      myRaytraceParameters.StackSize = Max(aRequiredStackSize, THE_DEFAULT_STACK_SIZE);
+      myRaytraceParameters.StackSize = std::max(aRequiredStackSize, THE_DEFAULT_STACK_SIZE);
 
       aToRebuildShaders = Standard_True;
     }
@@ -1419,7 +1420,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources(const Standard_Integer      
       {
         if (myRaytraceParameters.StackSize > THE_DEFAULT_STACK_SIZE)
         {
-          myRaytraceParameters.StackSize = Max(aRequiredStackSize, THE_DEFAULT_STACK_SIZE);
+          myRaytraceParameters.StackSize = std::max(aRequiredStackSize, THE_DEFAULT_STACK_SIZE);
           aToRebuildShaders              = Standard_True;
         }
       }
@@ -1585,8 +1586,8 @@ Standard_Boolean OpenGl_View::initRaytraceResources(const Standard_Integer      
     if (myIsRaytraceDataValid)
     {
       myRaytraceParameters.StackSize =
-        Max(THE_DEFAULT_STACK_SIZE,
-            myRaytraceGeometry.TopLevelTreeDepth() + myRaytraceGeometry.BotLevelTreeDepth());
+        std::max(THE_DEFAULT_STACK_SIZE,
+                 myRaytraceGeometry.TopLevelTreeDepth() + myRaytraceGeometry.BotLevelTreeDepth());
     }
 
     const TCollection_AsciiString aPrefixString = generateShaderPrefix(theGlContext);
@@ -2670,13 +2671,13 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources(const OpenGl_Mat4& theI
                             1.0f);
 
       // store smoothing radius in W-component
-      aEmission.w() = Max(aLight.Smoothness(), 0.f);
+      aEmission.w() = std::max(aLight.Smoothness(), 0.f);
     }
     else
     {
       // store cosine of smoothing angle in W-component
-      aEmission.w() =
-        cosf(Min(Max(aLight.Smoothness(), 0.f), static_cast<Standard_ShortReal>(M_PI / 2.0)));
+      aEmission.w() = cosf(
+        std::min(std::max(aLight.Smoothness(), 0.f), static_cast<Standard_ShortReal>(M_PI / 2.0)));
     }
 
     if (aLight.IsHeadlight())

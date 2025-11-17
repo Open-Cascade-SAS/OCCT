@@ -65,13 +65,13 @@ struct BSplCLib_CacheParams
       if (theParameter < FirstParameter)
       {
         Standard_Real aPeriod = LastParameter - FirstParameter;
-        Standard_Real aScale  = IntegerPart((FirstParameter - theParameter) / aPeriod);
+        Standard_Real aScale  = std::trunc((FirstParameter - theParameter) / aPeriod);
         return theParameter + aPeriod * (aScale + 1.0);
       }
       if (theParameter > LastParameter)
       {
         Standard_Real aPeriod = LastParameter - FirstParameter;
-        Standard_Real aScale  = IntegerPart((theParameter - LastParameter) / aPeriod);
+        Standard_Real aScale  = std::trunc((theParameter - LastParameter) / aPeriod);
         return theParameter - aPeriod * (aScale + 1.0);
       }
     }

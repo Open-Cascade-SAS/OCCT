@@ -271,8 +271,8 @@ static Standard_Boolean IsTangentSegment(const IntRes2d_IntersectionPoint& P1,
 
     if (aSqrDistPP <= aTolConf)
     {
-      Standard_Real aParDist1 = Abs(P1.ParamOnFirst() - P2.ParamOnFirst());
-      Standard_Real aParDist2 = Abs(P1.ParamOnSecond() - P2.ParamOnSecond());
+      Standard_Real aParDist1 = std::abs(P1.ParamOnFirst() - P2.ParamOnFirst());
+      Standard_Real aParDist2 = std::abs(P1.ParamOnSecond() - P2.ParamOnSecond());
       Standard_Real aResol1   = aC1.Resolution(aTolConf);
       Standard_Real aResol2   = aC2.Resolution(aTolConf);
 
@@ -597,7 +597,7 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape&    E1,
           nbp--;
         }
         //  Modified by Sergey KHROMOV - Fri Jan 11 10:31:38 2002 Begin
-        else if (IsTangentSegment(P1, P2, myCurve1, myCurve2, Max(tol1, tol2)))
+        else if (IsTangentSegment(P1, P2, myCurve1, myCurve2, std::max(tol1, tol2)))
         {
           const IntRes2d_Transition& aTrans = P2.TransitionOfFirst();
 
@@ -746,7 +746,7 @@ Standard_Boolean TopOpeBRep_EdgesIntersector::ComputeSameDomain()
   Standard_Real r2 = c2.Radius();
   //  Standard_Boolean rr = (r1 == r2);
   // clang-format off
-  Standard_Boolean rr = (Abs(r1-r2) < Precision::Confusion()); //xpu281098 (cto019D2) tolerance a revoir
+  Standard_Boolean rr = (std::abs(r1-r2) < Precision::Confusion()); //xpu281098 (cto019D2) tolerance a revoir
   if (!rr) return SetSameDomain(Standard_False);
 
   const gp_Pnt2d& p1 = c1.Location();
@@ -1089,7 +1089,7 @@ const TopOpeBRep_Point2d& TopOpeBRep_EdgesIntersector::Point(const Standard_Inte
 
 Standard_Real TopOpeBRep_EdgesIntersector::ToleranceMax() const
 {
-  Standard_Real tol = Max(myTol1, myTol2);
+  Standard_Real tol = std::max(myTol1, myTol2);
   return tol;
 }
 

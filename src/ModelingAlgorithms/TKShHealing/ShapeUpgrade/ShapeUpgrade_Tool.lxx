@@ -79,5 +79,5 @@ inline Standard_Real ShapeUpgrade_Tool::MaxTolerance() const
 inline Standard_Real ShapeUpgrade_Tool::LimitTolerance(const Standard_Real toler) const
 {
   // only maximal restriction implemented.
-  return Min(myMaxTol, toler);
+  return std::min(myMaxTol, toler);
 }

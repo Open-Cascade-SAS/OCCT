@@ -161,7 +161,7 @@ Quantity_Period Quantity_Period::Subtract(const Quantity_Period& OtherPeriod) co
   // Note: after normalization, myUSec is always in [0, 999999]
   if (result.mySec < 0)
   {
-    result.mySec = Abs(result.mySec);
+    result.mySec = std::abs(result.mySec);
     if (result.myUSec > 0)
     {
       result.mySec--;

@@ -1208,9 +1208,9 @@ Handle(Geom_BSplineSurface) BRepOffsetAPI_ThruSections::TotalSurf(
         TopoDS_Edge   aNextEdge = TopoDS::Edge(shapes((j - 1) * NbEdges + i));
         Standard_Real aTolV     = Precision::Confusion();
         TopExp::Vertices(aNextEdge, vf, vl);
-        aTolV  = Max(aTolV, BRep_Tool::Tolerance(vf));
-        aTolV  = Max(aTolV, BRep_Tool::Tolerance(vl));
-        aTolV  = Min(aTolV, 1.e-3);
+        aTolV  = std::max(aTolV, BRep_Tool::Tolerance(vf));
+        aTolV  = std::max(aTolV, BRep_Tool::Tolerance(vl));
+        aTolV  = std::min(aTolV, 1.e-3);
         curvBS = EdgeToBSpline(aNextEdge);
         if (curvBS.IsNull())
         {
@@ -1257,7 +1257,7 @@ Handle(Geom_BSplineSurface) BRepOffsetAPI_ThruSections::TotalSurf(
   if (myPres3d <= 1.e-3)
     nbIt = 0;
 
-  Standard_Integer degmin = 2, degmax = Max(myDegMax, degmin);
+  Standard_Integer degmin = 2, degmax = std::max(myDegMax, degmin);
   Standard_Boolean SpApprox = Standard_True;
 
   GeomFill_AppSurf anApprox(degmin, degmax, myPres3d, myPres3d, nbIt);
@@ -1446,7 +1446,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_ThruSections::Generated(const TopoDS_S
 
     Standard_Integer Eindex = myVertexIndex(S);
     Standard_Integer Vindex = (Eindex > 0) ? 0 : 1;
-    Eindex                  = Abs(Eindex);
+    Eindex                  = std::abs(Eindex);
 
     // Find the first longitudinal edge
     TopoDS_Face FirstFace = TopoDS::Face(AllFaces(Eindex));

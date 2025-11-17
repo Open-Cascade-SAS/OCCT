@@ -159,13 +159,13 @@ void gp_GTrsf::SetForm()
   gp_Mat        M(matrix);
   Standard_Real s = M.Determinant();
 
-  if (Abs(s) < gp::Resolution())
+  if (std::abs(s) < gp::Resolution())
     throw Standard_ConstructionError("gp_GTrsf::SetForm, null determinant");
 
   if (s > 0)
-    s = Pow(s, 1. / 3.);
+    s = std::pow(s, 1. / 3.);
   else
-    s = -Pow(-s, 1. / 3.);
+    s = -std::pow(-s, 1. / 3.);
   M.Divide(s);
 
   // check if the matrix is an uniform matrix
@@ -181,7 +181,7 @@ void gp_GTrsf::SetForm()
 
   for (Standard_Integer i = 1; i <= 3; i++)
     for (Standard_Integer j = 1; j <= 3; j++)
-      if (Abs(TM.Value(i, j)) > tol)
+      if (std::abs(TM.Value(i, j)) > tol)
       {
         shape = gp_Other;
         return;

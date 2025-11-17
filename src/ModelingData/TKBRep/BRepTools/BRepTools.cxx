@@ -1202,7 +1202,8 @@ void BRepTools::DetectClosedness(const TopoDS_Face& theFace,
         BRep_Tool::CurveOnSurface(TopoDS::Edge(anEdge.Reversed()), theFace, fpar, lpar);
       gp_Pnt2d         Point1 = PCurve1->Value(fpar);
       gp_Pnt2d         Point2 = PCurve2->Value(fpar);
-      Standard_Boolean IsUiso = (Abs(Point1.X() - Point2.X()) > Abs(Point1.Y() - Point2.Y()));
+      Standard_Boolean IsUiso =
+        (std::abs(Point1.X() - Point2.X()) > std::abs(Point1.Y() - Point2.Y()));
       if (IsUiso)
         theUclosed = Standard_True;
       else
@@ -1227,13 +1228,13 @@ Standard_Real BRepTools::EvalAndUpdateTol(const TopoDS_Edge&          theE,
   //
   if (!C3d->IsPeriodic())
   {
-    first = Max(first, C3d->FirstParameter());
-    last  = Min(last, C3d->LastParameter());
+    first = std::max(first, C3d->FirstParameter());
+    last  = std::min(last, C3d->LastParameter());
   }
   if (!C2d->IsPeriodic())
   {
-    first = Max(first, C2d->FirstParameter());
-    last  = Min(last, C2d->LastParameter());
+    first = std::max(first, C2d->FirstParameter());
+    last  = std::min(last, C2d->LastParameter());
   }
   const Handle(Adaptor3d_Curve) aGeomAdaptorCurve = new GeomAdaptor_Curve(C3d, first, last);
 
@@ -1257,7 +1258,7 @@ Standard_Real BRepTools::EvalAndUpdateTol(const TopoDS_Edge&          theE,
       // Try to estimate by sample points
       Standard_Integer nbint = 22;
       Standard_Real    dt    = (last - first) / nbint;
-      dt                     = Max(dt, Precision::Confusion());
+      dt                     = std::max(dt, Precision::Confusion());
       Standard_Real    d, dmax = 0.;
       gp_Pnt2d         aP2d;
       gp_Pnt           aPC, aPS;
@@ -1288,7 +1289,7 @@ Standard_Real BRepTools::EvalAndUpdateTol(const TopoDS_Edge&          theE,
         }
       }
 
-      newtol = 1.2 * Sqrt(dmax);
+      newtol = 1.2 * std::sqrt(dmax);
     }
   }
   Standard_Real Tol = BRep_Tool::Tolerance(theE);
@@ -1440,7 +1441,8 @@ void BRepTools::CheckLocations(const TopoDS_Shape& theS, TopTools_ListOfShape& t
     const TopLoc_Location& aLoc  = anS.Location();
     const gp_Trsf&         aTrsf = aLoc.Transformation();
     Standard_Boolean       isBadTrsf =
-      aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
+      aTrsf.IsNegative()
+      || (std::abs(std::abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
 
     if (isBadTrsf)
     {

@@ -174,10 +174,10 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face&     Face
 
     if (dU > Precision::Confusion() && dV > Precision::Confusion())
     {
-      if (Max(dU, dV) > Min(dU, dV) * aTresh)
+      if (std::max(dU, dV) > std::min(dU, dV) * aTresh)
       {
         aMinSamples = 10;
-        nbsu        = (Standard_Integer)(Sqrt(dU / dV) * aMaxSamples);
+        nbsu        = (Standard_Integer)(std::sqrt(dU / dV) * aMaxSamples);
         if (nbsu < aMinSamples)
           nbsu = aMinSamples;
         nbsv = aMaxSamples2 / nbsu;
@@ -229,13 +229,15 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
     for (; anExp.More(); anExp.Next())
     {
       Standard_Real curtol = BRep_Tool::Tolerance(TopoDS::Edge(anExp.Current()));
-      mintol3d             = Min(mintol3d, curtol);
-      maxtol3d             = Max(maxtol3d, curtol);
+      mintol3d             = std::min(mintol3d, curtol);
+      maxtol3d             = std::max(maxtol3d, curtol);
     }
-    Standard_Real minres = Max(Hsurface->UResolution(mintol3d), Hsurface->VResolution(mintol3d));
-    Standard_Real maxres = Max(Hsurface->UResolution(maxtol3d), Hsurface->VResolution(maxtol3d));
-    mintol2d             = Max(minres, Tol);
-    maxtol2d             = Max(maxres, Tol);
+    Standard_Real minres =
+      std::max(Hsurface->UResolution(mintol3d), Hsurface->VResolution(mintol3d));
+    Standard_Real maxres =
+      std::max(Hsurface->UResolution(maxtol3d), Hsurface->VResolution(maxtol3d));
+    mintol2d = std::max(minres, Tol);
+    maxtol2d = std::max(maxres, Tol);
     //
     Handle(BRepTopAdaptor_TopolTool) anAdditionalTool;
     for (Standard_Integer index = HICS.NbPoints(); index >= 1; index--)

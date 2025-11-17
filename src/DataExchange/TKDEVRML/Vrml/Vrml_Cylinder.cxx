@@ -71,13 +71,13 @@ Standard_OStream& Vrml_Cylinder::Print(Standard_OStream& anOStream) const
       break;
   }
 
-  if (Abs(myRadius - 1) > 0.0001)
+  if (std::abs(myRadius - 1) > 0.0001)
   {
     anOStream << "    radius\t";
     anOStream << myRadius << "\n";
   }
 
-  if (Abs(myHeight - 2) > 0.0001)
+  if (std::abs(myHeight - 2) > 0.0001)
   {
     anOStream << "    height\t";
     anOStream << myHeight << "\n";

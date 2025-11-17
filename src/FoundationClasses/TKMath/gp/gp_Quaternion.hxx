@@ -182,7 +182,7 @@ public:
   constexpr Standard_Real SquareNorm() const noexcept { return x * x + y * y + z * z + w * w; }
 
   //! Returns norm of quaternion
-  Standard_Real Norm() const { return Sqrt(SquareNorm()); }
+  Standard_Real Norm() const { return std::sqrt(SquareNorm()); }
 
   //! Scale all components by quaternion by theScale; note that
   //! rotation is not changed by this operation (except 0-scaling)

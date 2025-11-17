@@ -47,7 +47,7 @@ void BlendFunc::GetShape(const BlendFunc_SectionShape  SShape,
   switch (SShape)
   {
     case BlendFunc_Rational: {
-      Standard_Integer NbSpan = (Standard_Integer)(Ceiling(3. * Abs(MaxAng) / 2. / M_PI));
+      Standard_Integer NbSpan = (Standard_Integer)(std::ceil(3. * std::abs(MaxAng) / 2. / M_PI));
       NbPoles                 = 2 * NbSpan + 1;
       NbKnots                 = NbSpan + 1;
       Degree                  = 2;
@@ -116,7 +116,7 @@ void BlendFunc::GetMinimalWeights(const BlendFunc_SectionShape       SShape,
       CtoBspl->Weights(Weights);
 
       TColStd_Array1OfReal poids(Weights.Lower(), Weights.Upper());
-      Standard_Real        angle_min = Max(Precision::PConfusion(), MinAng);
+      Standard_Real        angle_min = std::max(Precision::PConfusion(), MinAng);
 
       Handle(Geom_TrimmedCurve) Sect2 = new Geom_TrimmedCurve(new Geom_Circle(C), 0., angle_min);
       CtoBspl                         = GeomConvert::CurveToBSplineCurve(Sect2, TConv);

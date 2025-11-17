@@ -67,10 +67,10 @@ void IGESGraph_Color::HLSPercentage(Standard_Real& Hue,
                                     Standard_Real& Saturation) const
 {
   Hue        = ((1.0 / (2.0 * M_PI))
-         * (ATan(((2 * theRed) - theGreen - theBlue) / (SQRT_3 * (theGreen - theBlue)))));
+         * (std::atan(((2 * theRed) - theGreen - theBlue) / (SQRT_3 * (theGreen - theBlue)))));
   Lightness  = ((1.0 / 3.0) * (theRed + theGreen + theBlue));
-  Saturation = (Sqrt((theRed * theRed) + (theGreen * theGreen) + (theBlue * theBlue)
-                     - (theRed * theGreen) - (theRed * theBlue) - (theBlue * theGreen)));
+  Saturation = (std::sqrt((theRed * theRed) + (theGreen * theGreen) + (theBlue * theBlue)
+                          - (theRed * theGreen) - (theRed * theBlue) - (theBlue * theGreen)));
 }
 
 Standard_Boolean IGESGraph_Color::HasColorName() const

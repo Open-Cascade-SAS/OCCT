@@ -25,9 +25,8 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <math_Vector.hxx>
 
-// (Sqrt(5.0) - 1.0) / 4.0
-// static const Standard_Real aSinCoeff = 0.30901699437494742410229341718282;
-static const Standard_Real aSinCoeff2 = 0.09549150281252627; // aSinCoeff^2 = (3. - Sqrt(5.)) / 8.
+static const Standard_Real aSinCoeff2 =
+  0.09549150281252627; // aSinCoeff^2 = (3. - std::sqrt(5.)) / 8.
 static const Standard_Integer aMaxPntCoeff = 15;
 
 //=================================================================================================
@@ -78,11 +77,11 @@ static Standard_Real EvalCurv(const Standard_Real  dim,
     return Precision::Infinite();
   }
 
-  q = Min(q, Precision::Infinite());
+  q = std::min(q, Precision::Infinite());
   q *= q * q;
 
   //
-  Standard_Real curv = Sqrt(mp / q);
+  Standard_Real curv = std::sqrt(mp / q);
 
   return curv;
 }
@@ -205,8 +204,8 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
   Standard_Real eps = 1.0e-9, eps1 = 1.0e3 * eps;
   for (i = aCurv.Lower() + 1; i < aCurv.Upper(); ++i)
   {
-    Standard_Real d1 = aCurv(i) - aCurv(i - 1), d2 = aCurv(i) - aCurv(i + 1), ad1 = Abs(d1),
-                  ad2 = Abs(d2);
+    Standard_Real d1 = aCurv(i) - aCurv(i - 1), d2 = aCurv(i) - aCurv(i + 1), ad1 = std::abs(d1),
+                  ad2 = std::abs(d2);
 
     if (d1 * d2 > 0. && ad1 > eps && ad2 > eps)
     {
@@ -290,11 +289,11 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
         // mp *= 2.; //P(j,i) = -P(i,j);
         //
 
-        if (mp > aSinCoeff2 * m1 * m2) // Sqrt (mp/(m1*m2)) > aSinCoeff
+        if (mp > aSinCoeff2 * m1 * m2) // std::sqrt(mp/(m1*m2)) > aSinCoeff
         {
           // Insert new knots
-          Standard_Real d1 = Abs(aCurv(anInd) - aCurv(anIndPrev));
-          Standard_Real d2 = Abs(aCurv(anInd) - aCurv(anIndNext));
+          Standard_Real d1 = std::abs(aCurv(anInd) - aCurv(anIndPrev));
+          Standard_Real d2 = std::abs(aCurv(anInd) - aCurv(anIndNext));
           if (d1 > d2)
           {
             Ok = InsKnotBefI(j, aCurv, theCoords, dim, theInds, Standard_False);
@@ -493,7 +492,7 @@ Standard_Boolean ApproxInt_KnotTools::InsKnotBefI(
     Standard_Real ac = theCurv(j - 1), ac1 = theCurv(j);
     if ((curv >= ac && curv <= ac1) || (curv >= ac1 && curv <= ac))
     {
-      if (Abs(curv - ac) < Abs(curv - ac1))
+      if (std::abs(curv - ac) < std::abs(curv - ac1))
       {
         mid = j - 1;
       }
@@ -539,7 +538,7 @@ Standard_Boolean ApproxInt_KnotTools::InsKnotBefI(
         // mp *= 2.; //P(j,i) = -P(i,j);
         //
 
-        if (mp > aSinCoeff2 * m1 * m2) // Sqrt (mp / m1m2) > aSinCoeff
+        if (mp > aSinCoeff2 * m1 * m2) // std::sqrt(mp / m1m2) > aSinCoeff
         {
           theInds.InsertBefore(theI, mid);
           return Standard_True;
@@ -645,7 +644,7 @@ static Standard_Real MaxParamRatio(const math_Vector& thePars)
     if (aRat < 1.)
       aRat = 1. / aRat;
 
-    aMaxRatio = Max(aMaxRatio, aRat);
+    aMaxRatio = std::max(aMaxRatio, aRat);
   }
   return aMaxRatio;
 }
@@ -681,8 +680,8 @@ Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(const Handle(IntPa
                                            theFpar,
                                            theLpar);
 
-  TColgp_Array1OfPnt   aTabPnt3d(1, Max(1, nbp3d));
-  TColgp_Array1OfPnt2d aTabPnt2d(1, Max(1, nbp2d));
+  TColgp_Array1OfPnt   aTabPnt3d(1, std::max(1, nbp3d));
+  TColgp_Array1OfPnt2d aTabPnt2d(1, std::max(1, nbp2d));
   TColgp_Array1OfPnt   aPntXYZ(theFpar, theLpar);
   TColgp_Array1OfPnt2d aPntU1V1(theFpar, theLpar);
   TColgp_Array1OfPnt2d aPntU2V2(theFpar, theLpar);

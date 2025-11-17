@@ -44,8 +44,8 @@ void Graphic3d_Layer::Add(const Graphic3d_CStructure* theStruct,
                           Graphic3d_DisplayPriority   thePriority,
                           Standard_Boolean            isForChangePriority)
 {
-  const Standard_Integer anIndex =
-    Min(Max(thePriority, Graphic3d_DisplayPriority_Bottom), Graphic3d_DisplayPriority_Topmost);
+  const Standard_Integer anIndex = std::min(std::max(thePriority, Graphic3d_DisplayPriority_Bottom),
+                                            Graphic3d_DisplayPriority_Topmost);
   if (theStruct == NULL)
   {
     return;
@@ -152,12 +152,12 @@ inline Graphic3d_BndBox3d centerOfinfiniteBndBox(const Graphic3d_BndBox3d& theBn
 //! Return true if at least one vertex coordinate out of float range.
 inline bool isInfiniteBndBox(const Graphic3d_BndBox3d& theBndBox)
 {
-  return Abs(theBndBox.CornerMax().x()) >= ShortRealLast()
-         || Abs(theBndBox.CornerMax().y()) >= ShortRealLast()
-         || Abs(theBndBox.CornerMax().z()) >= ShortRealLast()
-         || Abs(theBndBox.CornerMin().x()) >= ShortRealLast()
-         || Abs(theBndBox.CornerMin().y()) >= ShortRealLast()
-         || Abs(theBndBox.CornerMin().z()) >= ShortRealLast();
+  return std::abs(theBndBox.CornerMax().x()) >= ShortRealLast()
+         || std::abs(theBndBox.CornerMax().y()) >= ShortRealLast()
+         || std::abs(theBndBox.CornerMax().z()) >= ShortRealLast()
+         || std::abs(theBndBox.CornerMin().x()) >= ShortRealLast()
+         || std::abs(theBndBox.CornerMin().y()) >= ShortRealLast()
+         || std::abs(theBndBox.CornerMin().z()) >= ShortRealLast();
 }
 
 //! Extend bounding box with another box.
@@ -388,18 +388,18 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
       {
         aConvertedPoints[anIdx] = theCamera->Project(aPoints[anIdx]);
 
-        aConvertedMinX = Min(aConvertedMinX, aConvertedPoints[anIdx].X());
-        aConvertedMaxX = Max(aConvertedMaxX, aConvertedPoints[anIdx].X());
+        aConvertedMinX = std::min(aConvertedMinX, aConvertedPoints[anIdx].X());
+        aConvertedMaxX = std::max(aConvertedMaxX, aConvertedPoints[anIdx].X());
 
-        aConvertedMinY = Min(aConvertedMinY, aConvertedPoints[anIdx].Y());
-        aConvertedMaxY = Max(aConvertedMaxY, aConvertedPoints[anIdx].Y());
+        aConvertedMinY = std::min(aConvertedMinY, aConvertedPoints[anIdx].Y());
+        aConvertedMaxY = std::max(aConvertedMaxY, aConvertedPoints[anIdx].Y());
       }
 
       const Standard_Boolean isBigObject =
-        (Abs(aConvertedMaxX - aConvertedMinX)
+        (std::abs(aConvertedMaxX - aConvertedMinX)
          > 2.0) // width  of zoom pers. object greater than width  of window
                 // clang-format off
-                                         || (Abs (aConvertedMaxY - aConvertedMinY) > 2.0); // height of zoom pers. object greater than height of window
+                                         || (std::abs (aConvertedMaxY - aConvertedMinY) > 2.0); // height of zoom pers. object greater than height of window
                 // clang-format on
       const Standard_Boolean isAlreadyInScreen = (aConvertedMinX > -1.0 && aConvertedMinX < 1.0)
                                                  && (aConvertedMaxX > -1.0 && aConvertedMaxX < 1.0)
@@ -447,15 +447,15 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
                                   : (aConvertedMaxY - 1.0));
       }
 
-      const Standard_Real aDifX = Abs(aConvertedTPPoint.X()) - aShiftX;
-      const Standard_Real aDifY = Abs(aConvertedTPPoint.Y()) - aShiftY;
+      const Standard_Real aDifX = std::abs(aConvertedTPPoint.X()) - aShiftX;
+      const Standard_Real aDifY = std::abs(aConvertedTPPoint.Y()) - aShiftY;
       if (aDifX > Precision::Confusion())
       {
-        aMaxCoef = Max(aMaxCoef, Abs(aConvertedTPPoint.X()) / aDifX);
+        aMaxCoef = std::max(aMaxCoef, std::abs(aConvertedTPPoint.X()) / aDifX);
       }
       if (aDifY > Precision::Confusion())
       {
-        aMaxCoef = Max(aMaxCoef, Abs(aConvertedTPPoint.Y()) / aDifY);
+        aMaxCoef = std::max(aMaxCoef, std::abs(aConvertedTPPoint.Y()) / aDifY);
       }
     }
   }

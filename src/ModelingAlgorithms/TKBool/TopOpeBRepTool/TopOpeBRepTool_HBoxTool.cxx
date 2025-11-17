@@ -125,7 +125,7 @@ void TopOpeBRepTool_HBoxTool::ComputeBoxOnVertices(const TopoDS_Shape& S, Bnd_Bo
     Standard_Real x, y, z;
     BRep_Tool::Pnt(TopoDS::Vertex(ex.Current())).Coord(x, y, z);
     B.Update(x, y, z);
-    tol = Max(tol, BRep_Tool::Tolerance(TopoDS::Vertex(ex.Current())));
+    tol = std::max(tol, BRep_Tool::Tolerance(TopoDS::Vertex(ex.Current())));
   }
   B.Enlarge(tol);
 }

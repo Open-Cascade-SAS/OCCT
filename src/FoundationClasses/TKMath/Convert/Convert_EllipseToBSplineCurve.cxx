@@ -39,8 +39,8 @@
 //              Wayne Tiller  CADG September 1983
 //  x(t) = (1 - t^2) / (1 + t^2)
 //  y(t) =  2 t / (1 + t^2)
-//  then t = Sqrt(2) u /  ((Sqrt(2) - 2) u + 2)
-//  => u = 2 t / (Sqrt(2) + (2 - Sqrt(2)) t)
+//  then t = std::sqrt(2) u /  ((std::sqrt(2) - 2) u + 2)
+//  => u = 2 t / (std::sqrt(2) + (2 - std::sqrt(2)) t)
 //=======================================================================
 // function : Convert_EllipseToBSplineCurve
 // purpose  : this constructs a periodic Ellipse

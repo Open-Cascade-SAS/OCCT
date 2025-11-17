@@ -64,14 +64,14 @@ static void BuildParameters(const AppDef_MultiLine&          theLine,
         dist += aP2.SquareDistance(aP1);
       }
 
-      dist = Sqrt(dist);
+      dist = std::sqrt(dist);
       if (theParT == Approx_ChordLength)
       {
         thePars(i) = thePars(i - 1) + dist;
       }
       else
       { // Par == Approx_Centripetal
-        thePars(i) = thePars(i - 1) + Sqrt(dist);
+        thePars(i) = thePars(i - 1) + std::sqrt(dist);
       }
     }
     for (i = firstP; i <= lastP; i++)
@@ -98,9 +98,9 @@ static void BuildPeriodicTangent(const AppDef_MultiLine&     theLine,
     return;
   }
   //
-  Standard_Integer i, nnpol, nnp = Min(nbpoints, 9);
+  Standard_Integer i, nnpol, nnp = std::min(nbpoints, 9);
   nnpol                         = nnp;
-  Standard_Integer        lastp = Min(lastpt, firstpt + nnp - 1);
+  Standard_Integer        lastp = std::min(lastpt, firstpt + nnp - 1);
   Standard_Real           U;
   AppParCurves_Constraint Cons = AppParCurves_TangencyPoint;
   if (nnp <= 4)
@@ -139,7 +139,7 @@ static void BuildPeriodicTangent(const AppDef_MultiLine&     theLine,
     j += 3;
   }
 
-  Standard_Integer firstp = Max(firstpt, lastpt - nnp + 1);
+  Standard_Integer firstp = std::max(firstpt, lastpt - nnp + 1);
 
   if (firstp == firstpt && lastp == lastpt)
   {

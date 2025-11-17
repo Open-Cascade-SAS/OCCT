@@ -37,10 +37,10 @@ static Standard_Real DistanceToBorder(const math_Vector& theX,
 
   for (Standard_Integer anIdx = theMin.Lower(); anIdx <= theMin.Upper(); ++anIdx)
   {
-    const Standard_Real aDist1 = Abs(theX(anIdx) - theMin(anIdx));
-    const Standard_Real aDist2 = Abs(theX(anIdx) - theMax(anIdx));
+    const Standard_Real aDist1 = std::abs(theX(anIdx) - theMin(anIdx));
+    const Standard_Real aDist2 = std::abs(theX(anIdx) - theMax(anIdx));
 
-    aDist = Min(aDist, Min(aDist1, aDist2));
+    aDist = std::min(aDist, std::min(aDist1, aDist2));
   }
 
   return aDist;
@@ -97,8 +97,8 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   mySameTol = theSameTol;
 
   const Standard_Integer aMaxSquareSearchSol = 200;
-  Standard_Integer       aSolNb              = Standard_Integer(Pow(3.0, Standard_Real(myN)));
-  myMinCellFilterSol                         = Max(2 * aSolNb, aMaxSquareSearchSol);
+  Standard_Integer       aSolNb              = Standard_Integer(std::pow(3.0, Standard_Real(myN)));
+  myMinCellFilterSol                         = std::max(2 * aSolNb, aMaxSquareSearchSol);
   initCellSize();
   ComputeInitSol();
 
@@ -356,22 +356,22 @@ void math_GlobOptMin::computeInitialValues()
 
     // Walk over diagonal.
     myFunc->Value(aCurrPnt, aCurrVal);
-    aLipConst    = Max(Abs(aCurrVal - aPrevValDiag), aLipConst);
+    aLipConst    = std::max(std::abs(aCurrVal - aPrevValDiag), aLipConst);
     aPrevValDiag = aCurrVal;
 
     // Walk over diag in projected space aPnt(1) = myA(1) = const.
     aCurrPnt(1) = myA(1);
     myFunc->Value(aCurrPnt, aCurrVal);
-    aLipConst    = Max(Abs(aCurrVal - aPrevValProj), aLipConst);
+    aLipConst    = std::max(std::abs(aCurrVal - aPrevValProj), aLipConst);
     aPrevValProj = aCurrVal;
   }
 
   myC = myInitC;
-  aLipConst *= Sqrt(myN) / aStep;
+  aLipConst *= std::sqrt(myN) / aStep;
   if (aLipConst < myC * aMinEps)
-    myC = Max(aLipConst * aMinEps, aMinLC);
+    myC = std::max(aLipConst * aMinEps, aMinLC);
   else if (aLipConst > myC * aMaxEps)
-    myC = Min(myC * aMaxEps, aMaxLC);
+    myC = std::min(myC * aMaxEps, aMaxLC);
 }
 
 //=================================================================================================
@@ -407,7 +407,7 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
                                                      // clang-format off
       r2 = ((d + aPrevVal - myC * myLastStep) * 0.5 - myF) * myZ; // Shubert / Piyavsky estimation.
                                                      // clang-format on
-      r = Min(r1, r2);
+      r = std::min(r1, r2);
       if (r > myE3)
       {
         Standard_Real aSaveParam = myX(1);
@@ -438,7 +438,7 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       if (CheckFunctionalStopCriteria())
         return; // Best possible value is obtained.
 
-      myV(1)     = Min(myE2 + Abs(myF - d) / myC, myMaxV(1));
+      myV(1)     = std::min(myE2 + std::abs(myF - d) / myC, myMaxV(1));
       myLastStep = myV(1);
     }
     else
@@ -452,7 +452,7 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
     }
     if (j < myN)
     {
-      Standard_Real aUpperDimStep = Max(myV(j), myE2);
+      Standard_Real aUpperDimStep = std::max(myV(j), myE2);
       if (myV(j + 1) > aUpperDimStep)
       {
         if (aUpperDimStep > myMaxV(j + 1)) // Case of too big step.
@@ -496,7 +496,7 @@ Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
       isSame = Standard_True;
       for (j = 1; j <= myN; j++)
       {
-        if ((Abs(thePnt(j) - myY(i * myN + j))) > aTol(j))
+        if ((std::abs(thePnt(j) - myY(i * myN + j))) > aTol(j))
         {
           isSame = Standard_False;
           break;
@@ -567,7 +567,7 @@ void math_GlobOptMin::initCellSize()
 Standard_Boolean math_GlobOptMin::CheckFunctionalStopCriteria()
 {
   // Search single solution and current solution in its neighborhood.
-  if (myIsFindSingleSolution && Abs(myF - myFunctionalMinimalValue) < mySameTol * 0.01)
+  if (myIsFindSingleSolution && std::abs(myF - myFunctionalMinimalValue) < mySameTol * 0.01)
     return Standard_True;
 
   return Standard_False;
@@ -601,8 +601,8 @@ void math_GlobOptMin::ComputeInitSol()
 
 void math_GlobOptMin::checkAddCandidate(const math_Vector& thePnt, const Standard_Real theValue)
 {
-  if (Abs(theValue - myF) < mySameTol * 0.01 && // Value in point is close to optimal value.
-      !myIsFindSingleSolution)                  // Several optimal solutions are allowed.
+  if (std::abs(theValue - myF) < mySameTol * 0.01 && // Value in point is close to optimal value.
+      !myIsFindSingleSolution)                       // Several optimal solutions are allowed.
   {
     if (!isStored(thePnt))
     {

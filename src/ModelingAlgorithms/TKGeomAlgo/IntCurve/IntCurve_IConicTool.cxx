@@ -262,7 +262,7 @@ Standard_Real IntCurve_IConicTool::Distance(const gp_Pnt2d& ThePoint) const
     case GeomAbs_Hyperbola: { //-- Distance(X,Y) = (X/a)**2 - (Y/b)**2 -1
       //--                 pour x>0
       //--     -(Y/b)**2 - 1  sinon ??
-      //--     avec un gradient avec x -> Abs(x)
+      //--     avec un gradient avec x -> std::abs(x)
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
       if (P.X() > 0.0)
@@ -357,7 +357,7 @@ gp_Vec2d IntCurve_IConicTool::GradDistance(const gp_Pnt2d& ThePoint) const
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
       //--### la Branche a X negatif doit ramener vers les X positifs
-      gp_Vec2d Gradient(2.0 * Abs(P.X()) / Hypr_aa, -2.0 * P.Y() / Hypr_bb);
+      gp_Vec2d Gradient(2.0 * std::abs(P.X()) / Hypr_aa, -2.0 * P.Y() / Hypr_bb);
       Gradient.Transform(Object_To_Abs);
       return (Gradient);
     }

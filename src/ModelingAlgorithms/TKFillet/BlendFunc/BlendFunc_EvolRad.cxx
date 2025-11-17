@@ -55,7 +55,7 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
   {
     v1 = I1(ind1);
     v2 = I2(ind2);
-    if (Abs(v1 - v2) <= Epspar)
+    if (std::abs(v1 - v2) <= Epspar)
     {
       // Here elements of I1 and I2 are suitable.
       Seq.Append((v1 + v2) / 2);
@@ -893,7 +893,7 @@ Standard_Boolean BlendFunc_EvolRad::IsSolution(const math_Vector& Sol, const Sta
 
   Ok = ComputeValues(Sol, 1, Standard_True, param);
 
-  if (Abs(E(1)) <= Tol && E(2) * E(2) + E(3) * E(3) + E(4) * E(4) <= Tol * Tol)
+  if (std::abs(E(1)) <= Tol && E(2) * E(2) + E(3) * E(3) + E(4) * E(4) <= Tol * Tol)
   {
 
     // ns1, ns2, np are copied locally to avoid crushing the fields !
@@ -925,8 +925,8 @@ Standard_Boolean BlendFunc_EvolRad::IsSolution(const math_Vector& Sol, const Sta
       GetTolerance(tolerances, Tol);
       Resol.Solve(-DEDT, solution);
       controle = DEDT.Added(DEDX.Multiplied(solution));
-      if (Abs(controle(1)) > tolerances(1) || Abs(controle(2)) > tolerances(2)
-          || Abs(controle(3)) > tolerances(3) || Abs(controle(4)) > tolerances(4))
+      if (std::abs(controle(1)) > tolerances(1) || std::abs(controle(2)) > tolerances(2)
+          || std::abs(controle(3)) > tolerances(3) || std::abs(controle(4)) > tolerances(4))
       {
 #ifdef OCCT_DEBUG
         std::cout << "Cheminement : echec calcul des derivees" << std::endl;
@@ -967,7 +967,7 @@ Standard_Boolean BlendFunc_EvolRad::IsSolution(const math_Vector& Sol, const Sta
       Cosa = 1.;
       Sina = 0.;
     }
-    Angle = ACos(Cosa);
+    Angle = std::acos(Cosa);
     // Reframing on ]-pi/2, 3pi/2]
     if (Sina < 0.)
     {
@@ -977,23 +977,23 @@ Standard_Boolean BlendFunc_EvolRad::IsSolution(const math_Vector& Sol, const Sta
         Angle = 2. * M_PI - Angle;
     }
 
-    if (Abs(Angle) > maxang)
+    if (std::abs(Angle) > maxang)
     {
-      maxang = Abs(Angle);
+      maxang = std::abs(Angle);
     }
-    if (Abs(Angle) < minang)
+    if (std::abs(Angle) < minang)
     {
-      minang = Abs(Angle);
+      minang = std::abs(Angle);
     }
-    if (Abs(Angle * ray) < lengthmin)
+    if (std::abs(Angle * ray) < lengthmin)
     {
-      lengthmin = Abs(Angle * ray);
+      lengthmin = std::abs(Angle * ray);
     }
-    if (Abs(Angle * ray) > lengthmax)
+    if (std::abs(Angle * ray) > lengthmax)
     {
-      lengthmax = Abs(Angle * ray);
+      lengthmax = std::abs(Angle * ray);
     }
-    distmin = Min(distmin, pts1.Distance(pts2));
+    distmin = std::min(distmin, pts1.Distance(pts2));
 
     return Ok;
   }
@@ -1155,7 +1155,7 @@ void BlendFunc_EvolRad::Section(const Standard_Real Param,
   {
     np.Reverse();
   }
-  C.SetRadius(Abs(ray));
+  C.SetRadius(std::abs(ray));
   C.SetPosition(gp_Ax2(Center, np, ns1));
   Pdeb = 0.;
   Pfin = ElCLib::Parameter(C, pts2);
@@ -1334,8 +1334,8 @@ void BlendFunc_EvolRad::GetTolerance(const Standard_Real BoundTol,
   Tol = GeomFill::GetTolerance(myTConv, maxang, rayon, AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
-  Tol3d(low + 1) = Tol3d(up - 1) = Min(Tol, SurfTol);
-  Tol3d(low) = Tol3d(up) = Min(Tol, BoundTol);
+  Tol3d(low + 1) = Tol3d(up - 1) = std::min(Tol, SurfTol);
+  Tol3d(low) = Tol3d(up) = std::min(Tol, BoundTol);
 }
 
 //=================================================================================================
@@ -1373,7 +1373,7 @@ void BlendFunc_EvolRad::Section(const Blend_Point&    P,
 
   // Calculation and storage of distmin
   ComputeValues(X, 0, Standard_True, prm);
-  distmin = Min(distmin, pts1.Distance(pts2));
+  distmin = std::min(distmin, pts1.Distance(pts2));
 
   // ns1, ns2, np are copied locally to avoid crashing the fields !
   ns1 = nsurf1;
@@ -1431,7 +1431,7 @@ void BlendFunc_EvolRad::Section(const Blend_Point&    P,
     np.Reverse();
   }
 
-  GeomFill::GetCircle(myTConv, ns1, ns2, np, pts1, pts2, Abs(ray), Center, Poles, Weights);
+  GeomFill::GetCircle(myTConv, ns1, ns2, np, pts1, pts2, std::abs(ray), Center, Poles, Weights);
 }
 
 //=================================================================================================
@@ -1460,7 +1460,7 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
 
   // Calculation of equations
   ComputeValues(sol, 1, Standard_True, prm);
-  distmin = Min(distmin, pts1.Distance(pts2));
+  distmin = std::min(distmin, pts1.Distance(pts2));
 
   // ns1, ns2, np are copied locally to avoid crashing fields !
   ns1     = nsurf1;
@@ -1581,7 +1581,7 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
   }
 
   if (ray < 0.)
-  { // to avoid Abs(dray) some lines below
+  { // to avoid std::abs(dray) some lines below
     rayprim = -rayprim;
   }
 
@@ -1598,7 +1598,7 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
                                pts2,
                                tg1,
                                tg2,
-                               Abs(ray),
+                               std::abs(ray),
                                rayprim,
                                Center,
                                tgc,
@@ -1609,7 +1609,7 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
   }
   else
   {
-    GeomFill::GetCircle(myTConv, ns1, ns2, np, pts1, pts2, Abs(ray), Center, Poles, Weights);
+    GeomFill::GetCircle(myTConv, ns1, ns2, np, pts1, pts2, std::abs(ray), Center, Poles, Weights);
     return Standard_False;
   }
 }
@@ -1685,7 +1685,7 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
   */
   // Calculs des equations
   ComputeValues(X, 2, Standard_True, prm);
-  distmin = Min(distmin, pts1.Distance(pts2));
+  distmin = std::min(distmin, pts1.Distance(pts2));
 
   /*
   #ifdef OCCT_DEBUG
@@ -1717,14 +1717,14 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
 
 
     for ( ii=1; ii<=4; ii++) {
-      if (Abs(VDiff(ii)-D2EDT2(ii)) > 1.e-4*(Abs(D2EDT2(ii))+1.e-1))
+      if (std::abs(VDiff(ii)-D2EDT2(ii)) > 1.e-4*(std::abs(D2EDT2(ii))+1.e-1))
       {
         std::cout << "erreur sur D2EDT2 : "<< ii << std::endl;
             std::cout << D2EDT2(ii) << " D.F = " << VDiff(ii) << std::endl;
       }
       for (jj=1; jj<=4; jj++) {
-        if (Abs(MDiff(ii,jj)-D2EDXDT(ii, jj)) >
-            1.e-3*(Abs(D2EDXDT(ii, jj))+1.e-2))
+        if (std::abs(MDiff(ii,jj)-D2EDXDT(ii, jj)) >
+            1.e-3*(std::abs(D2EDXDT(ii, jj))+1.e-2))
             {
           std::cout << "erreur sur D2EDXDT : "<< ii << " , " << jj << std::endl;
           std::cout << D2EDXDT(ii,jj) << " D.F = " << MDiff(ii,jj) << std::endl;
@@ -1735,8 +1735,8 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
     MDiff = (Mu1 - DEDX)/deltaX;
     for (ii=1; ii<=4; ii++) {
       for (jj=1; jj<=4; jj++) {
-        if (Abs(MDiff(ii,jj)-D2EDX2(ii, jj, 1)) >
-        1.e-4*(Abs(D2EDX2(ii, jj, 1))+1.e-1))
+        if (std::abs(MDiff(ii,jj)-D2EDX2(ii, jj, 1)) >
+        1.e-4*(std::abs(D2EDX2(ii, jj, 1))+1.e-1))
       {
         std::cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " << 1 << std::endl;
         std::cout << D2EDX2(ii,jj, 1) << " D.F = " << MDiff(ii,jj) << std::endl;
@@ -1748,8 +1748,8 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
     MDiff = (Mv1 - DEDX)/deltaX;
     for (ii=1; ii<=4; ii++) {
       for (jj=1; jj<=4; jj++) {
-        if (Abs(MDiff(ii,jj)-D2EDX2(ii, jj, 2)) >
-        1.e-4*(Abs(D2EDX2(ii, jj, 2))+1.e-1))
+        if (std::abs(MDiff(ii,jj)-D2EDX2(ii, jj, 2)) >
+        1.e-4*(std::abs(D2EDX2(ii, jj, 2))+1.e-1))
       {
         std::cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " << 2 << std::endl;
         std::cout << D2EDX2(ii,jj, 2) << " D.F = " << MDiff(ii,jj) << std::endl;
@@ -1760,8 +1760,8 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
     MDiff = (Mu2 - DEDX)/deltaX;
     for (ii=1; ii<=4; ii++) {
       for (jj=1; jj<=4; jj++) {
-        if (Abs(MDiff(ii,jj)-D2EDX2(ii, jj, 3)) >
-        1.e-4*(Abs(D2EDX2(ii, jj, 3))+1.e-1))
+        if (std::abs(MDiff(ii,jj)-D2EDX2(ii, jj, 3)) >
+        1.e-4*(std::abs(D2EDX2(ii, jj, 3))+1.e-1))
       {
         std::cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " << 3 << std::endl;
         std::cout << D2EDX2(ii,jj, 3) << " D.F = " << MDiff(ii,jj) << std::endl;
@@ -1773,8 +1773,8 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
     MDiff = (Mv2 - DEDX)/deltaX;
     for (ii=1; ii<=4; ii++) {
       for (jj=1; jj<=4; jj++) {
-        if (Abs(MDiff(ii,jj)-D2EDX2(ii, jj, 4)) >
-        1.e-4*(Abs(D2EDX2(ii, jj, 4))+1.e-1))
+        if (std::abs(MDiff(ii,jj)-D2EDX2(ii, jj, 4)) >
+        1.e-4*(std::abs(D2EDX2(ii, jj, 4))+1.e-1))
       {
         std::cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , "
         << 4 << std::endl;
@@ -1948,7 +1948,7 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
   }
 
   if (ray < 0.)
-  { // to avoid Abs(dray) several lines below
+  { // to avoid std::abs(dray) several lines below
     rayprim = -rayprim;
     raysecn = -raysecn;
   }
@@ -1971,7 +1971,7 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
                                tg2,
                                dtg1,
                                dtg2,
-                               Abs(ray),
+                               std::abs(ray),
                                rayprim,
                                raysecn,
                                Center,
@@ -1986,7 +1986,16 @@ Standard_Boolean BlendFunc_EvolRad::Section(const Blend_Point&    P,
   }
   else
   {
-    GeomFill::GetCircle(myTConv, ns1, ns2, nplan, pts1, pts2, Abs(ray), Center, Poles, Weights);
+    GeomFill::GetCircle(myTConv,
+                        ns1,
+                        ns2,
+                        nplan,
+                        pts1,
+                        pts2,
+                        std::abs(ray),
+                        Center,
+                        Poles,
+                        Weights);
     return Standard_False;
   }
 }

@@ -153,7 +153,7 @@ void FindVertex(const TheArc&                 A,
     // The arc is already assumed in the load function.
 
     Func.Value(param, valf);
-    if (Abs(valf) <= Toler)
+    if (std::abs(valf) <= Toler)
     {
       itemp = Func.GetStateNumber();
       pnt.Append(IntStart_ThePathPoint(Func.Valpoint(itemp), Toler, vtx, A, param));
@@ -180,7 +180,7 @@ Standard_Boolean IsDegenerated(const IntSurf_Quadric& theQuadric)
   if (TypeQuad == GeomAbs_Cone)
   {
     gp_Cone       aCone      = theQuadric.Cone();
-    Standard_Real aSemiAngle = Abs(aCone.SemiAngle());
+    Standard_Real aSemiAngle = std::abs(aCone.SemiAngle());
     if (aSemiAngle < 0.02 || aSemiAngle > 1.55)
       return Standard_True;
   }
@@ -517,7 +517,7 @@ static void BoundedArc(const TheArc&                 A,
           Standard_Real aParam = Pdeb + i * delta;
           Standard_Real aValue;
           Func.Value(aParam, aValue);
-          if (Abs(aValue) > GlobalTol)
+          if (std::abs(aValue) > GlobalTol)
           {
             SolOnBoundary = Standard_False;
             break;
@@ -533,9 +533,9 @@ static void BoundedArc(const TheArc&                 A,
             // Recuperer point debut et fin, et leur parametre.
             SolAgain.GetInterval(i, pardeb, parfin);
 
-            if (Abs(pardeb - Pdeb) <= Precision::PConfusion())
+            if (std::abs(pardeb - Pdeb) <= Precision::PConfusion())
               pardeb = Pdeb;
-            if (Abs(parfin - Pfin) <= Precision::PConfusion())
+            if (std::abs(parfin - Pfin) <= Precision::PConfusion())
               parfin = Pfin;
 
             SolAgain.GetIntervalState(i, ideb, ifin);
@@ -604,21 +604,21 @@ static void BoundedArc(const TheArc&                 A,
           Standard_Real yf    = 0.0;
           Standard_Real ym    = 0.0;
           Standard_Real yl    = 0.0;
-          if (Func.Value(param, ym) && Abs(ym) < maxdist)
+          if (Func.Value(param, ym) && std::abs(ym) < maxdist)
           {
-            Standard_Real    sm    = Sign(1., ym);
+            Standard_Real    sm    = std::copysign(1., ym);
             Standard_Boolean aTang = Func.Value(para, yf) && Func.Value(parap1, yl);
             if (aTang)
             {
               // Line can be tangent surface if all distances less then maxdist
-              aTang = aTang && Abs(yf) < maxdist && Abs(yl) < maxdist;
+              aTang = aTang && std::abs(yf) < maxdist && std::abs(yl) < maxdist;
             }
             if (aTang && IsIntCSdone && TypeConS == GeomAbs_Line)
             {
               // Interval is got by exact intersection
               // Line can be tangent if all points are on the same side of surface
               // it means that signs of all distances are the same
-              Standard_Real sf = Sign(1., yf), sl = Sign(1., yl);
+              Standard_Real sf = std::copysign(1., yf), sl = std::copysign(1., yl);
               aTang = aTang && (sm == sf) && (sm == sl);
             }
             if (aTang)
@@ -632,10 +632,10 @@ static void BoundedArc(const TheArc&                 A,
                 aTol = 0.001;
 
               // fix floating point exception 569, chl-922-e9
-              parap1 = (Abs(parap1) < 1.e9) ? parap1 : ((parap1 >= 0.) ? 1.e9 : -1.e9);
-              para   = (Abs(para) < 1.e9) ? para : ((para >= 0.) ? 1.e9 : -1.e9);
+              parap1 = (std::abs(parap1) < 1.e9) ? parap1 : ((parap1 >= 0.) ? 1.e9 : -1.e9);
+              para   = (std::abs(para) < 1.e9) ? para : ((para >= 0.) ? 1.e9 : -1.e9);
 
-              Standard_Integer aNbNodes = RealToInt(Ceiling((parap1 - para) / aTol));
+              Standard_Integer aNbNodes = RealToInt(std::ceil((parap1 - para) / aTol));
 
               Standard_Real aVal    = RealLast();
               Standard_Real aValMax = 0.;
@@ -651,7 +651,7 @@ static void BoundedArc(const TheArc&                 A,
 
                 if (Func.Value(aCurPar, aCurVal))
                 {
-                  Standard_Real anAbsVal = Abs(aCurVal);
+                  Standard_Real anAbsVal = std::abs(aCurVal);
                   if (anAbsVal < aVal)
                   {
                     aVal  = anAbsVal;
@@ -668,8 +668,8 @@ static void BoundedArc(const TheArc&                 A,
               // minimal and maximal values are almost the same
               if (IsIntCSdone && aNbNodes > 1)
               {
-                aTang =
-                  Abs(param - para) > EpsX && Abs(parap1 - param) > EpsX && 0.01 * aValMax <= aVal;
+                aTang = std::abs(param - para) > EpsX && std::abs(parap1 - param) > EpsX
+                        && 0.01 * aValMax <= aVal;
               }
               if (aTang)
               {
@@ -689,7 +689,7 @@ static void BoundedArc(const TheArc&                 A,
           if (!Func.Value(para, dist))
             continue;
 
-          dist = Abs(dist);
+          dist = std::abs(dist);
 
           Standard_Integer anIndx = -1;
           // const Standard_Real aParam = Sol->GetPoint(aSI(i).Index());
@@ -697,8 +697,8 @@ static void BoundedArc(const TheArc&                 A,
           if (dist < maxdist)
           {
             if (!IsIntCSdone
-                && (Abs(aParam - Pdeb) <= Precision::PConfusion()
-                    || Abs(aParam - Pfin) <= Precision::PConfusion()))
+                && (std::abs(aParam - Pdeb) <= Precision::PConfusion()
+                    || std::abs(aParam - Pfin) <= Precision::PConfusion()))
             {
               anIndx = pSol->GetPointState(aSI(i).Index());
             }
@@ -787,8 +787,8 @@ static void BoundedArc(const TheArc&                 A,
 
     if (Nbi == 1)
     {
-      if ((Abs(pardeb - Pdeb) < Precision::PConfusion())
-          && (Abs(parfin - Pfin) < Precision::PConfusion()))
+      if ((std::abs(pardeb - Pdeb) < Precision::PConfusion())
+          && (std::abs(parfin - Pfin) < Precision::PConfusion()))
       {
         Arcsol = Standard_True;
       }
@@ -908,7 +908,7 @@ void PointProcess(const gp_Pnt&                 Pt,
   while (goon)
   {
     vtx   = Domain->Vertex();
-    dist  = Abs(Para - TheSOBTool::Parameter(vtx, A));
+    dist  = std::abs(Para - TheSOBTool::Parameter(vtx, A));
     toler = TheSOBTool::Tolerance(vtx, A);
 #ifdef OCCT_DEBUG
     if (toler > 0.1)
@@ -934,7 +934,7 @@ void PointProcess(const gp_Pnt&                 Pt,
         {
           // jag 940608  if (ptsol.Vertex() == vtx && ptsol.Arc()    == A) {
           if (Domain->Identical(ptsol.Vertex(), vtx) && ptsol.Arc() == A
-              && Abs(ptsol.Parameter() - Para) <= toler)
+              && std::abs(ptsol.Parameter() - Para) <= toler)
           {
             found = Standard_True;
           }
@@ -979,7 +979,7 @@ void PointProcess(const gp_Pnt&                 Pt,
       ptsol = pnt.Value(k);
       if (ptsol.Arc() != A || !ptsol.IsNew()) // vertex
         continue;
-      if (Abs(ptsol.Parameter() - Para) <= Precision::PConfusion())
+      if (std::abs(ptsol.Parameter() - Para) <= Precision::PConfusion())
       {
         found_internal = Standard_True;
         Range          = k;

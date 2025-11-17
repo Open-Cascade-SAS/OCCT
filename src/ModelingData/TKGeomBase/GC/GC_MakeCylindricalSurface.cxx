@@ -91,7 +91,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder&  Cyl,
                                                      const Standard_Real Dist)
 {
   TheError        = gce_Done;
-  Standard_Real R = Abs(Cyl.Radius() - Dist);
+  Standard_Real R = std::abs(Cyl.Radius() - Dist);
   TheCylinder     = new Geom_CylindricalSurface(Cyl);
   TheCylinder->SetRadius(R);
 }

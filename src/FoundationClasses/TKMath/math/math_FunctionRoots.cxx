@@ -88,7 +88,7 @@ static void AppendRoot(TColStd_SequenceOfReal&      Sol,
         pl = i;
         i  = n;
       }
-      if (Abs(X - t) <= dX)
+      if (std::abs(X - t) <= dX)
       {
         pl = 0;
         i  = n;
@@ -145,7 +145,7 @@ static void Solve(math_FunctionWithDerivative& F,
       fc = fa;
       e = d = b - a;
     }
-    if (Abs(fc) < Abs(fb))
+    if (std::abs(fc) < std::abs(fb))
     {
       a  = b;
       b  = c;
@@ -154,9 +154,9 @@ static void Solve(math_FunctionWithDerivative& F,
       fb = fc;
       fc = fa;
     }
-    tol1 = EPSEPS * Abs(b) + tols2;
+    tol1 = EPSEPS * std::abs(b) + tols2;
     xm   = 0.5 * (c - b);
-    if (Abs(xm) < tol1 || fb == 0)
+    if (std::abs(xm) < tol1 || fb == 0)
     {
       //-- On tente une iteration de newton
       Standard_Real    Xp, Yp, Dp;
@@ -177,7 +177,7 @@ static void Solve(math_FunctionWithDerivative& F,
           {
             F.Value(Xp, Yp);
             Yp -= K;
-            if (Abs(Yp) < Abs(fb))
+            if (std::abs(Yp) < std::abs(fb))
             {
               b  = Xp;
               fb = Yp;
@@ -190,7 +190,7 @@ static void Solve(math_FunctionWithDerivative& F,
       AppendRoot(Sol, NbStateSol, b, F, K, dX);
       return;
     }
-    if (Abs(e) >= tol1 && Abs(fa) > Abs(fb))
+    if (std::abs(e) >= tol1 && std::abs(fa) > std::abs(fb))
     {
       s = fb / fa;
       if (a == c)
@@ -210,9 +210,9 @@ static void Solve(math_FunctionWithDerivative& F,
       {
         q = -q;
       }
-      p    = Abs(p);
-      min1 = 3.0 * xm * q - Abs(tol1 * q);
-      min2 = Abs(e * q);
+      p    = std::abs(p);
+      min1 = 3.0 * xm * q - std::abs(tol1 * q);
+      min2 = std::abs(e * q);
       if ((p + p) < ((min1 < min2) ? min1 : min2))
       {
         e = d;
@@ -231,16 +231,16 @@ static void Solve(math_FunctionWithDerivative& F,
     }
     a  = b;
     fa = fb;
-    if (Abs(d) > tol1)
+    if (std::abs(d) > tol1)
     {
       b += d;
     }
     else
     {
       if (xm >= 0)
-        b += Abs(tol1);
+        b += std::abs(tol1);
       else
-        b += -Abs(tol1);
+        b += -std::abs(tol1);
     }
     F.Value(b, fb);
     fb -= K;
@@ -299,7 +299,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     }
     //--  On teste si EpsX est trop petit (ie : U+Nn*EpsX == U )
     Standard_Real EpsX   = _EpsX;
-    Standard_Real DeltaU = Abs(X0) + Abs(XN);
+    Standard_Real DeltaU = std::abs(X0) + std::abs(XN);
     Standard_Real NEpsX  = 0.0000000001 * DeltaU;
     if (EpsX < NEpsX)
     {
@@ -550,7 +550,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           {
             aSolX1 = aBR.Root();
             F.Value(aSolX1, aVal1);
-            aVal1 = Abs(aVal1);
+            aVal1 = std::abs(aVal1);
             if (aVal1 < EpsF)
             {
               isSol1 = Standard_True;
@@ -572,7 +572,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           f3                                 = ptrval(ip1);
           Standard_Boolean recherche_minimum = (f0 > 0.0);
 
-          if (Abs(x3 - xm) > Abs(x0 - xm))
+          if (std::abs(x3 - xm) > std::abs(x0 - xm))
           {
             x1 = xm;
             x2 = xm + C * (x3 - xm);
@@ -589,7 +589,8 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           f2 -= K;
           //-- printf("\n *************** RECHERCHE MINIMUM **********\n");
           Standard_Real tolX = 0.001 * NEpsX;
-          while (Abs(x3 - x0) > tolCR * (Abs(x1) + Abs(x2)) && (Abs(x1 - x2) > tolX))
+          while (std::abs(x3 - x0) > tolCR * (std::abs(x1) + std::abs(x2))
+                 && (std::abs(x1 - x2) > tolX))
           {
             //-- printf("\n (%10.5g,%10.5g) (%10.5g,%10.5g) (%10.5g,%10.5g) (%10.5g,%10.5g) ",
             //--    x0,f0,x1,f1,x2,f2,x3,f3);
@@ -655,21 +656,21 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           if ((recherche_minimum && f1 < f2) || (!recherche_minimum && f1 > f2))
           {
             //-- x1,f(x1) minimum
-            if (Abs(f1) < EpsF)
+            if (std::abs(f1) < EpsF)
             {
               isSol2 = Standard_True;
               aSolX2 = x1;
-              aVal2  = Abs(f1);
+              aVal2  = std::abs(f1);
             }
           }
           else
           {
             //-- x2.f(x2) minimum
-            if (Abs(f2) < EpsF)
+            if (std::abs(f2) < EpsF)
             {
               isSol2 = Standard_True;
               aSolX2 = x2;
-              aVal2  = Abs(f2);
+              aVal2  = std::abs(f2);
             }
           }
           // Choose the best solution between aSolX1, aSolX2
@@ -681,9 +682,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
             else
             {
-              aDer1 = Abs(aDer1);
+              aDer1 = std::abs(aDer1);
               F.Derivative(aSolX2, aDer2);
-              aDer2 = Abs(aDer2);
+              aDer2 = std::abs(aDer2);
               if (aDer1 < aDer2)
                 AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
               else
@@ -769,7 +770,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     StdFail_NotDone_Raise_if(Increment < EpsX, " ");
     Done = Standard_True;
     //--  On teste si EpsX est trop petit (ie : U+Nn*EpsX == U )
-    Standard_Real DeltaU = Abs(Upp) + Abs(Lowr);
+    Standard_Real DeltaU = std::abs(Upp) + std::abs(Lowr);
     Standard_Real NEpsX  = 0.0000000001 * DeltaU;
     if (EpsX < NEpsX)
     {
@@ -894,7 +895,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             {
 
               Finish = Standard_True;
-              FFi    = Min(FFxu, FFyu); // pour ne pas recalculer yu
+              FFi    = std::min(FFxu, FFyu); // pour ne pas recalculer yu
             }
             else if ((DFFxu <= Standard_Underflow && -DFFxu <= Standard_Underflow)
                      || (FFxu <= Standard_Underflow && -FFxu <= Standard_Underflow))
@@ -938,7 +939,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             BB = -2 * (Ambda * (DFFyu + 2. * DFFxu) + 3. * (FFxu - FFyu));
             CC = Ambda * DFFxu;
 
-            if (Abs(AA) < 1e-14 && Abs(BB) < 1e-14 && Abs(CC) < 1e-14)
+            if (std::abs(AA) < 1e-14 && std::abs(BB) < 1e-14 && std::abs(CC) < 1e-14)
             {
               AA = BB = CC = 0;
             }
@@ -1094,7 +1095,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                     DFxu  = BB;
                     FFxu  = FFi;
                     DFFxu = CC;
-                    FFi   = Min(FFxu, FFyu);
+                    FFi   = std::min(FFxu, FFyu);
                     T     = Alfa1 * 0.5;
                     Ambda = Alfa1 * 0.5;
                     U     = Xu;
@@ -1161,7 +1162,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                     DFyu  = BB;
                     Ambda = (Ambda - Alfa1) * 0.5;
                     T     = 0.;
-                    FFi   = Min(FFxu, FFyu);
+                    FFi   = std::min(FFxu, FFyu);
                     U     = Xu;
                   }
                   else
@@ -1177,21 +1178,21 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                 }
               }
               // tests d arrets
-              if (Abs(FFxu) <= Standard_Underflow
-                  || (Abs(DFFxu) <= Standard_Underflow && Fxu * Fyu > 0.))
+              if (std::abs(FFxu) <= Standard_Underflow
+                  || (std::abs(DFFxu) <= Standard_Underflow && Fxu * Fyu > 0.))
               {
                 Finish = Standard_True;
-                if (Abs(FFxu) <= Standard_Underflow)
+                if (std::abs(FFxu) <= Standard_Underflow)
                 {
                   FFxu = 0.0;
                 }
                 FFi = FFyu;
               }
-              else if (Abs(FFyu) <= Standard_Underflow
-                       || (Abs(DFFyu) <= Standard_Underflow && Fxu * Fyu > 0.))
+              else if (std::abs(FFyu) <= Standard_Underflow
+                       || (std::abs(DFFyu) <= Standard_Underflow && Fxu * Fyu > 0.))
               {
                 Finish = Standard_True;
-                if (Abs(FFyu) <= Standard_Underflow)
+                if (std::abs(FFyu) <= Standard_Underflow)
                 {
                   FFyu = 0.0;
                 }
@@ -1219,17 +1220,17 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
           if (U >= (Lowr - EpsX) && U <= (Upp + EpsX))
           {
-            U   = Max(Lowr, Min(U, Upp));
+            U   = std::max(Lowr, std::min(U, Upp));
             Ok  = F.Value(U, FFi);
             FFi = FFi - K;
-            if (Abs(FFi) < EpsF)
+            if (std::abs(FFi) < EpsF)
             {
               // coherence
-              if (Abs(Fxu) <= Standard_Underflow)
+              if (std::abs(Fxu) <= Standard_Underflow)
               {
                 AA = DFxu;
               }
-              else if (Abs(Fyu) <= Standard_Underflow)
+              else if (std::abs(Fyu) <= Standard_Underflow)
               {
                 AA = DFyu;
               }
@@ -1243,7 +1244,8 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               }
               if (!Sol.IsEmpty())
               {
-                if (Abs(Sol.Last() - U) > 5. * EpsX || (OldDF != RealLast() && OldDF * AA < 0.))
+                if (std::abs(Sol.Last() - U) > 5. * EpsX
+                    || (OldDF != RealLast() && OldDF * AA < 0.))
                 {
                   Sol.Append(U);
                   NbStateSol.Append(F.GetStateNumber());
@@ -1327,7 +1329,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       for (Standard_Integer i = 1; i <= n; i++)
       {
         Standard_Real t = Sol(i) - StaticSol(i);
-        if (Abs(t) > NEpsX)
+        if (std::abs(t) > NEpsX)
         {
           printf("\n mathFunctionRoots : i:%d/%d  delta: %g", i, n, t);
         }

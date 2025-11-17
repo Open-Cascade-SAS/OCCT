@@ -36,7 +36,7 @@ gp_Pnt Prs3d_ToolSector::Vertex(const Standard_Real theU, const Standard_Real th
 {
   const Standard_Real aU      = theU * M_PI / 2.0;
   const Standard_Real aRadius = myRadius * theV;
-  return gp_Pnt(Cos(aU) * aRadius, Sin(aU) * aRadius, 0.0);
+  return gp_Pnt(std::cos(aU) * aRadius, std::sin(aU) * aRadius, 0.0);
 }
 
 //=================================================================================================

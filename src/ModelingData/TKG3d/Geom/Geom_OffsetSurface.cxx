@@ -845,7 +845,7 @@ Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
     else if (Radius <= -Tol)
     {
       Axis.Rotate(gp_Ax1(Axis.Location(), Axis.Direction()), M_PI);
-      Result = new Geom_CylindricalSurface(Axis, Abs(Radius));
+      Result = new Geom_CylindricalSurface(Axis, std::abs(Radius));
       Result->UReverse();
     }
     else
@@ -862,22 +862,22 @@ Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
     Standard_Real               aRadius;
     if (isDirect)
     {
-      aRadius = C->RefRadius() + offsetValue * Cos(anAlpha);
+      aRadius = C->RefRadius() + offsetValue * std::cos(anAlpha);
     }
     else
     {
-      aRadius = C->RefRadius() - offsetValue * Cos(anAlpha);
+      aRadius = C->RefRadius() - offsetValue * std::cos(anAlpha);
     }
     if (aRadius >= 0.)
     {
       gp_Vec aZ(anAxis.Direction());
       if (isDirect)
       {
-        aZ *= -offsetValue * Sin(anAlpha);
+        aZ *= -offsetValue * std::sin(anAlpha);
       }
       else
       {
-        aZ *= offsetValue * Sin(anAlpha);
+        aZ *= offsetValue * std::sin(anAlpha);
       }
       anAxis.Translate(aZ);
       Result = new Geom_ConicalSurface(anAxis, anAlpha, aRadius);

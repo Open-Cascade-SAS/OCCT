@@ -249,10 +249,10 @@ void BRepBlend_SurfRstLineBuilder::Perform(Blend_SurfRstFunction&  Func,
   line       = new BRepBlend_Line();
   tolpoint3d = Tol3d;
   tolpoint2d = Tol2d;
-  tolgui     = Abs(TolGuide);
-  fleche     = Abs(Fleche);
+  tolgui     = std::abs(TolGuide);
+  fleche     = std::abs(Fleche);
   rebrou     = Standard_False;
-  pasmax     = Abs(MaxStep);
+  pasmax     = std::abs(MaxStep);
 
   if (Pmax - Pdep >= 0.)
   {
@@ -354,7 +354,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::PerformFirstSection(Blend_SurfRst
   line       = new BRepBlend_Line();
   tolpoint3d = Tol3d;
   tolpoint2d = Tol2d;
-  tolgui     = Abs(TolGuide);
+  tolgui     = std::abs(TolGuide);
   rebrou     = Standard_False;
 
   if (Pmax - Pdep >= 0.)
@@ -440,7 +440,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::PerformFirstSection(Blend_SurfRst
   }
   if (recads && recadrst)
   {
-    if (Abs(ws - wrst) < tolgui)
+    if (std::abs(ws - wrst) < tolgui)
     {
       State  = Blend_OnRst12;
       param  = 0.5 * (ws + wrst);
@@ -550,7 +550,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
     {
       stepw = (line->Point(nbp).Parameter() - line->Point(nbp - 1).Parameter());
     }
-    stepw = Max(stepw, 100. * tolgui);
+    stepw = std::max(stepw, 100. * tolgui);
   }
   Standard_Real parprec = param;
   if (sens * (parprec - Bound) >= -tolgui)
@@ -729,7 +729,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
         }
         if (recads && recadrst)
         {
-          if (Abs(ws - wrst) < tolgui)
+          if (std::abs(ws - wrst) < tolgui)
           {
             State  = Blend_OnRst12;
             param  = 0.5 * (ws + wrst);
@@ -837,7 +837,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
 
       case Blend_StepTooLarge: {
         stepw = stepw / 2.;
-        if (Abs(stepw) < tolgui)
+        if (std::abs(stepw) < tolgui)
         {
           previousP.ParametersOnS(U, V);
           Exts.SetValue(previousP.PointOnS(), U, V, previousP.Parameter(), tolpoint3d);
@@ -880,7 +880,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
         parinit = sol;
         parprec = param;
 
-        stepw = Min(1.5 * stepw, pasmax);
+        stepw = std::min(1.5 * stepw, pasmax);
         if (param == Bound)
         {
           Arrive = Standard_True;
@@ -1114,7 +1114,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfCurvFuncInv&   
     while (!IsVtx)
     {
       Vtx = domain1->Vertex();
-      if (Abs(BRepBlend_BlendTool::Parameter(Vtx, Arc) - Solinv(3))
+      if (std::abs(BRepBlend_BlendTool::Parameter(Vtx, Arc) - Solinv(3))
           <= BRepBlend_BlendTool::Tolerance(Vtx, Arc))
       {
         IsVtx = Standard_True;
@@ -1175,7 +1175,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfRstFunction&   
     while (!IsVtx)
     {
       Vtx = domain2->Vertex();
-      if (Abs(BRepBlend_BlendTool::Parameter(Vtx, rst) - Solinv(1))
+      if (std::abs(BRepBlend_BlendTool::Parameter(Vtx, rst) - Solinv(1))
           <= BRepBlend_BlendTool::Tolerance(Vtx, rst))
       {
         IsVtx = Standard_True;
@@ -1265,7 +1265,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfPointFuncInv&  
     while (!IsVtx)
     {
       Vtx = domain2->Vertex();
-      if (Abs(BRepBlend_BlendTool::Parameter(Vtx, rst) - wpoint)
+      if (std::abs(BRepBlend_BlendTool::Parameter(Vtx, rst) - wpoint)
           <= BRepBlend_BlendTool::Tolerance(Vtx, rst))
       {
         IsVtx = Standard_True;
@@ -1658,7 +1658,7 @@ Blend_Status BRepBlend_SurfRstLineBuilder::TestArret(Blend_SurfRstFunction& Func
       Func.Decroch(sol, nors, tgsecs);
       nors.Normalize();
       Standard_Real testra = tgsecs.Dot(nors.Crossed(tgs));
-      if (Abs(testra) > tolpoint3d)
+      if (std::abs(testra) > tolpoint3d)
       {
         if (testra < 0.)
         {
@@ -1673,7 +1673,7 @@ Blend_Status BRepBlend_SurfRstLineBuilder::TestArret(Blend_SurfRstFunction& Func
         rst->D1(sol(3), p2drstref, tg2drstref);
         testra                = tg2drst.Dot(tg2drstref);
         TopAbs_Orientation Or = domain2->Orientation(rst);
-        if (Abs(testra) > 1.e-8)
+        if (std::abs(testra) > 1.e-8)
         {
           if (testra < 0.)
           {

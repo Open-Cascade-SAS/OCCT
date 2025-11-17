@@ -346,8 +346,8 @@ public:
     }
     const size_t aNewNbRows    = theRowUpper - theRowLower + 1;
     const size_t aNewNbCols    = theColUpper - theColLower + 1;
-    const size_t aNbRowsToCopy = std::min<size_t>(mySizeRow, aNewNbRows);
-    const size_t aNbColsToCopy = std::min<size_t>(mySizeCol, aNewNbCols);
+    const size_t aNbRowsToCopy = (std::min)(mySizeRow, aNewNbRows);
+    const size_t aNbColsToCopy = (std::min)(mySizeCol, aNewNbCols);
 
     NCollection_Array2<TheItemType> aTmpMovedCopy(std::move(*this));
     TheItemType*                    anOldPointer = &aTmpMovedCopy.ChangeFirst();

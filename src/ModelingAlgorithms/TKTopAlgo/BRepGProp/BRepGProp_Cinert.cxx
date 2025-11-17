@@ -34,7 +34,8 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
 
   Standard_Real    Lower = BRepGProp_EdgeTool::FirstParameter(C);
   Standard_Real    Upper = BRepGProp_EdgeTool::LastParameter(C);
-  Standard_Integer Order = Min(BRepGProp_EdgeTool::IntegrationOrder(C), math::GaussPointsMax());
+  Standard_Integer Order =
+    std::min(BRepGProp_EdgeTool::IntegrationOrder(C), math::GaussPointsMax());
 
   gp_Pnt        P;  // value on the curve
   gp_Vec        V1; // first derivative on the curve
@@ -64,15 +65,15 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
     nbIntervals = 1;
   }
   Standard_Integer nIndex = 0;
-  Standard_Real    UU1    = Min(Lower, Upper);
-  Standard_Real    UU2    = Max(Lower, Upper);
+  Standard_Real    UU1    = std::min(Lower, Upper);
+  Standard_Real    UU2    = std::max(Lower, Upper);
 
   for (nIndex = 1; nIndex <= nbIntervals; nIndex++)
   {
     if (bHasIntervals)
     {
-      Lower = Max(TI(nIndex), UU1);
-      Upper = Min(TI(nIndex + 1), UU2);
+      Lower = std::max(TI(nIndex), UU1);
+      Upper = std::min(TI(nIndex + 1), UU2);
     }
     else
     {
@@ -145,7 +146,7 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
 
   inertia = gp_Mat(gp_XYZ(Ixx, -Ixy, -Ixz), gp_XYZ(-Ixy, Iyy, -Iyz), gp_XYZ(-Ixz, -Iyz, Izz));
 
-  if (Abs(dim) < gp::Resolution())
+  if (std::abs(dim) < gp::Resolution())
     g = P;
   else
     g.SetCoord(Ix / dim, Iy / dim, Iz / dim);

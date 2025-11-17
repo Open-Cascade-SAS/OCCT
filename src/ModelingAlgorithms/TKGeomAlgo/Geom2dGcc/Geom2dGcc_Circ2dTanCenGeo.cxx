@@ -48,7 +48,7 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
       par1sol(1, 2),
       pararg1(1, 2)
 {
-  Standard_Real           Tol = Abs(Tolerance);
+  Standard_Real           Tol = std::abs(Tolerance);
   TColgp_Array1OfPnt2d    pTan(1, 2);
   TColStd_Array1OfInteger Index(1, 2);
   TColStd_Array1OfReal    theDist2(1, 2);

@@ -173,7 +173,8 @@ void GeomFill_Frenet::Init()
 
       if (IsConst->Value(i))
       {
-        if (Abs(C.X() - C1.X()) > Tol || Abs(C.Y() - C1.Y()) > Tol || Abs(C.Z() - C1.Z()) > Tol)
+        if (std::abs(C.X() - C1.X()) > Tol || std::abs(C.Y() - C1.Y()) > Tol
+            || std::abs(C.Z() - C1.Z()) > Tol)
         {
           IsConst->ChangeValue(i) = Standard_False;
         }
@@ -294,9 +295,9 @@ void GeomFill_Frenet::Init()
     {
       Func.D2(mySngl->Value(i), C, SnglDer, SnglDer2);
       if ((norm = SnglDer.Magnitude()) > gp::Resolution())
-        mySnglLen->ChangeValue(i) = Min(NullTol / norm, MaxSingular);
+        mySnglLen->ChangeValue(i) = std::min(NullTol / norm, MaxSingular);
       else if ((norm = SnglDer2.Magnitude()) > gp::Resolution())
-        mySnglLen->ChangeValue(i) = Min(Sqrt(2 * NullTol / norm), MaxSingular);
+        mySnglLen->ChangeValue(i) = std::min(std::sqrt(2 * NullTol / norm), MaxSingular);
       else
         mySnglLen->ChangeValue(i) = MaxSingular;
     }
@@ -471,8 +472,8 @@ Standard_Boolean GeomFill_Frenet::D0(const Standard_Real theParam,
         u = theParam - aDelta;
 
       gp_Pnt P1, P2;
-      myTrimmed->D0(Min(theParam, u), P1);
-      myTrimmed->D0(Max(theParam, u), P2);
+      myTrimmed->D0(std::min(theParam, u), P1);
+      myTrimmed->D0(std::max(theParam, u), P2);
 
       gp_Vec        V1(P1, P2);
       Standard_Real aDirFactor = aTn.Dot(V1);
@@ -808,7 +809,7 @@ Standard_Boolean GeomFill_Frenet::IsSingular(const Standard_Real U, Standard_Int
     return Standard_False;
   for (i = 1; i <= mySngl->Length(); i++)
   {
-    if (Abs(U - mySngl->Value(i)) < mySnglLen->Value(i))
+    if (std::abs(U - mySngl->Value(i)) < mySnglLen->Value(i))
     {
       Index = i;
       return Standard_True;

@@ -58,8 +58,8 @@ public:
   }
 
   //! Creates the line from the equation theA*X + theB*Y + theC = 0.0 Raises ConstructionError if
-  //! Sqrt(theA*theA + theB*theB) <= Resolution from gp. Raised if Sqrt(theA*theA + theB*theB) <=
-  //! Resolution from gp.
+  //! std::sqrt(theA*theA + theB*theB) <= Resolution from gp. Raised if std::sqrt(theA*theA +
+  //! theB*theB) <= Resolution from gp.
   Standard_EXPORT gp_Lin2d(const Standard_Real theA,
                            const Standard_Real theB,
                            const Standard_Real theC);

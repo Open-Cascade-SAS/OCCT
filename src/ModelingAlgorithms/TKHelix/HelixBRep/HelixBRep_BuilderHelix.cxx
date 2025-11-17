@@ -221,7 +221,7 @@ void HelixBRep_BuilderHelix::Perform()
       aPitch = aHeight / myPitches->Value(i);
     }
 
-    aTaperAngle = ATan(.5 * (myDiams->Value(i + 1) - myDiams->Value(i)) / aHeight);
+    aTaperAngle = std::atan(.5 * (myDiams->Value(i + 1) - myDiams->Value(i)) / aHeight);
 
     TopoDS_Wire aPart;
     aBB.MakeWire(aPart);
@@ -349,7 +349,7 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1&          theAxis,
   //
   aBB.MakeWire(thePart);
   //
-  myTolReached = Max(myTolReached, aBH.ToleranceReached());
+  myTolReached = std::max(myTolReached, aBH.ToleranceReached());
   TColGeom_SequenceOfCurve aSC;
   aSC.Assign(aBH.Curves());
   if (aT1 < 0.)
@@ -368,7 +368,7 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1&          theAxis,
       return;
     }
 
-    myTolReached                         = Max(myTolReached, aBH1.ToleranceReached());
+    myTolReached                         = std::max(myTolReached, aBH1.ToleranceReached());
     const TColGeom_SequenceOfCurve& aSC1 = aBH1.Curves();
     Standard_Integer                nbc  = aSC1.Length();
     for (i = nbc; i >= 1; i--)

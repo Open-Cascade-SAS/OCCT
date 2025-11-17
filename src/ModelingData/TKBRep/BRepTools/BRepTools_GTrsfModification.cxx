@@ -46,17 +46,17 @@ BRepTools_GTrsfModification::BRepTools_GTrsfModification(const gp_GTrsf& T)
   // on prend comme dilatation maximale pour la tolerance la norme sup
   Standard_Real loc1, loc2, loc3, loc4;
 
-  loc1 = Max(Abs(T.Value(1, 1)), Abs(T.Value(1, 2)));
-  loc2 = Max(Abs(T.Value(2, 1)), Abs(T.Value(2, 2)));
-  loc3 = Max(Abs(T.Value(3, 1)), Abs(T.Value(3, 2)));
-  loc4 = Max(Abs(T.Value(1, 3)), Abs(T.Value(2, 3)));
+  loc1 = std::max(std::abs(T.Value(1, 1)), std::abs(T.Value(1, 2)));
+  loc2 = std::max(std::abs(T.Value(2, 1)), std::abs(T.Value(2, 2)));
+  loc3 = std::max(std::abs(T.Value(3, 1)), std::abs(T.Value(3, 2)));
+  loc4 = std::max(std::abs(T.Value(1, 3)), std::abs(T.Value(2, 3)));
 
-  loc1 = Max(loc1, loc2);
-  loc2 = Max(loc3, loc4);
+  loc1 = std::max(loc1, loc2);
+  loc2 = std::max(loc3, loc4);
 
-  loc1 = Max(loc1, loc2);
+  loc1 = std::max(loc1, loc2);
 
-  myGScale = Max(loc1, Abs(T.Value(3, 3)));
+  myGScale = std::max(loc1, std::abs(T.Value(3, 3)));
 }
 
 //=================================================================================================
@@ -260,7 +260,7 @@ Standard_Boolean BRepTools_GTrsfModification::NewTriangulation(
 
   theTriangulation = theTriangulation->Copy();
   theTriangulation->SetCachedMinMax(Bnd_Box()); // clear bounding box
-  theTriangulation->Deflection(theTriangulation->Deflection() * Abs(myGScale));
+  theTriangulation->Deflection(theTriangulation->Deflection() * std::abs(myGScale));
   // apply transformation to 3D nodes
   for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
   {
@@ -317,7 +317,7 @@ Standard_Boolean BRepTools_GTrsfModification::NewPolygon(const TopoDS_Edge&     
   aGTrsf.Multiply(aLoc.Transformation());
 
   thePoly = thePoly->Copy();
-  thePoly->Deflection(thePoly->Deflection() * Abs(myGScale));
+  thePoly->Deflection(thePoly->Deflection() * std::abs(myGScale));
   // transform nodes
   TColgp_Array1OfPnt& aNodesArray = thePoly->ChangeNodes();
   for (Standard_Integer anId = aNodesArray.Lower(); anId <= aNodesArray.Upper(); ++anId)

@@ -80,7 +80,8 @@ Handle(GccInt_Bisec) GccAna_CircLin2dBisec::ThisSolution(const Standard_Integer 
   Standard_Real        ycencir = circle.Location().Y();
   Standard_Real        R1      = circle.Radius();
   Standard_Real        dist    = line.Distance(circle.Location());
-  if ((Abs(line.Distance(circle.Location()) - circle.Radius()) <= gp::Resolution()) && (Index == 1))
+  if ((std::abs(line.Distance(circle.Location()) - circle.Radius()) <= gp::Resolution())
+      && (Index == 1))
   {
     gp_Lin2d biscirlin1(circle.Location(), gp_Dir2d(-ydir, xdir));
     bissol = new GccInt_BLine(biscirlin1);
@@ -123,7 +124,7 @@ Handle(GccInt_Bisec) GccAna_CircLin2dBisec::ThisSolution(const Standard_Integer 
                                              ycencir - signe * xdir * (dist - R1) / 2.)),
                               gp_Dir2d(-signe * ydir, signe * xdir));
         }
-        biscirlin = gp_Parab2d(axeparab1, Abs(dist - R1) / 2.0);
+        biscirlin = gp_Parab2d(axeparab1, std::abs(dist - R1) / 2.0);
       }
       bissol = new GccInt_BParab(biscirlin);
       //         ==========================================================

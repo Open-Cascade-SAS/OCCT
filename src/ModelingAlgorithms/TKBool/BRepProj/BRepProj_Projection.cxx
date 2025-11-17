@@ -222,7 +222,7 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
 
   // compute the ratio of the scale transformation
   Standard_Real Scale = PC.Distance(P);
-  if (Abs(Scale) < Precision::Confusion())
+  if (std::abs(Scale) < Precision::Confusion())
     throw Standard_ConstructionError("Projection");
   Scale = 1. + mdis / Scale;
 

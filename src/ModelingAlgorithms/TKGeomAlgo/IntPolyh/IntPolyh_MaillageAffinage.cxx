@@ -1172,9 +1172,9 @@ static void LargeTrianglesDeflectionsRefinement(const Handle(Adaptor3d_Surface)&
   // the smallest side of the bounding box is taken
   Standard_Real x0, y0, z0, x1, y1, z1;
   theOppositeBox.Get(x0, y0, z0, x1, y1, z1);
-  Standard_Real dx   = Abs(x1 - x0);
-  Standard_Real dy   = Abs(y1 - y0);
-  Standard_Real diag = Abs(z1 - z0);
+  Standard_Real dx   = std::abs(x1 - x0);
+  Standard_Real dy   = std::abs(y1 - y0);
+  Standard_Real diag = std::abs(z1 - z0);
   Standard_Real dd   = (dx > dy) ? dy : dx;
   if (diag > dd)
     diag = dd;
@@ -1668,7 +1668,7 @@ Standard_Integer IntPolyh_MaillageAffinage::StartingPointsResearch(const Standar
   Standard_Integer NbPointsTotal = 0;
 
   /// check T1 normal
-  if (Abs(nn1modulus) < MyConfusionPrecision)
+  if (std::abs(nn1modulus) < MyConfusionPrecision)
   { // 10.0e-20){
   }
   else
@@ -1701,7 +1701,7 @@ Standard_Integer IntPolyh_MaillageAffinage::StartingPointsResearch(const Standar
   }
 
   /// check T2 normal
-  if (Abs(mm1modulus) < MyConfusionPrecision)
+  if (std::abs(mm1modulus) < MyConfusionPrecision)
   { // 10.0e-20){
   }
   else
@@ -1809,7 +1809,7 @@ Standard_Integer IntPolyh_MaillageAffinage::NextStartingPointsResearch(
     IntPolyh_StartPoint SP1, SP2;
 
     /// check T1 normal
-    if (Abs(nn1modulus) < MyConfusionPrecision)
+    if (std::abs(nn1modulus) < MyConfusionPrecision)
     { // 10.0e-20){
     }
     else
@@ -1841,7 +1841,7 @@ Standard_Integer IntPolyh_MaillageAffinage::NextStartingPointsResearch(
       }
     }
     /// check T2 normal
-    if (Abs(mm1modulus) < MyConfusionPrecision)
+    if (std::abs(mm1modulus) < MyConfusionPrecision)
     { // 10.0e-20){
     }
     else
@@ -1947,16 +1947,16 @@ void CalculPtsInterTriEdgeCoplanaires(const Standard_Integer   TriSurfID,
     Standard_Real p0p = Per.Dot(PT1);
     /// The edge are PT1 are projected on the perpendicular of the side in the plane of the triangle
     if ((((p1p >= p0p) && (p0p >= p2p)) || ((p1p <= p0p) && (p0p <= p2p)))
-        && (Abs(p1p - p2p) > MyConfusionPrecision))
+        && (std::abs(p1p - p2p) > MyConfusionPrecision))
     {
       Standard_Real lambda = (p1p - p0p) / (p1p - p2p);
       if (lambda < -MyConfusionPrecision)
       {
       }
       IntPolyh_Point PIE;
-      if (Abs(lambda) < MyConfusionPrecision) // lambda=0
+      if (std::abs(lambda) < MyConfusionPrecision) // lambda=0
         PIE = PE1;
-      else if (Abs(lambda) > 1.0 - MyConfusionPrecision) // lambda=1
+      else if (std::abs(lambda) > 1.0 - MyConfusionPrecision) // lambda=1
         PIE = PE2;
       else
         PIE = PE1 + Edge * lambda;
@@ -1982,13 +1982,13 @@ void CalculPtsInterTriEdgeCoplanaires(const Standard_Integer   TriSurfID,
           SP1.SetXYZ(PIE.X(), PIE.Y(), PIE.Z());
           if (TriSurfID == 1)
           {
-            if (Abs(alpha) < MyConfusionPrecision)
+            if (std::abs(alpha) < MyConfusionPrecision)
             { // alpha=0
               SP1.SetUV1(PT1.U(), PT1.V());
               SP1.SetUV1(PIE.U(), PIE.V());
               SP1.SetEdge1(-1);
             }
-            if (Abs(alpha) > 1.0 - MyConfusionPrecision)
+            if (std::abs(alpha) > 1.0 - MyConfusionPrecision)
             { // alpha=1
               SP1.SetUV1(PT2.U(), PT2.V());
               SP1.SetUV1(PIE.U(), PIE.V());
@@ -2008,13 +2008,13 @@ void CalculPtsInterTriEdgeCoplanaires(const Standard_Integer   TriSurfID,
           }
           else if (TriSurfID == 2)
           {
-            if (Abs(alpha) < MyConfusionPrecision)
+            if (std::abs(alpha) < MyConfusionPrecision)
             { // alpha=0
               SP1.SetUV1(PT1.U(), PT1.V());
               SP1.SetUV1(PIE.U(), PIE.V());
               SP1.SetEdge2(-1);
             }
-            if (Abs(alpha) > 1.0 - MyConfusionPrecision)
+            if (std::abs(alpha) > 1.0 - MyConfusionPrecision)
             { // alpha=1
               SP1.SetUV1(PT2.U(), PT2.V());
               SP1.SetUV1(PIE.U(), PIE.V());
@@ -2042,13 +2042,13 @@ void CalculPtsInterTriEdgeCoplanaires(const Standard_Integer   TriSurfID,
           SP2.SetXYZ(PIE.X(), PIE.Y(), PIE.Z());
           if (TriSurfID == 1)
           {
-            if (Abs(alpha) < MyConfusionPrecision)
+            if (std::abs(alpha) < MyConfusionPrecision)
             { // alpha=0
               SP2.SetUV1(PT1.U(), PT1.V());
               SP2.SetUV1(PIE.U(), PIE.V());
               SP2.SetEdge1(-1);
             }
-            if (Abs(alpha) > 1.0 - MyConfusionPrecision)
+            if (std::abs(alpha) > 1.0 - MyConfusionPrecision)
             { // alpha=1
               SP2.SetUV1(PT2.U(), PT2.V());
               SP2.SetUV1(PIE.U(), PIE.V());
@@ -2068,13 +2068,13 @@ void CalculPtsInterTriEdgeCoplanaires(const Standard_Integer   TriSurfID,
           }
           else if (TriSurfID == 2)
           {
-            if (Abs(alpha) < MyConfusionPrecision)
+            if (std::abs(alpha) < MyConfusionPrecision)
             { // alpha=0
               SP2.SetUV1(PT1.U(), PT1.V());
               SP2.SetUV1(PIE.U(), PIE.V());
               SP2.SetEdge2(-1);
             }
-            if (Abs(alpha) > 1.0 - MyConfusionPrecision)
+            if (std::abs(alpha) > 1.0 - MyConfusionPrecision)
             { // alpha=1
               SP2.SetUV1(PT2.U(), PT2.V());
               SP2.SetUV1(PIE.U(), PIE.V());
@@ -2256,8 +2256,8 @@ void CalculPtsInterTriEdgeCoplanaires(const Standard_Integer   TriSurfID,
       }
 
       // It is checked if PEP1!=PEP2
-      if ((NbPoints == 2) && (Abs(PEP1.U() - PEP2.U()) < MyConfusionPrecision)
-          && (Abs(PEP1.V() - PEP2.V()) < MyConfusionPrecision))
+      if ((NbPoints == 2) && (std::abs(PEP1.U() - PEP2.U()) < MyConfusionPrecision)
+          && (std::abs(PEP1.V() - PEP2.V()) < MyConfusionPrecision))
         NbPoints = 1;
       if (NbPoints == 2)
       {
@@ -2300,24 +2300,24 @@ void CalculPtsInterTriEdgeCoplanaires(const Standard_Integer   TriSurfID,
   // Filter if the point is placed on top, the edge is set  to -1
   if (NbPoints > 0)
   {
-    if (Abs(SP1.Lambda1()) < MyConfusionPrecision)
+    if (std::abs(SP1.Lambda1()) < MyConfusionPrecision)
       SP1.SetEdge1(-1);
-    if (Abs(SP1.Lambda1() - 1) < MyConfusionPrecision)
+    if (std::abs(SP1.Lambda1() - 1) < MyConfusionPrecision)
       SP1.SetEdge1(-1);
-    if (Abs(SP1.Lambda2()) < MyConfusionPrecision)
+    if (std::abs(SP1.Lambda2()) < MyConfusionPrecision)
       SP1.SetEdge2(-1);
-    if (Abs(SP1.Lambda2() - 1) < MyConfusionPrecision)
+    if (std::abs(SP1.Lambda2() - 1) < MyConfusionPrecision)
       SP1.SetEdge2(-1);
   }
   if (NbPoints == 2)
   {
-    if (Abs(SP2.Lambda1()) < MyConfusionPrecision)
+    if (std::abs(SP2.Lambda1()) < MyConfusionPrecision)
       SP2.SetEdge1(-1);
-    if (Abs(SP2.Lambda1() - 1) < MyConfusionPrecision)
+    if (std::abs(SP2.Lambda1() - 1) < MyConfusionPrecision)
       SP2.SetEdge1(-1);
-    if (Abs(SP2.Lambda2()) < MyConfusionPrecision)
+    if (std::abs(SP2.Lambda2()) < MyConfusionPrecision)
       SP2.SetEdge2(-1);
-    if (Abs(SP2.Lambda2() - 1) < MyConfusionPrecision)
+    if (std::abs(SP2.Lambda2() - 1) < MyConfusionPrecision)
       SP2.SetEdge2(-1);
   }
 }
@@ -2380,7 +2380,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
 
     // PE1I = lambda.Edge
 
-    if ((Abs(pe1 - pt1) < MyConfusionPrecision) && (Abs(pe2 - pt1) < MyConfusionPrecision))
+    if ((std::abs(pe1 - pt1) < MyConfusionPrecision)
+        && (std::abs(pe2 - pt1) < MyConfusionPrecision))
     {
       // edge and triangle are coplanar (two contact points at maximum)
 
@@ -2392,7 +2393,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
       Standard_Real pp3  = PerpEdge.Dot(PT3);
       Standard_Real ppe1 = PerpEdge.Dot(PE1);
 
-      if ((Abs(pp1 - pp2) < MyConfusionPrecision) && (Abs(pp1 - pp3) < MyConfusionPrecision))
+      if ((std::abs(pp1 - pp2) < MyConfusionPrecision)
+          && (std::abs(pp1 - pp3) < MyConfusionPrecision))
       {
       }
       else
@@ -2419,8 +2421,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
                                            SP2,
                                            NbPoints);
 
-          if ((NbPoints > 1) && (Abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
-              && (Abs(SP1.V1() - SP2.V1()) < MyConfusionPrecision))
+          if ((NbPoints > 1) && (std::abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
+              && (std::abs(SP1.V1() - SP2.V1()) < MyConfusionPrecision))
             NbPoints = 1;
 
           // second side
@@ -2442,8 +2444,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
                                              NbPoints);
         }
 
-        if ((NbPoints > 1) && (Abs(SP1.U1() - SP2.U1()) < MyConfusionPrecision)
-            && (Abs(SP1.V2() - SP2.V1()) < MyConfusionPrecision))
+        if ((NbPoints > 1) && (std::abs(SP1.U1() - SP2.U1()) < MyConfusionPrecision)
+            && (std::abs(SP1.V2() - SP2.V1()) < MyConfusionPrecision))
           NbPoints = 1;
         if (NbPoints >= 2)
           return (NbPoints);
@@ -2471,8 +2473,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
                                            SP2,
                                            NbPoints);
 
-          if ((NbPoints > 1) && (Abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
-              && (Abs(SP1.V1() - SP2.V1()) < MyConfusionPrecision))
+          if ((NbPoints > 1) && (std::abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
+              && (std::abs(SP1.V1() - SP2.V1()) < MyConfusionPrecision))
             NbPoints = 1;
 
           // second side
@@ -2493,8 +2495,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
                                              SP2,
                                              NbPoints);
         }
-        if ((NbPoints > 1) && (Abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
-            && (Abs(SP1.V1() - SP2.V1()) < MyConfusionPrecision))
+        if ((NbPoints > 1) && (std::abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
+            && (std::abs(SP1.V1() - SP2.V1()) < MyConfusionPrecision))
           NbPoints = 1;
         if (NbPoints >= 2)
           return (NbPoints);
@@ -2522,8 +2524,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
                                            SP2,
                                            NbPoints);
 
-          if ((NbPoints > 1) && (Abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
-              && (Abs(SP1.V1() - SP2.V1()) < MyConfusionPrecision))
+          if ((NbPoints > 1) && (std::abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
+              && (std::abs(SP1.V1() - SP2.V1()) < MyConfusionPrecision))
             NbPoints = 1;
 
           // second side
@@ -2544,8 +2546,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
                                              SP2,
                                              NbPoints);
         }
-        if ((NbPoints > 1) && (Abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
-            && (Abs(SP2.V1() - SP1.V1()) < MyConfusionPrecision))
+        if ((NbPoints > 1) && (std::abs(SP2.U1() - SP1.U1()) < MyConfusionPrecision)
+            && (std::abs(SP2.V1() - SP1.V1()) < MyConfusionPrecision))
           NbPoints = 1;
         if (NbPoints >= 2)
           return (NbPoints);
@@ -2562,7 +2564,7 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
       if (lambda < -MyConfusionPrecision)
       {
       }
-      else if (Abs(lambda) < MyConfusionPrecision)
+      else if (std::abs(lambda) < MyConfusionPrecision)
       { // lambda==0
         PI = PE1;
         if (TriSurfID == 1)
@@ -2570,7 +2572,7 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
         else
           SP1.SetEdge1(-1);
       }
-      else if (Abs(lambda - 1.0) < MyConfusionPrecision)
+      else if (std::abs(lambda - 1.0) < MyConfusionPrecision)
       { // lambda==1
         PI = PE2;
         if (TriSurfID == 1)
@@ -2602,11 +2604,11 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
       Standard_Real D3, D4;
 
       // Combination Eq1 Eq2
-      if (Abs(Cote23X) > MyConfusionPrecision)
+      if (std::abs(Cote23X) > MyConfusionPrecision)
       {
         D1 = Cote12.Y() - Cote12.X() * Cote23.Y() / Cote23X;
       }
-      if (Abs(D1) > MyConfusionPrecision)
+      if (std::abs(D1) > MyConfusionPrecision)
       {
         alpha = (PI.Y() - PT1.Y() - (PI.X() - PT1.X()) * Cote23.Y() / Cote23X) / D1;
 
@@ -2617,24 +2619,25 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
           beta = (PI.X() - PT1.X() - alpha * Cote12.X()) / Cote23X;
       }
       // Combination Eq1 and Eq2 with Cote23.X()==0
-      else if ((Abs(Cote12.X()) > MyConfusionPrecision) && (Abs(Cote23X) < MyConfusionPrecision))
+      else if ((std::abs(Cote12.X()) > MyConfusionPrecision)
+               && (std::abs(Cote23X) < MyConfusionPrecision))
       { // There is Cote23.X()==0
         alpha = (PI.X() - PT1.X()) / Cote12.X();
 
         if ((alpha < -MyConfusionPrecision) || (alpha > (1.0 + MyConfusionPrecision)))
           return (0);
 
-        else if (Abs(Cote23.Y()) > MyConfusionPrecision)
+        else if (std::abs(Cote23.Y()) > MyConfusionPrecision)
           beta = (PI.Y() - PT1.Y() - alpha * Cote12.Y()) / Cote23.Y();
-        else if (Abs(Cote23.Z()) > MyConfusionPrecision)
+        else if (std::abs(Cote23.Z()) > MyConfusionPrecision)
           beta = (PI.Z() - PT1.Z() - alpha * Cote12.Z()) / Cote23.Z();
         else
         {
         }
       }
       // Combination Eq1 and Eq3
-      else if ((Abs(Cote23.X()) > MyConfusionPrecision)
-               && (Abs(D3 = (Cote12.Z() - Cote12.X() * Cote23.Z() / Cote23.X()))
+      else if ((std::abs(Cote23.X()) > MyConfusionPrecision)
+               && (std::abs(D3 = (Cote12.Z() - Cote12.X() * Cote23.Z() / Cote23.X()))
                    > MyConfusionPrecision))
       {
 
@@ -2646,8 +2649,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
           beta = (PI.X() - PT1.X() - alpha * Cote12.X()) / Cote23.X();
       }
       // Combination Eq2 and Eq3
-      else if ((Abs(Cote23.Y()) > MyConfusionPrecision)
-               && (Abs(D4 = (Cote12.Z() - Cote12.Y() * Cote23.Z() / Cote23.Y()))
+      else if ((std::abs(Cote23.Y()) > MyConfusionPrecision)
+               && (std::abs(D4 = (Cote12.Z() - Cote12.Y() * Cote23.Z() / Cote23.Y()))
                    > MyConfusionPrecision))
       {
 
@@ -2659,14 +2662,15 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
           beta = (PI.Y() - PT1.Y() - alpha * Cote12.Y()) / Cote23.Y();
       }
       // Combination Eq2 and Eq3 with Cote23.Y()==0
-      else if ((Abs(Cote12.Y()) > MyConfusionPrecision) && (Abs(Cote23.Y()) < MyConfusionPrecision))
+      else if ((std::abs(Cote12.Y()) > MyConfusionPrecision)
+               && (std::abs(Cote23.Y()) < MyConfusionPrecision))
       {
         alpha = (PI.Y() - PT1.Y()) / Cote12.Y();
 
         if ((alpha < -MyConfusionPrecision) || (alpha > (1.0 + MyConfusionPrecision)))
           return (0);
 
-        else if (Abs(Cote23.Z()) > MyConfusionPrecision)
+        else if (std::abs(Cote23.Z()) > MyConfusionPrecision)
           beta = (PI.Z() - PT1.Z() - alpha * Cote12.Z()) / Cote23.Z();
 
         else
@@ -2677,14 +2681,15 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
         }
       }
       // Combination Eq1 and Eq3 with Cote23.Z()==0
-      else if ((Abs(Cote12.Z()) > MyConfusionPrecision) && (Abs(Cote23.Z()) < MyConfusionPrecision))
+      else if ((std::abs(Cote12.Z()) > MyConfusionPrecision)
+               && (std::abs(Cote23.Z()) < MyConfusionPrecision))
       {
         alpha = (PI.Z() - PT1.Z()) / Cote12.Z();
 
         if ((alpha < -MyConfusionPrecision) || (alpha > (1.0 + MyConfusionPrecision)))
           return (0);
 
-        else if (Abs(Cote23.X()) > MyConfusionPrecision)
+        else if (std::abs(Cote23.X()) > MyConfusionPrecision)
           beta = (PI.X() - PT1.X() - alpha * Cote12.X()) / Cote23.X();
 
         else
@@ -2717,14 +2722,14 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
             SP1.SetUV1(PT1.U(), PT1.V());
             SP1.SetEdge1(-1);
           }
-          else if ((beta < MyConfusionPrecision) && (Abs(1 - alpha) < MyConfusionPrecision))
+          else if ((beta < MyConfusionPrecision) && (std::abs(1 - alpha) < MyConfusionPrecision))
           { // beta==0 alpha==1
             SP1.SetXYZ(PT2.X(), PT2.Y(), PT2.Z());
             SP1.SetUV1(PT2.U(), PT2.V());
             SP1.SetEdge1(-1);
           }
-          else if ((Abs(beta - 1) < MyConfusionPrecision)
-                   && (Abs(1 - alpha) < MyConfusionPrecision))
+          else if ((std::abs(beta - 1) < MyConfusionPrecision)
+                   && (std::abs(1 - alpha) < MyConfusionPrecision))
           { // beta==1 alpha==1
             SP1.SetXYZ(PT3.X(), PT3.Y(), PT3.Z());
             SP1.SetUV1(PT3.U(), PT3.V());
@@ -2738,7 +2743,7 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
             else
               SP1.SetLambda1(1.0 - alpha);
           }
-          else if (Abs(beta - alpha) < MyConfusionPrecision)
+          else if (std::abs(beta - alpha) < MyConfusionPrecision)
           { // beta==alpha
             SP1.SetEdge1(Tri1.GetEdgeNumber(3));
             if (Tri1.GetEdgeOrientation(3) > 0)
@@ -2746,7 +2751,7 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
             else
               SP1.SetLambda1(alpha);
           }
-          else if (Abs(alpha - 1) < MyConfusionPrecision)
+          else if (std::abs(alpha - 1) < MyConfusionPrecision)
           { // alpha==1
             SP1.SetEdge1(Tri1.GetEdgeNumber(2));
             if (Tri1.GetEdgeOrientation(2) > 0)
@@ -2767,14 +2772,14 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
             SP1.SetUV2(PT1.U(), PT1.V());
             SP1.SetEdge2(-1);
           }
-          else if ((beta < MyConfusionPrecision) && (Abs(1 - alpha) < MyConfusionPrecision))
+          else if ((beta < MyConfusionPrecision) && (std::abs(1 - alpha) < MyConfusionPrecision))
           { // beta==0 alpha==1
             SP1.SetXYZ(PT2.X(), PT2.Y(), PT2.Z());
             SP1.SetUV2(PT2.U(), PT2.V());
             SP1.SetEdge2(-1);
           }
-          else if ((Abs(beta - 1) < MyConfusionPrecision)
-                   && (Abs(1 - alpha) < MyConfusionPrecision))
+          else if ((std::abs(beta - 1) < MyConfusionPrecision)
+                   && (std::abs(1 - alpha) < MyConfusionPrecision))
           { // beta==1 alpha==1
             SP1.SetXYZ(PT3.X(), PT3.Y(), PT3.Z());
             SP1.SetUV2(PT3.U(), PT3.V());
@@ -2788,7 +2793,7 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
             else
               SP1.SetLambda2(1.0 - alpha);
           }
-          else if (Abs(beta - alpha) < MyConfusionPrecision)
+          else if (std::abs(beta - alpha) < MyConfusionPrecision)
           { // beta==alpha
             SP1.SetEdge2(Tri2.GetEdgeNumber(3));
             if (Tri2.GetEdgeOrientation(3) > 0)
@@ -2796,7 +2801,7 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact(const Standard_I
             else
               SP1.SetLambda2(alpha);
           }
-          else if (Abs(alpha - 1) < MyConfusionPrecision)
+          else if (std::abs(alpha - 1) < MyConfusionPrecision)
           { // alpha==1
             SP1.SetEdge2(Tri2.GetEdgeNumber(2));
             if (Tri2.GetEdgeOrientation(2) > 0)
@@ -2972,11 +2977,11 @@ Standard_Integer CheckNextStartPoint(IntPolyh_SectionLine&         SectionLine,
     for (Standard_Integer uiui = 0; uiui < FinTTZ; uiui++)
     {
       IntPolyh_StartPoint TestSP = TTangentZones[uiui];
-      if ((Abs(SP.U1() - TestSP.U1()) < MyConfusionPrecision)
-          && (Abs(SP.V1() - TestSP.V1()) < MyConfusionPrecision))
+      if ((std::abs(SP.U1() - TestSP.U1()) < MyConfusionPrecision)
+          && (std::abs(SP.V1() - TestSP.V1()) < MyConfusionPrecision))
       {
-        if ((Abs(SP.U2() - TestSP.U2()) < MyConfusionPrecision)
-            && (Abs(SP.V2() - TestSP.V2()) < MyConfusionPrecision))
+        if ((std::abs(SP.U2() - TestSP.U2()) < MyConfusionPrecision)
+            && (std::abs(SP.V2() - TestSP.V2()) < MyConfusionPrecision))
         {
           Test = 0; // SP is already in the list of  tops
           uiui = FinTTZ;

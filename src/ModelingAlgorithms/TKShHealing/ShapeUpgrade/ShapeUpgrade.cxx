@@ -86,7 +86,7 @@ Standard_Boolean ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
     TempKnots(TempKnotIndex)       = KnotSequence(StartFlatIndex - deg);
 
     for (j = StartFlatIndex - deg + 1; j <= EndFlatIndex + deg; j++)
-      if (Abs(KnotSequence(j) - KnotSequence(j - 1)) <= gp::Resolution())
+      if (std::abs(KnotSequence(j) - KnotSequence(j - 1)) <= gp::Resolution())
         TempMults(TempKnotIndex)++;
       else
         TempKnots(++TempKnotIndex) = KnotSequence(j);

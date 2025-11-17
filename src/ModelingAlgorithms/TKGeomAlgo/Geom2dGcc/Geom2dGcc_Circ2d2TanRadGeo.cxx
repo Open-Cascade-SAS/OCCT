@@ -75,7 +75,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedLin
   // Traitement.                                                           +
   //========================================================================
 
-  Standard_Real        Tol      = Abs(Tolerance);
+  Standard_Real        Tol      = std::abs(Tolerance);
   Standard_Real        thefirst = -100000.;
   Standard_Real        thelast  = 100000.;
   Standard_Real        firstparam;
@@ -198,8 +198,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedLin
         Handle(Geom2dAdaptor_Curve) HCu2 = new Geom2dAdaptor_Curve(Cu2);
         // Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
         Adaptor2d_OffsetCurve C2(HCu2, -cote2(jcote2));
-        firstparam = Max(C2.FirstParameter(), thefirst);
-        lastparam  = Min(C2.LastParameter(), thelast);
+        firstparam = std::max(C2.FirstParameter(), thefirst);
+        lastparam  = std::min(C2.LastParameter(), thelast);
         IntRes2d_Domain                    D2(C2.Value(firstparam),
                            firstparam,
                            Tol,
@@ -289,7 +289,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedCir
   // Traitement.                                                           +
   //========================================================================
 
-  Standard_Real        Tol      = Abs(Tolerance);
+  Standard_Real        Tol      = std::abs(Tolerance);
   Standard_Real        thefirst = -100000.;
   Standard_Real        thelast  = 100000.;
   Standard_Real        firstparam;
@@ -413,8 +413,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedCir
         Handle(Geom2dAdaptor_Curve) HCu2 = new Geom2dAdaptor_Curve(Cu2);
         // Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
         Adaptor2d_OffsetCurve C2(HCu2, -cote2(jcote2));
-        firstparam = Max(C2.FirstParameter(), thefirst);
-        lastparam  = Min(C2.LastParameter(), thelast);
+        firstparam = std::max(C2.FirstParameter(), thefirst);
+        lastparam  = std::min(C2.LastParameter(), thelast);
         IntRes2d_Domain D2(C2.Value(firstparam),
                            firstparam,
                            Tol,
@@ -443,11 +443,11 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedCir
               {
                 qualifier1(NbrSol) = Qualified1.Qualifier();
               }
-              else if (Abs(distcc1 + Radius - R1) < Tol)
+              else if (std::abs(distcc1 + Radius - R1) < Tol)
               {
                 qualifier1(NbrSol) = GccEnt_enclosed;
               }
-              else if (Abs(distcc1 - R1 - Radius) < Tol)
+              else if (std::abs(distcc1 - R1 - Radius) < Tol)
               {
                 qualifier1(NbrSol) = GccEnt_outside;
               }
@@ -514,7 +514,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
   // Traitement.                                                           +
   //========================================================================
 
-  Standard_Real        Tol      = Abs(Tolerance);
+  Standard_Real        Tol      = std::abs(Tolerance);
   Standard_Real        thefirst = -100000.;
   Standard_Real        thelast  = 100000.;
   Standard_Real        firstparam;
@@ -570,8 +570,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
       Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
       // Adaptor2d_OffsetCurve Cu2(HCu1,cote1(jcote1));
       Adaptor2d_OffsetCurve Cu2(HCu1, -cote1(jcote1));
-      firstparam = Max(Cu2.FirstParameter(), thefirst);
-      lastparam  = Min(Cu2.LastParameter(), thelast);
+      firstparam = std::max(Cu2.FirstParameter(), thefirst);
+      lastparam  = std::min(Cu2.LastParameter(), thelast);
       IntRes2d_Domain D2(Cu2.Value(firstparam),
                          firstparam,
                          Tol,
@@ -674,7 +674,7 @@ static void PrecRoot(const Adaptor2d_OffsetCurve& theC1,
   theC1.D2(aU, aPu, aD1u, aD2u);
   theC2.D2(aV, aPv, aD1v, aD2v);
 
-  const Standard_Real aCrProd = Abs(aD1u.Crossed(aD1v));
+  const Standard_Real aCrProd = std::abs(aD1u.Crossed(aD1v));
   if (aCrProd * aCrProd > 1.0e-6 * aD1u.SquareMagnitude() * aD1v.SquareMagnitude())
   {
     // Curves are not tangent. Therefore, we consider that
@@ -750,9 +750,9 @@ static void PrecRoot(const Adaptor2d_OffsetCurve& theC1,
       aStepU = -(aS1 * aDS2v - aS2 * aDS1v) / aDet;
       aStepV = -(aS2 * aDS1u - aS1 * aDS2u) / aDet;
 
-      if (Abs(aStepU) < Epsilon(Abs(aU)))
+      if (std::abs(aStepU) < Epsilon(std::abs(aU)))
       {
-        if (Abs(aStepV) < Epsilon(Abs(aV)))
+        if (std::abs(aStepV) < Epsilon(std::abs(aV)))
         {
           break;
         }
@@ -807,7 +807,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
   // Traitement.                                                           +
   //========================================================================
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
 #ifdef OCCT_DEBUG
   const Standard_Real thefirst = -100000.;
   const Standard_Real thelast  = 100000.;
@@ -920,8 +920,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
       // Adaptor2d_OffsetCurve C1(HCu1,cote1(jcote1));
       Adaptor2d_OffsetCurve C1(HCu1, -cote1(jcote1));
 #ifdef OCCT_DEBUG
-      Standard_Real   firstparam = Max(C1.FirstParameter(), thefirst);
-      Standard_Real   lastparam  = Min(C1.LastParameter(), thelast);
+      Standard_Real   firstparam = std::max(C1.FirstParameter(), thefirst);
+      Standard_Real   lastparam  = std::min(C1.LastParameter(), thelast);
       IntRes2d_Domain D2C1(C1.Value(firstparam),
                            firstparam,
                            Tol,
@@ -935,8 +935,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
         // Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
         Adaptor2d_OffsetCurve C2(HCu2, -cote2(jcote2));
 #ifdef OCCT_DEBUG
-        firstparam = Max(C2.FirstParameter(), thefirst);
-        lastparam  = Min(C2.LastParameter(), thelast);
+        firstparam = std::max(C2.FirstParameter(), thefirst);
+        lastparam  = std::min(C2.LastParameter(), thelast);
         IntRes2d_Domain D2C2(C2.Value(firstparam),
                              firstparam,
                              Tol,
@@ -973,8 +973,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
               Standard_Real aDist1221 = P12.SquareDistance(P21);
               Standard_Real aDist2122 = P21.SquareDistance(P22);
 
-              if ((Min(aDist1112, aDist1122) <= aSQApproxTol)
-                  && (Min(aDist1221, aDist2122) <= aSQApproxTol))
+              if ((std::min(aDist1112, aDist1122) <= aSQApproxTol)
+                  && (std::min(aDist1221, aDist2122) <= aSQApproxTol))
               {
                 PrecRoot(C1, C2, aU0, aV0, aU0, aV0);
               }

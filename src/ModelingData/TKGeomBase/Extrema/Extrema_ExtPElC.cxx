@@ -235,17 +235,16 @@ Method:
   Standard_Real    OPpMagn = OPp.Magnitude();
   if (OPpMagn < Tol)
   {
-    if (Abs(A - B) < Tol)
+    if (std::abs(A - B) < Tol)
     {
       return;
     }
   }
   Standard_Real X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
   Standard_Real Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
-  //  Standard_Real Y = Sqrt(OPpMagn*OPpMagn-X*X);
 
   Standard_Real ko2 = (B * B - A * A) / 2., ko3 = -B * Y, ko4 = A * X;
-  if (Abs(ko3) < 1.e-16 * Max(Abs(ko2), Abs(ko3)))
+  if (std::abs(ko3) < 1.e-16 * std::max(std::abs(ko2), std::abs(ko3)))
     ko3 = 0.0;
 
   //  math_TrigonometricFunctionRoots Sol(0.,(B*B-A*A)/2.,-B*Y,A*X,0.,Uinf,Usup);
@@ -300,7 +299,7 @@ Method:
       Let Pp, le point projete; on recherche les valeurs u telles que:
        (C(u)-Pp).C'(u) = 0. (1)
       Let R and r be the radiuses of the hyperbola,
-          Chu = Cosh(u) and Shu = Sinh(u),
+          Chu = std::cosh(u) and Shu = std::sinh(u),
           C(u) = (R*Chu,r*Shu) and Pp = (X,Y);
      Then, (1) <=> (R*Chu-X,r*Shu-Y).(R*Shu,r*Chu) = 0.
                     (R**2+r**2)*Chu*Shu - X*R*Shu - Y*r*Chu = 0. (2)
@@ -352,7 +351,7 @@ Method:
     Vs = Sol.Value(NoSol);
     if (Vs > 0.)
     {
-      Us = Log(Vs);
+      Us = std::log(Vs);
       if ((Us >= Uinf) && (Us <= Usup))
       {
         Cu      = ElCLib::Value(Us, C);
@@ -427,10 +426,9 @@ Method:
 
   // 2- Calculation of solutions ...
 
-  Standard_Real F = C.Focal();
-  gp_Vec        OPp(O, Pp);
-  Standard_Real X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
-  //  Standard_Real Y = Sqrt(OPpMagn*OPpMagn-X*X);
+  Standard_Real              F = C.Focal();
+  gp_Vec                     OPp(O, Pp);
+  Standard_Real              X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
   Standard_Real              Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
   math_DirectPolynomialRoots Sol(1. / (4. * F), 0., 2. * F - X, -2. * F * Y);
   if (!Sol.IsDone())

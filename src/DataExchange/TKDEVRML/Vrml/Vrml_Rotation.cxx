@@ -39,8 +39,8 @@ Standard_OStream& Vrml_Rotation::Print(Standard_OStream& anOStream) const
 {
   anOStream << "Rotation {\n";
 
-  if (Abs(myRotation.RotationX() - 0) > 0.0001 || Abs(myRotation.RotationY() - 0) > 0.0001
-      || Abs(myRotation.RotationZ() - 1) > 0.0001 || Abs(myRotation.Angle() - 0) > 0.0001)
+  if (std::abs(myRotation.RotationX() - 0) > 0.0001 || std::abs(myRotation.RotationY() - 0) > 0.0001
+      || std::abs(myRotation.RotationZ() - 1) > 0.0001 || std::abs(myRotation.Angle() - 0) > 0.0001)
   {
     anOStream << "    rotation\t";
     anOStream << myRotation.RotationX() << " " << myRotation.RotationY() << " ";

@@ -36,7 +36,7 @@ class Geom_Direction : public Geom_Vector
 public:
   //! Creates a unit vector with it 3 cartesian coordinates.
   //!
-  //! Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+  //! Raised if std::sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
   Standard_EXPORT Geom_Direction(const Standard_Real X,
                                  const Standard_Real Y,
                                  const Standard_Real Z);
@@ -46,7 +46,7 @@ public:
 
   //! Sets <me> to X,Y,Z coordinates.
   //!
-  //! Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+  //! Raised if std::sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
   Standard_EXPORT void SetCoord(const Standard_Real X,
                                 const Standard_Real Y,
                                 const Standard_Real Z);
@@ -56,17 +56,17 @@ public:
 
   //! Changes the X coordinate of <me>.
   //!
-  //! Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+  //! Raised if std::sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
   Standard_EXPORT void SetX(const Standard_Real X);
 
   //! Changes the Y coordinate of <me>.
   //!
-  //! Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+  //! Raised if std::sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
   Standard_EXPORT void SetY(const Standard_Real Y);
 
   //! Changes the Z coordinate of <me>.
   //!
-  //! Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+  //! Raised if std::sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
   Standard_EXPORT void SetZ(const Standard_Real Z);
 
   //! Returns the non transient direction with the same

@@ -339,7 +339,7 @@ Standard_Integer TopOpeBRepBuild_ShapeSet::MaxNumberSubShape(const TopoDS_Shape&
     for (i = 0; LI.More(); LI.Next(), i++)
     {
     }
-    m = Max(m, i);
+    m = std::max(m, i);
     SE.Next();
   }
   return m;

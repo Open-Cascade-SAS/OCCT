@@ -38,7 +38,7 @@ Handle(Expr_GeneralExpression) Expr_Sine::ShallowSimplified() const
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
-    return new Expr_NumericValue(Sin(myNVexp->GetValue()));
+    return new Expr_NumericValue(std::sin(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_ArcSine)))
   {
@@ -84,7 +84,7 @@ Handle(Expr_GeneralExpression) Expr_Sine::Derivative(const Handle(Expr_NamedUnkn
 Standard_Real Expr_Sine::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                   const TColStd_Array1OfReal&      vals) const
 {
-  return ::Sin(Operand()->Evaluate(vars, vals));
+  return std::sin(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_Sine::String() const

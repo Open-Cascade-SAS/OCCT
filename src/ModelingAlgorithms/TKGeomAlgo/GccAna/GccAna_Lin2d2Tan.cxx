@@ -48,7 +48,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const gp_Pnt2d&     ThePoint1,
       pararg2(1, 1)
 {
 
-  Standard_Real Tol  = Abs(Tolerance);
+  Standard_Real Tol  = std::abs(Tolerance);
   WellDone           = Standard_False;
   NbrSol             = 0;
   Standard_Real dist = ThePoint1.Distance(ThePoint2);
@@ -94,7 +94,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
       pararg2(1, 2)
 {
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
@@ -115,7 +115,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
   {
     WellDone = Standard_True;
   }
-  else if (Abs(ThePoint.Distance(C1.Location()) - R1) <= Tol)
+  else if (std::abs(ThePoint.Distance(C1.Location()) - R1) <= Tol)
   {
     gp_Dir2d dir(gp_Vec2d(C1.Location(), ThePoint));
     linsol(1) = gp_Lin2d(ThePoint, gp_Dir2d(Standard_Real(-dir.Y()), Standard_Real(dir.X())));
@@ -131,7 +131,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
   {
     Standard_Real signe = 1;
     Standard_Real dist  = ThePoint.Distance(C1.Location());
-    Standard_Real d     = dist - Sqrt(dist * dist - R1 * R1);
+    Standard_Real d     = dist - std::sqrt(dist * dist - R1 * R1);
     if (Qualified1.IsEnclosing())
     {
       //   =============================
@@ -151,7 +151,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
     }
     for (Standard_Integer i = 1; i <= NbrSol; i++)
     {
-      gp_Pnt2d P1(C1.Location().Rotated(ThePoint, ASin(signe * R1 / dist)));
+      gp_Pnt2d P1(C1.Location().Rotated(ThePoint, std::asin(signe * R1 / dist)));
       gp_Dir2d D1(gp_Vec2d(P1, ThePoint));
       P1        = gp_Pnt2d(P1.XY() + d * D1.XY());
       linsol(i) = gp_Lin2d(P1, gp_Dir2d(gp_Vec2d(P1, ThePoint)));
@@ -205,7 +205,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
       pararg2(1, 4)
 {
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
@@ -231,7 +231,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
     gp_Dir2d         D1;
     Standard_Integer signe = 1;
     Standard_Real    dist  = C1.Location().Distance(C2.Location());
-    if (Tol < Max(R1, R2) - dist - Min(R1, R2))
+    if (Tol < std::max(R1, R2) - dist - std::min(R1, R2))
     {
       WellDone = Standard_True;
     }
@@ -241,7 +241,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
       if (Qualified1.IsEnclosing() && Qualified2.IsEnclosing())
       {
         //     =========================================================
-        if (Abs(dist + Min(R1, R2) - Max(R1, R2)) <= Tol && dist >= Tol)
+        if (std::abs(dist + std::min(R1, R2) - std::max(R1, R2)) <= Tol && dist >= Tol)
         {
           if (R1 < R2)
           {
@@ -263,7 +263,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
         }
         else
         {
-          gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), ASin((R1 - R2) / dist)));
+          gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), std::asin((R1 - R2) / dist)));
           D1        = gp_Dir2d(gp_Vec2d(C1.Location(), P1));
           P1        = gp_Pnt2d((C1.Location().XY() + gp_XY(R1 * D1.Y(), -R1 * D1.X())));
           linsol(1) = gp_Lin2d(P1, D1);
@@ -293,7 +293,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
         {
           WellDone = Standard_True;
         }
-        else if (Abs(dist - R1 - R2) < Tol && dist > Tol)
+        else if (std::abs(dist - R1 - R2) < Tol && dist > Tol)
         {
           D1 = gp_Dir2d(gp_Vec2d(C1.Location(), C2.Location()));
           gp_Pnt2d P1(C1.Location().XY() + R1 * D1.XY());
@@ -308,7 +308,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
         }
         else
         {
-          gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), ASin(signe * (R1 + R2) / dist)));
+          gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), std::asin(signe * (R1 + R2) / dist)));
           D1        = gp_Dir2d(gp_Vec2d(C1.Location(), P1));
           P1        = gp_Pnt2d(C1.Location().XY() + signe * (gp_XY(R1 * D1.Y(), -R1 * D1.X())));
           linsol(1) = gp_Lin2d(P1, D1);
@@ -324,7 +324,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
       else if (Qualified1.IsOutside() && Qualified2.IsOutside())
       {
         //     =========================================================
-        if (Abs(dist + Min(R1, R2) - Max(R1, R2)) < Tol && dist > Tol)
+        if (std::abs(dist + std::min(R1, R2) - std::max(R1, R2)) < Tol && dist > Tol)
         {
           if (R1 < R2)
           {
@@ -348,7 +348,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
         }
         else
         {
-          gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), ASin((R2 - R1) / dist)));
+          gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), std::asin((R2 - R1) / dist)));
           D1        = gp_Dir2d(gp_Vec2d(C1.Location(), P1));
           P1        = gp_Pnt2d(C1.Location().XY() + gp_XY(-R1 * D1.Y(), R1 * D1.X()));
           linsol(1) = gp_Lin2d(P1, D1);
@@ -376,7 +376,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
           {
             signe = -1;
           }
-          if (Abs(dist + Min(R1, R2) - Max(R1, R2)) < Tol && dist > Tol)
+          if (std::abs(dist + std::min(R1, R2) - std::max(R1, R2)) < Tol && dist > Tol)
           {
             if (R1 < R2)
             {
@@ -400,7 +400,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
           }
           else
           {
-            gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), ASin((R1 - R2) / dist)));
+            gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), std::asin((R1 - R2) / dist)));
             D1        = gp_Dir2d(gp_Vec2d(C1.Location(), P1));
             P1        = gp_Pnt2d(C1.Location().XY() + gp_XY(R1 * D1.Y(), -R1 * D1.X()));
             linsol(1) = gp_Lin2d(P1, D1);
@@ -412,9 +412,10 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
               gp_Pnt2d(C2.Location().XY() + signe * (gp_XY(R2 * D1.Y(), -R2 * D1.X())));
             WellDone = Standard_True;
             NbrSol   = 1;
-            if (Min(R1, R2) + Max(R1, R2) < dist)
+            if (std::min(R1, R2) + std::max(R1, R2) < dist)
             {
-              gp_Pnt2d P2(C2.Location().Rotated(C1.Location(), ASin(signe * (R1 + R2) / dist)));
+              gp_Pnt2d P2(
+                C2.Location().Rotated(C1.Location(), std::asin(signe * (R1 + R2) / dist)));
               gp_Dir2d D2(gp_Vec2d(C1.Location(), P2));
               P2        = gp_Pnt2d(C1.Location().XY() + signe * (gp_XY(R1 * D2.Y(), -R1 * D2.X())));
               linsol(2) = gp_Lin2d(P2, D2);
@@ -440,7 +441,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
           {
             signe = -1;
           }
-          if (Abs(dist + Min(R1, R2) - Max(R1, R2)) <= Tol && dist >= Tol)
+          if (std::abs(dist + std::min(R1, R2) - std::max(R1, R2)) <= Tol && dist >= Tol)
           {
             if (R1 < R2)
             {
@@ -464,7 +465,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
           }
           else
           {
-            gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), ASin(signe * (R2 - R1) / dist)));
+            gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), std::asin(signe * (R2 - R1) / dist)));
             D1        = gp_Dir2d(gp_Vec2d(C1.Location(), P1));
             P1        = gp_Pnt2d(C1.Location().XY() + gp_XY(-R1 * D1.Y(), R1 * D1.X()));
             linsol(1) = gp_Lin2d(P1, D1);
@@ -476,9 +477,10 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
               gp_Pnt2d(C2.Location().XY() + signe * (gp_XY(-R2 * D1.Y(), R2 * D1.X())));
             WellDone = Standard_True;
             NbrSol   = 1;
-            if (Min(R1, R2) + Max(R1, R2) < dist)
+            if (std::min(R1, R2) + std::max(R1, R2) < dist)
             {
-              gp_Pnt2d P2(C2.Location().Rotated(C1.Location(), ASin(signe * (-R2 - R1) / dist)));
+              gp_Pnt2d P2(
+                C2.Location().Rotated(C1.Location(), std::asin(signe * (-R2 - R1) / dist)));
               gp_Dir2d D2(gp_Vec2d(C1.Location(), P2));
               P2        = gp_Pnt2d(C1.Location().XY() + signe * (gp_XY(-R1 * D2.Y(), R1 * D2.X())));
               linsol(2) = gp_Lin2d(P2, D2);
@@ -500,7 +502,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
       {
         signe = -signe;
         NbrSol++;
-        gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), ASin(signe * (R2 - R1) / dist)));
+        gp_Pnt2d P1(C2.Location().Rotated(C1.Location(), std::asin(signe * (R2 - R1) / dist)));
         D1             = gp_Dir2d(gp_Vec2d(C1.Location(), P1));
         P1             = gp_Pnt2d(C1.Location().XY() + signe * gp_XY(-R1 * D1.Y(), R1 * D1.X()));
         linsol(NbrSol) = gp_Lin2d(P1, D1);
@@ -511,9 +513,9 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
         pnttg2sol(NbrSol) =
           gp_Pnt2d(C2.Location().XY() + signe * (gp_XY(-R2 * D1.Y(), R2 * D1.X())));
         WellDone = Standard_True;
-        if (Min(R1, R2) + Max(R1, R2) < dist)
+        if (std::min(R1, R2) + std::max(R1, R2) < dist)
         {
-          gp_Pnt2d P2(C2.Location().Rotated(C1.Location(), ASin(signe * (R2 + R1) / dist)));
+          gp_Pnt2d P2(C2.Location().Rotated(C1.Location(), std::asin(signe * (R2 + R1) / dist)));
           gp_Dir2d D2(gp_Vec2d(C1.Location(), P2));
           P2 = gp_Pnt2d(C1.Location().XY() + signe * (gp_XY(R1 * D2.Y(), -R1 * D2.X())));
           NbrSol++;

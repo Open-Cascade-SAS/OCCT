@@ -18,90 +18,78 @@
 #include <Standard_Std.hxx>
 #include <Standard_TypeDef.hxx>
 
+#include <algorithm>
 #include <climits>
+#include <cmath>
 
-// ===============
-// Inline methods
-// ===============
-
-// ------------------------------------------------------------------
-// Abs : Returns the absolute value of an Integer
-// ------------------------------------------------------------------
-constexpr Standard_Integer Abs(const Standard_Integer Value)
+//! Returns the absolute value of a int @p Value.
+//! Equivalent to std::abs.
+[[nodiscard]] constexpr int Abs(const int theValue)
 {
-  return Value >= 0 ? Value : -Value;
+  return theValue < 0 ? -theValue : theValue;
 }
 
-// ------------------------------------------------------------------
-// IsEven : Returns Standard_True if an integer is even
-// ------------------------------------------------------------------
-constexpr Standard_Boolean IsEven(const Standard_Integer Value)
+//! Returns true if @p theValue is even.
+[[nodiscard]] constexpr bool IsEven(const int theValue)
 {
-  return Value % 2 == 0;
+  return theValue % 2 == 0;
 }
 
-// ------------------------------------------------------------------
-// IsOdd : Returns Standard_True if an integer is odd
-// ------------------------------------------------------------------
-constexpr Standard_Boolean IsOdd(const Standard_Integer Value)
+//! Returns true if @p theValue is odd.
+[[nodiscard]] constexpr bool IsOdd(const int theValue)
 {
-  return Value % 2 == 1;
+  return theValue % 2 == 1;
 }
 
-// ------------------------------------------------------------------
-// Max : Returns the maximum integer between two integers
-// ------------------------------------------------------------------
-constexpr Standard_Integer Max(const Standard_Integer Val1, const Standard_Integer Val2)
+//! Returns the maximum value of two integers.
+//! Equivalent to std::max.
+Standard_DEPRECATED("This function duplicates std::max and will be removed in future releases. "
+                    "Use std::max instead.")
+
+[[nodiscard]] constexpr int Max(const int theValue1, const int theValue2)
 {
-  return Val1 >= Val2 ? Val1 : Val2;
+  return (std::max)(theValue1, theValue2);
 }
 
-// ------------------------------------------------------------------
-// Min : Returns the minimum integer between two integers
-// ------------------------------------------------------------------
-constexpr Standard_Integer Min(const Standard_Integer Val1, const Standard_Integer Val2)
+//! Returns the minimum value of two integers.
+//! Equivalent to std::min.
+Standard_DEPRECATED("This function duplicates std::min and will be removed in future releases. "
+                    "Use std::min instead.")
+
+[[nodiscard]] constexpr int Min(const int theValue1, const int theValue2)
 {
-  return Val1 <= Val2 ? Val1 : Val2;
+  return (std::min)(theValue1, theValue2);
 }
 
-// ------------------------------------------------------------------
-// Modulus : Returns the remainder of division between two integers
-// ------------------------------------------------------------------
-constexpr Standard_Integer Modulus(const Standard_Integer Value, const Standard_Integer Divisor)
+//! Returns the modulus of @p theValue by @p theDivisor.
+[[nodiscard]] constexpr int Modulus(const int theValue, const int theDivisor)
 {
-  return Value % Divisor;
+  return theValue % theDivisor;
 }
 
-// ------------------------------------------------------------------
-// Square : Returns the square of an integer
-// ------------------------------------------------------------------
-constexpr Standard_Integer Square(const Standard_Integer Value)
+//! Returns the square of a int @p theValue.
+//! Note that behavior is undefined in case of overflow.
+[[nodiscard]] constexpr int Square(const int theValue)
 {
-  return Value * Value;
+  return theValue * theValue;
 }
 
-// ------------------------------------------------------------------
-// IntegerFirst : Returns the minimum value of an integer
-// ------------------------------------------------------------------
-constexpr Standard_Integer IntegerFirst()
+//! Returns the minimum value of an integer.
+[[nodiscard]] constexpr int IntegerFirst()
 {
   return INT_MIN;
 }
 
-// ------------------------------------------------------------------
-// IntegerLast : Returns the maximum value of an integer
-// ------------------------------------------------------------------
-constexpr Standard_Integer IntegerLast()
+//! Returns the maximum value of an integer.
+[[nodiscard]] constexpr int IntegerLast()
 {
   return INT_MAX;
 }
 
-// ------------------------------------------------------------------
-// IntegerSize : Returns the size in digits of an integer
-// ------------------------------------------------------------------
-constexpr Standard_Integer IntegerSize()
+//! Returns the size in bits of an integer.
+[[nodiscard]] constexpr int IntegerSize()
 {
-  return CHAR_BIT * sizeof(Standard_Integer);
+  return CHAR_BIT * sizeof(int);
 }
 
-#endif
+#endif // _Standard_Integer_HeaderFile

@@ -181,7 +181,7 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
   Standard_Real    B = E.MinorRadius();
   gp_Vec2d         V(OR, P);
 
-  if (OR.IsEqual(P, Precision::Confusion()) && (Abs(A - B) <= Tol))
+  if (OR.IsEqual(P, Precision::Confusion()) && (std::abs(A - B) <= Tol))
   {
     return;
   }
@@ -257,7 +257,7 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
     Vs = Sol.Value(NoSol);
     if (Vs > 0.)
     {
-      Us = Log(Vs);
+      Us = std::log(Vs);
       if ((Us >= Uinf) && (Us <= Usup))
       {
         Cu      = ElCLib::Value(Us, H);

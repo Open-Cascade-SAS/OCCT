@@ -266,7 +266,7 @@ void BRepBuilderAPI_FastSewing::Perform(void)
       // create vertices having unique coordinates
       Standard_Real                         aRange  = Compute3DRange();
       Handle(NCollection_IncAllocator)      anAlloc = new NCollection_IncAllocator;
-      NCollection_CellFilter<NodeInspector> aCells(Max(myTolerance, aRange / IntegerLast()),
+      NCollection_CellFilter<NodeInspector> aCells(std::max(myTolerance, aRange / IntegerLast()),
                                                    anAlloc);
 
       for (Standard_Integer i = myFaceVec.Lower(); i <= myFaceVec.Upper(); i++)
@@ -531,8 +531,8 @@ Standard_Real BRepBuilderAPI_FastSewing::Compute3DRange()
   Standard_Real aXm = 0.0, aYm = 0.0, aZm = 0.0, aXM = 0.0, aYM = 0.0, aZM = 0.0;
   aBox.Get(aXm, aYm, aZm, aXM, aYM, aZM);
   Standard_Real aDelta = aXM - aXm;
-  aDelta               = Max(aDelta, aYM - aYm);
-  aDelta               = Max(aDelta, aZM - aZm);
+  aDelta               = std::max(aDelta, aYM - aYm);
+  aDelta               = std::max(aDelta, aZM - aZm);
 
   return aDelta;
 }

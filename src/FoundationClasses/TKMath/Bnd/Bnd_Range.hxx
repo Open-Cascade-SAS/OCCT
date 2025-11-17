@@ -87,8 +87,8 @@ public:
       return;
     }
 
-    myFirst = Min(myFirst, theParameter);
-    myLast  = Max(myLast, theParameter);
+    myFirst = (std::min)(myFirst, theParameter);
+    myLast  = (std::max)(myLast, theParameter);
   }
 
   //! Extends this range to include both ranges.
@@ -103,8 +103,8 @@ public:
     {
       *this = theRange;
     }
-    myFirst = Min(myFirst, theRange.myFirst);
-    myLast  = Max(myLast, theRange.myLast);
+    myFirst = (std::min)(myFirst, theRange.myFirst);
+    myLast  = (std::max)(myLast, theRange.myLast);
   }
 
   //! Obtain MIN boundary of <this>.
@@ -214,7 +214,7 @@ public:
   {
     if (!IsVoid())
     {
-      myFirst = Max(myFirst, theValLower);
+      myFirst = (std::max)(myFirst, theValLower);
     }
   }
 
@@ -224,7 +224,7 @@ public:
   {
     if (!IsVoid())
     {
-      myLast = Min(myLast, theValUpper);
+      myLast = (std::min)(myLast, theValUpper);
     }
   }
 

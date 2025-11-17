@@ -218,12 +218,12 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box(const Standard_Integer th
     const gp_Pnt aPnt2 = myTriangul->Node(aNode2);
     const gp_Pnt aPnt3 = myTriangul->Node(aNode3);
 
-    aMinPnt = SelectMgr_Vec3(Min(aPnt1.X(), Min(aPnt2.X(), aPnt3.X())),
-                             Min(aPnt1.Y(), Min(aPnt2.Y(), aPnt3.Y())),
-                             Min(aPnt1.Z(), Min(aPnt2.Z(), aPnt3.Z())));
-    aMaxPnt = SelectMgr_Vec3(Max(aPnt1.X(), Max(aPnt2.X(), aPnt3.X())),
-                             Max(aPnt1.Y(), Max(aPnt2.Y(), aPnt3.Y())),
-                             Max(aPnt1.Z(), Max(aPnt2.Z(), aPnt3.Z())));
+    aMinPnt = SelectMgr_Vec3(std::min(aPnt1.X(), std::min(aPnt2.X(), aPnt3.X())),
+                             std::min(aPnt1.Y(), std::min(aPnt2.Y(), aPnt3.Y())),
+                             std::min(aPnt1.Z(), std::min(aPnt2.Z(), aPnt3.Z())));
+    aMaxPnt = SelectMgr_Vec3(std::max(aPnt1.X(), std::max(aPnt2.X(), aPnt3.X())),
+                             std::max(aPnt1.Y(), std::max(aPnt2.Y(), aPnt3.Y())),
+                             std::max(aPnt1.Z(), std::max(aPnt2.Z(), aPnt3.Z())));
   }
   else
   {
@@ -232,12 +232,12 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box(const Standard_Integer th
     const gp_Pnt     aNode1    = myTriangul->Node(aNodeIdx1);
     const gp_Pnt     aNode2    = myTriangul->Node(aNodeIdx2);
 
-    aMinPnt = SelectMgr_Vec3(Min(aNode1.X(), aNode2.X()),
-                             Min(aNode1.Y(), aNode2.Y()),
-                             Min(aNode1.Z(), aNode2.Z()));
-    aMaxPnt = SelectMgr_Vec3(Max(aNode1.X(), aNode2.X()),
-                             Max(aNode1.Y(), aNode2.Y()),
-                             Max(aNode1.Z(), aNode2.Z()));
+    aMinPnt = SelectMgr_Vec3(std::min(aNode1.X(), aNode2.X()),
+                             std::min(aNode1.Y(), aNode2.Y()),
+                             std::min(aNode1.Z(), aNode2.Z()));
+    aMaxPnt = SelectMgr_Vec3(std::max(aNode1.X(), aNode2.X()),
+                             std::max(aNode1.Y(), aNode2.Y()),
+                             std::max(aNode1.Z(), aNode2.Z()));
   }
 
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);

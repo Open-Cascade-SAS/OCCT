@@ -238,7 +238,7 @@ Standard_Integer Poly_MakeLoops::findContour(
     theContour.Add(aIndexS);
     aNodeLink.Bind(getFirstNode(aIndexS), aIndexS);
 
-    Standard_Integer aIndex = Abs(aIndexS);
+    Standard_Integer aIndex = std::abs(aIndexS);
 
     // collect the list of links from this node able to participate
     // in this contour
@@ -332,7 +332,7 @@ void Poly_MakeLoops::acceptContour(const NCollection_IndexedMap<Standard_Integer
   for (i = theStartNumber; i <= theContour.Extent(); i++)
   {
     Standard_Integer aIndexS       = theContour(i); // index with sign
-    Standard_Integer aIndex        = Abs(aIndexS);
+    Standard_Integer aIndex        = std::abs(aIndexS);
     const Link&      aLink         = myMapLink(aIndex);
     Link             aOrientedLink = aLink;
     if (aIndexS < 0)
@@ -351,7 +351,7 @@ void Poly_MakeLoops::acceptContour(const NCollection_IndexedMap<Standard_Integer
 
 Standard_Integer Poly_MakeLoops::getFirstNode(Standard_Integer theIndexS) const
 {
-  Standard_Integer aIndex = Abs(theIndexS);
+  Standard_Integer aIndex = std::abs(theIndexS);
   const Link&      aLink  = myMapLink(aIndex);
   if (theIndexS > 0)
     return aLink.node1;
@@ -366,7 +366,7 @@ Standard_Integer Poly_MakeLoops::getFirstNode(Standard_Integer theIndexS) const
 
 Standard_Integer Poly_MakeLoops::getLastNode(int theIndexS) const
 {
-  Standard_Integer aIndex = Abs(theIndexS);
+  Standard_Integer aIndex = std::abs(theIndexS);
   const Link&      aLink  = myMapLink(aIndex);
   if (theIndexS > 0)
     return aLink.node2;
@@ -383,7 +383,7 @@ void Poly_MakeLoops::markHangChain(Standard_Integer theNode, Standard_Integer th
 {
   Standard_Integer aNode1  = theNode;
   Standard_Integer aIndexS = theIndexS;
-  Standard_Integer aIndex  = Abs(aIndexS);
+  Standard_Integer aIndex  = std::abs(aIndexS);
   Standard_Boolean isOut   = (aNode1 == getFirstNode(aIndexS));
   for (;;)
   {
@@ -443,7 +443,7 @@ void Poly_MakeLoops::markHangChain(Standard_Integer theNode, Standard_Integer th
     if (aNextIndexS == 0)
       break;
     aIndexS = aNextIndexS;
-    aIndex  = Abs(aIndexS);
+    aIndex  = std::abs(aIndexS);
   }
 }
 
@@ -539,7 +539,7 @@ void Poly_MakeLoops::GetHangingLinks(ListOfLink& theLinks) const
   for (; it.More(); it.Next())
   {
     Standard_Integer aIndexS = it.Key();
-    Link             aLink   = myMapLink(Abs(aIndexS));
+    Link             aLink   = myMapLink(std::abs(aIndexS));
     if (aIndexS < 0)
       aLink.Reverse();
     theLinks.Append(aLink);

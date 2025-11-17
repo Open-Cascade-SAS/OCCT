@@ -198,8 +198,8 @@ Standard_Integer ShapeAnalysis_CheckSmallFace::IsSpotFace(const TopoDS_Face&  F,
 
   spot.SetCoord((minx + maxx) / 2., (miny + maxy) / 2., (minz + maxz) / 2.);
   spotol = maxx - minx;
-  spotol = Max(spotol, maxy - miny);
-  spotol = Max(spotol, maxz - minz);
+  spotol = std::max(spotol, maxy - miny);
+  spotol = std::max(spotol, maxz - minz);
   spotol = spotol / 2.;
 
   return (same ? 2 : 1);
@@ -343,15 +343,15 @@ Standard_Boolean ShapeAnalysis_CheckSmallFace::CheckStripEdges(const TopoDS_Edge
   C2 = BRep_Tool::Curve(E2, cf2, cl2);
   if (C1.IsNull() || C2.IsNull())
     return Standard_False;
-  cf1                           = Max(cf1, C1->FirstParameter());
-  cl1                           = Min(cl1, C1->LastParameter());
+  cf1                           = std::max(cf1, C1->FirstParameter());
+  cl1                           = std::min(cl1, C1->LastParameter());
   Handle(Geom_TrimmedCurve) C1T = new Geom_TrimmedCurve(C1, cf1, cl1, Standard_True);
   // pdn protection against feature in Trimmed_Curve
   cf1 = C1T->FirstParameter();
   cl1 = C1T->LastParameter();
   Handle(Geom_TrimmedCurve) CC;
-  cf2                           = Max(cf2, C2->FirstParameter());
-  cl2                           = Min(cl2, C2->LastParameter());
+  cf2                           = std::max(cf2, C2->FirstParameter());
+  cl2                           = std::min(cl2, C2->LastParameter());
   Handle(Geom_TrimmedCurve) C2T = new Geom_TrimmedCurve(C2, cf2, cl2, Standard_True);
   cf2                           = C2T->FirstParameter();
   cl2                           = C2T->LastParameter();
@@ -668,7 +668,7 @@ Standard_Integer ShapeAnalysis_CheckSmallFace::CheckSplittingVertices(
           continue; // Out of range
         fpar = param - cf;
         lpar = param - cl;
-        if ((Abs(fpar) < eps) || (Abs(lpar) < eps))
+        if ((std::abs(fpar) < eps) || (std::abs(lpar) < eps))
           continue; // Near end or start
         listEdge.Append(E);
         listParam.Append(param);
@@ -974,8 +974,8 @@ Standard_Boolean ShapeAnalysis_CheckSmallFace::CheckPinFace(const TopoDS_Face&  
       V2           = TopExp::LastVertex(theFirstEdge);
       p1           = BRep_Tool::Pnt(V1);
       p2           = BRep_Tool::Pnt(V2);
-      tol          = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
-      if (toler > 0) // tol = Max(tol, toler); gka
+      tol          = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+      if (toler > 0) // tol = std::max(tol, toler); gka
         tol = toler;
       d1 = p1.Distance(p2);
       if (d1 == 0)
@@ -997,7 +997,7 @@ Standard_Boolean ShapeAnalysis_CheckSmallFace::CheckPinFace(const TopoDS_Face&  
     p1 = BRep_Tool::Pnt(V1);
     p2 = BRep_Tool::Pnt(V2);
     if (toler == -1)
-      tol = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+      tol = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
     else
       tol = toler;
     if (p1.Distance(p2) > tol)

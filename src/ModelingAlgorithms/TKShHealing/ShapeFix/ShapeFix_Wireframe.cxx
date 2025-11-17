@@ -323,7 +323,7 @@ static Standard_Boolean JoinEdges(const TopoDS_Edge&          E1,
                    ? TopAbs_FORWARD
                    : TopAbs_REVERSED);
     }
-    B.UpdateEdge(newedge, CRes, Max(BRep_Tool::Tolerance(E1), BRep_Tool::Tolerance(E2)));
+    B.UpdateEdge(newedge, CRes, std::max(BRep_Tool::Tolerance(E1), BRep_Tool::Tolerance(E2)));
     Standard_Real fp = CRes->FirstParameter();
     Standard_Real lp = CRes->LastParameter();
     if (fp > newf)
@@ -628,7 +628,7 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(
   const Standard_Real                 theLimitAngle)
 {
   Standard_Boolean aModLimitAngle = (theLimitAngle > -1.0 || myLimitAngle > -1.0);
-  Standard_Real    aLimitAngle    = Max(theLimitAngle, myLimitAngle);
+  Standard_Real    aLimitAngle    = std::max(theLimitAngle, myLimitAngle);
 
   Standard_Boolean             aModeDrop = theModeDrop || myModeDrop;
   TopTools_DataMapOfShapeShape theNewVertices;
@@ -736,7 +736,7 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(
                   if (Vec1.SquareMagnitude() < tol2 || Vec2.SquareMagnitude() < tol2)
                     Ang1 = M_PI / 2.;
                   else
-                    Ang1 = Abs(Vec1.Angle(Vec2));
+                    Ang1 = std::abs(Vec1.Angle(Vec2));
                   C2->D1(last2, P, Vec1);
                   C3->D1(first3, P, Vec2);
                   if (edge2.Orientation() == TopAbs_REVERSED)
@@ -746,8 +746,8 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(
                   if (Vec1.SquareMagnitude() < tol2 || Vec2.SquareMagnitude() < tol2)
                     Ang2 = M_PI / 2.;
                   else
-                    Ang2 = Abs(Vec1.Angle(Vec2));
-                  // isLimAngle = (theLimitAngle != -1 && Min(Ang1,Ang2) > theLimitAngle);
+                    Ang2 = std::abs(Vec1.Angle(Vec2));
+                  // isLimAngle = (theLimitAngle != -1 && std::min(Ang1,Ang2) > theLimitAngle);
                   // take_next = (Ang2<Ang1);
                   // if (take_next) { edge1 = edge2; edge2 = edge3; }
                 }
@@ -806,7 +806,7 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(
                     edge1 = edge2;
                     edge2 = edge3;
                   }
-                  isLimAngle = (aModLimitAngle && Min(Ang1, Ang2) > aLimitAngle);
+                  isLimAngle = (aModLimitAngle && std::min(Ang1, Ang2) > aLimitAngle);
                 }
                 else if (same_set1 && !same_set2)
                 {
@@ -1220,7 +1220,7 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(
             if (Vec1.SquareMagnitude() < tol2 || Vec2.SquareMagnitude() < tol2)
               Ang1 = M_PI / 2.;
             else
-              Ang1 = Abs(Vec1.Angle(Vec2));
+              Ang1 = std::abs(Vec1.Angle(Vec2));
             C2->D1(last2, P, Vec1);
             C3->D1(first3, P, Vec2);
             if (edge2.Orientation() == TopAbs_REVERSED)
@@ -1230,8 +1230,8 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(
             if (Vec1.SquareMagnitude() < tol2 || Vec2.SquareMagnitude() < tol2)
               Ang2 = M_PI / 2.;
             else
-              Ang2 = Abs(Vec1.Angle(Vec2));
-            // isLimAngle = (theLimitAngle != -1 && Min(Ang1,Ang2) > theLimitAngle);
+              Ang2 = std::abs(Vec1.Angle(Vec2));
+            // isLimAngle = (theLimitAngle != -1 && std::min(Ang1,Ang2) > theLimitAngle);
             // take_next = (Ang2<Ang1);
             // if (take_next) { edge1 = edge2; edge2 = edge3; }
           }
@@ -1288,7 +1288,7 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(
               edge1 = edge2;
               edge2 = edge3;
             }
-            isLimAngle = (aModLimitAngle && Min(Ang1, Ang2) > aLimitAngle);
+            isLimAngle = (aModLimitAngle && std::min(Ang1, Ang2) > aLimitAngle);
           }
           else if (same_set1 && !same_set2)
           {

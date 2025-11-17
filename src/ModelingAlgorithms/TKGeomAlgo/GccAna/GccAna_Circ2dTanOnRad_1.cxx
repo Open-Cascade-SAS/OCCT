@@ -53,7 +53,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
       parcen3(1, 2)
 {
 
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   gp_Dir2d      dirx(gp_Dir2d::D::X);
   WellDone = Standard_False;
   NbrSol   = 0;

@@ -638,14 +638,14 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
                     pf                            = C2d->Value(f);
                     pl                            = C2d->Value(l);
                     constexpr Standard_Real tttol = Precision::Angular();
-                    while (Min(pf.X(), pl.X()) >= Umaxc - tttol)
+                    while (std::min(pf.X(), pl.X()) >= Umaxc - tttol)
                     {
                       C2d->Translate(gp_Vec2d(-2. * M_PI, 0));
                       pf = C2d->Value(f);
                       pl = C2d->Value(l);
                     }
 
-                    while (Max(pf.X(), pl.X()) <= Uminc + tttol)
+                    while (std::max(pf.X(), pl.X()) <= Uminc + tttol)
                     {
                       C2d->Translate(gp_Vec2d(2. * M_PI, 0));
                       pf = C2d->Value(f);
@@ -1021,14 +1021,14 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
                   pf                            = C2d->Value(f);
                   pl                            = C2d->Value(l);
                   constexpr Standard_Real tttol = Precision::Angular();
-                  while (Min(pf.X(), pl.X()) >= Umaxc - tttol)
+                  while (std::min(pf.X(), pl.X()) >= Umaxc - tttol)
                   {
                     C2d->Translate(gp_Vec2d(-2. * M_PI, 0));
                     pf = C2d->Value(f);
                     pl = C2d->Value(l);
                   }
 
-                  while (Max(pf.X(), pl.X()) <= Uminc + tttol)
+                  while (std::max(pf.X(), pl.X()) <= Uminc + tttol)
                   {
                     C2d->Translate(gp_Vec2d(2. * M_PI, 0));
                     pf = C2d->Value(f);
@@ -1409,7 +1409,7 @@ Standard_Real NewParameter(const TopoDS_Edge&   Edg,
       if (exp.More())
       {
         Standard_Real prmmax = BRep_Tool::Parameter(TopoDS::Vertex(exp.Current()), NewEdg);
-        if (Abs(prmmax - prm) <= Epsilon(2. * M_PI))
+        if (std::abs(prmmax - prm) <= Epsilon(2. * M_PI))
         {
           if (orient == TopAbs_REVERSED)
           {

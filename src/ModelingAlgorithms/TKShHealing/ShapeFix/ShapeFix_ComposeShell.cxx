@@ -322,13 +322,13 @@ static Standard_Real ParamPointsOnLine(const gp_Pnt2d& p1, const gp_Pnt2d& p2, c
   Standard_Real dist1 = PointLineDeviation(p1, line);
   Standard_Real dist2 = PointLineDeviation(p2, line);
   // in most cases, one of points is on line
-  if (Abs(dist1) < ::Precision::PConfusion())
+  if (std::abs(dist1) < ::Precision::PConfusion())
   {
-    if (Abs(dist2) < ::Precision::PConfusion())
+    if (std::abs(dist2) < ::Precision::PConfusion())
       return 0.5 * (ParamPointOnLine(p1, line) + ParamPointOnLine(p2, line));
     return ParamPointOnLine(p1, line);
   }
-  if (Abs(dist2) < ::Precision::PConfusion())
+  if (std::abs(dist2) < ::Precision::PConfusion())
     return ParamPointOnLine(p2, line);
   // just protection
   if (dist2 * dist1 > 0)
@@ -419,8 +419,8 @@ static inline Standard_Boolean IsCoincided(const gp_Pnt2d&     p1,
   // pdn Maximal accuracy is working precision of intersector.
   Standard_Real UTolerance = UResolution * tol;
   Standard_Real VTolerance = VResolution * tol;
-  return Abs(p1.X() - p2.X()) <= Max(TOLINT, UTolerance)
-         && Abs(p1.Y() - p2.Y()) <= Max(TOLINT, VTolerance);
+  return std::abs(p1.X() - p2.X()) <= std::max(TOLINT, UTolerance)
+         && std::abs(p1.Y() - p2.Y()) <= std::max(TOLINT, VTolerance);
 }
 
 //=================================================================================================
@@ -648,7 +648,7 @@ Standard_Integer ShapeFix_ComposeShell::ComputeCode(const Handle(ShapeExtend_Wir
     Standard_Real    par1 = (i == begInd && special >= 0 ? begPar : (isreversed ? l : f));
     Standard_Real    par2 = (i == endInd && special <= 0 ? endPar : (isreversed ? f : l));
     Standard_Real    dpar = (par2 - par1) / (NPOINTS - 1);
-    Standard_Integer np   = (Abs(dpar) < ::Precision::PConfusion() ? 1 : NPOINTS);
+    Standard_Integer np   = (std::abs(dpar) < ::Precision::PConfusion() ? 1 : NPOINTS);
     Standard_Integer j; // svv #1
     for (j = 0; j < np; j++)
     {
@@ -656,7 +656,7 @@ Standard_Integer ShapeFix_ComposeShell::ComputeCode(const Handle(ShapeExtend_Wir
       gp_Pnt2d      p2d = c2d->Value(par);
       if (myClosedMode)
       {
-        if (myUClosed && Abs(line.Direction().X()) < ::Precision::PConfusion())
+        if (myUClosed && std::abs(line.Direction().X()) < ::Precision::PConfusion())
         {
           if (begin)
             shift = ShapeAnalysis::AdjustByPeriod(p2d.X(), line.Location().X(), myUPeriod);
@@ -664,7 +664,7 @@ Standard_Integer ShapeFix_ComposeShell::ComputeCode(const Handle(ShapeExtend_Wir
             shift = ShapeAnalysis::AdjustByPeriod(p2d.X() - p2d0.X(), 0., myUPeriod);
           p2d.SetX(p2d.X() + shift);
         }
-        if (myVClosed && Abs(line.Direction().Y()) < ::Precision::PConfusion())
+        if (myVClosed && std::abs(line.Direction().Y()) < ::Precision::PConfusion())
         {
           if (begin)
             shift = ShapeAnalysis::AdjustByPeriod(p2d.Y(), line.Location().Y(), myVPeriod);
@@ -713,9 +713,9 @@ Standard_Integer ShapeFix_ComposeShell::ComputeCode(const Handle(ShapeExtend_Wir
     {
       // in closed mode, if segment is of 2*pi length, it is BOTH
       Standard_Real dev = PointLineDeviation(p2d0, line);
-      if (myUClosed && Abs(line.Direction().X()) < ::Precision::PConfusion())
+      if (myUClosed && std::abs(line.Direction().X()) < ::Precision::PConfusion())
       {
-        if (Abs(Abs(dev) - myUPeriod) < 0.1 * myUPeriod)
+        if (std::abs(std::abs(dev) - myUPeriod) < 0.1 * myUPeriod)
         {
           code = IOR_BOTH;
           if (dev > 0)
@@ -724,9 +724,9 @@ Standard_Integer ShapeFix_ComposeShell::ComputeCode(const Handle(ShapeExtend_Wir
         else if (code == IOR_BOTH)
           code = IOR_UNDEF;
       }
-      if (myVClosed && Abs(line.Direction().Y()) < ::Precision::PConfusion())
+      if (myVClosed && std::abs(line.Direction().Y()) < ::Precision::PConfusion())
       {
-        if (Abs(Abs(dev) - myVPeriod) < 0.1 * myVPeriod)
+        if (std::abs(std::abs(dev) - myVPeriod) < 0.1 * myVPeriod)
         {
           code = IOR_BOTH;
           if (dev > 0)
@@ -839,7 +839,7 @@ static Standard_Real GetGridResolution(const Handle(TColStd_HArray1OfReal)& Spli
   Standard_Real rigthLen =
     (cutIndex < nb ? SplitValues->Value(cutIndex + 1) - SplitValues->Value(cutIndex)
                    : SplitValues->Value(2) - SplitValues->Value(1));
-  return Min(leftLen, rigthLen) / 3.;
+  return std::min(leftLen, rigthLen) / 3.;
 }
 
 //=================================================================================================
@@ -1015,8 +1015,8 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
       // should be shifted too. gka SAMTECH 28.07.06
       if (isPeriodic)
       {
-        if (currPar > (Max(lastPar, firstPar) + Precision::PConfusion())
-            || currPar < (Min(firstPar, lastPar) - Precision::PConfusion()))
+        if (currPar > (std::max(lastPar, firstPar) + Precision::PConfusion())
+            || currPar < (std::min(firstPar, lastPar) - Precision::PConfusion()))
         {
           Standard_Real aShift =
             ShapeAnalysis::AdjustByPeriod(currPar, (firstPar + lastPar) * 0.5, aPeriod);
@@ -1030,12 +1030,12 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
       // Try to adjust current splitting point to previous or end of edge
       Standard_Boolean doCut = Standard_True;
       TopoDS_Vertex    V;
-      if (Abs(currPar - lastPar) < ::Precision::PConfusion())
+      if (std::abs(currPar - lastPar) < ::Precision::PConfusion())
       {
         V     = lastV;
         doCut = Standard_False;
       }
-      else if (Abs(currPar - prevPar) < ::Precision::PConfusion())
+      else if (std::abs(currPar - prevPar) < ::Precision::PConfusion())
       {
         vertices.Append(prevV);
         code = SegmentCodes(j); // classification code - update for next segment
@@ -1062,12 +1062,12 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
           if (isCutByU)
           {
             Standard_Real gridRes = GetGridResolution(myGrid->UJointValues(), cutIndex) / lastVTol;
-            uRes                  = Min(myUResolution, gridRes);
+            uRes                  = std::min(myUResolution, gridRes);
           }
           else
           {
             Standard_Real gridRes = GetGridResolution(myGrid->VJointValues(), cutIndex) / lastVTol;
-            vRes                  = Min(myVResolution, gridRes);
+            vRes                  = std::min(myVResolution, gridRes);
           }
           if (IsCoincided(lastPnt2d, currPnt2d, uRes, vRes, lastVTol)
               && IsCoincided(lastPnt2d,
@@ -1096,12 +1096,12 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
           if (isCutByU)
           {
             Standard_Real gridRes = GetGridResolution(myGrid->UJointValues(), cutIndex) / prevVTol;
-            uRes                  = Min(myUResolution, gridRes);
+            uRes                  = std::min(myUResolution, gridRes);
           }
           else
           {
             Standard_Real gridRes = GetGridResolution(myGrid->VJointValues(), cutIndex) / prevVTol;
-            vRes                  = Min(myVResolution, gridRes);
+            vRes                  = std::min(myVResolution, gridRes);
           }
           if (IsCoincided(prevPnt2d, currPnt2d, uRes, vRes, prevVTol)
               && IsCoincided(prevPnt2d,
@@ -1286,7 +1286,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
       if (code == 0 && wire.Orientation() == TopAbs_EXTERNAL)
       {
         // pdn defining code for intersection of two isos
-        code = ((isCutByU == (Abs(firstPar - currPar) < Abs(lastPar - currPar))) ? 2 : 1);
+        code = ((isCutByU == (std::abs(firstPar - currPar) < std::abs(lastPar - currPar))) ? 2 : 1);
       }
       DefinePatch(result, code, isCutByU, cutIndex);
     }
@@ -1347,9 +1347,9 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      w
   Standard_Integer closedDir = 0;
   if (myClosedMode)
   {
-    if (myUClosed && Abs(line.Direction().X()) < ::Precision::PConfusion())
+    if (myUClosed && std::abs(line.Direction().X()) < ::Precision::PConfusion())
       closedDir = -1;
-    else if (myVClosed && Abs(line.Direction().Y()) < ::Precision::PConfusion())
+    else if (myVClosed && std::abs(line.Direction().Y()) < ::Precision::PConfusion())
       closedDir = 1;
   }
   Standard_Real halfPeriod = 0.5 * (closedDir ? closedDir < 0 ? myUPeriod : myVPeriod : 0.);
@@ -1404,7 +1404,7 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      w
         }
         Standard_Real dUmax = umax + shift - x;
         shiftNext.SetX(dUmax > 0 ? -myUPeriod : myUPeriod);
-        nbIter = (Standard_Integer)(1 + Abs(dUmax) / myUPeriod);
+        nbIter = (Standard_Integer)(1 + std::abs(dUmax) / myUPeriod);
         shift  = ShapeAnalysis::AdjustByPeriod(posf.X(), x, myUPeriod);
         posf.SetX(posf.X() + shift);
         shift = ShapeAnalysis::AdjustByPeriod(posl.X(), x, myUPeriod);
@@ -1424,7 +1424,7 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      w
         }
         Standard_Real dVmax = vmax + shift - y;
         shiftNext.SetY(dVmax > 0 ? -myVPeriod : myVPeriod);
-        nbIter = (Standard_Integer)(1 + Abs(dVmax) / myVPeriod);
+        nbIter = (Standard_Integer)(1 + std::abs(dVmax) / myVPeriod);
         shift  = ShapeAnalysis::AdjustByPeriod(posf.Y(), y, myVPeriod);
         posf.SetY(posf.Y() + shift);
         shift = ShapeAnalysis::AdjustByPeriod(posl.Y(), y, myVPeriod);
@@ -1444,7 +1444,7 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      w
     }
     else if (code == IOR_UNDEF || code != prevCode)
     {
-      if (!closedDir || Abs(dev - prevDev) < halfPeriod)
+      if (!closedDir || std::abs(dev - prevDev) < halfPeriod)
       {
         // clang-format off
         IntLinePar.Append ( ParamPointsOnLine ( pos, prevPos, line ) ); // !! - maybe compute exactly ?
@@ -1543,7 +1543,7 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      w
         && wire.Orientation() != TopAbs_INTERNAL
         && (prevCode == IOR_UNDEF || prevCode != firstCode))
     {
-      if (!closedDir || Abs(firstDev - prevDev) < halfPeriod)
+      if (!closedDir || std::abs(firstDev - prevDev) < halfPeriod)
       {
         IntLinePar.Append(ParamPointsOnLine(pos, firstPos, line));
         IntEdgePar.Append(isreversed ? f : l);
@@ -1573,7 +1573,7 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      w
       if (i == j)
         break;
       if (IntEdgeInd(i) == IntEdgeInd(j)
-          && Abs(IntEdgePar(i) - IntEdgePar(j)) < ::Precision::PConfusion())
+          && std::abs(IntEdgePar(i) - IntEdgePar(j)) < ::Precision::PConfusion())
       {
         IntLinePar.Remove(i);
         IntEdgePar.Remove(i);
@@ -1589,9 +1589,9 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      w
         Standard_Real a1, b1, a2, b2;
         BRep_Tool::Range(E1, myFace, a1, b1);
         BRep_Tool::Range(E2, myFace, a2, b2);
-        if (Abs(IntEdgePar(j) - (E1.Orientation() == TopAbs_FORWARD ? b1 : a1))
+        if (std::abs(IntEdgePar(j) - (E1.Orientation() == TopAbs_FORWARD ? b1 : a1))
               < ::Precision::PConfusion()
-            && Abs(IntEdgePar(i) - (E2.Orientation() == TopAbs_FORWARD ? a2 : b2))
+            && std::abs(IntEdgePar(i) - (E2.Orientation() == TopAbs_FORWARD ? a2 : b2))
                  < ::Precision::PConfusion())
         {
           IntLinePar.Remove(i);
@@ -1762,7 +1762,7 @@ void ShapeFix_ComposeShell::SplitByLine(ShapeFix_SequenceOfWireSegment& wires,
   // merge null-length tangential segments into one-point tangencies or intersections
   for (i = 1; i < SplitLinePar.Length(); i++)
   {
-    if (Abs(SplitLinePar(i + 1) - SplitLinePar(i)) > ::Precision::PConfusion()
+    if (std::abs(SplitLinePar(i + 1) - SplitLinePar(i)) > ::Precision::PConfusion()
         && !SplitLineVertex(i).IsSame(SplitLineVertex(i + 1)))
       continue;
     if ((SplitLineCode(i) & ITP_ENDSEG && SplitLineCode(i + 1) & ITP_BEGSEG)
@@ -1829,8 +1829,8 @@ void ShapeFix_ComposeShell::SplitByLine(ShapeFix_SequenceOfWireSegment& wires,
     // case when max tolerance is not defined tolerance of vertices will be used as is
     if (aMaxTol <= 2. * Precision::Confusion())
       aMaxTol = Precision::Infinite();
-    Standard_Real aTol1 = Min(BRep_Tool::Tolerance(V1), aMaxTol);
-    Standard_Real aTol2 = Min(BRep_Tool::Tolerance(V2), aMaxTol);
+    Standard_Real aTol1 = std::min(BRep_Tool::Tolerance(V1), aMaxTol);
+    Standard_Real aTol2 = std::min(BRep_Tool::Tolerance(V2), aMaxTol);
     gp_Pnt        aP1   = BRep_Tool::Pnt(V1);
     gp_Pnt        aP2   = BRep_Tool::Pnt(V2);
     Standard_Real aD    = aP1.SquareDistance(aP2);
@@ -1978,7 +1978,7 @@ void ShapeFix_ComposeShell::SplitByGrid(ShapeFix_SequenceOfWireSegment& seqw)
       // in same cases for example trj4_pm2-ug-203.stp (entity #8024) wire in 2D space has length
       // greater then period
       Standard_Integer iumin =
-        Max(0, GetPatchIndex(Uf1 + pprec, myGrid->UJointValues(), myUClosed));
+        std::max(0, GetPatchIndex(Uf1 + pprec, myGrid->UJointValues(), myUClosed));
       Standard_Integer iumax = GetPatchIndex(Ul1 - pprec, myGrid->UJointValues(), myUClosed) + 1;
 
       for (Standard_Integer j = 1; j <= wire.NbEdges(); j++)
@@ -1988,7 +1988,7 @@ void ShapeFix_ComposeShell::SplitByGrid(ShapeFix_SequenceOfWireSegment& seqw)
       }
 
       Standard_Integer ivmin =
-        Max(0, GetPatchIndex(Vf1 + pprec, myGrid->VJointValues(), myVClosed));
+        std::max(0, GetPatchIndex(Vf1 + pprec, myGrid->VJointValues(), myVClosed));
       Standard_Integer ivmax = GetPatchIndex(Vl1 - pprec, myGrid->VJointValues(), myVClosed) + 1;
 
       for (Standard_Integer j = 1; j <= wire.NbEdges(); j++)
@@ -2260,10 +2260,10 @@ static Standard_Boolean IsSamePatch(const ShapeFix_WireSegment& wire,
   }
 
   // compute common (extended) indices
-  Standard_Integer iun = Min(iumin, jumin);
-  Standard_Integer iux = Max(iumax, jumax);
-  Standard_Integer ivn = Min(ivmin, jvmin);
-  Standard_Integer ivx = Max(ivmax, jvmax);
+  Standard_Integer iun = std::min(iumin, jumin);
+  Standard_Integer iux = std::max(iumax, jumax);
+  Standard_Integer ivn = std::min(ivmin, jvmin);
+  Standard_Integer ivx = std::max(ivmax, jvmax);
   Standard_Boolean ok  = (iun == iux || iun + 1 == iux) && (ivn == ivx || ivn + 1 == ivx);
   if (ok && extend)
   {
@@ -2446,7 +2446,7 @@ void ShapeFix_ComposeShell::CollectWires(ShapeFix_SequenceOfWireSegment& wires,
         // for coincidence (instead of vertex tolerance) in order
         // this check to be in agreement with check for position of wire segments
         // thus avoiding bad effects on overlapping edges
-        Standard_Real    ctol = Max(edgeTol, BRep_Tool::Tolerance(endV /*lastEdge*/));
+        Standard_Real    ctol = std::max(edgeTol, BRep_Tool::Tolerance(endV /*lastEdge*/));
         Standard_Boolean conn = IsCoincided(endPnt, lPnt, myUResolution, myVResolution, ctol);
         Standard_Real    dist = endPnt.SquareDistance(lPnt);
 
@@ -2978,9 +2978,9 @@ void ShapeFix_ComposeShell::DispatchWires(TopTools_SequenceOfShape&       faces,
           if (c21 == c22 || pf1.SquareDistance(pf2) < dPreci || pl1.SquareDistance(pl2) < dPreci)
           {
             gp_Vec2d shift(0., 0.);
-            if (myUClosed && Abs(pf2.X() - pl2.X()) < ::Precision::PConfusion())
+            if (myUClosed && std::abs(pf2.X() - pl2.X()) < ::Precision::PConfusion())
               shift.SetX(myUPeriod);
-            if (myVClosed && Abs(pf2.Y() - pl2.Y()) < ::Precision::PConfusion())
+            if (myVClosed && std::abs(pf2.Y() - pl2.Y()) < ::Precision::PConfusion())
               shift.SetY(myVPeriod);
             c22->Translate(shift);
           }

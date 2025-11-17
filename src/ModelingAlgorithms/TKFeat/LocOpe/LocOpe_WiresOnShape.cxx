@@ -316,8 +316,8 @@ void LocOpe_WiresOnShape::BindAll()
             Standard_Real aF1, aL1;
             BRep_Tool::Range(Epro, fac, aF1, aL1);
             if (!BRep_Tool::Degenerated(Epro)
-                && (Abs(prm - aF1) <= Precision::PConfusion()
-                    || Abs(prm - aL1) <= Precision::PConfusion()))
+                && (std::abs(prm - aF1) <= Precision::PConfusion()
+                    || std::abs(prm - aL1) <= Precision::PConfusion()))
             {
               myMap.Bind(vtx, vtx2);
               theMap.Add(vtx);
@@ -558,8 +558,8 @@ Standard_Boolean Project(const TopoDS_Vertex& V,
       Standard_Real dvmax = 0.01 * (adSurf.LastVParameter() - adSurf.FirstVParameter());
 
       gp_Pnt2d      aPcur = p2d;
-      Standard_Real dumin = Abs(aPcur.X() - aPBound2d.X());
-      Standard_Real dvmin = Abs(aPcur.Y() - aPBound2d.Y());
+      Standard_Real dumin = std::abs(aPcur.X() - aPBound2d.X());
+      Standard_Real dvmin = std::abs(aPcur.Y() - aPBound2d.Y());
       if (dumin > dumax && adSurf.IsUPeriodic())
       {
         Standard_Real aX1 = aPBound2d.X();
@@ -571,8 +571,8 @@ Standard_Boolean Project(const TopoDS_Vertex& V,
         aShift =
           ShapeAnalysis::AdjustToPeriod(aX2, adSurf.FirstUParameter(), adSurf.LastUParameter());
         aX2 += aShift;
-        dumin = Abs(aX2 - aX1);
-        if (dumin > dumax && (Abs(dumin - adSurf.UPeriod()) < Precision::PConfusion()))
+        dumin = std::abs(aX2 - aX1);
+        if (dumin > dumax && (std::abs(dumin - adSurf.UPeriod()) < Precision::PConfusion()))
         {
           aX2   = aX1;
           dumin = 0.;
@@ -591,8 +591,8 @@ Standard_Boolean Project(const TopoDS_Vertex& V,
         aShift =
           ShapeAnalysis::AdjustToPeriod(aY2, adSurf.FirstVParameter(), adSurf.LastVParameter());
         aY2 += aShift;
-        dvmin = Abs(aY1 - aY2);
-        if (dvmin > dvmax && (Abs(dvmin - adSurf.VPeriod()) < Precision::Confusion()))
+        dvmin = std::abs(aY1 - aY2);
+        if (dvmin > dvmax && (std::abs(dvmin - adSurf.VPeriod()) < Precision::Confusion()))
         {
           aY2   = aY1;
           dvmin = 0.;
@@ -605,12 +605,12 @@ Standard_Boolean Project(const TopoDS_Vertex& V,
 
         dumax                 = adSurf.UResolution(aTolV);
         dvmax                 = adSurf.VResolution(aTolV);
-        Standard_Real aTol2d  = 2. * Max(dumax, dvmax);
-        Standard_Real aDist2d = Max(dumin, dvmin);
+        Standard_Real aTol2d  = 2. * std::max(dumax, dvmax);
+        Standard_Real aDist2d = std::max(dumin, dvmin);
 
         if (aDist2d > aTol2d)
         {
-          Standard_Real aDist3d1 = aDist2d / Max(anUResolution, aVResolution);
+          Standard_Real aDist3d1 = aDist2d / std::max(anUResolution, aVResolution);
           if (aDist3d1 > aDist3d)
             aDist3d = aDist3d1;
         }
@@ -622,7 +622,7 @@ Standard_Boolean Project(const TopoDS_Vertex& V,
       gp_Pnt aPV2d;
       aSurf->D0(p2d.X(), p2d.Y(), aPV2d);
       Standard_Real aDistPoints_3D = aPV2d.SquareDistance(aPBound);
-      Standard_Real aMaxDist       = Max(aDistPoints_3D, aDist3d * aDist3d);
+      Standard_Real aMaxDist       = std::max(aDistPoints_3D, aDist3d * aDist3d);
 
       BRep_Builder B;
       if (aTolV * aTolV < aMaxDist)
@@ -794,8 +794,8 @@ void PutPCurve(const TopoDS_Edge& Edg, const TopoDS_Face& Fac)
     gp_Pnt        pnt2 = BRep_Tool::Pnt(V2);
     Standard_Real tol1 = pnt1.Distance(PF);
     Standard_Real tol2 = pnt2.Distance(PL);
-    B.UpdateVertex(V1, Max(old1, tol1));
-    B.UpdateVertex(V2, Max(old2, tol2));
+    B.UpdateVertex(V1, std::max(old1, tol1));
+    B.UpdateVertex(V2, std::max(old2, tol2));
   }
 
   if (S->IsUPeriodic())
@@ -803,8 +803,8 @@ void PutPCurve(const TopoDS_Edge& Edg, const TopoDS_Face& Fac)
     Standard_Real           up      = S->UPeriod();
     constexpr Standard_Real tolu    = Precision::PConfusion(); // Epsilon(up);
     Standard_Integer        nbtra   = 0;
-    Standard_Real           theUmin = Min(pf.X(), pl.X());
-    Standard_Real           theUmax = Max(pf.X(), pl.X());
+    Standard_Real           theUmin = std::min(pf.X(), pl.X());
+    Standard_Real           theUmax = std::max(pf.X(), pl.X());
 
     if (theUmin < Umin - tolu)
     {
@@ -834,8 +834,8 @@ void PutPCurve(const TopoDS_Edge& Edg, const TopoDS_Face& Fac)
     Standard_Real           vp      = S->VPeriod();
     constexpr Standard_Real tolv    = Precision::PConfusion(); // Epsilon(vp);
     Standard_Integer        nbtra   = 0;
-    Standard_Real           theVmin = Min(pf.Y(), pl.Y());
-    Standard_Real           theVmax = Max(pf.Y(), pl.Y());
+    Standard_Real           theVmin = std::min(pf.Y(), pl.Y());
+    Standard_Real           theVmax = std::max(pf.Y(), pl.Y());
 
     if (theVmin < Vmin - tolv)
     {
@@ -945,11 +945,11 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
       S = BRep_Tool::Surface(Fac);
 
       // Compute the tol2d
-      Standard_Real       tol3d = Max(BRep_Tool::Tolerance(Efrom), BRep_Tool::Tolerance(Fac));
+      Standard_Real       tol3d = std::max(BRep_Tool::Tolerance(Efrom), BRep_Tool::Tolerance(Fac));
       GeomAdaptor_Surface Gas(S, Umin, Umax, Vmin, Vmax);
       Standard_Real       TolU  = Gas.UResolution(tol3d);
       Standard_Real       TolV  = Gas.VResolution(tol3d);
-      Standard_Real       tol2d = Max(TolU, TolV);
+      Standard_Real       tol2d = std::max(TolU, TolV);
 
       Handle(Geom2d_Curve) C2d = GeomProjLib::Curve2d(C, S, Umin, Umax, Vmin, Vmax, tol2d);
       if (C2d.IsNull())
@@ -963,8 +963,8 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
         Standard_Real           up      = S->UPeriod();
         constexpr Standard_Real tolu    = Precision::PConfusion(); // Epsilon(up);
         Standard_Integer        nbtra   = 0;
-        Standard_Real           theUmin = Min(pf.X(), pl.X());
-        Standard_Real           theUmax = Max(pf.X(), pl.X());
+        Standard_Real           theUmin = std::min(pf.X(), pl.X());
+        Standard_Real           theUmax = std::max(pf.X(), pl.X());
 
         if (theUmin < Umin - tolu)
         {
@@ -1009,8 +1009,8 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
         Standard_Real           vp      = S->VPeriod();
         constexpr Standard_Real tolv    = Precision::PConfusion(); // Epsilon(vp);
         Standard_Integer        nbtra   = 0;
-        Standard_Real           theVmin = Min(pf.Y(), pl.Y());
-        Standard_Real           theVmax = Max(pf.Y(), pl.Y());
+        Standard_Real           theVmin = std::min(pf.Y(), pl.Y());
+        Standard_Real           theVmax = std::max(pf.Y(), pl.Y());
 
         if (theVmin < Vmin - tolv)
         {
@@ -1101,7 +1101,7 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
     gp_Pnt2d ptf(c2dtf->Value(f)); // sur courbe frw
     gp_Pnt2d ptr(c2dtr->Value(f)); // sur courbe rev
 
-    Standard_Boolean isoU = (Abs(ptf.Y() - ptr.Y()) < Epsilon(ptf.X())); // meme V
+    Standard_Boolean isoU = (std::abs(ptf.Y() - ptr.Y()) < Epsilon(ptf.X())); // meme V
 
     // Efrom et Eto dans le meme sens???
 
@@ -1160,11 +1160,11 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
       // Compute the tol2d
       BRepTools::UVBounds(Fac, Umin, Umax, Vmin, Vmax);
 
-      Standard_Real       tol3d = Max(BRep_Tool::Tolerance(Efrom), BRep_Tool::Tolerance(Fac));
+      Standard_Real       tol3d = std::max(BRep_Tool::Tolerance(Efrom), BRep_Tool::Tolerance(Fac));
       GeomAdaptor_Surface Gas(S, Umin, Umax, Vmin, Vmax);
       Standard_Real       TolU  = Gas.UResolution(tol3d);
       Standard_Real       TolV  = Gas.VResolution(tol3d);
-      Standard_Real       tol2d = Max(TolU, TolV);
+      Standard_Real       tol2d = std::max(TolU, TolV);
 
       Handle(Geom2d_Curve) C2d = GeomProjLib::Curve2d(C, S, Umin, Umax, Vmin, Vmax, tol2d);
       c2dff                    = C2d;
@@ -1188,12 +1188,12 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
     {
       if (SameOri)
       {
-        if (Abs(ptf.X() - p2f.X()) > Epsilon(ptf.X()))
+        if (std::abs(ptf.X() - p2f.X()) > Epsilon(ptf.X()))
         {
           c2dff =
             Handle(Geom2d_Curve)::DownCast(c2dff->Translated(gp_Vec2d(ptf.X() - p2f.X(), 0.)));
         }
-        if (Abs(ptr.X() - p2r.X()) > Epsilon(ptr.X()))
+        if (std::abs(ptr.X() - p2r.X()) > Epsilon(ptr.X()))
         {
           c2dfr =
             Handle(Geom2d_Curve)::DownCast(c2dfr->Translated(gp_Vec2d(ptr.X() - p2r.X(), 0.)));
@@ -1201,13 +1201,13 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
       }
       else
       {
-        if (Abs(ptr.X() - p2f.X()) > Epsilon(ptr.X()))
+        if (std::abs(ptr.X() - p2f.X()) > Epsilon(ptr.X()))
         {
           c2dff =
             Handle(Geom2d_Curve)::DownCast(c2dff->Translated(gp_Vec2d(ptr.X() - p2f.X(), 0.)));
         }
 
-        if (Abs(ptf.X() - p2r.X()) > Epsilon(ptf.X()))
+        if (std::abs(ptf.X() - p2r.X()) > Epsilon(ptf.X()))
         {
           c2dfr =
             Handle(Geom2d_Curve)::DownCast(c2dfr->Translated(gp_Vec2d(ptf.X() - p2r.X(), 0.)));
@@ -1221,12 +1221,12 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
     { // !isoU soit isoV
       if (SameOri)
       {
-        if (Abs(ptf.Y() - p2f.Y()) > Epsilon(ptf.Y()))
+        if (std::abs(ptf.Y() - p2f.Y()) > Epsilon(ptf.Y()))
         {
           c2dff =
             Handle(Geom2d_Curve)::DownCast(c2dff->Translated(gp_Vec2d(0., ptf.Y() - p2f.Y())));
         }
-        if (Abs(ptr.Y() - p2r.Y()) > Epsilon(ptr.Y()))
+        if (std::abs(ptr.Y() - p2r.Y()) > Epsilon(ptr.Y()))
         {
           c2dfr =
             Handle(Geom2d_Curve)::DownCast(c2dfr->Translated(gp_Vec2d(0., ptr.Y() - p2r.Y())));
@@ -1234,12 +1234,12 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
       }
       else
       {
-        if (Abs(ptr.Y() - p2f.Y()) > Epsilon(ptr.Y()))
+        if (std::abs(ptr.Y() - p2f.Y()) > Epsilon(ptr.Y()))
         {
           c2dff =
             Handle(Geom2d_Curve)::DownCast(c2dff->Translated(gp_Vec2d(0., ptr.Y() - p2f.Y())));
         }
-        if (Abs(ptf.Y() - p2r.Y()) > Epsilon(ptf.Y()))
+        if (std::abs(ptf.Y() - p2r.Y()) > Epsilon(ptf.Y()))
         {
           c2dfr =
             Handle(Geom2d_Curve)::DownCast(c2dfr->Translated(gp_Vec2d(0., ptf.Y() - p2r.Y())));
@@ -1288,8 +1288,8 @@ void FindInternalIntersections(const TopoDS_Edge&                         theEdg
   const Handle(Geom_Curve)& theCurve = BRep_Tool::Curve(theEdge, thePar[0], thePar[1]);
   GeomAdaptor_Curve         theGAcurve(theCurve, thePar[0], thePar[1]);
   Standard_Real aTolV2d[2] = {theGAcurve.Resolution(aTolV[0]), theGAcurve.Resolution(aTolV[1])};
-  aTolV2d[0]               = Max(aTolV2d[0], Precision::PConfusion());
-  aTolV2d[1]               = Max(aTolV2d[1], Precision::PConfusion());
+  aTolV2d[0]               = std::max(aTolV2d[0], Precision::PConfusion());
+  aTolV2d[1]               = std::max(aTolV2d[1], Precision::PConfusion());
   Standard_Real   aDistMax = Precision::Confusion() * Precision::Confusion();
   TopExp_Explorer Explo(theFace, TopAbs_EDGE);
   for (; Explo.More(); Explo.Next())
@@ -1345,7 +1345,7 @@ void FindInternalIntersections(const TopoDS_Edge&                         theEdg
       Standard_Real anIntPar  = aPOnC2.Parameter();
       for (j = 0; j < 2; j++) // try to find intersection on an extremity of "theEdge"
       {
-        if (Abs(theIntPar - thePar[j]) <= aTolV2d[j])
+        if (std::abs(theIntPar - thePar[j]) <= aTolV2d[j])
           break;
       }
       // intersection found in the middle of the edge

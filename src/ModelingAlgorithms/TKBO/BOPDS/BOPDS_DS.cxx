@@ -344,7 +344,7 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
     i1 = i2 + 1;
   }
   //
-  aTolAdd          = Max(theFuzz, Precision::Confusion()) * 0.5;
+  aTolAdd          = std::max(theFuzz, Precision::Confusion()) * 0.5;
   myNbSourceShapes = NbShapes();
   //
   // 2 Bounding Boxes
@@ -1845,8 +1845,8 @@ Standard_Boolean BOPDS_DS::CheckCoincidence(const Handle(BOPDS_PaveBlock)& aPB1,
     aD = aPPC.LowerDistance();
     //
     aTol = BRep_Tool::MaxTolerance(aE1, TopAbs_VERTEX);
-    aTol =
-      aTol + BRep_Tool::MaxTolerance(aE2, TopAbs_VERTEX) + Max(theFuzz, Precision::Confusion());
+    aTol = aTol + BRep_Tool::MaxTolerance(aE2, TopAbs_VERTEX)
+           + std::max(theFuzz, Precision::Confusion());
     if (aD < aTol)
     {
       aT2x = aPPC.LowerDistanceParameter();

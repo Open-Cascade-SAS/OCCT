@@ -58,7 +58,7 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   delta = NumCurves - 1;
   for (ii = NumCoeffPerCurve->Lower(); ii <= NumCoeffPerCurve->Lower() + delta; ii++)
   {
-    myDegree = Max(NumCoeffPerCurve->Value(ii) - 1, myDegree);
+    myDegree = std::max(NumCoeffPerCurve->Value(ii) - 1, myDegree);
   }
   if ((Continuity > myDegree) && (NumCurves > 1))
   {
@@ -114,7 +114,7 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   delta = NumCurves - 1;
   for (ii = NumCoeffPerCurve.Lower(); ii <= NumCoeffPerCurve.Lower() + delta; ii++)
   {
-    myDegree = Max(NumCoeffPerCurve.Value(ii) - 1, myDegree);
+    myDegree = std::max(NumCoeffPerCurve.Value(ii) - 1, myDegree);
   }
   //
   //  prepare output
@@ -245,7 +245,8 @@ void Convert_CompPolynomialToPoles::Perform(const Standard_Integer         NumCu
     normalized_value =
       (1.0e0 - normalized_value) * PolynomialIntervals(Pindex, PolynomialIntervals.LowerCol())
       + normalized_value * PolynomialIntervals(Pindex, PolynomialIntervals.UpperCol());
-    coeff_index = ((index - 2) * Dimension * (Max(MaxDegree, myDegree) + 1)) + Coefficients.Lower();
+    coeff_index =
+      ((index - 2) * Dimension * (std::max(MaxDegree, myDegree) + 1)) + Coefficients.Lower();
 
     coefficient_array    = (Standard_Real*)&(Coefficients(coeff_index));
     Standard_Integer Deg = NumCoeffPerCurve(NumCoeffPerCurve.Lower() + index - 2) - 1;

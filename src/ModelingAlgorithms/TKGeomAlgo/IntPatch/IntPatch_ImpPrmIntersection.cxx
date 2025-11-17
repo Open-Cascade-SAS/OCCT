@@ -131,7 +131,7 @@ static IntPatch_SpecPntType IsSeamOrPole(const Handle(Adaptor3d_Surface)& theQSu
     }
   }
 
-  const Standard_Real aDeltaU = Abs(aUQRef - aUQNext);
+  const Standard_Real aDeltaU = std::abs(aUQRef - aUQNext);
 
   if ((aType != GeomAbs_Torus) && (aDeltaU < theDeltaMax))
     return IntPatch_SPntNone;
@@ -142,7 +142,7 @@ static IntPatch_SpecPntType IsSeamOrPole(const Handle(Adaptor3d_Surface)& theQSu
       return IntPatch_SPntSeamU;
 
     case GeomAbs_Torus: {
-      const Standard_Real aDeltaV = Abs(aVQRef - aVQNext);
+      const Standard_Real aDeltaV = std::abs(aVQRef - aVQNext);
 
       if ((aDeltaU >= theDeltaMax) && (aDeltaV >= theDeltaMax))
         return IntPatch_SPntSeamUV;
@@ -326,7 +326,7 @@ void ComputeTangency(const IntPatch_TheSOnBounds&       solrst,
 
             vtx      = PStart.Vertex();
             vtxorien = Domain->Orientation(vtx);
-            if (Abs(test) <= tole)
+            if (std::abs(test) <= tole)
             {
               LocTrans = TopAbs_EXTERNAL; // et pourquoi pas INTERNAL
             }
@@ -376,7 +376,7 @@ void ComputeTangency(const IntPatch_TheSOnBounds&       solrst,
 
                     test     = vectg.Dot(v1.Crossed(v2));
                     vtxorien = Domain->Orientation(PStart.Vertex());
-                    if (Abs(test) <= tole)
+                    if (std::abs(test) <= tole)
                     {
                       LocTrans = TopAbs_EXTERNAL; // et pourquoi pas INTERNAL
                     }
@@ -527,9 +527,9 @@ Standard_Real GetLocalStep(const Handle(Adaptor3d_Surface)& theSurf, const Stand
       Standard_Integer    aMaxDeg = 0;
       const Standard_Real aLimRes = 1.e-10;
 
-      aMinRes = Min(theSurf->UResolution(Precision::Confusion()),
-                    theSurf->VResolution(Precision::Confusion()));
-      aMaxDeg = Max(theSurf->UDegree(), theSurf->VDegree());
+      aMinRes = std::min(theSurf->UResolution(Precision::Confusion()),
+                         theSurf->VResolution(Precision::Confusion()));
+      aMaxDeg = std::max(theSurf->UDegree(), theSurf->VDegree());
       if (aMinRes < aLimRes && aMaxDeg > 3)
       {
         aLocalStep = 0.0001;
@@ -547,7 +547,7 @@ Standard_Real GetLocalStep(const Handle(Adaptor3d_Surface)& theSurf, const Stand
       Standard_Real    aMinInt = Precision::Infinite();
       for (i = 1; i <= aNbInt; ++i)
       {
-        aMinInt = Min(aMinInt, anInts(i + 1) - anInts(i));
+        aMinInt = std::min(aMinInt, anInts(i + 1) - anInts(i));
       }
 
       aMinInt /= theSurf->LastUParameter() - theSurf->FirstUParameter();
@@ -569,7 +569,7 @@ Standard_Real GetLocalStep(const Handle(Adaptor3d_Surface)& theSurf, const Stand
       Standard_Real    aMinInt = Precision::Infinite();
       for (i = 1; i <= aNbInt; ++i)
       {
-        aMinInt = Min(aMinInt, anInts(i + 1) - anInts(i));
+        aMinInt = std::min(aMinInt, anInts(i + 1) - anInts(i));
       }
 
       aMinInt /= theSurf->LastVParameter() - theSurf->FirstVParameter();
@@ -580,7 +580,7 @@ Standard_Real GetLocalStep(const Handle(Adaptor3d_Surface)& theSurf, const Stand
     }
   }
 
-  aLocalStep = Min(theStep, aLocalStep);
+  aLocalStep = std::min(theStep, aLocalStep);
   return aLocalStep;
 }
 
@@ -763,7 +763,7 @@ void IntPatch_ImpPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
     UVap(1) = s2d.X();
     UVap(2) = s2d.Y();
     Func.Value(UVap, Valf);
-    Standard_Real rvalf = Sign(1., Valf(1));
+    Standard_Real rvalf = std::copysign(1., Valf(1));
     for (Standard_Integer i = 2; i <= aNbSamples; ++i)
     {
       T->SamplePoint(i, s2d, s3d);
@@ -1716,7 +1716,7 @@ void IntPatch_ImpPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
   // Now slin is filled as follows: lower indices correspond to Restriction line,
   // after (higher indices) - only Walking-line.
 
-  const Standard_Real              aTol3d      = Max(Func.Tolerance(), TolTang);
+  const Standard_Real              aTol3d      = std::max(Func.Tolerance(), TolTang);
   const Handle(Adaptor3d_Surface)& aQSurf      = (reversed) ? Surf2 : Surf1;
   const Handle(Adaptor3d_Surface)& anOtherSurf = (reversed) ? Surf1 : Surf2;
 
@@ -1773,7 +1773,7 @@ void IntPatch_ImpPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&   Sur
       Standard_Real aTol2d  = anOtherSurf->UResolution(aTol3d),
                     aPeriod = anOtherSurf->IsVPeriodic() ? anOtherSurf->VPeriod() : 0.0;
 
-      if (Abs(aDir.X()) < 0.5)
+      if (std::abs(aDir.X()) < 0.5)
       { // Restriction directs along V-direction
         aTol2d  = anOtherSurf->VResolution(aTol3d);
         aPeriod = anOtherSurf->IsUPeriodic() ? anOtherSurf->UPeriod() : 0.0;
@@ -2331,7 +2331,7 @@ static void ToSmooth(const Handle(IntSurf_LineOn2S)& Line,
 
   if (doU)
   {
-    Standard_Real dU = Min((DDU / 10.), 5.e-8);
+    Standard_Real dU = std::min((DDU / 10.), 5.e-8);
     Standard_Real U  = (U2 > U3) ? (U2 + dU) : (U2 - dU);
     if (IsReversed)
       Line->SetUV(Index1, Standard_False, U, V1);
@@ -2812,7 +2812,7 @@ static Standard_Boolean IsPointOnBoundary(const Standard_Real theToler2D,
                                           const Standard_Real thePeriod,
                                           const Standard_Real theParam)
 {
-  Standard_Real aDelta = Abs(theParam - theBoundary);
+  Standard_Real aDelta = std::abs(theParam - theBoundary);
   if (thePeriod != 0.0)
   {
     aDelta = fmod(aDelta, thePeriod);
@@ -2887,14 +2887,14 @@ static void DetectOfBoundaryAchievement(const Handle(Adaptor3d_Surface)& theQSur
 
     const Standard_Real aDu = (aUPrev - aUCurr);
     const Standard_Real aDv = (aVPrev - aVCurr);
-    if (aUPeriod > 0.0 && (2.0 * Abs(aDu) > aUPeriod))
+    if (aUPeriod > 0.0 && (2.0 * std::abs(aDu) > aUPeriod))
     {
-      aUCurr += Sign(aUPeriod, aDu);
+      aUCurr += std::copysign(aUPeriod, aDu);
     }
 
-    if (aVPeriod > 0.0 && (2.0 * Abs(aDv) > aVPeriod))
+    if (aVPeriod > 0.0 && (2.0 * std::abs(aDv) > aVPeriod))
     {
-      aVCurr += Sign(aVPeriod, aDv);
+      aVCurr += std::copysign(aVPeriod, aDv);
     }
 
     IntSurf_PntOn2S aPoint = aPCurr;
@@ -3001,10 +3001,11 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)&  theLi
       const Standard_Real aURes = theQSurf->UResolution(theArcTol),
                           aVRes = theQSurf->VResolution(theArcTol);
 
-      const Standard_Real aTol2d = (aPrePointExist == IntPatch_SPntPole)     ? -1.0
-                                   : (aPrePointExist == IntPatch_SPntSeamV)  ? aVRes
-                                   : (aPrePointExist == IntPatch_SPntSeamUV) ? Max(aURes, aVRes)
-                                                                             : aURes;
+      const Standard_Real aTol2d = (aPrePointExist == IntPatch_SPntPole)    ? -1.0
+                                   : (aPrePointExist == IntPatch_SPntSeamV) ? aVRes
+                                   : (aPrePointExist == IntPatch_SPntSeamUV)
+                                     ? std::max(aURes, aVRes)
+                                     : aURes;
 
       if (IntPatch_SpecialPoints::ContinueAfterSpecialPoint(theQSurf,
                                                             thePSurf,
@@ -3452,12 +3453,12 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)&  theLi
 
         if (aFLIndex == 0)
         {
-          aFPar = Max(aFPar, aPar);
+          aFPar = std::max(aFPar, aPar);
           aPar  = aFPar;
         }
         else
         {
-          aLPar = Min(aLPar, aPar);
+          aLPar = std::min(aLPar, aPar);
           aPar  = aLPar;
         }
 
@@ -3559,7 +3560,7 @@ Standard_Boolean IsCoincide(
     }
 
     const Standard_Real aDist = theArc->Line().Distance(anArc->Line());
-    if ((aDist < theToler2D) || (Abs(aDist - thePeriod) < theToler2D))
+    if ((aDist < theToler2D) || (std::abs(aDist - thePeriod) < theToler2D))
     {
       const Standard_Real aRf = theArc->FirstParameter(), aRl = theArc->LastParameter();
       const Standard_Real aParf = anArc->FirstParameter(), aParl = anArc->LastParameter();
@@ -3607,7 +3608,7 @@ Standard_Boolean IsCoincide(
     const gp_Pnt2d aPmin(ElCLib::Value(aRParam, anArcLin));
 
     const Standard_Real aDist = aPloc.Distance(aPmin);
-    if ((aDist < theToler2D) || (Abs(aDist - thePeriod) < theToler2D))
+    if ((aDist < theToler2D) || (std::abs(aDist - thePeriod) < theToler2D))
     { // Considered point is in Restriction line.
       // Go to the next point.
       continue;
@@ -3634,7 +3635,7 @@ Standard_Boolean IsCoincide(
         return Standard_False;
       }
 
-      if (Abs(theFunc.Root()) > theToler3D)
+      if (std::abs(theFunc.Root()) > theToler3D)
       {
         return Standard_False;
       }

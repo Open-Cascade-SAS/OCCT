@@ -121,7 +121,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   if (ddc.Dot(Dp) < 0.)
     ddc.Reverse();
   Standard_Real    Ang    = ddp.Angle(ddc);
-  Standard_Real    Rabio  = Radius / Tan(Ang / 2);
+  Standard_Real    Rabio  = Radius / std::tan(Ang / 2);
   Standard_Real    Maxrad = cPln.Distance(Pv);
   Standard_Real    Rad;
   Standard_Boolean dedans = Dx.Dot(Dc) <= 0.;
@@ -132,7 +132,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
       Dz.Reverse();
     }
     Rad = Maxrad - Rabio;
-    if (Abs(Rad) <= Precision::Confusion())
+    if (std::abs(Rad) <= Precision::Confusion())
     {
       c1sphere = Standard_True;
     }
@@ -269,7 +269,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   ElSLib::Parameters(Con, P, u, v);
   Standard_Real    tol           = Precision::PConfusion();
   Standard_Boolean careaboutsens = 0;
-  if (Abs(lu - fu - 2 * M_PI) < tol)
+  if (std::abs(lu - fu - 2 * M_PI) < tol)
     careaboutsens = 1;
   if (u >= fu - tol && u < fu)
     u = fu;
@@ -283,10 +283,10 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   if (deru.Dot(Dy) < 0.)
   {
     d2dCon.Reverse();
-    if (careaboutsens && Abs(fu - u) < tol)
+    if (careaboutsens && std::abs(fu - u) < tol)
       u = lu;
   }
-  else if (careaboutsens && Abs(lu - u) < tol)
+  else if (careaboutsens && std::abs(lu - u) < tol)
     u = fu;
   gp_Pnt2d            p2dCon(u, v);
   gp_Lin2d            lin2dCon(p2dCon, d2dCon);

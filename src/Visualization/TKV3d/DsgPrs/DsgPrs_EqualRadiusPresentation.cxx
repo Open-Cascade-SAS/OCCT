@@ -89,7 +89,8 @@ void DsgPrs_EqualRadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPres
   }
   else
   {
-    Standard_Real Rad = Max(FirstCenter.Distance(FirstPoint), SecondCenter.Distance(SecondPoint));
+    Standard_Real Rad =
+      std::max(FirstCenter.Distance(FirstPoint), SecondCenter.Distance(SecondPoint));
 
     SmallDist = Rad * 0.05; // take 1/20 part of length;
     if (SmallDist <= Precision::Confusion())

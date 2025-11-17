@@ -274,7 +274,7 @@ void OpenGl_Text::StringSize(const Handle(OpenGl_Context)& theCtx,
     }
     else if (aCharThis == '\x0A') // LF (line feed, new line)
     {
-      theWidth = Max(theWidth, aWidth);
+      theWidth = std::max(theWidth, aWidth);
       aWidth   = 0.0f;
       continue;
     }
@@ -291,7 +291,7 @@ void OpenGl_Text::StringSize(const Handle(OpenGl_Context)& theCtx,
 
     aWidth += aFont->FTFont()->AdvanceX(aCharThis, aCharNext);
   }
-  theWidth = Max(theWidth, aWidth);
+  theWidth = std::max(theWidth, aWidth);
 
   const Handle(OpenGl_Context)& aCtx = theCtx;
   aFont.Nullify();
@@ -405,8 +405,8 @@ void OpenGl_Text::setupMatrix(const Handle(OpenGl_Context)& theCtx,
       // Note that for better readability we could also try aligning freely rotated in 3D text
       // (myHasPlane), when camera orientation co-aligned with horizontal text orientation, but this
       // might look awkward while rotating camera.
-      aWinXYZ.x() = Floor(aWinXYZ.x());
-      aWinXYZ.y() = Floor(aWinXYZ.y());
+      aWinXYZ.x() = std::floor(aWinXYZ.x());
+      aWinXYZ.y() = std::floor(aWinXYZ.y());
     }
     Graphic3d_TransformUtils::UnProject<Standard_Real>(aWinXYZ.x(),
                                                        aWinXYZ.y(),

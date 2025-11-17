@@ -71,7 +71,8 @@ public:
   //! @code
   //! theA * X + theB * Y + theC * Z + theD = 0.0
   //! @endcode
-  //! Raises ConstructionError if Sqrt (theA*theA + theB*theB + theC*theC) <= Resolution from gp.
+  //! Raises ConstructionError if std::sqrt (theA*theA + theB*theB + theC*theC) <= Resolution from
+  //! gp.
   Standard_EXPORT gp_Pln(const Standard_Real theA,
                          const Standard_Real theB,
                          const Standard_Real theC,

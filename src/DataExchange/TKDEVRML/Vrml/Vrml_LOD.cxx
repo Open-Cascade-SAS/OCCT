@@ -70,8 +70,8 @@ Standard_OStream& Vrml_LOD::Print(Standard_OStream& anOStream) const
     anOStream << " ]\n";
   }
 
-  if (Abs(myCenter.X() - 0) > 0.0001 || Abs(myCenter.Y() - 0) > 0.0001
-      || Abs(myCenter.Z() - 0) > 0.0001)
+  if (std::abs(myCenter.X() - 0) > 0.0001 || std::abs(myCenter.Y() - 0) > 0.0001
+      || std::abs(myCenter.Z() - 0) > 0.0001)
   {
     anOStream << "    center\t";
     anOStream << myCenter.X() << " " << myCenter.Y() << " " << myCenter.Z() << "\n";

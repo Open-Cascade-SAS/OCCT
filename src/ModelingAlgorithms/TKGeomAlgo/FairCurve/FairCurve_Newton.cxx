@@ -45,5 +45,6 @@ Standard_Boolean FairCurve_Newton::IsConverged() const
 {
   const Standard_Real N = TheStep.Norm();
   return (N <= 0.01 * mySpTol)
-         || (N <= mySpTol && Abs(TheMinimum - PreviousMinimum) <= XTol * Abs(PreviousMinimum));
+         || (N <= mySpTol
+             && std::abs(TheMinimum - PreviousMinimum) <= XTol * std::abs(PreviousMinimum));
 }

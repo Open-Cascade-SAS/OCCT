@@ -91,7 +91,7 @@ Standard_Real IntPolyh_Triangle::ComputeDeflection(const Handle(Adaptor3d_Surfac
   IntPolyh_Point BarycentreReel(PtXYZ.X(), PtXYZ.Y(), PtXYZ.Z(), Gu, Gv);
   // compute distance to plane
   NormaleTri   = NormaleTri / sqrt(SqNorm);
-  myDeflection = Abs(NormaleTri.Dot(BarycentreReel - P1));
+  myDeflection = std::abs(NormaleTri.Dot(BarycentreReel - P1));
   return myDeflection;
 }
 

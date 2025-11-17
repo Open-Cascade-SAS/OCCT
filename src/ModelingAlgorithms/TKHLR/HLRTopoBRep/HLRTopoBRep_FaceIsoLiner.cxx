@@ -119,8 +119,8 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const Standard_Integer FI,
     Standard_Integer           IndE;
     const TopoDS_Edge&         newE = TopoDS::Edge(ExpEdges.Current());
     const Handle(Geom2d_Curve) PC   = BRep_Tool::CurveOnSurface(newE, TF, U1, U2);
-    if (Abs(PC->FirstParameter() - U1) <= Precision::PConfusion()
-        && Abs(PC->LastParameter() - U2) <= Precision::PConfusion())
+    if (std::abs(PC->FirstParameter() - U1) <= Precision::PConfusion()
+        && std::abs(PC->LastParameter() - U2) <= Precision::PConfusion())
     {
       IndE = Hatcher.AddElement(PC, newE.Orientation());
     }
@@ -145,8 +145,8 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const Standard_Integer FI,
       Standard_Integer           IndE;
       const TopoDS_Edge&         newE = TopoDS::Edge(itE.Value());
       const Handle(Geom2d_Curve) PC   = BRep_Tool::CurveOnSurface(newE, TF, U1, U2);
-      if (Abs(PC->FirstParameter() - U1) <= Precision::PConfusion()
-          && Abs(PC->LastParameter() - U2) <= Precision::PConfusion())
+      if (std::abs(PC->FirstParameter() - U1) <= Precision::PConfusion()
+          && std::abs(PC->LastParameter() - U2) <= Precision::PConfusion())
       {
         IndE = Hatcher.AddElement(PC, TopAbs_INTERNAL);
       }
@@ -169,9 +169,9 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const Standard_Integer FI,
   Standard_Real       Tolerance = BRep_Tool::Tolerance(TF);
 
   Standard_Integer IIso;
-  Standard_Real    DeltaU    = Abs(UMax - UMin);
-  Standard_Real    DeltaV    = Abs(VMax - VMin);
-  Standard_Real    Confusion = Min(DeltaU, DeltaV) * HatcherConfusion3d;
+  Standard_Real    DeltaU    = std::abs(UMax - UMin);
+  Standard_Real    DeltaV    = std::abs(VMax - VMin);
+  Standard_Real    Confusion = std::min(DeltaU, DeltaV) * HatcherConfusion3d;
   Hatcher.Confusion3d(Confusion);
 
   //-----------------------------------------------------------------------

@@ -209,21 +209,21 @@ Ax2d Geom2d_Hyperbola::Directrix2() const
 Standard_Real Geom2d_Hyperbola::Eccentricity() const
 {
   Standard_DomainError_Raise_if(majorRadius <= gp::Resolution(), " ");
-  return (Sqrt(majorRadius * majorRadius + minorRadius * minorRadius)) / majorRadius;
+  return (std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius)) / majorRadius;
 }
 
 //=================================================================================================
 
 Standard_Real Geom2d_Hyperbola::Focal() const
 {
-  return 2.0 * Sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  return 2.0 * std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
 }
 
 //=================================================================================================
 
 Pnt2d Geom2d_Hyperbola::Focus1() const
 {
-  Standard_Real C   = Sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  Standard_Real C   = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
   XY            Pxy = pos.XDirection().XY();
   Pxy.Multiply(C);
   Pxy.Add(pos.Location().XY());
@@ -234,7 +234,7 @@ Pnt2d Geom2d_Hyperbola::Focus1() const
 
 Pnt2d Geom2d_Hyperbola::Focus2() const
 {
-  Standard_Real C   = Sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  Standard_Real C   = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
   XY            Pxy = pos.XDirection().XY();
   Pxy.Multiply(-C);
   Pxy.Add(pos.Location().XY());
@@ -311,8 +311,8 @@ Vec2d Geom2d_Hyperbola::DN(const Standard_Real U, const Standard_Integer N) cons
 
 void Geom2d_Hyperbola::Transform(const Trsf2d& T)
 {
-  majorRadius = majorRadius * Abs(T.ScaleFactor());
-  minorRadius = minorRadius * Abs(T.ScaleFactor());
+  majorRadius = majorRadius * std::abs(T.ScaleFactor());
+  minorRadius = minorRadius * std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 

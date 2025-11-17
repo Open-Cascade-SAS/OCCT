@@ -69,7 +69,7 @@ public:
   //! It is a vector of dimension 1, i-e a real.
   Standard_Real Root() const;
 
-  //! Returns the value Tol so that if Abs(Func.Root())<Tol
+  //! Returns the value Tol so that if std::abs(Func.Root())<Tol
   //! the function is considered null.
   Standard_Real Tolerance() const;
 

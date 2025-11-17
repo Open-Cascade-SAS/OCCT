@@ -401,7 +401,7 @@ static void LineConstructor(Contap_TheSequenceOfLine&          slin,
         firstp = L.Vertex(i).ParameterOnLine();
         lastp  = L.Vertex(i + 1).ParameterOnLine();
       }
-      if (Abs(firstp - lastp) > 0.000000001)
+      if (std::abs(firstp - lastp) > 0.000000001)
       {
         Standard_Real pmid = (firstp + lastp) * 0.5;
         gp_Pnt        Pmid = ElCLib::Value(pmid, L.Circle());
@@ -450,7 +450,7 @@ static void LineConstructor(Contap_TheSequenceOfLine&          slin,
     {
       Standard_Real firstp = L.Vertex(nbvtx).ParameterOnLine();
       Standard_Real lastp  = L.Vertex(1).ParameterOnLine() + M_PI + M_PI;
-      if (Abs(firstp - lastp) > 0.0000000001)
+      if (std::abs(firstp - lastp) > 0.0000000001)
       {
         Standard_Real pmid = (firstp + lastp) * 0.5;
         gp_Pnt        Pmid = ElCLib::Value(pmid, L.Circle());
@@ -677,7 +677,7 @@ static void ComputeTangency(const Contap_TheSearch&            solrst,
             if (PStart.IsNew())
             {
               Standard_Real tbis = vectg.Normalized().Dot(tg3drst.Normalized());
-              if (Abs(tbis) < 1. - tole)
+              if (std::abs(tbis) < 1. - tole)
               {
 
                 if ((test < 0. && arcorien == TopAbs_FORWARD)
@@ -713,7 +713,7 @@ static void ComputeTangency(const Contap_TheSearch&            solrst,
                 test                                 = test / (vectg.Magnitude());
                 test = test / ((normale.Crossed(tg3drst)).Magnitude());
 
-                if (Abs(test) <= tole)
+                if (std::abs(test) <= tole)
                 {
                   tobeverified = Standard_True;
                   LocTrans     = TopAbs_EXTERNAL; // et pourquoi pas INTERNAL
@@ -766,7 +766,7 @@ static void ComputeTangency(const Contap_TheSearch&            solrst,
                         test      = test / ((normale.Crossed(tg3drst)).Magnitude());
 
                         vtxorien = Domain->Orientation(vtx2);
-                        if (Abs(test) <= tole)
+                        if (std::abs(test) <= tole)
                         {
                           tobeverified = Standard_True;
                           LocTrans     = TopAbs_EXTERNAL; // et pourquoi pas INTERNAL
@@ -1227,8 +1227,8 @@ void ComputeInternalPointsOnRstr(Contap_Line&         Line,
             vtestb = gp_Vec(0., 0., 0.);
           }
 
-          if ((vtestb.Magnitude() <= gp::Resolution()) || (Abs(paramp - paraminf) <= toler)
-              || (Abs(paramp - paramsup) <= toler))
+          if ((vtestb.Magnitude() <= gp::Resolution()) || (std::abs(paramp - paraminf) <= toler)
+              || (std::abs(paramp - paramsup) <= toler))
           {
             // on est a la solution
             solution = Standard_True;
@@ -1251,7 +1251,7 @@ void ComputeInternalPointsOnRstr(Contap_Line&         Line,
           for (i = 1; i <= Line.NbVertex(); i++)
           {
             Contap_Point& thevtx = Line.Vertex(i);
-            if (Abs(thevtx.ParameterOnLine() - paramp) <= toler)
+            if (std::abs(thevtx.ParameterOnLine() - paramp) <= toler)
             {
               thevtx.SetInternal();
               ok = Standard_False; // on a correspondence
@@ -1401,7 +1401,7 @@ void ComputeInternalPoints(Contap_Line&         Line,
 
             rsnld.Root(X);
             SFunc.Values(X, F, DF);
-            if (Abs(F(1)) <= SFunc.Tolerance())
+            if (std::abs(F(1)) <= SFunc.Tolerance())
             {
 
               if (!SFunc.IsTangent())
@@ -1418,8 +1418,8 @@ void ComputeInternalPoints(Contap_Line&         Line,
                 vtestb = gp_Vec(0., 0., 0.);
               }
               if ((vtestb.Magnitude() <= gp::Resolution())
-                  || (Abs(X(1) - XInf(1)) <= toler(1) && Abs(X(2) - XInf(2)) <= toler(2))
-                  || (Abs(X(1) - XSup(1)) <= toler(1) && Abs(X(2) - XSup(2)) <= toler(2)))
+                  || (std::abs(X(1) - XInf(1)) <= toler(1) && std::abs(X(2) - XInf(2)) <= toler(2))
+                  || (std::abs(X(1) - XSup(1)) <= toler(1) && std::abs(X(2) - XSup(2)) <= toler(2)))
               {
                 // on est a la solution
                 solution = Standard_True;
@@ -1448,7 +1448,7 @@ void ComputeInternalPoints(Contap_Line&         Line,
           Standard_Boolean newpoint = Standard_False;
           Line.Point(indexinf).ParametersOnS2(U, V);
           gp_Vec2d vinf(X(1) - U, X(2) - V);
-          if (Abs(vinf.X()) <= toler(1) && Abs(vinf.Y()) <= toler(2))
+          if (std::abs(vinf.X()) <= toler(1) && std::abs(vinf.Y()) <= toler(2))
           {
             paramp = indexinf;
           }
@@ -1458,7 +1458,7 @@ void ComputeInternalPoints(Contap_Line&         Line,
             {
               Line.Point(index).ParametersOnS2(U, V);
               gp_Vec2d vsup(X(1) - U, X(2) - V);
-              if (Abs(vsup.X()) <= toler(1) && Abs(vsup.Y()) <= toler(2))
+              if (std::abs(vsup.X()) <= toler(1) && std::abs(vsup.Y()) <= toler(2))
               {
                 paramp = index;
                 break;
@@ -1559,7 +1559,7 @@ void Contap_Contour::Perform(const Handle(Adaptor3d_TopolTool)& Domain)
 
   Standard_Real EpsU  = Adaptor3d_HSurfaceTool::UResolution(Surf, Precision::Confusion());
   Standard_Real EpsV  = Adaptor3d_HSurfaceTool::VResolution(Surf, Precision::Confusion());
-  Standard_Real Preci = Min(EpsU, EpsV);
+  Standard_Real Preci = std::min(EpsU, EpsV);
   //  Standard_Real Fleche = 5.e-1;
   //  Standard_Real Pas    = 5.e-2;
   Standard_Real Fleche = 0.01;
@@ -1978,14 +1978,14 @@ static Standard_Boolean FindLine(Contap_Line&                     Line,
     gp_Lin lin(Line.Line());
     para = ElCLib::Parameter(lin, Ptref);
     ElCLib::D1(para, lin, pt, tg);
-    dist = pt.Distance(Ptref) + Abs(Norm.Dot(lin.Direction()));
+    dist = pt.Distance(Ptref) + std::abs(Norm.Dot(lin.Direction()));
   }
   else
   { // Contap__Circle
     gp_Circ cir(Line.Circle());
     para = ElCLib::Parameter(cir, Ptref);
     ElCLib::D1(para, cir, pt, tg);
-    dist = pt.Distance(Ptref) + Abs(Norm.Dot(tg / cir.Radius()));
+    dist = pt.Distance(Ptref) + std::abs(Norm.Dot(tg / cir.Radius()));
   }
   if (dist < dismin)
   {
@@ -2057,7 +2057,7 @@ static void PutPointsOnLine(const Contap_TheSearch&          solrst,
           // des cones, et les sommets d`une sphere. Il faudrait peut-etre
           // rajouter une methode dans SurfProps
 
-          if (Abs(d2d.Y()) <= Precision::Confusion())
+          if (std::abs(d2d.Y()) <= Precision::Confusion())
           {
             tgtrst = d1v.Crossed(normale);
             if (d2d.X() < 0.0)
@@ -2172,7 +2172,7 @@ void Contap_Contour::PerformAna(const Handle(Adaptor3d_TopolTool)& Domain)
       {
         case Contap_ContourStd: {
           gp_Dir Dirpln(pl.Axis().Direction());
-          if (Abs(mySFunc.Direction().Dot(Dirpln)) > Precision::Angular())
+          if (std::abs(mySFunc.Direction().Dot(Dirpln)) > Precision::Angular())
           {
             // Aucun point du plan n`est solution, en particulier aucun point
             // sur restriction.
@@ -2192,8 +2192,8 @@ void Contap_Contour::PerformAna(const Handle(Adaptor3d_TopolTool)& Domain)
         break;
         case Contap_DraftStd: {
           gp_Dir        Dirpln(pl.Axis().Direction());
-          Standard_Real Sina = Sin(mySFunc.Angle());
-          if (Abs(mySFunc.Direction().Dot(Dirpln) + Sina) > // voir SurfFunction
+          Standard_Real Sina = std::sin(mySFunc.Angle());
+          if (std::abs(mySFunc.Direction().Dot(Dirpln) + Sina) > // voir SurfFunction
               Precision::Angular())
           {
 

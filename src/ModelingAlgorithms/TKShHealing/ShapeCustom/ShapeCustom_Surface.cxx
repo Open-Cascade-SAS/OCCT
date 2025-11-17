@@ -228,7 +228,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
 
     if (nVP > 2)
     {
-      if ((Abs(R(1)) < tol) && (Abs(R(2)) < tol) && (Abs(R(3)) > tol))
+      if ((std::abs(R(1)) < tol) && (std::abs(R(2)) < tol) && (std::abs(R(3)) > tol))
       {
         // deja fait	  gp_Ax3 aAx3(p3(1), aDir, xVec);
         // gp_Ax3 aAx3(p3(3), aDir);
@@ -244,7 +244,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
       // deja fait	gp_Ax3 aAx3(p3(1), aDir, xVec);
       // gp_Ax3 aAx3(p3(1), aDir);
 
-      if (Abs(R(2) - R(1)) < tol)
+      if (std::abs(R(2) - R(1)) < tol)
       {
         Handle(Geom_CylindricalSurface) anObject = new Geom_CylindricalSurface(aAx3, R(1));
         if (!uClosed)
@@ -309,7 +309,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
                        0.5 * (p1(i).Z() + p2(i).Z()));
         R(i) = p3(i).Distance(p1(i));
       }
-      if ((Abs(R(1) - R(2)) < tol) && (Abs(R(1) - R(3)) < tol))
+      if ((std::abs(R(1) - R(2)) < tol) && (std::abs(R(1) - R(3)) < tol))
       {
         gp_Pnt        p10(0.5 * (p3(1).X() + p3(2).X()),
                    0.5 * (p3(1).Y() + p3(2).Y()),

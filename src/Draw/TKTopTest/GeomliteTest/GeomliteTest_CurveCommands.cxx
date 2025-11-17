@@ -587,8 +587,8 @@ static Standard_Integer cmovetangent(Draw_Interpretor& di, Standard_Integer n, c
       tz = Draw::Atof(a[8]);
       if (n == 10)
       {
-        condition = Max(Draw::Atoi(a[9]), -1);
-        condition = Min(condition, G2->Degree() - 1);
+        condition = std::max(Draw::Atoi(a[9]), -1);
+        condition = std::min(condition, G2->Degree() - 1);
       }
       gp_Pnt p;
       gp_Vec tangent;
@@ -617,8 +617,8 @@ static Standard_Integer cmovetangent(Draw_Interpretor& di, Standard_Integer n, c
       ty = Draw::Atof(a[6]);
       if (n == 8)
       {
-        condition = Max(Draw::Atoi(a[7]), -1);
-        condition = Min(condition, G2->Degree() - 1);
+        condition = std::max(Draw::Atoi(a[7]), -1);
+        condition = std::min(condition, G2->Degree() - 1);
       }
       gp_Pnt2d p;
       gp_Vec2d tangent;
@@ -1390,9 +1390,9 @@ static Standard_Integer localprop(Draw_Interpretor& di, Standard_Integer argc, c
       Standard_Real K = Prop.Curvature();
       di << " Curvature : " << K << "\n";
 
-      if (Abs(K) > Precision::Confusion())
+      if (std::abs(K) > Precision::Confusion())
       {
-        Standard_Real R = 1 / Abs(K);
+        Standard_Real R = 1 / std::abs(K);
         gp_Pnt        Center;
         Prop.CentreOfCurvature(Center);
         gp_Dir Tang;
@@ -1424,9 +1424,9 @@ static Standard_Integer localprop(Draw_Interpretor& di, Standard_Integer argc, c
 
       di << " Curvature : " << K << "\n";
 
-      if (Abs(K) > Precision::Confusion())
+      if (std::abs(K) > Precision::Confusion())
       {
-        Standard_Real R = 1 / Abs(K);
+        Standard_Real R = 1 / std::abs(K);
         Prop.CentreOfCurvature(Center);
         gp_Ax2d                    Axe(Center, gp::DX2d());
         Handle(Geom2d_Circle)      Cir2d = new Geom2d_Circle(Axe, R);
@@ -1517,7 +1517,7 @@ static Standard_Integer approxcurveonsurf(Draw_Interpretor& di, Standard_Integer
     return 1;
 
   if (n > 4)
-    Tol = Max(Draw::Atof(a[4]), 1.e-10);
+    Tol = std::max(Draw::Atof(a[4]), 1.e-10);
 
   if (n > 5)
   {
@@ -1646,7 +1646,7 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
   }
 
   if (n > shift)
-    Tol = Max(Draw::Atof(a[shift]), 1.e-10);
+    Tol = std::max(Draw::Atof(a[shift]), 1.e-10);
 
   if (n > shift + 1)
   {
@@ -1808,7 +1808,7 @@ static Standard_Integer fitcurve(Draw_Interpretor& di, Standard_Integer n, const
   for (i = 1; i <= NbCurves; i++)
   {
     anAppro.Error(i, tol3d, tol2d);
-    tolreached                 = Max(tolreached, tol3d);
+    tolreached                 = std::max(tolreached, tol3d);
     AppParCurves_MultiCurve MC = anAppro.Value(i);
     TColgp_Array1OfPnt      Poles(1, MC.Degree() + 1);
     MC.Curve(1, Poles);

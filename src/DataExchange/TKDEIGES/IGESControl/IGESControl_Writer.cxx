@@ -146,15 +146,15 @@ Standard_Boolean IGESControl_Writer::AddShape(const TopoDS_Shape&          theSh
     }
     else if (tolmod < 0)
     { // Least
-      newtol = Min(Tolv, Tole);
+      newtol = std::min(Tolv, Tole);
       if (oldnb > 0)
-        newtol = Min(oldtol, newtol);
+        newtol = std::min(oldtol, newtol);
     }
     else
     { // Greatest
-      newtol = Max(Tolv, Tole);
+      newtol = std::max(Tolv, Tole);
       if (oldnb > 0)
-        newtol = Max(oldtol, newtol);
+        newtol = std::max(oldtol, newtol);
     }
   }
 

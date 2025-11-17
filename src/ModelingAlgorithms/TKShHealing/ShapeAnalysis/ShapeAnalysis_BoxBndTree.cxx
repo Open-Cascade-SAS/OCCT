@@ -128,7 +128,7 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
     }
     Standard_Integer result = res1;
     Standard_Real    min3d;
-    min3d = Min(dm1, dm2);
+    min3d = std::min(dm1, dm2);
     if (min3d > myMin3d)
       return Standard_False;
 

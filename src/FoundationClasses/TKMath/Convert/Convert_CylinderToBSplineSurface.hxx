@@ -27,7 +27,7 @@ class gp_Cylinder;
 //! This algorithm converts a bounded cylinder into a rational
 //! B-spline surface. The cylinder is a Cylinder from package gp.
 //! The parametrization of the cylinder is:
-//! P (U, V) = Loc + V * Zdir + Radius * (Xdir*Cos(U) + Ydir*Sin(U))
+//! P (U, V) = Loc + V * Zdir + Radius * (Xdir*std::cos(U) + Ydir*Sin(U))
 //! where Loc is the location point of the cylinder, Xdir, Ydir and
 //! Zdir are the normalized directions of the local cartesian
 //! coordinate system of the cylinder (Zdir is the direction of the

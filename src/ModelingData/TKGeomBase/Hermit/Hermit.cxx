@@ -312,39 +312,43 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
             Pole3 = Polesinit(3).Y();
             if (Pole0 < 3)
             {
-              a = Log10(Pole3 / Pole0);
+              a = std::log10(Pole3 / Pole0);
               if (boucle == 2)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
                     0.0,
-                    Polesinit(i).Y() - (Pole3 * (Pow(10.0, (-0.5 * Log10(TolPoles) - a / 2.0)))));
+                    Polesinit(i).Y()
+                      - (Pole3 * (std::pow(10.0, (-0.5 * std::log10(TolPoles) - a / 2.0)))));
               }
               if (boucle == 1)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
                     0.0,
-                    Polesinit(i).Y() - (Pole0 * (Pow(10.0, (a / 2.0 + 0.5 * Log10(TolPoles))))));
+                    Polesinit(i).Y()
+                      - (Pole0 * (std::pow(10.0, (a / 2.0 + 0.5 * std::log10(TolPoles))))));
                 dercas = 1;
               }
             }
             if (Pole0 > Pole3)
             {
-              a = Log10(Pole0 / Pole3);
+              a = std::log10(Pole0 / Pole3);
               if (boucle == 2)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
                     0.0,
-                    Polesinit(i).Y() - (Pole0 * (Pow(10.0, (-0.5 * Log10(TolPoles) - a / 2.0)))));
+                    Polesinit(i).Y()
+                      - (Pole0 * (std::pow(10.0, (-0.5 * std::log10(TolPoles) - a / 2.0)))));
               }
               if (boucle == 1)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
                     0.0,
-                    Polesinit(i).Y() - (Pole3 * (Pow(10.0, (a / 2.0 + 0.5 * Log10(TolPoles))))));
+                    Polesinit(i).Y()
+                      - (Pole3 * (std::pow(10.0, (a / 2.0 + 0.5 * std::log10(TolPoles))))));
                 dercas = 1;
               }
             }
@@ -571,39 +575,43 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
             Pole3 = Polesinit(3).Y();
             if (Pole0 < 3)
             {
-              a = Log10(Pole3 / Pole0);
+              a = std::log10(Pole3 / Pole0);
               if (boucle == 2)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
                     0.0,
-                    Polesinit(i).Y() - (Pole3 * (Pow(10.0, (-0.5 * Log10(TolPoles) - a / 2.0)))));
+                    Polesinit(i).Y()
+                      - (Pole3 * (std::pow(10.0, (-0.5 * std::log10(TolPoles) - a / 2.0)))));
               }
               if (boucle == 1)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
                     0.0,
-                    Polesinit(i).Y() - (Pole0 * (Pow(10.0, (a / 2.0 + 0.5 * Log10(TolPoles))))));
+                    Polesinit(i).Y()
+                      - (Pole0 * (std::pow(10.0, (a / 2.0 + 0.5 * std::log10(TolPoles))))));
                 dercas = 1;
               }
             }
             if (Pole0 > Pole3)
             {
-              a = Log10(Pole0 / Pole3);
+              a = std::log10(Pole0 / Pole3);
               if (boucle == 2)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
                     0.0,
-                    Polesinit(i).Y() - (Pole0 * (Pow(10.0, (-0.5 * Log10(TolPoles) - a / 2.0)))));
+                    Polesinit(i).Y()
+                      - (Pole0 * (std::pow(10.0, (-0.5 * std::log10(TolPoles) - a / 2.0)))));
               }
               else if (boucle == 1)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
                     0.0,
-                    Polesinit(i).Y() - (Pole3 * (Pow(10.0, (a / 2.0 + 0.5 * Log10(TolPoles))))));
+                    Polesinit(i).Y()
+                      - (Pole3 * (std::pow(10.0, (a / 2.0 + 0.5 * std::log10(TolPoles))))));
                 dercas = 1;
               }
             }
@@ -774,8 +782,8 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom_BSplineCurve)& BS
   if (Upos1 != 0.0)
     if (Upos2 != 1.0)
     {
-      Ux = Min(Upos1, Upos2);
-      Uy = Max(Upos1, Upos2);
+      Ux = std::min(Upos1, Upos2);
+      Uy = std::max(Upos1, Upos2);
     }
     else
     {
@@ -875,8 +883,8 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom2d_BSplineCurve)& 
   if (Upos1 != 0.0)
     if (Upos2 != 1.0)
     {
-      Ux = Min(Upos1, Upos2);
-      Uy = Max(Upos1, Upos2);
+      Ux = std::min(Upos1, Upos2);
+      Uy = std::max(Upos1, Upos2);
     }
     else
     {
@@ -976,8 +984,8 @@ void Hermit::Solutionbis(const Handle(Geom_BSplineCurve)& BS,
   if (Upos1 != 0.0)
     if (Upos2 != 1.0)
     {
-      Ux = Min(Upos1, Upos2);
-      Uy = Max(Upos1, Upos2);
+      Ux = std::min(Upos1, Upos2);
+      Uy = std::max(Upos1, Upos2);
     }
     else
     {

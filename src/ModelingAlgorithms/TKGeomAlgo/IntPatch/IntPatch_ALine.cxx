@@ -80,7 +80,7 @@ void IntPatch_ALine::AddVertex(const IntPatch_Point& VTXj)
       const IntPatch_Point& VTXi   = svtx.Value(i);
       if((VTXj.IsOnDomS1()==Standard_False) && (VTXj.IsOnDomS2()==Standard_False)) {
 	if((VTXi.IsOnDomS1()==Standard_False) && (VTXi.IsOnDomS2()==Standard_False)) {
-	  if(Abs(par-VTXi.ParameterOnLine())<=PCONFUSION) {
+	  if(std::abs(par-VTXi.ParameterOnLine())<=PCONFUSION) {
   #if DEBUG
 	    std::cout<<" Rejet  IntPatch_ALine::AddVertex   (0) "<<std::endl;
   #endif
@@ -93,7 +93,7 @@ void IntPatch_ALine::AddVertex(const IntPatch_Point& VTXj)
       const IntPatch_Point& VTXi   = svtx.Value(i);
       if((VTXj.IsOnDomS1()==Standard_True) && (VTXj.IsOnDomS2()==Standard_False)) {
 	if((VTXi.IsOnDomS1()==Standard_True) && (VTXi.IsOnDomS2()==Standard_False)) {
-	  if(Abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1())<=PCONFUSION) { 
+	  if(std::abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1())<=PCONFUSION) { 
 	    if(VTXi.ArcOnS1() == VTXj.ArcOnS1()) {
   #if DEBUG
 	      std::cout<<" Rejet  IntPatch_ALine::AddVertex   (1) "<<std::endl;
@@ -108,7 +108,7 @@ void IntPatch_ALine::AddVertex(const IntPatch_Point& VTXj)
       const IntPatch_Point& VTXi   = svtx.Value(i);
       if((VTXj.IsOnDomS2()==Standard_True) && (VTXj.IsOnDomS1()==Standard_False)) {
 	if((VTXi.IsOnDomS2()==Standard_True) && (VTXi.IsOnDomS1()==Standard_False)) {
-	  if(Abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2())<=PCONFUSION) { 
+	  if(std::abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2())<=PCONFUSION) { 
 	    if(VTXi.ArcOnS2() == VTXj.ArcOnS2()) {
   #if DEBUG
 	      std::cout<<" Rejet  IntPatch_ALine::AddVertex   (2) "<<std::endl;
@@ -123,8 +123,8 @@ void IntPatch_ALine::AddVertex(const IntPatch_Point& VTXj)
       const IntPatch_Point& VTXi   = svtx.Value(i);
       if((VTXj.IsOnDomS2()==Standard_True) && (VTXj.IsOnDomS1()==Standard_True)) {
 	if((VTXi.IsOnDomS2()==Standard_True) && (VTXi.IsOnDomS1()==Standard_True)) {
-	  if(Abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2())<=PCONFUSION) { 
-	    if(Abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1())<=PCONFUSION) { 
+	  if(std::abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2())<=PCONFUSION) { 
+	    if(std::abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1())<=PCONFUSION) { 
 	      if(VTXi.ArcOnS2() == VTXj.ArcOnS2()) {
 		if(VTXi.ArcOnS1() == VTXj.ArcOnS1()) {
   #if DEBUG
@@ -144,7 +144,7 @@ void IntPatch_ALine::AddVertex(const IntPatch_Point& VTXj)
       const IntPatch_Point& VTXi   = svtx.Value(i);
       if((VTXj.IsOnDomS2()==Standard_True) && (VTXj.IsOnDomS1()==Standard_True)) {
 	if((VTXi.IsOnDomS2()==Standard_False) && (VTXi.IsOnDomS1()==Standard_True)) {
-	  Standard_Real p = Abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1());
+	  Standard_Real p = std::abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1());
   #if DEBUG
 	  std::cout<<" Est ce que VTXj present sur 1 et 2  remplace un point VTXi present sur 1 : "<<p<<std::endl;
   #endif
@@ -165,7 +165,7 @@ void IntPatch_ALine::AddVertex(const IntPatch_Point& VTXj)
       const IntPatch_Point& VTXi   = svtx.Value(i);
       if((VTXj.IsOnDomS2()==Standard_True) && (VTXj.IsOnDomS1()==Standard_True)) {
 	if((VTXi.IsOnDomS2()==Standard_True) && (VTXi.IsOnDomS1()==Standard_False)) {
-	  Standard_Real p = Abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2());
+	  Standard_Real p = std::abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2());
   #if DEBUG
 	  std::cout<<" Est ce que VTXj present sur 1 et 2  remplace un point VTXi present sur 2 : "<<p<<std::endl;
   #endif
@@ -188,7 +188,7 @@ void IntPatch_ALine::AddVertex(const IntPatch_Point& VTXj)
       const IntPatch_Point& VTXi   = svtx.Value(i);
       if((VTXi.IsOnDomS2()==Standard_True) && (VTXi.IsOnDomS1()==Standard_True)) {
 	if((VTXj.IsOnDomS2()==Standard_False) && (VTXj.IsOnDomS1()==Standard_True)) {
-	  Standard_Real p = Abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1());
+	  Standard_Real p = std::abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1());
 	  if(p<=PCONFUSION) { 
 	    if(VTXi.ArcOnS1() == VTXj.ArcOnS1()) {
   #if DEBUG
@@ -205,7 +205,7 @@ void IntPatch_ALine::AddVertex(const IntPatch_Point& VTXj)
       const IntPatch_Point& VTXi   = svtx.Value(i);
       if((VTXi.IsOnDomS2()==Standard_True) && (VTXi.IsOnDomS1()==Standard_True)) {
 	if((VTXj.IsOnDomS2()==Standard_True) && (VTXj.IsOnDomS1()==Standard_False)) {
-	  Standard_Real p = Abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2());
+	  Standard_Real p = std::abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2());
 	  if(p<=PCONFUSION) { 
 	    if(VTXi.ArcOnS2() == VTXj.ArcOnS2()) {
 	      return;
@@ -327,9 +327,9 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol)
             const IntPatch_Point& VTXj = svtx.Value(j);
             if ((VTXj.IsOnDomS1() == Standard_True) && (VTXj.IsOnDomS2() == Standard_False))
             {
-              if (Abs(VTXi.ParameterOnArc1() - VTXj.ParameterOnArc1()) <= PCONFUSION)
+              if (std::abs(VTXi.ParameterOnArc1() - VTXj.ParameterOnArc1()) <= PCONFUSION)
               {
-                if (Abs(VTXi.ParameterOnLine() - VTXj.ParameterOnLine()) <= PCONFUSION)
+                if (std::abs(VTXi.ParameterOnLine() - VTXj.ParameterOnLine()) <= PCONFUSION)
                 {
                   if (VTXi.ArcOnS1() == VTXj.ArcOnS1())
                   {
@@ -371,9 +371,9 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol)
             const IntPatch_Point& VTXj = svtx.Value(j);
             if ((VTXj.IsOnDomS2() == Standard_True) && (VTXj.IsOnDomS1() == Standard_False))
             {
-              if (Abs(VTXi.ParameterOnArc2() - VTXj.ParameterOnArc2()) <= PCONFUSION)
+              if (std::abs(VTXi.ParameterOnArc2() - VTXj.ParameterOnArc2()) <= PCONFUSION)
               {
-                if (Abs(VTXi.ParameterOnLine() - VTXj.ParameterOnLine()) <= PCONFUSION)
+                if (std::abs(VTXi.ParameterOnLine() - VTXj.ParameterOnLine()) <= PCONFUSION)
                 {
                   if (VTXi.ArcOnS2() == VTXj.ArcOnS2())
                   {
@@ -445,7 +445,7 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol)
         IntPatch_Point&  VTXM1  = svtx.ChangeValue(j);
         Standard_Boolean kill   = Standard_False;
         Standard_Boolean killm1 = Standard_False;
-        if (Abs(VTXM1.ParameterOnLine() - VTX.ParameterOnLine()) < PCONFUSION)
+        if (std::abs(VTXM1.ParameterOnLine() - VTX.ParameterOnLine()) < PCONFUSION)
         {
           if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1())
           { //-- OnS1    OnS1
@@ -659,7 +659,7 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol)
     {
       IntPatch_Point& VTX   = svtx.ChangeValue(i);
       IntPatch_Point& VTXm1 = svtx.ChangeValue(i - 1);
-      if (Abs(VTX.ParameterOnLine() - VTXm1.ParameterOnLine()) < PCONFUSION)
+      if (std::abs(VTX.ParameterOnLine() - VTXm1.ParameterOnLine()) < PCONFUSION)
       {
         if (VTX.IsOnDomS1() && VTXm1.IsOnDomS1() == Standard_False)
         {

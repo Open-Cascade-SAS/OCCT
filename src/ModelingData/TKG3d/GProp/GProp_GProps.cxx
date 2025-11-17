@@ -49,7 +49,7 @@ void GProp_GProps::Add(const GProp_GProps& Item, const Standard_Real Density)
     g.SetXYZ(g.XYZ().Multiplied(dim));
     GXYZ.Add(g.XYZ());
     dim = dim + Item.dim * Density;
-    if (Abs(dim) >= 1.e-20)
+    if (std::abs(dim) >= 1.e-20)
     {
       GXYZ.Divide(dim);
       g.SetXYZ(GXYZ);
@@ -69,7 +69,7 @@ void GProp_GProps::Add(const GProp_GProps& Item, const Standard_Real Density)
     g.SetXYZ(g.XYZ().Multiplied(dim));
     GXYZ.Add(g.XYZ());
     dim = dim + Item.dim * Density;
-    if (Abs(dim) >= 1.e-20)
+    if (std::abs(dim) >= 1.e-20)
     {
       GXYZ.Divide(dim);
       g.SetXYZ(GXYZ);
@@ -146,7 +146,7 @@ Standard_Real GProp_GProps::MomentOfInertia(const gp_Ax1& A) const
 Standard_Real GProp_GProps::RadiusOfGyration(const gp_Ax1& A) const
 {
 
-  return Sqrt(MomentOfInertia(A) / dim);
+  return std::sqrt(MomentOfInertia(A) / dim);
 }
 
 GProp_PrincipalProps GProp_GProps::PrincipalProperties() const
@@ -178,9 +178,9 @@ GProp_PrincipalProps GProp_GProps::PrincipalProperties() const
   Standard_Real Rzz = 0.0e0;
   if (0.0e0 != dim)
   {
-    Rxx = Sqrt(Abs(Ixx / dim));
-    Ryy = Sqrt(Abs(Iyy / dim));
-    Rzz = Sqrt(Abs(Izz / dim));
+    Rxx = std::sqrt(std::abs(Ixx / dim));
+    Ryy = std::sqrt(std::abs(Iyy / dim));
+    Rzz = std::sqrt(std::abs(Izz / dim));
   }
   return GProp_PrincipalProps(Ixx,
                               Iyy,

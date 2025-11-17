@@ -164,14 +164,14 @@ Standard_Boolean ShapeAnalysis_Geom::PositionTrsf(const Handle(TColStd_HArray2Of
   Standard_Real mm = (m1 + m2 + m3) / 3.; // voici la Norme moyenne, cf Scale
   // szv#4:S4163:12Mar99 optimized
   Standard_Real pmm = prec * mm;
-  if (Abs(m1 - mm) > pmm || Abs(m2 - mm) > pmm || Abs(m3 - mm) > pmm)
+  if (std::abs(m1 - mm) > pmm || std::abs(m2 - mm) > pmm || std::abs(m3 - mm) > pmm)
     return Standard_False;
   // szv#4:S4163:12Mar99 warning
   v1.Divide(m1);
   v2.Divide(m2);
   v3.Divide(m3);
   // szv#4:S4163:12Mar99 optimized
-  if (Abs(v1.Dot(v2)) > prec || Abs(v2.Dot(v3)) > prec || Abs(v3.Dot(v1)) > prec)
+  if (std::abs(v1.Dot(v2)) > prec || std::abs(v2.Dot(v3)) > prec || std::abs(v3.Dot(v1)) > prec)
     return Standard_False;
 
   //  Ici, Orthogonale et memes normes. En plus on l a Normee
@@ -191,7 +191,7 @@ Standard_Boolean ShapeAnalysis_Geom::PositionTrsf(const Handle(TColStd_HArray2Of
   }
 
   //  Restent les autres caracteristiques :
-  if (Abs(mm - 1.) > prec)
+  if (std::abs(mm - 1.) > prec)
     trsf.SetScale(gp_Pnt(0, 0, 0), mm); // szv#4:S4163:12Mar99 optimized
   gp_Vec tp(gtrsf.TranslationPart());
   if (unit != 1.)

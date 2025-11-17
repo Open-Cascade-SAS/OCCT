@@ -146,7 +146,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   if (dedans)
   {
     Rad = Cyl.Radius() - dis1;
-    if (Abs(Rad) <= Precision::Confusion())
+    if (std::abs(Rad) <= Precision::Confusion())
       pointu = Standard_True;
     if (Rad < 0)
     {
@@ -291,7 +291,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   ElSLib::Parameters(Cyl, Pt, u, v);
   Standard_Real    tol           = Precision::PConfusion();
   Standard_Boolean careaboutsens = 0;
-  if (Abs(lu - fu - 2 * M_PI) < tol)
+  if (std::abs(lu - fu - 2 * M_PI) < tol)
     careaboutsens = 1;
   if (u >= fu - tol && u < fu)
     u = fu;
@@ -306,10 +306,10 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   if (deru.Dot(Dy) < 0.)
   {
     d2dCyl.Reverse();
-    if (careaboutsens && Abs(fu - u) < tol)
+    if (careaboutsens && std::abs(fu - u) < tol)
       u = lu;
   }
-  else if (careaboutsens && Abs(lu - u) < tol)
+  else if (careaboutsens && std::abs(lu - u) < tol)
     u = fu;
   gp_Pnt2d            p2dCyl(u, v);
   gp_Lin2d            lin2dCyl(p2dCyl, d2dCyl);
@@ -413,7 +413,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   // Calculation of distances dis1 and dis2, depending on Dis and Angle
   gp_Vec           DirSOrC = VecTranslCyl.Normalized();
   Standard_Real    cosA1   = DirSOrC.Dot(VecTranslPln.Normalized());
-  Standard_Real    sinA1   = Sqrt(1. - cosA1 * cosA1);
+  Standard_Real    sinA1   = std::sqrt(1. - cosA1 * cosA1);
   Standard_Real    dis1    = 0.;
   Standard_Real    dis2, ray = Cyl.Radius();
   Standard_Boolean IsDisOnP = ((plandab && DisOnP) || (!plandab && !DisOnP));
@@ -421,7 +421,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   if (IsDisOnP)
   {
     dis1                = Dis;
-    Standard_Real sinAl = Sin(Angle), cosAl = Cos(Angle);
+    Standard_Real sinAl = std::sin(Angle), cosAl = std::cos(Angle);
     Standard_Real h       = dis1 * sinAl;
     Standard_Real cosAhOC = cosA1 * sinAl + sinA1 * cosAl;
     Standard_Real sinAhOC = sinA1 * sinAl - cosA1 * cosAl;
@@ -440,11 +440,11 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
     }
     else if (dis2 < 1.E-09)
     {
-      dis2 = ray * Sqrt(2. * temp2);
+      dis2 = ray * std::sqrt(2. * temp2);
     }
     else
     {
-      dis2 = ray * Sqrt(2. * (temp2 - sinAhOC * Sqrt(dis2)));
+      dis2 = ray * std::sqrt(2. * (temp2 - sinAhOC * std::sqrt(dis2)));
     }
   }
   else
@@ -453,7 +453,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   }
 
   // construction of POnCyl
-  Standard_Real alpha   = (2 * ASin(dis2 * 0.5 / ray));
+  Standard_Real alpha   = (2 * std::asin(dis2 * 0.5 / ray));
   gp_Vec        VecTemp = VecTranslCyl.Reversed();
 
   if ((XDir.Crossed(gp_Dir(VecTranslCyl))).Dot(NorF) < 0.)
@@ -482,13 +482,13 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
     Corde.Normalize();
     Standard_Real cosCorTan = TCyl.Dot(Corde);
     Standard_Real tgCorTan  = 1. / (cosCorTan * cosCorTan);
-    tgCorTan                = Sqrt(tgCorTan - 1.);
+    tgCorTan                = std::sqrt(tgCorTan - 1.);
 
     Standard_Real tgAng = tan(Angle);
     tgAng               = (tgAng + tgCorTan) / (1. - tgAng * tgCorTan);
 
     Standard_Real cosA11 = dis2 / (2. * ray);
-    Standard_Real sinA11 = Sqrt(1. - cosA11 * cosA11);
+    Standard_Real sinA11 = std::sqrt(1. - cosA11 * cosA11);
     if (cosA1 > 0)
       sinA11 = -sinA11;
     dis1 = (sinA1 + cosA1 * tgAng) * cosA11;

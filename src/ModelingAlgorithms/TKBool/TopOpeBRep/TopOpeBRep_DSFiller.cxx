@@ -374,7 +374,7 @@ static Standard_Boolean FUN_shareNOG(const Handle(TopOpeBRepDS_HDataStructure)& 
         gp_Vec        tge1 = FUN_tool_tggeomE(par1, e1);
         gp_Vec        tge2 = FUN_tool_tggeomE(par2, e2);
         Standard_Real dot  = gp_Dir(tge1).Dot(gp_Dir(tge2));
-        Standard_Real x    = Abs(1 - Abs(dot));
+        Standard_Real x    = std::abs(1 - std::abs(dot));
         if (x > tola)
           return Standard_False; // e1,e2 not tangent
 

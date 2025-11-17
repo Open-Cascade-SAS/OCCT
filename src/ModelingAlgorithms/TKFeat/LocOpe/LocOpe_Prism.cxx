@@ -260,7 +260,7 @@ void LocOpe_Prism::Curves(TColGeom_SequenceOfCurve& Scurves) const
   TColgp_SequenceOfPnt spt;
   LocOpe::SampleEdges(myFirstShape, spt);
   Standard_Real height =
-    Sqrt(myVec.X() * myVec.X() + myVec.Y() * myVec.Y() + myVec.Z() * myVec.Z());
+    std::sqrt(myVec.X() * myVec.X() + myVec.Y() * myVec.Y() + myVec.Z() * myVec.Z());
   Standard_Real u1 = -2 * height;
   Standard_Real u2 = 2 * height;
 

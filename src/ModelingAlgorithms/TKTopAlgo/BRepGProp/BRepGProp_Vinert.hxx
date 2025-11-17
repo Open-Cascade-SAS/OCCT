@@ -58,7 +58,7 @@ public:
   //! delimited with the surface <S> and the point VLocation. S can be closed
   //! Adaptive 2D Gauss integration is used.
   //! Parameter Eps sets maximal relative error of computed mass (volume) for face.
-  //! Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
                                    const gp_Pnt&       VLocation,
@@ -79,7 +79,7 @@ public:
   //! delimited with the surface <S> and the point VLocation.
   //! Adaptive 2D Gauss integration is used.
   //! Parameter Eps sets maximal relative error of computed mass (volume) for face.
-  //! Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
@@ -102,7 +102,7 @@ public:
   //! delimited with the surface <S> and the plane Pln.
   //! Adaptive 2D Gauss integration is used.
   //! Parameter Eps sets maximal relative error of computed mass (volume) for face.
-  //! Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
@@ -123,7 +123,7 @@ public:
   //! delimited with the surface <S> and the point VLocation. S can be closed
   //! Adaptive 2D Gauss integration is used.
   //! Parameter Eps sets maximal relative error of computed mass (volume) for face.
-  //! Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
                                    BRepGProp_Domain&   D,
@@ -146,7 +146,7 @@ public:
   //! delimited with the surface <S> and the point VLocation.
   //! Adaptive 2D Gauss integration is used.
   //! Parameter Eps sets maximal relative error of computed mass (volume) for face.
-  //! Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
@@ -171,7 +171,7 @@ public:
   //! delimited with the surface <S> and the plane Pln.
   //! Adaptive 2D Gauss integration is used.
   //! Parameter Eps sets maximal relative error of computed mass (volume) for face.
-  //! Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
+  //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,

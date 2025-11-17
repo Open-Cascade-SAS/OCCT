@@ -70,7 +70,7 @@ public:
   {
     for (Standard_Integer i = 1; i <= Sol.Length(); ++i)
     {
-      if (Abs(Delta(i)) > Tol(i))
+      if (std::abs(Delta(i)) > Tol(i))
       {
         return Standard_False;
       }

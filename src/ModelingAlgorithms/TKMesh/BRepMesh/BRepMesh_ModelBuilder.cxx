@@ -56,7 +56,7 @@ Handle(IMeshData_Model) BRepMesh_ModelBuilder::performInternal(
     }
     else
     {
-      aModel->SetMaxSize(Max(theParameters.Deflection, theParameters.DeflectionInterior));
+      aModel->SetMaxSize(std::max(theParameters.Deflection, theParameters.DeflectionInterior));
     }
 
     Handle(IMeshTools_ShapeVisitor) aVisitor = new BRepMesh_ShapeVisitor(aModel);

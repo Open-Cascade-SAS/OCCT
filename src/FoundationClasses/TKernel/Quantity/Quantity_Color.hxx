@@ -316,7 +316,7 @@ public:
   static Standard_Real Convert_LinearRGB_To_sRGB(Standard_Real theLinearValue) noexcept
   {
     return theLinearValue <= 0.0031308 ? theLinearValue * 12.92
-                                       : Pow(theLinearValue, 1.0 / 2.4) * 1.055 - 0.055;
+                                       : std::pow(theLinearValue, 1.0 / 2.4) * 1.055 - 0.055;
   }
 
   //! Convert linear RGB component into sRGB using OpenGL specs formula (single precision), also
@@ -332,7 +332,7 @@ public:
   static Standard_Real Convert_sRGB_To_LinearRGB(Standard_Real thesRGBValue) noexcept
   {
     return thesRGBValue <= 0.04045 ? thesRGBValue / 12.92
-                                   : Pow((thesRGBValue + 0.055) / 1.055, 2.4);
+                                   : std::pow((thesRGBValue + 0.055) / 1.055, 2.4);
   }
 
   //! Convert sRGB component into linear RGB using OpenGL specs formula (single precision), also

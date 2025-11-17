@@ -593,8 +593,8 @@ void StdSelect_BRepSelectionTool::GetEdgeSensitive(const TopoDS_Shape&          
           aV2 = anIntervals(anIntervalId + 1);
           if (aV2 > aParamFirst && aV1 < aParamLast)
           {
-            aV1 = Max(aV1, aParamFirst);
-            aV2 = Min(aV2, aParamLast);
+            aV1 = std::max(aV1, aParamFirst);
+            aV2 = std::min(aV2, aParamLast);
 
             GCPnts_TangentialDeflection anAlgo(cu3d, aV1, aV2, theDeviationAngle, theDeflection);
             aNumberOfPoints = anAlgo.NbPoints();
@@ -624,11 +624,11 @@ void StdSelect_BRepSelectionTool::GetEdgeSensitive(const TopoDS_Shape&          
       if (cu3d.GetType() == GeomAbs_BSplineCurve)
       {
         nbintervals = cu3d.NbKnots() - 1;
-        nbintervals = Max(1, nbintervals / 3);
+        nbintervals = std::max(1, nbintervals / 3);
       }
 
       Standard_Real               aParam;
-      Standard_Integer            aPntNb      = Max(2, theNbPOnEdge * nbintervals);
+      Standard_Integer            aPntNb      = std::max(2, theNbPOnEdge * nbintervals);
       Standard_Real               aParamDelta = (aParamLast - aParamFirst) / (aPntNb - 1);
       Handle(TColgp_HArray1OfPnt) aPointArray = new TColgp_HArray1OfPnt(1, aPntNb);
       for (Standard_Integer aPntId = 1; aPntId <= aPntNb; ++aPntId)
@@ -703,7 +703,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
         {
           aRad1   = 0.0;
           aRad2   = aCircles[0].Radius();
-          aHeight = aRad2 * Tan(aCone.SemiAngle());
+          aHeight = aRad2 * std::tan(aCone.SemiAngle());
           aTrsf.SetTransformation(aCone.Position(), gp::XOY());
         }
         else
@@ -835,7 +835,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
 
     Standard_Real wf = 0.0, wl = 0.0;
     BRep_Tool::Range(aWireExplorer.Current(), wf, wl);
-    if (Abs(wf - wl) <= Precision::Confusion())
+    if (std::abs(wf - wl) <= Precision::Confusion())
     {
 #ifdef OCCT_DEBUG
       std::cout << " StdSelect_BRepSelectionTool : Curve where ufirst = ulast ...." << std::endl;
@@ -863,14 +863,15 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
         break;
       }
       case GeomAbs_Circle: {
-        if (2.0 * M_PI - Abs(wl - wf) <= Precision::Confusion())
+        if (2.0 * M_PI - std::abs(wl - wf) <= Precision::Confusion())
         {
           if (BS.GetType() == GeomAbs_Cylinder || BS.GetType() == GeomAbs_Torus
               || BS.GetType() == GeomAbs_Cone
               || BS.GetType() == GeomAbs_BSplineSurface) // beuurkk pour l'instant...
           {
             Standard_Real ff = wf, ll = wl;
-            Standard_Real dw = (Max(wf, wl) - Min(wf, wl)) / (Standard_Real)Max(2, NbPOnEdge - 1);
+            Standard_Real dw = (std::max(wf, wl) - std::min(wf, wl))
+                               / static_cast<double>(std::max(2, NbPOnEdge - 1));
             if (aWireExplorer.Orientation() == TopAbs_FORWARD)
             {
               for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
@@ -903,7 +904,8 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
         else
         {
           Standard_Real ff = wf, ll = wl;
-          Standard_Real dw = (Max(wf, wl) - Min(wf, wl)) / (Standard_Real)Max(2, NbPOnEdge - 1);
+          Standard_Real dw =
+            (std::max(wf, wl) - std::min(wf, wl)) / static_cast<double>(std::max(2, NbPOnEdge - 1));
           if (aWireExplorer.Orientation() == TopAbs_FORWARD)
           {
             for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
@@ -923,7 +925,8 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
       }
       default: {
         Standard_Real ff = wf, ll = wl;
-        Standard_Real dw = (Max(wf, wl) - Min(wf, wl)) / (Standard_Real)Max(2, NbPOnEdge - 1);
+        Standard_Real dw =
+          (std::max(wf, wl) - std::min(wf, wl)) / static_cast<double>(std::max(2, NbPOnEdge - 1));
         if (aWireExplorer.Orientation() == TopAbs_FORWARD)
         {
           for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
@@ -1002,10 +1005,10 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForCylinder(
       const gp_Cone       aCone = BRepAdaptor_Surface(*aFaces[aConIndex]).Cone();
       const Standard_Real aRad1 = aCone.RefRadius();
       const Standard_Real aHeight =
-        (aRad1 != 0.0) ? aRad1 / Abs(Tan(aCone.SemiAngle()))
+        (aRad1 != 0.0) ? aRad1 / std::abs(std::tan(aCone.SemiAngle()))
                        : aCone.Location().Distance(
                            aGeomPln->Location().Transformed(aLocSurf[aConIndex == 0 ? 1 : 0]));
-      const Standard_Real aRad2 = (aRad1 != 0.0) ? 0.0 : Tan(aCone.SemiAngle()) * aHeight;
+      const Standard_Real aRad2 = (aRad1 != 0.0) ? 0.0 : std::tan(aCone.SemiAngle()) * aHeight;
       gp_Trsf             aTrsf;
       aTrsf.SetTransformation(aCone.Position(), gp::XOY());
       Handle(Select3D_SensitiveCylinder) aSensSCyl =
@@ -1076,12 +1079,12 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForCylinder(
             .Distance(aGeomPlanes[1]->Location().Transformed(*aGeomPlanesLoc[1]));
         gp_Trsf aTrsf;
         aTrsf.SetTransformation(aCone.Position(), gp::XOY());
-        const Standard_Real aTriangleHeight = (aCone.SemiAngle() > 0.0)
-                                                ? aRad1 / Tan(aCone.SemiAngle())
-                                                : aRad1 / Tan(Abs(aCone.SemiAngle())) - aHeight;
-        const Standard_Real aRad2           = (aCone.SemiAngle() > 0.0)
-                                                ? aRad1 * (aTriangleHeight + aHeight) / aTriangleHeight
-                                                : aRad1 * aTriangleHeight / (aTriangleHeight + aHeight);
+        const Standard_Real aTriangleHeight =
+          (aCone.SemiAngle() > 0.0) ? aRad1 / std::tan(aCone.SemiAngle())
+                                    : aRad1 / std::tan(std::abs(aCone.SemiAngle())) - aHeight;
+        const Standard_Real aRad2 = (aCone.SemiAngle() > 0.0)
+                                      ? aRad1 * (aTriangleHeight + aHeight) / aTriangleHeight
+                                      : aRad1 * aTriangleHeight / (aTriangleHeight + aHeight);
 
         Handle(Select3D_SensitiveCylinder) aSensSCyl =
           new Select3D_SensitiveCylinder(theOwner, aRad1, aRad2, aHeight, aTrsf);

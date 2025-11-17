@@ -184,7 +184,7 @@ void OpenGl_AspectsSprite::build(const Handle(OpenGl_Context)&        theCtx,
     const OpenGl_PointSprite* aSprite = dynamic_cast<OpenGl_PointSprite*>(mySprite.get());
     if (!aSprite->IsDisplayList())
     {
-      theMarkerSize = Standard_ShortReal(Max(aSprite->SizeX(), aSprite->SizeY()));
+      theMarkerSize = Standard_ShortReal(std::max(aSprite->SizeX(), aSprite->SizeY()));
     }
     return;
   }
@@ -212,7 +212,7 @@ void OpenGl_AspectsSprite::build(const Handle(OpenGl_Context)&        theCtx,
     // reuse shared resource
     if (!aSprite->IsDisplayList())
     {
-      theMarkerSize = Standard_ShortReal(Max(aSprite->SizeX(), aSprite->SizeY()));
+      theMarkerSize = Standard_ShortReal(std::max(aSprite->SizeX(), aSprite->SizeY()));
     }
     return;
   }
@@ -251,7 +251,7 @@ void OpenGl_AspectsSprite::build(const Handle(OpenGl_Context)&        theCtx,
     // Creating texture resource for using it with point sprites
     Handle(Image_PixMap) anImage = aNewMarkerImage->GetImage();
     theMarkerSize =
-      Max((Standard_ShortReal)anImage->Width(), (Standard_ShortReal)anImage->Height());
+      std::max((Standard_ShortReal)anImage->Width(), (Standard_ShortReal)anImage->Height());
 
     if (!hadAlreadyRGBA)
     {
@@ -287,7 +287,7 @@ void OpenGl_AspectsSprite::build(const Handle(OpenGl_Context)&        theCtx,
         Image_PixMap::FlipY(*anImageCopy);
         anImage = anImageCopy;
       }
-      const GLint anAligment = Min((GLint)anImage->MaxRowAligmentBytes(), 8);
+      const GLint anAligment = std::min((GLint)anImage->MaxRowAligmentBytes(), 8);
       theCtx->core11fwd->glPixelStorei(GL_UNPACK_ALIGNMENT, anAligment);
 
       const GLint anExtraBytes = GLint(anImage->RowExtraBytes());

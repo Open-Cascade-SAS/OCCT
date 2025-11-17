@@ -59,15 +59,15 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Ax1& Axis, const Standard_Real Radiu
     Standard_Real x = D.X();
     Standard_Real y = D.Y();
     Standard_Real z = D.Z();
-    if (Abs(x) > gp::Resolution())
+    if (std::abs(x) > gp::Resolution())
     {
       Direc = gp_Dir(-y, x, 0.0);
     }
-    else if (Abs(y) > gp::Resolution())
+    else if (std::abs(y) > gp::Resolution())
     {
       Direc = gp_Dir(-y, x, 0.0);
     }
-    else if (Abs(z) > gp::Resolution())
+    else if (std::abs(z) > gp::Resolution())
     {
       Direc = gp_Dir(0.0, -z, y);
     }
@@ -105,15 +105,15 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_
     Standard_Real x = D1.X();
     Standard_Real y = D1.Y();
     Standard_Real z = D1.Z();
-    if (Abs(x) > gp::Resolution())
+    if (std::abs(x) > gp::Resolution())
     {
       D2 = gp_Dir(-y, x, 0.0);
     }
-    else if (Abs(y) > gp::Resolution())
+    else if (std::abs(y) > gp::Resolution())
     {
       D2 = gp_Dir(-y, x, 0.0);
     }
-    else if (Abs(z) > gp::Resolution())
+    else if (std::abs(z) > gp::Resolution())
     {
       D2 = gp_Dir(0.0, -z, y);
     }

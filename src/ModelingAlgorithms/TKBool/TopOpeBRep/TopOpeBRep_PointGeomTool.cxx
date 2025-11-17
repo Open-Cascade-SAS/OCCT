@@ -50,14 +50,14 @@ TopOpeBRepDS_Point TopOpeBRep_PointGeomTool::MakePoint(const TopOpeBRep_VPointIn
     const TopoDS_Edge& E2 = TopoDS::Edge(IP.Edge(2));
     Standard_Real      t1 = BRep_Tool::Tolerance(E1);
     Standard_Real      t2 = BRep_Tool::Tolerance(E2);
-    //    tolout = Max(t1,t2);
+    //    tolout = std::max(t1,t2);
     if (t1 > 0.9)
       t1 = 0.9;
     if (t1 > 0.9)
       t1 = 0.9;
     tolout = 2.5 * (t1 + t2);
   }
-  tolout = Max(tolout, tolip);
+  tolout = std::max(tolout, tolip);
   return TopOpeBRepDS_Point(IP.Value(), tolout);
 }
 

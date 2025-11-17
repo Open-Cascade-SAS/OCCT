@@ -61,12 +61,12 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
     for (ii = 1; ii <= myLine->NbPoints(); ii++)
     {
       P    = myLine->Point(ii);
-      Xmax = Max(Max(P.PointOnS1().X(), P.PointOnS2().X()), Xmax);
-      Xmin = Min(Min(P.PointOnS1().X(), P.PointOnS2().X()), Xmin);
-      Ymax = Max(Max(P.PointOnS1().Y(), P.PointOnS2().Y()), Ymax);
-      Ymin = Min(Min(P.PointOnS1().Y(), P.PointOnS2().Y()), Ymin);
-      Zmax = Max(Max(P.PointOnS1().Z(), P.PointOnS2().Z()), Zmax);
-      Zmin = Min(Min(P.PointOnS1().Z(), P.PointOnS2().Z()), Zmin);
+      Xmax = std::max(std::max(P.PointOnS1().X(), P.PointOnS2().X()), Xmax);
+      Xmin = std::min(std::min(P.PointOnS1().X(), P.PointOnS2().X()), Xmin);
+      Ymax = std::max(std::max(P.PointOnS1().Y(), P.PointOnS2().Y()), Ymax);
+      Ymin = std::min(std::min(P.PointOnS1().Y(), P.PointOnS2().Y()), Ymin);
+      Zmax = std::max(std::max(P.PointOnS1().Z(), P.PointOnS2().Z()), Zmax);
+      Zmin = std::min(std::min(P.PointOnS1().Z(), P.PointOnS2().Z()), Zmin);
 
       myBary.SetCoord((Xmax + Xmin) / 2, (Ymax + Ymin) / 2, (Zmax + Zmin) / 2);
     }

@@ -214,7 +214,7 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
 
   Standard_Real tol1 = myTol1;
   Standard_Real tol2 = myTol2;
-  GLOBAL_tolFF       = Max(tol1, tol2);
+  GLOBAL_tolFF       = std::max(tol1, tol2);
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL())
@@ -595,7 +595,7 @@ void TopOpeBRep_FacesIntersector::ShapeTolerances(const TopoDS_Shape& S1, const 
 void TopOpeBRep_FacesIntersector::ShapeTolerances(const TopoDS_Shape&, const TopoDS_Shape&)
 #endif
 {
-  //  myTol1 = Max(ToleranceMax(S1,TopAbs_EDGE),ToleranceMax(S2,TopAbs_EDGE));
+  //  myTol1 = std::max(ToleranceMax(S1,TopAbs_EDGE),ToleranceMax(S2,TopAbs_EDGE));
   myTol1            = Precision::Confusion();
   myTol2            = myTol1;
   myForceTolerances = Standard_False;
@@ -623,7 +623,7 @@ Standard_Real TopOpeBRep_FacesIntersector::ToleranceMax(const TopoDS_Shape&    S
   {
     Standard_Real tol = RealFirst();
     for (; e.More(); e.Next())
-      tol = Max(tol, TopOpeBRepTool_ShapeTool::Tolerance(e.Current()));
+      tol = std::max(tol, TopOpeBRepTool_ShapeTool::Tolerance(e.Current()));
     return tol;
   }
 }
@@ -722,7 +722,7 @@ static Handle(IntPatch_RLine) BuildRLineBasedOnWLine(const Handle(IntPatch_WLine
 
   Standard_Real tol = (Vtx1.Tolerance() > Vtx2.Tolerance()) ? Vtx1.Tolerance() : Vtx2.Tolerance();
 
-  if (Abs(par1 - par2) < theArc->Resolution(tol))
+  if (std::abs(par1 - par2) < theArc->Resolution(tol))
     return anRLine;
 
   Standard_Boolean IsOnFirst = (theRank == 1);
@@ -1400,14 +1400,14 @@ static Standard_Integer GetArc(IntPatch_SequenceOfLine&           theSlin,
     TopoDS_Edge*     anE        = (TopoDS_Edge*)anEAddress;
     TopoDS_Vertex    V1, V2;
     TopExp::Vertices(*anE, V1, V2);
-    Standard_Real MaxVertexTol = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+    Standard_Real MaxVertexTol = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
     theVrtxTol                 = MaxVertexTol;
     Standard_Real EdgeTol      = BRep_Tool::Tolerance(*anE);
-    CheckTol                   = Max(MaxVertexTol, EdgeTol);
+    CheckTol                   = std::max(MaxVertexTol, EdgeTol);
     Handle(Geom_Curve) aCEdge  = BRep_Tool::Curve(*anE, firstES1, lastES1);
     // classification gaps
     //  a. min - first
-    if (Abs(firstES1 - WLVertexParameters.Value(1)) > arc->Resolution(MaxVertexTol))
+    if (std::abs(firstES1 - WLVertexParameters.Value(1)) > arc->Resolution(MaxVertexTol))
     {
       Standard_Real param = (firstES1 + WLVertexParameters.Value(1)) / 2.;
       gp_Pnt        point;
@@ -1419,7 +1419,7 @@ static Standard_Integer GetArc(IntPatch_SequenceOfLine&           theSlin,
       }
     }
     //  b. max - last
-    if (Abs(lastES1 - WLVertexParameters.Value(WLVertexParameters.Length()))
+    if (std::abs(lastES1 - WLVertexParameters.Value(WLVertexParameters.Length()))
         > arc->Resolution(MaxVertexTol))
     {
       Standard_Real param = (lastES1 + WLVertexParameters.Value(WLVertexParameters.Length())) / 2.;
@@ -1435,7 +1435,7 @@ static Standard_Integer GetArc(IntPatch_SequenceOfLine&           theSlin,
     Standard_Integer NbChkPnts = WLVertexParameters.Length() / 2 - 1;
     for (i = 1; i <= NbChkPnts; i++)
     {
-      if (Abs(WLVertexParameters.Value(i * 2 + 1) - WLVertexParameters.Value(i * 2))
+      if (std::abs(WLVertexParameters.Value(i * 2 + 1) - WLVertexParameters.Value(i * 2))
           > arc->Resolution(MaxVertexTol))
       {
         Standard_Real param =
@@ -1456,7 +1456,7 @@ static Standard_Integer GetArc(IntPatch_SequenceOfLine&           theSlin,
     // if classification gaps OK, fill sequence by the points from arc (edge)
     Standard_Real ParamFirst = WLVertexParameters.Value(1);
     Standard_Real ParamLast  = WLVertexParameters.Value(WLVertexParameters.Length());
-    Standard_Real dParam     = Abs(ParamLast - ParamFirst) / 100.;
+    Standard_Real dParam     = std::abs(ParamLast - ParamFirst) / 100.;
     Standard_Real cParam     = ParamFirst;
     for (i = 0; i < 100; i++)
     {

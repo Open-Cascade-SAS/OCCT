@@ -544,9 +544,9 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt&  P,
       //
       // avoid process faces from uncorrected shells
       constexpr Standard_Real eps  = Precision::PConfusion();
-      Standard_Real           epsU = Max(eps * Max(Abs(U2), Abs(U1)), eps);
-      Standard_Real           epsV = Max(eps * Max(Abs(V2), Abs(V1)), eps);
-      if (Abs(U2 - U1) < epsU || Abs(V2 - V1) < epsV)
+      Standard_Real           epsU = std::max(eps * std::max(std::abs(U2), std::abs(U1)), eps);
+      Standard_Real           epsV = std::max(eps * std::max(std::abs(V2), std::abs(V1)), eps);
+      if (std::abs(U2 - U1) < epsU || std::abs(V2 - V1) < epsV)
       {
         return 2;
       }
@@ -661,7 +661,7 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt&  P,
             Standard_Real tt   = Norm.Magnitude();
             if (tt > gp::Resolution())
             {
-              tt = Abs(Norm.Dot(V)) / (tt * Par);
+              tt = std::abs(Norm.Dot(V)) / (tt * Par);
               if (tt > maxscal)
               {
                 maxscal = tt;

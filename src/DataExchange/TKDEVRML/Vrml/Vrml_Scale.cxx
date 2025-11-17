@@ -38,8 +38,8 @@ Standard_OStream& Vrml_Scale::Print(Standard_OStream& anOStream) const
 {
   anOStream << "Scale {\n";
 
-  if (Abs(myScaleFactor.X() - 1) > 0.0001 || Abs(myScaleFactor.Y() - 1) > 0.0001
-      || Abs(myScaleFactor.Z() - 1) > 0.0001)
+  if (std::abs(myScaleFactor.X() - 1) > 0.0001 || std::abs(myScaleFactor.Y() - 1) > 0.0001
+      || std::abs(myScaleFactor.Z() - 1) > 0.0001)
   {
     anOStream << "    scaleFactor\t";
     anOStream << myScaleFactor.X() << " " << myScaleFactor.Y() << " " << myScaleFactor.Z() << "\n";

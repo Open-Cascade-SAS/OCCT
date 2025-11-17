@@ -65,7 +65,7 @@ static void CheckCurveData(const TColgp_Array1OfPnt2d&    CPoles,
 
   for (Standard_Integer I = CKnots.Lower(); I < CKnots.Upper(); I++)
   {
-    if (CKnots(I + 1) - CKnots(I) <= Epsilon(Abs(CKnots(I))))
+    if (CKnots(I + 1) - CKnots(I) <= Epsilon(std::abs(CKnots(I))))
     {
       throw Standard_ConstructionError("BSpline curve: Knots interval values too close");
     }
@@ -80,7 +80,7 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& theWeights)
 {
   for (Standard_Integer i = theWeights.Lower(); i < theWeights.Upper(); i++)
   {
-    if (Abs(theWeights[i] - theWeights[i + 1]) > gp::Resolution())
+    if (std::abs(theWeights[i] - theWeights[i + 1]) > gp::Resolution())
     {
       return Standard_True;
     }
@@ -515,7 +515,7 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const Standard_Integer Index,
   // Insert the weight
 
   Handle(TColStd_HArray1OfReal) nweights;
-  Standard_Boolean              rat = IsRational() || Abs(Weight - 1.) > gp::Resolution();
+  Standard_Boolean              rat = IsRational() || std::abs(Weight - 1.) > gp::Resolution();
 
   if (rat)
   {
@@ -642,8 +642,8 @@ void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
   if (aU2 < aU1)
     throw Standard_DomainError("Geom2d_BSplineCurve::Segment");
   //
-  Standard_Real    AbsUMax = Max(Abs(FirstParameter()), Abs(LastParameter()));
-  Standard_Real    Eps     = Max(Epsilon(AbsUMax), theTolerance);
+  Standard_Real    AbsUMax = std::max(std::abs(FirstParameter()), std::abs(LastParameter()));
+  Standard_Real    Eps     = std::max(Epsilon(AbsUMax), theTolerance);
   Standard_Real    NewU1, NewU2;
   Standard_Real    U, DU = 0;
   Standard_Integer i, k, index;
@@ -688,8 +688,8 @@ void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
                             knots->Upper(),
                             index,
                             NewU2);
-  Knots(1) = Min(NewU1, NewU2);
-  Knots(2) = Max(NewU1, NewU2);
+  Knots(1) = std::min(NewU1, NewU2);
+  Knots(2) = std::max(NewU1, NewU2);
   Mults(1) = Mults(2) = deg;
   InsertKnots(Knots, Mults, Eps);
 
@@ -706,7 +706,7 @@ void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
                               index,
                               U);
     // Eps = Epsilon(knots->Value(index+1));
-    if (Abs(knots->Value(index + 1) - U) <= Eps)
+    if (std::abs(knots->Value(index + 1) - U) <= Eps)
     {
       index++;
     }
@@ -728,7 +728,7 @@ void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
                             ToU2,
                             index1,
                             U);
-  if (Abs(knots->Value(index1 + 1) - U) <= Eps)
+  if (std::abs(knots->Value(index1 + 1) - U) <= Eps)
   {
     index1++;
   }
@@ -742,7 +742,7 @@ void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
                             index2,
                             U);
   // Eps = Epsilon(knots->Value(index2+1));
-  if (Abs(knots->Value(index2 + 1) - U) <= Eps || index2 == index1)
+  if (std::abs(knots->Value(index2 + 1) - U) <= Eps || index2 == index1)
   {
     index2++;
   }
@@ -774,7 +774,7 @@ void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
   Standard_Integer pindex2 = BSplCLib::PoleIndex(deg, index2, periodic, mults->Array1());
 
   pindex1++;
-  pindex2 = Min(pindex2 + 1, poles->Length());
+  pindex2 = std::min(pindex2 + 1, poles->Length());
 
   Standard_Integer nbpoles = pindex2 - pindex1 + 1;
 
@@ -817,7 +817,7 @@ void Geom2d_BSplineCurve::SetKnot(const Standard_Integer Index, const Standard_R
 {
   if (Index < 1 || Index > knots->Length())
     throw Standard_OutOfRange("BSpline curve: SetKnot: Index and #knots mismatch");
-  Standard_Real DK = Abs(Epsilon(K));
+  Standard_Real DK = std::abs(Epsilon(K));
   if (Index == 1)
   {
     if (K >= knots->Value(2) - DK)
@@ -879,7 +879,7 @@ void Geom2d_BSplineCurve::SetPeriodic()
 
   Handle(TColStd_HArray1OfInteger) tm = mults;
   TColStd_Array1OfInteger          cmults((mults->Array1())(first), first, last);
-  cmults(first) = cmults(last) = Min(deg, Max(cmults(first), cmults(last)));
+  cmults(first) = cmults(last) = std::min(deg, std::max(cmults(first), cmults(last)));
   mults                        = new TColStd_HArray1OfInteger(1, cmults.Length());
   mults->ChangeArray1()        = cmults;
 
@@ -1064,7 +1064,7 @@ void Geom2d_BSplineCurve::SetWeight(const Standard_Integer Index, const Standard
   if (W <= gp::Resolution())
     throw Standard_ConstructionError("BSpline curve: SetWeight: Weight too small");
 
-  Standard_Boolean rat = IsRational() || (Abs(W - 1.) > gp::Resolution());
+  Standard_Boolean rat = IsRational() || (std::abs(W - 1.) > gp::Resolution());
 
   if (rat)
   {

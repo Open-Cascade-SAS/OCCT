@@ -237,8 +237,8 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
   TopoDS_Vertex V1f, V1l, V2f, V2l;
 
   // create a new Handle
-  if (Abs(f1 - C1->FirstParameter()) > Precision::PConfusion()
-      || Abs(l1 - C1->LastParameter()) > Precision::PConfusion())
+  if (std::abs(f1 - C1->FirstParameter()) > Precision::PConfusion()
+      || std::abs(l1 - C1->LastParameter()) > Precision::PConfusion())
   {
     C1 = new Geom_TrimmedCurve(C1, f1, l1);
   }
@@ -263,8 +263,8 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
   }
 
   // a new Handle is created
-  if (Abs(f2 - C2->FirstParameter()) > Precision::PConfusion()
-      || Abs(l2 - C2->LastParameter()) > Precision::PConfusion())
+  if (std::abs(f2 - C2->FirstParameter()) > Precision::PConfusion()
+      || std::abs(l2 - C2->LastParameter()) > Precision::PConfusion())
   {
     C2 = new Geom_TrimmedCurve(C2, f2, l2);
   }
@@ -307,7 +307,7 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
   TopoDS_Edge Edge3, Edge4;
 
   Iso = Surf->UIso(f1);
-  Tol = Max(BRep_Tool::Tolerance(V1f), BRep_Tool::Tolerance(V2f));
+  Tol = std::max(BRep_Tool::Tolerance(V1f), BRep_Tool::Tolerance(V2f));
   if (Iso->Value(f2).Distance(Iso->Value(l2)) > Tol)
   {
     B.MakeEdge(Edge3, Iso, Precision::Confusion());
@@ -330,7 +330,7 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
   else
   {
     Iso = Surf->UIso(l1);
-    Tol = Max(BRep_Tool::Tolerance(V1l), BRep_Tool::Tolerance(V2l));
+    Tol = std::max(BRep_Tool::Tolerance(V1l), BRep_Tool::Tolerance(V2l));
     if (Iso->Value(l2).Distance(Iso->Value(f2)) > Tol)
     {
       B.MakeEdge(Edge4, Iso, Precision::Confusion());
@@ -472,8 +472,8 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1, const TopoDS_Wire& Wire2)
 
     TopoDS_Vertex V1f, V1l, V2f, V2l;
 
-    if (Abs(f1 - C1->FirstParameter()) > Precision::PConfusion()
-        || Abs(l1 - C1->LastParameter()) > Precision::PConfusion())
+    if (std::abs(f1 - C1->FirstParameter()) > Precision::PConfusion()
+        || std::abs(l1 - C1->LastParameter()) > Precision::PConfusion())
     {
       C1 = new Geom_TrimmedCurve(C1, f1, l1);
     }
@@ -493,8 +493,8 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1, const TopoDS_Wire& Wire2)
     else
       TopExp::Vertices(Edge1, V1f, V1l);
 
-    if (Abs(f2 - C2->FirstParameter()) > Precision::PConfusion()
-        || Abs(l2 - C2->LastParameter()) > Precision::PConfusion())
+    if (std::abs(f2 - C2->FirstParameter()) > Precision::PConfusion()
+        || std::abs(l2 - C2->LastParameter()) > Precision::PConfusion())
     {
       C2 = new Geom_TrimmedCurve(C2, f2, l2);
     }
@@ -530,8 +530,8 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1, const TopoDS_Wire& Wire2)
     if (thefirst)
     {
       Iso = Surf->UIso(f1);
-      //      Tol = Max(BT.Tolerance(V1f), BT.Tolerance(V2f));
-      Tol = Max(BRep_Tool::Tolerance(V1f), BRep_Tool::Tolerance(V2f));
+      //      Tol = std::max(BT.Tolerance(V1f), BT.Tolerance(V2f));
+      Tol = std::max(BRep_Tool::Tolerance(V1f), BRep_Tool::Tolerance(V2f));
       if (Iso->Value(f2).Distance(Iso->Value(l2)) > Tol)
       {
         B.MakeEdge(Edge3, Iso, Precision::Confusion());
@@ -566,8 +566,8 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1, const TopoDS_Wire& Wire2)
     else
     {
       Iso = Surf->UIso(l1);
-      //      Tol = Max(BT.Tolerance(V1l), BT.Tolerance(V2l));
-      Tol = Max(BRep_Tool::Tolerance(V1l), BRep_Tool::Tolerance(V2l));
+      //      Tol = std::max(BT.Tolerance(V1l), BT.Tolerance(V2l));
+      Tol = std::max(BRep_Tool::Tolerance(V1l), BRep_Tool::Tolerance(V2l));
       if (Iso->Value(l2).Distance(Iso->Value(f2)) > Tol)
       {
         B.MakeEdge(Edge4, Iso, Precision::Confusion());
@@ -790,12 +790,12 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
       P1 = BRep_Tool::Pnt(V1);
       P2 = BRep_Tool::Pnt(V2);
       gp_Vec vec(P1, P2);
-      sca1 += Abs(Tang1.Dot(vec));
-      sca2 += Abs(Tang2.Dot(vec));
+      sca1 += std::abs(Tang1.Dot(vec));
+      sca2 += std::abs(Tang2.Dot(vec));
     }
     //  modified by NIZHNY-EAP Wed Feb  2 15:38:44 2000 ___END___
 
-    if (Abs(sca1) < Abs(sca2))
+    if (std::abs(sca1) < std::abs(sca2))
     {
       Loc  = Loc1;
       Tang = Tang1;

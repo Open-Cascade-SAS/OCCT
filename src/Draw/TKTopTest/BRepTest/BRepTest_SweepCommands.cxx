@@ -842,7 +842,8 @@ static Standard_Integer addsweep(Draw_Interpretor& di, Standard_Integer n, const
           ParAndRad(ii).SetY(Draw::Atof(a[cur + 1]));
         }
         thelaw = new (Law_Interpol)();
-        thelaw->Set(ParAndRad, Abs(ParAndRad(1).Y() - ParAndRad(L).Y()) < Precision::Confusion());
+        thelaw->Set(ParAndRad,
+                    std::abs(ParAndRad(1).Y() - ParAndRad(L).Y()) < Precision::Confusion());
       }
     }
   }

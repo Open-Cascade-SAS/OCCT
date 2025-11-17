@@ -56,8 +56,8 @@ Standard_EXPORT Standard_Boolean FUN_tool_IsUViso(const Handle(Geom2d_Curve)& PC
 
   Handle(Geom2d_Line) L = Handle(Geom2d_Line)::DownCast(LLL);
   d2d = L->Direction();
-  isoU = (Abs(d2d.X()) < Precision::Parametric(Precision::Confusion()));
-  isoV = (Abs(d2d.Y()) < Precision::Parametric(Precision::Confusion()));
+  isoU = (std::abs(d2d.X()) < Precision::Parametric(Precision::Confusion()));
+  isoV = (std::abs(d2d.Y()) < Precision::Parametric(Precision::Confusion()));
   Standard_Boolean isoUV = isoU || isoV;
   if (!isoUV) return Standard_False;
 
@@ -95,8 +95,8 @@ Standard_EXPORT Standard_Boolean FUN_tool_onapex(const gp_Pnt2d& p2d, const Hand
   {
     Standard_Real    pisur2       = M_PI * .5;
     Standard_Real    v            = p2d.Y();
-    Standard_Boolean vpisur2      = (Abs(v - pisur2) < toluv);
-    Standard_Boolean vmoinspisur2 = (Abs(v + pisur2) < toluv);
+    Standard_Boolean vpisur2      = (std::abs(v - pisur2) < toluv);
+    Standard_Boolean vmoinspisur2 = (std::abs(v + pisur2) < toluv);
     isapex                        = vpisur2 || vmoinspisur2;
   }
   return isapex;
@@ -123,8 +123,8 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const Handle(Geom_Surfa
     Standard_Real       toluv = 1.e-8;
     if (ST == GeomAbs_Cone)
     {
-      Standard_Boolean nullx = (Abs(p2d.X()) < toluv);
-      Standard_Boolean apex  = nullx && (Abs(p2d.Y()) < toluv);
+      Standard_Boolean nullx = (std::abs(p2d.X()) < toluv);
+      Standard_Boolean apex  = nullx && (std::abs(p2d.Y()) < toluv);
       if (apex)
       {
         gp_Dir axis = GS.Cone().Axis().Direction();
@@ -135,7 +135,7 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const Handle(Geom_Surfa
       else if (du < tol)
       {
         Standard_Real    vf   = GS.FirstVParameter();
-        Standard_Boolean onvf = Abs(p2d.Y() - vf) < toluv;
+        Standard_Boolean onvf = std::abs(p2d.Y() - vf) < toluv;
 
         Standard_Real x = p2d.X();
         Standard_Real y = p2d.Y();
@@ -154,11 +154,11 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const Handle(Geom_Surfa
       //      Standard_Real deuxpi = 2*M_PI;
       Standard_Real pisur2 = M_PI * .5;
       Standard_Real u = p2d.X(), v = p2d.Y();
-      //      Standard_Boolean u0  =(Abs(u) < toluv);
-      //      Standard_Boolean u2pi=(Abs(u-deuxpi) < toluv);
+      //      Standard_Boolean u0  =(std::abs(u) < toluv);
+      //      Standard_Boolean u2pi=(std::abs(u-deuxpi) < toluv);
       //      Standard_Boolean apex = u0 || u2pi;
-      Standard_Boolean vpisur2      = (Abs(v - pisur2) < toluv);
-      Standard_Boolean vmoinspisur2 = (Abs(v + pisur2) < toluv);
+      Standard_Boolean vpisur2      = (std::abs(v - pisur2) < toluv);
+      Standard_Boolean vmoinspisur2 = (std::abs(v + pisur2) < toluv);
       Standard_Boolean apex         = vpisur2 || vmoinspisur2;
       if (apex)
       {

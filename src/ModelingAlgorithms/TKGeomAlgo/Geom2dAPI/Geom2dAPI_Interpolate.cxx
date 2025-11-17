@@ -259,8 +259,8 @@ static void ScaleTangents(const TColgp_Array1OfPnt2d&    PointsArray,
       value[0] = value[1] = 0.0e0;
       for (jj = 1; jj <= 2; jj++)
       {
-        value[0] += Abs(TangentsArray.Value(ii).Coord(jj));
-        value[1] += Abs(eval_result[1][jj - 1]);
+        value[0] += std::abs(TangentsArray.Value(ii).Coord(jj));
+        value[1] += std::abs(eval_result[1][jj - 1]);
       }
       ratio = value[1] / value[0];
       for (jj = 1; jj <= 2; jj++)

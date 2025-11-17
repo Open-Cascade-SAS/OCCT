@@ -105,40 +105,40 @@ Standard_OStream& Vrml_Transform::Print(Standard_OStream& anOStream) const
 {
   anOStream << "Transform {\n";
 
-  if (Abs(myTranslation.X() - 0) > 0.0001 || Abs(myTranslation.Y() - 0) > 0.0001
-      || Abs(myTranslation.Z() - 0) > 0.0001)
+  if (std::abs(myTranslation.X() - 0) > 0.0001 || std::abs(myTranslation.Y() - 0) > 0.0001
+      || std::abs(myTranslation.Z() - 0) > 0.0001)
   {
     anOStream << "    translation\t\t";
     anOStream << myTranslation.X() << " " << myTranslation.Y() << " " << myTranslation.Z() << "\n";
   }
 
-  if (Abs(myRotation.RotationX() - 0) > 0.0001 || Abs(myRotation.RotationY() - 0) > 0.0001
-      || Abs(myRotation.RotationZ() - 1) > 0.0001 || Abs(myRotation.Angle() - 0) > 0.0001)
+  if (std::abs(myRotation.RotationX() - 0) > 0.0001 || std::abs(myRotation.RotationY() - 0) > 0.0001
+      || std::abs(myRotation.RotationZ() - 1) > 0.0001 || std::abs(myRotation.Angle() - 0) > 0.0001)
   {
     anOStream << "    rotation\t\t";
     anOStream << myRotation.RotationX() << " " << myRotation.RotationY() << " ";
     anOStream << myRotation.RotationZ() << " " << myRotation.Angle() << "\n";
   }
 
-  if (Abs(myScaleFactor.X() - 1) > 0.0001 || Abs(myScaleFactor.Y() - 1) > 0.0001
-      || Abs(myScaleFactor.Z() - 1) > 0.0001)
+  if (std::abs(myScaleFactor.X() - 1) > 0.0001 || std::abs(myScaleFactor.Y() - 1) > 0.0001
+      || std::abs(myScaleFactor.Z() - 1) > 0.0001)
   {
     anOStream << "    scaleFactor\t\t";
     anOStream << myTranslation.X() << " " << myTranslation.Y() << " " << myTranslation.Z() << "\n";
   }
 
-  if (Abs(myScaleOrientation.RotationX() - 0) > 0.0001
-      || Abs(myScaleOrientation.RotationY() - 0) > 0.0001
-      || Abs(myScaleOrientation.RotationZ() - 1) > 0.0001
-      || Abs(myScaleOrientation.Angle() - 0) > 0.0001)
+  if (std::abs(myScaleOrientation.RotationX() - 0) > 0.0001
+      || std::abs(myScaleOrientation.RotationY() - 0) > 0.0001
+      || std::abs(myScaleOrientation.RotationZ() - 1) > 0.0001
+      || std::abs(myScaleOrientation.Angle() - 0) > 0.0001)
   {
     anOStream << "    scaleOrientation\t";
     anOStream << myScaleOrientation.RotationX() << " " << myScaleOrientation.RotationY() << " ";
     anOStream << myScaleOrientation.RotationZ() << " " << myScaleOrientation.Angle() << "\n";
   }
 
-  if (Abs(myCenter.X() - 0) > 0.0001 || Abs(myCenter.Y() - 0) > 0.0001
-      || Abs(myCenter.Z() - 0) > 0.0001)
+  if (std::abs(myCenter.X() - 0) > 0.0001 || std::abs(myCenter.Y() - 0) > 0.0001
+      || std::abs(myCenter.Z() - 0) > 0.0001)
   {
     anOStream << "    center\t\t";
     anOStream << myCenter.X() << " " << myCenter.Y() << " " << myCenter.Z() << "\n";

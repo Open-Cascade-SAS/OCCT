@@ -38,7 +38,7 @@ void SelectMgr_ToleranceMap::Add(const Standard_Integer& theTolerance)
     ++(*aFreq);
     if (*aFreq == 1 && theTolerance != myLargestKey)
     {
-      myLargestKey = Max(theTolerance, myLargestKey);
+      myLargestKey = std::max(theTolerance, myLargestKey);
     }
     return;
   }
@@ -50,7 +50,7 @@ void SelectMgr_ToleranceMap::Add(const Standard_Integer& theTolerance)
   }
   else
   {
-    myLargestKey = Max(theTolerance, myLargestKey);
+    myLargestKey = std::max(theTolerance, myLargestKey);
   }
 }
 
@@ -77,7 +77,7 @@ void SelectMgr_ToleranceMap::Decrement(const Standard_Integer& theTolerance)
     {
       if (anIter.Value() != 0)
       {
-        myLargestKey = Max(myLargestKey, anIter.Key());
+        myLargestKey = std::max(myLargestKey, anIter.Key());
       }
     }
   }

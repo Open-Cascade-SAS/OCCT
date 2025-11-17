@@ -119,16 +119,16 @@ static Standard_Boolean FUN_keepIonF(const gp_Vec&        tgref,
   if (!ok)
     return Standard_False;
   gp_Dir        tgE  = gp_Dir(tmp);
-  Standard_Real prod = Abs(tgref.Dot(tgE));
-  if (Abs(1 - prod) < tola)
+  Standard_Real prod = std::abs(tgref.Dot(tgE));
+  if (std::abs(1 - prod) < tola)
     return Standard_False; // <Eref> & <E> are tangent edges
   gp_Vec dd;
   ok = FUN_tool_nggeomF(parE, E, F, dd);
   gp_Dir ngF(dd);
   if (!ok)
     return Standard_False;
-  prod = Abs((tgref ^ tgE).Dot(ngF));
-  if (Abs(1 - prod) < tola)
+  prod = std::abs((tgref ^ tgE).Dot(ngF));
+  if (std::abs(1 - prod) < tola)
     return Standard_False;
   return Standard_True;
 }
@@ -218,9 +218,9 @@ void TopOpeBRepDS_Edge3dInterferenceTool::Init(const TopoDS_Shape&              
   gp_Dir tgOO(tmp);
 
   Standard_Real dot     = tgref.Dot(tgOO);
-  dot                   = 1 - Abs(dot);
+  dot                   = 1 - std::abs(dot);
   Standard_Real    tola = Precision::Confusion();
-  Standard_Boolean Esdm = (Abs(dot) < tola);
+  Standard_Boolean Esdm = (std::abs(dot) < tola);
   if (Esdm)
     return;
   // NYI : il faut rejeter les interf I = (T,G,S=E) / E sdm with Eref

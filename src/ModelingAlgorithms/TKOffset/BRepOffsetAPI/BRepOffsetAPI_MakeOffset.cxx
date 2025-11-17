@@ -406,7 +406,7 @@ void BRepOffsetAPI_MakeOffset::Perform(const Standard_Real Offset, const Standar
       for (itOW.Initialize(myLeft); itOW.More(); itOW.Next())
       {
         BRepFill_OffsetWire& Algo = itOW.ChangeValue();
-        Algo.Perform(Abs(Offset), Alt);
+        Algo.Perform(std::abs(Offset), Alt);
         if (Algo.IsDone() && !Algo.Shape().IsNull())
         {
           B.Add(Res, isWasReversed ? Algo.Shape().Reversed() : Algo.Shape());

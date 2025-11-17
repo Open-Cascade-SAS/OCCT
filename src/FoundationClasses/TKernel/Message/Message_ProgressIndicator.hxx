@@ -156,7 +156,7 @@ inline void Message_ProgressIndicator::Increment(const Standard_Real          th
   // protect incrementation by mutex to avoid problems in multithreaded scenarios
   std::lock_guard<std::mutex> aLock(myMutex);
 
-  myPosition = Min(myPosition + theStep, 1.);
+  myPosition = (std::min)(myPosition + theStep, 1.);
 
   // show progress indicator; note that this call is protected by
   // the same mutex to avoid concurrency and ensure that this call

@@ -194,7 +194,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L
         Standard_Real    tolf    = vpf.Tolerance();
         gp_Pnt           ptf     = vpf.Value();
         Standard_Real    d       = ptf.Distance(ptclo);
-        Standard_Boolean sameclo = (d < Max(tolvclo, tolf));
+        Standard_Boolean sameclo = (d < std::max(tolvclo, tolf));
         if (!sameclo)
           return Standard_False;
       }
@@ -276,7 +276,7 @@ Standard_EXPORT Standard_Boolean FUN_brep_sdmRE(const TopoDS_Edge& E1, const Top
     Standard_Real tol1 = BRep_Tool::Tolerance(E1);
     Standard_Real tol2 = BRep_Tool::Tolerance(v3);
     Standard_Real tol3 = BRep_Tool::Tolerance(v4);
-    Standard_Real tol4 = Max(tol1, Max(tol2, tol3));
+    Standard_Real tol4 = std::max(tol1, std::max(tol2, tol3));
     if (!ok)
     {
       const gp_Pnt& P3 = BRep_Tool::Pnt(v3);
@@ -294,7 +294,7 @@ Standard_EXPORT Standard_Boolean FUN_brep_sdmRE(const TopoDS_Edge& E1, const Top
     Standard_Real tol1 = BRep_Tool::Tolerance(E2);
     Standard_Real tol2 = BRep_Tool::Tolerance(v1);
     Standard_Real tol3 = BRep_Tool::Tolerance(v2);
-    Standard_Real tol4 = Max(tol1, Max(tol2, tol3));
+    Standard_Real tol4 = std::max(tol1, std::max(tol2, tol3));
     if (!ok)
     {
       const gp_Pnt& P1 = BRep_Tool::Pnt(v1);

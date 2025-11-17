@@ -194,7 +194,7 @@ void LocOpe_SplitShape::Add(const TopoDS_Vertex& V, const Standard_Real P, const
     // for degenerated edges tolerance of vertices should be set to maximal value
     // from tolerance of the vertex of the edge and tolerance of splitting vertex
     Standard_Real aTolV1 =
-      (BRep_Tool::Degenerated(edg) ? Max(BRep_Tool::Tolerance(aCurV1), aTolSplitV)
+      (BRep_Tool::Degenerated(edg) ? std::max(BRep_Tool::Tolerance(aCurV1), aTolSplitV)
                                    : BRep_Tool::Tolerance(aCurV1));
 
     B.UpdateVertex(aCurV1, aPar1, E1, aTolV1);
@@ -685,7 +685,7 @@ static Standard_Boolean checkOverlapping(const TopoDS_Edge& theEdge1,
 
   Standard_Real MaxTol = (BRep_Tool::Tolerance(theEdge1) + BRep_Tool::Tolerance(theEdge2));
 
-  Standard_Real aMaxTol2d = Max(anAdS.UResolution(MaxTol), anAdS.VResolution(MaxTol));
+  Standard_Real aMaxTol2d = std::max(anAdS.UResolution(MaxTol), anAdS.VResolution(MaxTol));
   Standard_Real aTolAng   = M_PI / 180.;
   Geom2dAPI_ProjectPointOnCurve proj;
   Standard_Real                 aF1, aL1, aF2, aL2;
@@ -734,7 +734,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
 
   tolf = BRep_Tool::Tolerance(Vfirst);
   toll = BRep_Tool::Tolerance(Vlast);
-  tol1 = Max(tolf, toll);
+  tol1 = std::max(tolf, toll);
 
   TopExp_Explorer exp, exp2;
 
@@ -794,7 +794,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
 
   Standard_Boolean IsPeriodic = BAS.IsUPeriodic() || BAS.IsVPeriodic();
 
-  tol1 = Max(BAS.UResolution(tol1), BAS.VResolution(tol1));
+  tol1 = std::max(BAS.UResolution(tol1), BAS.VResolution(tol1));
 
   if (wfirst.IsSame(wlast))
   {
@@ -967,7 +967,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
         }
 
         toll = BRep_Tool::Tolerance(Vlast);
-        tol1 = Max(tolf, toll);
+        tol1 = std::max(tolf, toll);
       }
       // MODIFICATION PIERRE SMEYERS : si pas de possibilite, on sort avec erreur
       else
@@ -977,7 +977,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
       }
       // fin MODIF.
 
-      tol1 = Max(BAS.UResolution(tol1), BAS.VResolution(tol1));
+      tol1 = std::max(BAS.UResolution(tol1), BAS.VResolution(tol1));
     }
 
     Standard_Integer                   nbAddBound = 0;

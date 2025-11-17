@@ -74,7 +74,7 @@ static Standard_Integer inqadd(const Standard_Real    d1,
   m[0] = m[1] = deg - 2;
   if (d1 != 1. && d2 != 1.)
   {
-    if (Abs(d1 + d2 - 1.) < tolk)
+    if (std::abs(d1 + d2 - 1.) < tolk)
     {
       k[0]  = 0.5 * (d1 + 1. - d2);
       nbadd = 1;
@@ -82,8 +82,8 @@ static Standard_Integer inqadd(const Standard_Real    d1,
     else
     {
       nbadd = 2;
-      k[0]  = Min(d1, 1. - d2);
-      k[1]  = Max(d1, 1. - d2);
+      k[0]  = std::min(d1, 1. - d2);
+      k[1]  = std::max(d1, 1. - d2);
     }
   }
   else if (d1 != 1.)
@@ -220,7 +220,7 @@ static void coonscnd(const Standard_Integer     nb,
     if (stat[i].HasConstraint())
     {
       Standard_Integer ip     = (i - 1 + nb) % nb;
-      Standard_Real    tolang = Min(bound[ip]->Tolang(), bound[i]->Tolang());
+      Standard_Real    tolang = std::min(bound[ip]->Tolang(), bound[i]->Tolang());
       Standard_Real    an     = stat[i].NorAng();
       Standard_Boolean twist  = Standard_False;
       if (an >= 0.5 * M_PI)
@@ -233,7 +233,7 @@ static void coonscnd(const Standard_Integer     nb,
       else
       {
         Standard_Real fact = 0.5 * 27. / 4;
-        tolang *= (Min(mintg[ip], mintg[i]) * fact * fact_normalization);
+        tolang *= (std::min(mintg[ip], mintg[i]) * fact * fact_normalization);
         gp_Vec        tgp, dnorp, tgi, dnori, vbid;
         gp_Pnt        pbid;
         Standard_Real fp, lp, fi, li;
@@ -253,7 +253,7 @@ static void coonscnd(const Standard_Integer     nb,
         Standard_Real scal2 = tgi.Dot(dnorp);
         if (!twist)
           scal2 *= -1.;
-        scal1 = Abs(scal1 + scal2);
+        scal1 = std::abs(scal1 + scal2);
         if (scal1 > tolang)
         {
           Standard_Real killfactor = tolang / scal1;
@@ -408,7 +408,7 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
   gp_Pnt                            p1 = bound[1]->Value(1.);
   gp_Pnt                            p2 = bound[2]->Value(1.);
   gp_Pnt                            ppp(0.5 * (p1.XYZ() + p2.XYZ()));
-  Standard_Real                     t3 = Max(bound[1]->Tol3d(), bound[2]->Tol3d());
+  Standard_Real                     t3 = std::max(bound[1]->Tol3d(), bound[2]->Tol3d());
   Handle(GeomFill_DegeneratedBound) DB = new GeomFill_DegeneratedBound(ppp, 0., 1., t3, 10.);
 
   ptch = new GeomFill_CoonsAlgPatch(bound[0], bound[1], DB, bound[2]);
@@ -557,13 +557,13 @@ void GeomFill_ConstrainedFilling::SetDomain(const Standard_Real                 
                                             const Handle(GeomFill_BoundWithSurf)& B)
 {
   if (B == ptch->Bound(0))
-    dom[0] = Min(1., Abs(l));
+    dom[0] = std::min(1., std::abs(l));
   else if (B == ptch->Bound(1))
-    dom[1] = Min(1., Abs(l));
+    dom[1] = std::min(1., std::abs(l));
   else if (B == ptch->Bound(2))
-    dom[2] = Min(1., Abs(l));
+    dom[2] = std::min(1., std::abs(l));
   else if (B == ptch->Bound(3))
-    dom[3] = Min(1., Abs(l));
+    dom[3] = std::min(1., std::abs(l));
 }
 
 //=================================================================================================
@@ -679,7 +679,7 @@ void GeomFill_ConstrainedFilling::PerformApprox()
 
   if (app.IsDone() || app.HasResult())
   {
-    Standard_Integer imk   = Min(ibound[0], ibound[1]);
+    Standard_Integer imk   = std::min(ibound[0], ibound[1]);
     Standard_Integer nbpol = app.NbPoles();
     degree[imk]            = app.Degree();
     mults[imk]             = app.Multiplicities();
@@ -735,7 +735,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
   ntpol[3] = tgtepol[3];
   Standard_Real    kadd[2];
   Standard_Integer madd[2];
-  Standard_Real    tolk  = 1. / Max(10, 2 * knots[1]->Array1().Length());
+  Standard_Real    tolk  = 1. / std::max(10, 2 * knots[1]->Array1().Length());
   Standard_Integer nbadd = inqadd(dom[0], dom[2], kadd, madd, degree[1], tolk);
   if (nbadd)
   {
@@ -827,7 +827,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
     {
       for (i = 2; i <= nbnk; i++)
       {
-        if (Abs(dom[0] - nm[1]->Value(i)) < tolk)
+        if (std::abs(dom[0] - nm[1]->Value(i)) < tolk)
         {
           ind[0] = i;
           break;
@@ -838,7 +838,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
     {
       for (i = 1; i < nbnk; i++)
       {
-        if (Abs(1. - dom[2] - nm[1]->Value(i)) < tolk)
+        if (std::abs(1. - dom[2] - nm[1]->Value(i)) < tolk)
         {
           ind[2] = i;
           break;
@@ -846,7 +846,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
       }
     }
   }
-  tolk  = 1. / Max(10., 2. * knots[0]->Array1().Length());
+  tolk  = 1. / std::max(10., 2. * knots[0]->Array1().Length());
   nbadd = inqadd(dom[1], dom[3], kadd, madd, degree[0], tolk);
   if (nbadd)
   {
@@ -938,7 +938,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
     {
       for (i = 2; i <= nbnk; i++)
       {
-        if (Abs(dom[1] - nm[0]->Value(i)) < tolk)
+        if (std::abs(dom[1] - nm[0]->Value(i)) < tolk)
         {
           ind[1] = i;
           break;
@@ -949,7 +949,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
     {
       for (i = 1; i < nbnk; i++)
       {
-        if (Abs(1. - dom[3] - nm[0]->Value(i)) < tolk)
+        if (std::abs(1. - dom[3] - nm[0]->Value(i)) < tolk)
         {
           ind[3] = i;
           break;
@@ -1528,9 +1528,9 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const Standard_Integer I)
 #endif
     if (vnor.Magnitude() > 1.e-15 && vtg.Magnitude() > 1.e-15)
     {
-      Standard_Real alpha = Abs(M_PI / 2. - Abs(vnor.Angle(vtg)));
-      if (Abs(alpha) > maxang)
-        maxang = Abs(alpha);
+      Standard_Real alpha = std::abs(M_PI / 2. - std::abs(vnor.Angle(vtg)));
+      if (std::abs(alpha) > maxang)
+        maxang = std::abs(alpha);
     }
   }
   std::cout << "KAlgo angle max sur bord " << I << " : " << maxang << std::endl;
@@ -1577,9 +1577,9 @@ void GeomFill_ConstrainedFilling::CheckApprox(const Standard_Integer I)
       vbound = bou->Norm(uu);
       if (vapp.Magnitude() > 1.e-15 && vbound.Magnitude() > 1.e-15)
       {
-        Standard_Real alpha = Abs(M_PI / 2. - Abs(vbound.Angle(vapp)));
-        if (Abs(alpha) > maxang)
-          maxang = Abs(alpha);
+        Standard_Real alpha = std::abs(M_PI / 2. - std::abs(vbound.Angle(vapp)));
+        if (std::abs(alpha) > maxang)
+          maxang = std::abs(alpha);
       }
 #ifdef DRAW
       Handle(Draw_Segment3D) seg;
@@ -1660,8 +1660,8 @@ void GeomFill_ConstrainedFilling::CheckResult(const Standard_Integer I)
       vres[k] = V1.Crossed(V2);
       if (vres[k].Magnitude() > 1.e-15 && vbound[k].Magnitude() > 1.e-15)
       {
-        Standard_Real alpha = Abs(vres[k].Angle(vbound[k]));
-        alpha               = Min(alpha, Abs(M_PI - alpha));
+        Standard_Real alpha = std::abs(vres[k].Angle(vbound[k]));
+        alpha               = std::min(alpha, std::abs(M_PI - alpha));
         if (alpha > maxang)
           maxang = alpha;
 #ifdef DRAW

@@ -605,7 +605,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
       Standard_Real      First, Last;
       Handle(Geom_Curve) curve =
         Handle(Geom_Curve)::DownCast(BRep_Tool::Curve(edge, L, First, Last)->Copy());
-      if (Abs(First) <= Precision::PConfusion() && Abs(Last - 1.) <= Precision::PConfusion())
+      if (std::abs(First) <= Precision::PConfusion()
+          && std::abs(Last - 1.) <= Precision::PConfusion())
         continue;
 
       Handle(Geom_BSplineCurve) bscurve;
@@ -1098,7 +1099,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom
     if (geomSupport->Continuity() == GeomAbs_C0)
     {
       res =
-        ShapeAlgo::AlgoContainer()->C0ShapeToC1Shape(face, Abs(st->Distance()) * GetUnitFactor());
+        ShapeAlgo::AlgoContainer()->C0ShapeToC1Shape(face,
+                                                     std::abs(st->Distance()) * GetUnitFactor());
       if (res.ShapeType() != TopAbs_FACE)
       {
         Message_Msg msg1266("IGES_1266");
@@ -1922,9 +1924,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
     }
   }
 
-  if (Abs(paramu) <= Precision::Confusion())
+  if (std::abs(paramu) <= Precision::Confusion())
     paramu = 0.;
-  if (Abs(paramv) <= Precision::Confusion())
+  if (std::abs(paramv) <= Precision::Confusion())
     paramv = 0.;
 
   // S4181 pdn 16.04.99 computation of transformation depending on
@@ -1969,7 +1971,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
     Standard_Real                      Umin, Umax, Vmin, Vmax;
     // scaling parameterization from [0,1]
     Surf->Bounds(Umin, Umax, Vmin, Vmax);
-    uln = Abs(Umax - Umin);
+    uln = std::abs(Umax - Umin);
     // computing shift of pcurves
     uscale = uln / cscale;
     paramu = Umin / uln;

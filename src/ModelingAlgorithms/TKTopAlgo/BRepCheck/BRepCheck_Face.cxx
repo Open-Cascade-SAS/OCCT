@@ -775,7 +775,7 @@ static Standard_Boolean IsInside(const TopoDS_Wire&             theWire,
       aParameter = (aFirst + aLast) * 0.5;
 
       // Edge is skipped if its parametric range is too small
-      if (Abs(aParameter - aFirst) < Precision::PConfusion())
+      if (std::abs(aParameter - aFirst) < Precision::PConfusion())
       {
         continue;
       }
@@ -880,8 +880,8 @@ Standard_Boolean CheckThin(const TopoDS_Shape& w, const TopoDS_Shape& f)
   if (pc1.IsNull() || pc2.IsNull())
     return Standard_False;
 
-  Standard_Real d1 = Abs(l1 - f1) / 100.;
-  Standard_Real d2 = Abs(l2 - f2) / 100.;
+  Standard_Real d1 = std::abs(l1 - f1) / 100.;
+  Standard_Real d2 = std::abs(l2 - f2) / 100.;
   Standard_Real m1 = (l1 + f1) * 0.5;
   Standard_Real m2 = (l2 + f2) * 0.5;
 

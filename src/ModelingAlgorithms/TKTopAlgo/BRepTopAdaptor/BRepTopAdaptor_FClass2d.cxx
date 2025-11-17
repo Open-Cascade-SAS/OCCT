@@ -141,7 +141,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
         if (BRep_Tool::CurveOnSurface(edge, Face, pfbid, plbid).IsNull())
           return;
 
-        if (Abs(plbid - pfbid) < 1.e-9)
+        if (std::abs(plbid - pfbid) < 1.e-9)
           continue;
 
         Standard_Boolean degenerated = Standard_False;
@@ -244,8 +244,8 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
             gp_Lin2d      Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
             Standard_Real ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
             gp_Pnt2d      Pp = ElCLib::Value(ul, Lin);
-            Standard_Real dU = Abs(Pp.X() - SeqPnt2d(ii - 1).X());
-            Standard_Real dV = Abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+            Standard_Real dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
+            Standard_Real dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
             //-- printf(" (du=%7.5g   dv=%7.5g)",dU,dV);
             if (dU > FlecheU)
               FlecheU = dU;
@@ -310,9 +310,9 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
           //		  if(N>1e-16){ Standard_Real a=A.Angle(B); angle+=a; }
         }
 
-        Standard_Real anExpThick = Max(2. * Abs(square) / aPer, 1e-7);
-        Standard_Real aDefl      = Max(FlecheU, FlecheV);
-        Standard_Real aDiscrDefl = Min(aDefl * 0.1, anExpThick * 10.);
+        Standard_Real anExpThick = std::max(2. * std::abs(square) / aPer, 1e-7);
+        Standard_Real aDefl      = std::max(FlecheU, FlecheV);
+        Standard_Real aDiscrDefl = std::min(aDefl * 0.1, anExpThick * 10.);
         while (aDefl > anExpThick && aDiscrDefl > 1e-7)
         {
           // Deflection of the polygon is too much for this ratio of area and perimeter,
@@ -331,7 +331,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
             {
               Standard_Real pfbid, plbid;
               BRep_Tool::Range(edge, Face, pfbid, plbid);
-              if (Abs(plbid - pfbid) < 1.e-9)
+              if (std::abs(plbid - pfbid) < 1.e-9)
                 continue;
               BRepAdaptor_Curve2d           C(edge, Face);
               GCPnts_QuasiUniformDeflection aDiscr(C, aDiscrDefl);
@@ -358,8 +358,8 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
                 gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
                 Standard_Real ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
                 gp_Pnt2d      Pp = ElCLib::Value(ul, Lin);
-                Standard_Real dU = Abs(Pp.X() - SeqPnt2d(ii - 1).X());
-                Standard_Real dV = Abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+                Standard_Real dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
+                Standard_Real dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
                 if (dU > FlecheU)
                   FlecheU = dU;
                 if (dV > FlecheV)
@@ -386,14 +386,14 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
             aPer += (PClass(im0).XY() - PClass(im1).XY()).Modulus();
           }
 
-          anExpThick = Max(2. * Abs(square) / aPer, 1e-7);
-          aDefl      = Max(FlecheU, FlecheV);
-          aDiscrDefl = Min(aDiscrDefl * 0.1, anExpThick * 10.);
+          anExpThick = std::max(2. * std::abs(square) / aPer, 1e-7);
+          aDefl      = std::max(FlecheU, FlecheV);
+          aDiscrDefl = std::min(aDiscrDefl * 0.1, anExpThick * 10.);
         }
 
         //-- FlecheU*=10.0;
         //-- FlecheV*=10.0;
-        if (aNbE == 1 && FlecheU < eps && FlecheV < eps && Abs(square) < eps)
+        if (aNbE == 1 && FlecheU < eps && FlecheV < eps && std::abs(square) < eps)
         {
           TabOrien.Append(1);
         }

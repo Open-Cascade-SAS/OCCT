@@ -73,7 +73,7 @@ static Standard_Boolean verifD1(const TColgp_Array1OfPnt&   P1,
   for (ii = 1; ii <= L; ii++)
   {
     dw = (W2(ii) - W1(ii)) / pas;
-    if (Abs(dw - DWeights(ii)) > wTol)
+    if (std::abs(dw - DWeights(ii)) > wTol)
     {
       if (Affich)
       {
@@ -119,7 +119,7 @@ static Standard_Boolean verifD2(const TColgp_Array1OfVec&   DP1,
   {
     Standard_Real dw1 = DW1(ii), dw2 = DW2(ii);
     d2w = (dw2 - dw1) / pas;
-    if (Abs(d2w - D2Weights(ii)) > wTol)
+    if (std::abs(d2w - D2Weights(ii)) > wTol)
     {
       if (Affich)
       {
@@ -654,14 +654,14 @@ void GeomFill_NSections::ComputeSurface()
     Ui2 = ULast;
     Standard_Integer i1, i2;
     myRefSurf->LocateU(Ui1, Precision::PConfusion(), i1, i2);
-    if (Abs(Ui1 - myRefSurf->UKnot(i1)) <= Precision::PConfusion())
+    if (std::abs(Ui1 - myRefSurf->UKnot(i1)) <= Precision::PConfusion())
       Ui1 = myRefSurf->UKnot(i1);
-    if (Abs(Ui1 - myRefSurf->UKnot(i2)) <= Precision::PConfusion())
+    if (std::abs(Ui1 - myRefSurf->UKnot(i2)) <= Precision::PConfusion())
       Ui1 = myRefSurf->UKnot(i2);
     myRefSurf->LocateU(Ui2, Precision::PConfusion(), i1, i2);
-    if (Abs(Ui2 - myRefSurf->UKnot(i1)) <= Precision::PConfusion())
+    if (std::abs(Ui2 - myRefSurf->UKnot(i1)) <= Precision::PConfusion())
       Ui2 = myRefSurf->UKnot(i1);
-    if (Abs(Ui2 - myRefSurf->UKnot(i2)) <= Precision::PConfusion())
+    if (std::abs(Ui2 - myRefSurf->UKnot(i2)) <= Precision::PConfusion())
       Ui2 = myRefSurf->UKnot(i2);
     V0 = myRefSurf->VKnot(myRefSurf->FirstVKnotIndex());
     V1 = myRefSurf->VKnot(myRefSurf->LastVKnotIndex());
@@ -930,7 +930,7 @@ Standard_Boolean GeomFill_NSections::IsConstant(Standard_Real& Error) const
         Standard_Real    Tol = 1.e-7;
         Standard_Boolean samedir, samerad, samepos;
         samedir = (C1.Axis().IsParallel(C2.Axis(), 1.e-4));
-        samerad = (Abs(C1.Radius() - C2.Radius()) < Tol);
+        samerad = (std::abs(C1.Radius() - C2.Radius()) < Tol);
         samepos = (C1.Location().Distance(C2.Location()) < Tol);
         if (!samepos)
         {
@@ -948,7 +948,7 @@ Standard_Boolean GeomFill_NSections::IsConstant(Standard_Real& Error) const
         samedir    = (L1.Direction().IsParallel(L2.Direction(), 1.e-4));
         gp_Pnt P11 = AC1.Value(AC1.FirstParameter()), P12 = AC1.Value(AC1.LastParameter()),
                P21 = AC2.Value(AC2.FirstParameter()), P22 = AC2.Value(AC2.LastParameter());
-        samelength = (Abs(P11.Distance(P12) - P21.Distance(P22)) < Tol);
+        samelength = (std::abs(P11.Distance(P12) - P21.Distance(P22)) < Tol);
         // l'ecart entre les 2 sections ne compte pas
         samepos = ((P11.Distance(P21) < Tol && P12.Distance(P22) < Tol)
                    || (P12.Distance(P21) < Tol && P11.Distance(P22) < Tol));
@@ -1006,7 +1006,7 @@ Standard_Boolean GeomFill_NSections::IsConicalLaw(Standard_Real& Error) const
       //  formule plus generale pour 3 sections au moins
       //  Standard_Real param0 = C2.Radius()*myParams(1) - C1.Radius()*myParams(2);
       //  param0 = param0 / (C2.Radius()-C1.Radius()) ;
-      //  linearrad = ( Abs( C3.Radius()*myParams(1)-C1.Radius()*myParams(3)
+      //  linearrad = ( std::abs( C3.Radius()*myParams(1)-C1.Radius()*myParams(3)
       //                          - param0*(C3.Radius()-C1.Radius()) ) < Tol);
       if (isconic)
       {
@@ -1025,8 +1025,8 @@ Standard_Boolean GeomFill_NSections::IsConicalLaw(Standard_Real& Error) const
           //// Modified by jgv, 18.02.2009 for OCC20866 ////
           Standard_Real first1 = AC1.FirstParameter(), last1 = AC1.LastParameter();
           Standard_Real first2 = AC2.FirstParameter(), last2 = AC2.LastParameter();
-          isconic = (Abs(first1 - first2) <= Precision::PConfusion()
-                     && Abs(last1 - last2) <= Precision::PConfusion());
+          isconic = (std::abs(first1 - first2) <= Precision::PConfusion()
+                     && std::abs(last1 - last2) <= Precision::PConfusion());
           //////////////////////////////////////////////////
         }
       }
@@ -1061,7 +1061,7 @@ Handle(Geom_Curve) GeomFill_NSections::CirclSection(const Standard_Real V) const
   const Standard_Real aParL   = AC1.LastParameter();
   const Standard_Real aPeriod = AC1.IsPeriodic() ? AC1.Period() : 0.0;
 
-  if ((aPeriod == 0.0) || (Abs(aParL - aParF - aPeriod) > Precision::PConfusion()))
+  if ((aPeriod == 0.0) || (std::abs(aParL - aParF - aPeriod) > Precision::PConfusion()))
   {
     Handle(Geom_Curve) Cbis = new Geom_TrimmedCurve(C, aParF, aParL);
     C                       = Cbis;

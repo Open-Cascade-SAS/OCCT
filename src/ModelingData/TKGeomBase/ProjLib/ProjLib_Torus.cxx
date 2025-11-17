@@ -63,7 +63,7 @@ void ProjLib_Torus::Init(const gp_Torus& To)
 //           ( in order to avoid to divide by Radius)
 //                / X = (1+cosV)*cosU        U = Atan(Y/X)
 //            P = | Y = (1+cosV)*sinU   ==>
-//                \ Z = sinV                 V = ASin( Z)
+//                \ Z = sinV                 V = std::asin( Z)
 //=======================================================================
 
 static gp_Pnt2d EvalPnt2d(const gp_Vec& Ve, const gp_Torus& To)
@@ -72,9 +72,9 @@ static gp_Pnt2d EvalPnt2d(const gp_Vec& Ve, const gp_Torus& To)
   Standard_Real Y = Ve.Dot(gp_Vec(To.Position().YDirection()));
   Standard_Real U, V;
 
-  if (Abs(X) > Precision::PConfusion() || Abs(Y) > Precision::PConfusion())
+  if (std::abs(X) > Precision::PConfusion() || std::abs(Y) > Precision::PConfusion())
   {
-    U = ATan2(Y, X);
+    U = std::atan2(Y, X);
   }
   else
   {
@@ -124,7 +124,7 @@ void ProjLib_Torus::Project(const gp_Circ& C)
     }
     else
     {
-      V = ASin(Z);
+      V = std::asin(Z);
     }
 
     if (C.Radius() < myTorus.MajorRadius())
@@ -138,9 +138,9 @@ void ProjLib_Torus::Project(const gp_Circ& C)
     P1.SetY(V);
     P2.SetY(V);
     gp_Vec2d V2d(P1, P2);
-    // Normalement Abs( P1.X() - P2.X()) = PI/2
+    // Normalement std::abs( P1.X() - P2.X()) = PI/2
     // Si != PI/2, on a traverse la periode => On reverse la Direction
-    if (Abs(P1.X() - P2.X()) > M_PI)
+    if (std::abs(P1.X() - P2.X()) > M_PI)
       V2d.Reverse();
 
     gp_Dir2d D2(V2d);

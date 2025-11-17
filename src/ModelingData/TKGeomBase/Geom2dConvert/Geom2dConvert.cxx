@@ -125,8 +125,8 @@ Handle(Geom2d_BSplineCurve) Geom2dConvert::SplitBSplineCurve(
   Standard_Integer TheLast  = C->LastUKnotIndex();
   if (FromK1 == ToK2)
     throw Standard_DomainError();
-  Standard_Integer FirstK = Min(FromK1, ToK2);
-  Standard_Integer LastK  = Max(FromK1, ToK2);
+  Standard_Integer FirstK = std::min(FromK1, ToK2);
+  Standard_Integer LastK  = std::max(FromK1, ToK2);
   if (FirstK < TheFirst || LastK > TheLast)
     throw Standard_OutOfRange();
 
@@ -157,8 +157,8 @@ Handle(Geom2d_BSplineCurve) Geom2dConvert::SplitBSplineCurve(
   const Standard_Real, // ParametricTolerance,
   const Standard_Boolean SameOrientation)
 {
-  Standard_Real FirstU = Min(FromU1, ToU2);
-  Standard_Real LastU  = Max(FromU1, ToU2);
+  Standard_Real FirstU = std::min(FromU1, ToU2);
+  Standard_Real LastU  = std::max(FromU1, ToU2);
 
   Handle(Geom2d_BSplineCurve) C1 = Handle(Geom2d_BSplineCurve)::DownCast(C->Copy());
 
@@ -509,7 +509,7 @@ static Handle(Geom2d_BSplineCurve) MultNumandDenom(const Handle(Geom2d_BSplineCu
   BS->KnotSequence(BSFlatKnots);
   start_value             = BSKnots(1);
   end_value               = BSKnots(BS->NbKnots());
-  Standard_Real tolerance = 10. * Epsilon(Abs(end_value));
+  Standard_Real tolerance = 10. * Epsilon(std::abs(end_value));
 
   a->Knots(aKnots);
   a->Poles(aPoles);
@@ -843,7 +843,7 @@ static GeomAbs_Shape Continuity(const Handle(Geom2d_Curve)& C1,
         {
           d1.Normalize();
           d2.Normalize();
-          value = Abs(d1.Dot(d2));
+          value = std::abs(d1.Dot(d2));
           if (value >= 1.0e0 - ta * ta)
           {
             cont = GeomAbs_G1;
@@ -1026,9 +1026,8 @@ void Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&          ArrayOfCu
         KnotC1(1) = 0.0;
         for (ii = 2; ii <= KnotC1.Length(); ii++)
         {
-          //	 KnotC1(ii)=(-b+Abs(a)/a*Sqrt(b*b-4*a*(c-KnotC1(ii))))/(2*a);
           KnotC1(ii) =
-            (-b + Sqrt(b * b - 4 * a * (c - KnotC1(ii)))) / (2 * a); // ifv 17.05.00 buc60667
+            (-b + std::sqrt(b * b - 4 * a * (c - KnotC1(ii)))) / (2 * a); // ifv 17.05.00 buc60667
         }
         TColgp_Array1OfPnt2d Curve1Poles(1, Curve1->NbPoles());
         Curve1->Poles(Curve1Poles);
@@ -1293,9 +1292,8 @@ void Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&          ArrayOfCu
           KnotC1(1) = 0.0;
           for (ii = 2; ii <= KnotC1.Length(); ii++)
           {
-            //	   KnotC1(ii)=(-b+Abs(a)/a*Sqrt(b*b-4*a*(c-KnotC1(ii))))/(2*a);
             KnotC1(ii) =
-              (-b + Sqrt(b * b - 4 * a * (c - KnotC1(ii)))) / (2 * a); // ifv 17.05.00 buc60667
+              (-b + std::sqrt(b * b - 4 * a * (c - KnotC1(ii)))) / (2 * a); // ifv 17.05.00 buc60667
           }
           TColgp_Array1OfPnt2d Curve1Poles(1, Curve1->NbPoles());
           Curve1->Poles(Curve1Poles);
@@ -1430,7 +1428,7 @@ void Geom2dConvert::C0BSplineToC1BSplineCurve(Handle(Geom2d_BSplineCurve)& BS,
       nbcurveC1++;
   }
 
-  nbcurveC1 = Min(nbcurveC1, BS->NbKnots() - 1);
+  nbcurveC1 = std::min(nbcurveC1, BS->NbKnots() - 1);
 
   if (nbcurveC1 > 1)
   {
@@ -1525,7 +1523,7 @@ void Geom2dConvert::C0BSplineToArrayOfC1BSplineCurve(
       nbcurveC1++;
   }
 
-  nbcurveC1 = Min(nbcurveC1, BS->NbKnots() - 1);
+  nbcurveC1 = std::min(nbcurveC1, BS->NbKnots() - 1);
 
   if (nbcurveC1 > 1)
   {

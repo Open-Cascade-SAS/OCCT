@@ -251,7 +251,7 @@ void OpenGl_Sampler::applySamplerParams(const Handle(OpenGl_Context)&          t
 
   if (theCtx->HasTextureBaseLevel() && (theSampler == NULL || !theSampler->isValidSampler()))
   {
-    const Standard_Integer aMaxLevel = Min(theMaxMipLevels, theParams->MaxLevel());
+    const Standard_Integer aMaxLevel = std::min(theMaxMipLevels, theParams->MaxLevel());
     setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_BASE_LEVEL, theParams->BaseLevel());
     setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_MAX_LEVEL, aMaxLevel);
   }

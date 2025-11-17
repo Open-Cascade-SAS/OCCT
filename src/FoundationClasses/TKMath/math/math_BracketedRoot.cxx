@@ -50,7 +50,7 @@ math_BracketedRoot::math_BracketedRoot(math_Function&         F,
         d  = TheRoot - a;
         e  = d;
       }
-      if (Abs(Fc) < Abs(Fa))
+      if (std::abs(Fc) < std::abs(Fa))
       {
         a        = TheRoot;
         TheRoot  = c;
@@ -59,14 +59,14 @@ math_BracketedRoot::math_BracketedRoot(math_Function&         F,
         TheError = Fc;
         Fc       = Fa;
       }
-      tol1 = 2. * ZEPS * Abs(TheRoot) + 0.5 * Tolerance; // convergence check
+      tol1 = 2. * ZEPS * std::abs(TheRoot) + 0.5 * Tolerance; // convergence check
       xm   = 0.5 * (c - TheRoot);
-      if (Abs(xm) <= tol1 || TheError == 0.)
+      if (std::abs(xm) <= tol1 || TheError == 0.)
       {
         Done = Standard_True;
         return;
       }
-      if (Abs(e) >= tol1 && Abs(Fa) > Abs(TheError))
+      if (std::abs(e) >= tol1 && std::abs(Fa) > std::abs(TheError))
       {
         s = TheError / Fa; // attempt inverse quadratic interpolation
         if (a == c)
@@ -85,9 +85,9 @@ math_BracketedRoot::math_BracketedRoot(math_Function&         F,
         {
           q = -q;
         } // check whether in bounds
-        p    = Abs(p);
-        min1 = 3. * xm * q - Abs(tol1 * q);
-        min2 = Abs(e * q);
+        p    = std::abs(p);
+        min1 = 3. * xm * q - std::abs(tol1 * q);
+        min2 = std::abs(e * q);
         if (2. * p < (min1 < min2 ? min1 : min2))
         {
           e = d; // accept interpolation
@@ -106,13 +106,13 @@ math_BracketedRoot::math_BracketedRoot(math_Function&         F,
       }
       a  = TheRoot; // move last best guess to a
       Fa = TheError;
-      if (Abs(d) > tol1)
+      if (std::abs(d) > tol1)
       { // evaluate new trial root
         TheRoot += d;
       }
       else
       {
-        TheRoot += (xm > 0. ? Abs(tol1) : -Abs(tol1));
+        TheRoot += (xm > 0. ? std::abs(tol1) : -std::abs(tol1));
       }
       F.Value(TheRoot, TheError);
     }

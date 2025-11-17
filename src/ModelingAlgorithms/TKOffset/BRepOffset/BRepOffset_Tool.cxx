@@ -232,10 +232,10 @@ static void PutInBounds(const TopoDS_Face& F, const TopoDS_Edge& E, Handle(Geom2
     gp_Pnt2d      Pf     = C2d->Value(f);
     gp_Pnt2d      Pl     = C2d->Value(l);
     gp_Pnt2d      Pm     = C2d->Value(0.34 * f + 0.66 * l);
-    Standard_Real minC   = Min(Pf.X(), Pl.X());
-    minC                 = Min(minC, Pm.X());
-    Standard_Real maxC   = Max(Pf.X(), Pl.X());
-    maxC                 = Max(maxC, Pm.X());
+    Standard_Real minC   = std::min(Pf.X(), Pl.X());
+    minC                 = std::min(minC, Pm.X());
+    Standard_Real maxC   = std::max(Pf.X(), Pl.X());
+    maxC                 = std::max(maxC, Pm.X());
     Standard_Real du     = 0.;
     if (minC < umin - eps)
     {
@@ -276,10 +276,10 @@ static void PutInBounds(const TopoDS_Face& F, const TopoDS_Edge& E, Handle(Geom2
     gp_Pnt2d      Pf     = C2d->Value(f);
     gp_Pnt2d      Pl     = C2d->Value(l);
     gp_Pnt2d      Pm     = C2d->Value(0.34 * f + 0.66 * l);
-    Standard_Real minC   = Min(Pf.Y(), Pl.Y());
-    minC                 = Min(minC, Pm.Y());
-    Standard_Real maxC   = Max(Pf.Y(), Pl.Y());
-    maxC                 = Max(maxC, Pm.Y());
+    Standard_Real minC   = std::min(Pf.Y(), Pl.Y());
+    minC                 = std::min(minC, Pm.Y());
+    Standard_Real maxC   = std::max(Pf.Y(), Pl.Y());
+    maxC                 = std::max(maxC, Pm.Y());
     Standard_Real dv     = 0.;
     if (minC < vmin - eps)
     {
@@ -321,8 +321,8 @@ Standard_Real BRepOffset_Tool::Gabarit(const Handle(Geom_Curve)& aCurve)
   BndLib_Add3dCurve::Add(GC, Precision::Confusion(), aBox);
   Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax, dist;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-  dist = Max((aXmax - aXmin), (aYmax - aYmin));
-  dist = Max(dist, (aZmax - aZmin));
+  dist = std::max((aXmax - aXmin), (aYmax - aYmin));
+  dist = std::max(dist, (aZmax - aZmin));
   return dist;
 }
 
@@ -335,7 +335,7 @@ static void BuildPCurves(const TopoDS_Edge& E, const TopoDS_Face& F)
   if (!C2d.IsNull())
     return;
 
-  // Standard_Real Tolerance = Max(Precision::Confusion(),BRep_Tool::Tolerance(E));
+  // Standard_Real Tolerance = std::max(Precision::Confusion(),BRep_Tool::Tolerance(E));
   constexpr Standard_Real Tolerance = Precision::Confusion();
 
   BRepAdaptor_Surface AS(F, 0);
@@ -1057,8 +1057,8 @@ static Handle(Geom2d_Curve) ConcatPCurves(const TopoDS_Edge&     E1,
   if (PCurve1 == PCurve2)
   {
     newPCurve = PCurve1;
-    newFirst  = Min(first1, first2);
-    newLast   = Max(last1, last2);
+    newFirst  = std::min(first1, first2);
+    newLast   = std::max(last1, last2);
   }
   else if (PCurve1->DynamicType() == PCurve2->DynamicType()
            && (PCurve1->IsInstance(STANDARD_TYPE(Geom2d_Line))
@@ -1103,8 +1103,8 @@ static Handle(Geom2d_Curve) ConcatPCurves(const TopoDS_Edge&     E1,
       first2                           = ElCLib::Parameter(theHypr, P1);
       last2                            = ElCLib::Parameter(theHypr, P2);
     }
-    newFirst = Min(first1, first2);
-    newLast  = Max(last1, last2);
+    newFirst = std::min(first1, first2);
+    newLast  = std::max(last1, last2);
   }
   else
   {
@@ -1162,8 +1162,8 @@ static TopoDS_Edge Glue(const TopoDS_Edge&     E1,
   if (C1 == C2)
   {
     newCurve = C1;
-    fparam   = Min(first1, first2);
-    lparam   = Max(last1, last2);
+    fparam   = std::min(first1, first2);
+    lparam   = std::max(last1, last2);
   }
   else if (C1->DynamicType() == C2->DynamicType()
            && (C1->IsInstance(STANDARD_TYPE(Geom_Line)) || C1->IsKind(STANDARD_TYPE(Geom_Conic))))
@@ -2037,10 +2037,10 @@ static void ExtentEdge(const TopoDS_Face& F,
   Standard_Real        umin, umax, vmin, vmax;
 
   S->Bounds(umin, umax, vmin, vmax);
-  umin = Max(umin, -PMax);
-  vmin = Max(vmin, -PMax);
-  umax = Min(umax, PMax);
-  vmax = Min(vmax, PMax);
+  umin = std::max(umin, -PMax);
+  vmin = std::max(vmin, -PMax);
+  umax = std::min(umax, PMax);
+  vmax = std::min(vmax, PMax);
 
   Standard_Real        f, l;
   Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(E, F, f, l);
@@ -2051,21 +2051,21 @@ static void ExtentEdge(const TopoDS_Face& F,
   C2d->D1(CE.FirstParameter(), P, Tang);
   Standard_Real tx, ty, tmin;
   tx = ty = Precision::Infinite();
-  if (Abs(Tang.X()) > Precision::Confusion())
-    tx = Min(Abs((umax - P.X()) / Tang.X()), Abs((umin - P.X()) / Tang.X()));
-  if (Abs(Tang.Y()) > Precision::Confusion())
-    ty = Min(Abs((vmax - P.Y()) / Tang.Y()), Abs((vmin - P.Y()) / Tang.Y()));
-  tmin = Min(tx, ty);
+  if (std::abs(Tang.X()) > Precision::Confusion())
+    tx = std::min(std::abs((umax - P.X()) / Tang.X()), std::abs((umin - P.X()) / Tang.X()));
+  if (std::abs(Tang.Y()) > Precision::Confusion())
+    ty = std::min(std::abs((vmax - P.Y()) / Tang.Y()), std::abs((vmin - P.Y()) / Tang.Y()));
+  tmin = std::min(tx, ty);
   Tang = tmin * Tang;
   gp_Pnt2d PF2d(P.X() - Tang.X(), P.Y() - Tang.Y());
 
   C2d->D1(CE.LastParameter(), P, Tang);
   tx = ty = Precision::Infinite();
-  if (Abs(Tang.X()) > Precision::Confusion())
-    tx = Min(Abs((umax - P.X()) / Tang.X()), Abs((umin - P.X()) / Tang.X()));
-  if (Abs(Tang.Y()) > Precision::Confusion())
-    ty = Min(Abs((vmax - P.Y()) / Tang.Y()), Abs((vmin - P.Y()) / Tang.Y()));
-  tmin = Min(tx, ty);
+  if (std::abs(Tang.X()) > Precision::Confusion())
+    tx = std::min(std::abs((umax - P.X()) / Tang.X()), std::abs((umin - P.X()) / Tang.X()));
+  if (std::abs(Tang.Y()) > Precision::Confusion())
+    ty = std::min(std::abs((vmax - P.Y()) / Tang.Y()), std::abs((vmin - P.Y()) / Tang.Y()));
+  tmin = std::min(tx, ty);
   Tang = tmin * Tang;
   gp_Pnt2d PL2d(P.X() + Tang.X(), P.Y() + Tang.Y());
 
@@ -2129,7 +2129,7 @@ static Standard_Boolean ProjectVertexOnEdge(TopoDS_Vertex&     V,
 
   if (V.Orientation() == TopAbs_FORWARD)
   {
-    if (Abs(f) < Precision::Infinite())
+    if (std::abs(f) < Precision::Infinite())
     {
       gp_Pnt PF = C.Value(f);
       if (PF.IsEqual(P, TolConf))
@@ -2141,7 +2141,7 @@ static Standard_Boolean ProjectVertexOnEdge(TopoDS_Vertex&     V,
   }
   if (V.Orientation() == TopAbs_REVERSED)
   {
-    if (!found && Abs(l) < Precision::Infinite())
+    if (!found && std::abs(l) < Precision::Infinite())
     {
       gp_Pnt PL = C.Value(l);
       if (PL.IsEqual(P, TolConf))
@@ -2188,7 +2188,7 @@ static Standard_Boolean ProjectVertexOnEdge(TopoDS_Vertex&     V,
   if (!found)
   {
     std::cout << "BRepOffset_Tool::ProjectVertexOnEdge Parameter no found" << std::endl;
-    if (Abs(f) < Precision::Infinite() && Abs(l) < Precision::Infinite())
+    if (std::abs(f) < Precision::Infinite() && std::abs(l) < Precision::Infinite())
     {
   #ifdef DRAW
       DBRep::Set("E", E);
@@ -2317,7 +2317,8 @@ void BRepOffset_Tool::Inter2d(const TopoDS_Face&    F,
           {
             for (Standard_Integer i2 = 0; i2 < 2; i2++)
             {
-              if (Abs(fl1[i1]) < Precision::Infinite() && Abs(fl2[i2]) < Precision::Infinite())
+              if (std::abs(fl1[i1]) < Precision::Infinite()
+                  && std::abs(fl2[i2]) < Precision::Infinite())
               {
                 if (P1[i1].IsEqual(P2[i2], TolConf))
                 {
@@ -2571,9 +2572,9 @@ static void MakeFace(const Handle(Geom_Surface)& S,
     gp_Pnt                      theApex  = theCone.Apex();
     Standard_Real               Uapex, Vapex;
     ElSLib::Parameters(theCone, theApex, Uapex, Vapex);
-    if (Abs(VMin - Vapex) <= Precision::Confusion())
+    if (std::abs(VMin - Vapex) <= Precision::Confusion())
       vmindegen = Standard_True;
-    if (Abs(VMax - Vapex) <= Precision::Confusion())
+    if (std::abs(VMax - Vapex) <= Precision::Confusion())
       vmaxdegen = Standard_True;
   }
 
@@ -3054,10 +3055,10 @@ static Standard_Boolean EnlargeGeometry(Handle(Geom_Surface)&  S,
     Standard_Real UU1, UU2, VV1, VV2;
     S->Bounds(UU1, UU2, VV1, VV2);
     // Pas d extension au dela des bornes de la surface.
-    U1 = Max(UU1, U1);
-    V1 = Max(VV1, V1);
-    U2 = Min(UU2, U2);
-    V2 = Min(VV2, V2);
+    U1 = std::max(UU1, U1);
+    V1 = std::max(VV1, V1);
+    U2 = std::min(UU2, U2);
+    V2 = std::min(VV2, V2);
   }
   return SurfaceChange;
 }
@@ -3208,7 +3209,7 @@ void BRepOffset_Tool::CheckBounds(const TopoDS_Face&        F,
               Vbound++;
               if (BRep_Tool::Degenerated(anEdge))
               {
-                if (Abs(theLine->Location().Y() - VF1) <= Precision::Confusion())
+                if (std::abs(theLine->Location().Y() - VF1) <= Precision::Confusion())
                   enlargeVfirst = Standard_False;
                 else // theLine->Location().Y() is near VF2
                   enlargeVlast = Standard_False;
@@ -3237,11 +3238,11 @@ void BRepOffset_Tool::CheckBounds(const TopoDS_Face&        F,
 
   if (Ubound >= 2 || Vbound >= 2)
   {
-    if (Ubound >= 2 && Abs(UF1 - Ufirst) <= Precision::Confusion()
-        && Abs(UF2 - Ulast) <= Precision::Confusion())
+    if (Ubound >= 2 && std::abs(UF1 - Ufirst) <= Precision::Confusion()
+        && std::abs(UF2 - Ulast) <= Precision::Confusion())
       enlargeU = Standard_False;
-    if (Vbound >= 2 && Abs(VF1 - Vfirst) <= Precision::Confusion()
-        && Abs(VF2 - Vlast) <= Precision::Confusion())
+    if (Vbound >= 2 && std::abs(VF1 - Vfirst) <= Precision::Confusion()
+        && std::abs(VF2 - Vlast) <= Precision::Confusion())
     {
       enlargeVfirst = Standard_False;
       enlargeVlast  = Standard_False;
@@ -3329,10 +3330,10 @@ Standard_Boolean BRepOffset_Tool::EnLargeFace(const TopoDS_Face&     F,
   }
   else
   {
-    UU1 = Max(US1, UU1);
-    UU2 = Min(UU2, US2);
-    VV1 = Max(VS1, VV1);
-    VV2 = Min(VS2, VV2);
+    UU1 = std::max(US1, UU1);
+    UU2 = std::min(UU2, US2);
+    VV1 = std::max(VS1, VV1);
+    VV2 = std::min(VS2, VV2);
   }
 
   if (S->IsUPeriodic())
@@ -3974,9 +3975,9 @@ void BRepOffset_Tool::ExtentFace(const TopoDS_Face&            F,
           {
             if (U1 > U2)
             {
-              if (Abs(U1 - l) < eps)
+              if (std::abs(U1 - l) < eps)
                 U1 = f;
-              if (Abs(U2 - f) < eps)
+              if (std::abs(U2 - f) < eps)
                 U2 = l;
             }
             TopoDS_Shape aLocalVertex = NV1.Oriented(TopAbs_FORWARD);
@@ -3993,9 +3994,9 @@ void BRepOffset_Tool::ExtentFace(const TopoDS_Face&            F,
           {
             if (U2 > U1)
             {
-              if (Abs(U2 - l) < eps)
+              if (std::abs(U2 - l) < eps)
                 U2 = f;
-              if (Abs(U1 - f) < eps)
+              if (std::abs(U1 - f) < eps)
                 U1 = l;
             }
             TopoDS_Shape aLocalVertex = NV2.Oriented(TopAbs_FORWARD);

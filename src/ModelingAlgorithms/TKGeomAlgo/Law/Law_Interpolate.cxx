@@ -57,13 +57,14 @@ static void BuildParameters(const Standard_Boolean         PeriodicFlag,
   ParametersPtr->SetValue(1, 0.);
   for (ii = PointsArray.Lower(); ii < PointsArray.Upper(); ii++)
   {
-    distance = Abs(PointsArray.Value(ii) - PointsArray.Value(ii + 1));
+    distance = std::abs(PointsArray.Value(ii) - PointsArray.Value(ii + 1));
     ParametersPtr->SetValue(index, ParametersPtr->Value(ii) + distance);
     index += 1;
   }
   if (PeriodicFlag)
   {
-    distance = Abs(PointsArray.Value(PointsArray.Upper()) - PointsArray.Value(PointsArray.Lower()));
+    distance =
+      std::abs(PointsArray.Value(PointsArray.Upper()) - PointsArray.Value(PointsArray.Lower()));
     ParametersPtr->SetValue(index, ParametersPtr->Value(ii) + distance);
   }
 }

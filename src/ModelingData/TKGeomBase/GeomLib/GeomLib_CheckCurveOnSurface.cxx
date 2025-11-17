@@ -393,7 +393,7 @@ void GeomLib_CheckCurveOnSurface::Perform(const Handle(Adaptor3d_CurveOnSurface)
 
     const Standard_Integer aNbThreads =
       myIsParallel
-        ? Min(anIntervals.Size(), OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch())
+        ? std::min(anIntervals.Size(), OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch())
         : 1;
     Array1OfHCurve aCurveArray(0, aNbThreads - 1);
     Array1OfHCurve aCurveOnSurfaceArray(0, aNbThreads - 1);
@@ -425,7 +425,7 @@ void GeomLib_CheckCurveOnSurface::Perform(const Handle(Adaptor3d_CurveOnSurface)
     }
     aComp.OptimalValues(myMaxDistance, myMaxParameter);
 
-    myMaxDistance = sqrt(Abs(myMaxDistance));
+    myMaxDistance = sqrt(std::abs(myMaxDistance));
   }
   catch (Standard_Failure const&)
   {
@@ -623,12 +623,12 @@ Standard_Integer FillSubIntervals(const Handle(Adaptor3d_Curve)&   theCurve3d,
 
     if (!aBS3DCurv.IsNull())
     {
-      theNbParticles = Max(theNbParticles, aBS3DCurv->Degree());
+      theNbParticles = std::max(theNbParticles, aBS3DCurv->Degree());
     }
 
     if (!aBS2DCurv.IsNull())
     {
-      theNbParticles = Max(theNbParticles, aBS2DCurv->Degree());
+      theNbParticles = std::max(theNbParticles, aBS2DCurv->Degree());
     }
   }
   catch (Standard_Failure const&)

@@ -515,7 +515,7 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
         SPnt.InfoFirst(Type, SegIndex1, ParamOn1);
         SPnt.InfoSecond(Type, SegIndex2, ParamOn2);
 
-        if (Abs(SegIndex1 - SegIndex2) > 1)
+        if (std::abs(SegIndex1 - SegIndex2) > 1)
         {
 
           EIP.Perform(Poly1, Poly1, SegIndex1, SegIndex2, ParamOn1, ParamOn2);
@@ -531,7 +531,7 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
             Standard_Real Dist  = P1.Distance(P2);
             Standard_Real EpsX1 = 10.0 * TheCurveTool::EpsX(C1);
 
-            if (Abs(U - V) <= EpsX1)
+            if (std::abs(U - V) <= EpsX1)
             {
               //-----------------------------------------
               //-- Solution not valid
@@ -550,9 +550,9 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
             for (Standard_Integer p = 1; p <= nbp; p++)
             {
               const IntRes2d_IntersectionPoint& P = Point(p);
-              if (Abs(U - P.ParamOnFirst()) <= EpsX1)
+              if (std::abs(U - P.ParamOnFirst()) <= EpsX1)
               {
-                if (Abs(V - P.ParamOnSecond()) <= EpsX1)
+                if (std::abs(V - P.ParamOnSecond()) <= EpsX1)
                 {
                   Dist = TolConf + 1.0;
                   p += nbp;
@@ -737,7 +737,8 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                                             D1.LastParameter(),
                                             TheCurveTool::EpsX(C1));
     }
-    else if (Abs(ParamInfOnCurve1 - ParamSupOnCurve1) > Abs(ParamInfOnCurve2 - ParamSupOnCurve2))
+    else if (std::abs(ParamInfOnCurve1 - ParamSupOnCurve1)
+             > std::abs(ParamInfOnCurve2 - ParamSupOnCurve2))
     {
       PolyVInf = TheProjPCur::FindParameter(C1,
                                             P1,
@@ -772,8 +773,8 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
     IntRes2d_IntersectionPoint PtSeg1(P1, PolyUInf, PolyVInf, Trans1, Trans2, Standard_False);
     //----------------------------------------------------------------------
 
-    if ((Abs(PolyUInf - PolyUSup) <= TheCurveTool::EpsX(C1))
-        || (Abs(PolyVInf - PolyVSup) <= TheCurveTool::EpsX(C1)))
+    if ((std::abs(PolyUInf - PolyUSup) <= TheCurveTool::EpsX(C1))
+        || (std::abs(PolyVInf - PolyVSup) <= TheCurveTool::EpsX(C1)))
     {
       // bad segment
     }
@@ -817,7 +818,8 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                                               D1.LastParameter(),
                                               TheCurveTool::EpsX(C1));
       }
-      else if (Abs(ParamInfOnCurve1 - ParamSupOnCurve1) > Abs(ParamInfOnCurve2 - ParamSupOnCurve2))
+      else if (std::abs(ParamInfOnCurve1 - ParamSupOnCurve1)
+               > std::abs(ParamInfOnCurve2 - ParamSupOnCurve2))
       {
         PolyVSup = TheProjPCur::FindParameter(C1,
                                               P1,
@@ -942,13 +944,13 @@ Standard_Boolean HeadOrEndPoint(const IntRes2d_Domain&      D1,
   {
     if (Pos1 == IntRes2d_Middle)
     {
-      if (Abs(u - D1.FirstParameter()) <= EpsX1)
+      if (std::abs(u - D1.FirstParameter()) <= EpsX1)
       {
         Pos1    = IntRes2d_Head;
         P1      = D1.FirstPoint();
         HeadOn1 = Standard_True;
       }
-      else if (Abs(u - D1.LastParameter()) <= EpsX1)
+      else if (std::abs(u - D1.LastParameter()) <= EpsX1)
       {
         Pos1   = IntRes2d_End;
         P1     = D1.LastPoint();
@@ -962,7 +964,7 @@ Standard_Boolean HeadOrEndPoint(const IntRes2d_Domain&      D1,
 
     if (Pos2 == IntRes2d_Middle)
     {
-      if (Abs(v - D2.FirstParameter()) <= EpsX2)
+      if (std::abs(v - D2.FirstParameter()) <= EpsX2)
       {
         Pos2    = IntRes2d_Head;
         HeadOn2 = Standard_True;
@@ -976,7 +978,7 @@ Standard_Boolean HeadOrEndPoint(const IntRes2d_Domain&      D1,
           P2 = P1;
         }
       }
-      else if (Abs(v - D2.LastParameter()) <= EpsX2)
+      else if (std::abs(v - D2.LastParameter()) <= EpsX2)
       {
         Pos2   = IntRes2d_End;
         EndOn2 = Standard_True;
@@ -1058,8 +1060,8 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
   if (NbIter == 0)
   {
     // Minimal number of points.
-    nbsamplesOnC1 = Max(nbsamplesOnC1, myMinPntNb);
-    nbsamplesOnC2 = Max(nbsamplesOnC2, myMinPntNb);
+    nbsamplesOnC1 = std::max(nbsamplesOnC1, myMinPntNb);
+    nbsamplesOnC2 = std::max(nbsamplesOnC2, myMinPntNb);
   }
   else
   {
@@ -1076,8 +1078,8 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
   if ((aPoly1->DeflectionOverEstimation() > TolConf)
       && (aPoly2->DeflectionOverEstimation() > TolConf))
   {
-    const Standard_Real aDeflectionSum = Max(aPoly1->DeflectionOverEstimation(), TolConf)
-                                         + Max(aPoly2->DeflectionOverEstimation(), TolConf);
+    const Standard_Real aDeflectionSum = std::max(aPoly1->DeflectionOverEstimation(), TolConf)
+                                         + std::max(aPoly2->DeflectionOverEstimation(), TolConf);
 
     if (nbsamplesOnC2 > nbsamplesOnC1)
     {
@@ -1240,9 +1242,9 @@ Standard_Boolean IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&         
     for (Standard_Integer p = 1; p <= nbp; p++)
     {
       const IntRes2d_IntersectionPoint& P = Point(p);
-      if (Abs(U - P.ParamOnFirst()) <= EpsX1)
+      if (std::abs(U - P.ParamOnFirst()) <= EpsX1)
       {
-        if (Abs(V - P.ParamOnSecond()) <= EpsX2)
+        if (std::abs(V - P.ParamOnSecond()) <= EpsX2)
         {
           Dist = TolConf + 1.0;
           p += nbp;
@@ -1446,7 +1448,8 @@ Standard_Boolean IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&         
                                               D2.LastParameter(),
                                               TheCurveTool::EpsX(C2));
       }
-      else if (Abs(ParamInfOnCurve1 - ParamSupOnCurve1) > Abs(ParamInfOnCurve2 - ParamSupOnCurve2))
+      else if (std::abs(ParamInfOnCurve1 - ParamSupOnCurve1)
+               > std::abs(ParamInfOnCurve2 - ParamSupOnCurve2))
       {
         PolyVInf = TheProjPCur::FindParameter(C2,
                                               P1,
@@ -1481,8 +1484,8 @@ Standard_Boolean IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&         
       IntRes2d_IntersectionPoint PtSeg1(P1, PolyUInf, PolyVInf, Trans1, Trans2, Standard_False);
       //----------------------------------------------------------------------
 
-      if ((Abs(PolyUInf - PolyUSup) <= TheCurveTool::EpsX(C1))
-          || (Abs(PolyVInf - PolyVSup) <= TheCurveTool::EpsX(C2)))
+      if ((std::abs(PolyUInf - PolyUSup) <= TheCurveTool::EpsX(C1))
+          || (std::abs(PolyVInf - PolyVSup) <= TheCurveTool::EpsX(C2)))
       {
         Insert(PtSeg1);
       }
@@ -1526,8 +1529,8 @@ Standard_Boolean IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&         
                                                 D2.LastParameter(),
                                                 TheCurveTool::EpsX(C2));
         }
-        else if (Abs(ParamInfOnCurve1 - ParamSupOnCurve1)
-                 > Abs(ParamInfOnCurve2 - ParamSupOnCurve2))
+        else if (std::abs(ParamInfOnCurve1 - ParamSupOnCurve1)
+                 > std::abs(ParamInfOnCurve2 - ParamSupOnCurve2))
         {
           PolyVSup = TheProjPCur::FindParameter(C2,
                                                 P1,
@@ -1598,9 +1601,9 @@ void GetIntersection(const TheCurve&             theC1,
   //
   Standard_Real aTol2 = theTolConf * theTolConf;
   Standard_Real aPTol1 =
-    Max(100. * Epsilon(Max(Abs(theT1f), Abs(theT1l))), Precision::PConfusion());
+    std::max(100. * Epsilon(std::max(std::abs(theT1f), std::abs(theT1l))), Precision::PConfusion());
   Standard_Real aPTol2 =
-    Max(100. * Epsilon(Max(Abs(theT2f), Abs(theT2l))), Precision::PConfusion());
+    std::max(100. * Epsilon(std::max(std::abs(theT2f), std::abs(theT2l))), Precision::PConfusion());
   gp_Pnt2d  aP1f, aP1l, aP2f, aP2l;
   Bnd_Box2d aB1, aB2;
   //
@@ -1649,7 +1652,7 @@ void GetIntersection(const TheCurve&             theC1,
       }
     }
     //
-    dmin = Sqrt(dmin);
+    dmin = std::sqrt(dmin);
     if (theDist > dmin)
     {
       theDist = dmin;

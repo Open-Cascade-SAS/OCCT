@@ -34,13 +34,13 @@ public:
   {
     if (!theSet1.IsNull() && !theSet1->IsEmpty())
     {
-      myUnitLower = Min(myUnitLower, theSet1->FirstUnit());
-      myUnitUpper = Max(myUnitUpper, theSet1->LastUnit());
+      myUnitLower = (std::min)(myUnitLower, static_cast<int>(theSet1->FirstUnit()));
+      myUnitUpper = (std::max)(myUnitUpper, static_cast<int>(theSet1->LastUnit()));
     }
     if (!theSet2.IsNull() && !theSet2->IsEmpty())
     {
-      myUnitLower = Min(myUnitLower, theSet2->FirstUnit());
-      myUnitUpper = Max(myUnitUpper, theSet2->LastUnit());
+      myUnitLower = (std::min)(myUnitLower, static_cast<int>(theSet2->FirstUnit()));
+      myUnitUpper = (std::max)(myUnitUpper, static_cast<int>(theSet2->LastUnit()));
     }
     myUnitCurrent = myUnitLower;
     myTexture1 =

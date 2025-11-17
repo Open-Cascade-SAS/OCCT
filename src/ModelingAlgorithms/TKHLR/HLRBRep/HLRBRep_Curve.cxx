@@ -124,7 +124,7 @@ Standard_Real HLRBRep_Curve::Update(Standard_Real TotMin[16], Standard_Real TotM
         D1.Transform(((HLRAlgo_Projector*)myProj)->Transformation());
         if (D1.IsParallel(gp::DZ(), Precision::Angular()))
           myType = GeomAbs_Circle;
-        else if (Abs(D1.Dot(gp::DZ()))
+        else if (std::abs(D1.Dot(gp::DZ()))
                  < Precision::Angular()
                      * 10) //*10: The minor radius of ellipse should not be too small.
           myType = GeomAbs_OtherCurve;
@@ -208,7 +208,7 @@ Standard_Real HLRBRep_Curve::Update(Standard_Real TotMin[16], Standard_Real TotM
       myOZ = VFZ * gp_Vec(P.X() - F.X(), P.Y() - F.Y(), P.Z());
     }
     else
-      myVX = Sqrt(V.X() * V.X() + V.Y() * V.Y()) * l3d;
+      myVX = std::sqrt(V.X() * V.X() + V.Y() * V.Y()) * l3d;
   }
   return (UpdateMinMax(TotMin, TotMax));
 }

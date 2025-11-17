@@ -227,8 +227,8 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
   TColgp_Array1OfPnt tabAppP(1, NbUPoles);
   TColgp_Array1OfVec tabAppV(1, NbUPoles);
 
-  TColgp_Array1OfPnt2d tabP2d(1, Max(1, NbPoles2d));
-  TColgp_Array1OfVec2d tabV2d(1, Max(1, NbPoles2d));
+  TColgp_Array1OfPnt2d tabP2d(1, std::max(1, NbPoles2d));
+  TColgp_Array1OfVec2d tabV2d(1, std::max(1, NbPoles2d));
 
   TColStd_Array1OfReal tabW(1, NbUPoles), tabDW(1, NbUPoles);
 
@@ -414,8 +414,8 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
     for (Standard_Integer Index = 1; Index <= theapprox.NbMultiCurves(); Index++)
     {
       theapprox.Error(Index, TheTol3d, TheTol2d);
-      mytol3d = Max(TheTol3d, mytol3d);
-      mytol2d = Max(TheTol2d, mytol2d);
+      mytol3d = std::max(TheTol3d, mytol3d);
+      mytol2d = std::max(TheTol2d, mytol2d);
     }
 #ifdef OCCT_DEBUG
     std::cout << " Tolerances obtenues  --> 3d : " << mytol3d << std::endl;
@@ -637,15 +637,15 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
   X = Y = Z = RealLast();
   DX = DY = DZ = RealFirst();
 
-  TColgp_Array1OfPnt2d tabP2d(1, Max(1, NbPoles2d));
-  TColgp_Array1OfVec2d tabV2d(1, Max(1, NbPoles2d));
-  TColStd_Array1OfReal X2d(1, Max(1, NbPoles2d));
+  TColgp_Array1OfPnt2d tabP2d(1, std::max(1, NbPoles2d));
+  TColgp_Array1OfVec2d tabV2d(1, std::max(1, NbPoles2d));
+  TColStd_Array1OfReal X2d(1, std::max(1, NbPoles2d));
   X2d.Init(RealLast());
-  TColStd_Array1OfReal Y2d(1, Max(1, NbPoles2d));
+  TColStd_Array1OfReal Y2d(1, std::max(1, NbPoles2d));
   Y2d.Init(RealLast());
-  TColStd_Array1OfReal DX2d(1, Max(1, NbPoles2d));
+  TColStd_Array1OfReal DX2d(1, std::max(1, NbPoles2d));
   DX2d.Init(RealFirst());
-  TColStd_Array1OfReal DY2d(1, Max(1, NbPoles2d));
+  TColStd_Array1OfReal DY2d(1, std::max(1, NbPoles2d));
   DY2d.Init(RealFirst());
 
   TColStd_Array1OfReal tabW(1, NbUPoles), tabDW(1, NbUPoles);
@@ -828,7 +828,7 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
   for (itronc = 1; itronc <= nbtronc; itronc++)
   {
     troncstart(itronc)      = start;
-    Standard_Integer rabrab = Min(rab, reste);
+    Standard_Integer rabrab = std::min(rab, reste);
     if (reste > 0)
     {
       reste -= rabrab;
@@ -938,9 +938,9 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
     {
       AppParCurves_MultiCurve& mucu = theapprox.ChangeValue(Index);
       theapprox.Error(Index, TheTol3d, TheTol2d);
-      mytol3d = Max(TheTol3d / DX, mytol3d);
-      mytol3d = Max(TheTol3d / DY, mytol3d);
-      mytol3d = Max(TheTol3d / DZ, mytol3d);
+      mytol3d = std::max(TheTol3d / DX, mytol3d);
+      mytol3d = std::max(TheTol3d / DY, mytol3d);
+      mytol3d = std::max(TheTol3d / DZ, mytol3d);
       for (j = 1; j <= NbUPoles; j++)
       {
         mucu.Transform(j, -X / DX, 1. / DX, -Y / DY, 1. / DY, -Z / DZ, 1. / DZ);
@@ -952,8 +952,8 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
                          1. / DX2d(j),
                          -Y2d(j) / DY2d(j),
                          1. / DY2d(j));
-        mytol2d = Max(TheTol2d / DX2d(j), mytol2d);
-        mytol2d = Max(TheTol2d / DY2d(j), mytol2d);
+        mytol2d = std::max(TheTol2d / DX2d(j), mytol2d);
+        mytol2d = std::max(TheTol2d / DY2d(j), mytol2d);
       }
       concat.Append(mucu);
 

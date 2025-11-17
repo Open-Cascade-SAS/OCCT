@@ -264,7 +264,7 @@ void BSplCLib::LocateParameter(const TColStd_Array1OfReal& Knots,
   Standard_Real          val;
   const Standard_Integer KLower = Knots.Lower(), KUpper = Knots.Upper();
 
-  const Standard_Real Eps = Epsilon(Min(Abs(Knots(KUpper)), Abs(U)));
+  const Standard_Real Eps = Epsilon(std::min(std::abs(Knots(KUpper)), std::abs(U)));
 
   const Standard_Real* knots = &Knots(KLower);
   knots -= KLower;
@@ -743,7 +743,7 @@ void BSplCLib::KnotAnalysis(const Standard_Integer         Degree,
     for (Standard_Integer i = FirstKM + 1; i < LastKM; i++)
     {
       Multi       = CMults(i);
-      MaxKnotMult = Max(MaxKnotMult, Multi);
+      MaxKnotMult = std::max(MaxKnotMult, Multi);
     }
   }
 }
@@ -754,8 +754,8 @@ void BSplCLib::Reparametrize(const Standard_Real U1, const Standard_Real U2, Arr
 {
   Standard_Integer          Lower     = Knots.Lower();
   Standard_Integer          Upper     = Knots.Upper();
-  Standard_Real             UFirst    = Min(U1, U2);
-  Standard_Real             ULast     = Max(U1, U2);
+  Standard_Real             UFirst    = std::min(U1, U2);
+  Standard_Real             ULast     = std::max(U1, U2);
   Standard_Real             NewLength = ULast - UFirst;
   BSplCLib_KnotDistribution KSet      = BSplCLib::KnotForm(Knots, Lower, Upper);
   if (KSet == BSplCLib_Uniform)
@@ -783,9 +783,9 @@ void BSplCLib::Reparametrize(const Standard_Real U1, const Standard_Real U2, Arr
       Knots(i) = Knots(i - 1) + (NewLength * Ratio);
 
       // for CheckCurveData
-      Standard_Real Eps = Epsilon(Abs(Knots(i - 1)));
+      Standard_Real Eps = Epsilon(std::abs(Knots(i - 1)));
       if (Knots(i) - Knots(i - 1) <= Eps)
-        Knots(i) = NextAfter(Knots(i - 1) + Eps, RealLast());
+        Knots(i) = std::nextafter(Knots(i - 1) + Eps, RealLast());
 
       K1 = K2;
     }
@@ -1115,7 +1115,7 @@ Standard_Boolean BSplCLib::AntiBoorScheme(const Standard_Real    U,
     for (k = 0; k < Dimension; k++)
     {
       z = X * firstpole[k] + Y * firstpole[k + 2 * Dimension];
-      if (Abs(z - firstpole[k + Dimension]) > Tolerance)
+      if (std::abs(z - firstpole[k + Dimension]) > Tolerance)
         return Standard_False;
     }
     return Standard_True;
@@ -1162,7 +1162,7 @@ Standard_Boolean BSplCLib::AntiBoorScheme(const Standard_Real    U,
       for (k = 0; k < Dimension; k++)
       {
         z = (pole[k] - Y * pole[k + Dimension]) / X;
-        if (Abs(z - pole[k - Dimension]) > Tolerance)
+        if (std::abs(z - pole[k - Dimension]) > Tolerance)
           return Standard_False;
         pole[k - Dimension] += z;
         pole[k - Dimension] /= 2.;
@@ -1894,7 +1894,7 @@ Standard_Boolean BSplCLib::PrepareInsertKnots(const Standard_Integer         Deg
       return Standard_False;
     oldau = au;
 
-    Eps = Max(Tolerance, Epsilon(au));
+    Eps = std::max(Tolerance, Epsilon(au));
 
     while ((k < Knots.Upper()) && (Knots(k + 1) - au <= Eps))
     {
@@ -1906,9 +1906,9 @@ Standard_Boolean BSplCLib::PrepareInsertKnots(const Standard_Integer         Deg
     if (addflat)
       amult = 1;
     else
-      amult = Max(0, (*AddMults)(ak));
+      amult = std::max(0, (*AddMults)(ak));
 
-    while ((ak < AddKnots.Upper()) && (Abs(au - AddKnots(ak + 1)) <= Eps))
+    while ((ak < AddKnots.Upper()) && (std::abs(au - AddKnots(ak + 1)) <= Eps))
     {
       ak++;
       if (Add)
@@ -1916,18 +1916,18 @@ Standard_Boolean BSplCLib::PrepareInsertKnots(const Standard_Integer         Deg
         if (addflat)
           amult++;
         else
-          amult += Max(0, (*AddMults)(ak));
+          amult += std::max(0, (*AddMults)(ak));
       }
     }
 
-    if (Abs(au - Knots(k)) <= Eps)
+    if (std::abs(au - Knots(k)) <= Eps)
     {
       // identic to existing knot
       mult = Mults(k);
       if (Add)
       {
         if (mult + amult > Degree)
-          amult = Max(0, Degree - mult);
+          amult = std::max(0, Degree - mult);
         sigma += amult;
       }
       else if (amult > mult)
@@ -1936,7 +1936,7 @@ Standard_Boolean BSplCLib::PrepareInsertKnots(const Standard_Integer         Deg
           amult = Degree;
         if (k == Knots.Upper() && Periodic)
         {
-          aLastKnotMult = Max(amult, mult);
+          aLastKnotMult = std::max(amult, mult);
           sigma += 2 * (aLastKnotMult - mult);
         }
         else
@@ -2100,7 +2100,7 @@ void BSplCLib::InsertKnots(const Standard_Integer         Degree,
   {
 
     u   = AddKnots(kn);
-    Eps = Max(Tolerance, Epsilon(u));
+    Eps = std::max(Tolerance, Epsilon(u));
 
     //-----------------------------------
     // find the position in the old knots
@@ -2163,17 +2163,17 @@ void BSplCLib::InsertKnots(const Standard_Integer         Degree,
     // to insert the new knot
     //------------------------------------
 
-    Standard_Boolean sameknot = (Abs(u - NewKnots(curnk)) <= Eps);
+    Standard_Boolean sameknot = (std::abs(u - NewKnots(curnk)) <= Eps);
 
     if (sameknot)
-      length = Max(0, Degree - NewMults(curnk));
+      length = std::max(0, Degree - NewMults(curnk));
     else
       length = Degree;
 
     if (addflat)
       depth = 1;
     else
-      depth = Min(Degree, (*AddMults)(kn));
+      depth = std::min(Degree, (*AddMults)(kn));
 
     if (sameknot)
     {
@@ -2184,7 +2184,7 @@ void BSplCLib::InsertKnots(const Standard_Integer         Degree,
       }
       else
       {
-        depth = Max(0, depth - NewMults(curnk));
+        depth = std::max(0, depth - NewMults(curnk));
       }
 
       if (Periodic)
@@ -2206,7 +2206,7 @@ void BSplCLib::InsertKnots(const Standard_Integer         Degree,
     // copy the poles
 
     need = NewPoles.Lower() + (index + length + 1) * Dimension - curnp;
-    need = Min(need, Poles.Upper() - curp + 1);
+    need = std::min(need, Poles.Upper() - curp + 1);
 
     p  = curp;
     np = curnp;
@@ -3002,7 +3002,7 @@ void BSplCLib::PrepareTrimming(const Standard_Integer         Degree,
   LocateParameter(Degree, Knots, Mults, U1, Periodic, Knots.Lower(), Knots.Upper(), index1, NewU1);
   LocateParameter(Degree, Knots, Mults, U2, Periodic, Knots.Lower(), Knots.Upper(), index2, NewU2);
   index1++;
-  if (Abs(Knots(index2) - U2) <= Epsilon(U1))
+  if (std::abs(Knots(index2) - U2) <= Epsilon(U1))
     index2--;
 
   // eval NbKnots:
@@ -3083,8 +3083,8 @@ void BSplCLib::Trimming(const Standard_Integer         Degree,
     NewKnots(i) = TempKnots(Kindex + i - 1);
     NewMults(i) = TempMults(Kindex + i - 1);
   }
-  NewMults(1)                 = Min(Degree, NewMults(1)) + 1;
-  NewMults(NewMults.Length()) = Min(Degree, NewMults(NewMults.Length())) + 1;
+  NewMults(1)                 = std::min(Degree, NewMults(1)) + 1;
+  NewMults(NewMults.Length()) = std::min(Degree, NewMults(NewMults.Length())) + 1;
 }
 
 //=================================================================================================
@@ -3139,7 +3139,7 @@ Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
 
     Standard_Real divizor = Matrix(ii, LowerBandWidth + 1);
     Standard_Real Toler   = 1.0e-16;
-    if (Abs(divizor) > Toler)
+    if (std::abs(divizor) > Toler)
       Inverse = 1.0e0 / divizor;
     else
     {
@@ -3745,7 +3745,7 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
     Tbord = FlatKnots(FlatKnots.Lower() + CDegree);
   }
   Standard_Boolean periodic_flag = Standard_False;
-  Standard_Integer ipos, extrap_mode[2], derivative_request = Max(Continuity, 1);
+  Standard_Integer ipos, extrap_mode[2], derivative_request = std::max(Continuity, 1);
   extrap_mode[0] = extrap_mode[1] = CDegree;
   TColStd_Array1OfReal EvalBS(1, CDimension * (derivative_request + 1));
   Standard_Real*       Eadr = (Standard_Real*)&EvalBS(1);
@@ -3778,9 +3778,9 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
       Contraintes(1, ipos) = EvalBS(ipos);
       Contraintes(2, ipos) = C1Coefficient * EvalBS(ipos + CDimension);
       if (Continuity >= 2)
-        Contraintes(3, ipos) = EvalBS(ipos + 2 * CDimension) * Pow(C1Coefficient, 2);
+        Contraintes(3, ipos) = EvalBS(ipos + 2 * CDimension) * std::pow(C1Coefficient, 2);
       if (Continuity >= 3)
-        Contraintes(4, ipos) = EvalBS(ipos + 3 * CDimension) * Pow(C1Coefficient, 3);
+        Contraintes(4, ipos) = EvalBS(ipos + 3 * CDimension) * std::pow(C1Coefficient, 3);
       Contraintes(Continuity + 2, ipos) = ConstraintPoint(ipos);
     }
   }
@@ -3794,9 +3794,9 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
       if (Continuity >= 1)
         Contraintes(3, ipos) = C1Coefficient * EvalBS(ipos + CDimension);
       if (Continuity >= 2)
-        Contraintes(4, ipos) = EvalBS(ipos + 2 * CDimension) * Pow(C1Coefficient, 2);
+        Contraintes(4, ipos) = EvalBS(ipos + 2 * CDimension) * std::pow(C1Coefficient, 2);
       if (Continuity >= 3)
-        Contraintes(5, ipos) = EvalBS(ipos + 3 * CDimension) * Pow(C1Coefficient, 3);
+        Contraintes(5, ipos) = EvalBS(ipos + 3 * CDimension) * std::pow(C1Coefficient, 3);
     }
   }
 
@@ -4686,12 +4686,12 @@ Standard_Integer BSplCLib::Intervals(const TColStd_Array1OfReal&    theKnots,
                   anIndex2,
                   aDummyDouble);
   // the case when the beginning of the range coincides with the next knot
-  if (anIndex1 < aNbNewKnots && Abs(aNewKnots[anIndex1 + 1] - aCurFirst) < theTolerance)
+  if (anIndex1 < aNbNewKnots && std::abs(aNewKnots[anIndex1 + 1] - aCurFirst) < theTolerance)
   {
     anIndex1 += 1;
   }
   // the case when the ending of the range coincides with the current knot
-  if (aNbNewKnots && Abs(aNewKnots[anIndex2] - aCurLast) < theTolerance)
+  if (aNbNewKnots && std::abs(aNewKnots[anIndex2] - aCurLast) < theTolerance)
   {
     anIndex2 -= 1;
   }

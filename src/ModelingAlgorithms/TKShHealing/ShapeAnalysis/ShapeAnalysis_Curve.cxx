@@ -114,11 +114,11 @@ static void ProjectOnSegments(const Adaptor3d_Curve& theCurve,
   }
   if (aHasChanged)
   {
-    aProjDistance = Sqrt(aMinSqDistance);
+    aProjDistance = std::sqrt(aMinSqDistance);
   }
 
-  anEndParam  = Min(anEndParam, aProjParam + aParamStep);
-  aStartParam = Max(aStartParam, aProjParam - aParamStep);
+  anEndParam  = std::min(anEndParam, aProjParam + aParamStep);
+  aStartParam = std::max(aStartParam, aProjParam - aParamStep);
 }
 
 //=================================================================================================
@@ -186,8 +186,8 @@ Standard_Real ShapeAnalysis_Curve::Project(const Handle(Geom_Curve)& C3D,
     // in that case value 0.1 was too much and this method returned not correct parameter
     // uMin = uMin - 0.1;
     // uMax = uMax + 0.1;
-    //  modified by pdn on 01.07.98 after BUC60195 entity 1952 (Min() added)
-    Standard_Real delta = Min(GAC.Resolution(preci), (uMax - uMin) * 0.1);
+    //  modified by pdn on 01.07.98 after BUC60195 entity 1952 (std::min() added)
+    Standard_Real delta = std::min(GAC.Resolution(preci), (uMax - uMin) * 0.1);
     uMin -= delta;
     uMax += delta;
     GAC.Load(C3D, uMin, uMax);
@@ -539,8 +539,8 @@ Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real       paramPr
     // in that case value 0.1 was too much and this method returned not correct parameter
     // uMin = uMin - 0.1;
     // uMax = uMax + 0.1;
-    //  modified by pdn on 01.07.98 after BUC60195 entity 1952 (Min() added)
-    Standard_Real delta = Min(GAC.Resolution(preci), (uMax - uMin) * 0.1);
+    //  modified by pdn on 01.07.98 after BUC60195 entity 1952 (std::min() added)
+    Standard_Real delta = std::min(GAC.Resolution(preci), (uMax - uMin) * 0.1);
     uMin -= delta;
     uMax += delta;
     GAC.Load(C3D, uMin, uMax);
@@ -625,10 +625,10 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
     // DANGER precision 3d applique a une espace 1d
 
     // Last = cf au lieu de Last = cl
-    if (Abs(Last - cf) < Precision::PConfusion() /*preci*/)
+    if (std::abs(Last - cf) < Precision::PConfusion() /*preci*/)
       Last = cl;
     // First = cl au lieu de First = cf
-    else if (Abs(First - cl) < Precision::PConfusion() /*preci*/)
+    else if (std::abs(First - cl) < Precision::PConfusion() /*preci*/)
       First = cf;
 
     // on se trouve dans un cas ou l origine est traversee
@@ -661,10 +661,10 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
       // DANGER precision 3d applique a une espace 1d
 
       // Last = cf au lieu de Last = cl
-      if (Abs(Last - cf) < Precision::PConfusion() /*preci*/)
+      if (std::abs(Last - cf) < Precision::PConfusion() /*preci*/)
         Last = cl;
       // First = cl au lieu de First = cf
-      else if (Abs(First - cl) < Precision::PConfusion() /*preci*/)
+      else if (std::abs(First - cl) < Precision::PConfusion() /*preci*/)
         First = cf;
 
       // on se trouve dans un cas ou l origine est traversee
@@ -734,11 +734,11 @@ static Standard_Integer SearchForExtremum(const Handle(Geom2d_Curve)& C2d,
     gp_Vec2d D1, D2;
     C2d->D2(par, res, D1, D2);
     Standard_Real Det = (D2 * dir);
-    if (Abs(Det) < 1e-10)
+    if (std::abs(Det) < 1e-10)
       return Standard_True;
 
     par -= (D1 * dir) / Det;
-    if (Abs(par - prevpar) < Precision::PConfusion())
+    if (std::abs(par - prevpar) < Precision::PConfusion())
       return Standard_True;
 
     if (par < First)
@@ -922,7 +922,7 @@ Standard_Integer ShapeAnalysis_Curve::SelectForwardSeam(const Handle(Geom2d_Curv
 static gp_XYZ GetAnyNormal(const gp_XYZ& orig)
 {
   gp_XYZ Norm;
-  if (Abs(orig.Z()) < Precision::Confusion())
+  if (std::abs(orig.Z()) < Precision::Confusion())
     Norm.SetCoord(0, 0, 1);
   else
   {
@@ -1047,7 +1047,7 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const TColgp_Array1OfPnt& pnts,
       Normal = GetAnyNormal(N1);
       return Standard_True;
     }
-    return Abs(N1 * Normal) < Precision::Confusion();
+    return std::abs(N1 * Normal) < Precision::Confusion();
   }
 
   gp_XYZ aMaxDir;
@@ -1117,7 +1117,7 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const Handle(Geom_Curve)& curve,
       Normal = GetAnyNormal(N1);
       return Standard_True;
     }
-    return Abs(N1 * Normal) < Precision::Confusion();
+    return std::abs(N1 * Normal) < Precision::Confusion();
   }
 
   if (curve->IsKind(STANDARD_TYPE(Geom_Conic)))
@@ -1344,7 +1344,7 @@ Standard_Boolean ShapeAnalysis_Curve::IsClosed(const Handle(Geom_Curve)& theCurv
   if (theCurve->IsClosed())
     return Standard_True;
 
-  Standard_Real prec = Max(preci, Precision::Confusion());
+  Standard_Real prec = std::max(preci, Precision::Confusion());
 
   Standard_Real f, l;
   f = theCurve->FirstParameter();

@@ -68,7 +68,7 @@ public:
   //! the cone.
   //! theRaises ConstructionError
   //! * if theRadius is lower than 0.0
-  //! * Abs(theAng) < Resolution from gp or Abs(theAng) >= (PI/2) - Resolution.
+  //! * std::abs(theAng) < Resolution from gp or std::abs(theAng) >= (PI/2) - Resolution.
   gp_Cone(const gp_Ax3& theA3, const Standard_Real theAng, const Standard_Real theRadius);
 
   //! Changes the symmetry axis of the cone. Raises ConstructionError
@@ -95,9 +95,9 @@ public:
 
   //! Changes the semi-angle of the cone.
   //! Semi-angle can be negative. Its absolute value
-  //! Abs(theAng) is in range ]0,PI/2[.
-  //! Raises ConstructionError if Abs(theAng) < Resolution from gp or Abs(theAng) >= PI/2 -
-  //! Resolution
+  //! std::abs(theAng) is in range ]0,PI/2[.
+  //! Raises ConstructionError if std::abs(theAng) < Resolution from gp or std::abs(theAng) >= PI/2
+  //! - Resolution
   void SetSemiAngle(const Standard_Real theAng);
 
   //! Computes the cone's top. The Apex of the cone is on the
@@ -105,7 +105,7 @@ public:
   gp_Pnt Apex() const
   {
     gp_XYZ aCoord = pos.Direction().XYZ();
-    aCoord.Multiply(-radius / Tan(semiAngle));
+    aCoord.Multiply(-radius / std::tan(semiAngle));
     aCoord.Add(pos.Location().XYZ());
     return gp_Pnt(aCoord);
   }

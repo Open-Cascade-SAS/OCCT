@@ -93,8 +93,8 @@ inline void Intrv_Interval::FuseAtStart(const Standard_Real      Start,
 {
   if (myStart != RealFirst())
   {
-    Standard_Real a = Min(myStart - myTolStart, Start - TolStart);
-    Standard_Real b = Min(myStart + myTolStart, Start + TolStart);
+    Standard_Real a = std::min(myStart - myTolStart, Start - TolStart);
+    Standard_Real b = std::min(myStart + myTolStart, Start + TolStart);
     myStart         = (a + b) / 2;
     myTolStart      = (Standard_ShortReal)(b - a) / 2;
   }
@@ -114,8 +114,8 @@ inline void Intrv_Interval::CutAtStart(const Standard_Real Start, const Standard
 {
   if (myStart != RealFirst())
   {
-    Standard_Real a = Max(myStart - myTolStart, Start - TolStart);
-    Standard_Real b = Max(myStart + myTolStart, Start + TolStart);
+    Standard_Real a = std::max(myStart - myTolStart, Start - TolStart);
+    Standard_Real b = std::max(myStart + myTolStart, Start + TolStart);
     myStart         = (a + b) / 2;
     myTolStart      = (Standard_ShortReal)(b - a) / 2;
   }
@@ -143,8 +143,8 @@ inline void Intrv_Interval::FuseAtEnd(const Standard_Real End, const Standard_Sh
 {
   if (myEnd != RealLast())
   {
-    Standard_Real a = Max(myEnd - myTolEnd, End - TolEnd);
-    Standard_Real b = Max(myEnd + myTolEnd, End + TolEnd);
+    Standard_Real a = std::max(myEnd - myTolEnd, End - TolEnd);
+    Standard_Real b = std::max(myEnd + myTolEnd, End + TolEnd);
     myEnd           = (a + b) / 2;
     myTolEnd        = (Standard_ShortReal)(b - a) / 2;
   }
@@ -164,8 +164,8 @@ inline void Intrv_Interval::CutAtEnd(const Standard_Real End, const Standard_Sho
 {
   if (myEnd != RealLast())
   {
-    Standard_Real a = Min(myEnd - myTolEnd, End - TolEnd);
-    Standard_Real b = Min(myEnd + myTolEnd, End + TolEnd);
+    Standard_Real a = std::min(myEnd - myTolEnd, End - TolEnd);
+    Standard_Real b = std::min(myEnd + myTolEnd, End + TolEnd);
     myEnd           = (a + b) / 2;
     myTolEnd        = (Standard_ShortReal)(b - a) / 2;
   }
@@ -178,7 +178,7 @@ inline Standard_Boolean AreFused(const Standard_Real      c1,
                                  const Standard_Real      c2,
                                  const Standard_ShortReal t2)
 {
-  return t1 + t2 >= Abs(c1 - c2);
+  return t1 + t2 >= std::abs(c1 - c2);
 }
 
 //=================================================================================================

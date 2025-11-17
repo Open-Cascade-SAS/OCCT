@@ -46,9 +46,9 @@ static Standard_Real GetDeflection(const Handle(BRepAdaptor_Surface)&  aFace,
     if (!(box.IsOpenXmin() || box.IsOpenXmax() || box.IsOpenYmin() || box.IsOpenYmax()
           || box.IsOpenZmin() || box.IsOpenZmax()))
     {
-      diagonal               = Sqrt((Xmax - Xmin) * (Xmax - Xmin) + (Ymax - Ymin) * (Ymax - Ymin)
-                      + (Zmax - Zmin) * (Zmax - Zmin));
-      diagonal               = Max(diagonal, Precision::Confusion());
+      diagonal = std::sqrt((Xmax - Xmin) * (Xmax - Xmin) + (Ymax - Ymin) * (Ymax - Ymin)
+                           + (Zmax - Zmin) * (Zmax - Zmin));
+      diagonal = std::max(diagonal, Precision::Confusion());
       theRequestedDeflection = aDrawer->DeviationCoefficient() * diagonal;
     }
     else

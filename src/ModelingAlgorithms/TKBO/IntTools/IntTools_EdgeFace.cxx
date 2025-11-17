@@ -309,8 +309,8 @@ Standard_Integer IntTools_EdgeFace::MakeType(IntTools_CommonPrt& aCommonPrt)
     df1                           = aPF.Distance(aPL);
     Standard_Boolean isWholeRange = Standard_False;
 
-    if ((Abs(af1 - myRange.First()) < myC.Resolution(myCriteria))
-        && (Abs(al1 - myRange.Last()) < myC.Resolution(myCriteria)))
+    if ((std::abs(af1 - myRange.First()) < myC.Resolution(myCriteria))
+        && (std::abs(al1 - myRange.Last()) < myC.Resolution(myCriteria)))
       isWholeRange = Standard_True;
 
     if ((df1 > myCriteria * 2.) && isWholeRange)
@@ -355,7 +355,7 @@ Standard_Boolean IntTools_EdgeFace::CheckTouch(const IntTools_CommonPrt& aCP, St
   //
   Standard_Real aCR;
   aCR = myC.Resolution(myCriteria);
-  if ((Abs(aTF - myRange.First()) < aCR) && (Abs(aTL - myRange.Last()) < aCR))
+  if ((std::abs(aTF - myRange.First()) < aCR) && (std::abs(aTL - myRange.Last()) < aCR))
   {
     return theflag; // EDGE
   }
@@ -520,7 +520,7 @@ void IntTools_EdgeFace::Perform()
     Standard_Real diff2 = (aTolF / aTolE);
     if (diff1 > 100 || diff2 > 100)
     {
-      myCriteria = Max(aTolE, aTolF);
+      myCriteria = std::max(aTolE, aTolF);
     }
     else //--- 5112
       myCriteria = 1.5 * aTolE + aTolF;
@@ -552,7 +552,7 @@ void IntTools_EdgeFace::Perform()
   anIntersector.Perform();
 
   if (anIntersector.MinimalSquareDistance() < RealLast())
-    myMinDistance = Sqrt(anIntersector.MinimalSquareDistance());
+    myMinDistance = std::sqrt(anIntersector.MinimalSquareDistance());
 
   if (!anIntersector.IsDone())
   {

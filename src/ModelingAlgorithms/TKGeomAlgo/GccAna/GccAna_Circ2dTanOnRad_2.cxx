@@ -56,7 +56,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
 {
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol    = Abs(Tolerance);
+  Standard_Real Tol    = std::abs(Tolerance);
   WellDone             = Standard_False;
   NbrSol               = 0;
   Standard_Real dp1lin = OnLine.Distance(Point1);
@@ -80,7 +80,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
     Standard_Real ydir  = (OnLine.Direction()).Y();
     Standard_Real lxloc = (OnLine.Location()).X();
     Standard_Real lyloc = (OnLine.Location()).Y();
-    if (Abs(dp1lin - Radius) < Tol)
+    if (std::abs(dp1lin - Radius) < Tol)
     {
       WellDone = Standard_True;
       NbrSol   = 1;

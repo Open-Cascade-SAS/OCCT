@@ -45,7 +45,7 @@ public:
   //! @endcode
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxStrips  defines the maximum allowed strip  number in the array;
-  //!                      the number of triangle really drawn is: VertexNumber() - 2 * Min(1,
+  //!                      the number of triangle really drawn is: VertexNumber() - 2 * std::min(1,
   //!                      BoundNumber())
   //! @param theArrayFlags array flags
   Graphic3d_ArrayOfTriangleStrips(Standard_Integer     theMaxVertexs,
@@ -62,7 +62,7 @@ public:
   //! Creates an array of triangle strips (Graphic3d_TOPA_TRIANGLESTRIPS).
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxStrips  defines the maximum allowed strip  number in the array;
-  //!                      the number of triangle really drawn is: VertexNumber() - 2 * Min(1,
+  //!                      the number of triangle really drawn is: VertexNumber() - 2 * std::min(1,
   //!                      BoundNumber())
   //! @param theHasVNormals when TRUE, AddVertex(Point,Normal), AddVertex(Point,Normal,Color) or
   //! AddVertex(Point,Normal,Texel) should be used to specify vertex normal;

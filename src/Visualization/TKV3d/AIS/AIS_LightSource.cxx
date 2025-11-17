@@ -808,7 +808,7 @@ void AIS_LightSource::computeSpot(const Handle(Prs3d_Presentation)& thePrs,
   if (theMode == 0 && myToDisplayRange)
   {
     const Standard_ShortReal aHalfAngle = myLightSource->Angle() / 2.0f;
-    const Standard_Real      aRadius    = aDistance * Tan(aHalfAngle);
+    const Standard_Real      aRadius    = aDistance * std::tan(aHalfAngle);
     gp_Ax3                   aSystem(aLightPos + aLightDir.XYZ() * aDistance, -aLightDir);
     gp_Trsf                  aTrsfCone;
     aTrsfCone.SetTransformation(aSystem, gp_Ax3());
@@ -850,7 +850,7 @@ void AIS_LightSource::ComputeSelection(const Handle(SelectMgr_Selection)& theSel
     aSensPosition->SetSensitivityFactor(12);
     if (!myTransformPersistence.IsNull() && myTransformPersistence->IsTrihedronOr2d())
     {
-      aSensPosition->SetSensitivityFactor(Max(12, Standard_Integer(mySize * 0.5)));
+      aSensPosition->SetSensitivityFactor(std::max(12, Standard_Integer(mySize * 0.5)));
     }
     theSel->Add(aSensPosition);
   }

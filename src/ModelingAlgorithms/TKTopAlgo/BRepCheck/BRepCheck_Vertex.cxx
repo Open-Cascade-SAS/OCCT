@@ -136,7 +136,7 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
       TopAbs_Orientation orv = VFind.Orientation();
 
       Standard_Real Tol = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
-      Tol               = Max(Tol, BRep_Tool::Tolerance(E)); // to check
+      Tol               = std::max(Tol, BRep_Tool::Tolerance(E)); // to check
       Tol *= Tol;
 
       Handle(BRep_TEdge)&                          TE = *((Handle(BRep_TEdge)*)&E.TShape());
@@ -247,7 +247,7 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
       TopLoc_Location             L     = (Floc * TFloc).Predivided(myShape.Location());
 
       Standard_Real Tol = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
-      Tol               = Max(Tol, BRep_Tool::Tolerance(TopoDS::Face(S))); // to check
+      Tol               = std::max(Tol, BRep_Tool::Tolerance(TopoDS::Face(S))); // to check
       Tol *= Tol;
 
       BRep_ListIteratorOfListOfPointRepresentation itpr(TV->Points());

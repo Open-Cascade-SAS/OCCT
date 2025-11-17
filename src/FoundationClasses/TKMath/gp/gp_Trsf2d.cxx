@@ -211,7 +211,7 @@ gp_Mat2d gp_Trsf2d::VectorialPart() const
 
 Standard_Real gp_Trsf2d::RotationPart() const
 {
-  return ATan2(matrix.Value(2, 1), matrix.Value(1, 1));
+  return std::atan2(matrix.Value(2, 1), matrix.Value(1, 1));
 }
 
 void gp_Trsf2d::Invert()

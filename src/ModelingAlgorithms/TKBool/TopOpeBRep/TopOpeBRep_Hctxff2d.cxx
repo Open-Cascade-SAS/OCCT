@@ -157,7 +157,7 @@ void TopOpeBRep_Hctxff2d::GetTolerances(Standard_Real& Tol1, Standard_Real& Tol2
 
 Standard_Real TopOpeBRep_Hctxff2d::GetMaxTolerance() const
 {
-  Standard_Real tol = Max(myTol1, myTol2);
+  Standard_Real tol = std::max(myTol1, myTol2);
   return tol;
 }
 

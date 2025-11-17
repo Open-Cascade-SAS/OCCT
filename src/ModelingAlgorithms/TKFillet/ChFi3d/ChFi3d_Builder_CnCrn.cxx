@@ -330,13 +330,13 @@ static void CurveHermite(const TopOpeBRepDS_DataStructure& DStr,
   TColgp_Array1OfXYZ Cont(1, size);
   PLib::HermiteCoefficients(0, 1, 1, 1, MatCoefs);
   Standard_Real L1     = p01.Distance(p02);
-  Standard_Real lambda = ((Standard_Real)1) / Max(d11.Magnitude() / L1, 1.e-6);
+  Standard_Real lambda = ((Standard_Real)1) / std::max(d11.Magnitude() / L1, 1.e-6);
   Cont(1)              = p01.XYZ();
   if (sensicmoins == 1)
     Cont(2) = d11.XYZ() * (-lambda);
   else
     Cont(2) = d11.XYZ() * (lambda);
-  lambda  = ((Standard_Real)1) / Max(d12.Magnitude() / L1, 1.e-6);
+  lambda  = ((Standard_Real)1) / std::max(d12.Magnitude() / L1, 1.e-6);
   Cont(3) = p02.XYZ();
   if (sensicplus == 1)
     Cont(4) = d12.XYZ() * (lambda);
@@ -538,12 +538,12 @@ static void CalculBatten(const Handle(GeomAdaptor_Surface)& ASurf,
   else
     ang2 = -M_PI - dir1.Angle(dir4);
   if (contraint1 && contraint2)
-    anglebig = (Abs(ang1) > 1.2) || (Abs(ang2) > 1.2);
+    anglebig = (std::abs(ang1) > 1.2) || (std::abs(ang2) > 1.2);
   else if (contraint1)
-    anglebig = Abs(ang1) > 1.2;
+    anglebig = std::abs(ang1) > 1.2;
   else if (contraint2)
-    anglebig = Abs(ang2) > 1.2;
-  if (isplane && (Abs(ang1) > M_PI / 2 || Abs(ang2) > M_PI / 2))
+    anglebig = std::abs(ang2) > 1.2;
+  if (isplane && (std::abs(ang1) > M_PI / 2 || std::abs(ang2) > M_PI / 2))
     isplane = Standard_False;
   if (anglebig && !isplane)
   {
@@ -1108,8 +1108,8 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   if (bordlibre)
   {
     nedge                = (nedge - 2) / 2 + 2;
-    Standard_Real angedg = Abs(ChFi3d_AngleEdge(V1, edgelibre1, edgelibre2));
-    droit                = Abs(angedg - M_PI) < 0.01;
+    Standard_Real angedg = std::abs(ChFi3d_AngleEdge(V1, edgelibre1, edgelibre2));
+    droit                = std::abs(angedg - M_PI) < 0.01;
   }
   else
     nedge = nedge / 2;
@@ -1392,8 +1392,8 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
         if (ind != ic)
         {
           TopoDS_Edge   ecur = TopoDS::Edge(Evive.Value(ind));
-          Standard_Real ang  = Abs(ChFi3d_AngleEdge(V1, ecur, ereg));
-          if (ang < 0.01 || Abs(ang - M_PI) < 0.01)
+          Standard_Real ang  = std::abs(ChFi3d_AngleEdge(V1, ecur, ereg));
+          if (ang < 0.01 || std::abs(ang - M_PI) < 0.01)
           {
             regul.SetValue(ic, Standard_False);
             tangentregul.SetValue(ic, Standard_True);
@@ -1421,7 +1421,7 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       {
         E1         = TopoDS::Edge(Evive.Value(ic));
         E2         = TopoDS::Edge(Evive.Value(icplus));
-        deuxconges = (Abs(ChFi3d_AngleEdge(V1, E1, E2)) < 0.01);
+        deuxconges = (std::abs(ChFi3d_AngleEdge(V1, E1, E2)) < 0.01);
         trouve     = deuxconges;
       }
     }
@@ -1442,8 +1442,8 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
         if (!E1.IsSame(edgelibre1) && !E1.IsSame(edgelibre2) && !E2.IsSame(edgelibre1)
             && !E2.IsSame(edgelibre2))
         {
-          Standard_Real ang = Abs(ChFi3d_AngleEdge(V1, E1, E2));
-          deuxconges        = (ang < 0.01 || Abs(ang - M_PI) < 0.01);
+          Standard_Real ang = std::abs(ChFi3d_AngleEdge(V1, E1, E2));
+          deuxconges        = (ang < 0.01 || std::abs(ang - M_PI) < 0.01);
         }
       }
     }
@@ -1515,8 +1515,8 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
           {
             ChFi3d_cherche_vertex(Arc, cp1.Arc(), Vcom, trouve);
             if (trouve)
-              angedg = Abs(ChFi3d_AngleEdge(Vcom, Arc, cp1.Arc()));
-            if (!cp1.Arc().IsSame(Arc) && Abs(angedg - M_PI) < 0.01)
+              angedg = std::abs(ChFi3d_AngleEdge(Vcom, Arc, cp1.Arc()));
+            if (!cp1.Arc().IsSame(Arc) && std::abs(angedg - M_PI) < 0.01)
             {
               Evive.SetValue(ic, cp1.Arc());
               ChFi3d_edge_common_faces(myEFMap(cp1.Arc()), F1, F2);
@@ -1556,8 +1556,8 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
             angedg = M_PI;
             ChFi3d_cherche_vertex(Arc, cp2.Arc(), Vcom, trouve);
             if (trouve)
-              angedg = Abs(ChFi3d_AngleEdge(Vcom, Arc, cp2.Arc()));
-            if (!cp2.Arc().IsSame(Arc) && Abs(angedg - M_PI) < 0.01)
+              angedg = std::abs(ChFi3d_AngleEdge(Vcom, Arc, cp2.Arc()));
+            if (!cp2.Arc().IsSame(Arc) && std::abs(angedg - M_PI) < 0.01)
             {
               Evive.SetValue(ic, cp2.Arc());
               ChFi3d_edge_common_faces(myEFMap(cp2.Arc()), F1, F2);
@@ -1646,9 +1646,9 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       Standard_Real         angedg;
       Standard_Integer      iface;
       // if two edges are tangent the intersection is not attempted (cts60046)
-      angedg =
-        Abs(ChFi3d_AngleEdge(V1, TopoDS::Edge(Evive.Value(ic)), TopoDS::Edge(Evive.Value(icplus))));
-      if (Abs(angedg - M_PI) > 0.01)
+      angedg = std::abs(
+        ChFi3d_AngleEdge(V1, TopoDS::Edge(Evive.Value(ic)), TopoDS::Edge(Evive.Value(icplus))));
+      if (std::abs(angedg - M_PI) > 0.01)
         ok = ChFi3d_SearchFD(DStr,
                              CD.Value(ic),
                              CD.Value(icplus),
@@ -2549,7 +2549,7 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
         jfp     = 3 - jf.Value(icplus);
         cp =
           CD.Value(icplus)->SetOfSurfData()->Value(i.Value(icplus, ic))->ChangeVertex(isfirst, jfp);
-        if (cp.Point().Distance(PE) <= Max(1.e-4, tolcp))
+        if (cp.Point().Distance(PE) <= std::max(1.e-4, tolcp))
         {
           // edge was limited by the 1st CommonPoint of CD[icplus]
           indpoint.SetValue(ic, 0, indpoint.Value(icplus, 0));
@@ -2563,7 +2563,7 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
                ->SetOfSurfData()
                ->Value(i.Value(icmoins, ic))
                ->ChangeVertex(isfirst, jf.Value(icmoins));
-        if (cp.Point().Distance(PE) <= Max(1.e-4, tolcp))
+        if (cp.Point().Distance(PE) <= std::max(1.e-4, tolcp))
         {
           // edge was limited by the 2nd CommonPoint of CD[icmoins]
           if (indpoint.Value(ic, 0) == 0)
@@ -3134,7 +3134,7 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     S3d.Clear();
     PSurf.Disc2dContour(4, S2d);
     PSurf.Disc3dContour(4, 0, S3d);
-    seuil = Max(tolapp, 10 * PSurf.G0Error());
+    seuil = std::max(tolapp, 10 * PSurf.G0Error());
     GeomPlate_PlateG0Criterion critere(S2d, S3d, seuil);
     GeomPlate_MakeApprox       Mapp(gpPlate, critere, tolapp, nbcarreau, degmax);
     Handle(Geom_Surface)       Surf(Mapp.Surface());

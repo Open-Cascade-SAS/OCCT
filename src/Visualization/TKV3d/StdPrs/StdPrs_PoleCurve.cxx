@@ -93,7 +93,7 @@ Standard_Boolean StdPrs_PoleCurve::Match(const Standard_Real    X,
     for (i = 1; i <= Nb; i++)
     {
       Bz->Pole(i).Coord(x, y, z);
-      if (Abs(X - x) + Abs(Y - y) + Abs(Z - z) <= aDistance)
+      if (std::abs(X - x) + std::abs(Y - y) + std::abs(Z - z) <= aDistance)
         return Standard_True;
     }
     return Standard_False;
@@ -105,7 +105,7 @@ Standard_Boolean StdPrs_PoleCurve::Match(const Standard_Real    X,
     for (i = 1; i <= Nb; i++)
     {
       Bs->Pole(i).Coord(x, y, z);
-      if (Abs(X - x) + Abs(Y - y) + Abs(Z - z) <= aDistance)
+      if (std::abs(X - x) + std::abs(Y - y) + std::abs(Z - z) <= aDistance)
         return Standard_True;
     }
     return Standard_False;
@@ -134,7 +134,7 @@ Standard_Integer StdPrs_PoleCurve::Pick(const Standard_Real    X,
     for (i = 1; i <= Nb; i++)
     {
       Bz->Pole(i).Coord(x, y, z);
-      dist = Abs(X - x) + Abs(Y - y) + Abs(Z - z);
+      dist = std::abs(X - x) + std::abs(Y - y) + std::abs(Z - z);
       if (dist <= aDistance)
       {
         if (dist < DistMin)
@@ -152,7 +152,7 @@ Standard_Integer StdPrs_PoleCurve::Pick(const Standard_Real    X,
     for (i = 1; i <= Nb; i++)
     {
       Bs->Pole(i).Coord(x, y, z);
-      dist = Abs(X - x) + Abs(Y - y) + Abs(Z - z);
+      dist = std::abs(X - x) + std::abs(Y - y) + std::abs(Z - z);
       if (dist <= aDistance)
       {
         if (dist < DistMin)

@@ -97,7 +97,7 @@ static Standard_Boolean Perform(TColStd_Array1OfReal& theParameters,
                                 const Standard_Real   theEPSILON)
 {
   Standard_Boolean isLocalDone = Standard_True;
-  Standard_Real    aUU1 = Min(theU1, theU2), aUU2 = Max(theU1, theU2);
+  Standard_Real    aUU1 = std::min(theU1, theU2), aUU2 = std::max(theU1, theU2);
   theNbPoints = 0;
 
   // this initialization avoids the computation of the Length of the curve
@@ -125,7 +125,7 @@ static Standard_Boolean Perform(TColStd_Array1OfReal& theParameters,
     {
       anIndex += 1;
       aUi = anAbscissaFinder.Parameter();
-      if (Abs(aUi - aUU2) <= theEPSILON)
+      if (std::abs(aUi - aUU2) <= theEPSILON)
       {
         theParameters.SetValue(anIndex, aUU2);
         isNotDone = Standard_False;
@@ -168,8 +168,8 @@ static Standard_Boolean PerformLengthParametrized(TColStd_Array1OfReal& theParam
                                                   Standard_Integer&     theNbPoints,
                                                   const Standard_Real   theEPSILON)
 {
-  Standard_Real aUU1 = Min(theU1, theU2);
-  Standard_Real aUU2 = Max(theU1, theU2);
+  Standard_Real aUU1 = std::min(theU1, theU2);
+  Standard_Real aUU2 = std::max(theU1, theU2);
 
   // Ratio is defined as dl = Ratio * du
   // for a circle of gp Ratio is equal to the radius of the circle.
@@ -177,8 +177,8 @@ static Standard_Boolean PerformLengthParametrized(TColStd_Array1OfReal& theParam
   const Standard_Real aRatio = GetParameterLengthRatio(theC);
   if (theAbscissa < 0.0e0)
   {
-    aUU2 = Min(theU1, theU2);
-    aUU1 = Max(theU1, theU2);
+    aUU2 = std::min(theU1, theU2);
+    aUU1 = std::max(theU1, theU2);
   }
 
   const Standard_Real aDelta  = (theAbscissa / theTotalLength) * (aUU2 - aUU1);
@@ -189,7 +189,7 @@ static Standard_Boolean PerformLengthParametrized(TColStd_Array1OfReal& theParam
   {
     anIndex += 1;
     const Standard_Real aUi = theParameters.Value(anIndex - 1) + aDelta;
-    if (Abs(aUi - aUU2) <= theEPSILON)
+    if (std::abs(aUi - aUU2) <= theEPSILON)
     {
       theParameters.SetValue(anIndex, aUU2);
       isNotDone = Standard_False;
@@ -201,7 +201,7 @@ static Standard_Boolean PerformLengthParametrized(TColStd_Array1OfReal& theParam
     else
     {
       isNotDone = Standard_False;
-      if (Abs(theParameters.Value(anIndex - 1) - aUU2) * aRatio / theAbscissa < 0.1)
+      if (std::abs(theParameters.Value(anIndex - 1) - aUU2) * aRatio / theAbscissa < 0.1)
       {
         theParameters.SetValue(anIndex - 1, aUU2);
         anIndex -= 1;
@@ -385,7 +385,7 @@ void GCPnts_UniformAbscissa::initialize(const TheCurve&     theC,
   myNbPoints = 0;
   myDone     = Standard_False;
 
-  const Standard_Real anEPSILON = theC.Resolution(Max(theTol, Precision::Confusion()));
+  const Standard_Real anEPSILON = theC.Resolution(std::max(theTol, Precision::Confusion()));
   const Standard_Real aL        = GCPnts_AbscissaPoint::Length(theC, theU1, theU2, anEPSILON);
   if (aL <= Precision::Confusion())
   {
@@ -395,7 +395,7 @@ void GCPnts_UniformAbscissa::initialize(const TheCurve&     theC,
   // compute the total Length here so that we can guess
   // the number of points instead of letting the constructor
   // of CPnts_AbscissaPoint do that and lose the information
-  const Standard_Real aSizeR = aL / Abs(theAbscissa) + 5;
+  const Standard_Real aSizeR = aL / std::abs(theAbscissa) + 5;
   if (aSizeR >= IntegerLast()) // modified by Igor Motchalov 23/04/2001
   {
     return;
@@ -499,7 +499,7 @@ void GCPnts_UniformAbscissa::initialize(const TheCurve&        theC,
   myNbPoints = 0;
   myDone     = Standard_False;
 
-  const Standard_Real anEPSILON = theC.Resolution(Max(theTol, Precision::Confusion()));
+  const Standard_Real anEPSILON = theC.Resolution(std::max(theTol, Precision::Confusion()));
   // although very similar to Initialize with Abscissa this avoid
   // the computation of the total length of the curve twice
   const Standard_Real aL = GCPnts_AbscissaPoint::Length(theC, theU1, theU2, anEPSILON);

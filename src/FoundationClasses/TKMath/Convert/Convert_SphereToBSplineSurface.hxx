@@ -28,8 +28,8 @@ class gp_Sphere;
 //! This algorithm converts a bounded Sphere into a rational
 //! B-spline surface. The sphere is a Sphere from package gp.
 //! The parametrization of the sphere is:
-//! P (U, V) = Loc + Radius * Sin(V) * Zdir +
-//! Radius * Cos(V) * (Cos(U)*Xdir + Sin(U)*Ydir)
+//! P (U, V) = Loc + Radius * std::sin(V) * Zdir +
+//! Radius * std::cos(V) * (std::cos(U)*Xdir + std::sin(U)*Ydir)
 //! where Loc is the center of the sphere Xdir, Ydir and Zdir are the
 //! normalized directions of the local cartesian coordinate system of
 //! the sphere. The parametrization range is U [0, 2PI] and

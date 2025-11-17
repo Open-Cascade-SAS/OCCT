@@ -57,7 +57,7 @@ void GccAna_CircPnt2dBisec::DefineSolutions()
 {
   Standard_Real dist = circle.Radius() - point.Distance(circle.Location());
 
-  if (Abs(dist) < myTolerance)
+  if (std::abs(dist) < myTolerance)
   {
     theposition = 0;
     NbrSol      = 1;
@@ -122,7 +122,7 @@ Handle(GccInt_Bisec) GccAna_CircPnt2dBisec::ThisSolution(const Standard_Integer 
 
     if (theposition == -1)
     {
-      gp_Elips2d biscirpnt(majax, R1 / 2., Sqrt(R1 * R1 - dist * dist) / 2.);
+      gp_Elips2d biscirpnt(majax, R1 / 2., std::sqrt(R1 * R1 - dist * dist) / 2.);
       bissol = new GccInt_BElips(biscirpnt);
       //         ===========================================================
     }

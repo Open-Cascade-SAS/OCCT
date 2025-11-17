@@ -119,13 +119,13 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   if (alpha < 0)
     alpha += 2. * M_PI;
   const Standard_Integer nb    = (Standard_Integer)(50. * alpha / M_PI);
-  const Standard_Integer nbp   = Max(4, nb);
+  const Standard_Integer nbp   = std::max(4, nb);
   const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims;
 
   // trait joignant aPntOffset
-  if (Abs((aPntOffset.Distance(aCenter) - rad)) >= Precision::Confusion())
+  if (std::abs((aPntOffset.Distance(aCenter) - rad)) >= Precision::Confusion())
   {
     aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(2);
@@ -169,7 +169,7 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   if (alpha < 0)
     alpha += 2. * M_PI;
   const Standard_Integer nb    = (Standard_Integer)(50. * alpha / M_PI);
-  const Standard_Integer nbp   = Max(4, nb);
+  const Standard_Integer nbp   = std::max(4, nb);
   const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims;
@@ -216,7 +216,7 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   if (alpha < 0)
     alpha += 2. * M_PI;
   const Standard_Integer nb    = (Standard_Integer)(50.0 * alpha / M_PI);
-  const Standard_Integer nbp   = Max(4, nb);
+  const Standard_Integer nbp   = std::max(4, nb);
   const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims;

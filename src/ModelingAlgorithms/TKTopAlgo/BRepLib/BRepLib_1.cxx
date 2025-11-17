@@ -132,7 +132,7 @@ static Standard_Boolean findNearestValidPoint(const Adaptor3d_Curve& theCurve,
 
   // 3. Precise solution with binary search
 
-  Standard_Real aDelta = Abs(anUOut - anUIn);
+  Standard_Real aDelta = std::abs(anUOut - anUIn);
   while (aDelta > theEps)
   {
     Standard_Real aMidU = (anUIn + anUOut) * 0.5;
@@ -142,7 +142,7 @@ static Standard_Boolean findNearestValidPoint(const Adaptor3d_Curve& theCurve,
       anUOut = aMidU;
     else
       anUIn = aMidU;
-    aDelta = Abs(anUOut - anUIn);
+    aDelta = std::abs(anUOut - anUIn);
   }
   thePar = (anUIn + anUOut) * 0.5;
   return Standard_True;
@@ -169,12 +169,12 @@ Standard_Boolean BRepLib::FindValidRange(const Adaptor3d_Curve& theCurve,
 
   Standard_Real aMaxPar = 0.0;
   if (!isInfParV1)
-    aMaxPar = Abs(theParV1);
+    aMaxPar = std::abs(theParV1);
   if (!isInfParV2)
-    aMaxPar = Max(aMaxPar, Abs(theParV2));
+    aMaxPar = std::max(aMaxPar, std::abs(theParV2));
 
-  Standard_Real anEps =
-    Max(Max(theCurve.Resolution(theTolE) * 0.1, Epsilon(aMaxPar)), Precision::PConfusion());
+  Standard_Real anEps = std::max(std::max(theCurve.Resolution(theTolE) * 0.1, Epsilon(aMaxPar)),
+                                 Precision::PConfusion());
 
   if (isInfParV1)
     theFirst = theParV1;

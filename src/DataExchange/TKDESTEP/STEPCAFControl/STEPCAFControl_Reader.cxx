@@ -4193,7 +4193,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)&    theEnt,
         {
           aVal = aVal * anUnitCtxLowerBound.LengthFactor();
         }
-        aDim2 = Abs(aVal);
+        aDim2 = std::abs(aVal);
       }
       else
       {

@@ -140,7 +140,7 @@ Standard_EXPORT Standard_Boolean
       it.Next();
       continue;
     }
-    Standard_Boolean samepar = (Abs(par - ipar) < tolp);
+    Standard_Boolean samepar = (std::abs(par - ipar) < tolp);
     if (!samepar)
     {
       it.Next();
@@ -719,7 +719,7 @@ static void FUN_processCPI(TopOpeBRep_FacesFiller&                  FF,
   if (!DSCIL.IsEmpty())
   {
     Standard_Real par = FDS_Parameter(DSCIL.Last()); // parameter on curve
-    Standard_Real dd  = Abs(par - parline);          // en fait, ce sont des entiers
+    Standard_Real dd  = std::abs(par - parline);     // en fait, ce sont des entiers
     if (dd == 0)
       return;
   }
@@ -757,7 +757,7 @@ static Standard_Boolean FUN_onedge(const TopOpeBRepDS_Point& PDS, const TopoDS_E
   gp_Pnt        P    = PDS.Point();
   Standard_Real tolP = PDS.Tolerance();
   Standard_Real tolE = BRep_Tool::Tolerance(E);
-  Standard_Real tol  = Max(tolP, tolE);
+  Standard_Real tol  = std::max(tolP, tolE);
   TopoDS_Vertex vf, vl;
   TopExp::Vertices(E, vf, vl);
   gp_Pnt           pf    = BRep_Tool::Pnt(vf);
@@ -875,7 +875,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR(const TopOpeBRep_VPointInter&  VP,
   { // xpu171198, FRA61896 (f7,f13-> null DSC1)
     Standard_Real parline = VP.ParameterOnLine();
     Standard_Real par     = FDS_Parameter(myDSCIL.Last()); // parameter on curve
-    Standard_Real dd      = Abs(par - parline);            // en fait, ce sont des entiers
+    Standard_Real dd      = std::abs(par - parline);       // en fait, ce sont des entiers
     if (dd == 0)
       setlastonwl = Standard_False;
   }
@@ -1173,7 +1173,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR(const TopOpeBRep_VPointInter&  VP,
     Handle(Geom_Surface)    su   = BRep_Tool::Surface(OOFace);
     Standard_Boolean        apex = FUN_tool_onapex(OOuv, su);
     TopOpeBRepDS_Transition T;
-    if (!apex && ok && (Abs(dot) > tolang))
+    if (!apex && ok && (std::abs(dot) > tolang))
     {
       TopAbs_Orientation ori = (dot < 0.) ? TopAbs_FORWARD : TopAbs_REVERSED;
       T.Set(ori);

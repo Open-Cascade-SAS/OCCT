@@ -28,8 +28,10 @@ Standard_Boolean gp_Quaternion::IsEqual(const gp_Quaternion& theOther) const
 {
   if (this == &theOther)
     return Standard_True;
-  return Abs(x - theOther.x) <= gp::Resolution() && Abs(y - theOther.y) <= gp::Resolution()
-         && Abs(z - theOther.z) <= gp::Resolution() && Abs(w - theOther.w) <= gp::Resolution();
+  return std::abs(x - theOther.x) <= gp::Resolution()
+         && std::abs(y - theOther.y) <= gp::Resolution()
+         && std::abs(z - theOther.z) <= gp::Resolution()
+         && std::abs(w - theOther.w) <= gp::Resolution();
 }
 
 //=================================================================================================
@@ -74,26 +76,26 @@ void gp_Quaternion::SetVectorAndAngle(const gp_Vec& theAxis, const Standard_Real
 {
   gp_Vec        anAxis      = theAxis.Normalized();
   Standard_Real anAngleHalf = 0.5 * theAngle;
-  Standard_Real sin_a       = Sin(anAngleHalf);
-  Set(anAxis.X() * sin_a, anAxis.Y() * sin_a, anAxis.Z() * sin_a, Cos(anAngleHalf));
+  Standard_Real sin_a       = std::sin(anAngleHalf);
+  Set(anAxis.X() * sin_a, anAxis.Y() * sin_a, anAxis.Z() * sin_a, std::cos(anAngleHalf));
 }
 
 //=================================================================================================
 
 void gp_Quaternion::GetVectorAndAngle(gp_Vec& theAxis, Standard_Real& theAngle) const
 {
-  Standard_Real vl = Sqrt(x * x + y * y + z * z);
+  Standard_Real vl = std::sqrt(x * x + y * y + z * z);
   if (vl > gp::Resolution())
   {
     Standard_Real ivl = 1.0 / vl;
     theAxis.SetCoord(x * ivl, y * ivl, z * ivl);
     if (w < 0.0)
     {
-      theAngle = 2.0 * ATan2(-vl, -w); // [-PI,  0]
+      theAngle = 2.0 * std::atan2(-vl, -w); // [-PI,  0]
     }
     else
     {
-      theAngle = 2.0 * ATan2(vl, w); // [  0, PI]
+      theAngle = 2.0 * std::atan2(vl, w); // [  0, PI]
     }
   }
   else
@@ -114,7 +116,7 @@ void gp_Quaternion::SetMatrix(const gp_Mat& theMat)
         theMat(1, 3) - theMat(3, 1),
         theMat(2, 1) - theMat(1, 2),
         tr + 1.0);
-    Scale(0.5 / Sqrt(w)); // "w" contain the "norm * 4"
+    Scale(0.5 / std::sqrt(w)); // "w" contain the "norm * 4"
   }
   else if ((theMat(1, 1) > theMat(2, 2)) && (theMat(1, 1) > theMat(3, 3)))
   { // Some of vector components is bigger
@@ -122,7 +124,7 @@ void gp_Quaternion::SetMatrix(const gp_Mat& theMat)
         theMat(1, 2) + theMat(2, 1),
         theMat(1, 3) + theMat(3, 1),
         theMat(3, 2) - theMat(2, 3));
-    Scale(0.5 / Sqrt(x));
+    Scale(0.5 / std::sqrt(x));
   }
   else if (theMat(2, 2) > theMat(3, 3))
   {
@@ -130,7 +132,7 @@ void gp_Quaternion::SetMatrix(const gp_Mat& theMat)
         1.0 + theMat(2, 2) - theMat(1, 1) - theMat(3, 3),
         theMat(2, 3) + theMat(3, 2),
         theMat(1, 3) - theMat(3, 1));
-    Scale(0.5 / Sqrt(y));
+    Scale(0.5 / std::sqrt(y));
   }
   else
   {
@@ -138,7 +140,7 @@ void gp_Quaternion::SetMatrix(const gp_Mat& theMat)
         theMat(2, 3) + theMat(3, 2),
         1.0 + theMat(3, 3) - theMat(1, 1) - theMat(2, 2),
         theMat(2, 1) - theMat(1, 2));
-    Scale(0.5 / Sqrt(z));
+    Scale(0.5 / std::sqrt(z));
   }
 }
 
@@ -313,12 +315,12 @@ void gp_Quaternion::SetEulerAngles(const gp_EulerSequence theOrder,
   Standard_Real ti = 0.5 * a;
   Standard_Real tj = 0.5 * b;
   Standard_Real th = 0.5 * c;
-  Standard_Real ci = Cos(ti);
-  Standard_Real cj = Cos(tj);
-  Standard_Real ch = Cos(th);
-  Standard_Real si = Sin(ti);
-  Standard_Real sj = Sin(tj);
-  Standard_Real sh = Sin(th);
+  Standard_Real ci = std::cos(ti);
+  Standard_Real cj = std::cos(tj);
+  Standard_Real ch = std::cos(th);
+  Standard_Real si = std::sin(ti);
+  Standard_Real sj = std::sin(tj);
+  Standard_Real sh = std::sin(th);
   Standard_Real cc = ci * ch;
   Standard_Real cs = ci * sh;
   Standard_Real sc = si * ch;
@@ -363,30 +365,30 @@ void gp_Quaternion::GetEulerAngles(const gp_EulerSequence theOrder,
     double sy = sqrt(M(o.i, o.j) * M(o.i, o.j) + M(o.i, o.k) * M(o.i, o.k));
     if (sy > 16 * DBL_EPSILON)
     {
-      theAlpha = ATan2(M(o.i, o.j), M(o.i, o.k));
-      theGamma = ATan2(M(o.j, o.i), -M(o.k, o.i));
+      theAlpha = std::atan2(M(o.i, o.j), M(o.i, o.k));
+      theGamma = std::atan2(M(o.j, o.i), -M(o.k, o.i));
     }
     else
     {
-      theAlpha = ATan2(-M(o.j, o.k), M(o.j, o.j));
+      theAlpha = std::atan2(-M(o.j, o.k), M(o.j, o.j));
       theGamma = 0.;
     }
-    theBeta = ATan2(sy, M(o.i, o.i));
+    theBeta = std::atan2(sy, M(o.i, o.i));
   }
   else
   {
     double cy = sqrt(M(o.i, o.i) * M(o.i, o.i) + M(o.j, o.i) * M(o.j, o.i));
     if (cy > 16 * DBL_EPSILON)
     {
-      theAlpha = ATan2(M(o.k, o.j), M(o.k, o.k));
-      theGamma = ATan2(M(o.j, o.i), M(o.i, o.i));
+      theAlpha = std::atan2(M(o.k, o.j), M(o.k, o.k));
+      theGamma = std::atan2(M(o.j, o.i), M(o.i, o.i));
     }
     else
     {
-      theAlpha = ATan2(-M(o.j, o.k), M(o.j, o.j));
+      theAlpha = std::atan2(-M(o.j, o.k), M(o.j, o.j));
       theGamma = 0.;
     }
-    theBeta = ATan2(-M(o.k, o.i), cy);
+    theBeta = std::atan2(-M(o.k, o.i), cy);
   }
   if (o.isOdd)
   {
@@ -406,7 +408,7 @@ void gp_Quaternion::GetEulerAngles(const gp_EulerSequence theOrder,
 
 void gp_Quaternion::StabilizeLength()
 {
-  Standard_Real cs = Abs(x) + Abs(y) + Abs(z) + Abs(w);
+  Standard_Real cs = std::abs(x) + std::abs(y) + std::abs(z) + std::abs(w);
   if (cs > 0.0)
   {
     x /= cs;
@@ -439,11 +441,11 @@ Standard_Real gp_Quaternion::GetRotationAngle() const
 {
   if (w < 0.0)
   {
-    return 2.0 * ATan2(-Sqrt(x * x + y * y + z * z), -w);
+    return 2.0 * std::atan2(-std::sqrt(x * x + y * y + z * z), -w);
   }
   else
   {
-    return 2.0 * ATan2(Sqrt(x * x + y * y + z * z), w);
+    return 2.0 * std::atan2(std::sqrt(x * x + y * y + z * z), w);
   }
 }
 

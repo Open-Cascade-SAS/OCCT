@@ -159,7 +159,7 @@ void PrsDim_EllipseRadiusDimension::ComputeCylFaceGeometry(const PrsDim_KindOfSu
 
     if (surf1.GetType() == GeomAbs_OffsetSurface)
     {
-      if (Offset < 0.0 && Abs(Offset) > myEllipse.MinorRadius())
+      if (Offset < 0.0 && std::abs(Offset) > myEllipse.MinorRadius())
       {
         throw Standard_ConstructionError(
           "PrsDim:: Absolute value of negative offset is larger than MinorRadius");

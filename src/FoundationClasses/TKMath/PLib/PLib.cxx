@@ -1211,7 +1211,7 @@ Standard_Integer PLib::EvalLagrange(const Standard_Real    Parameter,
         divided_differences_array[Index + kk] -= divided_differences_array[Index1 + kk];
       }
       difference = ParameterArray[jj] - ParameterArray[jj - Degree - 1 + ii];
-      if (Abs(difference) < RealSmall())
+      if (std::abs(difference) < RealSmall())
       {
         ReturnCode = 1;
         goto FINISH;
@@ -2128,7 +2128,7 @@ void PLib::JacobiParameters(const GeomAbs_Shape    ConstraintOrder,
   //-->  NbGaussPoints est le nombre de points de discretisation de la fonction,
   //     il ne peut prendre que les valeurs 8,10,15,20,25,30,40,50 ou 61.
   //     NbGaussPoints doit etre superieur strictement a WorkDegree.
-  NbGaussPoints = Max(IPMIN, IWANT);
+  NbGaussPoints = std::max(IPMIN, IWANT);
   //  NbGaussPoints +=2;
 }
 
@@ -2196,7 +2196,7 @@ void PLib::EvalLength(const Standard_Integer Degree,
 
   Standard_Real* PolynomialArray = &PolynomialCoeff;
 
-  Standard_Integer NbGaussPoints = 4 * Min((Degree / 4) + 1, 10);
+  Standard_Integer NbGaussPoints = 4 * std::min((Degree / 4) + 1, 10);
 
   math_Vector GaussPoints(1, NbGaussPoints);
   math::GaussPoints(NbGaussPoints, GaussPoints);
@@ -2239,7 +2239,7 @@ void PLib::EvalLength(const Standard_Integer Degree,
 
     //****** Integration **
 
-    Sum += GaussWeights(j) * C2 * (Sqrt(Der1) + Sqrt(Der2));
+    Sum += GaussWeights(j) * C2 * (std::sqrt(Der1) + std::sqrt(Der2));
 
     //****** Fin de boucle dur les intervalles de GAUSS **
   }
@@ -2277,6 +2277,6 @@ void PLib::EvalLength(const Standard_Integer Degree,
       Length += LenI;
     }
     NbIter++;
-    Error = Abs(OldLen - Length);
+    Error = std::abs(OldLen - Length);
   } while (Error > Tol && NbIter <= MaxNbIter);
 }

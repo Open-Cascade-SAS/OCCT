@@ -252,7 +252,7 @@ void gp_Mat::Invert()
   // Compute determinant using first row expansion (reuse computed cofactors)
   const Standard_Real aDet = a00 * adj00 + a01 * adj10 + a02 * adj20;
 
-  Standard_ConstructionError_Raise_if(Abs(aDet) <= gp::Resolution(),
+  Standard_ConstructionError_Raise_if(std::abs(aDet) <= gp::Resolution(),
                                       "gp_Mat::Invert() - matrix has zero determinant");
 
   // Compute inverse: inv(A) = adj(A) / det(A)

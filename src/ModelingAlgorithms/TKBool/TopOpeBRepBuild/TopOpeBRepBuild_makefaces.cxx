@@ -485,7 +485,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape&             FF,
 		      //C2D = FC2D_CurveOnSurface(newEdge,newFace,f2,l2,tolpc);                                         // jyl980402+
 		      C2D = FC2D_CurveOnSurface(newEdge,newFace,f2,l2,tolpc, Standard_True);                            // xpu051198 (CTS21701)
 		      if(C2D.IsNull()) throw Standard_ProgramError("TopOpeBRepBuild_Builder::GFABUMakeFaces null PC"); // jyl980402+
-		      Standard_Real tol = Max(tolE,tolpc);                                                              // jyl980402+
+		      Standard_Real tol = std::max(tolE,tolpc);                                                              // jyl980402+
 		      BRep_Builder BB_PC; BB_PC.UpdateEdge(newEdge,C2D,newFace,tol);                                    // jyl980402+
 		    }                                                                                                   // jyl980402+
 		} // FABU.MoreEdge()

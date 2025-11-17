@@ -98,7 +98,7 @@ void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
       dxold = dx;
       dx    = 0.5 * (xh - xl);
       x     = xl + dx;
-      if (Abs(dx) < XTol)
+      if (std::abs(dx) < XTol)
       {
         TheStatus = math_OK;
         Done      = Standard_True;

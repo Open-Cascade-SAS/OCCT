@@ -279,7 +279,7 @@ BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const S
   }
 #endif
 
-  myAngle = Abs(Angle);
+  myAngle = std::abs(Angle);
   myDir   = Dir;
   myTop   = S;
   myDone  = Standard_False;
@@ -348,7 +348,7 @@ void BRepFill_Draft::Perform(const Handle(Geom_Surface)& Surface,
 
   // calculate the maximum length of the rule.
   L = Longueur(WBox, SBox, myDir, Pt);
-  L /= Abs(Cos(myAngle));
+  L /= std::abs(std::cos(myAngle));
 
   // Construction
   Init(Surface, L, WBox);
@@ -398,7 +398,7 @@ void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape, const Standard_Boole
 
   // calculate the maximum length of the rule.
   L = Longueur(WBox, SBox, myDir, Pt);
-  L /= Abs(Cos(myAngle));
+  L /= std::abs(std::cos(myAngle));
 
   // surface of stop
   gp_Trsf Inv;

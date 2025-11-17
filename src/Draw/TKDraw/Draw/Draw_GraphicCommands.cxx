@@ -230,8 +230,8 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
 
   if ((X1 == X2) || (Y1 == Y2))
     return 0;
-  zx = (Standard_Real)Abs(X2 - X1) / (Standard_Real)W;
-  zy = (Standard_Real)Abs(Y2 - Y1) / (Standard_Real)H;
+  zx = (Standard_Real)std::abs(X2 - X1) / (Standard_Real)W;
+  zy = (Standard_Real)std::abs(Y2 - Y1) / (Standard_Real)H;
   if (zy > zx)
     zx = zy;
   zx = 1 / zx;
@@ -711,7 +711,7 @@ static Standard_Integer hardcopy(Draw_Interpretor&, Standard_Integer n, const ch
   Standard_Real rap = 28.4;
   Standard_Real cad = 3;
   Standard_Real dx  = 210;
-  Standard_Real dy  = 210 * Sqrt(2.);
+  Standard_Real dy  = 210 * std::sqrt(2.);
 
   Standard_Integer iview = 1;
   const char*      file  = "a4.ps";
@@ -791,7 +791,7 @@ static Standard_Integer hardcopy(Draw_Interpretor&, Standard_Integer n, const ch
     dout.GetFrame(iview, vxmin, vymin, vxmax, vymax);
     Standard_Real kx = (Standard_Real)(pxmax - pxmin) / (vxmax - vxmin);
     Standard_Real ky = (Standard_Real)(pymax - pymin) / (vymax - vymin);
-    Standard_Real k  = Min(Abs(kx), Abs(ky));
+    Standard_Real k  = std::min(std::abs(kx), std::abs(ky));
     kx               = (kx > 0) ? k : -k;
     ky               = (ky > 0) ? k : -k;
     pxmax            = (Standard_Integer)(pxmin + kx * (vxmax - vxmin));
@@ -920,19 +920,19 @@ static Standard_Integer grid(Draw_Interpretor&, Standard_Integer NbArg, const ch
       StepZ = DefaultGridStep;
       break;
     case 2:
-      StepX = Abs(Draw::Atof(Arg[1]));
-      StepY = Abs(Draw::Atof(Arg[1]));
-      StepZ = Abs(Draw::Atof(Arg[1]));
+      StepX = std::abs(Draw::Atof(Arg[1]));
+      StepY = std::abs(Draw::Atof(Arg[1]));
+      StepZ = std::abs(Draw::Atof(Arg[1]));
       break;
     case 3:
-      StepX = Abs(Draw::Atof(Arg[1]));
-      StepY = Abs(Draw::Atof(Arg[2]));
-      StepZ = Abs(Draw::Atof(Arg[2]));
+      StepX = std::abs(Draw::Atof(Arg[1]));
+      StepY = std::abs(Draw::Atof(Arg[2]));
+      StepZ = std::abs(Draw::Atof(Arg[2]));
       break;
     case 4:
-      StepX = Abs(Draw::Atof(Arg[1]));
-      StepY = Abs(Draw::Atof(Arg[2]));
-      StepZ = Abs(Draw::Atof(Arg[3]));
+      StepX = std::abs(Draw::Atof(Arg[1]));
+      StepY = std::abs(Draw::Atof(Arg[2]));
+      StepZ = std::abs(Draw::Atof(Arg[3]));
       break;
     default:
       return 1;

@@ -88,7 +88,7 @@ Standard_Boolean TopOpeBRepTool_mkTondgE::Initialize(const TopoDS_Edge& dgE,
     return Standard_False;
 
   Standard_Real dot = myngf.Dot(myngfi);
-  isT2d             = (Abs(1 - Abs(dot)) < FUN_tola());
+  isT2d             = (std::abs(1 - std::abs(dot)) < FUN_tola());
   return Standard_True;
 }
 
@@ -157,9 +157,9 @@ Standard_Integer TopOpeBRepTool_mkTondgE::GetAllRest(TopTools_ListOfShape& lEi)
 
     Standard_Boolean ok = Standard_False;
     if (isou)
-      ok = Abs(o2d.X() - myuvi.X()) < tolu;
+      ok = std::abs(o2d.X() - myuvi.X()) < tolu;
     if (isov)
-      ok = Abs(o2d.Y() - myuvi.Y()) < tolv;
+      ok = std::abs(o2d.Y() - myuvi.Y()) < tolv;
     if (!ok)
       continue;
 
@@ -210,7 +210,7 @@ static Standard_Boolean FUN_MkTonE(const gp_Vec& faxis,
   // at par2 : tr(dge, ei/fi) = forward
   Standard_Real    tola  = FUN_tola();
   Standard_Real    dot1  = dirINcle.Dot(xxi);
-  Standard_Boolean isONi = (Abs(dot1) < tola);
+  Standard_Boolean isONi = (std::abs(dot1) < tola);
 
   // par1 = ang  -> inout
   // par2 = Cang -> outin
@@ -320,7 +320,7 @@ Standard_Boolean TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei,
   Standard_Real pfi, pli;
   FUN_tool_bounds(ei, pfi, pli);
   Standard_Real    tolpi = TopOpeBRepTool_TOOL::TolP(ei, myFi);
-  Standard_Boolean onfi = (Abs(pari - pfi) < tolpi), onli = (Abs(pari - pli) < tolpi);
+  Standard_Boolean onfi = (std::abs(pari - pfi) < tolpi), onli = (std::abs(pari - pli) < tolpi);
   gp_Vec           tgin1di;
   Standard_Boolean ok = TopOpeBRepTool_TOOL::TggeomE(pari, ei, tgin1di);
   if (!ok)
@@ -411,7 +411,7 @@ Standard_Boolean TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei,
     mkT               = MKI12;              // without restrictions.
     gp_Vec        tgi = xxi.Crossed(faxis); // tgi /(tgi,xxi,faxis) is direct :
     Standard_Real dot = tgi.Dot(xxri);
-    if (Abs(dot) < FUN_tola())
+    if (std::abs(dot) < FUN_tola())
     {
       if ((!onfi && !onli) || closedi)
       {
@@ -432,8 +432,8 @@ Standard_Boolean TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei,
         // xxri :
         Standard_Real ddot = tgin1di.Dot(faxis);
     // clang-format off
-        Standard_Boolean tgaxis = Abs(1-(Abs(ddot))) < FUN_tola(); //=true : edge is tangent to
-    sphere's axis
+        Standard_Boolean tgaxis = std::abs(1-(std::abs(ddot))) < FUN_tola(); //=true : edge is
+    tangent to sphere's axis
     // clang-format on
         if (tgaxis) {
           ok = TopOpeBRepTool_TOOL::XX(myuvi,myFi, pari,ei, xxri);

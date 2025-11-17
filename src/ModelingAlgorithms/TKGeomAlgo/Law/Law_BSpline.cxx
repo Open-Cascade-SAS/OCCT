@@ -95,7 +95,7 @@ static void CheckCurveData(const TColStd_Array1OfReal&    CPoles,
 
   for (Standard_Integer I = CKnots.Lower(); I < CKnots.Upper(); I++)
   {
-    if (CKnots(I + 1) - CKnots(I) <= Epsilon(Abs(CKnots(I))))
+    if (CKnots(I + 1) - CKnots(I) <= Epsilon(std::abs(CKnots(I))))
     {
       throw Standard_ConstructionError();
     }
@@ -158,7 +158,7 @@ static void KnotAnalysis(const Standard_Integer         Degree,
     for (Standard_Integer i = FirstKM + 1; i < LastKM; i++)
     {
       Multi       = CMults(i);
-      MaxKnotMult = Max(MaxKnotMult, Multi);
+      MaxKnotMult = std::max(MaxKnotMult, Multi);
     }
   }
 }
@@ -174,7 +174,7 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& W)
   Standard_Boolean rat = Standard_False;
   for (i = 1; i < n; i++)
   {
-    rat = Abs(W(i) - W(i + 1)) > gp::Resolution();
+    rat = std::abs(W(i) - W(i + 1)) > gp::Resolution();
     if (rat)
       break;
   }
@@ -675,7 +675,7 @@ void Law_BSpline::InsertPoleAfter
   // insert the weight 
   
   Handle(TColStd_HArray1OfReal) nweights;
-  Standard_Boolean rat = IsRational() || Abs(Weight-1.) > gp::Resolution();
+  Standard_Boolean rat = IsRational() || std::abs(Weight-1.) > gp::Resolution();
   
   if (rat) {
     nweights = new TColStd_HArray1OfReal(1,nbpoles+1);
@@ -812,7 +812,7 @@ Standard_Real Law_BSpline::ReversedParameter(const Standard_Real U) const
 void Law_BSpline::Segment(const Standard_Real U1, const Standard_Real U2)
 {
   Standard_DomainError_Raise_if(U2 < U1, "Law_BSpline::Segment");
-  Standard_Real Eps   = Epsilon(Max(Abs(U1), Abs(U2)));
+  Standard_Real Eps   = Epsilon(std::max(std::abs(U1), std::abs(U2)));
   Standard_Real delta = U2 - U1;
 
   Standard_Real    NewU1, NewU2;
@@ -842,8 +842,8 @@ void Law_BSpline::Segment(const Standard_Real U1, const Standard_Real U2)
                             knots->Upper(),
                             index,
                             NewU2);
-  Knots(1) = Min(NewU1, NewU2);
-  Knots(2) = Max(NewU1, NewU2);
+  Knots(1) = std::min(NewU1, NewU2);
+  Knots(2) = std::max(NewU1, NewU2);
   Mults(1) = Mults(2) = deg;
   InsertKnots(Knots, Mults, Eps);
 
@@ -859,7 +859,7 @@ void Law_BSpline::Segment(const Standard_Real U1, const Standard_Real U2)
                               knots->Upper(),
                               index0,
                               U);
-    if (Abs(knots->Value(index0 + 1) - U) < Eps)
+    if (std::abs(knots->Value(index0 + 1) - U) < Eps)
       index0++;
     SetOrigin(index0);
     SetNotPeriodic();
@@ -887,7 +887,7 @@ void Law_BSpline::Segment(const Standard_Real U1, const Standard_Real U2)
                             ToU2,
                             index2,
                             U);
-  if (Abs(knots->Value(index2 + 1) - U) < Eps)
+  if (std::abs(knots->Value(index2 + 1) - U) < Eps)
     index2++;
 
   Standard_Integer nbknots = index2 - index1 + 1;
@@ -910,7 +910,7 @@ void Law_BSpline::Segment(const Standard_Real U1, const Standard_Real U2)
   Standard_Integer pindex2 = BSplCLib::PoleIndex(deg, index2, periodic, mults->Array1());
 
   pindex1++;
-  pindex2 = Min(pindex2 + 1, poles->Length());
+  pindex2 = std::min(pindex2 + 1, poles->Length());
 
   Standard_Integer nbpoles = pindex2 - pindex1 + 1;
 
@@ -952,7 +952,7 @@ void Law_BSpline::SetKnot(const Standard_Integer Index, const Standard_Real K)
 {
   if (Index < 1 || Index > knots->Length())
     throw Standard_OutOfRange();
-  Standard_Real DK = Abs(Epsilon(K));
+  Standard_Real DK = std::abs(Epsilon(K));
   if (Index == 1)
   {
     if (K >= knots->Value(2) - DK)
@@ -1012,7 +1012,7 @@ void Law_BSpline::SetPeriodic()
 
   Handle(TColStd_HArray1OfInteger) tm = mults;
   TColStd_Array1OfInteger          cmults((mults->Array1())(first), first, last);
-  cmults(first) = cmults(last) = Max(cmults(first), cmults(last));
+  cmults(first) = cmults(last) = std::max(cmults(first), cmults(last));
   mults                        = new TColStd_HArray1OfInteger(1, cmults.Length());
   mults->ChangeArray1()        = cmults;
 
@@ -1209,7 +1209,7 @@ void Law_BSpline::SetWeight(const Standard_Integer Index, const Standard_Real W)
   if (W <= gp::Resolution())
     throw Standard_ConstructionError();
 
-  Standard_Boolean rat = IsRational() || (Abs(W - 1.) > gp::Resolution());
+  Standard_Boolean rat = IsRational() || (std::abs(W - 1.) > gp::Resolution());
 
   if (rat)
   {
@@ -1338,7 +1338,7 @@ Standard_Boolean Law_BSpline::IsCN(const Standard_Integer N) const
 
 Standard_Boolean Law_BSpline::IsClosed() const
 {
-  return (Abs(StartPoint() - EndPoint())) <= gp::Resolution();
+  return (std::abs(StartPoint() - EndPoint())) <= gp::Resolution();
 }
 
 //=================================================================================================
@@ -1794,20 +1794,20 @@ void Law_BSpline::LocateU(const Standard_Real    U,
   const TColStd_Array1OfReal& CKnots = TheKnots->Array1();
   Standard_Real               UFirst = CKnots(1);
   Standard_Real               ULast  = CKnots(CKnots.Length());
-  if (Abs(U - UFirst) <= Abs(ParametricTolerance))
+  if (std::abs(U - UFirst) <= std::abs(ParametricTolerance))
   {
     I1 = I2 = 1;
   }
-  else if (Abs(U - ULast) <= Abs(ParametricTolerance))
+  else if (std::abs(U - ULast) <= std::abs(ParametricTolerance))
   {
     I1 = I2 = CKnots.Length();
   }
-  else if (NewU < UFirst - Abs(ParametricTolerance))
+  else if (NewU < UFirst - std::abs(ParametricTolerance))
   {
     I2 = 1;
     I1 = 0;
   }
-  else if (NewU > ULast + Abs(ParametricTolerance))
+  else if (NewU > ULast + std::abs(ParametricTolerance))
   {
     I1 = CKnots.Length();
     I2 = I1 + 1;
@@ -1816,12 +1816,13 @@ void Law_BSpline::LocateU(const Standard_Real    U,
   {
     I1 = 1;
     BSplCLib::Hunt(CKnots, NewU, I1);
-    I1 = Max(Min(I1, CKnots.Upper()), CKnots.Lower());
-    while (I1 + 1 <= CKnots.Upper() && Abs(CKnots(I1 + 1) - NewU) <= Abs(ParametricTolerance))
+    I1 = std::max(std::min(I1, CKnots.Upper()), CKnots.Lower());
+    while (I1 + 1 <= CKnots.Upper()
+           && std::abs(CKnots(I1 + 1) - NewU) <= std::abs(ParametricTolerance))
     {
       I1++;
     }
-    if (Abs(CKnots(I1) - NewU) <= Abs(ParametricTolerance))
+    if (std::abs(CKnots(I1) - NewU) <= std::abs(ParametricTolerance))
     {
       I2 = I1;
     }

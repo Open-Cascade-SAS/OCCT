@@ -177,15 +177,15 @@ gp_Trsf2d gp_GTrsf2d::Trsf2d() const
 
   Standard_Real value =
     (matrix.Value(1, 1) * matrix.Value(1, 1) + matrix.Value(2, 1) * matrix.Value(2, 1));
-  if (Abs(value - 1.) > aTolerance2)
+  if (std::abs(value - 1.) > aTolerance2)
     throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(1)");
 
   value = (matrix.Value(1, 2) * matrix.Value(1, 2) + matrix.Value(2, 2) * matrix.Value(2, 2));
-  if (Abs(value - 1.) > aTolerance2)
+  if (std::abs(value - 1.) > aTolerance2)
     throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(2)");
 
   value = (matrix.Value(1, 1) * matrix.Value(1, 2) + matrix.Value(2, 1) * matrix.Value(2, 2));
-  if (Abs(value) > aTolerance)
+  if (std::abs(value) > aTolerance)
     throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(3)");
 
   gp_Trsf2d aTransformation;

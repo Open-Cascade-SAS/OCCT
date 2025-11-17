@@ -235,7 +235,7 @@ void IntTools_FaceFace::SetParameters(const Standard_Boolean ToApproxC3d,
 
 void IntTools_FaceFace::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  myFuzzyValue = Max(theFuzz, Precision::Confusion());
+  myFuzzyValue = std::max(theFuzz, Precision::Confusion());
 }
 
 //=================================================================================================
@@ -614,7 +614,7 @@ void IntTools_FaceFace::ComputeTolReached3d(const Standard_Boolean theToRunParal
   }
   //
   // Minimal tangential tolerance for the curve
-  Standard_Real aTolFMax = Max(myTolF1, myTolF2);
+  Standard_Real aTolFMax = std::max(myTolF1, myTolF2);
   //
   const Handle(Geom_Surface)& aS1 = myHS1->Surface();
   const Handle(Geom_Surface)& aS2 = myHS2->Surface();
@@ -1002,7 +1002,7 @@ reapprox:;
         lprm = aSeqLprm(i);
         //
         constexpr Standard_Real aRealEpsilon = RealEpsilon();
-        if (Abs(fprm) > aRealEpsilon || Abs(lprm - 2. * M_PI) > aRealEpsilon)
+        if (std::abs(fprm) > aRealEpsilon || std::abs(lprm - 2. * M_PI) > aRealEpsilon)
         {
           //==============================================
           ////
@@ -1049,7 +1049,7 @@ reapprox:;
           //
           mySeqOfCurve.Append(aCurve);
           //==============================================
-        } // if (Abs(fprm) > RealEpsilon() || Abs(lprm-2.*M_PI) > RealEpsilon())
+        } // if (std::abs(fprm) > RealEpsilon() || std::abs(lprm-2.*M_PI) > RealEpsilon())
 
         else
         {
@@ -1057,8 +1057,9 @@ reapprox:;
           //
           if (aNbParts == 1)
           {
-            //           if (Abs(fprm) < RealEpsilon() &&  Abs(lprm-2.*M_PI) < RealEpsilon()) {
-            if (Abs(fprm) <= aRealEpsilon && Abs(lprm - 2. * M_PI) <= aRealEpsilon)
+            //           if (std::abs(fprm) < RealEpsilon() &&  std::abs(lprm-2.*M_PI) <
+            //           RealEpsilon()) {
+            if (std::abs(fprm) <= aRealEpsilon && std::abs(lprm - 2. * M_PI) <= aRealEpsilon)
             {
               IntTools_Curve            aCurve;
               Handle(Geom_TrimmedCurve) aTC3D = new Geom_TrimmedCurve(newc, fprm, lprm);
@@ -2342,7 +2343,7 @@ Standard_Boolean ApproxWithPCurves(const gp_Cylinder& theCyl, const gp_Sphere& t
   gp_Lin anCylAx(theCyl.Axis());
 
   Standard_Real aDist = anCylAx.Distance(theSph.Location());
-  Standard_Real aDRel = Abs(aDist - R1) / R2;
+  Standard_Real aDRel = std::abs(aDist - R1) / R2;
 
   if (aDRel > .2)
     return bRes;
@@ -2432,8 +2433,8 @@ void PerformPlanes(const Handle(GeomAdaptor_Surface)& theS1,
     return;
 
   Standard_Real pmin, pmax;
-  pmin = Max(P11, P21);
-  pmax = Min(P12, P22);
+  pmin = std::max(P11, P21);
+  pmax = std::min(P12, P22);
 
   if (pmax - pmin <= TolTang)
     return;
@@ -2468,7 +2469,7 @@ void PerformPlanes(const Handle(GeomAdaptor_Surface)& theS1,
   //
   // Valid tolerance for the intersection curve between planar faces
   // is the maximal tolerance between tolerances of faces
-  Standard_Real aTolC = Max(TolF1, TolF2);
+  Standard_Real aTolC = std::max(TolF1, TolF2);
   aCurve.SetTolerance(aTolC);
   //
   // Computation of the tangential tolerance
@@ -2547,8 +2548,8 @@ Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_Surface)& theS,
 
     if (fabs(par[0] - par[1]) > theTol)
     {
-      theP1 = Min(par[0], par[1]);
-      theP2 = Max(par[0], par[1]);
+      theP1 = std::min(par[0], par[1]);
+      theP2 = std::max(par[0], par[1]);
       return Standard_True;
     }
     else
@@ -2581,8 +2582,8 @@ Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_Surface)& theS,
 
     if (fabs(par[0] - par[1]) > theTol)
     {
-      theP1 = Min(par[0], par[1]);
-      theP2 = Max(par[0], par[1]);
+      theP1 = std::min(par[0], par[1]);
+      theP2 = std::max(par[0], par[1]);
       return Standard_True;
     }
     else
@@ -2613,8 +2614,8 @@ Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_Surface)& theS,
   {
     if (fabs(par[0] - par[1]) > theTol)
     {
-      theP1 = Min(par[0], par[1]);
-      theP2 = Max(par[0], par[1]);
+      theP1 = std::min(par[0], par[1]);
+      theP2 = std::max(par[0], par[1]);
       return Standard_True;
     }
     else
@@ -2645,8 +2646,8 @@ Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_Surface)& theS,
   {
     if (fabs(par[0] - par[1]) > theTol)
     {
-      theP1 = Min(par[0], par[1]);
-      theP2 = Max(par[0], par[1]);
+      theP1 = std::min(par[0], par[1]);
+      theP2 = std::max(par[0], par[1]);
       return Standard_True;
     }
     else
@@ -2877,7 +2878,7 @@ Standard_Real FindMaxDistance(const Handle(Geom_Curve)&   theC,
   aX2 = aA + aCf * (aB - aA);
   aF2 = MaxDistance(theC, aX2, theProjPS);
 
-  while (Abs(aX1 - aX2) > theEps)
+  while (std::abs(aX1 - aX2) > theEps)
   {
     if (aF1 > aF2)
     {
@@ -2942,8 +2943,8 @@ Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)&     aPC,
   Standard_Real          umin, umax, vmin, vmax;
 
   theCtx->UVBounds(aFace, umin, umax, vmin, vmax);
-  Standard_Real tolU = Max((umax - umin) * 0.01, Precision::Confusion());
-  Standard_Real tolV = Max((vmax - vmin) * 0.01, Precision::Confusion());
+  Standard_Real tolU = std::max((umax - umin) * 0.01, Precision::Confusion());
+  Standard_Real tolV = std::max((vmax - vmin) * 0.01, Precision::Confusion());
   Standard_Real fp   = aPC->FirstParameter();
   Standard_Real lp   = aPC->LastParameter();
 

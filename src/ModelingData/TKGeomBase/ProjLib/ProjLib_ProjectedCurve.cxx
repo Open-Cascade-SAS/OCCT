@@ -57,7 +57,7 @@ static Standard_Real ComputeTolU(const Handle(Adaptor3d_Surface)& theSurf,
   Standard_Real aTolU = theSurf->UResolution(theTolerance);
   if (theSurf->IsUPeriodic())
   {
-    aTolU = Min(aTolU, 0.01 * theSurf->UPeriod());
+    aTolU = std::min(aTolU, 0.01 * theSurf->UPeriod());
   }
 
   return aTolU;
@@ -71,7 +71,7 @@ static Standard_Real ComputeTolV(const Handle(Adaptor3d_Surface)& theSurf,
   Standard_Real aTolV = theSurf->VResolution(theTolerance);
   if (theSurf->IsVPeriodic())
   {
-    aTolV = Min(aTolV, 0.01 * theSurf->VPeriod());
+    aTolV = std::min(aTolV, 0.01 * theSurf->VPeriod());
   }
 
   return aTolV;
@@ -101,7 +101,7 @@ static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
     for (T = U1; T <= U2; T = T + Step)
     {
       S.D1(T, Param, P, D1U, D1V);
-      D1NormMax = Max(D1NormMax, D1U.Magnitude());
+      D1NormMax = std::max(D1NormMax, D1U.Magnitude());
     }
 
     if (D1NormMax > TolMax || D1NormMax < TolMin)
@@ -114,7 +114,7 @@ static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
     for (T = V1; T <= V2; T = T + Step)
     {
       S.D1(Param, T, P, D1U, D1V);
-      D1NormMax = Max(D1NormMax, D1V.Magnitude());
+      D1NormMax = std::max(D1NormMax, D1V.Magnitude());
     }
 
     if (D1NormMax > TolMax || D1NormMax < TolMin)
@@ -312,7 +312,7 @@ ProjLib_ProjectedCurve::ProjLib_ProjectedCurve(const Handle(Adaptor3d_Surface)& 
 ProjLib_ProjectedCurve::ProjLib_ProjectedCurve(const Handle(Adaptor3d_Surface)& S,
                                                const Handle(Adaptor3d_Curve)&   C,
                                                const Standard_Real              Tol)
-    : myTolerance(Max(Tol, Precision::Confusion())),
+    : myTolerance(std::max(Tol, Precision::Confusion())),
       myDegMin(-1),
       myDegMax(-1),
       myMaxSegments(-1),
@@ -366,7 +366,7 @@ void ProjLib_ProjectedCurve::Load(const Standard_Real theTol)
 
 void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_Curve)& C)
 {
-  myTolerance                          = Max(myTolerance, Precision::Confusion());
+  myTolerance                          = std::max(myTolerance, Precision::Confusion());
   myCurve                              = C;
   Standard_Real       FirstPar         = C->FirstParameter();
   Standard_Real       LastPar          = C->LastParameter();
@@ -429,8 +429,8 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_Curve)& C)
         gp_Pnt        Pf      = myCurve->Value(f);
         gp_Pnt        Pl      = myCurve->Value(l);
         gp_Pnt        aLoc    = aSph.Position().Location();
-        Standard_Real maxdist = Max(Pf.Distance(aLoc), Pl.Distance(aLoc));
-        TolConf               = Max(anR * minang, Abs(anR - maxdist));
+        Standard_Real maxdist = std::max(Pf.Distance(aLoc), Pl.Distance(aLoc));
+        TolConf               = std::max(anR * minang, std::abs(anR - maxdist));
 
         // Surface has pole at V = Vmin and Vmax
         gp_Pnt Pole = mySurface->Value(U1, Vmin);
@@ -605,9 +605,9 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_Curve)& C)
         }
       }
 
-      Standard_Real aTolU  = Max(ComputeTolU(mySurface, myTolerance), Precision::Confusion());
-      Standard_Real aTolV  = Max(ComputeTolV(mySurface, myTolerance), Precision::Confusion());
-      Standard_Real aTol2d = Sqrt(aTolU * aTolU + aTolV * aTolV);
+      Standard_Real aTolU  = std::max(ComputeTolU(mySurface, myTolerance), Precision::Confusion());
+      Standard_Real aTolV  = std::max(ComputeTolV(mySurface, myTolerance), Precision::Confusion());
+      Standard_Real aTol2d = std::sqrt(aTolU * aTolU + aTolV * aTolV);
 
       Standard_Real aMaxDist = 100. * myTolerance;
       if (myMaxDist > 0.)
@@ -658,7 +658,7 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_Curve)& C)
       {
         aTolU                   = appr.MaxError2dU();
         aTolV                   = appr.MaxError2dV();
-        Standard_Real aNewTol2d = Sqrt(aTolU * aTolU + aTolV * aTolV);
+        Standard_Real aNewTol2d = std::sqrt(aTolU * aTolU + aTolV * aTolV);
         myTolerance *= (aNewTol2d / aTol2d);
         if (IsTrimmed[0] || IsTrimmed[1])
         {
@@ -693,7 +693,7 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_Curve)& C)
             // try to smoother the Curve GeomAbs_C1.
             Standard_Integer aDeg       = aRes->Degree();
             Standard_Boolean OK         = Standard_True;
-            Standard_Real    aSmoothTol = Max(Precision::Confusion(), aNewTol2d);
+            Standard_Real    aSmoothTol = std::max(Precision::Confusion(), aNewTol2d);
             for (Standard_Integer ij = 2; ij < aRes->NbKnots(); ij++)
             {
               OK = OK && aRes->RemoveKnot(ij, aDeg - 1, aSmoothTol);

@@ -42,6 +42,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
+#include <Standard_NumericError.hxx>
 
 namespace
 {
@@ -108,7 +109,7 @@ Standard_Real ElCLib::InPeriod(const Standard_Real theU,
     return theU;
   }
 
-  return Max(theUFirst, theU + aPeriod * Ceiling((theUFirst - theU) / aPeriod));
+  return std::max(theUFirst, theU + aPeriod * std::ceil((theUFirst - theU) / aPeriod));
 }
 
 //=================================================================================================
@@ -137,12 +138,12 @@ void ElCLib::AdjustPeriodic(const Standard_Real UFirst,
     return;
   }
 
-  U1 -= Floor((U1 - UFirst) / aPeriod) * aPeriod;
+  U1 -= std::floor((U1 - UFirst) / aPeriod) * aPeriod;
   if (ULast - U1 < Preci)
   {
     U1 -= aPeriod;
   }
-  U2 -= Floor((U2 - U1) / aPeriod) * aPeriod;
+  U2 -= std::floor((U2 - U1) / aPeriod) * aPeriod;
   if (U2 - U1 < Preci)
   {
     U2 += aPeriod;
@@ -199,8 +200,8 @@ gp_Pnt ElCLib::HyperbolaValue(const Standard_Real U,
   const gp_XYZ&       XDir = Pos.XDirection().XYZ();
   const gp_XYZ&       YDir = Pos.YDirection().XYZ();
   const gp_XYZ&       PLoc = Pos.Location().XYZ();
-  const Standard_Real A1   = MajorRadius * Cosh(U);
-  const Standard_Real A2   = MinorRadius * Sinh(U);
+  const Standard_Real A1   = MajorRadius * std::cosh(U);
+  const Standard_Real A2   = MinorRadius * std::sinh(U);
   return gp_Pnt(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
                 A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y(),
                 A1 * XDir.Z() + A2 * YDir.Z() + PLoc.Z());
@@ -243,8 +244,8 @@ void ElCLib::CircleD1(const Standard_Real U,
                       gp_Pnt&             P,
                       gp_Vec&             V1)
 {
-  const Standard_Real Xc = Radius * Cos(U);
-  const Standard_Real Yc = Radius * Sin(U);
+  const Standard_Real Xc = Radius * std::cos(U);
+  const Standard_Real Yc = Radius * std::sin(U);
   const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
   const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
   gp_XYZ              Coord0;
@@ -265,8 +266,8 @@ void ElCLib::EllipseD1(const Standard_Real U,
                        gp_Pnt&             P,
                        gp_Vec&             V1)
 {
-  const Standard_Real Xc = Cos(U);
-  const Standard_Real Yc = Sin(U);
+  const Standard_Real Xc = std::cos(U);
+  const Standard_Real Yc = std::sin(U);
   const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
   const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
   gp_XYZ              Coord0;
@@ -287,8 +288,8 @@ void ElCLib::HyperbolaD1(const Standard_Real U,
                          gp_Pnt&             P,
                          gp_Vec&             V1)
 {
-  const Standard_Real Xc = Cosh(U);
-  const Standard_Real Yc = Sinh(U);
+  const Standard_Real Xc = std::cosh(U);
+  const Standard_Real Yc = std::sinh(U);
   const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
   const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
   gp_XYZ              Coord0;
@@ -388,8 +389,8 @@ void ElCLib::HyperbolaD2(const Standard_Real U,
                          gp_Vec&             V1,
                          gp_Vec&             V2)
 {
-  const Standard_Real Xc = Cosh(U);
-  const Standard_Real Yc = Sinh(U);
+  const Standard_Real Xc = std::cosh(U);
+  const Standard_Real Yc = std::sinh(U);
   const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
   const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
   gp_XYZ              Coord0;
@@ -505,8 +506,8 @@ void ElCLib::HyperbolaD3(const Standard_Real U,
                          gp_Vec&             V2,
                          gp_Vec&             V3)
 {
-  const Standard_Real Xc = Cosh(U);
-  const Standard_Real Yc = Sinh(U);
+  const Standard_Real Xc = std::cosh(U);
+  const Standard_Real Yc = std::sinh(U);
   const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
   const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
   gp_XYZ              Coord0;
@@ -569,8 +570,8 @@ gp_Pnt2d ElCLib::HyperbolaValue(const Standard_Real U,
   const gp_XY&        XDir = Pos.XDirection().XY();
   const gp_XY&        YDir = Pos.YDirection().XY();
   const gp_XY&        PLoc = Pos.Location().XY();
-  const Standard_Real A1   = MajorRadius * Cosh(U);
-  const Standard_Real A2   = MinorRadius * Sinh(U);
+  const Standard_Real A1   = MajorRadius * std::cosh(U);
+  const Standard_Real A2   = MinorRadius * std::sinh(U);
   return gp_Pnt2d(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
                   A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y());
 }
@@ -657,8 +658,8 @@ void ElCLib::HyperbolaD1(const Standard_Real U,
                          gp_Pnt2d&           P,
                          gp_Vec2d&           V1)
 {
-  const Standard_Real Xc = Cosh(U);
-  const Standard_Real Yc = Sinh(U);
+  const Standard_Real Xc = std::cosh(U);
+  const Standard_Real Yc = std::sinh(U);
   const gp_XY&        Xdir((Pos.XDirection()).XY());
   const gp_XY&        Ydir((Pos.YDirection()).XY());
   gp_XY               Vxy;
@@ -764,8 +765,8 @@ void ElCLib::HyperbolaD2(const Standard_Real U,
 {
   const gp_XY&        Xdir(Pos.XDirection().XY());
   const gp_XY&        Ydir(Pos.YDirection().XY());
-  const Standard_Real Xc = Cosh(U);
-  const Standard_Real Yc = Sinh(U);
+  const Standard_Real Xc = std::cosh(U);
+  const Standard_Real Yc = std::sinh(U);
   gp_XY               Vxy;
 
   // V2 :
@@ -893,8 +894,8 @@ void ElCLib::HyperbolaD3(const Standard_Real U,
 {
   const gp_XY&        Xdir(Pos.XDirection().XY());
   const gp_XY&        Ydir(Pos.YDirection().XY());
-  const Standard_Real Xc = Cosh(U);
-  const Standard_Real Yc = Sinh(U);
+  const Standard_Real Xc = std::cosh(U);
+  const Standard_Real Yc = std::sinh(U);
   gp_XY               Vxy;
 
   // V2 :
@@ -1012,13 +1013,13 @@ gp_Vec ElCLib::HyperbolaDN(const Standard_Real    U,
   Standard_Real Xc = 0, Yc = 0;
   if (IsOdd(N))
   {
-    Xc = MajorRadius * Sinh(U);
-    Yc = MinorRadius * Cosh(U);
+    Xc = MajorRadius * std::sinh(U);
+    Yc = MinorRadius * std::cosh(U);
   }
   else if (IsEven(N))
   {
-    Xc = MajorRadius * Cosh(U);
-    Yc = MinorRadius * Sinh(U);
+    Xc = MajorRadius * std::cosh(U);
+    Yc = MinorRadius * std::sinh(U);
   }
   gp_XYZ Coord1(Pos.XDirection().XYZ());
   Coord1.SetLinearForm(Xc, Coord1, Yc, Pos.YDirection().XYZ());
@@ -1158,13 +1159,13 @@ gp_Vec2d ElCLib::HyperbolaDN(const Standard_Real    U,
   Standard_Real Xc = 0, Yc = 0;
   if (IsOdd(N))
   {
-    Xc = MajorRadius * Sinh(U);
-    Yc = MinorRadius * Cosh(U);
+    Xc = MajorRadius * std::sinh(U);
+    Yc = MinorRadius * std::cosh(U);
   }
   else if (IsEven(N))
   {
-    Xc = MajorRadius * Cosh(U);
-    Yc = MinorRadius * Sinh(U);
+    Xc = MajorRadius * std::cosh(U);
+    Yc = MinorRadius * std::sinh(U);
   }
   gp_XY        Xdir(Pos.XDirection().XY());
   const gp_XY& Ydir(Pos.YDirection().XY());
@@ -1249,7 +1250,7 @@ Standard_Real ElCLib::EllipseParameter(const gp_Ax2&       Pos,
   const Standard_Real NY    = OP.Dot(yaxis);
   const Standard_Real NX    = OP.Dot(xaxis);
 
-  if ((Abs(NX) <= gp::Resolution()) && (Abs(NY) <= gp::Resolution()))
+  if ((std::abs(NX) <= gp::Resolution()) && (std::abs(NY) <= gp::Resolution()))
     //-- The point P is on the Axis of the Ellipse.
     return (0.0);
 

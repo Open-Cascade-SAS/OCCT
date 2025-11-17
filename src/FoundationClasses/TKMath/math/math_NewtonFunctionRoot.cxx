@@ -104,7 +104,7 @@ void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const Stan
   Fx = RealLast();
   X  = Guess;
   It = 1;
-  while ((It <= Itermax) && ((Abs(Dx) > EpsilonX) || (Abs(Fx) > EpsilonF)))
+  while ((It <= Itermax) && ((std::abs(Dx) > EpsilonX) || (std::abs(Fx) > EpsilonF)))
   {
     Ok = F.Values(X, Fx, DFx);
 

@@ -80,9 +80,9 @@ void GeomFill_PolynomialConvertor::Init()
     for (ii = 1; ii <= Ordre; ii++)
     {
       terme = Poles1d->Value(ii, jj);
-      if (Abs(terme - 1) < 1.e-9)
+      if (std::abs(terme - 1) < 1.e-9)
         terme = 1; // petite retouche
-      if (Abs(terme + 1) < 1.e-9)
+      if (std::abs(terme + 1) < 1.e-9)
         terme = -1;
       B(ii, jj) = terme;
     }
@@ -107,7 +107,7 @@ void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
   math_Vector      Vx(1, Ordre), Vy(1, Ordre);
   math_Vector      Px(1, Ordre), Py(1, Ordre);
   Standard_Integer ii;
-  Standard_Real    Cos_b = Cos(Angle), Sin_b = Sin(Angle);
+  Standard_Real    Cos_b = std::cos(Angle), Sin_b = std::sin(Angle);
   Standard_Real    beta, beta2, beta3;
   gp_Vec           V1(Center, FirstPnt), V2;
   V2    = Dir ^ V1;
@@ -163,7 +163,7 @@ void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
   math_Vector      Vx(1, Ordre), Vy(1, Ordre), DVx(1, Ordre), DVy(1, Ordre);
   math_Vector      Px(1, Ordre), Py(1, Ordre), DPx(1, Ordre), DPy(1, Ordre);
   Standard_Integer ii;
-  Standard_Real    Cos_b = Cos(Angle), Sin_b = Sin(Angle);
+  Standard_Real    Cos_b = std::cos(Angle), Sin_b = std::sin(Angle);
   Standard_Real    beta, beta2, beta3, bprim;
   gp_Vec           V1(Center, FirstPnt), V1Prim, V2;
   V2    = Dir ^ V1;
@@ -255,7 +255,7 @@ void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
     D2Py(1, Ordre);
 
   Standard_Integer ii;
-  Standard_Real    aux, Cos_b = Cos(Angle), Sin_b = Sin(Angle);
+  Standard_Real    aux, Cos_b = std::cos(Angle), Sin_b = std::sin(Angle);
   Standard_Real    beta, beta2, beta3, bprim, bprim2, bsecn;
   gp_Vec           V1(Center, FirstPnt), V1Prim, V1Secn, V2;
   V2     = Dir ^ V1;

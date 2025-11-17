@@ -97,7 +97,7 @@ void Aspect_VKeySet::KeyFromAxis(Aspect_VKey theNegative,
     const Aspect_VKey aKeyDown = thePressure > 0 ? thePositive : theNegative;
     const Aspect_VKey aKeyUp   = thePressure < 0 ? thePositive : theNegative;
 
-    KeyDown_Unlocked(aKeyDown, theTime, Abs(thePressure));
+    KeyDown_Unlocked(aKeyDown, theTime, std::abs(thePressure));
     if (myKeys[aKeyUp].KStatus == KeyStatus_Pressed)
     {
       KeyUp_Unlocked(aKeyUp, theTime);

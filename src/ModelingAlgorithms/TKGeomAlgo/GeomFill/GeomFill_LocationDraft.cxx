@@ -84,7 +84,7 @@ void GeomFill_LocationDraft::SetTrsf(const gp_Mat& Transfo)
   WithTrans = Standard_False; // Au cas ou Trans = I
   for (Standard_Integer ii = 1; ii <= 3 && !WithTrans; ii++)
     for (Standard_Integer jj = 1; jj <= 3 && !WithTrans; jj++)
-      if (Abs(Aux.Value(ii, jj)) > 1.e-14)
+      if (std::abs(Aux.Value(ii, jj)) > 1.e-14)
         WithTrans = Standard_True;
 }
 
@@ -152,7 +152,7 @@ void GeomFill_LocationDraft::Prepare()
     myLaw->D0(t, T, N, B);
 
     // Generatrice
-    D = Cos(myAngle) * B + Sin(myAngle) * N;
+    D = std::cos(myAngle) * B + std::sin(myAngle) * N;
 
     L = new (Geom_Line)(P, D);
 
@@ -245,7 +245,7 @@ Standard_Boolean GeomFill_LocationDraft::D0(const Standard_Real   Param,
   {
     // la generatrice intersecte la surface d'arret
     // la generatrice
-    D = Cos(myAngle) * B + Sin(myAngle) * N;
+    D = std::cos(myAngle) * B + std::sin(myAngle) * N;
 
     Handle(Geom_Line)         L = new (Geom_Line)(P, D);
     Handle(GeomAdaptor_Curve) G = new (GeomAdaptor_Curve)(L);
@@ -360,7 +360,7 @@ Standard_Boolean GeomFill_LocationDraft::D1(const Standard_Real   Param,
   if (Intersec == Standard_True)
   { // la generatrice intersecte la surface d'arret
     // la generatrice
-    D = Cos(myAngle) * B + Sin(myAngle) * N;
+    D = std::cos(myAngle) * B + std::sin(myAngle) * N;
 
     Handle(Geom_Line)         L = new (Geom_Line)(P, D);
     Handle(GeomAdaptor_Curve) G = new (GeomAdaptor_Curve)(L);
@@ -497,7 +497,7 @@ Standard_Boolean GeomFill_LocationDraft::D2(const Standard_Real   Param,
   { // la generatrice intersecte la surface d'arret
 
     // la generatrice
-    D = Cos(myAngle) * B + Sin(myAngle) * N;
+    D = std::cos(myAngle) * B + std::sin(myAngle) * N;
 
     Handle(Geom_Line)         L = new (Geom_Line)(P, D);
     Handle(GeomAdaptor_Curve) G = new (GeomAdaptor_Curve)(L);

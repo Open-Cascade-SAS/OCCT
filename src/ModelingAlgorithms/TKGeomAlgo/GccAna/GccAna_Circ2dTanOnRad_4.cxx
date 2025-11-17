@@ -58,7 +58,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
 
   TheSame1.Init(0);
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol = Abs(Tolerance);
+  Standard_Real Tol = std::abs(Tolerance);
   WellDone          = Standard_False;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))

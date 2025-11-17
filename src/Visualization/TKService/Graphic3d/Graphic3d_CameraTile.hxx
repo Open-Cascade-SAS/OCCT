@@ -60,11 +60,11 @@ public:
       return aTile;
     }
 
-    aTile.Offset.x() = Max(Offset.x(), 0);
-    aTile.Offset.y() = Max(Offset.y(), 0);
+    aTile.Offset.x() = (std::max)(Offset.x(), 0);
+    aTile.Offset.y() = (std::max)(Offset.y(), 0);
 
-    const Standard_Integer anX = Min(Offset.x() + TileSize.x(), TotalSize.x());
-    const Standard_Integer anY = Min(Offset.y() + TileSize.y(), TotalSize.y());
+    const Standard_Integer anX = (std::min)(Offset.x() + TileSize.x(), TotalSize.x());
+    const Standard_Integer anY = (std::min)(Offset.y() + TileSize.y(), TotalSize.y());
     aTile.TileSize.x()         = anX - Offset.x();
     aTile.TileSize.y()         = anY - Offset.y();
     return aTile;

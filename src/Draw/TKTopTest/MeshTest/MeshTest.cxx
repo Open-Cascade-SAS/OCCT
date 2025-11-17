@@ -60,7 +60,7 @@
 Standard_IMPORT Draw_Viewer dout;
 #endif
 
-#define MAX2(X, Y) (Abs(X) > Abs(Y) ? Abs(X) : Abs(Y))
+#define MAX2(X, Y) (std::abs(X) > std::abs(Y) ? std::abs(X) : std::abs(Y))
 #define MAX3(X, Y, Z) (MAX2(MAX2(X, Y), Z))
 
 #define ONETHIRD 0.333333333333333333333333333333333333333333333333333333333333
@@ -207,7 +207,7 @@ static Standard_Integer incrementalmesh(Draw_Interpretor& theDI,
     }
     else if (aNameCase.IsRealValue(true) && !hasDefl)
     {
-      aMeshParams.Deflection = Max(Draw::Atof(theArgVec[anArgIter]), Precision::Confusion());
+      aMeshParams.Deflection = std::max(Draw::Atof(theArgVec[anArgIter]), Precision::Confusion());
       if (aMeshParams.DeflectionInterior < Precision::Confusion())
       {
         aMeshParams.DeflectionInterior = aMeshParams.Deflection;
@@ -449,7 +449,7 @@ static Standard_Integer tessellate(Draw_Interpretor& /*di*/,
     Handle(Geom2d_Curve) aC      = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
     gp_Pnt2d             aPFirst = aC->Value(aFirst);
     gp_Pnt2d             aPLast  = aC->Value(aLast);
-    if (Abs(aPFirst.X() - aPLast.X()) < 0.1 * (aUMax - aUMin)) // U=const
+    if (std::abs(aPFirst.X() - aPLast.X()) < 0.1 * (aUMax - aUMin)) // U=const
     {
       if (BRep_Tool::IsClosed(anEdge, aFace))
         B.UpdateEdge(anEdge, aUMinPoly, aUMaxPoly, aTriangulation);
@@ -767,12 +767,12 @@ static Standard_Integer trianglesinfo(Draw_Interpretor& theDI,
     {
       aNbTriangles += aTriangulation->NbTriangles();
       aNbNodes += aTriangulation->NbNodes();
-      aMaxDeflection = Max(aMaxDeflection, aTriangulation->Deflection());
+      aMaxDeflection = std::max(aMaxDeflection, aTriangulation->Deflection());
       if (!aTriangulation->Parameters().IsNull())
       {
-        aMeshingDefl    = Max(aMeshingDefl, aTriangulation->Parameters()->Deflection());
-        aMeshingAngDefl = Max(aMeshingAngDefl, aTriangulation->Parameters()->Angle());
-        aMeshingMinSize = Max(aMeshingMinSize, aTriangulation->Parameters()->MinSize());
+        aMeshingDefl    = std::max(aMeshingDefl, aTriangulation->Parameters()->Deflection());
+        aMeshingAngDefl = std::max(aMeshingAngDefl, aTriangulation->Parameters()->Angle());
+        aMeshingMinSize = std::max(aMeshingMinSize, aTriangulation->Parameters()->MinSize());
       }
     }
     else
@@ -1156,45 +1156,45 @@ static Standard_Integer veriftriangles(Draw_Interpretor& di, Standard_Integer n,
 
             S->D0(mi2d1.X(), mi2d1.Y(), PP);
             PP       = PP.Transformed(L.Transformation());
-            defle    = Abs((equa * PP.XYZ()) - dipo);
-            deflemax = Max(deflemax, defle);
-            deflemin = Min(deflemin, defle);
+            defle    = std::abs((equa * PP.XYZ()) - dipo);
+            deflemax = std::max(deflemax, defle);
+            deflemin = std::min(deflemin, defle);
 
             S->D0(mi2d2.X(), mi2d2.Y(), PP);
             PP       = PP.Transformed(L.Transformation());
-            defle    = Abs((equa * PP.XYZ()) - dipo);
-            deflemax = Max(deflemax, defle);
-            deflemin = Min(deflemin, defle);
+            defle    = std::abs((equa * PP.XYZ()) - dipo);
+            deflemax = std::max(deflemax, defle);
+            deflemin = std::min(deflemin, defle);
 
             S->D0(mi2d3.X(), mi2d3.Y(), PP);
             PP       = PP.Transformed(L.Transformation());
-            defle    = Abs((equa * PP.XYZ()) - dipo);
-            deflemax = Max(deflemax, defle);
-            deflemin = Min(deflemin, defle);
+            defle    = std::abs((equa * PP.XYZ()) - dipo);
+            deflemax = std::max(deflemax, defle);
+            deflemin = std::min(deflemin, defle);
 
             S->D0(v1.X(), v1.Y(), PP);
             PP       = PP.Transformed(L.Transformation());
-            defle    = Abs((equa * PP.XYZ()) - dipo);
-            deflemax = Max(deflemax, defle);
-            deflemin = Min(deflemin, defle);
+            defle    = std::abs((equa * PP.XYZ()) - dipo);
+            deflemax = std::max(deflemax, defle);
+            deflemin = std::min(deflemin, defle);
 
             S->D0(v2.X(), v2.Y(), PP);
             PP       = PP.Transformed(L.Transformation());
-            defle    = Abs((equa * PP.XYZ()) - dipo);
-            deflemax = Max(deflemax, defle);
-            deflemin = Min(deflemin, defle);
+            defle    = std::abs((equa * PP.XYZ()) - dipo);
+            deflemax = std::max(deflemax, defle);
+            deflemin = std::min(deflemin, defle);
 
             S->D0(v3.X(), v3.Y(), PP);
             PP       = PP.Transformed(L.Transformation());
-            defle    = Abs((equa * PP.XYZ()) - dipo);
-            deflemax = Max(deflemax, defle);
-            deflemin = Min(deflemin, defle);
+            defle    = std::abs((equa * PP.XYZ()) - dipo);
+            deflemax = std::max(deflemax, defle);
+            deflemin = std::min(deflemin, defle);
 
             S->D0(mitri.X(), mitri.Y(), PP);
             PP       = PP.Transformed(L.Transformation());
-            defle    = Abs((equa * PP.XYZ()) - dipo);
-            deflemax = Max(deflemax, defle);
-            deflemin = Min(deflemin, defle);
+            defle    = std::abs((equa * PP.XYZ()) - dipo);
+            deflemax = std::max(deflemax, defle);
+            deflemin = std::min(deflemin, defle);
 
             if (defle > defstock)
             {

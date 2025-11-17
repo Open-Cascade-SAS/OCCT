@@ -72,7 +72,7 @@ public:
   gp_Dir2d(const gp_XY& theCoord);
 
   //! Creates a Direction with its 2 cartesian coordinates. Raises ConstructionError if
-  //! Sqrt(theXv*theXv + theYv*theYv) <= Resolution from gp.
+  //! std::sqrt(theXv*theXv + theYv*theYv) <= Resolution from gp.
   gp_Dir2d(const Standard_Real theXv, const Standard_Real theYv);
 
   //! For this unit vector, assigns:
@@ -86,7 +86,7 @@ public:
   //! Standard_OutOfRange if theIndex is not 1 or 2.
   //! Standard_ConstructionError if either of the following
   //! is less than or equal to gp::Resolution():
-  //! -   Sqrt(theXv*theXv + theYv*theYv), or
+  //! -   std::sqrt(theXv*theXv + theYv*theYv), or
   //! -   the modulus of the number pair formed by the new
   //! value theXi and the other coordinate of this vector that
   //! was not directly modified.
@@ -102,7 +102,7 @@ public:
   //! Standard_OutOfRange if theIndex is not 1 or 2.
   //! Standard_ConstructionError if either of the following
   //! is less than or equal to gp::Resolution():
-  //! -   Sqrt(theXv*theXv + theYv*theYv), or
+  //! -   std::sqrt(theXv*theXv + theYv*theYv), or
   //! -   the modulus of the number pair formed by the new
   //! value Xi and the other coordinate of this vector that
   //! was not directly modified.
@@ -183,20 +183,20 @@ public:
 
   //! Returns True if the angle between this unit vector and the
   //! unit vector theOther is equal to Pi/2 or -Pi/2 (normal)
-  //! i.e. Abs(Abs(<me>.Angle(theOther)) - PI/2.) <= theAngularTolerance
+  //! i.e. std::abs(std::abs(<me>.Angle(theOther)) - PI/2.) <= theAngularTolerance
   Standard_Boolean IsNormal(const gp_Dir2d&     theOther,
                             const Standard_Real theAngularTolerance) const;
 
   //! Returns True if the angle between this unit vector and the
   //! unit vector theOther is equal to Pi or -Pi (opposite).
-  //! i.e.  PI - Abs(<me>.Angle(theOther)) <= theAngularTolerance
+  //! i.e.  PI - std::abs(<me>.Angle(theOther)) <= theAngularTolerance
   Standard_Boolean IsOpposite(const gp_Dir2d&     theOther,
                               const Standard_Real theAngularTolerance) const;
 
   //! Returns True if the angle between this unit vector and unit
   //! vector theOther is equal to 0, Pi or -Pi.
-  //! i.e.  Abs(Angle(<me>, theOther)) <= theAngularTolerance or
-  //! PI - Abs(Angle(<me>, theOther)) <= theAngularTolerance
+  //! i.e.  std::abs(Angle(<me>, theOther)) <= theAngularTolerance or
+  //! PI - std::abs(Angle(<me>, theOther)) <= theAngularTolerance
   Standard_Boolean IsParallel(const gp_Dir2d&     theOther,
                               const Standard_Real theAngularTolerance) const;
 

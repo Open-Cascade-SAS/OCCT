@@ -97,7 +97,7 @@ IntAna_Quadric::IntAna_Quadric(const gp_Cone& Cone)
 void IntAna_Quadric::SetQuadric(const gp_Cone& Cone)
 {
   Cone.Coefficients(CXX, CYY, CZZ, CXY, CXZ, CYZ, CX, CY, CZ, CCte);
-  const Standard_Real aVParam = -Cone.RefRadius() / Sin(Cone.SemiAngle());
+  const Standard_Real aVParam = -Cone.RefRadius() / std::sin(Cone.SemiAngle());
   mySpecialPoints.Append(ElSLib::Value(0.0, aVParam, Cone));
 }
 

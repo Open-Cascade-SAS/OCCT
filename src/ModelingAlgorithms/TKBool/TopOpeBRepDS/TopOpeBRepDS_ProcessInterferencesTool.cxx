@@ -446,7 +446,7 @@ Standard_EXPORT void FUN_reducedoublons
               Standard_Real    t1      = EVI1->Parameter();
               Standard_Real    t2      = EVI2->Parameter();
               Standard_Real    dd      = t1 - t2;
-              Standard_Boolean samepar = (Abs(dd) <= t);
+              Standard_Boolean samepar = (std::abs(dd) <= t);
               idT                      = samepar;
             }
           } // evi

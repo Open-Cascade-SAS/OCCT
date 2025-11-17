@@ -132,9 +132,9 @@ Standard_Integer IGESGeom_ConicArc::ComputedFormNumber() const
   //[Q1] = L^-4, [Q2]=L^-4, [Q3]=L^-2
   if (Q2 > eps4 && Q1 * Q3 < 0)
     return 1; // Ellipse
-  if (Q2 < -eps4 && Abs(Q1) > eps4)
+  if (Q2 < -eps4 && std::abs(Q1) > eps4)
     return 2; // Hyperbola
-  if (Abs(Q2) <= eps4 && Abs(Q1) > eps4)
+  if (std::abs(Q2) <= eps4 && std::abs(Q1) > eps4)
     return 3; // Parabola
   return 0;
 }
@@ -239,14 +239,14 @@ void IGESGeom_ConicArc::ComputedDefinition(Standard_Real& Xcen,
   if (IsFromParabola())
   {
     Rmin = Rmax = -1.; // radii : there are none
-    if ((Abs(a) <= eps) && (Abs(b) <= eps))
+    if ((std::abs(a) <= eps) && (std::abs(b) <= eps))
     {
       Xcen                = (f * c - e * e) / c / d / 2.;
       Ycen                = e / c;
       Standard_Real focal = -d / c;
       Xax                 = (focal >= 0 ? 1. : -1.);
       Yax                 = 0.;
-      Rmin = Rmax = Abs(focal);
+      Rmin = Rmax = std::abs(focal);
     }
     else
     {
@@ -261,14 +261,14 @@ void IGESGeom_ConicArc::ComputedDefinition(Standard_Real& Xcen,
       Ycen             = (-cc * dd - f * a) / dn;
 
       Standard_Real teta = M_PI / 2.;
-      if (Abs(b) > eps)
-        teta = ATan(-a / b);
+      if (std::abs(b) > eps)
+        teta = std::atan(-a / b);
       if (fc < 0)
         teta += M_PI;
-      Xax = Cos(teta);
-      Yax = Sin(teta);
+      Xax = std::cos(teta);
+      Yax = std::sin(teta);
 
-      Rmin = Rmax = Abs(fc) / sqrt(a * a + b * b) / 2.;
+      Rmin = Rmax = std::abs(fc) / sqrt(a * a + b * b) / 2.;
     }
   }
 
@@ -291,7 +291,7 @@ void IGESGeom_ConicArc::ComputedDefinition(Standard_Real& Xcen,
     Standard_Real cos2t;
     Standard_Real auxil;
 
-    if (Abs(term1) < gp::Resolution())
+    if (std::abs(term1) < gp::Resolution())
     {
       cos2t = 1.;
       auxil = term2;

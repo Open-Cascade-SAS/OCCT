@@ -696,7 +696,7 @@ void BRepLib_MakeEdge::Init(const Handle(Geom_Curve)& CC,
         myError = BRepLib_DifferentPointsOnClosedCurve;
         return;
       }
-      else if (P1.Distance(BRep_Tool::Pnt(V1)) > Max(preci, BRep_Tool::Tolerance(V1)))
+      else if (P1.Distance(BRep_Tool::Pnt(V1)) > std::max(preci, BRep_Tool::Tolerance(V1)))
       {
         myError = BRepLib_DifferentPointsOnClosedCurve;
         return;
@@ -727,7 +727,7 @@ void BRepLib_MakeEdge::Init(const Handle(Geom_Curve)& CC,
       {
         B.MakeVertex(V1, P1, preci);
       }
-      else if (P1.Distance(BRep_Tool::Pnt(V1)) > Max(preci, BRep_Tool::Tolerance(V1)))
+      else if (P1.Distance(BRep_Tool::Pnt(V1)) > std::max(preci, BRep_Tool::Tolerance(V1)))
       {
         myError = BRepLib_DifferentsPointAndParameter;
         return;
@@ -748,7 +748,7 @@ void BRepLib_MakeEdge::Init(const Handle(Geom_Curve)& CC,
       {
         B.MakeVertex(V2, P2, preci);
       }
-      else if (P2.Distance(BRep_Tool::Pnt(V2)) > Max(preci, BRep_Tool::Tolerance(V2)))
+      else if (P2.Distance(BRep_Tool::Pnt(V2)) > std::max(preci, BRep_Tool::Tolerance(V2)))
       {
         myError = BRepLib_DifferentsPointAndParameter;
         return;
@@ -978,7 +978,7 @@ void BRepLib_MakeEdge::Init(const Handle(Geom2d_Curve)& CC,
         myError = BRepLib_DifferentPointsOnClosedCurve;
         return;
       }
-      else if (P1.Distance(BRep_Tool::Pnt(V1)) > Max(preci, BRep_Tool::Tolerance(V1)))
+      else if (P1.Distance(BRep_Tool::Pnt(V1)) > std::max(preci, BRep_Tool::Tolerance(V1)))
       {
         myError = BRepLib_DifferentPointsOnClosedCurve;
         return;
@@ -1003,7 +1003,7 @@ void BRepLib_MakeEdge::Init(const Handle(Geom2d_Curve)& CC,
       {
         B.MakeVertex(V1, P1, preci);
       }
-      else if (P1.Distance(BRep_Tool::Pnt(V1)) > Max(preci, BRep_Tool::Tolerance(V1)))
+      else if (P1.Distance(BRep_Tool::Pnt(V1)) > std::max(preci, BRep_Tool::Tolerance(V1)))
       {
         myError = BRepLib_DifferentsPointAndParameter;
         return;
@@ -1024,7 +1024,7 @@ void BRepLib_MakeEdge::Init(const Handle(Geom2d_Curve)& CC,
       {
         B.MakeVertex(V2, P2, preci);
       }
-      else if (P2.Distance(BRep_Tool::Pnt(V2)) > Max(preci, BRep_Tool::Tolerance(V2)))
+      else if (P2.Distance(BRep_Tool::Pnt(V2)) > std::max(preci, BRep_Tool::Tolerance(V2)))
       {
         myError = BRepLib_DifferentsPointAndParameter;
         return;

@@ -198,7 +198,7 @@ public:
   void Set(Graphic3d_RenderTransparentMethod theMode, const float theDepthFactor)
   {
     myOitMode     = theMode;
-    myDepthFactor = static_cast<float>(Max(0.f, Min(1.f, theDepthFactor)));
+    myDepthFactor = static_cast<float>((std::max)(0.f, (std::min)(1.f, theDepthFactor)));
   }
 
   //! Returns flag indicating whether writing of output for OIT processing

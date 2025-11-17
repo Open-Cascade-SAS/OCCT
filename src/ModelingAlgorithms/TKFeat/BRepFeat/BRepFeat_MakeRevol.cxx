@@ -208,7 +208,7 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
   myGluedF.Clear();
   myPerfSelection = BRepFeat_NoSelection;
   PerfSelectionValid();
-  Standard_Boolean RevolComp = (2 * M_PI - Abs(Angle) <= Precision::Angular());
+  Standard_Boolean RevolComp = (2 * M_PI - std::abs(Angle) <= Precision::Angular());
   LocOpe_Revol     theRevol;
   Standard_Real    angledec = 0.;
   TopExp_Explorer  exp;
@@ -573,7 +573,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
       // OrF = OrU;
       OrF   = TopAbs::Reverse(OrU);
       FFrom = ASI2.Point(1, 1).Face();
-      PrF   = Max(pr1, pr2);
+      PrF   = std::max(pr1, pr2);
     }
     else
     {

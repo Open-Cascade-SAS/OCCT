@@ -239,7 +239,7 @@ void LProp_SLProps::TangentU(gp_Dir& D)
     else
       du = anUsupremum - anUinfium;
 
-    const Standard_Real aDeltaU = Max(du * DivisionFactor, MinStep);
+    const Standard_Real aDeltaU = std::max(du * DivisionFactor, MinStep);
 
     gp_Vec V = myD2u;
 
@@ -251,8 +251,8 @@ void LProp_SLProps::TangentU(gp_Dir& D)
       u = myU - aDeltaU;
 
     gp_Pnt P1, P2;
-    Tool::Value(mySurf, Min(myU, u), myV, P1);
-    Tool::Value(mySurf, Max(myU, u), myV, P2);
+    Tool::Value(mySurf, std::min(myU, u), myV, P1);
+    Tool::Value(mySurf, std::max(myU, u), myV, P2);
 
     gp_Vec        V1(P1, P2);
     Standard_Real aDirFactor = V.Dot(V1);
@@ -301,7 +301,7 @@ void LProp_SLProps::TangentV(gp_Dir& D)
     else
       dv = anVsupremum - anVinfium;
 
-    const Standard_Real aDeltaV = Max(dv * DivisionFactor, MinStep);
+    const Standard_Real aDeltaV = std::max(dv * DivisionFactor, MinStep);
 
     gp_Vec V = myD2v;
 
@@ -313,8 +313,8 @@ void LProp_SLProps::TangentV(gp_Dir& D)
       v = myV - aDeltaV;
 
     gp_Pnt P1, P2;
-    Tool::Value(mySurf, myU, Min(myV, v), P1);
-    Tool::Value(mySurf, myU, Max(myV, v), P2);
+    Tool::Value(mySurf, myU, std::min(myV, v), P1);
+    Tool::Value(mySurf, myU, std::max(myV, v), P2);
 
     gp_Vec        V1(P1, P2);
     Standard_Real aDirFactor = V.Dot(V1);
@@ -407,7 +407,7 @@ Standard_Boolean LProp_SLProps::IsCurvatureDefined()
   Standard_Real B = E * N - G * L;
   Standard_Real C = F * N - G * M;
 
-  Standard_Real MaxABC = Max(Max(Abs(A), Abs(B)), Abs(C));
+  Standard_Real MaxABC = std::max(std::max(std::abs(A), std::abs(B)), std::abs(C));
   if (MaxABC < RealEpsilon()) // ombilic
   {
     myMinCurv         = N / G;
@@ -426,7 +426,7 @@ Standard_Boolean LProp_SLProps::IsCurvatureDefined()
   Standard_Real Curv1, Curv2, Root1, Root2;
   gp_Vec        VectCurv1, VectCurv2;
 
-  if (Abs(A) > RealEpsilon())
+  if (std::abs(A) > RealEpsilon())
   {
     math_DirectPolynomialRoots Root(A, B, C);
     if (Root.NbSolutions() != 2)
@@ -444,7 +444,7 @@ Standard_Boolean LProp_SLProps::IsCurvatureDefined()
       VectCurv2 = Root2 * myD1u + myD1v;
     }
   }
-  else if (Abs(C) > RealEpsilon())
+  else if (std::abs(C) > RealEpsilon())
   {
     math_DirectPolynomialRoots Root(C, B, A);
 
@@ -498,7 +498,7 @@ Standard_Boolean LProp_SLProps::IsUmbilic()
   if (!IsCurvatureDefined())
     throw LProp_NotDefined();
 
-  return Abs(myMaxCurv - myMinCurv) < Abs(Epsilon(myMaxCurv));
+  return std::abs(myMaxCurv - myMinCurv) < std::abs(Epsilon(myMaxCurv));
 }
 
 Standard_Real LProp_SLProps::MaxCurvature()

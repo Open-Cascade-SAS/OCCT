@@ -496,7 +496,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
           listSDR->Append(sdr);
         else
         {
-          Standard_Integer iDiff = Abs(FindShapeReprType(rep) - ICS);
+          Standard_Integer iDiff = std::abs(FindShapeReprType(rep) - ICS);
           // if more suitable representation is found, drop previous if any selected
           if (iDiff < delta)
           {
@@ -2104,7 +2104,7 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
     TP->AddWarning(theRepCont, "No Length Uncertainty, value of read.precision.val is taken");
     myPrecision = aStepModel->InternalParameters.ReadPrecisionVal;
   }
-  myMaxTol = Max(myPrecision, aStepModel->InternalParameters.ReadMaxPrecisionVal);
+  myMaxTol = std::max(myPrecision, aStepModel->InternalParameters.ReadMaxPrecisionVal);
   // Assign uncertainty
 #ifdef TRANSLOG
   if (TP->TraceLevel() > 1)
@@ -2120,7 +2120,7 @@ void STEPControl_ActorRead::ResetUnits(Handle(StepData_StepModel)& theModel,
 {
   theLocalFactors.InitializeFactors(1, 1, 1);
   myPrecision = theModel->InternalParameters.ReadPrecisionVal;
-  myMaxTol    = Max(myPrecision, theModel->InternalParameters.ReadMaxPrecisionVal);
+  myMaxTol    = std::max(myPrecision, theModel->InternalParameters.ReadMaxPrecisionVal);
 }
 
 //=================================================================================================

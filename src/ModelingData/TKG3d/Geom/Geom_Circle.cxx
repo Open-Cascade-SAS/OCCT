@@ -187,7 +187,7 @@ Vec Geom_Circle::DN(const Standard_Real U, const Standard_Integer N) const
 void Geom_Circle::Transform(const Trsf& T)
 {
 
-  radius = radius * Abs(T.ScaleFactor());
+  radius = radius * std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 

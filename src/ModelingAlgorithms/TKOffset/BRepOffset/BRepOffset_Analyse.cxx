@@ -153,7 +153,7 @@ Standard_Boolean CheckMixedContinuity(const TopoDS_Edge&  theEdge,
     return aMixedCont;
   }
   // But we caqnnot trust result, if it is C0. because this value set by default.
-  Standard_Real TolC0 = Max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
+  Standard_Real TolC0 = std::max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
 
   Standard_Real aFirst;
   Standard_Real aLast;
@@ -309,7 +309,7 @@ void BRepOffset_Analyse::Perform(const TopoDS_Shape&          S,
   myDescendants.Clear();
 
   myAngle              = Angle;
-  Standard_Real SinTol = Abs(Sin(Angle));
+  Standard_Real SinTol = std::abs(std::sin(Angle));
 
   // Build ancestors.
   BuildAncestors(S, myAncestors);
@@ -412,12 +412,12 @@ void BRepOffset_Analyse::TreatTangentFaces(const TopTools_ListOfShape&  theLE,
 
     const Standard_Real* pOffsetVal1  = myFaceOffsetMap.Seek(aF1);
     const Standard_Real* pOffsetVal2  = myFaceOffsetMap.Seek(aF2);
-    const Standard_Real  anOffsetVal1 = pOffsetVal1 ? Abs(*pOffsetVal1) : myOffset;
-    const Standard_Real  anOffsetVal2 = pOffsetVal2 ? Abs(*pOffsetVal2) : myOffset;
+    const Standard_Real  anOffsetVal1 = pOffsetVal1 ? std::abs(*pOffsetVal1) : myOffset;
+    const Standard_Real  anOffsetVal2 = pOffsetVal2 ? std::abs(*pOffsetVal2) : myOffset;
     if (anOffsetVal1 != anOffsetVal2)
     {
       BRep_Builder().Add(aCETangent, aE);
-      anEdgeOffsetMap.Bind(aE, Max(anOffsetVal1, anOffsetVal2));
+      anEdgeOffsetMap.Bind(aE, std::max(anOffsetVal1, anOffsetVal2));
 
       const TopoDS_Shape& aFMin = anOffsetVal1 < anOffsetVal2 ? aF1 : aF2;
       for (TopoDS_Iterator itV(aE); itV.More(); itV.Next())
@@ -493,7 +493,7 @@ void BRepOffset_Analyse::TreatTangentFaces(const TopTools_ListOfShape&  theLE,
 
   Handle(IntTools_Context) aCtx = new IntTools_Context();
   // Tangency criteria
-  Standard_Real aSinTol = Abs(Sin(myAngle));
+  Standard_Real aSinTol = std::abs(std::sin(myAngle));
 
   // Make blocks of connected edges
   TopTools_ListOfListOfShape                aLCB;
@@ -546,7 +546,7 @@ void BRepOffset_Analyse::TreatTangentFaces(const TopTools_ListOfShape&  theLE,
         {
           BRep_Builder().Add(aBlock, aE2.Oriented(TopAbs_FORWARD));
           aMFence.Add(aE2);
-          anOffset = Max(anOffset, anEdgeOffsetMap.Find(aE2));
+          anOffset = std::max(anOffset, anEdgeOffsetMap.Find(aE2));
         }
       }
 
@@ -572,8 +572,8 @@ void BRepOffset_Analyse::TreatTangentFaces(const TopTools_ListOfShape&  theLE,
 
         const Standard_Real* pOffsetVal1  = myFaceOffsetMap.Seek(aF1);
         const Standard_Real* pOffsetVal2  = myFaceOffsetMap.Seek(aF2);
-        const Standard_Real  anOffsetVal1 = pOffsetVal1 ? Abs(*pOffsetVal1) : myOffset;
-        const Standard_Real  anOffsetVal2 = pOffsetVal2 ? Abs(*pOffsetVal2) : myOffset;
+        const Standard_Real  anOffsetVal1 = pOffsetVal1 ? std::abs(*pOffsetVal1) : myOffset;
+        const Standard_Real  anOffsetVal2 = pOffsetVal2 ? std::abs(*pOffsetVal2) : myOffset;
 
         const TopoDS_Shape& aFToRemove = anOffsetVal1 > anOffsetVal2 ? aF1 : aF2;
         const TopoDS_Shape& aFOpposite = anOffsetVal1 > anOffsetVal2 ? aF2 : aF1;

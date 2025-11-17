@@ -86,12 +86,12 @@ gp_Pnt Select3D_SensitiveSegment::CenterOfGeometry() const
 //=======================================================================
 Select3D_BndBox3d Select3D_SensitiveSegment::BoundingBox()
 {
-  const SelectMgr_Vec3 aMinPnt(Min(myStart.X(), myEnd.X()),
-                               Min(myStart.Y(), myEnd.Y()),
-                               Min(myStart.Z(), myEnd.Z()));
-  const SelectMgr_Vec3 aMaxPnt(Max(myStart.X(), myEnd.X()),
-                               Max(myStart.Y(), myEnd.Y()),
-                               Max(myStart.Z(), myEnd.Z()));
+  const SelectMgr_Vec3 aMinPnt(std::min(myStart.X(), myEnd.X()),
+                               std::min(myStart.Y(), myEnd.Y()),
+                               std::min(myStart.Z(), myEnd.Z()));
+  const SelectMgr_Vec3 aMaxPnt(std::max(myStart.X(), myEnd.X()),
+                               std::max(myStart.Y(), myEnd.Y()),
+                               std::max(myStart.Z(), myEnd.Z()));
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }
 

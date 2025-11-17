@@ -76,7 +76,7 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
     else if (Radius <= -Tol)
     {
       Axis.Rotate(gp_Ax1(Axis.Location(), Axis.Direction()), M_PI);
-      Result    = new Geom_CylindricalSurface(Axis, Abs(Radius));
+      Result    = new Geom_CylindricalSurface(Axis, std::abs(Radius));
       theStatus = BRepOffset_Reversed;
     }
     else
@@ -88,19 +88,19 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
   {
     Handle(Geom_ConicalSurface) C      = Handle(Geom_ConicalSurface)::DownCast(Surface);
     Standard_Real               Alpha  = C->SemiAngle();
-    Standard_Real               Radius = C->RefRadius() + Offset * Cos(Alpha);
+    Standard_Real               Radius = C->RefRadius() + Offset * std::cos(Alpha);
     gp_Ax3                      Axis   = C->Position();
     if (Radius >= 0.)
     {
       gp_Vec Z(Axis.Direction());
-      Z *= -Offset * Sin(Alpha);
+      Z *= -Offset * std::sin(Alpha);
       Axis.Translate(Z);
     }
     else
     {
       Radius = -Radius;
       gp_Vec Z(Axis.Direction());
-      Z *= -Offset * Sin(Alpha);
+      Z *= -Offset * std::sin(Alpha);
       Axis.Translate(Z);
       Axis.Rotate(gp_Ax1(Axis.Location(), Axis.Direction()), M_PI);
       Alpha = -Alpha;

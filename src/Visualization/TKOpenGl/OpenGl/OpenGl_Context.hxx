@@ -958,7 +958,7 @@ public: //! @name methods to alter or retrieve current state
   Standard_ShortReal RenderScale() const { return myRenderScale; }
 
   //! Return TRUE if rendering scale factor is not 1.
-  Standard_Boolean HasRenderScale() const { return Abs(myRenderScale - 1.0f) > 0.0001f; }
+  Standard_Boolean HasRenderScale() const { return std::abs(myRenderScale - 1.0f) > 0.0001f; }
 
   //! Rendering scale factor (inverted value).
   Standard_ShortReal RenderScaleInv() const { return myRenderScaleInv; }
@@ -983,7 +983,7 @@ public: //! @name methods to alter or retrieve current state
   void SetResolutionRatio(const Standard_ShortReal theRatio)
   {
     myResolutionRatio = theRatio;
-    myLineWidthScale  = Max(1.0f, std::floor(theRatio + 0.5f));
+    myLineWidthScale  = (std::max)(1.0f, std::floor(theRatio + 0.5f));
   }
 
   //! Return line feater width in pixels.

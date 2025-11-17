@@ -114,12 +114,12 @@ GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const Standard_Real U1,
                             Nb,
                             Index2,
                             newLast);
-  if (Abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
+  if (std::abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
   {
     if (Index1 < Nb)
       Index1++;
   }
-  if (Abs(newLast - TK(Index2)) < Precision::PConfusion())
+  if (std::abs(newLast - TK(Index2)) < Precision::PConfusion())
     Index2--;
   Standard_Integer MultMax;
   // attention aux courbes peridiques.
@@ -314,7 +314,7 @@ Standard_Integer GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
         throw Standard_DomainError("GeomAdaptor_Curve::NbIntervals()");
     }
 
-    Standard_Real anEps = Min(Resolution(Precision::Confusion()), Precision::PConfusion());
+    Standard_Real anEps = std::min(Resolution(Precision::Confusion()), Precision::PConfusion());
 
     return BSplCLib::Intervals(myBSplineCurve->Knots(),
                                myBSplineCurve->Multiplicities(),
@@ -406,7 +406,7 @@ void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S
         throw Standard_DomainError("GeomAdaptor_Curve::Intervals()");
     }
 
-    Standard_Real anEps = Min(Resolution(Precision::Confusion()), Precision::PConfusion());
+    Standard_Real anEps = std::min(Resolution(Precision::Confusion()), Precision::PConfusion());
 
     BSplCLib::Intervals(myBSplineCurve->Knots(),
                         myBSplineCurve->Multiplicities(),
@@ -746,7 +746,7 @@ Standard_Real GeomAdaptor_Curve::Resolution(const Standard_Real R3D) const
     case GeomAbs_Circle: {
       Standard_Real R = Handle(Geom_Circle)::DownCast(myCurve)->Circ().Radius();
       if (R > R3D / 2.)
-        return 2 * ASin(R3D / (2 * R));
+        return 2 * std::asin(R3D / (2 * R));
       else
         return 2 * M_PI;
     }

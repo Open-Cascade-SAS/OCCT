@@ -613,7 +613,8 @@ Standard_Boolean Geom2dHatch_Hatcher::Trim(const Standard_Integer IndH, const St
       // `hatcher'.
       //-----------------------------------------------------------------------
 
-      Standard_Boolean Conf2d = Abs(Pnt1.ParamOnFirst() - Pnt2.ParamOnFirst()) <= myConfusion2d;
+      Standard_Boolean Conf2d =
+        std::abs(Pnt1.ParamOnFirst() - Pnt2.ParamOnFirst()) <= myConfusion2d;
 
       //-----------------------------------------------------------------------
       // Les deux points peuvent etre `confondus' au regard des intersections.

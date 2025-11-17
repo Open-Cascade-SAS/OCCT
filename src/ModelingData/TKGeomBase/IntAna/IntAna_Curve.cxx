@@ -22,9 +22,9 @@
 //----------------------------------------------------------------------
 //-- Differents constructeurs sont proposes qui correspondent aux
 //-- polynomes en Z :
-//--    A(Sin(Theta),Cos(Theta)) Z**2
-//--  + B(Sin(Theta),Cos(Theta)) Z
-//--  + C(Sin(Theta),Cos(Theta))
+//--    A(std::sin(Theta),std::cos(Theta)) Z**2
+//--  + B(std::sin(Theta),std::cos(Theta)) Z
+//--  + C(std::sin(Theta),std::cos(Theta))
 //--
 //-- Une Courbe est definie sur un domaine
 //--
@@ -114,16 +114,16 @@ void IntAna_Curve::SetConeQuadValues(const gp_Cone&         Cone,
   RCyl = Cone.RefRadius();
 
   Angle                      = Cone.SemiAngle();
-  Standard_Real UnSurTgAngle = 1.0 / (Tan(Cone.SemiAngle()));
+  Standard_Real UnSurTgAngle = 1.0 / (std::tan(Cone.SemiAngle()));
 
   typequadric = GeomAbs_Cone;
 
   TwoCurves     = twocurves;     //-- deux  Z pour un meme parametre
   TakeZPositive = takezpositive; //-- Prendre sur la courbe le Z Positif
-                                 //--   ( -B + Sqrt()) et non (-B - Sqrt())
+                                 //--   ( -B + std::sqrt()) et non (-B - std::sqrt())
 
-  Z0Cte    = Q1;  //-- Attention On a    Z?Cos Cos(t)
-  Z0Sin    = 0.0; //-- et Non          2 Z?Cos Cos(t) !!!
+  Z0Cte    = Q1;  //-- Attention On a    Z?Cos std::cos(t)
+  Z0Sin    = 0.0; //-- et Non          2 Z?Cos std::cos(t) !!!
   Z0Cos    = 0.0; //-- Ce pour tous les Parametres
   Z0CosCos = 0.0; //--  ie pas de Coefficient 2
   Z0SinSin = 0.0; //--     devant les termes CS C S
@@ -182,7 +182,7 @@ void IntAna_Curve::SetCylinderQuadValues(const gp_Cylinder&     Cyl,
 
   TwoCurves              = twocurves;     //-- deux  Z pour un meme parametre
   TakeZPositive          = takezpositive; //-- Prendre sur la courbe le Z Positif
-  Standard_Real RCylmul2 = RCyl + RCyl;   //--   ( -B + Sqrt())
+  Standard_Real RCylmul2 = RCyl + RCyl;   //--   ( -B + std::sqrt())
 
   Z0Cte    = Q1;
   Z0Sin    = RCylmul2 * Qy;
@@ -301,7 +301,7 @@ void IntAna_Curve::InternalUVValue(const Standard_Real theta,
     throw Standard_DomainError("IntAna_Curve::Domain");
   }
 
-  if (Abs(Theta - DomainSup) < aDT)
+  if (std::abs(Theta - DomainSup) < aDT)
   {
     // Point of Null-discriminant.
     Theta = DomainSup;
@@ -319,10 +319,10 @@ void IntAna_Curve::InternalUVValue(const Standard_Real theta,
     SecondSolution = TakeZPositive;
   }
   //
-  cost                       = Cos(Theta);
-  sint                       = Sin(Theta);
-  const Standard_Real aSin2t = Sin(Theta + Theta);
-  const Standard_Real aCos2t = Cos(Theta + Theta);
+  cost                       = std::cos(Theta);
+  sint                       = std::sin(Theta);
+  const Standard_Real aSin2t = std::sin(Theta + Theta);
+  const Standard_Real aCos2t = std::cos(Theta + Theta);
 
   A =
     Z2Cte + sint * (Z2Sin + sint * Z2SinSin) + cost * (Z2Cos + cost * Z2CosCos) + Z2CosSin * aSin2t;
@@ -348,14 +348,14 @@ void IntAna_Curve::InternalUVValue(const Standard_Real theta,
   // Error of discriminant computation is equal to
   // (d(Disc)/dt)*dt, where 1st derivative d(Disc)/dt = 2*B*aDB - 4*(A*aDC + C*aDA).
 
-  const Standard_Real aTolD = 2.0 * aDT * Abs(B * aDB - 2.0 * (A * aDC + C * aDA));
+  const Standard_Real aTolD = 2.0 * aDT * std::abs(B * aDB - 2.0 * (A * aDC + C * aDA));
 
   if (aDiscriminant < aTolD)
     aDiscriminant = 0.0;
 
-  if (Abs(A) <= Precision::PConfusion())
+  if (std::abs(A) <= Precision::PConfusion())
   {
-    if (Abs(B) <= Precision::PConfusion())
+    if (std::abs(B) <= Precision::PConfusion())
     {
       Param2 = 0.0;
     }
@@ -366,7 +366,7 @@ void IntAna_Curve::InternalUVValue(const Standard_Real theta,
   }
   else
   {
-    SigneSqrtDis = (SecondSolution) ? Sqrt(aDiscriminant) : -Sqrt(aDiscriminant);
+    SigneSqrtDis = (SecondSolution) ? std::sqrt(aDiscriminant) : -std::sqrt(aDiscriminant);
     Param2       = (-B + SigneSqrtDis) / (A + A);
   }
 }
@@ -407,7 +407,7 @@ Standard_Boolean IntAna_Curve::D1u(const Standard_Real theta, gp_Pnt& Pt, gp_Vec
   InternalUVValue(theta, U, V, A, B, C, cost, sint, SigneSqrtDis);
   //
   Pt = Value(theta);
-  if (Abs(A) < 1.0e-7 || Abs(SigneSqrtDis) < 1.0e-10)
+  if (std::abs(A) < 1.0e-7 || std::abs(SigneSqrtDis) < 1.0e-10)
     return (Standard_False);
 
   //-- Approximation de la derivee (mieux que le calcul mathematique!)
@@ -537,12 +537,12 @@ gp_Pnt IntAna_Curve::InternalValue(const Standard_Real U, const Standard_Real _V
   {
     case GeomAbs_Cone: {
       //------------------------------------------------
-      //-- Parametrage : X = V * Cos(U)              ---
-      //--               Y = V * Sin(U)              ---
-      //--               Z = (V-RCyl) / Tan(SemiAngle)--
+      //-- Parametrage : X = V * std::cos(U)              ---
+      //--               Y = V * std::sin(U)              ---
+      //--               Z = (V-RCyl) / std::tan(SemiAngle)--
       //------------------------------------------------
       //-- Angle Vaut Cone.SemiAngle()
-      return (ElSLib::ConeValue(U, (V - RCyl) / Sin(Angle), Ax3, RCyl, Angle));
+      return (ElSLib::ConeValue(U, (V - RCyl) / std::sin(Angle), Ax3, RCyl, Angle));
     }
     break;
 

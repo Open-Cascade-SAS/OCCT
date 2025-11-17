@@ -35,8 +35,8 @@ void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       the
                                                NCollection_Array1<gp_Pnt>&   theFix)
 {
   Standard_Integer             aMaxIter = 15;
-  NCollection_Array1<gp_Pnt>   aTabP(1, Max(myNbP, 1)), aPrevP(1, Max(myNbP, 1));
-  NCollection_Array1<gp_Pnt2d> aTabP2d(1, Max(myNbP2d, 1)), aPrevP2d(1, Max(myNbP2d, 1));
+  NCollection_Array1<gp_Pnt>   aTabP(1, std::max(myNbP, 1)), aPrevP(1, std::max(myNbP, 1));
+  NCollection_Array1<gp_Pnt2d> aTabP2d(1, std::max(myNbP2d, 1)), aPrevP2d(1, std::max(myNbP2d, 1));
   Standard_Real                aMult       = ((theU - theU0) > (theU1 - theU)) ? 1.0 : -1.0;
   Standard_Real                aStartParam = theU, aCurrParam, aPrevDist = 1.0, aCurrDist = 1.0;
 
@@ -113,10 +113,10 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 
   Standard_Integer i2plus1, i2plus2;
   myNbdiscret = myNbPoints;
-  NCollection_Array1<gp_Pnt>   aTabP(1, Max(myNbP, 1));
-  NCollection_Array1<gp_Pnt2d> aTabP2d(1, Max(myNbP2d, 1));
-  NCollection_Array1<gp_Vec>   aTabV(1, Max(myNbP, 1));
-  NCollection_Array1<gp_Vec2d> aTabV2d(1, Max(myNbP2d, 1));
+  NCollection_Array1<gp_Pnt>   aTabP(1, std::max(myNbP, 1));
+  NCollection_Array1<gp_Pnt2d> aTabP2d(1, std::max(myNbP2d, 1));
+  NCollection_Array1<gp_Vec>   aTabV(1, std::max(myNbP, 1));
+  NCollection_Array1<gp_Vec2d> aTabV2d(1, std::max(myNbP2d, 1));
 
   for (Standard_Integer aDimIdx = 1; aDimIdx <= myNbP * 3 + myNbP2d * 2; aDimIdx++)
   {
@@ -185,8 +185,10 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
   for (Standard_Integer aDimIdx = 1; aDimIdx <= aMaxDim; aDimIdx++)
   {
     if (myPerInfo(aDimIdx).isPeriodic
-        && Abs(myPoints(1, aDimIdx) - myPoints(2, aDimIdx)) > myPerInfo(aDimIdx).myPeriod / 2.01
-        && Abs(myPoints(2, aDimIdx) - myPoints(3, aDimIdx)) < myPerInfo(aDimIdx).myPeriod / 2.01)
+        && std::abs(myPoints(1, aDimIdx) - myPoints(2, aDimIdx))
+             > myPerInfo(aDimIdx).myPeriod / 2.01
+        && std::abs(myPoints(2, aDimIdx) - myPoints(3, aDimIdx))
+             < myPerInfo(aDimIdx).myPeriod / 2.01)
     {
       Standard_Real aPeriodMult = (myPoints(1, aDimIdx) < myPoints(2, aDimIdx)) ? 1.0 : -1.0;
       Standard_Real aNewParam   = myPoints(1, aDimIdx) + aPeriodMult * myPerInfo(aDimIdx).myPeriod;
@@ -198,7 +200,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
     for (Standard_Integer aDimIdx = 1; aDimIdx <= aMaxDim; aDimIdx++)
     {
       if (myPerInfo(aDimIdx).isPeriodic
-          && Abs(myPoints(aPntIdx, aDimIdx) - myPoints(aPntIdx + 1, aDimIdx))
+          && std::abs(myPoints(aPntIdx, aDimIdx) - myPoints(aPntIdx + 1, aDimIdx))
                > myPerInfo(aDimIdx).myPeriod / 2.01)
       {
         Standard_Real aPeriodMult =
@@ -256,8 +258,8 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
   {
     math_Matrix M(1, classe, 1, classe);
     MMatrix(classe, M);
-    NCollection_Array1<gp_Pnt2d> aFixP2d(1, Max(myNbP2d, 1));
-    NCollection_Array1<gp_Pnt>   aFixP(1, Max(myNbP, 1));
+    NCollection_Array1<gp_Pnt2d> aFixP2d(1, std::max(myNbP2d, 1));
+    NCollection_Array1<gp_Pnt>   aFixP(1, std::max(myNbP, 1));
 
     if (myFirstC == AppParCurves_PassPoint || myFirstC == AppParCurves_TangencyPoint)
     {
@@ -285,7 +287,8 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       for (Standard_Integer aDimIdx = 1; aDimIdx <= aMaxDim; aDimIdx++)
       {
         if (myPerInfo(aDimIdx).isPeriodic
-            && Abs(myPoles(1, aDimIdx) - myPoints(1, aDimIdx)) > myPerInfo(aDimIdx).myPeriod / 2.01)
+            && std::abs(myPoles(1, aDimIdx) - myPoints(1, aDimIdx))
+                 > myPerInfo(aDimIdx).myPeriod / 2.01)
         {
           Standard_Real aMult = myPoles(1, aDimIdx) < myPoints(1, aDimIdx) ? 1.0 : -1.0;
           myPoles(1, aDimIdx) += aMult * myPerInfo(aDimIdx).myPeriod;
@@ -319,7 +322,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       for (Standard_Integer aDimIdx = 1; aDimIdx <= 2; aDimIdx++)
       {
         if (myPerInfo(aDimIdx).isPeriodic
-            && Abs(myPoles(classe, aDimIdx) - myPoints(myNbPoints, aDimIdx))
+            && std::abs(myPoles(classe, aDimIdx) - myPoints(myNbPoints, aDimIdx))
                  > myPerInfo(aDimIdx).myPeriod / 2.01)
         {
           Standard_Real aMult =
@@ -563,7 +566,7 @@ void AppCont_LeastSquare::Error(Standard_Real& F,
       e2     = MyPoints(i, i2 + 1);
       e3     = MyPoints(i, i2 + 2);
       err3d  = e1 * e1 + e2 * e2 + e3 * e3;
-      MaxE3d = Max(MaxE3d, err3d);
+      MaxE3d = std::max(MaxE3d, err3d);
       F += err3d;
       i2 += 3;
     }
@@ -572,14 +575,14 @@ void AppCont_LeastSquare::Error(Standard_Real& F,
       e1     = MyPoints(i, i2);
       e2     = MyPoints(i, i2 + 1);
       err2d  = e1 * e1 + e2 * e2;
-      MaxE2d = Max(MaxE2d, err2d);
+      MaxE2d = std::max(MaxE2d, err2d);
       F += err2d;
       i2 += 2;
     }
   }
 
-  MaxE3d = Sqrt(MaxE3d);
-  MaxE2d = Sqrt(MaxE2d);
+  MaxE3d = std::sqrt(MaxE3d);
+  MaxE2d = std::sqrt(MaxE2d);
 }
 
 //=================================================================================================

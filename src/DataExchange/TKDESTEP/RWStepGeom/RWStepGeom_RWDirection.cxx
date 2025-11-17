@@ -50,7 +50,7 @@ void RWStepGeom_RWDirection::ReadStep(const Handle(StepData_StepReaderData)& dat
     {
       ach->AddWarning("More than 3 direction ratios, ignored");
     }
-    aNbCoord = Min(aNbElements, 3);
+    aNbCoord = std::min(aNbElements, 3);
     for (Standard_Integer i2 = 0; i2 < aNbCoord; i2++)
     {
       if (data->ReadReal(aNSub2, i2 + 1, "direction_ratios", ach, aCoordinatesItem))
@@ -93,7 +93,7 @@ void RWStepGeom_RWDirection::Check(const Handle(StepGeom_Direction)& ent,
   Standard_Integer i;
   for (i = 1; i <= nbVal; i++)
   {
-    if (Abs(ent->DirectionRatiosValue(i)) >= RealEpsilon())
+    if (std::abs(ent->DirectionRatiosValue(i)) >= RealEpsilon())
       break;
   }
   if (i > nbVal)

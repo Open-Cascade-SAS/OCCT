@@ -111,7 +111,7 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
 
     // xpu030998 : cto901A3
     Standard_Real    toll    = 1.e-8;
-    Standard_Boolean ooplane = (Abs(Cur1) < toll) && (Abs(Cur2) < toll);
+    Standard_Boolean ooplane = (std::abs(Cur1) < toll) && (std::abs(Cur2) < toll);
     plane                    = plane || ooplane;
 
     if (plane)
@@ -128,7 +128,8 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
 
     D1                 = Norm;
     Standard_Real    x = D1.X(), y = D1.Y(), z = D1.Z(), tol = Precision::Confusion();
-    Standard_Boolean nullx = (Abs(x) < tol), nully = (Abs(y) < tol), nullz = (Abs(z) < tol);
+    Standard_Boolean nullx = (std::abs(x) < tol), nully = (std::abs(y) < tol),
+                     nullz = (std::abs(z) < tol);
     if (nullx && nully)
       D2 = gp_Dir(gp_Dir::D::X);
     else if (nullx && nullz)

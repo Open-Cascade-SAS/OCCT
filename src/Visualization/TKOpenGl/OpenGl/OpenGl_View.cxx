@@ -598,7 +598,7 @@ Standard_Boolean OpenGl_View::ShadowMapDump(Image_PixMap&                  theIm
         }
         // Setup alignment.
         // clang-format off
-        const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL.
+        const GLint anAligment = std::min(GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL.
         // clang-format on
         aGlCtx->core11fwd->glPixelStorei(GL_PACK_ALIGNMENT, anAligment);
         // Read data.
@@ -841,7 +841,7 @@ Standard_Integer OpenGl_View::ZLayerMax() const
        aLayerIter.More();
        aLayerIter.Next())
   {
-    aLayerMax = Max(aLayerMax, aLayerIter.Value()->LayerId());
+    aLayerMax = std::max(aLayerMax, aLayerIter.Value()->LayerId());
   }
   return aLayerMax;
 }
@@ -1192,7 +1192,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
   // determine multisampling parameters
   Standard_Integer aNbSamples =
     !myToDisableMSAA && aSizeX == aRendSize.x()
-      ? Max(Min(myRenderParams.NbMsaaSamples, aCtx->MaxMsaaSamples()), 0)
+      ? std::max(std::min(myRenderParams.NbMsaaSamples, aCtx->MaxMsaaSamples()), 0)
       : 0;
   if (aNbSamples != 0)
   {

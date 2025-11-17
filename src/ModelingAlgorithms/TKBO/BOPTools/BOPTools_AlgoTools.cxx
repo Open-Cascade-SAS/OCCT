@@ -1030,7 +1030,7 @@ Standard_Boolean BOPTools_AlgoTools::GetFaceOff(const TopoDS_Edge&              
     // Angle
     aAngle = AngleWithRef(aDBF, aDBF2, aDTF);
     //
-    if (Abs(aAngle) < Precision::Angular())
+    if (std::abs(aAngle) < Precision::Angular())
     {
       if (aF2 == theF1)
       {
@@ -1042,7 +1042,7 @@ Standard_Boolean BOPTools_AlgoTools::GetFaceOff(const TopoDS_Edge&              
       }
     }
     //
-    if (Abs(aAngle) < anAngleCriteria || Abs(aAngle - aAngleMin) < anAngleCriteria)
+    if (std::abs(aAngle) < anAngleCriteria || std::abs(aAngle - aAngleMin) < anAngleCriteria)
     {
       // the minimal angle can not be found
       bRet = Standard_False;
@@ -1150,7 +1150,7 @@ Standard_Boolean BOPTools_AlgoTools::AreFacesSameDomain(const TopoDS_Face&      
   }
 
   // Checking criteria
-  Standard_Real aTol = aTolF1 + aTolF2 + Max(theFuzz, Precision::Confusion());
+  Standard_Real aTol = aTolF1 + aTolF2 + std::max(theFuzz, Precision::Confusion());
 
   // Project and classify the point on second face
   bFacesSD = theContext->IsValidPointForFace(aP1, theF2, aTol);
@@ -2226,7 +2226,7 @@ Standard_Real MinStep3D(const TopoDS_Edge&                  theE1,
         break;
       }
       case GeomAbs_Sphere: {
-        aDtMin = Max(aDtMin, 5.e-4);
+        aDtMin = std::max(aDtMin, 5.e-4);
         aR     = aBAS.Sphere().Radius();
         break;
       }
@@ -2235,14 +2235,14 @@ Standard_Real MinStep3D(const TopoDS_Edge&                  theE1,
         break;
       }
       default:
-        aDtMin = Max(aDtMin, 5.e-4);
+        aDtMin = std::max(aDtMin, 5.e-4);
         break;
     }
     //
     if (aR > 100.)
     {
       constexpr Standard_Real d = 10 * Precision::PConfusion();
-      aDtMin                    = Max(aDtMin, sqrt(d * d + 2 * d * aR));
+      aDtMin                    = std::max(aDtMin, sqrt(d * d + 2 * d * aR));
     }
   }
   //

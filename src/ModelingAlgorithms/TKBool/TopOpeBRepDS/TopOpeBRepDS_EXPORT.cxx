@@ -283,7 +283,7 @@ Standard_EXPORT Standard_Boolean FDS_aresamdom(const TopOpeBRepDS_DataStructure&
       gp_Dir        d2   = FUN_tool_ngS(p2d2, su2);
       Standard_Real tola = Precision::Angular();
       Standard_Real dot  = d1.Dot(d2);
-      trfa_samdom        = (Abs(1. - Abs(dot)) < tola);
+      trfa_samdom        = (std::abs(1. - std::abs(dot)) < tola);
     }
   }
   return trfa_samdom;
@@ -1433,7 +1433,7 @@ Standard_EXPORT Standard_Boolean FUN_ds_mkTonFsdm(const Handle(TopOpeBRepDS_HDat
 
   Standard_Real prod = beafter.Dot(nxx2);
   Standard_Real tola = Precision::Angular() * 1.e3;
-  ok                 = (Abs(1 - Abs(prod)) < tola);
+  ok                 = (std::abs(1 - std::abs(prod)) < tola);
   if (!ok)
     return Standard_False;
 
@@ -3055,8 +3055,8 @@ Standard_EXPORT Standard_Boolean FDS_LOIinfsup(const TopOpeBRepDS_DataStructure&
     tolv               = Precision::Parametric(tolv);
     if (tolv > tol)
       tol = tolv;
-    Standard_Boolean pEisEf = (Abs(pE - f) <= tol);
-    Standard_Boolean pEisEl = (Abs(pE - l) <= tol);
+    Standard_Boolean pEisEf = (std::abs(pE - f) <= tol);
+    Standard_Boolean pEisEl = (std::abs(pE - l) <= tol);
     isonboundper            = pEisEf || pEisEl;
   }
 
@@ -3333,7 +3333,7 @@ Standard_EXPORT void FUN_ds_complete1dForSESDM(const Handle(TopOpeBRepDS_HDataSt
       if (!ok)
         continue;
 
-      Standard_Real tolEsd = Max(BRep_Tool::Tolerance(Esd), tolSE);
+      Standard_Real tolEsd = std::max(BRep_Tool::Tolerance(Esd), tolSE);
       // prepare the list of interferences of SE with Esd
       const TopOpeBRepDS_ListOfInterference& LIall = BDS.ShapeInterferences(iSE);
       TopOpeBRepDS_ListOfInterference        LI, LI1;
@@ -3398,7 +3398,7 @@ Standard_EXPORT void FUN_ds_complete1dForSESDM(const Handle(TopOpeBRepDS_HDataSt
 
         // make new interference
         Standard_Real par    = 0.0;
-        Standard_Real tol    = Max(BRep_Tool::Tolerance(aV), tolEsd);
+        Standard_Real tol    = std::max(BRep_Tool::Tolerance(aV), tolEsd);
         Standard_Real parEsd = BRep_Tool::Parameter(aV, Esd);
         ok                   = FUN_tool_parE(Esd, parEsd, SE, par, tol);
         if (!ok)

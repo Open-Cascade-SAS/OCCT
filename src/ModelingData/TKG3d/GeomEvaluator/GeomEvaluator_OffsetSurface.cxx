@@ -79,14 +79,14 @@ static Standard_Boolean shiftPoint(const Standard_Real                theUStart,
     (isUPeriodic || (isUSingular && !isVSingular) ? 0. : 0.5 * (aUMin + aUMax) - theUStart);
   Standard_Real aDirV =
     (isVPeriodic || (isVSingular && !isUSingular) ? 0. : 0.5 * (aVMin + aVMax) - theVStart);
-  Standard_Real aDist = Sqrt(aDirU * aDirU + aDirV * aDirV);
+  Standard_Real aDist = std::sqrt(aDirU * aDirU + aDirV * aDirV);
 
   // shift current point from its current position towards center, by value of twice
   // current distance from it to start (but not less than Precision::PConfusion());
   // fail if center is overpassed.
   Standard_Real aDU   = theU - theUStart;
   Standard_Real aDV   = theV - theVStart;
-  Standard_Real aStep = Max(2. * Sqrt(aDU * aDU + aDV * aDV), Precision::PConfusion());
+  Standard_Real aStep = std::max(2. * std::sqrt(aDU * aDU + aDV * aDV), Precision::PConfusion());
   if (aStep >= aDist)
   {
     return Standard_False;
@@ -566,9 +566,9 @@ void GeomEvaluator_OffsetSurface::CalculateD0(const Standard_Real theU,
   Standard_Real aD1UNorm2 = aD1U.SquareMagnitude();
   Standard_Real aD1VNorm2 = aD1V.SquareMagnitude();
   if (aD1UNorm2 > 1.0)
-    aD1U /= Sqrt(aD1UNorm2);
+    aD1U /= std::sqrt(aD1UNorm2);
   if (aD1VNorm2 > 1.0)
-    aD1V /= Sqrt(aD1VNorm2);
+    aD1V /= std::sqrt(aD1VNorm2);
 
   gp_Vec aNorm = aD1U.Crossed(aD1V);
   if (aNorm.SquareMagnitude() > the_D1MagTol * the_D1MagTol)
@@ -660,9 +660,9 @@ void GeomEvaluator_OffsetSurface::CalculateD1(const Standard_Real theU,
   Standard_Real aD1UNorm2 = aD1U.SquareMagnitude();
   Standard_Real aD1VNorm2 = aD1V.SquareMagnitude();
   if (aD1UNorm2 > 1.0)
-    aD1U /= Sqrt(aD1UNorm2);
+    aD1U /= std::sqrt(aD1UNorm2);
   if (aD1VNorm2 > 1.0)
-    aD1V /= Sqrt(aD1VNorm2);
+    aD1V /= std::sqrt(aD1VNorm2);
 
   Standard_Boolean isSingular = Standard_False;
   Standard_Integer MaxOrder   = 0;

@@ -189,7 +189,7 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Stan
     for (i = 1; i <= NbCurves; i++)
     {
       Standard_Integer Deg = Fit.Value(i).Degree();
-      MaxDeg               = Max(MaxDeg, Deg);
+      MaxDeg               = std::max(MaxDeg, Deg);
     }
     NbPoles = MaxDeg * NbCurves + 1; // Poles sur la BSpline
     TColgp_Array1OfPnt Poles(1, NbPoles);

@@ -47,7 +47,7 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const GccEnt_QualifiedCirc& Qua
   pararg1 = 0.;
   par2sol = 0.0;
   pararg2 = 0.0;
-  // Standard_Real Tol = Abs(Tolang);
+  // Standard_Real Tol = std::abs(Tolang);
 
   WellDone   = Standard_False;
   qualifier1 = GccEnt_noqualifier;
@@ -61,7 +61,12 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const GccEnt_QualifiedCirc& Qua
   Standard_Real              U1  = Geom2dGcc_CurveTool::FirstParameter(Cu2);
   Standard_Real              U2  = Geom2dGcc_CurveTool::LastParameter(Cu2);
   Geom2dGcc_FunctionTanCirCu func(C1, Cu2);
-  math_FunctionRoot sol(func, Param2, Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolang)), U1, U2, 100);
+  math_FunctionRoot          sol(func,
+                        Param2,
+                        Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolang)),
+                        U1,
+                        U2,
+                        100);
   if (sol.IsDone())
   {
     Standard_Real Usol = sol.Root();
@@ -69,7 +74,7 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const GccEnt_QualifiedCirc& Qua
     //  Modified by Sergey KHROMOV - Thu Apr  5 17:39:47 2001 Begin
     Standard_Real Norm;
     func.Value(Usol, Norm);
-    if (Abs(Norm) < Tolang)
+    if (std::abs(Norm) < Tolang)
     {
       //  Modified by Sergey KHROMOV - Thu Apr  5 17:39:48 2001 End
       gp_Pnt2d Origine;
@@ -163,8 +168,8 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualifi
   Umax(2)   = Geom2dGcc_CurveTool::LastParameter(Cu2);
   Ufirst(1) = Param1;
   Ufirst(2) = Param2;
-  tol(1)    = Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolang));
-  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu2, Abs(Tolang));
+  tol(1)    = Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolang));
+  tol(2)    = Geom2dGcc_CurveTool::EpsX(Cu2, std::abs(Tolang));
   math_FunctionSetRoot Root(Func, tol);
   Root.Perform(Func, Ufirst, Umin, Umax);
   if (Root.IsDone())
@@ -173,7 +178,7 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualifi
     //  Modified by Sergey KHROMOV - Thu Apr  5 17:45:00 2001 Begin
     math_Vector Norm(1, 2);
     Func.Value(Ufirst, Norm);
-    if (Abs(Norm(1)) < Tolang && Abs(Norm(2)) < Tolang)
+    if (std::abs(Norm(1)) < Tolang && std::abs(Norm(2)) < Tolang)
     {
       //  Modified by Sergey KHROMOV - Thu Apr  5 17:45:01 2001 End
       gp_Pnt2d point1, point2;
@@ -233,14 +238,19 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualifi
   Standard_Real              U1  = Geom2dGcc_CurveTool::FirstParameter(Cu1);
   Standard_Real              U2  = Geom2dGcc_CurveTool::LastParameter(Cu1);
   Geom2dGcc_FunctionTanCuPnt func(Cu1, ThePoint);
-  math_FunctionRoot sol(func, Param1, Geom2dGcc_CurveTool::EpsX(Cu1, Abs(Tolang)), U1, U2, 100);
+  math_FunctionRoot          sol(func,
+                        Param1,
+                        Geom2dGcc_CurveTool::EpsX(Cu1, std::abs(Tolang)),
+                        U1,
+                        U2,
+                        100);
   if (sol.IsDone())
   {
     Standard_Real Usol = sol.Root();
     //  Modified by Sergey KHROMOV - Thu Apr  5 17:45:17 2001 Begin
     Standard_Real Norm;
     func.Value(Usol, Norm);
-    if (Abs(Norm) < Tolang)
+    if (std::abs(Norm) < Tolang)
     {
       //  Modified by Sergey KHROMOV - Thu Apr  5 17:45:19 2001 End
       gp_Pnt2d Origine;

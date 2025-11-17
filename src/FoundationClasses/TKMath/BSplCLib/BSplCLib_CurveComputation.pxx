@@ -1259,7 +1259,7 @@ void BSplCLib_CacheD2(const Standard_Real         Parameter,
 
   Factor   = 1.0e0 / SpanLenght;
   Index    = Dimension;
-  EndIndex = Min(2, Degree);
+  EndIndex = std::min(2, Degree);
 
   for (ii = 1; ii <= EndIndex; ii++)
   {
@@ -1351,7 +1351,7 @@ void BSplCLib_CacheD3(const Standard_Real         Parameter,
 
   Factor   = 1.0e0 / SpanLenght;
   Index    = Dimension;
-  EndIndex = Min(3, Degree);
+  EndIndex = std::min(3, Degree);
 
   for (ii = 1; ii <= EndIndex; ii++)
   {
@@ -1670,7 +1670,7 @@ void BSplCLib_MovePoint(const Standard_Real         U,
   i   = kk1 - FirstNonZeroBsplineIndex + 2;
   if ((kk1 + 1) <= LastIndex)
   {
-    if (Abs(BSplineBasis(1, kk1 - FirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
+    if (std::abs(BSplineBasis(1, kk1 - FirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
     {
       kk2 = kk1 + 1;
     }

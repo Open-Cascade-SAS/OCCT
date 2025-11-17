@@ -28,7 +28,7 @@ SelectMgr_BVHThreadPool::SelectMgr_BVHThreadPool(Standard_Integer theNbThreads)
       myIdleEvent(Standard_True),
       myIsStarted(Standard_False)
 {
-  Standard_Integer aBVHThreadsNum = Max(1, theNbThreads);
+  Standard_Integer aBVHThreadsNum = std::max(1, theNbThreads);
   myBVHThreads.Resize(1, aBVHThreadsNum, Standard_False);
 
   Standard_Boolean toCatchFpe = OSD::ToCatchFloatingSignals();

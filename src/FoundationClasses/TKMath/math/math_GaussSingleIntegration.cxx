@@ -59,7 +59,7 @@ math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function&         
                                                          const Standard_Real    Upper,
                                                          const Standard_Integer Order)
 {
-  Standard_Integer theOrder = Min(math::GaussPointsMax(), Order);
+  Standard_Integer theOrder = std::min(math::GaussPointsMax(), Order);
   Perform(F, Lower, Upper, theOrder);
 }
 
@@ -69,7 +69,7 @@ math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function&         
                                                          const Standard_Integer Order,
                                                          const Standard_Real    Tol)
 {
-  Standard_Integer theOrder = Min(math::GaussPointsMax(), Order);
+  Standard_Integer theOrder = std::min(math::GaussPointsMax(), Order);
 
   const Standard_Integer IterMax    = 13; // Max number of iteration
   Standard_Integer       NIter      = 1;  // current number of iteration

@@ -133,7 +133,7 @@ TEST_F(PLibHermitJacobiTest, CoefficientConversion)
   TColStd_Array1OfReal aHermJacCoeff(0, aHermJacSize - 1);
   for (Standard_Integer i = aHermJacCoeff.Lower(); i <= aHermJacCoeff.Upper(); i++)
   {
-    aHermJacCoeff(i) = Sin(i * 0.3); // Some test values
+    aHermJacCoeff(i) = std::sin(i * 0.3); // Some test values
   }
 
   TColStd_Array1OfReal aCoefficients(0, aCoeffSize - 1);

@@ -130,7 +130,7 @@ static Standard_Boolean FUN_islook(const TopoDS_Edge& e)
   gp_Pnt           p1     = BRep_Tool::Pnt(v1);
   gp_Pnt           p2     = BRep_Tool::Pnt(v2);
   Standard_Real    dp1p2  = p1.Distance(p2);
-  Standard_Boolean islook = (Abs(dp1p2) > 1.e-8) ? Standard_True : Standard_False;
+  Standard_Boolean islook = (std::abs(dp1p2) > 1.e-8) ? Standard_True : Standard_False;
   return islook;
 }
 
@@ -364,7 +364,7 @@ Standard_Boolean TopOpeBRepBuild_PaveSet::HasEqualParameters()
         continue;
 
       p2              = it2.Value()->Parameter();
-      Standard_Real d = Abs(p1 - p2);
+      Standard_Real d = std::abs(p1 - p2);
 #ifdef OCCT_DEBUG
       if (TopOpeBRepTool_GettraceVC())
       {
@@ -403,7 +403,7 @@ Standard_Boolean TopOpeBRepBuild_PaveSet::HasEqualParameters()
 //	const TopoDS_Shape& v1 = it1.Value()->Vertex();
 #endif
         p1              = it1.Value()->Parameter();
-        Standard_Real d = Abs(p1 - f);
+        Standard_Real d = std::abs(p1 - f);
         if (d < Precision::PConfusion())
         {
           myHasEqualParameters = Standard_True;

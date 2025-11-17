@@ -23,7 +23,7 @@ GeomLib_LogSample::GeomLib_LogSample(const Standard_Real    A,
     : math_FunctionSample(A, B, N)
 {
   myF   = A - 1;
-  myexp = Log(B - A) / N;
+  myexp = std::log(B - A) / N;
 }
 
 Standard_Real GeomLib_LogSample::GetParameter(const Standard_Integer Index) const
@@ -42,6 +42,6 @@ Standard_Real GeomLib_LogSample::GetParameter(const Standard_Integer Index) cons
       throw Standard_OutOfRange("GeomLib_LogSample::GetParameter");
   }
 
-  Standard_Real v = myF + Exp(myexp * Index);
+  Standard_Real v = myF + std::exp(myexp * Index);
   return v;
 }

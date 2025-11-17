@@ -210,10 +210,10 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
   comptra    = Standard_False;
   line       = new BRepBlend_Line();
   tolpoint3d = Tol3d;
-  tolgui     = Abs(TolGuide);
-  fleche     = Abs(Fleche);
+  tolgui     = std::abs(TolGuide);
+  fleche     = std::abs(Fleche);
   rebrou     = Standard_False;
-  pasmax     = Abs(MaxStep);
+  pasmax     = std::abs(MaxStep);
 
   if (Pmax - Pdep >= 0.)
   {
@@ -319,7 +319,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFu
   comptra    = Standard_False;
   line       = new BRepBlend_Line();
   tolpoint3d = Tol3d;
-  tolgui     = Abs(TolGuide);
+  tolgui     = std::abs(TolGuide);
   rebrou     = Standard_False;
 
   if (Pmax - Pdep >= 0.)
@@ -448,7 +448,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFu
   // it is checked on which curve the contact is lost earlier
   if (recadrst1 && recadrst2)
   {
-    if (Abs(wrst1 - wrst2) < tolgui)
+    if (std::abs(wrst1 - wrst2) < tolgui)
     {
       State  = Blend_OnRst12;
       param  = 0.5 * (wrst1 + wrst2);
@@ -494,7 +494,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFu
   // it is checked on which curves one leaves first
   else if (recadp1 && recadp2)
   {
-    if (Abs(wrst1 - wrst2) < tolgui)
+    if (std::abs(wrst1 - wrst2) < tolgui)
     {
       State  = Blend_OnRst12;
       param  = 0.5 * (wrst1 + wrst2);
@@ -603,7 +603,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
     {
       stepw = (line->Point(nbp).Parameter() - line->Point(nbp - 1).Parameter());
     }
-    stepw = Max(stepw, 100. * tolgui);
+    stepw = std::max(stepw, 100. * tolgui);
   }
   Standard_Real parprec = param;
   if (sens * (parprec - Bound) >= -tolgui)
@@ -821,7 +821,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
         // it is checked on which curve the contact is lost earlier
         if (recadrst1 && recadrst2)
         {
-          if (Abs(wrst1 - wrst2) < tolgui)
+          if (std::abs(wrst1 - wrst2) < tolgui)
           {
             State   = Blend_OnRst12;
             decroch = Blend_DecrochBoth;
@@ -872,7 +872,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
         //  it is checked on which curve the contact is lost earlier
         else if (recadp1 && recadp2)
         {
-          if (Abs(wrst1 - wrst2) < tolgui)
+          if (std::abs(wrst1 - wrst2) < tolgui)
           {
             State  = Blend_OnRst12;
             param  = 0.5 * (wrst1 + wrst2);
@@ -976,7 +976,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 
       case Blend_StepTooLarge: {
         stepw = stepw / 2.;
-        if (Abs(stepw) < tolgui)
+        if (std::abs(stepw) < tolgui)
         {
           Extrst1.SetValue(previousP.PointOnC1(),
                            previousP.ParameterOnC1(),
@@ -1021,7 +1021,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
         parinit = sol;
         parprec = param;
 
-        stepw = Min(1.5 * stepw, pasmax);
+        stepw = std::min(1.5 * stepw, pasmax);
         if (param == Bound)
         {
           Arrive = Standard_True;
@@ -1188,7 +1188,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&    
     while (!IsVtx)
     {
       Vtx = domain1->Vertex();
-      if (Abs(BRepBlend_BlendTool::Parameter(Vtx, rst1) - Solinv(3))
+      if (std::abs(BRepBlend_BlendTool::Parameter(Vtx, rst1) - Solinv(3))
           <= BRepBlend_BlendTool::Tolerance(Vtx, rst1))
       {
         IsVtx = Standard_True;
@@ -1268,7 +1268,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&    
     while (!IsVtx)
     {
       Vtx = domain2->Vertex();
-      if (Abs(BRepBlend_BlendTool::Parameter(Vtx, rst2) - Solinv(3))
+      if (std::abs(BRepBlend_BlendTool::Parameter(Vtx, rst2) - Solinv(3))
           <= BRepBlend_BlendTool::Tolerance(Vtx, rst2))
       {
         IsVtx = Standard_True;
@@ -1360,7 +1360,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&  
     while (!IsVtx)
     {
       Vtx = domain1->Vertex();
-      if (Abs(BRepBlend_BlendTool::Parameter(Vtx, rst1) - upoint)
+      if (std::abs(BRepBlend_BlendTool::Parameter(Vtx, rst1) - upoint)
           <= BRepBlend_BlendTool::Tolerance(Vtx, rst1))
       {
         IsVtx = Standard_True;
@@ -1434,7 +1434,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&  
     while (!IsVtx)
     {
       Vtx = domain2->Vertex();
-      if (Abs(BRepBlend_BlendTool::Parameter(Vtx, rst2) - vpoint)
+      if (std::abs(BRepBlend_BlendTool::Parameter(Vtx, rst2) - vpoint)
           <= BRepBlend_BlendTool::Tolerance(Vtx, rst2))
       {
         IsVtx = Standard_True;
@@ -1843,7 +1843,7 @@ Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction&  Func,
       Standard_Real      testra = tg2drst1.Dot(tg2drstref);
       TopAbs_Orientation Or     = domain1->Orientation(rst1);
 
-      if (Abs(testra) > tolpoint3d)
+      if (std::abs(testra) > tolpoint3d)
       {
         if (testra < 0.)
         {
@@ -1858,7 +1858,7 @@ Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction&  Func,
         testra = tg2drst2.Dot(tg2drstref);
 
         Or = domain2->Orientation(rst2);
-        if (Abs(testra) > tolpoint3d)
+        if (std::abs(testra) > tolpoint3d)
         {
           if (testra < 0.)
           {

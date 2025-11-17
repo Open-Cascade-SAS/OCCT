@@ -539,9 +539,11 @@ Standard_Integer RWObj_Reader::triangulatePolygon(
   // map polygon onto plane
   gp_XYZ aXDir;
   {
-    const double aAbsXYZ[] = {Abs(aPolygonNorm.X()), Abs(aPolygonNorm.Y()), Abs(aPolygonNorm.Z())};
-    Standard_Integer aMinI = (aAbsXYZ[0] < aAbsXYZ[1]) ? 0 : 1;
-    aMinI                  = (aAbsXYZ[aMinI] < aAbsXYZ[2]) ? aMinI : 2;
+    const double     aAbsXYZ[]   = {std::abs(aPolygonNorm.X()),
+                                    std::abs(aPolygonNorm.Y()),
+                                    std::abs(aPolygonNorm.Z())};
+    Standard_Integer aMinI       = (aAbsXYZ[0] < aAbsXYZ[1]) ? 0 : 1;
+    aMinI                        = (aAbsXYZ[aMinI] < aAbsXYZ[2]) ? aMinI : 2;
     const Standard_Integer aI1   = (aMinI + 1) % 3 + 1;
     const Standard_Integer aI2   = (aMinI + 2) % 3 + 1;
     aXDir.ChangeCoord(aMinI + 1) = 0;

@@ -1803,7 +1803,7 @@ Standard_Boolean BOPAlgo_Tools::TrsfToPoint(const Bnd_Box&      theBox1,
   if (aPBDist < theCriteria)
     return Standard_False;
 
-  Standard_Real aBSize = Sqrt(aBox.SquareExtent());
+  Standard_Real aBSize = std::sqrt(aBox.SquareExtent());
   if ((aBSize / aPBDist) > (1. / theCriteria))
     return Standard_False;
 

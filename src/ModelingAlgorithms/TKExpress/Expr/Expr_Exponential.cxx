@@ -37,7 +37,7 @@ Handle(Expr_GeneralExpression) Expr_Exponential::ShallowSimplified() const
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
-    return new Expr_NumericValue(Exp(myNVexp->GetValue()));
+    return new Expr_NumericValue(std::exp(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_LogOfe)))
   {
@@ -83,7 +83,7 @@ Handle(Expr_GeneralExpression) Expr_Exponential::Derivative(
 Standard_Real Expr_Exponential::Evaluate(const Expr_Array1OfNamedUnknown& vars,
                                          const TColStd_Array1OfReal&      vals) const
 {
-  return ::Exp(Operand()->Evaluate(vars, vals));
+  return std::exp(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_Exponential::String() const

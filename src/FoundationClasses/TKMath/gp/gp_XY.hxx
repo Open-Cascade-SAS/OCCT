@@ -98,7 +98,7 @@ public:
   //! Returns the Y coordinate of this number pair.
   constexpr Standard_Real Y() const noexcept { return y; }
 
-  //! Computes Sqrt (X*X + Y*Y) where X and Y are the two coordinates of this number pair.
+  //! Computes std::sqrt(X*X + Y*Y) where X and Y are the two coordinates of this number pair.
   Standard_Real Modulus() const { return sqrt(SquareModulus()); }
 
   //! Computes X*X + Y*Y where X and Y are the two coordinates of this number pair.
@@ -109,7 +109,7 @@ public:
   //! theOther, within the specified tolerance theTolerance.
   Standard_Boolean IsEqual(const gp_XY& theOther, const Standard_Real theTolerance) const
   {
-    return (Abs(x - theOther.x) < theTolerance) && (Abs(y - theOther.y) < theTolerance);
+    return (std::abs(x - theOther.x) < theTolerance) && (std::abs(y - theOther.y) < theTolerance);
   }
 
   //! Computes the sum of this number pair and number pair theOther
@@ -157,7 +157,7 @@ public:
   //! theRight. Returns || <me> ^ theRight ||
   Standard_Real CrossMagnitude(const gp_XY& theRight) const
   {
-    return Abs(x * theRight.y - y * theRight.x);
+    return std::abs(x * theRight.y - y * theRight.x);
   }
 
   //! computes the square magnitude of the cross product between <me> and

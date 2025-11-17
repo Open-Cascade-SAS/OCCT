@@ -507,7 +507,7 @@ Standard_Boolean GeomFill_SweepSectionGenerator::Section(const Standard_Integer 
       if (DPoles(i).Magnitude() > Epsilon(1.))
       {
         DPoles(i).Normalize();
-        DPoles(i) *= Sqrt(x * x + y * y);
+        DPoles(i) *= std::sqrt(x * x + y * y);
       }
     }
   }

@@ -181,17 +181,17 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
               Standard_Real cross3 = gp_Dir2d(-ydir3, xdir3).Dot(gp_Dir2d(xloc3 - cx, yloc3 - cy));
               if (cross1 != 0.0)
               {
-                cross1 = cross1 / Abs(cross1);
+                cross1 = cross1 / std::abs(cross1);
               }
               pnttg1sol(nbsol) = gp_Pnt2d(gp_XY(cx, cy) + cross1 * Radius * gp_XY(-ydir1, xdir1));
               if (cross2 != 0.0)
               {
-                cross2 = cross2 / Abs(cross2);
+                cross2 = cross2 / std::abs(cross2);
               }
               pnttg2sol(nbsol) = gp_Pnt2d(gp_XY(cx, cy) + cross2 * Radius * gp_XY(-ydir2, xdir2));
               if (cross3 != 0.0)
               {
-                cross3 = cross3 / Abs(cross3);
+                cross3 = cross3 / std::abs(cross3);
               }
               pnttg3sol(nbsol) = gp_Pnt2d(gp_XY(cx, cy) + cross3 * Radius * gp_XY(-ydir3, xdir3));
               par1sol(nbsol)   = ElCLib::Parameter(cirsol(nbsol), pnttg1sol(nbsol));

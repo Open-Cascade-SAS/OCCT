@@ -53,9 +53,9 @@ void V3d::ArrowOfRadius(const Handle(Graphic3d_Group)& garrow,
   //      Construction d'un repere i,j pour le cercle:
   Xn = 0., Yn = 0., Zn = 0.;
 
-  if (Abs(Dx) <= Abs(Dy) && Abs(Dx) <= Abs(Dz))
+  if (std::abs(Dx) <= std::abs(Dy) && std::abs(Dx) <= std::abs(Dz))
     Xn = 1.;
-  else if (Abs(Dy) <= Abs(Dz) && Abs(Dy) <= Abs(Dx))
+  else if (std::abs(Dy) <= std::abs(Dz) && std::abs(Dy) <= std::abs(Dx))
     Yn = 1.;
   else
     Zn = 1.;
@@ -63,7 +63,7 @@ void V3d::ArrowOfRadius(const Handle(Graphic3d_Group)& garrow,
   Yi = Dz * Xn - Dx * Zn;
   Zi = Dx * Yn - Dy * Xn;
 
-  Norme = Sqrt(Xi * Xi + Yi * Yi + Zi * Zi);
+  Norme = std::sqrt(Xi * Xi + Yi * Yi + Zi * Zi);
   Xi    = Xi / Norme;
   Yi    = Yi / Norme;
   Zi    = Zi / Norme;
@@ -76,11 +76,11 @@ void V3d::ArrowOfRadius(const Handle(Graphic3d_Group)& garrow,
     new Graphic3d_ArrayOfPolylines(3 * NbPoints, NbPoints);
 
   Standard_Integer    i;
-  const Standard_Real Tg = Tan(Alpha);
+  const Standard_Real Tg = std::tan(Alpha);
   for (i = 1; i <= NbPoints; i++)
   {
-    const Standard_Real cosinus = Cos(2. * M_PI / NbPoints * (i - 1));
-    const Standard_Real sinus   = Sin(2. * M_PI / NbPoints * (i - 1));
+    const Standard_Real cosinus = std::cos(2. * M_PI / NbPoints * (i - 1));
+    const Standard_Real sinus   = std::sin(2. * M_PI / NbPoints * (i - 1));
 
     X = Xc + (cosinus * Xi + sinus * Xj) * Lng * Tg;
     Y = Yc + (cosinus * Yi + sinus * Yj) * Lng * Tg;
@@ -110,7 +110,7 @@ void V3d::CircleInPlane(const Handle(Graphic3d_Group)& gcircle,
                         const Standard_Real            DZ,
                         const Standard_Real            Rayon)
 {
-  Standard_Real Norme = Sqrt(DX * DX + DY * DY + DZ * DZ);
+  Standard_Real Norme = std::sqrt(DX * DX + DY * DY + DZ * DZ);
   if (Norme >= 0.0001)
   {
     Standard_Real VX, VY, VZ, X, Y, Z, Xn, Yn, Zn, Xi, Yi, Zi, Xj, Yj, Zj;
@@ -121,9 +121,9 @@ void V3d::CircleInPlane(const Handle(Graphic3d_Group)& gcircle,
 
     // Construction of marker i,j for the circle:
     Xn = 0., Yn = 0., Zn = 0.;
-    if (Abs(VX) <= Abs(VY) && Abs(VX) <= Abs(VZ))
+    if (std::abs(VX) <= std::abs(VY) && std::abs(VX) <= std::abs(VZ))
       Xn = 1.;
-    else if (Abs(VY) <= Abs(VZ) && Abs(VY) <= Abs(VX))
+    else if (std::abs(VY) <= std::abs(VZ) && std::abs(VY) <= std::abs(VX))
       Yn = 1.;
     else
       Zn = 1.;
@@ -131,7 +131,7 @@ void V3d::CircleInPlane(const Handle(Graphic3d_Group)& gcircle,
     Yi = VZ * Xn - VX * Zn;
     Zi = VX * Yn - VY * Xn;
 
-    Norme = Sqrt(Xi * Xi + Yi * Yi + Zi * Zi);
+    Norme = std::sqrt(Xi * Xi + Yi * Yi + Zi * Zi);
     Xi    = Xi / Norme;
     Yi    = Yi / Norme;
     Zi    = Zi / Norme;
@@ -148,8 +148,8 @@ void V3d::CircleInPlane(const Handle(Graphic3d_Group)& gcircle,
     const Standard_Real Dalpha = 2. * M_PI / NFACES;
     for (; i <= NFACES; i++, Alpha += Dalpha)
     {
-      const Standard_Real cosinus = Cos(Alpha);
-      const Standard_Real sinus   = Sin(Alpha);
+      const Standard_Real cosinus = std::cos(Alpha);
+      const Standard_Real sinus   = std::sin(Alpha);
 
       X = X0 + (cosinus * Xi + sinus * Xj) * Rayon;
       Y = Y0 + (cosinus * Yi + sinus * Yj) * Rayon;

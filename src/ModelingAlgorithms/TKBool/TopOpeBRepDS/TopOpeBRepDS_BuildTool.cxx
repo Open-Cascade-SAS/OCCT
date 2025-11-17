@@ -78,7 +78,7 @@ Standard_Boolean FUN_UisoLineOnSphe(const TopoDS_Shape& F, const Handle(Geom2d_C
   {
     Handle(Geom2d_Line) L = Handle(Geom2d_Line)::DownCast(LLL);
     const gp_Dir2d&     d = L->Direction();
-    isisoU                = (Abs(d.X()) < Precision::Parametric(Precision::Confusion()));
+    isisoU                = (std::abs(d.X()) < Precision::Parametric(Precision::Confusion()));
   }
   return isisoU;
 }
@@ -602,7 +602,7 @@ Standard_Boolean FUN_makeUisoLineOnSphe(const TopoDS_Face& F, // with geometry t
   if (!FUN_getUV(surf, C3D, par3dsup, usup, vsup))
     return Standard_False;
   Standard_Real tol = Precision::Parametric(tol3d);
-  if (Abs(uinf - usup) > tol)
+  if (std::abs(uinf - usup) > tol)
     return Standard_False;
 
   Standard_Boolean isvgrowing = (vsup - vinf > -tol);
@@ -654,8 +654,8 @@ void TopOpeBRepDS_BuildTool::ComputePCurves(const TopOpeBRepDS_Curve& C,
 
     Standard_Real r1 = TopOpeBRepTool_ShapeTool::Resolution3d(F1, tolreached2d1);
     Standard_Real r2 = TopOpeBRepTool_ShapeTool::Resolution3d(F2, tolreached2d2);
-    tol              = Max(tol, r1);
-    tol              = Max(tol, r2);
+    tol              = std::max(tol, r1);
+    tol              = std::max(tol, r2);
     newC.Tolerance(tol);
 
     if (!PC1new.IsNull())
@@ -1028,7 +1028,7 @@ void TopOpeBRepDS_BuildTool::TranslateOnPeriodic(TopoDS_Shape&         F,
   if (C3D->IsPeriodic())
   {
     if (last < first)
-      last += Abs(first - last);
+      last += std::abs(first - last);
   }
 
   // jyl-xpu : 13-06-97 :
@@ -1175,7 +1175,7 @@ void TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape&               F,
 
     if (!C.IsNull())
     {
-      Standard_Boolean    deca     = (Abs(Cf - CDSmin) > Precision::PConfusion());
+      Standard_Boolean    deca     = (std::abs(Cf - CDSmin) > Precision::PConfusion());
       Handle(Geom2d_Line) line2d   = Handle(Geom2d_Line)::DownCast(PCT);
       Standard_Boolean    isline2d = !line2d.IsNull();
       Standard_Boolean    tran     = (rangedef && deca && C->IsPeriodic() && isline2d);

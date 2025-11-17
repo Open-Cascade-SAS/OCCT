@@ -264,8 +264,8 @@ Handle(Geom2d_Curve) GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Adap
   UfinCheck = Curv->LastParameter();
   HProjector->Bounds(1, ProjUdeb, ProjUfin);
 
-  if (HProjector->NbCurves() != 1 || Abs(UdebCheck - ProjUdeb) > Precision::PConfusion()
-      || Abs(UfinCheck - ProjUfin) > Precision::PConfusion())
+  if (HProjector->NbCurves() != 1 || std::abs(UdebCheck - ProjUdeb) > Precision::PConfusion()
+      || std::abs(UfinCheck - ProjUfin) > Precision::PConfusion())
   {
     if (HProjector->IsSinglePnt(1, P2d))
     {
@@ -331,7 +331,8 @@ Handle(Adaptor2d_Curve2d) GeomPlate_BuildPlateSurface::ProjectedCurve(Handle(Ada
     Last1  = Curv->LastParameter();
     HProjector->Bounds(1, First2, Last2);
 
-    if (Abs(First1 - First2) <= Max(myTolU, myTolV) && Abs(Last1 - Last2) <= Max(myTolU, myTolV))
+    if (std::abs(First1 - First2) <= std::max(myTolU, myTolV)
+        && std::abs(Last1 - Last2) <= std::max(myTolU, myTolV))
     {
       HProjector = Handle(ProjLib_HCompProjectedCurve)::DownCast(
         HProjector->Trim(First2, Last2, Precision::PConfusion()));
@@ -1862,7 +1863,8 @@ void GeomPlate_BuildPlateSurface::Intersect(Handle(GeomPlate_HArray1OfSequenceOf
               Standard_Real ant = v16.Angle(v26);
               if (ant > (M_PI / 2))
                 ant = M_PI - ant;
-              if ((Abs(v16 * v15 - v16 * v25) > (myTol3d / 1000)) || (Abs(ant) > myTol3d / 1000))
+              if ((std::abs(v16 * v15 - v16 * v25) > (myTol3d / 1000))
+                  || (std::abs(ant) > myTol3d / 1000))
               // Non-compatible ==> remove zone in constraint G1
               // corresponding to 3D tolerance of 0.01
               {
@@ -1876,12 +1878,12 @@ void GeomPlate_BuildPlateSurface::Intersect(Handle(GeomPlate_HArray1OfSequenceOf
                 A1 = V1.Angle(V2);
                 if (A1 > (M_PI / 2))
                   A1 = M_PI - A1;
-                if (Abs(Abs(A1) - M_PI) < myTolAng)
+                if (std::abs(std::abs(A1) - M_PI) < myTolAng)
                   Tol = 100000 * myTol3d;
 #ifdef OCCT_DEBUG
                 if (Affich)
                   std::cout << "Angle between curves " << i << "," << j << " "
-                            << Abs(Abs(A1) - M_PI) << std::endl;
+                            << std::abs(std::abs(A1) - M_PI) << std::endl;
 #endif
 
                 coin               = Ci.Resolution(Tol);
@@ -1917,8 +1919,8 @@ void GeomPlate_BuildPlateSurface::Intersect(Handle(GeomPlate_HArray1OfSequenceOf
               }
               N                   = vecU ^ vecV;
               Standard_Real Angle = vec.Angle(N);
-              Angle               = Abs(M_PI / 2 - Angle);
-              if (Angle > myTolAng / 10.) //????????? //if (Abs( scal ) > myTol3d/100)
+              Angle               = std::abs(M_PI / 2 - Angle);
+              if (Angle > myTolAng / 10.) //????????? //if (std::abs( scal ) > myTol3d/100)
               {
                 // Non-compatible ==> one removes zone in constraint G0 and G1
                 // corresponding to 3D tolerance of 0.01
@@ -1932,12 +1934,12 @@ void GeomPlate_BuildPlateSurface::Intersect(Handle(GeomPlate_HArray1OfSequenceOf
                 A1 = V1.Angle(V2);
                 if (A1 > M_PI / 2)
                   A1 = M_PI - A1;
-                if (Abs(Abs(A1) - M_PI) < myTolAng)
+                if (std::abs(std::abs(A1) - M_PI) < myTolAng)
                   Tol = 100000 * myTol3d;
 #ifdef OCCT_DEBUG
                 if (Affich)
-                  std::cout << "Angle entre Courbe " << i << "," << j << " " << Abs(Abs(A1) - M_PI)
-                            << std::endl;
+                  std::cout << "Angle entre Courbe " << i << "," << j << " "
+                            << std::abs(std::abs(A1) - M_PI) << std::endl;
 #endif
                 if (myLinCont->Value(i)->Order() == 1)
                 {
@@ -2072,7 +2074,7 @@ void GeomPlate_BuildPlateSurface::Discretise(
       tabP2d(Nbint + 1).SetX(Length2d);
       for (ii = 2; ii <= Nbint; ii++)
       {
-        U = Uinit + (Ufinal - Uinit) * ((1 - Cos((ii - 1) * M_PI / (Nbint))) / 2);
+        U = Uinit + (Ufinal - Uinit) * ((1 - std::cos((ii - 1) * M_PI / (Nbint))) / 2);
         tabP2d(ii).SetY(U);
         /*        if (!HC2d.IsNull()) {
                      Standard_Real L = GCPnts_AbscissaPoint::Length(HC2d->Curve2d(), Uinit, U);
@@ -2105,12 +2107,12 @@ void GeomPlate_BuildPlateSurface::Discretise(
         Inter = Ufinal; // to avoid bug on Sun
       else if (ACR)
       {
-        CurLength = Length2d * (1 - Cos((j - 1) * M_PI / (NbPnt_i - 1))) / 2;
+        CurLength = Length2d * (1 - std::cos((j - 1) * M_PI / (NbPnt_i - 1))) / 2;
         Inter     = acrlaw->Value(CurLength);
       }
       else
       {
-        Inter = Uinit + (Ufinal - Uinit) * ((1 - Cos((j - 1) * M_PI / (NbPnt_i - 1))) / 2);
+        Inter = Uinit + (Ufinal - Uinit) * ((1 - std::cos((j - 1) * M_PI / (NbPnt_i - 1))) / 2);
       }
       myParCont->ChangeValue(i).Append(Inter); // add a point
       if (NbPtInter != 0)
@@ -2272,7 +2274,7 @@ void GeomPlate_BuildPlateSurface::LoadCurve(const Standard_Integer NbBoucle,
     Handle(GeomPlate_CurveConstraint) CC = myLinCont->Value(i);
     if (CC->Order() != -1)
     {
-      Tang = Min(CC->Order(), OrderMax);
+      Tang = std::min(CC->Order(), OrderMax);
       Nt   = myPlateCont->Value(i).Length();
       if (Tang != -1)
         for (j = 1; j <= Nt; j++)
@@ -2385,7 +2387,7 @@ void GeomPlate_BuildPlateSurface::LoadPoint(const Standard_Integer, const Standa
                   -PP.Coord(3) + P3d.Coord(3));
     Plate_PinpointConstraint PC(P2d.XY(), Pdif.XYZ(), 0, 0);
     myPlate.Load(PC);
-    Tang = Min(myPntCont->Value(i)->Order(), OrderMax);
+    Tang = std::min(myPntCont->Value(i)->Order(), OrderMax);
     if (Tang == 1)
     { // ==1
       gp_Vec V1, V2, V3, V4;
@@ -2539,10 +2541,10 @@ Standard_Boolean GeomPlate_BuildPlateSurface::VerifSurface(const Standard_Intege
       { // at least one point is not acceptable in G0
         Standard_Real Coef;
         if (LinCont->Order() == 0)
-          Coef = 0.6 * Log(diffDistMax + 7.4);
+          Coef = 0.6 * std::log(diffDistMax + 7.4);
         // 7.4 corresponds to the calculation of min. coefficient = 1.2 is e^1.2/0.6
         else
-          Coef = Log(diffDistMax + 3.3);
+          Coef = std::log(diffDistMax + 3.3);
         // 3.3 corresponds to calculation of min. coefficient = 1.2 donc e^1.2
         if (Coef > 3)
           Coef = 3;
@@ -2552,7 +2554,7 @@ Standard_Boolean GeomPlate_BuildPlateSurface::VerifSurface(const Standard_Intege
           Coef = 1.6;
         }
 
-        if (LinCont->NbPoints() >= Floor(LinCont->NbPoints() * Coef))
+        if (LinCont->NbPoints() >= std::floor(LinCont->NbPoints() * Coef))
           Coef = 2; // to provide increase of the number of points
 
         LinCont->SetNbPoints(Standard_Integer(LinCont->NbPoints() * Coef));
@@ -2561,7 +2563,7 @@ Standard_Boolean GeomPlate_BuildPlateSurface::VerifSurface(const Standard_Intege
       else if (NdiffAng > 0) // at least 1 point is not acceptable in G1
       {
         Standard_Real Coef = 1.5;
-        if ((LinCont->NbPoints() + 1) >= Floor(LinCont->NbPoints() * Coef))
+        if ((LinCont->NbPoints() + 1) >= std::floor(LinCont->NbPoints() * Coef))
           Coef = 2;
 
         LinCont->SetNbPoints(Standard_Integer(LinCont->NbPoints() * Coef));

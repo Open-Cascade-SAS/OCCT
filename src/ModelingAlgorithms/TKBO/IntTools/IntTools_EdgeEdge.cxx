@@ -166,14 +166,14 @@ void IntTools_EdgeEdge::Prepare()
     myRes2 = Resolution(myCurve2.Curve().Curve(), myCurve2.GetType(), myResCoeff2, myTol2);
     //
     myPTol1 = 5.e-13;
-    aTM     = Max(fabs(myRange1.First()), fabs(myRange1.Last()));
+    aTM     = std::max(fabs(myRange1.First()), fabs(myRange1.Last()));
     if (aTM > 999.)
     {
       myPTol1 = 5.e-16 * aTM;
     }
     //
     myPTol2 = 5.e-13;
-    aTM     = Max(fabs(myRange2.First()), fabs(myRange2.Last()));
+    aTM     = std::max(fabs(myRange2.First()), fabs(myRange2.Last()));
     if (aTM > 999.)
     {
       myPTol2 = 5.e-16 * aTM;
@@ -593,7 +593,7 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
         if (aDistP > 0.)
         {
           Standard_Boolean toGrow = Standard_False;
-          if (Abs(aDistP - aDist) / aDistP < 0.1)
+          if (std::abs(aDistP - aDist) / aDistP < 0.1)
           {
             aDt = Resolution(aCurve, aCurveType, theResCoeff, k * aDist);
             if (aDt < aMaxDt)
@@ -731,17 +731,18 @@ void IntTools_EdgeEdge::MergeSolutions(const IntTools_SequenceOfRanges& theRange
               || (aTi11 > aTj11 && aTi11 < aTj12) || (bSplit2 && (fabs(aTj12 - aTi11) < dTR1));
       if (bCond && bSplit2)
       {
-        bCond = (fabs((Max(aTi22, aTj22) - Min(aTi21, aTj21)) - ((aTi22 - aTi21) + (aTj22 - aTj21)))
+        bCond = (fabs((std::max(aTi22, aTj22) - std::min(aTi21, aTj21))
+                      - ((aTi22 - aTi21) + (aTj22 - aTj21)))
                  < dTR2)
                 || (aTj21 > aTi21 && aTj21 < aTi22) || (aTi21 > aTj21 && aTi21 < aTj22);
       }
       //
       if (bCond)
       {
-        aTi11 = Min(aTi11, aTj11);
-        aTi12 = Max(aTi12, aTj12);
-        aTi21 = Min(aTi21, aTj21);
-        aTi22 = Max(aTi22, aTj22);
+        aTi11 = std::min(aTi11, aTj11);
+        aTi12 = std::max(aTi12, aTj12);
+        aTi21 = std::min(aTi21, aTj21);
+        aTi22 = std::max(aTi22, aTj22);
         aMI.Add(j);
       }
       else if (!bSplit2)
@@ -990,7 +991,7 @@ void IntTools_EdgeEdge::ComputeLineLine()
   gp_Vec        O1O2(aL1.Location(), aL2.Location());
   gp_XYZ        aCross  = aD1.XYZ().Crossed(aD2.XYZ());
   Standard_Real aDistLL = O1O2.Dot(gp_Vec(aCross.Normalized()));
-  if (Abs(aDistLL) > myTol)
+  if (std::abs(aDistLL) > myTol)
     return;
 
   {
@@ -1060,7 +1061,7 @@ Standard_Boolean IntTools_EdgeEdge::IsIntersection(const Standard_Real aT11,
   }
   else
   {
-    Standard_Real aTRMin = Min((aT12 - aT11) / myRes1, (aT22 - aT21) / myRes2);
+    Standard_Real aTRMin = std::min((aT12 - aT11) / myRes1, (aT22 - aT21) / myRes2);
     aCoef                = aTRMin / 100.;
     if (aCoef < 1.)
     {
@@ -1242,7 +1243,7 @@ Standard_Integer FindDistPC(const Standard_Real          aT1A,
     return iErr;
   }
   //
-  Standard_Real anEps = Max(theEps, Epsilon(Max(Abs(aA), Abs(aB))) * 10.);
+  Standard_Real anEps = std::max(theEps, Epsilon(std::max(std::abs(aA), std::abs(aB))) * 10.);
   for (;;)
   {
     if (iC * (aYP - aYL) > 0)
@@ -1432,7 +1433,7 @@ Standard_Real PointBoxDistance(const Bnd_Box& aB, const gp_Pnt& aP)
     }
   }
   //
-  aDist = Sqrt(aDist);
+  aDist = std::sqrt(aDist);
   return aDist;
 }
 
@@ -1557,7 +1558,7 @@ Standard_Real Resolution(const Handle(Geom_Curve)& theCurve,
       break;
     case GeomAbs_Circle: {
       Standard_Real aDt = theResCoeff * theR3D;
-      aRes              = (aDt <= 1.) ? 2 * ASin(aDt) : 2 * M_PI;
+      aRes              = (aDt <= 1.) ? 2 * std::asin(aDt) : 2 * M_PI;
       break;
     }
     case GeomAbs_BezierCurve:
@@ -1578,7 +1579,7 @@ Standard_Real Resolution(const Handle(Geom_Curve)& theCurve,
       else if (aBCType == GeomAbs_Circle)
       {
         Standard_Real aDt = theResCoeff * theR3D;
-        aRes              = (aDt <= 1.) ? 2 * ASin(aDt) : 2 * M_PI;
+        aRes              = (aDt <= 1.) ? 2 * std::asin(aDt) : 2 * M_PI;
         break;
       }
     }
@@ -1630,7 +1631,7 @@ Standard_Boolean IsClosed(const Handle(Geom_Curve)& theCurve,
                           const Standard_Real       theTol,
                           const Standard_Real       theRes)
 {
-  if (Abs(aT1 - aT2) < theRes)
+  if (std::abs(aT1 - aT2) < theRes)
   {
     return Standard_False;
   }

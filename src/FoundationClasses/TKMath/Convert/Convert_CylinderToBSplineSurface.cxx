@@ -39,21 +39,25 @@ static void ComputePoles(const Standard_Real R,
   Standard_Integer i;
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  Standard_Integer nbUSpans = (Standard_Integer)IntegerPart(1.2 * deltaU / M_PI) + 1;
+  Standard_Integer nbUSpans = (Standard_Integer)std::trunc(1.2 * deltaU / M_PI) + 1;
   Standard_Real    AlfaU    = deltaU / (nbUSpans * 2);
 
   Standard_Real UStart = U1;
-  Poles(1, 1)          = gp_Pnt(R * Cos(UStart), R * Sin(UStart), V1);
-  Poles(1, 2)          = gp_Pnt(R * Cos(UStart), R * Sin(UStart), V2);
+  Poles(1, 1)          = gp_Pnt(R * std::cos(UStart), R * std::sin(UStart), V1);
+  Poles(1, 2)          = gp_Pnt(R * std::cos(UStart), R * std::sin(UStart), V2);
 
   for (i = 1; i <= nbUSpans; i++)
   {
-    Poles(2 * i, 1) =
-      gp_Pnt(R * Cos(UStart + AlfaU) / Cos(AlfaU), R * Sin(UStart + AlfaU) / Cos(AlfaU), V1);
-    Poles(2 * i, 2) =
-      gp_Pnt(R * Cos(UStart + AlfaU) / Cos(AlfaU), R * Sin(UStart + AlfaU) / Cos(AlfaU), V2);
-    Poles(2 * i + 1, 1) = gp_Pnt(R * Cos(UStart + 2 * AlfaU), R * Sin(UStart + 2 * AlfaU), V1);
-    Poles(2 * i + 1, 2) = gp_Pnt(R * Cos(UStart + 2 * AlfaU), R * Sin(UStart + 2 * AlfaU), V2);
+    Poles(2 * i, 1) = gp_Pnt(R * std::cos(UStart + AlfaU) / std::cos(AlfaU),
+                             R * std::sin(UStart + AlfaU) / std::cos(AlfaU),
+                             V1);
+    Poles(2 * i, 2) = gp_Pnt(R * std::cos(UStart + AlfaU) / std::cos(AlfaU),
+                             R * std::sin(UStart + AlfaU) / std::cos(AlfaU),
+                             V2);
+    Poles(2 * i + 1, 1) =
+      gp_Pnt(R * std::cos(UStart + 2 * AlfaU), R * std::sin(UStart + 2 * AlfaU), V1);
+    Poles(2 * i + 1, 2) =
+      gp_Pnt(R * std::cos(UStart + 2 * AlfaU), R * std::sin(UStart + 2 * AlfaU), V2);
     UStart += 2 * AlfaU;
   }
 }
@@ -73,7 +77,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
                                                 TheVDegree)
 {
   Standard_Real deltaU = U2 - U1;
-  Standard_DomainError_Raise_if((Abs(V2 - V1) <= Abs(Epsilon(V1))) || (deltaU > 2 * M_PI)
+  Standard_DomainError_Raise_if((std::abs(V2 - V1) <= std::abs(Epsilon(V1))) || (deltaU > 2 * M_PI)
                                   || (deltaU < 0.),
                                 "Convert_CylinderToBSplineSurface");
 
@@ -84,7 +88,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   // construction of the cylinder in the reference mark xOy.
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  Standard_Integer nbUSpans = (Standard_Integer)IntegerPart(1.2 * deltaU / M_PI) + 1;
+  Standard_Integer nbUSpans = (Standard_Integer)std::trunc(1.2 * deltaU / M_PI) + 1;
   Standard_Real    AlfaU    = deltaU / (nbUSpans * 2);
 
   nbUPoles = 2 * nbUSpans + 1;
@@ -118,7 +122,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
-      W1 = Cos(AlfaU);
+      W1 = std::cos(AlfaU);
     else
       W1 = 1.;
 
@@ -142,7 +146,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
                                                 TheUDegree,
                                                 TheVDegree)
 {
-  Standard_DomainError_Raise_if(Abs(V2 - V1) <= Abs(Epsilon(V1)),
+  Standard_DomainError_Raise_if(std::abs(V2 - V1) <= std::abs(Epsilon(V1)),
                                 "Convert_CylinderToBSplineSurface");
 
   Standard_Integer i, j;
@@ -180,7 +184,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
-      W = 0.5; // = Cos(pi /3)
+      W = 0.5; // = std::cos(pi /3)
     else
       W = 1.;
 

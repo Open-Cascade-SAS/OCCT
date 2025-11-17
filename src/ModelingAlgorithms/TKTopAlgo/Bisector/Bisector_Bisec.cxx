@@ -169,7 +169,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve,
       gp_Dir2d Sd(asecondvector);
       // if (Fd.Dot(Sd) < Precision::Angular() - 1.) {
       // if (Fd.Dot(Sd) < 10*Precision::Angular() - 1.) //patch
-      if (Fd.Dot(Sd) < Sqrt(2. * Precision::Angular()) - 1.)
+      if (Fd.Dot(Sd) < std::sqrt(2. * Precision::Angular()) - 1.)
         IsLine = Standard_True;
     }
     if (IsLine)
@@ -218,7 +218,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve,
         {
           gp_Dir2d dir1(afirstvector), dir2(asecondvector);
           Nx = -dir1.X() - dir2.X(), Ny = -dir1.Y() - dir2.Y();
-          if (Abs(Nx) <= gp::Resolution() && Abs(Ny) <= gp::Resolution())
+          if (std::abs(Nx) <= gp::Resolution() && std::abs(Ny) <= gp::Resolution())
           {
             Nx = -afirstvector.Y();
             Ny = afirstvector.X();
@@ -245,8 +245,8 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve,
       }
     }
   }
-  UFirst      = Max(UFirst, Bis->FirstParameter());
-  ULast       = Min(ULast, Bis->LastParameter());
+  UFirst      = std::max(UFirst, Bis->FirstParameter());
+  ULast       = std::min(ULast, Bis->LastParameter());
   thebisector = new Geom2d_TrimmedCurve(Bis, UFirst, ULast);
 #ifdef DRAW
   if (Affich)
@@ -354,7 +354,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve,
       {
         gp_Dir2d      dir1(afirstvector), dir2(asecondvector);
         Standard_Real Nx = -dir1.X() - dir2.X(), Ny = -dir1.Y() - dir2.Y();
-        if (Abs(Nx) <= gp::Resolution() && Abs(Ny) <= gp::Resolution())
+        if (std::abs(Nx) <= gp::Resolution() && std::abs(Ny) <= gp::Resolution())
         {
           Nx = -afirstvector.Y();
           Ny = afirstvector.X();
@@ -507,7 +507,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Point)& afirstpoint,
       {
         gp_Dir2d      dir1(afirstvector), dir2(asecondvector);
         Standard_Real Nx = -dir1.X() - dir2.X(), Ny = -dir1.Y() - dir2.Y();
-        if (Abs(Nx) <= gp::Resolution() && Abs(Ny) <= gp::Resolution())
+        if (std::abs(Nx) <= gp::Resolution() && std::abs(Ny) <= gp::Resolution())
         {
           Nx = -afirstvector.Y();
           Ny = afirstvector.X();
@@ -547,8 +547,8 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Point)& afirstpoint,
     }
   }
 
-  UFirst      = Max(UFirst, Bis->FirstParameter());
-  ULast       = Min(ULast, Bis->LastParameter());
+  UFirst      = std::max(UFirst, Bis->FirstParameter());
+  ULast       = std::min(ULast, Bis->LastParameter());
   thebisector = new Geom2d_TrimmedCurve(Bis, UFirst, ULast);
 
 #ifdef DRAW
@@ -638,7 +638,7 @@ static void ReplaceByLineIfIsToSmall(Handle(Bisector_Curve)& Bis,
                                      Standard_Real&          ULast)
 
 {
-  if (Abs(ULast - UFirst) > 2. * Precision::PConfusion() * 10.)
+  if (std::abs(ULast - UFirst) > 2. * Precision::PConfusion() * 10.)
     return; // patch
 
   gp_Pnt2d PF = Bis->Value(UFirst);
@@ -679,7 +679,7 @@ static Standard_Boolean IsMaxRC(const Handle(Geom2d_Curve)& C, Standard_Real U, 
   }
   else
   {
-    KF = Abs(D1 ^ D2) / (Norm2 * sqrt(Norm2));
+    KF = std::abs(D1 ^ D2) / (Norm2 * sqrt(Norm2));
   }
 
   C->D2(UL, P, D1, D2);
@@ -690,7 +690,7 @@ static Standard_Boolean IsMaxRC(const Handle(Geom2d_Curve)& C, Standard_Real U, 
   }
   else
   {
-    KL = Abs(D1 ^ D2) / (Norm2 * sqrt(Norm2));
+    KL = std::abs(D1 ^ D2) / (Norm2 * sqrt(Norm2));
   }
 
   Standard_Boolean IsMax = Standard_False;

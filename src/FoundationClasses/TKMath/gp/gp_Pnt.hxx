@@ -251,11 +251,11 @@ struct equal_to<gp_Pnt>
 {
   bool operator()(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2) const noexcept
   {
-    if (Abs(thePnt1.X() - thePnt2.X()) > Epsilon(thePnt2.X()))
+    if (std::abs(thePnt1.X() - thePnt2.X()) > Epsilon(thePnt2.X()))
       return false;
-    if (Abs(thePnt1.Y() - thePnt2.Y()) > Epsilon(thePnt2.Y()))
+    if (std::abs(thePnt1.Y() - thePnt2.Y()) > Epsilon(thePnt2.Y()))
       return false;
-    if (Abs(thePnt1.Z() - thePnt2.Z()) > Epsilon(thePnt2.Z()))
+    if (std::abs(thePnt1.Z() - thePnt2.Z()) > Epsilon(thePnt2.Z()))
       return false;
     return true;
   }

@@ -227,7 +227,7 @@ gp_Parab Geom_Parabola::Parab() const
 void Geom_Parabola::Transform(const Trsf& T)
 {
 
-  focalLength *= Abs(T.ScaleFactor());
+  focalLength *= std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 
@@ -237,14 +237,14 @@ Standard_Real Geom_Parabola::TransformedParameter(const Standard_Real U, const g
 {
   if (Precision::IsInfinite(U))
     return U;
-  return U * Abs(T.ScaleFactor());
+  return U * std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
 
 Standard_Real Geom_Parabola::ParametricTransformation(const gp_Trsf& T) const
 {
-  return Abs(T.ScaleFactor());
+  return std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================

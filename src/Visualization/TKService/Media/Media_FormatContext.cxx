@@ -258,8 +258,8 @@ bool Media_FormatContext::OpenInput(const TCollection_AsciiString& theInput)
     for (unsigned int aStreamId = 0; aStreamId < myFormatCtx->nb_streams; ++aStreamId)
     {
       const AVStream& aStream = *myFormatCtx->streams[aStreamId];
-      myPtsStartBase = Min(myPtsStartBase, StreamUnitsToSeconds(aStream, aStream.start_time));
-      myDuration     = Max(myDuration, StreamUnitsToSeconds(aStream, aStream.duration));
+      myPtsStartBase = std::min(myPtsStartBase, StreamUnitsToSeconds(aStream, aStream.start_time));
+      myDuration     = std::max(myDuration, StreamUnitsToSeconds(aStream, aStream.duration));
     }
   }
 

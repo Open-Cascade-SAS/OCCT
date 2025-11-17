@@ -38,16 +38,16 @@ void BRepBlend_SurfPointConstRadInv::Set(const Standard_Real R, const Standard_I
   {
     case 1:
     case 2: {
-      ray = -Abs(R);
+      ray = -std::abs(R);
     }
     break;
     case 3:
     case 4: {
-      ray = Abs(R);
+      ray = std::abs(R);
     }
     break;
     default: {
-      ray = -Abs(R);
+      ray = -std::abs(R);
     }
   }
 }
@@ -274,7 +274,8 @@ Standard_Boolean BRepBlend_SurfPointConstRadInv::IsSolution(const math_Vector&  
 {
   math_Vector valsol(1, 3);
   Value(Sol, valsol);
-  if (Abs(valsol(1)) <= Tol && Abs(valsol(2)) <= Tol && Abs(valsol(3)) <= 2 * Tol * Abs(ray))
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol
+      && std::abs(valsol(3)) <= 2 * Tol * std::abs(ray))
   {
     return Standard_True;
   }

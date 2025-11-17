@@ -376,7 +376,7 @@ gp_Vec BRepAdaptor_CompCurve::DN(const Standard_Real U, const Standard_Integer N
   Standard_Integer index = CurIndex;
   Prepare(u, d, index);
 
-  return (myCurves->Value(index).DN(u, N) * Pow(d, N));
+  return (myCurves->Value(index).DN(u, N) * std::pow(d, N));
 }
 
 Standard_Real BRepAdaptor_CompCurve::Resolution(const Standard_Real R3d) const

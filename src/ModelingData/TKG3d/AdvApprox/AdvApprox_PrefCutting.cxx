@@ -31,16 +31,16 @@ Standard_Boolean AdvApprox_PrefCutting::Value(const Standard_Real a,
   //                                    pour F(U,V) : EPS1=1.e-9 (cf.MMEPS1)
   constexpr Standard_Real lgmin = 10 * Precision::PConfusion();
   Standard_Integer        i;
-  Standard_Real           cut, mil = (a + b) / 2, dist = Abs((a - b) / 2);
+  Standard_Real           cut, mil = (a + b) / 2, dist = std::abs((a - b) / 2);
   cut = mil;
   for (i = myPntOfCutting.Lower(); i <= myPntOfCutting.Upper(); i++)
   {
-    if ((dist - lgmin) > Abs(mil - myPntOfCutting.Value(i)))
+    if ((dist - lgmin) > std::abs(mil - myPntOfCutting.Value(i)))
     {
       cut  = myPntOfCutting.Value(i);
-      dist = Abs(mil - myPntOfCutting.Value(i));
+      dist = std::abs(mil - myPntOfCutting.Value(i));
     }
   }
   cuttingvalue = cut;
-  return (Abs(cut - a) >= lgmin && Abs(b - cut) >= lgmin);
+  return (std::abs(cut - a) >= lgmin && std::abs(b - cut) >= lgmin);
 }

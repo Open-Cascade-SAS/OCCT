@@ -87,7 +87,7 @@ void math_Uzawa::Perform(const math_Matrix&     Cont,
   Standard_Integer i, j, k;
   Standard_Real    scale;
   Standard_Real    Normat, Normli, Xian, Xmax = 0, Xmuian;
-  Standard_Real    Rho, Err, Err1, ErrMax = 0, Coef = 1. / Sqrt(2.);
+  Standard_Real    Rho, Err, Err1, ErrMax = 0, Coef = 1. / std::sqrt(2.);
   Standard_Integer Nlig = Cont.RowNumber();
   Standard_Integer Ncol = Cont.ColNumber();
 
@@ -201,9 +201,9 @@ void math_Uzawa::Perform(const math_Matrix&     Cont,
         {
           if (i == 1)
           {
-            Xmax = Abs(Erruza(i) - Xian);
+            Xmax = std::abs(Erruza(i) - Xian);
           }
-          Xmax = Max(Xmax, Abs(Erruza(i) - Xian));
+          Xmax = std::max(Xmax, std::abs(Erruza(i) - Xian));
         }
       }
 
@@ -220,19 +220,19 @@ void math_Uzawa::Perform(const math_Matrix&     Cont,
         if (i <= Nce)
         {
           Vardua(i) += Rho * Err;
-          Err1 = Abs(Rho * Err);
+          Err1 = std::abs(Rho * Err);
         }
         else
         {
           Xmuian    = Vardua(i);
-          Vardua(i) = Max(0.0, Vardua(i) + Rho * Err);
-          Err1      = Abs(Vardua(i) - Xmuian);
+          Vardua(i) = std::max(0.0, Vardua(i) + Rho * Err);
+          Err1      = std::abs(Vardua(i) - Xmuian);
         }
         if (i == 1)
         {
           ErrMax = Err1;
         }
-        ErrMax = Max(ErrMax, Err1);
+        ErrMax = std::max(ErrMax, Err1);
       }
 
       if (NbIter > 1)

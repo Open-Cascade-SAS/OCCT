@@ -38,12 +38,12 @@ Standard_Boolean gp_Vec::IsEqual(const gp_Vec&       theOther,
 
   if (aMagnitude <= theLinearTolerance || anOtherMagnitude <= theLinearTolerance)
   {
-    const Standard_Real aVal = Abs(aMagnitude - anOtherMagnitude);
+    const Standard_Real aVal = std::abs(aMagnitude - anOtherMagnitude);
     return aVal <= theLinearTolerance;
   }
   else
   {
-    const Standard_Real aVal = Abs(aMagnitude - anOtherMagnitude);
+    const Standard_Real aVal = std::abs(aMagnitude - anOtherMagnitude);
     return aVal <= theLinearTolerance && Angle(theOther) <= theAngularTolerance;
   }
 }

@@ -104,7 +104,7 @@ public:
   //! Returns the recommended precision value
   //! when checking the equality of two angles (given in radians).
   //! Standard_Real Angle1 = ... , Angle2 = ... ;
-  //! If ( Abs( Angle2 - Angle1 ) < Precision::Angular() ) ...
+  //! If ( std::abs( Angle2 - Angle1 ) < Precision::Angular() ) ...
   //! The tolerance of angular equality may be used to check the parallelism of two vectors :
   //! gp_Vec V1, V2 ;
   //! V1 = ...
@@ -118,7 +118,7 @@ public:
   //! D1 = ...
   //! D2 = ...
   //! you can use :
-  //! If ( Abs( D1.D2 ) < Precision::Angular() ) ...
+  //! If ( std::abs( D1.D2 ) < Precision::Angular() ) ...
   //! (although the function IsNormal does exist).
   static constexpr Standard_Real Angular() { return 1.e-12; }
 
@@ -358,10 +358,10 @@ public:
   static constexpr Standard_Real PApproximation() { return Approximation() * 0.01; }
 
   //! Returns True if R may be considered as an infinite
-  //! number. Currently Abs(R) > 1e100
+  //! number. Currently std::abs(R) > 1e100
   static inline Standard_Boolean IsInfinite(const Standard_Real R)
   {
-    return Abs(R) >= (0.5 * Precision::Infinite());
+    return std::abs(R) >= (0.5 * Precision::Infinite());
   }
 
   //! Returns True if R may be considered as a positive

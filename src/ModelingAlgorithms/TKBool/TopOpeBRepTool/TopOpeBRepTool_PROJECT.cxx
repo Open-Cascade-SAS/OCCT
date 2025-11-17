@@ -266,10 +266,10 @@ Standard_EXPORT Standard_Boolean FUN_tool_projPonE(const gp_Pnt&       P,
   Standard_Real f, l;
   FUN_tool_bounds(E, f, l);
   Standard_Real    tolp = Precision::Parametric(Precision::Confusion());
-  Standard_Boolean onf  = Abs(f - param) < tolp;
+  Standard_Boolean onf  = std::abs(f - param) < tolp;
   if (onf)
     param = f;
-  Standard_Boolean onl = Abs(l - param) < tolp;
+  Standard_Boolean onl = std::abs(l - param) < tolp;
   if (onl)
     param = l;
   return Standard_True;

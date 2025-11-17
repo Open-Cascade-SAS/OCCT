@@ -127,8 +127,8 @@ static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
     for (TopOpeBRepDS_PointIterator it(LI); it.More(); it.Next())
     {
       Standard_Real par = it.Parameter();
-      parmin            = Min(parmin, par);
-      parmax            = Max(parmax, par);
+      parmin            = std::min(parmin, par);
+      parmax            = std::max(parmax, par);
     }
     DStr.ChangeCurve(ic).SetRange(parmin, parmax);
   }

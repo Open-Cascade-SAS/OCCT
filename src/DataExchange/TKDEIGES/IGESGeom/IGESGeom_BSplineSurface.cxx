@@ -126,7 +126,7 @@ Standard_Boolean IGESGeom_BSplineSurface::IsPolynomial(const Standard_Boolean fl
    */
   for (j = 0; j < (theIndexV + 1); j++)
     for (i = 0; i < (theIndexU + 1); i++)
-      if (Abs(theWeights->Value(i, j) - w0) > 1.e-10)
+      if (std::abs(theWeights->Value(i, j) - w0) > 1.e-10)
         return Standard_False;
   return Standard_True;
 }

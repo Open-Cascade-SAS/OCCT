@@ -128,7 +128,7 @@ Standard_Integer BOPAlgo_PaveFiller::UpdateVertex(const Standard_Integer nV,
   // create new vertex
   TopoDS_Vertex aVNew;
   gp_Pnt        aPV = BRep_Tool::Pnt(aV);
-  aBB.MakeVertex(aVNew, aPV, Max(aTolV, aTolNew));
+  aBB.MakeVertex(aVNew, aPV, std::max(aTolV, aTolNew));
   //
   // append new vertex to DS
   BOPDS_ShapeInfo aSIV;

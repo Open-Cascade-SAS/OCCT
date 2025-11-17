@@ -118,7 +118,7 @@ protected:
 
     if (!(myMaxSqDeflection < 0.))
     {
-      this->getDFace()->SetDeflection(Sqrt(myMaxSqDeflection));
+      this->getDFace()->SetDeflection(std::sqrt(myMaxSqDeflection));
     }
   }
 
@@ -148,7 +148,7 @@ private:
 
     Standard_Real SquareDeviation(const gp_Pnt& thePoint) const
     {
-      const Standard_Real aDeflection = Abs(myNormal.Dot(gp_Vec(myRefPnt, thePoint)));
+      const Standard_Real aDeflection = std::abs(myNormal.Dot(gp_Vec(myRefPnt, thePoint)));
       return aDeflection * aDeflection;
     }
 
@@ -277,7 +277,7 @@ private:
     const gp_Vec2d aLink2d2(theNodesInfo[1].Point2d, theNodesInfo[2].Point2d);
 
     const Standard_Real MinimalArea2d = 1.e-9;
-    return (Abs(aLink2d1 ^ aLink2d2) > MinimalArea2d);
+    return (std::abs(aLink2d1 ^ aLink2d2) > MinimalArea2d);
   }
 
   //! Computes normal using two link vectors.

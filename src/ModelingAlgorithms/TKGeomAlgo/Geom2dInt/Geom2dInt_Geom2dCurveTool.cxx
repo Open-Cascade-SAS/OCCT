@@ -40,7 +40,7 @@ Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C
       Standard_Real anb = t1 / t * nbs;
       nbs               = (Standard_Integer)anb;
 
-      Standard_Integer aMinPntNb = Max(C.Degree() + 1, 4);
+      Standard_Integer aMinPntNb = std::max(C.Degree() + 1, 4);
       if (nbs < aMinPntNb)
         nbs = aMinPntNb;
     }
@@ -52,9 +52,9 @@ Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C
     Standard_Real       R    = C.Circle().Radius();
     if (R > minR)
     {
-      Standard_Real    angl = 0.283079; // 2.*ACos(1. - eps);
-      Standard_Integer n    = RealToInt(Abs(U1 - U0) / angl);
-      nbs                   = Max(n, nbs);
+      Standard_Real    angl = 0.283079; // 2.*std::acos(1. - eps);
+      Standard_Integer n    = RealToInt(std::abs(U1 - U0) / angl);
+      nbs                   = std::max(n, nbs);
     }
   }
 
@@ -75,9 +75,9 @@ Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C
     Standard_Real       R    = C.Circle().Radius();
     if (R > minR)
     {
-      Standard_Real    angl = 0.283079; // 2.*ACos(1. - eps);
+      Standard_Real    angl = 0.283079; // 2.*std::acos(1. - eps);
       Standard_Integer n    = RealToInt((C.LastParameter() - C.FirstParameter()) / angl);
-      nbs                   = Max(n, nbs);
+      nbs                   = std::max(n, nbs);
     }
   }
 

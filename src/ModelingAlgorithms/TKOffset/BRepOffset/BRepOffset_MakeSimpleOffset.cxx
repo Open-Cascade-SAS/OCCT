@@ -140,8 +140,8 @@ Standard_Real BRepOffset_MakeSimpleOffset::GetSafeOffset(const Standard_Real the
   Standard_Real aMaxTol = 0.0;
   aMaxTol               = BRep_Tool::MaxTolerance(myInputShape, TopAbs_VERTEX);
 
-  const Standard_Real anExpOffset = Max((theExpectedToler - aMaxTol) / (2.0 * myMaxAngle),
-                                        0.0); // Minimal distance can't be lower than 0.0.
+  const Standard_Real anExpOffset = std::max((theExpectedToler - aMaxTol) / (2.0 * myMaxAngle),
+                                             0.0); // Minimal distance can't be lower than 0.0.
   return anExpOffset;
 }
 
@@ -284,7 +284,7 @@ static void tgtfaces(const TopoDS_Edge&     Ed,
     // Compute angle.
     Standard_Real aCurrentAng = d1.Angle(d2);
 
-    theResAngle = Max(theResAngle, aCurrentAng);
+    theResAngle = std::max(theResAngle, aCurrentAng);
   }
 }
 

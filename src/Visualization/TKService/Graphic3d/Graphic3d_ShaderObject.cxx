@@ -131,8 +131,8 @@ Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource(
     {
       if ((aVar.Stages & aStageIter) != 0)
       {
-        aStageLower = Min(aStageLower, aStageIter);
-        aStageUpper = Max(aStageUpper, aStageIter);
+        aStageLower = std::min(aStageLower, aStageIter);
+        aStageUpper = std::max(aStageUpper, aStageIter);
       }
     }
     if ((Standard_Integer)theType < aStageLower || (Standard_Integer)theType > aStageUpper)

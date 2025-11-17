@@ -327,8 +327,8 @@ Standard_Real Geom_ToroidalSurface::Volume() const
 void Geom_ToroidalSurface::Transform(const Trsf& T)
 {
 
-  majorRadius = majorRadius * Abs(T.ScaleFactor());
-  minorRadius = minorRadius * Abs(T.ScaleFactor());
+  majorRadius = majorRadius * std::abs(T.ScaleFactor());
+  minorRadius = minorRadius * std::abs(T.ScaleFactor());
   pos.Transform(T);
 }
 

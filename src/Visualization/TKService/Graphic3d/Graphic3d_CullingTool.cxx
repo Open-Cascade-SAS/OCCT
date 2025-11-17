@@ -60,8 +60,8 @@ void Graphic3d_CullingTool::SetViewVolume(const Handle(Graphic3d_Camera)& theCam
   myCamScale = theCamera->IsOrthographic()
                  ? theCamera->Scale()
                  : 2.0
-                     * Tan(theCamera->FOVy() * M_PI
-                           / 360.0); // same as theCamera->Scale()/theCamera->Distance()
+                     * std::tan(theCamera->FOVy() * M_PI
+                                / 360.0); // same as theCamera->Scale()/theCamera->Distance()
 
   // Compute frustum points
   theCamera->FrustumPoints(myClipVerts, theModelWorld);
@@ -106,7 +106,8 @@ void Graphic3d_CullingTool::SetViewportSize(Standard_Integer theViewportWidth,
 {
   myViewportHeight = theViewportHeight > 0 ? theViewportHeight : 1;
   myViewportWidth  = theViewportWidth > 0 ? theViewportWidth : 1;
-  myPixelSize = Max(theResolutionRatio / myViewportHeight, theResolutionRatio / myViewportWidth);
+  myPixelSize =
+    std::max(theResolutionRatio / myViewportHeight, theResolutionRatio / myViewportWidth);
 }
 
 //=================================================================================================
@@ -167,8 +168,8 @@ void Graphic3d_CullingTool::CacheClipPtsProjections()
          ++aCornerIter)
     {
       Standard_Real aProjection = myClipVerts[aCornerIter].Dot(myClipPlanes[aPlaneIter].Normal);
-      aMaxProj                  = Max(aProjection, aMaxProj);
-      aMinProj                  = Min(aProjection, aMinProj);
+      aMaxProj                  = std::max(aProjection, aMaxProj);
+      aMinProj                  = std::min(aProjection, aMinProj);
     }
     myMaxClipProjectionPts[aPlaneIter] = aMaxProj;
     myMinClipProjectionPts[aPlaneIter] = aMinProj;
@@ -186,8 +187,8 @@ void Graphic3d_CullingTool::CacheClipPtsProjections()
          ++aCornerIter)
     {
       Standard_Real aProjection = myClipVerts[aCornerIter].Dot(anAxes[aDim]);
-      aMaxProj                  = Max(aProjection, aMaxProj);
-      aMinProj                  = Min(aProjection, aMinProj);
+      aMaxProj                  = std::max(aProjection, aMaxProj);
+      aMinProj                  = std::min(aProjection, aMinProj);
     }
     myMaxOrthoProjectionPts[aDim] = aMaxProj;
     myMinOrthoProjectionPts[aDim] = aMinProj;

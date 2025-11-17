@@ -86,7 +86,7 @@ Standard_Real Extrema_FuncExtCC::SearchOfTolerance(const Standard_Address C)
       aMax = vm;
   } while (++aNum < NPoint + 1);
 
-  return Max(aMax * TolFactor, MinTol);
+  return std::max(aMax * TolFactor, MinTol);
 }
 
 //=================================================================================================
@@ -222,7 +222,7 @@ Standard_Boolean Extrema_FuncExtCC::Value(const math_Vector& UV, math_Vector& F)
       else
         du = myUsupremum - myUinfium;
 
-      const Standard_Real aDelta = Max(du * DivisionFactor, MinStep);
+      const Standard_Real aDelta = std::max(du * DivisionFactor, MinStep);
 
       Standard_Integer n = 1; // Derivative order
       Vec              V;
@@ -245,8 +245,8 @@ Standard_Boolean Extrema_FuncExtCC::Value(const math_Vector& UV, math_Vector& F)
           u = myU - aDelta;
 
         Pnt P1, P2;
-        Tool1::D0(*((Curve1*)myC1), Min(myU, u), P1);
-        Tool1::D0(*((Curve1*)myC1), Max(myU, u), P2);
+        Tool1::D0(*((Curve1*)myC1), std::min(myU, u), P1);
+        Tool1::D0(*((Curve1*)myC1), std::max(myU, u), P2);
 
         Vec           V1(P1, P2);
         Standard_Real aDirFactor = V.Dot(V1);
@@ -309,7 +309,7 @@ Standard_Boolean Extrema_FuncExtCC::Value(const math_Vector& UV, math_Vector& F)
       else
         dv = myVsupremum - myVinfium;
 
-      const Standard_Real aDelta = Max(dv * DivisionFactor, MinStep);
+      const Standard_Real aDelta = std::max(dv * DivisionFactor, MinStep);
 
       // Derivative is approximated by Taylor-series
 
@@ -334,8 +334,8 @@ Standard_Boolean Extrema_FuncExtCC::Value(const math_Vector& UV, math_Vector& F)
           v = myV - aDelta;
 
         Pnt P1, P2;
-        Tool2::D0(*((Curve2*)myC2), Min(myV, v), P1);
-        Tool2::D0(*((Curve2*)myC2), Max(myV, v), P2);
+        Tool2::D0(*((Curve2*)myC2), std::min(myV, v), P1);
+        Tool2::D0(*((Curve2*)myC2), std::max(myV, v), P2);
 
         Vec           V1(P1, P2);
         Standard_Real aDirFactor = V.Dot(V1);
@@ -433,7 +433,7 @@ Standard_Boolean Extrema_FuncExtCC::Values(const math_Vector& UV, math_Vector& F
   else
     du = myUsupremum - myUinfium;
 
-  const Standard_Real aDeltaU = Max(du * DivisionFactor, MinStep);
+  const Standard_Real aDeltaU = std::max(du * DivisionFactor, MinStep);
 
   Standard_Real dv;
   if ((myVsupremum >= RealLast()) || (myVinfium <= RealFirst()))
@@ -441,7 +441,7 @@ Standard_Boolean Extrema_FuncExtCC::Values(const math_Vector& UV, math_Vector& F
   else
     dv = myVsupremum - myVinfium;
 
-  const Standard_Real aDeltaV = Max(dv * DivisionFactor, MinStep);
+  const Standard_Real aDeltaV = std::max(dv * DivisionFactor, MinStep);
 
   Vec P1P2(myP1, myP2);
 
@@ -695,7 +695,7 @@ Standard_Integer Extrema_FuncExtCC::GetStateNumber()
     Dv /= mod;
   }
 
-  if (Abs(P1P2.Dot(Du)) <= myTol && Abs(P1P2.Dot(Dv)) <= myTol)
+  if (std::abs(P1P2.Dot(Du)) <= myTol && std::abs(P1P2.Dot(Dv)) <= myTol)
   {
     mySqDist.Append(myP1.SquareDistance(myP2));
     myPoints.Append(POnC(myU, myP1));

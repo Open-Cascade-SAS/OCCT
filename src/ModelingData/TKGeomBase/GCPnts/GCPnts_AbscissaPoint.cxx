@@ -74,7 +74,7 @@ static void Compute(CPnts_AbscissaPoint& theComputer,
                     const Standard_Real  theEPSILON)
 {
   // test for easy solution
-  if (Abs(theAbscis) <= Precision::Confusion())
+  if (std::abs(theAbscis) <= Precision::Confusion())
   {
     theComputer.SetParameter(theU0);
     return;
@@ -111,7 +111,7 @@ static void Compute(CPnts_AbscissaPoint& theComputer,
       while (anIndex >= 1 && anIndex <= aNbIntervals)
       {
         aL = CPnts_AbscissaPoint::Length(theC, theU0, aTI(anIndex + aDirection));
-        if (Abs(aL - theAbscis) <= Precision::Confusion())
+        if (std::abs(aL - theAbscis) <= Precision::Confusion())
         {
           theComputer.SetParameter(aTI(anIndex + aDirection));
           return;
@@ -203,7 +203,7 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
       if (anIndex == 0 && aDirection > 0)
       {
         aL = CPnts_AbscissaPoint::Length(theC, theU0, aTI(anIndex + aDirection), theEPSILON);
-        if (Abs(aL - theAbscis) <= /*Precision::Confusion()*/ theEPSILON)
+        if (std::abs(aL - theAbscis) <= /*Precision::Confusion()*/ theEPSILON)
         {
           theComputer.SetParameter(aTI(anIndex + aDirection));
           return;
@@ -231,7 +231,7 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
       while (anIndex >= 1 && anIndex <= aNbIntervals)
       {
         aL = CPnts_AbscissaPoint::Length(theC, theU0, aTI(anIndex + aDirection), theEPSILON);
-        if (Abs(aL - theAbscis) <= Precision::PConfusion())
+        if (std::abs(aL - theAbscis) <= Precision::PConfusion())
         {
           theComputer.SetParameter(aTI(anIndex + aDirection));
           return;
@@ -278,13 +278,13 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
       {
         if (aSign > 0)
         {
-          theUi = Min(theUi, theC.LastParameter());
-          aU1   = Min(aU1, theC.LastParameter());
+          theUi = std::min(theUi, theC.LastParameter());
+          aU1   = std::min(aU1, theC.LastParameter());
         }
         else
         {
-          theUi = Max(theUi, theC.FirstParameter());
-          aU1   = Max(aU1, theC.FirstParameter());
+          theUi = std::max(theUi, theC.FirstParameter());
+          aU1   = std::max(aU1, theC.FirstParameter());
         }
       }
 
@@ -383,7 +383,7 @@ Standard_Real GCPnts_AbscissaPoint::length(const TheCurve&      theC,
   switch (aType)
   {
     case GCPnts_LengthParametrized: {
-      return Abs(theU2 - theU1) * aRatio;
+      return std::abs(theU2 - theU1) * aRatio;
     }
     case GCPnts_Parametrized: {
       return theTol != NULL ? CPnts_AbscissaPoint::Length(theC, theU1, theU2, *theTol)
@@ -393,8 +393,8 @@ Standard_Real GCPnts_AbscissaPoint::length(const TheCurve&      theC,
       const Standard_Integer aNbIntervals = theC.NbIntervals(GeomAbs_CN);
       TColStd_Array1OfReal   aTI(1, aNbIntervals + 1);
       theC.Intervals(aTI, GeomAbs_CN);
-      const Standard_Real aUU1 = Min(theU1, theU2);
-      const Standard_Real aUU2 = Max(theU1, theU2);
+      const Standard_Real aUU1 = std::min(theU1, theU2);
+      const Standard_Real aUU2 = std::max(theU1, theU2);
       Standard_Real       aL   = 0.0;
       for (Standard_Integer anIndex = 1; anIndex <= aNbIntervals; ++anIndex)
       {
@@ -409,14 +409,15 @@ Standard_Real GCPnts_AbscissaPoint::length(const TheCurve&      theC,
         if (theTol != NULL)
         {
           aL += CPnts_AbscissaPoint::Length(theC,
-                                            Max(aTI(anIndex), aUU1),
-                                            Min(aTI(anIndex + 1), aUU2),
+                                            std::max(aTI(anIndex), aUU1),
+                                            std::min(aTI(anIndex + 1), aUU2),
                                             *theTol);
         }
         else
         {
-          aL +=
-            CPnts_AbscissaPoint::Length(theC, Max(aTI(anIndex), aUU1), Min(aTI(anIndex + 1), aUU2));
+          aL += CPnts_AbscissaPoint::Length(theC,
+                                            std::max(aTI(anIndex), aUU1),
+                                            std::min(aTI(anIndex + 1), aUU2));
         }
       }
       return aL;

@@ -212,7 +212,7 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
 
   const math_Matrix& aHermiteMatrix = GetHermiteMatrix(aNivConstr);
 
-  TColStd_Array1OfReal JacValue0(jac0[0], 0, Max(0, aJacDegree));
+  TColStd_Array1OfReal JacValue0(jac0[0], 0, std::max(0, aJacDegree));
   TColStd_Array1OfReal WValues(wvalues[0], 0, NDeriv);
   WValues.Init(0.);
 

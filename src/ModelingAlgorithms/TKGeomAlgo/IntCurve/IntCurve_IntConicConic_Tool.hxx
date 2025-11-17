@@ -93,7 +93,7 @@ public:
     }
   }
 
-  Standard_Real Length() { return ((isnull) ? -100.0 : Abs(Bsup - Binf)); }
+  Standard_Real Length() { return ((isnull) ? -100.0 : std::abs(Bsup - Binf)); }
 
   PeriodicInterval(const IntRes2d_Domain& Domain)
   {
