@@ -87,7 +87,7 @@ public:
         Zmin(theMin.Z()),
         Zmax(theMax.Z()),
         Gap(0.0),
-        Flags(0)
+        Flags(VoidMask)
   {
   }
 
