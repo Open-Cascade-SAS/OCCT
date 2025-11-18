@@ -90,7 +90,7 @@ public:
         Zmin(theMin.Z()),
         Zmax(theMax.Z()),
         Gap(0.0),
-        Flags(VoidMask)
+        Flags(0)
   {
   }
 
