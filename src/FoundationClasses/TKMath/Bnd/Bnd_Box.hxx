@@ -25,6 +25,9 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 
+#include <algorithm>
+#include <cmath>
+
 class gp_Pnt;
 class gp_Dir;
 class gp_Trsf;
