@@ -37,12 +37,6 @@ constexpr gp_Dir THE_DIR_YMAX{gp_Dir::D::Y};
 constexpr gp_Dir THE_DIR_ZMIN{gp_Dir::D::NZ};
 constexpr gp_Dir THE_DIR_ZMAX{gp_Dir::D::Z};
 
-// Helper to clear the Void flag (VoidMask = 0x01)
-inline void ClearVoidFlag(Standard_Integer& theFlags) noexcept
-{
-  theFlags &= ~0x01;
-}
-
 // Computes minimum squared distance between two 1D intervals
 inline Standard_Real DistMini2Box(const Standard_Real theR1Min,
                                   const Standard_Real theR1Max,
@@ -155,7 +149,7 @@ void Bnd_Box::Update(const Standard_Real x,
     Xmax = X;
     Ymax = Y;
     Zmax = Z;
-    ClearVoidFlag(Flags);
+    Flags &= ~VoidMask;
   }
   else
   {
@@ -180,7 +174,7 @@ void Bnd_Box::Update(const Standard_Real X, const Standard_Real Y, const Standar
     Xmax = X;
     Ymax = Y;
     Zmax = Z;
-    ClearVoidFlag(Flags);
+    Flags &= ~VoidMask;
   }
   else
   {
