@@ -26,6 +26,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
+
 class gp_Dir2d;
 class gp_Trsf2d;
 
@@ -55,11 +56,11 @@ public:
 
   //! Creates an empty 2D bounding box.
   //! The constructed box is qualified Void. Its gap is null.
-  Bnd_Box2d()
-      : Xmin(0.),
-        Xmax(0.),
-        Ymin(0.),
-        Ymax(0.),
+  constexpr Bnd_Box2d()
+      : Xmin(RealLast()),
+        Xmax(-RealLast()),
+        Ymin(RealLast()),
+        Ymax(-RealLast()),
         Gap(0.),
         Flags(VoidMask)
   {
@@ -67,13 +68,17 @@ public:
 
   //! Sets this bounding box so that it covers the whole 2D
   //! space, i.e. it is infinite in all directions.
-  void SetWhole() { Flags = WholeMask; }
+  void SetWhole() noexcept { Flags = WholeMask; }
 
   //! Sets this 2D bounding box so that it is empty. All points are outside a void box.
-  void SetVoid()
+  void SetVoid() noexcept
   {
-    Flags = VoidMask;
+    Xmin  = RealLast();
+    Xmax  = -RealLast();
+    Ymin  = RealLast();
+    Ymax  = -RealLast();
     Gap   = 0.0;
+    Flags = VoidMask;
   }
 
   //! Sets this 2D bounding box so that it bounds
@@ -111,19 +116,19 @@ public:
   Standard_EXPORT void Update(const Standard_Real X, const Standard_Real Y);
 
   //! Returns the gap of this 2D bounding box.
-  Standard_Real GetGap() const { return Gap; }
+  [[nodiscard]] constexpr Standard_Real GetGap() const noexcept { return Gap; }
 
   //! Set the gap of this 2D bounding box to abs(Tol).
-  void SetGap(const Standard_Real Tol) { Gap = Tol; }
+  void SetGap(const Standard_Real Tol) noexcept { Gap = std::abs(Tol); }
 
   //! Enlarges the box with a tolerance value.
   //! This means that the minimum values of its X and Y
   //! intervals of definition, when they are finite, are reduced by
   //! the absolute value of Tol, while the maximum values are
   //! increased by the same amount.
-  void Enlarge(const Standard_Real theTol)
+  void Enlarge(const Standard_Real theTol) noexcept
   {
-    Standard_Real aTol = theTol < 0.0 ? -theTol : theTol;
+    const Standard_Real aTol = std::abs(theTol);
     if (Gap < aTol)
       Gap = aTol;
   }
@@ -138,35 +143,38 @@ public:
                            Standard_Real& aYmax) const;
 
   //! The Box will be infinitely long in the Xmin direction.
-  void OpenXmin() { Flags |= XminMask; }
+  void OpenXmin() noexcept { Flags |= XminMask; }
 
   //! The Box will be infinitely long in the Xmax direction.
-  void OpenXmax() { Flags |= XmaxMask; }
+  void OpenXmax() noexcept { Flags |= XmaxMask; }
 
   //! The Box will be infinitely long in the Ymin direction.
-  void OpenYmin() { Flags |= YminMask; }
+  void OpenYmin() noexcept { Flags |= YminMask; }
 
   //! The Box will be infinitely long in the Ymax direction.
-  void OpenYmax() { Flags |= YmaxMask; }
+  void OpenYmax() noexcept { Flags |= YmaxMask; }
 
   //! Returns true if this bounding box is open in the Xmin direction.
-  Standard_Boolean IsOpenXmin() const { return (Flags & XminMask) != 0; }
+  [[nodiscard]] Standard_Boolean IsOpenXmin() const noexcept { return (Flags & XminMask) != 0; }
 
   //! Returns true if this bounding box is open in the Xmax direction.
-  Standard_Boolean IsOpenXmax() const { return (Flags & XmaxMask) != 0; }
+  [[nodiscard]] Standard_Boolean IsOpenXmax() const noexcept { return (Flags & XmaxMask) != 0; }
 
   //! Returns true if this bounding box is open in the Ymin direction.
-  Standard_Boolean IsOpenYmin() const { return (Flags & YminMask) != 0; }
+  [[nodiscard]] Standard_Boolean IsOpenYmin() const noexcept { return (Flags & YminMask) != 0; }
 
   //! Returns true if this bounding box is open in the Ymax direction.
-  Standard_Boolean IsOpenYmax() const { return (Flags & YmaxMask) != 0; }
+  [[nodiscard]] Standard_Boolean IsOpenYmax() const noexcept { return (Flags & YmaxMask) != 0; }
 
   //! Returns true if this bounding box is infinite in all 4
   //! directions (Whole Space flag).
-  Standard_Boolean IsWhole() const { return (Flags & WholeMask) == WholeMask; }
+  [[nodiscard]] Standard_Boolean IsWhole() const noexcept
+  {
+    return (Flags & WholeMask) == WholeMask;
+  }
 
   //! Returns true if this 2D bounding box is empty (Void flag).
-  Standard_Boolean IsVoid() const { return (Flags & VoidMask) != 0; }
+  [[nodiscard]] Standard_Boolean IsVoid() const noexcept { return (Flags & VoidMask) != 0; }
 
   //! Returns a bounding box which is the result of applying the
   //! transformation T to this bounding box.
@@ -174,16 +182,16 @@ public:
   //! Applying a geometric transformation (for example, a
   //! rotation) to a bounding box generally increases its
   //! dimensions. This is not optimal for algorithms which use it.
-  Standard_NODISCARD Standard_EXPORT Bnd_Box2d Transformed(const gp_Trsf2d& T) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d Transformed(const gp_Trsf2d& T) const;
 
   //! Adds the 2d box <Other> to <me>.
   Standard_EXPORT void Add(const Bnd_Box2d& Other);
 
   //! Adds the 2d point.
-  void Add(const gp_Pnt2d& thePnt) { Update(thePnt.X(), thePnt.Y()); }
+  void Add(const gp_Pnt2d& thePnt) noexcept { Update(thePnt.X(), thePnt.Y()); }
 
   //! Extends bounding box from thePnt in the direction theDir.
-  void Add(const gp_Pnt2d& thePnt, const gp_Dir2d& theDir)
+  void Add(const gp_Pnt2d& thePnt, const gp_Dir2d& theDir) noexcept
   {
     Add(thePnt);
     Add(theDir);
@@ -195,19 +203,21 @@ public:
   Standard_EXPORT void Add(const gp_Dir2d& D);
 
   //! Returns True if the 2d pnt <P> is out <me>.
-  Standard_EXPORT Standard_Boolean IsOut(const gp_Pnt2d& P) const;
+  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const gp_Pnt2d& P) const;
 
   //! Returns True if the line doesn't intersect the box.
-  Standard_EXPORT Standard_Boolean IsOut(const gp_Lin2d& theL) const;
+  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const gp_Lin2d& theL) const;
 
   //! Returns True if the segment doesn't intersect the box.
-  Standard_EXPORT Standard_Boolean IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) const;
+  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const gp_Pnt2d& theP0,
+                                                       const gp_Pnt2d& theP1) const;
 
   //! Returns True if <Box2d> is out <me>.
-  Standard_EXPORT Standard_Boolean IsOut(const Bnd_Box2d& Other) const;
+  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const Bnd_Box2d& Other) const;
 
   //! Returns True if transformed <Box2d> is out <me>.
-  Standard_Boolean IsOut(const Bnd_Box2d& theOther, const gp_Trsf2d& theTrsf) const
+  [[nodiscard]] Standard_Boolean IsOut(const Bnd_Box2d& theOther,
+                                       const gp_Trsf2d& theTrsf) const noexcept
   {
     return IsOut(theOther.Transformed(theTrsf));
   }
@@ -215,7 +225,9 @@ public:
   //! Compares a transformed bounding with a transformed
   //! bounding. The default implementation is to make a copy
   //! of <me> and <Other>, to transform them and to test.
-  Standard_Boolean IsOut(const gp_Trsf2d& T1, const Bnd_Box2d& Other, const gp_Trsf2d& T2) const
+  [[nodiscard]] Standard_Boolean IsOut(const gp_Trsf2d& T1,
+                                       const Bnd_Box2d& Other,
+                                       const gp_Trsf2d& T2) const noexcept
   {
     return Transformed(T1).IsOut(Other.Transformed(T2));
   }
@@ -223,7 +235,7 @@ public:
   Standard_EXPORT void Dump() const;
 
   //! Computes the squared diagonal of me.
-  Standard_Real SquareExtent() const
+  [[nodiscard]] Standard_Real SquareExtent() const noexcept
   {
     if (IsVoid())
       return 0.0;
