@@ -379,7 +379,7 @@ public:
   math_Matrix& operator=(const math_Matrix& Other) { return Initialized(Other); }
 
   //! Move assignment operator
-  inline math_Matrix& operator=(math_Matrix&& Other) noexcept;
+  inline math_Matrix& operator=(math_Matrix&& Other);
 
   //! Returns the product of 2 matrices.
   //! An exception is raised if the dimensions are different.

@@ -701,11 +701,22 @@ inline math_Matrix& math_Matrix::Initialized(const math_Matrix& Other)
 
 //==================================================================================================
 
-inline math_Matrix& math_Matrix::operator=(math_Matrix&& Other) noexcept
+inline math_Matrix& math_Matrix::operator=(math_Matrix&& Other)
 {
-  if (this != &Other)
+  if (this == &Other)
+  {
+    return *this;
+  }
+
+  if (Array.IsDeletable() && Other.Array.IsDeletable() && RowNumber() == Other.RowNumber()
+      && ColNumber() == Other.ColNumber() && LowerRow() == Other.LowerRow()
+      && LowerCol() == Other.LowerCol())
   {
     Array = std::move(Other.Array);
+  }
+  else
+  {
+    Initialized(Other);
   }
   return *this;
 }

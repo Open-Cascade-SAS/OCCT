@@ -27,6 +27,7 @@
 #include <math_Matrix.hxx>
 
 #include <array>
+#include <utility>
 
 //! This class implements the real vector abstract data type.
 //! Vectors can have an arbitrary range which must be defined at
@@ -94,8 +95,10 @@ public:
   void Init(const TheItemType theInitialValue);
 
   //! Constructs a copy for initialization.
-  //! An exception is raised if the lengths of the vectors are different.
   inline math_VectorBase(const math_VectorBase& theOther);
+
+  //! Move constructor
+  inline math_VectorBase(math_VectorBase&& theOther) noexcept;
 
   //! Returns the length of a vector
   inline Standard_Integer Length() const { return Array.Length(); }
@@ -254,6 +257,9 @@ public:
   inline math_VectorBase& Initialized(const math_VectorBase& theOther);
 
   math_VectorBase& operator=(const math_VectorBase& theOther) { return Initialized(theOther); }
+
+  //! Move assignment operator
+  inline math_VectorBase& operator=(math_VectorBase&& theOther);
 
   //! returns the inner product of 2 vectors.
   //! An exception is raised if the lengths are not equal.
