@@ -25,6 +25,8 @@
 #include <gp_Trsf2d.hxx>
 #include <gp_Ax2d.hxx>
 
+#include <array>
+
 //! Template class for 2D bounding box.
 //! This is a base template that is instantiated for Standard_Real and Standard_ShortReal.
 template <typename RealType>
@@ -34,16 +36,20 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor.
-  Bnd_B2();
+  constexpr Bnd_B2() noexcept;
 
   //! Constructor.
-  Bnd_B2(const gp_XY& theCenter, const gp_XY& theHSize);
+  constexpr Bnd_B2(const gp_XY& theCenter, const gp_XY& theHSize) noexcept;
+
+  //! Constructor.
+  constexpr Bnd_B2(const std::array<RealType, 2>& theCenter,
+                   const std::array<RealType, 2>& theHSize) noexcept;
 
   //! Returns True if the box is void (non-initialized).
-  Standard_Boolean IsVoid() const;
+  constexpr Standard_Boolean IsVoid() const noexcept;
 
   //! Reset the box data.
-  void Clear();
+  void Clear() noexcept;
 
   //! Update the box by a point.
   void Add(const gp_XY& thePnt);
@@ -57,19 +63,19 @@ public:
   //! Query a box corner: (Center - HSize). You must make sure that
   //! the box is NOT VOID (see IsVoid()), otherwise the method returns
   //! irrelevant result.
-  gp_XY CornerMin() const;
+  gp_XY CornerMin() const noexcept;
 
   //! Query a box corner: (Center + HSize). You must make sure that
   //! the box is NOT VOID (see IsVoid()), otherwise the method returns
   //! irrelevant result.
-  gp_XY CornerMax() const;
+  gp_XY CornerMax() const noexcept;
 
   //! Query the square diagonal. If the box is VOID (see method IsVoid())
   //! then a very big real value is returned.
-  Standard_Real SquareExtent() const;
+  constexpr Standard_Real SquareExtent() const noexcept;
 
   //! Extend the Box by the absolute value of theDiff.
-  void Enlarge(const Standard_Real theDiff);
+  void Enlarge(const Standard_Real theDiff) noexcept;
 
   //! Limit the Box by the internals of theOtherBox.
   //! Returns True if the limitation takes place, otherwise False
@@ -82,7 +88,7 @@ public:
 
   //! Check the given point for the inclusion in the Box.
   //! Returns True if the point is outside.
-  Standard_Boolean IsOut(const gp_XY& thePnt) const;
+  constexpr Standard_Boolean IsOut(const gp_XY& thePnt) const noexcept;
 
   //! Check a circle for the intersection with the current box.
   //! Returns True if there is no intersection between boxes.
@@ -92,7 +98,7 @@ public:
 
   //! Check the given box for the intersection with the current box.
   //! Returns True if there is no intersection between boxes.
-  Standard_Boolean IsOut(const Bnd_B2<RealType>& theOtherBox) const;
+  constexpr Standard_Boolean IsOut(const Bnd_B2<RealType>& theOtherBox) const noexcept;
 
   //! Check the given box oriented by the given transformation
   //! for the intersection with the current box.
@@ -110,7 +116,7 @@ public:
 
   //! Check that the box 'this' is inside the given box 'theBox'. Returns
   //! True if 'this' box is fully inside 'theBox'.
-  Standard_Boolean IsIn(const Bnd_B2<RealType>& theBox) const;
+  constexpr Standard_Boolean IsIn(const Bnd_B2<RealType>& theBox) const noexcept;
 
   //! Check that the box 'this' is inside the given box 'theBox'
   //! transformed by 'theTrsf'. Returns True if 'this' box is fully
@@ -118,19 +124,33 @@ public:
   Standard_Boolean IsIn(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& theTrsf) const;
 
   //! Set the Center coordinates
-  void SetCenter(const gp_XY& theCenter);
+  void SetCenter(const gp_XY& theCenter) noexcept;
+
+  //! Set the Center coordinates
+  void SetCenter(const std::array<RealType, 2>& theCenter) noexcept;
 
   //! Set the HSize (half-diagonal) coordinates.
   //! All components of theHSize must be non-negative.
-  void SetHSize(const gp_XY& theHSize);
+  void SetHSize(const gp_XY& theHSize) noexcept;
+
+  //! Set the HSize (half-diagonal) coordinates.
+  //! All components of theHSize must be non-negative.
+  void SetHSize(const std::array<RealType, 2>& theHSize) noexcept;
+
+  //! Get the Center coordinates
+  constexpr const std::array<RealType, 2>& Center() const noexcept;
+
+  //! Get the HSize (half-diagonal) coordinates
+  constexpr const std::array<RealType, 2>& HSize() const noexcept;
 
 protected:
-  static Standard_Boolean compareDist(const RealType aHSize[2], const RealType aDist[2])
+  static constexpr Standard_Boolean compareDist(const RealType aHSize[2],
+                                                const RealType aDist[2]) noexcept
   {
     return (std::abs(aDist[0]) > aHSize[0] || std::abs(aDist[1]) > aHSize[1]);
   }
 
-  static Standard_Boolean compareDistD(const gp_XY& aHSize, const gp_XY& aDist)
+  static Standard_Boolean compareDistD(const gp_XY& aHSize, const gp_XY& aDist) noexcept
   {
     return (std::abs(aDist.X()) > aHSize.X() || std::abs(aDist.Y()) > aHSize.Y());
   }
@@ -139,33 +159,42 @@ protected:
   static constexpr RealType THE_RealLast = RealType(1e30);
 
 private:
-  RealType myCenter[2];
-  RealType myHSize[2];
+  std::array<RealType, 2> myCenter;
+  std::array<RealType, 2> myHSize;
 };
 
 //=================================================================================================
 
 template <typename RealType>
-inline Bnd_B2<RealType>::Bnd_B2()
+constexpr inline Bnd_B2<RealType>::Bnd_B2() noexcept
+    : myCenter{THE_RealLast, THE_RealLast},
+      myHSize{-THE_RealLast, -THE_RealLast}
 {
-  Clear();
 }
 
 //=================================================================================================
 
 template <typename RealType>
-inline Bnd_B2<RealType>::Bnd_B2(const gp_XY& theCenter, const gp_XY& theHSize)
+constexpr inline Bnd_B2<RealType>::Bnd_B2(const gp_XY& theCenter, const gp_XY& theHSize) noexcept
+    : myCenter{RealType(theCenter.X()), RealType(theCenter.Y())},
+      myHSize{RealType(theHSize.X()), RealType(theHSize.Y())}
 {
-  myCenter[0] = RealType(theCenter.X());
-  myCenter[1] = RealType(theCenter.Y());
-  myHSize[0]  = RealType(theHSize.X());
-  myHSize[1]  = RealType(theHSize.Y());
 }
 
 //=================================================================================================
 
 template <typename RealType>
-inline void Bnd_B2<RealType>::Clear()
+constexpr inline Bnd_B2<RealType>::Bnd_B2(const std::array<RealType, 2>& theCenter,
+                                          const std::array<RealType, 2>& theHSize) noexcept
+    : myCenter(theCenter),
+      myHSize(theHSize)
+{
+}
+
+//=================================================================================================
+
+template <typename RealType>
+inline void Bnd_B2<RealType>::Clear() noexcept
 {
   myCenter[0] = THE_RealLast;
   myCenter[1] = THE_RealLast;
@@ -176,7 +205,7 @@ inline void Bnd_B2<RealType>::Clear()
 //=================================================================================================
 
 template <typename RealType>
-inline Standard_Boolean Bnd_B2<RealType>::IsVoid() const
+constexpr inline Standard_Boolean Bnd_B2<RealType>::IsVoid() const noexcept
 {
   return (myHSize[0] < -1e-5);
 }
@@ -194,7 +223,7 @@ inline void Bnd_B2<RealType>::Add(const gp_Pnt2d& thePnt)
 template <typename RealType>
 inline void Bnd_B2<RealType>::Add(const Bnd_B2<RealType>& theBox)
 {
-  if (theBox.IsVoid() == Standard_False)
+  if (!theBox.IsVoid())
   {
     Add(theBox.CornerMin());
     Add(theBox.CornerMax());
@@ -204,7 +233,7 @@ inline void Bnd_B2<RealType>::Add(const Bnd_B2<RealType>& theBox)
 //=================================================================================================
 
 template <typename RealType>
-inline gp_XY Bnd_B2<RealType>::CornerMin() const
+inline gp_XY Bnd_B2<RealType>::CornerMin() const noexcept
 {
   return gp_XY(myCenter[0] - myHSize[0], myCenter[1] - myHSize[1]);
 }
@@ -212,7 +241,7 @@ inline gp_XY Bnd_B2<RealType>::CornerMin() const
 //=================================================================================================
 
 template <typename RealType>
-inline gp_XY Bnd_B2<RealType>::CornerMax() const
+inline gp_XY Bnd_B2<RealType>::CornerMax() const noexcept
 {
   return gp_XY(myCenter[0] + myHSize[0], myCenter[1] + myHSize[1]);
 }
@@ -220,7 +249,7 @@ inline gp_XY Bnd_B2<RealType>::CornerMax() const
 //=================================================================================================
 
 template <typename RealType>
-inline Standard_Real Bnd_B2<RealType>::SquareExtent() const
+constexpr inline Standard_Real Bnd_B2<RealType>::SquareExtent() const noexcept
 {
   return 4 * (myHSize[0] * myHSize[0] + myHSize[1] * myHSize[1]);
 }
@@ -228,7 +257,7 @@ inline Standard_Real Bnd_B2<RealType>::SquareExtent() const
 //=================================================================================================
 
 template <typename RealType>
-inline void Bnd_B2<RealType>::SetCenter(const gp_XY& theCenter)
+inline void Bnd_B2<RealType>::SetCenter(const gp_XY& theCenter) noexcept
 {
   myCenter[0] = RealType(theCenter.X());
   myCenter[1] = RealType(theCenter.Y());
@@ -237,7 +266,7 @@ inline void Bnd_B2<RealType>::SetCenter(const gp_XY& theCenter)
 //=================================================================================================
 
 template <typename RealType>
-inline void Bnd_B2<RealType>::SetHSize(const gp_XY& theHSize)
+inline void Bnd_B2<RealType>::SetHSize(const gp_XY& theHSize) noexcept
 {
   myHSize[0] = RealType(theHSize.X());
   myHSize[1] = RealType(theHSize.Y());
@@ -246,7 +275,39 @@ inline void Bnd_B2<RealType>::SetHSize(const gp_XY& theHSize)
 //=================================================================================================
 
 template <typename RealType>
-inline void Bnd_B2<RealType>::Enlarge(const Standard_Real aDiff)
+inline void Bnd_B2<RealType>::SetCenter(const std::array<RealType, 2>& theCenter) noexcept
+{
+  myCenter = theCenter;
+}
+
+//=================================================================================================
+
+template <typename RealType>
+inline void Bnd_B2<RealType>::SetHSize(const std::array<RealType, 2>& theHSize) noexcept
+{
+  myHSize = theHSize;
+}
+
+//=================================================================================================
+
+template <typename RealType>
+constexpr inline const std::array<RealType, 2>& Bnd_B2<RealType>::Center() const noexcept
+{
+  return myCenter;
+}
+
+//=================================================================================================
+
+template <typename RealType>
+constexpr inline const std::array<RealType, 2>& Bnd_B2<RealType>::HSize() const noexcept
+{
+  return myHSize;
+}
+
+//=================================================================================================
+
+template <typename RealType>
+inline void Bnd_B2<RealType>::Enlarge(const Standard_Real aDiff) noexcept
 {
   const RealType aD = RealType(std::abs(aDiff));
   myHSize[0] += aD;
@@ -256,7 +317,7 @@ inline void Bnd_B2<RealType>::Enlarge(const Standard_Real aDiff)
 //=================================================================================================
 
 template <typename RealType>
-inline Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY& thePnt) const
+constexpr inline Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY& thePnt) const noexcept
 {
   return (std::abs(RealType(thePnt.X()) - myCenter[0]) > myHSize[0]
           || std::abs(RealType(thePnt.Y()) - myCenter[1]) > myHSize[1]);
@@ -265,7 +326,8 @@ inline Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY& thePnt) const
 //=================================================================================================
 
 template <typename RealType>
-inline Standard_Boolean Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox) const
+constexpr inline Standard_Boolean Bnd_B2<RealType>::IsOut(
+  const Bnd_B2<RealType>& theBox) const noexcept
 {
   return (std::abs(theBox.myCenter[0] - myCenter[0]) > theBox.myHSize[0] + myHSize[0]
           || std::abs(theBox.myCenter[1] - myCenter[1]) > theBox.myHSize[1] + myHSize[1]);
@@ -274,7 +336,8 @@ inline Standard_Boolean Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox) 
 //=================================================================================================
 
 template <typename RealType>
-inline Standard_Boolean Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox) const
+constexpr inline Standard_Boolean Bnd_B2<RealType>::IsIn(
+  const Bnd_B2<RealType>& theBox) const noexcept
 {
   return (std::abs(theBox.myCenter[0] - myCenter[0]) < theBox.myHSize[0] - myHSize[0]
           && std::abs(theBox.myCenter[1] - myCenter[1]) < theBox.myHSize[1] - myHSize[1]);
@@ -332,7 +395,7 @@ Standard_Boolean Bnd_B2<RealType>::Limit(const Bnd_B2<RealType>& theBox)
   const RealType   diffC[2] = {theBox.myCenter[0] - myCenter[0], theBox.myCenter[1] - myCenter[1]};
   const RealType   sumH[2]  = {theBox.myHSize[0] + myHSize[0], theBox.myHSize[1] + myHSize[1]};
   // check the condition IsOut
-  if (compareDist(sumH, diffC) == Standard_False)
+  if (!compareDist(sumH, diffC))
   {
     const RealType diffH[2] = {theBox.myHSize[0] - myHSize[0], theBox.myHSize[1] - myHSize[1]};
     if (diffC[0] - diffH[0] > 0.)
@@ -406,7 +469,7 @@ Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY&           theCenter,
                                          const Standard_Boolean isCircleHollow) const
 {
   Standard_Boolean aResult(Standard_True);
-  if (isCircleHollow == Standard_False)
+  if (!isCircleHollow)
   {
     // vector from the center of the circle to the nearest box face
     const Standard_Real aDist[2] = {
@@ -522,7 +585,7 @@ template <typename RealType>
 Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY& theP0, const gp_XY& theP1) const
 {
   Standard_Boolean aResult(Standard_True);
-  if (IsVoid() == Standard_False)
+  if (!IsVoid())
   {
     // Intersect the line containing the segment.
     const gp_XY         aSegDelta(theP1 - theP0);
