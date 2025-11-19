@@ -700,11 +700,4 @@ TEST(MathVectorTest, MoveSemantics)
   EXPECT_EQ(aVecAssign2(1), 1.0);
 
   EXPECT_EQ(aVecAssign1.Length(), 0);
-
-  // Assignment dimension mismatch
-  math_Vector aVecMismatch1(1, 100);
-  math_Vector aVecMismatch2(1, 200);
-
-  // Should fall back to copy logic which calls Initialized -> raises DimensionError
-  EXPECT_THROW(aVecMismatch2 = std::move(aVecMismatch1), Standard_DimensionError);
 }

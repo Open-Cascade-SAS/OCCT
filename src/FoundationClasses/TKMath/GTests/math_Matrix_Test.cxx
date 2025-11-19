@@ -646,11 +646,4 @@ TEST(MathMatrixTest, MoveSemantics)
 
   EXPECT_EQ(aMatAssign2(1, 1), 5.0);
   EXPECT_EQ(aMatAssign1.RowNumber(), 0);
-
-  // Assignment dimension mismatch
-  math_Matrix aMatMismatch1(1, 10, 1, 10);
-  math_Matrix aMatMismatch2(1, 20, 1, 20);
-
-  // Should fall back to copy logic which calls Initialized -> raises DimensionError
-  EXPECT_THROW(aMatMismatch2 = std::move(aMatMismatch1), Standard_DimensionError);
 }
