@@ -80,17 +80,23 @@ public:
 
   //! Move constructor
   math_DoubleTab(math_DoubleTab&& theOther) noexcept
-      : myArray(theOther.myArray.IsDeletable()
+      : myBuffer{},
+        myArray(theOther.myArray.IsDeletable()
                   ? std::move(theOther.myArray)
-                  : NCollection_Array2<Standard_Real>(*myBuffer.data(),
-                                                      theOther.LowerRow(),
-                                                      theOther.UpperRow(),
-                                                      theOther.LowerCol(),
-                                                      theOther.UpperCol()))
+                  : (theOther.NbRows() * theOther.NbColumns() <= THE_BUFFER_SIZE
+                       ? NCollection_Array2<Standard_Real>(*myBuffer.data(),
+                                                           theOther.LowerRow(),
+                                                           theOther.UpperRow(),
+                                                           theOther.LowerCol(),
+                                                           theOther.UpperCol())
+                       : NCollection_Array2<Standard_Real>(theOther.LowerRow(),
+                                                           theOther.UpperRow(),
+                                                           theOther.LowerCol(),
+                                                           theOther.UpperCol())))
   {
     if (!theOther.myArray.IsEmpty())
     {
-      myArray = theOther.myArray;
+      myArray.Assign(theOther.myArray);
     }
   }
 
@@ -153,7 +159,10 @@ public:
   //! Assignment operator
   math_DoubleTab& operator=(const math_DoubleTab& theOther)
   {
-    myArray = theOther.myArray;
+    if (this != &theOther)
+    {
+      myArray = theOther.myArray;
+    }
     return *this;
   }
 

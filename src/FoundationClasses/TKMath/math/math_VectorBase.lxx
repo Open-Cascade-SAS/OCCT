@@ -78,7 +78,8 @@ math_VectorBase<TheItemType>::math_VectorBase(const math_VectorBase<TheItemType>
 
 template <typename TheItemType>
 math_VectorBase<TheItemType>::math_VectorBase(math_VectorBase<TheItemType>&& theOther) noexcept
-    : Array(theOther.Array.IsDeletable()
+    : myBuffer{},
+      Array(theOther.Array.IsDeletable()
               ? std::move(theOther.Array)
               : (theOther.Length() <= math_VectorBase::THE_BUFFER_SIZE
                    ? NCollection_Array1<TheItemType>(*myBuffer.data(),
@@ -88,7 +89,7 @@ math_VectorBase<TheItemType>::math_VectorBase(math_VectorBase<TheItemType>&& the
 {
   if (!theOther.Array.IsEmpty())
   {
-    Array = theOther.Array;
+    Array.Assign(theOther.Array);
   }
 }
 
