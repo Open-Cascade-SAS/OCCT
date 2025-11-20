@@ -42,14 +42,15 @@ public:
 
 public:
   //! Returns current size of BVH build queue.
-  Standard_Integer Size() const { return mySize.load(std::memory_order_relaxed); }
+  //! Uses acquire semantics to synchronize with enqueue/dequeue operations.
+  Standard_Integer Size() const { return mySize.load(std::memory_order_acquire); }
 
   //! Enqueues new work-item onto BVH build queue.
   void Enqueue(const Standard_Integer theWorkItem)
   {
     std::lock_guard<std::mutex> aLock(myMutex);
     myQueue.Append(theWorkItem);
-    mySize.fetch_add(1, std::memory_order_relaxed);
+    mySize.fetch_add(1, std::memory_order_release);
   }
 
   //! Fetches first work-item from BVH build queue.
@@ -64,21 +65,22 @@ public:
       {
         aQuery = myQueue.First();
         myQueue.Remove(1);
-        mySize.fetch_sub(1, std::memory_order_relaxed);
+        mySize.fetch_sub(1, std::memory_order_release);
       }
     }
 
-    // Update thread counter atomically (lock-free)
+    // Update thread counter atomically with release/acquire semantics
+    // to ensure proper synchronization with HasBusyThreads()
     if (aQuery != -1)
     {
       if (!wasBusy)
       {
-        myNbThreads.fetch_add(1, std::memory_order_relaxed);
+        myNbThreads.fetch_add(1, std::memory_order_release);
       }
     }
     else if (wasBusy)
     {
-      myNbThreads.fetch_sub(1, std::memory_order_relaxed);
+      myNbThreads.fetch_sub(1, std::memory_order_release);
     }
 
     wasBusy = (aQuery != -1);
@@ -86,9 +88,12 @@ public:
   }
 
   //! Checks if there are active build threads.
+  //! Uses acquire semantics to ensure visibility of thread counter updates.
+  //! This is critical for termination detection: threads check this after
+  //! finding an empty queue to determine if they should exit or wait.
   Standard_Boolean HasBusyThreads() const
   {
-    return myNbThreads.load(std::memory_order_relaxed) != 0;
+    return myNbThreads.load(std::memory_order_acquire) != 0;
   }
 
 private:

@@ -67,9 +67,9 @@ constexpr unsigned int THE_MORTON_LUT[256] = {
 //! @param theVoxelY Y coordinate (0-1023)
 //! @param theVoxelZ Z coordinate (0-1023)
 //! @return 30-bit Morton code with interleaved bits
-inline unsigned int EncodeMortonCode(unsigned int theVoxelX,
-                                     unsigned int theVoxelY,
-                                     unsigned int theVoxelZ)
+constexpr unsigned int EncodeMortonCode(unsigned int theVoxelX,
+                                        unsigned int theVoxelY,
+                                        unsigned int theVoxelZ)
 {
   // Split each 10-bit coordinate into two 8-bit lookups (upper 2 bits + lower 8 bits)
   // For 10-bit values, we use lower 8 bits via LUT and handle upper 2 bits separately
