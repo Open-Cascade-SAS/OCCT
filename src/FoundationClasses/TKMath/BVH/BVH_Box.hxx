@@ -203,18 +203,18 @@ public:
     (void)theDepth;
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsInited)
 
-    int n = (std::min)(N, 3);
-    if (n == 1)
+    constexpr int n = (N < 3) ? N : 3;
+    if constexpr (n == 1)
     {
       OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMinPoint[0])
       OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMinPoint[0])
     }
-    else if (n == 2)
+    else if constexpr (n == 2)
     {
       OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream, "MinPoint", n, myMinPoint[0], myMinPoint[1])
       OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream, "MaxPoint", n, myMaxPoint[0], myMaxPoint[1])
     }
-    else if (n == 3)
+    else if constexpr (n == 3)
     {
       OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream,
                                        "MinPoint",
@@ -242,14 +242,14 @@ public:
     OCCT_INIT_FIELD_VALUE_INTEGER(aStreamStr, aPos, anIsInited);
     myIsInited = anIsInited != 0;
 
-    int n = (std::min)(N, 3);
-    if (n == 1)
+    constexpr int n = (N < 3) ? N : 3;
+    if constexpr (n == 1)
     {
       Standard_Real aValue;
       OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, aValue);
       myMinPoint[0] = (T)aValue;
     }
-    else if (n == 2)
+    else if constexpr (n == 2)
     {
       Standard_Real aValue1, aValue2;
       OCCT_INIT_VECTOR_CLASS(aStreamStr, "MinPoint", aPos, n, &aValue1, &aValue2);
@@ -260,7 +260,7 @@ public:
       myMaxPoint[0] = (T)aValue1;
       myMaxPoint[1] = (T)aValue2;
     }
-    else if (n == 3)
+    else if constexpr (n == 3)
     {
       Standard_Real aValue1, aValue2, aValue3;
       OCCT_INIT_VECTOR_CLASS(aStreamStr, "MinPoint", aPos, n, &aValue1, &aValue2, &aValue3);
@@ -294,10 +294,19 @@ public:
     if (!IsValid())
       return Standard_True;
 
-    int n = (std::min)(N, 3);
-    for (int i = 0; i < n; ++i)
+    if constexpr (N >= 1)
     {
-      if (myMinPoint[i] > theMaxPoint[i] || myMaxPoint[i] < theMinPoint[i])
+      if (myMinPoint[0] > theMaxPoint[0] || myMaxPoint[0] < theMinPoint[0])
+        return Standard_True;
+    }
+    if constexpr (N >= 2)
+    {
+      if (myMinPoint[1] > theMaxPoint[1] || myMaxPoint[1] < theMinPoint[1])
+        return Standard_True;
+    }
+    if constexpr (N >= 3)
+    {
+      if (myMinPoint[2] > theMaxPoint[2] || myMaxPoint[2] < theMinPoint[2])
         return Standard_True;
     }
     return Standard_False;
@@ -324,14 +333,26 @@ public:
 
     Standard_Boolean isInside = Standard_True;
 
-    int n = (std::min)(N, 3);
-    for (int i = 0; i < n; ++i)
+    if constexpr (N >= 1)
     {
-      hasOverlap = (myMinPoint[i] <= theMaxPoint[i] && myMaxPoint[i] >= theMinPoint[i]);
+      hasOverlap = (myMinPoint[0] <= theMaxPoint[0] && myMaxPoint[0] >= theMinPoint[0]);
       if (!hasOverlap)
         return Standard_False;
-
-      isInside = isInside && (myMinPoint[i] <= theMinPoint[i] && myMaxPoint[i] >= theMaxPoint[i]);
+      isInside = isInside && (myMinPoint[0] <= theMinPoint[0] && myMaxPoint[0] >= theMaxPoint[0]);
+    }
+    if constexpr (N >= 2)
+    {
+      hasOverlap = (myMinPoint[1] <= theMaxPoint[1] && myMaxPoint[1] >= theMinPoint[1]);
+      if (!hasOverlap)
+        return Standard_False;
+      isInside = isInside && (myMinPoint[1] <= theMinPoint[1] && myMaxPoint[1] >= theMaxPoint[1]);
+    }
+    if constexpr (N >= 3)
+    {
+      hasOverlap = (myMinPoint[2] <= theMaxPoint[2] && myMaxPoint[2] >= theMinPoint[2]);
+      if (!hasOverlap)
+        return Standard_False;
+      isInside = isInside && (myMinPoint[2] <= theMinPoint[2] && myMaxPoint[2] >= theMaxPoint[2]);
     }
     return isInside;
   }
@@ -342,10 +363,19 @@ public:
     if (!IsValid())
       return Standard_True;
 
-    int n = (std::min)(N, 3);
-    for (int i = 0; i < n; ++i)
+    if constexpr (N >= 1)
     {
-      if (thePoint[i] < myMinPoint[i] || thePoint[i] > myMaxPoint[i])
+      if (thePoint[0] < myMinPoint[0] || thePoint[0] > myMaxPoint[0])
+        return Standard_True;
+    }
+    if constexpr (N >= 2)
+    {
+      if (thePoint[1] < myMinPoint[1] || thePoint[1] > myMaxPoint[1])
+        return Standard_True;
+    }
+    if constexpr (N >= 3)
+    {
+      if (thePoint[2] < myMinPoint[2] || thePoint[2] > myMaxPoint[2])
         return Standard_True;
     }
     return Standard_False;

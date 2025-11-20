@@ -46,7 +46,7 @@ protected:
     const Standard_Integer aNodeBegPrimitive = theBVH->BegPrimitive(theNode);
     const Standard_Integer aNodeEndPrimitive = theBVH->EndPrimitive(theNode);
     const Standard_Integer aNodeNbPrimitives = theBVH->NbPrimitives(theNode);
-    if (aNodeEndPrimitive - aNodeBegPrimitive < BVH_Builder<T, N>::myLeafNodeSize)
+    if (aNodeNbPrimitives <= BVH_Builder<T, N>::myLeafNodeSize)
     {
       // clang-format off
       return typename BVH_QueueBuilder<T, N>::BVH_ChildNodes(); // node does not require partitioning
@@ -57,8 +57,8 @@ protected:
     Standard_Integer aMinSplitAxis  = -1;
     Standard_Integer aMinSplitIndex = 0;
 
-    NCollection_Array1<Standard_Real> aLftSet(0, aNodeNbPrimitives - 1);
-    NCollection_Array1<Standard_Real> aRghSet(0, aNodeNbPrimitives - 1);
+    NCollection_Array1<Standard_Real> aLftSet(1, aNodeNbPrimitives - 1);
+    NCollection_Array1<Standard_Real> aRghSet(1, aNodeNbPrimitives - 1);
     Standard_Real                     aMinSplitCost = std::numeric_limits<Standard_Real>::max();
 
     // Find best split
@@ -74,8 +74,6 @@ protected:
       BVH_QuickSorter<T, N>(anAxis).Perform(theSet, aNodeBegPrimitive, aNodeEndPrimitive);
       BVH_Box<T, N> aLftBox;
       BVH_Box<T, N> aRghBox;
-      aLftSet.ChangeFirst() = std::numeric_limits<T>::max();
-      aRghSet.ChangeFirst() = std::numeric_limits<T>::max();
 
       // Sweep from left
       for (Standard_Integer anIndex = 1; anIndex < aNodeNbPrimitives; ++anIndex)

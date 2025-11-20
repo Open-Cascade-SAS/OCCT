@@ -188,7 +188,7 @@ struct VecComp<T, 2>
 {
   typedef typename BVH::VectorType<T, 2>::Type BVH_Vec2t;
 
-  static T Get(const BVH_Vec2t& theVec, const Standard_Integer theAxis)
+  static constexpr T Get(const BVH_Vec2t& theVec, const Standard_Integer theAxis)
   {
     return theAxis == 0 ? theVec.x() : theVec.y();
   }
@@ -199,7 +199,7 @@ struct VecComp<T, 3>
 {
   typedef typename BVH::VectorType<T, 3>::Type BVH_Vec3t;
 
-  static T Get(const BVH_Vec3t& theVec, const Standard_Integer theAxis)
+  static constexpr T Get(const BVH_Vec3t& theVec, const Standard_Integer theAxis)
   {
     return theAxis == 0 ? theVec.x() : (theAxis == 1 ? theVec.y() : theVec.z());
   }
@@ -210,7 +210,7 @@ struct VecComp<T, 4>
 {
   typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
 
-  static T Get(const BVH_Vec4t& theVec, const Standard_Integer theAxis)
+  static constexpr T Get(const BVH_Vec4t& theVec, const Standard_Integer theAxis)
   {
     return theAxis == 0 ? theVec.x()
                         : (theAxis == 1 ? theVec.y() : (theAxis == 2 ? theVec.z() : theVec.w()));
@@ -302,7 +302,7 @@ struct Array
 };
 
 template <class T>
-static inline Standard_Integer IntFloor(const T theValue)
+static inline constexpr Standard_Integer IntFloor(const T theValue)
 {
   const Standard_Integer aRes = static_cast<Standard_Integer>(theValue);
 

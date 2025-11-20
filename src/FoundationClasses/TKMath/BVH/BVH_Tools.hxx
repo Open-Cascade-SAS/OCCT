@@ -58,19 +58,56 @@ public: //! @name Box-Box Square distance
                                 const BVH_VecNt& theCMax2)
   {
     T aDist = 0;
-    for (int i = 0; i < N; ++i)
+    if constexpr (N >= 1)
     {
-      if (theCMin1[i] > theCMax2[i])
+      if (theCMin1[0] > theCMax2[0])
       {
-        T d = theCMin1[i] - theCMax2[i];
-        d *= d;
-        aDist += d;
+        T d = theCMin1[0] - theCMax2[0];
+        aDist += d * d;
       }
-      else if (theCMax1[i] < theCMin2[i])
+      else if (theCMax1[0] < theCMin2[0])
       {
-        T d = theCMin2[i] - theCMax1[i];
-        d *= d;
-        aDist += d;
+        T d = theCMin2[0] - theCMax1[0];
+        aDist += d * d;
+      }
+    }
+    if constexpr (N >= 2)
+    {
+      if (theCMin1[1] > theCMax2[1])
+      {
+        T d = theCMin1[1] - theCMax2[1];
+        aDist += d * d;
+      }
+      else if (theCMax1[1] < theCMin2[1])
+      {
+        T d = theCMin2[1] - theCMax1[1];
+        aDist += d * d;
+      }
+    }
+    if constexpr (N >= 3)
+    {
+      if (theCMin1[2] > theCMax2[2])
+      {
+        T d = theCMin1[2] - theCMax2[2];
+        aDist += d * d;
+      }
+      else if (theCMax1[2] < theCMin2[2])
+      {
+        T d = theCMin2[2] - theCMax1[2];
+        aDist += d * d;
+      }
+    }
+    if constexpr (N >= 4)
+    {
+      if (theCMin1[3] > theCMax2[3])
+      {
+        T d = theCMin1[3] - theCMax2[3];
+        aDist += d * d;
+      }
+      else if (theCMax1[3] < theCMin2[3])
+      {
+        T d = theCMin2[3] - theCMax1[3];
+        aDist += d * d;
       }
     }
     return aDist;
@@ -93,19 +130,56 @@ public: //! @name Point-Box Square distance
                                   const BVH_VecNt& theCMax)
   {
     T aDist = 0;
-    for (int i = 0; i < N; ++i)
+    if constexpr (N >= 1)
     {
-      if (thePoint[i] < theCMin[i])
+      if (thePoint[0] < theCMin[0])
       {
-        T d = theCMin[i] - thePoint[i];
-        d *= d;
-        aDist += d;
+        T d = theCMin[0] - thePoint[0];
+        aDist += d * d;
       }
-      else if (thePoint[i] > theCMax[i])
+      else if (thePoint[0] > theCMax[0])
       {
-        T d = thePoint[i] - theCMax[i];
-        d *= d;
-        aDist += d;
+        T d = thePoint[0] - theCMax[0];
+        aDist += d * d;
+      }
+    }
+    if constexpr (N >= 2)
+    {
+      if (thePoint[1] < theCMin[1])
+      {
+        T d = theCMin[1] - thePoint[1];
+        aDist += d * d;
+      }
+      else if (thePoint[1] > theCMax[1])
+      {
+        T d = thePoint[1] - theCMax[1];
+        aDist += d * d;
+      }
+    }
+    if constexpr (N >= 3)
+    {
+      if (thePoint[2] < theCMin[2])
+      {
+        T d = theCMin[2] - thePoint[2];
+        aDist += d * d;
+      }
+      else if (thePoint[2] > theCMax[2])
+      {
+        T d = thePoint[2] - theCMax[2];
+        aDist += d * d;
+      }
+    }
+    if constexpr (N >= 4)
+    {
+      if (thePoint[3] < theCMin[3])
+      {
+        T d = theCMin[3] - thePoint[3];
+        aDist += d * d;
+      }
+      else if (thePoint[3] > theCMax[3])
+      {
+        T d = thePoint[3] - theCMax[3];
+        aDist += d * d;
       }
     }
     return aDist;
@@ -320,10 +394,12 @@ public: //! @name Ray-Box Intersection
     {
       if (theRayDirection[i] == 0)
       {
-        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) <= 0 ? (std::numeric_limits<T>::min)()
+        // Ray is parallel to this axis slab - check if origin is within bounds
+        // Use lowest() for negative extreme (not min() which is smallest positive for floats)
+        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) <= 0 ? (std::numeric_limits<T>::lowest)()
                                                              : (std::numeric_limits<T>::max)();
-        aNodeMax[i] = (theBoxCMax[i] - theRayOrigin[i]) < 0 ? (std::numeric_limits<T>::min)()
-                                                            : (std::numeric_limits<T>::max)();
+        aNodeMax[i] = (theBoxCMax[i] - theRayOrigin[i]) >= 0 ? (std::numeric_limits<T>::max)()
+                                                             : (std::numeric_limits<T>::lowest)();
       }
       else
       {

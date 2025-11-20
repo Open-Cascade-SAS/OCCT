@@ -16,6 +16,8 @@
 #ifndef _BVH_Ray_Header
 #define _BVH_Ray_Header
 
+#include <BVH_Types.hxx>
+
 //! Describes a ray based on BVH vectors.
 template <class T, int N>
 class BVH_Ray
@@ -28,7 +30,7 @@ public:
   BVH_VecNt Direct;
 
 public:
-  BVH_Ray(const BVH_VecNt& theOrigin, const BVH_VecNt& theDirect)
+  constexpr BVH_Ray(const BVH_VecNt& theOrigin, const BVH_VecNt& theDirect)
       : Origin(theOrigin),
         Direct(theDirect)
   {

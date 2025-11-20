@@ -107,8 +107,8 @@ protected:
 
 protected:
   Standard_Boolean                       myIsDirty; //!< Is geometry state outdated?
-  opencascade::handle<BVH_Tree<T, N>>    myBVH;     //!< Constructed hight-level BVH
-  opencascade::handle<BVH_Builder<T, N>> myBuilder; //!< Builder for hight-level BVH
+  opencascade::handle<BVH_Tree<T, N>>    myBVH;     //!< Constructed high-level BVH
+  opencascade::handle<BVH_Builder<T, N>> myBuilder; //!< Builder for high-level BVH
 
   mutable BVH_Box<T, N> myBox; //!< Cached bounding box of geometric objects
 };

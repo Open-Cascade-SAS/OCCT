@@ -7,6 +7,15 @@ set(OCCT_TKMath_GTests_FILES
   Bnd_BoundSortBox_Test.cxx
   Bnd_Box_Test.cxx
   Bnd_OBB_Test.cxx
+  BVH_BinnedBuilder_Test.cxx
+  BVH_Box_Test.cxx
+  BVH_LinearBuilder_Test.cxx
+  BVH_QuickSorter_Test.cxx
+  BVH_RadixSorter_Test.cxx
+  BVH_SweepPlaneBuilder_Test.cxx
+  BVH_Tools_Test.cxx
+  BVH_Triangulation_Test.cxx
+  BVH_Tree_Test.cxx
   ElCLib_Test.cxx
   gp_Ax3_Test.cxx
   gp_Mat_Test.cxx
