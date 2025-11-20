@@ -166,8 +166,8 @@ TEST(BVH_RayTest, FloatPrecision)
 TEST(BVH_RayTest, ConstexprConstructor)
 {
   // This test verifies that the constructor is truly constexpr
-  constexpr BVH_Vec3d aOrigin(1.0, 2.0, 3.0);
-  constexpr BVH_Vec3d aDirection(1.0, 1.0, 1.0);
+  constexpr BVH_Vec3d                 aOrigin(1.0, 2.0, 3.0);
+  constexpr BVH_Vec3d                 aDirection(1.0, 1.0, 1.0);
   constexpr BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
 
   // If this compiles, constexpr works
