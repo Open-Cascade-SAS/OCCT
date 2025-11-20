@@ -26,13 +26,21 @@ public:
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
 public:
-  BVH_VecNt Origin;
-  BVH_VecNt Direct;
+  BVH_VecNt Origin; //!< Ray origin point
+  BVH_VecNt Direct; //!< Ray direction vector
 
 public:
-  constexpr BVH_Ray(const BVH_VecNt& theOrigin, const BVH_VecNt& theDirect)
+  //! Creates ray with given origin and direction.
+  constexpr BVH_Ray(const BVH_VecNt& theOrigin, const BVH_VecNt& theDirect) noexcept
       : Origin(theOrigin),
         Direct(theDirect)
+  {
+  }
+
+  //! Default constructor (creates invalid ray at origin).
+  constexpr BVH_Ray() noexcept
+      : Origin(BVH_VecNt()),
+        Direct(BVH_VecNt())
   {
   }
 };

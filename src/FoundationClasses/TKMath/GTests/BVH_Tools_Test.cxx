@@ -659,3 +659,155 @@ TEST(BVH_ToolsTest, PointBoxProjectionAllCorners)
   EXPECT_NEAR(aProj2.y(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj2.z(), 1.0, Precision::Confusion());
 }
+
+// =======================================================================================
+// Tests for improved RayBoxIntersection (dimension-independent, early exit)
+// =======================================================================================
+
+TEST(BVH_ToolsTest, RayBoxIntersection2D)
+{
+  // Test 2D ray-box intersection (old code was hardcoded for 3D)
+  BVH_Box<Standard_Real, 2> aBox(BVH_Vec2d(0.0, 0.0), BVH_Vec2d(1.0, 1.0));
+
+  Standard_Real aTimeEnter, aTimeLeave;
+
+  // Ray hitting the box
+  Standard_Boolean aHit1 = BVH_Tools<Standard_Real, 2>::RayBoxIntersection(BVH_Vec2d(-1.0, 0.5),
+                                                                           BVH_Vec2d(1.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
+  EXPECT_TRUE(aHit1);
+  EXPECT_NEAR(aTimeEnter, 1.0, Precision::Confusion());
+  EXPECT_NEAR(aTimeLeave, 2.0, Precision::Confusion());
+
+  // Ray missing the box
+  Standard_Boolean aHit2 = BVH_Tools<Standard_Real, 2>::RayBoxIntersection(BVH_Vec2d(-1.0, 2.0),
+                                                                           BVH_Vec2d(1.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
+  EXPECT_FALSE(aHit2);
+
+  // Ray parallel to X axis, inside Y bounds
+  Standard_Boolean aHit3 = BVH_Tools<Standard_Real, 2>::RayBoxIntersection(BVH_Vec2d(-1.0, 0.5),
+                                                                           BVH_Vec2d(1.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
+  EXPECT_TRUE(aHit3);
+
+  // Ray parallel to Y axis, inside X bounds
+  Standard_Boolean aHit4 = BVH_Tools<Standard_Real, 2>::RayBoxIntersection(BVH_Vec2d(0.5, -1.0),
+                                                                           BVH_Vec2d(0.0, 1.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
+  EXPECT_TRUE(aHit4);
+  EXPECT_NEAR(aTimeEnter, 1.0, Precision::Confusion());
+  EXPECT_NEAR(aTimeLeave, 2.0, Precision::Confusion());
+}
+
+TEST(BVH_ToolsTest, RayBoxIntersectionEarlyExit)
+{
+  // Test early exit optimization when ray misses on first axis
+  BVH_Box<Standard_Real, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
+  Standard_Real             aTimeEnter, aTimeLeave;
+
+  // Ray clearly misses in X direction - should exit immediately
+  Standard_Boolean aHit = BVH_Tools<Standard_Real, 3>::RayBoxIntersection(BVH_Vec3d(-2.0, 0.5, 0.5),
+                                                                          BVH_Vec3d(-1.0, 0.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
+  EXPECT_FALSE(aHit);
+
+  // Ray with early mismatch in Y direction
+  Standard_Boolean aHit2 =
+    BVH_Tools<Standard_Real, 3>::RayBoxIntersection(BVH_Vec3d(0.5, -2.0, 0.5),
+                                                    BVH_Vec3d(0.0, -1.0, 0.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
+  EXPECT_FALSE(aHit2);
+}
+
+TEST(BVH_ToolsTest, RayBoxIntersectionParallelRayEarlyExit)
+{
+  // Test parallel ray that misses - should exit immediately
+  BVH_Box<Standard_Real, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
+  Standard_Real             aTimeEnter, aTimeLeave;
+
+  // Ray parallel to X axis but Y coordinate outside box - should reject immediately
+  Standard_Boolean aHit = BVH_Tools<Standard_Real, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 2.0, 0.5),
+                                                                          BVH_Vec3d(1.0, 0.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
+  EXPECT_FALSE(aHit);
+
+  // Ray parallel to Y axis but X coordinate outside box
+  Standard_Boolean aHit2 =
+    BVH_Tools<Standard_Real, 3>::RayBoxIntersection(BVH_Vec3d(2.0, -1.0, 0.5),
+                                                    BVH_Vec3d(0.0, 1.0, 0.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
+  EXPECT_FALSE(aHit2);
+
+  // Ray parallel to Z axis but X and Y outside
+  Standard_Boolean aHit3 =
+    BVH_Tools<Standard_Real, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, -1.0, 0.5),
+                                                    BVH_Vec3d(0.0, 0.0, 1.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
+  EXPECT_FALSE(aHit3);
+}
+
+TEST(BVH_ToolsTest, RayBoxIntersection2DParallelBothAxes)
+{
+  // 2D test with ray parallel to both axes (direction = 0,0)
+  BVH_Box<Standard_Real, 2> aBox(BVH_Vec2d(0.0, 0.0), BVH_Vec2d(1.0, 1.0));
+  Standard_Real             aTimeEnter, aTimeLeave;
+
+  // Ray origin inside box, direction = 0
+  Standard_Boolean aHit1 = BVH_Tools<Standard_Real, 2>::RayBoxIntersection(BVH_Vec2d(0.5, 0.5),
+                                                                           BVH_Vec2d(0.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
+  EXPECT_TRUE(aHit1); // Should still hit because origin is inside
+
+  // Ray origin outside box, direction = 0
+  Standard_Boolean aHit2 = BVH_Tools<Standard_Real, 2>::RayBoxIntersection(BVH_Vec2d(2.0, 2.0),
+                                                                           BVH_Vec2d(0.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
+  EXPECT_FALSE(aHit2); // Should miss because origin is outside
+}
+
+TEST(BVH_ToolsTest, RayBoxIntersectionNegativeTime)
+{
+  // Test that ray doesn't report intersection behind the origin
+  BVH_Box<Standard_Real, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
+  Standard_Real             aTimeEnter, aTimeLeave;
+
+  // Ray origin is past the box, pointing away
+  Standard_Boolean aHit = BVH_Tools<Standard_Real, 3>::RayBoxIntersection(BVH_Vec3d(2.0, 0.5, 0.5),
+                                                                          BVH_Vec3d(1.0, 0.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
+  EXPECT_FALSE(aHit);
+
+  // Ray origin inside box, pointing away - should still hit (leave point is in front)
+  Standard_Boolean aHit2 = BVH_Tools<Standard_Real, 3>::RayBoxIntersection(BVH_Vec3d(0.5, 0.5, 0.5),
+                                                                           BVH_Vec3d(1.0, 0.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
+  EXPECT_TRUE(aHit2);
+  EXPECT_TRUE(aTimeLeave >= 0.0);
+}

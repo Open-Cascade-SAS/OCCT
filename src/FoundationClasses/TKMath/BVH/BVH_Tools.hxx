@@ -221,7 +221,7 @@ public: //! @name Point-Triangle Square distance
     T aABdotAP = aAB.Dot(aAP);
     T aACdotAP = aAC.Dot(aAP);
 
-    if (aABdotAP <= 0. && aACdotAP <= 0.)
+    if (aABdotAP <= T(0) && aACdotAP <= T(0))
     {
       if (thePrjState != nullptr)
       {
@@ -238,7 +238,7 @@ public: //! @name Point-Triangle Square distance
     T aBAdotBP = -(aAB.Dot(aBP));
     T aBCdotBP = (aBC.Dot(aBP));
 
-    if (aBAdotBP <= 0. && aBCdotBP <= 0.)
+    if (aBAdotBP <= T(0) && aBCdotBP <= T(0))
     {
       if (thePrjState != nullptr)
       {
@@ -254,7 +254,7 @@ public: //! @name Point-Triangle Square distance
     T aCBdotCP = -(aBC.Dot(aCP));
     T aCAdotCP = -(aAC.Dot(aCP));
 
-    if (aCAdotCP <= 0. && aCBdotCP <= 0.)
+    if (aCAdotCP <= T(0) && aCBdotCP <= T(0))
     {
       if (thePrjState != nullptr)
       {
@@ -269,7 +269,7 @@ public: //! @name Point-Triangle Square distance
 
     T aVC = aABdotAP * aACdotBP + aBAdotBP * aACdotAP;
 
-    if (aVC <= 0. && aABdotAP > 0. && aBAdotBP > 0.)
+    if (aVC <= T(0) && aABdotAP > T(0) && aBAdotBP > T(0))
     {
       if (thePrjState != nullptr)
       {
@@ -284,7 +284,7 @@ public: //! @name Point-Triangle Square distance
 
     T aVA = aBAdotBP * aCAdotCP - aABdotCP * aACdotBP;
 
-    if (aVA <= 0. && aBCdotBP > 0. && aCBdotCP > 0.)
+    if (aVA <= T(0) && aBCdotBP > T(0) && aCBdotCP > T(0))
     {
       if (thePrjState != nullptr)
       {
@@ -297,7 +297,7 @@ public: //! @name Point-Triangle Square distance
 
     T aVB = aABdotCP * aACdotAP + aABdotAP * aCAdotCP;
 
-    if (aVB <= 0. && aACdotAP > 0. && aCAdotCP > 0.)
+    if (aVB <= T(0) && aACdotAP > T(0) && aCAdotCP > T(0))
     {
       if (thePrjState != nullptr)
       {
@@ -347,7 +347,7 @@ public: //! @name Ray-Box Intersection
                               theTimeLeave);
   }
 
-  //! Computes hit time of ray-box intersection
+  //! Computes hit time of ray-box intersection.
   static Standard_Boolean RayBoxIntersection(const BVH_Ray<T, N>& theRay,
                                              const BVH_VecNt&     theBoxCMin,
                                              const BVH_VecNt&     theBoxCMax,
@@ -381,7 +381,8 @@ public: //! @name Ray-Box Intersection
                               theTimeLeave);
   }
 
-  //! Computes hit time of ray-box intersection
+  //! Computes hit time of ray-box intersection.
+  //! Uses optimized single-pass algorithm with early exit.
   static Standard_Boolean RayBoxIntersection(const BVH_VecNt& theRayOrigin,
                                              const BVH_VecNt& theRayDirection,
                                              const BVH_VecNt& theBoxCMin,
@@ -389,43 +390,50 @@ public: //! @name Ray-Box Intersection
                                              T&               theTimeEnter,
                                              T&               theTimeLeave)
   {
-    BVH_VecNt aNodeMin, aNodeMax;
+    T aTimeEnter = (std::numeric_limits<T>::lowest)();
+    T aTimeLeave = (std::numeric_limits<T>::max)();
+
     for (int i = 0; i < N; ++i)
     {
-      if (theRayDirection[i] == 0)
+      if (theRayDirection[i] == T(0))
       {
         // Ray is parallel to this axis slab - check if origin is within bounds
-        // Use lowest() for negative extreme (not min() which is smallest positive for floats)
-        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) <= 0 ? (std::numeric_limits<T>::lowest)()
-                                                             : (std::numeric_limits<T>::max)();
-        aNodeMax[i] = (theBoxCMax[i] - theRayOrigin[i]) >= 0 ? (std::numeric_limits<T>::max)()
-                                                             : (std::numeric_limits<T>::lowest)();
+        if (theRayOrigin[i] < theBoxCMin[i] || theRayOrigin[i] > theBoxCMax[i])
+        {
+          return Standard_False; // Ray misses the slab entirely
+        }
+        // Ray is within the slab, doesn't constrain the intersection interval
+        continue;
       }
-      else
+
+      // Compute intersection distances for this axis
+      T aT1 = (theBoxCMin[i] - theRayOrigin[i]) / theRayDirection[i];
+      T aT2 = (theBoxCMax[i] - theRayOrigin[i]) / theRayDirection[i];
+
+      // Ensure aT1 <= aT2 (handle negative direction)
+      T aTMin = (std::min)(aT1, aT2);
+      T aTMax = (std::max)(aT1, aT2);
+
+      // Update intersection interval
+      aTimeEnter = (std::max)(aTimeEnter, aTMin);
+      aTimeLeave = (std::min)(aTimeLeave, aTMax);
+
+      // Early exit if no intersection
+      if (aTimeEnter > aTimeLeave)
       {
-        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) / theRayDirection[i];
-        aNodeMax[i] = (theBoxCMax[i] - theRayOrigin[i]) / theRayDirection[i];
+        return Standard_False;
       }
     }
 
-    BVH_VecNt aTimeMin, aTimeMax;
-    for (int i = 0; i < N; ++i)
+    // Check if intersection is behind the ray origin
+    if (aTimeLeave < T(0))
     {
-      aTimeMin[i] = (std::min)(aNodeMin[i], aNodeMax[i]);
-      aTimeMax[i] = (std::max)(aNodeMin[i], aNodeMax[i]);
+      return Standard_False;
     }
 
-    T aTimeEnter = (std::max)(aTimeMin[0], (std::max)(aTimeMin[1], aTimeMin[2]));
-    T aTimeLeave = (std::min)(aTimeMax[0], (std::min)(aTimeMax[1], aTimeMax[2]));
-
-    Standard_Boolean hasIntersection = aTimeEnter <= aTimeLeave && aTimeLeave >= 0;
-    if (hasIntersection)
-    {
-      theTimeEnter = aTimeEnter;
-      theTimeLeave = aTimeLeave;
-    }
-
-    return hasIntersection;
+    theTimeEnter = aTimeEnter;
+    theTimeLeave = aTimeLeave;
+    return Standard_True;
   }
 };
 
