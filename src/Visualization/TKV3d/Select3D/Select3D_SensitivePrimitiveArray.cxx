@@ -946,8 +946,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
   }
 
   const Standard_Integer  aPatchSize = myBvhIndices.PatchSize(theElemIdx);
-  Select3D_BndBox3d       aBox;
-  Standard_Boolean        aResult = Standard_False;
+  Standard_Boolean        aResult    = Standard_False;
   SelectBasics_PickResult aPickResult;
   switch (myPrimType)
   {
