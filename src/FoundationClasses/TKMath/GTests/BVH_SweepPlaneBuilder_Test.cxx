@@ -20,7 +20,7 @@
 template <class T, int N>
 BVH_Box<T, N> ComputeSetBox(BVH_Set<T, N>* theSet)
 {
-  BVH_Box<T, N> aBox;
+  BVH_Box<T, N>          aBox;
   const Standard_Integer aSize = theSet->Size();
   for (Standard_Integer i = 0; i < aSize; ++i)
   {
@@ -53,11 +53,11 @@ TEST(BVH_SweepPlaneBuilderTest, CustomParameters)
 
 TEST(BVH_SweepPlaneBuilderTest, BuildEmptyTriangulation)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<Standard_Real, 3>     aTriangulation;
   BVH_SweepPlaneBuilder<Standard_Real, 3> aBuilder;
 
   BVH_Tree<Standard_Real, 3> aBVH;
-  BVH_Box<Standard_Real, 3> aBox;
+  BVH_Box<Standard_Real, 3>  aBox;
 
   aBuilder.Build(&aTriangulation, &aBVH, aBox);
 
@@ -77,8 +77,8 @@ TEST(BVH_SweepPlaneBuilderTest, BuildSingleTriangle)
   BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 1, 2, 0));
 
   BVH_SweepPlaneBuilder<Standard_Real, 3> aBuilder(1, 32, 1);
-  BVH_Tree<Standard_Real, 3> aBVH;
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Tree<Standard_Real, 3>              aBVH;
+  BVH_Box<Standard_Real, 3>               aBox = ComputeSetBox(&aTriangulation);
 
   aBuilder.Build(&aTriangulation, &aBVH, aBox);
 
@@ -103,8 +103,8 @@ TEST(BVH_SweepPlaneBuilderTest, BuildTwoTriangles)
   BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 2, 3, 0));
 
   BVH_SweepPlaneBuilder<Standard_Real, 3> aBuilder(1, 32, 1);
-  BVH_Tree<Standard_Real, 3> aBVH;
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Tree<Standard_Real, 3>              aBVH;
+  BVH_Box<Standard_Real, 3>               aBox = ComputeSetBox(&aTriangulation);
 
   aBuilder.Build(&aTriangulation, &aBVH, aBox);
 
@@ -145,8 +145,8 @@ TEST(BVH_SweepPlaneBuilderTest, BuildMultipleTriangles_Grid)
   }
 
   BVH_SweepPlaneBuilder<Standard_Real, 3> aBuilder(2, 32, 1);
-  BVH_Tree<Standard_Real, 3> aBVH;
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Tree<Standard_Real, 3>              aBVH;
+  BVH_Box<Standard_Real, 3>               aBox = ComputeSetBox(&aTriangulation);
 
   aBuilder.Build(&aTriangulation, &aBVH, aBox);
 
@@ -180,8 +180,8 @@ TEST(BVH_SweepPlaneBuilderTest, SplitAlongDifferentAxes)
   }
 
   BVH_SweepPlaneBuilder<Standard_Real, 3> aBuilder(1, 32, 1);
-  BVH_Tree<Standard_Real, 3> aBVH;
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Tree<Standard_Real, 3>              aBVH;
+  BVH_Box<Standard_Real, 3>               aBox = ComputeSetBox(&aTriangulation);
 
   aBuilder.Build(&aTriangulation, &aBVH, aBox);
 
@@ -206,8 +206,8 @@ TEST(BVH_SweepPlaneBuilderTest, DegenerateCase_AllSamePosition)
   }
 
   BVH_SweepPlaneBuilder<Standard_Real, 3> aBuilder(1, 32, 1);
-  BVH_Tree<Standard_Real, 3> aBVH;
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Tree<Standard_Real, 3>              aBVH;
+  BVH_Box<Standard_Real, 3>               aBox = ComputeSetBox(&aTriangulation);
 
   aBuilder.Build(&aTriangulation, &aBVH, aBox);
 
@@ -242,13 +242,14 @@ TEST(BVH_SweepPlaneBuilderTest, SAHQuality_VerifyBetter)
     BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.4, 0.0, 0.0));
     BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.2, 0.4, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i((5 + i) * 3, (5 + i) * 3 + 1, (5 + i) * 3 + 2, 0));
+    BVH::Array<Standard_Integer, 4>::Append(
+      aTriangulation.Elements,
+      BVH_Vec4i((5 + i) * 3, (5 + i) * 3 + 1, (5 + i) * 3 + 2, 0));
   }
 
   BVH_SweepPlaneBuilder<Standard_Real, 3> aBuilder(2, 32, 1);
-  BVH_Tree<Standard_Real, 3> aBVH;
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Tree<Standard_Real, 3>              aBVH;
+  BVH_Box<Standard_Real, 3>               aBox = ComputeSetBox(&aTriangulation);
 
   aBuilder.Build(&aTriangulation, &aBVH, aBox);
 
@@ -258,7 +259,7 @@ TEST(BVH_SweepPlaneBuilderTest, SAHQuality_VerifyBetter)
   // Root should have two children covering separate regions
   if (!aBVH.IsOuter(0))
   {
-    int aLeftChild = aBVH.template Child<0>(0);
+    int aLeftChild  = aBVH.template Child<0>(0);
     int aRightChild = aBVH.template Child<1>(0);
 
     BVH_Box<Standard_Real, 3> aLeftBox(aBVH.MinPoint(aLeftChild), aBVH.MaxPoint(aLeftChild));
@@ -302,8 +303,8 @@ TEST(BVH_SweepPlaneBuilderTest, LeafSize_RespectMaxSize)
   }
 
   BVH_SweepPlaneBuilder<Standard_Real, 3> aBuilder(5, 32, 1); // Leaf size = 5
-  BVH_Tree<Standard_Real, 3> aBVH;
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Tree<Standard_Real, 3>              aBVH;
+  BVH_Box<Standard_Real, 3>               aBox = ComputeSetBox(&aTriangulation);
 
   aBuilder.Build(&aTriangulation, &aBVH, aBox);
 
