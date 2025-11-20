@@ -238,6 +238,23 @@ public: //! @name Selection
   //! Returns the number of accepted elements.
   Standard_Integer Select(const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH);
 
+protected: //! @name Internal structures
+  //! Auxiliary structure for keeping the nodes to process
+  struct BVH_NodeInStack
+  {
+    //! Constructor
+    constexpr BVH_NodeInStack(const Standard_Integer theNodeID = 0,
+                              const MetricType&      theMetric = MetricType()) noexcept
+        : NodeID(theNodeID),
+          Metric(theMetric)
+    {
+    }
+
+    // Fields
+    Standard_Integer NodeID; //!< Id of the node in the BVH tree
+    MetricType       Metric; //!< Metric computed for the node
+  };
+
 protected: //! @name Fields
   BVHSetType* myBVHSet;
 };
@@ -310,6 +327,26 @@ public: //! @name Selection
   //! Returns the number of accepted pairs of elements.
   Standard_Integer Select(const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH1,
                           const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH2);
+
+protected: //! @name Internal structures
+  //! Auxiliary structure for keeping the pair of nodes to process
+  struct BVH_PairNodesInStack
+  {
+    //! Constructor
+    constexpr BVH_PairNodesInStack(const Standard_Integer theNodeID1 = 0,
+                                   const Standard_Integer theNodeID2 = 0,
+                                   const MetricType&      theMetric  = MetricType()) noexcept
+        : NodeID1(theNodeID1),
+          NodeID2(theNodeID2),
+          Metric(theMetric)
+    {
+    }
+
+    // Fields
+    Standard_Integer NodeID1; //!< Id of the node in the first BVH tree
+    Standard_Integer NodeID2; //!< Id of the node in the second BVH tree
+    MetricType       Metric;  //!< Metric computed for the pair of nodes
+  };
 
 protected: //! @name Fields
   BVHSetType* myBVHSet1;

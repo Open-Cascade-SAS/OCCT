@@ -13,24 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-namespace
-{
-//! Auxiliary structure for keeping the nodes to process
-template <class MetricType>
-struct BVH_NodeInStack
-{
-  //! Constructor
-  BVH_NodeInStack(const Standard_Integer theNodeID = 0, const MetricType& theMetric = MetricType())
-      : NodeID(theNodeID),
-        Metric(theMetric)
-  {
-  }
-
-  // Fields
-  Standard_Integer NodeID; //!< Id of the node in the BVH tree
-  MetricType       Metric; //!< Metric computed for the node
-};
-} // namespace
+#include <Standard_Assert.hxx>
 
 //=================================================================================================
 
@@ -41,23 +24,24 @@ Standard_Integer BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Selec
   if (theBVH.IsNull())
     return 0;
 
-  if (theBVH->NodeInfoBuffer().empty())
+  const BVH_Array4i& aBVHNodes = theBVH->NodeInfoBuffer();
+  if (aBVHNodes.empty())
     return 0;
 
   // Create stack
-  BVH_NodeInStack<MetricType> aStack[BVH_Constants_MaxTreeDepth];
+  BVH_NodeInStack aStack[BVH_Constants_MaxTreeDepth];
 
   // clang-format off
-  BVH_NodeInStack<MetricType> aNode (0);         // Currently processed node, starting with the root node
+  BVH_NodeInStack aNode (0);         // Currently processed node, starting with the root node
   // clang-format on
-  BVH_NodeInStack<MetricType> aPrevNode = aNode; // Previously processed node
+  BVH_NodeInStack aPrevNode = aNode; // Previously processed node
 
   Standard_Integer aHead       = -1; // End of the stack
   Standard_Integer aNbAccepted = 0;  // Counter for accepted elements
 
   for (;;)
   {
-    const BVH_Vec4i& aData = theBVH->NodeInfoBuffer()[aNode.NodeID];
+    const BVH_Vec4i& aData = aBVHNodes[aNode.NodeID];
 
     if (aData.x() == 0)
     {
@@ -85,29 +69,32 @@ Standard_Integer BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Selec
         {
           // Chose the branch with the best metric to be processed next,
           // put the other branch in the stack
+          Standard_ASSERT_RAISE(aHead < BVH_Constants_MaxTreeDepth - 1,
+                                "Error! BVH stack overflow");
           if (this->IsMetricBetter(aMetricLft, aMetricRgh))
           {
-            aNode           = BVH_NodeInStack<MetricType>(aData.y(), aMetricLft);
-            aStack[++aHead] = BVH_NodeInStack<MetricType>(aData.z(), aMetricRgh);
+            aNode           = BVH_NodeInStack(aData.y(), aMetricLft);
+            aStack[++aHead] = BVH_NodeInStack(aData.z(), aMetricRgh);
           }
           else
           {
-            aNode           = BVH_NodeInStack<MetricType>(aData.z(), aMetricRgh);
-            aStack[++aHead] = BVH_NodeInStack<MetricType>(aData.y(), aMetricLft);
+            aNode           = BVH_NodeInStack(aData.z(), aMetricRgh);
+            aStack[++aHead] = BVH_NodeInStack(aData.y(), aMetricLft);
           }
         }
         else if (isGoodLft || isGoodRgh)
         {
-          aNode = isGoodLft ? BVH_NodeInStack<MetricType>(aData.y(), aMetricLft)
-                            : BVH_NodeInStack<MetricType>(aData.z(), aMetricRgh);
+          aNode = isGoodLft ? BVH_NodeInStack(aData.y(), aMetricLft)
+                            : BVH_NodeInStack(aData.z(), aMetricRgh);
         }
       }
       else
       {
         // Both children will be accepted
         // Take one for processing, put the other into stack
-        aNode           = BVH_NodeInStack<MetricType>(aData.y(), aNode.Metric);
-        aStack[++aHead] = BVH_NodeInStack<MetricType>(aData.z(), aNode.Metric);
+        Standard_ASSERT_RAISE(aHead < BVH_Constants_MaxTreeDepth - 1, "Error! BVH stack overflow");
+        aNode           = BVH_NodeInStack(aData.y(), aNode.Metric);
+        aStack[++aHead] = BVH_NodeInStack(aData.z(), aNode.Metric);
       }
     }
     else
@@ -142,29 +129,6 @@ Standard_Integer BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Selec
   }
 }
 
-namespace
-{
-//! Auxiliary structure for keeping the pair of nodes to process
-template <class MetricType>
-struct BVH_PairNodesInStack
-{
-  //! Constructor
-  BVH_PairNodesInStack(const Standard_Integer theNodeID1 = 0,
-                       const Standard_Integer theNodeID2 = 0,
-                       const MetricType&      theMetric  = MetricType())
-      : NodeID1(theNodeID1),
-        NodeID2(theNodeID2),
-        Metric(theMetric)
-  {
-  }
-
-  // Fields
-  Standard_Integer NodeID1; //!< Id of the node in the first BVH tree
-  Standard_Integer NodeID2; //!< Id of the node in the second BVH tree
-  MetricType       Metric;  //!< Metric computed for the pair of nodes
-};
-} // namespace
-
 //=================================================================================================
 
 template <class NumType, int Dimension, class BVHSetType, class MetricType>
@@ -187,12 +151,12 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
   const Standard_Integer aMaxNbPairsInStack = 3 * BVH_Constants_MaxTreeDepth;
 
   // Stack of pairs of nodes to process
-  BVH_PairNodesInStack<MetricType> aStack[aMaxNbPairsInStack];
+  BVH_PairNodesInStack aStack[aMaxNbPairsInStack];
 
   // Currently processed pair, starting with the root nodes
-  BVH_PairNodesInStack<MetricType> aNode(0, 0);
+  BVH_PairNodesInStack aNode(0, 0);
   // Previously processed pair
-  BVH_PairNodesInStack<MetricType> aPrevNode = aNode;
+  BVH_PairNodesInStack aPrevNode = aNode;
   // End of the stack
   Standard_Integer aHead = -1;
   // Counter for accepted elements
@@ -205,47 +169,59 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
 
     if (aData1.x() != 0 && aData2.x() != 0)
     {
-      // Outer/Outer
-      for (Standard_Integer iN1 = aData1.y(); iN1 <= aData1.z(); ++iN1)
-      {
-        for (Standard_Integer iN2 = aData2.y(); iN2 <= aData2.z(); ++iN2)
-        {
-          if (Accept(iN1, iN2))
-            ++aNbAccepted;
+      // Outer/Outer - both nodes are leaves
+      // Check if the leaf node bounding boxes overlap before testing elements
+      MetricType       aMetric;
+      Standard_Boolean isRejected = RejectNode(theBVH1->MinPoint(aNode.NodeID1),
+                                               theBVH1->MaxPoint(aNode.NodeID1),
+                                               theBVH2->MinPoint(aNode.NodeID2),
+                                               theBVH2->MaxPoint(aNode.NodeID2),
+                                               aMetric);
 
-          if (this->Stop())
-            return aNbAccepted;
+      if (!isRejected)
+      {
+        // Bounding boxes overlap, test all element pairs
+        for (Standard_Integer iN1 = aData1.y(); iN1 <= aData1.z(); ++iN1)
+        {
+          for (Standard_Integer iN2 = aData2.y(); iN2 <= aData2.z(); ++iN2)
+          {
+            if (Accept(iN1, iN2))
+              ++aNbAccepted;
+
+            if (this->Stop())
+              return aNbAccepted;
+          }
         }
       }
     }
     else
     {
-      BVH_PairNodesInStack<MetricType> aPairs[4];
-      Standard_Integer                 aNbPairs = 0;
+      BVH_PairNodesInStack aPairs[4];
+      Standard_Integer     aNbPairs = 0;
 
       if (aData1.x() == 0 && aData2.x() == 0)
       {
         // Inner/Inner
-        aPairs[aNbPairs++] = BVH_PairNodesInStack<MetricType>(aData1.y(), aData2.y());
-        aPairs[aNbPairs++] = BVH_PairNodesInStack<MetricType>(aData1.y(), aData2.z());
-        aPairs[aNbPairs++] = BVH_PairNodesInStack<MetricType>(aData1.z(), aData2.y());
-        aPairs[aNbPairs++] = BVH_PairNodesInStack<MetricType>(aData1.z(), aData2.z());
+        aPairs[aNbPairs++] = BVH_PairNodesInStack(aData1.y(), aData2.y());
+        aPairs[aNbPairs++] = BVH_PairNodesInStack(aData1.y(), aData2.z());
+        aPairs[aNbPairs++] = BVH_PairNodesInStack(aData1.z(), aData2.y());
+        aPairs[aNbPairs++] = BVH_PairNodesInStack(aData1.z(), aData2.z());
       }
       else if (aData1.x() == 0)
       {
         // Inner/Outer
-        aPairs[aNbPairs++] = BVH_PairNodesInStack<MetricType>(aData1.y(), aNode.NodeID2);
-        aPairs[aNbPairs++] = BVH_PairNodesInStack<MetricType>(aData1.z(), aNode.NodeID2);
+        aPairs[aNbPairs++] = BVH_PairNodesInStack(aData1.y(), aNode.NodeID2);
+        aPairs[aNbPairs++] = BVH_PairNodesInStack(aData1.z(), aNode.NodeID2);
       }
       else if (aData2.x() == 0)
       {
         // Outer/Inner
-        aPairs[aNbPairs++] = BVH_PairNodesInStack<MetricType>(aNode.NodeID1, aData2.y());
-        aPairs[aNbPairs++] = BVH_PairNodesInStack<MetricType>(aNode.NodeID1, aData2.z());
+        aPairs[aNbPairs++] = BVH_PairNodesInStack(aNode.NodeID1, aData2.y());
+        aPairs[aNbPairs++] = BVH_PairNodesInStack(aNode.NodeID1, aData2.z());
       }
 
-      BVH_PairNodesInStack<MetricType> aKeptPairs[4];
-      Standard_Integer                 aNbKept = 0;
+      BVH_PairNodesInStack aKeptPairs[4];
+      Standard_Integer     aNbKept = 0;
       // Compute metrics for the nodes
       for (Standard_Integer iPair = 0; iPair < aNbPairs; ++iPair)
       {
@@ -265,7 +241,7 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
             --iSort;
           }
           aKeptPairs[iSort] = aPairs[iPair];
-          aNbKept++;
+          ++aNbKept;
         }
       }
 
@@ -275,6 +251,7 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
 
         for (Standard_Integer iPair = 1; iPair < aNbKept; ++iPair)
         {
+          Standard_ASSERT_RAISE(aHead < aMaxNbPairsInStack - 1, "Error! BVH pair stack overflow");
           aStack[++aHead] = aKeptPairs[iPair];
         }
       }

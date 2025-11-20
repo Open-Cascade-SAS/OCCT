@@ -9,11 +9,14 @@ set(OCCT_TKMath_GTests_FILES
   Bnd_OBB_Test.cxx
   BVH_BinnedBuilder_Test.cxx
   BVH_Box_Test.cxx
+  BVH_BuildQueue_Test.cxx
   BVH_LinearBuilder_Test.cxx
   BVH_QuickSorter_Test.cxx
   BVH_RadixSorter_Test.cxx
+  BVH_SpatialMedianBuilder_Test.cxx
   BVH_SweepPlaneBuilder_Test.cxx
   BVH_Tools_Test.cxx
+  BVH_Traverse_Test.cxx
   BVH_Triangulation_Test.cxx
   BVH_Tree_Test.cxx
   ElCLib_Test.cxx

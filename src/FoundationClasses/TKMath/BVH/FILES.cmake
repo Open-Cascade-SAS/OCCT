@@ -9,7 +9,6 @@ set(OCCT_BVH_FILES
   BVH_Builder.hxx
   BVH_Builder3d.hxx
   BVH_BuildQueue.hxx
-  BVH_BuildQueue.cxx
   BVH_BuildThread.hxx
   BVH_BuildThread.cxx
   BVH_Constants.hxx

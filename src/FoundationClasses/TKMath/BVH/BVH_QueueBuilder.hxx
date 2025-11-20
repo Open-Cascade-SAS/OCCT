@@ -46,7 +46,7 @@ public:
   }
 
   //! Releases resources of BVH queue based builder.
-  virtual ~BVH_QueueBuilder() {}
+  virtual ~BVH_QueueBuilder() = default;
 
 public:
   //! Builds BVH using specific algorithm.
