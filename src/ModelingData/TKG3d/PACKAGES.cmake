@@ -10,4 +10,5 @@ set(OCCT_TKG3d_LIST_OF_PACKAGES
   TopAbs
   GeomEvaluator
   GProp
+  GeomHash
 )
