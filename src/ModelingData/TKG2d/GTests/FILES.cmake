@@ -8,4 +8,5 @@ set(OCCT_TKG2d_GTests_FILES
   Geom2dAPI_InterCurveCurve_Test.cxx
   Geom2dGcc_Circ2d2TanOn_Test.cxx
   Geom2dGcc_Circ2d2TanRad_Test.cxx
+  Geom2dHash_CurveHasher_Test.cxx
 )
