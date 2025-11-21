@@ -49,7 +49,7 @@ protected:
 
 TEST_F(GeomHash_SurfaceHasherTest, Plane_CopiedPlanes_SameHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3             anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Plane) aPlane1 = new Geom_Plane(anAxis);
   Handle(Geom_Plane) aPlane2 = Handle(Geom_Plane)::DownCast(aPlane1->Copy());
 
@@ -72,7 +72,7 @@ TEST_F(GeomHash_SurfaceHasherTest, Plane_DifferentPlanes_DifferentHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, CylindricalSurface_CopiedSurfaces_SameHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                          anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_CylindricalSurface) aCyl1 = new Geom_CylindricalSurface(anAxis, 5.0);
   Handle(Geom_CylindricalSurface) aCyl2 = Handle(Geom_CylindricalSurface)::DownCast(aCyl1->Copy());
 
@@ -82,7 +82,7 @@ TEST_F(GeomHash_SurfaceHasherTest, CylindricalSurface_CopiedSurfaces_SameHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, CylindricalSurface_DifferentRadius_DifferentHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                          anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_CylindricalSurface) aCyl1 = new Geom_CylindricalSurface(anAxis, 5.0);
   Handle(Geom_CylindricalSurface) aCyl2 = new Geom_CylindricalSurface(anAxis, 10.0);
 
@@ -96,7 +96,7 @@ TEST_F(GeomHash_SurfaceHasherTest, CylindricalSurface_DifferentRadius_DifferentH
 
 TEST_F(GeomHash_SurfaceHasherTest, ConicalSurface_CopiedSurfaces_SameHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                      anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_ConicalSurface) aCone1 = new Geom_ConicalSurface(anAxis, M_PI / 6.0, 5.0);
   Handle(Geom_ConicalSurface) aCone2 = Handle(Geom_ConicalSurface)::DownCast(aCone1->Copy());
 
@@ -106,7 +106,7 @@ TEST_F(GeomHash_SurfaceHasherTest, ConicalSurface_CopiedSurfaces_SameHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, ConicalSurface_DifferentAngle_DifferentHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                      anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_ConicalSurface) aCone1 = new Geom_ConicalSurface(anAxis, M_PI / 6.0, 5.0);
   Handle(Geom_ConicalSurface) aCone2 = new Geom_ConicalSurface(anAxis, M_PI / 4.0, 5.0);
 
@@ -120,9 +120,10 @@ TEST_F(GeomHash_SurfaceHasherTest, ConicalSurface_DifferentAngle_DifferentHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, SphericalSurface_CopiedSurfaces_SameHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                        anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_SphericalSurface) aSphere1 = new Geom_SphericalSurface(anAxis, 5.0);
-  Handle(Geom_SphericalSurface) aSphere2 = Handle(Geom_SphericalSurface)::DownCast(aSphere1->Copy());
+  Handle(Geom_SphericalSurface) aSphere2 =
+    Handle(Geom_SphericalSurface)::DownCast(aSphere1->Copy());
 
   EXPECT_EQ(myHasher(aSphere1), myHasher(aSphere2));
   EXPECT_TRUE(myHasher(aSphere1, aSphere2));
@@ -130,7 +131,7 @@ TEST_F(GeomHash_SurfaceHasherTest, SphericalSurface_CopiedSurfaces_SameHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, SphericalSurface_DifferentRadius_DifferentHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                        anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_SphericalSurface) aSphere1 = new Geom_SphericalSurface(anAxis, 5.0);
   Handle(Geom_SphericalSurface) aSphere2 = new Geom_SphericalSurface(anAxis, 10.0);
 
@@ -144,7 +145,7 @@ TEST_F(GeomHash_SurfaceHasherTest, SphericalSurface_DifferentRadius_DifferentHas
 
 TEST_F(GeomHash_SurfaceHasherTest, ToroidalSurface_CopiedSurfaces_SameHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                       anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_ToroidalSurface) aTorus1 = new Geom_ToroidalSurface(anAxis, 10.0, 3.0);
   Handle(Geom_ToroidalSurface) aTorus2 = Handle(Geom_ToroidalSurface)::DownCast(aTorus1->Copy());
 
@@ -154,7 +155,7 @@ TEST_F(GeomHash_SurfaceHasherTest, ToroidalSurface_CopiedSurfaces_SameHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, ToroidalSurface_DifferentRadii_DifferentHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                       anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_ToroidalSurface) aTorus1 = new Geom_ToroidalSurface(anAxis, 10.0, 3.0);
   Handle(Geom_ToroidalSurface) aTorus2 = new Geom_ToroidalSurface(anAxis, 10.0, 5.0);
 
@@ -226,7 +227,8 @@ TEST_F(GeomHash_SurfaceHasherTest, BSplineSurface_CopiedSurfaces_SameHash)
   aVMults(1) = 2;
   aVMults(2) = 2;
 
-  Handle(Geom_BSplineSurface) aSurf1 = new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 1, 1);
+  Handle(Geom_BSplineSurface) aSurf1 =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 1, 1);
   Handle(Geom_BSplineSurface) aSurf2 = Handle(Geom_BSplineSurface)::DownCast(aSurf1->Copy());
 
   EXPECT_EQ(myHasher(aSurf1), myHasher(aSurf2));
@@ -240,9 +242,10 @@ TEST_F(GeomHash_SurfaceHasherTest, BSplineSurface_CopiedSurfaces_SameHash)
 TEST_F(GeomHash_SurfaceHasherTest, SurfaceOfRevolution_CopiedSurfaces_SameHash)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax1 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax1            anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_SurfaceOfRevolution) aRev1 = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  Handle(Geom_SurfaceOfRevolution) aRev2 = Handle(Geom_SurfaceOfRevolution)::DownCast(aRev1->Copy());
+  Handle(Geom_SurfaceOfRevolution) aRev2 =
+    Handle(Geom_SurfaceOfRevolution)::DownCast(aRev1->Copy());
 
   EXPECT_EQ(myHasher(aRev1), myHasher(aRev2));
   EXPECT_TRUE(myHasher(aRev1, aRev2));
@@ -255,9 +258,10 @@ TEST_F(GeomHash_SurfaceHasherTest, SurfaceOfRevolution_CopiedSurfaces_SameHash)
 TEST_F(GeomHash_SurfaceHasherTest, SurfaceOfLinearExtrusion_CopiedSurfaces_SameHash)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  gp_Dir aDir(0.0, 0.0, 1.0);
+  gp_Dir            aDir(0.0, 0.0, 1.0);
   Handle(Geom_SurfaceOfLinearExtrusion) anExt1 = new Geom_SurfaceOfLinearExtrusion(aLine, aDir);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExt2 = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(anExt1->Copy());
+  Handle(Geom_SurfaceOfLinearExtrusion) anExt2 =
+    Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(anExt1->Copy());
 
   EXPECT_EQ(myHasher(anExt1), myHasher(anExt2));
   EXPECT_TRUE(myHasher(anExt1, anExt2));
@@ -269,10 +273,12 @@ TEST_F(GeomHash_SurfaceHasherTest, SurfaceOfLinearExtrusion_CopiedSurfaces_SameH
 
 TEST_F(GeomHash_SurfaceHasherTest, RectangularTrimmedSurface_CopiedSurfaces_SameHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Plane) aPlane = new Geom_Plane(anAxis);
-  Handle(Geom_RectangularTrimmedSurface) aTrimmed1 = new Geom_RectangularTrimmedSurface(aPlane, 0.0, 10.0, 0.0, 10.0);
-  Handle(Geom_RectangularTrimmedSurface) aTrimmed2 = Handle(Geom_RectangularTrimmedSurface)::DownCast(aTrimmed1->Copy());
+  gp_Ax3                                 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Plane)                     aPlane = new Geom_Plane(anAxis);
+  Handle(Geom_RectangularTrimmedSurface) aTrimmed1 =
+    new Geom_RectangularTrimmedSurface(aPlane, 0.0, 10.0, 0.0, 10.0);
+  Handle(Geom_RectangularTrimmedSurface) aTrimmed2 =
+    Handle(Geom_RectangularTrimmedSurface)::DownCast(aTrimmed1->Copy());
 
   EXPECT_EQ(myHasher(aTrimmed1), myHasher(aTrimmed2));
   EXPECT_TRUE(myHasher(aTrimmed1, aTrimmed2));
@@ -280,10 +286,12 @@ TEST_F(GeomHash_SurfaceHasherTest, RectangularTrimmedSurface_CopiedSurfaces_Same
 
 TEST_F(GeomHash_SurfaceHasherTest, RectangularTrimmedSurface_DifferentBounds_DifferentHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Plane) aPlane = new Geom_Plane(anAxis);
-  Handle(Geom_RectangularTrimmedSurface) aTrimmed1 = new Geom_RectangularTrimmedSurface(aPlane, 0.0, 10.0, 0.0, 10.0);
-  Handle(Geom_RectangularTrimmedSurface) aTrimmed2 = new Geom_RectangularTrimmedSurface(aPlane, 0.0, 20.0, 0.0, 10.0);
+  gp_Ax3                                 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Plane)                     aPlane = new Geom_Plane(anAxis);
+  Handle(Geom_RectangularTrimmedSurface) aTrimmed1 =
+    new Geom_RectangularTrimmedSurface(aPlane, 0.0, 10.0, 0.0, 10.0);
+  Handle(Geom_RectangularTrimmedSurface) aTrimmed2 =
+    new Geom_RectangularTrimmedSurface(aPlane, 0.0, 20.0, 0.0, 10.0);
 
   EXPECT_NE(myHasher(aTrimmed1), myHasher(aTrimmed2));
   EXPECT_FALSE(myHasher(aTrimmed1, aTrimmed2));
@@ -295,8 +303,8 @@ TEST_F(GeomHash_SurfaceHasherTest, RectangularTrimmedSurface_DifferentBounds_Dif
 
 TEST_F(GeomHash_SurfaceHasherTest, OffsetSurface_CopiedSurfaces_SameHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Plane) aPlane = new Geom_Plane(anAxis);
+  gp_Ax3                     anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Plane)         aPlane    = new Geom_Plane(anAxis);
   Handle(Geom_OffsetSurface) anOffset1 = new Geom_OffsetSurface(aPlane, 5.0);
   Handle(Geom_OffsetSurface) anOffset2 = Handle(Geom_OffsetSurface)::DownCast(anOffset1->Copy());
 
@@ -306,8 +314,8 @@ TEST_F(GeomHash_SurfaceHasherTest, OffsetSurface_CopiedSurfaces_SameHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, OffsetSurface_DifferentOffset_DifferentHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Plane) aPlane = new Geom_Plane(anAxis);
+  gp_Ax3                     anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Plane)         aPlane    = new Geom_Plane(anAxis);
   Handle(Geom_OffsetSurface) anOffset1 = new Geom_OffsetSurface(aPlane, 5.0);
   Handle(Geom_OffsetSurface) anOffset2 = new Geom_OffsetSurface(aPlane, 10.0);
 
@@ -321,8 +329,8 @@ TEST_F(GeomHash_SurfaceHasherTest, OffsetSurface_DifferentOffset_DifferentHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, DifferentTypes_DifferentComparison)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Plane) aPlane = new Geom_Plane(anAxis);
+  gp_Ax3                        anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Plane)            aPlane  = new Geom_Plane(anAxis);
   Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(anAxis, 5.0);
 
   EXPECT_FALSE(myHasher(aPlane, aSphere));
@@ -331,8 +339,8 @@ TEST_F(GeomHash_SurfaceHasherTest, DifferentTypes_DifferentComparison)
 TEST_F(GeomHash_SurfaceHasherTest, NullSurfaces_HandledCorrectly)
 {
   Handle(Geom_Surface) aNullSurface;
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Plane) aPlane = new Geom_Plane(anAxis);
+  gp_Ax3               anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Plane)   aPlane = new Geom_Plane(anAxis);
 
   EXPECT_EQ(myHasher(aNullSurface), 0u);
   EXPECT_TRUE(myHasher(aNullSurface, aNullSurface));
@@ -341,7 +349,7 @@ TEST_F(GeomHash_SurfaceHasherTest, NullSurfaces_HandledCorrectly)
 
 TEST_F(GeomHash_SurfaceHasherTest, SameObject_Equal)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3             anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Plane) aPlane = new Geom_Plane(anAxis);
   EXPECT_TRUE(myHasher(aPlane, aPlane));
 }
@@ -376,7 +384,8 @@ TEST_F(GeomHash_SurfaceHasherTest, BSplineSurface_Weighted_CopiedSurfaces_SameHa
   aVMults(1) = 2;
   aVMults(2) = 2;
 
-  Handle(Geom_BSplineSurface) aSurf1 = new Geom_BSplineSurface(aPoles, aWeights, aUKnots, aVKnots, aUMults, aVMults, 1, 1);
+  Handle(Geom_BSplineSurface) aSurf1 =
+    new Geom_BSplineSurface(aPoles, aWeights, aUKnots, aVKnots, aUMults, aVMults, 1, 1);
   Handle(Geom_BSplineSurface) aSurf2 = Handle(Geom_BSplineSurface)::DownCast(aSurf1->Copy());
 
   EXPECT_EQ(myHasher(aSurf1), myHasher(aSurf2));
@@ -415,8 +424,10 @@ TEST_F(GeomHash_SurfaceHasherTest, BSplineSurface_DifferentWeights_DifferentComp
   aVMults(1) = 2;
   aVMults(2) = 2;
 
-  Handle(Geom_BSplineSurface) aSurf1 = new Geom_BSplineSurface(aPoles, aWeights1, aUKnots, aVKnots, aUMults, aVMults, 1, 1);
-  Handle(Geom_BSplineSurface) aSurf2 = new Geom_BSplineSurface(aPoles, aWeights2, aUKnots, aVKnots, aUMults, aVMults, 1, 1);
+  Handle(Geom_BSplineSurface) aSurf1 =
+    new Geom_BSplineSurface(aPoles, aWeights1, aUKnots, aVKnots, aUMults, aVMults, 1, 1);
+  Handle(Geom_BSplineSurface) aSurf2 =
+    new Geom_BSplineSurface(aPoles, aWeights2, aUKnots, aVKnots, aUMults, aVMults, 1, 1);
 
   EXPECT_FALSE(myHasher(aSurf1, aSurf2));
 }
@@ -452,8 +463,8 @@ TEST_F(GeomHash_SurfaceHasherTest, BezierSurface_Weighted_CopiedSurfaces_SameHas
 
 TEST_F(GeomHash_SurfaceHasherTest, Plane_DifferentNormal_DifferentHash)
 {
-  gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax3 anAxis2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+  gp_Ax3             anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3             anAxis2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
   Handle(Geom_Plane) aPlane1 = new Geom_Plane(anAxis1);
   Handle(Geom_Plane) aPlane2 = new Geom_Plane(anAxis2);
 
@@ -463,8 +474,8 @@ TEST_F(GeomHash_SurfaceHasherTest, Plane_DifferentNormal_DifferentHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, CylindricalSurface_DifferentAxis_DifferentHash)
 {
-  gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax3 anAxis2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  gp_Ax3                          anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                          anAxis2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   Handle(Geom_CylindricalSurface) aCyl1 = new Geom_CylindricalSurface(anAxis1, 5.0);
   Handle(Geom_CylindricalSurface) aCyl2 = new Geom_CylindricalSurface(anAxis2, 5.0);
 
@@ -480,7 +491,7 @@ TEST_F(GeomHash_SurfaceHasherTest, SurfaceOfRevolution_DifferentBasisCurve_Diffe
 {
   Handle(Geom_Line) aLine1 = new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Line) aLine2 = new Geom_Line(gp_Pnt(2.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax1 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax1            anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_SurfaceOfRevolution) aRev1 = new Geom_SurfaceOfRevolution(aLine1, anAxis);
   Handle(Geom_SurfaceOfRevolution) aRev2 = new Geom_SurfaceOfRevolution(aLine2, anAxis);
 
@@ -494,8 +505,8 @@ TEST_F(GeomHash_SurfaceHasherTest, SurfaceOfRevolution_DifferentBasisCurve_Diffe
 TEST_F(GeomHash_SurfaceHasherTest, SurfaceOfLinearExtrusion_DifferentDirection_DifferentHash)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  gp_Dir aDir1(0.0, 0.0, 1.0);
-  gp_Dir aDir2(0.0, 1.0, 0.0);
+  gp_Dir            aDir1(0.0, 0.0, 1.0);
+  gp_Dir            aDir2(0.0, 1.0, 0.0);
   Handle(Geom_SurfaceOfLinearExtrusion) anExt1 = new Geom_SurfaceOfLinearExtrusion(aLine, aDir1);
   Handle(Geom_SurfaceOfLinearExtrusion) anExt2 = new Geom_SurfaceOfLinearExtrusion(aLine, aDir2);
 
@@ -520,8 +531,8 @@ TEST_F(GeomHash_SurfaceHasherTest, BSplineSurface_DifferentKnots_DifferentCompar
   aUKnots1(2) = 1.0;
   aUKnots2(1) = 0.0;
   aUKnots2(2) = 2.0; // Different
-  aVKnots(1) = 0.0;
-  aVKnots(2) = 1.0;
+  aVKnots(1)  = 0.0;
+  aVKnots(2)  = 1.0;
 
   TColStd_Array1OfInteger aUMults(1, 2), aVMults(1, 2);
   aUMults(1) = 2;
@@ -529,8 +540,10 @@ TEST_F(GeomHash_SurfaceHasherTest, BSplineSurface_DifferentKnots_DifferentCompar
   aVMults(1) = 2;
   aVMults(2) = 2;
 
-  Handle(Geom_BSplineSurface) aSurf1 = new Geom_BSplineSurface(aPoles, aUKnots1, aVKnots, aUMults, aVMults, 1, 1);
-  Handle(Geom_BSplineSurface) aSurf2 = new Geom_BSplineSurface(aPoles, aUKnots2, aVKnots, aUMults, aVMults, 1, 1);
+  Handle(Geom_BSplineSurface) aSurf1 =
+    new Geom_BSplineSurface(aPoles, aUKnots1, aVKnots, aUMults, aVMults, 1, 1);
+  Handle(Geom_BSplineSurface) aSurf2 =
+    new Geom_BSplineSurface(aPoles, aUKnots2, aVKnots, aUMults, aVMults, 1, 1);
 
   EXPECT_FALSE(myHasher(aSurf1, aSurf2));
 }
@@ -541,7 +554,7 @@ TEST_F(GeomHash_SurfaceHasherTest, BSplineSurface_DifferentKnots_DifferentCompar
 
 TEST_F(GeomHash_SurfaceHasherTest, Plane_Translated_DifferentHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3             anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Plane) aPlane1 = new Geom_Plane(anAxis);
   Handle(Geom_Plane) aPlane2 = Handle(Geom_Plane)::DownCast(aPlane1->Copy());
   aPlane2->Translate(gp_Vec(0.0, 0.0, 1.0));
@@ -552,9 +565,10 @@ TEST_F(GeomHash_SurfaceHasherTest, Plane_Translated_DifferentHash)
 
 TEST_F(GeomHash_SurfaceHasherTest, Sphere_Scaled_DifferentHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                        anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_SphericalSurface) aSphere1 = new Geom_SphericalSurface(anAxis, 5.0);
-  Handle(Geom_SphericalSurface) aSphere2 = Handle(Geom_SphericalSurface)::DownCast(aSphere1->Copy());
+  Handle(Geom_SphericalSurface) aSphere2 =
+    Handle(Geom_SphericalSurface)::DownCast(aSphere1->Copy());
   aSphere2->Scale(gp_Pnt(0.0, 0.0, 0.0), 2.0);
 
   EXPECT_NE(myHasher(aSphere1), myHasher(aSphere2));
@@ -620,7 +634,8 @@ TEST_F(GeomHash_SurfaceHasherTest, BSplineSurface_HigherDegree_CopiedSurfaces_Sa
   aVMults(1) = 4;
   aVMults(2) = 4;
 
-  Handle(Geom_BSplineSurface) aSurf1 = new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
+  Handle(Geom_BSplineSurface) aSurf1 =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
   Handle(Geom_BSplineSurface) aSurf2 = Handle(Geom_BSplineSurface)::DownCast(aSurf1->Copy());
 
   EXPECT_EQ(myHasher(aSurf1), myHasher(aSurf2));
@@ -633,18 +648,18 @@ TEST_F(GeomHash_SurfaceHasherTest, BSplineSurface_HigherDegree_CopiedSurfaces_Sa
 
 TEST_F(GeomHash_SurfaceHasherTest, Cylinder_vs_Cone_DifferentComparison)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                          anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_CylindricalSurface) aCylinder = new Geom_CylindricalSurface(anAxis, 5.0);
-  Handle(Geom_ConicalSurface) aCone = new Geom_ConicalSurface(anAxis, M_PI / 6.0, 5.0);
+  Handle(Geom_ConicalSurface)     aCone     = new Geom_ConicalSurface(anAxis, M_PI / 6.0, 5.0);
 
   EXPECT_FALSE(myHasher(aCylinder, aCone));
 }
 
 TEST_F(GeomHash_SurfaceHasherTest, Sphere_vs_Torus_DifferentComparison)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                        anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(anAxis, 5.0);
-  Handle(Geom_ToroidalSurface) aTorus = new Geom_ToroidalSurface(anAxis, 5.0, 1.0);
+  Handle(Geom_ToroidalSurface)  aTorus  = new Geom_ToroidalSurface(anAxis, 5.0, 1.0);
 
   EXPECT_FALSE(myHasher(aSphere, aTorus));
 }
@@ -655,9 +670,10 @@ TEST_F(GeomHash_SurfaceHasherTest, Sphere_vs_Torus_DifferentComparison)
 
 TEST_F(GeomHash_SurfaceHasherTest, RectangularTrimmedSurface_vs_BaseSurface_DifferentComparison)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Plane) aPlane = new Geom_Plane(anAxis);
-  Handle(Geom_RectangularTrimmedSurface) aTrimmed = new Geom_RectangularTrimmedSurface(aPlane, 0.0, 10.0, 0.0, 10.0);
+  gp_Ax3                                 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Plane)                     aPlane = new Geom_Plane(anAxis);
+  Handle(Geom_RectangularTrimmedSurface) aTrimmed =
+    new Geom_RectangularTrimmedSurface(aPlane, 0.0, 10.0, 0.0, 10.0);
 
   EXPECT_FALSE(myHasher(aPlane, aTrimmed));
 }
@@ -668,9 +684,10 @@ TEST_F(GeomHash_SurfaceHasherTest, RectangularTrimmedSurface_vs_BaseSurface_Diff
 
 TEST_F(GeomHash_SurfaceHasherTest, Sphere_VerySmallRadius_CopiedSpheres_SameHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                        anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_SphericalSurface) aSphere1 = new Geom_SphericalSurface(anAxis, 1e-10);
-  Handle(Geom_SphericalSurface) aSphere2 = Handle(Geom_SphericalSurface)::DownCast(aSphere1->Copy());
+  Handle(Geom_SphericalSurface) aSphere2 =
+    Handle(Geom_SphericalSurface)::DownCast(aSphere1->Copy());
 
   EXPECT_EQ(myHasher(aSphere1), myHasher(aSphere2));
   EXPECT_TRUE(myHasher(aSphere1, aSphere2));
@@ -678,9 +695,10 @@ TEST_F(GeomHash_SurfaceHasherTest, Sphere_VerySmallRadius_CopiedSpheres_SameHash
 
 TEST_F(GeomHash_SurfaceHasherTest, Sphere_VeryLargeRadius_CopiedSpheres_SameHash)
 {
-  gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                        anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_SphericalSurface) aSphere1 = new Geom_SphericalSurface(anAxis, 1e10);
-  Handle(Geom_SphericalSurface) aSphere2 = Handle(Geom_SphericalSurface)::DownCast(aSphere1->Copy());
+  Handle(Geom_SphericalSurface) aSphere2 =
+    Handle(Geom_SphericalSurface)::DownCast(aSphere1->Copy());
 
   EXPECT_EQ(myHasher(aSphere1), myHasher(aSphere2));
   EXPECT_TRUE(myHasher(aSphere1, aSphere2));
@@ -688,8 +706,8 @@ TEST_F(GeomHash_SurfaceHasherTest, Sphere_VeryLargeRadius_CopiedSpheres_SameHash
 
 TEST_F(GeomHash_SurfaceHasherTest, Plane_AtOrigin_vs_FarFromOrigin_DifferentHash)
 {
-  gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax3 anAxis2(gp_Pnt(1e10, 1e10, 1e10), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3             anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3             anAxis2(gp_Pnt(1e10, 1e10, 1e10), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Plane) aPlane1 = new Geom_Plane(anAxis1);
   Handle(Geom_Plane) aPlane2 = new Geom_Plane(anAxis2);
 
@@ -703,11 +721,12 @@ TEST_F(GeomHash_SurfaceHasherTest, Plane_AtOrigin_vs_FarFromOrigin_DifferentHash
 
 TEST_F(GeomHash_SurfaceHasherTest, SurfaceOfRevolution_CircleBasis_CopiedSurfaces_SameHash)
 {
-  gp_Ax2 aCircleAxis(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(aCircleAxis, 1.0);
-  gp_Ax1 aRevAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2                           aCircleAxis(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+  Handle(Geom_Circle)              aCircle = new Geom_Circle(aCircleAxis, 1.0);
+  gp_Ax1                           aRevAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_SurfaceOfRevolution) aRev1 = new Geom_SurfaceOfRevolution(aCircle, aRevAxis);
-  Handle(Geom_SurfaceOfRevolution) aRev2 = Handle(Geom_SurfaceOfRevolution)::DownCast(aRev1->Copy());
+  Handle(Geom_SurfaceOfRevolution) aRev2 =
+    Handle(Geom_SurfaceOfRevolution)::DownCast(aRev1->Copy());
 
   EXPECT_EQ(myHasher(aRev1), myHasher(aRev2));
   EXPECT_TRUE(myHasher(aRev1, aRev2));
@@ -719,13 +738,12 @@ TEST_F(GeomHash_SurfaceHasherTest, SurfaceOfRevolution_CircleBasis_CopiedSurface
 
 TEST_F(GeomHash_SurfaceHasherTest, OffsetSurface_DifferentBaseSurface_DifferentComparison)
 {
-  gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax3 anAxis2(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Plane) aPlane1 = new Geom_Plane(anAxis1);
-  Handle(Geom_Plane) aPlane2 = new Geom_Plane(anAxis2);
+  gp_Ax3                     anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3                     anAxis2(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Plane)         aPlane1   = new Geom_Plane(anAxis1);
+  Handle(Geom_Plane)         aPlane2   = new Geom_Plane(anAxis2);
   Handle(Geom_OffsetSurface) anOffset1 = new Geom_OffsetSurface(aPlane1, 5.0);
   Handle(Geom_OffsetSurface) anOffset2 = new Geom_OffsetSurface(aPlane2, 5.0);
 
   EXPECT_FALSE(myHasher(anOffset1, anOffset2));
 }
-

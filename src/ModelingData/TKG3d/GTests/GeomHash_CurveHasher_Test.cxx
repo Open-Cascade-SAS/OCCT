@@ -44,8 +44,8 @@ protected:
 
 TEST_F(GeomHash_CurveHasherTest, Line_CopiedLines_SameHash)
 {
-  gp_Pnt aLoc(1.0, 2.0, 3.0);
-  gp_Dir aDir(1.0, 0.0, 0.0);
+  gp_Pnt            aLoc(1.0, 2.0, 3.0);
+  gp_Dir            aDir(1.0, 0.0, 0.0);
   Handle(Geom_Line) aLine1 = new Geom_Line(aLoc, aDir);
   Handle(Geom_Line) aLine2 = Handle(Geom_Line)::DownCast(aLine1->Copy());
 
@@ -68,7 +68,7 @@ TEST_F(GeomHash_CurveHasherTest, Line_DifferentLines_DifferentHash)
 
 TEST_F(GeomHash_CurveHasherTest, Circle_CopiedCircles_SameHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Circle) aCircle1 = new Geom_Circle(anAxis, 5.0);
   Handle(Geom_Circle) aCircle2 = Handle(Geom_Circle)::DownCast(aCircle1->Copy());
 
@@ -78,7 +78,7 @@ TEST_F(GeomHash_CurveHasherTest, Circle_CopiedCircles_SameHash)
 
 TEST_F(GeomHash_CurveHasherTest, Circle_DifferentRadius_DifferentHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Circle) aCircle1 = new Geom_Circle(anAxis, 5.0);
   Handle(Geom_Circle) aCircle2 = new Geom_Circle(anAxis, 10.0);
 
@@ -92,7 +92,7 @@ TEST_F(GeomHash_CurveHasherTest, Circle_DifferentRadius_DifferentHash)
 
 TEST_F(GeomHash_CurveHasherTest, Ellipse_CopiedEllipses_SameHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2               anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Ellipse) anEllipse1 = new Geom_Ellipse(anAxis, 10.0, 5.0);
   Handle(Geom_Ellipse) anEllipse2 = Handle(Geom_Ellipse)::DownCast(anEllipse1->Copy());
 
@@ -102,7 +102,7 @@ TEST_F(GeomHash_CurveHasherTest, Ellipse_CopiedEllipses_SameHash)
 
 TEST_F(GeomHash_CurveHasherTest, Ellipse_DifferentRadii_DifferentHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2               anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Ellipse) anEllipse1 = new Geom_Ellipse(anAxis, 10.0, 5.0);
   Handle(Geom_Ellipse) anEllipse2 = new Geom_Ellipse(anAxis, 10.0, 7.0);
 
@@ -116,7 +116,7 @@ TEST_F(GeomHash_CurveHasherTest, Ellipse_DifferentRadii_DifferentHash)
 
 TEST_F(GeomHash_CurveHasherTest, Hyperbola_CopiedHyperbolas_SameHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2                 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Hyperbola) aHyp1 = new Geom_Hyperbola(anAxis, 5.0, 3.0);
   Handle(Geom_Hyperbola) aHyp2 = Handle(Geom_Hyperbola)::DownCast(aHyp1->Copy());
 
@@ -126,7 +126,7 @@ TEST_F(GeomHash_CurveHasherTest, Hyperbola_CopiedHyperbolas_SameHash)
 
 TEST_F(GeomHash_CurveHasherTest, Hyperbola_DifferentRadii_DifferentHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2                 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Hyperbola) aHyp1 = new Geom_Hyperbola(anAxis, 5.0, 3.0);
   Handle(Geom_Hyperbola) aHyp2 = new Geom_Hyperbola(anAxis, 5.0, 4.0);
 
@@ -140,7 +140,7 @@ TEST_F(GeomHash_CurveHasherTest, Hyperbola_DifferentRadii_DifferentHash)
 
 TEST_F(GeomHash_CurveHasherTest, Parabola_CopiedParabolas_SameHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2                anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Parabola) aPar1 = new Geom_Parabola(anAxis, 2.0);
   Handle(Geom_Parabola) aPar2 = Handle(Geom_Parabola)::DownCast(aPar1->Copy());
 
@@ -150,7 +150,7 @@ TEST_F(GeomHash_CurveHasherTest, Parabola_CopiedParabolas_SameHash)
 
 TEST_F(GeomHash_CurveHasherTest, Parabola_DifferentFocal_DifferentHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2                anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Parabola) aPar1 = new Geom_Parabola(anAxis, 2.0);
   Handle(Geom_Parabola) aPar2 = new Geom_Parabola(anAxis, 3.0);
 
@@ -229,7 +229,7 @@ TEST_F(GeomHash_CurveHasherTest, BSplineCurve_CopiedCurves_SameHash)
 
 TEST_F(GeomHash_CurveHasherTest, TrimmedCurve_CopiedCurves_SameHash)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  Handle(Geom_Line)         aLine     = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   Handle(Geom_TrimmedCurve) aTrimmed1 = new Geom_TrimmedCurve(aLine, 0.0, 10.0);
   Handle(Geom_TrimmedCurve) aTrimmed2 = Handle(Geom_TrimmedCurve)::DownCast(aTrimmed1->Copy());
 
@@ -239,7 +239,7 @@ TEST_F(GeomHash_CurveHasherTest, TrimmedCurve_CopiedCurves_SameHash)
 
 TEST_F(GeomHash_CurveHasherTest, TrimmedCurve_DifferentBounds_DifferentHash)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  Handle(Geom_Line)         aLine     = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   Handle(Geom_TrimmedCurve) aTrimmed1 = new Geom_TrimmedCurve(aLine, 0.0, 10.0);
   Handle(Geom_TrimmedCurve) aTrimmed2 = new Geom_TrimmedCurve(aLine, 0.0, 20.0);
 
@@ -253,8 +253,8 @@ TEST_F(GeomHash_CurveHasherTest, TrimmedCurve_DifferentBounds_DifferentHash)
 
 TEST_F(GeomHash_CurveHasherTest, OffsetCurve_CopiedCurves_SameHash)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  gp_Dir aRefDir(0.0, 0.0, 1.0);
+  Handle(Geom_Line)        aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  gp_Dir                   aRefDir(0.0, 0.0, 1.0);
   Handle(Geom_OffsetCurve) anOffset1 = new Geom_OffsetCurve(aLine, 5.0, aRefDir);
   Handle(Geom_OffsetCurve) anOffset2 = Handle(Geom_OffsetCurve)::DownCast(anOffset1->Copy());
 
@@ -264,8 +264,8 @@ TEST_F(GeomHash_CurveHasherTest, OffsetCurve_CopiedCurves_SameHash)
 
 TEST_F(GeomHash_CurveHasherTest, OffsetCurve_DifferentOffset_DifferentHash)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  gp_Dir aRefDir(0.0, 0.0, 1.0);
+  Handle(Geom_Line)        aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  gp_Dir                   aRefDir(0.0, 0.0, 1.0);
   Handle(Geom_OffsetCurve) anOffset1 = new Geom_OffsetCurve(aLine, 5.0, aRefDir);
   Handle(Geom_OffsetCurve) anOffset2 = new Geom_OffsetCurve(aLine, 10.0, aRefDir);
 
@@ -279,8 +279,8 @@ TEST_F(GeomHash_CurveHasherTest, OffsetCurve_DifferentOffset_DifferentHash)
 
 TEST_F(GeomHash_CurveHasherTest, DifferentTypes_DifferentComparison)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Line)   aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 5.0);
 
   EXPECT_FALSE(myHasher(aLine, aCircle));
@@ -289,7 +289,7 @@ TEST_F(GeomHash_CurveHasherTest, DifferentTypes_DifferentComparison)
 TEST_F(GeomHash_CurveHasherTest, NullCurves_HandledCorrectly)
 {
   Handle(Geom_Curve) aNullCurve;
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  Handle(Geom_Line)  aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
 
   EXPECT_EQ(myHasher(aNullCurve), 0u);
   EXPECT_TRUE(myHasher(aNullCurve, aNullCurve));
@@ -398,8 +398,8 @@ TEST_F(GeomHash_CurveHasherTest, BezierCurve_Weighted_CopiedCurves_SameHash)
 
 TEST_F(GeomHash_CurveHasherTest, Circle_DifferentAxisOrientation_DifferentHash)
 {
-  gp_Ax2 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax2 anAxis2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+  gp_Ax2              anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2              anAxis2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
   Handle(Geom_Circle) aCircle1 = new Geom_Circle(anAxis1, 5.0);
   Handle(Geom_Circle) aCircle2 = new Geom_Circle(anAxis2, 5.0);
 
@@ -506,7 +506,7 @@ TEST_F(GeomHash_CurveHasherTest, BezierCurve_Reversed_DifferentComparison)
 
 TEST_F(GeomHash_CurveHasherTest, Circle_Translated_DifferentHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Circle) aCircle1 = new Geom_Circle(anAxis, 5.0);
   Handle(Geom_Circle) aCircle2 = Handle(Geom_Circle)::DownCast(aCircle1->Copy());
   aCircle2->Translate(gp_Vec(1.0, 0.0, 0.0));
@@ -517,7 +517,7 @@ TEST_F(GeomHash_CurveHasherTest, Circle_Translated_DifferentHash)
 
 TEST_F(GeomHash_CurveHasherTest, Circle_Scaled_DifferentHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Circle) aCircle1 = new Geom_Circle(anAxis, 5.0);
   Handle(Geom_Circle) aCircle2 = Handle(Geom_Circle)::DownCast(aCircle1->Copy());
   aCircle2->Scale(gp_Pnt(0.0, 0.0, 0.0), 2.0);
@@ -627,8 +627,8 @@ TEST_F(GeomHash_CurveHasherTest, BSplineCurve_LinearMultipleSpans_CopiedCurves_S
 
 TEST_F(GeomHash_CurveHasherTest, Ellipse_vs_Hyperbola_DifferentComparison)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Ellipse) anEllipse = new Geom_Ellipse(anAxis, 5.0, 3.0);
+  gp_Ax2                 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Ellipse)   anEllipse  = new Geom_Ellipse(anAxis, 5.0, 3.0);
   Handle(Geom_Hyperbola) aHyperbola = new Geom_Hyperbola(anAxis, 5.0, 3.0);
 
   EXPECT_FALSE(myHasher(anEllipse, aHyperbola));
@@ -636,8 +636,8 @@ TEST_F(GeomHash_CurveHasherTest, Ellipse_vs_Hyperbola_DifferentComparison)
 
 TEST_F(GeomHash_CurveHasherTest, Circle_vs_Ellipse_DifferentComparison)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 5.0);
+  gp_Ax2               anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Circle)  aCircle   = new Geom_Circle(anAxis, 5.0);
   Handle(Geom_Ellipse) anEllipse = new Geom_Ellipse(anAxis, 5.0, 5.0);
 
   EXPECT_FALSE(myHasher(aCircle, anEllipse));
@@ -649,7 +649,7 @@ TEST_F(GeomHash_CurveHasherTest, Circle_vs_Ellipse_DifferentComparison)
 
 TEST_F(GeomHash_CurveHasherTest, TrimmedCurve_vs_BaseCurve_DifferentComparison)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  Handle(Geom_Line)         aLine    = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   Handle(Geom_TrimmedCurve) aTrimmed = new Geom_TrimmedCurve(aLine, 0.0, 10.0);
 
   // Trimmed curve is a different type from base curve
@@ -662,7 +662,7 @@ TEST_F(GeomHash_CurveHasherTest, TrimmedCurve_vs_BaseCurve_DifferentComparison)
 
 TEST_F(GeomHash_CurveHasherTest, Circle_VerySmallRadius_CopiedCircles_SameHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Circle) aCircle1 = new Geom_Circle(anAxis, 1e-10);
   Handle(Geom_Circle) aCircle2 = Handle(Geom_Circle)::DownCast(aCircle1->Copy());
 
@@ -672,7 +672,7 @@ TEST_F(GeomHash_CurveHasherTest, Circle_VerySmallRadius_CopiedCircles_SameHash)
 
 TEST_F(GeomHash_CurveHasherTest, Circle_VeryLargeRadius_CopiedCircles_SameHash)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Circle) aCircle1 = new Geom_Circle(anAxis, 1e10);
   Handle(Geom_Circle) aCircle2 = Handle(Geom_Circle)::DownCast(aCircle1->Copy());
 
@@ -688,4 +688,3 @@ TEST_F(GeomHash_CurveHasherTest, Line_AtOrigin_vs_FarFromOrigin_DifferentHash)
   EXPECT_NE(myHasher(aLine1), myHasher(aLine2));
   EXPECT_FALSE(myHasher(aLine1, aLine2));
 }
-

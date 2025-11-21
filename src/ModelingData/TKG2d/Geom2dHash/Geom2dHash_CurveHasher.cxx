@@ -134,11 +134,13 @@ bool Geom2dHash_CurveHasher::operator()(const Handle(Geom2d_Curve)& theCurve1,
   }
   if (Handle(Geom2d_BSplineCurve) aBSpl1 = Handle(Geom2d_BSplineCurve)::DownCast(theCurve1))
   {
-    return Geom2dHash_BSplineCurveHasher{}(aBSpl1, Handle(Geom2d_BSplineCurve)::DownCast(theCurve2));
+    return Geom2dHash_BSplineCurveHasher{}(aBSpl1,
+                                           Handle(Geom2d_BSplineCurve)::DownCast(theCurve2));
   }
   if (Handle(Geom2d_TrimmedCurve) aTrim1 = Handle(Geom2d_TrimmedCurve)::DownCast(theCurve1))
   {
-    return Geom2dHash_TrimmedCurveHasher{}(aTrim1, Handle(Geom2d_TrimmedCurve)::DownCast(theCurve2));
+    return Geom2dHash_TrimmedCurveHasher{}(aTrim1,
+                                           Handle(Geom2d_TrimmedCurve)::DownCast(theCurve2));
   }
   if (Handle(Geom2d_OffsetCurve) aOff1 = Handle(Geom2d_OffsetCurve)::DownCast(theCurve1))
   {

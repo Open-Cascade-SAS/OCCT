@@ -27,13 +27,12 @@ struct GeomHash_SphericalSurfaceHasher
   std::size_t operator()(const Handle(Geom_SphericalSurface)& theSphere) const noexcept
   {
     constexpr double aTolerance = 1e-12;
-    constexpr double aFactor = 1.0 / aTolerance;
+    constexpr double aFactor    = 1.0 / aTolerance;
 
     const GeomHash_AxisPlacement anAxisHasher;
-    const std::size_t aHashes[2] = {
+    const std::size_t            aHashes[2] = {
       anAxisHasher(theSphere->Position().Ax2()),
-      opencascade::hash(static_cast<int64_t>(std::round(theSphere->Radius() * aFactor)))
-    };
+      opencascade::hash(static_cast<int64_t>(std::round(theSphere->Radius() * aFactor)))};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
 
@@ -41,10 +40,10 @@ struct GeomHash_SphericalSurfaceHasher
   bool operator()(const Handle(Geom_SphericalSurface)& theSphere1,
                   const Handle(Geom_SphericalSurface)& theSphere2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
+    constexpr double             aTolerance = 1e-12;
     const GeomHash_AxisPlacement anAxisHasher;
-    return anAxisHasher(theSphere1->Position().Ax2(), theSphere2->Position().Ax2()) &&
-           std::abs(theSphere1->Radius() - theSphere2->Radius()) <= aTolerance;
+    return anAxisHasher(theSphere1->Position().Ax2(), theSphere2->Position().Ax2())
+           && std::abs(theSphere1->Radius() - theSphere2->Radius()) <= aTolerance;
   }
 };
 

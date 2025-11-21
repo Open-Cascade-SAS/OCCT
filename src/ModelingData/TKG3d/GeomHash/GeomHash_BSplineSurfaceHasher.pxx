@@ -34,9 +34,8 @@ struct GeomHash_BSplineSurfaceHasher
       opencascade::hash(theSurface->NbVPoles()),
       opencascade::hash(theSurface->NbUKnots()),
       opencascade::hash(theSurface->NbVKnots()),
-      opencascade::hash(static_cast<int>(theSurface->IsURational()) |
-                       (static_cast<int>(theSurface->IsVRational()) << 1))
-    };
+      opencascade::hash(static_cast<int>(theSurface->IsURational())
+                        | (static_cast<int>(theSurface->IsVRational()) << 1))};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
 
@@ -47,15 +46,15 @@ struct GeomHash_BSplineSurfaceHasher
     constexpr double aTolerance = 1e-12;
 
     // Compare degrees
-    if (theSurface1->UDegree() != theSurface2->UDegree() ||
-        theSurface1->VDegree() != theSurface2->VDegree())
+    if (theSurface1->UDegree() != theSurface2->UDegree()
+        || theSurface1->VDegree() != theSurface2->VDegree())
     {
       return false;
     }
 
     // Compare knot counts
-    if (theSurface1->NbUKnots() != theSurface2->NbUKnots() ||
-        theSurface1->NbVKnots() != theSurface2->NbVKnots())
+    if (theSurface1->NbUKnots() != theSurface2->NbUKnots()
+        || theSurface1->NbVKnots() != theSurface2->NbVKnots())
     {
       return false;
     }
@@ -63,8 +62,8 @@ struct GeomHash_BSplineSurfaceHasher
     // Compare U knots and multiplicities
     for (int i = 1; i <= theSurface1->NbUKnots(); ++i)
     {
-      if (std::abs(theSurface1->UKnot(i) - theSurface2->UKnot(i)) > aTolerance ||
-          theSurface1->UMultiplicity(i) != theSurface2->UMultiplicity(i))
+      if (std::abs(theSurface1->UKnot(i) - theSurface2->UKnot(i)) > aTolerance
+          || theSurface1->UMultiplicity(i) != theSurface2->UMultiplicity(i))
       {
         return false;
       }
@@ -73,16 +72,16 @@ struct GeomHash_BSplineSurfaceHasher
     // Compare V knots and multiplicities
     for (int i = 1; i <= theSurface1->NbVKnots(); ++i)
     {
-      if (std::abs(theSurface1->VKnot(i) - theSurface2->VKnot(i)) > aTolerance ||
-          theSurface1->VMultiplicity(i) != theSurface2->VMultiplicity(i))
+      if (std::abs(theSurface1->VKnot(i) - theSurface2->VKnot(i)) > aTolerance
+          || theSurface1->VMultiplicity(i) != theSurface2->VMultiplicity(i))
       {
         return false;
       }
     }
 
     // Compare rationality
-    if (theSurface1->IsURational() != theSurface2->IsURational() ||
-        theSurface1->IsVRational() != theSurface2->IsVRational())
+    if (theSurface1->IsURational() != theSurface2->IsURational()
+        || theSurface1->IsVRational() != theSurface2->IsVRational())
     {
       return false;
     }

@@ -41,7 +41,8 @@
 
 //=================================================================================================
 
-std::size_t GeomHash_SurfaceHasher::operator()(const Handle(Geom_Surface)& theSurface) const noexcept
+std::size_t GeomHash_SurfaceHasher::operator()(
+  const Handle(Geom_Surface)& theSurface) const noexcept
 {
   if (theSurface.IsNull())
   {
@@ -53,7 +54,8 @@ std::size_t GeomHash_SurfaceHasher::operator()(const Handle(Geom_Surface)& theSu
   {
     return GeomHash_PlaneHasher{}(aPlane);
   }
-  if (Handle(Geom_CylindricalSurface) aCylinder = Handle(Geom_CylindricalSurface)::DownCast(theSurface))
+  if (Handle(Geom_CylindricalSurface) aCylinder =
+        Handle(Geom_CylindricalSurface)::DownCast(theSurface))
   {
     return GeomHash_CylindricalSurfaceHasher{}(aCylinder);
   }
@@ -69,11 +71,13 @@ std::size_t GeomHash_SurfaceHasher::operator()(const Handle(Geom_Surface)& theSu
   {
     return GeomHash_ToroidalSurfaceHasher{}(aTorus);
   }
-  if (Handle(Geom_SurfaceOfRevolution) aRevol = Handle(Geom_SurfaceOfRevolution)::DownCast(theSurface))
+  if (Handle(Geom_SurfaceOfRevolution) aRevol =
+        Handle(Geom_SurfaceOfRevolution)::DownCast(theSurface))
   {
     return GeomHash_SurfaceOfRevolutionHasher{}(aRevol);
   }
-  if (Handle(Geom_SurfaceOfLinearExtrusion) aExtr = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theSurface))
+  if (Handle(Geom_SurfaceOfLinearExtrusion) aExtr =
+        Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theSurface))
   {
     return GeomHash_SurfaceOfLinearExtrusionHasher{}(aExtr);
   }
@@ -85,7 +89,8 @@ std::size_t GeomHash_SurfaceHasher::operator()(const Handle(Geom_Surface)& theSu
   {
     return GeomHash_BSplineSurfaceHasher{}(aBSpline);
   }
-  if (Handle(Geom_RectangularTrimmedSurface) aTrimmed = Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurface))
+  if (Handle(Geom_RectangularTrimmedSurface) aTrimmed =
+        Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurface))
   {
     return GeomHash_RectangularTrimmedSurfaceHasher{}(aTrimmed);
   }
@@ -124,29 +129,41 @@ bool GeomHash_SurfaceHasher::operator()(const Handle(Geom_Surface)& theSurface1,
   {
     return GeomHash_PlaneHasher{}(aPlane1, Handle(Geom_Plane)::DownCast(theSurface2));
   }
-  if (Handle(Geom_CylindricalSurface) aCyl1 = Handle(Geom_CylindricalSurface)::DownCast(theSurface1))
+  if (Handle(Geom_CylindricalSurface) aCyl1 =
+        Handle(Geom_CylindricalSurface)::DownCast(theSurface1))
   {
-    return GeomHash_CylindricalSurfaceHasher{}(aCyl1, Handle(Geom_CylindricalSurface)::DownCast(theSurface2));
+    return GeomHash_CylindricalSurfaceHasher{}(
+      aCyl1,
+      Handle(Geom_CylindricalSurface)::DownCast(theSurface2));
   }
   if (Handle(Geom_ConicalSurface) aCone1 = Handle(Geom_ConicalSurface)::DownCast(theSurface1))
   {
-    return GeomHash_ConicalSurfaceHasher{}(aCone1, Handle(Geom_ConicalSurface)::DownCast(theSurface2));
+    return GeomHash_ConicalSurfaceHasher{}(aCone1,
+                                           Handle(Geom_ConicalSurface)::DownCast(theSurface2));
   }
   if (Handle(Geom_SphericalSurface) aSph1 = Handle(Geom_SphericalSurface)::DownCast(theSurface1))
   {
-    return GeomHash_SphericalSurfaceHasher{}(aSph1, Handle(Geom_SphericalSurface)::DownCast(theSurface2));
+    return GeomHash_SphericalSurfaceHasher{}(aSph1,
+                                             Handle(Geom_SphericalSurface)::DownCast(theSurface2));
   }
   if (Handle(Geom_ToroidalSurface) aTor1 = Handle(Geom_ToroidalSurface)::DownCast(theSurface1))
   {
-    return GeomHash_ToroidalSurfaceHasher{}(aTor1, Handle(Geom_ToroidalSurface)::DownCast(theSurface2));
+    return GeomHash_ToroidalSurfaceHasher{}(aTor1,
+                                            Handle(Geom_ToroidalSurface)::DownCast(theSurface2));
   }
-  if (Handle(Geom_SurfaceOfRevolution) aRev1 = Handle(Geom_SurfaceOfRevolution)::DownCast(theSurface1))
+  if (Handle(Geom_SurfaceOfRevolution) aRev1 =
+        Handle(Geom_SurfaceOfRevolution)::DownCast(theSurface1))
   {
-    return GeomHash_SurfaceOfRevolutionHasher{}(aRev1, Handle(Geom_SurfaceOfRevolution)::DownCast(theSurface2));
+    return GeomHash_SurfaceOfRevolutionHasher{}(
+      aRev1,
+      Handle(Geom_SurfaceOfRevolution)::DownCast(theSurface2));
   }
-  if (Handle(Geom_SurfaceOfLinearExtrusion) aExt1 = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theSurface1))
+  if (Handle(Geom_SurfaceOfLinearExtrusion) aExt1 =
+        Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theSurface1))
   {
-    return GeomHash_SurfaceOfLinearExtrusionHasher{}(aExt1, Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theSurface2));
+    return GeomHash_SurfaceOfLinearExtrusionHasher{}(
+      aExt1,
+      Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theSurface2));
   }
   if (Handle(Geom_BezierSurface) aBez1 = Handle(Geom_BezierSurface)::DownCast(theSurface1))
   {
@@ -154,11 +171,15 @@ bool GeomHash_SurfaceHasher::operator()(const Handle(Geom_Surface)& theSurface1,
   }
   if (Handle(Geom_BSplineSurface) aBSpl1 = Handle(Geom_BSplineSurface)::DownCast(theSurface1))
   {
-    return GeomHash_BSplineSurfaceHasher{}(aBSpl1, Handle(Geom_BSplineSurface)::DownCast(theSurface2));
+    return GeomHash_BSplineSurfaceHasher{}(aBSpl1,
+                                           Handle(Geom_BSplineSurface)::DownCast(theSurface2));
   }
-  if (Handle(Geom_RectangularTrimmedSurface) aTrim1 = Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurface1))
+  if (Handle(Geom_RectangularTrimmedSurface) aTrim1 =
+        Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurface1))
   {
-    return GeomHash_RectangularTrimmedSurfaceHasher{}(aTrim1, Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurface2));
+    return GeomHash_RectangularTrimmedSurfaceHasher{}(
+      aTrim1,
+      Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurface2));
   }
   if (Handle(Geom_OffsetSurface) aOff1 = Handle(Geom_OffsetSurface)::DownCast(theSurface1))
   {

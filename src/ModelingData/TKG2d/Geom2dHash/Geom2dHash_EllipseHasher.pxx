@@ -27,14 +27,13 @@ struct Geom2dHash_EllipseHasher
   std::size_t operator()(const Handle(Geom2d_Ellipse)& theEllipse) const noexcept
   {
     constexpr double aTolerance = 1e-12;
-    constexpr double aFactor = 1.0 / aTolerance;
+    constexpr double aFactor    = 1.0 / aTolerance;
 
     const Geom2dHash_AxisPlacement anAxisHasher;
-    const std::size_t aHashes[3] = {
+    const std::size_t              aHashes[3] = {
       anAxisHasher(theEllipse->Position()),
       opencascade::hash(static_cast<int64_t>(std::round(theEllipse->MajorRadius() * aFactor))),
-      opencascade::hash(static_cast<int64_t>(std::round(theEllipse->MinorRadius() * aFactor)))
-    };
+      opencascade::hash(static_cast<int64_t>(std::round(theEllipse->MinorRadius() * aFactor)))};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
 
@@ -42,12 +41,12 @@ struct Geom2dHash_EllipseHasher
   bool operator()(const Handle(Geom2d_Ellipse)& theEllipse1,
                   const Handle(Geom2d_Ellipse)& theEllipse2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
+    constexpr double               aTolerance = 1e-12;
     const Geom2dHash_AxisPlacement anAxisHasher;
 
-    return anAxisHasher(theEllipse1->Position(), theEllipse2->Position()) &&
-           std::abs(theEllipse1->MajorRadius() - theEllipse2->MajorRadius()) <= aTolerance &&
-           std::abs(theEllipse1->MinorRadius() - theEllipse2->MinorRadius()) <= aTolerance;
+    return anAxisHasher(theEllipse1->Position(), theEllipse2->Position())
+           && std::abs(theEllipse1->MajorRadius() - theEllipse2->MajorRadius()) <= aTolerance
+           && std::abs(theEllipse1->MinorRadius() - theEllipse2->MinorRadius()) <= aTolerance;
   }
 };
 

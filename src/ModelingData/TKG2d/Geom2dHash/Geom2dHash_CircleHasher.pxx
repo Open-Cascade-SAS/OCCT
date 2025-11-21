@@ -27,13 +27,12 @@ struct Geom2dHash_CircleHasher
   std::size_t operator()(const Handle(Geom2d_Circle)& theCircle) const noexcept
   {
     constexpr double aTolerance = 1e-12;
-    constexpr double aFactor = 1.0 / aTolerance;
+    constexpr double aFactor    = 1.0 / aTolerance;
 
     const Geom2dHash_AxisPlacement anAxisHasher;
-    const std::size_t aHashes[2] = {
+    const std::size_t              aHashes[2] = {
       anAxisHasher(theCircle->Position()),
-      opencascade::hash(static_cast<int64_t>(std::round(theCircle->Radius() * aFactor)))
-    };
+      opencascade::hash(static_cast<int64_t>(std::round(theCircle->Radius() * aFactor)))};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
 
@@ -41,11 +40,11 @@ struct Geom2dHash_CircleHasher
   bool operator()(const Handle(Geom2d_Circle)& theCircle1,
                   const Handle(Geom2d_Circle)& theCircle2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
+    constexpr double               aTolerance = 1e-12;
     const Geom2dHash_AxisPlacement anAxisHasher;
 
-    return anAxisHasher(theCircle1->Position(), theCircle2->Position()) &&
-           std::abs(theCircle1->Radius() - theCircle2->Radius()) <= aTolerance;
+    return anAxisHasher(theCircle1->Position(), theCircle2->Position())
+           && std::abs(theCircle1->Radius() - theCircle2->Radius()) <= aTolerance;
   }
 };
 

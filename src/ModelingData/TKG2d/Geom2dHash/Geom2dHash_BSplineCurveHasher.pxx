@@ -27,12 +27,10 @@ struct Geom2dHash_BSplineCurveHasher
   // Hashes the B-spline curve metadata only.
   std::size_t operator()(const Handle(Geom2d_BSplineCurve)& theCurve) const noexcept
   {
-    const std::size_t aHashes[4] = {
-      opencascade::hash(theCurve->Degree()),
-      opencascade::hash(theCurve->NbPoles()),
-      opencascade::hash(theCurve->NbKnots()),
-      opencascade::hash(static_cast<int>(theCurve->IsRational()))
-    };
+    const std::size_t aHashes[4] = {opencascade::hash(theCurve->Degree()),
+                                    opencascade::hash(theCurve->NbPoles()),
+                                    opencascade::hash(theCurve->NbKnots()),
+                                    opencascade::hash(static_cast<int>(theCurve->IsRational()))};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
 
@@ -57,8 +55,8 @@ struct Geom2dHash_BSplineCurveHasher
     // Compare knots and multiplicities
     for (int i = 1; i <= theCurve1->NbKnots(); ++i)
     {
-      if (std::abs(theCurve1->Knot(i) - theCurve2->Knot(i)) > aTolerance ||
-          theCurve1->Multiplicity(i) != theCurve2->Multiplicity(i))
+      if (std::abs(theCurve1->Knot(i) - theCurve2->Knot(i)) > aTolerance
+          || theCurve1->Multiplicity(i) != theCurve2->Multiplicity(i))
       {
         return false;
       }

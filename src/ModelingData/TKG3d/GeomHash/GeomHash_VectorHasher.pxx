@@ -26,14 +26,13 @@ struct GeomHash_VectorHasher
   std::size_t operator()(const gp_Vec& theVector) const noexcept
   {
     constexpr double aTolerance = 1e-12;
-    constexpr double aFactor = 1.0 / aTolerance;
+    constexpr double aFactor    = 1.0 / aTolerance;
 
     // Round each component to tolerance precision before hashing
     const std::size_t aHashes[3] = {
       opencascade::hash(static_cast<int64_t>(std::round(theVector.X() * aFactor))),
       opencascade::hash(static_cast<int64_t>(std::round(theVector.Y() * aFactor))),
-      opencascade::hash(static_cast<int64_t>(std::round(theVector.Z() * aFactor)))
-    };
+      opencascade::hash(static_cast<int64_t>(std::round(theVector.Z() * aFactor)))};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
 
@@ -41,9 +40,9 @@ struct GeomHash_VectorHasher
   bool operator()(const gp_Vec& theVector1, const gp_Vec& theVector2) const noexcept
   {
     constexpr double aTolerance = 1e-12;
-    return std::abs(theVector1.X() - theVector2.X()) <= aTolerance &&
-           std::abs(theVector1.Y() - theVector2.Y()) <= aTolerance &&
-           std::abs(theVector1.Z() - theVector2.Z()) <= aTolerance;
+    return std::abs(theVector1.X() - theVector2.X()) <= aTolerance
+           && std::abs(theVector1.Y() - theVector2.Y()) <= aTolerance
+           && std::abs(theVector1.Z() - theVector2.Z()) <= aTolerance;
   }
 };
 

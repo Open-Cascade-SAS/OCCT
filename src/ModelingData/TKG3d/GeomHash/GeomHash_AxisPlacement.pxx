@@ -30,11 +30,9 @@ struct GeomHash_AxisPlacement
     const GeomHash_PointHasher     aPointHasher;
     const GeomHash_DirectionHasher aDirectionHasher;
 
-    const std::size_t aHashes[3] = {
-      aPointHasher(theAxisPlacement.Location()),
-      aDirectionHasher(theAxisPlacement.Direction()),
-      aDirectionHasher(theAxisPlacement.XDirection())
-    };
+    const std::size_t aHashes[3] = {aPointHasher(theAxisPlacement.Location()),
+                                    aDirectionHasher(theAxisPlacement.Direction()),
+                                    aDirectionHasher(theAxisPlacement.XDirection())};
 
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
@@ -45,9 +43,9 @@ struct GeomHash_AxisPlacement
     const GeomHash_PointHasher     aPointHasher;
     const GeomHash_DirectionHasher aDirectionHasher;
 
-    return aPointHasher(theAxisPlacement1.Location(), theAxisPlacement2.Location()) &&
-           aDirectionHasher(theAxisPlacement1.Direction(), theAxisPlacement2.Direction()) &&
-           aDirectionHasher(theAxisPlacement1.XDirection(), theAxisPlacement2.XDirection());
+    return aPointHasher(theAxisPlacement1.Location(), theAxisPlacement2.Location())
+           && aDirectionHasher(theAxisPlacement1.Direction(), theAxisPlacement2.Direction())
+           && aDirectionHasher(theAxisPlacement1.XDirection(), theAxisPlacement2.XDirection());
   }
 };
 

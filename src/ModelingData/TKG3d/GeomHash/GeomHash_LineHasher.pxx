@@ -26,13 +26,11 @@ struct GeomHash_LineHasher
   // Hashes the line by its location and direction.
   std::size_t operator()(const Handle(Geom_Line)& theLine) const noexcept
   {
-    const GeomHash_PointHasher aPointHasher;
+    const GeomHash_PointHasher     aPointHasher;
     const GeomHash_DirectionHasher aDirHasher;
 
-    const std::size_t aHashes[2] = {
-      aPointHasher(theLine->Position().Location()),
-      aDirHasher(theLine->Position().Direction())
-    };
+    const std::size_t aHashes[2] = {aPointHasher(theLine->Position().Location()),
+                                    aDirHasher(theLine->Position().Direction())};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
 
@@ -40,11 +38,11 @@ struct GeomHash_LineHasher
   bool operator()(const Handle(Geom_Line)& theLine1,
                   const Handle(Geom_Line)& theLine2) const noexcept
   {
-    const GeomHash_PointHasher aPointHasher;
+    const GeomHash_PointHasher     aPointHasher;
     const GeomHash_DirectionHasher aDirHasher;
 
-    return aPointHasher(theLine1->Position().Location(), theLine2->Position().Location()) &&
-           aDirHasher(theLine1->Position().Direction(), theLine2->Position().Direction());
+    return aPointHasher(theLine1->Position().Location(), theLine2->Position().Location())
+           && aDirHasher(theLine1->Position().Direction(), theLine2->Position().Direction());
   }
 };
 

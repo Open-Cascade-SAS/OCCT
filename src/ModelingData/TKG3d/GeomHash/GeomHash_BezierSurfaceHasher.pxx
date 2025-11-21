@@ -32,9 +32,8 @@ struct GeomHash_BezierSurfaceHasher
       opencascade::hash(theSurface->VDegree()),
       opencascade::hash(theSurface->NbUPoles()),
       opencascade::hash(theSurface->NbVPoles()),
-      opencascade::hash(static_cast<int>(theSurface->IsURational()) |
-                       (static_cast<int>(theSurface->IsVRational()) << 1))
-    };
+      opencascade::hash(static_cast<int>(theSurface->IsURational())
+                        | (static_cast<int>(theSurface->IsVRational()) << 1))};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
 
@@ -45,15 +44,15 @@ struct GeomHash_BezierSurfaceHasher
     constexpr double aTolerance = 1e-12;
 
     // Compare degrees
-    if (theSurface1->UDegree() != theSurface2->UDegree() ||
-        theSurface1->VDegree() != theSurface2->VDegree())
+    if (theSurface1->UDegree() != theSurface2->UDegree()
+        || theSurface1->VDegree() != theSurface2->VDegree())
     {
       return false;
     }
 
     // Compare rationality
-    if (theSurface1->IsURational() != theSurface2->IsURational() ||
-        theSurface1->IsVRational() != theSurface2->IsVRational())
+    if (theSurface1->IsURational() != theSurface2->IsURational()
+        || theSurface1->IsVRational() != theSurface2->IsVRational())
     {
       return false;
     }

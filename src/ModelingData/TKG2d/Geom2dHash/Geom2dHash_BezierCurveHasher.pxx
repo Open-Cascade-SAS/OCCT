@@ -27,11 +27,9 @@ struct Geom2dHash_BezierCurveHasher
   // Hashes the Bezier curve metadata only.
   std::size_t operator()(const Handle(Geom2d_BezierCurve)& theCurve) const noexcept
   {
-    const std::size_t aHashes[3] = {
-      opencascade::hash(theCurve->Degree()),
-      opencascade::hash(theCurve->NbPoles()),
-      opencascade::hash(static_cast<int>(theCurve->IsRational()))
-    };
+    const std::size_t aHashes[3] = {opencascade::hash(theCurve->Degree()),
+                                    opencascade::hash(theCurve->NbPoles()),
+                                    opencascade::hash(static_cast<int>(theCurve->IsRational()))};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
   }
 
