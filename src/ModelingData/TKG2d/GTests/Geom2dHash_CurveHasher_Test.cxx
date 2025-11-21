@@ -27,6 +27,7 @@
 #include <gp_Ax22d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -441,5 +442,211 @@ TEST_F(Geom2dHash_CurveHasherTest, BSplineCurve_DifferentKnots_DifferentComparis
   Handle(Geom2d_BSplineCurve) aCurve2 = new Geom2d_BSplineCurve(aPoles, aKnots2, aMults, 3);
 
   EXPECT_FALSE(myHasher(aCurve1, aCurve2));
+}
+
+// ============================================================================
+// Periodic BSpline Tests
+// ============================================================================
+
+TEST_F(Geom2dHash_CurveHasherTest, BSplineCurve_QuadraticBezierEquivalent_CopiedCurves_SameHash)
+{
+  // Simple quadratic B-spline (Bezier-like, single span)
+  TColgp_Array1OfPnt2d aPoles(1, 3);
+  aPoles(1) = gp_Pnt2d(0.0, 0.0);
+  aPoles(2) = gp_Pnt2d(1.0, 2.0);
+  aPoles(3) = gp_Pnt2d(2.0, 0.0);
+
+  TColStd_Array1OfReal aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+
+  TColStd_Array1OfInteger aMults(1, 2);
+  aMults(1) = 3;
+  aMults(2) = 3;
+
+  Handle(Geom2d_BSplineCurve) aCurve1 = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
+  Handle(Geom2d_BSplineCurve) aCurve2 = Handle(Geom2d_BSplineCurve)::DownCast(aCurve1->Copy());
+
+  EXPECT_EQ(myHasher(aCurve1), myHasher(aCurve2));
+  EXPECT_TRUE(myHasher(aCurve1, aCurve2));
+}
+
+// ============================================================================
+// Reversed Curve Tests
+// ============================================================================
+
+TEST_F(Geom2dHash_CurveHasherTest, Line_Reversed_DifferentComparison)
+{
+  Handle(Geom2d_Line) aLine1 = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  Handle(Geom2d_Line) aLine2 = Handle(Geom2d_Line)::DownCast(aLine1->Reversed());
+
+  EXPECT_FALSE(myHasher(aLine1, aLine2));
+}
+
+TEST_F(Geom2dHash_CurveHasherTest, BezierCurve_Reversed_DifferentComparison)
+{
+  TColgp_Array1OfPnt2d aPoles(1, 3);
+  aPoles(1) = gp_Pnt2d(0.0, 0.0);
+  aPoles(2) = gp_Pnt2d(1.0, 2.0);
+  aPoles(3) = gp_Pnt2d(2.0, 0.0);
+
+  Handle(Geom2d_BezierCurve) aCurve1 = new Geom2d_BezierCurve(aPoles);
+  Handle(Geom2d_BezierCurve) aCurve2 = Handle(Geom2d_BezierCurve)::DownCast(aCurve1->Reversed());
+
+  EXPECT_FALSE(myHasher(aCurve1, aCurve2));
+}
+
+// ============================================================================
+// Transformed Curve Tests
+// ============================================================================
+
+TEST_F(Geom2dHash_CurveHasherTest, Circle_Translated_DifferentHash)
+{
+  gp_Ax22d anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Handle(Geom2d_Circle) aCircle1 = new Geom2d_Circle(anAxis, 5.0);
+  Handle(Geom2d_Circle) aCircle2 = Handle(Geom2d_Circle)::DownCast(aCircle1->Copy());
+  aCircle2->Translate(gp_Vec2d(1.0, 0.0));
+
+  EXPECT_NE(myHasher(aCircle1), myHasher(aCircle2));
+  EXPECT_FALSE(myHasher(aCircle1, aCircle2));
+}
+
+TEST_F(Geom2dHash_CurveHasherTest, Circle_Scaled_DifferentHash)
+{
+  gp_Ax22d anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Handle(Geom2d_Circle) aCircle1 = new Geom2d_Circle(anAxis, 5.0);
+  Handle(Geom2d_Circle) aCircle2 = Handle(Geom2d_Circle)::DownCast(aCircle1->Copy());
+  aCircle2->Scale(gp_Pnt2d(0.0, 0.0), 2.0);
+
+  EXPECT_NE(myHasher(aCircle1), myHasher(aCircle2));
+  EXPECT_FALSE(myHasher(aCircle1, aCircle2));
+}
+
+// ============================================================================
+// Higher Degree BSpline Tests
+// ============================================================================
+
+TEST_F(Geom2dHash_CurveHasherTest, BSplineCurve_HigherDegree_CopiedCurves_SameHash)
+{
+  TColgp_Array1OfPnt2d aPoles(1, 6);
+  aPoles(1) = gp_Pnt2d(0.0, 0.0);
+  aPoles(2) = gp_Pnt2d(1.0, 1.0);
+  aPoles(3) = gp_Pnt2d(2.0, 0.5);
+  aPoles(4) = gp_Pnt2d(3.0, 1.5);
+  aPoles(5) = gp_Pnt2d(4.0, 0.0);
+  aPoles(6) = gp_Pnt2d(5.0, 1.0);
+
+  TColStd_Array1OfReal aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+
+  TColStd_Array1OfInteger aMults(1, 2);
+  aMults(1) = 6;
+  aMults(2) = 6;
+
+  Handle(Geom2d_BSplineCurve) aCurve1 = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 5);
+  Handle(Geom2d_BSplineCurve) aCurve2 = Handle(Geom2d_BSplineCurve)::DownCast(aCurve1->Copy());
+
+  EXPECT_EQ(myHasher(aCurve1), myHasher(aCurve2));
+  EXPECT_TRUE(myHasher(aCurve1, aCurve2));
+}
+
+// ============================================================================
+// Multiple Knot Spans Tests
+// ============================================================================
+
+TEST_F(Geom2dHash_CurveHasherTest, BSplineCurve_LinearMultipleSpans_CopiedCurves_SameHash)
+{
+  // Linear B-spline with multiple knots (piecewise linear)
+  TColgp_Array1OfPnt2d aPoles(1, 4);
+  aPoles(1) = gp_Pnt2d(0.0, 0.0);
+  aPoles(2) = gp_Pnt2d(1.0, 1.0);
+  aPoles(3) = gp_Pnt2d(2.0, 0.0);
+  aPoles(4) = gp_Pnt2d(3.0, 1.0);
+
+  TColStd_Array1OfReal aKnots(1, 4);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  aKnots(3) = 2.0;
+  aKnots(4) = 3.0;
+
+  TColStd_Array1OfInteger aMults(1, 4);
+  aMults(1) = 2;
+  aMults(2) = 1;
+  aMults(3) = 1;
+  aMults(4) = 2;
+
+  Handle(Geom2d_BSplineCurve) aCurve1 = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 1);
+  Handle(Geom2d_BSplineCurve) aCurve2 = Handle(Geom2d_BSplineCurve)::DownCast(aCurve1->Copy());
+
+  EXPECT_EQ(myHasher(aCurve1), myHasher(aCurve2));
+  EXPECT_TRUE(myHasher(aCurve1, aCurve2));
+}
+
+// ============================================================================
+// Cross-type Conic Tests
+// ============================================================================
+
+TEST_F(Geom2dHash_CurveHasherTest, Ellipse_vs_Hyperbola_DifferentComparison)
+{
+  gp_Ax22d anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Handle(Geom2d_Ellipse) anEllipse = new Geom2d_Ellipse(anAxis, 5.0, 3.0);
+  Handle(Geom2d_Hyperbola) aHyperbola = new Geom2d_Hyperbola(anAxis, 5.0, 3.0);
+
+  EXPECT_FALSE(myHasher(anEllipse, aHyperbola));
+}
+
+TEST_F(Geom2dHash_CurveHasherTest, Circle_vs_Ellipse_DifferentComparison)
+{
+  gp_Ax22d anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Handle(Geom2d_Circle) aCircle = new Geom2d_Circle(anAxis, 5.0);
+  Handle(Geom2d_Ellipse) anEllipse = new Geom2d_Ellipse(anAxis, 5.0, 5.0);
+
+  EXPECT_FALSE(myHasher(aCircle, anEllipse));
+}
+
+// ============================================================================
+// Trimmed vs Base Curve Tests
+// ============================================================================
+
+TEST_F(Geom2dHash_CurveHasherTest, TrimmedCurve_vs_BaseCurve_DifferentComparison)
+{
+  Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  Handle(Geom2d_TrimmedCurve) aTrimmed = new Geom2d_TrimmedCurve(aLine, 0.0, 10.0);
+
+  EXPECT_FALSE(myHasher(aLine, aTrimmed));
+}
+
+// ============================================================================
+// Edge Cases - Degenerate/Special Values
+// ============================================================================
+
+TEST_F(Geom2dHash_CurveHasherTest, Circle_VerySmallRadius_CopiedCircles_SameHash)
+{
+  gp_Ax22d anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Handle(Geom2d_Circle) aCircle1 = new Geom2d_Circle(anAxis, 1e-10);
+  Handle(Geom2d_Circle) aCircle2 = Handle(Geom2d_Circle)::DownCast(aCircle1->Copy());
+
+  EXPECT_EQ(myHasher(aCircle1), myHasher(aCircle2));
+  EXPECT_TRUE(myHasher(aCircle1, aCircle2));
+}
+
+TEST_F(Geom2dHash_CurveHasherTest, Circle_VeryLargeRadius_CopiedCircles_SameHash)
+{
+  gp_Ax22d anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Handle(Geom2d_Circle) aCircle1 = new Geom2d_Circle(anAxis, 1e10);
+  Handle(Geom2d_Circle) aCircle2 = Handle(Geom2d_Circle)::DownCast(aCircle1->Copy());
+
+  EXPECT_EQ(myHasher(aCircle1), myHasher(aCircle2));
+  EXPECT_TRUE(myHasher(aCircle1, aCircle2));
+}
+
+TEST_F(Geom2dHash_CurveHasherTest, Line_AtOrigin_vs_FarFromOrigin_DifferentHash)
+{
+  Handle(Geom2d_Line) aLine1 = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  Handle(Geom2d_Line) aLine2 = new Geom2d_Line(gp_Pnt2d(1e10, 1e10), gp_Dir2d(1.0, 0.0));
+
+  EXPECT_NE(myHasher(aLine1), myHasher(aLine2));
+  EXPECT_FALSE(myHasher(aLine1, aLine2));
 }
 
