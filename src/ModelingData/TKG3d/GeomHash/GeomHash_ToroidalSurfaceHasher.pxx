@@ -1,0 +1,52 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomHash_ToroidalSurfaceHasher_HeaderFile
+#define _GeomHash_ToroidalSurfaceHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <GeomHash_AxisPlacement.pxx>
+#include <cmath>
+
+//! OCCT-style hasher for Geom_ToroidalSurface.
+//! Used for geometry deduplication.
+struct GeomHash_ToroidalSurfaceHasher
+{
+  // Hashes the torus by its position, major radius, and minor radius.
+  std::size_t operator()(const Handle(Geom_ToroidalSurface)& theTorus) const noexcept
+  {
+    constexpr double aTolerance = 1e-12;
+    constexpr double aFactor    = 1.0 / aTolerance;
+
+    const GeomHash_AxisPlacement anAxisHasher;
+    const std::size_t            aHashes[3] = {
+      anAxisHasher(theTorus->Position().Ax2()),
+      opencascade::hash(static_cast<int64_t>(std::round(theTorus->MajorRadius() * aFactor))),
+      opencascade::hash(static_cast<int64_t>(std::round(theTorus->MinorRadius() * aFactor)))};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two tori by their positions, major radii, and minor radii.
+  bool operator()(const Handle(Geom_ToroidalSurface)& theTorus1,
+                  const Handle(Geom_ToroidalSurface)& theTorus2) const noexcept
+  {
+    constexpr double             aTolerance = 1e-12;
+    const GeomHash_AxisPlacement anAxisHasher;
+    return anAxisHasher(theTorus1->Position().Ax2(), theTorus2->Position().Ax2())
+           && std::abs(theTorus1->MajorRadius() - theTorus2->MajorRadius()) <= aTolerance
+           && std::abs(theTorus1->MinorRadius() - theTorus2->MinorRadius()) <= aTolerance;
+  }
+};
+
+#endif // _GeomHash_ToroidalSurfaceHasher_HeaderFile

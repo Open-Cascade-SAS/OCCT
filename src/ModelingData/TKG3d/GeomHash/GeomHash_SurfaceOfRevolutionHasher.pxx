@@ -1,0 +1,58 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomHash_SurfaceOfRevolutionHasher_HeaderFile
+#define _GeomHash_SurfaceOfRevolutionHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <GeomHash_PointHasher.pxx>
+#include <GeomHash_DirectionHasher.pxx>
+#include <GeomHash_CurveHasher.hxx>
+
+//! OCCT-style hasher for Geom_SurfaceOfRevolution.
+//! Used for geometry deduplication.
+struct GeomHash_SurfaceOfRevolutionHasher
+{
+  // Hashes the revolution surface by its axis and basis curve.
+  std::size_t operator()(const Handle(Geom_SurfaceOfRevolution)& theSurface) const noexcept
+  {
+    const GeomHash_PointHasher     aPointHasher;
+    const GeomHash_DirectionHasher aDirHasher;
+    const GeomHash_CurveHasher     aCurveHasher;
+
+    const gp_Ax1&     anAxis     = theSurface->Axis();
+    const std::size_t aHashes[3] = {aCurveHasher(theSurface->BasisCurve()),
+                                    aPointHasher(anAxis.Location()),
+                                    aDirHasher(anAxis.Direction())};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two revolution surfaces.
+  bool operator()(const Handle(Geom_SurfaceOfRevolution)& theSurface1,
+                  const Handle(Geom_SurfaceOfRevolution)& theSurface2) const noexcept
+  {
+    const GeomHash_PointHasher     aPointHasher;
+    const GeomHash_DirectionHasher aDirHasher;
+    const GeomHash_CurveHasher     aCurveHasher;
+
+    const gp_Ax1& anAxis1 = theSurface1->Axis();
+    const gp_Ax1& anAxis2 = theSurface2->Axis();
+
+    return aCurveHasher(theSurface1->BasisCurve(), theSurface2->BasisCurve())
+           && aPointHasher(anAxis1.Location(), anAxis2.Location())
+           && aDirHasher(anAxis1.Direction(), anAxis2.Direction());
+  }
+};
+
+#endif // _GeomHash_SurfaceOfRevolutionHasher_HeaderFile

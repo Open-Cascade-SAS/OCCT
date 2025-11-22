@@ -1,0 +1,53 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom2dHash_HyperbolaHasher_HeaderFile
+#define _Geom2dHash_HyperbolaHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2dHash_AxisPlacement.pxx>
+#include <cmath>
+
+//! OCCT-style hasher for Geom2d_Hyperbola (2D hyperbola).
+//! Used for geometry deduplication.
+struct Geom2dHash_HyperbolaHasher
+{
+  // Hashes the hyperbola by its position, major radius, and minor radius.
+  std::size_t operator()(const Handle(Geom2d_Hyperbola)& theHyperbola) const noexcept
+  {
+    constexpr double aTolerance = 1e-12;
+    constexpr double aFactor    = 1.0 / aTolerance;
+
+    const Geom2dHash_AxisPlacement anAxisHasher;
+    const std::size_t              aHashes[3] = {
+      anAxisHasher(theHyperbola->Position()),
+      opencascade::hash(static_cast<int64_t>(std::round(theHyperbola->MajorRadius() * aFactor))),
+      opencascade::hash(static_cast<int64_t>(std::round(theHyperbola->MinorRadius() * aFactor)))};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two hyperbolas by their positions and radii.
+  bool operator()(const Handle(Geom2d_Hyperbola)& theHyperbola1,
+                  const Handle(Geom2d_Hyperbola)& theHyperbola2) const noexcept
+  {
+    constexpr double               aTolerance = 1e-12;
+    const Geom2dHash_AxisPlacement anAxisHasher;
+
+    return anAxisHasher(theHyperbola1->Position(), theHyperbola2->Position())
+           && std::abs(theHyperbola1->MajorRadius() - theHyperbola2->MajorRadius()) <= aTolerance
+           && std::abs(theHyperbola1->MinorRadius() - theHyperbola2->MinorRadius()) <= aTolerance;
+  }
+};
+
+#endif // _Geom2dHash_HyperbolaHasher_HeaderFile

@@ -10,4 +10,6 @@ set(OCCT_TKG3d_GTests_FILES
   Geom_OffsetSurface_Test.cxx
   GeomAPI_ExtremaCurveCurve_Test.cxx
   GeomAPI_Interpolate_Test.cxx
+  GeomHash_CurveHasher_Test.cxx
+  GeomHash_SurfaceHasher_Test.cxx
 )

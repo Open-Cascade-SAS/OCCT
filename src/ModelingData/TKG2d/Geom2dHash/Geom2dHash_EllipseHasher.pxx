@@ -1,0 +1,53 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom2dHash_EllipseHasher_HeaderFile
+#define _Geom2dHash_EllipseHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2dHash_AxisPlacement.pxx>
+#include <cmath>
+
+//! OCCT-style hasher for Geom2d_Ellipse (2D ellipse).
+//! Used for geometry deduplication.
+struct Geom2dHash_EllipseHasher
+{
+  // Hashes the ellipse by its position, major radius, and minor radius.
+  std::size_t operator()(const Handle(Geom2d_Ellipse)& theEllipse) const noexcept
+  {
+    constexpr double aTolerance = 1e-12;
+    constexpr double aFactor    = 1.0 / aTolerance;
+
+    const Geom2dHash_AxisPlacement anAxisHasher;
+    const std::size_t              aHashes[3] = {
+      anAxisHasher(theEllipse->Position()),
+      opencascade::hash(static_cast<int64_t>(std::round(theEllipse->MajorRadius() * aFactor))),
+      opencascade::hash(static_cast<int64_t>(std::round(theEllipse->MinorRadius() * aFactor)))};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two ellipses by their positions and radii.
+  bool operator()(const Handle(Geom2d_Ellipse)& theEllipse1,
+                  const Handle(Geom2d_Ellipse)& theEllipse2) const noexcept
+  {
+    constexpr double               aTolerance = 1e-12;
+    const Geom2dHash_AxisPlacement anAxisHasher;
+
+    return anAxisHasher(theEllipse1->Position(), theEllipse2->Position())
+           && std::abs(theEllipse1->MajorRadius() - theEllipse2->MajorRadius()) <= aTolerance
+           && std::abs(theEllipse1->MinorRadius() - theEllipse2->MinorRadius()) <= aTolerance;
+  }
+};
+
+#endif // _Geom2dHash_EllipseHasher_HeaderFile

@@ -1,0 +1,52 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomHash_AxisPlacement_HeaderFile
+#define _GeomHash_AxisPlacement_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <gp_Ax2.hxx>
+#include <GeomHash_PointHasher.pxx>
+#include <GeomHash_DirectionHasher.pxx>
+
+//! OCCT-style hasher for gp_Ax2 (axis placement).
+//! Used for geometry deduplication.
+//! Compositional hasher using PointHasher and DirectionHasher.
+struct GeomHash_AxisPlacement
+{
+  // Hashes the axis placement by location, axis direction, and X direction.
+  std::size_t operator()(const gp_Ax2& theAxisPlacement) const noexcept
+  {
+    const GeomHash_PointHasher     aPointHasher;
+    const GeomHash_DirectionHasher aDirectionHasher;
+
+    const std::size_t aHashes[3] = {aPointHasher(theAxisPlacement.Location()),
+                                    aDirectionHasher(theAxisPlacement.Direction()),
+                                    aDirectionHasher(theAxisPlacement.XDirection())};
+
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two axis placements.
+  bool operator()(const gp_Ax2& theAxisPlacement1, const gp_Ax2& theAxisPlacement2) const noexcept
+  {
+    const GeomHash_PointHasher     aPointHasher;
+    const GeomHash_DirectionHasher aDirectionHasher;
+
+    return aPointHasher(theAxisPlacement1.Location(), theAxisPlacement2.Location())
+           && aDirectionHasher(theAxisPlacement1.Direction(), theAxisPlacement2.Direction())
+           && aDirectionHasher(theAxisPlacement1.XDirection(), theAxisPlacement2.XDirection());
+  }
+};
+
+#endif // _GeomHash_AxisPlacement_HeaderFile

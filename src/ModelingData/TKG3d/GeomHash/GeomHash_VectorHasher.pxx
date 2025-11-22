@@ -1,0 +1,49 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomHash_VectorHasher_HeaderFile
+#define _GeomHash_VectorHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <gp_Vec.hxx>
+#include <cmath>
+
+//! OCCT-style hasher for gp_Vec (3D vectors).
+//! Used for geometry deduplication.
+struct GeomHash_VectorHasher
+{
+  // Hashes the 3D vector by its XYZ components.
+  std::size_t operator()(const gp_Vec& theVector) const noexcept
+  {
+    constexpr double aTolerance = 1e-12;
+    constexpr double aFactor    = 1.0 / aTolerance;
+
+    // Round each component to tolerance precision before hashing
+    const std::size_t aHashes[3] = {
+      opencascade::hash(static_cast<int64_t>(std::round(theVector.X() * aFactor))),
+      opencascade::hash(static_cast<int64_t>(std::round(theVector.Y() * aFactor))),
+      opencascade::hash(static_cast<int64_t>(std::round(theVector.Z() * aFactor)))};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two 3D vectors with fixed tolerance.
+  bool operator()(const gp_Vec& theVector1, const gp_Vec& theVector2) const noexcept
+  {
+    constexpr double aTolerance = 1e-12;
+    return std::abs(theVector1.X() - theVector2.X()) <= aTolerance
+           && std::abs(theVector1.Y() - theVector2.Y()) <= aTolerance
+           && std::abs(theVector1.Z() - theVector2.Z()) <= aTolerance;
+  }
+};
+
+#endif // _GeomHash_VectorHasher_HeaderFile

@@ -1,0 +1,49 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomHash_LineHasher_HeaderFile
+#define _GeomHash_LineHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom_Line.hxx>
+#include <GeomHash_PointHasher.pxx>
+#include <GeomHash_DirectionHasher.pxx>
+
+//! OCCT-style hasher for Geom_Line (3D line).
+//! Used for geometry deduplication.
+struct GeomHash_LineHasher
+{
+  // Hashes the line by its location and direction.
+  std::size_t operator()(const Handle(Geom_Line)& theLine) const noexcept
+  {
+    const GeomHash_PointHasher     aPointHasher;
+    const GeomHash_DirectionHasher aDirHasher;
+
+    const std::size_t aHashes[2] = {aPointHasher(theLine->Position().Location()),
+                                    aDirHasher(theLine->Position().Direction())};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two lines by their positions.
+  bool operator()(const Handle(Geom_Line)& theLine1,
+                  const Handle(Geom_Line)& theLine2) const noexcept
+  {
+    const GeomHash_PointHasher     aPointHasher;
+    const GeomHash_DirectionHasher aDirHasher;
+
+    return aPointHasher(theLine1->Position().Location(), theLine2->Position().Location())
+           && aDirHasher(theLine1->Position().Direction(), theLine2->Position().Direction());
+  }
+};
+
+#endif // _GeomHash_LineHasher_HeaderFile

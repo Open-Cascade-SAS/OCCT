@@ -1,0 +1,41 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomHash_PlaneHasher_HeaderFile
+#define _GeomHash_PlaneHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomHash_AxisPlacement.pxx>
+
+//! OCCT-style hasher for Geom_Plane surfaces.
+//! Used for geometry deduplication.
+struct GeomHash_PlaneHasher
+{
+  // Hashes the plane by its position (location, normal, reference direction).
+  std::size_t operator()(const Handle(Geom_Plane)& thePlane) const noexcept
+  {
+    const GeomHash_AxisPlacement anAxisHasher;
+    return anAxisHasher(thePlane->Position().Ax2());
+  }
+
+  // Compares two planes by their positions.
+  bool operator()(const Handle(Geom_Plane)& thePlane1,
+                  const Handle(Geom_Plane)& thePlane2) const noexcept
+  {
+    const GeomHash_AxisPlacement anAxisHasher;
+    return anAxisHasher(thePlane1->Position().Ax2(), thePlane2->Position().Ax2());
+  }
+};
+
+#endif // _GeomHash_PlaneHasher_HeaderFile

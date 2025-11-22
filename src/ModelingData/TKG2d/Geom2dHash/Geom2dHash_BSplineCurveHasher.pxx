@@ -1,0 +1,98 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom2dHash_BSplineCurveHasher_HeaderFile
+#define _Geom2dHash_BSplineCurveHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2dHash_PointHasher.pxx>
+#include <cmath>
+
+//! OCCT-style hasher for Geom2d_BSplineCurve (2D B-spline curve).
+//! Used for geometry deduplication.
+//! Hashes only metadata (degree, pole count, knot count, rationality) for efficiency.
+struct Geom2dHash_BSplineCurveHasher
+{
+  // Hashes the B-spline curve metadata only.
+  std::size_t operator()(const Handle(Geom2d_BSplineCurve)& theCurve) const noexcept
+  {
+    const std::size_t aHashes[4] = {opencascade::hash(theCurve->Degree()),
+                                    opencascade::hash(theCurve->NbPoles()),
+                                    opencascade::hash(theCurve->NbKnots()),
+                                    opencascade::hash(static_cast<int>(theCurve->IsRational()))};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two B-spline curves by full geometric data.
+  bool operator()(const Handle(Geom2d_BSplineCurve)& theCurve1,
+                  const Handle(Geom2d_BSplineCurve)& theCurve2) const noexcept
+  {
+    constexpr double aTolerance = 1e-12;
+
+    // Compare degrees
+    if (theCurve1->Degree() != theCurve2->Degree())
+    {
+      return false;
+    }
+
+    // Compare knot counts
+    if (theCurve1->NbKnots() != theCurve2->NbKnots())
+    {
+      return false;
+    }
+
+    // Compare knots and multiplicities
+    for (int i = 1; i <= theCurve1->NbKnots(); ++i)
+    {
+      if (std::abs(theCurve1->Knot(i) - theCurve2->Knot(i)) > aTolerance
+          || theCurve1->Multiplicity(i) != theCurve2->Multiplicity(i))
+      {
+        return false;
+      }
+    }
+
+    // Compare rationality
+    if (theCurve1->IsRational() != theCurve2->IsRational())
+    {
+      return false;
+    }
+
+    const Geom2dHash_PointHasher aPointHasher;
+
+    // Compare poles
+    for (int i = 1; i <= theCurve1->NbPoles(); ++i)
+    {
+      if (!aPointHasher(theCurve1->Pole(i), theCurve2->Pole(i)))
+      {
+        return false;
+      }
+    }
+
+    // Compare weights if rational
+    if (theCurve1->IsRational())
+    {
+      for (int i = 1; i <= theCurve1->NbPoles(); ++i)
+      {
+        if (std::abs(theCurve1->Weight(i) - theCurve2->Weight(i)) > aTolerance)
+        {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+};
+
+#endif // _Geom2dHash_BSplineCurveHasher_HeaderFile

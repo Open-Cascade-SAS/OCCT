@@ -1,0 +1,52 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom2dHash_OffsetCurveHasher_HeaderFile
+#define _Geom2dHash_OffsetCurveHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2dHash_CurveHasher.hxx>
+#include <cmath>
+
+//! OCCT-style hasher for Geom2d_OffsetCurve (2D offset curve).
+//! Used for geometry deduplication.
+struct Geom2dHash_OffsetCurveHasher
+{
+  // Hashes the offset curve by its offset distance and basis curve.
+  std::size_t operator()(const Handle(Geom2d_OffsetCurve)& theCurve) const noexcept
+  {
+    constexpr double aTolerance = 1e-12;
+    constexpr double aFactor    = 1.0 / aTolerance;
+
+    const Geom2dHash_CurveHasher aCurveHasher;
+    const std::size_t            aHashes[2] = {
+      aCurveHasher(theCurve->BasisCurve()),
+      opencascade::hash(static_cast<int64_t>(std::round(theCurve->Offset() * aFactor)))};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two offset curves.
+  bool operator()(const Handle(Geom2d_OffsetCurve)& theCurve1,
+                  const Handle(Geom2d_OffsetCurve)& theCurve2) const noexcept
+  {
+    constexpr double aTolerance = 1e-12;
+
+    const Geom2dHash_CurveHasher aCurveHasher;
+
+    return aCurveHasher(theCurve1->BasisCurve(), theCurve2->BasisCurve())
+           && std::abs(theCurve1->Offset() - theCurve2->Offset()) <= aTolerance;
+  }
+};
+
+#endif // _Geom2dHash_OffsetCurveHasher_HeaderFile

@@ -1,0 +1,81 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomHash_BezierCurveHasher_HeaderFile
+#define _GeomHash_BezierCurveHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <GeomHash_PointHasher.pxx>
+#include <cmath>
+
+//! OCCT-style hasher for Geom_BezierCurve (3D Bezier curve).
+//! Used for geometry deduplication.
+//! Hashes only metadata (degree, pole count, rationality) for efficiency.
+struct GeomHash_BezierCurveHasher
+{
+  // Hashes the Bezier curve metadata only.
+  std::size_t operator()(const Handle(Geom_BezierCurve)& theCurve) const noexcept
+  {
+    const std::size_t aHashes[3] = {opencascade::hash(theCurve->Degree()),
+                                    opencascade::hash(theCurve->NbPoles()),
+                                    opencascade::hash(static_cast<int>(theCurve->IsRational()))};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two Bezier curves by full geometric data.
+  bool operator()(const Handle(Geom_BezierCurve)& theCurve1,
+                  const Handle(Geom_BezierCurve)& theCurve2) const noexcept
+  {
+    constexpr double aTolerance = 1e-12;
+
+    // Compare degrees
+    if (theCurve1->Degree() != theCurve2->Degree())
+    {
+      return false;
+    }
+
+    // Compare rationality
+    if (theCurve1->IsRational() != theCurve2->IsRational())
+    {
+      return false;
+    }
+
+    const GeomHash_PointHasher aPointHasher;
+
+    // Compare poles
+    for (int i = 1; i <= theCurve1->NbPoles(); ++i)
+    {
+      if (!aPointHasher(theCurve1->Pole(i), theCurve2->Pole(i)))
+      {
+        return false;
+      }
+    }
+
+    // Compare weights if rational
+    if (theCurve1->IsRational())
+    {
+      for (int i = 1; i <= theCurve1->NbPoles(); ++i)
+      {
+        if (std::abs(theCurve1->Weight(i) - theCurve2->Weight(i)) > aTolerance)
+        {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+};
+
+#endif // _GeomHash_BezierCurveHasher_HeaderFile
